@@ -17,6 +17,8 @@ import {
 import ELK from 'elkjs/lib/elk.bundled.js';
 import '@xyflow/react/dist/style.css';
 import './CauseEffectGraph.css';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 
 const elk = new ELK();
 
@@ -283,25 +285,6 @@ function DetailsPanel({ node, onClose }: { node: Node<CauseEffectNodeData> | nul
   );
 }
 
-// View toggle component
-function ViewToggle({ view, onToggle }: { view: 'graph' | 'data'; onToggle: () => void }) {
-  return (
-    <div className="cause-effect-graph__toggle">
-      <button
-        className={`cause-effect-graph__toggle-btn ${view === 'graph' ? 'cause-effect-graph__toggle-btn--active' : ''}`}
-        onClick={view === 'data' ? onToggle : undefined}
-      >
-        Graph
-      </button>
-      <button
-        className={`cause-effect-graph__toggle-btn ${view === 'data' ? 'cause-effect-graph__toggle-btn--active' : ''}`}
-        onClick={view === 'graph' ? onToggle : undefined}
-      >
-        Data (YAML)
-      </button>
-    </div>
-  );
-}
 
 // Data view component
 function DataView({ yaml }: { yaml: string }) {
@@ -330,32 +313,26 @@ function DataView({ yaml }: { yaml: string }) {
   );
 }
 
-// Fullscreen button component
-function FullscreenButton({ isFullscreen, onClick }: { isFullscreen: boolean; onClick: () => void }) {
+// Fullscreen icon components
+function ExpandIcon() {
   return (
-    <button className="cause-effect-graph__fullscreen-btn" onClick={onClick} aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}>
-      {isFullscreen ? (
-        <>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="4 14 10 14 10 20" />
-            <polyline points="20 10 14 10 14 4" />
-            <line x1="14" y1="10" x2="21" y2="3" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-          Exit
-        </>
-      ) : (
-        <>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 3 21 3 21 9" />
-            <polyline points="9 21 3 21 3 15" />
-            <line x1="21" y1="3" x2="14" y2="10" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-          Fullscreen
-        </>
-      )}
-    </button>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 3 21 3 21 9" />
+      <polyline points="9 21 3 21 3 15" />
+      <line x1="21" y1="3" x2="14" y2="10" />
+      <line x1="3" y1="21" x2="10" y2="14" />
+    </svg>
+  );
+}
+
+function ShrinkIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="4 14 10 14 10 20" />
+      <polyline points="20 10 14 10 14 4" />
+      <line x1="14" y1="10" x2="21" y2="3" />
+      <line x1="3" y1="21" x2="10" y2="14" />
+    </svg>
   );
 }
 
@@ -378,7 +355,6 @@ export default function CauseEffectGraph({
   const [selectedNode, setSelectedNode] = useState<Node<CauseEffectNodeData> | null>(null);
   const [isLayouting, setIsLayouting] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewMode, setViewMode] = useState<'graph' | 'data'>('graph');
 
   const yamlData = toYaml(initialNodes, initialEdges);
 
@@ -395,7 +371,6 @@ export default function CauseEffectGraph({
   const onNodeClick: NodeMouseHandler<Node<CauseEffectNodeData>> = useCallback((_, node) => setSelectedNode(node), []);
   const onPaneClick = useCallback(() => setSelectedNode(null), []);
   const toggleFullscreen = useCallback(() => setIsFullscreen((prev) => !prev), []);
-  const toggleViewMode = useCallback(() => setViewMode((prev) => (prev === 'graph' ? 'data' : 'graph')), []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -414,38 +389,48 @@ export default function CauseEffectGraph({
 
   return (
     <div className={containerClass} style={isFullscreen ? undefined : { height }}>
-      <div className="cause-effect-graph__header">
-        <ViewToggle view={viewMode} onToggle={toggleViewMode} />
-        <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />
-      </div>
-
-      {viewMode === 'graph' ? (
-        <div className="cause-effect-graph__content">
-          {isLayouting && <div className="cause-effect-graph__loading">Computing layout...</div>}
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            fitView
-            fitViewOptions={{ padding: fitViewPadding }}
-            defaultEdgeOptions={{
-              type: 'default',
-              style: { stroke: '#94a3b8', strokeWidth: 2 },
-              markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8', width: 16, height: 16 },
-            }}
-          >
-            <Controls />
-          </ReactFlow>
-          <DetailsPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
+      <Tabs defaultValue="graph" className="flex flex-col h-full">
+        <div className="cause-effect-graph__header">
+          <TabsList>
+            <TabsTrigger value="graph">Graph</TabsTrigger>
+            <TabsTrigger value="data">Data (YAML)</TabsTrigger>
+          </TabsList>
+          <Button variant="secondary" size="sm" onClick={toggleFullscreen}>
+            {isFullscreen ? <ShrinkIcon /> : <ExpandIcon />}
+            {isFullscreen ? 'Exit' : 'Fullscreen'}
+          </Button>
         </div>
-      ) : (
-        <DataView yaml={yamlData} />
-      )}
+
+        <TabsContent value="graph" className="flex-1 m-0 min-h-0" style={{ height: 'calc(100% - 3rem)' }}>
+          <div className="cause-effect-graph__content">
+            {isLayouting && <div className="cause-effect-graph__loading">Computing layout...</div>}
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onNodeClick={onNodeClick}
+              onPaneClick={onPaneClick}
+              nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: fitViewPadding }}
+              defaultEdgeOptions={{
+                type: 'default',
+                style: { stroke: '#94a3b8', strokeWidth: 2 },
+                markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8', width: 16, height: 16 },
+              }}
+            >
+              <Controls />
+            </ReactFlow>
+            <DetailsPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="data" className="flex-1 m-0 min-h-0" style={{ height: 'calc(100% - 3rem)' }}>
+          <DataView yaml={yamlData} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
