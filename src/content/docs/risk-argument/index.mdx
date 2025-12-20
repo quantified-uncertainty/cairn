@@ -1,0 +1,320 @@
+---
+title: The AI Risk Argument
+description: A structured breakdown of the case for AI existential risk.
+sidebar:
+  order: 0
+tableOfContents: false
+---
+
+import CauseEffectGraph from '../../../components/CauseEffectGraph';
+
+<style>{`
+  .breakout {
+    margin-left: -300px;
+    margin-right: -300px;
+    width: calc(100% + 600px);
+  }
+  @media (max-width: 1400px) {
+    .breakout {
+      margin-left: -200px;
+      margin-right: -200px;
+      width: calc(100% + 400px);
+    }
+  }
+  @media (max-width: 1100px) {
+    .breakout {
+      margin-left: -100px;
+      margin-right: -100px;
+      width: calc(100% + 200px);
+    }
+  }
+  @media (max-width: 800px) {
+    .breakout {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
+  }
+`}</style>
+
+The case for AI existential risk follows a chain of reasoning. **Disagreement on any step** changes your overall risk estimate. This page maps the key cruxes at each step.
+
+## The Argument Chain
+
+<div class="breakout">
+<CauseEffectGraph
+  client:load
+  height={750}
+  fitViewPadding={0.08}
+  initialNodes={[
+    {
+      id: 'timelines',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'TAI Timeline',
+        description: 'When will transformative AI be developed?',
+        type: 'cause',
+        confidence: 2032,
+        confidenceLabel: 'median year',
+        details: 'Current progress is faster than predicted. Scaling laws show consistent improvement. Major labs explicitly targeting AGI with massive investment. Range: 2027-2045.',
+        sources: ['Metaculus forecasts', 'Epoch AI', 'Lab announcements'],
+        relatedConcepts: ['Scaling laws', 'AGI timelines', 'Compute trends']
+      }
+    },
+    {
+      id: 'capabilities',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Peak Capability',
+        description: 'How capable will AI systems become?',
+        type: 'intermediate',
+        confidence: 1000,
+        confidenceLabel: 'x human (est.)',
+        details: 'No known ceiling on AI capabilities. Intelligence is the source of human power over nature. AI can run faster, copy itself, improve recursively.',
+        sources: ['Superintelligence (Bostrom)', 'Scaling research'],
+        relatedConcepts: ['Superintelligence', 'Recursive self-improvement', 'Capability ceilings']
+      }
+    },
+    {
+      id: 'goals',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'AI Agency Level',
+        description: 'How autonomous will AI systems be?',
+        type: 'cause',
+        confidence: 0.75,
+        confidenceLabel: 'autonomy (0-1)',
+        details: 'Agency is useful and will be selected for. Scale: 0=pure tool, 0.5=assistant, 0.75=autonomous agent, 1.0=fully independent.',
+        sources: ['Omohundro AI Drives', 'Risks from Learned Optimization'],
+        relatedConcepts: ['Mesa-optimization', 'Instrumental convergence', 'Power-seeking']
+      }
+    },
+    {
+      id: 'alignment-hard',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Alignment Solved?',
+        description: 'Will alignment be solved before TAI?',
+        type: 'cause',
+        confidence: 0.4,
+        confidenceLabel: 'P(solved first)',
+        details: 'Human values are complex and hard to specify. We cannot evaluate superhuman outputs. Current techniques may not scale. 40% chance we solve it in time.',
+        sources: ['MIRI research', 'Alignment Forum'],
+        relatedConcepts: ['Specification problem', 'Scalable oversight', 'Goodhart']
+      }
+    },
+    {
+      id: 'accident',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Accident Risk',
+        description: 'Unintentional misalignment causes catastrophic harm.',
+        type: 'intermediate',
+        confidence: 0.12,
+        confidenceLabel: 'expected loss',
+        details: 'AI systems pursue goals that diverge from human values due to specification errors, mesa-optimization, or distributional shift. Not malicious, but dangerous.',
+        sources: ['Concrete Problems in AI Safety', 'Goal Misgeneralization'],
+        relatedConcepts: ['Inner misalignment', 'Reward hacking', 'Deceptive alignment']
+      }
+    },
+    {
+      id: 'misuse-access',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Proliferation Speed',
+        description: 'How fast will dangerous AI spread?',
+        type: 'cause',
+        confidence: 3,
+        confidenceLabel: 'years to widespread',
+        details: 'Through open source, theft, leaks, or building their own. Includes state actors, terrorists, and criminals. Estimate: 3 years from frontier to widespread access.',
+        sources: ['AI misuse literature', 'Biosecurity reports'],
+        relatedConcepts: ['Proliferation', 'Open source risk', 'Dual use']
+      }
+    },
+    {
+      id: 'bio-misuse',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Bio Misuse',
+        description: 'AI-enabled biological weapons development.',
+        type: 'intermediate',
+        confidence: 0.04,
+        confidenceLabel: 'expected loss',
+        details: 'AI lowers barriers to designing novel pathogens, enhancing transmissibility or lethality. Could enable non-state actors to create pandemic-capable agents.',
+        sources: ['Biosecurity reports', 'CBRN literature'],
+        relatedConcepts: ['Gain of function', 'Pandemic', 'Dual use']
+      }
+    },
+    {
+      id: 'cyber-misuse',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Cyber Misuse',
+        description: 'AI-powered cyber attacks on critical infrastructure.',
+        type: 'intermediate',
+        confidence: 0.025,
+        confidenceLabel: 'expected loss',
+        details: 'Autonomous hacking, vulnerability discovery, and exploitation at scale. Could target power grids, financial systems, or military infrastructure.',
+        sources: ['Cyber security research', 'RAND reports'],
+        relatedConcepts: ['Critical infrastructure', 'Autonomous weapons', 'Offense-defense balance']
+      }
+    },
+    {
+      id: 'nuclear-misuse',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Nuclear Misuse',
+        description: 'AI destabilizing nuclear deterrence or enabling attacks.',
+        type: 'intermediate',
+        confidence: 0.015,
+        confidenceLabel: 'expected loss',
+        details: 'AI could compromise early warning systems, enable first-strike advantages, or be used in autonomous launch decisions. Increases risk of accidental or intentional nuclear war.',
+        sources: ['Nuclear security literature', 'FHI reports'],
+        relatedConcepts: ['Deterrence', 'First strike', 'Autonomous weapons']
+      }
+    },
+    {
+      id: 'misuse',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Misuse Risk',
+        description: 'Combined intentional harmful use of AI.',
+        type: 'intermediate',
+        confidence: 0.08,
+        confidenceLabel: 'expected loss',
+        details: 'Sum of bio (~4%), cyber (~2.5%), and nuclear (~1.5%) misuse pathways. AI amplifies capability of bad actors across domains.',
+        sources: ['GCR from AI misuse', 'CBRN reports'],
+        relatedConcepts: ['Bioweapons', 'Cyber offense', 'Nuclear risk']
+      }
+    },
+    {
+      id: 'coordination-failure',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Global Coordination',
+        description: 'How well can humanity coordinate on AI safety?',
+        type: 'cause',
+        confidence: 35,
+        confidenceLabel: 'score (0-100)',
+        details: 'Lab racing creates pressure to cut safety corners. US-China competition makes cooperation hard. Governance cannot keep up. 35/100 = poor but not zero coordination.',
+        sources: ['Racing to the Precipice', 'AI governance research'],
+        relatedConcepts: ['Race dynamics', 'Regulatory capture', 'International coordination']
+      }
+    },
+    {
+      id: 'fast-takeoff',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Takeoff Speed',
+        description: 'How fast from AGI to superintelligence?',
+        type: 'cause',
+        confidence: 18,
+        confidenceLabel: 'months (median)',
+        details: 'Recursive self-improvement, speed advantages, and copying could create rapid capability gains. Range: 1 month to 10 years. Median estimate ~18 months.',
+        sources: ['Intelligence Explosion FAQ', 'Christiano on takeoff'],
+        relatedConcepts: ['FOOM', 'Discontinuity', 'Soft takeoff']
+      }
+    },
+    {
+      id: 'structural',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Structural Risk',
+        description: 'Systemic failures even with aligned AI.',
+        type: 'intermediate',
+        confidence: 0.06,
+        confidenceLabel: 'expected loss',
+        details: 'Even if individual AI systems are aligned, racing, proliferation, and coordination failures lead to catastrophe. The system fails even if components work.',
+        sources: ['Multi-agent safety', 'AI governance'],
+        relatedConcepts: ['Race dynamics', 'Collective action', 'Systemic risk']
+      }
+    },
+    {
+      id: 'total-risk',
+      type: 'causeEffect',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Total Global Loss',
+        description: 'Combined expected loss from AI catastrophe.',
+        type: 'effect',
+        confidence: 0.25,
+        confidenceLabel: 'expected loss',
+        details: 'Sum of accident (~12%), misuse (~8%), and structural (~6%) risk pathways, with some overlap. Estimates vary widely (5-90%) depending on assumptions.',
+        sources: ['The Precipice (Ord)', 'Expert surveys', 'Metaculus'],
+        relatedConcepts: ['P(doom)', 'X-risk', 'Long-term future']
+      }
+    }
+  ]}
+  initialEdges={[
+    { id: 'e-time-cap', source: 'timelines', target: 'capabilities', data: { impact: 1.0 } },
+    { id: 'e-cap-acc', source: 'capabilities', target: 'accident', data: { impact: 0.25 } },
+    { id: 'e-goals-acc', source: 'goals', target: 'accident', data: { impact: 0.35 } },
+    { id: 'e-align-acc', source: 'alignment-hard', target: 'accident', data: { impact: 0.40 } },
+    { id: 'e-cap-bio', source: 'capabilities', target: 'bio-misuse', data: { impact: 0.40 } },
+    { id: 'e-access-bio', source: 'misuse-access', target: 'bio-misuse', data: { impact: 0.60 } },
+    { id: 'e-cap-cyber', source: 'capabilities', target: 'cyber-misuse', data: { impact: 0.40 } },
+    { id: 'e-access-cyber', source: 'misuse-access', target: 'cyber-misuse', data: { impact: 0.60 } },
+    { id: 'e-cap-nuclear', source: 'capabilities', target: 'nuclear-misuse', data: { impact: 0.40 } },
+    { id: 'e-access-nuclear', source: 'misuse-access', target: 'nuclear-misuse', data: { impact: 0.60 } },
+    { id: 'e-bio-misuse', source: 'bio-misuse', target: 'misuse', data: { impact: 0.50 } },
+    { id: 'e-cyber-misuse', source: 'cyber-misuse', target: 'misuse', data: { impact: 0.31 } },
+    { id: 'e-nuclear-misuse', source: 'nuclear-misuse', target: 'misuse', data: { impact: 0.19 } },
+    { id: 'e-coord-struct', source: 'coordination-failure', target: 'structural', data: { impact: 0.50 } },
+    { id: 'e-takeoff-struct', source: 'fast-takeoff', target: 'structural', data: { impact: 0.30 } },
+    { id: 'e-cap-struct', source: 'capabilities', target: 'structural', data: { impact: 0.20 } },
+    { id: 'e-acc-total', source: 'accident', target: 'total-risk', data: { impact: 0.45 } },
+    { id: 'e-misuse-total', source: 'misuse', target: 'total-risk', data: { impact: 0.30 } },
+    { id: 'e-struct-total', source: 'structural', target: 'total-risk', data: { impact: 0.25 } }
+  ]}
+/>
+</div>
+
+**Click any node** to see details. The confidence percentages are illustrative—your estimates will differ.
+
+## The Argument Structure
+
+| Claim | If you disagree... |
+|-------|-------------------|
+| [Advanced AI will be developed soon](/risk-argument/timelines) | Risk is far away, less urgent |
+| [It will be transformatively powerful](/risk-argument/capabilities) | AI won't be capable enough to pose existential risk |
+| [Takeoff could be fast](/risk-argument/takeoff) | We'll have time to course-correct |
+| [AI will be goal-directed in dangerous ways](/risk-argument/goal-directedness) | AI will be tool-like, not agentic |
+| [Alignment is fundamentally hard](/risk-argument/alignment-difficulty) | We'll solve it through normal engineering |
+| [Misalignment would be catastrophic](/risk-argument/catastrophe) | Failures will be contained/correctable |
+| [We'll fail to coordinate](/risk-argument/coordination) | We'll successfully manage the transition |
+
+## How This Leads to P(doom)
+
+Your probability estimate for AI catastrophe is roughly:
+
+**P(doom) ≈ P(soon) × P(powerful) × P(fast takeoff matters) × P(goal-directed) × P(hard alignment) × P(catastrophic) × P(coordination fails)**
+
+This is why experts disagree so much—small differences at each step compound.
+
+| Worldview | Steps they doubt | Resulting P(doom) |
+|-----------|------------------|-------------------|
+| AI Optimist | Goals, Alignment, Catastrophe | &lt;1% |
+| Concerned Researcher | Uncertain on Takeoff, Alignment | 5-15% |
+| AI Doomer | Confident in all | 30-90% |
+| Long-Timelines | Timelines, Takeoff | Low urgency, but eventually concerning |
+
+## Using This Framework
+
+1. **Identify your cruxes**: Which steps are you most uncertain about?
+2. **Find your disagreements**: When you disagree with someone, which step differs?
+3. **Prioritize research**: Focus on resolving your most uncertain steps
+
+Click into each step to see the detailed arguments for and against.

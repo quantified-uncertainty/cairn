@@ -1,0 +1,318 @@
+/* CauseEffectGraph styles using Starlight CSS variables */
+
+.cause-effect-graph {
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--sl-color-hairline-light);
+  background-color: var(--sl-color-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.cause-effect-graph--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 9999;
+  border-radius: 0;
+  border: none;
+}
+
+/* Header bar */
+.cause-effect-graph__header {
+  flex-shrink: 0;
+  height: 3rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--sl-color-bg-nav);
+  border-bottom: 1px solid var(--sl-color-hairline-light);
+  gap: 0.5rem;
+}
+
+/* View toggle group */
+.cause-effect-graph__toggle {
+  all: unset;
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #e5e7eb !important;
+  border-radius: 6px !important;
+  padding: 3px !important;
+  gap: 2px !important;
+  box-sizing: border-box !important;
+}
+
+.cause-effect-graph__toggle-btn {
+  all: unset;
+  box-sizing: border-box !important;
+  height: 28px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  transition: all 0.15s ease !important;
+  line-height: 28px !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cause-effect-graph__toggle-btn:hover:not(.cause-effect-graph__toggle-btn--active) {
+  background: #d1d5db !important;
+  color: #374151 !important;
+}
+
+.cause-effect-graph__toggle-btn--active {
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  cursor: default !important;
+}
+
+/* Fullscreen button */
+.cause-effect-graph__fullscreen-btn {
+  padding: 0.375rem 0.75rem;
+  font-size: var(--sl-text-sm);
+  font-weight: 500;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: var(--sl-color-gray-5);
+  color: var(--sl-color-gray-2);
+  transition: all 0.15s ease;
+  line-height: 1.4;
+  font-family: var(--__sl-font);
+}
+
+.cause-effect-graph__fullscreen-btn:hover {
+  background-color: var(--sl-color-gray-4);
+  color: var(--sl-color-text);
+}
+
+.cause-effect-graph__fullscreen-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Graph content area */
+.cause-effect-graph__content {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  background-color: var(--sl-color-bg);
+}
+
+/* Loading indicator */
+.cause-effect-graph__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+  z-index: 10;
+}
+
+/* Data view */
+.cause-effect-graph__data {
+  flex: 1;
+  overflow: auto;
+  background-color: var(--sl-color-gray-6);
+  position: relative;
+  min-height: 0;
+}
+
+.cause-effect-graph__data-copy {
+  position: sticky;
+  top: 0.75rem;
+  float: right;
+  margin-right: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  font-size: var(--sl-text-xs);
+  font-weight: 500;
+  background-color: var(--sl-color-gray-5);
+  color: var(--sl-color-gray-2);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+  font-family: var(--__sl-font);
+}
+
+.cause-effect-graph__data-copy:hover {
+  background-color: var(--sl-color-gray-4);
+  color: var(--sl-color-text);
+}
+
+.cause-effect-graph__data-copy--copied {
+  background-color: var(--sl-color-green-low);
+  color: var(--sl-color-green-high);
+}
+
+.cause-effect-graph__data pre {
+  margin: 0;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  font-size: var(--sl-text-code-sm);
+  line-height: 1.6;
+  color: var(--sl-color-gray-1);
+  font-family: var(--__sl-font-mono);
+  white-space: pre;
+  overflow: auto;
+}
+
+/* Details panel */
+.cause-effect-graph__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background-color: var(--sl-color-bg);
+  border-left: 1px solid var(--sl-color-hairline-light);
+  box-shadow: var(--sl-shadow-lg);
+  z-index: 1000;
+  overflow: auto;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.cause-effect-graph__panel-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--sl-color-hairline-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cause-effect-graph__panel-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: var(--sl-text-2xs);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.cause-effect-graph__panel-badge--cause {
+  background-color: var(--sl-color-red);
+  color: var(--sl-color-black);
+}
+
+.cause-effect-graph__panel-badge--effect {
+  background-color: var(--sl-color-green);
+  color: var(--sl-color-black);
+}
+
+.cause-effect-graph__panel-badge--intermediate {
+  background-color: var(--sl-color-purple);
+  color: var(--sl-color-black);
+}
+
+.cause-effect-graph__panel-title {
+  margin: 0;
+  font-size: var(--sl-text-lg);
+  font-weight: 600;
+  color: var(--sl-color-text);
+}
+
+.cause-effect-graph__panel-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--sl-color-gray-3);
+  padding: 0 0.25rem;
+  line-height: 1;
+}
+
+.cause-effect-graph__panel-close:hover {
+  color: var(--sl-color-text);
+}
+
+.cause-effect-graph__panel-content {
+  padding: 1rem;
+}
+
+.cause-effect-graph__panel-section {
+  margin-bottom: 1rem;
+}
+
+.cause-effect-graph__panel-label {
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-3);
+  margin-bottom: 0.25rem;
+}
+
+.cause-effect-graph__panel-text {
+  margin: 0;
+  font-size: var(--sl-text-sm);
+  line-height: 1.5;
+  color: var(--sl-color-text);
+}
+
+.cause-effect-graph__panel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.cause-effect-graph__panel-tag {
+  padding: 0.25rem 0.625rem;
+  background-color: var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-2);
+}
+
+/* Progress bar for confidence */
+.cause-effect-graph__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cause-effect-graph__progress-bar {
+  flex: 1;
+  height: 0.5rem;
+  background-color: var(--sl-color-gray-5);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.cause-effect-graph__progress-fill {
+  height: 100%;
+  border-radius: 0.25rem;
+  background-color: var(--sl-color-accent);
+}
+
+.cause-effect-graph__progress-value {
+  font-size: var(--sl-text-sm);
+  font-weight: 600;
+  color: var(--sl-color-text);
+}
