@@ -35,6 +35,10 @@ export interface CauseEffectNodeData {
 export interface CauseEffectEdgeData {
   label?: string;
   impact?: number;
+  // New cleaner arrow properties
+  strength?: 'strong' | 'medium' | 'weak';  // Maps to line thickness
+  confidence?: 'high' | 'medium' | 'low';   // Maps to solid/dashed/dotted
+  effect?: 'increases' | 'decreases';        // Maps to red/green color
 }
 
 // Convert graph data to YAML format
@@ -78,8 +82,14 @@ function toYaml(nodes: Node<CauseEffectNodeData>[], edges: Edge<CauseEffectEdgeD
   for (const edge of edges) {
     lines.push(`  - source: ${edge.source}`);
     lines.push(`    target: ${edge.target}`);
-    if (edge.data?.impact !== undefined) {
-      lines.push(`    impact: ${edge.data.impact}`);
+    if (edge.data?.strength) {
+      lines.push(`    strength: ${edge.data.strength}`);
+    }
+    if (edge.data?.confidence) {
+      lines.push(`    confidence: ${edge.data.confidence}`);
+    }
+    if (edge.data?.effect) {
+      lines.push(`    effect: ${edge.data.effect}`);
     }
     if (edge.data?.label) {
       lines.push(`    label: "${edge.data.label}"`);
@@ -94,21 +104,53 @@ function toYaml(nodes: Node<CauseEffectNodeData>[], edges: Edge<CauseEffectEdgeD
 const NODE_WIDTH = 180;
 const NODE_HEIGHT = 80;
 
-// Style edges based on impact value
+// Style edges based on strength, confidence, and effect
+// - Thickness: strong=4, medium=2.5, weak=1.5
+// - Style: high confidence=solid, medium=dashed, low=dotted
+// - Color: increases risk=red, decreases risk=green, neutral=gray
 function getStyledEdges(edges: Edge<CauseEffectEdgeData>[]): Edge<CauseEffectEdgeData>[] {
   return edges.map((edge) => {
-    const impact = edge.data?.impact ?? 0.5;
-    const strokeWidth = 1 + impact * 3;
-    const opacity = 0.4 + impact * 0.5;
+    const data = edge.data;
+
+    // Determine stroke width from strength
+    const strengthMap = { strong: 3.5, medium: 2, weak: 1.2 };
+    const strokeWidth = data?.strength ? strengthMap[data.strength] : 2;
+
+    // Determine stroke dash array from confidence
+    const confidenceMap = {
+      high: undefined,           // solid line
+      medium: '8 4',             // dashed
+      low: '3 3'                 // dotted
+    };
+    const strokeDasharray = data?.confidence ? confidenceMap[data.confidence] : undefined;
+
+    // Determine color from effect
+    const effectColors = {
+      increases: '#dc2626',      // red - increases risk
+      decreases: '#16a34a',      // green - decreases risk
+    };
+    const strokeColor = data?.effect ? effectColors[data.effect] : '#64748b'; // gray default
 
     return {
       ...edge,
-      label: edge.data?.impact !== undefined ? `${Math.round(edge.data.impact * 100)}%` : undefined,
-      labelStyle: { fontSize: 11, fontWeight: 600, fill: '#64748b' },
-      labelBgStyle: { fill: '#f8fafc', fillOpacity: 0.9 },
-      labelBgPadding: [4, 6] as [number, number],
-      labelBgBorderRadius: 4,
-      style: { ...edge.style, strokeWidth, opacity },
+      // Remove percentage labels - the visual encoding is now the information
+      label: data?.label,
+      labelStyle: data?.label ? { fontSize: 11, fontWeight: 500, fill: '#64748b' } : undefined,
+      labelBgStyle: data?.label ? { fill: '#f8fafc', fillOpacity: 0.9 } : undefined,
+      labelBgPadding: data?.label ? [4, 6] as [number, number] : undefined,
+      labelBgBorderRadius: data?.label ? 4 : undefined,
+      style: {
+        ...edge.style,
+        stroke: strokeColor,
+        strokeWidth,
+        strokeDasharray,
+      },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: strokeColor,
+        width: 16,
+        height: 16,
+      },
     };
   });
 }

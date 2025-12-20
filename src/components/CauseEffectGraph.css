@@ -45,6 +45,30 @@
   height: 100%;
 }
 
+/* Fix for React Flow edge SVGs - prevent Tailwind/Starlight from resetting dimensions */
+.cause-effect-graph__content .react-flow__edges {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.cause-effect-graph__content .react-flow__edges > svg {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  overflow: visible !important;
+  pointer-events: none;
+}
+
+.cause-effect-graph__content .react-flow__edge {
+  pointer-events: all;
+}
+
+.cause-effect-graph__content .react-flow__edge-path {
+  stroke-linecap: round;
+}
+
 /* Loading indicator */
 .cause-effect-graph__loading {
   position: absolute;

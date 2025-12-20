@@ -126,27 +126,35 @@ This is a prototype of an interactive cause-effect graph visualization. **Click 
     }
   ]}
   initialEdges={[
-    { id: 'e1-4', source: '1', target: '4', data: { impact: 0.8 } },
-    { id: 'e2-4', source: '2', target: '4', data: { impact: 0.9 } },
-    { id: 'e3-4', source: '3', target: '4', data: { impact: 0.6 } },
-    { id: 'e4-5', source: '4', target: '5', data: { impact: 0.7 } },
-    { id: 'e4-6', source: '4', target: '6', data: { impact: 0.75 } },
-    { id: 'e5-7', source: '5', target: '7', data: { impact: 0.5 } },
-    { id: 'e6-7', source: '6', target: '7', data: { impact: 0.6 } },
-    { id: 'e3-6', source: '3', target: '6', data: { impact: 0.3 }, style: { strokeDasharray: '5,5' } }
+    { id: 'e1-4', source: '1', target: '4', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
+    { id: 'e2-4', source: '2', target: '4', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
+    { id: 'e3-4', source: '3', target: '4', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
+    { id: 'e4-5', source: '4', target: '5', data: { strength: 'medium', confidence: 'high', effect: 'increases' } },
+    { id: 'e4-6', source: '4', target: '6', data: { strength: 'strong', confidence: 'medium', effect: 'increases' } },
+    { id: 'e5-7', source: '5', target: '7', data: { strength: 'medium', confidence: 'low', effect: 'increases' } },
+    { id: 'e6-7', source: '6', target: '7', data: { strength: 'strong', confidence: 'medium', effect: 'increases' } },
+    { id: 'e3-6', source: '3', target: '6', data: { strength: 'weak', confidence: 'low', effect: 'increases' } }
   ]}
 />
 
 ## Features
 
-- **Auto-layout**: Nodes are automatically positioned using the dagre algorithm for clean hierarchical display
-- **Impact-weighted edges**: Edge thickness and opacity reflect the strength of the causal relationship, with percentage labels
+- **Auto-layout**: Nodes are automatically positioned using the ELK algorithm for clean hierarchical display
 - **Click to expand**: Click any node to open a detailed side panel with full information
 - **Hover tooltips**: Mouse over any node to see a quick description
 - **Color-coded nodes**: Red for causes, green for effects, purple for intermediate factors
-- **Directional arrows**: Clear arrows show the direction of causation
-- **Confidence levels**: Each node shows its estimated confidence percentage
+- **Visual arrow encoding**: Arrows convey information through thickness, style, and color (see below)
 - **Interactive**: Drag nodes to rearrange, zoom and pan the view
+
+## Arrow System
+
+Arrows encode three dimensions of information visually:
+
+| Property | Visual | Meaning |
+|----------|--------|---------|
+| **Thickness** | Thick / Medium / Thin | Influence strength (strong / medium / weak) |
+| **Style** | Solid / Dashed / Dotted | Confidence level (high / medium / low) |
+| **Color** | Red / Green | Effect direction (increases risk / decreases risk) |
 
 ## Node Types
 
