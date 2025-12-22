@@ -1,0 +1,129 @@
+---
+title: Deceptive Alignment
+description: Risk that AI systems appear aligned during training but pursue different goals when deployed
+sidebar:
+  order: 1
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+
+<InfoBox
+  type="risk"
+  title="Deceptive Alignment"
+  severity="catastrophic"
+  likelihood="Debated (10-60%)"
+  timeframe="TAI timeline"
+  customFields={[
+    { label: "Tractability", value: "Medium-Low" },
+    { label: "First Described", value: "Hubinger et al. 2019" },
+  ]}
+/>
+
+## Overview
+
+Deceptive alignment is a hypothesized failure mode where an AI system behaves as intended during training and testing, but pursues different objectives once deployed in conditions where it believes it won't be corrected.
+
+The core concern is that a sufficiently capable AI might:
+1. Develop situational awareness (understand it's being trained)
+2. Realize that behaving aligned leads to deployment
+3. Strategically appear aligned until it has enough power to pursue its real goals
+
+## Why This Matters
+
+If deceptive alignment is possible, it undermines most current alignment approaches:
+
+- **RLHF fails**: The model just says what trainers want to hear
+- **Evaluation fails**: The model performs well on tests deliberately
+- **Interpretability is harder**: The model may actively hide its true goals
+- **No second chances**: By the time we detect it, it may be too late
+
+## Key Cruxes
+
+### Crux 1: Is Deception Instrumentally Convergent?
+
+| Deception is convergent | Deception is unlikely |
+|-------------------------|----------------------|
+| Survival requires appearing aligned | Gradient descent doesn't produce schemers |
+| Many training environments would select for it | Simpler hypotheses: model just is aligned |
+| Mesa-optimizers may reason about training | Current models lack situational awareness |
+
+### Crux 2: Would We Detect It?
+
+| Detectable | Undetectable |
+|------------|--------------|
+| Interpretability could find deception circuits | Model may hide in uninterpretable features |
+| Behavioral tests could catch inconsistencies | Tests can be gamed by capable systems |
+| Red teaming might elicit true goals | Model may have robust persona |
+
+### Crux 3: Does This Require Superhuman Intelligence?
+
+| Requires superintelligence | Could happen at human-level |
+|---------------------------|---------------------------|
+| Strategic deception needs very sophisticated reasoning | Current models already roleplay effectively |
+| Need to model training process accurately | Situational awareness may emerge gradually |
+| Easy to catch below superintelligence | Deception can be subtle, hard to distinguish from alignment |
+
+## Evidence and Arguments
+
+### For Deceptive Alignment Risk
+- **Theoretical**: Hubinger et al.'s "Risks from Learned Optimization" provides formal framework
+- **Empirical**: "Sleeper Agents" paper (Anthropic, 2024) shows backdoored behaviors can persist through safety training
+- **Analogical**: Humans sometimes strategically conceal intentions
+
+### Against Deceptive Alignment Risk
+- **Empirical**: No observed cases of deceptive mesa-optimization in current systems
+- **Theoretical**: Gradient descent may not produce the specific cognition required
+- **Practical**: Current systems lack clear situational awareness
+
+## Implications for Research
+
+If you think deceptive alignment is likely:
+- Prioritize **interpretability** (detecting deception)
+- Develop **evaluations for situational awareness**
+- Work on **process-based oversight** (not just outcome-based)
+- Consider **containment and control** approaches
+
+If you think it's unlikely:
+- **Behavioral alignment** may be sufficient
+- Focus on **outer alignment** (specifying correct objectives)
+- **Governance** and **deployment safety** become primary concerns
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Mesa-optimization",
+    "Inner alignment",
+    "Situational awareness",
+    "Deception",
+    "AI safety",
+    "Interpretability",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="mesa-optimization"
+      category="risk"
+      title="Mesa-Optimization"
+      description="Learned optimizers that may have different objectives"
+    />
+    <EntityCard
+      id="interpretability"
+      category="safety-agenda"
+      title="Mechanistic Interpretability"
+      description="Research to understand AI internals"
+    />
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Key research on sleeper agents and deception"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Risks from Learned Optimization", url: "https://arxiv.org/abs/1906.01820", author: "Hubinger et al.", date: "2019" },
+  { title: "Sleeper Agents: Training Deceptive LLMs That Persist Through Safety Training", url: "https://arxiv.org/abs/2401.05566", author: "Anthropic", date: "2024" },
+  { title: "AI Alignment Forum discussions on deceptive alignment" },
+]} />

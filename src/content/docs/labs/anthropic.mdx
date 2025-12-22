@@ -1,0 +1,105 @@
+---
+title: Anthropic
+description: AI safety company developing Claude and pioneering Constitutional AI
+sidebar:
+  order: 1
+---
+
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+
+<InfoBox
+  type="lab-frontier"
+  title="Anthropic"
+  founded="2021"
+  location="San Francisco, CA"
+  headcount="~1,000"
+  funding="$7.3B+"
+  website="https://anthropic.com"
+/>
+
+## Overview
+
+Anthropic is an AI safety company founded by former OpenAI researchers. The company takes a "race to the top" approach, believing that safety-focused labs should be at the frontier of AI capabilities to ensure safe development practices are embedded from the start.
+
+Their primary research directions include Constitutional AI (a technique for training AI systems to be helpful, harmless, and honest), mechanistic interpretability, and scalable oversight methods.
+
+## Core Safety Thesis
+
+Anthropic operates on several key assumptions:
+
+1. **Transformative AI is coming soon** - likely within the next decade
+2. **Safety research requires frontier access** - understanding risks requires working with the most capable systems
+3. **Empirical safety research is tractable** - we can make meaningful progress on alignment through experimentation
+4. **Responsible scaling is possible** - safety measures can keep pace with capability increases
+
+## Safety Research Areas
+
+### Constitutional AI (CAI)
+Training AI to follow principles rather than just human feedback. The model critiques and revises its own outputs based on a constitution of rules.
+
+### Mechanistic Interpretability
+Understanding neural networks by reverse-engineering their internal computations. Anthropic has published extensively on sparse autoencoders and feature visualization.
+
+### Responsible Scaling Policy (RSP)
+A framework for making capability advancement conditional on safety measures. Defines "ASL" levels (AI Safety Levels) with corresponding containment requirements.
+
+### Scalable Oversight
+Research on how humans can supervise AI systems on tasks too complex for humans to evaluate directly.
+
+<Section title="Key People">
+  <KeyPeople people={[
+    { name: "Dario Amodei", role: "CEO" },
+    { name: "Daniela Amodei", role: "President" },
+    { name: "Chris Olah", role: "Co-founder, Interpretability Lead" },
+    { name: "Jan Leike", role: "Head of Alignment" },
+    { name: "Tom Brown", role: "Co-founder" },
+  ]} />
+</Section>
+
+## Key Publications
+
+- **Constitutional AI** (2022) - Training models with self-critique
+- **Scaling Monosemanticity** (2024) - Extracting interpretable features from Claude
+- **Sleeper Agents** (2024) - Demonstrating persistence of backdoored behaviors
+- **Many-shot Jailbreaking** (2024) - Long-context attack vulnerabilities
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Constitutional AI",
+    "RLHF",
+    "Interpretability",
+    "Responsible Scaling",
+    "Claude",
+    "Frontier AI",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="anthropic-core-views"
+      category="safety-agenda"
+      title="Anthropic Core Views"
+      description="Anthropic's published perspective on AI safety priorities"
+    />
+    <EntityCard
+      id="constitutional-ai"
+      category="capability"
+      title="Constitutional AI"
+      description="Training technique using model self-critique"
+    />
+    <EntityCard
+      id="deceptive-alignment"
+      category="risk"
+      title="Deceptive Alignment"
+      description="Risk that AI systems appear aligned during training but pursue different goals when deployed"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Anthropic Company Website", url: "https://anthropic.com" },
+  { title: "Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety" },
+  { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy" },
+  "Crunchbase funding data",
+]} />

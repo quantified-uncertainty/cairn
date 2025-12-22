@@ -1,0 +1,129 @@
+---
+title: Anthropic Core Views
+description: Anthropic's published perspective on AI safety priorities and research directions
+sidebar:
+  order: 1
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, KeyPeople } from '../../../components/wiki';
+
+<InfoBox
+  type="safety-agenda"
+  title="Anthropic Core Views"
+  organization="Anthropic"
+  approach="Empirical safety research"
+  customFields={[
+    { label: "Published", value: "2023" },
+    { label: "Status", value: "Active" },
+  ]}
+  website="https://anthropic.com/news/core-views-on-ai-safety"
+/>
+
+## Overview
+
+Anthropic's Core Views on AI Safety is their publicly stated research agenda and organizational philosophy. Published in 2023, it articulates why Anthropic believes safety-focused labs should be at the frontier of AI development.
+
+## Key Claims
+
+### 1. Transformative AI is Likely Coming Soon
+Anthropic believes advanced AI systems that could have transformative (positive or negative) impacts on the world may be developed in the near future—potentially within the next decade.
+
+### 2. Safety Research Requires Frontier Access
+Working with the most capable systems is necessary to:
+- Understand risks that only emerge at scale
+- Develop safety techniques that work for advanced AI
+- Have credibility and influence in the field
+
+### 3. Empirical Alignment Research is Tractable
+Unlike some theoretical approaches, Anthropic believes we can make meaningful progress through:
+- Studying actual model behavior
+- Developing interpretability tools
+- Testing alignment techniques empirically
+
+### 4. Being at the Frontier is Necessary for Safety
+This is the most controversial claim: Anthropic argues that safety-focused organizations need to be competitive at the frontier, because:
+- Safety research on toy models may not transfer
+- If safety-focused labs fall behind, less safety-conscious actors dominate
+- Influence over deployment requires technical credibility
+
+## Research Priorities
+
+### Constitutional AI
+Training models to follow principles rather than just human feedback. Uses model self-critique against a "constitution" of rules.
+
+### Mechanistic Interpretability
+Understanding what happens inside neural networks by reverse-engineering their computations. Led by Chris Olah.
+
+### Scalable Oversight
+Developing techniques for humans to supervise AI systems on tasks too complex for humans to evaluate directly.
+
+### Responsible Scaling
+Framework (RSP) for making capability advancement conditional on safety measures.
+
+## Critiques
+
+### "Racing to the Top" Concerns
+Critics argue that even well-intentioned capability development:
+- Accelerates timelines for everyone
+- Normalizes frontier development race
+- May not achieve claimed safety benefits
+
+### Self-Serving Interpretation
+Some view Core Views as post-hoc justification for commercial AI development, noting:
+- Most staff work on capabilities, not safety
+- Commercial pressures may override safety
+- "Needs frontier access" is a convenient conclusion
+
+### Alternative Strategies
+Other approaches that conflict with Core Views:
+- **Pause advocacy**: Stop frontier development entirely
+- **Pure safety research**: Work on theory without building systems
+- **Governance focus**: Prioritize policy over technical research
+
+## Crux: Does Safety Need Frontier?
+
+| Frontier needed | Frontier not needed |
+|-----------------|---------------------|
+| Emergent risks only appear at scale | Theoretical work can anticipate risks |
+| Interpretability needs real models | Toy models can reveal principles |
+| Influence requires being competitive | Influence comes from being right |
+| Safety techniques must work at scale | Techniques can be developed separately |
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "AI Safety",
+    "Constitutional AI",
+    "Interpretability",
+    "Responsible Scaling",
+    "Anthropic",
+    "Research Agenda",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="The organization behind Core Views"
+    />
+    <EntityCard
+      id="interpretability"
+      category="safety-agenda"
+      title="Mechanistic Interpretability"
+      description="Key research pillar of Core Views"
+    />
+    <EntityCard
+      id="scalable-oversight"
+      category="safety-agenda"
+      title="Scalable Oversight"
+      description="Research on supervising advanced AI"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety", author: "Anthropic", date: "2023" },
+  { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy", date: "2023" },
+]} />

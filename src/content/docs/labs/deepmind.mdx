@@ -1,0 +1,115 @@
+---
+title: Google DeepMind
+description: AI research lab known for AlphaGo, AlphaFold, and Gemini
+sidebar:
+  order: 3
+---
+
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+
+<InfoBox
+  type="lab-frontier"
+  title="Google DeepMind"
+  founded="2010 (merged 2023)"
+  location="London, UK"
+  headcount="~3,000"
+  funding="Alphabet subsidiary"
+  website="https://deepmind.google"
+/>
+
+## Overview
+
+Google DeepMind was formed in 2023 from the merger of DeepMind and Google Brain. DeepMind, founded in 2010 and acquired by Google in 2014, is known for landmark achievements including AlphaGo (defeating world Go champion), AlphaFold (protein structure prediction), and Gemini (multimodal AI system).
+
+The lab combines fundamental research with deployment through Google's products, giving it massive scale and computational resources.
+
+## Core Approach
+
+DeepMind's safety philosophy emphasizes:
+
+1. **Capability research informs safety** - Understanding how systems work enables safer design
+2. **Scalable evaluation** - Developing benchmarks and testing methodologies
+3. **Responsible development** - Internal review processes before deployment
+4. **Beneficial applications** - Directing AI toward scientific breakthroughs (AlphaFold, weather prediction)
+
+## Safety Research Areas
+
+### Scalable Oversight Research
+Work on AI-assisted evaluation, debate, and recursive reward modeling for supervising advanced AI systems.
+
+### Specification & Alignment
+Research on how to specify what we want from AI systems, including work on reward modeling and preference learning.
+
+### Governance & Policy
+Active engagement with AI governance, including contributions to international AI safety discussions and the UK AI Safety Summit.
+
+### Evaluation & Red Teaming
+Frontier Safety Team focused on systematic evaluation of dangerous capabilities before deployment.
+
+<Section title="Key People">
+  <KeyPeople people={[
+    { name: "Demis Hassabis", role: "CEO" },
+    { name: "Shane Legg", role: "Chief AGI Scientist, Co-founder" },
+    { name: "Koray Kavukcuoglu", role: "VP Research" },
+    { name: "Pushmeet Kohli", role: "VP Research, Safety" },
+  ]} />
+</Section>
+
+## Key Achievements
+
+### AlphaGo / AlphaZero (2016-2017)
+Defeated world champions in Go and Chess using reinforcement learning and self-play.
+
+### AlphaFold (2020-2022)
+Solved protein structure prediction, releasing predictions for nearly all known proteins. Major contribution to biology.
+
+### Gemini (2023-present)
+Multimodal AI system competing with GPT-4, integrated across Google products.
+
+## Key Publications
+
+- **Scalable agent alignment via reward modeling** (2018)
+- **AI Safety Gridworlds** (2017) - Benchmark environments for safety
+- **Specification gaming examples** - Documented unexpected behaviors
+- **Frontier Safety Framework** (2024)
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Gemini",
+    "AlphaFold",
+    "Reinforcement Learning",
+    "AGI",
+    "Frontier AI",
+    "Google",
+    "Reward Modeling",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="scalable-oversight"
+      category="safety-agenda"
+      title="Scalable Oversight"
+      description="Approaches for supervising AI on tasks too complex for humans"
+    />
+    <EntityCard
+      id="reward-hacking"
+      category="risk"
+      title="Reward Hacking"
+      description="AI systems gaming their reward signals in unintended ways"
+    />
+    <EntityCard
+      id="openai"
+      category="lab"
+      title="OpenAI"
+      description="Competing frontier lab developing GPT series"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Google DeepMind Website", url: "https://deepmind.google" },
+  { title: "AlphaFold Protein Structure Database", url: "https://alphafold.ebi.ac.uk" },
+  { title: "DeepMind Safety Research", url: "https://deepmind.google/safety-research" },
+]} />

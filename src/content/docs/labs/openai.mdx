@@ -1,0 +1,112 @@
+---
+title: OpenAI
+description: AI research lab that pioneered GPT models and RLHF alignment techniques
+sidebar:
+  order: 2
+---
+
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+
+<InfoBox
+  type="lab-frontier"
+  title="OpenAI"
+  founded="2015"
+  location="San Francisco, CA"
+  headcount="~3,000"
+  funding="$14B+ (Microsoft)"
+  website="https://openai.com"
+/>
+
+## Overview
+
+OpenAI is an AI research company that has become synonymous with large language models through its GPT series. Originally founded as a non-profit, it transitioned to a "capped profit" structure in 2019. OpenAI pioneered RLHF (Reinforcement Learning from Human Feedback) as a practical alignment technique.
+
+The company's mission is to ensure artificial general intelligence (AGI) benefits all of humanity, though its commercial success with ChatGPT has raised questions about the balance between safety research and product development.
+
+## Core Approach
+
+OpenAI's safety strategy has evolved over time:
+
+1. **Iterative deployment** - Release progressively more capable systems to learn from real-world use
+2. **RLHF alignment** - Train models to follow human preferences
+3. **Preparedness framework** - Risk assessment for frontier capabilities
+4. **Superalignment initiative** - Research program for aligning superintelligent systems
+
+## Safety Research Areas
+
+### RLHF (Reinforcement Learning from Human Feedback)
+OpenAI developed and popularized RLHF, using human preference data to fine-tune language models. This became the standard technique for making LLMs helpful and harmless.
+
+### Preparedness
+A team focused on tracking and evaluating catastrophic risks from frontier models, including biosecurity, cybersecurity, and autonomous replication capabilities.
+
+### Superalignment (Disbanded 2024)
+A research program aimed at solving alignment for superintelligent systems. Leaders Jan Leike and Ilya Sutskever departed in 2024, raising concerns about OpenAI's safety commitment.
+
+### Red Teaming
+Extensive adversarial testing of models before deployment, including external red team partnerships.
+
+<Section title="Key People">
+  <KeyPeople people={[
+    { name: "Sam Altman", role: "CEO" },
+    { name: "Greg Brockman", role: "President (on leave)" },
+    { name: "Mira Murati", role: "Former CTO (departed 2024)" },
+    { name: "John Schulman", role: "Co-founder, Research (departed 2024)" },
+  ]} />
+</Section>
+
+## Key Publications
+
+- **InstructGPT** (2022) - RLHF for following instructions
+- **GPT-4 System Card** (2023) - Risk assessment and mitigations
+- **Weak-to-Strong Generalization** (2023) - Superalignment research direction
+- **Preparedness Framework** (2023) - Risk evaluation methodology
+
+## Notable Departures (2024)
+
+Several key safety researchers left OpenAI in 2024:
+- **Jan Leike** (to Anthropic) - Cited disagreements over safety prioritization
+- **Ilya Sutskever** (started SSI) - Co-founder, chief scientist
+- **John Schulman** (to Anthropic) - Co-founder, PPO inventor
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "GPT-4",
+    "ChatGPT",
+    "RLHF",
+    "Preparedness",
+    "AGI",
+    "Frontier AI",
+    "o1",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="rlhf"
+      category="capability"
+      title="RLHF"
+      description="Reinforcement Learning from Human Feedback alignment technique"
+    />
+    <EntityCard
+      id="mesa-optimization"
+      category="risk"
+      title="Mesa-Optimization"
+      description="Risk of learned optimizers pursuing different objectives"
+    />
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Safety-focused lab founded by former OpenAI researchers"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "OpenAI Website", url: "https://openai.com" },
+  { title: "OpenAI Charter", url: "https://openai.com/charter" },
+  { title: "Preparedness Framework", url: "https://openai.com/safety/preparedness" },
+  "Various news reports on 2024 departures",
+]} />
