@@ -7,3 +7,8 @@ export { KeyPeople } from './KeyPeople';
 export { Sources } from './Sources';
 export { Tags } from './Tags';
 export { Section } from './Section';
+
+// Probability estimate components
+export { EstimateBox } from './EstimateBox';
+export { KeyQuestions } from './KeyQuestions';
+export { DisagreementMap } from './DisagreementMap';

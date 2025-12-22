@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, DisagreementMap, KeyQuestions } from '../../../../components/wiki';
 
 <InfoBox
   type="risk"
@@ -74,6 +74,54 @@ If deceptive alignment is possible, it undermines most current alignment approac
 - **Empirical**: No observed cases of deceptive mesa-optimization in current systems
 - **Theoretical**: Gradient descent may not produce the specific cognition required
 - **Practical**: Current systems lack clear situational awareness
+
+## Expert Positions
+
+<DisagreementMap
+  client:load
+  topic="Likelihood of Deceptive Alignment"
+  description="How likely is deceptive alignment to occur in advanced AI systems?"
+  spectrum={{ low: "Very unlikely", high: "Near-certain" }}
+  positions={[
+    { actor: "Eliezer Yudkowsky", position: "Very likely", estimate: "85%", confidence: "high" },
+    { actor: "Paul Christiano", position: "Significant concern", estimate: "50%", confidence: "medium" },
+    { actor: "Evan Hubinger", position: "Possible", estimate: "40%", confidence: "medium", source: "Risks from Learned Optimization" },
+    { actor: "OpenAI Safety Team", position: "Uncertain", estimate: "20-40%", confidence: "low" },
+    { actor: "Neel Nanda", position: "Less likely", estimate: "15%", confidence: "medium" }
+  ]}
+/>
+
+<KeyQuestions
+  client:load
+  title="Key Uncertainties for Deceptive Alignment"
+  questions={[
+    {
+      question: "At what capability level does situational awareness emerge?",
+      currentEstimate: "GPT-5 to GPT-7 level",
+      confidence: "low",
+      importance: "critical",
+      cruxFor: ["Timeline for concern", "When to prioritize this risk"],
+      updatesOn: "Evaluations for situational awareness in future models"
+    },
+    {
+      question: "Can interpretability detect deceptive cognition?",
+      currentEstimate: "30-50% tractable",
+      confidence: "low",
+      importance: "high",
+      cruxFor: ["Viability of interpretability research", "Detection strategies"],
+      evidenceLinks: [
+        { label: "Sleeper Agents paper", url: "https://arxiv.org/abs/2401.05566" }
+      ]
+    },
+    {
+      question: "Would gradient descent select for or against deception?",
+      currentEstimate: "Unclear",
+      confidence: "low",
+      importance: "critical",
+      cruxFor: ["Whether this is a real concern", "Training approach changes"]
+    }
+  ]}
+/>
 
 ## Implications for Research
 

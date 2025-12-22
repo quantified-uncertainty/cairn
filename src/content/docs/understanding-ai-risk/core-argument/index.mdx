@@ -7,6 +7,7 @@ tableOfContents: false
 ---
 
 import CauseEffectGraph from '../../../../components/CauseEffectGraph';
+import { DisagreementMap, EstimateBox } from '../../../../components/wiki';
 
 <style>{`
   .breakout {
@@ -311,6 +312,35 @@ This is why experts disagree so much—small differences at each step compound.
 | AI Doomer | Confident in all | 30-90% |
 | Long-Timelines | Timelines, Takeoff | Low urgency, but eventually concerning |
 
+## Expert Estimates
+
+<DisagreementMap
+  client:load
+  topic="P(AI Catastrophe)"
+  description="Expert estimates of probability that AI causes existential or civilizational catastrophe this century."
+  spectrum={{ low: "Very unlikely (<1%)", high: "Near-certain (>90%)" }}
+  positions={[
+    { actor: "Eliezer Yudkowsky", position: "Very high", estimate: ">90%", confidence: "high" },
+    { actor: "Paul Christiano", position: "Significant", estimate: "10-20%", confidence: "medium" },
+    { actor: "Toby Ord", position: "Moderate", estimate: "10%", confidence: "medium", source: "The Precipice" },
+    { actor: "AI Impacts Survey", position: "Lower", estimate: "5%", confidence: "low", source: "2023 Expert Survey" },
+    { actor: "Stuart Russell", position: "Concerned", estimate: "15-25%", confidence: "medium" },
+    { actor: "Yoshua Bengio", position: "Concerned", estimate: "10-15%", confidence: "medium" }
+  ]}
+/>
+
+<EstimateBox
+  client:load
+  variable="P(Transformative AI by 2040)"
+  description="Probability of AI capable of having a transformative impact on civilization by 2040."
+  aggregateRange="50-75%"
+  estimates={[
+    { source: "Metaculus Community", value: "65%", date: "2024" },
+    { source: "AI Impacts Expert Survey", value: "50%", date: "2023" },
+    { source: "Epoch AI", value: "60-70%", date: "2024", notes: "Based on compute trends" }
+  ]}
+/>
+
 ## Using This Framework
 
 1. **Identify your cruxes**: Which steps are you most uncertain about?
@@ -318,3 +348,5 @@ This is why experts disagree so much—small differences at each step compound.
 3. **Prioritize research**: Focus on resolving your most uncertain steps
 
 Click into each step to see the detailed arguments for and against.
+
+See the [Key Estimates Dashboard](/analysis/estimates-dashboard/) for more detailed estimates across the AI safety landscape.

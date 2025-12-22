@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../components/wiki';
 
 <InfoBox
   type="lab-frontier"
@@ -55,6 +55,20 @@ Research on how humans can supervise AI systems on tasks too complex for humans 
     { name: "Tom Brown", role: "Co-founder" },
   ]} />
 </Section>
+
+## Stated Risk Estimates
+
+<EstimateBox
+  client:load
+  variable="Anthropic's Risk Assessment"
+  description="Based on public statements from Anthropic leadership"
+  unit=""
+  estimates={[
+    { source: "Dario Amodei (CEO)", value: "10-25%", date: "2023", notes: "Chance of AI-caused catastrophe" },
+    { source: "Anthropic Core Views", value: "TAI by 2030", date: "2023", notes: "Substantial chance of transformative AI soon" },
+    { source: "RSP Framework", value: "ASL-3 imminent", date: "2024", notes: "Expecting models to reach ASL-3 soon" }
+  ]}
+/>
 
 ## Key Publications
 

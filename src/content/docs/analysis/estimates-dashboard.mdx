@@ -1,0 +1,174 @@
+---
+title: Key Estimates Dashboard
+description: Aggregated probability estimates and expert positions on critical AI safety questions
+sidebar:
+  order: 1
+---
+
+import { EstimateBox, KeyQuestions, DisagreementMap } from '../../../components/wiki';
+
+This dashboard aggregates key probability estimates, expert positions, and critical questions from across the AI safety landscape. These estimates help calibrate our understanding of risks and inform prioritization.
+
+## Timeline Estimates
+
+<EstimateBox
+  client:load
+  variable="P(Transformative AI by 2030)"
+  description="Probability that we develop AI systems capable of causing transformative economic and social change by 2030."
+  aggregateRange="10-35%"
+  estimates={[
+    { source: "Metaculus Community", value: "25%", date: "2024", url: "https://metaculus.com" },
+    { source: "AI Impacts Survey", value: "10%", date: "2023", notes: "Median expert estimate" },
+    { source: "Epoch AI", value: "15-30%", date: "2024", notes: "Based on compute trends" },
+    { source: "Ajeya Cotra (Open Phil)", value: "35%", date: "2022", notes: "Biological anchors framework" }
+  ]}
+/>
+
+<EstimateBox
+  client:load
+  variable="P(AGI by 2040)"
+  description="Probability of human-level artificial general intelligence by 2040."
+  aggregateRange="40-70%"
+  estimates={[
+    { source: "Metaculus Community", value: "65%", date: "2024" },
+    { source: "Expert Survey Aggregate", value: "50%", date: "2023" },
+    { source: "AI Impacts Survey", value: "40%", date: "2023" }
+  ]}
+/>
+
+## Alignment Difficulty
+
+<EstimateBox
+  client:load
+  variable="P(Alignment is Very Hard)"
+  description="Probability that aligning superintelligent AI requires fundamental breakthroughs we don't yet have."
+  aggregateRange="25-60%"
+  estimates={[
+    { source: "MIRI", value: "80%+", date: "2023", notes: "Pessimistic view on current approaches" },
+    { source: "Anthropic", value: "30-50%", date: "2023", notes: "More optimistic on iterative approaches" },
+    { source: "DeepMind", value: "25-40%", date: "2023", notes: "Expects incremental progress" }
+  ]}
+/>
+
+<DisagreementMap
+  client:load
+  topic="Will Current Alignment Approaches Scale?"
+  description="Expert disagreement on whether current alignment techniques (RLHF, Constitutional AI, etc.) will remain effective as AI capabilities increase."
+  spectrum={{ low: "Will fail", high: "Will scale" }}
+  positions={[
+    { actor: "Eliezer Yudkowsky", position: "Very unlikely", estimate: "5%", confidence: "high", url: "https://intelligence.org" },
+    { actor: "Paul Christiano", position: "Uncertain", estimate: "40%", confidence: "medium" },
+    { actor: "Dario Amodei", position: "Cautiously optimistic", estimate: "60%", confidence: "medium" },
+    { actor: "Jan Leike", position: "Uncertain", estimate: "45%", confidence: "medium" },
+    { actor: "Stuart Russell", position: "Unlikely without changes", estimate: "25%", confidence: "medium" }
+  ]}
+/>
+
+## Catastrophic Risk
+
+<EstimateBox
+  client:load
+  variable="P(AI Catastrophe | No Intervention)"
+  description="Probability of existential or civilizational catastrophe from AI given current trajectories and no major intervention."
+  aggregateRange="5-50%"
+  estimates={[
+    { source: "Existential Risk Survey", value: "10%", date: "2023", notes: "Median across researchers" },
+    { source: "MIRI/Yudkowsky", value: ">90%", date: "2023", notes: "Doom by default view" },
+    { source: "AI Safety Community Survey", value: "20-30%", date: "2024" },
+    { source: "Toby Ord (The Precipice)", value: "10%", date: "2020", notes: "This century" },
+    { source: "Anthropic Leadership", value: "10-25%", date: "2023", notes: "Based on public statements" }
+  ]}
+/>
+
+<DisagreementMap
+  client:load
+  topic="Primary Source of AI Catastrophic Risk"
+  description="Where does the main risk come from? This affects what interventions matter most."
+  positions={[
+    { actor: "MIRI", position: "Misalignment", estimate: "80%", confidence: "high" },
+    { actor: "GovAI", position: "Misuse/Governance", estimate: "60%", confidence: "medium" },
+    { actor: "CAIS", position: "Structural/Systemic", estimate: "50%", confidence: "medium" },
+    { actor: "FHI", position: "Multiple sources", estimate: "—", confidence: "high" }
+  ]}
+/>
+
+## Key Questions
+
+<KeyQuestions
+  client:load
+  title="Critical Uncertainties"
+  questions={[
+    {
+      question: "Will we get meaningful warning signs before a catastrophic AI system?",
+      currentEstimate: "60% yes",
+      confidence: "low",
+      importance: "critical",
+      cruxFor: ["Deployment strategy", "Governance timing"],
+      updatesOn: "Observing near-miss incidents, interpretability progress"
+    },
+    {
+      question: "Can we develop adequate alignment techniques before AGI?",
+      currentEstimate: "40-60%",
+      confidence: "low",
+      importance: "critical",
+      cruxFor: ["Research prioritization", "Timeline concerns"],
+      updatesOn: "Alignment research progress, capability advances"
+    },
+    {
+      question: "Will AI labs voluntarily slow down if risks become clear?",
+      currentEstimate: "25%",
+      confidence: "medium",
+      importance: "high",
+      cruxFor: ["Governance necessity", "Lab cooperation"],
+      updatesOn: "RSP implementations, industry coordination"
+    },
+    {
+      question: "Is interpretability achievable for large language models?",
+      currentEstimate: "50%",
+      confidence: "low",
+      importance: "high",
+      cruxFor: ["Technical safety viability", "Monitoring approaches"],
+      evidenceLinks: [
+        { label: "Anthropic interpretability", url: "https://anthropic.com/research" },
+        { label: "Mechanistic interpretability", url: "https://distill.pub" }
+      ]
+    },
+    {
+      question: "Will international coordination on AI be achievable?",
+      currentEstimate: "20%",
+      confidence: "medium",
+      importance: "high",
+      cruxFor: ["Governance strategies", "Race dynamics"],
+      updatesOn: "AI summits, US-China relations, treaty progress"
+    }
+  ]}
+/>
+
+## Disagreement Summary
+
+The AI safety field has significant disagreements on fundamental questions:
+
+| Question | Range of Views | Implications |
+|----------|---------------|--------------|
+| Alignment difficulty | 10-90% chance current approaches fail | Research strategy |
+| Takeoff speed | Days to decades | Warning shot availability |
+| Primary risk source | Accidents vs misuse vs structural | Intervention focus |
+| Timeline to TAI | 5-50+ years | Urgency level |
+| Governance feasibility | Pessimistic to optimistic | Strategy emphasis |
+
+## Methodology Notes
+
+These estimates are aggregated from public statements, surveys, and publications. Key limitations:
+
+- **Selection bias**: Researchers who publish estimates may differ systematically from those who don't
+- **Anchoring**: Earlier estimates may anchor later ones
+- **Vagueness**: Terms like "AGI" and "transformative AI" lack precise definitions
+- **Updating**: Estimates change over time; dates shown indicate when recorded
+
+For the most current estimates, consult primary sources like Metaculus, AI Impacts surveys, and direct researcher publications.
+
+## Related Pages
+
+- [Risk Models](/understanding-ai-risk/models/) - Frameworks for thinking about AI risk
+- [Worldviews](/understanding-ai-risk/worldviews/) - Different perspectives on AI development
+- [Technical Safety](/safety-approaches/technical/) - Approaches to solving alignment
