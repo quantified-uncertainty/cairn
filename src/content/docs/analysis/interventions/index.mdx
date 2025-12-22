@@ -1,0 +1,311 @@
+---
+title: Intervention Analysis
+description: Framework for evaluating actions that could reduce AI risk
+sidebar:
+  order: 1
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, KeyQuestions } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="AI Risk Interventions"
+  customFields={[
+    { label: "Framework", value: "Expected Value + ITN" },
+    { label: "Key Question", value: "What should I do?" },
+    { label: "Key Uncertainty", value: "Tractability vs. Neglectedness tradeoffs" },
+  ]}
+/>
+
+## Overview
+
+This section examines concrete interventions that could reduce AI existential risk. Understanding the **landscape of possible actions** is crucial for:
+- Individuals deciding where to contribute
+- Organizations allocating resources
+- Policymakers prioritizing initiatives
+- Funders directing capital
+
+Each intervention is evaluated on multiple dimensions to help you determine which actions make sense given your worldview, resources, and position.
+
+## Evaluation Framework
+
+### Expected Value
+
+The fundamental question: **What's the expected reduction in existential risk per unit of resources invested?**
+
+This depends on three factors:
+1. **How much risk reduction if successful** (Scale)
+2. **How likely success is** (Tractability)
+3. **How much work is already happening** (Neglectedness)
+
+This is the **Importance, Tractability, Neglectedness (ITN)** framework adapted for AI safety interventions.
+
+### Scale: How much is at stake?
+
+**Questions:**
+- If this intervention succeeds completely, how much does it reduce x-risk?
+- Does it address a critical bottleneck or peripheral issue?
+- Is the effect direct or indirect?
+
+**Examples:**
+- **High scale:** Solving technical alignment → directly prevents misalignment catastrophe
+- **Medium scale:** International coordination → reduces racing dynamics
+- **Lower scale:** Public awareness → may eventually influence policy
+
+### Tractability: How solvable is this?
+
+**Questions:**
+- Is meaningful progress possible with available resources?
+- Are there clear research directions or concrete next steps?
+- What's the track record of similar efforts?
+
+**Examples:**
+- **Higher tractability:** Interpretability research → clear techniques showing progress
+- **Medium tractability:** AI governance → some policy successes but complex landscape
+- **Lower tractability:** Solving inner alignment → fundamental open problem
+
+### Neglectedness: How much work is happening?
+
+**Questions:**
+- How many people/dollars are already addressing this?
+- What's the marginal value of additional resources?
+- Are there diminishing returns?
+
+**Examples:**
+- **More neglected:** Compute governance → few dedicated researchers
+- **Medium neglectedness:** Technical alignment → growing but still small field
+- **Less neglected:** General ML capabilities → thousands of researchers, billions invested
+
+## How Worldviews Affect Priorities
+
+Your beliefs about AI risk substantially change which interventions look most promising.
+
+### Timelines
+
+**Short timelines (3-7 years):**
+- Favor work with immediate impact
+- Prioritize governance and existing systems
+- Less value in long-term research
+- Focus on influencing current labs
+
+**Long timelines (15+ years):**
+- More time for research to mature
+- Field-building becomes more valuable
+- Can work on harder technical problems
+- More opportunity for coordination
+
+### Alignment Difficulty
+
+**Alignment is very hard:**
+- Technical research is critical
+- Need fundamental breakthroughs
+- High value on interpretability
+- Less trust in incremental improvements
+
+**Alignment is moderately hard:**
+- Empirical safety work is valuable
+- Governance can buy time for solutions
+- Hybrid approaches (technical + governance)
+- Value both research and implementation
+
+**Alignment is relatively tractable:**
+- Focus shifts to implementation and adoption
+- Governance and standards matter more
+- Dissemination of best practices
+- Less need for fundamental research
+
+### Threat Models
+
+**Misalignment (accident risk):**
+- Technical alignment research
+- Interpretability and oversight
+- Evaluation and testing
+- Safety culture in labs
+
+**Misuse (intentional harm):**
+- Access controls
+- Governance and regulation
+- Monitoring and enforcement
+- Defensive capabilities
+
+**Structural (racing, lock-in, concentration):**
+- International coordination
+- Antitrust and competition policy
+- Democratic governance
+- Field-building for diverse perspectives
+
+### Optimism About Institutions
+
+**Institutions work reasonably well:**
+- Policy advocacy is tractable
+- Standards and regulations will be implemented
+- Corporate governance can be improved
+- International cooperation is possible
+
+**Institutions are dysfunctional:**
+- Direct technical work is more reliable
+- Grassroots and individual action
+- Building new institutions
+- Skepticism about regulatory capture
+
+## Intervention Categories
+
+<Section title="Main Intervention Types">
+  <EntityCards>
+    <EntityCard
+      id="technical-research"
+      category="intervention"
+      title="Technical AI Safety Research"
+      description="Alignment, interpretability, evaluations, and fundamental research"
+    />
+    <EntityCard
+      id="governance-policy"
+      category="intervention"
+      title="Governance and Policy"
+      description="International coordination, national regulation, industry standards"
+    />
+    <EntityCard
+      id="field-building"
+      category="intervention"
+      title="Field Building"
+      description="Growing the AI safety community through education and funding"
+    />
+    <EntityCard
+      id="corporate-influence"
+      category="intervention"
+      title="Corporate Influence"
+      description="Working at labs, shareholder activism, transparency advocacy"
+    />
+    <EntityCard
+      id="compute-governance"
+      category="intervention"
+      title="Compute Governance"
+      description="Hardware controls, export restrictions, monitoring"
+    />
+  </EntityCards>
+</Section>
+
+## Key Uncertainties
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Are technical solutions sufficient, or is governance essential?",
+      positions: [
+        {
+          position: "Technical solutions are sufficient",
+          confidence: "low",
+          reasoning: "If we solve alignment, governance becomes less critical. The technical problem is the bottleneck.",
+          implications: "Prioritize technical research; governance is secondary"
+        },
+        {
+          position: "Governance is necessary regardless",
+          confidence: "medium",
+          reasoning: "Even with technical solutions, coordination problems remain. Need both.",
+          implications: "Balance technical and governance work; neither alone is sufficient"
+        }
+      ]
+    },
+    {
+      question: "Should we focus resources on neglected areas or proven approaches?",
+      positions: [
+        {
+          position: "Neglectedness dominates",
+          confidence: "medium",
+          reasoning: "Marginal impact is higher in neglected areas even if less proven",
+          implications: "Work on compute governance, field-building in non-Western contexts"
+        },
+        {
+          position: "Tractability dominates",
+          confidence: "medium",
+          reasoning: "Proven approaches compound; high-variance bets often fail",
+          implications: "Focus on interpretability, policy advocacy in receptive jurisdictions"
+        }
+      ]
+    },
+    {
+      question: "How much should we defer to AI labs vs. external actors?",
+      positions: [
+        {
+          position: "Labs are best positioned",
+          confidence: "medium",
+          reasoning: "Frontier access is crucial; labs have most context and resources",
+          implications: "Work at labs, support their safety teams, trust RSPs"
+        },
+        {
+          position: "External oversight is essential",
+          confidence: "medium",
+          reasoning: "Incentive misalignment; labs face competitive pressures",
+          implications: "Independent evaluation, government regulation, external research"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Portfolio Approach
+
+Rather than picking a single intervention, many organizations and the overall ecosystem should pursue a **portfolio strategy**:
+
+### Diversification
+- **Hedge uncertainty:** If timelines are uncertain, work on both short and long-term interventions
+- **Different threat models:** Address both misalignment and misuse
+- **Multiple failure modes:** Don't assume any single approach will succeed
+
+### Coordination
+- **Comparative advantage:** Different actors focus on what they're best positioned for
+- **Information sharing:** Learn from each other's progress and failures
+- **Avoid duplication:** Unless redundancy is valuable, coordinate on coverage
+
+### Sequencing
+- **Build capacity first:** Field-building enables later technical work
+- **Maintain optionality:** Keep multiple paths open early on
+- **Adjust based on evidence:** Shift resources as we learn what works
+
+## Personal Considerations
+
+When choosing where to contribute, consider:
+
+### Your Resources
+- **Skills:** Technical vs. policy vs. communication vs. organizational
+- **Network:** Access to labs, policymakers, funders, or communities
+- **Risk tolerance:** Safe career vs. high-variance entrepreneurial paths
+- **Timeline:** Years to contribute vs. decades-long career
+
+### Your Values
+- **Moral weights:** How do you trade off different risks and values?
+- **Epistemics:** How much do you trust different sources and arguments?
+- **Cooperation:** How important is working with specific communities or institutions?
+
+### Your Comparative Advantage
+- **What are you better at than most people working on this?**
+- **What opportunities are uniquely available to you?**
+- **Where is the marginal value of your contribution highest?**
+
+## Next Steps
+
+Explore specific intervention categories to understand:
+- Theory of change
+- Key assumptions
+- Track record and evidence
+- Organizations and resources
+- Career paths and ways to contribute
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Expected Value",
+    "ITN Framework",
+    "Theory of Change",
+    "Comparative Advantage",
+    "Portfolio Strategy",
+    "Career Planning",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "Crucial Considerations and Wise Philanthropy", url: "https://www.effectivealtruism.org/articles/crucial-considerations-and-wise-philanthropy", author: "Nick Bostrom" },
+  { title: "Approaches to AI Safety", url: "https://80000hours.org/problem-profiles/artificial-intelligence/", author: "80,000 Hours" },
+  { title: "AI Alignment Research Overview", url: "https://www.alignmentforum.org/tag/ai-alignment", author: "Alignment Forum" },
+  { title: "The Precipice", author: "Toby Ord", date: "2020" },
+]} />

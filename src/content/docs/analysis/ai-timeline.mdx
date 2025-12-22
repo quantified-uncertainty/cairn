@@ -1,0 +1,494 @@
+---
+title: AI Development Timeline
+description: Key milestones in AI development, safety research, and governance
+sidebar:
+  order: 2
+---
+
+import { TimelineViz, Section, Tags, Sources } from '../../../components/wiki';
+
+This timeline tracks major developments in AI capabilities, safety research, governance, predictions, and notable incidents. Use the filters below to focus on specific categories.
+
+<TimelineViz
+  client:load
+  title="AI Development Timeline"
+  showFilters={true}
+  events={[
+    // Early History
+    {
+      date: "1956",
+      title: "Dartmouth Conference",
+      description: "The term 'Artificial Intelligence' is coined. The field is formally established.",
+      category: "capability",
+      importance: "high"
+    },
+    {
+      date: "1965",
+      title: "I.J. Good's Intelligence Explosion",
+      description: "First formal discussion of recursive self-improvement and superintelligence risks.",
+      category: "prediction",
+      importance: "high",
+      link: "https://en.wikipedia.org/wiki/Technological_singularity#Intelligence_explosion"
+    },
+
+    // Expert Systems Era
+    {
+      date: "1980s",
+      title: "Expert Systems Boom",
+      description: "Rule-based AI systems deployed in industry. First AI winter follows.",
+      category: "capability",
+      importance: "medium"
+    },
+
+    // Machine Learning Era
+    {
+      date: "1997",
+      title: "Deep Blue Defeats Kasparov",
+      description: "IBM's chess computer defeats world champion. Narrow AI milestone.",
+      category: "capability",
+      importance: "high",
+      link: "https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer)"
+    },
+    {
+      date: "2000",
+      title: "MIRI Founded",
+      description: "Machine Intelligence Research Institute (originally Singularity Institute) founded by Yudkowsky.",
+      category: "safety",
+      importance: "high",
+      link: "https://intelligence.org"
+    },
+
+    // Deep Learning Revolution
+    {
+      date: "2012",
+      title: "AlexNet Wins ImageNet",
+      description: "Deep learning breakthrough. CNN dramatically outperforms traditional methods.",
+      category: "capability",
+      importance: "high",
+      link: "https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html"
+    },
+    {
+      date: "2014",
+      title: "Superintelligence Published",
+      description: "Nick Bostrom's book brings AI existential risk to mainstream attention.",
+      category: "prediction",
+      importance: "high",
+      link: "https://www.amazon.com/Superintelligence-Dangers-Strategies-Nick-Bostrom/dp/0199678111"
+    },
+    {
+      date: "2015",
+      title: "OpenAI Founded",
+      description: "OpenAI established as non-profit AI safety lab with $1B commitment.",
+      category: "safety",
+      importance: "high",
+      link: "https://openai.com"
+    },
+    {
+      date: "2015",
+      title: "Open Letter on AI",
+      description: "Thousands of AI researchers sign Future of Life Institute letter on AI safety.",
+      category: "governance",
+      importance: "medium",
+      link: "https://futureoflife.org/open-letter/ai-open-letter/"
+    },
+    {
+      date: "2016",
+      title: "AlphaGo Defeats Lee Sedol",
+      description: "DeepMind's Go AI defeats world champion. Major capability milestone.",
+      category: "capability",
+      importance: "high",
+      link: "https://deepmind.com/research/case-studies/alphago-the-story-so-far"
+    },
+    {
+      date: "2016",
+      title: "Concrete Problems in AI Safety",
+      description: "Influential paper defines concrete safety problems for ML systems.",
+      category: "safety",
+      importance: "high",
+      link: "https://arxiv.org/abs/1606.06565"
+    },
+
+    // Transformer Era
+    {
+      date: "2017",
+      title: "Attention Is All You Need",
+      description: "Transformer architecture published. Foundation for modern LLMs.",
+      category: "capability",
+      importance: "high",
+      link: "https://arxiv.org/abs/1706.03762"
+    },
+    {
+      date: "2018",
+      title: "GPT-1 Released",
+      description: "OpenAI releases first GPT model. Language model paradigm begins.",
+      category: "capability",
+      importance: "medium",
+      link: "https://openai.com/research/language-unsupervised"
+    },
+    {
+      date: "2019",
+      title: "GPT-2 Released (Staged)",
+      description: "OpenAI initially withholds full model citing misuse concerns. First major 'responsible release' debate.",
+      category: "capability",
+      importance: "high",
+      link: "https://openai.com/research/gpt-2-1-5b-release"
+    },
+    {
+      date: "2019",
+      title: "AI Alignment Forum Launched",
+      description: "Dedicated platform for AI alignment research discussion.",
+      category: "safety",
+      importance: "medium",
+      link: "https://www.alignmentforum.org"
+    },
+
+    // GPT-3 and Scaling Era
+    {
+      date: "2020-05",
+      title: "GPT-3 Announced",
+      description: "175B parameter model shows emergent capabilities. Scaling hypothesis gains support.",
+      category: "capability",
+      importance: "high",
+      link: "https://arxiv.org/abs/2005.14165"
+    },
+    {
+      date: "2020-06",
+      title: "Scaling Laws Paper",
+      description: "OpenAI publishes scaling laws for neural language models.",
+      category: "capability",
+      importance: "high",
+      link: "https://arxiv.org/abs/2001.08361"
+    },
+    {
+      date: "2021-03",
+      title: "Constitutional AI Paper",
+      description: "Anthropic introduces Constitutional AI approach to alignment.",
+      category: "safety",
+      importance: "high",
+      link: "https://arxiv.org/abs/2212.08073"
+    },
+    {
+      date: "2021-05",
+      title: "Anthropic Founded",
+      description: "Dario Amodei and others leave OpenAI to found safety-focused AI company.",
+      category: "safety",
+      importance: "high",
+      link: "https://anthropic.com"
+    },
+
+    // ChatGPT Era
+    {
+      date: "2022-03",
+      title: "Chinchilla Paper",
+      description: "DeepMind shows optimal scaling requires more data, fewer parameters than assumed.",
+      category: "capability",
+      importance: "medium",
+      link: "https://arxiv.org/abs/2203.15556"
+    },
+    {
+      date: "2022-04",
+      title: "DALL-E 2 Released",
+      description: "Advanced image generation model demonstrates multimodal AI capabilities.",
+      category: "capability",
+      importance: "medium",
+      link: "https://openai.com/dall-e-2"
+    },
+    {
+      date: "2022-07",
+      title: "Gato: Generalist Agent",
+      description: "DeepMind's multi-task agent can play games, chat, control robots.",
+      category: "capability",
+      importance: "medium",
+      link: "https://arxiv.org/abs/2205.06175"
+    },
+    {
+      date: "2022-10",
+      title: "US Chip Export Controls",
+      description: "US restricts AI chip exports to China. First major compute governance action.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.bis.doc.gov/index.php/documents/about-bis/newsroom/press-releases/3158-2022-10-07-bis-press-release-advanced-computing-and-semiconductor-manufacturing-controls-final/file"
+    },
+    {
+      date: "2022-11",
+      title: "ChatGPT Released",
+      description: "OpenAI releases ChatGPT. Public AI awareness explodes. 100M users in 2 months.",
+      category: "capability",
+      importance: "high",
+      link: "https://openai.com/blog/chatgpt"
+    },
+
+    // 2023: Acceleration
+    {
+      date: "2023-03",
+      title: "GPT-4 Released",
+      description: "Multimodal model shows significant capability jump. Passes bar exam, professional tests.",
+      category: "capability",
+      importance: "high",
+      link: "https://openai.com/research/gpt-4"
+    },
+    {
+      date: "2023-03",
+      title: "Future of Life Pause Letter",
+      description: "Open letter calls for 6-month pause on giant AI training. 30,000+ signatories.",
+      category: "governance",
+      importance: "high",
+      link: "https://futureoflife.org/open-letter/pause-giant-ai-experiments/"
+    },
+    {
+      date: "2023-03",
+      title: "Sparks of AGI Paper",
+      description: "Microsoft researchers claim GPT-4 shows 'sparks' of AGI. Controversial.",
+      category: "prediction",
+      importance: "medium",
+      link: "https://arxiv.org/abs/2303.12712"
+    },
+    {
+      date: "2023-05",
+      title: "Geoffrey Hinton Leaves Google",
+      description: "'Godfather of AI' leaves to speak freely about AI risks. Major media attention.",
+      category: "safety",
+      importance: "high",
+      link: "https://www.nytimes.com/2023/05/01/technology/ai-google-chatbot-engineer-quits-hinton.html"
+    },
+    {
+      date: "2023-05",
+      title: "CAIS Statement on AI Risk",
+      description: "Statement: 'Mitigating AI extinction should be global priority.' Signed by Hinton, Bengio, lab leaders.",
+      category: "safety",
+      importance: "high",
+      link: "https://www.safe.ai/statement-on-ai-risk"
+    },
+    {
+      date: "2023-07",
+      title: "Claude 2 Released",
+      description: "Anthropic releases Claude 2 with improved safety and capabilities.",
+      category: "capability",
+      importance: "medium",
+      link: "https://www.anthropic.com/news/claude-2"
+    },
+    {
+      date: "2023-09",
+      title: "Anthropic RSP Published",
+      description: "Anthropic publishes Responsible Scaling Policy framework. Industry-leading safety commitment.",
+      category: "safety",
+      importance: "high",
+      link: "https://www.anthropic.com/news/anthropics-responsible-scaling-policy"
+    },
+    {
+      date: "2023-10",
+      title: "US Executive Order on AI",
+      description: "Biden executive order requires safety testing, reporting for powerful AI systems.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.whitehouse.gov/briefing-room/statements-releases/2023/10/30/fact-sheet-president-biden-issues-executive-order-on-safe-secure-and-trustworthy-artificial-intelligence/"
+    },
+    {
+      date: "2023-11",
+      title: "Bletchley Park AI Safety Summit",
+      description: "First global AI safety summit. 28 countries sign declaration.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.gov.uk/government/topical-events/ai-safety-summit-2023"
+    },
+    {
+      date: "2023-11",
+      title: "UK AI Safety Institute Launched",
+      description: "UK establishes first government AI safety evaluation body.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.gov.uk/government/organisations/ai-safety-institute"
+    },
+    {
+      date: "2023-11",
+      title: "Sam Altman Fired/Rehired",
+      description: "OpenAI board fires CEO over safety disagreements. Reinstated days later. Governance crisis.",
+      category: "incident",
+      importance: "high",
+      link: "https://www.nytimes.com/2023/11/29/technology/sam-altman-openai-return.html"
+    },
+    {
+      date: "2023-12",
+      title: "Gemini Ultra Announced",
+      description: "Google DeepMind announces Gemini, claiming GPT-4 parity/superiority on benchmarks.",
+      category: "capability",
+      importance: "medium",
+      link: "https://deepmind.google/technologies/gemini/"
+    },
+
+    // 2024: Continued Acceleration
+    {
+      date: "2024-02",
+      title: "Sora Announced",
+      description: "OpenAI reveals video generation model. Significant multimodal milestone.",
+      category: "capability",
+      importance: "medium",
+      link: "https://openai.com/sora"
+    },
+    {
+      date: "2024-03",
+      title: "Claude 3 Opus Released",
+      description: "Anthropic's Claude 3 Opus achieves GPT-4+ performance on many benchmarks.",
+      category: "capability",
+      importance: "high",
+      link: "https://www.anthropic.com/news/claude-3-family"
+    },
+    {
+      date: "2024-03",
+      title: "EU AI Act Adopted",
+      description: "European Parliament adopts comprehensive AI regulation.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.europarl.europa.eu/news/en/press-room/20240308IPR19015/artificial-intelligence-act-meps-adopt-landmark-law"
+    },
+    {
+      date: "2024-05",
+      title: "Seoul AI Safety Summit",
+      description: "Second global AI safety summit. Frontier AI Safety Commitments signed.",
+      category: "governance",
+      importance: "high",
+      link: "https://www.gov.uk/government/news/uk-hosts-ai-seoul-summit-2024"
+    },
+    {
+      date: "2024-05",
+      title: "Jan Leike Leaves OpenAI",
+      description: "Superalignment co-lead leaves OpenAI citing safety culture concerns. Joins Anthropic.",
+      category: "incident",
+      importance: "high",
+      link: "https://twitter.com/janleike/status/1791498176559284447"
+    },
+    {
+      date: "2024-05",
+      title: "Scaling Monosemanticity",
+      description: "Anthropic paper extracts interpretable features from Claude 3 Sonnet. Major interpretability milestone.",
+      category: "safety",
+      importance: "high",
+      link: "https://www.anthropic.com/research/mapping-mind-language-model"
+    },
+    {
+      date: "2024-06",
+      title: "Claude 3.5 Sonnet Released",
+      description: "Anthropic's Claude 3.5 Sonnet surpasses Opus on coding benchmarks at lower cost.",
+      category: "capability",
+      importance: "medium",
+      link: "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      date: "2024-06",
+      title: "Ilya Sutskever Founds SSI",
+      description: "Former OpenAI Chief Scientist founds Safe Superintelligence Inc.",
+      category: "safety",
+      importance: "high",
+      link: "https://ssi.inc"
+    },
+    {
+      date: "2024-09",
+      title: "OpenAI o1 Released",
+      description: "OpenAI releases 'reasoning' model with chain-of-thought capabilities.",
+      category: "capability",
+      importance: "high",
+      link: "https://openai.com/o1"
+    },
+    {
+      date: "2024-10",
+      title: "Claude 3.5 Sonnet (New)",
+      description: "Updated Claude 3.5 Sonnet with computer use capabilities.",
+      category: "capability",
+      importance: "medium",
+      link: "https://www.anthropic.com/news/3-5-models-and-computer-use"
+    },
+    {
+      date: "2024-12",
+      title: "Gemini 2.0 Released",
+      description: "Google DeepMind releases Gemini 2.0 with agentic capabilities.",
+      category: "capability",
+      importance: "medium",
+      link: "https://deepmind.google/technologies/gemini/"
+    },
+
+    // Predictions
+    {
+      date: "2025-2030",
+      title: "AGI Predicted (Short Timelines)",
+      description: "Many researchers predict transformative AI could arrive in this period.",
+      category: "prediction",
+      importance: "high"
+    },
+    {
+      date: "2030-2040",
+      title: "AGI Predicted (Medium Timelines)",
+      description: "Moderate timeline estimates for transformative AI.",
+      category: "prediction",
+      importance: "medium"
+    }
+  ]}
+/>
+
+## Understanding This Timeline
+
+### Capability Milestones (Blue)
+Major advances in what AI systems can do. Note the acceleration from 2020 onward with scaling and the transformer architecture.
+
+### Safety Research (Green)
+Key developments in AI safety research and the growth of the safety field. Organizations, research breakthroughs, and paradigm-setting papers.
+
+### Governance (Yellow)
+Policy and coordination efforts. Note the rapid increase in governance activity from 2023 onward as AI capabilities became more apparent.
+
+### Predictions (Purple)
+Expert forecasts and influential publications shaping expectations about AI timelines and impact.
+
+### Incidents (Red)
+Notable events that highlight risks, near-misses, or systemic issues in AI development.
+
+## Key Patterns
+
+### Accelerating Capability Development
+- 2012-2017: Deep learning revolution (image recognition, game-playing)
+- 2017-2020: Transformer architecture and language models
+- 2020-2022: Scaling demonstrates emergent capabilities
+- 2022-2024: Multimodal, agent capabilities, rapid deployment
+
+### Safety Research Lag
+Safety research has consistently lagged behind capabilities work:
+- MIRI founded 2000, but field remained tiny until ~2015
+- Significant investment only began ~2017-2019
+- Still far fewer resources than capabilities research
+
+### Governance Catch-Up
+Governance efforts have accelerated dramatically since ChatGPT:
+- First significant compute governance: October 2022
+- First government AI safety institute: November 2023
+- First comprehensive AI legislation: March 2024
+
+### Warning Signs
+The timeline shows several warning signs:
+- Rapid capability jumps exceeding predictions
+- Multiple incidents (Altman firing, researcher departures)
+- Growing expert concern (Hinton, Bengio, others)
+
+## What's Next
+
+The coming years will likely see:
+- **Continued capability advances:** Agentic systems, multimodal integration, reasoning
+- **More governance:** Implementation of AI Act, potential US legislation, international coordination
+- **Safety research:** Focus on scalable oversight, interpretability, evaluations
+- **Potential inflection points:** If capabilities continue accelerating, critical decisions loom
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "AI Timeline",
+    "Capabilities",
+    "Safety Research",
+    "Governance",
+    "AGI",
+    "History of AI",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "AI Timeline", url: "https://www.lesswrong.com/tag/ai-timeline-estimates", author: "LessWrong" },
+  { title: "Import AI Newsletter", url: "https://importai.substack.com/", author: "Jack Clark" },
+  { title: "State of AI Report", url: "https://www.stateof.ai/", author: "Benaich & Hogarth" },
+  { title: "AI Safety Timeline", url: "https://aisafety.world/timeline/", author: "AI Safety World" },
+]} />

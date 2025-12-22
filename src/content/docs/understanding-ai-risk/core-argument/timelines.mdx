@@ -1,0 +1,285 @@
+---
+title: Will Advanced AI Be Developed Soon?
+description: When will we develop AI systems capable of transforming civilization?
+sidebar:
+  order: 1
+---
+
+import { InfoBox, DisagreementMap, KeyQuestions, EstimateBox, EntityCard, EntityCards, Sources, Section, Tags } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="AI Timelines"
+  customFields={[
+    { label: "Core Question", value: "When will TAI arrive?" },
+    { label: "Short View", value: "2025-2035" },
+    { label: "Long View", value: "2050+" },
+    { label: "Affects", value: "Urgency, research strategy, careers" },
+  ]}
+/>
+
+**The claim**: Transformative AI (TAI)—AI that could radically change civilization comparable to the industrial revolution—will be developed in the coming decades, not centuries.
+
+This is arguably the most important crux because it determines how much time we have to solve alignment and establish governance.
+
+## Why Timelines Matter
+
+| If timelines are... | Implications |
+|--------------------|--------------|
+| **Very short (2025-2030)** | Current safety research is all we have; governance can't catch up; careers must start now |
+| **Short (2030-2040)** | One generation of researchers; urgent but not hopeless; governance might work |
+| **Medium (2040-2060)** | Multiple research paradigms possible; can build institutions; different risks may emerge |
+| **Long (2060+)** | Hard to predict what matters; current work may be obsolete; focus on robustness |
+
+## Current Expert Estimates
+
+<EstimateBox
+  client:load
+  variable="P(Transformative AI by 2030)"
+  description="Probability of AI systems capable of transforming the economy and society by 2030."
+  aggregateRange="15-35%"
+  estimates={[
+    { source: "Metaculus Community", value: "25%", date: "2024", url: "https://metaculus.com" },
+    { source: "AI Impacts Survey", value: "10%", date: "2023", notes: "Median researcher estimate" },
+    { source: "Ajeya Cotra (Open Phil)", value: "35%", date: "2022", notes: "Biological anchors" },
+    { source: "Epoch AI", value: "15-25%", date: "2024", notes: "Compute-based forecast" }
+  ]}
+/>
+
+<EstimateBox
+  client:load
+  variable="P(AGI by 2040)"
+  description="Probability of human-level artificial general intelligence by 2040."
+  aggregateRange="45-70%"
+  estimates={[
+    { source: "Metaculus Community", value: "65%", date: "2024" },
+    { source: "AI Impacts Survey", value: "50%", date: "2023" },
+    { source: "Epoch AI", value: "55%", date: "2024" },
+    { source: "Samotsvety Forecasters", value: "45%", date: "2023" }
+  ]}
+/>
+
+<DisagreementMap
+  client:load
+  topic="When Will Transformative AI Arrive?"
+  description="Expert estimates of when AI will have transformative impact on civilization."
+  spectrum={{ low: "2060+", high: "2025-2030" }}
+  positions={[
+    { actor: "Dario Amodei", position: "Very soon", estimate: "2026-2027", confidence: "medium" },
+    { actor: "Sam Altman", position: "Soon", estimate: "2027-2030", confidence: "medium" },
+    { actor: "Demis Hassabis", position: "Soon", estimate: "2028-2035", confidence: "medium" },
+    { actor: "Metaculus Median", position: "Medium", estimate: "2032", confidence: "medium" },
+    { actor: "AI Impacts Survey", position: "Uncertain", estimate: "2040-2060", confidence: "low" },
+    { actor: "Gary Marcus", position: "Skeptical", estimate: "2050+", confidence: "medium" }
+  ]}
+/>
+
+## Arguments for Short Timelines
+
+### Empirical Trends
+
+- **Scaling laws**: Performance improves predictably with compute, data, and parameters
+- **Rapid capability gains**: GPT-2 (2019) → GPT-4 (2023) represents dramatic improvement
+- **Benchmark saturation**: Models approaching or exceeding human performance on many tasks
+- **Emergent abilities**: New capabilities appear at scale without being explicitly trained
+
+### Economic/Institutional Factors
+
+- **Massive investment**: $100B+ annually flowing into AI development
+- **Talent concentration**: Best researchers concentrated at well-funded labs
+- **Competitive pressure**: US-China competition, lab racing dynamics
+- **Clear commercial value**: Strong incentives to push capabilities forward
+
+### Technical Arguments
+
+- **Transformers may be sufficient**: Current architectures might scale to AGI
+- **Few obvious barriers**: No known theoretical impossibility
+- **Combinatorial progress**: Improvements in multiple areas compound
+- **Hardware trajectory**: Moore's law continues; specialized AI chips
+
+**Key proponents**: Many researchers at OpenAI, Anthropic, DeepMind; Ajeya Cotra; forecasting communities
+
+## Arguments for Long Timelines
+
+### Empirical Concerns
+
+- **Benchmark gaming**: High scores may not indicate genuine understanding
+- **Brittleness**: Models fail unpredictably on slight distribution shifts
+- **Sample inefficiency**: Require vastly more data than humans to learn
+- **Integration gaps**: Lab performance doesn't translate to real-world reliability
+
+### Historical Patterns
+
+- **AI winters**: Field has repeatedly overpromised and underdelivered
+- **Moving goalposts**: Each "solved" task gets redefined as "not real AI"
+- **Expert overconfidence**: Researchers historically too optimistic
+- **Similar predictions before**: "AGI in 20 years" has been said for 60+ years
+
+### Technical Arguments
+
+- **Missing capabilities**: Current systems lack robust reasoning, planning, learning from few examples
+- **World models**: May need fundamentally different approaches for genuine understanding
+- **Embodiment**: Physical interaction with world may be necessary
+- **Unknown unknowns**: We may not know what capabilities are actually needed
+
+**Key proponents**: Gary Marcus, some academic AI researchers, AI skeptics
+
+## Key Sub-Cruxes
+
+<KeyQuestions
+  client:load
+  title="Critical Uncertainties for Timelines"
+  questions={[
+    {
+      question: "Will scaling current architectures (transformers) reach AGI?",
+      currentEstimate: "50-70% yes",
+      confidence: "low",
+      importance: "critical",
+      cruxFor: ["Overall timeline estimates", "Research priorities"],
+      updatesOn: "Next 2-3 generations of models; fundamental capability gaps"
+    },
+    {
+      question: "How much compute is needed for human-level AI?",
+      currentEstimate: "10^26-10^30 FLOP",
+      confidence: "low",
+      importance: "high",
+      cruxFor: ["Hardware bottlenecks", "Which actors can reach AGI"],
+      evidenceLinks: [
+        { label: "Biological Anchors", url: "https://www.cold-takes.com/forecasting-transformative-ai-the-biological-anchors-method-in-a-nutshell/" }
+      ]
+    },
+    {
+      question: "Will there be another AI winter or major slowdown?",
+      currentEstimate: "20% probability",
+      confidence: "medium",
+      importance: "high",
+      cruxFor: ["Timeline uncertainty", "Investment sustainability"]
+    },
+    {
+      question: "Are there fundamental barriers we haven't discovered?",
+      currentEstimate: "15-30%",
+      confidence: "low",
+      importance: "high",
+      cruxFor: ["Whether scaling works", "Need for new paradigms"],
+      updatesOn: "Capability plateaus, theoretical insights"
+    }
+  ]}
+/>
+
+## The Scaling Debate
+
+| Scaling Optimist | Scaling Skeptic |
+|-----------------|-----------------|
+| More compute → more capability (reliably) | Improvements may plateau |
+| Transformers are universal learners | Missing architectural innovations |
+| Emergent abilities will continue appearing | Emergent abilities may be measurement artifacts |
+| Data efficiency improving | Still vastly less efficient than humans |
+| Current trajectory leads to AGI | Current trajectory leads to "stochastic parrots" |
+
+## Defining "Transformative AI"
+
+Different definitions lead to different timelines:
+
+| Definition | Estimated Timeline |
+|-----------|-------------------|
+| **Automates most cognitive work** | 2030-2045 |
+| **Scientific research acceleration (10x)** | 2028-2040 |
+| **Matches median human at most tasks** | 2030-2050 |
+| **Recursive self-improvement capability** | 2035-2060 |
+| **Superintelligence (vastly exceeds humans)** | 2035-2100+ |
+
+## What Would Update Timelines?
+
+### Evidence for Shorter Timelines
+- [ ] GPT-5 or equivalent shows major capability jump
+- [ ] Models demonstrate robust reasoning/planning
+- [ ] AI systems make significant scientific discoveries
+- [ ] Autonomous AI agents work reliably in real world
+- [ ] Interpretability reveals increasing sophistication
+
+### Evidence for Longer Timelines
+- [ ] Next generation models show diminishing returns
+- [ ] Fundamental capability gaps remain despite scale
+- [ ] Major AI lab pivots to new architectures
+- [ ] Compute costs become prohibitive
+- [ ] Regulatory slowdowns take effect
+
+## Implications by Timeline Belief
+
+### If You Believe Short Timelines (2025-2035)
+
+- **Research**: Work on problems that could be solved in time; empirical approaches
+- **Careers**: Start now; every year matters enormously
+- **Governance**: Focus on near-term: RSPs, voluntary commitments, existing institutions
+- **Attitude**: High urgency; accept lower-confidence bets
+
+### If You Believe Long Timelines (2050+)
+
+- **Research**: Can afford to work on fundamental problems; theory
+- **Careers**: Build foundations; institutions matter more than individual contributions
+- **Governance**: Build durable international frameworks; long-term thinking
+- **Attitude**: Less urgency; focus on robustness and optionality
+
+## Historical Context
+
+| Year | Prediction | Reality |
+|------|-----------|---------|
+| 1956 | "AGI in a generation" (Dartmouth) | AI winter followed |
+| 1965 | "Machines will be capable of doing any work Man can do" within 20 years (Simon) | Didn't happen |
+| 1970 | "In from three to eight years we will have a machine with the general intelligence of an average human being" (Minsky) | Didn't happen |
+| 2005 | "Human-level AI by 2029" (Kurzweil) | Still pending |
+| 2020 | "AGI in 5 years" (various) | Still pending |
+
+This history counsels humility, but arguably current progress is qualitatively different.
+
+## Your Crux
+
+What's your probability of transformative AI by:
+- 2030: ____%
+- 2040: ____%
+- 2060: ____%
+
+What's your probability that scaling current architectures is sufficient for AGI? ____%
+
+What evidence would significantly change these estimates?
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Scaling laws",
+    "AGI",
+    "Compute",
+    "Transformers",
+    "AI forecasting",
+    "Biological anchors",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="takeoff"
+      category="crux"
+      title="Takeoff Speed"
+      description="How quickly from AGI to superintelligence?"
+    />
+    <EntityCard
+      id="warning-signs"
+      category="crux"
+      title="Warning Signs"
+      description="Will we get warning before dangerous AI?"
+    />
+    <EntityCard
+      id="capabilities"
+      category="crux"
+      title="Peak Capabilities"
+      description="How powerful will AI systems become?"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Forecasting TAI with Biological Anchors", url: "https://www.alignmentforum.org/posts/KrJfoZzpSDpnrv9va/draft-report-on-ai-timelines", author: "Ajeya Cotra", date: "2020" },
+  { title: "AI Impacts Expert Survey", url: "https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/", author: "AI Impacts", date: "2023" },
+  { title: "Epoch AI Forecasts", url: "https://epoch.ai/", author: "Epoch AI" },
+  { title: "Metaculus AI Timeline Questions", url: "https://www.metaculus.com/questions/?search=AGI", author: "Metaculus" },
+]} />

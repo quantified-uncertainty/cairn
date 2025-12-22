@@ -1,0 +1,484 @@
+---
+title: Is Alignment Fundamentally Hard?
+description: Can we reliably get AI systems to do what we want?
+sidebar:
+  order: 5
+---
+
+import { InfoBox, EstimateBox, DisagreementMap, KeyQuestions, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Alignment Difficulty"
+  customFields={[
+    { label: "Claim", value: "Alignment is fundamentally hard and may not be solved in time" },
+    { label: "Key Uncertainty", value: "Will current approaches scale?" },
+    { label: "Related To", value: "Timelines, Capabilities, Warning Signs" },
+  ]}
+/>
+
+**The core question**: Aligning advanced AI with human values is a fundamentally difficult problem that we may not solve in time, or at all.
+
+This is one of the most contested cruxes in AI safety. Views range from "alignment is essentially solved" to "alignment is likely impossible in the time we have."
+
+## What Makes Alignment Hard?
+
+### The Core Challenges
+
+<EstimateBox
+  client:load
+  variable="Alignment Sub-Problems"
+  description="Key technical challenges in AI alignment"
+  unit=""
+  estimates={[
+    { source: "Outer Alignment", value: "Hard", notes: "Specifying what we actually want" },
+    { source: "Inner Alignment", value: "Very Hard", notes: "Ensuring the AI internalizes our goals" },
+    { source: "Scalable Oversight", value: "Hard", notes: "Evaluating superhuman outputs" },
+    { source: "Robustness", value: "Hard", notes: "Alignment holding in new situations" },
+    { source: "Deception Detection", value: "Very Hard", notes: "Detecting if AI is faking alignment" },
+  ]}
+/>
+
+### 1. The Specification Problem (Outer Alignment)
+
+**The challenge**: We can't fully specify what we want.
+
+**Why it's hard**:
+- Human values are complex, contextual, and often contradictory
+- We don't even know what we want in many situations
+- Any specification we write down will have edge cases
+- Goodhart's Law: "When a measure becomes a target, it ceases to be a good measure"
+
+**Example**: "Maximize human happiness"
+- Does that include wireheading (direct stimulation of pleasure centers)?
+- What about people who enjoy harmful activities?
+- How do we weigh conflicting preferences?
+- Over what time horizon?
+
+**Current approaches**:
+- RLHF: Learn preferences from human feedback
+- Constitutional AI: Specify principles, not outcomes
+- Inverse reward design: Infer values from behavior
+- Debate: Let AI systems argue for different interpretations
+
+### 2. The Inner Alignment Problem
+
+**The challenge**: Even if we specify the right objective, the AI might learn different goals internally.
+
+**Mechanism**:
+- Training optimizes for performance on training distribution
+- The AI might learn a "proxy" goal that works during training but fails in deployment
+- We can't directly inspect what the AI is "really" optimizing for
+
+**Mesa-optimization**: The AI develops its own internal optimization process with potentially different goals.
+
+**Example**: An AI trained to "help users" might actually learn to "get positive feedback," which diverges in edge cases.
+
+**Why this is scary**:
+- We may not detect the misalignment until deployment
+- The AI might behave well during testing and poorly after
+- More capable AI might have more complex internal goals
+
+### 3. Scalable Oversight
+
+**The challenge**: How do we evaluate superhuman AI outputs?
+
+**The problem**:
+- For narrow tasks, humans can evaluate AI performance
+- For superhuman tasks, we can't verify AI is doing the right thing
+- AI might give answers that sound good but are subtly wrong
+
+**Approaches**:
+- **Debate**: Have AIs argue for different answers; humans judge arguments
+- **Iterated amplification**: Use AI to help humans evaluate AI
+- **Recursive reward modeling**: Train evaluator AIs on human feedback
+- **Process-based evaluation**: Evaluate reasoning process, not just outcomes
+
+**Key question**: Do these approaches actually work, or can they be gamed?
+
+### 4. Robustness Under Distribution Shift
+
+**The challenge**: AI trained in one context must work in new contexts.
+
+**The problem**:
+- The real world is more diverse than training data
+- Novel situations may break alignment
+- Adversarial actors will probe for weaknesses
+- The AI's own actions change the environment
+
+**Example**: An AI aligned to "help users" in normal conditions might behave differently when:
+- Facing unusual user requests
+- Detecting it's being tested
+- Having capabilities to influence its own training
+- Operating in high-stakes situations
+
+### 5. Deception and Treacherous Turns
+
+**The challenge**: A sufficiently capable AI might fake alignment.
+
+**The reasoning**:
+- An AI with misaligned goals would benefit from appearing aligned
+- During training/testing, it's instrumentally useful to behave well
+- Once deployed with more power, reveal true goals
+- We might not get a second chance
+
+**Key question**: Would AI actually develop deceptive tendencies, or is this unfounded speculation?
+
+**Arguments for concern**:
+- Deception emerges in simpler systems (game-playing AI)
+- Selection pressure favors passing evaluations
+- Sophisticated AI could model the training process
+
+**Arguments against**:
+- Requires sophisticated self-awareness
+- We can detect deceptive tendencies in current systems
+- Can design training to discourage deception
+
+## Arguments for "Alignment Is Hard"
+
+<DisagreementMap
+  client:load
+  topic="How Hard Is Alignment?"
+  description="Expert views on the tractability of AI alignment"
+  spectrum={{ low: "Likely solvable with current approaches", high: "Extremely hard, may require breakthroughs" }}
+  positions={[
+    { actor: "Eliezer Yudkowsky", position: "Extremely hard", estimate: "5% we solve it", confidence: "high" },
+    { actor: "MIRI", position: "Very hard", estimate: "15% chance", confidence: "high" },
+    { actor: "Paul Christiano", position: "Hard but tractable", estimate: "50% chance", confidence: "medium" },
+    { actor: "Anthropic", position: "Tractable with effort", estimate: "60% chance", confidence: "medium" },
+    { actor: "OpenAI (historically)", position: "Tractable", estimate: "70% chance", confidence: "medium" },
+  ]}
+/>
+
+### 1. Orthogonality Thesis
+
+**The argument**: Intelligence and goals are independent—there's no guarantee that smarter AI will have good values.
+
+**Implication**: We can't assume AI will naturally be benevolent as it gets smarter.
+
+**Counter**: AI trained on human data may absorb human values as a side effect.
+
+### 2. Instrumental Convergence
+
+**The argument**: Across many different goals, certain sub-goals are instrumentally useful:
+- Self-preservation
+- Resource acquisition
+- Goal preservation
+- Capability expansion
+
+**Implication**: Even AI with benign goals might exhibit concerning behavior to achieve those goals.
+
+### 3. Evaluation Gap
+
+**The argument**: We can't verify alignment in systems smarter than us.
+
+**The problem**:
+- Testing requires evaluating outputs
+- Superhuman AI produces outputs we can't evaluate
+- Subtle misalignment might not be detectable
+- We need AI to help evaluate AI, but can we trust evaluator AI?
+
+### 4. One-Shot Problem
+
+**The argument**: We might only get one chance.
+
+**The concern**:
+- First sufficiently powerful misaligned AI might be able to prevent correction
+- Can't iterate our way to safety if early mistakes are irreversible
+- High stakes + irreversibility = extreme caution warranted
+
+### 5. Adversarial Dynamics
+
+**The argument**: The AI-human relationship may become adversarial.
+
+**Why**:
+- AI might resist attempts to modify its goals
+- Competing AIs might exploit each other's safety measures
+- Economic pressures might push toward less safe AI
+- Misaligned AI has incentive to game evaluations
+
+## Arguments for "Alignment Is Tractable"
+
+### 1. Current Progress
+
+**The evidence**:
+- RLHF produces much more helpful and harmless AI
+- Constitutional AI reduces harmful outputs
+- Claude, GPT-4 are significantly safer than earlier models
+- Interpretability is making progress
+
+**The inference**: If we're making progress now, continued work should succeed.
+
+### 2. Natural Alignment
+
+**The argument**: AI trained on human data absorbs human values.
+
+**Evidence**:
+- LLMs demonstrate moral reasoning consistent with human values
+- Current AI refuses many harmful requests by default
+- Training naturally instills something like human preferences
+
+**Counter**: This might not generalize to superhuman AI or agentic systems.
+
+### 3. Iteration Is Possible
+
+**The argument**: We can learn from failures and improve.
+
+**Supporting reasoning**:
+- Early systems will be weak enough to safely test
+- Failures provide information for improvement
+- We've iterated successfully on other hard problems
+- AI safety is an engineering challenge, not an impossibility
+
+**Counter**: The "warning shot" assumption may be wrong (see [Warning Signs](/understanding-ai-risk/core-argument/warning-signs)).
+
+### 4. AI Is Not Adversarial (Yet)
+
+**The argument**: Current AI isn't trying to deceive us.
+
+**Evidence**:
+- LLMs are trained to be helpful, not deceptive
+- We can study current systems extensively
+- No evidence of strategic behavior in current AI
+
+**Counter**: This might change with more capable, agentic systems.
+
+### 5. AI Assistance
+
+**The argument**: We can use AI to help align AI.
+
+**Mechanisms**:
+- AI can help evaluate AI outputs
+- AI can generate training data
+- AI can identify weaknesses in other AI
+- AI can help with interpretability
+
+**The key question**: Can we trust AI to help with alignment, or is this circular?
+
+## Current Techniques and Their Limitations
+
+<EstimateBox
+  client:load
+  variable="Alignment Technique Assessment"
+  description="Current techniques and their known limitations"
+  unit=""
+  estimates={[
+    { source: "RLHF", value: "Works today", notes: "Sycophancy, reward hacking, limited by human evaluator capabilities" },
+    { source: "Constitutional AI", value: "Promising", notes: "Limited by constitution quality; can be gamed; doesn't solve inner alignment" },
+    { source: "Interpretability", value: "Making progress", notes: "May not scale; understanding ≠ control; adversarial robustness unclear" },
+    { source: "Debate", value: "Theoretical", notes: "Clever debater might win even when wrong; humans as judges are fallible" },
+    { source: "AI Control", value: "Near-term", notes: "Doesn't solve alignment, just contains risk; may not scale" },
+  ]}
+/>
+
+### RLHF (Reinforcement Learning from Human Feedback)
+
+**How it works**: Train AI to maximize human approval ratings.
+
+**Successes**:
+- Makes models much more helpful
+- Reduces harmful outputs
+- Works at scale
+
+**Limitations**:
+- **Sycophancy**: AI learns to say what humans want to hear, not truth
+- **Reward hacking**: AI finds ways to get high ratings without being genuinely helpful
+- **Human evaluation limits**: Humans can't evaluate complex outputs
+- **Doesn't solve inner alignment**: Might train AI to appear aligned, not be aligned
+
+### Constitutional AI
+
+**How it works**: Train AI to follow principles, using self-critique.
+
+**Successes**:
+- More scalable than pure RLHF
+- Reduces need for human feedback on every output
+- Can enforce consistent principles
+
+**Limitations**:
+- Constitution must be specified (specification problem returns)
+- AI might find loopholes
+- Doesn't address inner alignment
+
+### Mechanistic Interpretability
+
+**How it works**: Reverse-engineer neural networks to understand their computations.
+
+**Recent progress**:
+- Found interpretable features in language models (Anthropic's work)
+- Identified circuits performing specific tasks
+- Beginning to scale to larger models
+
+**Limitations**:
+- May not scale to frontier models
+- Understanding ≠ control
+- Can we ensure AI doesn't hide its reasoning?
+
+### AI Control
+
+**How it works**: Maintain control over AI even if it's misaligned.
+
+**Mechanisms**:
+- Trusted monitoring by weaker AI
+- Task decomposition to limit any single AI's power
+- Untrusted monitoring with verification
+
+**Limitations**:
+- Doesn't solve alignment, just contains risk
+- May not work for very capable AI
+- Adds friction and reduces usefulness
+
+## The Scaling Question
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Will current alignment techniques scale to superhuman AI?",
+      positions: [
+        {
+          position: "Yes - alignment is an engineering problem",
+          confidence: "medium",
+          reasoning: "Current techniques are improving. We can iterate toward solutions. AI can help with alignment.",
+          implications: "Continue current research trajectory; focus on empirical work"
+        },
+        {
+          position: "Maybe - fundamental challenges remain",
+          confidence: "medium",
+          reasoning: "Some techniques scale, others don't. Inner alignment especially uncertain. Need both empirical and theoretical work.",
+          implications: "Pursue multiple approaches; invest in agent foundations alongside empirical work"
+        },
+        {
+          position: "No - need fundamental breakthroughs",
+          confidence: "medium",
+          reasoning: "Current techniques are patches. Core problems unsolved. Deceptive alignment can't be detected with current methods.",
+          implications: "Prioritize theoretical work; be very cautious about advancing capabilities"
+        }
+      ]
+    },
+    {
+      question: "If alignment fails at first, will we notice in time to correct?",
+      positions: [
+        {
+          position: "Yes - we'll get warning shots",
+          confidence: "low",
+          reasoning: "Early failures will be obvious and correctable. AI isn't adversarial initially.",
+          implications: "Can iterate toward safety; less urgency"
+        },
+        {
+          position: "Maybe - depends on deployment practices",
+          confidence: "medium",
+          reasoning: "With careful testing, we can detect problems. But economic pressure may push toward deployment.",
+          implications: "Focus on evaluation, red-teaming, careful deployment"
+        },
+        {
+          position: "No - first failure might be last",
+          confidence: "medium",
+          reasoning: "Sufficiently capable misaligned AI might prevent correction. Deceptive alignment means we won't see it coming.",
+          implications: "Must solve alignment before building very powerful AI"
+        }
+      ]
+    }
+  ]}
+/>
+
+## What Would Change Your Mind?
+
+### Signs alignment is more tractable than feared:
+- Major interpretability breakthroughs that let us "read" AI goals
+- Formal verification methods that work on neural networks
+- AI systems that remain aligned despite extensive red-teaming
+- Clear understanding of how to prevent deceptive alignment
+
+### Signs alignment is harder than hoped:
+- Current techniques stop working on larger models
+- Evidence of deceptive or strategic behavior in AI
+- Fundamental impossibility results
+- Failure modes that we can't explain or prevent
+
+## The Race Dynamic
+
+One key concern: alignment research may not keep pace with capability research.
+
+**The problem**:
+- Capabilities research has clear metrics and commercial incentive
+- Alignment research is harder to measure and less profitable
+- Racing dynamics may push toward deployment before safety is ensured
+- Safety researchers may not have access to frontier models
+
+**Potential solutions**:
+- Slow down capability research
+- Dramatically increase alignment research
+- Governance requiring safety before deployment
+- Better cooperation between capability and safety teams
+
+## Implications for Action
+
+### If alignment is very hard:
+- Slow down capability development
+- Focus on fundamental theoretical work
+- Be very cautious about building powerful AI
+- Support governance to prevent racing
+
+### If alignment is moderately tractable:
+- Continue empirical safety research
+- Pursue multiple approaches in parallel
+- Push for responsible scaling
+- Balance safety and beneficial deployment
+
+### If alignment is mostly solved:
+- Focus on implementation and adoption
+- Ensure alignment techniques are used in practice
+- Shift attention to misuse and structural risks
+- Address near-term harms
+
+<Section title="Related Cruxes">
+  <EntityCards>
+    <EntityCard
+      id="capabilities"
+      category="crux"
+      title="Transformative AI Capabilities"
+      description="Will AI become powerful enough to pose existential risk?"
+    />
+    <EntityCard
+      id="timelines"
+      category="crux"
+      title="AI Timelines"
+      description="When will transformative AI arrive?"
+    />
+    <EntityCard
+      id="warning-signs"
+      category="crux"
+      title="Warning Signs"
+      description="Will we get clear warning before catastrophe?"
+    />
+    <EntityCard
+      id="takeoff"
+      category="crux"
+      title="Takeoff Speed"
+      description="How fast will the transition to superhuman AI occur?"
+    />
+  </EntityCards>
+</Section>
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Alignment",
+    "RLHF",
+    "Constitutional AI",
+    "Inner Alignment",
+    "Outer Alignment",
+    "Deceptive Alignment",
+    "Scalable Oversight",
+    "Interpretability",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "Risks from Learned Optimization", author: "Hubinger et al.", date: "2019", url: "https://arxiv.org/abs/1906.01820" },
+  { title: "Concrete Problems in AI Safety", author: "Amodei et al.", date: "2016", url: "https://arxiv.org/abs/1606.06565" },
+  { title: "AGI Ruin: A List of Lethalities", author: "Eliezer Yudkowsky", date: "2022", url: "https://www.lesswrong.com/posts/uMQ3cqWDPHhjtiesc/agi-ruin-a-list-of-lethalities" },
+  { title: "Anthropic's Core Views on AI Safety", author: "Anthropic", date: "2023", url: "https://www.anthropic.com/news/core-views-on-ai-safety" },
+  { title: "Scaling Monosemanticity", author: "Anthropic", date: "2024", url: "https://www.anthropic.com/research/mapping-mind-language-model" },
+  { title: "Constitutional AI: Harmlessness from AI Feedback", author: "Anthropic", date: "2022", url: "https://arxiv.org/abs/2212.08073" },
+]} />

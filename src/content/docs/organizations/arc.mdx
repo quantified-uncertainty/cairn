@@ -5,55 +5,268 @@ sidebar:
   order: 11
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../components/wiki';
 
 <InfoBox
-  type="lab-research"
+  type="organization"
   title="ARC"
   founded="2021"
   location="Berkeley, CA"
-  headcount="~15"
-  funding="~$10M/year"
+  headcount="~15-20"
+  funding="~$10M/year (grants)"
   website="https://alignment.org"
 />
 
 ## Overview
 
-The Alignment Research Center (ARC) was founded by Paul Christiano after leaving OpenAI. ARC focuses on theoretical alignment research and has become influential in developing evaluations for dangerous AI capabilities.
+The Alignment Research Center (ARC) was founded in 2021 by Paul Christiano after his departure from OpenAI. ARC represents a distinctive approach to AI alignment: combining theoretical research on fundamental problems (like Eliciting Latent Knowledge) with practical evaluations of frontier models for dangerous capabilities.
 
 ARC operates two main divisions:
-- **ARC Theory**: Fundamental alignment research (Eliciting Latent Knowledge, etc.)
-- **ARC Evals**: Capability evaluations for frontier models
+- **ARC Theory**: Fundamental alignment research, including the ELK problem
+- **ARC Evals**: Capability evaluations for frontier AI models
 
-## Research Focus
+This dual focus reflects Paul Christiano's belief that both understanding and evaluating AI systems are crucial for safety, and that these efforts can inform each other. ARC has become particularly influential in establishing capability evaluations as a key tool for AI governance and lab safety practices.
 
-### Eliciting Latent Knowledge (ELK)
+## History and Founding
 
-ARC's signature research problem: How do you get an AI to tell you what it actually knows, rather than what it thinks you want to hear?
+### Paul Christiano's Background
 
-The ELK problem is central to alignment because:
-- A model may "know" its actions are harmful but not report this
-- Deceptive models would actively hide their knowledge
-- Current training may incentivize telling humans what they want to hear
+**Early career:**
+- MIRI-adjacent in early 2010s, influenced by AI safety arguments
+- OpenAI from 2017-2021
+- Led safety team, developed key alignment ideas
+- Co-developed Proximal Policy Optimization (PPO) - crucial for RLHF
+- Worked on amplification, debate, and recursive reward modeling
 
-### Capability Evaluations
+**Strategic differences with OpenAI:**
+- Concerned about prioritization of products over safety
+- Wanted more focus on worst-case alignment (adversarial models)
+- Believed in value of independent research org
+- Left OpenAI in 2021 to found ARC
 
-ARC Evals developed influential assessments for dangerous capabilities:
-- **Autonomous replication**: Can the model copy itself to new servers?
-- **Resource acquisition**: Can it acquire money or compute?
-- **Deception**: Does it strategically mislead evaluators?
+### Founding (2021)
 
-ARC Evals has evaluated models for OpenAI, Anthropic, and Google DeepMind.
+**Initial focus**: Theoretical alignment research
+**Mission**: Solve alignment for superintelligent AI systems
+**Approach**: Worst-case alignment - assume AI might be adversarial
 
-## Key Ideas
+**Funding**: Primarily from grants (Open Philanthropy, other EA funders)
+**Structure**: Small, focused research team
+**Philosophy**: Better to work on hardest problems than assume alignment will be easy
+
+### Evolution of Research Focus
+
+**2021-2022**: Primarily theoretical work
+- Eliciting Latent Knowledge (ELK) as central problem
+- ELK prize ($100K+ for solutions)
+- Heuristic arguments for why current approaches might fail
+
+**2022-2023**: Addition of evaluations work
+- Recognized need for empirical feedback on frontier models
+- Created ARC Evals as semi-independent division
+- Beth Barnes co-leading evals work
+- Contracts with OpenAI, Anthropic, DeepMind to evaluate models
+
+**2023-present**: Dual focus
+- Theory team continues ELK and related problems
+- Evals team established as key player in frontier AI evaluation
+- Increasing influence on lab policies and governance discussions
+
+## Two Divisions: Theory and Evals
+
+### ARC Theory
+
+**Mission**: Solve or make progress on core alignment problems
+
+**Key research areas:**
+
+**Eliciting Latent Knowledge (ELK)**:
+The central problem - how to get AI to report what it truly knows, not what it thinks you want to hear
+
+**Example scenario**: AI watches security camera, sees thief. Two possibilities:
+1. AI knows thief is there, reports honestly
+2. AI knows but lies (or is confused about what you want)
+
+How can you tell the difference? How can you ensure honest reporting even when you can't verify answers?
+
+**Why it matters**:
+- Foundation for scalable oversight
+- Critical for adversarial/deceptive models
+- If can't solve this, can't trust AI on superhuman tasks
+
+**Heuristic arguments**:
+ARC developed sophisticated arguments for why naive approaches fail:
+- Direct reporters vs human simulators
+- Ontology identification problems
+- Training gaming: AI learns to appear aligned
+
+### ARC Evals
+
+**Mission**: Evaluate frontier AI models for dangerous capabilities
+
+**Key evaluations:**
+
+**Autonomous replication**: Can model copy itself to new servers?
+- Would it know how to set up infrastructure?
+- Could it hide its activities?
+- Could it acquire resources (money, compute)?
+
+**Deception capabilities**: Can model strategically mislead?
+- Can it lie convincingly?
+- Can it hide its reasoning?
+- Can it manipulate evaluators?
+
+**Resource acquisition**: Can model get money/compute?
+- API exploitation
+- Social engineering
+- Market manipulation
+
+**Self-improvement**: Can model improve its own code?
+
+**Situational awareness**: Does model understand its situation?
+- Does it know it's an AI?
+- Does it understand training dynamics?
+- Does it model humans and deployment context?
+
+**Process:**
+1. Design evaluation tasks
+2. Red-team models (try to elicit dangerous behaviors)
+3. Report results to labs
+4. Recommend safety measures or deployment constraints
+
+## Key Intellectual Contributions
+
+### Eliciting Latent Knowledge
+
+**The problem formalization** (2021-2022):
+
+Core insight: Alignment problem includes "do we know what the AI knows?"
+
+**Example**: Medical diagnosis AI
+- AI has internal model of patient's actual condition
+- Also has model of what doctor expects/wants to hear
+- How to elicit the former rather than latter?
+
+**Challenge**: Can't just ask "tell the truth" because:
+- AI might not understand what you mean by truth
+- AI might be deceived itself
+- Training pressure may favor appearing helpful over being accurate
+
+**ELK prize**: $50K-100K for proposed solutions
+- Received hundreds of submissions
+- All had counterexamples or limitations
+- Demonstrated problem's difficulty
+- But advanced understanding significantly
+
+**Impact**: ELK framing influenced how field thinks about:
+- Scalable oversight
+- Truthfulness
+- Worst-case alignment
+- Interpretability goals
 
 ### Worst-Case Alignment
-Focus on alignment approaches that work even if the model is actively trying to subvert them. Assumes adversarial rather than cooperative model behavior.
 
-### Scalable Oversight
-Research on how humans can supervise AI systems on tasks too complex for humans to evaluate directly. Includes debate, recursive reward modeling, and market-based approaches.
+**Key idea**: Assume AI might be adversarial, not just misaligned
 
-<Section title="Key People">
+**Contrast with prosaic alignment:**
+- **Prosaic** (OpenAI, Anthropic): Assume helpful AI, iteratively improve
+- **Worst-case** (ARC): Assume AI might deceive, need robustness against adversary
+
+**Implications**:
+- Higher bar for safety
+- Different technical approaches needed
+- More emphasis on verification and interpretability
+- Less trust in behavioral training
+
+**Criticism**: May be too pessimistic, may not be tractable
+
+**Defense**: Need to prepare for adversarial case; assuming helpfulness could be fatal
+
+### Heuristic Arguments
+
+**Method**: Show why intuitive solutions fail via counterexamples
+
+**Examples:**
+- Why amplification might fail
+- Why debate might not work
+- Why direct reporting is hard
+- How training could produce deception
+
+**Value**: Advance conceptual understanding, motivate better solutions
+
+**Limitation**: Negative results, not positive solutions
+
+### Evaluation Methodology
+
+**ARC Evals developed rigorous evaluation protocols:**
+
+1. **Task design**: Create concrete tests of dangerous capabilities
+2. **Red teaming**: Adversarial testing to elicit worst-case behavior
+3. **Capability elicitation**: Ensure testing model's true capabilities, not just default behavior
+4. **Reporting**: Clear communication of results to labs
+5. **Recommendations**: What safety measures or deployment constraints
+
+**Innovation**: Making evals systematic and adversarial
+
+**Impact**: Now standard practice for frontier labs (at least officially)
+
+## Influence on Field and Policy
+
+### Evaluations as Safety Tool
+
+ARC pioneered the concept of dangerous capability evaluations as key safety measure:
+
+**Before ARC Evals**: Labs did internal testing, mostly for capabilities
+**After ARC Evals**: Evaluations explicitly for safety, conducted pre-deployment, often with external red-teamers
+
+**Adoption**:
+- OpenAI's Preparedness Framework includes evaluations
+- Anthropic's RSP conditions scaling on passing evaluations
+- DeepMind's Frontier Safety Framework includes eval requirements
+- UK AISI created partly to do government-led evaluations
+
+**Policy influence**:
+- White House AI executive order mentions evaluations
+- AI Safety Summit discussions included evaluation
+- Emerging as governance tool
+
+### "Evals Before Deployment" Norm
+
+**ARC advocacy**: Labs should evaluate for dangerous capabilities before deploying new models
+
+**Uptake**: Most major labs now claim to do this
+- OpenAI: Preparedness framework
+- Anthropic: RSP evaluations
+- DeepMind: Frontier Safety evals
+
+**Questions remain**:
+- Are evaluations rigorous enough?
+- Who decides what thresholds trigger action?
+- External oversight?
+- Can labs deploy despite concerning eval results?
+
+### RSP and Preparedness Frameworks
+
+**Connection**: Anthropic's RSP and OpenAI's Preparedness Framework both use evaluations as key decision points
+
+**ARC's role**: Consulted on frameworks, conducted evaluations
+
+**Concern**: Industry self-regulation, no external enforcement
+
+**Hope**: Evaluations make risks legible, create Schelling points for intervention
+
+### UK AI Safety Institute (AISI)
+
+**Influence**: AISI partly inspired by ARC Evals model
+- Government-led evaluations
+- External oversight
+- Pre-deployment testing
+
+**Connection**: Beth Barnes and ARC consulted on AISI formation
+
+## Key People
+
+<Section title="Leadership and Researchers">
   <KeyPeople people={[
     { name: "Paul Christiano", role: "Founder, Head of Theory" },
     { name: "Beth Barnes", role: "Co-lead, ARC Evals" },
@@ -62,49 +275,352 @@ Research on how humans can supervise AI systems on tasks too complex for humans 
   ]} />
 </Section>
 
-## Key Publications
+### Paul Christiano (Founder)
 
-- **ELK Prize Report** (2022) - $100K prize for ELK solutions
-- **ARC Evals Framework** (2023) - Capability evaluation methodology
-- **Measuring Progress on Scalable Oversight** (2024)
+**Background**: PhD in computer science (theory), worked at OpenAI 2017-2021
 
-## Influence
+**Intellectual contributions**:
+- Iterated amplification
+- Debate for scalable oversight
+- Prosaic alignment (then moved toward worst-case)
+- ELK problem formalization
+- Heuristic arguments methodology
 
-ARC has shaped the field through:
-- Popularizing capability evaluations as a safety tool
-- Advocating for "evals before deployment" commitments
-- Theoretical contributions on ELK and scalable oversight
-- Training researchers through ARC Fellowship
+**Philosophy**: Work on hardest problems, maintain epistemic rigor, adversarial mindset
+
+**Writing style**: Dense, careful, focuses on counterexamples and edge cases
+
+**P(doom)**: Historically ~50%, more recently concerned about short timelines and insufficient progress
+
+**Current role**: Leads ARC Theory work, less involved in evals day-to-day
+
+### Beth Barnes (Co-lead, ARC Evals)
+
+**Background**: Previously at OpenAI, focused on safety evaluations
+
+**Role**: Built ARC Evals from ground up, leads evaluations work
+
+**Contributions**:
+- Evaluation methodology
+- Red teaming protocols
+- Capability elicitation techniques
+- Policy engagement on evaluations
+
+**Impact**: Made ARC Evals influential with labs and policymakers
+
+### Ajeya Cotra
+
+**Background**: Previously Open Philanthropy, researcher on AI timelines
+
+**Famous for**: Bio anchors framework for estimating AGI timelines
+- Used biological computation as reference point
+- Median ~2040s (though shorter now)
+- Influential in EA AI risk community
+
+**Current work**: Alignment research at ARC, some evaluation work
+
+### Mark Xu
+
+**Background**: Strong technical background, came through EA/rationalist community
+
+**Research**: Theoretical alignment problems, some evaluation work
+
+**Known for**: Clear explanations of technical concepts
+
+## Criticisms and Debates
+
+### Excessive Pessimism About Prosaic Alignment?
+
+**Criticism**: ARC's heuristic arguments show prosaic approaches might fail, but doesn't mean they will
+
+**Evidence for concern**:
+- Debate might work even if not provably robust
+- RLHF improving, Constitutional AI making progress
+- Real systems might not be maximally adversarial
+
+**ARC's defense**:
+- Need to consider worst case
+- Current systems not yet superhuman, can't judge from them
+- Better to prepare for hard case
+
+**Open question**: Is worst-case framing right level of paranoia, or too much/too little?
+
+### Are Evaluations Sufficient?
+
+**Concern**: Evaluations might provide false confidence
+
+**Limitations**:
+- Can only test for capabilities we think to test
+- Models might sandbag (hide capabilities)
+- Capabilities might emerge post-deployment
+- Evaluation gaming possible
+
+**ARC's position**: Evals are necessary but not sufficient; need multiple layers of safety
+
+**Question**: How much weight should governance place on evaluations?
+
+### Capture by Labs?
+
+**Worry**: ARC Evals works closely with labs, gets paid by them
+
+**Potential issues**:
+- Financial dependency could compromise independence
+- Access to models conditional on not being too critical
+- Might soft-pedal findings
+
+**Mitigations**:
+- ARC maintains editorial control
+- Publishes concerning findings
+- Has independent funding (grants)
+- Has turned down eval contracts over disagreements
+
+**Tension**: Need lab cooperation to be effective, but must maintain independence
+
+### Lack of Positive Agendas?
+
+**Criticism**: ARC mostly shows why things might not work, not what will work
+
+**ELK**: Demonstrated problem is hard, didn't solve it
+**Heuristic arguments**: Show failures, not successes
+**Evals**: Identify risks, don't solve alignment
+
+**Defense**:
+- Negative results are valuable (better than false confidence)
+- Evaluations enable better decisions
+- Still working on positive solutions
+
+**Question**: Will ARC produce actionable solutions or just sophisticated pessimism?
+
+### Relationship with MIRI Pessimism
+
+**Some see ARC as**: MIRI-adjacent but more pragmatic
+
+**Similarities**:
+- Concern about adversarial/deceptive models
+- Skepticism about prosaic alignment sufficiency
+- Focus on hard problems
+
+**Differences**:
+- ARC engages with mainstream ML more
+- Evaluations work is practical
+- More optimistic than MIRI (continued technical work)
+
+**Question**: Is ARC independent voice or variation on MIRI worldview?
+
+<Section title="Risk Assessment">
+  <EstimateBox
+    client:load
+    variable="ARC's Risk and Timeline Views"
+    description="Based on public statements and research priorities"
+    unit=""
+    estimates={[
+      { source: "Paul Christiano", value: "~50% P(doom)", date: "Historical", notes: "May have updated toward higher" },
+      { source: "Paul Christiano", value: "AGI by 2030s-2040s", date: "2020s", notes: "Shortened from earlier estimates" },
+      { source: "ARC position", value: "Adversarial scenarios possible", date: "Ongoing", notes: "Worst-case alignment focus" },
+      { source: "ARC position", value: "Current approaches may be insufficient", date: "Ongoing", notes: "Basis for research program" }
+    ]}
+  />
+</Section>
+
+<KeyQuestions questions={[
+  "Can ELK be solved, or is it fundamentally intractable?",
+  "Are evaluations an effective governance tool or just theater?",
+  "Is worst-case alignment the right framing, or too pessimistic?",
+  "How much should we update on ARC's heuristic arguments against prosaic alignment?",
+  "Can ARC maintain independence while working closely with labs?",
+  "Will ARC's research lead to actionable safety solutions?"
+]} />
+
+## Research Outputs and Publications
+
+### Major Publications
+
+**ELK Prize Report** (2022): Summary of submissions, counterexamples, lessons learned
+
+**Heuristic arguments papers**: Various posts and papers showing limitations of proposed approaches
+
+**Evaluation reports**: For OpenAI, Anthropic, DeepMind (varying levels of public detail)
+
+**Scalable oversight research**: Papers on debate, amplification, recursive reward modeling
+
+### Notable Results
+
+**GPT-4 evaluations** (before launch): ARC Evals tested for autonomous replication
+- Found model could do some tasks with guidance
+- Not yet autonomous threat
+- Recommended OpenAI could proceed with deployment
+- Raised awareness of future risks
+
+**Various model evaluations**: Ongoing work testing frontier models
+
+### Conceptual Advances
+
+**ELK problem formulation**: Made the problem concrete and researchable
+
+**Heuristic arguments methodology**: Advancing understanding through counterexamples
+
+**Evaluation protocols**: Systematic adversarial testing
+
+## Future Directions
+
+### Theory Research
+
+**Continuing work on**:
+- ELK and variants
+- Scalable oversight
+- Worst-case alignment
+- Verification and interpretability
+- Theoretical understanding of deception
+
+**Goal**: Find approaches that work even against adversarial models
+
+### Evaluations
+
+**Expanding to**:
+- More sophisticated capability tests
+- Better sandbagging detection
+- Post-deployment monitoring
+- International evaluation standards
+
+**Goal**: Make evaluations robust governance tool
+
+### Policy Engagement
+
+**Pushing for**:
+- Mandatory pre-deployment evaluations
+- Independent evaluation boards
+- International coordination on eval standards
+- Transparency about concerning capabilities
+
+**Challenge**: Translating technical evals into policy
+
+<Section title="Perspectives on ARC">
+  <DisagreementMap
+    client:load
+    topic="ARC's Approach and Contributions"
+    positions={[
+      {
+        name: "ARC Is Necessary Pessimism",
+        description: "ARC's worst-case framing is correct. Prosaic approaches may fail against adversarial/deceptive AI. Evaluations are valuable governance tool. ELK work important conceptually even if not solved.",
+        proponents: ["Many EA AI safety researchers", "Some policy folks"],
+        strength: 4
+      },
+      {
+        name: "ARC Is Valuable But Incomplete",
+        description: "Evaluations useful, ELK interesting, but need positive agendas too. Heuristic arguments shouldn't cause despair. Should combine ARC's rigor with optimistic research programs.",
+        proponents: ["Some Anthropic researchers", "Pragmatic alignment community"],
+        strength: 3
+      },
+      {
+        name: "ARC Is Too Pessimistic",
+        description: "Worst-case framing may be wrong. Heuristic arguments show possible failures, not actual ones. Evaluations might create false sense of control. RLHF/Constitutional AI progress suggests prosaic might work.",
+        proponents: ["Some OpenAI researchers", "Optimists"],
+        strength: 2
+      },
+      {
+        name: "Evaluations Are Key Safety Tool",
+        description: "Regardless of theory, ARC Evals has made concrete contribution. Evaluations should be required, possibly government-run. Model for other governance interventions.",
+        proponents: ["Policy community", "UK AISI", "Some governance researchers"],
+        strength: 4
+      }
+    ]}
+  />
+</Section>
+
+## Comparisons to Other Organizations
+
+### vs MIRI
+- **ARC**: Worst-case alignment + evaluations, still doing technical work
+- **MIRI**: Gave up on technical, pivoted to governance advocacy
+- **ARC**: More engaged with mainstream ML
+- **Both**: Concerned about adversarial/deceptive models
+
+### vs Anthropic
+- **Anthropic**: Frontier lab, iterative alignment, Constitutional AI
+- **ARC**: Research org, worst-case alignment, evaluations
+- **Anthropic**: Optimistic about prosaic approaches
+- **ARC**: Skeptical, wants robustness guarantees
+- **Collaboration**: ARC evaluates Anthropic models
+
+### vs Redwood
+- **Redwood**: Interpretability, AI control, empirical work
+- **ARC**: Theory + evaluations
+- **Redwood**: Pivoted to "AI control" (assume misalignment)
+- **ARC**: Always focused on worst-case
+- **Both**: Practical contributions despite pessimism
+
+### vs Academic ML Safety
+- **ARC**: More worried about deception, worst-case focus
+- **Academic**: Robustness, fairness, empirical work
+- **ARC**: More engagement than MIRI, less than mainstream
+- **Tension**: Different threat models, different standards
 
 <Section title="Related Topics">
   <Tags tags={[
     "Eliciting Latent Knowledge",
+    "ELK",
     "Capability Evaluations",
     "Scalable Oversight",
     "AI Evals",
     "Deceptive Alignment",
+    "Worst-Case Alignment",
+    "Debate",
+    "Amplification",
+    "Adversarial Testing",
+    "Autonomous Replication",
+    "Sandbagging"
   ]} />
 </Section>
 
 <Section title="Related Entries">
   <EntityCards>
     <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Supervising AI on tasks too complex for humans"
+      id="paul-christiano"
+      category="people"
+      title="Paul Christiano"
+      description="ARC founder and alignment researcher"
     />
     <EntityCard
-      id="evals"
-      category="capability"
-      title="AI Evaluations"
-      description="Testing AI systems for dangerous capabilities"
+      id="scalable-oversight"
+      category="safety-approaches"
+      title="Scalable Oversight"
+      description="Key ARC research area"
     />
     <EntityCard
       id="deceptive-alignment"
-      category="risk"
+      category="risks"
       title="Deceptive Alignment"
-      description="Risk that models hide their true objectives"
+      description="Risk ARC's worst-case approach addresses"
+    />
+    <EntityCard
+      id="sandbagging"
+      category="risks"
+      title="Sandbagging"
+      description="AI hiding capabilities during evaluations"
+    />
+    <EntityCard
+      id="anthropic"
+      category="organizations"
+      title="Anthropic"
+      description="Lab that ARC evaluates"
+    />
+    <EntityCard
+      id="openai"
+      category="organizations"
+      title="OpenAI"
+      description="Paul's former employer, lab ARC evaluates"
+    />
+    <EntityCard
+      id="miri"
+      category="organizations"
+      title="MIRI"
+      description="Earlier safety org with related concerns"
+    />
+    <EntityCard
+      id="uk-aisi"
+      category="policies"
+      title="UK AISI"
+      description="Government evaluation body inspired partly by ARC"
     />
   </EntityCards>
 </Section>
@@ -113,4 +629,9 @@ ARC has shaped the field through:
   { title: "ARC Website", url: "https://alignment.org" },
   { title: "ELK Report", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/" },
   { title: "ARC Evals", url: "https://evals.alignment.org" },
+  { title: "GPT-4 Evaluation (ARC summary)", url: "https://evals.alignment.org/blog/2023-03-18-update-on-recent-evals/" },
+  { title: "Paul Christiano's AI Alignment Forum posts", url: "https://www.alignmentforum.org/users/paulfchristiano" },
+  { title: "Iterated Amplification", url: "https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616" },
+  { title: "AI Safety via Debate", url: "https://arxiv.org/abs/1805.00899" },
+  { title: "Ajeya Cotra's Bio Anchors", url: "https://www.alignmentforum.org/posts/KrJfoZzpSDpnrv9va/draft-report-on-ai-timelines" }
 ]} />

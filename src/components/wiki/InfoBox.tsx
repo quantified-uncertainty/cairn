@@ -6,11 +6,18 @@ export type EntityType =
   | 'lab-research'
   | 'lab-startup'
   | 'lab-academic'
+  | 'lab'
   | 'capability'
   | 'risk'
   | 'safety-agenda'
   | 'policy'
-  | 'crux';
+  | 'crux'
+  | 'case-study'
+  | 'researcher'
+  | 'scenario'
+  | 'resource'
+  | 'funder'
+  | 'intervention';
 
 interface InfoBoxProps {
   type: EntityType;
@@ -43,6 +50,11 @@ interface InfoBoxProps {
   currentLevel?: string;
   projectedTimeline?: string;
 
+  // Researcher-specific
+  affiliation?: string;
+  role?: string;
+  knownFor?: string;
+
   // Custom fields
   customFields?: { label: string; value: string }[];
 }
@@ -52,12 +64,21 @@ const typeLabels: Record<EntityType, { label: string; color: string }> = {
   'lab-research': { label: 'Research Lab', color: '#2563eb' },
   'lab-startup': { label: 'Startup', color: '#7c3aed' },
   'lab-academic': { label: 'Academic', color: '#059669' },
+  'lab': { label: 'Organization', color: '#dc2626' },
   'capability': { label: 'Capability', color: '#0891b2' },
   'risk': { label: 'Risk', color: '#dc2626' },
   'safety-agenda': { label: 'Safety Agenda', color: '#7c3aed' },
   'policy': { label: 'Policy', color: '#0d9488' },
   'crux': { label: 'Key Crux', color: '#ea580c' },
+  'case-study': { label: 'Historical Case Study', color: '#78716c' },
+  'researcher': { label: 'Researcher', color: '#475569' },
+  'scenario': { label: 'Scenario', color: '#9333ea' },
+  'resource': { label: 'Resource', color: '#4f46e5' },
+  'funder': { label: 'Funder', color: '#16a34a' },
+  'intervention': { label: 'Intervention', color: '#0891b2' },
 };
+
+const defaultTypeInfo = { label: 'Entry', color: '#6b7280' };
 
 const severityColors: Record<string, string> = {
   low: '#22c55e',
@@ -85,9 +106,12 @@ export function InfoBox({
   approach,
   currentLevel,
   projectedTimeline,
+  affiliation,
+  role,
+  knownFor,
   customFields,
 }: InfoBoxProps) {
-  const typeInfo = typeLabels[type];
+  const typeInfo = typeLabels[type] || defaultTypeInfo;
 
   const fields: { label: string; value: string }[] = [];
 
@@ -106,6 +130,9 @@ export function InfoBox({
   if (approach) fields.push({ label: 'Approach', value: approach });
   if (currentLevel) fields.push({ label: 'Current Level', value: currentLevel });
   if (projectedTimeline) fields.push({ label: 'Timeline', value: projectedTimeline });
+  if (affiliation) fields.push({ label: 'Affiliation', value: affiliation });
+  if (role) fields.push({ label: 'Role', value: role });
+  if (knownFor) fields.push({ label: 'Known For', value: knownFor });
   if (website) fields.push({ label: 'Website', value: website });
 
   // Add custom fields

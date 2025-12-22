@@ -1,0 +1,666 @@
+---
+title: Compute Governance Interventions
+description: Using hardware and computational infrastructure to regulate AI development
+sidebar:
+  order: 6
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Compute Governance"
+  customFields={[
+    { label: "Category", value: "Hardware-based regulation" },
+    { label: "Tractability", value: "Medium-High (measurable, concentrated)" },
+    { label: "Primary Researchers", value: "~10-30 dedicated researchers" },
+    { label: "Policy Adoption", value: "Emerging (US EO, EU AI Act)" },
+    { label: "Key Advantage", value: "Upstream intervention" },
+  ]}
+/>
+
+## Overview
+
+Compute governance uses **computational hardware as a lever** to regulate AI development. Because advanced AI requires enormous amounts of computing power, and that compute comes from concentrated supply chains, controlling compute provides a tractable way to govern AI **before models are built**.
+
+This is one of the **most promising governance approaches** because compute is:
+- **Measurable:** FLOP, GPU-hours, chip counts
+- **Concentrated:** Few manufacturers and cloud providers
+- **Physical:** Hardware is trackable in ways software isn't
+- **Necessary:** Can't train frontier models without it
+
+See also: [Compute Governance Policy Overview](/policies/compute-governance/)
+
+## Theory of Change
+
+```
+Hardware chokepoints → Monitoring + controls → Prevent dangerous development or enable oversight → Reduced x-risk
+```
+
+**Key mechanisms:**
+1. **Export controls:** Restrict who can access AI chips
+2. **Compute thresholds:** Trigger requirements based on training compute
+3. **Know Your Customer (KYC):** Cloud providers verify customers and report large runs
+4. **Hardware governance:** Chips with built-in monitoring/controls
+5. **International regimes:** Coordination on compute access and verification
+
+## Major Intervention Approaches
+
+### 1. Export Controls and Sanctions
+
+**Goal:** Prevent adversarial nations from accessing AI chips needed for frontier models.
+
+**Current Implementation:**
+
+**US Export Controls (October 2022, updated 2023-2024):**
+- Restrict export of advanced AI chips to China and other countries
+- **Chips restricted:** NVIDIA A100, H100, and equivalents
+- **Manufacturing equipment:** Lithography equipment (ASML EUV machines)
+- **Rationale:** National security, prevent military AI applications
+- **Enforcement:** Bureau of Industry and Security (BIS)
+
+**How it works:**
+- **Performance thresholds:** Chips above certain performance can't be exported
+- **Country-based:** Restrictions apply to specific countries (primarily China, Russia)
+- **Entity lists:** Specific organizations blocked
+- **Re-export controls:** Can't ship through third countries
+
+**Impact so far:**
+- China developing domestic alternatives (slower but progressing)
+- NVIDIA creating "export-compliant" chips (A800, H800) that meet thresholds
+- Ongoing cat-and-mouse game of regulations vs. workarounds
+- Debate over effectiveness vs. economic costs
+
+<EstimateBox
+  client:load
+  variable="Delay to Chinese Frontier AI from Export Controls"
+  description="How much do export controls slow Chinese AI development?"
+  unit="years"
+  estimates={[
+    { source: "Optimistic", value: "3-5 years", notes: "Significant technological gap; domestic alternatives lag substantially" },
+    { source: "Moderate", value: "1-3 years", notes: "Some delay but workarounds exist; indigenous development accelerating" },
+    { source: "Pessimistic", value: "0.5-1 year", notes: "Stockpiling, smuggling, and rapid domestic development minimize impact" },
+  ]}
+/>
+
+**Theory of change:** Deny compute to adversaries → they can't build dangerous AI → reduces race dynamics and misuse risk
+
+**Who should work on this:**
+- **Government:** BIS officials, national security experts
+- **Policy researchers:** Analyzing effectiveness, recommending adjustments
+- **Technical experts:** Understanding chip capabilities and workarounds
+
+### 2. Compute Thresholds for Regulation
+
+**Goal:** Use training compute as a trigger for safety requirements.
+
+**Current Implementation:**
+
+**EU AI Act (2024):**
+- Models trained with >10^25 FLOP face requirements:
+  - Transparency about training
+  - Systemic risk evaluations
+  - Reporting serious incidents
+  - Adversarial testing
+- GPAI (General Purpose AI) with systemic risk designation
+
+**US Executive Order on AI (October 2023):**
+- Models trained with >10^26 FLOP must:
+  - Report to Department of Commerce
+  - Share safety test results
+  - Implement security measures
+- Lower threshold (10^23 FLOP) for biological sequence data
+
+**Why these thresholds?**
+- 10^25 FLOP: Roughly GPT-4 scale
+- 10^26 FLOP: Next generation models
+- Based on current scaling trends and capability expectations
+
+**Challenges:**
+
+**Algorithmic Efficiency:**
+- Same capability with less compute over time
+- Thresholds become outdated
+- Need regular updating
+
+**Gaming:**
+- Train in separate runs below threshold
+- Distributed training across jurisdictions
+- Creative accounting of FLOP
+
+**Measurement:**
+- How to verify reported compute?
+- Inference compute vs. training compute
+- Fine-tuning and continued training
+
+**Theory of change:** Compute thresholds → safety requirements triggered → dangerous models are tested/controlled → reduced deployment risk
+
+**Tractability:**
+- **High:** Already implemented in major jurisdictions
+- **Medium-term:** Need to evolve thresholds and close loopholes
+
+**Who should work on this:**
+- **Policy researchers:** Recommending threshold levels
+- **Government:** Implementing and enforcing
+- **Technical experts:** Verifying compliance, designing measurement
+
+### 3. Know Your Customer (KYC) for Cloud Compute
+
+**Goal:** Cloud providers monitor and report large-scale AI training runs.
+
+**Proposed Requirements:**
+
+**Customer Verification:**
+- Identity verification for large compute customers
+- Purpose of use declarations
+- Ongoing monitoring of usage patterns
+
+**Reporting Obligations:**
+- Report training runs above threshold (e.g., 10^23 FLOP)
+- Report to government authorities
+- Suspicious activity reporting
+
+**Access Controls:**
+- Deny service to blocked entities
+- Geographic restrictions
+- Capability-based access
+
+**Current Status:**
+- US Executive Order includes KYC requirements
+- Being developed by major cloud providers (AWS, Azure, GCP)
+- Still early implementation stage
+
+**Who needs to comply:**
+- Amazon Web Services (AWS)
+- Microsoft Azure
+- Google Cloud Platform (GCP)
+- Smaller cloud providers
+- On-premise compute (harder to monitor)
+
+**Challenges:**
+
+**Privacy:**
+- Balance monitoring with customer privacy
+- Proprietary training data and methods
+- Scope of reporting
+
+**Enforcement:**
+- International cloud providers
+- On-premise clusters
+- Compliance verification
+
+**Evasion:**
+- Use multiple providers
+- Jurisdictional arbitrage
+- False declarations
+
+**Theory of change:** Cloud KYC → visibility into who's training large models → can enforce requirements or block dangerous actors
+
+**Tractability:**
+- **Medium-High:** Cloud providers are concentrated and in regulable jurisdictions
+- **Challenges:** International coordination, on-premise compute
+
+**Who should work on this:**
+- **Cloud providers:** Implementing systems
+- **Regulators:** Designing requirements
+- **Technical experts:** Monitoring systems design
+
+### 4. Hardware-Level Governance
+
+**Goal:** Build governance capabilities directly into AI chips.
+
+**Proposed Mechanisms:**
+
+**Chip Registration:**
+- Each advanced AI chip has unique identifier
+- Registered with manufacturer or government
+- Trackable through supply chain
+
+**On-Chip Monitoring:**
+- Chips report usage data
+- Training run logging
+- Could be encrypted and secured
+
+**Remote Attestation:**
+- Chips cryptographically prove what they're running
+- Enable verification of compliance
+- Prevent unauthorized use
+
+**Kill Switches (controversial):**
+- Remote disable capability
+- Highly controversial due to security risks
+- Likely infeasible politically
+
+**Current Status:**
+- Mostly research/proposal stage
+- Some chip security features exist (TPM, secure enclaves)
+- Major technical and political challenges
+
+**Advantages:**
+- **Upstream control:** Governance built into hardware
+- **Difficult to circumvent:** Can't easily modify chips
+- **International verification:** Could enable treaty verification
+
+**Challenges:**
+
+**Technical:**
+- Backward compatibility
+- Performance overhead
+- Security of monitoring systems
+- Chip complexity
+
+**Political:**
+- Privacy concerns
+- Industry resistance
+- International acceptance
+- Security vulnerabilities (monitoring could be hacked)
+
+**Economic:**
+- Costs of implementation
+- Competitive disadvantage
+- Supply chain disruption
+
+**Theory of change:** Chip-level governance → comprehensive monitoring → enforcement of international AI agreements → reduced catastrophic risk
+
+**Tractability:**
+- **Low-Medium currently:** Major technical and political barriers
+- **Could increase:** If political will emerges for strong AI governance
+
+**Who should work on this:**
+- **Researchers:** Technical design of governance systems
+- **Chip manufacturers:** Implementation (NVIDIA, AMD, etc.)
+- **Standards bodies:** Defining requirements
+- **Security experts:** Ensuring systems aren't themselves vulnerabilities
+
+### 5. International Compute Governance Regimes
+
+**Goal:** Coordinate compute governance across nations to prevent races and enable verification.
+
+**Proposed Structures:**
+
+**IAEA-like Institution for AI:**
+- International monitoring body
+- Verify compliance with agreements
+- Inspect training runs
+- Information sharing on risks
+
+**Compute Allocation Treaties:**
+- Caps on total compute for AI
+- Verification mechanisms
+- Graduated responses to violations
+
+**Non-Proliferation Framework:**
+- Restrict transfer of AI capabilities
+- Verification through compute monitoring
+- Analogous to nuclear non-proliferation
+
+**Current Status:**
+- Discussions at AI Safety Summits
+- UN AI Advisory Body considering
+- No binding agreements yet
+- Long way from implementation
+
+**Precedents:**
+
+**Nuclear:**
+- IAEA inspections and safeguards
+- Non-Proliferation Treaty (NPT)
+- Mixed success (prevented some proliferation, not all)
+
+**Chemical Weapons:**
+- Chemical Weapons Convention (CWC)
+- OPCW verification
+- Generally successful
+
+**Differences from precedents:**
+- AI has civilian benefits (unlike weapons)
+- Harder to verify (software, not just hardware)
+- Rapid technological change
+- More actors involved
+
+**Theory of change:** International coordination → prevent race to the bottom → enable sufficient safety testing → reduced catastrophic risk
+
+**Tractability:**
+- **Low currently:** Major geopolitical barriers (US-China relations)
+- **Critical importance:** Without coordination, unilateral measures insufficient
+
+**Who should work on this:**
+- **Diplomats:** International negotiation
+- **Policy researchers:** Designing frameworks
+- **Technical experts:** Verification mechanisms
+- **International relations:** Building political will
+
+## What Needs to Be True
+
+For compute governance to substantially reduce x-risk:
+
+1. **Compute remains necessary:** Can't achieve dangerous AI without massive compute
+2. **Chokepoints persist:** Semiconductor supply chain remains concentrated
+3. **Algorithmic efficiency limits:** Efficiency improvements don't make thresholds obsolete too quickly
+4. **Political will:** Governments prioritize enforcement
+5. **International coordination:** Major AI powers (US, China, EU) cooperate
+6. **Technical feasibility:** Monitoring and verification systems work
+7. **Comprehensive coverage:** Can't easily evade through on-premise or alternative providers
+
+## Estimated Impact by Worldview
+
+### Compute Remains Bottleneck
+**Impact: Very High**
+- Direct control over AI development
+- Prevents dangerous training runs
+- Enables monitoring and enforcement
+- Most tractable governance approach
+
+### Algorithmic Efficiency Accelerates
+**Impact: Medium**
+- Useful in short term but effectiveness declines
+- Thresholds require frequent updates
+- Eventually less relevant
+- Still buys time
+
+### US-China Cooperation Impossible
+**Impact: Low-Medium**
+- Unilateral measures create bifurcated ecosystem
+- Racing dynamics not prevented
+- Some misuse reduction but not coordination
+- Still valuable but insufficient
+
+### Short Timelines (3-5 years)
+**Impact: Medium-High**
+- Already partially implemented
+- Can affect near-term models
+- Need rapid iteration and strengthening
+
+### Long Timelines (10+ years)
+**Impact: High**
+- Time to develop sophisticated regimes
+- International coordination possible
+- Can refine and adapt to evasion
+
+## Key Uncertainties and Debates
+
+<DisagreementMap
+  client:load
+  topic="Will compute governance remain effective as AI advances?"
+  description="Views on the durability of compute-based AI governance"
+  spectrum={{ low: "Will become obsolete", high: "Remain effective" }}
+  positions={[
+    { actor: "Compute governance researchers", position: "Compute remains bottleneck", estimate: "70-80% effective", confidence: "medium" },
+    { actor: "Some ML researchers", position: "Declining effectiveness", estimate: "40-50%", confidence: "medium" },
+    { actor: "Critics of governance", position: "Fundamentally flawed", estimate: "20-30%", confidence: "low" },
+  ]}
+/>
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Should export controls be tightened or loosened?",
+      positions: [
+        {
+          position: "Tighten - slow adversarial AI development",
+          confidence: "medium",
+          reasoning: "Preventing Chinese military AI is critical national security priority. Delay is valuable. Economic costs worth it.",
+          implications: "Stricter thresholds, more comprehensive controls, enforcement focus"
+        },
+        {
+          position: "Loosen - enable cooperation and reduce economic harm",
+          confidence: "low",
+          reasoning: "Controls accelerate Chinese indigenous development. Economic decoupling is costly. Cooperation on AI safety requires trust, not sanctions.",
+          implications: "Narrow controls to military applications; enable civilian research; focus on coordination"
+        }
+      ]
+    },
+    {
+      question: "Are hardware-level governance mechanisms worth pursuing?",
+      positions: [
+        {
+          position: "Yes - essential for robust governance",
+          confidence: "medium",
+          reasoning: "Only way to achieve comprehensive monitoring. Enables international verification. Worth the technical investment.",
+          implications: "Research and develop chip governance; advocate for standards; build political will"
+        },
+        {
+          position: "No - too difficult and risky",
+          confidence: "medium",
+          reasoning: "Technical barriers are enormous. Security vulnerabilities. Political impossibility. Better to focus on proven approaches.",
+          implications: "Focus on export controls and compute thresholds; defer hardware governance"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Who Should Consider This
+
+**Strong fit if you:**
+- Interested in intersection of technology and policy
+- Can work with governments and industry
+- Comfortable with long timelines
+- Strong technical understanding of AI hardware
+- Interest in international relations or national security
+
+**Backgrounds:**
+- Computer engineering / semiconductor physics
+- International relations / national security
+- Economics (semiconductor industry)
+- Policy / public policy
+- Law (export controls, international law)
+
+**Specific roles:**
+
+**Government:**
+- BIS (Bureau of Industry and Security) officials
+- National security staff
+- Diplomatic corps (AI governance)
+- Congressional/parliamentary staff
+
+**Research:**
+- Policy think tanks (CSET, GovAI, etc.)
+- Academic research
+- Lab policy teams
+
+**Industry:**
+- Cloud provider policy teams
+- Chip manufacturer government affairs
+- Compliance and security roles
+
+**Entry paths:**
+- Policy school with tech focus
+- Government fellowship (AAAS, TechCongress)
+- Think tank research assistant
+- Industry policy/compliance roles
+
+**Less good fit if:**
+- Prefer technical research over policy
+- Impatient with bureaucracy
+- Uncomfortable with national security framing
+- Prioritize open access to AI
+
+## Key Organizations
+
+### Research Institutions
+- **Centre for the Governance of AI** (Oxford)
+  - Leading compute governance research
+  - Lennart Heim and others
+- **Center for Security and Emerging Technology (CSET)** (Georgetown)
+  - Semiconductor supply chain analysis
+  - China AI capability assessment
+- **RAND Corporation**
+  - Export control analysis
+  - International governance frameworks
+
+### Government Bodies
+- **US Bureau of Industry and Security (BIS)**
+  - Implements export controls
+  - Defines thresholds and restrictions
+- **US AI Safety Institute (AISI)**
+  - Compute reporting framework
+  - Standards development
+- **EU AI Office**
+  - AI Act implementation including compute thresholds
+- **Various national security agencies**
+
+### Industry
+- **Cloud providers:** AWS, Azure, GCP (implementing KYC)
+- **Chip manufacturers:** NVIDIA, AMD, Intel (affected by controls)
+- **ASML:** Lithography equipment (critical chokepoint)
+
+### Advocacy
+- **Future of Life Institute**
+- **Center for AI Safety**
+- Various policy advocacy groups
+
+## Career Considerations
+
+### Pros
+- **High impact potential:** Leverage point for governance
+- **Growing field:** More opportunities emerging
+- **Institutional backing:** Government and think tank support
+- **Intellectual interest:** Complex technical and policy challenges
+- **Job security:** Government and established orgs
+
+### Cons
+- **Slow progress:** Policy moves slowly
+- **Political complexity:** National security environment
+- **Uncertain effectiveness:** Evasion and obsolescence risks
+- **Controversial:** Some view export controls as harmful
+- **Limited immediate impact:** Long-term intervention
+
+### Compensation
+- **Think tank researcher:** $60-100K
+- **Government (US):** $70-140K (GS-11 to GS-15)
+- **Senior roles:** $150-250K+
+- **Industry (cloud/chips):** $120-300K
+
+### Skills Development
+- Semiconductor industry expertise
+- Export control law and practice
+- AI technical understanding
+- International relations
+- Policy analysis
+
+## Risks and Downsides
+
+### Economic Costs
+- Export controls harm US semiconductor industry
+- Chinese retaliation on other goods
+- Fragmentation of global tech ecosystem
+- Innovation slowdown
+
+**Mitigation:** Narrow controls to high-risk applications; maintain scientific exchange
+
+### Accelerated Chinese Development
+- Controls incentivize Chinese self-sufficiency
+- May speed up indigenous alternatives
+- Long-term competitiveness shift
+
+**Mitigation:** Distinguish between slowing current development vs. long-term trajectory
+
+### Authoritarian Applications
+- Monitoring infrastructure could enable surveillance
+- Compute governance used for control, not safety
+- Democratic norms eroded
+
+**Mitigation:** Transparency, democratic oversight, civil liberties protections
+
+### False Security
+- Belief that compute governance is sufficient
+- Neglect other necessary interventions
+- Overconfidence in effectiveness
+
+**Mitigation:** Portfolio approach; recognize limitations; continuous evaluation
+
+### Coordination Failure
+- Unilateral controls without international cooperation
+- Race dynamics not solved
+- Worst of both worlds (costs without benefits)
+
+**Mitigation:** Invest in international dialogue; build trust; seek multilateral approaches
+
+## Complementary Interventions
+
+Compute governance works best combined with:
+- **Technical research:** Understand what compute is needed for dangerous capabilities
+- **Evaluations:** Verify what capabilities exist at different compute levels
+- **International relations:** Build cooperation for governance regimes
+- **Lab governance:** Ensure compute controls are implemented responsibly
+- **Other policy tools:** Regulation, standards, liability
+
+## Getting Started
+
+**If interested in compute governance:**
+
+1. **Build foundations:**
+   - Learn AI basics (understand what compute enables)
+   - Study semiconductor industry (supply chains, manufacturing)
+   - Read compute governance research (GovAI, CSET papers)
+   - Understand export control law
+
+2. **Gain expertise:**
+   - Policy school with tech/national security focus
+   - Semiconductor industry experience
+   - National security background
+   - International relations
+
+3. **Get involved:**
+   - Research assistant at think tank
+   - Government fellowship
+   - Industry policy role
+   - Academic research
+
+4. **Contribute:**
+   - Policy researcher
+   - Government official
+   - Industry compliance/policy
+   - Academic career
+
+**Resources:**
+- "Computing Power and the Governance of AI" (Heim et al.)
+- CSET semiconductor reports
+- BIS export control regulations
+- AI Safety Fundamentals (Governance track)
+- Centre for the Governance of AI publications
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Export Controls",
+    "Compute Thresholds",
+    "Know Your Customer",
+    "Hardware Governance",
+    "International Coordination",
+    "Semiconductors",
+    "Cloud Computing",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="compute-governance"
+      category="policy"
+      title="Compute Governance Policy"
+      description="Policy overview of compute governance approaches"
+    />
+    <EntityCard
+      id="govai"
+      category="lab"
+      title="Centre for the Governance of AI"
+      description="Leading compute governance research"
+    />
+    <EntityCard
+      id="governance-policy"
+      category="intervention"
+      title="AI Governance and Policy"
+      description="Broader governance intervention category"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Computing Power and the Governance of AI", url: "https://www.governance.ai/research-papers/computing-power-and-the-governance-of-artificial-intelligence", author: "Heim et al.", date: "2023" },
+  { title: "US Export Controls on Advanced Computing", url: "https://www.bis.doc.gov/", author: "Bureau of Industry and Security" },
+  { title: "EU AI Act Compute Provisions", url: "https://artificialintelligenceact.eu/" },
+  { title: "CSET Semiconductor Reports", url: "https://cset.georgetown.edu/publications/?fwp_publication_types=issue-brief&fwp_topics=semiconductors" },
+  { title: "The Chips and Science Act", url: "https://www.congress.gov/bill/117th-congress/house-bill/4346", date: "2022" },
+]} />

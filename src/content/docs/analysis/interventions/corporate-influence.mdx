@@ -1,0 +1,626 @@
+---
+title: Influencing AI Labs Directly
+description: Working at frontier labs, shareholder activism, whistleblowing, and transparency advocacy
+sidebar:
+  order: 5
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Corporate Influence"
+  customFields={[
+    { label: "Category", value: "Direct engagement with AI companies" },
+    { label: "Time to Impact", value: "Immediate to 3 years" },
+    { label: "Key Leverage", value: "Inside access and relationships" },
+    { label: "Risk Level", value: "Medium-High" },
+    { label: "Counterfactual Complexity", value: "Very High" },
+  ]}
+/>
+
+## Overview
+
+Rather than working on AI safety from outside, this category involves **directly influencing frontier AI labs** from within or through stakeholder pressure. The theory is that since labs are building potentially dangerous systems, shaping their decisions and culture may be the most direct path to safety.
+
+This is controversial—some see it as essential pragmatism, others as dangerous complicity.
+
+## Theory of Change
+
+```
+Access to labs → Safety influence → Better deployment decisions + safety culture → Reduced risk
+```
+
+**Key mechanisms:**
+1. **Inside decision-making:** Influence what gets built and deployed
+2. **Safety culture:** Shape norms and priorities
+3. **Technical access:** Work on safety with frontier models
+4. **Whistleblowing:** Expose problems from inside
+5. **External pressure:** Stakeholders push for safety
+
+## Major Approaches
+
+### 1. Working at Frontier Labs
+
+**Goal:** Influence lab practices from within, especially on safety teams.
+
+**Roles:**
+
+**Safety Researcher/Engineer:**
+- Work on alignment, interpretability, evaluations
+- Develop safety techniques
+- Influence RSP (Responsible Scaling Policy) design
+- Access to frontier models
+
+**Labs with substantial safety teams:**
+- **Anthropic** (~30% of staff on safety, ~300 people)
+  - Strongest safety focus of frontier labs
+  - Interpretability, Constitutional AI, RSP development
+  - "Race to the top" philosophy
+- **Google DeepMind** (~30-50 safety researchers)
+  - Scalable alignment team
+  - Mechanistic interpretability
+  - Evaluation and testing
+- **OpenAI** (Superalignment team dissolved Jan 2024)
+  - Unclear current state after Ilya Sutskever and Jan Leike departures
+  - Some continued safety work
+- **Meta** (smaller safety focus at FAIR)
+
+**Safety-Adjacent Roles:**
+- **Policy roles:** Shape lab positions on regulation
+- **Communications:** Frame AI safety for public
+- **Security:** Prevent model theft and misuse
+- **Ethics/responsibility:** Address near-term harms
+
+**Non-Safety Roles:**
+- **Capabilities research:** Directly advances AI (controversial)
+- **Engineering:** Builds infrastructure
+- **Operations/support:** Enables all work
+
+**Theory of change:** Safety staff → influence decisions → safer deployment + better safety research
+
+<DisagreementMap
+  client:load
+  topic="Is working at frontier labs net positive for safety?"
+  description="Views on whether joining AI labs reduces or increases AI risk"
+  spectrum={{ low: "Net negative (accelerates risk)", high: "Net positive (reduces risk)" }}
+  positions={[
+    { actor: "Lab safety teams", position: "Strongly positive", estimate: "80-90% positive", confidence: "high" },
+    { actor: "80,000 Hours", position: "Positive (especially safety roles)", estimate: "70% positive", confidence: "medium" },
+    { actor: "Many AI safety researchers", position: "Depends on role and lab", estimate: "40-60%", confidence: "medium" },
+    { actor: "Some pause advocates", position: "Net negative", estimate: "20-30% positive", confidence: "medium" },
+  ]}
+/>
+
+**Advantages:**
+- **Direct access:** Work with frontier models
+- **Inside influence:** Shape decisions at critical points
+- **Speed:** Immediate impact on deployed systems
+- **Resources:** Well-funded, high-quality infrastructure
+
+**Disadvantages:**
+- **Complicity:** May advance capabilities
+- **Limited influence:** May not actually shape major decisions
+- **Competitive pressure:** Safety may be overridden
+- **Normalization:** Makes risky development seem acceptable
+
+### 2. Shareholder Activism
+
+**Goal:** Use investor influence to push for safety commitments.
+
+**Mechanisms:**
+
+**Shareholder Resolutions:**
+- File proposals for safety measures
+- Vote at annual meetings
+- Engage management privately
+
+**Divestment Threats:**
+- Conditional investment on safety
+- Public pressure campaigns
+- Coordinated investor action
+
+**Board Representation:**
+- Safety-conscious board members
+- Governance structures for oversight
+- Independent safety committees
+
+**Current Status:**
+- Limited application so far
+- Most frontier labs are private (Anthropic, OpenAI, Mistral)
+- Google/Microsoft are publicly traded but AI is small part
+- More relevant as labs go public or raise public capital
+
+**Examples:**
+- **OpenAI governance crisis (Nov 2023):** Board attempted to fire Sam Altman, citing safety concerns; investor pressure led to reinstatement and board reconstitution
+  - Demonstrated: Investors have power
+  - Also showed: Safety concerns can be overridden by commercial interests
+
+**Theory of change:** Investor pressure → management takes safety seriously → better practices
+
+**Tractability:**
+- **Low currently:** Most labs are private
+- **Medium term:** More labs may go public
+- **Challenges:** Investors prioritize returns, not safety
+
+**Who can do this:**
+- Investors and fund managers
+- Pension funds with large holdings
+- Coordinated shareholder groups
+- Organizations advising investors
+
+### 3. Whistleblowing and Transparency
+
+**Goal:** Expose dangerous practices and create accountability through transparency.
+
+**Mechanisms:**
+
+**Internal Whistleblowing:**
+- Report safety violations internally
+- Escalate to board or leadership
+- Document concerns
+
+**External Whistleblowing:**
+- Media disclosures
+- Regulatory reporting
+- Public statements
+
+**Protection Needed:**
+- Legal protection for whistleblowers
+- Retaliation penalties for labs
+- Anonymous reporting channels
+
+**Recent Examples:**
+
+**OpenAI (2024):**
+- Multiple safety researchers resigned (Jan Leike, Ilya Sutskever, others)
+- Jan Leike tweet: "Safety culture has taken a backseat to shiny products"
+- Current/former employees wrote open letter about lack of whistleblower protection
+- Some NDAs included aggressive non-disparagement clauses
+
+**Google/DeepMind:**
+- Some researchers expressed concerns about DeepMind-Google merger effects
+- Timnit Gebru firing controversy (2020) - ethics researcher
+
+**Theory of change:** Transparency → accountability → better behavior by labs + regulatory pressure
+
+**Effectiveness:**
+- **Moderate:** Can create public pressure
+- **Risky:** Career consequences for whistleblower
+- **Uncertain:** May not change lab behavior
+
+**Legal Landscape:**
+- Currently weak whistleblower protection for AI
+- Some advocacy for stronger protections
+- NDAs and non-disparagement clauses limit speech
+
+<EstimateBox
+  client:load
+  variable="Value of Whistleblower Protections"
+  description="How much would strong whistleblower protections reduce x-risk?"
+  unit="percentage points"
+  estimates={[
+    { source: "Optimistic", value: "5-15%", notes: "Transparency enables oversight; prevents worst practices" },
+    { source: "Moderate", value: "2-5%", notes: "Helps but insufficient alone; needs enforcement" },
+    { source: "Pessimistic", value: "0.5-2%", notes: "Labs can continue risky work even if exposed" },
+  ]}
+/>
+
+**Who should consider this:**
+- Employees at labs who observe dangerous practices
+- Lawyers advocating for protections
+- Journalists covering AI
+- Regulators building reporting systems
+
+### 4. Safety Culture Advocacy
+
+**Goal:** Shape norms and culture within labs toward prioritizing safety.
+
+**Approaches:**
+
+**Internal Advocacy:**
+- Safety-conscious employees push for change
+- Build coalitions within companies
+- Participate in policy discussions
+- Influence hiring and promotion
+
+**Public Commitments:**
+- Labs make public safety pledges
+- **Frontier AI Safety Commitments** (post-Seoul Summit 2024):
+  - OpenAI, Anthropic, DeepMind, and others committed to:
+  - Safety testing before deployment
+  - Information sharing on risks
+  - Third-party evaluation access
+
+**Responsible Scaling Policies:**
+- **Anthropic's RSP:** IF capabilities reach level X, THEN safeguards Y
+- Defines AI Safety Levels (ASL-1 through ASL-5)
+- Other labs developing similar frameworks
+- Creates accountability structure
+
+**Industry Groups:**
+- **Partnership on AI:** Multi-stakeholder organization
+- **Frontier Model Forum:** Industry coordination
+- Standard-setting and best practices
+
+**Theory of change:** Cultural change → safety becomes priority → better decisions throughout org
+
+**Effectiveness:**
+- **Uncertain:** Culture is hard to measure and change
+- **Slow:** Takes years to shift norms
+- **Fragile:** Can reverse quickly with leadership changes or competitive pressure
+
+**Who can do this:**
+- Employees at all levels
+- Safety team leaders
+- External advisors and board members
+- Industry organization staff
+
+### 5. Strategic Deployment Decisions
+
+**Goal:** Influence which AI systems get deployed and how.
+
+**Key Decisions:**
+
+**Release Strategies:**
+- Full open source vs. closed
+- API access vs. downloadable weights
+- Gradual vs. sudden release
+- Red teaming before deployment
+
+**Capability Limitations:**
+- Refusing to build certain capabilities (bioweapons design, etc.)
+- Filtering dangerous outputs
+- Access controls for risky applications
+
+**Deployment Timing:**
+- Delay until safety measures ready
+- Pause at capability thresholds
+- Coordinate timing with other labs
+
+**Examples:**
+- **GPT-2 (2019):** OpenAI staged release over concerns (now seems quaint)
+- **GPT-4 (2023):** Extensive red-teaming, delayed release
+- **Claude 3 (2024):** Constitutional AI training
+- **Various labs:** Refusing certain military applications
+
+**Theory of change:** Better deployment decisions → dangerous capabilities controlled → reduced misuse and accident risk
+
+**Leverage points:**
+- Product managers and leadership
+- Safety teams defining ASL/RSP thresholds
+- Board members overseeing deployment
+- Regulators requiring pre-deployment testing
+
+## What Needs to Be True
+
+For corporate influence to reduce x-risk substantially:
+
+1. **Labs have sufficient control:** Can actually make safety decisions despite competitive pressure
+2. **Safety-conscious people have influence:** Their voices matter in key decisions
+3. **Good faith effort:** Labs genuinely trying to be safe, not just PR
+4. **Sufficient time:** Decisions happen with enough lead time to implement safety measures
+5. **Effectiveness of measures:** The safety practices actually work
+6. **Counterfactual impact:** Your presence changes outcomes vs. someone else in the role
+
+## Risks and Moral Hazards
+
+### Capabilities Acceleration
+**Risk:** Even safety roles accelerate capabilities development
+- Safety work makes labs seem responsible
+- Attracts talent and funding to labs
+- Provides cover for race dynamics
+
+**Mitigation:**
+- Work only at safety-focused labs
+- Avoid capabilities research
+- Advocate for pauses/coordination externally
+
+### Safety Washing
+**Risk:** Superficial safety work as PR, not substance
+- Labs use safety teams for legitimacy
+- Actual influence is minimal
+- Public misled about risk
+
+**Mitigation:**
+- Whistleblow if safety is ignored
+- Maintain external relationships
+- Be willing to quit publicly
+
+### Complicity
+**Risk:** Personal responsibility for lab actions
+- Enabling harmful deployment
+- Contributing to race dynamics
+- Moral costs
+
+**Mitigation:**
+- Red lines: Define conditions for quitting
+- Document concerns
+- Maintain external voice
+
+### Captured Perspective
+**Risk:** Inside view becomes distorted
+- Lab perspective seems more reasonable than it is
+- Social dynamics override judgment
+- Gradual normalization of risk
+
+**Mitigation:**
+- Maintain external networks
+- Regular outside perspective checks
+- Epistemic humility
+
+## Estimated Impact by Worldview
+
+### Labs Are Well-Intentioned
+**Impact: High**
+- Good-faith actors need help
+- Internal work is tractable
+- Can meaningfully improve safety
+
+### Labs Face Overwhelming Competitive Pressure
+**Impact: Low**
+- Economic forces dominate
+- Internal advocacy insufficient
+- External governance needed
+
+### Short Timelines + High Risk
+**Impact: Very High (or Very Negative)**
+- Most direct intervention on systems being built now
+- But also: Most dangerous acceleration
+- Highly context-dependent
+
+### Long Timelines
+**Impact: Medium**
+- Time for governance approaches
+- Less urgency for frontier access
+- Can work on better solutions externally
+
+## Who Should Consider This
+
+### Working at Labs
+
+**Strong fit if you:**
+- Have strong ML/engineering skills
+- Can maintain independent judgment
+- Comfortable with moral ambiguity
+- Have clear red lines and exit plan
+- Want frontier model access
+
+**Prerequisites:**
+- Technical skills competitive with top labs
+- Ability to get hired (very selective)
+- Clarity on counterfactuals
+- Support network outside lab
+
+**Less good fit if:**
+- Deeply uncomfortable with acceleration
+- Prefer clear-cut ethical situations
+- Want unambiguous positive impact
+- Risk of perspective capture
+
+### Other Corporate Influence
+
+**Shareholder Activism:**
+- Requires: wealth, finance expertise, or institutional position
+- Good for: investors concerned about AI risk
+
+**Whistleblowing:**
+- Requires: inside information, courage, legal support
+- High personal cost
+- Important public service
+
+**Culture Advocacy:**
+- Anyone at labs can contribute
+- Lower risk than whistleblowing
+- Slower and less visible impact
+
+## Career Considerations
+
+### Working at Frontier Labs
+
+**Pros:**
+- **High compensation:** $200-500K+ total comp
+- **Frontier access:** Work with most advanced AI
+- **Direct impact:** Shape actual deployed systems
+- **Career capital:** Prestigious, transferable skills
+- **Resources:** Best infrastructure and colleagues
+
+**Cons:**
+- **Moral ambiguity:** Unclear if net positive
+- **Competitive pressure:** Safety may be overridden
+- **Public criticism:** Some safety community disapproves
+- **Exit costs:** Golden handcuffs
+- **Risk of capture:** Perspective may shift
+
+### Compensation
+
+**Research Scientist:** $250-500K+
+**Research Engineer:** $180-350K
+**Policy/Safety Specialist:** $150-300K
+**Junior roles:** $120-200K
+
+(SF Bay Area, total compensation including equity)
+
+### Alternative Paths
+
+If uncertain about working at labs:
+- **Independent safety research:** Redwood, ARC, MIRI
+- **Evaluations:** METR, Apollo, AISI
+- **Policy:** Think tanks, government
+- **Activism:** Advocacy organizations
+
+## Key Organizations
+
+### Frontier Labs (by safety focus)
+
+**Higher Safety Priority:**
+- **Anthropic** - Strongest safety focus, ~30% of staff
+- **Google DeepMind** - Substantial safety team, mixed with capabilities
+
+**Medium/Unclear:**
+- **OpenAI** - In flux after Superalignment team dissolution
+- **Meta** - Smaller safety focus, more open approach
+
+**Other Players:**
+- **Mistral** (France) - Speed-focused, less safety emphasis
+- **Inflection** - Pivot to enterprise, unclear safety focus
+- **Various startups** - Usually minimal safety focus
+
+### Supporting Organizations
+
+**Advocacy:**
+- **Center for AI Safety (CAIS)** - Public advocacy, not corporate
+- **Future of Life Institute** - Advocacy and research
+
+**Shareholder/Governance:**
+- Limited current work
+- Opportunity for development
+
+**Legal/Whistleblower:**
+- Whistleblower Aid (general, some AI work)
+- ACLU (some tech cases)
+- Need more specialized support
+
+## Getting Started
+
+### If Interested in Lab Roles
+
+1. **Build technical skills:**
+   - ML engineering or research
+   - Competitive with top labs
+   - Demonstrate through publications/projects
+
+2. **Understand safety landscape:**
+   - Read Alignment Forum
+   - Take ARENA/MATS programs
+   - Form independent views
+
+3. **Network:**
+   - Attend conferences
+   - Connect with lab safety teams
+   - Get referrals
+
+4. **Clarify red lines:**
+   - What would make you quit?
+   - How will you maintain independence?
+   - What's your counterfactual?
+
+5. **Apply strategically:**
+   - Focus on safety roles at safety-focused labs
+   - Be clear about intentions
+   - Maintain outside options
+
+### If Interested in Other Corporate Influence
+
+**Shareholder activism:**
+- Build expertise in corporate governance
+- Connect with responsible investment community
+- Prepare for public markets
+
+**Transparency/Whistleblowing:**
+- Understand legal protections
+- Connect with journalists and lawyers
+- Document concerns carefully
+
+**Culture work:**
+- Join or form employee groups
+- Build coalition for safety
+- Push for institutional changes
+
+## Open Questions
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Does working at frontier labs accelerate or decelerate AI risk?",
+      positions: [
+        {
+          position: "Decelerates (net positive)",
+          confidence: "medium",
+          reasoning: "Safety teams prevent worst practices. Slower deployment. Better safety research. Alternative is less safety-conscious people in those roles.",
+          implications: "Working at labs (especially safety roles) is high impact"
+        },
+        {
+          position: "Accelerates (net negative)",
+          confidence: "medium",
+          reasoning: "Legitimizes race dynamics. Attracts talent to capabilities. Marginal safety work doesn't offset acceleration. External governance would be more effective.",
+          implications: "Avoid lab roles; work on external governance or independent research"
+        }
+      ]
+    },
+    {
+      question: "Should you quit publicly if a lab ignores safety concerns?",
+      positions: [
+        {
+          position: "Yes - public pressure is crucial",
+          confidence: "medium",
+          reasoning: "Public accountability is only check on labs. Whistleblowing can prevent disasters. Staying silent is complicit.",
+          implications: "Be prepared to resign loudly; prioritize transparency"
+        },
+        {
+          position: "No - inside influence more valuable",
+          confidence: "medium",
+          reasoning: "Lose all influence by leaving. Private advocacy more effective. Public criticism burns bridges. Can do more from inside.",
+          implications: "Stay and push internally; avoid public criticism; long-term relationship"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Complementary Interventions
+
+Corporate influence works best with:
+- **External governance:** Provides accountability backup
+- **Technical research:** Creates solutions labs can adopt
+- **Evaluations:** Independently verify lab claims
+- **Public advocacy:** Creates pressure for safety
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Frontier Labs",
+    "Safety Culture",
+    "Whistleblowing",
+    "Responsible Scaling",
+    "Shareholder Activism",
+    "Corporate Governance",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Frontier lab with strongest safety focus"
+    />
+    <EntityCard
+      id="openai"
+      category="lab"
+      title="OpenAI"
+      description="Frontier lab with contested safety record"
+    />
+    <EntityCard
+      id="deepmind"
+      category="lab"
+      title="Google DeepMind"
+      description="Frontier lab with significant safety team"
+    />
+    <EntityCard
+      id="racing-dynamics"
+      category="risk"
+      title="Racing Dynamics"
+      description="Core problem corporate influence aims to mitigate"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Working at Frontier AI Labs", url: "https://80000hours.org/career-reviews/artificial-intelligence-risk-research/#working-at-leading-ai-labs", author: "80,000 Hours" },
+  { title: "Right to Warn About Advanced Artificial Intelligence", url: "https://righttowarn.ai/", author: "Current/former OpenAI, DeepMind, Anthropic employees" },
+  { title: "Anthropic's Responsible Scaling Policy", url: "https://www.anthropic.com/news/anthropics-responsible-scaling-policy" },
+  { title: "OpenAI Governance Crisis Analysis", author: "Various", date: "2023-2024" },
+  { title: "Should You Work at a Frontier Lab?", url: "https://forum.effectivealtruism.org/topics/working-at-ai-labs", author: "EA Forum discussions" },
+]} />

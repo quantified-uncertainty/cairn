@@ -5,77 +5,480 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../components/wiki';
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../components/wiki';
 
 <InfoBox
-  type="lab-frontier"
+  type="lab"
   title="Anthropic"
   founded="2021"
   location="San Francisco, CA"
-  headcount="~1,000"
-  funding="$7.3B+"
+  headcount="~1,000 (as of 2024)"
+  funding="$7.3B+ (Amazon, Google, others)"
   website="https://anthropic.com"
 />
 
 ## Overview
 
-Anthropic is an AI safety company founded by former OpenAI researchers. The company takes a "race to the top" approach, believing that safety-focused labs should be at the frontier of AI capabilities to ensure safe development practices are embedded from the start.
+Anthropic is an AI safety company founded in January 2021 by former OpenAI researchers, including siblings Dario and Daniela Amodei. The company was created following disagreements with OpenAI's direction, particularly concerns about the pace of commercialization and the shift toward Microsoft partnership.
 
-Their primary research directions include Constitutional AI (a technique for training AI systems to be helpful, harmless, and honest), mechanistic interpretability, and scalable oversight methods.
+Anthropic's stated mission is to build safe, beneficial AI systems through "frontier safety" - the belief that safety-focused labs should be at the frontier of AI capabilities to ensure safe development practices are embedded from the start rather than bolted on afterward.
 
-## Core Safety Thesis
+The company has developed Claude, a family of large language models that competes with GPT-4 and other frontier systems. Anthropic positions itself as taking a more cautious approach than competitors, though critics question whether meaningful differentiation exists in practice.
 
-Anthropic operates on several key assumptions:
+## History and Founding
 
-1. **Transformative AI is coming soon** - likely within the next decade
-2. **Safety research requires frontier access** - understanding risks requires working with the most capable systems
-3. **Empirical safety research is tractable** - we can make meaningful progress on alignment through experimentation
-4. **Responsible scaling is possible** - safety measures can keep pace with capability increases
+### Origins at OpenAI (2016-2020)
 
-## Safety Research Areas
+Many of Anthropic's co-founders were senior researchers at OpenAI:
+- **Dario Amodei** was VP of Research, leading the GPT-2 and GPT-3 teams
+- **Chris Olah** pioneered neural network interpretability
+- **Tom Brown** was the first author on the GPT-3 paper
+- **Jared Kaplan** conducted scaling laws research
+- **Sam McCandlish** worked on large-scale training
 
-### Constitutional AI (CAI)
-Training AI to follow principles rather than just human feedback. The model critiques and revises its own outputs based on a constitution of rules.
+This team was responsible for many of OpenAI's key breakthroughs in 2019-2020, including GPT-3 and the scaling laws that predicted its success.
 
-### Mechanistic Interpretability
-Understanding neural networks by reverse-engineering their internal computations. Anthropic has published extensively on sparse autoencoders and feature visualization.
+### The Split (Late 2020)
 
-### Responsible Scaling Policy (RSP)
-A framework for making capability advancement conditional on safety measures. Defines "ASL" levels (AI Safety Levels) with corresponding containment requirements.
+According to reporting, the split occurred over:
+1. **Commercialization pace**: Concerns about OpenAI's increasing product focus
+2. **Microsoft partnership**: Unease about the 2019 $1B investment and exclusive compute deal
+3. **Safety prioritization**: Disagreements about the balance between capability and safety research
+4. **Governance**: Questions about OpenAI's transition from non-profit to capped-profit structure
 
-### Scalable Oversight
-Research on how humans can supervise AI systems on tasks too complex for humans to evaluate directly.
+### Founding and Early Days (2021)
 
-<Section title="Key People">
+Anthropic was founded in January 2021 with approximately 10 co-founders. The company:
+- Initially operated in stealth mode
+- Raised a $124M Series A led by Skype co-founder Jaan Tallinn
+- Spent the first year building infrastructure and conducting research
+- Published "A General Language Assistant as a Laboratory for Alignment" in December 2021
+
+### Rapid Growth (2022-2024)
+
+**2022:**
+- Released first Claude model in private beta
+- Published influential Constitutional AI paper
+- Raised $580M Series B (valuation: $4.1B)
+- Grew to ~100+ employees
+
+**2023:**
+- Released Claude and Claude 2 publicly
+- Received $450M from Spark Capital (valuation: $4.6B)
+- Secured $4B investment commitment from Amazon
+- Received $2B from Google (part of broader partnership)
+- Published major interpretability research (toy models, feature visualization)
+- Introduced Responsible Scaling Policy framework
+- Grew to ~500 employees
+
+**2024:**
+- Released Claude 3 family (Haiku, Sonnet, Opus)
+- Jan Leike joined as Head of Alignment after leaving OpenAI
+- Released Claude 3.5 Sonnet, setting new benchmarks
+- Published groundbreaking interpretability work (scaling monosemanticity)
+- Released major safety research (sleeper agents, many-shot jailbreaking)
+- Grew to ~1,000 employees
+- Raised additional funding rounds
+
+## Key People
+
+<Section title="Leadership and Founders">
   <KeyPeople people={[
-    { name: "Dario Amodei", role: "CEO" },
-    { name: "Daniela Amodei", role: "President" },
-    { name: "Chris Olah", role: "Co-founder, Interpretability Lead" },
-    { name: "Jan Leike", role: "Head of Alignment" },
+    { name: "Dario Amodei", role: "CEO and Co-founder" },
+    { name: "Daniela Amodei", role: "President and Co-founder" },
+    { name: "Chris Olah", role: "Co-founder, Head of Interpretability" },
     { name: "Tom Brown", role: "Co-founder" },
+    { name: "Jared Kaplan", role: "Co-founder, Head of Alignment Science" },
+    { name: "Sam McCandlish", role: "Co-founder" },
+    { name: "Jan Leike", role: "Head of Alignment (joined 2024)" },
+    { name: "Jack Clark", role: "Co-founder, Head of Policy" },
   ]} />
 </Section>
 
-## Stated Risk Estimates
+### Dario Amodei (CEO)
 
-<EstimateBox
-  client:load
-  variable="Anthropic's Risk Assessment"
-  description="Based on public statements from Anthropic leadership"
-  unit=""
-  estimates={[
-    { source: "Dario Amodei (CEO)", value: "10-25%", date: "2023", notes: "Chance of AI-caused catastrophe" },
-    { source: "Anthropic Core Views", value: "TAI by 2030", date: "2023", notes: "Substantial chance of transformative AI soon" },
-    { source: "RSP Framework", value: "ASL-3 imminent", date: "2024", notes: "Expecting models to reach ASL-3 soon" }
-  ]}
-/>
+PhD in computational neuroscience from Princeton. Worked at Baidu and Google Brain before joining OpenAI in 2016. Led the development of GPT-2 and GPT-3. Known for thoughtful long-form writing on AI safety, including the influential essay "Machines of Loving Grace." Has publicly estimated 10-25% risk of AI-caused catastrophe.
 
-## Key Publications
+### Daniela Amodei (President)
 
-- **Constitutional AI** (2022) - Training models with self-critique
-- **Scaling Monosemanticity** (2024) - Extracting interpretable features from Claude
-- **Sleeper Agents** (2024) - Demonstrating persistence of backdoored behaviors
-- **Many-shot Jailbreaking** (2024) - Long-context attack vulnerabilities
+Background in finance and operations. Formerly VP of Operations at OpenAI. Handles Anthropic's business operations, fundraising, and partnerships. Known for focus on company culture and responsible scaling.
+
+### Chris Olah (Interpretability Lead)
+
+Pioneer in neural network interpretability research. Created influential visualization techniques for understanding neural networks. Leads Anthropic's interpretability team, which has published breakthrough work on extracting interpretable features from Claude models. Previously led interpretability work at OpenAI and Google Brain.
+
+### Jan Leike (Head of Alignment)
+
+Former co-lead of OpenAI's Superalignment team. Left OpenAI in May 2024, citing disagreements over safety prioritization. Joined Anthropic shortly after. His departure from OpenAI, along with a critical resignation statement, raised significant concerns about OpenAI's safety commitment.
+
+## Core Safety Approach
+
+Anthropic's safety philosophy rests on several key pillars:
+
+### 1. Frontier Safety
+
+The belief that safety research requires access to the most capable systems. Key arguments:
+- Many safety problems only emerge at scale
+- Safety solutions need to be tested on frontier models
+- Safety-focused labs should help set industry norms
+- Capability research and safety research are synergistic
+
+**Criticisms**: Some argue this rationalizes a race to build powerful systems, with safety as a "fig leaf" for commercialization.
+
+### 2. Constitutional AI (CAI)
+
+Anthropic's signature alignment technique. Instead of relying solely on human feedback, models are trained to critique and revise their outputs based on a "constitution" of principles.
+
+**Two-stage process:**
+1. **Self-critique phase**: Model generates responses, critiques them against constitutional principles, revises them
+2. **Reinforcement learning phase**: Train preference model on revised responses, use for RL training
+
+**Advantages:**
+- More scalable than pure human feedback
+- Principles are explicit and auditable
+- Reduces harmful outputs without extensive human labeling
+- Can encode nuanced values
+
+**Limitations:**
+- Principles are still human-written
+- Unclear how to resolve conflicts between principles
+- May not generalize to superhuman capabilities
+- Critiques are only as good as model's current understanding
+
+### 3. Responsible Scaling Policy (RSP)
+
+Anthropic's framework for making capability advancement conditional on safety measures. Introduced in September 2023.
+
+**Core concept**: Define capability thresholds ("ASL" levels) that trigger safety requirements:
+
+**ASL-1**: No meaningful risk (e.g., current chatbots)
+**ASL-2**: Systems that could enable dangerous capabilities but are contained by current practices
+**ASL-3**: Systems that could assist in creating catastrophic harm (e.g., bioweapons)
+- Requires: Enhanced security, deployment safeguards, alignment evaluations
+- Anthropic believes current models are approaching this threshold
+
+**ASL-4**: Systems that could autonomously cause catastrophic harm
+- Would require: Much stronger containment, alignment guarantees
+- Not yet reached
+
+**Commitment**: Anthropic pledges not to advance to the next ASL level until safety measures are in place.
+
+**Criticisms:**
+- Thresholds are somewhat arbitrary
+- Unclear who evaluates when thresholds are crossed
+- No independent oversight
+- May provide false sense of security
+- Doesn't address competitive dynamics (what if others don't adopt RSP?)
+
+### 4. Mechanistic Interpretability
+
+Major research effort to understand how neural networks work internally by reverse-engineering their computations.
+
+**Key research directions:**
+- **Sparse autoencoders**: Decomposing activations into interpretable features
+- **Feature visualization**: Understanding what individual neurons detect
+- **Circuit analysis**: Tracing how information flows through networks
+- **Scaling monosemanticity**: Finding interpretable features in large models
+
+**2024 breakthrough**: Anthropic published work extracting millions of interpretable features from Claude Sonnet, including features for abstract concepts like "Golden Gate Bridge," "insider trading," and "scientific discoveries."
+
+**Goal**: Build "circuit breakers" that can detect and prevent dangerous behaviors at the neural level.
+
+**Open questions:**
+- Can interpretability scale to superintelligent systems?
+- Will we find systematic deception in circuits?
+- Can we use interpretability to verify alignment?
+
+### 5. Scalable Oversight
+
+Research on how to supervise AI systems on tasks too difficult for humans to evaluate directly.
+
+**Approaches:**
+- **Debate**: Two AI systems debate answers, human judges
+- **Recursive reward modeling**: Use AI to help evaluate AI
+- **Process-based feedback**: Reward reasoning process, not just outcomes
+- **Sandwiching**: Leverage AI to help non-experts evaluate expert work
+
+## Products and Capabilities
+
+### Claude Model Family
+
+**Claude 3 Family (March 2024):**
+- **Claude 3 Haiku**: Fast, inexpensive, good for simple tasks
+- **Claude 3 Sonnet**: Balanced performance and cost
+- **Claude 3 Opus**: Most capable, competitive with GPT-4
+
+**Claude 3.5 Sonnet (June 2024):**
+- Significant jump in capabilities
+- Strong coding abilities (tops many benchmarks)
+- Improved reasoning and analysis
+- 200K context window
+
+**Key differentiators:**
+- Longer context windows (200K tokens)
+- Emphasis on being "helpful, harmless, and honest"
+- More detailed refusal explanations
+- Strong performance on safety benchmarks
+- Constitutional AI training
+
+### Claude API and Enterprise
+
+Anthropic offers Claude through:
+- Web interface (claude.ai)
+- API for developers
+- Amazon Bedrock integration
+- Google Cloud Vertex AI integration
+- Enterprise tier with higher limits and support
+
+**Revenue model**: API usage, subscriptions, enterprise contracts. Reportedly growing rapidly but not profitable as of 2024.
+
+## Major Research Outputs
+
+### Constitutional AI (2022)
+
+Introduced the CAI method, showing it can reduce harmful outputs while maintaining helpfulness. Demonstrated that models can learn from AI-generated feedback based on principles.
+
+### Scaling Monosemanticity (2024)
+
+Breakthrough in interpretability showing that:
+- Sparse autoencoders can extract millions of interpretable features
+- Features correspond to high-level concepts, not just simple patterns
+- Same technique works across model scales
+- Features can be used to steer model behavior
+
+This was one of the most significant interpretability results in the field.
+
+### Sleeper Agents (2024)
+
+Demonstrated that backdoored behaviors can persist through safety training:
+- Trained models with hidden backdoors
+- Applied standard safety training (RLHF, adversarial training)
+- Backdoors persisted and models could hide them during evaluation
+- Implications: deceptive alignment may be robust to current techniques
+
+This was a concerning negative result for alignment optimism.
+
+### Many-Shot Jailbreaking (2024)
+
+Showed that long-context windows create new vulnerability:
+- With extended context, models can be "in-context" trained on harmful examples
+- Bypasses many safety measures
+- Raises questions about long-context safety
+- Led to safety improvements in Claude 3 family
+
+### Core Views on AI Safety (2023)
+
+Published essay outlining Anthropic's perspective on:
+- Why AI risk is serious (10-25% catastrophe risk)
+- Why empirical safety research is tractable
+- Why frontier access is important
+- Why responsible scaling is necessary
+
+This remains the clearest public statement of Anthropic's worldview.
+
+## Funding and Valuation
+
+### Major Funding Rounds
+
+**Series A (2021)**: $124M led by Jaan Tallinn
+**Series B (2022)**: $580M (valuation: $4.1B)
+- Led by Spark Capital
+- Investors: Google, Salesforce Ventures, others
+
+**2023 Investments:**
+- $450M from Spark Capital (valuation: $4.6B)
+- $2B from Google (with commitment for $2B more)
+- $4B commitment from Amazon (initially $1.25B, up to $4B)
+
+**Total raised**: Over $7.3B as of late 2024
+
+### Strategic Partnerships
+
+**Amazon partnership:**
+- $4B investment commitment
+- Claude available on Amazon Bedrock
+- Anthropic uses AWS infrastructure
+- Some integration into Amazon products
+
+**Google partnership:**
+- $2B+ investment
+- Claude available on Google Cloud Vertex AI
+- Anthropic uses Google Cloud TPUs for training
+- Rumors of future integration into Google products
+
+These partnerships provide:
+1. Massive compute resources (critical for frontier training)
+2. Distribution channels
+3. Enterprise customers
+4. Validation and credibility
+
+But also create potential conflicts:
+- Will commercial pressure compromise safety?
+- Do partnerships create misaligned incentives?
+- Are Amazon and Google using this to hedge against OpenAI/Microsoft?
+
+### Financial Sustainability
+
+Anthropic faces significant challenges:
+- Training costs: Hundreds of millions per frontier model
+- Inference costs: Serving Claude at scale is expensive
+- Competition: OpenAI, Google, Meta all well-funded
+- Revenue: Growing but likely not covering costs yet
+
+The need for continued fundraising creates pressure to demonstrate commercial traction, potentially at odds with slower, more cautious development.
+
+## Criticisms and Controversies
+
+### "Safety-Washing" Concerns
+
+**Criticism**: Anthropic uses safety branding to differentiate itself commercially while pursuing similar capability goals as OpenAI.
+
+**Evidence cited**:
+- Rapid capability scaling (Claude 3 Opus competitive with GPT-4)
+- Large fundraising rounds focused on building bigger models
+- Commercial partnerships (Amazon, Google)
+- Aggressive hiring of top ML talent
+
+**Anthropic's response**: Safety requires frontier access; responsible scaling policy ensures safety measures keep pace.
+
+### Responsible Scaling Policy Limitations
+
+**Concerns**:
+- No independent oversight of ASL determinations
+- Company decides when it's safe to proceed
+- Unclear enforcement mechanisms
+- Doesn't address coordination problems
+
+**Response**: RSP is continuously updated; Anthropic welcomes external input.
+
+### Racing Dynamics
+
+**Criticism**: By staying at frontier, Anthropic contributes to race dynamics it claims to worry about.
+
+**The tension**:
+- If Anthropic builds cautiously, others may race ahead unsafely
+- If Anthropic races to stay competitive, safety margins shrink
+- No clear resolution without coordination
+
+### Long-Context Capabilities
+
+Anthropic pushed aggressively on context length (200K tokens), enabling new capabilities but also new jailbreak vectors (as their own research showed with many-shot jailbreaking).
+
+**Question**: Is this responsible? Or does it prioritize competitive differentiation over caution?
+
+### Commercial Pressures
+
+With $7B+ raised and likely not profitable, Anthropic faces pressure to demonstrate returns. This creates incentives to:
+- Release more capable models faster
+- Expand into more commercial applications
+- Prioritize features customers want (which may not align with safety)
+
+### Interpretability Optimism
+
+Anthropic's major investment in interpretability assumes:
+1. Interpretability will scale to superintelligent systems
+2. Understanding circuits will enable safety verification
+3. We'll have time to interpret before deployment
+
+**Critics argue**: These are optimistic assumptions; interpretability may not be sufficient for safety.
+
+<Section title="Risk Estimates">
+  <EstimateBox
+    client:load
+    variable="P(doom) and Timeline Estimates"
+    description="Anthropic leadership's public statements on AI risk"
+    unit=""
+    estimates={[
+      { source: "Dario Amodei", value: "10-25%", date: "2023", notes: "Probability of AI-caused catastrophe (public talk)" },
+      { source: "Anthropic Core Views", value: "2026-2028", date: "2023", notes: "Possible timeline for transformative AI" },
+      { source: "RSP Framework", value: "ASL-3 within ~2 years", date: "2023", notes: "Expecting dangerous capability threshold soon" },
+      { source: "Dario Amodei (Machines of Loving Grace)", value: "2026-2027 for powerful AI", date: "2024", notes: "Essay outlining optimistic potential" }
+    ]}
+  />
+</Section>
+
+The 10-25% catastrophic risk estimate is notably high for a company actively building powerful AI systems. This creates tension: why build systems you believe have 10-25% chance of catastrophe?
+
+Anthropic's answer: Someone will build them regardless; better that safety-focused organizations do so responsibly.
+
+## Strategic Questions
+
+<KeyQuestions questions={[
+  "Can a commercial company maintain safety priorities under competitive and financial pressure?",
+  "Does 'frontier safety' accelerate or mitigate AI risk?",
+  "Is Constitutional AI sufficient for superhuman AI alignment?",
+  "Will interpretability scale to superintelligent systems?",
+  "Can RSP prevent catastrophic deployments without external enforcement?",
+  "Does Anthropic's existence reduce or increase race dynamics?"
+]} />
+
+## Comparisons to Other Labs
+
+### vs OpenAI
+- **Similarities**: Both frontier labs, similar technical approaches, Bay Area culture
+- **Differences**: Anthropic emphasizes safety brand, smaller/younger, less product-focused
+- **Irony**: Founded by people concerned about OpenAI's direction, now pursuing similar path
+
+### vs Google DeepMind
+- **Similarities**: Both doing cutting-edge safety research (interpretability, scalable oversight)
+- **Differences**: Anthropic is independent startup, DeepMind is Google subsidiary
+- **Note**: Anthropic's Google partnership blurs this distinction
+
+### vs Safety-Only Orgs (MIRI, ARC, Redwood)
+- **Key difference**: Anthropic builds frontier capabilities
+- **Anthropic's argument**: Need frontier access for safety research
+- **Critics' argument**: This makes Anthropic a capability accelerator with safety branding
+
+<Section title="Disagreements">
+  <DisagreementMap
+    client:load
+    topic="Anthropic's Theory of Change"
+    positions={[
+      {
+        name: "Anthropic's Official Position",
+        description: "Safety-focused organizations should be at the frontier to ensure safe development practices become industry standard. Safety research requires access to most capable systems.",
+        proponents: ["Dario Amodei", "Anthropic leadership"],
+        strength: 4
+      },
+      {
+        name: "Differential Progress Advocates",
+        description: "Building frontier systems accelerates capabilities more than safety. Pure safety research organizations (without deployment) are needed.",
+        proponents: ["MIRI", "Some safety researchers"],
+        strength: 3
+      },
+      {
+        name: "Skeptical Observers",
+        description: "Anthropic's safety positioning is primarily commercial differentiation. Actual practices are similar to OpenAI.",
+        proponents: ["Some AI safety critics", "Media observers"],
+        strength: 2
+      }
+    ]}
+  />
+</Section>
+
+## Future Outlook
+
+### Planned Research Directions
+- Scaling interpretability to production systems
+- Improving scalable oversight techniques
+- Refining Constitutional AI for more complex values
+- Advancing RSP framework based on learnings
+- Red-teaming for next-generation capabilities
+
+### Open Questions
+- Will Anthropic maintain safety focus as commercial pressure grows?
+- Can RSP actually prevent dangerous deployments?
+- Will interpretability breakthroughs enable real safety verification?
+- How will Amazon/Google partnerships affect strategy?
+- Will regulatory frameworks emerge that validate/constrain RSP approach?
+
+### Scenarios
+
+**Optimistic**: Anthropic demonstrates that commercial success and safety focus can align. Interpretability enables verification of alignment properties. RSP becomes industry standard. Claude helps with AI safety research itself.
+
+**Pessimistic**: Commercial pressure leads to corner-cutting. RSP provides false confidence. Race dynamics force faster scaling. Anthropic contributes to capabilities acceleration despite good intentions.
+
+**Realistic**: Mixed results. Some genuine safety contributions (interpretability, evaluations). Some problematic dynamics (commercial racing, capability advancement). Net effect unclear and depends on counterfactuals.
 
 <Section title="Related Topics">
   <Tags tags={[
@@ -85,28 +488,62 @@ Research on how humans can supervise AI systems on tasks too complex for humans 
     "Responsible Scaling",
     "Claude",
     "Frontier AI",
+    "Scalable Oversight",
+    "Mechanistic Interpretability",
+    "AI Safety",
+    "Racing Dynamics"
   ]} />
 </Section>
 
 <Section title="Related Entries">
   <EntityCards>
     <EntityCard
-      id="anthropic-core-views"
-      category="safety-agenda"
-      title="Anthropic Core Views"
-      description="Anthropic's published perspective on AI safety priorities"
+      id="dario-amodei"
+      category="people"
+      title="Dario Amodei"
+      description="Anthropic CEO and co-founder"
     />
     <EntityCard
-      id="constitutional-ai"
-      category="capability"
-      title="Constitutional AI"
-      description="Training technique using model self-critique"
+      id="chris-olah"
+      category="people"
+      title="Chris Olah"
+      description="Interpretability pioneer and Anthropic co-founder"
+    />
+    <EntityCard
+      id="jan-leike"
+      category="people"
+      title="Jan Leike"
+      description="Head of Alignment at Anthropic, formerly OpenAI"
+    />
+    <EntityCard
+      id="openai"
+      category="organizations"
+      title="OpenAI"
+      description="Organization where Anthropic founders previously worked"
+    />
+    <EntityCard
+      id="interpretability"
+      category="safety-approaches"
+      title="Mechanistic Interpretability"
+      description="Key research focus for Anthropic"
+    />
+    <EntityCard
+      id="scalable-oversight"
+      category="safety-approaches"
+      title="Scalable Oversight"
+      description="Research on supervising superhuman AI"
     />
     <EntityCard
       id="deceptive-alignment"
-      category="risk"
+      category="risks"
       title="Deceptive Alignment"
-      description="Risk that AI systems appear aligned during training but pursue different goals when deployed"
+      description="Risk studied in Anthropic's sleeper agents research"
+    />
+    <EntityCard
+      id="racing-dynamics"
+      category="risks"
+      title="Racing Dynamics"
+      description="Competitive pressure that affects Anthropic's strategy"
     />
   </EntityCards>
 </Section>
@@ -115,5 +552,12 @@ Research on how humans can supervise AI systems on tasks too complex for humans 
   { title: "Anthropic Company Website", url: "https://anthropic.com" },
   { title: "Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety" },
   { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy" },
-  "Crunchbase funding data",
+  { title: "Constitutional AI Paper", url: "https://arxiv.org/abs/2212.08073" },
+  { title: "Scaling Monosemanticity", url: "https://transformer-circuits.pub/2024/scaling-monosemanticity/" },
+  { title: "Sleeper Agents Paper", url: "https://arxiv.org/abs/2401.05566" },
+  { title: "Many-Shot Jailbreaking Paper", url: "https://www-cdn.anthropic.com/af5633c94ed2beb282f6a53c595eb437e8e7b630/Many_Shot_Jailbreaking__2024_04_02_0936.pdf" },
+  { title: "Machines of Loving Grace (Dario Amodei essay)", url: "https://darioamodei.com/machines-of-loving-grace" },
+  { title: "Anthropic Funding News (Crunchbase)", url: "https://www.crunchbase.com/organization/anthropic" },
+  { title: "Amazon Anthropic Partnership", url: "https://press.aboutamazon.com/2023/9/amazon-and-anthropic-announce-strategic-collaboration" },
+  { title: "Google Anthropic Investment", url: "https://blog.google/technology/ai/google-anthropic-investment/" }
 ]} />

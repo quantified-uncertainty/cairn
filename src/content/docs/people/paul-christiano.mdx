@@ -1,0 +1,226 @@
+---
+title: Paul Christiano
+description: Founder of ARC, creator of iterated amplification and AI safety via debate
+sidebar:
+  order: 2
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, DisagreementMap, EstimateBox } from '../../../components/wiki';
+
+<InfoBox
+  type="researcher"
+  title="Paul Christiano"
+  affiliation="Alignment Research Center (ARC)"
+  role="Founder"
+  knownFor="Iterated amplification, AI safety via debate, scalable oversight"
+  website="https://alignment.org"
+/>
+
+## Background
+
+Paul Christiano is one of the most influential researchers in AI alignment, known for developing concrete, empirically testable approaches to the alignment problem. He has a background in theoretical computer science (PhD from UC Berkeley) and has worked at both OpenAI and DeepMind before founding the Alignment Research Center.
+
+His work is characterized by:
+- Focus on "prosaic" alignment (aligning AI without exotic breakthroughs)
+- Emphasis on scalable oversight mechanisms
+- Concrete, implementable proposals
+- Formal analysis of alignment problems
+- Pragmatic approach to near-term alignment work
+
+## Key Contributions
+
+### Iterated Amplification and Distillation (IDA)
+
+Proposed in 2018, IDA is a training procedure where:
+1. A human overseer works with an AI assistant to solve hard problems
+2. The human+AI system's behavior is distilled into a new AI
+3. This process iterates, creating increasingly capable aligned systems
+
+The key insight: if we can align a weak system and use it to help us align slightly stronger systems, we can bootstrap to aligned AGI.
+
+### AI Safety via Debate
+
+Co-developed with Geoffrey Irving, this approach proposes training AI systems to:
+- Argue for different answers to questions
+- Have a human judge decide which argument is more convincing
+- Use the adversarial dynamic to surface hidden flaws
+
+The hope: debate between AIs can help humans supervise systems smarter than themselves.
+
+### Scalable Oversight Research
+
+Christiano has pioneered work on how humans can meaningfully supervise AI systems on tasks too complex for humans to evaluate directly. This includes:
+- Recursive reward modeling
+- Process-based feedback vs. outcome-based feedback
+- Eliciting latent knowledge (ELK)
+
+### Assistance Games Framework
+
+Formalized alignment as a cooperative game where the AI is uncertain about human preferences and actively seeks to learn them, rather than optimizing a fixed objective.
+
+## Views on Key Cruxes
+
+<EstimateBox
+  client:load
+  variable="Paul Christiano's Risk Assessment"
+  description="Estimates from public statements and writings"
+  unit=""
+  estimates={[
+    { source: "P(doom)", value: "~10-20%", date: "2022", notes: "Baseline existential risk from AI this century" },
+    { source: "AGI Timeline", value: "2030s-2040s", date: "2023", notes: "Median estimate for transformative AI" },
+    { source: "Alignment Difficulty", value: "Tractable but hard", date: "2023", notes: "Solvable with sustained effort but not guaranteed" }
+  ]}
+/>
+
+### Core Beliefs
+
+1. **Prosaic alignment is tractable**: We can likely align AI systems using techniques that build on current ML methods, without requiring fundamental theoretical breakthroughs
+2. **Iterative progress is possible**: We can learn from aligning weaker systems and apply those lessons to stronger ones
+3. **Scalable oversight is key**: The central challenge is supervising systems more capable than us
+4. **Moderate timelines**: Transformative AI likely in 2-3 decades, giving us time to work
+5. **Risk is significant but not overwhelming**: Takes AI risk very seriously but is more optimistic than many MIRI researchers
+
+### Where He Disagrees with Others
+
+<DisagreementMap
+  client:load
+  topic="Can we learn alignment iteratively?"
+  positions={[
+    {
+      person: "Paul Christiano",
+      position: "Yes, we can make progress on alignment by working with current systems and scaling up",
+      confidence: "medium-high",
+      reasoning: "Alignment tax should be acceptable, we can catch problems in weaker systems"
+    },
+    {
+      person: "Eliezer Yudkowsky",
+      position: "No, sharp capability jumps mean we won't get useful feedback from weaker systems",
+      confidence: "high",
+      reasoning: "Deceptive alignment, treacherous turns, alignment is anti-natural"
+    },
+    {
+      person: "Jan Leike",
+      position: "Yes, but we need to move fast as capabilities are advancing rapidly",
+      confidence: "medium",
+      reasoning: "Similar to Paul but more urgency given current pace"
+    }
+  ]}
+/>
+
+## Strategic Views
+
+### On AI Development
+
+- **Don't race recklessly**: Believes major labs should slow down if safety falls behind
+- **Coordination is valuable**: Supports efforts to coordinate between leading labs
+- **Gradual deployment**: Advocates for careful, incremental rollout of advanced systems
+- **Not calling for full pause**: Unlike some researchers, doesn't advocate stopping AI development entirely
+
+### On Research Priorities
+
+1. **Scalable oversight**: Top priority, enabling humans to supervise superhuman AI
+2. **Handling distributional shift**: Ensuring systems remain aligned in novel situations
+3. **Honesty and transparency**: Getting AI systems to truthfully report their reasoning
+4. **Preventing deception**: Detecting and preventing deceptively aligned systems
+
+### On Governance
+
+- **Cautiously optimistic about coordination**: Believes coordination between labs is possible and important
+- **Supports regulatory frameworks**: Generally supportive of thoughtful AI governance
+- **International dimension**: Concerned about dynamics between countries, not just companies
+
+## Influence and Impact
+
+### Research Impact
+- His alignment proposals (IDA, debate) have been implemented and tested at major labs
+- Inspired significant research programs at OpenAI, Anthropic, and DeepMind
+- The ELK problem has become a central focus for many alignment researchers
+
+### Organizational Impact
+- Founded ARC to work on alignment research independently
+- Previously led alignment teams at OpenAI
+- Mentored many researchers now working at frontier labs
+
+### Intellectual Leadership
+- His blog (AI Alignment Forum, LessWrong) has shaped discourse in the field
+- Regular technical agendas and problem statements guide others' research
+- Known for clear thinking and good faith engagement with disagreements
+
+## Evolution of Views
+
+Christiano's views have evolved over time:
+
+**Earlier (2016-2019):**
+- More optimistic about alignment difficulty
+- Focused heavily on IDA and debate as solutions
+- Less concerned about deceptive alignment
+
+**More recently (2020-present):**
+- Increased concern about risks
+- More focus on the ELK problem (honest reporting)
+- Greater emphasis on potential for catastrophe
+- More pessimistic about "racing to build aligned AGI"
+
+## Key Publications
+
+- **"Supervising strong learners by amplifying weak experts"** (2018) - Introduces IDA
+- **"AI safety via debate"** (2018) - Co-authored with Geoffrey Irving
+- **"Eliciting Latent Knowledge"** (2021) - The ELK report
+- **"What failure looks like"** (2019) - Influential post on gradual loss of control
+- **Numerous technical agendas** on alignment forum outlining research directions
+
+## Current Focus (as of 2024)
+
+At ARC, Christiano is focused on:
+- Understanding how AI systems could gain power gradually
+- Developing better evaluation methods for alignment
+- Working on scalable oversight techniques
+- Thinking about AI governance and coordination
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Iterated Amplification",
+    "Scalable Oversight",
+    "AI Safety via Debate",
+    "ELK",
+    "Prosaic Alignment",
+    "Recursive Reward Modeling",
+    "Deceptive Alignment",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="arc"
+      category="lab"
+      title="ARC"
+      description="Alignment Research Center, founded by Paul Christiano"
+    />
+    <EntityCard
+      id="scalable-oversight"
+      category="safety-agenda"
+      title="Scalable Oversight"
+      description="Techniques for humans to supervise superhuman AI systems"
+    />
+    <EntityCard
+      id="eliezer-yudkowsky"
+      category="researcher"
+      title="Eliezer Yudkowsky"
+      description="Researcher with more pessimistic views on alignment tractability"
+    />
+    <EntityCard
+      id="jan-leike"
+      category="researcher"
+      title="Jan Leike"
+      description="Former colleague at OpenAI, now at Anthropic"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "ARC Website", url: "https://alignment.org" },
+  { title: "Paul's Alignment Forum Posts", url: "https://www.alignmentforum.org/users/paulfchristiano" },
+  { title: "Iterated Amplification Paper", url: "https://arxiv.org/abs/1810.08575" },
+  { title: "ELK Report", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/" },
+]} />

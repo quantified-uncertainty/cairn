@@ -12,3 +12,12 @@ export { Section } from './Section';
 export { EstimateBox } from './EstimateBox';
 export { KeyQuestions } from './KeyQuestions';
 export { DisagreementMap } from './DisagreementMap';
+
+// Glossary and tooltips
+export { GlossaryTerm, GlossaryList } from './Glossary';
+
+// Comparison and visualization
+export { ComparisonTable } from './ComparisonTable';
+export { TimelineViz } from './TimelineViz';
+export { RiskDependencyGraph } from './RiskDependencyGraph';
+export { ArgumentMap } from './ArgumentMap';

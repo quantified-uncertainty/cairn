@@ -5,69 +5,670 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../components/wiki';
 
 <InfoBox
-  type="lab-frontier"
+  type="lab"
   title="OpenAI"
   founded="2015"
   location="San Francisco, CA"
-  headcount="~3,000"
-  funding="$14B+ (Microsoft)"
+  headcount="~3,000 (as of 2024)"
+  funding="$14B+ (primarily Microsoft)"
   website="https://openai.com"
 />
 
 ## Overview
 
-OpenAI is an AI research company that has become synonymous with large language models through its GPT series. Originally founded as a non-profit, it transitioned to a "capped profit" structure in 2019. OpenAI pioneered RLHF (Reinforcement Learning from Human Feedback) as a practical alignment technique.
+OpenAI is the AI research company that brought large language models into mainstream consciousness through ChatGPT. Founded in December 2015 as a non-profit with the mission to ensure artificial general intelligence benefits all of humanity, OpenAI has undergone dramatic evolution - from non-profit to "capped-profit," from research lab to product company, from openness to increasing secrecy.
 
-The company's mission is to ensure artificial general intelligence (AGI) benefits all of humanity, though its commercial success with ChatGPT has raised questions about the balance between safety research and product development.
+The company developed the GPT series that demonstrated the power of scaling language models, pioneered RLHF (Reinforcement Learning from Human Feedback) as a practical alignment technique, and created ChatGPT, the fastest-growing consumer application in history. OpenAI's trajectory has sparked intense debate about the relationship between safety, commercialization, and the race to AGI.
 
-## Core Approach
+## History and Evolution
 
-OpenAI's safety strategy has evolved over time:
+### Founding (2015)
 
-1. **Iterative deployment** - Release progressively more capable systems to learn from real-world use
-2. **RLHF alignment** - Train models to follow human preferences
-3. **Preparedness framework** - Risk assessment for frontier capabilities
-4. **Superalignment initiative** - Research program for aligning superintelligent systems
+OpenAI was founded in December 2015 by:
+- **Sam Altman** (Y Combinator president)
+- **Elon Musk** (Tesla, SpaceX)
+- **Greg Brockman** (former Stripe CTO)
+- **Ilya Sutskever** (former Google Brain researcher)
+- **Wojciech Zaremba**
+- **John Schulman**
 
-## Safety Research Areas
+**Initial structure**: Non-profit funded with ~$1B commitment from founders
+**Stated mission**: "Ensure artificial general intelligence benefits all of humanity"
+**Core principles**:
+- Openness by default (publish research)
+- Broad benefit (AGI should help everyone)
+- Long-term safety (prioritize safety over competitive advantage)
 
-### RLHF (Reinforcement Learning from Human Feedback)
-OpenAI developed and popularized RLHF, using human preference data to fine-tune language models. This became the standard technique for making LLMs helpful and harmless.
+**Early narrative**: Explicitly positioned as a counterweight to Google's AI dominance. Would remain non-profit to avoid perverse incentives from commercial pressure.
 
-### Preparedness
-A team focused on tracking and evaluating catastrophic risks from frontier models, including biosecurity, cybersecurity, and autonomous replication capabilities.
+### Early Research Era (2016-2019)
 
-### Superalignment (Disbanded 2024)
-A research program aimed at solving alignment for superintelligent systems. Leaders Jan Leike and Ilya Sutskever departed in 2024, raising concerns about OpenAI's safety commitment.
+Key developments:
+- **OpenAI Gym** (2016): Reinforcement learning benchmarks
+- **Universe** (2016): Platform for training agents on games/software
+- **Dota 2 project** (2017-2019): Reinforcement learning for complex games
+- **GPT-1** (2018): First generative pre-trained transformer, 117M parameters
+- **GPT-2** (2019): 1.5B parameters, initially withheld over misuse concerns
 
-### Red Teaming
-Extensive adversarial testing of models before deployment, including external red team partnerships.
+During this period, OpenAI pioneered many techniques that would become standard, but the models were not yet commercially significant. The organization was burning through funds faster than anticipated, creating financial pressure.
 
-<Section title="Key People">
+### Capped-Profit Transition (2019)
+
+**March 2019**: Announced creation of "OpenAI LP," a "capped-profit" company with OpenAI non-profit retaining control.
+
+**Structure:**
+- Investors/employees get returns capped at 100x (later modified)
+- Non-profit board has ultimate control
+- Excess profits return to non-profit mission
+
+**Rationale given:**
+- Need for massive capital to compete (estimated billions for AGI)
+- Can't raise sufficient funds as pure non-profit
+- Capped returns keep incentives aligned
+
+**Concerns raised:**
+- Shift from openness to commercial secrecy
+- Profit motive may compromise safety
+- "Capped" at 100x is still massive incentive
+- Precedent for further compromise
+
+### Microsoft Partnership (2019-2023)
+
+**July 2019**: $1B investment from Microsoft
+- Exclusive cloud partnership (Azure)
+- Microsoft becomes preferred partner for commercialization
+- OpenAI gains massive compute resources
+
+**January 2023**: $10B investment (reported)
+- Microsoft receives 49% of profits (up to cap)
+- Exclusive access to GPT models
+- Integration into Microsoft products (Bing, Office, GitHub Copilot)
+
+**Total Microsoft investment**: ~$13B+ as of 2024
+
+This partnership transformed OpenAI:
+- Access to compute enabled GPT-3, GPT-4 training
+- Microsoft relationship drove commercialization push
+- Increasing divergence from open/non-profit origins
+
+### GPT-3 and Scaling Era (2020)
+
+**June 2020**: GPT-3 paper published
+- 175B parameters (over 100x larger than GPT-2)
+- Few-shot learning capabilities
+- Clear demonstration of scaling laws
+
+**Impact:**
+- Validated "scaling hypothesis" - bigger models are qualitatively better
+- Sparked race to scale among all major labs
+- Made OpenAI commercially viable through API
+
+**September 2020**: GPT-3 API launch
+- First major monetization
+- Developers build applications on GPT-3
+- Raised questions about open vs. closed
+
+### ChatGPT Breakthrough (November 2022)
+
+**November 30, 2022**: ChatGPT public launch
+- Fine-tuned GPT-3.5 with RLHF and InstructGPT techniques
+- Simple chat interface
+- Free tier to drive adoption
+
+**Results:**
+- 1 million users in 5 days
+- 100 million users in 2 months (fastest-growing app ever)
+- Mainstream AI awareness exploded
+- Microsoft Bing integration accelerated
+- Triggered panic at Google and industry-wide acceleration
+
+**Significance**: ChatGPT made AI tangible to the public, changed the competitive landscape, and arguably accelerated timelines by galvanizing investment and attention.
+
+### GPT-4 and Capability Push (March 2023)
+
+**March 14, 2023**: GPT-4 released
+- Multimodal (text and images)
+- Significant capability jump
+- Longer context, better reasoning
+- Passed bar exam, SAT at high levels
+
+**GPT-4 System Card**: Detailed risk assessment
+- Acknowledged dangerous capabilities
+- Documented red teaming process
+- Described mitigations
+- Notable for transparency on risks
+
+**Concerns:**
+- Released despite known limitations in alignment
+- Competitive pressure from Google Bard accelerated timeline
+- System card revealed concerning capabilities (e.g., early signs of power-seeking in evaluations)
+
+### Governance Crisis (November 2023)
+
+The most dramatic moment in OpenAI's history:
+
+**Friday, November 17, 2023**: Board fires Sam Altman
+- Non-profit board (Ilya Sutskever, Adam D'Angelo, Tasha McCauley, Helen Toner)
+- Cited: "Not consistently candid in communications with board"
+- Specific issues remain unclear
+
+**Weekend chaos:**
+- Greg Brockman resigns in protest
+- Employees threaten mass walkout
+- Microsoft offers to hire OpenAI employees en masse
+- Pressure mounts on board
+
+**Monday, November 20**: Altman returns as CEO
+- Board replaced (except Adam D'Angelo)
+- Ilya Sutskever reverses position
+- New board: Bret Taylor (chair), Larry Summers, Adam D'Angelo
+
+**Analysis of crisis:**
+
+**Apparent motivations for firing:**
+- Safety concerns about pace of commercialization
+- Questions about Altman's candor on safety vs. capability priorities
+- Governance concerns (side projects, potential conflicts)
+- Helen Toner had published paper critical of OpenAI's approach
+
+**Why Altman returned:**
+- Employee loyalty/threatened walkout
+- Microsoft pressure
+- Investors demanded his return
+- Board lacked support
+
+**Consequences:**
+- Safety-concerned board members gone
+- Perception that commercial interests trumped safety governance
+- Question of whether board could ever check CEO power
+- Ilya Sutskever marginalized (later departed)
+- Accelerated departures of safety-focused researchers
+
+### Safety Researchers Exodus (2024)
+
+**May 2024**: Jan Leike and Ilya Sutskever depart
+- **Ilya Sutskever** (co-founder, chief scientist) resigns
+  - Co-led Superalignment team
+  - Started Safe Superintelligence Inc (SSI)
+- **Jan Leike** (Superalignment co-lead) resigns
+  - Published critical statement about OpenAI prioritizing "shiny products" over safety
+  - Joined Anthropic as Head of Alignment
+
+**August 2024**: John Schulman departs
+- Co-founder
+- Inventor of PPO algorithm (key to RLHF)
+- Joined Anthropic
+
+**Superalignment team dissolved**: 20% compute allocation never fully materialized
+
+**Pattern**: Multiple senior safety researchers cite concerns about safety prioritization when leaving.
+
+### o1 and Reasoning Models (September 2024)
+
+**September 2024**: o1 release
+- "Reasoning" model with chain-of-thought
+- Significant capability jump on math, coding, science
+- Raised concerns about hidden reasoning (can't observe chain of thought)
+
+**December 2024**: o1 full release and o3 preview
+- Further capability advancement
+- Continued rapid scaling
+
+## Key People
+
+<Section title="Current Leadership">
   <KeyPeople people={[
     { name: "Sam Altman", role: "CEO" },
-    { name: "Greg Brockman", role: "President (on leave)" },
-    { name: "Mira Murati", role: "Former CTO (departed 2024)" },
-    { name: "John Schulman", role: "Co-founder, Research (departed 2024)" },
+    { name: "Greg Brockman", role: "President (on leave as of Nov 2024)" },
+    { name: "Mira Murati", role: "Former CTO (departed Sept 2024)" },
+    { name: "Brad Lightcap", role: "COO" },
+    { name: "Bob McGrew", role: "Former Chief Research Officer (departed Sept 2024)" },
   ]} />
 </Section>
 
-## Key Publications
+<Section title="Notable Departures">
+  <KeyPeople people={[
+    { name: "Ilya Sutskever", role: "Co-founder, Chief Scientist (left May 2024)" },
+    { name: "Jan Leike", role: "Head of Alignment (left May 2024, to Anthropic)" },
+    { name: "John Schulman", role: "Co-founder (left Aug 2024, to Anthropic)" },
+    { name: "Dario Amodei", role: "Former VP Research (left 2020, founded Anthropic)" },
+  ]} />
+</Section>
 
-- **InstructGPT** (2022) - RLHF for following instructions
-- **GPT-4 System Card** (2023) - Risk assessment and mitigations
-- **Weak-to-Strong Generalization** (2023) - Superalignment research direction
-- **Preparedness Framework** (2023) - Risk evaluation methodology
+### Sam Altman (CEO)
 
-## Notable Departures (2024)
+Former president of Y Combinator. OpenAI co-founder and CEO (except for brief Nov 2023 firing). Known for:
+- Articulating AGI vision and timelines (believes AGI possible by 2025-2027)
+- Aggressive scaling and commercialization
+- Effective fundraising and partnerships
+- Political engagement (testifying to Congress, meeting world leaders)
 
-Several key safety researchers left OpenAI in 2024:
-- **Jan Leike** (to Anthropic) - Cited disagreements over safety prioritization
-- **Ilya Sutskever** (started SSI) - Co-founder, chief scientist
-- **John Schulman** (to Anthropic) - Co-founder, PPO inventor
+**Polarizing figure**:
+- Supporters: Visionary, pragmatic, effective at advancing AI progress
+- Critics: Prioritizes growth over safety, overly optimistic, conflicts of interest (side investments)
+
+Has stated belief that AGI has ~10-20% chance of going badly, but argues building it is necessary and rushing is unavoidable given competitive dynamics.
+
+### Ilya Sutskever (Former Chief Scientist)
+
+One of world's leading deep learning researchers. Former Google Brain, co-inventor of AlexNet. OpenAI co-founder.
+- Led research on GPT-2, GPT-3, GPT-4
+- Co-led Superalignment team
+- Voted to fire Sam Altman, then reversed position
+- Left May 2024 to start Safe Superintelligence Inc
+
+His departure widely seen as major loss for OpenAI's safety research and credibility.
+
+### Jan Leike (Former Head of Alignment)
+
+Led OpenAI's alignment team alongside Ilya. Worked on:
+- RLHF development
+- Scalable oversight research
+- Superalignment agenda
+
+**Resignation statement (May 2024)** was scathing:
+- "Safety culture has taken a backseat to shiny products"
+- Superalignment team's 20% compute allocation never fully realized
+- "Disagreements with leadership about the company's core priorities"
+
+Joined Anthropic shortly after, leading their alignment work.
+
+### John Schulman (Former Co-founder)
+
+Invented Proximal Policy Optimization (PPO), the algorithm underlying RLHF. Long-time OpenAI researcher and co-founder. Left August 2024 to join Anthropic, citing desire to "deepen focus on AI alignment."
+
+## Safety Approach Evolution
+
+OpenAI's safety approach has evolved significantly, with critics arguing it has weakened over time.
+
+### Original Vision (2015-2019): Openness and Caution
+
+**Principles:**
+- Publish research openly
+- Prioritize safety over competitive advantage
+- Collaborate broadly
+- Careful deployment
+
+**Example**: GPT-2 initially withheld over misuse concerns (later released after assessment)
+
+### RLHF Era (2020-2023): Iterative Deployment
+
+**Philosophy**: Deploy progressively more capable systems to learn from real-world use
+
+**Development of RLHF:**
+1. Models trained on large text corpora (pre-training)
+2. Fine-tuned on demonstrations of desired behavior
+3. Reward model trained from human preferences
+4. Policy optimized via reinforcement learning (PPO)
+
+**InstructGPT (2022)**: Demonstrated RLHF could make models more helpful and less harmful
+
+**Impact**: RLHF became the standard alignment technique, but questions remain about:
+- Does it actually align values or just align behavior?
+- Does it work on superhuman tasks?
+- Does it prevent deceptive alignment?
+
+### Preparedness Framework (2023-2024)
+
+**Announced October 2023**: Framework for tracking catastrophic risks
+
+**Risk categories:**
+- Cybersecurity
+- CBRN (Chemical, Biological, Radiological, Nuclear)
+- Persuasion
+- Model autonomy
+
+**Risk levels:**
+- Low, Medium, High, Critical
+- Thresholds defined for each category
+- Commit not to deploy/develop models above certain thresholds
+
+**Preparedness team** led by Aleksander Madry focuses on evaluations and red-teaming.
+
+**Concerns:**
+- Internal self-regulation with limited transparency
+- No independent oversight
+- Thresholds may be set too high
+- Doesn't address competitive pressure
+
+### Superalignment Initiative (2023-2024)
+
+**July 2023 announcement**: Dedicated team to solve superintelligence alignment
+- 20% of compute promised
+- 4-year timeline
+- Led by Ilya Sutskever and Jan Leike
+
+**Research directions:**
+- Weak-to-strong generalization (using weak models to supervise strong ones)
+- Scalable oversight
+- Interpretability
+
+**Results:**
+- Weak-to-strong generalization paper (Dec 2023)
+- Some progress on research agenda
+
+**Dissolution (May 2024):**
+- Both leaders departed
+- Team dissolved/integrated into other groups
+- 20% compute reportedly never fully allocated
+- Widely seen as failure of OpenAI's safety commitment
+
+### Current Status (Late 2024)
+
+**Safety approach appears to be:**
+- Preparedness framework for capability evaluations
+- Continued RLHF for deployed models
+- Red teaming before releases
+- Safety research diffused across organization
+
+**Concerns:**
+- No dedicated superalignment effort
+- Safety team departures
+- Rapid capability advancement (o1, o3)
+- Commercial pressure increasing
+
+## Products and Commercial Success
+
+### ChatGPT
+
+**Free tier**: GPT-3.5-based chat
+**ChatGPT Plus** ($20/month): GPT-4 access, higher limits
+**ChatGPT Enterprise**: Custom solutions for businesses
+
+**Impact:**
+- Over 100 million weekly active users (as of 2023)
+- Transformed public awareness of AI
+- Created new product category
+- Major revenue driver (billions annually)
+
+### GPT API
+
+Developers build on OpenAI models:
+- GPT-4, GPT-3.5 Turbo available
+- Vision capabilities
+- Function calling
+- Fine-tuning options
+
+Thousands of companies built on OpenAI API, creating lock-in and dependency.
+
+### DALL-E
+
+Image generation model:
+- DALL-E 2 (2022): High-quality image generation
+- DALL-E 3 (2023): Integrated into ChatGPT
+- Improved prompt following and safety
+
+### o1 "Reasoning" Models
+
+**o1-preview, o1-mini** (Sept 2024): Chain-of-thought reasoning
+**o1 full** (Dec 2024): Production reasoning model
+**o3** (Dec 2024): Next generation preview
+
+Significant capability jump on:
+- Mathematics (IMO problems)
+- Coding (programming competitions)
+- Science (PhD-level questions)
+- Complex reasoning tasks
+
+**Safety concerns:**
+- Hidden reasoning (can't fully observe chain of thought)
+- Greater capacity for deception
+- Capability jump may outpace safety measures
+
+### Microsoft Integration
+
+- **Bing Chat**: GPT-4 powered search
+- **Microsoft 365 Copilot**: AI assistant in Office apps
+- **GitHub Copilot**: Code completion (OpenAI Codex)
+- **Azure OpenAI Service**: Enterprise API access
+
+These integrations provide massive distribution and revenue.
+
+## Major Research Contributions
+
+### Scaling Laws (2020)
+
+Kaplan et al. paper showing predictable relationships between:
+- Model size
+- Data size
+- Compute
+- Performance
+
+Validated that scaling works, drove industry-wide race to scale.
+
+### GPT-3 (2020)
+
+Demonstrated few-shot learning and broad capabilities from scale alone. Showed language models could be useful without task-specific training.
+
+### RLHF and InstructGPT (2022)
+
+Made language models actually useful and safer by aligning to human preferences. Became standard technique across industry.
+
+### GPT-4 (2023)
+
+Multimodal, significant reasoning improvements, demonstrated continued scaling benefits.
+
+### Weak-to-Strong Generalization (2023)
+
+Superalignment research showing weak models can somewhat supervise strong models. Suggestive for alignment of superhuman AI.
+
+### o1 Reasoning (2024)
+
+Showed language models can improve via test-time compute and chain-of-thought reasoning. Major capability advancement.
+
+## Microsoft Partnership Dynamics
+
+The Microsoft relationship creates complex dynamics:
+
+**Benefits to OpenAI:**
+- ~$13B in funding
+- Massive Azure compute
+- Distribution through Microsoft products
+- Enterprise relationships
+
+**Benefits to Microsoft:**
+- Access to leading AI technology
+- Hedge against Google
+- Monetization through Azure and products
+- Potential AGI upside
+
+**Governance questions:**
+- Does Microsoft influence OpenAI decisions?
+- Would Microsoft let OpenAI pause for safety?
+- Conflict between OpenAI's mission and Microsoft's commercial interests?
+- What happens if OpenAI wants to withhold technology Microsoft wants?
+
+**November 2023 crisis revealed**: Microsoft was willing to hire entire OpenAI staff, suggesting they saw value in people/IP rather than mission alignment.
+
+## Criticisms and Controversies
+
+### Departure from Mission
+
+**Original mission**: "Ensure AGI benefits all of humanity"
+
+**Critics argue OpenAI has:**
+- Shifted from non-profit to profit-seeking
+- Moved from openness to secrecy
+- Prioritized products over safety research
+- Embraced commercial racing rather than caution
+
+**OpenAI's defense**: Staying competitive and financially viable is necessary to influence AGI development toward good outcomes.
+
+### Safety vs. Commercialization
+
+**Pattern of concerns:**
+- GPT-4 released despite known limitations
+- Superalignment team under-resourced
+- Safety researchers departing
+- o1 advanced capabilities without clear safety solutions
+
+**Jan Leike's resignation statement**: "Safety culture has taken a backseat to shiny products"
+
+**Counter-argument**: Products fund safety research; need capabilities to understand risks; RLHF is safety progress.
+
+### Governance Failure
+
+**November 2023 crisis demonstrated:**
+- Board couldn't check CEO power
+- Commercial interests override safety governance
+- Structure doesn't actually protect mission
+- Employees/investors/Microsoft have effective veto
+
+**Subsequent changes:**
+- Safety-concerned board members gone
+- New board more aligned with Altman
+- Questions about whether governance can constrain commercialization
+
+### Racing Dynamics
+
+**OpenAI has contributed to acceleration:**
+- ChatGPT sparked industry-wide race
+- Frequent releases create competitive pressure
+- Public demos and benchmarking encourage racing
+- "Deploy or fall behind" dynamic
+
+**Sam Altman's view**: Race is inevitable; better to be in front and shaping it responsibly.
+
+**Critics' view**: OpenAI created the race, then uses it to justify rushing.
+
+### Opacity and Secrecy
+
+**Shift from openness:**
+- GPT-4 architecture not disclosed
+- Training details increasingly secret
+- Safety research less published
+- Red teaming results limited
+
+**Rationale**: Competitive concerns, misuse risks
+
+**Concerns**: Can't verify safety claims, reduces external scrutiny, contradicts founding principles.
+
+### Employment Agreements
+
+**May 2024 reporting**: Former employees had restrictive non-disparagement agreements
+- Could lose vested equity for criticizing company
+- Created chilling effect on safety concerns
+- Altman claimed wasn't aware, agreements were removed
+
+Raised questions about OpenAI silencing safety concerns.
+
+<Section title="Timeline Estimates">
+  <EstimateBox
+    client:load
+    variable="AGI Timeline Estimates"
+    description="OpenAI leadership views on AGI arrival"
+    unit=""
+    estimates={[
+      { source: "Sam Altman", value: "2025-2027", date: "2023-2024", notes: "Various public statements on AGI possibility" },
+      { source: "Sam Altman", value: "10-20% catastrophic risk", date: "2023", notes: "But argues building it is necessary despite risk" },
+      { source: "Greg Brockman", value: "This decade", date: "2023", notes: "Public statements on AGI timeline" },
+      { source: "Ilya Sutskever (before departure)", value: "Sooner than most think", date: "2023", notes: "Expressed concern about rapid progress" }
+    ]}
+  />
+</Section>
+
+<KeyQuestions questions={[
+  "Can a for-profit company with commercial pressure maintain safety prioritization?",
+  "Was the capped-profit transition a necessary evil or a fundamental mission compromise?",
+  "Does RLHF actually solve alignment or just make models appear aligned?",
+  "Will OpenAI slow down if safety isn't solved, or does commercial pressure make that impossible?",
+  "What would it take for OpenAI's board to actually constrain the CEO?",
+  "Is OpenAI's theory of change (lead the race responsibly) viable or self-defeating?"
+]} />
+
+## Comparisons to Other Labs
+
+### vs Anthropic
+- **Founded by OpenAI departures** concerned about direction
+- **Similar technical approaches** (large language models, RLHF)
+- **Different branding**: OpenAI more product-focused, Anthropic emphasizes safety
+- **Irony**: Both racing to similar capabilities, questioning if differentiation is real
+
+### vs DeepMind
+- **OpenAI**: Independent but Microsoft-funded
+- **DeepMind**: Google subsidiary
+- **OpenAI**: More product-focused (ChatGPT)
+- **DeepMind**: More research-focused (though Gemini competing)
+- **Both**: Massive resources, frontier capabilities
+
+### vs Meta
+- **OpenAI**: Closed models, API/product business
+- **Meta**: Open-source models (Llama), ad-supported business
+- **Different incentives**: OpenAI protects IP, Meta benefits from open ecosystem
+
+<Section title="Disagreements">
+  <DisagreementMap
+    client:load
+    topic="OpenAI's Approach to AGI Safety"
+    positions={[
+      {
+        name: "OpenAI Leadership Position",
+        description: "Staying at the frontier and deploying iteratively is necessary to understand risks and influence AGI outcomes. Commercial success funds safety work. Racing is inevitable; better to lead responsibly.",
+        proponents: ["Sam Altman", "OpenAI leadership"],
+        strength: 4
+      },
+      {
+        name: "Concerned Departures",
+        description: "OpenAI has prioritized products over safety. Commercial pressure is incompatible with adequate safety margins. Superalignment under-resourced. Need independent safety focus.",
+        proponents: ["Jan Leike", "Ilya Sutskever (implied)", "John Schulman (implied)"],
+        strength: 4
+      },
+      {
+        name: "External Critics",
+        description: "OpenAI has fundamentally betrayed its mission. Shifted from open non-profit focused on safety to closed for-profit racing to AGI. Governance crisis showed commercial interests trump safety.",
+        proponents: ["Some AI safety researchers", "Effective altruism community members"],
+        strength: 3
+      },
+      {
+        name: "Optimists",
+        description: "OpenAI is making real progress on alignment (RLHF works). AGI will be transformatively positive. Safety concerns are overblown. Rapid progress is good.",
+        proponents: ["Some OpenAI supporters", "Accelerationists"],
+        strength: 2
+      }
+    ]}
+  />
+</Section>
+
+## Future Outlook
+
+### Trajectory
+
+**Capabilities**: Continued rapid scaling toward AGI
+- o-series reasoning models advancing quickly
+- Multimodal capabilities expanding
+- Likely GPT-5 or equivalent in 2025
+
+**Commercial**: Massive growth
+- Multi-billion dollar revenue
+- Deep Microsoft integration
+- Enterprise focus expanding
+- Potential IPO or additional funding
+
+**Safety**: Uncertain
+- Key safety leaders gone
+- Preparedness framework operational but questions about rigor
+- Commercial pressure increasing
+- Will safety concerns constrain deployment?
+
+### Scenarios
+
+**Optimistic**: OpenAI successfully balances safety and progress. RLHF and successors prove sufficient for aligning AGI. Iterative deployment catches problems. Governance improves. AGI benefits humanity.
+
+**Pessimistic**: Commercial pressure prevents adequate safety measures. Race dynamics force corners to be cut. Catastrophic deployment despite warnings. Governance can't constrain CEO. AGI goes badly.
+
+**Realistic**: Mixed outcomes. Real progress on some safety measures (RLHF, evaluations). Continued tension between safety and commercialization. Some close calls. Ultimate outcome depends on luck and future choices.
+
+### Open Questions
+
+- Will OpenAI slow down if safety isn't solved?
+- Can RLHF-style approaches scale to superintelligence?
+- Will regulatory pressure change OpenAI's approach?
+- What happens in next governance crisis?
+- Will Microsoft pressure force compromises?
+- Can OpenAI regain credibility on safety after 2024 departures?
 
 <Section title="Related Topics">
   <Tags tags={[
@@ -78,28 +679,63 @@ Several key safety researchers left OpenAI in 2024:
     "AGI",
     "Frontier AI",
     "o1",
+    "Reasoning Models",
+    "Microsoft",
+    "Governance",
+    "Racing Dynamics",
+    "Alignment Research"
   ]} />
 </Section>
 
 <Section title="Related Entries">
   <EntityCards>
     <EntityCard
-      id="rlhf"
-      category="capability"
-      title="RLHF"
-      description="Reinforcement Learning from Human Feedback alignment technique"
+      id="sam-altman"
+      category="people"
+      title="Sam Altman"
+      description="OpenAI CEO and co-founder"
     />
     <EntityCard
-      id="mesa-optimization"
-      category="risk"
-      title="Mesa-Optimization"
-      description="Risk of learned optimizers pursuing different objectives"
+      id="ilya-sutskever"
+      category="people"
+      title="Ilya Sutskever"
+      description="OpenAI co-founder and former Chief Scientist"
+    />
+    <EntityCard
+      id="jan-leike"
+      category="people"
+      title="Jan Leike"
+      description="Former OpenAI alignment lead, now at Anthropic"
     />
     <EntityCard
       id="anthropic"
-      category="lab"
+      category="organizations"
       title="Anthropic"
-      description="Safety-focused lab founded by former OpenAI researchers"
+      description="Founded by OpenAI departures, now competitor"
+    />
+    <EntityCard
+      id="interpretability"
+      category="safety-approaches"
+      title="Mechanistic Interpretability"
+      description="Safety research approach"
+    />
+    <EntityCard
+      id="scalable-oversight"
+      category="safety-approaches"
+      title="Scalable Oversight"
+      description="Supervising superhuman AI systems"
+    />
+    <EntityCard
+      id="racing-dynamics"
+      category="risks"
+      title="Racing Dynamics"
+      description="Competitive pressure driving OpenAI strategy"
+    />
+    <EntityCard
+      id="deceptive-alignment"
+      category="risks"
+      title="Deceptive Alignment"
+      description="Risk that RLHF doesn't solve"
     />
   </EntityCards>
 </Section>
@@ -107,6 +743,13 @@ Several key safety researchers left OpenAI in 2024:
 <Sources sources={[
   { title: "OpenAI Website", url: "https://openai.com" },
   { title: "OpenAI Charter", url: "https://openai.com/charter" },
+  { title: "GPT-4 System Card", url: "https://cdn.openai.com/papers/gpt-4-system-card.pdf" },
+  { title: "InstructGPT Paper", url: "https://arxiv.org/abs/2203.02155" },
   { title: "Preparedness Framework", url: "https://openai.com/safety/preparedness" },
-  "Various news reports on 2024 departures",
+  { title: "Weak-to-Strong Generalization", url: "https://arxiv.org/abs/2312.09390" },
+  { title: "Jan Leike Resignation Statement", url: "https://twitter.com/janleike/status/1791498184887095344" },
+  { title: "November 2023 Governance Crisis (reporting)", url: "https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired" },
+  { title: "Microsoft OpenAI Partnership", url: "https://blogs.microsoft.com/blog/2023/01/23/microsoftandopenaiextendpartnership/" },
+  { title: "o1 System Card", url: "https://openai.com/index/openai-o1-system-card/" },
+  { title: "OpenAI Funding History (Crunchbase)", url: "https://www.crunchbase.com/organization/openai" }
 ]} />

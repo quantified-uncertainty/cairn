@@ -1,0 +1,148 @@
+---
+title: Risk Dependency Map
+description: Interactive visualization of how AI risk factors connect
+sidebar:
+  order: 4
+---
+
+import { RiskDependencyGraph, Section, Tags } from '../../../components/wiki';
+
+This page provides an interactive visualization of how different AI risk factors relate to each other. Click on nodes to see details about each factor and its connections.
+
+## Core Argument Structure
+
+The AI existential risk argument flows through a chain of reasoning. Each node represents a key claim, and edges show logical dependencies.
+
+<RiskDependencyGraph
+  client:load
+  title="The AI X-Risk Argument Chain"
+  description="How the core claims connect: each step depends on the previous"
+  width={900}
+  height={400}
+  nodes={[
+    { id: "capabilities", label: "Transformative AI", category: "crux", description: "AI becomes powerful enough to pose existential risk" },
+    { id: "timelines", label: "Short Timelines", category: "crux", description: "Transformative AI arrives sooner rather than later" },
+    { id: "takeoff", label: "Fast Takeoff", category: "crux", description: "Transition from human-level to superhuman is rapid" },
+    { id: "goal-directed", label: "Goal-Directed", category: "crux", description: "AI pursues goals in autonomous, agentic ways" },
+    { id: "alignment-hard", label: "Alignment Hard", category: "crux", description: "Ensuring AI does what we want is fundamentally difficult" },
+    { id: "catastrophe", label: "Catastrophic", category: "outcome", description: "Misalignment leads to unrecoverable catastrophe" },
+    { id: "coordination-fail", label: "Coordination Fails", category: "crux", description: "Racing dynamics prevent safe development" },
+    { id: "x-risk", label: "X-Risk", category: "outcome", description: "Existential catastrophe occurs" },
+  ]}
+  edges={[
+    { from: "capabilities", to: "goal-directed", type: "enables", label: "enables" },
+    { from: "capabilities", to: "alignment-hard", type: "causes", label: "makes hard" },
+    { from: "timelines", to: "alignment-hard", type: "causes", label: "less time" },
+    { from: "takeoff", to: "catastrophe", type: "causes", label: "no warning" },
+    { from: "goal-directed", to: "alignment-hard", type: "causes", label: "more to align" },
+    { from: "alignment-hard", to: "catastrophe", type: "causes", label: "leads to" },
+    { from: "coordination-fail", to: "alignment-hard", type: "causes", label: "racing" },
+    { from: "catastrophe", to: "x-risk", type: "causes", label: "leads to" },
+  ]}
+/>
+
+## Detailed Risk Map
+
+A more comprehensive view showing how specific risk factors, capabilities, and potential interventions interact.
+
+<RiskDependencyGraph
+  client:load
+  title="AI Risk Factor Interactions"
+  description="Technical risks, capabilities, and intervention points"
+  width={950}
+  height={550}
+  nodes={[
+    { id: "scaling", label: "Scaling Laws", category: "capability", description: "Models improve predictably with more compute and data" },
+    { id: "agentic", label: "Agentic AI", category: "capability", description: "AI systems that take autonomous actions toward goals" },
+    { id: "situational", label: "Situational Awareness", category: "capability", description: "AI understands its context, training, and deployment" },
+    { id: "deception", label: "Deceptive Alignment", category: "risk", description: "AI behaves aligned during training but not deployment" },
+    { id: "mesa", label: "Mesa-Optimization", category: "risk", description: "AI develops internal optimization processes with different goals" },
+    { id: "instrumental", label: "Instrumental Convergence", category: "risk", description: "AI seeks power, resources, and self-preservation" },
+    { id: "reward-hack", label: "Reward Hacking", category: "risk", description: "AI optimizes reward signal rather than intended goal" },
+    { id: "interpretability", label: "Interpretability", category: "intervention", description: "Understanding what's happening inside AI models" },
+    { id: "rlhf", label: "RLHF", category: "intervention", description: "Training AI on human feedback" },
+    { id: "ai-control", label: "AI Control", category: "intervention", description: "Maintaining human control even if AI is misaligned" },
+    { id: "evals", label: "Evaluations", category: "intervention", description: "Testing AI for dangerous capabilities and behaviors" },
+    { id: "misalignment", label: "Misalignment", category: "outcome", description: "AI goals don't match human values" },
+  ]}
+  edges={[
+    { from: "scaling", to: "agentic", type: "enables" },
+    { from: "scaling", to: "situational", type: "enables" },
+    { from: "agentic", to: "instrumental", type: "causes" },
+    { from: "situational", to: "deception", type: "enables" },
+    { from: "mesa", to: "deception", type: "causes" },
+    { from: "mesa", to: "misalignment", type: "causes" },
+    { from: "instrumental", to: "misalignment", type: "causes" },
+    { from: "reward-hack", to: "misalignment", type: "causes" },
+    { from: "rlhf", to: "reward-hack", type: "mitigates" },
+    { from: "interpretability", to: "deception", type: "mitigates" },
+    { from: "interpretability", to: "mesa", type: "mitigates" },
+    { from: "ai-control", to: "misalignment", type: "mitigates" },
+    { from: "evals", to: "deception", type: "mitigates" },
+    { from: "evals", to: "instrumental", type: "mitigates" },
+  ]}
+/>
+
+## How to Read This Graph
+
+**Node Types**:
+- **Crux** (yellow): Key points of disagreement in the AI risk debate
+- **Capability** (blue): AI capabilities that enable or intensify risks
+- **Risk** (red): Potential failure modes or dangerous behaviors
+- **Intervention** (green): Safety measures and mitigations
+- **Outcome** (pink): End states (positive or negative)
+
+**Edge Types**:
+- **Causes** (solid red): One factor directly leads to another
+- **Enables** (solid blue): One factor makes another possible
+- **Requires** (solid indigo): One factor is necessary for another
+- **Mitigates** (dashed green): One factor reduces the likelihood of another
+- **Blocks** (dashed yellow): One factor prevents another
+
+## Key Insights from the Graph
+
+### Central Nodes
+
+The most connected nodes are often the most important leverage points:
+
+1. **Alignment Difficulty**: Many factors make alignment harder (capabilities, timelines, goal-directedness), and alignment failure leads directly to catastrophe.
+
+2. **Deceptive Alignment**: A critical risk that's hard to detect and could bypass many safety measures.
+
+3. **Interpretability**: A key intervention that could mitigate multiple risks.
+
+### Intervention Points
+
+The graph suggests several high-leverage intervention points:
+
+- **Interpretability research** mitigates deception and mesa-optimization
+- **AI Control** provides a defense even if alignment fails
+- **Evaluations** can detect dangerous capabilities before deployment
+- **RLHF** reduces reward hacking but doesn't solve deeper issues
+
+### Causal Chains
+
+Following the chains shows how risks propagate:
+
+1. Scaling → Agentic AI → Instrumental Convergence → Misalignment
+2. Situational Awareness → Deceptive Alignment → Misalignment
+3. Mesa-Optimization → Deceptive Alignment → Misalignment
+
+### Breaking the Chain
+
+To prevent x-risk, we need to break at least one link in the main chain:
+- Prevent transformative AI (very difficult)
+- Ensure AI isn't dangerously goal-directed (uncertain)
+- Solve alignment (the main research goal)
+- Ensure successful coordination (requires global cooperation)
+- Make misalignment non-catastrophic (AI control approach)
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Risk Mapping",
+    "Visualization",
+    "Causal Analysis",
+    "AI Safety",
+    "Interventions",
+  ]} />
+</Section>

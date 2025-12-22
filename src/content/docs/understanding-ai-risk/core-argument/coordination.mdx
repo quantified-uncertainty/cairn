@@ -1,0 +1,478 @@
+---
+title: Will We Fail to Coordinate?
+description: Will competitive dynamics prevent us from developing AI safely?
+sidebar:
+  order: 7
+---
+
+import { InfoBox, EstimateBox, DisagreementMap, KeyQuestions, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Coordination Failure"
+  customFields={[
+    { label: "Claim", value: "Competitive pressures will prevent safe AI development" },
+    { label: "Key Uncertainty", value: "Can labs, nations, and institutions coordinate?" },
+    { label: "Related To", value: "Governance, Racing Dynamics, Timelines" },
+  ]}
+/>
+
+**The core question**: Even if alignment is technically possible, will competitive pressures between labs and nations lead to racing, corner-cutting on safety, and ultimately catastrophe?
+
+This is the "social" dimension of AI risk. Even with perfect technical solutions, coordination failures could prevent their adoption.
+
+## The Coordination Failures
+
+<EstimateBox
+  client:load
+  variable="Coordination Failure Modes"
+  description="Ways coordination could fail in AI development"
+  unit=""
+  estimates={[
+    { source: "Lab Racing", value: "High Risk", notes: "Companies cut safety corners to ship first" },
+    { source: "Nation Racing", value: "High Risk", notes: "Countries deprioritize safety for strategic advantage" },
+    { source: "Proliferation", value: "Medium Risk", notes: "Dangerous capabilities spread to bad actors" },
+    { source: "Regulatory Failure", value: "High Risk", notes: "Governance can't keep up with technology" },
+    { source: "Value Disagreement", value: "Medium Risk", notes: "No consensus on what 'safe' means" },
+  ]}
+/>
+
+### The Tragedy of the Commons
+
+**The structure**:
+- Safety is a public good: everyone benefits if AI is safe
+- But safety is costly: slower development, fewer features
+- Each actor benefits by cutting corners while others are safe
+- If everyone cuts corners, everyone loses
+
+**Classic prisoner's dilemma**: Cooperation is collectively optimal, but defection is individually rational.
+
+### First-Mover Advantage
+
+**The argument**: Massive incentives to be first.
+
+**Benefits of being first**:
+- Capture market before competitors
+- Accumulate more data → better models
+- Set industry standards
+- Achieve "moat" through scale
+- Potentially achieve decisive strategic advantage
+
+**Implication**: Safety measures that slow you down feel costly, even if they're globally optimal.
+
+## Arguments for Coordination Failure
+
+### 1. History of Coordination Failures
+
+**The evidence**: Humans have repeatedly failed at similar problems.
+
+**Examples**:
+| Domain | Coordination Attempt | Result |
+|--------|---------------------|--------|
+| Nuclear weapons | Non-proliferation | Partial success, 9 countries have nukes |
+| Climate change | Paris Agreement | Insufficient, targets not met |
+| Social media | Content moderation | Largely failed |
+| Financial regulation | Basel accords | Mixed, still have crises |
+| Bioweapons | BWC treaty | Some success, but weak verification |
+
+**Key insight**: Coordination is possible but difficult and often incomplete.
+
+### 2. US-China Competition
+
+**The dynamic**: The two leading AI powers are geopolitical rivals.
+
+**The problem**:
+- Neither wants to fall behind
+- Each fears the other will defect on safety
+- Limited trust for verification
+- Different values and governance systems
+- Dual-use makes civilian/military separation hard
+
+**The parallel**: Cold War arms race, but with AI instead of nukes.
+
+**Key question**: Can rivals cooperate on existential risk?
+
+### 3. Regulatory Lag
+
+**The argument**: Government can't keep up with AI progress.
+
+**Reasons for lag**:
+- Technical complexity overwhelms regulators
+- Revolving door with industry
+- Lobbying against regulation
+- Jurisdictional fragmentation
+- Speed of AI progress
+
+**Evidence**: Current AI governance is patchwork, varies by jurisdiction, often years behind technology.
+
+### 4. Open Source and Proliferation
+
+**The dilemma**: Open source democratizes AI but spreads dangerous capabilities.
+
+**The case for open source**:
+- Prevents monopoly
+- Enables independent safety research
+- Allows broader scrutiny
+- Reduces concentration of power
+
+**The case against**:
+- Can't take back released capabilities
+- Bad actors get access
+- Can't control downstream use
+- Safety features can be removed
+
+**The meta-coordination problem**: Even if major labs agree on safety, open source efforts may not.
+
+### 5. Value Disagreement
+
+**The challenge**: No consensus on what "safe" or "aligned" means.
+
+**Disagreements**:
+- Whose values should AI reflect?
+- How much autonomy should AI have?
+- What risks are acceptable?
+- Who decides deployment?
+
+**Implication**: Even with will to coordinate, coordination on *what* is hard.
+
+<DisagreementMap
+  client:load
+  topic="Can We Coordinate on AI Safety?"
+  description="Expert views on the tractability of AI coordination"
+  spectrum={{ low: "Coordination will fail", high: "Coordination achievable" }}
+  positions={[
+    { actor: "Pessimists", position: "Will fail", estimate: "Less than 20% succeed", confidence: "medium" },
+    { actor: "MIRI", position: "Very difficult", estimate: "20-30% succeed", confidence: "medium" },
+    { actor: "Policy researchers", position: "Challenging but possible", estimate: "40-60% succeed", confidence: "medium" },
+    { actor: "Governance optimists", position: "Achievable with effort", estimate: "60-80% succeed", confidence: "medium" },
+    { actor: "Tech optimists", position: "Will figure it out", estimate: "80%+ succeed", confidence: "low" },
+  ]}
+/>
+
+## Arguments for Successful Coordination
+
+### 1. Mutual Destruction Motivates Cooperation
+
+**The argument**: Everyone loses from catastrophe, so everyone has incentive to cooperate.
+
+**The logic**:
+- AI catastrophe is bad for all actors
+- All parties know this
+- Therefore, cooperation is mutually beneficial
+- Self-interest aligns with coordination
+
+**Historical parallel**: Cold War nuclear deterrence (we didn't have nuclear war).
+
+**Counter**: This requires everyone to understand the risk. Disagreement about risk level undermines coordination.
+
+### 2. Small Number of Key Actors
+
+**The argument**: Only a few frontier labs to coordinate.
+
+**Current frontier labs**: Anthropic, OpenAI, Google DeepMind, (Meta AI, xAI, others emerging)
+
+**Advantages of small N**:
+- Easier to negotiate
+- Easier to monitor
+- Easier to build trust
+- Can make binding agreements
+
+**Historical parallel**: Nuclear non-proliferation works better with fewer players.
+
+**Counter**: More actors entering. Open source creates many actors.
+
+### 3. Visible Progress on Cooperation
+
+**The evidence**: Coordination efforts are forming.
+
+**Current efforts**:
+| Initiative | Type | Status |
+|------------|------|--------|
+| AI Safety Institutes | National | UK, US, Japan, others |
+| Bletchley Declaration | International | Signed by 28 countries |
+| Frontier Model Forum | Industry | Major labs participating |
+| RSPs / ASL | Self-regulation | Anthropic, others |
+| EU AI Act | Regulation | Implemented |
+
+**Key question**: Are these efforts sufficient?
+
+### 4. Lab Incentives Favor Safety
+
+**The argument**: Labs genuinely want safe AI, not just fast AI.
+
+**Reasons**:
+- Reputation matters
+- Liability concerns
+- Founders care about impact
+- Safety is a selling point
+- Don't want to cause catastrophe
+
+**Evidence**: Major labs all have safety teams, publish safety research.
+
+**Counter**: Competitive pressure may override internal incentives.
+
+### 5. Historical Precedents of Success
+
+**Examples of successful coordination**:
+- Ozone layer (Montreal Protocol): Banned CFCs, hole is healing
+- Smallpox eradication: Global coordination eliminated disease
+- Nuclear taboo: No use since 1945
+- Internet governance: IETF, ICANN work reasonably well
+- Aviation safety: Remarkable safety record through coordination
+
+**Key insight**: Coordination *can* work, especially when:
+- Risks are clear
+- Costs of cooperation are manageable
+- Verification is possible
+- Small number of key actors
+
+## Current Coordination Efforts
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Can major AI labs effectively coordinate on safety?",
+      positions: [
+        {
+          position: "Yes - alignment of interests enables cooperation",
+          confidence: "medium",
+          reasoning: "Labs share interest in avoiding catastrophe. Small number of frontier actors. Already seeing coordination (Frontier Model Forum, RSPs). Reputation incentives matter.",
+          implications: "Industry self-regulation can work; focus on making it robust"
+        },
+        {
+          position: "Partially - but competitive pressure will dominate",
+          confidence: "medium",
+          reasoning: "Labs may cooperate on some things but compete on capability. Voluntary commitments are weak. New entrants may not cooperate. Economic incentives ultimately dominate.",
+          implications: "Need regulation to backstop industry efforts"
+        },
+        {
+          position: "No - racing dynamics will prevent meaningful cooperation",
+          confidence: "medium",
+          reasoning: "First-mover advantage too strong. Pressure from investors, boards, nations. Safety theater rather than real safety. Will defect at critical moments.",
+          implications: "Need hard constraints (regulation, compute governance)"
+        }
+      ]
+    },
+    {
+      question: "Can US and China cooperate on AI safety?",
+      positions: [
+        {
+          position: "Yes - mutual interest in survival trumps rivalry",
+          confidence: "low",
+          reasoning: "Both countries lose from AI catastrophe. Precedent of arms control during Cold War. Track-2 diplomacy shows interest. Narrow cooperation possible even amid competition.",
+          implications: "Invest in diplomatic channels; seek narrow agreements"
+        },
+        {
+          position: "Unlikely - strategic competition prevents trust",
+          confidence: "medium",
+          reasoning: "Verification nearly impossible for AI. Each side fears other will cheat. AI is key military technology. Domestic politics in both countries oppose cooperation.",
+          implications: "Focus on defensive measures and domestic safety"
+        },
+        {
+          position: "Uncertain - depends on how competition evolves",
+          confidence: "low",
+          reasoning: "Current trajectory is negative, but could change. Crisis might create coordination opportunity. Depends heavily on political leadership.",
+          implications: "Maintain channels for cooperation; prepare for both scenarios"
+        }
+      ]
+    },
+    {
+      question: "Will governance keep pace with AI development?",
+      positions: [
+        {
+          position: "No - technology moves too fast",
+          confidence: "medium",
+          reasoning: "AI progress is exponential. Regulation takes years. Technical complexity exceeds regulator capacity. Lobbying slows regulation.",
+          implications: "Need proactive governance, not reactive. Industry self-regulation critical."
+        },
+        {
+          position: "Maybe - with institutional investment",
+          confidence: "medium",
+          reasoning: "Can build technical capacity in government. AI Safety Institutes are a start. Adaptive regulation possible. Some domains (finance) show it can work.",
+          implications: "Invest heavily in government capacity. Create agile regulatory frameworks."
+        }
+      ]
+    }
+  ]}
+/>
+
+## The Unilateral Action Problem
+
+**The question**: Even if *you* act safely, will others?
+
+| Unilateral Action Matters | Unilateral Action Is Futile |
+|---------------------------|----------------------------|
+| Set norms and standards | Others won't follow |
+| Buy time for coordination | Just delays the inevitable |
+| Demonstrate feasibility | Cedes advantage to less careful |
+| First-mover on safety creates pressure | Creates competitive disadvantage |
+| Safety leader can later help others | Unsafe leader wins the race |
+
+**The coordination dilemma**: If you unilaterally slow down for safety, you might:
+- Demonstrate that safe development is possible (positive)
+- Fall behind competitors who don't care (negative)
+- Create pressure for others to follow (positive)
+- Become irrelevant as less safe actors dominate (negative)
+
+**Strategic insight**: The value of unilateral safety depends on whether others can be brought along.
+
+## Mechanisms for Coordination
+
+### Compute Governance
+
+**The idea**: Control AI development by controlling the hardware.
+
+**Mechanisms**:
+- Export controls on advanced chips
+- Licensing requirements for large training runs
+- Monitoring of compute usage
+- International agreements on compute
+
+**Advantages**: Hardware is physical, visible, verifiable.
+
+**Challenges**: Circumvention, innovation in efficiency, international cooperation.
+
+### Responsible Scaling Policies (RSPs)
+
+**The idea**: Labs commit to specific safety requirements at capability levels.
+
+**How it works**:
+1. Define capability thresholds (ASL levels at Anthropic)
+2. Specify safety requirements for each level
+3. Don't deploy until requirements met
+4. External audit and verification
+
+**Current status**: Anthropic has RSP; others have similar frameworks.
+
+**Limitations**: Voluntary; relies on honest assessment; may not cover all risks.
+
+### International Agreements
+
+**The idea**: Nations agree on AI development rules.
+
+**Possible forms**:
+- Test ban (no systems above X capability)
+- Development limits (no autonomous weapons)
+- Mutual inspection
+- Shared safety standards
+
+**Challenges**: Verification, enforcement, US-China relations.
+
+### Domestic Regulation
+
+**The idea**: Governments regulate AI within their borders.
+
+**Examples**:
+- EU AI Act (risk-based regulation)
+- US executive order (safety requirements)
+- UK approach (principles-based)
+
+**Limitations**: Varies by jurisdiction, enforcement is hard, risk of regulatory capture.
+
+## What Would Change Your Mind?
+
+### Evidence for coordination failure:
+- Major lab breaks from safety commitments
+- US-China relations deteriorate further
+- Open source capabilities reach dangerous levels
+- Regulation fails to pass or is captured
+- Racing dynamic intensifies
+
+### Evidence for successful coordination:
+- Binding international agreement on AI safety
+- Effective compute governance implemented
+- Labs successfully enforce RSPs
+- Meaningful US-China cooperation on AI
+- Governance keeps pace with capability growth
+
+## Implications for Action
+
+### If Coordination Will Fail
+
+**Strategy**:
+- Focus on technical solutions that don't require coordination
+- Build defensive capabilities
+- Prepare for worst case
+- Reduce dependency on AI cooperation
+
+**Priority**: Technical alignment, containment, resilience
+
+### If Coordination Is Possible
+
+**Strategy**:
+- Invest heavily in diplomatic and governance efforts
+- Build institutions for cooperation
+- Create verification mechanisms
+- Foster trust between actors
+
+**Priority**: Policy, governance, institution-building
+
+### If Uncertain
+
+**Strategy**:
+- Pursue both technical and governance paths
+- Build coordination capacity while developing technical solutions
+- Seek cheap coordination wins
+- Maintain optionality
+
+**Priority**: Both technical and governance investment
+
+## The Interaction with Other Cruxes
+
+Coordination interacts with other cruxes:
+
+- **[Timelines](/understanding-ai-risk/core-argument/timelines)**: Short timelines make coordination harder.
+- **[Takeoff Speed](/understanding-ai-risk/core-argument/takeoff)**: Fast takeoff reduces time for coordination.
+- **[Alignment Difficulty](/understanding-ai-risk/core-argument/alignment-difficulty)**: If alignment is easy, less coordination needed.
+- **[Warning Signs](/understanding-ai-risk/core-argument/warning-signs)**: Warning shots might enable coordination.
+
+<Section title="Related Cruxes">
+  <EntityCards>
+    <EntityCard
+      id="timelines"
+      category="crux"
+      title="AI Timelines"
+      description="When will transformative AI arrive?"
+    />
+    <EntityCard
+      id="takeoff"
+      category="crux"
+      title="Takeoff Speed"
+      description="How fast will the transition to superhuman AI occur?"
+    />
+    <EntityCard
+      id="alignment-difficulty"
+      category="crux"
+      title="Alignment Difficulty"
+      description="How hard is it to align powerful AI systems?"
+    />
+    <EntityCard
+      id="warning-signs"
+      category="crux"
+      title="Warning Signs"
+      description="Will we get clear warning before catastrophe?"
+    />
+  </EntityCards>
+</Section>
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Coordination",
+    "Racing Dynamics",
+    "Governance",
+    "International Relations",
+    "Regulation",
+    "Game Theory",
+    "Compute Governance",
+    "RSPs",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "The Precipice", author: "Toby Ord", date: "2020", url: "https://theprecipice.com/" },
+  { title: "Governing AI", author: "Allan Dafoe et al.", date: "2023", url: "https://www.governance.ai/" },
+  { title: "Racing to the Top", author: "Anthropic", date: "2023", url: "https://www.anthropic.com/news/racing-to-the-top" },
+  { title: "International Institutions for Advanced AI", author: "GovAI", date: "2023", url: "https://www.governance.ai/research" },
+  { title: "Compute Governance and AI Safety", author: "Lennart Heim et al.", date: "2023", url: "https://www.governance.ai/post/compute-governance" },
+]} />

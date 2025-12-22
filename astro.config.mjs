@@ -33,6 +33,7 @@ export default defineConfig({
                   label: 'Knowledge Base',
                   items: [
                       { label: 'Organizations', autogenerate: { directory: 'organizations' } },
+                      { label: 'People', autogenerate: { directory: 'people' } },
                       { label: 'Capabilities', autogenerate: { directory: 'capabilities' } },
                       {
                           label: 'Risks & Failure Modes',
@@ -57,8 +58,21 @@ export default defineConfig({
                   ],
               },
               {
+                  label: 'Debates',
+                  autogenerate: { directory: 'debates' },
+              },
+              {
                   label: 'Scenarios & Analysis',
-                  autogenerate: { directory: 'analysis' },
+                  items: [
+                      { label: 'Future Scenarios', autogenerate: { directory: 'scenarios' } },
+                      { label: 'Case Studies', autogenerate: { directory: 'analysis/case-studies' } },
+                      { label: 'Interventions', autogenerate: { directory: 'analysis/interventions' } },
+                      { label: 'Other Analysis', autogenerate: { directory: 'analysis' } },
+                  ],
+              },
+              {
+                  label: 'Resources',
+                  autogenerate: { directory: 'resources' },
               },
               {
                   label: 'Guides',

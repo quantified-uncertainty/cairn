@@ -1,0 +1,592 @@
+---
+title: Field Building and Community
+description: Growing the AI safety research community and ecosystem
+sidebar:
+  order: 4
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Field Building and Community"
+  customFields={[
+    { label: "Category", value: "Meta-level intervention" },
+    { label: "Time Horizon", value: "3-10+ years" },
+    { label: "Primary Mechanism", value: "Human capital development" },
+    { label: "Key Metric", value: "Researchers produced per year" },
+    { label: "Entry Barrier", value: "Low to Medium" },
+  ]}
+/>
+
+## Overview
+
+Field-building focuses on **growing the AI safety ecosystem** rather than doing direct research or policy work. The theory is that by increasing the number and quality of people working on AI safety, we multiply the impact of all other interventions.
+
+This is a **meta-level** or **capacity-building** intervention—it doesn't directly solve the technical or governance problems, but creates the infrastructure and talent pipeline that makes solving them possible.
+
+## Theory of Change
+
+```
+Field-building programs → More capable people working on safety → More research + policy progress → Reduced x-risk
+```
+
+**Key mechanisms:**
+1. **Talent pipeline:** Train and recruit people into AI safety
+2. **Knowledge dissemination:** Spread ideas and frameworks
+3. **Community building:** Create support structures and networks
+4. **Funding infrastructure:** Direct resources to promising work
+5. **Public awareness:** Build broader support and understanding
+
+## Major Approaches
+
+### 1. Education and Training Programs
+
+**Goal:** Teach AI safety concepts and skills to potential contributors.
+
+**Key Programs:**
+
+**ARENA (AI Safety Research Engineering):**
+- 6-8 week intensive program
+- Technical ML + alignment curriculum
+- Hands-on projects and mentorship
+- ~100-200 participants/year
+- Focus: Research engineers and researchers
+- Strong track record of placement at safety orgs
+
+**MATS (ML Alignment & Theory Scholars):**
+- 3-4 month research mentorship
+- Scholars work directly with established researchers
+- ~30-50 scholars per cohort, 2-3 cohorts/year
+- Focus: Research-ready individuals
+- Many alumni join labs or start independent research
+
+**AGI Safety Fundamentals:**
+- Online course (~8 weeks)
+- Technical and Governance tracks
+- Facilitated discussion groups
+- Free and scalable
+- ~1,000+ participants total
+- Introductory, not research training
+
+**AI Safety Camp:**
+- Project-based intensive workshops
+- Teams work on specific research questions
+- Multiple camps per year globally
+- Mix of mentorship and peer collaboration
+
+**BlueDot Impact (formerly AI Safety Fundamentals):**
+- Running AGI Safety Fundamentals
+- Multiple course offerings
+- Growing to broader topics
+
+**Theory of change:** Train people in AI safety → some pursue careers → net increase in research capacity
+
+**Effectiveness considerations:**
+- **High leverage:** One good researcher can contribute for decades
+- **Uncertain conversion:** Not all trainees become AI safety researchers
+- **Counterfactual question:** Would they have entered anyway?
+- **Quality vs. quantity:** Better to train 10 excellent researchers or 100 mediocre ones?
+
+<EstimateBox
+  client:load
+  variable="Cost per Career Change"
+  description="Estimated cost to move one person into AI safety career via training programs"
+  unit="USD"
+  estimates={[
+    { source: "ARENA (successful cases)", value: "$5,000-15,000", notes: "Direct program costs per career change" },
+    { source: "MATS", value: "$20,000-40,000", notes: "Higher touch, research mentorship" },
+    { source: "AGI SF", value: "$500-2,000", notes: "Scalable but lower conversion rate" },
+  ]}
+/>
+
+**Who's doing this:**
+- ARENA (Redwood Research / independent)
+- MATS (independent, Lightcone funding)
+- BlueDot Impact
+- Various university courses and programs
+
+### 2. Public Communication and Awareness
+
+**Goal:** Increase general understanding of AI risk and build support for safety efforts.
+
+**Approaches:**
+
+**Popular Media:**
+- Podcasts (Lex Fridman, Dwarkesh Patel, 80K Hours)
+- Books (Superintelligence, The Alignment Problem, The Precipice)
+- Documentaries and videos
+- News articles and op-eds
+- Social media presence
+
+**High-Level Engagement:**
+- **Statement on AI Risk (May 2023):** Geoffrey Hinton, Yoshua Bengio, Demis Hassabis, Sam Altman, Dario Amodei signed
+  - "Mitigating the risk of extinction from AI should be a global priority"
+  - Raised public and elite awareness
+- Expert testimony to governments
+- Academic conferences and workshops
+- Industry events and presentations
+
+**Accessible Explanations:**
+- Robert Miles YouTube channel
+- AI Safety memes and infographics
+- Explainer articles
+- University lectures and courses
+
+**Theory of change:** Awareness → political will for governance + cultural shift toward safety + talent recruitment
+
+**Effectiveness:**
+- **Uncertain impact on x-risk:** Unclear if awareness translates to action
+- **Possible downsides:**
+  - AI hype and race dynamics
+  - Association with less credible narratives
+  - Backlash and polarization
+- **Possible upsides:**
+  - Political support for regulation
+  - Recruitment to field
+  - Cultural shift in labs
+
+**Who's doing this:**
+- Individual communicators (Miles, Yudkowsky, Christiano, etc.)
+- Organizations (CAIS, FLI)
+- Journalists covering AI
+- Academics doing public engagement
+
+### 3. Funding and Grantmaking
+
+**Goal:** Direct resources to high-impact work and people.
+
+**Major Funders:**
+
+**Open Philanthropy:**
+- Largest AI safety funder (~$200M+/year to AI safety)
+- Funds research orgs, policy work, field-building
+- Long-term, high-leverage focus
+- Key grants: Anthropic ($500M+), MIRI, Redwood, university centers
+
+**Survival and Flourishing Fund (SFF):**
+- ~$30-50M/year
+- Broad AI safety focus
+- Supports unconventional projects
+- Smaller grants, more experimental
+
+**Effective Altruism Funds (Long-Term Future Fund):**
+- ~$10-20M/year to AI safety
+- Small to medium grants
+- Individual researchers and projects
+- Lower bar for experimental work
+
+**Other:**
+- Founders Pledge
+- FTX Future Fund (defunct)
+- Individual donors (Vitalik Buterin, others)
+- Some government funding emerging
+
+**Grantmaking Strategies:**
+
+**Hits-based giving:**
+- Accept high failure rate for potential breakthroughs
+- Fund unconventional approaches
+- Support early-stage ideas
+
+**Ecosystem development:**
+- Fund infrastructure (ARENA, MATS, etc.)
+- Support conferences and gatherings
+- Build community spaces
+
+**Diversification:**
+- Support multiple approaches
+- Don't cluster too heavily
+- Hedge uncertainty
+
+**Theory of change:** Capital → enables people and orgs to work on AI safety → research and policy progress
+
+**Bottlenecks:**
+- **"More funding than talent":** Currently funding is less constrained than excellent people/projects
+- **Grantmaker capacity:** Limited bandwidth to evaluate proposals
+- **Risk aversion:** Tendency to fund safe bets over moonshots
+
+**Who should consider this:**
+- Program officers at foundations
+- Individual donors with wealth
+- Fund managers
+- Requires: wealth or institutional position + good judgment + network
+
+### 4. Community Building and Support
+
+**Goal:** Create infrastructure that supports AI safety work.
+
+**Activities:**
+
+**Gatherings and Conferences:**
+- EA Global (AI safety track)
+- AI Safety conferences
+- Workshops and retreats
+- Local meetups
+- Online forums (Alignment Forum, LessWrong, Discord servers)
+
+**Career Support:**
+- 80,000 Hours career advising
+- Mentorship programs
+- Job boards and hiring pipelines
+- Introductions and networking
+
+**Research Infrastructure:**
+- Alignment Forum (discussion platform)
+- ArXiv overlays and aggregation
+- Compute access programs
+- Shared datasets and benchmarks
+
+**Emotional and Social Support:**
+- Community spaces
+- Mental health resources
+- Peer support for difficult work
+- Social events
+
+**Theory of change:** Supportive community → people stay in field longer → more cumulative impact + better mental health
+
+**Challenges:**
+- **Insularity:** Echo chambers and groupthink
+- **Barrier to entry:** Can feel cliquish to newcomers
+- **Time investment:** Social events vs. object-level work
+- **Ideological narrowness:** Lack of diversity in perspectives
+
+**Who's doing this:**
+- CEA (Centre for Effective Altruism)
+- Local EA groups
+- Lightcone Infrastructure (LessWrong, Alignment Forum)
+- Individual organizers
+
+### 5. Academic Field Building
+
+**Goal:** Establish AI safety as legitimate academic field.
+
+**Approaches:**
+
+**University Centers:**
+- CHAI (UC Berkeley) - Center for Human-Compatible AI
+- FHI (Oxford) - Future of Humanity Institute (closed 2024)
+- MIT AI Safety
+- Stanford HAI (some safety work)
+- Various smaller groups
+
+**Academic Incentives:**
+- Tenure-track positions in AI safety
+- PhD programs with safety focus
+- Grants for safety research (NSF, etc.)
+- Prestigious publication venues
+- Academic conferences
+
+**Curriculum Development:**
+- AI safety courses at universities
+- Textbooks and syllabi
+- Integration into CS curriculum
+
+**Challenges:**
+- **Slow timelines:** Academic careers are 5-10 year investments
+- **Misaligned incentives:** Publish or perish vs. impact
+- **Capabilities research:** Universities also advance capabilities
+- **Brain drain:** Best people leave for industry/nonprofits
+
+**Benefits:**
+- **Legitimacy:** Academic credibility helps policy
+- **Training:** PhD pipeline
+- **Long-term research:** Can work on harder problems
+- **Geographic distribution:** Not just SF/Bay Area
+
+**Theory of change:** Academic legitimacy → more talent + more funding + political influence → field growth
+
+## What Needs to Be True
+
+For field-building to be high impact:
+
+1. **Talent is bottleneck:** More people actually means more progress (vs. "too many cooks")
+2. **Sufficient time:** Field-building is multi-year investment; need time before critical period
+3. **Quality maintained:** Growth doesn't dilute quality or focus
+4. **Absorptive capacity:** Ecosystem can integrate new people
+5. **Right people:** Recruiting those with high potential for contribution
+6. **Complementarity:** New people enable work that wouldn't happen otherwise
+
+## Risks and Considerations
+
+### Dilution Risk
+- Too many people with insufficient expertise
+- "Alignment washing" - superficial engagement
+- Noise drowns out signal
+
+**Mitigation:** Selective programs, emphasis on quality, mentorship
+
+### Information Hazards
+- Publicly discussing AI capabilities could accelerate them
+- Spreading awareness of potential attacks
+- Attracting bad actors
+
+**Mitigation:** Careful communication, expert judgment on what to share
+
+### Race Dynamics
+- Public attention accelerates AI development
+- Creates FOMO (fear of missing out)
+- Geopolitical competition
+
+**Mitigation:** Frame carefully, emphasize cooperation, private engagement
+
+### Community Problems
+- Groupthink and echo chambers
+- Lack of ideological diversity
+- Social dynamics override epistemic rigor
+- Cult-like dynamics
+
+**Mitigation:** Encourage disagreement, diverse perspectives, epistemic humility
+
+## Estimated Impact by Worldview
+
+### Long Timelines (10+ years)
+**Impact: Very High**
+- Time for field-building to compound
+- Training pays off over decades
+- Can build robust institutions
+- Best time to invest in human capital
+
+### Short Timelines (3-5 years)
+**Impact: Low-Medium**
+- Insufficient time for new people to become experts
+- Better to leverage existing talent
+- Exception: rapid deployment of already-skilled people
+
+### Optimism About Field Growth
+**Impact: High**
+- Every good researcher counts
+- Ecosystem effects are strong
+- More perspectives improve solutions
+
+### Pessimism About Field Growth
+**Impact: Low**
+- Talent bottleneck is overstated
+- Coordination costs dominate
+- Focus on existing excellent people
+
+## Who Should Consider This
+
+**Strong fit if you:**
+- Enjoy teaching, mentoring, organizing
+- Good at operations and logistics
+- Strong communication skills
+- Can evaluate talent and potential
+- Patient with long timelines
+- Value community and culture
+
+**Specific roles:**
+- **Program manager:** Run training programs (ARENA, MATS, etc.)
+- **Grantmaker:** Evaluate and fund projects
+- **Educator:** Teach courses, create content
+- **Community organizer:** Events, spaces, support
+- **Communicator:** Explain AI safety to various audiences
+
+**Backgrounds:**
+- Education / pedagogy
+- Program management
+- Operations
+- Communications
+- Community organizing
+- Content creation
+
+**Entry paths:**
+- Staff role at training program
+- Local group organizer → full-time
+- Teaching assistant → program lead
+- Communications role
+- Grantmaking entry programs
+
+**Less good fit if:**
+- Prefer direct object-level work
+- Impatient with meta-level interventions
+- Don't enjoy working with people
+- Want immediate measurable impact
+
+## Key Organizations
+
+### Training Programs
+- **ARENA** (Redwood / independent)
+- **MATS** (independent)
+- **BlueDot Impact** (running AGI Safety Fundamentals)
+- **AI Safety Camp**
+
+### Community Organizations
+- **Centre for Effective Altruism (CEA)**
+  - EAG conferences
+  - University group support
+  - Community health
+- **Lightcone Infrastructure**
+  - LessWrong, Alignment Forum
+  - Conferences and events
+  - Office spaces
+
+### Funding Organizations
+- **Open Philanthropy** (largest funder)
+- **Survival and Flourishing Fund**
+- **EA Funds - Long-Term Future Fund**
+- **Founders Pledge**
+
+### Academic Centers
+- **CHAI** (UC Berkeley)
+- **Various university groups**
+
+### Communication
+- Individual content creators
+- **Center for AI Safety (CAIS)** (public advocacy)
+- Journalists and media
+
+## Career Considerations
+
+### Pros
+- **Leveraged impact:** Enable many others
+- **People-focused:** Work with smart, motivated people
+- **Varied work:** Teaching, organizing, strategy
+- **Lower barrier:** Don't need research-level technical skills
+- **Rewarding:** See people grow and succeed
+
+### Cons
+- **Hard to measure:** Impact is indirect and delayed
+- **Meta-level:** One step removed from object-level problem
+- **Uncertain:** May not produce expected talent
+- **Community dependent:** Success depends on others
+- **Burnout risk:** Emotionally demanding
+
+### Compensation
+- **Program staff:** $60-100K
+- **Directors:** $100-150K
+- **Grantmakers:** $80-150K
+- **Community organizers:** $40-80K (often part-time)
+
+**Note:** Field-building often pays less than technical research but more than pure volunteering
+
+### Skills Development
+- Program management
+- Teaching and mentoring
+- Evaluation and judgment
+- Operations
+- Communication
+
+## Complementary Interventions
+
+Field-building enables and amplifies:
+- **Technical research:** Creates researcher pipeline
+- **Governance:** Trains policy experts
+- **Corporate influence:** Provides talent to labs
+- **All interventions:** Increases capacity across the board
+
+## Open Questions
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Is AI safety talent-constrained or idea-constrained?",
+      positions: [
+        {
+          position: "Talent-constrained",
+          confidence: "medium",
+          reasoning: "We have more ideas than people to execute them. Good researchers are bottleneck. Field-building is critical.",
+          implications: "Invest heavily in training and recruitment"
+        },
+        {
+          position: "Idea-constrained",
+          confidence: "medium",
+          reasoning: "We don't know what to work on. More people without better ideas doesn't help. Need conceptual breakthroughs first.",
+          implications: "Focus on research, not growth; be selective about field-building"
+        }
+      ]
+    },
+    {
+      question: "Should we prioritize growth or quality in field-building?",
+      positions: [
+        {
+          position: "Growth - quantity has quality of its own",
+          confidence: "low",
+          reasoning: "Bigger field attracts more talent, resources, attention. Can't predict who will contribute most. Inclusive approach.",
+          implications: "Lower barriers, scale programs, broad recruitment"
+        },
+        {
+          position: "Quality - excellence is rare and crucial",
+          confidence: "medium",
+          reasoning: "One excellent researcher worth 100 mediocre ones. Dilution risks real. Selectivity maintains standards.",
+          implications: "Highly selective programs, mentorship-heavy, focus on top talent"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Getting Started
+
+**If you want to contribute to field-building:**
+
+1. **Understand the field first:**
+   - Learn AI safety yourself
+   - Engage with community
+   - Understand current state
+
+2. **Identify your niche:**
+   - Teaching? → Develop curriculum, TA for programs
+   - Organizing? → Start local group, help with events
+   - Funding? → Learn grantmaking, advise donors
+   - Communication? → Write, make videos, explain concepts
+
+3. **Start small:**
+   - Volunteer for existing programs
+   - Organize local reading group
+   - Create content
+   - Help with events
+
+4. **Build track record:**
+   - Demonstrate impact
+   - Get feedback
+   - Iterate and improve
+
+5. **Scale up:**
+   - Apply for staff roles
+   - Launch new programs
+   - Seek funding for initiatives
+
+**Resources:**
+- CEA community-building resources
+- 80,000 Hours on field-building
+- Alignment Forum posts on field growth
+- MATS/ARENA/BlueDot as examples
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Training Programs",
+    "Community Building",
+    "Grantmaking",
+    "Public Awareness",
+    "Academic Field Building",
+    "Talent Pipeline",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="redwood"
+      category="lab"
+      title="Redwood Research"
+      description="Runs ARENA training program"
+    />
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Employs many field-building program alumni"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "ARENA Program", url: "https://www.arena.education/" },
+  { title: "MATS Program", url: "https://www.matsprogram.org/" },
+  { title: "BlueDot Impact", url: "https://www.bluedot.org/" },
+  { title: "80,000 Hours - AI Safety Community Building", url: "https://80000hours.org/articles/ai-policy-guide/" },
+  { title: "Centre for Effective Altruism", url: "https://www.centreforeffectivealtruism.org/" },
+  { title: "Open Philanthropy AI Grants", url: "https://www.openphilanthropy.org/focus/potential-risks-advanced-artificial-intelligence/" },
+]} />

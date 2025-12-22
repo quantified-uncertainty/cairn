@@ -5,71 +5,642 @@ sidebar:
   order: 10
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../components/wiki';
+import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../components/wiki';
 
 <InfoBox
-  type="lab-research"
+  type="organization"
   title="MIRI"
-  founded="2000"
+  founded="2000 (as SIAI)"
   location="Berkeley, CA"
   headcount="~20"
-  funding="~$5M/year"
+  funding="~$5M/year (donations)"
   website="https://intelligence.org"
 />
 
 ## Overview
 
-The Machine Intelligence Research Institute (MIRI) is one of the oldest AI safety organizations, founded in 2000 as the Singularity Institute for Artificial Intelligence. MIRI pioneered many foundational concepts in AI alignment, including the formalization of the alignment problem, decision theory for AI, and agent foundations research.
+The Machine Intelligence Research Institute (MIRI) is one of the oldest organizations focused on AI existential risk, founded in 2000 as the Singularity Institute for Artificial Intelligence (SIAI). For over two decades, MIRI has been at the intellectual forefront of AI alignment research, pioneering foundational concepts like instrumental convergence, the alignment problem's formalization, and agent foundations research.
 
-In recent years, MIRI shifted away from technical research toward governance work, with leadership expressing pessimism about solving alignment in time.
+MIRI occupies a unique position in AI safety: it has been consistently pessimistic about both AI timelines (expecting AGI soon) and alignment difficulty (expecting current approaches to fail). This combination has led to significant strategic shifts, from pure technical research to recent pivots toward governance and even recommendations for individual career paths away from technical work.
 
-## Historical Contributions
+The organization's trajectory - from defining the problem to technical research to strategic pessimism - provides a case study in how beliefs about tractability and timelines shape organizational strategy in AI safety.
 
-MIRI's early work established much of the conceptual vocabulary for AI safety:
+## History and Evolution
 
-- **Orthogonality Thesis**: Intelligence and goals are independent
-- **Instrumental Convergence**: Many goals share common subgoals (self-preservation, resource acquisition)
-- **Corrigibility**: The challenge of building systems that allow correction
-- **Embedded Agency**: How agents reason about themselves as part of the world
+### Origins and Founding (2000-2006)
 
-## Research Evolution
+**Founded 2000** by **Eliezer Yudkowsky** and tech entrepreneurs:
+- Originally called "Singularity Institute for Artificial Intelligence" (SIAI)
+- Mission: Work toward creation of safe artificial general intelligence
+- Inspired by I.J. Good's "intelligence explosion" and Vernor Vinge's "Singularity"
+
+**Early work:**
+- Flake-Sussman Debates (2000-2001): Early public discussions of AI risk
+- Writing on "Friendly AI" (Yudkowsky's term for aligned AGI)
+- Small organization, operating on minimal funding
+- Focused on raising awareness of AI risk (then very fringe idea)
+
+**Key intellectual contributions:**
+- Orthogonality thesis: Intelligence and goals are independent
+- Instrumental convergence: Many goals imply similar subgoals
+- Complexity of value: Human values are complex and fragile
+- Problem formalization: Making AI alignment concrete
+
+**Cultural context**: AI risk was considered science fiction by mainstream. MIRI (as SIAI) was isolated, often dismissed as fringe or apocalyptic.
+
+### Rationalist Community Building (2006-2012)
+
+**2006-2009**: Yudkowsky wrote "Sequences" on LessWrong blog
+- Over 1,000 posts on rationality, AI, cognitive science
+- Built influential rationalist community
+- Created intellectual foundation for AI safety field
+- Made AI risk arguments more rigorous and legible
+
+**Key concepts introduced:**
+- Friendly AI problem
+- Coherent Extrapolated Volition (CEV)
+- Intelligence explosion dynamics
+- Ontology identification problem
+- Value loading problem
+
+**Community impact:**
+- LessWrong became hub for rationalist community
+- Many later AI safety researchers discovered field through Sequences
+- Effective Altruism movement influenced by this community
+- Created talent pipeline for AI safety
+
+**Strategic function**: Since technical research wasn't yet tractable, community building and conceptual work were valuable contributions.
+
+### Establishment and Early Research (2012-2014)
+
+**2012**: "Facing the Intelligence Explosion" published (Luke Muehlhauser)
+**2013**: Renamed to Machine Intelligence Research Institute (MIRI)
+**Major hire**: Nate Soares becomes Executive Director (2015)
+
+**Research approach developed:**
+- **Agent foundations**: Fundamental mathematical questions about agency
+- Focus on "deconfusion" rather than empirical work
+- Long-term, pre-paradigmatic research
+- Not trying to align current systems, but understand agency itself
+
+**Rationale:**
+- AGI development still far off (they thought)
+- Need foundational understanding before technical solutions tractable
+- Current ML paradigm might not lead to AGI
+- Pure research with long time horizon
+
+**Funding**: ~$1-2M/year, primarily from tech donors
 
 ### Agent Foundations Era (2014-2020)
-Focus on fundamental mathematical questions about agency, decision theory, and logical uncertainty. Published the MIRI Research Guide and Agent Foundations sequence.
 
-### Alignment Research (2020-2023)
-Shift toward more empirical work on language models, including:
-- Eliciting Latent Knowledge (ELK)
+MIRI's most technically productive period, though results remained controversial.
+
+**Research areas:**
+
+### Logical Uncertainty
+Problem: How should agents reason about logical facts they haven't computed?
+- Logical inductors (major result)
+- Applications to self-reference and transparency
+
+### Embedded Agency
+Problem: How do agents reason when they're part of the world they're modeling?
+- Decision theory for embedded agents
+- Subsystem alignment
+- Cartesian boundary problems
+
+### Corrigibility
+Problem: How to create agents that allow themselves to be corrected or shut down?
+- Formal definitions attempted
+- Difficulty results (corrigibility is hard)
+- Interruptibility research
+
+### Decision Theory
+- Timeless decision theory (TDT)
+- Updateless decision theory (UDT)
+- Functional decision theory (FDT)
+- Applications to Newcomb-like problems
+
+**Publications:**
+- **Logical Induction paper** (Garrabrant et al., 2016) - major technical result
+- **Agent Foundations for Aligning Machine Intelligence with Human Interests** (2014)
+- **Embedded Agency** (2018) - important conceptual sequence
+- Various workshop papers and technical reports
+
+**Reception:**
+- Mixed: Some respected the mathematical rigor, others questioned relevance
+- Criticism: Too theoretical, unclear connection to actual AI systems
+- Defense: Working on hard problems that others ignore
+
+**Strategy**: "Die with dignity" - work on hard problems even if success unlikely, because they're important.
+
+### Transition Period (2020-2021)
+
+Major strategic reassessment as deep learning advanced rapidly.
+
+**Key realizations:**
+- Deep learning scaling was working (GPT-3 showed surprising capabilities)
+- AGI timelines much shorter than expected (median ~2030s, not 2050s+)
+- Agent foundations work not producing actionable results fast enough
+- Need different approach given short timelines
+
+**GPT-3 moment** (June 2020):
+- Demonstrated scaling laws
+- Language models showing broad capabilities
+- Clear path to transformative AI via scaling
+- Shortened timelines significantly
+
+**Response options:**
+1. Continue agent foundations (too slow for short timelines)
+2. Pivot to empirical ML safety work
+3. Give up on technical work, focus on governance
+4. Something else
+
+### Empirical Alignment Era (2020-2023)
+
+**Pivot**: MIRI tried working on empirical alignment with language models
+
+**Research directions explored:**
+- **Eliciting Latent Knowledge (ELK)** - ARC collaboration
+- Interpretability on language models
 - Alignment stress testing
-- Non-disclosed research (MIRI went "closed by default" in 2021)
+- Various theoretical extensions
 
-### Governance Pivot (2023-present)
-MIRI announced that technical research had not succeeded as hoped. Leadership now recommends governance careers and advocates for compute governance and international coordination.
+**Going "closed by default"** (2021):
+- MIRI stopped publishing most research
+- Rationale: Information hazards, competitive dynamics
+- Controversial decision in normally open research community
+- Reduced external visibility
 
-## Key Publications
+**Internal assessment** (not fully public):
+- Empirical work not producing breakthroughs
+- Current prosaic alignment approaches (RLHF, etc.) seem insufficient
+- Hard problems remain unsolved
+- Technical research not succeeding as hoped
 
-- **Intelligence Explosion Microeconomics** (Yudkowsky, 2013)
-- **Risks from Learned Optimization** (Hubinger et al., 2019)
-- **Agent Foundations for Aligning Machine Intelligence** (2014)
-- **Embedded Agency** sequence (2018)
+**Key belief**: Contemporary ML alignment approaches unlikely to work for superintelligence
 
-<Section title="Key People">
+### Governance Pivot (2023-Present)
+
+**2023 strategic update**: Major shift away from technical research
+
+**Nate Soares' position** (summarized from various writings):
+1. Technical alignment is not on track to be solved
+2. Timelines are short (AGI possibly by 2027-2030)
+3. Default outcome is doom (very high P(doom))
+4. No known technical path to success
+5. Therefore, only hope is governance/coordination
+
+**Recommendations:**
+- Don't enter technical alignment (unlikely to help)
+- Consider governance careers
+- Support compute governance
+- Push for international coordination
+- Advocate for pauses or slowdowns
+
+**Public communication:**
+- "There is No Fire Alarm" (old essay, still relevant)
+- Various pessimistic assessments
+- Advocacy for take safety concerns seriously
+- Support for governance approaches
+
+**Yudkowsky's increased public engagement:**
+- TIME magazine op-ed calling for international AGI moratorium
+- Various podcast appearances
+- More pessimistic public statements
+- "Die with more dignity" framing
+
+**Current state**: Small organization, reduced technical research, governance-focused messaging
+
+## Key People and Intellectual Leaders
+
+<Section title="Leadership">
   <KeyPeople people={[
-    { name: "Eliezer Yudkowsky", role: "Co-founder, Senior Researcher" },
+    { name: "Eliezer Yudkowsky", role: "Co-founder, Senior Research Fellow" },
     { name: "Nate Soares", role: "Executive Director" },
-    { name: "Evan Hubinger", role: "Former Researcher (now Anthropic)" },
     { name: "Scott Garrabrant", role: "Research Scientist" },
+    { name: "Benya Fallenstein", role: "Former Researcher" },
   ]} />
 </Section>
 
-## Current Position
+### Eliezer Yudkowsky (Co-founder)
 
-MIRI's leadership is notably pessimistic about the AI safety landscape:
+The face of MIRI and AI risk for over two decades. Autodidact, no formal credentials, yet profoundly influential.
 
-- **Timeline concerns**: Believe transformative AI is likely soon
-- **Technical pessimism**: Current alignment approaches may be insufficient
-- **Governance focus**: Now emphasize policy interventions
-- **Compute governance**: Advocate for controlling AI development via compute
+**Contributions:**
+- Founding MIRI/SIAI (2000)
+- LessWrong Sequences (2006-2009) - created rationalist community
+- Conceptual foundations of AI alignment
+- "Friendly AI" framing
+- Complexity of value, instrumental convergence, orthogonality thesis
+
+**Writing style**: Verbose, pedagogical, uses metaphors and thought experiments extensively
+
+**Evolution**:
+- Early (2000s): Optimistic about solving Friendly AI
+- Middle (2010s): "Die with dignity" - work on hard problems even if doomed
+- Recent (2020s): Very pessimistic publicly, advocates for international coordination
+
+**Current role**: Public advocate, less direct research. 2023 TIME op-ed calling for AGI moratorium had major visibility.
+
+**P(doom)**: Very high (often implies >90%), though specific number varies
+
+**Polarizing figure**:
+- Admirers: Visionary, saw AI risk decades early, rigorous thinker
+- Critics: Overconfident, too pessimistic, poor track record on specific predictions
+
+### Nate Soares (Executive Director)
+
+**Background**: Software engineer, came through rationalist community
+
+**Leadership** (2015-present):
+- Professionalized MIRI
+- Recruited technical staff
+- Oversaw agent foundations era
+- Made hard calls on strategy pivots
+
+**Public communication**: Less visible than Yudkowsky, but writes important strategic updates
+
+**Position**: Technical alignment not on track, governance is necessary, very short timelines
+
+**Style**: More measured than Yudkowsky, but similarly pessimistic about default outcomes
+
+### Scott Garrabrant
+
+**Background**: Mathematics PhD
+
+**Contributions**:
+- Lead author on Logical Induction paper
+- Significant agent foundations research
+- Innovative mathematical approaches
+
+**Status**: One of few remaining active researchers at MIRI
+
+### Notable Alumni/Collaborators
+
+**Evan Hubinger**: Former MIRI researcher, now at Anthropic
+- Mesa-optimization paper
+- Inner alignment concepts
+- Pseudoalignment risk
+
+**Paul Christiano**: Early MIRI connection, founded ARC
+- Diverged from MIRI approach (more optimistic about prosaic alignment)
+- Iterative alignment, amplification, ELK
+
+**Many others**: MIRI's intellectual influence exceeds its size. Ideas percolated through field.
+
+## Intellectual Contributions
+
+### Conceptual Foundations
+
+**Orthogonality Thesis**: Intelligence and goals are logically independent
+- Superintelligence won't automatically share human values
+- Refutes "AI will be wise" arguments
+- Foundational for understanding alignment problem
+
+**Instrumental Convergence**: Many goals imply similar subgoals
+- Self-preservation (can't achieve goals if you're destroyed)
+- Resource acquisition (more resources help achieve goals)
+- Cognitive enhancement (better thinking helps achieve goals)
+- Self-improvement
+- Explains why diverse AIs might be dangerous in similar ways
+
+**Complexity and Fragility of Value**:
+- Human values are complex, not simple
+- Value is fragile: small misspecifications lead to terrible outcomes
+- "Maximize paperclips" illustrates this
+- Refutes "it's easy to specify what we want"
+
+**Intelligence Explosion**:
+- Recursive self-improvement could lead to rapid capability gain
+- "Foom" scenario
+- Takeoff speed matters for strategy
+- Influenced debate on fast vs slow takeoff
+
+### Technical Research
+
+**Logical Induction** (2016):
+- Framework for reasoning under logical uncertainty
+- Technically sophisticated result
+- Won praise from theoretical CS community
+- Relevance to practical alignment unclear
+
+**Embedded Agency** (2018):
+- Conceptual progress on agents modeling world that contains them
+- Decision theory advances
+- Applications to transparency and robustness
+
+**Corrigibility Research**:
+- Formal definitions attempted
+- Difficulty results: corrigibility is subtle and hard
+- Informed later work on shutdown problems
+
+**Valencemap of Fun** and CEV:
+- Early work on value specification
+- Coherent Extrapolated Volition proposal
+- Recognized difficulty of pinning down human values
+
+## Strategic Positions and Beliefs
+
+### Core MIRI Worldview (Historically)
+
+1. **AGI is possible** and likely this century
+2. **Default outcome is catastrophic** (misaligned AGI destroys value)
+3. **Alignment is hard** - no easy solutions, need deep understanding
+4. **Security mindset** needed - can't rely on trial and error
+5. **Agent foundations** essential for deep understanding
+
+### Current MIRI Worldview (2023+)
+
+1. **Timelines are short** (AGI possibly 2027-2030)
+2. **Alignment has not been solved** and prosaic approaches insufficient
+3. **Technical path unclear** - may not exist with current paradigms
+4. **Governance is necessary** - need to slow down or coordinate
+5. **Default outcome is doom** - very high P(doom) without dramatic change
+
+### "Sharp Left Turn" and Related Concepts
+
+**Sharp Left Turn**: Concern that systems' capabilities could jump discontinuously
+- Training: human-level or below
+- Deployment: rapidly becomes superhuman
+- No time to align once capabilities arrive
+- Motivates "get it right first time" rather than iterative approaches
+
+**Contrast with "Prosaic AI Alignment"**:
+- **Prosaic view** (Christiano, Amodei): Iteratively align progressively more capable systems
+- **MIRI view**: May not work if capabilities jump discontinuously
+- Key crux between MIRI and organizations like Anthropic/OpenAI
+
+### Security Mindset
+
+**MIRI's emphasis**: Can't afford failures, need proofs/guarantees
+
+**Contrast with**: Iterative deployment, learning from failures
+
+**Criticism**: May be infeasible; perfect security often unattainable
+
+**Defense**: With superintelligence, one failure could be fatal
+
+### Deconfusion Methodology
+
+**Approach**: Clarify confused concepts before trying to solve problems
+
+**Examples**:
+- What is agency, formally?
+- What is a goal?
+- How should embedded agents reason?
+
+**Value**: Conceptual clarity can reveal solution paths
+
+**Limitation**: May not produce actionable results quickly
+
+## Criticisms and Controversies
+
+### Too Theoretical
+
+**Criticism**: Agent foundations work too abstract, disconnected from actual AI
+
+**Evidence**:
+- Limited uptake in mainstream ML
+- Unclear how to apply results to GPT-4 or similar
+- After 15+ years, few concrete tools for practitioners
+
+**MIRI's defense**:
+- Working on hard problems everyone else ignores
+- Pure research needs long time horizons
+- Conceptual clarity is valuable
+
+**Outcome**: MIRI itself pivoted away from agent foundations, partially validating concern
+
+### Excessive Pessimism
+
+**Criticism**: MIRI consistently too pessimistic, too soon
+
+**Evidence**:
+- High P(doom) for decades
+- "Die with dignity" framing arguably demotivating
+- May discourage productive work
+
+**MIRI's defense**:
+- Better too cautious than reckless
+- Pessimism has been vindicated (capabilities advancing rapidly, alignment not keeping up)
+- Someone needs to represent "things could go very wrong" view
+
+**Counterpoint**: Optimistic views may be more productive for attracting talent and resources
+
+### Poor Empirical Track Record
+
+**Criticism**: MIRI's specific predictions and research bets haven't panned out
+
+**Examples**:
+- Expected AGI via different paradigms (not deep learning scaling)
+- Agent foundations didn't produce practical tools
+- Empirical alignment pivot also didn't succeed (per their own assessment)
+- Various specific claims haven't held up
+
+**MIRI's defense**:
+- Research is hard; failures are normal
+- Core insights (alignment is hard, default is doom) remain valid
+- Easy to criticize in hindsight
+
+### Insularity and Opacity
+
+**Criticism**: MIRI insular, doesn't engage sufficiently with broader ML community
+
+**Evidence**:
+- Limited mainstream ML publications
+- "Closed by default" policy reduced transparency
+- Research direction set by small group with shared worldview
+- Limited external feedback
+
+**Concern**: Groupthink, missing insights from broader community
+
+**MIRI's perspective**: Mainstream doesn't understand the problem; need focused research
+
+### Governance Pivot Concerns
+
+**Criticism**: If MIRI gave up on technical research, what does that signal?
+
+**Interpretations**:
+1. **Pessimistic**: Even dedicated alignment researchers can't find path → extremely bad sign
+2. **Pragmatic**: MIRI's particular approach didn't work, but others' might
+3. **Strategic**: Given short timelines, governance is higher leverage
+
+**Community debate**: Should others follow MIRI's assessment or continue technical work?
+
+<Section title="MIRI's Estimates">
+  <EstimateBox
+    client:load
+    variable="Timeline and Risk Estimates"
+    description="MIRI leadership's assessments (approximate, based on public statements)"
+    unit=""
+    estimates={[
+      { source: "Nate Soares", value: "2027-2030 for AGI", date: "2023", notes: "Median estimate, could be sooner" },
+      { source: "Eliezer Yudkowsky", value: ">90% P(doom)", date: "2020s", notes: "Implied from various statements, not precise" },
+      { source: "MIRI leadership consensus", value: "Current approaches insufficient", date: "2023", notes: "Strategic assessment" },
+      { source: "Historical MIRI (2000s)", value: "AGI by 2050+", date: "Historical", notes: "Longer timelines in early days" }
+    ]}
+  />
+</Section>
+
+MIRI's estimates are among the most pessimistic in AI safety community. This pessimism drives their strategic pivots.
+
+<KeyQuestions questions={[
+  "If MIRI believes technical alignment is not on track, should others update similarly?",
+  "Does MIRI's agent foundations work provide valuable conceptual foundations even if not directly applicable?",
+  "Is MIRI's pessimism well-calibrated or excessive?",
+  "What does it mean that the longest-running alignment org pivoted away from technical research?",
+  "Can governance approaches succeed if technical alignment fails?",
+  "Should MIRI's assessment cause others to leave technical alignment research?"
+]} />
+
+## Influence and Legacy
+
+### Field-Building
+
+**Undeniable impact**:
+- Defined AI alignment as research area
+- Created conceptual vocabulary (instrumental convergence, corrigibility, etc.)
+- Built rationalist community that supplied talent
+- Inspired many researchers to enter field
+- Made AI risk intellectually respectable (eventually)
+
+**Talent pipeline**:
+- Many prominent safety researchers discovered field through MIRI/LessWrong
+- Ideas percolated to OpenAI, Anthropic, DeepMind
+- Effective Altruism community influenced by MIRI ideas
+
+### Conceptual Contributions
+
+Many concepts now standard in AI safety originated or were popularized by MIRI:
+- Alignment problem formalization
+- Instrumental convergence
+- Orthogonality thesis
+- Inner/outer alignment (mesa-optimization built on MIRI ideas)
+- Corrigibility
+- Value learning challenges
+
+### Cautionary Tale?
+
+MIRI's trajectory raises important questions:
+- What happens when research doesn't yield results fast enough?
+- How to handle strategic pessimism?
+- When to pivot vs persist?
+- Can pure research compete with empirical work?
+
+### Intellectual Honesty
+
+**Credit to MIRI**: Willingness to pivot based on evidence
+- Recognized agent foundations wasn't working fast enough
+- Tried empirical work when DL showed promise
+- Pivoted to governance when technical path unclear
+- Publicly stated positions rather than pretending progress
+
+**Alternative interpretation**: Shows difficulty of alignment research
+
+## Current Status and Future
+
+### Present Activities (2024)
+
+**Research**: Minimal, small team
+**Advocacy**: Governance-focused
+**Funding**: ~$5M/year, down from peak
+**Staff**: ~20 people, reduced from peak
+**Public presence**: Primarily through Yudkowsky's writing/appearances
+
+### Strategic Recommendations
+
+**MIRI's current advice** (approximately):
+- Consider governance careers over technical alignment
+- Support compute governance initiatives
+- Advocate for international coordination
+- Push for AI development slowdowns or pauses
+- Be aware that default outcome is bad
+
+### Debates About MIRI's Pivot
+
+**"MIRI is right" view**:
+- Technical alignment not on track
+- Timelines short
+- Governance is only hope
+- Others should update toward MIRI's pessimism
+
+**"MIRI is one datapoint" view**:
+- MIRI's particular approach didn't work
+- Others' approaches might work (Anthropic interpretability, ARC evaluations, etc.)
+- Continue technical work
+- Don't over-update on one organization's experience
+
+**"MIRI is wrong" view**:
+- Too pessimistic
+- Technical progress is happening (RLHF, Constitutional AI, etc.)
+- Prosaic alignment might work
+- Self-fulfilling prophecy if give up
+
+### Open Questions
+
+- Will MIRI's pessimism be vindicated or proven overly cautious?
+- Did agent foundations work contribute to long-term understanding even if not immediately applicable?
+- Should MIRI's governance pivot cause others to follow suit?
+- Was "closed by default" correct or did it reduce useful feedback?
+- What role should MIRI play going forward?
+
+<Section title="Views on MIRI's Position">
+  <DisagreementMap
+    client:load
+    topic="MIRI's Strategic Assessment"
+    positions={[
+      {
+        name: "MIRI Leadership View",
+        description: "Technical alignment not on track to be solved in time. Short timelines, high P(doom). Governance and coordination are only hope. Current prosaic approaches insufficient for superintelligence.",
+        proponents: ["Eliezer Yudkowsky", "Nate Soares", "MIRI leadership"],
+        strength: 5
+      },
+      {
+        name: "Cautiously Optimistic Technical Researchers",
+        description: "Technical progress is happening (interpretability, RLHF, evaluations). MIRI's particular approach didn't work, but others' might. Continue technical research while building governance. Longer timelines than MIRI expects.",
+        proponents: ["Many at Anthropic", "ARC", "Redwood", "Some at DeepMind"],
+        strength: 4
+      },
+      {
+        name: "Governance-Focused Agreement",
+        description: "MIRI is right that governance is critical. But not because technical work can't succeed - rather because governance is high-leverage. Need both technical and governance work.",
+        proponents: ["GovAI", "Some CAIS researchers", "Policy-focused safety community"],
+        strength: 3
+      },
+      {
+        name: "MIRI Is Too Pessimistic",
+        description: "MIRI has been consistently too pessimistic. Agent foundations was wrong bet. Current approaches (RLHF, Constitutional AI) are making progress. Pessimism is demotivating and potentially self-fulfilling.",
+        proponents: ["Some OpenAI researchers", "Optimists in EA community"],
+        strength: 2
+      }
+    ]}
+  />
+</Section>
+
+## Comparisons to Other Organizations
+
+### vs ARC (Alignment Research Center)
+- **ARC**: Evaluations + theory (ELK), more engagement with mainstream ML
+- **MIRI**: Pure theory, pivoted to governance advocacy
+- **Founded by**: Paul Christiano (ex-MIRI-adjacent)
+- **Divergence**: ARC more optimistic about prosaic alignment
+
+### vs Anthropic
+- **Anthropic**: Frontier lab doing empirical safety research
+- **MIRI**: Small org, now governance-focused
+- **Anthropic's approach**: Iterative alignment, Constitutional AI, interpretability
+- **MIRI's view**: Unlikely to work for superintelligence
+- **Many Anthropic researchers** were influenced by MIRI ideas
+
+### vs FHI (Future of Humanity Institute, closed 2024)
+- **Similarities**: Early AI risk work, academic philosophy angle
+- **Differences**: FHI broader x-risk focus, MIRI AI-specific
+- **Bostrom's Superintelligence** popularized MIRI-adjacent ideas
+
+### vs Mainstream ML Safety
+- **MIRI**: Agent foundations, governance, skeptical of prosaic approaches
+- **Mainstream**: Empirical safety research, interpretability, robustness
+- **Tension**: MIRI sees mainstream as solving wrong problems
 
 <Section title="Related Topics">
   <Tags tags={[
@@ -79,34 +650,77 @@ MIRI's leadership is notably pessimistic about the AI safety landscape:
     "Instrumental Convergence",
     "Embedded Agency",
     "AI Governance",
+    "Logical Uncertainty",
+    "Rationalist Community",
+    "LessWrong",
+    "Sharp Left Turn",
+    "Security Mindset",
+    "Deconfusion"
   ]} />
 </Section>
 
 <Section title="Related Entries">
   <EntityCards>
     <EntityCard
-      id="miri-agent-foundations"
-      category="safety-agenda"
-      title="Agent Foundations"
-      description="MIRI's research program on fundamental questions of agency"
+      id="eliezer-yudkowsky"
+      category="people"
+      title="Eliezer Yudkowsky"
+      description="MIRI co-founder and rationalist community founder"
+    />
+    <EntityCard
+      id="nate-soares"
+      category="people"
+      title="Nate Soares"
+      description="MIRI Executive Director"
+    />
+    <EntityCard
+      id="paul-christiano"
+      category="people"
+      title="Paul Christiano"
+      description="ARC founder, diverged from MIRI approach"
     />
     <EntityCard
       id="instrumental-convergence"
-      category="risk"
+      category="risks"
       title="Instrumental Convergence"
-      description="Why diverse goals lead to similar dangerous behaviors"
+      description="Key MIRI concept"
+    />
+    <EntityCard
+      id="corrigibility-failure"
+      category="risks"
+      title="Corrigibility Failure"
+      description="Problem MIRI has worked on extensively"
+    />
+    <EntityCard
+      id="sharp-left-turn"
+      category="risks"
+      title="Sharp Left Turn"
+      description="MIRI's concern about discontinuous capability jumps"
     />
     <EntityCard
       id="compute-governance"
-      category="policy"
+      category="policies"
       title="Compute Governance"
-      description="Controlling AI development through compute regulation"
+      description="Governance approach MIRI now advocates"
+    />
+    <EntityCard
+      id="arc"
+      category="organizations"
+      title="ARC"
+      description="Paul Christiano's organization, different approach"
     />
   </EntityCards>
 </Section>
 
 <Sources sources={[
   { title: "MIRI Website", url: "https://intelligence.org" },
-  { title: "MIRI 2023 Strategy Update", url: "https://intelligence.org/2023-strategy/" },
-  { title: "Risks from Learned Optimization", url: "https://arxiv.org/abs/1906.01820" },
+  { title: "MIRI 2023 Strategy Update", url: "https://intelligence.org/2023/03/09/miri-announces-new-death-with-dignity-strategy/" },
+  { title: "Risks from Learned Optimization (Hubinger et al.)", url: "https://arxiv.org/abs/1906.01820" },
+  { title: "Logical Induction Paper", url: "https://arxiv.org/abs/1609.03543" },
+  { title: "Embedded Agency (Demski, Garrabrant)", url: "https://intelligence.org/2018/10/29/embedded-agency/" },
+  { title: "LessWrong Sequences", url: "https://www.lesswrong.com/sequences" },
+  { title: "Eliezer Yudkowsky TIME Op-Ed", url: "https://time.com/6266923/ai-eliezer-yudkowsky-open-letter-not-enough/" },
+  { title: "Agent Foundations Research", url: "https://intelligence.org/research-guide/" },
+  { title: "Facing the Intelligence Explosion (Muehlhauser)", url: "https://intelligence.org/files/IE-EI.pdf" },
+  { title: "MIRI on GiveWell", url: "https://www.givewell.org/charities/machine-intelligence-research-institute" }
 ]} />

@@ -1,0 +1,460 @@
+---
+title: Technical AI Safety Research
+description: Research on alignment, interpretability, and evaluation of AI systems
+sidebar:
+  order: 2
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="Technical AI Safety Research"
+  customFields={[
+    { label: "Category", value: "Direct work on the problem" },
+    { label: "Primary Bottleneck", value: "Research talent" },
+    { label: "Estimated Researchers", value: "~300-1000 FTE" },
+    { label: "Annual Funding", value: "$100M-500M" },
+    { label: "Career Entry", value: "PhD or self-study + demonstrations" },
+  ]}
+/>
+
+## Overview
+
+Technical AI safety research aims to make AI systems reliably safe and aligned with human values through direct scientific and engineering work. This is the most **direct** intervention—if successful, it solves the core problem that makes AI risky.
+
+## Theory of Change
+
+```
+Technical breakthroughs → Better alignment techniques → Labs adopt methods → Deployed systems are aligned → Reduced catastrophic risk
+```
+
+**Key mechanisms:**
+1. **Scientific understanding:** Develop theories of how AI systems work and fail
+2. **Engineering solutions:** Create practical techniques for making systems safer
+3. **Validation methods:** Build tools to verify safety properties
+4. **Adoption:** Labs implement techniques in production systems
+
+## Major Research Agendas
+
+### 1. Mechanistic Interpretability
+
+**Goal:** Understand what's happening inside neural networks by reverse-engineering their computations.
+
+**Approach:**
+- Identify interpretable features in activation space
+- Map out computational circuits
+- Understand superposition and representation learning
+- Develop automated interpretability tools
+
+**Recent progress:**
+- Sparse autoencoders successfully extract interpretable features
+- Circuit discovery in toy models and language models
+- Anthropic's "Scaling Monosemanticity" (2024) found features in production models
+
+**Key organizations:**
+- Anthropic (Interpretability team)
+- DeepMind (Mechanistic Interpretability team)
+- Redwood Research
+- Apollo Research
+
+**Theory of change:** If we can read AI cognition, we can detect deception, verify alignment, and debug failures before deployment.
+
+<EstimateBox
+  client:load
+  variable="Impact of Interpretability Success"
+  description="Estimated x-risk reduction if interpretability becomes highly effective"
+  unit="percentage points"
+  estimates={[
+    { source: "Optimistic view", value: "30-50%", notes: "Can detect and fix most alignment failures" },
+    { source: "Moderate view", value: "10-20%", notes: "Helps but doesn't solve the full problem" },
+    { source: "Pessimistic view", value: "2-5%", notes: "Interpretability may not scale or may be fooled" },
+  ]}
+/>
+
+### 2. Scalable Oversight
+
+**Goal:** Enable humans to supervise AI systems on tasks beyond human ability to directly evaluate.
+
+**Approaches:**
+- **Recursive reward modeling:** Use AI to help evaluate AI
+- **Debate:** AI systems argue for different answers; humans judge
+- **Market-based approaches:** Prediction markets over outcomes
+- **Process-based supervision:** Reward reasoning process, not just outcomes
+
+**Recent progress:**
+- Weak-to-strong generalization (OpenAI, 2023)
+- Constitutional AI for self-critique (Anthropic)
+- Debate experiments showing promise in math/reasoning
+
+**Key organizations:**
+- OpenAI (Superalignment team - now dissolved)
+- Anthropic (Alignment Science team)
+- DeepMind (Alignment team)
+
+**Theory of change:** If we can supervise superhuman AI, we can train aligned systems even when we can't evaluate all behaviors directly.
+
+### 3. Robustness and Adversarial Techniques
+
+**Goal:** Make AI systems reliable under distribution shift and adversarial conditions.
+
+**Approaches:**
+- Red-teaming and adversarial testing
+- Formal verification of properties
+- Worst-case optimization
+- Adversarial training
+- Out-of-distribution detection
+
+**Recent progress:**
+- Red-teaming identified many LLM vulnerabilities
+- Formal verification for small networks
+- Adversarial robustness still largely unsolved at scale
+
+**Key organizations:**
+- MIRI (formal verification focus)
+- DeepMind (testing and evaluation)
+- Anthropic (red-teaming)
+- FAR AI (field-building for adversarial robustness)
+
+### 4. Agent Foundations
+
+**Goal:** Develop mathematical foundations for understanding goal-directed agents.
+
+**Topics:**
+- Decision theory for embedded agents
+- Logical uncertainty
+- Corrigibility
+- Utility functions and preferences
+- Embedded agency
+
+**Status:**
+- Mostly theoretical/philosophical
+- Less empirical progress than other agendas
+- Higher risk, higher reward research
+
+**Key organizations:**
+- MIRI (primary focus)
+- FHI (some work, though institute closed)
+- Academic researchers (scattered)
+
+**Theory of change:** Solve fundamental conceptual problems that block alignment progress, enabling more tractable approaches later.
+
+### 5. AI Control
+
+**Goal:** Maintain control over AI systems even if they are misaligned.
+
+**Approaches:**
+- **Trusted monitoring:** Use weaker but trusted AI to monitor stronger AI
+- **Untrusted monitoring:** Assume monitors may be compromised
+- **Task decomposition:** Break tasks so no single AI can cause harm
+- **Containment protocols:** Prevent AI from taking harmful actions
+
+**Recent progress:**
+- Redwood Research demonstrated practical control protocols
+- Apollo Research testing scheming detection
+- Growing focus on this as near-term priority
+
+**Key organizations:**
+- Redwood Research (primary developer)
+- Apollo Research (scheming and deception research)
+- Anthropic (adopting control ideas)
+
+**Theory of change:** Even if alignment is unsolved, we can maintain safety through monitoring and containment as we develop better solutions.
+
+### 6. Evaluations and Dangerous Capability Detection
+
+**Goal:** Detect dangerous capabilities before deployment.
+
+**Approaches:**
+- Benchmark dangerous capabilities (bioweapons, cyber, manipulation)
+- Autonomous replication and adaptation (ARA) testing
+- Situational awareness evaluations
+- Deception and scheming detection
+
+**Recent progress:**
+- METR's autonomous AI evaluation framework
+- Anthropic's RSP evaluation regime
+- Apollo's scheming and sandbagging research
+- UK AISI evaluation work
+
+**Key organizations:**
+- METR (Model Evaluation and Threat Research)
+- Apollo Research
+- UK AISI
+- US AISI
+
+**Theory of change:** Early detection of dangerous capabilities enables labs to implement safety measures before risks materialize.
+
+## What Needs to Be True
+
+For technical research to substantially reduce x-risk:
+
+1. **Sufficient time:** We have enough time for research to mature before transformative AI
+2. **Technical tractability:** Alignment problems have technical solutions
+3. **Adoption:** Labs implement research findings in production
+4. **Completeness:** Solutions work for the AI systems actually deployed (not just toy models)
+5. **Robustness:** Solutions work under competitive pressure and adversarial conditions
+
+<DisagreementMap
+  client:load
+  topic="Is technical alignment research on track to solve the problem?"
+  description="Views on whether current alignment approaches will succeed"
+  spectrum={{ low: "Fundamentally insufficient", high: "Making good progress" }}
+  positions={[
+    { actor: "Empirical alignment researchers", position: "Making good progress", estimate: "60-70% likely", confidence: "medium" },
+    { actor: "Many AI safety researchers", position: "Uncertain - too early to tell", estimate: "40-50%", confidence: "low" },
+    { actor: "MIRI leadership", position: "Fundamentally insufficient", estimate: "15-20%", confidence: "high" },
+  ]}
+/>
+
+## Estimated Impact by Worldview
+
+### Short Timelines + Alignment Hard
+**Impact: Medium-High**
+- Most critical intervention but may be too late
+- Focus on practical near-term techniques
+- AI control becomes especially valuable
+- De-prioritize long-term theoretical work
+
+### Long Timelines + Alignment Hard
+**Impact: Very High**
+- Best opportunity to solve the problem
+- Time for fundamental research to mature
+- Can work on harder problems
+- Highest expected value intervention
+
+### Short Timelines + Alignment Moderate
+**Impact: High**
+- Empirical research can succeed in time
+- Governance buys additional time
+- Focus on scaling existing techniques
+- Evaluations critical for near-term safety
+
+### Long Timelines + Alignment Moderate
+**Impact: High**
+- Technical research plus governance
+- Time to develop and validate solutions
+- Can be thorough rather than rushed
+- Multiple approaches can be tried
+
+## Tractability Assessment
+
+**High tractability areas:**
+- Mechanistic interpretability (clear techniques, measurable progress)
+- Evaluations and red-teaming (immediate application)
+- AI control (practical protocols being developed)
+
+**Medium tractability:**
+- Scalable oversight (conceptual clarity but implementation challenges)
+- Robustness (progress on narrow problems, hard to scale)
+
+**Lower tractability:**
+- Agent foundations (fundamental open problems)
+- Inner alignment (may require conceptual breakthroughs)
+- Deceptive alignment (hard to test until it happens)
+
+## Who Should Consider This
+
+**Strong fit if you:**
+- Have strong ML/CS technical background (or can build it)
+- Enjoy research and can work with ambiguity
+- Can self-direct or thrive in small research teams
+- Care deeply about directly solving the problem
+- Have 5-10+ years to build expertise and contribute
+
+**Prerequisites:**
+- **ML background:** Deep learning, transformers, training at scale
+- **Math:** Linear algebra, calculus, probability, optimization
+- **Programming:** Python, PyTorch/JAX, large-scale computing
+- **Research taste:** Can identify important problems and approaches
+
+**Entry paths:**
+- PhD in ML/CS focused on safety
+- Self-study + open source contributions
+- MATS/ARENA programs
+- Research engineer at safety org
+
+**Less good fit if:**
+- Want immediate impact (research is slow)
+- Prefer working with people over math/code
+- More interested in implementation than discovery
+- Uncertain about long-term commitment
+
+## Key Organizations
+
+### Frontier Labs (Safety Teams)
+- **Anthropic** (~300 employees, significant safety focus)
+  - Interpretability, Constitutional AI, RSP development
+- **OpenAI** (Superalignment team dissolved, unclear current state)
+  - Previously: Weak-to-strong generalization, scalable oversight
+- **Google DeepMind** (~30-50 safety researchers)
+  - Interpretability, alignment, specification gaming
+- **Meta** (FAIR safety team, smaller focus)
+
+### Independent Research Orgs
+- **Redwood Research** (~20 staff, $100M+ runway)
+  - AI control, adversarial robustness, causal scrubbing
+- **MIRI** (~10-15 researchers)
+  - Agent foundations, deconfusion, some empirical work
+- **ARC** (Alignment Research Center, ~5-10 staff)
+  - Alignment Research, evaluations, coordination
+- **Apollo Research** (~10-15 researchers)
+  - Scheming, deception detection, evaluations
+- **FAR AI** (field-building + some research)
+
+### Evaluation Organizations
+- **METR** (Model Evaluation and Threat Research)
+  - Autonomous AI evaluation, dangerous capability benchmarks
+- **UK AISI** (government evaluation institute)
+  - Pre-deployment testing, safety evaluations
+- **US AISI** (recently formed)
+
+### Academic Groups
+- **UC Berkeley** (CHAI, Center for Human-Compatible AI)
+- **CMU** (various safety researchers)
+- **Oxford/Cambridge** (smaller groups)
+- **Various professors** at institutions worldwide
+
+## Career Considerations
+
+### Pros
+- **Direct impact:** Working on the core problem
+- **Intellectually stimulating:** Cutting-edge research
+- **Growing field:** More opportunities and funding
+- **Flexible:** Remote work common, can transition to industry
+- **Community:** Strong AI safety research community
+
+### Cons
+- **Long timelines:** Years to make contributions
+- **High uncertainty:** May work on wrong problem
+- **Competitive:** Top labs are selective
+- **Funding dependent:** Relies on continued EA/philanthropic funding
+- **Moral hazard:** Could contribute to capabilities
+
+### Compensation
+- **PhD students:** $30-50K/year (typical stipend)
+- **Research engineers:** $100-200K
+- **Research scientists:** $150-400K+ (at frontier labs)
+- **Independent researchers:** $80-200K (grants/orgs)
+
+### Skills Development
+- Transferable ML skills (valuable in broader market)
+- Research methodology
+- Scientific communication
+- Large-scale systems engineering
+
+## Open Questions and Uncertainties
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Should we focus on prosaic alignment or agent foundations?",
+      positions: [
+        {
+          position: "Prosaic (empirical work on existing systems)",
+          confidence: "medium",
+          reasoning: "Current paradigm needs solutions; empirical feedback is valuable; agent foundations too slow",
+          implications: "Work on interpretability, RLHF, evaluations"
+        },
+        {
+          position: "Agent foundations (theoretical groundwork)",
+          confidence: "low",
+          reasoning: "Prosaic approaches may not scale; need conceptual clarity before solutions possible",
+          implications: "Mathematical research, decision theory, embedded agency"
+        }
+      ]
+    },
+    {
+      question: "Is working at frontier labs net positive or negative?",
+      positions: [
+        {
+          position: "Positive - access to frontier models is critical",
+          confidence: "medium",
+          reasoning: "Can't solve alignment without access; safety work slows deployment; can influence from inside",
+          implications: "Join lab safety teams; coordinate with capabilities work"
+        },
+        {
+          position: "Negative - contributes to race dynamics",
+          confidence: "medium",
+          reasoning: "Safety work legitimizes labs; contributes to capabilities; racing pressure dominates",
+          implications: "Independent research; government work; avoid frontier labs"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Complementary Interventions
+
+Technical research is most valuable when combined with:
+- **Governance:** Ensures solutions are adopted and enforced
+- **Field-building:** Creates pipeline of future researchers
+- **Evaluations:** Tests whether solutions actually work
+- **Corporate influence:** Gets research implemented at labs
+
+## Getting Started
+
+**If you're new to the field:**
+1. **Build foundations:** Learn deep learning thoroughly (fast.ai, Karpathy tutorials)
+2. **Study safety:** Read Alignment Forum, take ARENA course
+3. **Get feedback:** Join MATS, attend EAG, talk to researchers
+4. **Demonstrate ability:** Publish interpretability work, contribute to open source
+5. **Apply:** Research engineer roles are most accessible entry point
+
+**Resources:**
+- ARENA (AI Safety research program)
+- MATS (ML Alignment Theory Scholars)
+- AI Safety Camp
+- Alignment Forum
+- AGI Safety Fundamentals course
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Interpretability",
+    "Scalable Oversight",
+    "RLHF",
+    "AI Control",
+    "Evaluations",
+    "Agent Foundations",
+    "Robustness",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="interpretability"
+      category="safety-agenda"
+      title="Mechanistic Interpretability"
+      description="Understanding neural networks by reverse-engineering computations"
+    />
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Leading frontier lab with major safety research focus"
+    />
+    <EntityCard
+      id="redwood"
+      category="lab"
+      title="Redwood Research"
+      description="Independent research org focused on adversarial robustness and AI control"
+    />
+    <EntityCard
+      id="deceptive-alignment"
+      category="risk"
+      title="Deceptive Alignment"
+      description="Core problem technical research aims to solve"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "AI Alignment Research Overview", url: "https://www.alignmentforum.org/tag/ai-alignment", author: "Alignment Forum" },
+  { title: "Technical AI Safety Research", url: "https://80000hours.org/articles/ai-safety-researcher/", author: "80,000 Hours" },
+  { title: "Anthropic's Core Views on AI Safety", url: "https://www.anthropic.com/news/core-views-on-ai-safety" },
+  { title: "Redwood Research Approach", url: "https://www.redwoodresearch.org/" },
+  { title: "METR Evaluation Framework", url: "https://metr.org/" },
+  { title: "AGI Safety Fundamentals", url: "https://www.agisafetyfundamentals.com/" },
+]} />
