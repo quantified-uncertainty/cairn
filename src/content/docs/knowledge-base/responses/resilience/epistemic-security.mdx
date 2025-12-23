@@ -1,0 +1,321 @@
+---
+title: Epistemic Security
+description: Protecting society's capacity to know what's true in an era of AI-generated content
+sidebar:
+  order: 1
+---
+
+import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+
+<InfoBox
+  type="resilience"
+  title="Epistemic Security"
+  customFields={[
+    { label: "Definition", value: "Protecting collective capacity for knowledge and truth-finding" },
+    { label: "Key Threats", value: "Deepfakes, AI disinformation, trust collapse" },
+    { label: "Key Research", value: "RAND, Stanford Internet Observatory, Oxford" },
+  ]}
+/>
+
+## What Is Epistemic Security?
+
+**Epistemic security** refers to the protection of society's collective capacity to:
+- Determine what is true and false
+- Form accurate shared beliefs about reality
+- Maintain trust in knowledge-producing institutions
+- Resist manipulation of the information environment
+
+In an era of AI-generated content, epistemic security faces unprecedented challenges.
+
+---
+
+## Why Epistemic Security Matters
+
+### Foundation for Everything Else
+
+Most collective action depends on shared knowledge:
+
+| Domain | Epistemic Dependency |
+|--------|---------------------|
+| **Democracy** | Voters need accurate information to make decisions |
+| **Science** | Research depends on verifiable evidence |
+| **Markets** | Prices reflect information; manipulation distorts them |
+| **Public health** | Requires trusted health information |
+| **Law** | Justice depends on establishing facts |
+| **Coordination** | Acting together requires shared understanding |
+
+If epistemic security fails, these systems degrade.
+
+### AI as Threat Multiplier
+
+AI amplifies epistemic threats:
+- **Scale**: Generate disinformation at unprecedented volume
+- **Personalization**: Target individuals with customized manipulation
+- **Sophistication**: Create convincing synthetic content
+- **Automation**: Operate continuously without human intervention
+- **Adaptation**: Learn to bypass defenses
+
+---
+
+## Threat Landscape
+
+### AI-Generated Disinformation
+
+| Type | Description | Current Status |
+|------|-------------|---------------|
+| **Text** | AI-written articles, comments, messages | Widespread; detection improving |
+| **Images** | AI-generated or manipulated photos | Common; detection possible |
+| **Audio** | Voice cloning, synthetic speech | Improving rapidly; detection harder |
+| **Video** | Deepfakes, synthetic video | Advancing; still detectable usually |
+| **Multi-modal** | Coordinated fake evidence packages | Emerging threat |
+
+**Key research**:
+- [Stanford Internet Observatory](https://cyber.fsi.stanford.edu/io)
+- [Oxford Computational Propaganda Project](https://comprop.oii.ox.ac.uk/)
+- [Atlantic Council DFRLab](https://www.atlanticcouncil.org/programs/digital-forensic-research-lab/)
+
+### Coordinated Inauthentic Behavior
+
+AI-powered networks of fake accounts, automated engagement, and influence operations:
+- State actors (Russia, China, Iran documented)
+- Commercial disinformation-for-hire
+- Ideological movements
+
+**Research**:
+- [Graphika](https://graphika.com/)
+- [Meta Threat Reports](https://transparency.fb.com/en-gb/integrity-reports-hub/)
+- [Twitter/X Transparency Reports](https://transparency.twitter.com/)
+
+### Epistemic Pollution
+
+Beyond targeted disinformation, AI creates general epistemic pollution:
+- Flooding information space with low-quality content
+- Making signal-to-noise ratio unmanageable
+- Creating uncertainty about all content
+
+This may be worse than targeted attacks—it undermines all information, not just specific claims.
+
+### Trust Erosion (The Liar's Dividend)
+
+When fakes are possible, real evidence becomes deniable:
+- "That video is a deepfake" (even when it's real)
+- Blanket skepticism of all media
+- Collapse of "seeing is believing"
+
+**Research**:
+- [Chesney & Citron: Deep Fakes: A Looming Challenge](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3213954)
+- [WITNESS Media Lab](https://lab.witness.org/)
+
+---
+
+## Defense Approaches
+
+### Technical Defenses
+
+#### Content Authentication
+
+**Approach**: Cryptographic provenance for media content.
+
+| Initiative | Description | Status |
+|------------|-------------|--------|
+| **C2PA (Coalition for Content Provenance)** | Industry standard for content credentials | Deployed by some platforms |
+| **Content Credentials** | Adobe-led implementation | Available in Adobe products |
+| **Numbers Protocol** | Blockchain-based provenance | Active development |
+| **Truepic** | Photo verification platform | Commercial deployment |
+
+**Challenges**:
+- Adoption: Requires widespread implementation
+- Metadata stripping: Credentials can be removed
+- Origin problem: Can't authenticate content before system exists
+- Deepfake credentials: Could AI generate fake provenance?
+
+**Resources**:
+- [C2PA Specification](https://c2pa.org/)
+- [Content Authenticity Initiative](https://contentauthenticity.org/)
+- [Project Origin](https://www.originproject.info/)
+
+#### Detection Systems
+
+**Approach**: AI systems that detect AI-generated content.
+
+| Type | Techniques | Limitations |
+|------|-----------|-------------|
+| **Deepfake detection** | Facial inconsistencies, artifacts | Arms race; improving fakes |
+| **Text detection** | Statistical patterns, watermarks | Unreliable for short text |
+| **Audio detection** | Voice artifacts, inconsistencies | Advancing but imperfect |
+
+**Key players**:
+- [Microsoft Video Authenticator](https://blogs.microsoft.com/on-the-issues/2020/09/01/disinformation-deepfakes-newsguard-video-authenticator/)
+- [Sensity AI](https://sensity.ai/)
+- [Reality Defender](https://realitydefender.com/)
+- [Hive Moderation](https://hivemoderation.com/)
+
+**Fundamental problem**: Detection may always lag generation.
+
+#### Watermarking
+
+**Approach**: Embed detectable signatures in AI-generated content.
+
+**Implementations**:
+- [Google SynthID](https://deepmind.google/technologies/synthid/) — Images and audio
+- [OpenAI text watermarking](https://openai.com/index/understanding-the-source-of-what-we-see-and-hear-online/) — Research stage
+- [Meta Stable Signature](https://ai.meta.com/blog/stable-signature-watermarking-generative-ai/) — Image watermarking
+
+**Challenges**:
+- Voluntary: Bad actors won't use watermarks
+- Removable: Watermarks can potentially be stripped
+- False confidence: Presence ≠ AI-generated; absence ≠ human-created
+
+### Institutional Defenses
+
+#### Trusted Intermediaries
+
+**Approach**: Institutions that verify and vouch for information.
+
+| Type | Examples | Challenges |
+|------|----------|------------|
+| **Fact-checkers** | Snopes, PolitiFact, AFP | Scale; partisan attacks |
+| **Quality journalism** | Major news organizations | Business model; trust varies |
+| **Academic institutions** | Universities, research institutes | Slow; perceived bias |
+| **Professional bodies** | Medical associations, scientific societies | Limited scope |
+
+**Key organizations**:
+- [International Fact-Checking Network](https://www.poynter.org/ifcn/)
+- [First Draft](https://firstdraftnews.org/)
+- [Full Fact](https://fullfact.org/)
+
+#### Platform Governance
+
+**Approach**: Content moderation and policy on social platforms.
+
+| Approach | Description | Tradeoffs |
+|----------|-------------|-----------|
+| **Content removal** | Delete violating content | Free speech concerns; whack-a-mole |
+| **Labeling** | Add context to misleading content | May increase engagement |
+| **Demotion** | Reduce algorithmic amplification | Less visible; still available |
+| **Account suspension** | Remove bad actors | May migrate elsewhere |
+
+**Research**:
+- [Stanford's Platform Governance Archive](https://cyber.stanford.edu/spar)
+- [NYU Center for Social Media and Politics](https://csmapnyu.org/)
+
+### Societal Defenses
+
+#### Media Literacy
+
+**Approach**: Educate people to evaluate information critically.
+
+| Level | Intervention | Evidence |
+|-------|--------------|----------|
+| **School curriculum** | Teach critical evaluation skills | Mixed evidence on effectiveness |
+| **Public campaigns** | Raise awareness of manipulation | Limited lasting impact |
+| **Inoculation** | Pre-expose to manipulation techniques | Promising research |
+| **Lateral reading** | Teach verification techniques | Effective when used |
+
+**Research**:
+- [Sander van der Linden: Inoculation Theory](https://www.cambridge.org/core/journals/perspectives-on-psychological-science/article/inoculating-against-fake-news-about-covid19/7E4AA9F7B7E78CAF22F21DB01F03EC2A)
+- [Sam Wineburg: Civic Online Reasoning](https://cor.stanford.edu/)
+- [IREX: Learn to Discern](https://www.irex.org/project/learn-discern-l2d-media-literacy-training)
+
+#### Epistemic Norms
+
+**Approach**: Strengthen social norms around evidence and truth.
+
+**Components**:
+- Intellectual humility (admitting uncertainty)
+- Source evaluation (checking credentials)
+- Claim verification (seeking evidence)
+- Correction acceptance (updating on new information)
+
+**Challenge**: Norms are eroding, not strengthening.
+
+---
+
+## Research and Organizations
+
+### Academic Research Centers
+
+| Institution | Focus | Link |
+|-------------|-------|------|
+| Stanford Internet Observatory | Online manipulation | [cyber.fsi.stanford.edu/io](https://cyber.fsi.stanford.edu/io) |
+| Oxford Internet Institute | Digital politics | [oii.ox.ac.uk](https://www.oii.ox.ac.uk/) |
+| MIT Media Lab | Technology and society | [media.mit.edu](https://www.media.mit.edu/) |
+| Harvard Shorenstein Center | Media and democracy | [shorensteincenter.org](https://shorensteincenter.org/) |
+| NYU Center for Social Media and Politics | Platform effects | [csmapnyu.org](https://csmapnyu.org/) |
+| Berkman Klein Center | Internet and society | [cyber.harvard.edu](https://cyber.harvard.edu/) |
+| Carnegie Mellon CyLab | Security research | [cylab.cmu.edu](https://www.cylab.cmu.edu/) |
+
+### Research Organizations
+
+| Organization | Focus | Link |
+|--------------|-------|------|
+| RAND | Disinformation research | [rand.org](https://www.rand.org/topics/disinformation.html) |
+| Brookings | Tech policy | [brookings.edu](https://www.brookings.edu/topic/technology/) |
+| Atlantic Council DFRLab | Digital forensics | [atlanticcouncil.org/programs/digital-forensic-research-lab](https://www.atlanticcouncil.org/programs/digital-forensic-research-lab/) |
+| Data & Society | Critical tech research | [datasociety.net](https://datasociety.net/) |
+| AI Now Institute | AI social implications | [ainowinstitute.org](https://ainowinstitute.org/) |
+
+### Verification and Fact-Checking
+
+| Organization | Focus | Link |
+|--------------|-------|------|
+| Bellingcat | Open source investigation | [bellingcat.com](https://www.bellingcat.com/) |
+| First Draft | Misinformation response | [firstdraftnews.org](https://firstdraftnews.org/) |
+| Full Fact | UK fact-checking | [fullfact.org](https://fullfact.org/) |
+| Africa Check | African misinformation | [africacheck.org](https://africacheck.org/) |
+| WITNESS | Video verification | [witness.org](https://www.witness.org/) |
+
+### Policy and Governance
+
+| Organization | Focus | Link |
+|--------------|-------|------|
+| Partnership on AI | Multi-stakeholder AI governance | [partnershiponai.org](https://partnershiponai.org/) |
+| OECD AI Policy Observatory | International AI policy | [oecd.ai](https://oecd.ai/) |
+| Tech Policy Press | Tech policy journalism | [techpolicy.press](https://techpolicy.press/) |
+| Algorithm Watch | Algorithmic accountability | [algorithmwatch.org](https://algorithmwatch.org/) |
+
+---
+
+## Key Uncertainties
+
+<KeyQuestions
+  questions={[
+    "Can technical defenses (authentication, detection) keep pace with AI generation?",
+    "How do we rebuild trust in institutions that have lost credibility?",
+    "Is epistemic security possible without restricting speech?",
+    "What's the relative importance of technical vs. social defenses?",
+    "Can liberal democracies maintain epistemic security against authoritarian manipulation?"
+  ]}
+/>
+
+---
+
+## Implications for AI Safety
+
+Epistemic security affects AI safety directly:
+- **Coordination requires shared truth**: Can't coordinate on AI risk if we can't agree on facts
+- **Safety discourse is targeted**: AI safety itself is subject to manipulation
+- **Governance depends on information**: Regulators need accurate information about AI capabilities
+- **Early warning needs signal**: Detecting AI problems requires trustworthy information
+
+Epistemic security failure may be an underrated AI risk.
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Disinformation",
+    "Deepfakes",
+    "Trust",
+    "Media Literacy",
+    "Content Authentication",
+    "Information Security",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "The Vulnerability of Democracies to Disinformation", author: "RAND Corporation", date: "2019", url: "https://www.rand.org/pubs/research_briefs/RB10088.html" },
+  { title: "Deep Fakes: A Looming Challenge", author: "Chesney & Citron", date: "2019", url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3213954" },
+  { title: "The Oxygen of Amplification", author: "Whitney Phillips (Data & Society)", date: "2018", url: "https://datasociety.net/library/oxygen-of-amplification/" },
+  { title: "Inoculation Theory", author: "Sander van der Linden", url: "https://www.sdlab.psychol.cam.ac.uk/research/inoculation-science" },
+  { title: "C2PA Specification", url: "https://c2pa.org/specifications/specifications/1.0/specs/C2PA_Specification.html" },
+  { title: "Synthetic Media and AI", author: "Partnership on AI", date: "2023", url: "https://partnershiponai.org/paper/responsible-practices-synthetic-media/" },
+]} />

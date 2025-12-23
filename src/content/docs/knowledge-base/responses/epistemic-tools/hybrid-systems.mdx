@@ -1,0 +1,369 @@
+---
+title: AI-Human Hybrid Systems
+description: Designs that combine AI capabilities with human judgment for robust decision-making
+sidebar:
+  order: 3
+---
+
+import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+
+<InfoBox
+  type="solution"
+  title="AI-Human Hybrid Systems"
+  customFields={[
+    { label: "Maturity", value: "Emerging field; active research" },
+    { label: "Key Strength", value: "Combines AI scale with human robustness" },
+    { label: "Key Challenge", value: "Avoiding the worst of both" },
+    { label: "Related Fields", value: "HITL, human-computer interaction, AI safety" },
+  ]}
+/>
+
+## What Are AI-Human Hybrid Systems?
+
+AI-human hybrid systems are designed architectures that combine AI and human capabilities to achieve outcomes neither could achieve alone. Unlike ad-hoc AI assistance, hybrid systems have **structured protocols** for when and how each component contributes.
+
+**Goal**: Get the best of both—AI's scale, speed, and consistency; human's judgment, values, and robustness.
+
+---
+
+## Why Hybrid Systems?
+
+### The Problem with AI Alone
+
+| AI Weakness | Consequence |
+|-------------|-------------|
+| **Poor calibration on novel situations** | Overconfident on unprecedented events |
+| **Value misalignment** | Optimizes for proxy metrics |
+| **Adversarial vulnerability** | Can be manipulated |
+| **Limited accountability** | "The AI decided" isn't acceptable |
+| **Brittleness** | Fails unexpectedly on edge cases |
+
+### The Problem with Humans Alone
+
+| Human Weakness | Consequence |
+|----------------|-------------|
+| **Limited bandwidth** | Can't process all relevant information |
+| **Cognitive biases** | Systematic errors in judgment |
+| **Inconsistency** | Same problem gets different answers |
+| **Fatigue and attention** | Quality degrades over time |
+| **Slow** | Can't operate at AI speed |
+
+### The Hybrid Opportunity
+
+| Hybrid Strength | Mechanism |
+|-----------------|-----------|
+| **Complementary capabilities** | AI scales, humans judge |
+| **Error checking** | Each catches the other's mistakes |
+| **Graceful degradation** | System works if either component fails |
+| **Accountability** | Humans remain in loop |
+| **Adaptability** | Humans handle novel situations |
+
+---
+
+## Design Patterns
+
+### Pattern 1: AI Proposes, Human Disposes
+
+**Structure**: AI generates options or recommendations; humans make final decisions.
+
+```
+AI → generates candidates → Human → selects/modifies → Decision
+         ↓                          ↓
+    large coverage             judgment applied
+```
+
+**Examples**:
+- AI drafts documents; humans edit and approve
+- AI suggests diagnoses; doctors decide treatment
+- AI recommends hires; managers make final calls
+
+**Strengths**: Human maintains control; AI expands options
+**Weaknesses**: Humans may rubber-stamp; cognitive load on humans
+
+### Pattern 2: Human Steers, AI Executes
+
+**Structure**: Humans set goals and constraints; AI handles implementation.
+
+```
+Human → sets objectives → AI → implements within bounds → Outcome
+            ↓                      ↓
+       high-level goals       detailed execution
+```
+
+**Examples**:
+- Human sets editorial direction; AI writes content
+- Human defines investment strategy; AI executes trades
+- Human specifies code requirements; AI generates code
+
+**Strengths**: Scales human intent; AI handles complexity
+**Weaknesses**: AI may misinterpret goals; scope creep
+
+### Pattern 3: AI Monitors, Human Intervenes
+
+**Structure**: AI handles routine cases; humans step in for exceptions.
+
+```
+        ┌─ Routine → AI handles automatically
+        │
+Input → AI classification
+        │
+        └─ Exception → Human reviews and decides
+```
+
+**Examples**:
+- Content moderation: AI handles clear cases; humans review edge cases
+- Fraud detection: AI flags suspicious transactions; humans investigate
+- Customer service: Chatbot handles FAQs; escalates to human
+
+**Strengths**: Efficient use of human attention; AI handles volume
+**Weaknesses**: Exception criteria may be wrong; AI may miss cases
+
+### Pattern 4: Parallel Processing with Aggregation
+
+**Structure**: AI and humans work independently; results are combined.
+
+```
+        ┌─ AI analysis ─────────┐
+        │                       │
+Input → ┤                       ├→ Aggregation → Output
+        │                       │
+        └─ Human analysis ──────┘
+```
+
+**Examples**:
+- Forecasting: AI and human predictions are averaged
+- Medical diagnosis: AI and doctor opinions combined
+- Document review: AI and human annotations merged
+
+**Strengths**: Independent errors don't correlate; wisdom of crowds
+**Weaknesses**: Need good aggregation mechanism; more resources
+
+### Pattern 5: Adversarial Collaboration
+
+**Structure**: AI and humans challenge each other's conclusions.
+
+```
+AI → makes claim → Human → challenges/verifies → Refined conclusion
+ ↑                            ↓
+ └──── updates reasoning ─────┘
+```
+
+**Examples**:
+- AI red-teaming of AI outputs
+- Debate-style dialogue for complex decisions
+- Structured analytic techniques with AI assistance
+
+**Strengths**: Forces rigorous reasoning; catches errors
+**Weaknesses**: Adversarial dynamics can be unproductive
+
+### Pattern 6: Staged Trust
+
+**Structure**: AI autonomy increases as trust is established.
+
+```
+Stage 1: AI suggests → Human decides
+Stage 2: AI decides → Human reviews
+Stage 3: AI decides → Human spot-checks
+Stage 4: AI decides → Human monitors metrics
+```
+
+**Examples**:
+- Autonomous vehicle development stages
+- AI-assisted medical diagnosis progression
+- Algorithmic trading approval levels
+
+**Strengths**: Trust is earned, not assumed; reversible
+**Weaknesses**: May get stuck at early stages; slow
+
+---
+
+## Current Implementations
+
+### Content Moderation
+
+| Platform | Approach |
+|----------|----------|
+| **Meta/Facebook** | AI filters + human review for appeals |
+| **YouTube** | AI detection + human content moderators |
+| **Wikipedia** | AI vandalism detection + human editors |
+
+**Research**: [Gorwa et al.: "Algorithmic Content Moderation"](https://journals.sagepub.com/doi/10.1177/1461444820903049)
+
+### Medical Diagnosis
+
+| System | Hybrid Design |
+|--------|---------------|
+| **Radiology AI** | AI highlights regions; radiologist interprets |
+| **Dermatology AI** | AI provides differential; dermatologist decides |
+| **Clinical decision support** | AI suggests treatments; doctors choose |
+
+**Research**: [Topol: "High-performance medicine"](https://www.nature.com/articles/s41591-018-0300-7)
+
+### Autonomous Vehicles
+
+| Level | Human-AI Balance |
+|-------|------------------|
+| **Level 2** | AI assists; human supervises |
+| **Level 3** | AI drives; human ready to intervene |
+| **Level 4** | AI handles most; human for edge cases |
+| **Level 5** | Fully AI (theoretical) |
+
+**Research**: [SAE Levels of Driving Automation](https://www.sae.org/standards/content/j3016_202104/)
+
+### AI Development (AI Control)
+
+| Approach | Hybrid Design |
+|----------|---------------|
+| **Trusted monitoring** | Weak trusted AI monitors strong AI; humans oversee |
+| **Constitutional AI** | AI critiques AI; humans set constitution |
+| **RLHF** | AI generates; humans provide feedback |
+
+**Research**: [Redwood Research: AI Control](https://www.redwoodresearch.org/)
+
+---
+
+## Design Principles
+
+### 1. Appropriate Allocation
+
+| Allocate to AI | Allocate to Humans |
+|----------------|-------------------|
+| High volume, routine | High stakes, novel |
+| Speed-critical | Judgment-critical |
+| Pattern matching | Value-laden decisions |
+| Consistent application | Contextual adaptation |
+
+### 2. Legible Handoffs
+
+**Principle**: When switching between AI and human, make transitions clear.
+
+| Requirement | Rationale |
+|-------------|-----------|
+| Clear trigger criteria | Know when to involve human |
+| Context preservation | Human understands situation |
+| Reversibility | Human can override |
+| Audit trail | Trace who decided what |
+
+### 3. Calibrated Trust
+
+**Principle**: Trust AI in domains with demonstrated reliability; don't trust where unproven.
+
+| Measure | Approach |
+|---------|----------|
+| Track record | Measure AI performance by domain |
+| Confidence calibration | AI expresses uncertainty accurately |
+| Performance monitoring | Detect degradation early |
+| Fallback procedures | What if AI fails? |
+
+### 4. Avoid Automation Bias
+
+**Principle**: Design against humans over-trusting AI.
+
+| Intervention | Mechanism |
+|--------------|-----------|
+| Require human reasoning | Human must justify agreement |
+| Vary AI suggestions | Don't always show AI recommendation first |
+| Feedback on human overrides | Was human right to override? |
+| Training on AI errors | Humans learn when AI fails |
+
+### 5. Maintain Human Capability
+
+**Principle**: Preserve human skills needed for oversight.
+
+| Approach | Mechanism |
+|----------|-----------|
+| Periodic manual operation | Practice without AI |
+| Understanding AI reasoning | Humans learn how AI works |
+| Error analysis | Humans study AI failures |
+| Skill assessment | Test human capabilities |
+
+---
+
+## Challenges
+
+### Technical
+
+| Challenge | Explanation |
+|-----------|-------------|
+| **Explanation quality** | AI explanations may not be useful |
+| **Attention allocation** | Too many AI suggestions overwhelms humans |
+| **Speed mismatch** | AI operates faster than humans can process |
+| **Calibration** | AI uncertainty estimates may be wrong |
+
+### Organizational
+
+| Challenge | Explanation |
+|-----------|-------------|
+| **Responsibility diffusion** | "The AI did it" |
+| **Skill atrophy** | Humans lose abilities from disuse |
+| **Incentive misalignment** | Easier to defer to AI |
+| **Training requirements** | Humans need to understand AI |
+
+### Epistemological
+
+| Challenge | Explanation |
+|-----------|-------------|
+| **Unknown unknowns** | AI doesn't flag what it doesn't know |
+| **Correlated errors** | AI and human may share biases |
+| **Gaming** | Actors learn to manipulate the hybrid system |
+| **Feedback loops** | AI trained on human feedback; humans adapt to AI |
+
+---
+
+## Key Uncertainties
+
+<KeyQuestions
+  questions={[
+    "Can hybrid systems avoid the worst of both AI and human judgment?",
+    "What's the right level of human oversight as AI becomes more capable?",
+    "How do we prevent skill atrophy in human operators?",
+    "Can hybrid systems be made robust to adversarial attacks?",
+    "What accountability structures work for human-AI decisions?"
+  ]}
+/>
+
+---
+
+## Research and Resources
+
+### Academic
+
+| Field | Relevant Research |
+|-------|-------------------|
+| **Human-Computer Interaction** | Interface design, attention, trust |
+| **AI Safety** | Control, oversight, corrigibility |
+| **Cognitive Science** | Human-AI collaboration |
+| **Organizational Behavior** | Institutional design |
+
+### Key Papers
+
+- Parasuraman & Riley (1997): "Humans and Automation: Use, Misuse, Disuse, Abuse"
+- Kamar et al. (2012): "Combining Human and Machine Intelligence"
+- Bansal et al. (2021): "Does the Whole Exceed its Parts? The Effect of AI Explanations"
+- [Redwood Research: AI Control papers](https://www.redwoodresearch.org/)
+
+### Organizations
+
+| Organization | Focus |
+|--------------|-------|
+| **Stanford HAI** | Human-centered AI |
+| **MIT CSAIL** | Human-AI interaction |
+| **Anthropic** | Constitutional AI, RLHF |
+| **Redwood Research** | AI control |
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Human-AI Interaction",
+    "AI Control",
+    "Decision Making",
+    "Automation Bias",
+    "AI Safety",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "Humans and Automation: Use, Misuse, Disuse, Abuse", author: "Parasuraman & Riley", date: "1997" },
+  { title: "High-Performance Medicine: Convergence of AI and Human Expertise", author: "Eric Topol", date: "2019", url: "https://www.nature.com/articles/s41591-018-0300-7" },
+  { title: "Stanford HAI", url: "https://hai.stanford.edu/" },
+  { title: "Redwood Research", url: "https://www.redwoodresearch.org/" },
+]} />

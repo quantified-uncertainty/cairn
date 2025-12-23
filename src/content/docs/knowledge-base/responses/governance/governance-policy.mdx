@@ -1,0 +1,616 @@
+---
+title: AI Governance and Policy
+description: International coordination, national regulation, and industry standards
+sidebar:
+  order: 3
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+
+<InfoBox
+  type="crux"
+  title="AI Governance and Policy"
+  customFields={[
+    { label: "Category", value: "Institutional coordination" },
+    { label: "Primary Bottleneck", value: "Political will + expertise" },
+    { label: "Time to Impact", value: "2-10 years" },
+    { label: "Estimated Practitioners", value: "~200-500 dedicated" },
+    { label: "Entry Paths", value: "Policy, law, international relations" },
+  ]}
+/>
+
+## Overview
+
+AI governance seeks to shape the development and deployment of AI systems through **institutions, regulations, and coordination**. Unlike technical research that solves problems directly, governance creates **guardrails, incentives, and coordination mechanisms** to reduce risk.
+
+This is increasingly seen as **essential** even if technical solutions exist—coordination problems, racing dynamics, and deployment decisions require institutional solutions.
+
+## Theory of Change
+
+```
+Policy expertise → Evidence-based proposals → Political advocacy → Regulation/coordination → Changed behavior → Reduced risk
+```
+
+**Key mechanisms:**
+1. **Information:** Build knowledge of risks and solutions among policymakers
+2. **Proposals:** Develop concrete, implementable policy ideas
+3. **Advocacy:** Build political coalitions for adoption
+4. **Implementation:** Ensure effective execution
+5. **Iteration:** Learn from experience and adjust
+
+## Major Intervention Areas
+
+### 1. International Coordination
+
+**Goal:** Prevent race-to-the-bottom dynamics through international agreements and institutions.
+
+**Approaches:**
+
+**AI Safety Summits:**
+- Bletchley Park Summit (UK, November 2023)
+- Seoul AI Safety Summit (May 2024)
+- Paris AI Summit (2024)
+- Achieved: Frontier AI Safety Commitments, international dialogue
+- Limitations: Non-binding, limited enforcement
+
+**International Institutions:**
+- **UN AI Advisory Body:** Proposed governance framework
+- **IAEA-like body for AI:** Monitoring and verification (proposed)
+- **OECD AI Principles:** Non-binding guidelines
+- **G7/G20 AI discussions:** High-level coordination
+
+**Treaty Proposals:**
+- Compute governance regimes
+- Safety standard harmonization
+- Information sharing agreements
+- Non-proliferation frameworks
+
+**Theory of change:** International coordination prevents competitive dynamics where labs/nations sacrifice safety for speed.
+
+<EstimateBox
+  client:load
+  variable="Impact of Strong International Coordination"
+  description="X-risk reduction if binding international AI governance established"
+  unit="percentage points"
+  estimates={[
+    { source: "Optimistic", value: "40-60%", notes: "Prevents race dynamics, enables sufficient safety testing" },
+    { source: "Moderate", value: "20-30%", notes: "Reduces competitive pressure but doesn't solve technical problems" },
+    { source: "Pessimistic", value: "5-10%", notes: "International cooperation is unlikely or ineffective" },
+  ]}
+/>
+
+**Tractability concerns:**
+- History of arms control is mixed
+- China-US coordination especially difficult
+- Enforcement mechanisms unclear
+- Timeline may be too slow
+
+**Who's working on this:**
+- GovAI (now dissolved, merged into Centre for the Governance of AI)
+- Centre for the Governance of AI (Oxford)
+- Centre for AI Safety and Governance (Stanford)
+- UN researchers and advisors
+- Think tanks (CSIS, Brookings, CNAS)
+
+### 2. National Regulation
+
+**Goal:** Implement safety requirements, oversight, and accountability within specific jurisdictions.
+
+**Approaches:**
+
+**United States:**
+
+- **Executive Order on AI (October 2023):**
+  - Compute reporting requirements (>10^26 FLOP)
+  - Safety testing before release
+  - DHS oversight and standards
+  - NIST AI Safety Institute (AISI)
+
+- **Proposed legislation:**
+  - Algorithmic accountability
+  - Liability frameworks
+  - Licensing requirements for powerful models
+  - Whistleblower protections
+
+**European Union:**
+
+- **EU AI Act (2024):**
+  - Risk-based classification system
+  - Requirements for "high-risk" AI
+  - GPAI (General Purpose AI) provisions:
+    - Transparency requirements
+    - Systemic risk evaluation (>10^25 FLOP)
+    - Code of conduct
+  - Enforcement through fines (up to 7% of global revenue)
+
+- **Strengths:** Comprehensive, binding, Brussels Effect (global influence)
+- **Weaknesses:** May be too slow, overly bureaucratic, limited technical expertise
+
+**United Kingdom:**
+
+- **AI Safety Institute (AISI):**
+  - Pre-deployment testing
+  - Capability evaluations
+  - Safety research
+  - International coordination hub
+
+- **Pro-innovation approach:** Light regulation, sector-specific rules
+- **Question:** Will this be sufficient for catastrophic risks?
+
+**China:**
+
+- Regulation of generative AI content
+- State control over AI development
+- Less transparency about safety measures
+- Different governance approach (authoritarian)
+
+**Other jurisdictions:**
+- Canada, Australia, Japan, Singapore developing approaches
+- Global South mostly not engaged yet
+
+**Theory of change:** National regulations create floor for safety standards; competitive jurisdictions create race to the top.
+
+**Tractability:**
+- **Medium-High in EU:** Strong regulatory capacity, demonstrated willingness
+- **Medium in US:** Divided government, tech industry lobbying, but executive action possible
+- **Low in China:** Opaque process, different priorities
+- **Varies elsewhere:** Depends on state capacity and political will
+
+**Who's working on this:**
+- US AISI (government)
+- UK AISI (government)
+- Policy advocacy orgs (CAIS, CSET, FLI)
+- Think tanks
+- Academic policy researchers
+
+### 3. Industry Standards and Self-Regulation
+
+**Goal:** Establish safety commitments and best practices within AI industry.
+
+**Approaches:**
+
+**Responsible Scaling Policies (RSPs):**
+- Anthropic pioneered framework (2023)
+- IF-THEN structure: If capabilities reach level X, THEN implement safeguards Y
+- ASL (AI Safety Levels) with corresponding containment
+- Other labs developing similar frameworks
+
+**Frontier AI Safety Commitments:**
+- Voluntary commitments from major labs (post-Seoul Summit)
+- Safety testing before deployment
+- Information sharing on risks
+- Third-party evaluation access
+
+**Partnership on AI:**
+- Industry consortium
+- Best practices development
+- Limited teeth/enforcement
+
+**Safety standards development:**
+- NIST AI Risk Management Framework
+- ISO/IEC AI standards
+- Industry-specific guidelines
+
+**Theory of change:** If labs compete on safety (race to the top), self-regulation can work. If they compete only on capabilities (race to the bottom), regulation needed.
+
+<DisagreementMap
+  client:load
+  topic="Can industry self-regulation be sufficient for catastrophic risk?"
+  description="Views on whether voluntary commitments can prevent AI catastrophe"
+  spectrum={{ low: "Regulation essential", high: "Self-regulation sufficient" }}
+  positions={[
+    { actor: "Some lab leadership", position: "Self-regulation works", estimate: "70-80% sufficient", confidence: "medium" },
+    { actor: "Many governance researchers", position: "Hybrid approach needed", estimate: "40-50%", confidence: "medium" },
+    { actor: "AI safety advocates", position: "Binding regulation essential", estimate: "20-30%", confidence: "high" },
+  ]}
+/>
+
+**Tractability:**
+- **Higher:** Industry is engaged, some labs genuinely care about safety
+- **Lower:** Investor pressure, competitive dynamics, measurement difficulties
+
+**Who's working on this:**
+- Lab policy teams (Anthropic, OpenAI, DeepMind)
+- Partnership on AI
+- Standard-setting bodies (NIST, ISO)
+
+### 4. Compute Governance
+
+**Goal:** Control AI development through hardware and computational infrastructure.
+
+**Why promising:**
+- Compute is measurable, trackable, and concentrated
+- Acts upstream (before models are built)
+- Harder to circumvent than software regulation
+
+**Mechanisms:**
+
+**Export Controls:**
+- US restrictions on AI chip exports to China (October 2022, updated)
+- NVIDIA A100/H100 restricted
+- Lithography equipment controls
+- Goal: Slow adversarial AI development
+
+**Compute Thresholds:**
+- EU AI Act: 10^25 FLOP triggers requirements
+- US EO: 10^26 FLOP requires reporting
+- Basis for safety testing obligations
+
+**Know Your Customer (KYC):**
+- Cloud providers verify customers
+- Report large training runs
+- Prevent misuse
+
+**Hardware-level governance (proposed):**
+- Chip registration and tracking
+- Remote monitoring capabilities
+- International verification regimes
+
+**Theory of change:** Control chokepoints in AI supply chain to prevent dangerous development and enable monitoring.
+
+**Tractability:**
+- **Higher:** Clear policy mechanisms, existing export control infrastructure
+- **Medium-term challenges:** Algorithmic efficiency, distributed training, semiconductor supply chain evolution
+
+**Who's working on this:**
+- GovAI researchers (especially Lennart Heim)
+- US government (BIS - Bureau of Industry and Security)
+- Think tanks (CSET, CNAS)
+
+See full analysis: [Compute Governance](/knowledge-base/policies/compute-governance/)
+
+### 5. Liability and Legal Frameworks
+
+**Goal:** Create accountability through legal liability for AI harms.
+
+**Approaches:**
+
+**Strict Liability:**
+- Companies liable for harms caused by their AI
+- Incentivizes safety investment
+- Challenge: Defining causation for AI systems
+
+**Certification and Licensing:**
+- Require license to deploy powerful AI
+- Pre-deployment safety testing
+- Ongoing monitoring requirements
+
+**Whistleblower Protections:**
+- Protect employees who report safety issues
+- Reduce information asymmetry
+- Enable oversight
+
+**Bounties and Disclosure:**
+- Bug bounties for safety issues
+- Responsible disclosure frameworks
+- Adversarial testing incentives
+
+**Theory of change:** Legal consequences shift cost-benefit calculus toward safety; transparency enables oversight.
+
+**Tractability:**
+- **Medium:** Existing legal frameworks, political support for accountability
+- **Challenges:** Technical complexity, industry lobbying, international differences
+
+**Who's working on this:**
+- Legal scholars
+- Policy advocates (CAIS)
+- Government attorneys general
+
+## What Needs to Be True
+
+For governance to substantially reduce x-risk:
+
+1. **Sufficient time:** Policy development takes years; need lead time before critical systems
+2. **Political will:** Governments/publics must prioritize existential risk
+3. **Technical feasibility:** Proposed regulations must be implementable
+4. **International coordination:** Major AI powers must cooperate (especially US-China)
+5. **Enforcement:** Regulations must be monitored and enforced
+6. **Adaptability:** Policies must evolve with technology
+7. **Expertise:** Policymakers need sufficient technical understanding
+
+## Estimated Impact by Worldview
+
+### Short Timelines + Technical Difficulty High
+**Impact: Critical**
+- May be only hope if technical solutions won't arrive in time
+- Focus on emergency measures: compute caps, deployment moratoria
+- International coordination urgent
+- Less time for iterative policy development
+
+### Long Timelines + Technical Difficulty High
+**Impact: Very High**
+- Time to develop thoughtful governance
+- Can coordinate with technical research
+- Build robust institutions
+- Enable careful testing
+
+### Short Timelines + Technical Difficulty Moderate
+**Impact: High**
+- Buys time for technical solutions
+- Prevents worst competitive dynamics
+- Ensures adoption of safety measures
+- Complements technical work
+
+### Alignment Easy (Any Timeline)
+**Impact: Medium**
+- Still need deployment governance
+- Prevent misuse and structural risks
+- Ensure equitable access
+- Less critical than if alignment is hard
+
+## Key Open Questions
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Should we push for regulation now or wait for more evidence?",
+      positions: [
+        {
+          position: "Regulate now",
+          confidence: "medium",
+          reasoning: "Policy takes years; need to start before crisis. Waiting risks being too late. Some regulation better than none.",
+          implications: "Advocate for compute thresholds, licensing, safety requirements now"
+        },
+        {
+          position: "Wait for more evidence",
+          confidence: "medium",
+          reasoning: "Premature regulation could be counterproductive. Need clearer understanding of risks. Risk of regulatory capture or overreach.",
+          implications: "Focus on research and voluntary standards; delay binding rules"
+        }
+      ]
+    },
+    {
+      question: "Is US-China cooperation possible on AI safety?",
+      positions: [
+        {
+          position: "Yes - cooperation possible on shared interests",
+          confidence: "low",
+          reasoning: "Both countries vulnerable to existential risk. Track 1.5 and 2 diplomacy can build trust. Nuclear precedent.",
+          implications: "Invest in China expertise, backchannel dialogue, confidence-building measures"
+        },
+        {
+          position: "No - geopolitical competition dominates",
+          confidence: "medium",
+          reasoning: "AI seen as strategic asset. Military applications. Verification challenges. Current tensions prohibitive.",
+          implications: "Focus on US/allied governance; accept bifurcated AI development; plan for unilateral action"
+        }
+      ]
+    }
+  ]}
+/>
+
+## Who Should Consider This
+
+**Strong fit if you:**
+- Understand policymaking and institutions
+- Can translate technical concepts for non-technical audiences
+- Have relevant background (law, policy, international relations, economics)
+- Comfortable with slow, iterative progress
+- Good at relationship-building and coalition formation
+
+**Backgrounds:**
+- Law (especially administrative law, international law)
+- Political science / public policy
+- International relations / diplomacy
+- Economics (mechanism design, regulatory economics)
+- Technical background + policy interest
+
+**Entry paths:**
+- Policy school (MPP, MPA) with AI focus
+- Law school + tech law specialization
+- Government fellowship programs
+- Think tank research positions
+- PhD in relevant field (slower but deeper)
+
+**Career stages:**
+- **Early:** Policy school, research assistant, government fellowship
+- **Mid:** Policy researcher, government staffer, advocacy org
+- **Senior:** Policy director, government official, think tank leadership
+
+**Less good fit if:**
+- Prefer technical to institutional work
+- Impatient with bureaucracy and politics
+- Uncomfortable with ambiguity and compromise
+- Strongly libertarian (governance is the problem, not solution)
+
+## Key Organizations
+
+### Research Institutes
+- **Centre for the Governance of AI** (Oxford, ~15-20 researchers)
+  - Academic research on AI governance
+  - Policy analysis and proposals
+- **Center for Security and Emerging Technology (CSET)** (Georgetown)
+  - Technical policy analysis
+  - China expertise
+  - Compute governance research
+- **Centre for AI Safety and Governance** (Stanford HAI)
+- **AI Now Institute** (focused on fairness/accountability)
+
+### Advocacy Organizations
+- **Center for AI Safety (CAIS)**
+  - Policy advocacy
+  - Statement on AI Risk (signed by Hinton, Bengio, others)
+- **Future of Life Institute**
+  - AI policy grants
+  - Advocacy campaigns
+  - International coordination
+- **Partnership on AI**
+  - Industry consortium
+  - Multi-stakeholder dialogue
+
+### Government Bodies
+- **US AI Safety Institute (AISI)** - NIST
+  - Evaluations, standards, research
+- **UK AI Safety Institute**
+  - Pre-deployment testing
+  - International hub
+- **EU AI Office**
+  - AI Act implementation
+- **Various parliamentary/congressional AI committees**
+
+### Think Tanks (Broader)
+- CNAS (Center for New American Security)
+- Brookings Institution
+- CSIS (Center for Strategic and International Studies)
+- RAND Corporation
+
+## Career Considerations
+
+### Pros
+- **Leverage:** Policy affects entire ecosystem
+- **Institutional backing:** Work for established organizations
+- **Career capital:** Transferable skills, valuable network
+- **Impact uncertainty lower:** Less technical risk than research
+- **Growing field:** More opportunities emerging
+
+### Cons
+- **Slow:** Progress measured in years
+- **Political:** Subject to political winds
+- **Less control:** Dependent on others' decisions
+- **Measurement:** Hard to measure personal impact
+- **Competitive:** Top positions are scarce
+
+### Compensation
+- **Policy school:** Cost $80-150K (loans common)
+- **Think tank researcher:** $60-100K
+- **Government (US):** $70-130K (GS-11 to GS-14)
+- **Senior roles:** $150-250K+
+- **Advocacy org:** $80-150K
+
+### Skills Development
+- Policy analysis
+- Writing and communication
+- Political strategy
+- International relations
+- Institutional knowledge
+
+## Risks and Downsides
+
+**Policy Risk:**
+- Premature or poorly designed regulation could:
+  - Slow beneficial AI development
+  - Entrench incumbent advantages
+  - Stifle research and open source
+  - Drive development underground
+
+**Regulatory Capture:**
+- Industry shapes rules in their favor
+- Safety theater without substance
+- Barriers to entry for competitors
+
+**Authoritarian Empowerment:**
+- Governance infrastructure could be used for control
+- Surveillance and censorship
+- Democratic governance becomes authoritarian tool
+
+**Coordination Failure:**
+- Failed international cooperation worsens relations
+- Unilateral measures provoke backlash
+- Fragmentation of AI development
+
+**Distraction:**
+- Focus on governance delays technical solutions
+- Creates false sense of security
+
+**Mitigation:**
+- Evidence-based policy design
+- Multi-stakeholder input
+- Sunset clauses and review
+- Prioritize transparency and accountability
+- Maintain technical expertise in policy process
+
+## Complementary Interventions
+
+Governance works best combined with:
+- **Technical research:** Informs what's possible and necessary
+- **Evaluations:** Provides evidence for policy
+- **Field-building:** Creates pipeline of governance experts
+- **Corporate influence:** Ensures voluntary adoption beyond regulation
+
+## Getting Started
+
+**If you're interested in AI governance:**
+
+1. **Build foundation:**
+   - Read governance research (Centre for the Governance of AI papers)
+   - Follow policy developments (import AI newsletter, CSET reports)
+   - Understand AI basics (at least conceptually)
+
+2. **Get credentials:**
+   - Consider policy school (MPP/MPA) if early career
+   - Or law school with tech law focus
+   - Or relevant PhD (political science, economics)
+
+3. **Gain experience:**
+   - Research assistant at governance org
+   - Internship at think tank
+   - Government fellowship (TechCongress, AAAS)
+
+4. **Specialize:**
+   - Choose focus (international, national, compute, liability, etc.)
+   - Build expertise and network
+   - Publish/present analysis
+
+5. **Contribute:**
+   - Research position
+   - Government role
+   - Advocacy organization
+   - Academic career
+
+**Resources:**
+- AGI Safety Fundamentals (Governance track)
+- Centre for the Governance of AI reading list
+- 80,000 Hours career guide (AI policy)
+- Import AI newsletter (Jack Clark)
+- CSET publications
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "International Coordination",
+    "Compute Governance",
+    "Regulation",
+    "Standards",
+    "Liability",
+    "Export Controls",
+    "AI Safety Summits",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="compute-governance"
+      category="policy"
+      title="Compute Governance"
+      description="Hardware-based AI regulation"
+    />
+    <EntityCard
+      id="eu-ai-act"
+      category="policy"
+      title="EU AI Act"
+      description="Comprehensive AI regulation framework"
+    />
+    <EntityCard
+      id="govai"
+      category="lab"
+      title="Centre for the Governance of AI"
+      description="Leading AI governance research institution"
+    />
+    <EntityCard
+      id="racing-dynamics"
+      category="risk"
+      title="Racing Dynamics"
+      description="Key problem governance aims to solve"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "The Governance of AI", url: "https://www.governance.ai/", author: "Centre for the Governance of AI" },
+  { title: "AI Policy Career Guide", url: "https://80000hours.org/career-reviews/ai-policy-and-strategy/", author: "80,000 Hours" },
+  { title: "Computing Power and the Governance of AI", url: "https://www.governance.ai/research-papers/computing-power-and-the-governance-of-artificial-intelligence", author: "Heim et al." },
+  { title: "EU AI Act Summary", url: "https://artificialintelligenceact.eu/" },
+  { title: "AI Safety Summits", url: "https://www.aisafetysummit.gov.uk/" },
+  { title: "CSET Publications", url: "https://cset.georgetown.edu/publications/" },
+]} />

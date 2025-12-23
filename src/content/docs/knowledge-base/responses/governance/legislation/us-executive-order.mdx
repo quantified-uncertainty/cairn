@@ -1,0 +1,548 @@
+---
+title: US Executive Order on AI
+description: October 2023 executive order establishing AI safety requirements and oversight
+sidebar:
+  order: 4
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+
+<InfoBox
+  type="policy"
+  title="Executive Order on Safe, Secure, and Trustworthy AI"
+  jurisdiction="United States"
+  status="Active"
+  effectiveDate="October 30, 2023"
+  customFields={[
+    { label: "Type", value: "Executive Order" },
+    { label: "Number", value: "14110" },
+    { label: "Durability", value: "Can be revoked by future president" },
+  ]}
+/>
+
+## Overview
+
+The Executive Order on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, is the most comprehensive US government action on AI to date. It establishes safety requirements for frontier AI systems, mandates government agency actions, and creates oversight mechanisms.
+
+From an AI safety perspective, the order is significant because it:
+- Requires reporting from developers of the most powerful AI models
+- Establishes compute thresholds triggering safety requirements
+- Creates institutional infrastructure (US AI Safety Institute)
+- Addresses both near-term harms and long-term catastrophic risks
+
+However, it's an executive order, not legislation, meaning it can be revoked or modified by future administrations.
+
+## Key Provisions
+
+### 1. Compute-Based Reporting Requirements
+
+**Main Threshold: 10^26 FLOP**
+
+Any company training a model with >10^26 FLOP (floating-point operations) must:
+- Notify the Department of Commerce before and during training
+- Share results of safety testing
+- Provide information about:
+  - Model capabilities and limitations
+  - Cybersecurity measures protecting model weights
+  - Ownership and possession
+  - Red-team testing results
+
+**Bio-Risk Threshold: 10^23 FLOP**
+
+Lower threshold for models trained on biological sequence data:
+- Report training runs >10^23 FLOP using biological data
+- Share safety evaluation results
+- Rationale: Biological design capabilities could enable bioweapons
+
+**Why these thresholds?**
+- 10^26 FLOP: Approximately GPT-4.5/Claude 3 Opus scale (next-generation models)
+- 10^23 FLOP: Smaller models that could still assist bioweapon development
+- Based on current understanding of capabilities-compute relationship
+
+### 2. Safety Standards Development
+
+**NIST AI Risk Management Framework**
+
+National Institute of Standards and Technology (NIST) must develop:
+- Guidelines for red-team testing
+- Capability evaluation standards
+- Safety best practices
+- Regular updates as field evolves
+
+**AI Safety Institute**
+
+Establishes the US AI Safety Institute (AISI) to:
+- Conduct evaluations of frontier models
+- Develop testing methodologies
+- Collaborate with UK AISI and international partners
+- Research catastrophic risks
+
+### 3. Cloud Compute Reporting (Know Your Customer)
+
+**Infrastructure as a Service (IaaS) Requirements**
+
+Foreign users of US cloud computing must:
+- Provide identity verification
+- Describe intended use
+- Submit to monitoring of large training runs
+
+**Cloud providers must:**
+- Report large training runs by foreign customers
+- Implement Know Your Customer (KYC) practices
+- Report suspicious activity
+
+**Purpose:** Prevent adversaries from using US compute infrastructure to train dangerous models.
+
+### 4. AI in Government
+
+**Federal Agency Requirements**
+
+All federal agencies must:
+- Designate Chief AI Officer
+- Conduct AI risk assessments
+- Implement AI governance practices
+- Address algorithmic bias and discrimination
+
+**Procurement Standards**
+
+When purchasing AI systems, agencies must:
+- Verify safety testing
+- Assess reliability and accuracy
+- Consider rights-impacting uses
+- Ensure human oversight
+
+### 5. Critical Infrastructure Security
+
+**Critical Sectors**
+
+Special requirements for AI in:
+- Energy grid management
+- Transportation systems
+- Healthcare infrastructure
+- Financial systems
+- Water supply
+
+**Security Measures**
+
+Must implement:
+- Cybersecurity standards
+- Resilience to attacks
+- Human oversight mechanisms
+- Incident reporting
+
+### 6. Immigration for AI Talent
+
+**Visa Modernization**
+
+Streamline visas for:
+- AI researchers and engineers
+- Critical and emerging technology experts
+- International students in AI fields
+
+**Purpose:** Maintain US leadership in AI while addressing workforce needs.
+
+### 7. Privacy and Civil Liberties
+
+**Fairness and Equity**
+
+Address AI discrimination in:
+- Criminal justice
+- Healthcare
+- Housing
+- Employment
+
+**Privacy-Preserving AI**
+
+Promote development of:
+- Privacy-enhancing technologies
+- Federated learning
+- Differential privacy
+
+### 8. Competition and Innovation
+
+**Anti-Monopoly Measures**
+
+Study and address:
+- Market concentration in AI
+- Access to compute and data
+- Barriers to entry for startups
+
+**Open Research**
+
+Support:
+- Open-source AI development
+- Academic research
+- Small business innovation
+
+## Implementation Timeline
+
+| Timeframe | Deliverables |
+|-----------|--------------|
+| 90 days | NIST safety standards guidance |
+| 90 days | Cloud compute reporting framework |
+| 180 days | AI Safety Institute operational |
+| 270 days | Federal agency AI inventories |
+| 365 days | Comprehensive AI risk assessments |
+| Ongoing | Model training notifications |
+
+## Enforcement and Compliance
+
+### Reporting Mechanism
+
+**Department of Commerce** oversees:
+- Collection of model training reports
+- Safety test result analysis
+- Compliance verification
+
+**Penalties for Non-Compliance:**
+- Not explicitly specified in the order
+- Likely would require additional regulation or legislation
+- Could include contract ineligibility, export restrictions
+
+### Current Status (as of late 2024)
+
+**Implemented:**
+- US AI Safety Institute established and staffed
+- NIST guidelines published
+- Initial model training reports received
+- Cloud provider KYC frameworks in development
+
+**In Progress:**
+- Detailed compliance procedures
+- International coordination mechanisms
+- Standards refinement
+
+**Challenges:**
+- Voluntary nature of some provisions
+- Limited enforcement authority
+- Need for congressional legislation for durability
+
+## Strengths
+
+### Compute Governance
+
+**Measurable thresholds:** Using FLOP provides concrete triggers that are harder to evade than capability-based definitions.
+
+**Comprehensive scope:** Covers both domestic and foreign actors using US infrastructure.
+
+**International model:** Sets precedent other countries can follow.
+
+### Institutional Infrastructure
+
+**US AI Safety Institute:** Creates dedicated government capacity for frontier AI evaluation.
+
+**Multi-agency coordination:** Involves Commerce, Defense, Energy, NSF, and others.
+
+**Public-private partnership:** Engages industry while maintaining oversight.
+
+### Breadth of Coverage
+
+**Near and long-term risks:** Addresses both current harms (bias, privacy) and catastrophic risks.
+
+**Multiple intervention points:** Hits development, deployment, and use.
+
+### Speed and Scope
+
+**Fast action:** Comprehensive policy without waiting for Congress.
+
+**Sets baseline:** Even if modified, establishes norm that AI requires government oversight.
+
+## Weaknesses
+
+### Executive Action Limitations
+
+**No force of law:** Can be revoked by future president with stroke of pen.
+
+**Limited enforcement:** No penalties specified; enforcement unclear.
+
+**Budget constraints:** Implementation depends on Congressional appropriations.
+
+**Durability concerns:** May not survive political transitions.
+
+### Threshold Issues
+
+**Algorithmic efficiency:** As efficiency improves, dangerous capabilities achievable below thresholds.
+
+**Gaming potential:** Could split training runs, use different architectures, or other workarounds.
+
+**Static numbers:** 10^26 FLOP may become obsolete; requires regular updating.
+
+### Scope Limitations
+
+**Only affects US actors and US cloud:** Companies can train abroad using non-US infrastructure.
+
+**Voluntary elements:** Many provisions rely on cooperation, not enforcement.
+
+**Post-training not covered:** Fine-tuning, prompting, and other post-training methods not addressed.
+
+### Implementation Challenges
+
+**New territory:** Government has limited AI expertise and evaluation capacity.
+
+**Resource constraints:** AISI and other bodies small relative to task.
+
+**Industry resistance:** Some provisions face pushback from companies.
+
+**International coordination:** Effectiveness limited without allied participation.
+
+## Comparison to Other Approaches
+
+### vs. EU AI Act
+
+**EU:** Comprehensive binding regulation with fines up to 7% of global revenue.
+
+**US:** Executive order with unclear enforcement, more flexible but less durable.
+
+**EU:** Risk-based categories for AI applications.
+
+**US:** Compute-based thresholds for frontier models.
+
+**EU:** Focuses on deployed AI systems and their impacts.
+
+**US:** Includes broader government modernization and competition concerns.
+
+### vs. UK AISI
+
+**UK:** Voluntary evaluation-focused approach with industry cooperation.
+
+**US:** More mandatory elements (reporting requirements) but still cooperative.
+
+**UK:** Smaller, more focused institution.
+
+**US:** Broader mandate including government AI use and societal impacts.
+
+### vs. China
+
+**China:** Rapid iteration of specific regulations (generative AI, algorithms, deepfakes).
+
+**US:** Comprehensive but slower-moving framework.
+
+**China:** Content control and social stability emphasized.
+
+**US:** Rights, privacy, and competition emphasized.
+
+## Political Context
+
+### Biden Administration Priorities
+
+- AI leadership and competitiveness
+- Worker protections and labor impacts
+- Civil rights and algorithmic fairness
+- National security and China competition
+- Democratic values in technology
+
+### Congressional Response
+
+**Support:**
+- Bipartisan concern about AI risks
+- Recognition that action needed
+- Desire for US leadership
+
+**Criticism:**
+- Some Republicans: overregulation, innovation harm
+- Some Democrats: insufficient worker protections
+- Both: prefer legislation to executive action
+
+### Future Administration Risk
+
+**Potential changes:**
+- Repeal or significant modification
+- Shift priorities (e.g., reduce fairness focus, increase competition focus)
+- Weaken or strengthen depending on political orientation
+
+**Most durable elements:**
+- US AISI (once established, harder to eliminate)
+- International commitments
+- Industry best practices that emerge
+
+## Impact on AI Safety
+
+### Direct Safety Benefits
+
+**Visibility:** Government knows what frontier models are being trained.
+
+**Testing:** Safety evaluations become standard practice.
+
+**Infrastructure:** US AISI builds evaluation capacity.
+
+**Precedent:** Normalizes government oversight of AI development.
+
+### Indirect Benefits
+
+**International coordination:** Provides framework for allied coordination.
+
+**Industry standards:** Companies adopt reporting and testing practices.
+
+**Talent:** Immigration provisions help US labs hire safety researchers.
+
+### Limitations for X-Risk
+
+**Not binding enough:** Voluntary nature and weak enforcement limit effectiveness.
+
+**Doesn't prevent development:** Reporting requirements don't stop dangerous models.
+
+**Focuses on testing, not thresholds:** No requirement to delay deployment based on danger.
+
+**Missing elements:**
+- No pause or moratorium authority
+- No capability-based deployment restrictions
+- No liability for harms
+
+### Could Be Strengthened By
+
+**Legislation:** Congressional action would provide durability and enforcement.
+
+**Deployment thresholds:** Requirements to demonstrate safety before release.
+
+**Coordination requirements:** Mandate information sharing among labs.
+
+**Liability framework:** Hold developers accountable for harms.
+
+**International treaties:** Bind multiple countries to common standards.
+
+## Career Implications
+
+### Opportunities Created
+
+**US AI Safety Institute:** New government positions in AI evaluation and research.
+
+**Federal AI roles:** Chief AI Officers and governance staff at every agency.
+
+**Compliance positions:** Industry roles implementing reporting and testing.
+
+**Policy research:** Analysis of implementation and effectiveness.
+
+### Relevant Backgrounds
+
+- AI safety research (technical evaluations)
+- Public policy (implementation and analysis)
+- Law (compliance and regulatory interpretation)
+- National security (threat assessment)
+- Data science (analyzing model capabilities)
+
+### Organizations Involved
+
+**Government:**
+- Department of Commerce
+- National Institute of Standards and Technology (NIST)
+- US AI Safety Institute
+- National Security Council
+
+**Industry:**
+- OpenAI, Anthropic, Google, Meta, Microsoft
+- Cloud providers (AWS, Azure, GCP)
+- Startups developing frontier models
+
+**Civil Society:**
+- AI safety research organizations
+- Civil liberties groups
+- Policy think tanks
+
+## Related Policies
+
+### Complements
+
+**CHIPS and Science Act:** Funding for AI research and compute infrastructure.
+
+**National Security Memorandum on AI:** Classified guidance for defense/intelligence AI use.
+
+**Export controls:** BIS restrictions on AI chip exports to adversaries.
+
+### International Coordination
+
+**UK AI Safety Summit:** Bletchley Declaration aligned with EO approach.
+
+**G7 Hiroshima Process:** International AI governance discussions.
+
+**OECD AI Principles:** Broader framework EO builds on.
+
+## Key Uncertainties
+
+### Will it survive political transition?
+
+**Arguments for durability:**
+- Bipartisan AI safety concern
+- Institutional infrastructure created
+- Industry has adapted to requirements
+- International commitments made
+
+**Arguments for vulnerability:**
+- Executive orders routinely reversed
+- Potential deregulatory agenda
+- Industry lobbying against compliance costs
+- Political polarization
+
+### Will enforcement be effective?
+
+**Challenges:**
+- No fines or penalties specified
+- Limited government capacity
+- Voluntary cooperation required
+- Gaming possibilities
+
+**Possibilities:**
+- Industry self-interest in demonstrating responsibility
+- Reputational costs of non-compliance
+- Future legislation adding teeth
+- Contract and export controls as leverage
+
+### Will thresholds remain relevant?
+
+**Risk of obsolescence:**
+- Algorithmic efficiency improving
+- Alternative architectures emerging
+- Post-training methods advancing
+
+**Mitigation:**
+- Regular threshold updates planned
+- Capability-based triggers could supplement
+- International coordination on standards
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Compute Thresholds",
+    "AI Governance",
+    "US AISI",
+    "Cloud Computing",
+    "Know Your Customer",
+    "Safety Evaluations",
+    "Executive Policy",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="compute-governance"
+      category="policy"
+      title="Compute Governance"
+      description="Framework underlying EO's compute thresholds"
+    />
+    <EntityCard
+      id="uk-aisi"
+      category="policy"
+      title="UK AI Safety Institute"
+      description="Partner institution with similar mission"
+    />
+    <EntityCard
+      id="eu-ai-act"
+      category="policy"
+      title="EU AI Act"
+      description="Alternative comprehensive regulatory approach"
+    />
+    <EntityCard
+      id="voluntary-commitments"
+      category="policy"
+      title="Voluntary Industry Commitments"
+      description="Industry pledges that preceded the EO"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "Executive Order 14110: Full Text", url: "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/", date: "October 30, 2023" },
+  { title: "White House Fact Sheet", url: "https://www.whitehouse.gov/briefing-room/statements-releases/2023/10/30/fact-sheet-president-biden-issues-executive-order-on-safe-secure-and-trustworthy-artificial-intelligence/" },
+  { title: "US AI Safety Institute", url: "https://www.nist.gov/aisi" },
+  { title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework" },
+  { title: "Analysis from Center for Security and Emerging Technology", url: "https://cset.georgetown.edu/article/understanding-the-ai-executive-order/", author: "CSET", date: "2023" },
+]} />

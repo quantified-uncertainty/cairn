@@ -1,0 +1,123 @@
+---
+title: Probability Models Demo
+description: Interactive probabilistic models for AI risk estimation
+tableOfContents: true
+---
+
+import ProbabilityModelDemo, { TimelineModel, CyberRiskModel, AlignmentDecomposition, ExpertComparison } from '../../../components/ProbabilityModelDemo';
+
+This page demonstrates interactive probabilistic models for reasoning about AI risk. Adjust the sliders to see how different assumptions affect outcomes.
+
+## 1. TAI Timeline & Risk Model
+
+This model lets you specify your beliefs about when transformative AI (TAI) will arrive and how difficult alignment is. It then calculates implied probabilities.
+
+**Key variables:**
+- **Expected TAI Year**: Your median estimate for when TAI arrives
+- **Uncertainty**: How wide your probability distribution is (higher = more uncertain)
+- **Alignment Difficulty**: How likely is it that alignment remains unsolved?
+
+<TimelineModel client:load />
+
+### How it works
+
+The model samples from a normal distribution centered on your expected TAI year. The P(Catastrophe) is calculated as:
+
+```
+P(Catastrophe) = (1 - P(Alignment Success)) × P(Catastrophe | Misaligned)
+```
+
+Where alignment success is penalized if timelines are short (less time for research).
+
+---
+
+## 2. AI-Enabled Cyber Risk Over Time
+
+This model projects how AI could affect cybersecurity damage over the next 20 years. The key insight: there's likely a **peak vulnerability period** when AI-enabled offense outpaces defense.
+
+**Key variables:**
+- **TAI Year**: When AI capabilities jump significantly
+- **Offense Advantage**: How much does AI favor attackers? (1x = neutral, 2x = attackers benefit more)
+- **Defense Adaptation Rate**: How quickly do defenses catch up to new attack capabilities?
+
+<CyberRiskModel client:load />
+
+### Dynamics
+
+1. **Pre-TAI**: Gradual capability growth on both sides
+2. **At TAI**: Sharp jump in capabilities (affects offense first)
+3. **Post-TAI**: Defense eventually catches up, but damage accumulates during the gap
+
+The shaded band shows the 80% confidence interval across model runs.
+
+---
+
+## 3. Alignment Success Decomposition
+
+Alignment success likely requires solving multiple sub-problems. This model shows how uncertainty compounds when you need **all** of them to succeed.
+
+**Sub-problems:**
+- **Interpretability**: Can we understand what models are doing?
+- **Goal Specification**: Can we specify what we actually want?
+- **Robustness**: Will alignment hold under distribution shift?
+- **No Deceptive Alignment**: Will models not learn to fake alignment?
+
+<AlignmentDecomposition client:load />
+
+### Key insight: Conjunctive arguments
+
+Even if you're 60% confident on each sub-problem, the compound probability is:
+```
+0.6 × 0.6 × 0.6 × 0.6 = 13%
+```
+
+This is why many researchers are concerned even without being confident any *specific* problem is unsolvable.
+
+---
+
+## 4. Compare Your Views to Experts
+
+Input your views and see which expert's position you're closest to. This helps calibrate and understand where you sit in the discourse.
+
+<ExpertComparison client:load />
+
+### Expert positions (simplified)
+
+| Expert | TAI Timeline | Alignment Difficulty | P(Doom) |
+|--------|-------------|---------------------|---------|
+| Yudkowsky | ~2030 | Very hard (85%) | ~90% |
+| Christiano | ~2040 | Moderate (50%) | ~15% |
+| Anthropic | ~2032 | Moderate (45%) | ~18% |
+| OpenAI | ~2030 | Easier (35%) | ~12% |
+| LeCun | ~2050+ | Easy (20%) | ~2% |
+
+---
+
+## Technical Notes
+
+### What these models are
+
+These are **toy models** designed to build intuition, not precise forecasts. They demonstrate:
+- How inputs propagate to outputs
+- How uncertainty compounds
+- How different assumptions lead to different conclusions
+
+### What they're not
+
+- Not calibrated to real-world data
+- Not comprehensive (many factors omitted)
+- Not endorsed by any expert as their actual model
+
+### Future directions
+
+These could be extended to:
+- Use proper probabilistic programming (e.g., [Squiggle](https://www.squiggle-language.com/))
+- Incorporate more detailed causal models
+- Allow saving/sharing your model configurations
+- Show sensitivity analysis (which inputs matter most?)
+
+---
+
+## All Models Combined
+
+<ProbabilityModelDemo client:load />

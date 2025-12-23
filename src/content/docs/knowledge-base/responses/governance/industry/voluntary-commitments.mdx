@@ -1,0 +1,778 @@
+---
+title: Voluntary Industry Commitments
+description: AI labs' voluntary safety pledges and self-regulatory initiatives
+sidebar:
+  order: 7
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+
+<InfoBox
+  type="policy"
+  title="Voluntary AI Safety Commitments"
+  jurisdiction="International (US-led)"
+  status="Active (Ongoing)"
+  effectiveDate="July 2023 onwards"
+  customFields={[
+    { label: "Nature", value: "Non-binding voluntary pledges" },
+    { label: "Enforcement", value: "Reputational only" },
+    { label: "Participants", value: "Major AI labs" },
+  ]}
+/>
+
+## Overview
+
+In July 2023, the White House secured **voluntary commitments** from leading AI companies on safety, security, and trust. These commitments represent the **first coordinated industry-wide AI safety pledges**, establishing baseline practices for frontier AI development.
+
+From an AI safety perspective, voluntary commitments are significant because they:
+- Establish **norms and best practices** before regulation
+- Create **pressure for compliance** through reputational mechanisms
+- Demonstrate **industry recognition** of risks
+- Provide **templates** for future regulation
+
+However, they are **non-binding and unenforceable**, raising questions about their effectiveness and durability.
+
+## White House AI Commitments (July 2023)
+
+### Participating Companies (Initial)
+
+- Amazon
+- Anthropic
+- Google / Google DeepMind
+- Inflection AI
+- Meta
+- Microsoft
+- OpenAI
+
+**Later additions:**
+- Adobe
+- Cohere
+- IBM
+- Nvidia
+- Palantir
+- Salesforce
+- Scale AI
+- Stability AI
+
+### Eight Core Commitments
+
+#### 1. Internal and External Security Testing
+
+**Commitment:**
+- Test AI systems extensively before release
+- Include internal red-teaming
+- Invite external experts to find flaws
+- Address cybersecurity and biosecurity risks
+
+**Implementation:**
+- Pre-deployment testing protocols
+- Third-party security assessments
+- Bug bounty programs
+- Adversarial testing
+
+**Compliance:**
+- Most labs conduct some red-teaming
+- Depth and rigor varies significantly
+- External testing often limited
+- Details rarely public
+
+#### 2. Information Sharing
+
+**Commitment:**
+- Share information across industry and government on:
+  - Managing AI risks
+  - Best practices
+  - Attempting to circumvent safeguards
+
+**Implementation:**
+- Information sharing frameworks
+- Participation in industry groups
+- Government collaboration
+
+**Compliance:**
+- Limited sharing in practice
+- Competitive concerns limit openness
+- Some participation in working groups
+- Government collaboration (US AISI, UK AISI)
+
+#### 3. Third-Party Vulnerability Discovery and Reporting
+
+**Commitment:**
+- Invest in robust cybersecurity and insider threat safeguards
+- Mechanisms for reporting vulnerabilities by third parties
+
+**Implementation:**
+- Bug bounty programs
+- Responsible disclosure policies
+- Cybersecurity infrastructure
+
+**Compliance:**
+- Varies by company
+- Some have robust programs (e.g., bug bounties)
+- Model weight security inconsistent
+- Public information limited
+
+#### 4. Watermarking AI-Generated Content
+
+**Commitment:**
+- Develop technical mechanisms to identify AI-generated:
+  - Text
+  - Images
+  - Audio
+  - Video
+
+**Implementation:**
+- Watermarking systems
+- Metadata tagging
+- Detection tools
+
+**Compliance:**
+- Image generation often includes watermarking (Google, OpenAI)
+- Text watermarking largely absent (technical challenges)
+- Audio/video watermarking limited
+- Easy to remove in many cases
+
+#### 5. Public Reporting on Capabilities and Limitations
+
+**Commitment:**
+- Publicly report:
+  - AI system capabilities
+  - Known limitations
+  - Appropriate and inappropriate uses
+  - Societal risks (e.g., bias, privacy, misinformation)
+
+**Implementation:**
+- Model cards
+  - System cards
+- Capability reports
+- Limitations documentation
+
+**Compliance:**
+- Most labs publish model cards
+- Depth varies considerably
+- Often marketing-focused
+- Capability understatement common
+- Limitations sometimes vague
+
+#### 6. Research on Societal Risks
+
+**Commitment:**
+- Prioritize research on:
+  - Bias and discrimination
+  - Privacy violations
+  - Misinformation
+  - Other societal harms
+
+**Implementation:**
+- Internal research teams
+- Academic partnerships
+- Funding external research
+- Publishing findings
+
+**Compliance:**
+- All major labs have fairness/safety teams
+- Research quality and focus varies
+- Publication varies (some open, some limited)
+- Long-term existential risks less emphasized
+
+#### 7. Develop and Deploy Frontier AI Responsibly
+
+**Commitment:**
+- Prioritize safety in developing advanced AI
+- Mitigate societal risks
+- Focus benefits on meaningful problems
+
+**Implementation:**
+- Internal safety teams
+- Responsible Scaling Policies (RSPs)
+- Staged deployment
+- Monitoring and iteration
+
+**Compliance:**
+- High-level and vague commitment
+- Hard to evaluate compliance
+- All claim to prioritize safety
+- Deployment speed suggests limits
+
+#### 8. Robust Technical Work on Major Risks
+
+**Commitment:**
+- Develop and deploy frontier AI to address major challenges:
+  - Cancer detection and prevention
+  - Climate change mitigation
+  - Other pressing issues
+
+**Implementation:**
+- Partnerships with researchers
+- Specialized models for science
+- Public benefit applications
+
+**Compliance:**
+- Some efforts (AlphaFold for protein folding, etc.)
+- Often secondary to commercial applications
+- Marketing value of these applications
+- Genuine work but limited scale
+
+## Responsible Scaling Policies (RSPs)
+
+**Developed by:** Anthropic, adopted in various forms by others
+
+**Concept:**
+- Define **capability thresholds** that trigger safety measures
+- **If-then commitments**: "If model can do X, then implement Y safeguards"
+- Scale up safety measures as models scale up
+- Adaptive framework responding to capabilities
+
+### Anthropic's RSP
+
+**ASL Framework (AI Safety Levels):**
+
+**ASL-1:** No meaningful risk (chatbot, image classifier)
+**ASL-2:** Current systems (GPT-4, Claude 3)
+- Standard security measures
+- Refusal training
+- Monitoring
+
+**ASL-3:** Systems that could assist in creating CBRN weapons or enable autonomy
+- Deployment only if safeguards pass tests
+- Enhanced security for model weights
+- Monitoring deployment for misuse
+- Third-party audits
+
+**ASL-4:** Systems that could autonomously conduct dangerous research or operations
+- Not yet defined (to be specified before reaching ASL-3)
+- Likely very stringent safeguards
+- Possible deployment restrictions
+
+**Implementation:**
+- Quarterly capability evaluations
+- Update safeguards as needed
+- Public reporting on ASL status
+- Independent assessment
+
+### OpenAI's Preparedness Framework
+
+**Similar Structure:**
+- Risk categories: Cybersecurity, CBRN, Persuasion, Autonomy
+- Risk levels: Low, Medium, High, Critical
+- Cannot deploy models with "High" risk in any category without adequate safeguards
+- Cannot develop models with post-mitigation "Critical" risk
+
+**Governance:**
+- Preparedness team conducts evaluations
+- Leadership approves deployment
+- Board oversight
+
+**Transparency:**
+- Framework published
+- Updates shared
+- Specific evaluations less transparent
+
+### Google DeepMind's Frontier Safety Framework
+
+**Key Elements:**
+- Critical capability evaluations
+- Early warning systems
+- Capability-specific safety protocols
+- Deployment decisions based on risk assessments
+
+**Focus Areas:**
+- Autonomy
+- Biosecurity
+- Cybersecurity
+- ML research assistance
+
+### Evaluation and Critique
+
+**Positive Aspects:**
+- Concrete capability thresholds
+- Adaptive to emerging risks
+- Public accountability
+- If-then structure clearer than vague principles
+
+**Criticisms:**
+- Self-defined and self-enforced
+- Thresholds may be too permissive
+- "Adequate safeguards" subjective
+- Can revise framework unilaterally
+- Commercial pressure to weaken
+- No external enforcement
+
+## International AI Safety Commitments
+
+### Bletchley Declaration (November 2023)
+
+**Signatories:** 28 countries including US, UK, EU, China
+
+**Commitments:**
+- Recognize existential and catastrophic risks
+- Cooperate on AI safety research
+- Support science-based approaches
+- Inclusive international dialogue
+
+**Significance:**
+- **First international agreement** mentioning catastrophic AI risk
+- **China's participation** notable
+- Very high-level and non-binding
+
+**Follow-up:**
+- Seoul AI Safety Summit (May 2024)
+- Ongoing international coordination
+
+### Seoul AI Safety Summit (May 2024)
+
+**Building on Bletchley:**
+- Expanded participation
+- Focus on frontier AI safety
+- International research cooperation
+
+**Commitments:**
+- Frontier AI safety research
+- International evaluation collaboration
+- Information sharing
+- Public transparency
+
+**16 Leading AI Companies Pledged:**
+- Frontier AI Safety Commitments
+- Similar to White House commitments
+- International scope
+- Again voluntary and non-binding
+
+## Compliance and Enforcement
+
+### Monitoring
+
+**Challenges:**
+- No formal verification mechanism
+- Labs self-report
+- Technical details often proprietary
+- Hard to evaluate claims
+
+**Attempts:**
+- Civil society organizations tracking
+- Academic research
+- Journalism investigations
+- Company publications
+
+### Enforcement Mechanisms
+
+**Reputational:**
+- Public commitments create accountability
+- Violations harm company reputation
+- Media and civil society pressure
+- Employee and customer expectations
+
+**Market:**
+- Enterprise customers demand responsible AI
+- Government contracts require compliance
+- Competitive advantage in responsibility
+
+**Legal/Regulatory:**
+- Commitments may inform future regulation
+- Could be incorporated into laws
+- Basis for enforcement if codified
+- Currently no legal force
+
+### Track Record
+
+**Areas of Progress:**
+- Red-teaming now standard practice
+- Model cards widely adopted
+- Some watermarking implemented
+- Pre-deployment testing increased
+
+**Areas of Limited Progress:**
+- Information sharing minimal
+- Vulnerability reporting inconsistent
+- Capability disclosure often inadequate
+- Societal risk research variable
+
+**Backsliding Concerns:**
+- Competitive pressure to cut corners
+- Leadership changes
+- Market conditions
+- Weakening over time without enforcement
+
+## Debate: Are Voluntary Commitments Sufficient?
+
+### Arguments For Voluntary Approach
+
+**Flexibility:**
+- Adapts quickly to new technology
+- No legislative lag
+- Can iterate based on learning
+
+**Industry Expertise:**
+- Companies know capabilities best
+- Technical sophistication required
+- Impractical for regulators to specify details
+
+**Innovation:**
+- Avoids regulatory burden
+- Allows experimentation
+- Doesn't lock in potentially wrong approaches
+
+**Global Coordination:**
+- Easier to achieve than binding treaties
+- Can include rivals (China)
+- Builds norms and trust
+
+**Existing Success:**
+- Has improved practices
+- Red-teaming, model cards, testing more common
+- Better than no action
+
+### Arguments Against (Need for Binding Regulation)
+
+**Race Dynamics:**
+- Competitive pressure to deploy faster
+- First-mover advantage
+- Economic incentives override safety
+- Voluntary commitments sacrifice when costly
+
+**Enforcement:**
+- No penalties for violations
+- Reputational costs insufficient
+- Can renege without consequence
+- "Cheap talk" concern
+
+**Capture:**
+- Labs define own standards
+- Potential to weaken over time
+- No independent oversight
+- Conflicts of interest
+
+**Inadequate for Catastrophic Risk:**
+- Existential risk requires more than best efforts
+- Too important to leave to voluntary action
+- Need binding constraints
+- Public good requires regulation
+
+**Historical Precedent:**
+- Voluntary industry commitments often fail
+- Tobacco, finance, other industries
+- Regulation typically necessary
+- Self-regulation alone insufficient
+
+**Specific Failures:**
+- Limited information sharing
+- Weak watermarking
+- Vague capability disclosure
+- Continued rapid deployment
+
+### Synthesis Views
+
+**Voluntary Commitments as Foundation:**
+- Good starting point
+- Build industry buy-in
+- Develop best practices
+- Inform future regulation
+
+**Need Evolution to Binding Requirements:**
+- Codify successful practices
+- Add enforcement mechanisms
+- Independent oversight
+- Adapt based on experience
+
+**Complement, Don't Replace:**
+- Voluntary commitments for rapidly changing areas
+- Binding rules for core safety requirements
+- Hybrid approach
+- Different tools for different contexts
+
+## Comparison to Other Industries
+
+### Pharmaceutical Industry
+
+**Voluntary Period:**
+- Early 20th century, limited regulation
+- Industry self-regulation inadequate
+- Scandals (thalidomide, etc.)
+
+**Transition to Regulation:**
+- FDA established and strengthened
+- Required pre-market testing
+- Post-market surveillance
+- Binding safety standards
+
+**Lessons:**
+- Voluntary insufficient for public safety
+- Catastrophic failures drove regulation
+- Industry adapted and continued innovation
+- Regulation now accepted norm
+
+### Aviation Industry
+
+**Evolution:**
+- Started with voluntary safety practices
+- Accidents drove regulation
+- FAA certification required
+- Industry cooperates with regulators
+
+**Current State:**
+- Strict binding safety requirements
+- Industry still innovates
+- Safety record excellent
+- Combination of regulation and industry expertise
+
+**Lessons:**
+- Can regulate safety without killing innovation
+- Industry expertise essential for effective regulation
+- Binding requirements work
+- Continuous improvement possible
+
+### Financial Industry
+
+**Pattern:**
+- Cycles of deregulation and crisis
+- Voluntary commitments during booms
+- Binding regulation after crashes
+- Ongoing tension
+
+**Lessons:**
+- Competitive pressure undermines voluntary commitments
+- Systemic risk requires regulation
+- Industry resists until crisis forces action
+- Need proactive, not just reactive, regulation
+
+### Nuclear Industry
+
+**Regulatory Framework:**
+- Strict regulation from early stages
+- International coordination (IAEA)
+- Safety culture development
+- Binding requirements
+
+**Outcomes:**
+- Generally strong safety record (with exceptions)
+- Innovation within regulatory constraints
+- Accidents still occur
+- High public stakes justify strict regulation
+
+**Lessons for AI:**
+- Catastrophic potential justifies strong regulation
+- International coordination possible
+- Binding safety requirements compatible with development
+- Culture of safety can be built
+
+## Future of Voluntary Commitments
+
+### Likely Evolution
+
+**Short-term (1-2 years):**
+- Continued voluntary approach
+- Expansion to more companies
+- Refinement of commitments
+- Some regulation emerging (EU AI Act, US state laws)
+
+**Medium-term (3-5 years):**
+- Voluntary commitments codified in law
+- Binding requirements in major jurisdictions
+- International coordination frameworks
+- Hybrid voluntary/mandatory system
+
+**Long-term (5+ years):**
+- Comprehensive binding regulation
+- International treaties possible
+- Voluntary commitments for cutting edge
+- Core safety requirements mandatory
+
+### Threats to Voluntary Approach
+
+**Competitive Dynamics:**
+- New entrants not bound by commitments
+- Open-source development
+- International competition
+- Race to deploy
+
+**Capability Increases:**
+- More powerful systems increase stakes
+- Voluntary insufficient for AGI-level systems
+- Catastrophic risk potential
+- Public and political pressure
+
+**Failures:**
+- Accidents or misuse incidents
+- Erosion of trust in voluntary approach
+- Political reaction
+- Calls for regulation
+
+### Opportunities to Strengthen
+
+**Independent Verification:**
+- Third-party audits
+- Academic partnerships
+- Civil society monitoring
+- Transparency measures
+
+**Specificity:**
+- Concrete metrics and thresholds
+- Clear evaluation criteria
+- Public reporting standards
+- Measurable commitments
+
+**Expansion:**
+- Include more companies
+- Cover more aspects of safety
+- International scope
+- Supply chain (cloud, chips, data)
+
+**Institutionalization:**
+- Industry consortium
+- Shared evaluation frameworks
+- Collective action
+- Reduce competitive disadvantage
+
+## Role in AI Safety Strategy
+
+### Current Value
+
+**Establishes Norms:**
+- Safety testing expected
+- Transparency valued
+- Responsibility recognized
+- Foundation for culture
+
+**Buys Time:**
+- Action while regulation develops
+- Better than no constraints
+- Allows learning
+- Demonstrates feasibility
+
+**Engages Industry:**
+- Labs participate in shaping norms
+- Buy-in for future regulation
+- Develops expertise
+- Relationships with government
+
+### Limitations
+
+**Not Sufficient:**
+- Cannot rely solely on voluntary commitments for existential risk
+- Need binding requirements
+- Enforcement necessary
+- Too important to be optional
+
+**Weak Enforcement:**
+- Reputational costs may be insufficient
+- Economic incentives strong
+- Can weaken over time
+- No penalties for violations
+
+**Missing Elements:**
+- No pause or moratorium authority
+- No binding capability thresholds
+- No liability for harms
+- No independent oversight
+
+### Strategic Use
+
+**For AI Safety Community:**
+- **Push for stronger voluntary commitments** in near term
+- **Support transition to binding regulation** in medium term
+- **Use commitments to inform regulatory design**
+- **Monitor and publicize compliance or violations**
+
+**For Policymakers:**
+- **Build on voluntary framework** for legislation
+- **Codify successful practices**
+- **Add enforcement mechanisms**
+- **Maintain flexibility for innovation**
+
+**For Labs:**
+- **Exceed voluntary commitments** to build trust
+- **Engage constructively** in regulatory process
+- **Share lessons learned**
+- **Demonstrate responsibility**
+
+## Career Implications
+
+### Opportunities
+
+**Compliance Roles:**
+- Implementing voluntary commitments
+- Internal auditing
+- Policy teams at labs
+
+**Auditing:**
+- Third-party assessment
+- Academic evaluation research
+- Nonprofit monitoring
+
+**Policy Design:**
+- Transitioning voluntary to binding
+- Regulatory framework design
+- International coordination
+
+**Research:**
+- Evaluating effectiveness
+- Designing better commitments
+- Measuring compliance
+
+### Organizations
+
+**Industry:**
+- All major AI labs have policy/safety teams
+- Compliance roles
+- External affairs
+
+**Government:**
+- US AISI, UK AISI evaluating commitments
+- Regulatory agencies
+- International coordination bodies
+
+**Civil Society:**
+- AI safety nonprofits
+- Think tanks
+- Academic centers
+- Advocacy organizations
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Self-Regulation",
+    "Industry Commitments",
+    "Responsible Scaling",
+    "Red-Teaming",
+    "AI Governance",
+    "International Coordination",
+    "Safety Standards",
+  ]} />
+</Section>
+
+<Section title="Related Entries">
+  <EntityCards>
+    <EntityCard
+      id="us-executive-order"
+      category="policy"
+      title="US Executive Order on AI"
+      description="Federal policy building on voluntary commitments"
+    />
+    <EntityCard
+      id="international-summits"
+      category="policy"
+      title="International AI Safety Summits"
+      description="Forums where international commitments made"
+    />
+    <EntityCard
+      id="anthropic"
+      category="lab"
+      title="Anthropic"
+      description="Pioneer of Responsible Scaling Policies"
+    />
+    <EntityCard
+      id="openai"
+      category="lab"
+      title="OpenAI"
+      description="Major participant in voluntary commitments"
+    />
+  </EntityCards>
+</Section>
+
+<Sources sources={[
+  { title: "White House Fact Sheet: Voluntary AI Commitments", url: "https://www.whitehouse.gov/briefing-room/statements-releases/2023/07/21/fact-sheet-biden-harris-administration-secures-voluntary-commitments-from-leading-artificial-intelligence-companies-to-manage-the-risks-posed-by-ai/", date: "July 21, 2023" },
+  { title: "Anthropic's Responsible Scaling Policy", url: "https://www.anthropic.com/news/anthropics-responsible-scaling-policy", date: "September 2023" },
+  { title: "OpenAI Preparedness Framework", url: "https://openai.com/safety/preparedness", date: "December 2023" },
+  { title: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/", date: "May 2024" },
+  { title: "Bletchley Declaration", url: "https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration/the-bletchley-declaration-by-countries-attending-the-ai-safety-summit-1-2-november-2023", date: "November 2023" },
+  { title: "Analysis: Are Voluntary AI Commitments Enough?", url: "https://www.governance.ai/research-papers/voluntary-commitments", author: "GovAI", date: "2024" },
+]} />

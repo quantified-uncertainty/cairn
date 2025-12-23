@@ -1,0 +1,375 @@
+---
+title: Epistemic Infrastructure
+description: Building the foundational systems for knowledge creation, verification, and preservation
+sidebar:
+  order: 7
+---
+
+import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+
+<InfoBox
+  type="solution"
+  title="Epistemic Infrastructure"
+  customFields={[
+    { label: "Maturity", value: "Conceptual; partial implementations" },
+    { label: "Key Insight", value: "Knowledge systems need deliberate design" },
+    { label: "Key Challenge", value: "Coordination, funding, governance" },
+    { label: "Key Examples", value: "Wikipedia, Semantic Scholar, fact-checking networks" },
+  ]}
+/>
+
+## What Is Epistemic Infrastructure?
+
+Epistemic infrastructure refers to the **systems, institutions, and technologies** that enable societies to:
+- Create reliable knowledge
+- Verify claims and evidence
+- Preserve knowledge over time
+- Distribute knowledge fairly
+- Maintain shared understanding
+
+Just as physical infrastructure (roads, power grids) enables economic activity, epistemic infrastructure enables collective reasoning.
+
+---
+
+## Why We Need It
+
+### The Current State
+
+| Problem | Consequence |
+|---------|-------------|
+| **Fragmented verification** | Each platform/outlet does own fact-checking |
+| **No shared knowledge base** | Different sources say different things |
+| **Commercial incentives** | Engagement > accuracy |
+| **Skill atrophy** | Fewer people can evaluate claims |
+| **Platform dependence** | Knowledge locked in private systems |
+
+### What Good Infrastructure Enables
+
+| Function | Value |
+|----------|-------|
+| **Scalable verification** | Check claims across contexts |
+| **Shared reference** | Common source of agreed facts |
+| **Quality signals** | Know what's reliable |
+| **Preservation** | Knowledge survives institutional failure |
+| **Access** | Everyone can reach knowledge |
+
+---
+
+## Components of Epistemic Infrastructure
+
+### 1. Knowledge Bases
+
+**Purpose**: Structured, machine-readable knowledge with provenance.
+
+| Type | Examples | Strengths |
+|------|----------|-----------|
+| **General encyclopedias** | Wikipedia | Broad coverage |
+| **Domain knowledge bases** | Wikidata, DBpedia | Structured data |
+| **Research databases** | Semantic Scholar, PubMed | Academic knowledge |
+| **Claim databases** | ClaimReview, Fact-check repositories | Verified claims |
+
+**AI enhancement**:
+- Automated extraction from sources
+- Consistency checking
+- Gap identification
+- Multi-language synthesis
+
+### 2. Verification Networks
+
+**Purpose**: Distributed fact-checking with shared standards.
+
+| Component | Function |
+|-----------|----------|
+| **Fact-checking organizations** | Original investigation |
+| **ClaimReview markup** | Standard for fact-check results |
+| **Cross-referencing** | Multiple checks per claim |
+| **Aggregation** | Synthesize across checkers |
+
+**Key players**:
+- [International Fact-Checking Network](https://www.poynter.org/ifcn/)
+- [ClaimReview schema](https://schema.org/ClaimReview)
+- [Google Fact Check Tools](https://toolbox.google.com/factcheck/)
+
+**AI enhancement**:
+- Automated claim detection
+- Source gathering
+- Similar claim identification
+- Prioritization of claims to check
+
+### 3. Reputation Systems
+
+**Purpose**: Track reliability of sources over time.
+
+| Approach | Description | Examples |
+|----------|-------------|----------|
+| **Expert ratings** | Experts evaluate sources | NewsGuard |
+| **Track records** | Historical accuracy | Metaculus scores |
+| **Peer evaluation** | Sources rate each other | Academic peer review |
+| **Crowd sourcing** | Aggregate user assessments | Community Notes |
+
+**Key systems**:
+- [NewsGuard](https://www.newsguardtech.com/) — News source ratings
+- [Ad Fontes Media Bias Chart](https://adfontesmedia.com/) — Bias ratings
+- Community Notes (X/Twitter) — Crowd-sourced context
+
+### 4. Provenance Systems
+
+**Purpose**: Track where information came from.
+
+| Level | What It Tracks |
+|-------|----------------|
+| **Source** | Original creator/publication |
+| **Citations** | What sources cite what |
+| **Modifications** | How content was changed |
+| **Distribution** | How information spread |
+
+**Key systems**:
+- [C2PA](https://c2pa.org/) — Content credentials
+- Citation graphs — Academic provenance
+- Web archiving — Historical preservation
+
+### 5. Preservation Systems
+
+**Purpose**: Ensure knowledge survives over time.
+
+| System | Function |
+|--------|----------|
+| **Internet Archive** | Web snapshots |
+| **Academic archives** | Research preservation |
+| **Decentralized storage** | Censorship resistance |
+| **Version control** | Change history |
+
+**Key players**:
+- [Internet Archive](https://archive.org/)
+- [Perma.cc](https://perma.cc/) — Link preservation
+- LOCKSS, CLOCKSS — Library archiving
+
+### 6. Access Systems
+
+**Purpose**: Ensure knowledge is accessible.
+
+| Barrier | Solution |
+|---------|----------|
+| **Paywalls** | Open access, Sci-Hub |
+| **Language** | Translation, multilingual content |
+| **Complexity** | Plain language summaries |
+| **Connectivity** | Offline access, low-bandwidth versions |
+
+---
+
+## AI-Enhanced Infrastructure
+
+### What AI Can Do
+
+| Function | AI Application |
+|----------|----------------|
+| **Extraction** | Pull structured data from documents |
+| **Synthesis** | Combine information across sources |
+| **Translation** | Cross-language knowledge access |
+| **Summarization** | Make complex knowledge accessible |
+| **Verification** | Cross-check claims against sources |
+| **Gap-finding** | Identify missing knowledge |
+
+### Risks of AI in Infrastructure
+
+| Risk | Concern |
+|------|---------|
+| **Hallucination** | AI invents false information |
+| **Bias propagation** | AI amplifies training biases |
+| **Homogenization** | Same AI answers everywhere |
+| **Accountability** | Who's responsible for AI errors? |
+| **Dependency** | Infrastructure depends on AI providers |
+
+### Design Principles for AI Integration
+
+| Principle | Rationale |
+|-----------|-----------|
+| **Human oversight** | AI assists, doesn't replace |
+| **Transparency** | Know when AI is involved |
+| **Diverse AI** | Multiple systems reduce correlated errors |
+| **Auditability** | AI contributions are traceable |
+| **Graceful degradation** | Works if AI fails |
+
+---
+
+## Current Gaps
+
+### What's Missing
+
+| Gap | Why It Matters |
+|-----|----------------|
+| **Cross-platform verification** | Claims spread across platforms; verification doesn't |
+| **Real-time synthesis** | Knowledge updates faster than infrastructure |
+| **Global coverage** | Most infrastructure is Western/English |
+| **Incentive alignment** | Verification isn't profitable |
+| **Governance** | Who controls the infrastructure? |
+
+### Research Priorities
+
+| Priority | Question |
+|----------|----------|
+| **Scalable verification** | How to verify at internet scale? |
+| **Adversarial robustness** | How to resist manipulation? |
+| **Incentive design** | How to fund ongoing operation? |
+| **Governance models** | How to ensure legitimacy? |
+| **AI integration** | How to safely use AI? |
+
+---
+
+## Case Studies
+
+### Wikipedia
+
+**What works**:
+- Volunteer editing with quality control
+- Transparent edit history
+- Verifiability requirement
+- Cross-language knowledge sharing
+
+**Limitations**:
+- Not real-time
+- Coverage gaps
+- Edit wars on contested topics
+- Not structured data
+
+### Semantic Scholar
+
+**What works**:
+- AI-enhanced paper analysis
+- Citation graphs
+- Influence metrics
+- Open access
+
+**Limitations**:
+- Academic only
+- Doesn't verify content
+- Depends on publication system
+
+### Community Notes (Twitter/X)
+
+**What works**:
+- Crowd-sourced context
+- Cross-partisan agreement required
+- Real-time on platform
+- Transparent ratings
+
+**Limitations**:
+- One platform only
+- Vulnerable to coordination
+- Limited depth
+- Platform-controlled
+
+---
+
+## Governance Questions
+
+### Who Controls the Infrastructure?
+
+| Model | Trade-offs |
+|-------|------------|
+| **Private companies** | Resources but conflicts of interest |
+| **Governments** | Authority but capture risk |
+| **Nonprofits** | Mission-aligned but under-resourced |
+| **Decentralized** | Resistant but hard to govern |
+| **Hybrid** | Complex but balanced |
+
+### Key Governance Questions
+
+| Question | Considerations |
+|----------|----------------|
+| **Who sets standards?** | Legitimacy, expertise, representation |
+| **Who funds operations?** | Sustainability, independence |
+| **Who adjudicates disputes?** | Authority, fairness |
+| **Who has access?** | Openness, security |
+| **How does it change?** | Adaptability, stability |
+
+---
+
+## Building Blocks
+
+### Near-Term (Existing, Expand)
+
+| Building Block | Status |
+|----------------|--------|
+| Wikipedia/Wikidata | Expand, improve |
+| Fact-checking networks | Coordinate, standardize |
+| Academic infrastructure | Open access, AI tools |
+| Content authentication | Deploy C2PA |
+
+### Medium-Term (Build)
+
+| Building Block | Need |
+|----------------|------|
+| Cross-platform claim verification | Connect siloed systems |
+| Real-time knowledge synthesis | Match AI speed |
+| Global verification capacity | Beyond English/Western |
+| Incentive mechanisms | Sustainable funding |
+
+### Long-Term (Research)
+
+| Building Block | Challenge |
+|----------------|-----------|
+| Adversarial-robust systems | Resist sophisticated attacks |
+| AI-native infrastructure | Safe AI integration |
+| Self-governing knowledge systems | Legitimate governance |
+| Universal access | Global equity |
+
+---
+
+## Key Uncertainties
+
+<KeyQuestions
+  questions={[
+    "Can epistemic infrastructure be built fast enough to matter?",
+    "Who should govern global knowledge infrastructure?",
+    "How do we fund verification as a public good?",
+    "Can infrastructure resist adversarial manipulation?",
+    "What role should AI play in knowledge infrastructure?"
+  ]}
+/>
+
+---
+
+## Research and Resources
+
+### Organizations
+
+| Organization | Focus |
+|--------------|-------|
+| **[Wikimedia Foundation](https://wikimediafoundation.org/)** | Wikipedia and related projects |
+| **[Internet Archive](https://archive.org/)** | Web preservation |
+| **[Semantic Scholar](https://www.semanticscholar.org/)** | AI for research |
+| **[NewsGuard](https://www.newsguardtech.com/)** | News source ratings |
+| **[IFCN](https://www.poynter.org/ifcn/)** | Fact-checking coordination |
+
+### Academic
+
+| Field | Relevant Work |
+|-------|---------------|
+| **Library/Information Science** | Knowledge organization |
+| **Science of Science** | Research infrastructure |
+| **Computational Social Science** | Platform studies |
+| **AI for Good** | Beneficial AI applications |
+
+### Key Readings
+
+- [Knight First Amendment Institute: Epistemic Infrastructure](https://knightcolumbia.org/)
+- [Wikimedia research](https://research.wikimedia.org/)
+- [Coalition for Networked Information](https://www.cni.org/)
+
+<Section title="Related Topics">
+  <Tags tags={[
+    "Knowledge Management",
+    "Public Goods",
+    "Information Infrastructure",
+    "Verification",
+    "AI for Good",
+  ]} />
+</Section>
+
+<Sources sources={[
+  { title: "Wikimedia Foundation", url: "https://wikimediafoundation.org/" },
+  { title: "Internet Archive", url: "https://archive.org/" },
+  { title: "Semantic Scholar", url: "https://www.semanticscholar.org/" },
+  { title: "International Fact-Checking Network", url: "https://www.poynter.org/ifcn/" },
+]} />

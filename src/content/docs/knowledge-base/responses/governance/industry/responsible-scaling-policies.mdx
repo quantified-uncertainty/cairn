@@ -1,0 +1,164 @@
+---
+title: Responsible Scaling Policies
+description: Industry self-regulation frameworks for frontier AI development
+sidebar:
+  order: 8
+---
+
+import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+
+<InfoBox
+  type="policy"
+  title="Responsible Scaling Policies (RSPs)"
+  jurisdiction="Industry (voluntary)"
+  status="Active"
+  customFields={[
+    { label: "Type", value: "Self-regulation" },
+    { label: "Key Labs", value: "Anthropic, OpenAI, Google DeepMind" },
+    { label: "Origin", value: "2023" },
+  ]}
+/>
+
+## Overview
+
+**Responsible Scaling Policies (RSPs)** are voluntary commitments by frontier AI labs to evaluate AI systems for dangerous capabilities and implement appropriate safeguards before deployment or further scaling.
+
+The core idea: define **capability thresholds** that, if crossed, trigger **mandatory safety measures**. This creates a structured approach to managing risks as AI systems become more capable.
+
+## The RSP Framework
+
+### AI Safety Levels (ASLs)
+
+Anthropic introduced the concept of **AI Safety Levels**, analogous to biosafety levels:
+
+| Level | Capability | Required Safeguards |
+|-------|-----------|---------------------|
+| ASL-1 | No meaningful catastrophic risk | Standard practices |
+| ASL-2 | Some dangerous knowledge, no uplift | Current security, deployment controls |
+| ASL-3 | Meaningful uplift for CBRN/cyber | Enhanced security, evaluation protocols |
+| ASL-4 | Could cause catastrophic harm autonomously | Not yet defined; likely extensive |
+
+**Current status**: Most frontier models are assessed at ASL-2; labs are preparing ASL-3 protocols.
+
+### Evaluation → Safeguard Pipeline
+
+1. **Define thresholds**: What capabilities would require enhanced safeguards?
+2. **Evaluate models**: Test for those capabilities before training/deployment
+3. **Implement safeguards**: If thresholds crossed, deploy corresponding measures
+4. **Don't proceed without safeguards**: Pause scaling until safeguards ready
+
+## Lab-Specific Implementations
+
+### Anthropic RSP
+
+**Published**: September 2023 (updated 2024)
+
+**Key elements**:
+- AI Safety Levels framework
+- Evaluation protocols for dangerous capabilities
+- Commitment not to deploy ASL-3+ without corresponding safeguards
+- Third-party audits of evaluations
+- Public reporting on capability assessments
+
+**Triggers for ASL-3**:
+- Meaningful uplift for CBRN weapons creation
+- Significant cyber-offense capabilities
+- Ability to autonomously replicate and acquire resources
+
+### OpenAI Preparedness Framework
+
+**Published**: December 2023
+
+**Key elements**:
+- Four risk categories: Cybersecurity, CBRN, Persuasion, Model Autonomy
+- Risk levels: Low, Medium, High, Critical
+- **Deployment threshold**: Only deploy models at "Medium" or below
+- **Development threshold**: Only continue training if post-mitigation risk is "High" or below
+- Safety Advisory Group reviews all assessments
+
+**Governance**:
+- Preparedness team conducts evaluations
+- Safety Advisory Group reviews and can escalate
+- Board has final authority on "Critical" risk decisions
+
+### Google DeepMind Frontier Safety Framework
+
+**Published**: May 2024
+
+**Key elements**:
+- **Critical Capability Levels (CCLs)** for different risk domains
+- Evaluations before training and deployment decisions
+- Security and deployment mitigations corresponding to capability levels
+- Commitment to not develop models exceeding mitigatable risk levels
+
+**Risk domains**:
+- Autonomy and self-proliferation
+- Biosecurity
+- Cybersecurity
+- Machine learning R&D
+
+## Critiques and Limitations
+
+### Strengths of RSPs
+
+- **Structured approach**: Clear framework for managing scaling risks
+- **Proactive**: Address risks before they materialize
+- **Adaptable**: Can be updated as understanding improves
+- **Transparency**: Public commitments create accountability
+
+### Weaknesses and Critiques
+
+**Self-regulation concerns**:
+- Labs evaluate their own models (conflict of interest)
+- Commitments are voluntary (can be abandoned under competitive pressure)
+- No external enforcement mechanism
+- Commercial pressures may compromise rigor
+
+**Technical limitations**:
+- Capability evaluations may miss dangerous capabilities
+- Thresholds may be set too high
+- Safeguards may be insufficient for actual risks
+- Evaluations can't predict emergent capabilities
+
+**Governance gaps**:
+- RSPs don't address structural risks (concentration, racing)
+- No coordination between labs on thresholds
+- Board oversight may be insufficient
+
+## RSPs vs. Government Regulation
+
+| Aspect | RSPs | Government Regulation |
+|--------|------|----------------------|
+| Speed | Can be updated quickly | Slow legislative process |
+| Enforcement | Self-enforced | Legal penalties |
+| Expertise | Labs understand models | Regulators may lack expertise |
+| Conflicts | Self-interested | Public interest (in theory) |
+| Coverage | Only participating labs | All entities in jurisdiction |
+
+## Evolution and Future
+
+RSPs are evolving rapidly:
+
+**2023**: Initial frameworks published
+**2024**: Refinements, more detailed thresholds, third-party evaluation discussions
+**2025+**: Expected developments:
+- More sophisticated evaluation techniques
+- Cross-lab coordination on standards
+- Government integration (RSPs as compliance with regulations)
+- International harmonization efforts
+
+## Assessment
+
+RSPs represent a **significant step** toward structured AI safety management, but face fundamental limitations as **self-regulation**:
+
+- **Best case**: RSPs establish norms that governments codify into law
+- **Likely case**: RSPs provide some constraint but weaken under competitive pressure
+- **Worst case**: RSPs serve as "safety-washing" while providing inadequate protection
+
+Most AI safety experts view RSPs as **necessary but insufficient**—a useful tool that should complement, not replace, government oversight.
+
+<Sources sources={[
+  { title: "Anthropic's Responsible Scaling Policy", url: "https://www.anthropic.com/index/anthropics-responsible-scaling-policy", author: "Anthropic", date: "September 2023" },
+  { title: "OpenAI Preparedness Framework", url: "https://openai.com/safety/preparedness", author: "OpenAI", date: "December 2023" },
+  { title: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/", author: "Google DeepMind", date: "May 2024" },
+]} />

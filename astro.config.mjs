@@ -37,12 +37,21 @@ export default defineConfig({
                   label: 'Knowledge Base',
                   collapsed: true,
                   items: [
-                      { label: 'Safety Approaches', collapsed: true, items: [
-                          { label: 'Overview', slug: 'knowledge-base/safety-approaches' },
-                          { label: 'Technical', collapsed: true, autogenerate: { directory: 'knowledge-base/safety-approaches/technical' } },
-                          { label: 'Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/safety-approaches/governance' } },
-                          { label: 'Institutional', collapsed: true, autogenerate: { directory: 'knowledge-base/safety-approaches/institutional' } },
-                          { label: 'Research Agendas', slug: 'knowledge-base/research-agendas' },
+                      { label: 'Responses & Interventions', collapsed: true, items: [
+                          { label: 'Overview', slug: 'knowledge-base/responses' },
+                          { label: 'Technical Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/technical' } },
+                          { label: 'Governance', collapsed: true, items: [
+                              { label: 'Overview', slug: 'knowledge-base/responses/governance' },
+                              { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
+                              { label: 'Policy Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/policy-approaches' } },
+                              { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
+                              { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
+                          ]},
+                          { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
+                          { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
+                          { label: 'Institutional', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutional' } },
+                          { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
+                          { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
                       ]},
                       { label: 'Risks & Failure Modes', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/risks' },
@@ -52,8 +61,6 @@ export default defineConfig({
                           { label: 'Epistemic Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
                       ]},
                       { label: 'Key Uncertainties', collapsed: true, autogenerate: { directory: 'knowledge-base/cruxes' } },
-                      { label: 'Interventions', collapsed: true, autogenerate: { directory: 'knowledge-base/interventions' } },
-                      { label: 'Epistemic & Coordination Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/solutions' } },
                       { label: 'Organizations', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/organizations' },
                           { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
@@ -63,10 +70,8 @@ export default defineConfig({
                       { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
                       { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/funders' } },
                       { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
-                      { label: 'Policies', collapsed: true, autogenerate: { directory: 'knowledge-base/policies' } },
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
                       { label: 'Key Literature', collapsed: true, autogenerate: { directory: 'knowledge-base/literature' } },
-                      { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/resilience' } },
                   ],
               },
               {
