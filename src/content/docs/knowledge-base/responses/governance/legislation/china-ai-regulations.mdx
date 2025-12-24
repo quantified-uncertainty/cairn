@@ -5,22 +5,11 @@ sidebar:
   order: 6
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="China AI Regulatory Framework"
-  jurisdiction="People's Republic of China"
-  status="Active (Multiple Regulations)"
-  effectiveDate="Various (2021-2024)"
-  customFields={[
-    { label: "Approach", value: "Sector-specific, iterative" },
-    { label: "Primary Focus", value: "Content control, social stability" },
-    { label: "Enforcement", value: "Cyberspace Administration of China (CAC)" },
-  ]}
-/>
+<DataInfoBox entityId="china-ai-regulations" />
 
-## Overview
+## Summary
 
 China has developed one of the world's **most comprehensive AI regulatory frameworks** through a series of targeted regulations addressing specific AI applications and risks. Unlike the EU's comprehensive AI Act, China's approach is **iterative and sector-specific**, with new rules issued as technologies emerge.
 
@@ -713,53 +702,6 @@ While regulating AI, China simultaneously promotes AI development:
 - Support international cooperation
 - Work through multilateral channels
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Regulation",
-    "China",
-    "Content Control",
-    "Algorithmic Accountability",
-    "International Coordination",
-    "Generative AI",
-    "Deepfakes",
-    "Geopolitics",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="us-executive-order"
-      category="policy"
-      title="US Executive Order on AI"
-      description="Contrasting Western regulatory approach"
-    />
-    <EntityCard
-      id="eu-ai-act"
-      category="policy"
-      title="EU AI Act"
-      description="Alternative comprehensive framework"
-    />
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Export controls and international coordination"
-    />
-    <EntityCard
-      id="international-summits"
-      category="policy"
-      title="International AI Safety Summits"
-      description="Forums for international coordination including China"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Translation: Interim Measures for Generative AI Management", url: "https://digichina.stanford.edu/work/translation-interim-measures-for-the-management-of-generative-artificial-intelligence-services-effective-august-15-2023/", author: "DigiChina, Stanford", date: "2023" },
-  { title: "China's Algorithm Registry", url: "https://digichina.stanford.edu/work/translation-algorithmic-recommendation-management-provisions-effective-march-1-2022/", author: "DigiChina, Stanford" },
-  { title: "Deep Synthesis Regulations", url: "https://www.newamerica.org/cybersecurity-initiative/digichina/blog/translation-chinas-deep-synthesis-regulations/", author: "New America", date: "2022" },
-  { title: "China AI Governance Overview", url: "https://cset.georgetown.edu/publication/understanding-chinas-ai-regulation/", author: "CSET Georgetown", date: "2024" },
-  { title: "China's New Generation AI Development Plan", url: "https://www.newamerica.org/cybersecurity-initiative/digichina/blog/full-translation-chinas-new-generation-artificial-intelligence-development-plan-2017/", author: "New America", date: "2017" },
-  { title: "Comparing US and China AI Regulation", url: "https://carnegieendowment.org/research/2024/01/regulating-ai-in-china-and-the-united-states", author: "Carnegie Endowment", date: "2024" },
-]} />
+<Backlinks client:load entityId="china-ai-regulations" />

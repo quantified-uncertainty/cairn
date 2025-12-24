@@ -3,21 +3,12 @@ title: Authentication Collapse
 description: When verification systems can no longer keep pace with synthetic content generation
 sidebar:
   order: 17
+maturity: "Emerging"
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Authentication Collapse"
-  severity="critical"
-  likelihood="Emerging rapidly"
-  timeframe="Now - 2030"
-  customFields={[
-    { label: "Status", value: "Detection already failing for cutting-edge generators" },
-    { label: "Key Concern", value: "Fundamental asymmetry favors generation" },
-  ]}
-/>
+<DataInfoBox entityId="authentication-collapse" />
 
 ## The Scenario
 
@@ -240,19 +231,3 @@ By 2028, no reliable way exists to distinguish AI-generated content from human-c
 - [Project Origin](https://www.originproject.info/)
 - [Sensity AI](https://sensity.ai/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deepfakes",
-    "Content Verification",
-    "Watermarking",
-    "Digital Forensics",
-    "Provenance",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "C2PA: Coalition for Content Provenance and Authenticity", url: "https://c2pa.org/" },
-  { title: "DARPA MediFor Program", url: "https://www.darpa.mil/program/media-forensics" },
-  { title: "AI Text Detection is Unreliable", author: "Kirchner et al.", date: "2023", url: "https://arxiv.org/abs/2303.11156" },
-  { title: "Deepfake Detection Survey", url: "https://arxiv.org/abs/2004.11138" },
-]} />

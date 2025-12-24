@@ -5,19 +5,11 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab"
-  title="Google DeepMind"
-  founded="2010 (DeepMind), 2023 (merged entity)"
-  location="London, UK (HQ) + global offices"
-  headcount="~3,000+"
-  funding="Alphabet subsidiary (Google)"
-  website="https://deepmind.google"
-/>
+<DataInfoBox entityId="deepmind" />
 
-## Overview
+## Summary
 
 Google DeepMind was formed in April 2023 from the merger of DeepMind and Google Brain, uniting Google's two major AI research organizations. The combined entity represents one of the world's most formidable AI research labs, with landmark achievements including AlphaGo (defeating world champions at Go), AlphaFold (solving protein folding), and Gemini (multimodal AI competing with GPT-4).
 
@@ -586,86 +578,6 @@ Shane Legg's early AGI safety advocacy (from 2000s) was prescient. Both founders
 - What happens if DeepMind is first to AGI?
 - Can research culture survive long-term within Google?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Gemini",
-    "AlphaFold",
-    "AlphaGo",
-    "Reinforcement Learning",
-    "AGI",
-    "Frontier AI",
-    "Google",
-    "Scientific AI Applications",
-    "Frontier Safety Framework",
-    "Reward Modeling",
-    "Scalable Oversight"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="demis-hassabis"
-      category="people"
-      title="Demis Hassabis"
-      description="DeepMind CEO and co-founder"
-    />
-    <EntityCard
-      id="shane-legg"
-      category="people"
-      title="Shane Legg"
-      description="DeepMind co-founder and Chief AGI Scientist"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Primary competitor in frontier AI"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Safety-focused frontier lab"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-approaches"
-      title="Scalable Oversight"
-      description="Key DeepMind safety research area"
-    />
-    <EntityCard
-      id="reward-hacking"
-      category="risks"
-      title="Reward Hacking"
-      description="Risk DeepMind has documented extensively"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risks"
-      title="Racing Dynamics"
-      description="Competitive pressure from OpenAI/Microsoft"
-    />
-    <EntityCard
-      id="concentration-of-power"
-      category="risks"
-      title="Concentration of Power"
-      description="Risk from AGI at single tech company"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Google DeepMind Website", url: "https://deepmind.google" },
-  { title: "AlphaGo Documentary", url: "https://www.youtube.com/watch?v=WXuK6gekU1Y" },
-  { title: "AlphaFold Protein Structure Database", url: "https://alphafold.ebi.ac.uk" },
-  { title: "AlphaFold Nature Paper", url: "https://www.nature.com/articles/s41586-021-03819-2" },
-  { title: "Frontier Safety Framework", url: "https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/" },
-  { title: "AI Safety Gridworlds", url: "https://arxiv.org/abs/1711.09883" },
-  { title: "Specification Gaming Examples", url: "https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/" },
-  { title: "DeepMind Safety Research", url: "https://deepmind.google/discover/blog/building-safe-artificial-intelligence-insights-from-deepmind/" },
-  { title: "Gemini Technical Report", url: "https://arxiv.org/abs/2312.11805" },
-  { title: "Google DeepMind Merger Announcement", url: "https://blog.google/technology/ai/april-ai-update/" },
-  { title: "GraphCast Weather Prediction", url: "https://deepmind.google/discover/blog/graphcast-ai-model-for-faster-and-more-accurate-global-weather-forecasting/" },
-  { title: "Nobel Prize in Chemistry 2024", url: "https://www.nobelprize.org/prizes/chemistry/2024/press-release/" }
-]} />
+<Backlinks client:load entityId="deepmind" />

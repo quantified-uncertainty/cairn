@@ -5,23 +5,11 @@ sidebar:
   order: 8
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="International AI Safety Summit Series"
-  jurisdiction="International"
-  status="Ongoing"
-  effectiveDate="November 2023 onwards"
-  customFields={[
-    { label: "First Summit", value: "Bletchley Park, UK (Nov 2023)" },
-    { label: "Second Summit", value: "Seoul, South Korea (May 2024)" },
-    { label: "Third Summit", value: "Paris, France (Feb 2025)" },
-    { label: "Format", value: "Government-led, multi-stakeholder" },
-  ]}
-/>
+<DataInfoBox entityId="international-summits" />
 
-## Overview
+## Summary
 
 The **International AI Safety Summit series** represents the first sustained effort at global coordination on AI safety, bringing together governments, AI companies, civil society, and researchers to address the risks from advanced AI.
 
@@ -795,53 +783,6 @@ However, the summits produce only **voluntary, non-binding commitments** and fac
 - Collaborate on standards
 - Demonstrate responsibility
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "International Coordination",
-    "AI Governance",
-    "Multilateral Diplomacy",
-    "Frontier AI",
-    "Bletchley Declaration",
-    "Voluntary Commitments",
-    "Policy Summits",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="voluntary-commitments"
-      category="policy"
-      title="Voluntary Industry Commitments"
-      description="Company pledges made at summits"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="policy"
-      title="UK AI Safety Institute"
-      description="Established following Bletchley Summit"
-    />
-    <EntityCard
-      id="us-executive-order"
-      category="policy"
-      title="US Executive Order on AI"
-      description="US policy announced around Bletchley"
-    />
-    <EntityCard
-      id="china-ai-regulations"
-      category="policy"
-      title="China AI Regulations"
-      description="Chinese approach and participation"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Bletchley Declaration", url: "https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration/the-bletchley-declaration-by-countries-attending-the-ai-safety-summit-1-2-november-2023", date: "November 1, 2023" },
-  { title: "Seoul AI Safety Summit Outcomes", url: "https://www.gov.uk/government/publications/ai-seoul-summit-2024-outcomes", date: "May 2024" },
-  { title: "Frontier AI Safety Commitments", url: "https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024", date: "May 21, 2024" },
-  { title: "UN AI Advisory Body Report", url: "https://www.un.org/ai-advisory-body", date: "2024" },
-  { title: "G7 Hiroshima AI Process", url: "https://www.g7hiroshima.go.jp/en/documents/", date: "2023" },
-  { title: "Analysis: International AI Governance After Bletchley", url: "https://www.governance.ai/research-papers/international-ai-governance", author: "GovAI", date: "2024" },
-  { title: "OECD AI Principles", url: "https://oecd.ai/en/ai-principles", date: "2019, updated 2023" },
-]} />
+<Backlinks client:load entityId="international-summits" />

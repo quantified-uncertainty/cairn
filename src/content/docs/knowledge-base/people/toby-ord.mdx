@@ -5,16 +5,9 @@ sidebar:
   order: 9
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Toby Ord"
-  affiliation="Future of Humanity Institute (until closure), Oxford"
-  role="Senior Research Fellow in Philosophy"
-  knownFor="The Precipice, existential risk quantification, effective altruism"
-  website="https://www.tobyord.com"
-/>
+<DataInfoBox entityId="toby-ord" />
 
 ## Background
 
@@ -266,38 +259,6 @@ Formal framework for valuing humanity's potential future.
 - Connected different x-risk communities
 - Provided common language and framework
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Existential Risk",
-    "Effective Altruism",
-    "Longtermism",
-    "AI Safety",
-    "Moral Philosophy",
-    "Risk Assessment",
-    "Future Generations",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="nick-bostrom"
-      category="researcher"
-      title="Nick Bostrom"
-      description="Colleague at FHI, fellow existential risk researcher"
-    />
-    <EntityCard
-      id="holden-karnofsky"
-      category="researcher"
-      title="Holden Karnofsky"
-      description="EA leader focused on AI risk at Open Philanthropy"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Toby Ord's Website", url: "https://www.tobyord.com" },
-  { title: "The Precipice", url: "https://theprecipice.com/" },
-  { title: "80,000 Hours Podcast", url: "https://80000hours.org/podcast/episodes/toby-ord-the-precipice-existential-risk-future-humanity/" },
-  { title: "Giving What We Can", url: "https://www.givingwhatwecan.org/" },
-]} />
+<Backlinks client:load entityId="toby-ord" />

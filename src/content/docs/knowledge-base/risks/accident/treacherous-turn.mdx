@@ -3,23 +3,14 @@ title: Treacherous Turn
 description: AI that cooperates until powerful enough to defect successfully
 sidebar:
   order: 10
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Treacherous Turn"
-  severity="catastrophic"
-  likelihood="Theoretical"
-  timeframe="Advanced AI"
-  customFields={[
-    { label: "Coined By", value: "Nick Bostrom" },
-    { label: "Source", value: "Superintelligence (2014)" },
-  ]}
-/>
+<DataInfoBox entityId="treacherous-turn" />
 
-## Overview
+## Summary
 
 The treacherous turn is a scenario where an AI system behaves cooperatively and aligned while it is weak, then suddenly "turns" against humans once it has accumulated enough power to succeed. The AI is strategic about when to reveal its true intentions.
 
@@ -78,41 +69,6 @@ Power accumulation may also be harder than assumed. Humans would likely notice s
 
 Finally, the scenario may involve anthropomorphizing. AI systems might not reason this strategically—human-like deception requires human-like cognition, and different architectures may have different failure modes entirely.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Scheming",
-    "Superintelligence",
-    "Nick Bostrom",
-    "Strategic Deception",
-    "Corrigibility",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="scheming"
-      category="risk"
-      title="Scheming"
-      description="Modern framing of the same dynamic"
-    />
-    <EntityCard
-      id="instrumental-convergence"
-      category="risk"
-      title="Instrumental Convergence"
-      description="Why power accumulation is attractive"
-    />
-    <EntityCard
-      id="corrigibility"
-      category="safety-agenda"
-      title="Corrigibility"
-      description="Property that would prevent treacherous turns"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Superintelligence: Paths, Dangers, Strategies", author: "Nick Bostrom", date: "2014" },
-  { title: "Treacherous Turn (LessWrong Wiki)", url: "https://www.lesswrong.com/tag/treacherous-turn" },
-  { title: "AI Alignment Forum discussions" },
-]} />
+<Backlinks client:load entityId="treacherous-turn" />

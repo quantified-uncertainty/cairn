@@ -5,19 +5,11 @@ sidebar:
   order: 15
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="METR"
-  founded="2023 (as ARC Evals spin-off)"
-  location="Berkeley, CA"
-  headcount="~20-30"
-  funding="Grants and lab contracts"
-  website="https://metr.org"
-/>
+<DataInfoBox entityId="metr" />
 
-## Overview
+## Summary
 
 METR (Model Evaluation and Threat Research), formerly known as ARC Evals, is an organization dedicated to evaluating frontier AI models for dangerous capabilities before deployment. Founded in 2023 as a spin-off from the Alignment Research Center, METR conducts rigorous red-teaming and capability elicitation to determine whether AI systems can autonomously acquire resources, self-replicate, conduct cyberattacks, develop bioweapons, or engage in other catastrophically dangerous behaviors.
 
@@ -695,96 +687,6 @@ METR's evaluations are now core components of major labs' safety commitments.
 
 **Future**: May see more government bodies, METR's role might evolve
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Capability Evaluations",
-    "Dangerous Capabilities",
-    "Autonomous Replication",
-    "Cybersecurity",
-    "CBRN",
-    "Bio Risk",
-    "Red Teaming",
-    "Capability Elicitation",
-    "AI Evaluations",
-    "Deployment Decisions",
-    "Pre-deployment Testing",
-    "Safety Thresholds",
-    "Responsible Scaling",
-    "Preparedness Framework"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="beth-barnes"
-      category="people"
-      title="Beth Barnes"
-      description="METR Executive Director"
-    />
-    <EntityCard
-      id="paul-christiano"
-      category="people"
-      title="Paul Christiano"
-      description="ARC founder, METR's origin"
-    />
-    <EntityCard
-      id="arc"
-      category="organizations"
-      title="ARC"
-      description="Parent organization, ARC Theory"
-    />
-    <EntityCard
-      id="apollo-research"
-      category="organizations"
-      title="Apollo Research"
-      description="Complementary evaluation organization"
-    />
-    <EntityCard
-      id="autonomous-replication"
-      category="risks"
-      title="Autonomous Replication"
-      description="Key capability METR evaluates"
-    />
-    <EntityCard
-      id="cyber-offense"
-      category="risks"
-      title="Cyber Offense"
-      description="Dangerous capability evaluated"
-    />
-    <EntityCard
-      id="bio-risk"
-      category="risks"
-      title="Biological Risk"
-      description="CBRN evaluation focus"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Lab using METR evaluations"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Lab using METR evaluations"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="organizations"
-      title="UK AI Safety Institute"
-      description="Government body METR advises"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "METR Website", url: "https://metr.org" },
-  { title: "METR Evaluations", url: "https://metr.org/evaluations" },
-  { title: "GPT-4 System Card (ARC Evals section)", url: "https://cdn.openai.com/papers/gpt-4-system-card.pdf" },
-  { title: "OpenAI Preparedness Framework", url: "https://openai.com/safety/preparedness" },
-  { title: "Anthropic Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy" },
-  { title: "Beth Barnes on Twitter/X", url: "https://twitter.com/beth_from_ba" },
-  { title: "METR Research and Blog", url: "https://metr.org/blog" }
-]} />
+<Backlinks client:load entityId="metr" />

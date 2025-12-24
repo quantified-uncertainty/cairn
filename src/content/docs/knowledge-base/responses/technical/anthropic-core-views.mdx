@@ -5,21 +5,11 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, KeyPeople } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="safety-agenda"
-  title="Anthropic Core Views"
-  organization="Anthropic"
-  approach="Empirical safety research"
-  customFields={[
-    { label: "Published", value: "2023" },
-    { label: "Status", value: "Active" },
-  ]}
-  website="https://anthropic.com/news/core-views-on-ai-safety"
-/>
+<DataInfoBox entityId="anthropic-core-views" />
 
-## Overview
+## Summary
 
 Anthropic's Core Views on AI Safety is their publicly stated research agenda and organizational philosophy. Published in 2023, it articulates why Anthropic believes safety-focused labs should be at the frontier of AI development.
 
@@ -89,41 +79,6 @@ Other approaches that conflict with Core Views:
 | Influence requires being competitive | Influence comes from being right |
 | Safety techniques must work at scale | Techniques can be developed separately |
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Safety",
-    "Constitutional AI",
-    "Interpretability",
-    "Responsible Scaling",
-    "Anthropic",
-    "Research Agenda",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="The organization behind Core Views"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Mechanistic Interpretability"
-      description="Key research pillar of Core Views"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Research on supervising advanced AI"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety", author: "Anthropic", date: "2023" },
-  { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy", date: "2023" },
-]} />
+<Backlinks client:load entityId="anthropic-core-views" />

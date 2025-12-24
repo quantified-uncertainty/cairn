@@ -5,16 +5,9 @@ sidebar:
   order: 11
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Ilya Sutskever"
-  affiliation="Safe Superintelligence Inc."
-  role="Co-founder & Chief Scientist"
-  knownFor="Deep learning breakthroughs, OpenAI leadership, now focused on safe superintelligence"
-  website="https://ssi.inc"
-/>
+<DataInfoBox entityId="ilya-sutskever" />
 
 ## Background
 
@@ -243,43 +236,6 @@ Sutskever's evolution is important because:
 
 These questions matter enormously given stakes.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Superintelligence",
-    "AI Safety",
-    "Deep Learning",
-    "Alignment Research",
-    "OpenAI",
-    "Scalable Oversight",
-    "GPT",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="openai"
-      category="lab"
-      title="OpenAI"
-      description="Ilya's former organization where he was Chief Scientist"
-    />
-    <EntityCard
-      id="jan-leike"
-      category="researcher"
-      title="Jan Leike"
-      description="Former colleague who also left OpenAI over safety concerns"
-    />
-    <EntityCard
-      id="geoffrey-hinton"
-      category="researcher"
-      title="Geoffrey Hinton"
-      description="Ilya's PhD advisor, also now focused on AI safety"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Safe Superintelligence Inc.", url: "https://ssi.inc" },
-  { title: "SSI Founding Announcement", url: "https://ssi.inc/announcement" },
-  { title: "AlexNet Paper", url: "https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks" },
-]} />
+<Backlinks client:load entityId="ilya-sutskever" />

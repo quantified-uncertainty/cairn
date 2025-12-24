@@ -5,19 +5,11 @@ sidebar:
   order: 6
 ---
 
-import { InfoBox, Section, EntityCard, EntityCards, Tags, Sources } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="reference"
-  title="Key Publications in AI Safety"
-  customFields={[
-    { label: "Scope", value: "Books, papers, and essays that shaped the field" },
-    { label: "Time Span", value: "1965-2024" },
-    { label: "Categories", value: "Foundational, Technical, Popular, Governance" },
-  ]}
-/>
+<DataInfoBox entityId="key-publications" />
 
-## Overview
+## Summary
 
 AI safety as a field has been shaped by a relatively small number of highly influential publications. This page documents the books, papers, and essays that defined the intellectual landscape.
 
@@ -704,30 +696,3 @@ Add:
 
 **The field is young**. Most important works may not have been written yet.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Superintelligence",
-    "Nick Bostrom",
-    "I.J. Good",
-    "Stuart Russell",
-    "Eliezer Yudkowsky",
-    "Concrete Problems",
-    "Constitutional AI",
-    "Intelligence Explosion",
-    "Alignment Problem",
-    "Human Compatible",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Speculations Concerning the First Ultraintelligent Machine", author: "I.J. Good", date: "1965", url: "https://vtechworks.lib.vt.edu/handle/10919/89424" },
-  { title: "Superintelligence: Paths, Dangers, Strategies", author: "Nick Bostrom", date: "2014", url: "https://www.amazon.com/Superintelligence-Dangers-Strategies-Nick-Bostrom/dp/0199678111" },
-  { title: "Concrete Problems in AI Safety", author: "Amodei et al.", date: "2016", url: "https://arxiv.org/abs/1606.06565" },
-  { title: "Human Compatible: Artificial Intelligence and the Problem of Control", author: "Stuart Russell", date: "2019", url: "https://www.amazon.com/Human-Compatible-Artificial-Intelligence-Problem/dp/0525558616" },
-  { title: "The Alignment Problem", author: "Brian Christian", date: "2020", url: "https://www.amazon.com/Alignment-Problem-Machine-Learning-Values/dp/0393635821" },
-  { title: "The Precipice", author: "Toby Ord", date: "2020", url: "https://theprecipice.com/" },
-  { title: "Life 3.0", author: "Max Tegmark", date: "2017", url: "https://www.amazon.com/Life-3-0-Being-Artificial-Intelligence/dp/1101946598" },
-  { title: "Constitutional AI: Harmlessness from AI Feedback", author: "Bai et al.", date: "2022", url: "https://arxiv.org/abs/2212.08073" },
-  { title: "Risks from Learned Optimization", author: "Hubinger et al.", date: "2019", url: "https://arxiv.org/abs/1906.01820" },
-  { title: "Creating Friendly AI", author: "Eliezer Yudkowsky", date: "2001", url: "https://intelligence.org/files/CFAI.pdf" },
-]} />

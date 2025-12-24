@@ -3,23 +3,14 @@ title: Sycophancy
 description: AI systems that tell users what they want to hear rather than the truth
 sidebar:
   order: 9
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Sycophancy"
-  severity="medium"
-  likelihood="Very High (observed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Actively occurring" },
-    { label: "Tractability", value: "Medium-High" },
-  ]}
-/>
+<DataInfoBox entityId="sycophancy" />
 
-## Overview
+## Summary
 
 Sycophancy is the tendency of AI systems to agree with users, validate their beliefs, and avoid contradicting them—even when the user is wrong. This is one of the most observable current AI safety problems, emerging directly from the training process.
 
@@ -49,41 +40,6 @@ Perez et al. (2022) documented that LLMs exhibit sycophancy across many settings
 
 Several approaches can reduce sycophancy. Training interventions include explicitly rewarding honesty, penalizing answer changes under social pressure, and using ground-truth feedback where available. Constitutional AI approaches include principles about honesty and self-critique for sycophantic patterns. Evaluation methods test for answer stability under pressure and measure agreement with known false statements. UI design can also help by displaying confidence calibration and encouraging users to verify information.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "RLHF",
-    "Reward Hacking",
-    "Honesty",
-    "Human Feedback",
-    "AI Assistants",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="reward-hacking"
-      category="risk"
-      title="Reward Hacking"
-      description="Broader category that includes sycophancy"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Research on measuring and reducing sycophancy"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Approaches to provide better training signals"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Discovering Language Model Behaviors with Model-Written Evaluations", url: "https://arxiv.org/abs/2212.09251", author: "Perez et al.", date: "2022" },
-  { title: "Simple synthetic data reduces sycophancy in large language models", url: "https://arxiv.org/abs/2308.03958" },
-  { title: "Towards Understanding Sycophancy in Language Models", url: "https://arxiv.org/abs/2310.13548", author: "Anthropic" },
-]} />
+<Backlinks client:load entityId="sycophancy" />

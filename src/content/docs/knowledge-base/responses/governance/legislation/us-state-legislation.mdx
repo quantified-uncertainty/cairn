@@ -5,20 +5,11 @@ sidebar:
   order: 10
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="US State AI Legislation Landscape"
-  jurisdiction="US States"
-  customFields={[
-    { label: "Most active states", value: "California, Colorado, Texas, Illinois" },
-    { label: "Total bills (2024)", value: "400+" },
-    { label: "Trend", value: "Rapidly increasing" },
-  ]}
-/>
+<DataInfoBox entityId="us-state-legislation" />
 
-## Overview
+## Summary
 
 In the absence of comprehensive federal AI legislation, **US states have become laboratories for AI governance**. As of 2024, hundreds of AI-related bills have been introduced across all 50 states, with several significant laws enacted.
 
@@ -184,7 +175,3 @@ Early bills were narrow; recent proposals show:
 - Successful state laws may become templates
 - Industry may eventually prefer federal uniformity
 
-<Sources sources={[
-  { title: "State AI Legislation Tracker", url: "https://www.bsa.org/policy/artificial-intelligence", author: "BSA" },
-  { title: "AI Legislation in the States", url: "https://www.ncsl.org/technology-and-communication/artificial-intelligence-2024-legislation", author: "National Conference of State Legislatures" },
-]} />

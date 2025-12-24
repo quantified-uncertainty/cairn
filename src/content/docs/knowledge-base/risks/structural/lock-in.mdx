@@ -3,23 +3,14 @@ title: Lock-in
 description: Permanent entrenchment of values, systems, or power structures
 sidebar:
   order: 2
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Lock-in"
-  severity="catastrophic"
-  likelihood="Medium"
-  timeframe="Medium to Long-term"
-  customFields={[
-    { label: "Type", value: "Structural" },
-    { label: "Key Feature", value: "Irreversibility" },
-  ]}
-/>
+<DataInfoBox entityId="lock-in" />
 
-## Overview
+## Summary
 
 Lock-in refers to the permanent entrenchment of values, systems, or power structures in ways that are extremely difficult or impossible to reverse. AI could enable lock-in by giving certain actors the power to entrench their position, by creating systems too complex to change, or by shaping the future according to early decisions that become irreversible.
 
@@ -105,46 +96,6 @@ Robustness to error means designing systems that can survive mistakes without pe
 - [Lex Fridman #368: Eliezer Yudkowsky](https://lexfridman.com/eliezer-yudkowsky/) - Discusses existential risk
 - [Future of Life Institute: Existential Risk Podcasts](https://futureoflife.org/podcast/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Existential Risk",
-    "Irreversibility",
-    "Path Dependence",
-    "AI Governance",
-    "Long-term",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="concentration-of-power"
-      category="risk"
-      title="Concentration of Power"
-      description="Who might lock things in"
-    />
-    <EntityCard
-      id="authoritarian-tools"
-      category="risk"
-      title="Authoritarian Tools"
-      description="Political lock-in mechanisms"
-    />
-    <EntityCard
-      id="corrigibility-failure"
-      category="risk"
-      title="Corrigibility Failure"
-      description="AI systems resisting change"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Precipice", author: "Toby Ord", date: "2020" },
-  { title: "What We Owe the Future", author: "Will MacAskill", date: "2022" },
-  { title: "Existential Risk from AI (Wikipedia)", url: "https://en.wikipedia.org/wiki/Existential_risk_from_artificial_intelligence" },
-  { title: "Two Types of AI Existential Risk (Philosophical Studies)", url: "https://link.springer.com/article/10.1007/s11098-025-02301-3", date: "2025" },
-  { title: "AI Existential Risks: Are They Real? (Brookings)", url: "https://www.brookings.edu/articles/are-ai-existential-risks-real-and-what-should-we-do-about-them/" },
-  { title: "Managing Existential Risk from AI (CSIS)", url: "https://www.csis.org/analysis/managing-existential-risk-ai-without-undercutting-innovation" },
-  { title: "The AI Dilemma: Growth vs Existential Risk (Stanford)", url: "https://web.stanford.edu/~chadj/existentialrisk.pdf" },
-  { title: "How Much Should We Spend to Reduce AI Existential Risk? (NBER)", url: "https://www.nber.org/papers/w33602", date: "2025" },
-]} />
+<Backlinks client:load entityId="lock-in" />

@@ -5,20 +5,11 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Large Language Models"
-  currentLevel="GPT-4 / Claude 3.5 class"
-  projectedTimeline="Continuous improvement"
-  customFields={[
-    { label: "First Major", value: "GPT-2 (2019)" },
-    { label: "Key Labs", value: "OpenAI, Anthropic, Google" },
-  ]}
-/>
+<DataInfoBox entityId="language-models" />
 
-## Overview
+## Summary
 
 Large Language Models (LLMs) are neural networks trained on vast amounts of text data to predict the next token. Despite this simple objective, they develop sophisticated capabilities including reasoning, coding, and general knowledge.
 
@@ -81,43 +72,6 @@ Performance improves predictably with:
 - Long-horizon planning
 - Novel scientific reasoning
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Foundation Models",
-    "Transformers",
-    "Scaling Laws",
-    "Emergent Capabilities",
-    "RLHF",
-    "GPT",
-    "Claude",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="reasoning"
-      category="capability"
-      title="AI Reasoning"
-      description="Chain-of-thought and o1-style reasoning"
-    />
-    <EntityCard
-      id="agentic-ai"
-      category="capability"
-      title="Agentic AI"
-      description="AI systems that take actions in the world"
-    />
-    <EntityCard
-      id="openai"
-      category="lab"
-      title="OpenAI"
-      description="Developer of GPT series"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Language Models are Few-Shot Learners (GPT-3)", url: "https://arxiv.org/abs/2005.14165" },
-  { title: "Scaling Laws for Neural Language Models", url: "https://arxiv.org/abs/2001.08361" },
-  { title: "Emergent Abilities of Large Language Models", url: "https://arxiv.org/abs/2206.07682" },
-]} />
+<Backlinks client:load entityId="language-models" />

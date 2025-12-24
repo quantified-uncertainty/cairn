@@ -3,23 +3,14 @@ title: Mass Surveillance
 description: AI-enabled monitoring and tracking at population scale
 sidebar:
   order: 6
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="AI Mass Surveillance"
-  severity="high"
-  likelihood="Very High (occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Deployed in multiple countries" },
-    { label: "Key Change", value: "Automation of analysis" },
-  ]}
-/>
+<DataInfoBox entityId="surveillance" />
 
-## Overview
+## Summary
 
 AI dramatically expands surveillance capabilities. Previously, collecting data was easy but analysis was the bottleneck—human analysts could only review so much. AI removes this constraint. Facial recognition can identify individuals in crowds. Natural language processing can monitor communications at scale. Pattern analysis can track behavior across data sources.
 
@@ -101,40 +92,6 @@ The Carnegie Endowment's AI Global Surveillance Index documents AI surveillance 
 - [EFF Surveillance Explainers](https://www.eff.org/)
 - [CSIS Big Data China Project](https://bigdatachina.csis.org/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Privacy",
-    "Facial Recognition",
-    "Authoritarianism",
-    "Digital Rights",
-    "AI Governance",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="authoritarian-tools"
-      category="risk"
-      title="Authoritarian Tools"
-      description="AI enabling political control"
-    />
-    <EntityCard
-      id="concentration-of-power"
-      category="risk"
-      title="Concentration of Power"
-      description="Power asymmetries from AI"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Global Expansion of AI Surveillance (Carnegie Endowment)", url: "https://carnegieendowment.org/2019/09/17/global-expansion-of-ai-surveillance-pub-79847" },
-  { title: "AI Global Surveillance Technology Index (Carnegie)", url: "https://carnegieendowment.org/features/ai-global-surveillance-technology" },
-  { title: "Electronic Frontier Foundation on Facial Recognition", url: "https://www.eff.org/" },
-  { title: "China's AI Censorship and Surveillance (CNN)", url: "https://www.cnn.com/2025/12/04/china/china-ai-censorship-surveillance-report-intl-hnk", date: "2025" },
-  { title: "The AI-Surveillance Symbiosis in China (CSIS)", url: "https://bigdatachina.csis.org/the-ai-surveillance-symbiosis-in-china/" },
-  { title: "China Exports AI Surveillance Technology (Project Syndicate)", url: "https://www.project-syndicate.org/commentary/china-exports-ai-surveillance-technology-associated-with-autocratization-by-martin-beraja-et-al-2024-07", date: "2024" },
-  { title: "AI Surveillance Threatens Democracy (Bulletin of Atomic Scientists)", url: "https://thebulletin.org/2024/06/how-ai-surveillance-threatens-democracy-everywhere/", date: "2024" },
-  { title: "China's Views on AI Safety (Carnegie)", url: "https://carnegieendowment.org/research/2024/08/china-artificial-intelligence-ai-safety-regulation?lang=en", date: "2024" },
-]} />
+<Backlinks client:load entityId="surveillance" />

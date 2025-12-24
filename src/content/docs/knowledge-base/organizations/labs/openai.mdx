@@ -5,19 +5,11 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab"
-  title="OpenAI"
-  founded="2015"
-  location="San Francisco, CA"
-  headcount="~3,000 (as of 2024)"
-  funding="$14B+ (primarily Microsoft)"
-  website="https://openai.com"
-/>
+<DataInfoBox entityId="openai" />
 
-## Overview
+## Summary
 
 OpenAI is the AI research company that brought large language models into mainstream consciousness through ChatGPT. Founded in December 2015 as a non-profit with the mission to ensure artificial general intelligence benefits all of humanity, OpenAI has undergone dramatic evolution - from non-profit to "capped-profit," from research lab to product company, from openness to increasing secrecy.
 
@@ -670,86 +662,6 @@ Raised questions about OpenAI silencing safety concerns.
 - Will Microsoft pressure force compromises?
 - Can OpenAI regain credibility on safety after 2024 departures?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "GPT-4",
-    "ChatGPT",
-    "RLHF",
-    "Preparedness",
-    "AGI",
-    "Frontier AI",
-    "o1",
-    "Reasoning Models",
-    "Microsoft",
-    "Governance",
-    "Racing Dynamics",
-    "Alignment Research"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="sam-altman"
-      category="people"
-      title="Sam Altman"
-      description="OpenAI CEO and co-founder"
-    />
-    <EntityCard
-      id="ilya-sutskever"
-      category="people"
-      title="Ilya Sutskever"
-      description="OpenAI co-founder and former Chief Scientist"
-    />
-    <EntityCard
-      id="jan-leike"
-      category="people"
-      title="Jan Leike"
-      description="Former OpenAI alignment lead, now at Anthropic"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Founded by OpenAI departures, now competitor"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-approaches"
-      title="Mechanistic Interpretability"
-      description="Safety research approach"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-approaches"
-      title="Scalable Oversight"
-      description="Supervising superhuman AI systems"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risks"
-      title="Racing Dynamics"
-      description="Competitive pressure driving OpenAI strategy"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risks"
-      title="Deceptive Alignment"
-      description="Risk that RLHF doesn't solve"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "OpenAI Website", url: "https://openai.com" },
-  { title: "OpenAI Charter", url: "https://openai.com/charter" },
-  { title: "GPT-4 System Card", url: "https://cdn.openai.com/papers/gpt-4-system-card.pdf" },
-  { title: "InstructGPT Paper", url: "https://arxiv.org/abs/2203.02155" },
-  { title: "Preparedness Framework", url: "https://openai.com/safety/preparedness" },
-  { title: "Weak-to-Strong Generalization", url: "https://arxiv.org/abs/2312.09390" },
-  { title: "Jan Leike Resignation Statement", url: "https://twitter.com/janleike/status/1791498184887095344" },
-  { title: "November 2023 Governance Crisis (reporting)", url: "https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired" },
-  { title: "Microsoft OpenAI Partnership", url: "https://blogs.microsoft.com/blog/2023/01/23/microsoftandopenaiextendpartnership/" },
-  { title: "o1 System Card", url: "https://openai.com/index/openai-o1-system-card/" },
-  { title: "OpenAI Funding History (Crunchbase)", url: "https://www.crunchbase.com/organization/openai" }
-]} />
+<Backlinks client:load entityId="openai" />

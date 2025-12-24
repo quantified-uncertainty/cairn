@@ -1,0 +1,62 @@
+---
+title: Risks & Failure Modes
+description: Comprehensive catalog of AI-related risks from technical failures to societal harms
+sidebar:
+  order: 0
+tableOfContents: false
+---
+
+import { RisksTable, RiskCategoryCard, RecentUpdates, TagBrowser } from '../../../../components/wiki';
+import { getRisksForTable } from '../../../../data';
+
+This section documents risks from AI systems across four major categories: accident risks (technical failures), misuse risks (intentional harm), structural risks (systemic and societal), and epistemic risks (threats to knowledge and truth).
+
+## Risk Categories
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-content my-6">
+  <RiskCategoryCard client:load category="accident" href="/knowledge-base/risks/accident/" />
+  <RiskCategoryCard client:load category="misuse" href="/knowledge-base/risks/misuse/" />
+  <RiskCategoryCard client:load category="structural" href="/knowledge-base/risks/structural/" />
+  <RiskCategoryCard client:load category="epistemic" href="/knowledge-base/risks/epistemic/" />
+</div>
+
+## All Risks
+
+<RisksTable client:load risks={getRisksForTable()} />
+
+## Risk Assessment Framework
+
+Each risk profile includes:
+- **Severity**: Low / Medium / High / Catastrophic
+- **Likelihood**: Probability estimate with uncertainty
+- **Timeframe**: When might this become relevant?
+- **Status**: Theoretical, emerging, or currently occurring
+
+## Observable vs Theoretical
+
+| Currently Observable | Emerging | Theoretical/Future |
+|---------------------|----------|-------------------|
+| Sycophancy | Sandbagging | Scheming |
+| Reward Hacking | Disinformation at scale | Treacherous Turn |
+| Specification Gaming | Deepfakes | Sharp Left Turn |
+| Racing Dynamics | Economic Disruption | Lock-in |
+| Automation Bias | Emergent Capabilities | Corrigibility Failure |
+| Trust Erosion | Concentration of Power | Power-Seeking AI |
+
+Understanding observable failures helps us reason about future risks, though the relationship between current problems and future catastrophic risks is debated.
+
+## How Categories Interact
+
+These categories aren't independent:
+- **Accident + Misuse**: Misuse is more dangerous when AI is more capable; accident risks determine capability levels
+- **Structural + Accident**: Racing dynamics make accidents more likely by reducing safety investment
+- **Epistemic + All**: If we can't agree on what risks exist, coordinating responses is impossible
+- **Structural + Misuse**: Concentration of power determines who might misuse AI; proliferation determines who has access
+
+## Explore by Tag
+
+<TagBrowser client:load mode="compact" maxTags={15} />
+
+## Recently Updated Risks
+
+<RecentUpdates client:load limit={5} compact={true} />

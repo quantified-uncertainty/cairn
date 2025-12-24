@@ -5,16 +5,9 @@ sidebar:
   order: 7
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Yoshua Bengio"
-  affiliation="Mila - Quebec AI Institute, University of Montreal"
-  role="Scientific Director of Mila, Professor"
-  knownFor="Deep learning pioneer, now AI safety advocate"
-  website="https://yoshuabengio.org"
-/>
+<DataInfoBox entityId="yoshua-bengio" />
 
 ## Background
 
@@ -213,38 +206,6 @@ Bengio is now focused on:
 - Academic research takes time but builds foundations
 - Working within system to change it
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deep Learning",
-    "AI Safety",
-    "AI Governance",
-    "Mechanistic Interpretability",
-    "Causal Representation Learning",
-    "AI Regulation",
-    "Existential Risk",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="geoffrey-hinton"
-      category="researcher"
-      title="Geoffrey Hinton"
-      description="Fellow Turing Award winner also now focused on AI safety"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Interpretability"
-      description="Research area Bengio is contributing to"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Yoshua Bengio's Website", url: "https://yoshuabengio.org" },
-  { title: "Mila Institute", url: "https://mila.quebec/" },
-  { title: "Statement on AI Risk", url: "https://www.safe.ai/statement-on-ai-risk" },
-  { title: "Google Scholar Profile", url: "https://scholar.google.com/citations?user=kukA0LcAAAAJ" },
-]} />
+<Backlinks client:load entityId="yoshua-bengio" />

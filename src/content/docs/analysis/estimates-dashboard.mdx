@@ -1,271 +1,557 @@
 ---
-title: Key Estimates Dashboard
-description: Aggregated probability estimates and expert positions on critical AI safety questions
+title: AI Safety Estimates & Expert Positions
+description: Comprehensive data on AI timelines, risk estimates, and expert views
 sidebar:
-  order: 1
+  hidden: true
+tableOfContents: false
+template: splash
 ---
 
-import { EstimateBox, KeyQuestions, DisagreementMap } from '../../../components/wiki';
+<div class="dashboard">
 
-This dashboard aggregates key probability estimates, expert positions, and critical questions from across the AI safety landscape. These estimates help calibrate our understanding of risks and inform prioritization.
+<header class="dash-header">
+  <h1>AI Safety Estimates</h1>
+  <p>Aggregated data from surveys, forecasts, and expert statements</p>
+</header>
 
-## Timeline Estimates
+<section class="key-metrics">
+  <div class="metric">
+    <div class="metric-main">
+      <span class="metric-value blue">10-35%</span>
+      <span class="metric-label">TAI by 2030</span>
+    </div>
+    <span class="metric-source">Metaculus, AI Impacts, Epoch</span>
+  </div>
+  <div class="metric">
+    <div class="metric-main">
+      <span class="metric-value blue">40-70%</span>
+      <span class="metric-label">AGI by 2040</span>
+    </div>
+    <span class="metric-source">Expert surveys</span>
+  </div>
+  <div class="metric">
+    <div class="metric-main">
+      <span class="metric-value orange">5-30%</span>
+      <span class="metric-label">P(Catastrophe)</span>
+    </div>
+    <span class="metric-source">Without intervention</span>
+  </div>
+  <div class="metric">
+    <div class="metric-main">
+      <span class="metric-value red">5-90%</span>
+      <span class="metric-label">Expert P(doom) Range</span>
+    </div>
+    <span class="metric-source">Christiano to Yudkowsky</span>
+  </div>
+</section>
 
-<EstimateBox
-  client:load
-  variable="P(Transformative AI by 2030)"
-  description="Probability that we develop AI systems capable of causing transformative economic and social change by 2030."
-  aggregateRange="10-35%"
-  estimates={[
-    { source: "Metaculus Community", value: "25%", date: "2024", url: "https://metaculus.com" },
-    { source: "AI Impacts Survey", value: "10%", date: "2023", notes: "Median expert estimate" },
-    { source: "Epoch AI", value: "15-30%", date: "2024", notes: "Based on compute trends" },
-    { source: "Ajeya Cotra (Open Phil)", value: "35%", date: "2022", notes: "Biological anchors framework" }
-  ]}
-/>
+## Timeline Forecasts
 
-<EstimateBox
-  client:load
-  variable="P(AGI by 2040)"
-  description="Probability of human-level artificial general intelligence by 2040."
-  aggregateRange="40-70%"
-  estimates={[
-    { source: "Metaculus Community", value: "65%", date: "2024" },
-    { source: "Expert Survey Aggregate", value: "50%", date: "2023" },
-    { source: "AI Impacts Survey", value: "40%", date: "2023" }
-  ]}
-/>
+<div class="data-grid">
+
+<div class="data-table">
+<h3>Transformative AI by 2030</h3>
+
+| Source | Estimate | Date |
+|--------|----------|------|
+| Metaculus Community | 25% | 2024 |
+| AI Impacts Survey | 10% | 2023 |
+| Epoch AI | 15-30% | 2024 |
+| Ajeya Cotra (Open Phil) | 35% | 2022 |
+
+**Aggregate: 10-35%**
+</div>
+
+<div class="data-table">
+<h3>AGI by 2040</h3>
+
+| Source | Estimate | Date |
+|--------|----------|------|
+| Metaculus Community | 65% | 2024 |
+| AI Impacts Survey | 40-50% | 2023 |
+| Epoch AI | 55% | 2024 |
+| Samotsvety Forecasters | 45% | 2023 |
+
+**Aggregate: 40-70%**
+</div>
+
+</div>
+
+## Expert Timeline Views
+
+<div class="expert-grid">
+  <div class="expert-card short">
+    <span class="expert-name">Dario Amodei</span>
+    <span class="expert-org">Anthropic</span>
+    <span class="expert-view">2026-2027</span>
+    <span class="expert-label">Very Short</span>
+  </div>
+  <div class="expert-card short">
+    <span class="expert-name">Sam Altman</span>
+    <span class="expert-org">OpenAI</span>
+    <span class="expert-view">2025-2027</span>
+    <span class="expert-label">Very Short</span>
+  </div>
+  <div class="expert-card medium">
+    <span class="expert-name">Demis Hassabis</span>
+    <span class="expert-org">DeepMind</span>
+    <span class="expert-view">Within decade</span>
+    <span class="expert-label">Short-Medium</span>
+  </div>
+  <div class="expert-card medium">
+    <span class="expert-name">Paul Christiano</span>
+    <span class="expert-org">ARC</span>
+    <span class="expert-view">2030s-2040s</span>
+    <span class="expert-label">Medium</span>
+  </div>
+  <div class="expert-card long">
+    <span class="expert-name">Gary Marcus</span>
+    <span class="expert-org">NYU</span>
+    <span class="expert-view">2050+</span>
+    <span class="expert-label">Long</span>
+  </div>
+  <div class="expert-card medium">
+    <span class="expert-name">Stuart Russell</span>
+    <span class="expert-org">Berkeley</span>
+    <span class="expert-view">Decades, uncertain</span>
+    <span class="expert-label">Medium-Long</span>
+  </div>
+</div>
+
+## Risk Estimates (P(doom))
+
+<div class="data-grid">
+
+<div class="data-table">
+<h3>Individual Expert Estimates</h3>
+
+| Expert | P(doom) | Date | Notes |
+|--------|---------|------|-------|
+| Eliezer Yudkowsky | >90% | 2023 | "Doom by default" |
+| Paul Christiano | 10-20% | 2022 | Baseline existential risk |
+| Dario Amodei | 10-25% | 2023 | Without additional safety work |
+| Toby Ord | 10% | 2020 | This century (The Precipice) |
+| Yoshua Bengio | 10-15% | 2024 | Significant enough to act |
+| Sam Altman | 10-20% | 2023 | But argues building is necessary |
+
+</div>
+
+<div class="data-table">
+<h3>Survey Aggregates</h3>
+
+| Source | Estimate | Year |
+|--------|----------|------|
+| Existential Risk Survey | 10% median | 2023 |
+| AI Safety Community | 20-30% | 2024 |
+| Anthropic Leadership | 10-25% | 2023 |
+| FHI Researchers | 10-20% | 2022 |
+
+</div>
+
+</div>
 
 ## Alignment Difficulty
 
-<EstimateBox
-  client:load
-  variable="P(Alignment is Very Hard)"
-  description="Probability that aligning superintelligent AI requires fundamental breakthroughs we don't yet have."
-  aggregateRange="25-60%"
-  estimates={[
-    { source: "MIRI", value: "80%+", date: "2023", notes: "Pessimistic view on current approaches" },
-    { source: "Anthropic", value: "30-50%", date: "2023", notes: "More optimistic on iterative approaches" },
-    { source: "DeepMind", value: "25-40%", date: "2023", notes: "Expects incremental progress" }
-  ]}
-/>
+<div class="data-grid">
 
-<DisagreementMap
-  client:load
-  topic="Will Current Alignment Approaches Scale?"
-  description="Expert disagreement on whether current alignment techniques (RLHF, Constitutional AI, etc.) will remain effective as AI capabilities increase."
-  spectrum={{ low: "Will fail", high: "Will scale" }}
-  positions={[
-    { actor: "Eliezer Yudkowsky", position: "Very unlikely", estimate: "5%", confidence: "high", source: "AGI Ruin (2022)", url: "https://www.lesswrong.com/posts/uMQ3cqWDPHhjtiesc/agi-ruin-a-list-of-lethalities" },
-    { actor: "Paul Christiano", position: "Uncertain", estimate: "40%", confidence: "medium", source: "ARC Research (2023)" },
-    { actor: "Dario Amodei", position: "Cautiously optimistic", estimate: "60%", confidence: "medium", source: "Anthropic Core Views (2023)" },
-    { actor: "Jan Leike", position: "Uncertain", estimate: "45%", confidence: "medium", source: "OpenAI Superalignment (2023)" },
-    { actor: "Stuart Russell", position: "Unlikely without changes", estimate: "25%", confidence: "medium", source: "Human Compatible (2019)" }
-  ]}
-/>
+<div class="data-table">
+<h3>Is Alignment Very Hard?</h3>
 
-## Catastrophic Risk
+| Source | P(Hard) | View |
+|--------|---------|------|
+| MIRI | 80%+ | Current approaches insufficient |
+| Anthropic | 30-50% | Tractable with iteration |
+| DeepMind | 25-40% | Expects incremental progress |
+| Paul Christiano | ~50% | Hard but solvable |
+| Stuart Russell | High | Requires paradigm shift |
 
-<EstimateBox
-  client:load
-  variable="P(AI Catastrophe | No Intervention)"
-  description="Probability of existential or civilizational catastrophe from AI given current trajectories and no major intervention."
-  aggregateRange="5-50%"
-  estimates={[
-    { source: "Existential Risk Survey", value: "10%", date: "2023", notes: "Median across researchers" },
-    { source: "MIRI/Yudkowsky", value: ">90%", date: "2023", notes: "Doom by default view" },
-    { source: "AI Safety Community Survey", value: "20-30%", date: "2024" },
-    { source: "Toby Ord (The Precipice)", value: "10%", date: "2020", notes: "This century" },
-    { source: "Anthropic Leadership", value: "10-25%", date: "2023", notes: "Based on public statements" }
-  ]}
-/>
+</div>
 
-<DisagreementMap
-  client:load
-  topic="Primary Source of AI Catastrophic Risk"
-  description="Where does the main risk come from? This affects what interventions matter most."
-  positions={[
-    { actor: "MIRI", position: "Misalignment", estimate: "80%", confidence: "high", source: "Research focus (2023)" },
-    { actor: "GovAI", position: "Misuse/Governance", estimate: "60%", confidence: "medium", source: "Research agenda (2023)" },
-    { actor: "CAIS", position: "Structural/Systemic", estimate: "50%", confidence: "medium", source: "Research focus (2023)" },
-    { actor: "FHI", position: "Multiple sources", estimate: "—", confidence: "high", source: "The Precipice (2020)" }
-  ]}
-/>
+<div class="data-table">
+<h3>Will Current Techniques Scale?</h3>
 
-## Key Questions
+| Expert | Estimate | Position |
+|--------|----------|----------|
+| Eliezer Yudkowsky | 5% | Very unlikely |
+| Stuart Russell | 25% | Unlikely without changes |
+| Paul Christiano | 40% | Uncertain |
+| Jan Leike | 45% | Uncertain |
+| Dario Amodei | 60% | Cautiously optimistic |
 
-<KeyQuestions
-  client:load
-  title="Critical Uncertainties"
-  questions={[
-    {
-      question: "Will we get meaningful warning signs before a catastrophic AI system?",
-      currentEstimate: "60% yes",
-      confidence: "low",
-      importance: "critical",
-      cruxFor: ["Deployment strategy", "Governance timing"],
-      updatesOn: "Observing near-miss incidents, interpretability progress"
-    },
-    {
-      question: "Can we develop adequate alignment techniques before AGI?",
-      currentEstimate: "40-60%",
-      confidence: "low",
-      importance: "critical",
-      cruxFor: ["Research prioritization", "Timeline concerns"],
-      updatesOn: "Alignment research progress, capability advances"
-    },
-    {
-      question: "Will AI labs voluntarily slow down if risks become clear?",
-      currentEstimate: "25%",
-      confidence: "medium",
-      importance: "high",
-      cruxFor: ["Governance necessity", "Lab cooperation"],
-      updatesOn: "RSP implementations, industry coordination"
-    },
-    {
-      question: "Is interpretability achievable for large language models?",
-      currentEstimate: "50%",
-      confidence: "low",
-      importance: "high",
-      cruxFor: ["Technical safety viability", "Monitoring approaches"],
-      evidenceLinks: [
-        { label: "Anthropic interpretability", url: "https://anthropic.com/research" },
-        { label: "Mechanistic interpretability", url: "https://distill.pub" }
-      ]
-    },
-    {
-      question: "Will international coordination on AI be achievable?",
-      currentEstimate: "20%",
-      confidence: "medium",
-      importance: "high",
-      cruxFor: ["Governance strategies", "Race dynamics"],
-      updatesOn: "AI summits, US-China relations, treaty progress"
+</div>
+
+</div>
+
+## Warning Signs & Evidence
+
+<div class="evidence-section">
+
+<div class="evidence-item moderate">
+  <span class="evidence-signal">Moderate</span>
+  <span class="evidence-title">Jailbreaks & prompt injection</span>
+  <span class="evidence-desc">Shows robustness problems, but not catastrophic</span>
+</div>
+
+<div class="evidence-item moderate">
+  <span class="evidence-signal">Moderate</span>
+  <span class="evidence-title">Sycophancy</span>
+  <span class="evidence-desc">Subtle misalignment with user intent</span>
+</div>
+
+<div class="evidence-item high">
+  <span class="evidence-signal">High concern</span>
+  <span class="evidence-title">Sleeper Agents research (Anthropic 2024)</span>
+  <span class="evidence-desc">Demonstrates deception can persist through safety training</span>
+</div>
+
+<div class="evidence-item moderate">
+  <span class="evidence-signal">Moderate</span>
+  <span class="evidence-title">Capability jumps</span>
+  <span class="evidence-desc">GPT-3 to GPT-4 had unexpected emergent capabilities</span>
+</div>
+
+<div class="evidence-item moderate">
+  <span class="evidence-signal">Moderate</span>
+  <span class="evidence-title">Emergent deception in games</span>
+  <span class="evidence-desc">AI learning to deceive in training environments</span>
+</div>
+
+</div>
+
+## Key Disagreements
+
+<div class="disagreement-grid">
+
+<div class="disagreement">
+  <h4>Can we iterate to safety?</h4>
+  <div class="disagree-row">
+    <span class="view-yes">Yes - can learn from failures</span>
+    <span class="vs">vs</span>
+    <span class="view-no">No - first mistake fatal</span>
+  </div>
+  <span class="holders">Christiano, Anthropic vs Yudkowsky, MIRI</span>
+</div>
+
+<div class="disagreement">
+  <h4>Will we get warning signs?</h4>
+  <div class="disagree-row">
+    <span class="view-yes">Likely - gradual capability gains</span>
+    <span class="vs">vs</span>
+    <span class="view-no">Unlikely - capabilities hide</span>
+  </div>
+  <span class="holders">Most researchers vs MIRI</span>
+</div>
+
+<div class="disagreement">
+  <h4>Is deceptive alignment likely?</h4>
+  <div class="disagree-row">
+    <span class="view-yes">Detectable if present</span>
+    <span class="vs">vs</span>
+    <span class="view-no">Very likely, undetectable</span>
+  </div>
+  <span class="holders">Anthropic, DeepMind vs Yudkowsky</span>
+</div>
+
+<div class="disagreement">
+  <h4>Should we build frontier AI?</h4>
+  <div class="disagree-row">
+    <span class="view-yes">Yes, with safety work</span>
+    <span class="vs">vs</span>
+    <span class="view-no">No - too dangerous</span>
+  </div>
+  <span class="holders">Labs vs MIRI (post-2022)</span>
+</div>
+
+</div>
+
+## Lab Safety Investment (Rough Estimates)
+
+| Lab | Capabilities vs Safety | Notes |
+|-----|----------------------|-------|
+| Anthropic | 60-40 | Most safety-focused, but commercial needs |
+| OpenAI | 80-20 | Superalignment team dissolved 2024 |
+| DeepMind | 90-10 | Small dedicated safety team |
+| Meta | 95-5 | Primarily capabilities focus |
+
+## Data Sources
+
+- **Metaculus** - Prediction market aggregates ([metaculus.com](https://metaculus.com))
+- **AI Impacts** - Expert surveys ([aiimpacts.org](https://aiimpacts.org))
+- **Epoch AI** - Compute-based forecasts ([epochai.org](https://epochai.org))
+- **The Precipice** - Toby Ord (2020)
+- **Public statements** - Lab leadership talks, interviews, blog posts
+- **Research publications** - Anthropic, DeepMind safety papers
+
+---
+
+*Last updated: 2024. Estimates change frequently. See original sources for current data.*
+
+</div>
+
+<style>{`
+  .dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  .dash-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .dash-header h1 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    color: var(--sl-color-accent);
+  }
+
+  .dash-header p {
+    color: var(--sl-color-gray-3);
+    margin: 0;
+  }
+
+  .key-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 800px) {
+    .key-metrics { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .metric {
+    background: var(--sl-color-gray-6);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .metric-main {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .metric-value.blue { color: #3b82f6; }
+  .metric-value.orange { color: #f59e0b; }
+  .metric-value.red { color: #ef4444; }
+
+  .metric-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+    margin-top: 0.25rem;
+  }
+
+  .metric-source {
+    font-size: 0.7rem;
+    color: var(--sl-color-gray-4);
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 800px) {
+    .data-grid { grid-template-columns: 1fr; }
+  }
+
+  .data-table {
+    background: var(--sl-color-gray-6);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .data-table h3 {
+    font-size: 0.9rem;
+    margin: 0 0 0.75rem;
+    color: var(--sl-color-text);
+  }
+
+  .data-table table {
+    width: 100%;
+    font-size: 0.8rem;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    font-weight: 600;
+    color: var(--sl-color-gray-3);
+  }
+
+  .data-table td {
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+
+  .expert-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 900px) {
+    .expert-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 500px) {
+    .expert-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .expert-card {
+    background: var(--sl-color-gray-6);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    border-left: 3px solid;
+  }
+
+  .expert-card.short { border-color: #ef4444; }
+  .expert-card.medium { border-color: #f59e0b; }
+  .expert-card.long { border-color: #22c55e; }
+
+  .expert-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--sl-color-text);
+  }
+
+  .expert-org {
+    font-size: 0.7rem;
+    color: var(--sl-color-gray-4);
+    margin-bottom: 0.5rem;
+  }
+
+  .expert-view {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--sl-color-accent);
+  }
+
+  .expert-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--sl-color-gray-3);
+  }
+
+  .evidence-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .evidence-item {
+    display: grid;
+    grid-template-columns: 100px 200px 1fr;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--sl-color-gray-6);
+    border-radius: 0.5rem;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 700px) {
+    .evidence-item {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
     }
-  ]}
-/>
+  }
 
-## Disagreement Summary
+  .evidence-signal {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
 
-The AI safety field has significant disagreements on fundamental questions:
+  .evidence-item.moderate .evidence-signal { color: #f59e0b; }
+  .evidence-item.high .evidence-signal { color: #ef4444; }
 
-| Question | Range of Views | Implications |
-|----------|---------------|--------------|
-| Alignment difficulty | 10-90% chance current approaches fail | Research strategy |
-| Takeoff speed | Days to decades | Warning shot availability |
-| Primary risk source | Accidents vs misuse vs structural | Intervention focus |
-| Timeline to TAI | 5-50+ years | Urgency level |
-| Governance feasibility | Pessimistic to optimistic | Strategy emphasis |
+  .evidence-title {
+    font-weight: 500;
+    color: var(--sl-color-text);
+  }
 
----
+  .evidence-desc {
+    color: var(--sl-color-gray-3);
+    font-size: 0.8rem;
+  }
 
-## Disagreement Decomposition
+  .disagreement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
 
-Understanding *why* experts disagree is more useful than knowing *that* they disagree. Below we decompose major disagreements into their component cruxes.
+  @media (max-width: 700px) {
+    .disagreement-grid { grid-template-columns: 1fr; }
+  }
 
-### Yudkowsky (~90% doom) vs. Christiano (~15% doom)
+  .disagreement {
+    background: var(--sl-color-gray-6);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
 
-These two influential researchers disagree by ~75 percentage points. Here's where:
+  .disagreement h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: var(--sl-color-text);
+  }
 
-| Sub-Question | Yudkowsky | Christiano | Disagreement Level |
-|--------------|-----------|------------|-------------------|
-| **Timelines to TAI** | 2025-2035 | 2030-2045 | Minor |
-| **Will TAI be agentic/goal-directed?** | Yes, strongly | Yes, but controllably | Moderate |
-| **Will current techniques scale?** | No (5%) | Maybe (40%) | **MAJOR** |
-| **Will we get warning signs?** | No | Probably some | **MAJOR** |
-| **Can we iterate to safety?** | No—first mistake is fatal | Yes—we can learn from failures | **MAJOR** |
-| **Is deceptive alignment likely?** | Very likely | Possible but detectable | **MAJOR** |
-| **Can AI help with alignment?** | No—can't trust it | Yes—key to solution | Moderate |
+  .disagree-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
 
-**Key crux**: Their core disagreement is about whether alignment is an iterative engineering problem (Christiano) or a one-shot challenge we'll likely fail (Yudkowsky). If you could resolve this question, you'd resolve most of their disagreement.
+  .view-yes {
+    color: #22c55e;
+    flex: 1;
+  }
 
-**What would update them**:
-- *Toward Yudkowsky*: Evidence of deceptive behavior in current systems; alignment techniques breaking at scale
-- *Toward Christiano*: Continued success of RLHF/CAI; interpretability revealing model internals; no signs of deception despite looking
+  .vs {
+    color: var(--sl-color-gray-4);
+    font-size: 0.7rem;
+  }
 
----
+  .view-no {
+    color: #ef4444;
+    flex: 1;
+    text-align: right;
+  }
 
-### Safety Community (~20% doom) vs. ML Mainstream (~2% doom)
+  .holders {
+    font-size: 0.7rem;
+    color: var(--sl-color-gray-4);
+  }
 
-| Sub-Question | Safety Community | ML Mainstream | Disagreement Level |
-|--------------|-----------------|---------------|-------------------|
-| **Is "AGI" a coherent concept?** | Yes | Often skeptical | **MAJOR** |
-| **Are current systems on path to AGI?** | Probably | Uncertain/skeptical | **MAJOR** |
-| **Will AI be goal-directed?** | Yes, increasingly | LLMs aren't goal-directed | **MAJOR** |
-| **Is theoretical risk analysis valid?** | Yes | Prefer empirical evidence | Moderate |
-| **Is orthogonality thesis true?** | Yes | May not apply to trained systems | Moderate |
-| **Should we worry before seeing danger?** | Yes—proactive | No—reactive is fine | **MAJOR** |
-
-**Key crux**: The fundamental disagreement is whether AI risk arguments are valid *before* we see empirical evidence of danger, or whether this is unfounded speculation. The safety community treats absence of evidence as compatible with high risk; mainstream ML treats it as evidence of absence.
-
-**What would update them**:
-- *Toward safety community*: AI systems showing goal-directed deceptive behavior; capability jumps that surprise researchers
-- *Toward ML mainstream*: Continued absence of concerning behaviors despite capable systems; alignment techniques working without theoretical breakthroughs
-
----
-
-### X-Risk Focus vs. AI Ethics Focus
-
-| Sub-Question | X-Risk Focus | AI Ethics Focus | Disagreement Level |
-|--------------|--------------|-----------------|-------------------|
-| **Most important AI risks** | Existential (future) | Bias, labor, surveillance (present) | **MAJOR** |
-| **Tractability** | Speculative x-risk is tractable | Present harms more tractable | **MAJOR** |
-| **Who is harmed by AI** | Future generations | Marginalized groups today | **MAJOR** |
-| **Lab incentives** | Labs need safety pressure | Labs benefit from x-risk hype | Moderate |
-| **What's neglected** | X-risk is neglected | Present harms are neglected | **MAJOR** |
-| **Funding priorities** | More x-risk funding | More ethics/fairness funding | **MAJOR** |
-
-**Key crux**: This is partly an empirical disagreement (which risks are larger?) but largely a values disagreement (how to weigh certain present harms vs. uncertain future catastrophe?). These worldviews may be incommensurable.
-
-**Note**: This wiki is written primarily from the x-risk perspective. See the [Limitations section](/) for acknowledgment of this bias.
-
----
-
-### Optimistic Safety Researchers vs. Pessimistic Safety Researchers
-
-Even within AI safety, there's significant disagreement:
-
-| Sub-Question | Optimistic (e.g., Anthropic) | Pessimistic (e.g., MIRI) | Disagreement Level |
-|--------------|------------------------------|-------------------------|-------------------|
-| **Should we build frontier AI?** | Yes, with safety | No—too dangerous | **MAJOR** |
-| **Is empirical work sufficient?** | Mostly yes | No—need theory | **MAJOR** |
-| **Will scaling help safety?** | Yes—more capable = more helpful | No—more capable = more dangerous | Moderate |
-| **Can labs be trusted?** | Somewhat | No | Moderate |
-| **Is technical work still valuable?** | Yes | Maybe not (MIRI pivoted to governance) | **MAJOR** |
-
-**Key crux**: Whether working on safety at frontier labs is net positive (contributing to safety) or net negative (accelerating capabilities faster than safety). This determines whether "safety researcher at Anthropic" is a good career or complicity.
-
----
-
-## Using This Decomposition
-
-### To find your cruxes
-1. Look at the sub-questions where major disagreements exist
-2. Ask yourself: Where do I stand on each?
-3. Your position on these cruxes determines your overall view
-
-### To have productive disagreements
-1. Identify which sub-question you and your interlocutor disagree on
-2. Focus the conversation on that specific crux
-3. Ask: "What evidence would change your mind on *this specific point*?"
-
-### To update your views
-1. Track evidence relevant to the specific cruxes
-2. Don't update on overall "AI safety" vibes—update on specific sub-questions
-3. If a crux resolves, propagate the update to your overall view
-
-## Methodology Notes
-
-These estimates are aggregated from public statements, surveys, and publications. Key limitations:
-
-- **Selection bias**: Researchers who publish estimates may differ systematically from those who don't
-- **Anchoring**: Earlier estimates may anchor later ones
-- **Vagueness**: Terms like "AGI" and "transformative AI" lack precise definitions
-- **Updating**: Estimates change over time; dates shown indicate when recorded
-
-For the most current estimates, consult primary sources like Metaculus, AI Impacts surveys, and direct researcher publications.
-
-## Related Pages
-
-- [Risk Models](/understanding-ai-risk/models/) - Frameworks for thinking about AI risk
-- [Worldviews](/understanding-ai-risk/worldviews/) - Different perspectives on AI development
-- [Technical Safety](/knowledge-base/safety-approaches/technical/) - Approaches to solving alignment
+  .dashboard h2 {
+    font-size: 1.1rem;
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    color: var(--sl-color-text);
+  }
+`}</style>

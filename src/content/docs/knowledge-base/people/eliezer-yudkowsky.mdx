@@ -5,16 +5,9 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, DisagreementMap } from '../../../../components/wiki';
+import {DataInfoBox, Section, DisagreementMap, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Eliezer Yudkowsky"
-  affiliation="Machine Intelligence Research Institute (MIRI)"
-  role="Co-founder & Research Fellow"
-  knownFor="Early AI safety work, decision theory, rationalist community"
-  website="https://intelligence.org"
-/>
+<DataInfoBox entityId="eliezer-yudkowsky" />
 
 ## Background
 
@@ -148,51 +141,6 @@ Yudkowsky is a polarizing figure:
 - Pessimism may be warranted given stakes
 - Direct communication style is valuable even if uncomfortable
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Alignment",
-    "Existential Risk",
-    "Agent Foundations",
-    "Rationality",
-    "Decision Theory",
-    "CEV",
-    "Sharp Left Turn",
-    "Deceptive Alignment",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="miri"
-      category="lab"
-      title="MIRI"
-      description="Machine Intelligence Research Institute, co-founded by Yudkowsky"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Risk that AI systems appear aligned during training but pursue different goals when deployed"
-    />
-    <EntityCard
-      id="sharp-left-turn"
-      category="risk"
-      title="Sharp Left Turn"
-      description="Rapid capability jump that outpaces alignment efforts"
-    />
-    <EntityCard
-      id="paul-christiano"
-      category="researcher"
-      title="Paul Christiano"
-      description="Researcher with contrasting views on alignment tractability"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "MIRI Research", url: "https://intelligence.org/research/" },
-  { title: "LessWrong", url: "https://www.lesswrong.com/users/eliezer_yudkowsky" },
-  { title: "AGI Ruin: A List of Lethalities", url: "https://www.lesswrong.com/posts/uMQ3cqWDPHhjtiesc/agi-ruin-a-list-of-lethalities" },
-  { title: "The Sequences", url: "https://www.lesswrong.com/rationality" },
-]} />
+<Backlinks client:load entityId="eliezer-yudkowsky" />

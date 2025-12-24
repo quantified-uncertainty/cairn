@@ -5,20 +5,11 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Reasoning and Planning"
-  currentLevel="o1-class models"
-  projectedTimeline="Rapid improvement expected"
-  customFields={[
-    { label: "Safety Relevance", value: "Very High" },
-    { label: "Key Models", value: "OpenAI o1, o3" },
-  ]}
-/>
+<DataInfoBox entityId="reasoning" />
 
-## Overview
+## Summary
 
 Reasoning and planning capabilities refer to AI systems' ability to break down complex problems into steps, maintain coherent chains of logic, and solve problems that require multiple inference steps. Recent advances like OpenAI's o1 and o3 models demonstrate that language models can be trained to "think" through problems systematically before responding.
 
@@ -222,43 +213,6 @@ Will reasoning capabilities:
 - Recursive self-improvement via reasoning
 - Transformative scientific discoveries
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Chain-of-Thought",
-    "OpenAI o1",
-    "Problem Solving",
-    "Planning",
-    "Test-Time Compute",
-    "Strategic Reasoning",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="language-models"
-      category="capability"
-      title="Language Models"
-      description="Foundation for reasoning capabilities"
-    />
-    <EntityCard
-      id="self-improvement"
-      category="capability"
-      title="Self-Improvement"
-      description="Enabled by reasoning capabilities"
-    />
-    <EntityCard
-      id="openai"
-      category="lab"
-      title="OpenAI"
-      description="Developer of o1 and o3"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Learning to Reason with LLMs", url: "https://openai.com/index/learning-to-reason-with-llms/", author: "OpenAI" },
-  { title: "Chain-of-Thought Prompting", url: "https://arxiv.org/abs/2201.11903" },
-  { title: "Tree of Thoughts", url: "https://arxiv.org/abs/2305.10601" },
-  { title: "Let's Verify Step by Step", url: "https://arxiv.org/abs/2305.20050" },
-]} />
+<Backlinks client:load entityId="reasoning" />

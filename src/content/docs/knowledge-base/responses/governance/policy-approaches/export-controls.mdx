@@ -5,22 +5,11 @@ sidebar:
   order: 23
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="US AI Chip Export Controls"
-  jurisdiction="United States (extraterritorial reach)"
-  status="In force, evolving"
-  customFields={[
-    { label: "Initial Rules", value: "October 2022" },
-    { label: "Major Updates", value: "October 2023, December 2024" },
-    { label: "Primary Target", value: "China" },
-    { label: "Enforcing Agency", value: "Bureau of Industry and Security (BIS)" },
-  ]}
-/>
+<DataInfoBox entityId="export-controls" />
 
-## Overview
+## Summary
 
 The United States has implemented **unprecedented export controls** on advanced semiconductors and semiconductor manufacturing equipment, primarily targeting China. These controls represent one of the most significant attempts to constrain AI development through **hardware governance**.
 
@@ -306,8 +295,3 @@ Export controls are a **significant but imperfect** tool for AI governance:
 
 **Bottom line:** Export controls may buy 1-3 years of compute advantage. Whether that time is used productively for safety and governance is a separate question.
 
-<Sources sources={[
-  { title: "BIS Export Controls on Advanced Computing", url: "https://www.bis.doc.gov/index.php/policy-guidance/country-guidance/china-prc", author: "Bureau of Industry and Security" },
-  { title: "Commerce Implements New Export Controls on Advanced Computing", url: "https://www.commerce.gov/news/press-releases/2022/10/commerce-implements-new-export-controls-advanced-computing-and", author: "US Department of Commerce", date: "October 2022" },
-  { title: "Choking Off China's Access to the Future of AI", url: "https://www.csis.org/analysis/choking-chinas-access-future-ai", author: "CSIS", date: "2022" },
-]} />

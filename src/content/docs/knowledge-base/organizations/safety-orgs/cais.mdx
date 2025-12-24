@@ -5,19 +5,11 @@ sidebar:
   order: 14
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="CAIS"
-  founded="2022"
-  location="San Francisco, CA"
-  headcount="~30"
-  funding="~$20M+"
-  website="https://safe.ai"
-/>
+<DataInfoBox entityId="cais" />
 
-## Overview
+## Summary
 
 The Center for AI Safety (CAIS) is a nonprofit organization that works to reduce societal-scale risks from AI. CAIS combines research, field-building, and public communication to advance AI safety.
 
@@ -88,41 +80,6 @@ Signed by:
 - **Unsolved Problems in ML Safety** (2022)
 - **Measuring Power-Seeking** (2023)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Safety",
-    "Existential Risk",
-    "Representation Engineering",
-    "Field Building",
-    "AI Risk Communication",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="existential-risk"
-      category="risk"
-      title="Existential Risk from AI"
-      description="Risk of human extinction or permanent curtailment"
-    />
-    <EntityCard
-      id="power-seeking"
-      category="risk"
-      title="Power-Seeking AI"
-      description="Tendency of AI to acquire resources and influence"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Dario Amodei signed the AI risk statement"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "CAIS Website", url: "https://safe.ai" },
-  { title: "Statement on AI Risk", url: "https://www.safe.ai/statement-on-ai-risk" },
-  { title: "Representation Engineering Paper", url: "https://arxiv.org/abs/2310.01405" },
-]} />
+<Backlinks client:load entityId="cais" />

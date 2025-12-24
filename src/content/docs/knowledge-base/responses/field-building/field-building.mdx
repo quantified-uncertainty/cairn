@@ -5,21 +5,11 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, EstimateBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="crux"
-  title="Field Building and Community"
-  customFields={[
-    { label: "Category", value: "Meta-level intervention" },
-    { label: "Time Horizon", value: "3-10+ years" },
-    { label: "Primary Mechanism", value: "Human capital development" },
-    { label: "Key Metric", value: "Researchers produced per year" },
-    { label: "Entry Barrier", value: "Low to Medium" },
-  ]}
-/>
+<DataInfoBox entityId="field-building" />
 
-## Overview
+## Summary
 
 Field-building focuses on **growing the AI safety ecosystem** rather than doing direct research or policy work. The theory is that by increasing the number and quality of people working on AI safety, we multiply the impact of all other interventions.
 
@@ -554,39 +544,3 @@ Field-building enables and amplifies:
 - Alignment Forum posts on field growth
 - MATS/ARENA/BlueDot as examples
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Training Programs",
-    "Community Building",
-    "Grantmaking",
-    "Public Awareness",
-    "Academic Field Building",
-    "Talent Pipeline",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="redwood"
-      category="lab"
-      title="Redwood Research"
-      description="Runs ARENA training program"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Employs many field-building program alumni"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "ARENA Program", url: "https://www.arena.education/" },
-  { title: "MATS Program", url: "https://www.matsprogram.org/" },
-  { title: "BlueDot Impact", url: "https://www.bluedot.org/" },
-  { title: "80,000 Hours - AI Safety Community Building", url: "https://80000hours.org/articles/ai-policy-guide/" },
-  { title: "Centre for Effective Altruism", url: "https://www.centreforeffectivealtruism.org/" },
-  { title: "Open Philanthropy AI Grants", url: "https://www.openphilanthropy.org/focus/potential-risks-advanced-artificial-intelligence/" },
-]} />

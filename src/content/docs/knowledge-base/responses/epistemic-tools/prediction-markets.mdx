@@ -5,18 +5,9 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="Prediction Markets"
-  customFields={[
-    { label: "Maturity", value: "Growing adoption; proven concept" },
-    { label: "Key Strength", value: "Incentive-aligned information aggregation" },
-    { label: "Key Limitation", value: "Liquidity, legal barriers, manipulation risk" },
-    { label: "Key Players", value: "Polymarket, Metaculus, Manifold, Kalshi" },
-  ]}
-/>
+<DataInfoBox entityId="prediction-markets" />
 
 ## What Are Prediction Markets?
 
@@ -315,20 +306,3 @@ Information holders → Trade on beliefs → Prices emerge → Probability revea
 | **Conditional markets** | "If X happens, what's probability of Y?" |
 | **Decision markets for AI policy** | Futarchy for AI governance |
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Forecasting",
-    "Information Aggregation",
-    "Mechanism Design",
-    "Collective Intelligence",
-    "Decision Making",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Prediction Markets", author: "Wolfers & Zitzewitz", date: "2004", url: "https://www.aeaweb.org/articles?id=10.1257/0895330041371321" },
-  { title: "Superforecasting", author: "Philip Tetlock", date: "2015" },
-  { title: "Futarchy: Vote Values, Bet Beliefs", author: "Robin Hanson", url: "https://mason.gmu.edu/~rhanson/futarchy.html" },
-  { title: "Metaculus", url: "https://www.metaculus.com/" },
-  { title: "Good Judgment Project", url: "https://goodjudgment.com/" },
-]} />

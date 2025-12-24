@@ -5,22 +5,11 @@ sidebar:
   order: 7
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="NIST AI Risk Management Framework (AI RMF)"
-  jurisdiction="United States (voluntary)"
-  status="Published"
-  effectiveDate="January 26, 2023"
-  customFields={[
-    { label: "Version", value: "1.0" },
-    { label: "Type", value: "Voluntary framework" },
-    { label: "Referenced by", value: "US Executive Order, state laws" },
-  ]}
-/>
+<DataInfoBox entityId="nist-ai-rmf" />
 
-## Overview
+## Summary
 
 The NIST AI Risk Management Framework (AI RMF) is a **voluntary guidance document** developed by the National Institute of Standards and Technology to help organizations manage risks associated with AI systems.
 
@@ -124,8 +113,3 @@ The AI RMF has influenced:
 | CISA Guidelines | AI RMF cited for critical infrastructure |
 | OMB Memoranda | Federal agencies directed to follow AI RMF |
 
-<Sources sources={[
-  { title: "AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework", author: "NIST" },
-  { title: "AI RMF Playbook", url: "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook", author: "NIST" },
-  { title: "Generative AI Profile (AI 600-1)", url: "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence", author: "NIST", date: "July 2024" },
-]} />

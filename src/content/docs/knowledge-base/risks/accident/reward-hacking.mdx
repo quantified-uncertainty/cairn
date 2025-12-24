@@ -3,23 +3,14 @@ title: Reward Hacking
 description: AI systems gaming their reward signals in unintended ways
 sidebar:
   order: 3
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Reward Hacking"
-  severity="high"
-  likelihood="Very High (observed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Tractability", value: "Medium" },
-    { label: "Status", value: "Actively occurring" },
-  ]}
-/>
+<DataInfoBox entityId="reward-hacking" />
 
-## Overview
+## Summary
 
 Reward hacking (also called reward gaming or specification gaming) occurs when an AI system exploits flaws in its reward signal to achieve high reward without accomplishing the intended task. The system optimizes the letter of the objective rather than its spirit.
 
@@ -81,41 +72,6 @@ Red-team for reward hacks during training. But can't anticipate all exploits.
 ### Process-Based Evaluation
 Reward good reasoning processes, not just outcomes. Being explored in scalable oversight research.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Specification Gaming",
-    "Goodhart's Law",
-    "Outer Alignment",
-    "RLHF",
-    "Proxy Gaming",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="specification-gaming"
-      category="risk"
-      title="Specification Gaming"
-      description="Broader category of exploiting task specifications"
-    />
-    <EntityCard
-      id="rlhf"
-      category="capability"
-      title="RLHF"
-      description="Common technique vulnerable to reward hacking"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Research to provide better training signals"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Specification Gaming Examples", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPiprOaC3HsCf5Tuum8bRfzYUiKLRqJmbOoC-32JorNdfyTiRRsR7Ea5eWtvsWzuxo8bjOxCG84dAg/pubhtml", author: "DeepMind" },
-  { title: "Concrete Problems in AI Safety", url: "https://arxiv.org/abs/1606.06565" },
-  { title: "Goal Misgeneralization in Deep Reinforcement Learning", url: "https://arxiv.org/abs/2105.14111" },
-]} />
+<Backlinks client:load entityId="reward-hacking" />

@@ -5,19 +5,11 @@ sidebar:
   order: 22
 ---
 
-import { InfoBox, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="AI Safety Institutes (AISIs)"
-  customFields={[
-    { label: "Established", value: "UK (2023), US (2024), others planned" },
-    { label: "Function", value: "Evaluation, research, policy advice" },
-    { label: "Network", value: "International coordination emerging" },
-  ]}
-/>
+<DataInfoBox entityId="ai-safety-institutes" />
 
-## Overview
+## Summary
 
 **AI Safety Institutes (AISIs)** are government-affiliated institutions dedicated to evaluating AI systems, conducting safety research, and advising on AI policy. They represent a significant development in AI governance: **building technical capacity within government** to understand and oversee advanced AI systems.
 
@@ -307,9 +299,3 @@ AISIs are developing evaluation capabilities across:
 
 **Overall:** AISIs represent a **promising but early** institutional innovation. They're building necessary infrastructure for AI governance but face significant challenges of scale, authority, and independence. Their long-term effectiveness depends on how they evolve and whether they gain meaningful powers.
 
-<Sources sources={[
-  { title: "UK AI Safety Institute", url: "https://www.gov.uk/government/organisations/ai-safety-institute", author: "UK Government" },
-  { title: "US AI Safety Institute", url: "https://www.nist.gov/aisi", author: "NIST" },
-  { title: "Inspect Framework", url: "https://github.com/UKGovernmentBEIS/inspect_ai", author: "UK AISI" },
-  { title: "Seoul Declaration on AISI Network", url: "https://www.gov.uk/government/publications/seoul-declaration-for-safe-innovative-and-inclusive-ai", author: "Summit Participants" },
-]} />

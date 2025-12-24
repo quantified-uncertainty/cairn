@@ -5,16 +5,9 @@ sidebar:
   order: 6
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Nick Bostrom"
-  affiliation="Future of Humanity Institute (FHI), Oxford"
-  role="Founding Director (until FHI closure in 2024)"
-  knownFor="Superintelligence, existential risk research, simulation hypothesis"
-  website="https://nickbostrom.com"
-/>
+<DataInfoBox entityId="nick-bostrom" />
 
 ## Background
 
@@ -192,44 +185,6 @@ Even critics acknowledge his role in establishing AI safety as a field.
 - **"Are You Living in a Computer Simulation?"** (2003) - Simulation argument
 - **"The Vulnerable World Hypothesis"** (2019) - Risks from technological development
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Superintelligence",
-    "Existential Risk",
-    "Orthogonality Thesis",
-    "Instrumental Convergence",
-    "Treacherous Turn",
-    "Value Alignment",
-    "Control Problem",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="instrumental-convergence"
-      category="risk"
-      title="Instrumental Convergence"
-      description="Concept developed by Bostrom about convergent AI goals"
-    />
-    <EntityCard
-      id="treacherous-turn"
-      category="risk"
-      title="Treacherous Turn"
-      description="AI appearing cooperative until powerful enough to defect"
-    />
-    <EntityCard
-      id="toby-ord"
-      category="researcher"
-      title="Toby Ord"
-      description="Colleague at FHI, author of 'The Precipice'"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Nick Bostrom's Website", url: "https://nickbostrom.com" },
-  { title: "Superintelligence (book)", url: "https://www.superintelligence.com/" },
-  { title: "FHI Publications", url: "https://www.fhi.ox.ac.uk/publications/" },
-  { title: "Existential Risk Prevention as Global Priority", url: "https://www.existential-risk.org/concept.html" },
-]} />
+<Backlinks client:load entityId="nick-bostrom" />

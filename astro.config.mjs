@@ -7,11 +7,13 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://ea-crux-project.netlify.app',
   integrations: [
       react(),
       starlight({
           title: 'EA Crux Project',
           customCss: ['./src/styles/global.css'],
+          tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
           social: [
               { icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/ea-crux-project' },
           ],
@@ -37,6 +39,7 @@ export default defineConfig({
                   label: 'Knowledge Base',
                   collapsed: true,
                   items: [
+                      { label: 'Overview', slug: 'knowledge-base' },
                       { label: 'Responses & Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'Technical Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/technical' } },
@@ -85,6 +88,14 @@ export default defineConfig({
                       { label: 'Risk Map', slug: 'analysis/risk-map' },
                       { label: 'Estimates Dashboard', slug: 'analysis/estimates-dashboard' },
                       { label: 'Comparisons', slug: 'analysis/comparisons' },
+                  ],
+              },
+              {
+                  label: 'Browse',
+                  collapsed: false,
+                  items: [
+                      { label: 'All Entities', slug: 'browse' },
+                      { label: 'By Tag', slug: 'browse/tags' },
                   ],
               },
               {

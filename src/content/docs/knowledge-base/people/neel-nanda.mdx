@@ -5,16 +5,9 @@ sidebar:
   order: 13
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Neel Nanda"
-  affiliation="Google DeepMind"
-  role="Alignment Researcher"
-  knownFor="Mechanistic interpretability, TransformerLens library, educational content"
-  website="https://www.neelnanda.io"
-/>
+<DataInfoBox entityId="neel-nanda" />
 
 ## Background
 
@@ -260,44 +253,6 @@ Nanda emphasizes:
 - Ask questions publicly
 - Share your findings
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Mechanistic Interpretability",
-    "Transformer Circuits",
-    "TransformerLens",
-    "Induction Heads",
-    "AI Safety",
-    "Research Tools",
-    "Science Communication",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deepmind"
-      category="lab"
-      title="DeepMind"
-      description="Neel's current organization"
-    />
-    <EntityCard
-      id="chris-olah"
-      category="researcher"
-      title="Chris Olah"
-      description="Pioneer in interpretability who influenced Neel's work"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Interpretability"
-      description="Research area Neel focuses on"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Neel Nanda's Website", url: "https://www.neelnanda.io" },
-  { title: "TransformerLens", url: "https://github.com/neelnanda-io/TransformerLens" },
-  { title: "200 Open Problems in Mech Interp", url: "https://www.lesswrong.com/posts/LbrPTJ4fmABEdEnLf/200-concrete-open-problems-in-mechanistic-interpretability" },
-  { title: "Blog Posts", url: "https://www.neelnanda.io/blog" },
-]} />
+<Backlinks client:load entityId="neel-nanda" />

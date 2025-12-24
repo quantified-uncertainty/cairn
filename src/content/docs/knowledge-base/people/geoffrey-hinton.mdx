@@ -5,16 +5,9 @@ sidebar:
   order: 8
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Geoffrey Hinton"
-  affiliation="University of Toronto (Emeritus), formerly Google"
-  role="Professor Emeritus, AI Safety Advocate"
-  knownFor="Deep learning pioneer, backpropagation, now AI risk vocal advocate"
-  website="https://www.cs.toronto.edu/~hinton/"
-/>
+<DataInfoBox entityId="geoffrey-hinton" />
 
 ## Background
 
@@ -254,38 +247,6 @@ Hinton is notably uncertain about solutions:
 - **MIT Technology Review interview** (2023) - On leaving Google
 - **Various podcasts and media appearances** discussing AI safety
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deep Learning",
-    "AI Safety",
-    "Existential Risk",
-    "Neural Networks",
-    "Backpropagation",
-    "AI Regulation",
-    "Autonomous Weapons",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="yoshua-bengio"
-      category="researcher"
-      title="Yoshua Bengio"
-      description="Fellow Turing Award winner also concerned about AI safety"
-    />
-    <EntityCard
-      id="deepmind"
-      category="lab"
-      title="DeepMind"
-      description="Major AI lab (part of Google) doing safety research"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Geoffrey Hinton's Homepage", url: "https://www.cs.toronto.edu/~hinton/" },
-  { title: "CBS 60 Minutes Interview", url: "https://www.cbsnews.com/news/geoffrey-hinton-ai-dangers-60-minutes-transcript/" },
-  { title: "NYT: 'Godfather of AI' Quits Google", url: "https://www.nytimes.com/2023/05/01/technology/ai-google-chatbot-engineer-quits-hinton.html" },
-  { title: "Google Scholar Profile", url: "https://scholar.google.com/citations?user=JicYPdAAAAAJ" },
-]} />
+<Backlinks client:load entityId="geoffrey-hinton" />

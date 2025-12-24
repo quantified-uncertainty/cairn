@@ -1,7 +1,10 @@
+"use client"
+
 import React from 'react';
 import './wiki.css';
+import { EntityTypeBadge, type EntityType } from './EntityTypeIcon';
 
-type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'intervention' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder';
+type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'intervention' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder' | 'organization' | 'lab-research' | 'lab-academic' | 'lab-frontier' | 'lab-startup' | 'historical' | 'analysis';
 
 interface EntityCardProps {
   id: string;
@@ -10,54 +13,38 @@ interface EntityCardProps {
   description?: string;
 }
 
-const categoryPaths: Record<EntityCategory, string> = {
-  lab: '/organizations',
-  capability: '/capabilities',
-  risk: '/risks',
-  'safety-agenda': '/safety-approaches',
-  policy: '/policies',
-  timeline: '/timelines',
-  scenario: '/scenarios',
-  intervention: '/analysis/interventions',
+const categoryPaths: Record<string, string> = {
+  lab: '/knowledge-base/organizations',
+  'lab-research': '/knowledge-base/organizations',
+  'lab-academic': '/knowledge-base/organizations',
+  'lab-frontier': '/knowledge-base/organizations',
+  'lab-startup': '/knowledge-base/organizations',
+  organization: '/knowledge-base/organizations',
+  capability: '/knowledge-base/capabilities',
+  risk: '/knowledge-base/risks',
+  'safety-agenda': '/knowledge-base/responses',
+  policy: '/knowledge-base/responses',
+  timeline: '/knowledge-base/history',
+  historical: '/knowledge-base/history',
+  scenario: '/analysis/scenarios',
+  intervention: '/knowledge-base/responses',
   crux: '/understanding-ai-risk/core-argument',
   'case-study': '/analysis/case-studies',
-  researcher: '/people',
-  resource: '/resources',
-  funder: '/resources/funding',
-};
-
-const categoryStyles: Record<EntityCategory, { label: string; bg: string; color: string }> = {
-  lab: { label: 'Organization', bg: '#fee2e2', color: '#991b1b' },
-  capability: { label: 'Capability', bg: '#e0f2fe', color: '#075985' },
-  risk: { label: 'Risk', bg: '#fef3c7', color: '#92400e' },
-  'safety-agenda': { label: 'Safety Agenda', bg: '#ede9fe', color: '#5b21b6' },
-  policy: { label: 'Policy', bg: '#ccfbf1', color: '#115e59' },
-  timeline: { label: 'Timeline', bg: '#dbeafe', color: '#1e40af' },
-  scenario: { label: 'Scenario', bg: '#fce7f3', color: '#9d174d' },
-  intervention: { label: 'Intervention', bg: '#dcfce7', color: '#166534' },
-  crux: { label: 'Key Crux', bg: '#ffedd5', color: '#c2410c' },
-  'case-study': { label: 'Case Study', bg: '#e7e5e4', color: '#57534e' },
-  researcher: { label: 'Researcher', bg: '#e2e8f0', color: '#475569' },
-  resource: { label: 'Resource', bg: '#e0e7ff', color: '#3730a3' },
-  funder: { label: 'Funder', bg: '#dcfce7', color: '#166534' },
+  researcher: '/knowledge-base/people',
+  resource: '/getting-started',
+  funder: '/knowledge-base/funders',
+  analysis: '/analysis',
 };
 
 const defaultPath = '/';
-const defaultStyle = { label: 'Entry', bg: '#f3f4f6', color: '#374151' };
 
 export function EntityCard({ id, category, title, description }: EntityCardProps) {
   const basePath = categoryPaths[category] || defaultPath;
   const path = `${basePath}/${id}`;
-  const style = categoryStyles[category] || defaultStyle;
 
   return (
     <div className="wiki-entity-card">
-      <span
-        className="wiki-entity-card__type"
-        style={{ backgroundColor: style.bg, color: style.color }}
-      >
-        {style.label}
-      </span>
+      <EntityTypeBadge type={category as EntityType} size="xs" />
       <h4 className="wiki-entity-card__title">
         <a href={path}>{title}</a>
       </h4>

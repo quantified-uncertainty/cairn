@@ -3,23 +3,14 @@ title: Proliferation
 description: Spread of dangerous AI capabilities to more actors
 sidebar:
   order: 7
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="AI Proliferation"
-  severity="high"
-  likelihood="High"
-  timeframe="Current"
-  customFields={[
-    { label: "Type", value: "Structural" },
-    { label: "Status", value: "Ongoing" },
-  ]}
-/>
+<DataInfoBox entityId="proliferation" />
 
-## Overview
+## Summary
 
 AI proliferation is the spread of AI capabilities to more actors over time—from major labs to smaller companies, open-source communities, nation-states, and eventually individuals. As capabilities spread, more actors can cause harm, intentionally or accidentally.
 
@@ -111,46 +102,3 @@ But AI proliferates differently: software copies perfectly, knowledge transfers 
 - [Meta: Open Source AI Path Forward](https://about.fb.com/news/2024/07/open-source-ai-is-the-path-forward/)
 - [R Street: Open-Source AI Debate](https://www.rstreet.org/research/mapping-the-open-source-ai-debate-cybersecurity-implications-and-policy-priorities/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Open Source",
-    "AI Governance",
-    "Dual Use",
-    "Diffusion",
-    "Regulation",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="bioweapons"
-      category="risk"
-      title="Bioweapons"
-      description="Dangerous capability that could proliferate"
-    />
-    <EntityCard
-      id="cyberweapons"
-      category="risk"
-      title="Cyberweapons"
-      description="Another proliferation-sensitive capability"
-    />
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="One approach to limiting proliferation"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Open-sourcing highly capable foundation models (arXiv)", url: "https://arxiv.org/abs/2311.09227" },
-  { title: "GovAI Research", url: "https://www.governance.ai/research" },
-  { title: "Open Source, Open Risks: Dangers of Unregulated AI (IBM)", url: "https://securityintelligence.com/articles/unregulated-generative-ai-dangers-open-source/" },
-  { title: "Open-Source AI Is Uniquely Dangerous (IEEE Spectrum)", url: "https://spectrum.ieee.org/open-source-ai-2666932122" },
-  { title: "Ungoverned AI: Eurasia Group Top Risk 2024", url: "https://www.eurasiagroup.net/live-post/risk-4-ungoverned-ai", date: "2024" },
-  { title: "Global Security Risks of Open-Source AI Models", url: "https://www.globalcenter.ai/research/the-global-security-risks-of-open-source-ai-models" },
-  { title: "The Fight for Open Source in Generative AI (Network Law Review)", url: "https://www.networklawreview.org/open-source-generative-ai/" },
-  { title: "Palisade Research on AI Safety", url: "https://palisaderesearch.org/research" },
-]} />

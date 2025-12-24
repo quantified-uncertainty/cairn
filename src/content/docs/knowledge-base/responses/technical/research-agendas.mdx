@@ -5,17 +5,9 @@ sidebar:
   order: 5
 ---
 
-import { ComparisonTable, DisagreementMap, InfoBox, KeyQuestions, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../../components/wiki';
+import { ComparisonTable, DataInfoBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="crux"
-  title="Research Agendas"
-  customFields={[
-    { label: "Focus", value: "Comparing approaches to AI alignment" },
-    { label: "Key Tension", value: "Empirical vs. theoretical, prosaic vs. novel" },
-    { label: "Related To", value: "Alignment Difficulty, Timelines" },
-  ]}
-/>
+<DataInfoBox entityId="research-agendas" />
 
 Different research groups have different theories about what will make AI safe. This page compares the major research agendas and their underlying assumptions.
 
@@ -386,51 +378,4 @@ Given uncertainty about which approach will work, many argue for a **portfolio s
 | Uncertain | 40% empirical, 40% interpretability/verification, 20% foundations |
 | Need breakthroughs | 20% empirical, 30% interpretability, 50% foundations |
 
-<Section title="Related Organizations">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Constitutional AI and interpretability research"
-    />
-    <EntityCard
-      id="miri"
-      category="organization"
-      title="MIRI"
-      description="Agent foundations research"
-    />
-    <EntityCard
-      id="arc-evals"
-      category="organization"
-      title="ARC"
-      description="Eliciting latent knowledge and evaluations"
-    />
-    <EntityCard
-      id="redwood"
-      category="organization"
-      title="Redwood Research"
-      description="AI control protocols"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Research Agendas",
-    "Alignment",
-    "Interpretability",
-    "Constitutional AI",
-    "Agent Foundations",
-    "AI Control",
-    "Scalable Oversight",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Constitutional AI", author: "Anthropic", date: "2022", url: "https://arxiv.org/abs/2212.08073" },
-  { title: "Scaling Monosemanticity", author: "Anthropic", date: "2024", url: "https://www.anthropic.com/research/mapping-mind-language-model" },
-  { title: "AI Safety via Debate", author: "Irving et al.", date: "2018", url: "https://arxiv.org/abs/1805.00899" },
-  { title: "Eliciting Latent Knowledge", author: "Christiano et al.", date: "2021", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8" },
-  { title: "AI Control", author: "Redwood Research", date: "2024", url: "https://redwoodresearch.github.io/ai-control/" },
-]} />

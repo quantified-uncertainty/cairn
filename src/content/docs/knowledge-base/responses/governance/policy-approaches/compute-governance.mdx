@@ -5,21 +5,11 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../../components/wiki';
+import {DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="crux"
-  title="Compute Governance"
-  customFields={[
-    { label: "Category", value: "Hardware-based regulation" },
-    { label: "Tractability", value: "Medium-High (measurable, concentrated)" },
-    { label: "Primary Researchers", value: "~10-30 dedicated researchers" },
-    { label: "Policy Adoption", value: "Emerging (US EO, EU AI Act)" },
-    { label: "Key Advantage", value: "Upstream intervention" },
-  ]}
-/>
+<DataInfoBox entityId="compute-governance" />
 
-## Overview
+## Summary
 
 Compute governance uses **computational hardware as a lever** to regulate AI development. Because advanced AI requires enormous amounts of computing power, and that compute comes from concentrated supply chains, controlling compute provides a tractable way to govern AI **before models are built**.
 
@@ -621,39 +611,6 @@ Compute governance works best combined with:
 - AI Safety Fundamentals (Governance track)
 - Centre for the Governance of AI publications
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Export Controls",
-    "Compute Thresholds",
-    "Know Your Customer",
-    "Hardware Governance",
-    "International Coordination",
-    "Semiconductors",
-    "Cloud Computing",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="govai"
-      category="lab"
-      title="Centre for the Governance of AI"
-      description="Leading compute governance research"
-    />
-    <EntityCard
-      id="governance-policy"
-      category="intervention"
-      title="AI Governance and Policy"
-      description="Broader governance intervention category"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Computing Power and the Governance of AI", url: "https://www.governance.ai/research-papers/computing-power-and-the-governance-of-artificial-intelligence", author: "Heim et al.", date: "2023" },
-  { title: "US Export Controls on Advanced Computing", url: "https://www.bis.doc.gov/", author: "Bureau of Industry and Security" },
-  { title: "EU AI Act Compute Provisions", url: "https://artificialintelligenceact.eu/" },
-  { title: "CSET Semiconductor Reports", url: "https://cset.georgetown.edu/publications/?fwp_publication_types=issue-brief&fwp_topics=semiconductors" },
-  { title: "The Chips and Science Act", url: "https://www.congress.gov/bill/117th-congress/house-bill/4346", date: "2022" },
-]} />
+<Backlinks client:load entityId="compute-governance" />

@@ -5,19 +5,11 @@ sidebar:
   order: 21
 ---
 
-import { InfoBox, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="AI Standards Development"
-  customFields={[
-    { label: "Key Bodies", value: "ISO, IEEE, NIST, CEN-CENELEC" },
-    { label: "Status", value: "Rapidly developing" },
-    { label: "Relevance", value: "Standards increasingly referenced in law" },
-  ]}
-/>
+<DataInfoBox entityId="standards-bodies" />
 
-## Overview
+## Summary
 
 **Technical standards** play a crucial but often overlooked role in AI governance. While not legally binding on their own, standards:
 
@@ -260,8 +252,3 @@ For those concerned about AI safety:
 | 2024 | NIST GenAI Profile, CEN-CENELEC work accelerates |
 | 2025-26 | EU AI Act harmonized standards expected |
 
-<Sources sources={[
-  { title: "ISO/IEC JTC 1/SC 42 Artificial Intelligence", url: "https://www.iso.org/committee/6794475.html", author: "ISO" },
-  { title: "IEEE Ethically Aligned Design", url: "https://ethicsinaction.ieee.org/", author: "IEEE" },
-  { title: "EU AI Act Standardisation", url: "https://digital-strategy.ec.europa.eu/en/policies/ai-standards", author: "European Commission" },
-]} />

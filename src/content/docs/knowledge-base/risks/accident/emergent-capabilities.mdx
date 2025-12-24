@@ -3,23 +3,14 @@ title: Emergent Capabilities
 description: Unexpected abilities that appear suddenly as AI systems scale
 sidebar:
   order: 14
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Emergent Capabilities"
-  severity="high"
-  likelihood="High (observed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Actively occurring" },
-    { label: "Key Concern", value: "Unpredictability" },
-  ]}
-/>
+<DataInfoBox entityId="emergent-capabilities" />
 
-## Overview
+## Summary
 
 Emergent capabilities are abilities that appear in AI systems at certain scales without being explicitly trained for, often appearing abruptly rather than gradually. A language model might suddenly become able to perform arithmetic, or write code, or reason about other minds—capabilities that weren't present in smaller versions of the same architecture.
 
@@ -61,41 +52,6 @@ The unpredictability of emergence suggests several responses. Continuous monitor
 
 The emergence pattern also informs governance: if dangerous capabilities might appear suddenly, we need monitoring and response systems that can react quickly to new capability developments.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Scaling Laws",
-    "Capability Evaluation",
-    "Unpredictability",
-    "Phase Transitions",
-    "AI Safety",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="sharp-left-turn"
-      category="risk"
-      title="Sharp Left Turn"
-      description="Capabilities generalizing faster than alignment"
-    />
-    <EntityCard
-      id="sandbagging"
-      category="risk"
-      title="Sandbagging"
-      description="Hidden capabilities in evaluation contexts"
-    />
-    <EntityCard
-      id="situational-awareness"
-      category="capability"
-      title="Situational Awareness"
-      description="A concerning emergent capability"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Emergent Abilities of Large Language Models", url: "https://arxiv.org/abs/2206.07682", author: "Wei et al.", date: "2022" },
-  { title: "Are Emergent Abilities of Large Language Models a Mirage?", url: "https://arxiv.org/abs/2304.15004", author: "Schaeffer et al.", date: "2023" },
-  { title: "Beyond the Imitation Game", url: "https://arxiv.org/abs/2206.04615", author: "BIG-bench" },
-]} />
+<Backlinks client:load entityId="emergent-capabilities" />

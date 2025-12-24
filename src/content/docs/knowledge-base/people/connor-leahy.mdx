@@ -5,16 +5,9 @@ sidebar:
   order: 14
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Connor Leahy"
-  affiliation="Conjecture"
-  role="CEO & Co-founder"
-  knownFor="Founding Conjecture, AI safety advocacy, interpretability research"
-  website="https://conjecture.dev"
-/>
+<DataInfoBox entityId="connor-leahy" />
 
 ## Background
 
@@ -297,43 +290,6 @@ Observations about AI safety:
 - Need more attempts at solutions
 - Can't wait for perfect understanding
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Interpretability",
-    "Prosaic Alignment",
-    "AGI Timelines",
-    "AI Safety",
-    "Capability Evaluation",
-    "EleutherAI",
-    "Red-teaming",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Interpretability"
-      description="Core research focus at Conjecture"
-    />
-    <EntityCard
-      id="chris-olah"
-      category="researcher"
-      title="Chris Olah"
-      description="Pioneer in interpretability research"
-    />
-    <EntityCard
-      id="neel-nanda"
-      category="researcher"
-      title="Neel Nanda"
-      description="Fellow interpretability researcher"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Conjecture", url: "https://conjecture.dev" },
-  { title: "Connor Leahy on Twitter/X", url: "https://twitter.com/ConnorLeahy" },
-  { title: "Various podcast appearances", url: "https://www.youtube.com/results?search_query=connor+leahy" },
-]} />
+<Backlinks client:load entityId="connor-leahy" />

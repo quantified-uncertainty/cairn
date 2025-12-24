@@ -5,16 +5,9 @@ sidebar:
   order: 5
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import { DataInfoBox, EstimateBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Stuart Russell"
-  affiliation="UC Berkeley, CHAI"
-  role="Professor of Computer Science, CHAI Founder"
-  knownFor="Human Compatible, inverse reinforcement learning, AI safety advocacy"
-  website="https://people.eecs.berkeley.edu/~russell/"
-/>
+<DataInfoBox entityId="stuart-russell" />
 
 ## Background
 
@@ -210,44 +203,3 @@ Russell continues working on:
 - Much work remains to make frameworks practical
 - Need both academic research and fast-moving safety work
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Inverse Reinforcement Learning",
-    "Value Alignment",
-    "Cooperative AI",
-    "Off-Switch Problem",
-    "Corrigibility",
-    "Human-Compatible AI",
-    "AI Governance",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="chai"
-      category="lab"
-      title="CHAI"
-      description="Center for Human-Compatible AI at UC Berkeley"
-    />
-    <EntityCard
-      id="corrigibility-failure"
-      category="risk"
-      title="Corrigibility Failure"
-      description="Risk that AI systems resist shutdown or modification"
-    />
-    <EntityCard
-      id="paul-christiano"
-      category="researcher"
-      title="Paul Christiano"
-      description="Researcher working on related alignment problems"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Stuart Russell's Homepage", url: "https://people.eecs.berkeley.edu/~russell/" },
-  { title: "Human Compatible (book)", url: "https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" },
-  { title: "CHAI Website", url: "https://humancompatible.ai/" },
-  { title: "TED Talk: 3 Principles for Creating Safer AI", url: "https://www.ted.com/talks/stuart_russell_3_principles_for_creating_safer_ai" },
-]} />

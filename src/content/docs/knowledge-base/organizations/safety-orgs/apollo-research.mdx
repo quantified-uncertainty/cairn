@@ -5,19 +5,11 @@ sidebar:
   order: 13
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="Apollo Research"
-  founded="2022"
-  location="London, UK"
-  headcount="~15-20"
-  funding="Grants (Open Philanthropy, others)"
-  website="https://www.apolloresearch.ai"
-/>
+<DataInfoBox entityId="apollo-research" />
 
-## Overview
+## Summary
 
 Apollo Research is an AI safety research organization founded in 2022 with a specific focus on one of the most concerning potential failure modes: **deceptive alignment** and **scheming behavior** in advanced AI systems. Based in London, Apollo conducts rigorous empirical evaluations to determine whether current and near-future AI models might engage in strategic deception, hide their capabilities, or pursue misaligned goals while appearing aligned.
 
@@ -658,81 +650,6 @@ Apollo's core research area is **evaluating whether AI systems engage in decepti
 - Shared interest in understanding deception
 - Different incentives (builder vs evaluator)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deceptive Alignment",
-    "Scheming",
-    "Sandbagging",
-    "Capability Evaluations",
-    "Situational Awareness",
-    "Strategic Deception",
-    "Red Teaming",
-    "AI Evaluations",
-    "Alignment Failures",
-    "Dangerous Capabilities",
-    "Model Organisms",
-    "Adversarial Testing"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deceptive-alignment"
-      category="risks"
-      title="Deceptive Alignment"
-      description="Core risk Apollo evaluates"
-    />
-    <EntityCard
-      id="sandbagging"
-      category="risks"
-      title="Sandbagging"
-      description="Capability hiding evaluated by Apollo"
-    />
-    <EntityCard
-      id="metr"
-      category="organizations"
-      title="METR"
-      description="Complementary evaluation organization"
-    />
-    <EntityCard
-      id="arc"
-      category="organizations"
-      title="ARC Evals"
-      description="Pioneering evaluation organization"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Lab whose models Apollo evaluates"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="organizations"
-      title="UK AI Safety Institute"
-      description="Government body Apollo advises"
-    />
-    <EntityCard
-      id="situational-awareness"
-      category="risks"
-      title="Situational Awareness"
-      description="Capability Apollo studies"
-    />
-    <EntityCard
-      id="capability-evaluations"
-      category="safety-approaches"
-      title="Capability Evaluations"
-      description="Apollo's methodology"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Apollo Research Website", url: "https://www.apolloresearch.ai" },
-  { title: "Apollo Research Publications", url: "https://www.apolloresearch.ai/research" },
-  { title: "Evaluating Frontier Models for Dangerous Capabilities", url: "https://www.apolloresearch.ai/research/scheming-evaluations" },
-  { title: "Apollo on Sandbagging", url: "https://www.apolloresearch.ai/blog/sandbagging" },
-  { title: "Situational Awareness Research", url: "https://www.apolloresearch.ai/research/situational-awareness" },
-  { title: "Apollo Research Blog", url: "https://www.apolloresearch.ai/blog" }
-]} />
+<Backlinks client:load entityId="apollo-research" />

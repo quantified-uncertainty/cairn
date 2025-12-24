@@ -5,19 +5,11 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab"
-  title="Anthropic"
-  founded="2021"
-  location="San Francisco, CA"
-  headcount="~1,000 (as of 2024)"
-  funding="$7.3B+ (Amazon, Google, others)"
-  website="https://anthropic.com"
-/>
+<DataInfoBox entityId="anthropic" />
 
-## Overview
+## Summary
 
 Anthropic is an AI safety company founded in January 2021 by former OpenAI researchers, including siblings Dario and Daniela Amodei. The company was created following disagreements with OpenAI's direction, particularly concerns about the pace of commercialization and the shift toward Microsoft partnership.
 
@@ -480,84 +472,6 @@ Anthropic's answer: Someone will build them regardless; better that safety-focus
 
 **Realistic**: Mixed results. Some genuine safety contributions (interpretability, evaluations). Some problematic dynamics (commercial racing, capability advancement). Net effect unclear and depends on counterfactuals.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Constitutional AI",
-    "RLHF",
-    "Interpretability",
-    "Responsible Scaling",
-    "Claude",
-    "Frontier AI",
-    "Scalable Oversight",
-    "Mechanistic Interpretability",
-    "AI Safety",
-    "Racing Dynamics"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="dario-amodei"
-      category="people"
-      title="Dario Amodei"
-      description="Anthropic CEO and co-founder"
-    />
-    <EntityCard
-      id="chris-olah"
-      category="people"
-      title="Chris Olah"
-      description="Interpretability pioneer and Anthropic co-founder"
-    />
-    <EntityCard
-      id="jan-leike"
-      category="people"
-      title="Jan Leike"
-      description="Head of Alignment at Anthropic, formerly OpenAI"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Organization where Anthropic founders previously worked"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-approaches"
-      title="Mechanistic Interpretability"
-      description="Key research focus for Anthropic"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-approaches"
-      title="Scalable Oversight"
-      description="Research on supervising superhuman AI"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risks"
-      title="Deceptive Alignment"
-      description="Risk studied in Anthropic's sleeper agents research"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risks"
-      title="Racing Dynamics"
-      description="Competitive pressure that affects Anthropic's strategy"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Anthropic Company Website", url: "https://anthropic.com" },
-  { title: "Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety" },
-  { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy" },
-  { title: "Constitutional AI Paper", url: "https://arxiv.org/abs/2212.08073" },
-  { title: "Scaling Monosemanticity", url: "https://transformer-circuits.pub/2024/scaling-monosemanticity/" },
-  { title: "Sleeper Agents Paper", url: "https://arxiv.org/abs/2401.05566" },
-  { title: "Many-Shot Jailbreaking Paper", url: "https://www-cdn.anthropic.com/af5633c94ed2beb282f6a53c595eb437e8e7b630/Many_Shot_Jailbreaking__2024_04_02_0936.pdf" },
-  { title: "Machines of Loving Grace (Dario Amodei essay)", url: "https://darioamodei.com/machines-of-loving-grace" },
-  { title: "Anthropic Funding News (Crunchbase)", url: "https://www.crunchbase.com/organization/anthropic" },
-  { title: "Amazon Anthropic Partnership", url: "https://press.aboutamazon.com/2023/9/amazon-and-anthropic-announce-strategic-collaboration" },
-  { title: "Google Anthropic Investment", url: "https://blog.google/technology/ai/google-anthropic-investment/" }
-]} />
+<Backlinks client:load entityId="anthropic" />

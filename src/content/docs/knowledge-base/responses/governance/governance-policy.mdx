@@ -5,21 +5,11 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="crux"
-  title="AI Governance and Policy"
-  customFields={[
-    { label: "Category", value: "Institutional coordination" },
-    { label: "Primary Bottleneck", value: "Political will + expertise" },
-    { label: "Time to Impact", value: "2-10 years" },
-    { label: "Estimated Practitioners", value: "~200-500 dedicated" },
-    { label: "Entry Paths", value: "Policy, law, international relations" },
-  ]}
-/>
+<DataInfoBox entityId="governance-policy" />
 
-## Overview
+## Summary
 
 AI governance seeks to shape the development and deployment of AI systems through **institutions, regulations, and coordination**. Unlike technical research that solves problems directly, governance creates **guardrails, incentives, and coordination mechanisms** to reduce risk.
 
@@ -565,52 +555,6 @@ Governance works best combined with:
 - Import AI newsletter (Jack Clark)
 - CSET publications
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "International Coordination",
-    "Compute Governance",
-    "Regulation",
-    "Standards",
-    "Liability",
-    "Export Controls",
-    "AI Safety Summits",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Hardware-based AI regulation"
-    />
-    <EntityCard
-      id="eu-ai-act"
-      category="policy"
-      title="EU AI Act"
-      description="Comprehensive AI regulation framework"
-    />
-    <EntityCard
-      id="govai"
-      category="lab"
-      title="Centre for the Governance of AI"
-      description="Leading AI governance research institution"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risk"
-      title="Racing Dynamics"
-      description="Key problem governance aims to solve"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Governance of AI", url: "https://www.governance.ai/", author: "Centre for the Governance of AI" },
-  { title: "AI Policy Career Guide", url: "https://80000hours.org/career-reviews/ai-policy-and-strategy/", author: "80,000 Hours" },
-  { title: "Computing Power and the Governance of AI", url: "https://www.governance.ai/research-papers/computing-power-and-the-governance-of-artificial-intelligence", author: "Heim et al." },
-  { title: "EU AI Act Summary", url: "https://artificialintelligenceact.eu/" },
-  { title: "AI Safety Summits", url: "https://www.aisafetysummit.gov.uk/" },
-  { title: "CSET Publications", url: "https://cset.georgetown.edu/publications/" },
-]} />
+<Backlinks client:load entityId="governance-policy" />

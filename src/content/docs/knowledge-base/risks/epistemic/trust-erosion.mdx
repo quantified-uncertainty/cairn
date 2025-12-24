@@ -3,23 +3,14 @@ title: Trust Erosion
 description: Loss of faith in institutions, media, and systems of verification
 sidebar:
   order: 2
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Trust Erosion"
-  severity="medium-high"
-  likelihood="High"
-  timeframe="Current"
-  customFields={[
-    { label: "Type", value: "Epistemic" },
-    { label: "Status", value: "Ongoing" },
-  ]}
-/>
+<DataInfoBox entityId="trust-erosion" />
 
-## Overview
+## Summary
 
 Trust erosion is the gradual decline in public confidence in institutions, experts, media, and verification systems. AI accelerates this by making it easier to generate disinformation, fabricate evidence, and create customized attacks on institutional credibility.
 
@@ -65,41 +56,6 @@ Trust networks accept that universal trust is impossible and focus on communitie
 
 Education in epistemic competence helps individuals navigate low-trust environments—understanding uncertainty, evaluating sources, and updating beliefs appropriately.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Institutions",
-    "Media",
-    "Democracy",
-    "Verification",
-    "Polarization",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="epistemic-collapse"
-      category="risk"
-      title="Epistemic Collapse"
-      description="Ultimate consequence of trust erosion"
-    />
-    <EntityCard
-      id="disinformation"
-      category="risk"
-      title="Disinformation"
-      description="AI-powered attacks on trust"
-    />
-    <EntityCard
-      id="deepfakes"
-      category="risk"
-      title="Deepfakes"
-      description="Fabricated evidence undermining trust"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Trust: The Social Virtues and the Creation of Prosperity", author: "Francis Fukuyama" },
-  { title: "Edelman Trust Barometer" },
-  { title: "Pew Research on institutional trust" },
-]} />
+<Backlinks client:load entityId="trust-erosion" />

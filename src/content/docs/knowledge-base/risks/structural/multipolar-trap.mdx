@@ -3,23 +3,14 @@ title: Multipolar Trap
 description: Competitive dynamics producing collectively bad outcomes
 sidebar:
   order: 6
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Multipolar Trap"
-  severity="high"
-  likelihood="Medium-High"
-  timeframe="Current to Medium-term"
-  customFields={[
-    { label: "Type", value: "Structural" },
-    { label: "Also Called", value: "Collective action failure" },
-  ]}
-/>
+<DataInfoBox entityId="multipolar-trap" />
 
-## Overview
+## Summary
 
 A multipolar trap occurs when competition between multiple actors produces outcomes that none of them want but none can escape individually. Each actor rationally pursues their own interest, but the aggregate result is collectively irrational. Applied to AI, this captures how competition between labs, companies, or nations could produce dangerous AI outcomes even when no individual actor wants that.
 
@@ -100,40 +91,3 @@ Without global coordination, nations may compete for AI companies by reducing sa
 - [Slatestar Codex: Meditations on Moloch](https://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
 - [80,000 Hours: AI Coordination Problems](https://80000hours.org/podcast/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Game Theory",
-    "Coordination",
-    "Competition",
-    "AI Governance",
-    "Collective Action",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="racing-dynamics"
-      category="risk"
-      title="Racing Dynamics"
-      description="Specific instance of multipolar trap"
-    />
-    <EntityCard
-      id="concentration-of-power"
-      category="risk"
-      title="Concentration of Power"
-      description="Alternative: escape through monopoly"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Meditations on Moloch", url: "https://slatestarcodex.com/2014/07/30/meditations-on-moloch/", author: "Scott Alexander" },
-  { title: "Racing to the Precipice", author: "Armstrong et al." },
-  { title: "The Logic of Collective Action", author: "Mancur Olson" },
-  { title: "Multipolar Traps (Conversational Leadership)", url: "https://conversational-leadership.net/multipolar-trap/" },
-  { title: "Breaking Free from Multipolar Traps", url: "https://conversational-leadership.net/blog/multipolar-trap/" },
-  { title: "Darwinian Traps and Existential Risks (LessWrong)", url: "https://www.lesswrong.com/posts/q3YmKemEzyrcphAeP/darwinian-traps-and-existential-risks" },
-  { title: "Understanding and Escaping Multi-Polar Traps", url: "https://www.milesrote.com/blog/understanding-and-escaping-multi-polar-traps-in-the-age-of-technology" },
-  { title: "Mitigating Multipolar Traps into Multipolar Wins (Medium)", url: "https://medium.com/multipolar-win/mitigating-multipolar-traps-into-multipolar-wins-66de9aa3af27" },
-]} />

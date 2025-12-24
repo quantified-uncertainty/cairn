@@ -5,20 +5,11 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="safety-agenda"
-  title="AI Control"
-  organization="Redwood Research"
-  approach="Assumes alignment may fail"
-  customFields={[
-    { label: "Key Paper", value: "December 2023" },
-    { label: "Core Assumption", value: "Untrusted AI" },
-  ]}
-/>
+<DataInfoBox entityId="ai-control" />
 
-## Overview
+## Summary
 
 AI Control is a research agenda that focuses on maintaining safety even when using AI systems that might be actively trying to subvert safety measures. Rather than assuming alignment succeeds, it asks: "How can we safely use AI systems that might be misaligned?"
 
@@ -113,40 +104,6 @@ Control buys time but doesn't solve alignment:
 - Can't control forever
 - Should enable alignment research
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Monitoring",
-    "Containment",
-    "Defense in Depth",
-    "Red-Teaming",
-    "Untrusted AI",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="redwood"
-      category="lab"
-      title="Redwood Research"
-      description="Primary developer of AI Control agenda"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Key risk that control addresses"
-    />
-    <EntityCard
-      id="agentic-ai"
-      category="capability"
-      title="Agentic AI"
-      description="Systems where control is most relevant"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "AI Control: Improving Safety Despite Intentional Subversion", url: "https://arxiv.org/abs/2312.06942", author: "Greenblatt et al.", date: "2023" },
-  { title: "Redwood Research: AI Control", url: "https://www.redwoodresearch.org/control" },
-]} />
+<Backlinks client:load entityId="ai-control" />

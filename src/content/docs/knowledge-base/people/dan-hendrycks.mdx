@@ -5,16 +5,9 @@ sidebar:
   order: 15
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Dan Hendrycks"
-  affiliation="Center for AI Safety (CAIS)"
-  role="Director"
-  knownFor="AI safety research, benchmark creation, CAIS leadership, catastrophic risk focus"
-  website="https://hendrycks.com"
-/>
+<DataInfoBox entityId="dan-hendrycks" />
 
 ## Background
 
@@ -304,44 +297,6 @@ Hendrycks envisions:
 - Technical solutions to catastrophic risks
 - Safety research well-funded and respected
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Safety",
-    "Catastrophic Risk",
-    "Existential Risk",
-    "Robustness",
-    "AI Governance",
-    "Benchmarks",
-    "Compute Governance",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="cais"
-      category="lab"
-      title="CAIS"
-      description="Center for AI Safety, directed by Dan Hendrycks"
-    />
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Policy area CAIS works on"
-    />
-    <EntityCard
-      id="yoshua-bengio"
-      category="researcher"
-      title="Yoshua Bengio"
-      description="Prominent signatory of Statement on AI Risk"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Dan Hendrycks' Website", url: "https://hendrycks.com" },
-  { title: "Center for AI Safety", url: "https://safe.ai" },
-  { title: "Statement on AI Risk", url: "https://safe.ai/statement-on-ai-risk" },
-  { title: "Google Scholar Profile", url: "https://scholar.google.com/citations?user=VEvOFxQAAAAJ" },
-]} />
+<Backlinks client:load entityId="dan-hendrycks" />

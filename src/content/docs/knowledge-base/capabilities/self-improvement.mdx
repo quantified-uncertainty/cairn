@@ -5,20 +5,11 @@ sidebar:
   order: 7
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Self-Improvement and Recursive Enhancement"
-  currentLevel="Limited automated ML"
-  projectedTimeline="Critical capability threshold uncertain"
-  customFields={[
-    { label: "Safety Relevance", value: "Existential" },
-    { label: "Status", value: "Partial automation, human-led" },
-  ]}
-/>
+<DataInfoBox entityId="self-improvement" />
 
-## Overview
+## Summary
 
 Self-improvement refers to AI systems' ability to enhance their own capabilities or create more capable successor systems. This includes automated machine learning (AutoML), AI-assisted AI research, and the theoretical possibility of recursive self-improvement where each generation of AI creates a more capable next generation.
 
@@ -27,342 +18,187 @@ This capability is central to many AI safety concerns because it could lead to r
 ## Forms of Self-Improvement
 
 ### Automated Machine Learning (AutoML)
-Current reality:
-- Neural architecture search
-- Hyperparameter optimization
-- Data augmentation strategies
-- Training pipeline optimization
+
+**AutoML systems** currently optimize specific aspects of the machine learning pipeline without full autonomy. These tools perform neural architecture search to find optimal network structures, tune hyperparameters to maximize performance, develop data augmentation strategies, and streamline training pipelines—but still operate within human-defined constraints and objectives.
 
 ### AI-Assisted AI Research
-Growing capability:
-- Code generation for ML experiments
-- Literature review and synthesis
-- Experiment design
-- Results analysis
-- Paper writing
+
+**AI systems** increasingly assist with the research process itself, though humans remain essential for breakthroughs. Current systems can generate code for ML experiments, review and synthesize academic literature, design experiments, analyze results, and even draft research papers. This represents a growing but still limited form of self-improvement capability.
 
 ### Training AI on AI-Generated Data
-Emerging practice:
-- Synthetic data generation
-- Self-play for RL
-- Distillation from larger models
-- Constitutional AI approaches
+
+**Synthetic data generation** has become an established practice where AI systems train on content created by other AI systems. This includes generating synthetic training data, self-play approaches in reinforcement learning, knowledge distillation from larger to smaller models, and constitutional AI methods that use AI feedback to shape training. This creates a limited feedback loop of improvement.
 
 ### Recursive Self-Improvement
-Theoretical concern:
-- AI designs better AI
-- Without human involvement
-- Potentially very rapid
-- Difficult to control or stop
+
+**Recursive self-improvement** represents the theoretical concern that AI could design increasingly capable AI without human involvement. Such a process could potentially proceed very rapidly and prove difficult or impossible to control once initiated, fundamentally transforming the development landscape.
 
 ## Current State
 
 ### What Exists Today
-- **AutoML tools**: Neural architecture search, HPO
-- **AI coding assistants**: Help write ML code
-- **Synthetic data**: Training on AI-generated content
-- **Model distillation**: Smaller models learning from larger
-- **AI research assistance**: Literature review, experiment design
+
+**AutoML tools** like neural architecture search and hyperparameter optimization are widely deployed. **AI coding assistants** help researchers write ML code more efficiently. **Synthetic data** from AI-generated content is routinely used in training pipelines. **Model distillation** allows smaller models to learn from larger ones. **AI research assistance** supports literature review and experiment design across the field.
 
 ### Human Still in the Loop
-Critical steps still require humans:
-- Research direction setting
-- Novel architectural ideas
-- Evaluation design
-- Safety considerations
-- Deployment decisions
+
+**Critical steps** still require human involvement and judgment. Humans set research directions, contribute novel architectural ideas, design evaluation frameworks, consider safety implications, and make deployment decisions. While AI assistance accelerates these processes, the strategic and creative elements remain human-driven.
 
 ### Limitations
-Current systems cannot:
-- Independently conduct full research projects
-- Innovate fundamentally new approaches
-- Recursively improve without human guidance
-- Scale improvements indefinitely
-- Ensure safety of improvements
+
+**Current systems** cannot independently conduct full research projects from conception to publication. They lack the ability to innovate fundamentally new approaches, recursively improve without human guidance, or scale improvements indefinitely. Most importantly, they cannot ensure the safety of their own improvements without human oversight.
 
 ## Historical Examples
 
 ### AlphaGo to AlphaZero
-Self-improvement through self-play:
-- Started with human game data
-- AlphaZero learned purely from self-play
-- Exceeded human-trained version
-- Generalized to multiple games
+
+**AlphaGo** initially learned from human game data, but its successor AlphaZero learned purely from self-play, exceeding the performance of its human-trained predecessor. This system generalized the approach to multiple games, demonstrating how self-improvement through self-play can surpass human-guided training within constrained domains.
 
 ### GPT-4 Training GPT-4
-AI improving AI already happening:
-- GPT-4 generates synthetic training data
-- Used for instruction tuning
-- Bootstrapping from human examples
-- Limited but real self-improvement loop
+
+**Large language models** already participate in their own training process. GPT-4 generates synthetic training data used for instruction tuning of language models, bootstrapping from initial human examples to create a limited but real self-improvement loop. This demonstrates that AI improving AI is not purely theoretical but actively happening in controlled ways.
 
 ### AutoML Systems
-Automated architecture search:
-- EfficientNet: Automated neural architecture
-- Neural Architecture Search (NAS)
-- Better than many human designs
-- But within human-set constraints
+
+**Automated architecture search** has produced systems like EfficientNet through Neural Architecture Search (NAS). These systems often outperform many human-designed architectures, though they still operate within human-set constraints and optimization objectives rather than pursuing open-ended improvement.
 
 ## The Intelligence Explosion Hypothesis
 
 ### The Argument
-1. AI becomes capable of improving AI
-2. Improved AI is better at improving AI
-3. Each cycle happens faster
-4. Rapid capability explosion
-5. Superhuman AI in short timeframe
+
+**The intelligence explosion** scenario proceeds through a recursive cycle: AI becomes capable of improving AI, which makes it better at the task of improvement itself, causing each cycle to happen faster, producing a rapid capability explosion that reaches superhuman intelligence in a short timeframe.
 
 ### Key Assumptions
-Requires:
-- Returns to AI-powered AI research don't diminish
-- Improvements can be made faster than deployed
-- No fundamental capability ceilings nearby
-- AI can innovate, not just optimize
+
+**This scenario requires** several conditions to hold. Returns to AI-powered AI research must not diminish significantly. Improvements must be implementable faster than they can be deployed and tested. No fundamental capability ceilings can exist nearby. Perhaps most critically, AI must be able to truly innovate rather than merely optimize within existing paradigms.
 
 ### Counterarguments
-Reasons it might not happen:
-- Diminishing returns to optimization
-- Hard limits on capabilities
-- Bottlenecks in real-world testing
-- Physical constraints (compute, energy)
-- Need for empirical validation
+
+**Skeptics point to** several reasons the intelligence explosion might not occur. Diminishing returns to optimization could slow progress. Hard physical or theoretical limits on capabilities might exist. Real-world testing and empirical validation create unavoidable bottlenecks. Physical constraints on compute and energy impose limits. Innovation may require insights that optimization alone cannot produce.
 
 ### Current Evidence
-Mixed signals:
-- Some automation of AI development working
-- But humans still crucial for breakthroughs
-- Unclear if this is fundamental or temporary
-- Progress in AI capabilities has been rapid but not explosive
+
+**The evidence remains mixed.** Some automation of AI development is working and improving. However, humans remain crucial for major breakthroughs and paradigm shifts. Whether this limitation is fundamental or merely temporary remains unclear. Progress in AI capabilities has been rapid but follows a more continuous trajectory than the explosive discontinuity the hypothesis predicts.
 
 ## Safety Implications
 
 ### Why This Is Existential
-Recursive self-improvement could:
-- Happen too fast to react to
-- Bypass safety measures
-- Reach dangerous capabilities before we notice
-- Make AI uncontrollable
+
+**Recursive self-improvement** could happen too fast for humans to react, bypass safety measures before they can be updated, reach dangerous capabilities before detection, and render AI systems fundamentally uncontrollable. The speed differential between AI-driven and human-supervised development could prove decisive.
 
 ### Loss of Human Control
-If AI improves AI:
-- Humans become bottleneck, then eliminated
-- Safety measures may not transfer to successors
-- Unprecedented capabilities emerge
-- No time to pause and assess
+
+**Once AI improves AI,** humans could rapidly become a bottleneck in the development process and then be eliminated from the loop entirely. Safety measures designed for one generation may not transfer to successors. Unprecedented capabilities could emerge without time to pause and assess risks or implement safeguards.
 
 ### Alignment Difficulty
-Challenges:
-- Each improvement risks losing alignment
-- Can't thoroughly test each generation
-- Emergent capabilities unpredictable
-- Goal preservation not guaranteed
+
+**Each improvement cycle** risks degrading or losing alignment properties. Thorough testing of each generation becomes infeasible at scale. Emergent capabilities remain unpredictable. Most fundamentally, goal preservation across self-modification is not guaranteed and may be technically very difficult to achieve.
 
 ### Differential Progress
-Self-improvement might:
-- Accelerate capabilities faster than safety
-- Compound existing alignment problems
-- Reduce time for safety work
-- Change strategic landscape suddenly
+
+**Self-improvement might** accelerate capabilities development much faster than safety research. This would compound existing alignment problems, reduce available time for safety work, and suddenly change the strategic landscape in ways that favor capability gains over safety measures.
 
 ## When Might This Happen?
 
 ### Optimistic Timeline (Sooner)
-If AI can already:
-- Generate useful ML code
-- Conduct experiments autonomously
-- Iterate rapidly
-- Learn from failures
 
-Then recursive improvement could begin within years.
+**If AI can already** generate useful ML code, conduct experiments autonomously, iterate rapidly on designs, and learn effectively from failures, then recursive improvement could begin within years. Current trajectory suggests these capabilities are emerging, though their integration into a fully autonomous cycle remains incomplete.
 
 ### Pessimistic Timeline (Later)
-If we need:
-- True scientific creativity
-- Novel conceptual breakthroughs
-- Physical world grounding
-- Human judgment at each step
 
-Then it might take decades or not happen at all.
+**If genuine progress requires** true scientific creativity, novel conceptual breakthroughs, extensive physical world grounding, and human judgment at each critical step, then autonomous recursive improvement might take decades to emerge or might not happen at all. The nature of innovation itself becomes the key uncertainty.
 
 ### Current Trajectory
-We're seeing:
-- Increasing AI involvement in AI research
-- Faster iteration cycles
-- More automated experimentation
-- But still human-driven breakthroughs
+
+**Current developments show** increasing AI involvement in AI research, faster iteration cycles, and more automated experimentation. However, human insight and direction still drive major breakthroughs. The question is whether AI's growing research assistance represents early stages of recursive improvement or a plateau of useful-but-bounded automation.
 
 ## Related Concepts
 
 ### Takeoff Speed
-Self-improvement determines:
-- How fast AI capabilities grow
-- Slow takeoff: years of warning
-- Fast takeoff: months or less
-- Critically important for safety strategy
+
+**Self-improvement capability** fundamentally determines how fast AI capabilities grow. A slow takeoff provides years of warning and adjustment time, while a fast takeoff could occur in months or less. This distinction is critically important for safety strategy, as different speeds require radically different approaches to governance and control.
 
 ### Hard vs Soft Takeoff
-- **Hard takeoff**: Rapid, discontinuous jump
-- **Soft takeoff**: Gradual acceleration
-- Self-improvement capability suggests which
+
+**A hard takeoff** involves rapid, discontinuous jumps in capability, while **a soft takeoff** features gradual acceleration. The nature and efficiency of self-improvement mechanisms largely determine which scenario unfolds, with profound implications for whether humanity can maintain oversight during the transition.
 
 ### Intelligence Explosion
-The scenario where:
-- Self-improvement becomes self-sustaining
-- Capabilities grow exponentially
-- Reaches superintelligence quickly
+
+**The intelligence explosion** scenario describes self-improvement becoming self-sustaining, with capabilities growing exponentially and reaching superintelligence quickly. This represents the most extreme version of fast takeoff enabled by highly efficient recursive self-improvement.
 
 ## Safety Approaches
 
 ### Limiting Self-Improvement
-Prevent or restrict:
-- Don't give AI access to its own code
-- Require human approval for changes
-- Sandbox improvements
-- Rate-limit iteration
+
+**Restrictive approaches** prevent AI from accessing its own code, require human approval for all changes, sandbox improvement attempts, and rate-limit iteration cycles. These measures sacrifice potential benefits to maintain control and allow human oversight of each development step.
 
 ### Aligning the Process
-Make self-improvement safe:
-- Preserve alignment through improvements
-- Formal verification of changes
-- Conservative improvement strategies
-- Safety constraints that persist
+
+**Alignment-focused approaches** aim to make self-improvement safe rather than prevent it. This requires preserving alignment properties through improvements, formal verification of proposed changes, conservative improvement strategies that prioritize safety, and safety constraints that persist across generations.
 
 ### Monitoring
-Detect concerning developments:
-- Capability evaluations at each step
-- Red lines for dangerous capabilities
-- Kill switches and containment
-- International coordination
+
+**Detection and oversight** involve capability evaluations at each improvement step, establishing red lines for dangerous capabilities, maintaining kill switches and containment measures, and achieving international coordination on monitoring standards and responses.
 
 ### Using for Safety
-Leverage self-improvement for good:
-- AI improving AI safety techniques
-- Automated alignment research
-- Scalable oversight via AI
-- Recursive reward modeling
+
+**Leveraging self-improvement** for safety purposes could involve AI systems improving AI safety techniques, conducting automated alignment research, providing scalable oversight of other AI systems, and implementing recursive reward modeling that preserves beneficial objectives.
 
 ## Research Directions
 
 ### Understanding Self-Improvement
-- What forms are possible?
-- What are fundamental limits?
-- How fast could it proceed?
-- What are prerequisites?
+
+**Fundamental questions** include what forms of self-improvement are actually possible, what fundamental limits exist on the process, how fast it could proceed under various conditions, and what prerequisites must be in place before different types become feasible.
 
 ### Safe Self-Improvement
-- Preserving goals through modification
-- Formal verification of improvements
-- Corrigible self-improvement
-- Constrained optimization
+
+**Safety research** focuses on preserving goals through self-modification, developing formal verification methods for proposed improvements, achieving corrigible self-improvement where systems remain open to correction, and implementing constrained optimization that respects safety boundaries.
 
 ### Evaluation
-- Detecting self-improvement capability
-- Measuring recursive improvement potential
-- Early warning indicators
-- Safety benchmarks
+
+**Assessment challenges** involve detecting self-improvement capability before it becomes dangerous, measuring recursive improvement potential in current systems, identifying early warning indicators of problematic development, and establishing safety benchmarks that capture relevant risks.
 
 ## Current Research
 
 ### AutoML
-Continual progress in:
-- Architecture search
-- Hyperparameter optimization
-- Meta-learning
-- Neural architecture design
+
+**Continual progress** occurs in architecture search techniques, hyperparameter optimization methods, meta-learning approaches that learn how to learn, and neural architecture design automation. These advances steadily increase the scope of automated optimization in AI development.
 
 ### AI for AI Research
-Growing work on:
-- Automated theorem proving
-- Experiment design
-- Code generation for ML
-- Scientific literature analysis
+
+**Growing work** explores automated theorem proving, experiment design systems, code generation for machine learning, and scientific literature analysis. These capabilities represent incremental steps toward AI systems that can contribute more substantially to their own development.
 
 ### Alignment Research
-Specific efforts on:
-- Goal preservation under self-modification
-- Corrigibility
-- Formal verification
-- Safe exploration
+
+**Specific efforts** address goal preservation under self-modification, corrigibility that survives capability increases, formal verification of AI improvements, and safe exploration that avoids dangerous capability regions while still enabling progress.
 
 ## Implications
 
 ### For AI Safety
-Self-improvement capability determines:
-- Available time for safety work
-- Feasibility of containment
-- Need for early solutions
-- Acceptable risk tolerance
+
+**Self-improvement capability** determines how much time is available for safety work, whether containment strategies remain feasible, how urgently we need early solutions, and what level of risk we can accept in AI development. Fast self-improvement would dramatically compress timelines and narrow options.
 
 ### For Strategy
-Affects:
-- Resource allocation to safety
-- International coordination urgency
-- Acceptable capability levels
-- Deployment decisions
+
+**Strategic implications** affect resource allocation decisions for safety versus capabilities, the urgency of international coordination efforts, what capability levels are acceptable to pursue, and how deployment decisions should be structured to manage risks.
 
 ### For Governance
-Informs:
-- Regulation timing and stringency
-- Monitoring requirements
-- Red lines for capabilities
-- International agreements
+
+**Governance considerations** inform the timing and stringency of regulation, monitoring requirements for AI development, red lines for dangerous capabilities that trigger responses, and the structure of international agreements needed to coordinate global approaches.
 
 ## Open Questions
 
 ### Technical
-- Is recursive self-improvement actually possible?
-- What are hard limits on self-improvement?
-- Can alignment be preserved through improvements?
-- How fast could it proceed?
+
+**Key technical uncertainties** include whether recursive self-improvement is actually achievable, what hard limits on self-improvement exist, whether alignment can be preserved through improvement cycles, and how fast the process could proceed under realistic conditions.
 
 ### Strategic
-- Should we develop self-improvement capability?
-- Can it be reliably contained?
-- Is the risk worth potential benefits?
-- How do we coordinate globally?
+
+**Strategic questions** involve whether we should develop self-improvement capability given the risks, whether it can be reliably contained once created, whether potential benefits justify the risks, and how to achieve global coordination on development and deployment.
 
 ### Philosophical
-- Is there a fundamental ceiling on intelligence?
-- Would AI self-improvement be truly recursive?
-- Can systems understand their own source code well enough?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Intelligence Explosion",
-    "Recursive Self-Improvement",
-    "AutoML",
-    "Takeoff Speed",
-    "Superintelligence",
-    "AI Safety",
-  ]} />
-</Section>
+**Fundamental questions** include whether a ceiling on intelligence exists, whether AI self-improvement would be truly recursive or hit diminishing returns, and whether systems can understand their own source code well enough to improve it in unbounded ways.
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="fast-takeoff"
-      category="scenario"
-      title="Fast Takeoff"
-      description="Enabled by recursive self-improvement"
-    />
-    <EntityCard
-      id="coding"
-      category="capability"
-      title="Autonomous Coding"
-      description="Prerequisite for self-improvement"
-    />
-    <EntityCard
-      id="superintelligence"
-      category="concept"
-      title="Superintelligence"
-      description="Potential outcome of recursive improvement"
-    />
-  </EntityCards>
-</Section>
+## Related Pages
 
-<Sources sources={[
-  { title: "Intelligence Explosion: Evidence and Import", url: "https://intelligence.org/files/IE-EI.pdf", author: "MIRI" },
-  { title: "Neural Architecture Search: A Survey", url: "https://arxiv.org/abs/1808.05377" },
-  { title: "AutoML: A Survey of the State-of-the-Art", url: "https://arxiv.org/abs/1908.00709" },
-  { title: "Superintelligence: Paths, Dangers, Strategies", url: "https://en.wikipedia.org/wiki/Superintelligence:_Paths,_Dangers,_Strategies", author: "Nick Bostrom" },
-]} />
+<Backlinks client:load entityId="self-improvement" />

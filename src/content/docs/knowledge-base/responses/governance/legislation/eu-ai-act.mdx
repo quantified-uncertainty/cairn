@@ -5,21 +5,11 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="EU AI Act"
-  jurisdiction="European Union"
-  status="In Force"
-  effectiveDate="August 2024"
-  customFields={[
-    { label: "Type", value: "Binding Regulation" },
-    { label: "Scope", value: "Risk-based" },
-  ]}
-/>
+<DataInfoBox entityId="eu-ai-act" />
 
-## Overview
+## Summary
 
 The EU AI Act is the world's first comprehensive legal framework for artificial intelligence. Adopted in 2024, it establishes a risk-based approach to AI regulation, with stricter requirements for higher-risk AI systems.
 
@@ -109,41 +99,6 @@ For the most capable models:
 - Compliance burden for startups
 - Unclear how rules apply in practice
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Regulation",
-    "GPAI",
-    "Foundation Models",
-    "Risk-Based Regulation",
-    "Compute Thresholds",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Broader framework for compute-based regulation"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="policy"
-      title="UK AI Safety Institute"
-      description="Alternative governance approach"
-    />
-    <EntityCard
-      id="govai"
-      category="lab"
-      title="GovAI"
-      description="Research informing EU policy"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "EU AI Act Full Text", url: "https://artificialintelligenceact.eu/" },
-  { title: "EU AI Office", url: "https://digital-strategy.ec.europa.eu/en/policies/ai-office" },
-  { title: "Analysis of GPAI Provisions", url: "https://governance.ai/eu-ai-act" },
-]} />
+<Backlinks client:load entityId="eu-ai-act" />

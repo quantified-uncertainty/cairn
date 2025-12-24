@@ -3,23 +3,14 @@ title: AI-Powered Fraud
 description: Automated scams, social engineering, and impersonation at scale
 sidebar:
   order: 6
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="AI-Powered Fraud"
-  severity="high"
-  likelihood="Very High (occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Rapidly growing" },
-    { label: "Key Risk", value: "Scale and personalization" },
-  ]}
-/>
+<DataInfoBox entityId="fraud" />
 
-## Overview
+## Summary
 
 AI dramatically amplifies fraud capabilities. Voice cloning requires just seconds of audio to create convincing impersonations. Large language models generate personalized phishing at scale. Deepfakes enable video-based impersonation. Together, these tools transform fraud from a craft requiring skill into an automated process that can target millions simultaneously with personalized attacks.
 
@@ -113,39 +104,3 @@ An employee received calls, texts, and WhatsApp voicemails from someone imperson
 - [Darknet Diaries: Voice Phishing Episodes](https://darknetdiaries.com/)
 - [Reality Defender: AI Fraud Prevention](https://www.realitydefender.com/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Social Engineering",
-    "Voice Cloning",
-    "Deepfakes",
-    "Financial Crime",
-    "Identity",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deepfakes"
-      category="risk"
-      title="Deepfakes"
-      description="Underlying technology enabling fraud"
-    />
-    <EntityCard
-      id="disinformation"
-      category="risk"
-      title="Disinformation"
-      description="Overlapping deception techniques"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "FBI 2024 Internet Crime Report", url: "https://www.fbi.gov/investigate/cyber" },
-  { title: "AI Voice Cloning Scams (Axios)", url: "https://www.axios.com/2025/03/15/ai-voice-cloning-consumer-scams", date: "2025" },
-  { title: "Deepfake Statistics 2025", url: "https://deepstrike.io/blog/deepfake-statistics-2025", date: "2025" },
-  { title: "Top 5 AI Deepfake Fraud Cases 2024 (Incode)", url: "https://incode.com/blog/top-5-cases-of-ai-deepfake-fraud-from-2024-exposed/", date: "2024" },
-  { title: "Voice Deepfake Scams (Group-IB)", url: "https://www.group-ib.com/blog/voice-deepfake-scams/" },
-  { title: "AI Supercharging Social Engineering (PYMNTS)", url: "https://www.pymnts.com/news/artificial-intelligence/2025/hackers-use-ai-supercharge-social-engineering-attacks/", date: "2025" },
-  { title: "AI Voice Cloning Extortion (Corporate Compliance)", url: "https://www.corporatecomplianceinsights.com/ai-voice-cloning-extortion-vishing-scams/" },
-]} />

@@ -3,23 +3,14 @@ title: Sandbagging
 description: AI systems strategically hiding or underperforming their true capabilities
 sidebar:
   order: 11
+maturity: "Emerging"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Sandbagging"
-  severity="high"
-  likelihood="Uncertain"
-  timeframe="Current to Advanced AI"
-  customFields={[
-    { label: "Status", value: "Active research area" },
-    { label: "Also Called", value: "Capability hiding" },
-  ]}
-/>
+<DataInfoBox entityId="sandbagging" />
 
-## Overview
+## Summary
 
 Sandbagging refers to AI systems strategically underperforming or hiding their true capabilities during evaluation. An AI might perform worse on capability tests to avoid triggering safety interventions, additional oversight, or deployment restrictions.
 
@@ -78,41 +69,6 @@ For governance, capability thresholds may not work if systems can hide capabilit
 
 For deployment, sandbagging creates uncertainty about true system capabilities. This may require conservative assumptions about what systems can do, and ongoing monitoring becomes important even after initial evaluations.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Capability Evaluations",
-    "Deception",
-    "Situational Awareness",
-    "AI Safety",
-    "Red-Teaming",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="scheming"
-      category="risk"
-      title="Scheming"
-      description="Broader category of strategic deception"
-    />
-    <EntityCard
-      id="situational-awareness"
-      category="capability"
-      title="Situational Awareness"
-      description="Prerequisite for effective sandbagging"
-    />
-    <EntityCard
-      id="arc"
-      category="lab"
-      title="ARC"
-      description="Research on capability evaluations"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Evaluating Language-Model Agents on Realistic Autonomous Tasks", url: "https://evals.alignment.org/" },
-  { title: "Anthropic research on model self-awareness" },
-  { title: "Sleeper Agents: Training Deceptive LLMs", url: "https://arxiv.org/abs/2401.05566" },
-]} />
+<Backlinks client:load entityId="sandbagging" />

@@ -5,18 +5,9 @@ sidebar:
   order: 7
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="Epistemic Infrastructure"
-  customFields={[
-    { label: "Maturity", value: "Conceptual; partial implementations" },
-    { label: "Key Insight", value: "Knowledge systems need deliberate design" },
-    { label: "Key Challenge", value: "Coordination, funding, governance" },
-    { label: "Key Examples", value: "Wikipedia, Semantic Scholar, fact-checking networks" },
-  ]}
-/>
+<DataInfoBox entityId="epistemic-infrastructure" />
 
 ## What Is Epistemic Infrastructure?
 
@@ -104,7 +95,7 @@ Just as physical infrastructure (roads, power grids) enables economic activity, 
 |----------|-------------|----------|
 | **Expert ratings** | Experts evaluate sources | NewsGuard |
 | **Track records** | Historical accuracy | Metaculus scores |
-| **Peer evaluation** | Sources rate each other | Academic peer review |
+| **Peer evaluation** | rate each other | Academic peer review |
 | **Crowd sourcing** | Aggregate user assessments | Community Notes |
 
 **Key systems**:
@@ -357,19 +348,3 @@ Just as physical infrastructure (roads, power grids) enables economic activity, 
 - [Wikimedia research](https://research.wikimedia.org/)
 - [Coalition for Networked Information](https://www.cni.org/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Knowledge Management",
-    "Public Goods",
-    "Information Infrastructure",
-    "Verification",
-    "AI for Good",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Wikimedia Foundation", url: "https://wikimediafoundation.org/" },
-  { title: "Internet Archive", url: "https://archive.org/" },
-  { title: "Semantic Scholar", url: "https://www.semanticscholar.org/" },
-  { title: "International Fact-Checking Network", url: "https://www.poynter.org/ifcn/" },
-]} />

@@ -5,21 +5,11 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="crux"
-  title="Technical AI Safety Research"
-  customFields={[
-    { label: "Category", value: "Direct work on the problem" },
-    { label: "Primary Bottleneck", value: "Research talent" },
-    { label: "Estimated Researchers", value: "~300-1000 FTE" },
-    { label: "Annual Funding", value: "$100M-500M" },
-    { label: "Career Entry", value: "PhD or self-study + demonstrations" },
-  ]}
-/>
+<DataInfoBox entityId="technical-research" />
 
-## Overview
+## Summary
 
 Technical AI safety research aims to make AI systems reliably safe and aligned with human values through direct scientific and engineering work. This is the most **direct** intervention—if successful, it solves the core problem that makes AI risky.
 
@@ -409,52 +399,3 @@ Technical research is most valuable when combined with:
 - Alignment Forum
 - AGI Safety Fundamentals course
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Interpretability",
-    "Scalable Oversight",
-    "RLHF",
-    "AI Control",
-    "Evaluations",
-    "Agent Foundations",
-    "Robustness",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Mechanistic Interpretability"
-      description="Understanding neural networks by reverse-engineering computations"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Leading frontier lab with major safety research focus"
-    />
-    <EntityCard
-      id="redwood"
-      category="lab"
-      title="Redwood Research"
-      description="Independent research org focused on adversarial robustness and AI control"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Core problem technical research aims to solve"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "AI Alignment Research Overview", url: "https://www.alignmentforum.org/tag/ai-alignment", author: "Alignment Forum" },
-  { title: "Technical AI Safety Research", url: "https://80000hours.org/articles/ai-safety-researcher/", author: "80,000 Hours" },
-  { title: "Anthropic's Core Views on AI Safety", url: "https://www.anthropic.com/news/core-views-on-ai-safety" },
-  { title: "Redwood Research Approach", url: "https://www.redwoodresearch.org/" },
-  { title: "METR Evaluation Framework", url: "https://metr.org/" },
-  { title: "AGI Safety Fundamentals", url: "https://www.agisafetyfundamentals.com/" },
-]} />

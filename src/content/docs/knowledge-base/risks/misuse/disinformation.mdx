@@ -3,23 +3,14 @@ title: Disinformation
 description: AI-generated propaganda and influence operations at scale
 sidebar:
   order: 4
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="AI Disinformation"
-  severity="high"
-  likelihood="Very High (occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Actively happening" },
-    { label: "Key Change", value: "Scale and personalization" },
-  ]}
-/>
+<DataInfoBox entityId="disinformation" />
 
-## Overview
+## Summary
 
 AI enables disinformation at unprecedented scale and sophistication. Language models can generate convincing text, image generators can create realistic fake photos, and AI can personalize messages to individual targets. What previously required human effort for each piece of content can now be automated.
 
@@ -102,40 +93,6 @@ Will detection keep pace with generation? Currently generation is winning. Can p
 - [80,000 Hours: Podcasts on Information Integrity](https://80000hours.org/podcast/)
 - [Lawfare Podcast](https://www.lawfaremedia.org/) - Coverage of election security
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Misinformation",
-    "Influence Operations",
-    "Information Warfare",
-    "Democracy",
-    "Deepfakes",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deepfakes"
-      category="risk"
-      title="Deepfakes"
-      description="Synthetic media for deception"
-    />
-    <EntityCard
-      id="epistemic-collapse"
-      category="risk"
-      title="Epistemic Collapse"
-      description="Broader implications for truth"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "OpenAI Research on Influence Operations", url: "https://openai.com/research" },
-  { title: "How Persuasive Is AI-Generated Propaganda? (Stanford HAI)", url: "https://hai.stanford.edu/assets/files/2024-08/HAI-Policy-Brief-AI-Generated-Propaganda.pdf", date: "2024" },
-  { title: "The Disinformation Machine (Stanford HAI)", url: "https://hai.stanford.edu/news/disinformation-machine-how-susceptible-are-we-ai-propaganda" },
-  { title: "Stanford HAI 2024 AI Index on Responsible AI", url: "https://hai.stanford.edu/ai-index/2024-ai-index-report/responsible-ai", date: "2024" },
-  { title: "AI-Driven Disinformation Policy Recommendations (Frontiers)", url: "https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1569115/full", date: "2025" },
-  { title: "CSET Disinformation Research", url: "https://cset.georgetown.edu/topic/disinformation/" },
-  { title: "Forecasting Misuses of Language Models (Stanford FSI)", url: "https://cyber.fsi.stanford.edu/io/news/forecasting-potential-misuses-language-models-disinformation-campaigns-and-how-reduce-risk" },
-  { title: "AI-Driven Misinformation and Democracy (Stanford GSB)", url: "https://www.gsb.stanford.edu/insights/wreck-vote-how-ai-driven-misinformation-could-undermine-democracy" },
-]} />
+<Backlinks client:load entityId="disinformation" />

@@ -3,23 +3,14 @@ title: Autonomous Weapons
 description: Lethal autonomous weapons systems (LAWS) and AI in warfare
 sidebar:
   order: 3
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Autonomous Weapons"
-  severity="high"
-  likelihood="High (already deployed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Also Called", value: "LAWS, killer robots" },
-    { label: "Status", value: "Active military development" },
-  ]}
-/>
+<DataInfoBox entityId="autonomous-weapons" />
 
-## Overview
+## Summary
 
 Autonomous weapons systems are weapons that can select and engage targets without human intervention. AI advances are making such systems more capable and more likely to be deployed. The key concerns are: lowered barriers to war, loss of human judgment in life-or-death decisions, and potential for arms races or accidental escalation.
 
@@ -98,39 +89,6 @@ Some advocate for bans on specific categories (like fully autonomous lethal syst
 - [Stop Killer Robots Campaign Videos](https://www.stopkillerrobots.org/)
 - [Foreign Affairs: The Perilous Coming Age of AI Warfare](https://www.foreignaffairs.com/ukraine/perilous-coming-age-ai-warfare)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "LAWS",
-    "Military AI",
-    "Arms Control",
-    "AI Governance",
-    "Warfare",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="cyberweapons"
-      category="risk"
-      title="Cyberweapons"
-      description="AI in cyber warfare"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risk"
-      title="Racing Dynamics"
-      description="Military AI competition dynamics"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Campaign to Stop Killer Robots", url: "https://www.stopkillerrobots.org/" },
-  { title: "UN CCW Group of Governmental Experts on LAWS", url: "https://meetings.unoda.org/ccw-/convention-on-certain-conventional-weapons-group-of-governmental-experts-on-lethal-autonomous-weapons-systems-2024", date: "2024" },
-  { title: "Future of Life Institute on Autonomous Weapons", url: "https://futureoflife.org/cause-area/autonomous-weapons-systems/" },
-  { title: "LAWS and International Law: Growing Momentum (ASIL)", url: "https://www.asil.org/insights/volume/29/issue/1", date: "2025" },
-  { title: "U.S. Policy on Lethal Autonomous Weapon Systems (CRS)", url: "https://www.congress.gov/crs-product/IF11150" },
-  { title: "National Positions on LAWS Governance (Lieber Institute)", url: "https://lieber.westpoint.edu/future-warfare-national-positions-governance-lethal-autonomous-weapons-systems/" },
-  { title: "International Discussions on LAWS (CRS)", url: "https://www.congress.gov/crs-product/IF11294" },
-]} />
+<Backlinks client:load entityId="autonomous-weapons" />

@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-import { ArgumentMap, InfoBox, KeyQuestions, EntityCard, EntityCards, Section, Tags, Sources, DisagreementMap, ComparisonTable } from '../../../../components/wiki';
+import { ArgumentMap, ComparisonTable, DisagreementMap, InfoBox, KeyQuestions } from '../../../../components/wiki';
 
 <InfoBox
   type="crux"
@@ -502,42 +502,4 @@ The open vs closed question has different implications for different risks:
 - Open source may accelerate race (lower barriers)
 - But also may reduce pressure (can build on shared base)
 
-<Section title="Related Debates">
-  <EntityCards>
-    <EntityCard
-      id="regulation-debate"
-      category="crux"
-      title="Regulation vs Self-Governance"
-      description="Who should control AI development?"
-    />
-    <EntityCard
-      id="pause-debate"
-      category="crux"
-      title="Should We Pause AI?"
-      description="Calls to slow or pause development"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Open Source",
-    "Misuse Risk",
-    "Dual Use",
-    "Model Release",
-    "AI Policy",
-    "Democratization",
-    "Safety",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "The Case for Open-Source AI", author: "Yann LeCun", date: "2024", url: "https://www.facebook.com/yann.lecun/posts/10157957730342143" },
-  { title: "On Open-Source AI", author: "Anthropic", date: "2023", url: "https://www.anthropic.com/index/on-open-source-ai" },
-  { title: "Fine-tuning Aligned Language Models Compromises Safety", author: "Qi et al.", date: "2023", url: "https://arxiv.org/abs/2310.03693" },
-  { title: "The Llama 2 Release", author: "Meta AI", date: "2023", url: "https://ai.meta.com/llama/" },
-  { title: "Open-Sourcing Highly Capable Foundation Models", author: "Seger et al.", date: "2023", url: "https://arxiv.org/abs/2311.09227" },
-  { title: "Model Openness Framework", author: "Linux Foundation", date: "2024", url: "https://mozilla.ai/en/model-openness-framework/" },
-  { title: "Responsible Scaling Policy", author: "Anthropic", date: "2023", url: "https://www.anthropic.com/index/anthropics-responsible-scaling-policy" },
-  { title: "Open Source AI Is the Path Forward", author: "Mark Zuckerberg", date: "2024", url: "https://about.fb.com/news/2024/07/open-source-ai-is-the-path-forward/" },
-]} />

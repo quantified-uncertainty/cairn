@@ -5,22 +5,11 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="Executive Order on Safe, Secure, and Trustworthy AI"
-  jurisdiction="United States"
-  status="Active"
-  effectiveDate="October 30, 2023"
-  customFields={[
-    { label: "Type", value: "Executive Order" },
-    { label: "Number", value: "14110" },
-    { label: "Durability", value: "Can be revoked by future president" },
-  ]}
-/>
+<DataInfoBox entityId="us-executive-order" />
 
-## Overview
+## Summary
 
 The Executive Order on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, is the most comprehensive US government action on AI to date. It establishes safety requirements for frontier AI systems, mandates government agency actions, and creates oversight mechanisms.
 
@@ -498,51 +487,6 @@ Support:
 - Capability-based triggers could supplement
 - International coordination on standards
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Compute Thresholds",
-    "AI Governance",
-    "US AISI",
-    "Cloud Computing",
-    "Know Your Customer",
-    "Safety Evaluations",
-    "Executive Policy",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Framework underlying EO's compute thresholds"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="policy"
-      title="UK AI Safety Institute"
-      description="Partner institution with similar mission"
-    />
-    <EntityCard
-      id="eu-ai-act"
-      category="policy"
-      title="EU AI Act"
-      description="Alternative comprehensive regulatory approach"
-    />
-    <EntityCard
-      id="voluntary-commitments"
-      category="policy"
-      title="Voluntary Industry Commitments"
-      description="Industry pledges that preceded the EO"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Executive Order 14110: Full Text", url: "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/", date: "October 30, 2023" },
-  { title: "White House Fact Sheet", url: "https://www.whitehouse.gov/briefing-room/statements-releases/2023/10/30/fact-sheet-president-biden-issues-executive-order-on-safe-secure-and-trustworthy-artificial-intelligence/" },
-  { title: "US AI Safety Institute", url: "https://www.nist.gov/aisi" },
-  { title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework" },
-  { title: "Analysis from Center for Security and Emerging Technology", url: "https://cset.georgetown.edu/article/understanding-the-ai-executive-order/", author: "CSET", date: "2023" },
-]} />
+<Backlinks client:load entityId="us-executive-order" />

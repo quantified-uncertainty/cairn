@@ -5,18 +5,9 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="AI-Human Hybrid Systems"
-  customFields={[
-    { label: "Maturity", value: "Emerging field; active research" },
-    { label: "Key Strength", value: "Combines AI scale with human robustness" },
-    { label: "Key Challenge", value: "Avoiding the worst of both" },
-    { label: "Related Fields", value: "HITL, human-computer interaction, AI safety" },
-  ]}
-/>
+<DataInfoBox entityId="hybrid-systems" />
 
 ## What Are AI-Human Hybrid Systems?
 
@@ -351,19 +342,3 @@ Stage 4: AI decides → Human monitors metrics
 | **Anthropic** | Constitutional AI, RLHF |
 | **Redwood Research** | AI control |
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Human-AI Interaction",
-    "AI Control",
-    "Decision Making",
-    "Automation Bias",
-    "AI Safety",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Humans and Automation: Use, Misuse, Disuse, Abuse", author: "Parasuraman & Riley", date: "1997" },
-  { title: "High-Performance Medicine: Convergence of AI and Human Expertise", author: "Eric Topol", date: "2019", url: "https://www.nature.com/articles/s41591-018-0300-7" },
-  { title: "Stanford HAI", url: "https://hai.stanford.edu/" },
-  { title: "Redwood Research", url: "https://www.redwoodresearch.org/" },
-]} />

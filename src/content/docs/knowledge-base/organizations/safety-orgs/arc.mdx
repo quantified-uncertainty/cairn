@@ -5,19 +5,11 @@ sidebar:
   order: 11
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="organization"
-  title="ARC"
-  founded="2021"
-  location="Berkeley, CA"
-  headcount="~15-20"
-  funding="~$10M/year (grants)"
-  website="https://alignment.org"
-/>
+<DataInfoBox entityId="arc" />
 
-## Overview
+## Summary
 
 The Alignment Research Center (ARC) was founded in 2021 by Paul Christiano after his departure from OpenAI. ARC represents a distinctive approach to AI alignment: combining theoretical research on fundamental problems (like Eliciting Latent Knowledge) with practical evaluations of frontier models for dangerous capabilities.
 
@@ -555,83 +547,6 @@ ARC pioneered the concept of dangerous capability evaluations as key safety meas
 - **ARC**: More engagement than MIRI, less than mainstream
 - **Tension**: Different threat models, different standards
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Eliciting Latent Knowledge",
-    "ELK",
-    "Capability Evaluations",
-    "Scalable Oversight",
-    "AI Evals",
-    "Deceptive Alignment",
-    "Worst-Case Alignment",
-    "Debate",
-    "Amplification",
-    "Adversarial Testing",
-    "Autonomous Replication",
-    "Sandbagging"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="paul-christiano"
-      category="people"
-      title="Paul Christiano"
-      description="ARC founder and alignment researcher"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-approaches"
-      title="Scalable Oversight"
-      description="Key ARC research area"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risks"
-      title="Deceptive Alignment"
-      description="Risk ARC's worst-case approach addresses"
-    />
-    <EntityCard
-      id="sandbagging"
-      category="risks"
-      title="Sandbagging"
-      description="AI hiding capabilities during evaluations"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Lab that ARC evaluates"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Paul's former employer, lab ARC evaluates"
-    />
-    <EntityCard
-      id="miri"
-      category="organizations"
-      title="MIRI"
-      description="Earlier safety org with related concerns"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="policies"
-      title="UK AISI"
-      description="Government evaluation body inspired partly by ARC"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "ARC Website", url: "https://alignment.org" },
-  { title: "ELK Report", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/" },
-  { title: "ARC Evals", url: "https://evals.alignment.org" },
-  { title: "GPT-4 Evaluation (ARC summary)", url: "https://evals.alignment.org/blog/2023-03-18-update-on-recent-evals/" },
-  { title: "Paul Christiano's AI Alignment Forum posts", url: "https://www.alignmentforum.org/users/paulfchristiano" },
-  { title: "Iterated Amplification", url: "https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616" },
-  { title: "AI Safety via Debate", url: "https://arxiv.org/abs/1805.00899" },
-  { title: "Ajeya Cotra's Bio Anchors", url: "https://www.alignmentforum.org/posts/KrJfoZzpSDpnrv9va/draft-report-on-ai-timelines" }
-]} />
+<Backlinks client:load entityId="arc" />

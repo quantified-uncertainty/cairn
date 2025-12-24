@@ -5,16 +5,9 @@ sidebar:
   order: 12
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Chris Olah"
-  affiliation="Anthropic"
-  role="Co-founder, Head of Interpretability"
-  knownFor="Mechanistic interpretability, neural network visualization, clarity of research communication"
-  website="https://colah.github.io"
-/>
+<DataInfoBox entityId="chris-olah" />
 
 ## Background
 
@@ -251,44 +244,6 @@ Olah envisions:
 - Interpretability as standard practice
 - Understanding enabling safe deployment
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Mechanistic Interpretability",
-    "Feature Visualization",
-    "Neural Network Circuits",
-    "Sparse Autoencoders",
-    "AI Safety",
-    "Transparency",
-    "Monosemanticity",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="AI safety company co-founded by Chris Olah"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-agenda"
-      title="Interpretability"
-      description="Research area pioneered by Olah"
-    />
-    <EntityCard
-      id="dario-amodei"
-      category="researcher"
-      title="Dario Amodei"
-      description="Co-founder and CEO of Anthropic"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Chris Olah's Blog", url: "https://colah.github.io" },
-  { title: "Distill Journal", url: "https://distill.pub" },
-  { title: "Anthropic Interpretability Research", url: "https://www.anthropic.com/research#interpretability" },
-  { title: "Scaling Monosemanticity", url: "https://transformer-circuits.pub/2024/scaling-monosemanticity/" },
-]} />
+<Backlinks client:load entityId="chris-olah" />

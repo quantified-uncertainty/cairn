@@ -3,23 +3,14 @@ title: Cyberweapons
 description: AI-enabled autonomous hacking and cyber attacks
 sidebar:
   order: 2
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Cyberweapons Risk"
-  severity="high"
-  likelihood="High (emerging)"
-  timeframe="Current"
-  customFields={[
-    { label: "Type", value: "Misuse" },
-    { label: "Status", value: "Active development by state actors" },
-  ]}
-/>
+<DataInfoBox entityId="cyberweapons" />
 
-## Overview
+## Summary
 
 AI systems can enhance offensive cyber capabilities in several ways: discovering vulnerabilities in software, generating exploit code, automating attack campaigns, and evading detection. This shifts the offense-defense balance and may enable more frequent, sophisticated, and scalable cyber attacks.
 
@@ -99,39 +90,6 @@ Defensive investment is crucial—ensuring AI advances benefit defense at least 
 - [Darknet Diaries Podcast](https://darknetdiaries.com/) - True stories from the dark side of the internet
 - [CISA Cybersecurity Videos](https://www.cisa.gov/ai) - Official government guidance
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Cybersecurity",
-    "Information Warfare",
-    "Critical Infrastructure",
-    "AI Misuse",
-    "National Security",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="bioweapons"
-      category="risk"
-      title="Bioweapons"
-      description="Related AI-enabled weapons risk"
-    />
-    <EntityCard
-      id="autonomous-weapons"
-      category="risk"
-      title="Autonomous Weapons"
-      description="AI in kinetic weapons systems"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "CISA Artificial Intelligence", url: "https://www.cisa.gov/ai" },
-  { title: "CSET AI and Cybersecurity Research", url: "https://cset.georgetown.edu/" },
-  { title: "DHS Guidelines on AI and Critical Infrastructure", url: "https://www.dhs.gov/sites/default/files/2024-04/24_0426_dhs_ai-ci-safety-security-guidelines-508c.pdf", date: "2024" },
-  { title: "DHS Report on AI Threats to Critical Infrastructure", url: "https://dhs.gov/news/2024/04/29/dhs-publishes-guidelines-and-report-secure-critical-infrastructure-and-weapons-mass", date: "2024" },
-  { title: "ISACA State of Cybersecurity 2024", url: "https://www.isaca.org/resources/reports/state-of-cybersecurity-2024", date: "2024" },
-  { title: "CISA 2024 Year in Review", url: "https://www.cisa.gov/about/2024YIR", date: "2024" },
-  { title: "Cybersecurity Risk of AI Applications (ISACA)", url: "https://www.isaca.org/resources/isaca-journal/issues/2024/volume-2/cybersecurity-risk-of-ai-based-applications-demystified", date: "2024" },
-]} />
+<Backlinks client:load entityId="cyberweapons" />

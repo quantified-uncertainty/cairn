@@ -3,23 +3,14 @@ title: Instrumental Convergence
 description: Why diverse AI goals lead to similar dangerous subgoals
 sidebar:
   order: 4
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Instrumental Convergence"
-  severity="high"
-  likelihood="High (theoretical)"
-  timeframe="Advanced AI"
-  customFields={[
-    { label: "First Described", value: "Omohundro 2008" },
-    { label: "Formalized", value: "Bostrom 2014" },
-  ]}
-/>
+<DataInfoBox entityId="instrumental-convergence" />
 
-## Overview
+## Summary
 
 Instrumental convergence is the thesis that a wide variety of final goals lead to similar instrumental subgoals. Regardless of what an AI ultimately wants to achieve, it will likely pursue certain intermediate objectives that help achieve any goal.
 
@@ -88,41 +79,6 @@ Instrumental convergence suggests:
 - **Shutdown problems are fundamental**: Self-preservation conflicts with controllability
 - **Capability control matters**: More capable AI can better pursue convergent goals
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Power-Seeking",
-    "Self-Preservation",
-    "Corrigibility",
-    "Goal Stability",
-    "Orthogonality Thesis",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="power-seeking"
-      category="risk"
-      title="Power-Seeking AI"
-      description="Formal analysis of resource acquisition drives"
-    />
-    <EntityCard
-      id="corrigibility"
-      category="safety-agenda"
-      title="Corrigibility"
-      description="Making AI that allows shutdown and correction"
-    />
-    <EntityCard
-      id="miri"
-      category="lab"
-      title="MIRI"
-      description="Developed much of the theory around convergent goals"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Basic AI Drives", url: "https://selfawaresystems.files.wordpress.com/2008/01/ai_drives_final.pdf", author: "Steve Omohundro", date: "2008" },
-  { title: "Superintelligence, Chapter 7", author: "Nick Bostrom", date: "2014" },
-  { title: "Optimal Policies Tend to Seek Power", url: "https://arxiv.org/abs/2206.13477", author: "Turner et al." },
-]} />
+<Backlinks client:load entityId="instrumental-convergence" />

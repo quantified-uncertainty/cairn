@@ -5,19 +5,11 @@ sidebar:
   order: 18
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="organization"
-  title="UK AI Safety Institute"
-  founded="2023"
-  location="London, UK"
-  headcount="~50-70 (growing)"
-  funding="UK Government Budget"
-  website="https://www.aisi.gov.uk"
-/>
+<DataInfoBox entityId="uk-aisi" />
 
-## Overview
+## Summary
 
 The UK AI Safety Institute (UK AISI) is a government organization established in 2023 to advance AI safety through research, evaluation, and international coordination. Created in the wake of the first AI Safety Summit hosted by the UK government, AISI represents the UK's commitment to being a global leader in AI safety and governance.
 
@@ -702,80 +694,6 @@ The UK AISI's strategic positioning reflects the UK government's ambition: to be
 - Cooperative but some tension
 - AISI provides independent assessment
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Governance",
-    "Government AI Safety",
-    "International Coordination",
-    "AI Evaluations",
-    "Bletchley Declaration",
-    "AI Safety Summits",
-    "Standard-Setting",
-    "UK AI Policy",
-    "Frontier Model Evaluation",
-    "Global AI Safety",
-    "Regulatory Framework"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="ian-hogarth"
-      category="people"
-      title="Ian Hogarth"
-      description="UK AISI Chair"
-    />
-    <EntityCard
-      id="us-aisi"
-      category="organizations"
-      title="US AI Safety Institute"
-      description="Close partner and collaborator"
-    />
-    <EntityCard
-      id="metr"
-      category="organizations"
-      title="METR"
-      description="Private evaluation org UK AISI collaborates with"
-    />
-    <EntityCard
-      id="apollo-research"
-      category="organizations"
-      title="Apollo Research"
-      description="UK-based safety research organization"
-    />
-    <EntityCard
-      id="ai-safety-summit"
-      category="events"
-      title="AI Safety Summit"
-      description="International convenings UK hosts"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Lab engaging with UK AISI"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Lab engaging with UK AISI"
-    />
-    <EntityCard
-      id="deepmind"
-      category="organizations"
-      title="DeepMind"
-      description="UK-based lab coordinating with AISI"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "UK AI Safety Institute Website", url: "https://www.aisi.gov.uk" },
-  { title: "Bletchley Declaration", url: "https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration" },
-  { title: "UK AI Safety Summit", url: "https://www.aisafetysummit.gov.uk" },
-  { title: "UK DSIT AI Policy", url: "https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology" },
-  { title: "Ian Hogarth FT Op-Ed", url: "https://www.ft.com/content/03895dc4-a3b7-481e-95cc-336a524f2ac2" },
-  { title: "UK AI Safety Institute Announcements", url: "https://www.gov.uk/search/news-and-communications?organisations%5B%5D=ai-safety-institute" }
-]} />
+<Backlinks client:load entityId="uk-aisi" />

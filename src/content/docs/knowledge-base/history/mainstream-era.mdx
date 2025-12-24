@@ -5,20 +5,11 @@ sidebar:
   order: 5
 ---
 
-import { InfoBox, Section, EntityCard, EntityCards, Tags, Sources } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="historical"
-  title="Mainstream Era"
-  customFields={[
-    { label: "Period", value: "2020-Present" },
-    { label: "Defining Moment", value: "ChatGPT (November 2022)" },
-    { label: "Key Theme", value: "AI safety goes from fringe to central policy concern" },
-    { label: "Status", value: "Ongoing" },
-  ]}
-/>
+<DataInfoBox entityId="mainstream-era" />
 
-## Overview
+## Summary
 
 The Mainstream Era marks AI safety's transformation from a niche research field to a central topic in technology policy, corporate strategy, and public discourse. ChatGPT was the catalyst, but the shift reflected years of groundwork meeting rapidly advancing capabilities.
 
@@ -683,45 +674,4 @@ Racing to AGI without sufficient safety work? Or coordinated careful development
 
 **The mainstream era's defining question**: Will we get this right?
 
-<Section title="Related Organizations">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="organization"
-      title="Anthropic"
-      description="Founded 2021 as safety-focused AI lab"
-    />
-    <EntityCard
-      id="openai"
-      category="organization"
-      title="OpenAI"
-      description="Creator of ChatGPT and GPT-4"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "ChatGPT",
-    "GPT-4",
-    "Anthropic",
-    "Constitutional AI",
-    "Geoffrey Hinton",
-    "OpenAI Leadership Crisis",
-    "AI Safety Summit",
-    "EU AI Act",
-    "Pause Debate",
-    "Mechanistic Interpretability",
-    "Scalable Oversight",
-    "Government Regulation",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Constitutional AI: Harmlessness from AI Feedback", author: "Bai et al. (Anthropic)", date: "2022", url: "https://arxiv.org/abs/2212.08073" },
-  { title: "GPT-4 Technical Report", author: "OpenAI", date: "2023", url: "https://arxiv.org/abs/2303.08774" },
-  { title: "GPT-4 System Card", author: "OpenAI", date: "2023", url: "https://cdn.openai.com/papers/gpt-4-system-card.pdf" },
-  { title: "The Bletchley Declaration", author: "UK AI Safety Summit", date: "2023", url: "https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration" },
-  { title: "Executive Order on Safe, Secure, and Trustworthy AI", author: "White House", date: "2023", url: "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/" },
-  { title: "Pause Giant AI Experiments: An Open Letter", author: "Future of Life Institute", date: "2023", url: "https://futureoflife.org/open-letter/pause-giant-ai-experiments/" },
-]} />

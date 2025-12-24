@@ -5,18 +5,11 @@ sidebar:
   order: 15
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="Failed and Stalled AI Proposals"
-  customFields={[
-    { label: "Purpose", value: "Learning from unsuccessful efforts" },
-    { label: "Coverage", value: "US, International" },
-  ]}
-/>
+<DataInfoBox entityId="failed-stalled-proposals" />
 
-## Overview
+## Summary
 
 Understanding why AI governance proposals fail is as important as understanding successes. Failed efforts reveal political constraints, industry opposition patterns, and the challenges of regulating rapidly evolving technology.
 
@@ -171,7 +164,3 @@ The pattern of failures suggests:
 4. **State-level action** in the US faces federal preemption challenges
 5. **International coordination** requires US-China cooperation, which is currently lacking
 
-<Sources sources={[
-  { title: "California SB 1047 Veto Message", url: "https://www.gov.ca.gov/wp-content/uploads/2024/09/SB-1047-Veto-Message.pdf", author: "Governor Newsom", date: "September 2024" },
-  { title: "Hiroshima AI Process", url: "https://www.mofa.go.jp/ecm/ec/page5e_000076.html", author: "G7" },
-]} />

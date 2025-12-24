@@ -3,23 +3,14 @@ title: Deepfakes
 description: AI-generated synthetic media for impersonation and fabrication
 sidebar:
   order: 5
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Deepfakes"
-  severity="medium-high"
-  likelihood="Very High (occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Widespread" },
-    { label: "Key Risk", value: "Authenticity crisis" },
-  ]}
-/>
+<DataInfoBox entityId="deepfakes" />
 
-## Overview
+## Summary
 
 Deepfakes are AI-generated synthetic media—typically video or audio—that realistically depict people saying or doing things they never did. The technology has rapidly advanced from obviously fake to nearly indistinguishable from reality, creating both direct harms (fraud, harassment, defamation) and systemic harms (erosion of trust in authentic evidence).
 
@@ -97,40 +88,6 @@ A Hong Kong branch manager sent $35 million to scammers after receiving calls us
 - [C2PA Explainer Videos](https://c2pa.org/)
 - [MIT Technology Review: Deepfake Coverage](https://www.technologyreview.com/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Synthetic Media",
-    "Identity",
-    "Authentication",
-    "Digital Trust",
-    "AI Misuse",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="disinformation"
-      category="risk"
-      title="Disinformation"
-      description="Deepfakes as disinformation tool"
-    />
-    <EntityCard
-      id="trust-erosion"
-      category="risk"
-      title="Trust Erosion"
-      description="Systemic effects on evidence and trust"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Deepfakes and the New Disinformation War", url: "https://www.foreignaffairs.com/" },
-  { title: "C2PA Content Authenticity Standards", url: "https://c2pa.org/" },
-  { title: "Fighting Deepfakes With Content Credentials and C2PA", url: "https://www.cmswire.com/digital-experience/fighting-deepfakes-with-content-credentials-and-c2pa/" },
-  { title: "Content Credentials and 2024 Elections (IEEE Spectrum)", url: "https://spectrum.ieee.org/deepfakes-election" },
-  { title: "Deepfakes and Disinformation: Elections Impact (TechUK)", url: "https://www.techuk.org/resource/deepfakes-and-disinformation-what-impact-could-this-have-on-elections-in-2024.html", date: "2024" },
-  { title: "Deepfake Media Forensics: Status and Challenges (PMC)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11943306/", date: "2024" },
-  { title: "Synthetic Media and Deepfakes (CNTI)", url: "https://innovating.news/article/synthetic-media-deepfakes/" },
-  { title: "Deepfake Detection Legal Framework Proposal", url: "https://www.sciencedirect.com/science/article/pii/S2212473X25000355", date: "2025" },
-]} />
+<Backlinks client:load entityId="deepfakes" />

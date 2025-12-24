@@ -5,19 +5,11 @@ sidebar:
   order: 12
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, EstimateBox, KeyPeople, KeyQuestions, Section } from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="Conjecture"
-  founded="2021"
-  location="London, UK"
-  headcount="~30-40"
-  funding="~$30M+ (Series A)"
-  website="https://conjecture.dev"
-/>
+<DataInfoBox entityId="conjecture" />
 
-## Overview
+## Summary
 
 Conjecture is an AI safety research organization founded in 2021 by Connor Leahy and a team of researchers concerned about existential risks from advanced AI. Based in London, Conjecture pursues a distinctive technical approach centered on "Cognitive Emulation" (CoEm) - the idea that understanding and replicating the computational principles underlying human cognition is key to building safe AI systems.
 
@@ -591,67 +583,3 @@ Mixed results. CoEm provides valuable interpretability insights but doesn't full
 - What role in European AI policy?
 - Collaboration or competition with other safety orgs?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Cognitive Emulation",
-    "CoEm",
-    "Mechanistic Interpretability",
-    "Interpretability",
-    "Neural Network Internals",
-    "Circuit Analysis",
-    "Model Organisms",
-    "EleutherAI",
-    "European AI Safety",
-    "Alternative Paradigms"
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="connor-leahy"
-      category="people"
-      title="Connor Leahy"
-      description="Conjecture CEO and co-founder"
-    />
-    <EntityCard
-      id="interpretability"
-      category="safety-approaches"
-      title="Mechanistic Interpretability"
-      description="Core research focus for Conjecture"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Also doing interpretability research"
-    />
-    <EntityCard
-      id="redwood"
-      category="organizations"
-      title="Redwood Research"
-      description="Similar focus on mechanistic understanding"
-    />
-    <EntityCard
-      id="prosaic-alignment"
-      category="safety-approaches"
-      title="Prosaic Alignment"
-      description="Approach Conjecture critiques"
-    />
-    <EntityCard
-      id="uk-aisi"
-      category="organizations"
-      title="UK AI Safety Institute"
-      description="Policy body Conjecture engages with"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Conjecture Website", url: "https://conjecture.dev" },
-  { title: "Connor Leahy Twitter/X", url: "https://twitter.com/NPCollapse" },
-  { title: "EleutherAI Background", url: "https://www.eleuther.ai" },
-  { title: "Conjecture Funding Announcement", url: "https://techcrunch.com/2023/03/28/conjecture-raises-funding-for-ai-safety/" },
-  { title: "Cognitive Emulation Research", url: "https://conjecture.dev/research" },
-  { title: "Connor Leahy Podcast Appearances", url: "Various podcasts (Bankless, etc.)" }
-]} />

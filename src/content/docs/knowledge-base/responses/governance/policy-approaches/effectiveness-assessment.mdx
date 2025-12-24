@@ -5,19 +5,11 @@ sidebar:
   order: 20
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="analysis"
-  title="AI Policy Effectiveness"
-  customFields={[
-    { label: "Key Question", value: "Which policies actually reduce AI risk?" },
-    { label: "Challenge", value: "Counterfactuals are hard to assess" },
-    { label: "Status", value: "Early, limited evidence" },
-  ]}
-/>
+<DataInfoBox entityId="effectiveness-assessment" />
 
-## Overview
+## Summary
 
 As AI governance efforts multiply, a critical question emerges: **Which policies are actually working?**
 
@@ -282,7 +274,3 @@ Better effectiveness assessment requires:
 
 The field needs better evidence infrastructure and longer time horizons to properly assess what works.
 
-<Sources sources={[
-  { title: "AI Governance: A Research Agenda", url: "https://www.governance.ai/research-paper/research-agenda", author: "GovAI" },
-  { title: "Evaluating AI Governance", url: "https://cset.georgetown.edu/", author: "CSET Georgetown" },
-]} />

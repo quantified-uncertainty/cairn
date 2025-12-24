@@ -5,19 +5,11 @@ sidebar:
   order: 16
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, KeyPeople, KeyQuestions, Section } from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="FAR AI"
-  founded="2023"
-  location="San Francisco, CA"
-  headcount="~10-15"
-  funding="Grants and donations"
-  website="https://far.ai"
-/>
+<DataInfoBox entityId="far-ai" />
 
-## Overview
+## Summary
 
 FAR AI (Forecasting AI Research) is an AI safety research organization founded in 2023 with a focus on adversarial robustness, model evaluation, and alignment research. The organization was co-founded by Dan Hendrycks, a prominent AI safety researcher known for his work on benchmarks, robustness, and AI risk. FAR AI combines empirical machine learning research with a strong focus on making AI systems safer and more reliable.
 
@@ -421,66 +413,3 @@ Building on Dan Hendrycks' benchmark expertise.
 - Contribution to alignment solutions
 - Field-building
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Adversarial Robustness",
-    "ML Safety",
-    "Benchmarking",
-    "Natural Abstractions",
-    "Evaluation",
-    "MMLU",
-    "Out-of-Distribution Detection",
-    "Safety Evaluations",
-    "Empirical Research",
-    "Academic AI Safety"
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="dan-hendrycks"
-      category="people"
-      title="Dan Hendrycks"
-      description="FAR AI co-founder and director"
-    />
-    <EntityCard
-      id="adversarial-robustness"
-      category="safety-approaches"
-      title="Adversarial Robustness"
-      description="Core FAR AI research area"
-    />
-    <EntityCard
-      id="natural-abstractions"
-      category="concepts"
-      title="Natural Abstractions"
-      description="Theoretical research area"
-    />
-    <EntityCard
-      id="benchmarking"
-      category="safety-approaches"
-      title="AI Benchmarking"
-      description="Evaluation methodology"
-    />
-    <EntityCard
-      id="metr"
-      category="organizations"
-      title="METR"
-      description="Complementary evaluation organization"
-    />
-    <EntityCard
-      id="apollo-research"
-      category="organizations"
-      title="Apollo Research"
-      description="Related safety research organization"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "FAR AI Website", url: "https://far.ai" },
-  { title: "Dan Hendrycks Google Scholar", url: "https://scholar.google.com/citations?user=VUnTdTkAAAAJ" },
-  { title: "MMLU Paper", url: "https://arxiv.org/abs/2009.03300" },
-  { title: "Natural Abstractions Research", url: "https://www.alignmentforum.org/tag/natural-abstraction" },
-  { title: "Dan Hendrycks on X-risk", url: "https://arxiv.org/abs/2306.12001" }
-]} />

@@ -5,18 +5,9 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="AI-Augmented Forecasting"
-  customFields={[
-    { label: "Maturity", value: "Rapidly emerging" },
-    { label: "Key Strength", value: "Combines AI scale with human judgment" },
-    { label: "Key Challenge", value: "Calibration across domains" },
-    { label: "Key Players", value: "Metaculus, FutureSearch, Epoch AI" },
-  ]}
-/>
+<DataInfoBox entityId="ai-forecasting" />
 
 ## What Is AI-Augmented Forecasting?
 
@@ -350,20 +341,3 @@ The goal is forecasts that are **more accurate than either alone**.
 | Good Judgment Open | Training in forecasting methods |
 | Calibration training apps | Improve personal calibration |
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Forecasting",
-    "Prediction Markets",
-    "AI Capabilities",
-    "Decision Making",
-    "Calibration",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Metaculus AI Forecasting", url: "https://www.metaculus.com/project/ai-forecasting/" },
-  { title: "FutureSearch", date: "2023", url: "https://arxiv.org/abs/2312.07474" },
-  { title: "Epoch AI", url: "https://epochai.org/" },
-  { title: "Superforecasting", author: "Philip Tetlock", date: "2015" },
-  { title: "Forecasting Research Institute", url: "https://forecastingresearch.org/" },
-]} />

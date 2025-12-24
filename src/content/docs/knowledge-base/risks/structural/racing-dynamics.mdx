@@ -3,23 +3,14 @@ title: Racing Dynamics
 description: Competitive pressure driving AI development faster than safety can keep up
 sidebar:
   order: 12
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Racing Dynamics"
-  severity="high"
-  likelihood="High (currently occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Type", value: "Structural/Systemic" },
-    { label: "Also Called", value: "Arms race dynamics" },
-  ]}
-/>
+<DataInfoBox entityId="racing-dynamics" />
 
-## Overview
+## Summary
 
 Racing dynamics refers to competitive pressure between AI developers (labs, nations) that incentivizes speed over safety. When multiple actors race to develop powerful AI, each faces pressure to cut corners on safety to avoid falling behind.
 
@@ -112,45 +103,6 @@ The international dimension complicates everything. Agreements within one countr
 - [Carnegie Endowment: AI Governance Arms Race](https://carnegieendowment.org/)
 - [80,000 Hours: Podcasts on AI Coordination](https://80000hours.org/podcast/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Governance",
-    "Coordination",
-    "Competition",
-    "Structural Risks",
-    "Arms Race",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="One approach to slowing racing"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Lab arguing for 'race to the top'"
-    />
-    <EntityCard
-      id="govai"
-      category="lab"
-      title="GovAI"
-      description="Research on AI coordination problems"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Racing to the Precipice: A Model of AI Development", url: "https://nickbostrom.com/papers/racing.pdf", author: "Armstrong et al." },
-  { title: "AI Governance: A Research Agenda", url: "https://governance.ai/research" },
-  { title: "The AI Triad (CSET Georgetown)", url: "https://cset.georgetown.edu/" },
-  { title: "The AI Governance Arms Race (Carnegie Endowment)", url: "https://carnegieendowment.org/research/2024/10/the-ai-governance-arms-race-from-summit-pageantry-to-progress?lang=en", date: "2024" },
-  { title: "AI Race (EA Forum Topic)", url: "https://forum.effectivealtruism.org/topics/ai-race" },
-  { title: "AI Race (AI Safety Textbook)", url: "https://www.aisafetybook.com/textbook/ai-race" },
-  { title: "Debunking the AI Arms Race Theory (Texas NSR)", url: "https://tnsr.org/2021/06/debunking-the-ai-arms-race-theory/" },
-]} />
+<Backlinks client:load entityId="racing-dynamics" />

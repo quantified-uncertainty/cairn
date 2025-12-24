@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-## Overview
+## Summary
 
 The field of AI safety—the study of how to build advanced AI systems that are safe, beneficial, and aligned with human values—has evolved from scattered warnings by visionaries in the 1950s to a mainstream research area backed by billions in funding and government attention.
 

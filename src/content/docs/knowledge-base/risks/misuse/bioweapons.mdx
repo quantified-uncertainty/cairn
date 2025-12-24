@@ -3,23 +3,14 @@ title: Bioweapons
 description: AI-assisted biological weapon development
 sidebar:
   order: 1
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Bioweapons Risk"
-  severity="catastrophic"
-  likelihood="Low-Medium (increasing)"
-  timeframe="Near-term"
-  customFields={[
-    { label: "Type", value: "Misuse" },
-    { label: "Key Concern", value: "Lowering barriers to development" },
-  ]}
-/>
+<DataInfoBox entityId="bioweapons" />
 
-## Overview
+## Summary
 
 AI systems could accelerate biological weapons development by helping with pathogen design, synthesis planning, or acquisition of dangerous knowledge. The concern isn't that AI creates entirely new risks, but that it lowers barriers—making capabilities previously requiring rare expertise more accessible to bad actors.
 
@@ -87,41 +78,6 @@ A religious commune deliberately contaminated salad bars with Salmonella, causin
 - [Lex Fridman #431: Roman Yampolskiy](https://lexfridman.com/roman-yampolskiy/) - Discusses AI safety including CBRN risks
 - [Future of Life Institute Podcast](https://futureoflife.org/podcast/) - Multiple episodes on biosecurity
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Biosecurity",
-    "Dual-Use Research",
-    "Catastrophic Risk",
-    "CBRN",
-    "AI Misuse",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="cyberweapons"
-      category="risk"
-      title="Cyberweapons"
-      description="Related AI-enabled weapons risk"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Biosecurity evaluations for AI models"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Precipice", author: "Toby Ord", date: "2020" },
-  { title: "Anthropic Responsible Scaling Policy", url: "https://www.anthropic.com/news/anthropics-responsible-scaling-policy" },
-  { title: "Dual Use of Artificial Intelligence-powered Drug Discovery", url: "https://www.nature.com/articles/s42256-022-00465-9" },
-  { title: "AI and the Evolution of Biological National Security Risks (CNAS)", url: "https://www.cnas.org/publications/reports/ai-and-the-evolution-of-biological-national-security-risks", date: "2024" },
-  { title: "The Operational Risks of AI in Large-Scale Biological Attacks (RAND)", url: "https://www.rand.org/pubs/research_reports/RRA2977-2.html", date: "2024" },
-  { title: "Biosecurity in the Age of AI (Belfer Center)", url: "https://www.belfercenter.org/publication/biosecurity-age-ai-whats-risk" },
-  { title: "AI Challenges and Biological Threats (Frontiers in AI)", url: "https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2024.1382356/full", date: "2024" },
-  { title: "National Academies Study on AI Biosecurity", url: "https://www.nationalacademies.org/our-work/assessing-and-navigating-biosecurity-concerns-and-benefits-of-artificial-intelligence-use-in-the-life-sciences" },
-  { title: "Opportunities to Strengthen U.S. Biosecurity (CSIS)", url: "https://www.csis.org/analysis/opportunities-strengthen-us-biosecurity-ai-enabled-bioterrorism-what-policymakers-should", date: "2025" },
-]} />
+<Backlinks client:load entityId="bioweapons" />

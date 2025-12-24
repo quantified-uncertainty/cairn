@@ -5,16 +5,9 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, DisagreementMap, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Paul Christiano"
-  affiliation="Alignment Research Center (ARC)"
-  role="Founder"
-  knownFor="Iterated amplification, AI safety via debate, scalable oversight"
-  website="https://alignment.org"
-/>
+<DataInfoBox entityId="paul-christiano" />
 
 ## Background
 
@@ -177,50 +170,6 @@ At ARC, Christiano is focused on:
 - Working on scalable oversight techniques
 - Thinking about AI governance and coordination
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Iterated Amplification",
-    "Scalable Oversight",
-    "AI Safety via Debate",
-    "ELK",
-    "Prosaic Alignment",
-    "Recursive Reward Modeling",
-    "Deceptive Alignment",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="arc"
-      category="lab"
-      title="ARC"
-      description="Alignment Research Center, founded by Paul Christiano"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Techniques for humans to supervise superhuman AI systems"
-    />
-    <EntityCard
-      id="eliezer-yudkowsky"
-      category="researcher"
-      title="Eliezer Yudkowsky"
-      description="Researcher with more pessimistic views on alignment tractability"
-    />
-    <EntityCard
-      id="jan-leike"
-      category="researcher"
-      title="Jan Leike"
-      description="Former colleague at OpenAI, now at Anthropic"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "ARC Website", url: "https://alignment.org" },
-  { title: "Paul's Alignment Forum Posts", url: "https://www.alignmentforum.org/users/paulfchristiano" },
-  { title: "Iterated Amplification Paper", url: "https://arxiv.org/abs/1810.08575" },
-  { title: "ELK Report", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/" },
-]} />
+<Backlinks client:load entityId="paul-christiano" />

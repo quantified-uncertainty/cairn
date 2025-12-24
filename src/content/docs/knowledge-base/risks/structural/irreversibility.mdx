@@ -3,23 +3,14 @@ title: Irreversibility
 description: Crossing points of no return in AI development and deployment
 sidebar:
   order: 8
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Irreversibility"
-  severity="critical"
-  likelihood="Uncertain"
-  timeframe="Near to medium-term"
-  customFields={[
-    { label: "Status", value: "Emerging concern" },
-    { label: "Key Risk", value: "Permanent foreclosure of options" },
-  ]}
-/>
+<DataInfoBox entityId="irreversibility" />
 
-## Overview
+## Summary
 
 Irreversibility in AI refers to changes that, once made, cannot be undone—points of no return after which course correction becomes impossible. This could include AI systems that can't be shut down, values permanently embedded in superintelligent systems, societal transformations that can't be reversed, or ecological or economic changes that pass critical thresholds.
 
@@ -126,45 +117,6 @@ Climate science identifies "tipping points"—thresholds beyond which certain ch
 - [Lex Fridman #368: Eliezer Yudkowsky](https://lexfridman.com/eliezer-yudkowsky/)
 - [RAND: Is AI an Existential Risk?](https://www.rand.org/pubs/commentary/2024/03/is-ai-an-existential-risk-qa-with-rand-experts.html)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Existential Risk",
-    "Value Lock-In",
-    "Point of No Return",
-    "AI Safety",
-    "Long-Term Future",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="lock-in"
-      category="risk"
-      title="Lock-In"
-      description="Permanent entrenchment of values"
-    />
-    <EntityCard
-      id="flash-dynamics"
-      category="risk"
-      title="Flash Dynamics"
-      description="Speed-related irreversibility"
-    />
-    <EntityCard
-      id="concentration-of-power"
-      category="risk"
-      title="Concentration of Power"
-      description="Irreversible power accumulation"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Existential Risk from AI (Wikipedia)", url: "https://en.wikipedia.org/wiki/Existential_risk_from_artificial_intelligence" },
-  { title: "Are AI Existential Risks Real? (Brookings)", url: "https://www.brookings.edu/articles/are-ai-existential-risks-real-and-what-should-we-do-about-them/" },
-  { title: "Is AI an Existential Risk? (RAND)", url: "https://www.rand.org/pubs/commentary/2024/03/is-ai-an-existential-risk-qa-with-rand-experts.html", date: "2024" },
-  { title: "Two Types of AI Existential Risk (arXiv)", url: "https://arxiv.org/html/2401.07836v2" },
-  { title: "AI Extinction-Level Threat (CNN)", url: "https://www.cnn.com/2024/03/12/business/artificial-intelligence-ai-report-extinction", date: "2024" },
-  { title: "The AI Dilemma: Growth vs Existential Risk (Stanford)", url: "https://web.stanford.edu/~chadj/existentialrisk.pdf" },
-  { title: "The Economics of p(doom) (arXiv)", url: "https://arxiv.org/pdf/2503.07341" },
-]} />
+<Backlinks client:load entityId="irreversibility" />

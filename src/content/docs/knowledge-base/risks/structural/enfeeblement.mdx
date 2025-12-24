@@ -3,23 +3,14 @@ title: Enfeeblement
 description: Humanity losing capability and agency through AI dependence
 sidebar:
   order: 3
+maturity: "Neglected"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Enfeeblement"
-  severity="medium-high"
-  likelihood="Medium"
-  timeframe="Medium-term"
-  customFields={[
-    { label: "Type", value: "Structural" },
-    { label: "Also Called", value: "Human atrophy, skill loss" },
-  ]}
-/>
+<DataInfoBox entityId="enfeeblement" />
 
-## Overview
+## Summary
 
 Enfeeblement refers to humanity gradually losing capabilities, skills, and meaningful agency as AI systems take over more functions. Unlike sudden catastrophe, this is a slow erosion where humans become increasingly dependent on AI, losing the ability to function without it and potentially losing the ability to oversee or redirect AI systems.
 
@@ -104,41 +95,6 @@ Resilience requires the ability to function if AI systems fail. This argues agai
 - [Nicholas Carr talks on The Glass Cage](https://www.nicholascarr.com/)
 - [Center for AI Safety: Catastrophic Risks](https://safe.ai/ai-risk)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Human Agency",
-    "Automation",
-    "Dependence",
-    "Resilience",
-    "Long-term",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="erosion-of-agency"
-      category="risk"
-      title="Erosion of Human Agency"
-      description="Loss of meaningful human control"
-    />
-    <EntityCard
-      id="lock-in"
-      category="risk"
-      title="Lock-in"
-      description="Inability to change course"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "What We Owe the Future", author: "Will MacAskill" },
-  { title: "The Glass Cage", author: "Nicholas Carr" },
-  { title: "Human Enfeeblement (Safe AI Future)", url: "https://www.secureaifuture.org/topics/enfeeblement" },
-  { title: "AI Risks That Could Lead to Catastrophe (CAIS)", url: "https://safe.ai/ai-risk" },
-  { title: "AI's Impact on Human Loss and Laziness (Nature)", url: "https://www.nature.com/articles/s41599-023-01787-8", date: "2023" },
-  { title: "The Silent Erosion: AI and Mental Grip (CIGI)", url: "https://www.cigionline.org/articles/the-silent-erosion-how-ais-helping-hand-weakens-our-mental-grip/" },
-  { title: "AI Assistance and Skill Decay (PMC)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11239631/", date: "2024" },
-  { title: "AI Chatbots and Cognitive Health Impact (PMC)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11020077/", date: "2024" },
-  { title: "AI on the Brink: Losing Control? (IMD)", url: "https://www.imd.org/ibyimd/artificial-intelligence/ai-on-the-brink-how-close-are-we-to-losing-control/" },
-]} />
+<Backlinks client:load entityId="enfeeblement" />

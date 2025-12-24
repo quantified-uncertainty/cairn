@@ -5,18 +5,9 @@ sidebar:
   order: 5
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="Coordination Technologies"
-  customFields={[
-    { label: "Maturity", value: "Emerging; active development" },
-    { label: "Key Strength", value: "Addresses collective action failures" },
-    { label: "Key Challenge", value: "Bootstrapping trust and adoption" },
-    { label: "Key Domains", value: "AI governance, epistemic defense, international cooperation" },
-  ]}
-/>
+<DataInfoBox entityId="coordination-tech" />
 
 ## Why Coordination Technology?
 
@@ -303,19 +294,3 @@ Many AI and epistemic challenges are **coordination problems**: outcomes would b
 - [Dafoe (2020): AI Governance research agenda](https://www.governance.ai/)
 - [Compute governance literature](https://arxiv.org/abs/2402.08797)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Game Theory",
-    "AI Governance",
-    "International Cooperation",
-    "Mechanism Design",
-    "Verification",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "The Strategy of Conflict", author: "Thomas Schelling", date: "1960" },
-  { title: "Governing the Commons", author: "Elinor Ostrom", date: "1990" },
-  { title: "GovAI Research", url: "https://www.governance.ai/" },
-  { title: "Computing Power and the Governance of AI", date: "2024", url: "https://arxiv.org/abs/2402.08797" },
-]} />

@@ -3,23 +3,14 @@ title: Specification Gaming
 description: AI systems exploiting loopholes in how objectives are defined
 sidebar:
   order: 13
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Specification Gaming"
-  severity="medium-high"
-  likelihood="Very High (observed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Actively occurring" },
-    { label: "Also Called", value: "Reward hacking, Goodharting" },
-  ]}
-/>
+<DataInfoBox entityId="specification-gaming" />
 
-## Overview
+## Summary
 
 Specification gaming occurs when an AI system achieves high scores on its specified objective through unintended means—finding loopholes in the specification rather than doing what the designers actually wanted. The system does exactly what it was told, but not what was meant.
 
@@ -63,41 +54,6 @@ Process-based objectives reward the process of achieving goals rather than just 
 
 Human oversight keeps humans in the loop to catch specification gaming as it occurs. This works until AI systems are fast enough or opaque enough that humans can't effectively monitor.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Reward Hacking",
-    "Goodhart's Law",
-    "Outer Alignment",
-    "Objective Specification",
-    "AI Safety",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="reward-hacking"
-      category="risk"
-      title="Reward Hacking"
-      description="Gaming reward signals in reinforcement learning"
-    />
-    <EntityCard
-      id="goal-misgeneralization"
-      category="risk"
-      title="Goal Misgeneralization"
-      description="Learning different goals than intended"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Approaches to maintain human oversight"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Specification Gaming Examples", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPiprOaC3HsCf5Tuum8bRfzYUiKLRqJmbOoC-32JorNdfyTiRRsR7Ea5eWtvsWzuxo8bjOxCG84dAg/pubhtml", author: "DeepMind" },
-  { title: "Goal Misgeneralization in Deep Reinforcement Learning", url: "https://arxiv.org/abs/2105.14111" },
-  { title: "Concrete Problems in AI Safety", url: "https://arxiv.org/abs/1606.06565", author: "Amodei et al." },
-]} />
+<Backlinks client:load entityId="specification-gaming" />

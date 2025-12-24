@@ -5,20 +5,11 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, Section, EntityCard, EntityCards, Tags, Sources } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="historical"
-  title="The MIRI Era"
-  customFields={[
-    { label: "Period", value: "2000-2015" },
-    { label: "Key Event", value: "First dedicated AI safety organization founded" },
-    { label: "Main Figures", value: "Yudkowsky, Bostrom, Hanson, Tegmark" },
-    { label: "Milestone", value: "Superintelligence (2014) brings academic legitimacy" },
-  ]}
-/>
+<DataInfoBox entityId="miri-era" />
 
-## Overview
+## Summary
 
 The MIRI era marks the transition from scattered warnings to organized research. For the first time, AI safety had an institution, a community, and a research agenda.
 
@@ -648,43 +639,4 @@ But it also revealed challenges:
 
 The next era (2015-2020) would be defined by the deep learning revolution and the need for AI safety to engage with rapidly advancing real-world systems.
 
-<Section title="Related Organizations">
-  <EntityCards>
-    <EntityCard
-      id="miri"
-      category="organization"
-      title="MIRI"
-      description="Machine Intelligence Research Institute, founded 2000"
-    />
-    <EntityCard
-      id="fhi"
-      category="organization"
-      title="Future of Humanity Institute"
-      description="Oxford-based existential risk research (2005-2024)"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "MIRI",
-    "Eliezer Yudkowsky",
-    "Nick Bostrom",
-    "LessWrong",
-    "Superintelligence",
-    "Friendly AI",
-    "Orthogonality Thesis",
-    "Instrumental Convergence",
-    "CEV",
-    "Effective Altruism",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Creating Friendly AI", author: "Eliezer Yudkowsky", date: "2001", url: "https://intelligence.org/files/CFAI.pdf" },
-  { title: "Superintelligence: Paths, Dangers, Strategies", author: "Nick Bostrom", date: "2014", url: "https://www.amazon.com/Superintelligence-Dangers-Strategies-Nick-Bostrom/dp/0199678111" },
-  { title: "The Sequences", author: "Eliezer Yudkowsky", date: "2006-2009", url: "https://www.lesswrong.com/rationality" },
-  { title: "Existential Risk Prevention as Global Priority", author: "Nick Bostrom", date: "2013", url: "https://www.existential-risk.org/concept.html" },
-  { title: "The Hanson-Yudkowsky AI-Foom Debate", author: "Robin Hanson & Eliezer Yudkowsky", date: "2008", url: "https://intelligence.org/ai-foom-debate/" },
-  { title: "Future of Life Institute Open Letter", author: "Various", date: "2015", url: "https://futureoflife.org/open-letter/ai-open-letter/" },
-]} />

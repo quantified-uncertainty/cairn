@@ -5,17 +5,9 @@ sidebar:
   order: 1
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="resilience"
-  title="Epistemic Security"
-  customFields={[
-    { label: "Definition", value: "Protecting collective capacity for knowledge and truth-finding" },
-    { label: "Key Threats", value: "Deepfakes, AI disinformation, trust collapse" },
-    { label: "Key Research", value: "RAND, Stanford Internet Observatory, Oxford" },
-  ]}
-/>
+<DataInfoBox entityId="epistemic-security" />
 
 ## What Is Epistemic Security?
 
@@ -300,22 +292,3 @@ Epistemic security affects AI safety directly:
 
 Epistemic security failure may be an underrated AI risk.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Disinformation",
-    "Deepfakes",
-    "Trust",
-    "Media Literacy",
-    "Content Authentication",
-    "Information Security",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "The Vulnerability of Democracies to Disinformation", author: "RAND Corporation", date: "2019", url: "https://www.rand.org/pubs/research_briefs/RB10088.html" },
-  { title: "Deep Fakes: A Looming Challenge", author: "Chesney & Citron", date: "2019", url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3213954" },
-  { title: "The Oxygen of Amplification", author: "Whitney Phillips (Data & Society)", date: "2018", url: "https://datasociety.net/library/oxygen-of-amplification/" },
-  { title: "Inoculation Theory", author: "Sander van der Linden", url: "https://www.sdlab.psychol.cam.ac.uk/research/inoculation-science" },
-  { title: "C2PA Specification", url: "https://c2pa.org/specifications/specifications/1.0/specs/C2PA_Specification.html" },
-  { title: "Synthetic Media and AI", author: "Partnership on AI", date: "2023", url: "https://partnershiponai.org/paper/responsible-practices-synthetic-media/" },
-]} />

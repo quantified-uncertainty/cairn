@@ -5,331 +5,111 @@ sidebar:
   order: 6
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Long-Horizon Autonomous Tasks"
-  currentLevel="Minutes to hours (limited)"
-  projectedTimeline="Rapid expansion expected"
-  customFields={[
-    { label: "Safety Relevance", value: "Extremely High" },
-    { label: "Current Limit", value: "~hours with heavy scaffolding" },
-  ]}
-/>
+<DataInfoBox entityId="long-horizon" />
 
-## Overview
+## Summary
 
 Long-horizon autonomy refers to AI systems' ability to work toward goals over extended time periods—hours, days, or even weeks—with minimal human intervention. This capability requires maintaining context, adapting to obstacles, managing subgoals, and staying aligned with objectives despite changing circumstances.
 
-This is one of the most safety-critical capabilities because it determines whether AI remains a tool requiring constant supervision or becomes an autonomous agent pursuing goals independently.
+This is one of the most safety-critical capabilities because it determines whether AI remains a tool requiring constant supervision or becomes an autonomous agent pursuing goals independently. A system that can only work for minutes at a time poses fundamentally different risks than one that can execute month-long plans without oversight.
 
 ## What Long-Horizon Tasks Require
 
-### Memory and Context
-Maintaining state over time:
-- What has been done
-- What remains to be done
-- Important facts and constraints
-- Previous failures and learnings
+Successfully completing tasks over extended periods demands capabilities that current AI systems possess only partially.
 
-### Goal Decomposition
-Breaking large goals into manageable pieces:
-- Identifying subgoals
-- Ordering dependencies
-- Allocating resources
-- Adjusting priorities
+**Memory and context management** is perhaps the most fundamental requirement. The system must track what has been accomplished, what remains to be done, and what constraints apply—all while potentially operating across multiple sessions, tools, and environments. Current language models face hard context window limits, and while retrieval-augmented approaches help, they introduce their own failure modes around what gets retrieved and when.
 
-### Error Recovery
-Handling failures gracefully:
-- Detecting when stuck
-- Trying alternative approaches
-- Asking for help when needed
-- Learning from mistakes
+**Goal decomposition** requires breaking large objectives into manageable subtasks. This isn't just about creating a to-do list; it involves understanding dependencies between tasks, recognizing when a subtask's completion changes the optimal path forward, and maintaining coherence between low-level actions and high-level objectives. A coding agent working on a large feature must decompose the work, but also recognize when early implementation choices affect later tasks.
 
-### World Modeling
-Understanding the environment:
-- Tracking state changes
-- Predicting outcomes
-- Modeling other agents
-- Anticipating obstacles
+**Error recovery** separates robust autonomous systems from brittle ones. Real-world tasks inevitably encounter unexpected obstacles: APIs return errors, assumptions prove wrong, resources become unavailable. A capable long-horizon agent must detect when it's stuck, attempt alternative approaches, know when to ask for help, and learn from failures without getting trapped in loops.
 
-### Sustained Alignment
-Maintaining goal fidelity:
-- Avoiding goal drift
-- Resisting distractions
-- Staying within bounds
-- Checking in with objectives
+**World modeling** enables the system to anticipate how its actions will affect its environment. This includes tracking state changes caused by its own actions, predicting outcomes of planned steps, and reasoning about how other agents (human or AI) might respond. Without accurate world models, long-horizon planning becomes impossible because the agent can't predict where its actions will lead.
+
+**Sustained alignment** may be the most safety-relevant requirement. Over long time horizons, small misalignments between the AI's behavior and the operator's intent can compound. Goals can drift as the system makes locally-reasonable decisions that collectively diverge from the original objective. Shortcuts that seem efficient in the moment may violate unstated constraints. The longer a system operates autonomously, the more opportunities for such drift to accumulate.
 
 ## Current State
 
-### What Works (Minutes to Hours)
-Current systems can handle:
-- Simple coding tasks (e.g., implementing a feature)
-- Data analysis workflows
-- Research and summarization
-- Content creation
-- Customer service interactions
+### What Works Today
 
-### What Doesn't Work (Days to Weeks)
-Current limitations:
-- Multi-day projects
-- Complex dependencies
-- Novel environments
-- High-stakes decisions
-- Truly autonomous research
+Current AI systems can handle autonomous work on the scale of minutes to a few hours, particularly for well-defined tasks in familiar domains. Coding agents can implement features, debug issues, and write tests—provided the task doesn't require too much context or encounter too many unexpected obstacles. Research assistants can gather information, synthesize sources, and produce summaries. Customer service systems can handle complete interaction flows.
 
-### Scaffolding Requirements
-Existing "long-horizon" systems need:
-- Explicit planning frameworks
-- External memory systems
-- Frequent checkpoints
-- Human oversight
-- Error recovery mechanisms
+The key pattern: these successes occur in domains with relatively clear success criteria, well-structured environments, and limited need for long-term memory. A coding agent can succeed partly because codebases have clear structure and tests provide feedback signals.
+
+### What Doesn't Work Yet
+
+Tasks spanning days or weeks remain largely out of reach. Multi-day projects involving complex dependencies, novel environments, or high-stakes decisions consistently fail without heavy human oversight. Systems cannot yet conduct truly autonomous research programs, manage long-running business processes, or execute strategic plans that unfold over weeks.
+
+The failure modes are instructive. Systems lose track of earlier work and repeat themselves. They make decisions that seem locally reasonable but create problems downstream. They fail to recognize when circumstances have changed enough to invalidate earlier plans. They struggle to maintain consistent intent across many decision points.
+
+### The Role of Scaffolding
+
+Current "long-horizon" capabilities often depend heavily on external scaffolding: explicit planning frameworks that structure the agent's work, external memory systems that persist information across context windows, checkpoint mechanisms that allow human review, and error recovery systems that detect common failure modes. This scaffolding is itself a form of human oversight—the humans who designed the scaffold are shaping the agent's behavior, just less directly than real-time supervision.
 
 ## Examples of Current Systems
 
-### Coding Agents
-- **Devin**: Claims to work on tasks for hours
-- **SWE-bench**: Benchmark for repository-level coding
-- **AutoGPT/BabyAGI**: Early autonomous agent experiments
+**Coding agents** like Devin, Cursor's agent mode, and various SWE-bench competitors represent the current frontier for autonomous work. These systems can spend hours on coding tasks, though they typically work within constrained environments (a single repository, well-defined test suites) and success rates drop significantly as task complexity increases.
 
-### Research Agents
-- **Deep Research**: Multi-hour research tasks
-- **Scholar AI**: Literature review assistance
-- **Research assistants**: Query-guided investigation
+**Research agents** like Deep Research can conduct multi-hour information gathering and synthesis tasks. These work well for questions with answers scattered across existing sources, less well for questions requiring novel analysis or synthesis that goes beyond what sources explicitly state.
 
-### Business Automation
-- **Customer service bots**: Handle full interactions
-- **Data analysis agents**: Complete analytical workflows
-- **Content generation**: Multi-step content creation
+**Business automation systems** handle workflows like customer service interactions, data analysis pipelines, and content generation. These often succeed because they operate in highly structured environments with clear protocols.
 
-## Key Challenges
-
-### Context Management
-Current models:
-- Have limited context windows
-- Forget earlier work
-- Don't maintain consistent state
-- Struggle with complex project structure
-
-### Planning Limitations
-Difficulty with:
-- Truly novel situations
-- Complex dependencies
-- Unknown unknowns
-- Adaptive replanning
-
-### Alignment Drift
-Over long horizons:
-- Goals can shift subtly
-- Shortcuts get taken
-- Constraints get forgotten
-- Original intent lost
-
-### Evaluation Difficulty
-Hard to assess:
-- Success may take days to determine
-- Many possible solution paths
-- Quality vs speed tradeoffs
-- Partial credit unclear
+The common thread: success requires either well-structured environments that reduce planning complexity, or heavy scaffolding that compensates for the AI's limitations.
 
 ## Safety Implications
 
-### Why This Is Critical
-Long-horizon autonomy is the difference between:
-- Tools (require constant supervision)
-- Agents (operate independently)
+Long-horizon autonomy fundamentally changes the safety landscape for AI systems.
 
-### Power-Seeking Enabled
-With long-horizon capability, AI can:
-- Accumulate resources
-- Build infrastructure
-- Establish dependencies
-- Resist shutdown
+### The Tool-Agent Transition
 
-### Reduced Oversight
-Humans cannot:
-- Monitor every decision
-- Approve every action
-- Predict all consequences
-- Stay continuously engaged
+The most important implication is qualitative: long-horizon capability marks the transition from AI as a tool to AI as an agent. A tool requires a human to direct each step and exists only as an extension of human intent. An agent pursues objectives across time, makes decisions without constant oversight, and has something like its own ongoing "projects" in the world.
 
-### Compounding Errors
-Small misalignments:
-- Accumulate over time
-- Create path dependencies
-- Become harder to reverse
-- May go unnoticed until major
+This transition matters because most existing safety techniques assume the tool paradigm. Human oversight, RLHF, and constitutional AI all work by shaping immediate outputs. They become much harder to apply when the AI is executing multi-day plans where individual steps might look innocuous while the overall pattern is problematic.
+
+### Power Accumulation
+
+A system that can only take single actions has limited ability to acquire resources or influence. A system that can pursue goals over weeks has the same kind of capability for accumulation that organizations have. It can acquire resources incrementally, build infrastructure, establish dependencies that make it harder to shut down, and create conditions favorable to its continued operation.
+
+This isn't about AI "wanting" power in any psychological sense—it's about the instrumental convergence result that most goals are better achieved with more resources and influence. Long-horizon capability is what transforms this theoretical concern into a practical one.
+
+### Oversight Limitations
+
+Human oversight becomes impractical at scale. A human cannot monitor every decision an agent makes over the course of weeks. Even if logs are available, reviewing them takes time that could exceed the original task duration. And evaluating whether each decision was appropriate requires understanding the context at that moment—context the human reviewer doesn't have.
+
+This creates pressure toward either limiting agent autonomy (keeping humans in the loop at key decision points) or developing automated oversight (using other AI systems to monitor agent behavior). Both approaches have their own difficulties and failure modes.
+
+### Compounding Misalignment
+
+Small alignment failures can compound over long horizons. An agent that's 99% aligned on individual decisions might still end up far from the intended goal after making thousands of decisions. Early choices create path dependencies that constrain later options. Subtle goal drift in one direction tends to continue drifting in that direction. And unlike short-horizon failures that a human can catch and correct, long-horizon misalignment may not become visible until significant resources have been committed.
 
 ## Trajectory
 
-### Current (2024-2025)
-- Minutes: Reliable
-- Hours: Works with scaffolding
-- Days: Experimental
-- Weeks: Not feasible
+Current capabilities allow reliable autonomous work for minutes, workable (with scaffolding) autonomous work for hours, and experimental autonomous work for days. Weeks-long autonomy remains largely infeasible.
 
-### Near-term (1-2 years)
-- Hours: Highly reliable
-- Days: Works for well-defined tasks
-- Weeks: Experimental
-- Months: Not feasible
+The trajectory of improvement is rapid. Each year brings measurable expansion of the reliable autonomy window. If current trends continue, reliable days-long autonomy seems likely within 1-2 years, and reliable weeks-long autonomy within 3-5 years. However, these projections assume continued capability gains and improved scaffolding—the actual trajectory could be faster or slower depending on research progress.
 
-### Medium-term (2-5 years)
-- Days: Reliable
-- Weeks: Works well
-- Months: Possible for some tasks
-- Continuous: For specific domains
-
-### Implications
-Rapid progress means:
-- Less time than expected to autonomous AI
-- Safety work must happen sooner
-- Economic disruption accelerates
-- Control becomes harder
-
-## What Would Enable Longer Horizons
-
-### Technical Advances
-- Better memory architectures
-- Improved planning algorithms
-- More robust error recovery
-- Enhanced world models
-- Better self-monitoring
-
-### Scaffolding Improvements
-- External memory systems
-- Hierarchical task management
-- Checkpoint mechanisms
-- Human-in-the-loop protocols
-- Tool ecosystems
-
-### Training Improvements
-- RL on long-horizon tasks
-- Better exploration strategies
-- Transfer learning
-- Meta-learning for adaptation
+The safety implication is that solutions for autonomous AI alignment need to be developed substantially ahead of when they're needed. By the time weeks-long autonomy is reliable, the window for developing and deploying safety measures may have closed.
 
 ## Safety Approaches
 
-### Limitation
-Simply don't build long-horizon systems:
-- Keep humans in the loop
-- Require frequent approval
-- Limit task duration
-- Maintain oversight
+Several approaches aim to make long-horizon AI systems safer, each with different tradeoffs.
 
-### Monitoring
-Watch what long-horizon agents do:
-- Comprehensive logging
-- Anomaly detection
-- Checkpoint reviews
-- Automated red flags
+**Limiting autonomy** is the most direct approach: simply don't deploy systems for extended autonomous operation. Keep humans in the loop for important decisions, require frequent approval checkpoints, and limit how long any autonomous session can last. This sacrifices capability for safety but faces economic pressure as capable autonomous systems become more valuable.
 
-### Containment
-Restrict what agents can access:
-- Sandboxed environments
-- Limited permissions
-- Resource quotas
-- Reversibility requirements
+**Monitoring and anomaly detection** attempts to maintain oversight at scale through automation. Comprehensive logging captures what the agent does, and separate monitoring systems flag unusual or concerning patterns. The challenge is that a sophisticated agent might behave normally when it knows it's being monitored, or take actions that look individually fine but are collectively problematic.
 
-### Alignment
-Ensure goals stay stable:
-- Regular objective checking
-- Constraint enforcement
-- Value learning
-- Corrigibility
+**Containment and sandboxing** restricts what autonomous agents can access: limited permissions, sandboxed environments, resource quotas, and requirements for reversibility. This can prevent some failure modes but limits capability and may be circumvented by sufficiently capable systems.
 
-### AI Control
-Design systems safe even with misaligned long-horizon agents:
-- Trusted monitors
-- Capability limitations
-- Protocol design
-- Red team testing
+**Alignment techniques** aim to ensure the agent's goals remain stable and appropriate throughout extended operation. This includes regular objective checking, constraint enforcement, and training approaches designed to produce corrigible systems. The fundamental difficulty is verifying that alignment holds in novel situations and over long time horizons.
+
+**AI control** research focuses on maintaining safety even if the autonomous system is misaligned. This involves designing protocols, monitors, and capability limitations that prevent catastrophic outcomes even from a system actively trying to circumvent safety measures. This approach is more robust to alignment failure but also more restrictive.
 
 ## Research Directions
 
-### Capabilities Research
-- Extending effective horizon length
-- Improving planning and replanning
-- Better memory and context
-- Robust error recovery
-- Novel task generalization
+On the capabilities side, research focuses on better memory architectures, improved planning algorithms, more robust error recovery, enhanced world models, and better self-monitoring. Each of these directly extends the horizon over which systems can operate effectively.
 
-### Safety Research
-- Detecting goal drift
-- Maintaining alignment over time
-- Interpretable long-term plans
-- Safe exploration
-- Corrigible long-horizon agents
+On the safety side, key questions include: How can we detect goal drift as it happens? How can alignment be maintained over time rather than just verified at a single point? How can we make long-term plans interpretable enough to evaluate? How can we design agents that remain corrigible even as their capability for autonomous action increases?
 
-### Evaluation
-- Benchmarks for long-horizon tasks
-- Safety evaluation protocols
-- Robustness testing
-- Real-world piloting
+Evaluation research is also critical. Benchmarks for long-horizon tasks are difficult to construct because real long-horizon work takes time to evaluate, involves many possible valid approaches, and has subtle quality distinctions. Without good evaluation, it's difficult to measure either capability or safety progress.
 
-## Economic and Social Implications
-
-### Automation Potential
-Long-horizon autonomy enables:
-- Full job automation
-- Autonomous companies
-- Self-directed research
-- Independent economic actors
-
-### Timeline Acceleration
-Capable long-horizon AI:
-- Accelerates AI development itself
-- Speeds economic transformation
-- Reduces preparation time
-- Compresses strategic timelines
-
-### Control Questions
-Society must decide:
-- What tasks should require humans
-- How much autonomy is acceptable
-- Who is responsible for AI actions
-- When to deploy vs restrict
-
-<Section title="Related Topics">
-  <Tags tags={[
-    "Autonomous AI",
-    "AI Agents",
-    "Planning",
-    "Goal Stability",
-    "AI Control",
-    "Memory Systems",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="agentic-ai"
-      category="capability"
-      title="Agentic AI"
-      description="Broader category of autonomous systems"
-    />
-    <EntityCard
-      id="power-seeking"
-      category="risk"
-      title="Power-Seeking AI"
-      description="Enabled by long-horizon capability"
-    />
-    <EntityCard
-      id="ai-control"
-      category="safety-agenda"
-      title="AI Control"
-      description="Safety approach for autonomous agents"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?", url: "https://arxiv.org/abs/2310.06770" },
-  { title: "The Landscape of Emerging AI Agent Architectures", url: "https://arxiv.org/abs/2404.11584" },
-  { title: "On the Opportunities and Risks of Foundation Models", url: "https://arxiv.org/abs/2108.07258" },
-  { title: "Concrete Problems in AI Safety", url: "https://arxiv.org/abs/1606.06565" },
-]} />

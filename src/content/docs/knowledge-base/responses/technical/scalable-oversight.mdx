@@ -5,20 +5,11 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks } from '../../../../../components/wiki';
 
-<InfoBox
-  type="safety-agenda"
-  title="Scalable Oversight"
-  organization="ARC, Anthropic, DeepMind"
-  approach="Technical research"
-  customFields={[
-    { label: "Core Problem", value: "Superhuman tasks" },
-    { label: "Key Technique", value: "Recursive decomposition" },
-  ]}
-/>
+<DataInfoBox entityId="scalable-oversight" />
 
-## Overview
+## Summary
 
 Scalable oversight addresses a fundamental challenge: How can humans supervise AI systems on tasks where humans can't directly evaluate the AI's output?
 
@@ -105,42 +96,7 @@ Not all tasks decompose naturally:
 - Adversarial dynamics analysis
 - Information-theoretic limits
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Debate",
-    "Recursive Reward Modeling",
-    "Process Supervision",
-    "AI Evaluation",
-    "RLHF",
-    "Superhuman AI",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="arc"
-      category="lab"
-      title="ARC"
-      description="Key research on scalable oversight"
-    />
-    <EntityCard
-      id="deepmind"
-      category="lab"
-      title="DeepMind"
-      description="Debate and scalable oversight research"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Primary threat scalable oversight addresses"
-    />
-  </EntityCards>
-</Section>
+<Backlinks client:load entityId="scalable-oversight" />
 
-<Sources sources={[
-  { title: "AI Safety via Debate", url: "https://arxiv.org/abs/1805.00899", author: "Irving et al." },
-  { title: "Scalable Agent Alignment via Reward Modeling", url: "https://arxiv.org/abs/1811.07871", author: "Leike et al." },
-  { title: "Measuring Progress on Scalable Oversight", url: "https://arxiv.org/abs/2211.03540" },
-]} />

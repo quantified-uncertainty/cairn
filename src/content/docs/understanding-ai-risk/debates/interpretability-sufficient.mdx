@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-import { ArgumentMap, InfoBox, KeyQuestions, EntityCard, EntityCards, Section, Tags, Sources, DisagreementMap } from '../../../../components/wiki';
+import { ArgumentMap, DisagreementMap, InfoBox, KeyQuestions } from '../../../../components/wiki';
 
 <InfoBox
   type="crux"
@@ -569,42 +569,4 @@ Interpretability research itself has a philosophical debate:
 
 This mirrors the sufficiency debate: Do we need mechanistic interpretability or just pragmatic tools?
 
-<Section title="Related Debates">
-  <EntityCards>
-    <EntityCard
-      id="is-ai-xrisk-real"
-      category="crux"
-      title="Is AI X-Risk Real?"
-      description="If not, interpretability less critical"
-    />
-    <EntityCard
-      id="scaling-debate"
-      category="crux"
-      title="Is Scaling All You Need?"
-      description="Affects interpretability's feasibility"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Interpretability",
-    "Mechanistic Interpretability",
-    "Transparency",
-    "Alignment",
-    "Deception",
-    "Verification",
-    "AI Safety Research",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Towards Monosemanticity: Decomposing Language Models", author: "Anthropic", date: "2023", url: "https://transformer-circuits.pub/2023/monosemantic-features/index.html" },
-  { title: "A Mathematical Framework for Transformer Circuits", author: "Anthropic", date: "2021", url: "https://transformer-circuits.pub/2021/framework/index.html" },
-  { title: "Zoom In: An Introduction to Circuits", author: "Olah et al.", date: "2020", url: "https://distill.pub/2020/circuits/zoom-in/" },
-  { title: "Interpretability Dreams", author: "Chris Olah", date: "2022", url: "https://colah.github.io/posts/2022-03-Interpretability-Dreams/" },
-  { title: "Eliciting Latent Knowledge", author: "Christiano et al.", date: "2021", url: "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/" },
-  { title: "Language Models (Mostly) Know What They Know", author: "Kadavath et al.", date: "2022", url: "https://arxiv.org/abs/2207.05221" },
-  { title: "Adversarial Examples Are Not Bugs, They Are Features", author: "Ilyas et al.", date: "2019", url: "https://arxiv.org/abs/1905.02175" },
-  { title: "Grokking Modular Arithmetic", author: "Nanda et al.", date: "2023", url: "https://arxiv.org/abs/2301.05217" },
-]} />

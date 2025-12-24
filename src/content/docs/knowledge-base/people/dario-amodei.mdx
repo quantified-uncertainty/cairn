@@ -5,16 +5,9 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Dario Amodei"
-  affiliation="Anthropic"
-  role="Co-founder & CEO"
-  knownFor="Constitutional AI, Responsible Scaling Policy, Claude development"
-  website="https://anthropic.com"
-/>
+<DataInfoBox entityId="dario-amodei" />
 
 ## Background
 
@@ -173,50 +166,6 @@ Dario's influence extends beyond Anthropic:
 4. **Talent development**: Anthropic is training a generation of safety researchers
 5. **Industry norms**: Pushing major labs toward greater safety emphasis
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Constitutional AI",
-    "Responsible Scaling",
-    "Claude",
-    "RLHF",
-    "Mechanistic Interpretability",
-    "AI Safety Levels",
-    "Empirical Alignment",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="AI safety company co-founded by Dario Amodei"
-    />
-    <EntityCard
-      id="anthropic-core-views"
-      category="safety-agenda"
-      title="Anthropic Core Views"
-      description="Anthropic's published perspective on AI safety"
-    />
-    <EntityCard
-      id="jan-leike"
-      category="researcher"
-      title="Jan Leike"
-      description="Anthropic's Head of Alignment, recruited by Dario"
-    />
-    <EntityCard
-      id="chris-olah"
-      category="researcher"
-      title="Chris Olah"
-      description="Co-founder of Anthropic, interpretability lead"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Anthropic Website", url: "https://anthropic.com" },
-  { title: "Anthropic Core Views on AI Safety", url: "https://anthropic.com/news/core-views-on-ai-safety" },
-  { title: "Responsible Scaling Policy", url: "https://anthropic.com/news/anthropics-responsible-scaling-policy" },
-  { title: "Dwarkesh Podcast Interview", url: "https://www.dwarkeshpatel.com/p/dario-amodei" },
-]} />
+<Backlinks client:load entityId="dario-amodei" />

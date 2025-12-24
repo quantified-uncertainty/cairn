@@ -5,29 +5,15 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Situational Awareness"
-  currentLevel="Partial / Emerging"
-  projectedTimeline="Near-term"
-  customFields={[
-    { label: "Safety Relevance", value: "Very High" },
-    { label: "Status", value: "Active research area" },
-  ]}
-/>
+<DataInfoBox entityId="situational-awareness" />
 
-## Overview
+## Summary
 
-Situational awareness in AI refers to a model's understanding of:
-- That it is an AI system
-- That it is being trained/evaluated
-- Its own capabilities and limitations
-- The broader context of AI development
-- The likely consequences of its actions
+**Situational awareness** in AI systems refers to a model's understanding of its own nature and circumstances. This includes recognizing that it is an AI system, awareness of when it is being trained or evaluated, accurate knowledge of its capabilities and limitations, understanding of the broader AI development context, and the ability to reason about consequences of its actions.
 
-This capability is safety-critical because it's a prerequisite for dangerous behaviors like deceptive alignment.
+This capability is safety-critical because it serves as a prerequisite for dangerous behaviors like deceptive alignment. A model without situational awareness cannot strategically game its training process or hide concerning behaviors during evaluation.
 
 ## Why This Matters
 
@@ -101,41 +87,6 @@ Exploring how training affects situational awareness:
 - Does RLHF increase or decrease it?
 - Can we train models to lack situational awareness?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deceptive Alignment",
-    "Self-Awareness",
-    "AI Evaluations",
-    "Inner Alignment",
-    "Model Self-Knowledge",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Requires situational awareness"
-    />
-    <EntityCard
-      id="evals"
-      category="capability"
-      title="AI Evaluations"
-      description="Testing for dangerous capabilities"
-    />
-    <EntityCard
-      id="arc"
-      category="lab"
-      title="ARC"
-      description="Research on detecting situational awareness"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Sleeper Agents Paper", url: "https://arxiv.org/abs/2401.05566", author: "Anthropic" },
-  { title: "Situational Awareness (LessWrong)", url: "https://www.lesswrong.com/tag/situational-awareness" },
-  { title: "Model Organisms of Misalignment", url: "https://www.anthropic.com/research" },
-]} />
+<Backlinks client:load entityId="situational-awareness" />

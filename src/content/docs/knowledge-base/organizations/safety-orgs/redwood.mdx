@@ -5,19 +5,11 @@ sidebar:
   order: 12
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="organization"
-  title="Redwood Research"
-  founded="2021"
-  location="Berkeley, CA"
-  headcount="~20-25"
-  funding="~$8-10M/year (grants)"
-  website="https://redwoodresearch.org"
-/>
+<DataInfoBox entityId="redwood" />
 
-## Overview
+## Summary
 
 Redwood Research is an AI safety lab founded in 2021 that has made significant contributions to mechanistic interpretability and, more recently, pioneered the "AI control" research agenda. The organization is known for its willingness to pivot based on evidence, empirical focus, and practical contributions to AI safety despite maintaining realistic (some would say pessimistic) assessments of alignment difficulty.
 
@@ -552,73 +544,6 @@ Applying interpretability to real model behaviors
 - **Both**: Realistic about difficulty
 - **Different**: Redwood maintains technical optimism
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Mechanistic Interpretability",
-    "Causal Scrubbing",
-    "AI Control",
-    "Adversarial Robustness",
-    "Polysemanticity",
-    "Scheming",
-    "Deception Detection",
-    "Red Teaming",
-    "Monitoring",
-    "Safety Protocols"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="interpretability"
-      category="safety-approaches"
-      title="Mechanistic Interpretability"
-      description="Major Redwood research area"
-    />
-    <EntityCard
-      id="ai-control"
-      category="safety-approaches"
-      title="AI Control"
-      description="Redwood's current primary focus"
-    />
-    <EntityCard
-      id="scheming"
-      category="risks"
-      title="Scheming"
-      description="Threat model for control research"
-    />
-    <EntityCard
-      id="sandbagging"
-      category="risks"
-      title="Sandbagging"
-      description="AI hiding capabilities - Redwood research area"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Frontier lab with major interpretability team"
-    />
-    <EntityCard
-      id="arc"
-      category="organizations"
-      title="ARC"
-      description="Parallel organization with evaluations focus"
-    />
-    <EntityCard
-      id="miri"
-      category="organizations"
-      title="MIRI"
-      description="Earlier safety org with different trajectory"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Redwood Research Website", url: "https://redwoodresearch.org" },
-  { title: "AI Control Paper", url: "https://arxiv.org/abs/2312.06942" },
-  { title: "Causal Scrubbing", url: "https://www.alignmentforum.org/posts/JvZhhzycHu2Yd57RN/causal-scrubbing-a-method-for-rigorously-testing" },
-  { title: "Adversarial Training for High-Stakes Safety", url: "https://arxiv.org/abs/2205.01663" },
-  { title: "Redwood Research on Alignment Forum", url: "https://www.alignmentforum.org/users/redwood-research" },
-  { title: "Neel Nanda's Interpretability Work", url: "https://www.neelnanda.io/mechanistic-interpretability" }
-]} />
+<Backlinks client:load entityId="redwood" />

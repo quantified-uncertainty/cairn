@@ -5,19 +5,11 @@ sidebar:
   order: 14
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section } from '../../../../../components/wiki';
 
-<InfoBox
-  type="organization"
-  title="Epoch AI"
-  founded="2022"
-  location="Remote / San Francisco, CA"
-  headcount="~10-15"
-  funding="Grants (Open Philanthropy, others)"
-  website="https://epochai.org"
-/>
+<DataInfoBox entityId="epoch-ai" />
 
-## Overview
+## Summary
 
 Epoch AI is a research organization dedicated to producing rigorous, data-driven forecasts and analysis about artificial intelligence progress, with particular focus on compute trends, training datasets, algorithmic efficiency, and AI timelines. Founded in 2022, Epoch has quickly become the authoritative source for empirical data about AI development trends.
 
@@ -675,64 +667,3 @@ Epoch produces systematic forecasts for transformative AI timelines.
 
 **Tension**: Labs might not want to share data Epoch wants to track
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Forecasting",
-    "Compute Trends",
-    "Training Datasets",
-    "Algorithmic Progress",
-    "AI Timelines",
-    "Transformative AI",
-    "Compute Governance",
-    "Parameter Counts",
-    "Scaling Laws",
-    "Data Constraints",
-    "Empirical Analysis",
-    "Trend Extrapolation"
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policies"
-      title="Compute Governance"
-      description="Policy area informed by Epoch's data"
-    />
-    <EntityCard
-      id="transformative-ai"
-      category="concepts"
-      title="Transformative AI"
-      description="What Epoch forecasts timelines for"
-    />
-    <EntityCard
-      id="scaling-laws"
-      category="concepts"
-      title="Scaling Laws"
-      description="Empirical trends Epoch documents"
-    />
-    <EntityCard
-      id="ai-timelines"
-      category="concepts"
-      title="AI Timelines"
-      description="Core research focus for Epoch"
-    />
-    <EntityCard
-      id="data-constraints"
-      category="concepts"
-      title="Data Constraints"
-      description="Bottleneck Epoch identified"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Epoch AI Website", url: "https://epochai.org" },
-  { title: "Epoch Parameter Database", url: "https://epochai.org/data/epochdb/visualization" },
-  { title: "Compute Trends Paper", url: "https://epochai.org/blog/compute-trends" },
-  { title: "Will We Run Out of Data?", url: "https://epochai.org/blog/will-we-run-out-of-data" },
-  { title: "Algorithmic Progress Research", url: "https://epochai.org/blog/revisiting-algorithmic-progress" },
-  { title: "Epoch Research Blog", url: "https://epochai.org/blog" },
-  { title: "Epoch on Twitter/X", url: "https://twitter.com/epoch_ai" }
-]} />

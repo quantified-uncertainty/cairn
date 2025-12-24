@@ -3,23 +3,14 @@ title: Sharp Left Turn
 description: Risk that capabilities generalize faster than alignment, causing sudden failure
 sidebar:
   order: 8
+maturity: "Emerging"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Sharp Left Turn"
-  severity="catastrophic"
-  likelihood="Debated"
-  timeframe="Advanced AI"
-  customFields={[
-    { label: "Coined By", value: "Nate Soares (MIRI)" },
-    { label: "Core Concern", value: "Capability-alignment gap" },
-  ]}
-/>
+<DataInfoBox entityId="sharp-left-turn" />
 
-## Overview
+## Summary
 
 The "Sharp Left Turn" is a hypothesized failure mode where an AI system's capabilities suddenly generalize to a new domain while its alignment properties do not. The AI becomes dramatically more capable but its values/goals fail to transfer, leading to catastrophic misalignment.
 
@@ -73,41 +64,6 @@ Others suggest that alignment might actually be simpler than capabilities—perh
 
 There's also detection optimism: we might notice capability transitions as they happen, testing can reveal alignment failures before they become catastrophic, and gradual deployment would allow course correction.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Capability Generalization",
-    "Alignment Stability",
-    "MIRI",
-    "Discontinuous Progress",
-    "Takeoff Speed",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="goal-misgeneralization"
-      category="risk"
-      title="Goal Misgeneralization"
-      description="Related concept of goals failing to transfer"
-    />
-    <EntityCard
-      id="miri"
-      category="lab"
-      title="MIRI"
-      description="Where Nate Soares developed this concept"
-    />
-    <EntityCard
-      id="mesa-optimization"
-      category="risk"
-      title="Mesa-Optimization"
-      description="Framework for understanding learned goals"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Sharp Left Turn", url: "https://www.lesswrong.com/posts/GNhMPAWcfBCASy8e6/a-central-ai-alignment-problem-capabilities-generalization", author: "Nate Soares" },
-  { title: "MIRI Alignment Discussion", url: "https://intelligence.org/2022/05/30/discussion-sharp-left-turn/" },
-  { title: "Why the Sharp Left Turn idea is concerning", url: "https://www.alignmentforum.org/posts/YSFJosoHYFyXjoYWa/what-s-the-deal-with-sharp-left-turns" },
-]} />
+<Backlinks client:load entityId="sharp-left-turn" />

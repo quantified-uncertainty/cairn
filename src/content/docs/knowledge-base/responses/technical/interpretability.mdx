@@ -5,20 +5,11 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox, KeyPeople, Section, Backlinks } from '../../../../../components/wiki';
 
-<InfoBox
-  type="safety-agenda"
-  title="Mechanistic Interpretability"
-  organization="Anthropic, DeepMind, Redwood, etc."
-  approach="Technical research"
-  customFields={[
-    { label: "Maturity", value: "Active research" },
-    { label: "Key Advance", value: "Sparse Autoencoders" },
-  ]}
-/>
+<DataInfoBox entityId="interpretability" />
 
-## Overview
+## Summary
 
 Mechanistic interpretability is a research field focused on reverse-engineering neural networks to understand how they work internally. Rather than treating models as black boxes, researchers aim to identify meaningful circuits, features, and algorithms that explain model behavior.
 
@@ -101,42 +92,7 @@ Trace information flow through specific components:
   ]} />
 </Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Sparse Autoencoders",
-    "Features",
-    "Circuits",
-    "Superposition",
-    "Probing",
-    "Activation Patching",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Leading interpretability research"
-    />
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Primary threat interpretability aims to detect"
-    />
-    <EntityCard
-      id="redwood"
-      category="lab"
-      title="Redwood Research"
-      description="Causal scrubbing and interpretability evaluation"
-    />
-  </EntityCards>
-</Section>
+<Backlinks client:load entityId="interpretability" />
 
-<Sources sources={[
-  { title: "Scaling Monosemanticity", url: "https://transformer-circuits.pub/2024/scaling-monosemanticity/", author: "Anthropic", date: "2024" },
-  { title: "Zoom In: An Introduction to Circuits", url: "https://distill.pub/2020/circuits/zoom-in/", author: "Olah et al." },
-  { title: "Transformer Circuits Thread", url: "https://transformer-circuits.pub/" },
-]} />

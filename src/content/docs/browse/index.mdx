@@ -1,0 +1,46 @@
+---
+title: Browse All Entities
+description: Search and filter all entities in the knowledge base
+sidebar:
+  order: 1
+tableOfContents: false
+---
+
+import { EntityIndex, RecentUpdates } from '../../../components/wiki';
+
+Explore our full database of AI safety entities including risks, interventions, organizations, researchers, and more. Use the filters and search to find what you're looking for.
+
+<div className="browse-layout">
+  <div className="browse-main">
+    <EntityIndex
+      client:load
+      columns={['title', 'type', 'description', 'severity', 'tags']}
+      showFilters={true}
+      showSearch={true}
+      showViewToggle={true}
+      defaultView="table"
+    />
+  </div>
+
+  <aside className="browse-sidebar">
+    <RecentUpdates
+      client:load
+      limit={8}
+      title="Recently Updated"
+      compact={true}
+    />
+  </aside>
+</div>
+
+## Quick Stats
+
+Our knowledge base currently contains information on:
+
+- **Risks & Failure Modes** - Technical and structural risks from AI systems
+- **Interventions** - Technical and governance approaches to AI safety
+- **Organizations** - Labs, research orgs, and institutions
+- **Researchers** - Key people in the AI safety field
+- **Key Uncertainties** - Important cruxes and open questions
+- **Capabilities** - Current and emerging AI capabilities
+
+Use the filters above to explore specific categories, or search for a topic you're interested in.

@@ -3,23 +3,14 @@ title: Authoritarian Tools
 description: AI enabling censorship, social control, and political repression
 sidebar:
   order: 7
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="AI Authoritarian Tools"
-  severity="high"
-  likelihood="High (occurring)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Deployed by multiple regimes" },
-    { label: "Key Risk", value: "Stabilizing autocracy" },
-  ]}
-/>
+<DataInfoBox entityId="authoritarian-tools" />
 
-## Overview
+## Summary
 
 AI can strengthen authoritarian control through surveillance, censorship, propaganda, and prediction of dissent. The concern isn't just that AI enables human rights abuses today, but that AI-enabled authoritarianism might become stable and durable—harder to resist or overthrow than historical autocracies.
 
@@ -108,46 +99,6 @@ Both nations increasingly share techniques:
 - [Stanford FSI: Digital Repression Research](https://fsi.stanford.edu/)
 - [The Soufan Center: China-Russia Cooperation Analysis](https://thesoufancenter.org/)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Authoritarianism",
-    "Human Rights",
-    "Digital Repression",
-    "Lock-in",
-    "AI Governance",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="surveillance"
-      category="risk"
-      title="Mass Surveillance"
-      description="AI surveillance infrastructure"
-    />
-    <EntityCard
-      id="lock-in"
-      category="risk"
-      title="Lock-in"
-      description="Permanent entrenchment of bad systems"
-    />
-    <EntityCard
-      id="concentration-of-power"
-      category="risk"
-      title="Concentration of Power"
-      description="AI enabling power accumulation"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "The Road to Digital Unfreedom", author: "Yuval Noah Harari" },
-  { title: "How Democracies Die", author: "Levitsky and Ziblatt" },
-  { title: "The Repressive Power of Artificial Intelligence (Freedom House)", url: "https://freedomhouse.org/report/freedom-net/2023/repressive-power-artificial-intelligence", date: "2023" },
-  { title: "Freedom on the Net 2025: Uncertain Future (Freedom House)", url: "https://freedomhouse.org/report/freedom-net/2025/uncertain-future-global-internet", date: "2025" },
-  { title: "Digital Threats and Elections (Freedom House)", url: "https://freedomhouse.org/article/digital-threats-loom-over-busy-year-elections", date: "2024" },
-  { title: "Getting Ahead of Digital Repression (Stanford FSI)", url: "https://fsi.stanford.edu/publication/getting-ahead-digital-repression-authoritarian-innovation-and-democratic-response" },
-  { title: "Authoritarianism Could Poison AI (IGCC)", url: "https://ucigcc.org/blog/authoritarianism-could-poison-ai/" },
-  { title: "AI and Authoritarian Governments (Democratic Erosion)", url: "https://democratic-erosion.org/2023/11/17/artificial-intelligence-and-authoritarian-governments/", date: "2023" },
-]} />
+<Backlinks client:load entityId="authoritarian-tools" />

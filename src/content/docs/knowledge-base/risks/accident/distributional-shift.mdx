@@ -3,23 +3,14 @@ title: Distributional Shift
 description: AI systems failing when deployed in contexts different from training
 sidebar:
   order: 16
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Distributional Shift"
-  severity="medium-high"
-  likelihood="Very High (observed)"
-  timeframe="Current"
-  customFields={[
-    { label: "Status", value: "Common in deployed systems" },
-    { label: "Also Called", value: "Distribution shift, Out-of-distribution failure" },
-  ]}
-/>
+<DataInfoBox entityId="distributional-shift" />
 
-## Overview
+## Summary
 
 Distributional shift occurs when an AI system encounters inputs or situations that differ from its training distribution, leading to degraded or unpredictable performance. A model trained on daytime driving may fail at night. A language model trained on 2022 data may give outdated answers in 2024. A medical AI trained on one hospital's patients may fail at another hospital.
 
@@ -61,35 +52,3 @@ Domain adaptation techniques attempt to adjust models to new distributions with 
 
 Deployment constraints limit where and how models are used based on known training distribution. A model trained on one population shouldn't be deployed on a very different population without validation.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Robustness",
-    "Generalization",
-    "ML Safety",
-    "Out-of-Distribution",
-    "Deployment",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="goal-misgeneralization"
-      category="risk"
-      title="Goal Misgeneralization"
-      description="Distributional shift applied to learned goals"
-    />
-    <EntityCard
-      id="specification-gaming"
-      category="risk"
-      title="Specification Gaming"
-      description="Exploiting gaps between training and deployment"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "A Survey on Distribution Shift", url: "https://arxiv.org/abs/2108.13624" },
-  { title: "Underspecification Presents Challenges for Credibility in Modern ML", url: "https://arxiv.org/abs/2011.03395", author: "D'Amour et al." },
-  { title: "Concrete Problems in AI Safety", url: "https://arxiv.org/abs/1606.06565" },
-]} />

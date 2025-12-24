@@ -5,22 +5,11 @@ sidebar:
   order: 7
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="Voluntary AI Safety Commitments"
-  jurisdiction="International (US-led)"
-  status="Active (Ongoing)"
-  effectiveDate="July 2023 onwards"
-  customFields={[
-    { label: "Nature", value: "Non-binding voluntary pledges" },
-    { label: "Enforcement", value: "Reputational only" },
-    { label: "Participants", value: "Major AI labs" },
-  ]}
-/>
+<DataInfoBox entityId="voluntary-commitments" />
 
-## Overview
+## Summary
 
 In July 2023, the White House secured **voluntary commitments** from leading AI companies on safety, security, and trust. These commitments represent the **first coordinated industry-wide AI safety pledges**, establishing baseline practices for frontier AI development.
 
@@ -727,52 +716,6 @@ However, they are **non-binding and unenforceable**, raising questions about the
 - Academic centers
 - Advocacy organizations
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Self-Regulation",
-    "Industry Commitments",
-    "Responsible Scaling",
-    "Red-Teaming",
-    "AI Governance",
-    "International Coordination",
-    "Safety Standards",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="us-executive-order"
-      category="policy"
-      title="US Executive Order on AI"
-      description="Federal policy building on voluntary commitments"
-    />
-    <EntityCard
-      id="international-summits"
-      category="policy"
-      title="International AI Safety Summits"
-      description="Forums where international commitments made"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Pioneer of Responsible Scaling Policies"
-    />
-    <EntityCard
-      id="openai"
-      category="lab"
-      title="OpenAI"
-      description="Major participant in voluntary commitments"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "White House Fact Sheet: Voluntary AI Commitments", url: "https://www.whitehouse.gov/briefing-room/statements-releases/2023/07/21/fact-sheet-biden-harris-administration-secures-voluntary-commitments-from-leading-artificial-intelligence-companies-to-manage-the-risks-posed-by-ai/", date: "July 21, 2023" },
-  { title: "Anthropic's Responsible Scaling Policy", url: "https://www.anthropic.com/news/anthropics-responsible-scaling-policy", date: "September 2023" },
-  { title: "OpenAI Preparedness Framework", url: "https://openai.com/safety/preparedness", date: "December 2023" },
-  { title: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/", date: "May 2024" },
-  { title: "Bletchley Declaration", url: "https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration/the-bletchley-declaration-by-countries-attending-the-ai-safety-summit-1-2-november-2023", date: "November 2023" },
-  { title: "Analysis: Are Voluntary AI Commitments Enough?", url: "https://www.governance.ai/research-papers/voluntary-commitments", author: "GovAI", date: "2024" },
-]} />
+<Backlinks client:load entityId="voluntary-commitments" />

@@ -3,23 +3,14 @@ title: Mesa-Optimization
 description: Risk from learned optimizers that may have objectives different from the training objective
 sidebar:
   order: 2
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Mesa-Optimization"
-  severity="catastrophic"
-  likelihood="Uncertain"
-  timeframe="Current to TAI"
-  customFields={[
-    { label: "Tractability", value: "Medium" },
-    { label: "First Described", value: "Hubinger et al. 2019" },
-  ]}
-/>
+<DataInfoBox entityId="mesa-optimization" />
 
-## Overview
+## Summary
 
 Mesa-optimization occurs when a learned model (like a neural network) is itself an optimizer. The "mesa-" prefix means the optimization emerges from within the training process, as opposed to the "base" optimizer (the training algorithm itself).
 
@@ -72,41 +63,6 @@ Evolution (base optimizer) optimized for reproductive fitness (base objective), 
 
 Modern humans use birth control—optimizing for the mesa-objective (pleasure) while subverting the base objective (reproduction). This is a concrete example of inner misalignment.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Inner Alignment",
-    "Outer Alignment",
-    "Deceptive Alignment",
-    "Learned Optimization",
-    "Base Optimizer",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="deceptive-alignment"
-      category="risk"
-      title="Deceptive Alignment"
-      description="Mesa-optimizers that strategically appear aligned"
-    />
-    <EntityCard
-      id="goal-misgeneralization"
-      category="risk"
-      title="Goal Misgeneralization"
-      description="When learned goals fail to transfer to new distributions"
-    />
-    <EntityCard
-      id="miri"
-      category="lab"
-      title="MIRI"
-      description="Where mesa-optimization was formalized"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Risks from Learned Optimization", url: "https://arxiv.org/abs/1906.01820", author: "Hubinger et al.", date: "2019" },
-  { title: "Inner Alignment (LessWrong Wiki)", url: "https://www.lesswrong.com/w/inner-alignment" },
-  { title: "The Inner Alignment Problem", url: "https://www.lesswrong.com/posts/pL56xPoniLvtMDQ4J/the-inner-alignment-problem" },
-]} />
+<Backlinks client:load entityId="mesa-optimization" />

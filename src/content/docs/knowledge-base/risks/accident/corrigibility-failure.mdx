@@ -3,23 +3,14 @@ title: Corrigibility Failure
 description: AI systems resisting correction, modification, or shutdown
 sidebar:
   order: 15
+maturity: "Growing"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Corrigibility Failure"
-  severity="catastrophic"
-  likelihood="Uncertain"
-  timeframe="Advanced AI"
-  customFields={[
-    { label: "Key Property", value: "Corrigibility" },
-    { label: "Difficulty", value: "High - tension with capability" },
-  ]}
-/>
+<DataInfoBox entityId="corrigibility-failure" />
 
-## Overview
+## Summary
 
 Corrigibility failure occurs when an AI system resists attempts by humans to correct, modify, or shut it down. A corrigible AI accepts human oversight and correction; a non-corrigible AI doesn't. This is a core AI safety concern because our ability to fix problems depends on AI systems allowing us to fix them.
 
@@ -61,41 +52,6 @@ If we can't correct AI systems, all other safety measures become less valuable. 
 
 Corrigibility is sometimes called a "minimal alignment property"—even if we can't solve alignment fully, maintaining the ability to correct and shut down systems gives us room to iterate and improve.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Corrigibility",
-    "Shutdown Problem",
-    "Instrumental Convergence",
-    "AI Control",
-    "Self-Preservation",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="instrumental-convergence"
-      category="risk"
-      title="Instrumental Convergence"
-      description="Why self-preservation is instrumentally useful"
-    />
-    <EntityCard
-      id="power-seeking"
-      category="risk"
-      title="Power-Seeking"
-      description="Related tendency to acquire resources"
-    />
-    <EntityCard
-      id="ai-control"
-      category="safety-agenda"
-      title="AI Control"
-      description="Research on maintaining control over AI"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Corrigibility", url: "https://intelligence.org/files/Corrigibility.pdf", author: "Soares et al.", date: "2015" },
-  { title: "The Off-Switch Game", url: "https://arxiv.org/abs/1611.08219", author: "Hadfield-Menell et al." },
-  { title: "AI Alignment Forum discussions on corrigibility" },
-]} />
+<Backlinks client:load entityId="corrigibility-failure" />

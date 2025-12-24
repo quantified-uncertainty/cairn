@@ -5,18 +5,9 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="AI-Assisted Deliberation"
-  customFields={[
-    { label: "Maturity", value: "Emerging; promising pilots" },
-    { label: "Key Strength", value: "Scales genuine dialogue, not just voting" },
-    { label: "Key Challenge", value: "Adoption and integration with governance" },
-    { label: "Key Players", value: "Polis, Anthropic (Collective Constitutional AI), Taiwan vTaiwan" },
-  ]}
-/>
+<DataInfoBox entityId="deliberation" />
 
 ## What Is AI-Assisted Deliberation?
 
@@ -329,20 +320,3 @@ Unlike voting (which aggregates existing preferences) or polling (which measures
 - [vTaiwan case study](https://info.vtaiwan.tw/)
 - [Anthropic Collective Constitutional AI](https://www.anthropic.com/news/collective-constitutional-ai-aligning-a-language-model-with-public-input)
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Democratic Innovation",
-    "Collective Intelligence",
-    "AI Governance",
-    "Participatory Democracy",
-    "Consensus Building",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Polis", url: "https://pol.is/" },
-  { title: "Collective Constitutional AI", author: "Anthropic", date: "2023", url: "https://www.anthropic.com/news/collective-constitutional-ai-aligning-a-language-model-with-public-input" },
-  { title: "Stanford Deliberative Democracy Lab", url: "https://deliberation.stanford.edu/" },
-  { title: "Democracy When the People Are Thinking", author: "James Fishkin", date: "2018" },
-  { title: "vTaiwan", url: "https://info.vtaiwan.tw/" },
-]} />

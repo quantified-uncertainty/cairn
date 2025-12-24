@@ -5,20 +5,11 @@ sidebar:
   order: 2
 ---
 
-import { InfoBox, Section, EntityCard, EntityCards, Tags, Sources } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="historical"
-  title="Early Warnings Era"
-  customFields={[
-    { label: "Period", value: "1950s-2000" },
-    { label: "Key Theme", value: "Philosophical foundations and prescient warnings" },
-    { label: "Main Figures", value: "Turing, Wiener, Good, Asimov, Vinge" },
-    { label: "Reception", value: "Largely dismissed as science fiction" },
-  ]}
-/>
+<DataInfoBox entityId="early-warnings" />
 
-## Overview
+## Summary
 
 Long before AI safety became a research field, a handful of visionaries recognized that machine intelligence might pose unprecedented challenges to humanity. These early warnings—often dismissed as science fiction or philosophical speculation—laid the conceptual groundwork for modern AI safety.
 
@@ -514,27 +505,3 @@ The early warnings era established the questions:
 
 The MIRI era (2000-2015) would begin attempting to answer them.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Alan Turing",
-    "Norbert Wiener",
-    "I.J. Good",
-    "Isaac Asimov",
-    "Vernor Vinge",
-    "Intelligence Explosion",
-    "Three Laws of Robotics",
-    "Technological Singularity",
-    "Control Problem",
-    "Science Fiction",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "Computing Machinery and Intelligence", author: "Alan Turing", date: "1950", url: "https://academic.oup.com/mind/article/LIX/236/433/986238" },
-  { title: "Some Moral and Technical Consequences of Automation", author: "Norbert Wiener", date: "1960", url: "https://en.wikipedia.org/wiki/Norbert_Wiener" },
-  { title: "Speculations Concerning the First Ultraintelligent Machine", author: "I.J. Good", date: "1965", url: "https://vtechworks.lib.vt.edu/handle/10919/89424" },
-  { title: "I, Robot", author: "Isaac Asimov", date: "1950", url: "https://en.wikipedia.org/wiki/I,_Robot" },
-  { title: "The Coming Technological Singularity", author: "Vernor Vinge", date: "1993", url: "https://edoras.sdsu.edu/~vinge/misc/singularity.html" },
-  { title: "The Age of Em", author: "Robin Hanson", date: "2016", url: "https://ageofem.com/" },
-  { title: "Artificial Intelligence: A Modern Approach", author: "Stuart Russell & Peter Norvig", date: "1995", url: "http://aima.cs.berkeley.edu/" },
-]} />

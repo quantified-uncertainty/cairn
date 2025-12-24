@@ -5,19 +5,11 @@ sidebar:
   order: 10
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="organization"
-  title="MIRI"
-  founded="2000 (as SIAI)"
-  location="Berkeley, CA"
-  headcount="~20"
-  funding="~$5M/year (donations)"
-  website="https://intelligence.org"
-/>
+<DataInfoBox entityId="miri" />
 
-## Overview
+## Summary
 
 The Machine Intelligence Research Institute (MIRI) is one of the oldest organizations focused on AI existential risk, founded in 2000 as the Singularity Institute for Artificial Intelligence (SIAI). For over two decades, MIRI has been at the intellectual forefront of AI alignment research, pioneering foundational concepts like instrumental convergence, the alignment problem's formalization, and agent foundations research.
 
@@ -642,85 +634,6 @@ MIRI's trajectory raises important questions:
 - **Mainstream**: Empirical safety research, interpretability, robustness
 - **Tension**: MIRI sees mainstream as solving wrong problems
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Agent Foundations",
-    "Decision Theory",
-    "Corrigibility",
-    "Instrumental Convergence",
-    "Embedded Agency",
-    "AI Governance",
-    "Logical Uncertainty",
-    "Rationalist Community",
-    "LessWrong",
-    "Sharp Left Turn",
-    "Security Mindset",
-    "Deconfusion"
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="eliezer-yudkowsky"
-      category="people"
-      title="Eliezer Yudkowsky"
-      description="MIRI co-founder and rationalist community founder"
-    />
-    <EntityCard
-      id="nate-soares"
-      category="people"
-      title="Nate Soares"
-      description="MIRI Executive Director"
-    />
-    <EntityCard
-      id="paul-christiano"
-      category="people"
-      title="Paul Christiano"
-      description="ARC founder, diverged from MIRI approach"
-    />
-    <EntityCard
-      id="instrumental-convergence"
-      category="risks"
-      title="Instrumental Convergence"
-      description="Key MIRI concept"
-    />
-    <EntityCard
-      id="corrigibility-failure"
-      category="risks"
-      title="Corrigibility Failure"
-      description="Problem MIRI has worked on extensively"
-    />
-    <EntityCard
-      id="sharp-left-turn"
-      category="risks"
-      title="Sharp Left Turn"
-      description="MIRI's concern about discontinuous capability jumps"
-    />
-    <EntityCard
-      id="compute-governance"
-      category="policies"
-      title="Compute Governance"
-      description="Governance approach MIRI now advocates"
-    />
-    <EntityCard
-      id="arc"
-      category="organizations"
-      title="ARC"
-      description="Paul Christiano's organization, different approach"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "MIRI Website", url: "https://intelligence.org" },
-  { title: "MIRI 2023 Strategy Update", url: "https://intelligence.org/2023/03/09/miri-announces-new-death-with-dignity-strategy/" },
-  { title: "Risks from Learned Optimization (Hubinger et al.)", url: "https://arxiv.org/abs/1906.01820" },
-  { title: "Logical Induction Paper", url: "https://arxiv.org/abs/1609.03543" },
-  { title: "Embedded Agency (Demski, Garrabrant)", url: "https://intelligence.org/2018/10/29/embedded-agency/" },
-  { title: "LessWrong Sequences", url: "https://www.lesswrong.com/sequences" },
-  { title: "Eliezer Yudkowsky TIME Op-Ed", url: "https://time.com/6266923/ai-eliezer-yudkowsky-open-letter-not-enough/" },
-  { title: "Agent Foundations Research", url: "https://intelligence.org/research-guide/" },
-  { title: "Facing the Intelligence Explosion (Muehlhauser)", url: "https://intelligence.org/files/IE-EI.pdf" },
-  { title: "MIRI on GiveWell", url: "https://www.givewell.org/charities/machine-intelligence-research-institute" }
-]} />
+<Backlinks client:load entityId="miri" />

@@ -19,6 +19,13 @@ export type EntityType =
   | 'funder'
   | 'intervention';
 
+interface RelatedEntry {
+  type: EntityType;
+  title: string;
+  href: string;
+  description?: string;
+}
+
 interface InfoBoxProps {
   type: EntityType;
   // Common fields
@@ -57,6 +64,10 @@ interface InfoBoxProps {
 
   // Custom fields
   customFields?: { label: string; value: string }[];
+
+  // Related content
+  relatedTopics?: string[];
+  relatedEntries?: RelatedEntry[];
 }
 
 const typeLabels: Record<EntityType, { label: string; color: string }> = {
@@ -110,6 +121,8 @@ export function InfoBox({
   role,
   knownFor,
   customFields,
+  relatedTopics,
+  relatedEntries,
 }: InfoBoxProps) {
   const typeInfo = typeLabels[type] || defaultTypeInfo;
 
@@ -179,6 +192,41 @@ export function InfoBox({
           </div>
         ))}
       </div>
+
+      {relatedTopics && relatedTopics.length > 0 && (
+        <div className="wiki-infobox__section">
+          <div className="wiki-infobox__section-title">Related Topics</div>
+          <div className="wiki-infobox__topics">
+            {relatedTopics.map((topic, index) => (
+              <span key={index} className="wiki-infobox__topic-tag">
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {relatedEntries && relatedEntries.length > 0 && (
+        <div className="wiki-infobox__section">
+          <div className="wiki-infobox__section-title">Related Entries</div>
+          <div className="wiki-infobox__entries">
+            {relatedEntries.map((entry, index) => {
+              const entryTypeInfo = typeLabels[entry.type] || defaultTypeInfo;
+              return (
+                <a key={index} href={entry.href} className="wiki-infobox__entry">
+                  <span
+                    className="wiki-infobox__entry-type"
+                    style={{ color: entryTypeInfo.color }}
+                  >
+                    {entryTypeInfo.label}
+                  </span>
+                  <span className="wiki-infobox__entry-title">{entry.title}</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

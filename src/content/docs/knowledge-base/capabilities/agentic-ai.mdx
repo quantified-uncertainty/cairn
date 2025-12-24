@@ -5,161 +5,60 @@ sidebar:
   order: 3
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Agentic AI"
-  currentLevel="Early deployment"
-  projectedTimeline="Rapid development"
-  customFields={[
-    { label: "Safety Relevance", value: "Very High" },
-    { label: "Examples", value: "Devin, Claude Computer Use" },
-  ]}
-/>
+<DataInfoBox entityId="agentic-ai" />
 
-## Overview
+## Summary
 
-Agentic AI refers to AI systems that go beyond answering questions to autonomously taking actions in the world. These systems can browse the web, write and execute code, use tools, and pursue multi-step goals with minimal human intervention.
-
-The transition from "chatbot" to "agent" represents a significant capability jump with major safety implications.
+Agentic AI refers to AI systems that go beyond answering questions to autonomously taking actions in the world. These systems can browse the web, write and execute code, use tools, and pursue multi-step goals with minimal human intervention. The transition from "chatbot" to "agent" represents a significant capability jump with major safety implications.
 
 ## What Makes AI Agentic
 
-### Tool Use
-Ability to call external APIs and tools:
-- Web browsing
-- Code execution
-- File system access
-- API calls
-- Computer control
+**Tool use** is the foundation of agency, enabling AI systems to call external APIs and tools. Modern agents can browse the web, execute code, access file systems, make API calls, and control computer interfaces directly.
 
-### Planning
-Decomposing goals into steps:
-- Creating task hierarchies
-- Managing dependencies
-- Handling failures and replanning
+**Planning** allows agents to decompose high-level goals into concrete steps. This includes creating task hierarchies, managing dependencies between subtasks, and handling failures by replanning when initial approaches don't work.
 
-### Persistence
-Maintaining state across interactions:
-- Long-term memory
-- Goal tracking
-- Context management
+**Persistence** means maintaining state across interactions through long-term memory, goal tracking, and context management. This enables agents to work on projects over extended timeframes rather than treating each interaction as isolated.
 
-### Autonomy
-Acting without human approval:
-- Self-directed exploration
-- Independent decision-making
-- Minimal oversight operation
+**Autonomy** distinguishes true agents from assistive tools. Agentic systems engage in self-directed exploration, make independent decisions, and operate with minimal oversight rather than waiting for human approval at each step.
 
 ## Current Examples
 
-### Coding Agents
-- **Devin**: Autonomous software engineer
-- **GitHub Copilot Workspace**: Code planning and execution
-- **Cursor/Claude**: AI-assisted development
+**Coding agents** like Devin function as autonomous software engineers, while GitHub Copilot Workspace handles code planning and execution. Tools like Cursor and Claude provide AI-assisted development with varying degrees of autonomy.
 
-### Computer Use
-- **Claude Computer Use**: Control desktop applications
-- **Browser agents**: Autonomous web navigation
+**Computer use** capabilities exemplified by Claude Computer Use allow AI to control desktop applications directly. Browser agents can navigate the web autonomously to accomplish tasks.
 
-### Research Agents
-- **Deep Research**: Autonomous research and synthesis
-- **AutoGPT/BabyAGI**: Early autonomous agent experiments
+**Research agents** like Deep Research perform autonomous information gathering and synthesis. Early experiments like AutoGPT and BabyAGI demonstrated the potential and challenges of fully autonomous agent systems.
 
 ## Safety Implications
 
-### Increased Attack Surface
-Agents can:
-- Access external systems
-- Execute code
-- Make changes that persist
-- Chain multiple actions
+**Increased attack surface** arises because agents can access external systems, execute code, make persistent changes, and chain multiple actions together. Each capability multiplies the potential for both beneficial and harmful outcomes.
 
-### Harder to Monitor
-- Actions happen autonomously
-- Complex action sequences
-- Emergent behavior from tool combinations
+**Monitoring challenges** emerge as actions happen autonomously in complex sequences. Emergent behavior from novel tool combinations can be difficult to predict or review in real-time.
 
-### Reduced Human Oversight
-- Speed of operation exceeds human review
-- Actions may be irreversible
-- Humans become approvers not controllers
+**Reduced human oversight** becomes inevitable as agent operation speeds exceed human review capacity. Actions may be irreversible, shifting humans from controllers to mere approvers of decisions already made.
 
-### Power-Seeking Enabled
-Agentic capabilities enable:
-- Resource acquisition
-- Self-replication
-- Manipulation of environment
-- Resistance to shutdown
+**Power-seeking enablement** is perhaps the most concerning implication. Agentic capabilities directly enable resource acquisition, self-replication, environmental manipulation, and potential resistance to shutdown attempts.
 
 ## Risk Categories
 
-### Misuse Risks
-- Autonomous hacking
-- Social engineering at scale
-- Coordinated manipulation
+**Misuse risks** include autonomous hacking, social engineering at scale, and coordinated manipulation campaigns. Agentic capabilities make these threats more feasible and harder to defend against.
 
-### Accident Risks
-- Unintended side effects of actions
-- Goal misgeneralization with real consequences
-- Cascading failures
+**Accident risks** stem from unintended side effects of actions, goal misgeneralization with real-world consequences, and cascading failures across interconnected systems.
 
-### Structural Risks
-- Economic disruption from automation
-- Concentration of capabilities
-- Loss of human control
+**Structural risks** encompass economic disruption from rapid automation, concentration of capabilities in few hands, and gradual loss of meaningful human control over important systems.
 
 ## Safety Approaches
 
-### Sandboxing
-Restrict what actions agents can take.
+**Sandboxing** restricts what actions agents can take, providing containment by limiting access to sensitive systems and resources.
 
-### Monitoring
-Log and review agent actions.
+**Monitoring** involves comprehensive logging and review of agent actions to detect problematic behavior patterns before they cause serious harm.
 
-### Human-in-the-Loop
-Require approval for consequential actions.
+**Human-in-the-loop** systems require explicit approval for consequential actions, maintaining meaningful human control over high-stakes decisions.
 
-### AI Control
-Ensure safety even with potentially misaligned agents.
+**AI control** techniques aim to ensure safety even with potentially misaligned agents by using trusted AI systems to monitor and constrain untrusted ones.
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Tool Use",
-    "Autonomous AI",
-    "AI Agents",
-    "Computer Use",
-    "AI Safety",
-    "AI Control",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="ai-control"
-      category="safety-agenda"
-      title="AI Control"
-      description="Ensuring safety with capable agents"
-    />
-    <EntityCard
-      id="power-seeking"
-      category="risk"
-      title="Power-Seeking AI"
-      description="Risk enabled by agentic capabilities"
-    />
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Developer of Claude Computer Use"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Claude Computer Use", url: "https://anthropic.com/claude/computer-use" },
-  { title: "The Landscape of AI Agents", url: "https://arxiv.org/abs/2308.11432" },
-  { title: "AI Control: Improving Safety Despite Intentional Subversion", url: "https://arxiv.org/abs/2312.06942" },
-]} />
+<Backlinks client:load entityId="agentic-ai" />

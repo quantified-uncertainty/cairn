@@ -5,18 +5,9 @@ sidebar:
   order: 6
 ---
 
-import { InfoBox, KeyQuestions, Section, Tags, Sources } from '../../../../../components/wiki';
+import { DataInfoBox, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="solution"
-  title="Content Authentication"
-  customFields={[
-    { label: "Maturity", value: "Standards emerging; early deployment" },
-    { label: "Key Standard", value: "C2PA (Coalition for Content Provenance and Authenticity)" },
-    { label: "Key Challenge", value: "Universal adoption; credential stripping" },
-    { label: "Key Players", value: "Adobe, Microsoft, Google, BBC, camera manufacturers" },
-  ]}
-/>
+<DataInfoBox entityId="content-authentication" />
 
 ## What Is Content Authentication?
 
@@ -314,20 +305,3 @@ Content authentication systems create verifiable chains of custody for digital c
 - [DARPA MediFor](https://www.darpa.mil/program/media-forensics)
 - Stanford Internet Observatory research
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deepfakes",
-    "Digital Evidence",
-    "Verification",
-    "Watermarking",
-    "Trust",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "C2PA Technical Specification", url: "https://c2pa.org/specifications/specifications/1.0/specs/C2PA_Specification.html" },
-  { title: "Content Authenticity Initiative", url: "https://contentauthenticity.org/" },
-  { title: "Google SynthID", url: "https://deepmind.google/technologies/synthid/" },
-  { title: "Project Origin", url: "https://www.originproject.info/" },
-  { title: "Witness: Video as Evidence", url: "https://www.witness.org/" },
-]} />

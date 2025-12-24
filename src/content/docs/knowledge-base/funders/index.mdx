@@ -5,36 +5,23 @@ sidebar:
   order: 0
 ---
 
-import { InfoBox, EstimateBox, ComparisonTable, EntityCard, EntityCards, Section, Tags, Sources } from '../../../../components/wiki';
+import {
+  FundersOverview,
+  MajorFundersList,
+  FundersComparisonTable,
+  FundingByCategory,
+  GrantSizeBreakdown,
+  ApplicationTips,
+  TimelineExpectations
+} from '../../../../components/FundersList';
+import fundersData from '../../../../data/funders.json';
+import { Sources } from '../../../../components/wiki';
 
-<InfoBox
-  type="resource"
-  title="AI Safety Funding Overview"
-  keyFacts={[
-    "Total field: ~$100-500M/year",
-    "Largest funder: Open Philanthropy (~$50-100M/year)",
-    "Grant sizes: $5K to $5M+",
-    "Growing but still under 1% of AI capabilities funding"
-  ]}
-/>
+<FundersOverview client:load data={fundersData} />
 
-## Overview
+## Summary
 
 AI safety funding has grown dramatically since 2015 but remains a small fraction of overall AI investment. Understanding the funding landscape is critical for anyone seeking to work on AI safety.
-
-### Total Funding Estimates
-
-<EstimateBox
-  client:load
-  variable="Annual AI Safety Funding"
-  description="Estimated total funding to AI safety work per year"
-  unit="Million USD"
-  estimates={[
-    { source: "Conservative estimate", value: "100-200", date: "2024", notes: "Counting only explicit safety grants" },
-    { source: "Including indirect work", value: "300-500", date: "2024", notes: "Including AI safety teams at major labs" },
-    { source: "Historical (2019)", value: "10-50", date: "2019", notes: "Pre-scaling period" },
-  ]}
-/>
 
 ### Growth Trends
 
@@ -51,363 +38,46 @@ AI safety funding remains **~0.1-0.5% of total AI investment**:
 - AI capabilities funding vastly outpaces safety work
 - Some argue this ratio should be inverted given the stakes
 
-<Section title="Major Funders">
+---
 
-## Open Philanthropy
+## Major Funders
 
-<InfoBox
-  type="funder"
-  title="Open Philanthropy"
-  keyFacts={[
-    "Largest AI safety funder",
-    "~$50-100M/year to AI safety",
-    "Part of $16B+ foundation",
-    "Evidence-based approach"
-  ]}
-/>
-
-### Focus Areas
-- **Technical AI safety research**: Empirical alignment, interpretability, evals
-- **AI governance and policy**: Think tanks, policy research, field-building
-- **Field-building**: Recruitment, education, infrastructure
-- **Specific risk areas**: Biosecurity, information security
-
-### What They Look For
-- **Strong track record**: Publications, relevant experience, or exceptional potential
-- **Theory of change**: Clear connection between work and reduced AI risk
-- **Cost-effectiveness**: Efficient use of resources
-- **Neglectedness**: Funding gaps not well-served by other funders
-
-### How to Apply
-- **Employment route**: Many grants go to organizations hiring directly
-- **Direct grants**: Some support for individuals, typically through existing orgs
-- **Application process**: Often begins with informal outreach or referrals
-- **Timeline**: 3-6 months typical for large grants
-
-### Grant Sizes
-- Small: $50K-$500K for individuals or small projects
-- Medium: $500K-$3M for established researchers or small organizations
-- Large: $3M-$20M+ for major organizations or multi-year programs
-
-**Website**: https://www.openphilanthropy.org/focus/global-catastrophic-risks/
+<MajorFundersList client:load funders={fundersData.majorFunders} />
 
 ---
 
-## Survival and Flourishing Fund (SFF)
+## Funder Comparison
 
-<InfoBox
-  type="funder"
-  title="SFF"
-  keyFacts={[
-    "Speculative grant rounds",
-    "$10-30M per round",
-    "2-3 rounds per year",
-    "Recommender system"
-  ]}
-/>
-
-### Funding Approach
-SFF uses a unique **recommender system**:
-- Expert recommenders suggest grants
-- Funders choose which recommendations to fund
-- More speculative than Open Phil
-- Faster turnaround (weeks instead of months)
-
-### Focus Areas
-- Technical AI safety research
-- Unconventional approaches
-- Early-stage researchers
-- Projects other funders might miss
-
-### Grant Sizes
-- Typical: $50K-$500K
-- Range: $10K-$2M
-- Usually 1-2 year grants
-
-### Application Process
-1. Apply during open rounds (check website for dates)
-2. Brief application (2-3 pages)
-3. Recommenders review and advocate
-4. Decisions within 6-8 weeks
-5. Funding disbursed quickly
-
-### What They Look For
-- **Novel approaches**: Willing to fund speculative work
-- **Talent signals**: Strong technical ability or track record
-- **Reasoning transparency**: Clear thinking about the work
-- **Speed**: Projects that need to move quickly
-
-**Website**: https://survivalandflourishing.fund/
+<FundersComparisonTable client:load items={fundersData.comparisonTable} />
 
 ---
 
-## Long-Term Future Fund (LTFF)
+## Funding by Category
 
-<InfoBox
-  type="funder"
-  title="LTFF"
-  keyFacts={[
-    "Part of EA Funds",
-    "Rolling applications",
-    "$5K-$500K typical grants",
-    "2-6 week turnaround"
-  ]}
-/>
-
-### Overview
-LTFF is one of four EA Funds, focused on reducing existential risk from AI and other sources. Known for supporting individuals and early-stage projects.
-
-### Focus Areas
-- Technical AI alignment research
-- AI governance research
-- Field-building and movement-building
-- Upskilling grants for promising individuals
-- Operating expenses for small organizations
-
-### Grant Sizes
-- Small: $5K-$50K (common for individuals)
-- Medium: $50K-$200K (typical for established researchers)
-- Large: $200K-$500K (rare, for exceptional cases)
-
-### Application Process
-- **Rolling applications**: Apply anytime
-- **Fast turnaround**: 2-6 weeks typical
-- **Low barrier**: Easier to apply than Open Phil
-- **Individual-friendly**: Supports independent researchers
-
-### Common Grant Types
-- **Upskilling**: 3-12 months to learn AI safety
-- **Independent research**: 6-18 months of research support
-- **Project grants**: Specific initiatives or programs
-- **Operations**: Organizational infrastructure
-
-### What They Look For
-- **Potential**: Strong fit for AI safety work
-- **Plan**: Clear use of funds
-- **Neglectedness**: Gaps in current ecosystem
-- **Cost-effectiveness**: Reasonable budget for outcomes
-
-**Website**: https://funds.effectivealtruism.org/funds/far-future
+<FundingByCategory client:load categories={fundersData.fundingByCategory} />
 
 ---
 
-## Anthropic Long-Term Benefit Trust (LTBT)
+## Grant Size Breakdown
 
-<InfoBox
-  type="funder"
-  title="Anthropic LTBT"
-  keyFacts={[
-    "Newer funder (2024)",
-    "Controls Anthropic governance",
-    "Focus on long-term AI safety",
-    "Large grants possible"
-  ]}
-/>
-
-### Overview
-The LTBT is a unique structure giving control of Anthropic to a trust focused on long-term benefit. Beginning to make external grants in 2024.
-
-### Focus Areas
-- Technical AI safety research
-- AI governance and policy
-- Evaluations and standards
-- Work complementary to Anthropic's mission
-
-### Application Process
-- Still developing public application process
-- Early grants through relationships and outreach
-- Expect more formal process in 2024-2025
-
-### What They Look For
-- Alignment with Anthropic's safety priorities
-- Work that complements rather than duplicates Anthropic's research
-- High-quality technical or policy research
-
-**Website**: https://www.anthropic.com/ (check for LTBT updates)
+<GrantSizeBreakdown client:load tiers={fundersData.grantSizeBreakdown} />
 
 ---
 
-## Other Significant Funders
+## How to Get Funded
 
-### Schmidt Futures
-- Focus: AI safety policy and governance
-- Approach: High-level government and institutional work
-- Typical grants: $500K-$5M+
-- Application: Relationship-driven, not open applications
-
-### Jaan Tallinn
-Funds AI safety through multiple vehicles:
-- **Survival and Flourishing Fund**: Co-funder
-- **Founders Pledge**: Donor
-- **Direct grants**: To specific organizations and researchers
-- Focus: Technical research and longtermist priorities
-
-### Patrick Collison (Stripe)
-- Interest areas: AI safety, scientific progress
-- Approach: Speculative, relationship-based
-- Not a formal application process
-- Sometimes co-funds with other philanthropists
-
-### Berkeley Existential Risk Initiative (BERI)
-- Focus: Operations and infrastructure support
-- Grants: $50K-$500K typical
-- Services: Legal, financial, operational support for AI safety orgs
-- Application: Through relationship or referral
-
-### Government Funding
-
-**US AI Safety Institute (AISI)**
-- Research contracts and grants
-- Focus: Evaluations, standards, measurements
-- Typical size: $100K-$2M
-- Application: RFPs and competitions
-
-**UK AI Safety Institute**
-- Similar to US AISI
-- Research partnerships
-- Focus: Pre-deployment testing, standards
-
-**DARPA and other defense agencies**
-- Larger grants ($1M-$10M)
-- Often requires industry partnerships
-- Focus: Robustness, verification, security
-
-**National Science Foundation (NSF)**
-- Standard academic grant process
-- Smaller typical grants ($100K-$500K)
-- Good for early-career researchers
-
-</Section>
-
-<Section title="Funding by Category">
-
-## Technical Research
-
-**Well-funded areas**:
-- Mechanistic interpretability
-- Evaluations and benchmarks
-- Scalable oversight
-- RLHF and training methods
-
-**Underfunded areas**:
-- Agent foundations
-- Formal verification
-- Novel training paradigms
-- Worst-case safety
-
-**Major funders**: Open Phil, SFF, LTFF, Anthropic LTBT
-
-**Typical grants**: $100K-$2M for technical research
-
----
-
-## Governance and Policy
-
-**Well-funded areas**:
-- Think tank research
-- Government engagement
-- International coordination
-
-**Underfunded areas**:
-- Corporate governance
-- Enforcement mechanisms
-- Non-US policy work
-- Subnational governance
-
-**Major funders**: Open Phil, Schmidt Futures, government sources
-
-**Typical grants**: $200K-$5M for policy organizations
-
----
-
-## Field-Building
-
-**Activities funded**:
-- AI safety courses and programs
-- Conferences and workshops
-- Career advising and placement
-- Community infrastructure
-
-**Major funders**: Open Phil, LTFF, SFF
-
-**Typical grants**: $50K-$1M for field-building initiatives
-
----
-
-## Communications and Education
-
-**Underfunded category overall**:
-- Public outreach
-- Educational content
-- Media and journalism
-- Advocacy
-
-**Major funders**: Open Phil (selective), LTFF (small grants)
-
-**Typical grants**: $20K-$300K
-
-</Section>
-
-<Section title="How to Get Funded">
-
-## What Funders Look For
-
-### For Technical Research
-1. **Technical ability**: Publications, code, or demonstrated skill
-2. **Safety focus**: Clear connection to reducing AI risk
-3. **Feasibility**: Realistic plan and timeline
-4. **Differentiation**: Not duplicating existing work
-
-### For Policy and Governance
-1. **Policy experience**: Government, think tank, or relevant background
-2. **Network**: Connections to decision-makers
-3. **Theory of impact**: Clear path to influence
-4. **Credibility**: Respected in policy circles
-
-### For Independent Researchers
-1. **Track record**: Past research or relevant achievements
-2. **Plan**: Specific research agenda
-3. **Mentorship**: Connection to experienced researchers (helpful but not required)
-4. **Productivity signals**: Publications, posts, or projects
-
-### For Field-Building
-1. **Impact measurement**: How will you know it's working?
-2. **Talent pipeline**: Path to AI safety work for participants
-3. **Efficiency**: Cost per person reached/converted
-4. **Sustainability**: Plan beyond initial funding
-
-## Application Tips
-
-### Before Applying
-- **Research the funder**: Understand their priorities and past grants
-- **Check fit**: Does your project align with their focus?
-- **Build track record**: Create public work showing your ability
-- **Get feedback**: Talk to others who've received grants
-
-### Writing Strong Applications
-- **Lead with impact**: How does this reduce AI risk?
-- **Be specific**: Concrete plans, not vague aspirations
-- **Show capability**: Evidence you can deliver
-- **Right-size budget**: Justify costs, don't over or undershoot
-- **Timeline**: Realistic milestones
-
-### Common Mistakes
-1. **Too vague**: "I want to work on AI safety" without specifics
-2. **No track record**: Asking for funding without demonstrated ability
-3. **Wrong funder**: Applying to funders focused on different areas
-4. **Unrealistic scope**: Proposing to solve alignment in 6 months
-5. **Poor communication**: Unclear writing or logic
+<ApplicationTips client:load tips={fundersData.applicationTips} />
 
 ### Timeline Expectations
 
-**LTFF**: 2-6 weeks
-**SFF**: 6-8 weeks (during grant rounds)
-**Open Phil**: 3-6 months
-**Government**: 6-12 months
+<TimelineExpectations client:load timelines={fundersData.timelineExpectations} />
+
+---
 
 ## Alternative Funding Routes
 
 ### Employment vs. Grants
+
 **Consider employment if**:
 - You want to work on specific problems organizations are tackling
 - You value mentorship and collaboration
@@ -421,212 +91,23 @@ Funds AI safety through multiple vehicles:
 - You need flexibility
 
 ### Regranting Programs
+
 Some organizations accept donations and regrant:
 - **Manifund**: Platform for small AI safety grants
 - **Effective Altruism Infrastructure Fund**: For community infrastructure
 - **University groups**: Some have small grant budgets
 
 ### Fellowships and Programs
+
 Funded programs as an alternative to direct grants:
 - **MATS**: ML Alignment & Theory Scholars (stipended)
 - **AI Safety Camp**: Short programs (volunteer, some travel funding)
 - **Bluedot Impact**: Courses with some fellowships
-- **Apart Research**: Hacakthon-style programs
-
-</Section>
-
-<Section title="Grant Size Breakdown">
-
-## Small Grants ($5K-$50K)
-
-### Typical Uses
-- Upskilling (3-6 months)
-- Pilot projects
-- Travel and conferences
-- Course development
-- Part-time research
-
-### Primary Funders
-- LTFF
-- Manifund
-- University AI safety groups
-
-### Application Difficulty
-**Easiest tier** - Lower bar, faster turnaround
+- **Apart Research**: Hackathon-style programs
 
 ---
 
-## Medium Grants ($50K-$500K)
-
-### Typical Uses
-- Independent research (1-2 years)
-- Small organization operations
-- Specific research projects
-- Field-building initiatives
-
-### Primary Funders
-- LTFF (upper range)
-- SFF
-- Open Phil (lower range)
-
-### Application Difficulty
-**Moderate** - Need track record or strong plan
-
----
-
-## Large Grants ($500K-$5M+)
-
-### Typical Uses
-- Multi-year research programs
-- Organization operations
-- Major initiatives
-- Team funding
-
-### Primary Funders
-- Open Phil
-- Anthropic LTBT
-- Schmidt Futures
-- Government contracts
-
-### Application Difficulty
-**Difficult** - Need strong track record and institutional credibility
-
-</Section>
-
-<Section title="Trends and Gaps">
-
-## What's Well-Funded
-
-### Technical Research
-- Interpretability research (especially at major labs)
-- Evaluations and benchmarking
-- Empirical alignment research
-- RLHF improvements
-
-### Policy and Governance
-- Top-tier think tanks
-- Government engagement
-- Major policy organizations
-
-### Field-Building
-- University groups
-- Major conferences (NeurIPS, ICML safety tracks)
-- Established educational programs
-
-## What's Underfunded
-
-### Technical Research
-- **Agent foundations**: More theoretical work
-- **Novel paradigms**: Alternatives to current approaches
-- **Robustness and verification**: Formal methods
-- **Worst-case safety**: Planning for tail risks
-
-### Policy and Governance
-- **Corporate governance**: AI company oversight
-- **Non-US work**: Policy outside US/UK
-- **Enforcement**: Implementation and compliance
-- **Subnational**: State and local governance
-
-### Field-Building
-- **Junior mentorship**: Support for early-career researchers
-- **Non-academic paths**: Alternative routes into safety
-- **Diversity**: Reaching broader talent pools
-- **Global south**: Building capacity outside US/Europe
-
-### Communications
-- **Public education**: General audience content
-- **Journalism**: AI safety coverage
-- **Creative approaches**: Art, fiction, media
-- **Counter-narratives**: Addressing AI hype
-
-## Emerging Areas
-
-### New Opportunities (2024-2025)
-- **AI evaluations**: Standards and testing
-- **Model organisms**: Studying risk in controlled settings
-- **Information security**: Protecting AI systems and research
-- **Compute governance**: Monitoring and controlling AI development
-- **International coordination**: Global governance structures
-
-### Potential Future Funders
-- Other major tech philanthropists
-- Sovereign wealth funds
-- International organizations
-- Additional government programs
-
-## Funding Gaps by Career Stage
-
-**Most competitive**: Mid-career researchers (many qualified applicants)
-
-**Underfunded**:
-- Very early career (undergrad/early grad)
-- Career transitions (switching to AI safety)
-- Senior talent (need large packages)
-
-</Section>
-
-<Section title="Comparison Table">
-
-<ComparisonTable
-  client:load
-  title="Major AI Safety Funders Comparison"
-  items={[
-    {
-      name: "Open Philanthropy",
-      attributes: {
-        "Annual Amount": "$50-100M",
-        "Grant Size": "$50K-$20M",
-        "Speed": "3-6 months",
-        "Application": "Relationship-driven",
-        "Best For": "Large orgs, established researchers"
-      }
-    },
-    {
-      name: "SFF",
-      attributes: {
-        "Annual Amount": "$20-60M",
-        "Grant Size": "$50K-$2M",
-        "Speed": "6-8 weeks",
-        "Application": "Open rounds",
-        "Best For": "Speculative research, new approaches"
-      }
-    },
-    {
-      name: "LTFF",
-      attributes: {
-        "Annual Amount": "$5-15M",
-        "Grant Size": "$5K-$500K",
-        "Speed": "2-6 weeks",
-        "Application": "Rolling",
-        "Best For": "Individuals, small projects, upskilling"
-      }
-    },
-    {
-      name: "Anthropic LTBT",
-      attributes: {
-        "Annual Amount": "TBD",
-        "Grant Size": "$100K-$5M+",
-        "Speed": "TBD",
-        "Application": "Developing",
-        "Best For": "High-quality research, complementary to Anthropic"
-      }
-    },
-    {
-      name: "Government (AISI/NSF)",
-      attributes: {
-        "Annual Amount": "$10-50M",
-        "Grant Size": "$100K-$5M",
-        "Speed": "6-12 months",
-        "Application": "RFPs, standard process",
-        "Best For": "Academic researchers, standards work"
-      }
-    }
-  ]}
-/>
-
-</Section>
-
-<Section title="Resources">
+## Resources
 
 ### Application Resources
 - **EA Forum**: Search for "grant report" to see what gets funded
@@ -640,32 +121,10 @@ Funded programs as an alternative to direct grants:
 - Join AI safety Slack/Discord communities
 - Attend conferences and workshops
 
-### Getting Feedback
-- AI Safety Slack #funding channel
-- Reach out to past grantees
-- Talk to program officers (when appropriate)
-- Participate in review pools for funders
-
-</Section>
-
-<Section title="Related Topics">
-  <Tags tags={[
-    "Funding",
-    "Grants",
-    "Philanthropy",
-    "Career",
-    "Open Philanthropy",
-    "Effective Altruism",
-    "AI Safety",
-  ]} />
-</Section>
-
 <Sources sources={[
   { title: "Open Philanthropy - AI Risk", url: "https://www.openphilanthropy.org/focus/global-catastrophic-risks/" },
   { title: "Survival and Flourishing Fund", url: "https://survivalandflourishing.fund/" },
   { title: "EA Funds - Long-Term Future Fund", url: "https://funds.effectivealtruism.org/funds/far-future" },
   { title: "80,000 Hours - AI Safety Careers", url: "https://80000hours.org/problem-profiles/artificial-intelligence/" },
   { title: "EA Forum - AI Safety Funding", url: "https://forum.effectivealtruism.org/topics/ai-safety" },
-  "Conversations with grantmakers and researchers",
-  "Public grant databases and reports"
 ]} />

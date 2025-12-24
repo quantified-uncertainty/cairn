@@ -5,402 +5,212 @@ sidebar:
   order: 9
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="capability"
-  title="Autonomous Coding"
-  currentLevel="Human-competitive for many tasks"
-  projectedTimeline="Rapid improvement ongoing"
-  customFields={[
-    { label: "Safety Relevance", value: "Very High" },
-    { label: "Key Systems", value: "Devin, Claude Code, Cursor" },
-  ]}
-/>
+<DataInfoBox entityId="coding" />
 
-## Overview
+## Summary
 
-Autonomous coding refers to AI systems' ability to write, understand, debug, and modify code with minimal human intervention. This ranges from code completion tools to fully autonomous software engineers that can tackle complex programming tasks, understand entire codebases, and implement features from natural language descriptions.
+**Autonomous coding** refers to AI systems' ability to write, understand, debug, and modify code with minimal human intervention. This ranges from code completion tools to fully autonomous software engineers that can tackle complex programming tasks, understand entire codebases, and implement features from natural language descriptions.
 
-This capability is particularly important for AI safety because it enables AI systems to participate in their own development, accelerates AI progress, and creates new vectors for both beneficial and harmful applications.
+**Safety relevance** is particularly high for this capability because it enables AI systems to participate in their own development, accelerates AI progress, and creates new vectors for both beneficial and harmful applications.
 
 ## Levels of Coding Capability
 
 ### Level 1: Code Completion
-Basic assistance:
-- Autocomplete code snippets
-- Suggest next lines
-- Template filling
-- Simple refactoring
+
+**Basic assistance** includes autocompleting code snippets, suggesting next lines, filling templates, and performing simple refactoring operations. This level helps developers write code faster but doesn't make architectural decisions.
 
 ### Level 2: Function/Module Generation
-More sophisticated help:
-- Write complete functions from docstrings
-- Implement algorithms from descriptions
-- Create unit tests
-- Basic debugging
+
+**More sophisticated help** involves writing complete functions from docstrings, implementing algorithms from natural language descriptions, creating unit tests, and performing basic debugging. These systems can handle self-contained programming tasks.
 
 ### Level 3: Feature Implementation
-Task-level coding:
-- Implement features from specifications
-- Navigate existing codebases
-- Multi-file changes
-- Integration with existing code
+
+**Task-level coding** encompasses implementing features from specifications, navigating existing codebases, making multi-file changes, and integrating with existing code. This represents a significant step toward autonomous development work.
 
 ### Level 4: Project-Level Autonomy
-Advanced capabilities:
-- Design and implement systems
-- Debug complex issues
-- Refactor large codebases
-- Deploy and monitor
+
+**Advanced capabilities** include designing and implementing entire systems, debugging complex issues across codebases, refactoring large codebases, and handling deployment and monitoring. Systems at this level can work autonomously for extended periods.
 
 ### Level 5: Research-Level Programming
-Cutting edge:
-- Novel algorithm development
-- Architectural innovation
-- Performance optimization breakthroughs
-- Creative problem-solving
+
+**Cutting edge** abilities involve developing novel algorithms, creating architectural innovations, achieving performance optimization breakthroughs, and demonstrating creative problem-solving beyond standard programming patterns.
 
 ## Current State (2024-2025)
 
 ### What Works Well
-Current AI coding can:
-- Generate correct code for common tasks (~80%+ of the time)
-- Debug simple errors
-- Explain existing code
-- Translate between languages
-- Write unit tests
-- Refactor for readability
+
+**Current AI coding** can generate correct code for common tasks roughly 80% of the time or more, debug simple errors, explain existing code clearly, translate between programming languages, write comprehensive unit tests, and refactor code for improved readability.
 
 ### Best Systems
-- **GitHub Copilot**: Widely adopted assistant
-- **Cursor**: AI-first IDE
-- **Claude Code**: Agentic coding tool
-- **Devin**: Autonomous software engineer
-- **GPT-4o/Claude 3.5**: Foundation models
+
+**GitHub Copilot** is the most widely adopted AI coding assistant. **Cursor** offers an AI-first IDE experience. **Claude Code** provides agentic coding capabilities with autonomous workflows. **Devin** functions as an autonomous software engineer. Foundation models like **GPT-4o** and **Claude 3.5 Sonnet** power many of these tools.
 
 ### Benchmarks
-Performance on standard tests:
-- **HumanEval**: 90%+ for best models
-- **MBPP**: Strong performance
-- **SWE-bench**: 13-50% depending on difficulty
-- Competitive programming: Reaching Codeforces rating ~1800
+
+**Performance on standard tests** shows the best models achieving over 90% on HumanEval, strong performance on MBPP, 13-50% on SWE-bench depending on difficulty level, and reaching Codeforces ratings around 1800 in competitive programming.
 
 ### Where It Struggles
-Current limitations:
-- Very large codebases (>100k lines)
-- Complex architectural decisions
-- Novel algorithms
-- Performance-critical code
-- Security-critical code
-- Long-term maintainability
+
+**Current limitations** include handling very large codebases over 100k lines, making complex architectural decisions, developing novel algorithms, writing performance-critical code, ensuring security in critical systems, and maintaining long-term code maintainability.
 
 ## How AI Coding Works
 
 ### Training
-Models learn from:
-- Billions of lines of open-source code
-- Code execution feedback
-- Human feedback on generations
-- Bug fixing examples
-- Documentation and comments
+
+**Models learn from** billions of lines of open-source code, code execution feedback, human feedback on generations, bug fixing examples, and extensive documentation and comments across many programming languages and domains.
 
 ### Inference
-At generation time:
-- Context from surrounding code
-- Natural language instructions
-- Iterative refinement
-- Test-driven development
-- Error message feedback
+
+**At generation time**, systems use context from surrounding code, natural language instructions, iterative refinement processes, test-driven development approaches, and error message feedback to produce increasingly accurate code.
 
 ### Agentic Coding
-Advanced systems use:
-- Planning before coding
-- Tool use (terminals, debuggers, docs)
-- Iterative debugging
-- Multi-step workflows
-- Self-verification
+
+**Advanced systems** employ planning before writing code, use tools like terminals, debuggers, and documentation, perform iterative debugging, execute multi-step workflows, and implement self-verification to catch errors before human review.
 
 ## Safety Implications
 
 ### Accelerates AI Development
-Autonomous coding:
-- Speeds AI research
-- Enables AI systems to improve themselves
-- Reduces bottlenecks
-- Shortens timelines to advanced AI
+
+**Autonomous coding** speeds AI research substantially, enables AI systems to improve themselves, reduces development bottlenecks, and potentially shortens timelines to advanced AI by making development cycles faster and more efficient.
 
 ### Dual-Use Capabilities
-Can be used to:
-- **Beneficial**: Accelerate safety research, improve productivity
-- **Harmful**: Develop malware, find exploits, automate attacks
-- **Neutral**: General acceleration of software development
+
+**Beneficial applications** include accelerating safety research and improving productivity. **Harmful applications** include developing malware, finding exploits, and automating attacks. **Neutral effects** include general acceleration of software development across all domains.
 
 ### Security Vulnerabilities
-AI-written code may:
-- Introduce subtle bugs
-- Create security holes
-- Be harder to audit
-- Contain backdoors (if misaligned)
-- Fail in unexpected ways
+
+**AI-written code may** introduce subtle bugs that escape initial testing, create security holes through unforeseen edge cases, be harder to audit than human-written code, potentially contain backdoors if the system is misaligned, and fail in unexpected ways under production conditions.
 
 ### Economic Disruption
-Implications for:
-- Software engineering jobs
-- Tech industry structure
-- Concentration of power
-- Global competitiveness
+
+**Implications span** software engineering jobs and career paths, tech industry structure and competitive dynamics, concentration of power among AI-capable organizations, and global competitiveness in software development.
 
 ## Trajectory
 
 ### Recent Progress
-Rapid improvement:
-- 2021: Basic completion
-- 2022: Function-level generation
-- 2023: Multi-file reasoning
-- 2024: Autonomous feature implementation
-- 2025: Approaching human software engineer capability
+
+**Rapid improvement** has occurred from basic completion in 2021, to function-level generation in 2022, multi-file reasoning in 2023, autonomous feature implementation in 2024, and approaching human software engineer capability in 2025.
 
 ### Near-term (1-2 years)
-Expected advances:
-- More reliable code generation
-- Better codebase understanding
-- Longer autonomous work periods
-- Improved debugging
-- Better security
+
+**Expected advances** include more reliable code generation with fewer errors, better understanding of large codebases, longer autonomous work periods without human intervention, improved debugging capabilities, and better security properties in generated code.
 
 ### Medium-term (2-5 years)
-Possible capabilities:
-- Full software engineer replacement for many tasks
-- Novel algorithm discovery
-- Large-scale refactoring
-- Automated security hardening
-- AI-led software projects
+
+**Possible capabilities** include full software engineer replacement for many routine tasks, novel algorithm discovery, large-scale automated refactoring, automated security hardening, and entire software projects led by AI systems.
 
 ### Long-term (5+ years)
-Potential future:
-- Superhuman programming in many domains
-- AI designing AI systems
-- Software development primarily AI-driven
-- New programming paradigms
+
+**Potential future** scenarios include superhuman programming capabilities in many specialized domains, AI systems designing other AI systems, software development becoming primarily AI-driven, and emergence of entirely new programming paradigms designed for AI-to-AI communication.
 
 ## Key Benchmarks
 
 ### HumanEval
-Tests basic coding from docstrings:
-- Current best: >90%
-- Human expert: ~95%
-- Measures: Correctness on simple problems
+
+**Tests basic coding from docstrings.** Current best models achieve over 90% accuracy compared to human experts at around 95%. This benchmark measures correctness on simple, self-contained programming problems.
 
 ### SWE-bench
-Real GitHub issues:
-- Current best: ~50% (with scaffolding)
-- Human developer: ~80-90%
-- Measures: Repository-level changes
+
+**Real GitHub issues** from production repositories. Current best systems achieve around 50% with proper scaffolding, while human developers typically achieve 80-90%. This measures ability to make repository-level changes to fix real bugs.
 
 ### APPS
-Competitive programming:
-- Current best: ~30% on hardest
-- Human expert: Variable
-- Measures: Algorithmic reasoning
+
+**Competitive programming** problems of varying difficulty. Current best models achieve around 30% on the hardest problems, with human expert performance varying widely. This measures algorithmic reasoning and problem-solving ability.
 
 ### Real-World Metrics
-Hard to quantify:
-- Time to implement features
-- Code quality and maintainability
-- Bug introduction rate
-- Security properties
+
+**Hard to quantify** but crucial metrics include time to implement features, code quality and long-term maintainability, bug introduction rate compared to human developers, and security properties of the generated code.
 
 ## Enabling Technologies
 
 ### Better Models
-Improvements in:
-- Code-specialized training
-- Larger context windows
-- Multi-modal understanding
-- Reasoning capabilities
+
+**Improvements** in code-specialized training techniques, larger context windows enabling understanding of more code at once, multi-modal understanding of code, documentation, and diagrams, and enhanced reasoning capabilities for complex problems.
 
 ### Better Tools
-Enhanced ecosystems:
-- Integrated development environments
-- Automated testing frameworks
-- Code search and navigation
-- Debugging assistants
+
+**Enhanced ecosystems** include tightly integrated development environments, automated testing frameworks that provide rapid feedback, advanced code search and navigation tools, and sophisticated debugging assistants.
 
 ### Better Scaffolding
-Agentic frameworks:
-- Planning systems
-- Memory management
-- Tool integration
-- Error recovery
+
+**Agentic frameworks** provide planning systems that break down complex tasks, memory management for long-running sessions, seamless tool integration with development environments, and robust error recovery mechanisms.
 
 ## Applications
 
 ### Beneficial
-Positive use cases:
-- Accelerating beneficial software
-- Automating tedious tasks
-- Improving code quality
-- Accessibility for non-programmers
-- Education and learning
+
+**Positive use cases** include accelerating development of beneficial software, automating tedious and error-prone tasks, improving overall code quality through consistent patterns, making programming accessible to non-programmers, and enhancing education and learning experiences.
 
 ### Concerning
-Worrying applications:
-- Malware development
-- Exploit discovery
-- Automated hacking
-- Circumventing security
-- Weapons systems
+
+**Worrying applications** include automated malware development, systematic exploit discovery, automated hacking tools, circumventing security measures, and development of autonomous weapons systems.
 
 ### Transformative
-Broad impacts:
-- Democratizing software creation
-- Economic transformation
-- Changing nature of programming
-- Accelerating all digital innovation
+
+**Broad impacts** include democratizing software creation for non-technical users, transforming economics of software development, fundamentally changing the nature of programming work, and accelerating all forms of digital innovation.
 
 ## Challenges and Limitations
 
 ### Technical Challenges
-Remaining difficulties:
-- Very long-term coherence
-- True creativity and innovation
-- Understanding unstated requirements
-- Performance optimization
-- Hardware-aware programming
+
+**Remaining difficulties** include maintaining very long-term coherence across large projects, demonstrating true creativity and innovation beyond training patterns, understanding unstated requirements and user intent, optimizing for performance at scale, and hardware-aware programming for specialized systems.
 
 ### Social Challenges
-Human factors:
-- Trust in AI-written code
-- Responsibility and liability
-- Job displacement
-- Maintaining human expertise
-- Code review processes
+
+**Human factors** include building appropriate trust in AI-written code, determining responsibility and liability for bugs and failures, managing job displacement in software engineering, maintaining human expertise as AI becomes more capable, and adapting code review processes.
 
 ### Safety Challenges
-Risk management:
-- Ensuring code security
-- Detecting malicious code
-- Maintaining control
-- Preventing misuse
-- Alignment of autonomous coders
+
+**Risk management** requires ensuring code security against vulnerabilities, detecting potentially malicious code, maintaining human control over autonomous systems, preventing misuse of powerful coding capabilities, and ensuring alignment of increasingly autonomous coders.
 
 ## Safety Research
 
 ### Code Security
-Ensuring AI code is safe:
-- Automated security analysis
-- Formal verification
-- Adversarial testing
-- Sandboxed execution
-- Human review requirements
+
+**Ensuring AI code is safe** involves automated security analysis tools, formal verification of critical components, adversarial testing to find vulnerabilities, sandboxed execution environments, and maintaining human review requirements for critical code.
 
 ### Capability Evaluation
-Understanding what AI can code:
-- Malware generation tests
-- Exploit discovery benchmarks
-- Novel capability assessments
-- Red teaming exercises
+
+**Understanding what AI can code** requires malware generation tests to assess dual-use risks, exploit discovery benchmarks, novel capability assessments to track dangerous abilities, and red teaming exercises to probe system limits.
 
 ### Alignment
-Keeping coding AI aligned:
-- Following coding standards
-- Respecting safety requirements
-- Honest about limitations
-- Refusing harmful requests
-- Transparent reasoning
+
+**Keeping coding AI aligned** involves training systems to follow coding standards and best practices, respect safety requirements even under pressure, be honest about limitations and uncertainties, refuse harmful requests, and provide transparent reasoning about coding decisions.
 
 ### Governance
-Policy questions:
-- Restrictions on autonomous coding
-- Liability for AI-written code
-- Export controls
-- Open-source vs proprietary
-- International coordination
+
+**Policy questions** include potential restrictions on autonomous coding capabilities, determining liability frameworks for AI-written code, considering export controls on advanced systems, weighing open-source versus proprietary development, and establishing international coordination mechanisms.
 
 ## Relationship to Self-Improvement
 
 ### Critical Capability
-Autonomous coding enables:
-- AI improving AI code
-- Automating AI research
-- Faster iteration cycles
-- Potentially recursive improvement
+
+**Autonomous coding enables** AI systems to improve their own code, automate significant portions of AI research, accelerate iteration cycles dramatically, and potentially bootstrap recursive self-improvement processes.
 
 ### Current Status
-We're seeing:
-- AI writing ML experiment code
-- Automated hyperparameter tuning
-- AI-assisted architecture search
-- But humans still crucial for breakthroughs
+
+**We're currently seeing** AI systems writing machine learning experiment code, performing automated hyperparameter tuning, assisting with architecture search, but humans remain crucial for research breakthroughs and novel insights.
 
 ### Future Concern
-If autonomous coding reaches human expert level:
-- Could bootstrap self-improvement
-- Might accelerate beyond human ability to oversee
-- Creates possibility of intelligence explosion
-- Reduces safety work timeline
+
+**If autonomous coding reaches human expert level**, it could bootstrap more rapid self-improvement, might accelerate beyond human ability to meaningfully oversee, creates realistic possibility of intelligence explosion scenarios, and reduces available timeline for safety work.
 
 ## Research Directions
 
 ### Capabilities
-Improving coding AI:
-- Better long-horizon autonomy
-- Novel algorithm discovery
-- Formal verification integration
-- Hardware-software co-design
+
+**Improving coding AI** through better long-horizon autonomy, enabling novel algorithm discovery, integrating formal verification into development workflows, and advancing hardware-software co-design capabilities.
 
 ### Safety
-Making it safe:
-- Secure code generation
-- Alignment preservation in AI-written code
-- Interpretable coding decisions
-- Safe exploration of code space
+
+**Making it safe** requires secure code generation by default, preserving alignment in AI-written code, making coding decisions interpretable to humans, and ensuring safe exploration of the vast space of possible code.
 
 ### Evaluation
-Better measurement:
-- Real-world coding benchmarks
-- Security-focused evaluations
-- Maintainability metrics
-- Long-term code quality
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Software Engineering",
-    "Code Generation",
-    "Programming AI",
-    "GitHub Copilot",
-    "Devin",
-    "AI-Assisted Development",
-  ]} />
-</Section>
+**Better measurement** through realistic coding benchmarks, security-focused evaluations of dual-use risks, maintainability metrics for long-term code health, and assessment of long-term code quality beyond initial correctness.
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="self-improvement"
-      category="capability"
-      title="Self-Improvement"
-      description="Enabled by coding capability"
-    />
-    <EntityCard
-      id="tool-use"
-      category="capability"
-      title="Tool Use"
-      description="Coding is a form of tool use"
-    />
-    <EntityCard
-      id="openai"
-      category="lab"
-      title="OpenAI"
-      description="Developer of Codex and GPT models"
-    />
-  </EntityCards>
-</Section>
+## Related Pages
 
-<Sources sources={[
-  { title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?", url: "https://arxiv.org/abs/2310.06770" },
-  { title: "Evaluating Large Language Models Trained on Code", url: "https://arxiv.org/abs/2107.03374" },
-  { title: "Competition-Level Code Generation with AlphaCode", url: "https://arxiv.org/abs/2203.07814" },
-  { title: "GitHub Copilot Research", url: "https://github.blog/category/research/" },
-]} />
+<Backlinks client:load entityId="coding" />

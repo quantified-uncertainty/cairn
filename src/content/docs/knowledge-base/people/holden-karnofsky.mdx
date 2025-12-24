@@ -5,16 +5,9 @@ sidebar:
   order: 10
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Holden Karnofsky"
-  affiliation="Open Philanthropy"
-  role="Co-CEO"
-  knownFor="Directing billions toward AI safety, effective altruism leadership, AI timelines work"
-  website="https://www.openphilanthropy.org"
-/>
+<DataInfoBox entityId="holden-karnofsky" />
 
 ## Background
 
@@ -276,38 +269,6 @@ At Open Phil, Karnofsky focuses on:
 - **Various posts on bio anchors** - Methodology for forecasting AI
 - **Career choice posts** - Advice for people wanting to help with AI safety
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Effective Altruism",
-    "AI Safety Funding",
-    "AI Timelines",
-    "Transformative AI",
-    "Existential Risk",
-    "Most Important Century",
-    "Grantmaking",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="Major Open Phil investment in safety-focused AI lab"
-    />
-    <EntityCard
-      id="toby-ord"
-      category="researcher"
-      title="Toby Ord"
-      description="Fellow EA leader focused on existential risk"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Open Philanthropy", url: "https://www.openphilanthropy.org" },
-  { title: "Cold Takes Blog", url: "https://www.cold-takes.com/" },
-  { title: "Most Important Century Series", url: "https://www.cold-takes.com/most-important-century/" },
-  { title: "AI Timelines Post", url: "https://www.cold-takes.com/where-ai-forecasting-stands-today/" },
-]} />
+<Backlinks client:load entityId="holden-karnofsky" />

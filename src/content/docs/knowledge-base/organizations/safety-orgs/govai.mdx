@@ -5,19 +5,11 @@ sidebar:
   order: 13
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-research"
-  title="GovAI"
-  founded="2018"
-  location="Oxford, UK"
-  headcount="~25"
-  funding="~$5M/year"
-  website="https://governance.ai"
-/>
+<DataInfoBox entityId="govai" />
 
-## Overview
+## Summary
 
 The Centre for the Governance of AI (GovAI) is a research organization focused on AI policy and governance. Originally part of the Future of Humanity Institute at Oxford, GovAI became independent in 2023 when FHI closed.
 
@@ -87,41 +79,6 @@ GovAI has influenced AI governance through:
 - Providing research basis for compute governance proposals
 - Shaping international AI safety discussions
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Governance",
-    "Compute Governance",
-    "International Coordination",
-    "AI Policy",
-    "Regulation",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Regulating AI development through compute controls"
-    />
-    <EntityCard
-      id="international-coordination"
-      category="policy"
-      title="International AI Coordination"
-      description="Global cooperation on AI governance"
-    />
-    <EntityCard
-      id="deepmind"
-      category="lab"
-      title="Google DeepMind"
-      description="Where founding director Allan Dafoe now leads governance"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "GovAI Website", url: "https://governance.ai" },
-  { title: "Computing Power and AI Governance", url: "https://governance.ai/compute" },
-  { title: "GovAI Research Papers", url: "https://governance.ai/research" },
-]} />
+<Backlinks client:load entityId="govai" />

@@ -5,19 +5,11 @@ sidebar:
   order: 19
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
+import { DataInfoBox, Section, DisagreementMap, KeyQuestions } from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab"
-  title="xAI"
-  founded="2023"
-  location="San Francisco Bay Area, CA"
-  headcount="~100+ (rapidly growing)"
-  funding="Billions (Elon Musk, investors)"
-  website="https://x.ai"
-/>
+<DataInfoBox entityId="xai" />
 
-## Overview
+## Summary
 
 xAI is an artificial intelligence company founded by Elon Musk in July 2023 with the stated mission to "understand the true nature of the universe" through AI. The company develops Grok, a large language model integrated into X (formerly Twitter), and positions itself as pursuing "maximum truth-seeking AI" as an alternative to what Musk characterizes as "woke" AI from competitors.
 
@@ -583,66 +575,3 @@ The organization occupies a unique and controversial position in AI: claiming to
 - Different philosophies
 - Both distinct from OpenAI/Anthropic
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Grok",
-    "Elon Musk",
-    "X Integration",
-    "Truth-Seeking AI",
-    "Content Moderation",
-    "Free Speech",
-    "AI Safety Philosophy",
-    "Racing Dynamics",
-    "Frontier AI",
-    "AGI Development"
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="elon-musk"
-      category="people"
-      title="Elon Musk"
-      description="xAI founder and CEO"
-    />
-    <EntityCard
-      id="openai"
-      category="organizations"
-      title="OpenAI"
-      description="Musk co-founded, now competitor"
-    />
-    <EntityCard
-      id="anthropic"
-      category="organizations"
-      title="Anthropic"
-      description="Competitor with different safety approach"
-    />
-    <EntityCard
-      id="racing-dynamics"
-      category="risks"
-      title="Racing Dynamics"
-      description="xAI contributes to AI race"
-    />
-    <EntityCard
-      id="content-moderation"
-      category="concepts"
-      title="Content Moderation"
-      description="Central to xAI's positioning"
-    />
-    <EntityCard
-      id="agi-race"
-      category="concepts"
-      title="AGI Race"
-      description="Competitive dynamics xAI participates in"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "xAI Website", url: "https://x.ai" },
-  { title: "Grok Announcements", url: "https://x.ai/blog" },
-  { title: "Elon Musk on X (Twitter)", url: "https://twitter.com/elonmusk" },
-  { title: "xAI Funding Announcements", url: "Various news sources" },
-  { title: "Grok Technical Details", url: "https://x.ai/blog/grok" }
-]} />

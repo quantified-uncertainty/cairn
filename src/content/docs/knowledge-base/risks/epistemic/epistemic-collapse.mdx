@@ -3,23 +3,14 @@ title: Epistemic Collapse
 description: Society losing the ability to distinguish truth from falsehood
 sidebar:
   order: 1
+maturity: "Neglected"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Epistemic Collapse"
-  severity="high"
-  likelihood="Medium-High"
-  timeframe="Near to Medium-term"
-  customFields={[
-    { label: "Type", value: "Epistemic" },
-    { label: "Status", value: "Early stages visible" },
-  ]}
-/>
+<DataInfoBox entityId="epistemic-collapse" />
 
-## Overview
+## Summary
 
 Epistemic collapse refers to a breakdown in society's collective ability to distinguish truth from falsehood, leading to an inability to form shared beliefs about reality. AI accelerates this risk by enabling unprecedented scale of content generation, personalization of information, and fabrication of evidence.
 
@@ -69,41 +60,6 @@ Epistemic collapse undermines response to all other risks. If society can't agre
 
 Epistemic collapse could also be a terminal state—hard to recover from once reached. If there's no trusted way to establish truth, how do you rebuild epistemic institutions?
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Truth",
-    "Epistemology",
-    "Disinformation",
-    "Trust",
-    "Democracy",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="disinformation"
-      category="risk"
-      title="Disinformation"
-      description="AI-generated false content"
-    />
-    <EntityCard
-      id="deepfakes"
-      category="risk"
-      title="Deepfakes"
-      description="Fabricated evidence"
-    />
-    <EntityCard
-      id="trust-erosion"
-      category="risk"
-      title="Trust Erosion"
-      description="Institutional trust collapse"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Reality+", author: "David Chalmers" },
-  { title: "Post-Truth", author: "Lee McIntyre" },
-  { title: "The Death of Truth", author: "Michiko Kakutani" },
-]} />
+<Backlinks client:load entityId="epistemic-collapse" />

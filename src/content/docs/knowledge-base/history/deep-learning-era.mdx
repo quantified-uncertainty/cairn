@@ -5,20 +5,11 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, Section, EntityCard, EntityCards, Tags, Sources } from '../../../../components/wiki';
+import { DataInfoBox } from '../../../../components/wiki';
 
-<InfoBox
-  type="historical"
-  title="Deep Learning Revolution Era"
-  customFields={[
-    { label: "Period", value: "2012-2020" },
-    { label: "Defining Event", value: "AlexNet (2012) proves deep learning works at scale" },
-    { label: "Key Theme", value: "Capabilities acceleration makes safety urgent" },
-    { label: "Outcome", value: "AI safety becomes professionalized research field" },
-  ]}
-/>
+<DataInfoBox entityId="deep-learning-era" />
 
-## Overview
+## Summary
 
 The deep learning revolution transformed AI from a field of limited successes to one of rapidly compounding breakthroughs. For AI safety, this meant moving from theoretical concerns about far-future AGI to practical questions about current and near-future systems.
 
@@ -606,46 +597,4 @@ What was missing: A "ChatGPT moment" that would bring AI to everyone's daily lif
 
 That moment was coming in 2022.
 
-<Section title="Related Organizations">
-  <EntityCards>
-    <EntityCard
-      id="deepmind"
-      category="organization"
-      title="DeepMind"
-      description="Founded 2010, acquired by Google 2014"
-    />
-    <EntityCard
-      id="openai"
-      category="organization"
-      title="OpenAI"
-      description="Founded 2015 as non-profit, shifted to capped-profit 2019"
-    />
-  </EntityCards>
-</Section>
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Deep Learning",
-    "AlexNet",
-    "AlphaGo",
-    "GPT",
-    "DeepMind",
-    "OpenAI",
-    "Concrete Problems",
-    "Scaling Laws",
-    "Reward Hacking",
-    "Interpretability",
-    "Paul Christiano",
-    "Dario Amodei",
-  ]} />
-</Section>
-
-<Sources sources={[
-  { title: "ImageNet Classification with Deep Convolutional Neural Networks", author: "Krizhevsky et al.", date: "2012", url: "https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks" },
-  { title: "Mastering the game of Go with deep neural networks", author: "Silver et al.", date: "2016", url: "https://www.nature.com/articles/nature16961" },
-  { title: "Concrete Problems in AI Safety", author: "Amodei et al.", date: "2016", url: "https://arxiv.org/abs/1606.06565" },
-  { title: "Language Models are Few-Shot Learners", author: "Brown et al.", date: "2020", url: "https://arxiv.org/abs/2005.14165" },
-  { title: "OpenAI Charter", author: "OpenAI", date: "2018", url: "https://openai.com/charter/" },
-  { title: "Safely Interruptible Agents", author: "Orseau & Armstrong", date: "2016", url: "https://arxiv.org/abs/1606.06565" },
-  { title: "Risks from Learned Optimization", author: "Hubinger et al.", date: "2019", url: "https://arxiv.org/abs/1906.01820" },
-]} />

@@ -5,16 +5,9 @@ sidebar:
   order: 4
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section, EstimateBox } from '../../../../components/wiki';
+import {DataInfoBox, EstimateBox, Backlinks} from '../../../../components/wiki';
 
-<InfoBox
-  type="researcher"
-  title="Jan Leike"
-  affiliation="Anthropic"
-  role="Head of Alignment"
-  knownFor="Alignment research, scalable oversight, RLHF, superalignment work"
-  website="https://anthropic.com"
-/>
+<DataInfoBox entityId="jan-leike" />
 
 ## Background
 
@@ -178,50 +171,6 @@ At Anthropic, Jan faces several key challenges:
 4. **Automation**: Using AI to help solve alignment before it becomes too capable
 5. **Coordination**: Ensuring insights are shared across safety community
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "RLHF",
-    "Scalable Oversight",
-    "Superalignment",
-    "Reward Modeling",
-    "Weak-to-Strong Generalization",
-    "Process Supervision",
-    "Deceptive Alignment",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="anthropic"
-      category="lab"
-      title="Anthropic"
-      description="AI safety company where Jan leads alignment research"
-    />
-    <EntityCard
-      id="scalable-oversight"
-      category="safety-agenda"
-      title="Scalable Oversight"
-      description="Research area pioneered by Jan and others"
-    />
-    <EntityCard
-      id="dario-amodei"
-      category="researcher"
-      title="Dario Amodei"
-      description="CEO of Anthropic"
-    />
-    <EntityCard
-      id="paul-christiano"
-      category="researcher"
-      title="Paul Christiano"
-      description="Researcher with related work on scalable oversight"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Jan Leike on X/Twitter", url: "https://twitter.com/janleike" },
-  { title: "Deep RL from Human Preferences", url: "https://arxiv.org/abs/1706.03741" },
-  { title: "OpenAI Superalignment Announcement", url: "https://openai.com/blog/introducing-superalignment" },
-  { title: "Departure Statement", url: "https://twitter.com/janleike/status/1790517668677865835" },
-]} />
+<Backlinks client:load entityId="jan-leike" />

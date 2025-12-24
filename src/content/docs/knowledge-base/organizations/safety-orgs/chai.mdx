@@ -5,19 +5,11 @@ sidebar:
   order: 15
 ---
 
-import { InfoBox, KeyPeople, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="lab-academic"
-  title="CHAI"
-  founded="2016"
-  location="Berkeley, CA"
-  headcount="~30"
-  funding="Academic + Open Philanthropy"
-  website="https://humancompatible.ai"
-/>
+<DataInfoBox entityId="chai" />
 
-## Overview
+## Summary
 
 The Center for Human-Compatible AI (CHAI) is an academic research center at UC Berkeley focused on ensuring AI systems are beneficial to humans. Founded by Stuart Russell, author of the leading AI textbook, CHAI brings academic rigor to AI safety research.
 
@@ -79,41 +71,6 @@ CHAI has shaped AI safety through:
 - Training PhD students in alignment research
 - Collaborations with DeepMind and other labs
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Inverse Reinforcement Learning",
-    "Value Learning",
-    "Assistance Games",
-    "Human-Compatible AI",
-    "Academic AI Safety",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="value-learning"
-      category="safety-agenda"
-      title="Value Learning"
-      description="Learning human values from behavior"
-    />
-    <EntityCard
-      id="specification-gaming"
-      category="risk"
-      title="Specification Gaming"
-      description="AI exploiting misspecified objectives"
-    />
-    <EntityCard
-      id="corrigibility"
-      category="safety-agenda"
-      title="Corrigibility"
-      description="Building AI systems that allow correction"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "CHAI Website", url: "https://humancompatible.ai" },
-  { title: "Human Compatible (Book)", url: "https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" },
-  { title: "Stuart Russell on AI Risk", url: "https://www.youtube.com/watch?v=EBK-a94IFHY" },
-]} />
+<Backlinks client:load entityId="chai" />

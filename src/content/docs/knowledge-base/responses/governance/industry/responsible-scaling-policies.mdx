@@ -5,21 +5,11 @@ sidebar:
   order: 8
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="Responsible Scaling Policies (RSPs)"
-  jurisdiction="Industry (voluntary)"
-  status="Active"
-  customFields={[
-    { label: "Type", value: "Self-regulation" },
-    { label: "Key Labs", value: "Anthropic, OpenAI, Google DeepMind" },
-    { label: "Origin", value: "2023" },
-  ]}
-/>
+<DataInfoBox entityId="responsible-scaling-policies" />
 
-## Overview
+## Summary
 
 **Responsible Scaling Policies (RSPs)** are voluntary commitments by frontier AI labs to evaluate AI systems for dangerous capabilities and implement appropriate safeguards before deployment or further scaling.
 
@@ -157,8 +147,3 @@ RSPs represent a **significant step** toward structured AI safety management, bu
 
 Most AI safety experts view RSPs as **necessary but insufficient**—a useful tool that should complement, not replace, government oversight.
 
-<Sources sources={[
-  { title: "Anthropic's Responsible Scaling Policy", url: "https://www.anthropic.com/index/anthropics-responsible-scaling-policy", author: "Anthropic", date: "September 2023" },
-  { title: "OpenAI Preparedness Framework", url: "https://openai.com/safety/preparedness", author: "OpenAI", date: "December 2023" },
-  { title: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/", author: "Google DeepMind", date: "May 2024" },
-]} />

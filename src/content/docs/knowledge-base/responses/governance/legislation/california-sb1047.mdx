@@ -5,23 +5,11 @@ sidebar:
   order: 5
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../../components/wiki';
+import { DataInfoBox } from '../../../../../../components/wiki';
 
-<InfoBox
-  type="policy"
-  title="Safe and Secure Innovation for Frontier Artificial Intelligence Models Act"
-  jurisdiction="California, United States"
-  status="Vetoed"
-  effectiveDate="N/A"
-  customFields={[
-    { label: "Introduced", value: "February 2024" },
-    { label: "Passed Legislature", value: "August 29, 2024" },
-    { label: "Vetoed", value: "September 29, 2024" },
-    { label: "Author", value: "Senator Scott Wiener" },
-  ]}
-/>
+<DataInfoBox entityId="california-sb1047" />
 
-## Overview
+## Summary
 
 SB 1047, the Safe and Secure Innovation for Frontier Artificial Intelligence Models Act, was California state legislation that would have required safety testing and liability measures for developers of the most powerful AI models.
 
@@ -703,52 +691,3 @@ Newsom simultaneously:
 - Communications
 - Policy design
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Regulation",
-    "State Policy",
-    "Frontier Models",
-    "Liability",
-    "Compute Thresholds",
-    "California",
-    "Political Strategy",
-  ]} />
-</Section>
-
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="us-executive-order"
-      category="policy"
-      title="US Executive Order on AI"
-      description="Federal policy with similar compute thresholds"
-    />
-    <EntityCard
-      id="compute-governance"
-      category="policy"
-      title="Compute Governance"
-      description="Framework underlying size-based regulation"
-    />
-    <EntityCard
-      id="eu-ai-act"
-      category="policy"
-      title="EU AI Act"
-      description="Comprehensive regulatory alternative approach"
-    />
-    <EntityCard
-      id="voluntary-commitments"
-      category="policy"
-      title="Voluntary Industry Commitments"
-      description="Alternative to binding regulation"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "SB 1047 Bill Text (Final Amended Version)", url: "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240SB1047", date: "August 2024" },
-  { title: "Governor Newsom's Veto Message", url: "https://www.gov.ca.gov/wp-content/uploads/2024/09/SB-1047-Veto-Message.pdf", date: "September 29, 2024" },
-  { title: "Analysis from Future of Life Institute", url: "https://futureoflife.org/project/sb-1047/", author: "FLI" },
-  { title: "OpenAI Letter Opposing SB 1047", url: "https://openai.com/index/openai-letter-to-california-governor-newsom-on-sb-1047/" },
-  { title: "Anthropic's Nuanced Position", url: "https://www.anthropic.com/news/anthropics-letter-to-senator-wiener-on-sb-1047", date: "August 2024" },
-  { title: "Academic Analysis", url: "https://law.stanford.edu/2024/09/25/sb-1047-analysis/", author: "Stanford HAI" },
-]} />

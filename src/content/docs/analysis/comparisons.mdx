@@ -3,11 +3,17 @@ title: Comparison Tables
 description: Side-by-side comparisons of AI labs, safety approaches, and key positions
 sidebar:
   order: 3
+tableOfContents: false
 ---
 
-import { ComparisonTable, DisagreementMap, Section, Tags } from '../../../components/wiki';
+import { ComparisonTable, DataDisagreementMap } from '../../../components/wiki';
+
 
 This page provides side-by-side comparisons to help understand the landscape of AI safety organizations, approaches, and expert positions.
+
+:::note[Data-Driven]
+Expert position maps on this page pull data automatically from our structured data layer.
+:::
 
 ## Frontier Labs Comparison
 
@@ -263,51 +269,29 @@ This page provides side-by-side comparisons to help understand the landscape of 
 
 ### Timeline Estimates
 
-<DisagreementMap
+<DataDisagreementMap
   client:load
-  topic="When will AGI/TAI arrive?"
+  topic="timelines"
   description="Expert estimates for transformative AI timelines"
   spectrum={{ low: "2060+", high: "2025-2030" }}
-  positions={[
-    { actor: "Dario Amodei", position: "Very short", estimate: "2026-2027", confidence: "medium" },
-    { actor: "Sam Altman", position: "Short", estimate: "2027-2030", confidence: "medium" },
-    { actor: "Demis Hassabis", position: "Short-medium", estimate: "2028-2035", confidence: "medium" },
-    { actor: "Paul Christiano", position: "Medium", estimate: "2035-2045", confidence: "low" },
-    { actor: "Gary Marcus", position: "Long", estimate: "2050+", confidence: "medium" }
-  ]}
 />
 
 ### P(doom) Estimates
 
-<DisagreementMap
+<DataDisagreementMap
   client:load
-  topic="Probability of AI Catastrophe"
+  topic="p-doom"
   description="Expert estimates of existential risk from AI"
   spectrum={{ low: "under 1%", high: ">50%" }}
-  positions={[
-    { actor: "Eliezer Yudkowsky", position: "Very high", estimate: ">90%", confidence: "high" },
-    { actor: "Paul Christiano", position: "Significant", estimate: "10-20%", confidence: "medium" },
-    { actor: "Toby Ord", position: "Moderate", estimate: "10%", confidence: "medium" },
-    { actor: "Dario Amodei", position: "Moderate", estimate: "10-25%", confidence: "medium" },
-    { actor: "Yoshua Bengio", position: "Concerned", estimate: "10-15%", confidence: "low" },
-    { actor: "AI Impacts Survey", position: "Lower", estimate: "5%", confidence: "low" }
-  ]}
 />
 
 ### Alignment Tractability
 
-<DisagreementMap
+<DataDisagreementMap
   client:load
-  topic="How Hard is Alignment?"
+  topic="how-hard-is-alignment-"
   description="Expert views on whether current approaches can solve alignment"
   spectrum={{ low: "Extremely hard", high: "Tractable" }}
-  positions={[
-    { actor: "Eliezer Yudkowsky", position: "Extremely hard", estimate: "5%", confidence: "high" },
-    { actor: "MIRI", position: "Very hard", estimate: "15%", confidence: "high" },
-    { actor: "Paul Christiano", position: "Hard but tractable", estimate: "50%", confidence: "medium" },
-    { actor: "Anthropic", position: "Tractable with effort", estimate: "60%", confidence: "medium" },
-    { actor: "OpenAI (historically)", position: "Tractable", estimate: "70%", confidence: "medium" }
-  ]}
 />
 
 ## Worldview Comparison
@@ -359,12 +343,3 @@ This page provides side-by-side comparisons to help understand the landscape of 
   ]}
 />
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "AI Labs",
-    "Safety Research",
-    "Governance",
-    "Expert Positions",
-    "Worldviews",
-  ]} />
-</Section>

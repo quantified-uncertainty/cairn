@@ -3,23 +3,14 @@ title: Power-Seeking AI
 description: Formal analysis of why AI systems tend to acquire resources and influence
 sidebar:
   order: 6
+maturity: "Mature"
 ---
 
-import { InfoBox, EntityCard, EntityCards, Tags, Sources, Section } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
-<InfoBox
-  type="risk"
-  title="Power-Seeking AI"
-  severity="catastrophic"
-  likelihood="Debated"
-  timeframe="Advanced AI"
-  customFields={[
-    { label: "Formalized", value: "Turner et al. 2021" },
-    { label: "Status", value: "Theoretical + emerging evidence" },
-  ]}
-/>
+<DataInfoBox entityId="power-seeking" />
 
-## Overview
+## Summary
 
 Power-seeking refers to the tendency of optimal policies to acquire resources, influence, and capabilities beyond what's minimally necessary for their stated objective. Recent theoretical work has formalized when and why this occurs.
 
@@ -113,41 +104,6 @@ If power-seeking is a default tendency:
 - We need specific interventions to prevent power-seeking
 - Corrigibility research becomes critical
 
-<Section title="Related Topics">
-  <Tags tags={[
-    "Instrumental Convergence",
-    "Self-Preservation",
-    "Corrigibility",
-    "Optimal Policies",
-    "Resource Acquisition",
-  ]} />
-</Section>
+## Related Pages
 
-<Section title="Related Entries">
-  <EntityCards>
-    <EntityCard
-      id="instrumental-convergence"
-      category="risk"
-      title="Instrumental Convergence"
-      description="Why diverse goals lead to similar subgoals"
-    />
-    <EntityCard
-      id="corrigibility"
-      category="safety-agenda"
-      title="Corrigibility"
-      description="Making AI that allows shutdown and correction"
-    />
-    <EntityCard
-      id="cais"
-      category="lab"
-      title="CAIS"
-      description="Research on measuring power-seeking"
-    />
-  </EntityCards>
-</Section>
-
-<Sources sources={[
-  { title: "Optimal Policies Tend to Seek Power", url: "https://arxiv.org/abs/2206.13477", author: "Turner et al.", date: "2021" },
-  { title: "Parametrically Retargetable Decision-Makers Tend To Seek Power", url: "https://arxiv.org/abs/2206.13477" },
-  { title: "The Basic AI Drives", url: "https://selfawaresystems.files.wordpress.com/2008/01/ai_drives_final.pdf", author: "Omohundro" },
-]} />
+<Backlinks client:load entityId="power-seeking" />

@@ -24,3 +24,31 @@ export { ComparisonTable } from './ComparisonTable';
 export { TimelineViz } from './TimelineViz';
 export { RiskDependencyGraph } from './RiskDependencyGraph';
 export { ArgumentMap } from './ArgumentMap';
+
+// Data-aware wrapper components (support both inline and YAML data)
+export { DataDisagreementMap } from './DataDisagreementMap';
+export { DataEstimateBox } from './DataEstimateBox';
+export { DataInfoBox } from './DataInfoBox';
+export { DataCrux } from './DataCrux';
+
+// Dashboard layout components
+export { SummaryCard, CardGrid } from './SummaryCard';
+export { Tabs, TabPanel } from './Tabs';
+export { CollapsibleSection } from './CollapsibleSection';
+
+// Data tables
+export { RisksTable } from './RisksTable';
+
+// Risk category components
+export { RiskCategoryIcon, RiskCategoryBadge, RiskCategoryCard, categoryConfig } from './RiskCategoryIcon';
+export type { RiskCategory } from './RiskCategoryIcon';
+
+// Entity type components
+export { EntityTypeIcon, EntityTypeBadge, entityTypeConfig, getEntityTypeIcon, getEntityTypeLabel } from './EntityTypeIcon';
+export type { EntityType as EntityTypeEnum } from './EntityTypeIcon';
+
+// Discovery & navigation components
+export { Backlinks } from './Backlinks';
+export { TagBrowser } from './TagBrowser';
+export { EntityIndex } from './EntityIndex';
+export { RecentUpdates } from './RecentUpdates';
