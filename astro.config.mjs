@@ -84,6 +84,7 @@ export default defineConfig({
                       { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
                       { label: 'Key Literature', collapsed: true, autogenerate: { directory: 'knowledge-base/literature' } },
+                      { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                   ],
               },
               {
