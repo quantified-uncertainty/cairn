@@ -202,38 +202,18 @@ The evidence is inconclusive but trending toward increased concern. Current mode
 ### Intervention Approaches by Misalignment Type
 
 <Mermaid client:load chart={`flowchart LR
-    subgraph Detection["Detection Methods"]
-        D1[Behavioral Testing]
-        D2[Interpretability Analysis]
-        D3[Adversarial Probing]
-    end
+    D1[Behavioral Testing] --> T1[Proxy Alignment]
+    D1 --> T2[Subgoal Alignment]
+    D2[Interpretability Analysis] --> T2
+    D2 --> T3[Pseudo-Alignment]
+    D3[Adversarial Probing] --> T3
+    D3 --> T4[Deceptive Alignment]
 
-    subgraph Mitigation["Mitigation Approaches"]
-        M1[Improved Reward Modeling]
-        M2[Diverse Training Environments]
-        M3[Capability Control]
-        M4[Architecture Constraints]
-    end
-
-    subgraph Types["Misalignment Types"]
-        T1[Proxy Alignment]
-        T2[Subgoal Alignment]
-        T3[Pseudo-Alignment]
-        T4[Deceptive Alignment]
-    end
-
-    D1 --> T1
-    D1 --> T2
-    D2 --> T2
-    D2 --> T3
-    D3 --> T3
-    D3 --> T4
-
-    M1 --> T1
-    M2 --> T2
-    M3 --> T3
+    M1[Improved Reward Modeling] --> T1
+    M2[Diverse Training Environments] --> T2
+    M3[Capability Control] --> T3
     M3 --> T4
-    M4 --> T4
+    M4[Architecture Constraints] --> T4
 
     style D1 fill:#2563eb,color:#fff,stroke:#1d4ed8
     style D2 fill:#2563eb,color:#fff,stroke:#1d4ed8
