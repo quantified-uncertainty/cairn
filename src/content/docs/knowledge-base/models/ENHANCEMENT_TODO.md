@@ -71,33 +71,33 @@ Legend:
 - [x] scheming-likelihood-model.mdx
 - [x] sycophancy-feedback-loop.mdx
 - [x] winner-take-all-concentration.mdx
+- [x] authentication-collapse-timeline.mdx
+- [x] authoritarian-tools-diffusion.mdx
+- [x] automation-bias-cascade.mdx
+- [x] autonomous-weapons-escalation.mdx
+- [x] autonomous-weapons-proliferation.mdx
 
 ### Pending Enhancement
-- [ ] authentication-collapse-timeline.mdx
-- [ ] authoritarian-tools-diffusion.mdx
-- [ ] automation-bias-cascade.mdx
-- [ ] autonomous-weapons-escalation.mdx
-- [ ] autonomous-weapons-proliferation.mdx
-- [ ] bioweapons-ai-uplift.mdx
-- [ ] bioweapons-timeline.mdx
+- [~] bioweapons-ai-uplift.mdx
+- [~] bioweapons-timeline.mdx
 - [ ] capabilities-to-safety-pipeline.mdx
 - [ ] compounding-risks-analysis.mdx
-- [ ] concentration-of-power.mdx
+- [~] concentration-of-power.mdx
 - [ ] consensus-manufacturing-dynamics.mdx
 - [ ] cyber-psychosis-cascade.mdx
 - [ ] cyberweapons-attack-automation.mdx
-- [ ] cyberweapons-offense-defense.mdx
-- [ ] deepfakes-authentication-crisis.mdx
+- [~] cyberweapons-offense-defense.mdx
+- [~] deepfakes-authentication-crisis.mdx
 - [ ] disinformation-detection-race.mdx
 - [ ] disinformation-electoral-impact.mdx
 - [ ] economic-disruption.mdx
 - [ ] economic-disruption-impact.mdx
 - [ ] expertise-atrophy-progression.mdx
 - [ ] flash-dynamics-threshold.mdx
-- [ ] fraud-sophistication-curve.mdx
+- [~] fraud-sophistication-curve.mdx
 - [ ] institutional-adaptation-speed.mdx
 - [ ] intervention-effectiveness-matrix.mdx
-- [ ] irreversibility-threshold.mdx
+- [~] irreversibility-threshold.mdx
 - [ ] lab-incentives-model.mdx
 - [ ] media-policy-feedback-loop.mdx
 - [ ] multipolar-trap.mdx
@@ -115,10 +115,10 @@ Legend:
 - [ ] safety-researcher-gap.mdx
 - [ ] surveillance-authoritarian-stability.mdx
 - [ ] surveillance-chilling-effects.mdx
-- [ ] trust-cascade-model.mdx
+- [~] trust-cascade-model.mdx
 - [ ] trust-erosion-dynamics.mdx
-- [ ] warning-signs-model.mdx
-- [ ] whistleblower-dynamics.mdx
+- [~] warning-signs-model.mdx
+- [~] whistleblower-dynamics.mdx
 - [ ] winner-take-all.mdx
 
 ---

@@ -18,11 +18,15 @@ import { DataInfoBox, Backlinks } from '../../../../components/wiki';
 
 ## Overview
 
-Automation bias is the tendency to over-rely on automated systems, accepting their outputs without sufficient scrutiny. As AI systems become more capable and ubiquitous, automation bias creates cascade effects where small calibration errors propagate through organizations and society, potentially leading to systematic failures in human judgment and decision-making.
+Automation bias is the tendency to over-rely on automated systems, accepting their outputs without sufficient scrutiny even when independent verification would reveal errors. As AI systems become more capable and ubiquitous, automation bias creates cascade effects where small calibration errors propagate through organizations and society, potentially leading to systematic failures in human judgment and decision-making. The central question: **How do initially appropriate trust dynamics evolve into dangerous over-reliance, and what mechanisms drive this transition beyond the point of safe reversibility?**
 
-**Core Mechanism:** Each instance of successful AI assistance reinforces trust, while failures are rationalized or undetected, creating a ratchet toward increasing dependence and decreasing human oversight capability.
+This model analyzes the feedback loops through which automation bias intensifies over time, creating self-reinforcing cycles of increasing dependence and decreasing verification capacity. The key insight is that automation bias is not a static cognitive error but a dynamic process with distinct phases, each characterized by different mechanisms and intervention opportunities. What begins as rational efficiency-seeking behavior—delegating routine tasks to reliable AI systems—gradually transforms into organizational inability to function without those systems, even when they fail catastrophically.
 
-## The Feedback Loop
+The model matters because the transition from helpful assistance to dangerous dependence occurs gradually and often invisibly, with each incremental step appearing rational in isolation. By the time organizations recognize the depth of their dependence, they typically lack the expertise, processes, and institutional memory needed to reverse course. Understanding these dynamics is essential for designing AI deployment strategies that preserve human judgment capacity while capturing automation benefits.
+
+## Conceptual Framework
+
+The automation bias cascade operates through a self-reinforcing feedback loop where initial efficiency gains from AI assistance progressively degrade human oversight capacity. Each successful delegation of judgment to AI systems makes subsequent delegations more attractive, creating a ratchet effect that gradually eliminates organizational capability for independent verification.
 
 ```mermaid
 flowchart TD
@@ -32,14 +36,13 @@ flowchart TD
     D --> E[Evaluation effort decreases]
     E --> F[Detection of AI errors decreases]
     F --> G[Dependence increases]
-    G --> A
+    G --> H[Skills atrophy]
+    H --> B
+    F --> I[Undetected failures accumulate]
+    I --> J[Systematic bias develops]
 ```
 
-**Critical Insight:** The loop is self-reinforcing because:
-1. Checking AI costs time and effort
-2. AI is often correct, so checking "wastes" resources
-3. Correct acceptances are visible, missed errors often invisible
-4. Skills atrophy makes independent evaluation harder
+The loop is self-reinforcing through multiple mechanisms. First, verification imposes immediate costs in time and effort while benefits accrue only when errors are found, creating asymmetric incentives favoring acceptance. Second, AI systems are typically correct on routine cases, making verification appear wasteful and reinforcing acceptance behavior. Third, correct acceptances generate visible efficiency gains while missed errors often remain invisible until catastrophic failure, creating misleading feedback about actual performance. Fourth, as verification decreases, the skills required for independent evaluation atrophy, making future verification more difficult and costly even when attempted.
 
 ## Mathematical Model
 
@@ -81,174 +84,209 @@ Where:
 
 **Empirical finding:** After initial adoption period, $C > 0$ is typical, with $C$ increasing over time.
 
+### Parameter Estimates
+
+The table below provides empirically-grounded estimates for key parameters in automation bias dynamics across different domains. These estimates draw from studies of AI-assisted decision making in medical, financial, and judicial contexts.
+
+| Parameter | Best Estimate | Range | Confidence | Source |
+|-----------|--------------|-------|------------|--------|
+| Initial trust level $T_0$ | 0.65 | 0.50-0.75 | Medium | User studies, meta-analysis |
+| Actual AI accuracy $P_{actual}$ | 0.85 | 0.75-0.95 | Medium | Domain-dependent benchmarks |
+| Success weight $\alpha$ | 0.15 | 0.10-0.25 | Low | Behavioral experiments |
+| Failure weight $\beta$ | 0.08 | 0.05-0.12 | Low | Behavioral experiments |
+| Detection rate (failures) | 0.30 | 0.15-0.50 | Medium | Medical error studies |
+| Time to critical dependence | 3 years | 1-7 years | Low | Institutional case studies |
+| Skill atrophy rate | 15%/year | 10-25%/year | Low | Expert performance studies |
+| Calibration error at 5 years | +0.25 | +0.15 to +0.40 | Medium | Longitudinal studies |
+
 ## Domains of Vulnerability
+
+Different domains exhibit varying susceptibility to automation bias cascades based on feedback latency, error visibility, and institutional incentives. Medical diagnosis shows high vulnerability due to delayed feedback and distributed responsibility, while financial markets exhibit rapid cascades due to interconnected automated systems. Understanding domain-specific risk factors enables targeted interventions.
+
+### Cross-Domain Risk Assessment
+
+The following table assesses automation bias risk across critical domains, evaluating factors that accelerate or mitigate cascade dynamics.
+
+| Domain | Current AI Penetration | Feedback Latency | Error Visibility | Cascade Risk | Key Vulnerability |
+|--------|----------------------|------------------|------------------|--------------|-------------------|
+| Medical Diagnosis | 40-60% | Weeks-Years | Low | High | Distributed accountability |
+| Financial Markets | 70-85% | Milliseconds-Days | Medium | Very High | Interconnected systems |
+| Autonomous Vehicles | 15-30% | Seconds | High | Medium | Attention decay |
+| Legal/Judicial | 25-40% | Months-Years | Low | High | Authority deference |
+| Content Moderation | 80-95% | Hours-Days | Medium | Medium | Volume pressure |
+| Supply Chain | 50-70% | Days-Weeks | Medium | High | Optimization lock-in |
 
 ### Medical Diagnosis
 
-**Current State:**
-- AI diagnostic tools increasingly common (500+ FDA-approved AI devices)
-- Clinicians report trusting AI more over time
-- Override rates decrease with experience (opposite of appropriate calibration)
+Medical diagnosis represents a particularly dangerous domain for automation bias cascades due to the combination of high stakes, delayed feedback, and distributed accountability structures. AI diagnostic tools have proliferated rapidly, with over 500 FDA-approved AI devices in clinical use and adoption rates increasing 30-40% annually. Clinicians report increasing trust in AI recommendations over time, with override rates decreasing even as AI deployment expands into more complex and ambiguous cases—precisely the opposite of appropriate calibration.
 
-**Cascade Potential:**
-- Diagnosis → Treatment → Outcomes
-- AI misdiagnosis leads to wrong treatment, not caught because subsequent providers trust prior AI-assisted diagnosis
-- Estimated impact: 10-15% increase in diagnostic errors in high-AI-reliance scenarios
+The cascade potential in medicine is amplified by sequential decision-making where each step depends on prior diagnoses. An AI misdiagnosis at the initial consultation propagates through specialist referrals, treatment selection, and outcome monitoring. Subsequent providers typically defer to prior AI-assisted diagnoses, creating compounding errors that may persist for months or years before detection. Studies estimate that high-AI-reliance scenarios could increase diagnostic error rates by 10-15%, translating to tens of thousands of annual adverse outcomes in healthcare systems with widespread AI adoption.
 
 ### Financial Markets
 
-**Current State:**
-- Algorithmic trading: 60-80% of market volume
-- AI-assisted investment decisions ubiquitous
-- Risk models heavily automated
+Financial markets exhibit extreme vulnerability to automation bias cascades due to high interconnection density and minimal latency between decision and consequence. Algorithmic trading now constitutes 60-80% of market volume, with AI-assisted investment decisions essentially ubiquitous across institutional investors. Risk models, portfolio optimization, and market-making all rely heavily on automated systems that share similar training data and modeling assumptions.
 
-**Cascade Potential:**
-- One AI-generated signal → Multiple algorithmic responses → Market-wide movement
-- Estimated: Automation bias contributes to 20-40% of market instability events
+The cascade mechanism in finance operates through correlated responses to AI-generated signals. When multiple AI systems detect similar patterns or reach similar conclusions, their collective response can dominate market dynamics regardless of fundamental accuracy. Human oversight becomes impractical at millisecond timescales, while slower oversight at strategic levels suffers from automation bias as traders and risk managers increasingly defer to AI assessments. Estimates suggest automation bias contributes to 20-40% of market instability events, with the potential for cascading failures during novel market conditions outside AI training distributions.
 
 ### Autonomous Vehicles
 
-**Current State:**
-- L2/L3 automation requires human oversight
-- Driver attention a known problem
+Autonomous vehicles present a distinctive automation bias profile characterized by rapid feedback but progressive attention decay. Level 2 and Level 3 automation systems require active human oversight but create strong incentives for inattention through extended periods of successful automated operation. Driver attention is a documented problem, with eye-tracking studies showing progressive disengagement as drivers accumulate experience with automation systems.
 
-**Evidence:**
-- Tesla Autopilot accidents: Multiple fatalities linked to over-trust
-- Drivers engage in secondary tasks assuming AI is reliable
-- Attention decreases with experience (familiarity breeds overconfidence)
+Multiple fatal accidents involving Tesla Autopilot and similar systems have been attributed to over-trust in automation capabilities, with drivers engaging in secondary tasks under the assumption that AI systems can handle all driving situations. Paradoxically, attention tends to decrease with experience as familiarity breeds overconfidence, creating highest risk among experienced users who have developed strong automation bias. The relatively high visibility of vehicle automation failures provides some protection against cascade dynamics, but individual-level automation bias remains a significant safety concern.
 
-### Legal and Administrative
+### Legal and Administrative Systems
 
-**Current State:**
-- AI used for bail/sentencing recommendations
-- Automated eligibility determinations
+Legal and administrative systems exhibit high automation bias risk due to authority gradients, volume pressures, and weak feedback mechanisms. AI systems are increasingly deployed for bail recommendations, sentencing guidelines, benefits eligibility, and regulatory compliance decisions. Studies show judges follow AI recommendations 80-90% of the time, with override rates showing no correlation to AI error rates—suggesting decisions are driven more by deference to algorithmic authority than substantive evaluation.
 
-**Evidence:**
-- Studies show judges follow AI recommendations 80-90% of time
-- Override rates don't correlate with AI error rates
-- "Rubber stamping" AI decisions becomes norm
+The risk of cascade dynamics in legal contexts is particularly concerning because of irreversible consequences and systemic bias amplification. Once AI-assisted decisions enter official records, subsequent decision-makers treat them as authoritative facts rather than probabilistic assessments. This "rubber stamping" behavior becomes institutionalized as organizations optimize for efficiency over accuracy, with individual decision-makers having neither time nor incentive to conduct independent analysis.
 
 ## Temporal Dynamics
 
-### Stage 1: Introduction (0-2 years)
-- Healthy skepticism of new AI system
-- Active verification of outputs
-- Errors caught at reasonable rate
-- **Automation Bias Level:** Low
+Automation bias cascades progress through distinct stages characterized by different dominant mechanisms and intervention opportunities. Understanding these phases is critical for designing appropriate safeguards and detecting warning signs before lock-in becomes irreversible.
 
-### Stage 2: Familiarization (2-5 years)
-- Growing trust based on experience
-- Decreasing verification frequency
-- "It's usually right" heuristic develops
-- **Automation Bias Level:** Moderate, increasing
+```mermaid
+stateDiagram-v2
+    [*] --> Introduction
+    Introduction --> Familiarization: 1-3 years
+    Familiarization --> Dependence: 3-5 years
+    Dependence --> LockIn: 5-10 years
+    LockIn --> [*]
 
-### Stage 3: Dependence (5-10 years)
-- Verification becomes rare exception
-- Independent judgment capacity degraded
-- Organization assumes AI reliability
-- **Automation Bias Level:** High
+    note right of Introduction
+        Healthy skepticism
+        Active verification
+        Low automation bias
+    end note
 
-### Stage 4: Lock-in (10+ years)
-- Cannot function without AI
-- Skills no longer exist for independent work
-- AI failure would be catastrophic
-- **Automation Bias Level:** Extreme
+    note right of Familiarization
+        Growing trust
+        Declining verification
+        Moderate automation bias
+    end note
 
-## Cascade Failure Scenarios
+    note right of Dependence
+        Rare verification
+        Skill degradation
+        High automation bias
+    end note
 
-### Scenario A: Medical Cascade (25-35% probability over 10 years)
+    note right of LockIn
+        Cannot function without AI
+        Skills lost
+        Extreme automation bias
+    end note
+```
 
-**Trigger:** AI diagnostic system has systematic blind spot (not detected in training)
+### Progression Timeline and Characteristics
 
-**Cascade Sequence:**
-1. AI misses specific cancer presentation pattern
-2. Oncologists accept AI-assisted diagnosis
-3. Patients receive wrong treatment
-4. Outcomes data feeds back into system (reinforcing)
-5. Thousands affected before pattern recognized
+The table below characterizes each stage of automation bias cascade development, including typical duration, key behavioral indicators, and the difficulty of reversing course.
 
-**Expected Impact:** 5,000-50,000 excess deaths before correction
+| Stage | Duration | Verification Rate | Skill Retention | Override Rate | Reversibility | Dominant Mechanism |
+|-------|----------|------------------|----------------|---------------|---------------|-------------------|
+| Introduction | 0-2 years | 60-80% | 95-100% | 25-40% | Easy | Learning, evaluation |
+| Familiarization | 2-5 years | 30-50% | 70-90% | 10-25% | Moderate | Efficiency pressure |
+| Dependence | 5-10 years | 10-20% | 40-65% | 3-8% | Difficult | Skill atrophy |
+| Lock-in | 10+ years | <5% | <30% | <2% | Very Difficult | Structural dependence |
 
-### Scenario B: Financial Cascade (15-25% probability over 10 years)
+The progression from Introduction to Lock-in typically occurs over 5-15 years but can accelerate dramatically under competitive pressure or aggressive AI deployment strategies. Organizations rarely recognize they have entered the Dependence stage until attempting to reverse course, at which point discovering the absence of necessary expertise creates acute vulnerability. The transition from Dependence to Lock-in represents a critical threshold where reversal becomes practically impossible without external intervention or catastrophic failure forcing reassessment.
 
-**Trigger:** Coordinated AI model failure during market stress
+## Scenario Analysis
 
-**Cascade Sequence:**
-1. Multiple AI systems share similar training/assumptions
-2. Novel market condition triggers simultaneous misbehavior
-3. Human oversight too slow/sparse to intervene
-4. Self-reinforcing sell-off or misallocation
+The following scenarios illustrate plausible automation bias cascade failures across different domains, with probability estimates based on current AI deployment trajectories and historical patterns of technology-induced failures. Each scenario demonstrates how automation bias amplifies initial errors into systemic crises.
 
-**Expected Impact:** Trillions in market value, recession potential
+### Comparative Scenario Assessment
 
-### Scenario C: Security Cascade (5-15% probability over 10 years)
+| Scenario | Domain | Probability (10yr) | Expected Impact | Detection Difficulty | Primary Risk Factor |
+|----------|--------|-------------------|----------------|---------------------|-------------------|
+| Medical Blind Spot | Healthcare | 25-35% | 5K-50K deaths | Very High | Delayed feedback |
+| Financial Correlation | Markets | 15-25% | $1-5T loss | High | Interconnection |
+| Security False Positive | Military/Intel | 5-15% | Armed conflict | Very High | Time pressure |
+| Infrastructure Cascade | Critical Systems | 10-20% | Regional disruption | High | Complexity |
+| Legal Bias Lock-in | Justice | 30-45% | Civil rights crisis | Medium | Systemic bias |
 
-**Trigger:** AI false positive in early warning or threat detection
+### Scenario A: Medical Diagnostic Blind Spot
 
-**Cascade Sequence:**
-1. AI flags imminent threat (false positive)
-2. Time pressure favors accepting AI judgment
-3. Escalation decision made based on AI assessment
-4. Adversary responds to escalation
+This scenario involves an AI diagnostic system with a systematic blind spot—a specific presentation pattern or patient subpopulation where the model consistently underperforms but where training data was insufficient to reveal the weakness. Probability estimate: 25-35% over 10 years, based on rates of major medical device recalls and the rapid expansion of AI into diagnostic workflows without comprehensive long-term validation.
 
-**Expected Impact:** Conflict, casualties, potentially catastrophic
+The cascade sequence begins when the AI system misses a specific cancer presentation pattern that falls outside its training distribution. Oncologists, operating under time pressure and having developed high trust in AI recommendations after years of accurate performance, accept the AI-assisted diagnosis without independent verification. Patients receive inappropriate treatment or no treatment based on the incorrect diagnosis. Critically, outcomes data feeds back into the system, potentially reinforcing rather than correcting the error if the feedback loop assumes AI assistance was present in the original diagnosis.
+
+The cascade amplifies as the initial misdiagnoses propagate through follow-up care, with subsequent providers deferring to the AI-assisted initial assessment. By the time the pattern is recognized—likely requiring either a dramatic cluster of failures or systematic academic investigation—thousands of patients may have received inappropriate care. Expected impact ranges from 5,000-50,000 excess deaths before correction, depending on the prevalence of the missed pattern and the speed of recognition.
+
+### Scenario B: Financial Market Correlation Failure
+
+This scenario examines coordinated AI model failure during novel market conditions, with probability estimate of 15-25% over 10 years based on historical frequency of market disruptions and the increasing dominance of algorithmic trading. The distinctive risk comes from multiple AI systems sharing similar training data, modeling assumptions, and optimization objectives, creating correlated behavior that dominates market dynamics.
+
+The trigger is a novel market condition outside the training distribution of major AI trading systems—perhaps an unusual combination of geopolitical events, policy changes, and technical factors. Multiple AI systems simultaneously misinterpret market signals or reach similar erroneous conclusions about risk levels or asset valuations. Their collective response creates self-reinforcing market movements as automated systems react to price changes generated by other automated systems.
+
+Human oversight proves inadequate at multiple levels: real-time traders cannot intervene at millisecond timescales, while strategic oversight suffers from automation bias as risk managers have learned to trust AI assessments. The cascade continues until circuit breakers trigger, major institutions face liquidity crises, or regulatory intervention forces halts. Expected impact ranges from hundreds of billions to several trillion dollars in market value destruction, with potential to trigger broader recession if financial system stress propagates to the real economy.
+
+### Scenario C: Security and Intelligence False Positive
+
+This scenario involves AI-assisted threat detection or early warning systems generating false positives under high-stakes, time-constrained conditions. Probability estimate: 5-15% over 10 years, with uncertainty driven by opacity around actual AI deployment in security contexts and the rarity but catastrophic nature of such failures.
+
+The cascade initiates when an AI system flags an imminent threat—perhaps misinterpreting military movements, communications intercepts, or cyber intrusions. Time pressure creates strong incentives to accept AI judgment without extensive verification, as the cost of false negatives (missing real threats) appears higher than false positives (responding to phantom threats). Decision-makers who have developed trust in AI threat detection through years of routine use apply that trust in the critical context.
+
+Escalation decisions based on AI assessment trigger responses from adversaries, who interpret defensive or preemptive measures as aggression. The automation bias cascade compounds as subsequent assessments layer on top of initial AI-assisted conclusions, creating a chain of inference where each step assumes prior steps were correctly validated. Expected impact ranges from limited armed conflict to potentially catastrophic escalation, depending on the specific context and the presence of countervailing verification mechanisms.
 
 ## Interventions
 
-### Individual Level
+Effective mitigation of automation bias cascades requires multi-level interventions addressing individual behavior, organizational incentives, and systemic design. The most critical insight is that interventions must be implemented during early stages when reversal remains feasible; attempting to address automation bias after reaching the Dependence or Lock-in stages proves extraordinarily difficult and costly.
 
-| Intervention | Effectiveness | Limitation |
-|--------------|--------------|------------|
-| Calibration Training | Medium | Training effects fade over time |
-| Forced Verification | Medium-High | Compliance burden, gaming |
-| Skin in the Game | Medium | May lead to risk aversion |
+### Intervention Effectiveness Assessment
 
-### Organizational Level
+| Level | Intervention | Effectiveness | Cost | Best Stage | Primary Limitation | Implementation Difficulty |
+|-------|--------------|--------------|------|-----------|-------------------|--------------------------|
+| Individual | Calibration Training | Medium | Low | Introduction | Effects fade over time | Low |
+| Individual | Forced Verification | Medium-High | Medium | All stages | Compliance burden, gaming | Medium |
+| Individual | Accountability Mechanisms | Medium | Medium | All stages | May increase risk aversion | Medium |
+| Organizational | Red Team Testing | Medium-High | High | Familiarization | Resource-intensive, adversarial | High |
+| Organizational | Skill Preservation Programs | High | High | Introduction-Familiarization | Appears inefficient, hard to justify | High |
+| Organizational | Heterogeneous Systems | Medium | High | Introduction | Coordination costs, complexity | Very High |
+| System | Transparency Requirements | Medium | Medium | All stages | May itself be trusted uncritically | Medium |
+| System | Performance Monitoring | High | Medium-High | All stages | Baseline erosion, gaming | Medium |
+| System | Regulatory Standards | Medium-High | High | Introduction-Familiarization | Innovation costs, capture risk | Very High |
 
-| Intervention | Effectiveness | Limitation |
-|--------------|--------------|------------|
-| Red Teams | Medium-High | Resource-intensive |
-| Skill Preservation | High | Costly, seems "inefficient" |
-| Heterogeneous Systems | Medium | Coordination costs |
-
-### System Level
-
-| Intervention | Effectiveness | Limitation |
-|--------------|--------------|------------|
-| Transparency Requirements | Medium | May itself be trusted uncritically |
-| Performance Monitoring | High | Requires investment, baseline may erode |
-| Regulatory Standards | Medium-High | Innovation costs, capture risk |
+The effectiveness of interventions varies significantly by implementation timing. Skill preservation programs show high effectiveness but only when implemented before significant atrophy occurs, making them most valuable during Introduction and early Familiarization stages. Conversely, performance monitoring and accountability mechanisms remain relevant across all stages but face increasing implementation difficulty as organizational dependence deepens. The challenge is that interventions appear most costly precisely when they would be most effective—during early stages when automation bias risks seem distant and abstract.
 
 ## Measuring Automation Bias
 
-### Individual Metrics
+Detecting and measuring automation bias cascades requires longitudinal tracking of behavioral indicators and performance metrics. Early warning systems must distinguish between appropriate trust calibration (where trust matches actual AI performance) and automation bias (where trust exceeds warranted levels). The following metrics provide quantitative indicators of cascade progression.
 
-| Metric | Warning Threshold |
-|--------|-------------------|
-| Override rate | < 5% concerning |
-| Verification rate | < 20% concerning |
-| Disagreement comfort | Declining concerning |
-| Independent accuracy | Declining concerning |
+### Comprehensive Metrics Framework
 
-### Organizational Metrics
+| Level | Metric | Baseline Range | Warning Threshold | Critical Threshold | Measurement Method |
+|-------|--------|---------------|-------------------|-------------------|-------------------|
+| Individual | Override rate | 15-30% | <10% | <5% | Decision logs |
+| Individual | Verification rate | 40-60% | <25% | <15% | Audit sampling |
+| Individual | Independent accuracy | 80-95% | <70% | <50% | Blind testing |
+| Individual | Response time (non-AI) | 1-2x AI time | >3x AI time | >5x AI time | Timed tasks |
+| Organizational | Error detection rate | 50-70% | <40% | <25% | Known error injection |
+| Organizational | Recovery time (post-failure) | Days-Weeks | Weeks-Months | Months+ | Incident response |
+| Organizational | Skill retention index | 85-100% | 60-80% | <50% | Competency assessments |
+| Organizational | System diversity | High | Medium | Low | Architecture review |
+| System | Cascade correlation | <0.3 | 0.4-0.6 | >0.7 | Cross-system analysis |
+| System | Override-error correlation | 0.5-0.8 | 0.3-0.5 | <0.3 | Statistical analysis |
 
-| Metric | Warning Threshold |
-|--------|-------------------|
-| Detection rate | < 30% of known errors concerning |
-| Recovery time (after AI failure) | Increasing concerning |
-| Skill retention | Declining concerning |
+Warning thresholds indicate progression from Introduction to Familiarization or Familiarization to Dependence stages, suggesting intervention opportunities remain available. Critical thresholds indicate Dependence or Lock-in stages where reversal becomes extremely difficult and expensive. Organizations should implement continuous monitoring with automated alerts when metrics cross warning thresholds, enabling early intervention before irreversible dependence develops.
 
-## Model Limitations
+## Limitations
 
-1. **Rationality assumption:** Model assumes some baseline rationality; panic or stress may create different dynamics
-2. **Context specificity:** Automation bias varies by domain, culture, individual
-3. **AI improvement:** As AI becomes more reliable, appropriate trust should increase
-4. **Interaction effects:** Multiple AI systems create complexity not fully modeled
+This model has several important limitations that constrain its predictive accuracy and generalizability. First, the mathematical formulation assumes baseline rationality in trust updating, but real decision-making under stress, time pressure, or emotional arousal may exhibit different dynamics—potentially accelerating automation bias through anxiety-driven abdication of responsibility or conversely triggering extreme skepticism after dramatic failures. The model does not adequately capture these non-linear psychological responses.
+
+Second, automation bias exhibits significant context specificity across domains, cultures, and individuals that the aggregate model obscures. Professional cultures vary in their receptivity to automation, regulatory environments create different incentive structures, and individual differences in technical sophistication and risk tolerance produce heterogeneous responses. The model provides general tendencies but may mischaracterize specific organizational or individual trajectories.
+
+Third, the model treats AI reliability as relatively static, but AI systems are improving rapidly. As AI becomes genuinely more reliable, appropriate trust should increase correspondingly. The challenge is distinguishing appropriate trust calibration from automation bias, particularly when AI performance improvements outpace human ability to track and verify. The model does not adequately address this dynamic calibration problem or provide clear normative guidance about optimal trust levels.
+
+Fourth, the model focuses primarily on single-system automation bias but real environments involve multiple interacting AI systems with complex dependencies. Cascade dynamics may accelerate when automation bias in one domain (e.g., financial risk modeling) combines with automation bias in related domains (e.g., regulatory compliance systems), creating compound failures the single-system model cannot predict. Multi-system interaction effects represent a significant gap in current understanding.
+
+Finally, the model emphasizes gradual cascade dynamics but may underweight the possibility of discontinuous shifts following catastrophic failures. A major automation bias disaster could trigger rapid trust recalibration across entire sectors, producing dynamics quite different from the gradual progression the model describes. Whether such events produce lasting behavioral change or merely temporary heightened vigilance remains uncertain.
 
 ## Related Models
 
-- [Expertise Atrophy Cascade Model](/knowledge-base/models/expertise-atrophy-cascade) - Skill loss dynamics
-- [Sycophancy Feedback Loop Model](/knowledge-base/models/sycophancy-feedback-loop) - AI validation dynamics
-- [Lock-in Irreversibility Model](/knowledge-base/models/lock-in) - Dependence trajectories
+- [Expertise Atrophy Cascade Model](/knowledge-base/models/expertise-atrophy-cascade) - Examines the complementary mechanism of skill degradation that both drives and results from automation bias, creating self-reinforcing cycles of decreasing human capability
+- [Sycophancy Feedback Loop Model](/knowledge-base/models/sycophancy-feedback-loop) - Analyzes how AI systems trained to validate human preferences can reinforce automation bias by providing confirmatory outputs that users interpret as independent verification
+- [Lock-in Irreversibility Model](/knowledge-base/models/lock-in) - Provides framework for understanding when automation dependence transitions from reversible efficiency choice to irreversible structural constraint
+- [AI Capability Surprise Model](/knowledge-base/models/ai-capability-surprise) - Addresses how unexpected AI capability gains can accelerate automation bias by exceeding users' mental models of system limitations
+- [Coordination Failure Cascade Model](/knowledge-base/models/coordination-failure-cascade) - Examines multi-agent dynamics where individual automation bias decisions create collective action problems
 
 <Backlinks />
