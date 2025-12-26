@@ -6820,7 +6820,7 @@
     - information-silos
   lastUpdated: 2025-12
 
-- id: racing-dynamics
+- id: racing-dynamics-model
   type: model
   title: Racing Dynamics Game Theory Model
   description: Game-theoretic analysis of competitive pressures in AI development, modeling safety-capability tradeoffs as prisoner's dilemma with asymmetric payoffs.
@@ -6849,7 +6849,7 @@
     - structural-risks
   lastUpdated: 2025-12
 
-- id: multipolar-trap
+- id: multipolar-trap-model
   type: model
   title: Multipolar Trap Coordination Model
   description: Systems analysis of collective action failures where rational individual action produces collectively catastrophic outcomes in AI development.
@@ -6878,7 +6878,7 @@
     - structural-risks
   lastUpdated: 2025-12
 
-- id: winner-take-all
+- id: winner-take-all-model
   type: model
   title: Winner-Take-All Market Dynamics Model
   description: Economic analysis of power law distributions and market concentration in AI, examining superstar economics and increasing returns to scale.
@@ -6907,7 +6907,7 @@
     - structural-risks
   lastUpdated: 2025-12
 
-- id: concentration-of-power
+- id: concentration-of-power-model
   type: model
   title: Concentration of Power Systems Model
   description: Systems dynamics analysis of power accumulation mechanisms across economic, political, military, and informational domains through AI.
@@ -6939,7 +6939,7 @@
     - structural-risks
   lastUpdated: 2025-12
 
-- id: lock-in
+- id: lock-in-model
   type: model
   title: Lock-in Irreversibility Model
   description: Analysis of irreversible transitions and path dependencies in AI development, examining value, political, technical, economic, and cognitive lock-in mechanisms.
@@ -6971,7 +6971,7 @@
     - long-term
   lastUpdated: 2025-12
 
-- id: economic-disruption
+- id: economic-disruption-model
   type: model
   title: Economic Disruption Structural Model
   description: Macroeconomic analysis of AI-driven labor market transformations, examining displacement dynamics, inequality, and transition challenges.
@@ -7003,7 +7003,7 @@
     - structural-risks
   lastUpdated: 2025-12
 
-- id: proliferation
+- id: proliferation-model
   type: model
   title: AI Capability Proliferation Model
   description: Diffusion dynamics and control challenges for advanced AI capabilities, analyzing spread mechanisms and governance interventions.
@@ -7182,7 +7182,7 @@
     - id: irreversibility
       type: risk-factor
       relationship: related
-    - id: lock-in
+    - id: lock-in-model
       type: model
       relationship: related
   tags:
@@ -7246,6 +7246,20 @@
   type: model
   title: Automation Bias Cascade Model
   description: Analysis of over-reliance dynamics and calibration failures in human-AI systems
+  customFields:
+    - label: Model Type
+      value: Cascade Analysis
+    - label: Target Risk
+      value: Automation Bias
+    - label: Key Insight
+      value: Human-AI calibration failures create self-reinforcing patterns of over-reliance
+  relatedEntries:
+    - id: expertise-atrophy
+      type: risk-factor
+      relationship: related
+    - id: erosion-of-agency
+      type: risk
+      relationship: related
   tags:
     - human-ai-interaction
     - cognitive-bias
@@ -7256,6 +7270,20 @@
   type: model
   title: Cyber Psychosis Cascade Model
   description: Models how AI-generated content can trigger psychological distress cascades in vulnerable populations
+  customFields:
+    - label: Model Type
+      value: Population Risk Model
+    - label: Target Risk
+      value: Mental Health Impacts
+    - label: Key Insight
+      value: AI-generated content can trigger cascading psychological effects in vulnerable populations
+  relatedEntries:
+    - id: deepfakes
+      type: risk
+      relationship: related
+    - id: disinformation
+      type: risk
+      relationship: related
   tags:
     - mental-health
     - synthetic-media
@@ -7266,6 +7294,20 @@
   type: model
   title: Fraud Sophistication Curve Model
   description: Analyzes how AI enables fraud evolution and escalation dynamics over time
+  customFields:
+    - label: Model Type
+      value: Capability Progression
+    - label: Target Risk
+      value: AI-Enabled Fraud
+    - label: Key Insight
+      value: AI democratizes sophisticated fraud techniques, shifting the capability curve
+  relatedEntries:
+    - id: deepfakes
+      type: risk
+      relationship: related
+    - id: disinformation
+      type: risk
+      relationship: related
   tags:
     - fraud
     - crime
@@ -7276,6 +7318,13 @@
   type: model
   title: Intervention Effectiveness Matrix
   description: Framework for comparing AI safety interventions across dimensions of effectiveness, tractability, and neglectedness
+  customFields:
+    - label: Model Type
+      value: Prioritization Framework
+    - label: Scope
+      value: All AI Safety Interventions
+    - label: Key Insight
+      value: Interventions vary dramatically in cost-effectiveness across dimensions
   tags:
     - interventions
     - effectiveness
@@ -7286,6 +7335,20 @@
   type: model
   title: Lab Incentives Model
   description: Analysis of competitive dynamics and incentive structures facing frontier AI labs
+  customFields:
+    - label: Model Type
+      value: Incentive Analysis
+    - label: Target Actor
+      value: Frontier AI Labs
+    - label: Key Insight
+      value: Lab incentives systematically diverge from social optimum under competition
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk-factor
+      relationship: related
+    - id: multipolar-trap
+      type: risk-factor
+      relationship: related
   tags:
     - racing-dynamics
     - incentives
@@ -7296,6 +7359,13 @@
   type: model
   title: Risk Interaction Matrix
   description: Framework for understanding how different AI risks interact and compound
+  customFields:
+    - label: Model Type
+      value: Interaction Framework
+    - label: Scope
+      value: Cross-risk Analysis
+    - label: Key Insight
+      value: Risks rarely occur in isolation; interactions can amplify or mitigate effects
   tags:
     - risk-interactions
     - compounding-risks
@@ -7306,6 +7376,13 @@
   type: model
   title: Safety Research Value Model
   description: Cost-effectiveness analysis of AI safety research as an intervention
+  customFields:
+    - label: Model Type
+      value: Cost-Effectiveness Analysis
+    - label: Scope
+      value: Safety Research ROI
+    - label: Key Insight
+      value: Safety research value depends critically on timing relative to capability progress
   tags:
     - cost-effectiveness
     - research-priorities
@@ -7316,6 +7393,17 @@
   type: model
   title: Capabilities-to-Safety Pipeline Model
   description: Analysis of researcher transitions from capabilities to safety work and pipeline dynamics
+  customFields:
+    - label: Model Type
+      value: Talent Pipeline Analysis
+    - label: Target Factor
+      value: Safety Researcher Supply
+    - label: Key Insight
+      value: Capabilities researchers are the primary talent pool for safety work
+  relatedEntries:
+    - id: safety-researcher-gap
+      type: model
+      relationship: related
   tags:
     - talent
     - field-building
@@ -7326,6 +7414,20 @@
   type: model
   title: Compounding Risks Analysis Model
   description: Framework for understanding how multiple AI risks compound and interact non-linearly
+  customFields:
+    - label: Model Type
+      value: Systems Analysis
+    - label: Scope
+      value: Multi-Risk Interactions
+    - label: Key Insight
+      value: Combined risks often exceed the sum of individual risks due to non-linear interactions
+  relatedEntries:
+    - id: risk-interaction-matrix
+      type: model
+      relationship: related
+    - id: risk-cascade-pathways
+      type: model
+      relationship: related
   tags:
     - risk-interactions
     - compounding-effects
@@ -7336,6 +7438,13 @@
   type: model
   title: Defense in Depth Model
   description: Multi-layer defense framework for AI safety and security
+  customFields:
+    - label: Model Type
+      value: Defense Framework
+    - label: Scope
+      value: Layered Safety Architecture
+    - label: Key Insight
+      value: Multiple independent safety layers provide robustness against single-point failures
   tags:
     - defense
     - security
@@ -7346,6 +7455,17 @@
   type: model
   title: Institutional Adaptation Speed Model
   description: Analysis of how quickly institutions can adapt to AI changes relative to technology speed
+  customFields:
+    - label: Model Type
+      value: Adaptation Dynamics
+    - label: Target Factor
+      value: Governance Gap
+    - label: Key Insight
+      value: Institutional adaptation typically lags technology by 5-15 years, creating persistent governance gaps
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk-factor
+      relationship: related
   tags:
     - institutions
     - adaptation
@@ -7356,6 +7476,20 @@
   type: model
   title: International Coordination Game Model
   description: Game-theoretic analysis of international AI governance coordination challenges
+  customFields:
+    - label: Model Type
+      value: Game Theory
+    - label: Scope
+      value: International Governance
+    - label: Key Insight
+      value: International AI coordination faces prisoner's dilemma dynamics with verification challenges
+  relatedEntries:
+    - id: multipolar-trap
+      type: risk-factor
+      relationship: related
+    - id: racing-dynamics
+      type: risk-factor
+      relationship: related
   tags:
     - game-theory
     - international-coordination
@@ -7366,6 +7500,13 @@
   type: model
   title: Media-Policy Feedback Loop Model
   description: Analysis of how media coverage and policy development interact in AI governance
+  customFields:
+    - label: Model Type
+      value: Feedback Loop Analysis
+    - label: Target Factor
+      value: Media-Policy Dynamics
+    - label: Key Insight
+      value: Media coverage and policy responses create reinforcing cycles that can accelerate or delay governance
   tags:
     - media
     - policy
@@ -7376,6 +7517,13 @@
   type: model
   title: Post-Incident Recovery Model
   description: Framework for understanding recovery dynamics after AI incidents
+  customFields:
+    - label: Model Type
+      value: Recovery Dynamics
+    - label: Scope
+      value: Incident Response
+    - label: Key Insight
+      value: Recovery time and completeness depend on incident severity, preparedness, and system design
   tags:
     - incidents
     - recovery
@@ -7386,6 +7534,17 @@
   type: model
   title: Public Opinion Evolution Model
   description: Analysis of how public attitudes toward AI risk evolve over time
+  customFields:
+    - label: Model Type
+      value: Attitude Dynamics
+    - label: Target Factor
+      value: Public Perception
+    - label: Key Insight
+      value: Public opinion on AI risk follows event-driven cycles with gradual baseline shifts
+  relatedEntries:
+    - id: media-policy-feedback-loop
+      type: model
+      relationship: related
   tags:
     - public-opinion
     - attitudes
@@ -7396,6 +7555,20 @@
   type: model
   title: Risk Cascade Pathways Model
   description: Mapping how AI risks can cascade through interconnected systems
+  customFields:
+    - label: Model Type
+      value: Cascade Mapping
+    - label: Scope
+      value: Risk Propagation
+    - label: Key Insight
+      value: Risks propagate through system interdependencies, often in non-obvious paths
+  relatedEntries:
+    - id: compounding-risks-analysis
+      type: model
+      relationship: related
+    - id: risk-interaction-network
+      type: model
+      relationship: related
   tags:
     - cascades
     - risk-pathways
@@ -7406,6 +7579,20 @@
   type: model
   title: Risk Interaction Network Model
   description: Network analysis of how AI risks are connected and influence each other
+  customFields:
+    - label: Model Type
+      value: Network Analysis
+    - label: Scope
+      value: Risk Dependencies
+    - label: Key Insight
+      value: Risk network structure reveals critical nodes and amplification pathways
+  relatedEntries:
+    - id: risk-cascade-pathways
+      type: model
+      relationship: related
+    - id: compounding-risks-analysis
+      type: model
+      relationship: related
   tags:
     - networks
     - risk-interactions
@@ -7416,6 +7603,17 @@
   type: model
   title: Safety-Capability Tradeoff Model
   description: Analysis of tradeoffs between safety measures and capability development
+  customFields:
+    - label: Model Type
+      value: Tradeoff Analysis
+    - label: Scope
+      value: Safety vs Capability
+    - label: Key Insight
+      value: Some safety measures reduce capabilities while others are complementary; distinguishing is crucial
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk-factor
+      relationship: related
   tags:
     - tradeoffs
     - safety
@@ -7426,6 +7624,20 @@
   type: model
   title: Safety Research Allocation Model
   description: Framework for optimal allocation of safety research resources across problems
+  customFields:
+    - label: Model Type
+      value: Resource Optimization
+    - label: Scope
+      value: Research Prioritization
+    - label: Key Insight
+      value: Optimal allocation depends on problem tractability, neglectedness, and time-sensitivity
+  relatedEntries:
+    - id: safety-research-value
+      type: model
+      relationship: related
+    - id: intervention-effectiveness-matrix
+      type: model
+      relationship: related
   tags:
     - resource-allocation
     - research-priorities
@@ -7436,6 +7648,17 @@
   type: model
   title: Safety Researcher Gap Model
   description: Analysis of the gap between safety researcher supply and demand
+  customFields:
+    - label: Model Type
+      value: Supply-Demand Analysis
+    - label: Target Factor
+      value: Safety Talent
+    - label: Key Insight
+      value: Safety researcher demand is growing faster than supply, creating widening gaps
+  relatedEntries:
+    - id: capabilities-to-safety-pipeline
+      type: model
+      relationship: related
   tags:
     - talent
     - field-building
@@ -7446,6 +7669,17 @@
   type: model
   title: Whistleblower Dynamics Model
   description: Analysis of incentives and barriers for AI safety whistleblowing
+  customFields:
+    - label: Model Type
+      value: Incentive Analysis
+    - label: Target Factor
+      value: Transparency Mechanisms
+    - label: Key Insight
+      value: Current incentive structures strongly discourage whistleblowing, creating information asymmetries
+  relatedEntries:
+    - id: lab-incentives-model
+      type: model
+      relationship: related
   tags:
     - whistleblowing
     - incentives

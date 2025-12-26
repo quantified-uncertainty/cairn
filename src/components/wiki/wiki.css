@@ -3460,3 +3460,63 @@
   width: 6px;
   height: 6px;
 }
+
+/* ========================================
+   InfoBox Ratings (Sidebar)
+   ======================================== */
+
+.wiki-infobox__ratings {
+  border-top: 1px solid var(--sl-color-gray-5);
+  padding-top: 0.75rem;
+}
+
+.wiki-infobox__ratings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wiki-infobox__rating-item {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wiki-infobox__rating-icon {
+  color: var(--sl-color-gray-3);
+}
+
+.wiki-infobox__rating-label {
+  font-size: 0.75rem;
+  color: var(--sl-color-gray-2);
+}
+
+.wiki-infobox__rating-bar {
+  position: relative;
+  width: 50px;
+  height: 6px;
+  background: var(--sl-color-gray-5);
+  border-radius: 3px;
+  overflow: visible;
+}
+
+.wiki-infobox__rating-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.wiki-infobox__rating-value {
+  position: absolute;
+  right: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--sl-color-gray-2);
+}

@@ -5,11 +5,18 @@ sidebar:
   order: 25
 quality: 4
 lastEdited: "2025-12-25"
+ratings:
+  novelty: 4
+  rigor: 4
+  actionability: 4
+  completeness: 5
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, ModelRatings } from '../../../../components/wiki';
 
 <DataInfoBox entityId="proliferation-risk-model" />
+
+<ModelRatings ratings={frontmatter.ratings} />
 
 ## Overview
 

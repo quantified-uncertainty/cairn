@@ -5,11 +5,18 @@ sidebar:
   order: 22
 quality: 4
 lastEdited: "2025-12-25"
+ratings:
+  novelty: 4       # Novel threshold framework for speed-based control loss
+  rigor: 4         # Strong empirical grounding (Flash Crash data, reaction time studies)
+  actionability: 4 # Clear interventions (speed limits, circuit breakers) with tradeoffs
+  completeness: 5  # Comprehensive 5-threshold model with domain analysis and projections
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, ModelRatings } from '../../../../components/wiki';
 
 <DataInfoBox entityId="flash-dynamics-threshold" />
+
+<ModelRatings ratings={frontmatter.ratings} />
 
 ## Overview
 

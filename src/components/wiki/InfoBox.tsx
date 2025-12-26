@@ -1,5 +1,13 @@
 import React from 'react';
+import { Lightbulb, FlaskConical, Target, CheckCircle2 } from 'lucide-react';
 import './wiki.css';
+
+export interface ModelRatingsData {
+  novelty?: number;
+  rigor?: number;
+  actionability?: number;
+  completeness?: number;
+}
 
 export type EntityType =
   | 'lab-frontier'
@@ -78,6 +86,9 @@ interface InfoBoxProps {
   // Related content
   relatedTopics?: string[];
   relatedEntries?: RelatedEntry[];
+
+  // Model-specific ratings
+  ratings?: ModelRatingsData;
 }
 
 const typeLabels: Record<EntityType, { label: string; color: string }> = {
@@ -100,6 +111,20 @@ const typeLabels: Record<EntityType, { label: string; color: string }> = {
 };
 
 const defaultTypeInfo = { label: 'Entry', color: '#6b7280' };
+
+// Compact rating bar for sidebar display
+function RatingBar({ value, max = 5 }: { value: number; max?: number }) {
+  const percentage = (value / max) * 100;
+  return (
+    <div className="wiki-infobox__rating-bar">
+      <div
+        className="wiki-infobox__rating-bar-fill"
+        style={{ width: `${percentage}%` }}
+      />
+      <span className="wiki-infobox__rating-value">{value}</span>
+    </div>
+  );
+}
 
 const severityColors: Record<string, string> = {
   low: '#22c55e',
@@ -150,6 +175,7 @@ export function InfoBox({
   customFields,
   relatedTopics,
   relatedEntries,
+  ratings,
 }: InfoBoxProps) {
   const typeInfo = typeLabels[type] || defaultTypeInfo;
 
@@ -281,6 +307,42 @@ export function InfoBox({
                 </a>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {ratings && Object.values(ratings).some(v => v !== undefined) && (
+        <div className="wiki-infobox__section wiki-infobox__ratings">
+          <div className="wiki-infobox__section-title">Model Quality</div>
+          <div className="wiki-infobox__ratings-grid">
+            {ratings.novelty !== undefined && (
+              <div className="wiki-infobox__rating-item">
+                <Lightbulb size={14} className="wiki-infobox__rating-icon" />
+                <span className="wiki-infobox__rating-label">Novelty</span>
+                <RatingBar value={ratings.novelty} />
+              </div>
+            )}
+            {ratings.rigor !== undefined && (
+              <div className="wiki-infobox__rating-item">
+                <FlaskConical size={14} className="wiki-infobox__rating-icon" />
+                <span className="wiki-infobox__rating-label">Rigor</span>
+                <RatingBar value={ratings.rigor} />
+              </div>
+            )}
+            {ratings.actionability !== undefined && (
+              <div className="wiki-infobox__rating-item">
+                <Target size={14} className="wiki-infobox__rating-icon" />
+                <span className="wiki-infobox__rating-label">Actionability</span>
+                <RatingBar value={ratings.actionability} />
+              </div>
+            )}
+            {ratings.completeness !== undefined && (
+              <div className="wiki-infobox__rating-item">
+                <CheckCircle2 size={14} className="wiki-infobox__rating-icon" />
+                <span className="wiki-infobox__rating-label">Completeness</span>
+                <RatingBar value={ratings.completeness} />
+              </div>
+            )}
           </div>
         </div>
       )}

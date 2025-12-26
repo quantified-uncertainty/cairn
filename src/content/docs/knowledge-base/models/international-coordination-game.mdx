@@ -12,9 +12,18 @@ relatedModels:
 relatedRisks:
   - concentration-of-power
   - authoritarian-takeover
+ratings:
+  novelty: 3       # Applies game theory to AI coordination - not novel in isolation
+  rigor: 3         # Qualitative game analysis without formal modeling
+  actionability: 4 # Specific intervention tracks (Track 1/2/3) and leverage points
+  completeness: 4  # Good coverage of players, scenarios, and stability conditions
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, ModelRatings } from '../../../../components/wiki';
+
+<DataInfoBox entityId="international-coordination-game" />
+
+<ModelRatings ratings={frontmatter.ratings} />
 
 ## Overview
 

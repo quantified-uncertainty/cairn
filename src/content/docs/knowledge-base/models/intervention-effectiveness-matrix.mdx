@@ -5,11 +5,18 @@ sidebar:
   order: 35
 quality: 3
 lastEdited: "2025-12-26"
+ratings:
+  novelty: 3       # Matrix format is practical but not conceptually novel
+  rigor: 2         # Effectiveness ratings lack supporting evidence/citations
+  actionability: 5 # Directly actionable - shows which interventions address which risks
+  completeness: 3  # Good coverage of interventions but gap analysis is brief
 ---
 
-import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, KeyQuestions, ModelRatings } from '../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-effectiveness-matrix" />
+
+<ModelRatings ratings={frontmatter.ratings} />
 
 ## Overview
 

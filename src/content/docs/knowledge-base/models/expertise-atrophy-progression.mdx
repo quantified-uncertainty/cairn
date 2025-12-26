@@ -5,11 +5,18 @@ sidebar:
   order: 23
 quality: 4
 lastEdited: "2025-12-25"
+ratings:
+  novelty: 4       # Original 5-phase progression model with threshold analysis
+  rigor: 4         # Good empirical grounding (Air France 447, GPS studies, citations)
+  actionability: 5 # Clear intervention points at each phase with specific recommendations
+  completeness: 5  # Comprehensive coverage with domain timelines and policy recommendations
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, ModelRatings } from '../../../../components/wiki';
 
 <DataInfoBox entityId="expertise-atrophy-progression" />
+
+<ModelRatings ratings={frontmatter.ratings} />
 
 ## Overview
 

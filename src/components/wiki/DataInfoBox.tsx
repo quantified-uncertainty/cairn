@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { InfoBox, type EntityType } from './InfoBox';
+import { InfoBox, type EntityType, type ModelRatingsData } from './InfoBox';
 import { Sources } from './Sources';
 import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData } from '../../data';
 
@@ -61,6 +61,7 @@ interface DataInfoBoxProps {
   relatedTopics?: string[];
   relatedEntries?: RelatedEntry[];
   sources?: { title: string; url?: string; author?: string; date?: string }[];
+  ratings?: ModelRatingsData;
 }
 
 export function DataInfoBox({

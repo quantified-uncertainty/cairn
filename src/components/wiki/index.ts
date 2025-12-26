@@ -1,5 +1,5 @@
 export { InfoBox } from './InfoBox';
-export type { EntityType } from './InfoBox';
+export type { EntityType, ModelRatingsData } from './InfoBox';
 
 export { EntityLink, MultiEntityLinks } from './EntityLink';
 export { EntityCard, EntityCards } from './EntityCard';
