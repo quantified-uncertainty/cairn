@@ -58,6 +58,8 @@ export { RiskRelationshipDiagram } from './RiskRelationshipDiagram';
 
 // Analytical models
 export { ModelsList } from './ModelsList';
+export { ModelRatings } from './ModelRatings';
+export type { ModelRatingsData } from './ModelRatings';
 
 // Editorial / page management
 export { PageStatus } from './PageStatus';
