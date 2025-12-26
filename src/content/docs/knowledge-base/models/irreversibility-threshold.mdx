@@ -90,7 +90,17 @@ Fully Reversible → Costly but Possible → Practically Irreversible → Absolu
 
 Reversal cost $R$ as function of time since deployment $t$:
 
-$$R(t) = R_0 
+$$
+R(t) = R_0 \cdot e^{\alpha t} \cdot (1 + \beta D)
+$$
+
+Where:
+- $R_0$ = Base reversal cost at deployment
+- $\alpha$ = Growth rate of reversal difficulty (typically 0.1-0.5 per year)
+- $t$ = Time since deployment
+- $\beta$ = Dependency multiplier
+- $D$ = Dependency depth (0 to 1)
+
 ## Threshold Analysis
 
 ### Threshold Types
