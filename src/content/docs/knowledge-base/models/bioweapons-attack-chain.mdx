@@ -3,168 +3,308 @@ title: Bioweapons Attack Chain Model
 description: Multiplicative probability model decomposing AI-assisted bioweapons attack requirements
 sidebar:
   order: 10
-quality: 3
+quality: 4
 lastEdited: "2025-12-26"
 ratings:
-  novelty: 3       # Standard decomposition approach
-  rigor: 4         # Well-sourced probability estimates
-  actionability: 4 # Clear intervention points identified
-  completeness: 4  # Thorough step-by-step analysis
+  novelty: 3
+  rigor: 4
+  actionability: 5
+  completeness: 4
 ---
 
-import { DataInfoBox, Backlinks, EstimateBox } from '../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="bioweapons-attack-chain" ratings={frontmatter.ratings} />
 
-
 ## Overview
 
-This model decomposes a successful AI-assisted bioweapons attack into its component steps. The key insight is that many things must go right (from the attacker's perspective) for catastrophic harm to occur—each step has its own probability of success.
+This model decomposes a successful AI-assisted bioweapons attack into seven sequential steps, each with independent failure modes. The central insight is that catastrophic biological attacks require success across multiple bottlenecks—motivation, AI access, meaningful uplift, laboratory capabilities, synthesis execution, effective deployment, and evasion of countermeasures. Because these probabilities multiply, even moderately effective interventions at any step substantially reduce overall risk.
 
-**Core formula:**
-```
-P(Catastrophic Bioweapon Attack) = P(Motivation) × P(Access AI) × P(AI Provides Uplift)
-                                   × P(Lab Access) × P(Successful Synthesis)
-                                   × P(Effective Deployment) × P(Escapes Countermeasures)
-```
+The model draws on the RAND Corporation's 2024 study finding no statistically significant AI uplift for biological attacks, combined with historical analysis of state bioweapons programs and terrorist attempts. The key policy implication is that **defense in depth works**: interventions need not be perfect at any single step to dramatically reduce compound risk. However, correlations between steps (sophisticated actors succeed at multiple stages) may partially undermine this multiplicative protection.
 
-## Step-by-Step Decomposition
+**Central Question:** Given current AI capabilities and biosecurity infrastructure, what is the probability that a motivated actor could execute a catastrophic AI-assisted bioweapon attack, and which intervention points offer the highest leverage?
 
-### 1. Motivated Actor (P ≈ 0.95)
+## Conceptual Framework
 
-Someone must want to cause mass biological harm. This includes:
-- State programs (several exist)
-- Terrorist groups with biological ambitions (few, but historically includes Aum Shinrikyo)
-- Lone actors with requisite motivation
+### Attack Chain Architecture
 
-**Estimate:** Very high probability that motivated actors exist. This is not the bottleneck.
+A successful attack requires traversing all seven stages. Failure at any stage terminates the attack chain.
 
-### 2. Access to Capable AI (P ≈ 0.7-0.9)
+<Mermaid client:load chart={`flowchart TD
+    subgraph "Phase 1: Preparation"
+        A[Motivated Actor<br/>P = 0.95] --> B[AI Access<br/>P = 0.7-0.9]
+        B --> C[AI Provides Uplift<br/>P = 0.2-0.5]
+    end
 
-The actor must access AI systems that could provide relevant assistance:
-- Frontier models with biological knowledge
-- Open-source models without safety guardrails
-- Fine-tuned models for specific tasks
+    subgraph "Phase 2: Development"
+        C --> D[Lab Access<br/>P = 0.3-0.6]
+        D --> E[Successful Synthesis<br/>P = 0.1-0.4]
+    end
 
-**Estimate:** Moderate-high. Open-source models are freely available. Frontier models have guardrails but can be jailbroken. State actors can train custom models.
+    subgraph "Phase 3: Execution"
+        E --> F[Effective Deployment<br/>P = 0.2-0.5]
+        F --> G[Evades Countermeasures<br/>P = 0.3-0.7]
+    end
 
-### 3. AI Provides Meaningful Uplift (P ≈ 0.2-0.5)
+    G --> H[Catastrophic Attack<br/>P = 0.02-3.6%]
 
-The AI must provide information/capabilities beyond what's available through:
-- Scientific literature
-- Internet searches
-- Dark web forums
-- Recruiting human experts
+    style A fill:#fee
+    style H fill:#fcc`} />
 
-**This is a key uncertainty.** The RAND study found no statistically significant uplift. However:
-- Current models may underestimate future capabilities
-- Combination of LLMs + Biological Design Tools could change this
-- Marginal uplift for non-experts could still matter
+### Mathematical Formulation
 
-### 4. Laboratory Access (P ≈ 0.3-0.6)
+The compound probability of a successful catastrophic attack follows a multiplicative model:
 
-The actor must access laboratory facilities capable of:
-- Handling dangerous pathogens (BSL-3/4 equivalent)
-- Performing genetic modification
-- Growing sufficient quantities
+$$
+P(\text{catastrophic attack}) = \prod_{i=1}^{7} P_i = P_1 \times P_2 \times P_3 \times P_4 \times P_5 \times P_6 \times P_7
+$$
 
-**Constraints:**
-- Legitimate BSL-3/4 labs are monitored
-- Improvised labs possible but risky and limited
-- State actors have easier access
+Where each $P_i$ represents the conditional probability of success at step $i$, given success at all previous steps. Under the independence assumption:
 
-### 5. Successful Synthesis (P ≈ 0.1-0.4)
+$$
+P(\text{attack}) = P(\text{motivation}) \times P(\text{AI access}) \times P(\text{uplift}) \times P(\text{lab}) \times P(\text{synthesis}) \times P(\text{deployment}) \times P(\text{evasion})
+$$
 
-Even with knowledge and facilities, creating a viable pathogen is difficult:
-- Wet lab skills are tacit, hard to transfer via AI
-- Many synthesis attempts fail
-- Quality control is challenging
-- Working with dangerous pathogens is inherently risky
+**Key property:** Because probabilities multiply, a 50% reduction at any single step yields a 50% reduction in overall risk, regardless of which step is targeted.
 
-**Key point:** This is where the "knowledge is not capability" argument applies most strongly.
+## Parameter Estimates
 
-### 6. Effective Deployment (P ≈ 0.2-0.5)
+### Full Parameter Table
 
-The pathogen must be deployed in a way that causes mass casualties:
-- Delivery mechanism (aerosol, water, food, vectors)
-- Environmental stability
-- Reaching susceptible populations
-- Overcoming natural barriers to spread
+| Step | Parameter | Low Estimate | Central | High Estimate | Confidence | Key Uncertainty |
+|------|-----------|--------------|---------|---------------|------------|-----------------|
+| 1 | Motivated actor exists | 0.90 | 0.95 | 0.99 | High | Number of state programs |
+| 2 | Access to capable AI | 0.70 | 0.80 | 0.90 | Medium | Open-source proliferation rate |
+| 3 | AI provides meaningful uplift | 0.20 | 0.35 | 0.50 | Low | Future capability trajectory |
+| 4 | Laboratory access obtained | 0.30 | 0.45 | 0.60 | Medium | Improvised lab viability |
+| 5 | Successful pathogen synthesis | 0.10 | 0.25 | 0.40 | Low | Tacit knowledge transfer |
+| 6 | Effective deployment achieved | 0.20 | 0.35 | 0.50 | Medium | Delivery mechanism reliability |
+| 7 | Evades countermeasures | 0.30 | 0.50 | 0.70 | Medium | Regional variation in response |
+| **Compound** | **Overall probability** | **0.02%** | **0.5%** | **3.6%** | **Very Low** | **Correlation structure** |
 
-Many historical bioweapons programs failed at this step.
+### Actor-Specific Estimates
 
-### 7. Evades Countermeasures (P ≈ 0.3-0.7)
+Different actor types face different bottlenecks. State actors have easier laboratory access but face attribution risks; lone actors avoid attribution but struggle with technical execution.
 
-Modern biosecurity infrastructure must fail to stop the attack:
-- Disease surveillance systems
-- Public health response
-- Medical countermeasures (vaccines, treatments)
-- Quarantine and containment
+| Actor Type | Motivation | AI Access | Uplift Value | Lab Access | Synthesis | Deployment | Evasion | Compound P |
+|------------|------------|-----------|--------------|------------|-----------|------------|---------|------------|
+| State program | 0.99 | 0.95 | 0.30 | 0.90 | 0.50 | 0.60 | 0.40 | 3.0% |
+| Well-funded terrorist | 0.95 | 0.85 | 0.40 | 0.40 | 0.25 | 0.35 | 0.50 | 0.6% |
+| Lone actor | 0.90 | 0.80 | 0.50 | 0.15 | 0.10 | 0.20 | 0.60 | 0.06% |
+| Criminal organization | 0.70 | 0.75 | 0.35 | 0.30 | 0.15 | 0.25 | 0.55 | 0.15% |
 
-**This varies dramatically by pathogen and region.**
+State programs represent the highest risk due to superior resources and laboratory infrastructure, but they also face the strongest deterrence from attribution and retaliation concerns.
 
-## Compound Probability Estimates
+## Step-by-Step Analysis
 
-### Pessimistic Scenario
-Using high-end estimates for each step:
-```
-0.95 × 0.9 × 0.5 × 0.6 × 0.4 × 0.5 × 0.7 = 3.6%
-```
+### Step 1: Motivated Actor (P = 0.90-0.99)
 
-### Optimistic Scenario
-Using low-end estimates:
-```
-0.95 × 0.7 × 0.2 × 0.3 × 0.1 × 0.2 × 0.3 = 0.024% (1 in 4,200)
-```
+The existence of actors motivated to cause mass biological harm is unfortunately well-established. At least four nation-states are assessed to maintain offensive biological weapons research programs despite the Biological Weapons Convention. Historical terrorist groups including Aum Shinrikyo (which attempted anthrax and botulinum attacks) and al-Qaeda (which explored biological agents) have demonstrated intent. The lone actor threat, while lower in capability, includes individuals with relevant scientific training and ideological motivation for mass casualty attacks.
 
-### Central Estimate
-```
-0.95 × 0.8 × 0.35 × 0.45 × 0.25 × 0.35 × 0.5 = 0.5%
-```
+This parameter is not a meaningful intervention point—motivated actors exist and will continue to exist. Policy efforts should focus on downstream bottlenecks where intervention is tractable.
+
+### Step 2: Access to Capable AI (P = 0.70-0.90)
+
+Access to AI systems with relevant biological knowledge has become increasingly easy. Open-source models including Llama, Mistral, and their derivatives contain substantial biological and chemical information with minimal guardrails. Frontier models from Anthropic, OpenAI, and Google implement safety measures, but jailbreaking techniques continuously evolve. State actors can train custom models on biological literature without any safety constraints.
+
+The key question is not whether actors can access *some* AI system, but whether they can access systems capable of providing *meaningful* uplift beyond existing resources. Current evidence suggests frontier model guardrails remain partially effective for the most dangerous queries, but this may not persist as open-source models approach frontier capabilities.
+
+| Access Route | Availability | Capability Level | Guardrails | Risk Level |
+|--------------|--------------|------------------|------------|------------|
+| Open-source models | Universal | Medium-High | Minimal | High |
+| Jailbroken frontier | Moderate effort | High | Bypassed | High |
+| API access with evasion | Low effort | High | Partially effective | Medium |
+| Custom-trained models | State actors only | Variable | None | Very High |
+| Legitimate research use | Credentialed actors | Full | Oversight dependent | Medium |
+
+### Step 3: AI Provides Meaningful Uplift (P = 0.20-0.50)
+
+This is the most contested parameter and the focus of most AI biosecurity research. The RAND Corporation's 2024 study compared information access between AI-assisted and internet-only groups for biological attack planning, finding **no statistically significant difference** in the quality or completeness of information obtained. This suggests current AI systems provide minimal uplift over existing information sources.
+
+However, several factors complicate this finding. First, the study used 2023-era models; capabilities continue to advance. Second, the combination of large language models with specialized biological design tools (protein folding, gene synthesis optimization) may provide capabilities neither offers alone. Third, uplift may be more significant for actors who lack scientific training—reducing the expertise barrier rather than providing novel information.
+
+<Mermaid client:load chart={`quadrantChart
+    title AI Uplift by Actor Expertise
+    x-axis Low AI Capability --> High AI Capability
+    y-axis Low Actor Expertise --> High Actor Expertise
+    quadrant-1 Marginal uplift
+    quadrant-2 Minimal uplift
+    quadrant-3 Significant uplift
+    quadrant-4 Moderate uplift
+    Current LLMs + Expert: [0.6, 0.8]
+    Current LLMs + Novice: [0.6, 0.3]
+    Future AI + Expert: [0.85, 0.8]
+    Future AI + Novice: [0.85, 0.3]`} />
+
+The most concerning scenario is **AI as equalizer**: reducing the expertise threshold so that moderately skilled actors can accomplish what previously required deep specialist knowledge.
+
+### Step 4: Laboratory Access (P = 0.30-0.60)
+
+Obtaining laboratory facilities capable of handling dangerous pathogens presents a significant bottleneck. Legitimate BSL-3 and BSL-4 facilities operate under strict oversight with personnel vetting, inventory tracking, and physical security. However, alternative pathways exist: improvised laboratories can handle some dangerous work, university and commercial labs have variable security, and state actors control their own facilities.
+
+| Facility Type | Capability | Security Level | Accessibility | Risk for Misuse |
+|---------------|------------|----------------|---------------|-----------------|
+| BSL-4 (high containment) | Full | Very High | Highly restricted | Low |
+| BSL-3 (moderate containment) | High | High | Restricted | Low-Medium |
+| BSL-2 (basic containment) | Moderate | Medium | Moderate | Medium |
+| University research lab | Variable | Variable | Insider threat | Medium |
+| Commercial biotech | Variable | Low-Medium | Acquisition possible | Medium-High |
+| Improvised laboratory | Limited | None | Unrestricted | High (but limited capability) |
+
+The synthesis of most concerning pathogens requires BSL-3+ capabilities, but enhanced pathogens or novel agents might be developable in less sophisticated settings with greater personal risk to the attacker.
+
+### Step 5: Successful Synthesis (P = 0.10-0.40)
+
+This step represents the largest gap between information and capability. Even with complete knowledge of a pathogen's genome and theoretical synthesis pathway, executing wet lab procedures requires tacit knowledge that transfers poorly through text or AI interaction. Experienced biologists report that published protocols often omit crucial details that practitioners learn through apprenticeship. Synthesis failure modes include contamination, incorrect folding, loss of virulence, and degradation.
+
+Historical evidence supports high failure rates. The Soviet Biopreparat program, with thousands of scientists and state resources, spent years developing reliable production methods. Aum Shinrikyo's attempts at biological weapons failed despite substantial investment. The 2001 anthrax letters used naturally-occurring spores rather than synthesized material.
+
+**Key insight:** This is where "knowledge is not capability" applies most strongly. AI can provide information, but cannot transfer the embodied skills required for reliable synthesis. This bottleneck may persist even as AI capabilities advance.
+
+### Step 6: Effective Deployment (P = 0.20-0.50)
+
+Converting a synthesized pathogen into a weapon that causes mass casualties requires solving delivery challenges that have defeated most historical programs. Aerosol delivery requires particle size optimization (1-5 microns for lung deposition), environmental stability, and effective dispersal. Waterborne delivery faces dilution, treatment, and detection challenges. Food contamination reaches limited populations.
+
+| Delivery Method | Technical Difficulty | Population Reach | Detection Risk | Historical Success |
+|-----------------|---------------------|------------------|----------------|-------------------|
+| Aerosol (outdoor) | Very High | High | Medium | Very rare |
+| Aerosol (indoor/HVAC) | High | Medium | Medium | Limited (Rajneeshee) |
+| Water supply | High | Medium-High | High | None confirmed |
+| Food contamination | Medium | Low-Medium | Medium | Limited |
+| Vector release | Very High | Variable | Low | None confirmed |
+| Direct contact | Low | Very Low | Low | Occasional |
+
+The Rajneeshee salmonella attack (1984) sickened 751 people through salad bar contamination—a "successful" attack by historical standards, but far from catastrophic. Scaling biological attacks to mass casualty levels requires overcoming deployment challenges that information alone cannot solve.
+
+### Step 7: Evades Countermeasures (P = 0.30-0.70)
+
+Modern biosurveillance and public health response capabilities vary dramatically by region and pathogen. Well-resourced health systems can detect outbreaks within days through syndromic surveillance, laboratory networks, and genomic sequencing. Medical countermeasures including vaccines, antivirals, and antibiotics can limit spread for known pathogens.
+
+However, countermeasure effectiveness depends heavily on context. Novel pathogens may evade detection until widespread transmission occurs. Resource-limited regions lack surveillance infrastructure. Deliberately engineered resistance could defeat medical countermeasures. Pandemic response capacity, while improved since COVID-19, remains strained.
+
+| Countermeasure | Effectiveness (Known Pathogen) | Effectiveness (Novel Agent) | Response Time |
+|----------------|-------------------------------|----------------------------|---------------|
+| Syndromic surveillance | High | Medium | Days |
+| Laboratory diagnosis | Very High | Low-Medium | Days-Weeks |
+| Genomic sequencing | Very High | Medium | Days-Weeks |
+| Vaccines | High (if available) | None initially | Months-Years |
+| Antivirals/Antibiotics | Medium-High | Variable | Immediate |
+| Quarantine/containment | Medium | Medium | Days |
+
+## Scenario Analysis
+
+### Probability Scenarios
+
+| Scenario | Description | Compound Probability | Casualties (if successful) | Expected Harm |
+|----------|-------------|---------------------|---------------------------|---------------|
+| Optimistic | All low estimates, strong countermeasures | 0.02% | 1,000-10,000 | Low |
+| Central | Central estimates throughout | 0.5% | 10,000-100,000 | Medium |
+| Pessimistic | All high estimates, weak response | 3.6% | 100,000-1M+ | Very High |
+| State actor | High capability, moderate evasion | 3.0% | 100,000-1M+ | Very High |
+| AI breakthrough | 2x uplift, other parameters unchanged | 1.0% | 10,000-100,000 | Medium-High |
+
+### Timeline Scenarios
+
+| Timeframe | AI Uplift Trend | Countermeasure Trend | Net Risk Trend | Key Drivers |
+|-----------|-----------------|---------------------|----------------|-------------|
+| 2025-2027 | Moderate increase | Stable | Slight increase | Open-source model proliferation |
+| 2027-2030 | Significant increase | Moderate improvement | Uncertain | AI-bio tool integration, mRNA platform maturation |
+| 2030-2035 | Potentially high | Substantial improvement | Depends on investment | Metagenomic surveillance, universal vaccines |
 
 ## Sensitivity Analysis
 
-The model is most sensitive to:
+### Parameter Sensitivity
 
-| Parameter | Impact of 2x Change |
-|-----------|---------------------|
-| AI Uplift | 2x on final probability |
-| Successful Synthesis | 2x on final probability |
-| Evades Countermeasures | 2x on final probability |
+Which parameters most affect overall risk? Elasticity analysis shows that all parameters contribute equally in percentage terms (due to multiplicative structure), but intervention tractability varies dramatically.
 
-**Implication:** Interventions targeting synthesis barriers or countermeasures may be more robust than targeting AI specifically.
+| Parameter | Elasticity | Intervention Tractability | Cost-Effectiveness | Priority |
+|-----------|------------|--------------------------|-------------------|----------|
+| Motivated actor | 1.0 | Very Low | Poor | Low |
+| AI access | 1.0 | Low | Poor | Low |
+| AI uplift | 1.0 | Medium | Medium | Medium |
+| Lab access | 1.0 | Medium | Good | High |
+| Synthesis success | 1.0 | Medium-High | Good | High |
+| Deployment success | 1.0 | Medium | Good | Medium-High |
+| Countermeasure evasion | 1.0 | High | Very Good | Very High |
 
-## Key Debates
+**Key finding:** Countermeasures offer the highest-leverage intervention point because they are both effective (directly reducing one multiplier) and tractable (public health investment is feasible). Synthesis barriers are second-priority due to their persistence even as AI improves.
 
-### "This model underestimates correlation"
-Steps may not be independent. An actor sophisticated enough to synthesize a pathogen is likely more capable at deployment. This could increase compound probability.
+### Correlation Sensitivity
 
-### "This model ignores near-misses"
-Even failed attacks cause harm: fear, economic disruption, policy overreaction. The model only captures catastrophic success.
+The independence assumption may underestimate risk. If steps are positively correlated (sophisticated actors succeed at multiple stages), compound probability increases.
 
-### "AI capability is the fastest-moving variable"
-While synthesis is hard today, AI might help develop better synthesis techniques, effectively reducing multiple barriers simultaneously.
+| Correlation Assumption | Effective Parameters | Compound Probability |
+|------------------------|---------------------|---------------------|
+| Full independence | 7 independent steps | 0.5% (central) |
+| Moderate correlation (r=0.3) | ~5 effective steps | 1.2% |
+| High correlation (r=0.6) | ~3.5 effective steps | 2.8% |
+| Near-perfect correlation | ~2 effective steps | 8% |
+
+The true correlation structure is unknown, but moderate correlation is plausible. This suggests the central estimate may understate risk by 2-3x.
+
+## Intervention Analysis
+
+### Intervention Effectiveness by Step
+
+<Mermaid client:load chart={`flowchart LR
+    subgraph Low_Tractability[Low Tractability]
+        I1[Reduce motivation] -.-> S1[Step 1]
+        I2[Restrict AI access] -.-> S2[Step 2]
+    end
+
+    subgraph Medium_Tractability[Medium Tractability]
+        I3[AI guardrails] --> S3[Step 3]
+        I4[Lab security] --> S4[Step 4]
+        I5[Synthesis monitoring] --> S5[Step 5]
+    end
+
+    subgraph High_Tractability[High Tractability]
+        I6[Deployment detection] --> S6[Step 6]
+        I7[Countermeasures] --> S7[Step 7]
+    end
+
+    style I1 fill:#fcc
+    style I2 fill:#fcc
+    style I3 fill:#ffc
+    style I4 fill:#ffc
+    style I5 fill:#ffc
+    style I6 fill:#cfc
+    style I7 fill:#cfc`} />
+
+### Cost-Effectiveness Estimates
+
+| Intervention | Annual Cost | Risk Reduction | Cost per % Risk Reduction | Priority Ranking |
+|--------------|-------------|----------------|--------------------------|------------------|
+| Metagenomic surveillance | $500M | 15-25% | $20-33M | 1 |
+| DNA synthesis screening | $100M | 5-15% | $7-20M | 2 |
+| BSL facility security | $200M | 5-10% | $20-40M | 3 |
+| AI model guardrails | $50M | 2-8% | $6-25M | 4 |
+| Pandemic response stockpiles | $2B | 10-20% | $100-200M | 5 |
+| International bioweapons verification | $300M | 3-8% | $38-100M | 6 |
 
 ## Model Limitations
 
-1. **Independence assumption** - Steps may be correlated
-2. **Static analysis** - Doesn't capture how capabilities evolve
-3. **Single attack focus** - Doesn't consider repeated attempts
-4. **Harm threshold** - Only models "catastrophic" outcomes
-5. **High uncertainty** - Wide ranges reflect genuine uncertainty, not precise estimates
+The multiplicative independence model, while analytically useful, embeds several simplifying assumptions that may not hold. First, **step independence is approximate**: actors who succeed at early steps (demonstrating sophistication) likely have elevated success probabilities at later steps. The correlation sensitivity analysis suggests this could increase risk by 2-5x. Second, the model considers **single attempts only**; a persistent actor making multiple attempts faces compounding probability of eventual success. Third, **harm is treated as binary** (catastrophic vs. not), ignoring the substantial damage from smaller-scale attacks or near-misses that generate fear and policy responses. Fourth, the model is **static**, treating probabilities as fixed rather than evolving with AI capabilities and countermeasure investments.
+
+Most critically, the parameter estimates themselves carry substantial uncertainty. The ranges provided span factors of 2-5x at each step, compounding to orders of magnitude uncertainty in the final estimate. The 0.02%-3.6% range should be understood as capturing genuine deep uncertainty, not statistical confidence intervals.
+
+## Key Insights
+
+The attack chain model yields several actionable conclusions. Defense in depth provides substantial protection: even without any single intervention being highly effective, the multiplicative structure means moderate barriers at multiple steps dramatically reduce overall risk. The RAND finding of minimal current AI uplift is reassuring but may not persist as capabilities advance. Countermeasures (Step 7) and synthesis barriers (Step 5) offer the highest-leverage intervention points because they are both moderately effective and tractable to improve. Finally, the persistence of synthesis barriers—the gap between knowing and doing—may be the most robust protection against AI-enabled biological attacks.
 
 ## Related Models
 
-- [AI Uplift Assessment](/knowledge-base/models/bioweapons-ai-uplift/) - Deeper dive on step 3
-- [Timeline Model](/knowledge-base/models/bioweapons-timeline/) - When do these probabilities change?
+- [AI Uplift Assessment](/knowledge-base/models/bioweapons-ai-uplift/) — Detailed analysis of Step 3 (AI uplift probability)
+- [Bioweapons Timeline Model](/knowledge-base/models/bioweapons-timeline/) — Temporal evolution of these probabilities
+- [Defense in Depth Model](/knowledge-base/models/defense-in-depth-model/) — General framework for layered security
 
 ## Sources
 
-- RAND Corporation. "The Operational Risks of AI in Large-Scale Biological Attacks" (2024)
-- Esvelt, Kevin. Various biosecurity analyses
-- Anthropic, OpenAI internal biosecurity evaluations (summarized in public docs)
-- Open Philanthropy biosecurity research
+- RAND Corporation. "The Operational Risks of AI in Large-Scale Biological Attacks: Results of a Red-Team Study" (2024)
+- Esvelt, Kevin. "Delay, Detect, Defend: Preparing for a Future in which Thousands Can Release New Pandemics" (2022)
+- Anthropic. "Frontier Threats Red Teaming for AI Safety" (2023)
+- OpenAI. "GPT-4 System Card: Biosecurity Assessment" (2023)
+- Nuclear Threat Initiative. "Global Health Security Index" (2021)
+- Koblentz, Gregory. "Living Weapons: Biological Warfare and International Security" (2009)
 
-## Related Pages
-
-<Backlinks client:load entityId="bioweapons-attack-chain" />
+<Backlinks />

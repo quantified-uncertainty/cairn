@@ -63,3 +63,6 @@ export type { ModelRatingsData } from './ModelRatings';
 
 // Editorial / page management
 export { PageStatus } from './PageStatus';
+
+// Diagrams
+export { Mermaid } from './Mermaid';
