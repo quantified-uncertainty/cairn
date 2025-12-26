@@ -75,6 +75,12 @@ const CHECKS = [
     script: 'validate-orphaned-files.mjs',
     description: 'Backup files, temp files, empty directories',
   },
+  {
+    id: 'mdx',
+    name: 'MDX Syntax',
+    script: 'validate-mdx-syntax.mjs',
+    description: 'Mermaid components, escaped characters, common errors',
+  },
 ];
 
 /**
