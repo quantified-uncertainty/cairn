@@ -41,61 +41,56 @@ const options = {
   apply: args.includes('--apply'),
 };
 
-const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content. Your task is to grade educational/analytical content about AI risks and safety.
+const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a resource aimed at **expert AI prioritization work** - helping researchers and funders identify and prioritize concrete interventions to reduce AI existential risk.
 
-For each page, provide:
+Score each page on importance (0-100, one decimal place). Be discriminating - use the full range.
 
-1. **importance** (1-5): How significant is this topic for understanding AI existential risk?
-   - 5: Core concept essential for anyone in the field
-   - 4: Important topic that significantly affects risk assessment
-   - 3: Useful context or moderate relevance
-   - 2: Peripheral topic with limited direct relevance
-   - 1: Tangential or very niche
+**Scoring guidelines:**
 
-2. **quality** (1-5): How well-developed and useful is this content?
-   - 5: Comprehensive, well-sourced, publication-ready
-   - 4: Solid content with good depth
-   - 3: Adequate overview, could use more depth
-   - 2: Stub or underdeveloped
-   - 1: Placeholder or minimal content
+90-100: Essential for prioritization decisions. Core intervention strategies, key risk mechanisms, or foundational capabilities that directly inform resource allocation. (Expect ~5-10 pages)
 
-3. **llmSummary**: A 1-2 sentence summary that includes:
-   - What the page covers (methodology/approach)
-   - Key conclusions or findings (with numbers if available)
-   - Example: "This model estimates AI's contribution to bioweapons risk. It finds current LLMs provide 1.3-2.5x uplift for non-experts."
+70-89: High value for practitioners. Concrete responses, major risk categories, critical capabilities. Directly actionable or necessary context for action. (Expect ~30-50 pages)
 
-4. **For model pages only**, also provide ratings:
-   - novelty (1-5): How much does this add beyond existing frameworks?
-   - rigor (1-5): How well-supported and internally consistent?
-   - actionability (1-5): How useful for decision-making?
-   - completeness (1-5): How thoroughly does it cover its domain?
+50-69: Useful context. Supporting analysis, secondary risks, background on actors/institutions. Helps round out understanding. (Expect ~80-100 pages)
 
-Respond with valid JSON only, no markdown formatting.`;
+30-49: Reference material. Historical context, individual profiles, niche topics. Useful for specialists, not core prioritization. (Expect ~60-80 pages)
+
+0-29: Peripheral. Internal docs, tangential topics, stubs. (Expect ~30-50 pages)
+
+**Category adjustments (apply to your base assessment):**
+- Responses/interventions (technical safety, governance, policy): +10 (actionable)
+- Capabilities (what AI can do): +5 (foundational for risk assessment)
+- Core risks (accident, misuse): +5 (direct relevance)
+- Risk factors: 0 (contributing factors)
+- Models/analysis: -5 (meta-level, not direct prioritization)
+- Arguments/debates: -10 (discourse, not action)
+- People/organizations: -15 (reference material)
+- Internal/infrastructure: -30
+
+Also provide:
+- **quality** (1-5): How well-developed is this content?
+- **llmSummary**: 1-2 sentences with methodology AND conclusions (include numbers if available)
+
+Respond with valid JSON only, no markdown.`;
 
 const USER_PROMPT_TEMPLATE = `Grade this content page:
 
 **File path**: {{filePath}}
 **Category**: {{category}}
-**Current title**: {{title}}
-**Is a model page**: {{isModel}}
+**Title**: {{title}}
+**Description**: {{description}}
 
 ---
-CONTENT:
+CONTENT (first ~1000 words):
 {{content}}
 ---
 
-Respond with JSON in this exact format:
+Respond with JSON:
 {
-  "importance": <1-5>,
+  "importance": <0-100, one decimal>,
   "quality": <1-5>,
-  "llmSummary": "<1-2 sentences>",
-  "ratings": { // only if isModel is true
-    "novelty": <1-5>,
-    "rigor": <1-5>,
-    "actionability": <1-5>,
-    "completeness": <1-5>
-  },
-  "reasoning": "<brief explanation of grades>"
+  "llmSummary": "<1-2 sentences with conclusions>",
+  "reasoning": "<brief explanation>"
 }`;
 
 /**
@@ -164,15 +159,28 @@ function extractFrontmatter(content) {
 }
 
 /**
+ * Truncate content to approximately N words
+ */
+function truncateToWords(text, maxWords = 1000) {
+  // Remove frontmatter
+  const withoutFm = text.replace(/^---[\s\S]*?---\n*/, '');
+  const words = withoutFm.split(/\s+/);
+  if (words.length <= maxWords) return withoutFm;
+  return words.slice(0, maxWords).join(' ') + '...';
+}
+
+/**
  * Call Claude API to grade a page
  */
 async function gradePage(client, page) {
+  const truncatedContent = truncateToWords(page.content, 1000);
+
   const userPrompt = USER_PROMPT_TEMPLATE
     .replace('{{filePath}}', page.relativePath)
     .replace('{{category}}', page.category)
     .replace('{{title}}', page.title)
-    .replace('{{isModel}}', page.isModel.toString())
-    .replace('{{content}}', page.content.slice(0, 50000)); // Truncate very long content
+    .replace('{{description}}', page.frontmatter.description || '(none)')
+    .replace('{{content}}', truncatedContent);
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-20250514',
@@ -270,9 +278,9 @@ async function main() {
     console.log(`Limited to ${pages.length} pages`);
   }
 
-  // Cost estimate
-  const avgTokens = 4500; // input per page
-  const outputTokens = 300; // output per page
+  // Cost estimate (with truncated content)
+  const avgTokens = 1500; // input per page (~1000 words + metadata)
+  const outputTokens = 200; // output per page
   const inputCost = (pages.length * avgTokens / 1_000_000) * 3;
   const outputCost = (pages.length * outputTokens / 1_000_000) * 15;
   const totalCost = inputCost + outputCost;
@@ -321,9 +329,9 @@ async function main() {
 
         if (options.apply) {
           applyGradesToFile(page, grades);
-          console.log(`applied (imp=${grades.importance}, qual=${grades.quality})`);
+          console.log(`applied (imp=${grades.importance.toFixed(1)}, qual=${grades.quality})`);
         } else {
-          console.log(`graded (imp=${grades.importance}, qual=${grades.quality})`);
+          console.log(`graded (imp=${grades.importance.toFixed(1)}, qual=${grades.quality})`);
         }
       } else {
         errors++;
@@ -346,20 +354,35 @@ async function main() {
   console.log(`Processed: ${processed}, Errors: ${errors}`);
 
   // Summary statistics
-  const importanceDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  const importanceScores = results.map(r => r.grades.importance).filter(x => x != null).sort((a, b) => b - a);
   const qualityDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
   for (const r of results) {
-    if (r.grades.importance) importanceDistribution[r.grades.importance]++;
     if (r.grades.quality) qualityDistribution[r.grades.quality]++;
   }
 
-  console.log('\nImportance Distribution:');
-  for (const [k, v] of Object.entries(importanceDistribution)) {
-    console.log(`  ${k}: ${'█'.repeat(v)} (${v})`);
+  // Importance distribution by range
+  const impRanges = {
+    '90-100': importanceScores.filter(x => x >= 90).length,
+    '70-89': importanceScores.filter(x => x >= 70 && x < 90).length,
+    '50-69': importanceScores.filter(x => x >= 50 && x < 70).length,
+    '30-49': importanceScores.filter(x => x >= 30 && x < 50).length,
+    '0-29': importanceScores.filter(x => x < 30).length,
+  };
+
+  console.log('\nImportance Distribution (0-100):');
+  for (const [range, count] of Object.entries(impRanges)) {
+    const bar = '█'.repeat(Math.ceil(count / 3));
+    console.log(`  ${range}: ${bar} (${count})`);
   }
 
-  console.log('\nQuality Distribution:');
+  const avg = importanceScores.reduce((a, b) => a + b, 0) / importanceScores.length;
+  const median = importanceScores[Math.floor(importanceScores.length / 2)];
+  console.log(`\n  Avg: ${avg.toFixed(1)}, Median: ${median.toFixed(1)}`);
+  console.log(`  Top 5: ${importanceScores.slice(0, 5).map(x => x.toFixed(1)).join(', ')}`);
+  console.log(`  Bottom 5: ${importanceScores.slice(-5).map(x => x.toFixed(1)).join(', ')}`);
+
+  console.log('\nQuality Distribution (1-5):');
   for (const [k, v] of Object.entries(qualityDistribution)) {
     console.log(`  ${k}: ${'█'.repeat(v)} (${v})`);
   }

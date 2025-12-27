@@ -3,8 +3,14 @@ title: For Researchers
 description: Reading path for technical researchers considering AI safety work
 sidebar:
   order: 2
+importance: 4
+quality: 5
+llmSummary: This comprehensive guide helps technical researchers evaluate AI
+  safety as a career path, covering major research approaches (interpretability,
+  oversight, control, theory, evals), practical considerations, and decision
+  frameworks. It provides detailed technical overviews, career advice, and
+  actionable next steps for researchers at different commitment levels.
 ---
-
 If you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
 
 ## Quick Context Setting (15 minutes)

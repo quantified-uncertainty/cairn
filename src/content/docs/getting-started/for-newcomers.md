@@ -3,8 +3,13 @@ title: For Newcomers
 description: Your reading path if you're new to AI safety
 sidebar:
   order: 1
+importance: 5
+quality: 5
+llmSummary: This comprehensive guide provides structured learning paths for AI
+  safety newcomers, ranging from a 5-minute overview to a full-day curriculum.
+  It covers core concepts, common misconceptions, and emphasizes critical
+  engagement while helping readers form their own informed views on AI risk.
 ---
-
 Welcome! If you're new to AI safety, this page will guide you through the essential concepts in a logical order. We've designed several reading paths based on how much time you have.
 
 ## Start Here: The 5-Minute Version
@@ -211,7 +216,7 @@ Here are challenges many newcomers face and how to address them:
 
 ### "The Probabilities Are All Over the Place"
 
-**You're right**: Estimates of AI risk range from <1% to >90%. This huge range is actually information:
+**You're right**: Estimates of AI risk range from \<1% to \>90%. This huge range is actually information:
 - We genuinely don't know
 - Different people weigh evidence very differently
 - Your job isn't to find "the right" probability but to understand what drives the range

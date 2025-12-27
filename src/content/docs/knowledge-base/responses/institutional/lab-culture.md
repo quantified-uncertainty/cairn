@@ -1,8 +1,14 @@
 ---
 title: Lab Safety Culture
 description: Improving safety practices within AI development organizations.
+importance: 4
+quality: 4
+llmSummary: This framework analyzes improving safety culture within AI labs
+  through levers like safety team authority, evaluation standards, and
+  governance structures. It explores key uncertainties around whether labs can
+  self-regulate, whether inside positions provide meaningful influence, and
+  whether coordination between labs is possible.
 ---
-
 **The approach**: Improve safety culture, practices, and incentives within AI labs—the organizations actually building frontier AI.
 
 ## Evaluation Summary

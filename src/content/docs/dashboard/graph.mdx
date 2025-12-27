@@ -4,8 +4,14 @@ description: Interactive visualization of entity connections in the knowledge ba
 sidebar:
   label: Entity Graph
   order: 101
+importance: 2
+quality: 4
+llmSummary: An interactive graph visualization tool that displays relationships
+  between entities in the AI safety knowledge base, with automated analysis to
+  identify clusters, highly connected nodes, and orphaned entities. Uses label
+  propagation for cluster detection and provides navigation tools for exploring
+  the knowledge graph structure.
 ---
-
 import EntityGraph from '../../../components/wiki/EntityGraph';
 import { findOrphans, detectClusters, getMostConnected } from '../../../lib/graph-analysis';
 

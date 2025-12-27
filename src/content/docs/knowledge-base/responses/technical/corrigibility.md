@@ -1,8 +1,13 @@
 ---
 title: Corrigibility Research
 description: Designing AI systems that accept human correction.
+importance: 4
+quality: 4
+llmSummary: This page analyzes corrigibility research, which aims to create AI
+  systems that accept human correction and shutdown. It identifies key
+  challenges like incentive incompatibility and evaluates the approach across
+  tractability, coherence, achievability, and sufficiency dimensions.
 ---
-
 **The approach**: Create AI systems that actively support human oversight—that want to be corrected, allow modification, and don't resist shutdown.
 
 ## Evaluation Summary

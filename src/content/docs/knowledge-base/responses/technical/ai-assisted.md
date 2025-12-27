@@ -1,8 +1,14 @@
 ---
 title: AI-Assisted Alignment
 description: Using AI systems to help solve alignment problems.
+importance: 4
+quality: 4
+llmSummary: This page analyzes using current AI systems to help solve alignment
+  problems, covering applications from red-teaming to interpretability. It
+  identifies key risks including the bootstrapping problem (using potentially
+  misaligned AI to align future AI) and loss of human understanding as AI
+  assistance scales.
 ---
-
 **The approach**: Use current AI systems to help with alignment research—from red-teaming to interpretability to developing new safety techniques.
 
 ## Evaluation Summary

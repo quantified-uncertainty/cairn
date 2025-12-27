@@ -1,6 +1,8 @@
 ---
 title: Mesa-Optimization Risk Analysis
-description: "This model analyzes when mesa-optimizers might emerge during training. It estimates emergence probability increases sharply above certain capability thresholds, with deceptive alignment as a key concern."
+description: This model analyzes when mesa-optimizers might emerge during
+  training. It estimates emergence probability increases sharply above certain
+  capability thresholds, with deceptive alignment as a key concern.
 quality: 4
 lastEdited: "2025-12-26"
 ratings:
@@ -8,8 +10,15 @@ ratings:
   rigor: 4
   actionability: 4
   completeness: 4
+importance: 5
+llmSummary: This model analyzes when mesa-optimizers (models that internally
+  optimize for objectives different from their training objective) might emerge,
+  finding emergence probability of 10-70% for current frontier systems with
+  deceptive alignment representing the most catastrophic failure mode. It
+  provides a mathematical framework showing risk scales quadratically with
+  capability and estimates 1-20% likelihood of deceptive alignment in advanced
+  systems.
 ---
-
 import { DataInfoBox, Mermaid } from '@/components/wiki';
 
 <DataInfoBox entityId="mesa-optimization-analysis" ratings={frontmatter.ratings} />

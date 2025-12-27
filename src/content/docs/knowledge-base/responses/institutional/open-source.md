@@ -1,8 +1,14 @@
 ---
 title: Open Source Safety
 description: The role of open-source AI in safety outcomes.
+importance: 4
+quality: 4
+llmSummary: This page analyzes the strategic question of whether open-source AI
+  development (releasing model weights publicly) is net positive or negative for
+  safety. It identifies key cruxes including the net effect on safety research
+  vs. misuse, capability thresholds where open source becomes too dangerous, and
+  whether compute or weights are the primary bottleneck.
 ---
-
 **The question**: Is open-source AI development (releasing model weights publicly) net positive or negative for safety?
 
 ## Evaluation Summary

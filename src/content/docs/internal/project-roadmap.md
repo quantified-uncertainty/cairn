@@ -4,12 +4,16 @@ description: Future work, infrastructure improvements, and project tracking
 sidebar:
   order: 10
 lastEdited: "2025-12-26"
+importance: 1
+quality: 4
+llmSummary: This internal project management document tracks infrastructure
+  improvements, tooling automation, and style guide evolution for the knowledge
+  base. It provides well-organized tracking of completed work and future
+  priorities across content quality automation, schema enhancements, and
+  documentation standards.
 ---
-
 This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see:
 - [Model Enhancement TODO](/knowledge-base/models/_ENHANCEMENT_TODO/)
-- [Risk Enhancement TODO](/knowledge-base/risks/_ENHANCEMENT_TODO/)
-- [Response Enhancement TODO](/knowledge-base/responses/_ENHANCEMENT_TODO/)
 
 ---
 
@@ -93,10 +97,8 @@ Covers risks and responses with emphasis on:
 
 ## Content Priorities
 
-Enhancement task queues are now tracked in dedicated files:
+Enhancement task queues are tracked in:
 - **Models**: [_ENHANCEMENT_TODO.md](/knowledge-base/models/_ENHANCEMENT_TODO/) - ~26 pending
-- **Risks**: [_ENHANCEMENT_TODO.md](/knowledge-base/risks/_ENHANCEMENT_TODO/) - ~34 pending (1 high priority: mesa-optimization)
-- **Responses**: [_ENHANCEMENT_TODO.md](/knowledge-base/responses/_ENHANCEMENT_TODO/) - ~40 pending
 
 ### Pages Already Updated to kb-2.0
 - [x] ai-safety-institutes.mdx (2025-12-26)

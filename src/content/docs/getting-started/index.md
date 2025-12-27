@@ -257,7 +257,7 @@ Some rough figures to orient yourself (as of late 2024):
 **Risk levels:**
 - **P(doom) estimates range from**: 1% to 90% depending on who you ask
 - **Median among AI safety researchers**: Perhaps 10-30%
-- **Many mainstream ML researchers**: Much lower, often <5%
+- **Many mainstream ML researchers**: Much lower, often \<5%
 
 **Resources:**
 - **AI safety researchers worldwide**: Roughly 300-1000 FTE
