@@ -1,0 +1,28 @@
+flowchart TD
+    subgraph "Player Decision Space"
+        A[Choose Safety Level s] --> B{High Safety<br/>s > 0.5?}
+        B -->|Yes| C[Slower Development<br/>Lower Risk]
+        B -->|No| D[Faster Development<br/>Higher Risk]
+    end
+
+    subgraph "Competitive Dynamics"
+        C --> E{Competitor<br/>Aggressive?}
+        D --> F{Competitor<br/>Cautious?}
+        E -->|Yes| G[Lose First-Mover<br/>Advantage]
+        E -->|No| H[Shared Safety<br/>Optimal Outcome]
+        F -->|Yes| I[Mutual Racing<br/>Suboptimal]
+        F -->|No| J[Win First-Mover<br/>Advantage]
+    end
+
+    G --> K[Pressure to<br/>Reduce Safety]
+    H --> L[Stable<br/>Cooperation]
+    I --> M[Elevated<br/>Catastrophic Risk]
+    J --> N[Competitor<br/>Pressured to Race]
+
+    K --> I
+    N --> I
+
+    style H fill:#cfc
+    style L fill:#cfc
+    style I fill:#fcc
+    style M fill:#fcc

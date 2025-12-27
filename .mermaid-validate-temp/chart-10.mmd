@@ -1,0 +1,11 @@
+
+flowchart TD
+    INFO[Information Access] --> DEV[Capability Development]
+    DEV --> DEPLOY[Deployment]
+    AI[AI Systems] -.->|uplift| DEV
+    AI -.->|uplift| DEPLOY
+    BARRIER[Wet Lab Barrier] -->|bottleneck| DEV
+
+    style AI fill:#cceeff
+    style BARRIER fill:#ffcccc
+    style DEPLOY fill:#ffddcc

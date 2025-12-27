@@ -255,21 +255,28 @@ Raw transition numbers understate differences in impact because researcher quali
 
 The pipeline exhibits both positive and negative feedback loops that affect long-term trajectory. Positive loops include network effects (transitioners recruit peers), legitimacy effects (top researchers joining increases field prestige), and success stories (demonstrating viable paths reduces perceived risk). Negative loops include quality dilution (more transitioners may lower average quality) and saturation (positions filling makes transition less attractive).
 
-<Mermaid client:load chart={`flowchart LR
-    subgraph Positive["Positive Feedback"]
-        P1[More transitioners] --> P2[Larger network]
-        P2 --> P3[More recruitment]
-        P3 --> P1
-    end
+**Feedback Loop Dynamics**
 
-    subgraph Negative["Negative Feedback"]
-        N1[More transitioners] --> N2[Quality dilution]
-        N2 --> N3[Reputation suffers]
-        N3 --> N4[Fewer quality transitions]
-    end
+| Loop Type | Direction | Mechanism | Stability Impact |
+|-----------|-----------|-----------|------------------|
+| **Network Effects** | Positive | More transitioners → Larger network → More recruitment → More transitioners | Accelerating |
+| **Legitimacy Effects** | Positive | Top researchers join → Field prestige increases → More interest | Accelerating |
+| **Success Stories** | Positive | Viable paths demonstrated → Perceived risk decreases → More transitions | Accelerating |
+| **Quality Dilution** | Negative | More transitioners → Lower average quality → Reputation suffers → Fewer quality transitions | Stabilizing |
+| **Position Saturation** | Negative | Positions fill → Transition less attractive → Fewer attempts | Stabilizing |
 
-    style P1 fill:#cfc
-    style N1 fill:#fcc`} />
+<Mermaid client:load chart={`flowchart TD
+    A[Transition Volume] -->|"positive"| B[Network Size]
+    B -->|"positive"| A
+    A -->|"negative"| C[Average Quality]
+    C -->|"positive"| D[Field Reputation]
+    D -->|"positive"| A
+
+    style A fill:#e1f5ff
+    style B fill:#ccffcc
+    style C fill:#ffddcc
+    style D fill:#cceeff
+`} />
 
 ## Limitations
 

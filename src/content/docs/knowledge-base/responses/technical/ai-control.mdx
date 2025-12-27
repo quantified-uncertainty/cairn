@@ -5,10 +5,10 @@ sidebar:
   order: 4
 quality: 2
 llmSummary: "Ensuring AI safety even with potentially misaligned systems"
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-26"
 ---
 
-import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="ai-control" />
 
@@ -17,6 +17,27 @@ import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 AI Control is a research agenda that focuses on maintaining safety even when using AI systems that might be actively trying to subvert safety measures. Rather than assuming alignment succeeds, it asks: "How can we safely use AI systems that might be misaligned?"
 
 This represents a more defensive posture than pure alignment research.
+
+## Evaluation Summary
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | High | Concrete protocols, testable methods |
+| If alignment hard | Critical | Primary safety layer if alignment fails |
+| If alignment easy | Low-Medium | Redundant backup, less needed |
+| Neglectedness | Medium | Growing interest, led by Redwood Research |
+| Grade | A- | Practical, testable, addresses key failure mode |
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Monitoring and containment catch deceptive actions | High |
+| [Scheming](/knowledge-base/risks/accident/scheming/) | Redundancy and monitoring prevent undetected scheming | High |
+| [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) | Containment limits damage from inner misalignment | High |
+| [Goal Misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/) | Monitoring catches behavior outside intended scope | Medium-High |
+| [Reward Hacking](/knowledge-base/risks/accident/reward-hacking/) | Sandboxing prevents real-world reward exploits | Medium |
+| [Autonomous Replication](/knowledge-base/risks/accident/autonomous-replication/) | Containment prevents self-replication | High |
 
 ## Core Insight
 
@@ -106,6 +127,98 @@ Control buys time but doesn't solve alignment:
 - Eventually need aligned AI
 - Can't control forever
 - Should enable alignment research
+
+## Case For This Approach
+
+### Argument 1: Alignment May Fail
+We cannot be confident that alignment research will succeed. Given the stakes, we need safety measures that work even if alignment fails. AI Control provides safety without requiring trust in AI intentions.
+
+**Key proponents**: Buck Shlegeris, Ryan Greenblatt, Redwood Research
+
+### Argument 2: Testable and Practical
+Unlike some alignment approaches that rely on theoretical arguments, control protocols can be empirically tested. We can red-team protocols, find attacks, improve defenses, and measure progress. This makes it more tractable than purely theoretical work.
+
+### Argument 3: Defense in Depth
+Even if alignment succeeds, control provides a valuable backup layer. Defense in depth is a standard security principle—we shouldn't rely on a single point of failure. Control plus alignment is more robust than alignment alone.
+
+## Case Against This Approach
+
+### Counterargument 1: Capability Tax
+Control measures reduce AI usefulness. Monitoring, sandboxing, and restrictions all impose costs. If competitors don't use these measures, controlled AI may be outcompeted. This creates pressure to reduce controls.
+
+**Key concern**: Economic incentives may erode safety measures
+
+### Counterargument 2: May Not Scale to Superintelligence
+Control assumes we can maintain an advantage over AI systems. At some capability level, AI may be able to circumvent any human-designed control. Control may work for near-human AI but fail for superhuman systems.
+
+### Counterargument 3: Creates False Confidence
+Relying on control might reduce effort on alignment. If organizations believe control is sufficient, they may underinvest in solving the core problem. Control should supplement, not replace, alignment work.
+
+## Key Cruxes
+
+### Crux 1: How Long Can Control Work?
+
+<KeyQuestions
+  client:load
+  questions={["At what capability level does control become impossible?"]}
+/>
+
+| Control scales well | Control has limits |
+|--------------------|-------------------|
+| Incremental AI progress allows incremental control improvements | Superintelligence may fundamentally exceed control |
+| Monitoring AI with other AI can scale | Arms race may favor the controlled AI |
+| Can always restrict capabilities | Restricted AI may lose competitive value |
+
+### Crux 2: Will Organizations Actually Use Control?
+
+| Adoption likely | Adoption unlikely |
+|-----------------|-------------------|
+| AI incidents will motivate precaution | Competitive pressure to deploy fast |
+| Regulation may mandate controls | Control costs may be prohibitive |
+| Responsible labs already use controls | Not all labs are responsible |
+
+## Effectiveness Estimates
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of AI Control"
+  description="How well will control methods maintain safety with potentially misaligned AI?"
+  spectrum={{ low: "Won't work", high: "Critical safeguard" }}
+  positions={[
+    { actor: "Redwood Research", position: "High", estimate: "Core safety approach", confidence: "high" },
+    { actor: "Alignment-focused", position: "Medium-High", estimate: "Important complement", confidence: "medium" },
+    { actor: "Skeptics", position: "Medium", estimate: "Limited window of usefulness", confidence: "medium" },
+    { actor: "MIRI-adjacent", position: "Low-Medium", estimate: "Buys little time", confidence: "low" }
+  ]}
+/>
+
+## Who Should Work on This
+
+**Good fit if you believe:**
+- Alignment may not be solved in time
+- Empirical, testable research is valuable
+- Near-term AI safety matters most
+- Defense in depth is important
+
+**Less relevant if you believe:**
+- Alignment will succeed (control is redundant)
+- Only superintelligence-level risks matter (control won't scale)
+- Theoretical research is more important
+
+## Complementary Interventions
+
+- [Mechanistic Interpretability](/knowledge-base/responses/technical/interpretability/) - Detect misalignment that control should contain
+- [Scalable Oversight](/knowledge-base/responses/technical/scalable-oversight/) - Monitor AI with human+AI oversight
+- [Evaluations](/knowledge-base/responses/technical/evals/) - Identify dangerous capabilities before deployment
+- [Pause Advocacy](/knowledge-base/responses/institutional/pause/) - Buy time for control methods to develop
+
+<Section title="Key People">
+  <KeyPeople people={[
+    { name: "Buck Shlegeris", role: "Redwood Research; AI Control" },
+    { name: "Ryan Greenblatt", role: "Redwood Research; control protocols" },
+    { name: "Paul Christiano", role: "ARC; control concepts" },
+  ]} />
+</Section>
 
 ## Related Pages
 

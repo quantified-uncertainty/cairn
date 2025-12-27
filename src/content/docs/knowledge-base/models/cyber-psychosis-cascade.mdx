@@ -26,62 +26,27 @@ The model distinguishes three primary cascade pathways: targeted individual camp
 
 ## Conceptual Framework
 
-<Mermaid client:load chart={`
-flowchart TD
-    subgraph Triggers["Trigger Mechanisms"]
-        T1["Deepfake Targeting"]
-        T2["Reality Confusion Content"]
-        T3["Personalized Harassment"]
-        T4["Parasocial Manipulation"]
-    end
+**Cascade Stages**
 
-    subgraph Individual["Individual Effects"]
-        I1["Acute Distress"]
-        I2["Identity Disruption"]
-        I3["Trust Erosion"]
-        I4["Social Withdrawal"]
-    end
+| Stage | Examples | Key Transition |
+|-------|----------|----------------|
+| **Triggers** | Deepfakes, reality confusion, personalized harassment, parasocial manipulation | Vulnerable exposure |
+| **Individual Effects** | Acute distress, identity disruption, trust erosion, social withdrawal | Social sharing |
+| **Cascade Amplification** | Social media spread, community impact, institutional failure, collective uncertainty | Threshold crossing |
+| **Population Outcomes** | Mass confusion, dependency epidemics, democratic dysfunction, mental health crisis | Systemic harm |
 
-    subgraph Cascade["Cascade Amplification"]
-        C1["Social Media Spread"]
-        C2["Community Impact"]
-        C3["Institutional Failure"]
-        C4["Collective Uncertainty"]
-    end
+<Mermaid client:load chart={`flowchart TD
+    A[Trigger Events] --> B[Individual Harm]
+    B --> C[Social Amplification]
+    C --> D[Population Outcomes]
 
-    subgraph Population["Population Outcomes"]
-        P1["Mass Confusion"]
-        P2["Dependency Epidemics"]
-        P3["Democratic Dysfunction"]
-        P4["Mental Health Crisis"]
-    end
-
-    T1 --> I1
-    T2 --> I2
-    T3 --> I1
-    T4 --> I4
-
-    I1 --> C1
-    I2 --> C1
-    I3 --> C2
-    I4 --> C3
-
-    C1 --> C2
-    C2 --> C3
-    C3 --> C4
-
-    C4 --> P1
-    C4 --> P2
-    C4 --> P3
-    C4 --> P4
-
-    style P1 fill:#ff9999
-    style P2 fill:#ff9999
-    style P3 fill:#ff9999
-    style P4 fill:#ff9999
+    style A fill:#fff4e1
+    style B fill:#ffddcc
+    style C fill:#ffcccc
+    style D fill:#ff9999
 `} />
 
-The diagram illustrates how individual trigger mechanisms propagate through cascade amplification to produce population-level outcomes. Red highlighting indicates the most severe outcome categories that emerge from sustained cascade dynamics.
+Individual trigger mechanisms propagate through cascade amplification to produce population-level outcomes. The severity increases at each stage as effects compound.
 
 ## Mechanisms of Harm
 
@@ -97,29 +62,24 @@ The diagram illustrates how individual trigger mechanisms propagate through casc
 
 ### Cascade Pathways
 
-<Mermaid client:load chart={`
-flowchart LR
-    subgraph Pathway1["Pathway 1: Targeted Campaign"]
-        T1A["Deepfake Created"] --> T1B["Targeted Distribution"]
-        T1B --> T1C["Social Circle Exposure"]
-        T1C --> T1D["Relationship Damage"]
-        T1D --> T1E["Identity Crisis"]
-        T1E --> T1F["Long-term PTSD"]
-    end
+**Three Primary Cascade Pathways**
 
-    subgraph Pathway2["Pathway 2: Mass Confusion"]
-        T2A["Synthetic Evidence Released"] --> T2B["Conflicting 'Proof' Proliferates"]
-        T2B --> T2C["Authoritative Sources Questioned"]
-        T2C --> T2D["Polarization of Interpretation"]
-        T2D --> T2E["Factional Conflict"]
-    end
+| Pathway | Trigger | Progression | Terminal State | Timeline |
+|---------|---------|-------------|----------------|----------|
+| **1. Targeted Campaign** | Deepfake created | Distribution → Social exposure → Relationship damage → Identity crisis | Long-term PTSD | Weeks-months |
+| **2. Mass Confusion** | Synthetic evidence released | Conflicting "proof" → Authority questioned → Polarization | Factional conflict | Days-weeks |
+| **3. Dependency Cascade** | AI companion adoption | Human interaction decline → Social skill atrophy → Isolation | Complete withdrawal | Months-years |
 
-    subgraph Pathway3["Pathway 3: Dependency Cascade"]
-        T3A["AI Companion Adoption"] --> T3B["Human Interaction Decline"]
-        T3B --> T3C["Social Skill Atrophy"]
-        T3C --> T3D["Increased Isolation"]
-        T3D --> T3E["Complete Withdrawal"]
-    end
+<Mermaid client:load chart={`flowchart TD
+    A[Initial Trigger] --> B{Pathway Type}
+    B -->|"Targeted"| C[Individual PTSD]
+    B -->|"Confusion"| D[Factional Conflict]
+    B -->|"Dependency"| E[Social Withdrawal]
+
+    style A fill:#e1f5ff
+    style C fill:#ffcccc
+    style D fill:#ffcccc
+    style E fill:#ffcccc
 `} />
 
 ## Population Vulnerability Model

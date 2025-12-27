@@ -1,0 +1,38 @@
+
+flowchart TD
+    subgraph Trigger["Initial Trigger"]
+        A["Evidence authenticity<br/>becomes uncertain"]
+    end
+
+    subgraph Response["Defensive Response"]
+        B["Generalized skepticism"]
+        C["Conspiracy theory adoption"]
+        D["Authority rejection"]
+    end
+
+    subgraph Institutional["Institutional Effects"]
+        E["Media credibility collapse"]
+        F["Scientific authority erosion"]
+        G["Government legitimacy decline"]
+    end
+
+    subgraph Social["Social Outcomes"]
+        H["Social cohesion weakening"]
+        I["Coordination failure"]
+        J["Democratic dysfunction"]
+    end
+
+    A --> B
+    A --> C
+    B --> D
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    E --> H
+    F --> H
+    G --> H
+    H --> I
+    I --> J
+
+    style J fill:#ff9999

@@ -246,30 +246,27 @@ The true correlation structure is unknown, but moderate correlation is plausible
 
 ### Intervention Effectiveness by Step
 
-<Mermaid client:load chart={`flowchart LR
-    subgraph Low_Tractability[Low Tractability]
-        I1[Reduce motivation] -.-> S1[Step 1]
-        I2[Restrict AI access] -.-> S2[Step 2]
-    end
+| Tractability | Intervention | Target Step | Feasibility |
+|--------------|--------------|-------------|-------------|
+| **Low** | Reduce motivation | Step 1: Motivated Actor | Very difficult |
+| **Low** | Restrict AI access | Step 2: AI Access | Difficult |
+| **Medium** | AI guardrails | Step 3: AI Uplift | Moderate |
+| **Medium** | Lab security | Step 4: Lab Access | Moderate |
+| **Medium** | Synthesis monitoring | Step 5: Synthesis | Moderate |
+| **High** | Deployment detection | Step 6: Deployment | Feasible |
+| **High** | Countermeasures | Step 7: Evasion | Highly feasible |
 
-    subgraph Medium_Tractability[Medium Tractability]
-        I3[AI guardrails] --> S3[Step 3]
-        I4[Lab security] --> S4[Step 4]
-        I5[Synthesis monitoring] --> S5[Step 5]
-    end
+<Mermaid client:load chart={`
+flowchart TD
+    LOW[Low Tractability] --> MED[Medium Tractability]
+    MED --> HIGH[High Tractability]
+    HIGH --> BEST[Best Intervention Points]
 
-    subgraph High_Tractability[High Tractability]
-        I6[Deployment detection] --> S6[Step 6]
-        I7[Countermeasures] --> S7[Step 7]
-    end
-
-    style I1 fill:#fcc
-    style I2 fill:#fcc
-    style I3 fill:#ffc
-    style I4 fill:#ffc
-    style I5 fill:#ffc
-    style I6 fill:#cfc
-    style I7 fill:#cfc`} />
+    style LOW fill:#ffcccc
+    style MED fill:#ffddcc
+    style HIGH fill:#ccffcc
+    style BEST fill:#cceeff
+`} />
 
 ### Cost-Effectiveness Estimates
 

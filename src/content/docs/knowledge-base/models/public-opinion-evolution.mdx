@@ -12,7 +12,8 @@ ratings:
   completeness: 4
 ---
 
-import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="public-opinion-evolution" ratings={frontmatter.ratings} />
 
@@ -22,6 +23,78 @@ import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wik
 Public opinion on AI risk is not static—it evolves through complex dynamics involving salient events, media framing, elite signaling, and social contagion. This model examines how public perception of AI threats changes over time and what factors drive shifts toward concern or complacency.
 
 **Central Question:** What moves public opinion on AI risk, and can we predict tipping points where opinion translates into policy action?
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+Public opinion matters **instrumentally**—it enables or constrains governance responses. However, the opinion→policy link is weak and slow. Prioritize elite persuasion and direct policy work over mass public engagement unless you're building long-term legitimacy.
+</Aside>
+
+### Magnitude Assessment
+
+**Direct importance:** Low (public opinion doesn't directly reduce AI risk)
+
+**Instrumental importance:** Medium (affects what governance is politically feasible)
+
+<Mermaid client:load chart={`
+flowchart LR
+    PO[Public Opinion] -->|"weak, slow"| PP[Policy Pressure]
+    PP -->|"moderate"| GOV[Governance Action]
+    GOV -->|"variable"| RISK[Risk Reduction]
+
+    EO[Elite Opinion] -->|"strong, fast"| GOV
+
+    style PO fill:#ffeedd
+    style EO fill:#ccffcc
+`} />
+
+**Key insight:** Elite opinion (policymakers, tech leaders, academics) has **faster and stronger** policy effects than mass public opinion. Resources for persuasion are likely better spent on elites.
+
+### Comparative Ranking
+
+| Intervention | Relative Priority | Reasoning |
+|--------------|------------------:|-----------|
+| Direct technical work | Higher | Directly reduces risk |
+| Elite/policymaker engagement | Higher | Faster path to governance |
+| **Public opinion work** | Baseline | Slow, indirect effects |
+| Media engagement | Similar | Shapes both public and elite opinion |
+
+### Resource Implications
+
+**Current attention:** Medium-High (significant advocacy and communications work)
+
+**Assessment:** May be **over-invested** relative to impact. The AI safety community has limited resources; mass public engagement is expensive and the opinion→policy pipeline is leaky.
+
+**When public opinion work IS valuable:**
+- Building long-term legitimacy for future regulation
+- Creating electoral pressure for AI governance
+- Preventing backlash against necessary interventions
+
+**When it's NOT valuable:**
+- Expecting rapid policy change from public awareness
+- When elite opinion is already favorable
+- When technical solutions exist regardless of public support
+
+### Key Cruxes
+
+| If you believe... | Then public opinion work is... |
+|-------------------|-------------------------------|
+| Democratic legitimacy is essential for AI governance | **More important** (need public buy-in) |
+| Technocratic governance can work | **Less important** (elites matter more) |
+| We have decades before critical risks | **More important** (time to build support) |
+| Critical risks are imminent | **Less important** (no time for slow public shifts) |
+
+### Actionability
+
+**For advocates:**
+- Prioritize elite/policymaker engagement over mass public campaigns
+- Use public opinion work for long-term legitimacy, not short-term policy wins
+- Focus on "informed public" (journalists, educators) not mass awareness
+
+**For funders:**
+- Don't over-invest in public communications relative to technical and policy work
+- Fund targeted elite engagement over broad public campaigns
+- Measure policy outcomes, not just awareness metrics
 
 ## Opinion Formation Framework
 

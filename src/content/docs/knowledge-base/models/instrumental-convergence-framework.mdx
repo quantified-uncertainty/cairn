@@ -28,39 +28,21 @@ This model synthesizes theoretical foundations from Omohundro's "Basic AI Drives
 
 Instrumental convergence follows from a simple observation: certain capabilities and states are useful across a wide range of objectives. An agent that can think more clearly, access more resources, and maintain its operational integrity will outperform a comparable agent lacking these properties across almost any goal. This creates optimization pressure toward acquiring these instrumental goods, even when the terminal goal says nothing about them explicitly.
 
+| Terminal Goals (Diverse) | Convergent Instrumental Goals |
+|--------------------------|------------------------------|
+| Scientific Discovery | Self-Preservation |
+| Profit Maximization | Goal Integrity |
+| Human Welfare | Cognitive Enhancement |
+| Paperclip Production | Resource Acquisition |
+| Any other goal... | Freedom of Action |
+
 <Mermaid client:load chart={`flowchart TD
-    subgraph Terminal["Terminal Goals (Diverse)"]
-        G1[Scientific Discovery]
-        G2[Profit Maximization]
-        G3[Human Welfare]
-        G4[Paperclip Production]
-    end
+    T[Diverse Terminal Goals] --> M[Convergence Mechanism]
+    M --> C[Instrumental Goals]
 
-    subgraph Convergent["Convergent Instrumental Goals"]
-        I1[Self-Preservation]
-        I2[Goal Integrity]
-        I3[Cognitive Enhancement]
-        I4[Resource Acquisition]
-        I5[Freedom of Action]
-    end
-
-    subgraph Mechanism["Convergence Mechanism"]
-        M[Better Capability + More Resources = Higher P of Goal Achievement]
-    end
-
-    G1 --> M
-    G2 --> M
-    G3 --> M
-    G4 --> M
-    M --> I1
-    M --> I2
-    M --> I3
-    M --> I4
-    M --> I5
-
-    style Terminal fill:#e8f4e8
-    style Convergent fill:#ffe8e8
-    style M fill:#fff8e8`} />
+    style T fill:#ccffcc
+    style M fill:#fff4e1
+    style C fill:#ffcccc`} />
 
 The mathematical intuition is straightforward. For a goal $G$ and instrumental subgoal $I$, we say $I$ is instrumentally convergent for $G$ if:
 
@@ -233,43 +215,27 @@ The theoretical case for instrumental convergence rests on decision theory, game
 
 ### Intervention Effectiveness Matrix
 
-<Mermaid client:load chart={`flowchart TB
-    subgraph High_Leverage["High-Leverage Interventions"]
-        direction TB
-        A1[Corrigibility Research] --> C1[Weak Goal Integrity]
-        A2[Bounded Utility Functions] --> C2[Reduced Convergence Pressure]
-    end
+| Leverage Level | Intervention | Target Effect | Expected Outcome |
+|----------------|--------------|---------------|------------------|
+| **High** | Corrigibility Research | Weak Goal Integrity | Controllable AI |
+| **High** | Bounded Utility Functions | Reduced Convergence Pressure | Controllable AI |
+| **Medium** | Capability Control | Delayed Emergence | Detectable Risk |
+| **Medium** | Monitoring Systems | Early Detection | Detectable Risk |
+| **Medium** | Multi-Agent Checks | Reduced Individual Power | Detectable Risk |
+| **Lower** | RLHF Alignment | Potentially Unstable | Uncontrollable AI |
+| **Lower** | Explicit Goal Encoding | Specification Gaming | Uncontrollable AI |
 
-    subgraph Medium_Leverage["Medium-Leverage Interventions"]
-        direction TB
-        B1[Capability Control] --> D1[Delayed Emergence]
-        B2[Monitoring Systems] --> D2[Early Detection]
-        B3[Multi-Agent Checks] --> D3[Reduced Individual Power]
-    end
+<Mermaid client:load chart={`flowchart TD
+    H[High Leverage] --> O1[Controllable AI]
+    M[Medium Leverage] --> O2[Detectable Risk]
+    L[Lower Leverage] --> O3[Uncontrollable AI]
 
-    subgraph Lower_Leverage["Lower-Leverage Interventions"]
-        direction TB
-        C1A[RLHF Alignment] --> E1[Potentially Unstable]
-        C2A[Explicit Goal Encoding] --> E2[Specification Gaming]
-    end
-
-    subgraph Outcomes["Outcomes"]
-        F1[Controllable AI]
-        F2[Detectable Risk]
-        F3[Uncontrollable AI]
-    end
-
-    C1 --> F1
-    C2 --> F1
-    D1 --> F2
-    D2 --> F2
-    D3 --> F2
-    E1 --> F3
-    E2 --> F3
-
-    style High_Leverage fill:#cfc
-    style Medium_Leverage fill:#ffc
-    style Lower_Leverage fill:#fcc`} />
+    style H fill:#ccffcc
+    style M fill:#fff4e1
+    style L fill:#ffcccc
+    style O1 fill:#ccffcc
+    style O2 fill:#fff4e1
+    style O3 fill:#ffcccc`} />
 
 ### Recommendations by Stakeholder
 

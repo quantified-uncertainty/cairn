@@ -1,0 +1,9 @@
+
+flowchart LR
+    H[Healthy<br/>E > 0.5] -->|"Gradual stress"| C[Critical Zone<br/>0.35-0.5]
+    C -->|"Sudden collapse"| R[Collapsed<br/>E < 0.35]
+    R -.->|"Requires E > 0.6<br/>(hysteresis)"| H
+
+    style H fill:#ccffcc
+    style C fill:#ffffcc
+    style R fill:#ffcccc

@@ -1,0 +1,31 @@
+flowchart TD
+    subgraph Source["Source Pool"]
+        A[ML Researchers<br/>50,000-100,000]
+    end
+
+    subgraph Awareness["Awareness Stage"]
+        B[Aware of Safety Concerns<br/>10,000-30,000]
+    end
+
+    subgraph Interest["Interest Stage"]
+        C[Considering Transition<br/>1,000-5,000]
+    end
+
+    subgraph Exploration["Exploration Stage"]
+        D[Actively Exploring<br/>200-1,000]
+    end
+
+    subgraph Conversion["Conversion Stage"]
+        E[Safety Researchers<br/>50-400/year inflow]
+    end
+
+    A -->|"Exposure Rate: 20-30%"| B
+    B -->|"Consideration Rate: 10-15%"| C
+    C -->|"Exploration Rate: 20-30%"| D
+    D -->|"Transition Rate: 25-40%"| E
+
+    style A fill:#e8f4f8
+    style B fill:#d4edda
+    style C fill:#fff3cd
+    style D fill:#f8d7da
+    style E fill:#d1ecf1

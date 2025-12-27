@@ -1,0 +1,26 @@
+
+flowchart TD
+    A[Generative AI Capability] --> B{Detection Accuracy}
+    B -->|>70%| C[Functional Authentication]
+    B -->|50-70%| D[Degraded Authentication]
+    B -->|<50%| E[Authentication Collapse]
+
+    C --> F[Normal Operations]
+    D --> G{Intervention Success?}
+    E --> H[Institutional Crisis]
+
+    G -->|Yes| I[Stabilize at Higher Cost]
+    G -->|No| E
+
+    F --> J[Generation Improves]
+    I --> J
+    J --> K[Detection Gap Widens]
+    K --> B
+
+    H --> L[Trust Cascade Failure]
+    L --> M[Societal Adaptation Required]
+
+    style E fill:#ff6b6b
+    style H fill:#ff6b6b
+    style C fill:#51cf66
+    style D fill:#ffd43b

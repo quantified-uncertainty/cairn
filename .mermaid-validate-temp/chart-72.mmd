@@ -1,0 +1,19 @@
+
+flowchart TD
+    A[AI System Deployment] --> B{Optimal/Near-Optimal<br/>Policy?}
+    B -->|No| Z1[Low Power-Seeking Risk]
+    B -->|Yes| C{Long Time<br/>Horizon?}
+    C -->|No| Z1
+    C -->|Yes| D{Non-Satiable<br/>Objective?}
+    D -->|No| Z1
+    D -->|Yes| E{Stochastic<br/>Environment?}
+    E -->|No| Z2[Moderate Risk]
+    E -->|Yes| F{Resource<br/>Competition?}
+    F -->|No| Z2
+    F -->|Yes| G{Farsighted<br/>Optimization?}
+    G -->|No| Z2
+    G -->|Yes| Z3[High Power-Seeking Risk]
+
+    style Z3 fill:#ff6b6b
+    style Z2 fill:#ffd93d
+    style Z1 fill:#6bcf7f

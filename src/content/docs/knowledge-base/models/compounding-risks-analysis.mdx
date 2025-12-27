@@ -26,44 +26,30 @@ The framework distinguishes four types of compounding: multiplicative probabilit
 
 ## Conceptual Framework
 
-<Mermaid client:load chart={`
-flowchart TD
-    subgraph CompoundTypes["Types of Compounding"]
-        T1["Type 1: Multiplicative Probability<br/>P(B|A) > P(B)"]
-        T2["Type 2: Severity Multiplication<br/>Impact(A∩B) > Impact(A) + Impact(B)"]
-        T3["Type 3: Defense Negation<br/>A disables safeguards against B"]
-        T4["Type 4: Nonlinear Combined Effects<br/>Compound effects qualitatively different"]
-    end
+**Types of Compounding**
 
-    subgraph Outcomes["Compound Outcomes"]
-        O1["3-5x Higher Probability"]
-        O2["2-10x Higher Severity"]
-        O3["Detection Failure"]
-        O4["Qualitative Change"]
-    end
+| Type | Mechanism | Outcome | Typical Multiplier |
+|------|-----------|---------|-------------------|
+| **Multiplicative Probability** | P(B\|A) > P(B) | Higher combined probability | 3-5x |
+| **Severity Multiplication** | Impact(A∩B) > Impact(A) + Impact(B) | Worse combined severity | 2-10x |
+| **Defense Negation** | A disables safeguards against B | Detection failure | Variable |
+| **Nonlinear Combined** | Compound effects qualitatively different | Phase transitions | Discontinuous |
 
-    subgraph Assessment["Risk Assessment Impact"]
-        A1["Individual Analysis<br/>Dramatically Underestimates"]
-        A2["Compound Analysis<br/>Captures True Risk"]
-    end
+<Mermaid client:load chart={`flowchart TD
+    A[Risk A + Risk B] --> B{Compounding Type}
+    B -->|"Probability"| C[Higher Likelihood]
+    B -->|"Severity"| D[Worse Impact]
+    B -->|"Defense"| E[Detection Failure]
+    B -->|"Nonlinear"| F[Qualitative Change]
 
-    T1 --> O1
-    T2 --> O2
-    T3 --> O3
-    T4 --> O4
-
-    O1 --> A2
-    O2 --> A2
-    O3 --> A2
-    O4 --> A2
-
-    style T1 fill:#ffcccc
-    style T2 fill:#ffddcc
-    style T3 fill:#ffeecc
-    style T4 fill:#ffffcc
+    style A fill:#e1f5ff
+    style C fill:#ffcccc
+    style D fill:#ffddcc
+    style E fill:#ffeecc
+    style F fill:#ffffcc
 `} />
 
-The diagram illustrates how four distinct compounding mechanisms feed into different outcome types, all of which are missed by individual risk analysis but captured by compound assessment. The color gradient indicates the relative frequency of each type, with multiplicative probability being most common.
+Individual risk analysis dramatically underestimates total danger by missing these compounding effects. Compound analysis captures the true risk by modeling how risks interact.
 
 ## Mathematical Formulation
 
@@ -154,48 +140,36 @@ $$
 
 ## Compound Risk Network
 
-<Mermaid client:load chart={`
-flowchart LR
-    subgraph Technical["Technical Risks"]
-        R1[Racing]
-        R2[Mesa-opt]
-        R3[Deceptive Alignment]
-        R4[Corrigibility Failure]
-    end
+**Risk Interaction Network**
 
-    subgraph Structural["Structural Risks"]
-        R5[Lock-in]
-        R6[Concentration]
-        R7[Authoritarian]
-    end
+The table below shows interaction strengths (α coefficients) between major risks across three categories:
 
-    subgraph Epistemic["Epistemic Risks"]
-        R8[Sycophancy]
-        R9[Expertise Atrophy]
-        R10[Epistemic Collapse]
-    end
+| From Risk | To Risk | α Coefficient | Category |
+|-----------|---------|---------------|----------|
+| Racing | Mesa-optimization | 2.5 | Technical → Technical |
+| Racing | Deceptive Alignment | 2.0 | Technical → Technical |
+| Mesa-optimization | Deceptive Alignment | 3.0 | Technical → Technical |
+| Deceptive Alignment | Lock-in | 4.0 | Technical → Structural |
+| Lock-in | Authoritarian | 3.5 | Structural → Structural |
+| Concentration | Authoritarian | 3.0 | Structural → Structural |
+| Sycophancy | Expertise Atrophy | 3.5 | Epistemic → Epistemic |
+| Expertise Atrophy | Corrigibility Failure | 2.5 | Epistemic → Technical |
+| Epistemic Collapse | Authoritarian | 2.0 | Epistemic → Structural |
+| Lock-in | Deceptive Alignment | 5.0 | Structural → Technical |
+| Expertise Atrophy | Deceptive Alignment | 2.0 | Epistemic → Technical |
 
-    R1 -->|"α=2.5"| R2
-    R1 -->|"α=2.0"| R3
-    R2 -->|"α=3.0"| R3
-    R3 -->|"α=4.0"| R5
-    R5 -->|"α=3.5"| R7
-    R6 -->|"α=3.0"| R7
+<Mermaid client:load chart={`flowchart TD
+    A[Racing] -->|"α=2.0"| B[Deceptive Alignment]
+    B -->|"α=4.0"| C[Lock-in]
+    C -->|"α=3.5"| D[Authoritarian]
 
-    R8 -->|"α=3.5"| R9
-    R9 -->|"α=2.5"| R4
-    R10 -->|"α=2.0"| R7
-
-    R5 -->|"α=5.0"| R3
-    R9 -->|"α=2.0"| R3
-
-    style R1 fill:#ff9999
-    style R3 fill:#ff9999
-    style R5 fill:#ff9999
-    style R7 fill:#ff9999
+    style A fill:#ffcccc
+    style B fill:#ffcccc
+    style C fill:#ffcccc
+    style D fill:#ff9999
 `} />
 
-The network diagram shows interaction strengths (α coefficients) between major risks. Red-highlighted nodes represent the highest-danger compound pathway: Racing → Deceptive Alignment → Lock-in → Authoritarian outcomes.
+The summary diagram shows the highest-danger compound pathway: Racing → Deceptive Alignment → Lock-in → Authoritarian outcomes.
 
 ## High-Risk Compound Combinations
 

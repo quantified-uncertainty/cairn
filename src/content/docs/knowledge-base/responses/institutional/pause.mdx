@@ -1,0 +1,180 @@
+---
+title: Pause Advocacy
+description: Advocating for slowing or pausing frontier AI development until safety can be ensured.
+sidebar:
+  order: 3
+quality: 3
+lastEdited: "2025-12-26"
+---
+
+import { DataInfoBox, Backlinks, KeyQuestions, DisagreementMap } from '../../../../../components/wiki';
+
+<DataInfoBox entityId="pause-advocacy" />
+
+## Summary
+
+**The approach**: Advocate for slowing down or pausing the development of frontier AI systems until safety can be ensured.
+
+Pause advocacy ranges from calls for complete moratoriums on frontier AI development to more moderate proposals for conditional slowdowns tied to safety milestones. The core theory of change is that buying time allows safety research to catch up with capabilities, enables governance frameworks to mature, and reduces the probability of deploying systems we cannot control.
+
+## Evaluation Summary
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Low | Major political/economic barriers |
+| If alignment hard | High | May be necessary |
+| If alignment easy | Low | Probably not needed |
+| Neglectedness | Medium | Vocal advocates, limited political traction |
+| Grade | C+ | High potential value, low tractability |
+
+## Theory of Change
+
+```
+Advocacy → Political pressure → Policy change → Development slowdown →
+More time for safety research → Better alignment before deployment → Reduced x-risk
+```
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Reduces competitive pressure | Medium |
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | More time for detection methods | Medium |
+| [Treacherous Turn](/knowledge-base/risks/accident/treacherous-turn/) | Prevents premature deployment | Medium |
+| [Lock-in](/knowledge-base/risk-factors/lock-in/) | More time for value reflection | Low-Medium |
+
+## Types of "Pause"
+
+| Type | Description | Feasibility | Effectiveness |
+|------|-------------|-------------|---------------|
+| Full stop | No frontier AI development | Very low | Very high if achieved |
+| Capability limits | Cap at current level | Low | High |
+| Compute limits | Restrict training runs over X FLOP | Medium | Medium |
+| Conditional pause | Pause until safety criteria met | Medium | High |
+| Slowdown | Reduce speed without stopping | Medium | Low-Medium |
+
+## Case For Pause
+
+### Argument 1: Capabilities Outpacing Safety
+Current AI capabilities are advancing faster than alignment research. Major capability jumps (GPT-3 → GPT-4 → future systems) happen on 1-2 year timescales, while fundamental safety problems remain unsolved. Pause would allow safety research to catch up.
+
+**Key proponents**: Future of Life Institute, AI safety researchers who signed the 2023 open letter
+
+### Argument 2: Coordination Becomes Easier
+Slower development makes international coordination more feasible. With less competitive pressure, labs and nations can negotiate safety standards without fear of falling behind. Historical precedent: nuclear arms control was easier during periods of reduced arms race intensity.
+
+### Argument 3: Precautionary Principle
+Given existential stakes, the burden of proof should be on demonstrating safety, not on demonstrating danger. We don't deploy other potentially catastrophic technologies (nuclear weapons, gain-of-function research) without extensive safeguards.
+
+### Argument 4: Governance Needs Time
+Democratic institutions, legal frameworks, and international agreements move slowly. Pause allows governance to mature alongside technology rather than perpetually lagging behind.
+
+## Case Against Pause
+
+### Counterargument 1: Competitive Pressure Makes Pause Unstable
+Even if Western labs pause, China and other actors may continue. This could result in advanced AI being developed first by actors with less safety focus, worse outcome than continued Western development with safety efforts.
+
+**Key proponents**: Many in AI industry, some national security analysts
+
+### Counterargument 2: Compute Overhang
+If compute continues scaling during a development pause, the eventual resumption would enable a sudden capability jump. This could be more dangerous than gradual development that allows incremental safety research.
+
+### Counterargument 3: Delays Beneficial AI
+AI has significant potential benefits (medical research, climate solutions, economic productivity). Pause delays these benefits, with real human costs from problems that AI might help solve.
+
+### Counterargument 4: Political Impossibility
+The economic and competitive forces driving AI development may be too strong to pause. Advocacy effort spent on pause might be better directed toward tractable safety measures.
+
+## Key Cruxes
+
+### Crux 1: Is Pause Feasible?
+
+<KeyQuestions
+  client:load
+  questions={[
+    "Can a meaningful pause be achieved and maintained given competitive pressures?"
+  ]}
+/>
+
+| Pause is feasible | Pause is not feasible |
+|-------------------|----------------------|
+| Small number of frontier actors (3-5 labs) | Competitive pressure from geopolitical rivals |
+| Physical chokepoints exist (compute, chips) | Development goes underground or abroad |
+| Historical precedent (nuclear testing bans) | No precedent for pausing knowledge creation |
+| Growing political will post-2023 | Industry opposition too strong |
+
+### Crux 2: Is Pause Desirable?
+
+<KeyQuestions
+  client:load
+  questions={[
+    "Would a pause actually reduce risk, or create new risks?"
+  ]}
+/>
+
+| Pause is desirable | Pause is undesirable |
+|-------------------|---------------------|
+| Reduces probability of premature deployment | Delays beneficial AI applications |
+| Enables better preparation and governance | Creates compute overhang risk |
+| Allows international coordination | Cedes leadership to less safety-conscious actors |
+| More time for alignment research | May not actually buy much safety progress |
+
+### Crux 3: Who Benefits?
+
+<KeyQuestions
+  client:load
+  questions={[
+    "Are the costs and benefits of pause distributed fairly?"
+  ]}
+/>
+
+| Pause is neutral | Pause has distributive effects |
+|------------------|------------------------------|
+| Everyone benefits from reduced x-risk | Incumbents benefit from reduced competition |
+| Global benefit from safer AI | Geopolitical advantage to non-pausers |
+| Future generations benefit most | Current generation bears costs |
+| Democratic legitimacy if widely supported | Elite-driven if imposed top-down |
+
+## Effectiveness Estimates
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of Pause Advocacy"
+  description="How much would successful pause advocacy reduce AI x-risk?"
+  spectrum={{ low: "Minimal impact", high: "Major risk reduction" }}
+  positions={[
+    { actor: "Pause advocates", position: "High", estimate: "50%+ risk reduction", confidence: "medium" },
+    { actor: "AI industry", position: "Low", estimate: "May increase risk", confidence: "medium" },
+    { actor: "Moderate safety researchers", position: "Medium", estimate: "Depends on implementation", confidence: "low" }
+  ]}
+/>
+
+## Who Should Work on This?
+
+**Good fit if you believe**:
+- Alignment is hard and we need more time
+- Political change is possible despite industry opposition
+- Other approaches won't provide sufficient safety in time
+- Willing to take an unpopular stance with career costs
+
+**Less relevant if you believe**:
+- Pause is politically impossible given competitive dynamics
+- Would backfire (compute overhang, underground development)
+- Technical alignment is achievable in available time
+- Benefits of AI outweigh risks of continued development
+
+## Complementary Interventions
+
+- [Compute Governance](/knowledge-base/responses/governance/policy-approaches/compute-governance/) - Hardware controls could enable enforcement
+- [International Coordination](/knowledge-base/responses/governance/international/) - Treaties could make pause stable
+- [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) - Industry self-regulation as softer alternative
+
+## Key Organizations
+
+- **Future of Life Institute** - Organized 2023 open letter
+- **Pause AI** - Grassroots advocacy organization
+- **Campaign for AI Safety** - Policy advocacy
+
+## Related Pages
+
+<Backlinks client:load entityId="pause-advocacy" />

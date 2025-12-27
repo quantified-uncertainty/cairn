@@ -1,0 +1,27 @@
+stateDiagram-v2
+    [*] --> Healthy: E > 0.7
+    Healthy --> Stressed: E = 0.5-0.7
+    Stressed --> Dysfunctional: E = 0.35-0.5
+    Dysfunctional --> Collapsed: E < 0.35
+
+    Stressed --> Healthy: Intervention window (easy)
+    Dysfunctional --> Stressed: Intervention window (hard)
+    Collapsed --> Dysfunctional: Generational recovery
+
+    note right of Healthy
+        Self-reinforcing verification
+        Consensus achievable
+        Errors corrected
+    end note
+
+    note right of Dysfunctional
+        Unstable equilibrium
+        Small shocks can trigger collapse
+        Intervention still possible
+    end note
+
+    note right of Collapsed
+        Self-reinforcing distrust
+        Stable collapsed equilibrium
+        Recovery may be impossible
+    end note

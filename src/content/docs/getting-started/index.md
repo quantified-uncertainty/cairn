@@ -234,7 +234,7 @@ Different readers will want different paths through the material:
 Start with the [FAQ](/getting-started/faq/) to get basic orientation, then work through the [Core Argument](/understanding-ai-risk/core-argument/) section systematically.
 
 **If you're deciding whether to work on AI safety:**
-Explore [Interventions](/knowledge-base/responses/) to understand what kinds of work exist, check out [Organizations](/knowledge-base/organizations/) to see who's hiring, and read about [different worldviews](/understanding-ai-risk/worldviews/) to understand the range of perspectives.
+Explore [Interventions](/knowledge-base/responses/) to understand what kinds of work exist, check out [Organizations](/knowledge-base/organizations/) to see who's hiring, and read about [different worldviews](/knowledge-base/worldviews/) to understand the range of perspectives.
 
 **If you're a technical researcher:**
 Dive into [Safety Approaches](/knowledge-base/responses/technical/) to understand current research directions, review [Research Agendas](/knowledge-base/responses/technical/research-agendas/) for comparisons, and explore specific [Risk & Failure Modes](/knowledge-base/risks/) that motivate different approaches.
@@ -243,7 +243,7 @@ Dive into [Safety Approaches](/knowledge-base/responses/technical/) to understan
 Start with [Governance Approaches](/knowledge-base/responses/governance/), and review [Case Studies](/analysis/case-studies/) from other technologies.
 
 **If you're forming your own views:**
-Use the [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/) page to identify key questions, explore [Key Debates](/understanding-ai-risk/debates/) to see arguments on different sides, and examine how different [Worldviews](/understanding-ai-risk/worldviews/) weight the evidence.
+Use the [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) page to identify key questions, explore [Key Debates](/knowledge-base/debates/) to see arguments on different sides, and examine how different [Worldviews](/knowledge-base/worldviews/) weight the evidence.
 
 ## Key Numbers to Know
 
@@ -297,10 +297,10 @@ Ready to dive deeper? Here are the recommended next steps:
 4. Check out [Historical Scenarios](/analysis/scenarios/) to make it concrete
 
 **For those evaluating the field:**
-1. Read [Key Debates](/understanding-ai-risk/debates/) to see the strongest arguments on different sides
-2. Examine [Different Worldviews](/understanding-ai-risk/worldviews/) to understand the range of positions
+1. Read [Key Debates](/knowledge-base/debates/) to see the strongest arguments on different sides
+2. Examine [Different Worldviews](/knowledge-base/worldviews/) to understand the range of positions
 3. Review [Case Studies](/analysis/case-studies/) from analogous technologies
-4. Consider [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/) that drive disagreements
+4. Consider [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) that drive disagreements
 
 **For those ready to contribute:**
 1. Explore [Responses](/knowledge-base/responses/) to see what kinds of work exist

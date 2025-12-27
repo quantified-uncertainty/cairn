@@ -9,7 +9,7 @@ llmSummary: "Risk from learned optimizers that may have objectives different fro
 lastEdited: "2025-12-24"
 ---
 
-import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, EstimateBox} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="mesa-optimization" />
 
@@ -28,6 +28,39 @@ When training an AI system, we use a base optimizer (like SGD) to optimize a bas
 3. **Becomes a mesa-optimizer** - Develops its own internal optimization process
 
 If the model becomes a mesa-optimizer, there's no guarantee its mesa-objective matches our base objective.
+
+## Risk Assessment
+
+### Severity If It Occurs
+
+<EstimateBox
+  client:load
+  variable="Severity of Mesa-Optimization Failure"
+  description="How bad would inner alignment failure be?"
+  estimates={[
+    { source: "Hubinger et al.", value: "High to Catastrophic", notes: "Depends on capability and degree of misalignment" },
+    { source: "MIRI", value: "Catastrophic", notes: "Foundational alignment problem" },
+    { source: "Moderate view", value: "High", notes: "Serious but potentially detectable/correctable" }
+  ]}
+/>
+
+### Likelihood
+
+<EstimateBox
+  client:load
+  variable="Probability of Mesa-Optimization"
+  description="How likely are advanced AI systems to develop mesa-objectives?"
+  unit="%"
+  estimates={[
+    { source: "Hubinger et al.", value: "Uncertain", notes: "Depends on architecture and training; framework paper, not probability estimate" },
+    { source: "High concern view", value: "40-70%", notes: "Optimization is a natural solution to complex tasks" },
+    { source: "Low concern view", value: "10-30%", notes: "Current architectures may not develop mesa-optimization" }
+  ]}
+/>
+
+### Key Uncertainty
+
+The central uncertainty is whether modern deep learning produces mesa-optimizers at all. Current LLMs may implement sophisticated heuristics without explicit internal optimization. If mesa-optimization doesn't occur, the inner alignment problem is moot.
 
 ## Why Mesa-Optimizers Arise
 
@@ -65,6 +98,16 @@ The mesa-optimizer knowingly pursues a different objective but behaves aligned t
 Evolution (base optimizer) optimized for reproductive fitness (base objective), but humans (mesa-optimizers) don't directly pursue reproduction. Instead, we pursue pleasure, love, curiosity (mesa-objectives) that historically correlated with fitness.
 
 Modern humans use birth control—optimizing for the mesa-objective (pleasure) while subverting the base objective (reproduction). This is a concrete example of inner misalignment.
+
+## Responses That Address This Risk
+
+| Response | Mechanism | Effectiveness |
+|----------|-----------|---------------|
+| [Mechanistic Interpretability](/knowledge-base/responses/technical/interpretability/) | Detect mesa-objectives in model internals | Medium-High |
+| [Scalable Oversight](/knowledge-base/responses/technical/scalable-oversight/) | Catch mesa-objective divergence before deployment | Medium |
+| [AI Control](/knowledge-base/responses/technical/ai-control/) | Limit consequences of inner misalignment | High |
+| [RLHF](/knowledge-base/responses/technical/rlhf/) | May or may not align mesa-objectives | Low-Medium |
+| [Agent Foundations](/knowledge-base/responses/technical/agent-foundations/) | Formal understanding of optimization and agency | Medium (long-term) |
 
 ## Related Pages
 

@@ -23,28 +23,28 @@ The basic case for AI existential risk involves several steps, each with associa
 
 Different frameworks for thinking about how AI risk develops:
 
-- [Capability-Alignment Race](/understanding-ai-risk/models/capability-alignment-race) - Will alignment keep pace with capabilities?
-- [Multi-Actor Landscape](/understanding-ai-risk/models/multi-actor-landscape) - How do different actors interact?
-- [Technical Pathways](/understanding-ai-risk/models/technical-pathways) - What technical routes might lead to risk?
-- [Societal Response](/understanding-ai-risk/models/societal-response) - How might society react to AI developments?
-- [Feedback Loops](/understanding-ai-risk/models/feedback-loops) - What dynamics accelerate or mitigate risk?
-- [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties) - What don't we know that matters most?
+- [Capability-Alignment Race](/knowledge-base/models/capability-alignment-race) - Will alignment keep pace with capabilities?
+- [Multi-Actor Landscape](/knowledge-base/models/multi-actor-landscape) - How do different actors interact?
+- [Technical Pathways](/knowledge-base/models/technical-pathways) - What technical routes might lead to risk?
+- [Societal Response](/knowledge-base/models/societal-response) - How might society react to AI developments?
+- [Feedback Loops](/knowledge-base/models/feedback-loops) - What dynamics accelerate or mitigate risk?
+- [Critical Uncertainties](/knowledge-base/models/critical-uncertainties) - What don't we know that matters most?
 
 ## Worldviews
 
 Different perspectives on AI risk vary in their probability estimates and priority recommendations:
 
-- [High-Risk View](/understanding-ai-risk/worldviews/doomer) - Those who assign high probability to catastrophe
-- [Optimistic View](/understanding-ai-risk/worldviews/optimistic) - Those who see AI development as more likely positive
-- [Governance-Focused View](/understanding-ai-risk/worldviews/governance-focused) - Those who prioritize institutional responses
-- [Long Timelines View](/understanding-ai-risk/worldviews/long-timelines) - Those who expect more time to prepare
+- [High-Risk View](/knowledge-base/worldviews/doomer) - Those who assign high probability to catastrophe
+- [Optimistic View](/knowledge-base/worldviews/optimistic) - Those who see AI development as more likely positive
+- [Governance-Focused View](/knowledge-base/worldviews/governance-focused) - Those who prioritize institutional responses
+- [Long Timelines View](/knowledge-base/worldviews/long-timelines) - Those who expect more time to prepare
 
 ## How to Use This Section
 
 If you're new to AI risk:
 1. Start with the [Core Argument](/understanding-ai-risk/core-argument/) to understand the basic case
-2. Review [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties) to understand key debates
-3. Explore different [Worldviews](/understanding-ai-risk/worldviews/) to see how people weigh the evidence differently
+2. Review [Critical Uncertainties](/knowledge-base/models/critical-uncertainties) to understand key debates
+3. Explore different [Worldviews](/knowledge-base/worldviews/) to see how people weigh the evidence differently
 
 If you're trying to form your own view:
 - Consider which steps in the core argument you find most and least convincing

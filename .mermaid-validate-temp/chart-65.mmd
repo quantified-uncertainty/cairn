@@ -1,0 +1,17 @@
+flowchart TD
+    BO[Base Optimizer<br/>SGD/Adam] --> |minimizes| BObj[Base Objective<br/>e.g., cross-entropy loss]
+    BObj --> |shapes| Model[Trained Model]
+    Model --> |may contain| MO[Mesa-Optimizer<br/>internal optimization]
+    MO --> |pursues| MOb[Mesa-Objective<br/>learned goal]
+    MOb --> |aligned?| Q{Objective<br/>Match?}
+    Q -->|Yes| Safe[Safe Behavior]
+    Q -->|No| Risk[Misalignment Risk]
+
+    style BO fill:#2563eb,color:#fff,stroke:#1d4ed8
+    style BObj fill:#6b7280,color:#fff,stroke:#9ca3af
+    style Model fill:#6b7280,color:#fff,stroke:#9ca3af
+    style MO fill:#ea580c,color:#fff,stroke:#c2410c
+    style MOb fill:#6b7280,color:#fff,stroke:#9ca3af
+    style Q fill:#6b7280,color:#fff,stroke:#9ca3af
+    style Risk fill:#dc2626,color:#fff,stroke:#b91c1c
+    style Safe fill:#16a34a,color:#fff,stroke:#15803d

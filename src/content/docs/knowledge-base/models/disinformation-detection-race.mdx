@@ -26,43 +26,31 @@ The model evaluates four scenarios for how this race might unfold: detection fai
 
 ## Conceptual Framework
 
+### Structural Asymmetry
+
+| Actor | Advantages | Disadvantages |
+|-------|-----------|---------------|
+| **Generators** | Train directly against detectors | — |
+| | Access to detector architectures | — |
+| | Iterative testing capability | — |
+| | Optimize for indistinguishability | — |
+| **Detectors** | — | Must generalize to unseen techniques |
+| | — | Moving target problem |
+| | — | Lack access to latest generators |
+| | — | False positive/negative tradeoff |
+
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Generation["Generation Advantages"]
-        G1["Train directly against detectors"]
-        G2["Access to detector architectures"]
-        G3["Iterative testing capability"]
-        G4["Optimize for indistinguishability"]
-    end
+    GEN[Generation Advantages] --> ASYM[Asymmetric Advantage]
+    DET[Detection Challenges] --> ASYM
+    ASYM --> FAIL[Race Toward Detection Failure]
 
-    subgraph Detection["Detection Challenges"]
-        D1["Must generalize to unseen techniques"]
-        D2["Moving target problem"]
-        D3["Lack access to latest generators"]
-        D4["False positive/negative tradeoff"]
-    end
-
-    subgraph Outcome["Structural Outcome"]
-        O1["Asymmetric advantage<br/>favors generation"]
-        O2["Detection accuracy<br/>declining over time"]
-        O3["Race toward<br/>detection failure"]
-    end
-
-    G1 --> O1
-    G2 --> O1
-    G3 --> O1
-    G4 --> O1
-    D1 --> O2
-    D2 --> O2
-    D3 --> O2
-    D4 --> O2
-    O1 --> O3
-    O2 --> O3
-
-    style O3 fill:#ff9999
+    style GEN fill:#ffddcc
+    style DET fill:#cceeff
+    style FAIL fill:#ff9999
 `} />
 
-The diagram illustrates the structural asymmetry between generation and detection capabilities. Red highlighting indicates the likely trajectory toward detection failure given these asymmetric advantages.
+This structural asymmetry—where generators hold persistent advantages over detectors—indicates the likely trajectory toward detection failure.
 
 ## The Adversarial Dynamic
 

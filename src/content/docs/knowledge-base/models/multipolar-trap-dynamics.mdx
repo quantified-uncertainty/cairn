@@ -30,33 +30,22 @@ The model draws on classical game theory, particularly the prisoner's dilemma an
 
 The multipolar trap in AI development exhibits the classic structure of an N-player prisoner's dilemma, where individual incentives diverge from collective optimum. The following diagram illustrates how this dynamic unfolds across multiple actors and time periods.
 
+| Phase | Description | Outcome |
+|-------|-------------|---------|
+| **Initial State** | All actors prefer coordinated safety | Individual incentive check |
+| **Defection Cascade** | First mover accelerates, others observe threat, must follow | Industry-wide race dynamics |
+| **Trap Equilibrium** | All actors defecting, escape mechanism needed | Unsafe equilibrium or coordination restored |
+
 <Mermaid client:load chart={`flowchart TD
-    subgraph "Initial State"
-        A[All actors prefer<br/>coordinated safety] --> B{Individual<br/>incentive check}
-    end
+    A[Preference for Safety] --> B{Binding Commitment?}
+    B -->|No| C[Defection Cascade]
+    C --> D[Unsafe Equilibrium]
+    B -->|Yes| E[Coordination Maintained]
 
-    subgraph "Defection Cascade"
-        B -->|"First mover<br/>advantage exists"| C[Actor 1 accelerates]
-        C --> D[Others observe<br/>competitive threat]
-        D --> E[Actors 2-N<br/>must accelerate]
-        E --> F[Industry-wide<br/>race dynamics]
-    end
-
-    subgraph "Trap Equilibrium"
-        F --> G[All actors defecting]
-        G --> H{Escape<br/>mechanism?}
-        H -->|No| I[Unsafe equilibrium<br/>persists]
-        H -->|Yes| J[Coordination<br/>restored]
-        I --> G
-    end
-
-    B -->|"Binding commitment<br/>mechanism exists"| K[Coordination<br/>maintained]
-    K --> J
-
-    style A fill:#cfc
-    style G fill:#fcc
-    style I fill:#fcc
-    style J fill:#cfc`} />
+    style A fill:#ccffcc
+    style C fill:#ffddcc
+    style D fill:#ffcccc
+    style E fill:#ccffcc`} />
 
 ### Mathematical Formulation
 
@@ -142,34 +131,26 @@ The equilibrium in this trap is minimal safety investment across all actors, con
 
 ### Deployment Speed Trap
 
-<Mermaid client:load chart={`sequenceDiagram
-    participant OpenAI
-    participant Google
-    participant Anthropic
-    participant Meta
-    participant Regulators
+**Timeline: Deployment Speed Cascade (2022-2023)**
 
-    Note over OpenAI,Meta: Pre-ChatGPT: Measured release cadence
+| Date | Event | Effect on Competition |
+|------|-------|----------------------|
+| **Nov 2022** | OpenAI launches ChatGPT | Triggers industry-wide acceleration |
+| **Feb 2023** | Google rushes Bard launch (with demo errors) | Signals quality compromised for speed |
+| **Mar 2023** | Anthropic launches Claude | Joins accelerated timeline |
+| **Jul 2023** | Meta releases Llama 2 open-source | Escalates capability diffusion |
+| **2023-2024** | Release cycles compress: 24mo → 3-6mo | Safety testing windows shrink |
 
-    OpenAI->>OpenAI: ChatGPT launch (Nov 2022)
-    OpenAI->>Google: Competitive pressure signal
-    OpenAI->>Anthropic: Competitive pressure signal
-    OpenAI->>Meta: Competitive pressure signal
+<Mermaid client:load chart={`
+flowchart LR
+    A[First mover<br/>launches early] --> B[Competitors<br/>observe threat]
+    B --> C[Industry-wide<br/>acceleration]
+    C --> D[Testing windows<br/>shrink]
+    D --> E[Safety compromised<br/>for speed]
 
-    Google->>Google: Accelerate Bard timeline
-    Google->>OpenAI: Rushed launch (Feb 2023, demo errors)
-
-    Note over OpenAI,Meta: Industry release cycles: 24mo → 3-6mo
-
-    Anthropic->>Anthropic: Claude launches
-    Meta->>Meta: Llama 2 open release
-
-    Regulators->>OpenAI: Request safety assessment
-    OpenAI->>Regulators: Delayed response
-    Regulators->>Google: Request safety assessment
-    Google->>Regulators: Delayed response
-
-    Note over OpenAI,Regulators: Racing dynamics override regulatory caution`} />
+    style A fill:#ffeedd
+    style E fill:#ffcccc
+`} />
 
 The deployment speed trap operates on shorter timescales than the safety investment trap but follows the same structural logic. Early deployment captures market share, users, and data that compound advantages over time. Thorough testing and red-teaming require weeks or months that competitors may not invest. When one actor rushes deployment, others face a choice: match the accelerated timeline or cede market position.
 

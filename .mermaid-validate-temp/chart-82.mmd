@@ -1,0 +1,11 @@
+
+flowchart TD
+    A[Initiating Risk] -->|"triggers"| B[Intermediate Risk]
+    B -->|"enables"| C[Downstream Risk]
+    C -->|"causes"| D[Outcome]
+
+    I[Interventions] -.->|"block at each stage"| B
+
+    style A fill:#ffddcc
+    style D fill:#ffcccc
+    style I fill:#ccffcc

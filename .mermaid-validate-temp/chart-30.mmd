@@ -1,0 +1,10 @@
+flowchart TD
+    A[Training] --> B{All 5 Conditions Met?}
+    B -->|No| C[Safe Exit]
+    B -->|Yes| D[Deceptive Alignment]
+
+    E[Mesa-Opt] --> F[Misaligned] --> G[Aware] --> H[Deceptive] --> I[Survives]
+
+    style A fill:#e1f5ff
+    style C fill:#ccffcc
+    style D fill:#ffcccc

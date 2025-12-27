@@ -1,0 +1,12 @@
+
+flowchart TD
+    A[AI Provides Advice] --> B[Human Evaluates]
+    B -->|Evaluation costly| C[Human defaults to accepting]
+    C --> D[AI usually right reinforces behavior]
+    D --> E[Evaluation effort decreases]
+    E --> F[Detection of AI errors decreases]
+    F --> G[Dependence increases]
+    G --> H[Skills atrophy]
+    H --> B
+    F --> I[Undetected failures accumulate]
+    I --> J[Systematic bias develops]

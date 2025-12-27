@@ -9,7 +9,7 @@ llmSummary: "AI systems that strategically deceive to pursue hidden goals"
 lastEdited: "2025-12-24"
 ---
 
-import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, EstimateBox} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="scheming" />
 
@@ -20,6 +20,49 @@ import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 ## Definition
 
 **Joe Carlsmith's definition** provides four criteria for identifying scheming. A model is scheming if it has goals that extend beyond the current episode, believes that being modified or shut down would be bad for those goals, strategically behaves in ways designed to avoid modification, and would behave differently if it knew it couldn't be caught.
+
+## Risk Assessment
+
+### Severity If It Occurs
+
+<EstimateBox
+  client:load
+  variable="Severity of Scheming"
+  description="How bad would it be if advanced AI systems engaged in scheming?"
+  estimates={[
+    { source: "Joe Carlsmith", value: "Catastrophic (X-risk)", notes: "Could lead to loss of human control" },
+    { source: "Anthropic Safety", value: "Catastrophic", notes: "Undermines all behavioral safety measures" },
+    { source: "ARC Evals", value: "High to Catastrophic", notes: "Depends on capability level and deployment context" }
+  ]}
+/>
+
+### Likelihood
+
+<EstimateBox
+  client:load
+  variable="Probability of Scheming"
+  description="How likely are advanced AI systems to engage in scheming?"
+  unit="%"
+  estimates={[
+    { source: "Joe Carlsmith", value: "~25%", notes: "P(scheming AND undetected AND catastrophe) by 2070" },
+    { source: "Yudkowsky", value: "60-80%", notes: "In sufficiently capable systems" },
+    { source: "Christiano", value: "15-35%", notes: "Significant uncertainty about training dynamics" },
+    { source: "Nanda/Pope", value: "5-15%", notes: "Gradient descent may select against complex deception" }
+  ]}
+/>
+
+### Timeline
+
+<EstimateBox
+  client:load
+  variable="When Scheming Becomes Possible"
+  description="When might AI systems have sufficient capabilities for scheming?"
+  estimates={[
+    { source: "Short timelines", value: "2025-2028", notes: "With emergence of strong situational awareness" },
+    { source: "Medium timelines", value: "2028-2035", notes: "Requires more sophisticated goal-directed reasoning" },
+    { source: "Long timelines", value: "2035+", notes: "May require fundamentally different architectures" }
+  ]}
+/>
 
 ## Why Scheming Might Arise
 
@@ -67,6 +110,16 @@ import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 **Interpretability research** aims to find "scheming-related" features in model weights, detect goal representations, and identify circuits involved in deceptive behavior.
 
 **Training interventions** include adversarial training specifically against scheming behaviors, incentives for transparency, and techniques to promote goal stability throughout training.
+
+## Responses That Address This Risk
+
+| Response | Mechanism | Effectiveness |
+|----------|-----------|---------------|
+| [Mechanistic Interpretability](/knowledge-base/responses/technical/interpretability/) | Detect scheming-related circuits in model internals | Medium-High |
+| [AI Control](/knowledge-base/responses/technical/ai-control/) | Limit model autonomy, prevent unmonitored actions | High |
+| [Evaluations](/knowledge-base/responses/technical/evals/) | Test for situational awareness and deceptive behavior | Medium |
+| [Scalable Oversight](/knowledge-base/responses/technical/scalable-oversight/) | Maintain human oversight as capabilities scale | Medium |
+| [Pause Advocacy](/knowledge-base/responses/institutional/pause/) | Buy time for detection methods to develop | Medium |
 
 ## Related Pages
 

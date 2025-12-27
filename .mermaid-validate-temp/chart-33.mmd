@@ -1,0 +1,20 @@
+
+flowchart TD
+    A[AI System Development] --> B[Layer 1: Training Safety]
+    B --> C[Layer 2: Evaluation Safety]
+    C --> D[Layer 3: Runtime Safety]
+    D --> E[Layer 4: Institutional Safety]
+    E --> F[Deployment]
+    F --> G[Layer 5: Recovery Safety]
+
+    B -.-> H[RLHF, Constitutional AI]
+    C -.-> I[Red-teaming, Interpretability]
+    D -.-> J[Monitoring, Sandboxing]
+    E -.-> K[Audits, Regulation]
+    G -.-> L[Incident Response, Shutdown]
+
+    style B fill:#e1f5ff
+    style C fill:#e1f5ff
+    style D fill:#e1f5ff
+    style E fill:#ffe1e1
+    style G fill:#ffe1e1

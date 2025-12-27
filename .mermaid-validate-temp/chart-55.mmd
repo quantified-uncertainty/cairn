@@ -1,0 +1,35 @@
+
+graph TD
+    A[Initial State: Strategic Uncertainty] --> B{US Strategy Choice}
+    A --> C{China Strategy Choice}
+
+    B --> D[US Cooperates]
+    B --> E[US Defects]
+    C --> F[China Cooperates]
+    C --> G[China Defects]
+
+    D --> H{China Response}
+    E --> I{China Response}
+    F --> J{US Response}
+    G --> K{US Response}
+
+    H --> L["Mutual Cooperation<br/>(4,4) Safe Development"]
+    H --> M["US Exploited<br/>(1,5) China Advantage"]
+    I --> N["US Advantage<br/>(5,1) Unilateral Lead"]
+    I --> O["Mutual Defection<br/>(2,2) Arms Race"]
+
+    J --> L
+    J --> N
+    K --> M
+    K --> O
+
+    L --> P[Stable Equilibrium?]
+    O --> Q[Nash Equilibrium]
+
+    P -->|No Trust| O
+    P -->|Verification Works| R[Sustained Cooperation]
+
+    style L fill:#90EE90
+    style O fill:#FFB6C6
+    style Q fill:#FFB6C6
+    style R fill:#90EE90

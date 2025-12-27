@@ -28,35 +28,41 @@ The key insight emerging from this analysis is that AI provides a temporary but 
 
 The offense-defense balance can be modeled as a function of structural asymmetries multiplied by AI capability multipliers for each side. The following diagram illustrates the key dynamics:
 
+### Structural Asymmetries
+
+| Factor | Favors | Description |
+|--------|--------|-------------|
+| Target Selection | Offense | Attackers choose weakest link; defenders must protect all |
+| Disclosure Timing | Offense | Attackers stockpile 0-days; defenders learn after disclosure |
+| Success Threshold | Offense | One breach suffices vs. 100% defense required |
+| Data Position | Defense | Defenders know their own systems intimately |
+| Terrain Control | Defense | Defenders set architecture and choose tools |
+
+### AI Capability Multipliers
+
+| Capability | Multiplier | Primary Beneficiary |
+|------------|------------|---------------------|
+| Vulnerability Discovery | 1.5-2.0x | Offense |
+| Attack Automation | 2.0-3.0x | Offense |
+| Detection Speed | 10-100x | Defense |
+| Response Time | 50-200x | Defense |
+
+### Current Balance and Trajectory
+
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph SA["Structural Asymmetries"]
-        A[Target Selection - Attackers choose weakest link] --> OA[Offense Advantage]
-        B[Disclosure Timing - Attackers stockpile 0-days] --> OA
-        C[Success Threshold - One breach vs 100% defense] --> OA
-        D[Data Position - Defenders know own systems] --> DA[Defense Advantage]
-        E[Terrain Control - Defenders set architecture] --> DA
-    end
+    A[Structural Asymmetries] --> B[AI Multipliers]
+    B --> C[Current: Offense +30-70%]
+    C --> D{Future Trajectory}
+    D -->|Proliferation| E[Offense Widens]
+    D -->|Investment| F[Parity]
+    D -->|Breakthrough| G[Defense Wins]
 
-    subgraph AIM["AI Multipliers"]
-        OA --> F{AI Capability Multiplication}
-        DA --> F
-        F --> G[Vulnerability Discovery x1.5-2.0]
-        F --> H[Attack Automation x2.0-3.0]
-        F --> I[Detection Speed x10-100]
-        F --> J[Response Time x50-200]
-    end
-
-    subgraph NB["Net Balance"]
-        G --> K[Current State: Offense +30-70%]
-        H --> K
-        I --> K
-        J --> K
-        K --> L{Trajectory}
-        L -->|Tool proliferation| M[Offense Gap Widens]
-        L -->|Defense investment| N[Approaching Parity]
-        L -->|Breakthrough defense| O[Defense Advantage]
-    end
+    style A fill:#e1f5ff
+    style C fill:#ffddcc
+    style E fill:#ffcccc
+    style F fill:#fff4e1
+    style G fill:#ccffcc
 `} />
 
 The structural asymmetries that predate AI include target selection flexibility (attackers choose the weakest target while defenders must protect everything), disclosure timing (attackers can stockpile vulnerabilities while defenders only learn after disclosure), innovation burden (attackers need one novel technique while defenders must anticipate all possibilities), success thresholds (one breach suffices for attackers while defenders require near-perfect coverage), and resource concentration (attackers focus resources while defenders distribute across attack surfaces). AI multiplies both offensive and defensive capabilities, but the net effect depends on which structural asymmetries AI affects more strongly and whether defensive investments keep pace.

@@ -89,38 +89,32 @@ Return on investment calculations increasingly favor sophisticated fraud as auto
 
 ## Attack-Defense Dynamics
 
-The following diagram illustrates the cyclical relationship between fraud evolution and defensive responses, showing why attackers maintain persistent advantages.
+The cyclical relationship between fraud evolution and defensive responses reveals why attackers maintain persistent advantages.
+
+### Cycle Components
+
+| Phase | Attack Side | Defense Side | Typical Duration |
+|-------|------------|--------------|------------------|
+| **1. Capability** | AI advancement creates new techniques | — | 6-12 months |
+| **2. Diffusion** | Techniques spread via open-source, FaaS | — | 12-18 months |
+| **3. Deployment** | Widespread attacks cause losses | Loss detection triggers investment | 3-6 months |
+| **4. Response** | — | Countermeasures deployed | 18-36 months |
+| **5. Adaptation** | Obsolete techniques replaced | — | Continuous |
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph AE["Attack Evolution"]
-        A[AI Capability Advancement] --> B[New Fraud Techniques]
-        B --> C[Technique Diffusion]
-        C --> D[Widespread Attacks]
-    end
+    ATK[Attack Evolution<br/>12-18 months] --> LOSS[Losses Increase]
+    LOSS --> DEF[Defense Response<br/>18-36 months]
+    DEF --> OBS[Technique Obsolescence]
+    OBS --> ATK
+    GAP[Detection Gap] -.->|Amplifies| LOSS
 
-    subgraph DR["Defense Response"]
-        D --> E[Increased Losses]
-        E --> F[Defense Investment]
-        F --> G[Countermeasures Deployed]
-        G --> H[Technique Obsolescence]
-    end
-
-    subgraph AMP["Amplifiers"]
-        I[Economic Incentives] --> B
-        K[Open-Source AI] --> C
-        L[Fraud-as-a-Service] --> D
-    end
-
-    H --> B
-    J[Detection Gap 18-36 months] --> E
-
-    style J fill:#ff6b6b
-    style A fill:#4ecdc4
-    style G fill:#95e1d3
+    style ATK fill:#ffddcc
+    style DEF fill:#ccffcc
+    style GAP fill:#ff9999
 `} />
 
-The diagram reveals a fundamental asymmetry: the attack evolution cycle (AI capability to technique diffusion) operates on 12-18 month timescales, while the defense response cycle (loss detection to countermeasure deployment) requires 18-36 months. This persistent gap means defenses are always protecting against yesterday's threats.
+The fundamental asymmetry: the attack cycle operates on 12-18 month timescales, while defense requires 18-36 months. This persistent gap means defenses are always protecting against yesterday's threats.
 
 ### R1: Capability-to-Attack Lag
 

@@ -1,0 +1,44 @@
+
+flowchart TD
+    Start["Current State<br/>Competitive Coexistence<br/>~35% Coordination"] --> Crisis{Major AI<br/>Incident?}
+    Start --> Breakthrough{Capability<br/>Breakthrough?}
+    Start --> Dialogue{Sustained<br/>Dialogue?}
+
+    Crisis -->|Yes| Salience[Increased Risk Salience]
+    Crisis -->|No| Status[Status Quo Continues]
+
+    Breakthrough -->|US Lead| USPanic[China Panic Response]
+    Breakthrough -->|China Lead| ChinaPanic[US Panic Response]
+    Breakthrough -->|Simultaneous| Multipolar[Multipolar Competition]
+
+    Dialogue -->|Success| Track2[Track 2 Breakthrough]
+    Dialogue -->|Failure| Status
+
+    Salience --> Negotiate{Negotiate<br/>Framework?}
+    Negotiate -->|Yes| SC[Successful Coordination<br/>15%]
+    Negotiate -->|No| AR[Accelerating Race<br/>35%]
+
+    USPanic --> AR
+    ChinaPanic --> AR
+    Multipolar --> AR
+
+    Status --> CE[Competitive Coexistence<br/>35%]
+
+    Track2 --> Verify{Verification<br/>Workable?}
+    Verify -->|Yes| SC
+    Verify -->|No| CE
+
+    CE --> Decouple{Technology<br/>Decoupling?}
+    Decouple -->|Complete| DW[Decoupled Worlds<br/>15%]
+    Decouple -->|Partial| CE
+
+    AR --> Catastrophe[High Catastrophic Risk]
+    SC --> Safety[Safer Development Path]
+    CE --> Moderate[Moderate Risk]
+    DW --> Unknown[Unknown Outcome]
+
+    style SC fill:#90EE90
+    style AR fill:#FFB6C6
+    style Safety fill:#90EE90
+    style Catastrophe fill:#FF6B6B
+    style Moderate fill:#FFE66D

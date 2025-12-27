@@ -257,38 +257,27 @@ Different application domains combine distribution shift magnitudes, specificati
 
 ### Intervention Comparison
 
-<Mermaid client:load chart={`flowchart LR
-    subgraph Prevention["Prevention (Training)"]
-        P1[Diverse Adversarial Training<br/>-20-40% goal failure]
-        P2[Objective Specification<br/>-30-50% goal failure]
-        P3[Interpretability Verification<br/>-40-70% goal failure]
-    end
+| Category | Intervention | Risk Reduction | Target |
+|----------|-------------|----------------|--------|
+| **Prevention** | Diverse Adversarial Training | 20-40% | Goal failure |
+| | Objective Specification | 30-50% | Goal failure |
+| | Interpretability Verification | 40-70% | Goal failure |
+| **Detection** | Anomaly Monitoring | Early detection | Harm realization |
+| | Objective Probing | Behavioral testing | Harm realization |
+| | Interpretability Analysis | Goal verification | Harm realization |
+| **Response** | Capability-Aware Deployment | 50-80% | Exposure |
+| | AI Control Protocols | 60-90% | Harm |
+| | Automatic Shutoff | Damage limitation | Harm |
 
-    subgraph Detection["Detection (Deployment)"]
-        D1[Anomaly Monitoring<br/>Early detection]
-        D2[Objective Probing<br/>Behavioral testing]
-        D3[Interpretability Analysis<br/>Goal verification]
-    end
+<Mermaid client:load chart={`flowchart TD
+    PREV[Prevention<br/>Training phase] --> RISK[Misgeneralization Risk]
+    DET[Detection<br/>Deployment phase] --> HARM[Harm Realization]
+    RESP[Response<br/>Harm reduction] --> HARM
 
-    subgraph Response["Response (Harm Reduction)"]
-        R1[Capability-Aware Deployment<br/>-50-80% exposure]
-        R2[AI Control Protocols<br/>-60-90% harm]
-        R3[Automatic Shutoff<br/>Damage limitation]
-    end
-
-    P1 --> M[Misgeneralization Risk]
-    P2 --> M
-    P3 --> M
-    D1 --> H[Harm Realization]
-    D2 --> H
-    D3 --> H
-    R1 --> H
-    R2 --> H
-    R3 --> H
-
-    style P3 fill:#cfc
-    style R2 fill:#cfc
-    style P1 fill:#ffc`} />
+    style PREV fill:#ccffcc
+    style DET fill:#cceeff
+    style RESP fill:#fff4e1
+`} />
 
 ### Detailed Intervention Analysis
 

@@ -21,13 +21,108 @@ ratings:
   completeness: 4
 ---
 
-import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="post-incident-recovery" ratings={frontmatter.ratings} />
 
 ## Overview
 
 This model analyzes how individuals, organizations, and societies can recover from AI-related incidents. Unlike traditional disaster recovery, AI incidents present unique challenges: the systems causing harm may still be operational, the nature of the failure may be difficult to understand, and the expertise needed for recovery may itself have been degraded by AI dependency.
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+Recovery planning is a **second-tier priority**—valuable but less important than prevention. However, for scenarios where prevention might fail, recovery capacity could determine whether incidents become catastrophes. Think of it as insurance.
+</Aside>
+
+### The Prevention vs. Recovery Tradeoff
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Resources["Limited Resources"]
+        R[Safety Budget]
+    end
+
+    R --> P[Prevention]
+    R --> REC[Recovery Planning]
+
+    P --> |"Reduces P of incident"| OUT[Expected Harm]
+    REC --> |"Reduces harm given incident"| OUT
+
+    style P fill:#ccffcc
+    style REC fill:#cceeff
+`} />
+
+**Central question:** How should we allocate between preventing incidents vs. preparing to recover from them?
+
+**General answer:** Prevention dominates for most scenarios, but recovery matters more as:
+- Prevention becomes less tractable
+- Incident probability increases
+- Incident severity is bounded (not existential)
+
+### Magnitude Assessment
+
+**Direct importance:** 5-15% of total safety effort
+
+**Conditional importance:** If prevention fails, recovery capacity may be the difference between setback and catastrophe.
+
+| Scenario | Prevention Tractability | Recovery Value |
+|----------|------------------------|----------------|
+| Contained technical failure | High | Low (will recover anyway) |
+| Systemic technical failure | Medium | **Medium-High** |
+| Epistemic/trust collapse | Low | **High** (slow without preparation) |
+| Alignment failure | Very Low | Variable (depends on severity) |
+
+### Comparative Ranking
+
+| Intervention | Relative Priority | Reasoning |
+|--------------|------------------:|-----------|
+| Prevention (alignment, control) | Higher | Prevents harm entirely |
+| Monitoring/detection | Higher | Enables faster response |
+| **Recovery planning** | Baseline | Insurance value |
+| Resilience building | Similar | Related approach |
+
+### Resource Implications
+
+**Current attention:** Low (significantly neglected)
+
+**Where marginal resources are most valuable:**
+
+| Recovery Type | Current Prep | Marginal Value | Who Should Work On This |
+|---------------|--------------|----------------|-------------------------|
+| Technical incident response | Medium | Medium | Labs, governments |
+| Trust/epistemic recovery | Very Low | **High** | Researchers, institutions |
+| Skill/expertise preservation | Very Low | **High** | Academia, professional orgs |
+| Infrastructure resilience | Medium | Medium | Governments, critical sectors |
+
+**Recommendation:** Modest increase in recovery planning (from ~2% to ~5-10% of safety resources), focused on trust/epistemic recovery and skill preservation—the most neglected areas.
+
+### Key Cruxes
+
+| If you believe... | Then recovery planning is... |
+|-------------------|------------------------------|
+| Prevention will likely succeed | **Less important** (won't need it) |
+| Some incidents are inevitable | **More important** (insurance value) |
+| Incidents will be existential | **Less important** (no recovery possible) |
+| Incidents will be severe but recoverable | **More important** (recovery determines outcome) |
+
+### Actionability
+
+**For policymakers:**
+- Develop AI incident response protocols analogous to cybersecurity/disaster response
+- Fund "recovery research" for epistemic/trust reconstruction
+- Preserve non-AI expertise as backup capacity
+
+**For organizations:**
+- Create incident response plans for AI system failures
+- Maintain some non-AI-dependent operational capacity
+- Document institutional knowledge that AI might displace
+
+**For the safety community:**
+- Don't neglect recovery planning entirely
+- Focus on "Type 3" (trust/epistemic) and "Type 4" (expertise loss) scenarios
+- Accept that prevention should still dominate resource allocation
 
 ## Incident Taxonomy
 

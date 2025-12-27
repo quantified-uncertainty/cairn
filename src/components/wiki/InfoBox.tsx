@@ -80,8 +80,8 @@ interface InfoBoxProps {
   role?: string;
   knownFor?: string;
 
-  // Custom fields
-  customFields?: { label: string; value: string }[];
+  // Custom fields (with optional link support)
+  customFields?: { label: string; value: string; link?: string }[];
 
   // Related content
   relatedTopics?: string[];
@@ -248,6 +248,9 @@ export function InfoBox({
             valueStyle = { color: matColor, fontWeight: 500 };
           }
 
+          // Check if this field has a link (from customFields)
+          const fieldLink = customFields?.find(cf => cf.label === field.label)?.link;
+
           return (
             <div key={index} className="wiki-infobox__row">
               <span className="wiki-infobox__label">{field.label}</span>
@@ -256,6 +259,8 @@ export function InfoBox({
                   <a href={field.value} target="_blank" rel="noopener noreferrer">
                     {new URL(field.value).hostname.replace('www.', '')}
                   </a>
+                ) : fieldLink ? (
+                  <a href={fieldLink}>{field.value}</a>
                 ) : (
                   field.value
                 )}

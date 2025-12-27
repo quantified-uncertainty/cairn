@@ -30,28 +30,22 @@ Safety interventions relate to capabilities in three distinct ways. First, they 
 
 The relationship between any specific safety intervention and capability development depends on multiple factors including the technical nature of the intervention, the stage of development, resource availability, and competitive dynamics. Understanding which relationship type applies to a given intervention is crucial for prioritizing safety work and allocating resources effectively.
 
+| Relationship | Short-term Effect | Long-term Effect |
+|--------------|-------------------|------------------|
+| **Competitive** | Resource diversion, slower capability | May enable deployment, prevent disasters |
+| **Complementary** | Understanding improves both | Safe systems deploy more widely |
+| **Orthogonal** | Parallel development possible | Independent progress in both areas |
+
 <Mermaid client:load chart={`
-graph TD
-    A[Safety Intervention] --> B{Relationship Type}
-    B -->|Competitive| C[Slows Capability Development]
-    B -->|Complementary| D[Enhances Capability Development]
-    B -->|Orthogonal| E[Independent of Capabilities]
+flowchart TD
+    INT[Safety Intervention] --> REL{Relationship?}
+    REL -->|Competitive| COST[Short-term Cost]
+    REL -->|Complementary| BEN[Long-term Benefit]
+    REL -->|Orthogonal| PAR[Parallel Progress]
 
-    C --> F[Short-term Cost]
-    D --> G[Long-term Benefit]
-    E --> H[Parallel Progress]
-
-    F --> I{Time Horizon}
-    G --> I
-    H --> I
-
-    I -->|Short-term| J[Resources Finite]
-    I -->|Medium-term| K[Mixed Effects]
-    I -->|Long-term| L[Often Complementary]
-
-    style D fill:#90EE90
-    style C fill:#FFB6C1
-    style E fill:#87CEEB
+    style COST fill:#ffcccc
+    style BEN fill:#ccffcc
+    style PAR fill:#cceeff
 `} />
 
 ### Time Dimension
@@ -165,35 +159,25 @@ The complementary elements focus on preventing catastrophic outcomes. Risk reduc
 | **Risk reduction** | Prevent accidents that could halt all development (complementary) | Protects long-term ability to operate |
 | **Regulatory preemption** | Self-regulation may prevent harsher external limits (complementary) | Maintains operational flexibility and autonomy |
 
+### Investment Decision Framework
+
+| Investment Type | Short-term Effect | Long-term Effect | Racing Outcome |
+|-----------------|-------------------|------------------|----------------|
+| **Safety-focused** | Reduced capability | Enables deployment | Viable with coordination |
+| **Capability-focused** | Higher capability | Risk of shutdown | Pressure to minimize safety |
+
 <Mermaid client:load chart={`
-flowchart LR
-    A[Lab Investment Decision] --> B{Resource Allocation}
+flowchart TD
+    DEC[Investment Decision] --> RACE{Racing Dynamics?}
+    RACE -->|Strong| PRESS[Pressure for Capability]
+    RACE -->|Coordinated| SAFE[Safety Viable]
+    PRESS --> CAT[Potential Catastrophe]
+    SAFE --> SUS[Sustained Development]
 
-    B --> C[Safety Investment]
-    B --> D[Capability Investment]
-
-    C --> E[Short-term: Reduced Capability]
-    C --> F[Long-term: Enables Deployment]
-
-    D --> G[Short-term: Higher Capability]
-    D --> H[Long-term: Risk of Shutdown]
-
-    E --> I{Racing Dynamics}
-    G --> I
-
-    I -->|Strong Competition| J[Pressure to Minimize Safety]
-    I -->|Coordination| K[Safety Investment Viable]
-
-    F --> L[Sustained Development]
-    H --> M[Potential Catastrophe]
-
-    J --> M
-    K --> L
-
-    style L fill:#90EE90
-    style M fill:#FFB6C1
-    style C fill:#87CEEB
-    style D fill:#FFE4B5
+    style PRESS fill:#ffddcc
+    style CAT fill:#ffcccc
+    style SAFE fill:#cceeff
+    style SUS fill:#ccffcc
 `} />
 
 ## Economic Analysis

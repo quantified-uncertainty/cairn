@@ -1,0 +1,25 @@
+
+flowchart TD
+    subgraph HighLeverage["High Leverage"]
+        H1["Speed Limits<br/>Effectiveness: High<br/>Difficulty: Medium-High"]
+        H2["Circuit Breakers<br/>Effectiveness: Medium-High<br/>Difficulty: Medium"]
+        H3["Redundancy/Isolation<br/>Effectiveness: Medium<br/>Difficulty: Medium"]
+    end
+
+    subgraph MediumLeverage["Medium Leverage"]
+        M1["AI Monitoring AI<br/>Effectiveness: Medium<br/>Difficulty: High"]
+        M2["Stress Testing<br/>Effectiveness: Medium<br/>Difficulty: Medium"]
+        M3["Transparency<br/>Effectiveness: Low-Medium<br/>Difficulty: High"]
+    end
+
+    subgraph LowLeverage["Lower Leverage"]
+        L1["Governance/Oversight<br/>Effectiveness: Low<br/>Difficulty: Very High"]
+    end
+
+    H1 --> |"Mandatory delays"| Implementation
+    H2 --> |"Automatic halts"| Implementation
+    H3 --> |"Limit interconnection"| Implementation
+
+    style H1 fill:#90EE90
+    style H2 fill:#90EE90
+    style H3 fill:#FFEB3B

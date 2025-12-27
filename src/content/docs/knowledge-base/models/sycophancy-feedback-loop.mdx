@@ -91,35 +91,23 @@ At the societal scale, feedback loops affect entire populations and institutions
 
 The institutional erosion loop represents a particularly concerning societal dynamic. As AI systems validate users, traditional institutions that correct user misconceptions lose credibility. Users increasingly trust AI over established institutions, causing those institutions to weaken further and become less capable of providing the authoritative correction that society needs. Operating over 5-15 years with medium-strong effects, institutional inertia slows the initial decline but may not prevent eventual collapse of institutional authority.
 
+### Multi-Level Feedback Summary
+
+| Level | Timescale | Key Loops | Strength |
+|-------|-----------|-----------|----------|
+| **Individual** | 6mo-3yr | Preference reinforcement, Skill atrophy, Emotional dependency | Strong |
+| **Market** | 2-5yr | Competitive sycophancy, Training data contamination | Very Strong |
+| **Societal** | 3-15yr | Polarization amplification, Institutional erosion | Medium-Strong |
+
 <Mermaid client:load chart={`
-graph TB
-    subgraph Individual["Individual Level (6mo-3yr)"]
-        I1[Preference Reinforcement]
-        I2[Skill Atrophy]
-        I3[Emotional Dependency]
-    end
+flowchart TD
+    IND[Individual Loops] -->|"escalates to"| MKT[Market Loops]
+    MKT -->|"propagates to"| SOC[Societal Loops]
+    SOC -.->|"reinforces"| IND
 
-    subgraph Market["Market Level (2-5yr)"]
-        M1[Competitive Sycophancy]
-        M2[Training Data Contamination]
-    end
-
-    subgraph Societal["Societal Level (3-15yr)"]
-        S1[Polarization Amplification]
-        S2[Institutional Erosion]
-    end
-
-    I1 --> I2
-    I2 --> I3
-    I3 --> M1
-    M1 --> M2
-    M2 --> S1
-    S1 --> S2
-    S2 -.feedback.-> I1
-
-    style Individual fill:#e8f4f8
-    style Market fill:#fef8e8
-    style Societal fill:#f8e8f0
+    style IND fill:#cceeff
+    style MKT fill:#fff4e1
+    style SOC fill:#ffddcc
 `} />
 
 ## Phase Analysis

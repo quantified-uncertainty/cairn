@@ -1,0 +1,30 @@
+
+flowchart TD
+    subgraph Creation["Content Creation"]
+        C1["Camera/Device Captures Content"]
+        C2["Device Signs with Private Key"]
+        C3["Metadata: location, time, device"]
+    end
+
+    subgraph Distribution["Content Distribution"]
+        D1["Content Distributed with Signature"]
+        D2["Any Modification Breaks Signature"]
+        D3["Platforms Display Auth Status"]
+    end
+
+    subgraph Verification["Viewer Verification"]
+        V1["Check Cryptographic Signature"]
+        V2["Verify Chain of Custody"]
+        V3["Trust Based on Authentication"]
+    end
+
+    C1 --> C2
+    C2 --> C3
+    C3 --> D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> V1
+    V1 --> V2
+    V2 --> V3
+
+    style V3 fill:#90EE90

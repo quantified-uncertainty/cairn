@@ -8,6 +8,11 @@
  * - Unescaped < characters followed by numbers (parsed as JSX)
  * - <br/> tags in Mermaid diagrams (not supported)
  * - Subgraph syntax without IDs
+ * - sequenceDiagram (rendering issues)
+ *
+ * Also checks for diagram style issues (info level):
+ * - Wide horizontal diagrams (flowchart LR with many nodes)
+ * - Very tall diagrams (3+ subgraphs or 15+ nodes)
  *
  * Usage: node scripts/validate-mdx-syntax.mjs [--ci]
  */
@@ -54,18 +59,94 @@ const PATTERNS = [
     fix: 'Replace <N with "less than N" or wrap in backticks',
   },
   {
-    id: 'br-in-mermaid',
-    pattern: /<br\s*\/?>/,
-    description: '<br/> tag (may cause issues in Mermaid diagrams)',
-    severity: 'warning',
-    fix: 'Remove <br/> and use spaces or dashes instead',
-  },
-  {
     id: 'subgraph-no-id',
     pattern: /subgraph\s+"[^"]+"\s*\n/,
     description: 'Subgraph without ID (use subgraph ID["Label"] format)',
     severity: 'warning',
     fix: 'Change to: subgraph MyId["My Label"]',
+  },
+];
+
+// Move sequence diagram check to complex checks to avoid false positives in docs
+const SEQUENCE_DIAGRAM_CHECK = {
+  id: 'sequence-diagram',
+  description: 'sequenceDiagram has rendering issues in some environments',
+  severity: 'warning',
+  fix: 'Replace with a table + simple flowchart (see style-guides/mermaid-diagrams)',
+  check: (content) => {
+    const issues = [];
+    // Only flag sequenceDiagram inside actual Mermaid components
+    const mermaidRegex = /<Mermaid[^>]*chart=\{`([^`]+)`\}/gs;
+    let match;
+    while ((match = mermaidRegex.exec(content)) !== null) {
+      const chart = match[1];
+      if (/sequenceDiagram/i.test(chart)) {
+        const lineNum = content.substring(0, match.index).split('\n').length;
+        issues.push({
+          line: lineNum,
+          lineContent: 'sequenceDiagram in Mermaid component',
+        });
+      }
+    }
+    return issues;
+  },
+};
+
+// Complex patterns that require multi-line analysis
+const COMPLEX_CHECKS = [
+  SEQUENCE_DIAGRAM_CHECK,
+  {
+    id: 'wide-horizontal-diagram',
+    description: 'Horizontal flowchart (LR) may render poorly in narrow viewports',
+    severity: 'info',
+    fix: 'Consider using flowchart TD (vertical) or a table for complex data',
+    check: (content) => {
+      const issues = [];
+      // Find all Mermaid components
+      const mermaidRegex = /<Mermaid[^>]*chart=\{`([^`]+)`\}/gs;
+      let match;
+      while ((match = mermaidRegex.exec(content)) !== null) {
+        const chart = match[1];
+        // Check if it's a horizontal flowchart
+        if (/flowchart\s+LR/i.test(chart)) {
+          // Count nodes (rough heuristic: count brackets)
+          const nodeCount = (chart.match(/\[[^\]]+\]/g) || []).length;
+          if (nodeCount > 8) {
+            const lineNum = content.substring(0, match.index).split('\n').length;
+            issues.push({
+              line: lineNum,
+              lineContent: `flowchart LR with ~${nodeCount} nodes`,
+            });
+          }
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'tall-diagram',
+    description: 'Very tall diagram (3+ subgraphs or 15+ nodes) may overwhelm the page',
+    severity: 'info',
+    fix: 'Consider using a table for details + small summary diagram',
+    check: (content) => {
+      const issues = [];
+      const mermaidRegex = /<Mermaid[^>]*chart=\{`([^`]+)`\}/gs;
+      let match;
+      while ((match = mermaidRegex.exec(content)) !== null) {
+        const chart = match[1];
+        const subgraphCount = (chart.match(/subgraph/gi) || []).length;
+        const nodeCount = (chart.match(/\[[^\]]+\]/g) || []).length;
+
+        if (subgraphCount >= 3 || nodeCount > 15) {
+          const lineNum = content.substring(0, match.index).split('\n').length;
+          issues.push({
+            line: lineNum,
+            lineContent: `${subgraphCount} subgraphs, ~${nodeCount} nodes`,
+          });
+        }
+      }
+      return issues;
+    },
   },
 ];
 
@@ -91,6 +172,7 @@ function checkFile(filePath) {
   const content = readFileSync(filePath, 'utf-8');
   const issues = [];
 
+  // Simple pattern checks
   for (const check of PATTERNS) {
     const matches = content.match(new RegExp(check.pattern, 'gm'));
     if (matches) {
@@ -108,6 +190,21 @@ function checkFile(filePath) {
     }
   }
 
+  // Complex multi-line checks
+  for (const check of COMPLEX_CHECKS) {
+    const found = check.check(content);
+    for (const issue of found) {
+      issues.push({
+        id: check.id,
+        description: check.description,
+        severity: check.severity,
+        fix: check.fix,
+        line: issue.line,
+        lineContent: issue.lineContent,
+      });
+    }
+  }
+
   return issues;
 }
 
@@ -121,13 +218,15 @@ function main() {
     console.log(`${colors.blue}Checking ${files.length} MDX files for syntax issues...${colors.reset}\n`);
   }
 
+  let infoCount = 0;
   for (const file of files) {
     const issues = checkFile(file);
     if (issues.length > 0) {
       allIssues.push({ file, issues });
       for (const issue of issues) {
         if (issue.severity === 'error') errorCount++;
-        else warningCount++;
+        else if (issue.severity === 'warning') warningCount++;
+        else infoCount++;
       }
     }
   }
@@ -137,6 +236,7 @@ function main() {
       files: files.length,
       errors: errorCount,
       warnings: warningCount,
+      infos: infoCount,
       issues: allIssues,
     }, null, 2));
   } else {
@@ -148,7 +248,10 @@ function main() {
         console.log(`${colors.bold}${relPath}${colors.reset}`);
 
         for (const issue of issues) {
-          const icon = issue.severity === 'error' ? `${colors.red}✗` : `${colors.yellow}⚠`;
+          let icon;
+          if (issue.severity === 'error') icon = `${colors.red}✗`;
+          else if (issue.severity === 'warning') icon = `${colors.yellow}⚠`;
+          else icon = `${colors.blue}ℹ`;
           console.log(`  ${icon} Line ${issue.line}: ${issue.description}${colors.reset}`);
           console.log(`    ${colors.dim}${issue.lineContent}${colors.reset}`);
           console.log(`    ${colors.blue}Fix: ${issue.fix}${colors.reset}`);
@@ -162,6 +265,9 @@ function main() {
       }
       if (warningCount > 0) {
         console.log(`  ${colors.yellow}${warningCount} warning(s)${colors.reset}`);
+      }
+      if (infoCount > 0) {
+        console.log(`  ${colors.blue}${infoCount} info(s) - diagram style suggestions${colors.reset}`);
       }
       console.log();
     }

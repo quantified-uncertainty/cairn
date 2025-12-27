@@ -5,10 +5,10 @@ sidebar:
   order: 3
 quality: 2
 llmSummary: "Enabling humans to supervise AI on tasks too complex for direct evaluation"
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-26"
 ---
 
-import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="scalable-oversight" />
 
@@ -22,6 +22,26 @@ As AI systems become more capable, they will work on problems where:
 - The consequences are too difficult to predict
 
 We need oversight methods that scale with AI capability.
+
+## Evaluation Summary
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium | Active research but unproven at scale |
+| If alignment hard | Critical | May be necessary for superhuman systems |
+| If alignment easy | Medium | Still valuable for verification |
+| Neglectedness | Low | Active research at Anthropic, DeepMind, OpenAI |
+| Grade | B | Promising theory, limited empirical validation |
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Process-based supervision detects suspicious reasoning | Medium |
+| [Scheming](/knowledge-base/risks/accident/scheming/) | Debate format exposes hidden reasoning | Medium |
+| [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) | Recursive decomposition catches mesa-objective divergence | Medium |
+| [Reward Hacking](/knowledge-base/risks/accident/reward-hacking/) | Process-based evaluation reduces gaming | Medium-High |
+| [Sycophancy](/knowledge-base/risks/accident/sycophancy/) | Multi-evaluator methods reduce single-evaluator bias | Medium |
 
 ## The Core Problem
 
@@ -98,6 +118,101 @@ Not all tasks decompose naturally:
 - Computational complexity of scalable oversight
 - Adversarial dynamics analysis
 - Information-theoretic limits
+
+## Case For This Approach
+
+### Argument 1: Necessary for Superhuman Systems
+We cannot rely on direct human evaluation once AI surpasses human capability. Scalable oversight provides the only known path to maintaining meaningful supervision of superhuman systems. Either we develop these techniques, or we lose the ability to verify AI alignment.
+
+**Key proponents**: Paul Christiano, Anthropic Alignment team
+
+### Argument 2: Information-Theoretic Advantages of Debate
+In an adversarial debate, truth has a structural advantage—a true argument can expose flaws in false arguments, but false arguments struggle to refute true ones. This asymmetry means honest AI has an advantage over deceptive AI, making debate a promising scalable oversight mechanism.
+
+**Key proponents**: Geoffrey Irving, Jan Leike
+
+### Argument 3: Process Supervision Shows Promise
+Empirical work on mathematical problem-solving shows that process-based supervision (rewarding correct reasoning steps) outperforms outcome-based supervision. This suggests we can evaluate AI reasoning without understanding the final answer.
+
+**Key results**: OpenAI's "Let's Verify Step by Step" (2023)
+
+## Case Against This Approach
+
+### Counterargument 1: May Not Work for Deceptive AI
+If an AI is actively trying to deceive, it may be able to produce convincing but subtly wrong arguments that humans cannot detect even with AI assistance. Scalable oversight assumes some baseline of honest AI behavior that may not hold.
+
+**Key skeptics**: Some alignment researchers question whether debate works against adversarial deception
+
+### Counterargument 2: Decomposition May Lose Information
+Breaking complex problems into simple sub-problems may lose essential holistic information. Some tasks—like creative writing or strategic planning—may not decompose well, and correct sub-answers may not compose into correct final answers.
+
+### Counterargument 3: Unproven at Real Scale
+Current experiments are on toy problems or constrained domains. We don't know if these techniques work when AI is genuinely superhuman, which is precisely when we need them most. The techniques may fail exactly when they matter.
+
+## Key Cruxes
+
+### Crux 1: Can Debate Detect Sophisticated Deception?
+
+<KeyQuestions
+  client:load
+  questions={["Will the information-theoretic advantage of truth hold against capable deceivers?"]}
+/>
+
+| Truth advantage holds | Deception can win debates |
+|----------------------|---------------------------|
+| Honest AI can always expose false claims | Sufficiently capable AI could make compelling false arguments |
+| Recursive questioning eventually finds contradictions | Humans may not recognize deep deception |
+| Multiple debate rounds increase reliability | Deceptive AI could coordinate across rounds |
+
+### Crux 2: Does Process Supervision Generalize?
+
+| Generalizes well | Limited to specific domains |
+|------------------|----------------------------|
+| Math results show consistent improvement | Math has clear ground truth, other domains don't |
+| Process evaluation is more robust than outcome | Sophisticated AI could game process metrics too |
+| Can extend to other structured reasoning | Creative and open-ended tasks may not fit |
+
+## Effectiveness Estimates
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of Scalable Oversight"
+  description="How well will scalable oversight methods work for superhuman AI?"
+  spectrum={{ low: "Won't scale", high: "Essential solution" }}
+  positions={[
+    { actor: "Paul Christiano", position: "High", estimate: "Core alignment strategy", confidence: "high" },
+    { actor: "Anthropic", position: "High", estimate: "Active research priority", confidence: "medium" },
+    { actor: "Skeptics", position: "Medium", estimate: "Helpful but insufficient", confidence: "medium" },
+    { actor: "Pessimists", position: "Low", estimate: "May fail when needed most", confidence: "low" }
+  ]}
+/>
+
+## Who Should Work on This
+
+**Good fit if you believe:**
+- We will develop AI systems that exceed human capability
+- Maintaining human oversight of superhuman AI is essential
+- Interested in research with theoretical and empirical components
+
+**Less relevant if you believe:**
+- Direct human evaluation will remain sufficient
+- We should avoid building superhuman AI entirely
+- Prefer more deployment-ready interventions
+
+## Complementary Interventions
+
+- [Mechanistic Interpretability](/knowledge-base/responses/technical/interpretability/) - Understand internals, scalable oversight evaluates outputs
+- [AI Control](/knowledge-base/responses/technical/ai-control/) - Defense-in-depth if oversight fails
+- [Evaluations](/knowledge-base/responses/technical/evals/) - Testing complements oversight
+- [RLHF](/knowledge-base/responses/technical/rlhf/) - Current oversight approach that needs scaling
+
+<Section title="Key People">
+  <KeyPeople people={[
+    { name: "Paul Christiano", role: "Founder, ARC; recursive reward modeling" },
+    { name: "Geoffrey Irving", role: "DeepMind; AI safety via debate" },
+    { name: "Jan Leike", role: "Anthropic; scalable alignment" },
+  ]} />
+</Section>
 
 ## Related Pages
 

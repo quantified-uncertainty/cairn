@@ -1802,6 +1802,16 @@
       type: lab
     - id: governance-policy
       type: intervention
+    - id: racing-dynamics
+      type: risk-factor
+    - id: proliferation
+      type: risk-factor
+    - id: bioweapons
+      type: risk
+    - id: cyberweapons
+      type: risk
+    - id: concentration-of-power
+      type: risk
   sources:
     - title: Computing Power and the Governance of AI
       url: https://www.governance.ai/research-papers/computing-power-and-the-governance-of-artificial-intelligence
@@ -2938,6 +2948,40 @@
     - content-authentication
     - information-security
   lastUpdated: 2025-12
+- id: pause-advocacy
+  type: intervention
+  title: Pause Advocacy
+  customFields:
+    - label: Approach
+      value: Advocate for slowing or pausing frontier AI development
+    - label: Tractability
+      value: Low (major political/economic barriers)
+    - label: Key Organizations
+      value: Future of Life Institute, Pause AI
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk-factor
+    - id: deceptive-alignment
+      type: risk
+    - id: treacherous-turn
+      type: risk
+    - id: lock-in
+      type: risk-factor
+    - id: compute-governance
+      type: policy
+  sources:
+    - title: 'Pause Giant AI Experiments: An Open Letter'
+      url: https://futureoflife.org/open-letter/pause-giant-ai-experiments/
+      author: Future of Life Institute
+      date: '2023'
+  description: |
+    Pause advocacy involves advocating for slowing down or pausing the development of frontier AI systems until safety can be ensured. The core theory of change is that buying time allows safety research to catch up with capabilities, enables governance frameworks to mature, and reduces the probability of deploying systems we cannot control.
+  tags:
+    - governance
+    - policy
+    - racing-dynamics
+    - coordination
+  lastUpdated: 2025-12
 - id: authentication-collapse
   type: risk-factor
   title: Authentication Collapse
@@ -3411,6 +3455,12 @@
       type: risk
     - id: interpretability
       type: safety-agenda
+    - id: ai-control
+      type: safety-agenda
+    - id: scalable-oversight
+      type: safety-agenda
+    - id: evals
+      type: intervention
     - id: anthropic
       type: lab
   sources:
@@ -5999,6 +6049,88 @@
 # MODELS - Analytical models for risks and scenarios
 # =============================================================================
 
+# ===== PORTFOLIO & PRIORITIZATION MODELS =====
+- id: ai-risk-portfolio-analysis
+  type: model
+  title: AI Risk Portfolio Analysis
+  description: Framework for comparing the relative importance of different AI risk categories to guide resource allocation across misalignment, misuse, structural risks, and other categories.
+  customFields:
+    - label: Model Type
+      value: Prioritization Framework
+    - label: Focus
+      value: Resource Allocation
+    - label: Key Output
+      value: Risk magnitude comparisons and allocation recommendations
+  relatedEntries:
+    - id: compounding-risks-analysis
+      type: model
+      relationship: related
+    - id: flash-dynamics-threshold
+      type: model
+      relationship: related
+  tags:
+    - prioritization
+    - resource-allocation
+    - portfolio
+    - strategy
+    - comparative-analysis
+  lastUpdated: 2025-12
+
+- id: worldview-intervention-mapping
+  type: model
+  title: Worldview-Intervention Mapping
+  description: How your beliefs about AI timelines, alignment difficulty, and coordination feasibility should determine which interventions you prioritize.
+  customFields:
+    - label: Model Type
+      value: Strategic Framework
+    - label: Focus
+      value: Worldview-Action Coherence
+    - label: Key Output
+      value: Intervention priorities given different worldviews
+  relatedEntries:
+    - id: ai-risk-portfolio-analysis
+      type: model
+      relationship: related
+    - id: racing-dynamics
+      type: model
+      relationship: related
+  tags:
+    - prioritization
+    - worldview
+    - strategy
+    - theory-of-change
+    - intervention-effectiveness
+  lastUpdated: 2025-12
+
+- id: intervention-timing-windows
+  type: model
+  title: Intervention Timing Windows
+  description: Which AI safety interventions have closing windows and require urgent action vs which remain effective over longer periods.
+  customFields:
+    - label: Model Type
+      value: Timing Framework
+    - label: Focus
+      value: Temporal Urgency
+    - label: Key Output
+      value: Prioritization based on closing vs stable windows
+  relatedEntries:
+    - id: ai-risk-portfolio-analysis
+      type: model
+      relationship: related
+    - id: worldview-intervention-mapping
+      type: model
+      relationship: related
+    - id: racing-dynamics
+      type: model
+      relationship: related
+  tags:
+    - prioritization
+    - timing
+    - strategy
+    - urgency
+    - windows
+  lastUpdated: 2025-12
+
 # ===== ACCIDENT RISK MODELS =====
 - id: deceptive-alignment-decomposition
   type: model
@@ -6710,6 +6842,7 @@
       value: Timeline Projection
     - label: Target Risk
       value: Authentication Collapse
+      link: /knowledge-base/risk-factors/authentication-collapse/
     - label: Critical Threshold
       value: Detection accuracy approaching random chance (50%) by 2027-2030
   relatedEntries:

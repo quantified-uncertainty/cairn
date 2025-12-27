@@ -38,10 +38,6 @@ export default defineConfig({
                   items: [
                       { label: 'Overview', slug: 'understanding-ai-risk' },
                       { label: 'Core Argument', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/core-argument' } },
-                      { label: 'Risk Models', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/models' } },
-                      { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/worldviews' } },
-                      { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/debates' } },
-                      { label: 'Arguments', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/arguments' } },
                   ],
               },
               {
@@ -88,6 +84,9 @@ export default defineConfig({
                       { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
                       { label: 'Scenarios', collapsed: true, autogenerate: { directory: 'knowledge-base/scenarios' } },
+                      { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
+                      { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
+                      { label: 'Arguments', collapsed: true, autogenerate: { directory: 'knowledge-base/arguments' } },
                   ],
               },
               {
@@ -102,6 +101,11 @@ export default defineConfig({
                   label: 'Interactive Tools',
                   collapsed: true,
                   autogenerate: { directory: 'guides' },
+              },
+              {
+                  label: 'Style Guides',
+                  collapsed: true,
+                  autogenerate: { directory: 'style-guides' },
               },
           ],
       }),

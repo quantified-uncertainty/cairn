@@ -57,7 +57,7 @@ interface DataInfoBoxProps {
   affiliation?: string;
   role?: string;
   knownFor?: string;
-  customFields?: { label: string; value: string }[];
+  customFields?: { label: string; value: string; link?: string }[];
   relatedTopics?: string[];
   relatedEntries?: RelatedEntry[];
   sources?: { title: string; url?: string; author?: string; date?: string }[];

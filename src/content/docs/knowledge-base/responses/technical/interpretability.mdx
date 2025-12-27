@@ -8,7 +8,7 @@ llmSummary: "Understanding AI systems by reverse-engineering their internal comp
 lastEdited: "2025-12-24"
 ---
 
-import {DataInfoBox, KeyPeople, Section, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="interpretability" />
 
@@ -20,6 +20,26 @@ This is considered safety-critical because it could enable:
 - Detection of deceptive or misaligned cognition
 - Verification that models have learned intended concepts
 - Understanding of unexpected capabilities before deployment
+
+## Evaluation Summary
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium | Significant progress but frontier models still opaque |
+| If alignment hard | High | May be necessary to detect deceptive cognition |
+| If alignment easy | Medium | Still valuable for verification |
+| Neglectedness | Low | Well-funded at Anthropic, growing academic interest |
+| Grade | B+ | Promising but unproven at scale |
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Detect deception-related features/circuits | Medium-High (if scalable) |
+| [Scheming](/knowledge-base/risks/accident/scheming/) | Find evidence of strategic deception | Medium-High |
+| [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) | Identify mesa-objectives in model internals | Medium |
+| [Reward Hacking](/knowledge-base/risks/accident/reward-hacking/) | Detect proxy optimization vs. true goals | Medium |
+| [Goal Misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/) | Understand learned goal representations | Medium |
 
 ## Core Concepts
 
@@ -86,6 +106,88 @@ Trace information flow through specific components:
 ### Automation
 - Can AI assist in interpreting AI?
 - What's the role of automated interpretability?
+
+## Case For This Approach
+
+### Argument 1: Only Way to Verify Alignment
+Without interpretability, we can only evaluate models behaviorally. Behavioral evaluation can be gamed by sufficiently sophisticated models. Interpretability offers the possibility of directly verifying that models have aligned cognition, not just aligned outputs.
+
+**Key proponents**: Chris Olah, Anthropic Interpretability team
+
+### Argument 2: Scaling Progress is Promising
+Recent results (sparse autoencoders, automated feature labeling) suggest interpretability can scale. The "Scaling Monosemanticity" paper (2024) demonstrated interpretable features in Claude 3 Sonnet, a frontier model.
+
+### Argument 3: Already Finding Safety-Relevant Features
+Researchers have found features related to deception, manipulation, and sycophancy. This suggests interpretability can identify safety-relevant cognition if it exists.
+
+## Case Against This Approach
+
+### Counterargument 1: May Not Scale
+Current techniques work on small circuits and toy models. Frontier models have billions of parameters and emergent behaviors that may resist decomposition. Understanding may be fundamentally incomplete.
+
+**Key skeptics**: Some argue behavioral evaluation may be sufficient
+
+### Counterargument 2: Deception Could Hide from Interpretation
+A sufficiently sophisticated model might hide deceptive cognition in uninterpretable features or distribute it across many components. Interpretability tools themselves become an adversarial target.
+
+### Counterargument 3: Too Slow for Deployment
+Even if interpretability works, thoroughly interpreting a model takes months. This may be too slow for the pace of AI development, making it impractical as a safety check.
+
+## Key Cruxes
+
+### Crux 1: Can Interpretability Scale to Frontier Models?
+
+<KeyQuestions
+  client:load
+  questions={["Will current techniques work on models 10-100x larger?"]}
+/>
+
+| Will scale | Won't scale |
+|------------|-------------|
+| Sparse autoencoders show promise at scale | Frontier models may have qualitatively different representations |
+| Automated interpretability can accelerate | Understanding may be fundamentally incomplete |
+| Only need to find safety-relevant features, not everything | Deception could hide from any technique |
+
+### Crux 2: Can We Find Deceptive Cognition If It Exists?
+
+| Detectable | Undetectable |
+|------------|--------------|
+| Deception must be represented somewhere | Could be distributed across many features |
+| Already finding deception-adjacent features | Adversarial hiding may be possible |
+| Red-team interpretability research is active | May create false sense of security |
+
+## Effectiveness Estimates
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of Interpretability for AI Safety"
+  description="How much will mechanistic interpretability contribute to AI safety?"
+  spectrum={{ low: "Minimal contribution", high: "Essential/Critical" }}
+  positions={[
+    { actor: "Anthropic", position: "High", estimate: "Critical pillar of safety", confidence: "high" },
+    { actor: "Neel Nanda", position: "High", estimate: "B+ grade for safety relevance", confidence: "medium" },
+    { actor: "Skeptics", position: "Medium", estimate: "Helpful but not sufficient", confidence: "medium" },
+    { actor: "Behavioral-first view", position: "Low-Medium", estimate: "Behavioral evals may be enough", confidence: "low" }
+  ]}
+/>
+
+## Who Should Work on This
+
+**Good fit if you believe:**
+- Deep technical understanding of models is necessary for safety
+- Scalability challenges are solvable
+- Willing to work on long-term research with uncertain payoff
+
+**Less relevant if you believe:**
+- Behavioral evaluation will be sufficient
+- Interpretability won't scale in time
+- Prefer more applied, deployment-ready interventions
+
+## Complementary Interventions
+
+- [AI Control](/knowledge-base/responses/technical/ai-control/) - Defense-in-depth if interpretability misses something
+- [Evaluations](/knowledge-base/responses/technical/evals/) - Behavioral testing complements internal analysis
+- [Scalable Oversight](/knowledge-base/responses/technical/scalable-oversight/) - Process-based methods as alternative/complement
 
 <Section title="Key People">
   <KeyPeople people={[

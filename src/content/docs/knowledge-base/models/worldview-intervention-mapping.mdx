@@ -1,0 +1,328 @@
+---
+title: Worldview-Intervention Mapping
+description: How your beliefs about AI timelines, alignment difficulty, and coordination feasibility should determine which interventions you prioritize
+sidebar:
+  order: 51
+quality: 4
+lastEdited: "2025-12-26"
+ratings:
+  novelty: 5
+  rigor: 3
+  actionability: 5
+  completeness: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+
+<DataInfoBox entityId="worldview-intervention-mapping" ratings={frontmatter.ratings} />
+
+## Strategic Question
+
+**Given your beliefs about AI risk, which interventions should you prioritize?**
+
+People working on AI safety hold fundamentally different worldviews about timelines, technical difficulty, and institutional feasibility. These differences should imply different intervention priorities—but often don't. This model makes explicit which interventions are most valuable under which worldview assumptions.
+
+<Aside type="tip" title="How to Use This Model">
+1. Identify which worldview cluster best matches your beliefs
+2. Look up the corresponding intervention priorities
+3. Check if your current work aligns with your stated beliefs
+4. If not, either update your work focus or reconsider your worldview
+</Aside>
+
+## Core Worldview Dimensions
+
+Three key beliefs drive most disagreement about intervention priorities:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Dimensions["Key Worldview Dimensions"]
+        T[Timeline: When does risk materialize?]
+        D[Difficulty: How hard is alignment?]
+        C[Coordination: Can actors cooperate?]
+    end
+
+    T --> |Short| TS[2025-2030]
+    T --> |Medium| TM[2030-2040]
+    T --> |Long| TL[2040+]
+
+    D --> |Hard| DH[Fundamental obstacles]
+    D --> |Medium| DM[Solvable with effort]
+    D --> |Tractable| DT[Largely solved already]
+
+    C --> |Feasible| CF[Treaties possible]
+    C --> |Difficult| CD[Limited cooperation]
+    C --> |Impossible| CI[Pure competition]
+
+    style T fill:#cceeff
+    style D fill:#ffcccc
+    style C fill:#ccffcc
+`} />
+
+### Dimension 1: Timeline Beliefs
+
+| Timeline | Characteristic Beliefs | Implied Constraints |
+|----------|----------------------|---------------------|
+| **Short (2025-2030)** | AGI/ASI within 5 years; current scaling continues; no major obstacles | Little time for institutional change; must work with existing structures |
+| **Medium (2030-2040)** | Transformative AI in 10-15 years; some obstacles but surmountable | Time for some institution-building; research can mature |
+| **Long (2040+)** | Major technical obstacles remain; slow takeoff; decades of lead time | Full institutional development possible; fundamental research valuable |
+
+### Dimension 2: Alignment Difficulty
+
+| Difficulty | Characteristic Beliefs | Implied Constraints |
+|------------|----------------------|---------------------|
+| **Hard** | Alignment is unsolved; current techniques provide weak guarantees; deception likely | Technical solutions insufficient; need to slow down or stop |
+| **Medium** | Alignment is difficult but tractable; current techniques improve with scale | Technical research valuable; need continued investment |
+| **Tractable** | Alignment largely solved; RLHF + interpretability sufficient; risks overstated | Focus on deployment governance; less technical urgency |
+
+### Dimension 3: Coordination Feasibility
+
+| Feasibility | Characteristic Beliefs | Implied Constraints |
+|-------------|----------------------|---------------------|
+| **Feasible** | International treaties possible; labs can coordinate; racing avoidable | Invest in coordination mechanisms; governance valuable |
+| **Difficult** | Some coordination possible; major actors defect; limited cooperation | Partial governance; focus on willing actors |
+| **Impossible** | Pure competitive dynamics; no stable equilibria; all actors race | Focus on technical safety; governance futile |
+
+## The Four Major Worldview Clusters
+
+Combining these dimensions yields distinct worldview clusters with different intervention implications:
+
+<Mermaid client:load chart={`
+quadrantChart
+    title Worldview Clusters by Timeline and Difficulty
+    x-axis Alignment Tractable --> Alignment Hard
+    y-axis Long Timelines --> Short Timelines
+    quadrant-1 PAUSE/STOP
+    quadrant-2 TECHNICAL SPRINT
+    quadrant-3 INSTITUTION BUILD
+    quadrant-4 STEADY PROGRESS
+    Doomer: [0.85, 0.85]
+    Accelerationist: [0.15, 0.75]
+    Governance-focused: [0.35, 0.25]
+    Technical optimist: [0.25, 0.55]
+`} />
+
+### Cluster 1: "Doomer" Worldview
+**Beliefs:** Short timelines + Hard alignment + Coordination difficult
+
+| Intervention Category | Priority | Reasoning |
+|----------------------|----------|-----------|
+| Pause/slowdown advocacy | **Very High** | Only way to buy time if alignment is hard |
+| Compute governance | **Very High** | Concrete lever available now |
+| Technical safety research | **High** | Worth trying even if hard |
+| International coordination | **Medium** | Unlikely to succeed but high stakes |
+| Field-building | **Low** | No time for long-term investment |
+| Public engagement | **Medium** | Builds support for pause |
+
+**If you hold this worldview but work on:** field-building, long-term institution design, or incremental policy → *your work may be misaligned with your beliefs.*
+
+### Cluster 2: "Technical Optimist" Worldview
+**Beliefs:** Medium timelines + Medium difficulty + Coordination possible
+
+| Intervention Category | Priority | Reasoning |
+|----------------------|----------|-----------|
+| Technical safety research | **Very High** | Alignment tractable with investment |
+| Interpretability | **Very High** | Key bottleneck worth solving |
+| Lab safety standards | **High** | Achievable and high-leverage |
+| Compute governance | **Medium** | Useful but not critical |
+| Pause advocacy | **Low** | Unnecessary if alignment tractable |
+| Field-building | **High** | Time to build capacity |
+
+**If you hold this worldview but work on:** pause advocacy, aggressive regulation → *your work may be misaligned with your beliefs.*
+
+### Cluster 3: "Governance-Focused" Worldview
+**Beliefs:** Medium-long timelines + Medium difficulty + Coordination feasible
+
+| Intervention Category | Priority | Reasoning |
+|----------------------|----------|-----------|
+| International coordination | **Very High** | Achievable and high-leverage |
+| Domestic regulation | **Very High** | Sets norms for others |
+| Institution-building | **Very High** | Time to build capacity |
+| Technical standards | **High** | Enables governance |
+| Technical research | **Medium** | Others will do this |
+| Pause advocacy | **Low** | Premature; governance first |
+
+**If you hold this worldview but work on:** pure technical research, pause advocacy → *your work may be misaligned with your beliefs.*
+
+### Cluster 4: "Accelerationist/Optimist" Worldview
+**Beliefs:** Any timeline + Tractable alignment + Any coordination
+
+| Intervention Category | Priority | Reasoning |
+|----------------------|----------|-----------|
+| Capability development | **Very High** | Benefits outweigh risks |
+| Deployment governance | **Medium** | Manage specific harms |
+| Technical safety | **Low** | Already adequate |
+| Pause/slowdown | **Very Low** | Counterproductive |
+| Aggressive regulation | **Very Low** | Harms outweigh benefits |
+
+**If you hold this worldview but work on:** safety research, pause advocacy → *your work may be misaligned with your beliefs.*
+
+## Intervention Effectiveness by Worldview
+
+The following table shows how intervention effectiveness varies dramatically by worldview:
+
+| Intervention | Short+Hard | Short+Tractable | Long+Hard | Long+Tractable |
+|--------------|------------|-----------------|-----------|----------------|
+| **Pause/slowdown** | Very High | Low | Medium | Very Low |
+| **Compute governance** | Very High | Medium | High | Low |
+| **Alignment research** | High | Low | Very High | Low |
+| **Interpretability** | High | Medium | Very High | Medium |
+| **International treaties** | Medium | Low | Very High | Medium |
+| **Domestic regulation** | Medium | Medium | High | Medium |
+| **Lab safety standards** | High | High | High | Medium |
+| **Field-building** | Low | Low | Very High | Medium |
+| **Public engagement** | Medium | Low | High | Low |
+
+<Aside type="caution" title="Key Insight">
+An intervention that's "Very High" priority under one worldview can be "Low" priority under another. Working on the wrong interventions given your beliefs is a major source of wasted effort.
+</Aside>
+
+## Crux-Sensitive Recommendations
+
+### If You're Uncertain About Timelines
+
+| Your Uncertainty | Recommended Portfolio |
+|-----------------|----------------------|
+| 50/50 short vs long | Split between urgent (compute governance, standards) and patient (field-building, treaties) |
+| Mostly short, some long | Weight toward urgent interventions with option value |
+| Mostly long, some short | Weight toward patient interventions but maintain some urgent capacity |
+
+### If You're Uncertain About Difficulty
+
+| Your Uncertainty | Recommended Portfolio |
+|-----------------|----------------------|
+| 50/50 hard vs tractable | Balance technical research with governance/coordination |
+| Mostly hard, some tractable | Focus on buying time + some technical bets |
+| Mostly tractable, some hard | Focus on technical research + light governance |
+
+### If You're Uncertain About Coordination
+
+| Your Uncertainty | Recommended Portfolio |
+|-----------------|----------------------|
+| 50/50 feasible vs impossible | Pursue coordination while building unilateral capacity |
+| Mostly feasible | Heavy investment in coordination mechanisms |
+| Mostly impossible | Focus on technical solutions + leading actor influence |
+
+## Strategic Importance
+
+### Why This Model Matters
+
+**Magnitude:** Misalignment between worldview and work focus may waste 20-50% of field resources. If people worked on interventions matching their actual beliefs, field effectiveness could increase substantially.
+
+**Comparative Importance:** This meta-level coordination problem may be as important as any object-level research question. Getting the right people on the right problems is a force multiplier.
+
+### Resource Implications
+
+| Actor Type | Recommendation |
+|------------|---------------|
+| **Individual researchers** | Audit whether your work matches your worldview; switch if not |
+| **Organizations** | Make worldview assumptions explicit; hire for worldview diversity |
+| **Funders** | Fund portfolios that hedge across worldviews, not single bets |
+| **Field leaders** | Facilitate explicit worldview discussion; reduce social pressure toward consensus |
+
+### Key Cruxes
+
+1. **If timelines are shorter than you think:** Shift urgently toward compute governance and pause advocacy
+2. **If alignment is harder than you think:** Reduce emphasis on incremental technical work; increase emphasis on buying time
+3. **If coordination is more feasible than you think:** Increase investment in treaties and international institutions
+4. **If your worldview is wrong:** Having a diversified portfolio across worldviews reduces expected regret
+
+## Common Failure Modes
+
+### Worldview-Work Mismatch
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Problem["Common Mismatch Pattern"]
+        W[Stated Worldview] --> |"doesn't match"| A[Actual Work]
+    end
+
+    subgraph Examples["Examples"]
+        E1["'Short timelines' + field-building"]
+        E2["'Alignment is solved' + safety research"]
+        E3["'Coordination impossible' + treaty work"]
+    end
+
+    Problem --> Examples
+
+    style Problem fill:#ffcccc
+`} />
+
+**Why this happens:**
+- Social pressure toward certain interventions
+- Career incentives don't match worldview implications
+- Worldview not made explicit
+- Motivated reasoning about intervention effectiveness
+
+### Worldview Rigidity
+
+Some people hold worldviews that make *any* intervention seem low-value:
+- "Short timelines + hard alignment + impossible coordination" → Nothing works
+- "Long timelines + tractable alignment + feasible coordination" → No urgency
+
+**Response:** If your worldview implies no intervention is valuable, either:
+1. Reconsider the worldview
+2. Work on changing the underlying parameters (e.g., making coordination more feasible)
+3. Explicitly acknowledge the nihilistic implications
+
+## How to Use This Model
+
+### For Individuals
+
+1. **Identify your worldview:** Where do you fall on timelines, difficulty, coordination?
+2. **Check intervention priorities:** What does your worldview imply?
+3. **Audit your work:** Does your current work match?
+4. **Adjust or update:** Either change your work or reconsider your worldview
+
+### For Organizations
+
+1. **Make worldviews explicit:** What does leadership believe about key parameters?
+2. **Ensure strategic coherence:** Does organizational strategy match worldview?
+3. **Consider worldview diversity:** Do you have people who disagree on cruxes?
+4. **Update as evidence arrives:** How would new evidence change priorities?
+
+### For Funders
+
+1. **Fund worldview-coherent portfolios:** Don't fund pause advocacy AND accelerationist work unless hedging deliberately
+2. **Diversify across worldviews:** Unless highly confident, fund multiple theories of change
+3. **Make funding criteria explicit:** What worldview assumptions drive your funding?
+
+## Model Limitations
+
+### What This Model Doesn't Capture
+
+1. **Comparative advantage:** Individual skills matter regardless of worldview
+2. **Coordination effects:** Field-level portfolio matters, not just individual choices
+3. **Worldview evolution:** Evidence should update beliefs over time
+4. **Non-binary worldviews:** Real beliefs are distributions, not points
+
+### Confidence Levels
+
+| Claim | Confidence |
+|-------|------------|
+| Worldviews should affect intervention priorities | High |
+| Current mismatch is significant | Medium-High |
+| Specific intervention rankings by worldview | Medium |
+| Quantified effectiveness differences | Low |
+
+## Key Uncertainties
+
+<KeyQuestions
+  questions={[
+    "What's the actual distribution of worldviews among AI safety workers?",
+    "How much does worldview-work mismatch actually reduce field effectiveness?",
+    "Can people reliably identify their own worldview assumptions?",
+    "Would explicit worldview discussion increase or decrease field coordination?"
+  ]}
+/>
+
+## Related Models
+
+- [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Risk category prioritization
+- [Racing Dynamics](/knowledge-base/models/racing-dynamics/) - How competition affects coordination feasibility
+- [Safety Research Value](/knowledge-base/models/safety-research-value/) - Research prioritization
+- [International Coordination Game](/knowledge-base/models/international-coordination-game/) - Coordination feasibility factors
+
+## Related Pages
+
+<Backlinks client:load entityId="worldview-intervention-mapping" />

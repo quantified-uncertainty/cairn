@@ -3,16 +3,17 @@ title: AI Capability Proliferation Model
 description: Diffusion dynamics and control challenges for advanced AI capabilities
 sidebar:
   order: 26
-quality: 3
-lastEdited: "2025-12-25"
+quality: 4
+lastEdited: "2025-12-26"
 ratings:
   novelty: 3
   rigor: 3
-  actionability: 4
+  actionability: 5
   completeness: 4
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="proliferation-model" ratings={frontmatter.ratings} />
 
@@ -22,6 +23,93 @@ import { DataInfoBox, Backlinks } from '../../../../components/wiki';
 AI capability proliferation refers to the **spread of advanced AI capabilities from frontier labs to broader actors** over time. Unlike physical technologies, AI capabilities can be **copied perfectly**, **transmitted instantly**, and **reverse-engineered** from outputs, creating unique proliferation dynamics.
 
 This model analyzes the mechanisms, timescales, and governance challenges of AI diffusion.
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+Proliferation risk is **high priority but conditional**—it matters enormously IF offense-defense balance favors attackers, but may be manageable if defenses scale. Currently ranks as a **top 5-10 concern**, behind core alignment and alongside compute governance.
+</Aside>
+
+### Magnitude Assessment
+
+**Share of total AI catastrophic risk attributable to proliferation:** 15-30%
+
+Proliferation contributes to risk through:
+
+<Mermaid client:load chart={`
+pie title How Proliferation Contributes to AI Risk
+    "Misuse by malicious actors" : 40
+    "Accidental harm by incompetent actors" : 25
+    "Racing dynamics acceleration" : 20
+    "Undermining governance" : 15
+`} />
+
+**Key uncertainty:** The magnitude depends heavily on offense-defense balance. If AI-powered defenses (biosurveillance, cybersecurity) scale faster than attacks, proliferation risk decreases substantially.
+
+### Comparative Ranking
+
+| Risk/Intervention | Relative Importance | Reasoning |
+|-------------------|--------------------:|-----------|
+| Core alignment research | Higher | Directly addresses most severe scenarios |
+| Compute governance | Similar | Related lever; both about controlling capability spread |
+| **Proliferation control** | Baseline | Important but time-limited effectiveness |
+| International coordination | Similar | Proliferation is one key coordination problem |
+| Lab incentive reform | Lower | Less direct impact on catastrophic outcomes |
+
+<Aside type="caution">
+Proliferation and compute governance are **closely linked**—compute governance IS a form of proliferation control. Considering them separately can double-count.
+</Aside>
+
+### Resource Implications
+
+**Current attention:** Medium (significant policy interest, especially US-China)
+
+**Where additional resources have highest marginal value:**
+
+| Intervention | Current Effort | Marginal Value | Who Should Work On This |
+|--------------|----------------|----------------|-------------------------|
+| Defensive tech R&D | Medium | **Very High** | Technical researchers, labs |
+| Compute tracking systems | Low | **High** | Technical policy, governments |
+| International coordination | Low | **High** | Diplomats, policy orgs |
+| Responsible disclosure norms | Medium | Medium | Labs, researchers |
+| Open-source safety tooling | Low | Medium | Technical community |
+
+**Recommended shift:**
+- Increase investment in **defensive technology** (AI-powered biosecurity, cybersecurity, deepfake detection)
+- This shifts offense-defense balance, making proliferation less dangerous even if it occurs
+
+### Key Cruxes
+
+| If you believe... | Then proliferation is... |
+|-------------------|--------------------------|
+| Offense-defense balance favors attackers | **Critical priority** (proliferation enables catastrophe) |
+| Defenses can scale with capabilities | **Lower priority** (proliferation is manageable) |
+| Compute governance will succeed | **Lower priority** (proliferation is controlled) |
+| Compute governance will fail | **Higher priority** (need alternative approaches) |
+| Dangerous capabilities are 5+ years away | **Medium priority** (time to build governance) |
+| Dangerous capabilities are imminent | **Critical priority** (window closing) |
+
+### Actionability
+
+**For policymakers:**
+- Prioritize compute tracking infrastructure over broad bans
+- Invest heavily in AI-powered defenses (the best counter to proliferation)
+- Coordinate internationally before capability gaps widen
+
+**For technical researchers:**
+- Work on defensive applications (detection, attribution, countermeasures)
+- Develop safety tools that work for open-source models
+- Responsible disclosure for dual-use capabilities
+
+**For funders:**
+- Fund offense-defense balance research (which way does it tip?)
+- Support compute governance technical work
+- Fund defensive technology development
+
+**For labs:**
+- Assess proliferation risk before model releases
+- Invest in safety tools that can be open-sourced
+- Coordinate with other labs on sensitive capabilities
 
 ## Theoretical Framework
 

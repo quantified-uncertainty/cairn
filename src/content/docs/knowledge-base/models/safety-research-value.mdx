@@ -3,16 +3,17 @@ title: Expected Value of AI Safety Research
 description: Economic analysis of marginal returns on AI safety research investments
 sidebar:
   order: 30
-quality: 3
+quality: 4
 ratings:
-  novelty: 2
+  novelty: 3
   rigor: 3
-  actionability: 3
-  completeness: 3
+  actionability: 4
+  completeness: 4
 lastEdited: "2025-12-26"
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="safety-research-value" ratings={frontmatter.ratings} />
 
@@ -25,6 +26,94 @@ The analysis is complicated by deep uncertainty about:
 - The tractability of safety problems
 - Counterfactual outcomes (what happens without additional research)
 - Time horizons and discount rates
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+Safety research is likely a top-3 priority for reducing AI risk, but *which* safety research matters enormously. The difference between high-value and low-value research directions may be 10-100x.
+</Aside>
+
+### Magnitude Assessment
+
+**Share of AI risk reduction potential:** 20-40%
+
+Safety research is one of several major levers for reducing AI risk:
+
+| Lever | Share of Risk Reduction Potential | Current Investment |
+|-------|----------------------------------|-------------------|
+| Technical safety research | 20-40% | ~$500M/year |
+| Governance & policy | 20-35% | ~$100M/year |
+| Compute governance | 15-25% | ~$50M/year |
+| Lab culture & incentives | 10-20% | Indirect |
+| International coordination | 10-20% | ~$20M/year |
+
+### Comparative Ranking
+
+**How does safety research compare to other interventions?**
+
+| Intervention | Relative Priority | Reasoning |
+|--------------|------------------:|-----------|
+| Governance/policy (short timelines) | Higher | More leveraged if time is short |
+| **Safety research** | Baseline | Core technical contribution |
+| Field-building (long timelines) | Lower | Only valuable if time exists |
+| Public advocacy | Lower | Less direct impact on risk |
+
+<Aside type="caution">
+This ranking assumes *medium* timelines and *medium* alignment difficulty. Under short timelines + hard alignment, governance dominates. Under long timelines + tractable alignment, safety research dominates.
+</Aside>
+
+### Resource Implications
+
+**Current allocation vs. optimal:**
+
+<Mermaid client:load chart={`
+pie title Current Safety Research Allocation
+    "Interpretability" : 35
+    "RLHF/Fine-tuning" : 25
+    "Evaluations" : 20
+    "Alignment Theory" : 10
+    "Governance Research" : 10
+`} />
+
+**Recommended shifts:**
+- **Increase:** Alignment theory (+10%), governance research (+5%)
+- **Maintain:** Evaluations, interpretability
+- **Decrease:** RLHF-focused work (-10%) as it may be closer to capabilities
+
+**Who should invest more:**
+1. **Philanthropic funders:** Biggest gap; can fund neglected areas
+2. **Academia:** Underfunded; needs 5-10x increase
+3. **Governments:** Should fund basic research, not just applied
+4. **Labs:** Already investing; focus on quality over quantity
+
+### Key Cruxes
+
+Your priorities should change based on these beliefs:
+
+| If you believe... | Then prioritize... |
+|-------------------|-------------------|
+| Alignment is fundamentally hard | Governance over research (buying time) |
+| Current interpretability approaches will scale | Double down on interpretability |
+| Alignment is largely solved | Shift to deployment governance |
+| Timelines are very short (under 5 years) | Focus on evaluations and red-teaming |
+| We don't know what safety problems matter | Fund diverse exploratory research |
+
+### Actionability
+
+**For funders:**
+- Increase funding to neglected areas (alignment theory, governance research)
+- Fund senior researcher time, not just junior positions
+- Support high-risk/high-reward theoretical work
+
+**For researchers:**
+- Prioritize work that produces *legible progress indicators*
+- Collaborate with capabilities labs for access
+- Don't over-focus on current architectures
+
+**For labs:**
+- Allocate 10-20% of research budget to safety (up from ~5%)
+- Publish safety research openly
+- Create internal career paths for safety researchers
 
 ## Basic Expected Value Framework
 

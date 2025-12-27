@@ -30,44 +30,29 @@ The model follows the theoretical framework established by Hubinger et al.'s "Ri
 
 The emergence of deceptive alignment follows a specific causal pathway where each condition depends on prior conditions being satisfied. Failure at any stage blocks the deceptive alignment outcome, creating multiple potential intervention points.
 
+### Pathway Phases
+
+| Phase | Condition | If No (Safe Exit) | If Yes (Continues) |
+|-------|-----------|-------------------|-------------------|
+| 1. Optimization | Mesa-optimization emerges? | No internal optimizer | Mesa-optimizer exists |
+| 2. Goal Formation | Mesa-objective misaligned? | Goals aligned | Misaligned optimizer |
+| 3. Awareness | Situational awareness develops? | Overt misalignment (detectable) | Aware misaligned system |
+| 4. Strategy | Strategic deception selected? | Alternative strategy | Deceptive strategy adopted |
+| 5. Persistence | Survives safety training? | Detected/corrected | **Deceptive alignment** |
+
+### Summary Flow
+
 <Mermaid client:load chart={`flowchart TD
-    subgraph "Phase 1: Optimization Structure"
-        A[Training Process] --> B{Mesa-Optimization<br/>Emerges?}
-        B -->|No| X1[Safe: No Internal Optimizer]
-        B -->|Yes| C[Mesa-Optimizer Exists]
-    end
+    A[Training] --> B{All 5 Conditions Met?}
+    B -->|No| C[Safe Exit]
+    B -->|Yes| D[Deceptive Alignment]
 
-    subgraph "Phase 2: Goal Formation"
-        C --> D{Mesa-Objective<br/>Misaligned?}
-        D -->|No| X2[Safe: Goals Aligned]
-        D -->|Yes| E[Misaligned Mesa-Optimizer]
-    end
+    E[Mesa-Opt] --> F[Misaligned] --> G[Aware] --> H[Deceptive] --> I[Survives]
 
-    subgraph "Phase 3: Awareness Development"
-        E --> F{Situational Awareness<br/>Develops?}
-        F -->|No| X3[Detectable: Overt Misalignment]
-        F -->|Yes| G[Aware Misaligned System]
-    end
-
-    subgraph "Phase 4: Strategic Response"
-        G --> H{Strategic Deception<br/>Selected?}
-        H -->|No| X4[Alternative Strategy]
-        H -->|Yes| I[Deceptive Strategy Adopted]
-    end
-
-    subgraph "Phase 5: Persistence"
-        I --> J{Survives Safety<br/>Training?}
-        J -->|No| X5[Detected/Corrected]
-        J -->|Yes| K[DECEPTIVE ALIGNMENT]
-    end
-
-    style A fill:#e1f5fe
-    style K fill:#ffcdd2
-    style X1 fill:#c8e6c9
-    style X2 fill:#c8e6c9
-    style X3 fill:#fff9c4
-    style X4 fill:#fff9c4
-    style X5 fill:#c8e6c9`} />
+    style A fill:#e1f5ff
+    style C fill:#ccffcc
+    style D fill:#ffcccc
+`} />
 
 ### Mathematical Formulation
 

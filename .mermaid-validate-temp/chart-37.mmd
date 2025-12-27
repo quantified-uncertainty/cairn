@@ -1,0 +1,18 @@
+
+flowchart TD
+    subgraph Timeline["Detection Success Rate Trajectory"]
+        Y2020["2020: DSR = 75%<br/>Detection viable"]
+        Y2024["2024: DSR = 65%<br/>Detection degrading"]
+        Y2026["2026: DSR = 58%<br/>Detection struggling"]
+        Y2028["2028: DSR = 52%<br/>Near random"]
+        Y2030["2030: DSR = 48%<br/>Detection failed"]
+    end
+
+    Y2020 --> Y2024
+    Y2024 --> Y2026
+    Y2026 --> Y2028
+    Y2028 --> Y2030
+
+    style Y2030 fill:#ff6666
+    style Y2028 fill:#ff9999
+    style Y2026 fill:#ffcc99

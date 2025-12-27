@@ -12,7 +12,8 @@ ratings:
   completeness: 4
 ---
 
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="preference-manipulation-drift" ratings={frontmatter.ratings} />
 
@@ -22,6 +23,67 @@ import { DataInfoBox, Backlinks } from '../../../../components/wiki';
 This model examines how AI systems, through personalization, recommendation, and persuasive design, can gradually shift human preferences, values, and beliefs. Unlike acute manipulation, preference drift operates through slow, cumulative effects that may be invisible to those experiencing them.
 
 **Central Question:** How do AI systems shape what humans want, and what are the long-term implications for human autonomy and wellbeing?
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+Preference manipulation drift is a **lower-tier AI risk** (likely top 15-20, not top 10). While philosophically concerning, it affects wellbeing and autonomy more than it creates catastrophic outcomes. Prioritize this below alignment, misuse, and structural power risks.
+</Aside>
+
+### Magnitude Assessment
+
+**Share of total AI harm:** 5-15% (mostly non-catastrophic)
+
+| Harm Type | Magnitude | Catastrophic Potential |
+|-----------|-----------|----------------------|
+| Reduced autonomy | Medium-High | Low |
+| Polarization contribution | Medium | Medium |
+| Wellbeing degradation | Medium | Low |
+| Value erosion (long-term) | Unknown | Possibly High |
+
+**Key uncertainty:** The long-term value drift scenario (where AI gradually shifts human values in problematic directions over decades) could be highly significant but remains speculative.
+
+### Comparative Ranking
+
+| Risk | Relative Priority | Reasoning |
+|------|------------------:|-----------|
+| Core alignment/control | Higher | Existential potential |
+| Misuse (bio/cyber) | Higher | Direct catastrophic harm |
+| Structural power concentration | Higher | Enables other harms |
+| **Preference manipulation** | Baseline | Concerning but rarely catastrophic |
+| Economic disruption | Similar | Both are welfare risks |
+| Sycophancy/epistemic | Similar | Related mechanisms |
+
+### Resource Implications
+
+**Current attention:** Medium (significant academic and policy interest)
+
+**Marginal value of additional work:**
+- **Platform governance:** Medium-High (most tractable lever)
+- **User awareness:** Low (doesn't change behavior much)
+- **Technical solutions:** Medium (hard to implement without platform cooperation)
+
+**Recommendation:** This risk is adequately addressed by existing digital rights / platform governance work. AI safety community should **not** divert significant resources here unless working on AI-specific aspects (like preference manipulation by AI assistants, not just recommendation algorithms).
+
+### Key Cruxes
+
+| If you believe... | Then this risk is... |
+|-------------------|----------------------|
+| Long-term value drift is real and severe | **Much more important** (potentially top 10) |
+| AI assistants will become primary interfaces | **More important** (direct preference shaping) |
+| This is just "advertising 2.0" | **Less important** (existing frameworks apply) |
+| Humans can adapt/resist | **Less important** (self-limiting) |
+
+### Actionability
+
+**For AI safety community:**
+- Don't prioritize this over alignment, misuse, structural risks
+- Monitor for escalation (especially AI assistants shaping preferences)
+- Support platform governance work without leading it
+
+**For policymakers:**
+- This falls under digital platform regulation more than AI safety
+- Existing FTC, GDPR, DSA frameworks are appropriate starting points
 
 ## Conceptual Framework
 

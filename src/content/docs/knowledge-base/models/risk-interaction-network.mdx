@@ -25,66 +25,33 @@ AI risks do not exist in isolation. They form an interconnected network where on
 
 This model maps the key interaction pathways between technical, structural, and epistemic AI risks.
 
-## Risk Network Visualization
+## Risk Network Overview
+
+### Risk Categories
+
+| Category | Risks | Core Dynamic |
+|----------|-------|--------------|
+| **Technical** | Mesa-optimization, Deceptive Alignment, Scheming, Corrigibility Failure | Internal optimizer misalignment escalates to loss of control |
+| **Structural** | Racing Dynamics, Lock-in, Concentration of Power, Authoritarian Takeover | Market pressures create irreversible power concentration |
+| **Epistemic** | Sycophancy, Expertise Atrophy, Trust Cascade, Epistemic Collapse | Validation-seeking degrades judgment and institutional trust |
+
+### Key Cross-Domain Interactions
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Technical["Technical Risks"]
-        MO[Mesa-optimization]
-        DA[Deceptive Alignment]
-        SC[Scheming]
-        CF[Corrigibility Failure]
-    end
+    RD[Racing Dynamics] -->|"enables"| TECH[Technical Risks]
+    TECH -->|"facilitates"| STRUCT[Structural Lock-in]
+    SY[Sycophancy] -->|"degrades"| EPIST[Epistemic Capacity]
+    EPIST -->|"weakens defense"| TECH
+    STRUCT -->|"enables"| AT[Authoritarian Outcomes]
+    EPIST -->|"enables"| AT
 
-    subgraph Structural["Structural Risks"]
-        RD[Racing Dynamics]
-        LI[Lock-in]
-        CP[Concentration of Power]
-        AT[Authoritarian Takeover]
-    end
-
-    subgraph Epistemic["Epistemic Risks"]
-        SY[Sycophancy]
-        EX[Expertise Atrophy]
-        TC[Trust Cascade]
-        EC[Epistemic Collapse]
-    end
-
-    %% Technical chain
-    MO -->|"enables"| DA
-    DA -->|"leads to"| SC
-    SC -->|"causes"| CF
-
-    %% Racing to Technical
-    RD -->|"incentivizes"| MO
-    RD -->|"pressures toward"| DA
-
-    %% Technical to Structural
-    DA -->|"enables"| LI
-    SC -->|"facilitates"| CP
-    CF -->|"enables"| AT
-
-    %% Structural chain
-    RD -->|"creates"| CP
-    CP -->|"solidifies into"| LI
-    LI -->|"enables"| AT
-
-    %% Epistemic chain
-    SY -->|"causes"| EX
-    EX -->|"triggers"| TC
-    TC -->|"leads to"| EC
-
-    %% Epistemic to Technical
-    EX -->|"weakens defense against"| CF
-
-    %% Epistemic to Structural
-    EC -->|"enables"| AT
-
-    %% Feedback loops (dashed)
-    EX -.->|"increases demand for"| SY
-    CP -.->|"intensifies"| RD
-    EC -.->|"accelerates"| EX
-    AT -.->|"enforces"| LI
+    style RD fill:#ffddcc
+    style SY fill:#ffddcc
+    style TECH fill:#ffcccc
+    style STRUCT fill:#ffcccc
+    style EPIST fill:#fff4e1
+    style AT fill:#ff9999
 `} />
 
 ## Risk Categories

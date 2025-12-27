@@ -1,0 +1,19 @@
+
+flowchart LR
+    subgraph GeneratorTraining["Generator Training Loop"]
+        GT1["Generate Content"] --> GT2["Test Against Detector"]
+        GT2 --> GT3["Optimize for Evasion"]
+        GT3 --> GT1
+    end
+
+    subgraph DetectorTraining["Detector Training Loop"]
+        DT1["Train on Past Generators"] --> DT2["Deploy Detection"]
+        DT2 --> DT3["New Generators Evade"]
+        DT3 --> DT4["Collect New Data"]
+        DT4 --> DT1
+    end
+
+    GeneratorTraining -->|"Always ahead"| DetectorTraining
+
+    style GT3 fill:#90EE90
+    style DT3 fill:#ff9999

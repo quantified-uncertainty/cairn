@@ -29,14 +29,16 @@ Risk cascades occur when one AI risk triggers or enables subsequent risks in a c
 ### Basic Cascade Model
 
 <Mermaid client:load chart={`
-flowchart LR
+flowchart TD
     A[Initiating Risk] -->|"triggers"| B[Intermediate Risk]
     B -->|"enables"| C[Downstream Risk]
     C -->|"causes"| D[Outcome]
 
-    I1[Intervention 1] -.->|"blocks"| A
-    I2[Intervention 2] -.->|"blocks"| B
-    I3[Intervention 3] -.->|"blocks"| C
+    I[Interventions] -.->|"block at each stage"| B
+
+    style A fill:#ffddcc
+    style D fill:#ffcccc
+    style I fill:#ccffcc
 `} />
 
 ### Cascade Properties

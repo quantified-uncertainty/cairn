@@ -1,0 +1,23 @@
+
+flowchart TD
+    subgraph Factors["Contributing Factors"]
+        F1["Trigger Events<br/>(synthetic content volume)"]
+        F2["Vulnerable Exposure<br/>(population distribution)"]
+        F3["Amplification Potential<br/>(social media dynamics)"]
+        F4["Institutional Response<br/>(preparedness, capacity)"]
+    end
+
+    subgraph Correlations["Key Correlations"]
+        C1["Weak institutions → <br/>more amplification"]
+        C2["High vulnerability → <br/>easier amplification"]
+        C3["Certain triggers → <br/>stronger amplification"]
+    end
+
+    F1 -->|"influences"| F3
+    F2 -->|"influences"| F3
+    F4 -->|"constrains"| F3
+    F4 -->|"affects detection of"| F1
+
+    style C1 fill:#fff3cd
+    style C2 fill:#fff3cd
+    style C3 fill:#fff3cd

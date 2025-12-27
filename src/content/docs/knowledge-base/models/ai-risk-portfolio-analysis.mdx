@@ -1,0 +1,295 @@
+---
+title: AI Risk Portfolio Analysis
+description: A framework for comparing the relative importance of different AI risk categories to guide resource allocation
+sidebar:
+  order: 50
+quality: 4
+lastEdited: "2025-12-26"
+ratings:
+  novelty: 4
+  rigor: 3
+  actionability: 5
+  completeness: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+
+<DataInfoBox entityId="ai-risk-portfolio-analysis" ratings={frontmatter.ratings} />
+
+## Strategic Question
+
+**How should the AI safety community allocate its limited resources across different risk categories?**
+
+This model attempts to answer: Which AI risks deserve what share of attention, funding, and talent? The goal is not to explain *how* risks work (other models do that) but to help prioritize *which risks matter most*.
+
+<Aside type="caution" title="High Uncertainty">
+Estimates in this model carry substantial uncertainty (often ±50% or more). They represent informed speculation rather than established fact. The value is in the framework and relative comparisons, not precise numbers.
+</Aside>
+
+## Risk Category Comparison
+
+### Overview of Major Categories
+
+The AI risk landscape can be roughly divided into four major categories, each with distinct characteristics that affect prioritization:
+
+| Risk Category | Estimated Share of Total X-Risk | Tractability | Neglectedness | Current Resource Share |
+|--------------|--------------------------------|--------------|---------------|------------------------|
+| **Misalignment (Loss of Control)** | 40-70% | Low-Medium | Medium | ~50% |
+| **Misuse (Deliberate Harm)** | 15-35% | Medium | Medium-High | ~25% |
+| **Structural/Systemic Risks** | 10-25% | Medium-High | High | ~15% |
+| **Accident Risks (Non-X)** | 5-15% | High | Medium | ~10% |
+
+<Mermaid client:load chart={`
+pie title Estimated Share of AI X-Risk (Central Estimates)
+    "Misalignment" : 55
+    "Misuse" : 25
+    "Structural" : 15
+    "Other" : 5
+`} />
+
+### Category Deep Dive
+
+#### Misalignment Risk (Loss of Control)
+
+**What it is:** AI systems pursuing goals not aligned with human values, potentially resisting correction.
+
+**Why it dominates the portfolio:**
+- Only category that could result in permanent loss of human agency
+- Scales with capability - becomes *more* dangerous as AI improves
+- No natural ceiling on harm
+- Current alignment techniques provide weak guarantees
+
+**Key crux:** If you believe advanced AI will be developed and current alignment approaches are fundamentally inadequate, this category dominates. If you believe alignment is largely solved or AI won't reach dangerous capability levels, it drops substantially.
+
+**Resource implication:** The ~50% current allocation may be justified or even low, depending on timeline beliefs.
+
+#### Misuse Risk (Deliberate Harm)
+
+**What it is:** Humans using AI capabilities to cause harm (bioweapons, cyberattacks, manipulation campaigns).
+
+**Why it's significant but secondary:**
+- Bounded by human intent - most humans don't want extinction
+- Existing governance frameworks can partially apply
+- Natural self-limiting factors (attackers are also vulnerable)
+- However, tail risks exist if AI enables small groups to cause catastrophic harm
+
+**Key crux:** How much does AI lower barriers to catastrophic weapons? If AI enables any competent individual to synthesize bioweapons, this category rises dramatically.
+
+**Resource implication:** Currently somewhat under-resourced relative to risk share, especially biosecurity applications.
+
+#### Structural/Systemic Risks
+
+**What it is:** Emergent harms from AI deployment patterns - economic disruption, power concentration, erosion of human agency, institutional collapse.
+
+**Why it's underweighted:**
+- Slower-moving, allowing adaptation
+- Reversible in most scenarios
+- Less dramatic than extinction scenarios
+- However, could enable or accelerate other risks
+
+**Key crux:** Do structural risks primarily matter instrumentally (by affecting other risks) or terminally (as bad outcomes themselves)?
+
+**Resource implication:** Currently under-resourced. The ~15% allocation may underweight the instrumental value of maintaining functional institutions.
+
+## Influence Network
+
+Rather than treating these categories as independent, their interactions matter for prioritization:
+
+### Influence Relationships
+
+| Factor | Affects | Effect | Strength |
+|--------|---------|--------|----------|
+| **AI Capability** | Misalignment Risk | Increases | Strong |
+| **AI Capability** | Misuse Risk | Enables | Medium |
+| **Structural Risks** | Governance Quality | Degrades | Medium |
+| **Governance Quality** | Misuse Risk | Mitigates | Medium |
+| **Governance Quality** | Misalignment Risk | Mitigates | Weak |
+| **Alignment Research** | Misalignment Risk | Mitigates | Strong |
+| **Misuse Risk** | Structural Risks | Contributes to | Medium |
+
+<Mermaid client:load chart={`
+flowchart TD
+    CAP[AI Capability] -->|increases| RISK[Risk Categories]
+    RISK --> MIS[Misalignment]
+    RISK --> USE[Misuse]
+    INT[Interventions] -->|mitigate| RISK
+
+    style CAP fill:#cceeff
+    style MIS fill:#ffcccc
+    style USE fill:#ffddcc
+    style INT fill:#ccffcc
+`} />
+
+Key insight from this network: **Governance quality affects multiple risk categories**, suggesting structural risks may be more important than their direct harm contribution implies.
+
+## Prioritization Framework
+
+### Expected Value Calculation
+
+For each risk category, we can estimate:
+
+$$
+\text{Priority Score} = \text{Risk Magnitude} \times \text{Tractability} \times \text{Neglectedness Multiplier}
+$$
+
+This is a simplification - these factors aren't truly independent - but provides a starting framework.
+
+<Mermaid client:load chart={`
+quadrantChart
+    title Risk Prioritization Matrix
+    x-axis Low Tractability --> High Tractability
+    y-axis Low Magnitude --> High Magnitude
+    quadrant-1 High priority
+    quadrant-2 Research needed
+    quadrant-3 Lower priority
+    quadrant-4 Quick wins
+    Misalignment: [0.35, 0.85]
+    Biosecurity: [0.55, 0.65]
+    Cyber misuse: [0.65, 0.45]
+    Structural: [0.70, 0.40]
+    Accidents: [0.80, 0.25]
+`} />
+
+### Timeline Dependence
+
+Optimal allocation depends heavily on expected timelines to transformative AI:
+
+| Timeline to TAI | Recommended Emphasis |
+|-----------------|---------------------|
+| **Short (2-5 years)** | Focus almost entirely on misalignment; other risks won't have time to manifest at scale |
+| **Medium (5-15 years)** | Balanced portfolio; all categories relevant |
+| **Long (15+ years)** | More emphasis on structural risks and field-building; time to address multiple fronts |
+
+<Mermaid client:load chart={`
+gantt
+    title Resource Allocation by Timeline Belief
+    dateFormat YYYY
+    axisFormat %Y
+
+    section Short Timeline
+    Misalignment (70-80%)    :2025, 2030
+    Misuse (15-20%)          :2025, 2030
+    Other (5-10%)            :2025, 2030
+
+    section Medium Timeline
+    Misalignment (50-60%)    :2025, 2035
+    Misuse (20-25%)          :2025, 2035
+    Structural (15-20%)      :2025, 2035
+
+    section Long Timeline
+    Misalignment (40-50%)    :2025, 2045
+    Structural (25-30%)      :2025, 2045
+    Misuse/Field (25-30%)    :2025, 2045
+`} />
+
+## Marginal Value Analysis
+
+Beyond total allocation, we should ask: **Where does the next dollar/researcher have most impact?**
+
+### Current Bottlenecks by Category
+
+**Misalignment Research:**
+- Bottleneck: Conceptual clarity, not just funding
+- Marginal researcher value: High if talented, low if adding to crowded subproblems
+- Saturation risk: Medium (some areas crowded, others neglected)
+
+**Misuse Prevention:**
+- Bottleneck: Government engagement, not research capacity
+- Marginal dollar value: High for policy work, medium for technical
+- Saturation risk: Low
+
+**Structural Risk Work:**
+- Bottleneck: Frameworks and coordination, not raw effort
+- Marginal researcher value: High for experienced policy/economics researchers
+- Saturation risk: Very low (highly neglected)
+
+### Marginal Allocation Recommendation
+
+Given current landscape, marginal resources may be most valuable in:
+
+1. **Misuse prevention policy** - Currently under-invested relative to risk
+2. **Structural risk analysis** - Highly neglected, high instrumental value
+3. **Alignment research in neglected subfields** - Not all alignment work, but specific gaps
+4. **Field-building** - If timelines are medium-long
+
+## Key Cruxes for Prioritization
+
+<KeyQuestions
+  questions={[
+    "How likely is transformative AI in the next 10 years? (Timeline)",
+    "Is technical alignment tractable with current approaches?",
+    "How much does AI actually lower barriers to catastrophic misuse?",
+    "Do structural risks primarily matter instrumentally or terminally?",
+    "What's the correlation between AI capability and alignment difficulty?"
+  ]}
+/>
+
+### How Your Beliefs Change the Analysis
+
+| If you believe... | Then prioritize... |
+|-------------------|-------------------|
+| Timelines are short (under 5 years) | Misalignment research almost exclusively |
+| Alignment is largely tractable | Misuse prevention and governance |
+| AI radically enables bioweapons | Biosecurity applications immediately |
+| Structural risks enable other risks | Governance and institutional resilience |
+| Field needs more researchers | Field-building and pipeline development |
+
+## Comparison to Current Allocation
+
+The AI safety community currently allocates approximately:
+- 50% to alignment/interpretability research
+- 25% to misuse prevention and security
+- 15% to governance and structural concerns
+- 10% to other (field-building, accidents, meta)
+
+**Assessment:** This allocation is reasonable under median assumptions but may underweight:
+- Structural risk work (given instrumental importance)
+- Misuse prevention (given neglectedness)
+- Meta-level work (given field growth needs)
+
+## Model Limitations
+
+### What This Model Doesn't Capture
+
+1. **Interaction effects** - Risks aren't independent; addressing one may affect others
+2. **Option value** - Some investments maintain future flexibility
+3. **Comparative advantage** - Different actors should specialize differently
+4. **Uncertainty about categories** - The taxonomy itself may be wrong
+
+### Confidence Levels
+
+| Claim | Confidence |
+|-------|------------|
+| Misalignment is >30% of X-risk | Medium-High |
+| Current allocation is roughly appropriate | Medium |
+| Structural risks are underweighted | Medium |
+| Marginal biosecurity work is high-value | Medium-High |
+| Specific % allocations | Low |
+
+## Action Implications
+
+### For Funders
+- Consider increasing allocation to structural/governance work
+- Evaluate biosecurity-AI intersection more heavily
+- Fund marginal researchers in neglected alignment subfields
+
+### For Researchers
+- If early-career: alignment still has highest expected value for most
+- If policy-oriented: misuse prevention and governance are undersupplied
+- If economics/sociology: structural risks are very neglected
+
+### For Organizations
+- Audit current portfolio against this framework
+- Consider where you have comparative advantage
+- Build capacity for multiple scenarios
+
+## Related Models
+
+- [Compounding Risks Analysis](/knowledge-base/models/compounding-risks-analysis/) - How risks interact
+- [Capabilities-to-Safety Pipeline](/knowledge-base/models/capabilities-to-safety-pipeline/) - Alignment research dynamics
+- [Flash Dynamics Threshold Model](/knowledge-base/models/flash-dynamics-threshold/) - Rapid risk emergence
+
+## Related Pages
+
+<Backlinks client:load entityId="ai-risk-portfolio-analysis" />

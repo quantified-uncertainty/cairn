@@ -1,0 +1,21 @@
+
+flowchart TD
+    subgraph Windows["Intervention Window Types"]
+        C[Closing Windows]
+        S[Stable Windows]
+        E[Emerging Windows]
+    end
+
+    C --> C1[Must act before capability X]
+    C --> C2[Must act before deployment Y]
+    C --> C3[Must act before precedent Z]
+
+    S --> S1[Technical research]
+    S --> S2[Field-building]
+
+    E --> E1[Not yet possible]
+    E --> E2[Waiting for trigger event]
+
+    style C fill:#ffcccc
+    style S fill:#ccffcc
+    style E fill:#cceeff

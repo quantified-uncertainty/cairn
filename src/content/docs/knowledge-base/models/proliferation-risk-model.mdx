@@ -30,37 +30,25 @@ Understanding proliferation dynamics matters because many AI governance proposal
 
 AI capabilities diffuse through a hierarchical structure of actor tiers, each defined by resource availability and access mechanisms. The cascade operates as a one-way valve: once capabilities reach a tier, they cannot be recalled. Understanding this structure is essential for identifying where intervention remains possible.
 
-<Mermaid client:load chart={`flowchart TD
-    subgraph Tier1["Tier 1: Frontier Labs (5-10 actors)"]
-        A1[Original Development]
-    end
+| Tier | Actor Type | Actor Count | Access Mechanism | Diffusion Time |
+|------|------------|-------------|------------------|----------------|
+| **1** | Frontier Labs | 5-10 | Original development | - |
+| **2** | Major Tech | 50-100 | API access / Partnerships | 6-18 months |
+| **3** | Well-Resourced Orgs | 1K-10K | Fine-tuning / Replication | 12-24 months |
+| **4** | Open Source | Millions | Public model weights | 18-36 months |
+| **5** | Individuals | Billions | Consumer applications | 24-48 months |
 
-    subgraph Tier2["Tier 2: Major Tech (50-100 actors)"]
-        A2[API Access / Partnerships]
-    end
+<Mermaid client:load chart={`flowchart LR
+    T1[Tier 1] --> T2[Tier 2]
+    T2 --> T3[Tier 3]
+    T3 --> T4[Tier 4]
+    T4 --> T5[Tier 5]
 
-    subgraph Tier3["Tier 3: Well-Resourced Orgs (1K-10K actors)"]
-        A3[Fine-tuning / Replication]
-    end
-
-    subgraph Tier4["Tier 4: Open Source (Millions)"]
-        A4[Public Model Weights]
-    end
-
-    subgraph Tier5["Tier 5: Individuals (Billions)"]
-        A5[Consumer Applications]
-    end
-
-    A1 -->|"6-18 months"| A2
-    A2 -->|"12-24 months"| A3
-    A3 -->|"18-36 months"| A4
-    A4 -->|"24-48 months"| A5
-
-    style A1 fill:#fcc
-    style A2 fill:#fdc
-    style A3 fill:#ffc
-    style A4 fill:#cfc
-    style A5 fill:#cff`} />
+    style T1 fill:#ffcccc
+    style T2 fill:#ffddcc
+    style T3 fill:#fff4e1
+    style T4 fill:#ccffcc
+    style T5 fill:#cceeff`} />
 
 The time constants shown represent historical averages but are compressing rapidly. For GPT-3-class capabilities, full diffusion from Tier 1 to Tier 4 required approximately 24 months (2020-2022). For GPT-4-class capabilities, this compressed to 18-24 months (2023-2025). Current trajectories suggest future frontier capabilities may reach Tier 4 within 6-12 months of initial development.
 
@@ -156,35 +144,22 @@ The durability of compute control is uncertain. Algorithmic efficiency improveme
 
 The model identifies three critical thresholds that mark qualitative shifts in risk dynamics. Crossing these thresholds is largely irreversible, making them high-stakes decision points.
 
-<Mermaid client:load chart={`stateDiagram-v2
-    [*] --> Contained: Capability developed
-    Contained --> Organizational: Tier 3 access
-    Organizational --> Individual: Tier 4/5 access
-    Individual --> Irreversible: Open source + common knowledge
+| Threshold | Description | Control Status | Response Time |
+|-----------|-------------|----------------|---------------|
+| **Contained** | Tier 1-2 access only | Control still possible | Months |
+| **Organizational** | Tier 3 access | State/criminal access likely | Weeks |
+| **Individual** | Tier 4/5 access | Attribution difficult, monitoring overwhelmed | Days |
+| **Irreversible** | Open source + common knowledge | Control not possible, focus shifts to defense | N/A |
 
-    Contained: Contained Proliferation
-    note right of Contained
-        Control still possible
-        Response time: months
-    end note
+<Mermaid client:load chart={`flowchart LR
+    A[Contained] --> B[Organizational]
+    B --> C[Individual]
+    C --> D[Irreversible]
 
-    Organizational: Organizational Proliferation
-    note right of Organizational
-        State/criminal access likely
-        Response time: weeks
-    end note
-
-    Individual: Individual Proliferation
-    note right of Individual
-        Attribution difficult
-        Monitoring overwhelmed
-    end note
-
-    Irreversible: Irreversible Proliferation
-    note right of Irreversible
-        Control not possible
-        Focus shifts to defense
-    end note`} />
+    style A fill:#ccffcc
+    style B fill:#fff4e1
+    style C fill:#ffddcc
+    style D fill:#ffcccc`} />
 
 **Threshold 1: Organizational Proliferation.** When capabilities reach well-resourced organizations (Tier 3), state actors, large criminal organizations, and sophisticated terrorist groups gain access. This threshold was crossed for GPT-3-level capabilities in 2022 and GPT-4-level capabilities in 2024. At this stage, monitoring remains theoretically possible but practically limited by the number and sophistication of actors.
 

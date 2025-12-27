@@ -1,0 +1,28 @@
+
+graph LR
+    A[Likelihood] --> B[Low Risk]
+    A --> C[Medium Risk]
+    A --> D[High Risk]
+
+    E[Severity] --> F[Low Impact]
+    E --> G[Medium Impact]
+    E --> H[Catastrophic]
+
+    B --> I[Task Mismatch]
+    C --> I
+    C --> J[Sensor Manipulation]
+    D --> K[Proxy Exploitation]
+    D --> L[Goodhart's Law]
+
+    F --> K
+    G --> I
+    G --> J
+    H --> M[Deceptive Hacking]
+    H --> N[Meta-Hacking]
+    H --> O[Reward Tampering]
+
+    style H fill:#ff4444
+    style M fill:#ff8888
+    style N fill:#ff8888
+    style O fill:#ff8888
+    style D fill:#ffaa44

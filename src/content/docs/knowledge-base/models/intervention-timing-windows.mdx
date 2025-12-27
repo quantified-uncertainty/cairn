@@ -1,0 +1,312 @@
+---
+title: Intervention Timing Windows
+description: Which AI safety interventions have closing windows and require urgent action vs which remain effective over longer periods
+sidebar:
+  order: 52
+quality: 4
+lastEdited: "2025-12-26"
+ratings:
+  novelty: 4
+  rigor: 3
+  actionability: 5
+  completeness: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+
+<DataInfoBox entityId="intervention-timing-windows" ratings={frontmatter.ratings} />
+
+## Strategic Question
+
+**Which interventions must happen NOW vs which can wait?**
+
+Not all interventions are created equal in terms of timing. Some have windows that are closing rapidly—if we don't act soon, the opportunity passes. Others remain effective regardless of when we start. This model helps prioritize based on temporal urgency.
+
+<Aside type="danger" title="Key Insight">
+The AI safety community often under-weights timing considerations. An intervention with moderate impact that must happen NOW may be more valuable than a high-impact intervention that can happen anytime.
+</Aside>
+
+## The Timing Framework
+
+### Window Types
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Windows["Intervention Window Types"]
+        C[Closing Windows]
+        S[Stable Windows]
+        E[Emerging Windows]
+    end
+
+    C --> C1[Must act before capability X]
+    C --> C2[Must act before deployment Y]
+    C --> C3[Must act before precedent Z]
+
+    S --> S1[Technical research]
+    S --> S2[Field-building]
+
+    E --> E1[Not yet possible]
+    E --> E2[Waiting for trigger event]
+
+    style C fill:#ffcccc
+    style S fill:#ccffcc
+    style E fill:#cceeff
+`} />
+
+### What Closes Windows?
+
+| Trigger | Why It Closes Windows | Example |
+|---------|----------------------|---------|
+| **Capability threshold** | New capabilities make old interventions obsolete | Alignment interpretability for current architectures becomes irrelevant if architecture changes |
+| **Deployment precedent** | Once deployed, hard to recall | Social media recommendation algorithms; hard to change once users depend on them |
+| **Regulatory precedent** | First rules shape all future rules | Early AI regulations set templates for later frameworks |
+| **Market structure lock-in** | Winner-take-all dynamics | Once 2-3 labs dominate, hard to change industry structure |
+| **Norm establishment** | Early norms become entrenched | Safety culture set early is sticky; hard to change later |
+| **Talent flow** | Where people go early shapes field | If safety researchers go to capabilities, hard to reverse |
+
+## Intervention Timing Analysis
+
+### Closing Windows (Act Now)
+
+<Mermaid client:load chart={`
+timeline
+    title Intervention Windows Closing
+    section 2025
+        Compute governance : Window narrowing fast
+        International norms : Still possible
+        Lab safety culture : Partially closing
+    section 2026-2027
+        Pre-AGI coordination : May close
+        Architecture-specific safety : Uncertain
+    section 2028+
+        Post-deployment governance : Depends on deployment
+`} />
+
+#### 1. Compute Governance (Window: 2024-2027)
+
+**Why window is closing:**
+- Compute supply chains becoming established
+- Hardware export controls setting precedents
+- Cloud concentration creating facts on ground
+
+**Current window status:** Narrowing but still open
+
+| Action | Urgency | Leverage |
+|--------|---------|----------|
+| Export control frameworks | **Critical** | High |
+| Compute tracking systems | **High** | High |
+| Cloud safety requirements | **High** | Medium |
+| Chip design safety features | Medium | High (if done early) |
+
+**If window closes:** Compute governance becomes reactive rather than proactive; we lose ability to shape hardware trajectory.
+
+#### 2. International Coordination Frameworks (Window: 2024-2028)
+
+**Why window is closing:**
+- Great power competition intensifying
+- First-mover advantage in AI creating divergent interests
+- Once capability gap widens, cooperation incentives decrease
+
+**Current window status:** Open but fragile
+
+| Action | Urgency | Leverage |
+|--------|---------|----------|
+| US-China AI dialogue | **Critical** | Very High |
+| Multilateral safety standards | **High** | High |
+| Information sharing agreements | **High** | Medium |
+| Joint safety research | Medium | Medium |
+
+**If window closes:** We enter a multi-decade AI arms race with no coordination mechanisms; catastrophic risk increases substantially.
+
+#### 3. Lab Safety Culture (Window: 2023-2026)
+
+**Why window is closing:**
+- Founding cultures become entrenched
+- Early employees set norms
+- Rapid scaling dilutes safety-focused personnel
+
+**Current window status:** Partially closed; some labs' cultures already set
+
+| Action | Urgency | Leverage |
+|--------|---------|----------|
+| Safety leadership at frontier labs | **Critical** | Very High |
+| Early employee safety focus | **High** | High |
+| Safety-first hiring practices | **High** | Medium |
+| Internal safety incentives | Medium | Medium |
+
+**If window closes:** Lab cultures become resistant to change; external pressure needed to shift behavior.
+
+#### 4. Regulatory Precedent (Window: 2024-2027)
+
+**Why window is closing:**
+- EU AI Act setting global precedent
+- US regulatory frameworks forming
+- First rules create path dependency
+
+**Current window status:** Narrowing rapidly
+
+| Action | Urgency | Leverage |
+|--------|---------|----------|
+| Shape EU AI Act implementation | **Critical** | High |
+| US executive order follow-up | **Critical** | High |
+| State-level regulation coherence | **High** | Medium |
+| Avoid bad precedents | **Critical** | Negative (preventing harm) |
+
+**If window closes:** We're stuck with the regulatory frameworks established now; changing them takes decades.
+
+### Stable Windows (Can Act Anytime)
+
+These interventions remain effective regardless of when we pursue them:
+
+#### 1. Technical Safety Research
+
+**Why window stays open:**
+- Fundamental insights remain valuable
+- Knowledge accumulates over time
+- Can start whenever funding/talent available
+
+**Caveat:** The *type* of research that's valuable may change (architecture-specific work has closing windows), but the *activity* of research remains valuable.
+
+#### 2. Field-Building and Talent Development
+
+**Why window stays open:**
+- More researchers always helps
+- Training programs remain valuable
+- Career paths don't expire
+
+**Caveat:** *Early* field-building has higher returns (shapes field trajectory), but it's never too late to build capacity.
+
+#### 3. Foundational Governance Research
+
+**Why window stays open:**
+- Understanding governance options always useful
+- Academic research accumulates
+- Can inform future decisions
+
+### Emerging Windows (Not Yet Open)
+
+These interventions become possible or necessary only after certain triggers:
+
+| Intervention | Trigger | Current Status |
+|--------------|---------|----------------|
+| Post-AGI governance | AGI development | Not yet needed |
+| Incident response protocols | Major AI incident | Should prepare now |
+| AI rights frameworks | Moral status clarity | Philosophically uncertain |
+| Offense-defense policy | Clear asymmetry established | Still unclear |
+
+## Strategic Implications
+
+### Prioritization Matrix
+
+<Mermaid client:load chart={`
+quadrantChart
+    title Intervention Priority by Timing and Impact
+    x-axis Window Stable --> Window Closing
+    y-axis Low Impact --> High Impact
+    quadrant-1 HIGHEST PRIORITY
+    quadrant-2 High priority (impact)
+    quadrant-3 Lower priority
+    quadrant-4 Urgent but limited
+    Compute governance: [0.85, 0.8]
+    International coordination: [0.75, 0.85]
+    Regulatory precedent: [0.8, 0.7]
+    Lab culture: [0.7, 0.65]
+    Technical research: [0.2, 0.75]
+    Field-building: [0.15, 0.5]
+    Public engagement: [0.3, 0.4]
+`} />
+
+### Resource Allocation by Timing
+
+| Time Horizon | Focus | Example Interventions |
+|--------------|-------|----------------------|
+| **Next 12 months** | Closing windows + high impact | Compute governance, international coordination, regulatory shaping |
+| **1-3 years** | Building capacity + emerging windows | Field-building, research programs, incident preparation |
+| **3+ years** | Stable high-impact work | Fundamental research, institutional development |
+
+<Aside type="tip" title="Key Recommendation">
+The community should shift ~20-30% of resources from stable-window work (technical research, field-building) toward closing-window work (compute governance, international coordination) over the next 2 years.
+</Aside>
+
+### Warning Signs of Closing Windows
+
+Monitor these indicators to detect when windows are closing faster than expected:
+
+| Indicator | What It Signals | Response |
+|-----------|-----------------|----------|
+| Capability jumps | Architecture-specific work becoming obsolete | Shift to architecture-agnostic approaches |
+| Regulatory announcements | Precedent-setting accelerating | Engage immediately or accept framework |
+| Lab policy changes | Culture becoming fixed | External pressure needed |
+| International tensions | Coordination window narrowing | Prioritize diplomatic channels |
+| Market consolidation | Winner-take-all dynamics | Antitrust or accept structure |
+
+## Key Cruxes
+
+Your timing priorities should depend on:
+
+| If you believe... | Then prioritize... |
+|-------------------|-------------------|
+| AGI is 5 years away | Closing windows almost exclusively |
+| AGI is 15+ years away | Mix of closing and stable windows |
+| International cooperation is possible | International coordination work urgently |
+| Great power conflict is inevitable | Unilateral safety measures |
+| Regulatory capture is likely | Alternative governance mechanisms |
+| Labs will self-correct | Less urgency on lab culture work |
+
+## Actionability
+
+### For Funders
+
+**Immediate (next 6 months):**
+- Increase funding to compute governance work by 3x
+- Fund international coordination capacity
+- Support regulatory engagement in EU, US, UK
+
+**Near-term (6-24 months):**
+- Build incident response capacity
+- Expand international safety research cooperation
+- Fund post-AGI governance research
+
+### For Researchers
+
+**Consider:**
+- Is your current work in a closing or stable window?
+- Would switching to closing-window work have higher impact?
+- Can you contribute to urgent policy/governance work?
+
+### For Organizations
+
+**Audit your portfolio:**
+- What % of work addresses closing windows?
+- Are you over-invested in stable-window work?
+- Do you have capacity for rapid response when windows narrow?
+
+## Model Limitations
+
+1. **Window timing is uncertain** - We may have more or less time than estimated
+2. **New windows may open** - Unexpected events create opportunities
+3. **Window closure isn't binary** - Some interventions remain partially effective
+4. **Neglects comparative advantage** - Not everyone should switch to closing-window work
+
+## Key Uncertainties
+
+<KeyQuestions
+  questions={[
+    "How much faster is the compute governance window closing than we think?",
+    "Is the international coordination window already effectively closed?",
+    "Can lab culture be changed externally, or is the internal window the only one that matters?",
+    "What events might open new intervention windows?"
+  ]}
+/>
+
+## Related Models
+
+- [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Overall risk prioritization
+- [Worldview-Intervention Mapping](/knowledge-base/models/worldview-intervention-mapping/) - How beliefs affect priorities
+- [Racing Dynamics](/knowledge-base/models/racing-dynamics/) - Competition affecting timing
+- [International Coordination Game](/knowledge-base/models/international-coordination-game/) - Coordination feasibility
+
+## Related Pages
+
+<Backlinks client:load entityId="intervention-timing-windows" />

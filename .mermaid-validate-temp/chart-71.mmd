@@ -1,0 +1,14 @@
+
+flowchart LR
+    subgraph Resources["Limited Resources"]
+        R[Safety Budget]
+    end
+
+    R --> P[Prevention]
+    R --> REC[Recovery Planning]
+
+    P --> |"Reduces P of incident"| OUT[Expected Harm]
+    REC --> |"Reduces harm given incident"| OUT
+
+    style P fill:#ccffcc
+    style REC fill:#cceeff

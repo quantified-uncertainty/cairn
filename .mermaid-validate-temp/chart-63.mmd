@@ -1,0 +1,17 @@
+
+graph TD
+    A[Current State] --> B{Decision Point}
+    B -->|Path 1| C[Reversible Adoption]
+    B -->|Path 2| D[Critical Threshold]
+    C --> E[Maintain Optionality]
+    D --> F[Lock-in State]
+    F --> G[Irreversible]
+    E --> H{Re-evaluate}
+    H -->|Safe| E
+    H -->|Risk Detected| I[Course Correction]
+    G -.->|Impossible| I
+
+    style F fill:#ff6b6b
+    style G fill:#c92a2a
+    style E fill:#51cf66
+    style I fill:#ffd43b

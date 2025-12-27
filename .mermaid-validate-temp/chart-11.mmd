@@ -1,0 +1,20 @@
+flowchart TD
+    subgraph "Phase 1: Preparation"
+        A[Motivated Actor<br/>P = 0.95] --> B[AI Access<br/>P = 0.7-0.9]
+        B --> C[AI Provides Uplift<br/>P = 0.2-0.5]
+    end
+
+    subgraph "Phase 2: Development"
+        C --> D[Lab Access<br/>P = 0.3-0.6]
+        D --> E[Successful Synthesis<br/>P = 0.1-0.4]
+    end
+
+    subgraph "Phase 3: Execution"
+        E --> F[Effective Deployment<br/>P = 0.2-0.5]
+        F --> G[Evades Countermeasures<br/>P = 0.3-0.7]
+    end
+
+    G --> H[Catastrophic Attack<br/>P = 0.02-3.6%]
+
+    style A fill:#fee
+    style H fill:#fcc

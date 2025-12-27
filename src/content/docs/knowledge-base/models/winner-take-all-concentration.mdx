@@ -30,37 +30,26 @@ The analysis draws on platform economics research, historical precedents from te
 
 The winner-take-all dynamic emerges from five interconnected positive feedback loops, each reinforcing the others. Understanding this structure reveals why concentration tends to accelerate once established and why multiple intervention points may be necessary.
 
-<Mermaid client:load chart={`flowchart TD
-    subgraph "Core Feedback Loops"
-        A[Market Leader] --> B[More Users]
-        B --> C[More Data]
-        C --> D[Better Models]
-        D --> A
+### Core Feedback Loops
 
-        A --> E[More Revenue]
-        E --> F[More Compute]
-        F --> D
+| Loop | Mechanism | Amplification |
+|------|-----------|---------------|
+| **Data Flywheel** | More users generate more data, enabling better models | 1.3-1.6x |
+| **Compute Advantage** | More revenue funds more compute, improving models | 1.2-2.0x |
+| **Talent Concentration** | Prestige attracts top talent, improving models | 1.1-1.4x |
+| **Network Effects** | Developer ecosystem attracts more users | 1.0-1.3x |
+| **Barriers to Entry** | IP and partnerships create moats | Self-reinforcing |
 
-        A --> G[Prestige & Culture]
-        G --> H[Top Talent]
-        H --> D
+<Mermaid client:load chart={`
+flowchart TD
+    LEAD[Market Leader] --> ADV[Resource Advantages]
+    ADV --> MODEL[Better Models]
+    MODEL --> LEAD
 
-        A --> I[Developer Ecosystem]
-        I --> J[More Applications]
-        J --> B
-
-        A --> K[IP & Partnerships]
-        K --> L[Barriers to Entry]
-        L --> A
-    end
-
-    style A fill:#f96
-    style D fill:#9f9
-    style B fill:#bbf
-    style E fill:#bbf
-    style G fill:#bbf
-    style I fill:#bbf
-    style K fill:#bbf`} />
+    style LEAD fill:#ffddcc
+    style ADV fill:#cceeff
+    style MODEL fill:#ccffcc
+`} />
 
 ### Mathematical Formulation
 
@@ -253,30 +242,24 @@ The most concerning threshold involves concentration of political and decision-m
 
 ### Leverage Point Hierarchy
 
-<Mermaid client:load chart={`flowchart TD
-    subgraph High_Leverage[High Leverage - Difficult]
-        I1[Antitrust enforcement] --> O1[Prevents lock-in]
-        I2[Public compute infrastructure] --> O2[Democratizes access]
-    end
+### Intervention Leverage Points
 
-    subgraph Medium_Leverage[Medium Leverage - Moderate Difficulty]
-        I3[Open-source funding] --> O3[Creates alternatives]
-        I4[Data portability mandates] --> O4[Reduces flywheel]
-        I5[Interoperability requirements] --> O5[Lowers switching costs]
-    end
+| Leverage Level | Interventions | Outcomes | Difficulty |
+|----------------|---------------|----------|------------|
+| **High** | Antitrust enforcement, Public compute infrastructure | Prevents lock-in, Democratizes access | Difficult |
+| **Medium** | Open-source funding, Data portability, Interoperability | Creates alternatives, Reduces flywheel effects | Moderate |
+| **Lower** | Talent development, Redistribution mechanisms | Expands talent pool, Addresses inequality | Easier |
 
-    subgraph Lower_Leverage[Lower Leverage - Easier]
-        I6[Talent development programs] --> O6[Expands talent pool]
-        I7[Redistribution mechanisms] --> O7[Addresses inequality]
-    end
+<Mermaid client:load chart={`
+flowchart TD
+    HIGH[High Leverage] -->|"prevents"| LOCK[Lock-in]
+    MED[Medium Leverage] -->|"reduces"| FLY[Flywheel Effects]
+    LOW[Lower Leverage] -->|"addresses"| INEQ[Inequality]
 
-    style I1 fill:#f99
-    style I2 fill:#f99
-    style I3 fill:#ff9
-    style I4 fill:#ff9
-    style I5 fill:#ff9
-    style I6 fill:#9f9
-    style I7 fill:#9f9`} />
+    style HIGH fill:#ffcccc
+    style MED fill:#fff4e1
+    style LOW fill:#ccffcc
+`} />
 
 ### Intervention Cost-Effectiveness Estimates
 

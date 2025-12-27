@@ -26,56 +26,31 @@ The policy implications are urgent: speed limits, circuit breakers, and redundan
 
 ## Conceptual Framework
 
+### Threshold Summary
+
+| Threshold | Definition | Current Status | Risk Level |
+|-----------|-----------|----------------|------------|
+| **T1: Oversight Latency** | Actions faster than monitoring | Largely past in finance, content mod | Medium |
+| **T2: Intervention Impossibility** | Actions faster than physical intervention | Mostly past in HFT, degrading in cyber | High |
+| **T3: Comprehension Gap** | Complexity exceeds human understanding | Degrading in finance, social media | Very High |
+| **T4: Cascade Criticality** | Cascades faster than countermeasure design | Partially degraded in finance | Critical |
+| **T5: Recursive Acceleration** | Self-improvement faster than governance | Not yet significantly affected | Existential |
+
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Thresholds["Five Thresholds of Control Loss"]
-        T1["Threshold 1: Oversight Latency<br/>Actions faster than monitoring"]
-        T2["Threshold 2: Intervention Impossibility<br/>Actions faster than physical intervention"]
-        T3["Threshold 3: Comprehension Gap<br/>Complexity exceeds human understanding"]
-        T4["Threshold 4: Cascade Criticality<br/>Cascades faster than countermeasure design"]
-        T5["Threshold 5: Recursive Acceleration<br/>Self-improvement faster than governance"]
-    end
+    T1[T1: Oversight] --> T2[T2: Intervention]
+    T2 --> T3[T3: Comprehension]
+    T3 --> T4[T4: Cascade]
+    T4 --> T5[T5: Recursive]
 
-    subgraph Status["Current Status (Approximate)"]
-        S1["Largely past in finance, content mod"]
-        S2["Mostly past in HFT, degrading in cyber"]
-        S3["Degrading in finance, social media"]
-        S4["Partially degraded in finance"]
-        S5["Not yet significantly affected"]
-    end
-
-    subgraph Risk["Risk Level"]
-        R1["Medium"]
-        R2["High"]
-        R3["Very High"]
-        R4["Critical"]
-        R5["Existential"]
-    end
-
-    T1 --> S1
-    T2 --> S2
-    T3 --> S3
-    T4 --> S4
-    T5 --> S5
-
-    S1 --> R1
-    S2 --> R2
-    S3 --> R3
-    S4 --> R4
-    S5 --> R5
-
-    T1 --> T2
-    T2 --> T3
-    T3 --> T4
-    T4 --> T5
-
-    style T5 fill:#ff6666
-    style T4 fill:#ff9999
+    style T1 fill:#fff4e1
+    style T2 fill:#ffddcc
     style T3 fill:#ffcc99
-    style T2 fill:#ffdd99
+    style T4 fill:#ff9999
+    style T5 fill:#ff6666
 `} />
 
-The diagram illustrates the five thresholds as a progression of control loss. **Important caveat:** These "thresholds" are not sharp cutoffs but represent gradual degradation of human control. A system operating at 199ms is not magically controllable while one at 201ms is uncontrollable—human capacity varies by individual, context, fatigue, and training. The threshold framing is useful for policy thinking but should not be interpreted as predicting discrete phase transitions.
+The thresholds represent a progression of control loss, with each stage building on the previous. **Important caveat:** These "thresholds" are not sharp cutoffs but represent gradual degradation of human control. A system operating at 199ms is not magically controllable while one at 201ms is uncontrollable—human capacity varies by individual, context, fatigue, and training. The threshold framing is useful for policy thinking but should not be interpreted as predicting discrete phase transitions.
 
 ## Speed Hierarchy
 
@@ -103,32 +78,20 @@ The diagram illustrates the five thresholds as a progression of control loss. **
 
 ### AI System Speed Projections
 
+| Timeframe | Key Developments | Risk Implications |
+|-----------|-----------------|-------------------|
+| **Near-term (2025-2027)** | 10x inference improvement; More autonomous decision cycles; Multi-agent systems common | T1-T2 crossed in more domains |
+| **Medium-term (2027-2030)** | Real-time multi-modal processing; Continuous learning/adaptation; Autonomous experimentation | T3 approached in critical domains |
+| **Long-term (2030+)** | Recursive self-improvement; Human comprehension lag unbridgeable; Unknown upper bounds | T4-T5 risk increases |
+
 <Mermaid client:load chart={`
-flowchart LR
-    subgraph Near["Near-term (2025-2027)"]
-        N1["Inference: 10x improvement"]
-        N2["Decision cycles: More autonomous"]
-        N3["Multi-agent: Common, faster"]
-    end
+flowchart TD
+    NEAR[Near-term: 10x Speed] --> MED[Medium-term: Continuous Learning]
+    MED --> LONG[Long-term: Self-improvement]
 
-    subgraph Medium["Medium-term (2027-2030)"]
-        M1["Real-time multi-modal processing"]
-        M2["Continuous learning/adaptation"]
-        M3["Autonomous experimentation"]
-    end
-
-    subgraph Long["Long-term (2030+)"]
-        L1["Recursive self-improvement"]
-        L2["Human comprehension lag unbridgeable"]
-        L3["Unknown upper bounds"]
-    end
-
-    Near --> Medium
-    Medium --> Long
-
-    style L1 fill:#ff9999
-    style L2 fill:#ff9999
-    style L3 fill:#ff9999
+    style NEAR fill:#fff4e1
+    style MED fill:#ffddcc
+    style LONG fill:#ff9999
 `} />
 
 ## Threshold Framework
@@ -238,48 +201,26 @@ $$
 
 ## Domain-Specific Analysis
 
+### Threshold Status by Domain
+
+| Domain | T1: Oversight | T2: Intervention | T3: Comprehension | T4: Cascade | T5: Recursive |
+|--------|--------------|------------------|-------------------|-------------|---------------|
+| **Financial Markets** | Largely past | Largely past | Degrading | Partially at risk | N/A |
+| **Cybersecurity** | Largely past | Degrading | Degrading | Limited | N/A |
+| **Infrastructure** | Degrading | Limited | Limited | Limited | N/A |
+| **AI Development** | Limited | Limited | Degrading | Limited | Limited |
+
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Finance["Financial Markets"]
-        F1["T1: Largely past"]
-        F2["T2: Largely past"]
-        F3["T3: Degrading"]
-        F4["T4: Partially at risk"]
-        F5["T5: N/A"]
-    end
+    FIN[Finance: T1-T2 past] --> HIGHEST[Highest Risk]
+    CYBER[Cyber: T1 past, T2-T3 degrading] --> HIGH[High Risk]
+    AI[AI Dev: T3 degrading] --> MED[Medium Risk]
+    INFRA[Infrastructure: T1 degrading] --> LOW[Lower Risk]
 
-    subgraph Cyber["Cybersecurity"]
-        C1["T1: Largely past"]
-        C2["T2: Degrading"]
-        C3["T3: Degrading"]
-        C4["T4: Limited"]
-        C5["T5: N/A"]
-    end
-
-    subgraph Infra["Infrastructure"]
-        I1["T1: Degrading"]
-        I2["T2: Limited"]
-        I3["T3: Limited"]
-        I4["T4: Limited"]
-        I5["T5: N/A"]
-    end
-
-    subgraph AIDev["AI Development"]
-        A1["T1: Limited"]
-        A2["T2: Limited"]
-        A3["T3: Degrading"]
-        A4["T4: Limited"]
-        A5["T5: Limited"]
-    end
-
-    style F1 fill:#ff6666
-    style F2 fill:#ff6666
-    style F3 fill:#ffcc99
-    style F4 fill:#ffee99
-    style C1 fill:#ff6666
-    style C2 fill:#ffcc99
-    style C3 fill:#ffcc99
-    style A3 fill:#ffcc99
+    style FIN fill:#ff6666
+    style CYBER fill:#ff9999
+    style AI fill:#ffcc99
+    style INFRA fill:#ffddcc
 `} />
 
 ### Financial Markets

@@ -1,0 +1,238 @@
+---
+title: Formal Arguments on AI Risk
+description: Structured arguments for and against AI existential risk
+sidebar:
+  order: 1
+---
+
+import { Section, EntityCard, EntityCards, KeyQuestions } from '../../../../components/wiki';
+
+This section presents formal, structured arguments about AI existential risk. Rather than mixing claims and evidence throughout narrative text, we lay out explicit premises, evidence, and logical structures.
+
+## What You'll Find Here
+
+### Arguments About X-Risk
+
+- **[The Case FOR AI X-Risk](/knowledge-base/arguments/case-for-xrisk)**: The strongest argument that AI poses existential risk, presented as formal logical structure
+- **[The Case AGAINST AI X-Risk](/knowledge-base/arguments/case-against-xrisk)**: The steelmanned skeptical position—why AI might not pose existential risk
+
+### Arguments About Alignment Difficulty
+
+- **[Why Alignment Might Be Hard](/knowledge-base/arguments/why-alignment-hard)**: Core arguments for alignment being a fundamentally difficult problem
+- **[Why Alignment Might Be Easy](/knowledge-base/arguments/why-alignment-easy)**: Arguments that alignment is tractable with current or near-term methods
+
+## How to Read These Arguments
+
+### Argument Structure
+
+Each argument page follows this format:
+
+1. **Thesis Statement**: One-sentence summary of the argument
+2. **Formal Structure**: Premises (P1, P2, ...) leading to conclusion (C)
+3. **Evidence for Each Premise**: Empirical data, theoretical reasoning, expert opinions
+4. **Objections and Responses**: Strongest counterarguments and potential replies
+5. **Cruxes**: What evidence would change the conclusion?
+
+### Example Structure
+
+```
+P1: [First premise]
+  Evidence: [Supporting evidence]
+  Objections: [Counter-arguments]
+
+P2: [Second premise]
+  Evidence: [Supporting evidence]
+  Objections: [Counter-arguments]
+
+C: Therefore, [conclusion]
+```
+
+### How This Differs from Other Sections
+
+**Understanding AI Risk**: Explains concepts and provides context
+- "What is alignment?"
+- "How could AI cause catastrophe?"
+
+**Arguments** (this section): Presents logical cases
+- "Here's why alignment is hard: P1, P2, P3, therefore C"
+- "Here's why that argument might be wrong"
+
+**Debates**: Explores ongoing disagreements
+- "Experts disagree about takeoff speed"
+- "Here are the different positions"
+
+## Why Formal Arguments Matter
+
+### Clarity
+Explicit premises make it clear exactly what each argument claims. You can agree or disagree with specific premises rather than vague overall positions.
+
+### Falsifiability
+When arguments are structured formally, it's clear what evidence would change the conclusion. This makes the field more scientific.
+
+### Steelmanning
+By presenting the best version of each position, we avoid strawman arguments and engage with genuine intellectual disagreements.
+
+### Intellectual Honesty
+Many people in AI safety are genuinely uncertain. Formal arguments let us say "I assign 30% credence to P2" rather than pretending certainty.
+
+## Key Disagreements
+
+<KeyQuestions
+  client:load
+  questions={[
+    {
+      question: "Will AI become capable enough to pose existential risk?",
+      positions: [
+        {
+          position: "Yes - AGI/ASI is likely this century",
+          confidence: "medium",
+          reasoning: "Rapid progress, scaling laws, economic incentives, no fundamental barriers",
+          implications: "Need to solve alignment before AGI"
+        },
+        {
+          position: "Maybe - uncertain about timelines and ultimate capabilities",
+          confidence: "high",
+          reasoning: "Progress is real but extrapolation is hard. May hit walls. Transformative AI possible but not certain.",
+          implications: "Prepare for wide range of scenarios"
+        },
+        {
+          position: "No - fundamental limits to AI capabilities",
+          confidence: "low",
+          reasoning: "Current architectures won't scale to AGI. Need fundamental breakthroughs. Human intelligence may be special.",
+          implications: "Focus on near-term harms, not x-risk"
+        }
+      ]
+    },
+    {
+      question: "Is alignment fundamentally hard?",
+      positions: [
+        {
+          position: "Yes - may be impossible in time available",
+          confidence: "medium",
+          reasoning: "Inner alignment unsolved, deceptive alignment possible, can't evaluate superhuman systems",
+          implications: "Slow down capabilities research"
+        },
+        {
+          position: "Moderately hard - requires sustained effort",
+          confidence: "medium",
+          reasoning: "Current techniques show promise but have limitations. Need both empirical and theoretical work.",
+          implications: "Major investment in alignment research"
+        },
+        {
+          position: "No - tractable with current methods",
+          confidence: "medium",
+          reasoning: "RLHF works, AI is helpful by default, we can iterate",
+          implications: "Continue current research trajectory"
+        }
+      ]
+    },
+    {
+      question: "Will we get warning shots before catastrophe?",
+      positions: [
+        {
+          position: "Yes - will see problems coming",
+          confidence: "medium",
+          reasoning: "Gradual scaling, early failures will be obvious, AI not adversarial initially",
+          implications: "Can iterate toward safety"
+        },
+        {
+          position: "Maybe - depends on takeoff speed and deployment",
+          confidence: "medium",
+          reasoning: "Some scenarios include warning shots, others don't. Depends on whether AI is deceptive.",
+          implications: "Don't rely on warning shots"
+        },
+        {
+          position: "No - catastrophe could be sudden",
+          confidence: "medium",
+          reasoning: "Fast takeoff possible, deceptive alignment means we won't see it coming, first failure might be last",
+          implications: "Must solve alignment before building powerful AI"
+        }
+      ]
+    }
+  ]}
+/>
+
+## How to Engage with These Arguments
+
+### As a Skeptic
+
+If you think AI x-risk concerns are overblown:
+1. Read "Case AGAINST AI X-Risk" first
+2. Identify which premises in the FOR case you reject
+3. Ask: What evidence would change your mind?
+
+### As a Believer
+
+If you think AI x-risk is a serious concern:
+1. Read "Case FOR AI X-Risk" first
+2. Then seriously engage with the AGAINST case
+3. Ask: Which premises are weakest? What am I uncertain about?
+
+### As Uncertain
+
+If you're not sure what to think:
+1. Read both FOR and AGAINST cases
+2. Identify which premises you find most/least convincing
+3. Track your credences on key claims
+4. Update based on new evidence
+
+## Relationship to Other Debates
+
+These formal arguments connect to empirical questions explored elsewhere in this wiki:
+
+- **Timelines**: How soon will transformative AI arrive?
+- **Takeoff Speed**: How fast will the transition occur?
+- **Warning Signs**: Will we get clear signals before catastrophe?
+- **Coordination**: Can we cooperate to manage risks?
+
+See the [Understanding AI Risk](/understanding-ai-risk) section for conceptual background and the [Key Debates](/knowledge-base/debates) section for ongoing disagreements.
+
+## A Note on Uncertainty
+
+Many thoughtful people have deeply uncertain views on these questions. The arguments presented here are tools for thinking, not final answers. It's intellectually honest to say:
+
+- "I assign 60% credence to P1"
+- "I don't know if P3 is true"
+- "My view depends heavily on evidence about X"
+
+Certainty is often unwarranted. The goal is to think clearly about uncertain questions.
+
+## Contributing
+
+These arguments can always be improved:
+- Stronger evidence for premises
+- Better responses to objections
+- New relevant considerations
+- Clearer logical structure
+
+The goal is to present the strongest version of each position, regardless of which one you personally believe.
+
+<Section title="Explore Arguments">
+  <EntityCards>
+    <EntityCard
+      id="case-for-xrisk"
+      category="argument"
+      title="Case FOR AI X-Risk"
+      description="The strongest argument that AI poses existential risk"
+    />
+    <EntityCard
+      id="case-against-xrisk"
+      category="argument"
+      title="Case AGAINST AI X-Risk"
+      description="Steelmanned skeptical position on AI risk"
+    />
+    <EntityCard
+      id="why-alignment-hard"
+      category="argument"
+      title="Why Alignment Might Be Hard"
+      description="Arguments for fundamental alignment difficulty"
+    />
+    <EntityCard
+      id="why-alignment-easy"
+      category="argument"
+      title="Why Alignment Might Be Easy"
+      description="Arguments for alignment tractability"
+    />
+  </EntityCards>
+</Section>
+

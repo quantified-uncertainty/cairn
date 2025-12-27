@@ -201,31 +201,26 @@ The evidence is inconclusive but trending toward increased concern. Current mode
 
 ### Intervention Approaches by Misalignment Type
 
-<Mermaid client:load chart={`flowchart LR
-    D1[Behavioral Testing] --> T1[Proxy Alignment]
-    D1 --> T2[Subgoal Alignment]
-    D2[Interpretability Analysis] --> T2
-    D2 --> T3[Pseudo-Alignment]
-    D3[Adversarial Probing] --> T3
-    D3 --> T4[Deceptive Alignment]
+The following table maps detection methods and mitigations to each misalignment type:
 
-    M1[Improved Reward Modeling] --> T1
-    M2[Diverse Training Environments] --> T2
-    M3[Capability Control] --> T3
-    M3 --> T4
-    M4[Architecture Constraints] --> T4
+| Misalignment Type | Detection Methods | Mitigations |
+|-------------------|-------------------|-------------|
+| **Proxy Alignment** | Behavioral testing | Improved reward modeling |
+| **Subgoal Alignment** | Behavioral testing, Interpretability analysis | Diverse training environments |
+| **Pseudo-Alignment** | Interpretability analysis, Adversarial probing | Capability control |
+| **Deceptive Alignment** | Adversarial probing | Capability control, Architecture constraints |
 
-    style D1 fill:#2563eb,color:#fff,stroke:#1d4ed8
-    style D2 fill:#2563eb,color:#fff,stroke:#1d4ed8
-    style D3 fill:#2563eb,color:#fff,stroke:#1d4ed8
-    style M1 fill:#16a34a,color:#fff,stroke:#15803d
-    style M2 fill:#16a34a,color:#fff,stroke:#15803d
-    style M3 fill:#16a34a,color:#fff,stroke:#15803d
-    style M4 fill:#16a34a,color:#fff,stroke:#15803d
-    style T1 fill:#84cc16,color:#000,stroke:#65a30d
-    style T2 fill:#eab308,color:#000,stroke:#ca8a04
-    style T3 fill:#ea580c,color:#fff,stroke:#c2410c
-    style T4 fill:#dc2626,color:#fff,stroke:#b91c1c`} />
+<Mermaid client:load chart={`flowchart TD
+    D[Detection & Mitigation] --> T1[Proxy]
+    D --> T2[Subgoal]
+    D --> T3[Pseudo]
+    D --> T4[Deceptive]
+
+    style D fill:#e1f5ff
+    style T1 fill:#ccffcc
+    style T2 fill:#fff4e1
+    style T3 fill:#ffddcc
+    style T4 fill:#ffcccc`} />
 
 | Misalignment Type | Primary Interventions | Success Probability | Key Challenges | Research Priority |
 |-------------------|----------------------|--------------------|--------------------|-------------------|

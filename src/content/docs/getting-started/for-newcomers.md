@@ -81,9 +81,9 @@ Read [Warning Signs](/understanding-ai-risk/core-argument/warning-signs/) to und
 
 **4. Different Perspectives (20 minutes)**
 Explore how people weigh the evidence differently:
-- [High-Risk View](/understanding-ai-risk/worldviews/doomer/) - Why some think catastrophe is likely
-- [Optimistic View](/understanding-ai-risk/worldviews/optimistic/) - Why some think we'll probably be fine
-- [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/) - What we don't know that matters most
+- [High-Risk View](/knowledge-base/worldviews/doomer/) - Why some think catastrophe is likely
+- [Optimistic View](/knowledge-base/worldviews/optimistic/) - Why some think we'll probably be fine
+- [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) - What we don't know that matters most
 
 **5. What's Being Done (20 minutes)**
 Review safety approaches:
@@ -118,9 +118,9 @@ Deep dive into risk categories:
 
 **11:00-12:00 - Models and Frameworks**
 Understand different ways of thinking about risk:
-- [Capability-Alignment Race](/understanding-ai-risk/models/capability-alignment-race/) - Will safety keep pace with capabilities?
-- [Multi-Actor Landscape](/understanding-ai-risk/models/multi-actor-landscape/) - How do different actors interact?
-- [Feedback Loops](/understanding-ai-risk/models/feedback-loops/) - What dynamics accelerate or mitigate risk?
+- [Capability-Alignment Race](/knowledge-base/models/capability-alignment-race/) - Will safety keep pace with capabilities?
+- [Multi-Actor Landscape](/knowledge-base/models/multi-actor-landscape/) - How do different actors interact?
+- [Feedback Loops](/knowledge-base/models/feedback-loops/) - What dynamics accelerate or mitigate risk?
 
 ### Afternoon Session: Solutions and Strategy (3 hours)
 
@@ -148,7 +148,7 @@ Understand non-technical approaches:
 
 **3:00-4:00 - Debates and Disagreements**
 Understand key controversies:
-- Browse [Debates](/understanding-ai-risk/debates/) section
+- Browse [Debates](/knowledge-base/debates/) section
 - Focus on debates where you're genuinely uncertain
 - Try to steelman both sides
 - Identify which cruxes matter most for your views
@@ -184,8 +184,8 @@ Not everyone learns best linearly. Here are paths organized by topic:
 ### If You're Most Interested in Probability and Forecasting
 
 1. [Timelines](/understanding-ai-risk/core-argument/timelines/) - When might we get transformative AI?
-2. [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/) - What don't we know?
-3. [Different Worldviews](/understanding-ai-risk/worldviews/) - How people weigh evidence differently
+2. [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) - What don't we know?
+3. [Different Worldviews](/knowledge-base/worldviews/) - How people weigh evidence differently
 4. [AI Timeline Visualization](/analysis/ai-timeline/) - Historical and projected progress
 5. Expert estimates scattered throughout organization and people pages
 
@@ -216,7 +216,7 @@ Here are challenges many newcomers face and how to address them:
 - Different people weigh evidence very differently
 - Your job isn't to find "the right" probability but to understand what drives the range
 
-**What helps**: Read [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/) to understand which factors most affect estimates. Read [Different Worldviews](/understanding-ai-risk/worldviews/) to see how different assumptions lead to different conclusions.
+**What helps**: Read [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) to understand which factors most affect estimates. Read [Different Worldviews](/knowledge-base/worldviews/) to see how different assumptions lead to different conclusions.
 
 ### "Can't We Just..."
 
@@ -244,7 +244,7 @@ Every newcomer has "simple solutions" that turn out to be harder than they appea
 **What helps**:
 - Focus on understanding the cruxes, not finding consensus
 - Identify which disagreements matter most for decision-making
-- Read [Key Debates](/understanding-ai-risk/debates/) to see structured arguments on different sides
+- Read [Key Debates](/knowledge-base/debates/) to see structured arguments on different sides
 - Form your own views rather than trying to find "the right" view
 
 ## Key Concepts to Understand
@@ -358,7 +358,7 @@ This wiki presents the AI safety perspective. For balance, also read:
 Once you have a foundation, here's how to go deeper:
 
 **If you're forming views:**
-1. Identify your cruxes using [Critical Uncertainties](/understanding-ai-risk/models/critical-uncertainties/)
+1. Identify your cruxes using [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/)
 2. Deep dive into the topics that most affect your bottom line
 3. Engage with the strongest counterarguments
 4. Calibrate your confidence appropriately

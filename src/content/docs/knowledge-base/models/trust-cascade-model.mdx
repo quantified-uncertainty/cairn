@@ -32,59 +32,28 @@ Institutional trust exists as a directed graph where nodes represent institution
 
 The following diagram illustrates the trust cascade mechanism, showing how initial shock events propagate through the institutional network:
 
+### Cascade Phases
+
+| Phase | Description | Key Institutions Affected |
+|-------|-------------|---------------------------|
+| **Initial Shock** | AI deepfake scandal or major institutional failure | Primary target institution |
+| **Primary Impact** | Media trust falls below 30% threshold | Media organizations |
+| **Cascade Propagation** | Science, government, legal systems lose verification ability | Science, Government, Courts |
+| **Threshold Check** | System evaluates if trust > 35% | All interconnected institutions |
+| **Outcome** | Recovery (if above threshold) or collapse (if below) | Entire institutional network |
+
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Initial_Shock["Initial Shock Event"]
-        A[AI Deepfake Scandal or Major Institutional Failure]
-    end
+    SHOCK[Initial Shock] --> PRIMARY[Media Trust Collapse]
+    PRIMARY --> PROP[Cascade Propagation]
+    PROP --> CHECK{Trust > 35%?}
+    CHECK -->|Yes| REC[Recovery Possible]
+    CHECK -->|No| COLL[System Collapse]
+    COLL -.->|"feedback"| PRIMARY
 
-    subgraph Primary_Impact["Primary Impact"]
-        B[Media Trust Falls Below 30%]
-    end
-
-    subgraph Cascade_Phase["Cascade Propagation"]
-        C[Science Claims Cannot Be Verified]
-        D[Government Communication Loses Credibility]
-        E[Legal Evidence Becomes Unreliable]
-    end
-
-    subgraph Threshold_Check["Critical Threshold Check"]
-        F{Trust Level > 35%?}
-    end
-
-    subgraph Recovery["Recovery Possible"]
-        G[Institutional Resilience Activated]
-    end
-
-    subgraph Collapse["Cascade Collapse"]
-        H[Cross-Validation Network Fails]
-        I[All Institutions Below Critical Threshold]
-        J[System-Wide Trust Collapse]
-    end
-
-    A --> B
-    B --> C
-    B --> D
-    C --> E
-    D --> E
-    C --> F
-    D --> F
-    E --> F
-    F -->|Yes| G
-    F -->|No| H
-    H --> I
-    I --> J
-    J -.->|Feedback Loop| B
-
-    style A fill:#ff6b6b,color:#fff
-    style B fill:#ffa502,color:#fff
-    style C fill:#ffd93d,color:#000
-    style D fill:#ffd93d,color:#000
-    style E fill:#ffd93d,color:#000
-    style H fill:#ff4757,color:#fff
-    style I fill:#ff4757,color:#fff
-    style J fill:#8b0000,color:#fff
-    style G fill:#2ed573,color:#fff
+    style SHOCK fill:#ffcccc
+    style COLL fill:#ff9999
+    style REC fill:#ccffcc
 `} />
 
 This diagram reveals the critical role of threshold dynamics in cascade propagation. Once primary institutions fall below the critical 35% trust threshold, they lose the capacity to validate other institutions, creating a self-reinforcing spiral. The feedback loop from system-wide collapse back to media trust represents how collapsed states become self-perpetuating, making recovery extremely difficult.
@@ -311,32 +280,27 @@ AI simultaneously weakens institutional defenses:
 
 Cascades exhibit **catastrophic regime shifts** rather than gradual linear decline. The following state diagram illustrates the distinct phases institutions pass through and the dramatically different dynamics at each stage:
 
+### Trust State Transitions
+
+| State | Trust Level | Characteristics | Transition Time |
+|-------|-------------|-----------------|-----------------|
+| **Stable High Trust** | T > 0.5 | Self-reinforcing validation, strong recovery capacity | Baseline |
+| **Vulnerable** | 0.35-0.5 | Validation weakening, cascade risk emerging | Years to decades (erosion) |
+| **Collapsed** | 0.15-0.35 | Cannot validate others, rebuilding seen as manipulation | Weeks to months (shock) |
+| **Complete Collapse** | T < 0.15 | Institution non-functional, recovery may be impossible | Months to years (continued attacks) |
+
 <Mermaid client:load chart={`
-stateDiagram-v2
-    [*] --> StableHighTrust: Initial State
+flowchart TD
+    HIGH[Stable High Trust] -->|"erosion"| VULN[Vulnerable]
+    VULN -->|"intervention"| HIGH
+    VULN -->|"shock event"| COLL[Collapsed]
+    COLL -->|"massive effort"| VULN
+    COLL -->|"continued attacks"| DEAD[Complete Collapse]
 
-    StableHighTrust: Stable High Trust (T > 0.5)
-    StableHighTrust: Self-reinforcing validation
-    StableHighTrust: Strong recovery capacity
-
-    VulnerableState: Vulnerable State (0.35-0.5)
-    VulnerableState: Validation weakening
-    VulnerableState: Cascade risk emerging
-
-    CollapsedState: Collapsed State (0.15-0.35)
-    CollapsedState: Cannot validate others
-    CollapsedState: Rebuilding seen as manipulation
-
-    CompleteCollapse: Complete Collapse (T < 0.15)
-    CompleteCollapse: Institution non-functional
-    CompleteCollapse: Recovery may be impossible
-
-    StableHighTrust --> VulnerableState: Gradual erosion (years to decades)
-    VulnerableState --> StableHighTrust: Active intervention (years)
-    VulnerableState --> CollapsedState: Shock event or SUDDEN CASCADE (weeks to months)
-    CollapsedState --> VulnerableState: Massive intervention (decades)
-    CollapsedState --> CompleteCollapse: Continued attacks (months to years)
-    CompleteCollapse --> [*]: Generational replacement or permanent loss
+    style HIGH fill:#ccffcc
+    style VULN fill:#fff4e1
+    style COLL fill:#ffddcc
+    style DEAD fill:#ffcccc
 `} />
 
 This state diagram highlights a critical asymmetry: transitions downward through trust states occur much faster than upward recovery transitions. A shock event can push an institution from vulnerable to collapsed in weeks, while recovery from collapsed to vulnerable may require decades of sustained effort. The transitions also become increasingly irreversible as trust declines, with complete collapse potentially representing a permanent state within a single generation.

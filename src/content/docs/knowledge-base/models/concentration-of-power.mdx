@@ -28,41 +28,31 @@ This matters because we may be approaching tipping points beyond which concentra
 
 The following diagram illustrates the primary feedback loops driving power concentration in the AI era. Reinforcing loops (R1-R4) accelerate concentration while balancing loops (B1-B2) provide potential countervailing forces. The relative strength of these loops determines whether power concentrates or remains distributed.
 
-<Mermaid client:load chart={`
-flowchart TD
-    subgraph Reinforcing["Reinforcing Loops (Concentration)"]
-        AI[AI Capabilities] -->|R1| ECON[Economic Power]
-        ECON -->|Investment| AI
-        AI -->|R2| DATA[Data Accumulation]
-        DATA -->|Model Quality| AI
-        ECON -->|R3| POL[Political Influence]
-        POL -->|Favorable Regulation| ECON
-        AI -->|R4| MIL[Military Advantage]
-        MIL -->|Strategic Dominance| POL
-    end
+**Feedback Loop Structure**
 
-    subgraph Balancing["Balancing Loops (Diffusion)"]
-        ECON -->|B1| CONC[Visible Concentration]
-        CONC -->|Public Concern| REG[Regulatory Response]
-        REG -->|Constraints| ECON
-        ECON -->|B2| PROFIT[High Profits]
-        PROFIT -->|Attract Entry| COMP[Competition]
-        COMP -->|Market Share Loss| ECON
-    end
+| Loop ID | Type | Mechanism | Strength | Delay |
+|---------|------|-----------|----------|-------|
+| **R1** | Reinforcing | AI Capabilities → Economic Returns → Investment → Better AI | Very Strong | Months |
+| **R2** | Reinforcing | Users → Data → Model Quality → More Users | Strong | Weeks |
+| **R3** | Reinforcing | Economic Power → Political Influence → Favorable Regulation → More Power | Moderate | Years |
+| **R4** | Reinforcing | AI Capabilities → Military Advantage → Strategic Dominance → Political Power | Strong | Years |
+| **B1** | Balancing | Concentration → Public Concern → Regulatory Response → Constraints | Weak | 5-10 years |
+| **B2** | Balancing | High Profits → New Entrants → Competition → Lower Profits | Weak | 2-5 years |
 
-    subgraph CrossDomain["Cross-Domain Amplification"]
-        ECON <-->|Lobbying/Contracts| POL
-        POL <-->|Control/Funding| MIL
-        MIL <-->|Coercion/Requisition| ECON
-        INFO[Information Control] <-->|Narrative| POL
-        AI -->|Content Generation| INFO
-        INFO -->|Belief Shaping| ECON
-    end
+<Mermaid client:load chart={`flowchart TD
+    A[AI Capabilities] -->|"R1-R4"| B[Power Accumulation]
+    B -->|"Reinforcing"| A
+    B --> C[Visible Concentration]
+    C -->|"B1-B2"| D[Resistance]
+    D -->|"Weak"| B
 
-    style Reinforcing fill:#ffcccc
-    style Balancing fill:#ccffcc
-    style CrossDomain fill:#ccccff
+    style A fill:#e1f5ff
+    style B fill:#ffcccc
+    style C fill:#fff4e1
+    style D fill:#ccffcc
 `} />
+
+**Cross-Domain Power Flows:** Economic power converts to political influence through lobbying; political power enables military control through funding; AI amplifies all connections simultaneously through content generation and information control.
 
 ### Stock-Flow Model
 

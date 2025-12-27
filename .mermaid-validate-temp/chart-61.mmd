@@ -1,0 +1,17 @@
+
+flowchart TD
+    subgraph Spectrum["Irreversibility Spectrum"]
+        S1["Fully Reversible<br/>R&D Phase<br/>Cost: $K-$M"]
+        S2["Costly Reversible<br/>Deployment Phase<br/>Cost: $M-$B"]
+        S3["Practically Irreversible<br/>Integration Phase<br/>Cost: $B-$T"]
+        S4["Absolutely Irreversible<br/>Terminal State<br/>Cost: Infinite"]
+    end
+
+    Start([Initial Decision]) --> S1
+    S1 -->|Deployment| S2
+    S2 -->|Lock-in Effects| S3
+    S3 -->|Existential Threshold| S4
+    S4 --> End([No Return])
+
+    S2 -.->|Early Reversal| S1
+    S3 -.->|Costly Reversal| S2

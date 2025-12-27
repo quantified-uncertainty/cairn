@@ -1,0 +1,25 @@
+flowchart TD
+    subgraph "Training Phase"
+        T1[Training Distribution] --> T2[True Goal Features]
+        T1 --> T3[Spurious Correlations]
+        T2 --> T4{Model Learning}
+        T3 --> T4
+        T4 --> T5[Learned Objective]
+    end
+
+    subgraph "Deployment Phase"
+        D1[Deployment Distribution] --> D2[True Goal: Present]
+        D1 --> D3[Spurious Features: Absent/Changed]
+        T5 --> D4{Objective Evaluated}
+        D2 --> D4
+        D3 --> D4
+        D4 -->|Learned True Goal| D5[Goal Generalizes ✓]
+        D4 -->|Learned Spurious| D6[Goal Misgeneralizes ✗]
+    end
+
+    D6 --> D7[Capable System<br/>Wrong Objective]
+
+    style T3 fill:#ffc
+    style D6 fill:#fcc
+    style D7 fill:#fcc
+    style D5 fill:#cfc

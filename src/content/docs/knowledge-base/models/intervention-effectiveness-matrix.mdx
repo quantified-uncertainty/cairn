@@ -12,7 +12,8 @@ ratings:
   completeness: 3  # Good coverage of interventions but gap analysis is brief
 ---
 
-import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wiki';
+import { Aside } from '@astrojs/starlight/components';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-effectiveness-matrix" ratings={frontmatter.ratings} />
 
@@ -22,6 +23,90 @@ import { DataInfoBox, Backlinks, KeyQuestions } from '../../../../components/wik
 This model maps **AI safety interventions** (technical, governance, and organizational) to the **specific risks** they help mitigate. The goal is to identify which interventions address which failure modes, estimate their effectiveness, and highlight dangerous gaps where no good interventions exist.
 
 **Key insight**: Many interventions are highly specialized, effective against some risks but irrelevant to others. A comprehensive safety portfolio requires layered interventions targeting different failure modes.
+
+## Strategic Importance
+
+<Aside type="tip" title="Bottom Line">
+The matrix reveals that **no single intervention covers all risks**. The most strategically important gaps are (1) deceptive alignment detection and (2) structural risk governance—both need fundamentally new approaches, not just more of current work.
+</Aside>
+
+### How to Use This Model for Prioritization
+
+This matrix serves prioritization by showing:
+1. **Coverage gaps** - Which risks have NO effective interventions
+2. **Redundancy** - Which risks are over-covered relative to their magnitude
+3. **Portfolio construction** - What combination provides best coverage
+
+### Priority Ranking of Gaps
+
+Not all gaps are equally important. Ranking by **severity × tractability:**
+
+<Mermaid client:load chart={`
+quadrantChart
+    title Gap Prioritization
+    x-axis Low Tractability --> High Tractability
+    y-axis Low Severity --> High Severity
+    quadrant-1 HIGHEST PRIORITY
+    quadrant-2 Fund basic research
+    quadrant-3 Lower priority
+    quadrant-4 Quick wins
+    Deceptive alignment: [0.4, 0.9]
+    Scheming: [0.25, 0.85]
+    Structural risks: [0.55, 0.6]
+    Epistemic collapse: [0.5, 0.5]
+    Treacherous turn: [0.2, 0.95]
+`} />
+
+| Gap | Severity | Tractability | Priority | Recommendation |
+|-----|----------|--------------|----------|----------------|
+| **Deceptive Alignment** | Very High | Medium | **Critical** | Massive interpretability investment |
+| **Scheming/Treacherous Turn** | Very High | Low | **High** (research) | AI Control as stopgap; long-term theory |
+| **Structural Risks** | High | Medium-High | **High** | Governance work, not technical |
+| **Epistemic Collapse** | Medium | Medium | **Medium** | Information ecosystem reform |
+| **Misuse (bio/cyber)** | High | High | **Medium** | Already receiving attention; continue |
+
+### Resource Allocation Implications
+
+**Current allocation is misaligned with gaps:**
+
+| Intervention Type | Current Effort | Gap Severity Addressed | Recommendation |
+|-------------------|----------------|------------------------|----------------|
+| RLHF/Fine-tuning | Very High | Low (doesn't address deception) | **Reduce** marginal investment |
+| Red-teaming/Evals | High | Medium (catches some issues) | **Maintain** |
+| Interpretability | Medium | Very High (key gap) | **Increase substantially** |
+| AI Control | Low | Very High (defense against worst-case) | **Increase substantially** |
+| Structural governance | Low | High (only solution for structural risks) | **Increase substantially** |
+
+<Aside type="caution">
+The community over-invests in RLHF-adjacent work (because it's tractable) and under-invests in interpretability and AI Control (because they're hard). This is exactly backwards given the gap analysis.
+</Aside>
+
+### Key Cruxes
+
+| If you believe... | Then prioritize... |
+|-------------------|-------------------|
+| Deceptive alignment is the main risk | Interpretability, AI Control |
+| Misuse is the main risk | Evals, red-teaming, governance |
+| Structural risks matter most | Governance, not technical work |
+| Current alignment approaches will scale | Continue current portfolio |
+| Current approaches won't scale | Shift to AI Control + new paradigms |
+
+### Actionability
+
+**For funders:**
+- Shift ~20% of technical safety funding from RLHF-adjacent work to interpretability
+- Fund AI Control research as insurance against alignment failure
+- Fund governance work for structural risks (technical work won't help)
+
+**For researchers:**
+- If you can contribute to interpretability, that's highest-value technical work
+- If not, AI Control and evals are second-tier priorities
+- Don't pile onto RLHF/fine-tuning unless you have unique comparative advantage
+
+**For policymakers:**
+- The matrix shows technical interventions won't solve structural risks
+- Governance interventions are the only tools for concentration/lock-in/enfeeblement
+- Don't wait for technical solutions that won't come
 
 ## Intervention Categories
 

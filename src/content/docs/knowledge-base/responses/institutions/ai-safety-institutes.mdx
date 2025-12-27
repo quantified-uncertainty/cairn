@@ -3,302 +3,217 @@ title: AI Safety Institutes
 description: Government institutions for AI safety evaluation and research
 sidebar:
   order: 22
-quality: 2
+quality: 3
+styleGuideVersion: "kb-2.0"
 llmSummary: "Government institutions for AI safety evaluation and research"
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-26"
 ---
 
-import {DataInfoBox} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="ai-safety-institutes" />
 
-## Summary
+## Overview
 
 **AI Safety Institutes (AISIs)** are government-affiliated institutions dedicated to evaluating AI systems, conducting safety research, and advising on AI policy. They represent a significant development in AI governance: **building technical capacity within government** to understand and oversee advanced AI systems.
 
-The AISI model emerged in 2023-2024 and is rapidly spreading, with plans for an **international network** of coordinating institutes.
+The AISI model emerged in 2023-2024 and is spreading rapidly, with plans for an international network of coordinating institutes.
 
-## The Case for AISIs
+### Why They Exist
 
-### Why Government Needs Technical Capacity
+Traditional regulatory approaches face fundamental challenges with AI:
 
-Traditional regulatory approaches face challenges with AI:
-- **Information asymmetry:** Labs understand their systems far better than regulators
-- **Rapid advancement:** Capabilities evolve faster than policy can respond
-- **Technical complexity:** Evaluating AI safety requires deep ML expertise
-- **Access requirements:** Meaningful evaluation requires model access
+- **Information asymmetry**: Labs understand their systems far better than regulators
+- **Rapid advancement**: Capabilities evolve faster than policy can respond
+- **Technical complexity**: Evaluating AI safety requires deep ML expertise
+- **Access requirements**: Meaningful evaluation requires model access
 
-AISIs aim to address these by:
-- Building in-house technical expertise
-- Securing access to frontier models
-- Developing evaluation methodologies
-- Informing policy with technical understanding
+AISIs aim to address these gaps by building in-house technical expertise, securing access to frontier models, developing evaluation methodologies, and informing policy with technical understanding.
 
-### What AISIs Do
+### Quick Assessment
 
-1. **Safety Evaluations**
-   - Pre-deployment testing of frontier models
-   - Capability assessments (dangerous capabilities, dual-use)
-   - Red-teaming and adversarial testing
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium-High | Already established, growing rapidly |
+| If alignment hard | Medium | Provides evaluation but not solutions |
+| If alignment easy | Medium | Still valuable for verification |
+| Neglectedness | Low | Major government investment in UK/US |
+| Grade | B+ | Promising infrastructure, authority unclear |
 
-2. **Research**
-   - Evaluation methodology development
-   - Interpretability and alignment research
-   - Risk assessment frameworks
+### Risks Addressed
 
-3. **Policy Support**
-   - Technical advice to policymakers
-   - Input to standards development
-   - International coordination
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Pre-deployment evaluation for deceptive behaviors | Medium |
+| [Scheming](/knowledge-base/risks/accident/scheming/) | Red-teaming and adversarial testing | Medium |
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Independent evaluation could slow unsafe deployments | Low-Medium |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Dangerous capability evaluations | Medium |
+| [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | Cyber offense capability testing | Medium |
 
-4. **Ecosystem Development**
-   - Supporting academic research
-   - Training government personnel
-   - Building evaluation infrastructure
+---
 
-## Institute Profiles
+## The Current Landscape
 
 ### UK AI Safety Institute
 
-**Established:** November 2023 (announced at Bletchley Summit)
+The most established AISI, announced at the November 2023 Bletchley Summit.
 
-**Location:** London (with presence at Bletchley Park)
+**Leadership**: Ian Hogarth (Chair), Yuntao Bai (Research Lead, formerly Anthropic)
 
-**Leadership:**
-- Ian Hogarth (Chair)
-- Yuntao Bai (Research Lead, formerly Anthropic)
+**Staff**: ~50+ and growing rapidly
 
-**Staff:** ~50+ (growing rapidly)
-
-**Key activities:**
+**Key activities**:
 - Pre-deployment evaluations of frontier models
 - Research on dangerous capabilities
-- Development of evaluation frameworks (Inspect)
+- Development of the Inspect evaluation framework (open-source)
 - International coordination leadership
 
-**Model access:**
-- Agreements with major labs (Anthropic, OpenAI, Google DeepMind, Meta)
-- Pre-deployment access for evaluation
-- Some access for research purposes
+**Model access**: Agreements with Anthropic, OpenAI, Google DeepMind, and Meta for pre-deployment access.
 
-**Notable outputs:**
-- Inspect: Open-source evaluation framework
-- Contributed to Seoul Summit outcomes
-- Published research on dangerous capabilities
+**Organizational status**: Housed within DSIT (Department for Science, Innovation and Technology), relatively independent but government-funded.
 
-**Organizational status:**
-- Housed within DSIT (Department for Science, Innovation and Technology)
-- Relatively independent but government-funded
-- Reports to ministers
+### US AI Safety Institute
 
----
+Established February 2024 within NIST (National Institute of Standards and Technology).
 
-### US AI Safety Institute (USAISI)
+**Leadership**: Elizabeth Kelly (Director), Paul Christiano (Head of AI Safety, formerly Anthropic/ARC)
 
-**Established:** February 2024 (within NIST)
+**Staff**: ~30+, authorized for 100+
 
-**Location:** Gaithersburg, Maryland (NIST campus)
-
-**Leadership:**
-- Elizabeth Kelly (Director)
-- Paul Christiano (Head of AI Safety, formerly Anthropic/ARC)
-
-**Staff:** ~30+ (growing, authorized for 100+)
-
-**Key activities:**
+**Key activities**:
 - Developing evaluation guidelines
 - Coordinating with UK AISI
 - Supporting Executive Order implementation
-- Building testing infrastructure
 
-**Organizational status:**
-- Housed within NIST
-- Part of Commerce Department
-- Coordinates with broader AI policy apparatus
+**Challenges**: Slower to establish than UK counterpart due to federal bureaucratic constraints (hiring, procurement) and political uncertainty about future.
 
-**Challenges:**
-- Slower to establish than UK counterpart
-- More bureaucratic constraints (federal hiring, procurement)
-- Political uncertainty about future
+### Other Institutes
 
----
+**Japan AI Safety Institute** (February 2024): Within IPA, focused on evaluation methodologies and international coordination. Earlier stage than UK/US.
 
-### Japan AI Safety Institute
+**Singapore AI Safety Institute** (planning stage): Focused on Asia-Pacific regional coordination.
 
-**Established:** February 2024
+**Proposed/Planned**: Canada, France, Germany, Australia, South Korea, and a potential EU-level body are at various stages of discussion.
 
-**Location:** Tokyo (within IPA - Information-technology Promotion Agency)
+### International Network
 
-**Focus:**
-- Evaluation methodologies adapted for Japanese context
-- International coordination with UK/US
-- Supporting Japanese AI policy development
+At the May 2024 Seoul AI Safety Summit, participating countries agreed to establish an **International Network of AI Safety Institutes** with information sharing protocols, coordinated evaluation approaches, personnel exchanges, and joint research initiatives.
 
-**Status:** Earlier stage than UK/US, building capacity
+Current coordination includes:
+- **Bilateral**: UK-US MOU on AI safety cooperation, shared evaluation frameworks
+- **Multilateral**: Summit-based coordination (Bletchley → Seoul → Paris), working groups on specific topics
+
+**Harmonization challenges** include different national priorities, varying levels of model access, classification constraints, and jurisdictional limits.
 
 ---
 
-### Singapore AI Safety Institute
+## How AISIs Work
 
-**Established:** Planning stage (announced 2024)
+### Core Functions
 
-**Focus:**
-- Testing and evaluation capabilities
-- Regional coordination in Asia-Pacific
-- Support for Singapore's AI governance framework
+1. **Safety Evaluations**: Pre-deployment testing of frontier models, capability assessments (dangerous capabilities, dual-use), red-teaming and adversarial testing
 
----
+2. **Research**: Evaluation methodology development, interpretability and alignment research, risk assessment frameworks
 
-### Other Planned/Proposed Institutes
+3. **Policy Support**: Technical advice to policymakers, input to standards development, international coordination
 
-| Country | Status | Notes |
-|---------|--------|-------|
-| Canada | Proposed | AISI discussions ongoing |
-| France | Planning | Part of broader AI strategy |
-| Germany | Discussing | Federal AI agency considerations |
-| Australia | Exploring | Following UK model |
-| South Korea | Announced | Seoul Summit follow-up |
-| EU | Under discussion | Possible EU-level coordination body |
+4. **Ecosystem Development**: Supporting academic research, training government personnel, building evaluation infrastructure
 
-## International Network
+### Evaluation Capabilities
 
-### Seoul Summit Agreement
+AISIs are developing evaluation capabilities across two categories:
 
-At the May 2024 Seoul AI Safety Summit, participating countries agreed to establish an **International Network of AI Safety Institutes** with:
+**Dangerous capabilities**: Biological/chemical weapons uplift, cyber offense capabilities, autonomous replication/resource acquisition, persuasion and manipulation
 
-- Information sharing protocols
-- Coordinated evaluation approaches
-- Personnel exchanges
-- Joint research initiatives
-
-### Coordination Mechanisms
-
-**Bilateral:**
-- UK-US MOU on AI safety cooperation
-- Regular working-level exchanges
-- Shared evaluation frameworks
-
-**Multilateral:**
-- Summit-based coordination (Bletchley → Seoul → Paris)
-- Working groups on specific topics
-- Emerging governance structure for network
-
-### Harmonization Challenges
-
-- Different national priorities and threat models
-- Varying levels of model access
-- Classification/secrecy constraints on sharing
-- Jurisdictional limits on action
-
-## Evaluation Approaches
-
-### Current Capabilities
-
-AISIs are developing evaluation capabilities across:
-
-**Dangerous capabilities:**
-- Biological/chemical weapons uplift
-- Cyber offense capabilities
-- Autonomous replication/resource acquisition
-- Persuasion and manipulation
-
-**Safety properties:**
-- Honesty and truthfulness
-- Refusal of harmful requests
-- Robustness to jailbreaks
-- Instruction following
+**Safety properties**: Honesty and truthfulness, refusal of harmful requests, robustness to jailbreaks, instruction following
 
 ### Methodological Challenges
 
-1. **Evaluation validity:** Do tests predict real-world risks?
-2. **Coverage:** Can't test for unknown capabilities
-3. **Gaming:** Models optimized against known benchmarks
-4. **Generalization:** Lab results may not reflect deployment
-5. **Speed:** Evaluations take time; development is fast
+Evaluation faces inherent difficulties:
+
+1. **Validity**: Do tests predict real-world risks?
+2. **Coverage**: Can't test for unknown capabilities
+3. **Gaming**: Models may be optimized against known benchmarks
+4. **Generalization**: Lab results may not reflect deployment behavior
+5. **Speed**: Evaluations take time; development is fast
 
 ### Open Tools
 
-**UK AISI Inspect:**
-- Open-source evaluation framework
-- Modular, extensible design
-- Supports multiple model APIs
-- Community contributions welcomed
+The UK AISI's **Inspect** is an open-source evaluation framework with modular, extensible design supporting multiple model APIs. Making tools open-source helps build community capacity and enables faster iteration than government alone could achieve.
 
-## Critiques and Limitations
+---
 
-### Structural Concerns
+## Critical Assessment
 
-**Independence:**
-- Government AISIs may face political pressure
-- Industry relationships could compromise objectivity
-- Funding dependent on political priorities
+### Structural Limitations
 
-**Authority:**
-- Most AISIs advisory only (no regulatory power)
-- Cannot compel model access (rely on voluntary agreements)
-- Limited enforcement mechanisms
+**Independence concerns**: Government AISIs face pressure from both industry (which provides model access and talent) and politicians (who control funding). The revolving door with industry may lead to adopting industry framings of safety.
 
-**Capture risk:**
-- Staff often from industry (revolving door concerns)
-- May adopt industry framing of safety
-- Resource constraints vs. well-funded labs
+**Authority gap**: Most AISIs are advisory only—they cannot compel model access and have no enforcement mechanisms. Labs cooperate voluntarily, which means AISI influence depends on maintaining good relationships rather than institutional power.
 
-### Capacity Limitations
+**Scale mismatch**: AISIs have dozens of staff; frontier labs have thousands. AISIs cannot match lab investment in evaluation and remain dependent on lab cooperation. Model access is often limited and conditional—labs control what evaluators see.
 
-**Scale:**
-- AISIs have dozens of staff; labs have thousands
-- Cannot match lab investment in evaluation
-- Dependent on lab cooperation
+### The Central Questions
 
-**Access:**
-- Model access often limited and conditional
-- May not get full access to training data, infrastructure
-- Labs control what evaluators see
+Whether AISIs succeed depends on how several uncertainties resolve:
 
-**Expertise:**
-- Competing with industry for talent
-- Government salaries often lower
-- Security clearance requirements slow hiring
+**Will they maintain independence?** The UK AISI's relatively independent structure and hiring of respected safety researchers are positive signs, but long-term independence is unproven as political and commercial pressures mount.
 
-### Effectiveness Questions
+**Will they gain real authority?** Meaningful oversight may require mandatory pre-deployment evaluation through legislation. Without enforcement power, AISIs may become safety theater—giving the appearance of oversight without substance.
 
-| Optimistic View | Pessimistic View |
-|-----------------|------------------|
-| Building needed government capacity | Too small to matter |
-| Securing important model access | Access is limited and controlled |
-| Informing better policy | Policy moves independently |
-| International coordination | Coordination is superficial |
-| Technical credibility | Captured by industry framing |
+**Can they keep pace?** If AISIs are always evaluating last quarter's model while labs deploy this quarter's, their assessments become irrelevant. The open-source approach may help by enabling faster community-driven evaluation.
+
+**Will international coordination hold?** Geopolitical tensions, divergent national interests, or changes in government could fragment the network.
+
+### Optimistic vs Pessimistic Views
+
+| Optimistic | Pessimistic |
+|------------|-------------|
+| Building necessary government capacity | Too small to matter |
+| Securing important model access | Access is limited and controlled by labs |
+| Informing better policy | Policy moves independently of technical input |
+| Creating coordination infrastructure | Coordination is superficial |
+| Establishing technical credibility | Captured by industry framing |
+
+---
 
 ## Future Directions
 
-### Potential Evolution
+AISIs could evolve in several ways:
 
-1. **Regulatory authority:** AISIs could gain enforcement powers
-2. **Mandatory access:** Laws requiring pre-deployment evaluation
-3. **International treaty:** AISIs as verification bodies
-4. **Expanded mandate:** Beyond evaluation to incident response
+1. **Regulatory authority**: Gaining enforcement powers rather than remaining advisory
+2. **Mandatory access**: Laws requiring pre-deployment evaluation
+3. **International treaty**: AISIs as verification bodies for international AI agreements
+4. **Expanded mandate**: Beyond evaluation to incident response and ongoing monitoring
 
-### Key Uncertainties
+The trajectory depends on political will, whether serious AI incidents motivate stronger regulation, and whether AISIs can demonstrate value before capabilities advance too far.
 
-- Will AISIs maintain independence as political pressures grow?
-- Can they keep pace with rapid capability advancement?
-- Will international coordination deepen or fragment?
-- How will they handle classified/national security models?
+---
 
-## Assessment
+## Working at an AISI
 
-**Strengths:**
-- Building technical capacity in government (necessary)
-- Establishing model access precedents
-- Creating international coordination infrastructure
-- Developing open evaluation tools
+AISIs may be a good fit for researchers who want to apply technical AI safety skills in a policy-relevant context, work on evaluation methodologies with real deployment stakes, build government capacity from inside, or contribute to international coordination infrastructure.
 
-**Weaknesses:**
-- Small relative to challenge
-- Limited authority and enforcement
-- Dependent on voluntary lab cooperation
-- Potential for capture/politicization
+**Tradeoffs to consider**:
+- Government salaries are typically lower than industry
+- Bureaucratic constraints on research directions and hiring
+- Potential for political interference
+- Risk that your work remains advisory without impact
+- Security clearance requirements may slow onboarding
 
-**Overall:** AISIs represent a **promising but early** institutional innovation. They're building necessary infrastructure for AI governance but face significant challenges of scale, authority, and independence. Their long-term effectiveness depends on how they evolve and whether they gain meaningful powers.
+Those who believe technical alignment research is more urgent, or who are pessimistic about government institutions' ability to maintain independence, may prefer working at labs, nonprofits, or academia instead.
 
+---
+
+## Related Interventions
+
+AISIs are one component of a broader governance ecosystem:
+
+- **[Evaluations](/knowledge-base/responses/technical/evals/)**: Technical evaluation methodologies that AISIs apply and develop
+- **[Compute Governance](/knowledge-base/responses/governance/policy-approaches/compute-governance/)**: Hardware-level governance as a complementary leverage point
+- **[International Coordination](/knowledge-base/responses/governance/international/international-coordination/)**: Broader diplomatic frameworks that AISIs contribute to
+- **[AI Control](/knowledge-base/responses/technical/ai-control/)**: Control methods whose effectiveness AISI evaluations help validate
+
+## Related Pages
+
+<Backlinks client:load entityId="ai-safety-institutes" />

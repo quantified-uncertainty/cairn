@@ -329,7 +329,7 @@ As you design policy, consider these strategic questions:
 
 **Key question**: What capability level justifies precautionary regulation even before demonstrated harm?
 
-**Read**: [Different worldviews](/understanding-ai-risk/worldviews/) on how to weigh these tradeoffs
+**Read**: [Different worldviews](/knowledge-base/worldviews/) on how to weigh these tradeoffs
 
 ### Domestic vs. International
 
@@ -469,7 +469,7 @@ Based on your specific policy focus:
 ### If You're Working on International Coordination
 
 1. [Coordination Challenges](/understanding-ai-risk/core-argument/coordination/) - Why this is hard (20 min)
-2. [Multi-Actor Landscape](/understanding-ai-risk/models/multi-actor-landscape/) - Who's involved (30 min)
+2. [Multi-Actor Landscape](/knowledge-base/models/multi-actor-landscape/) - Who's involved (30 min)
 3. [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - What you're trying to prevent (20 min)
 4. [International Coordination](/knowledge-base/responses/governance/international/) - Approaches (45 min)
 5. [Nuclear Case Study](/analysis/case-studies/nuclear/) - Historical precedent (30 min)
@@ -596,7 +596,7 @@ Depending on your specific role:
 5. Design adaptive frameworks that can evolve
 
 **If you're working on international coordination:**
-1. Understand [multi-actor dynamics](/understanding-ai-risk/models/multi-actor-landscape/)
+1. Understand [multi-actor dynamics](/knowledge-base/models/multi-actor-landscape/)
 2. Review [international coordination approaches](/knowledge-base/responses/governance/international/)
 3. Study [nuclear case study](/analysis/case-studies/nuclear/) for lessons
 4. Identify possible coalition partners
@@ -611,7 +611,7 @@ Depending on your specific role:
 
 **If you're still learning:**
 1. Read the [Core Argument](/understanding-ai-risk/core-argument/) to understand the case
-2. Review [Different Worldviews](/understanding-ai-risk/worldviews/) to understand disagreement
+2. Review [Different Worldviews](/knowledge-base/worldviews/) to understand disagreement
 3. Study [Case Studies](/analysis/case-studies/) for historical precedent
 4. Explore [Responses](/knowledge-base/responses/) for what can be done
 5. Reach out to researchers for briefings

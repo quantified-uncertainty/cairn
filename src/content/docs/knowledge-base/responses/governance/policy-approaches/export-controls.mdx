@@ -5,10 +5,10 @@ sidebar:
   order: 23
 quality: 3
 llmSummary: "US restrictions on semiconductor exports and their AI implications"
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-26"
 ---
 
-import {DataInfoBox, KeyQuestions} from '../../../../../../components/wiki';
+import {DataInfoBox, KeyQuestions, Backlinks, DisagreementMap} from '../../../../../../components/wiki';
 
 <DataInfoBox entityId="export-controls" />
 
@@ -17,6 +17,26 @@ import {DataInfoBox, KeyQuestions} from '../../../../../../components/wiki';
 The United States has implemented **unprecedented export controls** on advanced semiconductors and semiconductor manufacturing equipment, primarily targeting China. These controls represent one of the most significant attempts to constrain AI development through **hardware governance**.
 
 The basic logic: **Control the chips → control the compute → constrain AI development.**
+
+## Evaluation Summary
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium-High | Already implemented, enforcement ongoing |
+| If alignment hard | Medium | Buys time but doesn't address core problem |
+| If alignment easy | Low | Less relevant if alignment is straightforward |
+| Neglectedness | Low | Active US government priority |
+| Grade | B | Meaningful short-term impact, uncertain long-term |
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Slows non-allied AI development, reduces race pressure | Medium |
+| [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) | Keeps advanced AI within allied democracies | Medium (contested) |
+| [Proliferation](/knowledge-base/risks/misuse/proliferation/) | Limits hardware access for potential bad actors | Medium |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Constrains compute for dangerous capabilities research | Low-Medium |
+| [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | Limits adversary access to advanced AI tools | Low-Medium |
 
 ## Timeline of Controls
 
@@ -297,4 +317,73 @@ Export controls are a **significant but imperfect** tool for AI governance:
 - Create long-term stability without cooperation
 
 **Bottom line:** Export controls may buy 1-3 years of compute advantage. Whether that time is used productively for safety and governance is a separate question.
+
+## Case For This Approach
+
+### Argument 1: Compute is a Real Bottleneck
+Training frontier AI models requires extraordinary amounts of compute. Controlling the supply of advanced chips creates genuine constraints on AI development outside the US and allies. This is one of the few governance levers that creates real physical limitations.
+
+**Key proponents**: National security establishment, some AI governance researchers
+
+### Argument 2: Buys Time for Governance
+Even if controls only delay Chinese frontier AI by 1-3 years, this time is valuable. It allows for development of international governance frameworks, safety research progress, and strategic planning. Time is one of the scarcest resources in AI safety.
+
+### Argument 3: Maintains Strategic Advantage
+Keeping advanced AI within allied democracies preserves options for value-aligned AI development. If AI development becomes transformative, better to have it concentrated in relatively accountable democracies than authoritarian states.
+
+## Case Against This Approach
+
+### Counterargument 1: Accelerates Chinese Self-Sufficiency
+Export controls provide strong incentive for China to develop indigenous chip manufacturing. In the long run, controls may result in a more capable Chinese semiconductor industry that is entirely outside US influence. Short-term pain, long-term loss.
+
+**Key concern**: Huawei's Ascend chips show domestic alternatives emerging
+
+### Counterargument 2: Geopolitical Rather Than Safety-Motivated
+Export controls are primarily about great power competition, not AI safety. They don't address risks from US-developed AI, which may be the more relevant concern. Framing geopolitics as safety may be misleading.
+
+### Counterargument 3: Undermines International Cooperation
+Adversarial chip restrictions make cooperation on AI safety harder. If the US-China relationship is adversarial on technology, cooperation on alignment, safety standards, or governance becomes less likely.
+
+## Key Cruxes
+
+### Crux 1: How Long Do Controls Buy?
+
+| Significant time | Limited time |
+|-----------------|--------------|
+| SME controls create multi-year constraints | Algorithmic efficiency improvements reduce compute needs |
+| China 5+ years behind on EUV | Domestic alternatives progressing faster than expected |
+| Workarounds can be addressed | Stockpiles and smuggling networks substantial |
+
+### Crux 2: Is Time Actually Used Productively?
+
+| Time is valuable | Time is wasted |
+|-----------------|----------------|
+| Alignment research is progressing | US labs continue racing with each other |
+| Governance frameworks developing | No clear plan for what to do with the time |
+| Safety standards emerging | Economic pressure to deploy regardless |
+
+## Effectiveness Estimates
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of Export Controls for AI Safety"
+  description="How much do export controls contribute to AI safety?"
+  spectrum={{ low: "Counterproductive", high: "Essential" }}
+  positions={[
+    { actor: "National security hawks", position: "High", estimate: "Critical strategic tool", confidence: "high" },
+    { actor: "AI governance researchers", position: "Medium", estimate: "Buys limited time", confidence: "medium" },
+    { actor: "Industry", position: "Low-Medium", estimate: "Costs outweigh benefits", confidence: "medium" },
+    { actor: "International cooperation advocates", position: "Low", estimate: "Harms cooperation", confidence: "medium" }
+  ]}
+/>
+
+## Complementary Interventions
+
+- [Compute Governance](/knowledge-base/responses/governance/policy-approaches/compute-governance/) - Broader compute policy framework
+- [International Coordination](/knowledge-base/responses/governance/international/international-coordination/) - Multilateral approaches
+- [AI Safety Institutes](/knowledge-base/responses/governance/international/ai-safety-institutes/) - Institutions to use the time bought
+
+## Related Pages
+
+<Backlinks client:load entityId="export-controls" />
 
