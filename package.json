@@ -7,6 +7,7 @@
     "start": "node scripts/build-data.mjs && astro dev",
     "build": "node scripts/build-data.mjs && astro build",
     "build:data": "node scripts/build-data.mjs",
+    "sync:descriptions": "node scripts/sync-model-descriptions.mjs",
     "extract": "node scripts/extract-data.mjs",
     "generate-yaml": "node scripts/generate-yaml.mjs",
     "cleanup-data": "node scripts/cleanup-data.mjs",
@@ -19,6 +20,11 @@
     "validate:mdx": "node scripts/validate-mdx-syntax.mjs",
     "validate:mermaid": "node scripts/validate-mermaid.mjs",
     "validate:mermaid:render": "node scripts/validate-mermaid.mjs --render",
+    "validate:style": "node scripts/validate-style-guide.mjs",
+    "validate:staleness": "node scripts/check-staleness.mjs",
+    "validate:consistency": "node scripts/validate-consistency.mjs",
+    "validate:sidebar": "node scripts/validate-sidebar.mjs",
+    "validate:types": "node scripts/validate-types.mjs",
     "validate:ci": "node scripts/validate-all.mjs --ci"
   },
   "dependencies": {
@@ -38,6 +44,7 @@
     "lucide-react": "^0.562.0",
     "mermaid": "^11.12.2",
     "react": "^19.2.3",
+    "react-data-table-component": "^7.7.0",
     "react-dom": "^19.2.3",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",

@@ -1,0 +1,226 @@
+---
+title: Compute Thresholds
+description: Using training compute to trigger regulatory requirements
+sidebar:
+  order: 2
+quality: 3
+llmSummary: "Using training compute to trigger regulatory requirements"
+lastEdited: "2025-12-26"
+styleGuideVersion: "kb-2.0"
+---
+
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
+
+<DataInfoBox entityId="compute-thresholds" />
+
+:::note[Part of Compute Governance]
+This page covers **compute thresholds**—one approach within the broader [Compute Governance](/knowledge-base/responses/governance/compute-governance/) framework. See also: [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/), [Monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/), [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/).
+:::
+
+## Overview
+
+Compute thresholds use **training compute as a trigger** for regulatory requirements. Rather than restricting access (like export controls) or requiring ongoing monitoring, thresholds create a simple rule: **if you train a model above X FLOP, you must do Y.**
+
+This approach is attractive because compute is measurable and correlates (imperfectly) with capability. It's already implemented in the EU AI Act and US Executive Order on AI.
+
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | High | Already implemented in major jurisdictions |
+| Mechanism | Trigger-based | Cross threshold → face requirements |
+| Current Status | Active | EU AI Act, US EO both use compute thresholds |
+| Main Challenge | Algorithmic efficiency | Same capabilities with less compute over time |
+
+### Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Forces safety testing before deployment | Medium |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Lower thresholds for bio-sequence models | Medium |
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Requires evaluation before deployment | Low-Medium |
+
+---
+
+## Current Implementations
+
+### EU AI Act (2024)
+
+Models trained with **>10^25 FLOP** are classified as General Purpose AI (GPAI) with systemic risk, triggering:
+
+- Transparency about training data and process
+- Systemic risk evaluations
+- Reporting serious incidents
+- Adversarial testing requirements
+- Documentation and compliance obligations
+
+**Context:** 10^25 FLOP is roughly GPT-4 scale training compute.
+
+### US Executive Order 14110 (October 2023)
+
+Models trained with **>10^26 FLOP** must:
+
+- Report to Department of Commerce before training
+- Share safety test results
+- Implement security measures for model weights
+
+**Lower threshold for biology:** 10^23 FLOP for models trained on biological sequence data, reflecting elevated bioweapon concerns.
+
+**Context:** 10^26 FLOP is approximately next-generation frontier model scale.
+
+### Why These Numbers?
+
+| Threshold | Approximate Scale | Rationale |
+|-----------|------------------|-----------|
+| 10^23 FLOP | GPT-3 scale | Low threshold for bio models |
+| 10^25 FLOP | GPT-4 scale | Current frontier, EU trigger |
+| 10^26 FLOP | Next-gen frontier | US EO trigger |
+
+Thresholds are set based on:
+- Current frontier model training compute
+- Expected capability correlations
+- Desire to capture "frontier" without over-regulating
+
+---
+
+## How Thresholds Work
+
+### The Pipeline
+
+```
+Define thresholds → Labs report training plans →
+Cross threshold → Trigger requirements →
+Evaluate/test → Implement safeguards → Deploy
+```
+
+### What Gets Triggered
+
+**Pre-training requirements:**
+- Reporting intent to train above threshold
+- Security measures for training infrastructure
+
+**Pre-deployment requirements:**
+- Safety evaluations (red-teaming, capability testing)
+- Risk assessments
+- Documentation
+
+**Ongoing requirements:**
+- Incident reporting
+- Monitoring for misuse
+- Cooperation with regulators
+
+---
+
+## Challenges
+
+### Algorithmic Efficiency
+
+**The core problem:** The same capabilities require less compute over time.
+
+- Training efficiency improves ~2x per year
+- Thresholds set today may be irrelevant in 3-5 years
+- A model that required 10^25 FLOP in 2023 might need only 10^24 in 2026
+
+**Implication:** Thresholds need regular updating, or they'll capture fewer and fewer frontier models.
+
+### Gaming and Evasion
+
+**Splitting training runs:**
+- Train in multiple separate runs below threshold
+- Combine via fine-tuning or other techniques
+
+**Distributed training:**
+- Train across jurisdictions to avoid any single jurisdiction's threshold
+
+**Creative accounting:**
+- Disputes about what counts as "training compute"
+- Inference compute vs. training compute
+- Fine-tuning and continued training
+
+### Measurement Challenges
+
+**Verification:** How do regulators verify reported compute?
+- Self-reporting is standard
+- Hardware-level verification not yet implemented
+- Cloud providers could provide data, but privacy concerns
+
+**Definitional ambiguity:**
+- What counts as a "model"?
+- How to handle multi-stage training?
+- Inference-time compute (chain-of-thought, etc.)
+
+---
+
+## Key Uncertainties
+
+**Can thresholds keep pace?** If algorithmic efficiency improves faster than thresholds are updated, the regulatory system falls behind. This requires either very frequent threshold updates or a different triggering mechanism.
+
+**Do thresholds correlate with danger?** Compute is a proxy for capability, but it's imperfect. A 10^24 FLOP model might be more dangerous than a 10^26 FLOP model depending on training data and objectives. Capability evaluations may be more relevant than compute.
+
+**Will labs comply in good faith?** Thresholds rely on labs accurately reporting compute and following requirements. Without strong enforcement, competitive pressure may erode compliance.
+
+---
+
+## Thresholds vs. Other Approaches
+
+| Aspect | Thresholds | Capability Evals | Export Controls |
+|--------|------------|------------------|-----------------|
+| Trigger | Compute used | Capabilities demonstrated | Actor identity |
+| Timing | Pre-training/deployment | Pre-deployment | Pre-acquisition |
+| What's required | Reporting, testing | Passing evals | Denial of access |
+| Main weakness | Efficiency gains | Eval gaming | Evasion, acceleration |
+
+**Complementary approaches:** Many argue thresholds should trigger capability evaluations, combining the predictability of thresholds with the relevance of capability testing.
+
+---
+
+## Future Evolution
+
+### Likely Developments
+
+**Short-term (1-2 years):**
+- Thresholds in EU AI Act become operative (2025)
+- US may codify EO thresholds in legislation
+- Debate over threshold levels intensifies
+
+**Medium-term (3-5 years):**
+- Threshold adjustment mechanisms established
+- Move toward capability-based triggers
+- International harmonization efforts
+
+### Alternative Approaches
+
+**Capability-based triggers:** Rather than compute, trigger requirements based on demonstrated capabilities (e.g., "can synthesize novel pathogens" rather than ">10^25 FLOP").
+
+**Hybrid approaches:** Use compute thresholds as initial screen, then capability evaluations for actual requirements.
+
+**Continuous monitoring:** Rather than threshold triggers, ongoing monitoring of all significant AI development.
+
+---
+
+## Key Crux
+
+**Are compute thresholds a useful proxy for danger?**
+
+| Yes, useful proxy | No, poor proxy |
+|-------------------|----------------|
+| Compute correlates with capability | Algorithmic efficiency decouples them |
+| Measurable and verifiable | Dangerous capabilities can emerge at any scale |
+| Simple rule, low compliance burden | Creates false sense of security |
+| Buys time while better measures develop | Distracts from capability-based approaches |
+
+Most experts view thresholds as **useful but insufficient**—a tractable starting point that should evolve toward more sophisticated approaches.
+
+---
+
+## Related Approaches
+
+- [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/) — Restricting access rather than triggering requirements
+- [Compute Monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/) — Ongoing visibility into training
+- [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/) — Multilateral threshold coordination
+
+---
+
+## Related Pages
+
+<Backlinks client:load entityId="compute-thresholds" />

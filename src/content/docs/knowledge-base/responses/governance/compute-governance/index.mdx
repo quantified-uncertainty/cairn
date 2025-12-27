@@ -1,0 +1,151 @@
+---
+title: Compute Governance
+description: Using computational infrastructure as a lever for AI governance
+sidebar:
+  label: Overview
+  order: 0
+quality: 4
+llmSummary: "Using computational infrastructure as a lever for AI governance"
+lastEdited: "2025-12-26"
+styleGuideVersion: "kb-2.0"
+---
+
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
+
+<DataInfoBox entityId="compute-governance" />
+
+## Overview
+
+Compute governance uses **computational hardware as a lever** to regulate AI development. Because advanced AI requires enormous amounts of computing power, and that compute comes from concentrated supply chains, controlling compute provides a tractable way to govern AI **before models are built**.
+
+This is one of the **most promising governance approaches** because compute is:
+- **Measurable:** FLOP, GPU-hours, chip counts
+- **Concentrated:** Few manufacturers and cloud providers
+- **Physical:** Hardware is trackable in ways software isn't
+- **Necessary:** Can't train frontier models without it
+
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | High | Hardware chokepoints exist, some measures already implemented |
+| Neglectedness | Low-Medium | Active government priority, growing research field |
+| Potential Impact | High | One of few levers that creates physical constraints |
+| Time Horizon | Near to medium-term | Already being implemented |
+
+### Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Slows development pace, reduces competitive pressure | High |
+| [Proliferation](/knowledge-base/risk-factors/proliferation/) | Restricts access to training compute for new actors | Medium-High |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Prevents adversaries from training dangerous models | Medium |
+| [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | Same mechanism | Medium |
+| [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) | Can enforce compute access limits on any actor | Low-Medium |
+
+---
+
+## Approaches
+
+Compute governance encompasses several distinct policy approaches, each with different mechanisms and tradeoffs:
+
+### [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/)
+
+**Restricting who can access AI chips and manufacturing equipment.**
+
+US-led export controls restrict advanced semiconductor exports to China and other countries. This is the most aggressive compute governance measure currently in place—essentially sanctions on AI hardware.
+
+- Chips restricted: NVIDIA A100/H100 and above
+- Equipment restricted: EUV lithography (ASML)
+- Enforcement: Bureau of Industry and Security (BIS)
+
+**Key question:** How long do controls buy, and does the time get used productively?
+
+### [Compute Thresholds](/knowledge-base/responses/governance/compute-governance/thresholds/)
+
+**Using training compute as a trigger for regulatory requirements.**
+
+Both the EU AI Act and US Executive Order define compute thresholds (10^25 to 10^26 FLOP) that trigger safety requirements. This creates a structured approach: cross the threshold → face additional obligations.
+
+- EU AI Act: 10^25 FLOP triggers GPAI requirements
+- US EO: 10^26 FLOP triggers reporting requirements
+- Lower thresholds for biological sequence models
+
+**Key question:** Can thresholds keep pace with algorithmic efficiency improvements?
+
+### [Compute Monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/)
+
+**Ongoing visibility into who's training large models.**
+
+Rather than just restricting access, monitoring approaches create visibility into AI development. This includes KYC (Know Your Customer) requirements for cloud providers and proposals for hardware-level governance.
+
+- Cloud KYC: Verify customers, report large training runs
+- Hardware governance: Chips with built-in monitoring
+- Verification: Cryptographic attestation of what's running
+
+**Key question:** Can monitoring work without enabling surveillance overreach?
+
+### [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/)
+
+**Coordinating compute governance across nations.**
+
+Unilateral controls have limits. International regimes—analogous to nuclear non-proliferation—could enable verification and prevent races. These are mostly proposals rather than implemented policies.
+
+- IAEA-like institution for AI compute
+- Compute allocation treaties
+- Verification through hardware governance
+
+**Key question:** Is US-China cooperation on compute governance possible?
+
+---
+
+## What Needs to Be True
+
+For compute governance to substantially reduce AI risk:
+
+1. **Compute remains necessary:** Can't achieve dangerous AI without massive compute
+2. **Chokepoints persist:** Semiconductor supply chain remains concentrated
+3. **Algorithmic efficiency limits:** Improvements don't make thresholds obsolete too quickly
+4. **Political will:** Governments prioritize enforcement
+5. **International coordination:** Major AI powers (US, China, EU) eventually cooperate
+6. **Technical feasibility:** Monitoring and verification systems work
+7. **Comprehensive coverage:** Can't easily evade through alternative providers
+
+---
+
+## Key Uncertainties
+
+**Will compute remain the bottleneck?** Algorithmic efficiency is improving rapidly. Each year, the same capabilities require less compute. If this trend continues, compute-based governance becomes less relevant over time. However, frontier capabilities may always require frontier compute.
+
+**Can international coordination emerge?** Export controls are currently unilateral (US-led). Without broader coordination, they create bifurcation rather than global governance. The US-China relationship makes cooperation difficult but not impossible.
+
+**Does governance enable or prevent safety?** Some argue compute governance is primarily geopolitical rather than safety-motivated. Others argue that slowing global AI development buys time for alignment research. The answer depends on how the time is used.
+
+---
+
+## Getting Started
+
+**If interested in compute governance:**
+
+1. **Build foundations:**
+   - Learn AI basics (understand what compute enables)
+   - Study semiconductor industry (supply chains, manufacturing)
+   - Read compute governance research (GovAI, CSET papers)
+
+2. **Entry paths:**
+   - Policy school with tech/national security focus
+   - Government fellowship (AAAS, TechCongress)
+   - Think tank research assistant
+   - Industry policy/compliance roles
+
+3. **Key organizations:**
+   - Centre for the Governance of AI (Oxford)
+   - Center for Security and Emerging Technology (Georgetown)
+   - US Bureau of Industry and Security
+   - US/UK AI Safety Institutes
+
+---
+
+## Related Pages
+
+<Backlinks client:load entityId="compute-governance" />

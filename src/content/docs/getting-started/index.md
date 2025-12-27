@@ -240,7 +240,7 @@ Explore [Interventions](/knowledge-base/responses/) to understand what kinds of 
 Dive into [Safety Approaches](/knowledge-base/responses/technical/) to understand current research directions, review [Research Agendas](/knowledge-base/responses/technical/research-agendas/) for comparisons, and explore specific [Risk & Failure Modes](/knowledge-base/risks/) that motivate different approaches.
 
 **If you're a policymaker or governance professional:**
-Start with [Governance Approaches](/knowledge-base/responses/governance/), and review [Case Studies](/analysis/case-studies/) from other technologies.
+Start with [Governance Approaches](/knowledge-base/responses/governance/), and review [Case Studies](/knowledge-base/history/) from other technologies.
 
 **If you're forming your own views:**
 Use the [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) page to identify key questions, explore [Key Debates](/knowledge-base/debates/) to see arguments on different sides, and examine how different [Worldviews](/knowledge-base/worldviews/) weight the evidence.
@@ -294,12 +294,12 @@ Ready to dive deeper? Here are the recommended next steps:
 1. Read the [FAQ](/getting-started/faq/) for quick answers to common questions
 2. Work through the [Core Argument](/understanding-ai-risk/core-argument/) to understand the basic case
 3. Explore [Key Risks](/knowledge-base/risks/) to see specific failure modes
-4. Check out [Historical Scenarios](/analysis/scenarios/) to make it concrete
+4. Check out [Historical Scenarios](/knowledge-base/scenarios/) to make it concrete
 
 **For those evaluating the field:**
 1. Read [Key Debates](/knowledge-base/debates/) to see the strongest arguments on different sides
 2. Examine [Different Worldviews](/knowledge-base/worldviews/) to understand the range of positions
-3. Review [Case Studies](/analysis/case-studies/) from analogous technologies
+3. Review [Case Studies](/knowledge-base/history/) from analogous technologies
 4. Consider [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) that drive disagreements
 
 **For those ready to contribute:**

@@ -1,0 +1,109 @@
+---
+title: "{{frontmatter.title}}"
+description: {{frontmatter.description}}
+sidebar:
+  order: 50
+quality: {{#if frontmatter.quality}}{{frontmatter.quality}}{{else}}3{{/if}}
+lastEdited: "{{frontmatter.lastEdited}}"
+{{#if frontmatter.reviewBy}}
+reviewBy: "{{frontmatter.reviewBy}}"
+{{/if}}
+{{#if frontmatter.ratings}}
+ratings:
+  novelty: {{frontmatter.ratings.novelty}}
+  rigor: {{frontmatter.ratings.rigor}}
+  actionability: {{frontmatter.ratings.actionability}}
+  completeness: {{frontmatter.ratings.completeness}}
+{{/if}}
+---
+
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
+
+<DataInfoBox entityId="{{entityId}}" {{#if frontmatter.ratings}}ratings={frontmatter.ratings}{{/if}} />
+
+## Overview
+
+{{#each overview.paragraphs}}
+{{this}}
+
+{{/each}}
+
+## Conceptual Framework
+
+<Mermaid client:load chart={`
+{{conceptualFramework.diagram.type}} {{conceptualFramework.diagram.direction}}
+{{conceptualFramework.diagram.content}}
+`} />
+
+{{conceptualFramework.explanation}}
+
+## Quantitative Analysis
+
+{{#each quantitativeAnalysis.tables}}
+{{#if caption}}
+**{{caption}}**
+{{/if}}
+
+| {{#each columns}}{{this}}{{#unless @last}} | {{/unless}}{{/each}} |
+|{{#each columns}}{{repeatChar "-" (len this)}}{{#unless @last}}|{{/unless}}{{/each}}|
+{{#each rows}}
+| {{#each ../columns}}{{lookup ../this this}}{{#unless @last}} | {{/unless}}{{/each}} |
+{{/each}}
+
+{{/each}}
+{{#if quantitativeAnalysis.discussion}}
+
+{{quantitativeAnalysis.discussion}}
+{{/if}}
+
+## Strategic Importance
+
+### Magnitude
+
+- **Share of total AI risk:** {{strategicImportance.magnitude.shareOfTotalRisk}}
+- **Affected population:** {{strategicImportance.magnitude.affectedPopulation}}
+- **Timeline:** {{strategicImportance.magnitude.timeline}}
+
+### Comparative Ranking
+
+| Risk Category | Relative Importance | Reasoning |
+|---------------|--------------------:|-----------|
+{{#each strategicImportance.comparativeRanking}}
+| {{riskCategory}} | {{relativeImportance}} | {{reasoning}} |
+{{/each}}
+
+### Resource Implications
+
+- **Who should work on this:** {{strategicImportance.resourceImplications.whoShouldWork}}
+- **Suggested allocation:** {{strategicImportance.resourceImplications.suggestedAllocation}}
+- **Comparative advantage:** {{strategicImportance.resourceImplications.comparativeAdvantage}}
+
+### Key Cruxes
+
+{{#each strategicImportance.keyCruxes}}
+{{inc @index}}. If {{condition}}, then {{implication}}
+{{/each}}
+
+## Limitations
+
+{{limitations.prose}}
+
+{{#if limitations.specificCaveats}}
+### Specific Caveats
+
+{{#each limitations.specificCaveats}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if relatedModels}}
+## Related Models
+
+{{#each relatedModels}}
+- [{{id}}](/knowledge-base/models/{{id}}/) - {{relationship}}
+{{/each}}
+{{/if}}
+
+## Related Pages
+
+<Backlinks />

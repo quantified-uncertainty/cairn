@@ -1,0 +1,58 @@
+---
+title: "{{frontmatter.title}}"
+description: {{frontmatter.description}}
+sidebar:
+  order: 50
+quality: {{#if frontmatter.quality}}{{frontmatter.quality}}{{else}}3{{/if}}
+lastEdited: "{{frontmatter.lastEdited}}"
+{{#if frontmatter.reviewBy}}
+reviewBy: "{{frontmatter.reviewBy}}"
+{{/if}}
+---
+
+import { DataInfoBox, Backlinks } from '../../../../../components/wiki';
+
+<DataInfoBox entityId="{{entityId}}" />
+
+## Overview
+
+{{#each overview.paragraphs}}
+{{this}}
+
+{{/each}}
+
+### Risk Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| **Severity** | {{riskAssessment.severity}} | {{riskAssessment.severityNotes}} |
+| **Likelihood** | {{riskAssessment.likelihood.level}} | {{riskAssessment.likelihood.keyFactors}} |
+| **Timeline** | {{riskAssessment.timeline.when}} | {{riskAssessment.timeline.conditions}} |
+
+### Responses That Address This Risk
+
+| Response | Mechanism | Effectiveness |
+|----------|-----------|---------------|
+{{#each responsesCrossLinks}}
+| [{{responseName}}](/knowledge-base/responses/{{responseId}}/) | {{mechanism}} | {{effectiveness}} |
+{{/each}}
+
+---
+
+## Why This Matters
+
+{{whyThisMatters}}
+
+---
+
+## Key Uncertainties
+
+{{#each keyUncertainties}}
+- {{this}}
+{{/each}}
+
+---
+
+## Related Pages
+
+<Backlinks />

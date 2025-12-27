@@ -3,14 +3,24 @@ title: Responsible Scaling Policies
 description: Industry self-regulation frameworks for frontier AI development
 sidebar:
   order: 8
-quality: 2
+quality: 3
 llmSummary: "Industry self-regulation frameworks for frontier AI development"
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-27"
 ---
 
 import {DataInfoBox} from '../../../../../../components/wiki';
 
 <DataInfoBox entityId="responsible-scaling-policies" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Quantitative Estimate |
+|-----------|------------|----------------------|
+| **Adoption** | Moderate | 3-4 frontier labs with published RSPs (Anthropic, OpenAI, DeepMind) |
+| **Tractability** | High | Framework can be implemented in 3-6 months per lab |
+| **Enforcement** | Weak | Self-policed; 0% external enforcement currently |
+| **Coverage** | Partial | ~60-70% of frontier model development covered |
+| **Estimated Risk Reduction** | 10-25% | Medium confidence; depends on commitment durability |
 
 ## Summary
 
@@ -149,4 +159,44 @@ RSPs represent a **significant step** toward structured AI safety management, bu
 - **Worst case**: RSPs serve as "safety-washing" while providing inadequate protection
 
 Most AI safety experts view RSPs as **necessary but insufficient**—a useful tool that should complement, not replace, government oversight.
+
+## Critical Assessment
+
+### Effectiveness Assessment
+
+| Criterion | Current Evidence | Estimated Effectiveness | Confidence |
+|-----------|------------------|------------------------|------------|
+| Capability evaluations conducted | Yes, at major labs | 50-70% of dangerous capabilities tested for | Medium |
+| Thresholds appropriately set | Uncertain | 30-50% chance thresholds are too permissive | Low |
+| Safeguards actually implemented | Some evidence | 60-80% compliance with own commitments | Low-Medium |
+| Durability under competitive pressure | Untested | 40-60% survival probability in race scenario | Low |
+| External verification | Limited | Less than 20% of evaluations independently verified | Medium |
+
+### Resource Requirements
+
+| Component | Investment Needed | Timeline | Expected Impact |
+|-----------|------------------|----------|-----------------|
+| Evaluation team (per lab) | $5-20M/year | 6-12 months to build | 10-20 evaluations per model |
+| Third-party auditing | $1-5M/year per lab | 3-6 months | 30-50% increase in credibility |
+| Cross-lab coordination | $2-5M/year total | 1-2 years | Standardized thresholds, reduced gaming |
+| Government integration | $10-50M (regulatory setup) | 2-4 years | Legal enforcement mechanism |
+| Red teaming (external) | $500K-2M per model | 1-3 months per model | Identify 10-30% additional vulnerabilities |
+
+### Key Uncertainties
+
+| Uncertainty | Range of Estimates | Impact on Assessment |
+|-------------|-------------------|---------------------|
+| Evaluation completeness | Can current evals catch 30-80% of dangerous capabilities? | High - determines if RSPs actually detect risks |
+| Competitive defection | 20-60% chance a major lab abandons RSP under pressure | High - single defection undermines entire framework |
+| Emergent capability gap | Capabilities may emerge unpredictably; 30-50% of risks may be missed | High - fundamental limitation of threshold-based approach |
+| Safeguard sufficiency | Even with detected risks, safeguards may be 40-70% effective | Medium - deployment controls are imperfect |
+| ASL threshold accuracy | ASL-3/4 boundaries may be off by 1-2 capability levels | Medium - could over- or under-regulate |
+
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | CBRN capability evaluations before deployment | Medium |
+| [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | Cyber capability evaluations | Medium |
+| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Autonomy and deception evaluations | Low-Medium |
 

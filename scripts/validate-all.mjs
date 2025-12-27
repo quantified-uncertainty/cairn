@@ -13,7 +13,7 @@
  *   --ci              Output JSON for CI pipelines
  *   --fail-fast       Stop on first failure
  *   --skip=<check>    Skip specific checks (comma-separated)
- *                     Available: data, links, orphans
+ *                     Available: data, links, orphans, mdx, style, staleness, consistency, sidebar, types
  *
  * Exit codes:
  *   0 = All checks passed
@@ -80,6 +80,36 @@ const CHECKS = [
     name: 'MDX Syntax',
     script: 'validate-mdx-syntax.mjs',
     description: 'Mermaid components, escaped characters, common errors',
+  },
+  {
+    id: 'style',
+    name: 'Style Guide Compliance',
+    script: 'validate-style-guide.mjs',
+    description: 'Section structure, magnitude assessment, diagram conventions',
+  },
+  {
+    id: 'staleness',
+    name: 'Content Freshness',
+    script: 'check-staleness.mjs',
+    description: 'Review dates, dependency updates, age thresholds',
+  },
+  {
+    id: 'consistency',
+    name: 'Cross-Page Consistency',
+    script: 'validate-consistency.mjs',
+    description: 'Probability estimates, causal claims, terminology',
+  },
+  {
+    id: 'sidebar',
+    name: 'Sidebar Configuration',
+    script: 'validate-sidebar.mjs',
+    description: 'Index pages have label: Overview and order: 0',
+  },
+  {
+    id: 'types',
+    name: 'Type Consistency',
+    script: 'validate-types.mjs',
+    description: 'UI components handle all entity types from schema',
   },
 ];
 

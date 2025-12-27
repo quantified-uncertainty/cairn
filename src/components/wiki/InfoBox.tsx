@@ -1,6 +1,10 @@
 import React from 'react';
 import { Lightbulb, FlaskConical, Target, CheckCircle2 } from 'lucide-react';
 import './wiki.css';
+import type { EntityType } from '../../data/schema';
+
+// Re-export for consumers of this module
+export type { EntityType };
 
 export interface ModelRatingsData {
   novelty?: number;
@@ -8,24 +12,6 @@ export interface ModelRatingsData {
   actionability?: number;
   completeness?: number;
 }
-
-export type EntityType =
-  | 'lab-frontier'
-  | 'lab-research'
-  | 'lab-startup'
-  | 'lab-academic'
-  | 'lab'
-  | 'capability'
-  | 'risk'
-  | 'safety-agenda'
-  | 'policy'
-  | 'crux'
-  | 'case-study'
-  | 'researcher'
-  | 'scenario'
-  | 'resource'
-  | 'funder'
-  | 'intervention';
 
 interface RelatedEntry {
   type: EntityType;
@@ -99,15 +85,21 @@ const typeLabels: Record<EntityType, { label: string; color: string }> = {
   'lab': { label: 'Organization', color: '#dc2626' },
   'capability': { label: 'Capability', color: '#0891b2' },
   'risk': { label: 'Risk', color: '#dc2626' },
+  'risk-factor': { label: 'Risk Factor', color: '#f97316' },
   'safety-agenda': { label: 'Safety Agenda', color: '#7c3aed' },
   'policy': { label: 'Policy', color: '#0d9488' },
   'crux': { label: 'Key Crux', color: '#ea580c' },
+  'concept': { label: 'Concept', color: '#6366f1' },
   'case-study': { label: 'Historical Case Study', color: '#78716c' },
   'researcher': { label: 'Researcher', color: '#475569' },
   'scenario': { label: 'Scenario', color: '#9333ea' },
   'resource': { label: 'Resource', color: '#4f46e5' },
   'funder': { label: 'Funder', color: '#16a34a' },
   'intervention': { label: 'Intervention', color: '#0891b2' },
+  'organization': { label: 'Organization', color: '#64748b' },
+  'historical': { label: 'Historical', color: '#78716c' },
+  'analysis': { label: 'Analysis', color: '#0ea5e9' },
+  'model': { label: 'Model', color: '#8b5cf6' },
 };
 
 const defaultTypeInfo = { label: 'Entry', color: '#6b7280' };

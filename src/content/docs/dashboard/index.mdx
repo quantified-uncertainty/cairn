@@ -1,0 +1,143 @@
+---
+title: Content Quality Dashboard
+description: Overview of content quality, staleness, and entity relationship health
+sidebar:
+  label: Dashboard
+  order: 100
+---
+
+import { getDashboardMetrics, getSummaryStats } from '../../../lib/dashboard';
+import QualityDashboard from '../../../components/dashboard/QualityDashboard';
+
+export const metrics = getDashboardMetrics();
+export const stats = getSummaryStats();
+
+This dashboard provides an overview of content quality, staleness tracking, and entity relationship health across the knowledge base.
+
+---
+
+## Summary Statistics
+
+<div className="not-content grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 my-6">
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{stats.total}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Total Entities</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{stats.risks}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Risks</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{stats.responses}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Responses</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{stats.models}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Models</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{stats.avgQuality}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Avg Quality</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold text-orange-600">{stats.gaps}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Gaps Found</div>
+  </div>
+</div>
+
+---
+
+## Quality Distribution
+
+<QualityDashboard client:load metrics={metrics} />
+
+---
+
+## Content by Type
+
+| Type | Count |
+|------|------:|
+{metrics.contentByType.map(t => `| ${t.type} | ${t.count} |`).join('\n')}
+
+---
+
+## Recently Updated
+
+| Entity | Last Updated |
+|--------|--------------|
+{metrics.recentlyUpdated.map(e => `| [${e.title}](/knowledge-base/${e.id}/) | ${e.date} |`).join('\n')}
+
+---
+
+## Entity Gaps
+
+### Risks Without Responses
+
+These risks don't have any response pages linking to them:
+
+{metrics.risksWithoutResponses.length === 0 ? (
+  <p className="text-green-600">✓ All risks have linked responses</p>
+) : (
+  <ul>
+    {metrics.risksWithoutResponses.slice(0, 10).map(gap => (
+      <li key={gap.id}><strong>{gap.title}</strong> ({gap.type})</li>
+    ))}
+    {metrics.risksWithoutResponses.length > 10 && (
+      <li className="text-gray-500">...and {metrics.risksWithoutResponses.length - 10} more</li>
+    )}
+  </ul>
+)}
+
+### Responses Without Risk Links
+
+These response pages don't link to any risks:
+
+{metrics.responsesWithoutRisks.length === 0 ? (
+  <p className="text-green-600">✓ All responses link to risks</p>
+) : (
+  <ul>
+    {metrics.responsesWithoutRisks.slice(0, 10).map(gap => (
+      <li key={gap.id}><strong>{gap.title}</strong> ({gap.type})</li>
+    ))}
+    {metrics.responsesWithoutRisks.length > 10 && (
+      <li className="text-gray-500">...and {metrics.responsesWithoutRisks.length - 10} more</li>
+    )}
+  </ul>
+)}
+
+### Orphaned Entities
+
+These entities have no incoming or outgoing links:
+
+{metrics.orphanedEntities.length === 0 ? (
+  <p className="text-green-600">✓ No orphaned entities</p>
+) : (
+  <ul>
+    {metrics.orphanedEntities.slice(0, 10).map(gap => (
+      <li key={gap.id}><strong>{gap.title}</strong> ({gap.type})</li>
+    ))}
+    {metrics.orphanedEntities.length > 10 && (
+      <li className="text-gray-500">...and {metrics.orphanedEntities.length - 10} more</li>
+    )}
+  </ul>
+)}
+
+---
+
+## Running Validation
+
+To run the full validation suite locally:
+
+```bash
+npm run validate
+```
+
+Individual validators:
+
+```bash
+npm run validate:style       # Style guide compliance
+npm run validate:staleness   # Content freshness
+npm run validate:consistency # Cross-page consistency
+npm run validate:data        # Entity data integrity
+npm run validate:links       # Internal link validation
+```

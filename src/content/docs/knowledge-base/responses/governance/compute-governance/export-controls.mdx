@@ -1,0 +1,192 @@
+---
+title: AI Chip Export Controls
+description: US restrictions on semiconductor exports and their AI implications
+sidebar:
+  order: 1
+quality: 3
+llmSummary: "US restrictions on semiconductor exports and their AI implications"
+lastEdited: "2025-12-26"
+styleGuideVersion: "kb-2.0"
+---
+
+import {DataInfoBox, KeyQuestions, Backlinks, DisagreementMap} from '../../../../../../components/wiki';
+
+<DataInfoBox entityId="export-controls" />
+
+:::note[Part of Compute Governance]
+This page covers **export controls**—one approach within the broader [Compute Governance](/knowledge-base/responses/governance/compute-governance/) framework. See also: [Thresholds](/knowledge-base/responses/governance/compute-governance/thresholds/), [Monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/), [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/).
+:::
+
+## Overview
+
+The United States has implemented **unprecedented export controls** on advanced semiconductors and semiconductor manufacturing equipment, primarily targeting China. These controls represent one of the most significant attempts to constrain AI development through **hardware governance**.
+
+The basic logic: **Control the chips → control the compute → constrain AI development.**
+
+Unlike other compute governance approaches that focus on monitoring or triggering requirements, export controls are **restrictive**—they aim to deny access entirely to certain actors.
+
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium-High | Already implemented, enforcement ongoing |
+| If alignment hard | Medium | Buys time but doesn't address core problem |
+| If alignment easy | Low | Less relevant if alignment is straightforward |
+| Neglectedness | Low | Active US government priority |
+| Grade | B | Meaningful short-term impact, uncertain long-term |
+
+### Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Slows non-allied AI development, reduces race pressure | Medium |
+| [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) | Keeps advanced AI within allied democracies | Medium (contested) |
+| [Proliferation](/knowledge-base/risk-factors/proliferation/) | Limits hardware access for potential bad actors | Medium |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Constrains compute for dangerous capabilities research | Low-Medium |
+| [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | Limits adversary access to advanced AI tools | Low-Medium |
+
+---
+
+## How It Works
+
+### What's Controlled
+
+**Advanced Logic Chips:**
+- NVIDIA A100, H100, and successors
+- AMD MI250, MI300 series
+- Any chip exceeding performance thresholds (>4800 TOPS INT8, >300 TFLOPS FP16)
+
+**Semiconductor Manufacturing Equipment:**
+- EUV lithography (ASML, Netherlands)
+- DUV immersion lithography (advanced)
+- Deposition and etch equipment for advanced nodes
+
+**Memory:**
+- HBM (High Bandwidth Memory) essential for AI accelerators
+
+### Timeline of Controls
+
+| Date | Action |
+|------|--------|
+| Oct 2022 | Initial BIS rules: A100-class chips banned, SME restrictions, "US person" rule |
+| Oct 2023 | Expanded: lower thresholds, more countries, additional equipment |
+| Dec 2024 | Further tightening: more Entity List additions, HBM restrictions |
+
+### Enforcement
+
+The Bureau of Industry and Security (BIS) enforces controls through:
+- Export Administration Regulations (EAR)
+- Entity List (requires license for exports to listed entities)
+- Civil penalties up to $300,000 per violation
+- Criminal penalties up to 20 years imprisonment
+
+---
+
+## Effectiveness
+
+### Evidence of Impact
+
+**Short-term effects:**
+- Chinese AI labs report chip shortages
+- NVIDIA China revenue declined significantly
+- Chinese cloud providers limiting AI compute access
+- Stockpiling behavior before restrictions
+
+**Evasion observed:**
+- Third-country transshipment
+- Smuggling networks
+- Cloud compute workarounds
+- Stockpiling before restrictions took effect
+
+### Estimates
+
+| Factor | Assessment |
+|--------|------------|
+| Timeline delay | 1-3 years on frontier capabilities |
+| Chinese domestic response | Accelerated (SMIC, Huawei Ascend) |
+| Workaround activity | Substantial |
+| Long-term effectiveness | Highly uncertain |
+
+---
+
+## Key Uncertainties
+
+**How long do controls buy?** Estimates range from 0.5-5 years. SME controls may create longer delays than chip controls since manufacturing equipment is harder to replicate.
+
+**Does time get used productively?** Even if controls work, they only matter if the time bought is used for alignment research, governance development, or safety measures. If US labs continue racing with each other, the benefit is limited.
+
+**Do controls accelerate Chinese self-sufficiency?** Controls create strong incentives for indigenous development. Long-term, this may result in a more capable Chinese semiconductor industry entirely outside US influence.
+
+**Is this about safety or geopolitics?** Export controls are primarily motivated by national security and great power competition, not AI safety. The safety case is secondary and contested.
+
+---
+
+## International Coordination
+
+### Allied Alignment
+
+**Netherlands:** ASML (makes all EUV machines) restricted exports after US pressure.
+
+**Japan:** Major SME producers (Tokyo Electron) implemented aligned restrictions.
+
+**Gaps:** South Korea (memory producer) has some friction; Taiwan (TSMC) is geopolitically complex.
+
+### Extraterritorial Reach
+
+US controls apply to:
+- US-origin items anywhere in world
+- Foreign-made items with US content above threshold
+- Items produced with US-origin software/technology
+
+This extends control effectiveness but creates international friction.
+
+---
+
+## Critical Assessment
+
+### Arguments For
+
+1. **Compute is a real bottleneck** — Training frontier models requires extraordinary compute
+2. **Buys time for governance** — Even 1-3 years is valuable
+3. **Maintains strategic advantage** — Keeps advanced AI in allied democracies
+4. **Creates leverage** — Bargaining chip for future negotiations
+
+### Arguments Against
+
+1. **Accelerates decoupling** — Pushes China toward self-sufficiency
+2. **Economic costs** — Lost revenue for US chip companies
+3. **Undermines cooperation** — Makes safety coordination harder
+4. **Geopolitics, not safety** — Doesn't address US-developed AI risks
+
+### Key Crux
+
+The central disagreement: **Is slowing Chinese AI development net positive for safety?**
+
+Those who say yes emphasize buying time and concentrating AI in democracies. Those who say no emphasize the value of cooperation and the irrelevance to US-developed risks.
+
+<DisagreementMap
+  client:load
+  topic="Effectiveness of Export Controls for AI Safety"
+  description="How much do export controls contribute to AI safety?"
+  spectrum={{ low: "Counterproductive", high: "Essential" }}
+  positions={[
+    { actor: "National security hawks", position: "High", estimate: "Critical strategic tool", confidence: "high" },
+    { actor: "AI governance researchers", position: "Medium", estimate: "Buys limited time", confidence: "medium" },
+    { actor: "Industry", position: "Low-Medium", estimate: "Costs outweigh benefits", confidence: "medium" },
+    { actor: "International cooperation advocates", position: "Low", estimate: "Harms cooperation", confidence: "medium" }
+  ]}
+/>
+
+---
+
+## Related Approaches
+
+- [Compute Thresholds](/knowledge-base/responses/governance/compute-governance/thresholds/) — Regulatory triggers rather than restrictions
+- [Compute Monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/) — Visibility into who's training what
+- [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/) — Multilateral coordination
+
+---
+
+## Related Pages
+
+<Backlinks client:load entityId="export-controls" />

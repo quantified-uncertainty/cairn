@@ -113,6 +113,82 @@ function buildTagIndex(entities) {
 }
 
 /**
+ * Extract frontmatter from MDX/MD content using YAML parser
+ * Properly handles nested objects like ratings
+ */
+function extractFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
+
+  try {
+    return parse(match[1]) || {};
+  } catch (e) {
+    console.warn('Failed to parse frontmatter:', e.message);
+    return {};
+  }
+}
+
+/**
+ * Build pages registry by scanning all MDX/MD files
+ * Extracts frontmatter including quality, lastUpdated, title, etc.
+ */
+function buildPagesRegistry() {
+  const pages = [];
+
+  function scanDirectory(dir, urlPrefix = '') {
+    if (!existsSync(dir)) return;
+
+    const entries = readdirSync(dir);
+
+    for (const entry of entries) {
+      const fullPath = join(dir, entry);
+      const stat = statSync(fullPath);
+
+      if (stat.isDirectory()) {
+        scanDirectory(fullPath, `${urlPrefix}/${entry}`);
+      } else if (entry.endsWith('.mdx') || entry.endsWith('.md')) {
+        const id = basename(entry, entry.endsWith('.mdx') ? '.mdx' : '.md');
+        const content = readFileSync(fullPath, 'utf-8');
+        const fm = extractFrontmatter(content);
+
+        // Skip index files for the pages list
+        if (id === 'index') continue;
+
+        const urlPath = `${urlPrefix}/${id}/`;
+
+        pages.push({
+          id,
+          path: urlPath,
+          filePath: relative(CONTENT_DIR, fullPath),
+          title: fm.title || id.replace(/-/g, ' '),
+          quality: fm.quality ? parseInt(fm.quality) : null,
+          lastUpdated: fm.lastUpdated || fm.lastEdited || null,
+          llmSummary: fm.llmSummary || null,
+          description: fm.description || null,
+          // Extract ratings for model pages
+          ratings: fm.ratings || null,
+          // Extract category from path
+          category: urlPrefix.split('/').filter(Boolean)[1] || 'other',
+        });
+      }
+    }
+  }
+
+  // Scan all content directories
+  scanDirectory(join(CONTENT_DIR, 'knowledge-base'), '/knowledge-base');
+
+  const otherDirs = ['understanding-ai-risk', 'analysis', 'getting-started', 'browse', 'internal', 'style-guides'];
+  for (const topDir of otherDirs) {
+    const dirPath = join(CONTENT_DIR, topDir);
+    if (existsSync(dirPath)) {
+      scanDirectory(dirPath, `/${topDir}`);
+    }
+  }
+
+  return pages;
+}
+
+/**
  * Build path registry by scanning all MDX/MD files
  * Maps entity IDs (from filenames) to their URL paths
  */
@@ -276,6 +352,12 @@ function main() {
   database.pathRegistry = pathRegistry;
   console.log(`  pathRegistry: ${Object.keys(pathRegistry).length} paths mapped`);
 
+  // Build pages registry with frontmatter data (quality, etc.)
+  const pages = buildPagesRegistry();
+  database.pages = pages;
+  const pagesWithQuality = pages.filter(p => p.quality !== null).length;
+  console.log(`  pages: ${pages.length} pages (${pagesWithQuality} with quality ratings)`);
+
   // Write combined JSON
   writeFileSync(OUTPUT_FILE, JSON.stringify(database, null, 2));
   console.log(`\n✓ Written: ${OUTPUT_FILE}`);
@@ -291,6 +373,7 @@ function main() {
   writeFileSync(join(DATA_DIR, 'tagIndex.json'), JSON.stringify(tagIndex, null, 2));
   writeFileSync(join(DATA_DIR, 'stats.json'), JSON.stringify(stats, null, 2));
   writeFileSync(join(DATA_DIR, 'pathRegistry.json'), JSON.stringify(pathRegistry, null, 2));
+  writeFileSync(join(DATA_DIR, 'pages.json'), JSON.stringify(pages, null, 2));
 
   console.log('✓ Written individual JSON files');
   console.log('✓ Written derived data files (backlinks, tagIndex, stats, pathRegistry)');

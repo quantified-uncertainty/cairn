@@ -356,6 +356,34 @@ export type StructuredTimeframe = z.infer<typeof StructuredTimeframe>;
 export const ResearchMaturity = z.enum(['Neglected', 'Emerging', 'Growing', 'Mature']);
 export type ResearchMaturity = z.infer<typeof ResearchMaturity>;
 
+// =============================================================================
+// CONTENT FRESHNESS TRACKING
+// =============================================================================
+
+/**
+ * Freshness tracking for content pages.
+ * These fields appear in MDX frontmatter to track content staleness.
+ *
+ * Usage in frontmatter:
+ * ---
+ * reviewBy: "2026-06-26"          # When content should be reviewed
+ * contentDependencies:             # Entity IDs that affect this content
+ *   - deceptive-alignment
+ *   - mesa-optimization
+ * lastReviewed: "2025-12-26"       # When last reviewed (optional)
+ * reviewedBy: "ozzie"              # Who reviewed it (optional)
+ * stalenessRisk: "low"             # How quickly this content might become stale
+ * ---
+ */
+export const FreshnessConfig = z.object({
+  reviewBy: z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/).optional(),
+  contentDependencies: z.array(z.string()).optional(),
+  lastReviewed: z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/).optional(),
+  reviewedBy: z.string().optional(),
+  stalenessRisk: z.enum(['low', 'medium', 'high']).optional(),
+});
+export type FreshnessConfig = z.infer<typeof FreshnessConfig>;
+
 export const Entity = z.object({
   id: z.string(),
   type: EntityType,

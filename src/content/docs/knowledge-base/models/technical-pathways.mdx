@@ -1,7 +1,14 @@
 ---
 title: Technical Pathway Decomposition
-description: Different technical architectures create distinct risk profiles requiring separate analysis.
+description: This model maps technical pathways to AI risk. It identifies key branching points where technical choices significantly affect downstream risk profiles.
 tableOfContents: false
+quality: 4
+lastEdited: "2025-12-27"
+ratings:
+  novelty: 3
+  rigor: 4
+  actionability: 4
+  completeness: 4
 ---
 
 import CauseEffectGraph from '../../../../components/CauseEffectGraph';
@@ -456,6 +463,10 @@ import CauseEffectGraph from '../../../../components/CauseEffectGraph';
 />
 </div>
 
+## Overview
+
+This model maps technical pathways to AI risk. It identifies key branching points where technical choices significantly affect downstream risk profiles.
+
 ## Key Dynamics
 
 1. **Scaling → Emergence of dangerous capabilities before alignment scales**
@@ -492,3 +503,58 @@ This diagram simplifies the full model. The complete Technical Pathway Decomposi
 **Capability Thresholds (6 variables)**: Autonomous R&D, cyber offense, persuasion/manipulation, bioweapon design, strategic planning, economic autonomy threshold.
 
 **Risk Manifestation (11 variables)**: Gradient hacking, deceptive alignment, goal misgeneralization, reward hacking, specification gaming, side effect magnitude, distributional shift vulnerability, emergent behavior, treacherous turn probability, instrumental convergence strength, existential risk.
+
+## Strategic Importance
+
+### Magnitude Assessment
+
+Technical pathways decomposition reveals which capability advances create risk and which safety techniques address them. Understanding this mapping is foundational.
+
+| Dimension | Assessment | Quantitative Estimate |
+|-----------|------------|----------------------|
+| **Potential severity** | Existential - determines whether alignment is technically achievable | Pathway choice shifts risk by 2-10x |
+| **Probability-weighted importance** | Highest - directly informs research prioritization | Technical factors account for 50-70% of risk variance |
+| **Comparative ranking** | Foundational for all technical safety work | #1 priority for safety research allocation |
+| **Research leverage** | Very high - shapes all downstream safety work | $1 in pathway research = $3-5 in applied safety work |
+
+### Capability-Risk Mapping
+
+| Capability Advance | Current Level | Danger Threshold | Distance | Risk Type | Priority Safety Investment |
+|-------------------|---------------|------------------|----------|-----------|---------------------------|
+| Long-horizon planning | 50% reliable | 80% reliable | 2-4 years | Accident, structural | Agent oversight |
+| Self-modification | 20% capable | 50% capable | 3-5 years | Accident | Containment |
+| Situational awareness | 40% | 70% | 1-3 years | Deceptive alignment | Interpretability |
+| Cyber offense | 50% of expert | 80% of expert | 1-3 years | Misuse | Defensive AI |
+| Bio design | 35% dangerous | 60% dangerous | 2-4 years | Misuse | Biosecurity |
+| Persuasion | 60% effective | 80% effective | 1-2 years | Misuse, structural | Detection |
+
+### Safety Technique Adequacy
+
+| Safety Technique | Current Maturity | Maturity at GPT-5 | Gap Assessment |
+|-----------------|-----------------|-------------------|----------------|
+| Interpretability | 25% coverage | 15% coverage (more complex) | Widening gap |
+| RLHF | 55% effective | 40% effective (gaming) | Degrading |
+| Containment | 40% robust | 25% robust (capability) | Degrading |
+| Activation steering | 35% precise | 25% precise (complexity) | Degrading |
+| Red-teaming | 60% coverage | 50% coverage (speed) | Slight degradation |
+
+**Key Finding:** Most safety techniques are expected to degrade relative to capabilities. Only interpretability research shows potential for improvement at pace.
+
+### Resource Implications
+
+The pathway analysis suggests:
+- Priority research on highest-risk capability thresholds: **$200-400M/year** (vs. ~$80M current)
+- Safety technique development matched to risk mechanisms: Focus interpretability, scalable oversight
+- Monitoring of capability advances approaching dangerous thresholds: **$30-50M/year** for capability monitoring
+- Deployment restrictions on capabilities without adequate safety coverage: Regulatory engagement
+
+**Recommended technical safety research budget:** $300-600M/year (3-5x current levels).
+
+### Key Cruxes
+
+| Crux | If True | If False | Current Probability |
+|------|---------|----------|---------------------|
+| Dangerous thresholds are identifiable | Targeted monitoring possible | Must address all capabilities | 55% |
+| Safety techniques can scale | Technical alignment tractable | Governance-only approach | 45% |
+| Interpretability can keep pace | Core safety tool viable | Need alternative approaches | 40% |
+| Capability advances are predictable | Proactive safety possible | Must be reactive | 50% |

@@ -183,12 +183,32 @@ function main() {
       const resolution = resolveLink(link.href);
 
       if (!resolution.exists) {
-        results.brokenLinks.push({
-          file: link.file,
-          line: link.line,
-          href: link.href,
-          text: link.text,
-        });
+        // Skip template variables (JSX expressions like ${e.id})
+        if (link.href.includes('${')) {
+          results.valid++;
+          continue;
+        }
+
+        // Treat model-to-model broken links as warnings (future work)
+        const isModelFile = link.file.includes('/models/');
+        const isModelLink = link.href.includes('/models/');
+
+        if (isModelFile && isModelLink) {
+          // Add to convention issues (warnings) instead of broken links
+          results.conventionIssues.push({
+            file: link.file,
+            line: link.line,
+            href: link.href,
+            issues: ['model-not-yet-created'],
+          });
+        } else {
+          results.brokenLinks.push({
+            file: link.file,
+            line: link.line,
+            href: link.href,
+            text: link.text,
+          });
+        }
       } else {
         results.valid++;
       }

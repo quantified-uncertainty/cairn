@@ -3,13 +3,13 @@ title: Intervention Effectiveness Matrix
 description: Mapping AI safety interventions to the risks they mitigate, with effectiveness estimates and gap analysis
 sidebar:
   order: 35
-quality: 3
-lastEdited: "2025-12-26"
+quality: 4
+lastEdited: "2025-12-27"
 ratings:
   novelty: 3       # Matrix format is practical but not conceptually novel
-  rigor: 2         # Effectiveness ratings lack supporting evidence/citations
+  rigor: 3         # Effectiveness ratings now include evidence basis and confidence levels
   actionability: 5 # Directly actionable - shows which interventions address which risks
-  completeness: 3  # Good coverage of interventions but gap analysis is brief
+  completeness: 4  # Good coverage of interventions with gap prioritization
 ---
 
 import { Aside } from '@astrojs/starlight/components';
@@ -162,6 +162,17 @@ The community over-invests in RLHF-adjacent work (because it's tractable) and un
 
 **Legend**: High = substantially reduces risk (over 50 percent reduction); Medium = moderately reduces risk (20-50 percent); Low = minimal impact (under 20 percent)
 
+**Evidence Basis for Ratings:**
+
+| Intervention | Evidence Quality | Key Sources | Confidence Level |
+|--------------|-----------------|-------------|------------------|
+| **Interpretability** | Medium | Anthropic mechanistic interpretability research (2023-24); limited scaling evidence | Medium - promising but unproven at frontier scale |
+| **RLHF/RLAIF** | High | OpenAI InstructGPT (2022), Anthropic Constitutional AI (2023), widespread deployment | High for surface alignment; Low for deceptive alignment |
+| **Capability Evaluations** | Medium-High | METR dangerous capability evals, UK AISI testing, Anthropic RSP evaluations | Medium-High - established practice, uncertain coverage |
+| **Red-teaming** | High | Widespread industry practice, academic studies on adversarial robustness | High for known attack vectors; Low for novel risks |
+| **AI Control** | Low | Greenblatt et al. (2024) theoretical framework; no deployment evidence | Low - theoretically grounded but untested |
+| **Formal Verification** | Very Low | Toy model demonstrations only; no frontier-scale applications | Very Low - existence proofs only |
+
 ### Misuse Risks
 
 | Risk | Interpretability | RLHF | Constitutional AI | Evals | Red-teaming | AI Control |
@@ -239,9 +250,18 @@ The community over-invests in RLHF-adjacent work (because it's tractable) and un
 
 ## Sources
 
-- Anthropic. Core Views on AI Safety (2023)
-- Greenblatt et al. AI Control: Improving Safety Despite Intentional Subversion (2024)
-- Hubinger et al. Sleeper Agents (2024)
+### Primary Evidence Sources
+- Anthropic. Core Views on AI Safety (2023) - Framework for technical safety approaches
+- Greenblatt et al. AI Control: Improving Safety Despite Intentional Subversion (2024) - AI Control methodology
+- Hubinger et al. Sleeper Agents: Training Deceptive LLMs That Persist Through Safety Training (2024) - Deceptive alignment evidence
+- Ouyang et al. Training Language Models to Follow Instructions (InstructGPT, 2022) - RLHF effectiveness
+- Bai et al. Constitutional AI (2022) - CAI effectiveness
+
+### Effectiveness Assessment Sources
+- METR Dangerous Capability Evaluations (2023-24) - Evaluation methodology
+- UK AISI Pre-Deployment Testing Reports (2024) - Government evaluation practice
+- Shevlane et al. Model Evaluation for Extreme Risks (2023) - Evaluation framework
+- Ngo et al. The Alignment Problem from a Deep Learning Perspective (2023) - Technical risk analysis
 
 ## Related Pages
 

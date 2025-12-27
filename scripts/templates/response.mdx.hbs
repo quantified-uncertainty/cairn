@@ -1,0 +1,85 @@
+---
+title: "{{frontmatter.title}}"
+description: {{frontmatter.description}}
+sidebar:
+  order: 50
+quality: {{#if frontmatter.quality}}{{frontmatter.quality}}{{else}}3{{/if}}
+lastEdited: "{{frontmatter.lastEdited}}"
+{{#if frontmatter.reviewBy}}
+reviewBy: "{{frontmatter.reviewBy}}"
+{{/if}}
+---
+
+import { DataInfoBox, Backlinks } from '../../../../../components/wiki';
+
+<DataInfoBox entityId="{{entityId}}" />
+
+## Overview
+
+{{#each overview.paragraphs}}
+{{this}}
+
+{{/each}}
+
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| **Tractability** | {{quickAssessment.tractability}} | {{quickAssessment.tractabilityNotes}} |
+| **If alignment hard** | — | {{quickAssessment.ifAlignmentHard}} |
+| **If alignment easy** | — | {{quickAssessment.ifAlignmentEasy}} |
+| **Neglectedness** | — | {{quickAssessment.neglectedness}} |
+| **Grade** | {{quickAssessment.grade}} | {{quickAssessment.gradeReasoning}} |
+
+### Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+{{#each risksAddressed}}
+| [{{riskName}}](/knowledge-base/risks/{{riskId}}/) | {{mechanism}} | {{effectiveness}} |
+{{/each}}
+
+---
+
+## How It Works
+
+{{howItWorks.mainContent}}
+
+{{#each howItWorks.subsections}}
+### {{heading}}
+
+{{content}}
+
+{{/each}}
+
+---
+
+## Critical Assessment
+
+### Limitations
+
+{{criticalAssessment.limitations}}
+
+### Key Uncertainties
+
+{{criticalAssessment.keyUncertainties}}
+
+{{#if criticalAssessment.differentPerspectives}}
+### Different Perspectives
+
+{{criticalAssessment.differentPerspectives}}
+{{/if}}
+
+{{#if gettingInvolved}}
+---
+
+## Getting Involved
+
+{{gettingInvolved}}
+{{/if}}
+
+---
+
+## Related Pages
+
+<Backlinks />

@@ -1,0 +1,300 @@
+---
+title: Compute Monitoring
+description: Ongoing visibility into who's training large AI models
+sidebar:
+  order: 3
+quality: 3
+llmSummary: "Ongoing visibility into who's training large AI models"
+lastEdited: "2025-12-26"
+styleGuideVersion: "kb-2.0"
+---
+
+import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
+
+<DataInfoBox entityId="compute-monitoring" />
+
+:::note[Part of Compute Governance]
+This page covers **compute monitoring**—one approach within the broader [Compute Governance](/knowledge-base/responses/governance/compute-governance/) framework. See also: [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/), [Thresholds](/knowledge-base/responses/governance/compute-governance/thresholds/), [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/).
+:::
+
+## Overview
+
+Compute monitoring creates **ongoing visibility** into who's training large AI models. Unlike export controls (which deny access) or thresholds (which trigger requirements), monitoring is about **knowing what's happening**—enabling detection, verification, and response.
+
+This includes:
+- **Cloud KYC (Know Your Customer):** Cloud providers verify customers and report large training runs
+- **Hardware-level governance:** Chips with built-in monitoring capabilities
+- **Verification systems:** Cryptographic attestation of what's running
+
+Monitoring is the foundation for enforcement of other compute governance measures.
+
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium-High (cloud) / Low-Medium (hardware) | Cloud KYC implementable now; hardware governance is longer-term |
+| Current Status | Early implementation | US EO includes KYC requirements; hardware governance is research-stage |
+| Main Challenge | Privacy vs. oversight balance | Monitoring infrastructure could enable surveillance |
+| Time Horizon | Near-term (cloud) / Long-term (hardware) | Different timelines for different approaches |
+
+### Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Proliferation](/knowledge-base/risk-factors/proliferation/) | Visibility into who's training large models | Medium-High |
+| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Enables verification of commitments | Medium |
+| [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | Detect training runs focused on biological capabilities | Medium |
+
+---
+
+## Cloud KYC (Know Your Customer)
+
+### How It Works
+
+Cloud providers (AWS, Azure, GCP) are the primary access point for AI training compute. KYC requirements would have them:
+
+**Customer Verification:**
+- Identity verification for large compute customers
+- Purpose of use declarations
+- Ongoing monitoring of usage patterns
+
+**Reporting Obligations:**
+- Report training runs above threshold (e.g., 10^23 FLOP)
+- Report to government authorities
+- Suspicious activity reporting
+
+**Access Controls:**
+- Deny service to blocked entities
+- Geographic restrictions
+- Capability-based access tiers
+
+### Current Status
+
+**US Executive Order 14110** includes KYC requirements:
+- Cloud providers must report large training runs
+- Customer verification requirements
+- Being developed by major cloud providers
+
+**Implementation challenges:**
+- International cloud providers and jurisdictions
+- On-premise clusters (not covered)
+- Privacy and proprietary information concerns
+
+### Advantages
+
+- **Concentrated chokepoints:** Few major cloud providers
+- **Already regulated:** Cloud providers are in regulable jurisdictions
+- **Existing infrastructure:** KYC systems exist for financial compliance
+
+### Limitations
+
+- **On-premise compute:** Organizations with their own hardware are not covered
+- **International arbitrage:** Training in less-regulated jurisdictions
+- **Privacy concerns:** Detailed monitoring of customer activities
+
+---
+
+## Hardware-Level Governance
+
+### The Vision
+
+Build governance capabilities **directly into AI chips**, enabling:
+
+**Chip Registration:**
+- Each advanced AI chip has unique identifier
+- Registered with manufacturer or government
+- Trackable through supply chain
+
+**On-Chip Monitoring:**
+- Chips report usage data
+- Training run logging
+- Encrypted and secured reporting
+
+**Remote Attestation:**
+- Chips cryptographically prove what they're running
+- Enable verification of compliance
+- Prevent unauthorized use
+
+**Remote Controls (controversial):**
+- Ability to disable chips remotely
+- Highly controversial due to security risks
+- Likely politically infeasible
+
+### Current Status
+
+**Mostly research/proposal stage:**
+- Some chip security features exist (TPM, secure enclaves)
+- No AI-specific governance features implemented
+- Major technical and political challenges remain
+
+**Key research:**
+- Centre for the Governance of AI (GovAI) proposals
+- Academic work on secure hardware
+- Industry exploration (limited public information)
+
+### Technical Challenges
+
+**Backward compatibility:**
+- Existing chips lack governance features
+- Long replacement cycles for hardware
+
+**Performance overhead:**
+- Monitoring consumes resources
+- May create competitive disadvantage
+
+**Security of monitoring systems:**
+- Monitoring infrastructure could be hacked
+- Creates new attack surface
+- Single point of failure risks
+
+**Chip complexity:**
+- Adding features increases manufacturing difficulty
+- Cost implications
+
+### Political Challenges
+
+**Privacy concerns:**
+- Detailed monitoring of computing activity
+- Potential for surveillance abuse
+- Civil liberties implications
+
+**Industry resistance:**
+- Costs of implementation
+- Competitive disadvantage for compliant manufacturers
+- Complex supply chain changes
+
+**International acceptance:**
+- Would require coordination across manufacturing countries
+- China unlikely to adopt US-designed governance chips
+- Creates bifurcated hardware ecosystems
+
+---
+
+## Verification and Attestation
+
+### The Problem
+
+How do you verify that someone is actually complying with compute governance requirements?
+
+**Self-reporting limitations:**
+- Labs report their own compute usage
+- Incentives to underreport
+- Difficult to verify claims
+
+### Technical Solutions
+
+**Cryptographic attestation:**
+- Hardware proves what software it's running
+- Can verify training configurations
+- Resistant to tampering
+
+**Trusted execution environments:**
+- Secure enclaves for sensitive computation
+- Can log activities securely
+- Existing technology (Intel SGX, ARM TrustZone)
+
+**Compute accounting:**
+- Track cumulative compute usage
+- Hardware-enforced limits
+- Tamper-evident logging
+
+### Challenges
+
+**Cat-and-mouse dynamics:**
+- Sophisticated actors may circumvent verification
+- Verification systems need continuous updating
+- Arms race between governance and evasion
+
+**False sense of security:**
+- Verification systems aren't foolproof
+- May create overconfidence in compliance
+- Need defense in depth
+
+---
+
+## Key Uncertainties
+
+**Can monitoring work without enabling surveillance?** The same infrastructure that enables AI governance could enable authoritarian surveillance. Designing monitoring systems that provide oversight without enabling abuse is a core challenge.
+
+**Will on-premise compute undermine cloud KYC?** If organizations respond to cloud monitoring by building their own data centers, cloud KYC becomes less effective. The trend toward on-premise compute for frontier labs is concerning for this approach.
+
+**Is hardware governance technically feasible?** The technical challenges are substantial. Whether governance features can be added without unacceptable performance or security costs is uncertain.
+
+**Will international coordination emerge?** Hardware governance only works if major manufacturing countries (Taiwan, South Korea, Netherlands, US) coordinate. Without coordination, governance chips create bifurcated ecosystems.
+
+---
+
+## Monitoring vs. Restriction
+
+| Aspect | Monitoring | Restriction (Export Controls) |
+|--------|------------|------------------------------|
+| Goal | Visibility | Denial of access |
+| Approach | Watch and verify | Block and sanction |
+| Flexibility | Can respond to observed behavior | Binary allow/deny |
+| Privacy impact | Higher (continuous surveillance) | Lower (one-time decision) |
+| Evasion | Harder if comprehensive | Easier (smuggling, workarounds) |
+
+**Complementary approaches:** Monitoring enables enforcement of restrictions. Export controls work better when you can verify compliance.
+
+---
+
+## Implementation Pathway
+
+### Near-term (1-3 years)
+
+- Cloud KYC requirements implemented
+- Reporting systems operational
+- Major cloud providers comply
+- On-premise gap remains
+
+### Medium-term (3-7 years)
+
+- Hardware governance research matures
+- Pilot programs for governance chips
+- International discussions on standards
+- Hybrid cloud/on-premise monitoring
+
+### Long-term (7+ years)
+
+- Governance features in new chip generations
+- International verification regimes
+- Comprehensive monitoring ecosystem
+- Legacy hardware phase-out
+
+---
+
+## Who Should Work on This
+
+**Technical researchers:**
+- Hardware security expertise
+- Cryptographic verification systems
+- Privacy-preserving monitoring
+
+**Policy researchers:**
+- Cloud governance frameworks
+- International coordination mechanisms
+- Privacy and civil liberties balance
+
+**Industry roles:**
+- Cloud provider compliance teams
+- Chip manufacturer security teams
+- Standards body participation
+
+**Government:**
+- BIS implementation
+- International negotiation
+- Regulatory framework design
+
+---
+
+## Related Approaches
+
+- [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/) — Restricting access rather than monitoring
+- [Compute Thresholds](/knowledge-base/responses/governance/compute-governance/thresholds/) — Triggering requirements based on compute
+- [International Regimes](/knowledge-base/responses/governance/compute-governance/international-regimes/) — Multilateral monitoring coordination
+
+---
+
+## Related Pages
+
+<Backlinks client:load entityId="compute-monitoring" />

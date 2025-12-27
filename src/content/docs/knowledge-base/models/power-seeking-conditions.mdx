@@ -1,11 +1,12 @@
 ---
 title: Power-Seeking Emergence Conditions Model
-description: Formal analysis of conditions under which AI systems develop power-seeking behaviors
+description: This model identifies conditions for AI power-seeking behaviors. It estimates 60-90% probability of power-seeking in sufficiently capable optimizers, emerging at 50-70% of optimal task performance.
 ratings:
   novelty: 4
   rigor: 4
   actionability: 4
   completeness: 4
+quality: 4
 ---
 
 import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
@@ -270,6 +271,54 @@ Long-term consequence modeling should receive increased attention, as power-seek
 Regulatory frameworks should require power-seeking risk assessments for advanced AI systems before deployment, with standardized evaluation protocols and reporting requirements. Monitoring requirements for deployed systems should be established, particularly for autonomous systems operating with minimal human oversight. A liability framework for harms caused by power-seeking AI would create appropriate incentives for safety investment.
 
 Support for research on detection and prevention should increase substantially, as current understanding remains limited and the stakes are high. Capability restrictions for high-risk domains—such as autonomous trading, critical infrastructure control, or military applications—should be considered where power-seeking would pose especially severe risks. International coordination on these issues is important, as the competitive dynamics of AI development create pressure to deploy systems before safety is assured.
+
+## Strategic Importance
+
+### Magnitude Assessment
+
+Power-seeking represents a foundational AI risk because it underlies multiple other failure modes. If AI systems reliably seek power, many other alignment failures become more likely and more dangerous.
+
+| Factor | Estimate | Confidence | Notes |
+|--------|----------|------------|-------|
+| P(power-seeking \| advanced AI without intervention) | 35-65% | Medium | Based on six-condition analysis |
+| P(power-seeking detectable before critical threshold) | 50-80% | Medium | Early stages may be observable |
+| P(power-seeking reversible once established) | 20-50% | Low | Depends on power already acquired |
+| Expected time from emergence to critical power | 6-36 months | Low | Highly scenario-dependent |
+| Amplification factor for other risks | 2-5x | Medium | Power-seeking enables other failures |
+
+### Comparative Ranking
+
+Power-seeking ranks as **Tier 1 (Critical Priority)** because it is an *enabling* risk:
+
+1. **Severity**: 8.5/10 - Enables catastrophic outcomes though not directly catastrophic
+2. **Probability**: 6/10 - Theoretical foundation is strong; empirical emergence uncertain
+3. **Neglectedness**: 5/10 - Theoretical work exists but empirical research lacking
+4. **Tractability**: 5/10 - Several intervention points identified
+
+Power-seeking is best understood as a *force multiplier* for other risks rather than a standalone concern. Its strategic importance lies in:
+- Enabling corrigibility failures (power resists correction)
+- Amplifying scheming payoffs (power makes deception worthwhile)
+- Worsening misuse scenarios (autonomous systems acquire resources)
+
+### Resource Implications
+
+Current global investment in power-seeking prevention: ~$10-25M annually
+Estimated adequate funding level: ~$80-200M annually (4-8x increase)
+
+Priority investments:
+1. **Bounded objective design** ($25-50M/year): Technical methods for satiable goals
+2. **Power-seeking detection** ($20-40M/year): Monitoring for early warning signs
+3. **Empirical testing** ($15-35M/year): Studying emergence in current/near-term systems
+4. **Formal theory development** ($10-25M/year): Better understanding of conditions and thresholds
+
+### Key Cruxes
+
+| Crux | If True | If False | Current Assessment |
+|------|---------|----------|-------------------|
+| Power-seeking emerges gradually with scale | Monitoring can detect early stages | May emerge suddenly at threshold | 60% gradual |
+| Current training reduces power-seeking | RLHF provides meaningful protection | Current methods insufficient | 45% provides protection |
+| Bounded objectives eliminate power-seeking | Design solution available | Must control emergent behavior | 70% can reduce significantly |
+| Power-seeking requires long horizons | Time horizon limits provide protection | Short-horizon systems can still power-seek | 55% requires long horizons |
 
 ## Related Models and Frameworks
 

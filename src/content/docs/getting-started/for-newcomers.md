@@ -125,10 +125,10 @@ Understand different ways of thinking about risk:
 ### Afternoon Session: Solutions and Strategy (3 hours)
 
 **12:00-1:00 - Lunch Break + Light Reading**
-Read [Historical Case Studies](/analysis/case-studies/) over lunch:
-- [Nuclear Weapons](/analysis/case-studies/nuclear/) - Lessons from nuclear governance
-- [Biotechnology](/analysis/case-studies/biotech/) - Managing dual-use technology
-- What patterns might apply to AI?
+Read about [AI safety history](/knowledge-base/history/) over lunch:
+- [Early warnings](/knowledge-base/history/early-warnings/) - How concerns first emerged
+- [Deep learning era](/knowledge-base/history/deep-learning-era/) - When AI capabilities accelerated
+- What patterns might apply going forward?
 
 **1:00-2:00 - Technical Safety Approaches**
 Understand what technical safety research looks like:
@@ -179,14 +179,14 @@ Not everyone learns best linearly. Here are paths organized by topic:
 2. [Structural Risks](/knowledge-base/risks/structural/) - Systemic problems
 3. [Governance Approaches](/knowledge-base/responses/governance/)
 4. [International Coordination](/knowledge-base/responses/governance/international/)
-5. [Case Studies](/analysis/case-studies/) - Historical parallels
+5. [AI Safety History](/knowledge-base/history/) - Historical evolution of the field
 
 ### If You're Most Interested in Probability and Forecasting
 
 1. [Timelines](/understanding-ai-risk/core-argument/timelines/) - When might we get transformative AI?
 2. [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) - What don't we know?
 3. [Different Worldviews](/knowledge-base/worldviews/) - How people weigh evidence differently
-4. [AI Timeline Visualization](/analysis/ai-timeline/) - Historical and projected progress
+4. [AI Safety History](/knowledge-base/history/) - Historical and projected progress
 5. Expert estimates scattered throughout organization and people pages
 
 ### If You're Most Interested in What You Can Do

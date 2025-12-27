@@ -26,6 +26,29 @@ export const tagIndex: Record<string, Array<{ id: string; type: string; title: s
   (database as any).tagIndex || {};
 export const pathRegistry: Record<string, string> =
   (database as any).pathRegistry || {};
+
+// Ratings for model pages
+export interface ModelRatings {
+  novelty?: number;
+  rigor?: number;
+  actionability?: number;
+  completeness?: number;
+}
+
+// Pages data with quality ratings from MDX frontmatter
+export interface Page {
+  id: string;
+  path: string;
+  filePath: string;
+  title: string;
+  quality: number | null;
+  lastUpdated: string | null;
+  llmSummary: string | null;
+  description: string | null;
+  ratings: ModelRatings | null;
+  category: string;
+}
+export const pages: Page[] = (database as any).pages || [];
 export const stats: {
   totalEntities: number;
   byType: Record<string, number>;
@@ -74,6 +97,10 @@ export function getGlossaryTerm(idOrTerm: string): GlossaryTerm | undefined {
   return glossary.find(
     (t) => t.id === idOrTerm || t.term.toLowerCase() === idOrTerm.toLowerCase()
   );
+}
+
+export function getPageById(id: string): Page | undefined {
+  return pages.find((p) => p.id === id);
 }
 
 // Literature data

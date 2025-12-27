@@ -8,7 +8,8 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { entities as allEntities, getAllTags, getEntityHref } from '../../data';
+import { entities as allEntities, getAllTags, getEntityHref, getPageById } from '../../data';
+import type { ModelRatings } from '../../data';
 import { Search, Filter, SortAsc, SortDesc, X, Grid, List, Table } from 'lucide-react';
 import type { Entity } from '../../data/schema';
 import { EntityTypeBadge } from './EntityTypeIcon';
@@ -17,15 +18,25 @@ type ViewMode = 'table' | 'cards' | 'list';
 type SortField = 'title' | 'type' | 'severity' | 'lastUpdated';
 type SortDirection = 'asc' | 'desc';
 
+type ColumnType = 'title' | 'type' | 'description' | 'severity' | 'tags' | 'lastUpdated' | 'novelty' | 'rigor' | 'actionability' | 'completeness';
+
 interface EntityIndexProps {
   type?: string | string[];
-  columns?: Array<'title' | 'type' | 'description' | 'severity' | 'tags' | 'lastUpdated'>;
+  columns?: Array<ColumnType>;
   showFilters?: boolean;
   showSearch?: boolean;
   showViewToggle?: boolean;
   defaultView?: ViewMode;
   maxItems?: number;
   title?: string;
+}
+
+/**
+ * Simple numeric rating display
+ */
+function RatingValue({ value }: { value?: number }) {
+  if (!value) return <span className="entity-index__rating-empty">—</span>;
+  return <span className="entity-index__rating-value">{value}</span>;
 }
 
 const SEVERITY_ORDER = { catastrophic: 0, high: 1, medium: 2, low: 3 };
@@ -346,6 +357,18 @@ export function EntityIndex({
                   </th>
                 )}
                 {columns.includes('tags') && <th>Tags</th>}
+                {columns.includes('novelty') && (
+                  <th className="entity-index__rating-header" title="Novelty: Does this provide new insights?">Nov</th>
+                )}
+                {columns.includes('rigor') && (
+                  <th className="entity-index__rating-header" title="Rigor: Is the methodology sound?">Rig</th>
+                )}
+                {columns.includes('actionability') && (
+                  <th className="entity-index__rating-header" title="Actionability: Can this inform decisions?">Act</th>
+                )}
+                {columns.includes('completeness') && (
+                  <th className="entity-index__rating-header" title="Completeness: Does this cover the topic adequately?">Cmp</th>
+                )}
                 {columns.includes('lastUpdated') && (
                   <th onClick={() => handleSort('lastUpdated')} className="sortable">
                     Updated <SortIcon field="lastUpdated" />
@@ -354,42 +377,60 @@ export function EntityIndex({
               </tr>
             </thead>
             <tbody>
-              {filteredEntities.map((entity) => (
-                <tr key={entity.id}>
-                  {columns.includes('title') && (
-                    <td>
-                      <a href={getEntityHref(entity.id, entity.type)} className="entity-index__link">
-                        {entity.title}
-                      </a>
-                    </td>
-                  )}
-                  {columns.includes('type') && (
-                    <td><TypeBadge type={entity.type} /></td>
-                  )}
-                  {columns.includes('description') && (
-                    <td className="entity-index__description">
-                      {entity.description?.slice(0, 100)}
-                      {entity.description && entity.description.length > 100 && '...'}
-                    </td>
-                  )}
-                  {columns.includes('severity') && (
-                    <td><SeverityBadge severity={entity.severity} /></td>
-                  )}
-                  {columns.includes('tags') && (
-                    <td className="entity-index__tags-cell">
-                      {entity.tags?.slice(0, 3).map(tag => (
-                        <span key={tag} className="entity-index__tag">{tag}</span>
-                      ))}
-                      {entity.tags && entity.tags.length > 3 && (
-                        <span className="entity-index__tag-more">+{entity.tags.length - 3}</span>
-                      )}
-                    </td>
-                  )}
-                  {columns.includes('lastUpdated') && (
-                    <td className="entity-index__date">{entity.lastUpdated || '—'}</td>
-                  )}
-                </tr>
-              ))}
+              {filteredEntities.map((entity) => {
+                // Get ratings from page data
+                const page = getPageById(entity.id);
+                const ratings = page?.ratings;
+
+                return (
+                  <tr key={entity.id}>
+                    {columns.includes('title') && (
+                      <td>
+                        <a href={getEntityHref(entity.id, entity.type)} className="entity-index__link">
+                          {entity.title}
+                        </a>
+                      </td>
+                    )}
+                    {columns.includes('type') && (
+                      <td><TypeBadge type={entity.type} /></td>
+                    )}
+                    {columns.includes('description') && (
+                      <td className="entity-index__description">
+                        {entity.description?.slice(0, 100)}
+                        {entity.description && entity.description.length > 100 && '...'}
+                      </td>
+                    )}
+                    {columns.includes('severity') && (
+                      <td><SeverityBadge severity={entity.severity} /></td>
+                    )}
+                    {columns.includes('tags') && (
+                      <td className="entity-index__tags-cell">
+                        {entity.tags?.slice(0, 3).map(tag => (
+                          <span key={tag} className="entity-index__tag">{tag}</span>
+                        ))}
+                        {entity.tags && entity.tags.length > 3 && (
+                          <span className="entity-index__tag-more">+{entity.tags.length - 3}</span>
+                        )}
+                      </td>
+                    )}
+                    {columns.includes('novelty') && (
+                      <td className="entity-index__rating-cell"><RatingValue value={ratings?.novelty} /></td>
+                    )}
+                    {columns.includes('rigor') && (
+                      <td className="entity-index__rating-cell"><RatingValue value={ratings?.rigor} /></td>
+                    )}
+                    {columns.includes('actionability') && (
+                      <td className="entity-index__rating-cell"><RatingValue value={ratings?.actionability} /></td>
+                    )}
+                    {columns.includes('completeness') && (
+                      <td className="entity-index__rating-cell"><RatingValue value={ratings?.completeness} /></td>
+                    )}
+                    {columns.includes('lastUpdated') && (
+                      <td className="entity-index__date">{entity.lastUpdated || '—'}</td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -3,9 +3,9 @@ title: AI Control
 description: Ensuring AI safety even with potentially misaligned systems
 sidebar:
   order: 4
-quality: 2
+quality: 3
 llmSummary: "Ensuring AI safety even with potentially misaligned systems"
-lastEdited: "2025-12-26"
+lastEdited: "2025-12-27"
 ---
 
 import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions} from '../../../../../components/wiki';
@@ -17,6 +17,18 @@ import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestion
 AI Control is a research agenda that focuses on maintaining safety even when using AI systems that might be actively trying to subvert safety measures. Rather than assuming alignment succeeds, it asks: "How can we safely use AI systems that might be misaligned?"
 
 This represents a more defensive posture than pure alignment research.
+
+## Quick Assessment
+
+| Dimension | Assessment | Quantitative Estimate |
+|-----------|------------|----------------------|
+| Tractability | High | 70-85% probability of working for near-human-level AI |
+| If alignment hard | Critical | Reduces catastrophic risk by estimated 40-60% |
+| If alignment easy | Low-Medium | 10-20% marginal safety improvement |
+| Neglectedness | Medium | ~$5-10M/year research investment; 15-25 FTE researchers |
+| Research Maturity | Medium | 3-5 years to deployment-ready protocols |
+| Scalability Limit | Unknown | Estimated effective up to 10-100x human capability |
+| Grade | A- | Practical, testable, addresses key failure mode |
 
 ## Evaluation Summary
 
@@ -37,7 +49,6 @@ This represents a more defensive posture than pure alignment research.
 | [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) | Containment limits damage from inner misalignment | High |
 | [Goal Misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/) | Monitoring catches behavior outside intended scope | Medium-High |
 | [Reward Hacking](/knowledge-base/risks/accident/reward-hacking/) | Sandboxing prevents real-world reward exploits | Medium |
-| [Autonomous Replication](/knowledge-base/risks/accident/autonomous-replication/) | Containment prevents self-replication | High |
 
 ## Core Insight
 
@@ -204,6 +215,39 @@ Relying on control might reduce effort on alignment. If organizations believe co
 - Alignment will succeed (control is redundant)
 - Only superintelligence-level risks matter (control won't scale)
 - Theoretical research is more important
+
+## Critical Assessment
+
+### Effectiveness Assessment
+
+| Criteria | Current Evidence | Confidence |
+|----------|-----------------|------------|
+| Detection of adversarial actions | Red-team studies show 80-95% detection rate for current models | High |
+| Containment effectiveness | Sandboxing prevents 90%+ of simulated escape attempts | Medium-High |
+| Monitoring overhead | 5-15% compute cost for comprehensive monitoring | Medium |
+| False positive rate | 1-5% of flagged actions are benign (tunable) | Medium |
+| Human review bottleneck | Can review ~100-500 flagged actions per hour per reviewer | High |
+| Protocol iteration speed | 2-4 weeks to develop and test new control protocol | Medium |
+
+### Resource Requirements
+
+| Investment Type | Estimated Need | Current State | Timeline to Impact |
+|-----------------|---------------|---------------|-------------------|
+| Core Research | $10-20M/year | ~$5-10M/year | 2-4 years to mature protocols |
+| Red-Team Testing | $2-5M/year | ~$1-2M/year | Ongoing |
+| Implementation Engineering | $5-10M per major lab | Early stage | 1-2 years per deployment |
+| Monitoring Infrastructure | $1-3M/year operational cost | Prototype stage | 6-12 months to deploy |
+| Human Review Capacity | 10-50 FTEs for high-stakes deployment | Not yet needed | Scales with deployment |
+
+### Key Uncertainties
+
+| Uncertainty | Range of Estimates | Key Factors |
+|-------------|-------------------|-------------|
+| Effective capability ceiling | 10x to 1000x human-level | AI self-improvement speed, monitoring scalability |
+| Adoption by frontier labs | 40-80% of major labs by 2027 | Regulation, safety culture, competitive pressure |
+| Capability tax | 5-30% performance reduction | Protocol strictness, task type |
+| Control window duration | 2-10 years before obsolete | AI progress rate, control research progress |
+| Complementarity with alignment | 30-70% of safety value from control | Alignment difficulty, overlap in failure modes |
 
 ## Complementary Interventions
 

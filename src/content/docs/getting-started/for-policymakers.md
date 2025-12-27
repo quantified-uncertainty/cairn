@@ -254,7 +254,7 @@ Based on case studies and expert analysis, these approaches show promise:
 
 **Precedent**: Nuclear Price-Anderson Act (liability limits + mandatory insurance); pharmaceutical liability
 
-**Read**: Case studies from [other technologies](/analysis/case-studies/)
+**Read**: Lessons from [AI safety history](/knowledge-base/history/)
 
 #### 5. International Coordination Mechanisms
 
@@ -285,7 +285,7 @@ Based on case studies and expert analysis, these approaches show promise:
 - **Aviation**: ICAO (successful technical coordination)
 - **Internet**: ICANN (technical coordination model)
 
-**Read**: [International coordination approaches](/knowledge-base/responses/governance/international/) and [Case Studies](/analysis/case-studies/)
+**Read**: [International coordination approaches](/knowledge-base/responses/governance/international/) and [AI safety history](/knowledge-base/history/)
 
 #### 6. Institutional Design for Labs
 
@@ -371,7 +371,7 @@ As you design policy, consider these strategic questions:
 - Implement light requirements that can tighten as capabilities advance
 - Build international coordination capacity before it's urgently needed
 
-**Read**: [AI Timeline analysis](/analysis/ai-timeline/) to calibrate urgency
+**Read**: [AI Timeline analysis](/knowledge-base/history/) to calibrate urgency
 
 ### Regulatory Capture and Incentives
 
@@ -396,24 +396,24 @@ As you design policy, consider these strategic questions:
 
 Historical case studies provide lessons:
 
-**[Nuclear Weapons](/analysis/case-studies/nuclear/):**
+**Nuclear Weapons:**
 - **Success**: No use in conflict since 1945; some non-proliferation success
 - **Failure**: Ongoing proliferation; close calls; verification challenges
 - **Lesson**: International coordination possible but imperfect; technology control is hard
 
-**[Biotechnology](/analysis/case-studies/biotech/):**
+**Biotechnology:**
 - **Success**: Asilomar conference led to self-regulation; gain-of-function pause showed coordination possible
 - **Failure**: BWC has weak verification; dual-use research continues; knowledge proliferation
 - **Lesson**: Scientific community can coordinate, but enforcement is hard
 
-**[Social Media](/analysis/case-studies/social-media/):**
+**Social Media:**
 - **Success**: (unclear if any major successes yet)
 - **Failure**: Regulation lagged capabilities by years; massive societal harms before any action
 - **Lesson**: Don't wait for demonstrated catastrophic harm before regulating
 
 **Key takeaway**: Early, adaptive governance frameworks are better than waiting for catastrophe.
 
-**Read**: [Case Studies section](/analysis/case-studies/)
+**Read**: [Case Studies section](/knowledge-base/history/)
 
 ## Evaluating Specific Proposals (20 minutes)
 
@@ -464,7 +464,7 @@ Based on your specific policy focus:
 2. [Risks Overview](/knowledge-base/risks/) - What you're trying to prevent (1 hour)
 3. [Governance Responses](/knowledge-base/responses/governance/) - What exists already (30 min)
 4. [Governance Approaches](/knowledge-base/responses/governance/) - Options available (45 min)
-5. [Case Studies](/analysis/case-studies/) - Historical lessons (1 hour)
+5. [Case Studies](/knowledge-base/history/) - Historical lessons (1 hour)
 
 ### If You're Working on International Coordination
 
@@ -472,7 +472,7 @@ Based on your specific policy focus:
 2. [Multi-Actor Landscape](/knowledge-base/models/multi-actor-landscape/) - Who's involved (30 min)
 3. [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - What you're trying to prevent (20 min)
 4. [International Coordination](/knowledge-base/responses/governance/international/) - Approaches (45 min)
-5. [Nuclear Case Study](/analysis/case-studies/nuclear/) - Historical precedent (30 min)
+5. [Nuclear Case Study](/knowledge-base/history/) - Historical precedent (30 min)
 
 ### If You're Working on Standards and Evaluation
 
@@ -486,7 +486,7 @@ Based on your specific policy focus:
 1. [Economic Disruption](/knowledge-base/risk-factors/economic-disruption/) - Scale of potential displacement (20 min)
 2. [Erosion of Agency](/knowledge-base/risks/structural/erosion-of-agency/) - Broader societal impacts (20 min)
 3. [Timelines](/understanding-ai-risk/core-argument/timelines/) - When to expect impacts (30 min)
-4. [Social Media Case Study](/analysis/case-studies/social-media/) - Lessons from previous disruption (20 min)
+4. [Social Media Case Study](/knowledge-base/history/) - Lessons from previous disruption (20 min)
 
 ## Key Organizations to Know
 
@@ -590,7 +590,7 @@ Depending on your specific role:
 
 **If you're drafting legislation:**
 1. Review [governance responses](/knowledge-base/responses/governance/) to understand existing frameworks
-2. Study [case studies](/analysis/case-studies/) for precedents
+2. Study [case studies](/knowledge-base/history/) for precedents
 3. Consult [governance approaches](/knowledge-base/responses/governance/) for options
 4. Engage experts across perspectives (not just industry)
 5. Design adaptive frameworks that can evolve
@@ -598,7 +598,7 @@ Depending on your specific role:
 **If you're working on international coordination:**
 1. Understand [multi-actor dynamics](/knowledge-base/models/multi-actor-landscape/)
 2. Review [international coordination approaches](/knowledge-base/responses/governance/international/)
-3. Study [nuclear case study](/analysis/case-studies/nuclear/) for lessons
+3. Study [nuclear case study](/knowledge-base/history/) for lessons
 4. Identify possible coalition partners
 5. Start with technically feasible measures (compute monitoring)
 
@@ -612,7 +612,7 @@ Depending on your specific role:
 **If you're still learning:**
 1. Read the [Core Argument](/understanding-ai-risk/core-argument/) to understand the case
 2. Review [Different Worldviews](/knowledge-base/worldviews/) to understand disagreement
-3. Study [Case Studies](/analysis/case-studies/) for historical precedent
+3. Study [Case Studies](/knowledge-base/history/) for historical precedent
 4. Explore [Responses](/knowledge-base/responses/) for what can be done
 5. Reach out to researchers for briefings
 

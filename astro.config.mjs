@@ -45,15 +45,16 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'Overview', slug: 'knowledge-base' },
-                      { label: 'Responses & Interventions', collapsed: true, items: [
+                      { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'Technical Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/technical' } },
                           { label: 'Governance', collapsed: true, items: [
                               { label: 'Overview', slug: 'knowledge-base/responses/governance' },
                               { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
-                              { label: 'Policy Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/policy-approaches' } },
+                              { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
                               { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
                               { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
+                              { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment' },
                           ]},
                           { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
                           { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
@@ -61,7 +62,7 @@ export default defineConfig({
                           { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
                           { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
                       ]},
-                      { label: 'Risks & Failure Modes', collapsed: true, items: [
+                      { label: 'Risks', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/risks' },
                           { label: 'Accident Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/accident' } },
                           { label: 'Misuse Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/misuse' } },
@@ -69,7 +70,6 @@ export default defineConfig({
                           { label: 'Epistemic Harms', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
                       ]},
                       { label: 'Risk Factors', collapsed: true, autogenerate: { directory: 'knowledge-base/risk-factors' } },
-                      { label: 'Key Uncertainties', collapsed: true, autogenerate: { directory: 'knowledge-base/cruxes' } },
                       { label: 'Organizations', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/organizations' },
                           { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
@@ -77,10 +77,8 @@ export default defineConfig({
                           { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
                       ]},
                       { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
-                      { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/funders' } },
                       { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
-                      { label: 'Key Literature', collapsed: true, autogenerate: { directory: 'knowledge-base/literature' } },
                       { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
                       { label: 'Scenarios', collapsed: true, autogenerate: { directory: 'knowledge-base/scenarios' } },
@@ -103,9 +101,9 @@ export default defineConfig({
                   autogenerate: { directory: 'guides' },
               },
               {
-                  label: 'Style Guides',
+                  label: 'Internal',
                   collapsed: true,
-                  autogenerate: { directory: 'style-guides' },
+                  autogenerate: { directory: 'internal' },
               },
           ],
       }),
@@ -113,6 +111,17 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['mermaid'],
+      esbuildOptions: {
+        // Ensure mermaid's dynamic imports are bundled
+        target: 'esnext',
+      },
+    },
+    ssr: {
+      // Don't externalize mermaid - bundle it
+      noExternal: ['mermaid'],
+    },
   },
 
   markdown: {

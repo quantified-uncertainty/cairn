@@ -51,6 +51,7 @@ export type { EntityType as EntityTypeEnum } from './EntityTypeIcon';
 export { Backlinks } from './Backlinks';
 export { TagBrowser } from './TagBrowser';
 export { EntityIndex } from './EntityIndex';
+export { PageIndex } from './PageIndex';
 export { RecentUpdates } from './RecentUpdates';
 
 // Risk relationship diagrams
@@ -59,6 +60,7 @@ export { RiskRelationshipDiagram } from './RiskRelationshipDiagram';
 // Analytical models
 export { ModelsList } from './ModelsList';
 export { ModelRatings } from './ModelRatings';
+export { ModelsTable } from './ModelsTable';
 export type { ModelRatingsData } from './ModelRatings';
 
 // Editorial / page management
