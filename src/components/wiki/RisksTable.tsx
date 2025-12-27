@@ -38,20 +38,23 @@ function Badge({ children, variant = "default" }: { children: React.ReactNode; v
   )
 }
 
-function RatingCell({ value }: { value: number | null }) {
+function ImportanceCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
 
-  const colorClass = value >= 4
+  // 0-100 scale: 90+ essential, 70-89 high, 50-69 useful, 30-49 reference, <30 peripheral
+  const colorClass = value >= 90
+    ? "bg-purple-200 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200"
+    : value >= 70
     ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-    : value >= 3
+    : value >= 50
     ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
-    : value >= 2
+    : value >= 30
     ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
     : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
 
   return (
-    <span className={cn("inline-flex items-center justify-center w-6 h-6 rounded text-sm font-medium", colorClass)}>
-      {value}
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {Math.round(value)}
     </span>
   )
 }
@@ -118,7 +121,7 @@ const columns: ColumnDef<Risk>[] = [
   {
     accessorKey: "importance",
     header: ({ column }) => <SortableHeader column={column}>Imp</SortableHeader>,
-    cell: ({ row }) => <RatingCell value={row.getValue("importance")} />,
+    cell: ({ row }) => <ImportanceCell value={row.getValue("importance")} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.getValue("importance") as number | null
       const b = rowB.getValue("importance") as number | null

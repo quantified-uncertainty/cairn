@@ -1,15 +1,14 @@
 ---
 title: Evals & Red-teaming
 description: Testing AI systems for dangerous capabilities and behaviors.
-importance: 4
+importance: 82
 quality: 4
-llmSummary: This page analyzes AI evaluation and red-teaming approaches for
-  detecting dangerous capabilities and misaligned behaviors. It identifies key
-  limitations including the inability to catch deceptive alignment and novel
-  failure modes, while noting high tractability but low neglectedness in the
-  field.
----
-**The approach**: Systematically evaluate AI systems for dangerous capabilities, misalignment, and failure modes before and during deployment.
+llmSummary: Evaluations and red-teaming systematically test AI systems for
+  dangerous capabilities and misaligned behaviors, with high tractability but
+  key limitations around detecting deceptive alignment and novel failure modes.
+  The approach is already a major focus at labs but faces fundamental questions
+  about whether sophisticated AI systems could game evaluation processes.
+---**The approach**: Systematically evaluate AI systems for dangerous capabilities, misalignment, and failure modes before and during deployment.
 
 ## Evaluation Summary
 

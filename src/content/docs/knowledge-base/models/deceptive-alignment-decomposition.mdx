@@ -12,14 +12,15 @@ ratings:
   rigor: 4
   actionability: 4
   completeness: 5
-importance: 5
+importance: 85
 llmSummary: This model decomposes deceptive alignment probability into five
-  necessary conditions (mesa-optimization, misalignment, situational awareness,
-  strategic deception, survival through safety training) using a multiplicative
-  framework. It estimates a central case probability of 5% for deceptive
-  alignment emerging, with ranges from 0.5% to 24% across scenarios.
----
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
+  multiplicative conditions (mesa-optimization, misaligned objectives,
+  situational awareness, strategic deception, and survival through safety
+  training), estimating overall risk at 0.5-24.2% with a central estimate of 5%.
+  The framework provides quantitative parameter estimates for each condition and
+  identifies specific intervention points where reducing any single factor by
+  50% reduces overall risk by 50%.
+---import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="deceptive-alignment-decomposition" ratings={frontmatter.ratings} />
 
@@ -307,10 +308,9 @@ The model also faces a fundamental **reference class problem**: we have no examp
 
 ## Related Models
 
-- [Mesa-Optimization Analysis](/knowledge-base/models/mesa-optimization/) — Detailed analysis of when internal optimizers emerge
-- [Situational Awareness Trajectory](/knowledge-base/models/situational-awareness/) — Timeline for awareness development
-- [AI Scheming Likelihood](/knowledge-base/models/scheming-likelihood/) — Broader treatment including non-mesa-optimizer paths
-- [Corrigibility Failure Pathways](/knowledge-base/models/corrigibility-failure/) — Overlapping failure modes
+- [Mesa-Optimization Analysis](/knowledge-base/models/mesa-optimization-analysis/) — Detailed analysis of when internal optimizers emerge
+- [AI Scheming Likelihood](/knowledge-base/models/scheming-likelihood-model/) — Broader treatment including non-mesa-optimizer paths
+- [Corrigibility Failure Pathways](/knowledge-base/models/corrigibility-failure-pathways/) — Overlapping failure modes
 
 ## Sources
 

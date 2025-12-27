@@ -1,14 +1,13 @@
 ---
 title: RLHF / Constitutional AI
 description: Training AI to be helpful and harmless through human feedback.
-importance: 5
+importance: 82
 quality: 4
-llmSummary: This page evaluates RLHF and Constitutional AI approaches for
-  training helpful, harmless AI through human or AI-generated feedback. It
-  identifies key scaling challenges including inability to evaluate superhuman
-  outputs and risks of sycophancy/gaming behaviors.
----
-**The approach**: Use human feedback (RLHF) or AI-generated feedback based on principles (Constitutional AI) to train models to be helpful, harmless, and honest.
+llmSummary: Evaluates RLHF and Constitutional AI as alignment approaches,
+  finding high tractability for current systems but uncertainty about scaling to
+  superhuman AI due to inability to evaluate superhuman outputs and potential
+  for sycophancy/gaming behaviors.
+---**The approach**: Use human feedback (RLHF) or AI-generated feedback based on principles (Constitutional AI) to train models to be helpful, harmless, and honest.
 
 ## Evaluation Summary
 

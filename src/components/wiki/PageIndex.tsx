@@ -22,29 +22,44 @@ interface PageIndexProps {
   title?: string
 }
 
-function RatingCell({ value, colorScheme = "quality" }: { value: number | null; colorScheme?: "quality" | "importance" }) {
+function QualityCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
 
-  const qualityColors = {
-    high: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-    medium: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-    low: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-    minimal: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  }
-
-  const importanceColors = {
-    high: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-    medium: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
-    low: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-    minimal: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  }
-
-  const colors = colorScheme === "importance" ? importanceColors : qualityColors
-  const colorClass = value >= 4 ? colors.high : value >= 3 ? colors.medium : value >= 2 ? colors.low : colors.minimal
+  const colorClass = value >= 4
+    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+    : value >= 3
+    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+    : value >= 2
+    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
 
   return (
     <span className={cn("inline-flex items-center justify-center w-6 h-6 rounded text-sm font-medium", colorClass)}>
       {value}
+    </span>
+  )
+}
+
+function ImportanceCell({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-muted-foreground">—</span>
+
+  // 0-100 scale: 90+ essential, 70-89 high, 50-69 useful, 30-49 reference, <30 peripheral
+  const colorClass = value >= 90
+    ? "bg-purple-200 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200"
+    : value >= 70
+    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+    : value >= 50
+    ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
+    : value >= 30
+    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+
+  // Display as integer for cleaner look
+  const displayValue = Math.round(value)
+
+  return (
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {displayValue}
     </span>
   )
 }
@@ -73,7 +88,7 @@ const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "importance",
     header: ({ column }) => <SortableHeader column={column}>Imp</SortableHeader>,
-    cell: ({ row }) => <RatingCell value={row.getValue("importance")} colorScheme="importance" />,
+    cell: ({ row }) => <ImportanceCell value={row.getValue("importance")} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.getValue("importance") as number | null
       const b = rowB.getValue("importance") as number | null
@@ -83,7 +98,7 @@ const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "quality",
     header: ({ column }) => <SortableHeader column={column}>Qual</SortableHeader>,
-    cell: ({ row }) => <RatingCell value={row.getValue("quality")} colorScheme="quality" />,
+    cell: ({ row }) => <QualityCell value={row.getValue("quality")} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.getValue("quality") as number | null
       const b = rowB.getValue("quality") as number | null
@@ -135,9 +150,11 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
 
   const stats = React.useMemo(() => {
     const byQuality: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-    const byImportance: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+    // Importance ranges: 90-100, 70-89, 50-69, 30-49, 0-29
+    const byImportanceRange = { "90+": 0, "70-89": 0, "50-69": 0, "30-49": 0, "<30": 0 }
     let noQuality = 0
     let noImportance = 0
+    let importanceSum = 0
 
     pages.forEach(p => {
       if (p.quality !== null && p.quality >= 1 && p.quality <= 5) {
@@ -145,8 +162,13 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
       } else {
         noQuality++
       }
-      if (p.importance !== null && p.importance >= 1 && p.importance <= 5) {
-        byImportance[p.importance]++
+      if (p.importance !== null && p.importance >= 0) {
+        importanceSum += p.importance
+        if (p.importance >= 90) byImportanceRange["90+"]++
+        else if (p.importance >= 70) byImportanceRange["70-89"]++
+        else if (p.importance >= 50) byImportanceRange["50-69"]++
+        else if (p.importance >= 30) byImportanceRange["30-49"]++
+        else byImportanceRange["<30"]++
       } else {
         noImportance++
       }
@@ -154,10 +176,10 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
 
     const withImportance = pages.length - noImportance
     const avgImportance = withImportance > 0
-      ? (Object.entries(byImportance).reduce((sum, [k, v]) => sum + parseInt(k) * v, 0) / withImportance).toFixed(1)
+      ? (importanceSum / withImportance).toFixed(1)
       : "—"
 
-    return { total: pages.length, byQuality, byImportance, noQuality, noImportance, withImportance, avgImportance }
+    return { total: pages.length, byQuality, byImportanceRange, noQuality, noImportance, withImportance, avgImportance }
   }, [])
 
   return (

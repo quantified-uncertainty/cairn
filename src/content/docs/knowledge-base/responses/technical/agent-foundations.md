@@ -1,15 +1,15 @@
 ---
 title: Agent Foundations
 description: Theoretical research on the foundations of aligned agency.
-importance: 4
+importance: 75
 quality: 4
-llmSummary: This page analyzes agent foundations research, which develops
-  mathematical frameworks for understanding agency, goals, and alignment before
-  these become practical problems. It identifies key tensions around
-  tractability, theory-practice transfer, and timeline considerations that
-  determine the approach's value.
----
-**The approach**: Develop mathematical foundations for understanding agency, goals, and alignment—solving theoretical problems before they manifest in real systems.
+llmSummary: Agent foundations research develops mathematical frameworks for
+  understanding agency, goals, and alignment, with high potential value if
+  alignment proves fundamentally difficult but low tractability and uncertain
+  practical transfer. The approach is assessed as highly neglected with few
+  researchers, making it valuable for those with strong math/philosophy
+  backgrounds who believe in long timelines and hard alignment scenarios.
+---**The approach**: Develop mathematical foundations for understanding agency, goals, and alignment—solving theoretical problems before they manifest in real systems.
 
 ## Evaluation Summary
 

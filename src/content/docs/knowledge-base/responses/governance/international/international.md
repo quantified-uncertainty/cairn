@@ -1,15 +1,14 @@
 ---
 title: International Coordination
 description: Global cooperation on AI safety and governance.
-importance: 4
+importance: 82
 quality: 3
-llmSummary: This page analyzes international coordination approaches for AI
-  safety, focusing on US-China cooperation and various forms of coordination
-  mechanisms. It presents key cruxes around feasibility and desirability of
-  cooperation, noting current efforts like AI Safety Summits have limited
-  substantive progress.
----
-**The approach**: Develop international cooperation mechanisms to ensure AI is developed safely worldwide—especially US-China coordination.
+llmSummary: Evaluates international coordination on AI safety, particularly
+  US-China cooperation, finding low tractability due to geopolitical tensions
+  but high importance if alignment is difficult. Identifies key cooperation
+  areas (information sharing, safety standards) as medium feasibility while full
+  partnership remains very unlikely.
+---**The approach**: Develop international cooperation mechanisms to ensure AI is developed safely worldwide—especially US-China coordination.
 
 ## Evaluation Summary
 

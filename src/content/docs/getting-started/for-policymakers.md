@@ -3,15 +3,16 @@ title: For Policymakers
 description: Reading path for policy professionals working on AI governance
 sidebar:
   order: 3
-importance: 5
+importance: 85.2
 quality: 5
-llmSummary: A comprehensive policy guide covering AI existential risks,
-  governance approaches, and strategic considerations for policymakers. It
-  provides detailed analysis of policy interventions including compute
-  governance, mandatory evaluations, and international coordination, with
-  practical frameworks for evaluating proposals.
----
-If you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
+llmSummary: "This comprehensive guide provides policymakers with a structured
+  overview of AI safety risks and governance approaches, emphasizing the urgency
+  of preparing for transformative AI within 10-30 years. It identifies three
+  high-leverage policy interventions: compute governance (hardware
+  tracking/controls), mandatory safety evaluations, and international
+  coordination, while mapping current policy frameworks across US, EU, UK, and
+  China."
+---If you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
 
 ## Executive Summary (5 minutes)
 

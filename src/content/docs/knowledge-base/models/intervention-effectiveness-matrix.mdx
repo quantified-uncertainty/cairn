@@ -11,15 +11,14 @@ ratings:
   rigor: 3
   actionability: 5
   completeness: 4
-importance: 5
-llmSummary: "This matrix systematically maps AI safety interventions (technical,
-  governance, organizational) to specific risks they mitigate, providing
-  effectiveness ratings and identifying critical gaps. Key finding:
-  interpretability and AI Control are severely underfunded relative to their
-  importance for addressing deceptive alignment, while RLHF-adjacent work is
-  overfunded."
----
-import { Aside } from '@astrojs/starlight/components';
+importance: 95
+llmSummary: This comprehensive matrix maps AI safety interventions to specific
+  risks with effectiveness estimates, revealing critical gaps where deceptive
+  alignment and scheming have no effective countermeasures while current efforts
+  over-invest in RLHF-adjacent work. The analysis provides concrete resource
+  allocation recommendations, suggesting 20% funding shifts from RLHF to
+  interpretability and substantial increases in AI Control research.
+---import { Aside } from '@astrojs/starlight/components';
 import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-effectiveness-matrix" ratings={frontmatter.ratings} />

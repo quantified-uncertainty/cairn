@@ -142,14 +142,14 @@ const maturityConfig: Record<string, { label: string; color: string }> = {
   mature: { label: 'Mature', color: '#22c55e' },
 };
 
-// Importance uses purple color scheme (matching PageIndex)
-const importanceColors: Record<number, string> = {
-  5: '#7c3aed', // purple-600
-  4: '#8b5cf6', // purple-500
-  3: '#6366f1', // indigo-500
-  2: '#3b82f6', // blue-500
-  1: '#94a3b8', // slate-400
-};
+// Get importance color based on 0-100 scale
+function getImportanceColor(value: number): string {
+  if (value >= 90) return '#7c3aed'; // purple-600 - essential
+  if (value >= 70) return '#8b5cf6'; // purple-500 - high
+  if (value >= 50) return '#6366f1'; // indigo-500 - useful
+  if (value >= 30) return '#3b82f6'; // blue-500 - reference
+  return '#94a3b8'; // slate-400 - peripheral
+}
 
 export function InfoBox({
   type,
@@ -186,9 +186,9 @@ export function InfoBox({
 
   const fields: { label: string; value: string }[] = [];
 
-  // Add importance first if present (universal field)
+  // Add importance first if present (universal field) - now 0-100 scale
   if (importance !== undefined) {
-    fields.push({ label: 'Importance', value: importance.toString() });
+    fields.push({ label: 'Importance', value: Math.round(importance).toString() });
   }
 
   // Add fields based on type
@@ -248,8 +248,8 @@ export function InfoBox({
         {fields.map((field, index) => {
           // Determine styling based on field type
           let valueStyle: React.CSSProperties | undefined;
-          if (field.label === 'Importance' && importance) {
-            valueStyle = { color: importanceColors[importance] || 'inherit', fontWeight: 600 };
+          if (field.label === 'Importance' && importance !== undefined) {
+            valueStyle = { color: getImportanceColor(importance), fontWeight: 600 };
           } else if (field.label === 'Severity' && severity) {
             valueStyle = { color: severityColors[severity] || 'inherit', fontWeight: 600 };
           } else if (field.label === 'Category' && catColor) {

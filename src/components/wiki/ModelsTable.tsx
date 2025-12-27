@@ -23,6 +23,27 @@ function RatingCell({ value }: { value: number | null }) {
   return <span>{value}</span>
 }
 
+function ImportanceCell({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-muted-foreground">—</span>
+
+  // 0-100 scale: 90+ essential, 70-89 high, 50-69 useful, 30-49 reference, <30 peripheral
+  const colorClass = value >= 90
+    ? "bg-purple-200 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200"
+    : value >= 70
+    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+    : value >= 50
+    ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
+    : value >= 30
+    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+
+  return (
+    <span className={`inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium ${colorClass}`}>
+      {Math.round(value)}
+    </span>
+  )
+}
+
 function TypeBadge({ type }: { type: string | null }) {
   if (!type) return <span className="text-muted-foreground">—</span>
   return (
@@ -36,7 +57,7 @@ const columns: ColumnDef<ModelRow>[] = [
   {
     accessorKey: "importance",
     header: ({ column }) => <SortableHeader column={column}>Imp</SortableHeader>,
-    cell: ({ row }) => <RatingCell value={row.getValue("importance")} />,
+    cell: ({ row }) => <ImportanceCell value={row.getValue("importance")} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.getValue("importance") as number | null
       const b = rowB.getValue("importance") as number | null
@@ -113,10 +134,12 @@ export function ModelsTable() {
   const stats = React.useMemo(() => {
     const total = data.length
     const withRatings = data.filter(m => m.novelty !== null).length
+    const withImportance = data.filter(m => m.importance !== null).length
+    const avgImportance = data.filter(m => m.importance !== null).reduce((sum, m) => sum + (m.importance || 0), 0) / (withImportance || 1)
     const avgNovelty = data.filter(m => m.novelty).reduce((sum, m) => sum + (m.novelty || 0), 0) / (withRatings || 1)
     const avgRigor = data.filter(m => m.rigor).reduce((sum, m) => sum + (m.rigor || 0), 0) / (withRatings || 1)
 
-    return { total, withRatings, avgNovelty: avgNovelty.toFixed(1), avgRigor: avgRigor.toFixed(1) }
+    return { total, withRatings, withImportance, avgImportance: avgImportance.toFixed(0), avgNovelty: avgNovelty.toFixed(1), avgRigor: avgRigor.toFixed(1) }
   }, [data])
 
   return (
@@ -127,6 +150,10 @@ export function ModelsTable() {
           <span className="text-2xl font-bold">{stats.total}</span>
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Total Models</span>
         </div>
+        <div className="flex flex-col border-l-2 border-l-purple-500 pl-3">
+          <span className="text-2xl font-bold">{stats.avgImportance}</span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide">Avg Importance</span>
+        </div>
         <div className="flex flex-col border-l-2 border-l-indigo-500 pl-3">
           <span className="text-2xl font-bold">{stats.withRatings}</span>
           <span className="text-xs text-muted-foreground uppercase tracking-wide">With Ratings</span>
@@ -134,10 +161,6 @@ export function ModelsTable() {
         <div className="flex flex-col border-l-2 border-l-blue-500 pl-3">
           <span className="text-2xl font-bold">{stats.avgNovelty}</span>
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Avg Novelty</span>
-        </div>
-        <div className="flex flex-col border-l-2 border-l-green-500 pl-3">
-          <span className="text-2xl font-bold">{stats.avgRigor}</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Avg Rigor</span>
         </div>
       </div>
 

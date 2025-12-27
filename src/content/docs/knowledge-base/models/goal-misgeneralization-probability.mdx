@@ -10,15 +10,14 @@ ratings:
   rigor: 4
   actionability: 4
   completeness: 4
-importance: 5
+importance: 85.2
 llmSummary: This model provides a quantitative framework for estimating goal
-  misgeneralization probability across deployment scenarios, using a
-  mathematical decomposition into capability generalization, goal failure, and
-  harm components. It finds misgeneralization risk varies from 1% for minor
-  shifts to over 50% for extreme distribution shifts, with key modifiers
-  including specification quality and capability level.
----
-import { DataInfoBox, Mermaid } from '@/components/wiki';
+  misgeneralization probability across deployment scenarios, finding risk varies
+  from ~1% for minor distribution shifts with well-specified objectives to over
+  50% for extreme shifts with poorly specified goals. The analysis decomposes
+  misgeneralization probability into capability generalization, goal failure,
+  and harm components, offering actionable insights for deployment practices.
+---import { DataInfoBox, Mermaid } from '@/components/wiki';
 
 <DataInfoBox entityId="goal-misgeneralization-probability" ratings={frontmatter.ratings} />
 

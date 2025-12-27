@@ -21,15 +21,13 @@ ratings:
   rigor: 3
   actionability: 5
   completeness: 4
-importance: 3
-llmSummary: This model analyzes recovery pathways from AI incidents across five
-  types (contained technical to alignment failures), finding that clear
-  attribution enables 3-5x faster recovery and preserved human expertise can
-  reduce recovery time by 2-20x. It recommends allocating 5-10% of safety
-  resources to recovery planning, particularly for trust rebuilding and skill
-  preservation which are currently neglected.
----
-import { Aside } from '@astrojs/starlight/components';
+importance: 65
+llmSummary: This model analyzes recovery pathways from AI incidents across 5
+  types (technical failures to alignment failures), finding that clear
+  attribution enables 3-5x faster recovery and recommending allocation of 5-10%
+  of safety resources to recovery capacity, with particular focus on
+  trust/epistemic recovery and skill preservation as the most neglected areas.
+---import { Aside } from '@astrojs/starlight/components';
 import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
 
 <DataInfoBox entityId="post-incident-recovery" ratings={frontmatter.ratings} />

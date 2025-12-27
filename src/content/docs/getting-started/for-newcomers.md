@@ -3,14 +3,15 @@ title: For Newcomers
 description: Your reading path if you're new to AI safety
 sidebar:
   order: 1
-importance: 5
+importance: 55
 quality: 5
-llmSummary: This comprehensive guide provides structured learning paths for AI
-  safety newcomers, ranging from a 5-minute overview to a full-day curriculum.
-  It covers core concepts, common misconceptions, and emphasizes critical
-  engagement while helping readers form their own informed views on AI risk.
----
-Welcome! If you're new to AI safety, this page will guide you through the essential concepts in a logical order. We've designed several reading paths based on how much time you have.
+llmSummary: A structured onboarding guide for AI safety newcomers offering three
+  reading paths (5-minute, 30-minute, 2-hour, and full-day) with specific page
+  recommendations and time allocations. Provides key statistics (median expert
+  timeline ~2040, 5-90% catastrophic risk estimates, 300-1000 full-time safety
+  researchers) and systematically introduces core concepts from basic risks to
+  technical solutions.
+---Welcome! If you're new to AI safety, this page will guide you through the essential concepts in a logical order. We've designed several reading paths based on how much time you have.
 
 ## Start Here: The 5-Minute Version
 
