@@ -22,7 +22,7 @@ When multiple AI risks occur together, their combined effect is often dramatical
 
 Understanding compounding matters because it fundamentally changes how we should allocate limited resources for AI safety. An intervention that reduces a single risk by 50% might be far less valuable than one that reduces an interaction coefficient between two risks by 30%, even though the latter sounds less impressive. Similarly, some risks that appear manageable in isolation become catastrophic when they co-occur with others—and these dangerous combinations may be more likely than we assume because the same underlying conditions (e.g., competitive pressure) simultaneously increase multiple correlated risks.
 
-The framework distinguishes four types of compounding: multiplicative probability (where Risk A makes Risk B more likely), severity multiplication (where combined impacts exceed the sum), defense negation (where Risk A disables safeguards against Risk B), and threshold crossing (where combined effects exceed critical limits that individual risks wouldn't breach). Each type requires different defensive strategies, and many real-world scenarios involve all four simultaneously. This creates a landscape where compound risk assessment is not optional but essential for prioritizing the highest-leverage interventions.
+The framework distinguishes four types of compounding: multiplicative probability (where Risk A makes Risk B more likely), severity multiplication (where combined impacts exceed the sum), defense negation (where Risk A disables safeguards against Risk B), and nonlinear combined effects (where compound impacts are qualitatively different from individual risks). Each type requires different defensive strategies, and many real-world scenarios involve all four simultaneously. This creates a landscape where compound risk assessment is not optional but essential for prioritizing the highest-leverage interventions.
 
 ## Conceptual Framework
 
@@ -32,14 +32,14 @@ flowchart TD
         T1["Type 1: Multiplicative Probability<br/>P(B|A) > P(B)"]
         T2["Type 2: Severity Multiplication<br/>Impact(A∩B) > Impact(A) + Impact(B)"]
         T3["Type 3: Defense Negation<br/>A disables safeguards against B"]
-        T4["Type 4: Threshold Crossing<br/>Combined effect exceeds critical limit"]
+        T4["Type 4: Nonlinear Combined Effects<br/>Compound effects qualitatively different"]
     end
 
     subgraph Outcomes["Compound Outcomes"]
         O1["3-5x Higher Probability"]
         O2["2-10x Higher Severity"]
         O3["Detection Failure"]
-        O4["Phase Transition"]
+        O4["Qualitative Change"]
     end
 
     subgraph Assessment["Risk Assessment Impact"]
@@ -136,19 +136,21 @@ $$
 | Moderate Atrophy | 35% | 30% | 2x |
 | Severe Atrophy | 15% | 50% | 3.3x |
 
-### Type 4: Threshold Crossing
+### Type 4: Nonlinear Combined Effects
 
-When combined risks cross a threshold that individual risks wouldn't:
+When combined risks produce qualitatively different outcomes than individual risks would suggest:
 
 $$
-R_1 + R_2 < \text{Threshold} < R_1 + R_2 + \text{Interaction Effect}
+\text{Effect}(R_1 + R_2 + \text{Interaction}) \gg \text{Effect}(R_1) + \text{Effect}(R_2)
 $$
 
-| Factor | Individual Contribution | Combined with Interaction | Threshold Status |
-|--------|------------------------|--------------------------|-----------------|
-| Epistemic degradation | 40% toward collapse | - | Below |
-| Political polarization | 35% toward collapse | - | Below |
-| Combined | - | 95% toward collapse | **CROSSED** (>80%) |
+| Factor | Individual Contribution | Combined with Interaction | Effect Level |
+|--------|------------------------|--------------------------|--------------|
+| Epistemic degradation | Moderate stress | - | Manageable |
+| Political polarization | Moderate stress | - | Manageable |
+| Combined | - | Severe compound stress | Qualitatively different |
+
+**Caveat:** This is *not* claiming a discrete "80% threshold" exists. Real systems degrade continuously—but compound effects can produce qualitatively different outcomes (e.g., democratic erosion that feels manageable becomes acute when both epistemics and polarization degrade together).
 
 ## Compound Risk Network
 
@@ -351,7 +353,7 @@ This model has significant limitations that affect the reliability of its conclu
 
 **Temporal dynamics are simplified.** The model treats risks as static probabilities when in reality they evolve over time, with interaction strengths changing as capabilities advance. A racing dynamic that starts mild may intensify rapidly; interaction effects that seem manageable at current capability levels may become overwhelming at higher levels.
 
-**Threshold locations are unknown.** The model discusses threshold crossing but cannot specify where thresholds actually lie. We may discover threshold locations only by crossing them, at which point intervention is too late. The model cannot distinguish between being 5% below a threshold and 50% below.
+**"Threshold crossing" implies false precision.** The model uses threshold language (e.g., ">80% toward collapse triggers cascade") but most real-world systems degrade continuously rather than exhibiting discrete phase transitions. Democratic systems don't suddenly collapse at a magic number—they erode gradually. The threshold framing is useful for illustrating how combined effects can be qualitatively different, but should not be interpreted as predicting actual tipping points. In most cases, there are no sharp cutoffs; instead, each factor continuously influences the others.
 
 **Empirical validation is impossible pre-catastrophe.** We cannot empirically test compound risk predictions without experiencing the compound failures. This creates fundamental uncertainty that more sophisticated modeling cannot resolve—the model's accuracy can only be assessed after outcomes we hope to prevent.
 

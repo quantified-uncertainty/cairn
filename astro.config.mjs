@@ -88,19 +88,7 @@ export default defineConfig({
                       { label: 'Key Literature', collapsed: true, autogenerate: { directory: 'knowledge-base/literature' } },
                       { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
-                  ],
-              },
-              {
-                  label: 'Analysis',
-                  collapsed: true,
-                  items: [
-                      { label: 'Overview', slug: 'analysis' },
-                      { label: 'Scenarios', collapsed: true, autogenerate: { directory: 'analysis/scenarios' } },
-                      { label: 'Case Studies', collapsed: true, autogenerate: { directory: 'analysis/case-studies' } },
-                      { label: 'AI Timeline', slug: 'analysis/ai-timeline' },
-                      { label: 'Risk Map', slug: 'analysis/risk-map' },
-                      { label: 'Estimates Dashboard', slug: 'analysis/estimates-dashboard' },
-                      { label: 'Comparisons', slug: 'analysis/comparisons' },
+                      { label: 'Scenarios', collapsed: true, autogenerate: { directory: 'knowledge-base/scenarios' } },
                   ],
               },
               {

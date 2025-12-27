@@ -94,11 +94,11 @@ The diagram illustrates the five thresholds as a progression of control loss. **
 
 | System Type | Operation Speed | Speed Ratio vs Human | Threshold Status |
 |-------------|----------------|----------------------|-----------------|
-| High-frequency trading | 64 microseconds | 10,000,000x faster | T1-T2 EXCEEDED |
-| AI model inference | 10-100ms | 10-100x faster | T1 APPROACHED |
-| Autonomous vehicle decisions | 50-200ms | 5-20x faster | T1-T2 APPROACHING |
-| Content recommendation | 100-500ms | 2-10x faster | T1 EXCEEDED |
-| AI-to-AI communication | 1-100ms | 100-10,000x faster | T1-T2 EXCEEDED |
+| High-frequency trading | 64 microseconds | 10,000,000x faster | T1-T2 largely past |
+| AI model inference | 10-100ms | 10-100x faster | T1 degrading |
+| Autonomous vehicle decisions | 50-200ms | 5-20x faster | T1-T2 degrading |
+| Content recommendation | 100-500ms | 2-10x faster | T1 largely past |
+| AI-to-AI communication | 1-100ms | 100-10,000x faster | T1-T2 largely past |
 | Network propagation | Microseconds-seconds | Variable | Context-dependent |
 
 ### AI System Speed Projections
@@ -189,9 +189,9 @@ $$
 
 | Domain | Status | Evidence | Risk Level |
 |--------|--------|----------|------------|
-| Financial markets | PARTIALLY EXCEEDED | Some flash crashes unexplained | Very High |
-| Social media | APPROACHING | Viral dynamics + AI recommendations | High |
-| Large language models | APPROACHING | Emergent capabilities, unexpected interactions | Very High |
+| Financial markets | Partially beyond comprehension | Some flash crashes unexplained | Very High |
+| Social media | Increasingly beyond comprehension | Viral dynamics + AI recommendations | High |
+| Large language models | Increasingly beyond comprehension | Emergent capabilities, unexpected interactions | Very High |
 
 **Control Implications:** Cannot predict system behavior. Cannot diagnose failures in real-time. Cannot design interventions confidently. Reliance on AI to understand AI.
 
@@ -211,10 +211,10 @@ $$
 
 | Domain | Status | Evidence | Risk Level |
 |--------|--------|----------|------------|
-| Financial markets | PARTIAL | Flash crashes recover, but could be worse | Critical |
-| Infrastructure | NOT YET | Limited AI integration | Medium |
-| Military | NOT YET | Autonomous weapons not widely deployed | Critical (if reached) |
-| AI development | NOT YET | But risk increases with capability | Critical (potential) |
+| Financial markets | Partially at risk | Flash crashes recover, but could be worse | Critical |
+| Infrastructure | Limited risk currently | Limited AI integration | Medium |
+| Military | Limited risk currently | Autonomous weapons not widely deployed | Critical (if degraded) |
+| AI development | Limited risk currently | But risk increases with capability | Critical (potential) |
 
 **Control Implications:** Irreversible changes possible. Catastrophic outcomes without recovery. No second chances. System becomes fundamentally unsafe.
 
@@ -241,35 +241,35 @@ $$
 <Mermaid client:load chart={`
 flowchart TD
     subgraph Finance["Financial Markets"]
-        F1["T1: EXCEEDED"]
-        F2["T2: EXCEEDED"]
-        F3["T3: APPROACHING"]
-        F4["T4: PARTIAL"]
+        F1["T1: Largely past"]
+        F2["T2: Largely past"]
+        F3["T3: Degrading"]
+        F4["T4: Partially at risk"]
         F5["T5: N/A"]
     end
 
     subgraph Cyber["Cybersecurity"]
-        C1["T1: EXCEEDED"]
-        C2["T2: APPROACHING"]
-        C3["T3: APPROACHING"]
-        C4["T4: NOT YET"]
+        C1["T1: Largely past"]
+        C2["T2: Degrading"]
+        C3["T3: Degrading"]
+        C4["T4: Limited"]
         C5["T5: N/A"]
     end
 
     subgraph Infra["Infrastructure"]
-        I1["T1: APPROACHING"]
-        I2["T2: NOT YET"]
-        I3["T3: NOT YET"]
-        I4["T4: NOT YET"]
+        I1["T1: Degrading"]
+        I2["T2: Limited"]
+        I3["T3: Limited"]
+        I4["T4: Limited"]
         I5["T5: N/A"]
     end
 
     subgraph AIDev["AI Development"]
-        A1["T1: NOT YET"]
-        A2["T2: NOT YET"]
-        A3["T3: APPROACHING"]
-        A4["T4: NOT YET"]
-        A5["T5: NOT YET"]
+        A1["T1: Limited"]
+        A2["T2: Limited"]
+        A3["T3: Degrading"]
+        A4["T4: Limited"]
+        A5["T5: Limited"]
     end
 
     style F1 fill:#ff6666
@@ -286,7 +286,7 @@ flowchart TD
 
 | Aspect | Status | Evidence |
 |--------|--------|----------|
-| Threshold Status | T1-T2 EXCEEDED, T3 APPROACHING, T4 PARTIAL | Flash Crashes 2010, 2024 |
+| Threshold Status | T1-T2 largely past, T3 degrading, T4 partial risk | Flash Crashes 2010, 2024 |
 | Interventions in Place | Circuit breakers, position limits, monitoring | Partial effectiveness |
 | Trend | Worsening | More AI trading, faster systems, greater interconnection |
 | IMF Assessment (Oct 2024) | AI increasing volatility | Shorter-timescale correlations |
@@ -295,7 +295,7 @@ flowchart TD
 
 | Aspect | Status | Evidence |
 |--------|--------|----------|
-| Threshold Status | T1 EXCEEDED, T2-T3 APPROACHING | Automated attack/defense cycles |
+| Threshold Status | T1 largely past, T2-T3 degrading | Automated attack/defense cycles |
 | Dynamics | Arms race accelerating | AI attack tools faster and adaptive |
 | Human Role | Increasingly sidelined | Operators cannot keep pace |
 | Concern | Both sides beyond human oversight | Attack and defense beyond human speed |
@@ -304,7 +304,7 @@ flowchart TD
 
 | Aspect | Status | Evidence |
 |--------|--------|----------|
-| Threshold Status | T3 APPROACHING, others NOT YET | Emergent capabilities |
+| Threshold Status | T3 degrading, others limited | Emergent capabilities |
 | Key Risk | All thresholds may be approached rapidly | If AI can improve AI |
 | Trigger Conditions | AI automates ML research, can improve own architecture | Feedback loops in capability development |
 | Time to Threshold | Highly uncertain | Possibly 3-10 years |
