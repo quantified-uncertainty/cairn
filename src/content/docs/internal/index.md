@@ -16,4 +16,5 @@ This section contains internal documentation for maintaining and contributing to
 
 ## Project Management
 
+- [Enhancement Queue](/internal/enhancement-queue/) - Track content enhancement progress across all page types
 - [Project Roadmap](/internal/project-roadmap/) - Future work, infrastructure improvements, and tracking

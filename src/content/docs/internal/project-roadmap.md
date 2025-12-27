@@ -6,7 +6,10 @@ sidebar:
 lastEdited: "2025-12-26"
 ---
 
-This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For model-specific enhancement tasks, see the [Model Enhancement TODO](/knowledge-base/models/_ENHANCEMENT_TODO/).
+This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see:
+- [Model Enhancement TODO](/knowledge-base/models/_ENHANCEMENT_TODO/)
+- [Risk Enhancement TODO](/knowledge-base/risks/_ENHANCEMENT_TODO/)
+- [Response Enhancement TODO](/knowledge-base/responses/_ENHANCEMENT_TODO/)
 
 ---
 
@@ -90,21 +93,13 @@ Covers risks and responses with emphasis on:
 
 ## Content Priorities
 
-### High Priority Pages
+Enhancement task queues are now tracked in dedicated files:
+- **Models**: [_ENHANCEMENT_TODO.md](/knowledge-base/models/_ENHANCEMENT_TODO/) - ~26 pending
+- **Risks**: [_ENHANCEMENT_TODO.md](/knowledge-base/risks/_ENHANCEMENT_TODO/) - ~34 pending (1 high priority: mesa-optimization)
+- **Responses**: [_ENHANCEMENT_TODO.md](/knowledge-base/responses/_ENHANCEMENT_TODO/) - ~40 pending
 
-Pages that get significant traffic or are frequently linked should be prioritized for kb-2.0 compliance:
-
-- [ ] Audit most-linked response pages
-- [ ] Audit most-linked risk pages
-- [ ] Review pages with quality < 3
-
-### Style Guide Compliance Tracking
-
-Pages updated to kb-2.0:
+### Pages Already Updated to kb-2.0
 - [x] ai-safety-institutes.mdx (2025-12-26)
-
-Pages needing kb-2.0 update:
-- [ ] (Run audit to identify pages with old or missing styleGuideVersion)
 
 ---
 
