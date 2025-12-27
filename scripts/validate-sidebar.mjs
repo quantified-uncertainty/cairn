@@ -16,35 +16,12 @@
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
+import { parseFrontmatter } from './lib/mdx-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
 
 const CONTENT_DIR = 'src/content/docs/knowledge-base';
 const CI_MODE = process.argv.includes('--ci');
-
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
-
-/**
- * Parse frontmatter from MDX content
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return {};
-  try {
-    return parseYaml(match[1]) || {};
-  } catch {
-    return {};
-  }
-}
+const colors = getColors(CI_MODE);
 
 /**
  * Find all index.mdx files recursively

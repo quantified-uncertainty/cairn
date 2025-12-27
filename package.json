@@ -25,9 +25,14 @@
     "validate:consistency": "node scripts/validate-consistency.mjs",
     "validate:sidebar": "node scripts/validate-sidebar.mjs",
     "validate:types": "node scripts/validate-types.mjs",
-    "validate:ci": "node scripts/validate-all.mjs --ci"
+    "validate:ci": "node scripts/validate-all.mjs --ci",
+    "kb:scan": "node scripts/scan-content.mjs",
+    "kb:summarize": "node scripts/generate-summaries.mjs",
+    "kb:stats": "node scripts/scan-content.mjs --stats",
+    "test:lib": "node scripts/lib/lib.test.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@astrojs/react": "^4.4.2",
     "@astrojs/starlight": "^0.37.1",
     "@dagrejs/dagre": "^1.1.8",
@@ -38,9 +43,12 @@
     "@tanstack/react-table": "^8.21.3",
     "@xyflow/react": "^12.10.0",
     "astro": "^5.6.1",
+    "better-sqlite3": "^12.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "elkjs": "^0.11.0",
+    "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
     "mermaid": "^11.12.2",
     "react": "^19.2.3",

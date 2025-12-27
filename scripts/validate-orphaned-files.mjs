@@ -22,15 +22,15 @@
  *   1 = Orphaned files found
  */
 
-import { readFileSync, existsSync, readdirSync, statSync, unlinkSync, rmdirSync } from 'fs';
-import { join, extname, basename } from 'path';
-
-const CONTENT_DIR = 'src/content/docs';
-const DATA_DIR = 'src/data';
+import { existsSync, readdirSync, statSync, unlinkSync, rmdirSync } from 'fs';
+import { join, basename } from 'path';
+import { getColors, formatPath } from './lib/output.mjs';
+import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
 
 const args = process.argv.slice(2);
 const CI_MODE = args.includes('--ci');
 const FIX_MODE = args.includes('--fix');
+const colors = getColors(CI_MODE);
 
 // Patterns for orphaned files
 const ORPHAN_PATTERNS = [
@@ -43,18 +43,6 @@ const ORPHAN_PATTERNS = [
   /^#.*#$/,           // emacs auto-save
   /\.orig$/,          // merge conflict originals
 ];
-
-// Color codes (disabled in CI mode)
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', reset: '', dim: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  reset: '\x1b[0m',
-};
 
 /**
  * Recursively find orphaned files

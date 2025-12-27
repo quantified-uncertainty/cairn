@@ -12,21 +12,14 @@
  * Usage: node scripts/validate-data.mjs
  */
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { getColors } from './lib/output.mjs';
+import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
 
-const DATA_DIR = 'src/data';
-const CONTENT_DIR = 'src/content/docs';
-
-// Color codes for terminal output
-const colors = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m',
-};
+const colors = getColors();
 
 function loadYaml(filename) {
   const filepath = join(DATA_DIR, filename);
@@ -35,24 +28,6 @@ function loadYaml(filename) {
   }
   const content = readFileSync(filepath, 'utf-8');
   return parseYaml(content) || [];
-}
-
-// Recursively find all MDX files
-function findMdxFiles(dir, results = []) {
-  if (!existsSync(dir)) return results;
-
-  const files = readdirSync(dir);
-  for (const file of files) {
-    const filePath = join(dir, file);
-    const stat = statSync(filePath);
-
-    if (stat.isDirectory()) {
-      findMdxFiles(filePath, results);
-    } else if (file.endsWith('.mdx')) {
-      results.push(filePath);
-    }
-  }
-  return results;
 }
 
 // Extract entity ID from file path

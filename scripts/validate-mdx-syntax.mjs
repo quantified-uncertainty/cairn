@@ -17,23 +17,13 @@
  * Usage: node scripts/validate-mdx-syntax.mjs [--ci]
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'fs';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
+import { CONTENT_DIR } from './lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
 const CI_MODE = process.argv.includes('--ci');
-
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
+const colors = getColors(CI_MODE);
 
 // Patterns to check with descriptions
 const PATTERNS = [
@@ -149,24 +139,6 @@ const COMPLEX_CHECKS = [
     },
   },
 ];
-
-function findMdxFiles(dir, results = []) {
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findMdxFiles(filePath, results);
-      } else if (file.endsWith('.mdx')) {
-        results.push(filePath);
-      }
-    }
-  } catch (e) {
-    // Directory doesn't exist
-  }
-  return results;
-}
 
 function checkFile(filePath) {
   const content = readFileSync(filePath, 'utf-8');

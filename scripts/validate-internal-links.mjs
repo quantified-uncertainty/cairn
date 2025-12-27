@@ -21,44 +21,15 @@
  *   1 = Broken links found
  */
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join, dirname, basename } from 'path';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
+import { CONTENT_DIR } from './lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
 const args = process.argv.slice(2);
 const CI_MODE = args.includes('--ci');
-
-// Color codes (disabled in CI mode)
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', reset: '', dim: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  reset: '\x1b[0m',
-};
-
-/**
- * Recursively find all MDX/MD files
- */
-function findContentFiles(dir, results = []) {
-  if (!existsSync(dir)) return results;
-
-  const files = readdirSync(dir);
-  for (const file of files) {
-    const filePath = join(dir, file);
-    const stat = statSync(filePath);
-
-    if (stat.isDirectory()) {
-      findContentFiles(filePath, results);
-    } else if (file.endsWith('.mdx') || file.endsWith('.md')) {
-      results.push(filePath);
-    }
-  }
-  return results;
-}
+const colors = getColors(CI_MODE);
 
 /**
  * Extract all internal links from file content
@@ -164,7 +135,7 @@ function main() {
   }
 
   // Find all content files
-  const files = findContentFiles(CONTENT_DIR);
+  const files = findMdxFiles(CONTENT_DIR);
   results.totalFiles = files.length;
 
   if (!CI_MODE) {

@@ -19,56 +19,14 @@
  *   1 = Pages significantly past review date (>30 days)
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
+import { readFileSync } from 'fs';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { parseFrontmatter } from './lib/mdx-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
+import { getContentType, getStalenessThreshold, CONTENT_DIR, DEFAULT_STALENESS_THRESHOLD } from './lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
 const CI_MODE = process.argv.includes('--ci') || process.argv.includes('--json');
-
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', cyan: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
-
-// Staleness thresholds by content type (days since lastEdited)
-const STALENESS_THRESHOLDS = {
-  model: 90,       // Models should be reviewed quarterly
-  risk: 60,        // Risks should be reviewed bi-monthly
-  response: 120,   // Responses can be reviewed less frequently
-  default: 180,    // Other content reviewed semi-annually
-};
-
-/**
- * Parse frontmatter from file content
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return {};
-  try {
-    return parseYaml(match[1]) || {};
-  } catch {
-    return {};
-  }
-}
-
-/**
- * Determine content type from file path
- */
-function getContentType(filePath) {
-  if (filePath.includes('/models/')) return 'model';
-  if (filePath.includes('/risks/')) return 'risk';
-  if (filePath.includes('/responses/')) return 'response';
-  return 'default';
-}
+const colors = getColors(CI_MODE);
 
 /**
  * Parse a date string (YYYY-MM-DD or YYYY-MM) to Date object
@@ -136,7 +94,7 @@ function checkStaleness(filePath, frontmatter, contentType, entityDateMap, today
   // Check 2: No reviewBy but old lastEdited
   if (!frontmatter.reviewBy && frontmatter.lastEdited) {
     const lastEdit = parseDate(frontmatter.lastEdited);
-    const threshold = STALENESS_THRESHOLDS[contentType];
+    const threshold = getStalenessThreshold(contentType);
 
     if (lastEdit) {
       const daysSinceEdit = daysBetween(lastEdit, today);
@@ -197,34 +155,11 @@ function formatSuggestedReviewDate(today, daysFromNow) {
 }
 
 /**
- * Find all content files recursively
- */
-function findContentFiles(dir, results = []) {
-  if (!existsSync(dir)) return results;
-
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findContentFiles(filePath, results);
-      } else if (file.endsWith('.mdx') || file.endsWith('.md')) {
-        results.push(filePath);
-      }
-    }
-  } catch {
-    // Skip directories that can't be read
-  }
-  return results;
-}
-
-/**
  * Main function
  */
 function main() {
   const today = new Date();
-  const files = findContentFiles(CONTENT_DIR);
+  const files = findMdxFiles(CONTENT_DIR);
 
   // Build entity date map for dependency checking
   const entityDateMap = buildEntityDateMap(files);
@@ -254,7 +189,7 @@ function main() {
     try {
       const content = readFileSync(file, 'utf-8');
       const frontmatter = parseFrontmatter(content);
-      const contentType = getContentType(file);
+      const contentType = getContentType(file) || 'default';
 
       // Update stats
       if (frontmatter.reviewBy) stats.withReviewBy++;
@@ -317,7 +252,7 @@ function main() {
         console.log(`${colors.yellow}${colors.bold}⚠️  Needs Attention (${urgent.length} pages)${colors.reset}\n`);
 
         for (const { file, issues } of urgent.slice(0, 20)) {
-          const relPath = file.replace(process.cwd() + '/', '');
+          const relPath = formatPath(file);
           console.log(`${colors.bold}${relPath}${colors.reset}`);
 
           for (const issue of issues) {
@@ -339,7 +274,7 @@ function main() {
         console.log(`${colors.blue}ℹ️  Suggestions (${other.length} pages)${colors.reset}\n`);
 
         for (const { file, issues } of other.slice(0, 10)) {
-          const relPath = file.replace(process.cwd() + '/', '');
+          const relPath = formatPath(file);
           console.log(`  ${colors.dim}${relPath}${colors.reset}`);
           for (const issue of issues) {
             console.log(`    ${colors.dim}${issue.description}${colors.reset}`);

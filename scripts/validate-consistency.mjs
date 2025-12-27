@@ -15,26 +15,16 @@
  *   1 = Significant inconsistencies found
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { parse as parseYaml } from 'yaml';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { getContentBody } from './lib/mdx-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
+import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
-const DATA_DIR = 'src/data';
 const CI_MODE = process.argv.includes('--ci');
-
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', cyan: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
+const colors = getColors(CI_MODE);
 
 // Pages that intentionally document ranges of views (should be skipped for consistency checks)
 // These pages quote different experts/sources with varying estimates by design
@@ -96,14 +86,6 @@ function loadEntities() {
   } catch {
     return [];
   }
-}
-
-/**
- * Get content body (without frontmatter)
- */
-function getContentBody(content) {
-  const match = content.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
-  return match ? match[1] : content;
 }
 
 /**
@@ -356,33 +338,10 @@ function checkCausalConsistency(allContent, entities) {
 }
 
 /**
- * Find all content files recursively
- */
-function findContentFiles(dir, results = []) {
-  if (!existsSync(dir)) return results;
-
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findContentFiles(filePath, results);
-      } else if (file.endsWith('.mdx') || file.endsWith('.md')) {
-        results.push(filePath);
-      }
-    }
-  } catch {
-    // Skip directories that can't be read
-  }
-  return results;
-}
-
-/**
  * Main function
  */
 function main() {
-  const files = findContentFiles(CONTENT_DIR);
+  const files = findMdxFiles(CONTENT_DIR);
   const entities = loadEntities();
 
   if (!CI_MODE) {
@@ -445,7 +404,7 @@ function main() {
           console.log(`    ${colors.dim}Gap: ${issue.gap}${colors.reset}`);
 
           for (const loc of issue.locations) {
-            const relPath = loc.file.replace(process.cwd() + '/', '');
+            const relPath = formatPath(loc.file);
             console.log(`    ${colors.dim}• ${relPath}:${loc.line} → ${loc.value}${colors.reset}`);
           }
           console.log();

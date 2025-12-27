@@ -17,26 +17,16 @@
  *   1 = Errors found
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
+import { readFileSync } from 'fs';
+import { findMdxFiles } from './lib/file-utils.mjs';
+import { parseFrontmatter, getContentBody } from './lib/mdx-utils.mjs';
+import { getColors, formatPath } from './lib/output.mjs';
+import { CONTENT_DIR } from './lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
 const CI_MODE = process.argv.includes('--ci');
+const colors = getColors(CI_MODE);
 
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
-
-// Content type definitions with their requirements
+// Content type definitions with their requirements (validator-specific, more detailed than shared)
 const CONTENT_TYPES = {
   model: {
     pathPattern: /\/models\//,
@@ -104,28 +94,7 @@ const CONCLUSION_PATTERNS = [
 ];
 
 /**
- * Parse frontmatter from MDX content
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return {};
-  try {
-    return parseYaml(match[1]) || {};
-  } catch {
-    return {};
-  }
-}
-
-/**
- * Get content body (without frontmatter)
- */
-function getContentBody(content) {
-  const match = content.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
-  return match ? match[1] : content;
-}
-
-/**
- * Determine content type based on file path
+ * Determine content type based on file path (local version with validator-specific types)
  */
 function getContentType(filePath) {
   for (const [type, config] of Object.entries(CONTENT_TYPES)) {
@@ -433,34 +402,12 @@ function checkFile(filePath) {
   return issues;
 }
 
-/**
- * Find all MDX/MD files recursively
- */
-function findContentFiles(dir, results = []) {
-  if (!existsSync(dir)) return results;
-
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findContentFiles(filePath, results);
-      } else if (file.endsWith('.mdx') || file.endsWith('.md')) {
-        results.push(filePath);
-      }
-    }
-  } catch (e) {
-    // Directory doesn't exist or permission error
-  }
-  return results;
-}
 
 /**
  * Main function
  */
 function main() {
-  const files = findContentFiles(CONTENT_DIR);
+  const files = findMdxFiles(CONTENT_DIR);
   const allIssues = [];
   let errorCount = 0;
   let warningCount = 0;
@@ -511,7 +458,7 @@ function main() {
         console.log(`${colors.bold}${colors.blue}${type.toUpperCase()} PAGES${colors.reset}\n`);
 
         for (const { file, issues } of typeIssues) {
-          const relPath = file.replace(process.cwd() + '/', '');
+          const relPath = formatPath(file);
           console.log(`${colors.bold}${relPath}${colors.reset}`);
 
           for (const issue of issues) {
