@@ -10,8 +10,9 @@ llmSummary: Internal project roadmap tracking infrastructure improvements,
   tooling ideas, and style guide evolution with specific task priorities and
   effort estimates. Lists 26 pending model enhancement tasks and completed work
   including creation of kb-2.0 style guide.
----This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see:
-- [Model Enhancement TODO](/knowledge-base/models/_ENHANCEMENT_TODO/)
+---
+
+This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see the [Enhancement Queue](/internal/enhancement-queue/).
 
 ---
 
@@ -95,8 +96,7 @@ Covers risks and responses with emphasis on:
 
 ## Content Priorities
 
-Enhancement task queues are tracked in:
-- **Models**: [_ENHANCEMENT_TODO.md](/knowledge-base/models/_ENHANCEMENT_TODO/) - ~26 pending
+Enhancement tasks are tracked in the [Enhancement Queue](/internal/enhancement-queue/).
 
 ### Pages Already Updated to kb-2.0
 - [x] ai-safety-institutes.mdx (2025-12-26)

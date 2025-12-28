@@ -11,7 +11,9 @@ llmSummary: An interactive visualization tool that displays entity relationships
   and centrality metrics. Provides navigation functionality and analysis of
   connection patterns but serves as infrastructure rather than substantive
   content.
----import EntityGraph from '../../../components/wiki/EntityGraph';
+---
+
+import EntityGraph from '../../../components/wiki/EntityGraph';
 import { findOrphans, detectClusters, getMostConnected } from '../../../lib/graph-analysis';
 
 export const orphans = findOrphans();
