@@ -7,6 +7,7 @@
  */
 
 import database from '../data/database.json';
+import pages from '../data/pages.json';
 
 // Types for dashboard data
 export interface QualityDistribution {
@@ -51,6 +52,30 @@ export function getEntities(): any[] {
 }
 
 /**
+ * Get pages data (includes quality scores from MDX frontmatter)
+ */
+export function getPages(): any[] {
+  try {
+    return require('../data/pages.json') as any[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Convert 0-100 quality score to 1-5 scale
+ * 0-20 → 1 (Stub), 21-40 → 2 (Draft), 41-60 → 3 (Adequate), 61-80 → 4 (Good), 81-100 → 5 (Excellent)
+ */
+export function convertQualityTo5Scale(quality: number | null | undefined): number {
+  if (quality == null || quality === 0) return 0; // Unrated
+  if (quality <= 20) return 1;
+  if (quality <= 40) return 2;
+  if (quality <= 60) return 3;
+  if (quality <= 80) return 4;
+  return 5;
+}
+
+/**
  * Get backlinks data
  */
 export function getBacklinks(): Record<string, any[]> {
@@ -58,10 +83,10 @@ export function getBacklinks(): Record<string, any[]> {
 }
 
 /**
- * Compute quality distribution from entities
+ * Compute quality distribution from pages (MDX frontmatter quality scores)
  */
 export function computeQualityDistribution(): QualityDistribution[] {
-  const entities = getEntities();
+  const pages = getPages();
   const distribution: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
   const qualityLabels: Record<number, string> = {
@@ -73,9 +98,9 @@ export function computeQualityDistribution(): QualityDistribution[] {
     5: 'Excellent',
   };
 
-  for (const entity of entities) {
-    const quality = entity.quality ?? 0;
-    distribution[quality] = (distribution[quality] || 0) + 1;
+  for (const page of pages) {
+    const quality5 = convertQualityTo5Scale(page.quality);
+    distribution[quality5] = (distribution[quality5] || 0) + 1;
   }
 
   return Object.entries(distribution).map(([q, count]) => ({
@@ -86,15 +111,17 @@ export function computeQualityDistribution(): QualityDistribution[] {
 }
 
 /**
- * Compute average quality score
+ * Compute average quality score (on 1-5 scale)
  */
 export function computeAverageQuality(): number {
-  const entities = getEntities();
-  const rated = entities.filter(e => e.quality && e.quality > 0);
+  const pages = getPages();
+  const rated = pages
+    .map(p => convertQualityTo5Scale(p.quality))
+    .filter(q => q > 0);
 
   if (rated.length === 0) return 0;
 
-  const sum = rated.reduce((acc, e) => acc + e.quality, 0);
+  const sum = rated.reduce((acc, q) => acc + q, 0);
   return sum / rated.length;
 }
 

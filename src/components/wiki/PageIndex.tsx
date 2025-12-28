@@ -18,6 +18,8 @@ interface PageRow {
   gapScore: number | null
   ageDays: number | null
   structuralScore: number | null
+  convertedLinkCount: number
+  unconvertedLinkCount: number
 }
 
 interface PageIndexProps {
@@ -158,6 +160,42 @@ function StructuralScoreCell({ value }: { value: number | null }) {
   )
 }
 
+function ConvertedLinksCell({ value }: { value: number }) {
+  if (value === 0) return <span className="text-muted-foreground">—</span>
+
+  // Green tones - more is better
+  const colorClass = value >= 10
+    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+    : value >= 5
+    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+    : "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+
+  return (
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {value}
+    </span>
+  )
+}
+
+function UnconvertedLinksCell({ value }: { value: number }) {
+  if (value === 0) return <span className="text-muted-foreground">—</span>
+
+  // Color based on count: more links = more urgent
+  const colorClass = value >= 10
+    ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+    : value >= 5
+    ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+    : value >= 1
+    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : "text-muted-foreground"
+
+  return (
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {value}
+    </span>
+  )
+}
+
 const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "importance",
@@ -251,6 +289,26 @@ const columns: ColumnDef<PageRow>[] = [
       return (a ?? -1) - (b ?? -1)
     },
   },
+  {
+    accessorKey: "convertedLinkCount",
+    header: ({ column }) => <SortableHeader column={column}>Refs</SortableHeader>,
+    cell: ({ row }) => <ConvertedLinksCell value={row.getValue("convertedLinkCount")} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("convertedLinkCount") as number
+      const b = rowB.getValue("convertedLinkCount") as number
+      return a - b
+    },
+  },
+  {
+    accessorKey: "unconvertedLinkCount",
+    header: ({ column }) => <SortableHeader column={column}>Unconv</SortableHeader>,
+    cell: ({ row }) => <UnconvertedLinksCell value={row.getValue("unconvertedLinkCount")} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("unconvertedLinkCount") as number
+      const b = rowB.getValue("unconvertedLinkCount") as number
+      return a - b
+    },
+  },
 ]
 
 export function PageIndex({ showSearch = true, filterCategory, maxItems, title }: PageIndexProps) {
@@ -286,6 +344,8 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
         gapScore,
         ageDays,
         structuralScore,
+        convertedLinkCount: p.convertedLinkCount ?? 0,
+        unconvertedLinkCount: p.unconvertedLinkCount ?? 0,
       }
     })
 
@@ -356,6 +416,22 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
           <span className="text-2xl font-bold">{stats.total - stats.noQuality}</span>
           <span className="text-xs text-muted-foreground uppercase tracking-wide">With Quality</span>
         </div>
+      </div>
+
+      {/* Column Legend */}
+      <div className="text-sm text-muted-foreground bg-muted/20 rounded-lg px-4 py-3">
+        <span className="font-medium text-foreground">Columns: </span>
+        <span className="inline-flex flex-wrap gap-x-4 gap-y-1">
+          <span><strong>Imp</strong> = Importance (0-100)</span>
+          <span><strong>Qual</strong> = Quality (0-100)</span>
+          <span><strong>Struct</strong> = Structural score (tables, diagrams, sections)</span>
+          <span><strong>Words</strong> = Word count</span>
+          <span><strong>Links</strong> = Backlinks from other pages</span>
+          <span><strong>Gap</strong> = Priority score (high importance + low quality)</span>
+          <span><strong>Age</strong> = Days since last edit</span>
+          <span><strong>Refs</strong> = Resource references with hover tooltips</span>
+          <span><strong>Unconv</strong> = Unconverted links (could have hover tooltips)</span>
+        </span>
       </div>
 
       {/* Table */}

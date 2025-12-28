@@ -13,6 +13,103 @@ import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
 
+// =============================================================================
+// UNCONVERTED LINK DETECTION
+// =============================================================================
+
+/**
+ * Normalize URL to handle variations (trailing slashes, www prefix, http/https)
+ */
+function normalizeUrl(url) {
+  const variations = new Set();
+  try {
+    const parsed = new URL(url);
+    const base = parsed.href.replace(/\/$/, '');
+    variations.add(base);
+    variations.add(base + '/');
+
+    // Without www
+    if (parsed.hostname.startsWith('www.')) {
+      const noWww = base.replace('://www.', '://');
+      variations.add(noWww);
+      variations.add(noWww + '/');
+    }
+    // With www
+    if (!parsed.hostname.startsWith('www.')) {
+      const withWww = base.replace('://', '://www.');
+      variations.add(withWww);
+      variations.add(withWww + '/');
+    }
+  } catch {
+    variations.add(url);
+  }
+  return Array.from(variations);
+}
+
+/**
+ * Build URL → resource map from resources.yaml
+ */
+function buildUrlToResourceMap(resources) {
+  const urlToResource = new Map();
+  for (const r of resources) {
+    if (!r.url) continue;
+    const normalizedUrls = normalizeUrl(r.url);
+    for (const url of normalizedUrls) {
+      urlToResource.set(url, r);
+    }
+  }
+  return urlToResource;
+}
+
+/**
+ * Extract markdown links from content (not images, not internal, not <R> components)
+ */
+function extractMarkdownLinks(content) {
+  const links = [];
+  // Match [text](url) but not images ![text](url)
+  const linkRegex = /(?<!!)\[([^\]]+)\]\(([^)]+)\)/g;
+  let match;
+  while ((match = linkRegex.exec(content)) !== null) {
+    const [full, text, url] = match;
+    // Skip internal links, anchors, mailto
+    if (url.startsWith('/') || url.startsWith('#') || url.startsWith('mailto:')) continue;
+    links.push({ text, url });
+  }
+  return links;
+}
+
+/**
+ * Find unconverted links in content (markdown links that have matching resources)
+ */
+function findUnconvertedLinks(content, urlToResource) {
+  const links = extractMarkdownLinks(content);
+  const unconverted = [];
+
+  for (const link of links) {
+    const resource = urlToResource.get(link.url) || urlToResource.get(link.url.replace(/\/$/, ''));
+    if (resource) {
+      unconverted.push({
+        text: link.text,
+        url: link.url,
+        resourceId: resource.id,
+        resourceTitle: resource.title,
+      });
+    }
+  }
+
+  return unconverted;
+}
+
+/**
+ * Count <R> component usages in content (already converted links)
+ */
+function countConvertedLinks(content) {
+  // Match <R id="..."> or <R id="...">...</R>
+  const rComponentRegex = /<R\s+id=/g;
+  const matches = content.match(rComponentRegex);
+  return matches ? matches.length : 0;
+}
+
 const DATA_DIR = 'src/data';
 const CONTENT_DIR = 'src/content/docs';
 const OUTPUT_FILE = 'src/data/database.json';
@@ -133,8 +230,9 @@ function extractFrontmatter(content) {
 /**
  * Build pages registry by scanning all MDX/MD files
  * Extracts frontmatter including quality, lastUpdated, title, etc.
+ * Also detects unconverted links (markdown links with matching resources)
  */
-function buildPagesRegistry() {
+function buildPagesRegistry(urlToResource) {
   const pages = [];
 
   function scanDirectory(dir, urlPrefix = '') {
@@ -162,6 +260,12 @@ function buildPagesRegistry() {
         const metrics = extractMetrics(content, fullPath);
         const currentQuality = fm.quality ? parseInt(fm.quality) : null;
 
+        // Find unconverted links (markdown links that have matching resources)
+        const unconvertedLinks = urlToResource ? findUnconvertedLinks(content, urlToResource) : [];
+
+        // Count already converted links (<R> components)
+        const convertedLinkCount = countConvertedLinks(content);
+
         pages.push({
           id,
           path: urlPath,
@@ -169,6 +273,7 @@ function buildPagesRegistry() {
           title: fm.title || id.replace(/-/g, ' '),
           quality: currentQuality,
           importance: fm.importance ? parseInt(fm.importance) : null,
+          causalLevel: fm.causalLevel || null,
           lastUpdated: fm.lastUpdated || fm.lastEdited || null,
           llmSummary: fm.llmSummary || null,
           description: fm.description || null,
@@ -192,6 +297,11 @@ function buildPagesRegistry() {
           suggestedQuality: suggestQuality(metrics.structuralScore),
           // Legacy field for backwards compatibility
           wordCount: metrics.wordCount,
+          // Unconverted links (markdown links with matching resources)
+          unconvertedLinks,
+          unconvertedLinkCount: unconvertedLinks.length,
+          // Already converted links (<R> components)
+          convertedLinkCount,
         });
       }
     }
@@ -375,8 +485,13 @@ function main() {
   database.pathRegistry = pathRegistry;
   console.log(`  pathRegistry: ${Object.keys(pathRegistry).length} paths mapped`);
 
+  // Build URL → resource map for unconverted link detection
+  const resources = database.resources || [];
+  const urlToResource = buildUrlToResourceMap(resources);
+  console.log(`  urlToResource: ${urlToResource.size} URL variations mapped`);
+
   // Build pages registry with frontmatter data (quality, etc.)
-  const pages = buildPagesRegistry();
+  const pages = buildPagesRegistry(urlToResource);
 
   // Enrich pages with backlink counts
   for (const page of pages) {
@@ -386,7 +501,10 @@ function main() {
 
   database.pages = pages;
   const pagesWithQuality = pages.filter(p => p.quality !== null).length;
+  const pagesWithUnconvertedLinks = pages.filter(p => p.unconvertedLinkCount > 0).length;
+  const totalUnconvertedLinks = pages.reduce((sum, p) => sum + p.unconvertedLinkCount, 0);
   console.log(`  pages: ${pages.length} pages (${pagesWithQuality} with quality ratings)`);
+  console.log(`  unconvertedLinks: ${totalUnconvertedLinks} links across ${pagesWithUnconvertedLinks} pages`);
 
   // Write combined JSON
   writeFileSync(OUTPUT_FILE, JSON.stringify(database, null, 2));

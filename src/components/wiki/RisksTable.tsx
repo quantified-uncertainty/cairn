@@ -15,6 +15,7 @@ interface Risk {
   timeframe?: RiskTableTimeframe
   maturity?: string
   category: string
+  causalLevel?: 'outcome' | 'pathway' | 'amplifier' | null
   relatedSolutions: RiskTableSolution[]
   importance: number | null
 }
@@ -68,6 +69,17 @@ function CategoryBadge({ category }: { category: string }) {
   }
   const config = categoryConfig[category as RiskCategory]
   return <Badge variant={variants[category] || "default"}>{config?.label || category}</Badge>
+}
+
+function CausalLevelBadge({ level }: { level?: 'outcome' | 'pathway' | 'amplifier' | null }) {
+  if (!level) return <span className="text-muted-foreground">—</span>
+  const config: Record<string, { label: string; variant: "danger" | "warning" | "info" }> = {
+    outcome: { label: "Outcome", variant: "danger" },
+    pathway: { label: "Pathway", variant: "warning" },
+    amplifier: { label: "Amplifier", variant: "info" },
+  }
+  const { label, variant } = config[level] || { label: level, variant: "info" as const }
+  return <Badge variant={variant}>{label}</Badge>
 }
 
 function SeverityBadge({ severity }: { severity?: string }) {
@@ -145,6 +157,17 @@ const columns: ColumnDef<Risk>[] = [
     header: ({ column }) => <SortableHeader column={column}>Category</SortableHeader>,
     cell: ({ row }) => <CategoryBadge category={row.getValue("category")} />,
     filterFn: (row, id, value) => value.includes(row.getValue(id)),
+  },
+  {
+    accessorKey: "causalLevel",
+    header: ({ column }) => <SortableHeader column={column}>Level</SortableHeader>,
+    cell: ({ row }) => <CausalLevelBadge level={row.getValue("causalLevel")} />,
+    sortingFn: (rowA, rowB) => {
+      const order: Record<string, number> = { outcome: 3, pathway: 2, amplifier: 1 }
+      const a = rowA.getValue("causalLevel") as string | null
+      const b = rowB.getValue("causalLevel") as string | null
+      return (a ? order[a] || 0 : 0) - (b ? order[b] || 0 : 0)
+    },
   },
   {
     accessorKey: "severity",

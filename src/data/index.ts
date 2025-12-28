@@ -51,6 +51,14 @@ export interface PageMetrics {
   structuralScore: number;
 }
 
+// Unconverted link info (markdown links that have matching resources)
+export interface UnconvertedLink {
+  text: string;
+  url: string;
+  resourceId: string;
+  resourceTitle: string;
+}
+
 // Pages data with quality ratings from MDX frontmatter
 export interface Page {
   id: string;
@@ -59,6 +67,7 @@ export interface Page {
   title: string;
   quality: number | null;
   importance: number | null;
+  causalLevel: 'outcome' | 'pathway' | 'amplifier' | null;
   lastUpdated: string | null;
   llmSummary: string | null;
   description: string | null;
@@ -70,6 +79,11 @@ export interface Page {
   // Legacy fields
   wordCount: number;
   backlinkCount: number;
+  // Unconverted links (markdown links that could use <R> component)
+  unconvertedLinks: UnconvertedLink[];
+  unconvertedLinkCount: number;
+  // Already converted links (<R> components)
+  convertedLinkCount: number;
 }
 export const pages: Page[] = database.pages || [];
 export const stats = database.stats || {
@@ -479,6 +493,7 @@ export interface RiskTableRow {
   timeframe?: RiskTableTimeframe;
   maturity?: string;
   category: string;
+  causalLevel?: 'outcome' | 'pathway' | 'amplifier' | null;
   relatedSolutions: RiskTableSolution[];
   customFields?: { label: string; value: string }[];
   importance: number | null;
@@ -588,6 +603,7 @@ export function getRisksForTable(): RiskTableRow[] {
       timeframe,
       maturity: (e as any).maturity as ResearchMaturity | undefined,
       category,
+      causalLevel: page?.causalLevel ?? null,
       relatedSolutions: riskToSolutions[e.id] || [],
       customFields: e.customFields,
       importance: page?.importance ?? null,
