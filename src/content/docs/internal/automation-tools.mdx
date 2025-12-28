@@ -1,0 +1,406 @@
+---
+title: Automation Tools
+description: Complete reference for all scripts and automation workflows for maintaining wiki content
+sidebar:
+  order: 1
+---
+
+This page documents all automation tools available for maintaining and improving the knowledge base.
+
+## Quick Reference
+
+| Tool | Purpose | Command |
+|------|---------|---------|
+| **Page Improver** | Improve pages to Q5 quality | `node scripts/page-improver.mjs <page-id>` |
+| **Content Grader** | Auto-grade pages via AI | `node scripts/grade-content.mjs` |
+| **Validators** | Check content quality | `npm run validate` |
+| **Knowledge Base** | Scan content, generate summaries | `npm run kb:scan` |
+| **Data Builder** | Regenerate entity data | `npm run build:data` |
+| **Document Enhancer** | Unified content management CLI | `node scripts/document-enhancer.mjs` |
+
+---
+
+## Page Improvement Workflow
+
+The recommended way to improve wiki pages to quality 5.
+
+### Commands
+
+```bash
+# List pages that need improvement (sorted by priority)
+node scripts/page-improver.mjs --list
+
+# Get improvement prompt for a specific page
+node scripts/page-improver.mjs economic-disruption
+
+# Show page info only (no prompt)
+node scripts/page-improver.mjs racing-dynamics --info
+
+# Filter by quality and importance
+node scripts/page-improver.mjs --list --max-qual 3 --min-imp 50
+```
+
+### What Makes a Q5 Page
+
+| Element | Requirement |
+|---------|-------------|
+| Quick Assessment Table | 5+ rows, 3 columns (Dimension, Assessment, Evidence) |
+| Substantive Tables | 2+ additional tables with real data |
+| Mermaid Diagram | 1+ showing key relationships |
+| Citations | 10+ real URLs from authoritative sources |
+| Quantified Claims | Replace "significant" with "25-40%" etc. |
+| Word Count | 800+ words of substantive content |
+
+### Cost Estimates
+
+| Model | Cost per Page |
+|-------|---------------|
+| Opus 4.5 | $3-5 |
+| Sonnet 4.5 | $0.50-1.00 |
+
+### Reference Examples
+
+- **Gold standard**: `src/content/docs/knowledge-base/risks/misuse/bioweapons.mdx`
+- **Good example**: `src/content/docs/knowledge-base/risk-factors/racing-dynamics.mdx`
+
+---
+
+## Content Grading
+
+Uses Claude Sonnet API to automatically grade pages with importance, quality, and AI-generated summaries.
+
+### Commands
+
+```bash
+# Preview what would be graded (no API calls)
+node scripts/grade-content.mjs --dry-run
+
+# Grade a specific page
+node scripts/grade-content.mjs --page scheming
+
+# Grade pages and apply to frontmatter
+node scripts/grade-content.mjs --limit 10 --apply
+
+# Grade a category with parallel processing
+node scripts/grade-content.mjs --category responses --parallel 3
+
+# Skip already-graded pages
+node scripts/grade-content.mjs --skip-graded --limit 50
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--page ID` | Grade a single page |
+| `--dry-run` | Preview without API calls |
+| `--limit N` | Only process N pages |
+| `--parallel N` | Process N pages concurrently (default: 1) |
+| `--category X` | Only process pages in category |
+| `--skip-graded` | Skip pages with existing importance |
+| `--apply` | Write grades to frontmatter (caution) |
+| `--output FILE` | Write results to JSON file |
+
+### Grading Criteria
+
+**Importance (0-100)**:
+- 90-100: Essential for prioritization (core interventions, key risk mechanisms)
+- 70-89: High value (concrete responses, major risk categories)
+- 50-69: Useful context (supporting analysis, secondary risks)
+- 30-49: Reference material (historical, profiles, niche)
+- 0-29: Peripheral (internal docs, stubs)
+
+**Quality (0-100)**:
+- 80-100: Comprehensive (2+ tables, 1+ diagram, 5+ citations, quantified claims)
+- 60-79: Good (1+ table, 3+ citations, mostly prose)
+- 40-59: Adequate (structure but lacks tables/citations)
+- 20-39: Draft (poorly structured, heavy bullets, no evidence)
+- 0-19: Stub (minimal content)
+
+### Cost Estimate
+
+~$0.02 per page, ~$6 for all 329 pages
+
+---
+
+## Validation Suite
+
+Run all content quality checks:
+
+```bash
+npm run validate          # Run all validators
+npm run validate:ci       # CI mode (JSON output)
+```
+
+### Individual Validators
+
+| Command | Description |
+|---------|-------------|
+| `npm run validate:style` | Style guide compliance (sections, structure) |
+| `npm run validate:staleness` | Content freshness (review dates, age) |
+| `npm run validate:consistency` | Cross-page consistency (estimates, terminology) |
+| `npm run validate:data` | Entity data integrity (references, required fields) |
+| `npm run validate:links` | Internal link validation |
+| `npm run validate:mdx` | MDX syntax errors |
+| `npm run validate:sidebar` | Sidebar configuration (index pages) |
+| `npm run validate:types` | UI components handle all entity types |
+| `npm run validate:quality` | Content quality metrics |
+
+### Advanced Usage
+
+```bash
+# Skip specific checks
+node scripts/validate-all.mjs --skip=orphans,staleness
+
+# Stop on first failure
+node scripts/validate-all.mjs --fail-fast
+```
+
+---
+
+## Knowledge Base System
+
+SQLite-based system for managing content, sources, and AI summaries.
+
+### Setup
+
+Requires `.env` file:
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Commands
+
+```bash
+npm run kb:scan        # Scan MDX files, extract sources, populate database
+npm run kb:summarize   # Generate AI summaries
+npm run kb:stats       # Show database statistics
+```
+
+### Detailed Usage
+
+```bash
+# Scan content (run after editing MDX files)
+node scripts/scan-content.mjs
+node scripts/scan-content.mjs --force    # Rescan all files
+node scripts/scan-content.mjs --verbose  # Show per-file progress
+
+# Generate summaries
+node scripts/generate-summaries.mjs --batch 50           # Summarize 50 articles
+node scripts/generate-summaries.mjs --type sources       # Summarize sources
+node scripts/generate-summaries.mjs --model sonnet       # Use Sonnet
+node scripts/generate-summaries.mjs --id deceptive-alignment  # Specific article
+node scripts/generate-summaries.mjs --dry-run            # Preview only
+```
+
+### Database Location
+
+All cached data is in `.cache/` (gitignored):
+- `.cache/knowledge.db` - SQLite database
+- `.cache/sources/` - Fetched source documents
+
+### Cost Estimates
+
+| Task | Model | Cost |
+|------|-------|------|
+| Summarize all 311 articles | Haiku | ~$2-3 |
+| Summarize all 793 sources | Haiku | ~$10-15 |
+
+---
+
+## Data Layer
+
+### Build Data
+
+**Important**: Data build must run before site build.
+
+```bash
+npm run build:data    # Regenerate all data files
+npm run dev           # Auto-runs build:data first
+npm run build         # Auto-runs build:data first
+```
+
+### Generated Files
+
+After running `build:data`:
+- `src/data/database.json` - Main entity database
+- `src/data/entities.json` - Entity definitions
+- `src/data/backlinks.json` - Cross-references
+- `src/data/tagIndex.json` - Tag index
+- `src/data/pathRegistry.json` - URL path mappings
+- `src/data/pages.json` - Page metadata for scripts
+
+### Other Data Scripts
+
+```bash
+npm run sync:descriptions    # Sync model descriptions from files
+npm run extract              # Extract data from pages
+npm run generate-yaml        # Generate YAML from data
+npm run cleanup-data         # Clean up data files
+```
+
+---
+
+## Document Enhancer CLI
+
+Unified tool for managing and improving content quality.
+
+### Commands
+
+```bash
+# List pages by priority (gap = importance - quality × 20)
+node scripts/document-enhancer.mjs list --sort gap --limit 20
+
+# Show details for a specific page
+node scripts/document-enhancer.mjs show scheming
+
+# Grade pages using Claude API
+node scripts/document-enhancer.mjs grade --limit 5 --dry-run
+node scripts/document-enhancer.mjs grade --apply
+
+# Enhance low-quality pages
+node scripts/document-enhancer.mjs enhance --min-imp 70 --max-qual 2 --dry-run
+node scripts/document-enhancer.mjs enhance --page language-models
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview without API calls |
+| `--limit N` | Process only N pages |
+| `--apply` | Apply changes directly to files |
+| `--model X` | Use specific Claude model |
+| `--min-imp N` | Minimum importance (enhance) |
+| `--max-qual N` | Maximum quality (enhance) |
+| `--page ID` | Target specific page |
+
+---
+
+## Resource Linking
+
+### Convert URLs to R Components
+
+```bash
+# Find URLs that can be converted to <R> components
+node scripts/map-urls-to-resources.mjs expertise-atrophy  # Specific file
+node scripts/map-urls-to-resources.mjs                     # All files
+node scripts/map-urls-to-resources.mjs --stats             # Statistics only
+
+# Auto-convert markdown links to R components
+node scripts/convert-links-to-r.mjs --dry-run              # Preview
+node scripts/convert-links-to-r.mjs --apply                # Apply changes
+```
+
+### Export Resources
+
+```bash
+node scripts/export-resources.mjs              # Export resource data
+node scripts/fix-resource-summaries.mjs        # Fix summary issues
+```
+
+---
+
+## Content Generation
+
+### Generate New Pages
+
+```bash
+# Generate a model page from YAML input
+node scripts/generate-content.mjs --type model --file input.yaml
+
+# Generate a risk page
+node scripts/generate-content.mjs --type risk --file input.yaml
+
+# Generate a response page
+node scripts/generate-content.mjs --type response --file input.yaml
+```
+
+### Batch Summaries
+
+```bash
+node scripts/batch-summaries.mjs              # Generate summaries for multiple pages
+```
+
+---
+
+## Testing
+
+```bash
+npm run test            # Run all tests
+npm run test:lib        # Test library functions
+npm run test:validators # Test validator functions
+```
+
+---
+
+## Linting and Formatting
+
+```bash
+npm run lint           # Check for linting issues
+npm run lint:fix       # Fix linting issues
+npm run format         # Format all files
+npm run format:check   # Check formatting without changing
+```
+
+---
+
+## Temporary Files
+
+**Convention**: All temporary/intermediate files go in `.claude/temp/` (gitignored).
+
+Scripts that generate intermediate output (like grading results) write here by default. This keeps the project root clean and prevents accidental commits.
+
+---
+
+## Common Workflows
+
+### Improve a Low-Quality Important Page
+
+1. Find candidates:
+   ```bash
+   node scripts/page-improver.mjs --list --max-qual 3
+   ```
+
+2. Get improvement prompt:
+   ```bash
+   node scripts/page-improver.mjs economic-disruption
+   ```
+
+3. Run in Claude Code with the generated prompt
+
+4. Validate the result:
+   ```bash
+   npm run validate:mdx
+   npm run validate:style
+   ```
+
+### Grade All New Pages
+
+1. Preview:
+   ```bash
+   node scripts/grade-content.mjs --skip-graded --dry-run
+   ```
+
+2. Grade and apply:
+   ```bash
+   node scripts/grade-content.mjs --skip-graded --apply --parallel 3
+   ```
+
+3. Review results:
+   ```bash
+   cat .claude/temp/grades-output.json
+   ```
+
+### Check Content Quality Before PR
+
+```bash
+npm run validate
+```
+
+### Update After Editing entities.yaml
+
+```bash
+npm run build:data
+npm run validate:data
+```
