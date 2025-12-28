@@ -181,13 +181,21 @@ function checkFile(filePath) {
 }
 
 function main() {
-  const files = findMdxFiles(CONTENT_DIR);
+  const allFiles = findMdxFiles(CONTENT_DIR);
+  // Exclude files starting with _ (meta/documentation files like _STYLE_GUIDE.md)
+  const files = allFiles.filter(f => {
+    const basename = f.split('/').pop();
+    return !basename.startsWith('_');
+  });
   const allIssues = [];
   let errorCount = 0;
   let warningCount = 0;
 
   if (!CI_MODE) {
     console.log(`${colors.blue}Checking ${files.length} MDX files for syntax issues...${colors.reset}\n`);
+    if (allFiles.length !== files.length) {
+      console.log(`${colors.dim}(Excluding ${allFiles.length - files.length} meta files starting with _)${colors.reset}\n`);
+    }
   }
 
   let infoCount = 0;
