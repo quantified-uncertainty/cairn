@@ -1,10 +1,12 @@
 #!/usr/bin/env node
+import 'dotenv/config';
+
 /**
  * Grade Content Script
  *
  * Uses Claude Sonnet API to automatically grade pages with:
- * - importance (1-5): How significant for understanding AI risk
- * - quality (1-5): How well-developed the content is
+ * - importance (0-100): How significant for understanding AI risk
+ * - quality (0-100): How well-developed the content is (strict structural requirements)
  * - llmSummary: 1-2 sentence summary with key conclusions
  * - ratings (for models): novelty, rigor, actionability, completeness
  *
@@ -12,14 +14,16 @@
  *   ANTHROPIC_API_KEY=sk-... node scripts/grade-content.mjs [options]
  *
  * Options:
+ *   --page ID       Grade a single page by ID or partial match
  *   --dry-run       Show what would be processed without calling API
  *   --limit N       Only process N pages (for testing)
+ *   --parallel N    Process N pages concurrently (default: 1)
  *   --category X    Only process pages in category (models, risks, responses, etc.)
  *   --skip-graded   Skip pages that already have importance set
  *   --output FILE   Write results to JSON file (default: grades-output.json)
  *   --apply         Apply grades directly to frontmatter (use with caution)
  *
- * Cost estimate: ~$6 for all 329 pages
+ * Cost estimate: ~$0.05 per page, ~$15 for all 300 pages (full content)
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -33,12 +37,14 @@ const OUTPUT_FILE = '.claude/temp/grades-output.json';
 // Parse command line args
 const args = process.argv.slice(2);
 const options = {
+  page: args.includes('--page') ? args[args.indexOf('--page') + 1] : null,
   dryRun: args.includes('--dry-run'),
   limit: args.includes('--limit') ? parseInt(args[args.indexOf('--limit') + 1]) : null,
   category: args.includes('--category') ? args[args.indexOf('--category') + 1] : null,
   skipGraded: args.includes('--skip-graded'),
   output: args.includes('--output') ? args[args.indexOf('--output') + 1] : OUTPUT_FILE,
   apply: args.includes('--apply'),
+  parallel: args.includes('--parallel') ? parseInt(args[args.indexOf('--parallel') + 1]) : 1,
 };
 
 const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a resource aimed at **expert AI prioritization work** - helping researchers and funders identify and prioritize concrete interventions to reduce AI existential risk.
@@ -68,7 +74,19 @@ Score each page on importance (0-100, one decimal place). Be discriminating - us
 - Internal/infrastructure: -30
 
 Also provide:
-- **quality** (1-5): How well-developed is this content?
+- **quality** (0-100): Be STRICT. Quality measures structure, rigor, and evidence - not just prose quality:
+  - **80-100 (Comprehensive)**: REQUIRES 2+ data tables, 1+ diagram, 5+ external citations with URLs, quantified claims with uncertainty ranges, <30% bullet ratio. Publication-ready reference material.
+  - **60-79 (Good)**: REQUIRES 1+ table, some external citations (3+), mostly prose with quantified claims. Minor gaps acceptable.
+  - **40-59 (Adequate)**: Has structure but lacks tables/citations. Good prose but vague claims without quantification. Readable but not rigorous.
+  - **20-39 (Draft)**: Basic content present but poorly structured. Heavy on bullets (>40%), light on evidence. No tables or citations. Needs significant work.
+  - **0-19 (Stub)**: Minimal content, placeholder, or severely incomplete.
+
+  CRITICAL RULES:
+  - NO tables + NO citations → MAXIMUM 55, regardless of prose quality
+  - NO tables OR NO citations → MAXIMUM 65
+  - Good prose alone is NEVER enough for 60+
+  - Count actual markdown tables (|---|) and [text](https://...) links before scoring
+
 - **llmSummary**: 1-2 sentences with methodology AND conclusions (include numbers if available)
 
 Respond with valid JSON only, no markdown.`;
@@ -81,16 +99,16 @@ const USER_PROMPT_TEMPLATE = `Grade this content page:
 **Description**: {{description}}
 
 ---
-CONTENT (first ~1000 words):
+FULL CONTENT:
 {{content}}
 ---
 
 Respond with JSON:
 {
   "importance": <0-100, one decimal>,
-  "quality": <1-5>,
+  "quality": <0-100, one decimal>,
   "llmSummary": "<1-2 sentences with conclusions>",
-  "reasoning": "<brief explanation>"
+  "reasoning": "<brief explanation of both scores>"
 }`;
 
 /**
@@ -159,31 +177,31 @@ function extractFrontmatter(content) {
 }
 
 /**
- * Truncate content to approximately N words
+ * Get content without frontmatter, optionally truncated
  */
-function truncateToWords(text, maxWords = 1000) {
+function getContent(text, maxWords = 10000) {
   // Remove frontmatter
   const withoutFm = text.replace(/^---[\s\S]*?---\n*/, '');
   const words = withoutFm.split(/\s+/);
   if (words.length <= maxWords) return withoutFm;
-  return words.slice(0, maxWords).join(' ') + '...';
+  return words.slice(0, maxWords).join(' ') + '\n\n[... truncated at ' + maxWords + ' words]';
 }
 
 /**
  * Call Claude API to grade a page
  */
 async function gradePage(client, page) {
-  const truncatedContent = truncateToWords(page.content, 1000);
+  const fullContent = getContent(page.content);
 
   const userPrompt = USER_PROMPT_TEMPLATE
     .replace('{{filePath}}', page.relativePath)
     .replace('{{category}}', page.category)
     .replace('{{title}}', page.title)
     .replace('{{description}}', page.frontmatter.description || '(none)')
-    .replace('{{content}}', truncatedContent);
+    .replace('{{content}}', fullContent);
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5-20250929',
     max_tokens: 500,
     messages: [
       { role: 'user', content: userPrompt }
@@ -220,7 +238,7 @@ function applyGradesToFile(page, grades) {
 
   // Update fields
   fm.importance = grades.importance;
-  if (grades.quality && !fm.quality) {
+  if (grades.quality !== undefined) {
     fm.quality = grades.quality;
   }
   if (grades.llmSummary) {
@@ -230,11 +248,44 @@ function applyGradesToFile(page, grades) {
     fm.ratings = { ...fm.ratings, ...grades.ratings };
   }
 
-  // Reconstruct file
-  const newFm = stringifyYaml(fm);
-  const bodyStart = content.indexOf('---', 4) + 4;
-  const body = content.slice(bodyStart);
+  // Ensure lastEdited is a string (not Date object)
+  if (fm.lastEdited instanceof Date) {
+    fm.lastEdited = fm.lastEdited.toISOString().split('T')[0];
+  }
+
+  // Reconstruct file with proper quoting for date strings
+  let newFm = stringifyYaml(fm, {
+    defaultStringType: 'QUOTE_DOUBLE',
+    defaultKeyType: 'PLAIN',
+    lineWidth: 0  // Don't wrap lines
+  });
+
+  // Ensure frontmatter ends with newline
+  if (!newFm.endsWith('\n')) {
+    newFm += '\n';
+  }
+
+  const bodyStart = content.indexOf('---', 4) + 3; // Skip past '---' only, not the newline
+  let body = content.slice(bodyStart);
+  // Ensure body starts with exactly one newline
+  body = '\n' + body.replace(/^\n+/, '');
   const newContent = `---\n${newFm}---${body}`;
+
+  // Validation: ensure file structure is correct
+  const fmTest = newContent.match(/^---\n[\s\S]*?\n---\n/);
+  if (!fmTest) {
+    console.error(`ERROR: Invalid frontmatter structure in ${page.filePath}`);
+    console.error('Frontmatter must end with ---\\n');
+    return false;
+  }
+
+  // Validation: ensure no corrupted imports (e.g., "mport" instead of "import")
+  const afterFm = newContent.slice(fmTest[0].length);
+  if (/^[a-z]/.test(afterFm.trim()) && !/^(import|export|const|let|var|function|class|\/\/)/.test(afterFm.trim())) {
+    console.error(`ERROR: Suspicious content after frontmatter in ${page.filePath}`);
+    console.error(`First chars: "${afterFm.slice(0, 50)}..."`);
+    return false;
+  }
 
   writeFileSync(page.filePath, newContent);
   return true;
@@ -259,6 +310,26 @@ async function main() {
   console.log(`Found ${pages.length} total pages\n`);
 
   // Apply filters
+  if (options.page) {
+    const query = options.page.toLowerCase();
+    pages = pages.filter(p =>
+      p.id.toLowerCase().includes(query) ||
+      p.title.toLowerCase().includes(query) ||
+      p.relativePath.toLowerCase().includes(query)
+    );
+    if (pages.length === 0) {
+      console.error(`No pages found matching: ${options.page}`);
+      process.exit(1);
+    }
+    if (pages.length > 1) {
+      console.log(`Found ${pages.length} matching pages:`);
+      pages.forEach(p => console.log(`  - ${p.id}: ${p.title}`));
+      console.log(`\nUse a more specific query or the full ID.`);
+      process.exit(1);
+    }
+    console.log(`Grading single page: ${pages[0].title}`);
+  }
+
   if (options.category) {
     pages = pages.filter(p => p.category === options.category || p.subcategory === options.category);
     console.log(`Filtered to ${pages.length} pages in category: ${options.category}`);
@@ -278,11 +349,11 @@ async function main() {
     console.log(`Limited to ${pages.length} pages`);
   }
 
-  // Cost estimate (with truncated content)
-  const avgTokens = 1500; // input per page (~1000 words + metadata)
+  // Cost estimate (with full content)
+  const avgTokens = 4000; // input per page (~2500 words avg + metadata)
   const outputTokens = 200; // output per page
-  const inputCost = (pages.length * avgTokens / 1_000_000) * 3;
-  const outputCost = (pages.length * outputTokens / 1_000_000) * 15;
+  const inputCost = (pages.length * avgTokens / 1_000_000) * 3; // Sonnet input
+  const outputCost = (pages.length * outputTokens / 1_000_000) * 15; // Sonnet output
   const totalCost = inputCost + outputCost;
 
   console.log(`\nCost Estimate:`);
@@ -309,40 +380,61 @@ async function main() {
   let processed = 0;
   let errors = 0;
 
-  console.log('Processing pages...\n');
+  const concurrency = options.parallel;
+  console.log(`Processing ${pages.length} pages with concurrency ${concurrency}...\n`);
 
-  for (const page of pages) {
-    process.stdout.write(`[${processed + 1}/${pages.length}] ${page.id}... `);
-
+  // Process in batches for parallel execution
+  async function processPage(page, index) {
     try {
       const grades = await gradePage(client, page);
 
       if (grades) {
-        results.push({
+        const result = {
           id: page.id,
           filePath: page.relativePath,
           category: page.category,
           isModel: page.isModel,
           title: page.title,
           grades,
-        });
+        };
 
+        let applied = false;
         if (options.apply) {
-          applyGradesToFile(page, grades);
-          console.log(`applied (imp=${grades.importance.toFixed(1)}, qual=${grades.quality})`);
-        } else {
-          console.log(`graded (imp=${grades.importance.toFixed(1)}, qual=${grades.quality})`);
+          applied = applyGradesToFile(page, grades);
+          if (!applied) {
+            console.error(`  Failed to apply grades to ${page.filePath}`);
+          }
         }
+
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, qual=${grades.quality}${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
+        return { success: true, result };
       } else {
-        errors++;
-        console.log('FAILED');
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED`);
+        return { success: false };
       }
     } catch (e) {
-      errors++;
-      console.log(`ERROR: ${e.message}`);
+      console.log(`[${index + 1}/${pages.length}] ${page.id}: ERROR - ${e.message}`);
+      return { success: false, error: e.message };
     }
+  }
 
-    processed++;
+  // Process in parallel batches
+  for (let i = 0; i < pages.length; i += concurrency) {
+    const batch = pages.slice(i, i + concurrency);
+    const batchPromises = batch.map((page, batchIndex) =>
+      processPage(page, i + batchIndex)
+    );
+
+    const batchResults = await Promise.all(batchPromises);
+
+    for (const br of batchResults) {
+      if (br.success) {
+        results.push(br.result);
+        processed++;
+      } else {
+        errors++;
+      }
+    }
 
     // Rate limiting - be nice to the API
     await new Promise(r => setTimeout(r, 200));
@@ -355,11 +447,7 @@ async function main() {
 
   // Summary statistics
   const importanceScores = results.map(r => r.grades.importance).filter(x => x != null).sort((a, b) => b - a);
-  const qualityDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-
-  for (const r of results) {
-    if (r.grades.quality) qualityDistribution[r.grades.quality]++;
-  }
+  const qualityScores = results.map(r => r.grades.quality).filter(x => x != null).sort((a, b) => b - a);
 
   // Importance distribution by range
   const impRanges = {
@@ -376,16 +464,30 @@ async function main() {
     console.log(`  ${range}: ${bar} (${count})`);
   }
 
-  const avg = importanceScores.reduce((a, b) => a + b, 0) / importanceScores.length;
-  const median = importanceScores[Math.floor(importanceScores.length / 2)];
-  console.log(`\n  Avg: ${avg.toFixed(1)}, Median: ${median.toFixed(1)}`);
+  const impAvg = importanceScores.reduce((a, b) => a + b, 0) / importanceScores.length;
+  const impMedian = importanceScores[Math.floor(importanceScores.length / 2)];
+  console.log(`\n  Avg: ${impAvg.toFixed(1)}, Median: ${impMedian.toFixed(1)}`);
   console.log(`  Top 5: ${importanceScores.slice(0, 5).map(x => x.toFixed(1)).join(', ')}`);
   console.log(`  Bottom 5: ${importanceScores.slice(-5).map(x => x.toFixed(1)).join(', ')}`);
 
-  console.log('\nQuality Distribution (1-5):');
-  for (const [k, v] of Object.entries(qualityDistribution)) {
-    console.log(`  ${k}: ${'█'.repeat(v)} (${v})`);
+  // Quality distribution by range (0-100 scale)
+  const qualRanges = {
+    '80-100 (Comprehensive)': qualityScores.filter(x => x >= 80).length,
+    '60-79 (Good)': qualityScores.filter(x => x >= 60 && x < 80).length,
+    '40-59 (Adequate)': qualityScores.filter(x => x >= 40 && x < 60).length,
+    '20-39 (Draft)': qualityScores.filter(x => x >= 20 && x < 40).length,
+    '0-19 (Stub)': qualityScores.filter(x => x < 20).length,
+  };
+
+  console.log('\nQuality Distribution (0-100):');
+  for (const [range, count] of Object.entries(qualRanges)) {
+    const bar = '█'.repeat(Math.ceil(count / 3));
+    console.log(`  ${range}: ${bar} (${count})`);
   }
+
+  const qualAvg = qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length;
+  const qualMedian = qualityScores[Math.floor(qualityScores.length / 2)];
+  console.log(`\n  Avg: ${qualAvg.toFixed(1)}, Median: ${qualMedian.toFixed(1)}`)
 }
 
 main().catch(console.error);

@@ -1,14 +1,11 @@
 ---
-title: Multi-Agent Safety
-description: Ensuring safe behavior when multiple AI systems interact.
-importance: 75
-quality: 4
-llmSummary: Multi-agent safety addresses coordination challenges when multiple
-  AI systems interact, focusing on preventing race dynamics, collusion, and
-  misaligned equilibria through game theory and mechanism design approaches.
-  Research areas include context alignment, social contracts between AI systems,
-  and coordination mechanisms, with high neglectedness but medium tractability.
----**The approach**: Address safety challenges that emerge when multiple AI systems interact, compete, or coordinate—recognizing that the future may involve many AI agents, not just one.
+title: "Multi-Agent Safety"
+description: "Ensuring safe behavior when multiple AI systems interact."
+importance: 72.5
+quality: 52
+llmSummary: "Multi-agent safety addresses coordination and competition challenges when multiple AI systems interact, identifying risks like race dynamics, collusion, and emergent behavior. Current research includes cooperative AI frameworks and context alignment, with tractability rated medium and neglectedness high."
+---
+The approach**: Address safety challenges that emerge when multiple AI systems interact, compete, or coordinate—recognizing that the future may involve many AI agents, not just one.
 
 ## Evaluation Summary
 

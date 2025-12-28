@@ -3,26 +3,34 @@ import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 
 /**
- * Quality Rating Guide (1-5 stars):
+ * Quality Rating Guide (0-100):
  *
- * 1 ⭐ - Stub: Minimal content, placeholder, or just a definition
- * 2 ⭐⭐ - Draft: AI-generated or rough draft, needs human review
- * 3 ⭐⭐⭐ - Adequate: Covers basics, factually checked, but lacks depth
- * 4 ⭐⭐⭐⭐ - Good: Well-researched, includes citations, balanced perspective
- * 5 ⭐⭐⭐⭐⭐ - Excellent: Comprehensive, expert-reviewed, authoritative source
+ * 80-100 - Comprehensive: 2+ tables, diagrams, 5+ citations, quantified claims
+ * 60-79  - Good: 1+ table, some citations (3+), mostly prose with numbers
+ * 40-59  - Adequate: Good prose but lacks tables/citations, vague claims
+ * 20-39  - Draft: Poorly structured, heavy bullets, no evidence
+ * 0-19   - Stub: Minimal content, placeholder
  *
- * Most pages start at 2 (AI-generated drafts). Upgrade only after human review.
+ * CRITICAL: No tables + no citations = max 55. Good prose alone ≠ high quality.
  */
 export const collections = {
   docs: defineCollection({
     loader: docsLoader(),
     schema: docsSchema({
       extend: z.object({
-        // Editorial metadata for PageStatus (see rating guide above)
-        quality: z.number().min(1).max(5).optional(),
+        // Editorial metadata for PageStatus (0-100 scale, see rating guide above)
+        quality: z.number().min(0).max(100).optional(),
+        importance: z.number().min(0).max(100).optional(),
         llmSummary: z.string().optional(),
         lastEdited: z.string().optional(),
         todo: z.string().optional(),
+        // Model page ratings
+        ratings: z.object({
+          novelty: z.number().min(1).max(5).optional(),
+          rigor: z.number().min(1).max(5).optional(),
+          actionability: z.number().min(1).max(5).optional(),
+          completeness: z.number().min(1).max(5).optional(),
+        }).optional(),
         // Existing custom fields
         maturity: z.string().optional(),
       }),

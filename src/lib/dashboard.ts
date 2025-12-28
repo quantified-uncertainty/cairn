@@ -226,6 +226,71 @@ export function getDashboardMetrics(): DashboardMetrics {
 }
 
 /**
+ * Enhancement Queue Item - pages prioritized for improvement
+ */
+export interface EnhancementQueueItem {
+  id: string;
+  title: string;
+  path: string;
+  quality: number;
+  importance: number;
+  gap: number;  // importance - (quality * 10)
+  category: string;
+}
+
+/**
+ * Get enhancement queue - pages sorted by improvement priority
+ * Priority = importance - (quality * 10)
+ * High importance + low quality = high priority
+ */
+export function getEnhancementQueue(limit = 20): EnhancementQueueItem[] {
+  try {
+    const pages = require('../data/pages.json') as any[];
+
+    return pages
+      .filter(p => p.quality && p.quality <= 4 && p.importance && p.importance >= 30)
+      .map(p => ({
+        id: p.id,
+        title: p.title,
+        path: p.path,
+        quality: p.quality,
+        importance: p.importance,
+        gap: p.importance - (p.quality * 10),
+        category: p.category || 'other',
+      }))
+      .sort((a, b) => b.gap - a.gap)
+      .slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Link Health Stats
+ */
+export interface LinkHealthStats {
+  totalLinks: number;
+  validLinks: number;
+  brokenLinks: number;
+  conventionIssues: number;
+  healthScore: number;  // 0-100
+}
+
+/**
+ * Get link health statistics (static placeholder - run npm run validate:links for real data)
+ */
+export function getLinkHealthStats(): LinkHealthStats {
+  // This is a placeholder - actual data comes from validate:links command
+  return {
+    totalLinks: 1254,
+    validLinks: 1254,
+    brokenLinks: 0,
+    conventionIssues: 0,
+    healthScore: 100,
+  };
+}
+
+/**
  * Get summary statistics
  */
 export function getSummaryStats(): {

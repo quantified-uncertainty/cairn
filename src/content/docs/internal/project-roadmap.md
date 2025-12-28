@@ -1,18 +1,14 @@
 ---
-title: Project Roadmap
-description: Future work, infrastructure improvements, and project tracking
+title: "Project Roadmap"
+description: "Future work, infrastructure improvements, and project tracking"
 sidebar:
   order: 10
 lastEdited: "2025-12-26"
-importance: 5
-quality: 4
-llmSummary: Internal project roadmap tracking infrastructure improvements,
-  tooling ideas, and style guide evolution with specific task priorities and
-  effort estimates. Lists 26 pending model enhancement tasks and completed work
-  including creation of kb-2.0 style guide.
+importance: 0
+quality: 25
+llmSummary: "Internal project management document tracking infrastructure tasks (Vale integration, freshness tracking, schema enhancements) and style guide evolution from kb-2.0. Primarily checklist format with minimal actionable content."
 ---
-
-This file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see the [Enhancement Queue](/internal/enhancement-queue/).
+his file tracks infrastructure improvements, tooling ideas, and style guide evolution. For content-specific enhancement tasks, see the [Enhancement Queue](/internal/enhancement-queue/).
 
 ---
 

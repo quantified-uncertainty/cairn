@@ -54,8 +54,8 @@ const VERBOSE = args.includes('--verbose');
 
 const MODEL_MAP = {
   'haiku': 'claude-3-5-haiku-20241022',
-  'sonnet': 'claude-sonnet-4-20250514',
-  'opus': 'claude-opus-4-20250514'
+  'sonnet': 'claude-sonnet-4-5-20250929',
+  'opus': 'claude-opus-4-5-20251101'
 };
 
 const MODEL_ID = MODEL_MAP[MODEL_NAME] || MODEL_MAP['haiku'];

@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
+import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
 
 const DATA_DIR = 'src/data';
 const CONTENT_DIR = 'src/content/docs';
@@ -157,12 +158,16 @@ function buildPagesRegistry() {
 
         const urlPath = `${urlPrefix}/${id}/`;
 
+        // Extract structural metrics
+        const metrics = extractMetrics(content, fullPath);
+        const currentQuality = fm.quality ? parseInt(fm.quality) : null;
+
         pages.push({
           id,
           path: urlPath,
           filePath: relative(CONTENT_DIR, fullPath),
           title: fm.title || id.replace(/-/g, ' '),
-          quality: fm.quality ? parseInt(fm.quality) : null,
+          quality: currentQuality,
           importance: fm.importance ? parseInt(fm.importance) : null,
           lastUpdated: fm.lastUpdated || fm.lastEdited || null,
           llmSummary: fm.llmSummary || null,
@@ -171,6 +176,22 @@ function buildPagesRegistry() {
           ratings: fm.ratings || null,
           // Extract category from path
           category: urlPrefix.split('/').filter(Boolean)[1] || 'other',
+          // Structural metrics
+          metrics: {
+            wordCount: metrics.wordCount,
+            tableCount: metrics.tableCount,
+            diagramCount: metrics.diagramCount,
+            internalLinks: metrics.internalLinks,
+            externalLinks: metrics.externalLinks,
+            bulletRatio: Math.round(metrics.bulletRatio * 100) / 100,
+            sectionCount: metrics.sectionCount.total,
+            hasOverview: metrics.hasOverview,
+            structuralScore: metrics.structuralScore,
+          },
+          // Suggested quality based on structure
+          suggestedQuality: suggestQuality(metrics.structuralScore),
+          // Legacy field for backwards compatibility
+          wordCount: metrics.wordCount,
         });
       }
     }
@@ -356,6 +377,13 @@ function main() {
 
   // Build pages registry with frontmatter data (quality, etc.)
   const pages = buildPagesRegistry();
+
+  // Enrich pages with backlink counts
+  for (const page of pages) {
+    const pageBacklinks = backlinks[page.id] || [];
+    page.backlinkCount = pageBacklinks.length;
+  }
+
   database.pages = pages;
   const pagesWithQuality = pages.filter(p => p.quality !== null).length;
   console.log(`  pages: ${pages.length} pages (${pagesWithQuality} with quality ratings)`);

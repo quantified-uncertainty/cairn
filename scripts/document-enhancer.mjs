@@ -26,12 +26,40 @@ import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 
 const CONTENT_DIR = 'src/content/docs';
 const PAGES_FILE = 'src/data/pages.json';
+const PATH_REGISTRY_FILE = 'src/data/pathRegistry.json';
 const TEMP_DIR = '.claude/temp';
 
 // ============ Utilities ============
 
 function loadPages() {
   return JSON.parse(readFileSync(PAGES_FILE, 'utf-8'));
+}
+
+function loadValidPaths() {
+  const registry = JSON.parse(readFileSync(PATH_REGISTRY_FILE, 'utf-8'));
+  // Filter out index pages and return sorted unique paths
+  return [...new Set(Object.values(registry))]
+    .filter(p => !p.includes('__index__'))
+    .sort();
+}
+
+function getValidPathsForPrompt() {
+  const paths = loadValidPaths();
+  // Group by category for readability
+  const categories = {};
+  for (const path of paths) {
+    const parts = path.split('/').filter(Boolean);
+    const category = parts[1] || 'other'; // e.g., 'risks', 'responses', 'capabilities'
+    if (!categories[category]) categories[category] = [];
+    categories[category].push(path);
+  }
+
+  let result = '';
+  for (const [cat, catPaths] of Object.entries(categories).sort()) {
+    result += `\n${cat}:\n${catPaths.slice(0, 30).join('\n')}`; // Limit per category
+    if (catPaths.length > 30) result += `\n... and ${catPaths.length - 30} more`;
+  }
+  return result;
 }
 
 function getFilePath(page) {
@@ -204,7 +232,7 @@ async function cmdGrade(opts) {
       const truncated = content.replace(/^---[\s\S]*?---\n*/, '').split(/\s+/).slice(0, 1000).join(' ');
 
       const response = await client.messages.create({
-        model: opts.model || 'claude-sonnet-4-20250514',
+        model: opts.model || 'claude-sonnet-4-5-20250929',
         max_tokens: 500,
         system: GRADE_SYSTEM,
         messages: [{
@@ -258,22 +286,60 @@ function applyGrades(filePath, grades) {
 
 const ENHANCE_SYSTEM = `You are an expert technical writer improving AI safety wiki content.
 
-Enhance this page to quality 4-5:
+Enhance this page to quality 4-5 with RICH CITATIONS, LINKS, AND STRUCTURED TABLES:
 
-1. **Comprehensive Overview** (2-3 paragraphs): What is this, why it matters, key takeaways
-2. **Substantive Sections**: Detailed prose paragraphs, not just bullets
-3. **Evidence & Examples**: Specific research, dates, numbers
-4. **Safety Implications**: Concerning and promising aspects
-5. **Trajectory**: Current state, 1-2 years, 2-5 years
-6. **Key Uncertainties**: What we don't know
+## Required Structure
 
-Guidelines:
-- Professional prose, not just bullet lists
-- Specific evidence and examples
-- Neutral, analytical tone
-- Target: 150-250 lines
-- Update description to include conclusions
+1. **Overview** (2-3 paragraphs): What is this, why it matters, key conclusions with specific numbers
+2. **Risk/Impact Assessment TABLE**: Always include a table with severity, likelihood, timeline, trend
+3. **Key Arguments/Evidence**: Use tables and bullet points, minimize large text paragraphs
+4. **Current State & Trajectory**: What's happening now, projections for 2-5 years
+5. **Key Uncertainties/Cruxes**: What we don't know, where experts disagree
+6. **Sources & Resources** section at the end with categorized links in tables
+
+## CRITICAL: Use Tables and Structure
+
+Prefer tables and bullet points over paragraphs. Examples:
+
+| Category | Assessment | Evidence | Source |
+|----------|------------|----------|--------|
+| Severity | High | 82% higher believability | [Stanford HAI](url) |
+
+Use tables for:
+- Risk assessments
+- Capability comparisons
+- Timeline projections
+- Case study summaries
+- Organization comparisons
+- Intervention effectiveness
+
+Keep paragraphs short (2-4 sentences max). Break up content with headers, tables, and bullet lists.
+
+## Critical: Include Rich Links
+
+**Inline citations** - Link to actual sources:
+- Academic papers: [Author (Year)](https://arxiv.org/...)
+- Organizations: [RAND](https://www.rand.org/...), [Anthropic](https://www.anthropic.com/...)
+- News/blogs: [Title](https://url)
+
+**Internal cross-links** - ONLY use paths from the VALID_PATHS list provided below.
+Do NOT invent internal paths. If a concept doesn't have a page, just use plain text.
+
+**External organization links**:
+- Research orgs: MIRI, Anthropic, OpenAI, DeepMind, RAND, CNAS
+- Policy bodies: NIST, EU AI Office, UK AISI
+
+## Guidelines
+
+- Include 10-20 external links per page (real URLs you know exist)
+- Include 5-10 internal cross-links to related wiki pages
+- Use 4-8 tables per page for structured data
+- Maximum 4 sentences per paragraph
+- Add expert quotes with attribution where relevant
+- Include a Timeline section if historical events are relevant
+- Target: 200-400 lines with rich content
 - Preserve DataInfoBox/Backlinks components
+- Update description to include methodology AND conclusions
 
 Return ONLY the complete MDX file starting with --- frontmatter.`;
 
@@ -317,6 +383,9 @@ async function cmdEnhance(opts) {
   const outputDir = join(TEMP_DIR, 'enhanced');
   mkdirSync(outputDir, { recursive: true });
 
+  // Load valid internal paths once
+  const validPaths = getValidPathsForPrompt();
+
   const concurrency = opts.parallel || 1;
   console.log(`\nProcessing with concurrency: ${concurrency}`);
 
@@ -334,12 +403,21 @@ async function cmdEnhance(opts) {
       const content = readFileSync(filePath, 'utf-8');
 
       const response = await client.messages.create({
-        model: opts.model || 'claude-sonnet-4-20250514',
+        model: opts.model || 'claude-sonnet-4-5-20250929',
         max_tokens: 8000,
         system: ENHANCE_SYSTEM,
         messages: [{
           role: 'user',
-          content: `Enhance this page from quality ${page.quality} to 4-5:\n\n${content}`
+          content: `Enhance this page from quality ${page.quality} to 4-5.
+
+VALID_PATHS (only use these for internal links):
+${validPaths}
+
+---
+
+PAGE TO ENHANCE:
+
+${content}`
         }]
       });
 

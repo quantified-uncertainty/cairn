@@ -13,6 +13,11 @@ interface PageRow {
   quality: number | null
   importance: number | null
   lastUpdated: string | null
+  wordCount: number
+  backlinkCount: number
+  gapScore: number | null
+  ageDays: number | null
+  structuralScore: number | null
 }
 
 interface PageIndexProps {
@@ -25,17 +30,20 @@ interface PageIndexProps {
 function QualityCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
 
-  const colorClass = value >= 4
+  // 0-100 scale: 80+ comprehensive, 60-79 good, 40-59 adequate, 20-39 draft, <20 stub
+  const colorClass = value >= 80
     ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
-    : value >= 3
+    : value >= 60
     ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-    : value >= 2
+    : value >= 40
     ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : value >= 20
+    ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
     : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
 
   return (
-    <span className={cn("inline-flex items-center justify-center w-6 h-6 rounded text-sm font-medium", colorClass)}>
-      {value}
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {Math.round(value)}
     </span>
   )
 }
@@ -84,6 +92,72 @@ function CategoryBadge({ category }: { category: string }) {
   )
 }
 
+function GapScoreCell({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-muted-foreground">—</span>
+
+  // Higher gap = higher priority (importance minus quality*20)
+  // Range roughly -100 to 100, with positive being high priority
+  const colorClass = value >= 50
+    ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+    : value >= 20
+    ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+    : value >= 0
+    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+
+  return (
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {Math.round(value)}
+    </span>
+  )
+}
+
+function AgeDaysCell({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-muted-foreground">—</span>
+
+  // Color based on staleness
+  const colorClass = value > 180
+    ? "text-red-600 dark:text-red-400"
+    : value > 90
+    ? "text-orange-600 dark:text-orange-400"
+    : value > 30
+    ? "text-amber-600 dark:text-amber-400"
+    : "text-muted-foreground"
+
+  // Format: show days, or weeks/months for larger values
+  let display: string
+  if (value <= 14) {
+    display = `${value}d`
+  } else if (value <= 60) {
+    display = `${Math.round(value / 7)}w`
+  } else {
+    display = `${Math.round(value / 30)}mo`
+  }
+
+  return (
+    <span className={cn("text-sm tabular-nums", colorClass)}>
+      {display}
+    </span>
+  )
+}
+
+function StructuralScoreCell({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-muted-foreground">—</span>
+
+  // Score out of 15: 10+ high, 6-9 medium, <6 low
+  const colorClass = value >= 10
+    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+    : value >= 6
+    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+
+  return (
+    <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+      {value}/15
+    </span>
+  )
+}
+
 const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "importance",
@@ -106,6 +180,16 @@ const columns: ColumnDef<PageRow>[] = [
     },
   },
   {
+    accessorKey: "structuralScore",
+    header: ({ column }) => <SortableHeader column={column}>Struct</SortableHeader>,
+    cell: ({ row }) => <StructuralScoreCell value={row.getValue("structuralScore")} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("structuralScore") as number | null
+      const b = rowB.getValue("structuralScore") as number | null
+      return (a ?? -1) - (b ?? -1)
+    },
+  },
+  {
     accessorKey: "title",
     header: ({ column }) => <SortableHeader column={column}>Title</SortableHeader>,
     cell: ({ row }) => (
@@ -120,22 +204,90 @@ const columns: ColumnDef<PageRow>[] = [
     cell: ({ row }) => <CategoryBadge category={row.getValue("category")} />,
   },
   {
-    accessorKey: "lastUpdated",
-    header: ({ column }) => <SortableHeader column={column}>Updated</SortableHeader>,
-    cell: ({ row }) => <span className="text-sm">{row.getValue("lastUpdated") || "—"}</span>,
+    accessorKey: "wordCount",
+    header: ({ column }) => <SortableHeader column={column}>Words</SortableHeader>,
+    cell: ({ row }) => {
+      const count = row.getValue("wordCount") as number
+      // Format: show K for thousands
+      const display = count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count.toString()
+      return <span className="text-sm text-muted-foreground tabular-nums">{display}</span>
+    },
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("wordCount") as number
+      const b = rowB.getValue("wordCount") as number
+      return a - b
+    },
+  },
+  {
+    accessorKey: "backlinkCount",
+    header: ({ column }) => <SortableHeader column={column}>Links</SortableHeader>,
+    cell: ({ row }) => {
+      const count = row.getValue("backlinkCount") as number
+      return <span className="text-sm text-muted-foreground tabular-nums">{count}</span>
+    },
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("backlinkCount") as number
+      const b = rowB.getValue("backlinkCount") as number
+      return a - b
+    },
+  },
+  {
+    accessorKey: "gapScore",
+    header: ({ column }) => <SortableHeader column={column}>Gap</SortableHeader>,
+    cell: ({ row }) => <GapScoreCell value={row.getValue("gapScore")} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("gapScore") as number | null
+      const b = rowB.getValue("gapScore") as number | null
+      return (a ?? -999) - (b ?? -999)
+    },
+  },
+  {
+    accessorKey: "ageDays",
+    header: ({ column }) => <SortableHeader column={column}>Age</SortableHeader>,
+    cell: ({ row }) => <AgeDaysCell value={row.getValue("ageDays")} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("ageDays") as number | null
+      const b = rowB.getValue("ageDays") as number | null
+      return (a ?? -1) - (b ?? -1)
+    },
   },
 ]
 
 export function PageIndex({ showSearch = true, filterCategory, maxItems, title }: PageIndexProps) {
   const data = React.useMemo(() => {
-    let result = pages.map(p => ({
-      path: p.path,
-      title: p.title,
-      category: p.category,
-      quality: p.quality,
-      importance: p.importance,
-      lastUpdated: p.lastUpdated,
-    }))
+    const today = new Date()
+
+    let result = pages.map(p => {
+      const structuralScore = p.metrics?.structuralScore ?? null
+
+      // Compute gap score: importance - (quality * 20) - (structuralScore * 2)
+      // Higher = more important but lower quality/structure = needs work
+      // Quality contributes 0-100 (quality * 20), structure contributes 0-30 (score * 2)
+      const gapScore = (p.importance !== null && p.quality !== null)
+        ? p.importance - (p.quality * 20) - ((structuralScore ?? 0) * 2)
+        : null
+
+      // Compute age in days
+      let ageDays: number | null = null
+      if (p.lastUpdated) {
+        const updated = new Date(p.lastUpdated)
+        ageDays = Math.floor((today.getTime() - updated.getTime()) / (1000 * 60 * 60 * 24))
+      }
+
+      return {
+        path: p.path,
+        title: p.title,
+        category: p.category,
+        quality: p.quality,
+        importance: p.importance,
+        lastUpdated: p.lastUpdated,
+        wordCount: p.wordCount ?? 0,
+        backlinkCount: p.backlinkCount ?? 0,
+        gapScore,
+        ageDays,
+        structuralScore,
+      }
+    })
 
     if (filterCategory) {
       result = result.filter(p => p.category === filterCategory)

@@ -8,15 +8,21 @@
  */
 import '../../../node_modules/@astrojs/starlight/style/markdown.css';
 import { PageStatus } from '../wiki/PageStatus';
+import pagesData from '../../data/pages.json';
 
 // Get frontmatter from the route context
 const { entry } = Astro.locals.starlightRoute;
 const frontmatter = entry?.data || {};
 
 // Check if this is a knowledge-base page with editorial metadata
-const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo;
+const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.importance;
 const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
 const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
+
+// Extract page ID from pathname to look up additional metadata
+const pathParts = Astro.url.pathname.split('/').filter(Boolean);
+const pageId = pathParts[pathParts.length - 1] || '';
+const pageData = pagesData.find((p: any) => p.id === pageId);
 ---
 
 <div class="sl-markdown-content">
@@ -24,9 +30,14 @@ const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
     <PageStatus
       client:load
       quality={frontmatter.quality}
+      importance={frontmatter.importance}
       llmSummary={frontmatter.llmSummary}
       lastEdited={frontmatter.lastEdited}
       todo={frontmatter.todo}
+      wordCount={pageData?.wordCount}
+      backlinkCount={pageData?.backlinkCount}
+      metrics={pageData?.metrics}
+      suggestedQuality={pageData?.suggestedQuality}
       devOnly={true}
     />
   )}

@@ -237,7 +237,7 @@ Start with the [FAQ](/getting-started/faq/) to get basic orientation, then work 
 Explore [Interventions](/knowledge-base/responses/) to understand what kinds of work exist, check out [Organizations](/knowledge-base/organizations/) to see who's hiring, and read about [different worldviews](/knowledge-base/worldviews/) to understand the range of perspectives.
 
 **If you're a technical researcher:**
-Dive into [Safety Approaches](/knowledge-base/responses/technical/) to understand current research directions, review [Research Agendas](/knowledge-base/responses/technical/research-agendas/) for comparisons, and explore specific [Risk & Failure Modes](/knowledge-base/risks/) that motivate different approaches.
+Dive into [Safety Approaches](/knowledge-base/responses/alignment/) to understand current research directions, review [Research Agendas](/knowledge-base/responses/alignment/research-agendas/) for comparisons, and explore specific [Risk & Failure Modes](/knowledge-base/risks/) that motivate different approaches.
 
 **If you're a policymaker or governance professional:**
 Start with [Governance Approaches](/knowledge-base/responses/governance/), and review [Case Studies](/knowledge-base/history/) from other technologies.

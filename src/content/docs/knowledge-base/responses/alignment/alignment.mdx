@@ -1,13 +1,13 @@
 ---
-title: AI Alignment
-description: Technical approaches to ensuring AI systems pursue intended goals and remain aligned with human values throughout training and deployment. Current methods show promise but face fundamental scalability challenges.
+title: "AI Alignment"
+description: "Technical approaches to ensuring AI systems pursue intended goals and remain aligned with human values throughout training and deployment. Current methods show promise but face fundamental scalability challenges."
 sidebar:
   order: 10
-quality: 5
-importance: 80
+quality: 88
+importance: 85
 lastEdited: "2025-12-28"
+llmSummary: "Comprehensive technical survey of AI alignment approaches including RLHF, Constitutional AI, debate, and weak-to-strong generalization. Quantifies current effectiveness (75-90% harm reduction, 88.9% judge accuracy in debate) while highlighting critical scalability limits at superhuman capability levels."
 ---
-
 import {Backlinks, Mermaid} from '../../../../../components/wiki';
 
 ## Overview
@@ -135,7 +135,7 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 | Challenge | Current Status | Quantified Limitations | AGI Implications | Proposed Solutions | Success Probability |
 |-----------|----------------|----------------------|------------------|-------------------|-------------------|
 | **Human Oversight** | Bottleneck at superhuman tasks | Humans evaluate ~100-200 outputs/day; models generate millions; 5-10% of complex tasks receive meaningful oversight | Superhuman AI will operate in domains where humans can't provide reliable feedback; oversight success drops to 52% at 400 Elo gap | Scalable oversight (debate, amplification), AI assistants, recursive reward modeling | 40-60% chance of working for near-AGI |
-| **Evaluation** | Limited to observable behaviors | Current evals detect 85% of obvious misalignment, 40-60% of sophisticated deception; [sandbagging](/knowledge-base/risks/accident/sandbagging/) undetectable in 70%+ cases | Advanced AI could strategically underperform on evaluations; alignment faking observed in Claude 3 Opus | Adversarial testing, [interpretability](/knowledge-base/responses/technical/interpretability/), mechanistic anomaly detection | 30-50% for detecting deception |
+| **Evaluation** | Limited to observable behaviors | Current evals detect 85% of obvious misalignment, 40-60% of sophisticated deception; [sandbagging](/knowledge-base/risks/accident/sandbagging/) undetectable in 70%+ cases | Advanced AI could strategically underperform on evaluations; alignment faking observed in Claude 3 Opus | Adversarial testing, [interpretability](/knowledge-base/responses/alignment/interpretability/), mechanistic anomaly detection | 30-50% for detecting deception |
 | **Goal Specification** | Approximate, inconsistent | Human preference inconsistency: 20-40%; specification gaming: 15-30% of tasks; value learning accuracy: 60-75% on complex moral dilemmas | Value lock-in with wrong objectives; permanent misalignment; inability to correct superhuman systems | [Value learning](https://arxiv.org/abs/1711.03540), democratic input processes, iterated refinement | 25-45% for correct specification |
 | **Robustness** | Fragile to distribution shift | Performance degradation: 25-50% on OOD prompts; adversarial examples fool aligned models 60-80% of time; robustness-capability tradeoff: 10-20% performance cost | [Distributional shift](/knowledge-base/risks/accident/distributional-shift/) at deployment breaks alignment; novel scenarios not covered in training cause failures | Adversarial training, diverse testing, robustness incentives in training | 50-70% for near-domain shift |
 

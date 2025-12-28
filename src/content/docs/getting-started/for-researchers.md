@@ -1,17 +1,13 @@
 ---
-title: For Researchers
-description: Reading path for technical researchers considering AI safety work
+title: "For Researchers"
+description: "Reading path for technical researchers considering AI safety work"
 sidebar:
   order: 2
-importance: 82.5
-quality: 5
-llmSummary: Comprehensive guide for technical researchers entering AI safety,
-  providing structured reading paths through core technical approaches including
-  interpretability, scalable oversight, AI control, agent foundations, and
-  evaluation methods. Effectively bridges the gap between general ML research
-  and AI safety by highlighting distinctive challenges like adversarial
-  difficulty and empirical constraints.
----If you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
+importance: 65
+quality: 48
+llmSummary: "Comprehensive onboarding guide for technical researchers entering AI safety, systematically covering five major research approaches (interpretability, scalable oversight, AI control, agent foundations, evaluation) with their goals, methods, key organizations, and contribution pathways. Provides structured learning path from 15-minute orientation to 2-3 hour technical deep dive."
+---
+you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
 
 ## Quick Context Setting (15 minutes)
 
@@ -49,7 +45,7 @@ This is fundamentally harder and may require different approaches than current M
 Before going further, read these two foundational pieces:
 
 1. **[Alignment Difficulty](/understanding-ai-risk/core-argument/alignment-difficulty/)** (20 min) - Why alignment is technically hard
-2. **[Research Agendas Comparison](/knowledge-base/responses/technical/research-agendas/)** (30 min) - Overview of different technical approaches
+2. **[Research Agendas Comparison](/knowledge-base/responses/alignment/research-agendas/)** (30 min) - Overview of different technical approaches
 
 This will give you enough context to evaluate whether the technical challenges are interesting to you.
 
@@ -103,7 +99,7 @@ The field has several main research directions:
 - Background in neuroscience or reverse-engineering helpful
 - Creative hypothesis generation valuable
 
-**Read**: [Interpretability approach overview](/knowledge-base/responses/technical/interpretability/)
+**Read**: [Interpretability approach overview](/knowledge-base/responses/alignment/interpretability/)
 
 #### 2. Scalable Oversight
 
@@ -130,7 +126,7 @@ The field has several main research directions:
 - Human-computer interaction background valuable
 - Game theory or mechanism design relevant
 
-**Read**: [Scalable Oversight overview](/knowledge-base/responses/technical/scalable-oversight/)
+**Read**: [Scalable Oversight overview](/knowledge-base/responses/alignment/scalable-oversight/)
 
 #### 3. AI Control
 
@@ -156,7 +152,7 @@ The field has several main research directions:
 - Systems engineering skills valuable
 - Red-teaming experience useful
 
-**Read**: [AI Control approach](/knowledge-base/responses/technical/ai-control/)
+**Read**: [AI Control approach](/knowledge-base/responses/alignment/ai-control/)
 
 #### 4. Agent Foundations / Theory
 
@@ -183,7 +179,7 @@ The field has several main research directions:
 - Comfort with abstraction and philosophy
 - Ability to identify conceptual confusions
 
-**Read**: [Agent Foundations overview](/knowledge-base/responses/technical/agent-foundations/)
+**Read**: [Agent Foundations overview](/knowledge-base/responses/alignment/agent-foundations/)
 
 #### 5. Evaluation & Measurement
 
@@ -209,7 +205,7 @@ The field has several main research directions:
 - Security/red-teaming background
 - Creative adversarial thinking
 
-**Read**: [Evals approach](/knowledge-base/responses/technical/evals/)
+**Read**: [Evals approach](/knowledge-base/responses/alignment/evals/)
 
 ### Comparing Research Bets
 
@@ -583,7 +579,7 @@ If no, even if the problem is important, you may have higher impact elsewhere.
 Depending on your level of interest:
 
 **If you're just exploring:**
-1. Read [Research Agendas comparison](/knowledge-base/responses/technical/research-agendas/)
+1. Read [Research Agendas comparison](/knowledge-base/responses/alignment/research-agendas/)
 2. Pick one approach and read 3-5 key papers
 3. Try a small project in that area
 4. Evaluate your interest and fit
@@ -621,4 +617,4 @@ The field needs:
 
 Make your own assessment. Engage critically. And if you decide to contribute, we're glad to have you.
 
-**Ready to explore?** Start with the [Research Agendas comparison](/knowledge-base/responses/technical/research-agendas/) and go from there.
+**Ready to explore?** Start with the [Research Agendas comparison](/knowledge-base/responses/alignment/research-agendas/) and go from there.

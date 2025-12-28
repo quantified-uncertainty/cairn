@@ -6,11 +6,13 @@ sidebar:
   order: 100
 ---
 
-import { getDashboardMetrics, getSummaryStats } from '../../../lib/dashboard';
+import { getDashboardMetrics, getSummaryStats, getEnhancementQueue, getLinkHealthStats } from '../../../lib/dashboard';
 import QualityDashboard from '../../../components/dashboard/QualityDashboard';
 
 export const metrics = getDashboardMetrics();
 export const stats = getSummaryStats();
+export const enhancementQueue = getEnhancementQueue(15);
+export const linkHealth = getLinkHealthStats();
 
 This dashboard provides an overview of content quality, staleness tracking, and entity relationship health across the knowledge base.
 
@@ -121,6 +123,49 @@ These entities have no incoming or outgoing links:
     )}
   </ul>
 )}
+
+---
+
+## Enhancement Queue
+
+Pages prioritized for improvement based on (importance - quality × 10). High importance + low quality = priority target for enhancement.
+
+| Page | Quality | Importance | Gap | Category |
+|------|:-------:|:----------:|:---:|----------|
+{enhancementQueue.map(p => `| [${p.title}](${p.path}) | ${p.quality} | ${p.importance} | ${p.gap} | ${p.category} |`).join('\n')}
+
+To enhance these pages, run:
+```bash
+node scripts/document-enhancer.mjs enhance --min-imp 30 --max-qual 3 --limit 10
+```
+
+---
+
+## Link Health
+
+<div className="not-content grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{linkHealth.totalLinks}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Total Links</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold text-green-600">{linkHealth.validLinks}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Valid Links</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold text-red-600">{linkHealth.brokenLinks}</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Broken Links</div>
+  </div>
+  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold">{linkHealth.healthScore}%</div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">Health Score</div>
+  </div>
+</div>
+
+To get current link health status, run:
+```bash
+npm run validate:links
+```
 
 ---
 

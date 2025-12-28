@@ -1,17 +1,13 @@
 ---
-title: For Newcomers
-description: Your reading path if you're new to AI safety
+title: "For Newcomers"
+description: "Your reading path if you're new to AI safety"
 sidebar:
   order: 1
-importance: 55
-quality: 5
-llmSummary: A structured onboarding guide for AI safety newcomers offering three
-  reading paths (5-minute, 30-minute, 2-hour, and full-day) with specific page
-  recommendations and time allocations. Provides key statistics (median expert
-  timeline ~2040, 5-90% catastrophic risk estimates, 300-1000 full-time safety
-  researchers) and systematically introduces core concepts from basic risks to
-  technical solutions.
----Welcome! If you're new to AI safety, this page will guide you through the essential concepts in a logical order. We've designed several reading paths based on how much time you have.
+importance: 42
+quality: 48
+llmSummary: "A structured onboarding guide for AI safety newcomers providing three reading paths (5-minute, 30-minute, 2-hour, and full-day) that progressively introduce core concepts, risks, and responses. Links extensively to other resource pages but lacks original analytical content, quantified evidence, or data tables."
+---
+come! If you're new to AI safety, this page will guide you through the essential concepts in a logical order. We've designed several reading paths based on how much time you have.
 
 ## Start Here: The 5-Minute Version
 
@@ -93,8 +89,8 @@ Explore how people weigh the evidence differently:
 
 **5. What's Being Done (20 minutes)**
 Review safety approaches:
-- [Interpretability](/knowledge-base/responses/technical/interpretability/) - Understanding how AI systems work internally
-- [Scalable Oversight](/knowledge-base/responses/technical/scalable-oversight/) - How to supervise superhuman AI
+- [Interpretability](/knowledge-base/responses/alignment/interpretability/) - Understanding how AI systems work internally
+- [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) - How to supervise superhuman AI
 - [Governance Approaches](/knowledge-base/responses/governance/) - Policy and coordination
 
 **6. Who's Working on This (20 minutes)**
@@ -138,10 +134,10 @@ Read about [AI safety history](/knowledge-base/history/) over lunch:
 
 **1:00-2:00 - Technical Safety Approaches**
 Understand what technical safety research looks like:
-- [Interpretability](/knowledge-base/responses/technical/interpretability/)
-- [AI Control](/knowledge-base/responses/technical/ai-control/)
-- [RLHF and Alignment](/knowledge-base/responses/technical/rlhf/)
-- [Research Agendas Comparison](/knowledge-base/responses/technical/research-agendas/)
+- [Interpretability](/knowledge-base/responses/alignment/interpretability/)
+- [AI Control](/knowledge-base/responses/alignment/ai-control/)
+- [RLHF and Alignment](/knowledge-base/responses/alignment/rlhf/)
+- [Research Agendas Comparison](/knowledge-base/responses/alignment/research-agendas/)
 
 **2:00-3:00 - Governance and Coordination**
 Understand non-technical approaches:
@@ -176,8 +172,8 @@ Not everyone learns best linearly. Here are paths organized by topic:
 1. [Capabilities](/understanding-ai-risk/core-argument/capabilities/) - What can AI systems do?
 2. [Alignment Difficulty](/understanding-ai-risk/core-argument/alignment-difficulty/) - Why is alignment hard technically?
 3. [Accident Risks](/knowledge-base/risks/accident/) - Technical failure modes
-4. [Technical Safety Approaches](/knowledge-base/responses/technical/) - What researchers are building
-5. [Research Agendas](/knowledge-base/responses/technical/research-agendas/) - Comparing different technical approaches
+4. [Technical Safety Approaches](/knowledge-base/responses/alignment/) - What researchers are building
+5. [Research Agendas](/knowledge-base/responses/alignment/research-agendas/) - Comparing different technical approaches
 
 ### If You're Most Interested in Strategy and Governance
 

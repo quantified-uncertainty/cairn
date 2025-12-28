@@ -64,11 +64,13 @@ function updateFrontmatter(filePath, updates) {
     }
   }
 
-  // Apply quality (only if not already set, unless forced)
+  // Apply quality - always update since we migrated from 1-5 to 0-100 scale
   if (updates.quality !== undefined && !options.onlyImportance) {
-    if (fm.quality === undefined || fm.quality === null) {
-      changes.push(`quality: null → ${updates.quality}`);
-      fm.quality = updates.quality;
+    if (!options.skipExisting || fm.quality === undefined) {
+      if (fm.quality !== updates.quality) {
+        changes.push(`quality: ${fm.quality ?? 'null'} → ${updates.quality}`);
+        fm.quality = updates.quality;
+      }
     }
   }
 
@@ -100,11 +102,28 @@ function updateFrontmatter(filePath, updates) {
     return { success: true, reason: 'dry run', changes };
   }
 
-  // Reconstruct file
-  const newFm = stringifyYaml(fm);
-  const bodyStart = content.indexOf('---', 4) + 4;
-  const body = content.slice(bodyStart);
+  // Reconstruct file with proper formatting
+  let newFm = stringifyYaml(fm, {
+    defaultStringType: 'QUOTE_DOUBLE',
+    defaultKeyType: 'PLAIN',
+    lineWidth: 0
+  });
+
+  // Ensure frontmatter ends with newline
+  if (!newFm.endsWith('\n')) {
+    newFm += '\n';
+  }
+
+  const bodyStart = content.indexOf('---', 4) + 3; // Skip past '---' only
+  let body = content.slice(bodyStart);
+  body = '\n' + body.replace(/^\n+/, ''); // Ensure exactly one newline after ---
   const newContent = `---\n${newFm}---${body}`;
+
+  // Validate before writing
+  const fmTest = newContent.match(/^---\n[\s\S]*?\n---\n/);
+  if (!fmTest) {
+    return { success: false, reason: 'validation failed - invalid frontmatter structure', changes };
+  }
 
   writeFileSync(filePath, newContent);
   return { success: true, reason: 'applied', changes };

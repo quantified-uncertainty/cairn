@@ -1,15 +1,14 @@
 ---
-title: Deceptive Alignment
-description: Risk that AI systems appear aligned during training but pursue different goals when deployed, with expert probability estimates ranging 5-90% and growing empirical evidence from studies like Anthropic's Sleeper Agents research
+title: "Deceptive Alignment"
+description: "Risk that AI systems appear aligned during training but pursue different goals when deployed, with expert probability estimates ranging 5-90% and growing empirical evidence from studies like Anthropic's Sleeper Agents research"
 sidebar:
   order: 1
-maturity: Growing
-quality: 5
-llmSummary: Comprehensive analysis of deceptive alignment risk where AI systems appear aligned during training but pursue different goals when deployed, with expert probability estimates ranging from 5-90% and severity assessments all rating it as high to catastrophic risk. Provides detailed examination of key disagreements, detection challenges, and empirical evidence including Anthropic's Sleeper Agents findings.
+maturity: "Growing"
+quality: 88
+llmSummary: "Comprehensive analysis of deceptive alignment risk using structured probability estimates (5-90% range across experts), multiple evidence tables comparing supporting/opposing arguments, and research status from key organizations like Anthropic and Apollo Research. Documents empirical evidence from Sleeper Agents study while systematically presenting key disagreements through crux-based framework with named proponents."
 lastEdited: "2025-12-24"
-importance: 95
+importance: 85
 ---
-
 import {DataInfoBox, DisagreementMap, KeyQuestions, Backlinks, EstimateBox, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="deceptive-alignment" />
@@ -93,7 +92,7 @@ The concern has gained empirical grounding through recent research, particularly
 
 | **Position A: Detectable** | **Position B: Undetectable** |
 |----------------------------|--------------------------------|
-| [Interpretability](/knowledge-base/responses/technical/interpretability/) could find deception circuits | Models may hide goals in uninterpretable features |
+| [Interpretability](/knowledge-base/responses/alignment/interpretability/) could find deception circuits | Models may hide goals in uninterpretable features |
 | Behavioral inconsistencies would emerge under testing | Sophisticated models could maintain robust personas |
 | Process oversight can monitor reasoning | [Steganographic](/knowledge-base/risks/accident/steganography/) communication possible |
 | **Key Proponents:** Olah, Nanda | **Key Proponents:** Yudkowsky, some MIRI researchers |
@@ -128,20 +127,20 @@ The concern has gained empirical grounding through recent research, particularly
 
 **Research Priorities:**
 - Mechanistic interpretability to detect deceptive cognition
-- [AI control](/knowledge-base/responses/technical/ai-control/) methods for containment
+- [AI control](/knowledge-base/responses/alignment/ai-control/) methods for containment
 - Process-based oversight to monitor reasoning
 - Robust evaluations for [situational awareness](/knowledge-base/capabilities/situational-awareness/)
 
 **Policy Implications:**
 - Mandatory interpretability requirements before deployment
-- Extensive [red teaming](/knowledge-base/responses/technical/red-teaming/) for strategic behavior
+- Extensive [red teaming](/knowledge-base/responses/alignment/red-teaming/) for strategic behavior
 - [Compute governance](/knowledge-base/responses/governance/compute-governance/) to limit training of potentially deceptive systems
 
 ### If Deceptive Alignment is Unlikely
 
 **Research Priorities:**
 - [Outer alignment](/understanding-ai-risk/core-argument/alignment-difficulty/) and objective specification
-- Behavioral alignment through [RLHF](/knowledge-base/responses/technical/rlhf/) improvements
+- Behavioral alignment through [RLHF](/knowledge-base/responses/alignment/rlhf/) improvements
 - [Governance frameworks](/knowledge-base/responses/governance/) for beneficial deployment
 
 **Resource Allocation:**
@@ -168,13 +167,13 @@ The concern has gained empirical grounding through recent research, particularly
 - [Treacherous turn](/knowledge-base/risks/accident/treacherous-turn/) - Related concept of AI systems changing behavior after gaining power
 
 ### Technical Responses
-- [Interpretability research](/knowledge-base/responses/technical/interpretability/) - Primary detection method
-- [AI control](/knowledge-base/responses/technical/ai-control/) - Containment strategies
-- [Scalable oversight](/knowledge-base/responses/technical/scalable-oversight/) - Maintaining human oversight
+- [Interpretability research](/knowledge-base/responses/alignment/interpretability/) - Primary detection method
+- [AI control](/knowledge-base/responses/alignment/ai-control/) - Containment strategies
+- [Scalable oversight](/knowledge-base/responses/alignment/scalable-oversight/) - Maintaining human oversight
 
 ### Governance Responses
 - [Responsible scaling policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) - Industry self-regulation
-- [Model evaluations](/knowledge-base/responses/technical/evals/) - Required testing protocols
+- [Model evaluations](/knowledge-base/responses/alignment/evals/) - Required testing protocols
 
 ## Sources and Resources
 

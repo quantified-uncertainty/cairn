@@ -1,18 +1,13 @@
 ---
-title: For Policymakers
-description: Reading path for policy professionals working on AI governance
+title: "For Policymakers"
+description: "Reading path for policy professionals working on AI governance"
 sidebar:
   order: 3
-importance: 85.2
-quality: 5
-llmSummary: "This comprehensive guide provides policymakers with a structured
-  overview of AI safety risks and governance approaches, emphasizing the urgency
-  of preparing for transformative AI within 10-30 years. It identifies three
-  high-leverage policy interventions: compute governance (hardware
-  tracking/controls), mandatory safety evaluations, and international
-  coordination, while mapping current policy frameworks across US, EU, UK, and
-  China."
----If you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
+importance: 68.5
+quality: 42
+llmSummary: "Structured introduction to AI governance for policymakers, covering four risk categories (accident, misuse, structural, epistemic), three policy levers (compute governance, mandatory evaluations, international coordination), and current policy frameworks across US, EU, UK, and China. Provides actionable prioritization framework but lacks tables, citations, and quantified evidence."
+---
+you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
 
 ## Executive Summary (5 minutes)
 
@@ -218,7 +213,7 @@ Based on case studies and expert analysis, these approaches show promise:
 - Can evaluations keep pace with capabilities?
 - Risk of regulatory capture
 
-**Read**: [Evaluations approach](/knowledge-base/responses/technical/evals/) and [UK AISI](/knowledge-base/organizations/government/uk-aisi/)
+**Read**: [Evaluations approach](/knowledge-base/responses/alignment/evals/) and [UK AISI](/knowledge-base/organizations/government/uk-aisi/)
 
 #### 3. Licensing and Registration
 
@@ -315,7 +310,7 @@ Based on case studies and expert analysis, these approaches show promise:
 - Commercial pressure may override formal structures
 - Talent competition may prevent strict requirements
 
-**Read**: [Institutional Approaches](/knowledge-base/responses/institutional/)
+**Read**: [Organizational Practices](/knowledge-base/responses/organizational-practices/)
 
 ## Strategy Considerations (30 minutes)
 
@@ -484,7 +479,7 @@ Based on your specific policy focus:
 ### If You're Working on Standards and Evaluation
 
 1. [Accident Risks](/knowledge-base/risks/accident/) - What to test for (1 hour)
-2. [Evaluations Approach](/knowledge-base/responses/technical/evals/) - How testing works (30 min)
+2. [Evaluations Approach](/knowledge-base/responses/alignment/evals/) - How testing works (30 min)
 3. [UK AISI](/knowledge-base/organizations/government/uk-aisi/) - Government evaluation example (20 min)
 4. [Organizations](/knowledge-base/organizations/) - Who's developing evaluation frameworks (1 hour)
 
@@ -610,7 +605,7 @@ Depending on your specific role:
 5. Start with technically feasible measures (compute monitoring)
 
 **If you're setting standards:**
-1. Understand [what to evaluate](/knowledge-base/responses/technical/evals/)
+1. Understand [what to evaluate](/knowledge-base/responses/alignment/evals/)
 2. Learn about [specific risks](/knowledge-base/risks/) to test for
 3. Review [UK AISI](/knowledge-base/organizations/government/uk-aisi/) as government evaluation model
 4. Engage technical experts on measurement
@@ -632,7 +627,7 @@ Depending on your specific role:
 - Academic publications on AI governance
 
 **For technical background:**
-- This wiki's [technical safety approaches](/knowledge-base/responses/technical/)
+- This wiki's [technical safety approaches](/knowledge-base/responses/alignment/)
 - NIST AI Risk Management Framework
 - UK government AI safety research
 - Academic computer science explainers

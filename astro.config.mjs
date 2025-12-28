@@ -47,7 +47,7 @@ export default defineConfig({
                       { label: 'Overview', slug: 'knowledge-base' },
                       { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
-                          { label: 'Technical Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/technical' } },
+                          { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
                           { label: 'Governance', collapsed: true, items: [
                               { label: 'Overview', slug: 'knowledge-base/responses/governance' },
                               { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
@@ -58,7 +58,7 @@ export default defineConfig({
                           ]},
                           { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
                           { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
-                          { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutional' } },
+                          { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/organizational-practices' } },
                           { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
                           { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
                       ]},

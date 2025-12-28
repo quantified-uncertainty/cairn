@@ -1,17 +1,16 @@
 ---
-title: Goal Misgeneralization Probability Model
-description: Quantitative framework estimating goal misgeneralization probability across deployment scenarios. Analyzes how distribution shift magnitude, training objective quality, and capability level affect risk from ~1% to 50%+. Provides actionable deployment and research guidance.
-quality: 4.5
+title: "Goal Misgeneralization Probability Model"
+description: "Quantitative framework estimating goal misgeneralization probability across deployment scenarios. Analyzes how distribution shift magnitude, training objective quality, and capability level affect risk from ~1% to 50%+. Provides actionable deployment and research guidance."
+quality: 88
 lastEdited: "2025-12-26"
 ratings:
   novelty: 3
   rigor: 4
   actionability: 4
   completeness: 4
-importance: 85.2
-llmSummary: This model provides a quantitative framework for estimating goal misgeneralization probability across deployment scenarios, finding risk varies from ~1% for minor distribution shifts with well-specified objectives to over 50% for extreme shifts with poorly specified goals. The analysis decomposes misgeneralization probability into capability generalization, goal failure, and harm components, offering actionable insights for deployment practices.
+importance: 82
+llmSummary: "Quantitative model decomposing goal misgeneralization probability into measurable components (capability transfer, goal failure, harm) across four distribution shift types, finding risk ranges from 3.6% for superficial shifts to 27.7% for extreme shifts. Meta-analysis of 60+ specification gaming cases provides empirical validation with pooled probabilities of 87% capability transfer and 76% goal failure given transfer."
 ---
-
 import { DataInfoBox, Mermaid } from '@/components/wiki';
 
 <DataInfoBox entityId="goal-misgeneralization-probability" ratings={frontmatter.ratings} />
@@ -195,10 +194,10 @@ Well-specified objectives dramatically reduce misgeneralization risk through cle
 |----------------------|------------------|----------------|-------------------|----------|
 | **Prevention** | Diverse adversarial training | 20-40% | 2-5x compute | High |
 | | Objective specification improvement | 30-50% | Research effort | High |
-| | [Interpretability](/knowledge-base/responses/technical/interpretability/) verification | 40-70% | Significant R&D | Very High |
+| | [Interpretability](/knowledge-base/responses/alignment/interpretability/) verification | 40-70% | Significant R&D | Very High |
 | **Detection** | Anomaly monitoring | Early warning | Monitoring overhead | Medium |
 | | Objective probing | Behavioral testing | Evaluation cost | High |
-| **Response** | [AI Control protocols](/knowledge-base/responses/technical/ai-control/) | 60-90% | System overhead | Very High |
+| **Response** | [AI Control protocols](/knowledge-base/responses/alignment/ai-control/) | 60-90% | System overhead | Very High |
 | | Gradual deployment | Variable | Reduced utility | High |
 
 ### Technical Implementation
