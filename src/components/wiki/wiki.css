@@ -4596,48 +4596,52 @@
   font-style: italic;
 }
 
-/* Hover card wrapper - positioned below trigger */
+/* Hover card - hidden by default, shown on hover */
 .resource-link__card-wrapper {
+  display: none;
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 100;
-  padding-top: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s, visibility 0.15s;
-  pointer-events: none;
+  z-index: 9999;
+  padding-top: 6px;
 }
 
-/* Bridge element to allow mouse movement */
+/* Bridge for mouse movement */
 .resource-link__bridge {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 8px;
+  right: 0;
+  height: 10px;
 }
 
-/* Show card on hover - both on trigger AND card-wrapper */
-.resource-link:hover .resource-link__card-wrapper,
-.resource-link__card-wrapper:hover {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+/* Show on hover */
+.resource-link:hover .resource-link__card-wrapper {
+  display: block;
 }
 
-/* The actual card */
+/* The card itself */
 .resource-link__card {
   display: block;
   width: 280px;
-  padding: 0.75rem;
+  padding: 0.625rem;
   background: var(--sl-color-bg);
   border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 0.8rem;
   line-height: 1.4;
-  overflow: hidden;
+}
+
+/* Ensure Starlight content area doesn't clip hover cards */
+.sl-markdown-content {
+  overflow: visible !important;
+}
+
+.sl-markdown-content table,
+.sl-markdown-content td,
+.sl-markdown-content th {
+  overflow: visible !important;
 }
 
 .resource-link__card-header {
