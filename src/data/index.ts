@@ -68,6 +68,10 @@ export interface Page {
   title: string;
   quality: number | null;
   importance: number | null;
+  // ITN framework fields (0-100 scale)
+  tractability: number | null;
+  neglectedness: number | null;
+  uncertainty: number | null;
   causalLevel: 'outcome' | 'pathway' | 'amplifier' | null;
   lastUpdated: string | null;
   llmSummary: string | null;

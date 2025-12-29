@@ -7,7 +7,7 @@ sidebar:
 lastEdited: "2025-12-29"
 ---
 
-import {Mermaid, ParameterFlowDiagram} from '../../../../components/wiki';
+import {Mermaid, ParameterFlowDiagram, ParametersTable} from '../../../../components/wiki';
 
 ## Overview
 
@@ -74,51 +74,364 @@ This interactive diagram shows how both risks (red) and interventions (green) af
 
 ---
 
-## Parameter Categories
+## All Parameters
 
-### Safety Parameters
-Parameters related to AI system safety and alignment:
-
-| Parameter | Direction | Current Trend | Key Risks | Key Interventions |
-|-----------|-----------|---------------|-----------|-------------------|
-| [Alignment Robustness](/knowledge-base/parameters/alignment-robustness/) | Higher is better | Declining | Reward hacking, deception | Interpretability, evals |
-| [Safety-Capability Gap](/knowledge-base/parameters/safety-capability-gap/) | Lower is better | Widening | Racing dynamics | Pause, safety research |
-| [Interpretability Coverage](/knowledge-base/parameters/interpretability-coverage/) | Higher is better | Improving slowly | — | Mechanistic interp |
-| [Human Oversight Quality](/knowledge-base/parameters/human-oversight-quality/) | Higher is better | Declining | Automation complacency | Scalable oversight |
-| [Safety Culture Strength](/knowledge-base/parameters/safety-culture-strength/) | Higher is better | Mixed | Racing, commercialization | RSPs, safety evals |
-
-### Governance Parameters
-Parameters related to AI governance and coordination:
-
-| Parameter | Direction | Current Trend | Key Risks | Key Interventions |
-|-----------|-----------|---------------|-----------|-------------------|
-| [Coordination Capacity](/knowledge-base/parameters/coordination-capacity/) | Higher is better | Fragile | Racing dynamics | Voluntary commitments |
-| [International Coordination](/knowledge-base/parameters/international-coordination/) | Higher is better | Mixed | Geopolitical competition | AISI network, treaties |
-| [Regulatory Capacity](/knowledge-base/parameters/regulatory-capacity/) | Higher is better | Improving | Regulatory capture | Tech expertise building |
-| [Institutional Quality](/knowledge-base/parameters/institutional-quality/) | Higher is better | Mixed | Capture, politicization | Independence safeguards |
-| [Racing Intensity](/knowledge-base/parameters/racing-intensity/) | Lower is better | Accelerating | Competition pressure | Coordination, pause |
-
-### Societal Parameters
-Parameters related to broader societal impacts:
-
-| Parameter | Direction | Current Trend | Key Risks | Key Interventions |
-|-----------|-----------|---------------|-----------|-------------------|
-| [Societal Trust](/knowledge-base/parameters/societal-trust/) | Higher is better | Declining | Trust erosion, deepfakes | Content authentication |
-| [Epistemic Health](/knowledge-base/parameters/epistemic-health/) | Higher is better | Declining | Misinformation, AI content | Media literacy |
-| [Human Agency](/knowledge-base/parameters/human-agency/) | Higher is better | Declining | Erosion of agency | Human-in-the-loop |
-| [AI Control Concentration](/knowledge-base/parameters/ai-control-concentration/) | Context-dependent | Concentrating | Concentration of power | Antitrust, open source |
-| [Economic Stability](/knowledge-base/parameters/economic-stability/) | Higher is better | Mixed | Job displacement | Transition support |
-
-### Resilience Parameters
-Parameters related to societal resilience:
-
-| Parameter | Direction | Current Trend | Key Risks | Key Interventions |
-|-----------|-----------|---------------|-----------|-------------------|
-| [Societal Resilience](/knowledge-base/parameters/societal-resilience/) | Higher is better | Mixed | Single points of failure | Redundancy, backups |
-| [Biological Threat Exposure](/knowledge-base/parameters/biological-threat-exposure/) | Higher is better | Stressed | AI-enabled bioweapons | DNA screening |
-| [Cyber Threat Exposure](/knowledge-base/parameters/cyber-threat-exposure/) | Higher is better | Stressed | AI cyberattacks | AI-powered defense |
-| [Information Authenticity](/knowledge-base/parameters/information-authenticity/) | Higher is better | Declining | Deepfakes, AI content | Provenance, watermarks |
-| [Human Expertise](/knowledge-base/parameters/human-expertise/) | Higher is better | Declining | Deskilling | Skill maintenance |
+<ParametersTable
+  client:load
+  parameters={[
+    // Alignment Parameters
+    {
+      id: 'alignment-robustness',
+      title: 'Alignment Robustness',
+      category: 'alignment',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 88,
+      tractability: 55,
+      neglectedness: 65,
+      uncertainty: 45,
+      risks: [
+        { id: 'reward-hacking', title: 'Reward Hacking', href: '/knowledge-base/risks/accident/reward-hacking/' },
+        { id: 'deceptive-alignment', title: 'Deceptive Alignment', href: '/knowledge-base/risks/accident/deceptive-alignment/' },
+      ],
+      interventions: [
+        { id: 'interpretability', title: 'Interpretability', href: '/knowledge-base/responses/alignment/interpretability/' },
+        { id: 'evals', title: 'AI Evaluations', href: '/knowledge-base/responses/alignment/evals/' },
+      ],
+    },
+    {
+      id: 'safety-capability-gap',
+      title: 'Safety-Capability Gap',
+      category: 'alignment',
+      direction: 'lower',
+      trend: 'Widening',
+      importance: 90,
+      tractability: 40,
+      neglectedness: 35,
+      uncertainty: 40,
+      risks: [
+        { id: 'racing-dynamics', title: 'Racing Dynamics', href: '/knowledge-base/risks/structural/racing-dynamics/' },
+      ],
+      interventions: [
+        { id: 'pause', title: 'Development Pause', href: '/knowledge-base/responses/governance/pause/' },
+        { id: 'safety-research', title: 'Safety Research', href: '/knowledge-base/responses/alignment/' },
+      ],
+    },
+    {
+      id: 'interpretability-coverage',
+      title: 'Interpretability Coverage',
+      category: 'alignment',
+      direction: 'higher',
+      trend: 'Improving slowly',
+      importance: 85,
+      tractability: 65,
+      neglectedness: 70,
+      uncertainty: 50,
+      risks: [],
+      interventions: [
+        { id: 'interpretability', title: 'Mechanistic Interp', href: '/knowledge-base/responses/alignment/interpretability/' },
+      ],
+    },
+    {
+      id: 'human-oversight-quality',
+      title: 'Human Oversight Quality',
+      category: 'alignment',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 82,
+      tractability: 55,
+      neglectedness: 50,
+      uncertainty: 45,
+      risks: [
+        { id: 'automation-complacency', title: 'Automation Complacency', href: '/knowledge-base/risks/structural/erosion-of-agency/' },
+      ],
+      interventions: [
+        { id: 'scalable-oversight', title: 'Scalable Oversight', href: '/knowledge-base/responses/alignment/scalable-oversight/' },
+      ],
+    },
+    {
+      id: 'safety-culture-strength',
+      title: 'Safety Culture Strength',
+      category: 'alignment',
+      direction: 'higher',
+      trend: 'Mixed',
+      importance: 80,
+      tractability: 50,
+      neglectedness: 75,
+      uncertainty: 55,
+      risks: [
+        { id: 'racing-dynamics', title: 'Racing Dynamics', href: '/knowledge-base/risks/structural/racing-dynamics/' },
+      ],
+      interventions: [
+        { id: 'rsps', title: 'RSPs', href: '/knowledge-base/responses/governance/rsps/' },
+        { id: 'evals', title: 'Safety Evals', href: '/knowledge-base/responses/alignment/evals/' },
+      ],
+    },
+    // Governance Parameters
+    {
+      id: 'coordination-capacity',
+      title: 'Coordination Capacity',
+      category: 'governance',
+      direction: 'higher',
+      trend: 'Fragile',
+      importance: 75,
+      tractability: 40,
+      neglectedness: 45,
+      uncertainty: 55,
+      risks: [
+        { id: 'racing-dynamics', title: 'Racing Dynamics', href: '/knowledge-base/risks/structural/racing-dynamics/' },
+      ],
+      interventions: [
+        { id: 'voluntary-commitments', title: 'Voluntary Commitments', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    {
+      id: 'international-coordination',
+      title: 'International Coordination',
+      category: 'governance',
+      direction: 'higher',
+      trend: 'Mixed',
+      importance: 80,
+      tractability: 30,
+      neglectedness: 50,
+      uncertainty: 60,
+      risks: [
+        { id: 'geopolitical', title: 'Geopolitical Competition', href: '/knowledge-base/risks/structural/racing-dynamics/' },
+      ],
+      interventions: [
+        { id: 'aisi', title: 'AISI Network', href: '/knowledge-base/responses/governance/' },
+        { id: 'treaties', title: 'AI Treaties', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    {
+      id: 'regulatory-capacity',
+      title: 'Regulatory Capacity',
+      category: 'governance',
+      direction: 'higher',
+      trend: 'Improving',
+      importance: 75,
+      tractability: 50,
+      neglectedness: 45,
+      uncertainty: 45,
+      risks: [
+        { id: 'regulatory-capture', title: 'Regulatory Capture', href: '/knowledge-base/risks/structural/' },
+      ],
+      interventions: [
+        { id: 'expertise', title: 'Tech Expertise Building', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    {
+      id: 'institutional-quality',
+      title: 'Institutional Quality',
+      category: 'governance',
+      direction: 'higher',
+      trend: 'Mixed',
+      importance: 72,
+      tractability: 40,
+      neglectedness: 40,
+      uncertainty: 50,
+      risks: [
+        { id: 'capture', title: 'Capture & Politicization', href: '/knowledge-base/risks/structural/' },
+      ],
+      interventions: [
+        { id: 'independence', title: 'Independence Safeguards', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    {
+      id: 'racing-intensity',
+      title: 'Racing Intensity',
+      category: 'governance',
+      direction: 'lower',
+      trend: 'Accelerating',
+      importance: 85,
+      tractability: 35,
+      neglectedness: 55,
+      uncertainty: 50,
+      risks: [
+        { id: 'racing-dynamics', title: 'Competition Pressure', href: '/knowledge-base/risks/structural/racing-dynamics/' },
+      ],
+      interventions: [
+        { id: 'compute-governance', title: 'Compute Governance', href: '/knowledge-base/responses/governance/compute-governance/' },
+        { id: 'coordination', title: 'Coordination', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    // Societal Parameters
+    {
+      id: 'societal-trust',
+      title: 'Societal Trust',
+      category: 'societal',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 65,
+      tractability: 30,
+      neglectedness: 30,
+      uncertainty: 60,
+      risks: [
+        { id: 'trust-erosion', title: 'Trust Erosion', href: '/knowledge-base/risks/epistemic/trust-erosion/' },
+        { id: 'deepfakes', title: 'Deepfakes', href: '/knowledge-base/risks/epistemic/' },
+      ],
+      interventions: [
+        { id: 'content-auth', title: 'Content Authentication', href: '/knowledge-base/responses/epistemic-tools/' },
+      ],
+    },
+    {
+      id: 'epistemic-health',
+      title: 'Epistemic Health',
+      category: 'societal',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 78,
+      tractability: 40,
+      neglectedness: 55,
+      uncertainty: 55,
+      risks: [
+        { id: 'misinformation', title: 'Misinformation', href: '/knowledge-base/risks/epistemic/' },
+      ],
+      interventions: [
+        { id: 'media-literacy', title: 'Media Literacy', href: '/knowledge-base/responses/epistemic-tools/' },
+      ],
+    },
+    {
+      id: 'human-agency',
+      title: 'Human Agency',
+      category: 'societal',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 60,
+      tractability: 35,
+      neglectedness: 60,
+      uncertainty: 65,
+      risks: [
+        { id: 'erosion-of-agency', title: 'Erosion of Agency', href: '/knowledge-base/risks/structural/erosion-of-agency/' },
+      ],
+      interventions: [
+        { id: 'human-in-loop', title: 'Human-in-the-Loop', href: '/knowledge-base/responses/alignment/scalable-oversight/' },
+      ],
+    },
+    {
+      id: 'ai-control-concentration',
+      title: 'AI Control Concentration',
+      category: 'societal',
+      direction: 'context',
+      trend: 'Concentrating',
+      importance: 75,
+      tractability: 30,
+      neglectedness: 60,
+      uncertainty: 65,
+      risks: [
+        { id: 'concentration', title: 'Concentration of Power', href: '/knowledge-base/risks/structural/concentration-of-power/' },
+      ],
+      interventions: [
+        { id: 'antitrust', title: 'Antitrust', href: '/knowledge-base/responses/governance/' },
+        { id: 'open-source', title: 'Open Source', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    {
+      id: 'economic-stability',
+      title: 'Economic Stability',
+      category: 'societal',
+      direction: 'higher',
+      trend: 'Mixed',
+      importance: 55,
+      tractability: 35,
+      neglectedness: 25,
+      uncertainty: 70,
+      risks: [
+        { id: 'economic-disruption', title: 'Job Displacement', href: '/knowledge-base/risks/structural/economic-disruption/' },
+      ],
+      interventions: [
+        { id: 'transition', title: 'Transition Support', href: '/knowledge-base/responses/governance/' },
+      ],
+    },
+    // Resilience Parameters
+    {
+      id: 'societal-resilience',
+      title: 'Societal Resilience',
+      category: 'resilience',
+      direction: 'higher',
+      trend: 'Mixed',
+      importance: 70,
+      tractability: 45,
+      neglectedness: 50,
+      uncertainty: 55,
+      risks: [
+        { id: 'single-points', title: 'Single Points of Failure', href: '/knowledge-base/risks/structural/' },
+      ],
+      interventions: [
+        { id: 'redundancy', title: 'Redundancy & Backups', href: '/knowledge-base/responses/' },
+      ],
+    },
+    {
+      id: 'biological-threat-exposure',
+      title: 'Biological Threat Exposure',
+      category: 'resilience',
+      direction: 'lower',
+      trend: 'Stressed',
+      importance: 82,
+      tractability: 55,
+      neglectedness: 60,
+      uncertainty: 55,
+      risks: [
+        { id: 'bioweapons', title: 'AI Bioweapons', href: '/knowledge-base/risks/misuse/bioweapons/' },
+      ],
+      interventions: [
+        { id: 'dna-screening', title: 'DNA Screening', href: '/knowledge-base/responses/biosecurity/' },
+      ],
+    },
+    {
+      id: 'cyber-threat-exposure',
+      title: 'Cyber Threat Exposure',
+      category: 'resilience',
+      direction: 'lower',
+      trend: 'Stressed',
+      importance: 75,
+      tractability: 50,
+      neglectedness: 30,
+      uncertainty: 45,
+      risks: [
+        { id: 'cyberattacks', title: 'AI Cyberattacks', href: '/knowledge-base/risks/misuse/cyberattacks/' },
+      ],
+      interventions: [
+        { id: 'ai-defense', title: 'AI-Powered Defense', href: '/knowledge-base/responses/' },
+      ],
+    },
+    {
+      id: 'information-authenticity',
+      title: 'Information Authenticity',
+      category: 'resilience',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 72,
+      tractability: 50,
+      neglectedness: 45,
+      uncertainty: 50,
+      risks: [
+        { id: 'deepfakes', title: 'Deepfakes', href: '/knowledge-base/risks/epistemic/' },
+      ],
+      interventions: [
+        { id: 'provenance', title: 'Provenance', href: '/knowledge-base/responses/epistemic-tools/' },
+        { id: 'watermarks', title: 'Watermarks', href: '/knowledge-base/responses/epistemic-tools/' },
+      ],
+    },
+    {
+      id: 'human-expertise',
+      title: 'Human Expertise',
+      category: 'resilience',
+      direction: 'higher',
+      trend: 'Declining',
+      importance: 70,
+      tractability: 45,
+      neglectedness: 40,
+      uncertainty: 50,
+      risks: [
+        { id: 'deskilling', title: 'Deskilling', href: '/knowledge-base/risks/structural/erosion-of-agency/' },
+      ],
+      interventions: [
+        { id: 'skill-maintenance', title: 'Skill Maintenance', href: '/knowledge-base/responses/' },
+      ],
+    },
+  ]}
+/>
 
 ---
 

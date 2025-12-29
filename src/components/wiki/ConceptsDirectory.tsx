@@ -17,25 +17,26 @@ interface ConceptsDirectoryProps {
 }
 
 // Category configuration with display order and styling
+// Order matches sidebar in astro.config.mjs
 const categoryConfig: Record<string, { title: string; order: number; description?: string }> = {
-  "arguments": { title: "Arguments & Debates", order: 1, description: "Core cases for and against AI risk" },
-  "risks": { title: "Risks", order: 2, description: "Potential harms from AI systems" },
-  "responses": { title: "Responses & Interventions", order: 3, description: "Technical and governance approaches" },
-  "models": { title: "Analytical Models", order: 4, description: "Frameworks for understanding AI risk" },
-  "capabilities": { title: "AI Capabilities", order: 5, description: "Current and emerging AI abilities" },
-  "cruxes": { title: "Key Uncertainties", order: 6, description: "Critical questions and disagreements" },
-  "organizations": { title: "Organizations", order: 7, description: "Labs, research orgs, and institutions" },
-  "people": { title: "People", order: 8, description: "Key researchers and figures" },
-  "funders": { title: "Funders", order: 9, description: "Funding organizations" },
-  "history": { title: "History", order: 10, description: "Timeline and key events" },
-  "scenarios": { title: "Scenarios", order: 11, description: "Future possibilities" },
-  "metrics": { title: "Metrics & Estimates", order: 12, description: "Quantified predictions" },
-  "worldviews": { title: "Worldviews", order: 13, description: "Different perspectives" },
-  "debates": { title: "Debates", order: 14, description: "Structured disagreements" },
-  "literature": { title: "Literature", order: 15, description: "Essential reading" },
-  "forecasting": { title: "Forecasting", order: 16, description: "Prediction methods" },
-  "foundation-models": { title: "Foundation Models", order: 17, description: "Specific AI systems" },
-  "parameters": { title: "Parameters", order: 18, description: "Key variables" },
+  "parameters": { title: "Key Parameters", order: 1, description: "Foundational societal variables AI can affect" },
+  "responses": { title: "Responses & Interventions", order: 2, description: "Technical and governance approaches" },
+  "risks": { title: "Risks", order: 3, description: "Potential harms from AI systems" },
+  "organizations": { title: "Organizations", order: 4, description: "Labs, research orgs, and institutions" },
+  "people": { title: "People", order: 5, description: "Key researchers and figures" },
+  "capabilities": { title: "AI Capabilities", order: 6, description: "Current and emerging AI abilities" },
+  "history": { title: "History", order: 7, description: "Timeline and key events" },
+  "metrics": { title: "Key Metrics", order: 8, description: "Quantified predictions and estimates" },
+  "models": { title: "Analytical Models", order: 9, description: "Frameworks for understanding AI risk" },
+  "scenarios": { title: "Scenarios", order: 10, description: "Future possibilities" },
+  "worldviews": { title: "Worldviews", order: 11, description: "Different perspectives" },
+  "debates": { title: "Key Debates", order: 12, description: "Structured disagreements" },
+  "arguments": { title: "Arguments", order: 13, description: "Core cases for and against AI risk" },
+  "cruxes": { title: "Key Uncertainties", order: 14, description: "Critical questions and disagreements" },
+  "funders": { title: "Funders", order: 15, description: "Funding organizations" },
+  "literature": { title: "Literature", order: 16, description: "Essential reading" },
+  "forecasting": { title: "Forecasting", order: 17, description: "Prediction methods" },
+  "foundation-models": { title: "Foundation Models", order: 18, description: "Specific AI systems" },
 }
 
 function PageItem({ page }: { page: Page }) {

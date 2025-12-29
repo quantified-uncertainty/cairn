@@ -2,6 +2,7 @@ import React from 'react';
 import { Lightbulb, FlaskConical, Target, CheckCircle2 } from 'lucide-react';
 import './wiki.css';
 import type { EntityType } from '../../data/schema';
+import { EntityTypeIcon, entityTypeConfig } from './EntityTypeIcon';
 
 // Re-export for consumers of this module
 export type { EntityType };
@@ -34,6 +35,10 @@ interface InfoBoxProps {
   image?: string;
   website?: string;
   importance?: number;
+  // ITN framework (0-100 scale) - for parameters
+  tractability?: number;
+  neglectedness?: number;
+  uncertainty?: number;
 
   // Lab-specific
   founded?: string;
@@ -130,6 +135,22 @@ const severityColors: Record<string, string> = {
   catastrophic: '#dc2626',
 };
 
+// Direction indicator config for parameters
+const directionConfig: Record<string, { icon: string; color: string }> = {
+  'higher': { icon: '▲', color: '#10b981' }, // emerald-500
+  'lower': { icon: '▼', color: '#3b82f6' },  // blue-500
+  'context': { icon: '◆', color: '#f59e0b' }, // amber-500
+};
+
+// Helper to detect direction type from text
+function getDirectionType(value: string): 'higher' | 'lower' | 'context' | null {
+  const lower = value.toLowerCase();
+  if (lower.includes('higher is better') || lower.includes('higher')) return 'higher';
+  if (lower.includes('lower is better') || lower.includes('lower')) return 'lower';
+  if (lower.includes('context') || lower.includes('optimal') || lower.includes('depends')) return 'context';
+  return null;
+}
+
 const categoryConfig: Record<string, { label: string; color: string }> = {
   accident: { label: 'Accident Risk', color: '#f59e0b' },
   misuse: { label: 'Misuse Risk', color: '#ef4444' },
@@ -159,6 +180,9 @@ export function InfoBox({
   image,
   website,
   importance,
+  tractability,
+  neglectedness,
+  uncertainty,
   founded,
   location,
   headcount,
@@ -263,6 +287,23 @@ export function InfoBox({
           // Check if this field has a link (from customFields)
           const fieldLink = customFields?.find(cf => cf.label === field.label)?.link;
 
+          // Special rendering for Direction field
+          if (field.label === 'Direction') {
+            const dirType = getDirectionType(field.value);
+            const config = dirType ? directionConfig[dirType] : null;
+            return (
+              <div key={index} className="wiki-infobox__row">
+                <span className="wiki-infobox__label">{field.label}</span>
+                <span className="wiki-infobox__value" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {config && (
+                    <span style={{ color: config.color, fontSize: '1rem', lineHeight: 1 }}>{config.icon}</span>
+                  )}
+                  <span>{field.value}</span>
+                </span>
+              </div>
+            );
+          }
+
           return (
             <div key={index} className="wiki-infobox__row">
               <span className="wiki-infobox__label">{field.label}</span>
@@ -308,27 +349,70 @@ export function InfoBox({
         </div>
       )}
 
-      {relatedEntries && relatedEntries.length > 0 && (
-        <div className="wiki-infobox__section">
-          <div className="wiki-infobox__section-title">Related Entries</div>
-          <div className="wiki-infobox__entries">
-            {relatedEntries.map((entry, index) => {
-              const entryTypeInfo = typeLabels[entry.type] || defaultTypeInfo;
-              return (
-                <a key={index} href={entry.href} className="wiki-infobox__entry">
-                  <span
-                    className="wiki-infobox__entry-type"
-                    style={{ color: entryTypeInfo.color }}
-                  >
-                    {entryTypeInfo.label}
-                  </span>
-                  <span className="wiki-infobox__entry-title">{entry.title}</span>
-                </a>
-              );
-            })}
+      {relatedEntries && relatedEntries.length > 0 && (() => {
+        // Group entries by type
+        const groupedEntries = relatedEntries.reduce((acc, entry) => {
+          const type = entry.type;
+          if (!acc[type]) acc[type] = [];
+          acc[type].push(entry);
+          return acc;
+        }, {} as Record<string, typeof relatedEntries>);
+
+        // Define display order for types (most important first)
+        const typeOrder: EntityType[] = [
+          'metric', 'parameter', 'risk', 'risk-factor', 'intervention', 'safety-agenda',
+          'policy', 'capability', 'model', 'concept', 'crux', 'organization',
+          'lab', 'lab-frontier', 'lab-research', 'lab-startup', 'lab-academic',
+          'researcher', 'funder', 'resource', 'analysis', 'case-study', 'scenario', 'historical'
+        ];
+
+        // Sort types by defined order, unknown types at end
+        const sortedTypes = Object.keys(groupedEntries).sort((a, b) => {
+          const aIdx = typeOrder.indexOf(a as EntityType);
+          const bIdx = typeOrder.indexOf(b as EntityType);
+          if (aIdx === -1 && bIdx === -1) return a.localeCompare(b);
+          if (aIdx === -1) return 1;
+          if (bIdx === -1) return -1;
+          return aIdx - bIdx;
+        });
+
+        return (
+          <div className="wiki-infobox__section">
+            <div className="wiki-infobox__section-title">Related</div>
+            <div className="wiki-infobox__grouped-entries">
+              {sortedTypes.map((type) => {
+                const entries = groupedEntries[type];
+                const config = entityTypeConfig[type as keyof typeof entityTypeConfig];
+                const typeInfo = typeLabels[type as EntityType] || defaultTypeInfo;
+                // Always use plural for section headers
+                const label = typeInfo.label.endsWith('y')
+                  ? typeInfo.label.slice(0, -1) + 'ies'
+                  : typeInfo.label + 's';
+
+                return (
+                  <div key={type} className="wiki-infobox__entry-group">
+                    <div className="wiki-infobox__entry-group-header">
+                      {config && <EntityTypeIcon type={type} size="xs" />}
+                      <span className="wiki-infobox__entry-group-label">
+                        {label}
+                      </span>
+                    </div>
+                    <ul className="wiki-infobox__entry-list">
+                      {entries.map((entry, index) => (
+                        <li key={index}>
+                          <a href={entry.href} className="wiki-infobox__entry-link">
+                            {entry.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {ratings && Object.values(ratings).some(v => v !== undefined) && (
         <div className="wiki-infobox__section wiki-infobox__ratings">
@@ -360,6 +444,39 @@ export function InfoBox({
                 <CheckCircle2 size={14} className="wiki-infobox__rating-icon" />
                 <span className="wiki-infobox__rating-label">Completeness</span>
                 <RatingBar value={ratings.completeness} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ITN Framework section for parameters */}
+      {(tractability !== undefined || neglectedness !== undefined || uncertainty !== undefined) && (
+        <div className="wiki-infobox__section">
+          <div className="wiki-infobox__section-title">Prioritization</div>
+          <div className="wiki-infobox__content">
+            {importance !== undefined && (
+              <div className="wiki-infobox__row">
+                <span className="wiki-infobox__label">Importance</span>
+                <span className="wiki-infobox__value" style={{ fontWeight: 600 }}>{importance}</span>
+              </div>
+            )}
+            {tractability !== undefined && (
+              <div className="wiki-infobox__row">
+                <span className="wiki-infobox__label">Tractability</span>
+                <span className="wiki-infobox__value" style={{ fontWeight: 600 }}>{tractability}</span>
+              </div>
+            )}
+            {neglectedness !== undefined && (
+              <div className="wiki-infobox__row">
+                <span className="wiki-infobox__label">Neglectedness</span>
+                <span className="wiki-infobox__value" style={{ fontWeight: 600 }}>{neglectedness}</span>
+              </div>
+            )}
+            {uncertainty !== undefined && (
+              <div className="wiki-infobox__row">
+                <span className="wiki-infobox__label">Uncertainty</span>
+                <span className="wiki-infobox__value" style={{ fontWeight: 600 }}>{uncertainty}</span>
               </div>
             )}
           </div>

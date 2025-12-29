@@ -6,7 +6,10 @@ sidebar:
 quality: 91
 llmSummary: "Comprehensive assessment of interpretability coverage showing rapid progress (34M features from Claude 3 at 70% interpretable rate) but facing fundamental scaling challenges, with current ~10% frontier model coverage far below the >80% needed for robust safety verification. Documents the critical trade-off where SAE-based interpretation imposes ~10x compute worth of performance penalty and identifies 'neural network dark matter' of rare features that may hide deceptive behaviors."
 lastEdited: "2025-12-29"
-importance: 82.5
+importance: 85
+tractability: 65
+neglectedness: 70
+uncertainty: 50
 ---
 import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
@@ -14,7 +17,7 @@ import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
 ## Overview
 
-Interpretability Coverage measures what fraction of AI model behavior can be explained and understood by researchers. This parameter quantifies transparency into the "black box"—how much we know about what's happening inside AI systems when they produce outputs.
+Interpretability Coverage measures what fraction of AI model behavior can be explained and understood by researchers. **Higher interpretability coverage is better**—it enables verification that AI systems are safe and aligned, detection of deceptive behaviors, and targeted fixes for problems. This parameter quantifies transparency into the "black box"—how much we know about what's happening inside AI systems when they produce outputs.
 
 Research progress, institutional investment, and model complexity growth all determine whether interpretability coverage expands or falls behind. The parameter is crucial because many AI safety approaches—detecting deception, verifying alignment, predicting behavior—depend on understanding model internals.
 

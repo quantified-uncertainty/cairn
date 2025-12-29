@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { InfoBox, type EntityType, type ModelRatingsData } from './InfoBox';
-import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData } from '../../data';
+import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData, getPageById } from '../../data';
 
 interface RelatedEntry {
   type: EntityType;
@@ -81,6 +81,9 @@ export function DataInfoBox({
       );
     }
 
+    // Also fetch page data to get ITN values from frontmatter
+    const pageData = getPageById(entityId);
+
     return (
       <InfoBox
         type={data.type as EntityType}
@@ -95,6 +98,11 @@ export function DataInfoBox({
         customFields={data.customFields}
         relatedTopics={data.relatedTopics}
         relatedEntries={data.relatedEntries as RelatedEntry[]}
+        // ITN framework from page frontmatter
+        importance={pageData?.importance ?? undefined}
+        tractability={pageData?.tractability ?? undefined}
+        neglectedness={pageData?.neglectedness ?? undefined}
+        uncertainty={pageData?.uncertainty ?? undefined}
         {...inlineProps} // Allow overrides
       />
     );

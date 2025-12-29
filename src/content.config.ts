@@ -29,6 +29,10 @@ export const collections = {
         // Editorial metadata for PageStatus (0-100 scale, see rating guide above)
         quality: z.number().min(0).max(100).optional(),
         importance: z.number().min(0).max(100).optional(),
+        // ITN framework fields (0-100 scale) - primarily for parameters
+        tractability: z.number().min(0).max(100).optional(),
+        neglectedness: z.number().min(0).max(100).optional(),
+        uncertainty: z.number().min(0).max(100).optional(), // Higher = more uncertain
         llmSummary: z.string().optional(),
         lastEdited: z.string().optional(),
         todo: z.string().optional(),

@@ -274,6 +274,10 @@ function buildPagesRegistry(urlToResource) {
           title: fm.title || id.replace(/-/g, ' '),
           quality: currentQuality,
           importance: fm.importance ? parseInt(fm.importance) : null,
+          // ITN framework fields (0-100 scale)
+          tractability: fm.tractability ? parseInt(fm.tractability) : null,
+          neglectedness: fm.neglectedness ? parseInt(fm.neglectedness) : null,
+          uncertainty: fm.uncertainty ? parseInt(fm.uncertainty) : null,
           causalLevel: fm.causalLevel || null,
           lastUpdated: fm.lastUpdated || fm.lastEdited || null,
           llmSummary: fm.llmSummary || null,

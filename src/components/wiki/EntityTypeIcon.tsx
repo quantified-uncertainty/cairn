@@ -20,12 +20,17 @@ import {
   Banknote,
   Microscope,
   Gauge,
+  AlertTriangle,
+  Lightbulb,
+  Box,
+  Activity,
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export type EntityType =
   | "risk"
+  | "risk-factor"
   | "capability"
   | "safety-agenda"
   | "intervention"
@@ -37,6 +42,7 @@ export type EntityType =
   | "lab-startup"
   | "lab-academic"
   | "crux"
+  | "concept"
   | "case-study"
   | "researcher"
   | "scenario"
@@ -44,7 +50,9 @@ export type EntityType =
   | "funder"
   | "historical"
   | "analysis"
+  | "model"
   | "parameter"
+  | "metric"
 
 interface EntityTypeConfig {
   icon: LucideIcon
@@ -57,6 +65,11 @@ export const entityTypeConfig: Record<EntityType, EntityTypeConfig> = {
     icon: Bug,
     label: "Risk",
     color: "text-amber-600 dark:text-amber-400",
+  },
+  "risk-factor": {
+    icon: AlertTriangle,
+    label: "Risk Factor",
+    color: "text-orange-600 dark:text-orange-400",
   },
   capability: {
     icon: Cpu,
@@ -113,6 +126,11 @@ export const entityTypeConfig: Record<EntityType, EntityTypeConfig> = {
     label: "Crux",
     color: "text-yellow-600 dark:text-yellow-400",
   },
+  concept: {
+    icon: Lightbulb,
+    label: "Concept",
+    color: "text-amber-500 dark:text-amber-300",
+  },
   "case-study": {
     icon: ClipboardList,
     label: "Case Study",
@@ -148,10 +166,20 @@ export const entityTypeConfig: Record<EntityType, EntityTypeConfig> = {
     label: "Analysis",
     color: "text-rose-600 dark:text-rose-400",
   },
+  model: {
+    icon: Box,
+    label: "Model",
+    color: "text-indigo-600 dark:text-indigo-400",
+  },
   parameter: {
     icon: Gauge,
     label: "Parameter",
     color: "text-fuchsia-600 dark:text-fuchsia-400",
+  },
+  metric: {
+    icon: Activity,
+    label: "Metric",
+    color: "text-cyan-600 dark:text-cyan-400",
   },
 }
 

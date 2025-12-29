@@ -44,6 +44,7 @@ export { CollapsibleSection } from './CollapsibleSection';
 
 // Data tables
 export { RisksTable } from './RisksTable';
+export { ParametersTable } from './ParametersTable';
 
 // Risk category components
 export { RiskCategoryIcon, RiskCategoryBadge, RiskCategoryCard, categoryConfig } from './RiskCategoryIcon';

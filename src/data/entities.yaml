@@ -1902,8 +1902,6 @@
       type: policy
     - id: international-coordination
       type: policy
-    - id: ai-governance
-      type: intervention
   sources:
     - title: "International Institutions for AI Safety"
       url: https://www.governance.ai/research-papers/international-institutions-for-advanced-ai
@@ -6033,6 +6031,10 @@
     - id: international-summits
       type: intervention
       relationship: related
+    # Metrics that measure this parameter
+    - id: geopolitics
+      type: metric
+      relationship: measured-by
   tags:
     - governance
     - international
@@ -7900,7 +7902,7 @@
     - id: trust-decline
       type: risk
       relationship: decreases
-    - id: misinformation
+    - id: disinformation
       type: risk
       relationship: decreases
     - id: deepfakes
@@ -7910,9 +7912,6 @@
     - id: content-authentication
       type: intervention
       relationship: supports
-    - id: transparency-requirements
-      type: intervention
-      relationship: supports
     # Related parameters
     - id: epistemic-health
       type: parameter
@@ -7920,6 +7919,10 @@
     - id: information-authenticity
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: public-opinion
+      type: metric
+      relationship: measured-by
   tags:
     - epistemic
     - governance
@@ -7941,16 +7944,13 @@
     - id: epistemic-collapse
       type: risk
       relationship: decreases
-    - id: misinformation
+    - id: disinformation
       type: risk
       relationship: decreases
     - id: consensus-manufacturing
       type: risk
       relationship: decreases
     # Interventions that increase epistemic capacity
-    - id: media-literacy
-      type: intervention
-      relationship: supports
     - id: epistemic-security
       type: intervention
       relationship: supports
@@ -7961,6 +7961,10 @@
     - id: information-authenticity
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: expert-opinion
+      type: metric
+      relationship: measured-by
   tags:
     - epistemic
     - information-environment
@@ -8000,6 +8004,10 @@
     - id: concentration-of-power
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: compute-hardware
+      type: metric
+      relationship: measured-by
   tags:
     - structural
     - governance
@@ -8020,6 +8028,10 @@
     - id: erosion-of-agency
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: economic-labor
+      type: metric
+      relationship: measured-by
   tags:
     - structural
     - autonomy
@@ -8040,6 +8052,10 @@
     - id: economic-disruption
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: economic-labor
+      type: metric
+      relationship: measured-by
   tags:
     - economic
     - labor-market
@@ -8060,6 +8076,10 @@
     - id: learned-helplessness
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: economic-labor
+      type: metric
+      relationship: measured-by
   tags:
     - epistemic
     - human-factors
@@ -8080,6 +8100,10 @@
     - id: scalable-oversight
       type: safety-agenda
       relationship: related
+    # Metrics that measure this parameter
+    - id: lab-behavior
+      type: metric
+      relationship: measured-by
   tags:
     - governance
     - human-factors
@@ -8123,12 +8147,6 @@
     - id: ai-control
       type: intervention
       relationship: supports
-    - id: constitutional-ai
-      type: intervention
-      relationship: supports
-    - id: red-teaming
-      type: intervention
-      relationship: supports
     # Related parameters
     - id: interpretability-coverage
       type: parameter
@@ -8139,6 +8157,10 @@
     - id: human-oversight-quality
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: alignment-progress
+      type: metric
+      relationship: measured-by
   tags:
     - safety
     - technical
@@ -8161,12 +8183,6 @@
       type: risk
       relationship: decreases
     # Interventions that close the gap
-    - id: pause
-      type: intervention
-      relationship: supports
-    - id: safety-evals
-      type: intervention
-      relationship: supports
     - id: interpretability
       type: intervention
       relationship: supports
@@ -8180,6 +8196,16 @@
     - id: safety-culture-strength
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: alignment-progress
+      type: metric
+      relationship: measured-by
+    - id: safety-research
+      type: metric
+      relationship: measured-by
+    - id: capabilities
+      type: metric
+      relationship: measured-by
   tags:
     - safety
     - technical
@@ -8200,6 +8226,10 @@
     - id: interpretability
       type: concept
       relationship: related
+    # Metrics that measure this parameter
+    - id: alignment-progress
+      type: metric
+      relationship: measured-by
   tags:
     - safety
     - technical
@@ -8289,6 +8319,10 @@
     - id: human-agency
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: public-opinion
+      type: metric
+      relationship: measured-by
   tags:
     - epistemic
     - autonomy
@@ -8309,6 +8343,19 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: safety-research
+      type: metric
+      relationship: measured-by
+    - id: lab-behavior
+      type: metric
+      relationship: measured-by
+    - id: expert-opinion
+      type: metric
+      relationship: measured-by
+    - id: compute-hardware
+      type: metric
+      relationship: measured-by
   tags:
     - governance
     - safety
@@ -8329,6 +8376,13 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    # Metrics that measure this parameter
+    - id: safety-research
+      type: metric
+      relationship: measured-by
+    - id: lab-behavior
+      type: metric
+      relationship: measured-by
   tags:
     - governance
     - safety
@@ -8352,6 +8406,10 @@
     - id: international-coordination
       type: parameter
       relationship: related
+    # Metrics that measure this parameter
+    - id: geopolitics
+      type: metric
+      relationship: measured-by
   tags:
     - governance
     - international

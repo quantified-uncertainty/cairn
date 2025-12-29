@@ -115,6 +115,10 @@ export interface PageEntry {
   title: string;
   quality: number | null;
   importance: number | null;
+  // ITN framework fields (0-100 scale)
+  tractability: number | null;
+  neglectedness: number | null;
+  uncertainty: number | null;
   lastUpdated: string | null;
   llmSummary: string | null;
   description: string | null;
