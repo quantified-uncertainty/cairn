@@ -1,18 +1,30 @@
 ---
 title: "US AI Safety Institute"
-description: "US government agency for AI safety research and standard-setting under NIST, established in 2023 to develop evaluations, standards, and oversight for frontier AI systems while coordinating international safety efforts"
+description: "US government agency for AI safety research and standard-setting under NIST, established November 2023 with $10M initial budget and 280+ consortium members. Conducted first-ever joint US-UK model evaluation of Claude 3.5 Sonnet in November 2024. Renamed to Center for AI Standards and Innovation (CAISI) in June 2025."
 sidebar:
   order: 17
-quality: 42
-llmSummary: "The US AI Safety Institute, established in 2023 within NIST, serves as the federal government's central hub for AI safety evaluation and standard-setting, conducting frontier model assessments and developing technical standards, though it lacks direct regulatory authority. The institute represents a shift from private sector AI safety work to government-backed institutional oversight with indirect influence through standards development and coordination with regulatory agencies."
-lastEdited: "2025-12-24"
+quality: 78
+llmSummary: "The US AI Safety Institute, established in 2023 within NIST, serves as the federal government's central hub for AI safety evaluation and standard-setting, conducting frontier model assessments and developing technical standards, though it lacks direct regulatory authority. With a $10M initial budget and 280+ consortium members including major AI labs, the institute signed formal agreements with Anthropic and OpenAI in August 2024 and conducted the first joint US-UK government evaluation of Claude 3.5 Sonnet. In June 2025, it was renamed to Center for AI Standards and Innovation (CAISI) under the Trump administration."
+lastEdited: "2025-12-28"
 importance: 55
 ---
-import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, Mermaid} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="us-aisi" />
 
 ## Overview
+
+### Quick Facts
+
+| Attribute | Details |
+|-----------|---------|
+| **Established** | November 2023 (announced at UK AI Safety Summit) |
+| **Parent Agency** | National Institute of Standards and Technology (NIST), Department of Commerce |
+| **Director** | Elizabeth Kelly (appointed February 2024) |
+| **Chief Technology Officer** | Elham Tabassi |
+| **Initial Budget** | \$10 million (March 2024) |
+| **Consortium Members** | 280+ organizations (as of December 2024) |
+| **2025 Status** | Renamed to Center for AI Standards and Innovation (CAISI) in June 2025 |
 
 The US AI Safety Institute (US AISI) represents the United States government's primary institutional response to mounting concerns about artificial intelligence risks. Established in 2023 within the National Institute of Standards and Technology (NIST), the institute serves as the federal government's central hub for AI safety research, evaluation, and standard-setting. Created in the wake of breakthroughs like ChatGPT and growing awareness of potential catastrophic risks from advanced AI systems, US AISI bridges the gap between cutting-edge technical research and government policy oversight.
 
@@ -24,13 +36,67 @@ The creation of US AISI marks a fundamental shift in AI safety from a primarily 
 
 The US AI Safety Institute emerged from a perfect storm of technological advancement and policy awakening that characterized 2023. The public release of ChatGPT in November 2022 had crystallized concerns about rapid AI progress that had been building within the research community for years. Simultaneously, international developments including the EU's AI Act negotiations and the UK's announcement of its own AI Safety Institute created pressure for the United States to establish its own institutional capacity.
 
+### Key Milestones
+
+| Date | Event |
+|------|-------|
+| October 30, 2023 | President Biden signs [Executive Order 14110](https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/) on AI safety |
+| November 2023 | VP Harris announces US AISI at UK AI Safety Summit |
+| February 8, 2024 | [Elizabeth Kelly appointed Director](https://www.commerce.gov/news/press-releases/2024/02/us-commerce-secretary-gina-raimondo-announces-key-executive-leadership); Elham Tabassi appointed CTO |
+| February 8, 2024 | [AI Safety Institute Consortium (AISIC) launched](https://www.nist.gov/news-events/news/2024/02/biden-harris-administration-announces-first-ever-consortium-dedicated-ai) with 200+ members |
+| March 2024 | \$10 million budget allocated |
+| April 2024 | US-UK bilateral agreement signed for joint safety testing |
+| May 2024 | [International Network of AI Safety Institutes](https://www.commerce.gov/news/press-releases/2024/05/us-secretary-commerce-gina-raimondo-releases-strategic-vision-ai-safety) launched at Seoul Summit |
+| August 29, 2024 | [Formal agreements signed with Anthropic and OpenAI](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) for model access |
+| November 2024 | [First joint US-UK evaluation](https://www.nist.gov/news-events/news/2024/11/pre-deployment-evaluation-anthropics-upgraded-claude-35-sonnet) of Claude 3.5 Sonnet published |
+| December 2024 | [First AISIC plenary meeting](https://www.nist.gov/news-events/news/us-ai-safety-institute-consortium-holds-first-plenary-meeting-reflect-progress-2024) at University of Maryland |
+| January 2025 | Executive Order 14110 revoked by Trump administration |
+| June 3, 2025 | [Renamed to Center for AI Standards and Innovation (CAISI)](https://www.commerce.gov/news/press-releases/2025/06/statement-us-secretary-commerce-howard-lutnick-transforming-us-ai) |
+
 The institute was formally announced as part of President Biden's Executive Order on Safe, Secure, and Trustworthy Artificial Intelligence in October 2023, which represented the most comprehensive US government action on AI to date. The decision to house the institute within NIST reflected strategic thinking about leveraging the agency's technical credibility, history of successful standard-setting in areas like cybersecurity, and non-partisan scientific reputation. NIST's placement within the Department of Commerce also signaled the administration's intent to balance safety concerns with innovation and competitiveness considerations.
 
 The institute's early development was significantly influenced by the AI safety research community. Key hires included personnel from organizations like METR (formerly ARC Evals), Apollo Research, and other technical safety organizations, bringing established methodologies for evaluating dangerous AI capabilities into government. This brain drain from private safety organizations into government represented both an opportunity to build institutional capacity quickly and a challenge for the broader ecosystem of AI safety research.
 
 By 2024, the institute had begun conducting its first formal evaluations of frontier AI systems, established initial partnerships with major AI laboratories, and started developing comprehensive safety standards. The institute's rapid initial progress reflected both the urgency of its mission and the advantage of building on existing evaluation methodologies developed by the safety research community.
 
+## AI Safety Institute Consortium (AISIC)
+
+In February 2024, the [AI Safety Institute Consortium (AISIC)](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute-consortium-aisic) was launched with over 200 members, later growing to 280+ organizations. The consortium brings together diverse stakeholders to develop science-based guidelines and standards for AI measurement and safety.
+
+### Notable Consortium Members by Category
+
+| Category | Key Members |
+|----------|-------------|
+| **Frontier AI Labs** | OpenAI, Anthropic, Google, Meta, Nvidia, Microsoft |
+| **Major Tech Companies** | Apple, Amazon, IBM, Intel, Salesforce, Palantir, Adobe, Databricks |
+| **Financial Services** | Bank of America, JP Morgan Chase, Citigroup, Wells Fargo, Mastercard |
+| **Academia** | MIT, Stanford, UC Berkeley, CMU, University of Maryland |
+| **Healthcare/Industry** | Boston Scientific, and numerous sector-specific organizations |
+| **Civil Society** | Various nonprofit organizations and research institutes |
+
+The consortium received over 600 letters of interest from organizations seeking to participate. In December 2024, members gathered for the [first in-person plenary meeting](https://www.nist.gov/news-events/news/us-ai-safety-institute-consortium-holds-first-plenary-meeting-reflect-progress-2024) at the University of Maryland to review progress and plan 2025 priorities.
+
 ## Organizational Structure and Authority
+
+<Mermaid client:load chart={`
+flowchart TD
+    COMMERCE[Department of Commerce] --> NIST[NIST]
+    NIST --> AISI[US AI Safety Institute / CAISI]
+
+    AISI --> EVAL[Model Evaluations]
+    AISI --> STANDARDS[Standards Development]
+    AISI --> AISIC[AISIC Consortium<br/>280+ members]
+
+    EVAL --> LABS[AI Labs<br/>OpenAI, Anthropic]
+    STANDARDS --> FRAMEWORK[AI RMF 2.0]
+
+    AISI <--> UKAISI[UK AI Safety Institute]
+    AISI <--> INTL[International Network<br/>11+ countries]
+
+    style AISI fill:#e1f5fe
+    style AISIC fill:#fff3e0
+    style INTL fill:#e8f5e9
+`} />
 
 US AISI operates within NIST's unique institutional position as a non-regulatory federal agency focused on technical standards and scientific research. This placement provides several critical advantages: NIST's established credibility with industry, its history of successful public-private partnerships in developing technical standards, and its reputation for scientific rigor over political considerations. The institute inherits NIST's culture of evidence-based decision-making and collaborative standard-setting processes that have proven effective in areas like cybersecurity frameworks.
 
@@ -39,6 +105,19 @@ However, this non-regulatory status also creates important limitations. Unlike a
 The institute's authority currently derives from several sources. The October 2023 Executive Order requires companies developing AI systems above certain computational thresholds to report safety test results to the government, providing US AISI with its first formal oversight mechanism. Additionally, the institute's role in developing standards that may inform future regulation, its participation in government contracting decisions, and its coordination with regulatory agencies like the FTC creates indirect but meaningful influence over industry behavior.
 
 Leadership under Director Elizabeth Kelly has focused on building the institute's technical credibility and maintaining productive relationships with AI laboratories while establishing clear independence from industry influence. The staffing strategy has prioritized hiring researchers with deep technical expertise in AI safety evaluation, often from the most respected organizations in the field, combined with policy professionals who can translate technical concerns into actionable government policy.
+
+## Model Evaluations
+
+US AISI has conducted several formal model evaluations, with the most significant being the first-ever joint government evaluation with the UK AI Safety Institute.
+
+### Completed Model Evaluations
+
+| Model | Date | Evaluation Type | Key Domains Tested | Notable Findings |
+|-------|------|-----------------|-------------------|------------------|
+| **Claude 3.5 Sonnet** (upgraded) | November 2024 | [Joint US-UK pre-deployment](https://www.nist.gov/news-events/news/2024/11/pre-deployment-evaluation-anthropics-upgraded-claude-35-sonnet) | Biological, cyber, software development, safeguard efficacy | "Most comprehensive government-led safety evaluation of an advanced AI model to date" - Elizabeth Kelly |
+| **OpenAI o1** | December 2024 | [Joint US-UK pre-deployment](https://www.nist.gov/news-events/news/2024/12/pre-deployment-evaluation-openais-o1-model) | Biological, cyber, reasoning capabilities | Advanced reasoning model with novel chain-of-thought architecture |
+
+The Claude 3.5 Sonnet evaluation was particularly significant as the inaugural joint evaluation under the April 2024 US-UK bilateral agreement. Testing was conducted by expert engineers, scientists, and subject matter specialists from both institutes, with findings shared with Anthropic before public release.
 
 ## Core Functions and Capabilities
 
@@ -52,6 +131,17 @@ The institute's policy support function provides technical expertise to lawmaker
 
 ## Industry Relationships and Cooperation
 
+On August 29, 2024, US AISI [signed landmark Memoranda of Understanding](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) with Anthropic and OpenAI, establishing formal frameworks for pre-deployment model access and collaborative safety research.
+
+### Formal Agreements with AI Labs
+
+| Company | Agreement Date | Key Terms | Company Statement |
+|---------|----------------|-----------|-------------------|
+| **Anthropic** | August 29, 2024 | Pre-deployment access to major new models; collaborative safety research | "Our collaboration with the U.S. AI Safety Institute leverages their wide expertise to rigorously test our models before widespread deployment." - Jack Clark, Co-founder |
+| **OpenAI** | August 29, 2024 | Pre-deployment and post-deployment access; joint evaluation methodology development | "We strongly support the U.S. AI Safety Institute's mission and look forward to working together to inform safety best practices." - Jason Kwon, Chief Strategy Officer |
+
+These agreements enable US AISI to receive access to frontier models both before and after public release, conduct collaborative research on capability evaluation and risk mitigation, and provide feedback on potential safety improvements in coordination with the UK AI Safety Institute.
+
 The relationship between US AISI and major AI laboratories represents one of the most important and complex dynamics in contemporary AI governance. The institute has established collaborative relationships with all major US AI developers, including OpenAI, Anthropic, Google DeepMind, and Meta, built on a foundation of shared concern about AI risks combined with mutual recognition of each party's legitimate interests and constraints.
 
 From the laboratories' perspective, cooperation with US AISI serves multiple strategic purposes. Voluntary engagement demonstrates good faith efforts at responsible development, potentially influencing future regulatory frameworks to be more favorable or proportionate. Early sharing of safety information allows labs to receive government feedback before public deployment, potentially identifying problems that could generate negative publicity or regulatory backlash. Participation in standard-setting processes gives labs influence over the rules they will eventually need to follow, while collaboration helps build relationships with government officials who may hold regulatory power in the future.
@@ -61,6 +151,26 @@ However, this cooperation exists within a framework of underlying tensions. AI l
 The current cooperative framework relies heavily on voluntary compliance and industry goodwill, creating inherent fragility. Major labs have generally been willing to share information and participate in evaluations, but this cooperation could break down if government demands become too burdensome, if competitive pressures intensify, or if labs conclude that cooperation is not producing favorable regulatory outcomes. The institute's challenge is maintaining productive relationships while building credible oversight capabilities that serve the public interest even when industry preferences diverge from broader safety considerations.
 
 ## International Coordination and Leadership
+
+At the [AI Seoul Summit in May 2024](https://www.gov.uk/government/topical-events/ai-seoul-summit-2024), the International Network of AI Safety Institutes was formally launched, with the US playing a leading role alongside the UK, EU, Japan, and other partners.
+
+### International Network of AI Safety Institutes
+
+| Member | Institute/Office | Status (as of 2024) |
+|--------|------------------|---------------------|
+| **United States** | US AI Safety Institute (NIST) | Founding member; co-host of inaugural convening |
+| **United Kingdom** | UK AI Safety Institute | Founding member; closest bilateral partner |
+| **European Union** | European AI Office | Founding member |
+| **Japan** | AI Safety Institute | Founding member |
+| **Canada** | Canadian AI Safety Institute | Founding member |
+| **Singapore** | AI Safety Institute | Founding member |
+| **South Korea** | Korean AI Safety Institute | Host of Seoul Summit |
+| **France** | AI Safety Office | Founding member; host of Paris 2025 Summit |
+| **Germany** | AI Safety Office | Founding member |
+| **Australia** | AI Safety Office | Founding member |
+| **Kenya** | AI Safety Office | Founding member |
+
+The [inaugural convening of the Network](https://www.commerce.gov/news/fact-sheets/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international) was co-hosted by the US Departments of Commerce and State on November 20-21, 2024, in San Francisco, bringing together technical experts to align on priority work areas ahead of the AI Action Summit in Paris (February 2025).
 
 US AISI plays a central role in emerging international efforts to coordinate AI safety governance across democratic nations. The institute works most closely with the UK AI Safety Institute, sharing evaluation methodologies, coordinating on international standards, and jointly developing best practices for government oversight of AI development. This partnership reflects both countries' recognition that effective AI governance requires international coordination given the global nature of AI development and deployment.
 
@@ -90,9 +200,33 @@ However, the limitations of the current approach raise serious concerns about wh
 
 Most fundamentally, the institute's current capabilities may be insufficient for the speed and scale of AI advancement. If AI development accelerates further, or if breakthrough capabilities emerge suddenly, the institute's deliberate evaluation processes may be too slow to provide meaningful oversight. The potential for AI systems to exceed human capability in domains relevant to safety evaluation creates the possibility that even well-intentioned oversight could miss critical risks or fail to understand the implications of new capabilities.
 
+## 2025 Transition: Renaming to CAISI
+
+On June 3, 2025, Secretary of Commerce Howard Lutnick [announced the transformation](https://www.commerce.gov/news/press-releases/2025/06/statement-us-secretary-commerce-howard-lutnick-transforming-us-ai) of the US AI Safety Institute into the **Center for AI Standards and Innovation (CAISI)**. This change followed the Trump administration's revocation of Executive Order 14110 in January 2025.
+
+### Key Changes Under CAISI
+
+| Aspect | Under AISI (2023-2025) | Under CAISI (2025-) |
+|--------|------------------------|---------------------|
+| **Name** | US AI Safety Institute | Center for AI Standards and Innovation |
+| **Focus** | Safety-first approach | Innovation and competitiveness focus |
+| **Regulatory Approach** | Standards development with potential for regulation | Light-touch, voluntary standards |
+| **National Security** | One priority among several | Primary emphasis alongside competitiveness |
+| **International Role** | Safety cooperation | "Represent American interests" and "guard against burdensome regulation by foreign governments" |
+
+According to Secretary Lutnick, CAISI "will evaluate and enhance US innovation of these rapidly developing commercial AI systems while ensuring they remain secure to our national security standards." The center remains housed within NIST and continues to:
+
+- Serve as industry's primary point of contact for AI testing and collaborative research
+- Develop guidelines and best practices for AI system security
+- Establish voluntary agreements with private sector AI developers
+- Lead unclassified evaluations of AI capabilities that may pose national security risks
+- Conduct assessments of US and adversary AI systems
+
+The name change notably removes "safety" from the title, signaling a shift in emphasis while the primary evaluation functions continue. The AISIC consortium formed under the previous administration remains active.
+
 ## Future Trajectory and Evolution
 
-Over the next one to two years, US AISI is likely to focus on consolidating its foundational capabilities while expanding its influence within existing institutional constraints. The institute will continue hiring key personnel, particularly senior researchers with established reputations in AI safety evaluation, and building out its technical infrastructure for conducting comprehensive assessments of frontier models. The development of more detailed safety standards and evaluation methodologies will provide clearer guidance for industry while establishing the institute's technical credibility.
+Over the next one to two years, CAISI is likely to focus on consolidating its foundational capabilities while expanding its influence within existing institutional constraints. The institute will continue hiring key personnel, particularly senior researchers with established reputations in AI safety evaluation, and building out its technical infrastructure for conducting comprehensive assessments of frontier models. The development of more detailed safety standards and evaluation methodologies will provide clearer guidance for industry while establishing the institute's technical credibility.
 
 The institute's relationship with AI laboratories will likely deepen and become more formal, potentially including regular reporting requirements, standardized evaluation processes, and more systematic information sharing arrangements. International coordination efforts will expand as other countries build their own AI safety institutions and seek to harmonize approaches. The institute may establish more formal partnership agreements with allied nations and begin influencing international standards bodies and multilateral organizations.
 
@@ -154,10 +288,26 @@ Perhaps most fundamentally, there remain deep uncertainties about the nature and
 
 <Section title="Key Leadership">
   <KeyPeople people={[
-    { name: "Elizabeth Kelly", role: "Director, leading institutional development and stakeholder coordination" },
-    { name: "Senior evaluation staff", role: "Researchers from METR, Apollo Research, and other safety organizations" },
-    { name: "Policy leadership", role: "Experts in technology policy and government coordination" },
+    { name: "Elizabeth Kelly", role: "Director (appointed Feb 2024). Former Special Assistant to the President for Economic Policy at the White House National Economic Council. Described as 'driving force' behind Biden's AI executive order." },
+    { name: "Elham Tabassi", role: "Chief Technology Officer. Previously Associate Director for Emerging Technologies at NIST's Information Technology Laboratory." },
+    { name: "Senior evaluation staff", role: "Researchers recruited from METR (formerly ARC Evals), Apollo Research, and other technical AI safety organizations" },
   ]} />
 </Section>
+
+## Sources and Further Reading
+
+### Official Sources
+- [US AI Safety Institute at NIST](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute-consortium-aisic)
+- [Elizabeth Kelly appointment announcement](https://www.commerce.gov/news/press-releases/2024/02/us-commerce-secretary-gina-raimondo-announces-key-executive-leadership)
+- [AISIC Consortium launch](https://www.nist.gov/news-events/news/2024/02/biden-harris-administration-announces-first-ever-consortium-dedicated-ai)
+- [Anthropic and OpenAI agreements](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research)
+- [Claude 3.5 Sonnet evaluation](https://www.nist.gov/news-events/news/2024/11/pre-deployment-evaluation-anthropics-upgraded-claude-35-sonnet)
+- [International Network launch](https://www.commerce.gov/news/fact-sheets/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international)
+- [CAISI transformation announcement](https://www.commerce.gov/news/press-releases/2025/06/statement-us-secretary-commerce-howard-lutnick-transforming-us-ai)
+
+### Analysis and Commentary
+- [CSIS: The US Vision for AI Safety with Elizabeth Kelly](https://www.csis.org/analysis/us-vision-ai-safety-conversation-elizabeth-kelly-director-us-ai-safety-institute)
+- [CSIS: AI Safety Institute International Network Recommendations](https://www.csis.org/analysis/ai-safety-institute-international-network-next-steps-and-recommendations)
+- [Wikipedia: AI Safety Institute](https://en.wikipedia.org/wiki/AI_Safety_Institute)
 
 <Backlinks client:load entityId="us-aisi" />

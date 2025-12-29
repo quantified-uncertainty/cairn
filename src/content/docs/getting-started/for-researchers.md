@@ -1,15 +1,16 @@
 ---
 title: "For Researchers"
-description: "Reading path for technical researchers considering AI safety work"
+description: "Comprehensive onboarding guide for technical researchers entering AI safety. Covers five major research approaches, career pathways, salary benchmarks ($100K-500K+), and training programs (MATS, Anthropic Fellows). The field has ~1,100 researchers with 21% annual growth and $40M+ in new funding for 2025."
 sidebar:
   order: 2
-importance: 65
-quality: 48
+importance: 82
+quality: 78
+lastEdited: "2025-12-28"
 llmSummary: "Comprehensive onboarding guide for technical researchers entering AI safety, systematically covering five major research approaches (interpretability, scalable oversight, AI control, agent foundations, evaluation) with their goals, methods, key organizations, and contribution pathways. Provides structured learning path from 15-minute orientation to 2-3 hour technical deep dive."
 ---
 import {R} from '../../../components/wiki';
 
-you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
+If you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
 
 ## Quick Context Setting (15 minutes)
 
@@ -50,6 +51,70 @@ Before going further, read these two foundational pieces:
 2. **[Research Agendas Comparison](/knowledge-base/responses/alignment/research-agendas/)** (30 min) - Overview of different technical approaches
 
 This will give you enough context to evaluate whether the technical challenges are interesting to you.
+
+## Field Landscape: Size, Funding, and Opportunities
+
+The AI safety research field has grown substantially since 2020 and now represents a significant, well-funded research ecosystem. Understanding the current landscape helps researchers evaluate career opportunities realistically.
+
+### Field Size and Growth
+
+According to the <R id="d5970e4ef7ed697f">AI Safety Field Growth Analysis 2025</R>, the field has roughly tripled since 2022:
+
+| Metric | 2022 Estimate | 2025 Estimate | Growth |
+|--------|---------------|---------------|--------|
+| Technical AI safety researchers (FTEs) | ~300 | ~600 | 2x |
+| Non-technical AI safety (governance, policy) | ~100 | ~500 | 5x |
+| **Total field size** | ~400 | ~1,100 | 2.75x |
+| Technical AI safety organizations | ~35 | ~70 | 2x |
+| Annual growth rate (technical FTEs) | — | 21% | — |
+
+The exponential growth began around 2020, driven by increasing capabilities of large language models and growing mainstream recognition of AI risks. The <R id="0e18641415977ad6">International AI Safety Report 2025</R>, authored by 100+ experts and backed by 30 countries, represents the field's new mainstream legitimacy.
+
+### Funding Landscape
+
+AI safety funding remains concentrated among philanthropic sources, with Open Philanthropy as the dominant funder. According to the <R id="913cb820e5769c0b">Open Philanthropy RFP for Technical AI Safety</R> and <R id="b1ab921f9cbae109">LessWrong funding analysis</R>:
+
+| Funder | 2024 Amount | Focus Areas |
+|--------|-------------|-------------|
+| Open Philanthropy | $63.6M | Interpretability, alignment, governance |
+| Jaan Tallinn (individual) | $20M | Technical research organizations |
+| Schmidt Sciences | $10M | AI Safety Research Program |
+| Frontier Model Forum | $10M | Industry safety collaboration |
+| UK AISI (government) | $25M | National AI safety research |
+
+Open Philanthropy announced a <R id="913cb820e5769c0b">$40M Request for Proposals</R> in March 2025—their largest single funding commitment for technical AI safety. Since 2017, they have donated approximately $336 million to AI safety (12% of their total $2.8B in grants), with median grants of ~$257K and average grants of $1.67M.
+
+**Top 2024 grant recipients:**
+- Center for AI Safety: $8.5M
+- Redwood Research: $6.2M
+- MIRI: $4.1M
+
+Early 2025 data shows $67M already committed through July, on track to exceed 2024 totals by 40-50%.
+
+### Salary Benchmarks
+
+Compensation varies significantly by organization type. Data from <R id="6c3ba43830cda3c5">80,000 Hours</R> and job postings:
+
+| Position Type | Salary Range | Notes |
+|---------------|--------------|-------|
+| **Industry safety teams** (Anthropic, OpenAI, DeepMind) | $150K-$500K+ | Competitive with ML engineering; senior roles exceed $300K |
+| **Non-profit research** (ARC, Redwood, MIRI) | $100K-$200K+ | Often includes housing/relocation support |
+| **Academic positions** | $80K-$150K | Standard academic scales; lower than industry |
+| **Fellowships** (MATS, Anthropic Fellows) | $3,500-$6,000/week | 3-6 month programs with compute stipends |
+| **Entry-level/internships** | $7,000-$12,000/month | Meta AI research internships; competitive with full-time salaries elsewhere |
+
+The <R id="e65e76531931acc2">Anthropic Fellows Program</R> offers $3,850/week plus $15,000/month compute funding for 4-month positions.
+
+### Critical Gap: Supply vs. Demand
+
+The field faces a significant talent shortage. According to the <R id="df46edd6fa2078d1">Future of Life AI Safety Index 2025</R>, safety research struggles to keep pace with capability advances. Key constraints:
+
+- **Access gap**: External researchers lack model access and compute for frontier research
+- **Funding concentration**: 50%+ of philanthropic AI safety funding from one source (Open Philanthropy/Good Ventures)
+- **Hiring bottleneck**: Frontier labs report difficulty hiring AI ethics and compliance specialists (78% of organizations struggle)
+- **Experience requirements**: Many positions require demonstrated research ability or PhDs
+
+The <R id="0e18641415977ad6">International AI Safety Report</R> notes that external safety organizations operate on budgets smaller than a frontier lab's daily burn, limiting their ability to compete for talent or conduct frontier-scale research.
 
 ## Deep Technical Dive (2-3 hours)
 
@@ -249,19 +314,24 @@ Before committing to AI safety research, honestly evaluate:
 
 ### Is This Tractable?
 
+The tractability of AI safety research remains a key uncertainty. The <R id="df46edd6fa2078d1">Future of Life AI Safety Index 2025</R> provides a sober assessment: safety research has entered a "more pragmatic phase" but struggles to keep pace with capability advances. Anthropic received the best overall grade among frontier labs (C+), suggesting even leaders have significant room for improvement.
+
 **Evidence for tractability:**
-- Concrete progress on interpretability (monosemanticity results)
+- Concrete progress on interpretability: <R id="7ae6b3be2d2043c1">Anthropic's Scaling Monosemanticity</R> extracted millions of interpretable features
 - Measurable improvement in oversight techniques (Constitutional AI, debate experiments)
 - Growing empirical evidence of failure modes (goal misgeneralization in practice)
-- Increasing organizational and financial support
+- Institutional momentum: <R id="0e18641415977ad6">International AI Safety Report</R> backed by 30 countries; number of Frontier AI Safety Frameworks has doubled since January 2025
 
 **Evidence against tractability:**
-- No consensus on whether current approaches will work
+- No consensus on whether current approaches will work for superintelligent systems
 - Fundamental challenges may be unsolved (embedded agency, value specification)
-- Can't test on actual superintelligent systems
-- Some proposed solutions may be impossible (provable alignment)
+- Can't test on actual superintelligent systems—only proxies
+- External researchers operate on budgets smaller than a frontier lab's daily compute spend
+- Models can now imitate alignment under supervision, complicating evaluation
 
 **Key question**: Do you believe the problem is solvable with current scientific paradigms, or does it require conceptual breakthroughs?
+
+The <R id="f09a58f2760fb69b">State of AI Report 2025</R> notes the existential risk debate has "cooled, giving way to concrete questions about reliability, cyber resilience, and long-term governance of increasingly autonomous systems."
 
 ### What's Your Comparative Advantage?
 
@@ -304,25 +374,30 @@ Different backgrounds map to different contributions:
 
 ### Career Considerations
 
-**Upsides of AI safety research:**
-- Potentially extremely high impact
-- Growing field with increasing funding
-- Intellectually challenging
-- Community of smart, motivated people
-- Increasing mainstream legitimacy
+The career landscape for AI safety research has matured significantly. The table below summarizes key tradeoffs based on data from <R id="6c3ba43830cda3c5">80,000 Hours career reviews</R> and industry sources:
 
-**Downsides to consider:**
-- Uncertain tractability (might not make progress)
-- Uncertain importance (might be overblown)
-- Smaller community than mainstream ML
-- May be harder to pivot back to capabilities research
-- Some organizations have controversial theories of change
+| Factor | Assessment | Evidence |
+|--------|------------|----------|
+| **Impact potential** | Very high | If AI risk is real (5-30% estimates vary widely), this may be among highest-impact careers |
+| **Funding availability** | Strong and growing | $67M+ committed in H1 2025; Open Phil $40M RFP; 40-50% YoY growth |
+| **Job market demand** | High | 78% of orgs struggle to hire AI ethics specialists; 21% annual field growth |
+| **Intellectual challenge** | High | Novel problems spanning ML, security, game theory, philosophy |
+| **Career optionality** | Moderate | Skills transfer to ML engineering; harder to return to pure capabilities |
+| **Community size** | Small but growing | ~1,100 FTEs globally vs. millions in broader AI/ML |
+| **Mainstream legitimacy** | Increasing | International AI Safety Report 2025 backed by 30 countries |
+| **Tractability uncertainty** | Significant | No consensus on whether current approaches will work for superintelligent systems |
 
-**Financial considerations:**
-- Academic positions: Standard academic salaries
-- Non-profit research: Often $100K-200K+ for senior researchers
-- Industry safety teams: Competitive with ML engineering ($150K-500K+)
-- Varies significantly by organization and seniority
+**Compensation benchmarks** (detailed in earlier section):
+- Industry safety teams: $150K-$500K+
+- Non-profit research: $100K-$200K+
+- Academic positions: $80K-$150K
+- Fellowships: $3,500-$6,000/week
+
+**Key risk factors:**
+- Field concentration: 50%+ of philanthropic funding from one source (Open Philanthropy)
+- Uncertain timelines: Expert estimates for transformative AI range from 5 years to never
+- Organizational controversy: Some organizations have contested theories of change
+- Access constraints: External researchers lack frontier model access for cutting-edge work
 
 **Read more**: [Organizations overview](/knowledge-base/organizations/) to see who's hiring and what they pay.
 
@@ -372,11 +447,20 @@ Try one of these to test fit:
 
 ### 3. Formal Programs
 
-**Research upskilling:**
-- **SERI MATS** (mentored research program, 8 weeks)
-- **AI Safety Camp** (team research projects)
-- **Redwood Research REMIX** (interpretability bootcamp)
-- **Arena** (online course, technical alignment)
+The AI safety field has developed a robust pipeline of training programs, from self-study to intensive research fellowships. The table below summarizes key programs with current data from <R id="ba3a8bd9c8404d7b">MATS</R>, <R id="e65e76531931acc2">Anthropic Fellows</R>, and other sources:
+
+| Program | Duration | Format | Compensation | Selectivity | Best For |
+|---------|----------|--------|--------------|-------------|----------|
+| **<R id="ba3a8bd9c8404d7b">MATS</R>** | 12 weeks | In-person (Berkeley) | Stipend + housing + compute | 4-7% acceptance | Career-changers with technical background |
+| **Anthropic Fellows** | 4 months | In-person (Berkeley/London) | $3,850/week + $15K/mo compute | Highly selective | Experienced researchers |
+| **<R id="b3c21e84a47c075a">Global AI Safety Fellowship</R>** | 6 months | Full-time | Up to $30K total | Competitive | International researchers |
+| **<R id="f566780364336e37">SPAR</R>** | Part-time | Remote | Unpaid (mentorship) | Moderate | Students/early career |
+| **<R id="ddc62f39d445be29">Pivotal Research Fellowship</R>** | Variable | London-based | £6-8K/month | Competitive | UK-based researchers |
+| **AI Safety Fundamentals** | 8 weeks | Online cohort | Free | Open enrollment | Foundational knowledge |
+
+**MATS track record**: Since late 2021, the <R id="ba3a8bd9c8404d7b">MATS program</R> has supported 298 scholars and 75 mentors. SPAR research has been accepted at ICML and NeurIPS, covered by TIME, and has led to full-time job offers.
+
+**Prerequisites**: MATS and similar programs expect completion of <R id="0a603cb2359cad84">AI Safety Fundamentals</R> courses. Technical tracks prefer postgraduate-level ML/CS/math/physics experience; governance tracks prefer policy research experience or government background.
 
 **Graduate programs:**
 - Few formal PhD programs yet
@@ -387,6 +471,7 @@ Try one of these to test fit:
 - Anthropic, OpenAI, DeepMind, etc. (frontier labs)
 - ARC, Redwood, MIRI, etc. (safety orgs)
 - Usually require demonstrated research ability
+- <R id="4d2d026d3cca4d9d">Anthropic hiring</R> is described as "extremely difficult, even for highly qualified candidates" with multi-stage interviews testing technical depth and mission alignment
 
 ### 4. Reading List
 
@@ -620,3 +705,28 @@ The field needs:
 Make your own assessment. Engage critically. And if you decide to contribute, we're glad to have you.
 
 **Ready to explore?** Start with the [Research Agendas comparison](/knowledge-base/responses/alignment/research-agendas/) and go from there.
+
+## Sources
+
+This guide draws on the following sources (as of December 2025):
+
+**Field analysis and statistics:**
+- <R id="d5970e4ef7ed697f">AI Safety Field Growth Analysis 2025</R> - EA Forum analysis of field size and growth
+- <R id="0e18641415977ad6">International AI Safety Report 2025</R> - 100+ expert report backed by 30 countries
+- <R id="df46edd6fa2078d1">Future of Life AI Safety Index 2025</R> - Lab safety grading and industry assessment
+- <R id="f09a58f2760fb69b">State of AI Report 2025</R> - Annual comprehensive AI industry report
+
+**Funding and career data:**
+- <R id="6c3ba43830cda3c5">80,000 Hours Career Review: AI Safety Researcher</R> - Comprehensive career guide
+- <R id="913cb820e5769c0b">Open Philanthropy Technical AI Safety RFP</R> - $40M funding initiative
+- <R id="b1ab921f9cbae109">AI Safety Funding Overview</R> - LessWrong funding landscape analysis
+
+**Training programs:**
+- <R id="ba3a8bd9c8404d7b">MATS Program</R> - ML Alignment & Theory Scholars
+- <R id="e65e76531931acc2">Anthropic Fellows Program 2026</R> - Anthropic research fellowship
+- <R id="b3c21e84a47c075a">Global AI Safety Fellowship</R> - International fellowship program
+- <R id="f566780364336e37">SPAR - Research Program for AI Risks</R> - Part-time mentorship program
+- <R id="0a603cb2359cad84">AI Safety Fundamentals</R> - Free online courses
+
+**Research directions:**
+- <R id="7ae6b3be2d2043c1">Anthropic Recommended Research Directions</R> - Technical research priorities

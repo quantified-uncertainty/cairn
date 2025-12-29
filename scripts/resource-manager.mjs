@@ -833,9 +833,28 @@ async function extractWebMetadata(opts) {
   const firecrawl = new FirecrawlApp({ apiKey: FIRECRAWL_KEY });
   let updated = 0;
 
+  // Build URL to resource map
+  const urlToResource = new Map();
   for (const r of toProcess) {
-    try {
-      const result = await firecrawl.scrape(r.url, { formats: ['markdown'] });
+    urlToResource.set(r.url, r);
+  }
+
+  // Use batch scraping for efficiency
+  const urls = toProcess.map(r => r.url);
+  if (!opts._skipSave) console.log(`   Batch scraping ${urls.length} URLs...`);
+
+  try {
+    // batchScrape processes URLs in parallel on Firecrawl's side
+    const results = await firecrawl.batchScrape(urls, {
+      formats: ['markdown'],
+      timeout: 300000, // 5 min timeout
+    });
+
+    // Process results
+    for (const result of results.data || []) {
+      const r = urlToResource.get(result.metadata?.sourceURL || result.metadata?.url);
+      if (!r) continue;
+
       const metadata = result.metadata || {};
 
       // Extract authors from various metadata fields
@@ -862,16 +881,47 @@ async function extractWebMetadata(opts) {
       }
       if (publishedDate) {
         r.published_date = publishedDate.split('T')[0];
-        if (!authors?.length) updated++; // Count if we got date but not authors
+        if (!authors?.length) updated++;
         if (verbose && !authors?.length) console.log(`   ✓ ${r.title} (date: ${publishedDate})`);
       }
+    }
+  } catch (err) {
+    // Fall back to sequential if batch fails
+    if (!opts._skipSave) console.log(`   Batch failed (${err.message}), falling back to sequential...`);
 
-      await sleep(7000); // Firecrawl rate limit
-    } catch (err) {
-      if (verbose) console.log(`   ✗ ${r.title}: ${err.message}`);
-      if (err.message?.includes('Rate limit')) {
-        console.log('   Waiting for rate limit...');
-        await sleep(60000);
+    for (const r of toProcess) {
+      try {
+        const result = await firecrawl.scrape(r.url, { formats: ['markdown'] });
+        const metadata = result.metadata || {};
+
+        const authorFields = ['author', 'authors', 'DC.Contributor', 'DC.Creator', 'article:author', 'og:article:author'];
+        let authors = null;
+        for (const field of authorFields) {
+          const value = metadata[field];
+          if (value) {
+            if (Array.isArray(value)) {
+              authors = value.filter(a => a && typeof a === 'string');
+            } else if (typeof value === 'string') {
+              authors = value.includes(',') ? value.split(',').map(a => a.trim()) : [value];
+            }
+            if (authors?.length > 0) break;
+          }
+        }
+
+        const publishedDate = metadata.publishedTime || metadata.datePublished || metadata.article?.publishedTime;
+
+        if (authors?.length > 0) {
+          r.authors = authors;
+          updated++;
+        }
+        if (publishedDate) {
+          r.published_date = publishedDate.split('T')[0];
+          if (!authors?.length) updated++;
+        }
+
+        await sleep(7000);
+      } catch (e) {
+        if (verbose) console.log(`   ✗ ${r.title}: ${e.message}`);
       }
     }
   }
@@ -1091,11 +1141,13 @@ Metadata Sources:
   scholar                Nature, Science, etc. (Semantic Scholar API)
   web                    General web pages (Firecrawl - requires API key)
   all                    Run all extractors
+  all --parallel         Run all extractors concurrently (faster)
   stats                  Show metadata statistics
 
 Options:
   --apply                Apply changes (default is dry-run for process)
   --batch N              Batch size for metadata extraction (default: varies)
+  --parallel             Run extractors concurrently (metadata all)
   --limit N              Limit results (list command)
   --min-unconv N         Minimum unconverted links (list command)
   --skip-create          Don't create new resources (process command)

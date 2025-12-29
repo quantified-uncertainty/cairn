@@ -325,6 +325,38 @@ export const EntitySource = z.object({
 export type EntitySource = z.infer<typeof EntitySource>;
 
 // =============================================================================
+// PUBLICATIONS (Venues/Publishers)
+// =============================================================================
+
+export const PublicationType = z.enum([
+  'academic_journal',   // Nature, Science, peer-reviewed journals
+  'preprint_server',    // arXiv, bioRxiv
+  'think_tank',         // RAND, Brookings, CSET
+  'company_blog',       // Anthropic, OpenAI technical blogs
+  'government',         // NIST, UK Gov, EU
+  'encyclopedia',       // Wikipedia
+  'blog_platform',      // LessWrong, Alignment Forum, EA Forum
+  'news',               // MIT Tech Review, media outlets
+  'organization',       // Nonprofits, advocacy groups
+  'academic',           // University research centers
+  'consulting',         // McKinsey, BCG
+  'academic_search',    // Google Scholar, Semantic Scholar
+  'code_repository',    // GitHub
+]);
+export type PublicationType = z.infer<typeof PublicationType>;
+
+export const Publication = z.object({
+  id: z.string(),                               // e.g., "nature", "arxiv"
+  domains: z.array(z.string()),                 // Domains that map to this publication
+  name: z.string(),                             // Display name
+  type: PublicationType,
+  credibility: z.number().min(1).max(5),        // 1-5, 5 = gold standard
+  peer_reviewed: z.boolean().optional(),
+  description: z.string().optional(),
+});
+export type Publication = z.infer<typeof Publication>;
+
+// =============================================================================
 // RESOURCES (External References with Summaries)
 // =============================================================================
 
@@ -359,6 +391,10 @@ export const Resource = z.object({
   // Metadata
   cited_by: z.array(z.string()).optional(),     // Entity IDs that cite this
   fetched_at: z.string().optional(),
+  // Publication & credibility
+  publication_id: z.string().optional(),        // Reference to publications.yaml
+  tags: z.array(z.string()).optional(),         // Topic tags (alignment, governance, etc.)
+  credibility_override: z.number().min(1).max(5).optional(), // Override publication default
 });
 export type Resource = z.infer<typeof Resource>;
 
@@ -469,5 +505,6 @@ export const Database = z.object({
   graphs: z.array(Graph),
   entities: z.array(Entity),
   resources: z.array(Resource),
+  publications: z.array(Publication),
 });
 export type Database = z.infer<typeof Database>;

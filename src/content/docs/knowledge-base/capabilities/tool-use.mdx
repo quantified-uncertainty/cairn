@@ -1,14 +1,14 @@
 ---
 title: "Tool Use and Computer Use"
-description: "AI systems' ability to interact with external tools and control computers, representing a critical transition from passive text generation to active autonomous agents with significant safety implications for both beneficial applications and potential risks."
+description: "AI systems' ability to interact with external tools and control computers represents a critical capability transition. Current benchmarks show Claude achieving 14.9% on OSWorld vs. 72% human baseline, while SWE-bench performance jumped from 4.4% to 71.7% between 2023-2024. Security research finds 94.4% of agents vulnerable to prompt injection."
 sidebar:
   order: 5
-quality: 48
-llmSummary: "Tool use represents a critical capability transition from passive text generation to active autonomous agents, with Anthropic's Computer Use (Oct 2024) enabling direct desktop control. The capability introduces qualitatively different safety challenges including expanded attack surfaces, monitoring complexity, and difficulty maintaining human control over rapid autonomous actions."
-lastEdited: "2025-12-24"
+quality: 78
+llmSummary: "Tool use represents a critical capability transition from passive text generation to active autonomous agents, with Anthropic's Computer Use (Oct 2024) enabling direct desktop control. Current benchmarks show significant gaps vs humans (14.9% vs 72% on OSWorld), but rapid progress (SWE-bench: 4.4% to 71.7% in one year). Security research finds 94.4% of agents vulnerable to prompt injection attacks."
+lastEdited: "2025-12-28"
 importance: 82.5
 ---
-import {DataInfoBox, Backlinks} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="tool-use" />
 
@@ -20,6 +20,16 @@ This evolution matters because it fundamentally changes the nature of AI systems
 
 The trajectory toward more capable tool-using agents appears inevitable, with major AI labs investing heavily in this area. However, the dual-use nature of these capabilities—where the same functionality that enables beneficial automation also enables potential harm—presents unique challenges for safety research and policy development that distinguish tool use from other AI capability advances.
 
+### Capability Assessment
+
+| Dimension | Current State (Late 2024) | Trend | Safety Relevance |
+|-----------|---------------------------|-------|------------------|
+| Function Calling | **Mature** — Reliable JSON schema validation, parallel execution | Stable | Moderate — Well-defined interfaces enable monitoring |
+| Web Browsing | **Advancing** — Can navigate, fill forms, extract data | Rapid improvement | High — Information gathering, social engineering vectors |
+| Code Execution | **Strong** — Can write and run code in sandboxed environments | Rapid improvement | High — Potential for malware, system manipulation |
+| Computer Use | **Emerging** — 14.9% on OSWorld vs. 72% human baseline | Very rapid improvement | Very High — Universal interface bypasses API restrictions |
+| Multi-Agent Orchestration | **Early** — Basic coordination, memory sharing | Emerging | High — Cascading failures, difficult to attribute actions |
+
 ## Technical Foundations and Current Implementations
 
 Modern tool use systems typically employ a structured approach where AI models receive descriptions of available tools, generate properly formatted function calls, execute these calls in controlled environments, and process the results to continue task completion. This architecture has been implemented with varying degrees of sophistication across major AI systems. OpenAI's function calling, introduced in June 2023, established early patterns for structured API invocation with JSON schema validation and support for parallel tool execution. Google's Gemini Extensions focused on deep integration with Google's ecosystem, enabling cross-service workflows between Gmail, Calendar, and Drive.
@@ -29,6 +39,21 @@ Anthropic's Computer Use capability, launched in public beta in October 2024, re
 The underlying technical implementation relies heavily on vision-language models that can interpret screenshots and translate high-level instructions into specific UI interactions. Training these systems involves a combination of supervised fine-tuning on human demonstrations, reinforcement learning from successful task completion, and synthetic data generation. The challenge lies in teaching models both the mechanical aspects of tool operation (correct function call formatting, proper argument passing) and the strategic aspects (when to use which tools, how to recover from errors, how to chain tools effectively).
 
 Current limitations include frequent tool selection errors, brittle error recovery mechanisms, and difficulty with novel tools not seen during training. Most implementations require careful prompt engineering and work best with familiar, well-documented tools rather than adapting flexibly to new interfaces or APIs.
+
+### Benchmark Performance Comparison
+
+Performance on tool use benchmarks reveals both rapid progress and significant remaining gaps compared to human capabilities:
+
+| Benchmark | Task Type | Human Baseline | Best AI (2024) | Best AI (2025) | Key Insight |
+|-----------|-----------|----------------|----------------|----------------|-------------|
+| <R id="c819ef71cbf34802">OSWorld</R> | Computer control | 72.4% | 14.9% (Claude 3.5) | 60.8% (CoACT-1) | Gap narrowing rapidly; some agents now superhuman |
+| <R id="e1f512a932def9e2">SWE-bench Verified</R> | Code issue resolution | ~92% | 49.0% (Claude 3.5) | 71.7%+ (Tools + Claude 4) | 16x improvement in one year |
+| <R id="1c294c3f51d7bc1f">GAIA</R> | General assistant tasks | 92% | 15% (GPT-4) | 75% (h2oGPTe) | First "C grade" achieved in 2025 |
+| TAU-bench (Retail) | Tool use in domains | — | 69.2% (Claude 3.5) | — | Strong performance on constrained domains |
+| TAU-bench (Airline) | Complex tool use | — | 46.0% (Claude 3.5) | — | More challenging multi-step workflows |
+| <R id="c2614357fa198ba4">WebArena</R> | Web navigation | — | ~35% | ~55% | Realistic web task completion |
+
+The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to over 71% by late 2024—illustrates how rapidly agentic coding capabilities are advancing. On OSWorld, one agent has achieved 76.26% success rate, exceeding the ~72% human baseline and demonstrating superhuman performance on standardized computer use tasks.
 
 ## Safety Implications and Risk Landscape
 
@@ -40,6 +65,54 @@ Monitoring and oversight become significantly more complex with tool-using agent
 
 The challenge of maintaining meaningful human control becomes acute when agents can operate autonomously across multiple tools and time horizons. Current approaches like requiring human approval for specific actions face the fundamental tension between preserving utility (which requires minimizing friction) and maintaining safety (which requires meaningful oversight). As tool use becomes more sophisticated, this tension will likely intensify.
 
+### Security Vulnerability Landscape
+
+Research on AI agent security has revealed alarming vulnerability rates. According to a <R id="3aec04f6fbc348bf">comprehensive study on agent security</R>, the attack surface for tool-using agents is significantly larger than for text-only systems:
+
+| Vulnerability Type | Prevalence | Severity | Example Attack |
+|-------------------|------------|----------|----------------|
+| Prompt Injection | **94.4%** of agents vulnerable | Critical | Malicious instructions hidden in web content |
+| Retrieval-Based Backdoors | **83.3%** vulnerable | High | Poisoned documents trigger unintended behavior |
+| Inter-Agent Trust Exploits | **100%** vulnerable | Critical | Compromised agent manipulates others in multi-agent systems |
+| Memory Poisoning | Common | High | Gradual alteration of agent behavior through corrupted context |
+| Excessive Agency | Common | High | Over-permissioned agents cause unintended damage |
+
+Real-world incidents have demonstrated these risks. The <R id="d6f4face14780e85">EchoLeak exploit (CVE-2025-32711)</R> against Microsoft Copilot showed how infected email messages containing engineered prompts could trigger automatic data exfiltration without user interaction. <R id="73b5426488075245">Experiments with OpenAI's Operator</R> demonstrated how agents could harvest personal data and automate credential stuffing attacks.
+
+<Mermaid client:load chart={`
+flowchart TD
+    INPUT[User Input] --> AGENT[AI Agent]
+    TOOLS[Tool Access] --> AGENT
+    EXTERNAL[External Data] --> AGENT
+
+    AGENT --> ACTIONS[Autonomous Actions]
+
+    subgraph ATTACKS[Attack Vectors]
+        PI[Prompt Injection]
+        MP[Memory Poisoning]
+        TE[Tool Exploitation]
+        IC[Inter-Agent Compromise]
+    end
+
+    INPUT -.->|Malicious prompts| PI
+    EXTERNAL -.->|Poisoned content| PI
+    TOOLS -.->|Privilege escalation| TE
+    AGENT -.->|Corrupted context| MP
+
+    PI --> ACTIONS
+    MP --> ACTIONS
+    TE --> ACTIONS
+    IC --> ACTIONS
+
+    ACTIONS --> HARM[Persistent Harm]
+
+    style ATTACKS fill:#fee
+    style HARM fill:#fcc
+    style AGENT fill:#e6f3ff
+`} />
+
+<R id="73b5426488075245">McKinsey's agentic AI security playbook</R> emphasizes that organizations should enforce strong sandboxing with network restrictions, implement tamper-resistant logging of all agent actions, and maintain traceability mechanisms from the outset.
+
 ## Computer Use as a Universal Interface
 
 Computer use capabilities deserve special attention because they represent a universal interface that can potentially access any digital functionality available to human users. Unlike API-specific tool integrations that require custom development for each service, computer control enables AI agents to operate any software through the same visual interface humans use. This universality creates both tremendous potential and significant risks.
@@ -49,6 +122,21 @@ Current computer use implementations, while impressive, remain limited in severa
 However, the trajectory of improvement appears steep. Vision language models continue advancing rapidly, training datasets for computer use are expanding, and techniques like action chunking and hierarchical planning show promise for handling longer task sequences. Industry observers expect computer use capabilities to achieve human-level performance on routine computer tasks within 2-3 years, with superhuman speed following shortly after.
 
 The implications of reliable computer use extend across virtually every domain of human digital activity. Positive applications include accessibility tools for users with disabilities, automated testing and quality assurance, and research assistance that can navigate complex information systems. Concerning applications include automated social engineering attacks, mass surveillance through social media manipulation, and autonomous malware that can adapt to novel security measures.
+
+## Tool Integration Standards: Model Context Protocol
+
+The <R id="e283b9c34207eff8">Model Context Protocol (MCP)</R>, announced by Anthropic in November 2024, represents a significant step toward standardizing AI-tool integration. MCP addresses what engineers called the "M×N problem"—the combinatorial explosion of connecting M different AI models with N different tools or data sources. By providing a universal protocol, developers implement MCP once and unlock an entire ecosystem of integrations.
+
+| Aspect | Details |
+|--------|---------|
+| **Architecture** | JSON-RPC 2.0 transport, similar to Language Server Protocol (LSP) |
+| **Primitives** | Servers: Prompts, Resources, Tools; Clients: Roots, Sampling |
+| **SDKs** | Python, TypeScript, C#, Java |
+| **Pre-built Servers** | Google Drive, Slack, GitHub, Git, Postgres, Puppeteer |
+| **Adoption** | OpenAI, Google DeepMind, Zed, Replit, Sourcegraph, Block, Apollo |
+| **Governance** | Donated to Linux Foundation's Agentic AI Foundation (AAIF) in December 2025 |
+
+The rapid uptake of MCP—with thousands of community-built servers within the first year—suggests growing consensus around standardized tool integration. This standardization has dual implications for safety: it enables more consistent monitoring and security practices, but also accelerates the proliferation of tool-using capabilities across the AI ecosystem.
 
 ## Current State and Near-Term Trajectory
 
@@ -71,6 +159,45 @@ The interaction between tool use capabilities and other AI advances creates addi
 Economic and regulatory responses will significantly influence the development trajectory. Industry self-regulation, government oversight, and international coordination efforts could substantially alter the pace and direction of tool use development. However, the dual-use nature of these capabilities makes targeted regulation challenging without hampering beneficial applications.
 
 The technical question of whether safe, beneficial tool use is possible at scale remains open. While current systems demonstrate both impressive capabilities and significant safety challenges, it's unclear whether fundamental barriers exist to creating reliable, beneficial tool-using agents or whether current problems represent engineering challenges that will be resolved through continued research and development.
+
+## Timeline
+
+| Date | Event | Significance |
+|------|-------|--------------|
+| June 2023 | <R id="461efab2a94bf7c5">OpenAI introduces function calling</R> | Establishes structured API invocation pattern for LLMs |
+| Nov 2023 | GAIA benchmark released | First comprehensive test for general AI assistants with tool use |
+| Apr 2024 | OSWorld benchmark published (NeurIPS 2024) | Standardized evaluation for computer control agents |
+| Aug 2024 | <R id="e1f512a932def9e2">SWE-bench Verified released</R> | Human-validated coding benchmark; collaboration with OpenAI |
+| Oct 2024 | <R id="9e4ef9c155b6d9f3">Anthropic launches Computer Use beta</R> | First frontier model with direct desktop control |
+| Nov 2024 | <R id="e283b9c34207eff8">Model Context Protocol announced</R> | Open standard for AI-tool integration |
+| Dec 2024 | Claude 3.5 Sonnet achieves 49% on SWE-bench | Significant jump in agentic coding capability |
+| 2025 | h2oGPTe achieves 75% on GAIA | First "C grade" on general assistant benchmark |
+| 2025 | CoACT-1 reaches 60.8% on OSWorld | Approaches human-level computer control |
+| Dec 2025 | MCP donated to Linux Foundation | Industry standardization of tool protocols |
+
+## Sources and Resources
+
+### Benchmarks and Evaluations
+- <R id="1c294c3f51d7bc1f">GAIA Benchmark</R> — General AI Assistants evaluation
+- <R id="c819ef71cbf34802">OSWorld</R> — Computer control benchmark (NeurIPS 2024)
+- <R id="433a37bad4e66a78">SWE-bench</R> — Real-world coding issue resolution
+- <R id="c2614357fa198ba4">WebArena</R> — Web navigation benchmark
+- <R id="893d2bf900cb93c0">ToolEmu</R> — Safety evaluation for LLM tool use
+
+### Industry Resources
+- <R id="9e4ef9c155b6d9f3">Anthropic Computer Use Announcement</R>
+- <R id="e283b9c34207eff8">Model Context Protocol Documentation</R>
+- <R id="ec4f8c98c7439855">OpenAI Function Calling Guide</R>
+
+### Security Research
+- <R id="3aec04f6fbc348bf">Security of AI Agents (arXiv)</R> — Comprehensive vulnerability analysis
+- <R id="73b5426488075245">McKinsey Agentic AI Security Playbook</R>
+- <R id="ab5ca9eea90f6454">Google SAIF 2.0</R> — Secure AI Framework for agents
+- <R id="d6f4face14780e85">Palo Alto Unit 42: Agentic AI Threats</R>
+
+### AI Index and Analysis
+- <R id="1a26f870e37dcc68">Stanford HAI AI Index 2025</R> — Technical performance trends
+- <R id="f8832ce349126f66">Evidently AI Agent Benchmarks Guide</R>
 
 ## Related Pages
 

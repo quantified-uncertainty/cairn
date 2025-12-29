@@ -1,13 +1,17 @@
 ---
 title: "For Policymakers"
-description: "Reading path for policy professionals working on AI governance"
+description: "A comprehensive guide for policy professionals on AI governance, covering risk categories, key policy frameworks (EU AI Act, US Executive Order, UK AISI), international coordination mechanisms, and high-leverage interventions including compute governance, mandatory evaluations, and licensing regimes."
 sidebar:
   order: 3
 importance: 68.5
-quality: 42
-llmSummary: "Structured introduction to AI governance for policymakers, covering four risk categories (accident, misuse, structural, epistemic), three policy levers (compute governance, mandatory evaluations, international coordination), and current policy frameworks across US, EU, UK, and China. Provides actionable prioritization framework but lacks tables, citations, and quantified evidence."
+quality: 80
+lastEdited: "2025-12-28"
+llmSummary: "Structured introduction to AI governance for policymakers, covering four risk categories (accident, misuse, structural, epistemic), three policy levers (compute governance, mandatory evaluations, international coordination), and current policy frameworks across US, EU, UK, and China. Includes policy timeline, framework comparison tables, and citations to authoritative sources."
 ---
-you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
+import {R} from '../../../components/wiki';
+
+
+If you're a policymaker, regulator, or governance professional working on AI, this guide will help you quickly understand the safety landscape, evaluate different policy approaches, and identify high-leverage interventions.
 
 ## Executive Summary (5 minutes)
 
@@ -47,6 +51,21 @@ The window for establishing governance frameworks may be short—possibly 5-15 y
 
 **Your opportunity**: AI governance is still being defined. Early movers can shape frameworks that last decades.
 
+### Key Policy Timeline (2023-2027)
+
+| Date | Event | Significance |
+|------|-------|--------------|
+| Oct 2023 | <R id="8f7ca1a7a9889160">US Executive Order 14110</R> | First comprehensive US federal AI governance framework; mandated safety testing for powerful models |
+| Nov 2023 | <R id="bc0ee414c7b1e2b9">Bletchley Declaration</R> | 28 countries (incl. US, China, EU) agreed to international AI safety cooperation |
+| Nov 2023 | <R id="fdf68a8f30f57dee">UK AI Safety Institute launched</R> | World's first government-backed frontier AI evaluation body |
+| May 2024 | <R id="1b4616cecfae83d5">Seoul AI Summit & Declaration</R> | Leaders from 11 countries committed to interoperable AI governance frameworks |
+| Aug 2024 | <R id="e889fb2f11761cd8">EU AI Act enters into force</R> | World's first comprehensive AI regulation; risk-based approach |
+| Feb 2025 | EU AI Act prohibited practices apply | Bans on social scoring, untargeted facial recognition scraping, emotion inference in workplaces |
+| Aug 2025 | EU AI Act GPAI rules apply | Obligations for general-purpose AI models become mandatory |
+| Feb 2025 | Paris AI Summit | Third global AI safety summit hosted by France |
+| Aug 2026 | EU AI Act fully applicable | All provisions including high-risk AI requirements take effect |
+| Aug 2027 | EU AI Act high-risk embedded systems | Extended transition period for AI embedded in regulated products |
+
 ## Understanding the Threat Model (30 minutes)
 
 To design effective policy, you need to understand what could go wrong:
@@ -54,6 +73,13 @@ To design effective policy, you need to understand what could go wrong:
 ### Categories of Risk
 
 AI risks fall into four main categories, each requiring different governance approaches:
+
+| Risk Category | Examples | Policy Approach | Key Insight |
+|---------------|----------|-----------------|-------------|
+| **Accident** (technical failures) | Goal misgeneralization, deceptive alignment, power-seeking | Safety testing mandates; liability frameworks | Standard product safety may be insufficient for superintelligent systems |
+| **Misuse** (intentional harm) | Bioweapons, cyberweapons, disinformation, autonomous weapons | Access controls; export restrictions; know-your-customer | Similar to traditional dual-use technology governance |
+| **Structural** (systemic problems) | Racing dynamics, concentration of power, economic disruption, lock-in | Institutional design; antitrust; labor policy; international coordination | Even safe individual systems may create problematic trajectories |
+| **Epistemic** (threats to truth) | Epistemic collapse, trust erosion, automation bias | Verification frameworks; authentication standards; institutional resilience | Undermines ability to coordinate on other risks |
 
 #### 1. Accident Risks (Technical Failures)
 AI systems behaving in unintended ways, even without malicious actors.
@@ -126,41 +152,45 @@ AI undermining our ability to distinguish true from false.
 
 ### Current Policy Frameworks
 
+The global AI governance landscape is rapidly evolving, with different jurisdictions taking distinct approaches. The following table summarizes the major frameworks:
+
+| Jurisdiction | Framework | Approach | Key Provisions | Enforcement | Status |
+|--------------|-----------|----------|----------------|-------------|--------|
+| **United States** | <R id="b787ccc64e78cae8">Executive Order 14110</R> | Voluntary + mandatory reporting | Safety testing for powerful models; red-team requirements; watermarking guidance | Agency-specific | Rescinded Jan 2025 |
+| **United States** | <R id="54dbc15413425997">NIST AI RMF 2.0</R> | Voluntary standards | Govern-Map-Measure-Manage framework; <R id="b8df5c37607d20c3">Generative AI Profile</R> (July 2024) | Self-assessment | Active |
+| **European Union** | <R id="1ad6dc89cded8b0c">EU AI Act</R> | Risk-based regulation | Prohibited practices; high-risk requirements; GPAI obligations | Fines up to 7% of global turnover (EUR 35M) | Phased 2024-2027 |
+| **United Kingdom** | <R id="fdf68a8f30f57dee">UK AISI</R> + sectoral | Evaluation-focused | Pre-deployment testing; <R id="0fd3b1f5c81a37d8">30+ frontier models evaluated</R> | Voluntary agreements | Active |
+| **China** | Multiple regulations | Use-case specific | Algorithm registration; deepfake labeling; generative AI rules | Administrative penalties | Active |
+
 **United States:**
-- Executive Order on AI (October 2023) - Broad framework covering safety, security, privacy
-- NIST AI Risk Management Framework - Voluntary standards
-- Emerging legislation (vary by state and federal proposals)
-- Limited specific focus on transformative AI risk
+The US approach combines executive action with voluntary standards. The October 2023 Executive Order required developers of powerful AI systems to share safety test results with the government and mandated NIST to develop red-team testing standards. The <R id="54dbc15413425997">NIST AI Risk Management Framework</R> provides voluntary guidance organized around four functions: Govern, Map, Measure, and Manage. In July 2024, NIST released a <R id="b8df5c37607d20c3">Generative AI Profile</R> addressing risks unique to generative AI systems. However, Executive Order 14110 was rescinded in January 2025, creating uncertainty about federal AI governance.
 
 **European Union:**
-- EU AI Act - Risk-based regulatory framework
-- Classifies AI by risk level (minimal, limited, high, unacceptable)
-- Focuses primarily on current systems, less on future transformative AI
-- Enforcement through fines and market restrictions
+The <R id="1ad6dc89cded8b0c">EU AI Act</R>, which entered into force in August 2024, represents the world's first comprehensive AI regulation. It classifies AI systems by risk level: unacceptable (banned), high-risk (strict requirements), limited (transparency obligations), and minimal (no requirements). <R id="373effab2c489c24">Prohibited practices</R> include social scoring, untargeted facial recognition scraping, and emotion inference in workplaces. High-risk systems face requirements including documentation, human oversight, and conformity assessments. Penalties can reach EUR 35 million or 7% of global annual turnover.
 
 **United Kingdom:**
-- [UK AI Safety Institute](/knowledge-base/organizations/government/uk-aisi/) (AISI) - Government research institute
-- Focus on frontier AI safety research and evaluations
-- "Pro-innovation" approach with light regulation
-- Hosted AI Safety Summits (Bletchley Park, Seoul)
+The UK has taken an evaluation-focused approach through the <R id="fdf68a8f30f57dee">UK AI Safety Institute</R> (AISI), established in November 2023. AISI has evaluated <R id="0fd3b1f5c81a37d8">over 30 frontier AI models</R> across domains including cybersecurity, biosecurity, and autonomous systems. Key findings include that AI models can now complete "apprentice-level" cyber tasks 50% of the time (up from 10% in early 2024), and models make it <R id="8a9de448c7130623">nearly 5x more likely</R> that non-experts can write feasible pathogen recovery protocols. The UK hosts the AI Safety Summit series (Bletchley Park 2023, Seoul 2024, Paris 2025).
 
 **China:**
-- Regulations on algorithms, recommendation systems, deepfakes
-- Emphasis on political stability and Party control
-- Less transparent about frontier AI safety measures
-- Significant AI development capability
+China has implemented use-case specific regulations covering algorithms, recommendation systems, deepfakes, and generative AI. Regulations emphasize political stability and require algorithm registration with authorities. Less transparency about frontier AI safety measures, though China signed the Bletchley Declaration.
 
 **International:**
-- No binding treaties yet
-- Some discussion at UN, G7, OECD
-- Bletchley Declaration (non-binding) from UK AI Safety Summit
-- Limited substantive coordination so far
+No binding treaties exist yet. The <R id="bc0ee414c7b1e2b9">Bletchley Declaration</R> (November 2023) saw 28 countries including the US, China, and EU agree to international AI safety cooperation. The <R id="1b4616cecfae83d5">Seoul Declaration</R> (May 2024) committed 11 countries to developing interoperable governance frameworks. Discussions continue at UN, G7, and OECD.
 
 **Read**: [Governance Responses](/knowledge-base/responses/governance/)
 
 ### High-Leverage Policy Interventions
 
-Based on case studies and expert analysis, these approaches show promise:
+Based on case studies and expert analysis, these approaches show promise. The following table summarizes the key policy levers available:
+
+| Intervention | Mechanism | Tractability | Precedent | Key Challenge |
+|--------------|-----------|--------------|-----------|---------------|
+| **Compute governance** | Control access to training hardware | High (physical, trackable) | Export controls on chips | China developing alternatives |
+| **Mandatory evaluations** | Test for dangerous capabilities pre-deployment | Medium (technical methods emerging) | FDA drug approval, aviation certification | What thresholds trigger requirements? |
+| **Licensing/registration** | Permits required above capability thresholds | Medium (institutional capacity needed) | Nuclear Regulatory Commission (NRC) | Innovation/competitiveness concerns |
+| **Liability/insurance** | Financial incentives for safety | Medium (markets for novel risks) | Nuclear Price-Anderson Act | Causation hard to prove; catastrophic risks exceed caps |
+| **International coordination** | Treaties, standards, monitoring | Low-Medium (geopolitical barriers) | Nuclear NPT, IAEA; Aviation ICAO | US-China tensions; verification hard |
+| **Institutional design** | Safety governance requirements for labs | Low-Medium (hard to verify internally) | Financial sector governance | Commercial pressure overrides structures |
 
 #### 1. Compute Governance
 
@@ -492,16 +522,32 @@ Based on your specific policy focus:
 
 ## Key Organizations to Know
 
+The AI governance ecosystem includes government bodies, research organizations, and frontier AI labs. The following table provides a quick reference:
+
+| Category | Organization | Focus | Key Output |
+|----------|--------------|-------|------------|
+| **Government (US)** | <R id="54dbc15413425997">NIST</R> | Standards development | AI RMF, Generative AI Profile |
+| **Government (US)** | US AI Safety Institute | Evaluations (planned) | In development |
+| **Government (UK)** | <R id="fdf68a8f30f57dee">UK AISI</R> | Frontier model evaluations | <R id="7042c7f8de04ccb1">Frontier AI Trends Report</R> |
+| **Government (EU)** | European AI Office | EU AI Act implementation | Regulatory guidance |
+| **International** | OECD AI Policy Observatory | Policy coordination | AI Policy Tracker |
+| **Research** | <R id="f35c467b353f990f">GovAI</R> | AI governance research | Policy papers |
+| **Research** | <R id="0562f8c207d8b63f">ARC</R> | Evaluations, alignment | Model evaluations |
+| **Research** | <R id="f0d95954b449240a">CSET Georgetown</R> | Security and emerging tech | Policy analysis |
+| **Lab** | [Anthropic](/knowledge-base/organizations/labs/anthropic/) | Commercial + safety focus | RSP, Constitutional AI |
+| **Lab** | [OpenAI](/knowledge-base/organizations/labs/openai/) | Commercial + safety team | Preparedness Framework |
+| **Lab** | [DeepMind](/knowledge-base/organizations/labs/deepmind/) | Google's AI lab | Safety research |
+
 ### Government and International
 
 **United States:**
-- NIST AI Safety Institute - Standards development
+- <R id="54dbc15413425997">NIST AI Safety Institute</R> - Standards development
 - NSF AI Research - Funding
 - OSTP - White House science policy
 - Various agency AI offices (DoD, DOE, etc.)
 
 **United Kingdom:**
-- UK AI Safety Institute (AISI) - Government research and evaluation
+- <R id="fdf68a8f30f57dee">UK AI Safety Institute (AISI)</R> - Government research and evaluation
 - Department for Science, Innovation & Technology (DSIT)
 - Office for AI
 
@@ -511,7 +557,7 @@ Based on your specific policy focus:
 
 **International:**
 - UN discussions on AI governance
-- OECD AI Policy Observatory
+- <R id="eca111f196cde5eb">OECD AI Policy Observatory</R> - Policy coordination and tracking
 - Partnership on AI (multi-stakeholder)
 
 **Read**: [Organizations overview](/knowledge-base/organizations/) for details

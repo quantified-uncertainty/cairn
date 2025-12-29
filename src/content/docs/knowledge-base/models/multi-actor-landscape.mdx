@@ -1,9 +1,9 @@
 ---
 title: "Multi-Actor Strategic Landscape"
-description: "This model analyzes how risk depends on which actors develop TAI. It maps actor incentive structures and identifies conditions where actor identity dominates technical factors."
+description: "This model analyzes how risk depends on which actors develop TAI. Using 2024-2025 capability data, it finds the US-China model performance gap narrowed from 9.26% to 1.70% (Recorded Future), while open-source closed to within 1.70% of frontier. Actor identity may determine 40-60% of total risk variance."
 tableOfContents: false
-quality: 72
-lastEdited: "2025-12-27"
+quality: 80
+lastEdited: "2025-12-28"
 ratings:
   novelty: 4
   rigor: 4
@@ -13,6 +13,7 @@ importance: 78.5
 llmSummary: "Analyzes how AI risk varies based on which actors (US labs, China, open-source) develop TAI, mapping incentive structures across ~20 causal factors including US-China competition (0.75 intensity), profit pressure (0.8), and democratic oversight (0.35). Quantifies current capability levels (US labs 0.85, China 0.65, open-source 0.55 vs frontier) and risk pathways including unaligned singleton (0.08 expected loss) and authoritarian lock-in."
 ---
 import CauseEffectGraph from '../../../../components/CauseEffectGraph';
+import {Mermaid, R} from '../../../../components/wiki';
 
 <style>{`
   .breakout {
@@ -390,15 +391,98 @@ import CauseEffectGraph from '../../../../components/CauseEffectGraph';
 
 ## Overview
 
-This model analyzes how risk depends on which actors develop TAI. It maps actor incentive structures and identifies conditions where actor identity dominates technical factors.
+This model analyzes how AI existential risk depends on which actors—US frontier labs, Chinese developers, open-source communities, or malicious actors—develop transformative AI first, and under what competitive conditions. The core insight is that actor identity and incentive structures may matter as much as technical alignment progress in determining outcomes.
+
+The strategic landscape shifted dramatically in 2024-2025. According to [Recorded Future analysis](https://www.recordedfuture.com/research/measuring-the-us-china-ai-gap), the gap in overall model performance between the best US and Chinese models narrowed from **9.26% in January 2024 to just 1.70% by February 2025**. This was catalyzed by DeepSeek's R1 release in January 2025, which [matched OpenAI's o1 performance](https://www.bu.edu/articles/2025/does-chinas-deepseek-represent-a-new-frontier-in-ai/) while training for just \$1.6 million—a fraction of US costs. Similarly, [open-source models closed to within 1.70%](https://www.red-line.ai/p/state-of-open-source-ai-2025) of frontier closed models on Chatbot Arena, fundamentally changing proliferation dynamics.
+
+Despite narrowing capability gaps, structural asymmetries persist. US private AI investment topped [\$109 billion in 2024](https://www.cfr.org/article/china-united-states-and-ai-race)—over 12 times China's figure. The US maintains roughly 4,049 data centers versus China's 379, representing the [largest single advantage](https://www.rand.org/pubs/commentary/2025/05/chinas-ai-models-are-closing-the-gap-but-americas-real.html) the US enjoys. Yet China leads in deployment: it installed approximately 295,000 industrial robots in 2024 alone—more than the rest of the world combined—and accounts for 69.7% of all AI patents.
+
+## Capability Gap Estimates (2024-2025)
+
+The following table synthesizes publicly available data on relative AI capabilities across actor categories. Estimates draw from benchmark performance, investment levels, and expert assessments.
+
+| Actor Category | Capability vs Frontier | Trend | Key Evidence | Source |
+|----------------|----------------------|-------|--------------|--------|
+| **US Frontier Labs** | 100% (reference) | Stable | GPT-4.5, Claude 3.5, Gemini 2.0 define frontier | Industry consensus |
+| **Chinese Labs (aggregate)** | 98.3% | Rapidly closing | Gap narrowed from 9.26% to 1.70% (Jan 2024 - Feb 2025) | [Recorded Future](https://www.recordedfuture.com/research/measuring-the-us-china-ai-gap) |
+| **DeepSeek specifically** | ~100% on benchmarks | Matched frontier | R1 matched o1 at \$1.6M training cost; gold medal at IMO 2025 | [CSIS](https://www.csis.org/analysis/deepseek-huawei-export-controls-and-future-us-china-ai-race) |
+| **Open-Source (Llama, Qwen)** | 98.3% | Rapidly closing | Gap narrowed from 8.04% to 1.70% on Chatbot Arena | [State of Open-Source AI](https://www.red-line.ai/p/state-of-open-source-ai-2025) |
+| **Malicious Actor Access** | ~40-60% | Increasing | Access via open-source, jailbreaks, or theft | Expert estimate |
+
+### Investment and Infrastructure Asymmetries
+
+| Dimension | United States | China | Ratio | Implications |
+|-----------|--------------|-------|-------|--------------|
+| Private AI Investment (2024) | \$109 billion | ~\$1 billion | **12:1** | US leads funding despite capability parity |
+| Data Centers | 4,049 | 379 | **11:1** | Largest structural US advantage |
+| New Data Center Capacity (2024) | 5.8 GW | Lower | — | Continued infrastructure expansion |
+| Industrial Robot Installations (2024) | 34,000 | 295,000 | **1:9** | China leads deployment/application |
+| AI Patents (2023) | 13% of global | 69.7% of global | **1:5** | China dominates IP filings |
+| AI Research Citations (2023) | 13% of global | 22.6% of global | **1:2** | China leads academic output |
+
+*Sources: [CFR](https://www.cfr.org/article/china-united-states-and-ai-race), [RAND](https://www.rand.org/pubs/commentary/2025/05/chinas-ai-models-are-closing-the-gap-but-americas-real.html), [Stanford HAI](https://tecspectrum.com/happenings/china-ai-vs-us-2024-stanford-report/)*
 
 ## Key Dynamics
 
-1. **Competition intensity → Safety shortcuts → Misalignment risk**
-2. **Transparency → Better coordination → Reduced racing**
-3. **First-mover advantage → Winner-take-all → Reduced caution**
-4. **Democratic oversight → Deployment delays → Capability gaps → Security vulnerability**
-5. **Open-source → Diffusion → Malicious access → Misuse risk**
+The following diagram illustrates how actor competition dynamics flow through to risk outcomes:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Actors["Actor Competition"]
+        USL[US Frontier Labs]
+        CNL[Chinese Labs]
+        OSS[Open-Source]
+        MAL[Malicious Actors]
+    end
+
+    subgraph Dynamics["Competitive Pressures"]
+        RACE[Racing Dynamics]
+        DIFF[Capability Diffusion]
+        SAFE[Safety Investment]
+    end
+
+    subgraph Outcomes["Risk Pathways"]
+        SING[Unaligned Singleton]
+        MULT[Multi-Agent Conflict]
+        AUTH[Authoritarian Lock-in]
+        MISUSE[Catastrophic Misuse]
+    end
+
+    USL -->|competes with| CNL
+    CNL -->|closes gap| RACE
+    USL -->|pressure to lead| RACE
+
+    OSS -->|enables access| DIFF
+    DIFF -->|reaches| MAL
+
+    RACE -->|reduces| SAFE
+    SAFE -->|insufficient| SING
+
+    CNL -->|if wins| AUTH
+    MAL -->|enables| MISUSE
+    RACE -->|increases| MULT
+
+    style USL fill:#e6f3ff
+    style CNL fill:#ffe6e6
+    style OSS fill:#e6ffe6
+    style MAL fill:#ffcccc
+    style SING fill:#ffdddd
+    style MULT fill:#ffdddd
+    style AUTH fill:#ffdddd
+    style MISUSE fill:#ffdddd
+`} />
+
+The key mechanisms are:
+
+1. **Competition intensity → Safety shortcuts → Misalignment risk**: As US-China competition intensifies (currently 0.75 on normalized scale), labs face pressure to accelerate timelines, potentially cutting safety corners.
+
+2. **Capability diffusion → Malicious access → Misuse risk**: Open-source releases (now within 1.70% of frontier) enable rapid proliferation to actors who may lack safety constraints or beneficial intent.
+
+3. **First-mover advantage → Winner-take-all → Reduced caution**: If decisive strategic advantage exists for first-mover, actors rationally accept higher alignment risk to capture it.
+
+4. **Democratic oversight → Deployment delays → Capability gaps**: Strong oversight in democratic nations may create windows where authoritarian actors gain advantages, creating perverse incentives against regulation.
+
+5. **Transparency → Better coordination → Reduced racing**: Conversely, capability transparency and safety research sharing (currently ~0.6 openness) can reduce competitive pressure.
 
 ## Risk Pathways
 
@@ -468,7 +552,22 @@ The multi-actor landscape determines whether AI development is coordinated or co
 | GPT-5 class (projected) | 2025 | 2026-2027 | 2027-2028 | 2028-2030 |
 | Autonomous agents (dangerous) | 2025-2026 | 2026-2027 | 2027-2028 | 2028-2029 |
 
-**Key Finding:** Open-source lag is shrinking from ~18 months to ~12 months. Malicious actor access lag remains 2-3 years but is highly uncertain.
+**Key Finding:** The open-source lag has collapsed. As of late 2025, the center of gravity for open-weight models has [shifted toward China](https://www.red-line.ai/p/state-of-open-source-ai-2025), with DeepSeek and Qwen becoming household names. US firms released fewer open-weight models citing commercial and safety constraints, while Chinese labs treated open-weight leadership as a deliberate catch-up strategy. Meta—long a champion of frontier open models—has [delayed release of Llama Behemoth](https://www.cnbc.com/2025/12/09/meta-avocado-ai-strategy-issues.html) and suggested it may keep future "superintelligence" models behind paywalls.
+
+### First-Mover Advantage: Evidence Assessment
+
+The model's risk estimates depend critically on the magnitude of first-mover advantage. Strong first-mover advantages create racing incentives; weak ones reduce them. Current evidence suggests first-mover advantages are significant but not overwhelming:
+
+| Evidence Type | Finding | Implication for FMA |
+|--------------|---------|---------------------|
+| Historical analysis | First movers have 47% failure rate; only 11% become market leaders ([Golder & Tellis](https://firstmovers.ai/first-mover/)) | **Weak FMA** |
+| AI competitive landscape | 2,011 companies in 2024 ML/AI landscape, 578 new entrants since 2023 | **Weak FMA** |
+| Model replication | 11 different developers globally achieved GPT-4-level models in 2024 | **Weak FMA** |
+| Cloud market | AWS and Azure trading leadership position; "more than one winner" possible | **Moderate FMA** |
+| Network effects | AI systems less network-effect-driven than social platforms | **Weak FMA** |
+| TAI-specific dynamics | Decisive strategic advantage at TAI level remains uncertain | **Unknown** |
+
+**Key insight:** Evidence from the [Abundance Institute](https://abundance.institute/articles/vibrant-AI-competitive-landscape) suggests "no signs of winner-take-all dynamics" in the current AI ecosystem. However, TAI (transformative AI) may differ qualitatively if it enables rapid capability improvements or strategic advantages not available to followers. The model's 0.7 first-mover advantage estimate may be too high based on current evidence, but TAI-level dynamics remain highly uncertain.
 
 ### Resource Implications
 
@@ -488,3 +587,40 @@ Understanding actor landscape enables:
 | Safety can be coordination point | Voluntary standards viable | Regulation required | 35% |
 | China is engageable on safety | Global coordination possible | Bifurcated governance | 30% |
 | Diffusion to malicious actors is slow | Window for governance | Proliferation dominates | 50% |
+
+### Multipolar vs Unipolar Governance Considerations
+
+A crucial variable in this model is whether AI development converges toward **unipolar** (single dominant actor or coalition) or **multipolar** (distributed power among multiple actors) outcomes. Each presents distinct risk profiles:
+
+| Governance Structure | Key Risks | Key Advantages |
+|---------------------|-----------|----------------|
+| **Unipolar (single dominant actor)** | Value lock-in, institutional stagnation, internal corruption, single points of failure | Coordination easier, racing reduced, unified safety standards |
+| **Multipolar (distributed power)** | Unchecked proliferation, system instability, coordination failures, racing dynamics | Diversity of approaches, no single point of failure, competitive pressure for safety |
+
+Current research from [AI Impacts](https://aiimpacts.org/multipolar-research-projects/) identifies key research questions: What "considerations might tip us between multipolar and unipolar scenarios"? What "risks [are] distinctive to a multipolar scenario"? The [CO/AI analysis](https://getcoai.com/news/ai-multipolarity-gains-importance-in-global-tech-landscape/) notes that while current AI safety discussions often default to unipolar frameworks, "exploring decentralized governance structures could address key risks like value lock-in and institutional stagnation."
+
+**Current assessment:** The model estimates 55% probability of continued multipolar development, with the US-China bifurcation appearing increasingly stable. Geopolitical tensions, divergent regulatory approaches, and the collapse of open-source lags all point toward a world with multiple competing AI powers rather than a single dominant actor.
+
+## Limitations
+
+1. **Capability estimates rapidly outdating**: The 2024-2025 data showing near-parity may not persist; breakthrough capabilities could restore gaps.
+
+2. **Safety investment data opaque**: Lab safety budgets are not publicly disclosed; estimates are inferential.
+
+3. **TAI dynamics uncertain**: Current competitive patterns may not predict TAI-level dynamics where decisive advantages could differ fundamentally.
+
+4. **Geopolitical volatility**: US-China relations, export control effectiveness, and regulatory trajectories are highly uncertain.
+
+5. **Malicious actor access hard to estimate**: Underground markets and state-sponsored theft create significant uncertainty in capability diffusion.
+
+## Sources
+
+- [Recorded Future: US-China AI Gap Analysis (2025)](https://www.recordedfuture.com/research/measuring-the-us-china-ai-gap)
+- [RAND: China's AI Models Closing the Gap (2025)](https://www.rand.org/pubs/commentary/2025/05/chinas-ai-models-are-closing-the-gap-but-americas-real.html)
+- [Council on Foreign Relations: China, the United States, and the AI Race](https://www.cfr.org/article/china-united-states-and-ai-race)
+- [Boston University: DeepSeek and AI Frontier (2025)](https://www.bu.edu/articles/2025/does-chinas-deepseek-represent-a-new-frontier-in-ai/)
+- [State of Open-Source AI 2025](https://www.red-line.ai/p/state-of-open-source-ai-2025)
+- [CSIS: DeepSeek, Huawei, and US-China AI Race](https://www.csis.org/analysis/deepseek-huawei-export-controls-and-future-us-china-ai-race)
+- [Abundance Institute: AI Competitive Landscape](https://abundance.institute/articles/vibrant-AI-competitive-landscape)
+- [AI Impacts: Multipolar Research Projects](https://aiimpacts.org/multipolar-research-projects/)
+- [Frontier Model Forum: Progress Update 2024](https://www.frontiermodelforum.org/updates/progress-update-advancing-frontier-ai-safety-in-2024-and-beyond/)

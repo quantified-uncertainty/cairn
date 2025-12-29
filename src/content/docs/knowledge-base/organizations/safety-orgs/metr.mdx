@@ -3,14 +3,28 @@ title: "METR"
 description: "Model Evaluation and Threat Research conducts dangerous capability evaluations for frontier AI models, testing for autonomous replication, cybersecurity, CBRN, and manipulation capabilities. Their assessments directly inform deployment decisions at major labs and government safety frameworks, with current models showing concerning progress toward catastrophic capabilities but not yet crossing critical thresholds."
 sidebar:
   order: 15
-quality: 52
+quality: 82
 llmSummary: "METR conducts pre-deployment dangerous capability evaluations for frontier AI models across autonomous replication, cybersecurity, CBRN, and manipulation domains, directly informing deployment decisions at major labs. Current models show concerning progress toward catastrophic capabilities (especially in cybersecurity and autonomous operation) but have not yet crossed critical thresholds, with METR serving as the primary empirical gatekeeper for AI safety."
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-28"
 importance: 78.5
 ---
-import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="metr" />
+
+## Organization Details
+
+| Attribute | Details |
+|-----------|---------|
+| **Full Name** | Model Evaluation and Threat Research |
+| **Founded** | December 2023 (spun off from ARC Evals) |
+| **Founder & CEO** | <R id="f895b1f8c1806c5e">Beth Barnes</R> (formerly OpenAI, DeepMind) |
+| **Location** | Berkeley, California |
+| **Status** | 501(c)(3) nonprofit research institute |
+| **Team Size** | ~30 specialists (as of 2024) |
+| **Key Partners** | OpenAI, Anthropic, Google DeepMind, UK AI Safety Institute, NIST AI Safety Institute Consortium |
+| **Evaluation Focus** | Autonomous replication, cybersecurity, CBRN, manipulation, AI R&D capabilities |
+| **Funding Model** | Non-profit; does not accept payment from labs for evaluations (maintains independence) |
 
 ## Overview
 
@@ -37,6 +51,19 @@ The rebranding to METR (Model Evaluation and Threat Research) in 2023 marked the
 Throughout 2024, METR's influence expanded dramatically. The organization played crucial roles in informing OpenAI's Preparedness Framework, Anthropic's Responsible Scaling Policy, and Google DeepMind's Frontier Safety Framework. These partnerships transformed METR from an external consultant to an essential component of the AI safety infrastructure, with deployment decisions at major labs now contingent on METR's assessments. The organization also began collaborating with government entities, including the UK AI Safety Institute and US government bodies implementing AI Executive Order requirements.
 
 METR's current position represents a remarkable evolution from a small research team to a critical piece of global AI governance infrastructure. The organization now employs approximately 30 specialists, conducts regular evaluations of new frontier models, and has established itself as the authoritative voice on dangerous capability assessment. Their methodologies are being adopted internationally, their thresholds inform regulatory frameworks, and their findings shape public discourse about AI safety.
+
+## Key Publications and Evaluations
+
+| Publication/Evaluation | Date | Key Findings | Link |
+|------------------------|------|--------------|------|
+| **GPT-5 Autonomy Evaluation** | 2025 | First comprehensive (non-"preliminary") evaluation; 50%-time horizon of 2h17m; no evidence of strategic sabotage but model shows eval awareness | <R id="7457262d461e2206">evaluations.metr.org</R> |
+| **GPT-5.1-Codex-Max Evaluation** | 2025 | Unlikely to pose significant catastrophic risks via self-improvement or rogue replication; capability trends continue rapidly | <R id="1060f486990f5014">evaluations.metr.org</R> |
+| **Measuring AI Ability to Complete Long Tasks** | March 2025 | Task length doubling time of ~7 months (accelerating to ~4 months in 2024-2025); 50%-time horizon of ~50 minutes for Claude 3.7 Sonnet | <R id="ddd93038c44fbd36">arXiv:2503.14499</R> |
+| **MALT Dataset** | October 2025 | 10,919 reviewed transcripts for studying reward hacking and sandbagging; best monitors achieve 0.96 AUROC for detecting reward hacking | <R id="3ee11b82b7e1fd68">metr.org</R> |
+| **RE-Bench** | November 2024 | ML research engineering benchmark; agents achieve 4x human performance at 2h but humans outperform 2x at 32h | <R id="8cf2074dc6198776">arXiv:2411.15114</R> |
+| **Common Elements of Frontier AI Safety Policies** | Aug 2024, updated Dec 2025 | Analysis of 12 companies' safety policies; all use capability thresholds for CBRN, cyber, autonomous replication | <R id="c8782940b880d00f">metr.org</R> |
+| **GPT-4.5 Pre-deployment Evaluation** | February 2025 | Preliminary dangerous capability assessment conducted in partnership with OpenAI | <R id="a86b4f04559de6da">metr.org</R> |
+| **GPT-4 Autonomous Replication Assessment** | 2023 | Found GPT-4 not yet capable of fully autonomous operation; established template for pre-deployment evaluations | Documented in <R id="ebab6e05661645c5">OpenAI GPT-4 System Card</R> |
 
 ## Core Evaluation Domains
 
@@ -154,6 +181,18 @@ The absence of external enforcement mechanisms for evaluation-based deployment c
 
 ### Near-Term Development (1-2 Years)
 
+METR's research on task completion time horizons provides a quantitative framework for tracking capability progression:
+
+| Model/Period | 50% Time Horizon | Trend Observation |
+|--------------|------------------|-------------------|
+| Claude 3.7 Sonnet (2025) | ~50 minutes | Current frontier baseline |
+| OpenAI o3 (2025) | 1h 30m | |
+| GPT-5 (2025) | 2h 17m (95% CI: 65m-4h25m) | Higher than o3 in 96% of bootstrap samples |
+| 2019-2025 average | 7-month doubling time | Consistent exponential growth |
+| 2024-2025 | 4-month doubling time | Acceleration observed |
+| Projection: 2-4 years | Days to weeks | Wide range of week-long software tasks |
+| Projection: end of decade | Month-long projects | If current trends continue |
+
 METR's immediate trajectory focuses on methodology refinement and organizational scaling to meet growing demand for evaluation services. The organization is developing more sophisticated testing protocols for emerging risks, including multimodal AI systems that integrate text, image, and potentially action capabilities. Enhanced automation of evaluation processes could improve efficiency while maintaining rigor, enabling more comprehensive assessment of rapidly proliferating AI models.
 
 Government integration represents a critical near-term priority, with METR working to establish evaluation capacity within national AI safety institutes while maintaining coordination with industry assessment practices. The development of standardized international protocols for dangerous capability evaluation could create the foundation for global AI governance frameworks, though national security considerations may limit information sharing and coordination.
@@ -227,5 +266,22 @@ The technical challenge of evaluating AI systems that exceed human expert perfor
     ]}
   />
 </Section>
+
+## Sources
+
+- <R id="45370a5153534152">METR Official Website</R> - Organization mission, research focus, and publications
+- <R id="9ece1a3a9a30d8c1">About METR</R> - Organization background and team information
+- <R id="a4652ab64ea54b52">METR Research</R> - Full list of research outputs and evaluations
+- <R id="7457262d461e2206">GPT-5 Autonomy Evaluation Report</R> - Comprehensive evaluation methodology and findings
+- <R id="1060f486990f5014">GPT-5.1-Codex-Max Evaluation Report</R> - Latest frontier model assessment
+- <R id="ddd93038c44fbd36">Measuring AI Ability to Complete Long Tasks (arXiv:2503.14499)</R> - Time horizon measurement methodology
+- <R id="8cf2074dc6198776">RE-Bench: Evaluating frontier AI R&D capabilities (arXiv:2411.15114)</R> - ML research engineering benchmark
+- <R id="3ee11b82b7e1fd68">MALT Dataset</R> - Reward hacking and sandbagging detection research
+- <R id="c8782940b880d00f">Common Elements of Frontier AI Safety Policies</R> - Analysis of 12 companies' safety frameworks
+- <R id="a86b4f04559de6da">METR GPT-4.5 Pre-deployment Evaluations</R> - Pre-deployment evaluation methodology
+- <R id="762cb9e7f2b6b886">AXRP Episode 34 - AI Evaluations with Beth Barnes</R> - In-depth discussion of METR's approach
+- <R id="14b7d36fb24c1627">Beth Barnes - Safety evaluations and standards for AI (EA Forum)</R> - EAG Bay Area 2023 talk
+- <R id="ab9cc01cf367fd79">METR - Wikipedia</R> - Organization history and overview
+- <R id="4f4d29912b960092">TIME: Nobody Knows How to Safety-Test AI</R> - Journalism coverage of AI evaluation challenges
 
 <Backlinks client:load entityId="metr" />

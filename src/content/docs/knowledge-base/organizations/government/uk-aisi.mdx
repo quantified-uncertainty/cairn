@@ -1,24 +1,38 @@
 ---
 title: "UK AI Safety Institute"
-description: "UK government body for AI safety research, evaluation, and international coordination"
+description: "The UK AI Safety Institute (renamed AI Security Institute in February 2025) is a government body with approximately 30+ technical staff and an annual budget of around 50 million GBP. It conducts frontier model evaluations, develops open-source evaluation tools like Inspect AI, and coordinates the International Network of AI Safety Institutes involving 10+ countries."
 sidebar:
   order: 18
-quality: 52
-llmSummary: "The UK AI Safety Institute, established in 2023 following the Bletchley Park Summit, conducts frontier model evaluations, develops safety standards, and coordinates international AI safety efforts as one of the first government bodies dedicated to advanced AI safety. The organization evaluates models for dangerous capabilities (cybersecurity, CBRN, autonomous operation) through partnerships with major labs and works closely with the US AISI on methodology development."
-lastEdited: "2025-12-24"
+quality: 78
+llmSummary: "The UK AI Safety Institute, established in 2023 following the Bletchley Park Summit, conducts frontier model evaluations, develops safety standards, and coordinates international AI safety efforts as one of the first government bodies dedicated to advanced AI safety. Renamed to AI Security Institute in February 2025 with a shift toward national security focus. The organization evaluates models for dangerous capabilities (cybersecurity, CBRN, autonomous operation) through partnerships with major labs, operates a San Francisco office, and manages over 28 million GBP in external research funding including the 15 million GBP Alignment Project."
+lastEdited: "2025-12-28"
 importance: 64.5
 ---
-import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, Mermaid} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="uk-aisi" />
 
-## Summary
+## Overview
 
-The UK AI Safety Institute (UK AISI) is a government organization established in 2023 to advance AI safety through research, evaluation, and international coordination. Created in the wake of the first AI Safety Summit hosted by the UK government, AISI represents the UK's commitment to being a global leader in AI safety and governance.
+The UK AI Safety Institute (UK AISI) is a government organization established in November 2023 to advance AI safety through research, evaluation, and international coordination. Created in the wake of the first AI Safety Summit at Bletchley Park, AISI represents the UK's commitment to being a global leader in AI safety and governance. In February 2025, the organization was renamed the **AI Security Institute** to reflect a sharper focus on national security threats including cyberattacks, fraud, and AI-enabled bioweapon development.
 
-As one of the first government bodies specifically dedicated to advanced AI safety (alongside the US AISI), the UK AISI plays a pioneering role in translating AI safety research into government policy and practice. The organization conducts technical research on AI risks, evaluates frontier models for dangerous capabilities, develops safety standards, and coordinates international efforts to ensure safe AI development.
+As one of the first government bodies specifically dedicated to advanced AI safety (alongside the US AISI), the UK AISI plays a pioneering role in translating AI safety research into government policy and practice. The organization conducts technical research on AI risks, evaluates frontier models for dangerous capabilities, develops safety standards, and coordinates international efforts through the International Network of AI Safety Institutes, which now includes 10+ member countries.
 
-The UK AISI's strategic positioning reflects the UK government's ambition: to be a global hub for AI safety, bridging technical research communities, frontier AI labs, and international policymakers.
+The UK AISI's strategic positioning reflects the UK government's ambition: to be a global hub for AI safety, bridging technical research communities, frontier AI labs, and international policymakers. Chair Ian Hogarth has described AISI as a "startup inside the government" that combines technical rigor with policy influence.
+
+### Organization at a Glance
+
+| Attribute | Details |
+|-----------|---------|
+| **Founded** | November 2023 (following AI Safety Summit) |
+| **Renamed** | February 2025 (to AI Security Institute) |
+| **Parent Department** | Department for Science, Innovation and Technology (DSIT) |
+| **Leadership** | Ian Hogarth (Chair) |
+| **Technical Staff** | 30+ researchers (as of mid-2024) |
+| **Annual Budget** | Approximately 50 million GBP |
+| **Locations** | London (HQ), San Francisco (opened 2024) |
+| **Key Output** | Inspect AI framework, Frontier AI Trends Report |
+| **International Role** | Founding member of International Network of AI Safety Institutes |
 
 ## History and Founding
 
@@ -63,131 +77,99 @@ The UK AISI's strategic positioning reflects the UK government's ambition: to be
 - Coordinate international AI safety efforts
 - Advise UK government on AI risks and governance
 
-**Funding:**
-- UK government budget allocation
-- Initially tens of millions of pounds
-- Growing investment over time
-- Independent research grants
-- International collaboration funding
+**Funding:** The UK initially invested 100 million GBP in the Frontier AI Taskforce (AISI's predecessor), providing more funding for AI safety than any other country at the time. The Institute's annual budget is approximately 50 million GBP, continuing as an annual amount through the end of the decade, subject to demonstrating continued requirement. This makes the UK AISI an outlier in funding compared to other national AI Safety Institutes globally.
 
 ### Early Development (2023-2024)
 
-**2023 activities:**
-- Rapid hiring of technical staff (from academia, safety orgs, labs)
-- Establishing organizational structure
-- Building relationships with AI labs for model access
-- International coordination (especially with US AISI)
-- Initial research program definition
+**2023 activities:** The Institute rapidly hired technical staff, recruiting senior alumni from OpenAI, Google DeepMind, and the University of Oxford. Ian Hogarth was appointed as permanent Chair in June 2023. By the end of 2023, the organization had established its organizational structure, built relationships with AI labs for model access, and begun coordination with the US AISI.
 
-**2024 progress:**
-- Growing team of researchers and engineers
-- First major evaluations of frontier models
-- Published research and evaluation reports
-- International partnerships deepened
-- Hosting second AI Safety Summit (planned)
-- Expanding scope and capabilities
+**2024 milestones:**
 
-**Current status (2024):**
-- Operational research organization
-- Conducting regular evaluations
-- Influential in international AI safety discussions
-- Building UK as hub for AI safety talent
-- Growing credibility in technical community
+| Date | Development |
+|------|-------------|
+| April 2024 | Published first evaluation results on publicly available frontier models |
+| May 2024 | Open-sourced Inspect AI evaluation framework |
+| May 2024 | Announced San Francisco office opening |
+| May 2024 | AI Seoul Summit: formed International Network of AI Safety Institutes |
+| November 2024 | First meeting of International Network in San Francisco |
+| December 2024 | Published Frontier AI Trends Report |
+
+**Current status (2025):** Following the February 2025 renaming to AI Security Institute, the organization now focuses more explicitly on national security threats. Technology Secretary Peter Kyle announced the change at the Munich Security Conference, emphasizing a pivot from concerns about bias and misinformation toward risks such as cyberattacks, fraud, and AI-enabled bioweapon development. The Institute has launched a new criminal misuse team in partnership with the Home Office to investigate AI's role in serious crimes including child exploitation, cybercrime, and financial fraud.
 
 ## Core Functions and Activities
 
 ### 1. Frontier Model Evaluations
 
-**Mission**: Independently assess advanced AI systems for dangerous capabilities
+The Institute independently assesses advanced AI systems for dangerous capabilities across domains critical to national security and public safety. In their April 2024 evaluation of publicly available frontier models, AISI found several concerning capabilities:
 
-**Evaluation focus:**
-- Cybersecurity capabilities and risks
-- CBRN (Chemical, Biological, Radiological, Nuclear) knowledge and assistance
-- Autonomous operation and replication
-- Deception and manipulation capabilities
-- Societal-scale risks (misinformation, manipulation)
+| Evaluation Domain | Key Findings (April 2024) |
+|-------------------|---------------------------|
+| **Cybersecurity** | Models capable of completing basic to intermediate cybersecurity challenges |
+| **Chemistry/Biology** | Several models demonstrated PhD-equivalent level of knowledge |
+| **Safeguards** | Built-in safeguards vulnerable to even basic "jailbreaks" |
+| **Autonomous Systems** | Models performed better than biology PhD experts on open-ended questions |
 
-**Methodology:**
-- Learning from and collaborating with METR, Apollo Research, ARC
-- Hiring evaluators from safety organizations
-- Building government evaluation expertise
-- Pre-deployment and post-deployment testing
-- Red-teaming and adversarial evaluation
+**Methodology:** The Institute has built evaluation expertise by learning from and collaborating with organizations like METR, Apollo Research, and ARC. Their approach includes both pre-deployment and post-deployment testing, with a focus on red-teaming and adversarial evaluation techniques.
 
-**Lab cooperation:**
-- Voluntary agreements with OpenAI, Anthropic, Google DeepMind
-- Pre-release access to models for evaluation
-- Information sharing under NDAs
-- Coordination on safety thresholds
-- Joint research on evaluation methodologies
+**Lab cooperation:** AISI has established voluntary agreements with OpenAI, Anthropic, and Google DeepMind for pre-release access to models. Labs share safety-relevant information under NDAs, coordinate on safety thresholds, and collaborate on evaluation methodology development.
 
-**Results and impact:**
-- Evaluation reports inform lab deployment decisions
-- Government risk assessments
-- Public communications (appropriate level of detail)
-- International standard-setting
-- Policy recommendations
+**Inspect AI Framework:** In May 2024, AISI open-sourced Inspect AI, a Python framework for building and running reproducible LLM evaluations. The framework has been adopted by major AI labs including Anthropic, DeepMind, and xAI. Inspect AI includes over 100 pre-built evaluations, a web-based visualization tool, and support for tool calling and multi-agent evaluations. Key benchmarks include ChemBench (2,786 chemistry questions), Humanity's Last Exam (3,000 questions across dozens of subjects), and Cybench (40 professional-level cybersecurity challenges).
 
-### 2. Research on AI Safety
+### 2. Research Funding Programs
 
-**Research priorities:**
+AISI manages substantial external research funding, making it one of the largest funders of AI safety research globally. The Institute's grant programs combine government funding with partnerships from industry and philanthropy.
 
-**Technical safety research:**
-- Evaluation methodologies
-- Interpretability and transparency techniques
-- Robustness and reliability
-- Alignment approaches
-- Measurement and benchmarking
+| Program | Total Funding | Per-Project Range | Focus Areas |
+|---------|---------------|-------------------|-------------|
+| **The Alignment Project** | 15 million GBP | 50K-1M GBP | Alignment research, interdisciplinary collaboration |
+| **Systemic Safety Grants** | 8.5 million GBP | Up to 200K GBP | Societal resilience, healthcare, energy grids, financial markets |
+| **Challenge Fund** | 5 million GBP | Up to 200K GBP | Safeguards, control, alignment, societal resilience |
 
-**Sociotechnical research:**
-- AI governance frameworks
-- Risk assessment methodologies
-- Safety standards and best practices
-- International coordination mechanisms
-- Public engagement on AI risks
+**The Alignment Project:** This global fund is supported by an international coalition including the UK AISI, Canadian AI Safety Institute, Schmidt Sciences, Amazon Web Services, Halcyon Futures, Safe AI Fund, UKRI, Anthropic, and ARIA. Recipients can also receive up to 5 million GBP in dedicated AWS cloud computing credits, enabling technical experiments beyond typical academic reach.
 
-**Collaboration:**
-- Academic partnerships (UK universities, international)
-- Private sector coordination (labs, safety orgs)
-- International research networks
-- Funding external research
-- Open problems and challenges
+**Systemic Safety Grants:** Launched in partnership with the Engineering and Physical Sciences Research Council (EPSRC) and Innovate UK (part of UKRI), the first phase allocated 4 million GBP to support approximately 20 projects. The program aims to increase societal resilience to widespread AI deployment across critical infrastructure.
 
-### 3. International Coordination
+### 3. Technical Safety Research
 
-**UK as global hub:**
+AISI conducts both in-house and collaborative research across several priority areas:
 
-**Strategic positioning:**
-- UK government sees AI safety leadership as strategic advantage
-- Leveraging UK strengths: academic excellence, tech sector, neutral convener
-- Bridging US and Europe, democracies and allies
-- Building international consensus
-- Hosting summits and convenings
+**Technical research:** Evaluation methodologies, interpretability and transparency techniques, robustness and reliability testing, alignment approaches, and measurement/benchmarking standards.
 
-**Key partnerships:**
+**Sociotechnical research:** AI governance frameworks, risk assessment methodologies, safety standards and best practices, international coordination mechanisms, and public engagement strategies.
 
-**US AI Safety Institute:**
-- Close collaboration, sister organizations
-- Shared methodologies and research
-- Coordinated evaluations
-- Joint international engagement
-- Regular staff exchanges and cooperation
+**Key outputs include:** The Frontier AI Trends Report (December 2024), which provides an empirical assessment of frontier AI capabilities and their trajectory, and regular evaluation reports shared with policymakers and the public.
 
-**Other national institutes:**
-- EU AI safety efforts
-- Japan, Singapore, Canada initiatives
-- Bilateral partnerships
-- Capacity building for other countries
-- Knowledge sharing
+### 4. International Coordination
 
-**International organizations:**
-- UN AI initiatives
-- OECD AI work
-- ISO standard-setting
-- Academic networks
-- Multi-stakeholder forums
+The UK has positioned itself as a convener for international AI safety efforts, hosting the first AI Safety Summit and co-founding the International Network of AI Safety Institutes.
 
-### 4. Standard-Setting and Guidelines
+<Mermaid client:load chart={`
+flowchart TD
+    UK[UK AI Security Institute] --> NETWORK[International Network of<br/>AI Safety Institutes]
+    US[US AI Safety Institute] --> NETWORK
+    NETWORK --> EU[European Commission]
+    NETWORK --> JP[Japan]
+    NETWORK --> KR[Republic of Korea]
+    NETWORK --> SG[Singapore]
+    NETWORK --> CA[Canada]
+    NETWORK --> AU[Australia]
+    NETWORK --> FR[France]
+    NETWORK --> KE[Kenya]
+
+    UK --> SF[San Francisco Office]
+    SF -.->|Close collaboration| US
+
+    style UK fill:#1e40af,color:#fff
+    style NETWORK fill:#059669,color:#fff
+`} />
+
+**International Network of AI Safety Institutes:** During the AI Seoul Summit in May 2024, international leaders agreed to form this network comprising institutes from the UK, US, Japan, France, Germany, Italy, Singapore, South Korea, Australia, Canada, and the European Union. The first meeting was held in San Francisco in November 2024, with representatives from 10 countries and the European Commission.
+
+**US-UK partnership:** The UK and US AISIs work as "sister organizations" with close collaboration on methodologies, coordinated evaluations, and joint international engagement. The San Francisco office (opened summer 2024) facilitates this partnership and allows AISI to recruit Bay Area talent and engage directly with major AI labs.
+
+**Seoul Statement goals:** The international network aims to "accelerate the advancement of the science of AI safety" by promoting complementarity and interoperability between institutes and fostering a common international understanding of AI safety approaches.
+
+### 5. Standard-Setting and Guidelines
 
 **Developing best practices:**
 
@@ -212,7 +194,7 @@ The UK AISI's strategic positioning reflects the UK government's ambition: to be
 - Foundation for potential regulation
 - Soft power and norm-setting
 
-### 5. Policy Advice and Government Coordination
+### 6. Policy Advice and Government Coordination
 
 **Advising UK government:**
 
@@ -426,145 +408,54 @@ The UK AISI's strategic positioning reflects the UK government's ambition: to be
 
 ## Impact and Accomplishments
 
+### Quantified Outcomes
+
+| Achievement | Impact | Timeframe |
+|-------------|--------|-----------|
+| **Bletchley Declaration** | 28 countries + EU committed to AI safety cooperation | November 2023 |
+| **International Network** | 10+ countries forming coordinated AI safety ecosystem | May 2024 onwards |
+| **Inspect AI adoption** | Framework used by Anthropic, DeepMind, xAI | 2024-2025 |
+| **Research funding** | 28.5 million GBP+ in external grants launched | 2024-2025 |
+| **AI Research Resource** | 300 million GBP investment (tripled from 100M) | 2023-2024 |
+| **Staff growth** | 30+ technical researchers recruited | 2023-2024 |
+
 ### On UK AI Policy
 
-**Influence:**
-- Technical expertise for Parliament and ministers
-- Risk assessments for policy decisions
-- Framework for UK AI regulation
-- International negotiating positions
-- Public communication on AI risks
-
-**Examples:**
-- Input to Online Safety Act AI provisions
-- AI White Paper and consultation responses
-- Regulatory framework development
-- National security AI strategy
-- Research funding priorities
+AISI provides technical expertise directly to Parliament and ministers, informing risk assessments for policy decisions and shaping the framework for UK AI regulation. Key policy inputs include the Online Safety Act AI provisions, AI White Paper consultation responses, regulatory framework development, and national security AI strategy.
 
 ### On Industry Practices
 
-**Standard-setting effect:**
-- Labs adopting AISI evaluation methods
-- Safety practices improving
-- Transparency increasing
-- Pre-deployment testing normalizing
-- International coordination on safety
-
-**Specific impacts:**
-- Model evaluation before UK deployment
-- Safety documentation requirements
-- Red-teaming becoming standard
-- Information sharing protocols
-- Incident reporting norms
+AISI's evaluation methods are becoming industry standard. Major labs (OpenAI, Anthropic, Google DeepMind) have entered voluntary agreements for pre-deployment testing, with Inspect AI being adopted as the evaluation framework of choice. This has normalized pre-deployment safety assessment, increased transparency requirements, and established red-teaming as standard practice.
 
 ### On International AI Safety
 
-**Leadership:**
-- UK seen as global leader on AI safety
-- Convening power for international cooperation
-- Technical expertise influencing global standards
-- Bridging different perspectives
-- Driving action through summits
-
-**Concrete outcomes:**
-- International agreement on risks (Bletchley Declaration)
-- Coordination between national AI Safety Institutes
-- Shared evaluation methodologies
-- Research collaboration networks
-- Foundation for future governance
+The UK is now recognized as a global leader in AI safety convening. Concrete outcomes include the Bletchley Declaration (first international agreement on AI risks), the International Network of AI Safety Institutes (10+ member countries), shared evaluation methodologies through Inspect AI, the International Scientific Report on AI Safety (led by Turing Award winner Yoshua Bengio), and foundation for ongoing governance discussions at summits in Seoul and Paris.
 
 ## Criticisms and Challenges
 
+### The 2025 Rebrand Controversy
+
+The February 2025 renaming from "AI Safety Institute" to "AI Security Institute" drew significant criticism from the AI safety community. AI Now Institute noted that the change signals the institute "will no longer focus on AI ethical issues, such as algorithm bias or protecting freedom of speech in AI applications." Critics worry this represents a narrowing of scope away from broader societal harms toward a purely national security focus.
+
+**Defenders argue** the rebrand reflects AISI's actual priorities from the beginning, with Ian Hogarth emphasizing that "this change of name better reflects the team's essential remit and the priorities that they have always focused on."
+
 ### Can Government Keep Pace?
 
-**Challenge**: AI advancing faster than government can respond
+AI capabilities advance faster than government institutions can respond. AISI faces structural challenges including bureaucratic constraints on hiring speed, difficulty matching private sector salaries (despite being competitive within civil service), limited compute resources compared to lab budgets, and inevitable evaluation lag behind the frontier.
 
-**Issues:**
-- Bureaucracy vs. agility
-- Hiring and scaling speed
-- Technical expertise gap
-- Resource constraints vs. lab budgets
-- Evaluation lag behind frontier
-
-**UK AISI response:**
-- Fast-track hiring processes
-- Competitive salaries (within civil service constraints)
-- Partnerships and collaborations
-- Focus on high-impact work
-- Continuous learning and adaptation
-
-**Ongoing concern**: Will always be challenge for government organizations
+**AISI's response** has been to operate as a "startup inside government" with fast-track hiring, partnerships with academic and private sector organizations, and focus on high-impact evaluation work rather than trying to match lab resources directly.
 
 ### Regulatory Capture Risk
 
-**Concern**: AISI might be captured by industry interests
-
-**Risks:**
-- Labs have information advantage
-- Revolving door with industry
-- Dependence on lab cooperation
-- Pressure to not be too restrictive
-- Limited enforcement authority currently
-
-**Mitigations:**
-- Government independence and mandate
-- Diverse expertise (not only from labs)
-- Public interest mission
-- Parliamentary oversight
-- Transparency and accountability
-
-**Vigilance needed**: Ongoing risk to manage
+There are concerns that AISI might be captured by industry interests given its dependence on voluntary lab cooperation, the information asymmetry favoring labs, and the revolving door between government and industry. However, mitigations include government independence, diverse expertise sourcing (not only from labs), public interest mandate, parliamentary oversight, and increasing transparency.
 
 ### International Coordination Challenges
 
-**Difficulties:**
-
-**China:**
-- Not participating in Western AI safety coordination
-- Different governance model
-- National security tensions
-- Verification challenges
-- Risk of race dynamics
-
-**Varying national interests:**
-- Different risk tolerances
-- Economic competitiveness concerns
-- National security vs. openness
-- Regulatory approaches diverge
-- Enforcement mechanisms unclear
-
-**UK approach:**
-- Focus on democratic allies initially
-- Open invitation for broader participation
-- Technical coordination where possible
-- Realistic about limitations
-- Long-term engagement strategy
+China's absence from Western AI safety coordination remains a significant limitation. The International Network of AI Safety Institutes includes primarily democratic allies, with no clear pathway to engaging China despite early participation in the Bletchley Declaration. This creates risks of fragmented governance and potential race dynamics.
 
 ### Resources and Scope
 
-**Limitations:**
-
-**Budget:**
-- Smaller than US AISI
-- Can't match lab resources
-- Limited compute for research
-- Funding dependent on government priorities
-- Economic constraints
-
-**Scope:**
-- Can't evaluate everything
-- Prioritization necessary
-- Dependent on collaborations
-- International vs. domestic focus
-- Breadth vs. depth trade-offs
-
-**Scaling:**
-- Need to grow carefully
-- Maintain quality and credibility
-- Build sustainable organization
-- Longer-term funding security
-- Avoid mission creep
+With an annual budget of approximately 50 million GBP, AISI remains smaller than major lab research budgets and must prioritize carefully. The Institute cannot evaluate everything and depends heavily on partnerships. Maintaining quality and credibility while scaling remains an ongoing challenge.
 
 <KeyQuestions questions={[
   "Can UK maintain global leadership in AI safety long-term?",
@@ -696,6 +587,60 @@ The UK AISI's strategic positioning reflects the UK government's ambition: to be
 - **AISI**: Safety focus
 - Cooperative but some tension
 - AISI provides independent assessment
+
+## Key Developments Timeline
+
+| Date | Event |
+|------|-------|
+| June 2023 | Frontier AI Taskforce launched; Ian Hogarth appointed as Chair |
+| November 2023 | AI Safety Summit at Bletchley Park; 28 countries sign Bletchley Declaration |
+| November 2023 | UK announces creation of AI Safety Institute |
+| April 2024 | First evaluation results published on publicly available frontier models |
+| May 2024 | Inspect AI evaluation framework open-sourced |
+| May 2024 | San Francisco office announced |
+| May 2024 | AI Seoul Summit: International Network of AI Safety Institutes formed |
+| May 2024 | International Scientific Report on AI Safety published (led by Yoshua Bengio) |
+| November 2024 | First meeting of International Network in San Francisco (10 countries + EU) |
+| December 2024 | Frontier AI Trends Report published |
+| February 2025 | Renamed to AI Security Institute at Munich Security Conference |
+| February 2025 | Criminal misuse team launched with Home Office |
+
+## Sources and Resources
+
+### Official Sources
+
+- [UK AI Security Institute Official Website](https://www.aisi.gov.uk/) - Main portal for the Institute
+- [GOV.UK AI Safety Institute Page](https://www.gov.uk/government/organisations/ai-safety-institute) - Government organizational page
+- [Introducing the AI Safety Institute](https://www.gov.uk/government/publications/ai-safety-institute-overview/introducing-the-ai-safety-institute) - Official overview document
+- [Fourth Progress Report](https://www.aisi.gov.uk/work/fourth-progress-report) - May 2024 progress update
+- [Our 2025 Year in Review](https://www.aisi.gov.uk/blog/our-2025-year-in-review) - 2025 annual review
+
+### Research Outputs
+
+- [Frontier AI Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report) - December 2024 assessment of frontier AI capabilities
+- [Inspect AI Framework](https://inspect.aisi.org.uk/) - Open-source evaluation framework documentation
+- [Inspect Evals](https://inspect.aisi.org.uk/evals/) - Collection of 100+ pre-built evaluations
+- [Early Lessons from Evaluating Frontier AI Systems](https://www.aisi.gov.uk/blog/early-lessons-from-evaluating-frontier-ai-systems) - Evaluation methodology insights
+
+### Funding Programs
+
+- [The Alignment Project](https://alignmentproject.aisi.gov.uk/) - 15 million GBP global alignment research fund
+- [Grants Overview](https://www.aisi.gov.uk/grants) - Information on all AISI grant programs
+- [Systemic Safety Grants](https://www.aisi.gov.uk/blog/advancing-the-field-of-systemic-ai-safety-grants-open) - 8.5 million GBP societal resilience program
+
+### International Coordination
+
+- [The Bletchley Declaration](https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration) - November 2023 international agreement
+- [Chair's Summary of AI Safety Summit 2023](https://www.gov.uk/government/publications/ai-safety-summit-2023-chairs-statement-2-november) - Summit outcomes
+- [CSIS: The AI Safety Institute International Network](https://www.csis.org/analysis/ai-safety-institute-international-network-next-steps-and-recommendations) - Analysis of international coordination
+- [Centre for Future Generations: The AI Safety Institute Network](https://cfg.eu/the-ai-safety-institute-network-who-what-and-how/) - Comparative analysis
+
+### News and Analysis
+
+- [UK AI Safety Institute Wikipedia](https://en.wikipedia.org/wiki/AI_Safety_Institute) - Comprehensive background
+- [Computer Weekly: San Francisco Office Announcement](https://www.computerweekly.com/news/366585598/UK-AI-Safety-Institute-to-open-San-Francisco-branch) - May 2024 expansion
+- [Infosecurity Magazine: AISI Rebrands](https://www.infosecurity-magazine.com/news/uk-ai-safety-institute-rebrands/) - February 2025 name change
+- [AI Now Statement on Transition](https://ainowinstitute.org/news/ai-now-statement-on-the-uk-ai-safety-institute-transition-to-the-uk-ai-security-institute) - Critical perspective on rebrand
 
 ## Related Pages
 

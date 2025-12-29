@@ -1,50 +1,115 @@
 ---
 title: "US Executive Order on AI"
-description: "October 2023 executive order establishing compute-based reporting thresholds, AI Safety Institute, and comprehensive governance framework for frontier AI systems, representing the most significant US government AI regulation to date despite enforcement limitations as an executive action."
+description: "Executive Order 14110 (October 2023) established compute-based reporting thresholds (10^26 FLOP for general models, 10^23 for biological), created the US AI Safety Institute, and implemented cloud computing KYC requirements. Revoked by President Trump on January 20, 2025, with the AISI renamed to CAISI and refocused on innovation over safety."
 sidebar:
   order: 4
-quality: 72
-llmSummary: "The October 2023 Biden Executive Order established compute-based reporting thresholds (10^26 FLOP for general models, 10^23 for biological) requiring frontier AI companies to report to the Department of Commerce, created the US AI Safety Institute for evaluation, and implemented cloud computing 'Know Your Customer' requirements. While representing significant progress in normalizing government oversight of AI development, the order lacks strong enforcement mechanisms and its durability depends on political continuity as an executive action rather than legislation."
-lastEdited: "2025-12-27"
+quality: 78
+llmSummary: "Executive Order 14110, signed October 30, 2023, established the first comprehensive US AI governance framework with compute-based reporting thresholds (10^26 FLOP for general models, 10^23 for biological), mandatory reporting to Commerce Department, and the US AI Safety Institute for evaluation. The order was revoked by President Trump on January 20, 2025, with the stated rationale that it 'hindered AI innovation.' The AISI was renamed CAISI in June 2025 and refocused from safety evaluation to promoting innovation and national security. Stanford HAI tracking showed ~85% of the order's 150 requirements were completed before revocation."
+lastEdited: "2025-12-28"
 importance: 82.5
 ---
-import {DataInfoBox, Backlinks} from '../../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid} from '../../../../../../components/wiki';
 
 <DataInfoBox entityId="us-executive-order" />
 
 ## Overview
 
-The Executive Order on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, represents the most comprehensive federal response to AI governance in US history. The 111-page directive establishes mandatory reporting requirements for frontier AI systems, creates new oversight institutions, and addresses both immediate risks like algorithmic bias and long-term catastrophic risks from advanced AI capabilities. With over 100 specific directives across 8 federal agencies, the order attempts to balance promoting American AI leadership while mitigating potential harms.
+[Executive Order 14110](https://www.federalregister.gov/documents/2023/11/01/2023-24283/safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence) on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, represented the most comprehensive federal response to AI governance in US history. The 111-page directive established mandatory reporting requirements for frontier AI systems, created new oversight institutions, and addressed both immediate risks like algorithmic bias and long-term catastrophic risks from advanced AI capabilities. With over 100 specific directives across 8 federal agencies, the order attempted to balance promoting American AI leadership while mitigating potential harms.
 
-The order's significance lies in its dual approach: addressing near-term AI deployment issues through civil rights protections and government modernization, while simultaneously creating infrastructure for overseeing the development of increasingly powerful AI systems. By establishing compute-based thresholds rather than capability-based triggers, it provides concrete, measurable criteria that developers must follow. However, as an executive action rather than legislation, its durability depends on political continuity and lacks strong enforcement mechanisms.
+**The order was revoked by President Trump on January 20, 2025**, within hours of his assuming office. The White House stated that EO 14110 "hindered AI innovation and imposed onerous and unnecessary government control over the development of AI." [Stanford HAI tracking](https://hai.stanford.edu/policy/policy-efforts/tracking-us-executive-action-ai) showed that approximately 85% of the order's 150 distinct requirements had been completed before revocation.
 
-For AI safety, the order represents both progress and limitations. It normalizes government oversight of frontier AI development and creates institutional capacity through the US AI Safety Institute. Yet it primarily focuses on transparency and voluntary cooperation rather than mandatory safety requirements or deployment restrictions. The order's ultimate impact will depend on implementation effectiveness, international coordination, and whether future administrations maintain or strengthen its provisions.
+### Quick Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| **Duration** | Oct 2023 - Jan 2025 | 15 months before revocation |
+| **Scope** | 150+ requirements across 50+ agencies | Most comprehensive US AI governance to date |
+| **Implementation** | ~85% completed | Per Stanford HAI tracker |
+| **Enforcement** | Weak | Relied on voluntary cooperation; no specified penalties |
+| **Durability** | Revoked | Executive action rather than legislation |
+| **Legacy** | Uncertain | Many completed actions remain; AISI renamed and refocused |
+
+For AI safety, the order represented both progress and limitations. It normalized government oversight of frontier AI development and created institutional capacity through the US AI Safety Institute. Yet it primarily focused on transparency and voluntary cooperation rather than mandatory safety requirements or deployment restrictions.
 
 ## Key Provisions and Mechanisms
 
 ### Compute-Based Reporting Framework
 
-The order's most innovative feature is its use of computational thresholds to trigger regulatory requirements. Companies training models using more than 10^26 floating-point operations (FLOP) must notify the Department of Commerce before and during training, share safety testing results, and provide detailed information about model capabilities, cybersecurity measures, and red-team testing outcomes. This threshold, equivalent to approximately 10 times the compute used for GPT-4, captures current and next-generation frontier models while avoiding over-regulation of smaller systems.
+The order's most innovative feature was its use of computational thresholds to trigger regulatory requirements. Companies training models using more than 10^26 floating-point operations (FLOP) were required to notify the Department of Commerce before and during training, share safety testing results, and provide detailed information about model capabilities, cybersecurity measures, and red-team testing outcomes.
 
-A separate 10^23 FLOP threshold applies specifically to models trained on biological sequence data, reflecting concerns that even smaller models could assist in bioweapon development. This represents about 1,000 times less compute than the general threshold, acknowledging that biological design capabilities may emerge at lower scales than general intelligence capabilities. The dual-threshold approach demonstrates sophisticated thinking about different risk profiles across AI application domains.
+#### Compute Threshold Comparison
 
-The compute-based approach offers several advantages over capability-based regulations. FLOP measurements are objective and difficult to manipulate, unlike subjective assessments of AI capabilities that might vary across evaluators. The thresholds also provide predictability for developers, allowing them to understand regulatory requirements before beginning training runs. However, the static nature of these numbers creates risks of obsolescence as algorithmic efficiency improves and new architectures emerge.
+| Threshold | Application | Training Cost Estimate | Models Affected |
+|-----------|-------------|----------------------|-----------------|
+| **10^26 FLOP** | General dual-use foundation models | [\$10-100M per training run](https://www.mofo.com/resources/insights/231107-the-ai-executive-order-presidential-authority) | Next-gen frontier models (GPT-5 class) |
+| **10^23 FLOP** | Biological sequence models | ~\$10-100K per training run | Specialized bio-AI tools |
+| **10^20 FLOP/s** | Computing cluster capacity threshold | N/A | Large data centers |
+| **GPT-4 (reference)** | Estimated at ~10^25 FLOP | ~\$100M | Just under general threshold |
+| **GPT-3 (reference)** | 3.14 × 10^23 FLOP | ~\$1M | ~318x below threshold |
+
+A Biden Administration official stated that "the threshold was set such that current models wouldn't be captured but the next generation state-of-the-art models likely would." The [Bureau of Industry and Security assessed](https://www.mayerbrown.com/en/insights/publications/2024/09/us-department-of-commerce-issues-proposal-to-require-reporting-development-of-advanced-ai-models-and-computer-clusters) that no more than 15 companies exceeded the reporting thresholds for models and computing clusters.
+
+The separate 10^23 FLOP threshold for biological sequence models reflected concerns that even smaller models could assist in bioweapon development—approximately 1,000 times less compute than the general threshold, acknowledging that biological design capabilities may emerge at lower scales than general intelligence capabilities.
+
+The compute-based approach offered several advantages over capability-based regulations. FLOP measurements are objective and difficult to manipulate, unlike subjective assessments of AI capabilities. The thresholds also provided predictability for developers. However, the static nature of these numbers created risks of obsolescence as algorithmic efficiency improves—[researchers estimated](https://heim.xyz/documents/Training-Compute-Thresholds.pdf) the thresholds could become outdated within 3-5 years.
 
 ### Institutional Infrastructure Creation
 
-The order establishes the US AI Safety Institute (AISI) within the National Institute of Standards and Technology, tasked with developing evaluation methodologies, conducting safety assessments, and coordinating with international partners. Unlike purely advisory bodies, AISI has operational responsibilities including direct testing of frontier models and developing technical standards for the broader AI ecosystem. The institute represents an attempt to build government capacity that matches the technical sophistication of private AI laboratories.
+The order established the US AI Safety Institute (AISI) within the National Institute of Standards and Technology, tasked with developing evaluation methodologies, conducting safety assessments, and coordinating with international partners. Unlike purely advisory bodies, AISI had operational responsibilities including direct testing of frontier models and developing technical standards for the broader AI ecosystem.
 
-AISI's creation parallels the UK's AI Safety Institute, established months earlier, reflecting a coordinated approach among allied nations. The two institutes have signed cooperation agreements and are developing shared evaluation frameworks, potentially creating international standards for AI safety assessment. This bilateral foundation could expand to include other nations, creating a network of government institutions capable of oversight as AI capabilities advance.
+#### AISI Timeline and Development
 
-However, AISI faces significant resource constraints relative to its mandate. Initial funding appears insufficient for the institute's ambitious goals, and recruiting technical talent to compete with private sector compensation remains challenging. The institute's effectiveness will depend on sustained political support and adequate funding, both uncertain given the executive order's status rather than legislative authorization.
+| Date | Event |
+|------|-------|
+| **Nov 2023** | AISI founded at NIST, one day after EO 14110 signed |
+| **Feb 2024** | Elizabeth Kelly appointed as director; [AISIC consortium created](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international) with 200+ member organizations |
+| **Mar 2024** | \$10M initial budget allocated (vs. \$17.7M FY2025 request) |
+| **May 2024** | NIST Director warns only [\$1M actually available](https://venturebeat.com/ai/biden-appoints-ai-safety-institute-leaders-as-nist-funding-concerns-linger/); "very difficult without additional funding" |
+| **Aug 2024** | [Agreements signed](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) with Anthropic and OpenAI for pre-deployment testing |
+| **Nov 2024** | First joint evaluation with UK AISI: [Claude 3.5 Sonnet assessment](https://www.nist.gov/news-events/news/2024/11/pre-deployment-evaluation-anthropics-upgraded-claude-35-sonnet) |
+| **Dec 2024** | [OpenAI o1 model evaluation](https://www.nist.gov/news-events/news/2024/12/pre-deployment-evaluation-openais-o1-model) published |
+| **Jan 2025** | EO 14110 revoked; AISI future uncertain |
+| **Jun 2025** | Renamed to Center for AI Standards and Innovation (CAISI); mission refocused from safety to innovation |
+
+AISI's creation paralleled the UK's AI Safety Institute, with the two signing cooperation agreements and developing shared evaluation frameworks. The [November 2024 joint evaluation of Claude 3.5 Sonnet](https://www.aisi.gov.uk/blog/pre-deployment-evaluation-of-anthropics-upgraded-claude-3-5-sonnet) tested biological capabilities, cyber capabilities, software/AI development, and safeguard efficacy—representing the first such government-led assessment of a frontier model.
+
+However, AISI faced significant resource constraints. With only \$1-10M in actual funding versus the \$17.7M requested, and staffing well below the estimated 200+ personnel needed for full capacity, the institute struggled to match the technical sophistication of private AI laboratories.
 
 ### Cloud Compute Governance
 
-The order introduces "Know Your Customer" requirements for Infrastructure-as-a-Service providers, mandating that cloud computing companies verify the identity of foreign customers and monitor large training runs. This provision addresses concerns that adversaries might use US computing infrastructure to develop dangerous AI capabilities without oversight. Cloud providers must implement reporting systems for suspicious activity and large-scale training by foreign entities.
+The order introduced "Know Your Customer" (KYC) requirements for Infrastructure-as-a-Service (IaaS) providers, mandating that cloud computing companies verify the identity of foreign customers and monitor large training runs. The [Bureau of Industry and Security proposed rule](https://www.dwt.com/blogs/artificial-intelligence-law-advisor/2024/02/commerce-department-proposes-kyc-ai-rules-for-iaas) required US IaaS providers to implement Customer Identification Programs (CIP) including:
 
-These requirements reflect recognition that compute infrastructure represents a chokepoint in AI development that the US can potentially control. By leveraging American companies' dominance in cloud computing, the order extends US regulatory reach to foreign AI developers who rely on American infrastructure. This approach complements export controls on AI chips by creating oversight even when controlled hardware reaches overseas customers.
+- Collection of customer name, address, payment source, email, telephone, and IP addresses
+- Verification of whether beneficial owners are US persons
+- Reporting to Commerce when foreign customers train large AI models with potential malicious applications
+- Violations subject to civil and criminal penalties under the International Emergency Economic Powers Act
 
-The practical implementation of cloud compute governance faces several challenges. Defining "large training runs" in real-time requires technical sophistication from cloud providers, who must distinguish AI training from other compute-intensive applications. Moreover, determined adversaries might circumvent these requirements by using non-US cloud providers or developing domestic computing capabilities, limiting the long-term effectiveness of this approach.
+These requirements reflected recognition that compute infrastructure represents a chokepoint in AI development that the US can potentially control. By leveraging American companies' dominance in cloud computing, the order extended US regulatory reach to foreign AI developers who rely on American infrastructure—complementing export controls on AI chips.
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph EO14110["Executive Order 14110 Framework"]
+        COMPUTE[Compute Thresholds<br/>10^26 FLOP general<br/>10^23 FLOP biological] --> REPORT[Mandatory Reporting<br/>to Commerce Dept]
+        REPORT --> AISI[US AI Safety Institute<br/>Pre-deployment Testing]
+        CLOUD[Cloud KYC Requirements<br/>IaaS Providers] --> FOREIGN[Foreign Customer<br/>Identification]
+        FOREIGN --> MONITOR[Training Run<br/>Monitoring]
+    end
+
+    subgraph REVOCATION["Trump Administration (Jan 2025)"]
+        REVOKE[EO 14110 Revoked] --> REVIEW[Agency Review<br/>of All Actions]
+        REVIEW --> CAISI[AISI → CAISI<br/>Safety → Innovation Focus]
+        REVIEW --> UNCERTAIN[Status of KYC Rules<br/>Uncertain]
+    end
+
+    EO14110 --> REVOCATION
+
+    style COMPUTE fill:#e1f5fe
+    style AISI fill:#e1f5fe
+    style REVOKE fill:#ffcdd2
+    style CAISI fill:#fff3e0
+`} />
+
+The practical implementation faced several challenges. Defining "large training runs" in real-time requires technical sophistication from cloud providers, who must distinguish AI training from other compute-intensive applications. Moreover, determined adversaries might circumvent these requirements by using non-US cloud providers or developing domestic computing capabilities.
 
 ## Safety Implications and Risk Assessment
 
@@ -64,50 +129,109 @@ The voluntary nature of many provisions weakens the order's potential effectiven
 
 The order's durability remains highly uncertain given its status as executive action rather than legislation. Future administrations could modify or revoke its provisions entirely, creating regulatory uncertainty that might discourage long-term compliance investments. This political fragility represents a significant weakness for addressing long-term AI risks that require sustained governance approaches spanning multiple electoral cycles.
 
-## Implementation Progress and Trajectory
+## Revocation and Aftermath
 
-### Current State (Late 2024)
+### Trump Administration Response
 
-Implementation has proceeded with mixed results across different provisions. The US AI Safety Institute has been established and staffed with approximately 40-50 researchers, though this remains well below the estimated 200+ personnel needed for full operational capacity. NIST has published initial guidance on AI risk management frameworks, and the Department of Commerce has established reporting procedures for large training runs. Major US AI laboratories have begun submitting required reports, demonstrating basic compliance with the order's most concrete requirements.
+On January 20, 2025, President Trump revoked Executive Order 14110 within hours of assuming office. The White House [fact sheet stated](https://natlawreview.com/article/changing-landscape-ai-federal-guidance-employers-reverses-course-new-administration) that the order "hindered AI innovation and imposed onerous and unnecessary government control over the development of AI."
 
-Cloud computing governance requirements are in various stages of implementation across different providers. Amazon Web Services, Microsoft Azure, and Google Cloud Platform have developed Know Your Customer frameworks for large compute customers, though the technical details of monitoring and reporting systems remain under development. The practical effectiveness of these measures in detecting and deterring malicious use remains largely untested.
+Three days later, on January 23, 2025, Trump signed [Executive Order 14179](https://www.federalregister.gov/documents/2025/01/31/2025-02172/removing-barriers-to-american-leadership-in-artificial-intelligence), "Removing Barriers to American Leadership in Artificial Intelligence," which:
 
-Federal agency compliance with the order's government modernization requirements shows significant variation. While most agencies have designated Chief AI Officers as required, the quality and authority of these positions varies considerably. Some agencies have made substantial progress on AI governance frameworks, while others appear to be treating compliance as a bureaucratic exercise rather than substantive policy implementation.
+- Directed agencies to identify and revise/rescind all EO 14110 actions "inconsistent with enhancing America's leadership in AI"
+- Mandated development of an "action plan" within 180 days to "sustain and enhance America's global AI dominance"
+- Explicitly framed AI development as a matter of national competitiveness over safety
+- Required OMB to revise memoranda M-24-10 and M-24-18 within 60 days
 
-### 1-2 Year Outlook
+Vice President Vance subsequently stated that ["pro-growth AI policies" should be prioritized over safety](https://en.wikipedia.org/wiki/AI_Safety_Institute), and the US refused to sign the February 2025 AI Action Summit communique in Paris.
 
-Over the next two years, the order's effectiveness will likely depend primarily on resource allocation and political continuity. If AISI receives adequate funding and can recruit sufficient technical talent, it may begin conducting meaningful evaluations of frontier AI systems and developing influential safety standards. However, current funding levels suggest the institute will remain under-resourced relative to its ambitious mandate, potentially limiting its impact on industry practices.
+### What Survived the Revocation
 
-The 2024 election results will significantly influence the order's trajectory. A new administration might maintain, modify, or revoke its provisions depending on political priorities and industry lobbying. Even if maintained, shifting priorities could redirect focus away from catastrophic risk concerns toward economic competitiveness or other objectives. The order's survival and effectiveness depend critically on sustained political commitment to AI governance.
+The revocation did not automatically repeal everything implemented under EO 14110. [Legal analysis](https://www.skadden.com/insights/publications/executive-briefing/ai-broad-biden-order-is-withdrawn) indicates:
 
-International coordination efforts may show more progress in this timeframe, particularly with allied nations facing similar AI governance challenges. Expanded cooperation between US and UK AI Safety Institutes could create momentum for broader international standards. However, achieving binding international agreements on AI governance remains unlikely in the near term, limiting coordination to voluntary frameworks and information sharing arrangements.
+| Category | Status | Uncertainty |
+|----------|--------|-------------|
+| **Completed agency actions** | Remain unless specifically reversed | High—under review |
+| **Final rules (e.g., IaaS KYC)** | Require formal rulemaking to rescind | Medium |
+| **Voluntary industry agreements** | Continue unless parties withdraw | Low |
+| **AISI evaluations completed** | Published; cannot be "unreviewed" | None |
+| **International agreements** | Continue; diplomatic relations independent | Low |
+| **Chief AI Officer designations** | Remain at agency discretion | Medium |
 
-### 2-5 Year Outlook
+The [Commerce Department's Framework for AI Diffusion](https://www.wiley.law/alert-President-Trump-Revokes-Biden-Administrations-AI-EO-What-To-Know) and other final rules may require separate rulemaking processes to revoke, providing some continuity even as the overall framework shifts.
 
-In the medium term, the order's legacy will likely depend on whether it catalyzes broader governance frameworks or remains an isolated executive action. If successful, it could provide a foundation for congressional legislation that addresses its enforcement limitations while preserving its institutional innovations. Legislative action would significantly enhance the framework's durability and effectiveness, particularly if it includes meaningful penalties for non-compliance.
+### AISI to CAISI Transformation
 
-The compute thresholds established by the order will likely require updating within this timeframe as algorithmic efficiency improves and new architectures emerge. Current estimates suggest the 10^26 FLOP threshold may become obsolete within 3-5 years if efficiency gains continue at historical rates. Maintaining effective oversight will require either regular threshold updates or transition to capability-based triggers, both presenting significant technical and political challenges.
+In June 2025, the US AI Safety Institute was renamed to the **Center for AI Standards and Innovation (CAISI)** with a fundamentally different mission. According to Commerce Secretary Howard Lutnick: "Innovators will no longer be limited by these standards. CAISI will evaluate and enhance US innovation of these rapidly developing commercial AI systems while ensuring they remain secure to our national security standards."
 
-The broader AI governance ecosystem will likely evolve significantly during this period, potentially superseding many of the order's specific provisions. European Union AI Act implementation, Chinese regulatory developments, and industry self-governance initiatives will create a complex landscape of overlapping requirements. The order's ultimate significance may lie more in establishing precedents for government AI oversight than in its specific technical provisions.
+This represents a shift from:
+- **Safety evaluation** → Innovation promotion
+- **Pre-deployment risk assessment** → National security focus
+- **International safety coordination** → Competitive advantage emphasis
 
-## Key Uncertainties and Evaluation Challenges
+The December 2025 NIST announcement of [\$10M in AI centers](https://cyberscoop.com/nist-mitre-announce-20-million-dollar-research-effort-on-ai-cybersecurity/) (with MITRE) and a planned \$10M AI for Resilient Manufacturing Institute suggests resources are being redirected toward manufacturing and cybersecurity applications rather than frontier model safety evaluation.
 
-### Enforcement Effectiveness
+## Implementation Progress (Pre-Revocation)
 
-The order's impact depends critically on enforcement mechanisms that remain largely untested. While reporting requirements appear to generate compliance from major laboratories, the absence of specified penalties creates uncertainty about consequences for non-compliance. The government's actual willingness and ability to use available tools like contract restrictions or export controls to enforce AI safety requirements remains unknown.
+### Completed Actions (Oct 2023 - Jan 2025)
 
-Industry cooperation with voluntary provisions presents another significant uncertainty. Many safety-related requirements depend on companies implementing best practices without clear legal obligations. Whether competitive pressures will undermine voluntary compliance as AI capabilities advance remains an open question, particularly for companies facing intense competition or international rivals operating under different regulatory frameworks.
+[Stanford HAI's tracker](https://hai.stanford.edu/policy/policy-efforts/tracking-us-executive-action-ai) documented approximately 85% completion of the order's 150 distinct requirements before revocation:
 
-### Technical Obsolescence
+| Policy Area | Requirements | Completion Rate | Key Actions |
+|-------------|--------------|-----------------|-------------|
+| **AI Safety & Security** | ~25 | High | AISI created; evaluation agreements signed |
+| **Civil Rights & Bias** | ~20 | High | Agency guidance issued |
+| **Consumer Protection** | ~15 | Medium | Standards development ongoing |
+| **Labor & Workforce** | ~15 | Medium | Reports published |
+| **Innovation & Competition** | ~20 | High | Research initiatives launched |
+| **Government Modernization** | ~30 | High | Chief AI Officers designated |
+| **International Cooperation** | ~15 | High | UK AISI partnership; international network launched |
+| **Emerging Threats** | ~10 | Medium | Biosecurity framework under development |
 
-The order's compute-based thresholds face inevitable obsolescence as AI research advances. While current thresholds appear appropriate for today's technological landscape, algorithmic improvements could enable dangerous capabilities at lower compute levels within several years. The challenge of maintaining relevant thresholds without stifling innovation or creating loopholes for malicious actors represents a fundamental tension in the governance framework.
+### Key Accomplishments
 
-Alternative technical approaches to AI development, such as neuromorphic computing or quantum-classical hybrid systems, might not fit cleanly within the FLOP-based framework. As AI research explores diverse architectures beyond standard deep learning, the order's technical foundations may require substantial revision to maintain effectiveness.
+Despite its short duration, the order achieved several notable outcomes:
 
-### International Coordination
+**Model Evaluation Precedent:** The [joint US-UK evaluation of Claude 3.5 Sonnet](https://www.nist.gov/news-events/news/2024/11/pre-deployment-evaluation-anthropics-upgraded-claude-35-sonnet) and [OpenAI o1](https://www.nist.gov/news-events/news/2024/12/pre-deployment-evaluation-openais-o1-model) established government capacity for pre-deployment testing of frontier models—the first such government-led assessments anywhere. The o1 evaluation notably found the model "solved an additional three cryptography-related challenges that no other model completed."
 
-The order's global impact depends significantly on international adoption of similar frameworks, which remains highly uncertain. While allied nations have expressed support for coordinated AI governance, translating this into binding international agreements faces substantial obstacles. Competing national interests, differing regulatory philosophies, and varying technical capabilities among nations complicate efforts to establish global standards.
+**International Network:** In November 2024, the US launched the [International Network of AI Safety Institutes](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international), establishing formal cooperation with the UK, Canada, Japan, Singapore, and other allies on AI safety research.
 
-China's response to US AI governance initiatives will particularly influence the order's strategic effectiveness. If Chinese AI development proceeds without equivalent oversight, it could create competitive pressures that undermine voluntary compliance by US companies. The order's success in addressing global catastrophic risks depends partly on achieving international cooperation that currently appears unlikely.
+**Industry Cooperation:** Voluntary agreements with Anthropic and OpenAI demonstrated that frontier AI companies would accept government access to pre-release models—a precedent that may persist even after revocation.
+
+## Key Uncertainties and Future Outlook
+
+### What Happens Next?
+
+With EO 14110 revoked and AISI transformed into CAISI, several key questions remain:
+
+| Question | Optimistic Scenario | Pessimistic Scenario | Current Assessment |
+|----------|---------------------|---------------------|-------------------|
+| **Will voluntary industry agreements continue?** | Labs maintain AISI relationships independently | Labs reduce cooperation without mandate | Medium uncertainty—depends on lab incentives |
+| **Will international coordination survive?** | UK/EU/allies continue; US rejoins later | US isolation undermines global frameworks | Medium-high—US refused to sign Paris communique |
+| **Will Congress legislate AI safety?** | Bipartisan legislation codifies key provisions | No legislation; state patchwork emerges | High uncertainty—no major bills advancing |
+| **Will compute thresholds become obsolete?** | Future frameworks adopt capability-based triggers | No governance framework adapts | High—3-5 year threshold for obsolescence |
+| **Will frontier labs face any oversight?** | Industry self-governance; state regulations | No meaningful oversight until incident | Medium-high—depends on state action and incidents |
+
+### Lessons for AI Governance
+
+The EO 14110 experience offers several lessons for future AI governance efforts:
+
+**Executive action fragility:** The complete revocation within 15 months demonstrates that executive orders cannot provide durable AI governance. Any sustainable framework requires congressional legislation or deeply embedded institutional practices that survive administration changes.
+
+**Compute thresholds have a shelf life:** The 10^26 FLOP threshold, designed to capture "next-generation" models, was never actually triggered before revocation. [Researchers estimate](https://www.fenwick.com/insights/publications/interesting-developments-for-regulatory-thresholds-of-ai-compute) such thresholds become outdated within 3-5 years as algorithmic efficiency improves.
+
+**Voluntary cooperation is necessary but insufficient:** The Anthropic and OpenAI agreements demonstrated frontier labs will cooperate with government oversight—but this cooperation was voluntary and contingent on political conditions that no longer exist.
+
+**International coordination requires US participation:** The [International Network of AI Safety Institutes](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international) launched just months before the US pivot away from safety-focused governance. Without sustained US engagement, international safety coordination faces significant headwinds.
+
+---
+
+## Sources
+
+- [Executive Order 14110 (Federal Register)](https://www.federalregister.gov/documents/2023/11/01/2023-24283/safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence) - Full text of the order
+- [Stanford HAI Executive Action Tracker](https://hai.stanford.edu/policy/policy-efforts/tracking-us-executive-action-ai) - Implementation progress monitoring
+- [Executive Order 14179 (Federal Register)](https://www.federalregister.gov/documents/2025/01/31/2025-02172/removing-barriers-to-american-leadership-in-artificial-intelligence) - Trump replacement order
+- [NIST AI Safety Institute](https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence) - AISI resources and evaluations
+- [Georgetown CSET Analysis](https://cset.georgetown.edu/article/the-executive-order-on-removing-barriers-to-american-leadership-in-artificial-intelligence/) - Policy analysis of the revocation
+- [Congress.gov CRS Report](https://www.congress.gov/crs-product/R47843) - Congressional Research Service analysis
 
 <Backlinks client:load entityId="us-executive-order" />

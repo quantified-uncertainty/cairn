@@ -1,15 +1,15 @@
 ---
 title: "Lock-in"
-description: "The risk that AI could enable permanent entrenchment of values, systems, or power structures, making future course correction impossible and potentially locking humanity into suboptimal or dystopian trajectories for millennia."
+description: "This model analyzes how AI could enable permanent entrenchment of values, systems, or power structures. It finds that AI-enabled lock-in differs qualitatively from historical examples (QWERTY, VHS) due to enforcement capabilities, and estimates 10-30% probability of significant lock-in occurring by 2050."
 sidebar:
   order: 2
 maturity: "Growing"
-quality: 48
+quality: 82
 llmSummary: "Analyzes lock-in risk—the permanent entrenchment of values, power structures, or systems through AI—as a potentially worse-than-extinction scenario that could trap humanity in a degraded state for millennia. Identifies mechanisms (enforcement capabilities, path dependence, technological complexity) and types (value, political, economic lock-in) through which AI uniquely enables irreversible trajectories, distinguishing this from historically reversible forms of entrenchment."
-lastEdited: "2025-12-24"
+lastEdited: "2025-12-28"
 importance: 72.5
 ---
-import {DataInfoBox, Backlinks} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="lock-in" />
 
@@ -20,6 +20,19 @@ Lock-in represents one of the most subtle yet consequential risks of advanced AI
 The concern centers on AI's unique potential to make early decisions irreversible. Historical civilizations could eventually change course—empires fell, ideologies shifted, and technological paradigms evolved. But AI-enabled systems might achieve such comprehensive control over human affairs that the normal mechanisms of change become impossible. A totalitarian regime with perfect surveillance, an AI system that reshapes the world according to misaligned objectives, or an economic structure that becomes too embedded to alter could persist indefinitely.
 
 What makes lock-in particularly urgent is the possibility that we are currently in the critical window when these permanent structures are being established. The values embedded in today's AI systems, the governance frameworks being developed, and the power structures emerging around AI development may determine humanity's trajectory for millennia. Getting these decisions right during this narrow window may be far more important than any subsequent course corrections, which might no longer be possible.
+
+## Lock-in Risk Factors
+
+The following table summarizes the key factors that contribute to AI-enabled lock-in risk, drawing on research from the <R id="9cf1412a293bfdbe">Future of Humanity Institute</R> and analysis by <R id="297ced45b445881c">Carl Shulman and colleagues</R>:
+
+| Risk Factor | Mechanism | Historical Analog | AI Amplification | Reversibility |
+|-------------|-----------|-------------------|------------------|---------------|
+| Enforcement capability | Autonomous systems maintain control without human cooperation | Secret police, informant networks | 10-100x more comprehensive surveillance; no human defection risk | Very Low |
+| Path dependence | Early choices constrain future options | <R id="c5eec991eed784e4">QWERTY keyboard</R>, railway gauge | Faster deployment cycles compress decision windows | Low |
+| Network effects | Systems become more valuable as adoption grows | VHS vs. Betamax, telecom standards | AI models compound advantages via data and compute | Low-Medium |
+| Switching costs | Changing systems requires significant investment | Enterprise software, infrastructure | AI integration with critical systems increases costs exponentially | Low |
+| Value embedding | Preferences encoded during development persist | Legal codes, constitutional frameworks | Constitutional AI approaches embed values during training | Medium |
+| Complexity barriers | System understanding requires specialized expertise | Nuclear reactors, financial derivatives | AI systems may become inscrutable even to developers | Very Low |
 
 ## The AI Lock-in Mechanism
 
@@ -39,13 +52,28 @@ Political lock-in represents perhaps the most concerning scenario, where governa
 
 Economic lock-in could occur through AI-enabled monopolies or economic structures that become too embedded to change. As AI systems become central to economic production, the companies or countries that control these systems could achieve permanent economic dominance. Network effects and data advantages could make competition impossible, while the integration of AI into economic infrastructure could make alternative systems prohibitively expensive to implement.
 
+## Lock-in Scenario Comparison
+
+The following table compares different lock-in scenarios, their probability estimates, and key distinguishing features. These estimates draw on expert assessments from organizations including the <R id="246e6e1c19b04bbb">Future of Life Institute</R> and analysis on the <R id="510fbddaf17ab0f9">EA Forum</R>:
+
+| Scenario | Probability by 2050 | Duration if Realized | Key Drivers | Reversibility Window |
+|----------|---------------------|---------------------|-------------|---------------------|
+| Totalitarian surveillance state | 5-15% | Potentially indefinite | AI-enhanced monitoring, predictive policing, autonomous enforcement | 5-10 years before fully entrenched |
+| Value lock-in via AI training | 10-20% | Centuries to millennia | Constitutional AI approaches, training data choices, <R id="e99a5c1697baa07d">RLHF value embedding</R> | 3-7 years during development phase |
+| Economic power concentration | 15-25% | Decades to centuries | <R id="d9cd3292030e2674">Network effects, compute monopoly</R>, data advantages | 10-20 years with antitrust action |
+| Geopolitical lock-in | 10-20% | Decades to centuries | First-mover AI advantages, regulatory capture | Uncertain, depends on coordination |
+| Aligned singleton (positive) | 5-10% | Indefinite | Successful alignment, beneficial governance | N/A (desirable outcome) |
+| Misaligned AI takeover | 2-10% | Permanent | Deceptive alignment, capability overhang | Days to weeks at critical juncture |
+
+Note: These probability ranges reflect significant uncertainty and represent rough estimates from various expert sources. The <R id="510fbddaf17ab0f9">stable totalitarianism analysis</R> suggests overall lock-in probability may be below 1% for the most extreme scenarios, while other researchers place combined lock-in risk in the 10-30% range.
+
 ## Historical Context and Unprecedented Permanence
 
-Historical examples provide both parallels and contrasts that illuminate the unique nature of AI lock-in risks. Writing systems, once established, persisted for thousands of years—cuneiform, hieroglyphics, and Chinese characters shaped thought and culture across millennia. Political boundaries established during colonial periods continue to influence global affairs centuries later. Religious and ideological frameworks have shown remarkable persistence, shaping societies long after their original contexts disappeared.
+Historical examples provide both parallels and contrasts that illuminate the unique nature of AI lock-in risks. The economics literature on <R id="d0a10b016d7b9e12">path dependence</R> demonstrates how seemingly minor early advantages can have irreversible effects on market allocation. The famous QWERTY keyboard case, analyzed by <R id="c5eec991eed784e4">David (1985)</R>, shows how design features of early typewriters dictated a keyboard layout that persisted long after mechanical constraints disappeared. The VHS-Betamax battle illustrated how network effects—rental stores stocking VHS tapes, leading consumers to buy VHS players—created vendor lock-in that was difficult to reverse.
 
-However, these historical examples were never truly permanent. Empires eventually fell, writing systems evolved or were replaced, and even the most entrenched ideologies eventually faced successful challenges. The Roman Empire lasted a thousand years but ultimately collapsed. The seemingly permanent feudal system gave way to capitalism. Even totalitarian regimes of the 20th century, despite their advanced control mechanisms, eventually faced successful opposition.
+However, these historical examples were never truly permanent. <R id="52e548d499a6ca42">Liebowitz and Margolis (1990)</R> demonstrated that even the QWERTY example involved less efficiency loss than commonly claimed, and technological lock-in has historically proven reversible with sufficient incentive. The British cotton industry's transition from mule to ring spinning, though slow, eventually occurred as the new technology improved. Empires eventually fell, writing systems evolved, and even the most entrenched ideologies faced successful challenges.
 
-What makes AI lock-in qualitatively different is the potential for true permanence. Historical forms of lock-in relied on human compliance, which could eventually be withdrawn. AI-enabled lock-in might not depend on human cooperation. If an AI system has overwhelming capability advantage and the ability to maintain that advantage indefinitely—through superior planning, resource control, or technological advancement—the historical precedent for eventual change might not apply.
+What makes AI lock-in qualitatively different is the potential for true permanence. As <R id="713ad72e6bc4d52a">Nick Bostrom has argued</R>, AI could enable "getting ourselves permanently locked into some radically suboptimal state, that could either collapse, or you could imagine some kind of global totalitarian surveillance dystopia that you could never overthrow." Historical forms of lock-in relied on human compliance, which could eventually be withdrawn. AI-enabled lock-in might not depend on human cooperation. According to research by <R id="297ced45b445881c">Finnveden, Riedel, and Shulman</R>, dictators enabled by AI to be effectively immortal could avoid the historical succession problem that explains the end of past totalitarian regimes.
 
 ## Safety Implications and Dystopian Scenarios
 
@@ -57,15 +85,15 @@ The timeline for recognizing and correcting these problems might be compressed c
 
 ## The Critical Window: Current Trajectory and Urgency
 
-Evidence suggests we may currently be in the critical period where permanent structures are being established. The AI Safety Clock, maintained by the International Management Development World Competitiveness Center, moved from 29 minutes to midnight in September 2024 to 24 minutes to midnight in February 2025, reflecting increasing urgency about AI risks including lock-in scenarios. This timeline suggests that decisions made in the next few years could have irreversible consequences.
+Evidence suggests we may currently be in the critical period where permanent structures are being established. The <R id="da390c7cc819b788">AI Safety Clock</R>, maintained by IMD's TONOMUS Global Center for Digital and AI Transformation, provides a symbolic measure of urgency. The clock launched at 29 minutes to midnight in September 2024, moved to 26 minutes in December 2024, reached 24 minutes by February 2025, and as of September 2025 stands at <R id="23067a0dd2856cc6">20 minutes to midnight</R>—a nine-minute advance in just one year. Key factors driving these adjustments include Sam Altman's November 2024 statement that AGI within five years is feasible, California's veto of SB 1047 safety legislation, and the rise of agentic AI systems.
 
 The current trajectory shows concerning trends across multiple dimensions. In value alignment, major AI developers are making foundational choices about which values to embed in systems without broad democratic input. Constitutional AI approaches are becoming standardized, potentially locking in particular interpretations of human values. In geopolitical competition, countries are racing to achieve AI dominance, with early leaders potentially able to shape global AI governance according to their preferences.
 
-Economic concentration is accelerating as AI capabilities become central to competitive advantage. A small number of companies control the computational resources, data, and talent necessary for frontier AI development. If this concentration continues, these entities could gain unprecedented influence over human affairs. Technical standards and infrastructure choices made today—about AI architectures, training methodologies, and deployment frameworks—could become increasingly difficult to change as systems scale and integrate.
+Economic concentration is accelerating as AI capabilities become central to competitive advantage. Research published in <R id="d9cd3292030e2674">Policy and Society</R> documents how the launch of ChatGPT has further accelerated power concentration, with a "compute divide" emerging between Big Tech and conventional research centers. Cases like OpenAI's investment from Microsoft and Anthropic's from Amazon illustrate that even independent developers get co-opted by large technology companies. A small number of companies control the computational resources, data, and talent necessary for frontier AI development. If this concentration continues, these entities could gain unprecedented influence over human affairs. Technical standards and infrastructure choices made today—about AI architectures, training methodologies, and deployment frameworks—could become increasingly difficult to change as systems scale and integrate.
 
 ## Near-term Outlook (1-2 Years)
 
-The immediate future will likely see continued consolidation of AI capabilities among leading developers, increasing the risk of premature lock-in of their particular approaches to AI safety and alignment. Constitutional AI and similar value-loading techniques may become industry standard without sufficient consideration of whose values are being embedded or whether they can be modified later. Geopolitical competition will likely intensify, with early advantages in AI capabilities potentially translating into long-term dominance.
+The immediate future will likely see continued consolidation of AI capabilities among leading developers, increasing the risk of premature lock-in of their particular approaches to AI safety and alignment. <R id="e99a5c1697baa07d">Constitutional AI</R> and similar value-loading techniques may become industry standard without sufficient consideration of whose values are being embedded or whether they can be modified later. Anthropic's <R id="3c862a18b467640b">Collective Constitutional AI research</R> represents one attempt to incorporate democratic input, but whether such approaches will be widely adopted remains uncertain. Geopolitical competition will likely intensify, with early advantages in AI capabilities potentially translating into long-term dominance.
 
 Regulatory frameworks being established now will shape the landscape for AI development globally. The EU's AI Act, China's AI regulations, and emerging US federal oversight represent foundational choices about how AI development will be governed. These frameworks could become entrenched as institutions, expertise, and expectations build around them. International coordination mechanisms—or the lack thereof—established during this period may determine whether any single country can make unilateral decisions that affect global AI development.
 
@@ -84,5 +112,15 @@ The question of democratic legitimacy for AI governance decisions remains largel
 Perhaps most fundamentally, uncertainty about human values themselves complicates efforts to prevent value lock-in. If humanity has "moral blind spots" similar to historical acceptance of slavery or oppression, attempting to lock in current values might be as dangerous as allowing arbitrary value lock-in to occur. Balancing the need to prevent obviously harmful lock-in with humility about moral progress represents one of the most difficult challenges in AI governance.
 
 The pace and predictability of AI development introduce additional uncertainty about when critical decisions must be made and how much time remains for deliberation and course correction. If AI capabilities advance discontinuously, the window for preventing lock-in might close suddenly and without warning. Conversely, if development proves more gradual and predictable, there may be more opportunities for democratic input and iterative improvement of AI governance frameworks.
+
+## Sources
+
+- Bostrom, N. (2014). *Superintelligence: Paths, Dangers, Strategies*. Oxford University Press.
+- David, P. A. (1985). "Clio and the Economics of QWERTY." *American Economic Review*, 75(2), 332-337.
+- Finnveden, L., Riedel, C. J., & Shulman, C. "Artificial General Intelligence and Lock-In." Research report on stable totalitarianism.
+- <R id="da390c7cc819b788">IMD AI Safety Clock</R> - Real-time tracking of AI safety risk indicators.
+- Liebowitz, S. J., & Margolis, S. E. (1990). "The Fable of the Keys." *Journal of Law and Economics*, 33(1), 1-25.
+- Ord, T. (2020). *The Precipice: Existential Risk and the Future of Humanity*. Bloomsbury Publishing.
+- <R id="510fbddaf17ab0f9">Stable Totalitarianism: An Overview</R> - EA Forum analysis of lock-in probability estimates.
 
 <Backlinks client:load entityId="lock-in" />

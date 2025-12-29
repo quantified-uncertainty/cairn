@@ -4,13 +4,13 @@ description: "The systematic decline in public confidence in institutions, media
 sidebar:
   order: 28
 maturity: "Growing"
-quality: 52
-llmSummary: "Trust erosion—systematic decline in public confidence in institutions—is accelerated by AI's ability to fabricate evidence at scale, with US federal government trust falling from 77% (1964) to 16% (2023). The 'liar's dividend' mechanism means AI-generated content undermines belief in all evidence, threatening democratic coordination and creating asymmetric advantages for institutional discreditation."
-lastEdited: "2025-12-24"
+quality: 78
+llmSummary: "Trust erosion—systematic decline in public confidence in institutions—is accelerated by AI's ability to fabricate evidence at scale, with US federal government trust falling from 77% (1964) to 22% (2024). The 'liar's dividend' mechanism means AI-generated content undermines belief in all evidence, threatening democratic coordination and creating asymmetric advantages for institutional discreditation."
+lastEdited: "2025-12-28"
 importance: 62.5
 causalLevel: "pathway"
 ---
-import {DataInfoBox, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="trust-erosion" />
 
@@ -22,55 +22,219 @@ The implications extend far beyond individual skepticism toward specific institu
 
 Understanding trust erosion requires distinguishing between warranted skepticism based on institutional failures and pathological distrust that undermines beneficial coordination. The key concern is not that people question authority—healthy skepticism can improve institutional performance—but that AI capabilities may push societies toward levels of distrust that make collective action nearly impossible.
 
+### Risk Assessment
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Severity | **High** | Undermines democratic governance, collective action on existential risks, and institutional legitimacy |
+| Likelihood | **Very High** | Already occurring; AI accelerating pre-existing trends |
+| Timeline | **Near-term to Ongoing** | Effects visible now, intensifying over 2-5 years |
+| Trend | **Accelerating** | AI content generation scaling faster than verification capacity |
+| Reversibility | **Difficult** | Rebuilding trust requires sustained effort over years to decades |
+
+### Responses That Address This Risk
+
+| Response | Mechanism | Effectiveness |
+|----------|-----------|---------------|
+| [Content Authentication](/knowledge-base/responses/epistemic-tools/content-authentication/) | Cryptographic verification of authentic content origins | Medium-High |
+| [Epistemic Infrastructure](/knowledge-base/responses/epistemic-tools/epistemic-infrastructure/) | Strengthening fact-checking and verification systems | Medium |
+| [Public Education](/knowledge-base/responses/public-education/) | Media literacy and AI awareness programs | Medium |
+| [Epistemic Security](/knowledge-base/responses/resilience/epistemic-security/) | Protecting information ecosystems from manipulation | Medium |
+| [Deliberation Tools](/knowledge-base/responses/epistemic-tools/deliberation/) | Structured dialogue to bridge epistemic divides | Low-Medium |
+
+---
+
 ## Current State and Evidence
 
-Empirical data reveals substantial trust decline across multiple domains over recent decades. The Pew Research Center's 2023 survey found that only 16% of Americans say they trust the federal government "just about always" or "most of the time," down from 77% in 1964. Trust in news media has similarly declined, with Gallup reporting that American trust in mass media fell to 34% in 2022, near historic lows. Scientific institutions, while maintaining higher trust levels than government or media, have also experienced erosion, particularly following COVID-19 controversies.
+Empirical data reveals substantial trust decline across multiple domains over recent decades. The <R id="b46b1ce9995931fe">Pew Research Center's 2024 survey</R> found that only 22% of Americans say they trust the federal government "just about always" or "most of the time," down from 77% in 1964—a decline of 55 percentage points over six decades. Trust in news media has fallen even more dramatically: <R id="ec0171d39415178a">Gallup's October 2024 survey</R> found that just 31% of Americans trust mass media, with 36% reporting no trust at all—the third consecutive year where complete distrust exceeded any degree of trust.
 
-The pattern is not uniform across demographics or geographies. Trust decline correlates with political polarization, education levels, and information consumption patterns. Partisans increasingly trust sources aligned with their political identity while distrusting opposing sources. This creates fragmented information ecosystems where shared epistemic foundations become increasingly rare. International data shows similar trends across developed democracies, suggesting structural rather than purely American causes.
+### Quantified Trust Decline
 
-Recent research indicates that AI-generated content is already contributing to trust erosion. A 2023 Reuters Institute study found that 67% of respondents were concerned about distinguishing between real and fake information online, with AI-generated content being a primary driver of this concern. The emergence of sophisticated deepfakes, AI-generated text that mimics journalistic writing, and personalized disinformation campaigns has begun to create what researchers term "epistemic chaos"—environments where determining truth becomes prohibitively difficult for ordinary citizens.
+| Institution | Peak Trust | Current Trust (2024) | Decline | Partisan Gap |
+|-------------|------------|---------------------|---------|--------------|
+| Federal Government | 77% (1964) | 22% | -55 pts | 24 pts (Dem: 35%, Rep: 11%) |
+| Mass Media | 72% (1976) | 31% | -41 pts | 42 pts (Dem: 54%, Rep: 12%) |
+| Congress | 42% (1973) | 11% | -31 pts | 15 pts |
+| Supreme Court | 56% (1985) | 25% | -31 pts | Variable |
+| Scientific Community | 67% (2019) | 57% | -10 pts | 30 pts |
+
+*Sources: <R id="b46b1ce9995931fe">Pew Research</R>, <R id="9bc684f131907acf">Gallup Confidence in Institutions</R>, <R id="1312df71e6a1ca40">Edelman Trust Barometer</R>*
+
+The pattern is not uniform across demographics or geographies. The <R id="1312df71e6a1ca40">2024 Edelman Trust Barometer</R> reveals striking international variation: trust levels in China (77%), Indonesia (76%), and India (75%) contrast sharply with the US (47%), UK (43%), and Japan (37%). The 2025 edition found that six in ten respondents globally report moderate to high grievance levels, with belief that "the system serves the wealthy" at historic highs.
+
+The <R id="6289dc2777ea1102">Reuters Institute Digital News Report 2024</R> documents rising concern about misinformation, with 59% globally expressing worry about distinguishing real from fake online news—up 3 percentage points from 2023. Concern is particularly acute in election-year contexts: 72% in the United States and 81% in South Africa reported high misinformation concern. Notably, 27% of TikTok users report difficulty identifying trustworthy news—the highest of any platform surveyed.
 
 ## AI Acceleration Mechanisms
 
-AI technologies accelerate trust erosion through several distinct but interconnected mechanisms. The most obvious is the production of sophisticated disinformation that can fabricate evidence against institutions with unprecedented realism. Modern large language models can generate thousands of fake news articles in minutes, each tailored to specific audiences and designed to exploit particular cognitive biases. Computer vision advances enable the creation of deepfake videos showing public officials making statements they never made or engaging in activities they never participated in.
+AI technologies accelerate trust erosion through several distinct but interconnected mechanisms, creating a cascade effect where each pathway reinforces the others.
 
-The "liar's dividend" represents a more subtle but potentially more destructive mechanism. This concept, developed by researchers studying information warfare, describes how the mere possibility of fabricated evidence undermines trust in all evidence. When any recording could be a deepfake, any document could be AI-generated, and any testimony could be fabricated, the default response becomes skepticism rather than provisional trust. This creates asymmetric advantages for those seeking to discredit institutions, as they need only raise doubt rather than prove alternative narratives.
+<Mermaid client:load chart={`
+flowchart TD
+    AI[AI Capabilities] --> CONTENT[Content Fabrication]
+    AI --> PERSONAL[Personalization]
+    AI --> SCALE[Scale Effects]
+
+    CONTENT --> DEEPFAKES[Deepfakes & Synthetic Media]
+    CONTENT --> DISINFO[Automated Disinformation]
+
+    PERSONAL --> TARGET[Targeted Trust Attacks]
+    PERSONAL --> BUBBLE[Epistemic Bubbles]
+
+    SCALE --> FLOOD[Information Flooding]
+    SCALE --> VERIFY[Verification Overwhelm]
+
+    DEEPFAKES --> LIAR[Liar's Dividend]
+    DISINFO --> LIAR
+    LIAR --> EROSION[Trust Erosion]
+
+    TARGET --> EROSION
+    BUBBLE --> EROSION
+    FLOOD --> EROSION
+    VERIFY --> EROSION
+
+    EROSION --> COORD[Coordination Failure]
+    EROSION --> MANIPULATE[Manipulation Vulnerability]
+    EROSION --> POLARIZE[Political Polarization]
+
+    style AI fill:#e1f5fe
+    style LIAR fill:#fff3e0
+    style EROSION fill:#ffcdd2
+    style COORD fill:#ffcdd2
+    style MANIPULATE fill:#ffcdd2
+    style POLARIZE fill:#ffcdd2
+`} />
+
+The most direct mechanism is sophisticated content fabrication. Modern large language models can generate thousands of fake news articles in minutes, each tailored to specific audiences and designed to exploit particular cognitive biases. Computer vision advances enable deepfake videos showing public officials making statements they never made. The technology for generating convincing synthetic media is advancing faster than detection capabilities—<R id="5494083a1717fed7">deepfake fraud attempts have surged 3,000% in recent years</R>, with businesses facing average losses of nearly \$100,000 in 2024.
+
+### The Liar's Dividend
+
+The "liar's dividend" represents a more subtle but potentially more destructive mechanism. This concept, coined by legal scholars <R id="ad6fe8bb9c2db0d9">Bobby Chesney and Danielle Citron</R>, describes how the mere possibility of fabricated evidence undermines trust in all evidence. When any recording could be a deepfake, any document could be AI-generated, and any testimony could be fabricated, the default response becomes skepticism rather than provisional trust.
+
+A <R id="c75d8df0bbf5a94d">2024 study in the American Political Science Review</R> tested this phenomenon experimentally with over 15,000 American adults. Researchers found that politicians can successfully claim real scandals are "fake news" or "deepfakes," raising their support across partisan subgroups. Crucially, these strategies work against text-based reports but are largely ineffective against video evidence—suggesting a temporary window before video deepfakes become convincing enough to also be plausibly denied.
+
+| Liar's Dividend Effect | Current Impact | Projected Impact (2027) |
+|------------------------|----------------|-------------------------|
+| Plausible deniability for text claims | High | Very High |
+| Plausible deniability for audio | Moderate | High |
+| Plausible deniability for video | Low | Moderate-High |
+| General evidence skepticism | Moderate | High |
+| Electoral manipulation via denial | Documented cases | Widespread concern |
+
+*Source: <R id="e68bcc79e17f42df">Brookings Institution analysis</R>, <R id="5494083a1717fed7">Brennan Center research</R>*
+
+### Personalization and Scale
 
 Personalization amplifies these effects by enabling targeted attacks on individual trust relationships. AI systems can analyze social media data, purchasing patterns, and demographic information to identify which institutions each person trusts most, then generate customized content designed to undermine those specific trust relationships. A person who trusts environmental scientists might receive AI-generated content suggesting climate researchers are financially compromised, while someone who trusts medical authorities might be shown fabricated evidence of pharmaceutical corruption.
 
-The scale effects are perhaps most concerning. Traditional disinformation required significant human resources and reached limited audiences. AI-powered systems can generate millions of pieces of targeted content simultaneously, overwhelming traditional fact-checking and verification systems. When the volume of questionable information exceeds society's capacity to verify it, trust becomes a necessary shortcut—but one that becomes increasingly unreliable as AI capabilities advance.
+The scale effects compound the personalization threat. Traditional disinformation campaigns required significant human resources—the Internet Research Agency employed roughly 400-1,000 people at its peak. AI-powered systems can generate equivalent volumes of targeted content with a handful of operators, overwhelming traditional fact-checking and verification systems whose capacity has not scaled proportionally.
+
+| Disinformation Capacity | Pre-AI Era | Current AI Era | Projected (2027) |
+|------------------------|------------|----------------|------------------|
+| Content generation (articles/day/operator) | 2-5 | 500-2,000 | 10,000+ |
+| Personalization depth | Demographics only | Individual-level | Predictive targeting |
+| Language capabilities | Native only | 20-50 languages | 100+ languages |
+| Multimedia synthesis | Expensive, slow | Cheap, fast | Real-time |
+| Detection evasion | Low | Moderate | High |
+
+When the volume of questionable information exceeds society's capacity to verify it, trust becomes a necessary shortcut—but one that becomes increasingly unreliable as AI capabilities advance. The 2025 Edelman Trust Barometer found that 4 in 10 people globally would now approve of hostile activism including spreading intentional disinformation, suggesting trust erosion is already enabling dangerous social dynamics.
 
 ## Safety Implications and Consequences
 
 The safety implications of trust erosion extend beyond information quality to fundamental questions of social stability and governance. Democratic systems require shared epistemic foundations to function effectively. Citizens must trust that elections are conducted fairly, that scientific evidence informs policy decisions, and that media institutions provide reasonably accurate information about public affairs. When these foundations erode, democratic legitimacy itself becomes contested.
 
-The concerning trajectory includes increased election denialism, as AI-generated "evidence" of voter fraud becomes more sophisticated and harder to definitively refute. Public health responses to future pandemics may become impossible if medical authorities lack credibility, while climate action may stall if scientific institutions are viewed as fundamentally compromised. International cooperation depends on trusted institutions that can verify compliance with agreements—trust erosion undermines this entire system.
+### Domain-Specific Consequences
 
-Violence represents an extreme but increasingly plausible consequence. When institutional channels for resolving disputes lose legitimacy, alternative mechanisms become more attractive. The January 6, 2021 attack on the US Capitol demonstrated how distrust in electoral institutions can lead to direct action against democratic processes. AI-generated evidence claiming to prove institutional corruption or conspiracy could trigger similar responses across various domains.
+| Domain | Trust Erosion Impact | Severity | Timeline |
+|--------|---------------------|----------|----------|
+| **Elections** | Contested results, reduced participation, violence | Critical | Immediate |
+| **Public Health** | Pandemic response failure, vaccine hesitancy | High | 1-3 years |
+| **Climate Action** | Policy paralysis, delayed mitigation | High | 5-15 years |
+| **International Cooperation** | Treaty verification failures, arms control collapse | Critical | 2-10 years |
+| **Scientific Research** | Funding shifts, brain drain, research stagnation | Moderate | 5-20 years |
+| **Financial Systems** | Market instability, reduced investment | Moderate-High | Variable |
 
-However, some aspects of AI-driven trust erosion may prove beneficial in the long term. Forcing institutions to improve transparency, accountability, and performance could strengthen rather than weaken legitimate authority. The development of new verification technologies, driven by the need to combat AI-generated disinformation, might create more robust systems for establishing truth than currently exist.
+The concerning trajectory includes increased election denialism, as AI-generated "evidence" of voter fraud becomes more sophisticated and harder to definitively refute. The 2020-2024 period demonstrated how distrust narratives can persist despite lack of evidence—AI tools will make such narratives easier to construct and harder to refute. Public health responses to future pandemics may become impossible if medical authorities lack credibility: the <R id="d3b07eea2e75cc28">Pew Research Center found a 30-point partisan gap in trust in scientists</R>, a divide that AI-generated health misinformation could widen further.
+
+Violence represents an extreme but increasingly plausible consequence. When institutional channels for resolving disputes lose legitimacy, alternative mechanisms become more attractive. The January 6, 2021 attack on the US Capitol demonstrated how distrust in electoral institutions can lead to direct action against democratic processes. The 2025 Edelman Trust Barometer found that 4 in 10 respondents would approve of threatening or committing violence to bring about change—a troubling indicator of how trust erosion enables radicalization.
+
+### Potential Beneficial Effects
+
+However, some aspects of AI-driven trust erosion may prove beneficial in the long term. Forcing institutions to improve transparency, accountability, and performance could strengthen rather than weaken legitimate authority. The development of new verification technologies—cryptographic signing, content provenance systems, and blockchain-based attestation—might create more robust systems for establishing truth than currently exist. The pressure to develop "trust infrastructure" could ultimately produce more resilient epistemic systems than the pre-AI baseline.
 
 ## Trajectory and Future Developments
 
-Current trends suggest trust erosion will accelerate over the next 1-2 years as AI capabilities become more accessible and sophisticated. Large language models will reach near-human performance in generating convincing disinformation across specialized domains, while deepfake technology will become available to non-expert users through consumer applications. The 2024-2026 period is likely to see the first major political crises directly attributable to AI-generated disinformation that cannot be definitively debunked.
+Current trends suggest trust erosion will accelerate over the next 1-2 years as AI capabilities become more accessible and sophisticated. Large language models already match human performance in generating convincing disinformation across most domains, while deepfake technology is becoming available to non-expert users through consumer applications. The 2024-2026 period is likely to see major political crises directly attributable to AI-generated disinformation that cannot be definitively debunked.
 
-Institutional responses during this period will prove critical for long-term trajectories. Media organizations, scientific institutions, and government agencies that successfully adapt to the new threat environment may emerge stronger, while those that fail to update their practices may suffer permanent credibility damage. The development of technical solutions—cryptographic signing of authentic content, blockchain-based verification systems, and AI detection tools—will begin but likely remain incomplete and unevenly deployed.
+### Projected Trust Trajectory
 
-The 2-5 year horizon presents more fundamental questions about epistemic reconstruction. Either societies will develop new mechanisms for establishing shared truth and rebuilding institutional credibility, or they will fragment into incompatible epistemic communities with little capacity for collective action. The former path requires unprecedented coordination between technology developers, institutions, and civil society. The latter path leads toward what researchers term "epistemic secession"—the breakdown of shared information environments into mutually incomprehensible fragments.
+| Timeframe | Key Developments | Trust Impact | Intervention Windows |
+|-----------|-----------------|--------------|---------------------|
+| **2025-2026** | Deepfake video consumer tools; multimodal synthesis; detection cat-and-mouse | Accelerating decline | High—standards can still be established |
+| **2027-2028** | Real-time synthetic media; personalized AI agents; provenance adoption | Plateau or further decline depending on response | Moderate—infrastructure investment critical |
+| **2029-2030** | Mature verification infrastructure vs. advanced evasion | Bifurcation: recovery or collapse | Low—path dependency established |
+| **2030+** | New equilibrium: either robust verification or fragmented reality | Stabilization at new level | Minimal—outcomes largely determined |
 
-International dimensions will become increasingly important as different countries pursue varying approaches to AI governance and information verification. Authoritarian systems may use AI-driven trust erosion to justify increased state control over information, while democratic societies struggle to balance free expression with epistemic security. These divergent paths could reshape global power dynamics and alliance structures.
+Institutional responses during this period will prove critical for long-term trajectories. Media organizations, scientific institutions, and government agencies that successfully adapt to the new threat environment may emerge stronger, while those that fail to update their practices may suffer permanent credibility damage. The Coalition for Content Provenance and Authenticity (C2PA) standard represents an early coordination attempt, but adoption remains limited and verification systems are not yet user-friendly.
+
+### Scenario Analysis
+
+The 2-5 year horizon presents fundamental questions about epistemic reconstruction:
+
+| Scenario | Probability | Pathway | Key Indicators |
+|----------|-------------|---------|----------------|
+| **Epistemic Recovery** | 25-35% | Robust verification infrastructure; institutional adaptation; public investment in media literacy | C2PA widespread adoption; major platforms require provenance; trust metrics stabilize |
+| **Managed Decline** | 35-45% | Partial defenses; continued erosion but not collapse; elite-mass trust divergence | Verification patchy; trust stratified by education/class; functional but degraded democracy |
+| **Epistemic Fragmentation** | 20-30% | Failed coordination; "epistemic secession" into incompatible communities | Divergent realities by political identity; coordination failures on major challenges; potential violence |
+| **Authoritarian Capture** | 5-10% | Trust collapse enables centralized "truth" authorities | State-controlled verification; democratic norms abandoned; surveillance-based trust |
+
+International dimensions will become increasingly important as different countries pursue varying approaches to AI governance and information verification. Authoritarian systems may use AI-driven trust erosion to justify increased state control over information, while democratic societies struggle to balance free expression with epistemic security. The 2025 Edelman Trust Barometer already shows a 40-point gap between trust levels in autocracies (China 77%, UAE 72%) and democracies (Japan 37%, UK 43%)—AI-driven dynamics could widen this divergence further.
 
 ## Key Uncertainties and Research Questions
 
-Several critical uncertainties will shape how trust erosion develops. The effectiveness of technical countermeasures remains unclear—while AI detection tools and verification systems show promise in laboratory settings, their performance in real-world adversarial environments is less certain. Adaptive attackers may develop techniques that circumvent detection faster than defenders can improve their tools.
+Several critical uncertainties will shape how trust erosion develops:
 
-Human psychological responses to epistemic uncertainty represent another major unknown. Some research suggests people may develop better "epistemic immune systems" when exposed to sophisticated disinformation, learning to navigate uncertain information environments more effectively. Other studies indicate the opposite—that repeated exposure to fabricated content reduces overall trust even in legitimate sources. The actual population-level response likely depends on factors like education, media literacy, and cultural context that are not yet well understood.
+### Critical Research Questions
 
-The institutional adaptation question remains open. Historical examples show that institutions can successfully adapt to new challenges—journalism evolved new practices during the rise of yellow journalism in the early 20th century, while scientific institutions developed peer review and replication standards partly in response to credibility challenges. Whether similar adaptations can occur rapidly enough to address AI-driven challenges is uncertain.
+| Uncertainty | Current Evidence | Resolution Importance | Tractability |
+|------------|------------------|----------------------|--------------|
+| **Technical countermeasure effectiveness** | Mixed lab results; real-world performance unclear | High | Moderate |
+| **Human psychological adaptation** | Conflicting studies on "epistemic immunity" vs. generalized skepticism | Very High | Moderate |
+| **Institutional adaptation speed** | Historical precedents suggest possible but uncertain | High | Low |
+| **Political economy dynamics** | Strong incentives for exploitation; weak coordination | Critical | Low |
+| **AGI timeline interactions** | If AGI arrives soon, current analysis may be obsolete | Very High | Very Low |
 
-Political economy factors may prove decisive but are difficult to predict. Trust erosion creates opportunities for actors who benefit from social fragmentation and institutional weakness. Whether such actors will be able to exploit AI capabilities to permanently undermine trust, or whether countervailing forces will emerge to defend epistemic commons, depends on complex political dynamics that traditional forecasting methods struggle to capture.
+**Technical countermeasures:** While AI detection tools and verification systems show promise in laboratory settings, their performance in adversarial environments is uncertain. Detection accuracy for current deepfakes ranges from 65-95% in controlled conditions but drops significantly with newer generation methods. The cat-and-mouse dynamic between generation and detection may favor attackers who need only occasional successes while defenders must catch everything.
 
-The timeline for advanced AI capabilities adds another layer of uncertainty. If artificial general intelligence emerges within the next decade, the entire problem space may be transformed in ways that make current analysis obsolete. Conversely, if AI progress plateaus, societies may have more time to develop adaptive responses to current challenges.
+**Human psychological responses:** Some research suggests people may develop better "epistemic immune systems" when exposed to sophisticated disinformation, learning to navigate uncertain information environments more effectively. Other studies indicate the opposite—that repeated exposure to fabricated content reduces overall trust even in legitimate sources. The <R id="6289dc2777ea1102">Reuters Institute</R> documents rising news avoidance (now 36% globally), suggesting fatigue rather than adaptation may be the dominant response.
+
+**Institutional adaptation:** Historical examples show that institutions can successfully adapt to new challenges—journalism evolved practices during yellow journalism's rise, while science developed peer review partly in response to credibility crises. However, these adaptations occurred over decades, not years. Whether institutions can adapt rapidly enough to address AI-driven challenges while maintaining public trust remains the central uncertainty.
+
+**Political economy:** Trust erosion creates opportunities for actors who benefit from social fragmentation and institutional weakness. The 2025 Edelman finding that 4 in 10 would approve intentional disinformation spreading suggests exploitation incentives are already high. Whether countervailing forces will defend epistemic commons depends on coordination dynamics that current models struggle to predict.
+
+---
+
+## Sources & Key Research
+
+### Trust Data and Surveys
+
+- <R id="b46b1ce9995931fe">Pew Research Center: Public Trust in Government 1958-2024</R> — Definitive longitudinal data on US government trust
+- <R id="ec0171d39415178a">Gallup: Trust in Media at New Low</R> — October 2024 survey showing 31% trust, 36% complete distrust
+- <R id="9bc684f131907acf">Gallup: Confidence in Institutions</R> — Cross-institutional trust tracking
+- <R id="1312df71e6a1ca40">Edelman Trust Barometer 2024</R> — Global trust data across 28 markets
+- <R id="6289dc2777ea1102">Reuters Institute Digital News Report 2024</R> — 47-country analysis of news consumption and trust
+
+### Liar's Dividend and Deepfakes
+
+- <R id="ad6fe8bb9c2db0d9">Chesney & Citron: Deep Fakes—A Looming Challenge</R> — Original conceptualization of the liar's dividend
+- <R id="c75d8df0bbf5a94d">Liar's Dividend study (American Political Science Review, 2024)</R> — Experimental evidence with 15,000+ subjects
+- <R id="e68bcc79e17f42df">Brookings: How the liar's dividend might affect elections</R> — Analysis of electoral implications
+- <R id="5494083a1717fed7">Brennan Center: Deepfakes and Shrinking the Liar's Dividend</R> — Policy responses and countermeasures
+
+### Scientific Trust
+
+- <R id="d3b07eea2e75cc28">Pew: Americans' Trust in Scientists Declines</R> — Partisan divergence in scientific authority
+
+---
 
 ## Related Pages
 

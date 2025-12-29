@@ -1,13 +1,14 @@
 ---
 title: "The Case AGAINST AI Existential Risk"
-description: "The strongest skeptical argument about AI x-risk, presented fairly"
+description: "This analysis synthesizes the strongest skeptical arguments against AI existential risk. It presents positions from prominent researchers including Yann LeCun, Gary Marcus, and Andrew Ng, who argue that x-risk probability is under 1% due to scaling limitations, tractable alignment, and robust human control mechanisms."
 sidebar:
   order: 3
-importance: 74.5
-quality: 52
+importance: 82
+quality: 78
+lastEdited: "2025-12-28"
 llmSummary: "Presents the steelmanned skeptical case against AI x-risk (probability less than 1%), systematically challenging each premise of the x-risk argument: capabilities may plateau due to data/compute/architectural limits; alignment may be easier than feared due to natural value absorption from training data; and iterative deployment allows for incremental safety improvements. Arguments include scaling limitations, intelligence specialization, and the possibility that current RLHF success indicates alignment by default."
 ---
-import { InfoBox } from '../../../../components/wiki';
+import {InfoBox, Mermaid, R} from '../../../../components/wiki';
 
 <InfoBox
   type="argument"
@@ -23,6 +24,33 @@ import { InfoBox } from '../../../../components/wiki';
 
 This page presents the **steelmanned skeptical position**—the strongest arguments against AI existential risk. This is not a strawman; these are serious objections raised by thoughtful researchers.
 
+## Prominent Skeptics and Their Arguments
+
+Several distinguished AI researchers have publicly articulated skepticism about existential risk claims. The following table summarizes key positions:
+
+| Researcher | Affiliation | Core Position | Key Quote |
+|------------|-------------|---------------|-----------|
+| **Yann LeCun** | Meta AI, NYU, Turing Award | X-risk concerns are premature; we lack systems smarter than a cat | "You're going to have to pardon my French, but that's complete B.S." (<R id="61b8ab42c6b32b27">TechCrunch, 2024</R>) |
+| **Gary Marcus** | NYU Emeritus | Extinction scenarios lack concrete mechanisms | "I'm not personally that concerned about extinction risk, at least for now, because the scenarios are not that concrete" (<R id="9a7642dfbd957ca5">France24, 2023</R>) |
+| **Andrew Ng** | Stanford, Google Brain co-founder | No plausible path from AI to extinction | "In the case of extinction risk, I just don't get it—I don't see any plausible path for AI to lead to human extinction" (<R id="46c0b419e8afe3fb">Senate testimony, 2023</R>) |
+| **Thomas Dietterich** | Oregon State, former AAAI President | Survey framing promotes doomer perspective | Declined participation in AI Impacts survey due to "AI-doomer, existential-risk perspective" (<R id="0f93fdc32b08ffd7">Scientific American, 2024</R>) |
+
+LeCun has been particularly vocal, arguing at Davos 2024 that "asking for regulations because of fear of superhuman intelligence is like asking for regulation of transatlantic flights at near the speed of sound in 1925." He emphasizes that AI is not a natural phenomenon but something humans design and build—comparable to how we made turbojets "insanely reliable before deploying them widely."
+
+## Expert Survey Data
+
+Survey evidence provides important context for understanding the distribution of expert opinion on AI existential risk. While surveys have methodological limitations, they offer quantitative insight into the range of views:
+
+| Survey | Year | Sample | Median P(doom) | Key Finding |
+|--------|------|--------|----------------|-------------|
+| AI Impacts | 2022 | ~700 AI researchers | 5% | Extinction from AI-caused inability to control systems: 10% median |
+| AI Impacts | 2023 | ~2,700 AI researchers | 5% | Mean 14.4%, but median unchanged from 2022 |
+| AAAI Presidential Panel | 2025 | 475 AI researchers | N/A | 76% say scaling current approaches is "unlikely" or "very unlikely" to yield AGI (<R id="fe6c042996d3aa1b">TechPolicy.Press</R>) |
+
+The AAAI 2025 survey is particularly notable: while the majority of AI researchers take safety seriously (77% agree catastrophic risks deserve attention), 76% are skeptical that current approaches will achieve AGI at all. Stuart Russell, a member of the research team, commented that "the vast investments in scaling, unaccompanied by any comparable efforts to understand what was going on, always seemed to me to be misplaced."
+
+A 2025 analysis of expert disagreement found that AI experts cluster into two worldviews: "AI as controllable tool" versus "AI as uncontrollable agent." Notably, the correlation between familiarity with AI safety concepts and risk perception suggests that skepticism may partly stem from unfamiliarity with alignment literature rather than fundamental disagreement (<R id="4a838ac42dc6e2fc">arXiv, 2025</R>).
+
 ## The Core Counter-Argument
 
 ### Responding to the X-Risk Argument
@@ -36,6 +64,42 @@ Recall the pro-x-risk argument:
 
 **The skeptical response**: Each premise is either false, uncertain, or not as strong as claimed.
 
+The following diagram illustrates how skeptics challenge each premise of the x-risk argument:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph "X-Risk Argument"
+        P1[P1: Extreme Capabilities]
+        P2[P2: Misalignment]
+        P3[P3: Danger]
+        P4[P4: Unsolved in Time]
+        C[Conclusion: X-Risk]
+    end
+
+    subgraph "Skeptical Challenges"
+        S1[Scaling Plateau<br/>AAAI: 76% doubt AGI via scaling]
+        S2[Alignment by Default<br/>LLMs absorb values from data]
+        S3[Human Control<br/>Multiple defense layers]
+        S4[Good Progress<br/>RLHF, Constitutional AI work]
+    end
+
+    P1 -.->|challenged by| S1
+    P2 -.->|challenged by| S2
+    P3 -.->|challenged by| S3
+    P4 -.->|challenged by| S4
+
+    S1 -->|weakens| C
+    S2 -->|weakens| C
+    S3 -->|weakens| C
+    S4 -->|weakens| C
+
+    style C fill:#f88,stroke:#a00
+    style S1 fill:#8f8,stroke:#0a0
+    style S2 fill:#8f8,stroke:#0a0
+    style S3 fill:#8f8,stroke:#0a0
+    style S4 fill:#8f8,stroke:#0a0
+`} />
+
 Let's examine why each premise might be wrong or overstated.
 
 ## Challenging P1: Will AI Really Become Extremely Capable?
@@ -46,7 +110,17 @@ Let's examine why each premise might be wrong or overstated.
 
 **The scaling optimism**: "Just add more compute and data, get smarter AI"
 
-**Why this might be wrong**:
+**Why this might be wrong**: In late 2024, multiple reports emerged suggesting that major labs are encountering diminishing returns from scaling. The following table summarizes the evidence:
+
+| Lab | Evidence | Source |
+|-----|----------|--------|
+| **OpenAI** | Orion's improvement over GPT-4 "far smaller" than GPT-3 to GPT-4 gap | <R id="1ed975df72c30426">TechCrunch, Nov 2024</R> |
+| **Google** | Gemini development showing "disappointing results and slower-than-expected improvement" | <R id="1ed975df72c30426">TechCrunch, Nov 2024</R> |
+| **Anthropic** | Bloomberg confirmed similar difficulties | <R id="2858bb2d8f8d10c7">Bloomberg, 2024</R> |
+
+Ilya Sutskever, recently-exited OpenAI co-founder, stated at NeurIPS 2024: "The 2010s were the age of scaling, now we're back in the age of wonder and discovery once again... pretraining as we know it will end." Robert Nishihara (Anyscale) elaborated: "If you just put in more compute, you put in more data, you make the model bigger—there are diminishing returns. In order to keep the scaling laws going... we also need new ideas."
+
+However, this view is contested. Dario Amodei (Anthropic CEO) claims "We don't see any evidence that things are leveling off," and Sam Altman (OpenAI CEO) simply stated: "There is no wall."
 
 **Data Limitations**:
 - Running out of high-quality text data (internet is finite)
@@ -64,11 +138,6 @@ Let's examine why each premise might be wrong or overstated.
 - Current architectures (transformers) may not scale to AGI
 - Might need fundamental breakthroughs
 - Breakthroughs might not arrive when needed
-
-**Evidence**:
-- GPT-4 to GPT-5 improvements seem incremental (not revolutionary)
-- Some scaling curves showing diminishing returns
-- Increasing costs for decreasing performance gains
 
 ### 1.2 Intelligence May Not Be Unidimensional
 
@@ -214,11 +283,11 @@ Let's examine why each premise might be wrong or overstated.
 - No self-model or identity
 - No planning toward long-term outcomes
 
-**Yann LeCun's position**: Current AI architectures fundamentally aren't agentic. The "AI wants things" framing is a category error.
+**Yann LeCun's position**: Current AI architectures fundamentally aren't agentic. The "AI wants things" framing is a category error. LeCun argues that "humans have all kinds of drives that make them do bad things to each other, like the self-preservation instinct... Those drives are programmed into our brain but there is absolutely no reason to build robots that have the same kind of drives." He believes superintelligent machines will have no desire for self-preservation precisely because we don't need to build that in (<R id="08b00b04bcd294dc">WebProNews, 2025</R>).
 
 **Implication**: Concerns about instrumental convergence, power-seeking, etc. don't apply to systems that don't have goals.
 
-**Response to "but we'll build agentic AI"**: Maybe, but it's not inevitable. We might get very capable non-agentic AI that's inherently safe.
+**Response to "but we'll build agentic AI"**: Maybe, but it's not inevitable. We might get very capable non-agentic AI that's inherently safe. LeCun promotes "self-supervised learning" as a path to safe intelligence, arguing that scalable, modular architectures can be designed to maintain human-compatible goals.
 
 ## Challenging P3: Would Misaligned AI Really Be Dangerous?
 
@@ -398,21 +467,34 @@ Let's examine why each premise might be wrong or overstated.
 
 **Conjunction is very weak**: Even if each premise has 50% probability (generous to x-risk), conjunction is 0.5^4 = 6.25%.
 
-**More realistic assessment**:
-- P1: 60% (AI will be very capable, but maybe not superintelligent)
-- P2: 30% (alignment seems tractable)
-- P3: 40% (dangerous but not necessarily existential)
-- P4: 30% (making progress, likely to solve in time)
+The following table presents a skeptical probability assessment:
 
-**Conjunction**: 0.6 × 0.3 × 0.4 × 0.3 = 2.16%
+| Premise | Skeptical P(True) | Reasoning | Challenge Strength |
+|---------|-------------------|-----------|-------------------|
+| P1: Extreme Capabilities | 60% | AAAI: 76% doubt scaling yields AGI; diminishing returns observed | Strong |
+| P2: Misalignment | 30% | RLHF success; values absorbed from training data | Moderate-Strong |
+| P3: Existential Danger | 40% | Multiple control layers; humans maintain physical control | Moderate |
+| P4: Unsolved in Time | 30% | Good progress on interpretability, RLHF, Constitutional AI | Moderate |
+| **Conjunction** | **2.16%** | 0.6 × 0.3 × 0.4 × 0.3 | — |
 
-**And this ignores positive factors** (regulation, economic incentives, AI helping alignment).
+This analysis suggests x-risk probability is roughly 2%, before accounting for positive factors like regulation and economic incentives favoring safety. This aligns with the AI Impacts survey median of 5% (with most skeptics placing it lower).
 
-**Conclusion**: X-risk is probably under 1%, possibly under 0.1%.
+For comparison, prominent skeptics estimate even lower probabilities:
+- **Yann LeCun**: Effectively 0% ("complete B.S.")
+- **Andrew Ng**: No plausible path to extinction
+- **Roman Yampolskiy** (for contrast): 99%
+
+**Conclusion**: X-risk is probably under 5%, possibly under 1%.
 
 ## The Methodological Critique
 
 ### Why the X-Risk Community Gets This Wrong
+
+Several prominent skeptics have raised methodological concerns about how AI existential risk estimates are generated and communicated.
+
+**Survey methodology concerns**: Thomas Dietterich, former AAAI president, declined to participate in the AI Impacts survey because "many of the questions are asked from the AI-doomer, existential-risk perspective." He argues that framing survey queries about existential risk inherently promotes the idea that AI poses an existential threat (<R id="0f93fdc32b08ffd7">Scientific American, 2024</R>).
+
+**Funding conflicts**: Andrew Ng has argued that large tech companies are creating fear of AI leading to human extinction to lobby for legislation that would be damaging to the open-source community. He states that "sensationalist worries about catastrophic risks may distract [policymakers] from paying attention to actually risky AI products" (<R id="c8ec6e4903275345">SiliconANGLE, 2023</R>). However, Geoffrey Hinton countered: "A data point that does not fit this conspiracy theory is that I left Google so that I could speak freely about the existential threat."
 
 **Cognitive biases**:
 - **Availability bias**: Scary scenarios are vivid and memorable
@@ -441,6 +523,8 @@ Let's examine why each premise might be wrong or overstated.
 - Didn't happen
 - Current AI alarmism follows same pattern
 - Base rate: technological catastrophe very rare
+
+Andrew Ng drew an analogy in 2015: worrying about AI existential risk is "like worrying about overpopulation on Mars when we have not even set foot on the planet yet." Gary Marcus has similarly argued that "literal extinction is just one possible risk, not yet well-understood, and there are many other risks from AI that also deserve attention."
 
 ### The Burden of Proof
 
@@ -615,8 +699,19 @@ The case against AI x-risk rests on:
 4. **We have time** to solve remaining problems
 5. **The evidence** is too speculative to justify extreme concern
 
-This doesn't mean AI is risk-free. Near-term harms are real. But **existential catastrophe is very unlikely** (under 1%).
+This doesn't mean AI is risk-free. Near-term harms are real. But **existential catastrophe is very unlikely** (under 5%, possibly under 1%).
 
 The reasonable approach: Work on concrete safety, pursue beneficial applications, avoid alarmism, and update on evidence.
 
+## Key Sources
 
+| Source | Year | Key Contribution |
+|--------|------|------------------|
+| <R id="61b8ab42c6b32b27">Yann LeCun interview, TechCrunch</R> | 2024 | "Complete B.S." quote; turbojets analogy |
+| <R id="9a7642dfbd957ca5">Gary Marcus, France24</R> | 2023 | Extinction scenarios lack concrete mechanisms |
+| <R id="46c0b419e8afe3fb">Andrew Ng Senate testimony</R> | 2023 | No plausible path to extinction |
+| <R id="fe6c042996d3aa1b">AAAI Presidential Panel</R> | 2025 | 76% doubt scaling yields AGI |
+| <R id="1ed975df72c30426">AI Scaling Diminishing Returns, TechCrunch</R> | 2024 | Orion, Gemini showing slower improvements |
+| <R id="4a838ac42dc6e2fc">Expert Disagreement Survey, arXiv</R> | 2025 | Two worldviews: controllable tool vs. uncontrollable agent |
+| <R id="08b00b04bcd294dc">LeCun-Hinton Clash, WebProNews</R> | 2025 | LeCun on self-preservation drives |
+| <R id="0f93fdc32b08ffd7">Survey Methodology Critique, Scientific American</R> | 2024 | Dietterich on survey framing bias |

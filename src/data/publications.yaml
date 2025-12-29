@@ -1,0 +1,293 @@
+# Publications / Venues Database
+# ==============================
+#
+# Maps publication venues to metadata including credibility ratings.
+# Resources reference these by domain or publication_id.
+#
+# Credibility tiers:
+#   5 - Gold standard (Nature, Science, peer-reviewed journals)
+#   4 - High quality (Major think tanks, established researchers)
+#   3 - Good quality (Company blogs from major labs, quality blogs)
+#   2 - Mixed quality (Preprints without review, general blogs)
+#   1 - Low quality (Unvetted sources, promotional content)
+#
+# Types:
+#   academic_journal - Peer-reviewed academic publications
+#   preprint_server - arXiv, bioRxiv, etc.
+#   think_tank - Policy research organizations
+#   company_blog - AI lab technical blogs
+#   government - Government agencies and reports
+#   encyclopedia - Wikipedia, reference works
+#   blog_platform - LessWrong, Substack, Medium
+#   news - News outlets and magazines
+#   organization - Nonprofit/advocacy organizations
+
+# Academic & Scientific
+- id: nature
+  domains: [nature.com, nature.com/articles]
+  name: Nature
+  type: academic_journal
+  credibility: 5
+  peer_reviewed: true
+  description: Premier multidisciplinary science journal
+
+- id: science
+  domains: [science.org, sciencemag.org]
+  name: Science
+  type: academic_journal
+  credibility: 5
+  peer_reviewed: true
+  description: Top-tier multidisciplinary science journal
+
+- id: arxiv
+  domains: [arxiv.org]
+  name: arXiv
+  type: preprint_server
+  credibility: 3
+  peer_reviewed: false
+  description: Open-access preprint server for STEM fields
+
+- id: springer
+  domains: [link.springer.com, springer.com]
+  name: Springer
+  type: academic_journal
+  credibility: 4
+  peer_reviewed: true
+  description: Major academic publisher
+
+- id: semantic-scholar
+  domains: [semanticscholar.org]
+  name: Semantic Scholar
+  type: academic_search
+  credibility: 4
+  description: AI-powered academic search engine
+
+- id: google-scholar
+  domains: [scholar.google.com]
+  name: Google Scholar
+  type: academic_search
+  credibility: 4
+  description: Academic literature search engine
+
+# AI Labs - Technical Blogs
+- id: anthropic
+  domains: [anthropic.com]
+  name: Anthropic
+  type: company_blog
+  credibility: 4
+  peer_reviewed: false
+  description: AI safety company, Claude developer
+
+- id: openai
+  domains: [openai.com]
+  name: OpenAI
+  type: company_blog
+  credibility: 4
+  peer_reviewed: false
+  description: GPT developer, leading AI lab
+
+- id: deepmind
+  domains: [deepmind.com, deepmind.google]
+  name: Google DeepMind
+  type: company_blog
+  credibility: 4
+  peer_reviewed: false
+  description: AI research lab under Alphabet
+
+- id: google-ai
+  domains: [ai.google, blog.google]
+  name: Google AI
+  type: company_blog
+  credibility: 4
+  peer_reviewed: false
+  description: Google's AI research division
+
+# Think Tanks & Policy Research
+- id: rand
+  domains: [rand.org]
+  name: RAND Corporation
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Nonpartisan policy research organization
+
+- id: brookings
+  domains: [brookings.edu]
+  name: Brookings Institution
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Centrist public policy think tank
+
+- id: cset
+  domains: [cset.georgetown.edu]
+  name: CSET Georgetown
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Center for Security and Emerging Technology
+
+- id: csis
+  domains: [csis.org]
+  name: CSIS
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Center for Strategic and International Studies
+
+- id: carnegie
+  domains: [carnegieendowment.org]
+  name: Carnegie Endowment
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: International affairs think tank
+
+- id: cnas
+  domains: [cnas.org]
+  name: CNAS
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Center for a New American Security
+
+- id: hai-stanford
+  domains: [hai.stanford.edu]
+  name: Stanford HAI
+  type: academic
+  credibility: 4
+  peer_reviewed: false
+  description: Stanford Human-Centered AI Institute
+
+- id: fhi
+  domains: [fhi.ox.ac.uk]
+  name: Future of Humanity Institute
+  type: academic
+  credibility: 4
+  peer_reviewed: false
+  description: Oxford research center (closed 2024)
+
+# Government
+- id: uk-gov
+  domains: [gov.uk]
+  name: UK Government
+  type: government
+  credibility: 4
+  peer_reviewed: false
+  description: Official UK government publications
+
+- id: nist
+  domains: [nist.gov]
+  name: NIST
+  type: government
+  credibility: 5
+  peer_reviewed: false
+  description: National Institute of Standards and Technology
+
+- id: eu
+  domains: [digital-strategy.ec.europa.eu, europa.eu]
+  name: European Union
+  type: government
+  credibility: 4
+  peer_reviewed: false
+  description: Official EU publications and strategy
+
+# AI Safety Organizations
+- id: miri
+  domains: [intelligence.org]
+  name: MIRI
+  type: organization
+  credibility: 3
+  peer_reviewed: false
+  description: Machine Intelligence Research Institute
+
+- id: metr
+  domains: [metr.org]
+  name: METR
+  type: organization
+  credibility: 4
+  peer_reviewed: false
+  description: Model Evaluation and Threat Research
+
+- id: open-philanthropy
+  domains: [openphilanthropy.org]
+  name: Open Philanthropy
+  type: organization
+  credibility: 4
+  peer_reviewed: false
+  description: EA grantmaker, AI safety funder
+
+- id: 80k
+  domains: [80000hours.org]
+  name: 80,000 Hours
+  type: organization
+  credibility: 3
+  peer_reviewed: false
+  description: EA career advice organization
+
+# Blog Platforms
+- id: lesswrong
+  domains: [lesswrong.com]
+  name: LessWrong
+  type: blog_platform
+  credibility: 3
+  peer_reviewed: false
+  description: Rationality and AI safety community blog
+
+- id: alignment-forum
+  domains: [alignmentforum.org]
+  name: Alignment Forum
+  type: blog_platform
+  credibility: 3
+  peer_reviewed: false
+  description: Curated AI alignment research blog
+
+- id: ea-forum
+  domains: [forum.effectivealtruism.org]
+  name: EA Forum
+  type: blog_platform
+  credibility: 3
+  peer_reviewed: false
+  description: Effective altruism community forum
+
+# Reference
+- id: wikipedia
+  domains: [en.wikipedia.org, wikipedia.org]
+  name: Wikipedia
+  type: encyclopedia
+  credibility: 3
+  peer_reviewed: false
+  description: Collaborative online encyclopedia
+
+- id: github
+  domains: [github.com]
+  name: GitHub
+  type: code_repository
+  credibility: 3
+  peer_reviewed: false
+  description: Code hosting and collaboration platform
+
+# News & Media
+- id: mit-tech-review
+  domains: [technologyreview.com]
+  name: MIT Technology Review
+  type: news
+  credibility: 4
+  peer_reviewed: false
+  description: Technology news and analysis
+
+- id: pew
+  domains: [pewresearch.org]
+  name: Pew Research Center
+  type: think_tank
+  credibility: 4
+  peer_reviewed: false
+  description: Nonpartisan polling and research
+
+- id: mckinsey
+  domains: [mckinsey.com]
+  name: McKinsey & Company
+  type: consulting
+  credibility: 3
+  peer_reviewed: false
+  description: Management consulting firm

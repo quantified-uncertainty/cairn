@@ -125,6 +125,7 @@ const DATA_FILES = [
   { key: 'literature', file: 'literature.yaml' },
   { key: 'funders', file: 'funders.yaml' },
   { key: 'resources', file: 'resources.yaml' },
+  { key: 'publications', file: 'publications.yaml' },
 ];
 
 function loadYaml(filename) {
