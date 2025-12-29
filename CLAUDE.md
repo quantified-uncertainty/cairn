@@ -140,16 +140,17 @@ Without `--apply`, enhanced pages are saved to `.claude/temp/enhanced/` for revi
 
 ## Resource Manager CLI
 
-Unified tool for managing external resource links and `<R>` component conversions.
+Unified tool for managing external resource links, `<R>` component conversions, and metadata extraction.
 
 ### Commands
 
 ```bash
 npm run resources list                              # List pages with unconverted links
 npm run resources -- show bioweapons               # Show unconverted links in file
-npm run resources -- process lock-in --dry-run     # Preview link conversions
-npm run resources -- process lock-in --apply       # Apply conversions
-npm run resources -- create "https://arxiv.org/..." # Create a resource entry
+npm run resources -- process lock-in --apply       # Convert links to <R> components
+npm run resources -- metadata stats                # Show metadata coverage statistics
+npm run resources -- metadata all                  # Extract metadata from all sources
+npm run resources -- rebuild-citations             # Rebuild cited_by relationships
 ```
 
 ### List Command
@@ -182,6 +183,31 @@ This command:
 2. For links with existing resources → converts to `<R id="...">`
 3. For links without resources → creates new resource entry, then converts
 4. Adds the `{R}` import statement if needed
+
+### Metadata Command
+
+Extract author/date metadata from external sources:
+```bash
+node scripts/resource-manager.mjs metadata stats            # Show coverage statistics
+node scripts/resource-manager.mjs metadata arxiv --batch 50 # ArXiv papers (free API)
+node scripts/resource-manager.mjs metadata forum            # LessWrong/AF/EAF posts
+node scripts/resource-manager.mjs metadata scholar          # Nature, Science via Semantic Scholar
+node scripts/resource-manager.mjs metadata web --batch 20   # General web via Firecrawl
+node scripts/resource-manager.mjs metadata all              # Run all extractors
+```
+
+Sources and rate limits:
+- **arxiv**: Free API, 3s/batch of 20
+- **forum**: GraphQL API, 200ms/request
+- **scholar**: Semantic Scholar API, 100ms/request (needs DOI)
+- **web**: Firecrawl API (requires FIRECRAWL_KEY), 7s/request
+
+### Rebuild Citations Command
+
+Scan MDX files and rebuild `cited_by` relationships in resources.yaml:
+```bash
+node scripts/resource-manager.mjs rebuild-citations
+```
 
 ### Create Command
 

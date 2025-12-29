@@ -97,11 +97,11 @@ function CategoryBadge({ category }: { category: string }) {
 function GapScoreCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
 
-  // Higher gap = higher priority (importance minus quality*20)
-  // Range roughly -100 to 100, with positive being high priority
-  const colorClass = value >= 50
+  // Gap = importance - quality (both 0-100)
+  // Positive = underdeveloped (needs work), Negative = over-developed
+  const colorClass = value >= 20
     ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-    : value >= 20
+    : value >= 10
     ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
     : value >= 0
     ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
@@ -318,11 +318,11 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
     let result = pages.map(p => {
       const structuralScore = p.metrics?.structuralScore ?? null
 
-      // Compute gap score: importance - (quality * 20) - (structuralScore * 2)
-      // Higher = more important but lower quality/structure = needs work
-      // Quality contributes 0-100 (quality * 20), structure contributes 0-30 (score * 2)
+      // Compute gap score: importance - quality (both 0-100 scale)
+      // Higher = more important but lower quality = needs work
+      // Positive gap = underdeveloped, negative gap = over-developed relative to importance
       const gapScore = (p.importance !== null && p.quality !== null)
-        ? p.importance - (p.quality * 20) - ((structuralScore ?? 0) * 2)
+        ? p.importance - p.quality
         : null
 
       // Compute age in days
@@ -361,7 +361,8 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
   }, [filterCategory, maxItems])
 
   const stats = React.useMemo(() => {
-    const byQuality: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+    // Quality ranges on 0-100 scale
+    const byQualityRange = { "80+": 0, "60-79": 0, "40-59": 0, "20-39": 0, "<20": 0 }
     // Importance ranges: 90-100, 70-89, 50-69, 30-49, 0-29
     const byImportanceRange = { "90+": 0, "70-89": 0, "50-69": 0, "30-49": 0, "<30": 0 }
     let noQuality = 0
@@ -369,8 +370,12 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
     let importanceSum = 0
 
     pages.forEach(p => {
-      if (p.quality !== null && p.quality >= 1 && p.quality <= 5) {
-        byQuality[p.quality]++
+      if (p.quality !== null && p.quality > 0) {
+        if (p.quality >= 80) byQualityRange["80+"]++
+        else if (p.quality >= 60) byQualityRange["60-79"]++
+        else if (p.quality >= 40) byQualityRange["40-59"]++
+        else if (p.quality >= 20) byQualityRange["20-39"]++
+        else byQualityRange["<20"]++
       } else {
         noQuality++
       }
@@ -391,7 +396,7 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
       ? (importanceSum / withImportance).toFixed(1)
       : "—"
 
-    return { total: pages.length, byQuality, byImportanceRange, noQuality, noImportance, withImportance, avgImportance }
+    return { total: pages.length, byQualityRange, byImportanceRange, noQuality, noImportance, withImportance, avgImportance }
   }, [])
 
   return (

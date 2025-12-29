@@ -21,7 +21,7 @@ import {DataInfoBox, KeyQuestions, Mermaid, R} from '../../../../../components/w
 | **AI Detection Accuracy** | 78% best-case, 50% drop in-the-wild | Best commercial detectors reach 78% AUC but drop 45-50% on novel deepfakes not in training data (<R id="919c9ed9593285fd">Deepfake-Eval-2024</R>) |
 | **Content Authentication Adoption** | Early stage, growing | C2PA market $1.29B in 2024, growing 26% CAGR; 5,000+ CAI members; Meta, Google, OpenAI joined 2024 (<R id="ff89bed1f7960ab2">C2PA</R>) |
 | **Inoculation Effectiveness** | Moderate (10-24% reduction) | Bad News game reduces susceptibility to disinformation by 10-24% across tactics; effects last 3+ months (<R id="82f99c43d60a4fa2">Cambridge</R>) |
-| **Financial Impact** | $500K+ per incident | Average deepfake fraud loss exceeds $500K; projected $40B fraud losses by 2027 from generative AI (<R id="c5681b00f52c7603">Brightside AI</R>) |
+| **Financial Impact** | \$500K+ per incident | Average deepfake fraud loss exceeds \$500K; projected \$40B fraud losses by 2027 from generative AI (<R id="c5681b00f52c7603">Brightside AI</R>) |
 | **Tractability** | Medium | Technical defenses exist but face adversarial arms race; institutional responses scaling slowly |
 
 ## Overview
@@ -98,8 +98,8 @@ Synthetic media generation has evolved rapidly since 2020. While early deepfakes
 - **1 in 4 adults have experienced an AI voice scam**, with 1 in 10 personally targeted (McAfee 2024)
 
 High-profile fraud cases demonstrate the real-world impact:
-- **January 2024**: A finance worker at engineering firm Arup authorized 15 transfers totaling <R id="c5681b00f52c7603">$25.5 million</R> after a video call where every person except the victim was an AI-generated deepfake
-- **2024**: A UK energy firm lost $220,000+ after an employee received a call from someone who sounded exactly like the CEO
+- **January 2024**: A finance worker at engineering firm Arup authorized 15 transfers totaling <R id="c5681b00f52c7603">\$25.5 million</R> after a video call where every person except the victim was an AI-generated deepfake
+- **2024**: A UK energy firm lost \$220,000+ after an employee received a call from someone who sounded exactly like the CEO
 
 More concerning for epistemic security, the mere possibility of sophisticated fakes creates what <R id="e68bcc79e17f42df">Brookings researchers call the "liar's dividend"</R>—authentic evidence becomes deniable because people assume it might be artificially generated.
 
@@ -115,7 +115,7 @@ A deepfake attack now occurs every 5 minutes globally. Deepfake content grew fro
 
 | Approach | Mechanism | Current Effectiveness | Key Limitations | Adoption Status |
 |----------|-----------|----------------------|-----------------|-----------------|
-| **Content Authentication (C2PA)** | Cryptographic signatures embedded in content metadata | High when preserved; metadata survives only 40% of sharing scenarios | Voluntary adoption; bad actors simply avoid it; platforms strip metadata | $1.29B market in 2024; major platforms joining (<R id="ff89bed1f7960ab2">C2PA</R>) |
+| **Content Authentication (C2PA)** | Cryptographic signatures embedded in content metadata | High when preserved; metadata survives only 40% of sharing scenarios | Voluntary adoption; bad actors simply avoid it; platforms strip metadata | \$1.29B market in 2024; major platforms joining (<R id="ff89bed1f7960ab2">C2PA</R>) |
 | **AI Detection Systems** | ML models trained to identify synthetic artifacts | 78% best-case accuracy; 45-50% drop on novel content | Arms race dynamic; detectors lag generators by 6-12 months | Microsoft Video Authenticator, various academic tools |
 | **Watermarking (SynthID)** | Imperceptible signatures in AI-generated content | Robust to mild edits; easily removed by translation or paraphrasing | Requires AI provider cooperation; malicious actors use unwatermarked models | 10B+ content pieces watermarked by Google (<R id="804f5f9f594ba214">DeepMind</R>) |
 | **Fact-Checking Networks** | Human verification of claims | High accuracy but very low coverage (less than 0.1% of content) | Cannot scale to match AI generation rates; hours vs. milliseconds | 100+ orgs in IFCN network |
@@ -123,7 +123,7 @@ A deepfake attack now occurs every 5 minutes globally. Deepfake content grew fro
 
 ### Content Authentication
 
-Content authentication represents the most technically mature approach to epistemic security. The <R id="ff89bed1f7960ab2">Coalition for Content Provenance and Authenticity (C2PA)</R>, backed by major technology companies, has developed standards that embed cryptographic signatures in digital content, creating an unbroken chain of custody from creation to consumption. The C2PA market reached $1.29 billion in 2024 and is projected to grow at 26% CAGR to $1.63 billion in 2025. Major platforms joined the C2PA steering committee in 2024: Google (February), OpenAI (May), and Meta and Amazon (September). The <R id="760493eae0f684f3">Content Authenticity Initiative</R> now includes over 5,000 member organizations.
+Content authentication represents the most technically mature approach to epistemic security. The <R id="ff89bed1f7960ab2">Coalition for Content Provenance and Authenticity (C2PA)</R>, backed by major technology companies, has developed standards that embed cryptographic signatures in digital content, creating an unbroken chain of custody from creation to consumption. The C2PA market reached \$1.29 billion in 2024 and is projected to grow at 26% CAGR to \$1.63 billion in 2025. Major platforms joined the C2PA steering committee in 2024: Google (February), OpenAI (May), and Meta and Amazon (September). The <R id="760493eae0f684f3">Content Authenticity Initiative</R> now includes over 5,000 member organizations.
 
 Adobe's Content Credentials implementation, deployed across Creative Cloud applications since 2021, demonstrates how this technology can work in practice. Every edit, transformation, and republishing event gets recorded in the metadata, allowing consumers to verify a photo's provenance and editing history.
 
@@ -198,8 +198,8 @@ The epistemic security landscape shows a concerning divergence between rapidly e
 | **Deepfake content volume** | Baseline | 500,000 files | Projected 8M files | 16x growth in 2 years |
 | **Deepfake attack frequency** | -- | -- | 1 every 5 minutes | Continuous escalation |
 | **Voice cloning fraud increase** | Baseline | 680% YoY growth | Continuing | Accelerating |
-| **Average fraud loss per incident** | -- | -- | $500,000+ | Increasing severity |
-| **GenAI fraud losses (projected)** | -- | -- | $12.3B | 32% CAGR to $40B by 2027 |
+| **Average fraud loss per incident** | -- | -- | \$500,000+ | Increasing severity |
+| **GenAI fraud losses (projected)** | -- | -- | \$12.3B | 32% CAGR to \$40B by 2027 |
 
 Sources: <R id="d786af9f7b112dc6">Deepstrike</R>, <R id="c5681b00f52c7603">Brightside AI</R>
 

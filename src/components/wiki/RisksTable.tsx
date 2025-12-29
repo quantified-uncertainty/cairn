@@ -241,25 +241,74 @@ const columns: ColumnDef<Risk>[] = [
   },
 ]
 
+type CausalLevel = 'outcome' | 'pathway' | 'amplifier'
+
+const causalLevelConfig: Record<CausalLevel, { label: string; color: string; activeColor: string }> = {
+  outcome: {
+    label: "Outcomes",
+    color: "border-red-300 text-red-700 dark:border-red-700 dark:text-red-300",
+    activeColor: "bg-red-100 border-red-500 text-red-800 dark:bg-red-900/50 dark:border-red-500 dark:text-red-200"
+  },
+  pathway: {
+    label: "Pathways",
+    color: "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300",
+    activeColor: "bg-amber-100 border-amber-500 text-amber-800 dark:bg-amber-900/50 dark:border-amber-500 dark:text-amber-200"
+  },
+  amplifier: {
+    label: "Amplifiers",
+    color: "border-indigo-300 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300",
+    activeColor: "bg-indigo-100 border-indigo-500 text-indigo-800 dark:bg-indigo-900/50 dark:border-indigo-500 dark:text-indigo-200"
+  },
+}
+
 export function RisksTable({ risks }: RisksTableProps) {
+  const [activeLevels, setActiveLevels] = React.useState<Set<CausalLevel>>(new Set(['outcome', 'pathway', 'amplifier']))
+
+  const toggleLevel = (level: CausalLevel) => {
+    setActiveLevels(prev => {
+      const next = new Set(prev)
+      if (next.has(level)) {
+        // Don't allow deselecting all - keep at least one active
+        if (next.size > 1) {
+          next.delete(level)
+        }
+      } else {
+        next.add(level)
+      }
+      return next
+    })
+  }
+
+  const filteredRisks = React.useMemo(() => {
+    return risks.filter(r => {
+      if (!r.causalLevel) return true // Show risks without causalLevel
+      return activeLevels.has(r.causalLevel)
+    })
+  }, [risks, activeLevels])
+
   const stats = React.useMemo(() => {
-    const categories = new Set(risks.map(r => r.category))
+    const categories = new Set(filteredRisks.map(r => r.category))
     const bySeverity = {
-      catastrophic: risks.filter(r => {
+      catastrophic: filteredRisks.filter(r => {
         const s = r.severity?.toLowerCase() || ""
         return s.includes("catastrophic") || s.includes("critical")
       }).length,
-      high: risks.filter(r => {
+      high: filteredRisks.filter(r => {
         const s = r.severity?.toLowerCase() || ""
         return s.includes("high") && !s.includes("medium")
       }).length,
     }
     const byCategory = Array.from(categories).reduce((acc, cat) => {
-      acc[cat] = risks.filter(r => r.category === cat).length
+      acc[cat] = filteredRisks.filter(r => r.category === cat).length
       return acc
     }, {} as Record<string, number>)
-    return { total: risks.length, bySeverity, byCategory, categories: Array.from(categories).sort() }
-  }, [risks])
+    const byLevel = {
+      outcome: risks.filter(r => r.causalLevel === 'outcome').length,
+      pathway: risks.filter(r => r.causalLevel === 'pathway').length,
+      amplifier: risks.filter(r => r.causalLevel === 'amplifier').length,
+    }
+    return { total: filteredRisks.length, fullTotal: risks.length, bySeverity, byCategory, byLevel, categories: Array.from(categories).sort() }
+  }, [risks, filteredRisks])
 
   const categoryBorderColors: Record<string, string> = {
     accident: "border-l-amber-500",
@@ -270,10 +319,43 @@ export function RisksTable({ risks }: RisksTableProps) {
 
   return (
     <div className="space-y-6">
+      {/* Filter by Causal Level */}
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-sm font-medium text-muted-foreground">Filter by level:</span>
+        {(Object.keys(causalLevelConfig) as CausalLevel[]).map(level => {
+          const config = causalLevelConfig[level]
+          const isActive = activeLevels.has(level)
+          const count = stats.byLevel[level]
+          return (
+            <button
+              key={level}
+              onClick={() => toggleLevel(level)}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all",
+                isActive ? config.activeColor : config.color,
+                "hover:opacity-80"
+              )}
+            >
+              {config.label} ({count})
+            </button>
+          )
+        })}
+        {activeLevels.size < 3 && (
+          <button
+            onClick={() => setActiveLevels(new Set(['outcome', 'pathway', 'amplifier']))}
+            className="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+          >
+            Show All
+          </button>
+        )}
+      </div>
+      {/* Stats Summary */}
       <div className="flex flex-wrap gap-6 p-4 bg-muted/30 rounded-lg">
         <div className="flex flex-col">
           <span className="text-2xl font-bold">{stats.total}</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide">
+            {stats.total !== stats.fullTotal ? `Showing` : 'Total'}
+          </span>
         </div>
         <div className="flex flex-col border-l-2 border-l-red-500 pl-3">
           <span className="text-2xl font-bold">{stats.bySeverity.catastrophic}</span>
@@ -295,7 +377,7 @@ export function RisksTable({ risks }: RisksTableProps) {
           )
         })}
       </div>
-      <DataTable columns={columns} data={risks} searchPlaceholder="Search risks..." />
+      <DataTable columns={columns} data={filteredRisks} searchPlaceholder="Search risks..." />
     </div>
   )
 }
