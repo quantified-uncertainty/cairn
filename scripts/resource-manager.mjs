@@ -29,6 +29,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 
 const CONTENT_DIR = 'src/content/docs';
 const RESOURCES_FILE = 'src/data/resources.yaml';
+const PUBLICATIONS_FILE = 'src/data/publications.yaml';
 const PAGES_FILE = 'src/data/pages.json';
 
 // ============ Utilities ============
