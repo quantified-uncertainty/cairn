@@ -4,55 +4,110 @@ interface MermaidProps {
   chart: string;
 }
 
-const mermaidConfig = {
-  startOnLoad: false,
-  theme: 'base',
-  securityLevel: 'loose',
-  fontFamily: 'inherit',
-  themeVariables: {
-    // Primary colors - good contrast
-    primaryColor: '#e8f4fc',
-    primaryTextColor: '#1a1a2e',
-    primaryBorderColor: '#4a90d9',
-
-    // Secondary colors
-    secondaryColor: '#f0f7e6',
-    secondaryTextColor: '#1a1a2e',
-    secondaryBorderColor: '#6b8e23',
-
-    // Tertiary colors
-    tertiaryColor: '#fff3e0',
-    tertiaryTextColor: '#1a1a2e',
-    tertiaryBorderColor: '#e67e22',
-
-    // Line and text colors
-    lineColor: '#5c6370',
-    textColor: '#1a1a2e',
-
-    // Node defaults
-    nodeBorder: '#4a90d9',
-    nodeTextColor: '#1a1a2e',
-
-    // Background
-    mainBkg: '#f8f9fa',
-
-    // Subgraph styling
-    clusterBkg: '#f0f4f8',
-    clusterBorder: '#8b9dc3',
-
-    // State diagram colors
-    labelColor: '#1a1a2e',
-
-    // Flowchart specific
-    edgeLabelBackground: '#ffffff',
-  },
+const lightTheme = {
+  // Primary colors - good contrast
+  primaryColor: '#e8f4fc',
+  primaryTextColor: '#1a1a2e',
+  primaryBorderColor: '#4a90d9',
+  // Secondary colors
+  secondaryColor: '#f0f7e6',
+  secondaryTextColor: '#1a1a2e',
+  secondaryBorderColor: '#6b8e23',
+  // Tertiary colors
+  tertiaryColor: '#fff3e0',
+  tertiaryTextColor: '#1a1a2e',
+  tertiaryBorderColor: '#e67e22',
+  // Line and text colors
+  lineColor: '#5c6370',
+  textColor: '#1a1a2e',
+  // Node defaults
+  nodeBorder: '#4a90d9',
+  nodeTextColor: '#1a1a2e',
+  // Background
+  mainBkg: '#f8f9fa',
+  // Subgraph styling
+  clusterBkg: '#f0f4f8',
+  clusterBorder: '#8b9dc3',
+  // State diagram colors
+  labelColor: '#1a1a2e',
+  // Flowchart specific
+  edgeLabelBackground: '#ffffff',
 };
+
+const darkTheme = {
+  // Primary colors - good contrast for dark mode
+  primaryColor: '#1e3a5f',
+  primaryTextColor: '#e8eaed',
+  primaryBorderColor: '#5c9ce6',
+  // Secondary colors
+  secondaryColor: '#2d4a2d',
+  secondaryTextColor: '#e8eaed',
+  secondaryBorderColor: '#7cb87c',
+  // Tertiary colors
+  tertiaryColor: '#4a3728',
+  tertiaryTextColor: '#e8eaed',
+  tertiaryBorderColor: '#e6a756',
+  // Line and text colors
+  lineColor: '#8b95a5',
+  textColor: '#e8eaed',
+  // Node defaults
+  nodeBorder: '#5c9ce6',
+  nodeTextColor: '#e8eaed',
+  // Background
+  mainBkg: '#1a1a2e',
+  // Subgraph styling
+  clusterBkg: '#252540',
+  clusterBorder: '#5c6b8a',
+  // State diagram colors
+  labelColor: '#e8eaed',
+  // Flowchart specific
+  edgeLabelBackground: '#2a2a40',
+};
+
+function getMermaidConfig(isDark: boolean) {
+  return {
+    startOnLoad: false,
+    theme: 'base',
+    securityLevel: 'loose',
+    fontFamily: 'inherit',
+    themeVariables: isDark ? darkTheme : lightTheme,
+  };
+}
 
 export function Mermaid({ chart }: MermaidProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDark, setIsDark] = useState(false);
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      // Check Starlight's data-theme attribute or prefers-color-scheme
+      const html = document.documentElement;
+      const theme = html.getAttribute('data-theme');
+      setIsDark(theme === 'dark' ||
+        (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches));
+    };
+
+    checkDarkMode();
+
+    // Listen for theme changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', checkDarkMode);
+
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener('change', checkDarkMode);
+    };
+  }, []);
 
   useEffect(() => {
     const renderChart = async () => {
@@ -61,7 +116,7 @@ export function Mermaid({ chart }: MermaidProps) {
       try {
         // Dynamically import mermaid only on client side
         const mermaid = (await import('mermaid')).default;
-        mermaid.initialize(mermaidConfig);
+        mermaid.initialize(getMermaidConfig(isDark));
 
         const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
         const { svg } = await mermaid.render(id, chart);
@@ -76,7 +131,7 @@ export function Mermaid({ chart }: MermaidProps) {
     };
 
     renderChart();
-  }, [chart]);
+  }, [chart, isDark]);
 
   if (error) {
     return (

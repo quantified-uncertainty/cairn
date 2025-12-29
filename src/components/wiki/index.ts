@@ -9,6 +9,8 @@ export { ResourceLink, ResourceCite, R } from './ResourceLink';
 export { ArticleSources } from './ArticleSources';
 export { ResourceList, ResourceBibliography } from './ResourceList';
 export { ResourcesIndex } from './ResourcesIndex';
+export { CredibilityBadge, CredibilityIndicator } from './CredibilityBadge';
+export { ResourceTags } from './ResourceTags';
 export { Tags } from './Tags';
 export { Section } from './Section';
 

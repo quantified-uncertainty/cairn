@@ -1,11 +1,11 @@
 ---
 title: "Bioweapons"
-description: "AI-assisted biological weapon development represents one of the most severe near-term AI risks. Current evidence suggests limited AI uplift for sophisticated attackers, but increasing capabilities in biosecurity evasion and the potential for lab automation could shift this balance."
+description: "AI-assisted biological weapon development represents one of the most severe near-term AI risks. In 2025, both OpenAI and Anthropic activated elevated safety measures after internal evaluations showed frontier models approaching expert-level biological capabilities, with OpenAI expecting next-gen models to hit 'high-risk' classification."
 sidebar:
   order: 1
 maturity: "Growing"
 quality: 78
-llmSummary: "Comprehensive analysis of AI-assisted bioweapons risk using attack chain modeling and expert elicitation, finding 0.02%-3.6% compound attack probability with mixed evidence on AI uplift. Microsoft research shows AI-designed toxins evading 75%+ of DNA synthesis screening, while RAND 2024 found no statistically significant AI assistance in attack planning."
+llmSummary: "Comprehensive analysis of AI-assisted bioweapons risk finding 0.02%-3.6% compound attack probability with evidence shifting in 2025. OpenAI expects next-gen models to hit 'high-risk' classification; Anthropic activated ASL-3 for Claude Opus 4 over CBRN concerns. RAND 2024 found no significant AI uplift, but 2025 developments show frontier models approaching expert-level virology capabilities."
 lastEdited: "2025-12-28"
 styleGuideVersion: "kb-2.0"
 importance: 82.5
@@ -22,6 +22,8 @@ AI systems could accelerate biological weapons development by helping with patho
 This is considered one of the most severe near-term AI risks because biological weapons can cause mass casualties and AI-assisted bioweapons could be developed by smaller groups than traditional state programs required. Unlike many other AI risks that depend on future, more capable systems, this risk applies to models available today.
 
 The key debate centers on whether AI provides meaningful "uplift"—whether it genuinely helps beyond what's already accessible through scientific literature and internet searches, or whether wet-lab skills remain the true bottleneck. Current evidence is mixed: the RAND Corporation's 2024 study found no statistically significant AI uplift for attack planning, while Microsoft research showed AI-designed toxins evading 75%+ of DNA synthesis screening.
+
+However, 2025 has marked a significant shift in official assessments. OpenAI now expects its next-generation models to reach "high-risk classification" for biological capabilities—meaning they could provide "meaningful counterfactual assistance to novice actors." Anthropic activated ASL-3 (AI Safety Level 3) protections for Claude Opus 4 specifically due to biological and chemical weapon concerns. The National Academies' March 2025 report "The Age of AI in the Life Sciences" found that while current biological design tools cannot yet design self-replicating pathogens, monitoring and mitigation are urgently needed.
 
 ### Risk Assessment
 
@@ -86,12 +88,14 @@ DNA synthesis screening is a cornerstone of current biosecurity. If AI can relia
 
 AI capabilities are improving rapidly. Even if current models provide limited uplift, the trend is concerning:
 
-| Capability | GPT-3.5 (2022) | GPT-4 (2023) | GPT-4.5/Claude 3.5 (2024) | Projection (2026) |
-|------------|----------------|--------------|---------------------------|-------------------|
-| Biology knowledge | Moderate | High | Very High | Approaching expert |
-| Synthesis planning | Poor | Moderate | Moderate-High | High |
-| Evading guardrails | Moderate | Moderate | Low-Moderate | Unknown |
-| Integration with tools | None | Limited | Growing | Substantial |
+| Capability | GPT-4 (2023) | Claude 3.5/GPT-4o (2024) | Claude Opus 4/o3 (2025) | Trend |
+|------------|--------------|---------------------------|-------------------------|-------|
+| Biology knowledge | High | Very High | Expert-level | Rapidly increasing |
+| Synthesis planning | Moderate | Moderate-High | High | Increasing |
+| Evading guardrails | Moderate | Low-Moderate | Low (frontier models) | Variable by model |
+| Integration with tools | Limited | Growing | Substantial | Accelerating |
+
+**2025 milestone:** OpenAI's April 2025 o3 model ranked in the 94th percentile among expert human virologists on the Virology Capabilities Test. This is the first time an AI model has demonstrated expert-level performance on biological troubleshooting scenarios.
 
 The argument is that we should prepare for future capabilities, not just current ones. By the time AI demonstrably provides high uplift, it may be too late to establish governance.
 
@@ -169,6 +173,8 @@ Even if frontier labs implement strong biosecurity measures, the proliferation o
 - **Global availability:** Actors in any jurisdiction can access open models
 
 The <R id="2b6675e423040e53">CNAS report</R> recommends considering a "licensing regime for biological design tools with potentially catastrophic capabilities"—but this is not currently implemented.
+
+**The DeepSeek warning:** In February 2025, Anthropic CEO Dario Amodei reported that testing of China's DeepSeek model revealed it was "the worst of basically any model we'd ever tested" for biosecurity—generating information critical to producing bioweapons "that can't be found on Google or can't be easily found in textbooks" with "absolutely no blocks whatsoever." While Amodei did not consider DeepSeek "literally dangerous" yet, the incident highlighted how open-source models from different jurisdictions may not implement equivalent safety measures.
 
 ### Arguments for Lower Risk
 
@@ -475,15 +481,51 @@ The <R id="2b6675e423040e53">Center for a New American Security report</R> by Bi
 
 The report emphasizes that while AI-enabled biological catastrophes are "far from inevitable," current biological safeguards already need significant updates.
 
+### 2025 Developments: A Pivotal Year
+
+2025 has seen a significant shift in how AI labs and governments assess biological risks. Several developments stand out:
+
+#### OpenAI's High-Risk Classification (June 2025)
+
+OpenAI Head of Safety Systems Johannes Heidecke announced that the company expects upcoming models—particularly successors to the o3 reasoning model—to trigger "high-risk classification" under its Preparedness Framework. This means they could provide "meaningful counterfactual assistance to novice actors" in creating known biological threats.
+
+Key points from OpenAI's approach:
+- Classified ChatGPT Agent as having "High capability in the biological domain"
+- Discovered that creating bioweapons would require weeks or months of sustained AI interaction, not single conversations
+- Implemented a traffic-light system: red-level content (direct bioweapon assistance) is immediately blocked; yellow-level content (dual-use information) requires careful handling
+
+#### Anthropic's ASL-3 Activation (May 2025)
+
+Anthropic became the first lab to activate its highest safety tier (ASL-3) specifically for biological concerns when releasing Claude Opus 4. Their internal evaluations found they "could no longer confidently rule out the ability of our most advanced model to uplift people with basic STEM backgrounds" attempting to develop CBRN weapons.
+
+Anthropic's testing revealed:
+- Participants with access to Claude Opus 4 developed bioweapon acquisition plans with "substantially fewer critical failures" than internet-only controls
+- Claude went from underperforming world-class virologists to "comfortably exceeding that baseline" on virology troubleshooting within a year
+- The company sent a letter to the White House urging immediate action after observing "alarming improvements" in Claude 3.7 Sonnet's biological capabilities
+
+#### National Academies Report (March 2025)
+
+The National Academies of Sciences, Engineering, and Medicine published "The Age of AI in the Life Sciences: Benefits and Biosecurity Considerations," directed by Executive Order 14110. Key findings:
+
+- AI-enabled biological tools can improve biosecurity through enhanced surveillance and faster countermeasure development
+- Current biological design tools can design simpler structures (molecules) but cannot yet design self-replicating pathogens
+- A "distinct lack of empirical data" exists for evaluating biosecurity risks of AI-enabled biological tools
+- Recommended continued investment alongside monitoring for potential risks
+
+#### CSIS Policy Analysis (August 2025)
+
+The Center for Strategic and International Studies published "Opportunities to Strengthen U.S. Biosecurity from AI-Enabled Bioterrorism," warning that current U.S. biosecurity measures are "ill-equipped to meet these challenges." The report noted that critical safeguards in biological design tools are "already circumventable post-deployment."
+
 ### Supplementary Evidence
 
 | Source | Finding | Implications |
 |--------|---------|--------------|
-| National Academies (2024) | AI could lower barriers for some actor types | Supports concern for non-expert actors |
+| National Academies (2025) | BDTs cannot yet design self-replicating pathogens | Current tools limited; monitoring needed |
+| CSIS Report (2025) | Current biosecurity measures inadequate | Policy urgently needs updating |
+| OpenAI Preparedness (2025) | Next-gen models will hit "high-risk" | Frontier labs anticipate near-term uplift |
+| Anthropic ASL-3 (2025) | Cannot rule out CBRN uplift for novices | First activation of highest safety tier |
+| DeepSeek testing (2025) | Open-source models lack equivalent safeguards | Proliferation concern validated |
 | CNAS Report (2024) | AI-bio integration is emerging risk | Supports compound capability concern |
-| Academic red-teaming | Models provide relevant knowledge with evasion | Supports guardrail limitations |
-| Bug bounty data | AI assists vulnerability discovery | Supports methodology uplift |
-| Epoch AI analysis | Biology may be "the science that has benefitted most from AI so far" | Supports rapid capability advancement |
 
 ---
 
@@ -938,6 +980,14 @@ Broader biosecurity measures may matter more than AI-specific interventions:
 | 2024 (Nov) | US/UK AI Safety Institutes conduct first joint model evaluation (Claude 3.5 Sonnet) |
 | 2024 (Dec) | Anthropic RSP includes 10+ biological capability evaluations per model |
 | 2025 (Jan) | Anthropic sends letter to White House citing "alarming improvements" in Claude 3.7 Sonnet |
+| 2025 (Feb) | Anthropic CEO reports DeepSeek was "the worst" model tested for biosecurity safeguards |
+| 2025 (Mar) | National Academies publishes "The Age of AI in the Life Sciences" report |
+| 2025 (Apr) | OpenAI's o3 model ranks 94th percentile among expert virologists on capability test |
+| 2025 (May) | Anthropic activates ASL-3 protections for Claude Opus 4 due to CBRN concerns |
+| 2025 (Jun) | OpenAI announces next-gen models will hit "high-risk" biological classification |
+| 2025 (Jul) | OpenAI hosts biodefense summit with government researchers and NGOs |
+| 2025 (Jul) | Trump administration's AI Action Plan identifies biosecurity as priority |
+| 2025 (Aug) | CSIS publishes "Opportunities to Strengthen U.S. Biosecurity from AI-Enabled Bioterrorism" |
 | 2025 (Oct) | Microsoft publishes Science paper; screening patch deployed globally (97% effective) |
 
 ---
@@ -950,11 +1000,15 @@ Expert opinion on AI-bioweapons risk is divided, with prominent voices on both s
 
 **Kevin Esvelt (MIT):** One of the most vocal experts on AI-biosecurity risks. Esvelt emphasizes that if you ask a chatbot how to cause a pandemic, "it will suggest the 1918 influenza virus. It will even tell you where to find the gene sequences online and where to purchase the genetic components." He co-founded SecureDNA and SecureBio to address these risks.
 
-**Dario Amodei (Anthropic CEO):** In July 2023, stated there was a "substantial risk" that within 2-3 years, AI would "greatly widen the range of actors with the technical capability to conduct a large-scale biological attack."
+**Dario Amodei (Anthropic CEO):** In July 2023, stated there was a "substantial risk" that within 2-3 years, AI would "greatly widen the range of actors with the technical capability to conduct a large-scale biological attack." In February 2025, reported that DeepSeek was "the worst" model tested for biosecurity, generating information "that can't be found on Google or easily found in textbooks."
+
+**Johannes Heidecke (OpenAI Head of Safety Systems):** In June 2025, announced OpenAI expects upcoming models to hit "high-risk classification" for biological capabilities. Emphasized that "99% or even one in 100,000 performance is [not] sufficient" for testing accuracy.
 
 **Rocco Casagrande (Gryphon Scientific):** After red-teaming Claude, said he was "personally surprised and dismayed by how capable current LLMs were" and that "these things are developing extremely, extremely fast."
 
 **Toby Ord (Oxford):** Estimates engineered pandemic risk at 1 in 30 by 2100—second highest anthropogenic existential risk after AI itself.
+
+**Georgia Adamson and Gregory C. Allen (CSIS):** Their August 2025 report warns current U.S. biosecurity measures are "ill-equipped" to meet AI-enabled challenges, with BDT safeguards "already circumventable post-deployment."
 
 **Bill Drexel and Caleb Withers (CNAS):** Their August 2024 report warns AI could enable "catastrophic threats far exceeding the impact of COVID-19."
 
@@ -972,11 +1026,13 @@ The debate often reduces to different assessments of:
 
 | Question | Higher Concern View | Lower Concern View |
 |----------|--------------------|--------------------|
-| Current uplift | Gryphon findings are alarming | RAND study is more rigorous |
-| Future trajectory | Capabilities advancing rapidly | May plateau; defenses improving |
-| Key bottleneck | Knowledge is underestimated | Wet lab skills remain rate-limiting |
-| Guardrail effectiveness | Easy to circumvent; open-source proliferating | Raise meaningful barriers |
-| Risk tolerance | Tail risks demand precaution | Base rates suggest low probability |
+| Current uplift | 2025 lab evaluations show expert-level capabilities | RAND 2024 study is most rigorous empirical evidence |
+| Future trajectory | OpenAI/Anthropic expect "high-risk" soon | May plateau; defenses improving |
+| Key bottleneck | Knowledge gap narrowing fast | Wet lab skills remain rate-limiting |
+| Guardrail effectiveness | DeepSeek shows open-source gaps | Frontier labs implementing robust safeguards |
+| Risk tolerance | ASL-3 activation signals real concern | Base rates suggest low probability |
+
+**2025 shift:** The debate has evolved significantly. Both major frontier labs now officially acknowledge their next-generation models pose elevated biological risks. The question is shifting from "does AI provide uplift?" to "how much uplift, and can mitigations keep pace?"
 
 **Notably:** Even those who downplay current uplift often acknowledge that future models may pose greater risks, and that defensive investments are worthwhile regardless.
 
@@ -988,12 +1044,14 @@ The debate often reduces to different assessments of:
 
 - **RAND Corporation (2024):** <R id="0fe4cfa7ca5f2270">The Operational Risks of AI in Large-Scale Biological Attacks: Results of a Red-Team Study</R> - The most rigorous empirical study of AI uplift to date
 - **Microsoft Research (2025):** AI-designed toxins evade DNA screening - Published in *Science*, October 2025
+- **National Academies (2025):** [The Age of AI in the Life Sciences: Benefits and Biosecurity Considerations](https://nap.nationalacademies.org/catalog/28868/) - Comprehensive government-commissioned study on AI biosecurity risks
 - **Gryphon Scientific (2023):** Red-team evaluation of Claude's biological capabilities - <R id="c5bed41f6d28d09e">Coverage in Semafor</R>
 - **UNICRI (2021):** <R id="80cf8f51eecba79e">The Potential for Dual-Use of Protein-Folding Prediction</R> - Early analysis of AlphaFold biosecurity implications
 - **Council on Strategic Risks (2023):** <R id="210d86aeb49f9c18">The Cyber-Biosecurity Nexus</R>
 
 ### Policy and Analysis
 
+- **CSIS (2025):** [Opportunities to Strengthen U.S. Biosecurity from AI-Enabled Bioterrorism](https://www.csis.org/analysis/opportunities-strengthen-us-biosecurity-ai-enabled-bioterrorism-what-policymakers-should) by Georgia Adamson and Gregory C. Allen
 - **CNAS (2024):** <R id="2b6675e423040e53">AI and the Evolution of Biological National Security Risks</R> by Bill Drexel and Caleb Withers
 - **White House OSTP (2024):** <R id="14ff22ab7e571166">Framework for Nucleic Acid Synthesis Screening</R>
 - **White House OSTP (2024):** <R id="2200ae108bcdce25">Policy for Oversight of DURC and PEPP</R>
@@ -1003,7 +1061,9 @@ The debate often reduces to different assessments of:
 ### Industry Frameworks
 
 - **Anthropic:** <R id="394ea6d17701b621">Responsible Scaling Policy</R>
+- **Anthropic (2025):** [Biorisk Evaluations](https://red.anthropic.com/2025/biorisk/) - Detailed methodology for Claude Opus 4 safety testing
 - **OpenAI:** <R id="ded0b05862511312">Preparedness Framework</R>
+- **OpenAI (2025):** [Preparing for Future AI Capabilities in Biology](https://openai.com/index/preparing-for-future-ai-capabilities-in-biology/) - High-risk classification announcement
 - **OpenAI (2024):** <R id="2f918741de446a84">Building an early warning system for LLM-aided biological threat creation</R>
 - **Google DeepMind:** <R id="81aa1be41165df66">Our approach to biosecurity for AlphaFold 3</R>
 

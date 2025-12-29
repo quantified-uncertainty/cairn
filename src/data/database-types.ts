@@ -13,6 +13,7 @@ import type {
   GlossaryTerm,
   Entity,
   Resource,
+  Publication,
 } from './schema';
 
 /**
@@ -175,6 +176,7 @@ export interface Database {
   literature: LiteratureData;
   funders: FunderEntry[];
   resources: Resource[];
+  publications: Publication[];
 
   // Computed/derived data
   backlinks: Record<string, BacklinkEntry[]>;

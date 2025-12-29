@@ -1,5 +1,7 @@
 import React from 'react';
-import { getResourceById } from '../../data';
+import { getResourceById, getResourceCredibility, getResourcePublication } from '../../data';
+import { CredibilityBadge } from './CredibilityBadge';
+import { ResourceTags } from './ResourceTags';
 import './wiki.css';
 
 interface ResourceLinkProps {
@@ -7,6 +9,7 @@ interface ResourceLinkProps {
   label?: string;
   children?: React.ReactNode;
   showType?: boolean;
+  showCredibility?: boolean;
   className?: string;
 }
 
@@ -50,6 +53,7 @@ export function ResourceLink({
   label,
   children,
   showType = false,
+  showCredibility = false,
   className = '',
 }: ResourceLinkProps) {
   const resource = getResourceById(id);
@@ -69,6 +73,8 @@ export function ResourceLink({
   const icon = showType ? getResourceTypeIcon(resource.type) : null;
   const detailUrl = `/browse/resources/${id}/`;
   const domain = getDomain(resource.url);
+  const credibility = getResourceCredibility(resource);
+  const publication = getResourcePublication(resource);
 
   return (
     <span className={`resource-link ${className}`}>
@@ -80,6 +86,11 @@ export function ResourceLink({
       >
         {icon && <span className="resource-link__icon">{icon}</span>}
         <span className="resource-link__label">{displayLabel}</span>
+        {showCredibility && credibility && (
+          <span style={{ marginLeft: '4px' }}>
+            <CredibilityBadge level={credibility} size="sm" />
+          </span>
+        )}
         <span className="resource-link__external">↗</span>
       </a>
 
@@ -91,8 +102,24 @@ export function ResourceLink({
             <span className="resource-link__card-type">
               {getResourceTypeIcon(resource.type)} {resource.type}
             </span>
-            {domain && <span className="resource-link__card-domain">{domain}</span>}
+            {credibility && (
+              <CredibilityBadge level={credibility} size="sm" />
+            )}
           </span>
+
+          {/* Publication info */}
+          {publication && (
+            <span className="resource-link__card-publication" style={{
+              fontSize: '10px',
+              color: 'var(--sl-color-gray-3)',
+              fontStyle: 'italic',
+              marginBottom: '4px',
+              display: 'block',
+            }}>
+              {publication.name}
+              {publication.peer_reviewed && ' (peer-reviewed)'}
+            </span>
+          )}
 
           <span className="resource-link__card-title">{resource.title}</span>
 
@@ -107,6 +134,13 @@ export function ResourceLink({
           {resource.summary && (
             <span className="resource-link__card-summary">
               {truncateText(resource.summary, 180)}
+            </span>
+          )}
+
+          {/* Tags */}
+          {resource.tags && resource.tags.length > 0 && (
+            <span style={{ marginTop: '6px', display: 'block' }}>
+              <ResourceTags tags={resource.tags} limit={4} size="sm" />
             </span>
           )}
 

@@ -1,10 +1,10 @@
 ---
 title: "Tool Use and Computer Use"
-description: "AI systems' ability to interact with external tools and control computers represents a critical capability transition. Current benchmarks show Claude achieving 14.9% on OSWorld vs. 72% human baseline, while SWE-bench performance jumped from 4.4% to 71.7% between 2023-2024. Security research finds 94.4% of agents vulnerable to prompt injection."
+description: "AI systems' ability to interact with external tools and control computers represents a critical capability transition. As of late 2025, OSAgent achieved 76.26% on OSWorld (superhuman vs 72% human baseline), while SWE-bench performance reached 80.9% with Claude Opus 4.5. OpenAI acknowledges prompt injection 'may never be fully solved,' with OWASP ranking it #1 vulnerability in 73% of deployments."
 sidebar:
   order: 5
-quality: 78
-llmSummary: "Tool use represents a critical capability transition from passive text generation to active autonomous agents, with Anthropic's Computer Use (Oct 2024) enabling direct desktop control. Current benchmarks show significant gaps vs humans (14.9% vs 72% on OSWorld), but rapid progress (SWE-bench: 4.4% to 71.7% in one year). Security research finds 94.4% of agents vulnerable to prompt injection attacks."
+quality: 5
+llmSummary: "Tool use represents a critical capability transition from passive text generation to active autonomous agents. By late 2025, AI agents achieved superhuman performance on OSWorld (76.26% vs 72% human baseline), with SWE-bench reaching 80.9%. However, security remains a critical concern: OWASP ranks prompt injection #1 vulnerability (73% of deployments), and OpenAI admits it 'may never be fully solved.' MCP standardization adopted by all major AI labs."
 lastEdited: "2025-12-28"
 importance: 82.5
 ---
@@ -22,13 +22,13 @@ The trajectory toward more capable tool-using agents appears inevitable, with ma
 
 ### Capability Assessment
 
-| Dimension | Current State (Late 2024) | Trend | Safety Relevance |
+| Dimension | Current State (Late 2025) | Trend | Safety Relevance |
 |-----------|---------------------------|-------|------------------|
-| Function Calling | **Mature** — Reliable JSON schema validation, parallel execution | Stable | Moderate — Well-defined interfaces enable monitoring |
-| Web Browsing | **Advancing** — Can navigate, fill forms, extract data | Rapid improvement | High — Information gathering, social engineering vectors |
-| Code Execution | **Strong** — Can write and run code in sandboxed environments | Rapid improvement | High — Potential for malware, system manipulation |
-| Computer Use | **Emerging** — 14.9% on OSWorld vs. 72% human baseline | Very rapid improvement | Very High — Universal interface bypasses API restrictions |
-| Multi-Agent Orchestration | **Early** — Basic coordination, memory sharing | Emerging | High — Cascading failures, difficult to attribute actions |
+| Function Calling | **Mature** — BFCL benchmark shows Claude Opus 4.1 at 70.36%, standardized via MCP | Stable | Moderate — Well-defined interfaces enable monitoring |
+| Web Browsing | **Advanced** — ChatGPT agent/Operator integrated into main products | Continued improvement | High — OpenAI admits prompt injection "may never be fully solved" |
+| Code Execution | **Strong** — SWE-bench Verified reaches 80.9% (Claude Opus 4.5) | Rapid improvement | High — Potential for malware, system manipulation |
+| Computer Use | **Superhuman** — OSAgent 76.26% vs. 72% human baseline on OSWorld | Milestone achieved | Very High — Universal interface bypasses API restrictions |
+| Multi-Agent Orchestration | **Advancing** — MCP standardization enables cross-platform coordination | Rapid development | Critical — 100% of multi-agent systems vulnerable to inter-agent exploits |
 
 ## Technical Foundations and Current Implementations
 
@@ -42,18 +42,20 @@ Current limitations include frequent tool selection errors, brittle error recove
 
 ### Benchmark Performance Comparison
 
-Performance on tool use benchmarks reveals both rapid progress and significant remaining gaps compared to human capabilities:
+Performance on tool use benchmarks reveals both rapid progress and, in some cases, superhuman achievement:
 
-| Benchmark | Task Type | Human Baseline | Best AI (2024) | Best AI (2025) | Key Insight |
+| Benchmark | Task Type | Human Baseline | Best AI (2024) | Best AI (Late 2025) | Key Insight |
 |-----------|-----------|----------------|----------------|----------------|-------------|
-| <R id="c819ef71cbf34802">OSWorld</R> | Computer control | 72.4% | 14.9% (Claude 3.5) | 60.8% (CoACT-1) | Gap narrowing rapidly; some agents now superhuman |
-| <R id="e1f512a932def9e2">SWE-bench Verified</R> | Code issue resolution | ~92% | 49.0% (Claude 3.5) | 71.7%+ (Tools + Claude 4) | 16x improvement in one year |
-| <R id="1c294c3f51d7bc1f">GAIA</R> | General assistant tasks | 92% | 15% (GPT-4) | 75% (h2oGPTe) | First "C grade" achieved in 2025 |
-| TAU-bench (Retail) | Tool use in domains | — | 69.2% (Claude 3.5) | — | Strong performance on constrained domains |
-| TAU-bench (Airline) | Complex tool use | — | 46.0% (Claude 3.5) | — | More challenging multi-step workflows |
+| <R id="c819ef71cbf34802">OSWorld</R> | Computer control | 72.4% | 14.9% (Claude 3.5) | **76.26% (OSAgent)** | Superhuman achieved Oct 2025 |
+| <R id="e1f512a932def9e2">SWE-bench Verified</R> | Code issue resolution | ~92% | 49.0% (Claude 3.5) | **80.9% (Claude Opus 4.5)** | Near-human; 18x improvement since 2023 |
+| SWE-bench Pro | Private codebases | — | — | 22.7% (Claude Opus 4.1) | More realistic; drops to 17.8% on commercial code |
+| <R id="1c294c3f51d7bc1f">GAIA</R> | General assistant tasks | 92% | 15% (GPT-4) | **75% (h2oGPTe)** | First "C grade" achieved in 2025 |
+| BFCL | Function calling | — | — | 70.36% (Claude Opus 4.1) | GPT-5 at 59.22%; Chinese models competitive |
 | <R id="c2614357fa198ba4">WebArena</R> | Web navigation | — | ~35% | ~55% | Realistic web task completion |
 
-The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to over 71% by late 2024—illustrates how rapidly agentic coding capabilities are advancing. On OSWorld, one agent has achieved 76.26% success rate, exceeding the ~72% human baseline and demonstrating superhuman performance on standardized computer use tasks.
+The trajectory of improvement has been extraordinary. On OSWorld, the best AI agent went from 14.9% in October 2024 to 76.26% in October 2025—a 5x improvement that crossed the human baseline. Claude's OSWorld performance improved 45% in just four months (from 42.2% to 61.4% with Sonnet 4.5). The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to 80.9% by late 2025—illustrates how rapidly agentic coding capabilities are advancing.
+
+However, performance drops significantly on private codebases that models haven't seen during training. On SWE-bench Pro's commercial code subset, Claude Opus 4.1 drops from 22.7% to 17.8%, and GPT-5 falls from 23.1% to 14.9%. This suggests current high scores may partially reflect training data contamination rather than genuine generalization.
 
 ## Safety Implications and Risk Landscape
 
@@ -67,17 +69,21 @@ The challenge of maintaining meaningful human control becomes acute when agents 
 
 ### Security Vulnerability Landscape
 
-Research on AI agent security has revealed alarming vulnerability rates. According to a <R id="3aec04f6fbc348bf">comprehensive study on agent security</R>, the attack surface for tool-using agents is significantly larger than for text-only systems:
+Research on AI agent security has revealed alarming vulnerability rates. According to a <R id="3aec04f6fbc348bf">comprehensive study on agent security</R>, the attack surface for tool-using agents is significantly larger than for text-only systems. According to OWASP's 2025 Top 10 for LLM Applications, prompt injection ranks as the #1 critical vulnerability, appearing in **over 73% of production AI deployments** assessed during security audits.
 
 | Vulnerability Type | Prevalence | Severity | Example Attack |
 |-------------------|------------|----------|----------------|
-| Prompt Injection | **94.4%** of agents vulnerable | Critical | Malicious instructions hidden in web content |
+| Prompt Injection | **94.4%** of agents vulnerable; OWASP #1 threat | Critical | Malicious instructions hidden in web content |
 | Retrieval-Based Backdoors | **83.3%** vulnerable | High | Poisoned documents trigger unintended behavior |
 | Inter-Agent Trust Exploits | **100%** vulnerable | Critical | Compromised agent manipulates others in multi-agent systems |
 | Memory Poisoning | Common | High | Gradual alteration of agent behavior through corrupted context |
 | Excessive Agency | Common | High | Over-permissioned agents cause unintended damage |
 
-Real-world incidents have demonstrated these risks. The <R id="d6f4face14780e85">EchoLeak exploit (CVE-2025-32711)</R> against Microsoft Copilot showed how infected email messages containing engineered prompts could trigger automatic data exfiltration without user interaction. <R id="73b5426488075245">Experiments with OpenAI's Operator</R> demonstrated how agents could harvest personal data and automate credential stuffing attacks.
+In December 2025, OpenAI made a significant admission: prompt injection "may never be fully solved." In their technical blog on hardening ChatGPT Atlas, they stated that "prompt injection, much like scams and social engineering on the web, is unlikely to ever be fully 'solved.'" The UK's National Cyber Security Centre issued a similar warning that prompt injection attacks against generative AI applications "may never be totally mitigated."
+
+Real-world incidents have demonstrated these risks. The <R id="d6f4face14780e85">EchoLeak exploit (CVE-2025-32711)</R> against Microsoft Copilot showed how infected email messages containing engineered prompts could trigger automatic data exfiltration without user interaction. <R id="73b5426488075245">Experiments with OpenAI's Operator</R> demonstrated how agents could harvest personal data and automate credential stuffing attacks. Brave's security research on the Perplexity Comet vulnerability confirmed that indirect prompt injection is "not an isolated issue, but a systemic challenge facing the entire category of AI-powered browsers."
+
+OpenAI developed an "LLM-based automated attacker"—a bot trained using reinforcement learning to discover prompt injection vulnerabilities. Unlike traditional red-teaming, this system can "steer an agent into executing sophisticated, long-horizon harmful workflows that unfold over tens (or even hundreds) of steps." In one demonstration, the automated attacker inserted a malicious email into a test inbox; when the AI agent scanned emails, it followed hidden instructions and sent a resignation message instead of the intended out-of-office reply.
 
 <Mermaid client:load chart={`
 flowchart TD
@@ -117,9 +123,23 @@ flowchart TD
 
 Computer use capabilities deserve special attention because they represent a universal interface that can potentially access any digital functionality available to human users. Unlike API-specific tool integrations that require custom development for each service, computer control enables AI agents to operate any software through the same visual interface humans use. This universality creates both tremendous potential and significant risks.
 
-Current computer use implementations, while impressive, remain limited in several key areas. Visual understanding of complex interfaces presents ongoing challenges, particularly with applications that use non-standard UI elements, require precise spatial reasoning, or display information in novel layouts. Performance lags significantly behind human users, with screenshot-to-action cycles taking several seconds compared to near-instantaneous human responses. Complex multi-step workflows that require maintaining context across many actions remain unreliable.
+In October 2025, AI agents crossed the human baseline on computer control for the first time. AGI Inc.'s OSAgent achieved 76.26% on OSWorld, exceeding the approximately 72% human baseline. The agent uses continuous self-checking (the "verification-generation gap"): it verifies outcomes in real time and corrects on the next turn when a step fails. Training combines a general-reasoning base model with hundreds of thousands of synthetic tasks and real browser environments.
 
-However, the trajectory of improvement appears steep. Vision language models continue advancing rapidly, training datasets for computer use are expanding, and techniques like action chunking and hierarchical planning show promise for handling longer task sequences. Industry observers expect computer use capabilities to achieve human-level performance on routine computer tasks within 2-3 years, with superhuman speed following shortly after.
+| Model/System | OSWorld Score | Date | Key Technique |
+|--------------|---------------|------|---------------|
+| Claude 3.5 (baseline) | 14.9% | Oct 2024 | Vision-language + screenshot analysis |
+| Claude 3.7 | 28.0% | Feb 2025 | Improved planning and error recovery |
+| Agent S2 + Claude 3.7 | 34.5% | Mar 2025 | Specialized agentic scaffolding |
+| Claude Sonnet 4 | 42.2% | July 2025 | Enhanced tool use training |
+| Claude Sonnet 4.5 | 61.4% | Nov 2025 | 45% improvement in 4 months |
+| Claude Opus 4.5 | 66.3% | Nov 2025 | Extended autonomous operation |
+| Agent S3 (Best-of-N) | 69.9% | Oct 2025 | Behavior Best-of-N techniques |
+| **OSAgent** | **76.26%** | Oct 2025 | Self-verification, synthetic data |
+| Human baseline | ~72% | — | — |
+
+However, efficiency remains a significant limitation. Even high-performing agents take 1.4-2.7x more steps than necessary to complete tasks. What humans can accomplish in 30 seconds might take an agent 12 minutes—primarily because 75-94% of the time is spent on planning and reflection calls to large AI models rather than actual task execution.
+
+Claude's updated computer use tool (January 2025) added new capabilities including hold_key, left_mouse_down, left_mouse_up, scroll, triple_click, and wait commands, plus a zoom feature for viewing specific screen regions at full resolution. These granular controls enable more precise UI interactions that were previously unreliable.
 
 The implications of reliable computer use extend across virtually every domain of human digital activity. Positive applications include accessibility tools for users with disabilities, automated testing and quality assurance, and research assistance that can navigate complex information systems. Concerning applications include automated social engineering attacks, mass surveillance through social media manipulation, and autonomous malware that can adapt to novel security measures.
 
@@ -131,22 +151,25 @@ The <R id="e283b9c34207eff8">Model Context Protocol (MCP)</R>, announced by Anth
 |--------|---------|
 | **Architecture** | JSON-RPC 2.0 transport, similar to Language Server Protocol (LSP) |
 | **Primitives** | Servers: Prompts, Resources, Tools; Clients: Roots, Sampling |
-| **SDKs** | Python, TypeScript, C#, Java |
-| **Pre-built Servers** | Google Drive, Slack, GitHub, Git, Postgres, Puppeteer |
-| **Adoption** | OpenAI, Google DeepMind, Zed, Replit, Sourcegraph, Block, Apollo |
-| **Governance** | Donated to Linux Foundation's Agentic AI Foundation (AAIF) in December 2025 |
+| **SDKs** | Python, TypeScript, C#, Java (97M+ monthly SDK downloads) |
+| **Pre-built Servers** | 10,000+ published servers (Google Drive, Slack, GitHub, Git, Postgres, Puppeteer) |
+| **Adoption** | Claude, ChatGPT, Gemini, Cursor, VS Code, Microsoft Copilot |
+| **Governance** | Donated to Linux Foundation's Agentic AI Foundation (AAIF) Dec 2025 |
+| **Co-founders** | Anthropic, Block, OpenAI (with support from Google, Microsoft, AWS, Cloudflare) |
 
-The rapid uptake of MCP—with thousands of community-built servers within the first year—suggests growing consensus around standardized tool integration. This standardization has dual implications for safety: it enables more consistent monitoring and security practices, but also accelerates the proliferation of tool-using capabilities across the AI ecosystem.
+In December 2025, MCP became a founding project of the newly created Agentic AI Foundation (AAIF), a directed fund under the Linux Foundation. The donation ensures MCP "stays open, neutral, and community-driven as it becomes critical infrastructure for AI." OpenAI officially adopted MCP in March 2025, integrating the standard across its products including the ChatGPT desktop app.
+
+The rapid uptake of MCP—with over 10,000 published servers and 97M+ monthly SDK downloads—suggests growing consensus around standardized tool integration. This standardization has dual implications for safety: it enables more consistent monitoring and security practices, but also accelerates the proliferation of tool-using capabilities across the AI ecosystem. Bloomberg noted that MCP provides "the essential connective layer required" for agentic AI systems that "do far more than simple question-answering."
 
 ## Current State and Near-Term Trajectory
 
-As of late 2024, tool use capabilities exist in a state of rapid capability growth coupled with significant reliability limitations. Production systems like GPT-4's function calling work well for structured, single-tool tasks but struggle with complex workflows requiring sophisticated tool chaining. Computer use implementations can handle basic desktop tasks but fail frequently on complex applications or novel interfaces.
+As of late 2025, tool use capabilities have reached several significant milestones. On OSWorld, AI agents now achieve superhuman performance (76.26% vs. 72% human baseline). Claude Opus 4.5 achieved 80.9% on SWE-bench Verified and demonstrated the ability to work autonomously for 30+ hours while maintaining focus on complex multi-step tasks. In one demonstration, Claude Sonnet 4.5 autonomously rebuilt Claude.ai's web application over approximately 5.5 hours with 3,000+ tool uses.
 
-The research pipeline suggests substantial improvements over the next 1-2 years. Better vision models will improve computer use reliability, larger training datasets will expand tool familiarity, and improved planning algorithms will enable more sophisticated multi-step workflows. Several labs have demonstrated experimental systems that can maintain context across dozens of tool calls and recover gracefully from common error modes.
+Despite accuracy improvements on benchmarks, efficiency remains a significant limitation. Research on OSWorld-Human reveals that even high-performing agents take 1.4-2.7x more steps than humans to complete tasks. What humans can accomplish in 30 seconds might take an agent 12 minutes—primarily because 75-94% of the time is spent on planning and reflection calls to large AI models.
 
-Safety research has not kept pace with capability development. While sandboxing and monitoring techniques exist, they often reduce utility significantly or fail to address sophisticated attack vectors. The development of robust safety measures for autonomous tool-using agents remains an active area of research with no clear solutions for many fundamental challenges.
+Safety research has not kept pace with capability development. OpenAI's December 2025 admission that prompt injection "may never be fully solved" represents a significant acknowledgment. While defensive approaches are advancing—including Google DeepMind's CaMel framework (which treats LLMs as untrusted elements) and Microsoft's FIDES (using information-flow control)—no production-ready solution exists for the fundamental vulnerability.
 
-The economic incentives for tool use development remain strong across industries. Organizations recognize the potential for significant productivity gains through automated digital workflows, creating pressure for rapid deployment even before safety questions are fully resolved. This dynamic suggests continued rapid capability development regardless of safety considerations.
+The economic incentives for tool use development remain exceptionally strong. OpenAI's GPT-5 leads MCPMark performance at approximately \$127.46 per benchmark run, compared to Claude Sonnet 4 at \$152.41. Organizations recognize the potential for significant productivity gains through automated digital workflows, creating pressure for rapid deployment even before safety questions are fully resolved.
 
 ## Key Uncertainties and Research Frontiers
 
@@ -171,9 +194,17 @@ The technical question of whether safe, beneficial tool use is possible at scale
 | Oct 2024 | <R id="9e4ef9c155b6d9f3">Anthropic launches Computer Use beta</R> | First frontier model with direct desktop control |
 | Nov 2024 | <R id="e283b9c34207eff8">Model Context Protocol announced</R> | Open standard for AI-tool integration |
 | Dec 2024 | Claude 3.5 Sonnet achieves 49% on SWE-bench | Significant jump in agentic coding capability |
-| 2025 | h2oGPTe achieves 75% on GAIA | First "C grade" on general assistant benchmark |
-| 2025 | CoACT-1 reaches 60.8% on OSWorld | Approaches human-level computer control |
-| Dec 2025 | MCP donated to Linux Foundation | Industry standardization of tool protocols |
+| Jan 2025 | OpenAI launches Operator | Browser-based agentic AI with Computer-Using Agent (CUA) model |
+| Feb 2025 | Claude 3.7 reaches 28% on OSWorld | Top leaderboard position at release |
+| Mar 2025 | OpenAI officially adopts MCP | Integration across ChatGPT desktop app |
+| Apr 2025 | Google DeepMind introduces CaMel framework | Treats LLMs as untrusted elements for security |
+| July 2025 | ChatGPT agent mode launched | Operator integrated into main ChatGPT product |
+| July 2025 | OSWorld-Verified released | Major benchmark updates, AWS parallelization support |
+| Oct 2025 | OSAgent achieves 76.26% on OSWorld | First superhuman performance on computer control benchmark |
+| Nov 2025 | Claude Opus 4.5 released | 80.9% on SWE-bench, 66.3% on OSWorld; 30+ hour autonomous operation |
+| Dec 2025 | Scale AI releases SWE-bench Pro | Harder benchmark with private/commercial codebases |
+| Dec 2025 | MCP donated to Linux Foundation AAIF | Industry standardization; co-founded by Anthropic, Block, OpenAI |
+| Dec 2025 | OpenAI admits prompt injection "may never be fully solved" | Critical security acknowledgment for agentic AI |
 
 ## Sources and Resources
 
@@ -183,21 +214,30 @@ The technical question of whether safe, beneficial tool use is possible at scale
 - <R id="433a37bad4e66a78">SWE-bench</R> — Real-world coding issue resolution
 - <R id="c2614357fa198ba4">WebArena</R> — Web navigation benchmark
 - <R id="893d2bf900cb93c0">ToolEmu</R> — Safety evaluation for LLM tool use
+- [SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public) — Harder benchmark with private codebases (Scale AI, Dec 2025)
+- [OSWorld-Human](https://arxiv.org/abs/2506.16042) — Efficiency benchmarking for computer-use agents
 
 ### Industry Resources
 - <R id="9e4ef9c155b6d9f3">Anthropic Computer Use Announcement</R>
 - <R id="e283b9c34207eff8">Model Context Protocol Documentation</R>
 - <R id="ec4f8c98c7439855">OpenAI Function Calling Guide</R>
+- [Linux Foundation AAIF Announcement](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation) — MCP donation and foundation formation (Dec 2025)
+- [OpenAI Operator/ChatGPT Agent](https://openai.com/index/introducing-chatgpt-agent/) — Browser-based agentic AI
+- [Claude Opus 4.5 Announcement](https://www.anthropic.com/news/claude-opus-4-5) — 30+ hour autonomous operation
 
 ### Security Research
 - <R id="3aec04f6fbc348bf">Security of AI Agents (arXiv)</R> — Comprehensive vulnerability analysis
 - <R id="73b5426488075245">McKinsey Agentic AI Security Playbook</R>
 - <R id="ab5ca9eea90f6454">Google SAIF 2.0</R> — Secure AI Framework for agents
 - <R id="d6f4face14780e85">Palo Alto Unit 42: Agentic AI Threats</R>
+- [OpenAI: Hardening Atlas Against Prompt Injection](https://openai.com/index/hardening-atlas-against-prompt-injection/) — Dec 2025 security admission
+- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — Prompt injection as #1 vulnerability
+- [Brave: Unseeable Prompt Injections](https://brave.com/blog/unseeable-prompt-injections/) — AI browser vulnerability research
 
 ### AI Index and Analysis
 - <R id="1a26f870e37dcc68">Stanford HAI AI Index 2025</R> — Technical performance trends
 - <R id="f8832ce349126f66">Evidently AI Agent Benchmarks Guide</R>
+- [AGI Inc. OSAgent](https://www.theagi.company/blog/osworld) — First superhuman computer control (Oct 2025)
 
 ## Related Pages
 

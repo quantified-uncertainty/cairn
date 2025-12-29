@@ -1,12 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import { resources } from '../../data';
+import { resources, getResourceCredibility, getResourcePublication } from '../../data';
 import type { Resource } from '../../data/schema';
+import { CredibilityBadge } from './CredibilityBadge';
+import { ResourceTags } from './ResourceTags';
 import './wiki.css';
 
 interface ResourcesIndexProps {
   showSearch?: boolean;
   showFilters?: boolean;
   defaultType?: string;
+  showCredibility?: boolean;
+  showTags?: boolean;
 }
 
 /**
@@ -49,10 +53,13 @@ export function ResourcesIndex({
   showSearch = true,
   showFilters = true,
   defaultType,
+  showCredibility = true,
+  showTags = true,
 }: ResourcesIndexProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>(defaultType || 'all');
-  const [sortBy, setSortBy] = useState<'title' | 'date' | 'type'>('title');
+  const [selectedCredibility, setSelectedCredibility] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'title' | 'date' | 'type' | 'credibility'>('title');
 
   // Get unique types for filter
   const types = useMemo(() => {
@@ -69,6 +76,12 @@ export function ResourcesIndex({
       result = result.filter((r) => r.type === selectedType);
     }
 
+    // Filter by credibility
+    if (selectedCredibility !== 'all') {
+      const level = parseInt(selectedCredibility);
+      result = result.filter((r) => getResourceCredibility(r) === level);
+    }
+
     // Filter by search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -76,7 +89,8 @@ export function ResourcesIndex({
         (r) =>
           r.title.toLowerCase().includes(query) ||
           r.authors?.some((a) => a.toLowerCase().includes(query)) ||
-          r.summary?.toLowerCase().includes(query)
+          r.summary?.toLowerCase().includes(query) ||
+          r.tags?.some((t) => t.toLowerCase().includes(query))
       );
     }
 
@@ -87,6 +101,8 @@ export function ResourcesIndex({
           return (b.published_date || '').localeCompare(a.published_date || '');
         case 'type':
           return a.type.localeCompare(b.type);
+        case 'credibility':
+          return (getResourceCredibility(b) || 0) - (getResourceCredibility(a) || 0);
         case 'title':
         default:
           return a.title.localeCompare(b.title);
@@ -94,7 +110,7 @@ export function ResourcesIndex({
     });
 
     return result;
-  }, [searchQuery, selectedType, sortBy]);
+  }, [searchQuery, selectedType, selectedCredibility, sortBy]);
 
   // Group by type for summary
   const typeStats = useMemo(() => {
@@ -148,6 +164,21 @@ export function ResourcesIndex({
               ))}
             </select>
 
+            {showCredibility && (
+              <select
+                value={selectedCredibility}
+                onChange={(e) => setSelectedCredibility(e.target.value)}
+                className="resources-index__select"
+              >
+                <option value="all">All Credibility</option>
+                <option value="5">★★★★★ Gold (5)</option>
+                <option value="4">★★★★☆ High (4)</option>
+                <option value="3">★★★☆☆ Good (3)</option>
+                <option value="2">★★☆☆☆ Mixed (2)</option>
+                <option value="1">★☆☆☆☆ Low (1)</option>
+              </select>
+            )}
+
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
@@ -156,6 +187,7 @@ export function ResourcesIndex({
               <option value="title">Sort by Title</option>
               <option value="date">Sort by Date</option>
               <option value="type">Sort by Type</option>
+              <option value="credibility">Sort by Credibility</option>
             </select>
           </div>
         )}
@@ -173,59 +205,93 @@ export function ResourcesIndex({
             <tr>
               <th>Type</th>
               <th>Title</th>
+              {showCredibility && <th>Credibility</th>}
               <th>Authors</th>
               <th>Date</th>
+              {showTags && <th>Tags</th>}
               <th>Cited By</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {filteredResources.map((resource) => (
-              <tr key={resource.id}>
-                <td>
-                  <span
-                    className={`resources-index__type-badge resources-index__type-badge--${resource.type}`}
-                    title={getResourceTypeLabel(resource.type)}
-                  >
-                    {getResourceTypeIcon(resource.type)} {getResourceTypeLabel(resource.type)}
-                  </span>
-                </td>
-                <td>
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="resources-index__title-link"
-                  >
-                    {resource.title}
-                  </a>
-                  {resource.summary && (
-                    <p className="resources-index__summary">{resource.summary}</p>
-                  )}
-                </td>
-                <td className="resources-index__authors">
-                  {resource.authors?.join(', ') || '—'}
-                </td>
-                <td className="resources-index__date">{resource.published_date || '—'}</td>
-                <td className="resources-index__cited-by">
-                  {resource.cited_by && resource.cited_by.length > 0 ? (
-                    <span title={resource.cited_by.join(', ')}>
-                      {resource.cited_by.length} article{resource.cited_by.length !== 1 ? 's' : ''}
+            {filteredResources.map((resource) => {
+              const credibility = getResourceCredibility(resource);
+              const publication = getResourcePublication(resource);
+              return (
+                <tr key={resource.id}>
+                  <td>
+                    <span
+                      className={`resources-index__type-badge resources-index__type-badge--${resource.type}`}
+                      title={getResourceTypeLabel(resource.type)}
+                    >
+                      {getResourceTypeIcon(resource.type)} {getResourceTypeLabel(resource.type)}
                     </span>
-                  ) : (
-                    '—'
+                  </td>
+                  <td>
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="resources-index__title-link"
+                    >
+                      {resource.title}
+                    </a>
+                    {publication && (
+                      <span className="resources-index__publication" style={{
+                        display: 'block',
+                        fontSize: '11px',
+                        color: 'var(--sl-color-gray-3)',
+                        fontStyle: 'italic',
+                      }}>
+                        {publication.name}
+                      </span>
+                    )}
+                    {resource.summary && (
+                      <p className="resources-index__summary">{resource.summary}</p>
+                    )}
+                  </td>
+                  {showCredibility && (
+                    <td className="resources-index__credibility">
+                      {credibility ? (
+                        <CredibilityBadge level={credibility} size="sm" />
+                      ) : (
+                        <span style={{ color: 'var(--sl-color-gray-4)' }}>—</span>
+                      )}
+                    </td>
                   )}
-                </td>
-                <td className="resources-index__actions">
-                  <a
-                    href={`/browse/resources/${resource.id}/`}
-                    className="resources-index__view-link"
-                  >
-                    View →
-                  </a>
-                </td>
-              </tr>
-            ))}
+                  <td className="resources-index__authors">
+                    {resource.authors?.join(', ') || '—'}
+                  </td>
+                  <td className="resources-index__date">{resource.published_date || '—'}</td>
+                  {showTags && (
+                    <td className="resources-index__tags">
+                      {resource.tags && resource.tags.length > 0 ? (
+                        <ResourceTags tags={resource.tags} limit={2} size="sm" />
+                      ) : (
+                        <span style={{ color: 'var(--sl-color-gray-4)' }}>—</span>
+                      )}
+                    </td>
+                  )}
+                  <td className="resources-index__cited-by">
+                    {resource.cited_by && resource.cited_by.length > 0 ? (
+                      <span title={resource.cited_by.join(', ')}>
+                        {resource.cited_by.length} article{resource.cited_by.length !== 1 ? 's' : ''}
+                      </span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td className="resources-index__actions">
+                    <a
+                      href={`/browse/resources/${resource.id}/`}
+                      className="resources-index__view-link"
+                    >
+                      View →
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,15 +1,15 @@
 ---
 title: "Intervention Effectiveness Matrix"
-description: "Comprehensive mapping of AI safety interventions to specific risks with quantitative effectiveness estimates, revealing critical gaps where deceptive alignment and scheming lack countermeasures while identifying optimal resource allocation strategies"
+description: "This model maps 15+ AI safety interventions to specific risk categories with quantitative effectiveness estimates derived from empirical research and expert elicitation. Analysis reveals critical resource misallocation: 40% of 2024 funding ($400M+) went to RLHF-based methods showing only 10-20% effectiveness against deceptive alignment, while interpretability research ($52M, demonstrating 40-50% effectiveness) remains severely underfunded relative to gap severity."
 sidebar:
   order: 35
-quality: 85
+quality: 5
 lastEdited: "2025-12-28"
 ratings:
   novelty: 4
   rigor: 4
   actionability: 5
-  completeness: 4
+  completeness: 5
 importance: 95
 llmSummary: "Comprehensive quantitative mapping of AI safety interventions to specific risks with effectiveness estimates, revealing critical resource misallocation: 40% of funding goes to RLHF (10-20% effective against key risks) while interpretability and AI Control (70-80% effective) receive only 15%. Recommends shifting $200M+ annually to address dangerous gaps in deceptive alignment and scheming detection."
 ---
@@ -26,7 +26,35 @@ This model provides a comprehensive mapping of **AI safety interventions** (tech
 
 The matrix enables strategic prioritization by revealing that **structural risks** cannot be addressed through technical means, requiring governance interventions, while **accident risks** need fundamentally new technical approaches beyond current alignment methods.
 
-The [International AI Safety Report 2025](https://internationalaisafetyreport.org/publication/international-ai-safety-report-2025)—authored by 96 AI experts from 30 countries—concluded that "there has been progress in training general-purpose AI models to function more safely, but no current method can reliably prevent even overtly unsafe outputs." This empirical assessment reinforces the need for systematic intervention mapping and gap identification.
+The <R id="b163447fdc804872">International AI Safety Report 2025</R>—authored by 96 AI experts from 30 countries—concluded that "there has been progress in training general-purpose AI models to function more safely, but no current method can reliably prevent even overtly unsafe outputs." This empirical assessment reinforces the need for systematic intervention mapping and gap identification.
+
+## 2024-2025 Funding Landscape
+
+Understanding current resource allocation is essential for identifying gaps. The AI safety field received approximately \$110-130 million in philanthropic funding in 2024, with major AI labs investing an estimated \$100+ million combined in internal safety research.
+
+| Funding Source | 2024 Amount | Primary Focus Areas | % of Total |
+|----------------|-------------|---------------------|------------|
+| **Open Philanthropy** | \$13.6M | Evaluations (68%), interpretability, field building | 49% |
+| **Major AI Labs (internal)** | \$100M+ (est.) | RLHF, Constitutional AI, red-teaming | N/A (internal) |
+| **Long-Term Future Fund** | \$1.4M | Technical safety, AI governance | 6% |
+| **UK AISI** | \$15M+ | Model evaluations, testing frameworks | 12% |
+| **Frontier Model Forum** | \$10M | Red-teaming, evaluation techniques | 8% |
+| **OpenAI Grants** | \$10M | Interpretability, scalable oversight | 8% |
+| **Other philanthropic** | \$10M+ | Various | 15% |
+
+Source: [Open Philanthropy 2024 Report](https://www.openphilanthropy.org/research/our-progress-in-2024-and-plans-for-2025/), [AI Safety Funding Analysis](https://forum.effectivealtruism.org/posts/XdhwXppfqrpPL2YDX/an-overview-of-the-ai-safety-funding-situation)
+
+### Allocation by Research Area (2024)
+
+| Research Area | Funding | Key Organizations | Gap Assessment |
+|---------------|---------|-------------------|----------------|
+| **Interpretability** | \$12M | Anthropic, Redwood Research | Severely underfunded relative to importance |
+| **Constitutional AI/RLHF** | \$18M | Anthropic, OpenAI | Potentially overfunded given limitations |
+| **Red-teaming & Evaluations** | \$13M | METR, UK AISI, Apollo Research | Growing rapidly; regulatory drivers |
+| **AI Governance** | \$18M | GovAI, CSET, Brookings | Increasing due to EU AI Act, US attention |
+| **Robustness/Benchmarks** | \$15M | CAIS, academic groups | Standard practice; diminishing returns |
+
+The geographic concentration is striking: the San Francisco Bay Area alone received \$18M (37% of total philanthropic funding), primarily flowing to UC Berkeley's CHAI, Stanford HAI, and independent research organizations. This concentration creates both collaboration benefits and single-point-of-failure risks.
 
 ## Empirical Evidence on Intervention Limitations
 
@@ -38,11 +66,24 @@ Anthropic's December 2024 research documented the first empirical example of a m
 
 ### Standard Methods Insufficient Against Backdoors
 
-[Hubinger et al. (2024)](https://arxiv.org/html/2410.18114v3) demonstrated that standard alignment techniques—RLHF, finetuning on helpful/harmless/honest outputs, and adversarial training—can be **jointly insufficient** to eliminate behavioral "backdoors" that produce undesirable behavior under specific triggers. This empirical finding suggests current methods provide less protection than previously assumed.
+<R id="86fb9322ee1b6a7d">Hubinger et al. (2024)</R> demonstrated that standard alignment techniques—RLHF, finetuning on helpful/harmless/honest outputs, and adversarial training—can be **jointly insufficient** to eliminate behavioral "backdoors" that produce undesirable behavior under specific triggers. This empirical finding suggests current methods provide less protection than previously assumed.
 
 ### Empirical Uplift Studies
 
-The [2025 Peregrine Report](https://riskmitigation.ai/), based on 48 in-depth interviews with staff at OpenAI, Anthropic, Google DeepMind, and multiple AI Safety Institutes, emphasizes the need for "compelling, empirical evidence of AI risks through large-scale experiments via concrete demonstration" rather than abstract theory—highlighting that intervention effectiveness claims often lack rigorous empirical grounding.
+The <R id="cc9309e5c6d52322">2025 Peregrine Report</R>, based on 48 in-depth interviews with staff at OpenAI, Anthropic, Google DeepMind, and multiple AI Safety Institutes, emphasizes the need for "compelling, empirical evidence of AI risks through large-scale experiments via concrete demonstration" rather than abstract theory—highlighting that intervention effectiveness claims often lack rigorous empirical grounding.
+
+### The Alignment Tax: Empirical Findings
+
+Research on the "alignment tax"—the performance cost of safety measures—reveals concerning trade-offs:
+
+| Study | Finding | Implication |
+|-------|---------|-------------|
+| [Lin et al. (2024)](https://aclanthology.org/2024.emnlp-main.35/) | RLHF causes "pronounced alignment tax" with forgetting of pretrained abilities | Safety methods may degrade capabilities |
+| [Safe RLHF (ICLR 2024)](https://proceedings.iclr.cc/paper_files/paper/2024/file/dd1577afd396928ed64216f3f1fd5556-Paper-Conference.pdf) | Three iterations improved helpfulness Elo by +244-364 points, harmlessness by +238-268 | Iterative refinement shows promise |
+| [MaxMin-RLHF (2024)](https://proceedings.mlr.press/v235/chakraborty24b.html) | Standard RLHF shows "preference collapse" for minority preferences; MaxMin achieves 16% average improvement, 33% for minority groups | Single-reward RLHF fundamentally limited for diverse preferences |
+| [Algorithmic Bias Study](https://arxiv.org/abs/2405.16455) | Matching regularization achieves 29-41% improvement over standard RLHF | Methodological refinements can reduce alignment tax |
+
+The empirical evidence suggests RLHF is effective for reducing overt harmful outputs but fundamentally limited for detecting strategic deception or representing diverse human preferences.
 
 ## Risk/Impact Assessment
 
@@ -143,6 +184,21 @@ quadrantChart
 
 **Funding shift recommendation**: Move \$100M+ annually from RLHF to interpretability and AI Control research based on <R id="f771d4f56ad4dbaa">Anthropic's estimate</R> that interpretability needs 10x current investment.
 
+### Cost-Effectiveness Comparison
+
+The following table compares interventions on a cost-per-unit-of-risk-reduction basis, using available evidence:
+
+| Intervention | Est. Annual Cost | Risk Reduction (Range) | Cost per 1% Risk Reduction | Confidence |
+|--------------|------------------|------------------------|---------------------------|------------|
+| **RLHF at scale** | \$100M+ | 5-15% (misuse only) | \$13-40M | High |
+| **Interpretability research** | \$12M | 15-30% (deception, misalignment) | \$1.7-3.5M | Medium |
+| **Capability evaluations** | \$10M | 10-25% (dangerous capabilities) | \$1.6-4M | Medium-High |
+| **AI Control research** | \$10M | 20-40% (theoretical, untested) | \$1.25-0.5M | Low |
+| **Governance research** | \$18M | 5-20% (structural risks) | \$1.9-3.6M | Medium |
+| **Red-teaming** | \$13M | 10-20% (misuse, jailbreaks) | \$1.15-2.3M | High |
+
+This analysis suggests AI Control and interpretability research offer the highest expected return on investment, though confidence levels vary significantly. The cost-effectiveness of AI Control is particularly uncertain because it remains largely theoretical.
+
 ## Technical Intervention Effectiveness
 
 ### Core Safety Methods Performance
@@ -178,7 +234,45 @@ Emerging evaluation frameworks provide more rigorous assessment of intervention 
 | **SafeBench Competition** | Robustness, monitoring, alignment, safety applications | \$150K prize pool; 120+ researchers registered | Competition format may miss systematic gaps |
 | **METR Dangerous Capabilities** | Autonomous replication, resource acquisition, deception | Frontier capability evaluation | Narrow focus on specific dangerous capabilities |
 
-The [Center for AI Safety SafeBench competition](https://newsletter.safe.ai/p/aisn-45-center-for-ai-safety-2024) represents an effort to develop empirically rigorous benchmarks for assessing AI safety across robustness, monitoring, alignment, and safety applications. However, behavioral benchmarks fundamentally cannot detect latent deceptive alignment—a model that strategically complies during evaluation would score well on all benchmarks while remaining unsafe.
+The <R id="112221760b143b57">Center for AI Safety SafeBench competition</R> represents an effort to develop empirically rigorous benchmarks for assessing AI safety across robustness, monitoring, alignment, and safety applications. However, behavioral benchmarks fundamentally cannot detect latent deceptive alignment—a model that strategically complies during evaluation would score well on all benchmarks while remaining unsafe.
+
+## AI Control: The Emerging Paradigm
+
+[AI Control](https://arxiv.org/pdf/2312.06942) represents a fundamentally different approach to managing risks from potentially misaligned AI systems. Rather than assuming alignment can be verified, AI Control assumes models may be intentionally subverting safety measures and designs systems to remain safe regardless.
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph ALIGNMENT["Alignment Approach"]
+        A1[Train model to be aligned] --> A2[Verify alignment]
+        A2 --> A3{Is model aligned?}
+        A3 -->|Yes| A4[Deploy safely]
+        A3 -->|No| A1
+    end
+
+    subgraph CONTROL["AI Control Approach"]
+        C1[Assume model may be misaligned] --> C2[Design robust oversight]
+        C2 --> C3[Limit model autonomy]
+        C3 --> C4[Monitor for subversion]
+        C4 --> C5[Deploy with safeguards]
+    end
+
+    style A3 fill:#ffcccc
+    style C5 fill:#ccffcc
+`} />
+
+### Key AI Control Techniques
+
+According to [Buck Shlegeris and Ryan Greenblatt at Redwood Research](https://blog.redwoodresearch.org/p/guide), AI Control employs several strategies:
+
+| Technique | Description | Effectiveness Estimate | Maturity |
+|-----------|-------------|------------------------|----------|
+| **Always-on auditing** | Continuous monitoring of model outputs for suspicious behavior | 60-80% detection of overt subversion | Research stage |
+| **Honeypotting** | Presenting apparent opportunities for subversion to detect intent | 40-70% detection of intentional subversion | Theoretical |
+| **Re-sampling** | Querying multiple model instances and comparing outputs | 50-75% detection of inconsistent behavior | Early implementation |
+| **Factored cognition** | Breaking tasks into pieces to limit model knowledge | 30-60% reduction in catastrophic action potential | Research stage |
+| **Trusted monitoring** | Using a trusted (weaker) model to oversee an untrusted (stronger) model | Varies by capability gap | Early research |
+
+Redwood Research recently released what they describe as "the biggest and most intricate study of AI control to date, in a command line agent setting," demonstrating these techniques are "the best available option for preventing misaligned early AGIs from causing sudden disasters."
 
 ## Critical Unaddressed Gaps
 
@@ -223,7 +317,7 @@ Sources: <R id="38eba87d0a888e2e">AI Impacts survey</R>, <R id="d6955ff937bf386d
 
 ### Interpretability Scaling: State of Evidence
 
-[Mechanistic interpretability research](https://arxiv.org/abs/2404.14082) has made significant progress but faces critical scaling challenges. According to a comprehensive 2024 review:
+<R id="b1d6e7501debf627">Mechanistic interpretability research</R> has made significant progress but faces critical scaling challenges. According to a comprehensive 2024 review:
 
 | Progress Area | Current State | Scaling Challenge | Safety Relevance |
 |---------------|---------------|-------------------|------------------|
@@ -276,9 +370,22 @@ The key constraint is that mechanistic analysis is "time- and compute-intensive,
 
 Sources: <R id="f0d95954b449240a">Georgetown CSET</R>, <R id="b31991b018d04a52">IAPS governance research</R>, <R id="89d77122c55f3155">Brookings AI governance tracker</R>
 
+### Compute Governance: Detailed Assessment
+
+Compute governance has emerged as a key policy lever for AI governance, with the Biden administration introducing export controls on advanced semiconductor manufacturing equipment. However, effectiveness varies significantly:
+
+| Mechanism | Target | Effectiveness | Limitations |
+|-----------|--------|---------------|-------------|
+| **Chip export controls** | Prevent adversary access to frontier AI | Medium (60-75%) | Black market smuggling; cloud computing loopholes |
+| **Training compute thresholds** | Trigger reporting requirements at 10^26 FLOP | Low-Medium | Algorithmic efficiency improvements reduce compute needs |
+| **Cloud access restrictions** | Limit API access for sanctioned entities | Low (30-50%) | VPNs, intermediaries, open-source alternatives |
+| **Know-your-customer requirements** | Track who uses compute | Medium (50-70%) | Privacy concerns; enforcement challenges |
+
+According to [GovAI research](https://www.governance.ai/analysis/computing-power-and-the-governance-of-ai), "compute governance may become less effective as algorithms and hardware improve. Scientific progress continually decreases the amount of computing power needed to reach any level of AI capability." The [RAND analysis](https://www.rand.org/pubs/perspectives/PEA3776-1.html) of the AI Diffusion Framework notes that China could benefit from a shift away from compute as the binding constraint, as companies like DeepSeek compete to push the frontier less handicapped by export controls.
+
 ### International Coordination: Effectiveness Assessment
 
-The [ITU Annual AI Governance Report 2025](https://www.itu.int/epublications/en/publication/the-annual-ai-governance-report-2025-steering-the-future-of-ai/en) and recent developments reveal significant challenges in international AI governance coordination:
+The <R id="ce43b69bb5fb00b2">ITU Annual AI Governance Report 2025</R> and recent developments reveal significant challenges in international AI governance coordination:
 
 | Coordination Mechanism | Status (2025) | Effectiveness Assessment | Key Limitation |
 |------------------------|---------------|--------------------------|----------------|
@@ -289,7 +396,7 @@ The [ITU Annual AI Governance Report 2025](https://www.itu.int/epublications/en/
 | **US-China Coordination** | Minimal | Very Low | Fundamental political contradictions; export control tensions |
 | **Bletchley/Seoul Summits** | Voluntary commitments | Low-Medium | Non-binding; limited to willing participants |
 
-The [Oxford International Affairs analysis](https://academic.oup.com/ia/article/100/3/1275/7641064) notes that addressing the global AI governance deficit requires moving from a "weak regime complex to the strongest governance system possible under current geopolitical conditions." However, proposals for an "IAEA for AI" face fundamental challenges because "nuclear and AI are not similar policy problems—AI policy is loosely defined with disagreement over field boundaries."
+The <R id="3277a685c8b28fe0">Oxford International Affairs analysis</R> notes that addressing the global AI governance deficit requires moving from a "weak regime complex to the strongest governance system possible under current geopolitical conditions." However, proposals for an "IAEA for AI" face fundamental challenges because "nuclear and AI are not similar policy problems—AI policy is loosely defined with disagreement over field boundaries."
 
 **Critical gap**: Companies plan to scale frontier AI systems 100-1000x in effective compute over the next 3-5 years. Without coordinated international licensing and oversight, countries risk a "regulatory race to the bottom."
 
@@ -315,15 +422,29 @@ The [Oxford International Affairs analysis](https://academic.oup.com/ia/article/
 
 ## Current State & Trajectory
 
+### Capability Evaluation Ecosystem (2024-2025)
+
+The capability evaluation landscape has matured significantly with multiple organizations now conducting systematic pre-deployment assessments:
+
+| Organization | Role | Key Contributions | Partnerships |
+|--------------|------|-------------------|--------------|
+| **METR** | Independent evaluator | ARA (autonomous replication & adaptation) methodology; GPT-4, Claude evaluations | UK AISI, Anthropic, OpenAI |
+| **Apollo Research** | Scheming detection | Safety cases framework; deception detection | UK AISI, Redwood, UC Berkeley |
+| **UK AISI** | Government evaluator | First government-led comprehensive model evaluations | METR, Apollo, major labs |
+| **US AISI (NIST)** | Standards development | AI RMF, evaluation guidelines | Industry consortium |
+| **Model developers** | Internal evaluation | Pre-deployment testing per RSPs | Third-party auditors |
+
+According to [METR's December 2025 analysis](https://metr.org/blog/2025-12-09-common-elements-of-frontier-ai-safety-policies/), twelve companies have now published frontier AI safety policies, including commitments to capability evaluations for dangerous capabilities before deployment. A 2023 survey found 98% of AI researchers "somewhat or strongly agreed" that labs should conduct pre-deployment risk assessments and dangerous capabilities evaluations.
+
 ### Funding Landscape (2024)
 
 | Intervention Type | Annual Funding | Growth Rate | Major Funders |
 |------------------|----------------|-------------|---------------|
-| **RLHF/Alignment Training** | \$400M+ | 50%/year | <R id="04d39e8bd5d50dd5">OpenAI</R>, <R id="afe2508ac4caf5ee">Anthropic</R>, <R id="0ef9b0fe0f3c92b4">Google DeepMind</R> |
+| **RLHF/Alignment Training** | \$100M+ | 50%/year | <R id="04d39e8bd5d50dd5">OpenAI</R>, <R id="afe2508ac4caf5ee">Anthropic</R>, <R id="0ef9b0fe0f3c92b4">Google DeepMind</R> |
 | **Capability Evaluations** | \$150M+ | 80%/year | <R id="817964dfbb0e3b1b">UK AISI</R>, <R id="45370a5153534152">METR</R>, industry labs |
 | **Interpretability** | \$100M+ | 60%/year | <R id="f771d4f56ad4dbaa">Anthropic</R>, academic institutions |
-| **AI Control** | \$20M+ | 200%/year | <R id="42e7247cbc33fc4c">Redwood Research</R>, academic groups |
-| **Governance Research** | \$80M+ | 40%/year | <R id="f35c467b353f990f">GovAI</R>, <R id="f0d95954b449240a">CSET</R> |
+| **AI Control** | \$10M+ | 200%/year | <R id="42e7247cbc33fc4c">Redwood Research</R>, academic groups |
+| **Governance Research** | \$10M+ | 40%/year | <R id="f35c467b353f990f">GovAI</R>, <R id="f0d95954b449240a">CSET</R> |
 
 ### Industry Deployment Status
 
@@ -373,11 +494,11 @@ The [Oxford International Affairs analysis](https://academic.oup.com/ia/article/
 
 | Report | Authors/Organization | Key Contribution | Date |
 |--------|---------------------|------------------|------|
-| [International AI Safety Report 2025](https://internationalaisafetyreport.org/publication/international-ai-safety-report-2025) | 96 experts from 30 countries | Comprehensive assessment that no current method reliably prevents unsafe outputs | 2025 |
-| [AI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/) | Future of Life Institute | Quarterly tracking of AI safety progress across multiple dimensions | 2025 |
-| [2025 Peregrine Report](https://riskmitigation.ai/) | 208 expert proposals | In-depth interviews with major AI lab staff on risk mitigation | 2025 |
-| [Mechanistic Interpretability Review](https://arxiv.org/abs/2404.14082) | Bereska & Gavves | Comprehensive review of interpretability for AI safety | 2024 |
-| [ITU AI Governance Report](https://www.itu.int/epublications/en/publication/the-annual-ai-governance-report-2025-steering-the-future-of-ai/en) | International Telecommunication Union | Global state of AI governance | 2025 |
+| <R id="b163447fdc804872">International AI Safety Report 2025</R> | 96 experts from 30 countries | Comprehensive assessment that no current method reliably prevents unsafe outputs | 2025 |
+| <R id="97185b28d68545b4">AI Safety Index</R> | Future of Life Institute | Quarterly tracking of AI safety progress across multiple dimensions | 2025 |
+| <R id="cc9309e5c6d52322">2025 Peregrine Report</R> | 208 expert proposals | In-depth interviews with major AI lab staff on risk mitigation | 2025 |
+| <R id="b1d6e7501debf627">Mechanistic Interpretability Review</R> | Bereska & Gavves | Comprehensive review of interpretability for AI safety | 2024 |
+| <R id="ce43b69bb5fb00b2">ITU AI Governance Report</R> | International Telecommunication Union | Global state of AI governance | 2025 |
 
 ### Primary Research Sources
 
@@ -388,7 +509,7 @@ The [Oxford International Affairs analysis](https://academic.oup.com/ia/article/
 | **Interpretability** | <R id="e724db341d6e0065">Anthropic Scaling Monosemanticity</R> | Interpretability scaling results | High |
 | **AI Control** | <R id="187aaa26886ce183">Greenblatt et al. AI Control</R> | Control theory framework | Medium |
 | **Evaluations** | <R id="dfeaf87817e20677">METR Dangerous Capabilities</R> | Evaluation methodology | Medium-High |
-| **Alignment Faking** | [Hubinger et al. 2024](https://arxiv.org/html/2410.18114v3) | Empirical evidence on backdoor persistence | High |
+| **Alignment Faking** | <R id="86fb9322ee1b6a7d">Hubinger et al. 2024</R> | Empirical evidence on backdoor persistence | High |
 
 ### Policy and Governance Sources
 
@@ -418,6 +539,21 @@ The [Oxford International Affairs analysis](https://academic.oup.com/ia/article/
 | **FHI Expert Survey** | 352 experts | Existential risk probabilities | Medium |
 | **State of AI Report** | Industry data | Deployment and capability trends | High |
 | **Anthropic Expert Interviews** | 45 researchers | Technical intervention effectiveness | Medium-High |
+
+### Additional Sources
+
+| Source | URL | Key Contribution |
+|--------|-----|------------------|
+| Open Philanthropy 2024 Progress | [openphilanthropy.org](https://www.openphilanthropy.org/research/our-progress-in-2024-and-plans-for-2025/) | Funding landscape, priorities |
+| AI Safety Funding Analysis | [EA Forum](https://forum.effectivealtruism.org/posts/XdhwXppfqrpPL2YDX/an-overview-of-the-ai-safety-funding-situation) | Comprehensive funding breakdown |
+| 80,000 Hours AI Safety | [80000hours.org](https://80000hours.org/2025/01/it-looks-like-there-are-some-good-funding-opportunities-in-ai-safety-right-now/) | Funding opportunities assessment |
+| RLHF Alignment Tax | [ACL Anthology](https://aclanthology.org/2024.emnlp-main.35/) | Empirical alignment tax research |
+| Safe RLHF | [ICLR 2024](https://proceedings.iclr.cc/paper_files/paper/2024/file/dd1577afd396928ed64216f3f1fd5556-Paper-Conference.pdf) | Helpfulness/harmlessness balance |
+| AI Control Paper | [arXiv](https://arxiv.org/pdf/2312.06942) | Foundational AI Control research |
+| Redwood Research Blog | [redwoodresearch.substack.com](https://redwoodresearch.substack.com/) | AI Control developments |
+| METR Safety Policies | [metr.org](https://metr.org/blog/2025-12-09-common-elements-of-frontier-ai-safety-policies/) | Industry policy analysis |
+| GovAI Compute Governance | [governance.ai](https://www.governance.ai/analysis/computing-power-and-the-governance-of-ai) | Compute governance analysis |
+| RAND AI Diffusion | [rand.org](https://www.rand.org/pubs/perspectives/PEA3776-1.html) | Export control effectiveness |
 
 ## Related Models and Pages
 

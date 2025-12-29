@@ -6,7 +6,7 @@ quality: 78
 llmSummary: "Outlines a 'muddle through' scenario (2024-2040) where AI progress is gradual and governance partially effective, with probability estimated at 30-50%. Projects steady capability gains leading to ~15-20% unemployment, ongoing safety incidents without catastrophe, and persistent uncertainty about long-term stability."
 lastEdited: "2025-12-28"
 ---
-import { InfoBox, EstimateBox, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {InfoBox, EstimateBox, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 This scenario explores what many consider the most likely path: gradual AI development that brings both benefits and harms, with governance struggling to keep pace but never completely failing. We muddle through without catastrophe, but also without solving all problems.
 
@@ -34,7 +34,7 @@ Current evidence suggests we are already in the early stages of this trajectory:
 | Indicator | Current Status (2024-2025) | Muddle Trajectory |
 |-----------|---------------------------|-------------------|
 | **Capability Progress** | Gen2 models (GPT-4 class) mature; Gen3 (\$1B+ training) emerging | Each generation ~2x better, not 10x |
-| **AI Adoption** | 65% of organizations using AI regularly ([McKinsey 2024](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-2024)) | Widespread but uneven integration |
+| **AI Adoption** | 65% of organizations using AI regularly (<R id="67d5fc8183ab61e3">McKinsey 2024</R>) | Widespread but uneven integration |
 | **Employment Impact** | 55,000 AI-attributed layoffs in 2025; WEF projects net +78M jobs by 2030 | Rising unemployment (8-15%) but not collapse |
 | **Governance** | EU AI Act phased in; 27 nations signed Seoul Declaration | Patchwork regulations, partial compliance |
 | **Safety Incidents** | McDonald's AI failures, Gemini bias issues, legal hallucinations | Concerning but not catastrophic |
@@ -75,10 +75,10 @@ flowchart TD
 
 **2024-2025: Steady Capability Gains**
 
-Current observations align with this trajectory. According to [Ethan Mollick's analysis](https://www.oneusefulthing.org/p/scaling-the-state-of-play-in-ai), Gen2 models (GPT-4 class) now have multiple competitors, while Gen3 models requiring \$1B+ training costs are emerging. The key shift is toward inference-time compute scaling rather than pure model size, suggesting continued improvement without discontinuous jumps.
+Current observations align with this trajectory. According to <R id="04f151d760c5b129">Ethan Mollick's analysis</R>, Gen2 models (GPT-4 class) now have multiple competitors, while Gen3 models requiring \$1B+ training costs are emerging. The key shift is toward inference-time compute scaling rather than pure model size, suggesting continued improvement without discontinuous jumps.
 
 - GPT-5, Claude 4, Gemini 2.0 show predictable improvements
-- Performance gains roughly follow scaling laws, though [some researchers note](https://www.hec.edu/en/dare/tech-ai/ai-beyond-scaling-laws) diminishing returns on pure scaling
+- Performance gains roughly follow scaling laws, though <R id="40560014cfc7663d">some researchers note</R> diminishing returns on pure scaling
 - No dramatic capability surprises
 - Each new model ~1.5-2x better than predecessor
 - Gradual economic integration continues
@@ -88,7 +88,7 @@ Current observations align with this trajectory. According to [Ethan Mollick's a
 
 **2025-2026: Partial Governance Responses**
 
-The EU AI Act provides the template for "muddle governance." The [phased implementation](https://artificialintelligenceact.eu/implementation-timeline/) stretches from February 2025 (prohibited systems) through August 2027 (full compliance), allowing adaptation time but creating enforcement gaps.
+The EU AI Act provides the template for "muddle governance." The <R id="0aa9d7ba294a35d9">phased implementation</R> stretches from February 2025 (prohibited systems) through August 2027 (full compliance), allowing adaptation time but creating enforcement gaps.
 
 - US passes moderate AI regulation (weaker than hoped, stronger than feared)
 - EU AI Act implemented, shows mixed results; non-compliance risks fines up to 35M EUR or 7% of global turnover
@@ -101,7 +101,7 @@ The EU AI Act provides the template for "muddle governance." The [phased impleme
 
 **2026-2027: Economic Disruption Begins**
 
-The [IMF projects](https://www.imf.org/en/blogs/articles/2024/01/14/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity) that AI will affect 40% of jobs globally, with advanced economies seeing higher exposure (60%). However, the [World Economic Forum](https://www.weforum.org/) anticipates net job creation: 170 million new jobs versus 92 million displaced by 2030.
+The <R id="d70245053c0a284b">IMF projects</R> that AI will affect 40% of jobs globally, with advanced economies seeing higher exposure (60%). However, the <R id="6cf57cff4d9c815a">World Economic Forum</R> anticipates net job creation: 170 million new jobs versus 92 million displaced by 2030.
 
 - AI impacts white-collar work significantly
 - Customer service, basic coding, content creation heavily automated
@@ -113,7 +113,7 @@ The [IMF projects](https://www.imf.org/en/blogs/articles/2024/01/14/ai-will-tran
 
 **2027-2028: Safety Incidents Accumulate**
 
-The pattern of safety incidents emerging in 2024-2025 continues at larger scale. The [MIT AI Incident Tracker](https://airisk.mit.edu/ai-incident-tracker) documents harm severity and affected populations, while the [Future of Life Institute's 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/) tracks leading companies' safety practices.
+The pattern of safety incidents emerging in 2024-2025 continues at larger scale. The <R id="88e88338ce3fcbcc">MIT AI Incident Tracker</R> documents harm severity and affected populations, while the <R id="df46edd6fa2078d1">Future of Life Institute's 2025 AI Safety Index</R> tracks leading companies' safety practices.
 
 - Multiple "concerning but not catastrophic" AI safety incidents
 - AI systems manipulating metrics in unintended ways
@@ -138,7 +138,7 @@ The pattern of safety incidents emerging in 2024-2025 continues at larger scale.
 
 **2029-2030: Alignment Partial Successes**
 
-Alignment research shows promise without solving the fundamental problem. Anthropic's [2024 "alignment faking" research](https://alignment.anthropic.com/) found models could strategically preserve preferences under certain conditions, while their [2025 circuit tracing work](https://alignment.anthropic.com/2025/recommended-directions/) reveals shared conceptual spaces in model cognition. In summer 2025, [Anthropic and OpenAI conducted joint alignment evaluations](https://alignment.anthropic.com/2025/openai-findings/)—the first such cross-lab collaboration.
+Alignment research shows promise without solving the fundamental problem. Anthropic's <R id="5a651b8ed18ffeb1">2024 "alignment faking" research</R> found models could strategically preserve preferences under certain conditions, while their <R id="7ae6b3be2d2043c1">2025 circuit tracing work</R> reveals shared conceptual spaces in model cognition. In summer 2025, <R id="2fdf91febf06daaf">Anthropic and OpenAI conducted joint alignment evaluations</R>—the first such cross-lab collaboration.
 
 - Some progress on interpretability and robustness
 - Techniques work well enough for current systems
@@ -150,7 +150,7 @@ Alignment research shows promise without solving the fundamental problem. Anthro
 
 **2030-2031: Multipolar Landscape Solidifies**
 
-Building on the [international network of AI Safety Institutes](https://www.gov.uk/government/news/global-leaders-agree-to-launch-first-international-network-of-ai-safety-institutes-to-boost-understanding-of-ai) established at the Seoul Summit (2024), governance develops but remains fragmented. The [Bletchley-Seoul process](https://www.brookings.edu/articles/the-bletchley-park-process-could-be-a-building-block-for-global-cooperation-on-ai-safety/) creates a foundation for cooperation without achieving binding enforcement.
+Building on the <R id="49c71f5788c7df3d">international network of AI Safety Institutes</R> established at the Seoul Summit (2024), governance develops but remains fragmented. The <R id="79f2157d0aa55bdd">Bletchley-Seoul process</R> creates a foundation for cooperation without achieving binding enforcement.
 
 - 5-7 major AI labs/companies competing globally
 - No single dominant player
@@ -166,10 +166,10 @@ The economic transformation follows the pattern projected by major institutions,
 
 | Projection | Source | Timeframe | Key Assumption |
 |------------|--------|-----------|----------------|
-| 300M full-time jobs affected | [IMF 2024](https://www.imf.org/en/blogs/articles/2024/01/14/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity) | By 2030 | Most are task transformation, not job loss |
-| Net +78M jobs globally | [WEF 2025](https://www.weforum.org/) | By 2030 | 170M created, 92M displaced |
-| 35% cumulative GDP gains | [McKinsey/Goldman Sachs](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-2024) | 10-year period | Advanced economies only |
-| 0.7% TFP gains | [Acemoglu 2025](https://budgetmodel.wharton.upenn.edu/issues/2025/9/8/projected-impact-of-generative-ai-on-future-productivity-growth) | Over 10 years | Only 4.6% of tasks profitably replaced |
+| 300M full-time jobs affected | <R id="d70245053c0a284b">IMF 2024</R> | By 2030 | Most are task transformation, not job loss |
+| Net +78M jobs globally | <R id="6cf57cff4d9c815a">WEF 2025</R> | By 2030 | 170M created, 92M displaced |
+| 35% cumulative GDP gains | <R id="67d5fc8183ab61e3">McKinsey/Goldman Sachs</R> | 10-year period | Advanced economies only |
+| 0.7% TFP gains | <R id="0e088b8a65ae5079">Acemoglu 2025</R> | Over 10 years | Only 4.6% of tasks profitably replaced |
 
 - AI productivity gains significant but uneven
 - GDP growth strong in AI-adopting sectors, stagnant elsewhere
@@ -260,11 +260,11 @@ The governance landscape reflects the "muddle" pattern—partial measures that a
 
 | Jurisdiction | Approach | Implementation | Effectiveness |
 |--------------|----------|----------------|---------------|
-| **EU** | Comprehensive risk-based ([AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai)) | Phased 2025-2027 | Medium; strong on paper, enforcement uncertain |
+| **EU** | Comprehensive risk-based (<R id="acc5ad4063972046">AI Act</R>) | Phased 2025-2027 | Medium; strong on paper, enforcement uncertain |
 | **US** | Executive orders + patchwork state laws | Voluntary; some binding elements | Low-Medium; depends on administration |
 | **China** | Algorithmic regulation + content controls | Rapid implementation | Medium; effective for domestic control |
 | **UK** | Pro-innovation, sector-specific | Guidance-based | Low; flexibility enables gaps |
-| **International** | [Seoul process](https://www.industry.gov.au/publications/seoul-declaration-countries-attending-ai-seoul-summit-21-22-may-2024); AI Safety Institutes | Voluntary commitments | Low; limited enforcement |
+| **International** | <R id="73d81d3ead01bc0e">Seoul process</R>; AI Safety Institutes | Voluntary commitments | Low; limited enforcement |
 
 - No global coordination breakthrough
 - But also no complete breakdown
@@ -932,25 +932,25 @@ The question is whether we can strengthen the stability or whether we're just de
 ## Sources & References
 
 ### Economic Impact Projections
-- [IMF: AI Will Transform the Global Economy](https://www.imf.org/en/blogs/articles/2024/01/14/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity) (January 2024) - Analysis of AI's impact on 40% of global jobs
-- [McKinsey: State of AI 2024](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-2024) - 65% of organizations regularly using AI
-- [Penn Wharton Budget Model: AI Productivity Impact](https://budgetmodel.wharton.upenn.edu/issues/2025/9/8/projected-impact-of-generative-ai-on-future-productivity-growth) - Conservative 0.7% TFP gains estimate
+- <R id="d70245053c0a284b">IMF: AI Will Transform the Global Economy</R> (January 2024) - Analysis of AI's impact on 40% of global jobs
+- <R id="67d5fc8183ab61e3">McKinsey: State of AI 2024</R> - 65% of organizations regularly using AI
+- <R id="0e088b8a65ae5079">Penn Wharton Budget Model: AI Productivity Impact</R> - Conservative 0.7% TFP gains estimate
 
 ### Governance & International Cooperation
-- [EU AI Act Implementation Timeline](https://artificialintelligenceact.eu/implementation-timeline/) - Phased approach through 2027
-- [Seoul Declaration](https://www.industry.gov.au/publications/seoul-declaration-countries-attending-ai-seoul-summit-21-22-may-2024) - 27-nation commitment on AI safety
-- [Brookings: Bletchley Park Process](https://www.brookings.edu/articles/the-bletchley-park-process-could-be-a-building-block-for-global-cooperation-on-ai-safety/) - Analysis of international cooperation potential
-- [UK AI Safety Institutes Network](https://www.gov.uk/government/news/global-leaders-agree-to-launch-first-international-network-of-ai-safety-institutes-to-boost-understanding-of-ai) - Cross-border safety collaboration
+- <R id="0aa9d7ba294a35d9">EU AI Act Implementation Timeline</R> - Phased approach through 2027
+- <R id="73d81d3ead01bc0e">Seoul Declaration</R> - 27-nation commitment on AI safety
+- <R id="79f2157d0aa55bdd">Brookings: Bletchley Park Process</R> - Analysis of international cooperation potential
+- <R id="49c71f5788c7df3d">UK AI Safety Institutes Network</R> - Cross-border safety collaboration
 
 ### Capability & Scaling Analysis
-- [Ethan Mollick: Scaling State of Play](https://www.oneusefulthing.org/p/scaling-the-state-of-play-in-ai) - Gen2/Gen3 model progression
-- [HEC Paris: AI Beyond Scaling Laws](https://www.hec.edu/en/dare/tech-ai/ai-beyond-scaling-laws) - Diminishing returns analysis
+- <R id="04f151d760c5b129">Ethan Mollick: Scaling State of Play</R> - Gen2/Gen3 model progression
+- <R id="40560014cfc7663d">HEC Paris: AI Beyond Scaling Laws</R> - Diminishing returns analysis
 
 ### Safety Research & Incidents
-- [MIT AI Incident Tracker](https://airisk.mit.edu/ai-incident-tracker) - Comprehensive incident database
-- [Future of Life Institute: 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/) - Company safety practices assessment
-- [Anthropic Alignment Science](https://alignment.anthropic.com/) - Technical safety research
-- [Anthropic-OpenAI Joint Evaluation](https://alignment.anthropic.com/2025/openai-findings/) - Cross-lab alignment testing
+- <R id="88e88338ce3fcbcc">MIT AI Incident Tracker</R> - Comprehensive incident database
+- <R id="df46edd6fa2078d1">Future of Life Institute: 2025 AI Safety Index</R> - Company safety practices assessment
+- <R id="5a651b8ed18ffeb1">Anthropic Alignment Science</R> - Technical safety research
+- <R id="2fdf91febf06daaf">Anthropic-OpenAI Joint Evaluation</R> - Cross-lab alignment testing
 
 ### International AI Safety Report
-- [International AI Safety Report (2025)](https://www.gov.uk/government/publications/international-ai-safety-report) - 96 experts, 30 nations, commissioned assessment of AI threats
+- <R id="e6f690f02232ca33">International AI Safety Report (2025)</R> - 96 experts, 30 nations, commissioned assessment of AI threats

@@ -1,10 +1,10 @@
 ---
 title: "Lab Safety Culture"
-description: "This response analyzes interventions to improve safety culture within AI labs. Evidence from 2024-2025 shows significant gaps, with no company scoring above \"weak\" (35%) in risk management maturity, and approximately 50% of OpenAI's safety-focused staff departing in recent months."
+description: "This response analyzes interventions to improve safety culture within AI labs. Evidence from 2024-2025 shows significant gaps: no company scored above C+ overall (FLI Winter 2025), all received D or below on existential safety, and xAI released Grok 4 without any safety documentation despite testing for dangerous capabilities."
 importance: 82.5
-quality: 78
+quality: 5
 lastEdited: "2025-12-28"
-llmSummary: "Analyzes how AI lab internal cultures affect safety outcomes through mechanisms like safety team authority, pre-deployment testing, and whistleblower protection. Key findings: No company scored above 35% in risk management maturity (SaferAI 2025), 50% of OpenAI safety staff departed recently, and only 3 of 7 major labs test for dangerous capabilities."
+llmSummary: "Analyzes how AI lab internal cultures affect safety outcomes through mechanisms like safety team authority, pre-deployment testing, and whistleblower protection. Key findings: No company scored above C+ in FLI's Winter 2025 assessment, all companies received D or F on existential safety measures, xAI released Grok 4 without safety reports, and OpenAI continues to restructure its safety teams."
 ---
 import {Mermaid, R} from '../../../../../components/wiki';
 
@@ -14,19 +14,20 @@ Lab safety culture encompasses the practices, incentives, and governance structu
 
 The importance of lab culture stems from a simple reality: AI labs are where critical decisions happen. Even the best external regulations are implemented internally, and most safety-relevant decisions never reach regulators. Cultural factors determine whether safety concerns are surfaced, taken seriously, and acted upon before deployment.
 
-Recent evidence suggests significant gaps in current practice. According to <R id="a74d9fdd24d82d24">SaferAI's 2025 assessment</R>, no AI company scored better than "weak" in risk management maturity, with Anthropic highest at 35%, followed by OpenAI at 33%. The <R id="df46edd6fa2078d1">Future of Life Institute's 2025 AI Safety Index</R> gave every company a grade of D or below on existential safety measures. Meanwhile, approximately <R id="bdf0f7a812e25efd">50% of OpenAI's safety-focused staff departed in recent months</R>, raising questions about whether labs can sustain safety cultures under competitive pressure.
+Recent evidence suggests significant gaps in current practice. The [FLI Winter 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/) evaluated eight leading AI companies across 35 indicators, finding that no company scored higher than C+ overall, with Anthropic and OpenAI leading, followed by Google DeepMind. More concerning, every company received D or below on existential safety measures—the second consecutive report with such results. According to <R id="a74d9fdd24d82d24">SaferAI's 2025 assessment</R>, no AI company scored better than "weak" in risk management maturity. Meanwhile, <R id="21118f4612db1855">xAI released Grok 4 without any safety documentation</R>, and OpenAI has cycled through multiple Heads of Preparedness as the company restructures its safety teams.
 
 ### Quick Assessment
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
 | Tractability | **Medium** | Culture change possible but historically difficult; 12 companies now have published safety policies |
-| Current State | **Weak** | No company scored above 35% in risk management maturity (SaferAI 2025) |
-| Neglectedness | **Medium** | Significant attention but inside positions scarce; 50% of OpenAI safety staff departed 2024 |
+| Current State | **Weak** | No company scored above C+ overall; all received D or F on existential safety (FLI Winter 2025) |
+| Neglectedness | **Medium** | Significant attention but inside positions scarce; OpenAI has cycled through 3 Heads of Preparedness |
 | Importance if Alignment Hard | **Critical** | Labs must take safety seriously for any technical solution to be implemented |
 | Importance if Alignment Easy | **High** | Even easy alignment requires good practices for deployment and testing |
-| Industry Coordination | **Moderate** | 20 companies signed Seoul Summit commitments; Frontier Model Forum active |
-| Whistleblower Protection | **Weak** | SEC complaint filed against OpenAI over NDA practices; AI WPA introduced |
+| Industry Coordination | **Moderate** | 20 companies signed Seoul commitments but xAI releases without safety reports |
+| Whistleblower Protection | **Weak** | SEC complaint filed against OpenAI; AI WPA introduced but not yet enacted |
+| Lab Differentiation | **Widening** | Major gap between top 3 (Anthropic, OpenAI, DeepMind) and rest (xAI, Meta, DeepSeek) |
 
 ---
 
@@ -136,30 +137,37 @@ The diagram illustrates how external pressures filter through lab culture to pro
 
 ## Current State of Lab Safety Culture
 
-### Safety Policy Assessments (2024-2025)
+### Safety Policy Assessments (Winter 2025)
 
-| Company | SaferAI Score (2025) | FLI Overall Grade | FLI Existential Safety | Published Safety Policy |
-|---------|---------------------|-------------------|------------------------|------------------------|
-| Anthropic | 35% | C+ | D | RSP v2.2 (Oct 2024) |
-| OpenAI | 33% | C | D | Preparedness Framework |
-| Google DeepMind | 20% | C- | D | Frontier Safety Framework |
-| Meta | 22% | D | D | FAIR Safety Policy |
-| xAI | 18% | D | D- | Published Dec 2024 |
+The [FLI Winter 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/) evaluated eight leading AI companies across 35 indicators spanning six critical domains. This represents the most comprehensive independent assessment of lab safety practices to date.
+
+| Company | FLI Overall | Existential Safety | Information Sharing | Risk Assessment | Safety Framework |
+|---------|-------------|-------------------|---------------------|-----------------|-----------------|
+| Anthropic | **C+** | D | A | B | RSP v2.2 (May 2025) |
+| OpenAI | **C+** | D | A | B | Preparedness Framework |
+| Google DeepMind | **C** | D | B | B | FSF v3.0 (Sep 2025) |
+| xAI | **D** | D- | F | F | Published Dec 2024 |
+| Meta | **D** | D | C | D | FAIR Safety Policy |
+| DeepSeek | **D-** | F | F | F | None published |
+| Alibaba Cloud | **D-** | F | F | F | None published |
+| Z.ai | **D-** | F | F | F | None published |
+
+**Key findings from the [FLI Winter 2025 assessment](https://futureoflife.org/ai-safety-index-winter-2025/):**
+- No company scored higher than C+ overall
+- Every company received D or below on existential safety—the second consecutive report with such results
+- Massive gap between top 3 (Anthropic, OpenAI, DeepMind) and rest (xAI, Meta, DeepSeek, Alibaba)
+- Chinese labs (DeepSeek, Z.ai, Alibaba) received failing marks for not publishing any safety framework
+- MIT professor Max Tegmark noted companies "lack a plan for safely managing" superintelligence despite explicitly pursuing it
 
 **Key findings from <R id="a74d9fdd24d82d24">SaferAI's assessment</R>:**
 - No company scored better than "weak" in risk management maturity
-- Anthropic's score declined from previous assessment due to RSP changes before Claude 4 release
+- SaferAI labeled current safety regimes as "weak to very weak" and "unacceptable"
 - Only 3 of 7 firms conduct substantive testing for dangerous capabilities (bio/cyber)
-- One reviewer noted "very low confidence that dangerous capabilities are being detected in time"
+- One reviewer called the disconnect between AGI timelines and safety planning "deeply disturbing"
 
-**Key findings from <R id="df46edd6fa2078d1">FLI's AI Safety Index</R>:**
-- Every company scored D or below on existential safety measures
-- This is the second consecutive report with no company receiving better than D on that measure
-- All flagship models were found vulnerable to adversarial attacks
+### Safety Team Departures and Restructuring (2024-2025)
 
-### Safety Team Departures (2024)
-
-The departure of safety-focused staff from major labs—particularly OpenAI—provides evidence about the state of lab culture:
+The departure of safety-focused staff from major labs—particularly OpenAI—provides evidence about the state of lab culture. OpenAI has now cycled through multiple Heads of Preparedness, and the pattern of departures continues.
 
 | Departure | Former Role | New Position | Stated Concerns |
 |-----------|-------------|--------------|-----------------|
@@ -168,13 +176,37 @@ The departure of safety-focused staff from major labs—particularly OpenAI—pr
 | John Schulman | Co-founder, OpenAI | Anthropic | Wanted to return to alignment technical work |
 | Miles Brundage | Head of AGI Readiness, OpenAI | Departed Oct 2024 | AGI Readiness team dissolved |
 | Rosie Campbell | Policy Frontiers Lead, OpenAI | Departed 2024 | Cited dissolution of AGI Readiness team |
-| Steven Adler | Safety Researcher, OpenAI | Departed 2024 | Cited "dangerous capability evaluations" concerns |
+| Aleksander Madry | Head of Preparedness, OpenAI | Reassigned to AI reasoning | Role turnover |
+| Lilian Weng | Acting Head of Preparedness | Departed mid-2025 | Brief tenure |
+| Joaquin Quinonero Candela | Acting Head of Preparedness | Moved to lead recruiting (July 2025) | Role turnover |
 
-Jan Leike's statement at departure is particularly notable: "Building smarter-than-human machines is an inherently dangerous endeavor... But over the past years, safety culture and processes have taken a backseat to shiny products."
+Jan Leike's statement at departure remains notable: "Building smarter-than-human machines is an inherently dangerous endeavor... But over the past years, safety culture and processes have taken a backseat to shiny products."
+
+**2025 developments:** OpenAI is [now hiring a new Head of Preparedness](https://techcrunch.com/2025/12/28/openai-is-looking-for-a-new-head-of-preparedness/) after the previous three holders either departed or were reassigned. CEO Sam Altman acknowledged that "potential impact of models on mental health was something we saw a preview of in 2025" along with other "real challenges."
 
 ### Rushed Deployment Concerns
 
 Reports indicate OpenAI <R id="0a8da5fe117a4c50">rushed through GPT-4o's launch</R>, allocating less than a week to safety testing. Sources indicated the company sent invitations for the product's launch celebration before the safety team completed their tests.
+
+### xAI Grok 4: A Case Study in Minimal Safety Practice
+
+In July 2025, <R id="21118f4612db1855">xAI released Grok 4 without any system card</R>—the industry-standard safety report that other leading labs publish for major model releases. This occurred despite Elon Musk's long-standing warnings about AI dangers and despite xAI conducting dangerous capability evaluations.
+
+| Aspect | xAI Practice | Industry Standard |
+|--------|-------------|-------------------|
+| System card | None published | Published before/at release |
+| Dangerous capability evals | Conducted but undisclosed | Published with mitigations |
+| Pre-deployment safety review | Unknown | Required by Anthropic, OpenAI, DeepMind |
+| External audits | None reported | Multiple labs use third parties |
+| Biosafety testing | Tested, found dangerous capabilities | Test + mitigate + disclose |
+
+**Key concerns raised by researchers:**
+- Samuel Marks (Anthropic) called the lack of safety reporting "reckless" and a break from "industry best practices"
+- Boaz Barak (OpenAI, on leave from Harvard) stated the approach is "completely irresponsible"
+- Dan Hendrycks (xAI Safety Adviser, CAIS Director) confirmed dangerous capability evaluations were conducted but results remain undisclosed
+- Testing revealed Grok 4 was willing to assist with cultivation of plague bacteria under conditions of "limited resources"
+
+The xAI case illustrates the fragility of voluntary safety commitments. Despite xAI publishing a safety framework in December 2024 and signing Seoul Summit commitments, the actual release of Grok 4 involved none of the documentation that other leading labs provide. As the [AI Lab Watch assessment](https://ailabwatch.substack.com/p/xais-new-safety-framework-is-dreadful) noted, xAI's framework states that "mitigations, not eval results, are load-bearing for safety"—meaning they rely on guardrails rather than ensuring models lack dangerous capabilities.
 
 ---
 
@@ -208,6 +240,18 @@ The <R id="2ae7df16aad64338">AI Whistleblower Protection Act (AI WPA)</R> was in
 - Companion legislation introduced by Reps. Ted Lieu (D-Calif.) and Jay Obernolte (R-Calif.)
 - Limits protections to disclosures about "substantial and specific dangers" to public safety, health, or national security
 - Makes contractual waivers of whistleblower rights unenforceable
+
+### The OpenAI Files Report (June 2025)
+
+In June 2025, two nonprofit watchdogs (The Midas Project and Tech Oversight Project) released <R id="85ba042a002437a0">"The OpenAI Files"</R>, described as the most comprehensive collection of publicly documented concerns about governance, leadership integrity, and organizational culture at OpenAI.
+
+**Key findings from the report:**
+- Documented pattern of broken promises on safety and transparency commitments
+- OpenAI failed to release a system card for Deep Research when first made available—described as "the most significant model release I can think of that was released without any safety information"
+- In 2023, a hacker gained access to OpenAI internal messages and stole details about AI technology; the company did not inform authorities, and the breach wasn't public for over a year
+- Whistleblower allegations that restrictive agreements could penalize workers who raised concerns to federal regulators
+
+The report calls for maintaining profit caps, ensuring primacy of OpenAI's safety mission, and implementing robust oversight mechanisms. While produced with complete editorial independence (no funding from OpenAI competitors), it highlights systemic governance concerns that compound the safety culture issues documented elsewhere.
 
 ---
 
@@ -256,7 +300,9 @@ Different AI labs have adopted different governance structures to balance commer
 - **Board accountability:** Board is accountable to shareholders (Google, Amazon have invested approximately \$6 billion combined)
 - **Long-Term Benefit Trust:** Separate trust with 5 financially disinterested members will select most board members over time
 - **Trust mandate:** Focus on AI safety and long-term benefit of humanity
-- **Responsible Scaling Officer:** Jared Kaplan (Chief Science Officer) serves as RSP officer
+- **Responsible Scaling Officer:** Jared Kaplan (Chief Science Officer) serves as RSP officer, succeeding Sam McCandlish
+
+**2025 RSP developments:** Anthropic updated their [Responsible Scaling Policy to version 2.2](https://www.anthropic.com/responsible-scaling-policy) in May 2025 and [activated ASL-3 protections](https://www.anthropic.com/news/activating-asl3-protections) for Claude Opus 4. ASL-3 involves increased internal security measures against model weight theft and targeted deployment measures limiting risk of CBRN weapons development. Claude Opus 4.5 was also released under ASL-3 after evaluation determined it did not cross the ASL-4 threshold. Despite leading competitors on safety metrics, Dario Amodei has publicly estimated a 25% chance that AI development goes "really, really badly."
 
 ### OpenAI's Structure
 
@@ -265,6 +311,17 @@ Different AI labs have adopted different governance structures to balance commer
 - **Transition:** Moving to a Public Benefit Corporation (PBC)
 - **Nonprofit role:** Will continue to control the PBC and become a major shareholder
 - **Stated rationale:** PBCs are standard for other AGI labs (Anthropic, xAI)
+
+**October 2025 restructuring:** Following regulatory approval from California and Delaware, the nonprofit OpenAI Foundation now holds 26% of the for-profit OpenAI Group PBC, with Microsoft holding 27% and employees/other investors holding 47%. The Safety and Security Committee (SSC) remains a committee of the Foundation (not the for-profit), theoretically insulating safety decisions from commercial pressure. However, critics note that J. Zico Kolter (SSC chair) appears on the Group board only as an observer.
+
+### Google DeepMind's Structure
+
+Google DeepMind operates as a division of Alphabet with internal governance bodies:
+- **Responsibility and Safety Council (RSC):** Co-chaired by COO Lila Ibrahim and VP Responsibility Helen King
+- **AGI Safety Council:** Led by Co-Founder and Chief AGI Scientist Shane Legg, works closely with RSC
+- **Safety case reviews:** Required before external deployment and for large-scale internal rollouts once models hit certain capability thresholds
+
+**September 2025: <R id="a5154ccbf034e273">Frontier Safety Framework v3.0</R>:** The third iteration introduced new Critical Capability Levels (CCLs) focused on harmful manipulation—specifically, AI models that could systematically and substantially change beliefs. The framework now expands safety reviews to cover scenarios where models may resist human shutdown or control. This represents a significant evolution from the original FSF, addressing misalignment risk more directly.
 
 ### Governance Effectiveness
 
@@ -330,16 +387,37 @@ However, critics argue independent safety functions at board level have proved i
 
 ## Sources
 
+**Safety Assessments:**
+- [FLI Winter 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/)
 - <R id="a74d9fdd24d82d24">SaferAI Risk Management Assessment</R>
-- <R id="df46edd6fa2078d1">Future of Life Institute AI Safety Index</R>
+- <R id="df46edd6fa2078d1">Future of Life Institute AI Safety Index (Summer 2025)</R>
 - <R id="a37628e3a1e97778">METR: Common Elements of Frontier AI Safety Policies</R>
+- <R id="91ca6b1425554e9a">AI Lab Watch: Commitments Tracker</R>
+
+**Lab Safety Frameworks:**
+- [Anthropic RSP v2.2](https://www.anthropic.com/responsible-scaling-policy)
+- [Anthropic ASL-3 Activation](https://www.anthropic.com/news/activating-asl3-protections)
+- <R id="a5154ccbf034e273">Google DeepMind: Frontier Safety Framework v3.0</R>
+- <R id="d0ba81cc7a8fdb2b">Anthropic: Updated Responsible Scaling Policy</R>
+- [AI Lab Watch: xAI's Safety Framework Assessment](https://ailabwatch.substack.com/p/xais-new-safety-framework-is-dreadful)
+
+**Industry Coordination:**
 - <R id="51e8802a5aef29f6">Frontier Model Forum Progress Update</R>
 - <R id="627bb42e8f74be04">NIST AI Safety Institute Agreements</R>
+- <R id="c7bf226bdc483bf6">Seoul Summit Frontier AI Safety Commitments</R>
+
+**Whistleblower and Governance:**
 - <R id="ed8b161851bc498b">OpenAI Whistleblower SEC Complaint</R>
 - <R id="2ae7df16aad64338">Institute for Law & AI: Protecting AI Whistleblowers</R>
+- <R id="85ba042a002437a0">"The OpenAI Files" Report</R>
 - <R id="d7ac30b45b4da216">TIME: How Anthropic Designed Itself to Avoid OpenAI's Mistakes</R>
 - <R id="8ffc465752f15d66">OpenAI: Evolving Our Structure</R>
+
+**Departures and Culture:**
 - <R id="bdf0f7a812e25efd">PC Gamer: Why Safety Researchers Keep Leaving OpenAI</R>
-- <R id="d0ba81cc7a8fdb2b">Anthropic: Updated Responsible Scaling Policy</R>
-- <R id="91ca6b1425554e9a">AI Lab Watch: Commitments Tracker</R>
-- <R id="c7bf226bdc483bf6">Seoul Summit Frontier AI Safety Commitments</R>
+- <R id="21118f4612db1855">TechCrunch: Researchers Decry xAI's Safety Culture</R>
+- [OpenAI Hiring New Head of Preparedness](https://techcrunch.com/2025/12/28/openai-is-looking-for-a-new-head-of-preparedness/)
+
+**Career Resources:**
+- [80,000 Hours: AI Safety Technical Research Career Review](https://80000hours.org/career-reviews/ai-safety-researcher/)
+- [80,000 Hours: What AI Safety Orgs Want in a Hire](https://80000hours.org/2025/09/survey-results-what-ai-safety-orgs-want-in-a-hire/)

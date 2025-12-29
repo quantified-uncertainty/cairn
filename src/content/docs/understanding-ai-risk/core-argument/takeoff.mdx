@@ -8,7 +8,7 @@ quality: 82
 llmSummary: "Analyzes the critical debate over whether AI will transition from human-level to superhuman capabilities in days/months versus years/decades, presenting arguments for fast takeoff (recursive self-improvement, speed advantages, no physical constraints) versus slow takeoff (hardware bottlenecks, deployment friction, diminishing returns). Tom Davidson's compute-centric model estimates ~3 years from 20% to 100% cognitive automation. Epoch AI shows capability improvement nearly doubled in 2024."
 lastEdited: "2025-12-28"
 ---
-import { InfoBox, EstimateBox, DisagreementMap, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {InfoBox, EstimateBox, DisagreementMap, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 <InfoBox
   type="crux"
@@ -26,18 +26,18 @@ This is one of the most consequential disagreements in AI safety. Fast takeoff s
 
 ## Quantitative Framework
 
-Recent modeling work has begun to quantify takeoff dynamics more precisely. [Tom Davidson's compute-centric framework](https://www.openphilanthropy.org/research/what-a-compute-centric-framework-says-about-takeoff-speeds/) at Open Philanthropy provides the most rigorous analysis to date.
+Recent modeling work has begun to quantify takeoff dynamics more precisely. <R id="31e373770f16b09b">Tom Davidson's compute-centric framework</R> at Open Philanthropy provides the most rigorous analysis to date.
 
 ### Key Quantitative Estimates
 
 | Parameter | Estimate | Range | Source |
 |-----------|----------|-------|--------|
-| Time from 20% to 100% cognitive automation | ~3 years | 1-10 years | [Davidson (2024)](https://www.openphilanthropy.org/research/what-a-compute-centric-framework-says-about-takeoff-speeds/) |
+| Time from 20% to 100% cognitive automation | ~3 years | 1-10 years | <R id="31e373770f16b09b">Davidson (2024)</R> |
 | Time from AGI to superintelligence | &lt;1 year | Months to years | Davidson model |
 | Effective compute gap to cross | ~10,000x | 1,000-100,000x | Davidson model |
-| AI researcher productivity multiplier | 6.25x | 4-10x | [AI 2027 survey](https://ai-2027.com/research/takeoff-forecast) of OpenAI/DeepMind staff |
-| Pre-2024 capability improvement rate | 8 pts/year | — | [Epoch AI](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up) |
-| Post-2024 capability improvement rate | 15 pts/year | — | [Epoch AI](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up) |
+| AI researcher productivity multiplier | 6.25x | 4-10x | <R id="f418db885210d581">AI 2027 survey</R> of OpenAI/DeepMind staff |
+| Pre-2024 capability improvement rate | 8 pts/year | — | <R id="663417bdb09208a4">Epoch AI</R> |
+| Post-2024 capability improvement rate | 15 pts/year | — | <R id="663417bdb09208a4">Epoch AI</R> |
 
 Davidson's model uses "effective compute" as the key variable—a product of raw computation, algorithmic efficiency, and financial investment. These factors multiply, meaning progress in all areas compounds to create rapid increases in effective compute. He refers to this as a "growth flywheel" where more capable AI automates more R&D work, which then accelerates improvements in software, hardware, and model scale.
 
@@ -177,15 +177,15 @@ The central question is whether this feedback loop accelerates (fast takeoff) or
 
 ### Expert Position Details
 
-**Eliezer Yudkowsky** [argues](https://intelligence.org/2021/11/22/yudkowsky-and-christiano-discuss-takeoff-speeds/) that recursive self-improvement "should either flatline or blow up. You would need exactly the right law of diminishing returns to fly through the extremely narrow soft takeoff keyhole."
+**Eliezer Yudkowsky** <R id="9c8ec6cef670271d">argues</R> that recursive self-improvement "should either flatline or blow up. You would need exactly the right law of diminishing returns to fly through the extremely narrow soft takeoff keyhole."
 
-**Sam Altman** wrote in 2025 that ["we are past the event horizon; the takeoff has started"](https://blog.samaltman.com/the-gentle-singularity) and that once AGI is achieved, "the path to ASI will likely be rapid."
+**Sam Altman** wrote in 2025 that <R id="2bc0d4251ea0868f">"we are past the event horizon; the takeoff has started"</R> and that once AGI is achieved, "the path to ASI will likely be rapid."
 
-**Tom Davidson's** [compute-centric model](https://www.openphilanthropy.org/research/what-a-compute-centric-framework-says-about-takeoff-speeds/) predicts less than one year from AGI to superintelligence, "primarily due to the massive amounts of AI labor available to do AI R&D once we have AGI."
+**Tom Davidson's** <R id="31e373770f16b09b">compute-centric model</R> predicts less than one year from AGI to superintelligence, "primarily due to the massive amounts of AI labor available to do AI R&D once we have AGI."
 
-**Paul Christiano** [defines slow takeoff](https://sideways-view.com/2018/02/24/takeoff-speeds/) as "GWP doubles in 4 years before the start of the first 1-year GWP doubling"—which he notes is "like the Industrial Revolution, but 10x-100x faster." He gives ~33% probability to fast takeoff.
+**Paul Christiano** <R id="d70ecd90990cdd58">defines slow takeoff</R> as "GWP doubles in 4 years before the start of the first 1-year GWP doubling"—which he notes is "like the Industrial Revolution, but 10x-100x faster." He gives ~33% probability to fast takeoff.
 
-**Robin Hanson** [predicts](https://hanson.gmu.edu/aigrow.pdf) "slow, slow, slow and then all of a sudden"—with gradual automation until a transition point, after which the economy may double every month or faster.
+**Robin Hanson** <R id="88451bfc3f9b0a9d">predicts</R> "slow, slow, slow and then all of a sudden"—with gradual automation until a transition point, after which the economy may double every month or faster.
 
 ## Arguments for Slow Takeoff
 
@@ -300,7 +300,7 @@ A key sub-debate: Will progress be continuous or discontinuous?
 
 ### 2024 Acceleration Data
 
-[Epoch AI's research](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up) provides empirical evidence of accelerating capabilities:
+<R id="663417bdb09208a4">Epoch AI's research</R> provides empirical evidence of accelerating capabilities:
 
 | Metric | Pre-April 2024 | Post-April 2024 | Change |
 |--------|----------------|-----------------|--------|
@@ -309,11 +309,11 @@ A key sub-debate: Will progress be continuous or discontinuous?
 | Reasoning model response lengths vs non-reasoning | — | 8x more tokens | New paradigm |
 | FrontierMath benchmark (frontier models) | — | &lt;2% solved | Gap remains |
 
-The [acceleration roughly coincides](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up) with the rise of reasoning models (like o1, o3) and increased focus on reinforcement learning at frontier labs. This suggests that methodological breakthroughs can produce step-changes in capability improvement rates.
+The <R id="663417bdb09208a4">acceleration roughly coincides</R> with the rise of reasoning models (like o1, o3) and increased focus on reinforcement learning at frontier labs. This suggests that methodological breakthroughs can produce step-changes in capability improvement rates.
 
 ### The Emergence Debate
 
-A [key area of contention](https://cset.georgetown.edu/article/emergent-abilities-in-large-language-models-an-explainer/) among researchers is whether capabilities emerge discontinuously or gradually:
+A <R id="9926d26da9a3d761">key area of contention</R> among researchers is whether capabilities emerge discontinuously or gradually:
 
 | View | Proponent | Evidence | Implication |
 |------|-----------|----------|-------------|
@@ -321,29 +321,29 @@ A [key area of contention](https://cset.georgetown.edu/article/emergent-abilitie
 | Emergence is a mirage | Sanmi Koyejo (Stanford) | "The transition is much more predictable than people give it credit for" | Smooth scaling, fewer surprises |
 | Phase transitions | Theoretical work | Symmetry breaking in training dynamics | Sudden jumps at specific scales |
 
-The [Future of Life Institute notes](https://futureoflife.org/ai/are-we-close-to-an-intelligence-explosion/) that even if emergence is partially illusory, "serious gaps remain in our ability to predict the future of LLMs. New training techniques, datasets, and prompting techniques keep researchers on their toes."
+The <R id="e49b6ceff6dfc795">Future of Life Institute notes</R> that even if emergence is partially illusory, "serious gaps remain in our ability to predict the future of LLMs. New training techniques, datasets, and prompting techniques keep researchers on their toes."
 
 ### Signs Pointing Toward Fast Takeoff
 
-**Rapid capability gains**: GPT-3 (2020) to GPT-4 (2023) showed dramatic capability improvements. [Sam Altman stated in 2025](https://blog.samaltman.com/the-gentle-singularity) that "we are past the event horizon; the takeoff has started."
+**Rapid capability gains**: GPT-3 (2020) to GPT-4 (2023) showed dramatic capability improvements. <R id="2bc0d4251ea0868f">Sam Altman stated in 2025</R> that "we are past the event horizon; the takeoff has started."
 
 **Emergent capabilities**: Abilities appearing at scale without explicit training (in-context learning, chain-of-thought reasoning).
 
-**Acceleration of progress**: [Epoch AI data](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up) shows capability improvement nearly doubled in 2024.
+**Acceleration of progress**: <R id="663417bdb09208a4">Epoch AI data</R> shows capability improvement nearly doubled in 2024.
 
-**AI for AI research**: Models increasingly useful for ML research itself. A [survey of OpenAI/DeepMind researchers](https://ai-2027.com/research/takeoff-forecast) found median estimate of 6.25x productivity boost from best-performing researchers.
+**AI for AI research**: Models increasingly useful for ML research itself. A <R id="f418db885210d581">survey of OpenAI/DeepMind researchers</R> found median estimate of 6.25x productivity boost from best-performing researchers.
 
 ### Signs Pointing Toward Slow Takeoff
 
 **Deployment lag**: Frontier models take years to fully integrate into applications.
 
-**Reliability issues**: Models still have fundamental limitations (hallucination, reasoning). [FrontierMath benchmark](https://epoch.ai/frontiermath/the-benchmark) shows frontier models solve less than 2% of advanced math problems.
+**Reliability issues**: Models still have fundamental limitations (hallucination, reasoning). <R id="46010026d8feac35">FrontierMath benchmark</R> shows frontier models solve less than 2% of advanced math problems.
 
 **Hardware constraints**: Compute costs remain significant; can't scale infinitely.
 
 **Regulatory friction**: Governments increasingly interested in oversight.
 
-**Diminishing returns**: [Recent 2025 papers](https://futureoflife.org/ai/are-we-close-to-an-intelligence-explosion/) show that self-improvement yields smaller returns each round and often stalls on harder tasks.
+**Diminishing returns**: <R id="e49b6ceff6dfc795">Recent 2025 papers</R> show that self-improvement yields smaller returns each round and often stalls on harder tasks.
 
 ## Implications for AI Safety
 
@@ -418,19 +418,19 @@ Takeoff speed interacts critically with:
 
 ### Primary Research
 
-- **[What a Compute-Centric Framework Says About Takeoff Speeds](https://www.openphilanthropy.org/research/what-a-compute-centric-framework-says-about-takeoff-speeds/)** — Tom Davidson's Open Philanthropy report (2024), the most rigorous quantitative model of takeoff dynamics
-- **[AI Capabilities Progress Has Sped Up](https://epoch.ai/data-insights/ai-capabilities-progress-has-sped-up)** — Epoch AI analysis showing 90% acceleration in capability improvement rates in 2024
-- **[Takeoff Speeds](https://sideways-view.com/2018/02/24/takeoff-speeds/)** — Paul Christiano's foundational 2018 post defining the slow takeoff position
-- **[Yudkowsky and Christiano Discuss Takeoff Speeds](https://intelligence.org/2021/11/22/yudkowsky-and-christiano-discuss-takeoff-speeds/)** — MIRI transcript of the key 2021 debate
+- **<R id="31e373770f16b09b">What a Compute-Centric Framework Says About Takeoff Speeds</R>** — Tom Davidson's Open Philanthropy report (2024), the most rigorous quantitative model of takeoff dynamics
+- **<R id="663417bdb09208a4">AI Capabilities Progress Has Sped Up</R>** — Epoch AI analysis showing 90% acceleration in capability improvement rates in 2024
+- **<R id="d70ecd90990cdd58">Takeoff Speeds</R>** — Paul Christiano's foundational 2018 post defining the slow takeoff position
+- **<R id="9c8ec6cef670271d">Yudkowsky and Christiano Discuss Takeoff Speeds</R>** — MIRI transcript of the key 2021 debate
 
 ### Expert Perspectives
 
-- **[The Gentle Singularity](https://blog.samaltman.com/the-gentle-singularity)** — Sam Altman's 2025 blog post arguing "we are past the event horizon"
-- **[Economic Growth Given Machine Intelligence](https://hanson.gmu.edu/aigrow.pdf)** — Robin Hanson's economic modeling of AI-driven growth
-- **[Are We Close to an Intelligence Explosion?](https://futureoflife.org/ai/are-we-close-to-an-intelligence-explosion/)** — Future of Life Institute's 2025 analysis of recursive self-improvement evidence
+- **<R id="2bc0d4251ea0868f">The Gentle Singularity</R>** — Sam Altman's 2025 blog post arguing "we are past the event horizon"
+- **<R id="88451bfc3f9b0a9d">Economic Growth Given Machine Intelligence</R>** — Robin Hanson's economic modeling of AI-driven growth
+- **<R id="e49b6ceff6dfc795">Are We Close to an Intelligence Explosion?</R>** — Future of Life Institute's 2025 analysis of recursive self-improvement evidence
 
 ### Empirical Evidence
 
-- **[Emergent Abilities in Large Language Models: An Explainer](https://cset.georgetown.edu/article/emergent-abilities-in-large-language-models-an-explainer/)** — CSET Georgetown overview of the emergence debate
-- **[AI 2027 Takeoff Forecast](https://ai-2027.com/research/takeoff-forecast)** — Survey of OpenAI/DeepMind researchers on AI R&D acceleration
-- **[FrontierMath Benchmark](https://epoch.ai/frontiermath/the-benchmark)** — Epoch AI's benchmark showing current capability limits
+- **<R id="9926d26da9a3d761">Emergent Abilities in Large Language Models: An Explainer</R>** — CSET Georgetown overview of the emergence debate
+- **<R id="f418db885210d581">AI 2027 Takeoff Forecast</R>** — Survey of OpenAI/DeepMind researchers on AI R&D acceleration
+- **<R id="46010026d8feac35">FrontierMath Benchmark</R>** — Epoch AI's benchmark showing current capability limits

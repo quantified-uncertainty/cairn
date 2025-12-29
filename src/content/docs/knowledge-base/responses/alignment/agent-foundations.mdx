@@ -6,13 +6,13 @@ quality: 78
 lastEdited: "2025-12-28"
 llmSummary: "Agent foundations research develops mathematical frameworks for understanding aligned agency, including embedded agency, decision theory, and corrigibility. MIRI's 2024 pivot to policy work reflects pessimism about theoretical progress arriving in time. Assessment indicates low tractability and high neglectedness, with value heavily dependent on alignment difficulty and timeline assumptions."
 ---
-import {Mermaid} from '../../../../../components/wiki';
+import {Mermaid, R} from '../../../../../components/wiki';
 
 ## Overview
 
 Agent foundations research seeks to develop mathematical frameworks for understanding agency, goals, and alignment before advanced AI systems manifest the problems these frameworks aim to solve. The approach treats alignment as requiring theoretical prerequisites: formal definitions of concepts like "corrigibility," "embedded reasoning," and "value learning" that must be established before building reliably aligned systems.
 
-This research program was pioneered by the [Machine Intelligence Research Institute (MIRI)](/knowledge-base/organizations/safety-orgs/miri/) starting in 2013. Key contributions include [embedded agency](https://intelligence.org/embedded-agency/) (how agents reason about themselves within their environment), [logical induction](https://intelligence.org/2016/09/12/new-paper-logical-induction/) (managing uncertainty about mathematical truths), [functional decision theory](https://intelligence.org/2017/10/22/fdt/) (how agents should make decisions under uncertainty), and [formal corrigibility analysis](https://intelligence.org/files/Corrigibility.pdf) (conditions under which agents accept correction).
+This research program was pioneered by the [Machine Intelligence Research Institute (MIRI)](/knowledge-base/organizations/safety-orgs/miri/) starting in 2013. Key contributions include <R id="1da850cbb06cd522">embedded agency</R> (how agents reason about themselves within their environment), <R id="c03dfe0b505debd6">logical induction</R> (managing uncertainty about mathematical truths), <R id="170ed59807cc7b2f">functional decision theory</R> (how agents should make decisions under uncertainty), and <R id="33c4da848ef72141">formal corrigibility analysis</R> (conditions under which agents accept correction).
 
 The field faces a critical juncture. In January 2024, MIRI announced a strategic pivot away from agent foundations research, stating that "alignment research at MIRI and in the larger field had gone too slowly" and that they "now believed this research was extremely unlikely to succeed in time to prevent an unprecedented catastrophe." MIRI has shifted focus to policy and communications work, with their agent foundations team discontinued. This development has intensified debate about whether agent foundations represents essential groundwork or a research dead end.
 
@@ -40,7 +40,7 @@ The field faces a critical juncture. In January 2024, MIRI announced a strategic
 
 ## Core Research Areas
 
-Agent foundations research spans several interconnected problem domains. The 2018 "[Embedded Agency](https://www.alignmentforum.org/s/Rm6oQRJJmhGCcLvxh)" framework by Abram Demski and Scott Garrabrant unified these into a coherent research agenda, identifying four core subproblems of embedded agency: decision theory, embedded world-models, robust delegation, and subsystem alignment.
+Agent foundations research spans several interconnected problem domains. The 2018 "<R id="bbc4bc9c2577c2d0">Embedded Agency</R>" framework by Abram Demski and Scott Garrabrant unified these into a coherent research agenda, identifying four core subproblems of embedded agency: decision theory, embedded world-models, robust delegation, and subsystem alignment.
 
 <Mermaid client:load chart={`
 flowchart TD
@@ -78,7 +78,7 @@ flowchart TD
 
 Traditional models of rational agents treat them as separate from their environment, able to model it completely and act on it from "outside." Real AI systems are embedded: they exist within the world they're modeling, are made of the same stuff as their environment, and cannot fully model themselves.
 
-The [embedded agency sequence](https://www.alignmentforum.org/s/Rm6oQRJJmhGCcLvxh) identifies four interconnected challenges:
+The <R id="bbc4bc9c2577c2d0">embedded agency sequence</R> identifies four interconnected challenges:
 
 **Decision Theory**: How should an embedded agent make decisions when its decision procedure is part of the world being reasoned about? Standard decision theories assume the agent can consider counterfactual actions, but an embedded agent's reasoning is itself a physical process that affects outcomes.
 
@@ -90,7 +90,7 @@ The [embedded agency sequence](https://www.alignmentforum.org/s/Rm6oQRJJmhGCcLvx
 
 ### Logical Induction: A Landmark Result
 
-[Logical induction](https://intelligence.org/2016/09/12/new-paper-logical-induction/) (Garrabrant et al., 2016) is widely considered agent foundations' most significant concrete achievement. The algorithm provides a computable method for assigning probabilities to mathematical statements, analogous to how Solomonoff induction handles empirical uncertainty.
+<R id="c03dfe0b505debd6">Logical induction</R> (Garrabrant et al., 2016) is widely considered agent foundations' most significant concrete achievement. The algorithm provides a computable method for assigning probabilities to mathematical statements, analogous to how Solomonoff induction handles empirical uncertainty.
 
 A logical inductor assigns probabilities to mathematical claims that:
 - **Converge to truth**: Probabilities approach 1 for true statements, 0 for false ones
@@ -103,7 +103,7 @@ However, integration with decision theory remains incomplete. As Wei Dai and oth
 
 ### Corrigibility: An Open Problem
 
-[Corrigibility](https://intelligence.org/files/Corrigibility.pdf) (Soares et al., 2015) formalized the challenge of building AI systems that accept human correction. A corrigible agent should:
+<R id="33c4da848ef72141">Corrigibility</R> (Soares et al., 2015) formalized the challenge of building AI systems that accept human correction. A corrigible agent should:
 - Not manipulate its operators
 - Preserve oversight mechanisms
 - Follow shutdown instructions
@@ -126,7 +126,7 @@ Agent foundations researchers developed novel decision theories to address probl
 
 Functional Decision Theory (Yudkowsky & Soares, 2017) and Updateless Decision Theory (Wei Dai, 2009) were designed to handle cases where the agent's decision procedure is predicted by other agents or affects multiple instances of itself. These theories outperform CDT and EDT in specific scenarios but require technical machinery—particularly "logical counterfactuals"—that remains undefined.
 
-The [MIRI/Open Philanthropy exchange on decision theory](https://www.alignmentforum.org/posts/FBbHEjkZzdupcjkna/miri-op-exchange-about-decision-theory-1) reveals ongoing disagreement about whether this research direction is productive or has generated more puzzles than solutions.
+The <R id="db5e810911f924b1">MIRI/Open Philanthropy exchange on decision theory</R> reveals ongoing disagreement about whether this research direction is productive or has generated more puzzles than solutions.
 
 ---
 
@@ -152,7 +152,7 @@ Critics, including many who previously supported agent foundations, argue the ap
 
 **Slow progress on key problems**: After 10+ years of work, corrigibility remains unsolved, decision theory has generated more puzzles than solutions, and logical induction doesn't integrate with the rest of the framework. MIRI's 2024 pivot implicitly acknowledges this.
 
-**Neural networks may not fit formalisms**: Agent foundations research makes few assumptions about "gears-level properties" of AI systems. But modern AI is increasingly certain to be neural networks. [Mechanistic interpretability](https://arxiv.org/html/2404.14082v1) and empirical safety research can assume neural network architectures and make faster progress.
+**Neural networks may not fit formalisms**: Agent foundations research makes few assumptions about "gears-level properties" of AI systems. But modern AI is increasingly certain to be neural networks. <R id="05bdadec7b6b3ee9">Mechanistic interpretability</R> and empirical safety research can assume neural network architectures and make faster progress.
 
 **The Science of Deep Learning argument**: Researchers like [Neel Nanda](/knowledge-base/people/neel-nanda/) argue that understanding how neural networks actually work (through mechanistic interpretability, scaling laws, etc.) is more tractable than developing abstract theories. Neural network properties may generalize even if specific alignment techniques don't.
 
@@ -230,22 +230,22 @@ Critics, including many who previously supported agent foundations, argue the ap
 
 ### Primary Research
 
-- **Embedded Agency** (Demski & Garrabrant, 2018): [AI Alignment Forum sequence](https://www.alignmentforum.org/s/Rm6oQRJJmhGCcLvxh) presenting the unified framework
-- **Logical Induction** (Garrabrant et al., 2016): [MIRI announcement](https://intelligence.org/2016/09/12/new-paper-logical-induction/)
-- **Corrigibility** (Soares et al., 2015): [PDF](https://intelligence.org/files/Corrigibility.pdf)
-- **Functional Decision Theory** (Yudkowsky & Soares, 2017): [MIRI announcement](https://intelligence.org/2017/10/22/fdt/)
-- **Agent Foundations Technical Agenda** (Soares & Fallenstein, 2017): [PDF](https://intelligence.org/files/TechnicalAgenda.pdf)
+- **Embedded Agency** (Demski & Garrabrant, 2018): <R id="bbc4bc9c2577c2d0">AI Alignment Forum sequence</R> presenting the unified framework
+- **Logical Induction** (Garrabrant et al., 2016): <R id="c03dfe0b505debd6">MIRI announcement</R>
+- **Corrigibility** (Soares et al., 2015): <R id="33c4da848ef72141">PDF</R>
+- **Functional Decision Theory** (Yudkowsky & Soares, 2017): <R id="170ed59807cc7b2f">MIRI announcement</R>
+- **Agent Foundations Technical Agenda** (Soares & Fallenstein, 2017): <R id="b781192f2704fdf4">PDF</R>
 
 ### Strategic and Meta-Level
 
-- **MIRI 2024 Mission and Strategy Update**: [MIRI blog](https://intelligence.org/2024/01/04/miri-2024-mission-and-strategy-update/) explaining pivot away from agent foundations
-- **MIRI/Open Philanthropy Exchange on Decision Theory**: [AI Alignment Forum](https://www.alignmentforum.org/posts/FBbHEjkZzdupcjkna/miri-op-exchange-about-decision-theory-1)
-- **Science of Deep Learning vs. Agent Foundations**: [LessWrong post](https://www.lesswrong.com/posts/v6zZaR7aDD6vkuPmx/science-of-deep-learning-more-tractably-addresses-the-sharp) arguing for empirical approaches
+- **MIRI 2024 Mission and Strategy Update**: <R id="435b669c11e07d8f">MIRI blog</R> explaining pivot away from agent foundations
+- **MIRI/Open Philanthropy Exchange on Decision Theory**: <R id="db5e810911f924b1">AI Alignment Forum</R>
+- **Science of Deep Learning vs. Agent Foundations**: <R id="d0d2b99c32eb6001">LessWrong post</R> arguing for empirical approaches
 
 ### Value Learning and CIRL
 
-- **Cooperative Inverse Reinforcement Learning** (Hadfield-Menell et al., 2016): [arXiv](https://arxiv.org/abs/1606.03137) - Formalizes value learning as cooperative game
-- **Inverse Reinforcement Learning**: [AI Alignment Forum wiki](https://www.alignmentforum.org/w/inverse-reinforcement-learning)
+- **Cooperative Inverse Reinforcement Learning** (Hadfield-Menell et al., 2016): <R id="821f65afa4c681ca">arXiv</R> - Formalizes value learning as cooperative game
+- **Inverse Reinforcement Learning**: <R id="6ebbb63a5bb271f2">AI Alignment Forum wiki</R>
 
 ### Related Concepts
 

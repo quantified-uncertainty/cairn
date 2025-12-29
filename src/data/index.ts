@@ -6,7 +6,7 @@
  */
 
 import databaseJson from './database.json';
-import type { Expert, Organization, Estimate, Crux, GlossaryTerm, Entity, StructuredLikelihood, StructuredTimeframe, ResearchMaturity, Resource } from './schema';
+import type { Expert, Organization, Estimate, Crux, GlossaryTerm, Entity, StructuredLikelihood, StructuredTimeframe, ResearchMaturity, Resource, Publication } from './schema';
 import type { Database } from './database-types';
 import { getRiskCategory } from './risk-categories';
 
@@ -24,6 +24,7 @@ export const cruxes: Crux[] = database.cruxes;
 export const glossary: GlossaryTerm[] = database.glossary;
 export const entities: Entity[] = database.entities || [];
 export const resources: Resource[] = database.resources || [];
+export const publications: Publication[] = database.publications || [];
 
 // Derived data (computed at build time)
 export const backlinks = database.backlinks || {};
@@ -131,6 +132,35 @@ export function getResourceById(id: string): Resource | undefined {
 
 export function getResourcesByIds(ids: string[]): Resource[] {
   return ids.map(id => getResourceById(id)).filter((r): r is Resource => r !== undefined);
+}
+
+export function getPublicationById(id: string): Publication | undefined {
+  return publications.find((p) => p.id === id);
+}
+
+/**
+ * Get effective credibility for a resource
+ * Uses credibility_override if set, otherwise falls back to publication default
+ */
+export function getResourceCredibility(resource: Resource): number | undefined {
+  if (resource.credibility_override) {
+    return resource.credibility_override;
+  }
+  if (resource.publication_id) {
+    const pub = getPublicationById(resource.publication_id);
+    return pub?.credibility;
+  }
+  return undefined;
+}
+
+/**
+ * Get publication info for a resource
+ */
+export function getResourcePublication(resource: Resource): Publication | undefined {
+  if (resource.publication_id) {
+    return getPublicationById(resource.publication_id);
+  }
+  return undefined;
 }
 
 export function getPageById(id: string): Page | undefined {

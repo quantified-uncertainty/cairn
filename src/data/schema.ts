@@ -330,18 +330,19 @@ export type EntitySource = z.infer<typeof EntitySource>;
 
 export const PublicationType = z.enum([
   'academic_journal',   // Nature, Science, peer-reviewed journals
-  'preprint_server',    // arXiv, bioRxiv
+  'preprint_server',    // arXiv, bioRxiv, SSRN
   'think_tank',         // RAND, Brookings, CSET
   'company_blog',       // Anthropic, OpenAI technical blogs
-  'government',         // NIST, UK Gov, EU
+  'government',         // NIST, UK Gov, EU, international orgs
   'encyclopedia',       // Wikipedia
   'blog_platform',      // LessWrong, Alignment Forum, EA Forum
   'news',               // MIT Tech Review, media outlets
   'organization',       // Nonprofits, advocacy groups
   'academic',           // University research centers
-  'consulting',         // McKinsey, BCG
+  'consulting',         // McKinsey, BCG, Edelman
   'academic_search',    // Google Scholar, Semantic Scholar
   'code_repository',    // GitHub
+  'marketplace',        // Amazon (for book links)
 ]);
 export type PublicationType = z.infer<typeof PublicationType>;
 

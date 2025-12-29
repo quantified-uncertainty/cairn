@@ -1116,6 +1116,133 @@ async function cmdRebuildCitations(opts) {
   }
 }
 
+// ============ Enrich Resources ============
+
+function loadPublications() {
+  const content = readFileSync(PUBLICATIONS_FILE, 'utf-8');
+  return parseYaml(content) || [];
+}
+
+function buildDomainToPublicationMap(publications) {
+  const map = new Map();
+  for (const pub of publications) {
+    if (!pub.domains) continue;
+    for (const domain of pub.domains) {
+      map.set(domain, pub);
+    }
+  }
+  return map;
+}
+
+// Infer topic tags from resource content and context
+function inferTags(resource, entities = []) {
+  const tags = new Set();
+  const text = `${resource.title || ''} ${resource.abstract || ''} ${resource.summary || ''}`.toLowerCase();
+
+  // Topic detection
+  const topicPatterns = [
+    { pattern: /\b(alignment|aligned|misalign)/i, tag: 'alignment' },
+    { pattern: /\b(interpretab|mechanistic|circuits|features)/i, tag: 'interpretability' },
+    { pattern: /\b(governance|regulat|policy|policymaker)/i, tag: 'governance' },
+    { pattern: /\b(capabilit|benchmark|performance|scaling)/i, tag: 'capabilities' },
+    { pattern: /\b(safety|safe|dangerous)/i, tag: 'safety' },
+    { pattern: /\b(x-risk|existential|extinction|catastroph)/i, tag: 'x-risk' },
+    { pattern: /\b(decepti|scheming|sandbagging)/i, tag: 'deception' },
+    { pattern: /\b(rlhf|fine-tun|training)/i, tag: 'training' },
+    { pattern: /\b(eval|evaluat|testing|benchmark)/i, tag: 'evaluation' },
+    { pattern: /\b(economic|labor|job|employment|automat)/i, tag: 'economic' },
+    { pattern: /\b(bioweapon|biological|pathogen|biosec)/i, tag: 'biosecurity' },
+    { pattern: /\b(cyber|hacking|security|vulnerab)/i, tag: 'cybersecurity' },
+    { pattern: /\b(compute|gpu|chip|hardware)/i, tag: 'compute' },
+    { pattern: /\b(open.?source|closed|release)/i, tag: 'open-source' },
+    { pattern: /\b(llm|language model|transformer|gpt|claude|gemini)/i, tag: 'llm' },
+    { pattern: /\b(agi|artificial general|superintelligen)/i, tag: 'agi' },
+    { pattern: /\b(mesa.?optim|inner|deceptive alignment)/i, tag: 'mesa-optimization' },
+  ];
+
+  for (const { pattern, tag } of topicPatterns) {
+    if (pattern.test(text)) tags.add(tag);
+  }
+
+  // Infer from cited_by entities
+  if (resource.cited_by?.length) {
+    for (const entityId of resource.cited_by) {
+      const entity = entities.find(e => e.id === entityId);
+      if (entity?.tags) {
+        for (const tag of entity.tags.slice(0, 3)) {
+          tags.add(tag);
+        }
+      }
+    }
+  }
+
+  return Array.from(tags).slice(0, 5);
+}
+
+async function cmdEnrich(opts) {
+  const dryRun = opts['dry-run'];
+  const verbose = opts.verbose;
+
+  console.log('🏷️  Enriching resources with publication data and tags');
+  if (dryRun) console.log('   DRY RUN');
+
+  const resources = loadResources();
+  const publications = loadPublications();
+  const domainMap = buildDomainToPublicationMap(publications);
+
+  // Load entities for tag inference
+  let entities = [];
+  try {
+    const entitiesContent = readFileSync('src/data/entities.yaml', 'utf-8');
+    entities = parseYaml(entitiesContent) || [];
+  } catch (e) {
+    console.warn('   Could not load entities.yaml for tag inference');
+  }
+
+  let pubMapped = 0;
+  let tagsAdded = 0;
+
+  for (const r of resources) {
+    // Map to publication
+    if (!r.publication_id && r.url) {
+      try {
+        const domain = new URL(r.url).hostname.replace('www.', '');
+        const pub = domainMap.get(domain);
+        if (pub) {
+          r.publication_id = pub.id;
+          pubMapped++;
+          if (verbose) console.log(`   📰 ${r.id} → ${pub.name}`);
+        }
+      } catch {}
+    }
+
+    // Infer tags if missing
+    if (!r.tags || r.tags.length === 0) {
+      const inferredTags = inferTags(r, entities);
+      if (inferredTags.length > 0) {
+        r.tags = inferredTags;
+        tagsAdded++;
+        if (verbose) console.log(`   🏷️  ${r.id} → [${inferredTags.join(', ')}]`);
+      }
+    }
+  }
+
+  console.log(`\n   Mapped to publications: ${pubMapped}`);
+  console.log(`   Resources with inferred tags: ${tagsAdded}`);
+
+  // Stats
+  const withPub = resources.filter(r => r.publication_id).length;
+  const withTags = resources.filter(r => r.tags?.length > 0).length;
+  console.log(`\n   Total with publication_id: ${withPub} (${Math.round(withPub/resources.length*100)}%)`);
+  console.log(`   Total with tags: ${withTags} (${Math.round(withTags/resources.length*100)}%)`);
+
+  if (!dryRun && (pubMapped > 0 || tagsAdded > 0)) {
+    saveResources(resources);
+    console.log('\n   Saved resources.yaml');
+    console.log('💡 Run `npm run build:data` to update the database.');
+  }
+}
+
 // ============ Utility ============
 
 function sleep(ms) {
@@ -1134,6 +1261,7 @@ Commands:
   process <file>         Convert links to <R>, creating resources as needed
   create <url>           Create a resource entry from a URL
   metadata <source>      Extract metadata from resources
+  enrich                 Add publication_id and tags to resources
   rebuild-citations      Rebuild cited_by from MDX files
 
 Metadata Sources:
@@ -1164,6 +1292,7 @@ Examples:
   node scripts/resource-manager.mjs metadata stats
   node scripts/resource-manager.mjs metadata arxiv --batch 50
   node scripts/resource-manager.mjs metadata all
+  node scripts/resource-manager.mjs enrich
   node scripts/resource-manager.mjs rebuild-citations
 `);
 }
@@ -1191,6 +1320,9 @@ async function main() {
       break;
     case 'rebuild-citations':
       await cmdRebuildCitations(opts);
+      break;
+    case 'enrich':
+      await cmdEnrich(opts);
       break;
     case 'help':
     case '--help':
