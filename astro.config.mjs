@@ -69,7 +69,6 @@ export default defineConfig({
                           { label: 'Structural Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/structural' } },
                           { label: 'Epistemic Harms', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
                       ]},
-                      { label: 'Risk Factors', collapsed: true, autogenerate: { directory: 'knowledge-base/risk-factors' } },
                       { label: 'Organizations', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/organizations' },
                           { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },

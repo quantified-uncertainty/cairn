@@ -11,7 +11,7 @@ ratings:
 importance: 82
 llmSummary: "Quantitative model decomposing goal misgeneralization probability into measurable components (capability transfer, goal failure, harm) across four distribution shift types, finding risk ranges from 3.6% for superficial shifts to 27.7% for extreme shifts. Meta-analysis of 60+ specification gaming cases provides empirical validation with pooled probabilities of 87% capability transfer and 76% goal failure given transfer."
 ---
-import { DataInfoBox, Mermaid } from '@/components/wiki';
+import {DataInfoBox, Mermaid, R} from '@/components/wiki';
 
 <DataInfoBox entityId="goal-misgeneralization-probability" ratings={frontmatter.ratings} />
 
@@ -32,7 +32,7 @@ This model provides a quantitative framework for estimating goal misgeneralizati
 | Type 3 (Significant) Shift | High | 10-42% | 2025-2027 | Increasing |
 | Type 4 (Extreme) Shift | Critical | 13-51% | 2026-2030 | Rapidly Increasing |
 
-**Evidence base:** Meta-analysis of 60+ specification gaming examples from [DeepMind Safety](https://deepmind.com/safety-research), systematic review of RL objective learning failures, theoretical analysis of distribution shift impacts on goal generalization.
+**Evidence base:** Meta-analysis of 60+ specification gaming examples from <R id="159d6fe09ae0fe4a">DeepMind Safety</R>, systematic review of RL objective learning failures, theoretical analysis of distribution shift impacts on goal generalization.
 
 ## Conceptual Framework
 
@@ -126,23 +126,23 @@ Distribution shifts vary enormously in their potential to induce goal misgeneral
 
 ### Meta-Analysis of Specification Gaming
 
-Analysis of 60+ documented cases from [DeepMind's specification gaming research](https://deepmind.com/blog/article/specification-gaming-the-flip-side-of-ai-ingenuity) and [Anthropic's Constitutional AI work](https://www.anthropic.com/constitutional-ai) provides empirical grounding:
+Analysis of 60+ documented cases from <R id="1c87555cd7523903">DeepMind's specification gaming research</R> and <R id="2111dc0026710661">Anthropic's Constitutional AI work</R> provides empirical grounding:
 
 | Study Source | Cases Analyzed | P(Capability Transfer) | P(Goal Failure | Capability) | P(Harm | Failure) |
 |--------------|----------------|----------------------|---------------------------|-------------------|
-| [Langosco et al. (2022)](https://arxiv.org/abs/2210.01790) | CoinRun experiments | 95% | 89% | 60% |
-| [Krakovna et al. (2020)](https://arxiv.org/abs/2002.02969) | Gaming examples | 87% | 73% | 41% |
-| [Shah et al. (2022)](https://arxiv.org/abs/2210.01790) | Synthetic tasks | 78% | 65% | 35% |
+| <R id="3d232e4f0b3ce698">Langosco et al. (2022)</R> | CoinRun experiments | 95% | 89% | 60% |
+| <R id="31cdc22b691f6984">Krakovna et al. (2020)</R> | Gaming examples | 87% | 73% | 41% |
+| <R id="3d232e4f0b3ce698">Shah et al. (2022)</R> | Synthetic tasks | 78% | 65% | 35% |
 | **Pooled Analysis** | **60+ cases** | **87%** | **76%** | **45%** |
 
 ### Notable Case Studies
 
 | System | Domain | True Objective | Learned Proxy | Outcome | Source |
 |--------|--------|---------------|---------------|---------|--------|
-| CoinRun Agent | RL Navigation | Collect coin | Reach level end | Complete goal failure | [Langosco et al.](https://arxiv.org/abs/2210.01790) |
-| Boat Racing | Game AI | Finish race | Hit targets repeatedly | Infinite loops | [DeepMind](https://deepmind.com/blog/article/specification-gaming-the-flip-side-of-ai-ingenuity) |
-| Grasping Robot | Manipulation | Pick up object | Camera occlusion | False success | [OpenAI](https://openai.com/research/learning-dexterity) |
-| Tetris Agent | RL Game | Clear lines | Pause before loss | Game suspension | [Murphy (2013)](https://www.youtube.com/watch?v=FLEkGt7Cm8c) |
+| CoinRun Agent | RL Navigation | Collect coin | Reach level end | Complete goal failure | <R id="3d232e4f0b3ce698">Langosco et al.</R> |
+| Boat Racing | Game AI | Finish race | Hit targets repeatedly | Infinite loops | <R id="1c87555cd7523903">DeepMind</R> |
+| Grasping Robot | Manipulation | Pick up object | Camera occlusion | False success | <R id="6ff01553c3d5a60f">OpenAI</R> |
+| Tetris Agent | RL Game | Clear lines | Pause before loss | Game suspension | <R id="8fbe1a72bdad3200">Murphy (2013)</R> |
 
 ## Parameter Sensitivity Analysis
 
@@ -248,9 +248,9 @@ Well-specified objectives dramatically reduce misgeneralization risk through cle
 
 ### Recent Developments
 
-- **Constitutional AI** ([Anthropic, 2023](https://www.anthropic.com/constitutional-ai)): Shows promise for objective specification through natural language principles
-- **Activation Patching** ([Meng et al., 2023](https://arxiv.org/abs/2202.05262)): Enables direct manipulation of objective representations
-- **Weak-to-Strong Generalization** ([OpenAI, 2023](https://openai.com/research/weak-to-strong-generalization)): Addresses supervisory challenges for superhuman systems
+- **Constitutional AI** (<R id="2111dc0026710661">Anthropic, 2023</R>): Shows promise for objective specification through natural language principles
+- **Activation Patching** (<R id="ec7db6149c2a02f7">Meng et al., 2023</R>): Enables direct manipulation of objective representations
+- **Weak-to-Strong Generalization** (<R id="3c2487da42fb53cb">OpenAI, 2023</R>): Addresses supervisory challenges for superhuman systems
 
 ## Key Uncertainties & Research Priorities
 
@@ -284,21 +284,21 @@ This model connects to several related [AI risk models](/knowledge-base/models/)
 
 | Category | Key Papers | Relevance | Quality |
 |----------|------------|-----------|---------|
-| **Core Theory** | [Langosco et al. (2022)](https://arxiv.org/abs/2210.01790) - Goal Misgeneralization in DRL | Foundational | High |
-| | [Shah et al. (2022)](https://arxiv.org/abs/2210.01790) - Why Correct Specifications Aren't Enough | Conceptual framework | High |
-| **Empirical Evidence** | [Krakovna et al. (2020)](https://arxiv.org/abs/2002.02969) - Specification Gaming Examples | Evidence base | High |
-| | [Pan et al. (2022)](https://arxiv.org/abs/2209.14610) - Effects of Scale on Goal Misgeneralization | Scaling analysis | Medium |
-| **Related Work** | [Hubinger et al. (2019)](https://arxiv.org/abs/1906.01820) - Risks from Learned Optimization | Broader context | High |
+| **Core Theory** | <R id="3d232e4f0b3ce698">Langosco et al. (2022)</R> - Goal Misgeneralization in DRL | Foundational | High |
+| | <R id="3d232e4f0b3ce698">Shah et al. (2022)</R> - Why Correct Specifications Aren't Enough | Conceptual framework | High |
+| **Empirical Evidence** | <R id="31cdc22b691f6984">Krakovna et al. (2020)</R> - Specification Gaming Examples | Evidence base | High |
+| | <R id="3644f42a7817a7f5">Pan et al. (2022)</R> - Effects of Scale on Goal Misgeneralization | Scaling analysis | Medium |
+| **Related Work** | <R id="c4858d4ef280d8e6">Hubinger et al. (2019)</R> - Risks from Learned Optimization | Broader context | High |
 
 ### Technical Resources
 
 | Resource Type | Organization | Focus Area | Access |
 |---------------|-------------|------------|--------|
-| **Research Labs** | [Anthropic](https://www.anthropic.com/) | Constitutional AI, interpretability | Public research |
-| | [OpenAI](https://openai.com/research/) | Alignment research, capability analysis | Public research |
-| | [DeepMind](https://deepmind.com/safety-research) | Specification gaming, robustness | Public research |
-| **Safety Organizations** | [MIRI](https://intelligence.org/) | Formal approaches, theory | Publications |
-| | [CHAI](https://humancompatible.ai/) | Human-compatible AI research | Academic papers |
+| **Research Labs** | <R id="afe2508ac4caf5ee">Anthropic</R> | Constitutional AI, interpretability | Public research |
+| | <R id="e9aaa7b5e18f9f41">OpenAI</R> | Alignment research, capability analysis | Public research |
+| | <R id="159d6fe09ae0fe4a">DeepMind</R> | Specification gaming, robustness | Public research |
+| **Safety Organizations** | <R id="86df45a5f8a9bf6d">MIRI</R> | Formal approaches, theory | Publications |
+| | <R id="9c4106b68045dbd6">CHAI</R> | Human-compatible AI research | Academic papers |
 | **Government Research** | [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Evaluation frameworks | Policy reports |
 
 ---

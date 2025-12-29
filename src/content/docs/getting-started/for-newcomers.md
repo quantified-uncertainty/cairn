@@ -144,7 +144,7 @@ Understand non-technical approaches:
 - [Governance Overview](/knowledge-base/responses/governance/)
 - [International Coordination](/knowledge-base/responses/governance/international/)
 - [Compute Governance](/knowledge-base/responses/governance/) - Can we govern AI through hardware?
-- [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - Understanding competitive pressure
+- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - Understanding competitive pressure
 
 ### Evening Session: Synthesis and Next Steps (2 hours)
 

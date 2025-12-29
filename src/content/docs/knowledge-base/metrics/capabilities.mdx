@@ -18,7 +18,7 @@ This page tracks concrete, measurable indicators of AI capabilities across multi
 
 **Safety Implication**: Rapid capability advancement outpaces development of reliable evaluation methods, creating blind spots in [AI risk assessment](/knowledge-base/risks/) as models approach human-level performance on narrow benchmarks while exhibiting unpredictable behaviors in real-world deployment. This evaluation-reality gap poses critical challenges for [alignment research](/knowledge-base/arguments/why-alignment-hard/) and safety validation.
 
-The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, representing a 3x improvement over previous models and bringing us to the threshold of AGI capability markers on several benchmarks simultaneously.
+The <R id="54fcb72b74acfae9">recent o3 release</R> achieved 87.5% on ARC-AGI, representing a 3x improvement over previous models and bringing us to the threshold of AGI capability markers on several benchmarks simultaneously.
 
 ---
 
@@ -44,24 +44,24 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### MMLU Trajectory and Saturation
 
-[MMLU (Massive Multitask Language Understanding)](https://crfm.stanford.edu/helm/latest/?group=mmlu) consists of 15,908 multiple-choice questions spanning 57 subjects, from STEM fields to humanities, serving as the primary benchmark for general knowledge assessment.
+<R id="0ad47133f1d6c2c0">MMLU (Massive Multitask Language Understanding)</R> consists of 15,908 multiple-choice questions spanning 57 subjects, from STEM fields to humanities, serving as the primary benchmark for general knowledge assessment.
 
 | Model | Release Date | MMLU Score | Performance Gap | Progress Rate |
 |-------|--------------|------------|-----------------|---------------|
 | GPT-3 (175B) | June 2020 | 43.9% | -45.9% vs human | Baseline |
 | **GPT-4** | **March 2023** | **86.4%** | **-3.4% vs human** | **+42.5%** |
-| [Gemini 1.0 Ultra](https://deepmind.google/technologies/gemini/) | Dec 2023 | 90.0% | +0.2% vs human | 5-shot evaluation |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | June 2024 | 88.3% | -1.5% vs human | Near saturation |
-| **[OpenAI o1](https://openai.com/o1/)** | **Sept 2024** | **92.3%** | **+2.5% vs human** | **Clear saturation** |
-| **[OpenAI o3](https://openai.com/12-days/)** | **Dec 2024** | **96.7%** | **+6.9% vs human** | **Super-human** |
+| <R id="3b8b5072889c4f8a">Gemini 1.0 Ultra</R> | Dec 2023 | 90.0% | +0.2% vs human | 5-shot evaluation |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | June 2024 | 88.3% | -1.5% vs human | Near saturation |
+| **<R id="90b3a9520ffec0d7">OpenAI o1</R>** | **Sept 2024** | **92.3%** | **+2.5% vs human** | **Clear saturation** |
+| **<R id="54fcb72b74acfae9">OpenAI o3</R>** | **Dec 2024** | **96.7%** | **+6.9% vs human** | **Super-human** |
 
-**Human Expert Baseline**: 89.8% (established through expert evaluation by [Hendrycks et al.](https://arxiv.org/abs/2009.03300))
+**Human Expert Baseline**: 89.8% (established through expert evaluation by <R id="0635974beafcf9c5">Hendrycks et al.</R>)
 
 **Critical Observations**:
 - **53 percentage point gain** in 4.5 years (2020-2024), with acceleration after reasoning models
 - o3's 96.7% represents a **6.9 percentage point leap** beyond human expert performance 
-- **Data quality issues**: [6.5% of questions contain errors](https://arxiv.org/abs/2305.12295) according to [Yadav et al. analysis](https://arxiv.org/abs/2305.12295)
-- **Training contamination concerns**: Many models likely trained on MMLU data per [contamination studies](https://arxiv.org/abs/2311.04850)
+- **Data quality issues**: <R id="999344796992fb9f">6.5% of questions contain errors</R> according to <R id="999344796992fb9f">Yadav et al. analysis</R>
+- **Training contamination concerns**: Many models likely trained on MMLU data per <R id="5064f6e55c994ee4">contamination studies</R>
 
 ### Next-Generation Benchmarks
 
@@ -69,11 +69,11 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Model | MMLU-Pro Score | Performance vs. MMLU | Saturation Status |
 |-------|----------------|---------------------|-------------------|
-| [GPT-4o](https://openai.com/index/hello-gpt-4o/) | 72.6% | -13.8% difficulty gap | Moderate headroom |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | 78.0% | -10.3% difficulty gap | Approaching saturation |
-| **[OpenAI o3](https://openai.com/12-days/)** | **92.1%** | **-4.6% gap** | **Near saturation** |
+| <R id="ee605bab036068f0">GPT-4o</R> | 72.6% | -13.8% difficulty gap | Moderate headroom |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | 78.0% | -10.3% difficulty gap | Approaching saturation |
+| **<R id="54fcb72b74acfae9">OpenAI o3</R>** | **92.1%** | **-4.6% gap** | **Near saturation** |
 
-**Evaluation Evolution**: MMLU-Pro approached saturation within 18 months of o3's release, demonstrating the accelerating pace of capability advancement. [SimpleQA](https://openai.com/research/simpleqa) and other fact-grounded benchmarks now serve as primary discriminators.
+**Evaluation Evolution**: MMLU-Pro approached saturation within 18 months of o3's release, demonstrating the accelerating pace of capability advancement. <R id="064e5d8266218028">SimpleQA</R> and other fact-grounded benchmarks now serve as primary discriminators.
 
 ---
 
@@ -81,17 +81,17 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### ARC-AGI: The AGI Capability Threshold
 
-[ARC-AGI (Abstraction and Reasoning Corpus)](https://arcprize.org/) contains 800+ visual reasoning tasks designed to test general intelligence through pattern recognition and abstraction, widely considered the most reliable AGI capability indicator.
+<R id="79a8204bfbccf20f">ARC-AGI (Abstraction and Reasoning Corpus)</R> contains 800+ visual reasoning tasks designed to test general intelligence through pattern recognition and abstraction, widely considered the most reliable AGI capability indicator.
 
 | Model | ARC-AGI Score | Human Performance | AGI Assessment | Breakthrough Factor |
 |-------|---------------|------------------|----------------|-------------------|
 | **Human Baseline** | **85%** | Reference standard | AGI threshold | — |
 | GPT-4o (2024) | 9.2% | Far below threshold | Not AGI | — |
 | Claude 3.5 Sonnet | 14.7% | Below threshold | Not AGI | — |
-| **[OpenAI o1-preview](https://openai.com/o1/)** | **25%** | **Approaching threshold** | **Early AGI signals** | **2.7x improvement** |
-| **[OpenAI o3](https://openai.com/12-days/)** | **87.5%** | **Exceeds human baseline** | **AGI capability achieved** | **3.5x over o1** |
+| **<R id="90b3a9520ffec0d7">OpenAI o1-preview</R>** | **25%** | **Approaching threshold** | **Early AGI signals** | **2.7x improvement** |
+| **<R id="54fcb72b74acfae9">OpenAI o3</R>** | **87.5%** | **Exceeds human baseline** | **AGI capability achieved** | **3.5x over o1** |
 
-**Critical Breakthrough**: o3's 87.5% ARC-AGI performance represents the first model to exceed human-level general reasoning capability, marking a potential AGI milestone per [François Chollet](https://x.com/fchollet/status/1870180691319951825) and [Mike Knoop's analysis](https://x.com/mdknoop/status/1870178822485881316).
+**Critical Breakthrough**: o3's 87.5% ARC-AGI performance represents the first model to exceed human-level general reasoning capability, marking a potential AGI milestone per <R id="05b717693daa745f">François Chollet</R> and <R id="595ede0651dc078d">Mike Knoop's analysis</R>.
 
 **Validation Concerns**: 
 - **Test-time compute scaling**: o3 required $10,000+ per task using massive inference compute
@@ -105,8 +105,8 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 | Model Type | MATH Score | Improvement vs 2023 | Human Baseline Comparison |
 |------------|------------|-------------------|--------------------------|
 | **GPT-4 (2023)** | **42.5%** | Baseline | Human competitive (40%) |
-| [OpenAI o1](https://openai.com/o1/) | 83.3% | +40.8% | 2.1x human performance |
-| **[OpenAI o3](https://openai.com/12-days/)** | **96.7%** | **+54.2%** | **2.4x human performance** |
+| <R id="90b3a9520ffec0d7">OpenAI o1</R> | 83.3% | +40.8% | 2.1x human performance |
+| **<R id="54fcb72b74acfae9">OpenAI o3</R>** | **96.7%** | **+54.2%** | **2.4x human performance** |
 
 **Competition Mathematics (AIME 2024)**:
 - **o1-preview**: Scored 83rd percentile among human competitors
@@ -120,27 +120,27 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### HumanEval Performance Evolution
 
-[HumanEval](https://github.com/openai/human-eval) contains 164 Python programming problems testing code generation from natural language specifications, serving as the standard coding benchmark.
+<R id="9edbbd4ae30cd1f8">HumanEval</R> contains 164 Python programming problems testing code generation from natural language specifications, serving as the standard coding benchmark.
 
 | Model | HumanEval Score | EvalPlus Score | Robustness Gap | Progress Notes |
 |-------|----------------|----------------|----------------|----------------|
-| **[OpenAI o3](https://openai.com/12-days/)** | **96.3%** | **89.2%** | **-7.1%** | Near-perfect |
-| [OpenAI o1](https://openai.com/o1/) | 92.1% | 89.0% | -3.1% | Strong performance |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | 92.0% | 87.3% | -4.7% | Balanced |
-| [Qwen2.5-Coder-32B](https://qwenlm.github.io/blog/qwen2.5/) | 89.5% | 87.2% | -2.3% | Specialized model |
+| **<R id="54fcb72b74acfae9">OpenAI o3</R>** | **96.3%** | **89.2%** | **-7.1%** | Near-perfect |
+| <R id="90b3a9520ffec0d7">OpenAI o1</R> | 92.1% | 89.0% | -3.1% | Strong performance |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | 92.0% | 87.3% | -4.7% | Balanced |
+| <R id="e8f0a037900ef044">Qwen2.5-Coder-32B</R> | 89.5% | 87.2% | -2.3% | Specialized model |
 | **Historical (2021)** | **Codex: 28.8%** | **—** | **—** | **Initial baseline** |
 
 **Progress Rate**: 28.8% → 96.3% in 3.5 years (2021-2024), representing the fastest benchmark progression observed across all domains.
 
-**Robustness Analysis**: The persistent 3-7% gap between HumanEval and [EvalPlus](https://evalplus.github.io/) (with additional test cases) reveals ongoing reliability challenges, highlighting concerns for [software safety applications](/knowledge-base/capabilities/coding/).
+**Robustness Analysis**: The persistent 3-7% gap between HumanEval and <R id="a6abd72df7a3dc9d">EvalPlus</R> (with additional test cases) reveals ongoing reliability challenges, highlighting concerns for [software safety applications](/knowledge-base/capabilities/coding/).
 
 ### Real-World Software Engineering
 
-**[SWE-bench](https://www.swebench.com/)**: Contains 2,294 real GitHub issues from open-source repositories, testing actual software engineering capabilities.
+**<R id="433a37bad4e66a78">SWE-bench</R>**: Contains 2,294 real GitHub issues from open-source repositories, testing actual software engineering capabilities.
 
 | Benchmark Version | 2024 Best | 2025 Current | Model | Improvement Factor |
 |-------------------|-----------|--------------|-------|-------------------|
-| **SWE-bench Full** | 12.3% (Devin) | 48.9% (o3) | [OpenAI o3](https://openai.com/12-days/) | **4.0x** |
+| **SWE-bench Full** | 12.3% (Devin) | 48.9% (o3) | <R id="54fcb72b74acfae9">OpenAI o3</R> | **4.0x** |
 | SWE-bench Lite | 43.0% (Multiple) | 71.7% (o3) | OpenAI o3 | 1.7x |
 | **SWE-bench Verified** | 33.2% (Claude) | 71.2% (o3) | OpenAI o3 | **2.1x** |
 
@@ -170,8 +170,8 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 | Model | Release Date | 50% Time Horizon | Doubling Period | Performance Notes |
 |-------|--------------|------------------|-----------------|-------------------|
 | Early models | 2019 | ~5 minutes | — | Basic task completion |
-| [GPT-4](https://openai.com/gpt-4) | March 2023 | ~15 minutes | 7 months (historical) | Reasoning breakthrough |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | June 2024 | ~45 minutes | 5-6 months trend | Planning advancement |
+| <R id="39f08ad975b7f4db">GPT-4</R> | March 2023 | ~15 minutes | 7 months (historical) | Reasoning breakthrough |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | June 2024 | ~45 minutes | 5-6 months trend | Planning advancement |
 | **OpenAI o1** | **Sept 2024** | **~90 minutes** | **Accelerating** | **Reasoning models** |
 | **Projected (o3 class)** | **Dec 2024** | **~3 hours** | **4-month doubling** | **Agent workflows** |
 
@@ -211,17 +211,17 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Model Family | 2022 | 2023 | 2024 | 2025 | Growth Factor |
 |--------------|------|------|------|------|---------------|
-| **[GPT](https://openai.com/)** | 4K | 8K | 128K | 2M (o3) | **500x** |
-| **[Claude](https://www.anthropic.com/)** | — | 100K | 200K | 200K | **2x** |
-| **[Gemini](https://deepmind.google/technologies/gemini/)** | — | — | 1M | 2M | **2x** |
+| **<R id="04d39e8bd5d50dd5">GPT</R>** | 4K | 8K | 128K | 2M (o3) | **500x** |
+| **<R id="afe2508ac4caf5ee">Claude</R>** | — | 100K | 200K | 200K | **2x** |
+| **<R id="3b8b5072889c4f8a">Gemini</R>** | — | — | 1M | 2M | **2x** |
 
 ### Effective Context Utilization
 
 | Model | Advertised Capacity | Effective Utilization | Performance at Limits | Validation Method |
 |-------|-------------------|---------------------|---------------------|-------------------|
-| **[o1/o3 class](https://openai.com/o1/)** | **2M tokens** | **~1.8M tokens** | **&lt;10% degradation** | **Chain-of-thought maintained** |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | 200K tokens | ~190K tokens | &lt;5% degradation | [Needle-in-haystack](https://github.com/gkamradt/LLMTest_NeedleInAHaystack) |
-| [Gemini 2.0 Flash](https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/) | 2M tokens | ~1.5M tokens | 15% degradation | Community testing |
+| **<R id="90b3a9520ffec0d7">o1/o3 class</R>** | **2M tokens** | **~1.8M tokens** | **&lt;10% degradation** | **Chain-of-thought maintained** |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | 200K tokens | ~190K tokens | &lt;5% degradation | <R id="17f8e83fab7b0fa7">Needle-in-haystack</R> |
+| <R id="08aca1a4de71818f">Gemini 2.0 Flash</R> | 2M tokens | ~1.5M tokens | 15% degradation | Community testing |
 
 **Safety Implications of Massive Context**:
 - Enhanced [situational awareness](/knowledge-base/capabilities/situational-awareness/) through comprehensive information integration
@@ -237,10 +237,10 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Model | Text | Vision | Audio | Video | 3D/Spatial | Native Integration |
 |-------|------|--------|-------|-------|-----------|-------------------|
-| **[Gemini 2.0 Flash](https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/)** | ✓ | ✓ | ✓ | ✓ | ✓ | **Unified architecture** |
-| [GPT-4o](https://openai.com/index/hello-gpt-4o/) | ✓ | ✓ | ✓ | ✓ | ✗ | Real-time processing |
-| **[OpenAI o1](https://openai.com/o1/)** | **✓** | **✓** | **Limited** | **✗** | **✗** | **Text-vision focus** |
-| [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | ✓ | ✓ | ✗ | ✗ | ✗ | Vision-language only |
+| **<R id="08aca1a4de71818f">Gemini 2.0 Flash</R>** | ✓ | ✓ | ✓ | ✓ | ✓ | **Unified architecture** |
+| <R id="ee605bab036068f0">GPT-4o</R> | ✓ | ✓ | ✓ | ✓ | ✗ | Real-time processing |
+| **<R id="90b3a9520ffec0d7">OpenAI o1</R>** | **✓** | **✓** | **Limited** | **✗** | **✗** | **Text-vision focus** |
+| <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet</R> | ✓ | ✓ | ✗ | ✗ | ✗ | Vision-language only |
 
 ### Multimodal Performance Benchmarks
 
@@ -248,8 +248,8 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Model | MMMU Score | Gap to Human Expert (82.6%) | Annual Progress | Saturation Timeline |
 |-------|------------|---------------------------|-----------------|-------------------|
-| **[OpenAI o1](https://openai.com/o1/) (2024)** | **78.2%** | **-4.4%** | Near-human | 6 months to parity |
-| [Google Gemini 1.5](https://deepmind.google/technologies/gemini/) | 62.4% | -20.2% | — | 12-18 months |
+| **<R id="90b3a9520ffec0d7">OpenAI o1</R> (2024)** | **78.2%** | **-4.4%** | Near-human | 6 months to parity |
+| <R id="3b8b5072889c4f8a">Google Gemini 1.5</R> | 62.4% | -20.2% | — | 12-18 months |
 | **Annual Improvement** | **+15.8%** | **76% gap closed** | Accelerating | — |
 
 **Real-Time Processing Capabilities**:
@@ -267,7 +267,7 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### Breakthrough Impact Assessment
 
-**[AlphaFold](https://deepmind.google/technologies/alphafold/) Global Scientific Impact (2020-2025)**:
+**<R id="ba8ca1cafdf06556">AlphaFold</R> Global Scientific Impact (2020-2025)**:
 
 | Impact Metric | 2024 Value | 2025 Projection | Global Significance | Transformation Factor |
 |---------------|------------|-----------------|-------------------|---------------------|
@@ -289,7 +289,7 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### Automated Scientific Discovery
 
-**[FunSearch](https://deepmind.google/discover/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/)** Mathematical Discoveries (2024):
+**<R id="632f5e9472fa8e55">FunSearch</R>** Mathematical Discoveries (2024):
 - **Set Cover Problem**: Found new constructions improving 20-year-old bounds
 - **Bin Packing**: Discovered novel online algorithms exceeding previous best practices
 - **Combinatorial Optimization**: Generated proofs for previously unknown mathematical relationships
@@ -311,7 +311,7 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### Adversarial Attack Resistance (2025 Assessment)
 
-**[Scale AI Adversarial Robustness](https://scale.com/leaderboard)**: 1,500+ human-designed attacks across risk categories.
+**<R id="fe2d9551e69e5ba9">Scale AI Adversarial Robustness</R>**: 1,500+ human-designed attacks across risk categories.
 
 | Attack Category | Success Rate vs. Best Models | Defense Effectiveness | Research Priority | Progress Trend |
 |-----------------|----------------------------|---------------------|-------------------|----------------|
@@ -322,7 +322,7 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 ### Robustness vs. Capability Trade-offs
 
-**[Constitutional AI Defense Analysis](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)**:
+**<R id="e99a5c1697baa07d">Constitutional AI Defense Analysis</R>**:
 
 | Defense Method | Robustness Gain | Capability Loss | Implementation Cost | Adoption Rate |
 |----------------|-----------------|-----------------|-------------------|---------------|
@@ -337,7 +337,7 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Attack System | Success Rate 2024 | Success Rate 2025 | Evolution Factor | Defense Response |
 |---------------|-------------------|-------------------|------------------|------------------|
-| **[GCG](https://llm-attacks.org/)** | **65%** | **78%** | **Automated scaling** | Minimal |
+| **<R id="9ccb89cd8bb8243e">GCG</R>** | **65%** | **78%** | **Automated scaling** | Minimal |
 | **AutoDAN** | 52% | 71% | LLM-generated attacks | Reactive patching |
 | **Multimodal Injection** | 89% | 94% | Image-text fusion | No systematic defense |
 | **Gradient-based Methods** | 43% | 67% | White-box optimization | Research countermeasures |
@@ -410,9 +410,9 @@ The [recent o3 release](https://openai.com/12-days/) achieved 87.5% on ARC-AGI, 
 
 | Expert Category | AGI Timeline | Key Evidence | Confidence Level |
 |----------------|--------------|--------------|------------------|
-| **[Optimistic Researchers](https://situational-awareness.ai/)** | **2025-2027** | **o3 ARC-AGI breakthrough** | **High** |
-| **[Cautious Researchers](https://www.anthropic.com/research)** | **2028-2032** | **Efficiency and deployment gaps** | **Medium** |
-| **[Conservative Researchers](https://www.openphilanthropy.org/research/report-on-whether-ai-could-drive-explosive-economic-growth/)** | **2030+** | **Real-world deployment limitations** | **Low** |
+| **<R id="1befe71d79c4d102">Optimistic Researchers</R>** | **2025-2027** | **o3 ARC-AGI breakthrough** | **High** |
+| **<R id="f771d4f56ad4dbaa">Cautious Researchers</R>** | **2028-2032** | **Efficiency and deployment gaps** | **Medium** |
+| **<R id="57e46933e5a96e78">Conservative Researchers</R>** | **2030+** | **Real-world deployment limitations** | **Low** |
 
 **Crux: Test-Time Compute Scaling**:
 - **Scaling optimists**: Test-time compute represents sustainable capability advancement  

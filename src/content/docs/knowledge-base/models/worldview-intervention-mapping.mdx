@@ -14,7 +14,7 @@ importance: 82.5
 llmSummary: "Maps three belief dimensions (timelines, alignment difficulty, coordination feasibility) to four worldview clusters showing 2-10x differences in optimal intervention priorities, with quantified expected ROI ranges for pause advocacy (10x+), technical research (8-12x), and governance work (3-8x) depending on worldview assumptions."
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="worldview-intervention-mapping" ratings={frontmatter.ratings} />
 
@@ -22,7 +22,7 @@ import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../compo
 
 This model maps how beliefs about AI risk create distinct worldview clusters with dramatically different intervention priorities. Different worldviews imply 2-10x differences in optimal resource allocation across pause advocacy, technical research, and governance work. 
 
-The model identifies that misalignment between personal beliefs and work focus may waste 20-50% of field resources. [AI safety researchers](https://www.anthropic.com/research) hold fundamentally different assumptions about timelines, technical difficulty, and coordination feasibility, but these differences often don't translate to coherent intervention choices.
+The model identifies that misalignment between personal beliefs and work focus may waste 20-50% of field resources. <R id="f771d4f56ad4dbaa">AI safety researchers</R> hold fundamentally different assumptions about timelines, technical difficulty, and coordination feasibility, but these differences often don't translate to coherent intervention choices.
 
 The framework reveals four major worldview clusters - from "doomer" (short timelines + hard alignment) prioritizing pause advocacy, to "technical optimist" (medium timelines + tractable alignment) emphasizing research investment.
 
@@ -83,17 +83,17 @@ flowchart TD
 
 | Timeline | Key Beliefs | Strategic Constraints | Supporting Evidence |
 |----------|-------------|---------------------|---------------------|
-| **Short (2025-2030)** | AGI within 5 years; scaling continues; few obstacles | Little time for institutional change; must work with existing structures | [Amodei prediction](https://www.anthropic.com/news/ceo-letter) of powerful AI by 2026-2027 |
-| **Medium (2030-2040)** | Transformative AI in 10-15 years; surmountable obstacles | Time for institution-building; research can mature | [Metaculus consensus](https://www.metaculus.com/) ~2032 for AGI |
-| **Long (2040+)** | Major obstacles remain; slow takeoff; decades available | Full institutional development possible; fundamental research valuable | [MIRI position](https://intelligence.org/2017/10/13/fire-alarm/) on alignment difficulty |
+| **Short (2025-2030)** | AGI within 5 years; scaling continues; few obstacles | Little time for institutional change; must work with existing structures | <R id="8ebbaf2b6e4d269a">Amodei prediction</R> of powerful AI by 2026-2027 |
+| **Medium (2030-2040)** | Transformative AI in 10-15 years; surmountable obstacles | Time for institution-building; research can mature | <R id="d99a6d0fb1edc2db">Metaculus consensus</R> ~2032 for AGI |
+| **Long (2040+)** | Major obstacles remain; slow takeoff; decades available | Full institutional development possible; fundamental research valuable | <R id="599472695a5fba70">MIRI position</R> on alignment difficulty |
 
 ### Dimension 2: Alignment Difficulty
 
 | Difficulty | Core Assumptions | Research Implications | Current Status |
 |------------|------------------|---------------------|----------------|
-| **Hard** | Alignment fundamentally unsolved; deception likely; current techniques inadequate | Technical solutions insufficient; need to slow/stop development | [Scheming research](https://www.anthropic.com/research/sleeper-agents-training-deceptive-llms) shows deception possible |
-| **Medium** | Alignment difficult but tractable; techniques improve with scale | Technical research highly valuable; sustained investment needed | [Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) shows promise |
-| **Tractable** | Alignment largely solved; RLHF + interpretability sufficient | Focus on deployment governance; limited technical urgency | [OpenAI safety approach](https://openai.com/safety) assumes tractability |
+| **Hard** | Alignment fundamentally unsolved; deception likely; current techniques inadequate | Technical solutions insufficient; need to slow/stop development | <R id="f63ec9445ab2f0aa">Scheming research</R> shows deception possible |
+| **Medium** | Alignment difficult but tractable; techniques improve with scale | Technical research highly valuable; sustained investment needed | <R id="e99a5c1697baa07d">Constitutional AI</R> shows promise |
+| **Tractable** | Alignment largely solved; RLHF + interpretability sufficient | Focus on deployment governance; limited technical urgency | <R id="838d7a59a02e11a7">OpenAI safety approach</R> assumes tractability |
 
 ### Dimension 3: Coordination Feasibility
 
@@ -126,11 +126,11 @@ quadrantChart
 | Intervention Category | Priority | Expected ROI | Key Advocates |
 |----------------------|----------|-------------|---------------|
 | Pause/slowdown advocacy | **Very High** | 10x+ if successful | [Eliezer Yudkowsky](/knowledge-base/people/eliezer-yudkowsky/) |
-| [Compute governance](/knowledge-base/responses/governance/compute-governance/) | **Very High** | 5-8x via bottlenecks | [RAND reports](https://www.rand.org/pubs/research_reports/RRA2974-1.html) |
+| [Compute governance](/knowledge-base/responses/governance/compute-governance/) | **Very High** | 5-8x via bottlenecks | <R id="0b85365d787dfe9a">RAND reports</R> |
 | Technical safety research | **High** | 2-4x (low prob, high value) | [MIRI](/knowledge-base/organizations/safety-orgs/miri/) approach |
-| International coordination | **Medium** | 8x if achieved (low prob) | [FHI governance work](https://www.fhi.ox.ac.uk/) |
+| International coordination | **Medium** | 8x if achieved (low prob) | <R id="1593095c92d34ed8">FHI governance work</R> |
 | Field-building | **Low** | 1-2x (insufficient time) | Long-term capacity building |
-| Public engagement | **Medium** | 3-5x via political support | [Pause AI movement](https://pauseai.info/) |
+| Public engagement | **Medium** | 3-5x via political support | <R id="a8fda81d4a00ec7c">Pause AI movement</R> |
 
 **Coherence Check:** If you believe this worldview but work on field-building or long-term institution design, your work may be misaligned with your beliefs.
 
@@ -141,10 +141,10 @@ quadrantChart
 |----------------------|----------|-------------|----------------------|
 | [Technical safety research](/knowledge-base/responses/alignment/) | **Very High** | 8-12x via direct solutions | [Anthropic](/knowledge-base/organizations/labs/anthropic/), [Redwood](/knowledge-base/organizations/safety-orgs/redwood/) |
 | [Interpretability](/knowledge-base/responses/alignment/interpretability/) | **Very High** | 6-10x via understanding | [Chris Olah's work](/knowledge-base/people/chris-olah/) |
-| Lab safety standards | **High** | 4-6x via industry norms | [Partnership on AI](https://partnershiponai.org/) |
-| [Compute governance](/knowledge-base/responses/governance/compute-governance/) | **Medium** | 3-5x supplementary value | [CSET](https://cset.georgetown.edu/) research |
+| Lab safety standards | **High** | 4-6x via industry norms | <R id="0e7aef26385afeed">Partnership on AI</R> |
+| [Compute governance](/knowledge-base/responses/governance/compute-governance/) | **Medium** | 3-5x supplementary value | <R id="f0d95954b449240a">CSET</R> research |
 | Pause advocacy | **Low** | 1x or negative (unnecessary) | Premature intervention |
-| Field-building | **High** | 5-8x via capacity | [CHAI](/knowledge-base/organizations/safety-orgs/chai/), [MATS](https://www.matsprogram.org/) |
+| Field-building | **High** | 5-8x via capacity | [CHAI](/knowledge-base/organizations/safety-orgs/chai/), <R id="ba3a8bd9c8404d7b">MATS</R> |
 
 **Coherence Check:** If you believe this worldview but work on pause advocacy or aggressive regulation, your efforts may be counterproductive.
 
@@ -154,9 +154,9 @@ quadrantChart
 | Intervention Category | Priority | Expected ROI | Key Institutions |
 |----------------------|----------|-------------|------------------|
 | [International coordination](/knowledge-base/responses/governance/international/) | **Very High** | 10-15x via global governance | [UK AISI](/knowledge-base/organizations/government/uk-aisi/), [US AISI](/knowledge-base/organizations/government/us-aisi/) |
-| [Domestic regulation](/knowledge-base/responses/governance/legislation/) | **Very High** | 6-10x via norm-setting | [EU AI Act](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence) |
-| Institution-building | **Very High** | 8-12x via capacity | [AI Safety Institute](https://www.aisi.gov.uk/) development |
-| Technical standards | **High** | 4-6x enabling governance | [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) |
+| [Domestic regulation](/knowledge-base/responses/governance/legislation/) | **Very High** | 6-10x via norm-setting | <R id="1102501c88207df3">EU AI Act</R> |
+| Institution-building | **Very High** | 8-12x via capacity | <R id="fdf68a8f30f57dee">AI Safety Institute</R> development |
+| Technical standards | **High** | 4-6x enabling governance | <R id="54dbc15413425997">NIST AI RMF</R> |
 | Technical research | **Medium** | 3-5x (others lead) | Research coordination role |
 | Pause advocacy | **Low** | 1-2x premature | Governance development first |
 
@@ -234,7 +234,7 @@ Working on "Very High" priority interventions under the wrong worldview can wast
 
 ### Observed Misalignment Patterns
 
-Based on [AI Alignment Forum](https://www.alignmentforum.org/) surveys and [80,000 Hours](https://80000hours.org/) career advising:
+Based on <R id="2e0c662574087c2a">AI Alignment Forum</R> surveys and <R id="ec456e4a78161d43">80,000 Hours</R> career advising:
 
 | Common Mismatch | Frequency | Estimated Efficiency Loss |
 |----------------|-----------|-------------------------|
@@ -325,17 +325,17 @@ Based on [AI Alignment Forum](https://www.alignmentforum.org/) surveys and [80,0
 
 | Category | Key Sources | Quality | Focus |
 |----------|------------|---------|-------|
-| **Worldview surveys** | [AI Alignment Forum survey](https://www.alignmentforum.org/posts/QvwSr5LsxyDeaPK5s/ai-alignment-2018-2019-review) | Medium | Community beliefs |
-| **Intervention effectiveness** | [80,000 Hours research](https://80000hours.org/problem-profiles/artificial-intelligence/) | High | Career prioritization |
-| **Strategic frameworks** | [Open Philanthropy worldview reports](https://www.openphilanthropy.org/research/cause-prioritization/) | High | Cause prioritization |
+| **Worldview surveys** | <R id="69b320e83d92f2a0">AI Alignment Forum survey</R> | Medium | Community beliefs |
+| **Intervention effectiveness** | <R id="c5cca651ad11df4d">80,000 Hours research</R> | High | Career prioritization |
+| **Strategic frameworks** | <R id="83aa195b6b8dd512">Open Philanthropy worldview reports</R> | High | Cause prioritization |
 
 ### Tools & Assessments
 
 | Resource | Purpose | Access |
 |----------|---------|--------|
-| **Worldview self-assessment** | Individual belief identification | [AI Safety Fundamentals](https://www.aisafetyfundamentals.com/) |
-| **Intervention prioritization calculator** | Portfolio optimization | [EA Forum tools](https://forum.effectivealtruism.org/) |
-| **Career decision frameworks** | Work-belief alignment | [80,000 Hours coaching](https://80000hours.org/speak-with-us/) |
+| **Worldview self-assessment** | Individual belief identification | <R id="468cbf657896b529">AI Safety Fundamentals</R> |
+| **Intervention prioritization calculator** | Portfolio optimization | <R id="bff2f5843023e85e">EA Forum tools</R> |
+| **Career decision frameworks** | Work-belief alignment | <R id="1cb4e288c338edca">80,000 Hours coaching</R> |
 
 ### Organizations by Worldview
 
@@ -343,14 +343,14 @@ Based on [AI Alignment Forum](https://www.alignmentforum.org/) surveys and [80,0
 |-------------|-------------------|-------------------|
 | **[MIRI](/knowledge-base/organizations/safety-orgs/miri/)** | Doomer (short+hard) | Agent foundations, pause advocacy |
 | **[Anthropic](/knowledge-base/organizations/labs/anthropic/)** | Technical optimist | Constitutional AI, interpretability |
-| **[CSET](https://cset.georgetown.edu/)** | Governance-focused | Policy research, international coordination |
+| **<R id="f0d95954b449240a">CSET</R>** | Governance-focused | Policy research, international coordination |
 | **[Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/)** | Technical optimist | Alignment research, interpretability |
 
 ## Related Models & Pages
 
 ### Complementary Models
 - [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Risk category prioritization across scenarios
-- [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - How competition affects coordination feasibility
+- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - How competition affects coordination feasibility
 - [International Coordination Game](/knowledge-base/models/international-coordination-game/) - Factors affecting cooperation
 
 ### Related Worldviews

@@ -8,13 +8,13 @@ llmSummary: "Synthesizes expert assessments across 13 cruxes determining AI misu
 lastEdited: "2025-12-24"
 importance: 82.5
 ---
-import {Crux, CruxList, DataInfoBox, Backlinks} from '../../../../components/wiki';
+import {Crux, CruxList, DataInfoBox, Backlinks, R} from '../../../../components/wiki';
 
 ## Overview
 
 Misuse risk cruxes are the fundamental uncertainties that shape how policymakers, researchers, and organizations prioritize AI safety responses. These 13 cruxes determine whether AI provides meaningful "uplift" to malicious actors (30-45% say significant vs 35-45% modest), whether AI will favor offensive or defensive capabilities across security domains, and how effective various mitigation strategies can be.
 
-Current evidence remains mixed across domains. The [RAND biological uplift study](https://www.rand.org/pubs/research_reports/RRA2977-2.html) found no significant capability increase for bioweapons development, while [CNAS analyses](https://www.cnas.org/publications/reports/ai-and-the-evolution-of-biological-national-security-risks) suggest more concerning possibilities. Similarly, while AI-powered cyberattacks remain largely commodity-level, the potential for scaling and sophistication growth creates significant uncertainty about future threat landscapes.
+Current evidence remains mixed across domains. The <R id="0fe4cfa7ca5f2270">RAND biological uplift study</R> found no significant capability increase for bioweapons development, while <R id="2b6675e423040e53">CNAS analyses</R> suggest more concerning possibilities. Similarly, while AI-powered cyberattacks remain largely commodity-level, the potential for scaling and sophistication growth creates significant uncertainty about future threat landscapes.
 
 The stakes are substantial: if AI provides significant capability uplift to malicious actors, urgent restrictions on model access and [compute governance](/knowledge-base/responses/governance/compute-governance/) become critical. If defenses can keep pace with offensive capabilities, investment priorities shift toward detection and response systems rather than prevention.
 
@@ -30,7 +30,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 | **Chemical Weapons** | Medium | 3-7 years | Early evidence | Synthesis barrier strength |
 | **Infrastructure Disruption** | High | 1-4 years | Escalating complexity | Critical system vulnerabilities |
 
-*Source: Synthesis of expert assessments from [CNAS](https://www.cnas.org/), [RAND Corporation](https://www.rand.org/), [Georgetown CSET](https://cset.georgetown.edu/), and AI safety research organizations*
+*Source: Synthesis of expert assessments from <R id="58f6946af0177ca5">CNAS</R>, <R id="0a17f30e99091ebf">RAND Corporation</R>, <R id="f0d95954b449240a">Georgetown CSET</R>, and AI safety research organizations*
 
 ## Capability and Uplift Cruxes
 
@@ -79,7 +79,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 
 | Domain | Evidence For Uplift | Evidence Against Uplift | Current Assessment |
 |--------|-------------------|----------------------|-------------------|
-| **Bioweapons** | [Kevin Esvelt warnings](https://www.nature.com/articles/s41587-022-01582-x), theoretical pathogen design | [RAND study](https://www.rand.org/pubs/research_reports/RRA2977-2.html) no significant uplift | Contested |
+| **Bioweapons** | <R id="8d846d942ebf47da">Kevin Esvelt warnings</R>, theoretical pathogen design | <R id="0fe4cfa7ca5f2270">RAND study</R> no significant uplift | Contested |
 | **Cyberweapons** | Enhanced phishing, automated vulnerability discovery | High-impact attacks still require sophisticated skills | Moderate uplift for commodity attacks |
 | **Chemical Weapons** | Literature synthesis, reaction optimization | Physical synthesis remains bottleneck | Limited evidence |
 | **Disinformation** | Scalable content generation, personalization | Detection improving, human verification possible | Significant uplift demonstrated |
@@ -172,7 +172,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 | **Malware Development** | Medium - code generation | High - behavioral detection | Roughly balanced | Evolving |
 | **Attribution** | Medium - obfuscation tools | High - pattern analysis | Favors defense | Improving |
 
-*Source: [CyberSeek](https://www.cyberseek.org/) workforce data and [MITRE ATT&CK](https://attack.mitre.org/) framework analysis*
+*Source: <R id="91138237c53ce8d6">CyberSeek</R> workforce data and <R id="4c2168269b12c393">MITRE ATT&CK</R> framework analysis*
 
 <Crux
   id="offense-defense"
@@ -256,10 +256,10 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 
 | Restriction Type | Implementation Difficulty | Circumvention Difficulty | Effectiveness Assessment | Current Deployment |
 |------------------|--------------------------|------------------------|-------------------------|-------------------|
-| **Training-time Safety** | Medium | High | Moderate - affects base capabilities | [Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) |
+| **Training-time Safety** | Medium | High | Moderate - affects base capabilities | <R id="e99a5c1697baa07d">Constitutional AI</R> |
 | **Output Filtering** | Low | Low | Low - easily bypassed | Most commercial APIs |
 | **Fine-tuning Prevention** | High | Medium | High - but open models complicate | Limited implementation |
-| **Access Controls** | Medium | Medium | Moderate - depends on enforcement | [OpenAI](https://openai.com/policies/usage-policies) terms |
+| **Access Controls** | Medium | Medium | Moderate - depends on enforcement | <R id="e64764924758e86b">OpenAI</R> terms |
 | **Weight Security** | High | High | Very High - if enforceable | Early development |
 
 *Source: Analysis of current AI lab practices and jailbreak research*
@@ -436,7 +436,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 | **Lone Actors** | High | Variable | Depends on AI uplift | Most unpredictable | Very Low - no clear target |
 | **Corporate Espionage** | High | High | IP theft, competitive intelligence | Moderate-High | Medium - business interests |
 
-*Source: [FBI Cyber Division](https://www.fbi.gov/investigate/cyber) threat assessments and [CSIS Critical Questions](https://www.csis.org/programs/strategic-technologies-program)*
+*Source: <R id="5f1b50c36bbedab1">FBI Cyber Division</R> threat assessments and <R id="80d7b04be0e63710">CSIS Critical Questions</R>*
 
 <Crux
   id="actor-landscape"
@@ -528,7 +528,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 | **Conventional** | Target selection, coordination | Medium (>100) | 20-30% | Physical access, materials | Oklahoma City, 9/11 |
 | **Nuclear** | Security system exploitation | Extreme (>100k) | 1-3% | Fissile material access | None successful (non-state) |
 
-*Probability estimates based on [Global Terrorism Database](https://www.start.umd.edu/gtd/) analysis and expert elicitation*
+*Probability estimates based on <R id="aa76b3fce4c8fe8e">Global Terrorism Database</R> analysis and expert elicitation*
 
 <Crux
   id="mass-casualty-misuse"
@@ -614,7 +614,7 @@ The stakes are substantial: if AI provides significant capability uplift to mali
 |------------------|----------------|------------------|-------------|
 | **Model Capabilities** | GPT-4 level reasoning, coding | Human-level in specialized domains | Scaling laws, compute access |
 | **Defense Investment** | $2B+ annual cybersecurity AI | 3-5x growth expected | Threat awareness, budget cycles |
-| **Regulatory Response** | [EU AI Act](https://artificialintelligenceact.eu/), US executive orders | Federal legislation likely | Political pressure, incident triggers |
+| **Regulatory Response** | <R id="1ad6dc89cded8b0c">EU AI Act</R>, US executive orders | Federal legislation likely | Political pressure, incident triggers |
 | **Open Source Models** | Llama 2, Mistral release patterns | Continued but controlled growth | Meta strategy, safety concerns |
 | **Compute Governance** | Initial export controls | Monitoring systems deployment | International coordination |
 

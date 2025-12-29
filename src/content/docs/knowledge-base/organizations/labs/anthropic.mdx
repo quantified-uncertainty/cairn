@@ -8,7 +8,7 @@ llmSummary: "Comprehensive analysis of Anthropic with 6 detailed data tables cov
 lastEdited: "2025-12-24"
 importance: 72.5
 ---
-import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="anthropic" />
 
@@ -60,7 +60,7 @@ Anthropic's signature alignment technique trains models to self-critique and rev
 | Self-Critique | Model generates, critiques, revises responses | Scalable, explicit principles | Human-written principles |
 | RL Training | Train preference model on revised responses | Reduces harmful outputs | May not generalize to superhuman AI |
 
-**Key Result**: [CAI paper](https://arxiv.org/abs/2212.08073) showed 82% reduction in harmful outputs while maintaining helpfulness compared to baseline training.
+**Key Result**: <R id="683aef834ac1612a">CAI paper</R> showed 82% reduction in harmful outputs while maintaining helpfulness compared to baseline training.
 
 ### Responsible Scaling Policy (RSP)
 
@@ -76,7 +76,7 @@ Framework making capability advancement conditional on safety measures through d
 
 ### Interpretability Research Breakthrough
 
-Anthropic's 2024 [scaling monosemanticity work](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html) extracted 16 million interpretable features from Claude 3 Sonnet, including:
+Anthropic's 2024 <R id="426fcdeae8e2b749">scaling monosemanticity work</R> extracted 16 million interpretable features from Claude 3 Sonnet, including:
 
 - Abstract concepts ("Golden Gate Bridge," "insider trading")
 - Behavioral patterns (deception, scientific reasoning)  
@@ -90,10 +90,10 @@ This represented the largest-scale interpretability breakthrough to date, though
 
 | Publication | Year | Key Finding | Impact |
 |-------------|------|-------------|--------|
-| [Constitutional AI](https://arxiv.org/abs/2212.08073) | 2022 | AI self-improvement via principles | New alignment paradigm |
-| [Sleeper Agents](https://arxiv.org/abs/2401.05566) | 2024 | Backdoors persist through safety training | Negative result for alignment optimism |
-| [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html) | 2024 | 16M interpretable features extracted | Major interpretability advance |
-| [Many-Shot Jailbreaking](https://arxiv.org/abs/2404.02151) | 2024 | Long context enables new attack vectors | Security implications for deployment |
+| <R id="683aef834ac1612a">Constitutional AI</R> | 2022 | AI self-improvement via principles | New alignment paradigm |
+| <R id="e5c0904211c7d0cc">Sleeper Agents</R> | 2024 | Backdoors persist through safety training | Negative result for alignment optimism |
+| <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | 2024 | 16M interpretable features extracted | Major interpretability advance |
+| <R id="95354fcd3a9c2578">Many-Shot Jailbreaking</R> | 2024 | Long context enables new attack vectors | Security implications for deployment |
 
 ### Concerning Findings
 
@@ -255,7 +255,7 @@ Based on public statements and releases:
 
 ### Pessimistic Scenario  
 - Commercial pressure leads to RSP threshold adjustments
-- [Racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) force faster scaling despite safety concerns
+- [Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) force faster scaling despite safety concerns
 - Interpretability fails to scale or provide meaningful safety guarantees
 - Anthropic accelerates [capabilities](/understanding-ai-risk/core-argument/capabilities/) development more than safety research
 
@@ -278,17 +278,17 @@ Based on public statements and releases:
 ### Academic Publications
 | Category | Key Papers | Impact |
 |----------|------------|---------|
-| Constitutional AI | [Bai et al. (2022)](https://arxiv.org/abs/2212.08073) | Foundational method |
-| Interpretability | [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html) | Major breakthrough |
-| Safety Evaluation | [Sleeper Agents](https://arxiv.org/abs/2401.05566) | Concerning negative result |
-| Security Research | [Many-Shot Jailbreaking](https://arxiv.org/abs/2404.02151) | New attack vectors |
+| Constitutional AI | <R id="683aef834ac1612a">Bai et al. (2022)</R> | Foundational method |
+| Interpretability | <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | Major breakthrough |
+| Safety Evaluation | <R id="e5c0904211c7d0cc">Sleeper Agents</R> | Concerning negative result |
+| Security Research | <R id="95354fcd3a9c2578">Many-Shot Jailbreaking</R> | New attack vectors |
 
 ### Policy and Governance Documents
 | Document | Year | Significance |
 |----------|------|-------------|
-| [Responsible Scaling Policy](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) | 2023 | Industry governance framework |
-| [Core Views on AI Safety](https://www.anthropic.com/news/core-views-on-ai-safety) | 2023 | Official company philosophy |
-| [Model Card: Claude 3](https://www.anthropic.com/news/claude-3-family) | 2024 | Technical capabilities and safety |
+| <R id="394ea6d17701b621">Responsible Scaling Policy</R> | 2023 | Industry governance framework |
+| <R id="5fa46de681ff9902">Core Views on AI Safety</R> | 2023 | Official company philosophy |
+| <R id="a2cf0d0271acb097">Model Card: Claude 3</R> | 2024 | Technical capabilities and safety |
 
 ### Related Organizations and Concepts
 - [Constitutional AI](/knowledge-base/responses/alignment/constitutional-ai/) methodology

@@ -13,15 +13,15 @@ ratings:
 importance: 82.5
 llmSummary: "Quantifies how competitive pressure reduces safety investment by 30-60% and increases alignment failure probability 2-5x through game-theoretic analysis of racing dynamics. Demonstrates observable acceleration (release cycles compressed from 18-24 months to 3-6 months) and identifies specific intervention leverage points with estimated effectiveness ranges."
 ---
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="racing-dynamics-impact" ratings={frontmatter.ratings} />
 
 ## Overview
 
-[Racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) create systemic pressure for AI developers to prioritize speed over safety through competitive market forces. This model quantifies how multi-actor competition reduces safety investment by 30-60% compared to coordinated scenarios and increases catastrophic risk probability through measurable causal pathways.
+[Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) create systemic pressure for AI developers to prioritize speed over safety through competitive market forces. This model quantifies how multi-actor competition reduces safety investment by 30-60% compared to coordinated scenarios and increases catastrophic risk probability through measurable causal pathways.
 
-The model demonstrates that even when all actors prefer safe outcomes, structural incentives create a [multipolar trap](/knowledge-base/risk-factors/multipolar-trap/) where rational individual choices lead to collectively irrational outcomes. Current evidence shows release cycles compressed from 18-24 months (2020) to 3-6 months (2024-2025), with DeepSeek's R1 release intensifying competitive pressure globally.
+The model demonstrates that even when all actors prefer safe outcomes, structural incentives create a [multipolar trap](/knowledge-base/risks/structural/multipolar-trap/) where rational individual choices lead to collectively irrational outcomes. Current evidence shows release cycles compressed from 18-24 months (2020) to 3-6 months (2024-2025), with DeepSeek's R1 release intensifying competitive pressure globally.
 
 ## Risk Assessment
 
@@ -49,10 +49,10 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 
 | Factor | Current State | Racing Intensity | Source |
 |--------|---------------|------------------|---------|
-| **Lab Count** | 5-7 frontier labs | High - prevents coordination | [Anthropic](https://www.anthropic.com/news/model-card-claude-2), [OpenAI](https://openai.com/research/) |
-| **Concentration (CR4)** | ~75% market share | Medium - some consolidation | [Epoch AI](https://epochai.org/blog/tracking-compute-per-dollar) |
-| **Geopolitical Rivalry** | US-China competition | Critical - national security framing | [CNAS](https://www.cnas.org/publications/reports/maintaining-the-ai-chip-competitive-advantage) |
-| **Open Source Pressure** | Multiple competing models | High - forces rapid releases | [Meta](https://ai.meta.com/blog/llama-2/) |
+| **Lab Count** | 5-7 frontier labs | High - prevents coordination | <R id="67242d35f03b20a1">Anthropic</R>, <R id="e9aaa7b5e18f9f41">OpenAI</R> |
+| **Concentration (CR4)** | ~75% market share | Medium - some consolidation | <R id="9c49c7c29ce5d079">Epoch AI</R> |
+| **Geopolitical Rivalry** | US-China competition | Critical - national security framing | <R id="10f716f6853c487a">CNAS</R> |
+| **Open Source Pressure** | Multiple competing models | High - forces rapid releases | <R id="240ca564b6b827bd">Meta</R> |
 
 ### Feedback Loop Dynamics
 
@@ -62,7 +62,7 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 
 **Talent Concentration Loop** (12-36 month cycles):
 - Leading position → Attracts top researchers → Faster progress → Stronger position
-- **Current Evidence**: [Anthropic](https://www.anthropic.com/news/core-views-on-ai-safety) hiring sprees, [OpenAI](https://openai.com/research/) researcher poaching
+- **Current Evidence**: <R id="5fa46de681ff9902">Anthropic</R> hiring sprees, <R id="e9aaa7b5e18f9f41">OpenAI</R> researcher poaching
 
 **Media Attention Loop** (1-6 month cycles):
 - Public demos → Media coverage → Political pressure → Reduced oversight
@@ -79,7 +79,7 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 | **Interpretability** | 15-25% of research staff | 5-15% of research staff | 40-67% | Reduced ability to detect [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/) |
 | **Safety Restrictions** | Comprehensive guardrails | Minimal viable restrictions | 60-80% | Higher [misuse risk](/knowledge-base/risks/misuse/) probability |
 
-**Data Sources**: [Anthropic Constitutional AI](https://www.anthropic.com/news/constitutional-ai-harmlessness-from-ai-feedback), [OpenAI Safety Research](https://openai.com/safety/), industry interviews
+**Data Sources**: <R id="1000c5dea784ef64">Anthropic Constitutional AI</R>, <R id="838d7a59a02e11a7">OpenAI Safety Research</R>, industry interviews
 
 ### Observable Racing Indicators
 
@@ -90,7 +90,7 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 | **Safety Team Turnover** | Baseline | 2x baseline | 3-4x baseline | >3x (institutional knowledge loss) |
 | **Public Commitment Gap** | Small | Moderate | Large | Complete divergence (collapse) |
 
-**Sources**: [Stanford HAI AI Index](https://aiindex.stanford.edu/), [Epoch AI](https://epochai.org/), industry reports
+**Sources**: <R id="31dad9e35ad0b5d3">Stanford HAI AI Index</R>, <R id="120adc539e2fa558">Epoch AI</R>, industry reports
 
 ## Critical Thresholds
 
@@ -99,7 +99,7 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 | Threshold Level | Definition | Current Status | Indicators | Estimated Timeline |
 |----------------|------------|----------------|------------|-------------------|
 | **Safety Floor Breach** | Safety investment below minimum viability | **ACTIVE** | Multiple labs rushing releases | Current |
-| **Coordination Collapse** | Industry agreements become meaningless | Approaching | [Seoul Summit](https://www.gov.uk/government/publications/seoul-declaration-on-ai-safety) commitments strained | 6-18 months |
+| **Coordination Collapse** | Industry agreements become meaningless | Approaching | <R id="4440e819b5d307a6">Seoul Summit</R> commitments strained | 6-18 months |
 | **State Intervention** | Governments mandate acceleration | Early signs | National security framing dominant | 1-3 years |
 | **Winner-Take-All Trigger** | First-mover advantage becomes decisive | Uncertain | AGI breakthrough or perceived proximity | Unknown |
 
@@ -108,7 +108,7 @@ The racing dynamic follows a classic prisoner's dilemma structure:
 DeepSeek R1's January 2025 release triggered a "Sputnik moment" for U.S. AI development:
 
 **Immediate Effects**:
-- [Marc Andreessen](https://twitter.com/pmarca): "Chinese AI capabilities achieved at 1/10th the cost"
+- <R id="25ed47b6a9afd7ab">Marc Andreessen</R>: "Chinese AI capabilities achieved at 1/10th the cost"
 - U.S. stock market AI valuations dropped $1T+ in single day
 - Calls for increased U.S. investment and reduced safety friction
 
@@ -131,13 +131,13 @@ DeepSeek R1's January 2025 release triggered a "Sputnik moment" for U.S. AI deve
 ### Current Intervention Status
 
 **Active Coordination Attempts**:
-- [Seoul AI Safety Summit](https://www.gov.uk/government/publications/seoul-declaration-on-ai-safety) commitments (2024)
-- [Partnership on AI](https://www.partnershiponai.org/) industry collaboration
+- <R id="4440e819b5d307a6">Seoul AI Safety Summit</R> commitments (2024)
+- <R id="0e7aef26385afeed">Partnership on AI</R> industry collaboration
 - [ML Safety Organizations](/knowledge-base/organizations/safety-orgs/) advocacy
 
 **Effectiveness Assessment**: Limited success under competitive pressure
 
-**Key Quote** ([Dario Amodei](https://www.anthropic.com/news/ceo-dario-amodei-on-anthropics-responsible-scaling-policy), Anthropic CEO):
+**Key Quote** (<R id="3b81fef7f559b573">Dario Amodei</R>, Anthropic CEO):
 "The challenge is that safety takes time, but the competitive landscape doesn't wait for safety research to catch up."
 
 ### Leverage Point Analysis
@@ -153,7 +153,7 @@ DeepSeek R1's January 2025 release triggered a "Sputnik moment" for U.S. AI deve
 
 ### Compounding Risks
 
-**Racing + [Proliferation](/knowledge-base/risk-factors/proliferation/)**:
+**Racing + [Proliferation](/knowledge-base/risks/structural/proliferation/)**:
 - Racing pressure → Open-source releases → Wider dangerous capability access
 - Estimated acceleration: 3-7 years earlier widespread access
 
@@ -236,7 +236,7 @@ DeepSeek R1's January 2025 release triggered a "Sputnik moment" for U.S. AI deve
 
 | Action | Responsible Actor | Expected Impact | Feasibility |
 |--------|------------------|-----------------|-------------|
-| **Safety evaluation standards** | [NIST](https://www.nist.gov/itl/ai), [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Baseline safety metrics | High |
+| **Safety evaluation standards** | <R id="eeb73db67a2f4a75">NIST</R>, [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Baseline safety metrics | High |
 | **Information sharing frameworks** | Industry + government | Reduced duplication, shared learnings | Medium |
 | **Racing intensity monitoring** | Independent research orgs | Early warning system | Medium-High |
 | **Liability framework development** | Legal/regulatory bodies | Long-term incentive alignment | Low-Medium |
@@ -254,23 +254,23 @@ DeepSeek R1's January 2025 release triggered a "Sputnik moment" for U.S. AI deve
 
 | Source Type | Organization | Key Finding | URL |
 |------------|--------------|-------------|-----|
-| **Industry Analysis** | [Epoch AI](https://epochai.org/) | Compute cost and capability tracking | https://epochai.org/blog/ |
-| **Policy Research** | [CNAS](https://www.cnas.org/) | AI competition and national security | https://www.cnas.org/artificial-intelligence |
-| **Technical Assessment** | [Anthropic](https://www.anthropic.com/) | Constitutional AI and safety research | https://www.anthropic.com/research |
-| **Academic Research** | [Stanford HAI](https://hai.stanford.edu/) | AI Index comprehensive metrics | https://aiindex.stanford.edu/ |
+| **Industry Analysis** | <R id="120adc539e2fa558">Epoch AI</R> | Compute cost and capability tracking | https://epochai.org/blog/ |
+| **Policy Research** | <R id="58f6946af0177ca5">CNAS</R> | AI competition and national security | https://www.cnas.org/artificial-intelligence |
+| **Technical Assessment** | <R id="afe2508ac4caf5ee">Anthropic</R> | Constitutional AI and safety research | https://www.anthropic.com/research |
+| **Academic Research** | <R id="c0a5858881a7ac1c">Stanford HAI</R> | AI Index comprehensive metrics | https://aiindex.stanford.edu/ |
 
 ### Government Resources
 
 | Organization | Focus Area | Key Publications |
 |-------------|------------|------------------|
-| **[NIST AI RMF](https://www.nist.gov/itl/ai/ai-risk-management-framework)** | Standards & frameworks | AI Risk Management Framework |
+| **<R id="307a0a71be752d69">NIST AI RMF</R>** | Standards & frameworks | AI Risk Management Framework |
 | **[UK AISI](/knowledge-base/organizations/government/uk-aisi/)** | Safety evaluation | Frontier AI evaluation methodologies |
-| **[EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office)** | Regulatory framework | AI Act implementation guidance |
+| **<R id="f37ebc766aaa61d7">EU AI Office</R>** | Regulatory framework | AI Act implementation guidance |
 
 ### Related Analysis
 
 - [Multipolar Trap Dynamics](/knowledge-base/models/multipolar-trap-dynamics/) - Game-theoretic foundations
-- [Winner-Take-All Dynamics](/knowledge-base/risk-factors/winner-take-all/) - Why racing may intensify
+- [Winner-Take-All Dynamics](/knowledge-base/risks/structural/winner-take-all/) - Why racing may intensify
 - [Capabilities vs Safety Timeline](/knowledge-base/models/capabilities-to-safety-pipeline/) - Temporal misalignment
 - [International Coordination Failures](/knowledge-base/responses/governance/international/) - Governance challenges
 

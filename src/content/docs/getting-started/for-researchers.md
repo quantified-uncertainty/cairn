@@ -7,6 +7,8 @@ importance: 65
 quality: 48
 llmSummary: "Comprehensive onboarding guide for technical researchers entering AI safety, systematically covering five major research approaches (interpretability, scalable oversight, AI control, agent foundations, evaluation) with their goals, methods, key organizations, and contribution pathways. Provides structured learning path from 15-minute orientation to 2-3 hour technical deep dive."
 ---
+import {R} from '../../../components/wiki';
+
 you're a technical researcher considering work in AI safety, this guide will help you quickly understand the landscape, evaluate the field's tractability, and identify how your skills might contribute.
 
 ## Quick Context Setting (15 minutes)
@@ -87,7 +89,7 @@ The field has several main research directions:
 
 **Key organizations**: Anthropic, DeepMind, Redwood Research
 
-**Recent breakthrough**: Anthropic's [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/) extracted millions of interpretable features from Claude.
+**Recent breakthrough**: Anthropic's <R id="e724db341d6e0065">Scaling Monosemanticity</R> extracted millions of interpretable features from Claude.
 
 **Open questions:**
 - Can interpretability scale to superintelligent systems?

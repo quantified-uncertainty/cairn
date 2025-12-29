@@ -8,7 +8,7 @@ llmSummary: "Evaluates three critical solution domains (technical verification, 
 lastEdited: "2025-12-24"
 importance: 92.5
 ---
-import {Crux, CruxList} from '../../../../components/wiki';
+import {Crux, CruxList, R} from '../../../../components/wiki';
 
 ## Overview
 
@@ -35,10 +35,10 @@ The technical domain centers on whether AI systems can be effectively turned aga
 
 | Approach | Investment Level | Success Rate | Commercial Deployment | Key Players |
 |----------|-----------------|--------------|---------------------|-------------|
-| AI Detection | $100M+ annually | 85-95% (academic) | Limited | [OpenAI](https://openai.com/), [Originality.ai](https://originality.ai/) |
-| Content Provenance | $50M+ annually | N/A (adoption metric) | Early stage | [Adobe](https://helpx.adobe.com/photoshop/using/content-credentials.html), [Microsoft](https://www.microsoft.com/en-us/ai/responsible-ai) |
-| Watermarking | $25M+ annually | Variable | Pilot programs | [Google DeepMind](https://deepmind.google/technologies/synthid/) |
-| Verification Systems | $75M+ annually | Context-dependent | Research phase | [DARPA](https://www.darpa.mil/program/semantic-forensics) |
+| AI Detection | $100M+ annually | 85-95% (academic) | Limited | <R id="04d39e8bd5d50dd5">OpenAI</R>, <R id="8f7f1a6ed1b856a8">Originality.ai</R> |
+| Content Provenance | $50M+ annually | N/A (adoption metric) | Early stage | <R id="499307d3fc7d6c07">Adobe</R>, <R id="dd1c59d8d7c26f28">Microsoft</R> |
+| Watermarking | $25M+ annually | Variable | Pilot programs | <R id="fc492fd338071abd">Google DeepMind</R> |
+| Verification Systems | $75M+ annually | Context-dependent | Research phase | <R id="7671d8111f8b8247">DARPA</R> |
 
 <Crux
   id="ai-verification-scaling"
@@ -79,11 +79,11 @@ The technical domain centers on whether AI systems can be effectively turned aga
   ]}
 />
 
-The current evidence presents a mixed picture. [DARPA's SemaFor program](https://www.darpa.mil/program/semantic-forensics), launched in 2021 with $26 million in funding, has demonstrated some success in semantic forensics for manipulated media, but primarily on specific types of synthetic content rather than the broad spectrum of AI-generated material now emerging. Meanwhile, commercial detection tools like [GPTZero](https://gptzero.me/) report accuracy rates of 85-95% on academic writing, but these drop significantly when generators are specifically designed to evade detection.
+The current evidence presents a mixed picture. <R id="7671d8111f8b8247">DARPA's SemaFor program</R>, launched in 2021 with $26 million in funding, has demonstrated some success in semantic forensics for manipulated media, but primarily on specific types of synthetic content rather than the broad spectrum of AI-generated material now emerging. Meanwhile, commercial detection tools like <R id="2a656ac18fe6b4d6">GPTZero</R> report accuracy rates of 85-95% on academic writing, but these drop significantly when generators are specifically designed to evade detection.
 
 The fundamental challenge lies in the asymmetric nature of the problem. Content generators need only produce plausible outputs, while detectors must distinguish between authentic and synthetic content across all possible generation techniques. This asymmetry may prove insurmountable, particularly as generation models become more sophisticated and numerous through [capabilities scaling](/understanding-ai-risk/core-argument/capabilities/).
 
-However, optimists point to potential advantages for verification systems: they can be specialized for detection tasks, leverage multiple modalities simultaneously, and benefit from centralized training on comprehensive datasets of known synthetic content. The emergence of foundation models specifically designed for verification, such as those being developed at [Anthropic](https://www.anthropic.com/research) and [OpenAI](https://openai.com/research/), suggests this approach may have untapped potential.
+However, optimists point to potential advantages for verification systems: they can be specialized for detection tasks, leverage multiple modalities simultaneously, and benefit from centralized training on comprehensive datasets of known synthetic content. The emergence of foundation models specifically designed for verification, such as those being developed at <R id="f771d4f56ad4dbaa">Anthropic</R> and <R id="e9aaa7b5e18f9f41">OpenAI</R>, suggests this approach may have untapped potential.
 
 <Crux
   id="provenance-vs-detection"
@@ -124,7 +124,7 @@ However, optimists point to potential advantages for verification systems: they 
   ]}
 />
 
-The [Coalition for Content Provenance and Authenticity (C2PA)](https://c2pa.org/), backed by Adobe, Microsoft, Intel, and BBC, has gained significant momentum since 2021, with over 50 member organizations and initial implementations in Adobe Creative Cloud and Microsoft products. The provenance approach embeds cryptographic metadata proving content's origin and modification history, creating an "immune system" for authentic content rather than trying to identify synthetic material.
+The <R id="ff89bed1f7960ab2">Coalition for Content Provenance and Authenticity (C2PA)</R>, backed by Adobe, Microsoft, Intel, and BBC, has gained significant momentum since 2021, with over 50 member organizations and initial implementations in Adobe Creative Cloud and Microsoft products. The provenance approach embeds cryptographic metadata proving content's origin and modification history, creating an "immune system" for authentic content rather than trying to identify synthetic material.
 
 ### Provenance vs Detection Comparison
 
@@ -176,9 +176,9 @@ However, provenance faces substantial adoption challenges. Early data from C2PA 
   ]}
 />
 
-[Google DeepMind's SynthID](https://deepmind.google/technologies/synthid/), launched in August 2023, represents the most advanced publicly available watermarking system, using statistical patterns imperceptible to humans but detectable by specialized algorithms. However, academic research consistently demonstrates that current watermarking approaches can be defeated through various attack vectors including adversarial perturbations, model fine-tuning, and regeneration techniques.
+<R id="fc492fd338071abd">Google DeepMind's SynthID</R>, launched in August 2023, represents the most advanced publicly available watermarking system, using statistical patterns imperceptible to humans but detectable by specialized algorithms. However, academic research consistently demonstrates that current watermarking approaches can be defeated through various attack vectors including adversarial perturbations, model fine-tuning, and regeneration techniques.
 
-Research by [UC Berkeley](https://arxiv.org/abs/2306.09933) and [University of Maryland](https://arxiv.org/abs/2305.15908) has shown that sophisticated attackers can remove watermarks with success rates exceeding 90% while preserving content quality. The theoretical foundations suggest fundamental limits to watermark robustness—any watermark that preserves content quality enough to be usable can potentially be removed by sufficiently sophisticated adversaries.
+Research by <R id="01f2211a18a3aa5a">UC Berkeley</R> and <R id="51df12a0a334621c">University of Maryland</R> has shown that sophisticated attackers can remove watermarks with success rates exceeding 90% while preserving content quality. The theoretical foundations suggest fundamental limits to watermark robustness—any watermark that preserves content quality enough to be usable can potentially be removed by sufficiently sophisticated adversaries.
 
 ## Coordination Solution Cruxes
 
@@ -189,7 +189,7 @@ Coordination cruxes address whether different actors—from AI labs to nation-st
 | Mechanism | Participants | Binding Nature | Track Record | Key Challenges |
 |-----------|-------------|----------------|--------------|----------------|
 | [RSPs](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | 4 major labs | Voluntary | Mixed compliance | Vague standards, competitive pressure |
-| [AI Safety Institute](https://www.aisi.gov.uk/) networks | 8+ countries | Non-binding | Early stage | Limited authority, funding |
+| <R id="fdf68a8f30f57dee">AI Safety Institute</R> networks | 8+ countries | Non-binding | Early stage | Limited authority, funding |
 | Export controls | US + allies | Legal | Partially effective | Circumvention, coordination gaps |
 | Voluntary commitments | Major labs | Self-enforced | Poor | No external verification |
 
@@ -284,7 +284,7 @@ Historical precedent suggests mixed prospects for voluntary coordination in high
   ]}
 />
 
-Current US-China AI relations are characterized by strategic competition rather than cooperation. Export controls on semiconductors, restrictions on Chinese AI companies, and national security framings dominate the policy landscape. The [CHIPS Act](https://www.whitehouse.gov/briefing-room/statements-releases/2022/08/09/fact-sheet-chips-and-science-act-will-lower-costs-create-jobs-strengthen-supply-chains-and-counter-china/) and export restrictions target Chinese AI development directly, while China's response includes increased domestic investment and alternative supply chains.
+Current US-China AI relations are characterized by strategic competition rather than cooperation. Export controls on semiconductors, restrictions on Chinese AI companies, and national security framings dominate the policy landscape. The <R id="9ae4c87175cc63c0">CHIPS Act</R> and export restrictions target Chinese AI development directly, while China's response includes increased domestic investment and alternative supply chains.
 
 However, some limited dialogue continues through academic conferences, multilateral forums like the G20, and informal diplomatic channels. The [UK AI Safety Institute](/knowledge-base/organizations/government/uk-aisi/) and [Seoul Declaration](/knowledge-base/responses/governance/international/seoul-declaration/) provide potential multilateral venues for engagement.
 
@@ -391,7 +391,7 @@ The final domain addresses whether we can build sustainable systems for truth, k
   ]}
 />
 
-[Metaculus](https://www.metaculus.com/) has been conducting systematic experiments with [AI forecasting](/knowledge-base/responses/epistemic-tools/ai-forecasting/) since 2023, with early results suggesting that AI systems can match or exceed human forecasters on certain types of questions, particularly those involving quantitative trends or pattern recognition from large datasets. However, humans continue to outperform on questions requiring contextual judgment, novel reasoning, or understanding of political and social dynamics.
+<R id="d99a6d0fb1edc2db">Metaculus</R> has been conducting systematic experiments with [AI forecasting](/knowledge-base/responses/epistemic-tools/ai-forecasting/) since 2023, with early results suggesting that AI systems can match or exceed human forecasters on certain types of questions, particularly those involving quantitative trends or pattern recognition from large datasets. However, humans continue to outperform on questions requiring contextual judgment, novel reasoning, or understanding of political and social dynamics.
 
 ### AI vs Human Forecasting Performance
 
@@ -449,7 +449,7 @@ Current epistemic infrastructure suffers from chronic underfunding relative to c
 | Platform fees | $50M+ (voluntary) | Unreliable | Low potential |
 | Commercial models | $25M+ (fact-check APIs) | Market-dependent | High potential |
 
-Government funding varies dramatically by jurisdiction. The EU's [Digital Services Act](https://digital-strategy.ec.europa.eu/en/policies/digital-services-act-package) includes provisions for funding fact-checking and verification systems, while the US has been more reluctant to fund what could be perceived as content moderation. Philanthropic support, led by foundations like [Omidyar Network](https://omidyar.com/) and [Craig Newmark Philanthropies](https://craignewmarkphilanthropies.org/), has provided crucial early-stage funding but may be insufficient for the scale required.
+Government funding varies dramatically by jurisdiction. The EU's <R id="23e41eec572c9b30">Digital Services Act</R> includes provisions for funding fact-checking and verification systems, while the US has been more reluctant to fund what could be perceived as content moderation. Philanthropic support, led by foundations like <R id="19bac4f67b51576e">Omidyar Network</R> and <R id="54d74a3da6c73239">Craig Newmark Philanthropies</R>, has provided crucial early-stage funding but may be insufficient for the scale required.
 
 ## Current State and Trajectory
 
@@ -513,19 +513,19 @@ Understanding these dependencies will be crucial for developing comprehensive so
 ### Technical Research Organizations
 | Organization | Focus Area | Key Publications |
 |-------------|-----------|------------------|
-| [DARPA](https://www.darpa.mil/) | Semantic forensics, verification | [SemaFor program](https://www.darpa.mil/program/semantic-forensics) |
-| [C2PA](https://c2pa.org/) | Content provenance standards | [Technical specification](https://c2pa.org/specifications/specifications/2.0/specs/C2PA_Specification.html) |
-| [Google DeepMind](https://deepmind.google/) | Watermarking, detection | [SynthID research](https://deepmind.google/technologies/synthid/) |
+| <R id="1adec5eb6a75f559">DARPA</R> | Semantic forensics, verification | <R id="7671d8111f8b8247">SemaFor program</R> |
+| <R id="ff89bed1f7960ab2">C2PA</R> | Content provenance standards | <R id="9b09e69e5f2a9f78">Technical specification</R> |
+| <R id="0ef9b0fe0f3c92b4">Google DeepMind</R> | Watermarking, detection | <R id="fc492fd338071abd">SynthID research</R> |
 
 ### Governance and Coordination Research
 | Organization | Focus Area | Key Resources |
 |-------------|-----------|---------------|
-| [GovAI](https://www.governance.ai/) | AI governance, coordination | [Compute governance research](https://www.governance.ai/research-areas/compute-governance) |
-| [RAND Corporation](https://www.rand.org/) | Strategic analysis | [AI competition studies](https://www.rand.org/topics/artificial-intelligence.html) |
-| [CNAS](https://www.cnas.org/) | Security, international relations | [AI security reports](https://www.cnas.org/research/technology-and-national-security/artificial-intelligence-and-global-competition) |
+| <R id="f35c467b353f990f">GovAI</R> | AI governance, coordination | <R id="26494a9f05b9db4d">Compute governance research</R> |
+| <R id="0a17f30e99091ebf">RAND Corporation</R> | Strategic analysis | <R id="cf5fd74e8db11565">AI competition studies</R> |
+| <R id="58f6946af0177ca5">CNAS</R> | Security, international relations | <R id="fbd5f171b9a891f3">AI security reports</R> |
 
 ### Epistemic Infrastructure Organizations  
 | Organization | Focus Area | Key Resources |
 |-------------|-----------|---------------|
-| [Metaculus](https://www.metaculus.com/) | Forecasting, prediction | [AI forecasting project](https://www.metaculus.com/project/ai-forecasting/) |
+| <R id="d99a6d0fb1edc2db">Metaculus</R> | Forecasting, prediction | <R id="10ca22c5e88ffee9">AI forecasting project</R> |
 | [Good Judgment](https://goodjudg

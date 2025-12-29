@@ -8,7 +8,7 @@ llmSummary: "Comprehensive analysis showing long-horizon autonomy (AI systems op
 lastEdited: "2025-12-24"
 importance: 85
 ---
-import {DataInfoBox} from '../../../../components/wiki';
+import {DataInfoBox, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="long-horizon" />
 
@@ -16,7 +16,7 @@ import {DataInfoBox} from '../../../../components/wiki';
 
 Long-horizon autonomy refers to AI systems' ability to pursue goals over extended time periods—hours, days, or weeks—with minimal human intervention. This capability requires maintaining context across sessions, decomposing complex objectives into subtasks, recovering from errors, and staying aligned with intentions despite changing circumstances.
 
-Current systems achieve reliable autonomy for 1-2 hours with scaffolding. [Devin](https://www.cognition-labs.com/introducing-devin) completes software engineering tasks over multiple hours, while [SWE-bench results](https://www.swebench.com/) show 43.8% success on real GitHub issues. However, days-to-weeks operation remains largely out of reach.
+Current systems achieve reliable autonomy for 1-2 hours with scaffolding. <R id="a4efa407affdbe1c">Devin</R> completes software engineering tasks over multiple hours, while <R id="433a37bad4e66a78">SWE-bench results</R> show 43.8% success on real GitHub issues. However, days-to-weeks operation remains largely out of reach.
 
 This represents one of the most safety-critical capability thresholds because it fundamentally transforms AI from supervised tools into autonomous agents. The transition undermines existing oversight mechanisms and enables power accumulation pathways that could lead to loss of human control.
 
@@ -33,23 +33,23 @@ This represents one of the most safety-critical capability thresholds because it
 
 | Capability | Current State | Key Challenges | Leading Research |
 |------------|---------------|----------------|------------------|
-| **Memory Management** | 1-2M token contexts | Persistence across sessions | [MemGPT](https://arxiv.org/abs/2310.08560), [Transformer-XL](https://arxiv.org/abs/1901.02860) |
-| **Goal Decomposition** | Works for structured tasks | Handling dependencies, replanning | [Tree of Thoughts](https://arxiv.org/abs/2305.10601), [HierarchicalRL](https://arxiv.org/abs/1604.06057) |
-| **Error Recovery** | Basic retry mechanisms | Failure detection, root cause analysis | [Self-correction research](https://arxiv.org/abs/2303.16755) |
-| **World Modeling** | Limited environment tracking | Predicting multi-step consequences | [Model-based RL](https://arxiv.org/abs/1906.08253) |
-| **Sustained Alignment** | Unclear beyond hours | Preventing goal drift over time | [Constitutional AI](https://arxiv.org/abs/2212.08073) |
+| **Memory Management** | 1-2M token contexts | Persistence across sessions | <R id="26e7ae529ac5e81b">MemGPT</R>, <R id="5b39694ffd7eee39">Transformer-XL</R> |
+| **Goal Decomposition** | Works for structured tasks | Handling dependencies, replanning | <R id="ba7b8013ee20dc8e">Tree of Thoughts</R>, <R id="3272d54e99e53eee">HierarchicalRL</R> |
+| **Error Recovery** | Basic retry mechanisms | Failure detection, root cause analysis | <R id="9f43ad33cfdb0c4d">Self-correction research</R> |
+| **World Modeling** | Limited environment tracking | Predicting multi-step consequences | <R id="e97b8be1cc138942">Model-based RL</R> |
+| **Sustained Alignment** | Unclear beyond hours | Preventing goal drift over time | <R id="683aef834ac1612a">Constitutional AI</R> |
 
 ## Current Capabilities Assessment
 
 ### What Works Today (1-8 Hours)
 
 **Coding and Software Engineering**:
-- [Devin](https://www.cognition-labs.com/introducing-devin): Multi-hour software development with planning and debugging
-- [Cursor Agent Mode](https://cursor.sh): Multi-file refactoring with context tracking
-- [SWE-bench performance](https://www.swebench.com/): 43.8% success rate on real GitHub issues (Claude 3.5 Sonnet)
+- <R id="a4efa407affdbe1c">Devin</R>: Multi-hour software development with planning and debugging
+- <R id="87a7d798988e26a3">Cursor Agent Mode</R>: Multi-file refactoring with context tracking
+- <R id="433a37bad4e66a78">SWE-bench performance</R>: 43.8% success rate on real GitHub issues (Claude 3.5 Sonnet)
 
 **Research and Analysis**:
-- [Perplexity Pro Research](https://www.perplexity.ai/): Multi-step investigation workflows lasting 2-4 hours
+- <R id="bd687578ef655f76">Perplexity Pro Research</R>: Multi-step investigation workflows lasting 2-4 hours
 - Academic literature reviews with synthesis across dozens of papers
 - Market research automation with competitor analysis and trend identification
 
@@ -115,14 +115,14 @@ This represents one of the most safety-critical capability thresholds because it
 ### Safety Research Progress
 
 **Alignment Preservation**:
-- [Constitutional AI](https://www.anthropic.com/index/constitutional-ai-harmlessness-from-ai-feedback): Maintaining principles over extended operation
-- [Debate and Amplification](https://arxiv.org/abs/1805.00899): Scalable oversight for complex decisions
-- [Corrigibility Research](https://intelligence.org/files/Corrigibility.pdf): Maintaining human control over time
+- <R id="02828439f34ad89c">Constitutional AI</R>: Maintaining principles over extended operation
+- <R id="61da2f8e311a2bbf">Debate and Amplification</R>: Scalable oversight for complex decisions
+- <R id="33c4da848ef72141">Corrigibility Research</R>: Maintaining human control over time
 
 **Monitoring and Control**:
-- [AI Control Framework](https://arxiv.org/abs/2312.06942): Safety despite possible misalignment
-- [Anomaly Detection Systems](https://arxiv.org/abs/2310.13639): Automated monitoring of agent behavior
-- [Capability Control Methods](https://arxiv.org/abs/2310.15077): Limiting agent capabilities without reducing utility
+- <R id="187aaa26886ce183">AI Control Framework</R>: Safety despite possible misalignment
+- <R id="bd051aa0e3e84d84">Anomaly Detection Systems</R>: Automated monitoring of agent behavior
+- <R id="ea759f3929d984ee">Capability Control Methods</R>: Limiting agent capabilities without reducing utility
 
 ## Trajectory and Timeline Projections
 
@@ -154,7 +154,7 @@ This represents one of the most safety-critical capability thresholds because it
 - Can robust world models emerge from training or require explicit engineering?
 
 **Safety Scalability**:
-- Will [constitutional AI](https://arxiv.org/abs/2212.08073) methods preserve alignment at extended timescales?
+- Will <R id="683aef834ac1612a">constitutional AI</R> methods preserve alignment at extended timescales?
 - Can oversight mechanisms scale to monitor thousands of daily decisions?
 - How will deceptive alignment risks manifest in long-horizon systems?
 
@@ -208,23 +208,23 @@ Long-horizon autonomy intersects critically with several other safety-relevant c
 
 | Category | Key Papers | Contribution |
 |----------|------------|--------------|
-| **Safety Foundations** | [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565) | Early identification of long-horizon alignment challenges |
-| **Agent Architectures** | [ReAct](https://arxiv.org/abs/2210.03629), [Tree of Thoughts](https://arxiv.org/abs/2305.10601) | Reasoning and planning frameworks |
-| **Memory Systems** | [MemGPT](https://arxiv.org/abs/2310.08560), [RAG](https://arxiv.org/abs/2005.11401) | Persistent context and knowledge retrieval |
-| **Safety Methods** | [Constitutional AI](https://arxiv.org/abs/2212.08073), [AI Control](https://arxiv.org/abs/2312.06942) | Alignment and oversight approaches |
+| **Safety Foundations** | <R id="cd3035dbef6c7b5b">Concrete Problems in AI Safety</R> | Early identification of long-horizon alignment challenges |
+| **Agent Architectures** | <R id="7647307fe49844a0">ReAct</R>, <R id="ba7b8013ee20dc8e">Tree of Thoughts</R> | Reasoning and planning frameworks |
+| **Memory Systems** | <R id="26e7ae529ac5e81b">MemGPT</R>, <R id="02ad74cdb0c9081f">RAG</R> | Persistent context and knowledge retrieval |
+| **Safety Methods** | <R id="683aef834ac1612a">Constitutional AI</R>, <R id="187aaa26886ce183">AI Control</R> | Alignment and oversight approaches |
 
 ### Organizations and Initiatives
 
 | Type | Organizations | Focus Areas |
 |------|---------------|-------------|
-| **Industry Research** | [OpenAI](https://openai.com/research), [Anthropic](https://www.anthropic.com/research), [DeepMind](https://www.deepmind.com/safety) | Capability development with safety research |
-| **Safety Organizations** | [MIRI](https://intelligence.org), [ARC](https://alignment.org), [CHAI](https://humancompatible.ai) | Theoretical alignment and control research |
-| **Policy Research** | [GovAI](https://www.governance.ai), [CNAS](https://www.cnas.org), [RAND](https://www.rand.org/topics/artificial-intelligence.html) | Governance frameworks and policy analysis |
+| **Industry Research** | <R id="e9aaa7b5e18f9f41">OpenAI</R>, <R id="f771d4f56ad4dbaa">Anthropic</R>, <R id="ea91ee7755dc9d40">DeepMind</R> | Capability development with safety research |
+| **Safety Organizations** | <R id="86df45a5f8a9bf6d">MIRI</R>, <R id="0562f8c207d8b63f">ARC</R>, <R id="9c4106b68045dbd6">CHAI</R> | Theoretical alignment and control research |
+| **Policy Research** | <R id="f35c467b353f990f">GovAI</R>, <R id="58f6946af0177ca5">CNAS</R>, <R id="cf5fd74e8db11565">RAND</R> | Governance frameworks and policy analysis |
 
 ### Evaluation Benchmarks
 
 | Benchmark | Description | Current SOTA | Target Timeline |
 |-----------|-------------|--------------|------------------|
-| [SWE-bench](https://www.swebench.com/) | Real software engineering tasks | 43.8% (Claude 3.5) | >70% by 2025 |
-| [WebArena](https://webarena.dev/) | Web-based task completion | ~30% success | Extended to multi-day tasks |
-| [AgentBench](https://arxiv.org/abs/2308.03688) | Multi-environment agent evaluation | Variable by domain | Long-horizon extensions planned |
+| <R id="433a37bad4e66a78">SWE-bench</R> | Real software engineering tasks | 43.8% (Claude 3.5) | >70% by 2025 |
+| <R id="c2614357fa198ba4">WebArena</R> | Web-based task completion | ~30% success | Extended to multi-day tasks |
+| <R id="d234ade2718a748e">AgentBench</R> | Multi-environment agent evaluation | Variable by domain | Long-horizon extensions planned |

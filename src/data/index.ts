@@ -638,7 +638,6 @@ export function getEntityHref(id: string, type?: string): string {
   // Fall back to type-based mapping for entities not in content files
   const pathMapping: Record<string, string> = {
     'risk': '/knowledge-base/risks/accident/',
-    'risk-factor': '/knowledge-base/risk-factors/',
     'capability': '/knowledge-base/capabilities/',
     'safety-agenda': '/knowledge-base/responses/technical/',
     'policy': '/knowledge-base/responses/governance/',

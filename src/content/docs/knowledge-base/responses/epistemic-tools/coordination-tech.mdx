@@ -9,7 +9,7 @@ lastEdited: "2025-12-24"
 todo: "Add more concrete case studies of successful/failed coordination; expand technical verification mechanisms section with specific cryptographic approaches"
 importance: 85.5
 ---
-import {DataInfoBox, KeyQuestions} from '../../../../../components/wiki';
+import {DataInfoBox, KeyQuestions, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="coordination-tech" />
 
@@ -17,21 +17,21 @@ import {DataInfoBox, KeyQuestions} from '../../../../../components/wiki';
 
 Many of the most pressing challenges in AI safety and information integrity are fundamentally coordination problems. Individual actors face incentives to defect from collectively optimal behaviors—racing to deploy potentially dangerous AI systems, failing to invest in costly verification infrastructure, or prioritizing engagement over truth in information systems. Coordination technologies represent a crucial class of tools designed to overcome these collective action failures by enabling actors to find, commit to, and maintain cooperative equilibria.
 
-The urgency of developing effective coordination mechanisms has intensified with the rapid advancement of AI capabilities. Current research suggests that without coordination, [racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) could compress safety timelines by 2-5 years compared to optimal development trajectories. Unlike traditional regulatory approaches that rely primarily on top-down enforcement, coordination technologies often work by changing the strategic structure of interactions themselves, making cooperation individually rational rather than merely collectively beneficial.
+The urgency of developing effective coordination mechanisms has intensified with the rapid advancement of AI capabilities. Current research suggests that without coordination, [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) could compress safety timelines by 2-5 years compared to optimal development trajectories. Unlike traditional regulatory approaches that rely primarily on top-down enforcement, coordination technologies often work by changing the strategic structure of interactions themselves, making cooperation individually rational rather than merely collectively beneficial.
 
-Success in coordination technology development could determine whether humanity can navigate the transition to advanced AI systems safely. The [Frontier Model Forum's](https://www.frontiermodelforum.org/) membership now includes all major AI labs, representing 85% of frontier model development capacity. Government initiatives like the [US AI Safety Institute](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute) and [UK AISI](/knowledge-base/organizations/government/uk-aisi/) have allocated $280M+ in coordination infrastructure investment since 2023, with measurable impacts on industry [responsible scaling policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/).
+Success in coordination technology development could determine whether humanity can navigate the transition to advanced AI systems safely. The <R id="43c333342d63e444">Frontier Model Forum's</R> membership now includes all major AI labs, representing 85% of frontier model development capacity. Government initiatives like the <R id="c9c2bcaca0d2c3e6">US AI Safety Institute</R> and [UK AISI](/knowledge-base/organizations/government/uk-aisi/) have allocated $280M+ in coordination infrastructure investment since 2023, with measurable impacts on industry [responsible scaling policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/).
 
 ## Risk/Impact Assessment
 
 | Risk Category | Severity | Likelihood (2-5yr) | Current Trend | Key Indicators | Mitigation Status |
 |---------------|----------|-------------------|---------------|----------------|-------------------|
-| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Very High | 75% | Worsening | 40% reduction in pre-deployment testing time | Partial (RSP adoption) |
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Very High | 75% | Worsening | 40% reduction in pre-deployment testing time | Partial (RSP adoption) |
 | Verification Failures | High | 60% | Stable | 30% of compute unmonitored | Active development |
 | International Fragmentation | High | 55% | Mixed | 3 major regulatory frameworks diverging | Diplomatic efforts ongoing |
 | Regulatory Capture | Medium | 45% | Improving | 70% industry self-regulation reliance | Standards development |
 | Technical Obsolescence | Medium | 35% | Stable | Annual 10x crypto verification improvements | Research investment |
 
-*Source: [CSIS AI Governance Database](https://www.csis.org/) and expert elicitation survey (n=127), December 2024*
+*Source: <R id="03c995f7743c75a8">CSIS AI Governance Database</R> and expert elicitation survey (n=127), December 2024*
 
 ## Current Coordination Landscape
 
@@ -45,7 +45,7 @@ Success in coordination technology development could determine whether humanity 
 | Meta | Llama Safety Protocol | 30+ days | Limited external | 5.4/10 |
 | xAI | Minimal framework | &lt;30 days | None public | 3.2/10 |
 
-*Compliance scores based on [Apollo Research](https://www.apolloresearch.ai/) industry assessment methodology, updated quarterly*
+*Compliance scores based on <R id="329d8c2e2532be3d">Apollo Research</R> industry assessment methodology, updated quarterly*
 
 ### Government Coordination Infrastructure Progress
 
@@ -71,7 +71,7 @@ Current [compute governance](/knowledge-base/responses/governance/compute-govern
 | Training Run Registration | >10^26 FLOPS | TBD | TBD | Development |
 | Chip-Level Telemetry | Research prototypes | 60% | 20% | R&D phase |
 
-*Source: [RAND Corporation](https://www.rand.org/topics/artificial-intelligence.html) compute governance effectiveness study, 2024*
+*Source: <R id="cf5fd74e8db11565">RAND Corporation</R> compute governance effectiveness study, 2024*
 
 ### Cryptographic Verification Advances
 
@@ -79,9 +79,9 @@ Zero-knowledge and homomorphic encryption systems for AI verification have achie
 
 | Technology | Performance Overhead | Verification Scope | Commercial Readiness | Key Players |
 |------------|---------------------|-------------------|-------------------|-------------|
-| ZK-SNARKs for ML | 100-1000x | Model inference | 2025-2026 | [Polygon](https://polygon.technology/), [StarkWare](https://starkware.co/) |
-| Homomorphic Encryption | 1000-10000x | Private evaluation | 2026-2027 | [Microsoft SEAL](https://github.com/Microsoft/SEAL), [IBM FHE](https://www.ibm.com/topics/fully-homomorphic-encryption) |
-| Secure Multi-Party Computation | 10-100x | Federated training | Operational | [Private AI](https://private-ai.com/), [OpenMined](https://www.openmined.org/) |
+| ZK-SNARKs for ML | 100-1000x | Model inference | 2025-2026 | <R id="4dff1441761a3693">Polygon</R>, <R id="2c3ab67ca65d102a">StarkWare</R> |
+| Homomorphic Encryption | 1000-10000x | Private evaluation | 2026-2027 | <R id="8a803827c20a0bd1">Microsoft SEAL</R>, <R id="df58e14a3138f5c3">IBM FHE</R> |
+| Secure Multi-Party Computation | 10-100x | Federated training | Operational | <R id="2f04234eb2619860">Private AI</R>, <R id="2fdb8def36ebd686">OpenMined</R> |
 | TEE-based Verification | 1.1-2x | Execution integrity | Operational | Intel SGX, AMD SEV |
 
 **Technical Challenge**: Current cryptographic verification adds 100-10,000x computational overhead for large language models, limiting real-time deployment applications.
@@ -140,12 +140,12 @@ Different actor types exhibit distinct strategic preferences for coordination me
 
 | Summit | Participants | Concrete Outcomes | Funding Committed | Compliance Rate |
 |--------|-------------|-------------------|------------------|----------------|
-| Bletchley Park (Nov 2023) | 28 countries + companies | [Bletchley Declaration](https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration) | $280M research funding | 70% aspiration adoption |
+| Bletchley Park (Nov 2023) | 28 countries + companies | <R id="243fa770c13b0c44">Bletchley Declaration</R> | $280M research funding | 70% aspiration adoption |
 | Seoul (May 2024) | 30+ countries | AI Safety Institute Network MOU | $150M institute funding | 85% network participation |
 | Paris (Feb 2024) | G7 + partners | Industry voluntary commitments | $0 (voluntary) | 60% company participation |
 | San Francisco (May 2025) | TBD | Verification protocol standards | TBD | TBD |
 
-*Source: [Georgetown CSET](https://cset.georgetown.edu/) international AI governance tracking database*
+*Source: <R id="f0d95954b449240a">Georgetown CSET</R> international AI governance tracking database*
 
 ### Regional Regulatory Convergence
 
@@ -170,7 +170,7 @@ Economic incentives increasingly align with safety outcomes through insurance an
 | Systemic Risk Coverage | $50M (pilot) | TBD | Society-wide impacts | Actuarial model limitations |
 | Directors & Officers (AI) | $1.2B | 25% annually | Strategic AI decisions | Governance structure evolution |
 
-*Source: [PwC AI Insurance Market Analysis](https://www.pwc.com/gx/en/issues/artificial-intelligence/ai-insurance-market.html), 2024*
+*Source: <R id="d0fa766fcfebbd36">PwC AI Insurance Market Analysis</R>, 2024*
 
 ### Financial Incentive Structures
 
@@ -205,7 +205,7 @@ Research by [Epoch AI](/knowledge-base/organizations/safety-orgs/epoch-ai/) proj
 ### Medium-Term Outlook (2026-2030)
 
 **Institutional Development**:
-- 65% probability of formal international AI coordination body by 2028 ([RAND forecast](https://www.rand.org/))
+- 65% probability of formal international AI coordination body by 2028 (<R id="0a17f30e99091ebf">RAND forecast</R>)
 - Integration of AI safety metrics into corporate governance frameworks
 - Evolution toward technology-neutral coordination principles
 
@@ -251,12 +251,12 @@ Research by [Epoch AI](/knowledge-base/organizations/safety-orgs/epoch-ai/) proj
 Current safety evaluations can assess ~40% of potentially dangerous capabilities. [METR](/knowledge-base/organizations/safety-orgs/metr/) research suggests theoretical ceiling of 80-85% coverage for superintelligent systems due to fundamental evaluation limits.
 
 **Cryptographic Assumptions**:
-Post-quantum cryptography development could invalidate current verification systems. [NIST post-quantum standards](https://csrc.nist.gov/Projects/post-quantum-cryptography) adoption timeline (2025-2030) creates transition risks.
+Post-quantum cryptography development could invalidate current verification systems. <R id="661fa26a6de38861">NIST post-quantum standards</R> adoption timeline (2025-2030) creates transition risks.
 
 ### Geopolitical Coordination Barriers
 
 **US-China Technology Competition**:
-Current coordination frameworks exclude Chinese AI labs (ByteDance, Baidu, Alibaba). [CSIS analysis](https://www.csis.org/analysis/strategic-competition-age-artificial-intelligence) suggests 35% probability of Chinese participation in global coordination by 2030.
+Current coordination frameworks exclude Chinese AI labs (ByteDance, Baidu, Alibaba). <R id="f905605a70b2b53d">CSIS analysis</R> suggests 35% probability of Chinese participation in global coordination by 2030.
 
 **Regulatory Sovereignty Tensions**:
 EU AI Act extraterritorial scope conflicts with US industry preferences. Harmonization success depends on finding compatible risk assessment methodologies.
@@ -264,7 +264,7 @@ EU AI Act extraterritorial scope conflicts with US industry preferences. Harmoni
 ### Strategic Evolution Dynamics
 
 **Open Source Disruption**:
-[Meta's Llama releases](https://ai.meta.com/llama/) and emerging open-source capabilities could undermine lab-centric coordination. Current frameworks assume centralized development control.
+<R id="69c685f410104791">Meta's Llama releases</R> and emerging open-source capabilities could undermine lab-centric coordination. Current frameworks assume centralized development control.
 
 **Corporate Governance Instability**:
 OpenAI's November 2023 governance crisis highlighted instability in AI lab corporate structures. Transition to public benefit corporation models could alter coordination dynamics.
@@ -275,35 +275,35 @@ OpenAI's November 2023 governance crisis highlighted instability in AI lab corpo
 
 | Organization | Coordination Focus | Key Publications | Website |
 |--------------|------------------|------------------|---------|
-| [RAND Corporation](https://www.rand.org/) | Policy & implementation | [Compute Governance Report](https://www.rand.org/pubs/research_reports/RRA2679-1.html) | rand.org |
-| [Center for AI Safety](https://www.safe.ai/) | Technical standards | [RSP Evaluation Framework](https://www.safe.ai/responsible-scaling-policies) | safe.ai |
-| [Georgetown CSET](https://cset.georgetown.edu/) | International dynamics | [AI Governance Database](https://aidatabase.cset.georgetown.edu/) | cset.georgetown.edu |
-| [Future of Humanity Institute](https://www.fhi.ox.ac.uk/) | Governance theory | Coordination Mechanism Design | fhi.ox.ac.uk |
+| <R id="0a17f30e99091ebf">RAND Corporation</R> | Policy & implementation | <R id="064a34101a962326">Compute Governance Report</R> | rand.org |
+| <R id="a306e0b63bdedbd5">Center for AI Safety</R> | Technical standards | <R id="3daf7680ca3e48e3">RSP Evaluation Framework</R> | safe.ai |
+| <R id="f0d95954b449240a">Georgetown CSET</R> | International dynamics | <R id="1734dd8df79ac601">AI Governance Database</R> | cset.georgetown.edu |
+| <R id="1593095c92d34ed8">Future of Humanity Institute</R> | Governance theory | Coordination Mechanism Design | fhi.ox.ac.uk |
 
 ### Government Initiatives
 
 | Institution | Coordination Role | Budget | Key Resources |
 |-------------|-----------------|--------|---------------|
-| [NIST AI Safety Institute](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute) | Standards development | $140M (5yr) | [AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) |
-| [UK AI Safety Institute](/knowledge-base/organizations/government/uk-aisi/) | International leadership | £100M (5yr) | [Summit proceedings](https://www.gov.uk/government/topical-events/ai-safety-summit-2023) |
-| [EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-board) | Regulatory implementation | €95M | [AI Act guidance](https://artificialintelligenceact.eu/) |
+| <R id="c9c2bcaca0d2c3e6">NIST AI Safety Institute</R> | Standards development | $140M (5yr) | <R id="54dbc15413425997">AI RMF</R> |
+| [UK AI Safety Institute](/knowledge-base/organizations/government/uk-aisi/) | International leadership | £100M (5yr) | <R id="254bcdc7bfcdcd73">Summit proceedings</R> |
+| <R id="fc75d07e5516b396">EU AI Office</R> | Regulatory implementation | €95M | <R id="1ad6dc89cded8b0c">AI Act guidance</R> |
 
 ### Technical Resources
 
 | Technology Domain | Key Papers | Implementation Status | Performance Metrics |
 |------------------|------------|----------------------|-------------------|
-| Zero-Knowledge ML | [ZKML Survey (Kang et al.)](https://arxiv.org/abs/2310.08674) | Research prototypes | 100-1000x overhead |
-| Compute Monitoring | [Heim et al. 2024](https://arxiv.org/abs/2402.15029) | Pilot deployment | 85% chip tracking |
-| Federated Safety Research | [Distributed AI Safety (Amodei et al.)](https://arxiv.org/abs/2309.04027) | Early development | Multi-party protocols |
-| Hardware Security | [TEE for ML (Chen et al.)](https://arxiv.org/abs/2312.14030) | Commercial deployment | 1.1-2x overhead |
+| Zero-Knowledge ML | <R id="e1037aade20094ee">ZKML Survey (Kang et al.)</R> | Research prototypes | 100-1000x overhead |
+| Compute Monitoring | <R id="8606ccd2aedd5e6b">Heim et al. 2024</R> | Pilot deployment | 85% chip tracking |
+| Federated Safety Research | <R id="ad0ef791cdf59bfb">Distributed AI Safety (Amodei et al.)</R> | Early development | Multi-party protocols |
+| Hardware Security | <R id="5a5c934f8df343c9">TEE for ML (Chen et al.)</R> | Commercial deployment | 1.1-2x overhead |
 
 ### Industry Coordination Platforms
 
 | Platform | Membership | Focus Area | Public Resources |
 |----------|------------|------------|------------------|
-| [Frontier Model Forum](https://www.frontiermodelforum.org/) | 8 major labs | Best practices sharing | [Public commitments](https://www.frontiermodelforum.org/frontier-model-forum-takes-action/) |
-| [Partnership on AI](https://partnershiponai.org/) | 100+ organizations | Broad AI governance | [Research publications](https://partnershiponai.org/research/) |
-| [MLCommons](https://mlcommons.org/) | Open consortium | Benchmarking standards | [AI Safety benchmark](https://mlcommons.org/en/groups/research-safety/) |
+| <R id="43c333342d63e444">Frontier Model Forum</R> | 8 major labs | Best practices sharing | <R id="b107e05e672159af">Public commitments</R> |
+| <R id="0e7aef26385afeed">Partnership on AI</R> | 100+ organizations | Broad AI governance | <R id="c3c4ffebd5466d53">Research publications</R> |
+| <R id="6ee1f08becb4fe91">MLCommons</R> | Open consortium | Benchmarking standards | <R id="02c81a1e4cade3ce">AI Safety benchmark</R> |
 
 ---
 

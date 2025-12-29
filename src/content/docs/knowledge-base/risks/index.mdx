@@ -10,9 +10,9 @@ tableOfContents: false
 import { RisksTable, RiskCategoryCard, RecentUpdates, TagBrowser } from '../../../../components/wiki';
 import { getRisksForTable } from '../../../../data';
 
-This section documents **risks**—harmful end states we want to avoid. These are organized into four categories: accident risks (technical failures), misuse risks (intentional harm), structural risks (societal harms), and epistemic risks (threats to collective knowledge).
+This section documents **risks**—harmful outcomes and the mechanisms that lead to them. These are organized into four categories: accident risks (technical failures), misuse risks (intentional harm), structural risks (societal harms), and epistemic risks (threats to collective knowledge).
 
-For contributing dynamics and mechanisms that increase these risks, see **[Risk Factors](/knowledge-base/risk-factors/)**.
+Each risk is tagged with a **causal level**: outcomes (end-state harms), pathways (mechanisms), or amplifiers (enabling conditions).
 
 ## Risk Categories
 
@@ -23,25 +23,15 @@ For contributing dynamics and mechanisms that increase these risks, see **[Risk 
   <RiskCategoryCard client:load category="epistemic" href="/knowledge-base/risks/epistemic/" />
 </div>
 
-## Risks vs Risk Factors
-
-| Risks (this section) | Risk Factors |
-|---------------------|--------------|
-| End-state harms | Contributing dynamics |
-| What we want to avoid | What increases probability |
-| e.g., Lock-in, Epistemic Collapse | e.g., Racing Dynamics, Trust Erosion |
-
-**[Browse Risk Factors →](/knowledge-base/risk-factors/)**
-
 ## Causal Levels
 
 Risks operate at different levels of causation. Understanding this helps identify where interventions are most effective:
 
 | Level | Description | Examples |
 |-------|-------------|----------|
-| **Outcome** | End-state catastrophic harms we ultimately want to avoid | [Lock-in](/knowledge-base/risks/structural/lock-in/), [Authoritarian Takeover](/knowledge-base/risks/structural/authoritarian-takeover/), [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/), [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) |
-| **Pathway** | Mechanisms and failure modes that lead to outcome-level harms | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/), [Power-Seeking](/knowledge-base/risks/accident/power-seeking/), [Bioweapons](/knowledge-base/risks/misuse/bioweapons/), [Disinformation](/knowledge-base/risks/misuse/disinformation/) |
-| **Amplifier** | Enabling conditions that increase probability or severity | [Sycophancy](/knowledge-base/risks/accident/sycophancy/), [Sandbagging](/knowledge-base/risks/accident/sandbagging/), [Emergent Capabilities](/knowledge-base/risks/accident/emergent-capabilities/) |
+| **Outcome** | End-state catastrophic harms we ultimately want to avoid | [Lock-in](/knowledge-base/risks/structural/lock-in/), [Authoritarian Takeover](/knowledge-base/risks/structural/authoritarian-takeover/), [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/), [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) |
+| **Pathway** | Mechanisms and failure modes that lead to outcome-level harms | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/), [Power-Seeking](/knowledge-base/risks/accident/power-seeking/), [Authentication Collapse](/knowledge-base/risks/epistemic/authentication-collapse/), [Trust Erosion](/knowledge-base/risks/epistemic/trust-erosion/) |
+| **Amplifier** | Enabling conditions that increase probability or severity | [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/), [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/), [Sycophancy](/knowledge-base/risks/accident/sycophancy/), [Automation Bias](/knowledge-base/risks/accident/automation-bias/) |
 
 **Why this matters:**
 - Addressing **amplifiers** can prevent multiple pathways

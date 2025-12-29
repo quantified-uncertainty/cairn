@@ -59,7 +59,7 @@ The Task agent reads ~3 files (50K tokens), runs WebSearch, and makes multiple E
 ### Reference Examples
 
 - **Gold standard**: `src/content/docs/knowledge-base/risks/misuse/bioweapons.mdx` (1079 lines, 15+ tables, 30+ citations)
-- **Good example**: `src/content/docs/knowledge-base/risk-factors/racing-dynamics.mdx` (307 lines, 12+ tables)
+- **Good example**: `src/content/docs/knowledge-base/risks/structural/racing-dynamics.mdx` (307 lines, 12+ tables)
 
 ### Manual Usage (via Claude Code)
 
@@ -137,6 +137,59 @@ Without `--apply`, enhanced pages are saved to `.claude/temp/enhanced/` for revi
 | `--min-imp N` | Minimum importance (enhance) |
 | `--max-qual N` | Maximum quality (enhance) |
 | `--page ID` | Target specific page |
+
+## Resource Manager CLI
+
+Unified tool for managing external resource links and `<R>` component conversions.
+
+### Commands
+
+```bash
+npm run resources list                              # List pages with unconverted links
+npm run resources -- show bioweapons               # Show unconverted links in file
+npm run resources -- process lock-in --dry-run     # Preview link conversions
+npm run resources -- process lock-in --apply       # Apply conversions
+npm run resources -- create "https://arxiv.org/..." # Create a resource entry
+```
+
+### List Command
+
+List pages sorted by number of unconverted links:
+```bash
+node scripts/resource-manager.mjs list --limit 20
+node scripts/resource-manager.mjs list --min-unconv 5
+```
+
+### Show Command
+
+Show details about unconverted links in a specific file:
+```bash
+node scripts/resource-manager.mjs show bioweapons
+node scripts/resource-manager.mjs show risks/structural/lock-in  # Use path for disambiguation
+```
+
+### Process Command
+
+Convert markdown links to `<R>` components, creating resources as needed:
+```bash
+node scripts/resource-manager.mjs process lock-in --dry-run      # Preview
+node scripts/resource-manager.mjs process lock-in --apply        # Apply changes
+node scripts/resource-manager.mjs process lock-in --skip-create  # Only convert existing
+```
+
+This command:
+1. Finds all external markdown links in the file
+2. For links with existing resources → converts to `<R id="...">`
+3. For links without resources → creates new resource entry, then converts
+4. Adds the `{R}` import statement if needed
+
+### Create Command
+
+Create a single resource entry:
+```bash
+node scripts/resource-manager.mjs create "https://arxiv.org/abs/2301.00001"
+node scripts/resource-manager.mjs create "https://example.com" --title "Example" --type paper
+```
 
 ## Content Quality System
 

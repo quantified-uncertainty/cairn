@@ -6,7 +6,7 @@ quality: 78
 lastEdited: "2025-12-28"
 llmSummary: "Analyzes how AI lab internal cultures affect safety outcomes through mechanisms like safety team authority, pre-deployment testing, and whistleblower protection. Key findings: No company scored above 35% in risk management maturity (SaferAI 2025), 50% of OpenAI safety staff departed recently, and only 3 of 7 major labs test for dangerous capabilities."
 ---
-import {Mermaid} from '../../../../../components/wiki';
+import {Mermaid, R} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -14,7 +14,7 @@ Lab safety culture encompasses the practices, incentives, and governance structu
 
 The importance of lab culture stems from a simple reality: AI labs are where critical decisions happen. Even the best external regulations are implemented internally, and most safety-relevant decisions never reach regulators. Cultural factors determine whether safety concerns are surfaced, taken seriously, and acted upon before deployment.
 
-Recent evidence suggests significant gaps in current practice. According to [SaferAI's 2025 assessment](https://time.com/7302757/anthropic-xai-meta-openai-risk-management-2/), no AI company scored better than "weak" in risk management maturity, with Anthropic highest at 35%, followed by OpenAI at 33%. The [Future of Life Institute's 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/) gave every company a grade of D or below on existential safety measures. Meanwhile, approximately [50% of OpenAI's safety-focused staff departed in recent months](https://www.pcgamer.com/hardware/why-safety-researchers-keep-leaving-openai/), raising questions about whether labs can sustain safety cultures under competitive pressure.
+Recent evidence suggests significant gaps in current practice. According to <R id="a74d9fdd24d82d24">SaferAI's 2025 assessment</R>, no AI company scored better than "weak" in risk management maturity, with Anthropic highest at 35%, followed by OpenAI at 33%. The <R id="df46edd6fa2078d1">Future of Life Institute's 2025 AI Safety Index</R> gave every company a grade of D or below on existential safety measures. Meanwhile, approximately <R id="bdf0f7a812e25efd">50% of OpenAI's safety-focused staff departed in recent months</R>, raising questions about whether labs can sustain safety cultures under competitive pressure.
 
 ### Quick Assessment
 
@@ -36,7 +36,7 @@ Lab safety culture is relevant to nearly all AI risks because labs are where dec
 
 | Risk | Relevance | How Culture Helps |
 |------|-----------|-------------------|
-| [Racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) | **High** | Culture determines whether labs slow down when safety warrants it |
+| [Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) | **High** | Culture determines whether labs slow down when safety warrants it |
 | [Deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/) | **High** | Thorough evaluation culture needed to detect subtle misalignment |
 | [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) | **High** | 3 of 7 labs test for dangerous bio capabilities; culture determines rigor |
 | [Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/) | **High** | Similar to bio: culture determines evaluation thoroughness |
@@ -146,13 +146,13 @@ The diagram illustrates how external pressures filter through lab culture to pro
 | Meta | 22% | D | D | FAIR Safety Policy |
 | xAI | 18% | D | D- | Published Dec 2024 |
 
-**Key findings from [SaferAI's assessment](https://time.com/7302757/anthropic-xai-meta-openai-risk-management-2/):**
+**Key findings from <R id="a74d9fdd24d82d24">SaferAI's assessment</R>:**
 - No company scored better than "weak" in risk management maturity
 - Anthropic's score declined from previous assessment due to RSP changes before Claude 4 release
 - Only 3 of 7 firms conduct substantive testing for dangerous capabilities (bio/cyber)
 - One reviewer noted "very low confidence that dangerous capabilities are being detected in time"
 
-**Key findings from [FLI's AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/):**
+**Key findings from <R id="df46edd6fa2078d1">FLI's AI Safety Index</R>:**
 - Every company scored D or below on existential safety measures
 - This is the second consecutive report with no company receiving better than D on that measure
 - All flagship models were found vulnerable to adversarial attacks
@@ -164,7 +164,7 @@ The departure of safety-focused staff from major labs—particularly OpenAI—pr
 | Departure | Former Role | New Position | Stated Concerns |
 |-----------|-------------|--------------|-----------------|
 | Ilya Sutskever | Chief Scientist, OpenAI | Safe Superintelligence Inc. | Left June 2024 to focus on safe AI |
-| Jan Leike | Co-lead Superalignment, OpenAI | Co-lead Alignment Science, Anthropic | "[Safety culture has taken a backseat to shiny products](https://www.windowscentral.com/software-apps/anthropic-ceo-claims-ai-will-double-human-life-expectancy-in-a-decade)" |
+| Jan Leike | Co-lead Superalignment, OpenAI | Co-lead Alignment Science, Anthropic | "<R id="a81e03bd4f8afca2">Safety culture has taken a backseat to shiny products</R>" |
 | John Schulman | Co-founder, OpenAI | Anthropic | Wanted to return to alignment technical work |
 | Miles Brundage | Head of AGI Readiness, OpenAI | Departed Oct 2024 | AGI Readiness team dissolved |
 | Rosie Campbell | Policy Frontiers Lead, OpenAI | Departed 2024 | Cited dissolution of AGI Readiness team |
@@ -174,7 +174,7 @@ Jan Leike's statement at departure is particularly notable: "Building smarter-th
 
 ### Rushed Deployment Concerns
 
-Reports indicate OpenAI [rushed through GPT-4o's launch](https://www.cnbc.com/2024/10/24/openai-miles-brundage-agi-readiness.html), allocating less than a week to safety testing. Sources indicated the company sent invitations for the product's launch celebration before the safety team completed their tests.
+Reports indicate OpenAI <R id="0a8da5fe117a4c50">rushed through GPT-4o's launch</R>, allocating less than a week to safety testing. Sources indicated the company sent invitations for the product's launch celebration before the safety team completed their tests.
 
 ---
 
@@ -186,10 +186,10 @@ In 2024, OpenAI faced significant controversy over restrictive employment agreem
 
 **Timeline of events:**
 1. **May 2024:** News broke that OpenAI pressured departing employees to sign contracts with extremely broad nondisparagement provisions or lose vested equity
-2. **July 2024:** Anonymous whistleblowers [filed an SEC complaint](https://www.washingtonpost.com/technology/2024/07/13/openai-safety-risks-whistleblower-sec/) alleging violations of Rule 21F-17(a) and the Dodd-Frank Act
-3. **July 2024:** 13 current and former employees from OpenAI and Google DeepMind posted "[A Right to Warn About Advanced Artificial Intelligence](https://www.epspros.com/news-resources/news/2024/ai-employees-publicly-warn-of-risks-and-lack-of-whistleblower-protection.html)"
-4. **August 2024:** Senator Grassley sent [letter to Sam Altman](https://www.washingtonpost.com/documents/8bf076a6-663b-4552-be52-079b79274f9c.pdf) requesting documentation
-5. **2024:** OpenAI [voided non-disparagement terms](https://www.ccn.com/news/technology/gary-gensler-sent-urgent-letter-about-openai-ndas-that-silence-employees/) in response to pressure
+2. **July 2024:** Anonymous whistleblowers <R id="ed8b161851bc498b">filed an SEC complaint</R> alleging violations of Rule 21F-17(a) and the Dodd-Frank Act
+3. **July 2024:** 13 current and former employees from OpenAI and Google DeepMind posted "<R id="7df8d480e414aa70">A Right to Warn About Advanced Artificial Intelligence</R>"
+4. **August 2024:** Senator Grassley sent <R id="67cbb636aee227a3">letter to Sam Altman</R> requesting documentation
+5. **2024:** OpenAI <R id="a0e42d8456793900">voided non-disparagement terms</R> in response to pressure
 
 **Key allegations from the SEC complaint:**
 - Agreements required employees to waive federal whistleblower compensation rights
@@ -203,7 +203,7 @@ The open letter from AI employees stated: "Ordinary whistleblower protections ar
 
 ### Legislative Response
 
-The [AI Whistleblower Protection Act (AI WPA)](https://law-ai.org/protecting-ai-whistleblowers/) was introduced with bipartisan support:
+The <R id="2ae7df16aad64338">AI Whistleblower Protection Act (AI WPA)</R> was introduced with bipartisan support:
 - Sponsored by Sen. Chuck Grassley (R-Iowa) with 3 Republican and 3 Democratic co-sponsors
 - Companion legislation introduced by Reps. Ted Lieu (D-Calif.) and Jay Obernolte (R-Calif.)
 - Limits protections to disclosures about "substantial and specific dangers" to public safety, health, or national security
@@ -215,19 +215,19 @@ The [AI Whistleblower Protection Act (AI WPA)](https://law-ai.org/protecting-ai-
 
 ### Frontier Model Forum
 
-Established in July 2023, the [Frontier Model Forum](https://www.frontiermodelforum.org/updates/progress-update-advancing-frontier-ai-safety-in-2024-and-beyond/) serves as the primary industry coordination body:
+Established in July 2023, the <R id="51e8802a5aef29f6">Frontier Model Forum</R> serves as the primary industry coordination body:
 
 **Members:** Anthropic, Google, Microsoft, OpenAI (founding), plus additional companies
 
 **Key activities in 2024:**
 - Announced $10 million AI Safety Fund with philanthropic partners
-- Published "[Early Best Practices for Frontier AI Safety Evaluations](https://www.frontiermodelforum.org/publications/)" (July 2024)
+- Published "<R id="5329d38ad33971ff">Early Best Practices for Frontier AI Safety Evaluations</R>" (July 2024)
 - Established biosecurity standing group with researchers from academia, industry, and government
 - Produced common definition of "red teaming" with shared case studies
 
 ### Seoul Summit Commitments
 
-In May 2024, [16 companies committed to publish frontier AI safety protocols](https://montrealethics.ai/ai-policy-corner-frontier-ai-safety-commitments-ai-seoul-summit-2024/):
+In May 2024, <R id="c7bf226bdc483bf6">16 companies committed to publish frontier AI safety protocols</R>:
 - All Frontier Model Forum members signed
 - 4 additional companies joined subsequently (total: 20)
 - Commitments require publishing safety frameworks before Paris AI Action Summit (February 2025)
@@ -236,7 +236,7 @@ In May 2024, [16 companies committed to publish frontier AI safety protocols](ht
 
 ### Government Testing Agreements
 
-In [August 2024, the U.S. AI Safety Institute signed MOUs](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) with Anthropic and OpenAI:
+In <R id="627bb42e8f74be04">August 2024, the U.S. AI Safety Institute signed MOUs</R> with Anthropic and OpenAI:
 - Framework for AISI to receive access to major new models before and after public release
 - Enables collaborative research on capability and safety risk evaluation
 - AISI will provide feedback on potential safety improvements
@@ -252,7 +252,7 @@ Different AI labs have adopted different governance structures to balance commer
 
 ### Anthropic's Structure
 
-[Anthropic is structured as a Public Benefit Corporation](https://time.com/6983420/anthropic-structure-openai-incentives/) with additional governance layers:
+<R id="d7ac30b45b4da216">Anthropic is structured as a Public Benefit Corporation</R> with additional governance layers:
 - **Board accountability:** Board is accountable to shareholders (Google, Amazon have invested approximately $6 billion combined)
 - **Long-Term Benefit Trust:** Separate trust with 5 financially disinterested members will select most board members over time
 - **Trust mandate:** Focus on AI safety and long-term benefit of humanity
@@ -260,7 +260,7 @@ Different AI labs have adopted different governance structures to balance commer
 
 ### OpenAI's Structure
 
-[OpenAI is transitioning from a capped-profit structure](https://openai.com/index/evolving-our-structure/):
+<R id="8ffc465752f15d66">OpenAI is transitioning from a capped-profit structure</R>:
 - **Current:** Capped-profit LLC under nonprofit board
 - **Transition:** Moving to a Public Benefit Corporation (PBC)
 - **Nonprofit role:** Will continue to control the PBC and become a major shareholder
@@ -308,7 +308,7 @@ However, critics argue independent safety functions at board level have proved i
 | Joint safety research publications | Racing dynamics create first-mover advantages |
 | Shared definitions and best practices | Labs can drop safety measures if competitors don't adopt them |
 
-**Assessment:** Coordination mechanisms exist but are fragile. The "[footnote 17 problem](https://metr.org/blog/2025-03-26-common-elements-of-frontier-ai-safety-policies/)"—where labs reserve the right to drop safety measures if competitors don't adopt them—undermines the value of voluntary coordination.
+**Assessment:** Coordination mechanisms exist but are fragile. The "<R id="a37628e3a1e97778">footnote 17 problem</R>"—where labs reserve the right to drop safety measures if competitors don't adopt them—undermines the value of voluntary coordination.
 
 ---
 
@@ -330,16 +330,16 @@ However, critics argue independent safety functions at board level have proved i
 
 ## Sources
 
-- [SaferAI Risk Management Assessment](https://time.com/7302757/anthropic-xai-meta-openai-risk-management-2/)
-- [Future of Life Institute AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/)
-- [METR: Common Elements of Frontier AI Safety Policies](https://metr.org/blog/2025-03-26-common-elements-of-frontier-ai-safety-policies/)
-- [Frontier Model Forum Progress Update](https://www.frontiermodelforum.org/updates/progress-update-advancing-frontier-ai-safety-in-2024-and-beyond/)
-- [NIST AI Safety Institute Agreements](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research)
-- [OpenAI Whistleblower SEC Complaint](https://www.washingtonpost.com/technology/2024/07/13/openai-safety-risks-whistleblower-sec/)
-- [Institute for Law & AI: Protecting AI Whistleblowers](https://law-ai.org/protecting-ai-whistleblowers/)
-- [TIME: How Anthropic Designed Itself to Avoid OpenAI's Mistakes](https://time.com/6983420/anthropic-structure-openai-incentives/)
-- [OpenAI: Evolving Our Structure](https://openai.com/index/evolving-our-structure/)
-- [PC Gamer: Why Safety Researchers Keep Leaving OpenAI](https://www.pcgamer.com/hardware/why-safety-researchers-keep-leaving-openai/)
-- [Anthropic: Updated Responsible Scaling Policy](https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy/)
-- [AI Lab Watch: Commitments Tracker](https://ailabwatch.org/resources/commitments)
-- [Seoul Summit Frontier AI Safety Commitments](https://montrealethics.ai/ai-policy-corner-frontier-ai-safety-commitments-ai-seoul-summit-2024/)
+- <R id="a74d9fdd24d82d24">SaferAI Risk Management Assessment</R>
+- <R id="df46edd6fa2078d1">Future of Life Institute AI Safety Index</R>
+- <R id="a37628e3a1e97778">METR: Common Elements of Frontier AI Safety Policies</R>
+- <R id="51e8802a5aef29f6">Frontier Model Forum Progress Update</R>
+- <R id="627bb42e8f74be04">NIST AI Safety Institute Agreements</R>
+- <R id="ed8b161851bc498b">OpenAI Whistleblower SEC Complaint</R>
+- <R id="2ae7df16aad64338">Institute for Law & AI: Protecting AI Whistleblowers</R>
+- <R id="d7ac30b45b4da216">TIME: How Anthropic Designed Itself to Avoid OpenAI's Mistakes</R>
+- <R id="8ffc465752f15d66">OpenAI: Evolving Our Structure</R>
+- <R id="bdf0f7a812e25efd">PC Gamer: Why Safety Researchers Keep Leaving OpenAI</R>
+- <R id="d0ba81cc7a8fdb2b">Anthropic: Updated Responsible Scaling Policy</R>
+- <R id="91ca6b1425554e9a">AI Lab Watch: Commitments Tracker</R>
+- <R id="c7bf226bdc483bf6">Seoul Summit Frontier AI Safety Commitments</R>

@@ -13,7 +13,7 @@ lastEdited: "2025-12-27"
 importance: 82.5
 llmSummary: "Systematic framework quantifying how AI risks interact through synergistic, antagonistic, and cascading effects, finding that 15-25% of risk pairs strongly interact and portfolio risk is 2x higher than linear estimates. Identifies high-leverage multi-risk interventions (racing coordination, authentication infrastructure, antitrust) offering 2-5x better ROI than single-risk approaches."
 ---
-import { DataInfoBox, Backlinks } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="risk-interaction-matrix" ratings={frontmatter.ratings} />
 
@@ -21,7 +21,7 @@ import { DataInfoBox, Backlinks } from '../../../../components/wiki';
 
 AI risks don't exist in isolation—they interact through complex feedback loops, amplifying effects, and cascading failures. The **Risk Interaction Matrix Model** provides a systematic framework for analyzing these interdependencies across [accident risks](/knowledge-base/risks/accident/), [misuse risks](/knowledge-base/risks/misuse/), [epistemic risks](/knowledge-base/risks/epistemic/), and [structural risks](/knowledge-base/risks/structural/).
 
-Research by [RAND Corporation](https://www.rand.org/pubs/research_reports/RRA2977-1.html) and [Centre for AI Safety](https://www.safe.ai/) suggests that **linear risk assessment dramatically underestimates total portfolio risk by 50-150%** when interaction effects are ignored. The model identifies 15-25% of risk pairs as having strong interactions (coefficient >0.5), with compounding effects often dominating simple additive models.
+Research by <R id="73c1b835c41bcbdb">RAND Corporation</R> and <R id="a306e0b63bdedbd5">Centre for AI Safety</R> suggests that **linear risk assessment dramatically underestimates total portfolio risk by 50-150%** when interaction effects are ignored. The model identifies 15-25% of risk pairs as having strong interactions (coefficient >0.5), with compounding effects often dominating simple additive models.
 
 Key finding: Multi-risk interventions targeting interaction hubs offer **2-5x better return on investment** than single-risk approaches, fundamentally reshaping optimal resource allocation for AI safety.
 
@@ -49,12 +49,12 @@ Key finding: Multi-risk interventions targeting interaction hubs offer **2-5x be
 
 | Risk A | Risk B | Type | Coefficient | Mechanism | Evidence Quality |
 |--------|--------|------|------------|-----------|------------------|
-| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | + | +1.4 to +1.8 | Speed pressure reduces safety verification by 40-60% | Medium |
-| [Authentication Collapse](/knowledge-base/risk-factors/authentication-collapse/) | [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) | C | +0.9 to +1.5 | Deepfake proliferation destroys information credibility | High |
-| [Economic Disruption](/knowledge-base/risk-factors/economic-disruption/) | [Multipolar Trap](/knowledge-base/risk-factors/multipolar-trap/) | + | +0.7 to +1.3 | Job losses fuel nationalism, reduce cooperation | High (historical) |
-| [Bioweapons AI-Uplift](/knowledge-base/models/bioweapons-ai-uplift/) | [Proliferation](/knowledge-base/risk-factors/proliferation/) | T | +1.6 to +2.2 | Open models enable 10-100x cost reduction | Low-Medium |
-| [Authoritarian Tools](/knowledge-base/risks/misuse/authoritarian-tools/) | [Winner-Take-All](/knowledge-base/risk-factors/winner-take-all/) | + | +1.1 to +1.7 | AI surveillance enables control concentration | Medium |
-| [Cyberweapons Automation](/knowledge-base/models/cyberweapons-attack-automation/) | [Flash Dynamics](/knowledge-base/risk-factors/flash-dynamics/) | C | +1.4 to +2.1 | Automated attacks create systemic vulnerabilities | Medium |
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | + | +1.4 to +1.8 | Speed pressure reduces safety verification by 40-60% | Medium |
+| [Authentication Collapse](/knowledge-base/risks/epistemic/authentication-collapse/) | [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) | C | +0.9 to +1.5 | Deepfake proliferation destroys information credibility | High |
+| [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) | [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) | + | +0.7 to +1.3 | Job losses fuel nationalism, reduce cooperation | High (historical) |
+| [Bioweapons AI-Uplift](/knowledge-base/models/bioweapons-ai-uplift/) | [Proliferation](/knowledge-base/risks/structural/proliferation/) | T | +1.6 to +2.2 | Open models enable 10-100x cost reduction | Low-Medium |
+| [Authoritarian Tools](/knowledge-base/risks/misuse/authoritarian-tools/) | [Winner-Take-All](/knowledge-base/risks/structural/winner-take-all/) | + | +1.1 to +1.7 | AI surveillance enables control concentration | Medium |
+| [Cyberweapons Automation](/knowledge-base/models/cyberweapons-attack-automation/) | [Flash Dynamics](/knowledge-base/risks/structural/flash-dynamics/) | C | +1.4 to +2.1 | Automated attacks create systemic vulnerabilities | Medium |
 
 ## Mathematical Framework
 
@@ -90,8 +90,8 @@ Expected amplification: 1.5-2.5x linear sum when synergies dominate
 
 | Component | Role | Interaction Strength |
 |-----------|------|-------------------|
-| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Primary driver | Hub node (7 strong connections) |
-| [Proliferation](/knowledge-base/risk-factors/proliferation/) | Amplifier | +1.3 coefficient with racing |
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Primary driver | Hub node (7 strong connections) |
+| [Proliferation](/knowledge-base/risks/structural/proliferation/) | Amplifier | +1.3 coefficient with racing |
 | Regulatory capture | Enabler | Reduces governance effectiveness by 30-50% |
 | **Net effect** | **Expanding ungoverned capability frontier** | **2.1x risk amplification** |
 
@@ -103,21 +103,21 @@ Expected amplification: 1.5-2.5x linear sum when synergies dominate
 |-----------|---------|------------------|
 | [Deepfakes](/knowledge-base/risks/misuse/deepfakes/) | Authentication failure | Threshold effect at 15-20% synthetic content |
 | [Disinformation](/knowledge-base/risks/misuse/disinformation/) | Epistemic degradation | 1.4x amplification with deepfakes |
-| [Trust Erosion](/knowledge-base/risk-factors/trust-erosion/) | Social fabric damage | Exponential decay below 40% institutional trust |
+| [Trust Erosion](/knowledge-base/risks/epistemic/trust-erosion/) | Social fabric damage | Exponential decay below 40% institutional trust |
 | **Outcome** | **Democratic dysfunction** | **System-level failure mode** |
 
-**Timeline:** [RAND analysis](https://www.rand.org/pubs/research_reports/RRA2977-1.html) suggests cascade initiation within 2-4 years if authentication tech lags deepfake advancement by >18 months.
+**Timeline:** <R id="73c1b835c41bcbdb">RAND analysis</R> suggests cascade initiation within 2-4 years if authentication tech lags deepfake advancement by >18 months.
 
 ### Cluster 3: Concentration-Control Nexus
 
 | Risk | Control Mechanism | Lock-in Potential |
 |------|------------------|------------------|
-| [Winner-Take-All](/knowledge-base/risk-factors/winner-take-all/) | Economic concentration | 3-5 dominant players globally |
+| [Winner-Take-All](/knowledge-base/risks/structural/winner-take-all/) | Economic concentration | 3-5 dominant players globally |
 | [Surveillance](/knowledge-base/risks/misuse/authoritarian-tools/) | Information asymmetry | 1000x capability gap vs individuals |
 | Regulatory capture | Legal framework control | Self-perpetuating advantage |
 | **Result** | **Irreversible power concentration** | **Democratic backsliding** |
 
-**Expert assessment:** [Anthropic research](https://www.anthropic.com/news/measuring-and-forecasting-risks-from-ai) indicates 35-55% probability of concerning concentration by 2030 without intervention.
+**Expert assessment:** <R id="4dc64a4d0b095a81">Anthropic research</R> indicates 35-55% probability of concerning concentration by 2030 without intervention.
 
 ## Strategic Intervention Analysis
 
@@ -133,12 +133,12 @@ Expected amplification: 1.5-2.5x linear sum when synergies dominate
 ### Multi-Risk Intervention Examples
 
 **International AI Racing Coordination:**
-- Primary effect: Reduces [racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) intensity by 40-60%
-- Secondary effects: Enables safety investment (+30%), reduces [proliferation](/knowledge-base/risk-factors/proliferation/) pressure (+25%), improves [alignment](/understanding-ai-risk/core-argument/alignment-difficulty/) timelines (+35%)
+- Primary effect: Reduces [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) intensity by 40-60%
+- Secondary effects: Enables safety investment (+30%), reduces [proliferation](/knowledge-base/risks/structural/proliferation/) pressure (+25%), improves [alignment](/understanding-ai-risk/core-argument/alignment-difficulty/) timelines (+35%)
 - **Total impact:** 2.3x single-risk intervention ROI
 
 **Content Authentication Standards:**
-- Primary effect: Prevents [authentication collapse](/knowledge-base/risk-factors/authentication-collapse/)
+- Primary effect: Prevents [authentication collapse](/knowledge-base/risks/epistemic/authentication-collapse/)
 - Secondary effects: Maintains epistemic foundations, preserves democratic deliberation, enables effective governance
 - **Total impact:** 1.9x single-risk intervention ROI
 
@@ -148,15 +148,15 @@ Expected amplification: 1.5-2.5x linear sum when synergies dominate
 
 | Area | Maturity | Key Organizations | Progress Indicators |
 |------|----------|------------------|-------------------|
-| Interaction modeling | Early stage | [RAND](https://www.rand.org/), [CSET](https://cset.georgetown.edu/) | 5-10 systematic analyses published |
+| Interaction modeling | Early stage | <R id="0a17f30e99091ebf">RAND</R>, <R id="f0d95954b449240a">CSET</R> | 5-10 systematic analyses published |
 | Empirical validation | Very early | [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [CHAI](/knowledge-base/organizations/safety-orgs/chai/) | Historical case studies beginning |
-| Policy applications | Nascent | [GovAI](/knowledge-base/organizations/safety-orgs/govai/), [CNAS](https://www.cnas.org/) | Framework adoption in 2-3 government analyses |
+| Policy applications | Nascent | [GovAI](/knowledge-base/organizations/safety-orgs/govai/), <R id="58f6946af0177ca5">CNAS</R> | Framework adoption in 2-3 government analyses |
 
 ### Implementation Status
 
 **Academic adoption:** 15-20% of AI risk papers now consider interaction effects, up from \<5% in 2020.
 
-**Policy integration:** [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) includes interaction considerations as of 2023 update.
+**Policy integration:** <R id="54dbc15413425997">NIST AI Risk Management Framework</R> includes interaction considerations as of 2023 update.
 
 **Industry awareness:** Major labs ([OpenAI](/knowledge-base/organizations/labs/openai/), [Anthropic](/knowledge-base/organizations/labs/anthropic/), [DeepMind](/knowledge-base/organizations/labs/deepmind/)) incorporating interaction analysis in risk assessments.
 
@@ -222,17 +222,17 @@ This demonstrates why traditional risk prioritization based on individual severi
 - [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Comprehensive risk assessment methodology
 - [Compounding Risks Analysis](/knowledge-base/models/compounding-risks-analysis/) - Detailed cascade modeling
 - [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) - Key unknowns in risk assessment
-- [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - Central hub risk detailed analysis
-- [Multipolar Trap](/knowledge-base/risk-factors/multipolar-trap/) - Related coordination failure dynamics
+- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - Central hub risk detailed analysis
+- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) - Related coordination failure dynamics
 
 ### External Resources
 
 | Category | Resource | Description |
 |----------|----------|-------------|
-| **Research papers** | [RAND AI Risk Interactions](https://www.rand.org/pubs/research_reports/RRA2977-1.html) | Foundational interaction framework |
-| **Policy frameworks** | [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) | Government risk management approach |
-| **Academic work** | [Future of Humanity Institute](https://www.fhi.ox.ac.uk/) | Existential risk interaction models |
-| **Think tanks** | [Centre for Security and Emerging Technology](https://cset.georgetown.edu/) | Technology risk assessment |
-| **Industry analysis** | [Anthropic Safety Research](https://www.anthropic.com/research) | Commercial risk interaction studies |
+| **Research papers** | <R id="73c1b835c41bcbdb">RAND AI Risk Interactions</R> | Foundational interaction framework |
+| **Policy frameworks** | <R id="54dbc15413425997">NIST AI RMF</R> | Government risk management approach |
+| **Academic work** | <R id="1593095c92d34ed8">Future of Humanity Institute</R> | Existential risk interaction models |
+| **Think tanks** | <R id="f0d95954b449240a">Centre for Security and Emerging Technology</R> | Technology risk assessment |
+| **Industry analysis** | <R id="f771d4f56ad4dbaa">Anthropic Safety Research</R> | Commercial risk interaction studies |
 
 <Backlinks />

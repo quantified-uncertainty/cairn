@@ -13,7 +13,7 @@ ratings:
 importance: 82.5
 llmSummary: "Game-theoretic analysis showing AI competition systematically drives unsafe outcomes even when actors prefer safety, with cooperation probability dropping from 81% (2 actors) to 21% (15 actors). Estimates 5-10% catastrophic lock-in risk within 3-7 years, with compute governance offering 20-35% risk reduction as highest-leverage intervention."
 ---
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="multipolar-trap-dynamics" ratings={frontmatter.ratings} />
 
@@ -29,10 +29,10 @@ The core mechanism operates as an N-player prisoner's dilemma where each actor f
 
 | Risk Factor | Severity | Likelihood (5yr) | Timeline | Trend | Evidence |
 |-------------|----------|------------------|----------|--------|----------|
-| **Competitive lock-in** | Catastrophic | 5-10% | 3-7 years | ↗ Worsening | [Safety team departures](https://www.anthropic.com/news/core-views-on-ai-safety), industry acceleration |
+| **Competitive lock-in** | Catastrophic | 5-10% | 3-7 years | ↗ Worsening | <R id="5fa46de681ff9902">Safety team departures</R>, industry acceleration |
 | **Safety investment erosion** | High | 65-80% | Ongoing | ↗ Worsening | Release cycles: 24mo → 3-6mo compression |
 | **Information sharing collapse** | Medium | 40-60% | 2-5 years | ↔ Stable (poor) | Limited inter-lab safety research sharing |
-| **Regulatory arbitrage** | Medium | 50-70% | 2-4 years | ↗ Increasing | [Industry lobbying](https://www.politico.com/news/2023/06/22/ai-industry-lobbying-surge-00102983) against binding standards |
+| **Regulatory arbitrage** | Medium | 50-70% | 2-4 years | ↗ Increasing | <R id="34469a08fb038984">Industry lobbying</R> against binding standards |
 | **Trust cascade failure** | High | 30-45% | 1-3 years | ↗ Concerning | Public accusations, agreement violations |
 
 ## Game-Theoretic Framework
@@ -84,16 +84,16 @@ Critical insight: coordination difficulty scales exponentially with participant 
 | **Release timeline compression** | 18-24 months | 3-6 months | 5 | ↔ Stabilized (compressed) |
 | **Safety commitment credibility** | High stated intentions | Declining follow-through | 4 | ↗ Deteriorating |
 | **Information sharing** | Limited | Minimal between competitors | 4 | ↔ Persistently poor |
-| **Regulatory resistance** | Moderate | [Extensive lobbying](https://www.reuters.com/technology/tech-giants-push-back-against-ai-regulation-2023-05-17/) | 3 | ↔ Stable |
+| **Regulatory resistance** | Moderate | <R id="20b4e2fea8c39488">Extensive lobbying</R> | 3 | ↔ Stable |
 
 ### Historical Timeline: Deployment Speed Cascade
 
 | Date | Event | Competitive Response | Safety Impact |
 |------|-------|---------------------|---------------|
-| **Nov 2022** | [ChatGPT launch](https://openai.com/blog/chatgpt) | Industry-wide acceleration | Testing windows shortened |
-| **Feb 2023** | [Google's rushed Bard launch](https://blog.google/technology/ai/bard-google-ai-search-updates/) | Demo errors signal quality compromise | Safety testing sacrificed |
-| **Mar 2023** | [Anthropic Claude release](https://www.anthropic.com/news/introducing-claude) | Matches accelerated timeline | Constitutional AI insufficient buffer |
-| **Jul 2023** | [Meta Llama 2 open-source](https://ai.meta.com/llama/) | Capability diffusion escalation | Open weights proliferation |
+| **Nov 2022** | <R id="5d0c50035bac37ed">ChatGPT launch</R> | Industry-wide acceleration | Testing windows shortened |
+| **Feb 2023** | <R id="ad5a96cbc53d3240">Google's rushed Bard launch</R> | Demo errors signal quality compromise | Safety testing sacrificed |
+| **Mar 2023** | <R id="f5041642fb213c07">Anthropic Claude release</R> | Matches accelerated timeline | Constitutional AI insufficient buffer |
+| **Jul 2023** | <R id="69c685f410104791">Meta Llama 2 open-source</R> | Capability diffusion escalation | Open weights proliferation |
 
 <Mermaid client:load chart={`flowchart TD
     A[ChatGPT Success] --> B[Competitor Panic]
@@ -113,7 +113,7 @@ Critical insight: coordination difficulty scales exponentially with participant 
 
 **Current Evidence:**
 - Safety teams comprise \<5% of headcount at major labs despite stated priorities
-- [OpenAI's departures](https://www.vox.com/future-perfect/2024/5/17/24158478/openai-departures-sam-altman-employees-ethics-safety) from safety leadership citing resource constraints
+- <R id="a9d4263acec736d0">OpenAI's departures</R> from safety leadership citing resource constraints
 - Industry-wide pattern of safety commitments without proportional resource allocation
 
 **Equilibrium:** Minimal safety investment at reputation-protection threshold, well below individually optimal levels.
@@ -123,7 +123,7 @@ Critical insight: coordination difficulty scales exponentially with participant 
 **Mechanism:** Sharing safety insights helps competitors avoid mistakes but also enhances their competitive position.
 
 **Manifestation:**
-- [Frontier Model Forum](https://www.frontiermodeIforum.org/) produces limited concrete sharing despite stated goals
+- <R id="01f718ecb2210e25">Frontier Model Forum</R> produces limited concrete sharing despite stated goals
 - Proprietary safety research treated as competitive advantage
 - Delayed, partial publication of safety findings
 
@@ -143,7 +143,7 @@ Critical insight: coordination difficulty scales exponentially with participant 
 **Structure:** Each actor benefits from others accepting regulation while remaining unregulated themselves.
 
 **Evidence:**
-- Coordinated [industry lobbying](https://www.politico.com/news/2023/06/22/ai-industry-lobbying-surge-00102983) against specific AI Act provisions
+- Coordinated <R id="34469a08fb038984">industry lobbying</R> against specific AI Act provisions
 - Regulatory arbitrage threats to relocate development
 - Voluntary commitments offered as alternative to binding regulation
 
@@ -153,11 +153,11 @@ Critical insight: coordination difficulty scales exponentially with participant 
 
 | Mechanism | Implementation Difficulty | Effectiveness If Successful | Current Status | Timeline |
 |-----------|--------------------------|----------------------------|----------------|----------|
-| **[Compute governance](/knowledge-base/responses/governance/compute-governance/)** | High | 20-35% risk reduction | [Export controls](https://www.bis.doc.gov/index.php/policy-guidance/product-guidance/25-new-controls-on-emerging-technology/1674-commerce-controls-certain-emerging-technologies) only | 2-5 years |
-| **Binding international framework** | Very High | 25-40% risk reduction | [Non-existent](https://www.un.org/en/ai-advisory-body) | 5-15 years |
-| **Verified industry agreements** | High | 15-30% risk reduction | [Weak voluntary](https://www.whitehouse.gov/briefing-room/statements-releases/2023/07/21/fact-sheet-biden-harris-administration-secures-voluntary-commitments-from-leading-artificial-intelligence-companies-to-manage-the-risks-posed-by-ai/) | 2-5 years |
+| **[Compute governance](/knowledge-base/responses/governance/compute-governance/)** | High | 20-35% risk reduction | <R id="0748954ed8e210a3">Export controls</R> only | 2-5 years |
+| **Binding international framework** | Very High | 25-40% risk reduction | <R id="2aa5bb51da378b79">Non-existent</R> | 5-15 years |
+| **Verified industry agreements** | High | 15-30% risk reduction | <R id="d6d8d74ef87d7711">Weak voluntary</R> | 2-5 years |
 | **Liability frameworks** | Medium-High | 15-25% risk reduction | Minimal precedent | 3-10 years |
-| **Safety consortia** | Medium | 10-20% risk reduction | [Emerging](https://www.mlsafety.org/) | 1-3 years |
+| **Safety consortia** | Medium | 10-20% risk reduction | <R id="48fda4293ccad420">Emerging</R> | 1-3 years |
 
 ### Critical Success Factors
 
@@ -174,9 +174,9 @@ Critical insight: coordination difficulty scales exponentially with participant 
 
 Compute governance offers the highest-leverage intervention because:
 
-1. **Physical chokepoint:** Advanced chips concentrated in [few manufacturers](https://www.semiconductors.org/global-semiconductor-alliance-releases-2023-global-semiconductor-industry-outlook/)
+1. **Physical chokepoint:** Advanced chips concentrated in <R id="287d9e70566dcf26">few manufacturers</R>
 2. **Verification capability:** Compute usage more observable than safety research
-3. **Cross-border enforcement:** [Export controls](https://www.commerce.gov/news/press-releases/2022/10/commerce-implements-new-export-controls-advanced-computing-and) already operational
+3. **Cross-border enforcement:** <R id="52e78ce64cda0297">Export controls</R> already operational
 
 **Implementation barriers:** International coordination, private cloud monitoring, enforcement capacity scaling.
 
@@ -248,7 +248,7 @@ The model assumes:
 |--------|----------------|-----------|-----------------|
 | **Compute** | Mandatory reporting thresholds | Regulatory requirement | 15-25% risk reduction |
 | **Liability** | AI harm attribution standards | Legal framework | 10-20% risk reduction |
-| **International** | [G7/G20 coordination working groups](https://www.g7italy.it/en/artificial-intelligence/) | Diplomatic process | 5-15% risk reduction |
+| **International** | <R id="27f9f4df2e239b40">G7/G20 coordination working groups</R> | Diplomatic process | 5-15% risk reduction |
 | **Industry** | Verified safety commitments | Self-regulation | 5-10% risk reduction |
 
 The multipolar trap represents one of the most tractable yet critical aspects of [AI governance](/knowledge-base/responses/governance/), requiring immediate attention to structural solutions rather than voluntary approaches.
@@ -265,8 +265,8 @@ The multipolar trap represents one of the most tractable yet critical aspects of
 
 | Source | Key Contribution | URL |
 |--------|------------------|-----|
-| Dafoe, A. (2018) | AI Governance research agenda | [Future of Humanity Institute](https://www.fhi.ox.ac.uk/govai-agenda/) |
-| Askell, A. et al. (2019) | Cooperation in AI development | [arXiv:1906.01820](https://arxiv.org/abs/1906.01820) |
+| Dafoe, A. (2018) | AI Governance research agenda | <R id="3d9f335ddbdd4409">Future of Humanity Institute</R> |
+| Askell, A. et al. (2019) | Cooperation in AI development | <R id="c4858d4ef280d8e6">arXiv:1906.01820</R> |
 | Schelling, T. (1960) | Strategy of Conflict foundations | Harvard University Press |
 | Axelrod, R. (1984) | Evolution of Cooperation | Basic Books |
 
@@ -274,17 +274,17 @@ The multipolar trap represents one of the most tractable yet critical aspects of
 
 | Organization | Focus | URL |
 |--------------|-------|-----|
-| [Centre for AI Safety](https://www.safe.ai/) | Technical safety research | https://www.safe.ai/ |
+| <R id="a306e0b63bdedbd5">Centre for AI Safety</R> | Technical safety research | https://www.safe.ai/ |
 | [AI Safety Institute (UK)](/knowledge-base/organizations/government/uk-aisi/) | Government safety evaluation | https://www.aisi.gov.uk/ |
-| [Frontier Model Forum](https://www.frontiermodeIforum.org/) | Industry coordination | https://www.frontiermodeIforum.org/ |
-| [Partnership on AI](https://www.partnershiponai.org/) | Multi-stakeholder collaboration | https://www.partnershiponai.org/ |
+| <R id="01f718ecb2210e25">Frontier Model Forum</R> | Industry coordination | https://www.frontiermodeIforum.org/ |
+| <R id="0e7aef26385afeed">Partnership on AI</R> | Multi-stakeholder collaboration | https://www.partnershiponai.org/ |
 
 ### Contemporary Analysis
 
 | Source | Analysis Type | URL |
 |--------|---------------|-----|
-| [AI Index Report 2024](https://aiindex.stanford.edu/) | Industry metrics | https://aiindex.stanford.edu/ |
-| [State of AI Report](https://www.stateof.ai/) | Technical progress tracking | https://www.stateof.ai/ |
-| [RAND AI Risk Assessment](https://www.rand.org/topics/artificial-intelligence.html) | Policy analysis | https://www.rand.org/topics/artificial-intelligence.html |
+| <R id="31dad9e35ad0b5d3">AI Index Report 2024</R> | Industry metrics | https://aiindex.stanford.edu/ |
+| <R id="f09a58f2760fb69b">State of AI Report</R> | Technical progress tracking | https://www.stateof.ai/ |
+| <R id="cf5fd74e8db11565">RAND AI Risk Assessment</R> | Policy analysis | https://www.rand.org/topics/artificial-intelligence.html |
 
 <Backlinks />

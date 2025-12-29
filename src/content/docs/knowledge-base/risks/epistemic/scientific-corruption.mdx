@@ -8,8 +8,9 @@ quality: 82
 llmSummary: "Comprehensive analysis documenting the scale of AI-enabled scientific fraud (300,000+ fake papers, ~2% of submissions from paper mills) and projecting potential epistemic collapse by 2027-2030 if detection capacity doesn't improve. Quantifies impacts across medical research, policy, and research ecosystems with detailed evidence tables and timelines."
 lastEdited: "2025-12-24"
 importance: 62.5
+causalLevel: "outcome"
 ---
-import {DataInfoBox, KeyQuestions, R} from '../../../../components/wiki';
+import {DataInfoBox, KeyQuestions, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="scientific-corruption" />
 
@@ -37,18 +38,18 @@ The implications extend far beyond academia: corrupted medical research could le
 
 | Metric | Current State | Source |
 |--------|---------------|--------|
-| Paper mill submissions | ~2% of some journal submissions | [Byrne & Christopher (2020)](https://www.nature.com/articles/d41586-020-01363-9) |
-| Estimated fake papers | 300,000+ in literature | [Cabanac et al. (2022)](https://arxiv.org/abs/2207.10830) |
-| Image manipulation | 3.8% of biomedical papers | [Bik et al. (2016)](https://mbio.asm.org/content/7/3/e00809-16) |
-| Retractions (2022) | 5,500+ papers | [Retraction Watch](https://retractionwatch.com/retraction-watch-database/) |
+| Paper mill submissions | ~2% of some journal submissions | <R id="cf34f1e4655eb38e">Byrne & Christopher (2020)</R> |
+| Estimated fake papers | 300,000+ in literature | <R id="dfae5307f40ea28e">Cabanac et al. (2022)</R> |
+| Image manipulation | 3.8% of biomedical papers | <R id="69ae4c89bdd47c32">Bik et al. (2016)</R> |
+| Retractions (2022) | 5,500+ papers | <R id="ff15d9afd7d1454e">Retraction Watch</R> |
 
 ### AI-Enabled Fraud Detection
 
 | Type | Detection Rate | Challenge |
 |------|----------------|-----------|
-| **Tortured phrases** | 863,000+ papers flagged | [Problematic Paper Screener](https://dalmeet.github.io/Post_Problematic_Paper_Screener/) |
+| **Tortured phrases** | 863,000+ papers flagged | <R id="fa68ad15144e1be0">Problematic Paper Screener</R> |
 | **Synthetic images** | Growing undetected rate | AI-generated images improving rapidly |
-| **ChatGPT content** | ~1% of ArXiv submissions | [Detection tools unreliable](https://www.nature.com/articles/d41586-023-00056-7) |
+| **ChatGPT content** | ~1% of ArXiv submissions | <R id="bdafdb8bd5a0332e">Detection tools unreliable</R> |
 | **Fake peer reviews** | Unknown scale | Recently discovered at major venues |
 
 ## Attack Vectors & Mechanisms
@@ -76,7 +77,7 @@ The implications extend far beyond academia: corrupted medical research could le
 
 ### Vector 3: Preprint Flooding
 
-[Preprint servers](https://arxiv.org) have minimal review processes, making them vulnerable:
+<R id="28bacb8b68411b9d">Preprint servers</R> have minimal review processes, making them vulnerable:
 
 - **ArXiv**: ~200,000 papers/year, minimal screening
 - **medRxiv**: Medical preprints, used by media/policymakers
@@ -119,9 +120,9 @@ The implications extend far beyond academia: corrupted medical research could le
 
 | Tool | Capability | Limitations |
 |------|------------|-------------|
-| **[Problematic Paper Screener](https://dalmeet.github.io/Post_Problematic_Paper_Screener/)** | Tortured phrase detection | Arms race; AI improving |
-| **[ImageTwin](https://www.imagetwin.org/)** | Image duplication detection | Limited to exact/near-exact matches |
-| **[Statcheck](http://statcheck.io/)** | Statistical inconsistency detection | Only catches simple errors |
+| **<R id="fa68ad15144e1be0">Problematic Paper Screener</R>** | Tortured phrase detection | Arms race; AI improving |
+| **<R id="67a6d75fce68e8cc">ImageTwin</R>** | Image duplication detection | Limited to exact/near-exact matches |
+| **<R id="97b88dfac9a8d647">Statcheck</R>** | Statistical inconsistency detection | Only catches simple errors |
 | **AI detection tools** | Content authenticity | High false positive rates |
 
 ### Detection Effectiveness
@@ -137,8 +138,8 @@ The implications extend far beyond academia: corrupted medical research could le
 
 | Organization | Response | Status |
 |-------------|----------|--------|
-| **[Committee on Publication Ethics (COPE)](https://publicationethics.org/)** | Fraud guidelines | Voluntary adoption |
-| **[Retraction Watch](https://retractionwatch.com/)** | Fraud monitoring | Post-publication only |
+| **<R id="291cd0c9eec553a5">Committee on Publication Ethics (COPE)</R>** | Fraud guidelines | Voluntary adoption |
+| **<R id="d702ac58a141c56c">Retraction Watch</R>** | Fraud monitoring | Post-publication only |
 | **Major journals** | Enhanced screening | Insufficient for AI fraud |
 | **Funding agencies** | Data sharing requirements | Easy to circumvent |
 
@@ -194,7 +195,7 @@ The implications extend far beyond academia: corrupted medical research could le
 This risk intersects with several other [epistemic risks](/knowledge-base/risks/epistemic/):
 
 - **[Epistemic collapse](/knowledge-base/risks/epistemic/epistemic-collapse/)**: Scientific corruption could trigger broader epistemic system failure
-- **[Expertise atrophy](/knowledge-base/risk-factors/expertise-atrophy/)**: Researchers may lose skills if AI does the work
+- **[Expertise atrophy](/knowledge-base/risks/epistemic/expertise-atrophy/)**: Researchers may lose skills if AI does the work
 - **[Trust cascade](/knowledge-base/risks/epistemic/trust-cascade/)**: Scientific fraud could undermine trust in all expertise
 
 ## Sources & Resources
@@ -203,34 +204,34 @@ This risk intersects with several other [epistemic risks](/knowledge-base/risks/
 
 | Organization | Focus | Key Resource |
 |-------------|-------|--------------|
-| **[Retraction Watch](https://retractionwatch.com/)** | Fraud monitoring | [Database of 38,000+ retractions](https://retractionwatch.com/retraction-watch-database/) |
-| **[Committee on Publication Ethics](https://publicationethics.org/)** | Publishing ethics | [Fraud detection guidelines](https://publicationethics.org/guidance) |
-| **[For Better Science](https://forbetterscience.com/)** | Fraud investigation | Independent fraud research |
-| **[PubPeer](https://pubpeer.com/)** | Post-publication review | Community-driven quality control |
+| **<R id="d702ac58a141c56c">Retraction Watch</R>** | Fraud monitoring | <R id="ff15d9afd7d1454e">Database of 38,000+ retractions</R> |
+| **<R id="291cd0c9eec553a5">Committee on Publication Ethics</R>** | Publishing ethics | <R id="c291a0480fc0ddd1">Fraud detection guidelines</R> |
+| **<R id="8b0afd74cd3ed388">For Better Science</R>** | Fraud investigation | Independent fraud research |
+| **<R id="da6c265284f38c4b">PubPeer</R>** | Post-publication review | Community-driven quality control |
 
 ### Key Academic Research
 
 | Study | Findings | Source |
 |-------|----------|--------|
-| **Fanelli (2009)** | 2% scientists admit fabrication | [PLOS ONE](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0005738) |
-| **Cabanac et al. (2022)** | 300,000+ fake papers estimated | [arXiv](https://arxiv.org/abs/2207.10830) |
-| **Ioannidis (2005)** | "Why Most Research Findings Are False" | [PLOS Medicine](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124) |
-| **Bik et al. (2016)** | 3.8% image manipulation rate | [mBio](https://mbio.asm.org/content/7/3/e00809-16) |
+| **Fanelli (2009)** | 2% scientists admit fabrication | <R id="5c74d4535ae71c83">PLOS ONE</R> |
+| **Cabanac et al. (2022)** | 300,000+ fake papers estimated | <R id="dfae5307f40ea28e">arXiv</R> |
+| **Ioannidis (2005)** | "Why Most Research Findings Are False" | <R id="1734a20e751ebd1b">PLOS Medicine</R> |
+| **Bik et al. (2016)** | 3.8% image manipulation rate | <R id="69ae4c89bdd47c32">mBio</R> |
 
 ### Detection & Monitoring Tools
 
 | Tool | Function | Access |
 |------|----------|--------|
-| **[Problematic Paper Screener](https://dalmeet.github.io/Post_Problematic_Paper_Screener/)** | Tortured phrase detection | Public database |
-| **[ImageTwin](https://www.imagetwin.org/)** | Image duplication | Web interface |
-| **[Statcheck](http://statcheck.io/)** | Statistical consistency | R package |
-| **[Crossref Event Data](https://www.crossref.org/services/event-data/)** | Citation monitoring | API access |
+| **<R id="fa68ad15144e1be0">Problematic Paper Screener</R>** | Tortured phrase detection | Public database |
+| **<R id="67a6d75fce68e8cc">ImageTwin</R>** | Image duplication | Web interface |
+| **<R id="97b88dfac9a8d647">Statcheck</R>** | Statistical consistency | R package |
+| **<R id="a673ce8fbe736eba">Crossref Event Data</R>** | Citation monitoring | API access |
 
 ### Policy & Guidelines
 
 | Resource | Organization | Focus |
 |----------|--------------|--------|
-| **[COPE Guidelines](https://publicationethics.org/guidance)** | Committee on Publication Ethics | Publisher guidance |
-| **[Singapore Statement](https://wcrif.org/guidance/singapore-statement)** | World Conference on Research Integrity | Research integrity principles |
-| **[NIH Guidelines](https://grants.nih.gov/grants/research_integrity/research_misconduct.htm)** | National Institutes of Health | US federal research standards |
-| **[EU Code of Conduct](https://ec.europa.eu/research/participants/data/ref/h2020/other/hi/h2020-ethics_code-of-conduct_en.pdf)** | European Commission | Research integrity framework |
+| **<R id="c291a0480fc0ddd1">COPE Guidelines</R>** | Committee on Publication Ethics | Publisher guidance |
+| **<R id="3d0e2410fcdc0976">Singapore Statement</R>** | World Conference on Research Integrity | Research integrity principles |
+| **<R id="e73f53ac06daa75a">NIH Guidelines</R>** | National Institutes of Health | US federal research standards |
+| **<R id="03ec238763a621f9">EU Code of Conduct</R>** | European Commission | Research integrity framework |

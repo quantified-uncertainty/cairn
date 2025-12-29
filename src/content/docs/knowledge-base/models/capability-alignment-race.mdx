@@ -12,6 +12,8 @@ ratings:
 importance: 82.5
 llmSummary: "Quantitative model tracking the widening gap between AI capabilities (advancing 10-15% annually via 10²⁶ FLOP scaling) and alignment readiness (15% interpretability coverage, 30% oversight maturity), currently ~3 years with gap increasing 0.5 years annually. Maps causal relationships between compute scaling, economic pressure ($500B annually), governance effectiveness (~25%), and x-risk through interactive graph with 16+ quantified nodes."
 ---
+import {R} from '../../../../components/wiki';
+
 import CauseEffectGraph from '../../../../components/CauseEffectGraph';
 
 <style>{`
@@ -429,10 +431,10 @@ The model tracks how frontier compute (currently 10²⁶ FLOP for largest traini
 
 | Component | Current State | Growth Rate | 2027 Projection | Source |
 |-----------|---------------|-------------|------------------|--------|
-| Training compute | 10²⁶ FLOP | 4x/year | 10²⁸ FLOP | [Epoch AI](https://epochai.org/blog/trends-in-machine-learning-hardware) |
-| Algorithmic efficiency | 2x 2024 baseline | 1.5x/year | 3.4x baseline | [Erdil & Besiroglu (2023)](https://arxiv.org/abs/2307.09793) |
-| Performance (MMLU) | 89% | +8pp/year | >95% | [Anthropic](https://www.anthropic.com/news/claude-3-family) |
-| Frontier lab lead | 6 months | Stable | 3-6 months | [RAND](https://www.rand.org/pubs/research_reports/RRA2680-1.html) |
+| Training compute | 10²⁶ FLOP | 4x/year | 10²⁸ FLOP | <R id="2efa03ce0d906d78">Epoch AI</R> |
+| Algorithmic efficiency | 2x 2024 baseline | 1.5x/year | 3.4x baseline | <R id="6c2f85e163e0c4a4">Erdil & Besiroglu (2023)</R> |
+| Performance (MMLU) | 89% | +8pp/year | >95% | <R id="a2cf0d0271acb097">Anthropic</R> |
+| Frontier lab lead | 6 months | Stable | 3-6 months | <R id="0532c540957038e6">RAND</R> |
 
 ### Alignment Lag
 
@@ -453,7 +455,7 @@ Economic value drives rapid deployment, creating misalignment between safety nee
 | Military competition | 0.6/1.0 intensity | Increasing | 0.8/1.0 | Arms control treaties |
 | Lab competition | 6 month lead | Shortening | 3 month lead | Industry coordination |
 
-Quote from [Paul Christiano](https://www.alignmentforum.org/users/paulfchristiano): "The core challenge is that capabilities are advancing faster than our ability to align them. If this gap continues to widen, we'll be in serious trouble."
+Quote from <R id="ebb2f8283d5a6014">Paul Christiano</R>: "The core challenge is that capabilities are advancing faster than our ability to align them. If this gap continues to widen, we'll be in serious trouble."
 
 ## Current State & Trajectory
 
@@ -475,7 +477,7 @@ The race is in a critical phase with capabilities accelerating faster than align
 | Governance strength | 0.25/1.0 | 0.4/1.0 | 0.6/1.0 | Improving |
 | Warning shot probability | 15%/year | 20%/year | 25%/year | Increasing |
 
-Based on [Metaculus forecasts](https://www.metaculus.com/questions/3479/date-of-artificial-general-intelligence/) and expert surveys from [AI Impacts](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/).
+Based on <R id="8fef0d8c902de618">Metaculus forecasts</R> and expert surveys from <R id="38eba87d0a888e2e">AI Impacts</R>.
 
 ### Potential Turning Points
 
@@ -498,9 +500,9 @@ Critical junctures that could alter trajectories:
 
 ### Governance Questions
 
-- **Regulatory capture**: Will AI labs co-opt government oversight? [CNAS analysis](https://www.cnas.org/publications/reports/regulating-artificial-intelligence) suggests 40% risk
-- **International coordination**: Can major powers cooperate on AI safety? [RAND assessment](https://www.rand.org/pubs/research_reports/RRA2680-1.html) shows limited progress
-- **Democratic response**: Will public concern drive effective policy? Polling shows [growing awareness](https://www.pewresearch.org/internet/2023/02/15/americans-largely-positive-about-increased-use-of-artificial-intelligence/) but uncertain translation to action
+- **Regulatory capture**: Will AI labs co-opt government oversight? <R id="5cde1bae73096dd7">CNAS analysis</R> suggests 40% risk
+- **International coordination**: Can major powers cooperate on AI safety? <R id="0532c540957038e6">RAND assessment</R> shows limited progress
+- **Democratic response**: Will public concern drive effective policy? Polling shows <R id="6b09f789e606b1d2">growing awareness</R> but uncertain translation to action
 
 ### Strategic Cruxes
 
@@ -521,7 +523,7 @@ Core disagreements among experts on [alignment difficulty](/understanding-ai-ris
 | **2028** | Recursive self-improvement | Deception detection tools | Compute governance regime |
 | **2030** | Transformative AI deployment | Mature alignment stack | Global coordination framework |
 
-Based on [Metaculus community predictions](https://www.metaculus.com/questions/3479/date-of-artificial-general-intelligence/) and [Future of Humanity Institute surveys](https://www.fhi.ox.ac.uk/wp-content/uploads/Policymakers-Brief-Advanced-AI-Risk.pdf).
+Based on <R id="8fef0d8c902de618">Metaculus community predictions</R> and <R id="9e229de82a60bdc2">Future of Humanity Institute surveys</R>.
 
 ## Resource Requirements & Strategic Investments
 
@@ -551,8 +553,8 @@ Leading efforts to address the capability-alignment gap:
 
 This model connects to several other risk analyses:
 
-- [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/): How competition accelerates capability development
-- [Multipolar Trap](/knowledge-base/risk-factors/multipolar-trap/): Coordination failures in competitive environments  
+- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/): How competition accelerates capability development
+- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/): Coordination failures in competitive environments  
 - [Warning Signs](/understanding-ai-risk/core-argument/warning-signs/): Indicators of dangerous capability-alignment gaps
 - [Takeoff Dynamics](/understanding-ai-risk/core-argument/takeoff/): Speed of AI development and adaptation time
 
@@ -567,6 +569,6 @@ The model also informs key debates:
 
 | Study | Key Finding | Citation |
 |-------|------------|----------|
-| Scaling Laws | Compute-capability relationship | [Kaplan et al. (2020)](https://arxiv.org/abs/2001.08361) |
-| Alignment Tax Analysis | Safety overhead quantification | [Kenton et al. (2021)](https://arxiv.org/abs/2109.07958) |
+| Scaling Laws | Compute-capability relationship | <R id="85f66a6419d173a7">Kaplan et al. (2020)</R> |
+| Alignment Tax Analysis | Safety overhead quantification | <R id="fe2a3307a3dae3e5">Kenton et al. (2021)</R> |
 | Governance Lag Study | Policy adaptation timelines | [D

@@ -8,7 +8,7 @@ llmSummary: "AI-assisted deliberation platforms like Polis and Anthropic's Const
 lastEdited: "2025-12-28"
 importance: 72.5
 ---
-import {DataInfoBox, KeyQuestions, Mermaid} from '../../../../../components/wiki';
+import {DataInfoBox, KeyQuestions, Mermaid, R} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="deliberation" />
 
@@ -16,13 +16,13 @@ import {DataInfoBox, KeyQuestions, Mermaid} from '../../../../../components/wiki
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Tractability** | Medium-High | [Polis](https://en.wikipedia.org/wiki/Pol.is) deployed in 35+ countries; [vTaiwan](https://participedia.net/method/vtaiwan) achieved 80% policy implementation rate on 26 technology issues |
-| **Scalability** | High | [EU Conference on Future of Europe](https://www.consilium.europa.eu/en/policies/conference-on-the-future-of-europe/) engaged 5+ million visitors across 27 countries; deliberations can span thousands to millions |
-| **Opinion Change Rate** | 15-35% | [Stanford deliberative polls](https://deliberation.stanford.edu/) show 18-point drops in dissatisfaction after deliberation; America in One Room found 17-point Republican shift on voting rights |
+| **Tractability** | Medium-High | <R id="778b26138faac342">Polis</R> deployed in 35+ countries; <R id="554af6334f25ba96">vTaiwan</R> achieved 80% policy implementation rate on 26 technology issues |
+| **Scalability** | High | <R id="1453c82c9ba30e00">EU Conference on Future of Europe</R> engaged 5+ million visitors across 27 countries; deliberations can span thousands to millions |
+| **Opinion Change Rate** | 15-35% | <R id="57b25f527191f46c">Stanford deliberative polls</R> show 18-point drops in dissatisfaction after deliberation; America in One Room found 17-point Republican shift on voting rights |
 | **Cost Effectiveness** | Medium | Digital platforms cost $50,000-500,000 per national deployment; citizen panels require $1-5 million including participant compensation |
-| **Manipulation Resistance** | Low-Medium | [Research shows](https://www.sciencedirect.com/science/article/pii/S0740624X25000735) AI-generated personas could exploit deliberation; "AI penalty" reduces participation willingness |
-| **Democratic Legitimacy** | Uncertain | [Studies indicate](https://journals.sagepub.com/doi/10.1177/00208345241262093) public perceptions of mini-publics vary; integration with representative democracy unclear |
-| **AI Governance Relevance** | High | [Anthropic's Constitutional AI](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) trained model on 1,094 participants' deliberated principles |
+| **Manipulation Resistance** | Low-Medium | <R id="192429705bed4c16">Research shows</R> AI-generated personas could exploit deliberation; "AI penalty" reduces participation willingness |
+| **Democratic Legitimacy** | Uncertain | <R id="076e6154ec767d11">Studies indicate</R> public perceptions of mini-publics vary; integration with representative democracy unclear |
+| **AI Governance Relevance** | High | <R id="3c862a18b467640b">Anthropic's Constitutional AI</R> trained model on 1,094 participants' deliberated principles |
 
 ## Overview
 
@@ -55,7 +55,7 @@ flowchart TD
     style INTEGRATE fill:#c8e6c9
 `} />
 
-The diagram illustrates the iterative process: participants submit statements and vote on others' statements, AI algorithms cluster similar voters and identify consensus across groups, facilitators synthesize insights, and the cycle repeats until stable recommendations emerge. Taiwan's vTaiwan platform used this approach to resolve the contentious Uber regulation debate, with [80% of issues leading to government action](https://participedia.net/method/vtaiwan).
+The diagram illustrates the iterative process: participants submit statements and vote on others' statements, AI algorithms cluster similar voters and identify consensus across groups, facilitators synthesize insights, and the cycle repeats until stable recommendations emerge. Taiwan's vTaiwan platform used this approach to resolve the contentious Uber regulation debate, with <R id="554af6334f25ba96">80% of issues leading to government action</R>.
 
 ## Core Technologies and Methodologies
 
@@ -65,21 +65,21 @@ Polis represents the most mature AI-assisted deliberation platform currently in 
 
 The visual interface displays participants as dots on a map, with similar voters clustered together and statements positioned based on the voting patterns they generate. This visualization makes polarization visible while highlighting areas of unexpected agreement. Taiwan's vTaiwan initiative used Polis to engage over 4,000 citizens in regulating Uber, ultimately producing policy recommendations that satisfied both taxi drivers and platform users by focusing on shared concerns about safety and fair competition rather than zero-sum positioning.
 
-Recent enhancements to Polis include improved natural language processing for statement clustering, real-time sentiment analysis to prevent toxic dynamics, and integration with video conferencing platforms for hybrid synchronous-asynchronous deliberation. According to [Audrey Tang](https://rebootdemocracy.ai/blog/audrey-tang-ai-democracy/), Taiwan's former Digital Minister, "Polis is quite well known in that it's a kind of social media that instead of polarizing people... it automatically drives bridge making narratives and statements."
+Recent enhancements to Polis include improved natural language processing for statement clustering, real-time sentiment analysis to prevent toxic dynamics, and integration with video conferencing platforms for hybrid synchronous-asynchronous deliberation. According to <R id="c8978a67d1900ee4">Audrey Tang</R>, Taiwan's former Digital Minister, "Polis is quite well known in that it's a kind of social media that instead of polarizing people... it automatically drives bridge making narratives and statements."
 
 ### Platform Comparison
 
 | Platform | Scale | Opinion Change | Policy Impact | Key Innovation |
 |----------|-------|----------------|---------------|----------------|
-| [Polis](https://compdemocracy.org/polis/) | 40-40,000+ participants per conversation | Variable (depends on topic) | Taiwan: 80% of 26 issues led to action | No reply button eliminates trolling; gamifies consensus |
-| [Stanford Deliberative Polling](https://deliberation.stanford.edu/) | 200-500 per event | 15-35% average | 100+ polls since 1988; informs policy worldwide | Random sampling + balanced briefings + moderated small groups |
-| [Anthropic CCAI](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) | 1,094 participants | N/A (values elicitation) | Directly incorporated into Claude training | First LLM trained on publicly deliberated principles |
-| [EU Conference Platform](https://www.consilium.europa.eu/en/policies/conference-on-the-future-of-europe/) | 5M+ visitors; 53,000 active | N/A | 49 proposals, 326 measures | 24-language multilingual synthesis; citizen panels |
-| [Taiwan Alignment Assembly](https://english.cw.com.tw/article/article.action?id=3795) | 450 citizens (2024) | Under evaluation | Shapes AI policy recommendations | Government-random-sampled, 6-hour deliberation |
+| <R id="b7a0eca58a8ad095">Polis</R> | 40-40,000+ participants per conversation | Variable (depends on topic) | Taiwan: 80% of 26 issues led to action | No reply button eliminates trolling; gamifies consensus |
+| <R id="57b25f527191f46c">Stanford Deliberative Polling</R> | 200-500 per event | 15-35% average | 100+ polls since 1988; informs policy worldwide | Random sampling + balanced briefings + moderated small groups |
+| <R id="3c862a18b467640b">Anthropic CCAI</R> | 1,094 participants | N/A (values elicitation) | Directly incorporated into Claude training | First LLM trained on publicly deliberated principles |
+| <R id="1453c82c9ba30e00">EU Conference Platform</R> | 5M+ visitors; 53,000 active | N/A | 49 proposals, 326 measures | 24-language multilingual synthesis; citizen panels |
+| <R id="b100a3b3959774d6">Taiwan Alignment Assembly</R> | 450 citizens (2024) | Under evaluation | Shapes AI policy recommendations | Government-random-sampled, 6-hour deliberation |
 
 ### Collective Constitutional AI
 
-[Anthropic's Collective Constitutional AI experiment](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) in 2023 represents a breakthrough in applying deliberation to AI governance specifically. The company partnered with the [Collective Intelligence Project](https://cip.org/) to recruit exactly **1,094 Americans** representing a demographically diverse sample across age, gender, income, and geography. Participants were screened with questions about generative AI to ensure informed engagement.
+<R id="3c862a18b467640b">Anthropic's Collective Constitutional AI experiment</R> in 2023 represents a breakthrough in applying deliberation to AI governance specifically. The company partnered with the <R id="3f5743d8ac57cf99">Collective Intelligence Project</R> to recruit exactly **1,094 Americans** representing a demographically diverse sample across age, gender, income, and geography. Participants were screened with questions about generative AI to ensure informed engagement.
 
 The experiment used Polis as its deliberation platform, where participants could vote on existing normative principles or add their own. In total, participants contributed **1,127 statements** and cast **38,252 votes** (an average of 34 votes per person). The resulting "public constitution" was then used to train a version of Claude, creating what researchers described as "one of the first instances in which members of the public have collectively directed the behavior of a language model via an online deliberation process."
 
@@ -91,13 +91,13 @@ The experiment used Polis as its deliberation platform, where participants could
 | Votes per participant | 34 (average) |
 | Demographic representation | Age, gender, income, geography balanced |
 
-The experiment revealed surprising consensus across partisan lines on many issues, with participants agreeing that AI should be helpful but not manipulative, informative but not dangerous, and respectful of human autonomy while maintaining appropriate boundaries. The [full comparison between public and Anthropic constitutions](https://www-cdn.anthropic.com/65408ee2b9c99abe53e432f300e7f43ef69fb6e4/CCAI_public_comparison_2023.pdf) is publicly available.
+The experiment revealed surprising consensus across partisan lines on many issues, with participants agreeing that AI should be helpful but not manipulative, informative but not dangerous, and respectful of human autonomy while maintaining appropriate boundaries. The <R id="cf4ee34b45b07fb0">full comparison between public and Anthropic constitutions</R> is publicly available.
 
 ### Deliberative Polling Evolution
 
-[Stanford's Deliberative Democracy Lab](https://deliberation.stanford.edu/) has conducted over 100 deliberative polls since 1988, recently incorporating AI tools to enhance traditional methodologies. The classic format involves randomly sampling citizens, providing balanced briefing materials, facilitating small-group discussions with trained moderators, and measuring opinion change through pre- and post-deliberation surveys.
+<R id="57b25f527191f46c">Stanford's Deliberative Democracy Lab</R> has conducted over 100 deliberative polls since 1988, recently incorporating AI tools to enhance traditional methodologies. The classic format involves randomly sampling citizens, providing balanced briefing materials, facilitating small-group discussions with trained moderators, and measuring opinion change through pre- and post-deliberation surveys.
 
-The [2023 America in One Room: Democratic Reform](https://deliberation.stanford.edu/news/deliberative-poll-democratic-reform-helena-and-stanford-deliberative-democracy-lab) poll, conducted in partnership with Helena and [NORC at the University of Chicago](https://www.norc.org/research/library/deliberative-poll-on-democratic-reform-from-helena-and-the-stanf.html), demonstrated substantial opinion change:
+The <R id="07ba7b86c48ea5cf">2023 America in One Room: Democratic Reform</R> poll, conducted in partnership with Helena and <R id="5fbb0b4399b747fa">NORC at the University of Chicago</R>, demonstrated substantial opinion change:
 
 | Finding | Before Deliberation | After Deliberation | Change |
 |---------|---------------------|-------------------|--------|
@@ -107,15 +107,15 @@ The [2023 America in One Room: Democratic Reform](https://deliberation.stanford.
 | Support for "everyone who wants to vote can" | 75% | 91% | +16 points |
 | Republican support for voting access | - | - | +17 points |
 
-The [August 2024 "America in One Room: The Youth Vote"](https://cddrl.fsi.stanford.edu/news/historic-america-one-room-deliberative-poll-releases-data-first-time-voters-political) poll engaged 430 first-time voters on key 2024 election issues, showing "dramatic changes in perspectives after deliberation on issues like contraceptive access, increasing the federal minimum wage, repealing the Affordable Care Act, and more."
+The <R id="f0967bd10916790f">August 2024 "America in One Room: The Youth Vote"</R> poll engaged 430 first-time voters on key 2024 election issues, showing "dramatic changes in perspectives after deliberation on issues like contraceptive access, increasing the federal minimum wage, repealing the Affordable Care Act, and more."
 
 ## Applications and Concrete Outcomes
 
 ### Digital Democracy in Taiwan
 
-[Taiwan's digital democracy initiatives](https://democracy-technologies.org/participation/consensus-building-in-taiwan/), spearheaded by former Digital Minister [Audrey Tang](https://rightlivelihood.org/the-change-makers/find-a-laureate/audrey-tang/) (2022 Right Livelihood Award laureate), have become the gold standard for government use of AI-assisted deliberation. The [vTaiwan platform](https://participedia.net/method/vtaiwan) has processed **26 national technology issues**, with **80% leading to government action**, including the notable resolution of the Uber regulation conflict that satisfied both taxi drivers and rideshare users.
+<R id="883522dd8fa98c9b">Taiwan's digital democracy initiatives</R>, spearheaded by former Digital Minister <R id="f6e20afde7545b06">Audrey Tang</R> (2022 Right Livelihood Award laureate), have become the gold standard for government use of AI-assisted deliberation. The <R id="554af6334f25ba96">vTaiwan platform</R> has processed **26 national technology issues**, with **80% leading to government action**, including the notable resolution of the Uber regulation conflict that satisfied both taxi drivers and rideshare users.
 
-In 2024, Taiwan's Ministry of Digital Affairs (moda) launched [Alignment Assemblies](https://rebootdemocracy.ai/blog/audrey-tang-ai-democracy/) in partnership with the Collective Intelligence Project, Anthropic, OpenAI, The GovLab, and the GETTING-Plurality research network. The government sent **100,000+ random invitations** via the 111 government hotline, selecting **450 citizens** through stratified sampling for a six-hour online deliberation on AI governance topics including:
+In 2024, Taiwan's Ministry of Digital Affairs (moda) launched <R id="c8978a67d1900ee4">Alignment Assemblies</R> in partnership with the Collective Intelligence Project, Anthropic, OpenAI, The GovLab, and the GETTING-Plurality research network. The government sent **100,000+ random invitations** via the 111 government hotline, selecting **450 citizens** through stratified sampling for a six-hour online deliberation on AI governance topics including:
 
 - Protecting users from AI-generated harm
 - Detecting and labeling AI content
@@ -123,7 +123,7 @@ In 2024, Taiwan's Ministry of Digital Affairs (moda) launched [Alignment Assembl
 - Making AI systems transparent
 - Implementing citizen oversight of fact-checking
 
-This represented Taiwan's largest online mini-public since it began promoting deliberative democracy in 2002. According to [Audrey Tang](https://english.cw.com.tw/article/article.action?id=3795), the approach demonstrates how "everyday citizens can co-govern AI in the context of information integrity."
+This represented Taiwan's largest online mini-public since it began promoting deliberative democracy in 2002. According to <R id="b100a3b3959774d6">Audrey Tang</R>, the approach demonstrates how "everyday citizens can co-govern AI in the context of information integrity."
 
 The COVID-19 response exemplifies the platform's effectiveness under pressure. When mask shortages emerged in early 2020, Taiwan used AI-assisted deliberation to rapidly develop a fair distribution system. Citizens proposed and refined solutions through online discussion, leading to the innovative "mask map" system that showed real-time pharmacy inventory and prevented hoarding. The deliberative process, compressed into just two weeks, produced a solution that maintained public trust throughout the pandemic.
 
@@ -137,7 +137,7 @@ The financial services industry has begun experimenting with customer deliberati
 
 ### International and Multilateral Applications
 
-The [United Nations High-level Advisory Body on AI](https://www.un.org/en/ai-advisory-body) released its final report ["Governing AI for Humanity"](https://www.un.org/sites/un2.un.org/files/governing_ai_for_humanity_final_report_en.pdf) in September 2024, recommending an Independent International Scientific Panel on AI and a Global Dialogue on AI Governance. [Connected by Data](https://connectedbydata.org/projects/2024-gca-ai) has produced an [options paper](https://connectedbydata.org/resources/global-deliberation-ai) exploring five templates for global citizen deliberation:
+The <R id="2aa5bb51da378b79">United Nations High-level Advisory Body on AI</R> released its final report <R id="5b0fdfb5ea562bd2">"Governing AI for Humanity"</R> in September 2024, recommending an Independent International Scientific Panel on AI and a Global Dialogue on AI Governance. <R id="2fc93b0bb7b612cf">Connected by Data</R> has produced an <R id="5da8a505abe8e2c4">options paper</R> exploring five templates for global citizen deliberation:
 
 1. Deliberative review of AI summits and scientific reports
 2. An independent global assembly on AI
@@ -145,7 +145,7 @@ The [United Nations High-level Advisory Body on AI](https://www.un.org/en/ai-adv
 4. Technology-enabled collective intelligence processes
 5. Commissioning AI topics in other deliberative processes
 
-The [European Union's Conference on the Future of Europe](https://www.consilium.europa.eu/en/policies/conference-on-the-future-of-europe/) (April 2021 - May 2022) represents the largest multilingual digital deliberation to date:
+The <R id="1453c82c9ba30e00">European Union's Conference on the Future of Europe</R> (April 2021 - May 2022) represents the largest multilingual digital deliberation to date:
 
 | Metric | Value |
 |--------|-------|
@@ -156,7 +156,7 @@ The [European Union's Conference on the Future of Europe](https://www.consilium.
 | Languages supported | 24 (all official EU languages) |
 | Final proposals | 49 proposals, 326 measures |
 
-The platform used [Decidim software](https://decidim.org/) (pioneered in Barcelona) with multilingual synthesis across all 24 official EU languages. The [final report](https://op.europa.eu/en/publication-detail/-/publication/e1b81f66-d7e7-11ec-a95f-01aa75ed71a1/language-en) delivered in May 2022 reflected genuine European-wide deliberation, with the 800 citizen panel members randomly selected by Kantar Public to reflect diversity in geographic region, gender, age, economic background, and educational attainment.
+The platform used <R id="827b7ad705521633">Decidim software</R> (pioneered in Barcelona) with multilingual synthesis across all 24 official EU languages. The <R id="91d4a92a9ca20400">final report</R> delivered in May 2022 reflected genuine European-wide deliberation, with the 800 citizen panel members randomly selected by Kantar Public to reflect diversity in geographic region, gender, age, economic background, and educational attainment.
 
 ## Risks Addressed
 
@@ -176,11 +176,11 @@ The primary mechanism is **legitimization**: decisions about AI development and 
 
 ### Concerning Aspects
 
-Research from the [Carnegie Endowment](https://carnegieendowment.org/research/2024/12/can-democracy-survive-the-disruptive-power-of-ai?lang=en) and the [Journal of Democracy](https://www.journalofdemocracy.org/articles/how-ai-threats-democracy/) identifies several critical risks to AI-assisted deliberation:
+Research from the <R id="087288a8d8338b97">Carnegie Endowment</R> and the <R id="ff5333016576ee2d">Journal of Democracy</R> identifies several critical risks to AI-assisted deliberation:
 
-**The "AI Penalty"**: [Recent research](https://www.sciencedirect.com/science/article/pii/S0740624X25000735) documents an "AI penalty" in deliberation: information that deliberation is AI-facilitated reduces willingness to participate, and participants expect AI-facilitated deliberation to be lower quality than human-led. This creates a new "deliberative divide" based on attitudes toward AI rather than traditional demographic factors.
+**The "AI Penalty"**: <R id="192429705bed4c16">Recent research</R> documents an "AI penalty" in deliberation: information that deliberation is AI-facilitated reduces willingness to participate, and participants expect AI-facilitated deliberation to be lower quality than human-led. This creates a new "deliberative divide" based on attitudes toward AI rather than traditional demographic factors.
 
-**Manipulation Vectors**: [Nature Human Behaviour research](https://www.nature.com/articles/s41562-025-02309-z) warns that "demos scraping"—employing AI and automated tools to continuously collect and analyze citizens' digital footprints—enables sophisticated profiling for targeted political messaging. Combined with generative AI, malicious actors can craft convincing narratives that exploit individual biases, preferences, and vulnerabilities.
+**Manipulation Vectors**: <R id="0fad76303c1e29dd">Nature Human Behaviour research</R> warns that "demos scraping"—employing AI and automated tools to continuously collect and analyze citizens' digital footprints—enables sophisticated profiling for targeted political messaging. Combined with generative AI, malicious actors can craft convincing narratives that exploit individual biases, preferences, and vulnerabilities.
 
 | Manipulation Risk | Current Status | Mitigation Options |
 |------------------|----------------|-------------------|
@@ -190,9 +190,9 @@ Research from the [Carnegie Endowment](https://carnegieendowment.org/research/20
 | Platform capture | Documented in some cases | Random sampling, participation limits |
 | Synthesis bias | Under-studied | Transparent synthesis, multiple methods |
 
-**Technosolutionism Concerns**: The [Journal of Deliberative Democracy](https://delibdemjournal.org/article/id/1839/) argues that introducing technology as a 'solution' to 'fix' democratic 'problems' may reinforce "depoliticisation and disintermediation," with some critics suggesting citizen panels can become "participatory-washing" by convening institutions.
+**Technosolutionism Concerns**: The <R id="47e2b264e2f75fd0">Journal of Deliberative Democracy</R> argues that introducing technology as a 'solution' to 'fix' democratic 'problems' may reinforce "depoliticisation and disintermediation," with some critics suggesting citizen panels can become "participatory-washing" by convening institutions.
 
-**Integration Challenges**: If deliberative outcomes contradict electoral mandates or expert judgment, the resulting confusion could undermine both deliberative and representative democracy. [Research indicates](https://journals.sagepub.com/doi/10.1177/00208345241262093) that clear frameworks for when deliberative input should be binding versus advisory remain underdeveloped.
+**Integration Challenges**: If deliberative outcomes contradict electoral mandates or expert judgment, the resulting confusion could undermine both deliberative and representative democracy. <R id="076e6154ec767d11">Research indicates</R> that clear frameworks for when deliberative input should be binding versus advisory remain underdeveloped.
 
 ### Promising Safety Features
 
@@ -246,13 +246,13 @@ International governance applications may prove transformative for addressing gl
 
 ### Legitimacy and Representativeness
 
-[A 2024 review in International Political Science Review](https://journals.sagepub.com/doi/10.1177/00208345241262093) examines the academic literature along three core challenges: conditions for deliberation to produce informed public opinion; difficulties achieving inclusiveness, representativeness, and political equality; and challenges of achieving public influence. [Research on scaling deliberative mini-publics](https://journals.sagepub.com/doi/10.1177/00323217221137444) analyzes over 10,000 respondents across 13 real-world mini-publics, finding that advisory mini-publics boosted policy knowledge evenly across many voter groups, but gains were slightly diminished for racial/ethnic minorities and some income brackets.
+<R id="076e6154ec767d11">A 2024 review in International Political Science Review</R> examines the academic literature along three core challenges: conditions for deliberation to produce informed public opinion; difficulties achieving inclusiveness, representativeness, and political equality; and challenges of achieving public influence. <R id="5bebfed0a9c5a803">Research on scaling deliberative mini-publics</R> analyzes over 10,000 respondents across 13 real-world mini-publics, finding that advisory mini-publics boosted policy knowledge evenly across many voter groups, but gains were slightly diminished for racial/ethnic minorities and some income brackets.
 
-[Belgian research (n = 1,579)](https://ejpr.onlinelibrary.wiley.com/doi/abs/10.1111/1475-6765.12639) found that respondents generally think of mini-publics as problem-solvers rather than problem-creators, but perceptions vary substantially. The fundamental question of whether deliberative platforms can achieve democratic legitimacy equivalent to elections remains unresolved.
+<R id="20cc840643f1d258">Belgian research (n = 1,579)</R> found that respondents generally think of mini-publics as problem-solvers rather than problem-creators, but perceptions vary substantially. The fundamental question of whether deliberative platforms can achieve democratic legitimacy equivalent to elections remains unresolved.
 
 ### Opinion Change Awareness
 
-[Frontiers in Political Science research](https://www.frontiersin.org/journals/political-science/articles/10.3389/fpos.2023.1300149/full) on two deliberative mini-publics (135 and 207 participants respectively) found limited awareness of opinion changes among participants. Key findings:
+<R id="81fec2ec91e85979">Frontiers in Political Science research</R> on two deliberative mini-publics (135 and 207 participants respectively) found limited awareness of opinion changes among participants. Key findings:
 
 - Participants correctly recognized opinion change when they had changed sides (positive to negative, or vice versa)
 - Participants were unable or unwilling to recognize opinion change toward more extreme viewpoints
@@ -262,9 +262,9 @@ This raises questions about whether deliberation produces genuine informed prefe
 
 ### Manipulation Resistance
 
-As deliberation platforms become more influential, they will attract more sophisticated manipulation attempts. The [DGAP AI/Democracy Initiative](https://dgap.org/en/research/programs/center-geopolitics-geoeconomics-and-technology/ai-democracy-initiative) applied quantitative and qualitative research to 2024 elections in Mexico, South Africa, India, the United States, and European Parliament elections to understand vulnerabilities. 2024 was dubbed "the biggest election year in history," serving as a test for democracy in the age of AI.
+As deliberation platforms become more influential, they will attract more sophisticated manipulation attempts. The <R id="d44a9910a7412564">DGAP AI/Democracy Initiative</R> applied quantitative and qualitative research to 2024 elections in Mexico, South Africa, India, the United States, and European Parliament elections to understand vulnerabilities. 2024 was dubbed "the biggest election year in history," serving as a test for democracy in the age of AI.
 
-[TechPolicy.Press analysis](https://www.techpolicy.press/the-uns-global-dialogue-on-ai-must-give-citizens-a-real-seat-at-the-table/) argues that the UN's Global Dialogue on AI Governance "must place local lived experiences at their heart. Unless they can meaningfully centre the voices of citizens, they risk irrelevance before they get started."
+<R id="01a32080614e53d6">TechPolicy.Press analysis</R> argues that the UN's Global Dialogue on AI Governance "must place local lived experiences at their heart. Unless they can meaningfully centre the voices of citizens, they risk irrelevance before they get started."
 
 <KeyQuestions
   questions={[
@@ -282,12 +282,12 @@ As deliberation platforms become more influential, they will attract more sophis
 
 | Organization | Focus | Key Contributions |
 |--------------|-------|-------------------|
-| [Computational Democracy Project](https://compdemocracy.org/polis/) | Polis development, algorithmic deliberation | Open-source platform used in 35+ countries |
-| [Stanford Deliberative Democracy Lab](https://deliberation.stanford.edu/) | Deliberative polling methodology | 100+ polls since 1988; opinion change research |
-| [Collective Intelligence Project](https://cip.org/) | AI governance deliberation | Partnered with Anthropic on Constitutional AI |
-| [Bennett Institute, Cambridge](https://www.bennettinstitute.cam.ac.uk/) | European digital democracy | Legitimacy and governance integration research |
-| [OECD Observatory of Public Sector Innovation](https://oecd-opsi.org/) | Best practices database | Cross-country comparison and evaluation |
-| [Participedia](https://participedia.net/) | Case study repository | 1,700+ cases of participatory processes |
+| <R id="b7a0eca58a8ad095">Computational Democracy Project</R> | Polis development, algorithmic deliberation | Open-source platform used in 35+ countries |
+| <R id="57b25f527191f46c">Stanford Deliberative Democracy Lab</R> | Deliberative polling methodology | 100+ polls since 1988; opinion change research |
+| <R id="3f5743d8ac57cf99">Collective Intelligence Project</R> | AI governance deliberation | Partnered with Anthropic on Constitutional AI |
+| <R id="1e9059c1286e56da">Bennett Institute, Cambridge</R> | European digital democracy | Legitimacy and governance integration research |
+| <R id="e7f7acbe5164b378">OECD Observatory of Public Sector Innovation</R> | Best practices database | Cross-country comparison and evaluation |
+| <R id="a870bbb5a8061ffd">Participedia</R> | Case study repository | 1,700+ cases of participatory processes |
 
 ### Funding and Policy Support
 
@@ -297,7 +297,7 @@ Private funding from technology companies has increased substantially, with Goog
 
 ### Practical Implementation Networks
 
-[Twitter/X's Community Notes](https://en.wikipedia.org/wiki/Pol.is) (formerly Birdwatch) was influenced by Polis, using similar bridging-based consensus mechanisms. The [RSA's Democracy in the Age of AI project](https://www.thersa.org/rsa-journal/democracy-in-the-age-of-ai/) explores how deliberation can address AI governance challenges in the UK context.
+<R id="778b26138faac342">Twitter/X's Community Notes</R> (formerly Birdwatch) was influenced by Polis, using similar bridging-based consensus mechanisms. The <R id="584db9c0b63c5fda">RSA's Democracy in the Age of AI project</R> explores how deliberation can address AI governance challenges in the UK context.
 
 ---
 
@@ -305,27 +305,27 @@ Private funding from technology companies has increased substantially, with Goog
 
 ### Primary Research
 
-- [Collective Constitutional AI: Aligning a Language Model with Public Input](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) - Anthropic's foundational experiment (2023)
-- [ACM FAccT 2024 Paper on CCAI](https://dl.acm.org/doi/10.1145/3630106.3658979) - Peer-reviewed academic publication
-- [Stanford Deliberative Polling Timeline](https://cdd.stanford.edu/deliberative-polling-timeline/) - 100+ polls documented
-- [America in One Room: Democratic Reform Results](https://deliberation.stanford.edu/news/deliberative-poll-democratic-reform-helena-and-stanford-deliberative-democracy-lab) - 2023 data
+- <R id="3c862a18b467640b">Collective Constitutional AI: Aligning a Language Model with Public Input</R> - Anthropic's foundational experiment (2023)
+- <R id="770bd69e2687f514">ACM FAccT 2024 Paper on CCAI</R> - Peer-reviewed academic publication
+- <R id="6f2293cccf09c113">Stanford Deliberative Polling Timeline</R> - 100+ polls documented
+- <R id="07ba7b86c48ea5cf">America in One Room: Democratic Reform Results</R> - 2023 data
 
 ### Platform Documentation
 
-- [Pol.is Technical Documentation](https://compdemocracy.org/polis/) - How the clustering algorithm works
-- [vTaiwan Participedia Entry](https://participedia.net/method/vtaiwan) - Taiwan's implementation methodology
-- [EU Conference Final Report](https://op.europa.eu/en/publication-detail/-/publication/e1b81f66-d7e7-11ec-a95f-01aa75ed71a1/language-en) - 49 proposals, 326 measures
+- <R id="b7a0eca58a8ad095">Pol.is Technical Documentation</R> - How the clustering algorithm works
+- <R id="554af6334f25ba96">vTaiwan Participedia Entry</R> - Taiwan's implementation methodology
+- <R id="91d4a92a9ca20400">EU Conference Final Report</R> - 49 proposals, 326 measures
 
 ### Critical Analysis
 
-- [Trends in Mini-Publics Research (2024)](https://journals.sagepub.com/doi/10.1177/00208345241262093) - High expectations, mixed findings
-- [The AI Penalty in Deliberation](https://www.sciencedirect.com/science/article/pii/S0740624X25000735) - New deliberative divide research
-- [Why AI Technosolutionism Harms Democracy](https://delibdemjournal.org/article/id/1839/) - Critical perspective
-- [Can Democracy Survive AI?](https://carnegieendowment.org/research/2024/12/can-democracy-survive-the-disruptive-power-of-ai?lang=en) - Carnegie Endowment analysis
+- <R id="076e6154ec767d11">Trends in Mini-Publics Research (2024)</R> - High expectations, mixed findings
+- <R id="192429705bed4c16">The AI Penalty in Deliberation</R> - New deliberative divide research
+- <R id="47e2b264e2f75fd0">Why AI Technosolutionism Harms Democracy</R> - Critical perspective
+- <R id="087288a8d8338b97">Can Democracy Survive AI?</R> - Carnegie Endowment analysis
 
 ### AI Governance Applications
 
-- [UN Governing AI for Humanity Report (2024)](https://www.un.org/sites/un2.un.org/files/governing_ai_for_humanity_final_report_en.pdf) - UN Advisory Body recommendations
-- [Global Citizen Deliberation on AI Options Paper](https://connectedbydata.org/resources/global-deliberation-ai) - Connected by Data (2024)
-- [Taiwan Alignment Assemblies](https://rebootdemocracy.ai/blog/audrey-tang-ai-democracy/) - Audrey Tang on AI governance deliberation
-- [Meta Oversight Board on AI Content Moderation](https://www.oversightboard.com/news/content-moderation-in-a-new-era-for-ai-and-automation/) - 2024 white paper
+- <R id="5b0fdfb5ea562bd2">UN Governing AI for Humanity Report (2024)</R> - UN Advisory Body recommendations
+- <R id="5da8a505abe8e2c4">Global Citizen Deliberation on AI Options Paper</R> - Connected by Data (2024)
+- <R id="c8978a67d1900ee4">Taiwan Alignment Assemblies</R> - Audrey Tang on AI governance deliberation
+- <R id="afcbd69d6b7dea3f">Meta Oversight Board on AI Content Moderation</R> - 2024 white paper

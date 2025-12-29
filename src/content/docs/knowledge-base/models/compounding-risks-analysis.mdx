@@ -13,13 +13,13 @@ ratings:
 importance: 78.5
 llmSummary: "Mathematical framework demonstrates AI risks compound through four mechanisms (multiplicative probability, severity multiplication, defense negation, nonlinear effects), with racing+deceptive alignment showing 3-8% catastrophic probability versus 4.5% baseline additive. Provides quantitative interaction coefficients (α=2-10x) showing traditional models underestimate total risk by 2-5x, enabling prioritization of compound pathway interventions."
 ---
-import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="compounding-risks-analysis" ratings={frontmatter.ratings} />
 
 ## Overview
 
-When multiple AI risks occur simultaneously, their combined impact often dramatically exceeds simple addition. This mathematical framework analyzes how [racing dynamics](/knowledge-base/risk-factors/racing-dynamics/), [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/), and [lock-in scenarios](/knowledge-base/risk-factors/irreversibility/) interact through four compounding mechanisms. The central insight: a world with three moderate risks isn't 3x as dangerous as one with a single risk—it can be 10-20x more dangerous due to multiplicative interactions.
+When multiple AI risks occur simultaneously, their combined impact often dramatically exceeds simple addition. This mathematical framework analyzes how [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/), [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/), and [lock-in scenarios](/knowledge-base/risks/structural/irreversibility/) interact through four compounding mechanisms. The central insight: a world with three moderate risks isn't 3x as dangerous as one with a single risk—it can be 10-20x more dangerous due to multiplicative interactions.
 
 Analysis of high-risk combinations reveals that racing+deceptive alignment scenarios carry 3-8% catastrophic probability, while [mesa-optimization](/knowledge-base/risks/accident/mesa-optimization/)+[scheming](/knowledge-base/risks/accident/scheming/) pathways show 2-6% existential risk. Traditional additive risk models systematically underestimate total danger by factors of 2-5x because they ignore how risks amplify each other's likelihood, severity, and defensive evasion.
 
@@ -31,7 +31,7 @@ The framework provides quantitative interaction coefficients (α values of 2-10x
 |------------------|------------------|---------------------|-------------------|------------------|
 | Racing + Deceptive Alignment | Probability multiplication | 15.8% vs 4.5% baseline | 3.5x | Medium |
 | Deceptive + Lock-in | Severity multiplication | 8% | 8-10x | Medium |
-| [Expertise Atrophy](/knowledge-base/risk-factors/expertise-atrophy/) + Corrigibility Failure | Defense negation | Variable | 3.3x | Medium-High |
+| [Expertise Atrophy](/knowledge-base/risks/epistemic/expertise-atrophy/) + Corrigibility Failure | Defense negation | Variable | 3.3x | Medium-High |
 | Mesa-opt + Scheming | Nonlinear combined | 2-6% catastrophic | Discontinuous | Medium |
 | [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) + Democratic Failure | Threshold crossing | 8-20% | Qualitative change | Low |
 
@@ -63,7 +63,7 @@ When Risk A increases the likelihood of Risk B:
 | Intense racing | 35% | 45% | 15.8% | 3.5x |
 | Extreme racing | 50% | 55% | 27.5% | 6.1x |
 
-**Mechanism**: [Racing dynamics](/knowledge-base/risk-factors/racing-dynamics/) compress safety timelines → inadequate testing → higher probability of [mesa-optimization](/knowledge-base/risks/accident/mesa-optimization/) → higher probability of [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/).
+**Mechanism**: [Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) compress safety timelines → inadequate testing → higher probability of [mesa-optimization](/knowledge-base/risks/accident/mesa-optimization/) → higher probability of [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/).
 
 ### Type 2: Severity Multiplication
 
@@ -82,7 +82,7 @@ When Risk A disables safeguards against Risk B:
 | Human Expertise Level | P(Detect Deceptive Behavior) | P(Catastrophe \| Undetected) | Total Catastrophe Risk |
 |-----------------------|-------------------------------|------------------------------|----------------------|
 | Full expertise maintained | 60% | 15% | 6% |
-| Moderate [expertise atrophy](/knowledge-base/risk-factors/expertise-atrophy/) | 35% | 30% | 19.5% (3.3x) |
+| Moderate [expertise atrophy](/knowledge-base/risks/epistemic/expertise-atrophy/) | 35% | 30% | 19.5% (3.3x) |
 | Severe expertise atrophy | 15% | 50% | 42.5% (7x) |
 
 ### Type 4: Nonlinear Combined Effects
@@ -118,11 +118,11 @@ When interactions produce qualitatively different outcomes:
 
 | Risk A | Risk B | Interaction Strength (α) | Combined Catastrophe Risk | Evidence Source |
 |--------|--------|-------------------------|--------------------------|-----------------|
-| Racing + Deceptive Alignment | 3.0-5.0 | 3-8% | [Amodei et al. (2016)](https://arxiv.org/abs/1606.06565) |
-| Deceptive + Lock-in | 5.0-10.0 | 8-15% | [Carlsmith (2021)](https://arxiv.org/abs/2108.13740) |
-| [Mesa-optimization](/knowledge-base/risks/accident/mesa-optimization/) + [Scheming](/knowledge-base/risks/accident/scheming/) | 3.0-6.0 | 2-6% | [Hubinger et al. (2019)](https://arxiv.org/abs/1906.01820) |
-| Expertise Atrophy + Corrigibility Failure | 2.0-4.0 | 5-12% | [RAND Corporation](https://www.rand.org/pubs/research_reports/RRA2747-1.html) |
-| [Concentration](/knowledge-base/risk-factors/winner-take-all/) + [Authoritarian Tools](/knowledge-base/risks/misuse/authoritarian-tools/) | 3.0-5.0 | 5-12% | [Center for AI Safety](https://www.safe.ai/) |
+| Racing + Deceptive Alignment | 3.0-5.0 | 3-8% | <R id="cd3035dbef6c7b5b">Amodei et al. (2016)</R> |
+| Deceptive + Lock-in | 5.0-10.0 | 8-15% | <R id="64ad308db00b3ce7">Carlsmith (2021)</R> |
+| [Mesa-optimization](/knowledge-base/risks/accident/mesa-optimization/) + [Scheming](/knowledge-base/risks/accident/scheming/) | 3.0-6.0 | 2-6% | <R id="c4858d4ef280d8e6">Hubinger et al. (2019)</R> |
+| Expertise Atrophy + Corrigibility Failure | 2.0-4.0 | 5-12% | <R id="eecd7c0e9ebb9cbe">RAND Corporation</R> |
+| [Concentration](/knowledge-base/risks/structural/winner-take-all/) + [Authoritarian Tools](/knowledge-base/risks/misuse/authoritarian-tools/) | 3.0-5.0 | 5-12% | <R id="a306e0b63bdedbd5">Center for AI Safety</R> |
 
 ### Three-Way Compound Scenarios
 
@@ -174,11 +174,11 @@ $$E[Risk] = 0.15(0.9) + 0.40(0.7) + 0.25(0.4) + 0.20(0.65) = 0.645$$
 
 | Indicator | Current Level | Trend | 2030 Projection | Key Evidence |
 |-----------|---------------|-------|-----------------|--------------|
-| Racing intensity | Moderate-High | ↗ Increasing | High | [AI lab competition](https://www.anthropic.com/news/core-views-on-ai-safety), [compute scaling](https://www.epochai.org/) |
-| Technical risk correlation | Medium | ↗ Increasing | Medium-High | [Mesa-optimization research](https://www.alignmentforum.org/) |
-| Lock-in pressure | Low-Medium | ↗ Increasing | Medium-High | [Market concentration](https://crfb.org/papers/national-debt-clock) |
-| Expertise preservation | Medium | ↘ Decreasing | Low-Medium | [RAND workforce analysis](https://www.rand.org/) |
-| Defensive capabilities | Medium | → Stable | Medium | [AI safety funding](https://aiimpacts.org/) |
+| Racing intensity | Moderate-High | ↗ Increasing | High | <R id="5fa46de681ff9902">AI lab competition</R>, <R id="120adc539e2fa558">compute scaling</R> |
+| Technical risk correlation | Medium | ↗ Increasing | Medium-High | <R id="2e0c662574087c2a">Mesa-optimization research</R> |
+| Lock-in pressure | Low-Medium | ↗ Increasing | Medium-High | <R id="456759f23f47ea0a">Market concentration</R> |
+| Expertise preservation | Medium | ↘ Decreasing | Low-Medium | <R id="0a17f30e99091ebf">RAND workforce analysis</R> |
+| Defensive capabilities | Medium | → Stable | Medium | <R id="3b9fda03b8be71dc">AI safety funding</R> |
 
 ### Key Trajectory Drivers
 
@@ -260,7 +260,7 @@ $$E[Risk] = 0.15(0.9) + 0.40(0.7) + 0.25(0.4) + 0.20(0.65) = 0.645$$
 
 ### Methodological Constraints
 
-**Interaction coefficient uncertainty**: α values are based primarily on expert judgment and theoretical reasoning rather than empirical measurement. Different analysts could reasonably propose coefficients differing by 2-3x, dramatically changing risk estimates. The [Center for AI Safety](https://www.safe.ai/) and [Future of Humanity Institute](https://www.fhi.ox.ac.uk/) have noted similar calibration challenges in compound risk assessment.
+**Interaction coefficient uncertainty**: α values are based primarily on expert judgment and theoretical reasoning rather than empirical measurement. Different analysts could reasonably propose coefficients differing by 2-3x, dramatically changing risk estimates. The <R id="a306e0b63bdedbd5">Center for AI Safety</R> and <R id="1593095c92d34ed8">Future of Humanity Institute</R> have noted similar calibration challenges in compound risk assessment.
 
 **Higher-order effects**: The model focuses on pairwise interactions but real catastrophic scenarios likely require 4+ simultaneous risks. The [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) suggests higher-order terms may dominate in extreme scenarios.
 
@@ -281,26 +281,26 @@ $$E[Risk] = 0.15(0.9) + 0.40(0.7) + 0.25(0.4) + 0.20(0.65) = 0.645$$
 
 | Source | Focus | Key Finding | Relevance |
 |--------|-------|-------------|-----------|
-| [Amodei et al. (2016)](https://arxiv.org/abs/1606.06565) | AI safety problems | Risk interactions in reward systems | High - foundational framework |
-| [Carlsmith (2021)](https://arxiv.org/abs/2108.13740) | Power-seeking AI | Lock-in mechanism analysis | High - severity multiplication |
-| [Hubinger et al. (2019)](https://arxiv.org/abs/1906.01820) | Mesa-optimization | Deceptive alignment pathways | High - compound technical risks |
-| [Russell (2019)](https://www.penguin.co.uk/books/301539/human-compatible-by-russell-stuart/9780241335208) | AI alignment | Compound failure modes | Medium - conceptual framework |
+| <R id="cd3035dbef6c7b5b">Amodei et al. (2016)</R> | AI safety problems | Risk interactions in reward systems | High - foundational framework |
+| <R id="64ad308db00b3ce7">Carlsmith (2021)</R> | Power-seeking AI | Lock-in mechanism analysis | High - severity multiplication |
+| <R id="c4858d4ef280d8e6">Hubinger et al. (2019)</R> | Mesa-optimization | Deceptive alignment pathways | High - compound technical risks |
+| <R id="28240d2bdf0f01d5">Russell (2019)</R> | AI alignment | Compound failure modes | Medium - conceptual framework |
 
 ### Research Organizations
 
 | Organization | Contribution | Key Publications |
 |--------------|-------------|------------------|
-| [Anthropic](https://www.anthropic.com/) | Compound risk research | [Constitutional AI](https://arxiv.org/abs/2212.08073) |
-| [Center for AI Safety](https://www.safe.ai/) | Risk interaction analysis | [AI Risk Statement](https://www.safe.ai/statement-on-ai-risk) |
-| [RAND Corporation](https://www.rand.org/) | Expertise atrophy studies | [AI Workforce Analysis](https://www.rand.org/pubs/research_reports/RRA2747-1.html) |
-| [Future of Humanity Institute](https://www.fhi.ox.ac.uk/) | Existential risk modeling | [Global Catastrophic Risks](https://www.fhi.ox.ac.uk/research/research-areas/) |
+| <R id="afe2508ac4caf5ee">Anthropic</R> | Compound risk research | <R id="683aef834ac1612a">Constitutional AI</R> |
+| <R id="a306e0b63bdedbd5">Center for AI Safety</R> | Risk interaction analysis | <R id="470ac236ca26008c">AI Risk Statement</R> |
+| <R id="0a17f30e99091ebf">RAND Corporation</R> | Expertise atrophy studies | <R id="eecd7c0e9ebb9cbe">AI Workforce Analysis</R> |
+| <R id="1593095c92d34ed8">Future of Humanity Institute</R> | Existential risk modeling | <R id="902320774d220a6c">Global Catastrophic Risks</R> |
 
 ### Policy & Governance
 
 | Resource | Focus | Application |
 |----------|-------|-------------|
-| [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) | Risk assessment methodology | Compound risk evaluation |
-| [UK AI Safety Institute](https://www.aisi.gov.uk/) | Safety evaluation | Interaction testing protocols |
-| [EU AI Act](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52021PC0206) | Regulatory framework | Compound risk regulation |
+| <R id="54dbc15413425997">NIST AI Risk Management Framework</R> | Risk assessment methodology | Compound risk evaluation |
+| <R id="fdf68a8f30f57dee">UK AI Safety Institute</R> | Safety evaluation | Interaction testing protocols |
+| <R id="3afc13e40d7102b1">EU AI Act</R> | Regulatory framework | Compound risk regulation |
 
 <Backlinks client:load entityId="compounding-risks-analysis" />

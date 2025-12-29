@@ -88,9 +88,9 @@ Actors using AI capabilities for malicious purposes.
 How AI reshapes society, power structures, and institutions.
 
 **Examples:**
-- [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - Competition undermining safety
+- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - Competition undermining safety
 - [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) - AI enabling unprecedented control
-- [Economic Disruption](/knowledge-base/risk-factors/economic-disruption/) - Mass displacement
+- [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) - Mass displacement
 - [Lock-in](/knowledge-base/risks/structural/lock-in/) - Permanent entrenchment of values or systems
 
 **Policy relevance**: These require institutional design, antitrust, labor policy, and international coordination.
@@ -104,8 +104,8 @@ AI undermining our ability to distinguish true from false.
 
 **Examples:**
 - [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) - Inability to verify information
-- [Trust Erosion](/knowledge-base/risk-factors/trust-erosion/) - Loss of faith in institutions
-- [Automation Bias](/knowledge-base/risk-factors/automation-bias/) - Over-reliance on AI outputs
+- [Trust Erosion](/knowledge-base/risks/epistemic/trust-erosion/) - Loss of faith in institutions
+- [Automation Bias](/knowledge-base/risks/accident/automation-bias/) - Over-reliance on AI outputs
 
 **Policy relevance**: Verification frameworks, authentication standards, institutional resilience.
 
@@ -472,7 +472,7 @@ Based on your specific policy focus:
 
 1. [Coordination Challenges](/understanding-ai-risk/core-argument/coordination/) - Why this is hard (20 min)
 2. [Multi-Actor Landscape](/knowledge-base/models/multi-actor-landscape/) - Who's involved (30 min)
-3. [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) - What you're trying to prevent (20 min)
+3. [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - What you're trying to prevent (20 min)
 4. [International Coordination](/knowledge-base/responses/governance/international/) - Approaches (45 min)
 5. [Nuclear Case Study](/knowledge-base/history/) - Historical precedent (30 min)
 
@@ -485,7 +485,7 @@ Based on your specific policy focus:
 
 ### If You're Working on Economic/Labor Policy
 
-1. [Economic Disruption](/knowledge-base/risk-factors/economic-disruption/) - Scale of potential displacement (20 min)
+1. [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) - Scale of potential displacement (20 min)
 2. [Erosion of Agency](/knowledge-base/risks/structural/erosion-of-agency/) - Broader societal impacts (20 min)
 3. [Timelines](/understanding-ai-risk/core-argument/timelines/) - When to expect impacts (30 min)
 4. [Social Media Case Study](/knowledge-base/history/) - Lessons from previous disruption (20 min)

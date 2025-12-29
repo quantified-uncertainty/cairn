@@ -14,7 +14,7 @@ importance: 95
 llmSummary: "Comprehensive quantitative mapping of AI safety interventions to specific risks with effectiveness estimates, revealing critical resource misallocation: 40% of funding goes to RLHF (10-20% effective against key risks) while interpretability and AI Control (70-80% effective) receive only 15%. Recommends shifting $200M+ annually to address dangerous gaps in deceptive alignment and scheming detection."
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-effectiveness-matrix" ratings={frontmatter.ratings} />
 
@@ -69,7 +69,7 @@ quadrantChart
 | **Red-teaming**: 10% | **Evaluations**: 15% | Maintain current level |
 | **Other Technical**: 10% | **Red-teaming**: 10% | Stable - proven value |
 
-**Funding shift recommendation**: Move $200M+ annually from RLHF to interpretability and AI Control research based on [Anthropic's estimate](https://www.anthropic.com/research) that interpretability needs 10x current investment.
+**Funding shift recommendation**: Move $200M+ annually from RLHF to interpretability and AI Control research based on <R id="f771d4f56ad4dbaa">Anthropic's estimate</R> that interpretability needs 10x current investment.
 
 ## Technical Intervention Effectiveness
 
@@ -77,11 +77,11 @@ quadrantChart
 
 | Intervention | Deceptive Alignment | Goal Misgeneralization | Power-Seeking | Scheming | Evidence Quality |
 |--------------|-------------------|----------------------|---------------|----------|------------------|
-| **Interpretability** | 40% reduction | 50% reduction | 45% reduction | 35% reduction | Medium ([Anthropic](https://transformer-circuits.pub/2024/scaling-monosemanticity/)) |
-| **RLHF/RLAIF** | 10% reduction | 60% reduction | 20% reduction | 5% reduction | High ([OpenAI InstructGPT](https://arxiv.org/abs/2203.02155)) |
-| **Constitutional AI** | 15% reduction | 55% reduction | 25% reduction | 10% reduction | High ([Anthropic CAI](https://arxiv.org/abs/2212.08073)) |
-| **Capability Evaluations** | 20% reduction | 70% reduction | 60% reduction | 15% reduction | Medium-High ([METR](https://metr.org/blog/2024-01-11-dangerous-capability-evaluations/)) |
-| **AI Control** | 70% reduction | 30% reduction | 80% reduction | 75% reduction | Low ([Greenblatt et al.](https://arxiv.org/abs/2312.06942)) |
+| **Interpretability** | 40% reduction | 50% reduction | 45% reduction | 35% reduction | Medium (<R id="e724db341d6e0065">Anthropic</R>) |
+| **RLHF/RLAIF** | 10% reduction | 60% reduction | 20% reduction | 5% reduction | High (<R id="1098fc60be7ca2b0">OpenAI InstructGPT</R>) |
+| **Constitutional AI** | 15% reduction | 55% reduction | 25% reduction | 10% reduction | High (<R id="683aef834ac1612a">Anthropic CAI</R>) |
+| **Capability Evaluations** | 20% reduction | 70% reduction | 60% reduction | 15% reduction | Medium-High (<R id="dfeaf87817e20677">METR</R>) |
+| **AI Control** | 70% reduction | 30% reduction | 80% reduction | 75% reduction | Low (<R id="187aaa26886ce183">Greenblatt et al.</R>) |
 | **Red-teaming** | 25% reduction | 65% reduction | 40% reduction | 20% reduction | High (industry standard) |
 
 ### Misuse Risk Coverage
@@ -93,7 +93,7 @@ quadrantChart
 | **Disinformation** | 30% (detection tools) | 60% (platform policies) | 72% combined |
 | **Autonomous Weapons** | 40% (safety constraints) | 90% (treaties) | 94% combined |
 
-Sources: [RAND Corporation](https://www.rand.org/pubs/perspectives/PEA2977-1.html), [Center for Security and Emerging Technology](https://cset.georgetown.edu/publication/ai-governance-database/)
+Sources: <R id="223b829c30beaca2">RAND Corporation</R>, <R id="3e8fecd4ef53888e">Center for Security and Emerging Technology</R>
 
 ## Critical Unaddressed Gaps
 
@@ -134,7 +134,7 @@ Sources: [RAND Corporation](https://www.rand.org/pubs/perspectives/PEA2977-1.htm
 | **AI Control feasibility** | ±40% effectiveness | High - theoretical vs practical |
 | **Governance implementation** | ±60% structural risk mitigation | Medium - feasibility questions |
 
-Sources: [AI Impacts survey](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/), [FHI expert elicitation](https://www.fhi.ox.ac.uk/publications/), [MIRI research updates](https://intelligence.org/research-updates/)
+Sources: <R id="38eba87d0a888e2e">AI Impacts survey</R>, <R id="d6955ff937bf386d">FHI expert elicitation</R>, <R id="64a253415795c91e">MIRI research updates</R>
 
 ## Intervention Synergies and Conflicts
 
@@ -142,10 +142,10 @@ Sources: [AI Impacts survey](https://aiimpacts.org/2022-expert-survey-on-progres
 
 | Intervention Pair | Synergy Strength | Mechanism | Evidence |
 |------------------|------------------|-----------|----------|
-| **Interpretability + Evaluations** | Very High (2x effectiveness) | Interpretability explains eval results | [Anthropic research](https://www.anthropic.com/research) |
-| **AI Control + Red-teaming** | High (1.5x effectiveness) | Red-teaming finds control vulnerabilities | [Theoretical analysis](https://arxiv.org/abs/2312.06942) |
-| **RLHF + Constitutional AI** | Medium (1.3x effectiveness) | Layered training approaches | [Constitutional AI paper](https://arxiv.org/abs/2212.08073) |
-| **Compute Governance + Export Controls** | High (1.7x effectiveness) | Hardware-software restriction combo | [CSET analysis](https://cset.georgetown.edu/) |
+| **Interpretability + Evaluations** | Very High (2x effectiveness) | Interpretability explains eval results | <R id="f771d4f56ad4dbaa">Anthropic research</R> |
+| **AI Control + Red-teaming** | High (1.5x effectiveness) | Red-teaming finds control vulnerabilities | <R id="187aaa26886ce183">Theoretical analysis</R> |
+| **RLHF + Constitutional AI** | Medium (1.3x effectiveness) | Layered training approaches | <R id="683aef834ac1612a">Constitutional AI paper</R> |
+| **Compute Governance + Export Controls** | High (1.7x effectiveness) | Hardware-software restriction combo | <R id="f0d95954b449240a">CSET analysis</R> |
 
 ### Negative Interactions
 
@@ -176,7 +176,7 @@ Sources: [AI Impacts survey](https://aiimpacts.org/2022-expert-survey-on-progres
 | **Liability Frameworks** | Legal analysis | Medium | 3-7 years |
 | **Export Controls (expanded)** | Active development | High | 1-2 years |
 
-Sources: [Georgetown CSET](https://cset.georgetown.edu/), [IAPS governance research](https://www.iaps.ai/), [Brookings AI governance tracker](https://www.brookings.edu/)
+Sources: <R id="f0d95954b449240a">Georgetown CSET</R>, <R id="b31991b018d04a52">IAPS governance research</R>, <R id="89d77122c55f3155">Brookings AI governance tracker</R>
 
 ## Implementation Roadmap
 
@@ -204,11 +204,11 @@ Sources: [Georgetown CSET](https://cset.georgetown.edu/), [IAPS governance resea
 
 | Intervention Type | Annual Funding | Growth Rate | Major Funders |
 |------------------|----------------|-------------|---------------|
-| **RLHF/Alignment Training** | $400M+ | 50%/year | [OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google DeepMind](https://deepmind.google/) |
-| **Capability Evaluations** | $150M+ | 80%/year | [UK AISI](https://www.gov.uk/government/organisations/ai-safety-institute), [METR](https://metr.org/), industry labs |
-| **Interpretability** | $100M+ | 60%/year | [Anthropic](https://www.anthropic.com/research), academic institutions |
-| **AI Control** | $20M+ | 200%/year | [Redwood Research](https://www.redwoodresearch.org/), academic groups |
-| **Governance Research** | $80M+ | 40%/year | [GovAI](https://www.governance.ai/), [CSET](https://cset.georgetown.edu/) |
+| **RLHF/Alignment Training** | $400M+ | 50%/year | <R id="04d39e8bd5d50dd5">OpenAI</R>, <R id="afe2508ac4caf5ee">Anthropic</R>, <R id="0ef9b0fe0f3c92b4">Google DeepMind</R> |
+| **Capability Evaluations** | $150M+ | 80%/year | <R id="817964dfbb0e3b1b">UK AISI</R>, <R id="45370a5153534152">METR</R>, industry labs |
+| **Interpretability** | $100M+ | 60%/year | <R id="f771d4f56ad4dbaa">Anthropic</R>, academic institutions |
+| **AI Control** | $20M+ | 200%/year | <R id="42e7247cbc33fc4c">Redwood Research</R>, academic groups |
+| **Governance Research** | $80M+ | 40%/year | <R id="f35c467b353f990f">GovAI</R>, <R id="f0d95954b449240a">CSET</R> |
 
 ### Industry Deployment Status
 
@@ -258,31 +258,31 @@ Sources: [Georgetown CSET](https://cset.georgetown.edu/), [IAPS governance resea
 
 | Category | Source | Key Contribution | Quality |
 |----------|--------|------------------|---------|
-| **Technical Safety** | [Anthropic Constitutional AI](https://arxiv.org/abs/2212.08073) | CAI effectiveness data | High |
-| **Technical Safety** | [OpenAI InstructGPT](https://arxiv.org/abs/2203.02155) | RLHF deployment evidence | High |
-| **Interpretability** | [Anthropic Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/) | Interpretability scaling results | High |
-| **AI Control** | [Greenblatt et al. AI Control](https://arxiv.org/abs/2312.06942) | Control theory framework | Medium |
-| **Evaluations** | [METR Dangerous Capabilities](https://metr.org/blog/2024-01-11-dangerous-capability-evaluations/) | Evaluation methodology | Medium-High |
+| **Technical Safety** | <R id="683aef834ac1612a">Anthropic Constitutional AI</R> | CAI effectiveness data | High |
+| **Technical Safety** | <R id="1098fc60be7ca2b0">OpenAI InstructGPT</R> | RLHF deployment evidence | High |
+| **Interpretability** | <R id="e724db341d6e0065">Anthropic Scaling Monosemanticity</R> | Interpretability scaling results | High |
+| **AI Control** | <R id="187aaa26886ce183">Greenblatt et al. AI Control</R> | Control theory framework | Medium |
+| **Evaluations** | <R id="dfeaf87817e20677">METR Dangerous Capabilities</R> | Evaluation methodology | Medium-High |
 
 ### Policy and Governance Sources
 
 | Organization | Resource | Focus Area | Reliability |
 |--------------|----------|------------|-------------|
-| **CSET** | [AI Governance Database](https://cset.georgetown.edu/publication/ai-governance-database/) | Policy landscape mapping | High |
-| **GovAI** | [Governance research](https://www.governance.ai/research) | Institutional analysis | High |
-| **RAND Corporation** | [AI Risk Assessment](https://www.rand.org/pubs/perspectives/PEA2977-1.html) | Military/security applications | High |
-| **UK AISI** | [Testing reports](https://www.gov.uk/government/organisations/ai-safety-institute) | Government evaluation practice | Medium-High |
-| **US AISI** | [Guidelines and standards](https://www.nist.gov/artificial-intelligence) | Federal AI policy | Medium-High |
+| **CSET** | <R id="3e8fecd4ef53888e">AI Governance Database</R> | Policy landscape mapping | High |
+| **GovAI** | <R id="571cb6299c6d27cf">Governance research</R> | Institutional analysis | High |
+| **RAND Corporation** | <R id="223b829c30beaca2">AI Risk Assessment</R> | Military/security applications | High |
+| **UK AISI** | <R id="817964dfbb0e3b1b">Testing reports</R> | Government evaluation practice | Medium-High |
+| **US AISI** | <R id="85ee8e554a07476b">Guidelines and standards</R> | Federal AI policy | Medium-High |
 
 ### Industry and Lab Resources
 
 | Organization | Resource Type | Key Insights | Access |
 |--------------|---------------|--------------|--------|
-| **OpenAI** | [Safety research](https://openai.com/safety) | RLHF deployment data | Public |
-| **Anthropic** | [Research publications](https://www.anthropic.com/research) | Constitutional AI, interpretability | Public |
-| **DeepMind** | [Safety research](https://deepmind.google/discover/blog/) | Technical safety approaches | Public |
-| **Redwood Research** | [AI Control research](https://www.redwoodresearch.org/) | Control methodology development | Public |
-| **METR** | [Evaluation frameworks](https://metr.org/) | Capability assessment tools | Partial |
+| **OpenAI** | <R id="838d7a59a02e11a7">Safety research</R> | RLHF deployment data | Public |
+| **Anthropic** | <R id="f771d4f56ad4dbaa">Research publications</R> | Constitutional AI, interpretability | Public |
+| **DeepMind** | <R id="d451b68232884e88">Safety research</R> | Technical safety approaches | Public |
+| **Redwood Research** | <R id="42e7247cbc33fc4c">AI Control research</R> | Control methodology development | Public |
+| **METR** | <R id="45370a5153534152">Evaluation frameworks</R> | Capability assessment tools | Partial |
 
 ### Expert Survey Data
 

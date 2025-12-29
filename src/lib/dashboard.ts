@@ -55,11 +55,7 @@ export function getEntities(): any[] {
  * Get pages data (includes quality scores from MDX frontmatter)
  */
 export function getPages(): any[] {
-  try {
-    return require('../data/pages.json') as any[];
-  } catch {
-    return [];
-  }
+  return (pages as any[]) || [];
 }
 
 /**
@@ -267,29 +263,25 @@ export interface EnhancementQueueItem {
 
 /**
  * Get enhancement queue - pages sorted by improvement priority
- * Priority = importance - (quality * 10)
+ * Priority = importance - quality (both on 0-100 scale)
  * High importance + low quality = high priority
  */
 export function getEnhancementQueue(limit = 20): EnhancementQueueItem[] {
-  try {
-    const pages = require('../data/pages.json') as any[];
+  const pagesData = getPages();
 
-    return pages
-      .filter(p => p.quality && p.quality <= 4 && p.importance && p.importance >= 30)
-      .map(p => ({
-        id: p.id,
-        title: p.title,
-        path: p.path,
-        quality: p.quality,
-        importance: p.importance,
-        gap: p.importance - (p.quality * 10),
-        category: p.category || 'other',
-      }))
-      .sort((a, b) => b.gap - a.gap)
-      .slice(0, limit);
-  } catch {
-    return [];
-  }
+  return pagesData
+    .filter(p => p.quality != null && p.quality <= 80 && p.importance && p.importance >= 30)
+    .map(p => ({
+      id: p.id,
+      title: p.title,
+      path: p.path,
+      quality: p.quality,
+      importance: p.importance,
+      gap: p.importance - p.quality,
+      category: p.category || 'other',
+    }))
+    .sort((a, b) => b.gap - a.gap)
+    .slice(0, limit);
 }
 
 /**

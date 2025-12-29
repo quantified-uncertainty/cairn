@@ -13,7 +13,7 @@ ratings:
 importance: 85.5
 llmSummary: "Mathematical model analyzing AI capability diffusion across 5 actor tiers, finding proliferation times compressed from 24-36 months (2020) to 12-18 months (2024), with α≈0.15/year acceleration. Identifies compute governance (70-85% effective) and pre-deployment gates as high-leverage interventions before irreversible open-source proliferation, with detailed risk equation R_total(t) = Σ N_i(t)·C_i(t)·P_misuse,i."
 ---
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="proliferation-risk-model" ratings={frontmatter.ratings} />
 
@@ -103,19 +103,19 @@ With $\alpha \approx 0.15$ per year, implying diffusion rates double every ~5 ye
 
 | Control Point | Effectiveness | Durability | Implementation Difficulty | Current Status |
 |---------------|---------------|------------|---------------------------|----------------|
-| **Compute governance** | 70-85% | 5-15 years | High | [Partial (US export controls)](https://www.bis.doc.gov/index.php/policy-guidance/country-guidance/export-controls-on-semiconductor) |
-| **Pre-deployment gates** | 60-80% | Unknown | Very High | [Voluntary only](https://www.whitehouse.gov/briefing-room/statements-releases/2023/07/21/fact-sheet-biden-harris-administration-secures-voluntary-commitments-from-leading-artificial-intelligence-companies-to-manage-the-risks-posed-by-ai/) |
-| **Weight security** | 50-70% | Fragile | Medium | [Industry standard emerging](https://arxiv.org/abs/2310.12166) |
-| **International coordination** | 40-70% | Medium | Very High | [Early stages](https://www.gov.uk/government/publications/ai-safety-summit-2023-chairs-statement-2-november) |
+| **Compute governance** | 70-85% | 5-15 years | High | <R id="ce78270338a5b946">Partial (US export controls)</R> |
+| **Pre-deployment gates** | 60-80% | Unknown | Very High | <R id="d6d8d74ef87d7711">Voluntary only</R> |
+| **Weight security** | 50-70% | Fragile | Medium | <R id="393e006ebb2ce784">Industry standard emerging</R> |
+| **International coordination** | 40-70% | Medium | Very High | <R id="5f1b2cc0fb23f0b8">Early stages</R> |
 
 ### Medium-Leverage Interventions
 
 | Control Point | Current Effectiveness | Key Limitation | Example Implementation |
 |---------------|----------------------|----------------|----------------------|
-| **API controls** | 40-60% | Continuous bypass development | [OpenAI usage policies](https://openai.com/policies/usage-policies) |
-| **Capability evaluation** | 50-70% | May miss emergent capabilities | [ARC Evals](https://evals.alignment.org/) |
-| **Publication norms** | 30-50% | Competitive pressure to publish | [FHI publication guidelines](https://www.fhi.ox.ac.uk/govai-blog/publication-norms-in-machine-learning/) |
-| **Talent restrictions** | 20-40% | Limited in free societies | [CFIUS review process](https://home.treasury.gov/policy-issues/international/the-committee-on-foreign-investment-in-the-united-states-cfius) |
+| **API controls** | 40-60% | Continuous bypass development | <R id="e64764924758e86b">OpenAI usage policies</R> |
+| **Capability evaluation** | 50-70% | May miss emergent capabilities | <R id="1648010fd1ff0370">ARC Evals</R> |
+| **Publication norms** | 30-50% | Competitive pressure to publish | <R id="a5ee696da305a1ce">FHI publication guidelines</R> |
+| **Talent restrictions** | 20-40% | Limited in free societies | <R id="e4bf76ba23c0cfdc">CFIUS review process</R> |
 
 ## Proliferation Scenarios
 
@@ -183,13 +183,13 @@ For Tier 4-5 proliferation with 100,000 capable actors and 5% misuse probability
 The proliferation landscape has shifted dramatically since 2023:
 
 **2023 Developments:**
-- [LLaMA leak](https://www.theverge.com/2023/3/8/23629362/meta-ai-language-model-llama-leak-online-misuse) demonstrated fragility of controlled releases
-- [LLaMA 2 open release](https://ai.meta.com/llama/) established new norm for frontier model sharing
-- [U.S. export controls](https://www.bis.doc.gov/index.php/policy-guidance/country-guidance/export-controls-on-semiconductor) on advanced semiconductors implemented
+- <R id="d2f67176f1bc7b5b">LLaMA leak</R> demonstrated fragility of controlled releases
+- <R id="69c685f410104791">LLaMA 2 open release</R> established new norm for frontier model sharing
+- <R id="ce78270338a5b946">U.S. export controls</R> on advanced semiconductors implemented
 
 **2024-2025 Developments:**
-- [DeepSeek R1 release](https://github.com/deepseek-ai/DeepSeek-R1) achieved GPT-4 level performance with open weights
-- [Qwen 2.5](https://qwenlm.github.io/) and [Mistral](https://mistral.ai/) continued aggressive open-source strategy
+- <R id="afad87e802e53736">DeepSeek R1 release</R> achieved GPT-4 level performance with open weights
+- <R id="91401135c6d09d96">Qwen 2.5</R> and <R id="aa1786bb9025867e">Mistral</R> continued aggressive open-source strategy
 - Chinese labs increasingly releasing frontier capabilities openly
 
 ### 2025-2030 Projections
@@ -285,29 +285,29 @@ Several critical uncertainties limit model precision and policy effectiveness:
 ### Academic Research
 | Source | Focus | Key Findings | Link |
 |--------|-------|--------------|------|
-| [Heim et al. (2023)](https://cset.georgetown.edu/publication/ai-chips-and-geopolitics/) | Compute governance | Export controls 60-80% effective short-term | CSET Georgetown |
-| [Anderljung et al. (2023)](https://arxiv.org/abs/2310.12166) | Model security | Weight protection reduces proliferation 50-70% | arXiv |
-| [Shavit et al. (2023)](https://arxiv.org/abs/2307.04699) | Capability evaluation | Current evals miss 30-50% of dangerous capabilities | arXiv |
+| <R id="f103dfcc68f5d4de">Heim et al. (2023)</R> | Compute governance | Export controls 60-80% effective short-term | CSET Georgetown |
+| <R id="393e006ebb2ce784">Anderljung et al. (2023)</R> | Model security | Weight protection reduces proliferation 50-70% | arXiv |
+| <R id="95d12033a9f98b31">Shavit et al. (2023)</R> | Capability evaluation | Current evals miss 30-50% of dangerous capabilities | arXiv |
 
 ### Policy Documents
 | Document | Organization | Key Recommendations | Year |
 |----------|-------------|-------------------|------|
-| [AI Executive Order](https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/) | White House | Mandatory reporting, evaluation requirements | 2023 |
-| [UK AI Safety Summit](https://www.gov.uk/government/publications/ai-safety-summit-2023-chairs-statement-2-november) | UK Government | International coordination framework | 2023 |
-| [EU AI Act](https://artificialintelligenceact.eu/) | European Union | Risk-based regulatory approach | 2024 |
+| <R id="59118f0c5d534110">AI Executive Order</R> | White House | Mandatory reporting, evaluation requirements | 2023 |
+| <R id="5f1b2cc0fb23f0b8">UK AI Safety Summit</R> | UK Government | International coordination framework | 2023 |
+| <R id="1ad6dc89cded8b0c">EU AI Act</R> | European Union | Risk-based regulatory approach | 2024 |
 
 ### Technical Resources
 | Resource | Type | Description | Access |
 |----------|------|-------------|--------|
-| [Model weight leaderboards](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) | Data | Open-source capability tracking | HuggingFace |
-| [Compute trend analysis](https://www.epochai.org/blog/trends-in-the-dollar-training-cost-of-machine-learning-systems) | Analysis | Training cost trends over time | Epoch AI |
-| [Export control guidance](https://www.bis.doc.gov/index.php/policy-guidance/country-guidance/export-controls-on-semiconductor) | Policy | Current semiconductor restrictions | BIS Commerce |
+| <R id="519d45a8450736f6">Model weight leaderboards</R> | Data | Open-source capability tracking | HuggingFace |
+| <R id="dff8fae99b47e61d">Compute trend analysis</R> | Analysis | Training cost trends over time | Epoch AI |
+| <R id="ce78270338a5b946">Export control guidance</R> | Policy | Current semiconductor restrictions | BIS Commerce |
 
 ### Related Models
 | Model | Focus | Relationship |
 |-------|-------|-------------|
-| [Racing Dynamics](/knowledge-base/risk-factors/racing-dynamics/) | Competitive pressures | Explains drivers of open release |
-| [Multipolar Trap](/knowledge-base/risk-factors/multipolar-trap/) | Coordination failures | Models governance challenges |
-| [Winner-Take-All](/knowledge-base/risk-factors/winner-take-all/) | Market structure | Alternative to proliferation scenario |
+| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Competitive pressures | Explains drivers of open release |
+| [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) | Coordination failures | Models governance challenges |
+| [Winner-Take-All](/knowledge-base/risks/structural/winner-take-all/) | Market structure | Alternative to proliferation scenario |
 
 <Backlinks />

@@ -14,7 +14,7 @@ importance: 84.5
 llmSummary: "Economic model quantifying marginal returns on AI safety research investment using expected value framework (P×R×V-C). Finds current $500M/year funding significantly underinvested with 2-5x returns available, recommending increases to $2-5B by 2030 with reallocation toward alignment theory (10%→20%) and governance research (10%→15%) and away from RLHF (25%→10%)."
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="safety-research-value" ratings={frontmatter.ratings} />
 
@@ -30,9 +30,9 @@ The model incorporates deep uncertainty about AI risk probabilities (1-20% exist
 
 | Factor | Assessment | Evidence | Source |
 |--------|------------|----------|--------|
-| **Current Underinvestment** | High | 100:1 capabilities vs safety ratio | [Epoch AI (2024)](https://epochai.org/blog/trends-in-machine-learning-funding) |
-| **Marginal Returns** | Medium-High | 2-5x potential in neglected areas | [Open Philanthropy](https://www.openphilanthropy.org/research/technical-ai-safety/) |
-| **Timeline Sensitivity** | High | Value drops 50%+ if timelines \<5 years | [AI Impacts Survey](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/) |
+| **Current Underinvestment** | High | 100:1 capabilities vs safety ratio | <R id="342acf7e721544e6">Epoch AI (2024)</R> |
+| **Marginal Returns** | Medium-High | 2-5x potential in neglected areas | <R id="2aa20a88a0b0cbcf">Open Philanthropy</R> |
+| **Timeline Sensitivity** | High | Value drops 50%+ if timelines \<5 years | <R id="38eba87d0a888e2e">AI Impacts Survey</R> |
 | **Research Direction Risk** | Medium | 10-100x variance between approaches | Analysis based on expert interviews |
 
 ## Strategic Framework
@@ -59,7 +59,7 @@ Where:
 | **Governance Research** | $50M | High (4-8x) | Medium |
 | **RLHF/Fine-tuning** | $125M | Low (1-2x) | High |
 
-*Source: Author estimates based on [Anthropic](https://www.anthropic.com/research), [OpenAI](https://openai.com/safety), [DeepMind](https://deepmind.google/research/publications/?tag=safety) public reporting*
+*Source: Author estimates based on <R id="f771d4f56ad4dbaa">Anthropic</R>, <R id="838d7a59a02e11a7">OpenAI</R>, <R id="70b4461a02951e08">DeepMind</R> public reporting*
 
 ## Resource Allocation Analysis
 
@@ -97,7 +97,7 @@ pie title Current Safety Research Allocation ($500M)
 | Policy research | $100M/year | High if timelines short | Near-term |
 | Field building | $50M/year | Network effects | Long-term |
 
-*Key organizations: [Open Philanthropy](https://www.openphilanthropy.org/), [Future of Humanity Institute](https://www.fhi.ox.ac.uk/), [Long-Term Future Fund](https://funds.effectivealtruism.org/funds/far-future)*
+*Key organizations: <R id="dd0cf0ff290cc68e">Open Philanthropy</R>, <R id="1593095c92d34ed8">Future of Humanity Institute</R>, <R id="9baa7f54db71864d">Long-Term Future Fund</R>*
 
 ### AI Labs ($300M/year current)
 
@@ -107,7 +107,7 @@ pie title Current Safety Research Allocation ($500M)
 - **External collaboration:** Fund academic partnerships, open source safety tools
 - **Evaluation infrastructure:** Invest in red-teaming, safety benchmarks
 
-*Analysis of [Anthropic](https://www.anthropic.com/), [OpenAI](https://openai.com/), [DeepMind](https://deepmind.google/) public commitments*
+*Analysis of <R id="afe2508ac4caf5ee">Anthropic</R>, <R id="04d39e8bd5d50dd5">OpenAI</R>, <R id="0ef9b0fe0f3c92b4">DeepMind</R> public commitments*
 
 ### Government Funding ($100M/year current)
 
@@ -115,9 +115,9 @@ pie title Current Safety Research Allocation ($500M)
 
 | Agency | Current | Recommended | Focus Area |
 |--------|---------|-------------|------------|
-| [NSF](https://www.nsf.gov/) | $20M | $200M | Basic research, academic capacity |
-| [NIST](https://www.nist.gov/artificial-intelligence) | $30M | $300M | Standards, evaluation frameworks |
-| [DARPA](https://www.darpa.mil/) | $50M | $500M | High-risk research, novel approaches |
+| <R id="d683b677912915e2">NSF</R> | $20M | $200M | Basic research, academic capacity |
+| <R id="85ee8e554a07476b">NIST</R> | $30M | $300M | Standards, evaluation frameworks |
+| <R id="1adec5eb6a75f559">DARPA</R> | $50M | $500M | High-risk research, novel approaches |
 
 ## Comparative Investment Analysis
 
@@ -130,7 +130,7 @@ pie title Current Safety Research Allocation ($500M)
 | Global health (GiveWell) | $100 | P(success) = 0.9 | $111 |
 | Climate change mitigation | $50-500 | P(success) = 0.7 | $71-714 |
 
-*QALY = Quality-Adjusted Life Year. Analysis based on [GiveWell](https://www.givewell.org/) methodology*
+*QALY = Quality-Adjusted Life Year. Analysis based on <R id="9315689a12534405">GiveWell</R> methodology*
 
 ### Risk-Adjusted Portfolio
 
@@ -165,7 +165,7 @@ pie title Current Safety Research Allocation ($500M)
 2. **Research direction clarity:** Uncertainty about most valuable approaches
 3. **Access to frontier models:** Safety research requires cutting-edge systems
 
-*Source: [Future of Humanity Institute](https://www.fhi.ox.ac.uk/) talent survey, author projections*
+*Source: <R id="1593095c92d34ed8">Future of Humanity Institute</R> talent survey, author projections*
 
 ## Key Uncertainties & Research Cruxes
 
@@ -173,7 +173,7 @@ pie title Current Safety Research Allocation ($500M)
 
 | Dimension | Optimistic View | Pessimistic View | Current Evidence |
 |-----------|----------------|------------------|------------------|
-| **AI Risk Level** | 2-5% x-risk probability | 15-20% x-risk probability | [Expert surveys](https://aiimpacts.org/) show 5-10% median |
+| **AI Risk Level** | 2-5% x-risk probability | 15-20% x-risk probability | <R id="3b9fda03b8be71dc">Expert surveys</R> show 5-10% median |
 | **Alignment Tractability** | Solvable with sufficient research | Fundamentally intractable | Mixed signals from early work |
 | **Timeline Sensitivity** | Decades to solve problems | Need solutions in 3-7 years | Acceleration in capabilities suggests shorter timelines |
 | **Research Transferability** | Insights transfer across architectures | Approach-specific solutions | Limited evidence either way |
@@ -227,16 +227,16 @@ pie title Current Safety Research Allocation ($500M)
 
 | Paper | Key Finding | Relevance |
 |-------|-------------|-----------|
-| [Ord (2020)](https://www.precipice.com/) | 10% x-risk this century | Risk probability estimates |
-| [Amodei et al. (2016)](https://arxiv.org/abs/1606.06565) | Safety research agenda | Research direction framework |
-| [Russell (2019)](https://www.humancompatible.ai/) | Control problem formulation | Alignment problem definition |
-| [Christiano (2018)](https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616) | IDA proposal | Specific alignment approach |
+| <R id="c59350538c51c58e">Ord (2020)</R> | 10% x-risk this century | Risk probability estimates |
+| <R id="cd3035dbef6c7b5b">Amodei et al. (2016)</R> | Safety research agenda | Research direction framework |
+| <R id="9c4106b68045dbd6">Russell (2019)</R> | Control problem formulation | Alignment problem definition |
+| <R id="77e9bf1a01a5b587">Christiano (2018)</R> | IDA proposal | Specific alignment approach |
 
 ### Research Organizations
 
 | Organization | Focus | Annual Budget | Key Publications |
 |--------------|-------|---------------|------------------|
-| [Anthropic](https://www.anthropic.com/) | Constitutional AI, interpretability | $100M+ | Constitutional AI paper |
+| <R id="afe2508ac4caf5ee">Anthropic</R> | Constitutional AI, interpretability | $100M+ | Constitutional AI paper |
 | [MIRI](/knowledge-base/organizations/safety-orgs/miri/) | Agent foundations | $5M | Logical induction |
 | [CHAI](/knowledge-base/organizations/safety-orgs/chai/) | Human-compatible AI | $10M | CIRL framework |
 | [ARC](/knowledge-base/organizations/safety-orgs/arc/) | Alignment research | $15M | Eliciting latent knowledge |
@@ -245,18 +245,18 @@ pie title Current Safety Research Allocation ($500M)
 
 | Source | Type | Key Insights |
 |--------|------|--------------|
-| [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) | Standards | Risk assessment methodology |
-| [UK AI Safety Institute](https://www.aisi.gov.uk/) | Government research | Evaluation frameworks |
-| [EU AI Act](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence) | Regulation | Compliance requirements |
-| [RAND AI Strategy](https://www.rand.org/topics/artificial-intelligence.html) | Analysis | Military AI implications |
+| <R id="54dbc15413425997">NIST AI Risk Management Framework</R> | Standards | Risk assessment methodology |
+| <R id="fdf68a8f30f57dee">UK AI Safety Institute</R> | Government research | Evaluation frameworks |
+| <R id="1102501c88207df3">EU AI Act</R> | Regulation | Compliance requirements |
+| <R id="cf5fd74e8db11565">RAND AI Strategy</R> | Analysis | Military AI implications |
 
 ### Funding Sources
 
 | Funder | Focus Area | Annual AI Safety | Application Process |
 |--------|------------|------------------|-------------------|
-| [Open Philanthropy](https://www.openphilanthropy.org/) | Technical research, policy | $100M+ | LOI system |
-| [Future Fund](https://ftxfuturefund.org/) | Longtermism, x-risk | $50M+ | Grant applications |
-| [NSF](https://www.nsf.gov/funding/) | Academic research | $20M | Standard grants |
-| [Survival and Flourishing Fund](https://survivalandflourishing.fund/) | Existential risk | $10M | Quarterly rounds |
+| <R id="dd0cf0ff290cc68e">Open Philanthropy</R> | Technical research, policy | $100M+ | LOI system |
+| <R id="48a1d8900cb30029">Future Fund</R> | Longtermism, x-risk | $50M+ | Grant applications |
+| <R id="47fe3aee53671108">NSF</R> | Academic research | $20M | Standard grants |
+| <R id="a01514f7c492ce4c">Survival and Flourishing Fund</R> | Existential risk | $10M | Quarterly rounds |
 
 <Backlinks />

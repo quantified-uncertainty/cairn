@@ -14,15 +14,15 @@ importance: 92.5
 llmSummary: "Quantitative portfolio framework estimates 40-70% of AI x-risk from misalignment, 15-35% from misuse, 10-25% from structural risks, with timeline-dependent allocation recommendations (e.g., 50-60% to misalignment for medium 5-15yr timelines). Analysis of $580M 2023 funding shows $30M gap in technical alignment, $15M in misuse prevention, $18M in governance relative to optimal medium-timeline allocation."
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../components/wiki';
 
 <DataInfoBox entityId="ai-risk-portfolio-analysis" ratings={frontmatter.ratings} />
 
 ## Overview
 
-This framework provides quantitative estimates for allocating limited resources across AI risk categories. Based on expert surveys and risk assessment methodologies from organizations like [RAND](https://www.rand.org/) and [Center for Security and Emerging Technology (CSET)](https://cset.georgetown.edu/), the analysis estimates misalignment accounts for 40-70% of existential risk, misuse 15-35%, and structural risks 10-25%.
+This framework provides quantitative estimates for allocating limited resources across AI risk categories. Based on expert surveys and risk assessment methodologies from organizations like <R id="0a17f30e99091ebf">RAND</R> and <R id="f0d95954b449240a">Center for Security and Emerging Technology (CSET)</R>, the analysis estimates misalignment accounts for 40-70% of existential risk, misuse 15-35%, and structural risks 10-25%.
 
-The model draws from [portfolio optimization theory](https://academic.oup.com/rfs/article-abstract/4/1/1/1599269) and [Open Philanthropy's cause prioritization framework](https://www.openphilanthropy.org/research/some-key-ways-in-which-i-think-open-philanthropy-should-change/), addressing the critical question: How should the AI safety community allocate its $500M+ annual resources across different risk categories? All estimates carry substantial uncertainty (±50% or higher), making the framework's value in relative comparisons rather than precise numbers.
+The model draws from <R id="d199149badb220f3">portfolio optimization theory</R> and <R id="d64c91adf6a2e394">Open Philanthropy's cause prioritization framework</R>, addressing the critical question: How should the AI safety community allocate its $500M+ annual resources across different risk categories? All estimates carry substantial uncertainty (±50% or higher), making the framework's value in relative comparisons rather than precise numbers.
 
 ## Risk Assessment Matrix
 
@@ -30,11 +30,11 @@ The model draws from [portfolio optimization theory](https://academic.oup.com/rf
 |--------------|---------------|-----------------|--------------|---------------|-------------------|
 | [Misalignment](/knowledge-base/risks/accident/) | 40-70% | 15-45% | 2.5/5 | 3/5 | ~50% |
 | [Misuse](/knowledge-base/risks/misuse/) | 15-35% | 8-25% | 3.5/5 | 4/5 | ~25% |
-| [Structural](/knowledge-base/risk-factors/) | 10-25% | 5-15% | 4/5 | 4.5/5 | ~15% |
+| [Structural](/knowledge-base/risks/structural/) | 10-25% | 5-15% | 4/5 | 4.5/5 | ~15% |
 | Accidents (non-X) | 5-15% | 20-40% | 4.5/5 | 2.5/5 | ~10% |
 
 <Aside type="caution" title="Uncertainty Bounds">
-These estimates represent informed speculation based on limited data. [Superforecasters](https://www.gjopen.com/) and [AI experts show significant disagreement](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/) on these parameters, with confidence intervals often spanning 2-3x.
+These estimates represent informed speculation based on limited data. <R id="ad946fbdfec12e8c">Superforecasters</R> and <R id="38eba87d0a888e2e">AI experts show significant disagreement</R> on these parameters, with confidence intervals often spanning 2-3x.
 </Aside>
 
 ## Strategic Prioritization Framework
@@ -80,13 +80,13 @@ pie title Current Resource Allocation vs Optimal (Medium Timeline)
 | Category | Primary Bottleneck | Marginal $ Value | Saturation Risk | Key Organizations |
 |----------|-------------------|------------------|-----------------|------------------|
 | Misalignment | Conceptual clarity | High (if skilled) | Medium | [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [Anthropic](/knowledge-base/organizations/labs/anthropic/) |
-| Misuse | Government engagement | Very High | Low | [CNAS](https://www.cnas.org/), [CSET](https://cset.georgetown.edu/) |
+| Misuse | Government engagement | Very High | Low | <R id="58f6946af0177ca5">CNAS</R>, <R id="f0d95954b449240a">CSET</R> |
 | Structural | Framework development | High | Very Low | [GovAI](/knowledge-base/organizations/safety-orgs/govai/), [CAIS](/knowledge-base/organizations/safety-orgs/cais/) |
-| Accidents | Implementation gaps | Medium | High | [Partnership on AI](https://www.partnershiponai.org/) |
+| Accidents | Implementation gaps | Medium | High | <R id="0e7aef26385afeed">Partnership on AI</R> |
 
 ### Funding Landscape Analysis
 
-According to [AI Philanthropy's 2023 report](https://www.aiphilanthropy.org/), total AI safety funding reached approximately $580M in 2023:
+According to <R id="8f2b23ed48e1262c">AI Philanthropy's 2023 report</R>, total AI safety funding reached approximately $580M in 2023:
 
 | Funding Category | 2023 Allocation | Optimal (Medium Timeline) | Gap |
 |------------------|-----------------|---------------------------|-----|
@@ -128,7 +128,7 @@ flowchart TD
 
 ### Expert Survey Results
 
-[AI Impacts 2022 expert survey](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/) of 738 AI researchers:
+<R id="38eba87d0a888e2e">AI Impacts 2022 expert survey</R> of 738 AI researchers:
 
 | Risk Category | Median P(Bad Outcome) | Expert Disagreement (IQR) | Policy Priority Ranking |
 |--------------|----------------------|---------------------------|------------------------|
@@ -194,7 +194,7 @@ Pattern: **Technical communities systematically under-weight governance and stru
 
 ### For Individual Researchers
 
-Career decision framework based on [80,000 Hours methodology](https://80000hours.org/):
+Career decision framework based on <R id="ec456e4a78161d43">80,000 Hours methodology</R>:
 
 | Career Stage | If Technical Background | If Policy Background | If Economics/Social Science |
 |--------------|------------------------|---------------------|----------------------------|
@@ -206,7 +206,7 @@ Career decision framework based on [80,000 Hours methodology](https://80000hours
 
 ### 2024 Funding Landscape
 
-According to [Epoch AI's tracking](https://epochai.org/), AI safety funding has grown 40% annually since 2020:
+According to <R id="120adc539e2fa558">Epoch AI's tracking</R>, AI safety funding has grown 40% annually since 2020:
 
 | Year | Total Funding | Misalignment % | Misuse % | Governance % |
 |------|---------------|----------------|----------|--------------|
@@ -251,25 +251,25 @@ According to [Epoch AI's tracking](https://epochai.org/), AI safety funding has 
 
 | Category | Key Papers | Organization |
 |----------|------------|--------------|
-| Portfolio Theory | [Markowitz (1952)](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1952.tb01525.x) | University of Chicago |
-| Risk Assessment | [Kaplan & Garrick (1981)](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1539-6924.1981.tb01350.x) | UCLA |
-| AI Risk Surveys | [Grace et al. (2022)](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/) | AI Impacts |
+| Portfolio Theory | <R id="b0303ec1db9a1cd0">Markowitz (1952)</R> | University of Chicago |
+| Risk Assessment | <R id="f1043d283b6cf307">Kaplan & Garrick (1981)</R> | UCLA |
+| AI Risk Surveys | <R id="38eba87d0a888e2e">Grace et al. (2022)</R> | AI Impacts |
 
 ### Policy Organizations
 
 | Organization | Focus Area | Key Resources |
 |-------------|------------|---------------|
-| [RAND Corporation](https://www.rand.org/topics/artificial-intelligence.html) | Defense applications | National security risk assessments |
-| [CSET](https://cset.georgetown.edu/) | Technology policy | AI governance frameworks |
-| [CNAS](https://www.cnas.org/research/technology-and-national-security) | Security implications | Military AI analysis |
+| <R id="cf5fd74e8db11565">RAND Corporation</R> | Defense applications | National security risk assessments |
+| <R id="f0d95954b449240a">CSET</R> | Technology policy | AI governance frameworks |
+| <R id="3afc8d3cef185a83">CNAS</R> | Security implications | Military AI analysis |
 
 ### Funding Data
 
 | Source | Coverage | Update Frequency |
 |--------|----------|------------------|
-| [AI Philanthropy](https://www.aiphilanthropy.org/) | Major donors | Annual |
-| [Epoch AI](https://epochai.org/) | Research funding | Quarterly |
-| [Open Philanthropy](https://www.openphilanthropy.org/focus/global-catastrophic-risks/potential-risks-advanced-artificial-intelligence/) | Effective altruism | Grant-by-grant |
+| <R id="8f2b23ed48e1262c">AI Philanthropy</R> | Major donors | Annual |
+| <R id="120adc539e2fa558">Epoch AI</R> | Research funding | Quarterly |
+| <R id="f8f6f3ee55c2babe">Open Philanthropy</R> | Effective altruism | Grant-by-grant |
 
 ## Related Models
 

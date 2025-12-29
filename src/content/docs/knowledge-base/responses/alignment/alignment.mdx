@@ -8,7 +8,7 @@ importance: 85
 lastEdited: "2025-12-28"
 llmSummary: "Comprehensive technical survey of AI alignment approaches including RLHF, Constitutional AI, debate, and weak-to-strong generalization. Quantifies current effectiveness (75-90% harm reduction, 88.9% judge accuracy in debate) while highlighting critical scalability limits at superhuman capability levels."
 ---
-import {Backlinks, Mermaid} from '../../../../../components/wiki';
+import {Backlinks, Mermaid, R} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -20,8 +20,8 @@ Current alignment approaches show promise for existing systems but face critical
 
 | Dimension | Rating | Evidence |
 |-----------|--------|----------|
-| **Tractability** | Medium | RLHF deployed successfully in GPT-4/Claude; interpretability advances (e.g., [Anthropic's monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html)) show 90%+ feature identification; but scalability to superhuman AI unproven |
-| **Current Effectiveness** | B | Constitutional AI reduces harmful outputs by 75% vs baseline; weak-to-strong generalization recovers [close to GPT-3.5 performance](https://openai.com/index/weak-to-strong-generalization/) from GPT-2-level supervision; debate increases judge accuracy from 59.4% to 88.9% in controlled experiments |
+| **Tractability** | Medium | RLHF deployed successfully in GPT-4/Claude; interpretability advances (e.g., <R id="426fcdeae8e2b749">Anthropic's monosemanticity</R>) show 90%+ feature identification; but scalability to superhuman AI unproven |
+| **Current Effectiveness** | B | Constitutional AI reduces harmful outputs by 75% vs baseline; weak-to-strong generalization recovers <R id="e64c8268e5f58e63">close to GPT-3.5 performance</R> from GPT-2-level supervision; debate increases judge accuracy from 59.4% to 88.9% in controlled experiments |
 | **Scalability** | C- | Human oversight becomes bottleneck at superhuman capabilities; interpretability methods tested only up to ~1B parameter models thoroughly; deceptive alignment remains undetected in current evaluations |
 | **Resource Requirements** | Medium-High | Leading labs (OpenAI, Anthropic, DeepMind) invest $100M+/year; alignment research comprises ~10-15% of total AI R&D spending; successful deployment requires ongoing red-teaming and iteration |
 | **Timeline to Impact** | 1-3 years | Near-term methods (RLHF, Constitutional AI) deployed today; scalable oversight techniques (debate, amplification) in research phase; AGI-level solutions remain uncertain |
@@ -30,10 +30,10 @@ Current alignment approaches show promise for existing systems but face critical
 
 | Category | Assessment | Timeline | Evidence | Confidence |
 |----------|------------|----------|----------|------------|
-| Current Risk | Medium | Immediate | GPT-4 [jailbreaks](https://arxiv.org/abs/2307.15043), reward hacking | High |
+| Current Risk | Medium | Immediate | GPT-4 <R id="302c069146f3f6f2">jailbreaks</R>, reward hacking | High |
 | Scaling Risk | High | 2-5 years | [Alignment difficulty increases](/knowledge-base/arguments/why-alignment-hard/) with capability | Medium |
 | Solution Adequacy | Low-Medium | Unknown | No clear path to AGI alignment | Low |
-| Research Progress | Medium | Ongoing | Interpretability advances, but [fundamental challenges remain](https://arxiv.org/abs/2109.07958) | Medium |
+| Research Progress | Medium | Ongoing | Interpretability advances, but <R id="fe2a3307a3dae3e5">fundamental challenges remain</R> | Medium |
 
 ## Core Technical Approaches
 
@@ -77,19 +77,19 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 | Technique | Mechanism | Success Metrics | Scalability Limits | Empirical Results | Key Citations |
 |-----------|-----------|-----------------|-------------------|-------------------|---------------|
-| **RLHF** | Human feedback on AI outputs trains reward model; AI optimizes for predicted human approval | Helpfulness: 85%+ user satisfaction; Harmlessness: 90%+ safe responses on adversarial prompts | Fails at superhuman tasks humans can't evaluate; vulnerable to reward hacking; ~10-20% of outputs show specification gaming | GPT-4 achieves 82% on MMLU with RLHF vs 70% without; reduces harmful content by 80% vs base model | [OpenAI (2022)](https://arxiv.org/abs/2203.02155) |
-| **Constitutional AI** | AI self-critiques outputs against constitutional principles; revised outputs used for preference learning (RLAIF) | 75% reduction in harmful outputs vs baseline RLHF; evasiveness reduced by 60%; transparency improved | Principles may be gamed; limited to codifiable values; compounds errors when AI judges its own work | Claude models show 2.5x improvement in handling nuanced ethical dilemmas; maintains performance with 50% less human feedback | [Anthropic (2022)](https://arxiv.org/abs/2212.08073) |
-| **Debate** | Two AI agents argue opposing sides to human judge; truth should be easier to defend than lies | Agent Score Difference (ASD): +0.3 to +0.7 favoring truth; judge accuracy improves from 59% to 89% in vision tasks | Effectiveness drops sharply at >400 Elo gap between debaters and judge; ~52% oversight success rate at large capability gaps | MNIST debate: 88.9% classifier accuracy from 6 pixels vs 59.4% baseline; QuALITY QA: humans+AI outperform AI alone by 12% | [Irving et al. (2018)](https://arxiv.org/abs/1805.00899) |
-| **Iterated Amplification** | Recursively decompose tasks into subtasks; train AI on human+AI judgments of subtasks; amplify to harder tasks | Task decomposition depth: 3-7 levels typical; human judgment confidence: 70-85% on leaf nodes | Errors compound across recursion tree; requires good decomposition strategy; exponential cost in tree depth | Book summarization: humans can judge summaries without reading books using chapter-level decomposition; 15-25% accuracy improvement | [Christiano et al. (2018)](https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616) |
-| **Recursive Reward Modeling** | Train AI assistants to help humans evaluate; use assisted humans to train next-level reward models; bootstrap to complex tasks | Helper quality: assistants improve human judgment by 20-40%; error propagation: 5-15% per recursion level | Requires evaluation to be easier than generation; error accumulation limits depth; helper alignment failures cascade | Enables evaluation of tasks requiring domain expertise; reduces expert time by 60% while maintaining 90% judgment quality | [Leike et al. (2018)](https://arxiv.org/abs/1811.07871) |
-| **Weak-to-Strong Generalization** | Weak model supervises strong model; strong model generalizes beyond weak supervisor's capabilities | Performance recovery: GPT-4 recovers 70-90% of full performance from GPT-2 supervision on NLP tasks; auxiliary losses boost to 85-95% | Naive finetuning only recovers partial capabilities; requires architectural insights; may not work for truly novel capabilities | GPT-4 trained on GPT-2 labels + confidence loss achieves near-GPT-3.5 performance; 30-60% of capability gap closed across benchmarks | [OpenAI (2023)](https://openai.com/index/weak-to-strong-generalization/) |
+| **RLHF** | Human feedback on AI outputs trains reward model; AI optimizes for predicted human approval | Helpfulness: 85%+ user satisfaction; Harmlessness: 90%+ safe responses on adversarial prompts | Fails at superhuman tasks humans can't evaluate; vulnerable to reward hacking; ~10-20% of outputs show specification gaming | GPT-4 achieves 82% on MMLU with RLHF vs 70% without; reduces harmful content by 80% vs base model | <R id="1098fc60be7ca2b0">OpenAI (2022)</R> |
+| **Constitutional AI** | AI self-critiques outputs against constitutional principles; revised outputs used for preference learning (RLAIF) | 75% reduction in harmful outputs vs baseline RLHF; evasiveness reduced by 60%; transparency improved | Principles may be gamed; limited to codifiable values; compounds errors when AI judges its own work | Claude models show 2.5x improvement in handling nuanced ethical dilemmas; maintains performance with 50% less human feedback | <R id="683aef834ac1612a">Anthropic (2022)</R> |
+| **Debate** | Two AI agents argue opposing sides to human judge; truth should be easier to defend than lies | Agent Score Difference (ASD): +0.3 to +0.7 favoring truth; judge accuracy improves from 59% to 89% in vision tasks | Effectiveness drops sharply at >400 Elo gap between debaters and judge; ~52% oversight success rate at large capability gaps | MNIST debate: 88.9% classifier accuracy from 6 pixels vs 59.4% baseline; QuALITY QA: humans+AI outperform AI alone by 12% | <R id="61da2f8e311a2bbf">Irving et al. (2018)</R> |
+| **Iterated Amplification** | Recursively decompose tasks into subtasks; train AI on human+AI judgments of subtasks; amplify to harder tasks | Task decomposition depth: 3-7 levels typical; human judgment confidence: 70-85% on leaf nodes | Errors compound across recursion tree; requires good decomposition strategy; exponential cost in tree depth | Book summarization: humans can judge summaries without reading books using chapter-level decomposition; 15-25% accuracy improvement | <R id="77e9bf1a01a5b587">Christiano et al. (2018)</R> |
+| **Recursive Reward Modeling** | Train AI assistants to help humans evaluate; use assisted humans to train next-level reward models; bootstrap to complex tasks | Helper quality: assistants improve human judgment by 20-40%; error propagation: 5-15% per recursion level | Requires evaluation to be easier than generation; error accumulation limits depth; helper alignment failures cascade | Enables evaluation of tasks requiring domain expertise; reduces expert time by 60% while maintaining 90% judgment quality | <R id="56fa6bd15dd062af">Leike et al. (2018)</R> |
+| **Weak-to-Strong Generalization** | Weak model supervises strong model; strong model generalizes beyond weak supervisor's capabilities | Performance recovery: GPT-4 recovers 70-90% of full performance from GPT-2 supervision on NLP tasks; auxiliary losses boost to 85-95% | Naive finetuning only recovers partial capabilities; requires architectural insights; may not work for truly novel capabilities | GPT-4 trained on GPT-2 labels + confidence loss achieves near-GPT-3.5 performance; 30-60% of capability gap closed across benchmarks | <R id="e64c8268e5f58e63">OpenAI (2023)</R> |
 
 ### Oversight and Control
 
 | Approach | Maturity | Key Benefits | Major Concerns | Leading Work |
 |----------|----------|--------------|----------------|--------------|
 | **AI Control** | Early | Works with misaligned models | [Deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/) detection | [Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/) |
-| **Interpretability** | Growing | Understanding model internals | [Scale limitations](https://arxiv.org/abs/2211.00593), [steganography](/knowledge-base/risks/accident/steganography/) | [Anthropic](https://transformer-circuits.pub/), [Chris Olah](/knowledge-base/people/chris-olah/) |
+| **Interpretability** | Growing | Understanding model internals | <R id="303088a4cbe03fad">Scale limitations</R>, [steganography](/knowledge-base/risks/accident/steganography/) | <R id="5083d746c2728ff2">Anthropic</R>, [Chris Olah](/knowledge-base/people/chris-olah/) |
 | **Formal Verification** | Limited | Mathematical guarantees | Computational complexity, specification gaps | Academic labs |
 | **Monitoring** | Developing | Behavioral detection | [Sandbagging](/knowledge-base/risks/accident/sandbagging/), capability evaluation | [ARC](/knowledge-base/organizations/safety-orgs/arc/), [METR](/knowledge-base/organizations/safety-orgs/metr/) |
 
@@ -97,17 +97,17 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 ### Recent Advances (2023-2025)
 
-**Mechanistic Interpretability**: [Anthropic's scaling monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html) work identified interpretable features in models up to 34M parameters with 90%+ accuracy, though scaling to billion-parameter models remains challenging. Dictionary learning techniques now extract 16 million features from Claude 3 Sonnet, enabling automated interpretability for ~1% of model behaviors.
+**Mechanistic Interpretability**: <R id="426fcdeae8e2b749">Anthropic's scaling monosemanticity</R> work identified interpretable features in models up to 34M parameters with 90%+ accuracy, though scaling to billion-parameter models remains challenging. Dictionary learning techniques now extract 16 million features from Claude 3 Sonnet, enabling automated interpretability for ~1% of model behaviors.
 
-**Constitutional AI Evolution**: Deployed in Claude models with demonstrated 75% reduction in harmful outputs versus baseline RLHF. The [Collective Constitutional AI](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) initiative (2024) gathered input from 1,000 Americans to draft AI constitutions, showing that democratic processes can influence alignment with 60-70% consensus on key principles.
+**Constitutional AI Evolution**: Deployed in Claude models with demonstrated 75% reduction in harmful outputs versus baseline RLHF. The <R id="3c862a18b467640b">Collective Constitutional AI</R> initiative (2024) gathered input from 1,000 Americans to draft AI constitutions, showing that democratic processes can influence alignment with 60-70% consensus on key principles.
 
-**Weak-to-Strong Generalization**: [OpenAI's 2023 research](https://arxiv.org/abs/2312.09390) demonstrated that GPT-4 supervised by GPT-2 can recover 70-90% of full performance on NLP tasks. Follow-up work in 2024 showed that combining weak-to-strong methods with scalable oversight and ensemble learning reduces the capability gap by an additional 15-30%, though effectiveness drops sharply for capability gaps exceeding 400 Elo points.
+**Weak-to-Strong Generalization**: <R id="0ba98ae3a8a72270">OpenAI's 2023 research</R> demonstrated that GPT-4 supervised by GPT-2 can recover 70-90% of full performance on NLP tasks. Follow-up work in 2024 showed that combining weak-to-strong methods with scalable oversight and ensemble learning reduces the capability gap by an additional 15-30%, though effectiveness drops sharply for capability gaps exceeding 400 Elo points.
 
-**Control Evaluations**: [Redwood's control work](https://arxiv.org/abs/2312.06942) demonstrates detection of scheming behavior in limited settings, achieving 85% detection rates for obvious misalignment but only 40-60% for sophisticated deception. This suggests current monitoring may be inadequate for advanced AI systems that learn to conceal their objectives.
+**Control Evaluations**: <R id="187aaa26886ce183">Redwood's control work</R> demonstrates detection of scheming behavior in limited settings, achieving 85% detection rates for obvious misalignment but only 40-60% for sophisticated deception. This suggests current monitoring may be inadequate for advanced AI systems that learn to conceal their objectives.
 
-**Debate Protocol Progress**: A [2025 benchmark for scalable oversight](https://arxiv.org/html/2504.03731) found that debate protocols achieve the highest Agent Score Difference (ASD of +0.3 to +0.7) and are most robust to increasing agent capability, though oversight success rates decline to ~52% at 400 Elo gaps between debaters and judges.
+**Debate Protocol Progress**: A <R id="f7ce4e3a86afd07a">2025 benchmark for scalable oversight</R> found that debate protocols achieve the highest Agent Score Difference (ASD of +0.3 to +0.7) and are most robust to increasing agent capability, though oversight success rates decline to ~52% at 400 Elo gaps between debaters and judges.
 
-**Recursive Self-Critiquing**: Recent work on [scalable oversight via recursive self-critiquing](https://arxiv.org/html/2502.04675) shows that larger models write more helpful critiques and can integrate self-feedback to refine outputs, with quality improvements of 20-35% on summarization tasks. However, models remain susceptible to persuasion and adversarial argumentation, particularly in competitive debate settings.
+**Recursive Self-Critiquing**: Recent work on <R id="6d1732ab914da313">scalable oversight via recursive self-critiquing</R> shows that larger models write more helpful critiques and can integrate self-feedback to refine outputs, with quality improvements of 20-35% on summarization tasks. However, models remain susceptible to persuasion and adversarial argumentation, particularly in competitive debate settings.
 
 ### Capability-Safety Gap
 
@@ -136,18 +136,18 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 |-----------|----------------|----------------------|------------------|-------------------|-------------------|
 | **Human Oversight** | Bottleneck at superhuman tasks | Humans evaluate ~100-200 outputs/day; models generate millions; 5-10% of complex tasks receive meaningful oversight | Superhuman AI will operate in domains where humans can't provide reliable feedback; oversight success drops to 52% at 400 Elo gap | Scalable oversight (debate, amplification), AI assistants, recursive reward modeling | 40-60% chance of working for near-AGI |
 | **Evaluation** | Limited to observable behaviors | Current evals detect 85% of obvious misalignment, 40-60% of sophisticated deception; [sandbagging](/knowledge-base/risks/accident/sandbagging/) undetectable in 70%+ cases | Advanced AI could strategically underperform on evaluations; alignment faking observed in Claude 3 Opus | Adversarial testing, [interpretability](/knowledge-base/responses/alignment/interpretability/), mechanistic anomaly detection | 30-50% for detecting deception |
-| **Goal Specification** | Approximate, inconsistent | Human preference inconsistency: 20-40%; specification gaming: 15-30% of tasks; value learning accuracy: 60-75% on complex moral dilemmas | Value lock-in with wrong objectives; permanent misalignment; inability to correct superhuman systems | [Value learning](https://arxiv.org/abs/1711.03540), democratic input processes, iterated refinement | 25-45% for correct specification |
+| **Goal Specification** | Approximate, inconsistent | Human preference inconsistency: 20-40%; specification gaming: 15-30% of tasks; value learning accuracy: 60-75% on complex moral dilemmas | Value lock-in with wrong objectives; permanent misalignment; inability to correct superhuman systems | <R id="3cdbd40455756dc3">Value learning</R>, democratic input processes, iterated refinement | 25-45% for correct specification |
 | **Robustness** | Fragile to distribution shift | Performance degradation: 25-50% on OOD prompts; adversarial examples fool aligned models 60-80% of time; robustness-capability tradeoff: 10-20% performance cost | [Distributional shift](/knowledge-base/risks/accident/distributional-shift/) at deployment breaks alignment; novel scenarios not covered in training cause failures | Adversarial training, diverse testing, robustness incentives in training | 50-70% for near-domain shift |
 
 ## Expert Perspectives
 
 ### Optimistic Views
 
-**[Paul Christiano](/knowledge-base/people/paul-christiano/)** (formerly OpenAI, now leading ARC): Argues that "alignment is probably easier than capabilities" and that iterative improvement through techniques like iterated amplification can scale to AGI. His work on [debate](https://arxiv.org/abs/1805.00899) and [amplification](https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616) suggests that decomposing hard problems into easier sub-problems can enable human oversight of superhuman systems, though he acknowledges significant uncertainty.
+**[Paul Christiano](/knowledge-base/people/paul-christiano/)** (formerly OpenAI, now leading ARC): Argues that "alignment is probably easier than capabilities" and that iterative improvement through techniques like iterated amplification can scale to AGI. His work on <R id="61da2f8e311a2bbf">debate</R> and <R id="77e9bf1a01a5b587">amplification</R> suggests that decomposing hard problems into easier sub-problems can enable human oversight of superhuman systems, though he acknowledges significant uncertainty.
 
-**[Dario Amodei](/knowledge-base/people/dario-amodei/)** (Anthropic CEO): Points to Constitutional AI's success in reducing harmful outputs by 75% as evidence that AI-assisted alignment methods can work. In Anthropic's ["Core Views on AI Safety"](https://www.anthropic.com/news/core-views-on-ai-safety), he argues that "we can create AI systems that are helpful, harmless, and honest" through careful research and scaling of current techniques, though with significant ongoing investment required.
+**[Dario Amodei](/knowledge-base/people/dario-amodei/)** (Anthropic CEO): Points to Constitutional AI's success in reducing harmful outputs by 75% as evidence that AI-assisted alignment methods can work. In Anthropic's <R id="5fa46de681ff9902">"Core Views on AI Safety"</R>, he argues that "we can create AI systems that are helpful, harmless, and honest" through careful research and scaling of current techniques, though with significant ongoing investment required.
 
-**[Jan Leike](/knowledge-base/people/jan-leike/)** (formerly OpenAI Superalignment, now Anthropic): His work on [weak-to-strong generalization](https://openai.com/index/weak-to-strong-generalization/) demonstrates that strong models can outperform their weak supervisors by 30-60% of the capability gap. He views this as a "promising direction" for superhuman alignment, though noting that "we are still far from recovering the full capabilities of strong models" and significant research remains.
+**[Jan Leike](/knowledge-base/people/jan-leike/)** (formerly OpenAI Superalignment, now Anthropic): His work on <R id="e64c8268e5f58e63">weak-to-strong generalization</R> demonstrates that strong models can outperform their weak supervisors by 30-60% of the capability gap. He views this as a "promising direction" for superhuman alignment, though noting that "we are still far from recovering the full capabilities of strong models" and significant research remains.
 
 ### Pessimistic Views
 
@@ -182,7 +182,7 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 ### Technical Cruxes
 - **Will interpretability scale?** Current methods may hit fundamental limits
 - **Is deceptive alignment detectable?** Models may learn to hide misalignment
-- **Can we specify human values?** [Value specification remains unsolved](https://arxiv.org/abs/1712.05812)
+- **Can we specify human values?** <R id="6b7fc3f234fa109c">Value specification remains unsolved</R>
 - **Do current methods generalize?** RLHF may break with capability jumps
 
 ### Strategic Questions
@@ -197,27 +197,27 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 | Category | Key Papers | Authors | Year |
 |----------|------------|---------|------|
-| **Foundations** | [Alignment for Advanced AI](https://arxiv.org/abs/1606.06565) | Taylor, Hadfield-Menell | 2016 |
-| **RLHF** | [Training Language Models to Follow Instructions](https://arxiv.org/abs/2203.02155) | OpenAI | 2022 |
-| **Constitutional AI** | [Constitutional AI: Harmlessness from AI Feedback](https://arxiv.org/abs/2212.08073) | Anthropic | 2022 |
-| **Constitutional AI** | [Collective Constitutional AI](https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input) | Anthropic | 2024 |
-| **Debate** | [AI Safety via Debate](https://arxiv.org/abs/1805.00899) | Irving, Christiano, Amodei | 2018 |
-| **Amplification** | [Iterated Distillation and Amplification](https://ai-alignment.com/iterated-distillation-and-amplification-157debfd1616) | Christiano et al. | 2018 |
-| **Recursive Reward Modeling** | [Scalable Agent Alignment via Reward Modeling](https://arxiv.org/abs/1811.07871) | Leike et al. | 2018 |
-| **Weak-to-Strong** | [Weak-to-Strong Generalization](https://openai.com/index/weak-to-strong-generalization/) | OpenAI | 2023 |
-| **Weak-to-Strong** | [Improving Weak-to-Strong with Scalable Oversight](https://arxiv.org/abs/2402.00667) | Multiple authors | 2024 |
-| **Interpretability** | [A Mathematical Framework](https://transformer-circuits.pub/2021/framework/index.html) | Anthropic | 2021 |
-| **Interpretability** | [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html) | Anthropic | 2024 |
-| **Scalable Oversight** | [A Benchmark for Scalable Oversight](https://arxiv.org/html/2504.03731) | Multiple authors | 2025 |
-| **Recursive Critique** | [Scalable Oversight via Recursive Self-Critiquing](https://arxiv.org/html/2502.04675) | Multiple authors | 2025 |
-| **Control** | [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942) | Redwood Research | 2023 |
+| **Foundations** | <R id="cd3035dbef6c7b5b">Alignment for Advanced AI</R> | Taylor, Hadfield-Menell | 2016 |
+| **RLHF** | <R id="1098fc60be7ca2b0">Training Language Models to Follow Instructions</R> | OpenAI | 2022 |
+| **Constitutional AI** | <R id="683aef834ac1612a">Constitutional AI: Harmlessness from AI Feedback</R> | Anthropic | 2022 |
+| **Constitutional AI** | <R id="3c862a18b467640b">Collective Constitutional AI</R> | Anthropic | 2024 |
+| **Debate** | <R id="61da2f8e311a2bbf">AI Safety via Debate</R> | Irving, Christiano, Amodei | 2018 |
+| **Amplification** | <R id="77e9bf1a01a5b587">Iterated Distillation and Amplification</R> | Christiano et al. | 2018 |
+| **Recursive Reward Modeling** | <R id="56fa6bd15dd062af">Scalable Agent Alignment via Reward Modeling</R> | Leike et al. | 2018 |
+| **Weak-to-Strong** | <R id="e64c8268e5f58e63">Weak-to-Strong Generalization</R> | OpenAI | 2023 |
+| **Weak-to-Strong** | <R id="e4fb663747c74f50">Improving Weak-to-Strong with Scalable Oversight</R> | Multiple authors | 2024 |
+| **Interpretability** | <R id="b948d6282416b586">A Mathematical Framework</R> | Anthropic | 2021 |
+| **Interpretability** | <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | Anthropic | 2024 |
+| **Scalable Oversight** | <R id="f7ce4e3a86afd07a">A Benchmark for Scalable Oversight</R> | Multiple authors | 2025 |
+| **Recursive Critique** | <R id="6d1732ab914da313">Scalable Oversight via Recursive Self-Critiquing</R> | Multiple authors | 2025 |
+| **Control** | <R id="187aaa26886ce183">AI Control: Improving Safety Despite Intentional Subversion</R> | Redwood Research | 2023 |
 
 ### Recent Empirical Studies (2023-2025)
 
-- [Debate May Help AI Models Converge on Truth](https://www.quantamagazine.org/debate-may-help-ai-models-converge-on-truth-20241108/) - Quanta Magazine (2024)
-- [Scalable Human Oversight for Aligned LLMs](https://www.iieta.org/journals/isi/paper/10.18280/isi.300807) - IIETA (2024)
-- [Scaling Laws for Scalable Oversight](https://arxiv.org/html/2504.18530v1) - ArXiv (2025)
-- [An Alignment Safety Case Sketch Based on Debate](https://arxiv.org/pdf/2505.03989) - ArXiv (2025)
+- <R id="b5b86fd37cd96469">Debate May Help AI Models Converge on Truth</R> - Quanta Magazine (2024)
+- <R id="311a21a10c96b10d">Scalable Human Oversight for Aligned LLMs</R> - IIETA (2024)
+- <R id="a2f0c5f433869914">Scaling Laws for Scalable Oversight</R> - ArXiv (2025)
+- <R id="ac9591c7ebccb8a9">An Alignment Safety Case Sketch Based on Debate</R> - ArXiv (2025)
 
 ### Organizations & Labs
 
@@ -231,8 +231,8 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 | Resource Type | Links | Description |
 |---------------|-------|-------------|
-| **Government** | [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework), [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Policy frameworks |
-| **Industry** | [Partnership on AI](https://partnershiponai.org/), [Anthropic RSP](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) | Industry initiatives |
-| **Academic** | [Stanford HAI](https://hai.stanford.edu/), [MIT FutureTech](https://futuretech.mit.edu/) | Research coordination |
+| **Government** | <R id="54dbc15413425997">NIST AI RMF</R>, [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Policy frameworks |
+| **Industry** | <R id="0e7aef26385afeed">Partnership on AI</R>, <R id="394ea6d17701b621">Anthropic RSP</R> | Industry initiatives |
+| **Academic** | <R id="c0a5858881a7ac1c">Stanford HAI</R>, <R id="0aa86d6b61aea588">MIT FutureTech</R> | Research coordination |
 
 <Backlinks />
