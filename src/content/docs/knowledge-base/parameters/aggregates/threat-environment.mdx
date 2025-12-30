@@ -1,0 +1,112 @@
+---
+title: "Threat Environment"
+description: "The aggregate external threat factors that could cause or amplify catastrophic events—biological and cyber exposure, dangerous power concentration, and racing dynamics."
+sidebar:
+  order: 5
+pageType: stub
+lastEdited: "2025-12-29"
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+## Overview
+
+Threat Environment measures the external factors that could cause or amplify catastrophic AI-related events. Unlike [Technical Safety](/knowledge-base/parameters/aggregates/technical-safety/) (which measures our defenses), Threat Environment measures the attacks, misuses, and dangerous dynamics we face.
+
+**Primary outcome affected:** [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑↑
+
+High threat environment means more vectors for catastrophe even if technical safety is strong. These threats can overwhelm defenses, trigger cascading failures, or exploit concentrated power.
+
+---
+
+## Component Parameters
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Components["Threat Components"]
+        BTE[Biological Threat Exposure]
+        CTE[Cyber Threat Exposure]
+        ACC[AI Control Concentration]
+        RI[Racing Intensity]
+    end
+
+    RI -->|accelerates| BTE
+    RI -->|accelerates| CTE
+    ACC -->|amplifies| BTE
+    ACC -->|amplifies| CTE
+
+    BTE --> THREAT[Threat Environment]
+    CTE --> THREAT
+    ACC --> THREAT
+    RI --> THREAT
+
+    THREAT --> ACUTE[Acute Risk ↑]
+
+    style THREAT fill:#ff6b6b
+    style ACUTE fill:#ff6b6b
+`} />
+
+| Parameter | Role | Current State |
+|-----------|------|---------------|
+| [Biological Threat Exposure](/knowledge-base/parameters/biological-threat-exposure/) | AI-enabled bioweapon risk | Contested (defense may win) |
+| [Cyber Threat Exposure](/knowledge-base/parameters/cyber-threat-exposure/) | AI-enabled cyber attack risk | High (60% face AI attacks) |
+| [AI Control Concentration](/knowledge-base/parameters/ai-control-concentration/) | Single point of failure / capture risk | Increasing concentration |
+| [Racing Intensity](/knowledge-base/parameters/racing-intensity/) | Pressure that undermines safety | High (80-85 composite score) |
+
+---
+
+## Internal Dynamics
+
+These threats compound each other:
+
+- **Racing accelerates all threats**: Competitive pressure leads to faster deployment of offensive capabilities
+- **Concentration amplifies impact**: When control is concentrated, single failures affect everyone
+- **Bio and cyber interact**: Same AI capabilities that enable one often enable the other
+- **Threat success breeds threat**: Successful attacks demonstrate viability and attract more actors
+
+This creates **threat escalation dynamics**—each incident makes the next more likely.
+
+---
+
+## How This Affects Outcomes
+
+| Outcome | Effect | Mechanism |
+|---------|--------|-----------|
+| [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) | ↑↑↑ Primary | Direct increase in catastrophic event probability |
+| [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/) | ↑ Secondary | Major incidents cause disruption during transition |
+| [Steady State](/knowledge-base/parameters/outcomes/steady-state/) | ↑ Secondary | Concentrated power shapes long-term distribution |
+
+---
+
+## Relationship to Technical Safety
+
+Threat Environment and [Technical Safety](/knowledge-base/parameters/aggregates/technical-safety/) work in opposition:
+
+| Factor | Technical Safety | Threat Environment |
+|--------|-----------------|-------------------|
+| Direction | Reduces acute risk | Increases acute risk |
+| Focus | Our defenses | Their attacks |
+| Improvability | Research & investment | Harder to reduce |
+| Dynamics | Cumulative progress | Escalation spirals |
+
+**The balance matters**: High technical safety can offset high threat environment, but overwhelming threats can defeat any defense. Racing intensity affects both—it degrades safety while accelerating threats.
+
+---
+
+## Why Concentration Matters
+
+AI Control Concentration is unique because its effect **depends on who controls**:
+- If control concentrates in **safety-conscious actors**: May reduce risk
+- If control concentrates in **reckless or malicious actors**: Dramatically increases risk
+- In either case: **Reduces resilience** to bad actors gaining control
+
+This makes concentration a key uncertainty in acute risk assessment.
+
+---
+
+## Related Pages
+
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) — The outcome this primarily affects
+- [Technical Safety](/knowledge-base/parameters/aggregates/technical-safety/) — The opposing force reducing acute risk
+- [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/) — Governance can moderate racing and concentration
+
+<Backlinks entityId="threat-environment" />

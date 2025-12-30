@@ -27,6 +27,38 @@ Understanding power distribution as a structural parameter enables more sophisti
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Moderates["What Moderates It"]
+        RC[Regulatory Capacity]
+    end
+
+    RC -->|moderates| ACC[AI Control Concentration]
+
+    ACC -->|amplifies| BTE[Bio Threat Exposure]
+    ACC -->|amplifies| CTE[Cyber Threat Exposure]
+
+    ACC --> THREAT[Threat Environment]
+    ACC --> ACUTE[Acute Risk ↑↑]
+    ACC --> STEADY[Steady State ↑↑↑]
+
+    style ACC fill:#f9f
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+`} />
+
+**Contributes to:** [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑ — Concentrated control creates single points of failure/capture
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↑↑↑ — Who controls AI shapes long-term power distribution
+
+*Note: Effects depend on **who** gains control. Concentration in safety-conscious actors may reduce risk; concentration in reckless actors increases it dramatically.*
+
+---
+
 ## Current State Assessment
 
 ### Compute and Infrastructure Concentration

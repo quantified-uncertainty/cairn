@@ -35,6 +35,36 @@ This framing enables:
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        IC[Interpretability Coverage]
+        HE[Human Expertise]
+    end
+
+    IC -->|enables understanding| HOQ[Human Oversight Quality]
+    HE -->|enables judgment| HOQ
+
+    HOQ -->|catches failures in| AR[Alignment Robustness]
+    HOQ --> TECH[Technical Safety]
+    HOQ --> ACUTE[Acute Risk ↓↓]
+    HOQ --> STEADY[Steady State ↓]
+
+    style HOQ fill:#90EE90
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+`} />
+
+**Contributes to:** [Technical Safety Capacity](/knowledge-base/parameters/aggregates/technical-safety/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓↓ — Oversight catches dangerous behaviors before catastrophe
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓ — Quality oversight preserves human agency in the long term
+
+---
+
 ## Current State Assessment
 
 ### Oversight Capability by Domain

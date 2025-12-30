@@ -1,0 +1,87 @@
+---
+title: "Technical Safety Capacity"
+description: "The aggregate capacity to build AI systems that reliably do what we intend—combining alignment robustness, interpretability, oversight quality, and safety culture."
+sidebar:
+  order: 1
+pageType: stub
+lastEdited: "2025-12-29"
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+## Overview
+
+Technical Safety Capacity measures our collective ability to build AI systems that reliably do what we intend. This aggregate combines the technical and organizational factors that determine whether advanced AI systems will be safe and aligned.
+
+**Primary outcome affected:** [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓↓↓
+
+When technical safety is high, catastrophic loss of control, accidents at scale, and misalignment become less likely. This is the most direct lever for reducing existential and catastrophic AI risk.
+
+---
+
+## Component Parameters
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Components["Technical Safety Components"]
+        AR[Alignment Robustness]
+        SCG[Safety-Capability Gap]
+        IC[Interpretability Coverage]
+        HOQ[Human Oversight Quality]
+        SCS[Safety Culture Strength]
+    end
+
+    IC -->|enables| AR
+    IC -->|enables| HOQ
+    SCS -->|strengthens| AR
+    SCG -->|when wide, undermines| AR
+    HOQ -->|catches failures in| AR
+
+    AR --> TECH[Technical Safety Capacity]
+    SCG --> TECH
+    IC --> TECH
+    HOQ --> TECH
+    SCS --> TECH
+
+    TECH --> ACUTE[Acute Risk ↓]
+
+    style TECH fill:#90EE90
+    style ACUTE fill:#ff6b6b
+`} />
+
+| Parameter | Role | Current State |
+|-----------|------|---------------|
+| [Alignment Robustness](/knowledge-base/parameters/alignment-robustness/) | Core outcome: do systems pursue intended goals? | Concerning (12-78% alignment faking in studies) |
+| [Safety-Capability Gap](/knowledge-base/parameters/safety-capability-gap/) | Can safety research keep pace with capabilities? | Widening gap |
+| [Interpretability Coverage](/knowledge-base/parameters/interpretability-coverage/) | Can we understand what's happening inside? | ~10% coverage, improving |
+| [Human Oversight Quality](/knowledge-base/parameters/human-oversight-quality/) | Can humans catch and correct problems? | Declining relative to AI speed |
+| [Safety Culture Strength](/knowledge-base/parameters/safety-culture-strength/) | Do organizations prioritize safety? | Variable (6-12% of R&D) |
+
+---
+
+## Internal Dynamics
+
+These components interact:
+
+- **Interpretability enables alignment verification**: We can only confirm alignment if we understand model internals
+- **Safety culture sustains investment**: Without organizational commitment, safety research loses funding to capabilities
+- **Oversight requires interpretability**: Human overseers need tools to understand what systems are doing
+- **Gap closure requires all components**: No single factor is sufficient; safety capacity emerges from their combination
+
+---
+
+## How This Affects Outcomes
+
+| Outcome | Effect | Mechanism |
+|---------|--------|-----------|
+| [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) | ↓↓↓ Primary | Aligned, interpretable, overseen systems are less likely to cause catastrophe |
+| [Steady State](/knowledge-base/parameters/outcomes/steady-state/) | ↓ Secondary | Technical control shapes who can direct AI and toward what ends |
+| [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/) | ↓ Secondary | Safer systems can be deployed more widely with less disruption |
+
+---
+
+## Related Pages
+
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) — The outcome this primarily affects
+- [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/) — The opposing force increasing acute risk
+
+<Backlinks entityId="technical-safety" />

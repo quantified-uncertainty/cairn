@@ -332,6 +332,24 @@ export const EntitySource = z.object({
 export type EntitySource = z.infer<typeof EntitySource>;
 
 // =============================================================================
+// PARAMETER DISTINCTIONS (Clarifying related parameters)
+// =============================================================================
+
+export const ParameterDistinction = z.object({
+  id: z.string(),                                // Target parameter ID
+  theirFocus: z.string(),                        // Short phrase: what they measure
+  relationship: z.string(),                      // How they relate to this parameter
+});
+export type ParameterDistinction = z.infer<typeof ParameterDistinction>;
+
+export const ParameterDistinctions = z.object({
+  focus: z.string(),                             // Short phrase: what this parameter measures
+  summary: z.string().optional(),                // One sentence summary
+  distinctFrom: z.array(ParameterDistinction),   // Related but distinct parameters
+});
+export type ParameterDistinctions = z.infer<typeof ParameterDistinctions>;
+
+// =============================================================================
 // PUBLICATIONS (Venues/Publishers)
 // =============================================================================
 
@@ -493,6 +511,8 @@ export const Entity = z.object({
   sources: z.array(EntitySource).optional(),
   // Resources (semantic references by ID)
   resources: z.array(z.string()).optional(),      // Resource IDs from resources.yaml
+  // Parameter distinctions (for parameter-type entities)
+  parameterDistinctions: ParameterDistinctions.optional(),
 });
 export type Entity = z.infer<typeof Entity>;
 

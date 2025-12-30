@@ -22,6 +22,87 @@ This framing is more analytically useful because:
 
 ---
 
+## Parameter Hierarchy
+
+Parameters aggregate upward into outcomes we care about. This hierarchy helps us understand which parameter changes matter most for which outcomes.
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Outcomes["What We Care About"]
+        ACUTE[Acute Risk]
+        STEADY[Steady State Quality]
+        TRANS[Transition Smoothness]
+    end
+
+    subgraph Aggregates["Aggregate Parameters"]
+        TECH[Technical Safety]
+        THREAT[Threat Environment]
+        GOV[Governance Capacity]
+        EPIST[Epistemic Foundation]
+        ADAPT[Societal Adaptability]
+    end
+
+    subgraph LeafParams["Leaf Parameters"]
+        AR[Alignment Robustness]
+        SCG[Safety-Capability Gap]
+        RI[Racing Intensity]
+        BTE[Bio Threat Exposure]
+        EH[Epistemic Health]
+        ST[Societal Trust]
+        ES[Economic Stability]
+        HA[Human Agency]
+        MORE[...20 total]
+    end
+
+    AR --> TECH
+    SCG --> TECH
+    RI --> THREAT
+    RI --> GOV
+    BTE --> THREAT
+    EH --> EPIST
+    ST --> EPIST
+    ES --> ADAPT
+    HA --> ADAPT
+    MORE --> TECH
+    MORE --> THREAT
+    MORE --> GOV
+    MORE --> EPIST
+    MORE --> ADAPT
+
+    TECH -->|reduces| ACUTE
+    THREAT -->|increases| ACUTE
+    GOV --> ACUTE
+    GOV --> STEADY
+    GOV --> TRANS
+    EPIST --> STEADY
+    EPIST --> TRANS
+    ADAPT --> TRANS
+
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+### Three Outcome Dimensions
+
+| Outcome | Question | Primary Aggregates |
+|---------|----------|-------------------|
+| [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) | What's the probability of catastrophe? | Technical Safety ↓, Threat Environment ↑ |
+| [Steady State](/knowledge-base/parameters/outcomes/steady-state/) | If we survive, what world do we get? | Epistemic Foundation, Governance |
+| [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/) | How rough is the path? | Societal Adaptability, Governance |
+
+### Five Aggregate Parameters
+
+| Aggregate | Primary Outcome | Components |
+|-----------|-----------------|------------|
+| [Technical Safety](/knowledge-base/parameters/aggregates/technical-safety/) | Acute Risk ↓ | Alignment, Interpretability, Oversight, Safety Culture |
+| [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/) | Acute Risk ↑ | Bio/Cyber Exposure, Concentration, Racing |
+| [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/) | All three | Regulation, Coordination, Institutions |
+| [Epistemic Foundation](/knowledge-base/parameters/aggregates/epistemic-foundation/) | Steady State | Trust, Information Authenticity, Epistemic Health |
+| [Societal Adaptability](/knowledge-base/parameters/aggregates/societal-adaptability/) | Transition | Resilience, Economic Stability, Human Expertise |
+
+---
+
 ## How Parameters, Risks, and Interventions Connect
 
 This interactive diagram shows how both risks (red) and interventions (green) affect parameters (purple). Risks decrease parameter values while interventions increase them. Click and drag to pan, scroll to zoom.

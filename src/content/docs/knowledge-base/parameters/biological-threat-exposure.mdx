@@ -31,6 +31,32 @@ Related analytical frameworks include the [Bioweapons AI Uplift Model](/knowledg
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Amplifies["What Amplifies It"]
+        ACC[AI Control Concentration]
+        RI[Racing Intensity]
+    end
+
+    ACC -->|amplifies| BTE[Biological Threat Exposure]
+    RI -->|accelerates| BTE
+
+    BTE --> THREAT[Threat Environment]
+    BTE --> ACUTE[Acute Risk ↑↑↑]
+
+    style BTE fill:#ff9999
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑↑ — AI-enabled bioweapons represent direct catastrophic threat
+
+---
+
 ## Current State Assessment
 
 ### Detection Capabilities
@@ -108,12 +134,14 @@ flowchart TD
 
 ### AI-Enabled Offense
 
-| Threat | Mechanism | Evidence |
-|--------|-----------|----------|
-| **Knowledge democratization** | AI synthesizes dangerous information for non-experts | GPT-4o3: 94th percentile virologist score |
-| **Screening evasion** | AI designs sequences that bypass detection | Microsoft: 75%+ evasion rate |
-| **Protocol assistance** | AI troubleshoots lab procedures | Documented capability |
-| **Combination effects** | AI + cheap synthesis + automation | Converging trends |
+| Threat | Mechanism | Evidence | Uncertainty |
+|--------|-----------|----------|-------------|
+| **Knowledge accessibility** | AI synthesizes information for non-experts | GPT-4o3: 94th percentile virologist score | High - same accessibility aids defenders |
+| **Screening evasion** | AI designs sequences that bypass detection | Microsoft: 75%+ evasion rate | Medium - detection AI also improving |
+| **Protocol assistance** | AI troubleshoots lab procedures | Documented capability | Medium - also aids legitimate research |
+| **Combination effects** | AI + cheap synthesis + automation | Converging trends | High - timeline uncertain |
+
+*Note: "Knowledge democratization" is dual-use—the same AI capabilities that could aid attackers also enable more researchers to work on countermeasures, vaccine development, and biosurveillance. See "AI for Defense" section below.*
 
 ### 2025 Capability Assessments
 
@@ -169,12 +197,18 @@ The 2024 U.S. Intelligence Community Annual Threat Assessment explicitly warns: 
 
 ### AI for Defense
 
-| Application | Benefit | Maturity |
-|-------------|---------|----------|
-| **Pathogen detection** | AI identifies novel sequences | Growing |
-| **Vaccine design** | Accelerate candidate development | Proven |
-| **Drug discovery** | Find countermeasures faster | Active |
-| **Surveillance analysis** | Process metagenomic data at scale | Developing |
+AI democratization cuts both ways—the same capabilities that lower barriers for potential attackers also dramatically expand defensive capacity:
+
+| Application | Benefit | Maturity | Democratization Effect |
+|-------------|---------|----------|----------------------|
+| **Pathogen detection** | AI identifies novel sequences | Growing | Enables smaller labs and developing nations to participate in surveillance |
+| **Vaccine design** | Accelerate candidate development | Proven | Open-source tools (AlphaFold, ESMFold) available to all researchers |
+| **Drug discovery** | Find countermeasures faster | Active | AI reduces cost from \$2.6B to potentially \$100-500M per drug |
+| **Surveillance analysis** | Process metagenomic data at scale | Developing | Cloud-based AI analysis accessible globally |
+| **Literature synthesis** | Rapid review of pathogen research | Emerging | Non-specialists can quickly understand biosecurity literature |
+| **Threat anticipation** | Model potential engineered pathogens | Research | Defenders can prepare countermeasures proactively |
+
+*The "democratization of biology" argument assumes attackers benefit more than defenders. However, defensive applications have larger user bases, more funding, regulatory support, and can operate openly—advantages that compound over time. The RAND finding that "wet lab skills remain the binding constraint" suggests knowledge democratization may benefit defenders more, since legitimate researchers already have lab access while potential attackers face persistent physical barriers.*
 
 ### Structural Improvements
 
@@ -204,16 +238,19 @@ Georgetown's analysis characterizes advances in genetic engineering and syntheti
 
 The balance hinges on three critical factors: (1) whether mandatory DNA synthesis screening can close the 75% evasion gap, (2) whether metagenomic surveillance deployment can achieve sufficient coverage (currently &lt;5% of high-risk sites) to provide early warning, and (3) whether mRNA vaccine platforms can compress response times below the 100-day threshold. Expert probability estimates on long-term balance range from 25-45% favoring defense to 15-25% favoring offense, with 30-40% expecting ongoing contestation.
 
-| Factor | Favors Offense | Favors Defense | Magnitude (1-5) |
-|--------|----------------|----------------|-----------------|
-| AI knowledge democratization | ✓ | | 4 - Reduces barrier from expert to intermediate |
-| Screening evasion capabilities | ✓ | | 3 - 75% evasion rate with current systems |
-| Synthesis cost reduction | ✓ | | 3 - \$1.09/base to &lt;\$1.01/base projected |
-| Offense operates outside legal constraints | ✓ | | 5 - Fundamental asymmetry in AI deployment |
-| mRNA vaccine platforms (100-day response) | | ✓ | 4 - Proven 42-63 day timelines |
-| Metagenomic surveillance | | ✓ | 3 - If deployed at scale (currently limited) |
-| Attribution capability | | ✓ | 2 - Forensics improving but imperfect |
-| **Net current balance** | **Contested, leaning offense** | **Potentially favorable 2030+ if investments made** | - |
+| Factor | Favors Offense | Favors Defense | Magnitude (1-5) | Notes |
+|--------|----------------|----------------|-----------------|-------|
+| AI knowledge accessibility | ✓ | ✓ | 3 | Dual-use: aids both sides, but defenders have lab access advantage |
+| Screening evasion capabilities | ✓ | | 3 | 75% evasion rate with current systems; AI detection improving |
+| Synthesis cost reduction | ✓ | | 2 | \$1.09/base to &lt;\$1.01/base; affects defenders too (cheaper countermeasures) |
+| Legal/operational constraints | ✓ | | 3 | Attackers unconstrained, but also unsupported and isolated |
+| mRNA vaccine platforms | | ✓ | 4 | Proven 42-63 day timelines; improving further |
+| Metagenomic surveillance | | ✓ | 4 | Game-changer if deployed at scale |
+| AI drug discovery | | ✓ | 3 | Dramatically accelerates countermeasure development |
+| Defender resource advantage | | ✓ | 4 | \$100B+ legitimate biotech vs. isolated attackers |
+| Open collaboration | | ✓ | 3 | Defenders share knowledge; attackers must work secretly |
+| Attribution capability | | ✓ | 2 | Forensics improving; deters state actors |
+| **Net balance** | **Contested** | **Contested** | - | Expert estimates: 25-45% defense-favorable, 15-25% offense-favorable, 30-40% ongoing contestation |
 
 ### Biosecurity and Existential Risk
 
@@ -238,10 +275,12 @@ Toby Ord in *The Precipice* estimates **1 in 30** chance of existential catastro
 
 | Scenario | Probability | Biosecurity Outcome | Key Indicators (by 2028) | Offense-Defense Balance |
 |----------|-------------|---------------------|--------------------------|-------------------------|
-| **Defense Wins** | 35-45% | Surveillance and vaccines outpace offense | Mandatory DNA screening implemented; metagenomic coverage >40%; &lt;50-day vaccine response proven | Defense +2 |
-| **Contested Balance** | 30-40% | Ongoing cat-and-mouse; some incidents | Voluntary screening continues; selective surveillance deployment; 60-90 day vaccine timelines | Neutral |
-| **Offense Advantage** | 15-25% | AI-enabled attacks exceed defense capacity | Screening remains voluntary; surveillance &lt;10% coverage; 100+ day responses | Offense +2 |
+| **Defense Strengthens** | 35-45% | Surveillance and vaccines outpace offense; AI democratization benefits defenders more | Mandatory DNA screening implemented; metagenomic coverage >40%; &lt;50-day vaccine response proven; open-source bio-defense tools proliferate | Defense +2 |
+| **Contested Balance** | 35-45% | Ongoing cat-and-mouse; both sides improve; no major incidents | Voluntary screening expands; selective surveillance deployment; 60-90 day vaccine timelines; incremental progress on both sides | Neutral |
+| **Offense Advantage** | 10-20% | AI-enabled attacks exceed defense capacity | Screening remains voluntary; surveillance &lt;10% coverage; 100+ day responses; successful engineered pathogen release | Offense +2 |
 | **Catastrophic Incident** | 5-10% | Major biological event forces reactive global response | Engineered outbreak with >100K casualties; emergency treaty negotiations | Depends on response |
+
+*Note: The "Defense Strengthens" and "Contested Balance" scenarios together account for 70-90% of probability mass. Catastrophic outcomes remain possible but are not the most likely trajectory given current defensive investments and the structural advantages defenders hold (resources, collaboration, legitimacy).*
 
 ### Critical Dependencies
 
@@ -258,25 +297,28 @@ Toby Ord in *The Precipice* estimates **1 in 30** chance of existential catastro
 
 ### Are AI-Bioweapons Overhyped?
 
-This debate centers on conflicting 2024 evidence. RAND Corporation's January 2024 study concluded that "current artificial intelligence does not meaningfully increase risk of a biological weapons attack" by non-state actors, finding wet lab skills remain the binding constraint. However, RAND President Jason Matheny simultaneously called synthetic biology and AI "grave security challenges for which we are currently unprepared," highlighting divergent interpretations even within the same organization.
+This debate centers on conflicting 2024-2025 evidence. RAND Corporation's January 2024 study concluded that "current artificial intelligence does not meaningfully increase risk of a biological weapons attack" by non-state actors, finding wet lab skills remain the binding constraint. This finding has held up through 2025 despite advancing AI capabilities.
 
-**High risk view (35-50% expert probability):**
-- AI democratizes dangerous knowledge (GPT-4o3: 94th percentile virologist performance)
-- Screening systems catch only 25% of dangerous sequences and AI achieves 75%+ evasion
-- Historical non-occurrence reflects lack of capable motivated actors, not impossibility
-- Attribution and deterrence fail against non-state actors
+**Higher concern view (25-40% expert probability):**
+- AI lowers knowledge barriers (GPT-4o3: 94th percentile virologist performance)
+- Screening systems currently catch only 25% of dangerous sequences
+- Historical non-occurrence may reflect luck or lack of motivated actors
+- Future AI capabilities may overcome current constraints
 
-**Lower risk view (20-35% expert probability):**
-- RAND study found no significant AI uplift for current models
-- Wet lab skills remain the bottleneck (equipment access, sterile technique, scale-up)
-- Existing information already accessible via scientific literature
-- Natural pandemics pose greater near-term risk than engineered ones
+**Lower concern view (30-45% expert probability):**
+- RAND study found no significant AI uplift for current or near-term models
+- Wet lab skills remain the binding constraint (equipment, technique, scale-up)—AI doesn't help here
+- Existing scientific literature already contains dangerous information; AI adds little marginal risk
+- Natural pandemics pose greater near-term risk; resources better spent on general preparedness
+- AI democratization benefits defense more (see above)—larger user base, more funding, open collaboration
+- No successful AI-enabled bioattacks despite years of AI availability
 
-**Moderate/uncertain view (30-40% expert probability):**
-- Risk is genuine but probability bounds remain wide (5-40% for catastrophic event by 2050)
-- Prudent to prepare while avoiding overreaction that chills beneficial biology research
+**Balanced/pragmatic view (30-40% expert probability):**
+- Risk is genuine but probability bounds remain wide (5-25% for catastrophic event by 2050)
+- Prudent to invest in defense while avoiding overreaction that chills beneficial biology research
 - Defensive investments (surveillance, vaccines) provide value against both natural and engineered threats
-- 2025-2027 capability trajectory will provide crucial evidence
+- The "democratization helps attackers" framing ignores that defenders also benefit from AI accessibility
+- 2025-2027 capability trajectory will provide crucial evidence; current alarmism may be premature
 
 ### Mandatory vs. Voluntary Screening
 

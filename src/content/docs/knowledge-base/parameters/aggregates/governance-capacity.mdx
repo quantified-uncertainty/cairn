@@ -1,0 +1,103 @@
+---
+title: "Governance Capacity"
+description: "The aggregate ability to collectively steer AI development through regulation, coordination, institutional quality, and managed competition—affecting all three outcome dimensions."
+sidebar:
+  order: 2
+pageType: stub
+lastEdited: "2025-12-29"
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+## Overview
+
+Governance Capacity measures our collective ability to steer AI development through policy, regulation, and coordination. This is the **cross-cutting aggregate**—it affects all three outcome dimensions because governance shapes both what we build and how we deploy it.
+
+**Outcomes affected:** All three
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓↓ — Can we slow down or stop if needed?
+- [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓↓ — Are disruptions managed?
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓↓ — Who controls the future?
+
+---
+
+## Component Parameters
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Components["Governance Components"]
+        RC[Regulatory Capacity]
+        IQ[Institutional Quality]
+        INTL[International Coordination]
+        CC[Coordination Capacity]
+        RI[Racing Intensity]
+    end
+
+    CC -->|enables| INTL
+    INTL -->|enables| RC
+    IQ -->|strengthens| RC
+    RI -->|undermines| RC
+    RI -->|undermines| INTL
+
+    RC --> GOV[Governance Capacity]
+    IQ --> GOV
+    INTL --> GOV
+    CC --> GOV
+    RI -->|inverse| GOV
+
+    GOV --> ACUTE[Acute Risk ↓]
+    GOV --> STEADY[Steady State ↑]
+    GOV --> TRANS[Transition ↓]
+
+    style GOV fill:#90EE90
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+| Parameter | Role | Current State |
+|-----------|------|---------------|
+| [Regulatory Capacity](/knowledge-base/parameters/regulatory-capacity/) | Can governments understand and regulate AI? | Improving (EU AI Act) but lagging |
+| [Institutional Quality](/knowledge-base/parameters/institutional-quality/) | Do democratic institutions function effectively? | Variable, under stress |
+| [International Coordination](/knowledge-base/parameters/international-coordination/) | Can nations cooperate on AI governance? | Fragile (Seoul commitments) |
+| [Coordination Capacity](/knowledge-base/parameters/coordination-capacity/) | Can stakeholders work together? | Growing but limited |
+| [Racing Intensity](/knowledge-base/parameters/racing-intensity/) | How much competitive pressure undermines governance? | High and increasing |
+
+---
+
+## Internal Dynamics
+
+These components interact:
+
+- **Coordination enables international agreements**: Domestic coordination capacity → international cooperation → binding agreements
+- **Racing undermines everything**: Intense competition pressures regulators, fragments international cooperation, weakens institutions
+- **Institutional quality amplifies capacity**: Strong institutions make regulation more effective and coordination more durable
+- **There are feedback loops**: Good governance reduces racing → enables more governance
+
+---
+
+## How This Affects Outcomes
+
+| Outcome | Effect | Mechanism |
+|---------|--------|-----------|
+| [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) | ↓↓ | Governance can slow racing, enforce safety standards, coordinate emergency response |
+| [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/) | ↓↓ | Governance manages economic disruption, maintains political stability, paces change |
+| [Steady State](/knowledge-base/parameters/outcomes/steady-state/) | ↓↓ | Governance shapes who controls AI, how benefits distribute, what values prevail |
+
+---
+
+## Why Cross-Cutting?
+
+Governance is unique among aggregates because it operates at a **meta-level**:
+- It shapes the rules under which technical development occurs
+- It determines how society responds to AI-driven changes
+- It influences long-term power structures
+
+Other aggregates describe *what happens*; governance determines *who decides*.
+
+---
+
+## Related Pages
+
+- All three outcomes: [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/), [Steady State](/knowledge-base/parameters/outcomes/steady-state/), [Transition](/knowledge-base/parameters/outcomes/transition-smoothness/)
+- [Technical Safety](/knowledge-base/parameters/aggregates/technical-safety/) — What governance regulates
+
+<Backlinks entityId="governance-capacity" />

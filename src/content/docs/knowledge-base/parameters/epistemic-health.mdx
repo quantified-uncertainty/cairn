@@ -11,7 +11,7 @@ tractability: 40
 neglectedness: 55
 uncertainty: 55
 ---
-import {DataInfoBox, Backlinks, R, Mermaid} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R, Mermaid, ParameterDistinctions} from '../../../../components/wiki';
 
 <DataInfoBox entityId="epistemic-health" />
 
@@ -26,6 +26,38 @@ Understanding epistemic health as a parameter (rather than just a "risk of colla
 - **Baseline comparison**: Measuring against historical and optimal levels
 - **Intervention targeting**: Focusing resources on effective capacity-building
 - **Early warning**: Detecting degradation before critical thresholds
+
+<ParameterDistinctions entityId="epistemic-health" />
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        IA[Information Authenticity]
+    end
+
+    IA -->|enables| EH[Epistemic Health]
+
+    EH -->|sustains| ST[Societal Trust]
+    EH -->|protects| PA[Preference Authenticity]
+
+    EH --> EPIST[Epistemic Foundation]
+    EH --> STEADY[Steady State ↓↓↓]
+    EH --> TRANS[Transition ↓↓]
+
+    style EH fill:#90EE90
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Epistemic Foundation](/knowledge-base/parameters/aggregates/epistemic-foundation/)
+
+**Primary outcomes affected:**
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓↓↓ — Clear thinking preserves human autonomy and genuine agency
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓↓ — Epistemic health enables coordination during rapid change
 
 ---
 
@@ -57,17 +89,9 @@ A <R id="5c1ad27ec9acc6f4">2024 meta-analysis of 56 studies</R> (86,155 particip
 | AI detection (lab conditions) | 89-94% | High in controlled settings |
 | AI detection (real-world) | ~45% | 50% accuracy drop "in-the-wild" |
 
-### Trust Indicators
+### Trust Context
 
-The [2025 Edelman Trust Barometer](https://www.edelman.com/trust/2025/trust-barometer) (surveying 32,000+ respondents across 28 countries) reveals acute institutional trust erosion. Those with high grievance levels distrust all four major institutions—business, government, media, and NGOs—with 40% approving hostile activism including spreading disinformation or threatening violence. Only 36% believe things will improve for the next generation (just 20% in developed countries). [Pew Research](https://www.pewresearch.org/short-reads/2025/10/29/how-americans-trust-in-information-from-news-organizations-and-social-media-sites-has-changed-over-time/) finds trust in national news organizations dropped from 76% (2016) to 56% (September 2025)—an 11-point decline in six months alone.
-
-| Institution | Peak Trust | Current (2024-25) | Trend | Source |
-|-------------|------------|-------------------|-------|--------|
-| Mass media | 72% (1970s) | 28% | Historic low | Edelman 2024 |
-| National news organizations (US) | 76% (2016) | 56% (Sept 2025) | -20 points | Pew Research |
-| "No trust at all" in media | &lt;10% | 36-38% | Rising | Edelman 2024 |
-| Worry about distinguishing real from fake | -- | 59% globally | Rising | Various |
-| Belief democracy at risk of failure (US) | -- | 64% | Rising | NPR/Brookings 2024 |
+Epistemic health depends on institutional trust. Key indicators: mass media trust at historic low (28%), 59% globally worried about distinguishing real from fake. **See [Reality Coherence](/knowledge-base/parameters/reality-coherence/) for detailed institutional trust data.**
 
 ---
 

@@ -11,7 +11,7 @@ tractability: 40
 neglectedness: 45
 uncertainty: 55
 ---
-import {DataInfoBox, Backlinks} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid} from '../../../../components/wiki';
 
 <DataInfoBox entityId="coordination-capacity" />
 
@@ -41,6 +41,32 @@ Low coordination directly increases existential risk through:
 - **No global response** capability for AI incidents
 
 Research suggests uncoordinated development reduces safety investment by 30-60% compared to coordinated scenarios.
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    CC[Coordination Capacity]
+
+    CC -->|enables| INTL[International Coordination]
+    CC -->|reduces| RI[Racing Intensity]
+
+    CC --> GOV[Governance Capacity]
+    CC --> ACUTE[Acute Risk ↓]
+    CC --> TRANS[Transition ↓]
+
+    style CC fill:#90EE90
+    style ACUTE fill:#ff6b6b
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓ — Coordination enables collective response to AI risks
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓ — Coordinated governance manages disruption
 
 ---
 

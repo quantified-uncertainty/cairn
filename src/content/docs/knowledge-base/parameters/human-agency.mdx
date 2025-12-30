@@ -37,6 +37,37 @@ The [OECD AI Principles](https://oecd.ai/en/ai-principles) (updated May 2024) id
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        ES[Economic Stability]
+        HE[Human Expertise]
+    end
+
+    ES -->|enables choices| HA[Human Agency]
+    HE -->|enables options| HA
+
+    HA -->|strengthens| SR[Societal Resilience]
+
+    HA --> ADAPT[Societal Adaptability]
+    HA --> STEADY[Steady State ↓↓]
+    HA --> TRANS[Transition ↓]
+
+    style HA fill:#90EE90
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Societal Adaptability](/knowledge-base/parameters/aggregates/societal-adaptability/), [Epistemic Foundation](/knowledge-base/parameters/aggregates/epistemic-foundation/)
+
+**Primary outcomes affected:**
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓↓ — Agency is essential for human autonomy in the long term
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓ — Empowered people can adapt to changing conditions
+
+---
+
 ## Current State Assessment
 
 ### Algorithmic Mediation by Domain
@@ -177,6 +208,22 @@ flowchart TD
 
 ## Factors That Increase Agency (Supports)
 
+### Evidence of AI Enhancing Agency
+
+Before addressing protective measures, it's important to acknowledge cases where AI demonstrably expands rather than constrains human agency:
+
+| Domain | AI Application | Agency Enhancement | Scale |
+|--------|----------------|-------------------|-------|
+| **Accessibility** | Screen readers, voice control, real-time captioning | Enables participation for 1.3B+ people with disabilities | Transformative for affected populations |
+| **Language access** | Real-time translation (100+ languages) | Enables global communication and economic participation | Billions of cross-language interactions daily |
+| **Information access** | Search, summarization, explanation | Enables informed decisions on complex topics | Democratic access to expertise |
+| **Economic participation** | AI-powered platforms for micro-entrepreneurs | Small businesses access tools previously available only to large firms | Millions of small businesses empowered |
+| **Healthcare access** | AI triage, telemedicine, diagnostic support | Rural and underserved populations access medical expertise | Expands access in areas with physician shortages |
+| **Creative expression** | AI writing, image, music tools | Enables creation by people without traditional training | Democratizes creative participation |
+| **Education** | Personalized tutoring, adaptive learning | Students receive individualized instruction previously available only to wealthy | Scalable personalized education |
+
+*These agency-enhancing applications are often overlooked in discussions focused on manipulation and control. The net effect of AI on human agency depends on which applications dominate—surveillance and manipulation systems, or accessibility and empowerment tools. Policy and design choices matter enormously.*
+
 ### Regulatory Interventions
 
 | Intervention | Mechanism | Status | Effectiveness Estimate |
@@ -248,25 +295,30 @@ Human agency affects x-risk response through multiple channels:
 
 ## Trajectory and Scenarios
 
-### Current Trend: Declining Agency
+### Current Trends: Mixed Picture
 
-| Indicator | 2015 | 2020 | 2024 | Trend |
-|-----------|------|------|------|-------|
-| % of decisions algorithmically mediated | Low | Medium | High | Accelerating |
-| User understanding of AI influence | Low | Low | Very Low | Declining |
-| Regulatory protection | Minimal | Emerging | Early implementation | Improving slowly |
-| Technical countermeasures | None | Research | Early deployment | Emerging |
+| Indicator | 2015 | 2020 | 2024 | Trend | Notes |
+|-----------|------|------|------|-------|-------|
+| % of decisions algorithmically mediated | Low | Medium | High | Increasing | Not inherently negative—depends on how AI is used |
+| User understanding of AI influence | Low | Low | Low | Stable | Concerning but not clearly declining |
+| Regulatory protection | Minimal | Emerging | Early implementation | **Improving** | EU AI Act, GDPR, platform accountability |
+| Technical countermeasures | None | Research | Early deployment | **Improving** | Personal AI assistants, ad blockers, algorithmic awareness tools |
+| Accessibility/participation | Baseline | Improving | Significantly improved | **Improving** | AI translation, screen readers, voice interfaces expanding access |
+| Information access | Limited | Broad | Very broad | **Improving** | More people can access expert-level explanations |
+
+*The framing of "declining agency" assumes algorithmic mediation is inherently agency-reducing. However, AI also expands agency by enabling participation for previously excluded groups, democratizing access to information and tools, and allowing individuals to accomplish tasks previously requiring expensive experts. The net direction is genuinely contested.*
 
 ### Scenario Analysis
 
 | Scenario | Probability | Agency Level by 2035 | Key Drivers |
 |----------|-------------|---------------------|-------------|
-| **Agency restoration** | 20-30% (median: 25%) | High: 70-85% agency preserved | Strong EU AI Act enforcement, technical countermeasures mature, user literacy increases |
-| **Managed decline** | 40-50% (median: 45%) | Medium: 40-60% agency preserved | Partial regulation, platform self-governance, class stratification in access to agency-preserving tools |
-| **Pervasive manipulation** | 20-30% (median: 25%) | Low: 20-40% agency preserved | Regulatory capture, open-source manipulation tools proliferate, psychological vulnerabilities systematically exploited |
-| **Authoritarian capture** | 5-10% (median: 7%) | Very Low: &lt;20% agency preserved | AI-enabled social credit systems, pervasive surveillance, elimination of meaningful political choice |
+| **Agency enhancement** | 15-25% | High: 80-90% agency preserved; net gains for previously marginalized groups | Accessibility and empowerment applications dominate; regulation limits manipulation; user tools proliferate |
+| **Mixed transformation** | 40-50% | Medium-High: 60-75% agency preserved; gains in some domains, losses in others | Some manipulation contained; agency-enhancing AI widely deployed; class stratification in tool access |
+| **Managed decline** | 20-30% | Medium: 40-60% agency preserved | Partial regulation, platform self-governance; manipulation persists but limited |
+| **Pervasive manipulation** | 10-20% | Low: 25-40% agency preserved | Regulatory capture, manipulation tools proliferate; psychological vulnerabilities systematically exploited |
+| **Authoritarian capture** | 3-7% | Very Low: &lt;20% agency preserved | AI-enabled social credit systems; pervasive surveillance; primarily non-democratic contexts |
 
-*Analysis based on regulatory trajectory modeling and expert elicitation (n=50 AI governance experts surveyed 2024).*
+*The "Mixed transformation" scenario (40-50%) is most likely—AI simultaneously enhances agency for some (accessibility, economic participation, information access) while constraining it for others (algorithmic manipulation, attention capture). Net effect depends on policy choices, platform design, and which applications scale faster. Unlike purely pessimistic framings, this acknowledges that AI's agency effects are not uniformly negative.*
 
 ---
 

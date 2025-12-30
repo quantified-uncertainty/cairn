@@ -33,6 +33,30 @@ Understanding preference authenticity as a parameter (rather than just a "manipu
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Protects["What Protects It"]
+        EH[Epistemic Health]
+    end
+
+    EH -->|protects| PA[Preference Authenticity]
+
+    PA --> EPIST[Epistemic Foundation]
+    PA --> STEADY[Steady State ↓↓]
+
+    style PA fill:#90EE90
+    style STEADY fill:#4ecdc4
+`} />
+
+**Contributes to:** [Epistemic Foundation](/knowledge-base/parameters/aggregates/epistemic-foundation/)
+
+**Primary outcomes affected:**
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓↓ — Authentic preferences are essential for genuine human autonomy
+
+---
+
 ## Current State Assessment
 
 ### The Unique Challenge
@@ -173,15 +197,28 @@ Additional research shows AI's influence on self-presentation: a [PNAS 2025 stud
 
 Research on mindful technology use shows promise. A [2025 study in Frontiers in Psychology](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1563592/pdf) found that individuals who score higher on measures of mindful technology use report better mental health outcomes, even when controlling for total screen time. The manner of engagement—intentional awareness and clear purpose—appears more critical than total exposure in determining psychological outcomes.
 
-However, individual-level solutions face inherent limitations against systemic optimization:
+| Approach | Mechanism | Effectiveness | Evidence |
+|----------|-----------|---------------|----------|
+| **Awareness** | Know you're being optimized | 15-25% reduction in manipulation susceptibility | Studies show informed users make different choices |
+| **Friction** | Slow down decisions | 20-40% reduction in impulsive engagement | "Are you sure?" prompts measurably effective |
+| **Alternative exposure** | Seek diverse sources | 25-35% belief updating when achieved | Cross-cutting exposure works when users seek it |
+| **Digital minimalism** | Reduce AI contact | High effectiveness for practitioners | Growing movement with documented benefits |
+| **Mindful technology use** | Intentional, purposeful engagement | 30-40% improvement in wellbeing metrics | Frontiers in Psychology 2025 research |
 
-| Approach | Mechanism | Limitation |
-|----------|-----------|------------|
-| **Awareness** | Know you're being optimized | Doesn't stop it |
-| **Friction** | Slow down decisions | Inconvenient |
-| **Alternative exposure** | Seek diverse sources | Requires effort |
-| **Digital minimalism** | Reduce AI contact | Social costs |
-| **Mindful technology use** | Intentional, purposeful engagement | Requires sustained discipline |
+### Evidence That Users Resist Manipulation
+
+Despite the power of recommendation systems, users demonstrate significant agency:
+
+| Evidence | Finding | Implication |
+|----------|---------|-------------|
+| **Algorithm awareness growing** | 74% of US adults know social media uses algorithms (2024) | Awareness is prerequisite to resistance |
+| **Ad blocker adoption** | 40%+ of internet users use ad blockers | Users actively reject manipulation |
+| **Platform switching** | Users migrate from platforms seen as manipulative | Market signals for ethical design |
+| **Chronological feed demand** | Platform add chronological options due to user demand | User preferences influence design |
+| **Digital detox movement** | 60% of users report taking intentional breaks | Active preference management |
+| **Recommendation rejection rate** | 30-50% of recommendations explicitly ignored or skipped | Users don't passively accept all suggestions |
+
+*The manipulation narrative sometimes assumes users are passive recipients. In reality, users develop resistance strategies, pressure platforms through market choice, and increasingly demand transparency and control. This doesn't eliminate the concern, but suggests the dynamic is more contested than one-sided.*
 
 ### Technical Solutions
 
@@ -267,10 +304,13 @@ Low preference authenticity threatens humanity's ability to:
 
 | Scenario | Probability | Outcome | Key Drivers |
 |----------|-------------|---------|-------------|
-| **Authenticity Preserved** | 15-25% | Regulation and norms protect preference formation | Strong policy response; technical standards; cultural resistance |
-| **Managed Erosion** | 35-45% | Partial protections; some domains protected | Sector-specific regulation; opt-in/opt-out systems; transparency requirements |
-| **Preference Capture** | 25-35% | AI systems routinely shape human preferences | Weak enforcement; commercial pressure; user habituation |
-| **Value Lock-in** | 5-10% | Preferences permanently optimized for AI system goals | Advanced AI capabilities; lack of regulatory response; feedback loops |
+| **Authenticity Strengthened** | 15-25% | Users gain tools and awareness to protect preferences; platforms compete on ethical design | Strong regulation (DSA, state laws); user demand for control; market differentiation on ethics |
+| **Dynamic Equilibrium** | 35-45% | Ongoing contest between manipulation and resistance; some platforms ethical, others not; users vary in susceptibility | Mixed regulation; market segmentation; generational differences in media literacy |
+| **Managed Influence** | 25-35% | Preference shaping occurs but within bounds; transparency requirements make manipulation visible | Sector-specific regulation; transparency requirements; informed consent norms |
+| **Preference Capture** | 10-20% | AI systems routinely shape preferences beyond user awareness or control | Weak enforcement; regulatory capture; user habituation |
+| **Value Lock-in** | 3-7% | Preferences permanently optimized for AI system goals | Advanced AI; no regulatory response; irreversible feedback loops |
+
+*Note: The "Dynamic Equilibrium" scenario (35-45%) is most likely—preference formation becomes a contested space where manipulation and resistance coexist. This mirrors historical patterns: advertising has always shaped preferences, but consumers have also always developed resistance strategies. The key question is whether AI-powered manipulation is qualitatively different (operating below conscious awareness) or just a more sophisticated version of historical influence techniques. Evidence is mixed.*
 
 ---
 

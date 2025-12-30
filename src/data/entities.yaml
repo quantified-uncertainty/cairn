@@ -6035,6 +6035,16 @@
     - id: geopolitics
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: racing-dynamics-model
+      type: model
+      relationship: analyzed-by
+    - id: multipolar-trap-dynamics
+      type: model
+      relationship: analyzed-by
+    - id: international-coordination-game
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - international
@@ -6293,6 +6303,12 @@
     - id: anthropic
       type: lab
       relationship: research
+    - id: alignment-robustness
+      type: parameter
+      relationship: models
+    - id: human-oversight-quality
+      type: parameter
+      relationship: affects
   tags:
     - probability
     - decomposition
@@ -6495,6 +6511,12 @@
     - id: ai-control
       type: safety-agenda
       relationship: mitigation
+    - id: alignment-robustness
+      type: parameter
+      relationship: models
+    - id: human-oversight-quality
+      type: parameter
+      relationship: affects
   tags:
     - causal-model
     - corrigibility
@@ -6514,6 +6536,9 @@
     - id: bioweapons
       type: risk
       relationship: related
+    - id: biological-threat-exposure
+      type: parameter
+      relationship: models
   tags:
     - probability
     - decomposition
@@ -6533,6 +6558,9 @@
     - id: bioweapons
       type: risk
       relationship: related
+    - id: biological-threat-exposure
+      type: parameter
+      relationship: affects
   tags:
     - uplift
     - comparison
@@ -6574,6 +6602,15 @@
     - id: multipolar-trap
       type: risk
       relationship: related
+    - id: racing-intensity
+      type: parameter
+      relationship: models
+    - id: safety-capability-gap
+      type: parameter
+      relationship: affects
+    - id: coordination-capacity
+      type: parameter
+      relationship: affects
   tags:
     - risk-factor
     - competition
@@ -6596,6 +6633,12 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    - id: international-coordination
+      type: parameter
+      relationship: models
+    - id: racing-intensity
+      type: parameter
+      relationship: affects
   tags:
     - risk-factor
     - game-theory
@@ -6637,6 +6680,12 @@
     - id: expertise-atrophy
       type: risk
       relationship: related
+    - id: human-expertise
+      type: parameter
+      relationship: models
+    - id: human-oversight-quality
+      type: parameter
+      relationship: affects
     - id: automation-bias
       type: risk
       relationship: related
@@ -6662,6 +6711,12 @@
     - id: winner-take-all
       type: risk
       relationship: related
+    - id: economic-stability
+      type: parameter
+      relationship: models
+    - id: human-agency
+      type: parameter
+      relationship: affects
   tags:
     - risk-factor
     - economics
@@ -6706,6 +6761,12 @@
     - id: economic-disruption
       type: risk
       relationship: related
+    - id: ai-control-concentration
+      type: parameter
+      relationship: models
+    - id: economic-stability
+      type: parameter
+      relationship: affects
   tags:
     - risk-factor
     - concentration
@@ -6725,6 +6786,9 @@
     - id: cyberweapons
       type: risk
       relationship: related
+    - id: cyber-threat-exposure
+      type: parameter
+      relationship: models
   tags:
     - offense-defense
     - cybersecurity
@@ -6744,6 +6808,9 @@
     - id: cyberweapons
       type: risk
       relationship: related
+    - id: cyber-threat-exposure
+      type: parameter
+      relationship: affects
   tags:
     - timeline
     - automation
@@ -6877,6 +6944,12 @@
     - id: deepfakes
       type: risk
       relationship: related
+    - id: information-authenticity
+      type: parameter
+      relationship: models
+    - id: societal-trust
+      type: parameter
+      relationship: affects
   tags:
     - authentication
     - deepfakes
@@ -6904,6 +6977,15 @@
     - id: epistemic-collapse
       type: risk
       relationship: leads-to
+    - id: societal-trust
+      type: parameter
+      relationship: models
+    - id: epistemic-health
+      type: parameter
+      relationship: affects
+    - id: information-authenticity
+      type: parameter
+      relationship: affects
   tags:
     - epistemic
     - cascade
@@ -6932,6 +7014,12 @@
     - id: learned-helplessness
       type: risk
       relationship: leads-to
+    - id: preference-authenticity
+      type: parameter
+      relationship: models
+    - id: societal-trust
+      type: parameter
+      relationship: affects
   tags:
     - epistemic
     - feedback-loops
@@ -6961,6 +7049,12 @@
     - id: deepfakes
       type: risk
       relationship: related
+    - id: information-authenticity
+      type: parameter
+      relationship: models
+    - id: epistemic-health
+      type: parameter
+      relationship: affects
   tags:
     - epistemic
     - timeline
@@ -6989,6 +7083,12 @@
     - id: epistemic-collapse
       type: risk
       relationship: contributes-to
+    - id: human-expertise
+      type: parameter
+      relationship: models
+    - id: human-agency
+      type: parameter
+      relationship: affects
   tags:
     - epistemic
     - cascade
@@ -7020,6 +7120,15 @@
     - id: learned-helplessness
       type: risk
       relationship: outcome
+    - id: epistemic-health
+      type: parameter
+      relationship: models
+    - id: reality-coherence
+      type: parameter
+      relationship: affects
+    - id: societal-trust
+      type: parameter
+      relationship: affects
   tags:
     - epistemic
     - threshold
@@ -7042,6 +7151,15 @@
     - id: reality-fragmentation
       type: risk
       relationship: analyzes
+    - id: reality-coherence
+      type: parameter
+      relationship: models
+    - id: epistemic-health
+      type: parameter
+      relationship: affects
+    - id: preference-authenticity
+      type: parameter
+      relationship: affects
     - id: epistemic-sycophancy
       type: risk
       relationship: mechanism
@@ -7076,6 +7194,15 @@
     - id: concentration-of-power
       type: risk
       relationship: outcome
+    - id: racing-intensity
+      type: parameter
+      relationship: models
+    - id: safety-culture-strength
+      type: parameter
+      relationship: affects
+    - id: international-coordination
+      type: parameter
+      relationship: affects
   tags:
     - game-theory
     - coordination
@@ -7132,6 +7259,12 @@
     - id: economic-disruption
       type: risk
       relationship: related
+    - id: ai-control-concentration
+      type: parameter
+      relationship: models
+    - id: economic-stability
+      type: parameter
+      relationship: affects
   tags:
     - market-structure
     - power-law
@@ -7163,6 +7296,12 @@
     - id: authoritarian-takeover
       type: risk
       relationship: scenario
+    - id: ai-control-concentration
+      type: parameter
+      relationship: models
+    - id: human-agency
+      type: parameter
+      relationship: affects
   tags:
     - power-dynamics
     - systems-thinking
@@ -7431,6 +7570,12 @@
     - id: sycophancy-feedback-loop
       type: model
       relationship: related
+    - id: preference-authenticity
+      type: parameter
+      relationship: models
+    - id: human-agency
+      type: parameter
+      relationship: affects
   tags:
     - autonomy
     - manipulation
@@ -7455,6 +7600,12 @@
     - id: trust-cascade-model
       type: model
       relationship: related
+    - id: societal-trust
+      type: parameter
+      relationship: models
+    - id: institutional-quality
+      type: parameter
+      relationship: affects
   tags:
     - trust
     - institutions
@@ -7479,6 +7630,12 @@
     - id: erosion-of-agency
       type: risk
       relationship: related
+    - id: human-oversight-quality
+      type: parameter
+      relationship: models
+    - id: human-expertise
+      type: parameter
+      relationship: affects
   tags:
     - human-ai-interaction
     - cognitive-bias
@@ -7564,6 +7721,12 @@
     - id: multipolar-trap
       type: risk
       relationship: related
+    - id: safety-culture-strength
+      type: parameter
+      relationship: models
+    - id: racing-intensity
+      type: parameter
+      relationship: affects
   tags:
     - racing-dynamics
     - incentives
@@ -7655,6 +7818,10 @@
       value: Layered Safety Architecture
     - label: Key Insight
       value: Multiple independent safety layers provide robustness against single-point failures
+  relatedEntries:
+    - id: societal-resilience
+      type: parameter
+      relationship: models
   tags:
     - defense
     - security
@@ -7675,6 +7842,12 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    - id: regulatory-capacity
+      type: parameter
+      relationship: models
+    - id: institutional-quality
+      type: parameter
+      relationship: affects
   tags:
     - institutions
     - adaptation
@@ -7698,6 +7871,15 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    - id: international-coordination
+      type: parameter
+      relationship: models
+    - id: coordination-capacity
+      type: parameter
+      relationship: affects
+    - id: ai-control-concentration
+      type: parameter
+      relationship: affects
   tags:
     - game-theory
     - international-coordination
@@ -7816,6 +7998,12 @@
     - id: racing-dynamics
       type: risk
       relationship: related
+    - id: safety-capability-gap
+      type: parameter
+      relationship: models
+    - id: alignment-robustness
+      type: parameter
+      relationship: affects
   tags:
     - tradeoffs
     - safety
@@ -7884,6 +8072,129 @@
     - incentives
     - transparency
   lastUpdated: 2025-12
+- id: parameter-interaction-network
+  type: model
+  title: Parameter Interaction Network Model
+  description: This model maps causal relationships between 22 key AI safety parameters. It identifies 7 feedback loops and 4 critical dependency clusters, showing that epistemic-health and institutional-quality are highest-leverage intervention points.
+  customFields:
+    - label: Model Type
+      value: Network Analysis
+    - label: Scope
+      value: Parameter Dependencies
+    - label: Key Insight
+      value: Epistemic and institutional parameters have highest downstream influence; interventions should target network hubs
+  relatedEntries:
+    - id: risk-interaction-network
+      type: model
+      relationship: related
+    - id: epistemic-health
+      type: parameter
+      relationship: models
+    - id: institutional-quality
+      type: parameter
+      relationship: models
+    - id: societal-trust
+      type: parameter
+      relationship: affects
+    - id: racing-intensity
+      type: parameter
+      relationship: affects
+  tags:
+    - networks
+    - parameters
+    - systems-thinking
+    - feedback-loops
+  lastUpdated: 2025-12
+- id: safety-culture-equilibrium
+  type: model
+  title: Safety Culture Equilibrium Model
+  description: This model analyzes stable states for AI lab safety culture under competitive pressure. It identifies three equilibria and transition conditions requiring coordinated commitment or major incident.
+  customFields:
+    - label: Model Type
+      value: Game-Theoretic Analysis
+    - label: Scope
+      value: Lab Behavior Dynamics
+    - label: Key Insight
+      value: Current industry sits in racing-dominant equilibrium; transition to safety-competitive requires coordination or forcing event
+  relatedEntries:
+    - id: lab-incentives-model
+      type: model
+      relationship: related
+    - id: racing-dynamics-model
+      type: model
+      relationship: related
+    - id: safety-culture-strength
+      type: parameter
+      relationship: models
+    - id: racing-intensity
+      type: parameter
+      relationship: models
+  tags:
+    - equilibrium
+    - safety-culture
+    - game-theory
+    - lab-behavior
+  lastUpdated: 2025-12
+- id: regulatory-capacity-threshold
+  type: model
+  title: Regulatory Capacity Threshold Model
+  description: This model estimates minimum regulatory capacity for credible AI oversight. It finds current US/UK capacity at 0.15-0.25 of the 0.4-0.6 threshold needed, with a 3-5 year window to build capacity.
+  customFields:
+    - label: Model Type
+      value: Threshold Analysis
+    - label: Scope
+      value: Regulatory Effectiveness
+    - label: Key Insight
+      value: Gap between regulatory capacity and industry capability is widening; crisis-level investment needed
+  relatedEntries:
+    - id: institutional-adaptation-speed
+      type: model
+      relationship: related
+    - id: regulatory-capacity
+      type: parameter
+      relationship: models
+    - id: institutional-quality
+      type: parameter
+      relationship: models
+  tags:
+    - governance
+    - regulation
+    - thresholds
+    - capacity-building
+  lastUpdated: 2025-12
+- id: alignment-robustness-trajectory
+  type: model
+  title: Alignment Robustness Trajectory Model
+  description: This model analyzes how alignment robustness changes with capability scaling. It estimates current techniques maintain 60-80% robustness at GPT-4 level but projects degradation to 30-50% at 100x capability.
+  customFields:
+    - label: Model Type
+      value: Trajectory Analysis
+    - label: Scope
+      value: Alignment Scaling
+    - label: Key Insight
+      value: Critical zone at 10-30x current capability where techniques become insufficient; alignment valley problem
+  relatedEntries:
+    - id: deceptive-alignment-decomposition
+      type: model
+      relationship: related
+    - id: safety-capability-tradeoff
+      type: model
+      relationship: related
+    - id: alignment-robustness
+      type: parameter
+      relationship: models
+    - id: safety-capability-gap
+      type: parameter
+      relationship: affects
+    - id: human-oversight-quality
+      type: parameter
+      relationship: affects
+  tags:
+    - alignment
+    - scaling
+    - trajectories
+    - robustness
+  lastUpdated: 2025-12
 
 # Key Parameters
 - id: societal-trust
@@ -7897,6 +8208,16 @@
       value: Declining (77% → 22% government trust since 1964)
     - label: Measurement
       value: Survey data (Pew, Gallup)
+  parameterDistinctions:
+    focus: "Do we trust institutions?"
+    summary: "Confidence in institutions, experts, and verification systems"
+    distinctFrom:
+      - id: epistemic-health
+        theirFocus: "Can we tell what's true?"
+        relationship: "Epistemic health reveals whether institutions deserve trust"
+      - id: reality-coherence
+        theirFocus: "Do we agree on facts?"
+        relationship: "Trust enables acceptance of shared facts; fragmentation erodes trust"
   relatedEntries:
     # Risks that decrease trust
     - id: trust-decline
@@ -7923,6 +8244,22 @@
     - id: public-opinion
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: trust-cascade-model
+      type: model
+      relationship: analyzed-by
+    - id: deepfakes-authentication-crisis
+      type: model
+      relationship: analyzed-by
+    - id: sycophancy-feedback-loop
+      type: model
+      relationship: analyzed-by
+    - id: epistemic-collapse-threshold
+      type: model
+      relationship: analyzed-by
+    - id: trust-erosion-dynamics
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - governance
@@ -7939,6 +8276,16 @@
       value: Declining (50%+ web content AI-generated)
     - label: Measurement
       value: Verification success rates, consensus formation
+  parameterDistinctions:
+    focus: "Can we tell what's true?"
+    summary: "Ability to distinguish truth from falsehood"
+    distinctFrom:
+      - id: societal-trust
+        theirFocus: "Do we trust institutions?"
+        relationship: "Trust enables verification; epistemic health reveals trustworthiness"
+      - id: reality-coherence
+        theirFocus: "Do we agree on facts?"
+        relationship: "Epistemic health is capacity; coherence is the outcome when that capacity is shared"
   relatedEntries:
     # Risks that decrease epistemic capacity
     - id: epistemic-collapse
@@ -7965,6 +8312,19 @@
     - id: expert-opinion
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: epistemic-collapse-threshold
+      type: model
+      relationship: analyzed-by
+    - id: trust-cascade-model
+      type: model
+      relationship: analyzed-by
+    - id: reality-fragmentation-network
+      type: model
+      relationship: analyzed-by
+    - id: authentication-collapse-timeline
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - information-environment
@@ -7984,6 +8344,16 @@
     - id: epistemic-health
       type: parameter
       relationship: related
+    # Models that analyze this parameter
+    - id: deepfakes-authentication-crisis
+      type: model
+      relationship: analyzed-by
+    - id: authentication-collapse-timeline
+      type: model
+      relationship: analyzed-by
+    - id: trust-cascade-model
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - information-environment
@@ -8008,6 +8378,19 @@
     - id: compute-hardware
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: winner-take-all-model
+      type: model
+      relationship: analyzed-by
+    - id: winner-take-all-concentration
+      type: model
+      relationship: analyzed-by
+    - id: concentration-of-power-model
+      type: model
+      relationship: analyzed-by
+    - id: international-coordination-game
+      type: model
+      relationship: analyzed-by
   tags:
     - structural
     - governance
@@ -8032,6 +8415,19 @@
     - id: economic-labor
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: economic-disruption-impact
+      type: model
+      relationship: analyzed-by
+    - id: expertise-atrophy-cascade
+      type: model
+      relationship: analyzed-by
+    - id: preference-manipulation-drift
+      type: model
+      relationship: analyzed-by
+    - id: concentration-of-power-model
+      type: model
+      relationship: analyzed-by
   tags:
     - structural
     - autonomy
@@ -8056,6 +8452,16 @@
     - id: economic-labor
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: economic-disruption-impact
+      type: model
+      relationship: analyzed-by
+    - id: winner-take-all-model
+      type: model
+      relationship: analyzed-by
+    - id: winner-take-all-concentration
+      type: model
+      relationship: analyzed-by
   tags:
     - economic
     - labor-market
@@ -8080,6 +8486,16 @@
     - id: economic-labor
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: expertise-atrophy-progression
+      type: model
+      relationship: analyzed-by
+    - id: expertise-atrophy-cascade
+      type: model
+      relationship: analyzed-by
+    - id: automation-bias-cascade
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - human-factors
@@ -8104,6 +8520,19 @@
     - id: lab-behavior
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: expertise-atrophy-progression
+      type: model
+      relationship: analyzed-by
+    - id: deceptive-alignment-decomposition
+      type: model
+      relationship: analyzed-by
+    - id: corrigibility-failure-pathways
+      type: model
+      relationship: analyzed-by
+    - id: automation-bias-cascade
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - human-factors
@@ -8161,6 +8590,19 @@
     - id: alignment-progress
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: deceptive-alignment-decomposition
+      type: model
+      relationship: analyzed-by
+    - id: corrigibility-failure-pathways
+      type: model
+      relationship: analyzed-by
+    - id: safety-capability-tradeoff
+      type: model
+      relationship: analyzed-by
+    - id: racing-dynamics-model
+      type: model
+      relationship: analyzed-by
   tags:
     - safety
     - technical
@@ -8206,6 +8648,13 @@
     - id: capabilities
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: racing-dynamics-impact
+      type: model
+      relationship: analyzed-by
+    - id: safety-capability-tradeoff
+      type: model
+      relationship: analyzed-by
   tags:
     - safety
     - technical
@@ -8253,6 +8702,10 @@
     - id: us-executive-order
       type: policy
       relationship: related
+    # Models that analyze this parameter
+    - id: institutional-adaptation-speed
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - regulation
@@ -8273,6 +8726,13 @@
     - id: institutional-capture
       type: risk
       relationship: related
+    # Models that analyze this parameter
+    - id: institutional-adaptation-speed
+      type: model
+      relationship: analyzed-by
+    - id: trust-erosion-dynamics
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - institutions
@@ -8289,6 +8749,16 @@
       value: Declining (cross-partisan news overlap from 47% to 12% since 2010)
     - label: Key Measurement
       value: Cross-partisan factual agreement, shared source overlap, institutional trust
+  parameterDistinctions:
+    focus: "Do we agree on facts?"
+    summary: "Shared factual beliefs across populations"
+    distinctFrom:
+      - id: epistemic-health
+        theirFocus: "Can we tell what's true?"
+        relationship: "Epistemic health is capacity; coherence is the outcome of that capacity being shared"
+      - id: societal-trust
+        theirFocus: "Do we trust institutions?"
+        relationship: "Trust in shared sources enables coherence; fragmentation erodes trust"
   relatedEntries:
     - id: reality-fragmentation
       type: risk
@@ -8296,6 +8766,13 @@
     - id: epistemic-health
       type: parameter
       relationship: related
+    # Models that analyze this parameter
+    - id: reality-fragmentation-network
+      type: model
+      relationship: analyzed-by
+    - id: epistemic-collapse-threshold
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - information-environment
@@ -8323,6 +8800,16 @@
     - id: public-opinion
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: preference-manipulation-drift
+      type: model
+      relationship: analyzed-by
+    - id: sycophancy-feedback-loop
+      type: model
+      relationship: analyzed-by
+    - id: reality-fragmentation-network
+      type: model
+      relationship: analyzed-by
   tags:
     - epistemic
     - autonomy
@@ -8356,6 +8843,19 @@
     - id: compute-hardware
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: racing-dynamics-model
+      type: model
+      relationship: analyzed-by
+    - id: racing-dynamics-impact
+      type: model
+      relationship: analyzed-by
+    - id: multipolar-trap-dynamics
+      type: model
+      relationship: analyzed-by
+    - id: lab-incentives-model
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - safety
@@ -8383,6 +8883,13 @@
     - id: lab-behavior
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: racing-dynamics-model
+      type: model
+      relationship: analyzed-by
+    - id: lab-incentives-model
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - safety
@@ -8410,6 +8917,13 @@
     - id: geopolitics
       type: metric
       relationship: measured-by
+    # Models that analyze this parameter
+    - id: racing-dynamics-impact
+      type: model
+      relationship: analyzed-by
+    - id: international-coordination-game
+      type: model
+      relationship: analyzed-by
   tags:
     - governance
     - international
@@ -8430,6 +8944,13 @@
     - id: bioweapons
       type: risk
       relationship: related
+    # Models that analyze this parameter
+    - id: bioweapons-attack-chain
+      type: model
+      relationship: analyzed-by
+    - id: bioweapons-ai-uplift
+      type: model
+      relationship: analyzed-by
   tags:
     - security
     - biosecurity
@@ -8450,6 +8971,13 @@
     - id: cyberweapons
       type: risk
       relationship: related
+    # Models that analyze this parameter
+    - id: cyberweapons-offense-defense
+      type: model
+      relationship: analyzed-by
+    - id: cyberweapons-attack-automation
+      type: model
+      relationship: analyzed-by
   tags:
     - security
     - cybersecurity
@@ -8470,6 +8998,10 @@
     - id: economic-disruption
       type: risk
       relationship: related
+    # Models that analyze this parameter
+    - id: defense-in-depth-model
+      type: model
+      relationship: analyzed-by
   tags:
     - resilience
     - infrastructure

@@ -1,0 +1,118 @@
+---
+title: "Acute Risk / Catastrophic Loss"
+description: "The probability and severity of catastrophic AI-related events—loss of control, weaponization, large-scale accidents, or irreversible lock-in to harmful power structures."
+sidebar:
+  order: 1
+  label: Acute Risk
+pageType: stub
+lastEdited: "2025-12-29"
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+## Overview
+
+Acute Risk measures the probability and potential severity of catastrophic AI-related events. This is about the **tail risks**—the scenarios we most urgently want to avoid because they could cause irreversible harm at civilizational scale.
+
+Unlike [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) (which concerns the journey) or [Steady State Quality](/knowledge-base/parameters/outcomes/steady-state/) (which concerns the destination), Acute Risk is about avoiding catastrophe entirely. A world with high acute risk might navigate a smooth transition to a good steady state—or might not make it there at all.
+
+---
+
+## Sub-dimensions
+
+| Dimension | Description | Key Parameters |
+|-----------|-------------|----------------|
+| **Loss of Control** | AI systems pursuing goals misaligned with humanity; inability to correct or shut down advanced systems | Alignment Robustness, Human Oversight Quality |
+| **Misuse Catastrophe** | Deliberate weaponization of AI for mass harm—bioweapons, autonomous weapons, critical infrastructure attacks | Biological Threat Exposure, Cyber Threat Exposure |
+| **Accident at Scale** | Unintended large-scale harms from deployed systems; cascading failures across interconnected AI | Safety-Capability Gap, Safety Culture Strength |
+| **Lock-in Risk** | Irreversible commitment to bad values, goals, or power structures | AI Control Concentration, Institutional Quality |
+| **Concentration Catastrophe** | Single actor gains decisive AI advantage and uses it harmfully | AI Control Concentration, Racing Intensity |
+
+---
+
+## What Contributes to Acute Risk
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Technical["Technical Safety Capacity"]
+        AR[Alignment Robustness]
+        SCG[Safety-Capability Gap]
+        IC[Interpretability Coverage]
+        HOQ[Human Oversight Quality]
+        SCS[Safety Culture Strength]
+    end
+
+    subgraph Threats["Threat Environment"]
+        BTE[Bio Threat Exposure]
+        CTE[Cyber Threat Exposure]
+        ACC[AI Control Concentration]
+        RI[Racing Intensity]
+    end
+
+    AR -->|reduces| ACUTE[Acute Risk]
+    SCG -->|widens gap, increases| ACUTE
+    IC -->|enables| AR
+    HOQ -->|catches problems| ACUTE
+    SCS -->|strengthens| AR
+
+    BTE -->|direct threat| ACUTE
+    CTE -->|direct threat| ACUTE
+    ACC -->|concentration risk| ACUTE
+    RI -->|undermines safety| SCG
+    RI -->|undermines| SCS
+
+    style ACUTE fill:#ff6b6b
+    style AR fill:#90EE90
+    style HOQ fill:#90EE90
+    style IC fill:#90EE90
+`} />
+
+### Primary Contributing Aggregates
+
+| Aggregate | Relationship | Mechanism |
+|-----------|--------------|-----------|
+| [Technical Safety Capacity](/knowledge-base/parameters/aggregates/technical-safety/) | ↓↓↓ Decreases risk | Aligned, interpretable, overseen systems are less likely to cause catastrophe |
+| [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/) | ↑↑↑ Increases risk | Higher bio/cyber exposure, concentration, and racing all elevate acute risk |
+| [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/) | ↓↓ Decreases risk | Effective governance can slow racing, enforce safety standards, coordinate responses |
+
+### Key Individual Parameters
+
+| Parameter | Effect | Strength |
+|-----------|--------|----------|
+| [Alignment Robustness](/knowledge-base/parameters/alignment-robustness/) | ↓ Reduces | ↓↓↓ Critical |
+| [Safety-Capability Gap](/knowledge-base/parameters/safety-capability-gap/) | ↑ Increases | ↑↑↑ Critical |
+| [Racing Intensity](/knowledge-base/parameters/racing-intensity/) | ↑ Increases | ↑↑↑ Strong |
+| [Human Oversight Quality](/knowledge-base/parameters/human-oversight-quality/) | ↓ Reduces | ↓↓ Strong |
+| [Interpretability Coverage](/knowledge-base/parameters/interpretability-coverage/) | ↓ Reduces | ↓↓ Strong |
+| [AI Control Concentration](/knowledge-base/parameters/ai-control-concentration/) | ↑/↓ Depends | ↑↑ Context-dependent |
+| [Biological Threat Exposure](/knowledge-base/parameters/biological-threat-exposure/) | ↑ Increases | ↑↑ Direct |
+| [Cyber Threat Exposure](/knowledge-base/parameters/cyber-threat-exposure/) | ↑ Increases | ↑↑ Direct |
+
+---
+
+## Why This Matters
+
+Acute risk is the most time-sensitive outcome dimension:
+- **Irreversibility**: Many catastrophic scenarios cannot be undone
+- **Path dependence**: High acute risk can foreclose good steady states entirely
+- **Limited recovery**: Unlike transition disruption, catastrophe may preclude recovery
+- **Urgency**: Near-term capability advances increase near-term acute risk
+
+This is why much AI safety work focuses on acute risk reduction—it's the outcome where failure is most permanent.
+
+---
+
+## Related Outcomes
+
+- [Long-term Steady State Quality](/knowledge-base/parameters/outcomes/steady-state/) — The destination (if we avoid catastrophe)
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) — The journey quality
+
+---
+
+## Related Parameters
+
+### Aggregate Parameters
+- [Technical Safety Capacity](/knowledge-base/parameters/aggregates/technical-safety/)
+- [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/)
+- [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/)
+
+<Backlinks entityId="acute-risk" />

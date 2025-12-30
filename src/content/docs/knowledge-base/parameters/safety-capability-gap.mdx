@@ -31,6 +31,37 @@ The safety-capability gap matters for four critical reasons:
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Widens["What Widens It"]
+        RI[Racing Intensity]
+    end
+
+    subgraph Narrows["What Narrows It"]
+        SCS[Safety Culture Strength]
+        IC[Interpretability Coverage]
+    end
+
+    RI -->|widens| SCG[Safety-Capability Gap]
+    SCS -->|narrows via investment| SCG
+    IC -->|narrows via tools| SCG
+
+    SCG --> TECH[Technical Safety]
+    SCG --> ACUTE[Acute Risk ↑↑↑]
+
+    style SCG fill:#ff9999
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Technical Safety Capacity](/knowledge-base/parameters/aggregates/technical-safety/) (inverse — wider gap means lower safety capacity)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑↑ — A wide gap means deploying systems we don't understand how to make safe
+
+---
+
 ## Current State Assessment
 
 ### Key Metrics

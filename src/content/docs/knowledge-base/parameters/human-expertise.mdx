@@ -31,18 +31,47 @@ This framing enables:
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    HE[Human Expertise]
+
+    HE -->|enables| HOQ[Human Oversight Quality]
+    HE -->|enables| HA[Human Agency]
+    HE -->|enables recovery| SR[Societal Resilience]
+
+    HE --> ADAPT[Societal Adaptability]
+    HE --> TRANS[Transition ↓↓]
+    HE --> ACUTE[Acute Risk ↓]
+
+    style HE fill:#90EE90
+    style TRANS fill:#ffe66d
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Societal Adaptability](/knowledge-base/parameters/aggregates/societal-adaptability/)
+
+**Primary outcomes affected:**
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓↓ — Expertise enables people to adapt to changing conditions
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓ — Human expertise enables meaningful oversight of AI systems
+
+---
+
 ## Current State Assessment
 
 ### Expertise Indicators by Domain
 
-| Domain | Indicator | Current State | Trend | Evidence |
-|--------|-----------|---------------|-------|----------|
-| **Aviation** | Pilot manual flying skills | Declining (automation complacency) | Worsening | <R id="e6b22bc6e1fad7e9">FAA 2023: 73% automation monitoring issues</R> |
-| **Medicine** | Diagnostic reasoning (unaided) | 20% decline after 3 months of AI use | Worsening | [Cognitive Research 2024 study](https://cognitiveresearchjournal.springeropen.com/articles/10.1186/s41235-024-00572-8) |
-| **Navigation** | Spatial memory and wayfinding | 30% decline in GPS users | Worsening | <R id="48b327b71a4b7d00">MIT cognitive studies</R> |
-| **Research** | Literature synthesis capability | Declining with AI summarization | Early stage | Self-reported reduction in deep reading |
-| **Writing** | Compositional skill | Neural connectivity reduced (MIT EEG study) | Concerning | [MIT 2024: Memory retention drops in ChatGPT users](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) |
-| **Programming** | Algorithm design & debugging | 36% increase in tech sector instability | Mixed | [Microsoft New Future of Work 2025](https://www.microsoft.com/en-us/research/wp-content/uploads/2025/12/New-Future-Of-Work-Report-2025.pdf) |
+| Domain | Indicator | Current State | Trend | Evidence | Counterpoint |
+|--------|-----------|---------------|-------|----------|--------------|
+| **Aviation** | Pilot manual flying skills | Declining (automation complacency) | Mixed | <R id="e6b22bc6e1fad7e9">FAA 2023: 73% automation monitoring issues</R> | Industry responding with mandatory hand-flying requirements |
+| **Medicine** | Diagnostic reasoning (unaided) | 20% decline after 3 months AI use (one study) | Uncertain | [Cognitive Research 2024](https://cognitiveresearchjournal.springeropen.com/articles/10.1186/s41235-024-00572-8) | AI-assisted diagnosis improves accuracy 30-50%; net patient outcomes improving |
+| **Navigation** | Spatial memory and wayfinding | 30% decline in GPS users | Stable | <R id="48b327b71a4b7d00">MIT cognitive studies</R> | Functional navigation maintained; unclear if loss matters for most people |
+| **Research** | Literature synthesis capability | Changing, not clearly declining | Mixed | Self-reported changes in reading patterns | AI enables broader literature coverage; different skill, not necessarily worse |
+| **Writing** | Compositional skill | Neural connectivity changes observed | Uncertain | [MIT 2024 EEG study](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) | Small sample; unclear long-term significance; AI also enables more people to write effectively |
+| **Programming** | Algorithm design & debugging | Shifting skill profile | Mixed | [Microsoft 2025](https://www.microsoft.com/en-us/research/wp-content/uploads/2025/12/New-Future-Of-Work-Report-2025.pdf) | Productivity up 30-50%; junior devs learning faster with AI assistance |
+
+*Note: Many "decline" findings come from short-term studies measuring specific sub-skills. Whether these translate to meaningful functional impairment remains uncertain. AI tools may be shifting the skill mix rather than causing pure atrophy—similar to how calculators changed but didn't eliminate mathematical competence.*
 
 ### Epistemic Capacity Indicators
 
@@ -180,6 +209,21 @@ Recent evidence quantifies the training pipeline disruption. According to [Signa
 
 ## Factors That Increase Expertise (Supports)
 
+### Evidence of Positive AI-Human Collaboration
+
+Before addressing preservation strategies, it's worth noting evidence that AI can enhance rather than erode expertise:
+
+| Finding | Evidence | Implication |
+|---------|----------|-------------|
+| **Productivity equalizer** | IMF 2024: AI provides greatest gains for less experienced workers | AI may accelerate expertise development for novices |
+| **Diagnostic improvement** | AI-assisted radiology shows 30-50% accuracy gains | Human-AI teams outperform either alone |
+| **Coding acceleration** | GitHub Copilot users complete tasks 55% faster | More time available for complex problem-solving |
+| **Learning enhancement** | Khan Academy's Khanmigo shows promising early results | AI tutoring can personalize expertise development |
+| **Accessibility expansion** | AI enables participation by people previously excluded | Broader talent pool developing expertise |
+| **Expert augmentation** | Senior professionals report AI handles routine tasks, freeing time for complex judgment | Expertise may be concentrating at higher levels |
+
+*The key question is whether these gains represent genuine expertise development or dependency-creating shortcuts. Evidence remains mixed, but the pessimistic framing that AI necessarily erodes expertise is not supported by all available data.*
+
 ### Deliberate Practice Programs
 
 | Approach | Mechanism | Effectiveness | Implementation |
@@ -275,10 +319,12 @@ According to [McKinsey's 2025 AI in the Workplace report](https://www.mckinsey.c
 
 | Scenario | Probability | Expertise Level Outcome | Key Indicators |
 |----------|-------------|------------------------|----------------|
-| **Expertise preservation** | 20-30% | Active policies maintain human capability; AI augments rather than replaces | EU AI Act enforcement, training pipeline recovery, skill-building AI design |
-| **Managed decline** | 40-50% | Some domains preserved (safety-critical); others atrophy; specialist/generalist divide | Current trajectory; selective preservation in aviation/medicine; entry-level erosion |
-| **Widespread atrophy** | 20-30% | Most populations lose deep expertise; AI dependence becomes universal | 25%+ continued reduction in graduate hiring; oversight threshold breached |
-| **Expertise renaissance** | 5-15% | Backlash creates premium for human expertise; deliberate preservation succeeds | 79% workers believe AI skills broaden opportunities; proactive preservation efforts |
+| **Expertise enhancement** | 20-30% | AI tools designed to build expertise; human-AI collaboration improves outcomes | Skill-building AI design becomes standard; mentorship augmented not replaced; productivity AND capability rise together |
+| **Expertise transformation** | 35-45% | Skills shift rather than decline; new competencies emerge; some traditional skills atrophy while others strengthen | Programming shifts from syntax to architecture; medicine shifts from pattern recognition to judgment; net capability maintained |
+| **Managed preservation** | 20-30% | Active policies maintain critical human capabilities in safety-relevant domains; mixed picture elsewhere | EU AI Act enforcement; aviation/medicine maintain standards; some consumer skill atrophy tolerated |
+| **Widespread atrophy** | 10-20% | Most populations lose deep expertise in multiple domains; AI dependence creates systemic vulnerabilities | Graduate hiring continues declining; oversight capability erodes; critical failures begin occurring |
+
+*Note: The "transformation" scenario (35-45%) represents the most likely trajectory—expertise changing rather than simply declining. Historical parallels include the calculator's effect on mental arithmetic (skill shifted, not lost) and word processors' effect on handwriting (acceptable trade-off for most). Whether current AI-driven changes follow this pattern or represent something more concerning remains genuinely uncertain.*
 
 ---
 

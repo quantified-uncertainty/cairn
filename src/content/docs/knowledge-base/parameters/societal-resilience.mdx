@@ -33,6 +33,37 @@ Understanding resilience as a parameter (rather than just "AI failure risks") en
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        HE[Human Expertise]
+        ES[Economic Stability]
+    end
+
+    HE -->|enables recovery| SR[Societal Resilience]
+    ES -->|enables investment| SR
+
+    SR -->|strengthened by| HA[Human Agency]
+
+    SR --> ADAPT[Societal Adaptability]
+    SR --> TRANS[Transition ↓↓]
+    SR --> ACUTE[Acute Risk ↓]
+
+    style SR fill:#90EE90
+    style TRANS fill:#ffe66d
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Societal Adaptability](/knowledge-base/parameters/aggregates/societal-adaptability/)
+
+**Primary outcomes affected:**
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓↓ — Resilience enables recovery from disruptions
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↓ — Resilient societies can recover from AI incidents
+
+---
+
 ## Current State Assessment
 
 ### AI Dependency Levels
@@ -185,14 +216,30 @@ AI systems fail differently than traditional infrastructure: they can drift from
 | **On-premises backup** | Local capability if cloud fails | Variable by sector |
 | **Non-AI fallbacks** | Traditional systems maintained | Often neglected |
 
+### Evidence of Successful Resilience Responses
+
+Before examining approaches, it's worth noting that resilience efforts are working in many cases:
+
+| Success | Evidence | Implication |
+|---------|----------|-------------|
+| **Multi-cloud adoption at 80-92%** | Most enterprises now use multiple cloud providers | Concentration risk being addressed |
+| **Post-CrowdStrike improvements** | Organizations implemented staged rollouts, better testing | Learning from incidents occurs |
+| **NIST \$10M+ investment** | Federal funding for AI resilience centers (Dec 2025) | Institutional response emerging |
+| **Financial sector circuit breakers** | Trading halts prevent flash crash cascades | Sector-specific resilience works |
+| **Healthcare backup systems** | Most hospitals maintain non-AI diagnostic capability | Critical sectors preserve fallbacks |
+| **Supply chain diversification post-COVID** | Companies reduced single-source dependencies | Resilience investment happening |
+
+*The resilience picture is not uniformly negative. While AI dependency is growing, so is awareness of the need for redundancy. The question is whether resilience investments keep pace with growing dependency.*
+
 ### Human Capital Preservation
 
 | Approach | Function | Status |
 |----------|----------|--------|
-| **Skills maintenance programs** | Preserve non-AI capabilities | Limited |
-| **Training for AI failure scenarios** | Prepare for manual operation | Emerging |
-| **Hybrid human-AI workflows** | Maintain human competence | Growing awareness |
-| **Documentation** | Capture institutional knowledge | Variable |
+| **Skills maintenance programs** | Preserve non-AI capabilities | Growing; mandated in some sectors |
+| **Training for AI failure scenarios** | Prepare for manual operation | Emerging; post-outage awareness |
+| **Hybrid human-AI workflows** | Maintain human competence | Growing adoption |
+| **Documentation** | Capture institutional knowledge | Improving with AI assistance |
+| **Reskilling programs** | Adapt workforce to AI environment | \$300B+ annual investment globally |
 
 ### Organizational Practices
 
@@ -249,16 +296,18 @@ Low resilience amplifies other AI risks:
 
 ### Current Trajectory
 
-Evidence shows declining resilience across multiple dimensions. Critical cloud outages increased 52% since 2022 and 18% annually in 2024. Human error causes 66% of outages. Organizations increasingly depend on concentrated infrastructure while cutting redundancy for efficiency.
+The resilience picture is mixed—some trends are concerning while others show improvement. Critical cloud outages have increased, but so has investment in resilience measures.
 
-| Trend | Assessment | Evidence | Trajectory |
-|-------|------------|----------|------------|
-| AI dependency | Increasing | Cloud concentration 65% → 71% (2022-2025) | Accelerating |
-| Concentration | Increasing | Top 3 providers control 63-71% of market | Growing risk |
-| Redundancy investment | Lagging | Multi-cloud at 80-92% but incomplete | Insufficient |
-| Skills maintenance | Declining rapidly | 76K AI job displacements; 44% skill changes expected | Critical concern |
-| Outage frequency | Increasing | +52% since 2022, +18% in 2024 | Worsening |
-| Outage duration | Increasing | 221 hours in 2024 (+51% since 2022) | Worsening |
+| Trend | Assessment | Evidence | Direction |
+|-------|------------|----------|-----------|
+| AI dependency | Increasing | Cloud concentration 65% → 71% (2022-2025) | Concerning but expected with technology adoption |
+| Concentration | Mixed | Top 3 control 63-71%; but alternative providers growing | Risk acknowledged; diversification efforts underway |
+| Redundancy investment | **Improving** | Multi-cloud at 80-92%; up from ~60% in 2020 | Positive trajectory; not yet sufficient |
+| Skills maintenance | Mixed | Some displacement (76K); but also reskilling investment (\$300B+) | Contested; varies by sector and company |
+| Outage frequency | Increasing | +52% since 2022 | Concerning; driving resilience investment |
+| Outage recovery | **Improving** | Post-incident response faster; automated failover growing | Learning from failures occurring |
+| Regulatory attention | **Improving** | NIST investment; EU/UK critical third-party rules | Institutional response emerging |
+| Awareness | **Improving** | Major outages (CrowdStrike, AWS) drive board-level attention | Resilience becoming strategic priority |
 
 ### Scenario Analysis
 
@@ -266,10 +315,12 @@ NIST is investing \$10M in AI centers for manufacturing and critical infrastruct
 
 | Scenario | Probability | Resilience Outcome | Key Drivers | Timeline |
 |----------|-------------|-------------------|-------------|----------|
-| **Resilience Investment** | 25-35% | Redundancy and skills maintained | Regulatory requirements, NIST standards | 2-5 years |
-| **Fragile Equilibrium** | 35-45% | Dependency grows; no major incident yet | Cost optimization dominates | Ongoing |
-| **Resilience Erosion** | 20-30% | Increasing vulnerability; recovery capacity lost | Skills atrophy, concentration increases | 1-3 years |
-| **Wake-Up Call** | 10-15% | Major incident forces resilience investment | Catastrophic multi-day outage | Could occur anytime |
+| **Resilience Strengthening** | 30-40% | Multi-cloud becomes standard; skills preservation programs scale; regulatory requirements enforced | Post-outage awareness; regulatory action; market demand for resilience | 2-5 years |
+| **Adequate Adaptation** | 30-40% | Dependency and resilience grow together; incidents occur but are manageable; sector variation | Mixed incentives; some sectors lead, others lag; learning from incidents | Ongoing |
+| **Fragile Equilibrium** | 15-25% | Dependency outpaces resilience; no catastrophe yet but vulnerability growing | Cost optimization dominates; complacency | 1-3 years |
+| **Wake-Up Call** | 10-15% | Major incident forces rapid resilience investment | Catastrophic multi-day outage affecting critical services | Could occur anytime; would likely accelerate positive scenarios |
+
+*Note: The probability of positive scenarios ("Resilience Strengthening" + "Adequate Adaptation" = 60-80%) reflects that major outages in 2024-2025 have already triggered significant institutional response. The question is whether this response is sufficient and sustained. Historical precedent (post-2008 financial regulation, post-COVID supply chain diversification) suggests major incidents do drive resilience investment, though often with delay.*
 
 ### Critical Thresholds
 

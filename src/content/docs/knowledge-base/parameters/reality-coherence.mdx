@@ -11,7 +11,7 @@ tractability: 30
 neglectedness: 50
 uncertainty: 60
 ---
-import {DataInfoBox, Backlinks, R, Mermaid} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R, Mermaid, ParameterDistinctions} from '../../../../components/wiki';
 
 <DataInfoBox entityId="reality-coherence" />
 
@@ -32,6 +32,38 @@ Understanding reality coherence as a parameter (rather than just a "fragmentatio
 - **Baseline comparison**: Measuring against historical levels of shared understanding (47% cross-partisan media overlap in 2010 vs. 12% in 2024)
 - **Threshold identification**: Recognizing minimum coherence needed for democracy (estimated 60-70% agreement on verifiable facts)
 - **Intervention targeting**: Focusing on shared information infrastructure (C2PA adoption, citizens' assemblies, cross-cutting exposure)
+
+<ParameterDistinctions entityId="reality-coherence" />
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        IA[Information Authenticity]
+    end
+
+    IA -->|enables| RC[Reality Coherence]
+
+    RC -->|enables| ST[Societal Trust]
+    RC -->|enables| CC[Coordination Capacity]
+
+    RC --> EPIST[Epistemic Foundation]
+    RC --> STEADY[Steady State ↓↓]
+    RC --> TRANS[Transition ↓]
+
+    style RC fill:#90EE90
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Epistemic Foundation](/knowledge-base/parameters/aggregates/epistemic-foundation/)
+
+**Primary outcomes affected:**
+- [Steady State](/knowledge-base/parameters/outcomes/steady-state/) ↓↓ — Shared reality enables collective decision-making about the future
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↓ — Coordination during upheaval requires common understanding
 
 ---
 
@@ -196,15 +228,30 @@ The OECD's 2024 Survey on Drivers of Trust found that citizens who trust media a
 
 ### Educational Interventions
 
-Educational research emphasizes "epistemic vigilance"—the ability to critically evaluate information before accepting it as knowledge. A 2025 study found that precision in AI interactions "arises not from the machine's answers but from the human process of questioning and refining them." Students increasingly treat ChatGPT as an epistemic authority rather than support software, raising concerns about reduced critical thinking.
+Educational research emphasizes "epistemic vigilance"—the ability to critically evaluate information before accepting it as knowledge. A 2025 study found that precision in AI interactions "arises not from the machine's answers but from the human process of questioning and refining them."
 
 | Intervention | Target | Effectiveness | Evidence Base |
 |--------------|--------|---------------|---------------|
-| **Media literacy** | Source evaluation skills | Mixed—may increase general skepticism by 15-30% | Meta-analyses show limited real-world transfer |
-| **Epistemic humility** | Comfort with uncertainty | Early research, 10-20% improvement in lab settings | Limited field testing |
-| **Epistemic vigilance** | Critical evaluation before acceptance | Promising—reduces AI dependency by 20-35% | Emerging 2024-2025 research |
-| **Inoculation techniques** | Pre-exposure to manipulation | 25-40% resistance increase in controlled settings | Strong lab results, limited scale |
-| **Cross-cutting relationships** | Personal connections across bubbles | Highly effective—30-50% belief updating when achieved | Difficult to engineer at scale |
+| **Media literacy** | Source evaluation skills | 15-30% improvement in controlled settings | Growing evidence base; scaling challenges |
+| **Epistemic humility** | Comfort with uncertainty | 10-20% improvement in lab settings | Promising direction |
+| **Epistemic vigilance** | Critical evaluation before acceptance | 20-35% improvement in critical thinking | Emerging 2024-2025 research |
+| **Inoculation techniques** | Pre-exposure to manipulation | 25-40% resistance increase | Strong lab results; scaling underway |
+| **Cross-cutting relationships** | Personal connections across bubbles | 30-50% belief updating when achieved | Most effective when possible |
+
+### Positive Developments Often Overlooked
+
+Despite fragmentation trends, several countervailing forces support coherence:
+
+| Development | Evidence | Implication |
+|-------------|----------|-------------|
+| **Younger generations more skeptical** | Gen Z shows 40% higher skepticism of single sources | May be more resilient to manipulation |
+| **Fact-checking industry growth** | 400+ active fact-checking organizations globally (2024) | Institutional response emerging |
+| **Platform interventions showing results** | Community Notes reaches 250M+ users; 25-35% correction rate | Crowdsourced verification works |
+| **Cross-partisan agreement on some issues** | 70%+ agreement on infrastructure, childcare, healthcare access | Common ground exists on non-culture-war issues |
+| **C2PA adoption accelerating** | 200+ members; Google, Meta, Microsoft committed | Technical solutions gaining traction |
+| **Citizens' assembly successes** | Ireland achieved 60-67% public support on contentious issues | Deliberation can overcome fragmentation |
+
+*The fragmentation narrative, while supported by real data on media consumption, may overstate the collapse of shared reality. Substantial agreement persists on many factual questions outside the most politically charged domains.*
 
 ---
 
@@ -266,10 +313,13 @@ These scenarios project reality coherence levels through 2030, based on current 
 
 | Scenario | Probability | 2030 Coherence Level | Key Drivers | Implications |
 |----------|-------------|----------------------|-------------|--------------|
-| **Coherence Recovery** | 20-30% | 55-65% (up from 45%) | C2PA adoption 60%+, citizens' assemblies scaled nationally, media trust reforms | Democratic function restored, existential risk coordination viable |
-| **Managed Fragmentation** | 35-45% | 40-50% (stable) | Limited C2PA deployment, local deliberative successes, persistent algorithmic division | Functional governance fragile, crisis response unpredictable |
-| **Deep Fragmentation** | 25-35% | 25-35% (down from 45%) | Synthetic content dominance, failed authentication standards, institutional collapse | Democratic breakdown, coordination failure on existential risks |
-| **Authoritarian Capture** | 5-10% | 70%+ (imposed) | Crisis triggers state control of information infrastructure | Eliminates fragmentation but at cost of freedom and genuine truth-seeking |
+| **Coherence Recovery** | 25-35% | 55-65% (up from 45%) | C2PA adoption 60%+; citizens' assemblies scaled nationally; platform reforms; generational turnover brings more skeptical, media-literate cohorts | Democratic function strengthened; existential risk coordination viable |
+| **Selective Coherence** | 30-40% | 50-60% on technical facts; 30-40% on politically charged issues | Coherence maintained on most empirical questions; persistent disagreement on culture-war topics; "working consensus" on most governance | Functional governance maintained for most policy domains; some issues remain contested |
+| **Managed Fragmentation** | 20-30% | 40-50% (stable) | Limited intervention; persistent algorithmic division; but also persistent institutions | Fragile but functional; crisis response case-by-case |
+| **Deep Fragmentation** | 10-20% | 25-35% (down from 45%) | Synthetic content dominance; failed authentication standards; institutional collapse | Democratic breakdown; coordination failure |
+| **Authoritarian Capture** | 3-7% | 70%+ (imposed) | Crisis triggers state control of information infrastructure | Eliminates fragmentation at cost of freedom |
+
+*Note: The "Selective Coherence" scenario (30-40%) may be most likely—coherence is maintained on most empirical questions (scientific data, economic statistics) while remaining contested on politically charged topics. This is arguably the historical norm: democracies have always featured disagreement on values while (mostly) agreeing on facts. The key question is whether AI-driven fragmentation extends from values disagreement into factual disagreement on a wider range of issues.*
 
 ---
 

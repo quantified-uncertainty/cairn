@@ -1,0 +1,102 @@
+---
+title: "Outcome Parameters"
+description: "The three ultimate outcomes we care about: avoiding catastrophe (Acute Risk), ensuring the destination is good (Steady State Quality), and minimizing suffering along the way (Transition Smoothness)."
+sidebar:
+  order: 0
+  label: Overview
+lastEdited: "2025-12-29"
+---
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Outcome Parameters represent what we ultimately care about when thinking about AI's impact on humanity. Unlike [leaf parameters](/knowledge-base/parameters/) (which measure specific factors) or [aggregate parameters](/knowledge-base/parameters/aggregates/) (which group related factors), outcome parameters describe the **final states** we're trying to achieve or avoid.
+
+---
+
+## The Three Outcomes
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Outcomes["What We Care About"]
+        ACUTE[Acute Risk]
+        STEADY[Steady State Quality]
+        TRANS[Transition Smoothness]
+    end
+
+    ACUTE -.->|Must avoid to reach| STEADY
+    TRANS -.->|Path affects| STEADY
+    TRANS -.->|Can trigger| ACUTE
+
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+| Outcome | Question | Time Horizon |
+|---------|----------|--------------|
+| [**Acute Risk**](/knowledge-base/parameters/outcomes/acute-risk/) | "What's the probability of catastrophe?" | Near to medium-term |
+| [**Steady State Quality**](/knowledge-base/parameters/outcomes/steady-state/) | "What does the world look like if we succeed?" | Long-term equilibrium |
+| [**Transition Smoothness**](/knowledge-base/parameters/outcomes/transition-smoothness/) | "How much suffering along the way?" | During transition |
+
+---
+
+## Why Three Dimensions?
+
+These outcomes are **partially independent**—you can have different combinations:
+
+| Scenario | Acute Risk | Steady State | Transition |
+|----------|------------|--------------|------------|
+| Best case | Low | Good | Smooth |
+| Fast but risky | High (survived) | Good | Rough |
+| Dystopia | Low | Poor | Smooth |
+| Chaotic success | Medium | Good | Very rough |
+| Catastrophe | Very high | N/A | N/A |
+
+This independence means:
+- **Different interventions target different outcomes**: Alignment research → Acute Risk; Economic policy → Transition; Governance design → Steady State
+- **Trade-offs exist**: Some approaches that reduce acute risk might worsen transition (e.g., abrupt shutdown of AI development)
+- **All three matter**: We shouldn't sacrifice one dimension entirely for another
+
+---
+
+## How Parameters Flow to Outcomes
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Aggregates["Aggregate Parameters"]
+        TECH[Technical Safety]
+        GOV[Governance Capacity]
+        EPIST[Epistemic Foundation]
+        ADAPT[Societal Adaptability]
+        THREAT[Threat Environment]
+    end
+
+    subgraph Outcomes["Outcome Parameters"]
+        ACUTE[Acute Risk]
+        STEADY[Steady State]
+        TRANS[Transition]
+    end
+
+    TECH -->|primary| ACUTE
+    THREAT -->|primary| ACUTE
+    GOV --> ACUTE
+    GOV --> STEADY
+    GOV --> TRANS
+    EPIST --> STEADY
+    EPIST --> TRANS
+    ADAPT -->|primary| TRANS
+
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+See [Aggregate Parameters](/knowledge-base/parameters/aggregates/) for how leaf parameters combine into these aggregate factors.
+
+---
+
+## Related Pages
+
+- [Key Parameters Index](/knowledge-base/parameters/) — All leaf parameters
+- [Aggregate Parameters](/knowledge-base/parameters/aggregates/) — How parameters group together

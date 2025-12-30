@@ -5009,3 +5009,92 @@
   flex-shrink: 0;
 }
 
+/* =============================================================================
+   PARAMETER DISTINCTIONS TABLE
+   ============================================================================= */
+
+.parameter-distinctions {
+  margin: 1.5rem 0;
+}
+
+.parameter-distinctions h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--sl-color-text);
+}
+
+.parameter-distinctions table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.parameter-distinctions th,
+.parameter-distinctions td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--sl-color-gray-5);
+  text-align: left;
+}
+
+.parameter-distinctions th {
+  background: var(--sl-color-gray-6);
+  font-weight: 600;
+}
+
+.parameter-distinctions__current {
+  background: var(--sl-color-gray-6);
+}
+
+.parameter-distinctions__current td:first-child {
+  font-weight: 600;
+}
+
+.parameter-distinctions td em {
+  color: var(--sl-color-gray-2);
+}
+
+.parameter-distinctions td a {
+  color: var(--sl-color-accent);
+  text-decoration: none;
+}
+
+.parameter-distinctions td a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================================================
+   BREAKOUT - Full-width content that extends beyond page margins
+   Used by CauseEffectGraph in model pages
+   ============================================================================= */
+
+.breakout {
+  margin-left: -300px;
+  margin-right: -300px;
+  width: calc(100% + 600px);
+}
+
+@media (max-width: 1400px) {
+  .breakout {
+    margin-left: -200px;
+    margin-right: -200px;
+    width: calc(100% + 400px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .breakout {
+    margin-left: -100px;
+    margin-right: -100px;
+    width: calc(100% + 200px);
+  }
+}
+
+@media (max-width: 800px) {
+  .breakout {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+}
+

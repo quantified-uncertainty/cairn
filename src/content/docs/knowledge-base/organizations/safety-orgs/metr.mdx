@@ -99,49 +99,31 @@ Testing methodologies include controlled human studies measuring persuasion effe
 
 The manipulation domain represents a particularly insidious form of dangerous capability because it directly targets human judgment—the foundation of AI oversight and control. Unlike technical capabilities that might be contained through engineering controls, manipulation capabilities that successfully compromise human decision-makers could undermine the entire safety infrastructure. METR's evaluations in this domain serve as crucial early warning systems for capabilities that could fundamentally alter the human-AI power balance.
 
-## Technical Methodology and Standards
+## Technical Methodology
 
-### Adversarial Evaluation Framework
+METR employs adversarial evaluation—testing for worst-case behaviors rather than typical performance. The methodology assumes models may hide capabilities (sandbagging) and uses sophisticated elicitation techniques: fine-tuning, scaffolding with tools, and multiple prompting strategies.
 
-METR's evaluation philosophy centers on adversarial testing that assumes models may be dangerous and attempts to elicit worst-case behaviors rather than typical performance. This approach recognizes that AI systems might hide capabilities during evaluation (sandbagging) or that dangerous capabilities might only emerge under specific conditions or with particular prompting strategies. The methodology explicitly rejects the assumption that initial safety-trained responses represent the model's full capability range.
+| Methodology Element | Approach |
+|---------------------|----------|
+| **Philosophy** | Assume dangerous until proven safe; elicit worst-case |
+| **Elicitation** | Fine-tuning, scaffolding, adversarial prompting |
+| **Thresholds** | Quantitative benchmarks comparing to human experts |
+| **Quality control** | Multiple evaluators, cross-validation, reproducible protocols |
 
-The adversarial framework employs capability elicitation techniques including sophisticated prompting strategies, fine-tuning to maximize performance on dangerous tasks, scaffolding with external tools and resources, and multiple attempts using varied approaches. Evaluators receive training in red-teaming methodologies and work to overcome safety training through legitimate assessment techniques. This process often reveals capabilities that would remain hidden under standard evaluation conditions.
+For general evaluation theory and scalable oversight approaches, see [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/).
 
-METR's approach includes quantitative threshold establishment with measurable benchmarks for determining when capabilities become "too dangerous" for deployment. These thresholds compare AI performance to human experts, establish risk-level categorization systems, and provide actionable results that labs can use for deployment decisions. The methodology emphasizes reproducibility through documented protocols and transparent reporting to appropriate stakeholders while maintaining necessary operational security.
+## Integration with Safety Frameworks
 
-### Evaluation Process and Quality Control
+METR's evaluations are integrated into the safety frameworks of major AI labs and government institutions:
 
-The evaluation process begins with extensive threat modeling and benchmark design developed in consultation with domain experts. METR establishes clear protocols, coordinates with relevant labs, and documents methodologies to ensure consistency and reproducibility. The initial testing phase includes capability assessment across multiple contexts, adversarial elicitation attempts, scaffolding integration, and expert red-team verification.
+| Partner | Integration | Role |
+|---------|-------------|------|
+| **OpenAI** | [Preparedness Framework](/knowledge-base/responses/governance/industry/voluntary-commitments/) | Pre-deployment evaluations for cybersecurity, CBRN, persuasion, autonomy |
+| **Anthropic** | [Responsible Scaling Policy](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | ASL threshold assessments, independent verification |
+| **UK AISI** | [AI Safety Institute](/knowledge-base/organizations/government/uk-aisi/) | Methodology sharing, evaluator training |
+| **US AISI** | [NIST Consortium](/knowledge-base/organizations/government/us-aisi/) | Executive Order implementation, standards development |
 
-Quality control measures include multiple independent evaluators, cross-validation of results, expert review of findings, and continuous methodology refinement. METR maintains detailed documentation of evaluation procedures, enabling other organizations to replicate assessments and verify findings. The organization also tracks evaluation results over time to identify capability emergence trends and sudden jumps that might indicate threshold crossing.
-
-Analysis and reporting involve quantitative scoring systems, comparison to established baselines, threshold assessment against predefined criteria, uncertainty quantification, and trend analysis. Results are communicated to labs with specific deployment recommendations, suggested mitigation strategies, and policy implications. Public communication follows appropriate disclosure principles, balancing transparency with security considerations.
-
-## Integration with Industry Safety Frameworks
-
-### OpenAI Preparedness Framework Implementation
-
-METR's evaluations form the empirical backbone of OpenAI's Preparedness Framework, particularly for cybersecurity, CBRN, persuasion, and autonomy risk categories. The framework explicitly requires that models pass METR evaluations before deployment, with threshold exceedance triggering deployment delays or additional safety measures. This integration represents the first formal mechanism requiring external safety evaluation for AI deployment, establishing a precedent that other labs have followed.
-
-The collaboration involves regular testing as OpenAI develops new models, with METR conducting both routine evaluations and targeted assessments when specific capabilities emerge. OpenAI's public reporting includes high-level results from METR evaluations, providing transparency about safety assessment processes while maintaining necessary operational security. The partnership has already influenced deployment decisions, with some releases modified or delayed based on METR findings.
-
-This integration demonstrates how external evaluation can be incorporated into commercial AI development without compromising competitive advantage or intellectual property. The success of the OpenAI-METR partnership has influenced other major labs to establish similar relationships, creating industry-wide acceptance of external safety evaluation as standard practice.
-
-### Anthropic's Responsible Scaling Policy
-
-METR's evaluations directly inform Anthropic's AI Safety Level (ASL) determinations under their Responsible Scaling Policy. The ASL framework uses capability thresholds partly defined by METR's evaluation methodologies, with ASL-3 designation requiring specific dangerous capability assessments. Anthropic's commitment not to advance ASL levels without corresponding safety measures creates direct deployment consequences for METR's findings.
-
-The collaboration includes joint methodology development, shared evaluation protocols, and independent verification of Anthropic's internal safety assessments. METR's external validation provides credibility to Anthropic's self-governance claims while ensuring that competitive pressures don't compromise safety evaluation rigor. The partnership has influenced the development of Claude models, with safety considerations integrated throughout the development process rather than only at deployment.
-
-Anthropic's RSP represents the most comprehensive public commitment to dangerous capability evaluation, with METR's assessments serving as objective measures of progress toward concerning thresholds. This framework has influenced policy discussions and competitor approaches, demonstrating how external evaluation can support credible self-governance in AI development.
-
-### Government and International Integration
-
-METR's influence extends beyond commercial partnerships to government evaluation capacity building and international standards development. The organization provides consultation to the UK AI Safety Institute, training government evaluators and sharing methodological expertise. This collaboration aims to build independent government capacity for AI safety evaluation while maintaining coordination with industry assessment practices.
-
-The organization's methodologies influence implementation of AI safety requirements in various jurisdictions, including US AI Executive Order provisions for advanced model evaluation and red-teaming mandates. METR contributes to ISO standards development for AI safety evaluation, international coordination frameworks, and shared definitions of dangerous capabilities across different regulatory environments.
-
-International expansion presents both opportunities and challenges. While global coordination on evaluation standards could strengthen overall AI safety, national security concerns limit information sharing, different countries maintain varying risk tolerance levels, and verification and enforcement mechanisms remain underdeveloped. METR's role in navigating these tensions while maintaining evaluation effectiveness will be crucial for global AI governance.
+These partnerships have established external evaluation as industry standard practice, with METR's findings directly influencing deployment decisions. For detailed analysis of these frameworks, see [Voluntary Industry Commitments](/knowledge-base/responses/governance/industry/voluntary-commitments/) and [AI Safety Institutes](/knowledge-base/responses/institutions/ai-safety-institutes/).
 
 ## Critical Analysis and Challenges
 

@@ -1,0 +1,88 @@
+---
+title: "Aggregate Parameters"
+description: "Five aggregate parameters that group related leaf parameters and show how they collectively influence outcomes: Technical Safety, Governance Capacity, Epistemic Foundation, Societal Adaptability, and Threat Environment."
+sidebar:
+  order: 0
+  label: Overview
+lastEdited: "2025-12-29"
+---
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Aggregate Parameters bridge the gap between individual [leaf parameters](/knowledge-base/parameters/) and [outcome parameters](/knowledge-base/parameters/outcomes/). They group related factors that work together to influence the same outcomes.
+
+---
+
+## The Five Aggregates
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Aggregates["Aggregate Parameters"]
+        TECH[Technical Safety Capacity]
+        GOV[Governance Capacity]
+        EPIST[Epistemic Foundation]
+        ADAPT[Societal Adaptability]
+        THREAT[Threat Environment]
+    end
+
+    subgraph Outcomes["What They Affect"]
+        ACUTE[Acute Risk]
+        STEADY[Steady State]
+        TRANS[Transition]
+    end
+
+    TECH -->|primary| ACUTE
+    THREAT -->|primary| ACUTE
+    GOV --> ACUTE
+    GOV --> STEADY
+    GOV --> TRANS
+    EPIST --> STEADY
+    EPIST --> TRANS
+    ADAPT -->|primary| TRANS
+
+    style ACUTE fill:#ff6b6b
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+| Aggregate | Primary Outcome | Components |
+|-----------|----------------|------------|
+| [**Technical Safety**](/knowledge-base/parameters/aggregates/technical-safety/) | Acute Risk ↓ | Alignment Robustness, Safety-Capability Gap, Interpretability, Oversight, Safety Culture |
+| [**Governance Capacity**](/knowledge-base/parameters/aggregates/governance-capacity/) | All three | Regulatory Capacity, Institutional Quality, International & Domestic Coordination, Racing (inverse) |
+| [**Epistemic Foundation**](/knowledge-base/parameters/aggregates/epistemic-foundation/) | Steady State + Transition | Epistemic Health, Information Authenticity, Reality Coherence, Trust, Preference Authenticity |
+| [**Societal Adaptability**](/knowledge-base/parameters/aggregates/societal-adaptability/) | Transition ↓ | Societal Resilience, Economic Stability, Human Expertise, Human Agency |
+| [**Threat Environment**](/knowledge-base/parameters/aggregates/threat-environment/) | Acute Risk ↑ | Bio/Cyber Threat Exposure, AI Control Concentration, Racing Intensity |
+
+---
+
+## How Aggregates Work
+
+Each aggregate groups parameters that:
+1. **Influence the same outcomes** through similar mechanisms
+2. **Interact with each other** (changes in one affect others in the group)
+3. **Respond to similar interventions** (policies that improve one often improve others)
+
+This grouping helps identify:
+- **Leverage points**: Which clusters of parameters are most important
+- **Intervention targets**: Where policy or research can have broad impact
+- **Correlations**: Which improvements tend to come together
+
+---
+
+## Cross-Aggregate Interactions
+
+Some parameters appear in multiple aggregates because they affect multiple outcome pathways:
+
+| Parameter | Aggregates | Why Multiple |
+|-----------|------------|--------------|
+| Racing Intensity | Governance, Threat Environment | Undermines governance AND increases threat exposure |
+| Human Oversight Quality | Technical Safety, Societal Adaptability | Both technical capability AND human capacity matter |
+| AI Control Concentration | Threat Environment, affects Steady State | Both acute risk AND long-term power distribution |
+
+---
+
+## Related Pages
+
+- [Outcome Parameters](/knowledge-base/parameters/outcomes/) — What we ultimately care about
+- [Key Parameters Index](/knowledge-base/parameters/) — All leaf parameters

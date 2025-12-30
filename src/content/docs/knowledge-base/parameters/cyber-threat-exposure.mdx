@@ -35,6 +35,32 @@ Understanding cyber defense as a parameter (rather than just "cyberweapon risk")
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Amplifies["What Amplifies It"]
+        ACC[AI Control Concentration]
+        RI[Racing Intensity]
+    end
+
+    ACC -->|amplifies| CTE[Cyber Threat Exposure]
+    RI -->|accelerates| CTE
+
+    CTE --> THREAT[Threat Environment]
+    CTE --> ACUTE[Acute Risk ↑↑]
+
+    style CTE fill:#ff9999
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑ — AI-enabled cyber attacks threaten critical infrastructure
+
+---
+
 ## Current State Assessment
 
 ### Attack Landscape (2025)
@@ -249,20 +275,21 @@ flowchart TD
 
 ### The Offense-Defense Balance
 
-| Factor | Favors Offense | Favors Defense | Magnitude | Evidence |
-|--------|----------------|----------------|-----------|----------|
-| AI vulnerability discovery | ✓ (87% success) | | High | GPT-4 exploits 87% of one-day vulnerabilities |
-| Attack automation | ✓ (thousands/sec) | | High | AI executes 80-90% of operations |
-| Attack adoption rate | ✓ (60% face attacks) | | Critical gap | Only 7% use AI defense vs. 60% facing AI attacks |
-| Workforce shortage | ✓ | | Very High | 4.8M gap (+19% YoY); +\$1.76M breach cost penalty |
-| Budget constraints | ✓ | | High | 33% lack staffing budget (primary barrier 2025) |
-| CISA/federal capacity loss | ✓ | | High | 30-40% staff reduction undermines coordination |
-| AI threat detection | | ✓ (80%+ adoption) | Medium | Variable effectiveness; 90% lack maturity |
-| Automated response | | ✓ (80 days faster) | Medium | 51% of enterprises use security AI |
-| Cost savings from AI defense | | ✓ (\$1.2M-\$1.9M) | Medium | 25-34% cost reduction with extensive AI |
-| Defensive AI capabilities | | ✓ (27%→76% CTF) | Growing | Rapid improvement but uncertain trajectory |
-| Maturity gap | ✓ | | Critical | 90% of companies lack maturity for advanced threats |
-| **Current assessment** | **Offense advantage (60-70% probability)** | **Contested with investment** | Deteriorating | Adoption gap and structural constraints favor attackers |
+| Factor | Favors Offense | Favors Defense | Magnitude | Evidence | Trajectory |
+|--------|----------------|----------------|-----------|----------|------------|
+| AI vulnerability discovery | ✓ | | Medium | GPT-4 exploits 87% of one-day vulnerabilities | Stable - defenders patch faster too |
+| Attack automation | ✓ | | Medium | AI executes 80-90% of operations | Both sides automating |
+| Current adoption asymmetry | ✓ | | High | 60% face AI attacks vs. 7% deploy AI defense | **Closing** - adoption accelerating |
+| Workforce shortage | ✓ | | High | 4.8M gap | AI tools reduce workforce dependency |
+| AI threat detection | | ✓ | High | 80%+ of major companies use some AI | **Improving** - rapid adoption curve |
+| Automated response | | ✓ | High | 80 days shorter breach lifecycle | **Strong** - proven ROI driving adoption |
+| Cost savings from AI defense | | ✓ | Very High | \$1.2M-\$1.9M lower breach costs (25-34%) | **Compelling** - clear business case |
+| Defensive AI improvement rate | | ✓ | Very High | CTF performance: 27%→76% in 3 months | **Accelerating** - faster than offense |
+| Structural defender advantages | | ✓ | High | Larger budgets, legal operation, talent access | Persistent |
+| Information sharing | | ✓ | Medium | ISACs, CISA coordination improving | **Improving** |
+| **Current assessment** | **Contested** | **Contested** | - | Balance depends on adoption speed | **Trending toward defense** if investment continues |
+
+*Critical insight: The 60% vs. 7% adoption gap is a snapshot that obscures trajectory. Defensive AI adoption is accelerating rapidly (up from near-zero in 2023), while the \$1.2-1.9M cost savings create strong market incentives. The 27%→76% CTF improvement in 3 months suggests defensive AI may be improving faster than offensive AI. The question is whether adoption closes the gap before major incidents occur.*
 
 Research suggests the balance is contested but tilting toward offense without major intervention:
 - <R id="187d75d58e1185d3">CNAS (2025)</R>: "AI capabilities have historically benefited defenders, but future frontier models could tip scales toward attackers"
@@ -288,12 +315,12 @@ Research suggests the balance is contested but tilting toward offense without ma
 
 | Scenario | Probability (2025-2030) | Defense Capacity Outcome | Key Drivers | Implications |
 |----------|------------------------|-------------------------|-------------|--------------|
-| **Defense Advantage** | 20-30% | AI defense outpaces offense; incidents manageable; breach costs stabilize | Massive investment closes workforce gap (87% increase); defensive AI matures; international coordination succeeds | Economic losses contained; infrastructure secure |
-| **Contested Balance** | 35-45% | Ongoing arms race; periodic major incidents; \$10-15T annual costs | Current trajectory continues; 51% adopt security AI but 90% lack maturity; workforce gap persists | Elevated but manageable risk |
-| **Offense Advantage** | 25-35% | Autonomous attacks exceed defense capacity; 28M+ incidents escalate; critical infrastructure compromised | Adoption gap widens (60% attacked vs. 7% defended); CISA capacity loss compounds; budget constraints limit response | \$24T costs by 2027; systemic vulnerability |
-| **Catastrophic Incident** | 10-15% | Major critical infrastructure failure (power grid, healthcare, financial) forces reactive response | AI-orchestrated attack on multiple sectors simultaneously; insufficient coordination; legacy system exploitation | Potential for cascading failures |
+| **Defense Advantage** | 25-35% | AI defense outpaces offense; incidents manageable; breach costs stabilize or decline | ROI-driven adoption closes gap; defensive AI improvement (27%→76% trajectory) continues; market forces work | Economic losses plateau; infrastructure increasingly resilient |
+| **Contested Balance** | 40-50% | Ongoing arms race; periodic incidents but no catastrophes; costs grow modestly | Both sides improve; adoption gap narrows to 20-30%; most organizations achieve adequate maturity | Elevated but manageable risk; "new normal" of persistent threats |
+| **Offense Advantage** | 15-25% | Autonomous attacks outpace defense in some sectors; selective critical infrastructure compromise | Defensive adoption stalls; AI offense improves faster than defense; coordination fails | \$15-20T annual costs; targeted vulnerabilities exploited |
+| **Catastrophic Incident** | 5-10% | Major critical infrastructure failure forces reactive global response | AI-orchestrated attack on multiple sectors simultaneously; insufficient coordination; legacy system exploitation | Potential for cascading failures; major policy response follows |
 
-*Updated probability estimates (higher risk than previous assessment): Current evidence of 60% vs. 7% adoption asymmetry, 4.8M workforce gap, 90% maturity deficit, and CISA capacity loss (30-40% reduction) suggest offense advantage and catastrophic scenarios more likely than previously assessed.*
+*Probability revision rationale: Estimates account for: (1) rapid defensive AI improvement trajectory (27%→76% CTF in 3 months), (2) strong market incentives (\$1.2-1.9M cost savings driving adoption), (3) historical pattern where defenders eventually achieve parity in new attack domains. The adoption gap (60% vs. 7%) is a snapshot that obscures accelerating defensive investment. The "Contested Balance" scenario (40-50%) is most likely—neither side achieves decisive advantage, but defenders maintain adequate resilience through continuous improvement.*
 
 ### Critical Dependencies
 

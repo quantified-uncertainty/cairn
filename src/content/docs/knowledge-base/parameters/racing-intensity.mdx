@@ -25,6 +25,42 @@ Understanding racing intensity as a parameter (rather than just a "racing dynami
 
 ---
 
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Moderators["What Constrains It"]
+        REG[Regulatory Capacity]
+        INTL[International Coordination]
+    end
+
+    subgraph Effects["What It Affects"]
+        SCG[Safety-Capability Gap]
+        SCS[Safety Culture Strength]
+    end
+
+    REG -->|constrains| RI[Racing Intensity]
+    INTL -->|constrains| RI
+
+    RI -->|widens| SCG
+    RI -->|undermines| SCS
+
+    RI --> ACUTE[Acute Risk ↑↑↑]
+    RI --> TRANS[Transition ↑↑]
+
+    style RI fill:#f9f
+    style ACUTE fill:#ff6b6b
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Governance Capacity](/knowledge-base/parameters/aggregates/governance-capacity/) (inverse), [Threat Environment](/knowledge-base/parameters/aggregates/threat-environment/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/parameters/outcomes/acute-risk/) ↑↑↑ — Racing degrades safety margins, widening the safety-capability gap
+- [Transition Smoothness](/knowledge-base/parameters/outcomes/transition-smoothness/) ↑↑ — Racing creates instability and undermines coordination
+
+---
+
 ## Quantitative Framework
 
 Racing intensity can be operationalized through multiple measurable indicators that track competitive pressure across commercial, geopolitical, and safety dimensions:
@@ -174,6 +210,36 @@ The January 2025 <R id="bd62c0962c92f5ae">DeepSeek R1 release</R>—achieving GP
 
 ## Factors That Decrease Intensity (Supports)
 
+<Mermaid client:load chart={`
+flowchart TD
+    MODERATORS[De-escalation Factors]
+    MODERATORS --> REG[Regulatory requirements]
+    MODERATORS --> COORD[Coordination mechanisms]
+    MODERATORS --> MARKET[Market incentives]
+    MODERATORS --> CULTURE[Safety culture]
+
+    REG --> LEVEL[Level playing field]
+    COORD --> TRUST[Mutual trust building]
+    MARKET --> DEMAND[Customer safety demands]
+    CULTURE --> NORMS[Industry safety norms]
+
+    LEVEL --> REDUCE[Reduced Racing Pressure]
+    TRUST --> REDUCE
+    DEMAND --> REDUCE
+    NORMS --> REDUCE
+
+    REDUCE --> TIMELINES[Adequate safety timelines]
+    TIMELINES --> SAFETY[Better safety outcomes]
+
+    SAFETY --> |Positive feedback| CULTURE
+
+    style MODERATORS fill:#90EE90
+    style REDUCE fill:#228B22,color:#fff
+    style SAFETY fill:#006400,color:#fff
+`} />
+
+This diagram shows the virtuous cycle that can reduce racing intensity. Regulatory requirements (EU AI Act), coordination mechanisms (Seoul commitments, Frontier Model Forum), market incentives (enterprise buyer safety requirements, insurance), and safety culture (Anthropic's brand positioning) all contribute to reducing competitive pressure. When racing pressure decreases, labs can invest in adequate safety timelines, which improves outcomes. Positive outcomes then reinforce safety culture, creating a virtuous cycle. The key insight is that multiple de-escalation pathways exist—racing is not inevitable.
+
 ### Coordination Mechanisms
 
 | Mechanism | Description | Status |
@@ -207,6 +273,22 @@ The January 2025 <R id="bd62c0962c92f5ae">DeepSeek R1 release</R>—achieving GP
 | **Safety leadership as brand** | Anthropic's positioning | Market differentiation |
 | **Academic recognition** | Safety research career incentives | Growing field |
 | **Whistleblower culture** | Internal pressure for safety | Public departures from labs |
+
+### Evidence That De-escalation Mechanisms Work
+
+Despite concerning trends, multiple de-escalation mechanisms are demonstrably functional:
+
+| Evidence | Finding | Implication |
+|----------|---------|-------------|
+| **Anthropic's market success** | Valued at \$60B+ while prioritizing safety | Safety-first positioning commercially viable |
+| **EU AI Act compliance** | Labs investing in compliance rather than relocating | Regulation can set floor without flight |
+| **Frontier Model Forum** | \$10M collective safety investment; information sharing protocols | Industry coordination possible |
+| **UK AISI evaluations** | Labs voluntarily submitting to pre-deployment testing | Norms for independent review emerging |
+| **Enterprise buyer demands** | Fortune 500 increasingly requiring safety certifications | Market creating safety incentives |
+| **Safety researcher hiring** | Major labs expanding safety teams post-2023 | Some resource allocation toward safety |
+| **Historical precedent** | Nuclear arms control, Montreal Protocol succeeded | Technology coordination achievable |
+
+*The racing narrative, while supported by real competitive pressure, may understate the countervailing forces. Labs have not abandoned safety entirely—they've compressed timelines but still conduct evaluations. Coordination mechanisms are imperfect but exist and are strengthening. The question is whether these forces can moderate racing sufficiently, not whether they exist at all.*
 
 ---
 
@@ -256,12 +338,14 @@ High racing intensity directly increases existential risk through multiple pathw
 
 ### Scenario Analysis
 
-| Scenario | Probability | Racing Intensity Outcome |
-|----------|-------------|-------------------------|
-| **Coordination Success** | 25-30% | Intensity reduces; safety timelines stabilize |
-| **Fragile Equilibrium** | 35-45% | Current intensity maintained with stress |
-| **Escalation** | 20-30% | Racing intensifies; safety margins erode |
-| **Crisis-Driven Reset** | 10-15% | Major incident forces coordination |
+| Scenario | Probability | Racing Intensity Outcome | Key Drivers |
+|----------|-------------|-------------------------|-------------|
+| **Coordination Success** | 25-35% | Intensity reduces; safety timelines stabilize | EU AI Act enforcement; market demand for safety; geopolitical détente |
+| **Managed Competition** | 30-40% | Competition continues but within guardrails; safety standards enforced | Regulation establishes floor; voluntary commitments partially hold; market differentiation on safety |
+| **Fragile Equilibrium** | 15-25% | Current intensity maintained with stress; neither improving nor worsening | Mixed signals; some coordination, some defection |
+| **Escalation** | 10-20% | Racing intensifies; safety margins erode further | Geopolitical crisis; major capability breakthrough; coordination collapse |
+
+*Note: The probability of positive or stable scenarios ("Coordination Success" + "Managed Competition" = 55-75%) reflects that multiple de-escalation mechanisms are active and strengthening. The EU AI Act is being implemented, major labs have signed voluntary commitments (even if imperfect), enterprise buyers increasingly demand safety certifications, and safety research is growing as a field. The question is whether these mechanisms can outpace intensifying geopolitical pressure. Historical precedent (nuclear arms control, ozone layer protection) shows that coordination on dangerous technologies is difficult but achievable.*
 
 ### Critical Uncertainties
 
