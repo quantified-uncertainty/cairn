@@ -60,6 +60,20 @@ export interface UnconvertedLink {
   resourceTitle: string;
 }
 
+// Similar page info for redundancy detection
+export interface SimilarPage {
+  id: string;
+  title: string;
+  path: string;
+  similarity: number; // 0-100
+}
+
+// Redundancy data for a page
+export interface PageRedundancy {
+  maxSimilarity: number; // 0-100, highest similarity to any other page
+  similarPages: SimilarPage[]; // Top 5 most similar pages
+}
+
 // Pages data with quality ratings from MDX frontmatter
 export interface Page {
   id: string;
@@ -89,6 +103,8 @@ export interface Page {
   unconvertedLinkCount: number;
   // Already converted links (<R> components)
   convertedLinkCount: number;
+  // Redundancy detection
+  redundancy: PageRedundancy;
 }
 export const pages: Page[] = database.pages || [];
 export const stats = database.stats || {

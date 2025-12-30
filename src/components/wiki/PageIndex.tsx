@@ -5,6 +5,14 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable, SortableHeader } from "@/components/ui/data-table"
 import { cn } from "@/lib/utils"
 import { pages, type Page } from "../../data"
+import "./wiki.css"
+
+interface SimilarPage {
+  id: string
+  title: string
+  path: string
+  similarity: number
+}
 
 interface PageRow {
   path: string
@@ -20,6 +28,8 @@ interface PageRow {
   structuralScore: number | null
   convertedLinkCount: number
   unconvertedLinkCount: number
+  redundancyScore: number
+  similarPages: SimilarPage[]
 }
 
 interface PageIndexProps {
@@ -196,6 +206,46 @@ function UnconvertedLinksCell({ value }: { value: number }) {
   )
 }
 
+function RedundancyCell({ value, similarPages }: { value: number, similarPages: SimilarPage[] }) {
+  if (value === 0) return <span className="text-muted-foreground">—</span>
+
+  // Color based on redundancy: higher = more concerning
+  const colorClass = value >= 40
+    ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+    : value >= 30
+    ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+    : value >= 20
+    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+
+  if (similarPages.length === 0) {
+    return (
+      <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+        {value}%
+      </span>
+    )
+  }
+
+  return (
+    <span className="redundancy-cell">
+      <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium cursor-help", colorClass)}>
+        {value}%
+      </span>
+      <span className="redundancy-cell__popup">
+        <div className="redundancy-cell__popup-content">
+          <div className="redundancy-cell__popup-header">Similar pages:</div>
+          {similarPages.map((p, i) => (
+            <a key={i} href={p.path} className="redundancy-cell__popup-item">
+              <span className="redundancy-cell__popup-title">{p.title}</span>
+              <span className="redundancy-cell__popup-score">{p.similarity}%</span>
+            </a>
+          ))}
+        </div>
+      </span>
+    </span>
+  )
+}
+
 const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "importance",
@@ -309,6 +359,16 @@ const columns: ColumnDef<PageRow>[] = [
       return a - b
     },
   },
+  {
+    accessorKey: "redundancyScore",
+    header: ({ column }) => <SortableHeader column={column}>Dup</SortableHeader>,
+    cell: ({ row }) => <RedundancyCell value={row.getValue("redundancyScore")} similarPages={row.original.similarPages} />,
+    sortingFn: (rowA, rowB) => {
+      const a = rowA.getValue("redundancyScore") as number
+      const b = rowB.getValue("redundancyScore") as number
+      return a - b
+    },
+  },
 ]
 
 export function PageIndex({ showSearch = true, filterCategory, maxItems, title }: PageIndexProps) {
@@ -346,6 +406,8 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
         structuralScore,
         convertedLinkCount: p.convertedLinkCount ?? 0,
         unconvertedLinkCount: p.unconvertedLinkCount ?? 0,
+        redundancyScore: p.redundancy?.maxSimilarity ?? 0,
+        similarPages: p.redundancy?.similarPages ?? [],
       }
     })
 
@@ -436,6 +498,7 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
           <span><strong>Age</strong> = Days since last edit</span>
           <span><strong>Refs</strong> = Resource references with hover tooltips</span>
           <span><strong>Unconv</strong> = Unconverted links (could have hover tooltips)</span>
+          <span><strong>Dup</strong> = Max similarity to other pages (hover for list)</span>
         </span>
       </div>
 

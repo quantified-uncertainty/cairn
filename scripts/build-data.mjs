@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSy
 import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
+import { computeRedundancy } from './lib/redundancy.mjs';
 
 // =============================================================================
 // UNCONVERTED LINK DETECTION
@@ -307,6 +308,8 @@ function buildPagesRegistry(urlToResource) {
           unconvertedLinkCount: unconvertedLinks.length,
           // Already converted links (<R> components)
           convertedLinkCount,
+          // Raw content for redundancy analysis (removed before JSON output)
+          rawContent: content,
         });
       }
     }
@@ -503,6 +506,28 @@ function main() {
     const pageBacklinks = backlinks[page.id] || [];
     page.backlinkCount = pageBacklinks.length;
   }
+
+  // Compute redundancy scores
+  console.log('  Computing redundancy scores...');
+  const { pageRedundancy, pairs: redundancyPairs } = computeRedundancy(pages);
+
+  // Add redundancy data to pages and remove rawContent
+  for (const page of pages) {
+    const redundancy = pageRedundancy.get(page.id);
+    page.redundancy = redundancy ? {
+      maxSimilarity: redundancy.maxSimilarity,
+      similarPages: redundancy.similarPages,
+    } : {
+      maxSimilarity: 0,
+      similarPages: [],
+    };
+    // Remove rawContent to keep JSON size reasonable
+    delete page.rawContent;
+  }
+
+  // Store redundancy pairs for analysis
+  database.redundancyPairs = redundancyPairs.slice(0, 100); // Top 100 pairs
+  console.log(`  redundancy: ${redundancyPairs.length} similar pairs found`);
 
   database.pages = pages;
   const pagesWithQuality = pages.filter(p => p.quality !== null).length;

@@ -4937,3 +4937,75 @@
   background: var(--sl-color-accent-high);
 }
 
+/* =============================================================================
+   REDUNDANCY CELL POPUP
+   ============================================================================= */
+
+.redundancy-cell {
+  position: relative;
+  display: inline-block;
+}
+
+.redundancy-cell__popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  padding-top: 8px;
+}
+
+.redundancy-cell:hover .redundancy-cell__popup {
+  display: block;
+}
+
+.redundancy-cell__popup-content {
+  background: var(--sl-color-bg);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  max-width: 300px;
+  padding: 8px 0;
+}
+
+.redundancy-cell__popup-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sl-color-gray-3);
+  padding: 4px 12px 8px;
+  border-bottom: 1px solid var(--sl-color-gray-6);
+  margin-bottom: 4px;
+}
+
+.redundancy-cell__popup-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  text-decoration: none;
+  color: var(--sl-color-text);
+  font-size: 13px;
+  gap: 12px;
+}
+
+.redundancy-cell__popup-item:hover {
+  background: var(--sl-color-gray-6);
+}
+
+.redundancy-cell__popup-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.redundancy-cell__popup-score {
+  font-weight: 600;
+  color: var(--sl-color-gray-2);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
