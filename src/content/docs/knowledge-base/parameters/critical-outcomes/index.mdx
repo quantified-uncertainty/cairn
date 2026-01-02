@@ -1,0 +1,207 @@
+---
+title: "Critical Outcomes"
+description: "Intermediate scenarios between parameters and ultimate outcomes—the specific ways AI development could lead to catastrophe or beneficial transformation."
+sidebar:
+  label: Overview
+  order: 0
+lastEdited: "2026-01-02"
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Critical Outcomes are the intermediate scenarios that connect [aggregate parameters](/knowledge-base/parameters/aggregates/) to [ultimate outcomes](/knowledge-base/parameters/outcomes/). They describe *how* parameters lead to catastrophe (or success)—the specific mechanisms and pathways that determine what kind of future we get.
+
+Unlike parameters (which are variables that can improve or degrade) or ultimate outcomes (which are high-level goals), critical outcomes describe **concrete scenarios** that could unfold. Some are inherently negative (like "AI rapidly takes over"), while others are symmetric and could go either way (like "value lock-in" which could entrench good or bad values).
+
+---
+
+## The Four-Layer Hierarchy
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Outcomes["Ultimate Outcomes"]
+        ACUTE[Acute Risk]
+        VALUE[Long-run Value]
+    end
+
+    subgraph CriticalOutcomes["Critical Outcomes"]
+        TURB[Transition Turbulence]
+        AI_FAST[Rapid AI Takeover]
+        AI_SLOW[Gradual AI Takeover]
+        STATE[State-Caused Catastrophe]
+        ROGUE[Rogue Actor Catastrophe]
+        LOCK[Value Lock-in]
+        EPIST[Epistemic Quality]
+        POWER[Power Transition]
+    end
+
+    subgraph Aggregates["Aggregate Parameters"]
+        TECH[Technical Safety]
+        THREAT[Threat Environment]
+        GOV[Governance Capacity]
+        EPFOUND[Epistemic Foundation]
+        ADAPT[Societal Adaptability]
+    end
+
+    subgraph Leaf["Leaf Parameters"]
+        MORE[24 parameters...]
+    end
+
+    MORE --> TECH
+    MORE --> THREAT
+    MORE --> GOV
+    MORE --> EPFOUND
+    MORE --> ADAPT
+
+    %% Aggregates to Critical Outcomes
+    TECH -->|"low +"| AI_FAST
+    TECH -->|"low +"| AI_SLOW
+    THREAT -->|"high +"| AI_FAST
+    THREAT -->|"high +"| STATE
+    THREAT -->|"high +"| ROGUE
+    GOV -->|"low +"| AI_SLOW
+    GOV -->|"low +"| STATE
+    GOV -->|shapes| LOCK
+    EPFOUND -->|shapes| EPIST
+    EPFOUND -->|"low +"| AI_SLOW
+    ADAPT -->|shapes| POWER
+    ADAPT -->|"low +"| LOCK
+    ADAPT -->|"low +"| TURB
+
+    %% Critical outcomes to Ultimate Outcomes
+    TURB -->|"triggers"| ACUTE
+    TURB -->|"path dependence"| VALUE
+    AI_FAST --> ACUTE
+    AI_SLOW --> ACUTE
+    AI_SLOW --> VALUE
+    STATE --> ACUTE
+    ROGUE --> ACUTE
+    LOCK -->|"bad lock-in"| ACUTE
+    LOCK --> VALUE
+    EPIST --> VALUE
+    POWER --> VALUE
+
+    %% Critical outcomes can lead to each other
+    STATE -.->|can cause| LOCK
+    TURB -.->|can trigger| STATE
+
+    style ACUTE fill:#ff6b6b
+    style VALUE fill:#4ecdc4
+    style TURB fill:#ffe66d
+    style AI_FAST fill:#ffb6c1
+    style AI_SLOW fill:#ffb6c1
+    style STATE fill:#ffb6c1
+    style ROGUE fill:#ffb6c1
+    style LOCK fill:#ffe4b5
+    style EPIST fill:#ffe4b5
+    style POWER fill:#87CEEB
+`} />
+
+**Color coding:**
+- **Red/Pink**: Inherently negative scenarios (catastrophes)
+- **Orange/Yellow**: Symmetric scenarios (could go well or badly)
+- **Blue**: Neutral framing (describes a transition that will happen)
+
+**Key insight:** Critical outcomes are not independent—they interact. For example:
+- State-Caused Catastrophe can lead to Value Lock-in (authoritarian control becomes permanent)
+- Transition Turbulence can trigger State catastrophes (political collapse)
+
+---
+
+## Critical Outcomes Summary
+
+| Critical Outcome | Polarity | Key Mechanism | Key Aggregates | Ultimate Outcomes |
+|-----------------|----------|---------------|----------------|-------------------|
+| [Transition Turbulence](/knowledge-base/parameters/critical-outcomes/transition-turbulence/) | Negative | Economic/political disruption | Societal Adaptability | Acute Risk, Long-run Value |
+| [Rapid AI Takeover](/knowledge-base/parameters/critical-outcomes/ai-takeover-fast/) | Negative | Intelligence explosion, treacherous turn | Technical Safety, Threat Environment | Acute Risk |
+| [Gradual AI Takeover](/knowledge-base/parameters/critical-outcomes/ai-takeover-gradual/) | Negative | Erosion of control, proxy gaming | Technical Safety, Governance, Epistemic | Acute Risk, Long-run Value |
+| [State-Caused Catastrophe](/knowledge-base/parameters/critical-outcomes/state-actor-catastrophe/) | Negative | Government weaponization, great power conflict | Threat Environment, Governance | Acute Risk → Lock-in |
+| [Rogue Actor Catastrophe](/knowledge-base/parameters/critical-outcomes/rogue-actor-catastrophe/) | Negative | Terrorism, lone wolf attacks | Threat Environment | Acute Risk |
+| [Value Lock-in](/knowledge-base/parameters/critical-outcomes/value-lock-in/) | Symmetric | Power concentration, irreversibility | Governance, Adaptability | Acute Risk, Long-run Value |
+| [Epistemic Quality](/knowledge-base/parameters/critical-outcomes/epistemic-quality/) | Symmetric | Information environment, trust dynamics | Epistemic Foundation | Long-run Value |
+| [Power Transition](/knowledge-base/parameters/critical-outcomes/power-transition/) | Neutral | AI-human power shift dynamics | Societal Adaptability | Long-run Value |
+
+---
+
+## How Critical Outcomes Differ from Other Concepts
+
+| Concept | What It Is | Example |
+|---------|-----------|---------|
+| **Parameters** | Variables that can increase or decrease | "Alignment Robustness" |
+| **Risks** | Things that could go wrong | "Deceptive Alignment" |
+| **Critical Outcomes** | Concrete scenarios connecting parameters to outcomes | "Rapid AI Takeover" |
+| **Ultimate Outcomes** | High-level goals | "Acute Risk", "Long-run Value" |
+
+**Key distinction**: A *risk* like "deceptive alignment" is a mechanism that could happen. A *critical outcome* like "Rapid AI Takeover" is the scenario that results if such mechanisms play out. Multiple risks can contribute to a single critical outcome.
+
+---
+
+## Why This Layer Matters
+
+### 1. Clarifies Causal Chains
+
+Without this layer, the connection between "Alignment Robustness declining" and "Acute Risk increasing" is abstract. Critical outcomes show the specific pathway: alignment fails → AI develops misaligned goals → AI takes over rapidly → catastrophe.
+
+### 2. Enables Different Intervention Strategies
+
+Different critical outcomes require different interventions:
+- **Rapid AI Takeover**: Technical alignment, capability restrictions
+- **Transition Turbulence**: Economic safety nets, paced deployment
+- **State Actor Catastrophe**: International coordination, governance
+- **Value Lock-in**: Power distribution, institutional design
+- **Epistemic Trajectory**: Information tools, trust-building
+
+### 3. Supports Scenario Planning
+
+Critical outcomes map directly onto scenarios that organizations can plan for. Rather than asking "what if Acute Risk increases?", planners can ask "what if we're heading toward a State Actor Catastrophe?"
+
+### 4. Connects to Existing Threat Models
+
+Each critical outcome corresponds to threat models discussed in the AI safety literature:
+- Carlsmith's six-premise argument → AI Takeover scenarios
+- Christiano's "What Failure Looks Like" → Gradual AI Takeover
+- Ord's "The Precipice" risk categories → Multiple critical outcomes
+- Kasirzadeh's decisive vs. accumulative → Fast vs. Gradual takeover
+
+---
+
+## Why Transition Turbulence is a Critical Outcome
+
+Previous versions of this framework treated "Transition Smoothness" as an Ultimate Outcome alongside Acute Risk and Steady State Quality. We moved it here because:
+
+1. **It's a pathway, not endpoint**: Turbulence affects *both* Ultimate Outcomes—it can trigger acute catastrophes (political collapse → loss of control) and shape long-run value (path dependence).
+
+2. **Cleaner hierarchy**: Ultimate Outcomes should be what we fundamentally care about. Transition experience matters because of how it affects survival and long-run value, not intrinsically.
+
+3. **Temporal clarity**: See [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/) for how this fits the temporal structure.
+
+---
+
+## Using This Section
+
+### For Analysts
+- Map specific risks to the critical outcomes they could produce
+- Estimate which critical outcomes are most likely given current parameter trends
+- Identify which parameters to prioritize based on which critical outcomes concern you most
+
+### For Policymakers
+- Design interventions targeted at preventing specific critical outcomes
+- Coordinate across domains (a single critical outcome may require multiple types of intervention)
+- Track early warning signs for each critical outcome
+
+### For Researchers
+- Use critical outcomes to frame research priorities
+- Connect technical work to concrete scenarios it addresses
+- Identify gaps in our understanding of specific pathways
+
+---
+
+## Related Sections
+
+- [Aggregate Parameters](/knowledge-base/parameters/aggregates/) — The parameter groupings that feed into critical outcomes
+- [Ultimate Outcomes](/knowledge-base/parameters/outcomes/) — The high-level goals critical outcomes affect
+- [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/) — Temporal structure framework
+- [Scenarios](/knowledge-base/scenarios/) — Detailed narratives of how critical outcomes might unfold
+- [Models](/knowledge-base/models/) — Analytical frameworks for understanding pathways

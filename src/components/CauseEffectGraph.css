@@ -67,6 +67,12 @@
 
 .cause-effect-graph__content .react-flow__edge-path {
   stroke-linecap: round;
+  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+/* Node hover transition */
+.cause-effect-graph__content .react-flow__node {
+  transition: opacity 0.2s ease;
 }
 
 /* Loading indicator */
@@ -81,24 +87,24 @@
 }
 
 
-/* Details panel */
+/* Details panel - positioned on the left to avoid overlapping "On this page" nav */
 .cause-effect-graph__panel {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   width: 320px;
   height: 100%;
   background-color: var(--sl-color-bg);
-  border-left: 1px solid var(--sl-color-hairline-light);
+  border-right: 1px solid var(--sl-color-hairline-light);
   box-shadow: var(--sl-shadow-lg);
   z-index: 1000;
   overflow: auto;
-  animation: slideIn 0.2s ease-out;
+  animation: slideInFromLeft 0.2s ease-out;
 }
 
-@keyframes slideIn {
+@keyframes slideInFromLeft {
   from {
-    transform: translateX(100%);
+    transform: translateX(-100%);
     opacity: 0;
   }
   to {
