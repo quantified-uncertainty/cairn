@@ -77,8 +77,11 @@ function extractInternalLinks(content, filePath) {
  * Check if an internal link resolves to an existing file
  */
 function resolveLink(href) {
+  // Remove anchor (e.g., #section-name) - we only check file existence
+  let path = href.split('#')[0];
+
   // Remove trailing slash for file lookup
-  let path = href.replace(/\/$/, '');
+  path = path.replace(/\/$/, '');
 
   // Remove leading slash
   if (path.startsWith('/')) {

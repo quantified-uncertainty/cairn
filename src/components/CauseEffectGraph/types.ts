@@ -6,12 +6,13 @@ export interface CauseEffectNodeData extends Record<string, unknown> {
   type?: 'leaf' | 'cause' | 'effect' | 'intermediate';
   subgroup?: string;
   order?: number;  // Manual ordering within layer (0 = leftmost)
-  subItems?: Array<{ label: string; probability?: string }>;
+  subItems?: Array<{ label: string; probability?: string; href?: string }>;
   confidence?: number;
   confidenceLabel?: string;
   details?: string;
   sources?: string[];
   relatedConcepts?: string[];
+  href?: string;  // URL to navigate to when node is clicked
 }
 
 export interface CauseEffectEdgeData extends Record<string, unknown> {

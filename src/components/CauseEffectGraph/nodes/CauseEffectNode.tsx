@@ -16,17 +16,26 @@ export function CauseEffectNode({ data, selected }: NodeProps<Node<CauseEffectNo
   };
 
   const hasSubItems = data.subItems && data.subItems.length > 0;
+  const isClickable = !!data.href;
+
+  const handleClick = () => {
+    if (data.href) {
+      window.location.href = data.href;
+    }
+  };
 
   return (
     <div
-      className={`ceg-node ${hasSubItems ? 'ceg-node--with-subitems' : ''} ${selected ? 'ceg-node--selected' : ''}`}
+      className={`ceg-node ${hasSubItems ? 'ceg-node--with-subitems' : ''} ${selected ? 'ceg-node--selected' : ''} ${isClickable ? 'ceg-node--clickable' : ''}`}
       style={{
         backgroundColor: colors.bg,
         borderColor: selected ? colors.text : colors.border,
         boxShadow: selected ? `0 8px 24px rgba(0,0,0,0.15), 0 0 0 2px ${colors.accent}` : undefined,
+        cursor: isClickable ? 'pointer' : undefined,
       }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
+      onClick={isClickable ? handleClick : undefined}
     >
       <Handle type="target" position={Position.Top} className="ceg-node__handle" />
 
@@ -47,12 +56,14 @@ export function CauseEffectNode({ data, selected }: NodeProps<Node<CauseEffectNo
           {data.subItems!.map((item, i) => (
             <div
               key={i}
-              className="ceg-node__subitem"
+              className={`ceg-node__subitem ${item.href ? 'ceg-node__subitem--clickable' : ''}`}
               style={{
                 backgroundColor: colors.bg,
                 borderColor: `${colors.border}60`,
                 color: colors.text,
+                cursor: item.href ? 'pointer' : undefined,
               }}
+              onClick={item.href ? (e) => { e.stopPropagation(); window.location.href = item.href!; } : undefined}
             >
               <span className="ceg-node__subitem-label">{item.label}</span>
               {item.probability && (

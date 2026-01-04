@@ -12,16 +12,21 @@ nodes:
     description: Potential for AI to be misaligned.
     type: cause
     order: 0
+    href: /knowledge-base/ai-transition-model/factors/misalignment-potential/
     subItems:
       - label: Alignment Gap
+        href: /knowledge-base/ai-transition-model/factors/misalignment-potential/alignment-robustness/
       - label: Opacity
+        href: /knowledge-base/ai-transition-model/factors/misalignment-potential/interpretability-coverage/
       - label: Control Failure
+        href: /knowledge-base/ai-transition-model/factors/misalignment-potential/human-oversight-quality/
 
   - id: ai-capabilities
     label: AI Capabilities
     description: How powerful AI systems become.
     type: cause
     order: 1
+    href: /knowledge-base/ai-transition-model/factors/ai-capabilities/
     subItems:
       - label: Speed
       - label: Generality
@@ -32,29 +37,39 @@ nodes:
     description: Humanity's ability to respond well.
     type: cause
     order: 2
+    href: /knowledge-base/ai-transition-model/factors/civilizational-competence/
     subItems:
       - label: Governance
+        href: /knowledge-base/ai-transition-model/factors/civilizational-competence/governance/
       - label: Epistemics
+        href: /knowledge-base/ai-transition-model/factors/civilizational-competence/epistemics/
       - label: Adaptability
+        href: /knowledge-base/ai-transition-model/factors/civilizational-competence/adaptability/
 
   - id: transition-turbulence
     label: Transition Turbulence
     description: Background instability during transition.
     type: cause
     order: 3
+    href: /knowledge-base/ai-transition-model/factors/transition-turbulence/
     subItems:
       - label: Economic Disruption
+        href: /knowledge-base/ai-transition-model/factors/transition-turbulence/economic-stability/
       - label: Political Instability
       - label: Racing Dynamics
+        href: /knowledge-base/ai-transition-model/factors/transition-turbulence/racing-intensity/
 
   - id: misuse-potential
     label: Misuse Potential
     description: Potential for AI to be misused for harm.
     type: cause
     order: 4
+    href: /knowledge-base/ai-transition-model/factors/misuse-potential/
     subItems:
       - label: Bioweapons
+        href: /knowledge-base/ai-transition-model/factors/misuse-potential/biological-threat-exposure/
       - label: Cyberattacks
+        href: /knowledge-base/ai-transition-model/factors/misuse-potential/cyber-threat-exposure/
       - label: Manipulation
 
   # === ULTIMATE SCENARIOS (middle layer) ===
@@ -64,32 +79,42 @@ nodes:
     description: AI gains decisive control over human affairs.
     type: intermediate
     order: 0
+    href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/
     subItems:
       - label: Rapid
         probability: "12%"
+        href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/rapid/
       - label: Gradual
         probability: "25%"
+        href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/gradual/
 
   - id: human-catastrophe
     label: Human-Caused Catastrophe
     description: Humans use AI to cause mass harm.
     type: intermediate
     order: 1
+    href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/
     subItems:
       - label: State Actor
         probability: "15%"
+        href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/state-actor/
       - label: Rogue Actor
         probability: "8%"
+        href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/rogue-actor/
 
   - id: long-term-lockin
     label: Long-term Lock-in
     description: Permanent entrenchment of outcomes.
     type: intermediate
     order: 2
+    href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/
     subItems:
       - label: Values
+        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/values/
       - label: Power
+        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/power/
       - label: Epistemics
+        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/epistemics/
 
   # === ULTIMATE OUTCOMES (bottom layer) ===
 
@@ -100,6 +125,7 @@ nodes:
     order: 0
     confidence: 0.20
     confidenceLabel: aggregate probability
+    href: /knowledge-base/ai-transition-model/outcomes/existential-catastrophe/
 
   - id: long-term-trajectory
     label: Long-term Trajectory
@@ -108,6 +134,7 @@ nodes:
     order: 1
     confidence: 0.50
     confidenceLabel: high uncertainty
+    href: /knowledge-base/ai-transition-model/outcomes/long-term-trajectory/
 
 edges:
   # Root Factors → Ultimate Scenarios
