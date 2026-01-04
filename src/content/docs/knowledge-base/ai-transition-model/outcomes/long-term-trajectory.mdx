@@ -6,7 +6,7 @@ sidebar:
   label: Long-term Trajectory
 lastEdited: "2026-01-02"
 ---
-import {Mermaid, Backlinks} from '../../../../../../components/wiki';
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -36,12 +36,14 @@ Even if we avoid catastrophe entirely, we could end up in a world where humans l
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph CriticalOutcomes["Critical Outcomes"]
-        LOCK[Value Lock-in]
-        EPIST[Epistemic Trajectory]
-        POWER[Power Transition]
-        SLOW[Gradual AI Takeover]
+    subgraph Scenarios["Structural Scenarios"]
+        TAKEOVER[AI Takeover]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    subgraph RootFactors["Root Factors"]
         TURB[Transition Turbulence]
+        CIV[Civilizational Competence]
     end
 
     subgraph Dimensions["Value Dimensions"]
@@ -51,13 +53,11 @@ flowchart TD
         OPTIONS[Option Value]
     end
 
-    LOCK -->|"determines"| OPTIONS
-    LOCK -->|"shapes"| AGENCY
-    EPIST -->|"enables"| AGENCY
-    EPIST -->|"affects"| MEANING
-    POWER -->|"determines"| BENEFITS
-    POWER -->|"shapes"| AGENCY
-    SLOW -->|"erodes"| AGENCY
+    LOCKIN -->|"determines"| OPTIONS
+    LOCKIN -->|"shapes"| AGENCY
+    CIV -->|"enables"| AGENCY
+    CIV -->|"shapes"| LOCKIN
+    TAKEOVER -->|"erodes"| AGENCY
     TURB -->|"path dependence"| OPTIONS
 
     AGENCY --> VALUE[Long-run Value]
@@ -66,19 +66,18 @@ flowchart TD
     OPTIONS --> VALUE
 
     style VALUE fill:#4ecdc4
-    style LOCK fill:#ffe66d
-    style EPIST fill:#ffe66d
+    style LOCKIN fill:#ffe4b5
+    style TAKEOVER fill:#ffb6c1
 `} />
 
-### Critical Outcomes That Affect This
+### Structural Scenarios That Affect This
 
-| Critical Outcome | Effect on Long-run Value |
-|------------------|-------------------------|
-| [Value Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/values/) | **Primary** — Determines whether good or bad values persist |
-| [Epistemic Trajectory](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/epistemics/) | **Primary** — Renaissance enables flourishing; collapse undermines it |
-| [Power Transition](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/power/) | **Primary** — How power shifts determines who benefits |
-| [Gradual AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/gradual/) | **Secondary** — Successful takeover means AI goals, not human values |
-| [Transition Turbulence](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | **Secondary** — Path dependence; rough transitions constrain options |
+| Structural Scenario | Effect on Long-term Trajectory |
+|---------------------|--------------------------------|
+| [Long-term Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/) | **Primary** — Determines whether good or bad values/power structures persist |
+| [AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/) | **Secondary** — Successful takeover means AI goals, not human values |
+
+The **Root Factor** [Transition Turbulence](/knowledge-base/ai-transition-model/factors/transition-turbulence/) also affects Long-term Trajectory through path dependence.
 
 ### Key Aggregate Parameters
 
@@ -144,7 +143,7 @@ This outcome dimension asks: **"Even if we avoid disaster, will the future be wo
 ## Related Content
 
 - [Acute Risk](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) — The other Ultimate Outcome
-- [Value Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/values/) — Key Critical Outcome for long-run value
+- [Long-term Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/) — Key Structural Scenario for long-term trajectory
 - [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/) — When does "long-run" begin?
 
 <Backlinks entityId="long-run-value" />

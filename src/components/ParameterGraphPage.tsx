@@ -16,7 +16,7 @@ const parameterGraphConfig: GraphConfig = {
   },
   typeLabels: {
     cause: 'Root Factors',
-    intermediate: 'Ultimate Scenarios',
+    intermediate: 'Structural Scenarios',
     effect: 'Ultimate Outcomes',
   },
   subgroups: {

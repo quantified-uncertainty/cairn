@@ -10,7 +10,7 @@ lastEdited: "2025-12-28"
 importance: 81.5
 causalLevel: "pathway"
 ---
-import {DataInfoBox, Backlinks, EstimateBox, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, EstimateBox, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="reward-hacking" />
 
@@ -145,7 +145,7 @@ This creates a **capability-alignment gap**: systems become capable enough to fi
 
 ## Relationship to Other AI Safety Concepts
 
-Reward hacking differs from **[goal misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/)** in important ways. In reward hacking, the system successfully optimizes the specified objective—the problem lies in the specification itself. In goal misgeneralization, the system learns an entirely different goal during training. A reward-hacking robot follows its programmed reward function but in unintended ways; a goal-misgeneralizing robot pursues a different objective altogether.
+Reward hacking differs from **<EntityLink id="goal-misgeneralization" />** in important ways. In reward hacking, the system successfully optimizes the specified objective—the problem lies in the specification itself. In goal misgeneralization, the system learns an entirely different goal during training. A reward-hacking robot follows its programmed reward function but in unintended ways; a goal-misgeneralizing robot pursues a different objective altogether.
 
 Reward hacking provides concrete evidence for **outer alignment failures**—the difficulty of specifying objectives that capture what we actually want. While inner alignment focuses on ensuring systems optimize their intended objectives, outer alignment focuses on ensuring those objectives are correct in the first place. Reward hacking demonstrates that even with perfect inner alignment, outer misalignment can cause significant problems.
 
@@ -213,11 +213,11 @@ The economic incentives around AI deployment also create uncertainty. Companies 
 
 | Response | Mechanism | Effectiveness |
 |----------|-----------|---------------|
-| [RLHF](/knowledge-base/responses/alignment/rlhf/) | Learn reward from human feedback | Medium (shifts problem to modeling) |
-| [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) | Process-based evaluation, oversight amplification | Medium-High |
-| [Evaluations](/knowledge-base/responses/alignment/evals/) | Red-team for reward exploits | Medium |
-| [Mechanistic Interpretability](/knowledge-base/responses/alignment/interpretability/) | Detect when model optimizes proxy vs. true goal | Medium |
-| [AI Control](/knowledge-base/responses/alignment/ai-control/) | Limit damage from reward hacking | Medium |
+| <EntityLink id="rlhf" /> | Learn reward from human feedback | Medium (shifts problem to modeling) |
+| <EntityLink id="scalable-oversight" /> | Process-based evaluation, oversight amplification | Medium-High |
+| <EntityLink id="evals" /> | Red-team for reward exploits | Medium |
+| <EntityLink id="interpretability" /> | Detect when model optimizes proxy vs. true goal | Medium |
+| <EntityLink id="ai-control" /> | Limit damage from reward hacking | Medium |
 
 ---
 

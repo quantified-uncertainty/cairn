@@ -1,0 +1,426 @@
+---
+title: "Cyber Psychosis Cascade Model"
+description: "This model analyzes AI-generated content triggering psychological harm cascades. It identifies 1-3% of population as highly vulnerable, with 5-10x increased susceptibility during reality-testing deficits."
+sidebar:
+  order: 46
+quality: 72
+lastEdited: "2025-12-27"
+ratings:
+  novelty: 4
+  rigor: 3
+  actionability: 3
+  completeness: 4
+importance: 45
+llmSummary: "Model analyzes how AI-generated content triggers psychological harm cascades through three pathways (targeted campaigns, mass confusion, dependency), estimating 1-3% of population as highly vulnerable with 5-10x increased risk multipliers. Provides structured framework with vulnerability distributions and cascade timelines but lacks external citations or quantified intervention effectiveness."
+---
+import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+
+<DataInfoBox entityId="cyber-psychosis-cascade" ratings={frontmatter.ratings} />
+
+## Overview
+
+The proliferation of AI-generated content creates novel vectors for psychological harm at population scale. This model examines how synthetic media can trigger, exacerbate, or weaponize psychological vulnerabilities in susceptible individuals, potentially creating cascading effects that propagate through social networks and destabilize collective sense-making. The core insight is that psychological harm from AI-generated content operates through cascade dynamics: individual distress can amplify through social channels, erode institutional trust, and ultimately impair society's ability to coordinate around shared reality.
+
+Understanding these cascade mechanisms matters because they represent a category of AI harm that is poorly addressed by current safety frameworks focused on individual model behavior. A model that generates convincing synthetic content may pass all standard evaluations while enabling attacks on mental health at scale. The population-level effects—mass confusion events, dependency cascades, and collective reality fragmentation—are emergent properties that cannot be predicted from individual content generation. This creates a gap between safety research (focused on individual model outputs) and harm prevention (which requires understanding population dynamics).
+
+The model distinguishes three primary cascade pathways: targeted individual campaigns that exploit personal vulnerabilities, mass confusion events that overwhelm collective sense-making, and gradual dependency cascades that erode human social capacity over time. Each pathway has different attack vectors, vulnerable populations, and intervention points. The critical uncertainty is whether defensive measures (detection technology, authentication infrastructure, mental health support) can scale faster than offensive capabilities (synthetic content generation, personalized targeting, social amplification). Current evidence suggests defense is losing this race, making proactive intervention increasingly urgent.
+
+## Conceptual Framework
+
+**Cascade Stages**
+
+| Stage | Examples | Key Transition |
+|-------|----------|----------------|
+| **Triggers** | Deepfakes, reality confusion, personalized harassment, parasocial manipulation | Vulnerable exposure |
+| **Individual Effects** | Acute distress, identity disruption, trust erosion, social withdrawal | Social sharing |
+| **Cascade Amplification** | Social media spread, community impact, institutional failure, collective uncertainty | Threshold crossing |
+| **Population Outcomes** | Mass confusion, dependency epidemics, democratic dysfunction, mental health crisis | Systemic harm |
+
+<Mermaid client:load chart={`flowchart TD
+    A[Trigger Events] --> B[Individual Harm]
+    B --> C[Social Amplification]
+    C --> D[Population Outcomes]
+
+    style A fill:#fff4e1
+    style B fill:#ffddcc
+    style C fill:#ffcccc
+    style D fill:#ff9999
+`} />
+
+Individual trigger mechanisms propagate through cascade amplification to produce population-level outcomes. The severity increases at each stage as effects compound.
+
+## Mechanisms of Harm
+
+### Direct Exposure Effects
+
+| Vector | Mechanism | Vulnerable Population | Severity | Emergence Timeline |
+|--------|-----------|----------------------|----------|-------------------|
+| Deepfake targeting | Synthetic content depicting individual in harmful scenarios | Specific targets with public profiles | High | Already occurring |
+| Reality confusion | Inability to distinguish real from synthetic | Elderly, cognitive decline, psychosis-prone | Moderate-High | 2024-2026 |
+| Personalized harassment | AI-generated content tailored to individual fears | Anxiety/PTSD sufferers | High | Already occurring |
+| Parasocial manipulation | AI personas exploiting attachment needs | Lonely, socially isolated | Moderate | Emerging |
+| Identity erosion | Synthetic content undermining self-concept | Adolescents, identity-formation stage | Moderate-High | 2025-2027 |
+
+### Cascade Pathways
+
+**Three Primary Cascade Pathways**
+
+| Pathway | Trigger | Progression | Terminal State | Timeline |
+|---------|---------|-------------|----------------|----------|
+| **1. Targeted Campaign** | Deepfake created | Distribution → Social exposure → Relationship damage → Identity crisis | Long-term PTSD | Weeks-months |
+| **2. Mass Confusion** | Synthetic evidence released | Conflicting "proof" → Authority questioned → Polarization | Factional conflict | Days-weeks |
+| **3. Dependency Cascade** | AI companion adoption | Human interaction decline → Social skill atrophy → Isolation | Complete withdrawal | Months-years |
+
+<Mermaid client:load chart={`flowchart TD
+    A[Initial Trigger] --> B{Pathway Type}
+    B -->|"Targeted"| C[Individual PTSD]
+    B -->|"Confusion"| D[Factional Conflict]
+    B -->|"Dependency"| E[Social Withdrawal]
+
+    style A fill:#e1f5ff
+    style C fill:#ffcccc
+    style D fill:#ffcccc
+    style E fill:#ffcccc
+`} />
+
+## Population Vulnerability Model
+
+### Causal Structure
+
+Cascade probability depends on interacting factors that influence each other in a network structure rather than combining independently. The key factors and their relationships:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Factors["Contributing Factors"]
+        F1["Trigger Events<br/>(synthetic content volume)"]
+        F2["Vulnerable Exposure<br/>(population distribution)"]
+        F3["Amplification Potential<br/>(social media dynamics)"]
+        F4["Institutional Response<br/>(preparedness, capacity)"]
+    end
+
+    subgraph Correlations["Key Correlations"]
+        C1["Weak institutions → <br/>more amplification"]
+        C2["High vulnerability → <br/>easier amplification"]
+        C3["Certain triggers → <br/>stronger amplification"]
+    end
+
+    F1 -->|"influences"| F3
+    F2 -->|"influences"| F3
+    F4 -->|"constrains"| F3
+    F4 -->|"affects detection of"| F1
+
+    style C1 fill:#fff3cd
+    style C2 fill:#fff3cd
+    style C3 fill:#fff3cd
+`} />
+
+**Why simple multiplication fails:** A naive model like `P(cascade) = P(trigger) × P(exposure) × P(amplification) × P(institutional failure)` treats these as independent dice rolls. In reality:
+- Weak institutional response correlates with higher amplification (same underlying causes: underfunding, low priority)
+- High vulnerable exposure makes amplification more likely (more nodes to propagate through)
+- Certain trigger types amplify more easily than others (not independent events)
+
+### Factor Estimates (with correlation caveat)
+
+| Factor | Low | Central | High | Correlated With |
+|--------|-----|---------|------|-----------------|
+| Trigger likelihood | 0.80 | 0.90 | 0.98 | Institutional detection capacity |
+| Vulnerable exposure | 0.15 | 0.22 | 0.30 | Amplification potential (+) |
+| Amplification potential | 0.30 | 0.45 | 0.60 | Institutional response (-), Vulnerability (+) |
+| Institutional failure | 0.20 | 0.35 | 0.50 | Amplification (+), Trigger detection (-) |
+
+**Rough cascade probability range:** 1-10%, but this range reflects uncertainty about correlation structure more than parameter uncertainty. If factors are highly correlated (institutions that fail to detect also fail to respond), the true probability is higher than naive multiplication suggests.
+
+### Vulnerability Distribution
+
+| Segment | % of Population | Primary Vulnerability | Risk Multiplier | Intervention Priority |
+|---------|-----------------|----------------------|-----------------|----------------------|
+| Pre-existing psychosis | 1-3% | Reality testing deficits | 5-10x | Critical |
+| Anxiety disorders | 15-20% | Threat hypervigilance | 2-3x | High |
+| High institutional distrust | 30-40% | Conspiracy susceptibility | 1.5-2x | Medium-High |
+| Information overload | 50-60% | Decision paralysis | 1.2-1.5x | Medium |
+| Baseline resilient | 20-30% | Standard vulnerability | 1x | Low |
+
+## Specific Scenario Analysis
+
+### Scenario 1: Targeted Individual Campaign
+
+An individual becomes the subject of a coordinated AI-generated synthetic content campaign designed to destroy their reputation, relationships, and psychological wellbeing.
+
+**Attack Components:**
+| Component | Technical Feasibility | Detectability | Harm Severity |
+|-----------|----------------------|---------------|---------------|
+| Deepfake videos in compromising scenarios | High (available today) | Low-Medium | Very High |
+| AI voice clones for fabricated statements | High (available today) | Low | High |
+| Synthetic social media histories | Medium-High | Low | High |
+| Coordinated cross-platform distribution | High | Medium | High |
+| Personalized psychological targeting | Medium | Very Low | Very High |
+
+**Psychological Impact Timeline:**
+
+| Phase | Duration | Primary Effect | Intervention Window | Recovery Probability |
+|-------|----------|----------------|---------------------|---------------------|
+| Acute shock | Hours-days | Panic, disbelief, social paralysis | Immediate support critical | 80-90% if addressed |
+| Social erosion | Days-weeks | Relationship damage, social isolation | Reputation management | 60-75% |
+| Identity crisis | Weeks-months | Self-concept disruption, depression | Mental health treatment | 40-60% |
+| Chronic effects | Months-years | PTSD, anxiety disorders, permanent trauma | Long-term therapy | 20-40% |
+
+### Scenario 2: Mass Confusion Event
+
+Large-scale release of synthetic content creates collective uncertainty about a major public event (election, crisis, terrorist attack).
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Phase1["Phase 1: Injection"]
+        A["Synthetic content released<br/>across multiple platforms"]
+    end
+
+    subgraph Phase2["Phase 2: Proliferation"]
+        B["Conflicting 'evidence' spreads"]
+        C["Authoritative sources questioned"]
+        D["Expert consensus undermined"]
+    end
+
+    subgraph Phase3["Phase 3: Polarization"]
+        E["Faction A: Original narrative"]
+        F["Faction B: Alternative narrative"]
+        G["Faction C: 'Everything is fake'"]
+    end
+
+    subgraph Phase4["Phase 4: Conflict"]
+        H["Inter-faction hostility"]
+        I["Violence between groups"]
+        J["Democratic legitimacy collapse"]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    E --> H
+    F --> H
+    G --> H
+    H --> I
+    H --> J
+
+    style I fill:#ff6666
+    style J fill:#ff6666
+`} />
+
+**Historical Analogs and Scaling:**
+
+| Historical Case | Mechanism | Scale | AI Enhancement Potential |
+|-----------------|-----------|-------|-------------------------|
+| Rwanda radio genocide | Information weaponization | National | 10-100x reach, personalization |
+| COVID misinformation | Health behavior cascades | Global | Real-time adaptation, targeting |
+| Election interference | Democratic legitimacy erosion | National | Synthetic evidence, deepfakes |
+| QAnon phenomenon | Collective delusion formation | Multi-national | Personalized recruitment, AI leaders |
+
+### Scenario 3: AI Companion Dependency Cascade
+
+Widespread reliance on AI companions leads to social skill atrophy and isolation at population scale.
+
+**Progression Model:**
+
+| Stage | Timeframe | Characteristics | Affected Population (%) | Reversibility |
+|-------|-----------|-----------------|------------------------|---------------|
+| Initial adoption | 0-6 months | Supplementary use, human preference maintained | 15-25% | High |
+| Primary preference | 6-18 months | Human interaction actively avoided | 5-10% | Moderate |
+| Functional dependency | 18-36 months | Atrophied social skills, AI required | 2-5% | Low |
+| Complete isolation | 3+ years | Near-complete social withdrawal | 0.5-2% | Very low |
+
+**Epidemiological Projection:**
+
+$$
+\text{Dependency Rate}(t) = D_0 \times e^{rt} \times \left(1 - \frac{D(t)}{K}\right)
+$$
+
+Where:
+- $D_0$ = initial dependency rate (~0.1% in 2024)
+- $r$ = growth rate (~0.3-0.5 annually)
+- $K$ = carrying capacity (~5-15% of population)
+
+| Year | Projected Dependency Rate | Confidence Interval | Key Assumptions |
+|------|---------------------------|---------------------|-----------------|
+| 2025 | 0.5-1.0% | Medium | Current trajectory |
+| 2027 | 1.5-3.0% | Medium | No major intervention |
+| 2030 | 3.0-6.0% | Low | Social norm shifts |
+| 2035 | 5.0-12.0% | Very Low | Generational effects |
+
+## System-Level Effects
+
+### Trust Erosion Dynamics
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Trigger["Initial Trigger"]
+        A["Evidence authenticity<br/>becomes uncertain"]
+    end
+
+    subgraph Response["Defensive Response"]
+        B["Generalized skepticism"]
+        C["Conspiracy theory adoption"]
+        D["Authority rejection"]
+    end
+
+    subgraph Institutional["Institutional Effects"]
+        E["Media credibility collapse"]
+        F["Scientific authority erosion"]
+        G["Government legitimacy decline"]
+    end
+
+    subgraph Social["Social Outcomes"]
+        H["Social cohesion weakening"]
+        I["Coordination failure"]
+        J["Democratic dysfunction"]
+    end
+
+    A --> B
+    A --> C
+    B --> D
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    E --> H
+    F --> H
+    G --> H
+    H --> I
+    I --> J
+
+    style J fill:#ff9999
+`} />
+
+### Mental Health System Impact
+
+| Effect | Timeline | Severity | Current Preparedness | Required Response |
+|--------|----------|----------|---------------------|-------------------|
+| Increased caseload | 1-3 years | Moderate (20-30% increase) | Low | Capacity expansion |
+| Novel presentation types | 2-5 years | Moderate | Very Low | Training, research |
+| Treatment complexity | 3-7 years | High | Very Low | New protocols |
+| System overwhelm | 5-10 years | High (potential 2-3x demand) | Minimal | Structural reform |
+
+## Scenario Probability Analysis
+
+The following scenarios represent probability-weighted paths for cyber-psychosis cascade evolution:
+
+| Scenario | Probability | 2027 Harm Level | 2035 Harm Level | Key Characteristics |
+|----------|-------------|-----------------|-----------------|---------------------|
+| A: Rapid Cascade | 15% | Very High | Critical | Defense overwhelmed, mass confusion |
+| B: Gradual Accumulation | 40% | Elevated | High | Slow-building but persistent harm |
+| C: Effective Defense | 25% | Moderate | Low-Moderate | Detection and intervention succeed |
+| D: Adaptation | 20% | Moderate | Low | Population develops resilience |
+
+### Scenario A: Rapid Cascade (15% probability)
+
+Defensive measures fail to keep pace with synthetic content capabilities. A major mass confusion event occurs between 2025-2027, creating lasting damage to institutional trust and social cohesion. Mental health systems are overwhelmed by novel presentations. AI companion dependency grows faster than projected as people retreat from confusing reality. Democratic processes are significantly impaired by inability to establish shared facts.
+
+### Scenario B: Gradual Accumulation (40% probability)
+
+No single catastrophic event, but steady accumulation of harms. Targeted campaigns become routine, affecting thousands of individuals annually. Trust erosion proceeds slowly but persistently. Mental health burden increases gradually, allowing partial adaptation. Society functions but with degraded epistemic capacity and elevated background anxiety. This is the most likely trajectory absent major intervention.
+
+### Scenario C: Effective Defense (25% probability)
+
+Detection technology and authentication infrastructure develop fast enough to maintain reasonable content verification. Platform interventions are strengthened through regulation. Mental health support expands. Public awareness programs increase resilience. Harm remains at manageable levels through sustained investment in defensive measures.
+
+### Scenario D: Population Adaptation (20% probability)
+
+Humans and societies prove more resilient than expected. New epistemological norms emerge (verification as default, skepticism as healthy). Social institutions adapt to synthetic content environment. Mental health impacts are real but manageable. This scenario requires no major intervention but also no major escalation by adversarial actors.
+
+### Expected Harm Calculation
+
+$$
+E[\text{Harm}_{2030}] = \sum_{s} P(s) \times H_s(2030)
+$$
+
+| Scenario | P(s) | Harm₂₀₃₀ (0-10) | Contribution |
+|----------|------|-----------------|--------------|
+| A: Rapid Cascade | 0.15 | 8.5 | 1.28 |
+| B: Gradual Accumulation | 0.40 | 5.5 | 2.20 |
+| C: Effective Defense | 0.25 | 3.0 | 0.75 |
+| D: Adaptation | 0.20 | 2.5 | 0.50 |
+| **Expected Value** | | | **4.73** |
+
+This expected harm level of 4.73/10 by 2030 indicates "moderate-elevated" concern, with significant probability mass on more severe outcomes.
+
+## Intervention Analysis
+
+### Individual Level Interventions
+
+| Intervention | Effectiveness | Cost | Scalability | Implementation Status |
+|--------------|---------------|------|-------------|----------------------|
+| Media literacy training | Moderate (30-40% harm reduction) | Low | High | Partial |
+| Targeted mental health support | High (50-70% for affected) | High | Low | Minimal |
+| Social connection programs | Moderate (25-35%) | Medium | Medium | Minimal |
+| Early warning systems | Low-Moderate (20-30%) | Medium | Medium | Conceptual |
+
+### Platform Level Interventions
+
+| Intervention | Effectiveness | Feasibility | Adoption Likelihood | Key Barriers |
+|--------------|---------------|-------------|---------------------|--------------|
+| Synthetic content labeling | Moderate | High | Medium | Evasion, false negatives |
+| Distribution velocity caps | Moderate | Medium | Low | Revenue impact |
+| Proactive targeting detection | High | Medium | Low | Technical difficulty |
+| Cross-platform coordination | High | Low | Very Low | Competition, legal |
+
+### Institutional Level Interventions
+
+| Intervention | Effectiveness | Timeline | Cost | Current Progress |
+|--------------|---------------|----------|------|------------------|
+| Rapid response capability | High | 2-3 years | High | Low |
+| Authentication infrastructure | High | 3-5 years | Very High | Minimal |
+| Research investment | Medium-High | Ongoing | Medium | Low |
+| Regulatory frameworks | Variable | 3-7 years | Medium | Very early |
+
+## Strategic Importance
+
+### Magnitude Assessment
+
+| Dimension | Assessment | Quantitative Estimate |
+|-----------|------------|----------------------|
+| **Potential severity** | Population-level mental health crisis; democratic dysfunction | 1-5% population experiencing significant harm by 2030 |
+| **Probability-weighted importance** | Medium-High - gradual accumulation most likely (40%) | Expected harm 4.73/10 by 2030 (see scenario analysis) |
+| **Comparative ranking** | Top 20 AI risks; underweighted relative to technical alignment | Less attention than warranted given probability and scale |
+| **Timeline** | Ongoing; critical escalation potential in 2-5 years | Targeted campaigns already occurring; mass confusion emerging |
+
+### Resource Implications
+
+| Category | Current Investment | Recommended | Gap Assessment |
+|----------|-------------------|-------------|----------------|
+| Research on AI-induced psychological harm | \$5-15M/year | \$50-100M/year | 5-10x underfunded |
+| Detection infrastructure | \$20-50M/year | \$200-500M/year | 5-10x underfunded |
+| Mental health capacity expansion | Insufficient | +\$1-5B/year (US) | Structural deficit |
+| Authentication infrastructure | \$50-100M/year | \$500M-2B/year | 10x+ underfunded |
+| Platform safety requirements | Voluntary, limited | Regulatory mandates | Structural gap |
+
+### Key Cruxes
+
+1. **Defense vs offense trajectory:** Can detection and authentication scale faster than synthetic content generation? Current evidence suggests offense is winning by 2-5 years.
+2. **Population resilience:** Will humans adapt epistemologically, or will vulnerability remain constant? Historical technology transitions suggest eventual adaptation, but 5-15 year lag.
+3. **Cascade threshold:** What level of synthetic content saturation triggers mass confusion events? Unknown, but estimates range from 10-30% of encountered content.
+4. **Mental health system capacity:** Can healthcare systems absorb 2-3x demand increase? Current trends suggest no; structural reform required.
+
+## Limitations
+
+This model has significant limitations that affect confidence in its predictions:
+
+**Limited empirical data on population-scale effects.** Large-scale AI-driven psychological harms are nascent phenomena with limited historical precedent. The model extrapolates from smaller-scale incidents and analogous cases, but population dynamics may differ qualitatively at scale. Cascade thresholds and amplification factors are particularly uncertain.
+
+**Cultural and demographic variation not captured.** Vulnerability factors, social dynamics, and institutional trust vary significantly across populations. A model calibrated to Western democracies may not apply to other contexts. The framework does not adequately capture how different cultural contexts might produce different cascade dynamics.
+
+**Adversarial adaptation underestimated.** The model treats attack capabilities as exogenous, but sophisticated adversaries will adapt to defenses. Each successful intervention may trigger counter-adaptation, creating arms race dynamics not captured in the static analysis. Adversarial creativity may exploit vulnerabilities the model does not anticipate.
+
+**Positive adaptation underestimated.** Human and societal resilience may exceed expectations. Previous information technology transitions (printing press, broadcast media, internet) caused disruption but ultimately resulted in adaptation. The model may overweight harm scenarios relative to adaptation scenarios.
+
+**Technical evolution creates forecasting uncertainty.** Both harmful capabilities (synthetic content quality, personalization, distribution) and defensive capabilities (detection, authentication, intervention) are rapidly evolving. Predictions beyond 2-3 years are highly uncertain, and the model cannot anticipate breakthrough developments on either side.
+
+**Intervention effectiveness poorly calibrated.** Most proposed interventions have not been tested at scale. Effectiveness estimates are based on theoretical reasoning and limited pilots rather than rigorous evaluation. Actual effectiveness may differ substantially from projections.
+
+## Related Models
+
+- [Trust Cascade Failure Model](/knowledge-base/models/trust-cascade-model/) - Institutional trust erosion dynamics
+
+## Related Pages
+
+<Backlinks client:load entityId="cyber-psychosis-cascade" />

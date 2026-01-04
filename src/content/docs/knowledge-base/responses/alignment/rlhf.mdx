@@ -6,7 +6,7 @@ quality: 78
 lastEdited: "2025-12-28"
 llmSummary: "RLHF and Constitutional AI are the dominant techniques for aligning language models, with InstructGPT (1.3B) outperforming GPT-3 (175B) in human evaluations and industry-wide adoption. However, fundamental scalability limitations emerge at superhuman capability levels where human evaluation becomes unreliable, achieving moderate risk reduction (20-40%) primarily for current systems."
 ---
-import {Mermaid, R} from '../../../../../components/wiki';
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -20,10 +20,10 @@ However, these techniques face fundamental challenges as AI systems approach and
 
 | Risk | How RLHF/CAI Helps | Effectiveness |
 |------|-------------------|---------------|
-| [Misuse (Bioweapons, Cyberweapons)](/knowledge-base/risks/misuse/) | Trains refusal behaviors for dangerous requests | Moderate—can be jailbroken |
-| [Harmful Outputs](/knowledge-base/risks/accident/) | Reduces toxic, biased, and deceptive content | High for current systems |
-| [Goal Misgeneralization](/knowledge-base/risks/accident/) | Shapes outputs toward intended behavior | Low—addresses symptoms, not root cause |
-| [Deceptive Alignment](/knowledge-base/risks/accident/) | No direct mitigation | Very Low—cannot detect deception |
+| <EntityLink id="misuse" /> | Trains refusal behaviors for dangerous requests | Moderate—can be jailbroken |
+| <EntityLink id="accident-risks" /> | Reduces toxic, biased, and deceptive content | High for current systems |
+| <EntityLink id="goal-misgeneralization" /> | Shapes outputs toward intended behavior | Low—addresses symptoms, not root cause |
+| <EntityLink id="deceptive-alignment" /> | No direct mitigation | Very Low—cannot detect deception |
 
 ### Quick Assessment
 
@@ -341,3 +341,16 @@ RLTHF combines LLM-based initial alignment with selective human corrections, ach
 - <R id="d692d6a7d3f5d48e">MA-RLHF: Macro Actions</R> — Credit assignment improvements
 - <R id="cea0ecf0a1d00903">Safe RLHF</R> — Decoupling helpfulness and harmlessness
 - <R id="573756885a2318ef">A Comprehensive Survey of DPO</R> — DPO variants and applications
+
+---
+
+## AI Transition Model Context
+
+RLHF improves the <EntityLink id="ai-transition-model" /> through <EntityLink id="misalignment-potential" />:
+
+| Factor | Parameter | Impact |
+|--------|-----------|--------|
+| <EntityLink id="misalignment-potential" /> | <EntityLink id="alignment-robustness" /> | Shapes model behavior toward human preferences, reducing misalignment |
+| <EntityLink id="misalignment-potential" /> | <EntityLink id="human-oversight-quality" /> | Creates feedback loop between human evaluators and model training |
+
+RLHF effectiveness is bounded by the scalable oversight problem: as AI capabilities exceed human evaluation ability, the approach faces fundamental limits.

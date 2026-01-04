@@ -1,0 +1,408 @@
+---
+title: "Interpretability Coverage"
+description: "The percentage of AI model behavior that can be explained and understood by researchers. Anthropic's 2024 breakthrough extracted 34 million features from Claude 3 Sonnet with 70% human-interpretable, yet enormous 'neural network dark matter' remains—with full frontier model mapping requiring billions of features beyond current methods."
+parentFactor: misalignment-potential
+sidebar:
+  order: 10
+quality: 91
+llmSummary: "Comprehensive assessment of interpretability coverage showing rapid progress (34M features from Claude 3 at 70% interpretable rate) but facing fundamental scaling challenges, with current ~10% frontier model coverage far below the >80% needed for robust safety verification. Documents the critical trade-off where SAE-based interpretation imposes ~10x compute worth of performance penalty and identifies 'neural network dark matter' of rare features that may hide deceptive behaviors."
+lastEdited: "2025-12-29"
+importance: 85
+tractability: 65
+neglectedness: 70
+uncertainty: 50
+---
+import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
+
+<DataInfoBox entityId="interpretability-coverage" />
+
+## Overview
+
+Interpretability Coverage measures what fraction of AI model behavior can be explained and understood by researchers. **Higher interpretability coverage is better**—it enables verification that AI systems are safe and aligned, detection of deceptive behaviors, and targeted fixes for problems. This parameter quantifies transparency into the "black box"—how much we know about what's happening inside AI systems when they produce outputs.
+
+Research progress, institutional investment, and model complexity growth all determine whether interpretability coverage expands or falls behind. The parameter is crucial because many AI safety approaches—detecting deception, verifying alignment, predicting behavior—depend on understanding model internals.
+
+This parameter underpins critical safety capabilities across multiple domains. Without sufficient interpretability coverage, we cannot reliably verify that advanced AI systems are aligned with human values, detect [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/) or [scheming](/knowledge-base/risks/accident/scheming/) behaviors, identify [mesa-optimizers](/knowledge-base/risks/accident/mesa-optimization/) forming within training processes, or predict dangerous capabilities before they manifest in deployment. The parameter directly influences [epistemic capacity](/knowledge-base/ai-transition-model/factors/civilizational-competence/epistemic-health/) (our ability to understand AI systems), [human oversight quality](/knowledge-base/ai-transition-model/factors/misalignment-potential/human-oversight-quality/) (oversight requires understanding what's being overseen), and [safety culture strength](/knowledge-base/ai-transition-model/factors/misalignment-potential/safety-culture-strength/) (interpretability enables evidence-based safety practices).
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    IC[Interpretability Coverage]
+
+    IC -->|enables| AR[Alignment Robustness]
+    IC -->|enables| HOQ[Human Oversight Quality]
+    IC -->|narrows| SCG[Safety-Capability Gap]
+
+    IC --> TECH[Misalignment Potential]
+    IC --> ACUTE[Acute Risk ↓↓]
+
+    style IC fill:#90EE90
+    style ACUTE fill:#ff6b6b
+`} />
+
+**Contributes to:** [Misalignment Potential](/knowledge-base/ai-transition-model/factors/misalignment-potential/)
+
+**Primary outcomes affected:**
+- [Acute Risk](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) ↓↓ — Interpretability enables detection of deception and verification of alignment
+
+---
+
+## Current State Assessment
+
+### Key Metrics
+
+| Metric | Pre-2024 | Current (2025) | Target (Sufficient) |
+|--------|----------|----------------|---------------------|
+| Features extracted (Claude 3 Sonnet) | Thousands | 34 million | 100M-1B (est.) |
+| Features extracted (GPT-4) | None | 16 million | 1B-10B (est.) |
+| Human-interpretable rate | ~50% | 70% (±5%) | >90% |
+| Estimated coverage of frontier models | &lt;1% | 8-12% (median 10%) | &gt;80% |
+| Automated interpretability tools | Research prototypes | <R id="6490bfa2b3094be7">MAIA</R>, early deployment | Comprehensive suite |
+| Global FTE researchers | ~20 | ~50 | 500-1,000 |
+
+*Sources: <R id="e724db341d6e0065">Anthropic Scaling Monosemanticity</R>, <R id="f7b06d857b564d78">OpenAI GPT-4 Concepts</R>, <R id="a31c49bf9c1df71f">Gemma Scope</R>*
+
+### Progress Timeline
+
+| Year | Milestone | Coverage Impact |
+|------|-----------|-----------------|
+| 2020 | <R id="ad268b74cee64b6f">Circuits in CNNs</R> | First interpretable circuits in vision |
+| 2021 | <R id="b948d6282416b586">Transformer Circuits Framework</R> | Formal approach to understanding transformers |
+| 2022 | <R id="23e5123e7f8f98e2">Induction Heads</R> | Key mechanism for in-context learning identified |
+| 2023 | <R id="0946f0572a487914">Monosemanticity</R> | SAEs extract interpretable features from 1-layer models |
+| 2024 | <R id="e724db341d6e0065">Scaling to Claude 3 Sonnet</R> | 34M features; 70% interpretable rate |
+| 2024 | <R id="f7b06d857b564d78">GPT-4 Concepts</R> | 16M features from GPT-4 |
+| 2024 | <R id="a31c49bf9c1df71f">Gemma Scope</R> | Open SAE suite released by Google DeepMind |
+| 2025 | <R id="a1036bc63472c5fc">Gemma Scope 2</R> | 110 PB open-source SAE release |
+| 2025 | Attribution Graphs | New technique for cross-layer causal understanding |
+
+---
+
+## What "High Coverage" Looks Like
+
+High interpretability coverage would enable researchers to understand most of what happens inside AI systems—not perfect transparency, but sufficient insight for safety verification. Concretely, this means being able to answer questions like "Is this model pursuing a hidden objective?" or "What would trigger this dangerous capability?" with >95% confidence rather than the current ~60-70% confidence for favorable cases.
+
+### Characteristics of High Coverage
+
+1. **Comprehensive Feature Maps**: >90% of model concepts identified and catalogued (currently ~10% for frontier models)
+2. **Causal Understanding**: Changes to identified features predictably alter behavior with >85% accuracy (currently ~70%)
+3. **Safety-Relevant Completeness**: >99% of features relevant to alignment, deception, and dangerous behaviors are known (currently unknown, likely &lt;50%)
+4. **Scalable Analysis**: Understanding scales linearly or sublinearly with model size rather than requiring exponentially more effort (current trajectory: slightly superlinear but improving)
+5. **Adversarial Robustness**: Interpretations remain valid even for models trying to hide their true reasoning (untested; likely requires fundamentally different approaches than current methods)
+6. **Rare Feature Coverage**: Ability to detect features activating &lt;0.01% of the time, where deceptive behaviors may hide (current methods struggle below ~0.1% activation frequency)
+
+### Coverage Level Framework
+
+| Level | Description | What's Possible | Current Status |
+|-------|-------------|-----------------|----------------|
+| **Minimal** (&lt;5%) | Identify a few circuits/features | Demonstrate interpretability is possible | 2022-2023 |
+| **Partial** (10-30%) | Map significant fraction of model behavior | Discover safety-relevant features | Current (2024-2025) |
+| **Substantial** (30-60%) | Understand most common behaviors | Reliable deception detection for known patterns | Target 2026-2028 |
+| **Comprehensive** (60-90%) | Full coverage except rare edge cases | Formal verification of alignment properties | Unknown timeline |
+| **Complete** (>90%) | Essentially complete understanding | Mathematical safety guarantees | May be impossible |
+
+---
+
+## Factors That Decrease Coverage (Threats)
+
+<Mermaid client:load chart={`
+flowchart TD
+    SCALE[Model Scale Increase] --> MORE_FEAT[More Features Needed]
+    MORE_FEAT --> COVERAGE[Relative Coverage Drops]
+
+    COMPLEX[Architectural Complexity] --> HARDER[Harder to Interpret]
+    HARDER --> SLOWER[Slower Progress]
+
+    DARK[Neural Network Dark Matter] --> MISS[Rare Features Missed]
+    MISS --> GAPS[Safety-Critical Gaps]
+
+    COVERAGE --> GAP[Coverage Gap Widens]
+    SLOWER --> GAP
+    GAPS --> GAP
+
+    style SCALE fill:#ff6b6b
+    style GAP fill:#990000,color:#fff
+`} />
+
+### Model Scaling Challenges
+
+| Challenge | Description | Current Impact |
+|-----------|-------------|----------------|
+| **Parameter growth** | Models doubling every 6-12 months | Coverage as % declining |
+| **Feature count scaling** | Features scale with parameters | Need billions for frontier models |
+| **Compute requirements** | SAE training is expensive | Limits who can do interpretability |
+| **Performance penalty** | SAE pass-through loses model quality | ~10x compute worth of degradation |
+
+<R id="b1d6e7501debf627">Bereska & Gavves (2024)</R> document the fundamental trade-off: passing GPT-4's activations through sparse autoencoders results in performance equivalent to a model trained with roughly 10x less compute.
+
+### Neural Network Dark Matter
+
+Chris Olah (July 2024): "If asked a year ago about the key open problems for mechanistic interpretability, I would have said the most important problem was superposition, followed by the challenge of scalability... We can now automatically extract large numbers of interpretable features. However, we are likely only extracting a small fraction of the features, with an enormous number of rare features we can't yet extract—a kind of 'neural network dark matter.'"
+
+| Gap Category | Description | Safety Relevance |
+|--------------|-------------|------------------|
+| **Rare features** | Low-frequency activations missed by SAEs | May include deceptive behaviors |
+| **Distributed representations** | Information spread across many neurons | Mesa-optimization may hide here |
+| **Compositional complexity** | Features that combine in complex ways | Emergent behaviors unexplained |
+| **Context-dependent features** | Activations that only appear in specific contexts | Situational awareness patterns |
+
+### Adversarial Considerations
+
+Adversarially capable models may actively resist interpretation, creating arms-race dynamics between interpretability researchers and deceptive AI systems. This threat is particularly acute for [scheming](/knowledge-base/risks/accident/scheming/) models that understand they're being monitored.
+
+| Threat | Mechanism | Evidence | Related Risk |
+|--------|-----------|----------|--------------|
+| **Steganography** | Models encoding information invisibly via [steganographic channels](/knowledge-base/risks/accident/steganography/) | Theoretical; demonstrated in toy settings | [Steganography](/knowledge-base/risks/accident/steganography/) |
+| **Obfuscation** | Distributing goals to evade detection | No strong evidence yet; 10-20% probability by 2027 (est.) | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) |
+| **Probe evasion** | Models learning to avoid triggering probes | Adversarial robustness largely untested | [Sandbagging](/knowledge-base/risks/accident/sandbagging/) |
+| **Interpretability gaming** | Producing interpretable-seeming features that mislead | Theoretical; plausible for sufficiently capable models | [Scheming](/knowledge-base/risks/accident/scheming/) |
+| **Power-seeking via opacity** | Maintaining interpretability gaps as instrumental goal | Speculative; depends on [instrumental convergence](/knowledge-base/risks/accident/instrumental-convergence/) | [Power-Seeking](/knowledge-base/risks/accident/power-seeking/) |
+
+---
+
+## Factors That Increase Coverage (Supports)
+
+### Technical Advances
+
+| Technique | Mechanism | Current Status |
+|-----------|-----------|----------------|
+| **Sparse Autoencoders** | Extract monosemantic features from polysemantic neurons | Core method; scaling demonstrated |
+| **Activation patching** | Identify which components cause specific behaviors | Standard technique |
+| **Circuit analysis** | Map computational graphs in model | Labor-intensive; partial automation |
+| **Automated interpretability** | AI assists in interpreting AI | <R id="6490bfa2b3094be7">MAIA</R>, early tools |
+| **Feature steering** | Modify behavior via activation editing | Demonstrates causal understanding |
+
+### Scaling Progress
+
+| Dimension | 2023 | 2025 | Trajectory |
+|-----------|------|------|------------|
+| **Features per model** | ~100K | 34M+ | Exponential growth (~10x per year) |
+| **Model size interpretable** | 1-layer toys | Claude 3 Sonnet (70B) | Scaling with compute investment |
+| **Interpretability rate** | ~50% | ~70% | Improving 5-10% annually |
+| **Time to interpret new feature** | Hours (human) | Minutes (automated) | Automating via AI-assisted tools |
+| **Papers published annually** | ~50 | ~200+ | Rapid field growth |
+
+### Recent Research Advances (2024-2025)
+
+The field has seen explosive growth in both theoretical foundations and practical applications, with 93 papers accepted to the ICML 2024 Mechanistic Interpretability Workshop alone—demonstrating research velocity that has roughly quadrupled since 2022.
+
+**Major Methodological Advances:**
+
+A comprehensive [March 2025 survey on sparse autoencoders](https://arxiv.org/abs/2503.05613) synthesizes progress across technical architecture, feature explanation methods, evaluation frameworks, and real-world applications. Key developments include improved SAE architectures (gated SAEs, JumpReLU variants), better training strategies, and systematic evaluation methods that have increased interpretability rates from 50% to 70%+ over two years.
+
+[Anthropic's 2025 work on attribution graphs](https://transformer-circuits.pub/2025/attribution-graphs/biology.html) introduces cross-layer transcoder (CLT) architectures with 30 million features across all layers, enabling causal understanding of how features interact across the model's depth. This addresses a critical gap: earlier SAE work captured features within individual layers but struggled to trace causal pathways through the full network.
+
+**Scaling Demonstrations:**
+
+The [Llama Scope project (2024)](https://arxiv.org/abs/2309.08600) extracted millions of features from Llama-3.1-8B, demonstrating that SAE techniques generalize across model architectures beyond Anthropic and OpenAI's proprietary systems. This open-weights replication is crucial for research democratization.
+
+**Applications Beyond Safety:**
+
+Sparse autoencoders have been successfully applied to [protein language models](https://pmc.ncbi.nlm.nih.gov/articles/PMC12403088/) (2024), discovering biologically meaningful features absent from Swiss-Prot annotations but confirmed in other databases. This demonstrates interpretability techniques transfer across domains—from natural language to protein sequences—suggesting underlying principles may generalize.
+
+**Critical Challenges Identified:**
+
+[Bereska & Gavves' comprehensive 2024 review](https://arxiv.org/abs/2404.14082) identifies fundamental scalability challenges: "As language models grow in size and complexity, many interpretability methods, including activation patching, ablations, and probing, become computationally expensive and less effective." The review documents that SAEs trained on identical data with different random initializations learn substantially different feature sets, indicating that SAE decomposition is not unique but rather "a pragmatic artifact of training conditions"—raising questions about whether discovered features represent objective properties of the model or researcher-dependent perspectives.
+
+The [January 2025 "Open Problems" paper](https://arxiv.org/abs/2501.16496) takes a forward-looking stance, identifying priority research directions: resolving polysemantic neurons, minimizing human subjectivity in feature labeling, scaling to GPT-4-scale models, and developing automated methods that reduce reliance on human interpretation.
+
+### Institutional Investment
+
+| Organization | Investment | Focus |
+|--------------|------------|-------|
+| <R id="afe2508ac4caf5ee">Anthropic</R> | 17+ researchers (2024); ~1/3 global capacity | Full-stack interpretability |
+| <R id="04d39e8bd5d50dd5">OpenAI</R> | Dedicated team | Feature extraction, GPT-4 |
+| <R id="1bcc2acc6c2a1721">DeepMind</R> | Gemma Scope releases | Open-source SAEs |
+| **Academia** | Growing programs | Theoretical foundations |
+| **MATS/Redwood** | Training pipeline | Researcher development |
+
+As of mid-2024, mechanistic interpretability had approximately **50 full-time positions** globally. This is growing but remains tiny relative to the challenge.
+
+### Government and Policy Initiatives
+
+Recognition of interpretability's strategic importance has grown significantly in 2024-2025, with multiple government initiatives launched to accelerate research:
+
+| Initiative | Scope | Key Focus |
+|------------|-------|-----------|
+| **U.S. AI Action Plan (July 2025)** | Federal priority | "Invest in AI Interpretability, Control, and Robustness Breakthroughs" noting systems' inner workings remain "poorly understood" |
+| **FAS Policy Recommendations** | U.S. federal policy | Three pillars: creative research investment, R&D partnerships with government labs, prioritizing interpretable AI in federal procurement |
+| **DoD/IC Programs** | Defense & intelligence | XAI, GARD, and TrojAI programs for national security applications |
+| **EU AI Act** | Regulatory framework | Standards for AI transparency and explainability (Aug 2024-Aug 2025 implementation) |
+| **International AI Safety Report** | 96 experts, global | Recommends governments fund interpretability, adversarial training, ethical AI frameworks |
+
+The U.S. government's July 2025 AI Action Plan explicitly identifies the interpretability gap as a strategic vulnerability: "Today, the inner workings of frontier AI systems are poorly understood. Technologists know how LLMs work at a high level, but often cannot explain why a model produced a specific output. This lack of predictability can make it challenging to use advanced AI in defense, national security, or other applications where lives are at stake."
+
+A critical timeline mismatch has emerged: the Federation of American Scientists notes that "AI companies project that it could take 5-10 years to reliably understand model internals, while experts expect systems exhibiting human-level general-purpose capabilities by as early as 2027." This 2-8 year gap between achieving transformative capabilities (2027-2029) and achieving interpretability coverage (2029-2035) represents a period of acute vulnerability where we may deploy systems we cannot understand.
+
+---
+
+## Why This Parameter Matters
+
+### Safety Applications of Interpretability
+
+| Application | Requirement | Current Capability | Related Intervention |
+|-------------|-------------|-------------------|---------------------|
+| **Detecting deceptive alignment** | Find hidden objective features | >99% AUROC for known patterns (limited to trained distributions) | [Scheming Detection](/knowledge-base/responses/alignment/scheming-detection/) |
+| **Verifying goal alignment** | Comprehensive goal representation map | Partial; 30-40% of safety-relevant features identified (est.) | [Evaluations](/knowledge-base/responses/alignment/evals/) |
+| **Predicting novel behaviors** | Understand feature composition | Very limited; &lt;5% of compositional interactions understood | [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) |
+| **Formal safety proofs** | Complete coverage + causal model | Not achievable currently; fundamental barriers unclear | [Agent Foundations](/knowledge-base/responses/alignment/agent-foundations/) |
+| **Training guidance** | Know what features to encourage/discourage | Emerging capability via representation engineering | [Representation Engineering](/knowledge-base/responses/alignment/representation-engineering/) |
+
+### Safety-Relevant Discoveries
+
+<R id="e724db341d6e0065">Anthropic's May 2024 research</R> specifically identified features related to safety concerns:
+
+| Feature Type | Description | Implication |
+|--------------|-------------|-------------|
+| **Deception-related** | Patterns activating when processing/generating deceptive content | Deception may be detectable |
+| **Sycophancy features** | Activations for agreeing regardless of accuracy | Can measure sycophancy |
+| **Bias-related** | Patterns correlating with various biases | Bias auditing possible |
+| **Dangerous content** | Activations for harmful information | Content filtering targets |
+
+### Interpretability and Existential Risk
+
+| Scenario | Interpretability Role |
+|----------|----------------------|
+| **Deceptive alignment detection** | Core approach—interpret internal goals |
+| **Mesa-optimization identification** | Detect internal optimizers |
+| **Alignment verification** | Confirm intended goals are pursued |
+| **Controlled deployment** | Monitor for concerning features |
+
+Without sufficient interpretability coverage, we may deploy transformative AI systems without any way to verify their alignment—essentially gambling on the most important technology in history.
+
+---
+
+## Trajectory and Scenarios
+
+### Projected Coverage
+
+| Timeframe | Key Developments | Coverage Projection | Confidence |
+|-----------|------------------|---------------------|------------|
+| **2025-2026** | SAE scaling continues; automation improves; government funding increases | 15-25% (median 18%) | High |
+| **2027-2028** | New techniques possible (attribution graphs mature); frontier models 10-100x larger; potential breakthroughs or fundamental barriers discovered | 20-40% (median 28%) if no breakthroughs; 50-70% if major theoretical advance | Medium |
+| **2029-2030** | Either coverage catches up or gap is insurmountable; critical period for AGI deployment decisions | 25-45% (pessimistic); 50-75% (optimistic); &lt;20% (fundamental limits scenario) | Low |
+| **2031-2035** | Post-AGI interpretability; may be too late for safety-critical applications | Unknown; depends entirely on 2027-2030 breakthroughs | Very Low |
+
+The central uncertainty: Will interpretability progress scale linearly (~15% improvement per 2 years, reaching 40-50% by 2030) or will theoretical breakthroughs enable step-change improvements (reaching 70-80% by 2030)? Current evidence (2023-2025) suggests linear progress, but the field is young enough that paradigm shifts remain plausible.
+
+### Scenario Analysis
+
+| Scenario | Probability (2025-2030) | 2030 Coverage | Outcome |
+|----------|------------------------|--------------|---------|
+| **Coverage Scales** | 25-35% | 50-70% | Interpretability keeps pace with model growth; safety verification achievable for most critical properties |
+| **Diminishing Returns** | 30-40% | 20-35% | Coverage improves but slows; partial verification possible for known threat models only |
+| **Capability Outpaces** | 20-30% | 5-15% | Models grow faster than understanding; coverage as % declines; deployment proceeds despite uncertainty |
+| **Fundamental Limits** | 5-10% | &lt;10% | Interpretability hits theoretical barriers; transformative AI remains black box |
+| **Breakthrough Discovery** | 5-15% | >80% | Novel theoretical insight enables rapid scaling (e.g., "interpretability Rosetta Stone") |
+
+---
+
+## Key Debates
+
+### Is Full Interpretability Possible?
+
+**Optimistic view:**
+- Rapid progress from SAEs demonstrates tractability
+- AI can help interpret AI, scaling with capability
+- Don't need complete understanding—just safety-relevant properties
+- Chris Olah: "Understanding neural networks is not just possible but necessary"
+
+**Pessimistic view:**
+- Can't understand cognition smarter than us—like a dog understanding calculus
+- Complexity makes full interpretation intractable (1.7T parameters in GPT-4)
+- Advanced AI could hide deception via steganography
+- Verification gap: understanding =/= proof
+
+### Interpretability vs. Other Safety Approaches
+
+**Interpretability-focused view:**
+- Only way to detect deceptive alignment
+- Provides principled understanding, not just behavioral observation
+- Necessary foundation for other approaches
+
+**Complementary approaches view:**
+- Interpretability is one tool among many
+- Behavioral testing, AI control, and scalable oversight also needed
+- Resource-intensive with uncertain payoff
+- May not be sufficient alone even if achieved
+
+---
+
+## Related Pages
+
+### Related Parameters
+- [Epistemic Health](/knowledge-base/ai-transition-model/factors/civilizational-competence/epistemic-health/) — Interpretability coverage directly determines epistemic capacity about AI systems
+- [Human Oversight Quality](/knowledge-base/ai-transition-model/factors/misalignment-potential/human-oversight-quality/) — Effective oversight requires understanding what's being overseen
+- [Safety-Capability Gap](/knowledge-base/ai-transition-model/factors/misalignment-potential/safety-capability-gap/) — Interpretability as primary gap-closing tool
+- [Alignment Robustness](/knowledge-base/ai-transition-model/factors/misalignment-potential/alignment-robustness/) — What interpretability helps verify
+- [Safety Culture Strength](/knowledge-base/ai-transition-model/factors/misalignment-potential/safety-culture-strength/) — Interpretability enables evidence-based safety practices
+
+### Related Risks (Detection Targets)
+- [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) — Hidden objectives interpretability aims to find
+- [Scheming](/knowledge-base/risks/accident/scheming/) — Strategic deception requiring interpretability to detect
+- [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) — Internal optimizers interpretability might detect
+- [Steganography](/knowledge-base/risks/accident/steganography/) — Information hiding that challenges interpretability
+- [Power-Seeking](/knowledge-base/risks/accident/power-seeking/) — Instrumental goals detectable through interpretability
+- [Sandbagging](/knowledge-base/risks/accident/sandbagging/) — Capability hiding detectable through internal analysis
+- [Treacherous Turn](/knowledge-base/risks/accident/treacherous-turn/) — Sudden defection potentially predictable via interpretability
+
+### Related Interventions (Applications)
+- [Mechanistic Interpretability](/knowledge-base/responses/alignment/interpretability/) — The core research agenda
+- [Scheming Detection](/knowledge-base/responses/alignment/scheming-detection/) — Interpretability-based deception detection
+- [Representation Engineering](/knowledge-base/responses/alignment/representation-engineering/) — Steering models via feature manipulation
+- [Evaluations](/knowledge-base/responses/alignment/evals/) — Testing enabled by interpretability insights
+- [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) — Oversight mechanisms requiring interpretability
+- [AI Control](/knowledge-base/responses/alignment/ai-control/) — Control protocols informed by interpretability research
+
+### Related Debates
+- [Is Interpretability Sufficient for Safety?](/knowledge-base/debates/interpretability-sufficient/) — The core debate on interpretability's role
+
+---
+
+## Sources & Key Research
+
+### Recent Reviews & Surveys (2024-2025)
+- [Bereska & Gavves (2024): "Mechanistic Interpretability for AI Safety — A Review"](https://arxiv.org/abs/2404.14082) — Comprehensive review of interpretability challenges, scalability barriers, and the ~10x compute performance penalty from SAE pass-through
+- [March 2025 Survey: "Sparse Autoencoders: Interpreting the Internal Mechanisms of Large Language Models"](https://arxiv.org/abs/2503.05613) — Systematic overview of SAE architectures, training strategies, evaluation methods, and applications
+- [January 2025: "Open Problems in Mechanistic Interpretability"](https://arxiv.org/abs/2501.16496) — Forward-looking analysis identifying priority research directions and fundamental challenges
+- [Bridging the Black Box: Survey on Mechanistic Interpretability in AI](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5345552) — Organizes field across neurons, circuits, and algorithms; covers manual tracing, causal scrubbing, SAEs
+
+### Government Policy & Strategic Analysis (2024-2025)
+- [White House: America's AI Action Plan (July 2025)](https://www.whitehouse.gov/wp-content/uploads/2025/07/Americas-AI-Action-Plan.pdf) — Federal priority to "Invest in AI Interpretability, Control, and Robustness Breakthroughs"
+- [Federation of American Scientists: "Accelerating AI Interpretability"](https://fas.org/publication/accelerating-ai-interpretability/) — Policy recommendations: creative research investment, R&D partnerships with government labs, prioritizing interpretable AI in federal procurement
+- [International AI Safety Report 2025](https://perspectives.intelligencestrategy.org/p/international-ai-safety-report-2025) — 96 experts recommend governments fund interpretability research alongside adversarial training and ethical frameworks
+- [Future of Life Institute: 2025 AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/) — Tracks company-level interpretability research contributions relevant to extreme-risk mitigation
+
+### Foundational Work
+- <R id="ad268b74cee64b6f">Olah et al. (2020): Circuits in CNNs</R>
+- <R id="b948d6282416b586">Elhage et al. (2021): A Mathematical Framework for Transformer Circuits</R>
+- <R id="23e5123e7f8f98e2">Olsson et al. (2022): In-Context Learning and Induction Heads</R>
+
+### Sparse Autoencoder Research
+- <R id="0946f0572a487914">Anthropic (2023): Towards Monosemanticity</R>
+- <R id="e724db341d6e0065">Anthropic (2024): Scaling Monosemanticity to Claude 3 Sonnet</R>
+- <R id="f7b06d857b564d78">OpenAI (2024): Extracting Concepts from GPT-4</R>
+- <R id="a31c49bf9c1df71f">DeepMind (2024): Gemma Scope</R>
+- <R id="a1036bc63472c5fc">DeepMind (2025): Gemma Scope 2</R> — 110 PB open-source release
+
+### Advanced Techniques (2024-2025)
+- [Anthropic (2025): "On the Biology of a Large Language Model"](https://transformer-circuits.pub/2025/attribution-graphs/biology.html) — Cross-layer transcoder (CLT) architecture with 30M features enabling causal understanding across model depth
+- [Cunningham et al. (2024): "Sparse Autoencoders Find Highly Interpretable Features"](https://openreview.net/forum?id=F76bwRSLeK) — Demonstrated SAEs reconstruct activations with monosemantic features more interpretable than alternative approaches
+- [He et al. (2024): "Llama Scope: Extracting Millions of Features from Llama-3.1-8B"](https://arxiv.org/abs/2309.08600) — Open-weights replication demonstrating SAE generalization across architectures
+- [Rajamanoharan et al. (2024): "Improving Sparse Decomposition with Gated SAEs"](https://arxiv.org/abs/2309.08600) — Architectural improvements increasing feature quality
+- [Rajamanoharan et al. (2024): "Jumping Ahead: Improving Reconstruction with JumpReLU SAEs"](https://arxiv.org/abs/2309.08600) — Novel activation functions for better feature extraction
+
+### Applications Beyond AI Safety
+- [InterPLM (2024): "Sparse Autoencoders Uncover Biologically Interpretable Features in Protein Models"](https://pmc.ncbi.nlm.nih.gov/articles/PMC12403088/) — Discovered protein features absent from Swiss-Prot but confirmed in other databases, demonstrating cross-domain generalization
+
+### Detection and Application
+- <R id="72c1254d07071bf7">Anthropic (2024): Simple Probes Can Catch Sleeper Agents</R>
+- <R id="6490bfa2b3094be7">MIT (2024): MAIA Automated Interpretability Agent</R>
+
+### Workshops & Field Development
+- [ICML 2024 Mechanistic Interpretability Workshop](https://icml2024mi.pages.dev/) — 93 accepted papers including 5 prize winners, demonstrating explosive field growth
+
+<Backlinks entityId="interpretability-coverage" />

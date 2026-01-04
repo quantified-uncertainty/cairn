@@ -1,20 +1,20 @@
 ---
-title: "Threat Environment"
-description: "The aggregate external threat factors that could cause or amplify catastrophic events—biological and cyber exposure, dangerous power concentration, and racing dynamics."
+title: "Misuse Potential"
+description: "The aggregate potential for AI to be weaponized or exploited—encompassing biological threat exposure, cyber threat exposure, and dangerous AI control concentration."
 sidebar:
-  order: 5
-pageType: stub
-lastEdited: "2025-12-29"
+  label: Overview
+  order: 0
+lastEdited: "2026-01-03"
 ---
 import {Mermaid, Backlinks} from '../../../../../../components/wiki';
 
 ## Overview
 
-Threat Environment measures the external factors that could cause or amplify catastrophic AI-related events. Unlike [Technical Safety](/knowledge-base/ai-transition-model/factors/misalignment-potential/) (which measures our defenses), Threat Environment measures the attacks, misuses, and dangerous dynamics we face.
+Misuse Potential measures the likelihood and severity of AI being weaponized or exploited by malicious actors. Unlike [Misalignment Potential](/knowledge-base/ai-transition-model/factors/misalignment-potential/) (which measures unintended AI behavior), Misuse Potential measures intentional harmful use by humans.
 
-**Primary outcome affected:** [Acute Risk](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) ↑↑↑
+**Primary outcome affected:** [Existential Catastrophe](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) ↑↑↑
 
-High threat environment means more vectors for catastrophe even if technical safety is strong. These threats can overwhelm defenses, trigger cascading failures, or exploit concentrated power.
+High misuse potential means more vectors for catastrophe even if AI systems are well-aligned. These threats can overwhelm defenses, trigger cascading failures, or exploit concentrated power.
 
 ---
 
@@ -22,27 +22,23 @@ High threat environment means more vectors for catastrophe even if technical saf
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Components["Threat Components"]
+    subgraph Components["Misuse Potential Components"]
         BTE[Biological Threat Exposure]
         CTE[Cyber Threat Exposure]
         ACC[AI Control Concentration]
-        RI[Racing Intensity]
     end
 
-    RI -->|accelerates| BTE
-    RI -->|accelerates| CTE
     ACC -->|amplifies| BTE
     ACC -->|amplifies| CTE
 
-    BTE --> THREAT[Threat Environment]
-    CTE --> THREAT
-    ACC --> THREAT
-    RI --> THREAT
+    BTE --> MP[Misuse Potential]
+    CTE --> MP
+    ACC --> MP
 
-    THREAT --> ACUTE[Acute Risk ↑]
+    MP --> EXCAT[Existential Catastrophe ↑]
 
-    style THREAT fill:#ff6b6b
-    style ACUTE fill:#ff6b6b
+    style MP fill:#ff6b6b
+    style EXCAT fill:#ff6b6b
 `} />
 
 | Parameter | Role | Current State |
@@ -50,7 +46,6 @@ flowchart TD
 | [Biological Threat Exposure](/knowledge-base/ai-transition-model/factors/misuse-potential/biological-threat-exposure/) | AI-enabled bioweapon risk | Contested (defense may win) |
 | [Cyber Threat Exposure](/knowledge-base/ai-transition-model/factors/misuse-potential/cyber-threat-exposure/) | AI-enabled cyber attack risk | High (60% face AI attacks) |
 | [AI Control Concentration](/knowledge-base/ai-transition-model/factors/misuse-potential/ai-control-concentration/) | Single point of failure / capture risk | Increasing concentration |
-| [Racing Intensity](/knowledge-base/ai-transition-model/factors/transition-turbulence/racing-intensity/) | Pressure that undermines safety | High (80-85 composite score) |
 
 ---
 
@@ -58,7 +53,6 @@ flowchart TD
 
 These threats compound each other:
 
-- **Racing accelerates all threats**: Competitive pressure leads to faster deployment of offensive capabilities
 - **Concentration amplifies impact**: When control is concentrated, single failures affect everyone
 - **Bio and cyber interact**: Same AI capabilities that enable one often enable the other
 - **Threat success breeds threat**: Successful attacks demonstrate viability and attract more actors
@@ -71,24 +65,24 @@ This creates **threat escalation dynamics**—each incident makes the next more 
 
 | Outcome | Effect | Mechanism |
 |---------|--------|-----------|
-| [Acute Risk](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) | ↑↑↑ Primary | Direct increase in catastrophic event probability |
-| [Transition](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | ↑ Secondary | Major incidents cause disruption during transition |
-| [Steady State](/knowledge-base/ai-transition-model/outcomes/long-term-trajectory/) | ↑ Secondary | Concentrated power shapes long-term distribution |
+| [Existential Catastrophe](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) | ↑↑↑ Primary | Direct increase in catastrophic event probability |
+| [Transition Turbulence](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | ↑ Secondary | Major incidents cause disruption during transition |
+| [Long-term Trajectory](/knowledge-base/ai-transition-model/outcomes/long-term-trajectory/) | ↑ Secondary | Concentrated power shapes long-term distribution |
 
 ---
 
-## Relationship to Technical Safety
+## Relationship to Misalignment Potential
 
-Threat Environment and [Technical Safety](/knowledge-base/ai-transition-model/factors/misalignment-potential/) work in opposition:
+Misuse Potential and [Misalignment Potential](/knowledge-base/ai-transition-model/factors/misalignment-potential/) are complementary risk factors:
 
-| Factor | Technical Safety | Threat Environment |
-|--------|-----------------|-------------------|
-| Direction | Reduces acute risk | Increases acute risk |
-| Focus | Our defenses | Their attacks |
+| Factor | Misalignment Potential | Misuse Potential |
+|--------|----------------------|------------------|
+| Source | AI behavior | Human actors |
+| Direction | AI pursues unintended goals | Humans weaponize AI |
+| Focus | Technical alignment | Access controls & defense |
 | Improvability | Research & investment | Harder to reduce |
-| Dynamics | Cumulative progress | Escalation spirals |
 
-**The balance matters**: High technical safety can offset high threat environment, but overwhelming threats can defeat any defense. Racing intensity affects both—it degrades safety while accelerating threats.
+**Both matter**: Either can cause existential catastrophe independently. High misalignment potential means AI might cause harm on its own; high misuse potential means humans will use AI to cause harm.
 
 ---
 
@@ -105,8 +99,8 @@ This makes concentration a key uncertainty in acute risk assessment.
 
 ## Related Pages
 
-- [Acute Risk](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) — The outcome this primarily affects
-- [Technical Safety](/knowledge-base/ai-transition-model/factors/misalignment-potential/) — The opposing force reducing acute risk
-- [Governance Capacity](/knowledge-base/ai-transition-model/factors/civilizational-competence/governance/) — Governance can moderate racing and concentration
+- [Existential Catastrophe](/knowledge-base/ai-transition-model/outcomes/existential-catastrophe/) — The outcome this primarily affects
+- [Misalignment Potential](/knowledge-base/ai-transition-model/factors/misalignment-potential/) — The complementary factor for AI-caused catastrophe
+- [Governance](/knowledge-base/ai-transition-model/factors/civilizational-competence/governance/) — Governance can moderate misuse through regulation
 
-<Backlinks entityId="threat-environment" />
+<Backlinks entityId="misuse-potential" />

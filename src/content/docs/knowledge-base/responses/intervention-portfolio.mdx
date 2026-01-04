@@ -1,0 +1,281 @@
+---
+title: Intervention Portfolio
+description: Strategic overview of AI safety interventions, their risk coverage, and how they address parameters in the AI Transition Model
+sidebar:
+  order: 1
+lastEdited: "2026-01-03"
+---
+
+import {EntityLink, Mermaid, Backlinks} from '../../../../components/wiki';
+
+## Overview
+
+This page provides a strategic view of the AI safety intervention landscape, analyzing how different interventions address different risk categories and improve key parameters in the [AI Transition Model](/knowledge-base/ai-transition-model/). Rather than examining interventions individually, this portfolio view helps identify coverage gaps, complementarities, and allocation priorities.
+
+The intervention landscape can be divided into several categories: **technical approaches** (alignment, interpretability, control), **governance mechanisms** (legislation, compute governance, international coordination), **field building** (talent, funding, community), and **resilience measures** (epistemic security, economic adaptation). Each category has different tractability profiles, timelines, and risk coverage—understanding these tradeoffs is essential for strategic resource allocation.
+
+An effective safety portfolio requires both breadth (covering diverse failure modes) and depth (sufficient investment in each area to achieve impact). The current portfolio shows significant concentration in certain areas (RLHF, capability evaluations) while other areas remain relatively neglected (epistemic resilience, international coordination).
+
+---
+
+## Intervention Categories and Risk Coverage
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Technical["Technical Approaches"]
+        INT[Interpretability]
+        CTRL[AI Control]
+        ALIGN[Alignment Research]
+        EVAL[Evaluations]
+    end
+
+    subgraph Governance["Governance"]
+        COMP[Compute Governance]
+        LEG[Legislation]
+        INTL[International Coordination]
+        RSP[Responsible Scaling]
+    end
+
+    subgraph Meta["Field Building & Resilience"]
+        FIELD[Field Building]
+        EPIST[Epistemic Resilience]
+        ECON[Economic Resilience]
+    end
+
+    subgraph Risks["Risk Categories"]
+        ACC[Accident Risks]
+        MIS[Misuse Risks]
+        STR[Structural Risks]
+        EPI[Epistemic Risks]
+    end
+
+    INT --> ACC
+    CTRL --> ACC
+    ALIGN --> ACC
+    EVAL --> ACC
+    EVAL --> MIS
+
+    COMP --> MIS
+    COMP --> STR
+    LEG --> MIS
+    LEG --> STR
+    INTL --> STR
+    RSP --> ACC
+    RSP --> MIS
+
+    FIELD --> ACC
+    FIELD --> STR
+    EPIST --> EPI
+    ECON --> STR
+
+    style ACC fill:#ffcccc
+    style MIS fill:#ffe6cc
+    style STR fill:#fff3cc
+    style EPI fill:#e6ccff
+    style Technical fill:#cce6ff
+    style Governance fill:#ccffcc
+    style Meta fill:#ffccff
+`} />
+
+---
+
+## Intervention by Risk Matrix
+
+This matrix shows how strongly each major intervention addresses each risk category. Ratings are based on current evidence and expert assessments.
+
+| Intervention | Accident Risks | Misuse Risks | Structural Risks | Epistemic Risks | Primary Mechanism |
+|--------------|:--------------:|:------------:|:----------------:|:---------------:|-------------------|
+| **[Interpretability](/knowledge-base/responses/alignment/interpretability/)** | High | Low | Low | -- | Detect deception and misalignment in model internals |
+| **[AI Control](/knowledge-base/responses/alignment/ai-control/)** | High | Medium | -- | -- | External constraints regardless of AI intentions |
+| **[Evaluations](/knowledge-base/responses/alignment/evals/)** | High | Medium | Low | -- | Pre-deployment testing for dangerous capabilities |
+| **[RLHF/Constitutional AI](/knowledge-base/responses/alignment/rlhf/)** | Medium | Medium | -- | -- | Train models to follow human preferences |
+| **[Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/)** | Medium | Low | -- | -- | Human supervision of superhuman systems |
+| **[Compute Governance](/knowledge-base/responses/governance/compute-governance/)** | Low | High | Medium | -- | Hardware chokepoints limit access |
+| **[Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/)** | Low | High | Medium | -- | Restrict adversary access to training compute |
+| **[Responsible Scaling](/knowledge-base/responses/governance/industry/responsible-scaling-policies/)** | Medium | Medium | Low | -- | Capability thresholds trigger safety requirements |
+| **[International Coordination](/knowledge-base/responses/governance/international/)** | Low | Medium | High | -- | Reduce racing dynamics through agreements |
+| **[AI Safety Institutes](/knowledge-base/responses/institutions/ai-safety-institutes/)** | Medium | Medium | Medium | -- | Government capacity for evaluation and oversight |
+| **[Field Building](/knowledge-base/responses/field-building/)** | Medium | Low | Medium | Low | Grow talent pipeline and research capacity |
+| **[Epistemic Security](/knowledge-base/responses/resilience/epistemic-security/)** | -- | Low | Low | High | Protect collective truth-finding capacity |
+| **[Content Authentication](/knowledge-base/responses/epistemic-tools/content-authentication/)** | -- | Medium | -- | High | Verify authentic content in synthetic era |
+
+**Legend:** High = primary focus, addresses directly; Medium = secondary impact; Low = indirect or limited; -- = minimal relevance
+
+---
+
+## Prioritization Framework
+
+This framework evaluates interventions across the standard Importance-Tractability-Neglectedness (ITN) dimensions, with additional consideration for timeline fit and portfolio complementarity.
+
+| Intervention | Tractability | Impact Potential | Neglectedness | Timeline Fit | Overall Priority |
+|--------------|:------------:|:----------------:|:-------------:|:------------:|:----------------:|
+| **Interpretability** | Medium | High | Low | Long | High |
+| **AI Control** | High | Medium-High | Medium | Near | Very High |
+| **Evaluations** | High | Medium | Low | Near | High |
+| **Compute Governance** | High | High | Low | Near | Very High |
+| **International Coordination** | Low | Very High | High | Long | High |
+| **Field Building** | High | Medium | Medium | Ongoing | Medium-High |
+| **Epistemic Resilience** | Medium | Medium | High | Near-Long | Medium-High |
+| **Scalable Oversight** | Medium-Low | High | Medium | Long | Medium |
+
+### Prioritization Rationale
+
+**Very High Priority:**
+- **AI Control** scores highly because it provides near-term safety benefits (70-85% tractability for human-level systems) regardless of whether alignment succeeds. It represents a practical bridge during the transition period.
+- **Compute Governance** is one of few levers creating physical constraints on AI development. Hardware chokepoints exist, some measures are already implemented, and impact potential is substantial.
+
+**High Priority:**
+- **Interpretability** is potentially essential if alignment proves difficult (only reliable way to detect sophisticated deception), though scaling challenges create uncertainty.
+- **Evaluations** provide measurable near-term impact and are already standard practice at major labs, though effectiveness against deceptive AI remains uncertain.
+- **International Coordination** has very high impact potential for addressing structural risks like racing dynamics, but low tractability given current geopolitical tensions.
+
+**Medium-High Priority:**
+- **Field Building** and **Epistemic Resilience** are relatively neglected meta-level interventions that multiply the effectiveness of direct technical and governance work.
+
+---
+
+## AI Transition Model Integration
+
+Each intervention affects different parameters in the [AI Transition Model](/knowledge-base/ai-transition-model/). This mapping helps identify which interventions address which aspects of the transition.
+
+### Technical Approaches
+
+| Intervention | Primary Parameter | Secondary Parameters | Mechanism |
+|--------------|-------------------|---------------------|-----------|
+| [Interpretability](/knowledge-base/responses/alignment/interpretability/) | <EntityLink id="interpretability-coverage" /> | <EntityLink id="alignment-robustness" />, <EntityLink id="safety-capability-gap" /> | Direct visibility into model internals |
+| [AI Control](/knowledge-base/responses/alignment/ai-control/) | <EntityLink id="human-oversight-quality" /> | <EntityLink id="alignment-robustness" /> | External constraints maintain oversight |
+| [Evaluations](/knowledge-base/responses/alignment/evals/) | <EntityLink id="safety-capability-gap" /> | <EntityLink id="safety-culture-strength" />, <EntityLink id="human-oversight-quality" /> | Pre-deployment testing identifies risks |
+| [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) | <EntityLink id="human-oversight-quality" /> | <EntityLink id="alignment-robustness" /> | Human supervision despite capability gaps |
+
+### Governance Approaches
+
+| Intervention | Primary Parameter | Secondary Parameters | Mechanism |
+|--------------|-------------------|---------------------|-----------|
+| [Compute Governance](/knowledge-base/responses/governance/compute-governance/) | <EntityLink id="racing-intensity" /> | <EntityLink id="coordination-capacity" />, <EntityLink id="ai-control-concentration" /> | Hardware chokepoints slow development |
+| [Responsible Scaling](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | <EntityLink id="safety-culture-strength" /> | <EntityLink id="safety-capability-gap" /> | Capability thresholds trigger requirements |
+| [International Coordination](/knowledge-base/responses/governance/international/) | <EntityLink id="coordination-capacity" /> | <EntityLink id="racing-intensity" /> | Agreements reduce competitive pressure |
+| [Legislation](/knowledge-base/responses/governance/legislation/) | <EntityLink id="regulatory-capacity" /> | <EntityLink id="safety-culture-strength" /> | Binding requirements with enforcement |
+
+### Meta-Level Interventions
+
+| Intervention | Primary Parameter | Secondary Parameters | Mechanism |
+|--------------|-------------------|---------------------|-----------|
+| [Field Building](/knowledge-base/responses/field-building/) | <EntityLink id="safety-research" /> | <EntityLink id="alignment-progress" /> | Grow talent pipeline and capacity |
+| [Epistemic Security](/knowledge-base/responses/resilience/epistemic-security/) | <EntityLink id="epistemic-health" /> | <EntityLink id="societal-trust" />, <EntityLink id="reality-coherence" /> | Protect collective knowledge |
+| [AI Safety Institutes](/knowledge-base/responses/institutions/ai-safety-institutes/) | <EntityLink id="institutional-quality" /> | <EntityLink id="regulatory-capacity" /> | Government capacity for oversight |
+
+---
+
+## Portfolio Gaps and Complementarities
+
+### Coverage Gaps
+
+Analysis of the current intervention portfolio reveals several areas where coverage is thin:
+
+| Gap Area | Current Status | Risk Exposure | Recommended Action |
+|----------|----------------|---------------|-------------------|
+| **Epistemic Risks** | Few interventions directly address | <EntityLink id="epistemic-collapse" />, <EntityLink id="reality-fragmentation" /> | Increase investment in content authentication and epistemic infrastructure |
+| **Long-term Structural Risks** | International coordination is low tractability | <EntityLink id="lock-in" />, <EntityLink id="concentration-of-power" /> | Develop alternative coordination mechanisms; invest in governance research |
+| **Post-Incident Recovery** | Minimal current work | All risk categories | Develop recovery protocols and resilience measures |
+| **Misuse by State Actors** | Export controls are primary lever | <EntityLink id="authoritarian-tools" />, <EntityLink id="surveillance" /> | Research additional governance mechanisms |
+
+### Key Complementarities
+
+Certain interventions work better together than in isolation:
+
+**Technical + Governance:**
+- <EntityLink id="evals" /> inform <EntityLink id="responsible-scaling-policies" /> thresholds
+- <EntityLink id="interpretability" /> enables verification for <EntityLink id="international-coordination" />
+- <EntityLink id="ai-control" /> provides safety margin while governance matures
+
+**Near-term + Long-term:**
+- <EntityLink id="compute-governance" /> buys time for <EntityLink id="interpretability" /> research
+- <EntityLink id="evals" /> identify near-term risks while <EntityLink id="scalable-oversight" /> develops
+- <EntityLink id="field-building" /> ensures capacity for future technical work
+
+**Prevention + Resilience:**
+- Technical safety research aims to prevent failures
+- <EntityLink id="epistemic-security" /> and economic resilience limit damage if prevention fails
+- Both are needed for robust defense-in-depth
+
+---
+
+## Resource Allocation Assessment
+
+### Current vs. Recommended Allocation
+
+| Area | Current Allocation | Recommended | Rationale |
+|------|:-----------------:|:-----------:|-----------|
+| **RLHF/Training** | Very High | High | Deployed at scale but retains 70% misalignment on agentic tasks |
+| **Interpretability** | High | High | Rapid progress; potential for fundamental breakthroughs |
+| **Evaluations** | High | Very High | Critical for identifying dangerous capabilities pre-deployment |
+| **AI Control** | Medium | High | Near-term tractable; provides safety regardless of alignment |
+| **Compute Governance** | Medium | High | One of few physical levers; already showing policy impact |
+| **International Coordination** | Low | Medium | Low tractability but very high stakes |
+| **Epistemic Resilience** | Very Low | Medium | Highly neglected; addresses underserved risk category |
+| **Field Building** | Medium | Medium | Maintain current investment; returns are well-established |
+
+### Investment Concentration Risks
+
+The current portfolio shows:
+
+1. **Frontier lab concentration**: Most technical safety work happens at Anthropic, OpenAI, and DeepMind. Independent safety organizations (MIRI, ARC, Redwood) have significant funding gaps.
+
+2. **Technical over governance**: Technical approaches receive substantially more investment than governance research, despite governance mechanisms being potentially high-leverage.
+
+3. **Prevention over resilience**: Nearly all resources go to preventing AI harm; very little goes to limiting damage or enabling recovery if prevention fails.
+
+4. **Near-term bias**: Tractable near-term interventions receive more attention than long-term work on international coordination and fundamental alignment.
+
+---
+
+## Strategic Considerations
+
+### Worldview Dependencies
+
+Different beliefs about AI risk lead to different portfolio recommendations:
+
+| Worldview | Prioritize | Deprioritize |
+|-----------|------------|--------------|
+| **Alignment is very hard** | Interpretability, Control, International coordination | RLHF, Voluntary commitments |
+| **Misuse is the main risk** | Compute governance, Content authentication, Legislation | Interpretability, Agent foundations |
+| **Short timelines** | AI Control, Evaluations, Responsible scaling | Long-term governance research |
+| **Racing dynamics dominate** | International coordination, Compute governance | Unilateral safety research |
+| **Epistemic collapse is likely** | Epistemic security, Content authentication | Technical alignment |
+
+### Portfolio Robustness
+
+A robust portfolio should:
+
+1. **Cover multiple failure modes**: Don't assume one risk category dominates
+2. **Include both prevention and resilience**: Defense in depth against prediction failure
+3. **Balance near-term and long-term**: Near-term work buys time; long-term work addresses root causes
+4. **Maintain independent capacity**: Don't rely solely on frontier labs for safety research
+5. **Support multiple worldviews**: Invest in interventions valuable across different scenarios
+
+---
+
+## Related Pages
+
+- [Responses Overview](/knowledge-base/responses/) - Full list of interventions
+- [Technical Approaches](/knowledge-base/responses/alignment/) - Alignment, interpretability, control
+- [Governance Approaches](/knowledge-base/responses/governance/) - Legislation, compute governance, international
+- [Risks Overview](/knowledge-base/risks/) - Risk categories addressed by interventions
+- [AI Transition Model](/knowledge-base/ai-transition-model/) - Framework for understanding AI transition dynamics
+
+---
+
+## AI Transition Model Context
+
+The intervention portfolio collectively affects the <EntityLink id="ai-transition-model" /> across all major factors:
+
+| Factor | Key Interventions | Coverage |
+|--------|-------------------|----------|
+| <EntityLink id="misalignment-potential" /> | Alignment research, interpretability, control | Technical safety |
+| <EntityLink id="civilizational-competence" /> | Governance, institutions, epistemic tools | Coordination capacity |
+| <EntityLink id="transition-turbulence" /> | Compute governance, international coordination | Racing dynamics |
+| <EntityLink id="misuse-potential" /> | Resilience, authentication, detection | Harm reduction |
+
+Portfolio balance matters: over-investment in any single intervention type creates vulnerability if that approach fails.
+
+<Backlinks client:load entityId="intervention-portfolio" />

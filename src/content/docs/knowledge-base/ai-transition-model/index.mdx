@@ -1,21 +1,20 @@
 ---
 title: AI Transition Model
-description: A causal model of how root factors shape ultimate scenarios and outcomes during the AI transition period.
+description: A causal model of how root factors shape structural scenarios and outcomes during the AI transition period.
 sidebar:
   label: Overview
   order: 0
-lastEdited: "2026-01-03"
+lastEdited: "2026-01-04"
 ---
 
 import {Mermaid, ParameterFlowDiagram, ParametersTable} from '../../../../components/wiki';
-import CauseEffectGraph from '../../../../components/CauseEffectGraph';
 
 ## Overview
 
 The AI Transition Model is a causal framework for understanding how various factors influence the trajectory of AI development and its ultimate outcomes for humanity. It maps the relationships between:
 
 - **Root Factors**: The underlying variables that shape AI-related scenarios
-- **Ultimate Scenarios**: The pathways through which factors lead to outcomes
+- **Structural Scenarios**: The pathways through which factors lead to outcomes
 - **Ultimate Outcomes**: The final states we care about (catastrophe vs. positive trajectory)
 
 This model helps identify:
@@ -26,12 +25,21 @@ This model helps identify:
 
 ---
 
+## Interactive Model
+
+<a href="/parameter-graph/" class="sl-link-card" style="display: block; padding: 1.5rem; border: 2px solid var(--sl-color-accent); border-radius: 0.5rem; text-decoration: none; margin: 1rem 0 2rem 0; background: var(--sl-color-accent-low);">
+  <strong style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;">🔗 View Full Interactive Model →</strong>
+  <span style="color: var(--sl-color-text);">Explore the parameter graph with hover highlighting, click-to-inspect nodes, and fullscreen mode. This is the canonical visualization of the three-layer causal structure.</span>
+</a>
+
+---
+
 ## Model Structure
 
 The model flows through three levels:
 
 ```
-Root Factors (5) → Ultimate Scenarios (3) → Ultimate Outcomes (2)
+Root Factors (5) → Structural Scenarios (3) → Ultimate Outcomes (2)
 ```
 
 <Mermaid client:load chart={`
@@ -41,7 +49,7 @@ flowchart TD
         TRAJ[Long-term Trajectory]
     end
 
-    subgraph Scenarios["Ultimate Scenarios"]
+    subgraph Scenarios["Structural Scenarios"]
         TAKEOVER[AI Takeover]
         HUMAN[Human-Caused Catastrophe]
         LOCKIN[Long-term Lock-in]
@@ -55,7 +63,7 @@ flowchart TD
         MISUSE[Misuse Potential]
     end
 
-    %% Root Factors to Ultimate Scenarios
+    %% Root Factors to Structural Scenarios
     MISALIGN -->|"increases"| TAKEOVER
     CAPS -->|"increases"| TAKEOVER
     TURB -->|"increases"| TAKEOVER
@@ -67,7 +75,7 @@ flowchart TD
 
     CIV -->|"shapes"| LOCKIN
 
-    %% Ultimate Scenarios to Ultimate Outcomes
+    %% Structural Scenarios to Ultimate Outcomes
     TAKEOVER -->|"increases"| EXCAT
     HUMAN -->|"increases"| EXCAT
     TAKEOVER -->|"shapes"| TRAJ
@@ -82,537 +90,40 @@ flowchart TD
 
 ---
 
-## Interactive Visualization
-
-Explore the full parameter hierarchy interactively. Click any node to see details, hover to highlight connections. Use fullscreen (top-right) for better exploration.
-
-<CauseEffectGraph
-  client:load
-  height={700}
-  initialNodes={[
-    // === LEAF PARAMETERS (grouped by target aggregate, left to right) ===
-    // -- Technical Safety inputs --
-    {
-      id: 'alignment-robustness',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Alignment Robustness',
-        description: 'How reliably AI systems pursue intended goals.',
-        type: 'leaf',
-        details: 'The degree to which AI systems remain aligned with human intentions under distribution shift, capability gains, and adversarial conditions.',
-        relatedConcepts: ['Reward Hacking', 'Goal Misgeneralization', 'Deceptive Alignment'],
-        sources: ['Anthropic Core Views', 'DeepMind Alignment']
-      }
-    },
-    {
-      id: 'interpretability-coverage',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Interpretability',
-        description: 'How well we can understand AI internal processes.',
-        type: 'leaf',
-        details: 'Our ability to inspect, understand, and verify what AI systems are doing internally. Critical for detecting deception and misalignment.',
-        relatedConcepts: ['Mechanistic Interpretability', 'Probing', 'Feature Visualization'],
-        sources: ['Anthropic Interpretability', 'OpenAI Microscope']
-      }
-    },
-    {
-      id: 'safety-gap',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Safety-Capability Gap',
-        description: 'How far safety lags behind capabilities.',
-        type: 'leaf',
-        details: 'The growing distance between what AI systems can do and our ability to ensure they do it safely. A widening gap increases risk.',
-        relatedConcepts: ['Racing Dynamics', 'Safety Tax', 'Differential Progress'],
-        sources: ['MIRI', 'FHI Research']
-      }
-    },
-    {
-      id: 'human-oversight',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Human Oversight Quality',
-        description: 'Effectiveness of human supervision over AI systems.',
-        type: 'leaf',
-        details: 'How well humans can monitor, understand, and correct AI behavior. Degrades with AI complexity and speed, critical for preventing both takeover scenarios.',
-        relatedConcepts: ['Scalable Oversight', 'Automation Complacency', 'Human-in-the-Loop'],
-        sources: ['Amodei Scalable Oversight', 'Christiano Debate']
-      }
-    },
-    {
-      id: 'safety-culture',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Safety Culture',
-        description: 'Organizational commitment to safety practices.',
-        type: 'leaf',
-        details: 'The degree to which AI labs and deployers prioritize safety, implement rigorous processes, and resist competitive pressure to cut corners.',
-        relatedConcepts: ['RSPs', 'Safety Evals', 'Racing Dynamics'],
-        sources: ['Anthropic RSP', 'METR Evals']
-      }
-    },
-    {
-      id: 'rsi-potential',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Recursive Self-Improvement',
-        description: 'Potential for AI systems to improve themselves.',
-        type: 'leaf',
-        details: 'Whether AI can substantially improve its own capabilities, potentially leading to rapid capability gains. Key factor in fast takeoff scenarios.',
-        relatedConcepts: ['Intelligence Explosion', 'AI R&D Automation', 'Seed AI'],
-        sources: ['Bostrom Superintelligence', 'Yudkowsky FOOM']
-      }
-    },
-    {
-      id: 'capabilities-speed',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'AI Capabilities Speed',
-        description: 'How rapidly AI capabilities are advancing.',
-        type: 'leaf',
-        details: 'The pace of AI capability improvements, including potential for discontinuous jumps. Faster progress compresses time for safety work and governance adaptation.',
-        relatedConcepts: ['Scaling Laws', 'Compute Growth', 'Algorithmic Progress'],
-        sources: ['Epoch AI', 'Cotra Timelines']
-      }
-    },
-    // -- Threat Environment inputs --
-    {
-      id: 'racing-intensity',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Racing Intensity',
-        description: 'Competitive pressure to deploy AI quickly.',
-        type: 'leaf',
-        details: 'The degree of competitive pressure between labs and nations to advance AI capabilities, potentially at the expense of safety.',
-        relatedConcepts: ['Arms Race', 'First-Mover Advantage', 'Coordination Failure'],
-        sources: ['Armstrong Racing', 'Askell Competition']
-      }
-    },
-    {
-      id: 'bio-threat',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Bio Threat Exposure',
-        description: 'Vulnerability to AI-enabled bioweapons.',
-        type: 'leaf',
-        details: 'How much AI lowers barriers to developing and deploying biological weapons. Includes both capability uplift and access to dangerous information.',
-        relatedConcepts: ['Dual Use', 'Information Hazards', 'Bioweapons'],
-        sources: ['Sandbrink Bio Misuse', 'NTI Biosecurity']
-      }
-    },
-    {
-      id: 'cyber-threat',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Cyber Threat Exposure',
-        description: 'Vulnerability to AI-enhanced cyberattacks.',
-        type: 'leaf',
-        details: 'How much AI improves offensive cyber capabilities relative to defense. Includes automated vulnerability discovery and exploitation.',
-        relatedConcepts: ['Autonomous Hacking', 'Critical Infrastructure', 'Offense-Defense Balance'],
-        sources: ['CSET Cyber', 'RAND Research']
-      }
-    },
-    // -- Governance inputs --
-    {
-      id: 'intl-coordination',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'International Coordination',
-        description: 'Global cooperation on AI governance.',
-        type: 'leaf',
-        details: 'The degree of effective international cooperation on AI safety and governance. Critical for preventing races and ensuring global coverage.',
-        relatedConcepts: ['AI Treaties', 'GPAI', 'UN AI Governance'],
-        sources: ['GovAI', 'CAIS Policy']
-      }
-    },
-    // -- Epistemic inputs --
-    {
-      id: 'societal-trust',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Societal Trust',
-        description: 'Trust in institutions, experts, and each other.',
-        type: 'leaf',
-        details: 'The foundation for collective action and coordination. Low trust makes it harder to implement safety measures and respond to crises.',
-        relatedConcepts: ['Polarization', 'Institutional Legitimacy', 'Social Cohesion'],
-        sources: ['Edelman Trust', 'Pew Research']
-      }
-    },
-    {
-      id: 'info-authenticity',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Information Authenticity',
-        description: 'Ability to verify information is genuine and unmanipulated.',
-        type: 'leaf',
-        details: 'As AI enables cheap, convincing synthetic media, our ability to distinguish real from fake degrades. Critical for epistemic health and democratic function.',
-        relatedConcepts: ['Deepfakes', 'Content Provenance', 'Synthetic Media'],
-        sources: ['Partnership on AI', 'C2PA Standards']
-      }
-    },
-    // -- Adaptability inputs --
-    {
-      id: 'human-agency',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Human Agency',
-        description: 'Meaningful human control over important decisions.',
-        type: 'leaf',
-        details: 'The degree to which humans retain meaningful influence over consequential decisions as AI systems become more capable.',
-        relatedConcepts: ['Automation Complacency', 'Human-in-the-Loop', 'Autonomy'],
-        sources: ['Critch ARCHES', 'Russell Human Compatible']
-      }
-    },
-    {
-      id: 'human-expertise',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Human Expertise',
-        description: 'Preservation of critical human skills and knowledge.',
-        type: 'leaf',
-        details: 'Whether humans maintain the skills needed to oversee, correct, and replace AI systems if needed. Skill atrophy creates dependency.',
-        relatedConcepts: ['Deskilling', 'Automation Bias', 'Tacit Knowledge'],
-        sources: ['Expertise Atrophy Research', 'Aviation Safety Studies']
-      }
-    },
-    // -- Direct to Critical Outcomes --
-    {
-      id: 'ai-concentration',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'AI Control Concentration',
-        description: 'How concentrated vs distributed is control over AI systems.',
-        type: 'leaf',
-        details: 'Whether AI capabilities and decision-making are concentrated in few hands or distributed. High concentration directly enables value lock-in by whoever controls the AI.',
-        relatedConcepts: ['Concentration of Power', 'Monopoly', 'Single Points of Failure'],
-        sources: ['Dafoe AI Governance', 'RAND AI Policy']
-      }
-    },
-    // === SUPERCATEGORIES (second row - 3 categories) ===
-    {
-      id: 'ai-vulnerability',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'AI Vulnerability',
-        description: 'How vulnerable are we to AI systems causing harm?',
-        type: 'cause',
-        confidence: 0.55,
-        confidenceLabel: 'current level',
-        details: 'Aggregates alignment robustness, interpretability, oversight quality, safety culture, and the safety-capability gap. Low AI vulnerability means we can build safe AI; high vulnerability enables AI takeover scenarios.',
-        relatedConcepts: ['Alignment', 'Interpretability', 'Scalable Oversight', 'Technical Safety'],
-        sources: ['Anthropic Core Views', 'DeepMind Safety Research']
-      }
-    },
-    {
-      id: 'threat-env',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Threat Environment',
-        description: 'How capable/motivated are humans to cause AI-enabled catastrophe?',
-        type: 'cause',
-        confidence: 0.65,
-        confidenceLabel: 'severity',
-        details: 'Includes biological and cyber threat exposure, racing dynamics, and power concentration. High threat environment enables state and rogue actor catastrophes.',
-        relatedConcepts: ['Racing Dynamics', 'Bioweapons', 'Cyberweapons', 'Concentration of Power'],
-        sources: ['The Precipice', 'CSET Research']
-      }
-    },
-    {
-      id: 'civ-competence',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Civilizational Competence',
-        description: 'How well can humanity navigate the AI transition?',
-        type: 'cause',
-        confidence: 0.45,
-        confidenceLabel: 'current level',
-        details: 'Combines governance capacity, epistemic foundation, and societal adaptability. Determines whether we can coordinate, make good decisions, and adapt to rapid change.',
-        relatedConcepts: ['Governance', 'Epistemic Health', 'Societal Resilience', 'Coordination'],
-        sources: ['GovAI Research', 'Partnership on AI', 'IMF AI Reports']
-      }
-    },
-    {
-      id: 'turb',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Transition Turbulence',
-        description: 'Economic, political, and social disruption during the AI transition.',
-        type: 'intermediate',
-        subgroup: 'transition',
-        confidence: 0.70,
-        confidenceLabel: 'likelihood of significant turbulence',
-        details: 'High turbulence can trigger acute catastrophes (political collapse → loss of control) and constrain long-run value through path dependence. Even if we reach a good destination, a rough transition causes real suffering.',
-        relatedConcepts: ['Economic Disruption', 'Political Instability', 'Racing Dynamics'],
-        sources: ['What Failure Looks Like', 'Kasirzadeh Accumulative Risk']
-      }
-    },
-    {
-      id: 'fast-takeover',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Rapid AI Takeover',
-        description: 'Superintelligent AI rapidly seizes control within days to months.',
-        type: 'intermediate',
-        subgroup: 'ai-takeover',
-        confidence: 0.12,
-        confidenceLabel: 'probability estimate',
-        details: 'Requires: (1) sufficient AI capabilities, (2) misaligned goals, (3) determination that seizing control is instrumentally useful. The "decisive" form of AI existential risk.',
-        relatedConcepts: ['Intelligence Explosion', 'Treacherous Turn', 'Deceptive Alignment', 'Power-Seeking'],
-        sources: ['Carlsmith Power-Seeking AI', 'Bostrom Superintelligence', 'Yudkowsky']
-      }
-    },
-    {
-      id: 'slow-takeover',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Gradual AI Takeover',
-        description: 'Slow erosion of human control over years to decades.',
-        type: 'intermediate',
-        subgroup: 'ai-takeover',
-        confidence: 0.25,
-        confidenceLabel: 'probability estimate',
-        details: 'Christiano\'s "What Failure Looks Like": AI systems optimize for proxies while human values are neglected, then influence-seeking behavior locks in misalignment. Each step seems reasonable; cumulative effect is catastrophic.',
-        relatedConcepts: ['Proxy Gaming', 'Value Drift', 'Automation Complacency', 'Lock-in'],
-        sources: ['Christiano What Failure Looks Like', 'Kasirzadeh Accumulative X-Risk']
-      }
-    },
-    {
-      id: 'state-catastrophe',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'State-Caused Catastrophe',
-        description: 'Governments weaponize AI for mass harm.',
-        type: 'intermediate',
-        subgroup: 'human-caused',
-        confidence: 0.15,
-        confidenceLabel: 'probability estimate',
-        details: 'Includes great power AI war, AI-enabled authoritarianism, and state WMD programs. Even perfectly aligned AI could enable catastrophe if wielded by states with harmful intentions.',
-        relatedConcepts: ['Autonomous Weapons', 'AI Arms Race', 'Authoritarian AI', 'Bioweapons'],
-        sources: ['FLI Autonomous Weapons', 'Dafoe AI Governance']
-      }
-    },
-    {
-      id: 'rogue-catastrophe',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Rogue Actor Catastrophe',
-        description: 'Non-state actors use AI to cause mass casualties.',
-        type: 'intermediate',
-        subgroup: 'human-caused',
-        confidence: 0.08,
-        confidenceLabel: 'probability estimate',
-        details: 'Terrorists, lone wolves, or criminal organizations use AI-enabled bioweapons, cyberattacks, or other means. AI lowers barriers to acquiring dangerous capabilities.',
-        relatedConcepts: ['Bioterrorism', 'Cyberterrorism', 'Democratization of Destruction'],
-        sources: ['Sandbrink AI & Biological Misuse', 'NTI Biosecurity']
-      }
-    },
-    {
-      id: 'lock-in',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Value Lock-in',
-        description: 'Permanent entrenchment of values—could be good or bad.',
-        type: 'intermediate',
-        subgroup: 'post-trans-factors',
-        confidence: 0.50,
-        confidenceLabel: 'probability of some lock-in',
-        details: 'AI may enable unprecedented stability. Good lock-in preserves beneficial values; bad lock-in entrenches authoritarianism, corporate extraction, or ideological extremism permanently.',
-        relatedConcepts: ['Authoritarian Lock-in', 'Concentration of Power', 'Value Stagnation'],
-        sources: ['Karnofsky Most Important Century', 'MacAskill What We Owe The Future']
-      }
-    },
-    {
-      id: 'epistemic-traj',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Epistemic Quality',
-        description: 'Whether humanity\'s truth-finding capacity improves or collapses.',
-        type: 'intermediate',
-        subgroup: 'post-trans-factors',
-        confidence: 0.50,
-        confidenceLabel: 'symmetric uncertainty',
-        details: 'AI could enable epistemic renaissance (better research, authenticated information) or epistemic collapse (pervasive deepfakes, fragmented reality, trust breakdown).',
-        relatedConcepts: ['Epistemic Collapse', 'Content Authentication', 'Misinformation', 'AI Research Tools'],
-        sources: ['Partnership on AI Synthetic Media', 'Marcus & Davis Rebooting AI']
-      }
-    },
-    {
-      id: 'power-trans',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Power Transition',
-        description: 'How the shift in power between AI and humans unfolds.',
-        type: 'intermediate',
-        subgroup: 'post-trans-factors',
-        confidence: 0.50,
-        confidenceLabel: 'uncertainty about character',
-        details: 'Neutral framing: the power transition will happen. Question is whether it\'s smooth/human-led, bumpy/stable, chaotic, or AI-dominated.',
-        relatedConcepts: ['Human Agency', 'AI Autonomy', 'Control Problem'],
-        sources: ['Karnofsky Most Important Century', 'Cotra AI Timelines']
-      }
-    },
-    {
-      id: 'acute-risk',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Acute Risk',
-        description: 'Does catastrophe occur during the AI transition?',
-        type: 'effect',
-        confidence: 0.20,
-        confidenceLabel: 'aggregate probability',
-        details: 'The probability of extinction, permanent disempowerment, or civilizational collapse. Multiple pathways: AI takeover (fast or gradual), state catastrophe, rogue actor catastrophe, or turbulence-triggered collapse.',
-        relatedConcepts: ['X-Risk', 'Existential Catastrophe', 'Human Extinction'],
-        sources: ['The Precipice', 'Carlsmith Power-Seeking AI', 'AI Risk Surveys']
-      }
-    },
-    {
-      id: 'pre-trans-value',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Pre-Transition Value',
-        description: 'How much do beings suffer during the transition?',
-        type: 'effect',
-        confidence: 0.50,
-        confidenceLabel: 'high uncertainty',
-        details: 'Welfare of moral patients during the AI transition period: humans (economic disruption, conflict), animals (factory farming), and digital minds (AI welfare). Even if we reach a good destination, the journey matters.',
-        relatedConcepts: ['Transition Welfare', 'AI Welfare', 'Animal Welfare', 'Economic Disruption'],
-        sources: ['Shulman Digital Minds', 'GiveWell Global Health']
-      }
-    },
-    {
-      id: 'post-trans-value',
-      type: 'causeEffect',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Post-Transition Value',
-        description: 'What\'s the quality of the stable post-transition world?',
-        type: 'effect',
-        confidence: 0.50,
-        confidenceLabel: 'high uncertainty',
-        details: 'Conditional on avoiding acute catastrophe, what quality of future do we get? Depends on power distribution (political/economic) and belief environment (epistemic/values).',
-        relatedConcepts: ['Flourishing', 'Dystopia', 'Lock-in', 'Existential Hope'],
-        sources: ['MacAskill What We Owe The Future', 'Foresight Existential Hope']
-      }
-    }
-  ]}
-  initialEdges={[
-    // === LEAF → SUPERCATEGORY edges ===
-    { id: 'e-capspeed-vuln', source: 'capabilities-speed', target: 'ai-vulnerability', data: { strength: 'medium', effect: 'increases' } },
-    { id: 'e-capspeed-threat', source: 'capabilities-speed', target: 'threat-env', data: { strength: 'medium', effect: 'increases' } },
-    { id: 'e-rsi-vuln', source: 'rsi-potential', target: 'ai-vulnerability', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-align-vuln', source: 'alignment-robustness', target: 'ai-vulnerability', data: { strength: 'strong', effect: 'decreases' } },
-    { id: 'e-interp-vuln', source: 'interpretability-coverage', target: 'ai-vulnerability', data: { strength: 'strong', effect: 'decreases' } },
-    { id: 'e-gap-vuln', source: 'safety-gap', target: 'ai-vulnerability', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-oversight-vuln', source: 'human-oversight', target: 'ai-vulnerability', data: { strength: 'strong', effect: 'decreases' } },
-    { id: 'e-culture-vuln', source: 'safety-culture', target: 'ai-vulnerability', data: { strength: 'medium', effect: 'decreases' } },
-    { id: 'e-racing-threat', source: 'racing-intensity', target: 'threat-env', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-racing-vuln', source: 'racing-intensity', target: 'ai-vulnerability', data: { strength: 'medium', effect: 'increases' } },
-    { id: 'e-bio-threat', source: 'bio-threat', target: 'threat-env', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-cyber-threat', source: 'cyber-threat', target: 'threat-env', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-intl-civ', source: 'intl-coordination', target: 'civ-competence', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-trust-civ', source: 'societal-trust', target: 'civ-competence', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-auth-civ', source: 'info-authenticity', target: 'civ-competence', data: { strength: 'medium', effect: 'increases' } },
-    { id: 'e-agency-civ', source: 'human-agency', target: 'civ-competence', data: { strength: 'strong', effect: 'increases' } },
-    { id: 'e-expertise-civ', source: 'human-expertise', target: 'civ-competence', data: { strength: 'medium', effect: 'increases' } },
-    // === LEAF → CRITICAL OUTCOME edges (high-leverage direct connections) ===
-    { id: 'e-concentration-lock', source: 'ai-concentration', target: 'lock-in', data: { strength: 'strong', effect: 'increases' } },
-    // === SUPERCATEGORY → CRITICAL OUTCOME edges ===
-    { id: 'e-vuln-fast', source: 'ai-vulnerability', target: 'fast-takeover', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-vuln-slow', source: 'ai-vulnerability', target: 'slow-takeover', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-threat-fast', source: 'threat-env', target: 'fast-takeover', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-threat-state', source: 'threat-env', target: 'state-catastrophe', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-threat-rogue', source: 'threat-env', target: 'rogue-catastrophe', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-civ-slow', source: 'civ-competence', target: 'slow-takeover', data: { strength: 'medium', confidence: 'medium', effect: 'decreases' } },
-    { id: 'e-civ-state', source: 'civ-competence', target: 'state-catastrophe', data: { strength: 'medium', confidence: 'medium', effect: 'decreases' } },
-    { id: 'e-civ-lock', source: 'civ-competence', target: 'lock-in', data: { strength: 'medium', confidence: 'medium', effect: 'decreases' } },
-    { id: 'e-civ-epist', source: 'civ-competence', target: 'epistemic-traj', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-civ-power', source: 'civ-competence', target: 'power-trans', data: { strength: 'strong', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-civ-turb', source: 'civ-competence', target: 'turb', data: { strength: 'strong', confidence: 'high', effect: 'decreases' } },
-    // === CRITICAL OUTCOME → ULTIMATE OUTCOME edges ===
-    { id: 'e-turb-acute', source: 'turb', target: 'acute-risk', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-turb-pretrans', source: 'turb', target: 'pre-trans-value', data: { strength: 'strong', confidence: 'high', effect: 'decreases' } },
-    { id: 'e-turb-state', source: 'turb', target: 'state-catastrophe', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-fast-acute', source: 'fast-takeover', target: 'acute-risk', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-slow-acute', source: 'slow-takeover', target: 'acute-risk', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-slow-post', source: 'slow-takeover', target: 'post-trans-value', data: { strength: 'strong', confidence: 'medium', effect: 'decreases' } },
-    { id: 'e-state-acute', source: 'state-catastrophe', target: 'acute-risk', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-state-lock', source: 'state-catastrophe', target: 'lock-in', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-rogue-acute', source: 'rogue-catastrophe', target: 'acute-risk', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-lock-acute', source: 'lock-in', target: 'acute-risk', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-lock-post', source: 'lock-in', target: 'post-trans-value', data: { strength: 'strong', confidence: 'high', effect: 'increases' } },
-    { id: 'e-epist-post', source: 'epistemic-traj', target: 'post-trans-value', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } },
-    { id: 'e-power-post', source: 'power-trans', target: 'post-trans-value', data: { strength: 'medium', confidence: 'medium', effect: 'increases' } }
-  ]}
-/>
-
-*Hover over nodes to highlight connected paths. Click nodes for details. Legend (bottom-right) shows color encoding.*
-
----
-
 ### Two Ultimate Outcomes
 
-| Outcome | Question | Key Ultimate Scenarios |
+| Outcome | Question | Key Structural Scenarios |
 |---------|----------|------------------------|
 | Existential Catastrophe | Does civilization-ending harm occur? | AI Takeover, Human-Caused Catastrophe |
 | Long-term Trajectory | What's the quality of the post-transition future? | AI Takeover, Long-term Lock-in |
 
-### Three Ultimate Scenarios
+### Three Structural Scenarios
 
-Ultimate Scenarios are the intermediate pathways connecting root factors to ultimate outcomes—they describe *how* factor changes lead to catastrophe or shape the long-term future.
+Structural Scenarios are the intermediate pathways connecting root factors to ultimate outcomes—they describe *how* factor changes lead to catastrophe or shape the long-term future.
 
-| Ultimate Scenario | Description | Key Root Factors | Ultimate Outcomes |
+| Structural Scenario | Description | Key Root Factors | Ultimate Outcomes |
 |-------------------|-------------|------------------|-------------------|
-| AI Takeover | AI gains decisive control (rapid or gradual) | Misalignment Potential ↑, AI Capabilities ↑, Civilizational Competence ↓ | Existential Catastrophe, Long-term Trajectory |
-| Human-Caused Catastrophe | Humans use AI for mass harm (state or rogue actors) | Misuse Potential ↑, Transition Turbulence ↑, Civilizational Competence ↓ | Existential Catastrophe |
-| Long-term Lock-in | Permanent entrenchment of values/power structures | Civilizational Competence shapes outcome | Long-term Trajectory |
+| [AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/) | AI gains decisive control (rapid or gradual) | Misalignment Potential ↑, AI Capabilities ↑, Civilizational Competence ↓ | Existential Catastrophe, Long-term Trajectory |
+| [Human-Caused Catastrophe](/knowledge-base/ai-transition-model/scenarios/human-catastrophe/) | Humans use AI for mass harm (state or rogue actors) | Misuse Potential ↑, Transition Turbulence ↑, Civilizational Competence ↓ | Existential Catastrophe |
+| [Long-term Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/) | Permanent entrenchment of values/power structures | Civilizational Competence shapes outcome | Long-term Trajectory |
 
 ### Five Root Factors
 
-Each root factor aggregates underlying parameters and influences ultimate scenarios:
+Each root factor aggregates underlying parameters and influences structural scenarios:
 
 | Root Factor | Description | Sub-components | Scenarios Influenced |
 |-------------|-------------|----------------|---------------------|
-| Misalignment Potential | Potential for AI to be misaligned | Alignment Gap, Opacity, Control Failure | AI Takeover ↑ |
-| AI Capabilities | How powerful AI systems become | Speed, Generality, Autonomy | AI Takeover ↑ |
-| Civilizational Competence | Humanity's ability to respond well | Governance, Epistemics, Adaptability | AI Takeover ↓, Human-Caused Catastrophe ↓, Lock-in (shapes) |
-| Transition Turbulence | Background instability during transition | Economic Disruption, Political Instability, Racing Dynamics | AI Takeover ↑, Human-Caused Catastrophe ↑ |
-| Misuse Potential | Potential for AI to be misused for harm | Bioweapons, Cyberattacks, Manipulation | Human-Caused Catastrophe ↑ |
+| [Misalignment Potential](/knowledge-base/ai-transition-model/factors/misalignment-potential/) | Potential for AI to be misaligned | Alignment Robustness, Interpretability Coverage, Human Oversight Quality, Safety Capability Gap, Safety Culture Strength | AI Takeover ↑ |
+| [AI Capabilities](/knowledge-base/ai-transition-model/factors/ai-capabilities/) | How powerful AI systems become | Speed, Generality, Autonomy | AI Takeover ↑ |
+| [Civilizational Competence](/knowledge-base/ai-transition-model/factors/civilizational-competence/) | Humanity's ability to respond well | Governance, Epistemics, Adaptability | AI Takeover ↓, Human-Caused Catastrophe ↓, Lock-in (shapes) |
+| [Transition Turbulence](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | Background instability during transition | Economic Stability, Racing Intensity | AI Takeover ↑, Human-Caused Catastrophe ↑ |
+| [Misuse Potential](/knowledge-base/ai-transition-model/factors/misuse-potential/) | Potential for AI to be misused for harm | Biological Threat Exposure, Cyber Threat Exposure, AI Control Concentration | Human-Caused Catastrophe ↑ |
 
 ---
 
 ## How Parameters, Risks, and Interventions Connect
 
-This interactive diagram shows how both risks (red) and interventions (green) affect parameters (purple). Risks decrease parameter values while interventions increase them. Click and drag to pan, scroll to zoom.
+This diagram shows how both risks (red) and interventions (green) affect parameters (purple). Risks decrease parameter values while interventions increase them.
 
 <ParameterFlowDiagram
   client:load
@@ -627,11 +138,11 @@ This interactive diagram shows how both risks (red) and interventions (green) af
     { id: 'bioweapons', title: 'AI Bioweapons', type: 'risk', href: '/knowledge-base/risks/misuse/bioweapons/' },
 
     // PARAMETERS (will be placed in center)
-    { id: 'alignment-robustness', title: 'Alignment Robustness', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/misalignment-potential/alignment-robustness/' },
-    { id: 'racing-intensity', title: 'Racing Intensity', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/transition-turbulence/racing-intensity/' },
-    { id: 'societal-trust', title: 'Societal Trust', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/civilizational-competence/societal-trust/' },
-    { id: 'human-agency', title: 'Human Agency', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/civilizational-competence/human-agency/' },
-    { id: 'biological-threat-exposure', title: 'Biological Threat Exposure', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/misuse-potential/biological-threat-exposure/' },
+    { id: 'alignment-robustness', title: 'Alignment Robustness', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/misalignment-potential/' },
+    { id: 'racing-intensity', title: 'Racing Intensity', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/transition-turbulence/' },
+    { id: 'societal-trust', title: 'Societal Trust', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/civilizational-competence/' },
+    { id: 'human-agency', title: 'Human Agency', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/civilizational-competence/' },
+    { id: 'biological-threat-exposure', title: 'Biological Threat Exposure', type: 'parameter', href: '/knowledge-base/ai-transition-model/factors/misuse-potential/' },
 
     // INTERVENTIONS (will be placed on right)
     { id: 'interpretability', title: 'Interpretability', type: 'intervention', href: '/knowledge-base/responses/alignment/interpretability/' },
@@ -639,7 +150,7 @@ This interactive diagram shows how both risks (red) and interventions (green) af
     { id: 'compute-governance', title: 'Compute Governance', type: 'intervention', href: '/knowledge-base/responses/governance/compute-governance/' },
     { id: 'content-auth', title: 'Content Authentication', type: 'intervention', href: '/knowledge-base/responses/epistemic-tools/' },
     { id: 'scalable-oversight', title: 'Scalable Oversight', type: 'intervention', href: '/knowledge-base/responses/alignment/scalable-oversight/' },
-    { id: 'dna-screening', title: 'DNA Screening', type: 'intervention', href: '/knowledge-base/responses/biosecurity/' },
+    { id: 'dna-screening', title: 'DNA Screening', type: 'intervention', href: '/knowledge-base/responses/resilience/' },
   ]}
   edges={[
     // Risks → Parameters

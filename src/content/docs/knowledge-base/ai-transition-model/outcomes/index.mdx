@@ -45,7 +45,7 @@ flowchart LR
 
 Previous versions of this framework had three outcomes (including "Transition Smoothness"). We moved to two because:
 
-1. **Transition Turbulence is a pathway, not endpoint**: How rough the transition is affects *both* acute risk and long-run value. It belongs in [Critical Outcomes](/knowledge-base/ai-transition-model/factors/transition-turbulence/).
+1. **Transition Turbulence is a pathway, not endpoint**: How rough the transition is affects *both* acute risk and long-run value. It belongs in [Root Factors](/knowledge-base/ai-transition-model/factors/transition-turbulence/).
 
 2. **Cleaner analytical structure**: Two outcomes are genuinely orthogonal:
    - You can have low acute risk but poor long-run value (safe dystopia)
@@ -67,25 +67,24 @@ These outcomes are **partially independent**—you can have different combinatio
 | Extinction | Very High | N/A | Catastrophe occurs |
 
 This independence means:
-- **Different Critical Outcomes affect different Ultimate Outcomes**
+- **Different Structural Scenarios affect different Ultimate Outcomes**
 - **Trade-offs exist**: Some approaches that reduce acute risk might worsen long-run value (e.g., authoritarian control)
 - **Both matter**: We shouldn't sacrifice one entirely for the other
 
 ---
 
-## How Critical Outcomes Flow to Ultimate Outcomes
+## How Structural Scenarios Flow to Ultimate Outcomes
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph CriticalOutcomes["Critical Outcomes"]
+    subgraph Scenarios["Structural Scenarios"]
+        TAKEOVER[AI Takeover]
+        HUMAN[Human-Caused Catastrophe]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    subgraph RootFactors["Root Factors"]
         TURB[Transition Turbulence]
-        AI_FAST[Rapid AI Takeover]
-        AI_SLOW[Gradual AI Takeover]
-        STATE[State-Caused Catastrophe]
-        ROGUE[Rogue Actor Catastrophe]
-        LOCK[Value Lock-in]
-        EPIST[Epistemic Trajectory]
-        POWER[Power Transition]
     end
 
     subgraph Outcomes["Ultimate Outcomes"]
@@ -93,36 +92,30 @@ flowchart TD
         VALUE[Long-term Trajectory]
     end
 
-    %% To Acute Risk
-    TURB -->|"triggers"| ACUTE
-    AI_FAST --> ACUTE
-    AI_SLOW --> ACUTE
-    STATE --> ACUTE
-    ROGUE --> ACUTE
-    LOCK -->|"bad lock-in"| ACUTE
+    %% Root Factor effects
+    TURB -->|"increases"| TAKEOVER
+    TURB -->|"increases"| HUMAN
 
-    %% To Long-run Value
-    TURB -->|"path dependence"| VALUE
-    AI_SLOW --> VALUE
-    LOCK --> VALUE
-    EPIST --> VALUE
-    POWER --> VALUE
+    %% Scenarios to Outcomes
+    TAKEOVER --> ACUTE
+    HUMAN --> ACUTE
+    TAKEOVER -->|"shapes"| VALUE
+    LOCKIN -->|"shapes"| VALUE
 
     style ACUTE fill:#ff6b6b
     style VALUE fill:#4ecdc4
-    style TURB fill:#ffe66d
+    style TAKEOVER fill:#ffb6c1
+    style HUMAN fill:#ffb6c1
+    style LOCKIN fill:#ffe4b5
 `} />
 
-| Critical Outcome | Affects Acute Risk | Affects Long-run Value |
-|------------------|-------------------|----------------------|
-| [Transition Turbulence](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | Yes (can trigger) | Yes (path dependence) |
-| [Rapid AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/rapid/) | Yes (primary) | — |
-| [Gradual AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/gradual/) | Yes | Yes |
-| [State-Caused Catastrophe](/knowledge-base/ai-transition-model/scenarios/human-catastrophe/state-actor/) | Yes | — |
-| [Rogue Actor Catastrophe](/knowledge-base/ai-transition-model/scenarios/human-catastrophe/rogue-actor/) | Yes | — |
-| [Value Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/values/) | Yes (bad lock-in) | Yes (primary) |
-| [Epistemic Trajectory](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/epistemics/) | — | Yes |
-| [Power Transition](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/power/) | — | Yes |
+| Structural Scenario | Affects Existential Catastrophe | Affects Long-term Trajectory |
+|---------------------|--------------------------------|------------------------------|
+| [AI Takeover](/knowledge-base/ai-transition-model/scenarios/ai-takeover/) | Yes (primary pathway) | Yes (shapes future) |
+| [Human-Caused Catastrophe](/knowledge-base/ai-transition-model/scenarios/human-catastrophe/) | Yes (primary pathway) | — |
+| [Long-term Lock-in](/knowledge-base/ai-transition-model/scenarios/long-term-lockin/) | Yes (bad lock-in) | Yes (primary determinant) |
+
+Each structural scenario has sub-variants with different probability estimates. See the [Structural Scenarios](/knowledge-base/ai-transition-model/scenarios/) section for details.
 
 ---
 

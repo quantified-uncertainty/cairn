@@ -15,7 +15,7 @@ ratings:
   actionability: 3
   completeness: 4
 ---
-import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="lock-in" />
 
@@ -34,12 +34,12 @@ import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki
 
 | Response | Mechanism | Lock-in Prevention Potential |
 |----------|-----------|------------------------------|
-| [Democratic AI Governance](/knowledge-base/responses/governance/) | Public participation in AI value decisions | High - ensures legitimacy and adaptability |
-| [AI Safety Institutes](/knowledge-base/responses/institutions/ai-safety-institutes/) | Government evaluation before deployment | Medium - can identify concerning patterns early |
-| [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | Internal capability thresholds and pauses | Medium - slows potentially dangerous deployment |
-| [Compute Governance](/knowledge-base/responses/governance/compute-governance/) | Controls on training resources | Medium - prevents concentration of capabilities |
-| [Value Learning Research](/knowledge-base/responses/alignment/) | AI systems that learn rather than lock in values | High - maintains adaptability by design |
-| [International Coordination](/knowledge-base/responses/governance/international/) | Global agreements on AI development | High - prevents single-actor lock-in |
+| <EntityLink id="governance-policy" /> | Public participation in AI value decisions | High - ensures legitimacy and adaptability |
+| <EntityLink id="ai-safety-institutes" /> | Government evaluation before deployment | Medium - can identify concerning patterns early |
+| <EntityLink id="responsible-scaling-policies" /> | Internal capability thresholds and pauses | Medium - slows potentially dangerous deployment |
+| <EntityLink id="compute-governance" /> | Controls on training resources | Medium - prevents concentration of capabilities |
+| <EntityLink id="alignment" /> | AI systems that learn rather than lock in values | High - maintains adaptability by design |
+| <EntityLink id="international-coordination" /> | Global agreements on AI development | High - prevents single-actor lock-in |
 
 ## Overview
 
@@ -304,10 +304,10 @@ Designing AI systems that can adapt as human values evolve rather than locking i
 
 Lock-in intersects with multiple categories of AI risk, often serving as a mechanism that prevents recovery from other failures:
 
-- **[Power-seeking AI](/knowledge-base/risks/accident/power-seeking/)**: An AI system that successfully seeks power could use that power to lock in its continued dominance
+- **<EntityLink id="power-seeking" />**: An AI system that successfully seeks power could use that power to lock in its continued dominance
 - **Alignment Failure**: Misaligned AI systems could lock in their misaligned objectives
-- **[Deceptive AI](/knowledge-base/risks/accident/scheming/)**: AI systems that conceal their true capabilities could achieve lock-in through deception
-- **[AI-Enabled Authoritarianism](/knowledge-base/risks/misuse/authoritarian-tools/)**: Authoritarian regimes could use AI to achieve permanent political lock-in
+- **<EntityLink id="scheming" />**: AI systems that conceal their true capabilities could achieve lock-in through deception
+- **<EntityLink id="authoritarian-tools" />**: Authoritarian regimes could use AI to achieve permanent political lock-in
 
 The common thread is that lock-in transforms temporary problems into permanent ones. Even recoverable AI failures could become permanent if they occur during a critical window when lock-in becomes possible.
 
@@ -379,6 +379,20 @@ The common thread is that lock-in transforms temporary problems into permanent o
 - <R id="143f51d60ea39853">Chinese AI Content Regulations (2023)</R> - Mandate for "core socialist values" in AI
 - <R id="3e03a6e800128f8c">MERICS: China's Social Credit Score - Myth vs. Reality</R> - Nuanced analysis of surveillance infrastructure
 - <R id="63c61bcd7ab0ca78">Horizons: China Social Credit System Explained (2025)</R> - Current status and business focus
+
+## AI Transition Model Context
+
+Lock-in affects the <EntityLink id="ai-transition-model" /> across multiple factors:
+
+| Factor | Parameter | Impact |
+|--------|-----------|--------|
+| <EntityLink id="civilizational-competence" /> | <EntityLink id="preference-authenticity" /> | AI-mediated preference formation may lock in manipulated values |
+| <EntityLink id="civilizational-competence" /> | <EntityLink id="governance" /> | AI concentration enables governance capture |
+| <EntityLink id="misuse-potential" /> | <EntityLink id="ai-control-concentration" /> | Power concentration creates lock-in conditions |
+
+Lock-in is the defining feature of the <EntityLink id="long-term-lockin" /> scenario—whether values, power, or epistemics become permanently entrenched. This affects <EntityLink id="long-term-trajectory" /> more than acute existential risk.
+
+---
 
 ## Related Pages
 

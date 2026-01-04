@@ -11,7 +11,7 @@ styleGuideVersion: "kb-2.0"
 importance: 82.5
 causalLevel: "outcome"
 ---
-import {DataInfoBox, Backlinks, ModelsList, EstimateBox, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, ModelsList, EstimateBox, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="bioweapons" />
 
@@ -39,11 +39,11 @@ However, 2025 has marked a significant shift in official assessments. OpenAI now
 
 | Response | Mechanism | Effectiveness |
 |----------|-----------|---------------|
-| [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | Internal biosecurity evaluations before deployment | Medium |
-| [Compute Governance](/knowledge-base/responses/governance/compute-governance/) | Limits access to training resources for dangerous models | Medium |
-| [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/) | Restricts AI chip exports to adversary nations | Low-Medium |
-| [AI Safety Institutes](/knowledge-base/responses/institutions/ai-safety-institutes/) | Government evaluation of biosecurity risks | Medium |
-| [Voluntary Commitments](/knowledge-base/responses/governance/industry/voluntary-commitments/) | Lab pledges on dangerous capability evaluation | Low |
+| <EntityLink id="responsible-scaling-policies" /> | Internal biosecurity evaluations before deployment | Medium |
+| <EntityLink id="compute-governance" /> | Limits access to training resources for dangerous models | Medium |
+| <EntityLink id="export-controls" /> | Restricts AI chip exports to adversary nations | Low-Medium |
+| <EntityLink id="ai-safety-institutes" /> | Government evaluation of biosecurity risks | Medium |
+| <EntityLink id="voluntary-commitments" /> | Lab pledges on dangerous capability evaluation | Low |
 
 ---
 
@@ -1122,6 +1122,19 @@ The debate often reduces to different assessments of:
 ## Analytical Models
 
 <ModelsList client:load entityId="bioweapons" />
+
+---
+
+## AI Transition Model Context
+
+Bioweapons risk affects the <EntityLink id="ai-transition-model" /> primarily through <EntityLink id="misuse-potential" />:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="biological-threat-exposure" /> | Direct parameter—AI uplift for bioweapon development |
+| <EntityLink id="ai-control-concentration" /> | Powerful AI in few hands increases misuse risk |
+
+The bioweapons pathway can lead to <EntityLink id="human-catastrophe" />—catastrophic outcomes from humans misusing AI capabilities, distinct from AI misalignment.
 
 ---
 

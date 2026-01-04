@@ -8,7 +8,7 @@ llmSummary: "Mechanistic interpretability aims to reverse-engineer AI internal c
 lastEdited: "2025-12-28"
 importance: 85.5
 ---
-import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, KeyPeople, Section, Backlinks, DisagreementMap, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="interpretability" />
 
@@ -218,11 +218,11 @@ Despite these uncertainties, mechanistic interpretability represents one of the 
 
 | Risk | Mechanism | Effectiveness |
 |------|-----------|---------------|
-| [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | Detect deception-related features/circuits | Medium-High (if scalable) |
-| [Scheming](/knowledge-base/risks/accident/scheming/) | Find evidence of strategic deception | Medium-High |
-| [Mesa-Optimization](/knowledge-base/risks/accident/mesa-optimization/) | Identify mesa-objectives in model internals | Medium |
-| [Reward Hacking](/knowledge-base/risks/accident/reward-hacking/) | Detect proxy optimization vs. true goals | Medium |
-| [Goal Misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/) | Understand learned goal representations | Medium |
+| <EntityLink id="deceptive-alignment" /> | Detect deception-related features/circuits | Medium-High (if scalable) |
+| <EntityLink id="scheming" /> | Find evidence of strategic deception | Medium-High |
+| <EntityLink id="mesa-optimization" /> | Identify mesa-objectives in model internals | Medium |
+| <EntityLink id="reward-hacking" /> | Detect proxy optimization vs. true goals | Medium |
+| <EntityLink id="goal-misgeneralization" /> | Understand learned goal representations | Medium |
 
 <DisagreementMap
   client:load
@@ -239,9 +239,9 @@ Despite these uncertainties, mechanistic interpretability represents one of the 
 
 ## Complementary Interventions
 
-- [AI Control](/knowledge-base/responses/alignment/ai-control/) - Defense-in-depth if interpretability misses something
-- [Evaluations](/knowledge-base/responses/alignment/evals/) - Behavioral testing complements internal analysis
-- [Scalable Oversight](/knowledge-base/responses/alignment/scalable-oversight/) - Process-based methods as alternative/complement
+- <EntityLink id="ai-control" /> - Defense-in-depth if interpretability misses something
+- <EntityLink id="evals" /> - Behavioral testing complements internal analysis
+- <EntityLink id="scalable-oversight" /> - Process-based methods as alternative/complement
 
 <Section title="Key People">
   <KeyPeople people={[
@@ -284,5 +284,19 @@ Despite these uncertainties, mechanistic interpretability represents one of the 
 - **Transformer Circuits:** <R id="5083d746c2728ff2">transformer-circuits.pub</R> - Main hub for Anthropic interpretability research
 - **Anthropic Research:** <R id="dfc21a319f95a75d">anthropic.com/research/team/interpretability</R> - Team overview and research priorities
 - **Mechanistic Interpretability Workshop:** <R id="e78a965cde8d82bd">NeurIPS 2025 Workshop</R> - Annual academic gathering
+
+---
+
+## AI Transition Model Context
+
+Interpretability improves the <EntityLink id="ai-transition-model" /> primarily through <EntityLink id="misalignment-potential" />:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="interpretability-coverage" /> | Direct improvement—this is the core parameter interpretability affects |
+| <EntityLink id="alignment-robustness" /> | Enables verification that alignment techniques actually work |
+| <EntityLink id="safety-capability-gap" /> | Helps close the gap by providing tools to understand advanced AI |
+
+Interpretability reduces <EntityLink id="existential-catastrophe" /> probability by enabling detection of <EntityLink id="scheming" /> and <EntityLink id="deceptive-alignment" />.
 
 <Backlinks client:load entityId="interpretability" />

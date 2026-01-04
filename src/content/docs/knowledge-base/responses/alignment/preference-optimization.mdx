@@ -8,7 +8,7 @@ lastEdited: "2025-12-28"
 importance: 72.5
 llmSummary: "Comprehensive technical comparison of post-RLHF preference optimization methods (DPO, ORPO, KTO, IPO, GRPO) showing DPO reduces alignment costs by 50-75% while maintaining performance, with rigorous analysis finding proper PPO tuning can still outperform but DPO enables faster iteration. Includes 6 detailed comparison tables, mathematical formulations, and practical implementation guidance for selecting methods based on compute constraints and data quality."
 ---
-import {Mermaid} from '../../../../../components/wiki';
+import {Mermaid, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -291,3 +291,16 @@ For organizations implementing preference optimization:
 - **Anthropic (2023):** "Constitutional AI: Harmlessness from AI Feedback" - RLAIF for safety
 - **DeepMind (2024):** Preference optimization in Gemini safety training
 - **OpenAI (2024):** Integration of DPO variants in GPT-4 training pipeline
+
+---
+
+## AI Transition Model Context
+
+Preference optimization methods improve the <EntityLink id="ai-transition-model" /> through <EntityLink id="misalignment-potential" />:
+
+| Factor | Parameter | Impact |
+|--------|-----------|--------|
+| <EntityLink id="misalignment-potential" /> | <EntityLink id="alignment-robustness" /> | More stable training reduces reward hacking and mode collapse |
+| <EntityLink id="misalignment-potential" /> | <EntityLink id="safety-capability-gap" /> | Lower costs enable faster alignment iteration |
+
+Efficient preference optimization accelerates safety research but does not address fundamental scalability challenges at superhuman capability levels.

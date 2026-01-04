@@ -73,6 +73,9 @@ function extractInternalLinks(content, filePath) {
   return links;
 }
 
+// Pages directory for standalone Astro pages
+const PAGES_DIR = join(process.cwd(), 'src/pages');
+
 /**
  * Check if an internal link resolves to an existing file
  */
@@ -90,10 +93,14 @@ function resolveLink(href) {
 
   // Check various possible file locations
   const possiblePaths = [
+    // Content files (MDX/MD in src/content/docs)
     join(CONTENT_DIR, path + '.mdx'),
     join(CONTENT_DIR, path + '.md'),
     join(CONTENT_DIR, path, 'index.mdx'),
     join(CONTENT_DIR, path, 'index.md'),
+    // Standalone Astro pages (src/pages)
+    join(PAGES_DIR, path + '.astro'),
+    join(PAGES_DIR, path, 'index.astro'),
   ];
 
   for (const p of possiblePaths) {

@@ -110,7 +110,8 @@ function createGroupContainer(
   type: string,
   nodesInGroup: LayoutedNode[],
   globalCenterX: number,
-  containerWidth: number
+  containerWidth: number,
+  typeLabels?: TypeLabels
 ): Node<CauseEffectNodeData> | null {
   if (nodesInGroup.length === 0) return null;
 
@@ -120,11 +121,14 @@ function createGroupContainer(
   const minY = Math.min(...nodesInGroup.map(n => n.position.y)) - GROUP_PADDING - GROUP_HEADER_HEIGHT;
   const maxY = Math.max(...nodesInGroup.map(n => n.position.y + LAYOUT_NODE_HEIGHT)) + GROUP_PADDING;
 
+  // Use custom type labels if provided, otherwise fall back to default config label
+  const label = typeLabels?.[type as keyof TypeLabels] || config.label;
+
   return {
     id: `group-${type}`,
     type: 'group',
     position: { x: minX, y: minY },
-    data: { label: config.label, type: type as CauseEffectNodeData['type'] },
+    data: { label, type: type as CauseEffectNodeData['type'] },
     style: {
       width: containerWidth,
       height: maxY - minY,
@@ -344,13 +348,13 @@ export async function getLayoutedElements(
 
   ['leaf', 'cause'].forEach(type => {
     if (nodesByType[type]) {
-      const container = createGroupContainer(type, nodesByType[type], globalCenterX, layout.containerWidth);
+      const container = createGroupContainer(type, nodesByType[type], globalCenterX, layout.containerWidth, config.typeLabels);
       if (container) groupNodes.push(container);
     }
   });
 
   if (allIntermediates.length > 0) {
-    const container = createGroupContainer('intermediate', allIntermediates, globalCenterX, layout.containerWidth);
+    const container = createGroupContainer('intermediate', allIntermediates, globalCenterX, layout.containerWidth, config.typeLabels);
     if (container) groupNodes.push(container);
   }
 
@@ -380,7 +384,7 @@ export async function getLayoutedElements(
   }
 
   if (nodesByType['effect']) {
-    const container = createGroupContainer('effect', nodesByType['effect'], globalCenterX, layout.containerWidth);
+    const container = createGroupContainer('effect', nodesByType['effect'], globalCenterX, layout.containerWidth, config.typeLabels);
     if (container) groupNodes.push(container);
   }
 

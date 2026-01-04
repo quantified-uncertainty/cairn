@@ -10,79 +10,95 @@ import {Mermaid} from '../../../../../components/wiki';
 
 ## Overview
 
-Aggregate Parameters bridge the gap between individual [leaf parameters](/knowledge-base/ai-transition-model/factors/) and [outcome parameters](/knowledge-base/ai-transition-model/outcomes/). They group related factors that work together to influence the same outcomes.
+Root Factors are the top-level causal drivers that shape AI transition outcomes. They bridge the gap between specific [component parameters](#) and [ultimate outcomes](/knowledge-base/ai-transition-model/outcomes/) like existential catastrophe and long-term trajectory.
+
+See the [interactive parameter graph](/parameter-graph/) for a visual representation.
 
 ---
 
-## The Five Aggregates
+## The Five Root Factors
 
 <Mermaid client:load chart={`
 flowchart TD
-    subgraph Aggregates["Aggregate Parameters"]
-        TECH[Technical Safety Capacity]
-        GOV[Governance Capacity]
-        EPIST[Epistemic Foundation]
-        ADAPT[Societal Adaptability]
-        THREAT[Threat Environment]
+    subgraph Factors["Root Factors"]
+        MP[Misalignment Potential]
+        CAP[AI Capabilities]
+        CC[Civilizational Competence]
+        TT[Transition Turbulence]
+        MU[Misuse Potential]
     end
 
-    subgraph Outcomes["What They Affect"]
-        ACUTE[Acute Risk]
-        STEADY[Steady State]
-        TRANS[Transition]
+    subgraph Scenarios["Intermediate Scenarios"]
+        TAKE[AI Takeover]
+        HUMAN[Human Catastrophe]
+        LOCK[Long-term Lock-in]
     end
 
-    TECH -->|primary| ACUTE
-    THREAT -->|primary| ACUTE
-    GOV --> ACUTE
-    GOV --> STEADY
-    GOV --> TRANS
-    EPIST --> STEADY
-    EPIST --> TRANS
-    ADAPT -->|primary| TRANS
+    MP -->|increases| TAKE
+    CAP -->|enables| TAKE
+    MU -->|increases| HUMAN
+    TT -->|increases| TAKE
+    TT -->|increases| HUMAN
+    CC -->|decreases| TAKE
+    CC -->|decreases| HUMAN
+    CC -->|shapes| LOCK
 
-    style ACUTE fill:#ff6b6b
-    style STEADY fill:#4ecdc4
-    style TRANS fill:#ffe66d
+    style TAKE fill:#ff6b6b
+    style HUMAN fill:#ff6b6b
+    style LOCK fill:#ffe66d
 `} />
 
-| Aggregate | Primary Outcome | Components |
-|-----------|----------------|------------|
-| [**Technical Safety**](/knowledge-base/ai-transition-model/factors/misalignment-potential/) | Acute Risk ↓ | Alignment Robustness, Safety-Capability Gap, Interpretability, Oversight, Safety Culture |
-| [**Governance Capacity**](/knowledge-base/ai-transition-model/factors/civilizational-competence/governance/) | All three | Regulatory Capacity, Institutional Quality, International & Domestic Coordination, Racing (inverse) |
-| [**Epistemic Foundation**](/knowledge-base/ai-transition-model/factors/civilizational-competence/epistemics/) | Steady State + Transition | Epistemic Health, Information Authenticity, Reality Coherence, Trust, Preference Authenticity |
-| [**Societal Adaptability**](/knowledge-base/ai-transition-model/factors/civilizational-competence/adaptability/) | Transition ↓ | Societal Resilience, Economic Stability, Human Expertise, Human Agency |
-| [**Threat Environment**](/knowledge-base/ai-transition-model/factors/misuse-potential/) | Acute Risk ↑ | Bio/Cyber Threat Exposure, AI Control Concentration, Racing Intensity |
+| Factor | Description | Primary Outcomes |
+|--------|-------------|------------------|
+| [**Misalignment Potential**](/knowledge-base/ai-transition-model/factors/misalignment-potential/) | Likelihood AI pursues unintended goals | AI Takeover ↑, Existential Catastrophe ↑ |
+| [**AI Capabilities**](/knowledge-base/ai-transition-model/factors/ai-capabilities/) | How powerful AI systems become | Enables all scenarios |
+| [**Civilizational Competence**](/knowledge-base/ai-transition-model/factors/civilizational-competence/) | Humanity's ability to respond well | AI Takeover ↓, Human Catastrophe ↓ |
+| [**Transition Turbulence**](/knowledge-base/ai-transition-model/factors/transition-turbulence/) | Background instability during transition | AI Takeover ↑, Human Catastrophe ↑ |
+| [**Misuse Potential**](/knowledge-base/ai-transition-model/factors/misuse-potential/) | Potential for AI to be weaponized | Human Catastrophe ↑ |
 
 ---
 
-## How Aggregates Work
+## Factor Components
 
-Each aggregate groups parameters that:
-1. **Influence the same outcomes** through similar mechanisms
-2. **Interact with each other** (changes in one affect others in the group)
-3. **Respond to similar interventions** (policies that improve one often improve others)
+Each root factor contains multiple component parameters:
 
-This grouping helps identify:
-- **Leverage points**: Which clusters of parameters are most important
-- **Intervention targets**: Where policy or research can have broad impact
-- **Correlations**: Which improvements tend to come together
+### Misalignment Potential
+- [Alignment Robustness](/knowledge-base/ai-transition-model/factors/misalignment-potential/alignment-robustness/)
+- [Safety-Capability Gap](/knowledge-base/ai-transition-model/factors/misalignment-potential/safety-capability-gap/)
+- [Interpretability Coverage](/knowledge-base/ai-transition-model/factors/misalignment-potential/interpretability-coverage/)
+- [Human Oversight Quality](/knowledge-base/ai-transition-model/factors/misalignment-potential/human-oversight-quality/)
+- [Safety Culture Strength](/knowledge-base/ai-transition-model/factors/misalignment-potential/safety-culture-strength/)
+
+### Civilizational Competence
+- [Governance](/knowledge-base/ai-transition-model/factors/civilizational-competence/governance/)
+- [Epistemics](/knowledge-base/ai-transition-model/factors/civilizational-competence/epistemics/)
+- [Adaptability](/knowledge-base/ai-transition-model/factors/civilizational-competence/adaptability/)
+
+### Transition Turbulence
+- [Economic Stability](/knowledge-base/ai-transition-model/factors/transition-turbulence/economic-stability/)
+- [Racing Intensity](/knowledge-base/ai-transition-model/factors/transition-turbulence/racing-intensity/)
+
+### Misuse Potential
+- [Biological Threat Exposure](/knowledge-base/ai-transition-model/factors/misuse-potential/biological-threat-exposure/)
+- [Cyber Threat Exposure](/knowledge-base/ai-transition-model/factors/misuse-potential/cyber-threat-exposure/)
+- [AI Control Concentration](/knowledge-base/ai-transition-model/factors/misuse-potential/ai-control-concentration/)
 
 ---
 
-## Cross-Aggregate Interactions
+## Cross-Factor Interactions
 
-Some parameters appear in multiple aggregates because they affect multiple outcome pathways:
+Some parameters interact across multiple factors:
 
-| Parameter | Aggregates | Why Multiple |
-|-----------|------------|--------------|
-| Racing Intensity | Governance, Threat Environment | Undermines governance AND increases threat exposure |
-| Human Oversight Quality | Technical Safety, Societal Adaptability | Both technical capability AND human capacity matter |
-| AI Control Concentration | Threat Environment, affects Steady State | Both acute risk AND long-term power distribution |
+| Parameter | Factors | Interaction |
+|-----------|---------|-------------|
+| Racing Intensity | Transition Turbulence, affects Misalignment Potential | Racing undermines safety AND causes turbulence |
+| AI Control Concentration | Misuse Potential, affects Long-term Trajectory | Concentration enables both misuse AND lock-in |
+| Human Oversight Quality | Misalignment Potential, requires Civilizational Competence | Technical oversight needs societal capacity |
 
 ---
 
 ## Related Pages
 
-- [Outcome Parameters](/knowledge-base/ai-transition-model/outcomes/) — What we ultimately care about
-- [AI Transition Model](/knowledge-base/ai-transition-model/) — All leaf parameters
+- [Outcome Parameters](/knowledge-base/ai-transition-model/outcomes/) — Ultimate outcomes these factors affect
+- [Scenarios](/knowledge-base/ai-transition-model/scenarios/) — Intermediate pathways to outcomes
+- [AI Transition Model](/knowledge-base/ai-transition-model/) — Full model overview
