@@ -1,0 +1,185 @@
+# Parameter Graph Data
+# Defines the nodes and edges for the cause-effect visualization
+# Edit this file to update the graph structure
+
+nodes:
+  # === ROOT FACTORS (top layer) ===
+  # Manual X positions to minimize edge crossings
+  # X positions: 0=far left, 1=left-center, 2=center, 3=right-center, 4=far right
+
+  - id: misalignment-potential
+    label: Misalignment Potential
+    description: Potential for AI to be misaligned.
+    type: cause
+    order: 0
+    subItems:
+      - label: Alignment Gap
+      - label: Opacity
+      - label: Control Failure
+
+  - id: ai-capabilities
+    label: AI Capabilities
+    description: How powerful AI systems become.
+    type: cause
+    order: 1
+    subItems:
+      - label: Speed
+      - label: Generality
+      - label: Autonomy
+
+  - id: civ-competence
+    label: Civilizational Competence
+    description: Humanity's ability to respond well.
+    type: cause
+    order: 2
+    subItems:
+      - label: Governance
+      - label: Epistemics
+      - label: Adaptability
+
+  - id: transition-turbulence
+    label: Transition Turbulence
+    description: Background instability during transition.
+    type: cause
+    order: 3
+    subItems:
+      - label: Economic Disruption
+      - label: Political Instability
+      - label: Racing Dynamics
+
+  - id: misuse-potential
+    label: Misuse Potential
+    description: Potential for AI to be misused for harm.
+    type: cause
+    order: 4
+    subItems:
+      - label: Bioweapons
+      - label: Cyberattacks
+      - label: Manipulation
+
+  # === ULTIMATE SCENARIOS (middle layer) ===
+
+  - id: ai-takeover
+    label: AI Takeover
+    description: AI gains decisive control over human affairs.
+    type: intermediate
+    order: 0
+    subItems:
+      - label: Rapid
+        probability: "12%"
+      - label: Gradual
+        probability: "25%"
+
+  - id: human-catastrophe
+    label: Human-Caused Catastrophe
+    description: Humans use AI to cause mass harm.
+    type: intermediate
+    order: 1
+    subItems:
+      - label: State Actor
+        probability: "15%"
+      - label: Rogue Actor
+        probability: "8%"
+
+  - id: long-term-lockin
+    label: Long-term Lock-in
+    description: Permanent entrenchment of outcomes.
+    type: intermediate
+    order: 2
+    subItems:
+      - label: Values
+      - label: Power
+      - label: Epistemics
+
+  # === ULTIMATE OUTCOMES (bottom layer) ===
+
+  - id: existential-catastrophe
+    label: Existential Catastrophe
+    description: Civilization-ending or irreversible harm.
+    type: effect
+    order: 0
+    confidence: 0.20
+    confidenceLabel: aggregate probability
+
+  - id: long-term-trajectory
+    label: Long-term Trajectory
+    description: Quality of post-transition future.
+    type: effect
+    order: 1
+    confidence: 0.50
+    confidenceLabel: high uncertainty
+
+edges:
+  # Root Factors → Ultimate Scenarios
+
+  - id: e-cap-takeover
+    source: ai-capabilities
+    target: ai-takeover
+    strength: strong
+    effect: increases
+
+  - id: e-misalign-takeover
+    source: misalignment-potential
+    target: ai-takeover
+    strength: strong
+    effect: increases
+
+  - id: e-misuse-human
+    source: misuse-potential
+    target: human-catastrophe
+    strength: strong
+    effect: increases
+
+  - id: e-turb-takeover
+    source: transition-turbulence
+    target: ai-takeover
+    strength: medium
+    effect: increases
+
+  - id: e-turb-human
+    source: transition-turbulence
+    target: human-catastrophe
+    strength: medium
+    effect: increases
+
+  - id: e-civ-takeover
+    source: civ-competence
+    target: ai-takeover
+    strength: medium
+    effect: decreases
+
+  - id: e-civ-human
+    source: civ-competence
+    target: human-catastrophe
+    strength: medium
+    effect: decreases
+
+  - id: e-civ-lockin
+    source: civ-competence
+    target: long-term-lockin
+    strength: strong
+
+  # Ultimate Scenarios → Ultimate Outcomes
+
+  - id: e-takeover-excat
+    source: ai-takeover
+    target: existential-catastrophe
+    strength: strong
+    effect: increases
+
+  - id: e-human-excat
+    source: human-catastrophe
+    target: existential-catastrophe
+    strength: strong
+    effect: increases
+
+  - id: e-takeover-traj
+    source: ai-takeover
+    target: long-term-trajectory
+    strength: strong
+    effect: increases
+
+  - id: e-lockin-traj
+    source: long-term-lockin
+    target: long-term-trajectory
+    strength: strong

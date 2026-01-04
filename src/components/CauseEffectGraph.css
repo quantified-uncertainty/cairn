@@ -227,3 +227,358 @@
   font-weight: 600;
   color: var(--sl-color-text);
 }
+
+/* ========================================
+   Node Components
+   ======================================== */
+
+/* Group Node */
+.ceg-group-node {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+.ceg-group-node__label {
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* Subgroup Node */
+.ceg-subgroup-node {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.ceg-subgroup-node__label {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Cause Effect Node */
+.ceg-node {
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 2px solid;
+  min-width: 140px;
+  max-width: 180px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.ceg-node--with-subitems {
+  padding: 12px 14px;
+  max-width: 220px;
+}
+
+.ceg-node--selected {
+  /* box-shadow is set inline based on accent color */
+}
+
+.ceg-node__handle {
+  background: transparent;
+  border: none;
+  width: 1px;
+  height: 1px;
+}
+
+.ceg-node__label {
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ceg-node__confidence {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.ceg-node__subitems {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid;
+}
+
+.ceg-node__subitem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  padding: 3px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.ceg-node__subitem-label {
+  font-weight: 500;
+}
+
+.ceg-node__subitem-prob {
+  margin-left: 6px;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 9px;
+}
+
+.ceg-node__tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 12px;
+  padding: 12px 16px;
+  background-color: #1e293b;
+  color: white;
+  border-radius: 8px;
+  font-size: 13px;
+  max-width: 280px;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  white-space: normal;
+  line-height: 1.5;
+}
+
+.ceg-node__tooltip-arrow {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1e293b;
+}
+
+/* ========================================
+   Legend Component
+   ======================================== */
+
+.ceg-legend {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #374151;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+  transition: padding 0.2s ease;
+}
+
+.ceg-legend--expanded {
+  padding: 12px 16px;
+}
+
+.ceg-legend__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+}
+
+.ceg-legend__title {
+  font-weight: 600;
+  color: #111827;
+  font-size: 12px;
+}
+
+.ceg-legend__content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+}
+
+.ceg-legend--expanded .ceg-legend__content {
+  max-height: 300px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.ceg-legend__section {
+  margin-bottom: 10px;
+}
+
+.ceg-legend__section--last {
+  margin-bottom: 0;
+}
+
+.ceg-legend__section-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #111827;
+}
+
+.ceg-legend__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.ceg-legend__node-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.ceg-legend__line-container {
+  width: 24px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.ceg-chevron {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.ceg-chevron--expanded {
+  transform: rotate(180deg);
+}
+
+/* ========================================
+   Data View Component
+   ======================================== */
+
+.ceg-data-view {
+  height: 100%;
+  overflow: auto;
+  background-color: #f8fafc;
+  padding: 16px;
+}
+
+.ceg-data-view__code {
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  white-space: pre;
+  margin: 0;
+  color: #1e293b;
+}
+
+/* ========================================
+   Header and Controls
+   ======================================== */
+
+.ceg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  flex-shrink: 0;
+}
+
+.ceg-segmented-control {
+  display: flex;
+  align-items: center;
+  background-color: #e5e7eb;
+  border-radius: 6px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.ceg-segment-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+  color: #6b7280;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ceg-segment-btn--active {
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ceg-action-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #374151;
+}
+
+.ceg-action-btn:hover {
+  background-color: #f9fafb;
+}
+
+.ceg-button-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ceg-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* Panel sources list */
+.ceg-panel-sources {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
