@@ -59,6 +59,8 @@ export default defineConfig({
                               { label: 'Overview', slug: 'knowledge-base/ai-transition-model/factors' },
                               { label: 'Misalignment Potential', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/misalignment-potential' } },
                               { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/ai-capabilities' } },
+                              { label: 'AI Uses', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/ai-uses' } },
+                              { label: 'AI Ownership', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/ai-ownership' } },
                               { label: 'Civilizational Competence', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/civilizational-competence' } },
                               { label: 'Transition Turbulence', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/transition-turbulence' } },
                               { label: 'Misuse Potential', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/misuse-potential' } },

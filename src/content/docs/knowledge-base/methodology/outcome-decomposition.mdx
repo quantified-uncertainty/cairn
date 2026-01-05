@@ -11,7 +11,7 @@ import {Mermaid} from '../../../../components/wiki';
 
 ## Executive Summary
 
-This report examines how the effective altruism and AI safety communities decompose AI outcomes into analyzable dimensions. We find that our current three-outcome framework (Acute Risk, Steady State Quality, Transition Smoothness) conflates distinct analytical types—probability, welfare level, and temporal integral—in ways that complicate quantitative reasoning. Drawing on extensive research across the EA literature, we identify several alternative approaches and propose potential improvements.
+This report examines how the effective altruism and AI safety communities decompose AI outcomes into analyzable dimensions. We find that our current three-outcome framework (Existential Catastrophe, Steady State Quality, Transition Smoothness) conflates distinct analytical types—probability, welfare level, and temporal integral—in ways that complicate quantitative reasoning. Drawing on extensive research across the EA literature, we identify several alternative approaches and propose potential improvements.
 
 **Key finding**: Most rigorous frameworks in the field either (a) focus on probabilistic decomposition of discrete catastrophic events, or (b) use multi-scenario approaches that separately model probability and conditional value. Our current framework attempts an intermediate approach that may sacrifice the benefits of both.
 
@@ -25,7 +25,7 @@ Our knowledge base currently organizes outcomes into three dimensions:
 
 | Outcome | Description | Analytical Type |
 |---------|-------------|-----------------|
-| **Acute Risk** | Probability of catastrophic events (extinction, loss of control) | Probability measure |
+| **Existential Catastrophe** | Probability of catastrophic events (extinction, loss of control) | Probability measure |
 | **Steady State Quality** | Quality of long-term future conditional on survival | Welfare level |
 | **Transition Smoothness** | How much disruption occurs during AI transition | Temporal welfare integral |
 
@@ -33,7 +33,7 @@ Our knowledge base currently organizes outcomes into three dimensions:
 
 These three dimensions are incommensurable—they measure fundamentally different things:
 
-1. **Acute Risk** is P(catastrophe), a probability between 0 and 1
+1. **Existential Catastrophe** is P(catastrophe), a probability between 0 and 1
 2. **Steady State Quality** is E[Welfare | survival], a conditional expectation
 3. **Transition Smoothness** is ∫W(t)dt over the transition period, an integral
 
@@ -41,7 +41,7 @@ This creates several analytical difficulties:
 
 **Problem 1: No natural aggregation.** How do we combine a 10% chance of extinction with a "good" steady state conditional on survival? The expected value calculation requires explicit probability-weighting that our current structure obscures.
 
-**Problem 2: Double-counting risk.** "Acute Risk" captures P(catastrophe), but some catastrophes affect "Steady State Quality" rather than survival. Is a totalitarian lock-in an acute risk or a steady-state quality issue?
+**Problem 2: Double-counting risk.** "Existential Catastrophe" captures P(catastrophe), but some catastrophes affect "Steady State Quality" rather than survival. Is a totalitarian lock-in an acute risk or a steady-state quality issue?
 
 **Problem 3: Temporal ambiguity.** When does "transition" end and "steady state" begin? In [Paul Christiano's gradual disempowerment scenario](https://www.alignmentforum.org/posts/HBxe6wdjxK239zajf/what-failure-looks-like), there may be no discrete transition—just continuous decline.
 
@@ -356,7 +356,7 @@ Organize around the causal chain from present to long-term:
 
 | Our Current Dimension | Scenario-Based | Dimension-Based | Temporal-Causal |
 |-----------------------|----------------|-----------------|-----------------|
-| Acute Risk | P(Extinction) + P(Lock-in) | Survival + Agency | Transition dynamics |
+| Existential Catastrophe | P(Extinction) + P(Lock-in) | Survival + Agency | Transition dynamics |
 | Steady State Quality | E[Welfare \| Flourishing] | Value realization + Welfare | Long-run welfare |
 | Transition Smoothness | P(Muddling) weighting | N/A | Transition dynamics |
 
@@ -368,7 +368,7 @@ Organize around the causal chain from present to long-term:
 
 Without major restructuring, we can:
 
-1. **Add explicit scenario breakdown** within Acute Risk (extinction vs. lock-in vs. gradual disempowerment)
+1. **Add explicit scenario breakdown** within Existential Catastrophe (extinction vs. lock-in vs. gradual disempowerment)
 2. **Clarify temporal boundaries** between transition and steady state
 3. **Add reversibility dimension** to distinguish temporary from permanent outcomes
 4. **Include s-risk consideration** in Steady State Quality

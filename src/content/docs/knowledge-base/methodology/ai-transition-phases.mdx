@@ -22,12 +22,12 @@ This page attempts to formalize the **temporal structure of AI risk**—the phas
 ### The Problem
 
 Our current framework has three "Ultimate Outcomes":
-- **Acute Risk** — probability of catastrophe
+- **Existential Catastrophe** — probability of catastrophe
 - **Steady State Quality** — quality of the long-run future
 - **Transition Smoothness** — disruption during the transition
 
 But these conflate different things:
-1. **Acute Risk** is primarily about the *transition period*
+1. **Existential Catastrophe** is primarily about the *transition period*
 2. **Steady State Quality** is about the *post-transition period*
 3. **Transition Smoothness** affects *both* acute risk and steady state
 
@@ -144,7 +144,7 @@ flowchart TD
         P1C[Governance developing]
     end
 
-    subgraph Phase2["Phase 2: Acute Risk Period"]
+    subgraph Phase2["Phase 2: Existential Catastrophe Period"]
         P2A[Transformative AI deployed]
         P2B[High uncertainty]
         P2C[Multiple failure modes possible]
@@ -187,7 +187,7 @@ flowchart TD
 
 ---
 
-### Phase 2: Acute Risk Period
+### Phase 2: Existential Catastrophe Period
 
 **Definition**: The period when transformative AI exists but outcomes remain highly uncertain.
 
@@ -203,7 +203,7 @@ flowchart TD
 3. AI systems controlling critical infrastructure at scale
 4. AI systems that could execute catastrophic actions if misaligned
 
-**This is the period our "Acute Risk" outcome primarily measures.**
+**This is the period our "Existential Catastrophe" outcome primarily measures.**
 
 ---
 
@@ -237,13 +237,13 @@ flowchart TD
 - Human role vis-à-vis AI is determined
 - Key trade-offs have been made
 
-**This is what our "Steady State Quality" / "Long-run Value" outcome measures.**
+**This is what our "Steady State Quality" / "Long-term Trajectory" outcome measures.**
 
 **Note**: "Long-run" doesn't mean static—it means the fundamental questions are resolved. Change continues, but within established parameters.
 
 ---
 
-## What Ends the Acute Risk Period?
+## What Ends the Existential Catastrophe Period?
 
 The crucial question: **What triggers the transition from Phase 2 to Phase 3?**
 
@@ -282,25 +282,25 @@ For bad outcomes, it's obvious (we're dead or enslaved). For good outcomes, it's
 
 Our current hierarchy treats three Ultimate Outcomes equally:
 ```
-Critical Outcomes → Acute Risk
+Critical Outcomes → Existential Catastrophe
                  → Steady State Quality
                  → Transition Smoothness
 ```
 
 But temporally:
-- **Acute Risk** is about Phase 2 (the dangerous period)
+- **Existential Catastrophe** is about Phase 2 (the dangerous period)
 - **Steady State Quality** is about Phase 4 (long-run trajectory)
 - **Transition Smoothness** spans Phases 2-3 and *causes* both acute risk and steady state outcomes
 
 ### Proposed Revision
 
 **Two Ultimate Outcomes**:
-1. **Acute Risk** — Does catastrophe occur during the transition?
-2. **Long-run Value** — What's the expected value of the post-resolution world?
+1. **Existential Catastrophe** — Does catastrophe occur during the transition?
+2. **Long-term Trajectory** — What's the expected value of the post-resolution world?
 
 **Transition Turbulence as Critical Outcome**:
 - Moves to Critical Outcomes layer
-- Affects both Acute Risk (rough transitions trigger catastrophes) and Long-run Value (path dependence)
+- Affects both Existential Catastrophe (rough transitions trigger catastrophes) and Long-term Trajectory (path dependence)
 
 <Mermaid client:load chart={`
 flowchart TD
@@ -316,8 +316,8 @@ flowchart TD
     end
 
     subgraph Ultimate["Ultimate Outcomes"]
-        ACUTE[Acute Risk]
-        VALUE[Long-run Value]
+        ACUTE[Existential Catastrophe]
+        VALUE[Long-term Trajectory]
     end
 
     TURB --> ACUTE
@@ -379,7 +379,7 @@ If there's no obvious event, when do we update our frameworks? This has practica
 
 ### For Our Framework
 
-1. **Rename "Steady State Quality"** to **"Long-run Value"** — doesn't assume steady state
+1. **Rename "Steady State Quality"** to **"Long-term Trajectory"** — doesn't assume steady state
 2. **Move "Transition Turbulence"** to Critical Outcomes — it's a pathway, not endpoint
 3. **Add phase markers** to Critical Outcomes — which phase are they most relevant for?
 4. **Acknowledge temporal uncertainty** — we may not know which phase we're in
