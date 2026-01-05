@@ -1,4 +1,6 @@
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface CredibilityBadgeProps {
   level: number; // 1-5
@@ -48,43 +50,38 @@ export function CredibilityBadge({
 }: CredibilityBadgeProps) {
   const config = credibilityConfig[level] || credibilityConfig[3];
 
-  const sizeStyles = {
-    sm: { fontSize: '10px', padding: '1px 4px', gap: '2px' },
-    md: { fontSize: '11px', padding: '2px 6px', gap: '3px' },
-    lg: { fontSize: '12px', padding: '3px 8px', gap: '4px' },
+  const sizeClasses = {
+    sm: 'text-[10px] px-1 py-0 gap-0.5',
+    md: 'text-[11px] px-1.5 py-0.5 gap-1',
+    lg: 'text-xs px-2 py-1 gap-1',
   };
-
-  const style = sizeStyles[size];
 
   // Star display for small sizes
   const stars = '★'.repeat(level) + '☆'.repeat(5 - level);
 
   return (
-    <span
-      className={`credibility-badge credibility-badge--${level} ${className}`}
+    <Badge
+      variant="outline"
+      className={cn(
+        'rounded-sm font-medium border-transparent',
+        sizeClasses[size],
+        className
+      )}
       title={`Credibility: ${config.label} (${level}/5) - ${config.description}`}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: style.gap,
-        fontSize: style.fontSize,
-        padding: style.padding,
-        borderRadius: '3px',
         backgroundColor: config.bgColor,
         color: config.color,
-        fontWeight: 500,
-        whiteSpace: 'nowrap',
       }}
     >
       {showLabel ? (
         <>
           <span>{config.label}</span>
-          <span style={{ opacity: 0.7 }}>({level})</span>
+          <span className="opacity-70">({level})</span>
         </>
       ) : (
-        <span style={{ letterSpacing: '-1px' }}>{stars}</span>
+        <span className="tracking-tighter">{stars}</span>
       )}
-    </span>
+    </Badge>
   );
 }
 
@@ -104,37 +101,26 @@ export function CredibilityIndicator({
   peerReviewed,
   className = '',
 }: CredibilityIndicatorProps) {
-  const config = credibilityConfig[level] || credibilityConfig[3];
-
   return (
-    <span
-      className={`credibility-indicator ${className}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        fontSize: '11px',
-      }}
-    >
+    <span className={cn('inline-flex items-center gap-1.5 text-[11px]', className)}>
       <CredibilityBadge level={level} size="sm" />
       {publicationName && (
-        <span style={{ color: 'var(--sl-color-gray-3)', fontStyle: 'italic' }}>
+        <span className="text-(--sl-color-gray-3) italic">
           {publicationName}
         </span>
       )}
       {peerReviewed && (
-        <span
+        <Badge
+          variant="outline"
+          className="text-[9px] px-1 py-0 rounded-sm font-medium border-transparent"
+          title="Peer-reviewed publication"
           style={{
-            fontSize: '9px',
-            padding: '1px 4px',
-            borderRadius: '3px',
             backgroundColor: 'rgba(46, 125, 50, 0.12)',
             color: '#2e7d32',
           }}
-          title="Peer-reviewed publication"
         >
           peer-reviewed
-        </span>
+        </Badge>
       )}
     </span>
   );
