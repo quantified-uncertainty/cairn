@@ -18,6 +18,28 @@ import {
 // Use larger height for layout since most nodes have subItems
 const LAYOUT_NODE_HEIGHT = NODE_HEIGHT_WITH_SUBITEMS;
 
+// Estimate node width based on content (label and sub-items)
+function estimateNodeWidth(node: { data: CauseEffectNodeData }): number {
+  const CHAR_WIDTH = 8; // Approximate pixels per character
+  const MIN_WIDTH = NODE_WIDTH; // Must match actual rendered node width
+  const PADDING = 40; // Internal padding
+
+  // Get the longest text (label or any sub-item)
+  let maxTextLength = node.data.label?.length || 0;
+
+  if (node.data.subItems) {
+    for (const item of node.data.subItems) {
+      const itemLength = item.label?.length || 0;
+      if (itemLength > maxTextLength) {
+        maxTextLength = itemLength;
+      }
+    }
+  }
+
+  const estimatedWidth = maxTextLength * CHAR_WIDTH + PADDING;
+  return Math.max(MIN_WIDTH, estimatedWidth);
+}
+
 const elk = new ELK();
 
 // Style edges based on strength and effect
@@ -92,12 +114,12 @@ function groupNodesByType(nodes: LayoutedNode[]): NodesByType {
   return result;
 }
 
-// Group intermediate nodes by subgroup
-function groupIntermediatesBySubgroup(intermediates: LayoutedNode[] | undefined): Record<string, LayoutedNode[]> {
+// Group nodes by subgroup (works for any node type)
+function groupNodesBySubgroup(nodes: LayoutedNode[] | undefined): Record<string, LayoutedNode[]> {
   const result: Record<string, LayoutedNode[]> = {};
-  if (!intermediates) return result;
+  if (!nodes) return result;
 
-  for (const node of intermediates) {
+  for (const node of nodes) {
     const subgroup = node.data.subgroup || 'default';
     if (!result[subgroup]) result[subgroup] = [];
     result[subgroup].push(node);
@@ -224,7 +246,7 @@ export async function getLayoutedElements(
   const intermediateStartY = intermediateContainerTop + GROUP_HEADER_HEIGHT + GROUP_PADDING;
 
   // Position intermediate nodes by subgroup
-  const intermediatesBySubgroup = groupIntermediatesBySubgroup(nodesByType['intermediate']);
+  const intermediatesBySubgroup = groupNodesBySubgroup(nodesByType['intermediate']);
   const hasSubgroups = Object.keys(intermediatesBySubgroup).some(k => k !== 'default' && intermediatesBySubgroup[k]?.length > 0);
 
   let maxIntermediateY = intermediateStartY;
@@ -303,14 +325,74 @@ export async function getLayoutedElements(
   // Check if any nodes have manual order
   const hasManualOrder = (nodes: LayoutedNode[]) => nodes.some(n => n.data.order !== undefined);
 
-  // Position cause nodes
+  // Position cause nodes (with horizontal subgroup support)
+  const causesBySubgroup = groupNodesBySubgroup(nodesByType['cause']);
+  const hasCauseSubgroups = Object.keys(causesBySubgroup).some(k => k !== 'default' && causesBySubgroup[k]?.length > 0);
+  const causeSubgroupPositions: Record<string, { startX: number; endX: number; nodes: LayoutedNode[] }> = {};
+  const CAUSE_SUBGROUP_GAP = 60; // Extra gap between subgroups
+
   if (nodesByType['cause']) {
-    if (hasManualOrder(nodesByType['cause'])) {
-      sortByOrder(nodesByType['cause']);
+    if (hasCauseSubgroups) {
+      // Get ordered subgroups from config, then remaining
+      const causeSubgroupOrder = Object.keys(config.subgroups);
+      const activeCauseSubgroups = causeSubgroupOrder.filter(sg => causesBySubgroup[sg]?.length > 0);
+      Object.keys(causesBySubgroup).forEach(sg => {
+        if (sg !== 'default' && !activeCauseSubgroups.includes(sg)) activeCauseSubgroups.push(sg);
+      });
+      if (causesBySubgroup['default']?.length > 0) activeCauseSubgroups.push('default');
+
+      // Sort nodes within each subgroup
+      for (const sg of activeCauseSubgroups) {
+        const nodes = causesBySubgroup[sg] || [];
+        if (hasManualOrder(nodes)) {
+          sortByOrder(nodes);
+        } else {
+          nodes.sort((a, b) => a.position.x - b.position.x);
+        }
+      }
+
+      // Calculate total width needed using dynamic node widths
+      let totalWidth = 0;
+      for (const sg of activeCauseSubgroups) {
+        const nodes = causesBySubgroup[sg] || [];
+        for (const node of nodes) {
+          totalWidth += estimateNodeWidth(node) + layout.causeSpacing;
+        }
+        if (nodes.length > 0) totalWidth -= layout.causeSpacing; // Remove trailing spacing
+      }
+      totalWidth += (activeCauseSubgroups.length - 1) * CAUSE_SUBGROUP_GAP;
+
+      // Position each subgroup using dynamic node widths
+      let currentX = globalCenterX - totalWidth / 2;
+      for (const sg of activeCauseSubgroups) {
+        const nodes = causesBySubgroup[sg] || [];
+        if (nodes.length === 0) continue;
+
+        const subgroupStartX = currentX;
+        for (const node of nodes) {
+          node.position.x = currentX;
+          node.position.y = causeRowY;
+          currentX += estimateNodeWidth(node) + layout.causeSpacing;
+        }
+        const subgroupEndX = currentX - layout.causeSpacing;
+
+        causeSubgroupPositions[sg] = {
+          startX: subgroupStartX,
+          endX: subgroupEndX,
+          nodes,
+        };
+
+        currentX += CAUSE_SUBGROUP_GAP - layout.causeSpacing; // Add extra gap between subgroups
+      }
     } else {
-      nodesByType['cause'].sort((a, b) => a.position.x - b.position.x);
+      // Original single-row layout
+      if (hasManualOrder(nodesByType['cause'])) {
+        sortByOrder(nodesByType['cause']);
+      } else {
+        nodesByType['cause'].sort((a, b) => a.position.x - b.position.x);
+      }
+      positionRow(nodesByType['cause'], globalCenterX, layout.causeSpacing);
     }
-    positionRow(nodesByType['cause'], globalCenterX, layout.causeSpacing);
   }
 
   // Position intermediate nodes
@@ -346,19 +428,44 @@ export async function getLayoutedElements(
   // Create group containers with fixed width
   const groupNodes: Node<CauseEffectNodeData>[] = [];
 
-  ['leaf', 'cause'].forEach(type => {
-    if (nodesByType[type]) {
-      const container = createGroupContainer(type, nodesByType[type], globalCenterX, layout.containerWidth, config.typeLabels);
-      if (container) groupNodes.push(container);
-    }
-  });
+  // Create leaf container
+  if (nodesByType['leaf']) {
+    const container = createGroupContainer('leaf', nodesByType['leaf'], globalCenterX, layout.containerWidth, config.typeLabels);
+    if (container) groupNodes.push(container);
+  }
+
+  // Create cause container only if no cause subgroups (to avoid overlapping boxes)
+  if (nodesByType['cause'] && !hasCauseSubgroups) {
+    const container = createGroupContainer('cause', nodesByType['cause'], globalCenterX, layout.containerWidth, config.typeLabels);
+    if (container) groupNodes.push(container);
+  } else if (nodesByType['cause'] && hasCauseSubgroups) {
+    // Create a label-only container (no border) when subgroups handle the visual grouping
+    const causeLabel = config.typeLabels?.cause || 'Root Factors';
+    const minY = Math.min(...nodesByType['cause'].map(n => n.position.y)) - GROUP_PADDING - GROUP_HEADER_HEIGHT - SUBGROUP_HEADER_HEIGHT - SUBGROUP_PADDING;
+    const maxY = Math.max(...nodesByType['cause'].map(n => n.position.y + LAYOUT_NODE_HEIGHT)) + GROUP_PADDING;
+    groupNodes.push({
+      id: 'group-cause',
+      type: 'group',
+      position: { x: globalCenterX - layout.containerWidth / 2, y: minY },
+      data: { label: causeLabel, type: 'cause' },
+      style: {
+        width: layout.containerWidth,
+        height: maxY - minY,
+        backgroundColor: 'transparent',
+        border: 'none',
+        zIndex: -1,
+      },
+      selectable: false,
+      draggable: false,
+    });
+  }
 
   if (allIntermediates.length > 0) {
     const container = createGroupContainer('intermediate', allIntermediates, globalCenterX, layout.containerWidth, config.typeLabels);
     if (container) groupNodes.push(container);
   }
 
-  // Create subgroup containers
+  // Create subgroup containers for intermediate nodes
   if (hasSubgroups) {
     for (const [subgroupKey, pos] of Object.entries(subgroupPositions)) {
       const subConfig = config.subgroups[subgroupKey];
@@ -375,7 +482,35 @@ export async function getLayoutedElements(
           backgroundColor: subConfig.bgColor,
           border: `1.5px solid ${subConfig.borderColor}`,
           borderRadius: '8px',
-          zIndex: 0,
+          zIndex: -1,
+          pointerEvents: 'none' as const,
+        },
+        selectable: false,
+        draggable: false,
+      });
+    }
+  }
+
+  // Create subgroup containers for cause nodes (horizontal layout)
+  if (hasCauseSubgroups) {
+    for (const [subgroupKey, pos] of Object.entries(causeSubgroupPositions)) {
+      const subConfig = config.subgroups[subgroupKey];
+      if (!subConfig || pos.nodes.length === 0) continue;
+
+      const width = pos.endX - pos.startX + SUBGROUP_PADDING * 2;
+      groupNodes.push({
+        id: `cause-subgroup-${subgroupKey}`,
+        type: 'subgroup',
+        position: { x: pos.startX - SUBGROUP_PADDING, y: causeRowY - SUBGROUP_HEADER_HEIGHT - SUBGROUP_PADDING },
+        data: { label: subConfig.label, type: 'cause' },
+        style: {
+          width,
+          height: LAYOUT_NODE_HEIGHT + SUBGROUP_HEADER_HEIGHT + SUBGROUP_PADDING * 2,
+          backgroundColor: subConfig.bgColor,
+          border: `1.5px solid ${subConfig.borderColor}`,
+          borderRadius: '8px',
+          zIndex: -1,
+          pointerEvents: 'none' as const,
         },
         selectable: false,
         draggable: false,

@@ -15,6 +15,7 @@ interface RawNode {
   description?: string;
   type: 'cause' | 'intermediate' | 'effect';
   order?: number;  // Manual ordering within layer (0 = leftmost)
+  subgroup?: string;  // Cluster within layer (e.g., 'ai' vs 'society')
   subItems?: Array<{ label: string; probability?: string }>;
   confidence?: number;
   confidenceLabel?: string;
@@ -93,6 +94,7 @@ export const parameterNodes: Node<CauseEffectNodeData>[] = rawData.nodes.map(nod
     description: node.description,
     type: node.type,
     order: node.order,  // Manual ordering for layout
+    subgroup: node.subgroup,  // Cluster within layer
     subItems: node.subItems,
     confidence: node.confidence,
     confidenceLabel: node.confidenceLabel,

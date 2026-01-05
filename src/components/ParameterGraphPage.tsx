@@ -7,20 +7,23 @@ import { parameterNodes, parameterEdges } from '../data/parameter-graph-data';
 // Complete configuration specific to this parameter graph
 const parameterGraphConfig: GraphConfig = {
   layout: {
-    containerWidth: 1350,
-    centerX: 750,
+    containerWidth: 1600,
+    centerX: 800,
     layerGap: 60,
-    causeSpacing: 40,        // Compressed top row
+    causeSpacing: 25,        // Spacing between root factor nodes
     intermediateSpacing: 200, // Spread middle row
     effectSpacing: 400,       // Spread bottom row
   },
   typeLabels: {
     cause: 'Root Factors',
-    intermediate: 'Structural Scenarios',
+    intermediate: 'Ultimate Scenarios',
     effect: 'Ultimate Outcomes',
   },
   subgroups: {
-    // Subgroups for this specific graph (if nodes have subgroup field)
+    // Root Factor clusters
+    'ai': { label: 'AI System Factors', bgColor: 'rgba(219, 234, 254, 0.4)', borderColor: '#93c5fd' },
+    'society': { label: 'Societal Factors', bgColor: 'rgba(254, 243, 199, 0.4)', borderColor: '#fcd34d' },
+    // Ultimate Scenario subgroups (if used)
     'ai-takeover': { label: 'AI Takeover', bgColor: 'rgba(255, 182, 193, 0.3)', borderColor: '#f9a8d4' },
     'human-caused': { label: 'Human-Caused', bgColor: 'rgba(255, 182, 193, 0.3)', borderColor: '#f9a8d4' },
     'post-trans-factors': { label: 'Post-Trans Factors', bgColor: 'rgba(255, 228, 181, 0.3)', borderColor: '#fcd34d' },
@@ -48,8 +51,8 @@ const styles = `
   }
   .parameter-graph-page__back-link {
     position: fixed;
-    top: 16px;
-    left: 16px;
+    top: 8px;
+    left: 12px;
     z-index: 1000;
     color: #475569;
     text-decoration: none;
@@ -69,6 +72,10 @@ const styles = `
   .parameter-graph-page__container {
     width: 100%;
     height: 100%;
+  }
+  /* Add left padding to graph header to make room for back button */
+  .parameter-graph-page .ceg-header {
+    padding-left: 240px;
   }
 `;
 

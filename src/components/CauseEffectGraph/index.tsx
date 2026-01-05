@@ -16,7 +16,7 @@ import '../CauseEffectGraph.css';
 
 import type { CauseEffectNodeData, CauseEffectEdgeData, GraphConfig } from './types';
 import { GroupNode, SubgroupNode, CauseEffectNode } from './nodes';
-import { DetailsPanel, Legend, DataView, CopyIcon, CheckIcon, ExpandIcon, ShrinkIcon } from './components';
+import { DetailsPanel, Legend, DataView, OutlineView, generateOutlineText, CopyIcon, CheckIcon, ExpandIcon, ShrinkIcon } from './components';
 import { getLayoutedElements, toYaml } from './layout';
 
 // Re-export types for external use
@@ -49,14 +49,20 @@ export default function CauseEffectGraph({
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [isLayouting, setIsLayouting] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'graph' | 'data'>('graph');
+  const [activeTab, setActiveTab] = useState<'graph' | 'outline' | 'data'>('graph');
   const [copied, setCopied] = useState(false);
 
   const yamlData = toYaml(initialNodes, initialEdges);
 
+  // Generate outline text for copy/display
+  const outlineData = useMemo(() => {
+    return generateOutlineText(initialNodes, graphConfig?.typeLabels, graphConfig?.subgroups);
+  }, [initialNodes, graphConfig?.typeLabels, graphConfig?.subgroups]);
+
   const handleCopy = async () => {
+    const textToCopy = activeTab === 'outline' ? outlineData : yamlData;
     try {
-      await navigator.clipboard.writeText(yamlData);
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -202,6 +208,12 @@ export default function CauseEffectGraph({
             Graph
           </button>
           <button
+            className={`ceg-segment-btn ${activeTab === 'outline' ? 'ceg-segment-btn--active' : ''}`}
+            onClick={() => setActiveTab('outline')}
+          >
+            Outline
+          </button>
+          <button
             className={`ceg-segment-btn ${activeTab === 'data' ? 'ceg-segment-btn--active' : ''}`}
             onClick={() => setActiveTab('data')}
           >
@@ -210,7 +222,7 @@ export default function CauseEffectGraph({
         </div>
 
         <div className="ceg-button-group">
-          {activeTab === 'data' && (
+          {(activeTab === 'outline' || activeTab === 'data') && (
             <button className="ceg-action-btn" onClick={handleCopy}>
               {copied ? <CheckIcon /> : <CopyIcon />}
               {copied ? 'Copied!' : 'Copy'}
@@ -252,6 +264,13 @@ export default function CauseEffectGraph({
             <Legend typeLabels={graphConfig?.typeLabels} customItems={graphConfig?.legendItems} />
             <DetailsPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
           </div>
+        )}
+        {activeTab === 'outline' && (
+          <OutlineView
+            nodes={initialNodes}
+            typeLabels={graphConfig?.typeLabels}
+            subgroups={graphConfig?.subgroups}
+          />
         )}
         {activeTab === 'data' && <DataView yaml={yamlData} />}
       </div>

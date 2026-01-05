@@ -8,39 +8,35 @@ nodes:
   # X positions: 0=far left, 1=left-center, 2=center, 3=right-center, 4=far right
 
   - id: misalignment-potential
-    label: Misalignment Potential
+    label: AI Misalignment Potential
     description: Potential for AI to be misaligned.
     type: cause
+    subgroup: ai
     order: 0
     href: /knowledge-base/ai-transition-model/factors/misalignment-potential/
     subItems:
-      - label: Alignment Robustness
-        href: /knowledge-base/ai-transition-model/parameters/alignment-robustness/
-      - label: Interpretability Coverage
-        href: /knowledge-base/ai-transition-model/parameters/interpretability-coverage/
-      - label: Human Oversight Quality
-        href: /knowledge-base/ai-transition-model/parameters/human-oversight-quality/
-      - label: Safety Capability Gap
-        href: /knowledge-base/ai-transition-model/parameters/safety-capability-gap/
-      - label: Safety Culture Strength
-        href: /knowledge-base/ai-transition-model/parameters/safety-culture-strength/
+      - label: Technical AI Safety
+      - label: AI Governance
+      - label: Lab Safety Practices
 
   - id: ai-capabilities
     label: AI Capabilities
     description: How powerful AI systems become.
     type: cause
+    subgroup: ai
     order: 1
     href: /knowledge-base/ai-transition-model/factors/ai-capabilities/
     subItems:
-      - label: Speed
-      - label: Generality
-      - label: Autonomy
+      - label: Compute
+      - label: Algorithmic
+      - label: Adoption
 
   - id: civ-competence
     label: Civilizational Competence
     description: Humanity's ability to respond well.
     type: cause
-    order: 2
+    subgroup: society
+    order: 0
     href: /knowledge-base/ai-transition-model/factors/civilizational-competence/
     subItems:
       - label: Governance
@@ -54,7 +50,8 @@ nodes:
     label: Transition Turbulence
     description: Background instability during transition.
     type: cause
-    order: 3
+    subgroup: society
+    order: 1
     href: /knowledge-base/ai-transition-model/factors/transition-turbulence/
     subItems:
       - label: Economic Stability
@@ -66,15 +63,39 @@ nodes:
     label: Misuse Potential
     description: Potential for AI to be misused for harm.
     type: cause
-    order: 4
+    subgroup: society
+    order: 2
     href: /knowledge-base/ai-transition-model/factors/misuse-potential/
     subItems:
       - label: Biological Threat Exposure
         href: /knowledge-base/ai-transition-model/parameters/biological-threat-exposure/
       - label: Cyber Threat Exposure
         href: /knowledge-base/ai-transition-model/parameters/cyber-threat-exposure/
-      - label: AI Control Concentration
-        href: /knowledge-base/ai-transition-model/parameters/ai-control-concentration/
+      - label: Robot Threat Exposure
+      - label: Surprise Threat Exposure
+
+  - id: ai-ownership
+    label: AI Ownership
+    description: Who controls and owns AI systems.
+    type: cause
+    subgroup: ai
+    order: 2
+    subItems:
+      - label: Countries
+      - label: Companies
+      - label: Shareholders
+
+  - id: ai-uses
+    label: AI Uses
+    description: Where and how AI is deployed.
+    type: cause
+    subgroup: ai
+    order: 3
+    subItems:
+      - label: Recursive AI Capabilities
+      - label: Industries
+      - label: Governments
+      - label: Coordination
 
   # === ULTIMATE SCENARIOS (middle layer) ===
 
@@ -86,10 +107,8 @@ nodes:
     href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/
     subItems:
       - label: Rapid
-        probability: "12%"
         href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/rapid/
       - label: Gradual
-        probability: "25%"
         href: /knowledge-base/ai-transition-model/scenarios/ai-takeover/gradual/
 
   - id: human-catastrophe
@@ -100,10 +119,8 @@ nodes:
     href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/
     subItems:
       - label: State Actor
-        probability: "15%"
         href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/state-actor/
       - label: Rogue Actor
-        probability: "8%"
         href: /knowledge-base/ai-transition-model/scenarios/human-catastrophe/rogue-actor/
 
   - id: long-term-lockin
@@ -113,12 +130,11 @@ nodes:
     order: 2
     href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/
     subItems:
-      - label: Values
-        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/values/
-      - label: Power
-        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/power/
+      - label: Economic Power
+      - label: Political Power
       - label: Epistemics
-        href: /knowledge-base/ai-transition-model/scenarios/long-term-lockin/epistemics/
+      - label: Values
+      - label: Suffering Lock-in
 
   # === ULTIMATE OUTCOMES (bottom layer) ===
 
@@ -127,8 +143,6 @@ nodes:
     description: Civilization-ending or irreversible harm.
     type: effect
     order: 0
-    confidence: 0.20
-    confidenceLabel: aggregate probability
     href: /knowledge-base/ai-transition-model/outcomes/existential-catastrophe/
 
   - id: long-term-trajectory
@@ -136,8 +150,6 @@ nodes:
     description: Quality of post-transition future.
     type: effect
     order: 1
-    confidence: 0.50
-    confidenceLabel: high uncertainty
     href: /knowledge-base/ai-transition-model/outcomes/long-term-trajectory/
 
 edges:
@@ -187,6 +199,16 @@ edges:
 
   - id: e-civ-lockin
     source: civ-competence
+    target: long-term-lockin
+    strength: strong
+
+  - id: e-ownership-lockin
+    source: ai-ownership
+    target: long-term-lockin
+    strength: strong
+
+  - id: e-uses-lockin
+    source: ai-uses
     target: long-term-lockin
     strength: strong
 
