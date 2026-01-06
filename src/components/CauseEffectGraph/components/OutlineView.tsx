@@ -3,6 +3,7 @@ import type { Node } from '@xyflow/react';
 import type { CauseEffectNodeData } from '../types';
 import { getImpactsFrom, getImpactsTo, getNodeLabel, type ImpactGridEntry } from '../../../data/parameter-graph-data';
 import { MiniModelDiagram } from '../../MiniModelDiagram';
+import Markdown from 'react-markdown';
 
 // Convert label to URL-friendly slug
 function toSlug(label: string): string {
@@ -10,6 +11,18 @@ function toSlug(label: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+// Truncate description to first sentence or max characters for preview
+function truncateDescription(desc: string, maxLength: number = 150): string {
+  if (!desc) return '';
+  // Get first sentence (up to first period followed by space or end)
+  const firstSentence = desc.split(/\.\s/)[0];
+  if (firstSentence.length <= maxLength) {
+    return firstSentence + (desc.length > firstSentence.length + 1 ? '.' : '');
+  }
+  // If first sentence is too long, truncate with ellipsis
+  return desc.slice(0, maxLength).trim() + '...';
 }
 
 interface OutlineViewProps {
@@ -338,6 +351,47 @@ const styles = `
     color: #334155;
     margin-bottom: 32px;
   }
+  .ov-detail__description p {
+    margin-bottom: 16px;
+  }
+  .ov-detail__description p:last-child {
+    margin-bottom: 0;
+  }
+  .ov-detail__description a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  .ov-detail__description a:hover {
+    text-decoration: underline;
+  }
+  .ov-detail__description ul, .ov-detail__description ol {
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+  .ov-detail__description li {
+    margin-bottom: 8px;
+  }
+  .ov-detail__description strong {
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .ov-detail__description em {
+    font-style: italic;
+  }
+  .ov-detail__description h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+  .ov-detail__description h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
 
   .ov-detail__ratings {
     display: grid;
@@ -525,25 +579,23 @@ const styles = `
   }
 
   .ov-detail__scope {
-    margin-top: 24px;
-    padding: 16px;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 8px;
-    border-left: 4px solid #22c55e;
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #f9fafb;
+    border-radius: 6px;
   }
   .ov-detail__scope-header {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #166534;
+    color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .ov-detail__scope-text {
-    font-size: 14px;
-    color: #166534;
-    line-height: 1.6;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.5;
     white-space: pre-wrap;
   }
 
@@ -592,39 +644,34 @@ const styles = `
     font-size: 12px;
   }
 
-  /* Related Content */
+  /* Related Content - sidebar layout */
   .ov-related {
-    margin-top: 32px;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 24px;
+    margin-top: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
   }
   .ov-related__header {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 16px;
-  }
-  .ov-related__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    margin-bottom: 12px;
   }
   .ov-related__section {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 12px;
+    margin-bottom: 12px;
   }
+  .ov-related__section:last-child { margin-bottom: 0; }
   .ov-related__section-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
   }
   .ov-related__section--risks .ov-related__section-title { color: #dc2626; }
   .ov-related__section--responses .ov-related__section-title { color: #059669; }
@@ -632,10 +679,10 @@ const styles = `
   .ov-related__section--cruxes .ov-related__section-title { color: #d97706; }
   .ov-related__link {
     display: block;
-    padding: 6px 10px;
-    margin-bottom: 4px;
+    padding: 4px 8px;
+    margin-bottom: 2px;
     border-radius: 4px;
-    font-size: 13px;
+    font-size: 12px;
     color: #1e293b;
     text-decoration: none;
     transition: background 0.15s;
@@ -981,7 +1028,9 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
           </nav>
           <h1 className="ov-detail__title">{selected.label}</h1>
           {selected.description && (
-            <p className="ov-detail__description">{selected.description}</p>
+            <div className="ov-detail__description">
+              <Markdown>{selected.description}</Markdown>
+            </div>
           )}
           {selected.scope && (
           <div className="ov-detail__scope">
@@ -1011,7 +1060,7 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
               >
                 <div className="ov-detail__subitem-label">{sub.label}</div>
                 {sub.description && (
-                  <div className="ov-detail__subitem-desc">{sub.description}</div>
+                  <div className="ov-detail__subitem-desc">{truncateDescription(sub.description)}</div>
                 )}
               </div>
             ))}
@@ -1052,18 +1101,23 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
             </div>
           );
         })()}
-        {selected.relatedContent && (
-          (selected.relatedContent.risks?.length ?? 0) > 0 ||
-          (selected.relatedContent.responses?.length ?? 0) > 0 ||
-          (selected.relatedContent.models?.length ?? 0) > 0 ||
-          (selected.relatedContent.cruxes?.length ?? 0) > 0
-        ) && (
-          <div className="ov-related">
-            <div className="ov-related__header">Related Knowledge Base</div>
-            <div className="ov-related__grid">
+        </div>
+        <div className="ov-detail__sidebar">
+          <div className="ov-mini-graph">
+            <div className="ov-mini-graph__header">Position in Model</div>
+            <MiniModelDiagram selectedNodeId={selected.nodeId} />
+          </div>
+          {selected.relatedContent && (
+            (selected.relatedContent.risks?.length ?? 0) > 0 ||
+            (selected.relatedContent.responses?.length ?? 0) > 0 ||
+            (selected.relatedContent.models?.length ?? 0) > 0 ||
+            (selected.relatedContent.cruxes?.length ?? 0) > 0
+          ) && (
+            <div className="ov-related">
+              <div className="ov-related__header">Related Knowledge Base</div>
               {selected.relatedContent.risks && selected.relatedContent.risks.length > 0 && (
                 <div className="ov-related__section ov-related__section--risks">
-                  <div className="ov-related__section-title">⚠️ Risks</div>
+                  <div className="ov-related__section-title">Risks</div>
                   {selected.relatedContent.risks.map((item, i) => (
                     <a key={i} href={item.path} className="ov-related__link">{item.title}</a>
                   ))}
@@ -1071,7 +1125,7 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
               )}
               {selected.relatedContent.responses && selected.relatedContent.responses.length > 0 && (
                 <div className="ov-related__section ov-related__section--responses">
-                  <div className="ov-related__section-title">✓ Responses</div>
+                  <div className="ov-related__section-title">Responses</div>
                   {selected.relatedContent.responses.map((item, i) => (
                     <a key={i} href={item.path} className="ov-related__link">{item.title}</a>
                   ))}
@@ -1079,7 +1133,7 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
               )}
               {selected.relatedContent.models && selected.relatedContent.models.length > 0 && (
                 <div className="ov-related__section ov-related__section--models">
-                  <div className="ov-related__section-title">📊 Models</div>
+                  <div className="ov-related__section-title">Models</div>
                   {selected.relatedContent.models.map((item, i) => (
                     <a key={i} href={item.path} className="ov-related__link">{item.title}</a>
                   ))}
@@ -1087,21 +1141,14 @@ export function OutlineView({ nodes, typeLabels, subgroups }: OutlineViewProps) 
               )}
               {selected.relatedContent.cruxes && selected.relatedContent.cruxes.length > 0 && (
                 <div className="ov-related__section ov-related__section--cruxes">
-                  <div className="ov-related__section-title">🔑 Key Cruxes</div>
+                  <div className="ov-related__section-title">Key Cruxes</div>
                   {selected.relatedContent.cruxes.map((item, i) => (
                     <a key={i} href={item.path} className="ov-related__link">{item.title}</a>
                   ))}
                 </div>
               )}
             </div>
-          </div>
-        )}
-        </div>
-        <div className="ov-detail__sidebar">
-          <div className="ov-mini-graph">
-            <div className="ov-mini-graph__header">Position in Model</div>
-            <MiniModelDiagram selectedNodeId={selected.nodeId} />
-          </div>
+          )}
         </div>
       </div>
     );

@@ -119,7 +119,7 @@ export function MiniModelDiagram({ selectedNodeId, onNodeClick, className }: Min
       onNodeClick(node.id);
     } else {
       // Navigate to outline page with slug as hash (matches OutlineView's label-based slugs)
-      window.location.href = `/ai-transition-model/outline#${node.slug}`;
+      window.location.href = `/ai-transition-model-views/outline#${node.slug}`;
     }
   };
 

@@ -79,7 +79,7 @@ export default function ParameterGraphPage() {
     <>
       <style>{styles}</style>
       <div className="parameter-graph-page">
-        <a href="/knowledge-base/ai-transition-model/" className="parameter-graph-page__back-link">
+        <a href="/ai-transition-model/" className="parameter-graph-page__back-link">
           &larr; Documentation
         </a>
         <div className="parameter-graph-page__container">

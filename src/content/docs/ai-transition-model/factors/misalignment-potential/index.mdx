@@ -1,0 +1,89 @@
+---
+title: "Misalignment Potential"
+description: "The aggregate potential for AI systems to pursue unintended goals—determined by alignment robustness, interpretability coverage, oversight quality, safety culture, and the safety-capability gap."
+sidebar:
+  label: Overview
+  order: 0
+lastEdited: "2026-01-03"
+---
+import {Mermaid, Backlinks, DataInfoBox} from '../../../../../components/wiki';
+
+<DataInfoBox entityId="misalignment-potential" />
+
+## Overview
+
+Misalignment Potential measures the likelihood that AI systems will pursue goals other than what we intend. This aggregate combines the technical and organizational factors that determine whether advanced AI systems might behave in harmful ways despite our efforts.
+
+**Primary outcome affected:** [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) ↑↑↑
+
+When misalignment potential is high, catastrophic loss of control, accidents at scale, and goal divergence become more likely. Reducing this potential is the most direct lever for reducing existential and catastrophic AI risk.
+
+---
+
+## Component Parameters
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Components["Misalignment Potential Components"]
+        AR[Alignment Robustness]
+        SCG[Safety-Capability Gap]
+        IC[Interpretability Coverage]
+        HOQ[Human Oversight Quality]
+        SCS[Safety Culture Strength]
+    end
+
+    IC -->|enables| AR
+    IC -->|enables| HOQ
+    SCS -->|strengthens| AR
+    SCG -->|when wide, undermines| AR
+    HOQ -->|catches failures in| AR
+
+    AR --> MP[Misalignment Potential]
+    SCG --> MP
+    IC --> MP
+    HOQ --> MP
+    SCS --> MP
+
+    MP --> EXCAT[Existential Catastrophe ↑]
+
+    style MP fill:#ff9f9f
+    style EXCAT fill:#ff6b6b
+`} />
+
+| Parameter | Role | Current State |
+|-----------|------|---------------|
+| [Alignment Robustness](/ai-transition-model/parameters/alignment-robustness/) | Core outcome: do systems pursue intended goals? | Concerning (12-78% alignment faking in studies) |
+| [Safety-Capability Gap](/ai-transition-model/parameters/safety-capability-gap/) | Can safety research keep pace with capabilities? | Widening gap |
+| [Interpretability Coverage](/ai-transition-model/parameters/interpretability-coverage/) | Can we understand what's happening inside? | ~10% coverage, improving |
+| [Human Oversight Quality](/ai-transition-model/parameters/human-oversight-quality/) | Can humans catch and correct problems? | Declining relative to AI speed |
+| [Safety Culture Strength](/ai-transition-model/parameters/safety-culture-strength/) | Do organizations prioritize safety? | Variable (6-12% of R&D) |
+
+---
+
+## Internal Dynamics
+
+These components interact:
+
+- **Interpretability enables alignment verification**: We can only confirm alignment if we understand model internals
+- **Safety culture sustains investment**: Without organizational commitment, safety research loses funding to capabilities
+- **Oversight requires interpretability**: Human overseers need tools to understand what systems are doing
+- **Gap closure requires all components**: No single factor is sufficient; safety capacity emerges from their combination
+
+---
+
+## How This Affects Outcomes
+
+| Outcome | Effect | Mechanism |
+|---------|--------|-----------|
+| [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) | ↑↑↑ Primary | Misaligned systems are more likely to cause catastrophe |
+| [Long-term Trajectory](/ai-transition-model/outcomes/long-term-trajectory/) | ↑ Secondary | Misalignment shapes who can direct AI and toward what ends |
+| [Transition Turbulence](/ai-transition-model/factors/transition-turbulence/) | ↑ Secondary | Misaligned systems cause disruption during transition |
+
+---
+
+## Related Pages
+
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) — The outcome this primarily affects
+- [Misuse Potential](/ai-transition-model/factors/misuse-potential/) — The complementary factor for human-caused catastrophe
+
+<Backlinks entityId="misalignment-potential" />

@@ -1,0 +1,186 @@
+---
+title: "Robot Threat Exposure"
+description: "The degree to which AI-controlled physical systems—particularly lethal autonomous weapons systems (LAWS)—enable deliberate harm at scale. AI-guided drones already achieve 70-80% hit rates versus 10-20% for manually-piloted systems."
+parentFactor: misuse-potential
+sidebar:
+  order: 22
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 40
+  xriskImpact: 60
+  trajectoryImpact: 50
+  uncertainty: 65
+---
+import {Mermaid, Backlinks} from '../../../../components/wiki';
+
+
+## Overview
+
+Robot Threat Exposure measures the degree to which AI-controlled physical systems—particularly lethal autonomous weapons systems (LAWS)—enable deliberate harm at scale. Unlike cyber threats that operate in digital space, robotic threats can cause direct physical casualties and represent one of the most immediate applications of AI in military contexts.
+
+**Lower exposure is better**—it means robust controls exist on autonomous weapons development, deployment, and proliferation, with meaningful human oversight in decisions to use lethal force.
+
+---
+
+## Ratings
+
+| Metric | Score | Interpretation |
+|--------|-------|----------------|
+| **Changeability** | 40/100 | Moderately difficult to change once deployed |
+| **X-risk Impact** | 60/100 | Significant but not primary existential pathway |
+| **Trajectory Impact** | 50/100 | Moderate long-term effects on AI governance |
+| **Uncertainty** | 65/100 | High uncertainty about proliferation and escalation |
+
+---
+
+## Current State: Autonomous Weapons Are Already Here
+
+Autonomous weapons are not science fiction—they are battlefield realities that have already claimed human lives. The March 2020 incident in Libya, documented in a UN Security Council Panel of Experts report, marked a watershed moment when Turkish-supplied Kargu-2 loitering munitions allegedly engaged human targets autonomously, without remote pilot control or explicit targeting commands.
+
+Ukraine's conflict has become what analysts describe as "the Silicon Valley of offensive AI," with approximately **2 million drones produced in 2024**.
+
+### Effectiveness Data
+
+| Metric | Manual Systems | AI-Guided Systems | Improvement |
+|--------|----------------|-------------------|-------------|
+| Hit rate | 10-20% | 70-80% | 4-8x |
+| Drones per target | 8-9 | 1-2 | ~5x efficiency |
+| Response time | Seconds-minutes | Milliseconds | Orders of magnitude |
+
+The global autonomous weapons market reached **$41.6 billion in 2024**.
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Factors["Root Factors"]
+        RI[Racing Intensity]
+        ACC[AI Control Concentration]
+        GOV[Weak Governance]
+    end
+
+    RI -->|accelerates| RTE[Robot Threat Exposure]
+    ACC -->|concentrates| RTE
+    GOV -->|no limits| RTE
+
+    RTE --> MISUSE[Misuse Potential]
+
+    subgraph Scenarios["Ultimate Scenarios"]
+        HC[Human Catastrophe]
+    end
+
+    MISUSE --> HC
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        XRISK[Existential Catastrophe]
+        TRAJ[Long-term Trajectory]
+    end
+
+    HC --> XRISK
+    HC --> TRAJ
+
+    style Factors fill:#dbeafe,stroke:#3b82f6
+    style RTE fill:#3b82f6,color:#fff
+    style MISUSE fill:#dbeafe,stroke:#3b82f6
+    style Scenarios fill:#ede9fe,stroke:#8b5cf6
+    style HC fill:#8b5cf6,color:#fff
+    style XRISK fill:#ef4444,color:#fff
+    style TRAJ fill:#f59e0b,color:#fff
+`} />
+
+**Contributes to:** [Misuse Potential](/ai-transition-model/factors/misuse-potential/)
+
+**Primary outcomes affected:**
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) — Direct threat through autonomous weapons escalation
+- [Long-term Trajectory](/ai-transition-model/outcomes/long-term-trajectory/) — Sets precedents for AI-human relationships in lethal contexts
+
+---
+
+## Proliferation Dynamics
+
+The [LAWS Proliferation Model](/knowledge-base/models/domain-models/autonomous-weapons-proliferation/) projects that autonomous weapons are proliferating **4-6 times faster than nuclear weapons**—reaching more nations by 2032 than nuclear weapons have in 80 years.
+
+### Why Autonomous Weapons Proliferate Faster
+
+| Factor | Nuclear Weapons | Autonomous Weapons |
+|--------|-----------------|-------------------|
+| Materials | Rare (enriched uranium/plutonium) | Dual-use commercial components |
+| Infrastructure | Massive, specialized | Modest, adaptable |
+| Detection | Highly detectable signatures | Difficult to distinguish from civilian tech |
+| Cost | Billions per weapon | Potentially thousands per unit |
+| Expertise | Highly specialized | Growing commercial AI talent pool |
+
+---
+
+## The Autonomy Spectrum
+
+The autonomy spectrum has profound implications for accountability:
+
+| Level | Description | Human Role | Current Status |
+|-------|-------------|------------|----------------|
+| Human-operated | Direct human control of all functions | Full control | Widespread |
+| Human-in-the-loop | System identifies targets, human authorizes | Authorization | Common in military |
+| Human-on-the-loop | System operates autonomously, human can intervene | Supervision | Deployed (limited) |
+| Human-out-of-the-loop | Fully autonomous target engagement | None | Emerging/alleged |
+
+---
+
+## Flash War Scenarios
+
+The speed of autonomous systems—operating in milliseconds rather than the seconds or minutes humans require—creates dynamics where conflicts could escalate beyond human comprehension or control.
+
+### Flash War Characteristics
+
+| Factor | Human-Controlled Conflict | Autonomous Conflict |
+|--------|--------------------------|---------------------|
+| Decision cycle | Seconds to hours | Milliseconds |
+| Escalation speed | Days to weeks | Minutes to hours |
+| De-escalation opportunity | Yes | Limited/None |
+| Attribution clarity | Usually clear | Potentially ambiguous |
+| Recall capability | Yes | May be impossible |
+
+---
+
+## Governance Failures
+
+Control mechanisms have largely failed. The UN Convention on Certain Conventional Weapons has hosted discussions on LAWS since 2014 but produced **no binding agreements** due to major power opposition.
+
+### Current Governance Landscape
+
+| Mechanism | Status | Effectiveness |
+|-----------|--------|---------------|
+| UN CCW discussions | Ongoing since 2014 | No binding outcome |
+| National export controls | Variable by country | Limited scope |
+| Industry self-regulation | Minimal | Insufficient |
+| International treaties | None specific to LAWS | Non-existent |
+
+---
+
+## Key Debates
+
+| Debate | Core Question |
+|--------|---------------|
+| **Autonomy thresholds** | At what level of autonomy do AI weapons become unacceptably dangerous? Where should humans remain in the loop? |
+| **Proliferation control** | Can autonomous weapons be controlled like nuclear weapons, or are they too easy to develop and deploy? |
+| **Swarm scenarios** | Do coordinated autonomous swarms create qualitatively new risks beyond individual systems? |
+
+---
+
+## Related Content
+
+### Related Risks
+- [Autonomous Weapons](/knowledge-base/risks/misuse/autonomous-weapons/) — Comprehensive analysis of autonomous weapons development and deployment
+
+### Related Models
+- [Autonomous Weapons Proliferation](/knowledge-base/models/domain-models/autonomous-weapons-proliferation/) — Quantifies global diffusion of autonomous weapons capabilities
+- [Autonomous Weapons Escalation](/knowledge-base/models/domain-models/autonomous-weapons-escalation/) — Models "flash war" and rapid escalation scenarios
+
+### Related Parameters
+- [Cyber Threat Exposure](/ai-transition-model/parameters/cyber-threat-exposure/) — Parallel analysis of digital attack vectors
+- [Biological Threat Exposure](/ai-transition-model/parameters/biological-threat-exposure/) — Parallel analysis of biological threats
+- [AI Control Concentration](/ai-transition-model/parameters/ai-control-concentration/) — Who controls advanced AI capabilities
+- [Racing Intensity](/ai-transition-model/parameters/racing-intensity/) — Competitive dynamics accelerating weapons development
+
+<Backlinks entityId="robot-threat-exposure" />

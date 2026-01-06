@@ -5,19 +5,28 @@
  * This overrides Starlight's default PageFrame to add the PageStatus
  * component at the top of content pages when quality/llmSummary/etc
  * are defined in frontmatter.
+ *
+ * Also provides MetaPanel for ?meta query param debugging.
  */
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageFrame.astro';
 import { PageStatus } from '../wiki/PageStatus';
+import { MetaPanel, MetaToggle } from '../MetaPanel';
+import database from '../../data/database.json';
 
 // Extract frontmatter from the entry data
 const { entry } = Astro.props;
 const frontmatter = entry?.data || {};
+const slug = entry?.slug || '';
 
 // Check if this is a knowledge-base page with editorial metadata
 const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo;
 const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
 const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
+
+// Check if this is an ai-transition-model page (for meta panel)
+// Use slug instead of pathname for reliable static build detection
+const isAiTransitionModelPage = slug.startsWith('ai-transition-model/') || slug === 'ai-transition-model';
 ---
 
 <Default {...Astro.props}>
@@ -36,6 +45,18 @@ const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
     </div>
   )}
   <slot />
+  {/* Meta panel for ?meta debugging - only on ai-transition-model pages */}
+  {isAiTransitionModelPage && (
+    <>
+      <MetaPanel
+        client:load
+        slug={slug}
+        frontmatter={frontmatter}
+        database={database}
+      />
+      <MetaToggle client:load />
+    </>
+  )}
 </Default>
 
 <style>

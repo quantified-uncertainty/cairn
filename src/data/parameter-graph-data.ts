@@ -139,3 +139,160 @@ export function getNodeLabel(nodeId: string): string {
   const node = rawData.nodes.find(n => n.id === nodeId);
   return node?.label || nodeId;
 }
+
+// Types for sub-items
+export interface SubItemRatings {
+  changeability?: number;
+  xriskImpact?: number;
+  trajectoryImpact?: number;
+  uncertainty?: number;
+}
+
+export interface KeyDebate {
+  topic: string;
+  description: string;
+}
+
+export interface RelatedContentLink {
+  path: string;
+  title: string;
+}
+
+export interface RelatedContent {
+  risks?: RelatedContentLink[];
+  responses?: RelatedContentLink[];
+  models?: RelatedContentLink[];
+  cruxes?: RelatedContentLink[];
+}
+
+export interface SubItem {
+  label: string;
+  description?: string;
+  href?: string;
+  ratings?: SubItemRatings;
+  scope?: string;
+  keyDebates?: KeyDebate[];
+  relatedContent?: RelatedContent;
+}
+
+export interface RootFactor {
+  id: string;
+  label: string;
+  description?: string;
+  href?: string;
+  subgroup?: string;
+  order?: number;
+  subItems?: SubItem[];
+}
+
+// Get all root factors (cause nodes) with their sub-items
+export function getRootFactors(): RootFactor[] {
+  return rawData.nodes
+    .filter(node => node.type === 'cause')
+    .sort((a, b) => {
+      // Sort by subgroup first (ai before society), then by order
+      if (a.subgroup !== b.subgroup) {
+        return a.subgroup === 'ai' ? -1 : 1;
+      }
+      return (a.order || 0) - (b.order || 0);
+    })
+    .map(node => ({
+      id: node.id,
+      label: node.label,
+      description: node.description,
+      href: (node as any).href,
+      subgroup: node.subgroup,
+      order: node.order,
+      subItems: node.subItems?.map(item => ({
+        label: item.label,
+        description: (item as any).description,
+        href: (item as any).href,
+        ratings: (item as any).ratings,
+        scope: (item as any).scope,
+        keyDebates: (item as any).keyDebates,
+        relatedContent: (item as any).relatedContent,
+      })),
+    }));
+}
+
+// Get scenarios (intermediate nodes)
+export function getScenarios(): RootFactor[] {
+  return rawData.nodes
+    .filter(node => node.type === 'intermediate')
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map(node => ({
+      id: node.id,
+      label: node.label,
+      description: node.description,
+      href: (node as any).href,
+      subItems: node.subItems?.map(item => ({
+        label: item.label,
+        description: (item as any).description,
+        href: (item as any).href,
+        ratings: (item as any).ratings,
+        scope: (item as any).scope,
+        keyDebates: (item as any).keyDebates,
+        relatedContent: (item as any).relatedContent,
+      })),
+    }));
+}
+
+// Get outcomes (effect nodes)
+export function getOutcomes(): RootFactor[] {
+  return rawData.nodes
+    .filter(node => node.type === 'effect')
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map(node => ({
+      id: node.id,
+      label: node.label,
+      description: node.description,
+      href: (node as any).href,
+    }));
+}
+
+// Get edges for a specific source node
+export function getEdgesFrom(sourceId: string) {
+  return rawData.edges.filter(e => e.source === sourceId);
+}
+
+// Get edges for a specific target node
+export function getEdgesTo(targetId: string) {
+  return rawData.edges.filter(e => e.target === targetId);
+}
+
+// Get all nodes (root factors + scenarios + outcomes)
+function getAllNodes(): RootFactor[] {
+  return [...getRootFactors(), ...getScenarios(), ...getOutcomes()];
+}
+
+// Get a specific sub-item by node ID and label
+export function getSubItem(nodeId: string, subItemLabel: string): SubItem | undefined {
+  const allNodes = getAllNodes();
+  const node = allNodes.find(n => n.id === nodeId);
+  if (!node?.subItems) return undefined;
+  return node.subItems.find(item => item.label === subItemLabel);
+}
+
+// Get key debates for a sub-item
+export function getSubItemDebates(nodeId: string, subItemLabel: string): KeyDebate[] {
+  const subItem = getSubItem(nodeId, subItemLabel);
+  return subItem?.keyDebates || [];
+}
+
+// Get ratings for a sub-item
+export function getSubItemRatings(nodeId: string, subItemLabel: string): SubItemRatings | undefined {
+  const subItem = getSubItem(nodeId, subItemLabel);
+  return subItem?.ratings;
+}
+
+// Get related content for a sub-item
+export function getSubItemRelatedContent(nodeId: string, subItemLabel: string): RelatedContent | undefined {
+  const subItem = getSubItem(nodeId, subItemLabel);
+  return subItem?.relatedContent;
+}
+
+// Get scope for a sub-item
+export function getSubItemScope(nodeId: string, subItemLabel: string): string | undefined {
+  const subItem = getSubItem(nodeId, subItemLabel);
+  return subItem?.scope;
+}

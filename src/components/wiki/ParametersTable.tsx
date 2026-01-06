@@ -230,7 +230,7 @@ const columns: ColumnDef<Parameter>[] = [
     header: ({ column }) => <SortableHeader column={column}>Parameter</SortableHeader>,
     cell: ({ row }) => (
       <a
-        href={`/knowledge-base/ai-transition-model/factors/${row.original.id}/`}
+        href={`/ai-transition-model/factors/${row.original.id}/`}
         className="text-primary hover:underline font-medium"
       >
         {row.getValue("title")}

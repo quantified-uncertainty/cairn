@@ -77,7 +77,7 @@ export default function ParameterListPage() {
       <style>{styles}</style>
       <div className="parameter-list-page">
         <div className="parameter-list-page__header">
-          <a href="/knowledge-base/ai-transition-model/" className="parameter-list-page__back-link">
+          <a href="/ai-transition-model/" className="parameter-list-page__back-link">
             &larr; Documentation
           </a>
           <span className="parameter-list-page__title">AI Transition Model - List View</span>

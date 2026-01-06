@@ -341,7 +341,7 @@ function buildPagesRegistry(urlToResource) {
   // Scan all content directories
   scanDirectory(join(CONTENT_DIR, 'knowledge-base'), '/knowledge-base');
 
-  const otherDirs = ['understanding-ai-risk', 'analysis', 'getting-started', 'browse', 'internal', 'style-guides'];
+  const otherDirs = ['ai-transition-model', 'analysis', 'getting-started', 'browse', 'internal', 'style-guides'];
   for (const topDir of otherDirs) {
     const dirPath = join(CONTENT_DIR, topDir);
     if (existsSync(dirPath)) {
@@ -392,7 +392,7 @@ function buildPathRegistry() {
   scanDirectory(join(CONTENT_DIR, 'knowledge-base'), '/knowledge-base');
 
   // Also scan other top-level content directories
-  const topLevelDirs = ['understanding-ai-risk', 'analysis', 'getting-started'];
+  const topLevelDirs = ['ai-transition-model', 'analysis', 'getting-started'];
   for (const topDir of topLevelDirs) {
     const dirPath = join(CONTENT_DIR, topDir);
     if (existsSync(dirPath)) {

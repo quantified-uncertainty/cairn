@@ -57,7 +57,7 @@ export function ParameterDistinctions({ entityId }: ParameterDistinctionsProps) 
             const relatedEntity = getEntityById(distinction.id);
             const href = relatedEntity
               ? getEntityHref(distinction.id, relatedEntity.type)
-              : `/knowledge-base/ai-transition-model/factors/${distinction.id}/`;
+              : `/ai-transition-model/factors/${distinction.id}/`;
 
             return (
               <tr key={distinction.id}>

@@ -1,0 +1,108 @@
+---
+title: "Misuse Potential"
+description: "The aggregate potential for AI to be weaponized or exploited—encompassing biological threat exposure, cyber threat exposure, and dangerous AI control concentration."
+sidebar:
+  label: Overview
+  order: 0
+lastEdited: "2026-01-03"
+---
+import {Mermaid, Backlinks, DataInfoBox} from '../../../../../components/wiki';
+
+<DataInfoBox entityId="misuse-potential" />
+
+## Overview
+
+Misuse Potential measures the likelihood and severity of AI being weaponized or exploited by malicious actors. Unlike [Misalignment Potential](/ai-transition-model/factors/misalignment-potential/) (which measures unintended AI behavior), Misuse Potential measures intentional harmful use by humans.
+
+**Primary outcome affected:** [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) ↑↑↑
+
+High misuse potential means more vectors for catastrophe even if AI systems are well-aligned. These threats can overwhelm defenses, trigger cascading failures, or exploit concentrated power.
+
+---
+
+## Component Parameters
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Components["Misuse Potential Components"]
+        BTE[Biological Threat Exposure]
+        CTE[Cyber Threat Exposure]
+        ACC[AI Control Concentration]
+    end
+
+    ACC -->|amplifies| BTE
+    ACC -->|amplifies| CTE
+
+    BTE --> MP[Misuse Potential]
+    CTE --> MP
+    ACC --> MP
+
+    MP --> EXCAT[Existential Catastrophe ↑]
+
+    style MP fill:#ff6b6b
+    style EXCAT fill:#ff6b6b
+`} />
+
+| Parameter | Role | Current State |
+|-----------|------|---------------|
+| [Biological Threat Exposure](/ai-transition-model/parameters/biological-threat-exposure/) | AI-enabled bioweapon risk | Contested (defense may win) |
+| [Cyber Threat Exposure](/ai-transition-model/parameters/cyber-threat-exposure/) | AI-enabled cyber attack risk | High (60% face AI attacks) |
+| [AI Control Concentration](/ai-transition-model/parameters/ai-control-concentration/) | Single point of failure / capture risk | Increasing concentration |
+
+---
+
+## Internal Dynamics
+
+These threats compound each other:
+
+- **Concentration amplifies impact**: When control is concentrated, single failures affect everyone
+- **Bio and cyber interact**: Same AI capabilities that enable one often enable the other
+- **Threat success breeds threat**: Successful attacks demonstrate viability and attract more actors
+
+This creates **threat escalation dynamics**—each incident makes the next more likely.
+
+---
+
+## How This Affects Outcomes
+
+| Outcome | Effect | Mechanism |
+|---------|--------|-----------|
+| [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) | ↑↑↑ Primary | Direct increase in catastrophic event probability |
+| [Transition Turbulence](/ai-transition-model/factors/transition-turbulence/) | ↑ Secondary | Major incidents cause disruption during transition |
+| [Long-term Trajectory](/ai-transition-model/outcomes/long-term-trajectory/) | ↑ Secondary | Concentrated power shapes long-term distribution |
+
+---
+
+## Relationship to Misalignment Potential
+
+Misuse Potential and [Misalignment Potential](/ai-transition-model/factors/misalignment-potential/) are complementary risk factors:
+
+| Factor | Misalignment Potential | Misuse Potential |
+|--------|----------------------|------------------|
+| Source | AI behavior | Human actors |
+| Direction | AI pursues unintended goals | Humans weaponize AI |
+| Focus | Technical alignment | Access controls & defense |
+| Improvability | Research & investment | Harder to reduce |
+
+**Both matter**: Either can cause existential catastrophe independently. High misalignment potential means AI might cause harm on its own; high misuse potential means humans will use AI to cause harm.
+
+---
+
+## Why Concentration Matters
+
+AI Control Concentration is unique because its effect **depends on who controls**:
+- If control concentrates in **safety-conscious actors**: May reduce risk
+- If control concentrates in **reckless or malicious actors**: Dramatically increases risk
+- In either case: **Reduces resilience** to bad actors gaining control
+
+This makes concentration a key uncertainty in existential catastrophe assessment.
+
+---
+
+## Related Pages
+
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) — The outcome this primarily affects
+- [Misalignment Potential](/ai-transition-model/factors/misalignment-potential/) — The complementary factor for AI-caused catastrophe
+- [Civilizational Competence](/ai-transition-model/factors/civilizational-competence/) — Governance can moderate misuse through regulation
+
+<Backlinks entityId="misuse-potential" />

@@ -1,0 +1,102 @@
+---
+title: "Root Factors"
+description: "The seven root factors that shape AI transition outcomes: Misalignment Potential, AI Capabilities, AI Uses, AI Ownership, Civilizational Competence, Transition Turbulence, and Misuse Potential."
+sidebar:
+  order: 0
+  label: Overview
+lastEdited: "2026-01-05"
+---
+import {Mermaid, RootFactorsTable} from '../../../../components/wiki';
+
+## Overview
+
+Root Factors are the top-level causal drivers that shape AI transition outcomes. They bridge the gap between specific [component parameters](#) and [ultimate outcomes](/ai-transition-model/outcomes/) like existential catastrophe and long-term trajectory.
+
+See the [interactive AI transition model](/ai-transition-model/) for a visual representation.
+
+---
+
+## The Seven Root Factors
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Factors["Root Factors"]
+        MP[Misalignment Potential]
+        CAP[AI Capabilities]
+        USES[AI Uses]
+        OWN[AI Ownership]
+        CC[Civilizational Competence]
+        TT[Transition Turbulence]
+        MU[Misuse Potential]
+    end
+
+    subgraph Scenarios["Intermediate Scenarios"]
+        TAKE[AI Takeover]
+        HUMAN[Human Catastrophe]
+        LOCK[Long-term Lock-in]
+    end
+
+    MP -->|increases| TAKE
+    CAP -->|enables| TAKE
+    USES -->|affects| LOCK
+    OWN -->|affects| LOCK
+    MU -->|increases| HUMAN
+    TT -->|increases| TAKE
+    TT -->|increases| HUMAN
+    CC -->|decreases| TAKE
+    CC -->|decreases| HUMAN
+    CC -->|shapes| LOCK
+
+    style TAKE fill:#ff6b6b
+    style HUMAN fill:#ff6b6b
+    style LOCK fill:#ffe66d
+`} />
+
+<RootFactorsTable client:load showSubItems={false} />
+
+---
+
+## Factor Components
+
+Each root factor contains multiple component parameters. See the [Parameters directory](/ai-transition-model/parameters/) for detailed pages on each.
+
+### Misalignment Potential
+- [Alignment Robustness](/ai-transition-model/parameters/alignment-robustness/)
+- [Safety-Capability Gap](/ai-transition-model/parameters/safety-capability-gap/)
+- [Interpretability Coverage](/ai-transition-model/parameters/interpretability-coverage/)
+- [Human Oversight Quality](/ai-transition-model/parameters/human-oversight-quality/)
+- [Safety Culture Strength](/ai-transition-model/parameters/safety-culture-strength/)
+
+### Civilizational Competence
+- [Governance](/ai-transition-model/parameters/governance/)
+- [Epistemics](/ai-transition-model/parameters/epistemics/)
+- [Adaptability](/ai-transition-model/parameters/adaptability/)
+
+### Transition Turbulence
+- [Economic Stability](/ai-transition-model/parameters/economic-stability/)
+- [Racing Intensity](/ai-transition-model/parameters/racing-intensity/)
+
+### Misuse Potential
+- [Biological Threat Exposure](/ai-transition-model/parameters/biological-threat-exposure/)
+- [Cyber Threat Exposure](/ai-transition-model/parameters/cyber-threat-exposure/)
+- [AI Control Concentration](/ai-transition-model/parameters/ai-control-concentration/)
+
+---
+
+## Cross-Factor Interactions
+
+Some parameters interact across multiple factors:
+
+| Parameter | Factors | Interaction |
+|-----------|---------|-------------|
+| Racing Intensity | Transition Turbulence, affects Misalignment Potential | Racing undermines safety AND causes turbulence |
+| AI Control Concentration | Misuse Potential, affects Long-term Trajectory | Concentration enables both misuse AND lock-in |
+| Human Oversight Quality | Misalignment Potential, requires Civilizational Competence | Technical oversight needs societal capacity |
+
+---
+
+## Related Pages
+
+- [Outcome Parameters](/ai-transition-model/outcomes/) — Ultimate outcomes these factors affect
+- [Scenarios](/ai-transition-model/scenarios/) — Intermediate pathways to outcomes
+- [AI Transition Model](/ai-transition-model/) — Full model overview

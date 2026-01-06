@@ -46,6 +46,7 @@ export { CollapsibleSection } from './CollapsibleSection';
 export { RisksTable } from './RisksTable';
 export { ParametersTable } from './ParametersTable';
 export { ParameterDistinctions } from './ParameterDistinctions';
+export { RootFactorsTable, ScenariosTable, OutcomesTable } from './RootFactorsTable';
 
 // Risk category components
 export { RiskCategoryIcon, RiskCategoryBadge, RiskCategoryCard, categoryConfig } from './RiskCategoryIcon';
@@ -78,4 +79,11 @@ export { PageStatus } from './PageStatus';
 
 // Diagrams
 export { Mermaid } from './Mermaid';
+
+// AI Transition Model
+export { ModelPosition } from './ModelPosition';
+export { FactorKeyDebates } from './FactorKeyDebates';
+export { FactorRatings } from './FactorRatings';
+export { FactorRelatedContent } from './FactorRelatedContent';
+export { FactorScope } from './FactorScope';
 

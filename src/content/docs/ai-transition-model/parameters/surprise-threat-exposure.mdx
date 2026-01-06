@@ -1,0 +1,202 @@
+---
+title: "Surprise Threat Exposure"
+description: "Risk from novel attack vectors that have not yet been anticipated—cases where AI enables entirely new categories of harm that fall outside existing threat models. By definition, we cannot enumerate these threats precisely."
+parentFactor: misuse-potential
+sidebar:
+  order: 23
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 20
+  xriskImpact: 70
+  trajectoryImpact: 55
+  uncertainty: 85
+---
+import {Mermaid, Backlinks} from '../../../../components/wiki';
+
+
+## Overview
+
+Surprise Threat Exposure captures the risk from novel attack vectors that have not yet been anticipated—cases where AI enables entirely new categories of harm that fall outside existing threat models. By definition, we cannot enumerate these threats precisely, making this parameter inherently difficult to assess but critically important to consider.
+
+**Lower exposure is better**—it means robust general resilience exists to handle unexpected threats, rapid response mechanisms are in place, and systems are designed for reversibility where possible.
+
+---
+
+## Ratings
+
+| Metric | Score | Interpretation |
+|--------|-------|----------------|
+| **Changeability** | 20/100 | Very difficult—can't prevent unknown threats directly |
+| **X-risk Impact** | 70/100 | High potential if novel threat emerges unexpectedly |
+| **Trajectory Impact** | 55/100 | Moderate effects on long-term preparation |
+| **Uncertainty** | 85/100 | Extremely high by definition |
+
+---
+
+## The "Unknown Unknown" Problem
+
+The "unknown unknown" quality of surprise threats requires different analytical approaches than specific, enumerable risks. Rather than attempting to predict specific attack vectors, which may be impossible, analysis focuses on meta-level questions:
+
+| Question | Why It Matters |
+|----------|----------------|
+| How quickly can novel AI capabilities emerge? | Determines detection window |
+| How long would it take for humans to recognize a new threat category? | Affects response time |
+| What general resilience measures would help regardless of the specific threat? | Guides resource allocation |
+
+---
+
+## Warning Signs Framework
+
+The [Warning Signs Model](/knowledge-base/models/analysis-models/warning-signs-model/) provides a framework for thinking about unknown risks through systematic monitoring of leading and lagging indicators across five signal categories.
+
+### Current Warning Sign Coverage
+
+| Metric | Status | Gap |
+|--------|--------|-----|
+| Critical warning signs identified | 32 | - |
+| High-priority indicators near threshold crossing | 18-48 months | Urgent |
+| Detection probability | 45-90% | Variable |
+| Systematic tracking coverage | &lt;30% | 70%+ untracked |
+| Pre-committed response protocols | &lt;15% | 85%+ no protocol |
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Challenges["Detection Challenges"]
+        NOVEL[Novel Capabilities]
+        SPEED[Emergence Speed]
+        OPAQUE[Opaque Development]
+    end
+
+    NOVEL -->|creates| STE[Surprise Threat Exposure]
+    SPEED -->|shortens window| STE
+    OPAQUE -->|prevents warning| STE
+
+    STE --> MISUSE[Misuse Potential]
+
+    subgraph Scenarios["Ultimate Scenarios"]
+        HC[Human Catastrophe]
+    end
+
+    MISUSE --> HC
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        XRISK[Existential Catastrophe]
+    end
+
+    HC --> XRISK
+
+    subgraph Mitigations["Mitigations"]
+        RESIL[General Resilience]
+        REDUND[Redundancy]
+    end
+
+    RESIL -.->|reduces| STE
+    REDUND -.->|reduces| STE
+
+    style Challenges fill:#f1f5f9,stroke:#94a3b8
+    style STE fill:#3b82f6,color:#fff
+    style MISUSE fill:#dbeafe,stroke:#3b82f6
+    style Scenarios fill:#ede9fe,stroke:#8b5cf6
+    style HC fill:#8b5cf6,color:#fff
+    style XRISK fill:#ef4444,color:#fff
+    style Mitigations fill:#dcfce7,stroke:#22c55e
+`} />
+
+**Contributes to:** [Misuse Potential](/ai-transition-model/factors/misuse-potential/)
+
+**Primary outcomes affected:**
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) — Novel threats could bypass all existing defenses
+
+---
+
+## Categories of Potential Surprise
+
+While we cannot enumerate specific surprise threats (that would make them no longer surprises), several *categories* deserve attention:
+
+### Novel Persuasion and Manipulation
+
+Current AI already achieves **54% click-through rates** on phishing emails versus 12% without AI, suggesting we may be in early stages of a broader transformation in influence capabilities.
+
+| Capability | Current Evidence | Uncertainty |
+|------------|-----------------|-------------|
+| Targeted persuasion | 4-5x improvement in phishing | Medium |
+| Psychological manipulation | Emerging research | High |
+| Mass influence operations | Limited evidence | Very high |
+
+### Strategic Planning Capabilities
+
+AI systems capable of sophisticated strategic planning could pursue goals through pathways humans haven't anticipated.
+
+### Capability Combinations
+
+Novel combinations of existing capabilities may create emergent risks—for example, combining autonomous systems with biological or chemical agents, or linking AI systems in unexpected ways.
+
+---
+
+## Critical Uncertainties
+
+The [Critical Uncertainties Model](/knowledge-base/models/analysis-models/critical-uncertainties/) identifies 35 high-leverage uncertainties in AI risk, finding that approximately **8-12 key variables** drive the majority of disagreement about AI risk levels and appropriate responses.
+
+### Expert Disagreement
+
+Expert surveys consistently show wide disagreement:
+
+| Assessment | Percentage of AI Researchers |
+|------------|------------------------------|
+| >10% probability of human extinction/severe disempowerment from AI | 41-51% |
+| Lower probabilities | 49-59% |
+
+This disagreement itself suggests high surprise potential—experts cannot agree on threat landscape.
+
+---
+
+## Response Strategy: General Resilience
+
+General [resilience building](/knowledge-base/responses/resilience/) emerges as the primary response strategy for surprise threats. Rather than trying to anticipate specific attack vectors, resilience approaches focus on:
+
+| Strategy | Description | Applicability |
+|----------|-------------|---------------|
+| **Redundancy** | Maintain backup systems and capabilities | All novel threats |
+| **Human agency** | Preserve human capability and decision-making | All novel threats |
+| **Rapid response** | Build capacity to respond quickly to new situations | All novel threats |
+| **Reversibility** | Design systems that can be undone or shut down | Where possible |
+
+### Why Resilience Over Prediction
+
+| Approach | Strengths | Weaknesses |
+|----------|-----------|------------|
+| **Specific prediction** | Enables targeted countermeasures | Cannot predict unknown unknowns |
+| **General resilience** | Works against any threat | Less efficient for known threats |
+
+---
+
+## Key Debates
+
+| Debate | Core Question |
+|--------|---------------|
+| **Unknown unknowns** | By definition we can't enumerate these threats—how should we reason about risks we can't specify? |
+| **Preparation strategies** | Is general resilience the right approach, or should we try to anticipate specific novel threats? |
+| **Early warning** | Can we detect novel AI-enabled threats early enough to respond, or will they emerge suddenly? |
+
+---
+
+## Related Content
+
+### Related Models
+- [Warning Signs Model](/knowledge-base/models/analysis-models/warning-signs-model/) — Framework for monitoring early indicators of emerging threats
+- [Critical Uncertainties](/knowledge-base/models/analysis-models/critical-uncertainties/) — Analysis of key variables driving disagreement about AI risks
+
+### Related Responses
+- [Resilience Building](/knowledge-base/responses/resilience/) — General strategies for handling unexpected challenges
+
+### Related Parameters
+- [Biological Threat Exposure](/ai-transition-model/parameters/biological-threat-exposure/) — One category of potential surprise
+- [Cyber Threat Exposure](/ai-transition-model/parameters/cyber-threat-exposure/) — Another category where novel attacks emerge
+- [Robot Threat Exposure](/ai-transition-model/parameters/robot-threat-exposure/) — Physical systems that could enable novel threats
+- [Societal Resilience](/ai-transition-model/parameters/societal-resilience/) — Broader capacity to recover from shocks
+
+<Backlinks entityId="surprise-threat-exposure" />

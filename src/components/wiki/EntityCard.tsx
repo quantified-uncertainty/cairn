@@ -28,7 +28,7 @@ const categoryPaths: Record<string, string> = {
   historical: '/knowledge-base/history',
   scenario: '/analysis/scenarios',
   intervention: '/knowledge-base/responses',
-  crux: '/understanding-ai-risk/core-argument',
+  crux: '/ai-transition-model/core-argument',
   'case-study': '/analysis/case-studies',
   researcher: '/knowledge-base/people',
   resource: '/getting-started',

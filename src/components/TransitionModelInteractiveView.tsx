@@ -34,6 +34,7 @@ export default function TransitionModelInteractiveView() {
             edges={parameterEdges}
             typeLabels={typeLabels}
             subgroups={subgroups}
+            basePath="/ai-transition-model"
           />
         </div>
       </div>

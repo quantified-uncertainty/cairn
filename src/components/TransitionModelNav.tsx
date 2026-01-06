@@ -5,11 +5,11 @@ interface TransitionModelNavProps {
 }
 
 const tabs = [
-  { id: 'graph', label: 'Graph', href: '/ai-transition-model/graph' },
-  { id: 'interactive', label: 'Interactive', href: '/ai-transition-model/interactive' },
-  { id: 'table', label: 'Table', href: '/ai-transition-model/table' },
-  { id: 'outline', label: 'Outline', href: '/ai-transition-model/outline' },
-  { id: 'data', label: 'Data (YAML)', href: '/ai-transition-model/data' },
+  { id: 'graph', label: 'Graph', href: '/ai-transition-model-views/graph' },
+  { id: 'interactive', label: 'Interactive', href: '/ai-transition-model-views/interactive' },
+  { id: 'table', label: 'Table', href: '/ai-transition-model-views/table' },
+  { id: 'outline', label: 'Outline', href: '/ai-transition-model-views/outline' },
+  { id: 'data', label: 'Data (YAML)', href: '/ai-transition-model-views/data' },
 ];
 
 const styles = `
@@ -80,8 +80,8 @@ export default function TransitionModelNav({ activeTab }: TransitionModelNavProp
     <>
       <style>{styles}</style>
       <nav className="tm-nav">
-        <a href="/knowledge-base/ai-transition-model/" className="tm-nav__back">
-          &larr; Documentation
+        <a href="/ai-transition-model/" className="tm-nav__back">
+          &larr; AI Transition Model
         </a>
         <div className="tm-nav__tabs">
           {tabs.map(tab => (

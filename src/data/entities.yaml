@@ -9234,3 +9234,408 @@
     - institutions
     - resilience
   lastUpdated: 2025-12
+
+# =============================================================================
+# AI TRANSITION MODEL - OUTCOMES
+# =============================================================================
+
+- id: existential-catastrophe
+  type: scenario
+  title: Existential Catastrophe
+  description: The probability and severity of catastrophic AI-related events—loss of control, weaponization, large-scale accidents, or irreversible lock-in to harmful power structures.
+  customFields:
+    - label: Model Role
+      value: Ultimate Outcome
+    - label: Primary Drivers
+      value: Misalignment Potential, Misuse Potential
+    - label: Risk Character
+      value: Tail risk, irreversible
+  relatedEntries:
+    - id: misalignment-potential
+      type: risk-factor
+      relationship: driver
+    - id: misuse-potential
+      type: risk-factor
+      relationship: driver
+    - id: ai-takeover
+      type: scenario
+      relationship: sub-scenario
+    - id: human-catastrophe
+      type: scenario
+      relationship: sub-scenario
+    - id: alignment-robustness
+      type: parameter
+      relationship: mitigates
+  tags:
+    - ai-transition-model
+    - outcome
+    - x-risk
+    - catastrophe
+  lastUpdated: 2025-12
+
+- id: long-term-trajectory
+  type: scenario
+  title: Long-term Trajectory
+  description: The quality of humanity's long-term future given successful AI transition—measuring human flourishing, autonomy preservation, and value realization across civilizational timescales.
+  customFields:
+    - label: Model Role
+      value: Ultimate Outcome
+    - label: Primary Drivers
+      value: Civilizational Competence, AI Ownership
+    - label: Risk Character
+      value: Gradual degradation, potentially reversible
+  relatedEntries:
+    - id: civilizational-competence
+      type: risk-factor
+      relationship: driver
+    - id: ai-ownership
+      type: risk-factor
+      relationship: driver
+    - id: long-term-lockin
+      type: scenario
+      relationship: sub-scenario
+    - id: human-agency
+      type: parameter
+      relationship: key-factor
+    - id: preference-authenticity
+      type: parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - outcome
+    - long-term
+    - flourishing
+  lastUpdated: 2025-12
+
+# =============================================================================
+# AI TRANSITION MODEL - SCENARIOS
+# =============================================================================
+
+- id: ai-takeover
+  type: scenario
+  title: AI Takeover
+  description: Scenarios where AI systems pursue goals misaligned with human values at scale, potentially resulting in human disempowerment or extinction.
+  customFields:
+    - label: Model Role
+      value: Catastrophic Scenario
+    - label: Primary Drivers
+      value: Misalignment Potential
+    - label: Sub-scenarios
+      value: Gradual takeover, Rapid takeover
+  relatedEntries:
+    - id: existential-catastrophe
+      type: scenario
+      relationship: contributes-to
+    - id: misalignment-potential
+      type: risk-factor
+      relationship: driven-by
+    - id: alignment-robustness
+      type: parameter
+      relationship: mitigated-by
+  tags:
+    - ai-transition-model
+    - scenario
+    - x-risk
+    - misalignment
+  lastUpdated: 2025-12
+
+- id: human-catastrophe
+  type: scenario
+  title: Human-Caused Catastrophe
+  description: Catastrophic outcomes caused by human actors using AI as a tool—including state actors, rogue actors, or unintended cascading failures from human decisions.
+  customFields:
+    - label: Model Role
+      value: Catastrophic Scenario
+    - label: Primary Drivers
+      value: Misuse Potential
+    - label: Sub-scenarios
+      value: State actor misuse, Rogue actor misuse
+  relatedEntries:
+    - id: existential-catastrophe
+      type: scenario
+      relationship: contributes-to
+    - id: misuse-potential
+      type: risk-factor
+      relationship: driven-by
+    - id: biological-threat-exposure
+      type: parameter
+      relationship: key-factor
+    - id: cyber-threat-exposure
+      type: parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - scenario
+    - x-risk
+    - misuse
+  lastUpdated: 2025-12
+
+- id: long-term-lockin
+  type: scenario
+  title: Long-term Lock-in
+  description: Scenarios where AI enables irreversible commitment to suboptimal values, power structures, or epistemics—foreclosing better futures without catastrophic collapse.
+  customFields:
+    - label: Model Role
+      value: Degradation Scenario
+    - label: Primary Drivers
+      value: AI Ownership, Civilizational Competence
+    - label: Sub-scenarios
+      value: Values lock-in, Power lock-in, Epistemic lock-in
+  relatedEntries:
+    - id: long-term-trajectory
+      type: scenario
+      relationship: contributes-to
+    - id: ai-ownership
+      type: risk-factor
+      relationship: driven-by
+    - id: ai-control-concentration
+      type: parameter
+      relationship: key-factor
+    - id: preference-authenticity
+      type: parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - scenario
+    - lock-in
+    - long-term
+  lastUpdated: 2025-12
+
+# =============================================================================
+# AI TRANSITION MODEL - ROOT FACTORS
+# =============================================================================
+
+- id: misalignment-potential
+  type: risk-factor
+  title: Misalignment Potential
+  description: The aggregate risk that AI systems pursue goals misaligned with human values—combining technical alignment challenges, interpretability gaps, and oversight limitations.
+  customFields:
+    - label: Model Role
+      value: Root Factor (AI System)
+    - label: Key Parameters
+      value: Alignment Robustness, Interpretability Coverage, Human Oversight Quality
+    - label: Primary Outcome
+      value: Existential Catastrophe
+  relatedEntries:
+    - id: existential-catastrophe
+      type: scenario
+      relationship: drives
+    - id: ai-takeover
+      type: scenario
+      relationship: enables
+    - id: alignment-robustness
+      type: parameter
+      relationship: composed-of
+    - id: interpretability-coverage
+      type: parameter
+      relationship: composed-of
+    - id: human-oversight-quality
+      type: parameter
+      relationship: composed-of
+    - id: safety-capability-gap
+      type: parameter
+      relationship: composed-of
+    - id: safety-culture-strength
+      type: parameter
+      relationship: composed-of
+  tags:
+    - ai-transition-model
+    - factor
+    - technical
+    - alignment
+  lastUpdated: 2025-12
+
+- id: misuse-potential
+  type: risk-factor
+  title: Misuse Potential
+  description: The aggregate risk from deliberate harmful use of AI—including biological weapons, cyber attacks, autonomous weapons, and surveillance misuse.
+  customFields:
+    - label: Model Role
+      value: Root Factor (AI System)
+    - label: Key Parameters
+      value: Biological Threat Exposure, Cyber Threat Exposure, Racing Intensity
+    - label: Primary Outcome
+      value: Existential Catastrophe
+  relatedEntries:
+    - id: existential-catastrophe
+      type: scenario
+      relationship: drives
+    - id: human-catastrophe
+      type: scenario
+      relationship: enables
+    - id: biological-threat-exposure
+      type: parameter
+      relationship: composed-of
+    - id: cyber-threat-exposure
+      type: parameter
+      relationship: composed-of
+    - id: racing-intensity
+      type: parameter
+      relationship: composed-of
+    - id: ai-control-concentration
+      type: parameter
+      relationship: composed-of
+  tags:
+    - ai-transition-model
+    - factor
+    - misuse
+    - weapons
+  lastUpdated: 2025-12
+
+- id: ai-capabilities
+  type: risk-factor
+  title: AI Capabilities
+  description: The aggregate advancement of AI system capabilities—including reasoning, autonomy, generality, and domain expertise. Higher capabilities amplify both benefits and risks.
+  customFields:
+    - label: Model Role
+      value: Root Factor (AI System)
+    - label: Character
+      value: Amplifier (neither inherently good nor bad)
+    - label: Trajectory
+      value: Rapidly increasing
+  relatedEntries:
+    - id: misalignment-potential
+      type: risk-factor
+      relationship: amplifies
+    - id: misuse-potential
+      type: risk-factor
+      relationship: amplifies
+    - id: safety-capability-gap
+      type: parameter
+      relationship: affects
+  tags:
+    - ai-transition-model
+    - factor
+    - capabilities
+    - scaling
+  lastUpdated: 2025-12
+
+- id: ai-uses
+  type: risk-factor
+  title: AI Uses
+  description: How AI capabilities are deployed across sectors—including research acceleration, industry automation, government applications, and coordination tools.
+  customFields:
+    - label: Model Role
+      value: Root Factor (AI System)
+    - label: Character
+      value: Distribution factor
+    - label: Key Domains
+      value: Recursive AI, Industries, Governments, Coordination
+  relatedEntries:
+    - id: ai-capabilities
+      type: risk-factor
+      relationship: shaped-by
+    - id: economic-stability
+      type: parameter
+      relationship: affects
+    - id: human-expertise
+      type: parameter
+      relationship: affects
+  tags:
+    - ai-transition-model
+    - factor
+    - deployment
+    - applications
+  lastUpdated: 2025-12
+
+- id: ai-ownership
+  type: risk-factor
+  title: AI Ownership
+  description: The distribution of control over AI systems across actors—countries, companies, and individuals. Concentration creates both coordination opportunities and power risks.
+  customFields:
+    - label: Model Role
+      value: Root Factor (AI System)
+    - label: Character
+      value: Distribution factor
+    - label: Key Dimensions
+      value: Countries, Companies, Shareholders
+  relatedEntries:
+    - id: long-term-trajectory
+      type: scenario
+      relationship: drives
+    - id: long-term-lockin
+      type: scenario
+      relationship: enables
+    - id: ai-control-concentration
+      type: parameter
+      relationship: composed-of
+  tags:
+    - ai-transition-model
+    - factor
+    - ownership
+    - concentration
+  lastUpdated: 2025-12
+
+- id: civilizational-competence
+  type: risk-factor
+  title: Civilizational Competence
+  description: Society's aggregate capacity to navigate AI transition well—including governance effectiveness, epistemic health, coordination capacity, and adaptive resilience.
+  customFields:
+    - label: Model Role
+      value: Root Factor (Societal)
+    - label: Key Parameters
+      value: Governance, Epistemics, Societal Resilience, Adaptability
+    - label: Primary Outcomes
+      value: Long-term Trajectory, Transition Smoothness
+  relatedEntries:
+    - id: long-term-trajectory
+      type: scenario
+      relationship: drives
+    - id: transition-turbulence
+      type: risk-factor
+      relationship: mitigates
+    - id: regulatory-capacity
+      type: parameter
+      relationship: composed-of
+    - id: institutional-quality
+      type: parameter
+      relationship: composed-of
+    - id: international-coordination
+      type: parameter
+      relationship: composed-of
+    - id: societal-resilience
+      type: parameter
+      relationship: composed-of
+    - id: epistemic-health
+      type: parameter
+      relationship: composed-of
+    - id: societal-trust
+      type: parameter
+      relationship: composed-of
+  tags:
+    - ai-transition-model
+    - factor
+    - governance
+    - institutions
+  lastUpdated: 2025-12
+
+- id: transition-turbulence
+  type: risk-factor
+  title: Transition Turbulence
+  description: The severity of disruption during the AI transition period—economic displacement, social instability, and institutional stress. Distinct from long-term outcomes.
+  customFields:
+    - label: Model Role
+      value: Intermediate Factor
+    - label: Key Parameters
+      value: Economic Stability, Human Agency, Societal Resilience
+    - label: Character
+      value: Process quality (not destination)
+  relatedEntries:
+    - id: civilizational-competence
+      type: risk-factor
+      relationship: mitigated-by
+    - id: economic-stability
+      type: parameter
+      relationship: composed-of
+    - id: human-agency
+      type: parameter
+      relationship: composed-of
+    - id: human-expertise
+      type: parameter
+      relationship: composed-of
+  tags:
+    - ai-transition-model
+    - factor
+    - transition
+    - disruption
+  lastUpdated: 2025-12

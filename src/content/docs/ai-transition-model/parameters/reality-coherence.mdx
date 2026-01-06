@@ -1,0 +1,436 @@
+---
+title: "Reality Coherence"
+description: "The degree to which different populations share common factual beliefs about basic events, evidence, and causal relationships—enabling democratic deliberation and collective action. Currently declining: cross-partisan news overlap dropped from 47% (2010) to 12% (2024)."
+parentFactor: civilizational-competence
+sidebar:
+  order: 6
+quality: 91
+llmSummary: "Measures the degree to which populations share factual beliefs about events and evidence, using multiple data tables showing dramatic declines: cross-partisan news overlap dropped from 47% (2010) to 12% (2024), institutional trust declined 20-40% across major institutions. Provides symmetric analysis of both fragmenting forces (algorithmic personalization, synthetic content) and cohering mechanisms (shared infrastructure, deliberative democracy), with scenario projections suggesting 25-35% probability of deep fragmentation."
+lastEdited: "2025-12-29"
+importance: 70
+tractability: 30
+neglectedness: 50
+uncertainty: 60
+---
+import {DataInfoBox, Backlinks, R, Mermaid, ParameterDistinctions} from '../../../../components/wiki';
+
+
+<DataInfoBox entityId="reality-coherence" />
+
+## Overview
+
+Reality Coherence measures the degree to which different populations share common beliefs about basic facts, events, and causal relationships. **Higher reality coherence is better**—it enables democratic deliberation, emergency coordination, and collective action on shared challenges. This goes beyond political disagreement—when coherence is high, people can disagree about *what to do* while agreeing on *what is happening*. AI-driven personalization, synthetic content proliferation, platform algorithm design, and shared information infrastructure all shape whether coherence strengthens or fragments.
+
+Recent research demonstrates that democratic deliberation requires shared epistemic foundations. A 2024 study published in the *American Political Science Review* found that deliberative processes produce "an awakening of civic capacities," with participants showing 15-25% increases in political knowledge and internal efficacy when working from common factual bases. However, this foundation is eroding: partisan trust in government institutions collapsed from 64% (1970s) to 20% (2020s) among opposition party members, and the U.S. now ranks last among G7 nations in trust across government, judicial, and electoral institutions.
+
+This parameter underpins:
+- **Democratic deliberation**: Policy debate requires shared factual foundations (65-75% minimum agreement on basic facts, per deliberative democracy research)
+- **Emergency coordination**: Crisis response requires common situation awareness (COVID-19 response failures linked to 50%+ factual divergence)
+- **Scientific consensus**: Cumulative knowledge requires shared reference points (institutional trust in science down 43% since 2000)
+- **Institutional legitimacy**: Courts, elections, and governance depend on accepted facts (election acceptance dropped from 92% to 21-69% depending on party, 2016-2020)
+
+Understanding reality coherence as a parameter (rather than just a "fragmentation risk") enables:
+- **Symmetric analysis**: Identifying both fragmenting forces (algorithmic personalization, synthetic content) and cohering mechanisms (deliberative assemblies, content authentication)
+- **Baseline comparison**: Measuring against historical levels of shared understanding (47% cross-partisan media overlap in 2010 vs. 12% in 2024)
+- **Threshold identification**: Recognizing minimum coherence needed for democracy (estimated 60-70% agreement on verifiable facts)
+- **Intervention targeting**: Focusing on shared information infrastructure (C2PA adoption, citizens' assemblies, cross-cutting exposure)
+
+<ParameterDistinctions entityId="reality-coherence" />
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Enables["What Enables It"]
+        IA[Information Authenticity]
+    end
+
+    IA -->|enables| RC[Reality Coherence]
+
+    RC -->|enables| ST[Societal Trust]
+    RC -->|enables| CC[Coordination Capacity]
+
+    RC --> EPIST[Epistemic Foundation]
+    RC --> STEADY[Steady State ↓↓]
+    RC --> TRANS[Transition ↓]
+
+    style RC fill:#90EE90
+    style STEADY fill:#4ecdc4
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Epistemic Foundation](/ai-transition-model/parameters/epistemics/)
+
+**Primary outcomes affected:**
+- [Steady State](/ai-transition-model/outcomes/long-term-trajectory/) ↓↓ — Shared reality enables collective decision-making about the future
+- [Transition Smoothness](/ai-transition-model/factors/transition-turbulence/) ↓ — Coordination during upheaval requires common understanding
+
+---
+
+## Current State Assessment
+
+### Information Environment Isolation
+
+| Metric | 2010 | 2020 | 2024 | Trend |
+|--------|------|------|------|-------|
+| Cross-partisan news source overlap | 47% | 23% | 12% | -35% decline |
+| Trust in "news media" | 54% | 36% | 31% | -23% decline |
+| Social media as primary news source | 23% | 53% | 67% | +44% increase |
+| Family political disagreement frequency | 24% | 41% | 58% | +34% increase |
+
+*Sources: <R id="35e3244199e922ad">Reuters Institute</R>, <R id="03acd249014f87dd">Knight Foundation</R>*
+
+### Documented Factual Divergences
+
+| Domain | Group A Belief | Group B Belief | Population Split |
+|--------|---------------|----------------|------------------|
+| **COVID-19 deaths** | 1M+ Americans died | Deaths overcounted by 50%+ | 78% vs 22% |
+| **2020 election** | Biden won legitimately | Election was stolen | 61% vs 39% |
+| **Climate data** | Human-caused warming | Natural cycles/hoax | 71% vs 29% |
+| **Economic performance** | Context-dependent | Same data, opposite conclusions | Varies by party |
+
+*Source: <R id="c67537d289bb7a7e">Pew Research</R>, <R id="b63a8ecfadae3006">Gallup</R>*
+
+### Institutional Trust Collapse
+
+| Institution | Trust Level (2023) | Change Since 2000 |
+|-------------|-------------------|-------------------|
+| Supreme Court | 25% | -42% |
+| Congress | 8% | -21% |
+| Federal agencies (CDC, FDA) | 31% | -38% |
+| Major newspapers | 16% | -34% |
+| Universities | 36% | -41% |
+
+*Source: <R id="b63a8ecfadae3006">Gallup Confidence in Institutions</R>*
+
+---
+
+## What "Healthy Reality Coherence" Looks Like
+
+Healthy coherence is not universal agreement—democracies require genuine disagreement. Instead, it involves sufficient agreement on verifiable facts (65-75% threshold) while maintaining vigorous debate on interpretations and values. Analysis of pre-digital and functional deliberative systems suggests specific quantifiable characteristics:
+
+### Key Characteristics
+
+1. **Shared empirical baselines**: 70-80% agreement on measurable facts (temperature data, vote counts, mortality statistics, economic indicators)
+2. **Disputability of interpretations**: Healthy debate about what facts mean and what to do about them (30-60% agreement on policy implications is normal)
+3. **Cross-cutting trust**: At least 2-3 major sources trusted by 40%+ across partisan lines (vs. current &lt;5% for most sources)
+4. **Error correction**: Mechanisms to identify and correct factual errors within 24-72 hours reaching 60%+ of audience
+5. **Distinction between facts and values**: Clear separation of empirical claims from normative positions (measured by ability to distinguish "is" from "ought" statements)
+
+### Historical Baseline (1970s-1990s)
+
+Pre-algorithm information environments featured quantifiably higher coherence:
+- Shared "broadcast" media creating common reference points (70%+ viewing same major events, vs. 15-25% today)
+- Geographic communities with diverse viewpoints in contact (neighborhood diversity 40% higher than current filter bubble equivalents)
+- Editorial gatekeeping (with biases, but creating some consistency—3-5 major gatekeepers vs. algorithmic infinity)
+- Slower information cycles allowing verification (24-48 hour news cycles vs. real-time, enabling 60-80% fact-check penetration)
+- Cross-partisan news source overlap: 47% (2010) declining to 12% (2024)
+
+This baseline wasn't perfect—it excluded marginalized voices, had significant biases, and enabled elite control—but it maintained sufficient shared reality for democratic function and crisis coordination.
+
+---
+
+## Factors That Decrease Coherence (Threats)
+
+<Mermaid client:load chart={`
+flowchart TD
+    AI[AI Systems] --> ALGO[Algorithmic Personalization]
+    AI --> SYNTH[Synthetic Content]
+    ALGO --> SILO[Information Silos]
+    SYNTH --> CONFIRM[Infinite Confirming Content]
+    SILO --> DIVERGE[Factual Divergence]
+    CONFIRM --> DIVERGE
+    DIVERGE --> FRAGMENT[Reality Fragmentation]
+    FRAGMENT --> FAIL[Democratic Failure]
+
+    style AI fill:#e1f5fe
+    style FRAGMENT fill:#ff6b6b
+    style FAIL fill:#990000,color:#fff
+`} />
+
+### Algorithmic Personalization
+
+| Mechanism | Effect | Evidence |
+|-----------|--------|----------|
+| **Engagement optimization** | Serves content that provokes strong reactions | Emotional content gets 6x more engagement |
+| **Echo chamber formation** | Users see confirming viewpoints | 94% content overlap loss (<R id="2aca21d86d28cee6">MIT study</R>) |
+| **Outgroup caricature** | Algorithms amplify extreme examples | Cross-partisan perception distorted |
+| **Attention capture** | Prioritizes compelling over accurate | Verification too slow to compete |
+
+### Synthetic Content Generation
+
+AI-generated content creates what researchers term "epistemic detriment"—illusions of understanding that undermine genuine knowledge. A 2024 study in *AI & Society* found that LLM-generated explanations create cognitive dulling and AI dependency, with users experiencing 25-40% reduced critical evaluation of claims. The proliferation of synthetic content "risks introducing a phase of scientific inquiry in which we produce more but understand less."
+
+| Threat | Mechanism | Current Impact |
+|--------|-----------|----------------|
+| **Infinite supply** | AI generates content for any worldview | 42% synthetic content growth (<R id="6289dc2777ea1102">Reuters</R>) |
+| **Personalized narratives** | AI creates worldview-confirming "evidence" | Emerging capability (GPT-4, Claude accuracy 70-85%) |
+| **Source fabrication** | AI creates fake experts, institutions | Detection accuracy 60-80% with semantic entropy |
+| **Historical revision** | AI generates alternative historical "records" | Growing concern, no effective countermeasures |
+| **Algorithmic truth** | AI systems mediate knowledge validation | Replacing institutional gatekeepers at 15-25% annual rate |
+
+### Institutional Bypass
+
+| Traditional Gatekeeper | AI-Era Replacement | Trust Transfer |
+|------------------------|--------------------|-----------------|
+| Professional journalism | Personalized feeds | -67% trust since 2000 |
+| Academic expertise | AI-generated explanations | -43% trust in scientists |
+| Government data | Crowdsourced "research" | -71% trust in institutions |
+| Encyclopedia verification | LLM responses | No shared reference point |
+
+### The Feedback Loop
+
+| Stage | Process | Acceleration |
+|-------|---------|--------------|
+| 1 | User engagement teaches algorithm preferences | Continuous |
+| 2 | Algorithm serves more extreme confirming content | Faster than human adaptation |
+| 3 | User beliefs strengthen and narrow | Gradual, unnoticed |
+| 4 | Cross-cutting exposure becomes uncomfortable | Social reinforcement |
+| 5 | Reality bubbles become self-sustaining | Self-reinforcing |
+
+---
+
+## Factors That Increase Coherence (Supports)
+
+### Shared Information Infrastructure
+
+| Approach | Mechanism | Status |
+|----------|-----------|--------|
+| **Public broadcasting** | Common information baseline | Declining but still significant |
+| **Wire services** | Shared factual reporting | AP, Reuters remain widely used |
+| **Scientific consensus** | Agreed research findings | Under stress but functional |
+| **Official statistics** | Government data as reference | Trust declining but still primary |
+
+### Technical Interventions
+
+The Coalition for Content Provenance and Authenticity (C2PA) launched version 2.1 of its technical standard in 2025, with adoption by Google, Microsoft, Adobe, OpenAI, Meta, and Amazon. C2PA provides "nutrition labels" for digital content showing creation and editing history. However, experts document bypass methods—attackers can alter provenance metadata, remove watermarks, and forge digital fingerprints with 20-40% success rates. Content authentication requires multi-faceted approaches combining provenance, detection, education, and policy.
+
+| Technology | Mechanism | Maturity | Effectiveness |
+|------------|-----------|----------|---------------|
+| **Content provenance (C2PA)** | Verifiable source chains | Fast-tracked as ISO standard (2025) | 60-80% attack resistance |
+| **Algorithmic diversity** | Forced exposure to different viewpoints | Limited deployment | 10-15% bubble reduction |
+| **Community notes** | Crowdsourced context | Moderate scale (X/Twitter) | 25-35% misinformation correction |
+| **Cross-cutting exposure** | Design for diverse information | Research stage | Promising in lab settings |
+| **Deepfake detection** | AI-generated content identification | Rapidly improving | 70-90% accuracy, arms race ongoing |
+
+### Institutional Approaches
+
+Citizens' assemblies demonstrate significant potential for rebuilding shared factual foundations. A 2024 study in *Innovation: The European Journal of Social Science Research* found that assemblies "address societal crises and strengthen societal cohesion and trust," with Irish assemblies producing referendum outcomes supported by 60-67% majorities. Research on Poland's Citizens' Assembly on Energy Poverty showed participants developed 15-25% higher democratic engagement and political knowledge. However, critics note most assemblies remain Western-focused and face challenges scaling beyond local contexts.
+
+The OECD's 2024 Survey on Drivers of Trust found that citizens who trust media are 2x more likely to trust government, highlighting the interconnected nature of institutional confidence. Across OECD countries, 44% had low/no trust in national government (November 2023), with information environments marked by polarizing content and disinformation as primary drivers.
+
+| Approach | Mechanism | Evidence | Scale |
+|----------|-----------|----------|-------|
+| **Deliberative democracy** | Citizens' assemblies with diverse participants | 15-25% gains in engagement, 60-67% public support for outcomes | Local to national (Ireland model) |
+| **Trusted messengers** | Local leaders bridge communities | Context-dependent, 20-40% message acceptance increases | Community level |
+| **Cross-partisan media** | AllSides, Ground News | Limited adoption, 5-10% user base growth | Niche but growing |
+| **Transparency reforms** | Increase accountability | Correlates with 10-20% higher institutional trust | Requires sustained commitment |
+
+### Educational Interventions
+
+Educational research emphasizes "epistemic vigilance"—the ability to critically evaluate information before accepting it as knowledge. A 2025 study found that precision in AI interactions "arises not from the machine's answers but from the human process of questioning and refining them."
+
+| Intervention | Target | Effectiveness | Evidence Base |
+|--------------|--------|---------------|---------------|
+| **Media literacy** | Source evaluation skills | 15-30% improvement in controlled settings | Growing evidence base; scaling challenges |
+| **Epistemic humility** | Comfort with uncertainty | 10-20% improvement in lab settings | Promising direction |
+| **Epistemic vigilance** | Critical evaluation before acceptance | 20-35% improvement in critical thinking | Emerging 2024-2025 research |
+| **Inoculation techniques** | Pre-exposure to manipulation | 25-40% resistance increase | Strong lab results; scaling underway |
+| **Cross-cutting relationships** | Personal connections across bubbles | 30-50% belief updating when achieved | Most effective when possible |
+
+### Positive Developments Often Overlooked
+
+Despite fragmentation trends, several countervailing forces support coherence:
+
+| Development | Evidence | Implication |
+|-------------|----------|-------------|
+| **Younger generations more skeptical** | Gen Z shows 40% higher skepticism of single sources | May be more resilient to manipulation |
+| **Fact-checking industry growth** | 400+ active fact-checking organizations globally (2024) | Institutional response emerging |
+| **Platform interventions showing results** | Community Notes reaches 250M+ users; 25-35% correction rate | Crowdsourced verification works |
+| **Cross-partisan agreement on some issues** | 70%+ agreement on infrastructure, childcare, healthcare access | Common ground exists on non-culture-war issues |
+| **C2PA adoption accelerating** | 200+ members; Google, Meta, Microsoft committed | Technical solutions gaining traction |
+| **Citizens' assembly successes** | Ireland achieved 60-67% public support on contentious issues | Deliberation can overcome fragmentation |
+
+*The fragmentation narrative, while supported by real data on media consumption, may overstate the collapse of shared reality. Substantial agreement persists on many factual questions outside the most politically charged domains.*
+
+---
+
+## Why This Parameter Matters
+
+### Consequences of Low Reality Coherence
+
+| Domain | Impact | Severity |
+|--------|--------|----------|
+| **Elections** | Contested results, reduced participation, potential violence | Critical |
+| **Public health** | Pandemic response failure, vaccine hesitancy | High |
+| **Climate action** | Policy paralysis from disputed evidence | High |
+| **Judicial function** | Jury decisions based on incompatible facts | High |
+| **International cooperation** | Treaty verification becomes impossible | Critical |
+
+### Electoral Legitimacy Crisis
+
+| Election Outcome | Acceptance by Losing Side | Historical Average |
+|------------------|---------------------------|-------------------|
+| 2016 Presidential | 69% Democratic acceptance | 92% |
+| 2020 Presidential | 21% Republican acceptance | 92% |
+| 2022 Midterm | 67% overall acceptance | 96% |
+
+### Reality Coherence and Existential Risk
+
+Low coherence directly undermines humanity's ability to address existential risks. International coordination on AI safety, pandemic preparedness, climate change, and nuclear security requires 70-80% cross-national agreement on basic threat assessments. Current levels (45-55% for most domains) fall below this threshold. Specific dependencies:
+
+- **AI safety coordination** requires shared understanding of capabilities and risks (current agreement: 40-50% across major powers, insufficient for treaty verification)
+- **Pandemic preparedness** requires trusted public health communication (COVID-19 demonstrated 50%+ factual divergence undermining response effectiveness)
+- **Climate response** requires accepted scientific consensus (current: 71% vs 29% split on anthropogenic causation prevents collective action)
+- **Nuclear security** requires common threat assessment (fragmentation creates verification challenges, false alarm risks)
+
+Research on deliberative processes suggests that targeted citizens' assemblies can achieve 75-85% agreement even on contested issues, offering a potential path to rebuilding sufficient coherence for existential risk coordination. However, scaling from local assemblies (100-200 participants) to national/international levels (millions to billions) remains an unsolved challenge.
+
+---
+
+## Trajectory and Scenarios
+
+### Projected Trajectory
+
+| Timeframe | Key Developments | Coherence Impact |
+|-----------|-----------------|------------------|
+| **2025-2026** | Real-time AI synthesis; personalization deepens | Accelerating fragmentation |
+| **2027-2028** | AI companions validate individual realities | Silo hardening |
+| **2029-2030** | Either intervention or new equilibrium | Bifurcation point |
+
+### Near-Term Projections
+
+| Trend | Current Trajectory | AI Acceleration |
+|-------|-------------------|-----------------|
+| Information silo hardening | 12% overlap → 5% | AI personalization |
+| Synthetic content volume | 2% → 15% of online content | Generative AI |
+| Institutional trust decline | -3% → -5% annually | AI-enabled criticism |
+| Reality divergence events | Monthly → Weekly | Real-time narrative generation |
+
+### Scenario Analysis
+
+These scenarios project reality coherence levels through 2030, based on current trajectories and intervention effectiveness. Coherence is measured as the percentage of basic verifiable facts (election results, mortality statistics, temperature data) with 70%+ cross-partisan agreement.
+
+| Scenario | Probability | 2030 Coherence Level | Key Drivers | Implications |
+|----------|-------------|----------------------|-------------|--------------|
+| **Coherence Recovery** | 25-35% | 55-65% (up from 45%) | C2PA adoption 60%+; citizens' assemblies scaled nationally; platform reforms; generational turnover brings more skeptical, media-literate cohorts | Democratic function strengthened; existential risk coordination viable |
+| **Selective Coherence** | 30-40% | 50-60% on technical facts; 30-40% on politically charged issues | Coherence maintained on most empirical questions; persistent disagreement on culture-war topics; "working consensus" on most governance | Functional governance maintained for most policy domains; some issues remain contested |
+| **Managed Fragmentation** | 20-30% | 40-50% (stable) | Limited intervention; persistent algorithmic division; but also persistent institutions | Fragile but functional; crisis response case-by-case |
+| **Deep Fragmentation** | 10-20% | 25-35% (down from 45%) | Synthetic content dominance; failed authentication standards; institutional collapse | Democratic breakdown; coordination failure |
+| **Authoritarian Capture** | 3-7% | 70%+ (imposed) | Crisis triggers state control of information infrastructure | Eliminates fragmentation at cost of freedom |
+
+*Note: The "Selective Coherence" scenario (30-40%) may be most likely—coherence is maintained on most empirical questions (scientific data, economic statistics) while remaining contested on politically charged topics. This is arguably the historical norm: democracies have always featured disagreement on values while (mostly) agreeing on facts. The key question is whether AI-driven fragmentation extends from values disagreement into factual disagreement on a wider range of issues.*
+
+---
+
+## Key Debates
+
+### Is Coherence Recoverable?
+
+**Optimistic view:**
+- Historical precedent: societies have recovered from information crises
+- Technical solutions (provenance, authentication) can help
+- Deliberative processes show promise at small scale
+
+**Pessimistic view:**
+- Attention economy permanently optimizes for division
+- Generational change has locked in fragmented habits
+- AI content generation makes recovery nearly impossible
+
+### How Much Coherence Is Needed?
+
+**High threshold view (requires 70-80% agreement):**
+- Democracy requires substantial shared factual baseline for legitimate majority rule
+- Current levels (45-55% on contested issues) already below minimum for stable function
+- Historical precedent: Pre-2000s democracies maintained 65-75% agreement on verifiable facts
+- Risk: Governance breakdown, inability to coordinate on existential threats
+
+**Medium threshold view (requires 55-65% agreement):**
+- Functional governance possible with modest supermajority on core facts
+- Current levels concerning but not yet catastrophic
+- Deliberative processes can achieve sufficient agreement on critical issues
+- Risk: Fragile institutions, crisis-dependent coordination
+
+**Low threshold view (requires 40-50% agreement):**
+- Democracies have always had significant disagreement (true but conflates values with facts)
+- What looks like fragmentation may be normal variation (disputed by historical data)
+- Coordination on critical issues still possible through negotiation (increasingly difficult)
+- Risk: Underestimates danger, normalizes epistemic dysfunction
+
+Evidence from deliberative democracy research, electoral legitimacy studies, and pandemic response effectiveness suggests the true threshold lies in the **65-75% range** for stable democratic function and existential risk coordination.
+
+### Local vs. Global Coherence
+
+**Local coherence sufficient:**
+- Communities can function with internal agreement
+- Federalism allows different realities to coexist
+
+**Global coherence necessary:**
+- Existential risks require global coordination
+- Local coherence with global fragmentation is unstable
+
+---
+
+## Related Pages
+
+### Related Risks
+- [Reality Fragmentation](/knowledge-base/risks/epistemic/reality-fragmentation/) — The risk of coherence collapse creating incompatible worldviews
+- [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) — Broader breakdown of truth-seeking institutions and norms
+- [Trust Erosion](/knowledge-base/risks/epistemic/trust-decline/) — Declining institutional confidence undermining coordination
+
+### Related Interventions
+- [Epistemic Infrastructure](/knowledge-base/responses/epistemic-tools/epistemic-infrastructure/) — Building shared information systems for common reference points
+- [Content Authentication](/knowledge-base/responses/epistemic-tools/content-authentication/) — Technical verification approaches (C2PA, provenance tracking)
+- [Deepfake Detection](/knowledge-base/responses/epistemic-tools/deepfake-detection/) — Identifying AI-generated synthetic content
+
+### Related Parameters
+- [Epistemic Health](/ai-transition-model/parameters/epistemic-health/) — Individual and collective ability to distinguish truth from falsehood
+- [Societal Trust](/ai-transition-model/parameters/societal-trust/) — Confidence in institutions enabling collective action
+- [Information Authenticity](/ai-transition-model/parameters/information-authenticity/) — Degree to which content sources are verifiable and genuine
+- [Human Agency](/ai-transition-model/parameters/human-agency/) — Capacity for autonomous decision-making (requires shared reality)
+- [Institutional Quality](/ai-transition-model/parameters/institutional-quality/) — Effectiveness of democratic governance structures
+- [International Coordination](/ai-transition-model/parameters/international-coordination/) — Cross-border cooperation (depends on shared threat assessment)
+
+---
+
+## Sources & Key Research
+
+### Core Research
+- <R id="4104b23838ebbb14">Stanford Internet Observatory</R> — Platform manipulation research
+- <R id="47d3aba057032f71">Brookings Center for Technology Innovation</R> — Governance implications
+- <R id="523e08b5f4ef45d2">Oxford Internet Institute</R> — Digital society research
+
+### Key Datasets
+- <R id="c67537d289bb7a7e">Pew Research</R> — Political polarization data
+- <R id="b63a8ecfadae3006">Gallup</R> — Institutional trust tracking
+- <R id="35e3244199e922ad">Reuters Institute Digital News Report</R> — Global news consumption
+
+### Academic Research (2023-2025)
+- <R id="e145561ff269bf04">Guess et al., Science Advances (2023)</R> — Social media bubbles
+- <R id="564edc3c052d0843">Sunstein, Constitutional Political Economy (2018)</R> — Democratic prerequisites
+
+### Recent Research (2024-2025)
+
+**Democratic Deliberation:**
+- [Tessler et al., Science (2024)](https://www.science.org/doi/10.1126/science.adq2852) — AI-mediated deliberation finding common ground
+- [American Political Science Review (2024)](https://www.cambridge.org/core/journals/american-political-science-review/article/can-deliberation-have-lasting-effects/341938D11548550CBEBA9B93109065CE) — Lasting effects of deliberation on civic capacities
+- [Innovation: European Journal (2024)](https://www.tandfonline.com/doi/full/10.1080/13511610.2024.2381958) — Citizens' assemblies overcoming polarization in crisis
+
+**Trust and Institutions:**
+- [Pew Charitable Trusts (2024)](https://www.pew.org/en/trend/archive/fall-2024/data-behind-americans-waning-trust-in-institutions) — Americans' waning trust data
+- [Gallup (2024)](https://news.gallup.com/poll/697421/trust-government-depends-upon-party-control.aspx) — Partisan nature of institutional trust
+- [OECD Survey (2024)](https://www.oecd.org/en/publications/oecd-survey-on-drivers-of-trust-in-public-institutions-2024-results_9a20554b-en.html) — Drivers of trust in public institutions
+
+**AI and Epistemic Coherence:**
+- [AI & Society (2025)](https://link.springer.com/content/pdf/10.1007/s00146-025-02560-y.pdf) — Epistemic downside of LLM-based generative AI
+- [Frontiers in Education (2025)](https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1647687/full) — Epistemic authority and generative AI in learning
+- [ACM FAccT (2025)](https://dl.acm.org/doi/full/10.1145/3715275.3732005) — Role of synthetic data in AI development
+
+**Content Provenance:**
+- [C2PA Technical Specification 2.2 (2025)](https://c2pa.org/specifications/) — Content credentials standard
+- [Google C2PA Blog (2025)](https://blog.google/technology/ai/google-gen-ai-content-transparency-c2pa/) — Implementation for AI content transparency
+- [World Privacy Forum (2024)](https://worldprivacyforum.org/posts/privacy-identity-and-trust-in-c2pa/) — Privacy and trust analysis of C2PA
+
+<Backlinks entityId="reality-coherence" />

@@ -1,0 +1,139 @@
+---
+title: "Ultimate Outcomes"
+description: "The two ultimate outcomes of the AI transition: avoiding existential catastrophe and ensuring a positive long-term trajectory."
+sidebar:
+  order: 0
+  label: Overview
+lastEdited: "2026-01-03"
+---
+import {Mermaid, OutcomesTable} from '../../../../components/wiki';
+
+## Overview
+
+Ultimate Outcomes represent what we fundamentally care about when thinking about AI's impact on humanity. Unlike [Scenarios](/ai-transition-model/scenarios/) (which describe intermediate scenarios) or [parameters](/ai-transition-model/) (which measure specific factors), Ultimate Outcomes describe the **final states** we're trying to achieve or avoid.
+
+There are two Ultimate Outcomes:
+
+1. **[Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/)** — Does catastrophe occur?
+2. **[Long-term Trajectory](/ai-transition-model/outcomes/long-term-trajectory/)** — What's the expected value of the future?
+
+---
+
+## The Two Outcomes
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Outcomes["What We Ultimately Care About"]
+        ACUTE[Existential Catastrophe]
+        VALUE[Long-term Trajectory]
+    end
+
+    ACUTE -.->|"must avoid to reach"| VALUE
+
+    style ACUTE fill:#ff6b6b
+    style VALUE fill:#4ecdc4
+`} />
+
+<OutcomesTable client:load />
+
+---
+
+## Why Two Outcomes?
+
+Previous versions of this framework had three outcomes (including "Transition Smoothness"). We moved to two because:
+
+1. **Transition Turbulence is a pathway, not endpoint**: How rough the transition is affects *both* existential catastrophe and long-term trajectory. It belongs in [Root Factors](/ai-transition-model/factors/transition-turbulence/).
+
+2. **Cleaner analytical structure**: Two outcomes are genuinely orthogonal:
+   - You can have low existential catastrophe but poor long-term trajectory (safe dystopia)
+   - You can have high existential catastrophe but good conditional value (high-stakes gamble)
+
+3. **Temporal clarity**: Existential Catastrophe is primarily about the transition period; Long-term Trajectory is about what comes after. See [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/).
+
+---
+
+## How They Relate
+
+These outcomes are **partially independent**—you can have different combinations:
+
+| Scenario | Existential Catastrophe | Long-term Trajectory | Example |
+|----------|------------|----------------|---------|
+| Best case | Low | High | Aligned AI, smooth transition, flourishing |
+| Safe dystopia | Low | Low | No catastrophe but authoritarian lock-in |
+| High-stakes success | High (survived) | High | Near-misses but good outcome |
+| Extinction | Very High | N/A | Catastrophe occurs |
+
+This independence means:
+- **Different Ultimate Scenarios affect different Ultimate Outcomes**
+- **Trade-offs exist**: Some approaches that reduce existential catastrophe might worsen long-term trajectory (e.g., authoritarian control)
+- **Both matter**: We shouldn't sacrifice one entirely for the other
+
+---
+
+## How Ultimate Scenarios Flow to Ultimate Outcomes
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Scenarios["Ultimate Scenarios"]
+        TAKEOVER[AI Takeover]
+        HUMAN[Human-Caused Catastrophe]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    subgraph RootFactors["Root Factors"]
+        TURB[Transition Turbulence]
+    end
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        ACUTE[Existential Catastrophe]
+        VALUE[Long-term Trajectory]
+    end
+
+    %% Root Factor effects
+    TURB -->|"increases"| TAKEOVER
+    TURB -->|"increases"| HUMAN
+
+    %% Scenarios to Outcomes
+    TAKEOVER --> ACUTE
+    HUMAN --> ACUTE
+    TAKEOVER -->|"shapes"| VALUE
+    LOCKIN -->|"shapes"| VALUE
+
+    style ACUTE fill:#ff6b6b
+    style VALUE fill:#4ecdc4
+    style TAKEOVER fill:#ffb6c1
+    style HUMAN fill:#ffb6c1
+    style LOCKIN fill:#ffe4b5
+`} />
+
+| Ultimate Scenario | Affects Existential Catastrophe | Affects Long-term Trajectory |
+|---------------------|--------------------------------|------------------------------|
+| [AI Takeover](/ai-transition-model/scenarios/ai-takeover/) | Yes (primary pathway) | Yes (shapes future) |
+| [Human-Caused Catastrophe](/ai-transition-model/scenarios/human-catastrophe/) | Yes (primary pathway) | — |
+| [Long-term Lock-in](/ai-transition-model/scenarios/long-term-lockin/) | Yes (bad lock-in) | Yes (primary determinant) |
+
+Each ultimate scenario has sub-variants with different probability estimates. See the [Ultimate Scenarios](/ai-transition-model/scenarios/) section for details.
+
+---
+
+## Temporal Structure
+
+These outcomes map to different phases of the AI transition:
+
+| Phase | Primary Concern | Relevant Outcome |
+|-------|-----------------|------------------|
+| **Pre-transformative AI** (now) | Building capacity, avoiding racing | Existential Catastrophe (preparation) |
+| **Existential Catastrophe Period** | Surviving the transition | Existential Catastrophe |
+| **Resolution** | How it resolves | Both |
+| **Long-run Trajectory** | Quality of the future | Long-term Trajectory |
+
+See [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/) for more detail.
+
+---
+
+## Related Pages
+
+- [Scenarios](/ai-transition-model/scenarios/) — The intermediate scenarios
+- [AI Transition Model](/ai-transition-model/) — All parameters
+- [Aggregate Parameters](/ai-transition-model/factors/) — How parameters group together
+- [Phases of the AI Transition](/knowledge-base/methodology/ai-transition-phases/) — Temporal structure

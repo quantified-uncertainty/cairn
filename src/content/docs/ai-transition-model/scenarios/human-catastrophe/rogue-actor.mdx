@@ -1,0 +1,211 @@
+---
+title: "Rogue Actor Catastrophe"
+description: "Non-state actors—terrorists, lone wolves, or criminal organizations—use AI capabilities to cause mass casualties through bioweapons, cyberattacks, or other means."
+sidebar:
+  order: 4
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 35
+  xriskImpact: 70
+  trajectoryImpact: 45
+  uncertainty: 65
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+
+## Overview
+
+A rogue actor catastrophe occurs when non-state actors use AI to cause mass harm—potentially at civilizational scale. Unlike [state actor catastrophes](/ai-transition-model/scenarios/human-catastrophe/state-actor/), these scenarios involve individuals or groups operating outside governmental authority. AI lowers the barriers to acquiring dangerous capabilities, potentially enabling small groups to cause harm previously requiring nation-state resources.
+
+This is a key "misuse" risk that may be more tractable than alignment failures, since it involves known bad actors using AI as a tool rather than AI systems developing misaligned goals.
+
+---
+
+## Ratings
+
+| Metric | Score | Interpretation |
+|--------|-------|----------------|
+| **Changeability** | 35/100 | Difficult to prevent rogue actors |
+| **X-risk Impact** | 70/100 | High existential risk potential |
+| **Trajectory Impact** | 45/100 | Moderate long-term impact |
+| **Uncertainty** | 65/100 | High uncertainty about capability democratization |
+
+---
+
+## Polarity
+
+**Inherently negative.** There is no positive version of rogue actors causing mass harm. Beneficial non-state use of AI (innovation, civil society empowerment) is a separate consideration.
+
+---
+
+## How This Happens
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Actors["Rogue Actors"]
+        TERROR[Terrorist Groups]
+        LONE[Lone Wolves]
+        CRIME[Criminal Organizations]
+        CULT[Apocalyptic Cults]
+    end
+
+    subgraph Capabilities["AI-Enhanced Capabilities"]
+        BIO[Bioweapon Design]
+        CYBER[Cyberattack Planning]
+        COORD[Attack Coordination]
+        MANIP[Recruitment/Radicalization]
+    end
+
+    subgraph Outcomes["Catastrophic Outcomes"]
+        PANDEMIC[Engineered Pandemic]
+        INFRA[Infrastructure Collapse]
+        MASS_CAS[Mass Casualties]
+    end
+
+    TERROR --> BIO
+    TERROR --> CYBER
+    LONE --> BIO
+    LONE --> CYBER
+    CRIME --> CYBER
+    CULT --> BIO
+
+    BIO --> PANDEMIC
+    CYBER --> INFRA
+    PANDEMIC --> MASS_CAS
+    INFRA --> MASS_CAS
+
+    style PANDEMIC fill:#ff6b6b
+    style INFRA fill:#ff6b6b
+    style MASS_CAS fill:#ff6b6b
+`} />
+
+### Primary Pathways
+
+**1. AI-Enabled Bioweapons**
+
+AI could help non-experts design and synthesize dangerous pathogens:
+- LLMs providing step-by-step synthesis guidance
+- AI-designed pathogens optimized for transmissibility or lethality
+- Reduced need for tacit knowledge that currently limits bioweapon development
+- Potential for pandemic-scale casualties (millions to billions)
+
+**2. AI-Enhanced Cyberattacks**
+
+AI dramatically improves offensive cyber capabilities:
+- Automated vulnerability discovery and exploitation
+- AI-generated social engineering at scale
+- Attacks on critical infrastructure (power grids, water, financial systems)
+- Potential for cascading failures across interdependent systems
+
+**3. Coordination and Recruitment**
+
+AI amplifies organizational capabilities of rogue actors:
+- AI-optimized radicalization and recruitment
+- Better operational security and planning
+- Coordination of complex multi-stage attacks
+- Harder for defenders to infiltrate or monitor
+
+---
+
+## Key Parameters
+
+| Parameter | Direction | Impact |
+|-----------|-----------|--------|
+| [Biological Threat Exposure](/ai-transition-model/parameters/biological-threat-exposure/) | High → Enables | Easier access to dangerous biological knowledge |
+| [Cyber Threat Exposure](/ai-transition-model/parameters/cyber-threat-exposure/) | High → Enables | More attack surfaces and vulnerabilities |
+| [Information Authenticity](/ai-transition-model/parameters/information-authenticity/) | Low → Enables | Harder to counter radicalization content |
+| [Safety Culture Strength](/ai-transition-model/parameters/safety-culture-strength/) | Low → Enables | Labs may not implement access controls |
+
+---
+
+## Which Ultimate Outcomes It Affects
+
+### Existential Catastrophe (Primary)
+Rogue actor catastrophes could cause existential-scale harm:
+- Engineered pandemic causing billions of deaths
+- Cascading infrastructure failures
+- Even if not extinction, could cause civilizational collapse
+
+### Long-term Trajectory (Secondary)
+Successful attacks would reshape the long-run trajectory:
+- Permanent surveillance and security measures
+- Loss of trust and openness
+- Reduced innovation due to fear of misuse
+- Backlash could lead to heavy-handed regulation or divert resources from beneficial development
+
+---
+
+## Why AI Changes the Risk Profile
+
+| Dimension | Pre-AI | Post-AI |
+|-----------|--------|---------|
+| **Expertise required** | High (needed tacit knowledge) | Lower (AI provides guidance) |
+| **Resources required** | Significant (state-level for WMD) | Reduced (smaller groups can act) |
+| **Attack sophistication** | Limited by human planning | Enhanced by AI optimization |
+| **Defense effectiveness** | Often adequate | Offense may outpace defense |
+
+### The "Democratization of Destruction" Problem
+
+AI potentially allows small groups to cause harm that previously required nation-state resources. This is particularly concerning for bioweapons, where the barriers have been:
+1. Access to dangerous pathogen sequences (now more available)
+2. Knowledge of synthesis techniques (AI can provide)
+3. Lab equipment (increasingly available)
+4. Tacit knowledge (AI reduces this requirement)
+
+---
+
+## Warning Signs
+
+1. **Capability proliferation**: AI tools that could assist attack planning becoming widely available
+2. **Concerning queries**: Reports of AI systems being asked about attack methods
+3. **Radicalization AI**: Use of AI for recruitment by extremist groups
+4. **Near-misses**: Foiled attacks that show AI involvement in planning
+5. **Lab security failures**: Breaches at facilities with dangerous biological materials
+6. **Infrastructure vulnerabilities**: Discovery of critical systems susceptible to AI-enhanced attack
+
+---
+
+## Interventions That Address This
+
+**Technical/Access Controls:**
+- DNA synthesis screening — Prevent synthesis of dangerous sequences (see [Bioweapons Risk](/knowledge-base/risks/misuse/bioweapons/) for details)
+- AI model access restrictions for dangerous queries
+- Know-Your-Customer requirements for AI services
+- Watermarking and monitoring of AI-generated content
+
+**Defensive Measures:**
+- AI-enhanced detection and response
+- Infrastructure hardening and redundancy
+- Broad-spectrum medical countermeasures (e.g., metagenomic sequencing)
+
+**Governance:**
+- International coordination on AI misuse prevention
+- Export controls on dual-use capabilities
+- Liability frameworks for AI providers
+
+---
+
+## Probability Estimates
+
+| Factor | Assessment |
+|--------|------------|
+| **Bio attack capability** | Increasing; current LLMs provide some uplift |
+| **Bio attack motivation** | Low base rate but non-zero |
+| **Cyber attack capability** | Significantly enhanced by AI |
+| **Civilizational-scale outcome** | Uncertain; depends on specific attack and response |
+
+The combination of low base rates (most people don't want to cause mass harm) with increasing capability (AI lowers barriers) creates genuine uncertainty about risk levels.
+
+---
+
+## Related Content
+
+### Existing Risk Pages
+- [AI-Enabled Bioweapons](/knowledge-base/risks/misuse/bioweapons/)
+- [AI Cyberweapons](/knowledge-base/risks/misuse/cyberweapons/)
+
+### External Resources
+- Sandbrink, J. (2023). "Artificial Intelligence and Biological Misuse" — Nature Machine Intelligence
+- CSET reports on AI and weapons of mass destruction
+- Nuclear Threat Initiative — Biosecurity and AI work

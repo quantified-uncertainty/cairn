@@ -1,0 +1,212 @@
+---
+/**
+ * Static InfoBox component for Starlight sidebar.
+ * Renders entity info without React hydration.
+ */
+import { getEntityInfoBoxData } from '../../data';
+
+interface Props {
+  entityId: string;
+}
+
+const { entityId } = Astro.props;
+const data = getEntityInfoBoxData(entityId);
+
+// Type label config
+const typeLabels: Record<string, { label: string; color: string }> = {
+  'risk-factor': { label: 'Risk Factor', color: '#f97316' },
+  'scenario': { label: 'Scenario', color: '#9333ea' },
+  'risk': { label: 'Risk', color: '#dc2626' },
+  'parameter': { label: 'Parameter', color: '#d946ef' },
+  'concept': { label: 'Concept', color: '#6366f1' },
+  'outcome': { label: 'Outcome', color: '#f59e0b' },
+};
+
+const defaultType = { label: 'Entry', color: '#6b7280' };
+const typeInfo = data ? (typeLabels[data.type] || defaultType) : defaultType;
+
+// Pre-compute grouped related entries
+type RelatedEntry = { type: string; title: string; href: string };
+type GroupedEntries = { type: string; label: string; entries: RelatedEntry[] }[];
+
+let groupedRelatedEntries: GroupedEntries = [];
+if (data?.relatedEntries && data.relatedEntries.length > 0) {
+  const grouped: Record<string, RelatedEntry[]> = {};
+  for (const entry of data.relatedEntries) {
+    if (!grouped[entry.type]) grouped[entry.type] = [];
+    grouped[entry.type].push(entry);
+  }
+  groupedRelatedEntries = Object.entries(grouped).map(([type, entries]) => {
+    const typeConfig = typeLabels[type] || defaultType;
+    const label = typeConfig.label.endsWith('y')
+      ? typeConfig.label.slice(0, -1) + 'ies'
+      : typeConfig.label + 's';
+    return { type, label, entries };
+  });
+}
+---
+
+{data && (
+  <div class="sidebar-info-box">
+    <div class="sidebar-info-box__header" style={`background-color: ${typeInfo.color};`}>
+      <span class="sidebar-info-box__type">{typeInfo.label}</span>
+      <span class="sidebar-info-box__title">{data.title}</span>
+    </div>
+
+    {data.customFields && data.customFields.length > 0 && (
+      <div class="sidebar-info-box__content">
+        {data.customFields.map((field: { label: string; value: string; link?: string }) => (
+          <div class="sidebar-info-box__row">
+            <span class="sidebar-info-box__label">{field.label}</span>
+            <span class="sidebar-info-box__value">
+              {field.link ? (
+                <a href={field.link}>{field.value}</a>
+              ) : (
+                field.value
+              )}
+            </span>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {groupedRelatedEntries.length > 0 && (
+      <div class="sidebar-info-box__related">
+        <div class="sidebar-info-box__related-title">Related</div>
+        {groupedRelatedEntries.map((group) => (
+          <div class="sidebar-info-box__group">
+            <div class="sidebar-info-box__group-header">{group.label}</div>
+            <ul class="sidebar-info-box__list">
+              {group.entries.map((entry) => (
+                <li><a href={entry.href}>{entry.title}</a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .sidebar-info-box {
+    background: var(--sl-color-gray-6);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+  }
+
+  .sidebar-info-box__header {
+    padding: 10px 12px;
+    color: white;
+  }
+
+  .sidebar-info-box__type {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-info-box__title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .sidebar-info-box__content {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+
+  .sidebar-info-box__content:empty {
+    display: none;
+  }
+
+  .sidebar-info-box__row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+
+  .sidebar-info-box__row:last-child {
+    border-bottom: none;
+  }
+
+  .sidebar-info-box__label {
+    color: var(--sl-color-gray-3);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .sidebar-info-box__value {
+    color: var(--sl-color-white);
+    line-height: 1.4;
+  }
+
+  .sidebar-info-box__value a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+  }
+
+  .sidebar-info-box__value a:hover {
+    text-decoration: underline;
+  }
+
+  .sidebar-info-box__related {
+    padding: 10px 12px;
+  }
+
+  .sidebar-info-box__related-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-gray-3);
+    margin-bottom: 8px;
+  }
+
+  .sidebar-info-box__group {
+    margin-bottom: 8px;
+  }
+
+  .sidebar-info-box__group:last-child {
+    margin-bottom: 0;
+  }
+
+  .sidebar-info-box__group-header {
+    font-size: 11px;
+    color: var(--sl-color-gray-2);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .sidebar-info-box__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-info-box__list li {
+    padding: 2px 0;
+  }
+
+  .sidebar-info-box__list a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+    font-size: 11px;
+  }
+
+  .sidebar-info-box__list a:hover {
+    text-decoration: underline;
+  }
+</style>
