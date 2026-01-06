@@ -1,0 +1,168 @@
+---
+title: "Governments (AI Uses)"
+description: "Government use of AI for surveillance, military, and administration—with profound implications for civil liberties, warfare, democratic governance, and the citizen-state relationship."
+sidebar:
+  order: 3
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 40
+  xriskImpact: 55
+  trajectoryImpact: 70
+  uncertainty: 50
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+
+## Overview
+
+Government use of AI represents a crucial and contested dimension of the AI transition, with profound implications for civil liberties, warfare, democratic governance, and the fundamental relationship between citizens and states.
+
+Unlike private sector applications where market forces and consumer choice provide some constraints, government AI deployment operates through sovereign authority with correspondingly higher stakes for individual rights and collective outcomes.
+
+---
+
+## Ratings
+
+| Metric | Score | Interpretation |
+|--------|-------|----------------|
+| **Changeability** | 40/100 | Moderately changeable through policy |
+| **X-risk Impact** | 55/100 | Significant existential relevance |
+| **Trajectory Impact** | 70/100 | High long-term effects |
+| **Uncertainty** | 50/100 | Moderate uncertainty |
+
+---
+
+## Surveillance
+
+The [surveillance](/knowledge-base/risks/misuse/surveillance/) dimension of government AI use has already reached unprecedented scale and sophistication.
+
+### Scale of Deployment
+
+| Country | Systems | Scope |
+|---------|---------|-------|
+| **China** | 600 million cameras | ~3 cameras per 7 people |
+| **Global exports** | 80+ countries | Chinese "Safe City" systems |
+
+### The Uyghur Case Study
+
+The surveillance campaign targeting Uyghurs in Xinjiang demonstrates the catastrophic potential:
+- AI systems specifically designed to identify Uyghur ethnicity through facial recognition
+- Contributed to detention of **1-2 million people** in "re-education" facilities
+
+---
+
+## Global Proliferation
+
+The global proliferation of government surveillance AI is accelerating rapidly:
+
+| Metric | Status |
+|--------|--------|
+| Internet freedom decline | 13 consecutive years |
+| Countries mandating ML content removal | 22+ |
+| Chinese surveillance exports | 80+ countries |
+
+---
+
+## Long-term Authoritarian Stability
+
+<Mermaid client:load chart={`
+flowchart TD
+    GOV[Governments - AI Use]
+
+    GOV --> SURV[Surveillance]
+    GOV --> MIL[Military AI]
+    GOV --> ADMIN[Administration]
+
+    SURV --> STABLE[Authoritarian Stability]
+
+    GOV --> USES[AI Uses]
+
+    subgraph Scenarios["Ultimate Scenarios"]
+        HC[Human Catastrophe]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    USES --> HC
+    USES --> LOCKIN
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        XRISK[Existential Catastrophe]
+        TRAJ[Long-term Trajectory]
+    end
+
+    HC --> XRISK
+    LOCKIN --> TRAJ
+
+    style GOV fill:#3b82f6,color:#fff
+    style STABLE fill:#fecaca,stroke:#ef4444
+    style USES fill:#dbeafe,stroke:#3b82f6
+    style Scenarios fill:#ede9fe,stroke:#8b5cf6
+    style HC fill:#8b5cf6,color:#fff
+    style LOCKIN fill:#8b5cf6,color:#fff
+    style XRISK fill:#ef4444,color:#fff
+    style TRAJ fill:#f59e0b,color:#fff
+`} />
+
+The concern extends beyond immediate human rights violations to questions of long-term [authoritarian stability](/knowledge-base/models/societal-models/surveillance-authoritarian-stability/).
+
+Research suggests that AI surveillance may enable the creation of stable, durable authoritarian regimes that are significantly harder to overthrow than historical autocracies.
+
+---
+
+## Autonomous Weapons
+
+[Autonomous weapons](/knowledge-base/risks/misuse/autonomous-weapons/) represent another critical domain of government AI use with potentially existential implications.
+
+| Metric | Value |
+|--------|-------|
+| Global market (2024) | $41.6 billion |
+| Projected market (2034) | $73.6 billion |
+
+The United Nations Office for Disarmament Affairs has explicitly cautioned against "flash wars"—scenarios where algorithmic escalation intensifies a crisis before humans can intervene.
+
+---
+
+## Democratic Enhancement Potential
+
+Simultaneously, AI offers potential for improving democratic governance and public services.
+
+### Taiwan's vTaiwan Platform
+
+[AI-assisted deliberation platforms](/knowledge-base/responses/epistemic-tools/deliberation/) like Taiwan's vTaiwan have achieved:
+- **80% policy implementation rates** on technology issues
+- Demonstrated how AI can facilitate large-scale democratic participation
+- Notable success: Uber regulation that satisfied both taxi drivers and rideshare users
+
+---
+
+## The Dual-Use Dilemma
+
+| Application | Democratic Use | Authoritarian Use |
+|-------------|---------------|-------------------|
+| Surveillance | Crime prevention | Population control |
+| Deliberation tools | Citizen engagement | Manufactured consent |
+| Administration | Efficiency | Automated discrimination |
+
+---
+
+## Key Debates
+
+| Debate | Core Question |
+|--------|---------------|
+| **Surveillance trade-offs** | Does AI surveillance make societies safer or enable authoritarianism? Context-dependent or universal answer? |
+| **Military AI** | Should lethal autonomous weapons be banned, or is such a ban unrealistic and unverifiable? |
+| **Democratic enhancement** | Can AI actually improve democratic deliberation, or will it be captured by incumbents? |
+
+---
+
+## Related Content
+
+### Related Risks
+- [Surveillance](/knowledge-base/risks/misuse/surveillance/) — Comprehensive analysis of surveillance risks
+- [Autonomous Weapons](/knowledge-base/risks/misuse/autonomous-weapons/) — Military AI applications
+- [Authoritarian Tools](/knowledge-base/risks/misuse/authoritarian-tools/) — AI enabling authoritarian control
+
+### Related Models
+- [Surveillance-Authoritarian Stability](/knowledge-base/models/societal-models/surveillance-authoritarian-stability/) — How AI surveillance affects regime durability
+
+<Backlinks entityId="governments" />

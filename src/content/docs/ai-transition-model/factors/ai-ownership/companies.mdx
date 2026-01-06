@@ -1,0 +1,163 @@
+---
+title: "Companies (AI Ownership)"
+description: "Corporate concentration in AI where four organizations control frontier development and five firms control 80%+ of AI cloud infrastructure. Creates distinct risks and safety incentive tensions."
+sidebar:
+  order: 2
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 35
+  xriskImpact: 50
+  trajectoryImpact: 70
+  uncertainty: 45
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+
+## Overview
+
+Corporate concentration in AI development creates a landscape where a small number of organizations effectively control frontier capabilities, shaping market dynamics, safety incentives, and the distribution of AI benefits.
+
+Currently, **four organizations**—OpenAI, Anthropic, Google DeepMind, and Meta—control the vast majority of frontier AI development, while just **five firms control over 80%** of AI cloud infrastructure.
+
+This concentration stems from multiple reinforcing feedback loops that may make AI markets fundamentally different from traditional industries.
+
+---
+
+## Ratings
+
+| Metric | Score | Interpretation |
+|--------|-------|----------------|
+| **Changeability** | 35/100 | Moderately difficult to alter |
+| **X-risk Impact** | 50/100 | Substantial existential relevance |
+| **Trajectory Impact** | 70/100 | High long-term effects |
+| **Uncertainty** | 45/100 | Moderate uncertainty |
+
+---
+
+## Winner-Take-All Dynamics
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Loops["Reinforcing Feedback Loops"]
+        DATA[Data Flywheel]
+        COMPUTE[Compute Advantage]
+        TALENT[Talent Concentration]
+    end
+
+    DATA --> CONC[Companies - Corporate Concentration]
+    COMPUTE --> CONC
+    TALENT --> CONC
+
+    CONC --> DATA
+    CONC --> COMPUTE
+    CONC --> TALENT
+
+    CONC --> OWNER[AI Ownership]
+
+    subgraph Scenarios["Ultimate Scenarios"]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    OWNER --> LOCKIN
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        TRAJ[Long-term Trajectory]
+    end
+
+    LOCKIN --> TRAJ
+
+    style Loops fill:#f1f5f9,stroke:#94a3b8
+    style CONC fill:#3b82f6,color:#fff
+    style OWNER fill:#dbeafe,stroke:#3b82f6
+    style Scenarios fill:#ede9fe,stroke:#8b5cf6
+    style LOCKIN fill:#8b5cf6,color:#fff
+    style TRAJ fill:#f59e0b,color:#fff
+`} />
+
+The [winner-take-all concentration model](/knowledge-base/models/race-models/winner-take-all-concentration/) identifies five interconnected positive feedback loops:
+
+| Loop | Mechanism | Strength |
+|------|-----------|----------|
+| **Data flywheel** | More users generate better training data | Strong |
+| **Compute advantage** | More revenue funds more compute | Strong |
+| **Talent concentration** | Prestige attracts top researchers | Strong |
+| **Network effects** | Developer ecosystems attract users | Medium |
+| **Barriers to entry** | IP and partnerships create moats | Medium |
+
+Mathematical modeling suggests combined loop gain of **1.2-2.0**, indicating concentration is the stable equilibrium rather than a temporary phenomenon.
+
+---
+
+## Safety Implications of Concentration
+
+As detailed in the [concentration of power](/knowledge-base/risks/structural/concentration-of-power/) analysis, concentrated development creates:
+
+| Risk | Description | Severity |
+|------|-------------|----------|
+| **Undemocratic decisions** | Small group makes decisions affecting billions | High |
+| **Single points of failure** | Key actors failing causes system-wide problems | High |
+| **Regulatory capture** | Concentrated interests shape rules in their favor | Medium |
+| **Value embedding** | Few decide whose values get encoded | High |
+
+### Current Safety Assessments
+
+SaferAI 2025 assessments found no major lab scored above "weak" (35%) in risk management:
+
+| Lab | Risk Management Score |
+|-----|----------------------|
+| Anthropic | 35% |
+| OpenAI | 33% |
+| xAI | 18% |
+
+---
+
+## Competitive Pressure vs. Safety
+
+The tension between corporate safety incentives and competitive pressure represents a key uncertainty.
+
+[Industry self-regulation](/knowledge-base/responses/governance/industry/) through Responsible Scaling Policies and voluntary commitments offers:
+- Flexibility and technical expertise
+- But lacks enforcement mechanisms
+- May be weakened under competitive pressure
+
+The December 2024 release of DeepSeek-R1 demonstrated how quickly safety considerations can be subordinated to competitive dynamics.
+
+---
+
+## The Open Source Question
+
+The role of [open source AI](/knowledge-base/responses/organizational-practices/open-source/) in corporate concentration remains contested.
+
+| Position | Arguments |
+|----------|-----------|
+| **Democratization** | Meta's Llama releases challenge concentration by distributing capabilities broadly |
+| **Limitations** | Open-source models lag frontier capabilities by 6-12 months |
+| **Safety concerns** | Safety training can be removed with as few as 200 fine-tuning examples |
+
+---
+
+## Key Debates
+
+| Debate | Core Question |
+|--------|---------------|
+| **Concentration effects** | Is AI lab concentration good (easier to regulate) or bad (single points of failure)? |
+| **Profit vs safety** | Can profit-motivated companies be trusted with AI safety, or do incentives fundamentally conflict? |
+| **Open source role** | Does open source AI democratize capability or just make dangerous systems accessible? |
+
+---
+
+## Related Content
+
+### Related Risks
+- [Concentration of Power](/knowledge-base/risks/structural/concentration-of-power/) — Comprehensive analysis of power concentration risks
+- [Winner-Take-All Dynamics](/knowledge-base/risks/structural/winner-take-all/) — Market dynamics driving concentration
+
+### Related Responses
+- [Open Source AI](/knowledge-base/responses/organizational-practices/open-source/) — Alternative development paradigm
+- [Industry Governance](/knowledge-base/responses/governance/industry/) — Self-regulatory approaches
+
+### Related Models
+- [Winner-Take-All Concentration](/knowledge-base/models/race-models/winner-take-all-concentration/) — Mathematical modeling of concentration dynamics
+- [Lab Incentives Model](/knowledge-base/models/dynamics-models/lab-incentives-model/) — Analysis of AI lab decision-making
+
+<Backlinks entityId="companies" />
