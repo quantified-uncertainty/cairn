@@ -1,0 +1,131 @@
+---
+title: AI Transition Model
+description: A causal model of how root factors shape ultimate scenarios and outcomes during the AI transition period.
+sidebar:
+  label: Overview
+  order: 0
+lastEdited: "2026-01-05"
+---
+
+import {RootFactorsTable, ScenariosTable, OutcomesTable} from '../../../components/wiki';
+import AITransitionModelLink from '../../../components/AITransitionModelLink';
+import TransitionModelInteractive from '../../../components/TransitionModelInteractive';
+
+<TransitionModelInteractive client:load />
+
+## Overview
+
+The AI Transition Model is a causal framework for understanding how various factors influence the trajectory of AI development and its ultimate outcomes for humanity. It maps the relationships between:
+
+- **Root Factors**: The underlying variables that shape AI-related scenarios
+- **Ultimate Scenarios**: The pathways through which factors lead to outcomes
+- **Ultimate Outcomes**: The final states we care about (catastrophe vs. positive trajectory)
+
+This model helps identify:
+1. **Leverage points**: Which factors have the most influence on outcomes
+2. **Intervention targets**: Where effort can most effectively shift trajectories
+3. **Key uncertainties**: Which causal relationships are most uncertain
+4. **Scenario dependencies**: How different pathways interact
+
+---
+
+## Model Structure
+
+The model flows through three levels: **Root Factors** → **Ultimate Scenarios** → **Ultimate Outcomes**.
+
+<AITransitionModelLink client:load />
+
+---
+
+### Two Ultimate Outcomes
+
+<OutcomesTable client:load />
+
+### Three Ultimate Scenarios
+
+Ultimate Scenarios are the intermediate pathways connecting root factors to ultimate outcomes—they describe *how* factor changes lead to catastrophe or shape the long-term future.
+
+<ScenariosTable client:load />
+
+### Seven Root Factors
+
+Each root factor aggregates underlying parameters and influences ultimate scenarios:
+
+<RootFactorsTable client:load />
+
+---
+
+## How Parameters, Risks, and Interventions Connect
+
+Both **risks** and **interventions** connect to root factors:
+- **Risks** (like deceptive alignment, racing dynamics) tend to *increase* harmful factors or *decrease* protective ones
+- **Interventions** (like interpretability research, compute governance) work to counteract risks
+
+**Interactive Views:**
+- **[Parameter Table](/ai-transition-model/table)** - Sortable tables with ratings (changeability, uncertainty, x-risk impact, trajectory)
+- **[Interactive Graph](/ai-transition-model-views/interactive)** - Clickable flow diagram with expandable nodes
+- **[Graph View](/ai-transition-model-views/graph)** - Visual causal diagram showing relationships between factors, scenarios, and outcomes
+- **[Outline View](/ai-transition-model-views/outline)** - Hierarchical text-based navigation with detailed descriptions
+
+---
+
+## All Parameters
+
+For detailed information on all parameters including ITN (Importance, Tractability, Neglectedness) assessments, trends, and linked risks/interventions, see the **[Parameters Directory](/ai-transition-model/parameters/)**.
+
+Key parameter categories:
+- **Alignment**: Alignment robustness, safety-capability gap, interpretability coverage, human oversight quality, safety culture strength
+- **Governance**: Coordination capacity, international coordination, regulatory capacity, institutional quality, racing intensity
+- **Societal**: Societal trust, epistemic health, human agency, AI control concentration, economic stability
+- **Resilience**: Societal resilience, biological/cyber threat exposure, information authenticity, human expertise
+
+---
+
+## Why This Framing Matters
+
+### Traditional Risk Framing
+- "Trust erosion is a risk we must prevent"
+- "Concentration of power threatens democracy"
+- Focus: Avoiding negative outcomes
+
+### Parameter Framing
+- "Trust is a parameter that AI affects in both directions"
+- "Power distribution is a variable we can influence through policy"
+- Focus: Understanding dynamics and identifying intervention points
+
+The parameter framing enables:
+
+1. **Better modeling**: Can estimate current levels, trends, and intervention effects
+2. **Clearer priorities**: Which parameters matter most for good outcomes?
+3. **Strategic allocation**: Where should resources go to maintain critical parameters?
+4. **Progress tracking**: Are our interventions actually improving parameter levels?
+
+---
+
+## Relationship to Other Sections
+
+| Section | Relationship to Parameters |
+|---------|---------------------------|
+| **Risks** | Many risks describe *decreases* in parameters (e.g., "trust erosion" = trust declining) |
+| **Interventions** | Interventions aim to *increase* or *stabilize* parameters |
+| **Metrics** | Metrics are *concrete measurements* of parameter levels |
+| **Models** | Analytical models often estimate parameter dynamics and trajectories |
+
+---
+
+## How to Use This Section
+
+### For Researchers
+- Understand which underlying variables matter for AI outcomes
+- Identify gaps between current and optimal parameter levels
+- Design studies to measure parameter changes
+
+### For Policymakers
+- Prioritize interventions based on which parameters are most degraded
+- Monitor parameter trends to assess policy effectiveness
+- Coordinate across domains (a single parameter may affect multiple risks)
+
+### For Forecasters
+- Use parameters as input variables for scenario modeling
+- Estimate how different interventions would shift parameter levels
+- Identify tipping points where parameter degradation becomes irreversible

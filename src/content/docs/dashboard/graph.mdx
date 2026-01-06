@@ -7,9 +7,14 @@ sidebar:
 importance: 0
 quality: 25
 llmSummary: "Interactive dashboard tool for visualizing entity relationships in the knowledge base using graph analysis techniques including cluster detection and centrality metrics. Provides metadata about connection patterns but no substantive AI safety content."
+tableOfContents: false
+fullWidth: true
 ---
 import EntityGraph from '../../../components/wiki/EntityGraph';
 import { findOrphans, detectClusters, getMostConnected } from '../../../lib/graph-analysis';
+import FullWidthLayout from '../../../components/FullWidthLayout';
+
+<FullWidthLayout />
 
 export const orphans = findOrphans();
 export const clusters = detectClusters();

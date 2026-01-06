@@ -22,6 +22,14 @@ const TooltipContext = createContext<{
   hideTooltip: () => {},
 });
 
+// Convert label to URL-friendly slug
+function toSlug(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 interface InteractiveViewProps {
   nodes: Node<CauseEffectNodeData>[];
   edges: Edge<CauseEffectEdgeData>[];
@@ -31,6 +39,8 @@ interface InteractiveViewProps {
     effect?: string;
   };
   subgroups?: Record<string, { label: string }>;
+  basePath?: string; // Base path for generated links (e.g., '/ai-transition-model')
+  className?: string; // Additional CSS class (e.g., 'iv-container--embedded')
 }
 
 // Global tooltip component (renders at root level to avoid overflow clipping)
@@ -53,7 +63,17 @@ function GlobalTooltip({ content, position }: { content: string | null; position
 }
 
 // Sub-item component with hover tooltip
-function SubItem({ item }: { item: { label: string; description?: string; href?: string } }) {
+function SubItem({
+  item,
+  nodeType,
+  nodeId,
+  basePath,
+}: {
+  item: { label: string; description?: string; href?: string };
+  nodeType?: 'cause' | 'intermediate' | 'effect';
+  nodeId?: string;
+  basePath?: string;
+}) {
   const { showTooltip, hideTooltip } = useContext(TooltipContext);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -64,8 +84,21 @@ function SubItem({ item }: { item: { label: string; description?: string; href?:
     }
   };
 
-  const content = item.href ? (
-    <a href={item.href} className="iv-subitem__link">{item.label}</a>
+  // Generate href based on basePath, nodeType, nodeId, and item label
+  let href = item.href;
+  if (!href && basePath && nodeType && nodeId) {
+    const typePathMap: Record<string, string> = {
+      cause: 'factors',
+      intermediate: 'scenarios',
+      effect: 'outcomes',
+    };
+    const typePath = typePathMap[nodeType];
+    const itemSlug = toSlug(item.label);
+    href = `${basePath}/${typePath}/${nodeId}/${itemSlug}`;
+  }
+
+  const content = href ? (
+    <a href={href} className="iv-subitem__link">{item.label}</a>
   ) : (
     item.label
   );
@@ -85,8 +118,10 @@ function SubItem({ item }: { item: { label: string; description?: string; href?:
 // Individual node item component
 function NodeItem({
   node,
+  basePath,
 }: {
   node: Node<CauseEffectNodeData>;
+  basePath?: string;
 }) {
   const { setHovered, hoveredId, connectedIds } = useContext(HighlightContext);
   const { showTooltip, hideTooltip } = useContext(TooltipContext);
@@ -128,7 +163,13 @@ function NodeItem({
         {hasSubItems && (
           <div className="iv-node__subitems">
             {node.data.subItems!.map((item, i) => (
-              <SubItem key={i} item={item} />
+              <SubItem
+                key={i}
+                item={item}
+                nodeType={node.data.type}
+                nodeId={node.id}
+                basePath={basePath}
+              />
             ))}
           </div>
         )}
@@ -143,11 +184,13 @@ function TierSection({
   nodes,
   subgroups,
   tierType,
+  basePath,
 }: {
   title: string;
   nodes: Node<CauseEffectNodeData>[];
   subgroups?: Record<string, { label: string }>;
   tierType: 'cause' | 'intermediate' | 'effect';
+  basePath?: string;
 }) {
   // Group by subgroup if applicable
   const groupedNodes = useMemo(() => {
@@ -191,6 +234,7 @@ function TierSection({
                     <NodeItem
                       key={node.id}
                       node={node}
+                      basePath={basePath}
                     />
                   ))}
                 </div>
@@ -203,6 +247,7 @@ function TierSection({
               <NodeItem
                 key={node.id}
                 node={node}
+                basePath={basePath}
               />
             ))}
           </div>
@@ -213,7 +258,7 @@ function TierSection({
 }
 
 // Main interactive view component
-export function InteractiveView({ nodes, edges, typeLabels, subgroups }: InteractiveViewProps) {
+export function InteractiveView({ nodes, edges, typeLabels, subgroups, basePath, className }: InteractiveViewProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
@@ -270,13 +315,14 @@ export function InteractiveView({ nodes, edges, typeLabels, subgroups }: Interac
   return (
     <HighlightContext.Provider value={highlightContextValue}>
       <TooltipContext.Provider value={tooltipContextValue}>
-        <div className="iv-container">
+        <div className={`iv-container ${className || ''}`}>
           {nodesByType['cause'] && nodesByType['cause'].length > 0 && (
             <TierSection
               title={typeLabels?.cause || 'Root Factors'}
               nodes={nodesByType['cause']}
               subgroups={subgroups}
               tierType="cause"
+              basePath={basePath}
             />
           )}
 
@@ -285,6 +331,7 @@ export function InteractiveView({ nodes, edges, typeLabels, subgroups }: Interac
               title={typeLabels?.intermediate || 'Scenarios'}
               nodes={nodesByType['intermediate']}
               tierType="intermediate"
+              basePath={basePath}
             />
           )}
 
@@ -293,6 +340,7 @@ export function InteractiveView({ nodes, edges, typeLabels, subgroups }: Interac
               title={typeLabels?.effect || 'Outcomes'}
               nodes={nodesByType['effect']}
               tierType="effect"
+              basePath={basePath}
             />
           )}
         </div>

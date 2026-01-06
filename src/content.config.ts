@@ -47,6 +47,8 @@ export const collections = {
         }).optional(),
         // Existing custom fields
         maturity: z.string().optional(),
+        // Layout options
+        fullWidth: z.boolean().optional(),
       }),
     }),
   }),

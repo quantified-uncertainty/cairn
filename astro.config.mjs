@@ -39,6 +39,7 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'Overview', slug: 'ai-transition-model' },
+                      { label: 'Parameter Table', slug: 'ai-transition-model/table' },
                       { label: 'Outcomes', collapsed: true, items: [
                           { slug: 'ai-transition-model/outcomes/existential-catastrophe' },
                           { slug: 'ai-transition-model/outcomes/long-term-trajectory' },
