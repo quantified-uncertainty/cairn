@@ -37,10 +37,10 @@ export function MetaView({
   };
 
   return (
-    <div className="max-w-3xl">
+    <div className="meta-view-container">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold">
+      <div className="meta-view-header">
+        <h1 className="meta-view-title">
           Page Metadata: {frontmatter.title}
         </h1>
         <Button variant="ghost" size="sm" onClick={handleBack}>

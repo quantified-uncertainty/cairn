@@ -51,10 +51,6 @@ const backlinks = database.backlinks?.[entityId] || [];
 
   {/* Regular content view */}
   <div id="content-view" class="view-content">
-    {/* Meta button - floats near title */}
-    {isAiTransitionModelPage && (
-      <a href="?meta" class="meta-link-btn" id="meta-link-btn" title="View page metadata">Meta</a>
-    )}
     {showPageStatus && (
       <div class="page-status-wrapper">
         <PageStatus
@@ -101,37 +97,100 @@ const backlinks = database.backlinks?.[entityId] || [];
       if (metaView) metaView.hidden = !showMeta;
     }
 
-    // Handle link clicks without full page reload
-    document.getElementById('meta-link-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      const url = new URL(window.location.href);
-      url.searchParams.set('meta', '');
-      window.history.pushState({}, '', url.toString());
-      updateView();
-    });
+    // Inject Meta button next to the page title
+    function injectMetaButton() {
+      const title = document.querySelector('.content-panel h1, .sl-container h1');
+      if (!title || document.getElementById('meta-link-btn')) return;
+
+      // Create wrapper for title + button
+      const wrapper = document.createElement('div');
+      wrapper.className = 'meta-title-wrapper';
+
+      // Insert wrapper before title, then move title inside
+      title.parentNode?.insertBefore(wrapper, title);
+      wrapper.appendChild(title);
+
+      // Create and add button
+      const btn = document.createElement('a');
+      btn.id = 'meta-link-btn';
+      btn.href = '?meta';
+      btn.className = 'meta-link-btn';
+      btn.textContent = 'Meta';
+      btn.title = 'View page metadata';
+      wrapper.appendChild(btn);
+
+      // Handle click
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = new URL(window.location.href);
+        url.searchParams.set('meta', '');
+        window.history.pushState({}, '', url.toString());
+        updateView();
+      });
+    }
 
     // Handle browser back/forward
     window.addEventListener('popstate', updateView);
 
-    // Initial state
-    updateView();
+    // Initial setup - wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        injectMetaButton();
+        updateView();
+      });
+    } else {
+      injectMetaButton();
+      updateView();
+    }
   </script>
 
   <style>
-    /* Meta button on content view */
+    /* Title wrapper with Meta button */
+    .meta-title-wrapper {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .meta-title-wrapper h1 {
+      margin: 0;
+      flex: 1;
+    }
+    /* Meta button styling */
     .meta-link-btn {
-      float: right;
       font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
+      padding: 0.25rem 0.75rem;
       background: var(--sl-color-gray-6);
       color: var(--sl-color-gray-3);
       border-radius: 4px;
       text-decoration: none;
-      margin-top: 0.25rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .meta-link-btn:hover {
       background: var(--sl-color-gray-5);
       color: var(--sl-color-white);
+    }
+    /* Meta view container */
+    #meta-view {
+      padding: 1rem 0 2rem;
+    }
+    /* Meta view component styles */
+    .meta-view-container {
+      max-width: 48rem;
+    }
+    .meta-view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--sl-color-gray-5);
+    }
+    .meta-view-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
     }
   </style>
 )}
