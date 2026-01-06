@@ -173,11 +173,17 @@ const backlinks = database.backlinks?.[entityId] || [];
     }
     /* Meta view container */
     #meta-view {
-      padding: 1rem 0 2rem;
+      padding: 1rem 1rem 2rem;
     }
     /* Meta view component styles */
     .meta-view-container {
       max-width: 48rem;
+      padding: 0 1rem;
+    }
+    @media (min-width: 50rem) {
+      .meta-view-container {
+        padding: 0;
+      }
     }
     .meta-view-header {
       display: flex;
