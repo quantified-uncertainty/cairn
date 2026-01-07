@@ -83,6 +83,7 @@ export { Mermaid } from './Mermaid';
 export { ModelPosition } from './ModelPosition';
 export { FactorKeyDebates } from './FactorKeyDebates';
 export { FactorRatings } from './FactorRatings';
+export { ScenarioRatings } from './ScenarioRatings';
 export { FactorRelatedContent } from './FactorRelatedContent';
 export { FactorScope } from './FactorScope';
 export { FactorSubItemsList, AllFactorsSubItems } from './FactorSubItemsList';

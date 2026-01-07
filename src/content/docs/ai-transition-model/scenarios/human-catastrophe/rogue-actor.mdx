@@ -11,8 +11,7 @@ ratings:
   uncertainty: 65
 ---
 
-import {Mermaid} from '../../../../../components/wiki';
-
+import {Mermaid, ScenarioRatings} from '../../../../../components/wiki';
 
 ## Overview
 
@@ -24,12 +23,7 @@ This is a key "misuse" risk that may be more tractable than alignment failures, 
 
 ## Ratings
 
-| Metric | Score | Interpretation |
-|--------|-------|----------------|
-| **Changeability** | 35/100 | Difficult to prevent rogue actors |
-| **X-risk Impact** | 70/100 | High existential risk potential |
-| **Trajectory Impact** | 45/100 | Moderate long-term impact |
-| **Uncertainty** | 65/100 | High uncertainty about capability democratization |
+<ScenarioRatings changeability={35} xriskImpact={70} trajectoryImpact={45} uncertainty={65} />
 
 ---
 
