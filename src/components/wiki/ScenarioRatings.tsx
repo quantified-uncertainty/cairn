@@ -10,26 +10,27 @@ interface ScenarioRatingsProps {
 function getInterpretation(value: number, metric: string): string {
   const level = value <= 33 ? 'low' : value <= 66 ? 'medium' : 'high';
 
+  // Interpretations for scenario pages (typically negative outcomes)
   const interpretations: Record<string, Record<string, string>> = {
     changeability: {
-      low: "Very difficult to change",
-      medium: "Moderately changeable",
-      high: "Relatively easy to influence",
+      low: "Hard to prevent or redirect",
+      medium: "Somewhat influenceable",
+      high: "More tractable to address",
     },
     xriskImpact: {
-      low: "Low existential risk potential",
-      medium: "Moderate existential risk potential",
-      high: "High existential risk potential",
+      low: "Limited direct extinction risk",
+      medium: "Meaningful extinction risk",
+      high: "Substantial extinction risk",
     },
     trajectoryImpact: {
-      low: "Low long-term impact",
-      medium: "Moderate long-term impact",
-      high: "High long-term impact",
+      low: "Minor effect on long-term welfare",
+      medium: "Significant effect on long-term welfare",
+      high: "Major effect on long-term welfare",
     },
     uncertainty: {
-      low: "Lower uncertainty",
-      medium: "Moderate uncertainty",
-      high: "High uncertainty",
+      low: "Relatively confident assessment",
+      medium: "Moderate uncertainty in estimates",
+      high: "High uncertainty; estimates speculative",
     },
   };
 
