@@ -1,5 +1,6 @@
 import React from 'react';
-import './wiki.css';
+import { Card } from '../ui/card';
+import { cn } from '../../lib/utils';
 
 interface Position {
   // Primary format
@@ -73,6 +74,12 @@ const normalizePosition = (pos: Position) => ({
   strength: pos.strength,
 });
 
+const confidenceIndicators = {
+  high: { text: '●●●', class: 'text-green-500' },
+  medium: { text: '●●○', class: 'text-amber-500' },
+  low: { text: '●○○', class: 'text-red-500' },
+};
+
 export function DisagreementMap({
   topic,
   description,
@@ -88,95 +95,122 @@ export function DisagreementMap({
   });
 
   return (
-    <div className="disagreement-map">
-      <div className="disagreement-header">
-        <span className="disagreement-icon">⚖️</span>
-        <span className="disagreement-topic">{topic}</span>
+    <Card className="my-6 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-muted border-b border-border">
+        <span>⚖️</span>
+        <span className="font-semibold">{topic}</span>
       </div>
 
-      {description && (
-        <p className="disagreement-description">{description}</p>
-      )}
+      <div className="p-4">
+        {/* Description */}
+        {description && (
+          <p className="text-sm text-muted-foreground mb-4">{description}</p>
+        )}
 
-      {spectrum && (
-        <div className="disagreement-spectrum">
-          <span className="spectrum-low">{spectrum.low}</span>
-          <div className="spectrum-bar"></div>
-          <span className="spectrum-high">{spectrum.high}</span>
+        {/* Spectrum bar */}
+        {spectrum && (
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-xs font-medium text-green-600 min-w-[80px]">{spectrum.low}</span>
+            <div
+              className="flex-1 h-2 rounded-full"
+              style={{
+                background: 'linear-gradient(to right, #22c55e, #f59e0b, #ef4444)'
+              }}
+            />
+            <span className="text-xs font-medium text-red-600 min-w-[80px] text-right">{spectrum.high}</span>
+          </div>
+        )}
+
+        {/* Positions list */}
+        <div className="flex flex-col gap-3">
+          {sortedPositions.map((pos, i) => {
+            const barWidth = parseEstimateForBar(pos.estimate, pos.strength);
+            const color = getPositionColor(pos.position, pos.strength);
+
+            return (
+              <div key={i} className="flex items-center gap-3">
+                {/* Actor name */}
+                <div className="w-[100px] flex-shrink-0 text-sm font-medium truncate">
+                  {pos.url ? (
+                    <a
+                      href={pos.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-foreground no-underline hover:underline"
+                    >
+                      {pos.actor}
+                    </a>
+                  ) : (
+                    pos.actor
+                  )}
+                </div>
+
+                {/* Bar + estimate */}
+                <div className="flex-1 flex items-center gap-2">
+                  <div className="relative flex-1 h-5 bg-muted rounded overflow-hidden">
+                    {barWidth !== null && (
+                      <div
+                        className="absolute inset-y-0 left-0 rounded transition-all"
+                        style={{
+                          width: `${barWidth}%`,
+                          backgroundColor: color
+                        }}
+                      />
+                    )}
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-foreground mix-blend-difference">
+                      {pos.estimate || ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Position text */}
+                <div className="w-[150px] flex-shrink-0">
+                  <div className="text-sm font-medium" style={{ color }}>
+                    {pos.position}
+                  </div>
+                  {pos.proponents && pos.proponents.length > 0 && (
+                    <div className="text-xs text-muted-foreground truncate">
+                      {pos.proponents.join(', ')}
+                    </div>
+                  )}
+                </div>
+
+                {/* Confidence indicator */}
+                {pos.confidence && confidenceIndicators[pos.confidence as keyof typeof confidenceIndicators] && (
+                  <span className={cn("text-xs tracking-tight", confidenceIndicators[pos.confidence as keyof typeof confidenceIndicators].class)}>
+                    {confidenceIndicators[pos.confidence as keyof typeof confidenceIndicators].text}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
-      )}
 
-      <div className="positions-list">
-        {sortedPositions.map((pos, i) => {
-          const barWidth = parseEstimateForBar(pos.estimate, pos.strength);
-          const color = getPositionColor(pos.position, pos.strength);
-
-          return (
-            <div key={i} className="position-row">
-              <div className="position-actor">
+        {/* Sources footer */}
+        {normalizedPositions.some(p => p.source) && (
+          <div className="mt-4 pt-3 border-t border-border text-xs text-muted-foreground">
+            <span className="font-medium mr-2">Sources:</span>
+            {normalizedPositions.filter(p => p.source).map((pos, i) => (
+              <span key={i} className="mr-1">
                 {pos.url ? (
-                  <a href={pos.url} target="_blank" rel="noopener noreferrer">
-                    {pos.actor}
+                  <a
+                    href={pos.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent-foreground no-underline hover:underline"
+                  >
+                    [{pos.actor}]
                   </a>
                 ) : (
-                  pos.actor
+                  `[${pos.actor}]`
                 )}
-              </div>
-
-              <div className="position-bar-container">
-                {barWidth !== null && (
-                  <div
-                    className="position-bar"
-                    style={{
-                      width: `${barWidth}%`,
-                      backgroundColor: color
-                    }}
-                  />
-                )}
-                <span className="position-estimate">{pos.estimate || ''}</span>
-              </div>
-
-              <div className="position-content">
-                <div
-                  className="position-label"
-                  style={{ color }}
-                >
-                  {pos.position}
-                </div>
-                {pos.proponents && pos.proponents.length > 0 && (
-                  <div className="position-proponents">
-                    {pos.proponents.join(', ')}
-                  </div>
-                )}
-              </div>
-
-              {pos.confidence && (
-                <span className={`confidence-indicator confidence-${pos.confidence}`}>
-                  {pos.confidence === 'high' ? '●●●' : pos.confidence === 'medium' ? '●●○' : '●○○'}
-                </span>
-              )}
-            </div>
-          );
-        })}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
-
-      {normalizedPositions.some(p => p.source) && (
-        <div className="position-sources">
-          <span className="sources-label">Sources:</span>
-          {normalizedPositions.filter(p => p.source).map((pos, i) => (
-            <span key={i} className="source-ref">
-              {pos.url ? (
-                <a href={pos.url} target="_blank" rel="noopener noreferrer">
-                  [{pos.actor}]
-                </a>
-              ) : (
-                `[${pos.actor}]`
-              )}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
+    </Card>
   );
 }
 

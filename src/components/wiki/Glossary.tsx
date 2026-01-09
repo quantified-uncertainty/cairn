@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import './wiki.css';
+import React from 'react';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Card } from '../ui/card';
 
 // Glossary terms database
 const glossaryTerms: Record<string, { definition: string; related?: string[] }> = {
@@ -147,32 +148,35 @@ interface GlossaryTermProps {
 }
 
 export function GlossaryTerm({ term, children }: GlossaryTermProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const entry = glossaryTerms[term];
 
   if (!entry) {
-    return <span className="glossary-unknown">{children || term}</span>;
+    return (
+      <span className="border-b border-dashed border-red-400 text-red-600 dark:text-red-400">
+        {children || term}
+      </span>
+    );
   }
 
   return (
-    <span
-      className="glossary-term"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <span className="glossary-term-text">{children || term}</span>
-      {isHovered && (
-        <span className="glossary-tooltip">
-          <strong>{term}</strong>
-          <span className="glossary-definition">{entry.definition}</span>
-          {entry.related && entry.related.length > 0 && (
-            <span className="glossary-related">
-              Related: {entry.related.join(', ')}
-            </span>
-          )}
+    <HoverCard openDelay={200} closeDelay={100}>
+      <HoverCardTrigger asChild>
+        <span className="border-b border-dotted border-accent-foreground cursor-help text-accent-foreground">
+          {children || term}
         </span>
-      )}
-    </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80" align="start">
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-foreground">{term}</h4>
+          <p className="text-sm text-muted-foreground m-0">{entry.definition}</p>
+          {entry.related && entry.related.length > 0 && (
+            <p className="text-xs text-muted-foreground m-0">
+              <span className="font-medium">Related:</span> {entry.related.join(', ')}
+            </p>
+          )}
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 
@@ -181,21 +185,27 @@ export function GlossaryList() {
   const sortedTerms = Object.keys(glossaryTerms).sort();
 
   return (
-    <div className="glossary-list">
-      {sortedTerms.map(term => (
-        <div key={term} className="glossary-entry">
-          <dt className="glossary-entry-term">{term}</dt>
-          <dd className="glossary-entry-definition">
-            {glossaryTerms[term].definition}
-            {glossaryTerms[term].related && (
-              <span className="glossary-entry-related">
-                Related: {glossaryTerms[term].related?.join(', ')}
-              </span>
-            )}
-          </dd>
-        </div>
-      ))}
-    </div>
+    <Card className="my-6 overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-3 bg-muted border-b border-border font-semibold">
+        <span>📖</span>
+        <span>Glossary</span>
+      </div>
+      <dl className="divide-y divide-border">
+        {sortedTerms.map(term => (
+          <div key={term} className="px-4 py-3 hover:bg-muted/50 transition-colors">
+            <dt className="font-semibold text-foreground">{term}</dt>
+            <dd className="mt-1 text-sm text-muted-foreground m-0">
+              {glossaryTerms[term].definition}
+              {glossaryTerms[term].related && (
+                <span className="block mt-1 text-xs text-muted-foreground/70">
+                  Related: {glossaryTerms[term].related?.join(', ')}
+                </span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </Card>
   );
 }
 

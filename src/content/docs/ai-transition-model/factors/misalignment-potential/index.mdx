@@ -1,0 +1,53 @@
+---
+title: "Misalignment Potential"
+description: "Root factor measuring the likelihood AI systems pursue unintended goals. Primary driver of AI Takeover scenarios."
+sidebar:
+  label: Overview
+  order: 0
+lastEdited: "2026-01-03"
+---
+import {Backlinks, DataInfoBox, FactorSubItemsList, FactorRelationshipDiagram, ImpactList} from '../../../../../components/wiki';
+
+<DataInfoBox entityId="misalignment-potential" />
+
+## Overview
+
+Misalignment Potential measures the likelihood that AI systems will pursue goals other than what we intend. This aggregate combines the technical and organizational factors that determine whether advanced AI systems might behave in harmful ways despite our efforts.
+
+**Primary outcome affected:** [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) ↑↑↑
+
+When misalignment potential is high, catastrophic loss of control, accidents at scale, and goal divergence become more likely. Reducing this potential is the most direct lever for reducing existential and catastrophic AI risk.
+
+---
+
+## Component Parameters
+
+<FactorRelationshipDiagram nodeId="misalignment-potential" direction="outgoing" showSubItems={true} client:load />
+
+<FactorSubItemsList factorId="misalignment-potential" client:load />
+
+---
+
+## Internal Dynamics
+
+These components interact:
+
+- **Interpretability enables alignment verification**: We can only confirm alignment if we understand model internals
+- **Safety culture sustains investment**: Without organizational commitment, safety research loses funding to capabilities
+- **Oversight requires interpretability**: Human overseers need tools to understand what systems are doing
+- **Gap closure requires all components**: No single factor is sufficient; safety capacity emerges from their combination
+
+---
+
+## How This Affects Scenarios
+
+<ImpactList nodeId="misalignment-potential" direction="from" client:load />
+
+---
+
+## Related Pages
+
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) — The outcome this primarily affects
+- [Misuse Potential](/ai-transition-model/factors/misuse-potential/) — The complementary factor for human-caused catastrophe
+
+<Backlinks entityId="misalignment-potential" />

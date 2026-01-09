@@ -1,0 +1,172 @@
+---
+/**
+ * Static SVG version of MiniModelDiagram for use in Starlight sidebar.
+ * This avoids React hydration issues in component overrides.
+ */
+
+interface Props {
+  selectedNodeId?: string;
+}
+
+const { selectedNodeId } = Astro.props;
+
+// Node definitions with positions
+// slug must match actual folder/file names in the knowledge base
+const NODES = [
+  { id: 'misalignment-potential', label: 'Safety', slug: 'misalignment-potential', tier: 'cause', x: 3, y: 3, width: 36, height: 16 },
+  { id: 'ai-capabilities', label: 'Capabilities', slug: 'ai-capabilities', tier: 'cause', x: 42, y: 3, width: 48, height: 16 },
+  { id: 'ai-uses', label: 'Uses', slug: 'ai-uses', tier: 'cause', x: 93, y: 3, width: 28, height: 16 },
+  { id: 'ai-ownership', label: 'Ownership', slug: 'ai-ownership', tier: 'cause', x: 124, y: 3, width: 44, height: 16 },
+  { id: 'civ-competence', label: 'Civ Comp', slug: 'civilizational-competence', tier: 'cause', x: 178, y: 3, width: 42, height: 16 },
+  { id: 'transition-turbulence', label: 'Turbulence', slug: 'transition-turbulence', tier: 'cause', x: 223, y: 3, width: 46, height: 16 },
+  { id: 'misuse-potential', label: 'Misuse', slug: 'misuse-potential', tier: 'cause', x: 272, y: 3, width: 34, height: 16 },
+  { id: 'ai-takeover', label: 'AI Takeover', slug: 'ai-takeover', tier: 'intermediate', x: 22, y: 32, width: 62, height: 18 },
+  { id: 'human-catastrophe', label: 'Human Catastrophe', slug: 'human-catastrophe', tier: 'intermediate', x: 108, y: 32, width: 88, height: 18 },
+  { id: 'long-term-lockin', label: 'Lock-in', slug: 'long-term-lockin', tier: 'intermediate', x: 220, y: 32, width: 48, height: 18 },
+  { id: 'existential-catastrophe', label: 'Existential Catastrophe', slug: 'existential-catastrophe', tier: 'effect', x: 40, y: 62, width: 100, height: 18 },
+  { id: 'long-term-trajectory', label: 'Long-term Trajectory', slug: 'long-term-trajectory', tier: 'effect', x: 165, y: 62, width: 90, height: 18 },
+];
+
+const EDGES = [
+  { source: 'misalignment-potential', target: 'ai-takeover' },
+  { source: 'ai-capabilities', target: 'ai-takeover' },
+  { source: 'misuse-potential', target: 'human-catastrophe' },
+  { source: 'transition-turbulence', target: 'human-catastrophe' },
+  { source: 'civ-competence', target: 'ai-takeover' },
+  { source: 'civ-competence', target: 'human-catastrophe' },
+  { source: 'ai-ownership', target: 'long-term-lockin' },
+  { source: 'ai-uses', target: 'long-term-lockin' },
+  { source: 'civ-competence', target: 'long-term-lockin' },
+  { source: 'ai-takeover', target: 'existential-catastrophe' },
+  { source: 'human-catastrophe', target: 'existential-catastrophe' },
+  { source: 'ai-takeover', target: 'long-term-trajectory' },
+  { source: 'long-term-lockin', target: 'long-term-trajectory' },
+];
+
+const TIER_COLORS = {
+  cause: { bg: '#f1f5f9', bgSelected: '#3b82f6', border: '#cbd5e1', text: '#94a3b8', textSelected: '#ffffff' },
+  intermediate: { bg: '#f5f3ff', bgSelected: '#8b5cf6', border: '#ddd6fe', text: '#94a3b8', textSelected: '#ffffff' },
+  effect: { bg: '#fefce8', bgSelected: '#f59e0b', border: '#fef08a', text: '#94a3b8', textSelected: '#ffffff' },
+};
+
+const OUTCOME_COLORS = {
+  'existential-catastrophe': { bg: '#fef2f2', bgSelected: '#ef4444', border: '#fecaca', text: '#94a3b8', textSelected: '#ffffff' },
+  'long-term-trajectory': { bg: '#fefce8', bgSelected: '#f59e0b', border: '#fef08a', text: '#94a3b8', textSelected: '#ffffff' },
+};
+
+const BORDER_RADIUS = { cause: 4, intermediate: 8, effect: 16 };
+
+function getNodeById(id: string) {
+  return NODES.find(n => n.id === id);
+}
+
+function getNodeColors(node: typeof NODES[0]) {
+  if (node.tier === 'effect' && OUTCOME_COLORS[node.id as keyof typeof OUTCOME_COLORS]) {
+    return OUTCOME_COLORS[node.id as keyof typeof OUTCOME_COLORS];
+  }
+  return TIER_COLORS[node.tier as keyof typeof TIER_COLORS];
+}
+
+function getEdgePath(edge: typeof EDGES[0]) {
+  const source = getNodeById(edge.source);
+  const target = getNodeById(edge.target);
+  if (!source || !target) return '';
+  const sourceX = source.x + source.width / 2;
+  const sourceY = source.y + source.height;
+  const targetX = target.x + target.width / 2;
+  const targetY = target.y;
+  const midY = sourceY + 4;
+  return `M ${sourceX} ${sourceY} L ${sourceX} ${midY} L ${targetX} ${midY} L ${targetX} ${targetY}`;
+}
+
+function getNodeHref(node: typeof NODES[0]) {
+  const base = '/ai-transition-model';
+  switch (node.tier) {
+    case 'cause':
+      return `${base}/factors/${node.slug}/`;
+    case 'intermediate':
+      return `${base}/scenarios/${node.slug}/`;
+    case 'effect':
+      return `${base}/outcomes/${node.slug}/`;
+    default:
+      return `${base}/`;
+  }
+}
+---
+
+<div class="mini-model-diagram-static">
+  <svg viewBox="0 0 310 83" preserveAspectRatio="xMidYMid meet">
+    <!-- Edges -->
+    <g class="edges">
+      {EDGES.map((edge) => (
+        <path d={getEdgePath(edge)} fill="none" stroke="#e5e7eb" stroke-width="1" />
+      ))}
+    </g>
+
+    <!-- Nodes -->
+    <g class="nodes">
+      {NODES.map((node) => {
+        const isSelected = node.id === selectedNodeId;
+        const colors = getNodeColors(node);
+        const borderRadius = BORDER_RADIUS[node.tier as keyof typeof BORDER_RADIUS];
+        const href = getNodeHref(node);
+
+        return (
+          <a href={href}>
+            <g class={`node ${isSelected ? 'node--selected' : ''}`} style={`cursor: pointer; opacity: ${isSelected ? 1 : 0.85};`}>
+              <rect
+                x={node.x}
+                y={node.y}
+                width={node.width}
+                height={node.height}
+                rx={borderRadius}
+                ry={borderRadius}
+                fill={isSelected ? colors.bgSelected : colors.bg}
+                stroke={colors.border}
+                stroke-width={isSelected ? 2 : 1}
+              />
+              <text
+                x={node.x + node.width / 2}
+                y={node.y + node.height / 2}
+                text-anchor="middle"
+                dominant-baseline="central"
+                fill={isSelected ? colors.textSelected : colors.text}
+                class="node-label"
+              >
+                {node.label}
+              </text>
+            </g>
+          </a>
+        );
+      })}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .mini-model-diagram-static {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .mini-model-diagram-static svg {
+    width: 100%;
+    height: auto;
+    background: transparent;
+  }
+
+  .node-label {
+    font-size: 6.5px;
+    font-weight: 500;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .node:hover rect {
+    filter: brightness(0.95);
+  }
+
+  .node--selected rect {
+    filter: none;
+  }
+</style>

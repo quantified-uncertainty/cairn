@@ -1,45 +1,180 @@
 ---
 /**
- * Custom PageFrame that auto-injects PageStatus from frontmatter
+ * Custom PageFrame for AI Transition Model pages
  *
- * This overrides Starlight's default PageFrame to add the PageStatus
- * component at the top of content pages when quality/llmSummary/etc
- * are defined in frontmatter.
+ * Provides ?meta view that replaces page content with metadata debugging.
  */
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageFrame.astro';
-import { PageStatus } from '../wiki/PageStatus';
+import { MetaView } from '../MetaView';
+import database from '../../data/database.json';
 
 // Extract frontmatter from the entry data
-const { entry } = Astro.props;
+const starlightRoute = Astro.locals.starlightRoute;
+const entry = starlightRoute?.entry;
 const frontmatter = entry?.data || {};
+const slug = entry?.slug || '';
 
-// Check if this is a knowledge-base page with editorial metadata
-const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo;
-const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
-const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
+// Check if this is an ai-transition-model page (for meta view)
+const isAiTransitionModelPage = slug.startsWith('ai-transition-model/') || slug === 'ai-transition-model';
+
+// Extract entity ID from slug
+const slugParts = slug.split('/');
+let entityId = slugParts[slugParts.length - 1];
+if (entityId === 'index' || !entityId) {
+  entityId = slugParts[slugParts.length - 2] || slugParts[0];
+}
+
+// Get entity data for meta view
+const entity = database.entities?.find((e: any) => e.id === entityId);
+const parameterGraph = database.parameterGraph || {};
+const graphNode = parameterGraph.nodes?.find((n: any) => n.id === entityId);
+const incomingEdges = parameterGraph.edges?.filter((e: any) => e.target === entityId) || [];
+const outgoingEdges = parameterGraph.edges?.filter((e: any) => e.source === entityId) || [];
+const backlinks = database.backlinks?.[entityId] || [];
 ---
 
 <Default {...Astro.props}>
   <slot name="header" slot="header" />
   <slot name="sidebar" slot="sidebar" />
-  {showPageStatus && (
-    <div class="page-status-wrapper">
-      <PageStatus
-        client:load
-        quality={frontmatter.quality}
-        llmSummary={frontmatter.llmSummary}
-        lastEdited={frontmatter.lastEdited}
-        todo={frontmatter.todo}
-        devOnly={true}
+
+  {/* Regular content view */}
+  <div id="content-view" class="view-content">
+    <slot />
+  </div>
+
+  {/* Meta view - shown when ?meta is in URL */}
+  {isAiTransitionModelPage && (
+    <div id="meta-view" hidden>
+      <MetaView
+        client:only="react"
+        slug={slug}
+        frontmatter={frontmatter}
+        entity={entity}
+        graphNode={graphNode}
+        incomingEdges={incomingEdges}
+        outgoingEdges={outgoingEdges}
+        backlinks={backlinks}
+        entityId={entityId}
       />
     </div>
   )}
-  <slot />
 </Default>
 
-<style>
-  .page-status-wrapper {
-    margin-bottom: 1rem;
-  }
-</style>
+{isAiTransitionModelPage && (
+  <script>
+    function updateView() {
+      const params = new URLSearchParams(window.location.search);
+      const showMeta = params.has('meta');
+
+      const contentView = document.getElementById('content-view');
+      const metaView = document.getElementById('meta-view');
+
+      if (contentView) contentView.hidden = showMeta;
+      if (metaView) metaView.hidden = !showMeta;
+    }
+
+    // Inject Meta button next to the page title
+    function injectMetaButton() {
+      const title = document.querySelector('.content-panel h1, .sl-container h1');
+      if (!title || document.getElementById('meta-link-btn')) return;
+
+      // Create wrapper for title + button
+      const wrapper = document.createElement('div');
+      wrapper.className = 'meta-title-wrapper';
+
+      // Insert wrapper before title, then move title inside
+      title.parentNode?.insertBefore(wrapper, title);
+      wrapper.appendChild(title);
+
+      // Create and add button
+      const btn = document.createElement('a');
+      btn.id = 'meta-link-btn';
+      btn.href = '?meta';
+      btn.className = 'meta-link-btn';
+      btn.textContent = 'Meta';
+      btn.title = 'View page metadata';
+      wrapper.appendChild(btn);
+
+      // Handle click
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = new URL(window.location.href);
+        url.searchParams.set('meta', '');
+        window.history.pushState({}, '', url.toString());
+        updateView();
+      });
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', updateView);
+
+    // Initial setup - wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        injectMetaButton();
+        updateView();
+      });
+    } else {
+      injectMetaButton();
+      updateView();
+    }
+  </script>
+
+  <style>
+    /* Title wrapper with Meta button */
+    .meta-title-wrapper {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .meta-title-wrapper h1 {
+      margin: 0;
+      flex: 1;
+    }
+    /* Meta button styling */
+    .meta-link-btn {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--sl-color-gray-6);
+      color: var(--sl-color-gray-3);
+      border-radius: 4px;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .meta-link-btn:hover {
+      background: var(--sl-color-gray-5);
+      color: var(--sl-color-white);
+    }
+    /* Meta view container */
+    #meta-view {
+      padding: 1rem 1rem 2rem;
+    }
+    /* Meta view component styles */
+    .meta-view-container {
+      max-width: 48rem;
+      padding: 0 1rem;
+    }
+    @media (min-width: 50rem) {
+      .meta-view-container {
+        padding: 0;
+      }
+    }
+    .meta-view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--sl-color-gray-5);
+    }
+    .meta-view-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  </style>
+)}
+

@@ -227,6 +227,12 @@ export default function CauseEffectGraph({
           >
             Data (YAML)
           </button>
+          <a
+            href="/ai-transition-model-list"
+            className="ceg-segment-btn ceg-segment-link"
+          >
+            List View
+          </a>
         </div>
 
         <div className="ceg-button-group">

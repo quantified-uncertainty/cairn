@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import './wiki.css';
+import { Card } from '../ui/card';
+import { cn } from '../../lib/utils';
 
 interface RiskNode {
   id: string;
@@ -152,13 +153,8 @@ export function RiskDependencyGraph({
 
     const color = EDGE_COLORS[edge.type] || '#666';
 
-    // Calculate arrow position
-    const angle = Math.atan2(y2 - y1, x2 - x1);
-    const arrowX = x2 - 25 * Math.cos(angle);
-    const arrowY = y2 - 25 * Math.sin(angle);
-
     return (
-      <g key={`edge-${index}`} className={`edge ${isHighlighted ? 'highlighted' : ''}`}>
+      <g key={`edge-${index}`} style={{ opacity: isHighlighted ? 1 : 0.4, transition: 'opacity 0.2s' }}>
         <defs>
           <marker
             id={`arrowhead-${index}`}
@@ -180,7 +176,6 @@ export function RiskDependencyGraph({
           fill="none"
           stroke={color}
           strokeWidth={isHighlighted ? 2.5 : 1.5}
-          opacity={isHighlighted ? 1 : 0.4}
           markerEnd={`url(#arrowhead-${index})`}
           strokeDasharray={edge.type === 'mitigates' || edge.type === 'blocks' ? '5,5' : 'none'}
         />
@@ -191,7 +186,6 @@ export function RiskDependencyGraph({
             fontSize="10"
             fill="#666"
             textAnchor="middle"
-            opacity={isHighlighted ? 1 : 0.5}
           >
             {edge.label}
           </text>
@@ -213,12 +207,11 @@ export function RiskDependencyGraph({
     return (
       <g
         key={node.id}
-        className={`node ${isHighlighted ? 'highlighted' : ''}`}
         transform={`translate(${node.x}, ${node.y})`}
         onMouseEnter={() => setHoveredNode(node.id)}
         onMouseLeave={() => setHoveredNode(null)}
         onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: 'pointer', opacity: hoveredNode && !isHighlighted ? 0.3 : 1, transition: 'opacity 0.2s' }}
       >
         <rect
           x={-50}
@@ -229,7 +222,6 @@ export function RiskDependencyGraph({
           fill={colors.bg}
           stroke={colors.border}
           strokeWidth={isHighlighted ? 3 : 2}
-          opacity={hoveredNode && !isHighlighted ? 0.3 : 1}
         />
         <text
           x={0}
@@ -250,17 +242,18 @@ export function RiskDependencyGraph({
   const connectedEdges = selectedNode ? getConnectedEdges(selectedNode) : [];
 
   return (
-    <div className="risk-dependency-graph">
-      {title && <h3 className="graph-title">{title}</h3>}
-      {description && <p className="graph-description">{description}</p>}
+    <Card className="my-6 p-6 bg-muted/50">
+      {title && <h3 className="text-xl font-semibold text-foreground m-0 mb-2">{title}</h3>}
+      {description && <p className="text-sm text-muted-foreground mb-4">{description}</p>}
 
-      <div className="graph-legend">
-        <div className="legend-section">
-          <span className="legend-label">Nodes:</span>
+      {/* Legend */}
+      <div className="flex flex-wrap gap-4 mb-4 p-3 bg-background rounded-lg text-xs">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-muted-foreground">Nodes:</span>
           {Object.entries(CATEGORY_COLORS).map(([cat, colors]) => (
             <span
               key={cat}
-              className="legend-item"
+              className="px-2 py-1 rounded border font-medium capitalize"
               style={{
                 backgroundColor: colors.bg,
                 borderColor: colors.border,
@@ -271,12 +264,12 @@ export function RiskDependencyGraph({
             </span>
           ))}
         </div>
-        <div className="legend-section">
-          <span className="legend-label">Edges:</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-muted-foreground">Edges:</span>
           {Object.entries(EDGE_COLORS).map(([type, color]) => (
-            <span key={type} className="legend-edge">
+            <span key={type} className="flex items-center gap-1 text-muted-foreground">
               <span
-                className="edge-line"
+                className="w-5 h-0.5"
                 style={{
                   backgroundColor: color,
                   borderStyle: (type === 'mitigates' || type === 'blocks') ? 'dashed' : 'solid'
@@ -288,28 +281,27 @@ export function RiskDependencyGraph({
         </div>
       </div>
 
+      {/* SVG Graph */}
       <svg
         width={width}
         height={height}
         viewBox={`0 0 ${width} ${height}`}
-        className="graph-svg"
+        className="w-full h-auto max-w-full bg-background rounded-lg border border-border"
       >
-        {/* Render edges first (behind nodes) */}
-        <g className="edges">
+        <g>
           {edges.map((edge, i) => renderEdge(edge, i))}
         </g>
-
-        {/* Render nodes on top */}
-        <g className="nodes">
+        <g>
           {layoutNodes.map(node => renderNode(node))}
         </g>
       </svg>
 
+      {/* Selected node details */}
       {selectedNodeData && (
-        <div className="node-details">
-          <h4>{selectedNodeData.label}</h4>
+        <div className="mt-4 p-4 bg-background rounded-lg border border-border">
+          <h4 className="text-lg font-semibold text-foreground m-0 mb-2">{selectedNodeData.label}</h4>
           <span
-            className="node-category"
+            className="inline-block px-2 py-1 rounded border text-xs font-medium capitalize mb-2"
             style={{
               backgroundColor: CATEGORY_COLORS[selectedNodeData.category].bg,
               color: CATEGORY_COLORS[selectedNodeData.category].text,
@@ -319,18 +311,18 @@ export function RiskDependencyGraph({
             {selectedNodeData.category}
           </span>
           {selectedNodeData.description && (
-            <p>{selectedNodeData.description}</p>
+            <p className="text-sm text-muted-foreground mt-2 mb-0">{selectedNodeData.description}</p>
           )}
           {connectedEdges.length > 0 && (
-            <div className="connections">
-              <strong>Connections:</strong>
-              <ul>
+            <div className="mt-3">
+              <strong className="text-sm text-foreground">Connections:</strong>
+              <ul className="mt-1 pl-5 m-0">
                 {connectedEdges.map((edge, i) => {
                   const other = edge.from === selectedNode ? edge.to : edge.from;
                   const otherNode = getNodeById(other);
                   const direction = edge.from === selectedNode ? '→' : '←';
                   return (
-                    <li key={i}>
+                    <li key={i} className="text-sm text-muted-foreground leading-relaxed">
                       <span style={{ color: EDGE_COLORS[edge.type] }}>{edge.type}</span>
                       {' '}{direction} {otherNode?.label}
                     </li>
@@ -341,6 +333,6 @@ export function RiskDependencyGraph({
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

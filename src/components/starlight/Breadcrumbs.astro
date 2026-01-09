@@ -1,0 +1,201 @@
+---
+/**
+ * Breadcrumbs component for AI Transition Model pages
+ * Shows navigation path like: AI Transition Model > Scenarios > Long-term Lock-in > Values
+ */
+
+const pathname = Astro.url.pathname;
+
+// Only show breadcrumbs for AI Transition Model pages with nesting
+const isAITransitionModelPage = pathname.includes('/ai-transition-model/');
+const pathParts = pathname.split('/').filter(Boolean);
+
+// Skip if not AI Transition Model or at root level
+const showBreadcrumbs = isAITransitionModelPage && pathParts.length > 1;
+
+// AI Factors vs Civilizational Factors
+const aiFactors = ['misalignment-potential', 'ai-capabilities', 'ai-uses', 'ai-ownership'];
+const civFactors = ['civilizational-competence', 'transition-turbulence', 'misuse-potential'];
+
+// Map slugs to readable display names
+const displayNames: Record<string, string> = {
+  'ai-transition-model': 'AI Transition Model',
+  'factors': 'Factors', // Will be overridden dynamically
+  'scenarios': 'Scenarios',
+  'outcomes': 'Outcomes',
+  'parameters': 'Parameters',
+  // Factor names
+  'misalignment-potential': 'Misalignment Potential',
+  'ai-capabilities': 'AI Capabilities',
+  'ai-uses': 'AI Uses',
+  'ai-ownership': 'AI Ownership',
+  'civilizational-competence': 'Civilizational Competence',
+  'transition-turbulence': 'Transition Turbulence',
+  'misuse-potential': 'Misuse Potential',
+  // Scenario names
+  'ai-takeover': 'AI Takeover',
+  'human-catastrophe': 'Human Catastrophe',
+  'long-term-lockin': 'Long-term Lock-in',
+  // Outcome names
+  'existential-catastrophe': 'Existential Catastrophe',
+  'long-term-trajectory': 'Long-term Trajectory',
+  // Sub-scenarios
+  'rapid': 'Rapid',
+  'gradual': 'Gradual',
+  'state-actor': 'State Actor',
+  'rogue-actor': 'Rogue Actor',
+  'economic-power': 'Economic Power',
+  'political-power': 'Political Power',
+  'epistemics': 'Epistemics',
+  'values': 'Values',
+  'suffering-lock-in': 'Suffering Lock-in',
+  // Parameter names
+  'technical-ai-safety': 'Technical AI Safety',
+  'ai-governance': 'AI Governance',
+  'lab-safety-practices': 'Lab Safety Practices',
+  'compute': 'Compute',
+  'algorithms': 'Algorithms',
+  'adoption': 'Adoption',
+  'recursive-ai-capabilities': 'Recursive AI Capabilities',
+  'industries': 'Industries',
+  'governments': 'Governments',
+  'coordination': 'Coordination',
+  'countries': 'Countries',
+  'companies': 'Companies',
+  'shareholders': 'Shareholders',
+  'governance': 'Governance',
+  'adaptability': 'Adaptability',
+  'economic-stability': 'Economic Stability',
+  'racing-intensity': 'Racing Intensity',
+  'biological-threat-exposure': 'Biological Threat Exposure',
+  'cyber-threat-exposure': 'Cyber Threat Exposure',
+  'robot-threat-exposure': 'Robot Threat Exposure',
+  'surprise-threat-exposure': 'Surprise Threat Exposure',
+  // Generic fallbacks
+  'table': 'Parameter Table',
+  'index': '',  // Skip index in display
+};
+
+// Build breadcrumb items
+interface BreadcrumbItem {
+  label: string;
+  href: string;
+  isCurrent: boolean;
+}
+
+function buildBreadcrumbs(): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [];
+  let currentPath = '';
+
+  for (let i = 0; i < pathParts.length; i++) {
+    const part = pathParts[i];
+    currentPath += '/' + part;
+
+    // Skip 'index' in the path
+    if (part === 'index') continue;
+
+    let label = displayNames[part] || part.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+    // Dynamically determine "AI Factors" vs "Civilizational Factors"
+    if (part === 'factors' && i + 1 < pathParts.length) {
+      const nextPart = pathParts[i + 1];
+      if (aiFactors.includes(nextPart)) {
+        label = 'AI Factors';
+      } else if (civFactors.includes(nextPart)) {
+        label = 'Civilizational Factors';
+      }
+    }
+
+    const isCurrent = i === pathParts.length - 1;
+
+    items.push({
+      label,
+      href: currentPath + '/',
+      isCurrent
+    });
+  }
+
+  return items;
+}
+
+const breadcrumbs = showBreadcrumbs ? buildBreadcrumbs() : [];
+---
+
+{showBreadcrumbs && breadcrumbs.length > 1 && (
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
+      {breadcrumbs.map((item, index) => (
+        <li>
+          {!item.isCurrent ? (
+            <>
+              <a href={item.href}>{item.label}</a>
+              <span class="separator" aria-hidden="true">/</span>
+            </>
+          ) : (
+            <span class="current" aria-current="page">{item.label}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .breadcrumbs {
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumbs li {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .breadcrumbs a {
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--sl-color-white);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs .separator {
+    color: var(--sl-color-gray-4);
+    margin: 0 0.125rem;
+  }
+
+  .breadcrumbs .current {
+    color: var(--sl-color-gray-2);
+    font-weight: 500;
+  }
+
+  /* Truncate long breadcrumbs on mobile */
+  @media (max-width: 50rem) {
+    .breadcrumbs {
+      font-size: 0.75rem;
+    }
+
+    .breadcrumbs a,
+    .breadcrumbs .current {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+</style>

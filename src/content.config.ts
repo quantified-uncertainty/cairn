@@ -38,15 +38,24 @@ export const collections = {
         todo: z.string().optional(),
         // Reference to primary page (for reference-style stubs)
         seeAlso: z.string().optional(),
-        // Model page ratings
+        // Model page ratings (1-5 scale)
         ratings: z.object({
           novelty: z.number().min(1).max(5).optional(),
           rigor: z.number().min(1).max(5).optional(),
           actionability: z.number().min(1).max(5).optional(),
           completeness: z.number().min(1).max(5).optional(),
+          // Scenario ratings (0-100 scale)
+          changeability: z.number().min(0).max(100).optional(),
+          xriskImpact: z.number().min(0).max(100).optional(),
+          trajectoryImpact: z.number().min(0).max(100).optional(),
+          uncertainty: z.number().min(0).max(100).optional(),
         }).optional(),
         // Existing custom fields
         maturity: z.string().optional(),
+        // Layout options
+        fullWidth: z.boolean().optional(),
+        // Entity ID for sidebar InfoBox (when filename doesn't match entity ID)
+        entityId: z.string().optional(),
       }),
     }),
   }),

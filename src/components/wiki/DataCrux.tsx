@@ -8,7 +8,9 @@
 
 import React from 'react';
 import { getCruxData } from '../../data';
-import './wiki.css';
+import { Card } from '../ui/card';
+import { cn } from '../../lib/utils';
+import { importanceColors, resolvabilityLabels, type ImportanceLevel } from './shared/style-config';
 
 interface CruxPosition {
   view: string;
@@ -40,19 +42,6 @@ interface DataCruxProps {
   relevantResearch?: RelevantResearch[];
 }
 
-const importanceColors: Record<string, string> = {
-  low: '#6b7280',
-  medium: '#eab308',
-  high: '#f97316',
-  critical: '#dc2626',
-};
-
-const resolvabilityLabels: Record<string, string> = {
-  soon: 'Potentially soon (months)',
-  years: 'Years of research',
-  decades: 'Decades',
-  never: 'May never resolve',
-};
 
 export function DataCrux({
   dataId,
@@ -75,9 +64,9 @@ export function DataCrux({
     const fetchedData = getCruxData(dataId);
     if (!fetchedData) {
       return (
-        <div className="crux-box crux-box--empty">
-          <p>No crux found with ID: {dataId}</p>
-        </div>
+        <Card className="my-6 p-4 border-dashed">
+          <p className="text-muted-foreground m-0">No crux found with ID: {dataId}</p>
+        </Card>
       );
     }
     data = fetchedData;
@@ -112,106 +101,130 @@ export function DataCrux({
 
   if (!question) {
     return (
-      <div className="crux-box crux-box--empty">
-        <p>Crux requires a question prop or dataId</p>
-      </div>
+      <Card className="my-6 p-4 border-dashed">
+        <p className="text-muted-foreground m-0">Crux requires a question prop or dataId</p>
+      </Card>
     );
   }
 
   return (
-    <div className="crux-box">
-      <div className="crux-header">
-        <span className="crux-icon">🔑</span>
-        <span className="crux-label">Key Crux</span>
-        {domain && <span className="crux-domain">{domain}</span>}
+    <Card className="my-6 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/10 border-b border-border">
+        <span>🔑</span>
+        <span className="font-semibold">Key Crux</span>
+        {domain && (
+          <span className="text-xs px-2 py-0.5 bg-muted rounded">{domain}</span>
+        )}
         {importance && (
-          <span
-            className="crux-importance"
-            style={{ backgroundColor: importanceColors[importance] }}
-          >
+          <span className={cn("text-xs px-2 py-0.5 text-white rounded ml-auto", importanceColors[importance as ImportanceLevel]?.bg)}>
             {importance}
           </span>
         )}
       </div>
 
-      <h4 className="crux-question">{question}</h4>
+      <div className="p-4">
+        {/* Question */}
+        <h4 className="text-lg font-semibold text-foreground mt-0 mb-3">{question}</h4>
 
-      {description && <p className="crux-description">{description}</p>}
+        {/* Description */}
+        {description && (
+          <p className="text-sm text-muted-foreground mb-4">{description}</p>
+        )}
 
-      {currentState && (
-        <div className="crux-current-state">
-          <strong>Current state:</strong> {currentState}
-        </div>
-      )}
-
-      {resolvability && (
-        <div className="crux-resolvability">
-          <strong>Resolvability:</strong> {resolvabilityLabels[resolvability] || resolvability}
-        </div>
-      )}
-
-      {positions && positions.length > 0 && (
-        <div className="crux-positions">
-          <h5>Positions:</h5>
-          {positions.map((pos, i) => (
-            <div key={i} className="crux-position">
-              <div className="crux-position-view">
-                <strong>{pos.view}</strong>
-                {pos.probability && (
-                  <span className="crux-position-prob"> ({pos.probability})</span>
-                )}
+        {/* Current state & Resolvability */}
+        {(currentState || resolvability) && (
+          <div className="flex flex-col gap-2 mb-4 text-sm">
+            {currentState && (
+              <div>
+                <strong className="text-foreground">Current state:</strong>{' '}
+                <span className="text-muted-foreground">{currentState}</span>
               </div>
-              {pos.holders && pos.holders.length > 0 && (
-                <div className="crux-position-holders">
-                  Held by: {pos.holders.join(', ')}
+            )}
+            {resolvability && (
+              <div>
+                <strong className="text-foreground">Resolvability:</strong>{' '}
+                <span className="text-muted-foreground">{resolvabilityLabels[resolvability] || resolvability}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Positions */}
+        {positions && positions.length > 0 && (
+          <div className="mb-4">
+            <h5 className="text-sm font-semibold text-muted-foreground mb-2">Positions:</h5>
+            <div className="flex flex-col gap-3">
+              {positions.map((pos, i) => (
+                <div key={i} className="pl-3 border-l-2 border-amber-500/50">
+                  <div className="flex items-baseline gap-2">
+                    <strong className="text-foreground">{pos.view}</strong>
+                    {pos.probability && (
+                      <span className="text-xs text-muted-foreground">({pos.probability})</span>
+                    )}
+                  </div>
+                  {pos.holders && pos.holders.length > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Held by: {pos.holders.join(', ')}
+                    </div>
+                  )}
+                  {pos.implications && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Implications: {pos.implications}
+                    </div>
+                  )}
                 </div>
-              )}
-              {pos.implications && (
-                <div className="crux-position-implications">
-                  Implications: {pos.implications}
-                </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
 
-      {wouldUpdateOn && wouldUpdateOn.length > 0 && (
-        <div className="crux-would-update">
-          <h5>Would update on:</h5>
-          <ul>
-            {wouldUpdateOn.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {/* Would update on */}
+        {wouldUpdateOn && wouldUpdateOn.length > 0 && (
+          <div className="mb-4">
+            <h5 className="text-sm font-semibold text-muted-foreground mb-2">Would update on:</h5>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 m-0">
+              {wouldUpdateOn.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {relatedCruxes && relatedCruxes.length > 0 && (
-        <div className="crux-related">
-          <strong>Related cruxes:</strong> {relatedCruxes.join(', ')}
-        </div>
-      )}
+        {/* Related cruxes */}
+        {relatedCruxes && relatedCruxes.length > 0 && (
+          <div className="text-sm mb-4">
+            <strong className="text-foreground">Related cruxes:</strong>{' '}
+            <span className="text-muted-foreground">{relatedCruxes.join(', ')}</span>
+          </div>
+        )}
 
-      {relevantResearch && relevantResearch.length > 0 && (
-        <div className="crux-research">
-          <h5>Relevant research:</h5>
-          <ul>
-            {relevantResearch.map((item, i) => (
-              <li key={i}>
-                {item.url ? (
-                  <a href={item.url} target="_blank" rel="noopener noreferrer">
-                    {item.title}
-                  </a>
-                ) : (
-                  item.title
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+        {/* Relevant research */}
+        {relevantResearch && relevantResearch.length > 0 && (
+          <div>
+            <h5 className="text-sm font-semibold text-muted-foreground mb-2">Relevant research:</h5>
+            <ul className="list-disc list-inside text-sm space-y-1 m-0">
+              {relevantResearch.map((item, i) => (
+                <li key={i}>
+                  {item.url ? (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-foreground no-underline hover:underline"
+                    >
+                      {item.title}
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground">{item.title}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </Card>
   );
 }
 

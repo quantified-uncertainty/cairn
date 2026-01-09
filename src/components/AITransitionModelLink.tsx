@@ -30,9 +30,9 @@ export default function AITransitionModelLink() {
   return (
     <>
       <style>{styles}</style>
-      <a href="/ai-transition-model" className="ai-model-link">
+      <a href="/ai-transition-model-views/graph" className="ai-model-link">
         <span className="ai-model-link__icon">📊</span>
-        View AI Transition Model
+        View Interactive Graph
         <span>→</span>
       </a>
     </>

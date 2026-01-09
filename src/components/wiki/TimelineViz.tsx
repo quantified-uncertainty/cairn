@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './wiki.css';
+import { Card } from '../ui/card';
+import { cn } from '../../lib/utils';
 
 interface TimelineEvent {
   date: string;
@@ -16,12 +17,20 @@ interface TimelineVizProps {
   showFilters?: boolean;
 }
 
-const categoryColors: Record<string, { bg: string; border: string; label: string }> = {
-  capability: { bg: '#dbeafe', border: '#3b82f6', label: 'Capability' },
-  safety: { bg: '#dcfce7', border: '#22c55e', label: 'Safety' },
-  governance: { bg: '#fef3c7', border: '#f59e0b', label: 'Governance' },
-  prediction: { bg: '#e0e7ff', border: '#6366f1', label: 'Prediction' },
-  incident: { bg: '#fee2e2', border: '#ef4444', label: 'Incident' },
+const categoryStyles: Record<string, { bg: string; border: string; text: string; label: string }> = {
+  capability: { bg: 'bg-blue-100 dark:bg-blue-900/30', border: 'border-blue-500', text: 'text-blue-600 dark:text-blue-400', label: 'Capability' },
+  safety: { bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-500', text: 'text-green-600 dark:text-green-400', label: 'Safety' },
+  governance: { bg: 'bg-amber-100 dark:bg-amber-900/30', border: 'border-amber-500', text: 'text-amber-600 dark:text-amber-400', label: 'Governance' },
+  prediction: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', border: 'border-indigo-500', text: 'text-indigo-600 dark:text-indigo-400', label: 'Prediction' },
+  incident: { bg: 'bg-red-100 dark:bg-red-900/30', border: 'border-red-500', text: 'text-red-600 dark:text-red-400', label: 'Incident' },
+};
+
+const markerColors: Record<string, string> = {
+  capability: 'bg-blue-500',
+  safety: 'bg-green-500',
+  governance: 'bg-amber-500',
+  prediction: 'bg-indigo-500',
+  incident: 'bg-red-500',
 };
 
 export function TimelineViz({ title = "AI Timeline", events, showFilters = true }: TimelineVizProps) {
@@ -45,56 +54,74 @@ export function TimelineViz({ title = "AI Timeline", events, showFilters = true 
   );
 
   return (
-    <div className="timeline-viz">
-      <div className="timeline-viz__header">
-        <span className="timeline-viz__icon">📅</span>
-        <span className="timeline-viz__title">{title}</span>
+    <Card className="my-6 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold">
+        <span>📅</span>
+        <span>{title}</span>
       </div>
 
+      {/* Filters */}
       {showFilters && (
-        <div className="timeline-viz__filters">
-          {Object.entries(categoryColors).map(([key, { bg, border, label }]) => (
+        <div className="flex flex-wrap gap-2 p-4 border-b border-border">
+          {Object.entries(categoryStyles).map(([key, style]) => (
             <button
               key={key}
-              className={`timeline-viz__filter ${selectedCategories.has(key) ? 'active' : ''}`}
-              style={{
-                backgroundColor: selectedCategories.has(key) ? bg : 'transparent',
-                borderColor: border,
-              }}
+              className={cn(
+                "px-3 py-1 text-sm font-medium rounded border-2 transition-colors",
+                style.border,
+                selectedCategories.has(key)
+                  ? `${style.bg} ${style.text}`
+                  : "bg-transparent text-muted-foreground opacity-50"
+              )}
               onClick={() => toggleCategory(key)}
             >
-              {label}
+              {style.label}
             </button>
           ))}
         </div>
       )}
 
-      <div className="timeline-viz__content">
+      {/* Timeline content */}
+      <div className="relative py-6 px-4">
+        {/* Vertical timeline line */}
+        <div className="absolute left-[70px] top-6 bottom-6 w-0.5 bg-border" />
+
         {sortedEvents.map((event, i) => {
-          const colors = categoryColors[event.category];
+          const style = categoryStyles[event.category];
           return (
             <div
               key={i}
-              className={`timeline-viz__event timeline-viz__event--${event.importance || 'medium'}`}
+              className={cn(
+                "relative flex gap-4 mb-6 last:mb-0",
+                event.importance === 'high' && "scale-[1.02]",
+                event.importance === 'low' && "opacity-80"
+              )}
             >
-              <div className="timeline-viz__date">{event.date}</div>
-              <div
-                className="timeline-viz__marker"
-                style={{ backgroundColor: colors.border }}
-              />
-              <div
-                className="timeline-viz__card"
-                style={{ borderLeftColor: colors.border }}
-              >
-                <span
-                  className="timeline-viz__category"
-                  style={{ backgroundColor: colors.bg, color: colors.border }}
-                >
-                  {colors.label}
+              {/* Date */}
+              <div className="w-[55px] flex-shrink-0 text-right text-sm text-muted-foreground font-medium pt-1">
+                {event.date}
+              </div>
+
+              {/* Marker dot */}
+              <div className={cn(
+                "w-3 h-3 rounded-full flex-shrink-0 mt-1.5 z-10 ring-2 ring-background",
+                markerColors[event.category]
+              )} />
+
+              {/* Event card */}
+              <div className={cn("flex-1 pl-3 border-l-3", style.border)} style={{ borderLeftWidth: '3px' }}>
+                <span className={cn("inline-block px-2 py-0.5 text-xs font-medium rounded mb-1", style.bg, style.text)}>
+                  {style.label}
                 </span>
-                <h4 className="timeline-viz__event-title">
+                <h4 className="text-base font-semibold text-foreground m-0">
                   {event.link ? (
-                    <a href={event.link} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground no-underline hover:text-accent-foreground hover:underline"
+                    >
                       {event.title}
                     </a>
                   ) : (
@@ -102,14 +129,14 @@ export function TimelineViz({ title = "AI Timeline", events, showFilters = true 
                   )}
                 </h4>
                 {event.description && (
-                  <p className="timeline-viz__description">{event.description}</p>
+                  <p className="mt-1 mb-0 text-sm text-muted-foreground">{event.description}</p>
                 )}
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 }
 

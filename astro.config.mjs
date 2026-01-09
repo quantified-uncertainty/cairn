@@ -22,6 +22,12 @@ export default defineConfig({
               Header: './src/components/starlight/Header.astro',
               // Add dev mode init script to head
               Head: './src/components/starlight/Head.astro',
+              // Custom right sidebar with minimap for AI Transition Model pages
+              PageSidebar: './src/components/starlight/PageSidebar.astro',
+              // Add MetaPanel for ?meta debugging on AI Transition Model pages
+              PageFrame: './src/components/starlight/PageFrame.astro',
+              // Add breadcrumbs for AI Transition Model pages
+              PageTitle: './src/components/starlight/PageTitle.astro',
           },
           tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
           social: [
@@ -33,11 +39,62 @@ export default defineConfig({
                   autogenerate: { directory: 'getting-started' },
               },
               {
-                  label: 'Understanding AI Risk',
+                  label: 'AI Transition Model',
                   collapsed: true,
                   items: [
-                      { label: 'Overview', slug: 'understanding-ai-risk' },
-                      { label: 'Core Argument', collapsed: true, autogenerate: { directory: 'understanding-ai-risk/core-argument' } },
+                      { label: 'Overview', slug: 'ai-transition-model' },
+                      { label: 'Parameter Table', slug: 'ai-transition-model/table' },
+                      { label: 'Outcomes', collapsed: true, items: [
+                          { slug: 'ai-transition-model/outcomes/existential-catastrophe' },
+                          { slug: 'ai-transition-model/outcomes/long-term-trajectory' },
+                      ]},
+                      { label: 'Scenarios', collapsed: true, items: [
+                          { label: 'AI Takeover', slug: 'ai-transition-model/scenarios/ai-takeover' },
+                          { slug: 'ai-transition-model/scenarios/ai-takeover/rapid' },
+                          { slug: 'ai-transition-model/scenarios/ai-takeover/gradual' },
+                          { label: 'Human Catastrophe', slug: 'ai-transition-model/scenarios/human-catastrophe' },
+                          { slug: 'ai-transition-model/scenarios/human-catastrophe/state-actor' },
+                          { slug: 'ai-transition-model/scenarios/human-catastrophe/rogue-actor' },
+                          { label: 'Long-term Lock-in', slug: 'ai-transition-model/scenarios/long-term-lockin' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/economic-power' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/political-power' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/epistemics' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/values' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/suffering-lock-in' },
+                      ]},
+                      { label: 'AI Factors', collapsed: true, items: [
+                          { label: 'Misalignment Potential', slug: 'ai-transition-model/factors/misalignment-potential' },
+                          { slug: 'ai-transition-model/factors/misalignment-potential/technical-ai-safety' },
+                          { slug: 'ai-transition-model/factors/misalignment-potential/ai-governance' },
+                          { slug: 'ai-transition-model/factors/misalignment-potential/lab-safety-practices' },
+                          { label: 'AI Capabilities', slug: 'ai-transition-model/factors/ai-capabilities' },
+                          { slug: 'ai-transition-model/factors/ai-capabilities/compute' },
+                          { slug: 'ai-transition-model/factors/ai-capabilities/algorithms' },
+                          { slug: 'ai-transition-model/factors/ai-capabilities/adoption' },
+                          { label: 'AI Uses', slug: 'ai-transition-model/factors/ai-uses' },
+                          { slug: 'ai-transition-model/factors/ai-uses/recursive-ai-capabilities' },
+                          { slug: 'ai-transition-model/factors/ai-uses/industries' },
+                          { slug: 'ai-transition-model/factors/ai-uses/governments' },
+                          { slug: 'ai-transition-model/factors/ai-uses/coordination' },
+                          { label: 'AI Ownership', slug: 'ai-transition-model/factors/ai-ownership' },
+                          { slug: 'ai-transition-model/factors/ai-ownership/countries' },
+                          { slug: 'ai-transition-model/factors/ai-ownership/companies' },
+                          { slug: 'ai-transition-model/factors/ai-ownership/shareholders' },
+                      ]},
+                      { label: 'Civilizational Factors', collapsed: true, items: [
+                          { label: 'Civilizational Competence', slug: 'ai-transition-model/factors/civilizational-competence' },
+                          { slug: 'ai-transition-model/factors/civilizational-competence/governance' },
+                          { slug: 'ai-transition-model/factors/civilizational-competence/epistemics' },
+                          { slug: 'ai-transition-model/factors/civilizational-competence/adaptability' },
+                          { label: 'Transition Turbulence', slug: 'ai-transition-model/factors/transition-turbulence' },
+                          { slug: 'ai-transition-model/factors/transition-turbulence/economic-stability' },
+                          { slug: 'ai-transition-model/factors/transition-turbulence/racing-intensity' },
+                          { label: 'Misuse Potential', slug: 'ai-transition-model/factors/misuse-potential' },
+                          { slug: 'ai-transition-model/factors/misuse-potential/biological-threat-exposure' },
+                          { slug: 'ai-transition-model/factors/misuse-potential/cyber-threat-exposure' },
+                          { slug: 'ai-transition-model/factors/misuse-potential/robot-threat-exposure' },
+                          { slug: 'ai-transition-model/factors/misuse-potential/surprise-threat-exposure' },
+                      ]},
                   ],
               },
               {
@@ -46,24 +103,6 @@ export default defineConfig({
                   items: [
                       { label: 'Overview', slug: 'knowledge-base' },
                       { label: 'Directory', slug: 'knowledge-base/directory' },
-                      { label: 'AI Transition Model', collapsed: true, items: [
-                          { label: 'Overview', slug: 'knowledge-base/ai-transition-model' },
-                          { label: 'Outcomes', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/outcomes' } },
-                          { label: 'Scenarios', collapsed: true, items: [
-                              { label: 'Overview', slug: 'knowledge-base/ai-transition-model/scenarios' },
-                              { label: 'AI Takeover', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/scenarios/ai-takeover' } },
-                              { label: 'Human Catastrophe', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/scenarios/human-catastrophe' } },
-                              { label: 'Long-term Lock-in', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/scenarios/long-term-lockin' } },
-                          ]},
-                          { label: 'Root Factors', collapsed: true, items: [
-                              { label: 'Overview', slug: 'knowledge-base/ai-transition-model/factors' },
-                              { label: 'Misalignment Potential', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/misalignment-potential' } },
-                              { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/ai-capabilities' } },
-                              { label: 'Civilizational Competence', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/civilizational-competence' } },
-                              { label: 'Transition Turbulence', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/transition-turbulence' } },
-                              { label: 'Misuse Potential', collapsed: true, autogenerate: { directory: 'knowledge-base/ai-transition-model/factors/misuse-potential' } },
-                          ]},
-                      ]},
                       { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
@@ -102,8 +141,6 @@ export default defineConfig({
                       { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
                       { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
                       { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
-                      { label: 'Methodology', collapsed: true, autogenerate: { directory: 'knowledge-base/methodology' } },
-                      { label: 'Research Notes', collapsed: true, autogenerate: { directory: 'knowledge-base/research-notes' } },
                   ],
               },
               {

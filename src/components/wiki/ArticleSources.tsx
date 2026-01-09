@@ -1,6 +1,6 @@
 import React from 'react';
 import { resources } from '../../data';
-import './wiki.css';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 interface ArticleSourcesProps {
   entityId: string;
@@ -48,43 +48,47 @@ export function ArticleSources({
   const sorted = [...citingResources].sort((a, b) => a.title.localeCompare(b.title));
 
   return (
-    <div className="article-sources">
-      <h2>{title}</h2>
-      <table className="article-sources__table">
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Domain</th>
-            <th>Links</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="mt-12 pt-8 border-t border-border">
+      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Resource</TableHead>
+            <TableHead>Domain</TableHead>
+            <TableHead>Links</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {sorted.map((resource) => (
-            <tr key={resource.id}>
-              <td>
-                <span className="article-sources__type-icon">
-                  {getResourceTypeIcon(resource.type)}
-                </span>
+            <TableRow key={resource.id}>
+              <TableCell>
+                <span className="mr-2">{getResourceTypeIcon(resource.type)}</span>
                 {resource.title}
-              </td>
-              <td className="article-sources__domain">{getDomain(resource.url)}</td>
-              <td className="article-sources__links">
+              </TableCell>
+              <TableCell className="text-muted-foreground text-sm">
+                {getDomain(resource.url)}
+              </TableCell>
+              <TableCell className="whitespace-nowrap">
                 <a
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-accent-foreground no-underline hover:underline"
                 >
                   Source
                 </a>
                 {' · '}
-                <a href={`/browse/resources/${resource.id}/`}>
+                <a
+                  href={`/browse/resources/${resource.id}/`}
+                  className="text-accent-foreground no-underline hover:underline"
+                >
                   Notes
                 </a>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

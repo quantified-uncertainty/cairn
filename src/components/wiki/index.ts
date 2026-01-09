@@ -29,7 +29,6 @@ export { GlossaryTerm, GlossaryList } from './Glossary';
 export { ComparisonTable } from './ComparisonTable';
 export { TimelineViz } from './TimelineViz';
 export { RiskDependencyGraph } from './RiskDependencyGraph';
-export { ArgumentMap } from './ArgumentMap';
 
 // Data-aware wrapper components (support both inline and YAML data)
 export { DataDisagreementMap } from './DataDisagreementMap';
@@ -41,6 +40,7 @@ export { DataCrux } from './DataCrux';
 export { RisksTable } from './RisksTable';
 export { ParametersTable } from './ParametersTable';
 export { ParameterDistinctions } from './ParameterDistinctions';
+export { RootFactorsTable, ScenariosTable, OutcomesTable } from './RootFactorsTable';
 
 // Risk category components
 export { RiskCategoryIcon, RiskCategoryBadge, RiskCategoryCard, categoryConfig } from './RiskCategoryIcon';
@@ -72,4 +72,16 @@ export { PageStatus } from './PageStatus';
 
 // Diagrams
 export { Mermaid } from './Mermaid';
+export { default as EntityGraph } from './EntityGraph';
+
+// AI Transition Model
+export { ModelPosition } from './ModelPosition';
+export { FactorKeyDebates } from './FactorKeyDebates';
+export { FactorRatings } from './FactorRatings';
+export { ScenarioRatings } from './ScenarioRatings';
+export { FactorRelatedContent } from './FactorRelatedContent';
+export { FactorScope } from './FactorScope';
+export { FactorSubItemsList, AllFactorsSubItems } from './FactorSubItemsList';
+export { FactorRelationshipDiagram, FullModelDiagram } from './FactorRelationshipDiagram';
+export { ImpactGrid, ImpactList } from './ImpactGrid';
 

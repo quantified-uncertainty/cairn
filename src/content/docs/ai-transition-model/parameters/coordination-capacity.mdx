@@ -1,0 +1,82 @@
+---
+title: "Coordination Capacity"
+description: "The degree to which AI stakeholders successfully coordinate on safety standards, information sharing, and development practices."
+parentFactor: civilizational-competence
+sidebar:
+  order: 19
+pageType: stub
+seeAlso: "international-coordination"
+lastEdited: "2025-12-29"
+importance: 75
+tractability: 40
+neglectedness: 45
+uncertainty: 55
+---
+import {DataInfoBox, Backlinks, Mermaid} from '../../../../components/wiki';
+
+
+<DataInfoBox entityId="coordination-capacity" />
+
+> **For comprehensive analysis**, see [International Coordination](/ai-transition-model/parameters/international-coordination/), which covers:
+> - Current coordination status (AISI network, summits, treaties)
+> - US-China cooperation prospects
+> - Coordination mechanisms effectiveness
+> - Historical precedents (Montreal Protocol, nuclear arms control)
+> - Scenario analysis and trajectory projections
+
+## Overview
+
+Coordination Capacity measures the degree to which AI developers, governments, and other stakeholders successfully cooperate on safety standards, information sharing, and development practices. This parameter is closely related to—and largely subsumed by—[International Coordination](/ai-transition-model/parameters/international-coordination/).
+
+Key aspects of coordination capacity include:
+- **Voluntary commitments**: Seoul, Bletchley declarations (10-30% effectiveness)
+- **Information sharing**: Currently 10-20% of safety findings shared
+- **Standard adoption**: 25-40% market share of compliant systems
+- **Enforcement mechanisms**: Currently minimal (no binding AI treaties with verification)
+
+### Coordination and Existential Risk
+
+Low coordination directly increases existential risk through:
+- **Racing to dangerous capabilities** without collective pause mechanisms
+- **Unilateral deployment** of inadequately tested systems
+- **Regulatory arbitrage** undermining safety requirements
+- **No global response** capability for AI incidents
+
+Research suggests uncoordinated development reduces safety investment by 30-60% compared to coordinated scenarios.
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    CC[Coordination Capacity]
+
+    CC -->|enables| INTL[International Coordination]
+    CC -->|reduces| RI[Racing Intensity]
+
+    CC --> GOV[Governance Capacity]
+    CC --> ACUTE[Existential Catastrophe ↓]
+    CC --> TRANS[Transition ↓]
+
+    style CC fill:#90EE90
+    style ACUTE fill:#ff6b6b
+    style TRANS fill:#ffe66d
+`} />
+
+**Contributes to:** [Governance Capacity](/ai-transition-model/parameters/governance/)
+
+**Primary outcomes affected:**
+- [Existential Catastrophe](/ai-transition-model/outcomes/existential-catastrophe/) ↓ — Coordination enables collective response to AI risks
+- [Transition Smoothness](/ai-transition-model/factors/transition-turbulence/) ↓ — Coordinated governance manages disruption
+
+---
+
+## Related Pages
+
+- **[International Coordination](/ai-transition-model/parameters/international-coordination/)** — Comprehensive analysis of global AI governance coordination
+- [Racing Intensity](/ai-transition-model/parameters/racing-intensity/) — Competitive pressure that undermines coordination
+- [Safety Culture Strength](/ai-transition-model/parameters/safety-culture-strength/) — Organizational priorities affecting cooperation
+- [Regulatory Capacity](/ai-transition-model/parameters/regulatory-capacity/) — Government ability to enforce agreements
+
+<Backlinks entityId="coordination-capacity" />

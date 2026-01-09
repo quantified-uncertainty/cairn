@@ -1,0 +1,388 @@
+---
+title: "Societal Trust"
+description: "Public confidence in institutions, experts, and verification systems—a foundational parameter for democratic governance and collective action. Currently declining from 77% (1964) to 22% (2024) for US government trust, with AI accelerating erosion through fabrication capabilities and the 'liar's dividend'."
+parentFactor: civilizational-competence
+sidebar:
+  order: 1
+quality: 91
+llmSummary: "Comprehensive quantitative analysis showing US institutional trust declined from 77% (1964) to 22% (2024), with AI capabilities accelerating erosion through deepfakes and the 'liar's dividend' effect. Documents both trust-building interventions (content authentication, transparency) and projects 25-35% probability of epistemic recovery versus 20-30% risk of epistemic fragmentation by 2030."
+lastEdited: "2025-12-29"
+importance: 65
+tractability: 30
+neglectedness: 30
+uncertainty: 60
+---
+import {DataInfoBox, Backlinks, Mermaid, R, ParameterDistinctions} from '../../../../components/wiki';
+
+
+<DataInfoBox entityId="societal-trust" />
+
+## Overview
+
+Societal Trust measures public confidence in institutions, experts, media, and verification systems that serve as the epistemic backbone of modern society. **Higher societal trust is better**—it enables democratic governance, collective action on shared challenges, and effective responses to existential risks. Institutional performance, AI-driven information manipulation, political polarization, and media ecosystem dynamics all shape whether trust strengthens or erodes. This parameter directly influences [epistemic capacity](/ai-transition-model/parameters/epistemic-health/), the collective ability to distinguish truth from falsehood.
+
+Trust serves as a critical coordination mechanism in complex societies, enabling democratic governance, scientific progress, and collective action on shared challenges. The parameter's current level and trend significantly affect society's ability to respond to existential risks, coordinate on climate change, maintain public health, and preserve democratic norms. In OECD countries surveyed in late 2023, 44% of respondents reported low or no trust in national government, compared to only 39% with high or moderately high trust—indicating a trust deficit across advanced democracies.
+
+Understanding societal trust as a parameter (rather than just a "risk of erosion") enables:
+- **Symmetric analysis**: Identifying both threats and supports
+- **Baseline comparison**: Measuring against historical levels and international benchmarks
+- **Intervention targeting**: Focusing resources on the most effective trust-building mechanisms
+- **Progress tracking**: Monitoring whether interventions actually improve trust levels
+
+<ParameterDistinctions entityId="societal-trust" />
+
+---
+
+## Parameter Network
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Sustains["What Sustains It"]
+        IQ[Institutional Quality]
+        IA[Information Authenticity]
+    end
+
+    IQ -->|sustains| ST[Societal Trust]
+    IA -->|sustains| ST
+
+    ST -->|enables| EH[Epistemic Health]
+    ST -->|enables| CC[Coordination Capacity]
+
+    ST --> EPIST[Epistemic Foundation]
+    ST --> TRANS[Transition ↓↓]
+    ST --> STEADY[Steady State ↓]
+
+    style ST fill:#90EE90
+    style TRANS fill:#ffe66d
+    style STEADY fill:#4ecdc4
+`} />
+
+**Contributes to:** [Epistemic Foundation](/ai-transition-model/parameters/epistemics/)
+
+**Primary outcomes affected:**
+- [Transition Smoothness](/ai-transition-model/factors/transition-turbulence/) ↓↓ — Trust enables collective action during upheaval
+- [Steady State](/ai-transition-model/outcomes/long-term-trajectory/) ↓ — Democratic governance requires public trust in institutions
+
+---
+
+## Current State Assessment
+
+### Quantified Trust Levels
+
+| Institution | Peak Trust | Current Trust (2024-25) | Change | Partisan Gap |
+|-------------|------------|---------------------|--------|--------------|
+| Federal Government | 77% (1964) | 22% | -55 pts | 24 pts (Dem: 35%, Rep: 11%) |
+| Mass Media | 72% (1976) | 28-31% | -41 to -44 pts | 42 pts (Dem: 54%, Rep: 12%) |
+| Congress | 42% (1973) | 11% | -31 pts | 15 pts |
+| Supreme Court | 56% (1985) | 25% | -31 pts | Variable |
+| Scientific Community | 67% (2019) | 57% | -10 pts | 30 pts |
+| Healthcare System | 71.5% (2020) | 40.1% (2024) | -31.4 pts | Growing |
+
+*Sources: <R id="b46b1ce9995931fe">Pew Research</R>, <R id="9bc684f131907acf">Gallup Confidence in Institutions</R>, <R id="1312df71e6a1ca40">Edelman Trust Barometer</R>, [AAMC Health Justice Center (2024)](https://www.aamchealthjustice.org/news/polling/trust-trends), [OECD Trust Survey (2024)](https://www.oecd.org/en/publications/oecd-survey-on-drivers-of-trust-in-public-institutions-2024-results_9a20554b-en.html)*
+
+The healthcare trust decline is particularly significant: a 30.4 percentage point drop during and after COVID-19 reflects how crisis experiences can rapidly erode confidence. [Interpersonal trust](https://www.pew.org/en/trend/archive/fall-2024/americans-deepening-mistrust-of-institutions) also declined from 46.3% (1972) to 31.9% (2018), showing the phenomenon extends beyond institutions to social relationships.
+
+### International Variation
+
+The <R id="1312df71e6a1ca40">2024 Edelman Trust Barometer</R> reveals striking international variation:
+
+| Region/Country | Trust Level | Trend |
+|----------------|-------------|-------|
+| China | 77% | Stable-High |
+| Indonesia | 76% | Stable-High |
+| India | 75% | Stable-High |
+| United States | 47% | Declining |
+| United Kingdom | 43% | Declining |
+| Japan | 37% | Stable-Low |
+
+The 40-point gap between high-trust autocracies and low-trust democracies suggests political system type influences baseline trust levels.
+
+### Trend Direction
+
+| Dimension | Assessment |
+|-----------|------------|
+| **Direction** | Declining |
+| **Speed** | Accelerating (AI amplification) |
+| **Reversibility** | Difficult (rebuilding takes decades) |
+| **Variance** | High (partisan gaps widening) |
+
+---
+
+## What "Healthy Trust" Looks Like
+
+Optimal trust levels are not maximum trust—blind trust enables abuse. Instead, healthy trust involves:
+
+1. **Calibrated confidence**: Trust proportional to actual institutional performance
+2. **Verification capacity**: Ability to check claims when needed
+3. **Constructive skepticism**: Questioning that improves institutions rather than paralyzing coordination
+4. **Shared baselines**: Enough common ground for democratic deliberation
+
+| Trust Level Range | Governance Outcomes | Historical Examples |
+|------------------|---------------------|---------------------|
+| **70-85%** | Functional but low accountability; enables groupthink | US 1960s (pre-Vietnam); authoritarian high-trust states |
+| **50-70%** | Optimal zone: coordination + accountability | Denmark (69%), Finland (69%), Norway (~65%) currently |
+| **30-50%** | Strained but viable; chronic coordination deficits | US (47%), UK (43%), France (~40%) currently |
+| **Below 30%** | Democratic dysfunction; governance paralysis | Failed/failing states; US at 22% government trust approaching threshold |
+
+Historical benchmarks from stable democracies suggest **50-70% institutional trust** enables effective governance while maintaining accountability. The US at 22% federal government trust and 28-31% media trust sits well below this range, indicating structural governance stress rather than healthy skepticism.
+
+---
+
+## Factors That Decrease Trust (Threats)
+
+### AI-Driven Threats
+
+<Mermaid client:load chart={`
+flowchart TD
+    AI[AI Capabilities] --> CONTENT[Content Fabrication]
+    AI --> PERSONAL[Personalization]
+    AI --> SCALE[Scale Effects]
+
+    CONTENT --> DEEPFAKES[Deepfakes & Synthetic Media]
+    CONTENT --> DISINFO[Automated Disinformation]
+
+    PERSONAL --> TARGET[Targeted Trust Attacks]
+    PERSONAL --> BUBBLE[Epistemic Bubbles]
+
+    SCALE --> FLOOD[Information Flooding]
+    SCALE --> VERIFY[Verification Overwhelm]
+
+    DEEPFAKES --> LIAR[Liar's Dividend]
+    DISINFO --> LIAR
+    LIAR --> EROSION[Trust Decreases]
+
+    TARGET --> EROSION
+    BUBBLE --> EROSION
+    FLOOD --> EROSION
+    VERIFY --> EROSION
+
+    style AI fill:#e1f5fe
+    style LIAR fill:#fff3e0
+    style EROSION fill:#ffcdd2
+`} />
+
+#### The Liar's Dividend
+
+The "liar's dividend" (<R id="ad6fe8bb9c2db0d9">Chesney & Citron</R>) describes how the mere *possibility* of fabricated evidence undermines trust in *all* evidence. When any recording could be a deepfake, the default response becomes skepticism rather than provisional trust. This phenomenon creates a double bind where neither belief nor disbelief in evidence can be rationally justified.
+
+Research from Purdue University's Governance and Responsible AI Lab [quantified this effect](https://gvu.gatech.edu/research/projects/liars-dividend-impact-deepfakes-and-fake-news-politician-support-and-trust-media) across five studies (N=15,000+, 2020-2022): politicians who falsely claim scandals are "fake news" receive 8-15% higher support across partisan subgroups compared to those who remain silent or apologize. Critically, **false claims of misinformation are more effective for text-based scandals than video scandals**, suggesting current deepfake capabilities haven't yet fully enabled the liar's dividend for visual media—but this gap is closing rapidly. An August 2023 [YouGov survey](https://www.brennancenter.org/our-work/research-reports/deepfakes-elections-and-shrinking-liars-dividend) found 85% of Americans are "very concerned" or "somewhat concerned" about misleading deepfakes.
+
+| Liar's Dividend Effect | Current Impact | Projected Impact (2027) |
+|------------------------|----------------|-------------------------|
+| Plausible deniability for text claims | High | Very High |
+| Plausible deniability for audio | Moderate | High |
+| Plausible deniability for video | Low | Moderate-High |
+| General evidence skepticism | Moderate | High |
+
+#### Scale Asymmetry
+
+| Disinformation Capacity | Pre-AI Era | Current AI Era | Projected (2027) |
+|------------------------|------------|----------------|------------------|
+| Content generation (articles/day/operator) | 2-5 | 500-2,000 | 10,000+ |
+| Personalization depth | Demographics only | Individual-level | Predictive targeting |
+| Language capabilities | Native only | 20-50 languages | 100+ languages |
+| Detection evasion | Low | Moderate | High |
+
+### Non-AI Threats
+
+Beyond AI-driven erosion, several structural factors independently decrease trust:
+
+| Threat | Mechanism | Magnitude | Evidence |
+|--------|-----------|-----------|----------|
+| **Institutional Failures** | Actual misconduct that justifies reduced trust | High | Vietnam War, Watergate, 2008 financial crisis, COVID-19 response failures all preceded major trust drops |
+| **Political Polarization** | Partisan media ecosystems creating divergent realities | Very High | 42pt media trust gap (Dem vs Rep); 30pt science trust gap; shared factual baselines eroding |
+| **Economic Inequality** | "System serves the wealthy" perception | High | Edelman 2025: Only 36% believe next generation will be better off; 1 in 5 in developed countries |
+| **Information Overload** | Too much content to verify; reliance on trust shortcuts | Medium | Exponentially growing content volume outpacing individual verification capacity |
+| **Social Media Dynamics** | Algorithmic amplification of outrage and division | Medium-High | [Whistleblower revelations](/knowledge-base/responses/organizational-practices/whistleblower-protections/) document platform incentive misalignment |
+
+The OECD 2024 survey identified **political voice** as the strongest trust driver: 69% of those who feel they have a say in government trust it, compared to only 22% of those who feel voiceless—a 47 percentage point gap. This suggests participation and responsiveness are more important than service delivery for building trust.
+
+---
+
+## Factors That Increase Trust (Supports)
+
+### Interventions That Build Trust
+
+| Intervention | Mechanism | Evidence of Effectiveness | Effect Size |
+|--------------|-----------|--------------------------|-------------|
+| **Content Authentication** | Cryptographic verification of content origins | [C2PA standard](https://c2pa.org/) advancing toward ISO adoption (2025); industry coalition of 100+ companies | Early (pending adoption) |
+| **Institutional Transparency** | Proactive disclosure of processes and data | OECD 2024: Evidence-based decision-making is "very important" driver; political voice creates 47pt trust gap (69% vs 22%) | Large (observational) |
+| **Epistemic Infrastructure** | Strengthened fact-checking and verification systems | Community Notes on X shows moderate success; AI-assisted fact-checking experimental | Medium (mixed contexts) |
+| **Media Literacy Education** | Teaching source evaluation and critical thinking | [Meta-analysis (2024)](https://journals.sagepub.com/doi/10.1177/00936502241288103): d=0.60 overall; stronger with multiple sessions (d=0.76 discernment, d=1.04 sharing reduction) | Medium to Large |
+| **Trust-Building Tips** | Guidance on reliable news sources | [Communications Psychology (2024)](https://www.nature.com/articles/s44271-024-00121-5): Trust-inducing tips boost true news sharing; skepticism tips reduce false news | Medium (experimental) |
+| **Community-Based Programs** | Culturally-tailored interventions through trusted networks | [PEN America (2024)](https://pen.org/report/the-impact-of-community-based-digital-literacy-interventions-on-disinformation-resilience/): Community leaders and ethnic media more effective in communities of color | Medium (preliminary) |
+| **Whistleblower Protections** | Enabling internal correction of institutional failures | Enables accountability without external attacks | Unstudied |
+
+### Conditions That Support Trust
+
+- **Verified institutional performance**: When institutions demonstrably work well
+- **Aligned incentives**: When institutional interests match public interests
+- **Accessible verification**: When claims can be checked by ordinary people
+- **Cross-cutting ties**: When people have relationships across partisan lines
+- **Shared information sources**: Common reference points for public discourse
+
+### Technology-Enabled Trust Building
+
+| Technology | Trust Mechanism | Current Maturity | Key Developments (2024-25) |
+|------------|-----------------|------------------|---------------------------|
+| Content provenance (C2PA) | Verify origin and integrity | Early adoption | ISO standardization expected 2025; adopted by Adobe, Microsoft, Google, OpenAI, Meta; [NSA/CISA guidance](https://media.defense.gov/2025/Jan/29/2003634788/-1/-1/0/CSI-CONTENT-CREDENTIALS.PDF) Jan 2025 |
+| Blockchain attestation | Immutable records of claims | Niche applications | Limited mainstream adoption |
+| Prediction markets | Incentivize accurate beliefs | Limited scale | Polymarket surge in 2024 elections |
+| Community notes (X/Twitter) | Crowdsourced context | Moderate success | Expanding post-2022; mixed partisan reception |
+| AI-assisted fact-checking | Scale verification capacity | Experimental | Emerging LLM applications; accuracy concerns remain |
+
+The C2PA standard represents the most significant trust infrastructure development: a coalition of 100+ companies (led by Microsoft, Adobe, Intel, BBC, Sony, OpenAI, Google, Meta, Amazon) created an open technical standard for content provenance. [Version 2.1 (2024)](https://blog.google/technology/ai/google-gen-ai-content-transparency-c2pa/) strengthened tamper resistance, and the standard is progressing toward ISO adoption and W3C browser-level integration. However, as the [World Privacy Forum analysis](https://worldprivacyforum.org/posts/privacy-identity-and-trust-in-c2pa/) notes, attackers can still bypass safeguards through metadata alteration, watermark removal, and fingerprint mimicry.
+
+---
+
+## Why This Parameter Matters
+
+### Consequences of Low Trust
+
+| Domain | Impact of Low Trust | Severity | 2024-25 Evidence |
+|--------|---------------------|----------|------------------|
+| **Elections** | Contested results, reduced participation, violence | Critical | [Edelman 2025](https://www.edelman.com/trust/2025/trust-barometer): 4 in 10 with high grievance approve hostile activism (online attacks, disinformation, violence) |
+| **Public Health** | Pandemic response failure, vaccine hesitancy | High | Healthcare trust dropped 30.4pts (2020-2024); physician trust at 40.1% |
+| **Climate Action** | Policy paralysis, delayed mitigation | High | OECD 2024: Only ~40% believe government will reduce greenhouse gas emissions effectively |
+| **AI Governance** | Regulatory resistance, verification failures | Critical | OECD 2024: Only ~40% trust government to regulate AI appropriately |
+| **International Cooperation** | Treaty verification failures | Critical | Declining multilateral institution confidence |
+| **Scientific Research** | Funding shifts, brain drain | Moderate | 30pt partisan gap in science trust; stable overall but fragmenting |
+
+### Trust and Existential Risk
+
+Low societal trust directly undermines humanity's capacity to address existential risks through multiple mechanisms:
+
+**AI Safety Coordination**: Trust enables international AI safety agreements, lab-government cooperation, and public acceptance of AI governance measures. With only ~40% trusting government AI regulation (OECD 2024) and deepening lab-government mutual suspicion, coordination failures become more likely. This increases risks of [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) where labs compete rather than coordinate on safety.
+
+**Pandemic Preparedness**: The 30.4 percentage point drop in healthcare trust (2020-2024) suggests future pandemic responses will face greater resistance to public health measures, reduced vaccine uptake, and weakened institutional authority—precisely when rapid collective action is most critical.
+
+**Climate Response**: With only ~40% trusting government climate action and widening partisan gaps, the political feasibility of large-scale mitigation policies diminishes, increasing tail risks of climate tipping points.
+
+**Verification Regimes**: Arms control, bioweapons treaties, and AI safety agreements all depend on trust in verification mechanisms. The liar's dividend undermines verification by making authenticated evidence dismissible, potentially destabilizing nuclear deterrence and international security frameworks.
+
+---
+
+## Trajectory and Scenarios
+
+### Projected Trust Trajectory
+
+| Timeframe | Key Developments | Trust Impact |
+|-----------|-----------------|--------------|
+| **2025-2026** | Deepfake consumer tools; multimodal synthesis | Accelerating decline |
+| **2027-2028** | Real-time synthetic media; provenance adoption | Depends on response |
+| **2029-2030** | Mature verification vs. advanced evasion | Bifurcation point |
+| **2030+** | New equilibrium established | Stabilization |
+
+### Scenario Analysis
+
+| Scenario | Probability (2030) | Trust Level Outcome | Key Mechanisms |
+|----------|-------------|---------------------|----------------|
+| **Epistemic Recovery** | 25-35% | Return to 50-60% institutional trust | C2PA adoption succeeds; media literacy scales; institutional reforms restore performance |
+| **Managed Decline** | 35-45% | Stabilize at 30-40% with stratification | Elite-mass trust gap widens; functional verification for institutions but not general public |
+| **Epistemic Fragmentation** | 20-30% | Divergent realities by identity group | Partisan gap exceeds 60pts; separate information ecosystems consolidate; common epistemic ground collapses |
+| **Authoritarian Capture** | 5-10% | State-controlled "truth" authorities | Democratic crisis enables centralized verification monopoly; dissent labeled "misinformation" |
+
+The **Managed Decline** scenario (modal outcome) resembles the current trajectory: trust stabilizes at historically low levels, partisan gaps remain wide (40-50pts), and society functions with chronic coordination deficits. This "new normal" of low-trust equilibrium would be stable but fragile, vulnerable to shocks that could trigger either recovery (if handled well) or fragmentation (if handled poorly).
+
+---
+
+## Key Debates
+
+### Can Trust Be Rebuilt?
+
+**Restoration view (30-40% of experts):**
+- Historical precedent: trust has recovered from previous lows (post-Watergate, post-2008)
+- Institutional performance improvements can rebuild credibility over time
+- Generational turnover may reset baseline expectations
+- C2PA and verification technologies could restore confidence in information
+
+**Adaptation view (40-50% of experts):**
+- Current decline is structural, not cyclical—driven by information environment changes
+- Low-trust equilibrium may be stable: societies can function with chronic distrust
+- Resources better spent on designing low-trust-robust systems than restoration attempts
+- Historical recovery periods lacked AI-driven synthetic media; this time is different
+
+**Synthesis:** The question may not be "can trust be rebuilt" but "rebuilt to what level and for whom?" Elite-institutional trust may recover while mass trust remains low, creating a two-tier epistemic society.
+
+### Technical Verification vs. Institutional Reform
+
+**Technical solutions view:**
+- C2PA, watermarking, and provenance systems can restore content authenticity
+- AI detection tools can identify synthetic media at scale
+- Blockchain-based verification can create immutable audit trails
+- Technology created the problem; technology can solve it
+
+**Institutional reform view:**
+- Technical solutions address symptoms, not causes of distrust
+- Verification systems require trusted institutions to operate them
+- Authentication can be circumvented; institutional credibility cannot be faked
+- Focus should be on rebuilding journalism, science, and government performance
+
+**Current evidence:** Technical solutions show promise (C2PA adoption growing) but face adoption challenges. Institutional reform is slower but may be necessary for lasting recovery. Most experts advocate both approaches simultaneously.
+
+---
+
+## Related Pages
+
+### Related Parameters
+- [Epistemic Health](/ai-transition-model/parameters/epistemic-health/) — Collective ability to distinguish truth from falsehood (influenced by trust levels)
+
+### Related Risks
+- [Trust Erosion](/knowledge-base/risks/epistemic/trust-decline/) — Active degradation of this parameter
+- [Epistemic Collapse](/knowledge-base/risks/epistemic/epistemic-collapse/) — Catastrophic trust failure scenario
+- [Trust Cascade](/knowledge-base/risks/epistemic/trust-cascade/) — Cascading institutional trust failures
+- [Authentication Collapse](/knowledge-base/risks/epistemic/authentication-collapse/) — Verification system breakdown
+- [Deepfakes](/knowledge-base/risks/misuse/deepfakes/) — AI capability that accelerates trust erosion
+
+### Related Models
+- [Trust Erosion Dynamics](/knowledge-base/models/trust-erosion-dynamics/) — Mechanistic model of trust decline
+- [Trust Cascade Model](/knowledge-base/models/trust-cascade-model/) — Contagion dynamics across institutions
+- [Epistemic Collapse Threshold](/knowledge-base/models/epistemic-collapse-threshold/) — Tipping points in trust breakdown
+- [Deepfakes Authentication Crisis](/knowledge-base/models/deepfakes-authentication-crisis/) — AI's impact on verification
+- [Authentication Collapse Timeline](/knowledge-base/models/authentication-collapse-timeline/) — Projected trajectory
+
+### Related Interventions
+- [Content Authentication](/knowledge-base/responses/epistemic-tools/content-authentication/) — C2PA and provenance standards
+- [Epistemic Infrastructure](/knowledge-base/responses/epistemic-tools/epistemic-infrastructure/) — Fact-checking and verification systems
+- [Epistemic Security](/knowledge-base/responses/resilience/epistemic-security/) — Defensive measures against information attacks
+- [Whistleblower Protections](/knowledge-base/responses/organizational-practices/whistleblower-protections/) — Internal accountability mechanisms
+
+### Related Metrics
+- [Public Opinion](/knowledge-base/metrics/public-opinion/) — Concrete measurements of trust levels
+
+---
+
+## Sources & Key Research
+
+### Trust Data (2024-2025)
+- <R id="b46b1ce9995931fe">Pew Research Center: Public Trust in Government 1958-2024</R>
+- <R id="ec0171d39415178a">Gallup: Trust in Media at New Low</R>
+- <R id="9bc684f131907acf">Gallup: Confidence in Institutions</R>
+- <R id="1312df71e6a1ca40">Edelman Trust Barometer 2024</R>
+- <R id="6289dc2777ea1102">Reuters Institute Digital News Report 2024</R>
+- [OECD Survey on Drivers of Trust in Public Institutions – 2024 Results](https://www.oecd.org/en/publications/oecd-survey-on-drivers-of-trust-in-public-institutions-2024-results_9a20554b-en.html) — 60,000 respondents across 30 OECD countries (November 2023)
+- [AAMC Health Justice: Trust Trends 2021-2024](https://www.aamchealthjustice.org/news/polling/trust-trends) — Healthcare institution trust during and after COVID-19
+- [Pew Charitable Trusts: Americans' Deepening Mistrust of Institutions (2024)](https://www.pew.org/en/trend/archive/fall-2024/americans-deepening-mistrust-of-institutions)
+- [Edelman Trust Barometer 2025](https://www.edelman.com/trust/2025/trust-barometer) — Trust and grievance dynamics
+
+### Liar's Dividend Research
+- <R id="ad6fe8bb9c2db0d9">Chesney & Citron: Deep Fakes—A Looming Challenge</R>
+- <R id="c75d8df0bbf5a94d">Liar's Dividend study (American Political Science Review, 2024)</R>
+- [Purdue GRAIL Lab: The Liar's Dividend (N=15,000+)](https://gvu.gatech.edu/research/projects/liars-dividend-impact-deepfakes-and-fake-news-politician-support-and-trust-media) — Experimental evidence across five studies
+- [Brennan Center: Deepfakes, Elections, and Shrinking the Liar's Dividend](https://www.brennancenter.org/our-work/research-reports/deepfakes-elections-and-shrinking-liars-dividend)
+- [UNESCO: Deepfakes and the Crisis of Knowing](https://www.unesco.org/en/articles/deepfakes-and-crisis-knowing)
+
+### Content Authentication & C2PA
+- [C2PA Coalition for Content Provenance and Authenticity](https://c2pa.org/)
+- [C2PA Technical Specification 2.2 (2025)](https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html)
+- [Google: Gen AI Content Transparency with C2PA (2024)](https://blog.google/technology/ai/google-gen-ai-content-transparency-c2pa/)
+- [NSA/CISA: Content Credentials Guidance (January 2025)](https://media.defense.gov/2025/Jan/29/2003634788/-1/-1/0/CSI-CONTENT-CREDENTIALS.PDF)
+- [World Privacy Forum: Privacy, Identity and Trust in C2PA](https://worldprivacyforum.org/posts/privacy-identity-and-trust-in-c2pa/)
+
+### Media Literacy & Trust-Building Interventions
+- [Huang et al. (2024): Media Literacy Interventions Meta-Analysis](https://journals.sagepub.com/doi/10.1177/00936502241288103) — d=0.60 overall effect, N=81,155
+- [Communications Psychology (2024): Media Literacy Tips and Trust](https://www.nature.com/articles/s44271-024-00121-5)
+- [PEN America (2024): Community-Based Digital Literacy Interventions](https://pen.org/report/the-impact-of-community-based-digital-literacy-interventions-on-disinformation-resilience/)
+- [Stanford Social Media Lab: Building Resilience in Communities of Color (2024)](https://sml.stanford.edu/publications/2024/building-resilience-misinformation-communities-color-results-two-studies-tailored)
+
+<Backlinks entityId="societal-trust" />

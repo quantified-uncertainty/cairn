@@ -1,5 +1,4 @@
 import React from 'react';
-import './wiki.css';
 
 interface SectionProps {
   title: string;
@@ -8,8 +7,8 @@ interface SectionProps {
 
 export function Section({ title, children }: SectionProps) {
   return (
-    <div className="wiki-section">
-      <div className="wiki-section__title">{title}</div>
+    <div className="my-8">
+      <div className="text-sm font-semibold text-muted-foreground mb-2">{title}</div>
       {children}
     </div>
   );

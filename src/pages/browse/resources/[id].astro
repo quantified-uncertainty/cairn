@@ -10,7 +10,12 @@ import { resources, getEntityWithPath } from '../../../data';
 import type { Resource } from '../../../data/schema';
 
 export function getStaticPaths() {
-  return resources.map((resource) => ({
+  // Only generate pages for resources that are actually cited by articles
+  // This reduces build time significantly (from ~2900 pages to ~100-200)
+  const citedResources = resources.filter(
+    (resource) => resource.cited_by && resource.cited_by.length > 0
+  );
+  return citedResources.map((resource) => ({
     params: { id: resource.id },
     props: { resource },
   }));

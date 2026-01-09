@@ -1,0 +1,125 @@
+---
+title: "Countries (AI Ownership)"
+description: "Geographic concentration of advanced AI capabilities shapes trajectory through effects on geopolitical stability, international coordination, and benefit distribution. US attracts $67.2B in AI investment (8.7x China)."
+sidebar:
+  order: 1
+lastEdited: "2026-01-05"
+ratings:
+  changeability: 25
+  xriskImpact: 45
+  trajectoryImpact: 65
+  uncertainty: 50
+---
+import {Mermaid, Backlinks} from '../../../../../components/wiki';
+
+
+## Overview
+
+Geographic concentration of advanced AI capabilities shapes the trajectory of AI development through its effects on geopolitical stability, international coordination, and the distribution of AI benefits. As of 2024, AI development exhibits extreme geographic concentration, with the United States attracting **$67.2 billion** in AI investment (8.7x more than China's $7.8 billion) and just 15 US metropolitan areas controlling approximately two-thirds of global AI assets.
+
+This concentration creates a fundamentally bipolar landscape where US-China competition dominates, while other nations struggle to maintain meaningful AI capabilities.
+
+---
+
+## The Coordination Dilemma
+
+The distribution of AI capabilities among nations creates a classic coordination dilemma analyzed in the [international coordination game](/knowledge-base/models/governance-models/international-coordination-game/).
+
+### Game-Theoretic Dynamics
+
+Game-theoretic modeling shows that defection (racing) mathematically dominates cooperation when actors believe cooperation probability falls below 50%—a threshold currently unmet in US-China relations. This creates [multipolar trap](/knowledge-base/risks/structural/multipolar-trap/) dynamics where rational actors pursuing individual interests produce collectively catastrophic outcomes.
+
+Both superpowers are "turbo-charging development with almost no guardrails" because neither wants to slow down first.
+
+---
+
+## Why Geographic Concentration Matters for Safety
+
+<Mermaid client:load chart={`
+flowchart TD
+    CONC[Countries - Geographic Concentration]
+
+    CONC --> FIRST[First-Mover Pressure]
+    CONC --> COOP[Cooperation Challenges]
+
+    FIRST --> RACE[Racing Dynamics]
+    COOP --> TRAP[Multipolar Trap]
+
+    RACE --> OWNER[AI Ownership]
+    TRAP --> OWNER
+
+    subgraph Scenarios["Ultimate Scenarios"]
+        LOCKIN[Long-term Lock-in]
+    end
+
+    OWNER --> LOCKIN
+
+    subgraph Outcomes["Ultimate Outcomes"]
+        TRAJ[Long-term Trajectory]
+    end
+
+    LOCKIN --> TRAJ
+
+    style CONC fill:#3b82f6,color:#fff
+    style OWNER fill:#dbeafe,stroke:#3b82f6
+    style Scenarios fill:#ede9fe,stroke:#8b5cf6
+    style LOCKIN fill:#8b5cf6,color:#fff
+    style TRAJ fill:#f59e0b,color:#fff
+`} />
+
+### Mechanisms
+
+| Mechanism | Effect | Example |
+|-----------|--------|---------|
+| **First-mover pressure** | Reduces safety investment | Winner-take-all competition |
+| **Export controls** | Strains cooperation | US semiconductor restrictions |
+| **Coordination failure** | Enables racing | No binding agreements |
+
+---
+
+## Current International Landscape
+
+### Coordination Mechanisms
+
+| Initiative | Scope | Budget | Effectiveness |
+|------------|-------|--------|---------------|
+| AI Safety Institute network | 11 countries | ~$150M combined | Emerging |
+| Council of Europe AI Treaty | 14 signatories | N/A | First binding agreement |
+| US-China bilateral dialogues | 2 countries | N/A | Limited by competition |
+| Private sector investment | Global | $100B+ annually | Dwarfs public efforts |
+
+---
+
+## Key Uncertainties
+
+| Question | Possible Answers |
+|----------|-----------------|
+| Do US-China dynamics inevitably tend toward confrontation? | Confrontation vs. cooperation through mutual catastrophic risk awareness |
+| Do democratic nations maintain structural advantages? | Innovation ecosystem vs. state-directed focus |
+| Can alternative power centers influence trajectory? | EU, UK, emerging economies as third pole vs. bipolar lock-in |
+
+---
+
+## Key Debates
+
+| Debate | Core Question |
+|--------|---------------|
+| **US-China dynamics** | Is US-China AI competition inevitable, or can cooperation emerge? The answer shapes global AI trajectory. |
+| **Multipolar vs unipolar** | Is one country leading in AI safer or more dangerous than distributed capability? |
+| **Democratic AI advantage** | Do democracies have structural advantages or disadvantages in AI development? |
+
+---
+
+## Related Content
+
+### Related Risks
+- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) — Racing dynamics from coordination failure
+
+### Related Responses
+- [International Coordination](/knowledge-base/responses/governance/international/coordination-mechanisms/) — Mechanisms for cross-border cooperation
+- [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/) — Trade restrictions on AI-relevant hardware
+
+### Related Models
+- [International Coordination Game](/knowledge-base/models/governance-models/international-coordination-game/) — Game-theoretic analysis of cooperation dynamics
+
+<Backlinks entityId="countries" />

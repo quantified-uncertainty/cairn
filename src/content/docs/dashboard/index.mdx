@@ -4,11 +4,16 @@ description: Overview of content quality, staleness, and entity relationship hea
 sidebar:
   label: Dashboard
   order: 100
+tableOfContents: false
+fullWidth: true
 ---
 
 import { getDashboardMetrics, getSummaryStats, getEnhancementQueue, getLinkHealthStats } from '../../../lib/dashboard';
 import QualityDashboard from '../../../components/dashboard/QualityDashboard';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '../../../components/ui/table';
+import FullWidthLayout from '../../../components/FullWidthLayout';
+
+<FullWidthLayout />
 
 export const metrics = getDashboardMetrics();
 export const stats = getSummaryStats();

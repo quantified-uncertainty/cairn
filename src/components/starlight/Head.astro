@@ -18,3 +18,25 @@ const { head } = Astro.locals.starlightRoute;
     }
   })();
 </script>
+
+<!-- Auto-expand sidebar to show current page on direct URL navigation -->
+<script is:inline>
+  function expandSidebarToCurrentPage() {
+    const currentLink = document.querySelector('nav.sidebar a[aria-current="page"]');
+    if (currentLink) {
+      let parent = currentLink.parentElement;
+      while (parent) {
+        if (parent.tagName === 'DETAILS') {
+          parent.open = true;
+        }
+        parent = parent.parentElement;
+      }
+    }
+  }
+  // Run when DOM is ready, or immediately if already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', expandSidebarToCurrentPage);
+  } else {
+    expandSidebarToCurrentPage();
+  }
+</script>

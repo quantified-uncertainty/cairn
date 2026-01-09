@@ -3,9 +3,10 @@
 import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable, SortableHeader } from "@/components/ui/data-table"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { cn } from "@/lib/utils"
 import { pages, type Page } from "../../data"
-import "./wiki.css"
+import { getImportanceScoreColor, getQualityScoreColor, contentCategoryColors } from "./shared/style-config"
 
 interface SimilarPage {
   id: string
@@ -41,20 +42,8 @@ interface PageIndexProps {
 
 function QualityCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
-
-  // 0-100 scale: 80+ comprehensive, 60-79 good, 40-59 adequate, 20-39 draft, <20 stub
-  const colorClass = value >= 80
-    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
-    : value >= 60
-    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-    : value >= 40
-    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-    : value >= 20
-    ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-
   return (
-    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", getQualityScoreColor(value))}>
       {Math.round(value)}
     </span>
   )
@@ -62,40 +51,15 @@ function QualityCell({ value }: { value: number | null }) {
 
 function ImportanceCell({ value }: { value: number | null }) {
   if (value === null) return <span className="text-muted-foreground">—</span>
-
-  // 0-100 scale: 90+ essential, 70-89 high, 50-69 useful, 30-49 reference, <30 peripheral
-  const colorClass = value >= 90
-    ? "bg-purple-200 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200"
-    : value >= 70
-    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-    : value >= 50
-    ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
-    : value >= 30
-    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-
-  // Display as integer for cleaner look
-  const displayValue = Math.round(value)
-
   return (
-    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
-      {displayValue}
+    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", getImportanceScoreColor(value))}>
+      {Math.round(value)}
     </span>
   )
 }
 
 function CategoryBadge({ category }: { category: string }) {
-  const variants: Record<string, string> = {
-    risks: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-    responses: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-    models: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
-    capabilities: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-    cruxes: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-    history: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-    organizations: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-    people: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
-  }
-  const colorClass = variants[category] || "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+  const colorClass = contentCategoryColors[category as keyof typeof contentCategoryColors] || contentCategoryColors.history
   const displayName = category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ')
   return (
     <span className={cn("inline-block px-2 py-0.5 rounded text-xs font-medium", colorClass)}>
@@ -218,31 +182,39 @@ function RedundancyCell({ value, similarPages }: { value: number, similarPages: 
     ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
     : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
 
+  const badge = (
+    <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium", similarPages.length > 0 && "cursor-help", colorClass)}>
+      {value}%
+    </span>
+  )
+
   if (similarPages.length === 0) {
-    return (
-      <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
-        {value}%
-      </span>
-    )
+    return badge
   }
 
   return (
-    <span className="redundancy-cell">
-      <span className={cn("inline-flex items-center justify-center min-w-[2.5rem] px-1 h-6 rounded text-sm font-medium cursor-help", colorClass)}>
-        {value}%
-      </span>
-      <span className="redundancy-cell__popup">
-        <div className="redundancy-cell__popup-content">
-          <div className="redundancy-cell__popup-header">Similar pages:</div>
+    <HoverCard openDelay={200} closeDelay={100}>
+      <HoverCardTrigger asChild>
+        {badge}
+      </HoverCardTrigger>
+      <HoverCardContent className="w-64 p-0" align="start">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground px-3 py-2 border-b border-border">
+          Similar pages:
+        </div>
+        <div className="flex flex-col">
           {similarPages.map((p, i) => (
-            <a key={i} href={p.path} className="redundancy-cell__popup-item">
-              <span className="redundancy-cell__popup-title">{p.title}</span>
-              <span className="redundancy-cell__popup-score">{p.similarity}%</span>
+            <a
+              key={i}
+              href={p.path}
+              className="flex items-center justify-between px-3 py-2 text-sm no-underline hover:bg-muted transition-colors"
+            >
+              <span className="text-foreground truncate mr-2">{p.title}</span>
+              <span className="font-semibold text-accent-foreground flex-shrink-0">{p.similarity}%</span>
             </a>
           ))}
         </div>
-      </span>
-    </span>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
 

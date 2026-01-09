@@ -5,9 +5,12 @@
  * This overrides Starlight's default MarkdownContent to add the PageStatus
  * component at the top of content pages when quality/llmSummary/etc
  * are defined in frontmatter.
+ *
+ * Also auto-injects ScenarioRatings at the bottom for AI Transition Model pages.
  */
 import '../../../node_modules/@astrojs/starlight/style/markdown.css';
 import { PageStatus } from '../wiki/PageStatus';
+import { ScenarioRatings } from '../wiki/ScenarioRatings';
 import pagesData from '../../data/pages.json';
 
 // Get frontmatter from the route context
@@ -18,6 +21,12 @@ const frontmatter = entry?.data || {};
 const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.importance;
 const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
 const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
+
+// Check if this is an AI Transition Model page with ratings
+const isAITransitionModelPage = Astro.url.pathname.includes('/ai-transition-model/');
+const ratings = (frontmatter as any).ratings;
+const hasRatings = ratings && (ratings.changeability !== undefined || ratings.xriskImpact !== undefined || ratings.trajectoryImpact !== undefined || ratings.uncertainty !== undefined);
+const showRatings = isAITransitionModelPage && hasRatings;
 
 // Extract page ID from pathname to look up additional metadata
 const pathParts = Astro.url.pathname.split('/').filter(Boolean);
@@ -42,4 +51,17 @@ const pageData = pagesData.find((p: any) => p.id === pageId);
     />
   )}
   <slot />
+  {showRatings && (
+    <div class="ratings-section">
+      <hr />
+      <h2 id="ratings">Ratings</h2>
+      <ScenarioRatings
+        client:load
+        changeability={ratings.changeability}
+        xriskImpact={ratings.xriskImpact}
+        trajectoryImpact={ratings.trajectoryImpact}
+        uncertainty={ratings.uncertainty}
+      />
+    </div>
+  )}
 </div>

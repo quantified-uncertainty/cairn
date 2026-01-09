@@ -1,7 +1,10 @@
 "use client"
 
-import { Bug, Crosshair, Building2, Brain, type LucideIcon } from "lucide-react"
+import { Bug, Crosshair, Building2, Brain } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+// Define LucideIcon type locally to avoid ESM/CJS issues
+type LucideIcon = React.ForwardRefExoticComponent<React.SVGProps<SVGSVGElement> & { size?: number | string }>
 
 export type RiskCategory = "accident" | "misuse" | "structural" | "epistemic"
 

@@ -9,6 +9,7 @@
 import React from 'react';
 import { DisagreementMap } from './DisagreementMap';
 import { getDisagreementMapData } from '../../data';
+import { Card } from '../ui/card';
 
 interface Position {
   actor?: string;
@@ -69,9 +70,9 @@ export function DataDisagreementMap({
 
   if (positions.length === 0) {
     return (
-      <div className="disagreement-map disagreement-map--empty">
-        <p>No position data available for topic: {topic}</p>
-      </div>
+      <Card className="my-6 p-4 border-dashed">
+        <p className="text-muted-foreground m-0">No position data available for topic: {topic}</p>
+      </Card>
     );
   }
 

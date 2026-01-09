@@ -1,5 +1,4 @@
 import React from 'react';
-import './wiki.css';
 
 interface Source {
   title: string;
@@ -102,30 +101,30 @@ function SourceIcon({ type }: { type: SourceType }) {
 
 export function Sources({ sources }: SourcesProps) {
   return (
-    <div className="wiki-sources">
-      <div className="wiki-sources__title">Sources & References</div>
-      <ul className="wiki-sources__list">
+    <div className="my-8 p-4 bg-muted rounded-lg">
+      <div className="text-sm font-semibold text-muted-foreground mb-3">Sources & References</div>
+      <ul className="m-0 pl-5 space-y-1.5">
         {sources.map((source, index) => {
           if (typeof source === 'string') {
             const type = getSourceType(undefined);
             return (
-              <li key={index}>
-                <span className="wiki-source-icon" title={getSourceTypeLabel(type)}>
+              <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="w-4 h-4 flex-shrink-0 mt-0.5" title={getSourceTypeLabel(type)}>
                   <SourceIcon type={type} />
                 </span>
-                <span className="wiki-source-content">{source}</span>
+                <span>{source}</span>
               </li>
             );
           }
           const type = getSourceType(source.url);
           return (
-            <li key={index}>
-              <span className="wiki-source-icon" title={getSourceTypeLabel(type)}>
+            <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <span className="w-4 h-4 flex-shrink-0 mt-0.5" title={getSourceTypeLabel(type)}>
                 <SourceIcon type={type} />
               </span>
-              <span className="wiki-source-content">
+              <span>
                 {source.url ? (
-                  <a href={source.url} target="_blank" rel="noopener noreferrer">
+                  <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-accent-foreground hover:underline">
                     {source.title}
                   </a>
                 ) : (

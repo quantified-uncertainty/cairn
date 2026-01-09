@@ -1,0 +1,24 @@
+---
+/**
+ * Custom PageTitle that includes breadcrumbs for AI Transition Model pages
+ */
+import Breadcrumbs from './Breadcrumbs.astro';
+
+// From Starlight constants - used for skip links and ToC
+const PAGE_TITLE_ID = '_top';
+---
+
+<Breadcrumbs />
+<h1 id={PAGE_TITLE_ID}>{Astro.locals.starlightRoute.entry.data.title}</h1>
+
+<style>
+  @layer starlight.core {
+    h1 {
+      margin-top: 1rem;
+      font-size: var(--sl-text-h1);
+      line-height: var(--sl-line-height-headings);
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+  }
+</style>

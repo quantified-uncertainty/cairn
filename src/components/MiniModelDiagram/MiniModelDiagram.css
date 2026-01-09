@@ -1,0 +1,77 @@
+.mini-model-diagram {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem 0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mini-model-diagram svg {
+  width: 100%;
+  height: auto;
+  background: transparent;
+}
+
+/* Subgroup labels (AI System Factors, Societal Factors) */
+.mini-model-diagram__subgroup-label {
+  font-size: 8px;
+  font-weight: 500;
+  fill: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tier labels (Root Factors, Scenarios, Outcomes) */
+.mini-model-diagram__tier-label {
+  font-size: 6px;
+  font-weight: 400;
+  fill: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Edge styling */
+.mini-model-diagram__edge {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+/* Node styling */
+.mini-model-diagram__node {
+  transition: opacity 0.15s ease;
+}
+
+.mini-model-diagram__node:hover rect {
+  filter: brightness(0.95);
+}
+
+.mini-model-diagram__node--selected rect {
+  filter: none;
+}
+
+.mini-model-diagram__node-label {
+  font-size: 6.5px;
+  font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Hover effect - dim non-hovered nodes when any node is hovered */
+.mini-model-diagram__nodes:hover .mini-model-diagram__node:not(:hover):not(.mini-model-diagram__node--selected) {
+  opacity: 0.6;
+}
+
+/* Link to full graph */
+.mini-model-diagram__link {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #6b7280;
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+.mini-model-diagram__link:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}

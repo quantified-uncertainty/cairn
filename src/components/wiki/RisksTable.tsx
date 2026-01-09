@@ -6,6 +6,14 @@ import { DataTable, SortableHeader } from "@/components/ui/data-table"
 import { cn } from "@/lib/utils"
 import { categoryConfig, type RiskCategory } from "./RiskCategoryIcon"
 import type { RiskTableLikelihood, RiskTableTimeframe, RiskTableSolution } from "@/data/index"
+import { Badge } from "./shared/Badge"
+import { EmptyCell } from "./shared/EmptyCell"
+import { ImportanceScoreCell } from "./shared/ScoreCell"
+import { InterventionItemsCell } from "./shared/ItemsCell"
+import { SeverityBadge } from "./shared/SeverityBadge"
+import { StatBox, PrimaryStatBox, StatsSummary } from "./shared/StatBox"
+import { useToggleSet } from "./shared/useToggleSet"
+import { riskCategoryColors, causalLevelColors, severitySortOrder, likelihoodSortOrder, maturitySortOrder, causalLevelSortOrder } from "./shared/style-config"
 
 interface Risk {
   id: string
@@ -24,116 +32,39 @@ interface RisksTableProps {
   risks: Risk[]
 }
 
-function Badge({ children, variant = "default" }: { children: React.ReactNode; variant?: "default" | "danger" | "warning" | "success" | "info" }) {
-  const variants = {
-    default: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-    danger: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-    warning: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-    success: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-    info: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
-  }
-  return (
-    <span className={cn("inline-block px-2 py-0.5 rounded text-xs font-medium", variants[variant])}>
-      {children}
-    </span>
-  )
-}
-
-function ImportanceCell({ value }: { value: number | null }) {
-  if (value === null) return <span className="text-muted-foreground">—</span>
-
-  // 0-100 scale: 90+ essential, 70-89 high, 50-69 useful, 30-49 reference, <30 peripheral
-  const colorClass = value >= 90
-    ? "bg-purple-200 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200"
-    : value >= 70
-    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-    : value >= 50
-    ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
-    : value >= 30
-    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-
-  return (
-    <span className={cn("inline-flex items-center justify-center min-w-[2rem] px-1 h-6 rounded text-sm font-medium", colorClass)}>
-      {Math.round(value)}
-    </span>
-  )
-}
-
 function CategoryBadge({ category }: { category: string }) {
-  const variants: Record<string, "danger" | "warning" | "info" | "default"> = {
-    accident: "warning",
-    misuse: "danger",
-    structural: "info",
-    epistemic: "default",
-  }
   const config = categoryConfig[category as RiskCategory]
-  return <Badge variant={variants[category] || "default"}>{config?.label || category}</Badge>
+  const colorConfig = riskCategoryColors[category as keyof typeof riskCategoryColors]
+  return <Badge variant={colorConfig?.variant || "default"}>{config?.label || category}</Badge>
 }
 
 function CausalLevelBadge({ level }: { level?: 'outcome' | 'pathway' | 'amplifier' | null }) {
-  if (!level) return <span className="text-muted-foreground">—</span>
-  const config: Record<string, { label: string; variant: "danger" | "warning" | "info" }> = {
-    outcome: { label: "Outcome", variant: "danger" },
-    pathway: { label: "Pathway", variant: "warning" },
-    amplifier: { label: "Amplifier", variant: "info" },
-  }
-  const { label, variant } = config[level] || { label: level, variant: "info" as const }
-  return <Badge variant={variant}>{label}</Badge>
-}
-
-function SeverityBadge({ severity }: { severity?: string }) {
-  if (!severity) return <span className="text-muted-foreground">—</span>
-  const normalized = severity.toLowerCase()
-  let variant: "danger" | "warning" | "info" | "success" | "default" = "default"
-  if (normalized.includes("catastrophic") || normalized.includes("critical")) variant = "danger"
-  else if (normalized.includes("high") && !normalized.includes("medium")) variant = "warning"
-  else if (normalized.includes("medium")) variant = "info"
-  else if (normalized.includes("low")) variant = "success"
-  return <Badge variant={variant}>{severity}</Badge>
+  if (!level) return <EmptyCell />
+  const config = causalLevelColors[level]
+  return <Badge variant={config?.variant || "info"}>{config?.label || level}</Badge>
 }
 
 function LikelihoodCell({ likelihood }: { likelihood?: RiskTableLikelihood }) {
-  if (!likelihood) return <span className="text-muted-foreground">—</span>
+  if (!likelihood) return <EmptyCell />
   const displayText = likelihood.display || likelihood.level || '—'
   return <span className="text-sm">{displayText}</span>
 }
 
 function TimeframeCell({ timeframe }: { timeframe?: RiskTableTimeframe }) {
-  if (!timeframe) return <span className="text-muted-foreground">—</span>
+  if (!timeframe) return <EmptyCell />
   return <span className="text-sm">{timeframe.display}</span>
 }
 
 function MaturityCell({ maturity }: { maturity?: string }) {
-  if (!maturity) return <span className="text-muted-foreground">—</span>
+  if (!maturity) return <EmptyCell />
   return <span className="text-sm">{maturity}</span>
-}
-
-function SolutionsCell({ solutions }: { solutions: RiskTableSolution[] }) {
-  if (!solutions || solutions.length === 0) return <span className="text-muted-foreground">—</span>
-  return (
-    <div className="flex flex-wrap gap-1">
-      {solutions.slice(0, 2).map((solution) => (
-        <a
-          key={solution.id}
-          href={solution.href}
-          className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 hover:underline"
-        >
-          {solution.title}
-        </a>
-      ))}
-      {solutions.length > 2 && (
-        <span className="text-xs text-muted-foreground">+{solutions.length - 2}</span>
-      )}
-    </div>
-  )
 }
 
 const columns: ColumnDef<Risk>[] = [
   {
     accessorKey: "importance",
     header: ({ column }) => <SortableHeader column={column}>Imp</SortableHeader>,
-    cell: ({ row }) => <ImportanceCell value={row.getValue("importance")} />,
+    cell: ({ row }) => <ImportanceScoreCell value={row.getValue("importance")} />,
     sortingFn: (rowA, rowB) => {
       const a = rowA.getValue("importance") as number | null
       const b = rowB.getValue("importance") as number | null
@@ -163,10 +94,9 @@ const columns: ColumnDef<Risk>[] = [
     header: ({ column }) => <SortableHeader column={column}>Level</SortableHeader>,
     cell: ({ row }) => <CausalLevelBadge level={row.getValue("causalLevel")} />,
     sortingFn: (rowA, rowB) => {
-      const order: Record<string, number> = { outcome: 3, pathway: 2, amplifier: 1 }
       const a = rowA.getValue("causalLevel") as string | null
       const b = rowB.getValue("causalLevel") as string | null
-      return (a ? order[a] || 0 : 0) - (b ? order[b] || 0 : 0)
+      return (a ? causalLevelSortOrder[a] || 0 : 0) - (b ? causalLevelSortOrder[b] || 0 : 0)
     },
   },
   {
@@ -174,14 +104,11 @@ const columns: ColumnDef<Risk>[] = [
     header: ({ column }) => <SortableHeader column={column}>Severity</SortableHeader>,
     cell: ({ row }) => <SeverityBadge severity={row.getValue("severity")} />,
     sortingFn: (rowA, rowB) => {
-      const order: Record<string, number> = {
-        low: 1, medium: 2, "medium-high": 3, high: 4, critical: 5, catastrophic: 6,
-      }
       const a = rowA.getValue("severity") as string || ""
       const b = rowB.getValue("severity") as string || ""
       const aKey = a.toLowerCase().split(" ")[0]
       const bKey = b.toLowerCase().split(" ")[0]
-      return (order[aKey] || 0) - (order[bKey] || 0)
+      return (severitySortOrder[aKey] || 0) - (severitySortOrder[bKey] || 0)
     },
   },
   {
@@ -189,12 +116,9 @@ const columns: ColumnDef<Risk>[] = [
     header: ({ column }) => <SortableHeader column={column}>Likelihood</SortableHeader>,
     cell: ({ row }) => <LikelihoodCell likelihood={row.getValue("likelihood")} />,
     sortingFn: (rowA, rowB) => {
-      const levelOrder: Record<string, number> = {
-        "low": 1, "medium": 2, "medium-high": 3, "high": 4, "very-high": 5, "near-certain": 6,
-      }
       const a = rowA.getValue("likelihood") as RiskTableLikelihood | undefined
       const b = rowB.getValue("likelihood") as RiskTableLikelihood | undefined
-      return (a ? (levelOrder[a.level] || 0) : 0) - (b ? (levelOrder[b.level] || 0) : 0)
+      return (a ? (likelihoodSortOrder[a.level] || 0) : 0) - (b ? (likelihoodSortOrder[b.level] || 0) : 0)
     },
   },
   {
@@ -212,16 +136,10 @@ const columns: ColumnDef<Risk>[] = [
     header: ({ column }) => <SortableHeader column={column}>Maturity</SortableHeader>,
     cell: ({ row }) => <MaturityCell maturity={row.getValue("maturity")} />,
     sortingFn: (rowA, rowB) => {
-      const order: Record<string, number> = {
-        "neglected": 1, "under-researched": 1, "minimal": 1,
-        "emerging": 2, "early": 2, "nascent": 2,
-        "growing": 3, "developing": 3, "active": 3,
-        "mature": 4, "established": 4, "well-studied": 4,
-      }
       const a = (rowA.getValue("maturity") as string || "").toLowerCase()
       const b = (rowB.getValue("maturity") as string || "").toLowerCase()
       const getScore = (val: string) => {
-        for (const [key, score] of Object.entries(order)) {
+        for (const [key, score] of Object.entries(maturitySortOrder)) {
           if (val.includes(key)) return score
         }
         return 0
@@ -232,7 +150,7 @@ const columns: ColumnDef<Risk>[] = [
   {
     accessorKey: "relatedSolutions",
     header: "Solutions",
-    cell: ({ row }) => <SolutionsCell solutions={row.getValue("relatedSolutions")} />,
+    cell: ({ row }) => <InterventionItemsCell items={row.getValue("relatedSolutions")} />,
     sortingFn: (rowA, rowB) => {
       const a = (rowA.getValue("relatedSolutions") as RiskTableSolution[] || []).length
       const b = (rowB.getValue("relatedSolutions") as RiskTableSolution[] || []).length
@@ -261,23 +179,10 @@ const causalLevelConfig: Record<CausalLevel, { label: string; color: string; act
   },
 }
 
-export function RisksTable({ risks }: RisksTableProps) {
-  const [activeLevels, setActiveLevels] = React.useState<Set<CausalLevel>>(new Set(['outcome', 'pathway', 'amplifier']))
+const allCausalLevels: CausalLevel[] = ['outcome', 'pathway', 'amplifier']
 
-  const toggleLevel = (level: CausalLevel) => {
-    setActiveLevels(prev => {
-      const next = new Set(prev)
-      if (next.has(level)) {
-        // Don't allow deselecting all - keep at least one active
-        if (next.size > 1) {
-          next.delete(level)
-        }
-      } else {
-        next.add(level)
-      }
-      return next
-    })
-  }
+export function RisksTable({ risks }: RisksTableProps) {
+  const { active: activeLevels, toggle: toggleLevel, reset: resetLevels, isAllActive } = useToggleSet(allCausalLevels)
 
   const filteredRisks = React.useMemo(() => {
     return risks.filter(r => {
@@ -310,13 +215,6 @@ export function RisksTable({ risks }: RisksTableProps) {
     return { total: filteredRisks.length, fullTotal: risks.length, bySeverity, byCategory, byLevel, categories: Array.from(categories).sort() }
   }, [risks, filteredRisks])
 
-  const categoryBorderColors: Record<string, string> = {
-    accident: "border-l-amber-500",
-    misuse: "border-l-red-500",
-    structural: "border-l-indigo-500",
-    epistemic: "border-l-slate-500",
-  }
-
   return (
     <div className="space-y-6">
       {/* Filter by Causal Level */}
@@ -340,9 +238,9 @@ export function RisksTable({ risks }: RisksTableProps) {
             </button>
           )
         })}
-        {activeLevels.size < 3 && (
+        {!isAllActive && (
           <button
-            onClick={() => setActiveLevels(new Set(['outcome', 'pathway', 'amplifier']))}
+            onClick={resetLevels}
             className="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
           >
             Show All
@@ -350,33 +248,23 @@ export function RisksTable({ risks }: RisksTableProps) {
         )}
       </div>
       {/* Stats Summary */}
-      <div className="flex flex-wrap gap-6 p-4 bg-muted/30 rounded-lg">
-        <div className="flex flex-col">
-          <span className="text-2xl font-bold">{stats.total}</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">
-            {stats.total !== stats.fullTotal ? `Showing` : 'Total'}
-          </span>
-        </div>
-        <div className="flex flex-col border-l-2 border-l-red-500 pl-3">
-          <span className="text-2xl font-bold">{stats.bySeverity.catastrophic}</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Catastrophic</span>
-        </div>
-        <div className="flex flex-col border-l-2 border-l-amber-500 pl-3">
-          <span className="text-2xl font-bold">{stats.bySeverity.high}</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">High</span>
-        </div>
+      <StatsSummary>
+        <PrimaryStatBox value={stats.total} label={stats.total !== stats.fullTotal ? 'Showing' : 'Total'} />
+        <StatBox value={stats.bySeverity.catastrophic} label="Catastrophic" borderColor="border-l-red-500" />
+        <StatBox value={stats.bySeverity.high} label="High" borderColor="border-l-amber-500" />
         {stats.categories.map(cat => {
           const config = categoryConfig[cat as RiskCategory]
+          const colorConfig = riskCategoryColors[cat as keyof typeof riskCategoryColors]
           return (
-            <div key={cat} className={cn("flex flex-col border-l-2 pl-3", categoryBorderColors[cat])}>
-              <span className="text-2xl font-bold">{stats.byCategory[cat]}</span>
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                {config?.label || cat}
-              </span>
-            </div>
+            <StatBox
+              key={cat}
+              value={stats.byCategory[cat]}
+              label={config?.label || cat}
+              borderColor={colorConfig?.borderColor}
+            />
           )
         })}
-      </div>
+      </StatsSummary>
       <DataTable columns={columns} data={filteredRisks} searchPlaceholder="Search risks..." />
     </div>
   )

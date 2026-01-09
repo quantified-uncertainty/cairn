@@ -6,7 +6,20 @@ export interface CauseEffectNodeData extends Record<string, unknown> {
   type?: 'leaf' | 'cause' | 'effect' | 'intermediate';
   subgroup?: string;
   order?: number;  // Manual ordering within layer (0 = leftmost)
-  subItems?: Array<{ label: string; probability?: string; href?: string; description?: string }>;
+  subItems?: Array<{
+    label: string;
+    probability?: string;
+    href?: string;
+    description?: string;
+    scope?: string;
+    ratings?: {
+      changeability?: number;
+      xriskImpact?: number;
+      trajectoryImpact?: number;
+      uncertainty?: number;
+    };
+    keyDebates?: Array<{ topic: string; description: string }>;
+  }>;
   confidence?: number;
   confidenceLabel?: string;
   details?: string;

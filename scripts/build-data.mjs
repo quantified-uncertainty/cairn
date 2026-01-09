@@ -122,11 +122,12 @@ const DATA_FILES = [
   { key: 'estimates', file: 'estimates.yaml' },
   { key: 'cruxes', file: 'cruxes.yaml' },
   { key: 'glossary', file: 'glossary.yaml' },
-  { key: 'entities', file: 'entities.yaml' },
+  { key: 'entities', dir: 'entities' }, // Split by entity type
   { key: 'literature', file: 'literature.yaml' },
   { key: 'funders', file: 'funders.yaml' },
   { key: 'resources', dir: 'resources' }, // Split into multiple files
   { key: 'publications', file: 'publications.yaml' },
+  { key: 'parameterGraph', file: 'parameter-graph.yaml', isObject: true }, // Graph structure (not array)
 ];
 
 function loadYaml(filename) {
@@ -341,7 +342,7 @@ function buildPagesRegistry(urlToResource) {
   // Scan all content directories
   scanDirectory(join(CONTENT_DIR, 'knowledge-base'), '/knowledge-base');
 
-  const otherDirs = ['understanding-ai-risk', 'analysis', 'getting-started', 'browse', 'internal', 'style-guides'];
+  const otherDirs = ['ai-transition-model', 'analysis', 'getting-started', 'browse', 'internal', 'style-guides'];
   for (const topDir of otherDirs) {
     const dirPath = join(CONTENT_DIR, topDir);
     if (existsSync(dirPath)) {
@@ -392,7 +393,7 @@ function buildPathRegistry() {
   scanDirectory(join(CONTENT_DIR, 'knowledge-base'), '/knowledge-base');
 
   // Also scan other top-level content directories
-  const topLevelDirs = ['understanding-ai-risk', 'analysis', 'getting-started'];
+  const topLevelDirs = ['ai-transition-model', 'analysis', 'getting-started'];
   for (const topDir of topLevelDirs) {
     const dirPath = join(CONTENT_DIR, topDir);
     if (existsSync(dirPath)) {
@@ -485,10 +486,17 @@ function main() {
 
   const database = {};
 
-  for (const { key, file, dir } of DATA_FILES) {
+  for (const { key, file, dir, isObject } of DATA_FILES) {
     const data = dir ? loadYamlDir(dir) : loadYaml(file);
     database[key] = data;
-    console.log(`  ${key}: ${countEntries(data)} entries`);
+    if (isObject) {
+      // Object with structure (e.g., parameterGraph with nodes/edges)
+      const nodeCount = data?.nodes?.length || 0;
+      const edgeCount = data?.edges?.length || 0;
+      console.log(`  ${key}: ${nodeCount} nodes, ${edgeCount} edges`);
+    } else {
+      console.log(`  ${key}: ${countEntries(data)} entries`);
+    }
   }
 
   // Compute derived data for entities

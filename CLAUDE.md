@@ -8,6 +8,28 @@ This document describes available workflows for Claude Code when working with th
 
 Scripts that generate intermediate output (like grading results) should write to this directory by default. This keeps the project root clean and prevents accidental commits of temp data.
 
+## Styling Guidelines
+
+**Prefer Tailwind CSS and shadcn/ui components over custom CSS.**
+
+When adding or modifying styles:
+1. **Use Tailwind utility classes** directly in components via `className`
+2. **Use shadcn/ui components** from `src/components/ui/` for common UI patterns (buttons, cards, tabs, tables, etc.)
+3. **Avoid creating new CSS classes** in `.css` files - use Tailwind instead
+4. **When refactoring existing components**, convert custom CSS to Tailwind where practical
+
+Existing custom CSS files (legacy):
+- `src/components/wiki/wiki.css` - Wiki component styles (refactor candidate)
+- `src/components/CauseEffectGraph.css` - Graph visualization styles
+- `src/components/MiniModelDiagram/MiniModelDiagram.css` - SVG diagram styles
+
+shadcn/ui is configured in `components.json`. To add new shadcn components:
+```bash
+npx shadcn@latest add [component-name]
+```
+
+Available shadcn components are in `src/components/ui/`.
+
 ## Page Improvement Workflow (Recommended)
 
 The most effective way to improve wiki pages to quality 5 is using a Task Agent with research capabilities. This approach:

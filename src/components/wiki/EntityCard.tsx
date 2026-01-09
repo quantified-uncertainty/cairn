@@ -1,8 +1,9 @@
 "use client"
 
 import React from 'react';
-import './wiki.css';
+import { Card, CardContent } from '../ui/card';
 import { EntityTypeBadge, type EntityType } from './EntityTypeIcon';
+import { cn } from '../../lib/utils';
 
 type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'intervention' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder' | 'organization' | 'lab-research' | 'lab-academic' | 'lab-frontier' | 'lab-startup' | 'historical' | 'analysis';
 
@@ -28,7 +29,7 @@ const categoryPaths: Record<string, string> = {
   historical: '/knowledge-base/history',
   scenario: '/analysis/scenarios',
   intervention: '/knowledge-base/responses',
-  crux: '/understanding-ai-risk/core-argument',
+  crux: '/ai-transition-model/core-argument',
   'case-study': '/analysis/case-studies',
   researcher: '/knowledge-base/people',
   resource: '/getting-started',
@@ -43,15 +44,17 @@ export function EntityCard({ id, category, title, description }: EntityCardProps
   const path = `${basePath}/${id}`;
 
   return (
-    <div className="wiki-entity-card">
+    <Card className="p-4 py-4 gap-2 transition-all hover:border-accent-foreground hover:shadow-md">
       <EntityTypeBadge type={category as EntityType} size="xs" />
-      <h4 className="wiki-entity-card__title">
-        <a href={path}>{title}</a>
+      <h4 className="m-0 text-base font-semibold">
+        <a href={path} className="text-foreground no-underline hover:text-accent-foreground">
+          {title}
+        </a>
       </h4>
       {description && (
-        <p className="wiki-entity-card__description">{description}</p>
+        <p className="m-0 text-sm text-muted-foreground leading-snug">{description}</p>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -60,7 +63,11 @@ interface EntityCardsProps {
 }
 
 export function EntityCards({ children }: EntityCardsProps) {
-  return <div className="wiki-entity-cards">{children}</div>;
+  return (
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 my-4">
+      {children}
+    </div>
+  );
 }
 
 export default EntityCard;

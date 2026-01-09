@@ -1,7 +1,7 @@
 import React from 'react';
 import { getEntityById, getEntityHref, getEntityPath } from '../../data';
 import { getEntityTypeIcon } from './EntityTypeIcon';
-import './wiki.css';
+import { cn } from '../../lib/utils';
 
 interface EntityLinkProps {
   /**
@@ -68,18 +68,22 @@ export function EntityLink({
   // Get icon if requested
   const icon = showIcon && entity ? getEntityTypeIcon(entity.type) : null;
 
-  // Build class names
-  const classNames = ['wiki-entity-link', className].filter(Boolean).join(' ');
-
   // External link props
   const externalProps = external
     ? { target: '_blank', rel: 'noopener noreferrer' }
     : {};
 
   return (
-    <a href={href} className={classNames} {...externalProps}>
-      {icon && <span className="wiki-entity-link__icon">{icon}</span>}
-      <span className="wiki-entity-link__label">{displayLabel}</span>
+    <a
+      href={href}
+      className={cn(
+        'inline-flex items-center gap-1 px-2 py-0.5 bg-muted rounded text-sm text-accent-foreground no-underline transition-colors hover:bg-muted/80',
+        className
+      )}
+      {...externalProps}
+    >
+      {icon && <span className="text-xs">{icon}</span>}
+      <span>{displayLabel}</span>
     </a>
   );
 }
@@ -110,7 +114,7 @@ export function MultiEntityLinks({
   className = '',
 }: MultiEntityLinkProps) {
   return (
-    <span className={`wiki-entity-links ${className}`}>
+    <span className={cn('inline-flex flex-wrap gap-1', className)}>
       {ids.map((id, index) => (
         <React.Fragment key={id}>
           <EntityLink id={id} showIcon={showIcons} />

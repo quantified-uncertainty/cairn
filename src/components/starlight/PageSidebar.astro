@@ -1,0 +1,378 @@
+---
+/**
+ * Custom PageSidebar that shows the MiniModelDiagram for AI Transition Model pages
+ * above the default table of contents, plus a compact info box.
+ * Also shows SidebarInfoBox for knowledge-base pages with entity definitions.
+ */
+import MobileTableOfContents from '@astrojs/starlight/components/MobileTableOfContents.astro';
+import TableOfContents from '@astrojs/starlight/components/TableOfContents.astro';
+import MiniModelDiagramStatic from './MiniModelDiagramStatic.astro';
+import SidebarInfoBox from './SidebarInfoBox.astro';
+import { getEntityById } from '../../data';
+
+// Get current route info
+const route = Astro.locals.starlightRoute;
+const pathname = Astro.url.pathname;
+const frontmatter = route?.entry?.data || {};
+
+// Check if this is an AI Transition Model page
+const isAITransitionModelPage = pathname.includes('/ai-transition-model/');
+
+// Check if this is a knowledge-base page
+const isKnowledgeBasePage = pathname.includes('/knowledge-base/');
+
+// Check frontmatter for full-width layout (keeping for potential future use)
+const isFullWidth = (frontmatter as any).fullWidth === true;
+
+// Determine the nodeId for the minimap
+function getModelNodeId(): string | null {
+  if (!isAITransitionModelPage) return null;
+
+  // Check for explicit modelNodeId in frontmatter
+  if (frontmatter.modelNodeId) return frontmatter.modelNodeId;
+
+  // Check for parentFactor (used by parameter pages)
+  if (frontmatter.parentFactor) {
+    // Map parentFactor to nodeId (most match directly except civ-competence)
+    const parentFactor = frontmatter.parentFactor;
+    if (parentFactor === 'civilizational-competence') return 'civ-competence';
+    return parentFactor;
+  }
+
+  // Derive from URL path
+  const pathParts = pathname.split('/').filter(Boolean);
+
+  // Handle outcomes: /ai-transition-model/outcomes/existential-catastrophe/
+  if (pathname.includes('/outcomes/')) {
+    const outcomeIndex = pathParts.indexOf('outcomes');
+    const outcomeSlug = pathParts[outcomeIndex + 1];
+    if (outcomeSlug === 'existential-catastrophe') return 'existential-catastrophe';
+    if (outcomeSlug === 'long-term-trajectory') return 'long-term-trajectory';
+    // Outcomes index page - no specific node
+    return null;
+  }
+
+  // Handle scenarios: /ai-transition-model/scenarios/ai-takeover/
+  if (pathname.includes('/scenarios/')) {
+    const scenarioIndex = pathParts.indexOf('scenarios');
+    const scenarioType = pathParts[scenarioIndex + 1];
+    if (scenarioType === 'ai-takeover') return 'ai-takeover';
+    if (scenarioType === 'human-catastrophe') return 'human-catastrophe';
+    if (scenarioType === 'long-term-lockin') return 'long-term-lockin';
+    // Scenarios index page
+    return null;
+  }
+
+  // Handle factors: /ai-transition-model/factors/ai-uses/
+  if (pathname.includes('/factors/')) {
+    const factorIndex = pathParts.indexOf('factors');
+    const factorType = pathParts[factorIndex + 1];
+    const factorMapping: Record<string, string> = {
+      'misalignment-potential': 'misalignment-potential',
+      'ai-capabilities': 'ai-capabilities',
+      'ai-uses': 'ai-uses',
+      'ai-ownership': 'ai-ownership',
+      'civilizational-competence': 'civ-competence',
+      'transition-turbulence': 'transition-turbulence',
+      'misuse-potential': 'misuse-potential',
+    };
+    return factorMapping[factorType] || null;
+  }
+
+  // Handle parameters: /ai-transition-model/parameters/
+  // These should have parentFactor in frontmatter (handled above)
+  // If not, we can't determine the nodeId
+
+  return null;
+}
+
+// Get the entity ID for the info box (from frontmatter or URL path)
+function getEntityId(): string | null {
+  // First check for explicit entityId in frontmatter
+  if ((frontmatter as any).entityId) {
+    return (frontmatter as any).entityId;
+  }
+
+  const pathParts = pathname.split('/').filter(Boolean);
+
+  // Handle AI Transition Model pages
+  if (isAITransitionModelPage) {
+    // Handle outcomes: /ai-transition-model/outcomes/existential-catastrophe/
+    if (pathname.includes('/outcomes/')) {
+      const outcomeIndex = pathParts.indexOf('outcomes');
+      return pathParts[outcomeIndex + 1] || null;
+    }
+
+    // Handle scenarios: /ai-transition-model/scenarios/ai-takeover/
+    if (pathname.includes('/scenarios/')) {
+      const scenarioIndex = pathParts.indexOf('scenarios');
+      return pathParts[scenarioIndex + 1] || null;
+    }
+
+    // Handle factors: /ai-transition-model/factors/transition-turbulence/
+    if (pathname.includes('/factors/')) {
+      const factorIndex = pathParts.indexOf('factors');
+      return pathParts[factorIndex + 1] || null;
+    }
+
+    // Handle parameters: /ai-transition-model/parameters/racing-intensity/
+    if (pathname.includes('/parameters/')) {
+      const paramIndex = pathParts.indexOf('parameters');
+      return pathParts[paramIndex + 1] || null;
+    }
+  }
+
+  // Handle Knowledge Base pages - extract slug from last path segment
+  if (isKnowledgeBasePage) {
+    // Get the last non-empty path segment as potential entity ID
+    const lastSegment = pathParts[pathParts.length - 1];
+    // Skip index pages
+    if (lastSegment && lastSegment !== 'index' && lastSegment !== 'knowledge-base') {
+      return lastSegment;
+    }
+  }
+
+  return null;
+}
+
+const nodeId = getModelNodeId();
+const entityId = getEntityId();
+
+// Check if entity exists in database (for knowledge-base pages)
+const entityExists = entityId ? !!getEntityById(entityId) : false;
+
+const showMinimap = isAITransitionModelPage && nodeId;
+const showInfoBox = (isAITransitionModelPage && entityId) || (isKnowledgeBasePage && entityId && entityExists);
+const showToc = route?.toc;
+---
+
+{/* Mobile ToC - always show for pages with headings */}
+{route?.toc && (
+  <div class="lg:sl-hidden">
+    <MobileTableOfContents />
+  </div>
+)}
+
+{/* Desktop right sidebar */}
+{(showMinimap || showInfoBox || showToc) && (
+  <div class:list={["right-sidebar-panel sl-hidden lg:sl-block", { "has-minimap": showMinimap || showInfoBox }]}>
+    <div class="sl-container">
+      {/* Model Position minimap - shown first for AI Transition Model pages */}
+      {showMinimap && (
+        <div class="model-position-sidebar">
+          <h2 class="sidebar-section-title">Position in Model</h2>
+          <MiniModelDiagramStatic selectedNodeId={nodeId} />
+          <a href="/ai-transition-model-views/graph" class="view-model-link">
+            View full interactive model →
+          </a>
+        </div>
+      )}
+
+      {/* Info Box - shown below minimap for AI Transition Model pages */}
+      {showInfoBox && entityId && (
+        <div class="sidebar-info-section">
+          <SidebarInfoBox entityId={entityId} />
+        </div>
+      )}
+
+      {/* Table of Contents - shown below info box */}
+      {showToc && (
+        <div class:list={["toc-section", { "toc-with-minimap": showMinimap || showInfoBox }]}>
+          <TableOfContents />
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+<style>
+  @layer starlight.core {
+    .right-sidebar-panel {
+      padding: 1rem var(--sl-sidebar-pad-x);
+      /* Ensure sidebar doesn't overflow */
+      overflow: hidden;
+    }
+    .sl-container {
+      width: calc(var(--sl-sidebar-width) - 2 * var(--sl-sidebar-pad-x));
+      /* Prevent text overflow */
+      overflow: hidden;
+    }
+    /* Wider container when showing minimap */
+    .right-sidebar-panel.has-minimap .sl-container {
+      width: 100%;
+      max-width: 280px;
+    }
+    .right-sidebar-panel :global(h2) {
+      color: var(--sl-color-white);
+      font-size: var(--sl-text-h5);
+      font-weight: 600;
+      line-height: var(--sl-line-height-headings);
+      margin-bottom: 0.5rem;
+    }
+    .right-sidebar-panel :global(:where(a)) {
+      display: block;
+      font-size: var(--sl-text-xs);
+      text-decoration: none;
+      color: var(--sl-color-gray-3);
+      overflow-wrap: anywhere;
+      /* Truncate long links */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .right-sidebar-panel :global(:where(a):hover) {
+      color: var(--sl-color-white);
+    }
+    /* At medium-large screens (72-85rem), use much narrower sidebar */
+    @media (min-width: 72rem) and (max-width: 85rem) {
+      .sl-container {
+        max-width: 160px;
+      }
+      .right-sidebar-panel.has-minimap .sl-container {
+        max-width: 180px;
+      }
+    }
+    /* At larger-medium screens (85-100rem), slightly wider */
+    @media (min-width: 85rem) and (max-width: 100rem) {
+      .sl-container {
+        max-width: 200px;
+      }
+      .right-sidebar-panel.has-minimap .sl-container {
+        max-width: 240px;
+      }
+    }
+    /* At large screens (100rem+), give more room */
+    @media (min-width: 100rem) {
+      .sl-container {
+        max-width: calc(
+          (
+            (
+                100vw - var(--sl-sidebar-width) - 2 * var(--sl-content-pad-x) - 2 *
+                  var(--sl-sidebar-pad-x)
+              ) * 0.25 /* MAGIC NUMBER 🥲 */
+          )
+        );
+      }
+      /* Override for minimap - give it more room */
+      .right-sidebar-panel.has-minimap .sl-container {
+        max-width: 300px;
+      }
+    }
+  }
+
+  /* Custom styles for the model position sidebar */
+  .model-position-sidebar {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-section-title {
+    font-size: 11px !important;
+    font-weight: 600;
+    color: var(--sl-color-gray-3) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px !important;
+  }
+
+  .view-model-link {
+    display: block;
+    text-align: right;
+    font-size: 11px;
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+    margin-top: 8px;
+    /* Handle truncation */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .view-model-link:hover {
+    color: var(--sl-color-white);
+  }
+
+  /* Add spacing when ToC follows minimap */
+  .toc-with-minimap {
+    padding-top: 0.5rem;
+  }
+
+  /* Info box section in sidebar */
+  .sidebar-info-section {
+    margin-bottom: 1rem;
+  }
+</style>
+
+{/* CSS to make AI Transition Model pages wider */}
+{isAITransitionModelPage && (
+  <style is:global>
+    /* Wider content for AI Transition Model pages */
+    .sl-markdown-content {
+      max-width: none !important;
+    }
+  </style>
+)}
+
+{/* Hide inline InfoBox when sidebar version is shown */}
+{showInfoBox && (
+  <style is:global>
+    /* Hide the inline InfoBox since it's now in sidebar */
+    .wiki-infobox {
+      display: none !important;
+    }
+    /* Remove margin gap from elements following hidden InfoBox */
+    .wiki-infobox + * {
+      margin-top: 0 !important;
+    }
+  </style>
+)}
+
+{/* Fix right sidebar overflow at all widths */}
+{(showMinimap || showInfoBox) && (
+  <style is:global>
+    /* Constrain the right sidebar container to prevent viewport overflow */
+    .right-sidebar-container {
+      overflow: hidden;
+    }
+    /* At medium screens (72-90rem), use narrow sidebar */
+    @media (min-width: 72rem) and (max-width: 90rem) {
+      .right-sidebar-container {
+        width: 200px !important;
+        min-width: 200px !important;
+      }
+    }
+    /* At larger screens (90rem+), slightly wider */
+    @media (min-width: 90rem) {
+      .right-sidebar-container {
+        width: 280px !important;
+        min-width: 280px !important;
+      }
+    }
+  </style>
+)}
+
+{/* Full-width layout when frontmatter has fullWidth: true */}
+{isFullWidth && (
+  <style is:global>
+    /* Make the main content area full width */
+    main.main-pane {
+      --sl-content-width: 100%;
+      max-width: none !important;
+    }
+    .content-panel {
+      max-width: none !important;
+    }
+    .main-frame {
+      max-width: none !important;
+    }
+    /* Hide right sidebar completely */
+    .right-sidebar-container {
+      display: none !important;
+    }
+    /* Expand content to use full width */
+    .main-pane {
+      grid-column: 2 / -1 !important;
+    }
+  </style>
+)}

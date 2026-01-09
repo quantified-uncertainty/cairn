@@ -1,7 +1,8 @@
 import React from 'react';
 import { getResourcesByIds, getResourceById, resources } from '../../data';
 import type { Resource } from '../../data/schema';
-import './wiki.css';
+import { Badge } from '../ui/badge';
+import { cn } from '../../lib/utils';
 
 /**
  * Get icon for resource type
@@ -127,41 +128,50 @@ export function ResourceList({
   }
 
   return (
-    <div className={`wiki-resource-list ${className}`}>
-      {title && <div className="wiki-resource-list__title">{title}</div>}
-      <ul className="wiki-resource-list__items">
+    <div className={cn('my-8', className)}>
+      {title && (
+        <div className="text-sm font-semibold text-muted-foreground mb-3">{title}</div>
+      )}
+      <ul className="m-0 p-0 list-none space-y-3">
         {resolvedResources.map((resource) => (
-          <li key={resource.id} className="wiki-resource-list__item">
-            <span className="wiki-resource-list__icon" title={getResourceTypeLabel(resource.type)}>
+          <li key={resource.id} className="flex items-start gap-3">
+            <span
+              className="w-5 h-5 flex-shrink-0 mt-0.5 text-muted-foreground"
+              title={getResourceTypeLabel(resource.type)}
+            >
               {getResourceTypeIcon(resource.type)}
             </span>
-            <div className="wiki-resource-list__content">
-              <div className="wiki-resource-list__main">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <a
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="wiki-resource-list__link"
+                  className="text-accent-foreground font-medium hover:underline"
                 >
                   {resource.title}
                 </a>
                 {resource.authors && resource.authors.length > 0 && (
-                  <span className="wiki-resource-list__authors">
-                    {' '}— {resource.authors.join(', ')}
+                  <span className="text-sm text-muted-foreground">
+                    — {resource.authors.join(', ')}
                   </span>
                 )}
                 {resource.published_date && (
-                  <span className="wiki-resource-list__date"> ({resource.published_date})</span>
+                  <span className="text-sm text-muted-foreground">
+                    ({resource.published_date})
+                  </span>
                 )}
-                <span className={`wiki-resource-list__type wiki-resource-list__type--${resource.type}`}>
+                <Badge variant="secondary" className="text-xs">
                   {getResourceTypeLabel(resource.type)}
-                </span>
+                </Badge>
               </div>
               {showSummaries && resource.summary && (
-                <p className="wiki-resource-list__summary">{resource.summary}</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                  {resource.summary}
+                </p>
               )}
               {showKeyPoints && resource.key_points && resource.key_points.length > 0 && (
-                <ul className="wiki-resource-list__key-points">
+                <ul className="mt-2 ml-4 text-sm text-muted-foreground list-disc space-y-1">
                   {resource.key_points.map((point, idx) => (
                     <li key={idx}>{point}</li>
                   ))}
@@ -227,12 +237,12 @@ export function ResourceBibliography({
   resolvedResources.sort((a, b) => a.title.localeCompare(b.title));
 
   if (resolvedResources.length === 0) {
-    return <p className="wiki-resource-bibliography--empty">No resources found.</p>;
+    return <p className="text-muted-foreground italic">No resources found.</p>;
   }
 
   if (!groupByType) {
     return (
-      <div className={`wiki-resource-bibliography ${className}`}>
+      <div className={className}>
         <ResourceList ids={resolvedResources.map((r) => r.id)} title="" showSummaries />
       </div>
     );
@@ -252,12 +262,12 @@ export function ResourceBibliography({
   const typeOrder = ['paper', 'book', 'report', 'blog', 'talk', 'podcast', 'government', 'reference', 'web'];
 
   return (
-    <div className={`wiki-resource-bibliography ${className}`}>
+    <div className={className}>
       {typeOrder
         .filter((t) => grouped[t]?.length > 0)
         .map((t) => (
-          <div key={t} className="wiki-resource-bibliography__section">
-            <h3 className="wiki-resource-bibliography__section-title">
+          <div key={t} className="mb-8">
+            <h3 className="text-lg font-semibold mb-3">
               {getResourceTypeLabel(t)}s ({grouped[t].length})
             </h3>
             <ResourceList ids={grouped[t].map((r) => r.id)} title="" showSummaries />

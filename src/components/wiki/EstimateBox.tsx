@@ -1,5 +1,7 @@
 import React from 'react';
-import './wiki.css';
+import { Card } from '../ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { cn } from '../../lib/utils';
 
 interface Estimate {
   source: string;
@@ -25,64 +27,78 @@ export function EstimateBox({
   aggregateRange
 }: EstimateBoxProps) {
   return (
-    <div className="estimate-box">
-      <div className="estimate-header">
-        <span className="estimate-icon">📊</span>
-        <span className="estimate-variable">{variable}</span>
+    <Card className="my-6 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+        <span className="text-xl">📊</span>
+        <span className="font-semibold">{variable}</span>
       </div>
 
+      {/* Description */}
       {description && (
-        <p className="estimate-description">{description}</p>
+        <p className="m-0 px-4 py-3 text-sm text-muted-foreground border-b border-border">
+          {description}
+        </p>
       )}
 
+      {/* Aggregate Range */}
       {aggregateRange && (
-        <div className="estimate-aggregate">
-          <span className="aggregate-label">Aggregate Range:</span>
-          <span className="aggregate-value">{aggregateRange}</span>
+        <div className="flex items-center gap-2 px-4 py-3 bg-muted">
+          <span className="text-sm text-muted-foreground">Aggregate Range:</span>
+          <span className="font-semibold text-lg text-accent-foreground">{aggregateRange}</span>
         </div>
       )}
 
-      <div className="estimate-sources">
-        <table className="estimate-table">
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Estimate</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
+      {/* Table */}
+      <div className="p-2">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="font-semibold">Source</TableHead>
+              <TableHead className="font-semibold">Estimate</TableHead>
+              <TableHead className="font-semibold">Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {estimates.map((est, i) => (
-              <tr key={i}>
-                <td>
+              <TableRow key={i}>
+                <TableCell>
                   {est.url ? (
-                    <a href={est.url} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={est.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-foreground no-underline hover:underline"
+                    >
                       {est.source}
                     </a>
                   ) : (
                     est.source
                   )}
-                </td>
-                <td className="estimate-value-cell">
+                </TableCell>
+                <TableCell className="font-semibold">
                   {est.value}{unit && !est.value.includes('%') && !est.value.includes('-') ? unit : ''}
-                </td>
-                <td className="estimate-date">{est.date || '—'}</td>
-              </tr>
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {est.date || '—'}
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
+      {/* Notes */}
       {estimates.some(e => e.notes) && (
-        <div className="estimate-notes">
+        <div className="px-4 py-3 bg-muted border-t border-border">
           {estimates.filter(e => e.notes).map((est, i) => (
-            <p key={i} className="estimate-note">
+            <p key={i} className={cn("m-0 text-[0.8rem] text-muted-foreground", i < estimates.filter(e => e.notes).length - 1 && "mb-2")}>
               <strong>{est.source}:</strong> {est.notes}
             </p>
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 

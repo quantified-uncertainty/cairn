@@ -3,7 +3,8 @@ import { resources, getResourceCredibility, getResourcePublication } from '../..
 import type { Resource } from '../../data/schema';
 import { CredibilityBadge } from './CredibilityBadge';
 import { ResourceTags } from './ResourceTags';
-import './wiki.css';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { cn } from '../../lib/utils';
 
 interface ResourcesIndexProps {
   showSearch?: boolean;
@@ -71,6 +72,14 @@ function getResourceTypeIcon(type: string): string {
   };
   return icons[type] || '🔗';
 }
+
+const typeBadgeColors: Record<string, string> = {
+  paper: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+  book: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+  blog: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+  report: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+  government: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
+};
 
 export function ResourcesIndex({
   showSearch = true,
@@ -163,16 +172,18 @@ export function ResourcesIndex({
     return stats;
   }, []);
 
+  const selectClass = "h-9 px-3 py-1 text-sm border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring";
+
   return (
-    <div className="resources-index">
+    <div className="my-4">
       {/* Stats summary */}
-      <div className="resources-index__stats">
-        <span className="resources-index__total">{resources.length} resources</span>
-        <span className="resources-index__breakdown">
+      <div className="flex flex-wrap items-center gap-4 mb-4 p-4 bg-muted/50 rounded-lg">
+        <span className="font-semibold text-lg">{resources.length} resources</span>
+        <span className="flex flex-wrap gap-3 text-sm text-muted-foreground">
           {Object.entries(typeStats)
             .sort((a, b) => b[1] - a[1])
             .map(([type, count]) => (
-              <span key={type} className="resources-index__stat-item">
+              <span key={type}>
                 {getResourceTypeIcon(type)} {count} {getResourceTypeLabel(type).toLowerCase()}s
               </span>
             ))}
@@ -180,23 +191,23 @@ export function ResourcesIndex({
       </div>
 
       {/* Controls */}
-      <div className="resources-index__controls">
+      <div className="flex flex-col sm:flex-row gap-4 mb-4">
         {showSearch && (
           <input
             type="text"
             placeholder="Search resources..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="resources-index__search"
+            className="flex-1 h-9 px-3 py-1 text-sm border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
           />
         )}
 
         {showFilters && (
-          <div className="resources-index__filters">
+          <div className="flex flex-wrap gap-2">
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="resources-index__select"
+              className={selectClass}
             >
               <option value="all">All Types</option>
               {types.map((type) => (
@@ -210,7 +221,7 @@ export function ResourcesIndex({
               <select
                 value={selectedCredibility}
                 onChange={(e) => setSelectedCredibility(e.target.value)}
-                className="resources-index__select"
+                className={selectClass}
               >
                 <option value="all">All Credibility</option>
                 <option value="5">★★★★★ Gold (5)</option>
@@ -225,7 +236,7 @@ export function ResourcesIndex({
               <select
                 value={selectedContent}
                 onChange={(e) => setSelectedContent(e.target.value)}
-                className="resources-index__select"
+                className={selectClass}
               >
                 <option value="all">All Content ({resources.length})</option>
                 <option value="full">Full ({contentStats.full})</option>
@@ -238,7 +249,7 @@ export function ResourcesIndex({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="resources-index__select"
+              className={selectClass}
             >
               <option value="title">Sort by Title</option>
               <option value="date">Sort by Date</option>
@@ -251,84 +262,80 @@ export function ResourcesIndex({
       </div>
 
       {/* Results count */}
-      <div className="resources-index__results-count">
+      <div className="text-sm text-muted-foreground mb-3">
         Showing {filteredResources.length} of {resources.length} resources
       </div>
 
       {/* Table */}
-      <div className="resources-index__table-wrapper">
-        <table className="resources-index__table">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Title</th>
-              {showCredibility && <th>Credibility</th>}
-              {showContent && <th>Content</th>}
-              <th>Authors</th>
-              <th>Date</th>
-              {showTags && <th>Tags</th>}
-              <th>Cited By</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="overflow-x-auto border border-border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Type</TableHead>
+              <TableHead>Title</TableHead>
+              {showCredibility && <TableHead>Credibility</TableHead>}
+              {showContent && <TableHead>Content</TableHead>}
+              <TableHead>Authors</TableHead>
+              <TableHead>Date</TableHead>
+              {showTags && <TableHead>Tags</TableHead>}
+              <TableHead>Cited By</TableHead>
+              <TableHead>Notes</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredResources.map((resource) => {
               const credibility = getResourceCredibility(resource);
               const publication = getResourcePublication(resource);
               const contentStatus = getContentStatus(resource);
               return (
-                <tr key={resource.id}>
-                  <td>
+                <TableRow key={resource.id}>
+                  <TableCell>
                     <span
-                      className={`resources-index__type-badge resources-index__type-badge--${resource.type}`}
+                      className={cn(
+                        "inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded whitespace-nowrap",
+                        typeBadgeColors[resource.type] || "bg-muted text-foreground"
+                      )}
                       title={getResourceTypeLabel(resource.type)}
                     >
                       {getResourceTypeIcon(resource.type)} {getResourceTypeLabel(resource.type)}
                     </span>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell className="max-w-md">
                     <a
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="resources-index__title-link"
+                      className="text-accent-foreground font-medium no-underline hover:underline"
                     >
                       {resource.title}
                     </a>
                     {publication && (
-                      <span className="resources-index__publication" style={{
-                        display: 'block',
-                        fontSize: '11px',
-                        color: 'var(--sl-color-gray-3)',
-                        fontStyle: 'italic',
-                      }}>
+                      <span className="block text-[11px] text-muted-foreground italic">
                         {publication.name}
                       </span>
                     )}
                     {resource.summary && (
-                      <p className="resources-index__summary">{resource.summary}</p>
+                      <p className="mt-1 mb-0 text-xs text-muted-foreground line-clamp-2">
+                        {resource.summary}
+                      </p>
                     )}
-                  </td>
+                  </TableCell>
                   {showCredibility && (
-                    <td className="resources-index__credibility">
+                    <TableCell>
                       {credibility ? (
                         <CredibilityBadge level={credibility} size="sm" />
                       ) : (
-                        <span style={{ color: 'var(--sl-color-gray-4)' }}>—</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
-                    </td>
+                    </TableCell>
                   )}
                   {showContent && (
-                    <td className="resources-index__content">
+                    <TableCell>
                       <span
+                        className="inline-block text-[10px] px-1.5 py-0.5 rounded font-medium"
                         style={{
-                          display: 'inline-block',
-                          fontSize: '10px',
-                          padding: '2px 6px',
-                          borderRadius: '3px',
                           backgroundColor: `${contentStatus.color}20`,
                           color: contentStatus.color,
-                          fontWeight: 500,
                         }}
                         title={
                           contentStatus.level === 'full' ? 'Downloaded, reviewed, with key points' :
@@ -339,22 +346,24 @@ export function ResourcesIndex({
                       >
                         {contentStatus.label}
                       </span>
-                    </td>
+                    </TableCell>
                   )}
-                  <td className="resources-index__authors">
+                  <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate">
                     {resource.authors?.join(', ') || '—'}
-                  </td>
-                  <td className="resources-index__date">{resource.published_date || '—'}</td>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                    {resource.published_date || '—'}
+                  </TableCell>
                   {showTags && (
-                    <td className="resources-index__tags">
+                    <TableCell>
                       {resource.tags && resource.tags.length > 0 ? (
                         <ResourceTags tags={resource.tags} limit={2} size="sm" />
                       ) : (
-                        <span style={{ color: 'var(--sl-color-gray-4)' }}>—</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
-                    </td>
+                    </TableCell>
                   )}
-                  <td className="resources-index__cited-by">
+                  <TableCell className="text-sm">
                     {resource.cited_by && resource.cited_by.length > 0 ? (
                       <span title={resource.cited_by.join(', ')}>
                         {resource.cited_by.length} article{resource.cited_by.length !== 1 ? 's' : ''}
@@ -362,34 +371,24 @@ export function ResourcesIndex({
                     ) : (
                       '—'
                     )}
-                  </td>
-                  <td className="resources-index__actions">
+                  </TableCell>
+                  <TableCell>
                     <a
                       href={`/browse/resources/${resource.id}/`}
-                      className="resources-index__view-link"
-                      style={{
-                        display: 'inline-block',
-                        padding: '2px 8px',
-                        fontSize: '11px',
-                        borderRadius: '4px',
-                        backgroundColor: 'var(--sl-color-accent)',
-                        color: 'white',
-                        textDecoration: 'none',
-                        whiteSpace: 'nowrap',
-                      }}
+                      className="inline-block px-2 py-1 text-[11px] rounded bg-accent-foreground text-background no-underline whitespace-nowrap hover:opacity-90"
                     >
                       View →
                     </a>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {filteredResources.length === 0 && (
-        <div className="resources-index__empty">
+        <div className="text-center py-8 text-muted-foreground">
           No resources found matching your criteria.
         </div>
       )}

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import './wiki.css';
 
 interface RiskNode {
   id: string;
@@ -149,13 +148,13 @@ export function RiskRelationshipDiagram({
   const edgePairIndex = new Map<string, number>();
 
   return (
-    <div className="risk-diagram-container">
-      {title && <h4 className="risk-diagram-title">{title}</h4>}
+    <div className="my-6">
+      {title && <h4 className="text-base font-semibold text-foreground mb-3">{title}</h4>}
 
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="risk-diagram-svg"
-        style={{ maxWidth: '100%', height: 'auto' }}
+        className="w-full h-auto"
+        style={{ maxWidth: '100%' }}
       >
         <defs>
           <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
@@ -313,7 +312,7 @@ export function RiskRelationshipDiagram({
 
           return (
             <g key={node.id}>
-              <a href={node.href} className="risk-diagram-node-link">
+              <a href={node.href} style={{ textDecoration: 'none' }}>
                 <rect
                   x={pos.x - nodeWidth / 2}
                   y={pos.y - nodeHeight / 2}
@@ -323,7 +322,9 @@ export function RiskRelationshipDiagram({
                   fill="var(--sl-color-bg)"
                   stroke={borderColor}
                   strokeWidth={2}
-                  className="risk-diagram-node"
+                  style={{ transition: 'stroke-width 0.15s, stroke 0.15s' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.strokeWidth = '3'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.strokeWidth = '2'; }}
                 />
                 <text
                   x={pos.x}
@@ -332,7 +333,7 @@ export function RiskRelationshipDiagram({
                   dominantBaseline="middle"
                   fontSize={10}
                   fill="var(--sl-color-text)"
-                  className="risk-diagram-node-label"
+                  style={{ pointerEvents: 'none' }}
                 >
                   {wrapText(node.title, 15).map((line, i, arr) => (
                     <tspan key={i} x={pos.x} dy={i === 0 ? -(arr.length - 1) * 6 : 12}>
@@ -347,13 +348,13 @@ export function RiskRelationshipDiagram({
       </svg>
 
       {/* Minimal legend */}
-      <div className="risk-diagram-legend" style={{ opacity: 0.7 }}>
-        <div className="risk-diagram-legend-item">
+      <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground" style={{ opacity: 0.7 }}>
+        <div className="flex items-center gap-1">
           <svg width="20" height="8" style={{ marginRight: '4px' }}>
             <line x1="0" y1="4" x2="14" y2="4" stroke="#dc2626" strokeWidth="1.5" />
             <polygon points="14,2 14,6 18,4" fill="#dc2626" />
           </svg>
-          <span className="risk-diagram-legend-label">increases</span>
+          <span>increases</span>
         </div>
       </div>
     </div>
