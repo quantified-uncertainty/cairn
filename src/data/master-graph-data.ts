@@ -225,11 +225,7 @@ export function getNodeHrefFromMaster(nodeId: string): string | undefined {
 export function getDetailedNodes(): Node<CauseEffectNodeData>[] {
   const data = getData();
 
-  // Filter out "parameters" category nodes - they came from individual entity diagrams
-  // and aren't part of the main structure
-  return data.detailedNodes
-    .filter((node) => node.category !== 'parameters')
-    .map((node) => ({
+  return data.detailedNodes.map((node) => ({
       id: node.id,
       type: 'causeEffect' as const,
       position: { x: 0, y: 0 },
@@ -575,11 +571,9 @@ export function getMasterGraphStats(): {
   subgraphCount: number;
 } {
   const data = getData();
-  // Count only non-"parameters" nodes (parameters came from entity diagrams, not main structure)
-  const validNodeCount = data.detailedNodes.filter(n => n.category !== 'parameters').length;
   return {
     categoryCount: data.categories.length,
-    detailedNodeCount: validNodeCount,
+    detailedNodeCount: data.detailedNodes.length,
     categoryEdgeCount: data.categoryEdges.length,
     detailedEdgeCount: data.detailedEdges.length,
     subgraphCount: data.subgraphs?.length || 0,
@@ -610,12 +604,10 @@ export function getFilterCategories(): FilterCategoryInfo[] {
   const data = getData();
 
   // Count nodes per category and subcategory
-  // Skip "parameters" category nodes - they aren't part of the main structure
   const categoryNodeCounts = new Map<string, number>();
   const subcategoryNodeCounts = new Map<string, number>();
 
   for (const node of data.detailedNodes) {
-    if (node.category === 'parameters') continue;
     categoryNodeCounts.set(node.category, (categoryNodeCounts.get(node.category) || 0) + 1);
     if (node.subcategory) {
       const subKey = `${node.category}/${node.subcategory}`;
@@ -629,7 +621,6 @@ export function getFilterCategories(): FilterCategoryInfo[] {
     const seenSubcats = new Set<string>();
 
     for (const node of data.detailedNodes) {
-      if (node.category === 'parameters') continue;
       if (node.category === cat.id && node.subcategory && !seenSubcats.has(node.subcategory)) {
         seenSubcats.add(node.subcategory);
         const subKey = `${cat.id}/${node.subcategory}`;
@@ -783,10 +774,6 @@ export function getFilteredDetailedData(filters: {
 
   // First, add detailed nodes (granular factors)
   for (const node of data.detailedNodes) {
-    // Skip nodes with undefined category (e.g., "parameters" which isn't a real category)
-    // These came from individual entity diagrams and aren't part of the main structure
-    if (node.category === 'parameters') continue;
-
     // Check category filter
     if (filters.categories[node.category] === false) continue;
 

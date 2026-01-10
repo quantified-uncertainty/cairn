@@ -108,8 +108,10 @@ categories:
     subItems:
       - id: economic-stability
         label: "Economic Stability"
+        entityRef: economic-stability
       - id: racing-intensity
         label: "Racing Intensity"
+        entityRef: racing-intensity
 
   # Scenarios (Intermediate)
   - id: ai-takeover
@@ -971,6 +973,7 @@ detailedNodes:
     subcategory: technical-ai-safety
     type: intermediate
     description: "Can explain safety-relevant features but far from comprehensive model understanding."
+    entityRef: interpretability-coverage
 
   - id: interpretability-progress
     label: "Interpretability Progress"
@@ -1081,6 +1084,7 @@ detailedNodes:
     subcategory: ai-governance
     type: effect
     description: "Government ability to understand and regulate AI."
+    entityRef: regulatory-capacity
 
   - id: deployment-safeguards
     label: "Deployment Safeguards"
@@ -1525,6 +1529,7 @@ detailedNodes:
     subcategory: coordination-capacity
     type: effect
     description: "Degree of global cooperation on AI governance."
+    entityRef: international-coordination
 
   - id: expert-policy-influence
     label: "Expert Policy Influence"
@@ -2012,6 +2017,7 @@ detailedNodes:
     subcategory: epistemics
     type: intermediate
     description: "Ability to distinguish real from synthetic content."
+    entityRef: information-authenticity
 
   - id: liars-dividend
     label: "Liar's Dividend"
@@ -2404,6 +2410,7 @@ detailedNodes:
     subcategory: societal-trust
     type: effect
     description: "Confidence in institutions, experts, and verification systems."
+    entityRef: societal-trust
 
 
   # From epistemic-health diagram
@@ -2448,6 +2455,7 @@ detailedNodes:
     subcategory: epistemic-health
     type: effect
     description: "Society's collective capacity to form accurate beliefs."
+    entityRef: epistemic-health
 
 
   # From information-authenticity diagram
@@ -2529,6 +2537,7 @@ detailedNodes:
     subcategory: ai-control-concentration
     type: effect
     description: "Degree to which AI power is concentrated vs distributed."
+    entityRef: ai-control-concentration
 
 
   # From human-agency diagram
@@ -2573,6 +2582,7 @@ detailedNodes:
     subcategory: human-agency
     type: effect
     description: "Meaningful human control over decisions affecting lives."
+    entityRef: human-agency
 
 
   # From economic-stability diagram
@@ -2654,6 +2664,7 @@ detailedNodes:
     subcategory: human-expertise
     type: effect
     description: "Maintenance of human skills, knowledge, and cognitive capabilities."
+    entityRef: human-expertise
 
 
   # From human-oversight-quality diagram
@@ -2691,6 +2702,7 @@ detailedNodes:
     subcategory: human-oversight-quality
     type: effect
     description: "Effectiveness of human review and correction of AI systems."
+    entityRef: human-oversight-quality
 
 
   # From alignment-robustness diagram
@@ -2758,6 +2770,7 @@ detailedNodes:
     subcategory: safety-capability-gap
     type: effect
     description: "How far safety understanding trails AI capabilities."
+    entityRef: safety-capability-gap
 
 
   # From interpretability-coverage diagram
@@ -2876,6 +2889,7 @@ detailedNodes:
     subcategory: institutional-quality
     type: effect
     description: "Health and effectiveness of governance institutions."
+    entityRef: institutional-quality
 
 
   # From reality-coherence diagram
@@ -2920,6 +2934,7 @@ detailedNodes:
     subcategory: reality-coherence
     type: effect
     description: "Degree to which populations share common factual beliefs."
+    entityRef: reality-coherence
 
 
   # From preference-authenticity diagram
@@ -2964,6 +2979,7 @@ detailedNodes:
     subcategory: preference-authenticity
     type: effect
     description: "Degree to which preferences reflect genuine values."
+    entityRef: preference-authenticity
 
 
   # From racing-intensity diagram
@@ -3031,6 +3047,7 @@ detailedNodes:
     subcategory: safety-culture-strength
     type: effect
     description: "Genuine organizational prioritization of safety."
+    entityRef: safety-culture-strength
 
 
   # From coordination-capacity diagram
@@ -3061,6 +3078,7 @@ detailedNodes:
     subcategory: coordination-capacity
     type: effect
     description: "Effective coordination on safety standards and practices."
+    entityRef: coordination-capacity
 
 
   # From biological-threat-exposure diagram
@@ -3105,6 +3123,7 @@ detailedNodes:
     subcategory: biological-threat-exposure
     type: effect
     description: "Society's vulnerability to biological threats."
+    entityRef: biological-threat-exposure
 
 
   # From cyber-threat-exposure diagram
@@ -3149,6 +3168,7 @@ detailedNodes:
     subcategory: cyber-threat-exposure
     type: effect
     description: "Net societal vulnerability to cyber attacks."
+    entityRef: cyber-threat-exposure
 
 
   # From societal-resilience diagram
@@ -3193,1013 +3213,7 @@ detailedNodes:
     subcategory: societal-resilience
     type: effect
     description: "Overall ability to withstand and recover from AI-related shocks."
-
-
-  # ===========================================================================
-  # PARAMETER DIAGRAM NODES (from individual entity diagrams)
-  # These nodes appear in entity-specific causal diagrams
-  # ===========================================================================
-
-  # From existential-catastrophe diagram
-  - id: misuse-potential
-    label: "Misuse Potential"
-    category: parameters
-    subcategory: existential-catastrophe
-    type: leaf
-    description: "Risk that humans use AI capabilities for destructive purposes. Includes state and non-state actors."
-
-  - id: racing-dynamics
-    label: "Racing Dynamics"
-    category: parameters
-    subcategory: existential-catastrophe
-    type: leaf
-    description: "Competitive pressure that reduces safety margins and accelerates deployment without adequate testing."
-
-  - id: ai-takeover-scenario
-    label: "AI Takeover"
-    category: parameters
-    subcategory: existential-catastrophe
-    type: intermediate
-    description: "AI systems gain and maintain power against human interests, either rapidly or gradually."
-
-  - id: human-catastrophe-scenario
-    label: "Human Catastrophe"
-    category: parameters
-    subcategory: existential-catastrophe
-    type: intermediate
-    description: "Humans deliberately cause mass harm using AI—state actors or rogue actors."
-
-
-  # From long-term-trajectory diagram
-  - id: ai-ownership-distribution
-    label: "AI Ownership Distribution"
-    category: parameters
-    subcategory: long-term-trajectory
-    type: leaf
-    description: "How AI capabilities and benefits are distributed. Concentration vs. broad access."
-
-  - id: value-preservation
-    label: "Value Preservation"
-    category: parameters
-    subcategory: long-term-trajectory
-    type: intermediate
-    description: "Whether beneficial human values are maintained and can evolve over time."
-
-  - id: autonomy-preservation
-    label: "Autonomy Preservation"
-    category: parameters
-    subcategory: long-term-trajectory
-    type: intermediate
-    description: "Whether humans retain genuine choice and self-determination."
-
-  - id: lock-in-prevention
-    label: "Lock-in Prevention"
-    category: parameters
-    subcategory: long-term-trajectory
-    type: intermediate
-    description: "Avoiding permanent entrenchment of harmful power structures or values."
-
-
-  # From ai-capabilities diagram
-  - id: compute-investment
-    label: "Compute Investment"
-    category: parameters
-    subcategory: ai-capabilities
-    type: leaf
-    description: "Hardware spending on AI training. ~$100B+ annually; frontier training runs cost $100M+."
-
-  - id: scaling-effectiveness
-    label: "Scaling Effectiveness"
-    category: parameters
-    subcategory: ai-capabilities
-    type: intermediate
-    description: "How well increased resources translate to capabilities. Scaling laws remain robust."
-
-
-  # From ai-uses diagram
-  - id: capability-level
-    label: "AI Capability Level"
-    category: parameters
-    subcategory: ai-uses
-    type: leaf
-    description: "What AI can do determines where it can be deployed. Higher capability enables more applications."
-
-  - id: regulatory-environment
-    label: "Regulatory Environment"
-    category: parameters
-    subcategory: ai-uses
-    type: leaf
-    description: "Rules governing AI deployment. EU AI Act, sector-specific regulations, liability frameworks."
-
-  - id: industry-adoption
-    label: "Industry Adoption"
-    category: parameters
-    subcategory: ai-uses
-    type: intermediate
-    description: "AI deployed in manufacturing, finance, healthcare, etc. Variable by sector."
-
-  - id: government-adoption
-    label: "Government Adoption"
-    category: parameters
-    subcategory: ai-uses
-    type: intermediate
-    description: "AI in military, surveillance, services. Dual-use concerns prominent."
-
-
-  # From ai-ownership diagram
-  - id: development-costs
-    label: "Development Costs"
-    category: parameters
-    subcategory: ai-ownership
-    type: leaf
-    description: "High costs ($100M+ for frontier models) limit who can develop. Favors concentration."
-
-  - id: compute-access
-    label: "Compute Access"
-    category: parameters
-    subcategory: ai-ownership
-    type: leaf
-    description: "Hardware availability determines who can train. Top 3 cloud providers control 66%+ of market."
-
-  - id: talent-distribution
-    label: "Talent Distribution"
-    category: parameters
-    subcategory: ai-ownership
-    type: leaf
-    description: "Where AI researchers work. Currently concentrated at ~20 frontier labs."
-
-  - id: policy-interventions
-    label: "Policy Interventions"
-    category: parameters
-    subcategory: ai-ownership
-    type: leaf
-    description: "Antitrust, export controls, open-source mandates. Can shift concentration."
-
-  - id: corporate-concentration
-    label: "Corporate Concentration"
-    category: parameters
-    subcategory: ai-ownership
-    type: intermediate
-    description: "Power in few companies. Top 5 control most frontier development."
-
-
-  # From civilizational-competence diagram
-  - id: governance-effectiveness
-    label: "Governance Effectiveness"
-    category: parameters
-    subcategory: civilizational-competence
-    type: intermediate
-    description: "How well governance systems respond to AI challenges."
-
-
-  # From transition-turbulence diagram
-  - id: ai-deployment-speed
-    label: "AI Deployment Speed"
-    category: parameters
-    subcategory: transition-turbulence
-    type: leaf
-    description: "How fast AI is adopted across sectors. Faster deployment = less adaptation time."
-
-  - id: safety-net-strength
-    label: "Safety Net Strength"
-    category: parameters
-    subcategory: transition-turbulence
-    type: leaf
-    description: "Social protections for displaced workers. UBI, retraining programs, unemployment insurance."
-
-  - id: governance-lag
-    label: "Governance Lag"
-    category: parameters
-    subcategory: transition-turbulence
-    type: leaf
-    description: "Gap between AI advancement and regulatory response. Regulators consistently behind."
-
-  - id: economic-disruption
-    label: "Economic Disruption"
-    category: parameters
-    subcategory: transition-turbulence
-    type: intermediate
-    description: "Aggregate economic instability from AI transition."
-
-  - id: social-instability
-    label: "Social Instability"
-    category: parameters
-    subcategory: transition-turbulence
-    type: intermediate
-    description: "Social cohesion breakdown from rapid change."
-
-
-  # From tmc-adoption diagram
-  - id: capability-improvements
-    label: "Capability Improvements"
-    category: parameters
-    subcategory: tmc-adoption
-    type: leaf
-    description: "AI systems becoming more capable and reliable. Enables new use cases."
-
-  - id: cost-reduction
-    label: "Cost Reduction"
-    category: parameters
-    subcategory: tmc-adoption
-    type: leaf
-    description: "Declining inference costs (~280x over 24 months). Makes deployment economical."
-
-  - id: integration-ease
-    label: "Integration Ease"
-    category: parameters
-    subcategory: tmc-adoption
-    type: intermediate
-    description: "How easily AI fits into existing workflows and systems."
-
-  - id: demonstrated-roi
-    label: "Demonstrated ROI"
-    category: parameters
-    subcategory: tmc-adoption
-    type: intermediate
-    description: "Proven business value from AI deployments."
-
-  - id: ai-adoption
-    label: "AI Adoption Rate"
-    category: parameters
-    subcategory: tmc-adoption
-    type: effect
-    description: "Speed and breadth of AI deployment across economy."
-
-
-  # From tmc-recursive-ai diagram
-  - id: coding-capability
-    label: "AI Coding Capability"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: leaf
-    description: "Ability to write, debug, and optimize code. Already substantial assistance."
-
-  - id: research-understanding
-    label: "Research Understanding"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: leaf
-    description: "Ability to understand and propose ML research directions."
-
-  - id: experiment-automation
-    label: "Experiment Automation"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: leaf
-    description: "Running and evaluating ML experiments autonomously."
-
-  - id: architecture-search
-    label: "Architecture Search"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: intermediate
-    description: "AI discovering better neural network designs."
-
-  - id: training-optimization
-    label: "Training Optimization"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: intermediate
-    description: "Improving efficiency of training processes."
-
-  - id: recursive-capability
-    label: "Recursive AI Capability"
-    category: parameters
-    subcategory: tmc-recursive-ai
-    type: effect
-    description: "Degree to which AI accelerates its own improvement."
-
-
-  # From tmc-industries diagram
-  - id: automation-potential
-    label: "Automation Potential"
-    category: parameters
-    subcategory: tmc-industries
-    type: leaf
-    description: "Technical feasibility of automating industry tasks."
-
-  - id: labor-costs
-    label: "Labor Costs"
-    category: parameters
-    subcategory: tmc-industries
-    type: leaf
-    description: "Cost of human workers relative to AI systems."
-
-  - id: regulatory-constraints
-    label: "Regulatory Constraints"
-    category: parameters
-    subcategory: tmc-industries
-    type: leaf
-    description: "Industry-specific rules limiting AI deployment."
-
-  - id: productivity-gains
-    label: "Productivity Gains"
-    category: parameters
-    subcategory: tmc-industries
-    type: intermediate
-    description: "Output improvements from AI integration."
-
-
-  # From tmc-governments diagram
-  - id: efficiency-pressure
-    label: "Efficiency Pressure"
-    category: parameters
-    subcategory: tmc-governments
-    type: leaf
-    description: "Pressure to improve public services with limited budgets."
-
-  - id: security-concerns
-    label: "Security Concerns"
-    category: parameters
-    subcategory: tmc-governments
-    type: leaf
-    description: "National security motivations for AI capabilities."
-
-  - id: privacy-constraints
-    label: "Privacy Constraints"
-    category: parameters
-    subcategory: tmc-governments
-    type: leaf
-    description: "Legal and ethical limits on government AI use."
-
-  - id: regime-type
-    label: "Regime Type"
-    category: parameters
-    subcategory: tmc-governments
-    type: leaf
-    description: "Democratic vs authoritarian governance affects use patterns."
-
-  - id: administrative-ai
-    label: "Administrative AI"
-    category: parameters
-    subcategory: tmc-governments
-    type: intermediate
-    description: "AI for benefits, services, document processing."
-
-  - id: surveillance-ai
-    label: "Surveillance AI"
-    category: parameters
-    subcategory: tmc-governments
-    type: intermediate
-    description: "AI for monitoring, identification, prediction."
-
-
-  # From tmc-coordination diagram
-  - id: translation-capability
-    label: "Translation Capability"
-    category: parameters
-    subcategory: tmc-coordination
-    type: leaf
-    description: "AI breaking down language barriers between actors."
-
-  - id: information-synthesis
-    label: "Information Synthesis"
-    category: parameters
-    subcategory: tmc-coordination
-    type: leaf
-    description: "AI combining diverse sources into shared understanding."
-
-  - id: manipulation-risk
-    label: "Manipulation Risk"
-    category: parameters
-    subcategory: tmc-coordination
-    type: leaf
-    description: "AI used for strategic deception between parties."
-
-  - id: verification-tools
-    label: "Verification Tools"
-    category: parameters
-    subcategory: tmc-coordination
-    type: intermediate
-    description: "AI helping verify compliance with agreements."
-
-  - id: trust-effects
-    label: "Trust Effects"
-    category: parameters
-    subcategory: tmc-coordination
-    type: intermediate
-    description: "How AI affects trust between coordinating parties."
-
-  - id: coordination-effect
-    label: "Coordination Effectiveness"
-    category: parameters
-    subcategory: tmc-coordination
-    type: effect
-    description: "Net effect of AI on coordination capacity."
-
-
-  # From tmc-companies diagram
-  - id: capital-requirements
-    label: "Capital Requirements"
-    category: parameters
-    subcategory: tmc-companies
-    type: leaf
-    description: "Training costs $100M-$1B+. Barriers to entry."
-
-  - id: talent-scarcity
-    label: "Talent Scarcity"
-    category: parameters
-    subcategory: tmc-companies
-    type: leaf
-    description: "Top researchers concentrated in few labs."
-
-  - id: data-moats
-    label: "Data Moats"
-    category: parameters
-    subcategory: tmc-companies
-    type: leaf
-    description: "Proprietary data creating competitive advantage."
-
-  - id: market-power
-    label: "Market Power"
-    category: parameters
-    subcategory: tmc-companies
-    type: intermediate
-    description: "Ability to set prices and standards."
-
-  - id: company-concentration
-    label: "Company Concentration"
-    category: parameters
-    subcategory: tmc-companies
-    type: effect
-    description: "How concentrated AI capabilities are among firms."
-
-
-  # From tmc-countries diagram
-  - id: research-ecosystem
-    label: "Research Ecosystem"
-    category: parameters
-    subcategory: tmc-countries
-    type: leaf
-    description: "Universities, labs, talent pipelines."
-
-  - id: capital-availability
-    label: "Capital Availability"
-    category: parameters
-    subcategory: tmc-countries
-    type: leaf
-    description: "Venture funding and government investment."
-
-  - id: talent-migration
-    label: "Talent Migration"
-    category: parameters
-    subcategory: tmc-countries
-    type: intermediate
-    description: "Flow of AI researchers between countries."
-
-  - id: industrial-base
-    label: "Industrial Base"
-    category: parameters
-    subcategory: tmc-countries
-    type: intermediate
-    description: "Manufacturing and deployment infrastructure."
-
-  - id: country-distribution
-    label: "Country AI Distribution"
-    category: parameters
-    subcategory: tmc-countries
-    type: effect
-    description: "How AI capabilities are distributed among nations."
-
-
-  # From tmc-shareholders diagram
-  - id: stock-ownership-patterns
-    label: "Stock Ownership Patterns"
-    category: parameters
-    subcategory: tmc-shareholders
-    type: leaf
-    description: "Who owns equity in AI companies."
-
-  - id: winner-take-all
-    label: "Winner-Take-All Dynamics"
-    category: parameters
-    subcategory: tmc-shareholders
-    type: leaf
-    description: "Market concentration in AI companies."
-
-  - id: ai-company-valuations
-    label: "AI Company Valuations"
-    category: parameters
-    subcategory: tmc-shareholders
-    type: intermediate
-    description: "Market cap of AI companies ($1-3T for leaders)."
-
-  - id: shareholder-concentration
-    label: "Shareholder Wealth Concentration"
-    category: parameters
-    subcategory: tmc-shareholders
-    type: effect
-    description: "Degree of AI wealth concentration among shareholders."
-
-
-  # From tmc-adaptability diagram
-  - id: institutional-flexibility
-    label: "Institutional Flexibility"
-    category: parameters
-    subcategory: tmc-adaptability
-    type: leaf
-    description: "Ability of institutions to change rules and practices."
-
-  - id: education-systems
-    label: "Education Systems"
-    category: parameters
-    subcategory: tmc-adaptability
-    type: leaf
-    description: "Capacity for retraining and skill development."
-
-  - id: cultural-openness
-    label: "Cultural Openness"
-    category: parameters
-    subcategory: tmc-adaptability
-    type: leaf
-    description: "Society's willingness to embrace change."
-
-  - id: transition-capacity
-    label: "Transition Capacity"
-    category: parameters
-    subcategory: tmc-adaptability
-    type: intermediate
-    description: "Ability to manage workforce transitions."
-
-  - id: adaptation-speed
-    label: "Adaptation Speed"
-    category: parameters
-    subcategory: tmc-adaptability
-    type: intermediate
-    description: "How quickly society can respond to changes."
-
-
-  # From tmc-civ-epistemics diagram
-  - id: information-quality
-    label: "Information Quality"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: leaf
-    description: "Accuracy and reliability of available information."
-
-  - id: media-ecosystem
-    label: "Media Ecosystem"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: leaf
-    description: "Structure and incentives of information distribution."
-
-  - id: critical-thinking
-    label: "Critical Thinking"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: leaf
-    description: "Population's ability to evaluate claims."
-
-  - id: institutional-credibility
-    label: "Institutional Credibility"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: leaf
-    description: "Trust in knowledge-producing institutions."
-
-  - id: consensus-formation
-    label: "Consensus Formation"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: intermediate
-    description: "Ability to reach shared understanding."
-
-  - id: belief-accuracy
-    label: "Belief Accuracy"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: intermediate
-    description: "Correspondence between beliefs and reality."
-
-  - id: civ-epistemics
-    label: "Civilizational Epistemics"
-    category: parameters
-    subcategory: tmc-civ-epistemics
-    type: effect
-    description: "Overall epistemic health of society."
-
-
-  # From tmc-civ-governance diagram
-  - id: technical-expertise
-    label: "Technical Expertise"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: leaf
-    description: "Government understanding of AI systems."
-
-  - id: regulatory-resources
-    label: "Regulatory Resources"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: leaf
-    description: "Budget and staff for AI oversight."
-
-  - id: policy-speed
-    label: "Policy Speed"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: leaf
-    description: "How quickly governance can adapt to changes."
-
-  - id: international-cooperation
-    label: "International Cooperation"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: leaf
-    description: "Cross-border governance coordination."
-
-  - id: enforcement-capacity
-    label: "Enforcement Capacity"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: intermediate
-    description: "Ability to monitor and enforce rules."
-
-  - id: adaptive-governance
-    label: "Adaptive Governance"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: intermediate
-    description: "Rules that evolve with technology."
-
-  - id: civ-governance
-    label: "Governance Effectiveness"
-    category: parameters
-    subcategory: tmc-civ-governance
-    type: effect
-    description: "Overall governance capacity for AI transition."
-
-
-  # From tmc-ai-governance diagram
-  - id: oversight-bodies
-    label: "Oversight Bodies"
-    category: parameters
-    subcategory: tmc-ai-governance
-    type: leaf
-    description: "AI Safety Institutes, regulatory agencies."
-
-  - id: liability-rules
-    label: "Liability Rules"
-    category: parameters
-    subcategory: tmc-ai-governance
-    type: leaf
-    description: "Legal accountability for AI harms."
-
-  - id: evaluation-requirements
-    label: "Evaluation Requirements"
-    category: parameters
-    subcategory: tmc-ai-governance
-    type: intermediate
-    description: "Mandated safety testing before deployment."
-
-  - id: transparency-mandates
-    label: "Transparency Mandates"
-    category: parameters
-    subcategory: tmc-ai-governance
-    type: intermediate
-    description: "Required disclosure of capabilities and risks."
-
-  - id: governance-effect
-    label: "Governance Effect on Misalignment"
-    category: parameters
-    subcategory: tmc-ai-governance
-    type: effect
-    description: "How governance reduces misalignment risk."
-
-
-  # From tmc-lab-safety diagram
-  - id: external-pressure
-    label: "External Pressure"
-    category: parameters
-    subcategory: tmc-lab-safety
-    type: leaf
-    description: "Regulatory and public expectations."
-
-  - id: red-teaming-quality
-    label: "Red-Teaming Quality"
-    category: parameters
-    subcategory: tmc-lab-safety
-    type: intermediate
-    description: "Thoroughness of adversarial testing."
-
-  - id: deployment-gates
-    label: "Deployment Gates"
-    category: parameters
-    subcategory: tmc-lab-safety
-    type: intermediate
-    description: "RSPs and evaluation requirements before release."
-
-  - id: lab-safety
-    label: "Lab Safety Practices"
-    category: parameters
-    subcategory: tmc-lab-safety
-    type: effect
-    description: "Overall safety practices at AI labs."
-
-
-  # From tmc-robot-threat diagram
-  - id: drone-proliferation
-    label: "Drone Proliferation"
-    category: parameters
-    subcategory: tmc-robot-threat
-    type: leaf
-    description: "Spread of capable drone platforms."
-
-  - id: ai-robot-integration
-    label: "AI-Robot Integration"
-    category: parameters
-    subcategory: tmc-robot-threat
-    type: leaf
-    description: "Sophistication of AI control of physical systems."
-
-  - id: defense-systems
-    label: "Defense Systems"
-    category: parameters
-    subcategory: tmc-robot-threat
-    type: leaf
-    description: "Counter-drone and defensive capabilities."
-
-  - id: attack-capability
-    label: "Attack Capability"
-    category: parameters
-    subcategory: tmc-robot-threat
-    type: intermediate
-    description: "What robotic systems can do offensively."
-
-  - id: robot-exposure
-    label: "Robot Threat Exposure"
-    category: parameters
-    subcategory: tmc-robot-threat
-    type: effect
-    description: "Net vulnerability to AI-enabled robotic threats."
-
-
-  # From tmc-surprise-threat diagram
-  - id: emergent-capabilities
-    label: "Emergent Capabilities"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: leaf
-    description: "Unpredictable capabilities appearing at scale."
-
-  - id: adversarial-creativity
-    label: "Adversarial Creativity"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: leaf
-    description: "Attackers using AI to discover novel attack vectors."
-
-  - id: defense-adaptability
-    label: "Defense Adaptability"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: leaf
-    description: "Ability to respond to novel threats quickly."
-
-  - id: threat-surface-expansion
-    label: "Threat Surface Expansion"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: intermediate
-    description: "Growth in potential attack vectors."
-
-  - id: detection-lag
-    label: "Detection Lag"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: intermediate
-    description: "Time between threat emergence and recognition."
-
-  - id: surprise-exposure
-    label: "Surprise Threat Exposure"
-    category: parameters
-    subcategory: tmc-surprise-threat
-    type: effect
-    description: "Vulnerability to unanticipated AI threats."
-
-
-  # From tmc-state-actor diagram
-  - id: great-power-tensions
-    label: "Great Power Tensions"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: leaf
-    description: "US-China competition, Russia-NATO tensions. Creates pressure for military AI deployment."
-
-  - id: authoritarian-regimes
-    label: "Authoritarian Regimes"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: leaf
-    description: "72% of humanity lives under autocracy (2024). Creates demand for AI control technologies."
-
-  - id: ai-military-capability
-    label: "AI Military Capability"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: leaf
-    description: "Autonomous weapons, cyber capabilities, WMD enhancement. Technical enablers for state harm."
-
-  - id: coordination-failure
-    label: "International Coordination Failure"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: leaf
-    description: "No binding agreements on military AI. Verification and enforcement gaps."
-
-  - id: ai-arms-race
-    label: "AI Arms Race"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: cause
-    description: "Military AI development pressure between major powers. Safety concerns secondary to capability."
-
-  - id: deterrence-instability
-    label: "Deterrence Instability"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: cause
-    description: "AI may undermine nuclear deterrence or create first-strike incentives."
-
-  - id: great-power-war
-    label: "AI-Enhanced Great Power War"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: intermediate
-    description: "Conflict between major powers escalated by autonomous systems, speed of AI decision-making."
-
-  - id: permanent-tyranny
-    label: "Permanent AI-Enabled Tyranny"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: intermediate
-    description: "Authoritarian control so comprehensive it forecloses regime change through any mechanism."
-
-  - id: state-wmd
-    label: "State WMD Programs"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: intermediate
-    description: "AI-designed bioweapons, cyberweapons, or novel weapons deployed by state actors."
-
-  - id: state-catastrophe
-    label: "State-Caused Catastrophe"
-    category: parameters
-    subcategory: tmc-state-actor
-    type: effect
-    description: "Mass casualties, civilizational damage, or permanent loss of human freedom from state misuse of AI."
-
-
-  # From tmc-rogue-actor diagram
-  - id: ai-capability-democratization
-    label: "AI Capability Democratization"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: leaf
-    description: "Open-source models, accessible APIs. Lowers barriers to dangerous capability access."
-
-  - id: dual-use-knowledge
-    label: "Dual-Use Knowledge"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: leaf
-    description: "LLMs can provide WMD synthesis guidance. Tacit knowledge requirements reduced."
-
-  - id: radicalization-potential
-    label: "Radicalization Potential"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: leaf
-    description: "AI-optimized recruitment and radicalization. Extremist content harder to counter."
-
-  - id: attribution-difficulty
-    label: "Attribution Difficulty"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: leaf
-    description: "Hard to identify attackers. Reduces deterrence effectiveness."
-
-  - id: bio-capability-uplift
-    label: "Bio Capability Uplift"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: cause
-    description: "AI helps non-experts design pathogens. Current LLMs provide some uplift; future models more concerning."
-
-  - id: cyber-capability-uplift
-    label: "Cyber Capability Uplift"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: cause
-    description: "Automated vulnerability discovery, AI-generated social engineering. Offensive advantage."
-
-  - id: coordination-enhancement
-    label: "Coordination Enhancement"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: cause
-    description: "AI helps rogue actors plan, recruit, and evade detection."
-
-  - id: engineered-pandemic
-    label: "Engineered Pandemic"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: intermediate
-    description: "AI-designed pathogen released by non-state actor. Potential billions of casualties."
-
-  - id: infrastructure-collapse
-    label: "Infrastructure Collapse"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: intermediate
-    description: "AI-enhanced cyberattacks on critical infrastructure causing cascading failures."
-
-  - id: mass-casualty-attack
-    label: "Mass Casualty Attack"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: intermediate
-    description: "Novel attack vectors enabled by AI planning and execution."
-
-  - id: rogue-catastrophe
-    label: "Rogue Actor Catastrophe"
-    category: parameters
-    subcategory: tmc-rogue-actor
-    type: effect
-    description: "Civilizational-scale harm from non-state actors empowered by AI capabilities."
-
-
-  # ===========================================================================
-  # PARAMETER DIAGRAM NODES (from individual entity diagrams)
-  # These nodes appear in entity-specific causal diagrams
-  # ===========================================================================
-
-  # From misalignment-potential diagram
-  - id: alignment-difficulty
-    label: "Alignment Difficulty"
-    category: parameters
-    subcategory: misalignment-potential
-    type: leaf
-    description: "How hard it is to specify and instill correct goals. May be fundamentally unsolvable or just very hard."
-
-  - id: capability-growth
-    label: "Capability Growth"
-    category: parameters
-    subcategory: misalignment-potential
-    type: leaf
-    description: "Faster capability growth creates larger safety-capability gaps."
-
-  - id: interpretability-gap
-    label: "Interpretability Gap"
-    category: parameters
-    subcategory: misalignment-potential
-    type: leaf
-    description: "Inability to understand model internals. Can't verify alignment without understanding."
-
-  - id: safety-investment
-    label: "Safety Investment"
-    category: parameters
-    subcategory: misalignment-potential
-    type: leaf
-    description: "Resources dedicated to alignment research. Currently ~1-3% of AI R&D budgets."
-
-
-  # From misuse-potential diagram
-  - id: ai-capability-access
-    label: "AI Capability Access"
-    category: parameters
-    subcategory: misuse-potential
-    type: leaf
-    description: "Who can access powerful AI. Open-source models, API access, compute availability."
-
-  - id: malicious-actor-presence
-    label: "Malicious Actor Presence"
-    category: parameters
-    subcategory: misuse-potential
-    type: leaf
-    description: "State actors, terrorists, criminal organizations with intent to cause harm."
-
-  - id: defensive-capacity
-    label: "Defensive Capacity"
-    category: parameters
-    subcategory: misuse-potential
-    type: leaf
-    description: "Biosecurity, cybersecurity, physical security infrastructure."
-
-  - id: bio-threat
-    label: "Biological Threat"
-    category: parameters
-    subcategory: misuse-potential
-    type: intermediate
-    description: "Risk of AI-enabled bioweapons. Current LLMs provide some uplift."
-
-  - id: cyber-threat
-    label: "Cyber Threat"
-    category: parameters
-    subcategory: misuse-potential
-    type: intermediate
-    description: "Risk of AI-enhanced cyberattacks. Offensive advantage growing."
+    entityRef: societal-resilience
 
 
 # =============================================================================
