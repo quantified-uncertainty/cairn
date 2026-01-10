@@ -60,7 +60,7 @@ export default defineConfig({
                           { slug: 'ai-transition-model/scenarios/long-term-lockin/political-power' },
                           { slug: 'ai-transition-model/scenarios/long-term-lockin/epistemics' },
                           { slug: 'ai-transition-model/scenarios/long-term-lockin/values' },
-                          { slug: 'ai-transition-model/scenarios/long-term-lockin/suffering' },
+                          { slug: 'ai-transition-model/scenarios/long-term-lockin/suffering-lock-in' },
                       ]},
                       { label: 'AI Factors', collapsed: true, items: [
                           { label: 'Misalignment Potential', slug: 'ai-transition-model/factors/misalignment-potential' },
