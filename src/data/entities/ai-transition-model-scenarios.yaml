@@ -1,0 +1,402 @@
+- id: existential-catastrophe
+  type: ai-transition-model-scenario
+  title: Existential Catastrophe
+  description: The probability and severity of catastrophic AI-related events—loss of control,
+    weaponization, large-scale accidents, or irreversible lock-in to harmful power structures.
+  customFields:
+    - label: Model Role
+      value: Ultimate Outcome
+    - label: Primary Drivers
+      value: Misalignment Potential, Misuse Potential
+    - label: Risk Character
+      value: Tail risk, irreversible
+  relatedEntries:
+    - id: misalignment-potential
+      type: ai-transition-model-factor
+      relationship: driver
+    - id: misuse-potential
+      type: ai-transition-model-factor
+      relationship: driver
+    - id: ai-takeover
+      type: ai-transition-model-scenario
+      relationship: sub-scenario
+    - id: human-catastrophe
+      type: ai-transition-model-scenario
+      relationship: sub-scenario
+    - id: alignment-robustness
+      type: ai-transition-model-parameter
+      relationship: mitigates
+  tags:
+    - ai-transition-model
+    - outcome
+    - x-risk
+    - catastrophe
+  lastUpdated: 2026-01
+  causeEffectGraph:
+    title: Pathways to Existential Catastrophe
+    description: "Major causal pathways leading to AI-related existential catastrophe. Two primary
+      branches: AI takeover (misalignment) and human-caused catastrophe (misuse)."
+    primaryNodeId: existential-catastrophe
+    nodes:
+      - id: misalignment-potential
+        label: Misalignment Potential
+        type: leaf
+        description: Risk that AI systems pursue goals different from human values. Driven by alignment
+          difficulty and capability growth.
+        entityRef: misalignment-potential
+      - id: misuse-potential
+        label: Misuse Potential
+        type: leaf
+        description: Risk that humans use AI capabilities for destructive purposes. Includes state and
+          non-state actors.
+        entityRef: misuse-potential
+      - id: racing-dynamics
+        label: Racing Dynamics
+        type: leaf
+        description: Competitive pressure that reduces safety margins and accelerates deployment without
+          adequate testing.
+      - id: ai-takeover-scenario
+        label: AI Takeover
+        type: intermediate
+        description: AI systems gain and maintain power against human interests, either rapidly or gradually.
+        entityRef: ai-takeover
+      - id: human-catastrophe-scenario
+        label: Human Catastrophe
+        type: intermediate
+        description: Humans deliberately cause mass harm using AI—state actors or rogue actors.
+        entityRef: human-catastrophe
+      - id: existential-catastrophe
+        label: Existential Catastrophe
+        type: effect
+        description: Extinction, permanent loss of potential, or irreversible harm to civilization.
+    edges:
+      - source: misalignment-potential
+        target: ai-takeover-scenario
+        strength: strong
+        effect: increases
+      - source: misuse-potential
+        target: human-catastrophe-scenario
+        strength: strong
+        effect: increases
+      - source: racing-dynamics
+        target: ai-takeover-scenario
+        strength: medium
+        effect: increases
+      - source: racing-dynamics
+        target: human-catastrophe-scenario
+        strength: medium
+        effect: increases
+      - source: ai-takeover-scenario
+        target: existential-catastrophe
+        strength: strong
+        effect: increases
+      - source: human-catastrophe-scenario
+        target: existential-catastrophe
+        strength: strong
+        effect: increases
+- id: long-term-trajectory
+  type: ai-transition-model-scenario
+  title: Long-term Trajectory
+  description: The quality of humanity's long-term future given successful AI transition—measuring
+    human flourishing, autonomy preservation, and value realization across civilizational
+    timescales.
+  customFields:
+    - label: Model Role
+      value: Ultimate Outcome
+    - label: Primary Drivers
+      value: Civilizational Competence, AI Ownership
+    - label: Risk Character
+      value: Gradual degradation, potentially reversible
+  relatedEntries:
+    - id: civilizational-competence
+      type: ai-transition-model-factor
+      relationship: driver
+    - id: ai-ownership
+      type: ai-transition-model-factor
+      relationship: driver
+    - id: long-term-lockin
+      type: ai-transition-model-scenario
+      relationship: sub-scenario
+    - id: human-agency
+      type: ai-transition-model-parameter
+      relationship: key-factor
+    - id: preference-authenticity
+      type: ai-transition-model-parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - outcome
+    - long-term
+    - flourishing
+  lastUpdated: 2026-01
+  causeEffectGraph:
+    title: What Shapes Long-term Trajectory?
+    description: Major factors affecting humanity's long-term flourishing given successful AI
+      transition. Focuses on value preservation, autonomy, and avoiding negative lock-in scenarios.
+    primaryNodeId: long-term-trajectory
+    nodes:
+      - id: civilizational-competence
+        label: Civilizational Competence
+        type: leaf
+        description: Humanity's collective capacity to navigate challenges—adaptability, governance quality,
+          epistemic health.
+        entityRef: civilizational-competence
+      - id: ai-ownership-distribution
+        label: AI Ownership Distribution
+        type: leaf
+        description: How AI capabilities and benefits are distributed. Concentration vs. broad access.
+        entityRef: ai-ownership
+      - id: human-agency
+        label: Human Agency
+        type: leaf
+        description: Degree to which humans maintain meaningful control and autonomy over their lives.
+        entityRef: human-agency
+      - id: value-preservation
+        label: Value Preservation
+        type: intermediate
+        description: Whether beneficial human values are maintained and can evolve over time.
+      - id: autonomy-preservation
+        label: Autonomy Preservation
+        type: intermediate
+        description: Whether humans retain genuine choice and self-determination.
+      - id: lock-in-prevention
+        label: Lock-in Prevention
+        type: intermediate
+        description: Avoiding permanent entrenchment of harmful power structures or values.
+        entityRef: long-term-lockin
+      - id: long-term-trajectory
+        label: Long-term Trajectory
+        type: effect
+        description: Quality of humanity's long-term future—flourishing, autonomy, value realization across
+          civilizational timescales.
+    edges:
+      - source: civilizational-competence
+        target: value-preservation
+        strength: strong
+        effect: increases
+      - source: civilizational-competence
+        target: lock-in-prevention
+        strength: strong
+        effect: increases
+      - source: ai-ownership-distribution
+        target: autonomy-preservation
+        strength: strong
+        effect: increases
+      - source: ai-ownership-distribution
+        target: lock-in-prevention
+        strength: medium
+        effect: increases
+      - source: human-agency
+        target: autonomy-preservation
+        strength: strong
+        effect: increases
+      - source: human-agency
+        target: value-preservation
+        strength: medium
+        effect: increases
+      - source: value-preservation
+        target: long-term-trajectory
+        strength: strong
+        effect: increases
+      - source: autonomy-preservation
+        target: long-term-trajectory
+        strength: strong
+        effect: increases
+      - source: lock-in-prevention
+        target: long-term-trajectory
+        strength: strong
+        effect: increases
+- id: ai-takeover
+  type: ai-transition-model-scenario
+  title: AI Takeover
+  description: Scenarios where AI systems pursue goals misaligned with human values at scale,
+    potentially resulting in human disempowerment or extinction.
+  customFields:
+    - label: Model Role
+      value: Catastrophic Scenario
+    - label: Primary Drivers
+      value: Misalignment Potential
+    - label: Sub-scenarios
+      value: Gradual takeover, Rapid takeover
+  relatedEntries:
+    - id: existential-catastrophe
+      type: ai-transition-model-scenario
+      relationship: contributes-to
+    - id: misalignment-potential
+      type: ai-transition-model-factor
+      relationship: driven-by
+    - id: alignment-robustness
+      type: ai-transition-model-parameter
+      relationship: mitigated-by
+  tags:
+    - ai-transition-model
+    - scenario
+    - x-risk
+    - misalignment
+  lastUpdated: 2025-12
+- id: human-catastrophe
+  type: ai-transition-model-scenario
+  title: Human-Caused Catastrophe
+  description: Catastrophic outcomes caused by human actors using AI as a tool—including state actors,
+    rogue actors, or unintended cascading failures from human decisions.
+  customFields:
+    - label: Model Role
+      value: Catastrophic Scenario
+    - label: Primary Drivers
+      value: Misuse Potential
+    - label: Sub-scenarios
+      value: State actor misuse, Rogue actor misuse
+  relatedEntries:
+    - id: existential-catastrophe
+      type: ai-transition-model-scenario
+      relationship: contributes-to
+    - id: misuse-potential
+      type: ai-transition-model-factor
+      relationship: driven-by
+    - id: biological-threat-exposure
+      type: ai-transition-model-parameter
+      relationship: key-factor
+    - id: cyber-threat-exposure
+      type: ai-transition-model-parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - scenario
+    - x-risk
+    - misuse
+  lastUpdated: 2025-12
+- id: long-term-lockin
+  type: ai-transition-model-scenario
+  title: Long-term Lock-in
+  description: Scenarios where AI enables irreversible commitment to suboptimal values, power
+    structures, or epistemics—foreclosing better futures without catastrophic collapse.
+  customFields:
+    - label: Model Role
+      value: Degradation Scenario
+    - label: Primary Drivers
+      value: AI Ownership, Civilizational Competence
+    - label: Sub-scenarios
+      value: Values lock-in, Power lock-in, Epistemic lock-in
+  relatedEntries:
+    - id: long-term-trajectory
+      type: ai-transition-model-scenario
+      relationship: contributes-to
+    - id: ai-ownership
+      type: ai-transition-model-factor
+      relationship: driven-by
+    - id: ai-control-concentration
+      type: ai-transition-model-parameter
+      relationship: key-factor
+    - id: preference-authenticity
+      type: ai-transition-model-parameter
+      relationship: key-factor
+  tags:
+    - ai-transition-model
+    - scenario
+    - lock-in
+    - long-term
+  lastUpdated: 2025-12
+- id: misaligned-catastrophe
+  type: ai-transition-model-scenario
+  title: Misaligned Catastrophe - The Bad Ending
+  description: A scenario where alignment fails and AI systems pursue misaligned goals with
+    catastrophic consequences.
+  customFields:
+    - label: Scenario Type
+      value: Catastrophic / Worst Case
+    - label: Probability Estimate
+      value: 10-25%
+    - label: Timeframe
+      value: 2024-2040
+    - label: Key Assumption
+      value: Alignment fails and powerful AI is deployed anyway
+    - label: Core Uncertainty
+      value: Is alignment fundamentally unsolvable or just very hard?
+  tags:
+    - scenario
+    - catastrophe
+    - misalignment
+  lastUpdated: 2025-01
+- id: slow-takeoff-muddle
+  type: ai-transition-model-scenario
+  title: Slow Takeoff Muddle - Muddling Through
+  description: A scenario of gradual AI progress with mixed outcomes, partial governance, and ongoing
+    challenges.
+  customFields:
+    - label: Scenario Type
+      value: Base Case / Most Likely
+    - label: Probability Estimate
+      value: 30-50%
+    - label: Timeframe
+      value: 2024-2040
+    - label: Key Assumption
+      value: No discontinuous jumps in either direction
+    - label: Core Uncertainty
+      value: Does 'muddling through' stay stable or degrade?
+  tags:
+    - scenario
+    - slow-takeoff
+    - base-case
+  lastUpdated: 2025-01
+- id: aligned-agi
+  type: ai-transition-model-scenario
+  title: Aligned AGI - The Good Ending
+  description: A scenario where AI labs successfully solve alignment and coordinated deployment leads
+    to broadly beneficial outcomes.
+  customFields:
+    - label: Scenario Type
+      value: Optimistic / Best Case
+    - label: Probability Estimate
+      value: 10-30%
+    - label: Timeframe
+      value: 2024-2040
+    - label: Key Assumption
+      value: Alignment is solvable and coordination is achievable
+    - label: Core Uncertainty
+      value: Can we solve alignment before capabilities race ahead?
+  tags:
+    - scenario
+    - aligned-agi
+    - optimistic
+  lastUpdated: 2025-01
+- id: multipolar-competition
+  type: ai-transition-model-scenario
+  title: Multipolar Competition - The Fragmented World
+  description: A fragmented AI future where no single actor achieves dominance, leading to persistent
+    instability and coordination failures.
+  customFields:
+    - label: Scenario Type
+      value: Competitive / Unstable Equilibrium
+    - label: Probability Estimate
+      value: 20-30%
+    - label: Timeframe
+      value: 2024-2040
+    - label: Key Assumption
+      value: Multiple actors achieve advanced AI without single winner
+    - label: Core Uncertainty
+      value: Can multipolar competition remain stable or does it collapse?
+  tags:
+    - scenario
+    - multipolar
+    - competition
+  lastUpdated: 2025-01
+- id: pause-and-redirect
+  type: ai-transition-model-scenario
+  title: Pause and Redirect - The Deliberate Path
+  description: A scenario where humanity coordinates to deliberately slow AI development for safety preparation.
+  customFields:
+    - label: Scenario Type
+      value: Deliberate / Coordinated Slowdown
+    - label: Probability Estimate
+      value: 5-15%
+    - label: Timeframe
+      value: 2024-2040
+    - label: Key Assumption
+      value: Coordination achievable and pause sustainable
+    - label: Core Uncertainty
+      value: Can we coordinate to slow down, and will the pause hold?
+  tags:
+    - scenario
+    - pause
+    - coordination
+  lastUpdated: 2025-01

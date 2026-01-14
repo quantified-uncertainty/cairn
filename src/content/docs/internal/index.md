@@ -24,6 +24,13 @@ This section contains internal documentation for maintaining and contributing to
 - [Enhancement Queue](/internal/enhancement-queue/) - Track content enhancement progress across all page types
 - [Project Roadmap](/internal/project-roadmap/) - Future work, infrastructure improvements, and tracking
 
+## CAIRN Project
+
+- [CAIRN Project](/internal/cairn/) - Planning docs for CAIRN: Comprehensive AI Impact & Risk Navigator
+  - [Vision Document](/internal/cairn/vision/) - 2-person-year scope, architecture, milestones
+  - [Strategy Brainstorm](/internal/cairn/strategy-brainstorm/) - Failure modes, definitions of success
+  - [Similar Projects Analysis](/internal/cairn/similar-projects/) - Lessons from Arbital, Stampy, etc.
+
 ## Technical Reports
 
 - [Internal Reports](/internal/reports/) - Technical research and design decisions

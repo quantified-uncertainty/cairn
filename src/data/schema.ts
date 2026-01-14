@@ -310,6 +310,46 @@ export const CauseEffectGraph = z.object({
 export type CauseEffectGraph = z.infer<typeof CauseEffectGraph>;
 
 // =============================================================================
+// CONTENT SECTIONS (Rich content stored in YAML for entity pages)
+// =============================================================================
+
+/**
+ * A table that can be rendered in content sections.
+ * Headers and rows are simple string arrays for flexibility.
+ */
+export const ContentTable = z.object({
+  headers: z.array(z.string()),
+  rows: z.array(z.array(z.string())),
+  caption: z.string().optional(),
+});
+export type ContentTable = z.infer<typeof ContentTable>;
+
+/**
+ * A section of content that can include prose, diagrams, and tables.
+ * Used to store page content in YAML for portability.
+ */
+export const ContentSection = z.object({
+  heading: z.string(),                            // Section heading (e.g., "## How This Happens")
+  body: z.string().optional(),                    // Markdown prose content
+  mermaid: z.string().optional(),                 // Mermaid diagram source
+  table: ContentTable.optional(),                 // Structured table data
+  component: z.string().optional(),               // Custom component to render (e.g., "PageCauseEffectGraph")
+  componentProps: z.record(z.unknown()).optional(), // Props for custom component
+});
+export type ContentSection = z.infer<typeof ContentSection>;
+
+/**
+ * Rich content structure for entity pages.
+ * Stores all prose content in YAML for framework portability.
+ */
+export const EntityContent = z.object({
+  intro: z.string().optional(),                   // Opening paragraph(s) before any sections
+  sections: z.array(ContentSection).optional(),   // Main content sections
+  footer: z.string().optional(),                  // Closing content after sections
+});
+export type EntityContent = z.infer<typeof EntityContent>;
+
+// =============================================================================
 // ENTITIES (Generic knowledge base entries with InfoBox data)
 // =============================================================================
 
@@ -584,6 +624,7 @@ export const Entity = z.object({
   // Core content fields
   description: z.string().optional(),           // 1-3 sentence summary
   aliases: z.array(z.string()).optional(),      // Alternative names for search
+  content: EntityContent.optional(),            // Rich content sections (YAML-first architecture)
   // Metadata
   status: EntityStatus.optional(),              // Content maturity level
   lastUpdated: z.string().optional(),           // ISO date "2024-12"

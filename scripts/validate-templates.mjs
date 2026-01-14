@@ -80,12 +80,12 @@ async function validatePage(filePath, options = {}) {
   const issues = [];
   const suggestions = [];
 
-  const declaredTemplate = frontmatter.template;
+  const declaredTemplate = frontmatter.pageTemplate;
   const suggestedTemplate = suggestTemplate(relativePath);
 
   if (!declaredTemplate) {
     if (suggestedTemplate) {
-      suggestions.push(`Add 'template: ${suggestedTemplate}' to frontmatter`);
+      suggestions.push(`Add 'pageTemplate: ${suggestedTemplate}' to frontmatter`);
     }
     return { filePath, relativePath, issues, suggestions, template: null };
   }

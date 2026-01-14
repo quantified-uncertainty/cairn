@@ -75,6 +75,7 @@ export { Mermaid } from './Mermaid';
 export { default as EntityGraph } from './EntityGraph';
 
 // AI Transition Model
+export { ATMPage } from './ATMPage';
 export { ModelPosition } from './ModelPosition';
 export { FactorKeyDebates } from './FactorKeyDebates';
 export { FactorRatings } from './FactorRatings';

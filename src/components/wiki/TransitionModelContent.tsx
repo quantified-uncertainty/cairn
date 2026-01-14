@@ -14,19 +14,23 @@
  * Usage: <TransitionModelContent entityId="tmc-compute" client:load />
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { getEntityById } from '../../data';
 import {
   getFactorScenarioInfluences,
   getScenarioFactorInfluences,
   getScenarioOutcomeConnections,
 } from '../../data/parameter-graph-data';
-import { getEntitySubgraph, hasEntitySubgraph } from '../../data/master-graph-data';
+import { getEntitySubgraph } from '../../data/master-graph-data';
 import { FactorStatusCard } from './FactorStatusBadge';
 import { InterventionsCard } from './InterventionsList';
 import { EstimatesCard } from './EstimatesPanel';
 import { WarningIndicatorsCard } from './WarningIndicatorsTable';
+import { Backlinks } from './Backlinks';
 import CauseEffectGraph from '../CauseEffectGraph';
+import { Mermaid } from './index';
 
 // Types for TMC entity data
 interface TMCRatings {
@@ -116,6 +120,30 @@ interface TMCCauseEffectGraph {
   edges: TMCCauseEffectEdge[];
 }
 
+// Content table for YAML-first architecture
+interface TMCContentTable {
+  headers: string[];
+  rows: string[][];
+  caption?: string;
+}
+
+// Content section for YAML-first architecture
+interface TMCContentSection {
+  heading: string;
+  body?: string;
+  mermaid?: string;
+  table?: TMCContentTable;
+  component?: string;
+  componentProps?: Record<string, unknown>;
+}
+
+// Rich content for YAML-first architecture
+interface TMCContent {
+  intro?: string;
+  sections?: TMCContentSection[];
+  footer?: string;
+}
+
 // Extended entity type for TMC entities
 interface TMCEntity {
   id: string;
@@ -133,6 +161,7 @@ interface TMCEntity {
   warningIndicators?: TMCWarningIndicator[];
   estimates?: TMCEstimate[];
   causeEffectGraph?: TMCCauseEffectGraph;
+  content?: TMCContent;  // YAML-first: Rich prose content stored in YAML
 }
 
 interface TransitionModelContentProps {
@@ -153,6 +182,10 @@ interface TransitionModelContentProps {
   showEstimates?: boolean;
   showWarningIndicators?: boolean;
   showCauseEffectGraph?: boolean;
+  // YAML-first content sections
+  showContent?: boolean;
+  // Show backlinks at bottom
+  showBacklinks?: boolean;
 }
 
 function RatingsSection({ ratings }: { ratings: TMCRatings }) {
@@ -427,6 +460,174 @@ function InfluencesSection({ parentFactor }: { parentFactor: string }) {
   return null;
 }
 
+/**
+ * Preprocesses markdown content from YAML to handle JSX components
+ * that were migrated from MDX files. ReactMarkdown doesn't process JSX,
+ * so we convert them to markdown equivalents or strip them.
+ */
+function preprocessYamlContent(content: string): string {
+  let result = content;
+
+  // Convert <R id="...">text</R> to markdown links
+  // Matches: <R id="abc123">Link Text</R>
+  result = result.replace(/<R\s+id="([^"]+)"[^>]*>([^<]+)<\/R>/g, '[$2](/browse/resources/$1/)');
+
+  // Remove self-closing JSX components that shouldn't be in YAML content
+  // DataInfoBox, ImpactList, FactorRelationshipDiagram, ParameterDistinctions
+  result = result.replace(/<(DataInfoBox|ImpactList|FactorRelationshipDiagram|ParameterDistinctions)[^>]*\/>/g, '');
+
+  // Remove JSX components with client:load directive (these were MDX-specific)
+  // Matches: <ComponentName ... client:load /> or <ComponentName ... client:load>...</ComponentName>
+  result = result.replace(/<(ATMPage|ImpactList|FactorRelationshipDiagram)[^>]*client:load[^>]*>[\s\S]*?<\/\1>/g, '');
+  result = result.replace(/<(ATMPage|ImpactList|FactorRelationshipDiagram)[^>]*client:load[^>]*\/>/g, '');
+
+  // Remove orphaned opening JSX tags (migration errors where only opening tag remains)
+  // Matches: <ComponentName ...> at start or on its own line
+  result = result.replace(/^\s*<[A-Z][a-zA-Z]*[^/>]*>\s*$/gm, '');
+
+  // Remove any remaining self-closing components that look like JSX (capitalized)
+  result = result.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, '');
+
+  // Clean up any double blank lines left after removing components
+  result = result.replace(/\n{3,}/g, '\n\n');
+
+  // Trim leading/trailing whitespace
+  result = result.trim();
+
+  return result;
+}
+
+/**
+ * Fixes markdown tables that were broken by YAML multiline folding.
+ * YAML multiline strings can add extra newlines/indentation that break tables.
+ * This function:
+ * 1. Identifies table rows (lines starting and ending with |)
+ * 2. Removes blank lines between table rows
+ * 3. Handles YAML folding that splits rows across lines
+ */
+function fixMarkdownTables(markdown: string): string {
+  const lines = markdown.split('\n');
+  const result: string[] = [];
+  let tableBuffer: string[] = [];
+  let pendingBlankLines = 0;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    const isTableRow = trimmedLine.startsWith('|') && trimmedLine.endsWith('|');
+    const isSeparator = /^\|[-:|]+\|$/.test(trimmedLine);
+
+    if (isTableRow || isSeparator) {
+      // This is a table row - add to buffer (skip any pending blank lines)
+      tableBuffer.push(trimmedLine);
+      pendingBlankLines = 0;
+    } else if (trimmedLine === '' && tableBuffer.length > 0) {
+      // Blank line while in a potential table - defer decision
+      pendingBlankLines++;
+    } else {
+      // Non-table line - flush any buffered table
+      if (tableBuffer.length > 0) {
+        result.push(...tableBuffer);
+        tableBuffer = [];
+      }
+      // Add any pending blank lines for non-table content
+      for (let i = 0; i < pendingBlankLines; i++) {
+        result.push('');
+      }
+      pendingBlankLines = 0;
+      result.push(line);
+    }
+  }
+
+  // Flush any remaining table
+  if (tableBuffer.length > 0) {
+    result.push(...tableBuffer);
+  }
+
+  return result.join('\n');
+}
+
+/**
+ * Renders a single content section from YAML content structure.
+ * Supports markdown body, mermaid diagrams, and tables.
+ */
+function ContentSectionRenderer({ section }: { section: TMCContentSection }) {
+  return (
+    <div className="tm-content-section">
+      <h2>{section.heading}</h2>
+
+      {/* Mermaid diagram */}
+      {section.mermaid && (
+        <div className="tm-content-mermaid">
+          <Mermaid chart={section.mermaid} />
+        </div>
+      )}
+
+      {/* Table */}
+      {section.table && (
+        <div className="tm-content-table-wrapper">
+          <table className="tm-table tm-content-table">
+            <thead>
+              <tr>
+                {section.table.headers.map((header, i) => (
+                  <th key={i}><ReactMarkdown>{header}</ReactMarkdown></th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {section.table.rows.map((row, rowIdx) => (
+                <tr key={rowIdx}>
+                  {row.map((cell, cellIdx) => (
+                    <td key={cellIdx}><ReactMarkdown>{cell}</ReactMarkdown></td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {section.table.caption && (
+            <p className="tm-table-caption">{section.table.caption}</p>
+          )}
+        </div>
+      )}
+
+      {/* Markdown body */}
+      {section.body && (
+        <div className="tm-content-body">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{fixMarkdownTables(preprocessYamlContent(section.body))}</ReactMarkdown>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Renders the full content structure from YAML.
+ * Includes intro, sections, and footer.
+ */
+function ContentRenderer({ content }: { content: TMCContent }) {
+  return (
+    <div className="tm-yaml-content">
+      {/* Intro paragraphs */}
+      {content.intro && (
+        <div className="tm-content-intro">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{fixMarkdownTables(preprocessYamlContent(content.intro))}</ReactMarkdown>
+        </div>
+      )}
+
+      {/* Content sections */}
+      {content.sections?.map((section, i) => (
+        <ContentSectionRenderer key={i} section={section} />
+      ))}
+
+      {/* Footer */}
+      {content.footer && (
+        <div className="tm-content-footer">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{fixMarkdownTables(preprocessYamlContent(content.footer))}</ReactMarkdown>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TransitionModelContent({
   entityId,
   slug,
@@ -441,6 +642,8 @@ export function TransitionModelContent({
   showEstimates = true,
   showWarningIndicators = true,
   showCauseEffectGraph = true,
+  showContent = true,
+  showBacklinks = true,
 }: TransitionModelContentProps) {
   // Support legacy slug prop by converting to tmc-{slug}
   let effectiveEntityId = entityId;
@@ -468,6 +671,11 @@ export function TransitionModelContent({
         <div className="tm-section tm-description">
           <p>{entity.description}</p>
         </div>
+      )}
+
+      {/* YAML-first content sections (intro + sections + footer) */}
+      {showContent && entity.content && (
+        <ContentRenderer content={entity.content} />
       )}
 
       {/* Current Assessment - shows status level and trend */}
@@ -610,6 +818,14 @@ export function TransitionModelContent({
       )}
 
       {showRelated && entity.relatedContent && <RelatedContentSection related={entity.relatedContent} />}
+
+      {/* Backlinks section */}
+      {showBacklinks && effectiveEntityId && (
+        <>
+          <hr className="tm-divider" />
+          <Backlinks entityId={effectiveEntityId.replace(/^tmc-/, '')} />
+        </>
+      )}
 
       <style>{`
         .tm-content {
@@ -783,6 +999,111 @@ export function TransitionModelContent({
           border: 1px solid var(--sl-color-red);
           border-radius: 0.5rem;
           color: var(--sl-color-red-high);
+        }
+        /* YAML-first content sections */
+        .tm-yaml-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .tm-content-intro {
+          font-size: 1rem;
+          line-height: 1.7;
+        }
+        .tm-content-intro p {
+          margin: 0 0 1rem 0;
+        }
+        .tm-content-intro p:last-child {
+          margin-bottom: 0;
+        }
+        .tm-content-section h2 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin: 1.5rem 0 0.75rem 0;
+          color: var(--sl-color-white);
+          border-bottom: 1px solid var(--sl-color-gray-5);
+          padding-bottom: 0.5rem;
+        }
+        .tm-content-section h2:first-child {
+          margin-top: 0;
+        }
+        .tm-content-section h3 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin: 1rem 0 0.5rem 0;
+        }
+        .tm-content-body {
+          line-height: 1.7;
+        }
+        .tm-content-body p {
+          margin: 0 0 1rem 0;
+        }
+        .tm-content-body ul, .tm-content-body ol {
+          margin: 0.5rem 0 1rem 1.5rem;
+          padding: 0;
+        }
+        .tm-content-body li {
+          margin: 0.25rem 0;
+        }
+        .tm-content-body strong {
+          font-weight: 600;
+        }
+        .tm-content-body a {
+          color: var(--sl-color-text-accent);
+          text-decoration: none;
+        }
+        .tm-content-body a:hover {
+          text-decoration: underline;
+        }
+        .tm-content-mermaid {
+          margin: 1rem 0;
+        }
+        .tm-content-table {
+          margin: 1rem 0;
+        }
+        .tm-content-table p {
+          margin: 0;
+        }
+        .tm-table-caption {
+          font-size: 0.85rem;
+          color: var(--sl-color-gray-3);
+          font-style: italic;
+          text-align: center;
+          margin: 0.5rem 0 0 0;
+        }
+        .tm-content-footer {
+          margin-top: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid var(--sl-color-gray-5);
+        }
+        .tm-divider {
+          border: none;
+          border-top: 1px solid var(--sl-color-gray-5);
+          margin: 1rem 0;
+        }
+        /* Styles for ReactMarkdown-generated tables */
+        .tm-content-body table,
+        .tm-content-intro table,
+        .tm-content-footer table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1rem 0;
+        }
+        .tm-content-body table th,
+        .tm-content-body table td,
+        .tm-content-intro table th,
+        .tm-content-intro table td,
+        .tm-content-footer table th,
+        .tm-content-footer table td {
+          border: 1px solid var(--sl-color-gray-5);
+          padding: 0.5rem 0.75rem;
+          text-align: left;
+        }
+        .tm-content-body table th,
+        .tm-content-intro table th,
+        .tm-content-footer table th {
+          background: var(--sl-color-gray-6);
+          font-weight: 600;
         }
       `}</style>
     </div>

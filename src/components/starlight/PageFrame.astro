@@ -20,13 +20,27 @@ const isAiTransitionModelPage = slug.startsWith('ai-transition-model/') || slug 
 
 // Extract entity ID from slug
 const slugParts = slug.split('/');
-let entityId = slugParts[slugParts.length - 1];
-if (entityId === 'index' || !entityId) {
-  entityId = slugParts[slugParts.length - 2] || slugParts[0];
+let entityIdFromSlug = slugParts[slugParts.length - 1];
+if (entityIdFromSlug === 'index' || !entityIdFromSlug) {
+  entityIdFromSlug = slugParts[slugParts.length - 2] || slugParts[0];
 }
 
 // Get entity data for meta view
-const entity = database.entities?.find((e: any) => e.id === entityId);
+// Try multiple lookup strategies:
+// 1. Direct ID match (e.g., "state-actor")
+// 2. Prefixed ID match (e.g., "tmc-state-actor" for AI Transition Model entities)
+// 3. Path match (e.g., "/ai-transition-model/scenarios/human-catastrophe/state-actor/")
+const pagePath = `/${slug}/`.replace(/\/+/g, '/');
+let entity = database.entities?.find((e: any) => e.id === entityIdFromSlug);
+if (!entity) {
+  // Try with tmc- prefix for AI Transition Model entities
+  entity = database.entities?.find((e: any) => e.id === `tmc-${entityIdFromSlug}`);
+}
+if (!entity) {
+  // Try matching by path
+  entity = database.entities?.find((e: any) => e.path === pagePath);
+}
+const entityId = entity?.id || entityIdFromSlug;
 const parameterGraph = database.parameterGraph || {};
 const graphNode = parameterGraph.nodes?.find((n: any) => n.id === entityId);
 const incomingEdges = parameterGraph.edges?.filter((e: any) => e.target === entityId) || [];

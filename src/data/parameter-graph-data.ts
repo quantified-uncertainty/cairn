@@ -7,7 +7,12 @@ import yaml from 'js-yaml';
 
 // Import YAML as raw text
 import graphYaml from './parameter-graph.yaml?raw';
-import entitiesYaml from './entities/ai-transition-model.yaml?raw';
+// Import split YAML files for AI Transition Model entities
+import factorsYaml from './entities/ai-transition-model-factors.yaml?raw';
+import subitemsYaml from './entities/ai-transition-model-subitems.yaml?raw';
+import scenariosYaml from './entities/ai-transition-model-scenarios.yaml?raw';
+import metricsYaml from './entities/ai-transition-model-metrics.yaml?raw';
+import parametersYaml from './entities/ai-transition-model-parameters.yaml?raw';
 
 // Types for the raw YAML structure
 // All metadata lives in YAML - MDX files just contain custom content
@@ -143,7 +148,14 @@ interface RawEntity {
   description?: string;
   [key: string]: unknown;
 }
-const rawEntities = yaml.load(entitiesYaml) as RawEntity[];
+// Merge all split YAML files into one array
+const rawEntities = [
+  ...(yaml.load(factorsYaml) as RawEntity[] || []),
+  ...(yaml.load(subitemsYaml) as RawEntity[] || []),
+  ...(yaml.load(scenariosYaml) as RawEntity[] || []),
+  ...(yaml.load(metricsYaml) as RawEntity[] || []),
+  ...(yaml.load(parametersYaml) as RawEntity[] || []),
+];
 
 // Build a map of entity ID -> description for efficient lookup at build time
 const entityDescriptionMap = new Map<string, string>();

@@ -12,7 +12,7 @@
  * Usage: node scripts/validate-data.mjs
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
 import { findMdxFiles } from './lib/file-utils.mjs';
@@ -28,6 +28,28 @@ function loadYaml(filename) {
   }
   const content = readFileSync(filepath, 'utf-8');
   return parseYaml(content) || [];
+}
+
+/**
+ * Load and merge all YAML files from a directory
+ */
+function loadYamlDir(dirname) {
+  const dirpath = join(DATA_DIR, dirname);
+  if (!existsSync(dirpath)) {
+    return [];
+  }
+
+  const files = readdirSync(dirpath).filter((f) => f.endsWith('.yaml'));
+  const merged = [];
+
+  for (const file of files) {
+    const filepath = join(dirpath, file);
+    const content = readFileSync(filepath, 'utf-8');
+    const data = parseYaml(content) || [];
+    merged.push(...data);
+  }
+
+  return merged;
 }
 
 // Extract entity ID from file path
@@ -66,7 +88,10 @@ function main() {
   let warnings = 0;
 
   // Load all data
-  const entities = loadYaml('entities.yaml');
+  // Load entities from both single file and directory
+  const entitiesFromFile = loadYaml('entities.yaml');
+  const entitiesFromDir = loadYamlDir('entities');
+  const entities = [...entitiesFromFile, ...entitiesFromDir];
   const experts = loadYaml('experts.yaml');
   const organizations = loadYaml('organizations.yaml');
   const literature = loadYaml('literature.yaml');

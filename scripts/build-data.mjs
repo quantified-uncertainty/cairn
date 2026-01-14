@@ -115,6 +115,100 @@ const DATA_DIR = 'src/data';
 const CONTENT_DIR = 'src/content/docs';
 const OUTPUT_FILE = 'src/data/database.json';
 
+// =============================================================================
+// MDX GENERATION FOR YAML-FIRST ENTITIES
+// =============================================================================
+
+/**
+ * Check if an MDX file needs regeneration based on entity content
+ * Returns true if the file doesn't exist or is a minimal stub that should be regenerated
+ */
+function shouldGenerateMdx(mdxPath, entity) {
+  if (!existsSync(mdxPath)) return true;
+
+  const content = readFileSync(mdxPath, 'utf-8');
+
+  // If file contains custom content beyond the stub, don't overwrite
+  // Check for markers that indicate it's a generated stub
+  const isGeneratedStub = content.includes('<TransitionModelContent entityId=') &&
+    !content.includes('## ') && // No custom headings
+    content.split('\n').length < 20; // Short file
+
+  return isGeneratedStub;
+}
+
+/**
+ * Generate minimal MDX stub for an entity with YAML-first content
+ */
+function generateMdxStub(entity) {
+  // Calculate relative import path based on entity path depth
+  // Path like /ai-transition-model/scenarios/human-catastrophe/state-actor/
+  // File at src/content/docs/ai-transition-model/scenarios/human-catastrophe/state-actor.mdx
+  // Need to go up: (depth) levels to get to src/content/docs/, then 2 more for src/
+  // Actually, we need depth + 1 because we go up from inside the file's directory
+  const pathParts = entity.path.split('/').filter(Boolean);
+  const depth = pathParts.length;
+  // +1 because the file is inside src/content/docs/ and we need to reach src/components/wiki
+  const relativePath = '../'.repeat(depth + 1) + 'components/wiki';
+
+  // Extract sidebar order from entity if available
+  const sidebarOrder = entity.sidebarOrder || 99;
+
+  return `---
+title: "${entity.title}"
+sidebar:
+  order: ${sidebarOrder}
+---
+
+import {TransitionModelContent} from '${relativePath}';
+
+<TransitionModelContent entityId="${entity.id}" client:load />
+`;
+}
+
+/**
+ * Generate MDX files for entities with YAML-first content structure
+ * Only generates/updates files that are marked as generated stubs
+ */
+function generateMdxFromYaml(entities, options = { dryRun: false }) {
+  const generated = [];
+  const skipped = [];
+
+  for (const entity of entities) {
+    // Only process entities with content field and path
+    if (!entity.content || !entity.path) continue;
+
+    // Convert URL path to file path
+    // e.g., /ai-transition-model/scenarios/human-catastrophe/state-actor/
+    //    -> src/content/docs/ai-transition-model/scenarios/human-catastrophe/state-actor.mdx
+    const urlPath = entity.path.replace(/^\/|\/$/g, ''); // Remove leading/trailing slashes
+    const mdxPath = join(CONTENT_DIR, `${urlPath}.mdx`);
+
+    // Check if we should generate this file
+    if (!shouldGenerateMdx(mdxPath, entity)) {
+      skipped.push({ id: entity.id, path: mdxPath, reason: 'custom content' });
+      continue;
+    }
+
+    const mdxContent = generateMdxStub(entity);
+
+    if (options.dryRun) {
+      generated.push({ id: entity.id, path: mdxPath, action: 'would generate' });
+    } else {
+      // Ensure directory exists
+      const dir = join(mdxPath, '..');
+      if (!existsSync(dir)) {
+        mkdirSync(dir, { recursive: true });
+      }
+
+      writeFileSync(mdxPath, mdxContent);
+      generated.push({ id: entity.id, path: mdxPath, action: 'generated' });
+    }
+  }
+
+  return { generated, skipped };
+}
+
 // Files to combine
 const DATA_FILES = [
   { key: 'experts', file: 'experts.yaml' },
@@ -501,6 +595,19 @@ function main() {
 
   // Compute derived data for entities
   const entities = database.entities || [];
+
+  // Generate MDX stubs for entities with YAML-first content
+  console.log('\nGenerating MDX from YAML content...');
+  const { generated, skipped } = generateMdxFromYaml(entities, { dryRun: false });
+  if (generated.length > 0) {
+    console.log(`  generated: ${generated.length} MDX files from YAML content`);
+    for (const g of generated) {
+      console.log(`    ✓ ${g.id}`);
+    }
+  }
+  if (skipped.length > 0) {
+    console.log(`  skipped: ${skipped.length} files (have custom content)`);
+  }
 
   console.log('\nComputing derived data...');
 
