@@ -1,0 +1,62 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import DiagramViewer from '../../components/DiagramViewer';
+import { entities, getEntityById } from '../../data';
+
+export function getStaticPaths() {
+  // Generate paths for all entities that have causeEffectGraph diagrams
+  const entitiesWithDiagrams = entities.filter(
+    (e: any) => e.causeEffectGraph?.nodes?.length > 0
+  );
+  return entitiesWithDiagrams.map((entity: any) => ({
+    params: { entityId: entity.id },
+  }));
+}
+
+const { entityId } = Astro.params;
+const entity = getEntityById(entityId);
+const graphTitle = (entity as any)?.causeEffectGraph?.title || (entity as any)?.title || `Diagram: ${entityId}`;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: graphTitle,
+    description: (entity as any)?.causeEffectGraph?.description || `Cause-effect diagram for ${(entity as any)?.title || entityId}`,
+    tableOfContents: false,
+    template: 'splash',
+  }}
+  headings={[]}
+>
+  <div class="diagram-page">
+    <DiagramViewer entityId={entityId} client:load />
+  </div>
+</StarlightPage>
+
+<style is:global>
+  /* Make diagram pages full width and height */
+  .content-panel {
+    max-width: 100% !important;
+  }
+  main {
+    max-width: 100% !important;
+    padding-inline: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  .sl-container {
+    max-width: 100% !important;
+  }
+  .sl-markdown-content {
+    max-width: 100% !important;
+  }
+  /* Remove extra bottom padding from Starlight */
+  footer {
+    display: none !important;
+  }
+</style>
+
+<style>
+  .diagram-page {
+    margin: -1rem;
+    margin-top: 0;
+  }
+</style>

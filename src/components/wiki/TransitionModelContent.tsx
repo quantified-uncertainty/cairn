@@ -715,6 +715,7 @@ export function TransitionModelContent({
                 height={calculatedHeight}
                 hideListView={true}
                 selectedNodeId={entity.causeEffectGraph.primaryNodeId}
+                entityId={effectiveEntityId || entity.id}
                 graphConfig={{
                   hideGroupBackgrounds: true,
                   useDagre: true,  // Cleaner layout for simple causal diagrams
@@ -781,6 +782,7 @@ export function TransitionModelContent({
               height={calculatedHeight}
               hideListView={true}
               selectedNodeId={autoSubgraph.primaryNodeId}
+              entityId={effectiveEntityId || entity.id}
               graphConfig={{
                 hideGroupBackgrounds: true,
                 useDagre: true,

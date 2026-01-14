@@ -1,13 +1,48 @@
 /**
- * DiagramViewer - Standalone viewer for causeEffectGraph diagrams
+ * DiagramViewer - Viewer for causeEffectGraph diagrams
  *
- * Usage: /diagrams?entity=tmc-compute
+ * Usage: /diagrams/tmc-compute
+ * Now designed to be embedded within Starlight pages
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getEntityById, getEntityHref, entities, pathRegistry } from '../data';
 import { getNodeHrefFromMaster } from '../data/master-graph-data';
 import CauseEffectGraph from './CauseEffectGraph';
+
+/**
+ * Hook to calculate available height from an element to the bottom of the viewport.
+ * Updates on window resize and returns a stable height value.
+ */
+function useAvailableHeight(minHeight = 500, bottomPadding = 20) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(minHeight);
+
+  const calculateHeight = useCallback(() => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const availableHeight = window.innerHeight - rect.top - bottomPadding;
+    setHeight(Math.max(minHeight, availableHeight));
+  }, [minHeight, bottomPadding]);
+
+  useEffect(() => {
+    // Calculate on mount
+    calculateHeight();
+
+    // Recalculate on resize
+    window.addEventListener('resize', calculateHeight);
+
+    // Also recalculate after a short delay (for layout shifts)
+    const timer = setTimeout(calculateHeight, 100);
+
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+      clearTimeout(timer);
+    };
+  }, [calculateHeight]);
+
+  return { containerRef, height };
+}
 
 // Get all entities that have causeEffectGraph diagrams
 function getEntitiesWithDiagrams(): Array<{ id: string; title: string; graphTitle?: string; nodeCount: number }> {
@@ -61,11 +96,18 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
   const [entityId, setEntityId] = useState(propEntityId || '');
 
   useEffect(() => {
-    // If no entity ID from props, read from URL
+    // If no entity ID from props, read from URL path
     if (!propEntityId) {
-      const params = new URLSearchParams(window.location.search);
-      const urlEntityId = params.get('entity') || '';
-      setEntityId(urlEntityId);
+      // Check for path-based URL (/diagrams/xxx)
+      const pathMatch = window.location.pathname.match(/\/diagrams\/([^/]+)/);
+      if (pathMatch) {
+        setEntityId(pathMatch[1]);
+      } else {
+        // Fallback to query param for legacy URLs
+        const params = new URLSearchParams(window.location.search);
+        const urlEntityId = params.get('entity') || '';
+        setEntityId(urlEntityId);
+      }
     }
   }, [propEntityId]);
 
@@ -74,35 +116,75 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
     const availableDiagrams = getEntitiesWithDiagrams();
 
     return (
-      <div style={styles.container}>
-        <div style={styles.indexCard}>
-          <h1 style={styles.title}>Cause-Effect Diagrams</h1>
-          <p style={styles.text}>
-            Interactive diagrams showing causal relationships in the AI Transition Model.
-          </p>
+      <div className="diagram-list">
+        {availableDiagrams.length === 0 ? (
+          <p className="empty-state">No diagrams available yet.</p>
+        ) : (
+          <div className="diagram-grid">
+            {availableDiagrams.map((diagram) => (
+              <a
+                key={diagram.id}
+                href={`/diagrams/${diagram.id}`}
+                className="diagram-card"
+              >
+                <div className="diagram-card-title">
+                  {diagram.graphTitle || diagram.title}
+                </div>
+                <div className="diagram-card-meta">
+                  <span className="diagram-card-id">{diagram.id}</span>
+                  <span className="diagram-card-count">{diagram.nodeCount} nodes</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
 
-          {availableDiagrams.length === 0 ? (
-            <p style={styles.text}>No diagrams available yet.</p>
-          ) : (
-            <div style={styles.diagramList}>
-              {availableDiagrams.map((diagram) => (
-                <a
-                  key={diagram.id}
-                  href={`/diagrams?entity=${diagram.id}`}
-                  style={styles.diagramCard}
-                >
-                  <div style={styles.diagramTitle}>
-                    {diagram.graphTitle || diagram.title}
-                  </div>
-                  <div style={styles.diagramMeta}>
-                    <span style={styles.entityId}>{diagram.id}</span>
-                    <span style={styles.nodeCount}>{diagram.nodeCount} nodes</span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
+        <style>{`
+          .diagram-list {
+            margin-top: 0;
+          }
+          .empty-state {
+            color: var(--sl-color-gray-3);
+            font-style: italic;
+          }
+          .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+          }
+          .diagram-card {
+            display: block;
+            background: var(--sl-color-gray-6);
+            border: 1px solid var(--sl-color-hairline);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s, border-color 0.15s;
+          }
+          .diagram-card:hover {
+            background: var(--sl-color-gray-5);
+            border-color: var(--sl-color-accent);
+          }
+          .diagram-card-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--sl-color-text);
+            margin-bottom: 0.5rem;
+          }
+          .diagram-card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+          }
+          .diagram-card-id {
+            color: var(--sl-color-text-accent);
+            font-family: monospace;
+          }
+          .diagram-card-count {
+            color: var(--sl-color-gray-3);
+          }
+        `}</style>
       </div>
     );
   }
@@ -112,14 +194,40 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
 
   if (!rawEntity) {
     return (
-      <div style={styles.container}>
-        <div style={styles.errorCard}>
-          <h1 style={styles.title}>Entity Not Found</h1>
-          <p style={styles.text}>
-            No entity found with ID: <code style={styles.code}>{entityId}</code>
-          </p>
-          <a href="/diagrams" style={styles.link}>Back to Diagram Viewer</a>
-        </div>
+      <div className="diagram-error">
+        <h2>Entity Not Found</h2>
+        <p>
+          No entity found with ID: <code>{entityId}</code>
+        </p>
+        <a href="/diagrams/">← Back to Diagrams</a>
+
+        <style>{`
+          .diagram-error {
+            background: var(--sl-color-red-low);
+            border: 1px solid var(--sl-color-red);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 500px;
+          }
+          .diagram-error h2 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.25rem;
+          }
+          .diagram-error p {
+            margin: 0 0 1rem 0;
+            color: var(--sl-color-gray-2);
+          }
+          .diagram-error code {
+            background: var(--sl-color-gray-6);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+          }
+          .diagram-error a {
+            color: var(--sl-color-text-accent);
+            text-decoration: none;
+          }
+        `}</style>
       </div>
     );
   }
@@ -128,41 +236,71 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
 
   if (!entity.causeEffectGraph || !entity.causeEffectGraph.nodes.length) {
     return (
-      <div style={styles.container}>
-        <div style={styles.errorCard}>
-          <h1 style={styles.title}>No Diagram Available</h1>
-          <p style={styles.text}>
-            Entity <code style={styles.code}>{entityId}</code> ({entity.title}) does not have a cause-effect diagram.
-          </p>
-          <a href="/diagrams" style={styles.link}>Back to Diagram Viewer</a>
-        </div>
+      <div className="diagram-error">
+        <h2>No Diagram Available</h2>
+        <p>
+          Entity <code>{entityId}</code> ({entity.title}) does not have a cause-effect diagram.
+        </p>
+        <a href="/diagrams/">← Back to Diagrams</a>
+
+        <style>{`
+          .diagram-error {
+            background: var(--sl-color-orange-low);
+            border: 1px solid var(--sl-color-orange);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 500px;
+          }
+          .diagram-error h2 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.25rem;
+          }
+          .diagram-error p {
+            margin: 0 0 1rem 0;
+            color: var(--sl-color-gray-2);
+          }
+          .diagram-error code {
+            background: var(--sl-color-gray-6);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+          }
+          .diagram-error a {
+            color: var(--sl-color-text-accent);
+            text-decoration: none;
+          }
+        `}</style>
       </div>
     );
   }
 
   const graph = entity.causeEffectGraph;
 
+  // Compute the back link from the entity's path or via getEntityHref
+  const entityPath = (rawEntity as any).path || getEntityHref(entityId, (rawEntity as any).type) || '/ai-transition-model/';
+
+  // Calculate available height dynamically
+  const { containerRef, height: graphHeight } = useAvailableHeight(500, 20);
+
   return (
-    <div style={styles.fullscreen}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div>
-          <h1 style={styles.graphTitle}>{graph.title || entity.title}</h1>
-          {graph.description && (
-            <p style={styles.graphDescription}>{graph.description}</p>
-          )}
-        </div>
-        <a href={`/ai-transition-model/factors/ai-capabilities/compute/`} style={styles.backLink}>
-          Back to Page
+    <div className="diagram-viewer">
+      {/* Compact header with description and page link */}
+      <div className="diagram-header">
+        {graph.description && (
+          <p className="diagram-description">{graph.description}</p>
+        )}
+        <a href={entityPath} className="page-link">
+          View {entity.title} →
         </a>
       </div>
 
       {/* Graph */}
-      <div style={styles.graphContainer}>
+      <div className="diagram-graph-container" ref={containerRef}>
         <CauseEffectGraph
-          height="100%"
+          height={graphHeight}
           hideListView={true}
           selectedNodeId={graph.primaryNodeId}
+          showFullscreenButton={false}
           graphConfig={{
             hideGroupBackgrounds: true,
             useDagre: true,
@@ -226,131 +364,46 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
           }))}
         />
       </div>
+
+      <style>{`
+        .diagram-viewer {
+          margin-top: 0;
+        }
+        .diagram-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 1rem;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+        }
+        .diagram-description {
+          margin: 0;
+          color: var(--sl-color-gray-2);
+          font-size: 0.95rem;
+          flex: 1;
+          min-width: 200px;
+        }
+        .page-link {
+          color: var(--sl-color-text-accent);
+          text-decoration: none;
+          font-size: 0.9rem;
+          padding: 0.4rem 0.8rem;
+          background: var(--sl-color-gray-6);
+          border: 1px solid var(--sl-color-hairline);
+          border-radius: 6px;
+          white-space: nowrap;
+        }
+        .page-link:hover {
+          background: var(--sl-color-gray-5);
+        }
+        .diagram-graph-container {
+          border: 1px solid var(--sl-color-hairline);
+          border-radius: 8px;
+          overflow: hidden;
+          min-height: 500px;
+        }
+      `}</style>
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '2rem',
-  },
-  indexCard: {
-    background: '#1e293b',
-    borderRadius: '12px',
-    padding: '2rem',
-    maxWidth: '600px',
-    width: '100%',
-  },
-  diagramList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-    marginTop: '1.5rem',
-  },
-  diagramCard: {
-    display: 'block',
-    background: '#334155',
-    borderRadius: '8px',
-    padding: '1rem 1.25rem',
-    textDecoration: 'none',
-    color: 'inherit',
-    transition: 'background 0.15s, transform 0.15s',
-    border: '1px solid transparent',
-  },
-  diagramTitle: {
-    fontSize: '1rem',
-    fontWeight: 500,
-    color: '#f1f5f9',
-    marginBottom: '0.5rem',
-  },
-  diagramMeta: {
-    display: 'flex',
-    gap: '1rem',
-    fontSize: '0.8rem',
-  },
-  entityId: {
-    color: '#60a5fa',
-    fontFamily: 'monospace',
-  },
-  nodeCount: {
-    color: '#94a3b8',
-  },
-  errorCard: {
-    background: '#1e293b',
-    borderRadius: '12px',
-    padding: '2rem',
-    maxWidth: '500px',
-    width: '100%',
-    borderLeft: '4px solid #ef4444',
-  },
-  title: {
-    margin: '0 0 1rem 0',
-    fontSize: '1.5rem',
-    fontWeight: 600,
-  },
-  text: {
-    margin: '0 0 1rem 0',
-    color: '#94a3b8',
-    lineHeight: 1.6,
-  },
-  usage: {
-    marginBottom: '1rem',
-  },
-  examples: {
-    marginTop: '1.5rem',
-  },
-  list: {
-    margin: '0.5rem 0 0 1.5rem',
-    padding: 0,
-  },
-  code: {
-    background: '#334155',
-    padding: '0.2rem 0.5rem',
-    borderRadius: '4px',
-    fontSize: '0.9rem',
-    fontFamily: 'monospace',
-  },
-  link: {
-    color: '#60a5fa',
-    textDecoration: 'none',
-  },
-  fullscreen: {
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: '1rem 1.5rem',
-    borderBottom: '1px solid #334155',
-    background: '#1e293b',
-  },
-  graphTitle: {
-    margin: 0,
-    fontSize: '1.25rem',
-    fontWeight: 600,
-  },
-  graphDescription: {
-    margin: '0.5rem 0 0 0',
-    color: '#94a3b8',
-    fontSize: '0.9rem',
-  },
-  backLink: {
-    color: '#60a5fa',
-    textDecoration: 'none',
-    fontSize: '0.9rem',
-    padding: '0.5rem 1rem',
-    background: '#334155',
-    borderRadius: '6px',
-  },
-  graphContainer: {
-    flex: 1,
-    minHeight: 0,
-  },
-};

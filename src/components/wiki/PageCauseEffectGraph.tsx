@@ -182,6 +182,7 @@ export function PageCauseEffectGraph({
         height={calculatedHeight}
         hideListView={true}
         selectedNodeId={graph.primaryNodeId}
+        entityId={entityId}
         graphConfig={{
           hideGroupBackgrounds: true,
           useDagre: true,

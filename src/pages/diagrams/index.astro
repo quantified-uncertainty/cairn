@@ -1,56 +1,104 @@
 ---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import DiagramViewer from '../../components/DiagramViewer';
-import '../../styles/global.css';
-
-// Get entity ID from query params
-const entityId = Astro.url.searchParams.get('entity') || '';
 ---
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{entityId ? `Diagram: ${entityId}` : 'Diagram Viewer'}</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background: #0f172a;
-        color: #e2e8f0;
-        font-family: system-ui, -apple-system, sans-serif;
-      }
-      .master-graph-banner {
-        background: #1e3a5f;
-        border-bottom: 1px solid #334155;
-        padding: 0.75rem 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .master-graph-banner p {
-        margin: 0;
-        color: #94a3b8;
-        font-size: 0.9rem;
-      }
-      .master-graph-banner a {
-        color: #60a5fa;
-        text-decoration: none;
-        padding: 0.4rem 0.8rem;
-        background: #334155;
-        border-radius: 6px;
-        font-size: 0.9rem;
-      }
-      .master-graph-banner a:hover {
-        background: #475569;
-      }
-    </style>
-  </head>
-  <body>
-    {!entityId && (
-      <div class="master-graph-banner">
-        <p>Try the new unified Master Graph view (experimental)</p>
-        <a href="/diagrams/master-graph?full=true">View Master Graph →</a>
+
+<script is:inline>
+  // Redirect old query param URLs (?entity=xxx) to new path-based URLs (/diagrams/xxx)
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const entityId = params.get('entity');
+    if (entityId) {
+      window.location.replace('/diagrams/' + entityId);
+    }
+  })();
+</script>
+
+<StarlightPage
+  frontmatter={{
+    title: 'Cause-Effect Diagrams',
+    description: 'Interactive diagrams showing causal relationships in the AI Transition Model',
+    tableOfContents: false,
+    template: 'splash',
+  }}
+  headings={[]}
+>
+  <div class="diagram-index-page">
+    <p class="intro-text">
+      Interactive diagrams showing causal relationships in the AI Transition Model.
+      Click any diagram below to view it in detail.
+    </p>
+
+    <div class="master-graph-banner">
+      <div class="banner-content">
+        <span class="banner-label">New</span>
+        <p>Try the unified Master Graph view (experimental)</p>
       </div>
-    )}
-    <DiagramViewer entityId={entityId} client:load />
-  </body>
-</html>
+      <a href="/diagrams/master-graph?full=true">View Master Graph →</a>
+    </div>
+
+    <DiagramViewer entityId="" client:load />
+  </div>
+</StarlightPage>
+
+<style>
+  .diagram-index-page {
+    margin-top: 0;
+  }
+
+  .intro-text {
+    color: var(--sl-color-gray-3);
+    margin-bottom: 1.5rem;
+  }
+
+  .master-graph-banner {
+    background: var(--sl-color-accent-low);
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .banner-label {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-black);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .banner-content p {
+    margin: 0;
+    color: var(--sl-color-text);
+    font-size: 0.95rem;
+  }
+
+  .master-graph-banner a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .master-graph-banner a:hover {
+    background: var(--sl-color-gray-6);
+  }
+</style>
