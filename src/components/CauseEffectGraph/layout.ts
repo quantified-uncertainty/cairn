@@ -451,6 +451,15 @@ async function getElkLayout(
 
 // Convert graph data to YAML format
 export function toYaml(nodes: Node<CauseEffectNodeData>[], edges: Edge<CauseEffectEdgeData>[]): string {
+  // Build a map of outgoing edges by source node
+  const edgesBySource = new Map<string, Edge<CauseEffectEdgeData>[]>();
+  for (const edge of edges) {
+    if (!edgesBySource.has(edge.source)) {
+      edgesBySource.set(edge.source, []);
+    }
+    edgesBySource.get(edge.source)!.push(edge);
+  }
+
   const lines: string[] = ['nodes:'];
 
   for (const node of nodes) {
@@ -469,17 +478,28 @@ export function toYaml(nodes: Node<CauseEffectNodeData>[], edges: Edge<CauseEffe
       lines.push(`    sources:`);
       for (const source of node.data.sources) lines.push(`      - "${source}"`);
     }
-    lines.push('');
-  }
-
-  lines.push('edges:');
-  for (const edge of edges) {
-    lines.push(`  - source: ${edge.source}`);
-    lines.push(`    target: ${edge.target}`);
-    if (edge.data?.strength) lines.push(`    strength: ${edge.data.strength}`);
-    if (edge.data?.confidence) lines.push(`    confidence: ${edge.data.confidence}`);
-    if (edge.data?.effect) lines.push(`    effect: ${edge.data.effect}`);
-    if (edge.data?.label) lines.push(`    label: "${edge.data.label}"`);
+    if (node.data.scores) {
+      const { novelty, sensitivity, changeability, certainty } = node.data.scores;
+      if (novelty !== undefined || sensitivity !== undefined || changeability !== undefined || certainty !== undefined) {
+        lines.push(`    scores:`);
+        if (novelty !== undefined) lines.push(`      novelty: ${novelty}`);
+        if (sensitivity !== undefined) lines.push(`      sensitivity: ${sensitivity}`);
+        if (changeability !== undefined) lines.push(`      changeability: ${changeability}`);
+        if (certainty !== undefined) lines.push(`      certainty: ${certainty}`);
+      }
+    }
+    // Add outgoing edges for this node
+    const nodeEdges = edgesBySource.get(node.id);
+    if (nodeEdges?.length) {
+      lines.push(`    edges:`);
+      for (const edge of nodeEdges) {
+        lines.push(`      - target: ${edge.target}`);
+        if (edge.data?.strength) lines.push(`        strength: ${edge.data.strength}`);
+        if (edge.data?.confidence) lines.push(`        confidence: ${edge.data.confidence}`);
+        if (edge.data?.effect) lines.push(`        effect: ${edge.data.effect}`);
+        if (edge.data?.label) lines.push(`        label: "${edge.data.label}"`);
+      }
+    }
     lines.push('');
   }
 
