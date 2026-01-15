@@ -301,12 +301,28 @@
   /* box-shadow is set inline based on accent color */
 }
 
+/* Lift node above others when tooltip is visible */
+.ceg-node--tooltip-visible {
+  z-index: 10000 !important;
+}
+
 /* Fixed position tooltip - rendered via portal to escape stacking context */
 .ceg-node__tooltip--fixed {
   position: fixed !important;
   /* margin-top not needed for fixed positioning */
   margin-top: 0 !important;
   pointer-events: none;
+}
+
+/* Inline tooltip - positioned as child of node, stays in same DOM tree for hover */
+.ceg-node__tooltip--inline {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  z-index: 10000;
+  pointer-events: auto;
 }
 
 .ceg-node__handle {
@@ -1820,18 +1836,7 @@
 .ceg-node__tooltip--rich {
   max-width: 320px;
   padding: 0;
-  overflow: visible;
-}
-
-/* Invisible bridge area above tooltip to allow mouse to travel from node to tooltip */
-.ceg-node__tooltip--rich::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: transparent;
+  overflow: hidden;
 }
 
 .ceg-tooltip__description {
@@ -1952,4 +1957,39 @@
   font-size: 12px;
   font-weight: 600;
   color: #e2e8f0;
+}
+
+/* ========================================
+   Inline Node Scores (on card)
+   ======================================== */
+
+.ceg-node__scores-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 6px 12px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.ceg-node__score-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: default;
+}
+
+.ceg-node__score-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ceg-node__score-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.9;
 }

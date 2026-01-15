@@ -1,5 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react';
 import type { CauseEffectNodeData } from '../types';
 import { NODE_TYPE_CONFIG, OUTCOME_COLORS, NODE_BORDER_RADIUS } from '../config';
@@ -25,10 +24,8 @@ function getBriefDescription(text: string | undefined): string {
 
 export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffectNodeData>>) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipPos, setTooltipPos] = useState<{ top: number; left: number } | null>(null);
   const [hoveredSubItemIndex, setHoveredSubItemIndex] = useState<number | null>(null);
   const nodeRef = useRef<HTMLDivElement>(null);
-  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nodeType = data.type || 'intermediate';
 
   const config = NODE_TYPE_CONFIG[nodeType] || NODE_TYPE_CONFIG.intermediate;
@@ -62,59 +59,147 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
     };
   }
 
-  // Apply score-based highlighting (green intensity) when scoreIntensity is set
+  // Apply score-based highlighting when scoreIntensity is set
   // scoreIntensity: 0-1 = valid score intensity, -1 = no score for this dimension
+  // Design: White/light backgrounds with colored borders. Higher scores = more saturated border.
   const hasScoreHighlight = data.scoreIntensity !== undefined;
-  let scoreOpacity = 1;
+  let scoreBorderWidth = 2;
+  let scoreBoxShadow: string | undefined;
+
+  // Color palettes for each highlight color (matching score dot colors)
+  const colorPalettes = {
+    purple: {
+      light: 'rgba(139, 92, 246, 0.8)',   // violet-500
+      medium: '#8b5cf6',                   // violet-500
+      strong: '#7c3aed',                   // violet-600
+      bold: '#6d28d9',                     // violet-700
+      text: '#5b21b6',                     // violet-800
+      shadow: 'rgba(139, 92, 246, 0.25)',
+    },
+    red: {
+      light: 'rgba(239, 68, 68, 0.8)',     // red-500
+      medium: '#ef4444',                    // red-500
+      strong: '#dc2626',                    // red-600
+      bold: '#b91c1c',                      // red-700
+      text: '#991b1b',                      // red-800
+      shadow: 'rgba(239, 68, 68, 0.25)',
+    },
+    green: {
+      light: 'rgba(34, 197, 94, 0.8)',     // green-500
+      medium: '#22c55e',                    // green-500
+      strong: '#16a34a',                    // green-600
+      bold: '#15803d',                      // green-700
+      text: '#166534',                      // green-800
+      shadow: 'rgba(34, 197, 94, 0.25)',
+    },
+    blue: {
+      light: 'rgba(59, 130, 246, 0.8)',    // blue-500
+      medium: '#3b82f6',                    // blue-500
+      strong: '#2563eb',                    // blue-600
+      bold: '#1d4ed8',                      // blue-700
+      text: '#1e40af',                      // blue-800
+      shadow: 'rgba(59, 130, 246, 0.25)',
+    },
+    yellow: {
+      light: 'rgba(234, 179, 8, 0.8)',     // yellow-500
+      medium: '#eab308',                    // yellow-500
+      strong: '#ca8a04',                    // yellow-600
+      bold: '#a16207',                      // yellow-700
+      text: '#854d0e',                      // yellow-800
+      shadow: 'rgba(234, 179, 8, 0.25)',
+    },
+  };
+
+  // Get the active color palette (default to blue)
+  const highlightColor = data.highlightColor || 'blue';
+  const palette = colorPalettes[highlightColor];
+
   if (hasScoreHighlight) {
     if (data.scoreIntensity === -1) {
-      // No score - extremely faded
+      // No score - very faded, nearly invisible
       colors = {
-        bg: 'rgba(30, 41, 59, 0.3)',
-        border: 'rgba(51, 65, 85, 0.3)',
-        text: 'rgba(100, 116, 139, 0.4)',
-        accent: 'rgba(71, 85, 105, 0.3)',
+        bg: '#fafafa',
+        border: 'rgba(148, 163, 184, 0.3)', // Very transparent
+        text: 'rgba(148, 163, 184, 0.6)',
+        accent: 'rgba(148, 163, 184, 0.3)',
       };
-      scoreOpacity = 0.25;
+      scoreBorderWidth = 1;
     } else {
       const intensity = data.scoreIntensity;
-      // Use a curve to make low scores much more faded
-      // intensity^2 makes 0.5 -> 0.25, so mid-range is still fairly faded
-      const adjustedIntensity = Math.pow(intensity, 1.5);
 
-      // Low scores: very faded gray with low opacity
-      // High scores: vibrant green with full opacity
-      if (intensity < 0.45) {
-        // Scores 1-4: Very faded, nearly invisible
-        const fade = intensity / 0.45; // 0 to 1 within this range
-        scoreOpacity = 0.25 + fade * 0.35; // 0.25 to 0.6 opacity
+      // All scored nodes get white/near-white background
+      // Border opacity and thickness increase with score
+      if (intensity < 0.3) {
+        // Low scores (1-3): Very faded, transparent border
         colors = {
-          bg: `rgba(30, 41, 59, ${0.4 + fade * 0.3})`,
-          border: `rgba(71, 85, 105, ${0.4 + fade * 0.3})`,
-          text: `rgba(148, 163, 184, ${0.5 + fade * 0.3})`,
-          accent: `rgba(71, 85, 105, ${0.4 + fade * 0.3})`,
+          bg: '#fafafa',
+          border: 'rgba(148, 163, 184, 0.4)',
+          text: 'rgba(100, 116, 139, 0.7)',
+          accent: 'rgba(148, 163, 184, 0.4)',
         };
+        scoreBorderWidth = 1;
+      } else if (intensity < 0.5) {
+        // Medium-low scores (4-5): Slightly more visible
+        colors = {
+          bg: '#ffffff',
+          border: 'rgba(100, 116, 139, 0.6)',
+          text: '#64748b',
+          accent: 'rgba(100, 116, 139, 0.6)',
+        };
+        scoreBorderWidth = 1.5;
+      } else if (intensity < 0.7) {
+        // Medium-high scores (6-7): Colored tint, more opaque
+        colors = {
+          bg: '#ffffff',
+          border: palette.light,
+          text: palette.text,
+          accent: palette.medium,
+        };
+        scoreBorderWidth = 2;
+        scoreBoxShadow = `0 2px 8px ${palette.shadow}`;
+      } else if (intensity < 0.9) {
+        // High scores (8-9): Stronger color, solid
+        colors = {
+          bg: '#ffffff',
+          border: palette.strong,
+          text: palette.text,
+          accent: palette.strong,
+        };
+        scoreBorderWidth = 2.5;
+        scoreBoxShadow = `0 4px 12px ${palette.shadow}`;
       } else {
-        // Scores 5-10: Transition to green
-        const greenIntensity = (intensity - 0.45) / 0.55; // 0 to 1 for scores 5-10
-        scoreOpacity = 0.6 + greenIntensity * 0.4; // 0.6 to 1.0 opacity
-
-        // Interpolate from muted to vibrant green
-        const r = Math.round(35 - greenIntensity * 15); // 35 -> 20
-        const g = Math.round(55 + greenIntensity * 145); // 55 -> 200
-        const b = Math.round(65 - greenIntensity * 5); // 65 -> 60
-        const borderR = Math.round(55 - greenIntensity * 33); // 55 -> 22
-        const borderG = Math.round(75 + greenIntensity * 90); // 75 -> 165
-        const borderB = Math.round(85 - greenIntensity * 11); // 85 -> 74
-
+        // Very high scores (10): Bold color with glow
         colors = {
-          bg: `rgb(${r}, ${g}, ${b})`,
-          border: `rgb(${borderR}, ${borderG}, ${borderB})`,
-          text: greenIntensity > 0.5 ? '#f0fdf4' : '#e2e8f0',
-          accent: `rgb(${borderR}, ${borderG}, ${borderB})`,
+          bg: '#ffffff',
+          border: palette.bold,
+          text: palette.text,
+          accent: palette.bold,
         };
+        scoreBorderWidth = 3;
+        scoreBoxShadow = `0 4px 16px ${palette.shadow}, 0 0 0 1px rgba(0, 0, 0, 0.05)`;
       }
     }
+  }
+
+  // Effect nodes (final/critical nodes) always get gold styling to stand out
+  const isEffectNode = nodeType === 'effect';
+  let effectBorderWidth = scoreBorderWidth;
+  let effectBoxShadow = scoreBoxShadow;
+  let effectBackground = colors.bg;
+
+  if (isEffectNode) {
+    colors = {
+      ...colors,
+      bg: '#fffbeb', // amber-50 - warm light background
+      border: '#f59e0b', // amber-500 - clean gold border
+      accent: '#d97706', // amber-600
+      text: '#78350f', // amber-900 for good contrast
+    };
+
+    effectBackground = colors.bg;
+    effectBorderWidth = 2;
+    // No box-shadow to avoid double-border appearance
+    effectBoxShadow = 'none';
   }
 
   // Get border radius based on node type (shapes encode function)
@@ -130,55 +215,47 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
   };
 
   const handleMouseEnter = useCallback(() => {
-    // Cancel any pending hide
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-      hideTimeoutRef.current = null;
-    }
     setShowTooltip(true);
-    if (nodeRef.current && data.description) {
-      const rect = nodeRef.current.getBoundingClientRect();
-      setTooltipPos({
-        top: rect.bottom + 12, // 12px gap below node
-        left: rect.left + rect.width / 2, // centered
-      });
-    }
-  }, [data.description]);
+  }, []);
 
   const handleMouseLeave = useCallback(() => {
-    // Delay hiding to allow mouse to move to tooltip
-    hideTimeoutRef.current = setTimeout(() => {
-      setShowTooltip(false);
-      setTooltipPos(null);
-    }, 150);
-  }, []);
-
-  const handleTooltipMouseEnter = useCallback(() => {
-    // Cancel hide when entering tooltip
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-      hideTimeoutRef.current = null;
-    }
-  }, []);
-
-  const handleTooltipMouseLeave = useCallback(() => {
-    // Hide when leaving tooltip
     setShowTooltip(false);
-    setTooltipPos(null);
   }, []);
+
+  // Raise parent ReactFlow node's z-index when tooltip is visible
+  // ReactFlow wraps nodes in .react-flow__node with transform (creates stacking context)
+  // Our CSS z-index is trapped in that context, so we must raise the parent
+  useEffect(() => {
+    if (!nodeRef.current) return;
+
+    const reactFlowNode = nodeRef.current.closest('.react-flow__node') as HTMLElement;
+    if (!reactFlowNode) return;
+
+    const originalZIndex = reactFlowNode.style.zIndex;
+
+    if (showTooltip) {
+      reactFlowNode.style.zIndex = '10000';
+    }
+
+    return () => {
+      // Restore original z-index on cleanup
+      reactFlowNode.style.zIndex = originalZIndex;
+    };
+  }, [showTooltip]);
 
   return (
     <div
       ref={nodeRef}
       className={`ceg-node ${hasSubItems ? 'ceg-node--with-subitems' : ''} ${selected ? 'ceg-node--selected' : ''} ${isClickable ? 'ceg-node--clickable' : ''} ${showTooltip ? 'ceg-node--tooltip-visible' : ''}`}
       style={{
-        backgroundColor: colors.bg,
-        borderColor: selected ? colors.text : colors.border,
+        background: isEffectNode ? effectBackground : colors.bg,
+        borderColor: isEffectNode ? colors.border : (selected ? colors.text : colors.border),
         borderRadius: borderRadius,
-        borderWidth: hasScoreHighlight ? '2.5px' : undefined,
-        boxShadow: selected ? `0 8px 24px rgba(0,0,0,0.15), 0 0 0 2px ${colors.accent}` : undefined,
+        borderWidth: (hasScoreHighlight || isEffectNode) ? `${effectBorderWidth}px` : undefined,
+        boxShadow: isEffectNode
+          ? (selected ? '0 4px 12px rgba(245, 158, 11, 0.3)' : 'none')
+          : (selected ? `0 8px 24px rgba(0,0,0,0.15), 0 0 0 2px ${colors.accent}` : effectBoxShadow),
         cursor: isClickable ? 'pointer' : undefined,
-        opacity: hasScoreHighlight ? scoreOpacity : undefined,
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -186,7 +263,7 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
     >
       <Handle type="target" position={Position.Top} className="ceg-node__handle" />
 
-      <div className="ceg-node__label" style={{ color: colors.text, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+      <div className="ceg-node__label" style={{ color: isClickable ? '#2563eb' : colors.text, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
         <span>{data.label}</span>
         {isClickable && (
           <svg
@@ -214,6 +291,49 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
           {getBriefDescription(data.description)}
         </div>
       )}
+
+      {/* Inline score indicators - shown when showScores is enabled */}
+      {data.showScores && data.scores && (Object.values(data.scores).some(v => v !== undefined)) && (() => {
+        const activeDim = data.activeScoreDimension;
+        const getScoreOpacity = (scoreName: string) => {
+          if (!activeDim) return 1; // No dimension active = all full opacity
+          return scoreName === activeDim ? 1 : 0.3; // Active = full, others faded
+        };
+        const containerOpacity = hasScoreHighlight && data.scoreIntensity !== undefined && data.scoreIntensity < 0.5
+          ? 0.4 + (data.scoreIntensity === -1 ? 0 : data.scoreIntensity * 0.6)
+          : 1;
+        return (
+        <div
+          className="ceg-node__scores-inline"
+          style={{ opacity: containerOpacity }}
+        >
+          {data.scores.sensitivity !== undefined && (
+            <span className="ceg-node__score-item" style={{ opacity: getScoreOpacity('sensitivity') }} title={`Sensitivity: ${data.scores.sensitivity}/10 — Impact on downstream nodes`}>
+              <span className="ceg-node__score-dot" style={{ backgroundColor: '#3b82f6' }} />
+              <span className="ceg-node__score-num">{data.scores.sensitivity}</span>
+            </span>
+          )}
+          {data.scores.novelty !== undefined && (
+            <span className="ceg-node__score-item" style={{ opacity: getScoreOpacity('novelty') }} title={`Novelty: ${data.scores.novelty}/10 — How surprising to informed readers`}>
+              <span className="ceg-node__score-dot" style={{ backgroundColor: '#8b5cf6' }} />
+              <span className="ceg-node__score-num">{data.scores.novelty}</span>
+            </span>
+          )}
+          {data.scores.changeability !== undefined && (
+            <span className="ceg-node__score-item" style={{ opacity: getScoreOpacity('changeability') }} title={`Changeability: ${data.scores.changeability}/10 — How tractable to influence`}>
+              <span className="ceg-node__score-dot" style={{ backgroundColor: '#22c55e' }} />
+              <span className="ceg-node__score-num">{data.scores.changeability}</span>
+            </span>
+          )}
+          {data.scores.certainty !== undefined && (
+            <span className="ceg-node__score-item" style={{ opacity: getScoreOpacity('certainty') }} title={`Certainty: ${data.scores.certainty}/10 — How well understood`}>
+              <span className="ceg-node__score-dot" style={{ backgroundColor: '#ef4444' }} />
+              <span className="ceg-node__score-num">{data.scores.certainty}</span>
+            </span>
+          )}
+        </div>
+        );
+      })()}
 
       {hasSubItems && (
         <div className="ceg-node__subitems" style={{ borderTopColor: `${colors.border}40` }}>
@@ -253,107 +373,93 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
 
       <Handle type="source" position={Position.Bottom} className="ceg-node__handle" />
 
-      {/* Portal tooltip - renders outside ReactFlow's stacking context */}
-      {showTooltip && hoveredSubItemIndex === null && tooltipPos && typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            className="ceg-node__tooltip ceg-node__tooltip--fixed ceg-node__tooltip--rich"
-            style={{
-              position: 'fixed',
-              top: tooltipPos.top,
-              left: tooltipPos.left,
-              transform: 'translateX(-50%)',
-              zIndex: 99999,
-            }}
-            onMouseEnter={handleTooltipMouseEnter}
-            onMouseLeave={handleTooltipMouseLeave}
-          >
-            {/* Description */}
-            {data.description && (
-              <div className="ceg-tooltip__description">
-                {truncateDescription(data.description, 280)}
-              </div>
-            )}
+      {/* Inline tooltip - child of node so hover stays in same DOM tree */}
+      {showTooltip && hoveredSubItemIndex === null && (
+        <div className="ceg-node__tooltip ceg-node__tooltip--inline ceg-node__tooltip--rich">
+          {/* Description */}
+          {data.description && (
+            <div className="ceg-tooltip__description">
+              {truncateDescription(data.description, 280)}
+            </div>
+          )}
 
-            {/* Scores - compact inline */}
-            {data.scores && (Object.values(data.scores).some(v => v !== undefined)) && (
-              <div className="ceg-tooltip__scores-compact">
-                {data.scores.novelty !== undefined && (
-                  <span className="ceg-tooltip__score-item" title="Novelty: How surprising to informed readers">
-                    <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#8b5cf6' }} />
-                    <span className="ceg-tooltip__score-num">{data.scores.novelty}</span>
-                  </span>
-                )}
-                {data.scores.sensitivity !== undefined && (
-                  <span className="ceg-tooltip__score-item" title="Sensitivity: Impact on downstream nodes">
-                    <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#ef4444' }} />
-                    <span className="ceg-tooltip__score-num">{data.scores.sensitivity}</span>
-                  </span>
-                )}
-                {data.scores.changeability !== undefined && (
-                  <span className="ceg-tooltip__score-item" title="Changeability: How tractable to influence">
-                    <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#22c55e' }} />
-                    <span className="ceg-tooltip__score-num">{data.scores.changeability}</span>
-                  </span>
-                )}
-                {data.scores.certainty !== undefined && (
-                  <span className="ceg-tooltip__score-item" title="Certainty: How well understood">
-                    <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#3b82f6' }} />
-                    <span className="ceg-tooltip__score-num">{data.scores.certainty}</span>
-                  </span>
-                )}
-              </div>
-            )}
+          {/* Scores - compact inline */}
+          {data.scores && (Object.values(data.scores).some(v => v !== undefined)) && (
+            <div className="ceg-tooltip__scores-compact">
+              {data.scores.sensitivity !== undefined && (
+                <span className="ceg-tooltip__score-item" title="Sensitivity: Impact on downstream nodes">
+                  <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#3b82f6' }} />
+                  <span className="ceg-tooltip__score-num">{data.scores.sensitivity}</span>
+                </span>
+              )}
+              {data.scores.novelty !== undefined && (
+                <span className="ceg-tooltip__score-item" title="Novelty: How surprising to informed readers">
+                  <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#8b5cf6' }} />
+                  <span className="ceg-tooltip__score-num">{data.scores.novelty}</span>
+                </span>
+              )}
+              {data.scores.changeability !== undefined && (
+                <span className="ceg-tooltip__score-item" title="Changeability: How tractable to influence">
+                  <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#22c55e' }} />
+                  <span className="ceg-tooltip__score-num">{data.scores.changeability}</span>
+                </span>
+              )}
+              {data.scores.certainty !== undefined && (
+                <span className="ceg-tooltip__score-item" title="Certainty: How well understood">
+                  <span className="ceg-tooltip__score-dot" style={{ backgroundColor: '#ef4444' }} />
+                  <span className="ceg-tooltip__score-num">{data.scores.certainty}</span>
+                </span>
+              )}
+            </div>
+          )}
 
-            {/* Metadata row */}
-            {(data.confidence !== undefined || data.type || data.subgroup) && (
-              <div className="ceg-tooltip__meta">
-                {data.type && (
-                  <span className="ceg-tooltip__tag ceg-tooltip__tag--type">
-                    {data.type}
-                  </span>
-                )}
-                {data.subgroup && (
-                  <span className="ceg-tooltip__tag ceg-tooltip__tag--subgroup">
-                    {data.subgroup.replace(/-/g, ' ')}
-                  </span>
-                )}
-                {data.confidence !== undefined && (
-                  <span className="ceg-tooltip__tag ceg-tooltip__tag--confidence">
-                    {Math.round(data.confidence * 100)}% confidence
-                  </span>
-                )}
-              </div>
-            )}
+          {/* Metadata row */}
+          {(data.confidence !== undefined || data.type || data.subgroup) && (
+            <div className="ceg-tooltip__meta">
+              {data.type && (
+                <span className="ceg-tooltip__tag ceg-tooltip__tag--type">
+                  {data.type}
+                </span>
+              )}
+              {data.subgroup && (
+                <span className="ceg-tooltip__tag ceg-tooltip__tag--subgroup">
+                  {data.subgroup.replace(/-/g, ' ')}
+                </span>
+              )}
+              {data.confidence !== undefined && (
+                <span className="ceg-tooltip__tag ceg-tooltip__tag--confidence">
+                  {Math.round(data.confidence * 100)}% confidence
+                </span>
+              )}
+            </div>
+          )}
 
-            {/* Related concepts */}
-            {data.relatedConcepts && data.relatedConcepts.length > 0 && (
-              <div className="ceg-tooltip__related">
-                <span className="ceg-tooltip__related-label">Related:</span>
-                {data.relatedConcepts.slice(0, 3).join(', ')}
-                {data.relatedConcepts.length > 3 && ` +${data.relatedConcepts.length - 3} more`}
-              </div>
-            )}
+          {/* Related concepts */}
+          {data.relatedConcepts && data.relatedConcepts.length > 0 && (
+            <div className="ceg-tooltip__related">
+              <span className="ceg-tooltip__related-label">Related:</span>
+              {data.relatedConcepts.slice(0, 3).join(', ')}
+              {data.relatedConcepts.length > 3 && ` +${data.relatedConcepts.length - 3} more`}
+            </div>
+          )}
 
-            {/* View details link hint */}
-            {data.href && (
-              <div className="ceg-tooltip__action">
-                Click to view details →
-              </div>
-            )}
+          {/* View details link hint */}
+          {data.href && (
+            <div className="ceg-tooltip__action">
+              Click to view details →
+            </div>
+          )}
 
-            {/* No description fallback */}
-            {!data.description && !data.confidence && !data.relatedConcepts?.length && (
-              <div className="ceg-tooltip__empty">
-                {data.href ? 'Click to view details' : 'No additional information'}
-              </div>
-            )}
+          {/* No description fallback */}
+          {!data.description && !data.confidence && !data.relatedConcepts?.length && (
+            <div className="ceg-tooltip__empty">
+              {data.href ? 'Click to view details' : 'No additional information'}
+            </div>
+          )}
 
-            <div className="ceg-node__tooltip-arrow" />
-          </div>,
-          document.body
-        )
-      }
+          <div className="ceg-node__tooltip-arrow" />
+        </div>
+      )}
     </div>
   );
 }

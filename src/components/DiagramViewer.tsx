@@ -101,6 +101,7 @@ interface EntityWithGraph {
 interface LayoutSettings {
   algorithm: 'elk' | 'dagre';
   showDescriptions: boolean;
+  showScores: boolean;
   straightEdges: boolean;
   // Numeric layout values
   layerGap: number;      // Vertical spacing between layers (2-150)
@@ -111,6 +112,7 @@ interface LayoutSettings {
 const DEFAULT_SETTINGS: LayoutSettings = {
   algorithm: 'elk',
   showDescriptions: true,
+  showScores: false,
   straightEdges: false,
   layerGap: 25,
   nodeSpacing: 20,
@@ -341,6 +343,7 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
             selectedNodeId={graph.primaryNodeId}
             showFullscreenButton={false}
             showDescriptions={settings.showDescriptions}
+            showScores={settings.showScores}
             scoreHighlight={scoreHighlight}
             graphConfig={{
               hideGroupBackgrounds: true,
@@ -484,6 +487,14 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
             <label className="settings-checkbox">
               <input
                 type="checkbox"
+                checked={settings.showScores}
+                onChange={(e) => setSettings({ ...settings, showScores: e.target.checked })}
+              />
+              <span>Show scores on nodes</span>
+            </label>
+            <label className="settings-checkbox">
+              <input
+                type="checkbox"
                 checked={settings.straightEdges}
                 onChange={(e) => setSettings({ ...settings, straightEdges: e.target.checked })}
               />
@@ -492,25 +503,70 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
           </div>
 
           <div className="settings-section">
-            <label className="settings-label">Score Highlighting</label>
-            <select
-              className="settings-select"
-              value={scoreHighlight || ''}
-              onChange={(e) => setScoreHighlight(e.target.value as ScoreHighlightMode || undefined)}
-            >
-              <option value="">None</option>
-              <option value="novelty">Novelty</option>
-              <option value="sensitivity">Sensitivity</option>
-              <option value="changeability">Changeability</option>
-              <option value="certainty">Certainty</option>
-            </select>
-            <p className="settings-hint">
-              {scoreHighlight === 'novelty' && 'How surprising to informed readers'}
-              {scoreHighlight === 'sensitivity' && 'Impact on downstream nodes'}
-              {scoreHighlight === 'changeability' && 'How tractable to influence'}
-              {scoreHighlight === 'certainty' && 'How well understood'}
-              {!scoreHighlight && 'Highlight nodes by score'}
-            </p>
+            <label className="settings-label">View Mode</label>
+            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: '4px' }}>
+              {[
+                { key: undefined, title: 'Default view', color: undefined, icon: (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                  </svg>
+                )},
+                { key: 'sensitivity' as const, title: 'Sensitivity: Impact on downstream nodes', color: '#3b82f6', icon: (
+                  // Ripple/impact icon for sensitivity
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/>
+                  </svg>
+                )},
+                { key: 'novelty' as const, title: 'Novelty: How surprising to informed readers', color: '#8b5cf6', icon: (
+                  // Lightbulb icon for novelty/new ideas
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18h6"/><path d="M10 22h4"/>
+                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+                  </svg>
+                )},
+                { key: 'changeability' as const, title: 'Changeability: How tractable to influence', color: '#22c55e', icon: (
+                  // Hammer icon for changeability/tractability
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/>
+                    <path d="M17.64 15L22 10.64"/><path d="M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/>
+                  </svg>
+                )},
+                { key: 'certainty' as const, title: 'Certainty: How well understood', color: '#ef4444', icon: (
+                  // Question mark icon for certainty/uncertainty
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                )},
+              ].map((mode) => {
+                const isActive = scoreHighlight === mode.key;
+                const strokeColor = isActive ? (mode.color || 'var(--sl-color-accent)') : 'var(--sl-color-gray-3)';
+                return (
+                  <button
+                    key={mode.title}
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      margin: 0,
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '6px',
+                      border: `1px solid ${isActive ? (mode.color || 'var(--sl-color-accent)') : 'var(--sl-color-hairline)'}`,
+                      background: isActive
+                        ? (mode.color ? `${mode.color}20` : 'var(--sl-color-accent-low)')
+                        : 'var(--sl-color-gray-5)',
+                      color: strokeColor,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setScoreHighlight(mode.key)}
+                    title={mode.title}
+                  >
+                    {mode.icon}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="settings-section">
@@ -756,12 +812,6 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
         }
         .settings-select:hover {
           background: var(--sl-color-gray-4);
-        }
-        .settings-hint {
-          margin: 0.375rem 0 0 0;
-          font-size: 0.7rem;
-          color: var(--sl-color-gray-3);
-          line-height: 1.3;
         }
         .settings-slider-row {
           display: flex;

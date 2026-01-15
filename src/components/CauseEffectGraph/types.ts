@@ -45,6 +45,9 @@ export interface CauseEffectNodeData extends Record<string, unknown> {
   href?: string;  // URL to navigate to when node is clicked
   scores?: NodeScores;  // Scoring dimensions for node
   scoreIntensity?: number;  // Computed score intensity (0-1) for highlighting, -1 = no score
+  highlightColor?: 'purple' | 'red' | 'green' | 'blue' | 'yellow';  // Color for score highlighting
+  activeScoreDimension?: 'sensitivity' | 'novelty' | 'changeability' | 'certainty';  // Which score is being highlighted
+  showScores?: boolean;  // Whether to display score indicators on the node
 }
 
 export interface CauseEffectEdgeData extends Record<string, unknown> {

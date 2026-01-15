@@ -60,6 +60,7 @@ interface CauseEffectGraphProps {
   enablePathHighlighting?: boolean;  // Click nodes to highlight causal paths (default false)
   entityId?: string;  // Entity ID for linking to expanded diagram page (/diagrams/xxx)
   showDescriptions?: boolean;  // Show descriptions on nodes (default true)
+  showScores?: boolean;  // Show score indicators on nodes (default false)
   renderHeaderRight?: () => React.ReactNode;  // Custom content for right side of header
   scoreHighlight?: ScoreHighlightMode;  // Highlight nodes by score dimension (opacity based on score value)
 }
@@ -148,6 +149,7 @@ function CauseEffectGraphInner({
   enablePathHighlighting = false,
   entityId,
   showDescriptions = true,
+  showScores = false,
   renderHeaderRight,
   scoreHighlight,
 }: CauseEffectGraphProps) {
@@ -333,10 +335,20 @@ function CauseEffectGraphInner({
       // Determine opacity and score-based styling
       let opacity = 1;
       let scoreIntensity: number | undefined;
+      let highlightColor: 'purple' | 'red' | 'green' | 'blue' | 'yellow' | undefined;
+
+      // Map score dimensions to highlight colors
+      const scoreToColor: Record<string, 'purple' | 'red' | 'green' | 'blue'> = {
+        novelty: 'purple',
+        sensitivity: 'blue',
+        changeability: 'green',
+        certainty: 'red',
+      };
 
       // Score-based highlighting takes precedence when active
       if (scoreHighlight && node.data.scores) {
         const score = node.data.scores[scoreHighlight];
+        highlightColor = scoreToColor[scoreHighlight];
         if (score !== undefined) {
           // Normalize score to 0-1 range for color intensity
           scoreIntensity = (score - 1) / 9; // 0 for score 1, 1 for score 10
@@ -347,6 +359,7 @@ function CauseEffectGraphInner({
       } else if (scoreHighlight) {
         // Score highlight mode active but node has no scores at all
         scoreIntensity = -1;
+        highlightColor = scoreToColor[scoreHighlight];
       } else if (hasPathHighlight && !isInPath) {
         opacity = 0.3;
       } else if (hoveredNodeId && !isConnected) {
@@ -360,6 +373,12 @@ function CauseEffectGraphInner({
           ...node.data,
           // Pass score intensity to node for styling
           scoreIntensity,
+          // Pass highlight color for score-based styling
+          highlightColor,
+          // Pass active score dimension for fading non-active scores
+          activeScoreDimension: scoreHighlight,
+          // Pass showScores setting to node
+          showScores,
         },
         style: {
           ...node.style,
@@ -369,7 +388,7 @@ function CauseEffectGraphInner({
         className: isInPath ? 'react-flow__node--path-highlighted' : undefined,
       };
     });
-  }, [nodes, hoveredNodeId, connectedNodeIds, selectedNodeId, pathHighlight, pathHighlightNodeId, scoreHighlight]);
+  }, [nodes, hoveredNodeId, connectedNodeIds, selectedNodeId, pathHighlight, pathHighlightNodeId, scoreHighlight, showScores]);
 
   // Keyboard handler for ESC
   useEffect(() => {

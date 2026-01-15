@@ -17,7 +17,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getEntityById } from '../../data';
+import { getEntityById, getEntityHref } from '../../data';
 import {
   getFactorScenarioInfluences,
   getScenarioFactorInfluences,
@@ -726,20 +726,38 @@ export function TransitionModelContent({
                     effect: 'Target',
                   },
                 }}
-                initialNodes={entity.causeEffectGraph.nodes.map((node, i) => ({
-                  id: node.id,
-                  type: 'causeEffect' as const,
-                  position: { x: 0, y: 0 },
-                  data: {
-                    label: node.label,
-                    description: node.description || '',
-                    type: node.type,
-                    ...(node.confidence !== undefined && { confidence: node.confidence }),
-                    details: node.details || '',
-                    sources: node.sources || [],
-                    relatedConcepts: node.relatedConcepts || [],
-                  },
-                }))}
+                initialNodes={entity.causeEffectGraph.nodes.map((node, i) => {
+                  // Resolve entityRef to href for clickable nodes
+                  let href: string | undefined;
+                  if (node.entityRef) {
+                    const refEntity = getEntityById(node.entityRef);
+                    if (refEntity) {
+                      href = getEntityHref(node.entityRef, refEntity.type);
+                    }
+                  }
+                  // Fallback: check if node ID matches an entity
+                  if (!href) {
+                    const matchingEntity = getEntityById(node.id);
+                    if (matchingEntity) {
+                      href = getEntityHref(node.id, matchingEntity.type);
+                    }
+                  }
+                  return {
+                    id: node.id,
+                    type: 'causeEffect' as const,
+                    position: { x: 0, y: 0 },
+                    data: {
+                      label: node.label,
+                      description: node.description || '',
+                      type: node.type,
+                      ...(node.confidence !== undefined && { confidence: node.confidence }),
+                      details: node.details || '',
+                      sources: node.sources || [],
+                      relatedConcepts: node.relatedConcepts || [],
+                      ...(href && { href }),
+                    },
+                  };
+                })}
                 initialEdges={entity.causeEffectGraph.edges.map((edge, i) => ({
                   id: edge.id || `e-${edge.source}-${edge.target}`,
                   source: edge.source,
