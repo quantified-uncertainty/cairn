@@ -24,7 +24,7 @@
   background: white;
 }
 
-[data-theme="dark"] .cause-effect-graph--fullscreen,
+[data-theme='dark'] .cause-effect-graph--fullscreen,
 :root.dark .cause-effect-graph--fullscreen,
 .dark .cause-effect-graph--fullscreen {
   background: #09090b;
@@ -36,13 +36,13 @@
   position: relative;
   min-height: 0;
   height: 100%;
-  background-color: #f8fafc;  /* Tailwind slate-50 */
+  background-color: #fcf9f8 /* Light orangeish gray */;
 }
 
-[data-theme="dark"] .cause-effect-graph__content,
+[data-theme='dark'] .cause-effect-graph__content,
 :root.dark .cause-effect-graph__content,
 .dark .cause-effect-graph__content {
-  background-color: #1e293b;  /* Tailwind slate-800 */
+  background-color: #1e293b; /* Tailwind slate-800 */
 }
 
 /* Ensure React Flow fills the container */
@@ -73,7 +73,28 @@
 
 .cause-effect-graph__content .react-flow__edge-path {
   stroke-linecap: round;
-  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+  stroke: #d6d3d1; /* stone-300 */
+  transition:
+    opacity 0.2s ease,
+    stroke-width 0.2s ease,
+    stroke 0.15s ease;
+}
+
+.cause-effect-graph__content .react-flow__edge:hover .react-flow__edge-path {
+  stroke: #57534e; /* stone-600 */
+}
+
+/* Dark mode edge colors */
+[data-theme='dark'] .cause-effect-graph__content .react-flow__edge-path,
+:root.dark .cause-effect-graph__content .react-flow__edge-path,
+.dark .cause-effect-graph__content .react-flow__edge-path {
+  stroke: #57534e; /* stone-600 for dark mode default */
+}
+
+[data-theme='dark'] .cause-effect-graph__content .react-flow__edge:hover .react-flow__edge-path,
+:root.dark .cause-effect-graph__content .react-flow__edge:hover .react-flow__edge-path,
+.dark .cause-effect-graph__content .react-flow__edge:hover .react-flow__edge-path {
+  stroke: #a8a29e; /* stone-400 for dark mode hover */
 }
 
 /* Node hover transition */
@@ -91,7 +112,6 @@
   font-size: var(--sl-text-sm);
   z-index: 10;
 }
-
 
 /* Details panel - positioned on the left to avoid overlapping "On this page" nav */
 .cause-effect-graph__panel {
@@ -340,7 +360,7 @@
 }
 
 .ceg-node__confidence {
-  display: none;  /* Hidden - confidence shown via edge weights instead */
+  display: none; /* Hidden - confidence shown via edge weights instead */
 }
 
 .ceg-node__snippet {
@@ -467,7 +487,10 @@
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 11px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: #374151;
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -499,7 +522,10 @@
   max-height: 0;
   opacity: 0;
   margin-top: 0;
-  transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.2s ease,
+    margin-top 0.2s ease;
 }
 
 .ceg-legend--expanded .ceg-legend__content {
@@ -572,6 +598,28 @@
 }
 
 /* ========================================
+   Mermaid View Component
+   ======================================== */
+
+.ceg-mermaid-view {
+  height: 100%;
+  overflow: auto;
+  background-color: #f8fafc;
+  padding: 16px;
+}
+
+.ceg-mermaid-view .mermaid-diagram {
+  margin: 0;
+  min-height: 300px;
+}
+
+[data-theme='dark'] .ceg-mermaid-view,
+:root.dark .ceg-mermaid-view,
+.dark .ceg-mermaid-view {
+  background-color: #1e293b;
+}
+
+/* ========================================
    Header and Controls
    ======================================== */
 
@@ -603,14 +651,20 @@
   height: 28px;
   padding: 0 12px;
   font-size: 13px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-weight: 500;
   line-height: 1;
   border-radius: 4px;
   cursor: pointer;
   background-color: transparent;
   color: #6b7280;
-  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .ceg-segment-btn--active {
@@ -641,7 +695,10 @@
   height: 34px;
   padding: 0 12px;
   font-size: 13px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-weight: 500;
   line-height: 1;
   border: 1px solid #d1d5db;
@@ -685,7 +742,10 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   overflow-y: auto;
   height: 100%;
 }
@@ -867,8 +927,14 @@
 }
 
 @keyframes iv-tooltip-fade {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .iv-node__tooltip::before {
@@ -896,8 +962,14 @@
 }
 
 @keyframes iv-tooltip-fade-right {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Hoverable sub-items */
@@ -1019,7 +1091,10 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   overflow-y: auto;
   height: 100%;
 }
@@ -1200,8 +1275,14 @@
 }
 
 @keyframes lv-tooltip-fade {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ========================================
@@ -1347,13 +1428,13 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] .exp-node__collapse-btn,
+[data-theme='dark'] .exp-node__collapse-btn,
 :root.dark .exp-node__collapse-btn,
 .dark .exp-node__collapse-btn {
   background: rgba(255, 255, 255, 0.05);
 }
 
-[data-theme="dark"] .exp-node__collapse-btn:hover,
+[data-theme='dark'] .exp-node__collapse-btn:hover,
 :root.dark .exp-node__collapse-btn:hover,
 .dark .exp-node__collapse-btn:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -1442,25 +1523,25 @@
    Dark theme overrides for new components
    ======================================== */
 
-[data-theme="dark"] .exp-node,
+[data-theme='dark'] .exp-node,
 :root.dark .exp-node,
 .dark .exp-node {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="dark"] .exp-node__expand-btn:hover,
+[data-theme='dark'] .exp-node__expand-btn:hover,
 :root.dark .exp-node__expand-btn:hover,
 .dark .exp-node__expand-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .cluster-node,
+[data-theme='dark'] .cluster-node,
 :root.dark .cluster-node,
 .dark .cluster-node {
   background: rgba(255, 255, 255, 0.02);
 }
 
-[data-theme="dark"] .cluster-node__preview-item,
+[data-theme='dark'] .cluster-node__preview-item,
 :root.dark .cluster-node__preview-item,
 .dark .cluster-node__preview-item {
   background: rgba(0, 0, 0, 0.3);
@@ -1534,7 +1615,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] .react-flow__minimap,
+[data-theme='dark'] .react-flow__minimap,
 :root.dark .react-flow__minimap,
 .dark .react-flow__minimap {
   background-color: rgba(30, 41, 59, 0.9) !important;
@@ -1640,8 +1721,9 @@
 .ceg-zoom-far .exp-node {
   border-width: 3px !important;
   filter: saturate(1.3) brightness(1.05);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15),
-              0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+  box-shadow:
+    0 0 8px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
 }
 
 .ceg-zoom-far .cluster-node {
@@ -1650,15 +1732,16 @@
 }
 
 /* Dark mode: add subtle glow effect for better visibility */
-[data-theme="dark"] .ceg-zoom-far .ceg-node,
+[data-theme='dark'] .ceg-zoom-far .ceg-node,
 :root.dark .ceg-zoom-far .ceg-node,
 .dark .ceg-zoom-far .ceg-node,
-[data-theme="dark"] .ceg-zoom-far .exp-node,
+[data-theme='dark'] .ceg-zoom-far .exp-node,
 :root.dark .ceg-zoom-far .exp-node,
 .dark .ceg-zoom-far .exp-node {
   filter: saturate(1.4) brightness(1.1);
-  box-shadow: 0 0 12px rgba(var(--node-glow-rgb, 100, 150, 255), 0.25),
-              0 0 0 1px rgba(255, 255, 255, 0.15) inset !important;
+  box-shadow:
+    0 0 12px rgba(var(--node-glow-rgb, 100, 150, 255), 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset !important;
 }
 
 /* --- MEDIUM ZOOM: Labels only --- */
@@ -1694,10 +1777,10 @@
   filter: saturate(1.15) brightness(1.02);
 }
 
-[data-theme="dark"] .ceg-zoom-medium .ceg-node,
+[data-theme='dark'] .ceg-zoom-medium .ceg-node,
 :root.dark .ceg-zoom-medium .ceg-node,
 .dark .ceg-zoom-medium .ceg-node,
-[data-theme="dark"] .ceg-zoom-medium .exp-node,
+[data-theme='dark'] .ceg-zoom-medium .exp-node,
 :root.dark .ceg-zoom-medium .exp-node,
 .dark .ceg-zoom-medium .exp-node {
   filter: saturate(1.2) brightness(1.05);
@@ -1728,7 +1811,10 @@
 .ceg-node,
 .exp-node,
 .cluster-node {
-  transition: padding 0.15s ease, min-width 0.15s ease, min-height 0.15s ease;
+  transition:
+    padding 0.15s ease,
+    min-width 0.15s ease,
+    min-height 0.15s ease;
 }
 
 .ceg-node__label,

@@ -41,6 +41,7 @@
       - id: misalignment-potential
         label: Misalignment Potential
         type: leaf
+        color: rose
         description: Risk that AI systems pursue goals different from human values. Driven by alignment
           difficulty and capability growth.
         entityRef: misalignment-potential
@@ -52,6 +53,7 @@
       - id: misuse-potential
         label: Misuse Potential
         type: leaf
+        color: rose
         description: Risk that humans use AI capabilities for destructive purposes. Includes state and
           non-state actors.
         entityRef: misuse-potential
@@ -63,6 +65,7 @@
       - id: racing-dynamics
         label: Racing Dynamics
         type: leaf
+        color: blue
         description: Competitive pressure that reduces safety margins and accelerates deployment without
           adequate testing.
         scores:
@@ -70,9 +73,43 @@
           sensitivity: 7 # Amplifier for both takeover and misuse pathways; affects safety margins
           changeability: 4 # Hard to change—requires coordination among competitors and geopolitical actors
           certainty: 6 # Economic and game-theoretic dynamics fairly well understood
+      - id: alignment-difficulty
+        label: Alignment Difficulty
+        type: leaf
+        color: violet
+        description: Core uncertainty about whether robust alignment is technically achievable before
+          transformative AI capabilities emerge.
+        scores:
+          novelty: 4 # Specific framing of the alignment problem; distinct from general misalignment
+          sensitivity: 9 # Determines whether takeover pathway is avoidable; crucial technical crux
+          changeability: 5 # Research-dependent; could shift with breakthroughs or demonstrated failures
+          certainty: 2 # Fundamental disagreement on tractability; no consensus in field
+      - id: capability-acceleration
+        label: Capability Acceleration
+        type: leaf
+        color: slate
+        description: Rate at which AI capabilities advance, potentially outpacing safety research and
+          governance adaptation.
+        scores:
+          novelty: 3 # Well-discussed in AI timelines debates; specific mechanism known
+          sensitivity: 8 # Affects time available for alignment; amplifies racing dynamics
+          changeability: 4 # Driven by investment, talent, algorithmic progress—hard to slow
+          certainty: 4 # Recent progress gives data points; future trajectory uncertain
+      - id: safety-investment
+        label: Safety Investment
+        type: leaf
+        color: emerald
+        description: Resources devoted to alignment research, interpretability, and safety evaluation
+          relative to capability development.
+        scores:
+          novelty: 3 # Safety funding is tracked and discussed; relative ratio less analyzed
+          sensitivity: 7 # Directly affects alignment progress; influences misalignment potential
+          changeability: 7 # Policy-amenable—tax incentives, grants, regulatory requirements
+          certainty: 6 # Current investment levels measurable; future allocation uncertain
       - id: ai-takeover-scenario
         label: AI Takeover
         type: intermediate
+        color: red
         description: AI systems gain and maintain power against human interests, either rapidly or gradually.
         entityRef: ai-takeover
         scores:
@@ -83,6 +120,7 @@
       - id: human-catastrophe-scenario
         label: Human Catastrophe
         type: intermediate
+        color: red
         description: Humans deliberately cause mass harm using AI—state actors or rogue actors.
         entityRef: human-catastrophe
         scores:
@@ -93,6 +131,7 @@
       - id: existential-catastrophe
         label: Existential Catastrophe
         type: effect
+        color: red
         description: Extinction, permanent loss of potential, or irreversible harm to civilization.
         scores:
           novelty: 2 # Well-known concept in x-risk community; widely discussed
@@ -116,6 +155,26 @@
         target: human-catastrophe-scenario
         strength: medium
         effect: increases
+      - source: alignment-difficulty
+        target: misalignment-potential
+        strength: strong
+        effect: increases
+      - source: capability-acceleration
+        target: racing-dynamics
+        strength: strong
+        effect: increases
+      - source: capability-acceleration
+        target: misalignment-potential
+        strength: medium
+        effect: increases
+      - source: safety-investment
+        target: misalignment-potential
+        strength: medium
+        effect: decreases
+      - source: safety-investment
+        target: alignment-difficulty
+        strength: medium
+        effect: decreases
       - source: ai-takeover-scenario
         target: existential-catastrophe
         strength: strong
@@ -168,6 +227,7 @@
       - id: civilizational-competence
         label: Civilizational Competence
         type: leaf
+        color: teal
         description: Humanity's collective capacity to navigate challenges—adaptability, governance quality,
           epistemic health.
         entityRef: civilizational-competence
@@ -179,6 +239,7 @@
       - id: ai-ownership-distribution
         label: AI Ownership Distribution
         type: leaf
+        color: blue
         description: How AI capabilities and benefits are distributed. Concentration vs. broad access.
         entityRef: ai-ownership
         scores:
@@ -196,9 +257,43 @@
           sensitivity: 7 # Key driver of autonomy preservation; affects value preservation indirectly
           changeability: 5 # Depends on design choices, regulation, social norms; partially tractable
           certainty: 3 # What counts as "meaningful" agency is philosophically contested
+      - id: epistemic-health
+        label: Epistemic Health
+        type: leaf
+        color: violet
+        description: Quality of collective knowledge, discourse, and decision-making processes. Risk of
+          AI-enabled manipulation or epistemic degradation.
+        scores:
+          novelty: 6 # Increasingly discussed with misinformation concerns; AI-specific aspects newer
+          sensitivity: 7 # Affects civilizational competence and value preservation
+          changeability: 5 # Platform design, education, regulatory interventions can influence
+          certainty: 4 # Effects of AI on epistemic environment are observable but complex
+      - id: governance-adaptability
+        label: Governance Adaptability
+        type: leaf
+        color: emerald
+        description: How well institutions can adapt to rapid AI-driven change—updating regulations,
+          coordinating responses, maintaining legitimacy.
+        scores:
+          novelty: 5 # Governance gaps discussed; specific adaptability framing less common
+          sensitivity: 7 # Affects lock-in prevention and value preservation
+          changeability: 6 # Institutional reforms, international cooperation can improve
+          certainty: 4 # Historical patterns of governance adaptation provide some guidance
+      - id: power-concentration
+        label: Power Concentration
+        type: leaf
+        color: rose
+        description: Risk that AI enables extreme concentration of power in few actors—corporations,
+          governments, or individuals—reducing checks and balances.
+        scores:
+          novelty: 5 # Power dynamics familiar; AI-specific acceleration less analyzed
+          sensitivity: 8 # Major driver of lock-in and autonomy erosion
+          changeability: 5 # Policy, antitrust, democratic institutions can counteract
+          certainty: 5 # Economic and political concentration trends observable
       - id: value-preservation
         label: Value Preservation
         type: intermediate
+        color: emerald
         description: Whether beneficial human values are maintained and can evolve over time.
         scores:
           novelty: 6 # Distinct from alignment; value drift and preservation less discussed
@@ -217,6 +312,7 @@
       - id: lock-in-prevention
         label: Lock-in Prevention
         type: intermediate
+        color: rose
         description: Avoiding permanent entrenchment of harmful power structures or values.
         entityRef: long-term-lockin
         scores:
@@ -227,6 +323,7 @@
       - id: long-term-trajectory
         label: Long-term Trajectory
         type: effect
+        color: emerald
         description: Quality of humanity's long-term future—flourishing, autonomy, value realization across
           civilizational timescales.
         scores:
@@ -259,6 +356,30 @@
         target: value-preservation
         strength: medium
         effect: increases
+      - source: epistemic-health
+        target: civilizational-competence
+        strength: strong
+        effect: increases
+      - source: epistemic-health
+        target: value-preservation
+        strength: medium
+        effect: increases
+      - source: governance-adaptability
+        target: lock-in-prevention
+        strength: strong
+        effect: increases
+      - source: governance-adaptability
+        target: value-preservation
+        strength: medium
+        effect: increases
+      - source: power-concentration
+        target: lock-in-prevention
+        strength: strong
+        effect: decreases
+      - source: power-concentration
+        target: autonomy-preservation
+        strength: medium
+        effect: decreases
       - source: value-preservation
         target: long-term-trajectory
         strength: strong

@@ -284,13 +284,14 @@ export const CauseEffectNode = z.object({
   id: z.string(),
   label: z.string(),
   description: z.string().optional(),
-  type: z.enum(['cause', 'intermediate', 'effect']),
+  type: z.enum(['leaf', 'cause', 'intermediate', 'effect']),  // 'leaf' for upstream drivers
   confidence: z.number().min(0).max(1).optional(),  // 0-1 confidence in this factor
   details: z.string().optional(),                    // Extended explanation
   sources: z.array(z.string()).optional(),           // Source references
   relatedConcepts: z.array(z.string()).optional(),   // Related concept tags
   entityRef: z.string().optional(),                  // Link to entity ID
   scores: NodeScores.optional(),                     // Scoring dimensions for node
+  color: z.string().optional(),                      // Tailwind color name (e.g., "rose", "violet", "teal")
 });
 export type CauseEffectNode = z.infer<typeof CauseEffectNode>;
 

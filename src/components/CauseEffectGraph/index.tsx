@@ -25,6 +25,7 @@ import { GroupNode, SubgroupNode, CauseEffectNode, ExpandableNode, ClusterNode, 
 import { Legend, DataView, CopyIcon, CheckIcon, ExpandIcon, ShrinkIcon } from './components';
 import { getLayoutedElements, toYaml } from './layout';
 import { ZoomProvider } from './ZoomContext';
+import { Mermaid } from '../wiki/Mermaid';
 
 // Re-export types for external use
 export type { CauseEffectNodeData, CauseEffectEdgeData, GraphConfig, LayoutOptions, TypeLabels, SubgroupConfig, LegendItem, LayoutAlgorithm } from './types';
@@ -132,6 +133,82 @@ function traverseGraph(
 const computeCausalPath = (startNodeId: string, edges: Edge<CauseEffectEdgeData>[], maxDepth = 10) =>
   traverseGraph(startNodeId, edges, maxDepth, 'directed');
 
+// Generate Mermaid flowchart syntax from graph data
+function generateMermaidCode(nodes: Node<CauseEffectNodeData>[], edges: Edge<CauseEffectEdgeData>[], direction: 'TD' | 'LR' = 'TD'): string {
+  const lines: string[] = [];
+  lines.push(`flowchart ${direction}`);
+  lines.push('');
+
+  // Group nodes by type for subgraphs
+  const nodesByType: Record<string, Node<CauseEffectNodeData>[]> = {};
+  for (const node of nodes) {
+    if (node.type === 'group' || node.type === 'subgroup' || node.type === 'clusterContainer') continue;
+    const nodeType = node.data.type || 'intermediate';
+    if (!nodesByType[nodeType]) nodesByType[nodeType] = [];
+    nodesByType[nodeType].push(node);
+  }
+
+  // Type labels and order
+  const typeLabels: Record<string, string> = {
+    leaf: 'Root Causes',
+    cause: 'Derived Factors',
+    intermediate: 'Direct Factors',
+    effect: 'Outcomes',
+  };
+  const typeOrder = ['leaf', 'cause', 'intermediate', 'effect'];
+
+  // Add nodes grouped by type
+  for (const nodeType of typeOrder) {
+    const typeNodes = nodesByType[nodeType];
+    if (!typeNodes || typeNodes.length === 0) continue;
+
+    const label = typeLabels[nodeType] || nodeType;
+    lines.push(`    subgraph ${nodeType}["${label}"]`);
+    for (const node of typeNodes) {
+      // Escape quotes and special chars in labels
+      const safeLabel = (node.data.label || node.id).replace(/"/g, "'").replace(/\[/g, '(').replace(/\]/g, ')');
+      // Use different shapes based on type
+      // Effect: stadium shape (rounded sides)
+      // All others: rectangle
+      if (nodeType === 'effect') {
+        lines.push(`        ${node.id}(["${safeLabel}"])`);
+      } else {
+        lines.push(`        ${node.id}["${safeLabel}"]`);
+      }
+    }
+    lines.push('    end');
+    lines.push('');
+  }
+
+  // Add edges
+  lines.push('    %% Edges');
+  for (const edge of edges) {
+    const edgeData = edge.data;
+    const arrowType = edgeData?.effect === 'decreases' ? '-.->|−|' :
+                      edgeData?.effect === 'mixed' ? '-.->|±|' :
+                      edgeData?.strength === 'strong' ? '==>' : '-->';
+    lines.push(`    ${edge.source} ${arrowType} ${edge.target}`);
+  }
+
+  // Add styling
+  lines.push('');
+  lines.push('    %% Styling');
+  lines.push('    classDef leaf fill:#f0fdfa,stroke:#14b8a6,stroke-width:2px');
+  lines.push('    classDef cause fill:#eff6ff,stroke:#3b82f6,stroke-width:2px');
+  lines.push('    classDef intermediate fill:#f8fafc,stroke:#64748b,stroke-width:2px');
+  lines.push('    classDef effect fill:#fffbeb,stroke:#f59e0b,stroke-width:2px');
+
+  // Apply classes to nodes
+  for (const nodeType of typeOrder) {
+    const typeNodes = nodesByType[nodeType];
+    if (typeNodes && typeNodes.length > 0) {
+      lines.push(`    class ${typeNodes.map(n => n.id).join(',')} ${nodeType}`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // Inner component that has access to ReactFlow instance
 function CauseEffectGraphInner({
   initialNodes,
@@ -183,16 +260,29 @@ function CauseEffectGraphInner({
     }
   }, [fitViewPadding]);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'graph' | 'data'>('graph');
+  const [activeTab, setActiveTab] = useState<'graph' | 'mermaid' | 'data'>('graph');
   const [copied, setCopied] = useState(false);
+  const [mermaidCopied, setMermaidCopied] = useState(false);
+  const [mermaidDirection, setMermaidDirection] = useState<'TD' | 'LR'>('TD');
 
   const yamlData = toYaml(initialNodes, initialEdges);
+  const mermaidCode = useMemo(() => generateMermaidCode(initialNodes, initialEdges, mermaidDirection), [initialNodes, initialEdges, mermaidDirection]);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(yamlData);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleMermaidCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(mermaidCode);
+      setMermaidCopied(true);
+      setTimeout(() => setMermaidCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -314,7 +404,7 @@ function CauseEffectGraphInner({
         },
         markerEnd: isHighlighted
           ? edge.markerEnd
-          : { ...(edge.markerEnd as object), color: '#d1d5db' },
+          : { ...(edge.markerEnd as object), color: '#d6d3d1' },
         zIndex: isHighlighted ? 1000 : 0,
         className: isInPath ? 'react-flow__edge--path-highlighted' : undefined,
       };
@@ -451,6 +541,12 @@ function CauseEffectGraphInner({
             Graph
           </button>
           <button
+            className={`ceg-segment-btn ${activeTab === 'mermaid' ? 'ceg-segment-btn--active' : ''}`}
+            onClick={() => setActiveTab('mermaid')}
+          >
+            Mermaid
+          </button>
+          <button
             className={`ceg-segment-btn ${activeTab === 'data' ? 'ceg-segment-btn--active' : ''}`}
             onClick={() => setActiveTab('data')}
           >
@@ -474,6 +570,28 @@ function CauseEffectGraphInner({
               </svg>
               Fit All
             </button>
+          )}
+          {activeTab === 'mermaid' && (
+            <>
+              <button
+                className="ceg-action-btn"
+                onClick={() => setMermaidDirection(d => d === 'TD' ? 'LR' : 'TD')}
+                title={mermaidDirection === 'TD' ? 'Switch to left-right layout' : 'Switch to top-down layout'}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  {mermaidDirection === 'TD' ? (
+                    <path d="M12 3v18M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4"/>
+                  ) : (
+                    <path d="M3 12h18M12 5v14M12 5l-4 4M12 5l4 4M12 19l-4-4M12 19l4-4"/>
+                  )}
+                </svg>
+                {mermaidDirection === 'TD' ? 'Top→Down' : 'Left→Right'}
+              </button>
+              <button className="ceg-action-btn" onClick={handleMermaidCopy}>
+                {mermaidCopied ? <CheckIcon /> : <CopyIcon />}
+                {mermaidCopied ? 'Copied!' : 'Copy Code'}
+              </button>
+            </>
           )}
           {activeTab === 'data' && (
             <button className="ceg-action-btn" onClick={handleCopy}>
@@ -523,8 +641,8 @@ function CauseEffectGraphInner({
               onInit={(instance) => { reactFlowInstance.current = instance; }}
               defaultEdgeOptions={{
                 type: graphConfig?.straightEdges ? 'straight' : 'default',
-                style: { stroke: '#cbd5e1', strokeWidth: 1.5 },
-                markerEnd: { type: MarkerType.Arrow, color: '#cbd5e1', width: 15, height: 15, strokeWidth: 2 },
+                style: { stroke: '#d6d3d1', strokeWidth: 1.5 },
+                markerEnd: { type: MarkerType.Arrow, color: '#d6d3d1', width: 15, height: 15, strokeWidth: 2 },
               }}
             >
               <Controls />
@@ -538,6 +656,11 @@ function CauseEffectGraphInner({
               )}
             </ReactFlow>
             <Legend typeLabels={graphConfig?.typeLabels} customItems={graphConfig?.legendItems} />
+          </div>
+        )}
+        {activeTab === 'mermaid' && (
+          <div className="ceg-mermaid-view">
+            <Mermaid chart={mermaidCode} />
           </div>
         )}
         {activeTab === 'data' && <DataView yaml={yamlData} />}

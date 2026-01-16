@@ -94,7 +94,7 @@ export function estimateNodeDimensions(node: Node<CauseEffectNodeData>): { width
 // Style edges - variable weight based on strength
 export function getStyledEdges(edges: Edge<CauseEffectEdgeData>[]): Edge<CauseEffectEdgeData>[] {
   const strengthMap = { strong: 2.5, medium: 1.5, weak: 1 };
-  const edgeColor = '#cbd5e1';  // Light gray for all edges
+  const edgeColor = '#d6d3d1';  // stone-300 for all edges
 
   return edges.map((edge) => {
     const data = edge.data;

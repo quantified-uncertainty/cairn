@@ -22,7 +22,8 @@ export interface CauseEffectNodeData extends Record<string, unknown> {
   type?: 'leaf' | 'cause' | 'effect' | 'intermediate';
   subgroup?: string;
   order?: number;  // Manual ordering within layer (0 = leftmost)
-  nodeColors?: NodeColors;  // Optional color override for this specific node
+  color?: string;  // Semantic color name (e.g., "rose", "violet", "teal") - maps to predefined palette
+  nodeColors?: NodeColors;  // Optional explicit color override (hex values) - takes priority over color
   subItems?: Array<{
     label: string;
     probability?: string;

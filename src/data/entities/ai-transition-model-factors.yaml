@@ -52,6 +52,7 @@
           sensitivity: 8    # Key enabler for detecting misalignment
           changeability: 6  # Research can accelerate with funding/talent
           certainty: 3      # Unclear if interpretability will scale to frontier models
+        color: emerald
       - id: alignment-techniques
         label: Alignment Techniques
         type: leaf
@@ -61,6 +62,7 @@
           sensitivity: 9    # Core determinant of whether AI stays aligned
           changeability: 7  # Active research area with room for breakthroughs
           certainty: 4      # Current methods work but scalability uncertain
+        color: emerald
       - id: safety-research-talent
         label: Safety Research Talent
         type: leaf
@@ -70,6 +72,7 @@
           sensitivity: 6    # Important but not decisive alone
           changeability: 5  # Can grow but takes years to train researchers
           certainty: 7      # Talent numbers relatively well known
+        color: slate
       - id: regulatory-frameworks
         label: Regulatory Frameworks
         type: leaf
@@ -79,6 +82,7 @@
           sensitivity: 5    # Affects deployment but not core alignment
           changeability: 7  # Policy can change relatively quickly
           certainty: 6      # Regulatory landscape fairly clear, effects uncertain
+        color: blue
       - id: liability-regimes
         label: Liability Regimes
         type: leaf
@@ -88,6 +92,7 @@
           sensitivity: 4    # Incentive effects moderate
           changeability: 6  # Courts and legislatures can clarify
           certainty: 3      # Highly unsettled legal landscape
+        color: slate
       - id: safety-culture
         label: Safety Culture
         type: leaf
@@ -97,6 +102,7 @@
           sensitivity: 7    # Strong culture can catch problems early
           changeability: 5  # Hard to change organizational DNA quickly
           certainty: 5      # Observable but hard to measure precisely
+        color: emerald
       - id: deployment-incentives
         label: Deployment Incentives
         type: leaf
@@ -106,6 +112,7 @@
           sensitivity: 7    # Strong driver of corner-cutting
           changeability: 4  # Structural competitive forces hard to change
           certainty: 8      # Observable market dynamics
+        color: rose
       - id: technical-ai-safety
         label: Technical AI Safety
         type: intermediate
@@ -116,6 +123,7 @@
           sensitivity: 9    # Primary defense against misalignment
           changeability: 6  # Research progress possible with resources
           certainty: 3      # High uncertainty about whether solutions exist
+        color: slate
       - id: ai-governance
         label: AI Governance
         type: intermediate
@@ -126,6 +134,7 @@
           sensitivity: 6    # Can slow deployment but not solve alignment
           changeability: 6  # Policy can change, implementation slower
           certainty: 5      # Policy landscape evolving rapidly
+        color: slate
       - id: lab-safety
         label: Lab Safety Practices
         type: intermediate
@@ -136,6 +145,7 @@
           sensitivity: 7    # Labs are where safety decisions happen
           changeability: 5  # Culture hard to change, procedures easier
           certainty: 4      # Internal practices not fully visible
+        color: slate
       - id: alignment-scalability-question
         label: Does alignment scale with capability?
         type: leaf
@@ -145,6 +155,7 @@
           sensitivity: 10   # If alignment doesn't scale, catastrophe likely
           changeability: 3  # Fundamental property of the problem space
           certainty: 2      # Core unresolved question in alignment
+        color: violet
       - id: deception-detection-question
         label: Can we detect deceptive alignment?
         type: leaf
@@ -154,6 +165,7 @@
           sensitivity: 9    # Undetected deception could be catastrophic
           changeability: 4  # May require interpretability breakthroughs
           certainty: 2      # Highly uncertain if detection is possible
+        color: violet
       - id: misalignment-potential
         label: Misalignment Potential
         type: effect
@@ -264,6 +276,7 @@
           sensitivity: 8    # Key enabler for bio-threat path
           changeability: 3  # Tied to model advancement, hard to roll back
           certainty: 5      # Some benchmarks exist but real-world uplift uncertain
+        color: rose
       - id: dna-synthesis-access
         label: DNA Synthesis Access
         type: leaf
@@ -273,6 +286,7 @@
           sensitivity: 7    # Critical chokepoint for bioweapons
           changeability: 7  # Can be regulated with better screening
           certainty: 7      # Well-understood technical landscape
+        color: slate
       - id: biosecurity-defenses
         label: Biosecurity Defenses
         type: leaf
@@ -282,6 +296,7 @@
           sensitivity: 6    # Moderates but doesn't eliminate threat
           changeability: 6  # Can be improved with investment
           certainty: 4      # Uncertain efficacy against novel threats
+        color: emerald
       - id: ai-hacking-capability
         label: AI Hacking Capability
         type: leaf
@@ -291,6 +306,7 @@
           sensitivity: 8    # Key driver of cyber threat
           changeability: 3  # Hard to stop capability growth
           certainty: 4      # Few public benchmarks, uncertain effectiveness
+        color: slate
       - id: attack-surface-growth
         label: Attack Surface Growth
         type: leaf
@@ -300,6 +316,7 @@
           sensitivity: 5    # Moderate impact on cyber risk
           changeability: 3  # IoT proliferation hard to stop
           certainty: 9      # Well documented
+        color: slate
       - id: cybersecurity-workforce
         label: Cybersecurity Workforce
         type: leaf
@@ -309,6 +326,7 @@
           sensitivity: 4    # Important but not decisive
           changeability: 5  # Training takes time but possible
           certainty: 8      # Well documented shortage
+        color: slate
       - id: model-access-controls
         label: Model Access Controls
         type: leaf
@@ -318,6 +336,7 @@
           sensitivity: 6    # Important for limiting misuse
           changeability: 7  # Policy can change this
           certainty: 3      # Unclear if controls actually work
+        color: slate
       - id: actor-intent
         label: Actor Intent
         type: leaf
@@ -327,6 +346,7 @@
           sensitivity: 9    # No intent = no misuse
           changeability: 2  # Hard to change human motivation
           certainty: 8      # We know malicious actors exist
+        color: rose
       - id: bio-threat
         label: Biological Threat Exposure
         type: intermediate
@@ -337,6 +357,7 @@
           sensitivity: 9    # Major contributor to catastrophic outcomes
           changeability: 5  # Depends on upstream factors
           certainty: 3      # High uncertainty about magnitude
+        color: red
       - id: cyber-threat
         label: Cyber Threat Exposure
         type: intermediate
@@ -347,6 +368,7 @@
           sensitivity: 7    # Significant but less existential than bio
           changeability: 5  # Depends on upstream factors
           certainty: 5      # Some evidence but uncertain at scale
+        color: red
       - id: actor-capability
         label: Malicious Actor Capability
         type: intermediate
@@ -356,6 +378,7 @@
           sensitivity: 8    # Key mediating variable
           changeability: 5  # Can be affected by access controls
           certainty: 4      # Hard to assess real capabilities
+        color: slate
       - id: offense-defense-balance
         label: Does offense or defense win?
         type: leaf
@@ -365,6 +388,7 @@
           sensitivity: 9    # Determines which direction outcomes go
           changeability: 4  # Hard to deliberately shift the balance
           certainty: 2      # Core unresolved question
+        color: violet
       - id: democratization-question
         label: Does AI democratize WMD?
         type: leaf
@@ -374,6 +398,7 @@
           sensitivity: 8    # Major implications if true
           changeability: 3  # Knowledge spread is hard to stop
           certainty: 3      # Highly uncertain
+        color: violet
       - id: misuse-potential
         label: Misuse Potential
         type: effect
@@ -478,6 +503,7 @@
           sensitivity: 8    # Major bottleneck - disruption would significantly slow AI progress
           changeability: 4  # Fabs take 3-5 years to build, geopolitics hard to shift
           certainty: 7      # Supply chain well-documented, though future disruption risk uncertain
+        color: slate
       - id: energy-infrastructure
         label: Energy Infrastructure
         type: leaf
@@ -487,6 +513,7 @@
           sensitivity: 7    # Growing bottleneck for large training runs and inference scaling
           changeability: 5  # New plants take years, but efficiency gains possible
           certainty: 6      # Power requirements well-understood, future demand less certain
+        color: slate
       - id: capital-investment
         label: Capital Investment
         type: leaf
@@ -496,6 +523,7 @@
           sensitivity: 8    # Critical enabler - no capital = no frontier models
           changeability: 6  # Market-driven, can shift with sentiment or ROI evidence
           certainty: 8      # Current investment levels well-documented
+        color: teal
       - id: research-talent-pool
         label: Research Talent Pool
         type: leaf
@@ -505,6 +533,7 @@
           sensitivity: 7    # Key bottleneck, though AI-assisted research may reduce importance
           changeability: 4  # Training takes years; immigration policy affects distribution
           certainty: 6      # Talent pools estimated but future supply uncertain
+        color: slate
       - id: paradigm-discoveries
         label: Paradigm Discoveries
         type: leaf
@@ -514,6 +543,7 @@
           sensitivity: 9    # Can dramatically reshape the field - transformers changed everything
           changeability: 2  # Cannot be directed; emerge from research ecosystem unpredictably
           certainty: 2      # Inherently unpredictable by nature
+        color: violet
       - id: economic-incentives
         label: Economic Incentives
         type: leaf
@@ -523,6 +553,7 @@
           sensitivity: 7    # Strong driver of adoption speed and investment
           changeability: 4  # Market forces hard to redirect directly
           certainty: 7      # Economic drivers well-understood, though magnitude varies
+        color: slate
       - id: regulatory-friction
         label: Regulatory Friction
         type: leaf
@@ -532,6 +563,7 @@
           sensitivity: 5    # Slows deployment but hasn't stopped frontier development
           changeability: 7  # Policy can be changed through political process
           certainty: 5      # Current rules known, but enforcement and effects uncertain
+        color: blue
       - id: compute
         label: Compute
         type: intermediate
@@ -542,6 +574,7 @@
           sensitivity: 9    # Fundamental input - more compute = more capable models
           changeability: 5  # Depends on upstream factors (chips, energy, capital)
           certainty: 7      # Scaling laws well-established, though limits debated
+        color: slate
       - id: algorithms
         label: Algorithms
         type: intermediate
@@ -552,6 +585,7 @@
           sensitivity: 9    # Algorithmic gains can match or exceed compute scaling
           changeability: 3  # Research-driven; hard to direct specific breakthroughs
           certainty: 5      # Historical progress documented, but future rate uncertain
+        color: slate
       - id: adoption
         label: Adoption
         type: intermediate
@@ -562,6 +596,7 @@
           sensitivity: 6    # Affects real-world impact but less direct on frontier capabilities
           changeability: 6  # Can be influenced by policy, incentives, and UX
           certainty: 5      # Current adoption measurable; future diffusion rates uncertain
+        color: slate
       - id: scaling-ceiling-question
         label: Will scaling hit a ceiling?
         type: leaf
@@ -571,6 +606,7 @@
           sensitivity: 9    # Answer determines trajectory of AI progress entirely
           changeability: 1  # Physical/mathematical reality - we discover rather than change it
           certainty: 2      # Core unresolved question; experts disagree significantly
+        color: violet
       - id: recursive-improvement-question
         label: Can AI accelerate AI research?
         type: leaf
@@ -580,6 +616,7 @@
           sensitivity: 10   # If true, completely changes timeline and control dynamics
           changeability: 3  # Depends on capability trajectory; hard to deliberately prevent
           certainty: 3      # Early evidence emerging but magnitude highly uncertain
+        color: violet
       - id: ai-capabilities
         label: AI Capabilities
         type: effect
@@ -681,6 +718,7 @@
           sensitivity: 9    # Key enabler for recursive AI improvement
           changeability: 3  # Tied to model capability advancement
           certainty: 8      # Current capabilities well-benchmarked
+        color: slate
       - id: ai-research-ability
         label: AI Research Ability
         type: leaf
@@ -690,6 +728,7 @@
           sensitivity: 9    # Critical for recursive improvement trajectory
           changeability: 3  # Follows capability growth, hard to steer
           certainty: 4      # Limited evidence on real research automation
+        color: violet
       - id: productivity-pressure
         label: Productivity Pressure
         type: leaf
@@ -699,6 +738,7 @@
           sensitivity: 7    # Major driver of industry adoption rate
           changeability: 4  # Market forces hard to change, policy can modulate
           certainty: 8      # Clear evidence across industries
+        color: slate
       - id: workflow-compatibility
         label: Workflow Compatibility
         type: leaf
@@ -709,6 +749,7 @@
           sensitivity: 6    # Significant friction factor for adoption
           changeability: 6  # Can improve with better tooling and APIs
           certainty: 7      # Well-studied in organizational research
+        color: slate
       - id: procurement-processes
         label: Procurement Processes
         type: leaf
@@ -718,6 +759,7 @@
           sensitivity: 5    # Slows but doesn't block government adoption
           changeability: 5  # Can be reformed, but institutional inertia strong
           certainty: 8      # Well-documented government process
+        color: blue
       - id: public-trust-concerns
         label: Public Trust Concerns
         type: leaf
@@ -727,6 +769,7 @@
           sensitivity: 6    # Can significantly slow public sector adoption
           changeability: 5  # Affected by incidents, media, and policy choices
           certainty: 6      # Survey data exists but volatile
+        color: rose
       - id: collective-action-problems
         label: Collective Action Problems
         type: leaf
@@ -736,6 +779,7 @@
           sensitivity: 7    # Major demand driver for coordination tools
           changeability: 3  # Fundamental problem, won't disappear
           certainty: 9      # Well-established academic literature
+        color: slate
       - id: coordination-technology
         label: Coordination Technology
         type: leaf
@@ -745,6 +789,7 @@
           sensitivity: 7    # Could be transformative if effective
           changeability: 6  # Depends on research and investment choices
           certainty: 3      # Highly speculative, limited real-world testing
+        color: emerald
       - id: recursive-ai
         label: Recursive AI
         type: intermediate
@@ -755,6 +800,7 @@
           sensitivity: 10   # Could dramatically change capability trajectory
           changeability: 4  # Hard to stop once economically advantageous
           certainty: 3      # Key uncertainty about takeoff dynamics
+        color: red
       - id: industries
         label: AI in Industries
         type: intermediate
@@ -765,6 +811,7 @@
           sensitivity: 7    # Major determinant of economic impact
           changeability: 5  # Market-driven, policy can influence
           certainty: 6      # Good data on current adoption, future uncertain
+        color: slate
       - id: governments
         label: AI in Governments
         type: intermediate
@@ -775,6 +822,7 @@
           sensitivity: 6    # Affects governance capacity and legitimacy
           changeability: 6  # Policy choices can accelerate or slow adoption
           certainty: 5      # Varied implementations, limited outcome data
+        color: teal
       - id: coordination
         label: AI for Coordination
         type: intermediate
@@ -785,6 +833,7 @@
           sensitivity: 7    # Could significantly improve global cooperation
           changeability: 6  # Depends on research priorities and adoption
           certainty: 2      # Highly speculative, few examples
+        color: emerald
       - id: recursive-takeoff-question
         label: Will recursive improvement accelerate?
         type: leaf
@@ -794,6 +843,7 @@
           sensitivity: 10   # Could determine entire trajectory
           changeability: 4  # Depends on technical factors and choices
           certainty: 2      # Core unresolved question
+        color: violet
       - id: deployment-governance-gap
         label: Can governance keep pace with deployment?
         type: leaf
@@ -803,6 +853,7 @@
           sensitivity: 7    # Determines if guardrails are effective
           changeability: 6  # Regulatory reform possible but slow
           certainty: 6      # Pattern well-established, gap size uncertain
+        color: violet
       - id: ai-uses
         label: AI Uses
         type: effect
@@ -911,6 +962,7 @@
           sensitivity: 7    # Major driver of company concentration
           changeability: 4  # Tied to physics of compute, hard to change quickly
           certainty: 8      # Well-documented cost figures from labs
+        color: rose
       - id: talent-concentration
         label: Talent Concentration
         type: leaf
@@ -920,6 +972,7 @@
           sensitivity: 6    # Important for company advantage but not decisive alone
           changeability: 5  # Immigration policy, remote work could shift this
           certainty: 7      # Clear patterns in researcher distribution
+        color: rose
       - id: cloud-partnerships
         label: Cloud Partnerships
         type: leaf
@@ -929,6 +982,7 @@
           sensitivity: 5    # Important but secondary to core capabilities
           changeability: 6  # New partnerships possible, existing ones evolving
           certainty: 8      # Partnership structures are public
+        color: blue
       - id: chip-manufacturing-geography
         label: Chip Manufacturing Geography
         type: leaf
@@ -938,6 +992,7 @@
           sensitivity: 9    # Taiwan scenario could reshape global AI power
           changeability: 3  # Fab construction takes years, geography fixed
           certainty: 9      # Well-documented supply chain structure
+        color: red
       - id: export-controls
         label: Export Controls
         type: leaf
@@ -947,6 +1002,7 @@
           sensitivity: 8    # Major factor in US-China AI competition dynamics
           changeability: 7  # Policy lever, can be tightened or loosened
           certainty: 6      # Controls exist but effectiveness debated
+        color: emerald
       - id: national-ai-strategies
         label: National AI Strategies
         type: leaf
@@ -956,6 +1012,7 @@
           sensitivity: 5    # Important but often underwhelm in practice
           changeability: 6  # Government priorities can shift with elections
           certainty: 5      # Strategies exist but actual commitment varies
+        color: blue
       - id: corporate-structures
         label: Corporate Structures
         type: leaf
@@ -965,6 +1022,7 @@
           sensitivity: 7    # Governance shapes lab priorities and behavior
           changeability: 4  # Corporate structures hard to change once set
           certainty: 5      # Structures known but real influence unclear
+        color: blue
       - id: investor-influence
         label: Investor Influence
         type: leaf
@@ -974,6 +1032,7 @@
           sensitivity: 6    # Significant pressure on lab direction
           changeability: 5  # New investors possible but existing stakes locked in
           certainty: 4      # Hard to observe actual influence in decisions
+        color: rose
       - id: companies
         label: Company Ownership
         type: intermediate
@@ -984,6 +1043,7 @@
           sensitivity: 8    # Core dimension of AI control
           changeability: 5  # New entrants possible but hard
           certainty: 7      # Clear picture of major players
+        color: teal
       - id: countries
         label: Country Control
         type: intermediate
@@ -994,6 +1054,7 @@
           sensitivity: 9    # Geopolitical dimension hugely consequential
           changeability: 4  # National capabilities hard to shift quickly
           certainty: 6      # US leads but China's position debated
+        color: teal
       - id: shareholders
         label: Shareholder Power
         type: intermediate
@@ -1004,6 +1065,7 @@
           sensitivity: 7    # Shareholders shape incentives and governance
           changeability: 5  # Ownership can shift with new funding rounds
           certainty: 5      # Ownership known but influence mechanisms unclear
+        color: teal
       - id: concentration-stability
         label: Will concentration persist?
         type: leaf
@@ -1013,6 +1075,7 @@
           sensitivity: 8    # Determines long-term power structure
           changeability: 5  # Multiple factors could shift dynamics either way
           certainty: 2      # Core uncertainty - could go either direction
+        color: violet
       - id: power-alignment
         label: Are controllers aligned with humanity?
         type: leaf
@@ -1022,6 +1085,7 @@
           sensitivity: 9    # Ultimate question of who benefits from AI
           changeability: 6  # Governance, policy, and social pressure can influence
           certainty: 2      # Deep uncertainty about actor motivations
+        color: violet
       - id: ai-ownership
         label: AI Ownership
         type: effect
@@ -1141,6 +1205,7 @@
           sensitivity: 7 # Low trust severely constrains governance options
           changeability: 4 # Trust erodes faster than it builds; slow to change
           certainty: 6 # Extensively studied, but causal mechanisms debated
+        color: emerald
       - id: regulatory-expertise
         label: Regulatory Expertise
         type: leaf
@@ -1150,6 +1215,7 @@
           sensitivity: 8 # Poor regulation can enable catastrophic outcomes
           changeability: 6 # Can build expertise through hiring, training, partnerships
           certainty: 5 # Hard to measure; varies greatly by jurisdiction
+        color: emerald
       - id: international-cooperation
         label: International Cooperation
         type: leaf
@@ -1159,6 +1225,7 @@
           sensitivity: 9 # Global coordination failures could enable races to the bottom
           changeability: 3 # Deep geopolitical tensions; requires major diplomatic shifts
           certainty: 4 # Highly contingent on unpredictable political events
+        color: blue
       - id: information-environment
         label: Information Environment
         type: leaf
@@ -1168,6 +1235,7 @@
           sensitivity: 8 # Epistemic collapse undermines all other coordination
           changeability: 5 # Platform regulation possible; but AI makes defenses harder
           certainty: 3 # Rapidly evolving; very hard to predict AI's effects
+        color: rose
       - id: scientific-consensus
         label: Scientific Consensus Processes
         type: leaf
@@ -1177,6 +1245,7 @@
           sensitivity: 6 # Important for quality decisions but not sole determinant
           changeability: 5 # Institutional reform possible; AI tools could help or hurt
           certainty: 4 # Emerging threat; limited empirical data on AI impacts
+        color: emerald
       - id: media-ecosystem
         label: Media Ecosystem
         type: leaf
@@ -1186,6 +1255,7 @@
           sensitivity: 6 # Shapes public opinion but not sole driver of outcomes
           changeability: 5 # Regulation possible; business models hard to shift
           certainty: 6 # Well-studied ecosystem; AI effects less certain
+        color: slate
       - id: economic-flexibility
         label: Economic Flexibility
         type: leaf
@@ -1195,6 +1265,7 @@
           sensitivity: 7 # Economic instability could cause political backlash
           changeability: 6 # Policy levers exist (UBI, retraining); political will unclear
           certainty: 5 # Past transitions informative but may not apply to AI speed
+        color: emerald
       - id: social-cohesion
         label: Social Cohesion
         type: leaf
@@ -1204,6 +1275,7 @@
           sensitivity: 7 # Low cohesion makes collective response to AI harder
           changeability: 3 # Deep cultural/structural factors; slow to change
           certainty: 5 # Measured via surveys; causal impact debated
+        color: slate
       - id: governance
         label: Governance Capacity
         type: intermediate
@@ -1214,6 +1286,7 @@
           sensitivity: 9 # Poor governance enables most catastrophic scenarios
           changeability: 5 # Can improve with effort; institutional inertia significant
           certainty: 5 # What constitutes "good" AI governance still debated
+        color: slate
       - id: epistemics
         label: Epistemic Health
         type: intermediate
@@ -1224,6 +1297,7 @@
           sensitivity: 8 # Cannot coordinate on problems we cannot understand
           changeability: 4 # Some interventions possible; fundamental challenges deep
           certainty: 4 # Hard to measure societal-level epistemic health
+        color: slate
       - id: adaptability
         label: Adaptability
         type: intermediate
@@ -1234,6 +1308,7 @@
           sensitivity: 7 # Determines whether society absorbs or fragments under AI pressure
           changeability: 5 # Can build adaptive capacity; requires sustained investment
           certainty: 4 # Uncertain how past adaptation patterns apply to AI
+        color: slate
       - id: pace-question
         label: Can institutions keep pace with AI?
         type: leaf
@@ -1243,6 +1318,7 @@
           sensitivity: 9 # If gap is uncloseable, most governance interventions fail
           changeability: 4 # Requires institutional innovation; path-dependent
           certainty: 2 # Core uncertainty; depends on both AI and governance trajectories
+        color: violet
       - id: epistemics-collapse-question
         label: Will AI erode shared reality?
         type: leaf
@@ -1252,6 +1328,7 @@
           sensitivity: 8 # Shared reality collapse undermines all coordination
           changeability: 4 # Some technical/policy tools; fundamental tension hard to resolve
           certainty: 2 # Unprecedented situation; limited empirical basis for predictions
+        color: violet
       - id: civilizational-competence
         label: Civilizational Competence
         type: effect
@@ -1359,6 +1436,7 @@
           sensitivity: 9    # Core driver - faster automation = more turbulence
           changeability: 4  # Tied to capability advancement, hard to slow down
           certainty: 3      # High uncertainty about actual pace of automation
+        color: rose
       - id: job-displacement-scope
         label: Job Displacement Scope
         type: leaf
@@ -1368,6 +1446,7 @@
           sensitivity: 8    # Determines who is affected and political response
           changeability: 3  # Depends on which tasks AI can do, hard to redirect
           certainty: 4      # Uncertainty about which jobs will actually be automated
+        color: rose
       - id: safety-net-adequacy
         label: Safety Net Adequacy
         type: leaf
@@ -1377,6 +1456,7 @@
           sensitivity: 7    # Major buffer against economic turbulence
           changeability: 7  # Policy lever that can be changed with political will
           certainty: 6      # Current programs well-understood, future expansion uncertain
+        color: emerald
       - id: ai-decision-authority
         label: AI Decision Authority
         type: leaf
@@ -1386,6 +1466,7 @@
           sensitivity: 8    # Core driver of human agency erosion
           changeability: 6  # Can be regulated through policy choices
           certainty: 5      # Current trends visible but future scope uncertain
+        color: rose
       - id: human-oversight-design
         label: Human Oversight Design
         type: leaf
@@ -1395,6 +1476,7 @@
           sensitivity: 6    # Important for preserving agency but not decisive alone
           changeability: 7  # Design choices can be mandated through regulation
           certainty: 5      # Automation bias well-documented, effectiveness of oversight unclear
+        color: emerald
       - id: skill-atrophy-pressure
         label: Skill Atrophy Pressure
         type: leaf
@@ -1404,6 +1486,7 @@
           sensitivity: 7    # Could undermine human capacity to oversee AI
           changeability: 5  # Can be addressed with training requirements but hard
           certainty: 4      # Limited empirical data on AI-specific skill atrophy
+        color: rose
       - id: education-adaptation
         label: Education Adaptation
         type: leaf
@@ -1413,6 +1496,7 @@
           sensitivity: 5    # Moderate long-term impact on expertise preservation
           changeability: 5  # Education systems change slowly, decades-long lag
           certainty: 4      # Unclear what skills will remain valuable
+        color: slate
       - id: ai-augmentation-tools
         label: AI Augmentation Tools
         type: leaf
@@ -1422,6 +1506,7 @@
           sensitivity: 6    # Could preserve human expertise and agency
           changeability: 6  # Product design choices, can be incentivized
           certainty: 4      # Unclear if augmentation tools will win over automation
+        color: emerald
       - id: economic-stability
         label: Economic Stability
         type: intermediate
@@ -1432,6 +1517,7 @@
           sensitivity: 9    # Major component of transition turbulence
           changeability: 5  # Depends on upstream factors and policy responses
           certainty: 4      # High uncertainty about economic trajectory
+        color: slate
       - id: human-agency
         label: Human Agency
         type: intermediate
@@ -1442,6 +1528,7 @@
           sensitivity: 8    # Core dimension of human flourishing in AI era
           changeability: 6  # Design and policy choices can preserve agency
           certainty: 4      # Uncertain how much agency will actually erode
+        color: slate
       - id: human-expertise
         label: Human Expertise
         type: intermediate
@@ -1452,6 +1539,7 @@
           sensitivity: 7    # Important for maintaining human oversight capacity
           changeability: 5  # Hard to counteract once delegation occurs
           certainty: 3      # Limited data on long-term expertise effects
+        color: slate
       - id: adaptation-speed-question
         label: Can adaptation keep pace with disruption?
         type: leaf
@@ -1461,6 +1549,7 @@
           sensitivity: 9    # Determines whether transition is manageable
           changeability: 4  # Hard to speed up human/institutional adaptation
           certainty: 2      # Core unresolved question about transition dynamics
+        color: violet
       - id: meaningful-work-question
         label: What replaces displaced work?
         type: leaf
@@ -1470,6 +1559,7 @@
           sensitivity: 7    # Major determinant of human wellbeing post-transition
           changeability: 5  # Cultural and social choices, not purely technical
           certainty: 2      # Deep uncertainty about future of meaning and work
+        color: violet
       - id: transition-turbulence
         label: Transition Turbulence
         type: effect

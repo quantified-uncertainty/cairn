@@ -40,6 +40,7 @@
       - id: shared-threat-perception
         label: Shared Threat Perception
         type: leaf
+        color: emerald
         description: Common understanding that AI poses global risks requiring cooperation.
         scores:
           novelty: 3  # Well-known factor in international relations literature
@@ -49,6 +50,7 @@
       - id: us-china-relations
         label: US-China Relations
         type: leaf
+        color: red
         description: Geopolitical relationship between leading AI powers. Currently adversarial.
         scores:
           novelty: 2  # Common knowledge that this is the key bilateral relationship
@@ -58,6 +60,7 @@
       - id: institutional-frameworks
         label: Institutional Frameworks
         type: leaf
+        color: blue
         description: Existing international bodies (UN, OECD, G7) that could facilitate coordination.
         scores:
           novelty: 3  # Known that institutions matter; AI-specific adaptation somewhat novel
@@ -67,6 +70,7 @@
       - id: trust-between-nations
         label: Trust Between Nations
         type: intermediate
+        color: teal
         description: Confidence that commitments will be honored. Verification reduces need for trust.
         scores:
           novelty: 2  # Core IR concept; well understood as cooperation prerequisite
@@ -82,6 +86,46 @@
           sensitivity: 6  # Important transmission channel; effectiveness depends on underlying trust
           changeability: 6  # Can be built deliberately; AISI expansion shows tractability
           certainty: 5  # Which mechanisms work for AI specifically is still being tested
+      - id: verification-technology
+        label: Verification Technology
+        type: leaf
+        color: emerald
+        description: Technical means to verify compliance with agreements (compute monitoring, model evaluations).
+        scores:
+          novelty: 6  # Novel application of monitoring tech to AI governance
+          sensitivity: 7  # Enables trust-reduced cooperation; key for overcoming commitment problems
+          changeability: 5  # Active R&D area; deployment requires political will
+          certainty: 4  # Whether verification is technically feasible for AI is uncertain
+      - id: racing-dynamics
+        label: Racing Dynamics
+        type: leaf
+        color: rose
+        description: Competitive pressure to advance AI capabilities faster than rivals, reducing cooperation.
+        scores:
+          novelty: 4  # Known from arms race literature; AI application moderately novel
+          sensitivity: 8  # Major obstacle to coordination; creates urgency that undermines deliberation
+          changeability: 4  # Structural economic and security incentives; hard to shift
+          certainty: 6  # Dynamics well-understood; intensity debated
+      - id: domestic-politics
+        label: Domestic Politics
+        type: leaf
+        color: slate
+        description: Internal political constraints on international AI commitments (nationalism, industry lobbying).
+        scores:
+          novelty: 3  # Classic constraint on international cooperation
+          sensitivity: 6  # Can veto cooperation even when leaders agree
+          changeability: 4  # Depends on elections, public opinion, interest group dynamics
+          certainty: 6  # Well-studied in IR; AI-specific pressures emerging
+      - id: can-cooperation-survive-capability-gaps
+        label: Can cooperation survive capability gaps?
+        type: leaf
+        color: violet
+        description: Key uncertainty whether coordination holds as AI advantages become strategically decisive.
+        scores:
+          novelty: 5  # Novel question as AI capabilities diverge
+          sensitivity: 8  # Fundamental question about coordination viability
+          changeability: 3  # Structural tension; hard to engineer around
+          certainty: 3  # No historical precedent for this dynamic
       - id: international-coordination
         label: International Coordination
         type: effect
@@ -112,6 +156,22 @@
         target: international-coordination
         strength: strong
         effect: increases
+      - source: verification-technology
+        target: trust-between-nations
+        strength: medium
+        effect: increases
+      - source: racing-dynamics
+        target: international-coordination
+        strength: strong
+        effect: decreases
+      - source: domestic-politics
+        target: coordination-mechanisms
+        strength: medium
+        effect: decreases
+      - source: can-cooperation-survive-capability-gaps
+        target: international-coordination
+        strength: medium
+        effect: mixed
 - id: societal-trust
   type: ai-transition-model-parameter
   title: Societal Trust
@@ -185,6 +245,7 @@
       - id: institutional-performance
         label: Institutional Performance
         type: leaf
+        color: blue
         description: Track record of institutions delivering on promises. Failures erode trust.
         scores:
           novelty: 2  # Well-established in political science; nothing surprising
@@ -194,6 +255,7 @@
       - id: deepfake-prevalence
         label: Deepfake Prevalence
         type: leaf
+        color: red
         description: AI-generated fake content undermines ability to verify reality.
         scores:
           novelty: 5  # AI-generated content is new threat vector; general concept known
@@ -203,6 +265,7 @@
       - id: media-polarization
         label: Media Polarization
         type: leaf
+        color: rose
         description: Fragmented information environment where different groups see different facts.
         scores:
           novelty: 3  # Polarization well-documented; AI amplification aspect moderately novel
@@ -212,6 +275,7 @@
       - id: verification-capability
         label: Verification Capability
         type: intermediate
+        color: emerald
         description: Ability to distinguish authentic from fake content.
         scores:
           novelty: 5  # Content authentication is emerging field; specific techniques novel
@@ -227,6 +291,46 @@
           sensitivity: 8  # Foundation for democracy and collective action; erosion cascades
           changeability: 3  # Difficult to rebuild once lost; requires sustained effort
           certainty: 6  # Decline well-documented; recovery mechanisms less understood
+      - id: expert-credibility
+        label: Expert Credibility
+        type: leaf
+        color: teal
+        description: Public perception of whether experts have reliable knowledge and good incentives.
+        scores:
+          novelty: 3  # Long-standing sociological concept
+          sensitivity: 7  # Key intermediary for science communication and policy uptake
+          changeability: 4  # Depends on expert behavior and media portrayal
+          certainty: 6  # Well-studied in science communication
+      - id: algorithmic-amplification
+        label: Algorithmic Amplification
+        type: leaf
+        color: rose
+        description: Social media algorithms that amplify divisive and emotionally engaging content.
+        scores:
+          novelty: 5  # Relatively new phenomenon; mechanisms increasingly understood
+          sensitivity: 7  # Major driver of polarization and distrust
+          changeability: 5  # Platform policy and regulation can shift this
+          certainty: 6  # Growing empirical evidence on effects
+      - id: ai-sycophancy
+        label: AI Sycophancy
+        type: leaf
+        color: violet
+        description: AI systems that tell users what they want to hear, reinforcing biases.
+        scores:
+          novelty: 7  # Emerging concern as AI assistants become widespread
+          sensitivity: 6  # Could accelerate filter bubbles and epistemic fragmentation
+          changeability: 5  # Training approaches can mitigate; competitive pressure to please users
+          certainty: 4  # Effects on trust still speculative
+      - id: can-trust-be-rebuilt
+        label: Can trust be rebuilt once lost?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether institutional trust can recover from current lows.
+        scores:
+          novelty: 4  # Historical precedents exist but AI context novel
+          sensitivity: 8  # Determines whether decline is reversible
+          changeability: 3  # Structural question; not directly changeable
+          certainty: 3  # Limited historical precedent for recovery
       - id: societal-trust
         label: Societal Trust
         type: effect
@@ -257,6 +361,22 @@
         target: societal-trust
         strength: medium
         effect: increases
+      - source: expert-credibility
+        target: societal-trust
+        strength: medium
+        effect: increases
+      - source: algorithmic-amplification
+        target: media-polarization
+        strength: strong
+        effect: increases
+      - source: ai-sycophancy
+        target: shared-reality
+        strength: medium
+        effect: decreases
+      - source: can-trust-be-rebuilt
+        target: societal-trust
+        strength: medium
+        effect: mixed
 - id: epistemic-health
   type: ai-transition-model-parameter
   title: Epistemic Health
@@ -326,6 +446,7 @@
       - id: ai-content-generation
         label: AI Content Generation
         type: leaf
+        color: red
         description: Cheap, scalable production of synthetic text, images, audio, video.
         scores:
           novelty: 4  # Well-known capability; scale and ease continue to surprise
@@ -335,6 +456,7 @@
       - id: fact-checking-capacity
         label: Fact-Checking Capacity
         type: leaf
+        color: emerald
         description: Human and automated verification resources. Lags content production.
         scores:
           novelty: 4  # AI-assisted fact-checking is novel; basic concept known
@@ -344,6 +466,7 @@
       - id: media-literacy
         label: Media Literacy
         type: leaf
+        color: blue
         description: Population's ability to critically evaluate information sources.
         scores:
           novelty: 3  # Long-standing concept; AI-era requirements moderately novel
@@ -353,6 +476,7 @@
       - id: content-verification
         label: Content Verification
         type: intermediate
+        color: emerald
         description: Systems for authenticating real vs. synthetic content.
         scores:
           novelty: 6  # Technical provenance systems (C2PA) are genuinely new
@@ -368,6 +492,46 @@
           sensitivity: 6  # Important heuristic when content verification fails
           changeability: 4  # Depends on media ecosystem; slow to shift
           certainty: 5  # Traditional signals weakening; new signals emerging
+      - id: scientific-consensus-formation
+        label: Scientific Consensus Formation
+        type: leaf
+        color: teal
+        description: Processes by which scientific communities reach agreement on facts and theories.
+        scores:
+          novelty: 4  # Process well-studied; AI impacts moderately novel
+          sensitivity: 7  # Upstream of public understanding of science
+          changeability: 4  # Depends on academic incentives and norms; slow to shift
+          certainty: 6  # Mechanisms understood; AI disruption effects uncertain
+      - id: information-asymmetry
+        label: Information Asymmetry
+        type: leaf
+        color: rose
+        description: Power imbalance where some actors have much better access to accurate information.
+        scores:
+          novelty: 4  # Classic economics concept; AI amplification novel
+          sensitivity: 6  # Affects who can navigate the information environment
+          changeability: 4  # Structural feature; requires deliberate intervention
+          certainty: 6  # Well-understood in principle; AI-era dynamics emerging
+      - id: coordination-on-truth
+        label: Coordination on Truth
+        type: intermediate
+        color: violet
+        description: Collective action to establish and maintain shared factual foundations.
+        scores:
+          novelty: 5  # Framing somewhat novel; underlies many interventions
+          sensitivity: 8  # Determines whether verification efforts succeed at scale
+          changeability: 5  # Requires institutional commitment; can be built
+          certainty: 4  # Whether such coordination is achievable is uncertain
+      - id: can-ai-help-verify-ai-content
+        label: Can AI help verify AI content?
+        type: leaf
+        color: violet
+        description: Key uncertainty whether AI detection can keep pace with AI generation.
+        scores:
+          novelty: 6  # Arms race dynamics novel; specific technical question
+          sensitivity: 8  # Determines whether verification strategies can scale
+          changeability: 3  # Depends on fundamental technical capabilities
+          certainty: 3  # Actively researched but fundamentally uncertain
       - id: epistemic-health
         label: Epistemic Health
         type: effect
@@ -398,6 +562,22 @@
         target: epistemic-health
         strength: strong
         effect: increases
+      - source: scientific-consensus-formation
+        target: source-credibility
+        strength: medium
+        effect: increases
+      - source: information-asymmetry
+        target: epistemic-health
+        strength: medium
+        effect: decreases
+      - source: coordination-on-truth
+        target: epistemic-health
+        strength: strong
+        effect: increases
+      - source: can-ai-help-verify-ai-content
+        target: content-verification
+        strength: medium
+        effect: mixed
 - id: information-authenticity
   type: ai-transition-model-parameter
   title: Information Authenticity
@@ -438,6 +618,7 @@
       - id: generative-ai-quality
         label: Generative AI Quality
         type: leaf
+        color: red
         description: Fidelity of synthetic content. Approaching indistinguishable from real.
         scores:
           novelty: 4  # Rapid improvement known; specific capabilities still surprise
@@ -447,6 +628,7 @@
       - id: provenance-standards
         label: Provenance Standards
         type: leaf
+        color: emerald
         description: C2PA and similar content authenticity initiatives.
         scores:
           novelty: 7  # C2PA relatively new; cryptographic provenance is emerging approach
@@ -456,6 +638,7 @@
       - id: detection-technology
         label: Detection Technology
         type: leaf
+        color: emerald
         description: AI and human ability to identify synthetic content.
         scores:
           novelty: 5  # Detection methods advancing; arms race dynamics known
@@ -465,6 +648,7 @@
       - id: platform-adoption
         label: Platform Adoption
         type: intermediate
+        color: teal
         description: Deployment of authenticity tools by major platforms.
         scores:
           novelty: 5  # Platform role in authenticity emerging; incentives unclear
@@ -796,6 +980,7 @@
       - id: ai-capability-growth
         label: AI Capability Growth
         type: leaf
+        color: rose
         description: Rate of AI improvement in economically relevant tasks.
         scores:
           novelty: 2 # Widely discussed in AI discourse
@@ -805,6 +990,7 @@
       - id: labor-market-adaptation
         label: Labor Market Adaptation
         type: leaf
+        color: emerald
         description: Speed of worker retraining and job creation. Historically slow.
         scores:
           novelty: 4 # Known from past industrial transitions
@@ -814,6 +1000,7 @@
       - id: social-safety-nets
         label: Social Safety Nets
         type: leaf
+        color: blue
         description: Unemployment support, retraining programs, income support.
         scores:
           novelty: 3 # Standard policy tool; well-understood
@@ -1027,6 +1214,7 @@
       - id: ai-capability-level
         label: AI Capability Level
         type: leaf
+        color: rose
         description: Sophistication of AI outputs. Higher capability makes oversight harder.
         scores:
           novelty: 2 # Core concern widely discussed in AI safety
@@ -1036,6 +1224,7 @@
       - id: interpretability-tools
         label: Interpretability Tools
         type: leaf
+        color: emerald
         description: Methods for understanding AI reasoning. Currently cover <10% of behavior.
         scores:
           novelty: 6 # Active research frontier; new techniques emerging
@@ -1051,9 +1240,50 @@
           sensitivity: 7 # Determines baseline human capacity for oversight
           changeability: 5 # Training possible but expertise atrophy works against it
           certainty: 6 # Well-documented expertise requirements
+      - id: oversight-time-pressure
+        label: Oversight Time Pressure
+        type: leaf
+        color: rose
+        description: Economic pressure to review AI outputs quickly, reducing thoroughness. Speed-accuracy tradeoff.
+        scores:
+          novelty: 5 # Underappreciated driver of oversight failure
+          sensitivity: 7 # Directly affects review quality
+          changeability: 5 # Business pressure vs. safety; policy can influence
+          certainty: 7 # Well-documented in human factors research
+      - id: decision-authority-design
+        label: Decision Authority Design
+        type: leaf
+        color: blue
+        description: Institutional rules about when humans must approve vs. when AI can act autonomously.
+        scores:
+          novelty: 5 # Novel challenge as AI capabilities expand
+          sensitivity: 8 # Determines which decisions get human review at all
+          changeability: 7 # Direct policy lever; organizations can mandate
+          certainty: 6 # Effects depend on implementation quality
+      - id: oversight-tooling
+        label: Oversight Tooling
+        type: leaf
+        color: emerald
+        description: Software interfaces and processes designed to support effective human review.
+        scores:
+          novelty: 6 # Emerging focus area; many designs untested
+          sensitivity: 6 # Good tooling enables better oversight
+          changeability: 7 # Engineering investment can improve rapidly
+          certainty: 5 # Which tools work best still unclear
+      - id: can-oversight-scale
+        label: Can oversight scale?
+        type: leaf
+        color: violet
+        description: Key uncertainty - can human oversight remain meaningful as AI decisions multiply and complexity grows?
+        scores:
+          novelty: 7 # Central question for AI governance
+          sensitivity: 9 # Determines viability of human-in-the-loop approaches
+          changeability: 1 # Intrinsic property; cannot be changed
+          certainty: 2 # Fundamental uncertainty about scalability limits
       - id: capability-gap
         label: Capability Gap
         type: intermediate
+        color: red
         description: Difference between AI capability and human ability to evaluate.
         scores:
           novelty: 5 # Specific framing moderately novel
@@ -1063,6 +1293,7 @@
       - id: automation-bias
         label: Automation Bias
         type: intermediate
+        color: rose
         description: Tendency to accept AI outputs without critical evaluation.
         scores:
           novelty: 4 # Known in human factors; AI-specific dynamics newer
@@ -1099,6 +1330,22 @@
         target: human-oversight-quality
         strength: medium
         effect: decreases
+      - source: oversight-time-pressure
+        target: human-oversight-quality
+        strength: medium
+        effect: decreases
+      - source: decision-authority-design
+        target: human-oversight-quality
+        strength: medium
+        effect: increases
+      - source: oversight-tooling
+        target: human-oversight-quality
+        strength: medium
+        effect: increases
+      - source: can-oversight-scale
+        target: human-oversight-quality
+        strength: medium
+        effect: mixed
 - id: alignment-robustness
   type: ai-transition-model-parameter
   title: Alignment Robustness
@@ -1174,6 +1421,7 @@
       - id: training-diversity
         label: Training Diversity
         type: leaf
+        color: emerald
         description: Variety of scenarios in training data. More diversity improves generalization.
         scores:
           novelty: 4 # Known technique; scale and approach evolving
@@ -1183,6 +1431,7 @@
       - id: alignment-research
         label: Alignment Research
         type: leaf
+        color: emerald
         description: Progress on techniques like RLHF, constitutional AI, interpretability.
         scores:
           novelty: 5 # Rapidly evolving field with new techniques emerging
@@ -1192,15 +1441,57 @@
       - id: adversarial-testing
         label: Adversarial Testing
         type: leaf
+        color: emerald
         description: Red-teaming and stress testing before deployment.
         scores:
           novelty: 4 # Well-established practice; AI-specific methods newer
           sensitivity: 7 # Key for finding failure modes pre-deployment
           changeability: 7 # Directly controllable by labs
           certainty: 6 # Testing value established; coverage always incomplete
+      - id: deployment-pressure
+        label: Deployment Pressure
+        type: leaf
+        color: rose
+        description: Competitive and market pressure to deploy models before alignment is fully verified.
+        scores:
+          novelty: 4 # Known dynamic in tech deployment
+          sensitivity: 8 # Can override safety considerations
+          changeability: 5 # Market forces hard to change; regulation can help
+          certainty: 7 # Clear evidence of deployment pressure effects
+      - id: goal-specification-quality
+        label: Goal Specification Quality
+        type: leaf
+        color: blue
+        description: Clarity and completeness of human preferences encoded in training objectives.
+        scores:
+          novelty: 6 # Outer alignment is active research area
+          sensitivity: 8 # Fundamental determinant of what AI optimizes for
+          changeability: 6 # Can be improved with research investment
+          certainty: 4 # Difficult to specify complex human values
+      - id: reward-hacking-incentive
+        label: Reward Hacking Incentive
+        type: leaf
+        color: rose
+        description: Structural incentives for AI to find shortcuts that satisfy metrics without intended behavior.
+        scores:
+          novelty: 6 # Goodhart's law in AI context is evolving understanding
+          sensitivity: 8 # Can undermine even well-designed training
+          changeability: 5 # Depends on fundamental properties of optimization
+          certainty: 6 # Well-documented phenomenon; specific instances hard to predict
+      - id: is-alignment-stable
+        label: Is alignment stable at scale?
+        type: leaf
+        color: violet
+        description: Key uncertainty - will alignment techniques that work now continue working as capabilities increase?
+        scores:
+          novelty: 8 # Core unresolved question in alignment research
+          sensitivity: 10 # Determines whether current approaches are sufficient
+          changeability: 1 # Intrinsic property; cannot be changed
+          certainty: 2 # Fundamental uncertainty about scaling behavior
       - id: generalization-quality
         label: Generalization Quality
         type: intermediate
+        color: red
         description: Ability of alignment to hold in new situations.
         scores:
           novelty: 6 # Goal misgeneralization is active research area
@@ -1246,6 +1537,22 @@
         target: alignment-robustness
         strength: medium
         effect: increases
+      - source: deployment-pressure
+        target: vulnerability-detection
+        strength: medium
+        effect: decreases
+      - source: goal-specification-quality
+        target: alignment-robustness
+        strength: strong
+        effect: increases
+      - source: reward-hacking-incentive
+        target: alignment-robustness
+        strength: medium
+        effect: decreases
+      - source: is-alignment-stable
+        target: alignment-robustness
+        strength: strong
+        effect: mixed
 - id: safety-capability-gap
   type: ai-transition-model-parameter
   title: Safety-Capability Gap
@@ -1303,6 +1610,7 @@
       - id: racing-pressure
         label: Racing Pressure
         type: leaf
+        color: red
         description: Competitive dynamics compressing safety timelines 70-80%.
         scores:
           novelty: 4 # Known dynamic; magnitude post-ChatGPT surprising
@@ -1312,6 +1620,7 @@
       - id: safety-funding
         label: Safety Funding
         type: leaf
+        color: emerald
         description: Resources for safety research. Small fraction of capability funding.
         scores:
           novelty: 3 # Well-known funding disparity
@@ -1321,15 +1630,57 @@
       - id: problem-difficulty
         label: Problem Difficulty
         type: leaf
+        color: violet
         description: Intrinsic hardness of safety research. May require breakthroughs.
         scores:
           novelty: 6 # Uncertainty about tractability underappreciated
           sensitivity: 8 # If fundamentally hard, gap may be unavoidable
           changeability: 2 # Intrinsic property; can't be changed directly
           certainty: 3 # Deep uncertainty about whether safety is solvable
+      - id: safety-talent-pool
+        label: Safety Talent Pool
+        type: leaf
+        color: emerald
+        description: Number of qualified researchers working on safety. Currently a few hundred globally.
+        scores:
+          novelty: 4 # Known constraint; scale often underappreciated
+          sensitivity: 8 # Directly limits safety research throughput
+          changeability: 6 # Can be grown with training programs; takes time
+          certainty: 7 # Talent counts roughly known
+      - id: capability-investment
+        label: Capability Investment
+        type: leaf
+        color: rose
+        description: Billions invested in capability research. Far exceeds safety investment.
+        scores:
+          novelty: 2 # Well-documented investment levels
+          sensitivity: 8 # Drives capability velocity
+          changeability: 4 # Market-driven; regulation can influence
+          certainty: 8 # Investment data publicly available
+      - id: coordination-mechanisms
+        label: Coordination Mechanisms
+        type: leaf
+        color: blue
+        description: Agreements and institutions that could slow racing or increase safety investment.
+        scores:
+          novelty: 5 # Some mechanisms emerging; effectiveness unclear
+          sensitivity: 7 # Could reduce racing pressure if effective
+          changeability: 6 # Policy lever; requires international cooperation
+          certainty: 4 # Effectiveness of coordination mechanisms untested
+      - id: can-safety-keep-pace
+        label: Can safety keep pace?
+        type: leaf
+        color: violet
+        description: Key uncertainty - is it possible for safety research to match capability advances, or is the gap structural?
+        scores:
+          novelty: 8 # Core unresolved question for AI safety
+          sensitivity: 10 # Determines viability of safe AI development path
+          changeability: 1 # Intrinsic property; cannot be changed
+          certainty: 2 # Fundamental uncertainty about relative progress rates
       - id: capability-velocity
         label: Capability Velocity
         type: intermediate
+        color: red
         description: Speed of AI capability improvement. Accelerating.
         scores:
           novelty: 3 # Widely discussed capability trajectory
@@ -1339,6 +1690,7 @@
       - id: safety-velocity
         label: Safety Velocity
         type: intermediate
+        color: emerald
         description: Speed of safety research progress. Limited by talent and funding.
         scores:
           novelty: 5 # Progress rate less tracked than capabilities
@@ -1375,6 +1727,22 @@
         target: safety-capability-gap
         strength: strong
         effect: decreases
+      - source: safety-talent-pool
+        target: safety-velocity
+        strength: strong
+        effect: increases
+      - source: capability-investment
+        target: capability-velocity
+        strength: strong
+        effect: increases
+      - source: coordination-mechanisms
+        target: racing-pressure
+        strength: medium
+        effect: decreases
+      - source: can-safety-keep-pace
+        target: safety-capability-gap
+        strength: strong
+        effect: mixed
 - id: interpretability-coverage
   type: ai-transition-model-parameter
   title: Interpretability Coverage
@@ -1409,6 +1777,7 @@
       - id: model-complexity
         label: Model Complexity
         type: leaf
+        color: rose
         description: Size and sophistication of AI systems. Growing exponentially.
         scores:
           novelty: 2  # Well known that models are getting bigger
@@ -1418,6 +1787,7 @@
       - id: research-investment
         label: Research Investment
         type: leaf
+        color: emerald
         description: Resources for interpretability research. ~50 researchers globally.
         scores:
           novelty: 5  # Some surprise at how few researchers work on this
@@ -1427,15 +1797,57 @@
       - id: technique-development
         label: Technique Development
         type: leaf
+        color: emerald
         description: New methods like sparse autoencoders, activation patching.
         scores:
           novelty: 7  # Recent breakthroughs like SAEs are genuinely surprising
           sensitivity: 8  # New techniques could unlock major progress
           changeability: 4  # Depends on unpredictable research breakthroughs
           certainty: 5  # Unclear which techniques will scale
+      - id: lab-cooperation
+        label: Lab Cooperation
+        type: leaf
+        color: blue
+        description: Willingness of AI labs to share model internals for interpretability research.
+        scores:
+          novelty: 5  # Emerging as key constraint
+          sensitivity: 7  # Without access, external research limited
+          changeability: 6  # Policy and incentives can influence
+          certainty: 6  # Current cooperation levels known; future uncertain
+      - id: computational-requirements
+        label: Computational Requirements
+        type: leaf
+        color: rose
+        description: Computing resources needed to run interpretability methods on frontier models.
+        scores:
+          novelty: 4  # Known constraint; scale less appreciated
+          sensitivity: 6  # Limits who can do interpretability research
+          changeability: 5  # Cost declining but model size increasing
+          certainty: 7  # Compute requirements well-characterized
+      - id: automation-of-interpretability
+        label: Automation of Interpretability
+        type: leaf
+        color: emerald
+        description: Using AI to help interpret AI, potentially accelerating progress dramatically.
+        scores:
+          novelty: 7  # Emerging approach with significant potential
+          sensitivity: 8  # Could fundamentally change interpretability pace
+          changeability: 5  # Depends on technique development
+          certainty: 4  # Unclear if automated approaches will work well
+      - id: is-full-interpretability-possible
+        label: Is full interpretability possible?
+        type: leaf
+        color: violet
+        description: Key uncertainty - can we ever fully understand frontier AI systems, or are they fundamentally opaque?
+        scores:
+          novelty: 8  # Core philosophical and empirical question
+          sensitivity: 10  # Determines ceiling of interpretability progress
+          changeability: 1  # Intrinsic property; cannot be changed
+          certainty: 2  # Deep uncertainty about fundamental limits
       - id: scaling-challenge
         label: Scaling Challenge
         type: intermediate
+        color: red
         description: Difficulty applying interpretability techniques to larger models.
         scores:
           novelty: 4  # Known that interpretability struggles to scale
@@ -1481,6 +1893,22 @@
         target: interpretability-coverage
         strength: strong
         effect: increases
+      - source: lab-cooperation
+        target: feature-identification
+        strength: medium
+        effect: increases
+      - source: computational-requirements
+        target: scaling-challenge
+        strength: medium
+        effect: increases
+      - source: automation-of-interpretability
+        target: feature-identification
+        strength: medium
+        effect: increases
+      - source: is-full-interpretability-possible
+        target: interpretability-coverage
+        strength: strong
+        effect: mixed
 - id: regulatory-capacity
   type: ai-transition-model-parameter
   title: Regulatory Capacity
@@ -1517,6 +1945,7 @@
       - id: government-ai-expertise
         label: Government AI Expertise
         type: leaf
+        color: rose
         description: Technical staff in agencies. Far below industry levels.
         scores:
           novelty: 4  # Expertise gap is known but magnitude may surprise
@@ -1526,6 +1955,7 @@
       - id: regulatory-budgets
         label: Regulatory Budgets
         type: leaf
+        color: blue
         description: Resources for AI Safety Institutes and regulators.
         scores:
           novelty: 3  # Budget constraints are well-known
@@ -1535,15 +1965,47 @@
       - id: industry-transparency
         label: Industry Transparency
         type: leaf
+        color: rose
         description: Willingness of labs to share information with regulators.
         scores:
           novelty: 5  # Opacity of AI labs is increasingly discussed
           sensitivity: 7  # Without access, regulation is blind
           changeability: 5  # Voluntary commitments exist but enforcement weak
           certainty: 5  # Hard to assess actual vs stated transparency
+      - id: salary-competition
+        label: Salary Competition
+        type: leaf
+        color: red
+        description: Industry salaries 3-5x government pay for AI talent.
+        scores:
+          novelty: 3  # Pay gap is well-known
+          sensitivity: 7  # Directly limits hiring capability
+          changeability: 3  # Government pay scales rigid; hard to change
+          certainty: 8  # Salary data is publicly available
+      - id: regulatory-complexity
+        label: Regulatory Complexity
+        type: leaf
+        color: violet
+        description: AI systems evolve faster than regulatory frameworks can adapt.
+        scores:
+          novelty: 6  # AI-specific complexity is emerging challenge
+          sensitivity: 7  # Determines whether rules are even enforceable
+          changeability: 4  # Fundamental challenge of regulating fast-moving tech
+          certainty: 6  # Complexity is evident but hard to quantify
+      - id: can-regulators-keep-pace
+        label: Can regulators keep pace with AI?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether government can ever close the capability gap.
+        scores:
+          novelty: 7  # Core question gaining attention
+          sensitivity: 9  # Determines viability of regulation as strategy
+          changeability: 4  # Depends on structural factors
+          certainty: 3  # Fundamental open question
       - id: evaluation-capability
         label: Evaluation Capability
         type: intermediate
+        color: teal
         description: Ability to independently assess AI systems.
         scores:
           novelty: 5  # Growing recognition of evaluation challenges
@@ -1553,6 +2015,7 @@
       - id: enforcement-tools
         label: Enforcement Tools
         type: intermediate
+        color: blue
         description: Legal authority and mechanisms to enforce rules.
         scores:
           novelty: 3  # Standard regulatory toolkit discussion
@@ -1562,6 +2025,7 @@
       - id: regulatory-capacity
         label: Regulatory Capacity
         type: effect
+        color: emerald
         description: Government ability to understand and regulate AI.
         scores:
           novelty: 4  # Regulatory gaps are increasingly recognized
@@ -1581,6 +2045,18 @@
         target: evaluation-capability
         strength: medium
         effect: increases
+      - source: salary-competition
+        target: government-ai-expertise
+        strength: strong
+        effect: decreases
+      - source: regulatory-complexity
+        target: enforcement-tools
+        strength: medium
+        effect: decreases
+      - source: can-regulators-keep-pace
+        target: regulatory-capacity
+        strength: medium
+        effect: mixed
       - source: evaluation-capability
         target: regulatory-capacity
         strength: strong
@@ -1625,6 +2101,7 @@
       - id: capture-pressure
         label: Capture Pressure
         type: leaf
+        color: red
         description: Industry influence on regulators through lobbying, revolving door.
         scores:
           novelty: 3  # Regulatory capture is well-studied concept
@@ -1634,6 +2111,7 @@
       - id: expertise-retention
         label: Expertise Retention
         type: leaf
+        color: rose
         description: Ability to keep skilled staff vs. industry salary competition.
         scores:
           novelty: 4  # Known issue but AI salary gaps may surprise
@@ -1643,15 +2121,47 @@
       - id: political-independence
         label: Political Independence
         type: leaf
+        color: blue
         description: Insulation from short-term political pressures.
         scores:
           novelty: 3  # Standard concern in institutional design
           sensitivity: 6  # Affects long-term institutional credibility
           changeability: 3  # Requires constitutional or statutory changes
           certainty: 6  # Independence varies by institution and measure
+      - id: revolving-door-dynamics
+        label: Revolving Door Dynamics
+        type: leaf
+        color: rose
+        description: Staff cycling between regulator and industry roles.
+        scores:
+          novelty: 3  # Well-known phenomenon in regulation
+          sensitivity: 7  # Affects independence and expertise simultaneously
+          changeability: 4  # Requires cooling-off periods, salary reform
+          certainty: 7  # Career patterns are observable
+      - id: institutional-learning
+        label: Institutional Learning
+        type: leaf
+        color: emerald
+        description: Ability to accumulate and apply knowledge over time.
+        scores:
+          novelty: 5  # AI-specific learning challenges are novel
+          sensitivity: 7  # Critical for keeping up with technology
+          changeability: 5  # Can be improved with deliberate knowledge management
+          certainty: 5  # Hard to measure institutional knowledge
+      - id: will-institutions-adapt-in-time
+        label: Will institutions adapt in time?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether governance can keep pace with AI development.
+        scores:
+          novelty: 6  # Core question for AI governance
+          sensitivity: 9  # Determines whether institutions remain relevant
+          changeability: 4  # Depends on both institutions and AI trajectory
+          certainty: 3  # Fundamental open question
       - id: decision-quality
         label: Decision Quality
         type: intermediate
+        color: teal
         description: Quality of institutional choices and policies.
         scores:
           novelty: 4  # AI-specific decision challenges are novel
@@ -1661,6 +2171,7 @@
       - id: public-legitimacy
         label: Public Legitimacy
         type: intermediate
+        color: slate
         description: Trust in institutions as fair arbiters.
         scores:
           novelty: 3  # Legitimacy concerns are well-established
@@ -1670,6 +2181,7 @@
       - id: institutional-quality
         label: Institutional Quality
         type: effect
+        color: emerald
         description: Health and effectiveness of governance institutions.
         scores:
           novelty: 4  # AI governance institutions are new and evolving
@@ -1689,6 +2201,18 @@
         target: institutional-quality
         strength: medium
         effect: increases
+      - source: revolving-door-dynamics
+        target: capture-pressure
+        strength: medium
+        effect: increases
+      - source: institutional-learning
+        target: decision-quality
+        strength: medium
+        effect: increases
+      - source: will-institutions-adapt-in-time
+        target: institutional-quality
+        strength: medium
+        effect: mixed
       - source: decision-quality
         target: institutional-quality
         strength: strong
@@ -1747,6 +2271,7 @@
       - id: algorithmic-curation
         label: Algorithmic Curation
         type: leaf
+        color: rose
         description: Personalization creates filter bubbles with different facts.
         scores:
           novelty: 4  # Filter bubble concept is known; scale may surprise
@@ -1756,6 +2281,7 @@
       - id: shared-media-sources
         label: Shared Media Sources
         type: leaf
+        color: emerald
         description: Common information sources across groups. Declining.
         scores:
           novelty: 3  # Media fragmentation is well-documented trend
@@ -1765,15 +2291,47 @@
       - id: political-polarization
         label: Political Polarization
         type: leaf
+        color: red
         description: Partisan identity shapes fact acceptance.
         scores:
           novelty: 2  # Polarization is extremely well-documented
           sensitivity: 8  # Major driver of fact rejection
           changeability: 2  # Deep structural and identity factors; very hard to shift
           certainty: 8  # Strong empirical evidence across multiple measures
+      - id: ai-generated-content
+        label: AI-Generated Content
+        type: leaf
+        color: red
+        description: Synthetic media and text increasingly indistinguishable from authentic content.
+        scores:
+          novelty: 7  # Rapidly emerging challenge
+          sensitivity: 8  # Could accelerate reality fragmentation dramatically
+          changeability: 4  # Detection tech vs generation is arms race
+          certainty: 5  # Scale of impact still uncertain
+      - id: trust-in-institutions
+        label: Trust in Institutions
+        type: leaf
+        color: rose
+        description: Confidence in media, science, and government as truth arbiters.
+        scores:
+          novelty: 3  # Trust decline is well-documented
+          sensitivity: 7  # Without trusted arbiters, facts become tribal
+          changeability: 3  # Rebuilding trust is slow multi-generational process
+          certainty: 7  # Survey data shows clear trends
+      - id: can-shared-reality-survive-ai
+        label: Can shared reality survive AI content?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether coherence can persist when anyone can generate convincing false content.
+        scores:
+          novelty: 8  # Novel question as AI content proliferates
+          sensitivity: 9  # Existential for democratic deliberation
+          changeability: 4  # Depends on tech, regulation, and social adaptation
+          certainty: 2  # Highly uncertain outcome
       - id: information-exposure
         label: Information Exposure
         type: intermediate
+        color: slate
         description: What facts different groups encounter.
         scores:
           novelty: 4  # AI-driven personalization adds novelty to known concept
@@ -1783,6 +2341,7 @@
       - id: fact-acceptance
         label: Fact Acceptance
         type: intermediate
+        color: teal
         description: Willingness to accept facts from non-aligned sources.
         scores:
           novelty: 5  # Motivated reasoning research growing; AI angle novel
@@ -1792,6 +2351,7 @@
       - id: reality-coherence
         label: Reality Coherence
         type: effect
+        color: emerald
         description: Degree to which populations share common factual beliefs.
         scores:
           novelty: 4  # Fragmentation trend known; AI acceleration moderately novel
@@ -1811,6 +2371,18 @@
         target: fact-acceptance
         strength: strong
         effect: decreases
+      - source: ai-generated-content
+        target: fact-acceptance
+        strength: medium
+        effect: decreases
+      - source: trust-in-institutions
+        target: fact-acceptance
+        strength: medium
+        effect: increases
+      - source: can-shared-reality-survive-ai
+        target: reality-coherence
+        strength: medium
+        effect: mixed
       - source: information-exposure
         target: reality-coherence
         strength: medium
@@ -1864,6 +2436,7 @@
       - id: recommendation-optimization
         label: Recommendation Optimization
         type: leaf
+        color: red
         description: AI systems optimizing for engagement over user wellbeing.
         scores:
           novelty: 4  # Engagement optimization is known; scale and sophistication growing
@@ -1873,6 +2446,7 @@
       - id: targeted-advertising
         label: Targeted Advertising
         type: leaf
+        color: rose
         description: Precision persuasion based on psychological profiles.
         scores:
           novelty: 3  # Targeted ads are well-known; AI enhancement incremental
@@ -1882,15 +2456,47 @@
       - id: user-awareness
         label: User Awareness
         type: leaf
+        color: emerald
         description: Understanding of how preferences are being shaped.
         scores:
           novelty: 5  # AI manipulation mechanisms are less understood by public
           sensitivity: 6  # Enables but doesn't guarantee resistance
           changeability: 6  # Education and transparency can improve
           certainty: 5  # Hard to measure actual awareness vs claimed
+      - id: ai-companionship
+        label: AI Companionship
+        type: leaf
+        color: violet
+        description: Emotional relationships with AI systems that may shape preferences toward AI interaction.
+        scores:
+          novelty: 8  # Emerging phenomenon with character.ai, Replika
+          sensitivity: 7  # Could fundamentally alter social preferences
+          changeability: 4  # Market demand may be hard to redirect
+          certainty: 3  # Long-term effects unknown
+      - id: personalized-content-bubbles
+        label: Personalized Content Bubbles
+        type: leaf
+        color: rose
+        description: AI curation creating increasingly narrow preference reinforcement loops.
+        scores:
+          novelty: 5  # Filter bubbles known; AI personalization intensifies
+          sensitivity: 7  # Narrows preference formation environment
+          changeability: 5  # Platform policy and regulation can affect
+          certainty: 6  # Effects documented but long-term trajectory uncertain
+      - id: can-preferences-remain-authentic
+        label: Can preferences remain authentic at scale?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether genuine preference formation is possible under pervasive AI influence.
+        scores:
+          novelty: 7  # Philosophical question with new practical relevance
+          sensitivity: 9  # Affects meaning of democracy and autonomy
+          changeability: 3  # Structural question; not directly addressable
+          certainty: 2  # Deep philosophical uncertainty
       - id: manipulation-exposure
         label: Manipulation Exposure
         type: intermediate
+        color: slate
         description: Degree of exposure to preference-shaping systems.
         scores:
           novelty: 4  # Ubiquity of AI systems in daily life increasingly recognized
@@ -1900,6 +2506,7 @@
       - id: reflective-capacity
         label: Reflective Capacity
         type: intermediate
+        color: teal
         description: Ability to critically evaluate own preferences.
         scores:
           novelty: 6  # AI-accelerated preference shaping outpacing reflection
@@ -1909,6 +2516,7 @@
       - id: preference-authenticity
         label: Preference Authenticity
         type: effect
+        color: emerald
         description: Degree to which preferences reflect genuine values.
         scores:
           novelty: 6  # AI-scale preference manipulation is relatively new concern
@@ -1928,6 +2536,18 @@
         target: reflective-capacity
         strength: medium
         effect: increases
+      - source: ai-companionship
+        target: manipulation-exposure
+        strength: medium
+        effect: increases
+      - source: personalized-content-bubbles
+        target: manipulation-exposure
+        strength: medium
+        effect: increases
+      - source: can-preferences-remain-authentic
+        target: preference-authenticity
+        strength: medium
+        effect: mixed
       - source: manipulation-exposure
         target: preference-authenticity
         strength: strong
@@ -2010,6 +2630,7 @@
       - id: commercial-competition
         label: Commercial Competition
         type: leaf
+        color: red
         description: Market pressures between AI labs for customers and revenue.
         scores:
           novelty: 3  # Commercial competition is well-understood driver
@@ -2019,6 +2640,7 @@
       - id: geopolitical-competition
         label: Geopolitical Competition
         type: leaf
+        color: red
         description: US-China dynamics driving national AI programs.
         scores:
           novelty: 3  # US-China AI competition is well-known
@@ -2028,15 +2650,47 @@
       - id: coordination-mechanisms
         label: Coordination Mechanisms
         type: leaf
+        color: emerald
         description: Agreements and norms that could slow racing. Currently weak.
         scores:
           novelty: 4  # AI-specific coordination mechanisms are evolving
           sensitivity: 7  # Could significantly reduce racing if strengthened
           changeability: 5  # Can be built deliberately; requires sustained effort
           certainty: 5  # Effectiveness of various mechanisms still being tested
+      - id: investor-pressure
+        label: Investor Pressure
+        type: leaf
+        color: rose
+        description: VC and capital market expectations for rapid returns and competitive wins.
+        scores:
+          novelty: 3  # Standard startup dynamics
+          sensitivity: 7  # Affects resource allocation and urgency
+          changeability: 4  # Depends on broader market conditions
+          certainty: 7  # Investment dynamics well-understood
+      - id: talent-competition
+        label: Talent Competition
+        type: leaf
+        color: rose
+        description: Labs competing for limited AI research talent accelerates hiring and projects.
+        scores:
+          novelty: 4  # AI talent wars increasingly recognized
+          sensitivity: 6  # Adds to urgency; researchers want to work on cutting-edge
+          changeability: 3  # Structural supply constraint
+          certainty: 7  # Salary data and hiring patterns clear
+      - id: is-racing-inevitable
+        label: Is racing inevitable?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether coordination can overcome competitive pressures.
+        scores:
+          novelty: 5  # Game theory question with novel AI context
+          sensitivity: 9  # Determines whether slowdown is even possible
+          changeability: 4  # Depends on coordination mechanisms and incentives
+          certainty: 3  # Structural question with uncertain answer
       - id: first-mover-perception
         label: First-Mover Perception
         type: intermediate
+        color: teal
         description: Belief that early leads confer lasting advantages.
         scores:
           novelty: 5  # Accuracy of first-mover beliefs is debated
@@ -2046,6 +2700,7 @@
       - id: safety-cost-perception
         label: Safety Cost Perception
         type: intermediate
+        color: slate
         description: Perception of safety work as competitive disadvantage.
         scores:
           novelty: 5  # Some labs argue safety is competitive advantage; debated
@@ -2055,6 +2710,7 @@
       - id: racing-intensity
         label: Racing Intensity
         type: effect
+        color: red
         description: Competitive pressure driving speed over safety.
         scores:
           novelty: 4  # Racing dynamics increasingly recognized but specifics debated
@@ -2074,6 +2730,18 @@
         target: racing-intensity
         strength: medium
         effect: decreases
+      - source: investor-pressure
+        target: first-mover-perception
+        strength: medium
+        effect: increases
+      - source: talent-competition
+        target: racing-intensity
+        strength: medium
+        effect: increases
+      - source: is-racing-inevitable
+        target: racing-intensity
+        strength: medium
+        effect: mixed
       - source: first-mover-perception
         target: racing-intensity
         strength: strong
@@ -2124,6 +2792,7 @@
       - id: leadership-commitment
         label: Leadership Commitment
         type: leaf
+        color: emerald
         description: Genuine priority placed on safety by executives and founders.
         scores:
           novelty: 3 # Well-known that leadership sets culture
@@ -2133,6 +2802,7 @@
       - id: competitive-pressure
         label: Competitive Pressure
         type: leaf
+        color: rose
         description: Racing dynamics that pressure labs to cut safety corners.
         scores:
           novelty: 4 # Recognized but underappreciated by some
@@ -2142,6 +2812,7 @@
       - id: external-oversight
         label: External Oversight
         type: leaf
+        color: blue
         description: Regulatory scrutiny and public accountability.
         scores:
           novelty: 3 # Standard governance mechanism
@@ -2151,6 +2822,7 @@
       - id: safety-team-authority
         label: Safety Team Authority
         type: intermediate
+        color: emerald
         description: Power of safety teams to delay or block deployments.
         scores:
           novelty: 5 # Often overlooked in policy discussions
@@ -2166,6 +2838,46 @@
           sensitivity: 7 # Direct effect on safety output
           changeability: 6 # Can be adjusted with budget decisions
           certainty: 8 # Clear relationship between resources and output
+      - id: safety-talent-retention
+        label: Safety Talent Retention
+        type: leaf
+        color: rose
+        description: Ability to retain top safety researchers amid competitive poaching and mission drift.
+        scores:
+          novelty: 6 # Often overlooked; recent departures highlight importance
+          sensitivity: 8 # Loss of key researchers can cripple safety efforts
+          changeability: 5 # Depends on compensation, mission clarity, and org culture
+          certainty: 6 # Clear cases like OpenAI departures, but hard to generalize
+      - id: incident-learning-culture
+        label: Incident Learning Culture
+        type: intermediate
+        color: emerald
+        description: Whether near-misses and failures are shared and learned from across the organization.
+        scores:
+          novelty: 5 # Well-known in safety engineering, less applied to AI
+          sensitivity: 7 # Key for preventing repeated mistakes
+          changeability: 6 # Can be improved with process changes
+          certainty: 7 # Strong precedent from aviation and nuclear industries
+      - id: board-governance
+        label: Board Governance
+        type: leaf
+        color: blue
+        description: Board composition and authority to enforce safety commitments against management.
+        scores:
+          novelty: 5 # Highlighted by OpenAI board crisis
+          sensitivity: 7 # Can override management decisions
+          changeability: 4 # Board changes are rare and often contentious
+          certainty: 5 # Limited data on effective AI safety governance
+      - id: culture-scaling-question
+        label: Can Safety Culture Scale?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether safety culture persists during rapid growth and commercialization.
+        scores:
+          novelty: 7 # Underexplored in policy discussions
+          sensitivity: 8 # Could determine long-term safety outcomes
+          changeability: 3 # Structural challenge, not easily addressed
+          certainty: 4 # Limited historical precedent at this scale
       - id: safety-culture-strength
         label: Safety Culture Strength
         type: effect
@@ -2196,6 +2908,26 @@
         target: safety-culture-strength
         strength: medium
         effect: increases
+      - source: safety-talent-retention
+        target: safety-culture-strength
+        strength: strong
+        effect: increases
+      - source: leadership-commitment
+        target: incident-learning-culture
+        strength: medium
+        effect: increases
+      - source: incident-learning-culture
+        target: safety-culture-strength
+        strength: medium
+        effect: increases
+      - source: board-governance
+        target: leadership-commitment
+        strength: medium
+        effect: increases
+      - source: culture-scaling-question
+        target: safety-culture-strength
+        strength: medium
+        effect: mixed
 - id: coordination-capacity
   type: ai-transition-model-parameter
   title: Coordination Capacity
@@ -2238,27 +2970,101 @@
       - id: shared-risk-perception
         label: Shared Risk Perception
         type: leaf
+        color: emerald
         description: Common understanding of AI risks. Enables cooperation motivation.
+        scores:
+          novelty: 4 # Well-known prerequisite for cooperation
+          sensitivity: 8 # Strong effect on willingness to coordinate
+          changeability: 5 # Can shift with evidence and high-profile incidents
+          certainty: 7 # Established in collective action literature
       - id: trust-levels
         label: Trust Between Actors
         type: leaf
+        color: teal
         description: Confidence that others will honor commitments. Foundation for cooperation.
+        scores:
+          novelty: 3 # Fundamental to all cooperation theory
+          sensitivity: 9 # Critical determinant of coordination success
+          changeability: 4 # Trust builds slowly, breaks quickly
+          certainty: 8 # Well-established in game theory
       - id: verification-capability
         label: Verification Capability
         type: leaf
+        color: blue
         description: Ability to confirm compliance with agreements. Reduces need for trust.
+        scores:
+          novelty: 5 # Technical verification for AI is novel challenge
+          sensitivity: 7 # Key enabler for enforceable agreements
+          changeability: 5 # Depends on technical and institutional development
+          certainty: 6 # Unclear what verification is feasible for AI
       - id: communication-channels
         label: Communication Channels
         type: intermediate
         description: Established forums for dialogue between AI stakeholders.
+        scores:
+          novelty: 3 # Standard institutional feature
+          sensitivity: 6 # Enables but doesn't guarantee coordination
+          changeability: 6 # Forums can be created with political will
+          certainty: 7 # Clear role in facilitating dialogue
       - id: coordination-mechanisms
         label: Coordination Mechanisms
         type: intermediate
+        color: blue
         description: Standards bodies, agreements, joint commitments.
+        scores:
+          novelty: 4 # Well-understood mechanisms, novel AI application
+          sensitivity: 8 # Key transmission belt for coordination
+          changeability: 5 # Can be built but require buy-in
+          certainty: 6 # Effectiveness varies widely by design
+      - id: geopolitical-tension
+        label: Geopolitical Tension
+        type: leaf
+        color: rose
+        description: US-China competition and broader great power rivalry undermining cooperation.
+        scores:
+          novelty: 3 # Widely recognized factor
+          sensitivity: 9 # Major barrier to international coordination
+          changeability: 2 # Structural geopolitical forces are slow to shift
+          certainty: 8 # Clear evidence of impact on AI governance talks
+      - id: first-mover-incentives
+        label: First-Mover Incentives
+        type: leaf
+        color: rose
+        description: Economic and strategic advantages from moving first, creating defection pressure.
+        scores:
+          novelty: 4 # Recognized in AI race discourse
+          sensitivity: 8 # Key driver of racing dynamics
+          changeability: 4 # Hard to eliminate without coordination
+          certainty: 7 # Consistent with game theory predictions
+      - id: information-asymmetries
+        label: Information Asymmetries
+        type: leaf
+        color: slate
+        description: Gaps in knowledge about others' capabilities and intentions.
+        scores:
+          novelty: 4 # Standard in security dilemma literature
+          sensitivity: 7 # Creates uncertainty that inhibits cooperation
+          changeability: 5 # Can be reduced through transparency measures
+          certainty: 7 # Well-established effect on cooperation
+      - id: coordination-will-question
+        label: Will Major Powers Coordinate?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether US and China can overcome rivalry to coordinate on AI safety.
+        scores:
+          novelty: 6 # Central question for AI governance
+          sensitivity: 9 # Determines feasibility of global coordination
+          changeability: 3 # Depends on deep structural factors
+          certainty: 3 # Highly uncertain; could go either way
       - id: coordination-capacity
         label: Coordination Capacity
         type: effect
         description: Effective coordination on safety standards and practices.
+        scores:
+          novelty: 4 # Concept is familiar, AI application is novel
+          sensitivity: 8 # Key determinant of collective safety outcomes
+          changeability: 5 # Can be improved with sustained effort
+          certainty: 5 # Uncertain how much coordination is achievable
     edges:
       - source: shared-risk-perception
         target: communication-channels
@@ -2280,6 +3086,26 @@
         target: coordination-capacity
         strength: strong
         effect: increases
+      - source: geopolitical-tension
+        target: trust-levels
+        strength: strong
+        effect: decreases
+      - source: first-mover-incentives
+        target: coordination-capacity
+        strength: strong
+        effect: decreases
+      - source: information-asymmetries
+        target: trust-levels
+        strength: medium
+        effect: decreases
+      - source: verification-capability
+        target: information-asymmetries
+        strength: medium
+        effect: decreases
+      - source: coordination-will-question
+        target: coordination-capacity
+        strength: strong
+        effect: mixed
 - id: biological-threat-exposure
   type: ai-transition-model-parameter
   title: Biological Threat Exposure
@@ -2334,27 +3160,102 @@
       - id: ai-bioweapon-capability
         label: AI Bioweapon Capability
         type: leaf
+        color: red
         description: AI's ability to assist with pathogen design. Approaching expert level.
+        scores:
+          novelty: 6 # Emerging capability with limited precedent
+          sensitivity: 9 # Could enable catastrophic attacks
+          changeability: 3 # Capability is advancing regardless of intent
+          certainty: 6 # Active debate on magnitude of AI uplift
       - id: dna-synthesis-controls
         label: DNA Synthesis Controls
         type: leaf
+        color: emerald
         description: Screening and verification at synthesis facilities.
+        scores:
+          novelty: 4 # Established mechanism, expanding coverage
+          sensitivity: 8 # Key chokepoint for preventing attacks
+          changeability: 6 # Can be mandated with regulatory effort
+          certainty: 7 # Clear mechanism, uncertain coverage
       - id: biosurveillance-capacity
         label: Biosurveillance Capacity
         type: leaf
+        color: emerald
         description: Early detection systems for biological threats.
+        scores:
+          novelty: 5 # Advancing with metagenomic sequencing
+          sensitivity: 7 # Early detection enables faster response
+          changeability: 5 # Requires investment and coordination
+          certainty: 6 # Coverage and speed vary widely
       - id: attack-feasibility
         label: Attack Feasibility
         type: intermediate
+        color: rose
         description: How easily actors can develop bioweapons.
+        scores:
+          novelty: 4 # Classic biosecurity framing
+          sensitivity: 9 # Direct determinant of threat level
+          changeability: 4 # Multiple pathways to attack
+          certainty: 5 # Depends on attacker resources and intent
       - id: defense-capability
         label: Defense Capability
         type: intermediate
+        color: emerald
         description: Detection, response, and countermeasure capacity.
+        scores:
+          novelty: 3 # Traditional biosecurity framing
+          sensitivity: 8 # Key to reducing harm from attacks
+          changeability: 5 # Can be improved with investment
+          certainty: 6 # Effectiveness varies by pathogen type
+      - id: wet-lab-bottleneck
+        label: Wet Lab Bottleneck
+        type: leaf
+        color: slate
+        description: Physical biology skills needed to synthesize and handle pathogens.
+        scores:
+          novelty: 5 # Key debate point in AI biosecurity
+          sensitivity: 7 # If strong, limits AI uplift impact
+          changeability: 4 # Training and automation could reduce
+          certainty: 5 # Actively debated by experts
+      - id: mcm-development-capacity
+        label: MCM Development Capacity
+        type: leaf
+        color: emerald
+        description: Ability to rapidly develop medical countermeasures (vaccines, therapeutics).
+        scores:
+          novelty: 5 # COVID showed importance and limitations
+          sensitivity: 8 # Key defense against novel pathogens
+          changeability: 6 # Can be improved with investment
+          certainty: 6 # Platform technologies advancing
+      - id: actor-intent
+        label: Malicious Actor Intent
+        type: leaf
+        color: red
+        description: Presence of state or non-state actors motivated to use bioweapons.
+        scores:
+          novelty: 3 # Classic threat assessment factor
+          sensitivity: 9 # Without intent, capability is academic
+          changeability: 2 # Difficult to influence motivations
+          certainty: 4 # Hard to assess clandestine intentions
+      - id: offense-defense-balance-question
+        label: Does AI Help Defense More?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether AI capabilities favor biodefense or biooffense.
+        scores:
+          novelty: 7 # Central unresolved question
+          sensitivity: 9 # Determines net impact of AI on biorisk
+          changeability: 5 # Could be shaped by investment priorities
+          certainty: 3 # Genuinely uncertain; depends on many factors
       - id: biological-threat-exposure
         label: Biological Threat Exposure
         type: effect
         description: Society's vulnerability to biological threats.
+        scores:
+          novelty: 4 # Established framing for biosecurity
+          sensitivity: 9 # Direct measure of catastrophic risk
+          changeability: 5 # Multiple intervention points
+          certainty: 5 # Net exposure hard to measure
     edges:
       - source: ai-bioweapon-capability
         target: attack-feasibility
@@ -2376,6 +3277,22 @@
         target: biological-threat-exposure
         strength: strong
         effect: decreases
+      - source: wet-lab-bottleneck
+        target: attack-feasibility
+        strength: medium
+        effect: decreases
+      - source: mcm-development-capacity
+        target: defense-capability
+        strength: strong
+        effect: increases
+      - source: actor-intent
+        target: attack-feasibility
+        strength: strong
+        effect: increases
+      - source: offense-defense-balance-question
+        target: biological-threat-exposure
+        strength: strong
+        effect: mixed
 - id: cyber-threat-exposure
   type: ai-transition-model-parameter
   title: Cyber Threat Exposure
@@ -2427,27 +3344,102 @@
       - id: ai-attack-capabilities
         label: AI Attack Capabilities
         type: leaf
+        color: red
         description: AI ability to find vulnerabilities, craft exploits, and automate attacks.
+        scores:
+          novelty: 5 # Emerging threat with demonstrated capabilities
+          sensitivity: 9 # Could dramatically scale attack throughput
+          changeability: 3 # Capability advancing with general AI progress
+          certainty: 7 # Clear evidence of AI-assisted attacks
       - id: legacy-systems
         label: Legacy System Prevalence
         type: leaf
+        color: rose
         description: Continued use of outdated, vulnerable infrastructure.
+        scores:
+          novelty: 2 # Well-known vulnerability source
+          sensitivity: 7 # Persistent attack surface
+          changeability: 4 # Slow replacement cycles; costly
+          certainty: 8 # Clear link to breaches
       - id: ai-defense-capabilities
         label: AI Defense Capabilities
         type: leaf
+        color: emerald
         description: AI-powered threat detection, response, and remediation.
+        scores:
+          novelty: 5 # Rapidly developing defensive applications
+          sensitivity: 8 # Could shift offense-defense balance
+          changeability: 6 # Investment can accelerate deployment
+          certainty: 6 # Effectiveness varies by deployment
       - id: security-investment
         label: Security Investment
         type: leaf
+        color: blue
         description: Resources devoted to cybersecurity across organizations.
+        scores:
+          novelty: 2 # Standard factor in security posture
+          sensitivity: 6 # Enables defensive capabilities
+          changeability: 6 # Can be increased with incentives
+          certainty: 7 # Clear correlation with breach rates
       - id: attack-surface
         label: Attack Surface
         type: intermediate
+        color: rose
         description: Overall vulnerability exposure in critical systems.
+        scores:
+          novelty: 3 # Standard security concept
+          sensitivity: 8 # Direct measure of exposure
+          changeability: 5 # Can be reduced but constantly expanding
+          certainty: 7 # Well-understood relationship to risk
+      - id: critical-infrastructure-exposure
+        label: Critical Infrastructure Exposure
+        type: leaf
+        color: red
+        description: Vulnerability of power grids, water systems, and other essential infrastructure to cyber attacks.
+        scores:
+          novelty: 4 # Recognized concern but often underinvested
+          sensitivity: 9 # Could cause widespread physical harm
+          changeability: 4 # Slow upgrades to SCADA/ICS systems
+          certainty: 7 # Clear attack vectors demonstrated
+      - id: cybersecurity-workforce
+        label: Cybersecurity Workforce
+        type: leaf
+        color: slate
+        description: Availability of skilled security professionals to defend systems.
+        scores:
+          novelty: 3 # Well-known talent gap
+          sensitivity: 6 # Limits defensive capacity
+          changeability: 5 # Training pipelines exist but slow
+          certainty: 7 # Documented shortage across sectors
+      - id: supply-chain-complexity
+        label: Supply Chain Complexity
+        type: leaf
+        color: rose
+        description: Third-party dependencies that introduce vulnerabilities beyond org control.
+        scores:
+          novelty: 5 # SolarWinds highlighted this vector
+          sensitivity: 8 # Amplifies attack reach
+          changeability: 4 # Difficult to reduce dependencies
+          certainty: 7 # Clear evidence from supply chain attacks
+      - id: cyber-offense-defense-question
+        label: Will Offense Dominate?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether AI will shift cyber landscape toward attackers or defenders.
+        scores:
+          novelty: 7 # Central question for AI cybersecurity
+          sensitivity: 9 # Determines net impact direction
+          changeability: 5 # May be influenced by investment priorities
+          certainty: 3 # Genuinely uncertain; competing dynamics
       - id: cyber-threat-exposure
         label: Cyber Threat Exposure
         type: effect
         description: Net societal vulnerability to cyber attacks.
+        scores:
+          novelty: 4 # Established security framing
+          sensitivity: 9 # Direct measure of digital risk
+          changeability: 5 # Multiple intervention points
+          certainty: 5 # Net exposure hard to quantify
     edges:
       - source: ai-attack-capabilities
         target: attack-surface
@@ -2469,6 +3461,22 @@
         target: cyber-threat-exposure
         strength: strong
         effect: increases
+      - source: critical-infrastructure-exposure
+        target: cyber-threat-exposure
+        strength: strong
+        effect: increases
+      - source: cybersecurity-workforce
+        target: ai-defense-capabilities
+        strength: medium
+        effect: increases
+      - source: supply-chain-complexity
+        target: attack-surface
+        strength: medium
+        effect: increases
+      - source: cyber-offense-defense-question
+        target: cyber-threat-exposure
+        strength: strong
+        effect: mixed
 - id: societal-resilience
   type: ai-transition-model-parameter
   title: Societal Resilience
@@ -2502,27 +3510,102 @@
       - id: system-redundancy
         label: System Redundancy
         type: leaf
+        color: emerald
         description: Backup systems and fallback capabilities across infrastructure.
+        scores:
+          novelty: 3 # Well-known resilience principle
+          sensitivity: 8 # Key buffer against single points of failure
+          changeability: 5 # Requires investment but achievable
+          certainty: 8 # Clear relationship to resilience
       - id: human-skill-maintenance
         label: Human Skill Maintenance
         type: leaf
+        color: emerald
         description: Continued human capability to operate without AI assistance.
+        scores:
+          novelty: 5 # Emerging concern as AI adoption grows
+          sensitivity: 8 # Critical for non-AI fallback
+          changeability: 4 # Skills erode gradually; hard to reverse
+          certainty: 6 # Some evidence from automation literature
       - id: ai-dependency-level
         label: AI Dependency Level
         type: leaf
+        color: rose
         description: Extent of critical system reliance on AI.
+        scores:
+          novelty: 4 # Growing concern but not yet mainstream
+          sensitivity: 8 # Higher dependency = greater shock risk
+          changeability: 4 # Economic pressures drive adoption
+          certainty: 7 # Clear relationship to vulnerability
       - id: recovery-planning
         label: Recovery Planning
         type: leaf
+        color: blue
         description: Preparation for AI failures and disruptions.
+        scores:
+          novelty: 5 # AI-specific planning is nascent
+          sensitivity: 6 # Enables faster recovery but doesn't prevent shocks
+          changeability: 6 # Can be improved with deliberate effort
+          certainty: 6 # Standard planning principles apply
       - id: adaptive-capacity
         label: Adaptive Capacity
         type: intermediate
+        color: emerald
         description: Ability to reconfigure and respond to novel challenges.
+        scores:
+          novelty: 4 # Standard resilience concept
+          sensitivity: 8 # Key to surviving unexpected shocks
+          changeability: 5 # Can be built with intentional design
+          certainty: 7 # Well-established in resilience literature
+      - id: institutional-capacity
+        label: Institutional Capacity
+        type: leaf
+        color: blue
+        description: Strength of governance institutions to coordinate responses to AI disruptions.
+        scores:
+          novelty: 4 # Standard governance factor
+          sensitivity: 7 # Enables coordinated response
+          changeability: 4 # Institutional change is slow
+          certainty: 7 # Clear role in crisis response
+      - id: economic-diversification
+        label: Economic Diversification
+        type: leaf
+        color: slate
+        description: Breadth of economic sectors and employment options reducing concentration risk.
+        scores:
+          novelty: 3 # Standard resilience principle
+          sensitivity: 6 # Limits cascading failures
+          changeability: 4 # Structural economic changes are slow
+          certainty: 7 # Well-established in economics
+      - id: social-cohesion
+        label: Social Cohesion
+        type: leaf
+        color: teal
+        description: Trust and cooperation between groups enabling collective response to crises.
+        scores:
+          novelty: 4 # Recognized but often overlooked in tech policy
+          sensitivity: 7 # Determines collective action capacity
+          changeability: 4 # Deep social trends are slow to shift
+          certainty: 6 # Clear role in historical crises
+      - id: resilience-vs-efficiency-question
+        label: Will Society Invest in Resilience?
+        type: leaf
+        color: violet
+        description: Key uncertainty about whether economic pressures will allow resilience investment over efficiency gains.
+        scores:
+          novelty: 6 # Central tension in AI policy
+          sensitivity: 8 # Determines long-term vulnerability
+          changeability: 5 # Policy could shift incentives
+          certainty: 4 # Unknown how this tradeoff will resolve
       - id: societal-resilience
         label: Societal Resilience
         type: effect
         description: Overall ability to withstand and recover from AI-related shocks.
+        scores:
+          novelty: 4 # Standard resilience framing
+          sensitivity: 9 # Key to surviving disruptions
+          changeability: 5 # Can be improved with investment
+          certainty: 6 # Aggregate measure hard to quantify
     edges:
       - source: system-redundancy
         target: adaptive-capacity
@@ -2544,3 +3627,19 @@
         target: societal-resilience
         strength: strong
         effect: increases
+      - source: institutional-capacity
+        target: adaptive-capacity
+        strength: medium
+        effect: increases
+      - source: economic-diversification
+        target: societal-resilience
+        strength: medium
+        effect: increases
+      - source: social-cohesion
+        target: adaptive-capacity
+        strength: medium
+        effect: increases
+      - source: resilience-vs-efficiency-question
+        target: societal-resilience
+        strength: strong
+        effect: mixed

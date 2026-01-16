@@ -1,39 +1,69 @@
 ---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import MasterGraphViewer from '../../components/MasterGraphViewer';
-import '../../styles/global.css';
 
 // Get URL params for view configuration
 const entityId = Astro.url.searchParams.get('entity') || '';
 const showFull = Astro.url.searchParams.get('full') === 'true';
 const zoomParam = Astro.url.searchParams.get('zoom');
 const defaultZoom = zoomParam ? parseFloat(zoomParam) : undefined;
+
+const pageTitle = entityId
+  ? `Subgraph: ${entityId}`
+  : 'Master Graph';
 ---
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      {entityId
-        ? `Subgraph: ${entityId} | AI Transition Model`
-        : 'Master Graph | AI Transition Model'}
-    </title>
-    <meta name="description" content="Unified causal model of the AI Transition Model showing how factors influence capabilities, alignment, and outcomes." />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background: #0f172a;
-        color: #e2e8f0;
-        font-family: system-ui, -apple-system, sans-serif;
-      }
-    </style>
-  </head>
-  <body>
+
+<StarlightPage
+  frontmatter={{
+    title: pageTitle,
+    description: 'Unified causal model of the AI Transition Model showing how factors influence capabilities, alignment, and outcomes.',
+    tableOfContents: false,
+    template: 'splash',
+  }}
+  headings={[]}
+>
+  <div class="master-graph-page">
     <MasterGraphViewer
       entityId={entityId}
       startWithFullGraph={showFull || !entityId}
       defaultZoom={defaultZoom}
       client:load
     />
-  </body>
-</html>
+  </div>
+</StarlightPage>
+
+<style is:global>
+  /* Make diagram pages full width and height */
+  .content-panel {
+    max-width: 100% !important;
+  }
+  main {
+    max-width: 100% !important;
+    padding-inline: 1rem !important;
+    padding-bottom: 0 !important;
+  }
+  .sl-container {
+    max-width: 100% !important;
+  }
+  .sl-markdown-content {
+    max-width: 100% !important;
+  }
+  /* Remove extra bottom padding from Starlight */
+  footer {
+    display: none !important;
+  }
+  /* Hide the page title for diagram pages */
+  h1#_top,
+  .hero-html {
+    display: none !important;
+  }
+</style>
+
+<style>
+  .master-graph-page {
+    margin: -1rem;
+    margin-top: 0;
+    height: calc(100vh - 80px);
+    min-height: 600px;
+  }
+</style>

@@ -49,7 +49,39 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
     };
   }
 
-  // Apply explicit nodeColors override if provided (highest priority)
+  // Color palette map: simple color name → full color object
+  // This allows YAML authors to just say `color: rose` and get consistent styling
+  const semanticColorPalettes: Record<string, { bg: string; border: string; text: string; accent: string }> = {
+    // Concerning/risk factors (warm reds/pinks)
+    rose: { bg: '#fff1f2', border: '#fb7185', text: '#9f1239', accent: '#f43f5e' },
+    red: { bg: '#fef2f2', border: '#f87171', text: '#991b1b', accent: '#ef4444' },
+    // Positive/intervention factors (greens)
+    emerald: { bg: '#ecfdf5', border: '#34d399', text: '#065f46', accent: '#10b981' },
+    green: { bg: '#f0fdf4', border: '#4ade80', text: '#166534', accent: '#22c55e' },
+    // Structural/policy factors (blues)
+    blue: { bg: '#eff6ff', border: '#60a5fa', text: '#1e40af', accent: '#3b82f6' },
+    sky: { bg: '#f0f9ff', border: '#38bdf8', text: '#0c4a6e', accent: '#0ea5e9' },
+    // Power centers/key actors (teals)
+    teal: { bg: '#f0fdfa', border: '#2dd4bf', text: '#115e59', accent: '#14b8a6' },
+    cyan: { bg: '#ecfeff', border: '#22d3ee', text: '#164e63', accent: '#06b6d4' },
+    // Uncertainties/key questions (purples)
+    violet: { bg: '#f5f3ff', border: '#a78bfa', text: '#5b21b6', accent: '#8b5cf6' },
+    purple: { bg: '#faf5ff', border: '#c084fc', text: '#6b21a8', accent: '#a855f7' },
+    // Warnings/caution (ambers/yellows)
+    amber: { bg: '#fffbeb', border: '#fbbf24', text: '#78350f', accent: '#f59e0b' },
+    yellow: { bg: '#fefce8', border: '#facc15', text: '#713f12', accent: '#eab308' },
+    // Neutral/informational (grays/slates)
+    slate: { bg: '#f8fafc', border: '#94a3b8', text: '#334155', accent: '#64748b' },
+    gray: { bg: '#f9fafb', border: '#9ca3af', text: '#374151', accent: '#6b7280' },
+  };
+
+  // Apply semantic color from simple color name (e.g., `color: rose`)
+  if (data.color && semanticColorPalettes[data.color]) {
+    const palette = semanticColorPalettes[data.color];
+    colors = { ...palette };
+  }
+
+  // Apply explicit nodeColors override if provided (highest priority - for legacy/advanced use)
   if (data.nodeColors) {
     colors = {
       bg: data.nodeColors.bg || colors.bg,
