@@ -44,31 +44,61 @@
         description: Risk that AI systems pursue goals different from human values. Driven by alignment
           difficulty and capability growth.
         entityRef: misalignment-potential
+        scores:
+          novelty: 3 # Well-known concept in AI safety; widely discussed since Bostrom
+          sensitivity: 10 # Primary driver of AI takeover pathway; changes here cascade to existential outcomes
+          changeability: 5 # Depends on alignment research progress; uncertain but potentially improvable
+          certainty: 3 # Deep disagreement on whether alignment is solvable; fundamental uncertainty
       - id: misuse-potential
         label: Misuse Potential
         type: leaf
         description: Risk that humans use AI capabilities for destructive purposes. Includes state and
           non-state actors.
         entityRef: misuse-potential
+        scores:
+          novelty: 2 # Very familiar concept; dual-use technology risks are well understood
+          sensitivity: 9 # Primary driver of human catastrophe pathway; high impact on outcomes
+          changeability: 6 # More tractable than alignment—governance, access controls can reduce
+          certainty: 5 # Better understood than misalignment; historical precedents with other technologies
       - id: racing-dynamics
         label: Racing Dynamics
         type: leaf
         description: Competitive pressure that reduces safety margins and accelerates deployment without
           adequate testing.
+        scores:
+          novelty: 4 # Somewhat known but underappreciated; game theory aspects less discussed
+          sensitivity: 7 # Amplifier for both takeover and misuse pathways; affects safety margins
+          changeability: 4 # Hard to change—requires coordination among competitors and geopolitical actors
+          certainty: 6 # Economic and game-theoretic dynamics fairly well understood
       - id: ai-takeover-scenario
         label: AI Takeover
         type: intermediate
         description: AI systems gain and maintain power against human interests, either rapidly or gradually.
         entityRef: ai-takeover
+        scores:
+          novelty: 4 # Known scenario but specific mechanisms remain speculative
+          sensitivity: 10 # Direct pathway to existential catastrophe; binary outcome
+          changeability: 4 # Prevention requires solving alignment or limiting capabilities—both hard
+          certainty: 2 # No historical precedent; deeply uncertain if/how this would unfold
       - id: human-catastrophe-scenario
         label: Human Catastrophe
         type: intermediate
         description: Humans deliberately cause mass harm using AI—state actors or rogue actors.
         entityRef: human-catastrophe
+        scores:
+          novelty: 3 # Extension of existing WMD concerns; mechanisms fairly intuitive
+          sensitivity: 9 # Direct pathway to existential catastrophe; major outcome driver
+          changeability: 5 # More tractable than takeover—governance, monitoring, access control
+          certainty: 4 # Some historical precedent for misuse; specific AI pathways less certain
       - id: existential-catastrophe
         label: Existential Catastrophe
         type: effect
         description: Extinction, permanent loss of potential, or irreversible harm to civilization.
+        scores:
+          novelty: 2 # Well-known concept in x-risk community; widely discussed
+          sensitivity: 10 # Ultimate outcome; by definition maximally important
+          changeability: 3 # Outcome of upstream factors; prevention requires changing drivers
+          certainty: 2 # Probability estimates range from <1% to >50%; deep uncertainty
     edges:
       - source: misalignment-potential
         target: ai-takeover-scenario
@@ -141,34 +171,69 @@
         description: Humanity's collective capacity to navigate challenges—adaptability, governance quality,
           epistemic health.
         entityRef: civilizational-competence
+        scores:
+          novelty: 6 # Less discussed than technical factors; underappreciated in AI discourse
+          sensitivity: 8 # Affects value preservation and lock-in prevention; broad downstream effects
+          changeability: 5 # Slowly improvable through institutions, education, norms; not fixed
+          certainty: 4 # Hard to measure; what constitutes competence is contested
       - id: ai-ownership-distribution
         label: AI Ownership Distribution
         type: leaf
         description: How AI capabilities and benefits are distributed. Concentration vs. broad access.
         entityRef: ai-ownership
+        scores:
+          novelty: 5 # Distribution questions familiar from other tech; AI-specific aspects less discussed
+          sensitivity: 8 # Major driver of autonomy preservation and lock-in; affects power dynamics
+          changeability: 6 # Policy-amenable; antitrust, open-source, public investment can shift
+          certainty: 5 # Economic dynamics somewhat predictable; political outcomes less so
       - id: human-agency
         label: Human Agency
         type: leaf
         description: Degree to which humans maintain meaningful control and autonomy over their lives.
         entityRef: human-agency
+        scores:
+          novelty: 5 # Philosophical concept applied to AI context; specifics less explored
+          sensitivity: 7 # Key driver of autonomy preservation; affects value preservation indirectly
+          changeability: 5 # Depends on design choices, regulation, social norms; partially tractable
+          certainty: 3 # What counts as "meaningful" agency is philosophically contested
       - id: value-preservation
         label: Value Preservation
         type: intermediate
         description: Whether beneficial human values are maintained and can evolve over time.
+        scores:
+          novelty: 6 # Distinct from alignment; value drift and preservation less discussed
+          sensitivity: 9 # Direct driver of long-term trajectory quality; affects flourishing
+          changeability: 4 # Hard to ensure—values are shaped by many factors, including AI itself
+          certainty: 3 # No clear framework for what values to preserve; meta-ethical uncertainty
       - id: autonomy-preservation
         label: Autonomy Preservation
         type: intermediate
         description: Whether humans retain genuine choice and self-determination.
+        scores:
+          novelty: 5 # Autonomy erosion risks discussed but often overshadowed by catastrophe focus
+          sensitivity: 8 # Core component of trajectory quality; affects meaning and flourishing
+          changeability: 5 # Design choices, regulation, social norms can preserve autonomy
+          certainty: 3 # What constitutes genuine autonomy with AI assistance is unclear
       - id: lock-in-prevention
         label: Lock-in Prevention
         type: intermediate
         description: Avoiding permanent entrenchment of harmful power structures or values.
         entityRef: long-term-lockin
+        scores:
+          novelty: 7 # Lock-in risks underappreciated vs. catastrophe; less mainstream attention
+          sensitivity: 9 # Irreversible negative outcomes; affects all future option value
+          changeability: 4 # Must act before lock-in occurs; coordination challenges
+          certainty: 4 # Historical precedents for lock-in; AI-specific mechanisms less clear
       - id: long-term-trajectory
         label: Long-term Trajectory
         type: effect
         description: Quality of humanity's long-term future—flourishing, autonomy, value realization across
           civilizational timescales.
+        scores:
+          novelty: 4 # Long-term thinking known in EA; specific AI trajectory framing less common
+          sensitivity: 10 # Ultimate outcome; by definition maximally important
+          changeability: 3 # Outcome determined by upstream factors; must change drivers
+          certainty: 2 # Extreme uncertainty over civilizational timescales; no precedent
     edges:
       - source: civilizational-competence
         target: value-preservation

@@ -253,7 +253,7 @@ export function CauseEffectNode({ data, selected, id }: NodeProps<Node<CauseEffe
         borderRadius: borderRadius,
         borderWidth: (hasScoreHighlight || isEffectNode) ? `${effectBorderWidth}px` : undefined,
         boxShadow: isEffectNode
-          ? (selected ? '0 4px 12px rgba(245, 158, 11, 0.3)' : 'none')
+          ? 'none'
           : (selected ? `0 8px 24px rgba(0,0,0,0.15), 0 0 0 2px ${colors.accent}` : effectBoxShadow),
         cursor: isClickable ? 'pointer' : undefined,
       }}

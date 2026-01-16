@@ -119,12 +119,89 @@ const DEFAULT_SETTINGS: LayoutSettings = {
   nodeWidth: 180,
 };
 
+type ViewTab = 'graph' | 'mermaid' | 'yaml';
+
+// Generate Mermaid flowchart syntax from graph data
+function generateMermaidCode(graph: { nodes: any[]; edges: any[]; title?: string; description?: string }): string {
+  const lines: string[] = [];
+  lines.push('flowchart TD');
+  lines.push('');
+
+  // Group nodes by type for subgraphs
+  const nodesByType: Record<string, any[]> = {};
+  for (const node of graph.nodes) {
+    const type = node.type || 'intermediate';
+    if (!nodesByType[type]) nodesByType[type] = [];
+    nodesByType[type].push(node);
+  }
+
+  // Type labels and order
+  const typeLabels: Record<string, string> = {
+    leaf: 'Root Causes',
+    cause: 'Derived Factors',
+    intermediate: 'Direct Factors',
+    effect: 'Outcomes',
+  };
+  const typeOrder = ['leaf', 'cause', 'intermediate', 'effect'];
+
+  // Add nodes grouped by type
+  for (const type of typeOrder) {
+    const nodes = nodesByType[type];
+    if (!nodes || nodes.length === 0) continue;
+
+    const label = typeLabels[type] || type;
+    lines.push(`    subgraph ${type}["${label}"]`);
+    for (const node of nodes) {
+      // Escape quotes and special chars in labels
+      const safeLabel = (node.label || node.id).replace(/"/g, "'").replace(/\[/g, '(').replace(/\]/g, ')');
+      // Use different shapes based on type
+      if (type === 'effect') {
+        lines.push(`        ${node.id}([["${safeLabel}"]])`);
+      } else if (type === 'leaf') {
+        lines.push(`        ${node.id}[/"${safeLabel}"/]`);
+      } else {
+        lines.push(`        ${node.id}["${safeLabel}"]`);
+      }
+    }
+    lines.push('    end');
+    lines.push('');
+  }
+
+  // Add edges
+  lines.push('    %% Edges');
+  for (const edge of graph.edges) {
+    const arrowType = edge.effect === 'decreases' ? '-.->|−|' :
+                      edge.effect === 'mixed' ? '-.->|±|' :
+                      edge.strength === 'strong' ? '==>' : '-->';
+    lines.push(`    ${edge.source} ${arrowType} ${edge.target}`);
+  }
+
+  // Add styling
+  lines.push('');
+  lines.push('    %% Styling');
+  lines.push('    classDef leaf fill:#f0fdfa,stroke:#14b8a6,stroke-width:2px');
+  lines.push('    classDef cause fill:#eff6ff,stroke:#3b82f6,stroke-width:2px');
+  lines.push('    classDef intermediate fill:#f8fafc,stroke:#64748b,stroke-width:2px');
+  lines.push('    classDef effect fill:#fffbeb,stroke:#f59e0b,stroke-width:2px');
+
+  // Apply classes to nodes
+  for (const type of typeOrder) {
+    const nodes = nodesByType[type];
+    if (nodes && nodes.length > 0) {
+      lines.push(`    class ${nodes.map(n => n.id).join(',')} ${type}`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerProps) {
   // Read entity ID from URL client-side (Astro props may not have query params in dev)
   const [entityId, setEntityId] = useState(propEntityId || '');
   const [settings, setSettings] = useState<LayoutSettings>(DEFAULT_SETTINGS);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [scoreHighlight, setScoreHighlight] = useState<ScoreHighlightMode | undefined>(undefined);
+  const [scoreHighlight, setScoreHighlight] = useState<ScoreHighlightMode | undefined>('sensitivity');
+  const [activeTab, setActiveTab] = useState<ViewTab>('graph');
 
   useEffect(() => {
     // If no entity ID from props, read from URL path
@@ -334,7 +411,30 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
           </a>
         </div>
 
-        {/* Graph with settings button in tab bar */}
+        {/* Tab buttons */}
+        <div className="diagram-tabs">
+          <button
+            className={`diagram-tab ${activeTab === 'graph' ? 'active' : ''}`}
+            onClick={() => setActiveTab('graph')}
+          >
+            Graph
+          </button>
+          <button
+            className={`diagram-tab ${activeTab === 'mermaid' ? 'active' : ''}`}
+            onClick={() => setActiveTab('mermaid')}
+          >
+            Mermaid
+          </button>
+          <button
+            className={`diagram-tab ${activeTab === 'yaml' ? 'active' : ''}`}
+            onClick={() => setActiveTab('yaml')}
+          >
+            Data (YAML)
+          </button>
+        </div>
+
+        {/* Graph view */}
+        {activeTab === 'graph' && (
         <div className="diagram-graph-container" ref={containerRef}>
           <CauseEffectGraph
             key={settingsKey}
@@ -430,6 +530,51 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
           }))}
         />
         </div>
+        )}
+
+        {/* Mermaid code view */}
+        {activeTab === 'mermaid' && (
+          <div className="diagram-code-container" style={{ height: graphHeight }}>
+            <div className="code-header">
+              <span>Mermaid Flowchart</span>
+              <button
+                className="copy-button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generateMermaidCode(graph));
+                }}
+              >
+                Copy
+              </button>
+            </div>
+            <pre className="code-content">
+              <code>{generateMermaidCode(graph)}</code>
+            </pre>
+          </div>
+        )}
+
+        {/* YAML data view */}
+        {activeTab === 'yaml' && (
+          <div className="diagram-code-container" style={{ height: graphHeight }}>
+            <div className="code-header">
+              <span>Graph Data (YAML)</span>
+              <button
+                className="copy-button"
+                onClick={() => {
+                  const yamlContent = `# ${graph.title || entity.title}\n${graph.description ? `# ${graph.description}\n` : ''}\nnodes:\n${graph.nodes.map(n => `  - id: ${n.id}\n    label: "${n.label}"\n    type: ${n.type}${n.description ? `\n    description: "${n.description.replace(/"/g, '\\"')}"` : ''}${n.scores ? `\n    scores:\n${Object.entries(n.scores).map(([k, v]) => `      ${k}: ${v}`).join('\n')}` : ''}`).join('\n')}\n\nedges:\n${graph.edges.map(e => `  - source: ${e.source}\n    target: ${e.target}${e.strength ? `\n    strength: ${e.strength}` : ''}${e.effect ? `\n    effect: ${e.effect}` : ''}`).join('\n')}`;
+                  navigator.clipboard.writeText(yamlContent);
+                }}
+              >
+                Copy
+              </button>
+            </div>
+            <pre className="code-content">
+              <code>{(() => {
+                const yamlContent = `# ${graph.title || entity.title}\n${graph.description ? `# ${graph.description}\n` : ''}\nnodes:\n${graph.nodes.map(n => `  - id: ${n.id}\n    label: "${n.label}"\n    type: ${n.type}${n.description ? `\n    description: "${n.description.replace(/"/g, '\\"')}"` : ''}${n.scores ? `\n    scores:\n${Object.entries(n.scores).map(([k, v]) => `      ${k}: ${v}`).join('\n')}` : ''}`).join('\n')}\n\nedges:\n${graph.edges.map(e => `  - source: ${e.source}\n    target: ${e.target}${e.strength ? `\n    strength: ${e.strength}` : ''}${e.effect ? `\n    effect: ${e.effect}` : ''}`).join('\n')}`;
+                return yamlContent;
+              })()}</code>
+            </pre>
+          </div>
+        )}
       </div>
 
       {/* Settings Sidebar */}
@@ -621,6 +766,79 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
       )}
 
       <style>{`
+        .diagram-tabs {
+          display: flex;
+          gap: 0;
+          margin-bottom: 0;
+          border-bottom: 1px solid var(--sl-color-hairline);
+        }
+        .diagram-tab {
+          padding: 0.6rem 1.2rem;
+          background: transparent;
+          border: none;
+          border-bottom: 2px solid transparent;
+          color: var(--sl-color-gray-3);
+          cursor: pointer;
+          font-size: 0.9rem;
+          font-weight: 500;
+          transition: all 0.15s ease;
+        }
+        .diagram-tab:hover {
+          color: var(--sl-color-text);
+          background: var(--sl-color-gray-6);
+        }
+        .diagram-tab.active {
+          color: var(--sl-color-accent);
+          border-bottom-color: var(--sl-color-accent);
+        }
+        .diagram-code-container {
+          display: flex;
+          flex-direction: column;
+          background: var(--sl-color-gray-6);
+          border: 1px solid var(--sl-color-hairline);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .code-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.6rem 1rem;
+          background: var(--sl-color-gray-5);
+          border-bottom: 1px solid var(--sl-color-hairline);
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: var(--sl-color-gray-2);
+        }
+        .copy-button {
+          padding: 0.3rem 0.8rem;
+          background: var(--sl-color-gray-6);
+          border: 1px solid var(--sl-color-hairline);
+          border-radius: 4px;
+          color: var(--sl-color-gray-2);
+          font-size: 0.8rem;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+        .copy-button:hover {
+          background: var(--sl-color-accent);
+          color: white;
+          border-color: var(--sl-color-accent);
+        }
+        .code-content {
+          flex: 1;
+          margin: 0;
+          padding: 1rem;
+          overflow: auto;
+          font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+          font-size: 0.85rem;
+          line-height: 1.5;
+          white-space: pre;
+          color: var(--sl-color-text);
+        }
+        .code-content code {
+          background: transparent;
+        }
         .diagram-viewer-wrapper {
           display: flex;
           gap: 1rem;

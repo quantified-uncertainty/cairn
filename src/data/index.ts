@@ -685,6 +685,12 @@ export function getEntityHref(id: string, type?: string): string {
     return registryPath;
   }
 
+  // Second, check if the entity has a path defined in its YAML data
+  const entity = getEntityById(id);
+  if (entity && (entity as any).path) {
+    return (entity as any).path;
+  }
+
   // Fall back to type-based mapping for entities not in content files
   const pathMapping: Record<string, string> = {
     'risk': '/knowledge-base/risks/accident/',

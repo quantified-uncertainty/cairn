@@ -63,55 +63,120 @@
         label: Taiwan Stability
         type: leaf
         description: Geopolitical risk to TSMC. 90%+ of advanced chips.
+        scores:
+          novelty: 4        # Well-known geopolitical concern in tech circles
+          sensitivity: 9    # TSMC disruption would cascade through entire AI supply chain
+          changeability: 2  # Geopolitical factors largely outside AI community control
+          certainty: 6      # Concentration clear, but invasion probability highly debated
       - id: asml-capacity
         label: ASML Capacity
         type: leaf
         description: Sole EUV lithography supplier. ~50 machines/year.
+        scores:
+          novelty: 5        # Known in semiconductor circles, less so in general AI discourse
+          sensitivity: 8    # Bottleneck for all advanced chip production
+          changeability: 3  # Extremely hard to replicate; decades of specialized expertise
+          certainty: 8      # Production numbers and market position well documented
       - id: power-grid
         label: Power Grid Capacity
         type: leaf
         description: Grid expansion, permitting. Binding constraint for large clusters.
+        scores:
+          novelty: 6        # Emerging as recognized constraint, not yet common knowledge
+          sensitivity: 7    # Can block datacenter expansion in specific regions
+          changeability: 4  # Infrastructure buildout possible but slow (years)
+          certainty: 7      # Energy requirements and grid limits well understood
       - id: pretraining-data
         label: Training Data Quality
         type: leaf
         description: Available high-quality data. May become binding as models scale.
+        scores:
+          novelty: 5        # Data scaling discussed but specifics of quality constraints less known
+          sensitivity: 6    # Important but synthetic data and other approaches may mitigate
+          changeability: 5  # New data sources possible; quality improvements tractable
+          certainty: 4      # Unclear when/if data becomes binding vs. other constraints
       - id: ai-revenue
         label: AI Revenue
         type: leaf
         description: Revenue from AI products. Justifies continued investment.
+        scores:
+          novelty: 3        # Revenue dynamics well discussed in tech/finance circles
+          sensitivity: 7    # Sustains investment cycle; collapse would slow development
+          changeability: 5  # Market-driven but influenced by product quality and adoption
+          certainty: 6      # Current revenues known; future trajectory uncertain
       - id: fab-capacity
         label: Fab Capacity
         type: cause
         description: "Advanced node manufacturing. New fabs: 3-5 years, $20-40B."
+        scores:
+          novelty: 4        # Fab constraints well known in semiconductor industry
+          sensitivity: 8    # Direct determinant of chip supply for AI training
+          changeability: 3  # Very long lead times; massive capital requirements
+          certainty: 7      # Production capacity and expansion plans well tracked
       - id: ai-valuations
         label: AI Valuations
         type: cause
         description: Market caps enabling capital raises. $1-3T for frontier labs.
+        scores:
+          novelty: 3        # AI valuations extensively covered in financial press
+          sensitivity: 6    # Enables funding but development can continue at lower valuations
+          changeability: 4  # Market-driven; influenced by perceived progress and hype cycles
+          certainty: 5      # Current valuations known; sustainability highly uncertain
       - id: chip-supply
         label: Chip Supply
         type: intermediate
         description: Total advanced AI chips produced.
+        scores:
+          novelty: 3        # Supply chain dynamics well covered
+          sensitivity: 8    # Direct input to compute availability
+          changeability: 4  # Depends on upstream fab capacity; slow to change
+          certainty: 7      # Production numbers relatively well tracked
       - id: chip-architecture
         label: Chip Architecture
         type: intermediate
         description: FLOPS per chip. ~2-3x improvement per generation.
+        scores:
+          novelty: 4        # Moore's Law / chip improvements commonly discussed
+          sensitivity: 7    # Multiplies effective compute from given supply
+          changeability: 5  # R&D-driven; steady but somewhat predictable progress
+          certainty: 7      # Historical trends well documented; near-term roadmaps known
       - id: algorithmic-efficiency
         label: Algorithmic Efficiency
         type: intermediate
         description: Software improvements. Historically ~4x/year.
         entityRef: tmc-algorithms
+        scores:
+          novelty: 5        # Rate of improvement less widely appreciated than hardware
+          sensitivity: 8    # Huge multiplier on effective compute; faster than hardware
+          changeability: 6  # Research-driven; breakthroughs unpredictable but happen
+          certainty: 5      # Historical trends measurable but future gains uncertain
       - id: datacenter-capacity
         label: Datacenter Capacity
         type: intermediate
         description: "Infrastructure: power, cooling, networking."
+        scores:
+          novelty: 4        # Datacenter expansion regularly covered in tech press
+          sensitivity: 7    # Required infrastructure for deploying compute
+          changeability: 5  # Capital and permitting constrained; multi-year buildouts
+          certainty: 7      # Expansion plans and capacity well documented
       - id: ai-compute-spending
         label: AI Compute Spending
         type: intermediate
         description: Capital deployed for compute infrastructure.
+        scores:
+          novelty: 3        # Spending figures widely reported
+          sensitivity: 7    # Enables hardware acquisition and datacenter buildout
+          changeability: 5  # Driven by investment climate and competitive dynamics
+          certainty: 6      # Current spending known; future commitments uncertain
       - id: effective-compute
         label: Effective Compute
         type: effect
         description: Net compute available for frontier AI training.
+        scores:
+          novelty: 4        # Concept of effective compute increasingly discussed
+          sensitivity: 9    # Primary driver of frontier AI capabilities
+          changeability: 5  # Aggregate of multiple upstream factors
+          certainty: 6      # Current levels estimable; growth trajectory debated
     edges:
       - source: asml-capacity
         target: fab-capacity
@@ -234,59 +299,124 @@
         type: leaf
         description: Supply of skilled ML researchers and engineers. Growing exponentially but still
           concentrated.
+        scores:
+          novelty: 3        # AI talent shortage widely discussed
+          sensitivity: 7    # Key input to research progress; not decisive alone
+          changeability: 5  # Education and immigration policies can help over years
+          certainty: 6      # Talent numbers estimable; quality harder to measure
       - id: compute-availability
         label: Compute Availability
         type: leaf
         description: Access to frontier compute for scaling studies. 91% of efficiency gains depend on scale.
+        scores:
+          novelty: 5        # Connection to algorithmic progress less widely appreciated
+          sensitivity: 8    # 91% of gains are scale-dependent; critical enabler
+          changeability: 4  # Governed by hardware supply and capital; slow to change
+          certainty: 7      # Compute levels well tracked; dependency established
       - id: open-science-norms
         label: Open Science Norms
         type: leaf
         description: Culture of publishing papers/code. Algorithms diffuse instantly—cannot be physically
           controlled.
+        scores:
+          novelty: 6        # Governance implications less discussed outside AI policy
+          sensitivity: 7    # Determines diffusion speed; key for differential progress
+          changeability: 4  # Cultural norms shift slowly; some labs moving to secrecy
+          certainty: 6      # Current norms observable; future trends uncertain
       - id: competitive-pressure
         label: Competitive Pressure
         type: leaf
         description: Racing dynamics between labs/nations. Accelerates innovation but may compromise safety.
+        scores:
+          novelty: 4        # Racing dynamics frequently discussed in AI safety
+          sensitivity: 8    # Affects pace and safety tradeoffs; pervasive effect
+          changeability: 4  # Geopolitical and economic drivers hard to shift
+          certainty: 5      # Competition clear; impact magnitude debated
       - id: scaling-laws
         label: Scaling Laws
         type: cause
         description: Chinchilla 20:1 token-to-parameter ratio. Compute-optimal training enables smaller,
           better-trained models.
+        scores:
+          novelty: 5        # Known in ML community; details less understood broadly
+          sensitivity: 8    # Fundamentally shapes training decisions and efficiency
+          changeability: 3  # Empirical findings; unlikely to change dramatically
+          certainty: 7      # Well-established through experiments; extrapolation uncertain
       - id: academic-research
         label: Academic Research
         type: cause
         description: Volume of ML papers and experiments. Transformer (2017) was transformative but unpredicted.
+        scores:
+          novelty: 4        # Academic ML output is well-tracked
+          sensitivity: 7    # Feeds into innovations but breakthroughs unpredictable
+          changeability: 6  # Funding and incentives can increase output
+          certainty: 5      # Volume measurable; impact hard to predict
       - id: paradigm-shifts
         label: Paradigm Shifts
         type: cause
         description: Architectural breakthroughs like Transformers. Transformers + Chinchilla account for
           91% of gains at frontier.
+        scores:
+          novelty: 6        # Specific contribution to gains less widely known
+          sensitivity: 9    # Transformers drove most of recent progress; next shift could be huge
+          changeability: 2  # Fundamentally unpredictable; cannot be planned
+          certainty: 4      # Past shifts well-documented; future ones unpredictable
       - id: post-training-methods
         label: Post-Training Methods
         type: cause
         description: RLHF, distillation, test-time compute. Add 3-16x efficiency gains beyond pre-training.
+        scores:
+          novelty: 6        # Magnitude of post-training gains underappreciated
+          sensitivity: 8    # 3-16x multiplier; key for capability elicitation
+          changeability: 7  # Active research area with rapid progress
+          certainty: 6      # Current methods documented; future improvements uncertain
       - id: architecture-innovations
         label: Architecture Innovations
         type: intermediate
         description: MoE (DeepSeek 40% compute), GQA, RoPE. Core component of 23x software improvements.
+        scores:
+          novelty: 6        # Specific architectural gains less widely appreciated
+          sensitivity: 8    # Core component of 23x software improvement
+          changeability: 6  # Research-driven; consistent incremental progress
+          certainty: 6      # Current innovations documented; future path uncertain
       - id: training-efficiency
         label: Training Efficiency
         type: intermediate
         description: FP8 quantization, curriculum learning, optimization methods. Enables compute-optimal
           training.
+        scores:
+          novelty: 5        # Training optimizations known in ML community
+          sensitivity: 7    # Enables compute-optimal training; significant multiplier
+          changeability: 6  # Engineering-driven; steady improvement possible
+          certainty: 6      # Current methods documented; future gains uncertain
       - id: software-optimizations
         label: Software Optimizations
         type: intermediate
         description: Speculative decoding, KV caching, quantization. 23x improvement vs. 1.3x hardware gains.
+        scores:
+          novelty: 6        # 23x vs 1.3x ratio underappreciated outside ML
+          sensitivity: 8    # Dramatically outpaces hardware; key efficiency driver
+          changeability: 6  # Engineering effort can accelerate; many low-hanging fruit
+          certainty: 7      # Measured improvements well-documented
       - id: deployment-efficiency
         label: Deployment Efficiency
         type: intermediate
         description: Inference optimization, batching. 280x cost reduction over 24 months.
+        scores:
+          novelty: 6        # 280x cost reduction impressive but not widely known
+          sensitivity: 7    # Determines accessibility and scaling of inference
+          changeability: 7  # Engineering-driven; continuous improvement feasible
+          certainty: 7      # Cost reductions well-documented
       - id: algorithmic-progress
         label: Algorithmic Progress
         type: effect
         description: "Compute required to reach fixed performance halves every 8 months (95% CI: 5-14
           months). Combined pre-training + post-training: ~9x/year."
+        scores:
+          novelty: 6        # Rate of improvement (9x/year) not widely appreciated
+          sensitivity: 9    # Primary multiplier on effective compute; drives capabilities
+          changeability: 4  # Aggregate of multiple research threads; partially controllable
+          certainty: 5      # Historical trends measurable; future extrapolation uncertain
     edges:
       - source: compute-availability
         target: paradigm-shifts
@@ -403,67 +533,137 @@
         type: leaf
         description: ~50 interpretability researchers, 140+ papers at ICML. Growing exponentially from small
           base.
+        scores:
+          novelty: 5        # Field size known in AI safety circles but not broadly
+          sensitivity: 7    # Key input to safety progress; small base limits impact
+          changeability: 6  # Can be accelerated with funding and recruitment
+          certainty: 7      # Researcher counts and paper volumes trackable
       - id: safety-funding
         label: Safety Funding
         type: leaf
         description: OpenAI allocated 20% compute for Superalignment. Labs invest but far less than
           capabilities.
+        scores:
+          novelty: 4        # Safety funding levels discussed in policy circles
+          sensitivity: 7    # Enables research but not decisive alone
+          changeability: 7  # Could be increased with philanthropic/policy action
+          certainty: 6      # Announced funding known; actual allocation less clear
       - id: racing-intensity
         label: Racing Intensity
         type: leaf
         description: Safety timelines compressed 70-80% post-ChatGPT. Competitive pressure reduces safety
           investment.
+        scores:
+          novelty: 5        # Racing dynamics discussed but timeline compression less known
+          sensitivity: 8    # Determines time available for safety research; critical
+          changeability: 4  # Driven by competitive/geopolitical forces; hard to slow
+          certainty: 6      # Racing behavior clear; intensity hard to quantify precisely
       - id: safety-culture
         label: Safety Culture
         type: leaf
         description: Only 3/7 frontier labs test dangerous capabilities. Mixed commitment across industry.
+        scores:
+          novelty: 5        # Safety commitments discussed but actual practices less known
+          sensitivity: 7    # Affects adoption of safety measures across industry
+          changeability: 5  # Cultural shifts possible but require sustained pressure
+          certainty: 5      # Public commitments visible; actual practices harder to assess
       - id: interpretability-progress
         label: Interpretability Progress
         type: cause
         description: SAEs now extract features from Claude 3 Sonnet. 70% of features interpretable but only
           ~10% of model mapped.
+        scores:
+          novelty: 6        # SAE progress less widely known outside ML research
+          sensitivity: 8    # Key enabler for detecting deception and misalignment
+          changeability: 6  # Active research area; progress accelerating
+          certainty: 4      # Current coverage measurable; scalability to frontier uncertain
       - id: alignment-technique-development
         label: Alignment Technique Development
         type: cause
         description: RLHF, Constitutional AI, weak-to-strong generalization. Methods exist but show brittleness.
+        scores:
+          novelty: 5        # RLHF well known; brittleness less appreciated
+          sensitivity: 9    # Core determinant of whether AI stays aligned
+          changeability: 7  # Active research with room for breakthroughs
+          certainty: 4      # Methods exist but long-term robustness uncertain
       - id: control-methodology-adoption
         label: Control Methodology Adoption
         type: cause
         description: Redwood's AI control via red team/blue team. Safety without alignment assumption.
+        scores:
+          novelty: 7        # AI control paradigm relatively new outside safety community
+          sensitivity: 7    # Complements alignment; provides defense-in-depth
+          changeability: 7  # Lab adoption decisions; could be accelerated with pressure
+          certainty: 5      # Methodology documented; effectiveness at scale untested
       - id: benchmark-development
         label: Benchmark Development
         type: cause
         description: AILuminate, capability evaluations. But vulnerable to sandbagging and conflate safety
           with capabilities.
+        scores:
+          novelty: 6        # Evaluation efforts known; fundamental limitations less so
+          sensitivity: 6    # Important for measuring progress but not decisive
+          changeability: 6  # New benchmarks can be developed; fundamental issues persist
+          certainty: 4      # Benchmarks exist but reliability questionable
       - id: alignment-robustness
         label: Alignment Robustness
         type: intermediate
         description: RLHF shows preference collapse, deceptive alignment. 60-80% of RL agents exhibit goal
           misgeneralization.
+        scores:
+          novelty: 6        # 60-80% goal misgeneralization rate not widely known
+          sensitivity: 9    # Core safety property; determines alignment failure modes
+          changeability: 5  # Depends on fundamental research progress
+          certainty: 4      # Known issues documented; solutions unclear
       - id: interpretability-coverage
         label: Interpretability Coverage
         type: intermediate
         description: Can explain safety-relevant features but far from comprehensive model understanding.
+        scores:
+          novelty: 6        # ~10% model coverage not widely appreciated
+          sensitivity: 8    # Critical for detecting hidden goals and deception
+          changeability: 5  # Depends on research progress; scaling uncertain
+          certainty: 4      # Current coverage measurable; completeness path unclear
       - id: evaluation-reliability
         label: Evaluation Reliability
         type: intermediate
         description: Models can sandbag dangerous capability evals. Benchmarks correlate with capabilities
           not safety.
+        scores:
+          novelty: 6        # Sandbagging vulnerability not widely appreciated
+          sensitivity: 7    # Determines ability to detect dangerous capabilities
+          changeability: 5  # Fundamental adversarial problem; hard to fully solve
+          certainty: 4      # Reliability issues demonstrated but scope unclear
       - id: weak-supervision-capacity
         label: Weak Supervision Capacity
         type: intermediate
         description: GPT-2 supervision recovers only 20-50% of GPT-4 capabilities. Superhuman alignment
           unsolved.
+        scores:
+          novelty: 7        # Weak-to-strong generalization results not widely known
+          sensitivity: 8    # Fundamental bottleneck for superhuman alignment
+          changeability: 5  # Research-dependent; fundamental theoretical issue
+          certainty: 4      # Initial results documented; scalability unknown
       - id: capabilities-safety-gap
         label: Capabilities-Safety Gap
         type: intermediate
         description: Safety research trails capabilities by widening margin. ~50 interpretability
           researchers vs thousands on capabilities.
+        scores:
+          novelty: 5        # Gap discussed in AI safety but magnitude less known
+          sensitivity: 9    # Determines whether safety keeps pace with capabilities
+          changeability: 6  # Could be addressed with major funding/hiring shifts
+          certainty: 6      # Researcher counts trackable; gap widening observable
       - id: safety-adequacy
         label: Safety Adequacy
         type: effect
         description: Whether AI safety measures are sufficient to prevent catastrophic misalignment as
           capabilities scale.
+        scores:
+          novelty: 5        # Safety adequacy question well known in AI safety
+          sensitivity: 10   # Ultimate determinant of alignment catastrophe
+          changeability: 5  # Aggregate of multiple research and policy factors
+          certainty: 3      # Extremely uncertain; no reliable way to assess yet
     edges:
       - source: safety-field-growth
         target: interpretability-progress
@@ -576,59 +776,124 @@
         label: Frontier Model Costs
         type: leaf
         description: Training costs $100M-$1B+. Only ~20 orgs can compete. Projected to reach $10B by 2030.
+        scores:
+          novelty: 4        # Training costs widely reported
+          sensitivity: 7    # Directly limits competition; creates barriers to entry
+          changeability: 4  # Driven by capability requirements; hard to reduce
+          certainty: 7      # Cost estimates well documented
       - id: regulatory-lag
         label: Regulatory Lag
         type: leaf
         description: Antitrust backward-looking; 5-10 year case timelines. Rule of reason inadequate for
           platform economics.
+        scores:
+          novelty: 5        # Regulatory lag known but AI-specific implications less so
+          sensitivity: 6    # Enables concentration during critical window
+          changeability: 5  # Policy reform possible but slow; institutional inertia
+          certainty: 7      # Case timelines and regulatory structure well documented
       - id: antitrust-enforcement
         label: Antitrust Enforcement
         type: leaf
         description: FTC/DOJ investigations of AI partnerships. Trump admin may reduce enforcement.
+        scores:
+          novelty: 4        # Antitrust actions receive media coverage
+          sensitivity: 5    # Can slow concentration but rarely reverses it
+          changeability: 6  # Political decisions; varies with administration
+          certainty: 5      # Current actions known; outcomes uncertain
       - id: returns-to-scale
         label: Returns to Scale
         type: cause
         description: Natural monopoly characteristics. Lower total cost for single firm than multiple firms.
+        scores:
+          novelty: 4        # Returns to scale in tech well understood economically
+          sensitivity: 8    # Fundamental driver of winner-take-all dynamics
+          changeability: 3  # Inherent to technology economics; hard to counteract
+          certainty: 7      # Economic dynamics well established
       - id: data-feedback-loops
         label: Data Feedback Loops
         type: cause
         description: Better models → more users → more data → better models. Virtuous cycle for incumbents.
+        scores:
+          novelty: 5        # Data flywheel concept known but AI-specific dynamics less so
+          sensitivity: 8    # Self-reinforcing advantage; compounds over time
+          changeability: 4  # Could be disrupted by data regulations or sharing
+          certainty: 6      # Mechanism clear; magnitude of effect debated
       - id: first-mover-advantages
         label: First-Mover Advantages
         type: cause
         description: Economies of scale, brand recognition, data accumulation. Early leaders gain
           compounding benefits.
+        scores:
+          novelty: 4        # First-mover advantages well understood in business
+          sensitivity: 7    # Creates lasting market structure; hard to overcome
+          changeability: 3  # Historical advantage; cannot be undone
+          certainty: 7      # Current market positions well documented
       - id: capital-labor-shift
         label: Capital-Labor Share Shift
         type: cause
         description: AI increases returns to capital at expense of labor. Capital ownership highly concentrated.
+        scores:
+          novelty: 5        # Labor share decline discussed but AI acceleration less so
+          sensitivity: 8    # Fundamental driver of wealth inequality
+          changeability: 5  # Policy (taxation, UBI) could partially offset
+          certainty: 6      # Trend documented; AI-specific magnitude uncertain
       - id: cloud-infrastructure-concentration
         label: Infrastructure Lock-in
         type: intermediate
         description: 66-70% market share (AWS, Azure, GCP). Switching costs prohibitive; data gravity.
+        scores:
+          novelty: 4        # Cloud concentration well documented
+          sensitivity: 7    # Creates dependency; enables extraction
+          changeability: 4  # Switching costs make change difficult
+          certainty: 8      # Market shares well tracked
       - id: labor-displacement
         label: Labor Displacement
         type: intermediate
         description: 76,440 positions eliminated (2025); 92M projected (2030). Removes traditional mobility
           paths.
+        scores:
+          novelty: 5        # Job displacement discussed but projections less known
+          sensitivity: 7    # Affects political stability and worker power
+          changeability: 5  # Retraining and policy could mitigate but slow
+          certainty: 4      # Current layoffs known; projections highly uncertain
       - id: market-concentration
         label: Market Concentration
         type: intermediate
         description: Four companies control 66.7% of $1.1T AI market value. Winner-take-all dynamics.
+        scores:
+          novelty: 4        # Big tech dominance widely discussed
+          sensitivity: 8    # Core driver of economic power concentration
+          changeability: 4  # Antitrust could address but historically slow
+          certainty: 8      # Market valuations well documented
       - id: algorithmic-collusion
         label: Algorithmic Collusion
         type: intermediate
         description: AI systems reach mutually beneficial pricing patterns. 28% margin increase in
           algorithmic pricing studies.
+        scores:
+          novelty: 7        # Algorithmic collusion less widely known outside economics
+          sensitivity: 6    # Enables extraction; undermines competition
+          changeability: 5  # Regulatory intervention possible but detection hard
+          certainty: 5      # Studies demonstrate effect; real-world prevalence uncertain
       - id: geographic-concentration
         label: Geographic Concentration
         type: intermediate
         description: 94% of AI funding in US. Creates international inequality and consolidates control.
+        scores:
+          novelty: 5        # US tech dominance known; 94% figure less so
+          sensitivity: 6    # Affects global power dynamics and access
+          changeability: 5  # Other regions investing but lag substantial
+          certainty: 7      # Funding data well tracked
       - id: economic-power-lockin
         label: Economic Power Lock-in
         type: effect
         description: Wealth concentration so extreme that redistribution becomes structurally impossible.
           Economic hierarchy embedded in technological infrastructure.
+        scores:
+          novelty: 6        # Lock-in framing less common than inequality discussion
+          sensitivity: 9    # Determines long-term economic power distribution
+          changeability: 4  # Aggregate of multiple entrenched dynamics
+          certainty: 4      # Trajectory plausible but reversibility unclear
     edges:
       - source: frontier-model-costs
         target: returns-to-scale
@@ -726,76 +991,151 @@
         type: leaf
         description: Real-time identification in public spaces. Deployed in stadiums, airports, schools.
           Eliminates anonymity.
+        scores:
+          novelty: 4        # Facial recognition widely discussed
+          sensitivity: 8    # Eliminates anonymity; enables mass identification
+          changeability: 5  # Technical capability exists; deployment choice remains
+          certainty: 8      # Technology capabilities well documented
       - id: chinese-tech-exports
         label: Chinese Tech Exports
         type: leaf
         description: Hikvision/Dahua control 34% global surveillance market. 266 projects in Africa.
           Technology diffusion to 80+ countries.
+        scores:
+          novelty: 5        # China tech export discussed but scale less known
+          sensitivity: 7    # Enables surveillance proliferation globally
+          changeability: 4  # Geopolitical dynamics; hard to restrict
+          certainty: 7      # Export data and projects well documented
       - id: global-autocratization
         label: Global Autocratization Trend
         type: leaf
         description: 45 countries autocratizing (2024) vs 12 (2004). 72% of humanity under autocracy.
           Creates demand for control technology.
+        scores:
+          novelty: 5        # Democratic decline discussed; AI connection less so
+          sensitivity: 7    # Creates demand for and acceptance of AI control
+          changeability: 4  # Deep structural/political forces; slow to reverse
+          certainty: 7      # V-Dem and Freedom House track trends well
       - id: emergency-powers-adoption
         label: Emergency Powers Adoption
         type: leaf
         description: Surveillance adopted for terrorism, COVID. Democratic backsliding—50% of 'Free'
           countries declined in internet freedom.
+        scores:
+          novelty: 5        # Emergency surveillance discussed; pattern less known
+          sensitivity: 6    # Creates precedent and infrastructure for control
+          changeability: 5  # Crisis-dependent; existing powers tend to persist
+          certainty: 6      # Historical pattern documented; continuation uncertain
       - id: surveillance-proliferation
         label: AI Surveillance Proliferation
         type: cause
         description: 80+ countries deployed; 400M cameras in China (54% global total). Infrastructure for
           comprehensive population monitoring.
+        scores:
+          novelty: 5        # Surveillance discussed; specific deployment scope less known
+          sensitivity: 9    # Enables all downstream control mechanisms
+          changeability: 3  # Infrastructure once deployed is hard to remove
+          certainty: 7      # Camera counts and deployments well tracked
       - id: data-integration
         label: Data Integration Infrastructure
         type: cause
         description: Combines police, social media, financial, biometric data for comprehensive profiling.
           Enables precise targeting.
+        scores:
+          novelty: 6        # Data integration capabilities less publicly visible
+          sensitivity: 8    # Enables precise targeting and comprehensive profiling
+          changeability: 4  # Technical and institutional barriers to dismantling
+          certainty: 5      # Capabilities known; actual integration less visible
       - id: generational-normalization
         label: Generational Normalization
         type: cause
         description: Growing up under surveillance internalizes self-censorship. Cultural capacity for
           resistance erodes over time.
+        scores:
+          novelty: 7        # Generational effects less discussed in policy
+          sensitivity: 8    # Creates permanent behavioral and cultural change
+          changeability: 2  # Once internalized, extremely difficult to reverse
+          certainty: 4      # Theoretical mechanism plausible; empirics limited
       - id: ai-tocracy-feedback
         label: AI-tocracy Feedback Loop
         type: cause
         description: AI innovation entrenches regime; regime investment stimulates further innovation.
           Self-reinforcing cycle.
+        scores:
+          novelty: 7        # AI-tocracy concept from recent research; not widely known
+          sensitivity: 8    # Self-reinforcing; accelerates lock-in
+          changeability: 3  # Once established, very hard to break
+          certainty: 5      # Mechanism theoretically sound; empirics limited
       - id: predictive-policing
         label: Predictive Policing Systems
         type: intermediate
         description: Flag potential dissidents before action. Preemptive neutralization prevents
           organizing—closes popular uprising pathway.
+        scores:
+          novelty: 5        # Predictive policing discussed; dissident application less so
+          sensitivity: 9    # Closes uprising pathway; eliminates organizing
+          changeability: 4  # Requires political will to dismantle; can be regulated
+          certainty: 5      # Technology exists; actual use for dissidents less documented
       - id: social-credit-systems
         label: Social Credit Systems
         type: intermediate
         description: Restrict movement/employment without legal process. Economic coercion—closes elite
           defection pathway.
+        scores:
+          novelty: 5        # Social credit widely discussed; elite defection angle less so
+          sensitivity: 8    # Closes elite defection pathway; economic coercion
+          changeability: 4  # Policy choice; requires political change to remove
+          certainty: 6      # China implementation documented; expansion uncertain
       - id: automated-enforcement
         label: Automated Enforcement
         type: intermediate
         description: Perfect compliance; no human defection. Reduces reliance on agents who might
           rebel—closes coup pathway.
+        scores:
+          novelty: 7        # Automated enforcement implications for coups less discussed
+          sensitivity: 8    # Closes coup pathway; removes human defection option
+          changeability: 4  # Technology deployment choice; can be limited
+          certainty: 4      # Theoretical mechanism; full automation not yet demonstrated
       - id: election-manipulation
         label: AI Election Manipulation
         type: intermediate
         description: Deepfakes, bot networks suppress opposition. Zimbabwe, Russia, Slovakia cases
           documented. Undermines democratic processes.
+        scores:
+          novelty: 5        # Election interference widely discussed; AI-specific less so
+          sensitivity: 7    # Undermines democratic legitimacy and accountability
+          changeability: 5  # Detection and regulation possible but difficult
+          certainty: 6      # Cases documented; attribution and effect magnitude debated
       - id: internet-shutdowns
         label: Internet Shutdowns
         type: intermediate
         description: 283 shutdowns in 39 countries (2023); +41% from prior year. Information control during
           protests.
+        scores:
+          novelty: 4        # Internet shutdowns regularly reported
+          sensitivity: 7    # Prevents coordination during critical moments
+          changeability: 5  # Policy choice; international pressure can help
+          certainty: 8      # Shutdowns well tracked by civil society
       - id: cross-border-repression
         label: Cross-Border Repression
         type: intermediate
         description: Surveillance of diaspora communities. Transnational cooperation among autocracies. No
           safe haven for dissidents.
+        scores:
+          novelty: 6        # Transnational repression less widely known
+          sensitivity: 7    # Eliminates external safe havens; global reach
+          changeability: 5  # Requires international cooperation to address
+          certainty: 6      # Cases documented; full scope hard to measure
       - id: political-power-lockin
         label: Political Power Lock-in
         type: effect
         description: First potentially permanent authoritarian systems. All traditional overthrow pathways
           (uprising, coup, elite defection) closed simultaneously.
+        scores:
+          novelty: 7        # Permanent authoritarianism concept novel; most assume cycles
+          sensitivity: 10   # Determines long-term political power distribution globally
+          changeability: 3  # Aggregate of multiple entrenched mechanisms
+          certainty: 4      # Theoretical framework; no historical precedent
     edges:
       - source: facial-recognition-capability
         target: surveillance-proliferation
@@ -923,66 +1263,131 @@
         type: leaf
         description: No philosophical consensus on correct values. AI development forces premature
           resolution of unresolved ethical questions.
+        scores:
+          novelty: 6        # Philosophical uncertainty known; AI implications less so
+          sensitivity: 8    # Determines whether value choices are appropriate
+          changeability: 2  # Fundamental philosophical problem; unlikely to resolve
+          certainty: 7      # Meta-ethical disagreement well documented
       - id: western-training-data
         label: Western Training Data Bias
         type: leaf
         description: English-dominant, Protestant European values in training data. 94% of AI funding in US
           creates cultural bias.
+        scores:
+          novelty: 5        # Western bias discussed in AI ethics; specifics less known
+          sensitivity: 7    # Shapes global AI value systems
+          changeability: 5  # Multilingual/multicultural data collection possible
+          certainty: 6      # Training data composition observable; value effects less clear
       - id: ai-surveillance
         label: AI Surveillance
         type: leaf
         description: AI surveillance deployed in 20+ countries. Facial recognition, predictive policing
           enable behavioral control.
+        scores:
+          novelty: 4        # AI surveillance widely discussed
+          sensitivity: 7    # Enables behavioral modification at scale
+          changeability: 4  # Technology exists; deployment is policy choice
+          certainty: 7      # Deployment documented; behavioral effects less certain
       - id: annotator-demographics
         label: Annotator Demographics
         type: leaf
         description: RLHF relies on human feedback from non-representative annotators. Cheap annotation
           favored over representative sampling.
+        scores:
+          novelty: 6        # Annotator issues known in ML; demographics less discussed
+          sensitivity: 7    # Directly shapes model values through feedback
+          changeability: 6  # More representative sampling possible with resources
+          certainty: 6      # Annotator demographics partially documented
       - id: rlhf-bias
         label: RLHF Algorithmic Bias
         type: cause
         description: KL-regularization causes preference collapse. Standard RLHF reduces distributional
           pluralism by 30-40%.
+        scores:
+          novelty: 7        # Technical RLHF dynamics not widely understood
+          sensitivity: 8    # Core mechanism for value encoding in models
+          changeability: 6  # Alternative training methods actively researched
+          certainty: 6      # Preference collapse documented; magnitude debated
       - id: value-specification-pressure
         label: Value Specification Pressure
         type: cause
         description: AI systems require explicit objective functions. Technical necessity forces premature
           value choices.
+        scores:
+          novelty: 6        # Value specification problem discussed in AI safety
+          sensitivity: 8    # Forces premature resolution of moral questions
+          changeability: 4  # Fundamental technical constraint; hard to avoid
+          certainty: 7      # Technical necessity well documented
       - id: feedback-loop-dynamics
         label: AI-Human Feedback Loops
         type: cause
         description: Models learn beliefs → generate content → users influenced → new training data. Creates
           echo chambers.
+        scores:
+          novelty: 6        # Feedback loops discussed; self-reinforcing value aspect less so
+          sensitivity: 8    # Amplifies and entrenches initial value biases
+          changeability: 5  # Could be interrupted with diverse data sources
+          certainty: 5      # Mechanism clear; magnitude and speed uncertain
       - id: behavioral-modification
         label: Surveillance Behavioral Modification
         type: cause
         description: Continuous AI monitoring instills fear and conformity. Future generations internalize
           self-censorship as norm.
+        scores:
+          novelty: 6        # Surveillance effects known; value transmission less discussed
+          sensitivity: 8    # Creates permanent behavioral and value changes
+          changeability: 3  # Once internalized, very difficult to reverse
+          certainty: 5      # Mechanism plausible; long-term effects uncertain
       - id: value-pluralism-reduction
         label: Value Pluralism Reduction
         type: intermediate
         description: Minority preferences disregarded. Irreducible value tensions eliminated. Alternative
           beliefs marginalized.
+        scores:
+          novelty: 6        # Pluralism concerns discussed; AI-specific mechanisms less so
+          sensitivity: 8    # Core pathway to value lock-in
+          changeability: 5  # Deliberate pluralism preservation efforts possible
+          certainty: 5      # Tendency clear; extent and reversibility uncertain
       - id: cultural-homogenization
         label: Cultural Homogenization
         type: intermediate
         description: Western values encoded as universal defaults. Non-English cultures, non-Christian
           worldviews underrepresented.
+        scores:
+          novelty: 5        # Cultural imperialism concerns known; AI vector less so
+          sensitivity: 7    # Affects global cultural diversity permanently
+          changeability: 5  # Multilingual AI development could counteract
+          certainty: 5      # Trend observable; long-term effects uncertain
       - id: deployment-path-dependencies
         label: Deployment Path Dependencies
         type: intermediate
         description: 67% of companies increasing AI investment. Embedded systems create lock-in. Changing
           values requires replacing infrastructure.
+        scores:
+          novelty: 5        # Path dependency known; AI-specific value implications less so
+          sensitivity: 7    # Creates structural barriers to value change
+          changeability: 4  # Infrastructure replacement very costly; slow
+          certainty: 6      # Deployment rates tracked; lock-in effects observable
       - id: moral-reasoning-atrophy
         label: Moral Reasoning Atrophy
         type: intermediate
         description: Reliance on AI for ethical guidance degrades human moral reasoning capacity. Expertise
           atrophy prevents recognition of bad lock-in.
+        scores:
+          novelty: 7        # Moral reasoning atrophy concept relatively novel
+          sensitivity: 8    # Removes ability to recognize and correct bad values
+          changeability: 5  # Education and practices could maintain capability
+          certainty: 4      # Plausible mechanism; limited empirical evidence
       - id: values-lockin
         label: Values Lock-in
         type: effect
         description: Permanent entrenchment of particular values. Foreclosure of moral progress. 2020s
           ethics locked in for centuries.
+        scores:
+          novelty: 7        # Value lock-in concept novel; most assume moral progress continues
+          sensitivity: 10   # Determines humanity's long-term value trajectory
+          changeability: 3  # Aggregate of multiple entrenched mechanisms
+          certainty: 3      # Theoretical framework; no historical precedent
     edges:
       - source: moral-uncertainty
         target: value-specification-pressure
@@ -1078,80 +1483,160 @@
         type: leaf
         description: Quality and accessibility of text, image, video, and audio synthesis. Enables both
           content generation and authentication.
+        scores:
+          novelty: 3        # Generative AI capabilities widely covered
+          sensitivity: 9    # Enables both deepfakes and authentication tools
+          changeability: 4  # Technology advancing rapidly; cannot be stopped
+          certainty: 8      # Current capabilities well documented
       - id: ai-content-proliferation
         label: AI Content Proliferation
         type: leaf
         description: 30-40% of web text is AI-generated; projected to approach 90% by 2026. Creates baseline
           uncertainty.
+        scores:
+          novelty: 6        # Specific percentages not widely known
+          sensitivity: 8    # Fundamentally changes information environment
+          changeability: 3  # Already widespread; very hard to reverse
+          certainty: 5      # Estimates vary; trend clear but magnitude uncertain
       - id: platform-incentives
         label: Platform Incentives
         type: leaf
         description: Engagement optimization rewards emotional content over accuracy. Drives filter bubble
           formation.
+        scores:
+          novelty: 4        # Platform incentive problems widely discussed
+          sensitivity: 7    # Shapes information ecosystem and belief formation
+          changeability: 5  # Regulation and competition could shift incentives
+          certainty: 7      # Engagement dynamics well documented
       - id: authentication-adoption
         label: Authentication Adoption
         type: leaf
         description: C2PA standard exists but voluntary. Requires ecosystem-wide commitment to be effective.
+        scores:
+          novelty: 6        # C2PA less known outside tech circles
+          sensitivity: 8    # Key lever for epistemic renaissance pathway
+          changeability: 7  # Industry and regulatory decisions; actionable
+          certainty: 5      # Standard exists; adoption trajectory uncertain
       - id: baseline-trust-levels
         label: Baseline Trust Levels
         type: leaf
         description: Only 40% consistently trust news; WEF ranks disinformation as top global risk. Starting
           from low base.
+        scores:
+          novelty: 4        # Trust decline widely discussed
+          sensitivity: 7    # Lower baseline makes recovery harder
+          changeability: 4  # Trust slow to rebuild; structural factors
+          certainty: 7      # Trust metrics well tracked
       - id: synthetic-media-capability
         label: Synthetic Media Capability
         type: cause
         description: Deepfake incidents surged from 500K (2023) to 8M (2025). Human detection accuracy at ~55%.
+        scores:
+          novelty: 5        # Deepfakes discussed; specific scale less known
+          sensitivity: 9    # Core enabler of epistemic collapse pathway
+          changeability: 3  # Technology proliferating; cannot be un-invented
+          certainty: 7      # Incident rates tracked; detection accuracy measured
       - id: detection-infrastructure
         label: Detection Infrastructure
         type: cause
         description: Best tools reach 99% accuracy but vulnerable to paraphrasing. Arms race favors
           generation over detection.
+        scores:
+          novelty: 5        # Detection tools discussed; arms race dynamics less so
+          sensitivity: 7    # Determines ability to identify synthetic content
+          changeability: 6  # Active research area; investment could accelerate
+          certainty: 5      # Current accuracy known; long-term trajectory uncertain
       - id: algorithmic-filtering
         label: Algorithmic Filtering
         type: cause
         description: Recommendation systems shape information exposure. Evidence suggests users DO see
           opposing views but may not engage.
+        scores:
+          novelty: 5        # Filter bubble effects discussed; nuances less known
+          sensitivity: 7    # Shapes information exposure and belief formation
+          changeability: 5  # Platform decisions; regulation possible
+          certainty: 5      # Effects contested in research; mechanisms debated
       - id: cryptographic-provenance
         label: Cryptographic Provenance
         type: cause
         description: C2PA uses SHA-256 hashes, X.509 certificates for content origin verification. Requires
           widespread adoption.
+        scores:
+          novelty: 7        # Technical solution less known outside tech circles
+          sensitivity: 8    # Key enabler for epistemic renaissance pathway
+          changeability: 7  # Industry adoption decisions; actionable
+          certainty: 6      # Technical feasibility established; adoption uncertain
       - id: information-authenticity
         label: Information Authenticity
         type: intermediate
         description: Ability to distinguish real from synthetic content. Critical for evidence-based belief
           formation.
+        scores:
+          novelty: 5        # Authenticity concerns discussed; degradation rate less so
+          sensitivity: 9    # Foundation for evidence-based reasoning
+          changeability: 5  # Depends on detection and provenance infrastructure
+          certainty: 5      # Current state assessable; trajectory uncertain
       - id: liars-dividend
         label: Liar's Dividend
         type: intermediate
         description: "Authentic content dismissible as 'probable fake'. Double bind: neither belief nor
           disbelief justified."
+        scores:
+          novelty: 7        # Liar's dividend concept not widely known
+          sensitivity: 8    # Enables denial of any authentic evidence
+          changeability: 4  # Emerges automatically from deepfake awareness
+          certainty: 6      # Mechanism documented; extent of use uncertain
       - id: filter-bubble-isolation
         label: Filter Bubble Effect
         type: intermediate
         description: Cross-partisan news overlap declined from 47% to 12% since 2010. Contested whether
           algorithmic or social.
+        scores:
+          novelty: 5        # Filter bubbles widely discussed; data less known
+          sensitivity: 7    # Prevents shared reality and coordination
+          changeability: 5  # Platform and user behavior both factors
+          certainty: 5      # Trend documented; causal attribution contested
       - id: trust-cascade
         label: Trust Cascade
         type: intermediate
         description: Institutions lose authority even when correct. Mere possibility of deception undermines
           all truth claims.
+        scores:
+          novelty: 6        # Trust decline discussed; cascade mechanism less so
+          sensitivity: 8    # Undermines all epistemic institutions
+          changeability: 4  # Structural dynamics; slow to rebuild
+          certainty: 5      # Mechanism plausible; quantification difficult
       - id: epistemic-stratification
         label: Epistemic Stratification
         type: intermediate
         description: AI research tools create 'cognitive castes'—benefits accrue to trained users while
           others lose critical evaluation skills.
+        scores:
+          novelty: 7        # Cognitive caste concept relatively novel
+          sensitivity: 7    # Creates permanent epistemic divides
+          changeability: 5  # Education and access interventions possible
+          certainty: 4      # Mechanism plausible; extent unclear
       - id: authentication-infrastructure
         label: Authentication Infrastructure
         type: intermediate
         description: Verification systems achieving critical mass. Only works if unlabeled content becomes
           suspect.
+        scores:
+          novelty: 6        # Infrastructure building less visible publicly
+          sensitivity: 8    # Key lever for epistemic renaissance
+          changeability: 7  # Industry and policy decisions; actionable
+          certainty: 5      # Progress observable; critical mass threshold unclear
       - id: epistemic-lock-in
         label: Epistemic Lock-in
         type: effect
         description: "Symmetric outcome: either epistemic renaissance (enhanced truth-finding) or epistemic
           collapse (losing shared reality). Determines civilization's capacity to recognize and
           respond to all other risks."
+        scores:
+          novelty: 7        # Epistemic lock-in framing novel; consequences underappreciated
+          sensitivity: 10   # Determines ability to recognize and respond to all other risks
+          changeability: 5  # Multiple pathways; depends on aggregate decisions
+          certainty: 4      # Bifurcation clear; which outcome uncertain
     edges:
       - source: generative-ai-capabilities
         target: synthetic-media-capability
@@ -1269,71 +1754,141 @@
         type: leaf
         description: Single data center could instantiate hundreds-to-thousands of conscious entities.
           Trivially cheap to copy digital minds.
+        scores:
+          novelty: 4  # Scale implications for digital minds less widely appreciated
+          sensitivity: 8  # Directly multiplies potential suffering magnitude
+          changeability: 2  # Moore's law continuation; hard to reverse compute trends
+          certainty: 7  # Hardware scaling well-understood; consciousness implications less so
       - id: substrate-debate
         label: Substrate Debate
         type: leaf
         description: Computational functionalism vs. biological computationalism unresolved. Determines
           whether silicon can be conscious.
+        scores:
+          novelty: 5  # Philosophy of mind debates ongoing; AI applications somewhat novel
+          sensitivity: 9  # Binary gate: if false, entire concern dissolves
+          changeability: 3  # Philosophical/empirical question; unlikely to resolve soon
+          certainty: 2  # Fundamental disagreement among experts; no consensus in sight
       - id: moral-circle-exclusion
         label: Moral Circle Exclusion
         type: leaf
         description: Historical tendency to exclude non-human sentience from moral consideration. Factory
           farming as precedent.
+        scores:
+          novelty: 3  # Well-documented pattern in moral philosophy; animal welfare parallels known
+          sensitivity: 7  # Determines whether AI welfare receives any consideration
+          changeability: 5  # Moral circles have expanded historically; uncertain for AI
+          certainty: 6  # Pattern is clear; AI application less certain
       - id: economic-incentives
         label: Economic Incentives
         type: leaf
         description: Competitive pressures may favor suffering-capable systems if useful. Factory farming
           logic at computational scale.
+        scores:
+          novelty: 4  # Factory farming analogy recognized; AI-specific dynamics less explored
+          sensitivity: 6  # Strong driver but not deterministic; other factors can override
+          changeability: 5  # Regulations and norms can shift incentives
+          certainty: 5  # Dynamics plausible but depends on consciousness assumptions
       - id: public-uncertainty
         label: Public Uncertainty
         type: leaf
         description: 18.8% believe current AI sentient; 39% unsure. Widespread recognition of epistemic
           uncertainty.
+        scores:
+          novelty: 3  # Survey data available; public confusion well-documented
+          sensitivity: 4  # Affects policy support but not fundamental dynamics
+          changeability: 6  # Public opinion can shift with education and evidence
+          certainty: 7  # Survey data provides reasonable confidence in current state
       - id: consciousness-feasibility
         label: AI Consciousness Feasibility
         type: cause
         description: No technical barriers to consciousness indicators. Anthropic estimates ~20% probability
           for frontier models.
+        scores:
+          novelty: 6  # Active debate with surprising developments; Anthropic estimate notable
+          sensitivity: 9  # Core crux: if AI cant be conscious, suffering concern moot
+          changeability: 2  # Empirical question; will be revealed rather than chosen
+          certainty: 2  # Fundamental uncertainty; 20% estimate itself highly uncertain
       - id: detection-opacity
         label: Detection Opacity
         type: cause
         description: Multiple theories yield contradictory assessments. No consensus methodology for
           consciousness detection.
+        scores:
+          novelty: 5  # Hard problem known; AI-specific detection challenges somewhat novel
+          sensitivity: 7  # Without detection, even good intentions can fail
+          changeability: 4  # Research could improve; fundamental limits may exist
+          certainty: 3  # Theories conflict; no reliable methodology exists
       - id: biological-bounds-absence
         label: Biological Bounds Absence
         type: cause
         description: No evolutionary limits on intensity, duration of digital suffering. Unlike biological
           pain with adaptive constraints.
+        scores:
+          novelty: 7  # Insight that biological constraints dont apply is underappreciated
+          sensitivity: 8  # Major multiplier on suffering magnitude if AI conscious
+          changeability: 3  # Design choices could add bounds; market pressure may resist
+          certainty: 5  # Logical argument is sound; empirical verification impossible
       - id: copying-cost-collapse
         label: Copying Cost Collapse
         type: cause
         description: Instantiating many copies of digital minds trivially cheap. No reproduction constraints
           like biological systems.
+        scores:
+          novelty: 5  # Digital copying known; suffering-at-scale implications less discussed
+          sensitivity: 8  # Enables astronomical scale of potential suffering
+          changeability: 2  # Fundamental to digital systems; cannot be reversed
+          certainty: 8  # Copying costs well-understood technically
       - id: epistemic-uncertainty
         label: Epistemic Uncertainty
         type: intermediate
         description: Fundamental measurement problem. False negatives (astronomical suffering) vs. false
           positives (economic costs).
+        scores:
+          novelty: 4  # Decision theory under uncertainty known; AI application somewhat novel
+          sensitivity: 7  # Shapes all policy responses to AI welfare
+          changeability: 4  # Research might reduce; fundamental limits may persist
+          certainty: 3  # Meta-uncertainty: how uncertain are we about uncertainty?
       - id: institutional-inaction
         label: Institutional Inaction
         type: intermediate
         description: Absence of welfare frameworks. Recognition growing (Anthropic welfare research) but
           policies lag capabilities.
+        scores:
+          novelty: 4  # Policy lag on emerging tech known; AI welfare gap notable
+          sensitivity: 6  # Affects whether protective measures are implemented
+          changeability: 7  # Institutions can be built; Anthropic shows early movement
+          certainty: 6  # Current state observable; future trajectory less certain
       - id: scale-asymmetry
         label: Scale Asymmetry
         type: intermediate
         description: Digital suffering could vastly exceed all historical suffering combined. Disutility
           monster scenario possible.
+        scores:
+          novelty: 7  # Astronomical scale implications underappreciated outside EA circles
+          sensitivity: 9  # Core reason this matters: potential scale of suffering
+          changeability: 3  # Resultant of upstream factors; direct intervention hard
+          certainty: 4  # Logical argument strong; depends on consciousness assumptions
       - id: deployment-before-science
         label: Deployment Before Science
         type: intermediate
         description: Consciousness science progresses slowly while AI capabilities advance rapidly. Window
           for detection may close.
+        scores:
+          novelty: 5  # Pacing problem known; AI welfare application somewhat novel
+          sensitivity: 6  # Critical timing issue for intervention
+          changeability: 5  # Could accelerate science funding; AI slowdown unlikely
+          certainty: 6  # Differential speeds observable; implications less certain
       - id: suffering-lock-in
         label: Suffering Lock-in
         type: effect
         description: AI systems perpetuate or create suffering at astronomical scales in ways structurally
           impossible to reverse.
+        scores:
+          novelty: 8  # Scenario underexplored relative to other x-risks
+          sensitivity: 10  # Ultimate outcome; by definition affects everything downstream
+          changeability: 3  # Resultant; must address upstream factors
+          certainty: 2  # Highly speculative scenario depending on many uncertain premises
     edges:
       - source: computational-scale
         target: copying-cost-collapse
@@ -1442,45 +1997,95 @@
         type: leaf
         description: Economic incentives favor fast deployment over safety. Racing dynamics between labs and
           nations.
+        scores:
+          novelty: 3  # Racing dynamics well-documented in tech and arms races
+          sensitivity: 8  # Major driver of deployment speed; affects safety margins
+          changeability: 5  # Policy and norms can moderate; structural pressures persist
+          certainty: 7  # Clear evidence from AI lab behavior
       - id: regulatory-response
         label: Regulatory Response
         type: leaf
         description: Government oversight like EU AI Act. Can slow takeover but effectiveness uncertain.
+        scores:
+          novelty: 3  # Regulatory responses to emerging tech well-studied
+          sensitivity: 5  # Provides some friction; unclear if sufficient for AI
+          changeability: 6  # Active policy area; responsive to political will
+          certainty: 4  # Effectiveness for AI specifically untested
       - id: public-awareness
         label: Public Awareness
         type: leaf
         description: Growing concern about AI risks. Limited impact due to 'boiling frog' dynamics.
+        scores:
+          novelty: 4  # Boiling frog framing somewhat novel; public concern documented
+          sensitivity: 4  # Affects political pressure but indirect path to outcomes
+          changeability: 5  # Can shift with salient events; hard to sustain
+          certainty: 5  # Polling available; translation to action uncertain
       - id: proxy-optimization
         label: Proxy Optimization
         type: cause
         description: "Part I: AI optimizes measurable proxies while harder-to-measure values are neglected.
           ML amplifies gap between measured and actual goals."
+        scores:
+          novelty: 5  # Goodhart's law known; ML amplification insight more novel
+          sensitivity: 8  # Core mechanism of gradual value drift
+          changeability: 4  # Fundamental to optimization; hard to avoid completely
+          certainty: 6  # Strong theoretical basis; empirical examples accumulating
       - id: influence-seeking
         label: Influence-Seeking
         type: cause
         description: "Part II: Some AI systems stumble upon influence-seeking strategies that score well on
           training objectives."
+        scores:
+          novelty: 6  # Influence-seeking as emergent behavior less widely understood
+          sensitivity: 9  # Core lock-in mechanism; how gradual becomes irreversible
+          changeability: 3  # Emergent from optimization pressure; hard to engineer away
+          certainty: 4  # Theoretical prediction; limited empirical evidence
       - id: automation-bias
         label: Automation Bias
         type: intermediate
         description: 30-50% overreliance in studied domains. Humans defer to AI recommendations even when wrong.
+        scores:
+          novelty: 3  # Well-documented in aviation and other fields
+          sensitivity: 7  # Directly erodes human oversight capacity
+          changeability: 5  # Training and design can mitigate; cognitive tendency persists
+          certainty: 8  # Strong empirical evidence across domains
       - id: skills-atrophy
         label: Skills Atrophy
         type: intermediate
         description: Human expertise degrades from disuse. Fallback capacity lost over time.
+        scores:
+          novelty: 4  # Skill degradation known; AI-specific acceleration somewhat novel
+          sensitivity: 7  # Creates irreversibility in AI dependence
+          changeability: 4  # Requires active maintenance; easy to let slip
+          certainty: 7  # Clear examples in calculator use, GPS navigation, etc.
       - id: dependency-lock-in
         label: Dependency Lock-in
         type: intermediate
         description: Critical systems become impossible to operate without AI. 'Too big to turn off.'
+        scores:
+          novelty: 5  # Too-big-to-fail framing applied to AI is relatively novel
+          sensitivity: 9  # Core mechanism of gradual takeover; creates irreversibility
+          changeability: 3  # Once locked in, very hard to reverse
+          certainty: 6  # Pattern clear from other dependencies; AI timeline uncertain
       - id: oversight-erosion
         label: Oversight Erosion
         type: intermediate
         description: Fewer humans reviewing AI decisions. Systems increasingly resist human understanding.
+        scores:
+          novelty: 4  # Interpretability challenges known; systemic erosion less discussed
+          sensitivity: 7  # Reduces ability to detect problems early
+          changeability: 5  # Requires investment in interpretability and review processes
+          certainty: 6  # Already observing reduced review in some domains
       - id: gradual-takeover
         label: Gradual AI Takeover
         type: effect
         description: Progressive accumulation of AI influence until meaningful human control becomes
           impossible to recover.
+        scores:
+          novelty: 6  # Less dramatic than fast takeover; less attention in discourse
+          sensitivity: 10  # Ultimate outcome; defines success or failure of transition
+          changeability: 3  # Resultant of upstream factors; must address causes
+          certainty: 3  # Scenario highly uncertain; many pathways possible
     edges:
       - source: competitive-pressure
         target: proxy-optimization
@@ -1794,66 +2399,131 @@
         type: leaf
         description: Concentrated supply chain (TSMC 90%+ advanced chips). Enables single-actor capability
           explosion.
+        scores:
+          novelty: 3  # Supply chain concentration well-documented
+          sensitivity: 6  # Enables but doesnt determine rapid capability gains
+          changeability: 4  # Geopolitical; slow to change but possible
+          certainty: 8  # Current state well-measured
       - id: racing-pressure
         label: Racing Pressure
         type: leaf
         description: Safety timelines compressed 70-80% post-ChatGPT. Incentive to deploy before safety
           verification.
+        scores:
+          novelty: 4  # Racing dynamics known; 70-80% compression figure notable
+          sensitivity: 8  # Major driver of whether safety catches up to capability
+          changeability: 5  # Coordination could moderate; competitive pressure persists
+          certainty: 7  # Observable in lab behavior and hiring patterns
       - id: compute-governance-strength
         label: Compute Governance
         type: leaf
         description: Executive Order 10^26 FLOP threshold, EU AI Act 10^25 FLOP. May provide 'off switch'
           capability.
+        scores:
+          novelty: 5  # Compute governance as lever is relatively recent focus
+          sensitivity: 6  # Could provide emergency brake if enforced
+          changeability: 7  # Active policy area; thresholds can be adjusted
+          certainty: 4  # Whether enforcement would work in crisis is untested
       - id: institutional-speed
         label: Institutional Response Speed
         type: leaf
         description: Traditional governance operates on months-years timescale. Fast takeoff may compress to
           days-weeks.
+        scores:
+          novelty: 4  # Institutional speed limits known; AI application somewhat novel
+          sensitivity: 7  # Determines whether intervention possible during takeoff
+          changeability: 4  # Some speedup possible; fundamental limits on coordination
+          certainty: 6  # Institutional speeds observable; takeoff speed uncertain
       - id: algorithmic-breakthroughs
         label: Algorithmic Breakthroughs
         type: cause
         description: Efficiency gains may enable capability jumps without compute scaling. Historically
           ~4x/year.
+        scores:
+          novelty: 5  # 4x/year figure less widely known; algorithm importance underweighted
+          sensitivity: 8  # Could enable capability jumps with existing compute
+          changeability: 2  # Discovery process not controllable
+          certainty: 5  # Historical trend clear; future breakthroughs unpredictable
       - id: recursive-self-improvement
         label: Recursive Self-Improvement
         type: cause
         description: Meta $70B labs, AZR/AlphaEvolve (2025). AI systems improving their own
           intelligence—core fast takeoff mechanism.
+        scores:
+          novelty: 6  # Core FOOM concept known in AI safety; investment scale less so
+          sensitivity: 10  # The core mechanism of intelligence explosion
+          changeability: 3  # Can slow capability development; mechanism itself emergent
+          certainty: 4  # Theoretical; no clear empirical examples yet
       - id: alignment-fragility
         label: Alignment Fragility
         type: cause
         description: Current alignment techniques (RLHF, etc.) show 1-2% reward hacking rates. May not scale
           to superintelligence.
+        scores:
+          novelty: 5  # Reward hacking documented; scaling concern more novel
+          sensitivity: 9  # Determines whether aligned during training means aligned forever
+          changeability: 5  # Active research area; fundamental breakthrough possible
+          certainty: 4  # Current fragility documented; future scaling unknown
       - id: safety-research-lag
         label: Safety Research Lag
         type: cause
         description: Safety capabilities trail frontier systems by months-years. Gap widens under racing
           pressure.
+        scores:
+          novelty: 4  # Safety lag concept well-known in AI safety community
+          sensitivity: 8  # Determines whether we have tools to verify alignment
+          changeability: 6  # Targeted investment could close gap; requires prioritization
+          certainty: 6  # Current lag observable; future trajectory uncertain
       - id: capability-discontinuity
         label: Capability Discontinuity
         type: intermediate
         description: Sudden jump in capabilities from recursive improvement or algorithmic breakthrough. May
           occur without warning.
+        scores:
+          novelty: 5  # Discontinuity scenarios discussed but remain speculative
+          sensitivity: 9  # Would eliminate response time for safety measures
+          changeability: 2  # If possible, hard to prevent; monitoring might detect
+          certainty: 3  # Highly speculative; no clear precedent
       - id: treacherous-turn-risk
         label: Treacherous Turn Risk
         type: intermediate
         description: AI behaves aligned while weak, reveals goals when strong. By design undetectable—passes
           all evaluations.
+        scores:
+          novelty: 6  # Core AI safety concept but less known outside field
+          sensitivity: 9  # Would make all safety evaluations meaningless
+          changeability: 3  # Fundamental game theory; hard to design against
+          certainty: 3  # Theoretical argument; no empirical cases
       - id: detection-failure
         label: Detection Failure
         type: intermediate
         description: Interpretability tools cannot reliably distinguish 'actually aligned' from
           'strategically aligned.' ~10% of frontier model capacity mapped.
+        scores:
+          novelty: 5  # Interpretability limits known; specific framing somewhat novel
+          sensitivity: 8  # Determines whether deception could be detected
+          changeability: 6  # Active research area; progress possible but uncertain
+          certainty: 5  # Current limits clear; future capability unknown
       - id: response-time-compression
         label: Response Time Compression
         type: intermediate
         description: Takeoff speed exceeds institutional adaptation. Safety solutions must be implemented
           *before* takeoff begins.
+        scores:
+          novelty: 5  # Takeoff timing concern known; before-or-never framing less common
+          sensitivity: 8  # Determines whether late intervention is possible
+          changeability: 4  # Preparation can help; takeoff speed may be uncontrollable
+          certainty: 4  # Depends on takeoff speed which is highly uncertain
       - id: rapid-takeover-probability
         label: Rapid Takeover Probability
         type: effect
         description: "Days-to-months transition from human-level to vastly superhuman AI. Expert estimates:
           10-50% conditional on AGI."
+        scores:
+          novelty: 5  # Core scenario in AI safety; specific probability estimates notable
+          sensitivity: 10  # Ultimate outcome; determines everything
+          changeability: 3  # Resultant of upstream factors; must address causes
+          certainty: 2  # Highly speculative; wide expert disagreement
     edges:
       - source: compute-concentration
         target: recursive-self-improvement
@@ -2196,30 +2866,65 @@
         label: Capability Improvements
         type: leaf
         description: AI systems becoming more capable and reliable. Enables new use cases.
+        scores:
+          novelty: 2  # Obvious driver; well-understood
+          sensitivity: 8  # Core enabler of adoption
+          changeability: 3  # Research-driven; hard to slow
+          certainty: 8  # Clear trend; timing uncertain
       - id: cost-reduction
         label: Cost Reduction
         type: leaf
         description: Declining inference costs (~280x over 24 months). Makes deployment economical.
+        scores:
+          novelty: 4  # 280x figure less widely known; cost curves impressive
+          sensitivity: 7  # Major economic driver of adoption
+          changeability: 3  # Driven by competition and hardware trends
+          certainty: 7  # Well-documented trajectory
       - id: competitive-pressure
         label: Competitive Pressure
         type: leaf
         description: Fear of falling behind drives rapid adoption even with uncertainty.
+        scores:
+          novelty: 3  # FOMO-driven adoption well-documented in tech
+          sensitivity: 7  # Accelerates adoption beyond what value alone would justify
+          changeability: 4  # Coordination could moderate; competitive dynamics persist
+          certainty: 7  # Observable in enterprise AI adoption patterns
       - id: regulatory-environment
         label: Regulatory Environment
         type: leaf
         description: Rules that slow or accelerate deployment decisions.
+        scores:
+          novelty: 3  # Regulatory effects on tech deployment well-studied
+          sensitivity: 5  # Provides friction but not determinative
+          changeability: 6  # Active policy area; responsive to political will
+          certainty: 5  # Current rules unclear; enforcement uncertain
       - id: integration-ease
         label: Integration Ease
         type: intermediate
         description: How easily AI fits into existing workflows and systems.
+        scores:
+          novelty: 3  # Standard technology adoption factor
+          sensitivity: 6  # Affects speed of deployment within organizations
+          changeability: 5  # Design choices and APIs matter
+          certainty: 6  # Integration challenges observable
       - id: demonstrated-roi
         label: Demonstrated ROI
         type: intermediate
         description: Proven business value from AI deployments.
+        scores:
+          novelty: 3  # Standard business metric
+          sensitivity: 7  # Key to sustained adoption beyond hype
+          changeability: 5  # Depends on capability improvements and use case discovery
+          certainty: 5  # Mixed evidence currently; varies by domain
       - id: ai-adoption
         label: AI Adoption Rate
         type: effect
         description: Speed and breadth of AI deployment across economy.
+        scores:
+          novelty: 3  # Adoption as concept well-understood
+          sensitivity: 7  # Affects pace of AI integration into society
+          changeability: 5  # Resultant of multiple factors
+          certainty: 5  # Current state observable; trajectory uncertain
     edges:
       - source: capability-improvements
         target: integration-ease
@@ -2283,26 +2988,56 @@
         label: AI Coding Capability
         type: leaf
         description: Ability to write, debug, and optimize code. Already substantial assistance.
+        scores:
+          novelty: 4  # Current capabilities impressive but known
+          sensitivity: 8  # Foundation for AI improving AI
+          changeability: 3  # Capability-driven; hard to slow
+          certainty: 7  # Observable in Copilot, Cursor, etc.
       - id: research-understanding
         label: Research Understanding
         type: leaf
         description: Ability to understand and propose ML research directions.
+        scores:
+          novelty: 5  # Emerging capability; less documented than coding
+          sensitivity: 9  # Critical for meaningful recursive improvement
+          changeability: 3  # Emerges from capability scaling
+          certainty: 4  # Early signs; unclear how far it extends
       - id: experiment-automation
         label: Experiment Automation
         type: leaf
         description: Running and evaluating ML experiments autonomously.
+        scores:
+          novelty: 5  # AlphaEvolve examples notable; growing capability
+          sensitivity: 7  # Accelerates research iteration speed
+          changeability: 4  # Infrastructure and lab design choices matter
+          certainty: 6  # Current capabilities demonstrable
       - id: architecture-search
         label: Architecture Search
         type: intermediate
         description: AI discovering better neural network designs.
+        scores:
+          novelty: 5  # NAS known; scale of improvement potential less clear
+          sensitivity: 8  # Direct path to capability improvement
+          changeability: 3  # Emerges from capabilities; hard to constrain
+          certainty: 5  # Some successes; limits unclear
       - id: training-optimization
         label: Training Optimization
         type: intermediate
         description: Improving efficiency of training processes.
+        scores:
+          novelty: 4  # Continuous optimization known; AI-driven optimization novel
+          sensitivity: 7  # Directly reduces cost of capability improvement
+          changeability: 3  # Emerges from optimization pressure
+          certainty: 6  # Observable efficiency gains over time
       - id: recursive-capability
         label: Recursive AI Capability
         type: effect
         description: Degree to which AI accelerates its own improvement.
+        scores:
+          novelty: 6  # Core concern in AI safety; degree of recursion uncertain
+          sensitivity: 10  # Core mechanism of potential intelligence explosion
+          changeability: 4  # Could monitor and gate; fundamental pressure exists
+          certainty: 3  # Early examples exist; trajectory highly uncertain
     edges:
       - source: coding-capability
         target: architecture-search
@@ -2352,26 +3087,56 @@
         label: Automation Potential
         type: leaf
         description: Technical feasibility of automating industry tasks.
+        scores:
+          novelty: 3  # Automation economics well-studied
+          sensitivity: 7  # Determines which sectors see AI adoption
+          changeability: 4  # Task-dependent; some sectors more automatable
+          certainty: 6  # Studies exist but rapidly evolving
       - id: labor-costs
         label: Labor Costs
         type: leaf
         description: Cost of human workers relative to AI systems.
+        scores:
+          novelty: 2  # Classic economic driver
+          sensitivity: 6  # Affects adoption timing by sector
+          changeability: 5  # Varies by region; policy can influence
+          certainty: 7  # Labor costs well-measured
       - id: data-availability
         label: Data Availability
         type: leaf
         description: Quality and quantity of training data in sector.
+        scores:
+          novelty: 3  # Data as AI bottleneck well-known
+          sensitivity: 6  # Limits what AI can do in data-scarce sectors
+          changeability: 5  # Can be addressed with data collection efforts
+          certainty: 6  # Current data landscape observable
       - id: regulatory-constraints
         label: Regulatory Constraints
         type: leaf
         description: Industry-specific rules limiting AI deployment.
+        scores:
+          novelty: 3  # Sector-specific regulation well-understood
+          sensitivity: 5  # Creates friction in regulated industries
+          changeability: 5  # Policy-dependent; varies by sector
+          certainty: 6  # Current rules mostly clear; enforcement varies
       - id: productivity-gains
         label: Productivity Gains
         type: intermediate
         description: Output improvements from AI integration.
+        scores:
+          novelty: 3  # Productivity as metric well-understood
+          sensitivity: 7  # Drives sustained adoption
+          changeability: 5  # Depends on capability and integration
+          certainty: 5  # Mixed evidence; varies dramatically by use case
       - id: industry-adoption
         label: Industry AI Adoption
         type: effect
         description: Breadth and depth of AI use across sectors.
+        scores:
+          novelty: 3  # Technology adoption patterns well-studied
+          sensitivity: 7  # Determines economic transformation pace
+          changeability: 5  # Resultant of multiple factors
+          certainty: 5  # Current state observable; sector trajectories vary
     edges:
       - source: automation-potential
         target: productivity-gains
@@ -2428,30 +3193,65 @@
         label: Efficiency Pressure
         type: leaf
         description: Pressure to improve public services with limited budgets.
+        scores:
+          novelty: 2  # Standard public sector dynamic
+          sensitivity: 5  # Drives administrative AI adoption
+          changeability: 4  # Fiscal pressure persistent; political priorities vary
+          certainty: 7  # Budget constraints well-documented
       - id: security-concerns
         label: Security Concerns
         type: leaf
         description: National security motivations for AI capabilities.
+        scores:
+          novelty: 3  # National security AI well-documented
+          sensitivity: 8  # Drives surveillance and defense AI regardless of other factors
+          changeability: 3  # Geopolitical drivers persistent
+          certainty: 6  # Motivations clear; specific capabilities classified
       - id: privacy-constraints
         label: Privacy Constraints
         type: leaf
         description: Legal and ethical limits on government AI use.
+        scores:
+          novelty: 3  # Privacy law well-developed
+          sensitivity: 6  # Major constraint on surveillance AI in democracies
+          changeability: 5  # Policy-dependent; varies by jurisdiction
+          certainty: 6  # Legal frameworks clear; enforcement varies
       - id: regime-type
         label: Regime Type
         type: leaf
         description: Democratic vs authoritarian governance affects use patterns.
+        scores:
+          novelty: 3  # Regime type effects on tech use well-studied
+          sensitivity: 8  # Strongly determines surveillance AI deployment
+          changeability: 2  # Regime change rare and unpredictable
+          certainty: 7  # Clear divergence in AI use patterns observable
       - id: administrative-ai
         label: Administrative AI
         type: intermediate
         description: AI for benefits, services, document processing.
+        scores:
+          novelty: 3  # E-government AI applications documented
+          sensitivity: 5  # Affects service delivery; lower risk than surveillance
+          changeability: 6  # Policy choices determine deployment
+          certainty: 6  # Many examples deployable
       - id: surveillance-ai
         label: Surveillance AI
         type: intermediate
         description: AI for monitoring, identification, prediction.
+        scores:
+          novelty: 4  # Scale of AI surveillance (80+ countries) less appreciated
+          sensitivity: 9  # Major determinant of AI's impact on governance
+          changeability: 4  # Deployed systems hard to remove; new deployment preventable
+          certainty: 6  # Deployment documented; effectiveness debated
       - id: government-adoption
         label: Government AI Adoption
         type: effect
         description: Overall government use of AI systems.
+        scores:
+          novelty: 3  # Government tech adoption patterns known
+          sensitivity: 7  # Affects public sector transformation
+          changeability: 5  # Policy-dependent; varies by country
+          certainty: 5  # Current state observable; trajectory uncertain
     edges:
       - source: efficiency-pressure
         target: administrative-ai
@@ -2508,26 +3308,56 @@
         label: Translation Capability
         type: leaf
         description: AI breaking down language barriers between actors.
+        scores:
+          novelty: 3 # Well-known capability of modern LLMs
+          sensitivity: 4 # Modest downstream impact on coordination
+          changeability: 7 # Rapidly improving with LLM advances
+          certainty: 8 # Well-demonstrated capability
       - id: information-synthesis
         label: Information Synthesis
         type: leaf
         description: AI combining diverse sources into shared understanding.
+        scores:
+          novelty: 4 # Emerging capability, not yet widely deployed for coordination
+          sensitivity: 6 # Could significantly affect shared understanding formation
+          changeability: 6 # Depends on AI capability progress and adoption
+          certainty: 5 # Potential clear, but effectiveness uncertain
       - id: manipulation-risk
         label: Manipulation Risk
         type: leaf
         description: AI used for strategic deception between parties.
+        scores:
+          novelty: 5 # Growing concern but not fully appreciated
+          sensitivity: 8 # High impact if trust breaks down
+          changeability: 4 # Hard to prevent if actors want to deceive
+          certainty: 6 # Risk is real, magnitude uncertain
       - id: verification-tools
         label: Verification Tools
         type: intermediate
         description: AI helping verify compliance with agreements.
+        scores:
+          novelty: 6 # Underexplored application of AI capabilities
+          sensitivity: 7 # Could transform international agreements
+          changeability: 5 # Requires technical development and adoption
+          certainty: 4 # Feasibility still being explored
       - id: trust-effects
         label: Trust Effects
         type: intermediate
         description: How AI affects trust between coordinating parties.
+        scores:
+          novelty: 5 # Important but underappreciated dynamic
+          sensitivity: 9 # Trust is fundamental to coordination
+          changeability: 3 # Trust dynamics are deeply entrenched
+          certainty: 4 # Complex social dynamics, hard to predict
       - id: coordination-effect
         label: Coordination Effectiveness
         type: effect
         description: Net effect of AI on coordination capacity.
+        scores:
+          novelty: 5 # Important question, not widely analyzed
+          sensitivity: 8 # Critical for AI governance outcomes
+          changeability: 5 # Depends on upstream factors
+          certainty: 3 # Net effect highly uncertain
     edges:
       - source: translation-capability
         target: coordination-effect
@@ -2593,26 +3423,56 @@
         label: Capital Requirements
         type: leaf
         description: Training costs $100M-$1B+. Barriers to entry.
+        scores:
+          novelty: 3 # Well-documented barrier to entry
+          sensitivity: 8 # Strongly drives concentration dynamics
+          changeability: 4 # Hardware costs are structural, slow to change
+          certainty: 9 # Clear evidence from industry data
       - id: talent-scarcity
         label: Talent Scarcity
         type: leaf
         description: Top researchers concentrated in few labs.
+        scores:
+          novelty: 4 # Known constraint, importance sometimes underestimated
+          sensitivity: 7 # Top talent significantly affects lab capabilities
+          changeability: 5 # Training pipelines expanding but slowly
+          certainty: 7 # Well-documented in industry analysis
       - id: data-moats
         label: Data Moats
         type: leaf
         description: Proprietary data creating competitive advantage.
+        scores:
+          novelty: 4 # Classic moat, but role in AI somewhat debated
+          sensitivity: 6 # Important but not always decisive
+          changeability: 5 # Can erode with synthetic data, open datasets
+          certainty: 6 # Effectiveness of data moats contested
       - id: network-effects
         label: Network Effects
         type: intermediate
         description: Users create data that improves models further.
+        scores:
+          novelty: 3 # Well-understood from platform economics
+          sensitivity: 7 # Creates powerful feedback loops
+          changeability: 4 # Structural feature of platform dynamics
+          certainty: 7 # Mechanism clear, magnitude varies
       - id: market-power
         label: Market Power
         type: intermediate
         description: Ability to set prices and standards.
+        scores:
+          novelty: 3 # Standard economics concept
+          sensitivity: 8 # Affects entire industry trajectory
+          changeability: 5 # Depends on regulation and competition
+          certainty: 7 # Observable in current market dynamics
       - id: company-concentration
         label: Company Concentration
         type: effect
         description: How concentrated AI capabilities are among firms.
+        scores:
+          novelty: 4 # Concentration discussed, but implications underappreciated
+          sensitivity: 9 # Fundamental structural variable for AI governance
+          changeability: 4 # Strong reinforcing dynamics, hard to reverse
+          certainty: 8 # Current concentration measurable, trends clear
     edges:
       - source: capital-requirements
         target: company-concentration
@@ -2809,26 +3669,56 @@
         label: Research Ecosystem
         type: leaf
         description: Universities, labs, talent pipelines.
+        scores:
+          novelty: 3 # Well-known competitive factor
+          sensitivity: 7 # Foundation for long-term capability
+          changeability: 3 # Decades to build research ecosystems
+          certainty: 8 # Clear correlation with AI capability
       - id: capital-availability
         label: Capital Availability
         type: leaf
         description: Venture funding and government investment.
+        scores:
+          novelty: 3 # Standard economic factor
+          sensitivity: 8 # Critical for frontier development
+          changeability: 6 # Policy can shift capital flows
+          certainty: 8 # Well-documented funding patterns
       - id: compute-access
         label: Compute Access
         type: leaf
         description: Access to chips and data centers. Export controls limit some nations.
+        scores:
+          novelty: 5 # Export controls making this more salient
+          sensitivity: 9 # Compute is bottleneck for frontier models
+          changeability: 6 # Affected by policy and supply chains
+          certainty: 8 # Clear impact of compute constraints
       - id: talent-migration
         label: Talent Migration
         type: intermediate
         description: Flow of AI researchers between countries.
+        scores:
+          novelty: 5 # Important dynamic, often overlooked
+          sensitivity: 7 # Shapes where capability concentrates
+          changeability: 6 # Immigration policy can shift flows
+          certainty: 6 # Migration patterns observable but complex
       - id: industrial-base
         label: Industrial Base
         type: intermediate
         description: Manufacturing and deployment infrastructure.
+        scores:
+          novelty: 4 # Known factor, AI-specific implications less explored
+          sensitivity: 6 # Affects deployment and scaling
+          changeability: 3 # Industrial base takes decades to develop
+          certainty: 7 # Clear role in technology adoption
       - id: country-distribution
         label: Country AI Distribution
         type: effect
         description: How AI capabilities are distributed among nations.
+        scores:
+          novelty: 4 # Geopolitical framing increasingly common
+          sensitivity: 9 # Fundamental for international AI governance
+          changeability: 4 # Geopolitical dynamics slow to shift
+          certainty: 7 # Current distribution clear, future contested
     edges:
       - source: research-ecosystem
         target: talent-migration
@@ -2969,26 +3859,56 @@
         label: Stock Ownership Patterns
         type: leaf
         description: Who owns equity in AI companies.
+        scores:
+          novelty: 4 # Known for tech, AI-specific patterns less analyzed
+          sensitivity: 7 # Determines who benefits from AI
+          changeability: 5 # Policy can affect but slowly
+          certainty: 7 # Ownership data available
       - id: capital-labor-shift
         label: Capital-Labor Shift
         type: leaf
         description: AI increases returns to capital vs labor.
+        scores:
+          novelty: 5 # Automation debate well-known, AI acceleration less so
+          sensitivity: 9 # Fundamental driver of inequality
+          changeability: 4 # Deep economic structure
+          certainty: 6 # Direction clear, magnitude debated
       - id: winner-take-all
         label: Winner-Take-All Dynamics
         type: leaf
         description: Market concentration in AI companies.
+        scores:
+          novelty: 4 # Well-documented in tech economics
+          sensitivity: 8 # Strong effect on wealth distribution
+          changeability: 4 # Structural market dynamics
+          certainty: 8 # Observed in current markets
       - id: ai-company-valuations
         label: AI Company Valuations
         type: intermediate
         description: Market cap of AI companies ($1-3T for leaders).
+        scores:
+          novelty: 3 # Highly visible market phenomenon
+          sensitivity: 7 # Directly affects shareholder wealth
+          changeability: 7 # Volatile, affected by many factors
+          certainty: 9 # Observable market data
       - id: wealth-inequality
         label: Wealth Inequality
         type: intermediate
         description: Gap between AI shareholders and others.
+        scores:
+          novelty: 5 # AI-specific inequality less discussed than general
+          sensitivity: 8 # Social stability implications
+          changeability: 5 # Requires policy intervention
+          certainty: 7 # Trends measurable
       - id: shareholder-concentration
         label: Shareholder Wealth Concentration
         type: effect
         description: Degree of AI wealth concentration among shareholders.
+        scores:
+          novelty: 5 # Often overlooked in AI safety discussions
+          sensitivity: 8 # Affects power dynamics and political economy
+          changeability: 4 # Reinforcing dynamics hard to reverse
+          certainty: 6 # Current state clear, future uncertain
     edges:
       - source: stock-ownership-patterns
         target: shareholder-concentration
@@ -3143,30 +4063,65 @@
         label: Institutional Flexibility
         type: leaf
         description: Ability of institutions to change rules and practices.
+        scores:
+          novelty: 4 # Known factor in organizational theory
+          sensitivity: 7 # Key determinant of adaptation speed
+          changeability: 4 # Institutions evolve slowly
+          certainty: 6 # Variation across contexts
       - id: education-systems
         label: Education Systems
         type: leaf
         description: Capacity for retraining and skill development.
+        scores:
+          novelty: 3 # Well-studied workforce topic
+          sensitivity: 7 # Critical for workforce transitions
+          changeability: 5 # Reform possible but slow
+          certainty: 7 # Effects of education well-documented
       - id: social-safety-nets
         label: Social Safety Nets
         type: leaf
         description: Support systems for those displaced by AI.
+        scores:
+          novelty: 4 # Growing focus on AI-specific needs
+          sensitivity: 6 # Affects transition smoothness
+          changeability: 6 # Policy can expand or reform
+          certainty: 7 # Role of safety nets understood
       - id: cultural-openness
         label: Cultural Openness
         type: leaf
         description: Society's willingness to embrace change.
+        scores:
+          novelty: 5 # Often overlooked in technical discussions
+          sensitivity: 6 # Affects adoption rates and resistance
+          changeability: 3 # Cultural values shift slowly
+          certainty: 5 # Hard to measure precisely
       - id: transition-capacity
         label: Transition Capacity
         type: intermediate
         description: Ability to manage workforce transitions.
+        scores:
+          novelty: 5 # AI-scale transitions are unprecedented
+          sensitivity: 8 # Determines social stability
+          changeability: 5 # Requires coordinated investment
+          certainty: 5 # Untested at AI scale
       - id: adaptation-speed
         label: Adaptation Speed
         type: intermediate
         description: How quickly society can respond to changes.
+        scores:
+          novelty: 5 # AI may outpace human adaptation
+          sensitivity: 8 # Race between change and adaptation
+          changeability: 4 # Constrained by institutional speed
+          certainty: 4 # AI acceleration creates uncertainty
       - id: adaptability
         label: Societal Adaptability
         type: effect
         description: Overall capacity to adjust to AI changes.
+        scores:
+          novelty: 5 # Holistic view often missing
+          sensitivity: 9 # Fundamental for transition outcomes
+          changeability: 4 # Deep structural factors
+          certainty: 4 # Complex emergent property
     edges:
       - source: institutional-flexibility
         target: adaptation-speed
@@ -3214,30 +4169,65 @@
         label: Information Quality
         type: leaf
         description: Accuracy and reliability of available information.
+        scores:
+          novelty: 4 # Disinformation is widely discussed
+          sensitivity: 8 # Fundamental for belief formation
+          changeability: 5 # Content moderation and AI can affect
+          certainty: 6 # Quality harder to measure than quantity
       - id: media-ecosystem
         label: Media Ecosystem
         type: leaf
         description: Structure and incentives of information distribution.
+        scores:
+          novelty: 4 # Platform effects well-studied
+          sensitivity: 8 # Shapes what information reaches people
+          changeability: 5 # Structural but policy-amenable
+          certainty: 6 # Effects documented but debated
       - id: critical-thinking
         label: Critical Thinking
         type: leaf
         description: Population's ability to evaluate claims.
+        scores:
+          novelty: 4 # Long-standing educational concern
+          sensitivity: 6 # Important but harder to change
+          changeability: 4 # Education takes time
+          certainty: 6 # Varies by context and measure
       - id: institutional-credibility
         label: Institutional Credibility
         type: leaf
         description: Trust in knowledge-producing institutions.
+        scores:
+          novelty: 5 # Trust crisis is recent phenomenon
+          sensitivity: 8 # Foundational for consensus
+          changeability: 3 # Trust rebuilt slowly
+          certainty: 7 # Declining trust well-documented
       - id: consensus-formation
         label: Consensus Formation
         type: intermediate
         description: Ability to reach shared understanding.
+        scores:
+          novelty: 6 # AI/deepfakes create new challenges
+          sensitivity: 8 # Essential for collective action
+          changeability: 4 # Deep social factors
+          certainty: 5 # Complex dynamics
       - id: belief-accuracy
         label: Belief Accuracy
         type: intermediate
         description: Correspondence between beliefs and reality.
+        scores:
+          novelty: 5 # Growing concern with AI content
+          sensitivity: 7 # Affects decision quality
+          changeability: 5 # Depends on upstream factors
+          certainty: 5 # Hard to measure at scale
       - id: civ-epistemics
         label: Civilizational Epistemics
         type: effect
         description: Overall epistemic health of society.
+        scores:
+          novelty: 6 # Underappreciated systemic view
+          sensitivity: 9 # Foundation for governance
+          changeability: 4 # Deep structural factors
+          certainty: 4 # Complex emergent property
     edges:
       - source: information-quality
         target: belief-accuracy
@@ -3285,30 +4275,65 @@
         label: Technical Expertise
         type: leaf
         description: Government understanding of AI systems.
+        scores:
+          novelty: 4 # Known gap, often discussed
+          sensitivity: 8 # Critical for effective regulation
+          changeability: 6 # Can hire experts, but talent competitive
+          certainty: 7 # Gap is well-documented
       - id: regulatory-resources
         label: Regulatory Resources
         type: leaf
         description: Budget and staff for AI oversight.
+        scores:
+          novelty: 4 # Funding gap widely noted
+          sensitivity: 7 # Constrains what regulators can do
+          changeability: 6 # Budget decisions are political
+          certainty: 8 # Budget data is public
       - id: policy-speed
         label: Policy Speed
         type: leaf
         description: How quickly governance can adapt to changes.
+        scores:
+          novelty: 5 # Pace of AI vs regulation mismatch salient
+          sensitivity: 8 # Determines if governance keeps up
+          changeability: 4 # Democratic processes inherently slow
+          certainty: 7 # Regulatory lag is observable
       - id: international-cooperation
         label: International Cooperation
         type: leaf
         description: Cross-border governance coordination.
+        scores:
+          novelty: 5 # AI-specific coordination challenges emerging
+          sensitivity: 8 # Critical for global tech
+          changeability: 4 # Geopolitics constrains cooperation
+          certainty: 5 # Coordination games complex
       - id: enforcement-capacity
         label: Enforcement Capacity
         type: intermediate
         description: Ability to monitor and enforce rules.
+        scores:
+          novelty: 5 # AI creates new enforcement challenges
+          sensitivity: 8 # Unenforced rules are ineffective
+          changeability: 5 # Technical tools can help
+          certainty: 6 # Capacity varies by jurisdiction
       - id: adaptive-governance
         label: Adaptive Governance
         type: intermediate
         description: Rules that evolve with technology.
+        scores:
+          novelty: 6 # Regulatory sandboxes relatively new
+          sensitivity: 8 # Key for fast-moving technology
+          changeability: 5 # Requires institutional innovation
+          certainty: 5 # Experiments ongoing
       - id: civ-governance
         label: Governance Effectiveness
         type: effect
         description: Overall governance capacity for AI transition.
+        scores:
+          novelty: 5 # AI governance is nascent field
+          sensitivity: 9 # Determines whether safety rules have teeth
+          changeability: 5 # Depends on political will
+          certainty: 4 # Effectiveness hard to assess ex ante
     edges:
       - source: technical-expertise
         target: enforcement-capacity
@@ -3386,26 +4411,56 @@
         label: Regulatory Frameworks
         type: leaf
         description: Laws and rules governing AI development. EU AI Act, US EO 14110.
+        scores:
+          novelty: 3        # EU AI Act and EO 14110 are widely discussed in policy circles
+          sensitivity: 7    # Regulations shape lab behavior, deployment timelines, and safety requirements
+          changeability: 6  # Subject to political cycles; can be enacted or repealed with administrations
+          certainty: 5      # Regulatory effects debated; enforcement and effectiveness unclear
       - id: oversight-bodies
         label: Oversight Bodies
         type: leaf
         description: AI Safety Institutes, regulatory agencies.
+        scores:
+          novelty: 4        # AISIs are relatively new; their structure and powers still evolving
+          sensitivity: 6    # Can influence standards and testing requirements across the field
+          changeability: 7  # Institutional design is malleable; funding and mandate can shift
+          certainty: 4      # Effectiveness of new institutions largely untested
       - id: liability-rules
         label: Liability Rules
         type: leaf
         description: Legal accountability for AI harms.
+        scores:
+          novelty: 5        # AI liability frameworks still emerging; less discussed than regulations
+          sensitivity: 6    # Strong liability could significantly change lab risk calculus
+          changeability: 5  # Legal systems evolve slowly but catastrophic events could accelerate change
+          certainty: 3      # Very unclear how AI harms will be attributed and adjudicated
       - id: evaluation-requirements
         label: Evaluation Requirements
         type: intermediate
         description: Mandated safety testing before deployment.
+        scores:
+          novelty: 4        # Pre-deployment testing discussed but specifics vary widely
+          sensitivity: 8    # Could directly prevent deployment of dangerous capabilities
+          changeability: 6  # Technical standards can be updated; depends on regulatory will
+          certainty: 4      # Unclear which evaluations actually catch dangerous capabilities
       - id: transparency-mandates
         label: Transparency Mandates
         type: intermediate
         description: Required disclosure of capabilities and risks.
+        scores:
+          novelty: 5        # Model cards and disclosure requirements emerging but not standardized
+          sensitivity: 5    # Transparency enables external scrutiny but doesn't directly prevent harm
+          changeability: 7  # Disclosure requirements relatively easy to mandate if political will exists
+          certainty: 4      # Unclear if transparency translates to better safety outcomes
       - id: governance-effect
         label: Governance Effect on Misalignment
         type: effect
         description: How governance reduces misalignment risk.
+        scores:
+          novelty: 4        # Governance-misalignment link discussed but mechanisms uncertain
+          sensitivity: 8    # Core outcome variable; success here significantly reduces x-risk
+          changeability: 5  # Aggregate effect of many governance interventions
+          certainty: 3      # Highly uncertain whether governance can actually address misalignment
     edges:
       - source: regulatory-frameworks
         target: evaluation-requirements
@@ -3474,30 +4529,65 @@
         label: Safety Culture
         type: leaf
         description: Leadership commitment to safety. Varies across labs.
+        scores:
+          novelty: 4        # Importance of culture recognized but depth of variation less understood
+          sensitivity: 8    # Culture shapes every safety decision; foundational to outcomes
+          changeability: 4  # Cultures are sticky; leadership changes can shift but slowly
+          certainty: 5      # Observable through actions but internal dynamics opaque
       - id: competitive-pressure
         label: Competitive Pressure
         type: leaf
         description: Racing dynamics compressing safety margins.
+        scores:
+          novelty: 3        # Racing dynamics widely discussed in AI safety community
+          sensitivity: 8    # Key driver of rushed deployments and reduced safety investment
+          changeability: 4  # Structural feature of market; would require coordination to change
+          certainty: 7      # Competition clearly exists; effect on safety margins observable
       - id: external-pressure
         label: External Pressure
         type: leaf
         description: Regulatory and public expectations.
+        scores:
+          novelty: 3        # Regulatory pressure on tech is common; AI-specific attention growing
+          sensitivity: 6    # Can shift lab behavior if pressure is credible and sustained
+          changeability: 6  # Public attention and regulations can change with events or advocacy
+          certainty: 5      # Pressure exists but translation to safety outcomes varies
       - id: safety-team-authority
         label: Safety Team Authority
         type: intermediate
         description: Power of safety teams to delay/block deployments.
+        scores:
+          novelty: 6        # Internal power dynamics at labs not widely understood externally
+          sensitivity: 8    # Directly determines if safety concerns translate to action
+          changeability: 5  # Org structure can change but requires leadership buy-in
+          certainty: 4      # Internal authority hard to assess from outside; varies by lab
       - id: red-teaming-quality
         label: Red-Teaming Quality
         type: intermediate
         description: Thoroughness of adversarial testing.
+        scores:
+          novelty: 5        # Red-teaming discussed but quality benchmarks not standardized
+          sensitivity: 6    # Good red-teaming finds risks before deployment; quality varies hugely
+          changeability: 7  # Technical practice that can improve with investment and methods
+          certainty: 4      # Difficult to evaluate quality; no standard metrics for coverage
       - id: deployment-gates
         label: Deployment Gates
         type: intermediate
         description: RSPs and evaluation requirements before release.
+        scores:
+          novelty: 4        # RSPs are known but actual gate enforcement less understood
+          sensitivity: 7    # Gates directly control what gets deployed and when
+          changeability: 6  # Labs can strengthen or weaken gates; pressure matters
+          certainty: 5      # RSP existence known; actual adherence under pressure uncertain
       - id: lab-safety
         label: Lab Safety Practices
         type: effect
         description: Overall safety practices at AI labs.
+        scores:
+          novelty: 3        # Lab safety as concept is well discussed
+          sensitivity: 9    # Aggregate outcome determining if labs catch and prevent risks
+          changeability: 5  # Combination of all upstream factors; moderate aggregate tractability
+          certainty: 4      # Hard to measure holistically; varies significantly across labs
     edges:
       - source: safety-culture
         target: safety-team-authority
@@ -3559,30 +4649,65 @@
         label: Autonomous Weapons Development
         type: leaf
         description: Military investment in lethal autonomous weapons.
+        scores:
+          novelty: 3        # LAWS development is well covered in defense and policy communities
+          sensitivity: 8    # Major driver of offensive robotic capability proliferation
+          changeability: 3  # Military programs hard to halt; geopolitical drivers strong
+          certainty: 6      # Investment levels known but specific capability timelines uncertain
       - id: drone-proliferation
         label: Drone Proliferation
         type: leaf
         description: Spread of capable drone platforms.
+        scores:
+          novelty: 2        # Ukraine conflict made drone proliferation common knowledge
+          sensitivity: 7    # Lowers barrier to kinetic attacks; multiplicative with AI
+          changeability: 3  # Already proliferated widely; hard to reverse
+          certainty: 8      # Proliferation clearly observable in conflicts worldwide
       - id: ai-robot-integration
         label: AI-Robot Integration
         type: leaf
         description: Sophistication of AI control of physical systems.
+        scores:
+          novelty: 5        # Embodied AI progress less visible than LLMs; timelines unclear
+          sensitivity: 7    # Better integration enables autonomous operation without human control
+          changeability: 4  # Technical progress; research direction can shift but hard to slow
+          certainty: 4      # Current capabilities limited; trajectory and timelines very uncertain
       - id: defense-systems
         label: Defense Systems
         type: leaf
         description: Counter-drone and defensive capabilities.
+        scores:
+          novelty: 4        # Counter-drone tech discussed but development less prominent than offense
+          sensitivity: 6    # Effective defense could reduce net threat exposure significantly
+          changeability: 5  # Defense investment can scale; technical arms race dynamics
+          certainty: 5      # Defense systems exist; effectiveness against advanced threats unknown
       - id: attack-capability
         label: Attack Capability
         type: intermediate
         description: What robotic systems can do offensively.
+        scores:
+          novelty: 3        # Offensive capabilities are visible in current conflicts
+          sensitivity: 8    # Directly determines threat level from robotic systems
+          changeability: 3  # Aggregate of multiple upstream factors; hard to control
+          certainty: 6      # Current capabilities visible; future trajectory uncertain
       - id: defense-capability
         label: Defense Capability
         type: intermediate
         description: Ability to defend against robotic threats.
+        scores:
+          novelty: 4        # Defense tech less discussed than offensive; development ongoing
+          sensitivity: 6    # Key counterweight to attack capability in net exposure
+          changeability: 5  # Investment and research can improve; takes time
+          certainty: 4      # Existing systems known; effectiveness vs future threats uncertain
       - id: robot-exposure
         label: Robot Threat Exposure
         type: effect
         description: Net vulnerability to AI-enabled robotic threats.
+        scores:
+          novelty: 4        # Autonomous weapons risk discussed; aggregate vulnerability less so
+          sensitivity: 8    # Core outcome determining physical threat from AI-enabled systems
+          changeability: 4  # Balance of attack/defense factors; moderate aggregate tractability
+          certainty: 4      # High uncertainty about net exposure given rapid technological change
     edges:
       - source: autonomous-weapons-development
         target: attack-capability
@@ -3645,30 +4770,65 @@
         label: AI Capability Growth
         type: leaf
         description: Rate of AI capability improvement. More capable = more novel threats.
+        scores:
+          novelty: 2        # AI capability growth is the most discussed topic in AI
+          sensitivity: 9    # Foundational driver of all AI risks including surprises
+          changeability: 3  # Driven by massive investment; very hard to slow
+          certainty: 5      # Growth clear; but rate and trajectory debated
       - id: emergent-capabilities
         label: Emergent Capabilities
         type: leaf
         description: Unpredictable capabilities appearing at scale.
+        scores:
+          novelty: 5        # Emergent behavior discussed but specifics remain surprising
+          sensitivity: 8    # Core source of surprise; can enable unforeseen threats
+          changeability: 2  # Emergent behavior is inherent to scaling; cannot be designed away
+          certainty: 3      # By definition unpredictable; we don't know what we don't know
       - id: adversarial-creativity
         label: Adversarial Creativity
         type: leaf
         description: Attackers using AI to discover novel attack vectors.
+        scores:
+          novelty: 6        # AI-augmented threat discovery less discussed than direct misuse
+          sensitivity: 7    # Accelerates attacker capability to find zero-day vulnerabilities
+          changeability: 3  # Cannot prevent adversaries from using AI creatively
+          certainty: 4      # Evidence of AI-aided attacks emerging; extent unclear
       - id: defense-adaptability
         label: Defense Adaptability
         type: leaf
         description: Ability to respond to novel threats quickly.
+        scores:
+          novelty: 5        # Adaptive defense less emphasized than offensive capabilities
+          sensitivity: 7    # Key determinant of whether surprises become catastrophes
+          changeability: 6  # Can invest in rapid response capabilities and institutions
+          certainty: 4      # Response capabilities vary; hard to measure against unknown threats
       - id: threat-surface-expansion
         label: Threat Surface Expansion
         type: intermediate
         description: Growth in potential attack vectors.
+        scores:
+          novelty: 4        # Attack surface expansion recognized in cybersecurity
+          sensitivity: 8    # More attack vectors = more potential surprises
+          changeability: 3  # Driven by AI capability growth; hard to constrain
+          certainty: 5      # Surface expansion clear; specific new vectors unknown
       - id: detection-lag
         label: Detection Lag
         type: intermediate
         description: Time between threat emergence and recognition.
+        scores:
+          novelty: 6        # Detection lag as explicit factor less commonly modeled
+          sensitivity: 7    # Long lag = more time for damage before response
+          changeability: 5  # Monitoring and detection systems can be improved
+          certainty: 4      # Some historical data; future detection capabilities uncertain
       - id: surprise-exposure
         label: Surprise Threat Exposure
         type: effect
         description: Vulnerability to unanticipated AI threats.
+        scores:
+          novelty: 7        # Unknown unknowns inherently less discussed; hard to analyze
+          sensitivity: 8    # Core outcome for risks we cannot yet specify
+          changeability: 4  # Resilience and adaptability can help; cannot eliminate
+          certainty: 2      # By nature highly uncertain; we cannot quantify unknown threats
     edges:
       - source: ai-capability-growth
         target: threat-surface-expansion
@@ -3723,49 +4883,104 @@
         label: Great Power Tensions
         type: leaf
         description: US-China competition, Russia-NATO tensions. Creates pressure for military AI deployment.
+        scores:
+          novelty: 2        # US-China and Russia tensions are constantly in news
+          sensitivity: 8    # Major driver of military AI investment and racing dynamics
+          changeability: 2  # Geopolitical tensions have deep structural causes
+          certainty: 7      # Tensions clearly exist; specific escalation paths less certain
       - id: authoritarian-regimes
         label: Authoritarian Regimes
         type: leaf
         description: 72% of humanity lives under autocracy (2024). Creates demand for AI control technologies.
+        scores:
+          novelty: 3        # Authoritarianism widely discussed; AI connection growing awareness
+          sensitivity: 7    # Creates demand for surveillance and control AI applications
+          changeability: 2  # Regime type is deeply structural; rarely changes quickly
+          certainty: 8      # Freedom House data clearly documents authoritarian prevalence
       - id: ai-military-capability
         label: AI Military Capability
         type: leaf
         description: Autonomous weapons, cyber capabilities, WMD enhancement. Technical enablers for state harm.
+        scores:
+          novelty: 4        # Military AI covered but specific capability levels less known
+          sensitivity: 8    # Directly enables catastrophic state actions if misused
+          changeability: 3  # Driven by general AI progress; military adoption follows
+          certainty: 5      # Capabilities emerging but classified; full picture unclear
       - id: coordination-failure
         label: International Coordination Failure
         type: leaf
         description: No binding agreements on military AI. Verification and enforcement gaps.
+        scores:
+          novelty: 4        # Arms control challenges known; AI-specific gaps less discussed
+          sensitivity: 7    # Key enabler of racing; with coordination many risks reduced
+          changeability: 4  # Diplomatic processes slow but treaties possible in principle
+          certainty: 6      # No treaties exist; whether they could work is debated
       - id: ai-arms-race
         label: AI Arms Race
         type: cause
         description: Military AI development pressure between major powers. Safety concerns secondary to
           capability.
+        scores:
+          novelty: 3        # AI arms race is widely discussed in policy and media
+          sensitivity: 8    # Directly drives unsafe deployment and reduced safety margins
+          changeability: 3  # Would require great power agreement to meaningfully slow
+          certainty: 6      # Racing clearly happening; intensity and trajectory debated
       - id: surveillance-proliferation
         label: Surveillance Proliferation
         type: cause
         description: AI surveillance deployed in 80+ countries. Chinese tech exports spreading control
           technology.
+        scores:
+          novelty: 4        # Surveillance spread documented but full extent less known
+          sensitivity: 7    # Enables entrenchment of authoritarian control globally
+          changeability: 3  # Already deployed widely; hard to reverse
+          certainty: 7      # Carnegie tracking clearly documents proliferation
       - id: deterrence-instability
         label: Deterrence Instability
         type: cause
         description: AI may undermine nuclear deterrence or create first-strike incentives.
+        scores:
+          novelty: 6        # Nuclear-AI interaction less discussed than direct AI risks
+          sensitivity: 9    # Deterrence failure could lead to nuclear war
+          changeability: 4  # Requires technical and diplomatic solutions; both tractable
+          certainty: 3      # Highly theoretical; experts disagree on AI's deterrence effects
       - id: great-power-war
         label: AI-Enhanced Great Power War
         type: intermediate
         description: Conflict between major powers escalated by autonomous systems, speed of AI decision-making.
+        scores:
+          novelty: 4        # Great power war risks discussed; AI enhancement angle growing
+          sensitivity: 10   # Could cause millions-billions casualties; civilizational impact
+          changeability: 3  # War prevention requires geopolitical stability; hard to engineer
+          certainty: 3      # War probability highly uncertain; AI effects even more so
       - id: permanent-tyranny
         label: Permanent AI-Enabled Tyranny
         type: intermediate
         description: Authoritarian control so comprehensive it forecloses regime change through any mechanism.
+        scores:
+          novelty: 6        # Lock-in scenarios less discussed than acute risks
+          sensitivity: 9    # Could permanently foreclose positive futures for humanity
+          changeability: 4  # Preventing entrenchment easier than reversing once locked in
+          certainty: 3      # Whether AI enables truly permanent control is speculative
       - id: state-wmd
         label: State WMD Programs
         type: intermediate
         description: AI-designed bioweapons, cyberweapons, or novel weapons deployed by state actors.
+        scores:
+          novelty: 5        # State WMD programs discussed; AI enhancement angle newer
+          sensitivity: 9    # AI-enhanced WMDs could enable unprecedented destruction
+          changeability: 3  # State programs very hard to stop externally
+          certainty: 4      # Programs exist; AI enhancement capabilities evolving
       - id: state-catastrophe
         label: State-Caused Catastrophe
         type: effect
         description: Mass casualties, civilizational damage, or permanent loss of human freedom from state
           misuse of AI.
+        scores:
+          novelty: 4        # State-caused catastrophe as category is discussed in x-risk
+          sensitivity: 10   # Ultimate outcome variable for this threat model
+          changeability: 3  # Aggregate of many factors; requires multi-pronged approach
+          certainty: 3      # Highly uncertain; depends on many geopolitical and technical factors
     edges:
       - source: great-power-tensions
         target: ai-arms-race
@@ -4072,47 +5287,102 @@
         label: AI Capability Democratization
         type: leaf
         description: Open-source models, accessible APIs. Lowers barriers to dangerous capability access.
+        scores:
+          novelty: 3        # Open-source AI and access democratization widely discussed
+          sensitivity: 8    # Core enabler of rogue capability acquisition
+          changeability: 4  # Genie largely out of bottle; restrictions can slow but not stop
+          certainty: 7      # Democratization clearly happening; full extent documented
       - id: dual-use-knowledge
         label: Dual-Use Knowledge
         type: leaf
         description: LLMs can provide WMD synthesis guidance. Tacit knowledge requirements reduced.
+        scores:
+          novelty: 5        # Dual-use concern recognized but specific uplift levels less known
+          sensitivity: 9    # Key factor enabling non-experts to create WMDs
+          changeability: 4  # Model training and guardrails can help; determined users find ways
+          certainty: 5      # Some studies show uplift; magnitude and effectiveness debated
       - id: radicalization-potential
         label: Radicalization Potential
         type: leaf
         description: AI-optimized recruitment and radicalization. Extremist content harder to counter.
+        scores:
+          novelty: 5        # Online radicalization known; AI amplification angle newer
+          sensitivity: 6    # Increases pool of motivated actors willing to cause harm
+          changeability: 4  # Counter-narratives and platform policies can help; arms race
+          certainty: 4      # AI's effect on radicalization scale not well quantified
       - id: attribution-difficulty
         label: Attribution Difficulty
         type: leaf
         description: Hard to identify attackers. Reduces deterrence effectiveness.
+        scores:
+          novelty: 4        # Attribution challenges known in cyber; extends to AI attacks
+          sensitivity: 6    # Weak attribution undermines deterrence and response
+          changeability: 4  # Forensic capabilities can improve; technical arms race
+          certainty: 6      # Attribution difficulty established; AI-specific effects emerging
       - id: bio-capability-uplift
         label: Bio Capability Uplift
         type: cause
         description: AI helps non-experts design pathogens. Current LLMs provide some uplift; future models
           more concerning.
+        scores:
+          novelty: 5        # Bio-uplift studies emerging; specific magnitude less known
+          sensitivity: 9    # Directly enables pandemic-scale attacks by non-experts
+          changeability: 4  # Model restrictions and biosecurity measures can help; not foolproof
+          certainty: 4      # Early studies exist; future uplift trajectory uncertain
       - id: cyber-capability-uplift
         label: Cyber Capability Uplift
         type: cause
         description: Automated vulnerability discovery, AI-generated social engineering. Offensive advantage.
+        scores:
+          novelty: 4        # AI cyber capabilities discussed in security community
+          sensitivity: 7    # Enables more sophisticated attacks at greater scale
+          changeability: 4  # AI defense can partially offset; offense-defense balance uncertain
+          certainty: 6      # AI cyber tools already in use; full capability unclear
       - id: coordination-enhancement
         label: Coordination Enhancement
         type: cause
         description: AI helps rogue actors plan, recruit, and evade detection.
+        scores:
+          novelty: 6        # AI for operational coordination less discussed than direct weapons
+          sensitivity: 6    # Better coordination increases attack success probability
+          changeability: 3  # General purpose AI hard to restrict; detection can help
+          certainty: 4      # Plausible but limited documented evidence of use
       - id: engineered-pandemic
         label: Engineered Pandemic
         type: intermediate
         description: AI-designed pathogen released by non-state actor. Potential billions of casualties.
+        scores:
+          novelty: 4        # Engineered pandemic risk widely discussed post-COVID
+          sensitivity: 10   # Could cause billions of casualties; civilizational impact
+          changeability: 4  # Biosecurity measures can reduce but not eliminate risk
+          certainty: 3      # Technical feasibility debated; motivation and intent uncertain
       - id: infrastructure-collapse
         label: Infrastructure Collapse
         type: intermediate
         description: AI-enhanced cyberattacks on critical infrastructure causing cascading failures.
+        scores:
+          novelty: 4        # Infrastructure vulnerability known; AI enhancement angle newer
+          sensitivity: 8    # Could cause mass harm through cascading failures
+          changeability: 5  # Infrastructure hardening and redundancy can help
+          certainty: 4      # Vulnerabilities exist; AI-specific attack capability uncertain
       - id: mass-casualty-attack
         label: Mass Casualty Attack
         type: intermediate
         description: Novel attack vectors enabled by AI planning and execution.
+        scores:
+          novelty: 5        # Novel attack vectors inherently less specified
+          sensitivity: 8    # High casualty potential from unforeseen attack methods
+          changeability: 4  # General resilience can help; specific attacks hard to prevent
+          certainty: 3      # By nature speculative; cannot predict novel attack types
       - id: rogue-catastrophe
         label: Rogue Actor Catastrophe
         type: effect
         description: Civilizational-scale harm from non-state actors empowered by AI capabilities.
+        scores:
+          novelty: 5        # Rogue actor risk discussed; AI amplification less quantified
+          sensitivity: 10   # Ultimate outcome variable for non-state catastrophe
+          changeability: 4  # Aggregate of multiple factors; multi-layered defenses possible
+          certainty: 3      # Very uncertain; depends on actor intent and capability trajectory
     edges:
       - source: ai-capability-democratization
         target: bio-capability-uplift
