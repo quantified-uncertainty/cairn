@@ -1,5 +1,6 @@
 # build output
 dist/
+apps/*/dist/
 
 # dependencies
 node_modules/
@@ -19,16 +20,21 @@ pnpm-debug.log*
 
 # astro
 .astro/
+apps/*/.astro/
 
 # Auto-generated data files (rebuild with npm run build:data)
-src/data/*.json
+apps/*/src/data/*.json
 
 # Knowledge cache (SQLite database, fetched sources, dossiers)
 .cache/
+apps/*/.cache/
 
 # Claude Code temp files
 .claude/temp/
 .claude/settings.local.json
 
 # Generated diagram files
-internal/
+apps/*/internal/
+
+# pnpm
+pnpm-lock.yaml

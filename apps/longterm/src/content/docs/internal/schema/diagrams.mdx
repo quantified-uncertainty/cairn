@@ -1,0 +1,209 @@
+---
+title: Schema Diagrams
+description: Visual documentation of the data schema - entity types, relationships, and data flow
+sidebar:
+  order: 1
+---
+
+import {Mermaid} from '../../../../components/wiki';
+
+Visual documentation auto-generated from `src/data/schema.ts`. Regenerate with `npm run diagrams`.
+
+## Entity Types
+
+All entity types grouped by category:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph CoreContent["Core Content"]
+        direction TB
+        risk["risk"]
+        risk_factor["risk-factor"]
+        capability["capability"]
+        concept["concept"]
+        crux["crux"]
+        argument["argument"]
+    end
+
+    subgraph SafetyResponses["Safety & Responses"]
+        direction TB
+        safety_agenda["safety-agenda"]
+        intervention["intervention"]
+        policy["policy"]
+    end
+
+    subgraph Organizations["Organizations"]
+        direction TB
+        organization["organization"]
+        lab["lab"]
+        lab_frontier["lab-frontier"]
+        lab_research["lab-research"]
+        funder["funder"]
+    end
+
+    subgraph Analysis["Analysis"]
+        direction TB
+        model["model"]
+        scenario["scenario"]
+        parameter["parameter"]
+        metric["metric"]
+    end
+
+    subgraph Other["Other"]
+        direction TB
+        researcher["researcher"]
+        resource["resource"]
+        historical["historical"]
+    end
+`} />
+
+## Relationship Types
+
+How entities can relate to each other:
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph Causal["Causal"]
+        causes["causes"]
+        drives["drives"]
+        affects["affects"]
+        amplifies["amplifies"]
+    end
+
+    subgraph Mitigation["Mitigation"]
+        mitigates["mitigates"]
+        blocks["blocks"]
+        addresses["addresses"]
+    end
+
+    subgraph Structural["Structural"]
+        requires["requires"]
+        enables["enables"]
+        child_of["child-of"]
+        composed_of["composed-of"]
+    end
+
+    subgraph Analysis["Analysis"]
+        measures["measures"]
+        analyzes["analyzes"]
+        models["models"]
+    end
+`} />
+
+## Schema Structure
+
+ER diagram showing main types and their relationships:
+
+<Mermaid client:load chart={`
+erDiagram
+    Entity {
+        string id PK
+        enum type
+        string title
+        string description
+        enum severity
+        string likelihood
+    }
+
+    Resource {
+        string id PK
+        string url
+        string title
+        enum type
+        string summary
+    }
+
+    Publication {
+        string id PK
+        string name
+        enum type
+        int credibility
+    }
+
+    RelatedEntry {
+        string id FK
+        enum type
+        enum relationship
+    }
+
+    Entity ||--o{ RelatedEntry : has
+    Entity ||--o{ EntitySource : cites
+    Entity }o--o{ Resource : references
+    Resource }o--|| Publication : published_in
+`} />
+
+## Data Flow
+
+How data flows from YAML files through validation to the UI:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Sources["YAML Data Sources"]
+        E1[entities/*.yaml]
+        E2[resources/*.yaml]
+        E3[publications.yaml]
+    end
+
+    subgraph Schema["Zod Schema Validation"]
+        S1[Entity Schema]
+        S2[Resource Schema]
+        S3[Publication Schema]
+    end
+
+    subgraph Build["Build Pipeline"]
+        B1[build-data.mjs]
+        B2[database.json]
+    end
+
+    subgraph Validation["Validation Suite"]
+        V1[validate-yaml-schema.mjs]
+        V2[validate-data.mjs]
+    end
+
+    subgraph UI["UI Components"]
+        U1[DataInfoBox]
+        U2[ResourceCard]
+        U3[CauseEffectGraph]
+    end
+
+    E1 --> V1
+    E2 --> V1
+    E3 --> V1
+
+    V1 --> S1
+    V1 --> S2
+    V1 --> S3
+
+    E1 --> B1
+    E2 --> B1
+    E3 --> B1
+
+    B1 --> B2
+    B2 --> U1
+    B2 --> U2
+    B2 --> U3
+`} />
+
+## Statistics
+
+| Metric | Count |
+|--------|-------|
+| Entity Types | 31 |
+| Relationship Types | 41 |
+| Entity Fields | 19 |
+| Resource Fields | 17 |
+
+## Regenerating Diagrams
+
+```bash
+# Generate schema-derived diagrams (from Zod)
+npm run diagrams:schema
+
+# Generate data-derived diagrams (from YAML)
+npm run diagrams:data
+
+# Generate all
+npm run diagrams
+```
+
+Raw `.mmd` files are saved to `internal/` (gitignored) for use in other tools.
