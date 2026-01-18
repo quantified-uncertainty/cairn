@@ -1,0 +1,46 @@
+---
+title: Architecture Overview
+description: How CAIRN sites are structured
+---
+
+## Data-Driven Architecture
+
+CAIRN sites follow a data-driven pattern:
+
+1. **YAML is the source of truth** - Entity definitions, relationships, metadata
+2. **Build-time processing** - YAML → JSON for fast runtime access
+3. **React components** - Consume JSON data for interactive UIs
+
+## Key Concepts
+
+### Entities
+
+Everything is an entity with a stable ID:
+
+```yaml
+# src/data/entities/risks.yaml
+- id: deceptive-alignment
+  type: risk
+  title: Deceptive Alignment
+  description: AI systems that appear aligned during training but pursue different goals when deployed
+```
+
+### Path Registry
+
+Entity IDs map to URLs, allowing content reorganization without breaking links:
+
+```typescript
+// Generated at build time
+{
+  "deceptive-alignment": "/knowledge-base/risks/technical/deceptive-alignment/"
+}
+```
+
+### Components
+
+Use `EntityLink` to reference entities by ID:
+
+```tsx
+<EntityLink id="deceptive-alignment" />
+// Renders as a link to the current URL for that entity
+```

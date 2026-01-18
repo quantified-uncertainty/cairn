@@ -1,0 +1,43 @@
+---
+title: Introduction
+description: Getting started with CAIRN
+---
+
+## What is CAIRN?
+
+CAIRN (name TBD) is a monorepo framework for building LLM-assisted knowledge bases. It provides:
+
+1. **Shared UI components** (`@cairn/ui`) - Graph visualizations, shadcn/ui components
+2. **Shared design tokens** (`@cairn/tailwind`) - Consistent theming across sites
+3. **Site templates** - Astro + Starlight configurations
+
+## Monorepo Structure
+
+```
+cairn/
+├── apps/
+│   ├── longterm/     # AI safety knowledge base
+│   └── meta/         # This documentation site
+├── packages/
+│   ├── ui/           # @cairn/ui - shared components
+│   └── tailwind/     # @cairn/tailwind - shared theme
+└── pnpm-workspace.yaml
+```
+
+## Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/quantified-uncertainty/cairn
+
+# Install dependencies
+pnpm install
+
+# Run the meta docs
+pnpm --filter meta dev
+```
+
+## Next Steps
+
+- [Architecture Overview](/architecture/overview/)
+- [Using Components](/components/overview/)
