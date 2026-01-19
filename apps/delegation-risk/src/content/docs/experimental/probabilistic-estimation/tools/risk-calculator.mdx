@@ -1,0 +1,91 @@
+---
+title: "Risk Calculator"
+description: "Monte Carlo simulation-based risk calculator with budget confidence analysis"
+sidebar:
+  order: 1
+---
+
+import SquiggleRiskCalculator from '../../../../../components/SquiggleRiskCalculator.tsx';
+
+# Risk Calculator
+
+This tool calculates your **expected monthly delegation risk** using Monte Carlo simulation with probabilistic inputs.
+
+## How It Works
+
+1. **Define Harm Modes**: Each potential failure mode has a probability of occurring and an associated damage distribution
+2. **Probabilistic Modeling**: Probabilities use beta distributions; damages use lognormal distributions to capture uncertainty
+3. **Monte Carlo Simulation**: 10,000 scenarios are sampled to build the risk distribution
+4. **Budget Analysis**: Compare your risk tolerance against the simulated distribution
+
+---
+
+<div style="margin: 2rem 0;">
+<SquiggleRiskCalculator client:load />
+</div>
+
+---
+
+## Understanding the Inputs
+
+### Probability (mean)
+The expected probability that this harm mode occurs each month. For example:
+- 0.05 = 5% chance of occurring
+- 0.01 = 1% chance of occurring
+
+### Probability (uncertainty)
+How confident you are in the probability estimate. Higher values create wider distributions around the mean.
+
+### Damage (median $)
+The typical cost when this harm mode occurs. Uses lognormal distribution, so actual damages could be significantly higher.
+
+### Damage (log-std)
+Controls the "tail thickness" of the damage distribution:
+- 0.5 = relatively predictable damages
+- 1.0 = moderate variation
+- 1.5 = high variation (rare events could be much larger)
+
+---
+
+## Understanding the Outputs
+
+### Budget Confidence
+The probability that your actual monthly risk stays within budget. Target levels:
+- **90%+**: Conservative, suitable for risk-averse organizations
+- **70-90%**: Moderate, typical for most applications
+- **Below 70%**: Aggressive, may need risk reduction measures
+
+### Expected Risk vs. Median
+- **Expected (mean)**: Average of all simulations. Pulled up by tail events.
+- **Median**: Middle value. More representative of "typical" month.
+
+If expected is much greater than median, you have significant tail risk.
+
+### 5th and 95th Percentiles
+- **5th percentile**: Best-case realistic scenario
+- **95th percentile**: Worst-case realistic scenario (1-in-20 months)
+
+---
+
+## Recommended Priors
+
+Use these starting points based on component type:
+
+| Component Type | Probability Prior | Damage Prior |
+|----------------|------------------|--------------|
+| Deterministic code | beta(1, 100) ~1% | lognormal(log(100), 0.5) |
+| Narrow ML | beta(3, 100) ~3% | lognormal(log(500), 0.7) |
+| General LLM | beta(8, 80) ~10% | lognormal(log(1000), 0.9) |
+| RL/Agentic | beta(15, 60) ~20% | lognormal(log(2000), 1.1) |
+
+See [Probability Priors](/experimental/probabilistic-estimation/estimates/probability-priors) for detailed distributions.
+
+---
+
+## Tips for Better Estimates
+
+1. **Start conservative**: Underestimating risk is worse than overestimating
+2. **Use reference classes**: How did similar systems perform historically?
+3. **Decompose carefully**: More specific harm modes are easier to estimate
+4. **Update with data**: Use the [Trust Updater](/experimental/probabilistic-estimation/tools/trust-updater) as you gather track record
+5. **Sensitivity check**: Which inputs matter most? See [Sensitivity Dashboard](/experimental/probabilistic-estimation/tools/sensitivity-dashboard)

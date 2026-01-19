@@ -13,41 +13,49 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Getting Started',
+          label: 'Start Here',
           items: [
             { label: 'Introduction', slug: 'getting-started/introduction' },
           ],
         },
         {
-          label: 'CAIRN',
-          autogenerate: { directory: 'cairn' },
-        },
-        {
-          label: 'Architecture',
-          autogenerate: { directory: 'architecture' },
+          label: 'Core Concepts',
+          items: [
+            { label: 'Architecture', slug: 'architecture' },
+            { label: 'Content Formats', slug: 'content-formats' },
+            { label: 'Knowledge Base', slug: 'knowledge-base' },
+            { label: 'Models', slug: 'models' },
+          ],
         },
         {
           label: 'Components',
-          autogenerate: { directory: 'components' },
+          items: [
+            { label: 'Overview', slug: 'components' },
+            { label: 'Mermaid Diagrams', slug: 'mermaid-diagrams' },
+            { label: 'Cause-Effect Diagrams', slug: 'cause-effect-diagrams' },
+          ],
+        },
+        {
+          label: 'LLM Workflows',
+          items: [
+            { label: 'Overview', slug: 'workflows' },
+            { label: 'Research Reports', slug: 'research-reports' },
+            { label: 'Content Database', slug: 'content-database' },
+            { label: 'Automation Tools', slug: 'automation-tools' },
+            { label: 'Enhancement Queue', slug: 'enhancement-queue' },
+          ],
         },
         {
           label: 'Reports',
           autogenerate: { directory: 'reports' },
         },
         {
-          label: 'Reference',
+          label: 'Project',
           items: [
-            { label: 'LLM Workflows', slug: 'workflows' },
-            { label: 'Content Formats', slug: 'content-formats' },
-            { label: 'Content Database', slug: 'content-database' },
-            { label: 'Automation Tools', slug: 'automation-tools' },
-            { label: 'Mermaid Diagrams', slug: 'mermaid-diagrams' },
-            { label: 'Cause-Effect Diagrams', slug: 'cause-effect-diagrams' },
-            { label: 'Knowledge Base', slug: 'knowledge-base' },
-            { label: 'Models', slug: 'models' },
-            { label: 'Research Reports', slug: 'research-reports' },
-            { label: 'Enhancement Queue', slug: 'enhancement-queue' },
-            { label: 'Project Roadmap', slug: 'project-roadmap' },
+            { label: 'Vision', slug: 'cairn/vision' },
+            { label: 'Strategy', slug: 'cairn/strategy-brainstorm' },
+            { label: 'Similar Projects', slug: 'cairn/similar-projects' },
+            { label: 'Roadmap', slug: 'project-roadmap' },
           ],
         },
       ],

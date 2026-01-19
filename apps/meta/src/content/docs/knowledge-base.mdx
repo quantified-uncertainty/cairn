@@ -8,9 +8,15 @@ importance: 0
 quality: 72
 llmSummary: "Internal style guide (kb-2.0) for knowledge base pages emphasizing content over rigid templates, proper hierarchy, and integrated argumentation. Provides structured patterns for risk/response pages with assessment tables, but recommends substantive prose over sparse bullet points."
 ---
-**Style Guide ID: `kb-2.0`** (2025-12-26)
+import { Aside, Badge } from '@astrojs/starlight/components';
+
+<Badge text="kb-2.0" variant="tip" /> <Badge text="2025-12-26" variant="default" />
 
 This guide provides principles and patterns for creating knowledge base pages. **These are guidelines, not rigid templates**—adapt structure to fit the content rather than forcing content into a fixed format.
+
+<Aside type="tip" title="Key Principle">
+A well-organized page with natural flow beats a mechanically-filled template with sparse content. Prioritize substance over structure.
+</Aside>
 
 Pages can track which style guide they follow using the `styleGuideVersion` frontmatter field (e.g., `styleGuideVersion: "kb-2.0"`).
 
@@ -70,6 +76,10 @@ Don't add template sections that duplicate existing content. If a page already d
 
 Every risk should link to relevant responses, and vice versa. Use the "Risks Addressed" table for responses and "Responses That Address This Risk" table for risks.
 
+<Aside type="note" title="Backlinks are Auto-Generated">
+The `<Backlinks />` component automatically shows pages that link to yours. Focus on adding outgoing links—incoming links appear automatically.
+</Aside>
+
 ### 5. Use Visualizations Sparingly
 
 Components like `DisagreementMap` can be confusing if the data doesn't clearly communicate something. Only use them when:
@@ -85,11 +95,13 @@ When in doubt, use prose or a simple table instead.
 
 The core principles above apply to all page types. Below are patterns specific to each type.
 
----
+| Page Type | Key Question | Core Sections |
+|-----------|--------------|---------------|
+| **Risk** | Is this real? How severe? What can be done? | Overview, Risk Assessment, Responses |
+| **Response** | What is this? Does it work? Who should work on it? | Overview, Quick Assessment, How It Works |
 
-### Risk Pages
-
-A risk page should answer: **Is this risk real? How severe is it? What can be done about it?**
+<details>
+<summary>**View Risk Page Template**</summary>
 
 **Recommended structure:**
 ```
@@ -130,14 +142,12 @@ A risk page should answer: **Is this risk real? How severe is it? What can be do
 - **Technical risks**: More mechanism explanation
 - **Governance risks**: More policy context
 
----
+</details>
 
-### Response Pages
+<details>
+<summary>**View Response Page Template**</summary>
 
-A response page should answer: **What is this? Does it work? What risks does it address? Who should work on it?**
-
-### Recommended Structure
-
+**Recommended structure:**
 ```
 ## Overview
 [2-3 paragraphs explaining the intervention]
@@ -191,15 +201,25 @@ A response page should answer: **What is this? Does it work? What risks does it 
 <Backlinks />
 ```
 
-### Adapting to Content
-
+**Adapting to content:**
 - **Technical responses** might need more detail on methods and current research
 - **Governance responses** might need more policy context and implementation details
 - **Institutional responses** might focus more on organizational landscape
 
+</details>
+
 ---
 
 ## Writing Guidelines
+
+| Guideline | Recommendation |
+|-----------|----------------|
+| Arguments | Integrate into narrative, avoid sparse "Case For/Against" |
+| Uncertainties | Substantive questions with context, not sparse tables |
+| Structure | Use `---` to separate major sections |
+
+<details>
+<summary>**View Writing Examples**</summary>
 
 ### Arguments and Perspectives
 
@@ -252,13 +272,21 @@ pre-deployment evaluation through legislation, which faces significant political
 obstacles.
 ```
 
-### Visual Separation
-
-Use horizontal rules (`---`) to separate major sections. This helps readers see the page's structure at a glance.
+</details>
 
 ---
 
 ## Components Reference
+
+| Component | Usage | When to Use |
+|-----------|-------|-------------|
+| **Tables** | Assessments, cross-references | Preferred for structured data |
+| **EstimateBox** | Expert estimate ranges | Only with actual sourced estimates |
+| **Backlinks** | Related page links | Always include |
+| **DisagreementMap** | Position visualization | Rarely—prefer prose/tables |
+
+<details>
+<summary>**View Component Examples**</summary>
 
 ### Tables (Preferred for Structured Data)
 
@@ -299,6 +327,8 @@ Only use when you have actual sourced estimates—don't make up positions.
 
 This component often doesn't clearly communicate what's being measured. Prefer prose or tables for showing different perspectives. Only use if you have clear, meaningful positions that benefit from visualization.
 
+</details>
+
 ---
 
 ## Examples
@@ -313,6 +343,10 @@ Good examples of different page types:
 
 ## Common Mistakes
 
+<Aside type="caution" title="Quality Check">
+Review your page for these issues before submitting. They're the most frequent problems in PRs.
+</Aside>
+
 1. **Flat hierarchy**: 10+ h2 sections instead of grouped h2/h3 structure
 2. **Sparse template-filling**: One-sentence arguments in Case For/Against sections
 3. **Redundant sections**: Adding Case For/Against when the page already discusses pros/cons elsewhere
@@ -321,6 +355,9 @@ Good examples of different page types:
 6. **Missing cross-links**: Not connecting risks to responses and vice versa
 
 ---
+
+<details>
+<summary>**View Version Tracking & Changelog**</summary>
 
 ## Version Tracking
 
@@ -357,3 +394,5 @@ Benefits:
 - Initial template-based approach with fixed section structure
 - Introduced EstimateBox, DisagreementMap, KeyQuestions components
 - Established cross-linking patterns between risks and responses
+
+</details>

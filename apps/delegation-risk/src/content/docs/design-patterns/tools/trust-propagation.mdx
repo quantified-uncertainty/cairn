@@ -1,0 +1,615 @@
+---
+title: "Risk Inheritance Calculator"
+sidebar:
+  order: 6
+---
+
+import { Card } from '@astrojs/starlight/components';
+
+# Risk Inheritance Calculator
+
+:::caution[Illustrative Tool]
+This calculator demonstrates **conceptual models** of risk propagation. Real systems may not follow these simplified rules. Use it to explore the ideas, not to make critical decisions about actual systems.
+:::
+
+Interactive tool for calculating how trust flows through delegation chains and networks.
+
+## How to Use
+
+1. Add nodes representing principals, coordinators, and executors
+2. Add edges to define trust relationships between nodes
+3. Select a propagation rule
+4. Calculator shows effective trust from source to all reachable nodes
+
+---
+
+<div id="trust-propagation">
+  <style>{`
+    .prop-container {
+      background: var(--sl-color-gray-6);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .prop-section {
+      margin-bottom: 1.5rem;
+    }
+    .prop-section h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+    }
+    .node-list, .edge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .node-item, .edge-item {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.5rem;
+      background: var(--sl-color-gray-5);
+      border-radius: 4px;
+    }
+    .node-item input, .edge-item input, .edge-item select {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+    }
+    .node-item input[type="text"] {
+      flex: 1;
+    }
+    .edge-item select {
+      flex: 1;
+    }
+    .edge-item input[type="number"] {
+      width: 80px;
+    }
+    .remove-btn {
+      padding: 0.5rem 0.75rem;
+      background: var(--sl-color-red);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .add-btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--sl-color-accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .rule-select {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+      width: 100%;
+      max-width: 300px;
+    }
+    .source-select {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+      margin-left: 0.5rem;
+    }
+    .results-section {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--sl-color-gray-5);
+      border-radius: 4px;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .results-table th, .results-table td {
+      padding: 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--sl-color-gray-4);
+    }
+    .results-table th {
+      font-weight: bold;
+    }
+    .path-cell {
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+    .trust-high { color: var(--sl-color-green); }
+    .trust-medium { color: var(--sl-color-orange); }
+    .trust-low { color: var(--sl-color-red); }
+    .graph-viz {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--sl-color-bg);
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      min-height: 150px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .rule-description {
+      font-size: 0.9em;
+      color: var(--sl-color-gray-2);
+      margin-top: 0.5rem;
+    }
+  `}</style>
+
+  <div class="prop-container">
+    <div class="prop-section">
+      <h3>Nodes</h3>
+      <div class="node-list" id="node-list">
+        {/* Nodes added here */}
+      </div>
+      <button class="add-btn" id="add-node">+ Add Node</button>
+    </div>
+
+    <div class="prop-section">
+      <h3>Trust Edges</h3>
+      <div class="edge-list" id="edge-list">
+        {/* Edges added here */}
+      </div>
+      <button class="add-btn" id="add-edge">+ Add Edge</button>
+    </div>
+
+    <div class="prop-section">
+      <h3>Propagation Rule</h3>
+      <select class="rule-select" id="prop-rule">
+        <option value="multiplicative">Multiplicative (default)</option>
+        <option value="minimum">Minimum</option>
+        <option value="harmonic">Harmonic Mean</option>
+        <option value="weakest">Weakest Link (product of complements)</option>
+      </select>
+      <div class="rule-description" id="rule-desc">
+        Effective trust = T₁ × T₂ × ... × Tₙ along each path
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <label><strong>Source Node:</strong></label>
+      <select class="source-select" id="source-node">
+        {/* Populated dynamically */}
+      </select>
+    </div>
+
+    <div class="results-section">
+      <strong>Effective Trust from Source</strong>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Target</th>
+            <th>Effective Trust</th>
+            <th>Best Path</th>
+          </tr>
+        </thead>
+        <tbody id="results-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prop-section">
+      <strong>Graph Visualization</strong>
+      <div class="graph-viz" id="graph-viz">
+        {/* ASCII graph here */}
+      </div>
+    </div>
+  </div>
+
+  <script>{`
+    (function() {
+      let nodeCount = 0;
+      let edgeCount = 0;
+
+      const defaultNodes = ['Principal', 'Coordinator', 'Executor A', 'Executor B'];
+      const defaultEdges = [
+        { from: 'Principal', to: 'Coordinator', trust: 0.9 },
+        { from: 'Coordinator', to: 'Executor A', trust: 0.8 },
+        { from: 'Coordinator', to: 'Executor B', trust: 0.7 },
+      ];
+
+      const ruleDescriptions = {
+        'multiplicative': 'Effective trust = T₁ × T₂ × ... × Tₙ along each path',
+        'minimum': 'Effective trust = min(T₁, T₂, ..., Tₙ) along each path',
+        'harmonic': 'Effective trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ) along each path',
+        'weakest': 'Effective trust = 1 - [(1-T₁)(1-T₂)...(1-Tₙ)] - models independent failure'
+      };
+
+      function getNodes() {
+        const nodes = [];
+        document.querySelectorAll('.node-item input').forEach(input => {
+          if (input.value.trim()) nodes.push(input.value.trim());
+        });
+        return nodes;
+      }
+
+      function getEdges() {
+        const edges = [];
+        document.querySelectorAll('.edge-item').forEach(item => {
+          const from = item.querySelector('.edge-from').value;
+          const to = item.querySelector('.edge-to').value;
+          const trust = parseFloat(item.querySelector('.edge-trust').value) || 0;
+          if (from && to && from !== to) {
+            edges.push({ from, to, trust });
+          }
+        });
+        return edges;
+      }
+
+      function createNodeRow(name = '') {
+        const id = nodeCount++;
+        const row = document.createElement('div');
+        row.className = 'node-item';
+        row.id = 'node-' + id;
+        row.innerHTML =
+          '<input type="text" placeholder="Node name" value="' + name + '" class="node-name" />' +
+          '<button class="remove-btn" onclick="removeNode(' + id + ')">×</button>';
+        return row;
+      }
+
+      function removeNode(id) {
+        const row = document.getElementById('node-' + id);
+        if (row) row.remove();
+        updateEdgeDropdowns();
+        calculate();
+      }
+      window.removeNode = removeNode;
+
+      function createEdgeRow(edge = { from: '', to: '', trust: 0.8 }) {
+        const id = edgeCount++;
+        const row = document.createElement('div');
+        row.className = 'edge-item';
+        row.id = 'edge-' + id;
+
+        const nodes = getNodes();
+        const fromOptions = nodes.map(n =>
+          '<option value="' + n + '"' + (n === edge.from ? ' selected' : '') + '>' + n + '</option>'
+        ).join('');
+        const toOptions = nodes.map(n =>
+          '<option value="' + n + '"' + (n === edge.to ? ' selected' : '') + '>' + n + '</option>'
+        ).join('');
+
+        row.innerHTML =
+          '<select class="edge-from">' + fromOptions + '</select>' +
+          '<span>→</span>' +
+          '<select class="edge-to">' + toOptions + '</select>' +
+          '<span>Trust:</span>' +
+          '<input type="number" step="0.01" min="0" max="1" value="' + edge.trust + '" class="edge-trust" />' +
+          '<button class="remove-btn" onclick="removeEdge(' + id + ')">×</button>';
+        return row;
+      }
+
+      function removeEdge(id) {
+        const row = document.getElementById('edge-' + id);
+        if (row) row.remove();
+        calculate();
+      }
+      window.removeEdge = removeEdge;
+
+      function updateEdgeDropdowns() {
+        const nodes = getNodes();
+        document.querySelectorAll('.edge-item').forEach(item => {
+          const fromSelect = item.querySelector('.edge-from');
+          const toSelect = item.querySelector('.edge-to');
+          const fromVal = fromSelect.value;
+          const toVal = toSelect.value;
+
+          fromSelect.innerHTML = nodes.map(n =>
+            '<option value="' + n + '"' + (n === fromVal ? ' selected' : '') + '>' + n + '</option>'
+          ).join('');
+          toSelect.innerHTML = nodes.map(n =>
+            '<option value="' + n + '"' + (n === toVal ? ' selected' : '') + '>' + n + '</option>'
+          ).join('');
+        });
+
+        // Update source selector
+        const sourceSelect = document.getElementById('source-node');
+        const currentSource = sourceSelect.value;
+        sourceSelect.innerHTML = nodes.map(n =>
+          '<option value="' + n + '"' + (n === currentSource ? ' selected' : '') + '>' + n + '</option>'
+        ).join('');
+      }
+
+      function propagateTrust(rule, pathTrusts) {
+        if (pathTrusts.length === 0) return 0;
+        switch(rule) {
+          case 'multiplicative':
+            return pathTrusts.reduce((acc, t) => acc * t, 1);
+          case 'minimum':
+            return Math.min(...pathTrusts);
+          case 'harmonic':
+            const sum = pathTrusts.reduce((acc, t) => acc + 1/t, 0);
+            return pathTrusts.length / sum;
+          case 'weakest':
+            // 1 - product of (1 - t) for each t
+            return 1 - pathTrusts.reduce((acc, t) => acc * (1 - t), 1);
+          default:
+            return pathTrusts.reduce((acc, t) => acc * t, 1);
+        }
+      }
+
+      function findAllPaths(edges, source, target, visited = new Set()) {
+        if (source === target) return [[]];
+        if (visited.has(source)) return [];
+
+        visited.add(source);
+        const paths = [];
+
+        edges.filter(e => e.from === source).forEach(edge => {
+          const subPaths = findAllPaths(edges, edge.to, target, new Set(visited));
+          subPaths.forEach(subPath => {
+            paths.push([edge, ...subPath]);
+          });
+        });
+
+        return paths;
+      }
+
+      function calculate() {
+        const nodes = getNodes();
+        const edges = getEdges();
+        const rule = document.getElementById('prop-rule').value;
+        const source = document.getElementById('source-node').value;
+
+        const results = [];
+
+        nodes.forEach(target => {
+          if (target === source) {
+            results.push({ target, trust: 1.0, path: 'self' });
+            return;
+          }
+
+          const paths = findAllPaths(edges, source, target);
+          if (paths.length === 0) {
+            results.push({ target, trust: 0, path: 'no path' });
+            return;
+          }
+
+          // Calculate trust for each path and take the best
+          let bestTrust = 0;
+          let bestPath = [];
+
+          paths.forEach(path => {
+            const pathTrusts = path.map(e => e.trust);
+            const trust = propagateTrust(rule, pathTrusts);
+            if (trust > bestTrust) {
+              bestTrust = trust;
+              bestPath = path;
+            }
+          });
+
+          const pathStr = bestPath.length > 0
+            ? source + ' → ' + bestPath.map(e => e.to).join(' → ')
+            : 'direct';
+
+          results.push({ target, trust: bestTrust, path: pathStr });
+        });
+
+        // Update results table
+        const tbody = document.getElementById('results-body');
+        tbody.innerHTML = results.map(r => {
+          const trustClass = r.trust >= 0.7 ? 'trust-high' : r.trust >= 0.4 ? 'trust-medium' : 'trust-low';
+          const trustPercent = (r.trust * 100).toFixed(1) + '%';
+          return '<tr>' +
+            '<td>' + r.target + '</td>' +
+            '<td class="' + trustClass + '">' + trustPercent + '</td>' +
+            '<td class="path-cell">' + r.path + '</td>' +
+            '</tr>';
+        }).join('');
+
+        // Update graph visualization
+        updateGraphViz(nodes, edges, source, results);
+      }
+
+      function updateGraphViz(nodes, edges, source, results) {
+        const viz = document.getElementById('graph-viz');
+
+        // Build adjacency info
+        const adjInfo = {};
+        nodes.forEach(n => adjInfo[n] = []);
+        edges.forEach(e => {
+          adjInfo[e.from].push({ to: e.to, trust: e.trust });
+        });
+
+        // Create simple ASCII representation
+        let output = '';
+        output += 'Source: [' + source + ']\\n\\n';
+        output += 'Connections:\\n';
+
+        nodes.forEach(node => {
+          const result = results.find(r => r.target === node);
+          const effectiveTrust = result ? (result.trust * 100).toFixed(0) + '%' : '?';
+          const marker = node === source ? '◉' : '○';
+
+          output += '  ' + marker + ' ' + node + ' (effective: ' + effectiveTrust + ')\\n';
+
+          adjInfo[node].forEach(edge => {
+            output += '    └─(' + (edge.trust * 100).toFixed(0) + '%)─→ ' + edge.to + '\\n';
+          });
+        });
+
+        viz.textContent = output;
+      }
+
+      // Initialize
+      const nodeContainer = document.getElementById('node-list');
+      const edgeContainer = document.getElementById('edge-list');
+
+      defaultNodes.forEach(name => {
+        nodeContainer.appendChild(createNodeRow(name));
+      });
+
+      updateEdgeDropdowns();
+
+      defaultEdges.forEach(edge => {
+        edgeContainer.appendChild(createEdgeRow(edge));
+      });
+
+      // Event listeners
+      document.getElementById('add-node').addEventListener('click', () => {
+        nodeContainer.appendChild(createNodeRow());
+      });
+
+      document.getElementById('add-edge').addEventListener('click', () => {
+        edgeContainer.appendChild(createEdgeRow());
+        calculate();
+      });
+
+      document.getElementById('prop-rule').addEventListener('change', (e) => {
+        document.getElementById('rule-desc').textContent = ruleDescriptions[e.target.value];
+        calculate();
+      });
+
+      document.getElementById('source-node').addEventListener('change', calculate);
+
+      nodeContainer.addEventListener('input', () => {
+        updateEdgeDropdowns();
+        calculate();
+      });
+
+      edgeContainer.addEventListener('input', calculate);
+
+      // Initial calculation
+      calculate();
+    })();
+  `}</script>
+</div>
+
+---
+
+## Propagation Rules Explained
+
+### Multiplicative (Default)
+
+The most common model. Trust compounds multiplicatively along a path:
+
+```
+Effective Trust = T₁ × T₂ × ... × Tₙ
+```
+
+**Example**: Principal trusts Coordinator at 0.9, Coordinator trusts Executor at 0.8
+- Effective trust: 0.9 × 0.8 = **0.72**
+
+**Use when**: Trust represents "probability of correct behavior" and failures are independent.
+
+### Minimum
+
+Trust is limited by the weakest link:
+
+```
+Effective Trust = min(T₁, T₂, ..., Tₙ)
+```
+
+**Example**: Same chain with 0.9 and 0.8
+- Effective trust: min(0.9, 0.8) = **0.8**
+
+**Use when**: Each link must independently meet a threshold (like security clearances).
+
+### Harmonic Mean
+
+Balanced approach that penalizes low values:
+
+```
+Effective Trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ)
+```
+
+**Example**: Same chain with 0.9 and 0.8
+- Effective trust: 2 / (1/0.9 + 1/0.8) = **0.847**
+
+**Use when**: You want to balance between multiplicative (too pessimistic) and minimum (too optimistic).
+
+### Weakest Link (Product of Complements)
+
+Models trust as "probability of not failing":
+
+```
+Effective Trust = 1 - [(1-T₁) × (1-T₂) × ... × (1-Tₙ)]
+```
+
+**Example**: Same chain with 0.9 and 0.8
+- Failure probabilities: 0.1 and 0.2
+- Combined failure: 1 - (0.1 × 0.2) = 1 - 0.02 = **0.98**
+
+**Use when**: Failures must occur at multiple points simultaneously (redundant systems).
+
+---
+
+## Multiple Paths
+
+When multiple paths exist between source and target, this calculator shows the **best path** (highest effective trust). In practice, you might:
+
+1. **Take the maximum** (optimistic): If any path succeeds, trust is established
+2. **Average paths** (moderate): Blend multiple paths
+3. **Use only verified paths** (conservative): Only count audited delegation chains
+
+---
+
+## Practical Examples
+
+### Example 1: Simple Delegation Chain
+
+```
+Human → AI Orchestrator → Code Generator → Deployed Code
+
+Trust levels: 0.95 → 0.80 → 0.70
+Multiplicative: 0.95 × 0.80 × 0.70 = 0.532 (53.2%)
+```
+
+The effective trust to deployed code is only 53.2%, suggesting need for:
+- Additional verification at each step
+- Direct human review of deployed code
+
+### Example 2: Parallel Executors
+
+```
+        ┌→ Executor A (0.9)
+Human → Coordinator ─┤
+        └→ Executor B (0.7)
+```
+
+With Coordinator trust at 0.85:
+- To Executor A: 0.85 × 0.9 = 0.765
+- To Executor B: 0.85 × 0.7 = 0.595
+
+Executor B should have limited capabilities or additional oversight.
+
+### Example 3: Redundant Verification
+
+```
+           ┌→ Verifier A (0.8) ─┐
+Human → ──┤                     ├→ Action
+           └→ Verifier B (0.8) ─┘
+```
+
+Using weakest link rule (both must pass):
+- If both verify independently: 1 - (0.2 × 0.2) = 0.96
+
+Redundancy significantly increases effective trust.
+
+---
+
+## Design Implications
+
+| Effective Trust | Implication |
+|-----------------|-------------|
+| > 80% | Can operate with standard monitoring |
+| 60-80% | Requires enhanced logging and periodic review |
+| 40-60% | Needs active human oversight |
+| < 40% | Should not operate autonomously |
+
+---
+
+## Next Steps
+
+- [Delegation Risk Calculator](/applying/tools/delegation-risk-calculator/) — Calculate Delegation Risk
+- [Quick Start](/applying/tools/quick-start/) — Apply these concepts to your system
+- [Decision Guide](/applying/tools/decision-guide/) — Choose implementation based on trust levels

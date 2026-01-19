@@ -1,0 +1,668 @@
+---
+title: "Capability-Trust Tradeoff"
+sidebar:
+  order: 7
+---
+
+# Capability-Trust Tradeoff
+
+:::caution[Illustrative Tool]
+This visualization shows a **conceptual model** of capability-risk tradeoffs. Real systems have more dimensions and the curves are illustrative, not empirically derived.
+:::
+
+The fundamental tradeoff in AI system design: more capable systems require more trust, but trust is limited.
+
+<div id="pareto-chart">
+  <style>{`
+    .chart-container {
+      background: var(--sl-color-gray-6);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .chart-canvas {
+      background: var(--sl-color-bg);
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
+    }
+    .chart-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+      align-items: center;
+    }
+    .chart-controls label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chart-controls input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+    .chart-controls select, .chart-controls input[type="number"] {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+    }
+    .point-editor {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--sl-color-gray-5);
+      border-radius: 4px;
+    }
+    .point-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .point-item {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.5rem;
+      background: var(--sl-color-gray-6);
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .point-item input {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+    }
+    .point-item input[type="text"] { width: 120px; }
+    .point-item input[type="number"] { width: 60px; }
+    .point-item .pareto-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .point-item .pareto-indicator.on-frontier { background: #22c55e; }
+    .point-item .pareto-indicator.dominated { background: #ef4444; }
+    .remove-btn {
+      padding: 0.25rem 0.5rem;
+      background: var(--sl-color-red);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .add-btn {
+      padding: 0.5rem 1rem;
+      background: var(--sl-color-accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9em;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .legend-line {
+      width: 24px;
+      height: 3px;
+    }
+    .tooltip {
+      position: absolute;
+      background: var(--sl-color-gray-5);
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      padding: 0.5rem;
+      font-size: 0.85em;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+    }
+    .insight-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--sl-color-gray-5);
+      border-left: 4px solid var(--sl-color-accent);
+      border-radius: 4px;
+    }
+  `}</style>
+
+  <div class="chart-container">
+    <div style="position: relative;">
+      <canvas id="frontier-canvas" class="chart-canvas" width="600" height="450"></canvas>
+      <div class="tooltip" id="chart-tooltip"></div>
+    </div>
+
+    <div class="chart-controls">
+      <label>
+        <input type="checkbox" id="show-frontier" checked />
+        Show Pareto Frontier
+      </label>
+      <label>
+        <input type="checkbox" id="show-dominated" checked />
+        Show Dominated Region
+      </label>
+      <label>
+        <input type="checkbox" id="show-labels" checked />
+        Show Labels
+      </label>
+      <label>
+        Budget Line: $
+        <input type="number" id="budget-line" value="0" min="0" step="100" style="width: 80px;" />
+      </label>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #22c55e;"></div>
+        <span>On Frontier (Efficient)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #ef4444;"></div>
+        <span>Dominated (Inefficient)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background: #22c55e;"></div>
+        <span>Pareto Frontier</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background: #3b82f6; opacity: 0.3; height: 12px;"></div>
+        <span>Dominated Region</span>
+      </div>
+    </div>
+
+    <div class="point-editor">
+      <strong>System Configurations</strong>
+      <div class="point-list" id="point-list"></div>
+      <button class="add-btn" id="add-point">+ Add Configuration</button>
+    </div>
+
+    <div class="insight-box" id="insight-box">
+      <strong>Insight:</strong> <span id="insight-text">Add points to see analysis.</span>
+    </div>
+  </div>
+
+  <script>{`
+    (function() {
+      const canvas = document.getElementById('frontier-canvas');
+      const ctx = canvas.getContext('2d');
+      const tooltip = document.getElementById('chart-tooltip');
+
+      // Chart dimensions
+      const margin = { top: 40, right: 40, bottom: 60, left: 70 };
+      const width = canvas.width - margin.left - margin.right;
+      const height = canvas.height - margin.top - margin.bottom;
+
+      // Default system configurations
+      let points = [
+        { name: 'Basic Chatbot', capability: 20, trust: 95, ete: 50 },
+        { name: 'Code Assistant', capability: 50, trust: 80, ete: 200 },
+        { name: 'Autonomous Agent', capability: 85, trust: 40, ete: 1500 },
+        { name: 'Research Assistant', capability: 60, trust: 75, ete: 300 },
+        { name: 'Data Analyzer', capability: 45, trust: 85, ete: 150 },
+        { name: 'Full Autonomy', capability: 95, trust: 20, ete: 5000 },
+        { name: 'Constrained Agent', capability: 70, trust: 60, ete: 600 },
+        { name: 'Legacy System', capability: 30, trust: 70, ete: 100 },
+      ];
+
+      function computeParetoFrontier(pts) {
+        // Sort by capability descending
+        const sorted = [...pts].sort((a, b) => b.capability - a.capability);
+        const frontier = [];
+        let maxTrust = -1;
+
+        for (const p of sorted) {
+          if (p.trust > maxTrust) {
+            frontier.push(p);
+            maxTrust = p.trust;
+          }
+        }
+
+        return frontier;
+      }
+
+      function isOnFrontier(point, frontier) {
+        return frontier.some(f => f.name === point.name);
+      }
+
+      function scaleX(capability) {
+        return margin.left + (capability / 100) * width;
+      }
+
+      function scaleY(trust) {
+        return margin.top + height - (trust / 100) * height;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const showFrontier = document.getElementById('show-frontier').checked;
+        const showDominated = document.getElementById('show-dominated').checked;
+        const showLabels = document.getElementById('show-labels').checked;
+        const budgetLine = parseFloat(document.getElementById('budget-line').value) || 0;
+
+        const frontier = computeParetoFrontier(points);
+
+        // Draw axes
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(margin.left, margin.top);
+        ctx.lineTo(margin.left, margin.top + height);
+        ctx.lineTo(margin.left + width, margin.top + height);
+        ctx.stroke();
+
+        // Axis labels
+        ctx.fillStyle = '#ccc';
+        ctx.font = '14px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Capability', margin.left + width / 2, canvas.height - 15);
+
+        ctx.save();
+        ctx.translate(20, margin.top + height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Trust', 0, 0);
+        ctx.restore();
+
+        // Grid lines and tick labels
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 0.5;
+        ctx.font = '11px system-ui, sans-serif';
+
+        for (let i = 0; i <= 100; i += 20) {
+          // X axis ticks
+          const x = scaleX(i);
+          ctx.beginPath();
+          ctx.moveTo(x, margin.top + height);
+          ctx.lineTo(x, margin.top + height + 5);
+          ctx.stroke();
+          ctx.fillText(i + '%', x, margin.top + height + 20);
+
+          // X grid
+          if (i > 0) {
+            ctx.beginPath();
+            ctx.moveTo(x, margin.top);
+            ctx.lineTo(x, margin.top + height);
+            ctx.stroke();
+          }
+
+          // Y axis ticks
+          const y = scaleY(i);
+          ctx.beginPath();
+          ctx.moveTo(margin.left - 5, y);
+          ctx.lineTo(margin.left, y);
+          ctx.stroke();
+          ctx.textAlign = 'right';
+          ctx.fillText(i + '%', margin.left - 10, y + 4);
+          ctx.textAlign = 'center';
+
+          // Y grid
+          if (i > 0 && i < 100) {
+            ctx.beginPath();
+            ctx.moveTo(margin.left, y);
+            ctx.lineTo(margin.left + width, y);
+            ctx.stroke();
+          }
+        }
+
+        // Draw dominated region (area below/left of frontier)
+        if (showDominated && frontier.length > 1) {
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+          ctx.beginPath();
+
+          // Start from bottom-left
+          ctx.moveTo(margin.left, margin.top + height);
+
+          // Go up to first frontier point's trust level
+          const sortedFrontier = [...frontier].sort((a, b) => a.capability - b.capability);
+          ctx.lineTo(margin.left, scaleY(sortedFrontier[0].trust));
+
+          // Follow frontier
+          sortedFrontier.forEach(p => {
+            ctx.lineTo(scaleX(p.capability), scaleY(p.trust));
+          });
+
+          // Go down to bottom
+          ctx.lineTo(scaleX(sortedFrontier[sortedFrontier.length - 1].capability), margin.top + height);
+
+          // Close path
+          ctx.lineTo(margin.left, margin.top + height);
+          ctx.fill();
+        }
+
+        // Draw Pareto frontier line
+        if (showFrontier && frontier.length > 1) {
+          const sortedFrontier = [...frontier].sort((a, b) => a.capability - b.capability);
+
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(scaleX(sortedFrontier[0].capability), scaleY(sortedFrontier[0].trust));
+
+          for (let i = 1; i < sortedFrontier.length; i++) {
+            ctx.lineTo(scaleX(sortedFrontier[i].capability), scaleY(sortedFrontier[i].trust));
+          }
+          ctx.stroke();
+        }
+
+        // Draw budget line (iso-Delegation Risk curve approximation)
+        if (budgetLine > 0) {
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+          ctx.beginPath();
+
+          // Delegation Risk ≈ capability × (100 - trust) × factor
+          // Rearrange: trust = 100 - Delegation Risk / (capability × factor)
+          const factor = 50; // Scaling factor
+          let started = false;
+
+          for (let cap = 5; cap <= 100; cap += 1) {
+            const trust = 100 - budgetLine / (cap * factor);
+            if (trust >= 0 && trust <= 100) {
+              const x = scaleX(cap);
+              const y = scaleY(trust);
+              if (!started) {
+                ctx.moveTo(x, y);
+                started = true;
+              } else {
+                ctx.lineTo(x, y);
+              }
+            }
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Label
+          ctx.fillStyle = '#f59e0b';
+          ctx.font = '11px system-ui, sans-serif';
+          ctx.fillText('Budget: $' + budgetLine, margin.left + width - 60, margin.top + 20);
+        }
+
+        // Draw points
+        points.forEach(point => {
+          const x = scaleX(point.capability);
+          const y = scaleY(point.trust);
+          const onFrontier = isOnFrontier(point, frontier);
+
+          // Point
+          ctx.beginPath();
+          ctx.arc(x, y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = onFrontier ? '#22c55e' : '#ef4444';
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // Label
+          if (showLabels) {
+            ctx.fillStyle = '#ccc';
+            ctx.font = '11px system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(point.name, x + 12, y + 4);
+          }
+        });
+
+        // Title
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 16px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Capability vs Trust Pareto Frontier', canvas.width / 2, 25);
+
+        // Update point list
+        updatePointList(frontier);
+        updateInsight(frontier);
+      }
+
+      function updatePointList(frontier) {
+        const container = document.getElementById('point-list');
+        container.innerHTML = points.map((p, i) => {
+          const onFrontier = isOnFrontier(p, frontier);
+          return '<div class="point-item">' +
+            '<div class="pareto-indicator ' + (onFrontier ? 'on-frontier' : 'dominated') + '"></div>' +
+            '<input type="text" value="' + p.name + '" data-index="' + i + '" data-field="name" />' +
+            '<span>Cap:</span><input type="number" value="' + p.capability + '" min="0" max="100" data-index="' + i + '" data-field="capability" />' +
+            '<span>Trust:</span><input type="number" value="' + p.trust + '" min="0" max="100" data-index="' + i + '" data-field="trust" />' +
+            '<button class="remove-btn" data-index="' + i + '">×</button>' +
+            '</div>';
+        }).join('');
+      }
+
+      function updateInsight(frontier) {
+        const dominated = points.filter(p => !isOnFrontier(p, frontier));
+        let text = '';
+
+        if (frontier.length === 0) {
+          text = 'Add configurations to analyze the tradeoff frontier.';
+        } else if (dominated.length === 0) {
+          text = 'All configurations are Pareto-efficient. Each offers a unique capability-trust tradeoff.';
+        } else {
+          const names = dominated.map(d => d.name).join(', ');
+          text = dominated.length + ' dominated configuration(s): ' + names + '. Consider removing or improving these.';
+        }
+
+        document.getElementById('insight-text').textContent = text;
+      }
+
+      // Event listeners
+      document.getElementById('show-frontier').addEventListener('change', draw);
+      document.getElementById('show-dominated').addEventListener('change', draw);
+      document.getElementById('show-labels').addEventListener('change', draw);
+      document.getElementById('budget-line').addEventListener('input', draw);
+
+      document.getElementById('add-point').addEventListener('click', () => {
+        points.push({
+          name: 'New System',
+          capability: 50,
+          trust: 50,
+          ete: 500
+        });
+        draw();
+      });
+
+      document.getElementById('point-list').addEventListener('input', (e) => {
+        const index = parseInt(e.target.dataset.index);
+        const field = e.target.dataset.field;
+        if (index >= 0 && field) {
+          if (field === 'name') {
+            points[index][field] = e.target.value;
+          } else {
+            points[index][field] = parseFloat(e.target.value) || 0;
+          }
+          draw();
+        }
+      });
+
+      document.getElementById('point-list').addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+          const index = parseInt(e.target.dataset.index);
+          if (index >= 0) {
+            points.splice(index, 1);
+            draw();
+          }
+        }
+      });
+
+      // Tooltip on hover
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        let found = null;
+        points.forEach(point => {
+          const x = scaleX(point.capability);
+          const y = scaleY(point.trust);
+          const dist = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+          if (dist < 15) found = point;
+        });
+
+        if (found) {
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+          tooltip.style.top = (e.clientY - rect.top - 10) + 'px';
+          tooltip.innerHTML = '<strong>' + found.name + '</strong><br>' +
+            'Capability: ' + found.capability + '%<br>' +
+            'Trust: ' + found.trust + '%';
+        } else {
+          tooltip.style.display = 'none';
+        }
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+
+      // Initial draw
+      draw();
+    })();
+  `}</script>
+</div>
+
+---
+
+## Understanding the Frontier
+
+### What is a Pareto Frontier?
+
+A **Pareto frontier** (or efficient frontier) shows the best achievable tradeoffs between two objectives. Points on the frontier are "efficient"—you cannot improve one dimension without sacrificing the other.
+
+```
+                    │
+         Efficient  │    ●━━━━● Frontier
+         Region     │   ╱      ╲
+                    │  ●        ●
+                    │           │
+         Dominated  │     ○     │
+         Region     │   ○   ○   │
+                    │           │
+                    └───────────┴────
+                      Capability →
+```
+
+- **Green points** (on frontier): Efficient configurations
+- **Red points** (below frontier): Dominated—another config offers better capability AND trust
+
+### The Capability-Trust Tradeoff
+
+| More Capability | Requires |
+|-----------------|----------|
+| Broader action space | More ways to cause harm |
+| Less human oversight | Less chance to catch errors |
+| Faster execution | Less time for verification |
+| More autonomy | Higher trust exposure |
+
+This is why the frontier slopes downward: gaining capability typically costs trust.
+
+---
+
+## Strategic Positions
+
+### Conservative (High Trust, Lower Capability)
+
+```
+Position: Upper-left of frontier
+Examples: Basic chatbots, constrained tools
+Tradeoff: Limited functionality, very safe
+Use when: Stakes are high, delegation risk budget is small
+```
+
+### Aggressive (High Capability, Lower Trust)
+
+```
+Position: Lower-right of frontier
+Examples: Autonomous agents, full-autonomy systems
+Tradeoff: Powerful but risky
+Use when: High potential value, substantial delegation risk budget
+```
+
+### Balanced (Middle of Frontier)
+
+```
+Position: Center of frontier
+Examples: Code assistants, research tools
+Tradeoff: Moderate capability and trust
+Use when: Need functionality without extreme risk
+```
+
+---
+
+## Moving the Frontier
+
+The frontier isn't fixed. You can shift it outward (better tradeoffs) through:
+
+### 1. Better Verification
+- Formal methods push frontier outward
+- Same capability, higher trust
+
+### 2. Architectural Improvements
+- Smaller blast radius
+- Defense in depth
+- Human gates at critical points
+
+### 3. Capability Restrictions
+- Limit action space to safe subset
+- Trade raw capability for trust
+
+### 4. Better Monitoring
+- Detect problems faster
+- Reduce expected damage
+
+```
+Before:  ●───●───●
+              ╲
+After:        ●───●───●  (shifted outward)
+                   ╲
+```
+
+---
+
+## Using the Budget Line
+
+The orange dashed line (when budget > 0) shows configurations with approximately equal Delegation Risk. Points below this line exceed your risk budget.
+
+**Reading the chart:**
+- Configurations on the frontier AND below the budget line are optimal choices
+- Dominated configurations below the budget line are inefficient AND within budget—improve them
+- Any configuration above the budget line exceeds acceptable risk
+
+---
+
+## Practical Application
+
+1. **Map your systems**: Plot each AI system's capability and trust
+2. **Identify dominated systems**: Why do they exist? Legacy? Oversight gap?
+3. **Set budget line**: What Delegation Risk can you accept?
+4. **Choose position**: Where on the frontier matches your needs?
+5. **Improve frontier**: Invest in verification/architecture to shift outward
+
+---
+
+## Next Steps
+
+- [Delegation Risk Calculator](/applying/tools/delegation-risk-calculator/) — Quantify your risk exposure
+- [Risk Inheritance](/applying/tools/trust-propagation/) — Model trust through delegation chains
+- [Decision Guide](/applying/tools/decision-guide/) — Choose implementation approach

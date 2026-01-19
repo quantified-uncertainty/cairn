@@ -1,0 +1,130 @@
+---
+title: "Trust Updater"
+description: "Bayesian belief updating for component reliability based on track record"
+sidebar:
+  order: 2
+---
+
+import TrustUpdater from '../../../../../components/TrustUpdater.tsx';
+
+# Trust Updater
+
+This tool helps you convert **observed track records** into **calibrated trust estimates** using Bayesian updating.
+
+## Why Bayesian Updating?
+
+Simple success rate calculations ignore:
+- **Prior knowledge**: What you believed before observations
+- **Sample size**: 9/10 is not the same as 900/1000
+- **Uncertainty**: Confidence should increase with more data
+
+Bayesian updating properly weighs prior beliefs against observed evidence.
+
+---
+
+<div style="margin: 2rem 0;">
+<TrustUpdater client:load />
+</div>
+
+---
+
+## How It Works
+
+### 1. Prior Selection
+
+Your prior belief encodes what you expect before seeing any data. The framework provides defaults:
+
+| Component Type | Prior | Mean Reliability |
+|----------------|-------|-----------------|
+| Deterministic Code | beta(99, 1) | 99% |
+| Narrow ML | beta(19, 1) | 95% |
+| General LLM | beta(9, 1) | 90% |
+| RL/Agentic | beta(4, 1) | 80% |
+| Skeptical | beta(5, 5) | 50% |
+
+### 2. Observations
+
+Enter the number of successes and failures you've observed. More observations will move the posterior further from the prior.
+
+### 3. Posterior Belief
+
+The updated belief after combining prior with observations:
+
+```
+posterior = beta(prior_alpha + successes, prior_beta + failures)
+```
+
+### 4. Track Record Modifier
+
+The modifier adjusts your risk estimate based on performance vs. expectations:
+
+```
+modifier = prior_mean / posterior_mean
+```
+
+- **< 1.0**: Performance better than expected, reduce risk
+- **= 1.0**: Performance matches expectation, no change
+- **> 1.0**: Performance worse than expected, increase risk
+
+---
+
+## Interpretation Guide
+
+### Confidence Interval Width
+
+The 90% CI width indicates your uncertainty:
+
+| CI Width | Interpretation |
+|----------|---------------|
+| < 5% | High confidence, stable estimate |
+| 5-15% | Moderate confidence |
+| 15-30% | Low confidence, need more data |
+| > 30% | Very uncertain, prior dominates |
+
+### Data Requirements
+
+How much data to significantly update from prior:
+
+| Prior Strength | Observations Needed |
+|----------------|---------------------|
+| Weak (alpha + beta ≈ 10) | 20-50 |
+| Moderate (alpha + beta ≈ 50) | 100-200 |
+| Strong (alpha + beta ≈ 200) | 500+ |
+
+---
+
+## Best Practices
+
+### Starting a New Component
+1. Start with the appropriate component-type prior
+2. Use a weak prior strength to allow quick updates
+3. Closely monitor first 50-100 tasks
+4. Increase prior strength as track record accumulates
+
+### Established Components
+1. Use a moderate prior based on historical volume
+2. Apply time-weighting (recent observations count more)
+3. Weight complex tasks higher than simple ones
+4. Review calibration quarterly
+
+### Critical Components
+1. Use a skeptical prior (trust must be earned)
+2. Weight adversarial failures heavily (3× normal failures)
+3. Focus on worst-case bounds, not just mean
+4. Require statistical significance before increasing trust
+
+---
+
+## Integration with Risk Calculator
+
+The track record modifier feeds directly into the [Risk Calculator](/experimental/probabilistic-estimation/tools/risk-calculator):
+
+```squiggle
+// Base risk from component type
+baseRisk = probability * damage
+
+// Adjusted for track record
+adjustedRisk = baseRisk * trackRecordModifier
+```
+
+Good track records reduce risk; poor track records increase it.

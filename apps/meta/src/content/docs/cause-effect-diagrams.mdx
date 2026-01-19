@@ -7,25 +7,29 @@ importance: 0
 quality: 4
 llmSummary: "Internal style guide for creating cause-effect diagrams using the CauseEffectGraph component. Covers node types, edge properties, YAML schema, color conventions, and best practices for modeling causal relationships in the AI Transition Model."
 ---
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Badge } from '@astrojs/starlight/components';
+
+Cause-effect diagrams visualize causal relationships between factors. They're defined in YAML under the `causeEffectGraph` property of entities.
+
+**View all diagrams:** [/diagrams](/diagrams)
+
+<Aside type="tip" title="Start from Research">
+Create a [Research Report](/research-reports/) first. Its Causal Factors section maps directly to diagram nodes—Primary factors become `strong` edges, Secondary become `medium`.
+</Aside>
+
+---
 
 ## Quick Reference
 
-Cause-effect diagrams are defined in YAML under the `causeEffectGraph` property of entities:
-
 ```yaml
 - id: tmc-compute
-  type: ai-transition-model-subitem
-  title: Compute
   causeEffectGraph:
     title: "What Drives Effective AI Compute?"
-    description: "Causal factors affecting frontier AI training compute."
     primaryNodeId: effective-compute
     nodes:
       - id: effective-compute
         label: Effective Compute
         type: effect
-        description: Net compute available for AI training.
     edges:
       - source: chip-supply
         target: effective-compute
@@ -33,24 +37,21 @@ Cause-effect diagrams are defined in YAML under the `causeEffectGraph` property 
         effect: increases
 ```
 
-**View all diagrams:** [/diagrams](/diagrams)
+---
 
 ## Node Types
 
-Nodes are organized into four hierarchical types that flow from root causes to effects:
+| Type | Purpose | Color |
+|------|---------|-------|
+| `leaf` | Root inputs, external factors | Teal |
+| `cause` | Derived factors from leaves | Light gray |
+| `intermediate` | Direct contributing factors | Darker gray |
+| `effect` | Target outcome(s) | Amber |
 
-| Type | Purpose | Color | Shape |
-|------|---------|-------|-------|
-| `leaf` | Root inputs, external factors | Teal/cyan | Rounded rectangle |
-| `cause` | Derived factors from leaves | Light gray | Slightly rounded |
-| `intermediate` | Direct contributing factors | Darker gray | Less rounded |
-| `effect` | Target outcome(s) | Amber/yellow | Sharp corners |
+**Node Properties:** `id` (required), `label` (required), `type` (required), `description`, `confidence` (0-1), `color`, `scores`
 
-<Aside type="tip" title="Visual Hierarchy">
-The color gradient (teal → gray → amber) creates a visual flow from inputs to outputs. Shapes also encode function: rounder = more fundamental, sharper = final outcomes.
-</Aside>
-
-### Node Properties
+<details>
+<summary>**View Node Properties Reference**</summary>
 
 | Property | Required | Description |
 |----------|----------|-------------|
@@ -59,200 +60,189 @@ The color gradient (teal → gray → amber) creates a visual flow from inputs t
 | `type` | Yes | One of: `leaf`, `cause`, `intermediate`, `effect` |
 | `description` | No | Brief explanation (shown on hover) |
 | `confidence` | No | 0-1 confidence in this node's relevance |
-| `color` | No | Semantic color name (see [Semantic Colors](#semantic-colors)) |
-| `scores` | No | Rating dimensions (see [Node Scores](#node-scores)) |
+| `color` | No | Semantic color name (see Semantic Colors) |
+| `scores` | No | Rating dimensions (see Node Scores) |
+
+</details>
+
+---
 
 ## Edge Properties
 
-Edges represent causal relationships between nodes:
-
 | Property | Values | Visual Effect |
 |----------|--------|---------------|
-| `strength` | `weak`, `medium`, `strong` | Line thickness (1.2px, 2px, 3px) |
-| `confidence` | `low`, `medium`, `high` | Line style (dashed, semi-dashed, solid) |
+| `strength` | `weak`, `medium`, `strong` | Line thickness |
+| `confidence` | `low`, `medium`, `high` | Line style (dashed → solid) |
 | `effect` | `increases`, `decreases`, `mixed` | Arrow color (blue, red, gray) |
 
-<Aside type="note" title="Edge Direction">
-Edges flow from cause to effect. The `source` node influences the `target` node.
-</Aside>
+**Guidelines:** Use `strong` for direct, well-established causal links. Use `weak` for speculative connections.
 
-### Edge Weight Guidelines
-
-| Strength | Use When |
-|----------|----------|
-| `strong` | Direct, well-established causal link |
-| `medium` | Meaningful but indirect influence |
-| `weak` | Minor or speculative connection |
+---
 
 ## Semantic Colors
 
-Nodes can be assigned semantic colors to convey meaning at a glance. Use colors sparingly—about half of nodes should remain grey/neutral to make colored nodes stand out.
+Use colors sparingly—about half of nodes should remain grey/neutral.
 
-### Available Colors
+| Color | Use For |
+|-------|---------|
+| `rose`/`red` | Risk factors, threats |
+| `emerald`/`green` | Defensive factors, countermeasures |
+| `violet`/`purple` | Key uncertainties, critical questions |
+| `teal`/`blue` | Power centers, structural factors |
+| `slate`/`gray` | Neutral, well-known factors |
+| `amber` | Warnings (effect nodes use amber by default) |
 
-| Color | Use For | Example Nodes |
-|-------|---------|---------------|
-| `rose` | Risk factors, concerning inputs | "Actor Intent", "AI Biology Knowledge" |
-| `red` | Major threat domains, severe risks | "Biological Threat", "Cyber Threat" |
-| `emerald` | Defensive factors, countermeasures | "Biosecurity Defenses", "Export Controls" |
-| `green` | Positive interventions | Alternative to emerald |
-| `violet` | Key uncertainties, critical questions | "Does offense or defense win?" |
-| `purple` | Alternative uncertainty color | Similar to violet |
-| `teal` | Power centers, key actors | "Company Ownership", "Country Control" |
-| `blue` | Structural/policy factors | "Cloud Partnerships", "Corporate Structures" |
-| `amber` | Warnings, caution | (Effect nodes use amber by default) |
-| `slate` | Neutral, less critical nodes | Technical details, well-known factors |
-| `gray` | Alternative neutral | Similar to slate |
+<details>
+<summary>**View Color Guidelines & Example**</summary>
 
-<Aside type="tip" title="Color Guidelines">
-- **Color ~50%** of nodes; leave the rest grey/slate
-- Reserve colors for **most critical** nodes (high sensitivity, novelty, or importance)
-- Use `slate` for well-known factors (low novelty) or less decisive nodes
-- Intermediates that just aggregate other nodes often work well as slate
-</Aside>
+**Guidelines:**
+- Color ~50% of nodes; leave the rest grey/slate
+- Reserve colors for most critical nodes
+- Use `slate` for well-known factors or aggregation nodes
 
-### Example
-
+**Example:**
 ```yaml
 nodes:
   - id: key-threat
     label: Major Threat
     type: intermediate
     color: red
-    description: Critical danger node
   - id: countermeasure
     label: Defense System
     type: leaf
     color: emerald
-    description: Mitigating factor
   - id: technical-detail
     label: Implementation Detail
     type: leaf
     color: slate
-    description: Less critical, well-known
 ```
+
+</details>
+
+---
 
 ## Node Scores
 
-Nodes can have four scoring dimensions (1-10 scale) that enable interactive visualization modes in the diagram viewer.
+<Badge text="Optional" variant="note" />
 
-### Score Dimensions
+Nodes can have four scoring dimensions (1-10) for interactive visualization.
 
-| Dimension | Scale | Description |
-|-----------|-------|-------------|
-| `novelty` | 1-10 | How surprising to an informed reader (1=common knowledge, 10=very surprising) |
-| `sensitivity` | 1-10 | How much downstream nodes change if this changes (1=minimal impact, 10=huge cascading effects) |
-| `changeability` | 1-10 | How tractable/malleable is this factor (1=fixed/immutable, 10=highly changeable) |
-| `certainty` | 1-10 | How well understood (1=deep uncertainty, 10=well established) |
+| Dimension | Description |
+|-----------|-------------|
+| `novelty` | How surprising (1=common knowledge, 10=very surprising) |
+| `sensitivity` | Downstream impact if changed (1=minimal, 10=huge cascading) |
+| `changeability` | How tractable (1=fixed, 10=highly changeable) |
+| `certainty` | How well understood (1=deep uncertainty, 10=well established) |
 
-<Aside type="note" title="View Modes">
-When viewing a diagram with scores, use the view mode buttons to highlight nodes by score dimension. Higher-scoring nodes appear more prominent; lower-scoring nodes fade out.
-</Aside>
-
-### Example
-
-```yaml
-nodes:
-  - id: ai-biology-knowledge
-    label: AI Biology Knowledge
-    type: leaf
-    description: LLM knowledge of virology and synthesis routes.
-    scores:
-      novelty: 5        # Discussed but details less known
-      sensitivity: 8    # Key enabler for bio-threat path
-      changeability: 3  # Hard to roll back model knowledge
-      certainty: 5      # Some benchmarks but real-world uplift uncertain
-    color: rose
-```
-
-### Scoring Guidelines
+<details>
+<summary>**View Scoring Guidelines & Example**</summary>
 
 | Score | Novelty | Sensitivity | Changeability | Certainty |
 |-------|---------|-------------|---------------|-----------|
-| 1-3 | Common knowledge | Minimal downstream impact | Fixed/immutable | Deep uncertainty |
+| 1-3 | Common knowledge | Minimal impact | Fixed/immutable | Deep uncertainty |
 | 4-6 | Somewhat familiar | Moderate impact | Somewhat malleable | Mixed evidence |
-| 7-10 | Surprising insight | Huge cascading effects | Highly tractable | Well established |
+| 7-10 | Surprising insight | Huge cascading | Highly tractable | Well established |
+
+**Example:**
+```yaml
+- id: ai-biology-knowledge
+  label: AI Biology Knowledge
+  type: leaf
+  scores:
+    novelty: 5
+    sensitivity: 8
+    changeability: 3
+    certainty: 5
+  color: rose
+```
+
+</details>
+
+---
 
 ## Layout Best Practices
 
-### Node Count Limits
-
 | Guideline | Recommendation |
 |-----------|----------------|
-| **Maximum nodes** | 15-20 (beyond this, split into multiple diagrams) |
-| **Maximum edges** | 30-40 (avoid spaghetti) |
-| **Nodes per layer** | 4-5 max horizontal nodes per type |
+| Maximum nodes | 15-20 (split larger diagrams) |
+| Maximum edges | 30-40 |
+| Nodes per layer | 4-5 max horizontal |
 
-### Layer Organization
-
-Organize nodes by their causal position:
-
+**Layer Organization:**
 ```
-Layer 1: leaf nodes (root causes, external factors)
+Layer 1: leaf nodes (root causes)
     ↓
-Layer 2: cause nodes (derived from leaves)
+Layer 2: cause nodes (derived)
     ↓
 Layer 3: intermediate nodes (direct factors)
     ↓
-Layer 4: effect nodes (target outcomes)
+Layer 4: effect nodes (outcomes)
 ```
 
 <Aside type="caution" title="Avoid Feedback Loops">
-The diagram renderer uses Dagre (DAG layout). Cycles create messy diagonal lines. If your model has feedback loops, note them in the description but omit them from the edges.
+The renderer uses Dagre (DAG layout). Cycles create messy lines. Note feedback in description but omit from edges.
 </Aside>
 
-## When to Use Each Diagram Type
+---
 
-| Use Case | Diagram Type |
-|----------|--------------|
-| **Causal model** with 5-20 factors | CauseEffectGraph |
-| **Simple flow** (3-5 steps) | Mermaid flowchart |
-| **Taxonomy/hierarchy** | Table or Mermaid |
-| **Proportions** | Mermaid pie chart |
-| **2x2 matrix** | Mermaid quadrant |
-| **Timeline** | Mermaid timeline |
+## When to Use
 
-<Aside type="tip" title="Choose CauseEffectGraph When">
-- You're modeling causal relationships (not just categories)
-- You need edge properties (strength, confidence, direction)
-- The diagram will be reused across pages
-- You want interactive hover details
+<Aside type="note" title="Right Tool for the Job">
+CauseEffectGraph is powerful but complex. For simple relationships, use Mermaid or a table instead.
 </Aside>
 
-## YAML Schema Reference
+| Use Case | Format |
+|----------|--------|
+| Causal model (5-20 factors) | CauseEffectGraph |
+| Simple flow (3-5 steps) | Mermaid flowchart |
+| Taxonomy/hierarchy | Table or Mermaid |
+| 2x2 matrix | Mermaid quadrant |
+
+---
+
+## YAML Schema
+
+<details>
+<summary>**View Full Schema Reference**</summary>
 
 ```yaml
 causeEffectGraph:
-  title: "Diagram Title"           # Optional, falls back to entity title
-  description: "Brief explanation" # Optional, shown in header
+  title: "Diagram Title"           # Optional
+  description: "Brief explanation" # Optional
   primaryNodeId: "main-effect"     # Optional, highlights this node
 
   nodes:
     - id: node-id                  # Required: unique identifier
       label: "Node Label"          # Required: display text
       type: leaf                   # Required: leaf|cause|intermediate|effect
-      description: "Hover text"    # Optional: explanation
-      confidence: 0.8              # Optional: 0-1 confidence
-      color: rose                  # Optional: semantic color (rose|red|emerald|violet|teal|blue|slate|etc)
-      scores:                      # Optional: rating dimensions (1-10)
+      description: "Hover text"    # Optional
+      confidence: 0.8              # Optional: 0-1
+      color: rose                  # Optional: semantic color
+      scores:                      # Optional: 1-10 ratings
         novelty: 5
         sensitivity: 8
         changeability: 3
         certainty: 5
 
   edges:
-    - source: cause-node           # Required: source node id
-      target: effect-node          # Required: target node id
-      strength: strong             # Optional: weak|medium|strong (default: medium)
-      confidence: high             # Optional: low|medium|high (default: medium)
-      effect: increases            # Optional: increases|decreases|mixed (default: increases)
-      label: "edge label"          # Optional: text on edge (rarely used)
+    - source: cause-node           # Required
+      target: effect-node          # Required
+      strength: strong             # Optional: weak|medium|strong
+      confidence: high             # Optional: low|medium|high
+      effect: increases            # Optional: increases|decreases|mixed
+      label: "edge label"          # Optional
 ```
+
+</details>
+
+---
 
 ## Common Patterns
 
-### Simple Causal Chain
+<details>
+<summary>**View Pattern Examples**</summary>
 
+**Simple Causal Chain:**
 ```yaml
 nodes:
   - { id: a, label: Root Cause, type: leaf }
@@ -263,8 +253,7 @@ edges:
   - { source: b, target: c, strength: strong }
 ```
 
-### Multiple Converging Causes
-
+**Multiple Converging Causes:**
 ```yaml
 nodes:
   - { id: a, label: Factor A, type: leaf }
@@ -277,16 +266,15 @@ edges:
   - { source: c, target: outcome, strength: weak }
 ```
 
-### Hierarchical Factors
-
+**Hierarchical Factors:**
 ```yaml
 nodes:
   # Root inputs
   - { id: input-1, label: External Factor, type: leaf }
   - { id: input-2, label: Resource, type: leaf }
-  # Derived factors
+  # Derived
   - { id: derived, label: Combined Effect, type: cause }
-  # Direct factors
+  # Direct
   - { id: direct-1, label: Capability, type: intermediate }
   - { id: direct-2, label: Constraint, type: intermediate }
   # Target
@@ -300,25 +288,19 @@ edges:
   - { source: direct-2, target: outcome, strength: medium, effect: decreases }
 ```
 
+</details>
+
+---
+
 ## Anti-Patterns
 
-### Don't: Too Many Leaf Nodes
+<details>
+<summary>**View Common Mistakes**</summary>
 
-Having 8+ leaf nodes creates a very wide top layer:
+**Too Many Leaf Nodes (8+)**
+Fix: Group into intermediate nodes or split diagrams.
 
-```yaml
-# Bad: 8 parallel leaf nodes
-nodes:
-  - { id: a, type: leaf }
-  - { id: b, type: leaf }
-  - { id: c, type: leaf }
-  # ... 5 more
-```
-
-**Fix:** Group related factors into intermediate nodes, or split into multiple diagrams.
-
-### Don't: Feedback Loops in Edges
-
+**Feedback Loops in Edges**
 ```yaml
 # Bad: Creates cycles
 edges:
@@ -326,70 +308,56 @@ edges:
   - { source: b, target: c }
   - { source: c, target: a }  # Loop!
 ```
+Fix: Remove loop edge, note in description.
 
-**Fix:** Remove the loop edge and note the feedback in the description.
-
-### Don't: Long Node Labels
-
+**Long Node Labels**
 ```yaml
 # Bad
-- { id: x, label: "This is a very long label explaining everything" }
-
+- { id: x, label: "This is a very long label" }
 # Good
-- { id: x, label: "Key Factor", description: "Detailed explanation here" }
+- { id: x, label: "Key Factor", description: "Details here" }
 ```
 
-### Don't: All Same Strength
-
+**All Same Strength**
 ```yaml
 # Bad: No visual hierarchy
 edges:
   - { source: a, target: x, strength: medium }
   - { source: b, target: x, strength: medium }
-  - { source: c, target: x, strength: medium }
-
-# Good: Differentiate importance
+# Good: Differentiate
 edges:
   - { source: a, target: x, strength: strong }
-  - { source: b, target: x, strength: medium }
-  - { source: c, target: x, strength: weak }
+  - { source: b, target: x, strength: weak }
 ```
 
-## Integration with Pages
+</details>
 
-### Using TransitionModelContent
+---
 
-For AI Transition Model pages, diagrams are automatically rendered by `TransitionModelContent`:
+## Integration
 
-```mdx
-import {TransitionModelContent} from '../../../../../components/wiki';
+**With TransitionModelContent:** Diagrams auto-render for entities with `causeEffectGraph`.
 
-<TransitionModelContent slug="compute" client:load />
-```
+**Standalone Viewer:** `/diagrams?entity=tmc-compute`
 
-### Standalone Viewer
+<details>
+<summary>**View Color Reference Tables**</summary>
 
-Link to the standalone diagram viewer for presentations or full-screen viewing:
-
-```
-/diagrams?entity=tmc-compute
-```
-
-## Color Reference
-
-### Node Colors by Type
+**Node Colors by Type:**
 
 | Type | Background | Text | Border |
 |------|------------|------|--------|
-| `leaf` | `#ccfbf1` (teal-100) | `#0f766e` (teal-700) | `#5eead4` (teal-300) |
-| `cause` | `#e2e8f0` (slate-200) | `#334155` (slate-700) | `#94a3b8` (slate-400) |
-| `intermediate` | `#cbd5e1` (slate-300) | `#1e293b` (slate-800) | `#64748b` (slate-500) |
-| `effect` | `#fef3c7` (amber-100) | `#92400e` (amber-800) | `#fbbf24` (amber-400) |
+| `leaf` | teal-100 | teal-700 | teal-300 |
+| `cause` | slate-200 | slate-700 | slate-400 |
+| `intermediate` | slate-300 | slate-800 | slate-500 |
+| `effect` | amber-100 | amber-800 | amber-400 |
 
-### Edge Colors by Effect
+**Edge Colors by Effect:**
 
 | Effect | Color | Meaning |
 |--------|-------|---------|
 | `increases` | Blue | Positive correlation |
 | `decreases` | Red | Negative correlation |
 | `mixed` | Gray | Context-dependent |
+
+</details>

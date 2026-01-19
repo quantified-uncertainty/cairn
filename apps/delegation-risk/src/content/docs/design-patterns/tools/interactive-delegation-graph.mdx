@@ -1,0 +1,95 @@
+---
+title: "Interactive Delegation Graph"
+sidebar:
+  order: 10
+---
+
+import DelegationGraph from '../../../../components/DelegationGraph.tsx';
+
+<style>{`
+  /* Make the component full-width within main content area */
+  .delegation-graph-wrapper {
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    overflow: visible;
+  }
+  @media (min-width: 72rem) {
+    .delegation-graph-wrapper {
+      width: calc(100% + 4rem);
+      margin-left: -2rem;
+      margin-right: -2rem;
+    }
+  }
+`}</style>
+
+This interactive visualization shows a complex delegation hierarchy for a coding task (implementing a new feature with authentication, API, and database components).
+
+<div className="delegation-graph-wrapper">
+  <DelegationGraph client:load />
+</div>
+
+## Understanding the Visualization
+
+### Node Types
+
+| Icon | Type | Description |
+|------|------|-------------|
+| 👤 | Human | Ultimate authority and oversight |
+| 🎯 | Coordinator | Plans and routes tasks (high leverage) |
+| 🤖 | Agent | Designs/analyzes but doesn't execute |
+| ⚡ | Executor | Writes code or makes changes |
+| ✓ | Verifier | Reviews and validates (read-only) |
+
+### Risk Levels
+
+Risk is determined by a combination of:
+- **Permissions scope** (what can the node access/modify?)
+- **Potential impact** (what's the blast radius of mistakes?)
+- **Position in hierarchy** (can it influence other nodes?)
+
+### Key Patterns to Notice
+
+1. **Coordinator Risk**: The Task Planner has elevated risk despite limited permissions—its position gives it leverage over the entire system.
+
+2. **Defense in Depth**: Security-critical paths (Auth Implementer) have dedicated verifiers (Security Reviewer).
+
+3. **Permission Scoping**: Each executor has write access limited to specific directories, not the entire codebase.
+
+4. **Read-Only Defaults**: Designers and verifiers have read-only access—they can influence decisions but can't directly cause harm.
+
+5. **Isolated Low-Risk Tasks**: Documentation is handled by a separate low-risk executor outside the main task chain.
+
+## Delegation Risk Calculation
+
+The delegation risk values shown ($/month) represent the expected cost from potential failures:
+
+```
+Delegation Risk = Σ P(harm mode) × Damage(harm mode)
+```
+
+High-risk nodes like the Auth Implementer ($300/mo) have:
+- Access to sensitive data (secrets, auth logic)
+- Ability to introduce security vulnerabilities
+- Higher probability of consequential mistakes
+
+Low-risk nodes like the Doc Writer ($20/mo) have:
+- Isolated scope (only /docs/)
+- Limited blast radius
+- Easy to verify and correct
+
+## Try It Yourself
+
+Explore the graph above to understand:
+- Which nodes have the highest delegation risk?
+- Where are the "choke points" where controls would be most effective?
+- Which paths lead to the highest-impact components?
+- How does the tree structure limit blast radius compared to a fully-connected system?
+
+---
+
+## See Also
+
+- [Framework Overview](/framework/risk/overview/) — Core concepts behind this visualization
+- [Exposure Cascade](/framework/risk/exposure-cascade/) — How risk flows through hierarchies
+- [Hierarchy Visualization Research](/deep-dives/research/hierarchy-visualization/) — Other visualization approaches

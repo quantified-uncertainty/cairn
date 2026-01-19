@@ -1,0 +1,312 @@
+---
+title: "Delegation Risk Calculator"
+sidebar:
+  order: 5
+---
+
+import { Card } from '@astrojs/starlight/components';
+
+# Delegation Risk Calculator
+
+:::caution[Illustrative Tool]
+This calculator is for **exploring concepts**, not production risk assessment. The outputs depend entirely on your input estimates, which are often highly uncertain. Use it to build intuition about the framework, not to make critical decisions.
+:::
+
+Interactive tool for calculating Delegation Risk for your AI system components.
+
+## How to Use
+
+1. Add failure modes for each component
+2. Estimate probability and damage for each
+3. Calculator computes individual and total Delegation Risk
+4. Compare against your budget
+
+---
+
+<div id="ete-calculator">
+  <style>{`
+    .calculator-container {
+      background: var(--sl-color-gray-6);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .failure-mode {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: var(--sl-color-gray-5);
+      border-radius: 4px;
+    }
+    .failure-mode input, .failure-mode select {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+    }
+    .failure-mode button {
+      padding: 0.5rem 1rem;
+      background: var(--sl-color-red);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .add-btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--sl-color-accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .results {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--sl-color-gray-5);
+      border-radius: 4px;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .results-table th, .results-table td {
+      padding: 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--sl-color-gray-4);
+    }
+    .total-row {
+      font-weight: bold;
+      background: var(--sl-color-gray-4);
+    }
+    .budget-input {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .budget-input input {
+      padding: 0.5rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 4px;
+      background: var(--sl-color-bg);
+      color: var(--sl-color-text);
+      width: 150px;
+    }
+    .within-budget {
+      color: var(--sl-color-green);
+      font-weight: bold;
+    }
+    .over-budget {
+      color: var(--sl-color-red);
+      font-weight: bold;
+    }
+    .header-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 0.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+    }
+  `}</style>
+
+  <div class="calculator-container">
+    <div class="budget-input">
+      <label><strong>Monthly Delegation Risk Budget: $</strong></label>
+      <input type="number" id="budget" value="2000" min="0" />
+    </div>
+
+    <div class="header-row">
+      <span>Failure Mode</span>
+      <span>P(failure)</span>
+      <span>Damage ($)</span>
+      <span>Risk</span>
+      <span></span>
+    </div>
+
+    <div id="failure-modes">
+      {/* Failure modes will be added here */}
+    </div>
+
+    <button class="add-btn" id="add-mode">+ Add Failure Mode</button>
+
+    <div class="results" id="results">
+      <strong>Results</strong>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Failure Mode</th>
+            <th>Probability</th>
+            <th>Damage</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody id="results-body">
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="3">Total Delegation Risk</td>
+            <td id="total-ete">$0</td>
+          </tr>
+          <tr>
+            <td colspan="3">Budget</td>
+            <td id="budget-display">$2,000</td>
+          </tr>
+          <tr>
+            <td colspan="3">Status</td>
+            <td id="budget-status" class="within-budget">Within Budget</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <script>{`
+    (function() {
+      let modeCount = 0;
+      const defaultModes = [
+        { name: 'Component A - Minor failure', prob: 0.05, damage: 1000 },
+        { name: 'Component A - Major failure', prob: 0.01, damage: 10000 },
+        { name: 'Component B - Error', prob: 0.02, damage: 5000 },
+      ];
+
+      function createModeRow(mode = { name: '', prob: 0.01, damage: 1000 }) {
+        const id = modeCount++;
+        const row = document.createElement('div');
+        row.className = 'failure-mode';
+        row.id = 'mode-' + id;
+        row.innerHTML =
+          '<input type="text" placeholder="Failure mode description" value="' + mode.name + '" class="mode-name" />' +
+          '<input type="number" step="0.001" min="0" max="1" value="' + mode.prob + '" class="mode-prob" />' +
+          '<input type="number" min="0" value="' + mode.damage + '" class="mode-damage" />' +
+          '<span class="mode-ete">$' + (mode.prob * mode.damage).toFixed(0) + '</span>' +
+          '<button onclick="removeMode(' + id + ')">×</button>';
+        return row;
+      }
+
+      function removeMode(id) {
+        const row = document.getElementById('mode-' + id);
+        if (row) row.remove();
+        calculate();
+      }
+      window.removeMode = removeMode;
+
+      function calculate() {
+        const budget = parseFloat(document.getElementById('budget').value) || 0;
+        const modes = document.querySelectorAll('.failure-mode');
+        let total = 0;
+        const results = [];
+
+        modes.forEach(mode => {
+          const name = mode.querySelector('.mode-name').value || 'Unnamed';
+          const prob = parseFloat(mode.querySelector('.mode-prob').value) || 0;
+          const damage = parseFloat(mode.querySelector('.mode-damage').value) || 0;
+          const ete = prob * damage;
+
+          mode.querySelector('.mode-ete').textContent = '$' + ete.toFixed(0);
+          total += ete;
+          results.push({ name, prob, damage, ete });
+        });
+
+        // Update results table
+        const tbody = document.getElementById('results-body');
+        tbody.innerHTML = results.map(r =>
+          '<tr><td>' + r.name + '</td><td>' + (r.prob * 100).toFixed(1) + '%</td><td>$' + r.damage.toLocaleString() + '</td><td>$' + r.ete.toFixed(0) + '</td></tr>'
+        ).join('');
+
+        document.getElementById('total-ete').textContent = '$' + total.toFixed(0);
+        document.getElementById('budget-display').textContent = '$' + budget.toLocaleString();
+
+        const status = document.getElementById('budget-status');
+        if (total <= budget) {
+          status.textContent = 'Within Budget ✓';
+          status.className = 'within-budget';
+        } else {
+          status.textContent = 'Over Budget (' + ((total / budget - 1) * 100).toFixed(0) + '% over)';
+          status.className = 'over-budget';
+        }
+      }
+
+      // Initialize with default modes
+      const container = document.getElementById('failure-modes');
+      defaultModes.forEach(mode => {
+        container.appendChild(createModeRow(mode));
+      });
+
+      // Add event listeners
+      document.getElementById('add-mode').addEventListener('click', () => {
+        container.appendChild(createModeRow());
+        calculate();
+      });
+
+      document.getElementById('budget').addEventListener('input', calculate);
+      container.addEventListener('input', calculate);
+
+      // Initial calculation
+      calculate();
+    })();
+  `}</script>
+</div>
+
+---
+
+## Understanding the Results
+
+### Delegation Risk Formula
+
+For each failure mode:
+```
+Delegation Risk = P(failure) × Damage
+```
+
+Total system Delegation Risk is the sum across all failure modes.
+
+### Probability Guidelines
+
+| Probability | Meaning | Example |
+|-------------|---------|---------|
+| 0.1 (10%) | Common without mitigation | Unvalidated user input |
+| 0.01 (1%) | Occasional, seen in testing | Edge case handling |
+| 0.001 (0.1%) | Rare but plausible | Unusual input combinations |
+| 0.0001 (0.01%) | Very rare, needs adversary | Targeted attack |
+
+### What If Over Budget?
+
+If your total Delegation Risk exceeds budget:
+
+1. **Reduce probability**: Add verification, redundancy, testing
+2. **Reduce damage**: Limit permissions, add rollback capability
+3. **Split components**: Decompose into smaller, lower-risk pieces
+4. **Add human gates**: Require approval for high-risk actions
+
+---
+
+## Example Calculation
+
+**Scenario**: Customer support bot
+
+| Failure Mode | P(failure) | Damage | Delegation Risk |
+|--------------|------------|--------|-----|
+| Gives wrong answer | 0.05 | $500 | $25 |
+| Leaks customer data | 0.001 | $50,000 | $50 |
+| Generates harmful content | 0.01 | $10,000 | $100 |
+| Infinite loop/crash | 0.02 | $1,000 | $20 |
+
+**Total Delegation Risk**: $195/month
+
+With a $500/month budget, this system is well within tolerance.
+
+---
+
+## Next Steps
+
+- [Risk Inheritance Calculator](/applying/tools/trust-propagation/) — Compute effective trust through networks
+- [Quick Start](/applying/tools/quick-start/) — Apply Delegation Risk calculation to your system
+- [Decision Guide](/applying/tools/decision-guide/) — Choose implementations based on Delegation Risk

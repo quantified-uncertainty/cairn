@@ -1,0 +1,121 @@
+---
+title: "Sensitivity Dashboard"
+description: "Discover which parameters drive your risk with tornado diagrams and elasticity analysis"
+sidebar:
+  order: 3
+---
+
+import SensitivityDashboard from '../../../../../components/SensitivityDashboard.tsx';
+
+# Sensitivity Dashboard
+
+This tool helps you identify **which parameters matter most** for your risk profile, enabling focused optimization efforts.
+
+## Why Sensitivity Analysis?
+
+Risk models have many parameters. Not all are equally important:
+
+- Some parameters have wide uncertainty but low impact
+- Others have narrow ranges but dominate the outcome
+- Knowing which is which helps prioritize investigation and mitigation
+
+---
+
+<div style="margin: 2rem 0;">
+<SensitivityDashboard client:load />
+</div>
+
+---
+
+## Understanding the Outputs
+
+### Tornado Diagram
+
+The tornado diagram shows **one-at-a-time sensitivity**:
+- Each bar represents one parameter varying from min to max
+- Center line is the base case risk
+- Longer bars = more influential parameters
+- Parameters sorted by influence (most important at top)
+
+### Elasticity
+
+Elasticity measures **relative sensitivity**:
+
+```
+Elasticity = (% change in risk) / (% change in parameter)
+```
+
+| Elasticity | Interpretation |
+|------------|---------------|
+| > 1.0 | Risk more than proportional to parameter |
+| 0.5 - 1.0 | Moderate sensitivity |
+| 0.2 - 0.5 | Low sensitivity |
+| < 0.2 | Negligible impact |
+
+### Top Drivers
+
+The top 3 parameters that most influence your total risk. Focus investigation and mitigation here first.
+
+---
+
+## How to Use This Tool
+
+### 1. Customize Parameters
+Adjust the base values and ranges to match your specific situation. The sensitivity analysis will recalculate automatically.
+
+### 2. Identify High-Impact Areas
+Look for parameters with:
+- Long bars in the tornado diagram
+- High absolute elasticity values
+- Wide possible ranges
+
+### 3. Prioritize Actions
+
+For **high-sensitivity parameters with uncertainty**:
+- Invest in better estimates (data collection, expert elicitation)
+- Consider robust decision-making approaches
+
+For **high-sensitivity parameters you can control**:
+- Prioritize mitigation investments here
+- Calculate ROI of reducing the parameter
+
+For **low-sensitivity parameters**:
+- Don't over-invest in precise estimates
+- Simple approximations are often sufficient
+
+---
+
+## Limitations
+
+### One-at-a-Time Analysis
+
+This dashboard uses one-at-a-time (OAT) sensitivity analysis:
+- Varies each parameter while holding others constant
+- Doesn't capture interaction effects between parameters
+- May underestimate total uncertainty from correlated parameters
+
+### Linear Approximation
+
+Elasticities assume approximately linear relationships:
+- Actual risk functions may be highly nonlinear
+- Extreme parameter values may have disproportionate effects
+
+### Range Dependence
+
+Results depend heavily on assumed parameter ranges:
+- Wide ranges will show high importance
+- Narrow ranges will appear less important
+- Choose ranges that reflect actual uncertainty
+
+---
+
+## Advanced: Monte Carlo Sensitivity
+
+For more accurate sensitivity analysis, use the [Risk Calculator](/experimental/probabilistic-estimation/tools/risk-calculator) with parameter variations:
+
+1. Run baseline simulation
+2. Vary one parameter's distribution
+3. Compare output distributions
+4. Repeat for each parameter
+
+This captures nonlinear effects and parameter correlations better than OAT analysis.

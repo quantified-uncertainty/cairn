@@ -9,114 +9,108 @@ llmSummary: "Internal style guide for AI-assisted research reports. Covers repor
 ---
 import { Aside } from '@astrojs/starlight/components';
 
-## Purpose
-
-Research reports are **deep-dive investigations** into specific topics within the knowledge base. They serve two primary functions:
-
-1. **Comprehensive analysis** of a topic with citations from authoritative sources
-2. **Input for diagram creation** - reports inform the causal models in cause-effect diagrams
-
-Reports are generated with AI assistance (Claude Code) using web research and synthesis of existing content.
+Research reports are **deep-dive investigations** that serve two functions:
+1. Comprehensive analysis with citations from authoritative sources
+2. Input for diagram creation—reports inform causal models
 
 **View all reports:** [/knowledge-base/research-reports/](/knowledge-base/research-reports/)
 
 ---
 
-## Formatting Guidelines
+## Quick Reference
 
-<Aside type="caution" title="Key Formatting Rules">
-Follow the [Knowledge Base Style Guide](/internal/knowledge-base/) for general principles. These additional rules are specific to research reports.
-</Aside>
+**Required Sections:** Executive Summary (table), Background, Key Findings, Causal Factors (tables), Open Questions (table), Sources
 
-### Use Tables Over Bullet Lists
-
-**Bad (low density):**
-```markdown
-**Factor Name**
-- Direction: Increases → topic
-- Type: leaf
-- Evidence: Some evidence
-- Confidence: high
-```
-
-**Good (table format):**
-```markdown
-| Factor | Direction | Type | Evidence | Confidence |
-|--------|-----------|------|----------|------------|
-| **Factor Name** | ↑ Topic | leaf | Some evidence | High |
-```
-
-### Use Callouts/Asides Liberally
-
-Add `<Aside>` components to highlight key insights, caveats, and implications. Aim for **at least 3-4 callouts per report**.
-
-```mdx
-<Aside type="tip" title="Why This Matters">
-Key insight about safety implications.
-</Aside>
-
-<Aside type="caution" title="Limitation">
-Important caveat about the data.
-</Aside>
-
-<Aside type="note" title="Data Source">
-Methodological note about how data was collected.
-</Aside>
-```
-
-### Escape Dollar Signs
-
-Currency values MUST be escaped to avoid LaTeX rendering:
-
-| Wrong | Right | Renders As |
-|-------|-------|------------|
-| `$100,000` | `\$100,000` | \$100,000 |
-| `$5B` | `\$5B` | \$5B |
-
-Also escape in frontmatter description:
-```yaml
-description: "H-1B fees increased to \\$100K"
-```
-
-### Use Horizontal Rules
-
-Separate major sections with `---` for visual clarity.
+**Key Rules:**
+- Use tables for factors/summaries, not bullets
+- Escape `$` as `\$` in currency
+- Include 3-4 Asides per report
+- Dates without quotes: `createdAt: 2025-01-07`
 
 ---
 
 ## Report Structure
 
-Every research report should follow this structure:
-
 ```yaml
 ---
 title: "Topic Name: Research Report"
-description: "One-sentence summary with specific data (escape \\$ signs)."
-topic: "entity-id"           # Links to knowledge-base or transition-model item
-createdAt: 2025-01-07        # Date without quotes (YAML date type)
-lastUpdated: 2025-01-07      # Date without quotes (YAML date type)
-researchDepth: "standard"    # quick | standard | comprehensive
-sources: ["web", "codebase"] # What sources were consulted
-quality: 3                   # 1-5 quality rating
+description: "One-sentence summary with data (escape \\$ signs)."
+topic: "entity-id"
+createdAt: 2025-01-07      # No quotes
+lastUpdated: 2025-01-07
+researchDepth: "standard"  # quick | standard | comprehensive
+sources: ["web", "codebase"]
+quality: 3
 ---
 ```
 
-### Required Sections
-
 | Section | Purpose | Format |
 |---------|---------|--------|
-| **Executive Summary** | Key findings with data | **Table** (not bullets) |
-| **Background** | Context and why this matters | Prose + Aside |
-| **Key Findings** | Main research results | Prose + tables + Asides |
-| **Causal Factors** | Factors for diagram creation | **Tables by strength** |
-| **Open Questions** | Key uncertainties | **Table** |
-| **Sources** | Organized citations | Lists by type |
+| Executive Summary | Key findings | Table |
+| Background | Context | Prose + Aside |
+| Key Findings | Results | Prose + tables |
+| Causal Factors | For diagrams | Tables by strength |
+| Open Questions | Uncertainties | Table |
+| Sources | Citations | Lists by type |
+
+---
+
+## Causal Factors Format
+
+<Aside type="tip" title="Critical for Diagrams">
+This section directly feeds into cause-effect diagram creation. Tables ensure factors map cleanly to diagram nodes.
+</Aside>
+
+```markdown
+### Primary Factors (Strong Influence)
+
+| Factor | Direction | Type | Evidence | Confidence |
+|--------|-----------|------|----------|------------|
+| **Immigration Policy** | ↑↓ Topic | leaf | Evidence | High |
+
+### Secondary Factors (Medium Influence)
+
+| Factor | Direction | Type | Evidence | Confidence |
+|--------|-----------|------|----------|------------|
+| **Graduate Programs** | ↑ Topic | cause | Evidence | Medium |
+```
+
+**Columns:**
+- **Direction:** ↑ (increases), ↓ (decreases), ↑↓ (bidirectional)
+- **Type:** `leaf` (external), `cause` (derived), `intermediate` (direct)
+- **Confidence:** High, Medium, Low
+
+---
+
+## Research Depth
+
+| Level | Time | Sources | Use When |
+|-------|------|---------|----------|
+| `quick` | 15-30 min | 5-10 | Initial exploration |
+| `standard` | 1-2 hours | 15-25 | Most topics |
+| `comprehensive` | 3-5 hours | 30-50+ | Critical topics |
+
+<details>
+<summary>**View Source Hierarchy**</summary>
+
+| Priority | Source Type | Examples | Trust |
+|----------|-------------|----------|-------|
+| 1 | Peer-reviewed | Nature, Science, arXiv | High |
+| 2 | Expert orgs | RAND, Brookings, FHI | High |
+| 3 | Government | GAO, UK AISI, NIST | High |
+| 4 | Journalism | Reuters, AP | Medium |
+| 5 | Industry | McKinsey, OECD | Medium |
+| 6 | Forums | LessWrong, EA Forum | Variable |
+| 7 | Company blogs | OpenAI, Anthropic | Medium |
+
+</details>
 
 ---
 
 ## Section Templates
 
-### Executive Summary (Table Format)
+<details>
+<summary>**View Executive Summary Template**</summary>
 
 Use a table, not bullets:
 
@@ -130,43 +124,10 @@ Use a table, not bullets:
 | **Key uncertainty** | Immigration policy | Critical inflection point |
 ```
 
-### Causal Factors (Table Format)
+</details>
 
-<Aside type="tip" title="Critical for Diagrams">
-This section directly feeds into cause-effect diagram creation. Use tables to ensure factors map cleanly to diagram nodes and edges.
-</Aside>
-
-```markdown
-## Causal Factors
-
-### Primary Factors (Strong Influence)
-
-| Factor | Direction | Type | Evidence | Confidence |
-|--------|-----------|------|----------|------------|
-| **Immigration Policy** | ↑↓ Concentration | leaf | 80% retention depends on visas | High |
-| **Research Ecosystem** | ↑ Concentration | cause | 60% of top institutions in US | High |
-
-### Secondary Factors (Medium Influence)
-
-| Factor | Direction | Type | Evidence | Confidence |
-|--------|-----------|------|----------|------------|
-| **Graduate Programs** | ↑ Concentration | cause | 80% of students stay | Medium |
-
-### Minor Factors (Weak Influence)
-
-| Factor | Direction | Type | Evidence | Confidence |
-|--------|-----------|------|----------|------------|
-| **Nationalist Sentiment** | ↓ Mobility | leaf | Limited evidence | Low |
-```
-
-**Column definitions:**
-- **Factor**: Short name (2-5 words)
-- **Direction**: ↑ (increases), ↓ (decreases), ↑↓ (bidirectional), Mixed
-- **Type**: `leaf` (external), `cause` (derived), `intermediate` (direct factor)
-- **Evidence**: Brief summary with source reference
-- **Confidence**: High, Medium, or Low
-
-### Open Questions (Table Format)
+<details>
+<summary>**View Open Questions Template**</summary>
 
 ```markdown
 ## Open Questions
@@ -181,103 +142,112 @@ These questions represent the highest-value areas for follow-up research.
 | **Is China's surge sustainable?** | 47% share may be temporary | Depends on retention |
 ```
 
----
+</details>
 
-## Research Methodology
+<details>
+<summary>**View Formatting Guidelines**</summary>
 
-### Source Hierarchy
+**Use Tables Over Bullet Lists:**
+```markdown
+# Bad (low density)
+**Factor Name**
+- Direction: Increases
+- Type: leaf
 
-| Priority | Source Type | Examples | Trust Level |
-|----------|-------------|----------|-------------|
-| 1 | **Peer-reviewed research** | Nature, Science, arXiv | High |
-| 2 | **Expert organizations** | RAND, Brookings, FHI, CAIS | High |
-| 3 | **Government reports** | GAO, UK AISI, NIST | High |
-| 4 | **Quality journalism** | Reuters, AP, major newspapers | Medium |
-| 5 | **Industry analysis** | McKinsey, Gartner, OECD | Medium |
-| 6 | **Blog posts/forums** | LessWrong, EA Forum | Variable |
-| 7 | **Company announcements** | OpenAI, Anthropic blogs | Medium (verify) |
-
-### Research Depth Levels
-
-| Level | Time | Sources | Use When |
-|-------|------|---------|----------|
-| `quick` | 15-30 min | 5-10 | Initial exploration |
-| `standard` | 1-2 hours | 15-25 | Most topics |
-| `comprehensive` | 3-5 hours | 30-50+ | Critical topics |
-
----
-
-## Validation Checklist
-
-Before marking a report complete, verify:
-
-| Check | Why | How to Fix |
-|-------|-----|------------|
-| **Dollar signs escaped** | Prevents LaTeX rendering | Replace `$` with `\$` |
-| **Dates unquoted** | YAML schema requires date type | `createdAt: 2025-01-07` not `"2025-01-07"` |
-| **Tables used** | Causal factors must be in tables | Convert bullet lists to tables |
-| **Asides included** | Highlight key insights | Add 3-4 callouts minimum |
-| **Sources organized** | Easier to assess quality | Group by type |
-| **Links valid** | Broken links hurt credibility | Test all URLs |
-
-**Run validators:**
-```bash
-npm run validate:mdx
-npm run validate:dollars
+# Good (table format)
+| Factor | Direction | Type |
+|--------|-----------|------|
+| **Factor Name** | ↑ Topic | leaf |
 ```
 
----
+**Escape Dollar Signs:**
 
-## Quality Criteria
+| Wrong | Right |
+|-------|-------|
+| `$100,000` | `\$100,000` |
+| `$5B` | `\$5B` |
 
-| Level | Criteria |
-|-------|----------|
-| **1** | Basic outline, fewer than 10 sources, major gaps |
-| **2** | Main points covered, 10-15 sources, some gaps |
-| **3** | Solid coverage, 15-25 sources, minor gaps |
-| **4** | Comprehensive, 25-35 sources, well-structured |
-| **5** | Authoritative, 35+ sources, original synthesis |
+Also escape in frontmatter: `description: "Fees increased to \\$100K"`
+
+**Use Asides Liberally (3-4 per report):**
+```mdx
+<Aside type="tip" title="Why This Matters">
+Key insight about safety implications.
+</Aside>
+
+<Aside type="caution" title="Limitation">
+Important caveat about the data.
+</Aside>
+```
+
+</details>
 
 ---
 
 ## Integration with Diagrams
 
-After a report is complete, the Causal Factors section can be directly converted to a causeEffectGraph:
-
-| Report Column | Maps to Diagram |
+| Report Column | Diagram Element |
 |---------------|-----------------|
 | Factor | Node label |
-| Type | Node type (`leaf`, `cause`, `intermediate`) |
-| Direction (↑/↓) | Edge effect (`increases`, `decreases`) |
-| Strength (section) | Edge strength (`strong`, `medium`, `weak`) |
+| Type | Node type |
+| Direction (↑/↓) | Edge effect |
+| Section (Primary/Secondary) | Edge strength |
 | Confidence | Edge confidence |
 
-**Workflow:**
-1. Create report → Research and document findings
-2. Extract factors → Format in tables
-3. Create diagram → Use `cause-effect-diagram` skill
-4. Link both → Report references diagram
+**Workflow:** Report → Extract factors → Create diagram → Link both
 
 ---
 
-## File Location & Naming
+## Quality Levels
 
-**Location:** `src/content/docs/knowledge-base/research-reports/`
-
-**Naming:** Use kebab-case matching the topic entity ID:
-- `ai-talent-concentration.mdx`
-- `algorithmic-progress.mdx`
-- `compute-governance.mdx`
+| Level | Criteria |
+|-------|----------|
+| 1-2 | Basic outline, 10-15 sources, gaps |
+| 3 | Solid coverage, 15-25 sources |
+| 4 | Comprehensive, 25-35 sources |
+| 5 | Authoritative, 35+ sources, original synthesis |
 
 ---
 
-## Common Mistakes
+## Validation
 
-| Mistake | Problem | Fix |
-|---------|---------|-----|
-| Bullet lists for factors | Low density, hard to scan | Use tables |
-| Unescaped `$` | Renders as LaTeX | Use `\$` |
-| Quoted dates | Schema validation fails | Remove quotes |
-| No Asides | Misses key insights | Add 3-4 callouts |
-| Flat hierarchy | Hard to navigate | Use h2/h3 structure |
-| Missing validation | Errors in production | Run `npm run validate` |
+```bash
+npm run validate:mdx
+npm run validate:dollars
+```
+
+<details>
+<summary>**View Validation Checklist**</summary>
+
+| Check | Problem | Fix |
+|-------|---------|-----|
+| Dollar signs escaped | LaTeX rendering | `$` → `\$` |
+| Dates unquoted | Schema fails | Remove quotes |
+| Tables used | Low density | Convert bullets |
+| Asides included | Missing insights | Add 3-4 |
+| Sources organized | Hard to assess | Group by type |
+| Links valid | Broken refs | Test URLs |
+
+</details>
+
+<details>
+<summary>**View Common Mistakes**</summary>
+
+| Mistake | Fix |
+|---------|-----|
+| Bullet lists for factors | Use tables |
+| Unescaped `$` | Use `\$` |
+| Quoted dates | Remove quotes |
+| No Asides | Add 3-4 callouts |
+| Flat hierarchy | Use h2/h3 |
+| Missing validation | Run validators |
+
+</details>
+
+---
+
+## File Location
+
+**Path:** `src/content/docs/knowledge-base/research-reports/`
+
+**Naming:** kebab-case matching topic ID (e.g., `ai-talent-concentration.mdx`)

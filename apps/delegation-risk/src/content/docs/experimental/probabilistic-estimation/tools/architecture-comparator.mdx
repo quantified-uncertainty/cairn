@@ -1,0 +1,161 @@
+---
+title: "Architecture Comparator"
+description: "Compare risk profiles of different delegation architectures side-by-side"
+sidebar:
+  order: 4
+---
+
+import ArchitectureComparator from '../../../../../components/ArchitectureComparator.tsx';
+
+# Architecture Comparator
+
+Compare the risk profiles of different delegation architectures to make informed design decisions.
+
+## How It Works
+
+This tool provides side-by-side comparison of delegation architectures:
+
+1. **Component Breakdown**: See which AI/human components each architecture uses
+2. **Risk Visualization**: Compare expected vs. worst-case risk
+3. **Mitigation Impact**: See how different safety measures affect overall risk
+4. **Trade-off Analysis**: Understand the cost-benefit of each approach
+
+---
+
+<div style="margin: 2rem 0;">
+<ArchitectureComparator client:load />
+</div>
+
+---
+
+## Default Architectures Explained
+
+### Baseline (Human Only)
+Traditional human-driven process with no AI delegation. Establishes the risk level you're comparing against.
+
+**Characteristics**:
+- Single point of failure (human error)
+- Predictable but expensive
+- Limited scalability
+- Well-understood failure modes
+
+### Simple AI Assist
+AI provides suggestions and recommendations, but humans make all decisions. Common for high-stakes domains.
+
+**Characteristics**:
+- AI errors caught by human review
+- Slower than autonomous but safer
+- Good for building trust in AI systems
+- Human bottleneck remains
+
+### Autonomous AI
+AI handles routine tasks independently; humans handle exceptions. Balances efficiency with safety.
+
+**Characteristics**:
+- Higher throughput for routine work
+- Complex failure modes (routing errors)
+- Requires robust exception handling
+- Multiple points of mitigation
+
+### Full Automation
+End-to-end AI with minimal human intervention. Maximum efficiency, maximum risk.
+
+**Characteristics**:
+- Highest potential damage
+- Requires extensive mitigation
+- Suitable only for well-understood domains
+- Fastest degradation if poorly designed
+
+---
+
+## Interpreting the Comparison
+
+### Expected vs. Worst Case
+
+- **Expected Risk** (dark bar): Average monthly risk given probability distributions
+- **Worst Case** (light bar): Maximum possible damage if everything fails
+
+A wide gap indicates high tail risk.
+
+### Component Types
+
+Risk varies significantly by component type:
+
+| Type | Base Failure Rate | Typical Use |
+|------|-------------------|-------------|
+| Deterministic | ~0.1% | Rule-based routing, validation |
+| Narrow ML | ~3% | Classification, detection |
+| General LLM | ~10% | Generation, reasoning |
+| RL Agent | ~20% | Autonomous decision-making |
+| Human | ~5% | Review, exception handling |
+
+### Mitigation Stacking
+
+Each mitigation reduces risk multiplicatively. With 3 mitigations at 85% effectiveness each:
+
+```
+final_risk = base_risk × 0.85³ = base_risk × 0.61
+```
+
+More mitigations help, but with diminishing returns.
+
+---
+
+## When to Choose Each Architecture
+
+### Choose Human Only When:
+- Stakes are extremely high
+- Decisions require nuanced judgment
+- AI systems aren't well-calibrated for your domain
+- Regulatory requirements demand human oversight
+
+### Choose AI Assist When:
+- AI can improve human decision quality
+- Speed is important but not critical
+- Building organizational trust in AI
+- Failure costs are moderate
+
+### Choose Autonomous AI When:
+- High volume of routine decisions
+- Clear criteria for "routine" vs "exception"
+- Good monitoring and fallback in place
+- Moderate-to-high risk tolerance
+
+### Choose Full Automation When:
+- Domain is well-understood with clear boundaries
+- Extensive testing and validation completed
+- Strong mitigation stack in place
+- Benefits significantly outweigh risks
+
+---
+
+## Migration Paths
+
+### Human → AI Assist
+1. Start with AI suggestions for low-stakes decisions
+2. Track AI accuracy vs. human decisions
+3. Gradually expand scope based on performance
+4. Maintain human review throughout
+
+### AI Assist → Autonomous
+1. Identify truly routine tasks (over 95% predictable)
+2. Implement robust exception detection
+3. Add monitoring and alerting
+4. Pilot with limited scope, then expand
+
+### Autonomous → Full Automation
+1. Achieve consistent performance metrics
+2. Reduce human exception handling rate to less than 5%
+3. Implement comprehensive mitigation stack
+4. Establish clear rollback procedures
+
+---
+
+## Customization
+
+The default architectures serve as templates. To analyze your specific situation:
+
+1. Use the [Risk Calculator](/experimental/probabilistic-estimation/tools/risk-calculator) to model each architecture
+2. Use the [Sensitivity Dashboard](/experimental/probabilistic-estimation/tools/sensitivity-dashboard) to identify key parameters
+3. Use the [Trust Updater](/experimental/probabilistic-estimation/tools/trust-updater) to calibrate component reliability
+4. Document your analysis in the [Decomposition Worksheet](/guides/decomposition-worksheet)
