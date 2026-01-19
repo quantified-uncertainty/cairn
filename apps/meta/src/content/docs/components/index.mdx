@@ -35,16 +35,25 @@ Available components:
 
 #### Graph Components
 
-Import from `@cairn/ui/graph`:
+> **Note:** The CauseEffectGraph component is currently tightly coupled to the longterm app's data layer. It's planned for full extraction in a future phase.
 
-```tsx
-import CauseEffectGraph from '@cairn/ui/graph';
-```
-
-The CauseEffectGraph component provides:
+The CauseEffectGraph component (in `@cairn/ui/graph`) provides:
 - Interactive node-based visualizations
 - Multiple layout algorithms (Dagre, ELK)
 - Multiple view modes (Graph, List, Data, Mermaid)
+
+#### Mermaid Components
+
+Import from `@cairn/ui/mermaid`:
+
+```tsx
+import { Mermaid } from '@cairn/ui/mermaid';
+```
+
+The Mermaid component provides:
+- Dynamic diagram rendering from Mermaid syntax
+- Automatic dark mode support
+- Error handling with syntax preview
 
 ### @cairn/tailwind
 

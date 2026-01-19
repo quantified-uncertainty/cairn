@@ -19,12 +19,38 @@ export default defineConfig({
           ],
         },
         {
+          label: 'CAIRN',
+          autogenerate: { directory: 'cairn' },
+        },
+        {
           label: 'Architecture',
           autogenerate: { directory: 'architecture' },
         },
         {
           label: 'Components',
           autogenerate: { directory: 'components' },
+        },
+        {
+          label: 'Schema',
+          autogenerate: { directory: 'schema' },
+        },
+        {
+          label: 'Reports',
+          autogenerate: { directory: 'reports' },
+        },
+        {
+          label: 'Reference',
+          items: [
+            { label: 'Content Database', slug: 'content-database' },
+            { label: 'Automation Tools', slug: 'automation-tools' },
+            { label: 'Mermaid Diagrams', slug: 'mermaid-diagrams' },
+            { label: 'Cause-Effect Diagrams', slug: 'cause-effect-diagrams' },
+            { label: 'Knowledge Base', slug: 'knowledge-base' },
+            { label: 'Models', slug: 'models' },
+            { label: 'Research Reports', slug: 'research-reports' },
+            { label: 'Enhancement Queue', slug: 'enhancement-queue' },
+            { label: 'Project Roadmap', slug: 'project-roadmap' },
+          ],
         },
       ],
     }),

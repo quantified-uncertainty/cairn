@@ -1,0 +1,508 @@
+---
+title: "Content Database System"
+description: "SQLite-based system for indexing articles, tracking sources, and generating AI summaries"
+sidebar:
+  order: 5
+lastEdited: "2025-12-27"
+importance: 0
+quality: 72
+llmSummary: "Comprehensive technical documentation for a SQLite-based content management system that indexes MDX articles, tracks external citations, and generates AI summaries using Anthropic's API. The system includes complete database schema, CLI commands, cost estimates (~$2-3 for 311 articles with Haiku), and API documentation for programmatic access."
+---
+import { Aside } from '@astrojs/starlight/components';
+import { Mermaid } from '@cairn/ui/mermaid';
+
+This project includes a SQLite-based content database for managing article metadata, tracking external source references, and generating AI-powered summaries. The database is stored locally in `.cache/knowledge.db` (gitignored) and serves as a foundation for content quality tooling.
+
+---
+
+## Quick Start
+
+```bash
+# Scan all content files and populate database
+npm run kb:scan
+
+# Generate AI summaries for articles
+npm run kb:summarize
+
+# Export sources to resources.yaml
+node scripts/export-resources.mjs
+
+# View database statistics
+npm run kb:stats
+```
+
+<Aside type="note">
+Requires `ANTHROPIC_API_KEY` in `.env` file for summary generation.
+</Aside>
+
+---
+
+## Architecture
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Content["Content Layer"]
+        MDX[MDX Files]
+        YAML[entities.yaml]
+    end
+    subgraph Processing["Processing Layer"]
+        SCAN[scan-content.mjs]
+        SUMM[generate-summaries.mjs]
+    end
+    subgraph Storage["Storage Layer"]
+        DB[(knowledge.db)]
+        CACHE[.cache/sources/]
+    end
+    subgraph API["External"]
+        ANTH[Anthropic API]
+    end
+    MDX --> SCAN
+    YAML --> SCAN
+    SCAN --> DB
+    DB --> SUMM
+    SUMM --> ANTH
+    ANTH --> DB
+    SUMM --> CACHE
+`} />
+
+---
+
+## Database Schema
+
+### articles
+
+Stores content extracted from MDX files.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT PRIMARY KEY | Entity ID from filename |
+| `path` | TEXT | Relative path to source file |
+| `title` | TEXT | Article title from frontmatter |
+| `description` | TEXT | Article description |
+| `content` | TEXT | Plain text content (JSX removed) |
+| `word_count` | INTEGER | Word count for prioritization |
+| `quality` | INTEGER | Quality rating from frontmatter |
+| `content_hash` | TEXT | MD5 hash for change detection |
+| `created_at` | TEXT | When article was first indexed |
+| `updated_at` | TEXT | When article was last updated |
+
+### sources
+
+Stores metadata about external references discovered in articles.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT PRIMARY KEY | SHA256 hash of URL/DOI (16 chars) |
+| `url` | TEXT | Full URL of external source |
+| `doi` | TEXT | Digital Object Identifier (if paper) |
+| `title` | TEXT | Source title/headline |
+| `authors` | TEXT (JSON) | Array of author names |
+| `year` | INTEGER | Publication year |
+| `source_type` | TEXT | Type: paper, blog, report, web, etc. |
+| `content` | TEXT | Fetched source content |
+| `fetch_status` | TEXT | pending, fetched, failed, manual |
+| `fetched_at` | TEXT | When source was last fetched |
+
+### article_sources
+
+Junction table linking articles to their cited sources.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `article_id` | TEXT | Foreign key to articles |
+| `source_id` | TEXT | Foreign key to sources |
+| `citation_context` | TEXT | Quote where source is cited |
+
+### summaries
+
+Stores AI-generated summaries of articles and sources.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `entity_id` | TEXT PRIMARY KEY | ID of summarized entity |
+| `entity_type` | TEXT | 'article' or 'source' |
+| `one_liner` | TEXT | Single-sentence summary (max 25 words) |
+| `summary` | TEXT | 2-3 paragraph summary |
+| `key_points` | TEXT (JSON) | 3-5 bullet points |
+| `key_claims` | TEXT (JSON) | Claims with values |
+| `model` | TEXT | Model used (e.g., claude-3-5-haiku) |
+| `tokens_used` | INTEGER | Total tokens consumed |
+| `generated_at` | TEXT | When summary was generated |
+
+### entity_relations
+
+Entity relationships loaded from `entities.yaml`.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `from_id` | TEXT | Source entity ID |
+| `to_id` | TEXT | Target entity ID |
+| `relationship` | TEXT | Relationship type |
+
+---
+
+## Commands Reference
+
+### npm run kb:scan
+
+Scans all MDX files and populates the database.
+
+```bash
+# Standard scan (skips unchanged files)
+npm run kb:scan
+
+# Force rescan all files
+node scripts/scan-content.mjs --force
+
+# Show per-file progress
+node scripts/scan-content.mjs --verbose
+
+# Show database stats only
+node scripts/scan-content.mjs --stats
+```
+
+**What it does:**
+
+1. Finds all `.mdx` and `.md` files in `src/content/docs/`
+2. Extracts frontmatter (title, description, quality, sources)
+3. Extracts plain text content (removes imports, JSX, HTML comments)
+4. Discovers URLs from markdown links and DOIs
+5. Infers source types from domains (arxiv.org → paper, lesswrong.com → blog)
+6. Loads entity relations from `entities.yaml`
+7. Skips unchanged files via content hash comparison
+
+### npm run kb:summarize
+
+Generates AI summaries using the Anthropic API.
+
+```bash
+# Summarize 10 articles (default)
+npm run kb:summarize
+
+# Summarize specific count
+node scripts/generate-summaries.mjs --batch 50
+
+# Summarize sources instead of articles
+node scripts/generate-summaries.mjs --type sources
+
+# Use higher-quality model
+node scripts/generate-summaries.mjs --model sonnet
+
+# Summarize specific article
+node scripts/generate-summaries.mjs --id deceptive-alignment
+
+# Re-summarize changed content
+node scripts/generate-summaries.mjs --resummary
+
+# Preview without API calls
+node scripts/generate-summaries.mjs --dry-run
+```
+
+**Models available:**
+
+| Model | ID | Cost (per 1M input tokens) | Use case |
+|-------|----|-----------------------------|----------|
+| haiku | claude-3-5-haiku-20241022 | ~\$0.25 | Bulk summarization |
+| sonnet | claude-sonnet-4-20250514 | ~\$3.00 | Higher quality |
+| opus | claude-opus-4-20250514 | ~\$15.00 | Best quality |
+
+**Cost estimates:**
+
+| Task | Model | Estimated Cost |
+|------|-------|----------------|
+| Summarize 311 articles | Haiku | ~\$2-3 |
+| Summarize 793 sources | Haiku | ~\$10-15 |
+| Single article improvement | Sonnet | ~\$0.20 |
+
+### npm run kb:stats
+
+Display database statistics.
+
+```bash
+npm run kb:stats
+```
+
+---
+
+## Core Module API
+
+The database is accessed via `scripts/lib/knowledge-db.mjs`.
+
+### Import
+
+```javascript
+import {
+  db,                    // Better-sqlite3 instance
+  articles,              // Article operations
+  sources,               // Source operations
+  summaries,             // Summary operations
+  relations,             // Entity relation operations
+  getResearchContext,    // Full context for article
+  getStats,              // Database statistics
+  CACHE_DIR,             // Path to .cache/
+  SOURCES_DIR,           // Path to .cache/sources/
+} from './scripts/lib/knowledge-db.mjs';
+```
+
+### articles API
+
+```javascript
+// Get article by ID
+const article = articles.get('deceptive-alignment');
+
+// Get article with its summary
+const withSummary = articles.getWithSummary('deceptive-alignment');
+
+// Get all articles
+const all = articles.getAll();
+
+// Find articles needing summaries
+const unsummarized = articles.needingSummary();
+
+// Search articles
+const results = articles.search('reward hacking');
+
+// Check if content changed
+const changed = articles.hasChanged('id', newHash);
+
+// Insert/update article
+articles.upsert({
+  id: 'my-article',
+  path: 'knowledge-base/risks/my-article.mdx',
+  title: 'My Article',
+  description: 'Description here',
+  content: 'Full text content...',
+  word_count: 1500,
+  quality: 3,
+  content_hash: 'abc123...'
+});
+```
+
+### sources API
+
+```javascript
+// Get source by ID or URL
+const source = sources.get('abc123def456');
+const byUrl = sources.getByUrl('https://arxiv.org/...');
+
+// Get sources for an article
+const articleSources = sources.getForArticle('deceptive-alignment');
+
+// Get pending sources for fetching
+const pending = sources.getPending(100);
+
+// Link source to article
+sources.linkToArticle('article-id', 'source-id', 'citation context');
+
+// Mark source fetch status
+sources.markFetched('source-id', 'content...');
+sources.markFailed('source-id', 'Error message');
+
+// Get statistics
+const stats = sources.stats();
+// { total: 793, pending: 793, fetched: 0, failed: 0, manual: 0 }
+```
+
+### summaries API
+
+```javascript
+// Get summary by entity ID
+const summary = summaries.get('deceptive-alignment');
+
+// Get all summaries of a type
+const articleSummaries = summaries.getAll('article');
+
+// Insert/update summary
+summaries.upsert('entity-id', 'article', {
+  oneLiner: 'Single sentence...',
+  summary: 'Full summary...',
+  keyPoints: ['Point 1', 'Point 2'],
+  keyClaims: [{ claim: '...', value: '...' }],
+  model: 'claude-3-5-haiku-20241022',
+  tokensUsed: 1247
+});
+
+// Get statistics
+const stats = summaries.stats();
+// { article: { count: 311, tokens: 387000 }, source: { count: 0, tokens: 0 } }
+```
+
+### Research Context
+
+Get comprehensive context for improving an article:
+
+```javascript
+const context = getResearchContext('deceptive-alignment');
+// Returns:
+// {
+//   article: { ...article, summary: {...} },
+//   relatedArticles: [...],
+//   sources: [...],
+//   claims: [...],
+//   stats: { relatedCount, sourcesTotal, sourcesFetched, claimsCount }
+// }
+```
+
+---
+
+## Source Type Inference
+
+When scanning content, source types are inferred from domains:
+
+| Domain Pattern | Inferred Type |
+|----------------|---------------|
+| arxiv.org, doi.org, nature.com | paper |
+| lesswrong.com, alignmentforum.org | blog |
+| substack.com | blog |
+| .gov, congress.gov, whitehouse.gov | government |
+| wikipedia.org | reference |
+| .pdf (any domain) | report |
+| (default) | web |
+
+---
+
+## Directory Structure
+
+```
+project/
+├── .cache/                         # Gitignored
+│   ├── knowledge.db               # SQLite database
+│   └── sources/                   # Cached source documents
+│       ├── pdf/
+│       ├── html/
+│       └── text/
+├── scripts/
+│   ├── lib/
+│   │   ├── knowledge-db.mjs       # Core DB module
+│   │   ├── file-utils.mjs         # File discovery
+│   │   ├── mdx-utils.mjs          # MDX parsing
+│   │   └── output.mjs             # Terminal formatting
+│   ├── scan-content.mjs           # Content scanner
+│   └── generate-summaries.mjs     # AI summarization
+├── src/content/docs/              # Source MDX files
+└── .env                           # API credentials
+```
+
+---
+
+## Workflow Examples
+
+### After Editing Content
+
+```bash
+# 1. Scan for changes (fast, uses hash comparison)
+npm run kb:scan
+
+# 2. Generate summaries for new/changed articles
+npm run kb:summarize --resummary
+```
+
+### Bulk Initial Setup
+
+```bash
+# 1. Scan all content
+npm run kb:scan --force
+
+# 2. Generate summaries in batches
+node scripts/generate-summaries.mjs --batch 100
+node scripts/generate-summaries.mjs --batch 100
+node scripts/generate-summaries.mjs --batch 100
+# ... repeat until done
+```
+
+### Check Database State
+
+```bash
+# View statistics
+npm run kb:stats
+
+# Or programmatically
+node -e "
+import { getStats } from './scripts/lib/knowledge-db.mjs';
+console.log(JSON.stringify(getStats(), null, 2));
+"
+```
+
+---
+
+## Exporting to YAML (Resources System)
+
+The database serves as a processing layer. Canonical data is exported to YAML files for the site build.
+
+### Export Resources
+
+```bash
+# Export cited sources to resources.yaml
+node scripts/export-resources.mjs
+
+# Export ALL sources (including uncited)
+node scripts/export-resources.mjs --all
+
+# Preview without writing
+node scripts/export-resources.mjs --dry-run
+```
+
+The export script:
+- Reads sources from SQLite with their AI summaries
+- Merges with existing `src/data/resources.yaml` (preserves manual edits)
+- Includes `cited_by` references showing which articles cite each source
+
+### Using Resources in MDX
+
+Once resources are in `resources.yaml`, you can reference them semantically:
+
+```mdx
+import { ResourceLink, ResourceList, ResourceCite } from '../../components/wiki';
+
+Recent work on AI control <ResourceCite id="ai-control-2023" /> shows...
+
+See also: <ResourceLink id="superintelligence-2014" />
+
+## Key Papers
+
+<ResourceList
+  ids={["ai-control-2023", "concrete-problems-2016"]}
+  showSummaries
+/>
+```
+
+### Resource Schema
+
+Resources in `resources.yaml` have this structure:
+
+```yaml
+- id: ai-control-2023
+  url: https://arxiv.org/abs/2312.06942
+  title: "AI Control: Improving Safety..."
+  authors: ["Ryan Greenblatt", "Buck Shlegeris"]
+  published_date: "2023-12"
+  type: paper  # paper, blog, book, report, talk, podcast, government, reference, web
+  summary: "AI-generated summary..."
+  key_points:
+    - "Point 1"
+    - "Point 2"
+  cited_by:
+    - agentic-ai
+    - ai-control
+```
+
+---
+
+## Limitations
+
+1. **Source fetching not implemented**: The `fetch_status` field exists but automatic fetching of external sources is not yet built
+2. **Claims extraction minimal**: The claims table exists but extraction is not fully implemented
+3. **Local only**: Database is gitignored and must be regenerated on each machine
+4. **No incremental summary updates**: Summaries are regenerated from scratch, not updated
+
+---
+
+## Future Enhancements
+
+Potential improvements to the system:
+
+- Automatic source fetching (PDFs, web pages)
+- Claims extraction and consistency checking across articles
+- Similarity search using embeddings
+- Migration of entity `sources` to use resource IDs
+- Integration with content validation tools
