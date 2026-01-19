@@ -7,7 +7,7 @@ sidebar:
 
 import { Mermaid } from '@cairn/ui/mermaid';
 
-Visual documentation auto-generated from `src/data/schema.ts`. Regenerate with `npm run diagrams`.
+Visual documentation of the CAIRN data schema. Source: `apps/longterm/src/data/schema.ts`.
 
 ## Entity Types
 
@@ -20,16 +20,18 @@ flowchart TD
         risk["risk"]
         risk_factor["risk-factor"]
         capability["capability"]
-        concept["concept"]
+        concept["concept / concepts"]
         crux["crux"]
         argument["argument"]
+        case_study["case-study"]
     end
 
     subgraph SafetyResponses["Safety & Responses"]
         direction TB
         safety_agenda["safety-agenda"]
+        safety_approaches["safety-approaches"]
         intervention["intervention"]
-        policy["policy"]
+        policy["policy / policies"]
     end
 
     subgraph Organizations["Organizations"]
@@ -38,15 +40,27 @@ flowchart TD
         lab["lab"]
         lab_frontier["lab-frontier"]
         lab_research["lab-research"]
+        lab_startup["lab-startup"]
+        lab_academic["lab-academic"]
         funder["funder"]
     end
 
     subgraph Analysis["Analysis"]
         direction TB
-        model["model"]
+        model["model / models"]
         scenario["scenario"]
         parameter["parameter"]
         metric["metric"]
+        analysis["analysis"]
+    end
+
+    subgraph AITransitionModel["AI Transition Model"]
+        direction TB
+        atm_factor["ai-transition-model-factor"]
+        atm_subitem["ai-transition-model-subitem"]
+        atm_param["ai-transition-model-parameter"]
+        atm_metric["ai-transition-model-metric"]
+        atm_scenario["ai-transition-model-scenario"]
     end
 
     subgraph Other["Other"]
@@ -54,6 +68,7 @@ flowchart TD
         researcher["researcher"]
         resource["resource"]
         historical["historical"]
+        events["events"]
     end
 `} />
 
@@ -64,14 +79,18 @@ How entities can relate to each other:
 <Mermaid client:load chart={`
 flowchart LR
     subgraph Causal["Causal"]
-        causes["causes"]
-        drives["drives"]
+        causes["causes / cause"]
+        drives["drives / driver / driven-by"]
         affects["affects"]
         amplifies["amplifies"]
+        leads_to["leads-to"]
+        contributes["contributes-to"]
+        shaped["shaped-by"]
     end
 
     subgraph Mitigation["Mitigation"]
-        mitigates["mitigates"]
+        mitigates["mitigates / mitigated-by"]
+        mitigation["mitigation"]
         blocks["blocks"]
         addresses["addresses"]
     end
@@ -81,12 +100,29 @@ flowchart LR
         enables["enables"]
         child_of["child-of"]
         composed_of["composed-of"]
+        component["component"]
+        prerequisite["prerequisite"]
     end
 
-    subgraph Analysis["Analysis"]
-        measures["measures"]
-        analyzes["analyzes"]
+    subgraph Measurement["Measurement"]
+        measures["measures / measured-by"]
+        analyzes["analyzes / analyzed-by"]
         models["models"]
+        increases["increases"]
+        decreases["decreases"]
+        supports["supports"]
+    end
+
+    subgraph Classification["Classification"]
+        related["related"]
+        example["example"]
+        mechanism["mechanism"]
+        outcome["outcome"]
+        consequence["consequence"]
+        manifestation["manifestation"]
+        key_factor["key-factor"]
+        scenario_rel["scenario / sub-scenario"]
+        supersedes["supersedes"]
     end
 `} />
 
@@ -103,6 +139,8 @@ erDiagram
         string description
         enum severity
         string likelihood
+        array tags
+        array related
     }
 
     Resource {
@@ -111,6 +149,8 @@ erDiagram
         string title
         enum type
         string summary
+        array authors
+        string year
     }
 
     Publication {
@@ -120,6 +160,14 @@ erDiagram
         int credibility
     }
 
+    CauseEffectGraph {
+        string title
+        string description
+        string primaryNodeId
+        array nodes
+        array edges
+    }
+
     RelatedEntry {
         string id FK
         enum type
@@ -127,7 +175,7 @@ erDiagram
     }
 
     Entity ||--o{ RelatedEntry : has
-    Entity ||--o{ EntitySource : cites
+    Entity ||--o| CauseEffectGraph : has
     Entity }o--o{ Resource : references
     Resource }o--|| Publication : published_in
 `} />
@@ -142,68 +190,112 @@ flowchart TD
         E1[entities/*.yaml]
         E2[resources/*.yaml]
         E3[publications.yaml]
+        E4[graphs/*.yaml]
     end
 
     subgraph Schema["Zod Schema Validation"]
         S1[Entity Schema]
         S2[Resource Schema]
         S3[Publication Schema]
+        S4[CauseEffectGraph Schema]
     end
 
     subgraph Build["Build Pipeline"]
         B1[build-data.mjs]
         B2[database.json]
+        B3[pathRegistry.json]
+        B4[backlinks.json]
     end
 
     subgraph Validation["Validation Suite"]
         V1[validate-yaml-schema.mjs]
         V2[validate-data.mjs]
+        V3[validate-graph-sync.mjs]
     end
 
     subgraph UI["UI Components"]
         U1[DataInfoBox]
         U2[ResourceCard]
         U3[CauseEffectGraph]
+        U4[EntityLink]
     end
 
     E1 --> V1
     E2 --> V1
     E3 --> V1
+    E4 --> V3
 
     V1 --> S1
     V1 --> S2
     V1 --> S3
+    V3 --> S4
 
     E1 --> B1
     E2 --> B1
     E3 --> B1
+    E4 --> B1
 
     B1 --> B2
+    B1 --> B3
+    B1 --> B4
     B2 --> U1
     B2 --> U2
     B2 --> U3
+    B3 --> U4
 `} />
 
 ## Statistics
 
 | Metric | Count |
 |--------|-------|
-| Entity Types | 31 |
-| Relationship Types | 41 |
-| Entity Fields | 19 |
-| Resource Fields | 17 |
+| Entity Types | 27 |
+| Relationship Types | 47 |
+| AI Transition Model Types | 5 |
 
-## Regenerating Diagrams
+## Key Schema Files
 
-```bash
-# Generate schema-derived diagrams (from Zod)
-npm run diagrams:schema
+| File | Purpose |
+|------|---------|
+| `src/data/schema.ts` | Zod schemas and TypeScript types |
+| `src/data/entities/*.yaml` | Entity definitions |
+| `src/data/resources/*.yaml` | External resource references |
+| `src/data/graphs/*.yaml` | Cause-effect graph definitions |
 
-# Generate data-derived diagrams (from YAML)
-npm run diagrams:data
+## Cause-Effect Graph Schema
 
-# Generate all
-npm run diagrams
+Graphs are defined with nodes and edges:
+
+```yaml
+causeEffectGraph:
+  title: "What Drives X?"
+  description: "Causal factors affecting X"
+  primaryNodeId: main-node
+  nodes:
+    - id: node-1
+      label: "Node Label"
+      type: leaf | cause | intermediate | effect
+      description: "Node description"
+      entityRef: optional-entity-id  # Links to entity page
+      score: 75  # 0-100 importance score
+  edges:
+    - source: node-1
+      target: node-2
+      strength: strong | medium | weak
+      effect: increases | decreases | mixed
 ```
 
-Raw `.mmd` files are saved to `internal/` (gitignored) for use in other tools.
+### Node Types
+
+| Type | Purpose | Visual |
+|------|---------|--------|
+| `leaf` | Root inputs, external factors | Teal |
+| `cause` | Derived causal factors | Light gray |
+| `intermediate` | Middle-tier factors | Darker gray |
+| `effect` | Target outcomes | Amber |
+
+### Edge Properties
+
+| Property | Values | Meaning |
+|----------|--------|---------|
+| `strength` | strong, medium, weak | Line thickness |
+| `effect` | increases, decreases, mixed | Arrow color/style |
