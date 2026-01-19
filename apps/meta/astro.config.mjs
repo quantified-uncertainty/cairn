@@ -31,16 +31,14 @@ export default defineConfig({
           autogenerate: { directory: 'components' },
         },
         {
-          label: 'Schema',
-          autogenerate: { directory: 'schema' },
-        },
-        {
           label: 'Reports',
           autogenerate: { directory: 'reports' },
         },
         {
           label: 'Reference',
           items: [
+            { label: 'LLM Workflows', slug: 'workflows' },
+            { label: 'Content Formats', slug: 'content-formats' },
             { label: 'Content Database', slug: 'content-database' },
             { label: 'Automation Tools', slug: 'automation-tools' },
             { label: 'Mermaid Diagrams', slug: 'mermaid-diagrams' },

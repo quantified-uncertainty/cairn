@@ -1,0 +1,517 @@
+---
+title: "Content Formats"
+description: "Reference guide to the different content types and data formats in the knowledge base"
+sidebar:
+  order: 3
+importance: 0
+quality: 3
+llmSummary: "Reference documentation for all content formats: wiki pages, research reports, cascade models, Squiggle models, cause-effect diagrams, and estimate tables. Explains when to use each format, their structure, and how they interconnect."
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The knowledge base uses several distinct content formats, each optimized for different purposes. Understanding when to use each format helps maintain consistency and makes content more useful.
+
+<Aside type="tip" title="Format Selection">
+Choose the format that best communicates your content. A good research report may be more valuable than a mediocre model, and a clear wiki page may be better than a complex diagram.
+</Aside>
+
+---
+
+## Format Overview
+
+| Format | Purpose | Complexity | Example |
+|--------|---------|------------|---------|
+| **Wiki Page** | Explain concepts, risks, responses | Low-Medium | [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) |
+| **Research Report** | Deep-dive investigation | Medium | [AI Talent Concentration](/knowledge-base/research-reports/ai-talent-concentration/) |
+| **Cascade Model** | Detailed analytical scenarios | High | [Cyber Psychosis Cascade](/knowledge-base/models/cascade-models/cyber-psychosis-cascade/) |
+| **Squiggle Model** | Quantitative forecasts | High | [Compute Forecast Sketch](/ai-transition-model/models/compute-forecast-sketch/) |
+| **Cause-Effect Diagram** | Visual causal structure | Medium | [Diagrams Index](/diagrams/) |
+| **Estimate Table** | Aggregate parameter view | Low | [Parameter Table](/ai-transition-model/table/) |
+
+---
+
+## 1. Wiki Pages
+
+**Purpose:** The core content unit for explaining concepts, risks, and responses.
+
+### When to Use
+
+- Explaining a risk, response, or concept
+- Providing reference material on a topic
+- Creating overview pages for categories
+
+### Structure
+
+<Tabs>
+<TabItem label="Risk Page">
+```yaml
+---
+title: "Risk Name"
+description: "One-sentence summary with specifics"
+quality: 3
+importance: 75
+---
+
+## Overview
+[2-3 paragraphs]
+
+### Risk Assessment
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Severity | High | ... |
+| Likelihood | 20-40% | ... |
+
+### Responses That Address This Risk
+| Response | Mechanism | Effectiveness |
+|----------|-----------|---------------|
+| [Response](/link) | How it helps | Medium |
+
+## Why This Matters
+[Detailed explanation]
+
+## Key Uncertainties
+[What would change the assessment]
+```
+</TabItem>
+<TabItem label="Response Page">
+```yaml
+---
+title: "Response Name"
+description: "One-sentence summary"
+quality: 3
+importance: 70
+---
+
+## Overview
+[2-3 paragraphs]
+
+### Quick Assessment
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| Tractability | Medium | ... |
+| If alignment hard | High value | ... |
+| If alignment easy | Lower value | ... |
+
+### Risks Addressed
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| [Risk](/link) | How it helps | High |
+
+## How It Works
+[Detailed explanation]
+
+## Critical Assessment
+### Limitations
+### Key Uncertainties
+```
+</TabItem>
+</Tabs>
+
+### Quality Levels
+
+| Level | Characteristics |
+|-------|----------------|
+| **Q1-2** | Stub or basic outline, few citations |
+| **Q3** | Solid coverage, 5-10 citations, some tables |
+| **Q4** | Comprehensive, 15+ citations, multiple tables |
+| **Q5** | Authoritative, 25+ citations, diagrams, quantified claims |
+
+**Reference:** [Knowledge Base Style Guide](/knowledge-base/)
+
+---
+
+## 2. Research Reports
+
+**Purpose:** Deep-dive investigations that identify causal factors and inform diagram creation.
+
+### When to Use
+
+- Need comprehensive understanding before building models
+- Investigating specific questions with web research
+- Preparing groundwork for cause-effect diagrams
+
+### Structure
+
+```yaml
+---
+title: "Topic: Research Report"
+description: "Key finding with specific data (escape \\$ signs)"
+topic: "entity-id"
+createdAt: 2025-01-07
+lastUpdated: 2025-01-07
+researchDepth: "standard"  # quick | standard | comprehensive
+sources: ["web", "codebase"]
+quality: 3
+---
+
+## Executive Summary
+| Finding | Key Data | Implication |
+|---------|----------|-------------|
+| **US dominance** | 57% share | ... |
+
+## Background
+[Context and safety implications]
+
+## Key Findings
+### Theme 1
+[Analysis with tables and citations]
+
+## Causal Factors
+### Primary Factors (Strong Influence)
+| Factor | Direction | Type | Evidence | Confidence |
+|--------|-----------|------|----------|------------|
+| **Factor A** | ↑ Topic | leaf | Evidence | High |
+
+### Secondary Factors (Medium Influence)
+| Factor | Direction | Type | Evidence | Confidence |
+|--------|-----------|------|----------|------------|
+| **Factor B** | ↓ Topic | cause | Evidence | Medium |
+
+## Open Questions
+| Question | Why It Matters | Current State |
+|----------|----------------|---------------|
+| **Question 1** | Impact | Status |
+
+## Sources
+[Organized by type]
+```
+
+### Research Depth Levels
+
+| Depth | Time | Sources | Output |
+|-------|------|---------|--------|
+| `quick` | 15-30 min | 5-10 | Basic overview |
+| `standard` | 1-2 hours | 15-25 | Solid analysis |
+| `comprehensive` | 3-5 hours | 30-50+ | Authoritative |
+
+### Causal Factors → Diagrams
+
+The Causal Factors section maps directly to cause-effect diagrams:
+
+| Report Element | Diagram Element |
+|----------------|-----------------|
+| Factor name | Node label |
+| Direction (↑/↓) | Edge effect (increases/decreases) |
+| Type (leaf/cause) | Node type |
+| Section (Primary/Secondary) | Edge strength |
+
+**Reference:** [Research Report Style Guide](/research-reports/)
+
+---
+
+## 3. Cascade Models
+
+**Purpose:** Detailed analytical models for specific dynamics, scenarios, or risk pathways.
+
+### When to Use
+
+- Modeling multi-stage processes with cascading effects
+- Analyzing specific scenarios with probability estimates
+- Creating detailed intervention analysis
+
+### Characteristics
+
+| Aspect | Description |
+|--------|-------------|
+| **Depth** | 1000+ lines, comprehensive analysis |
+| **Sections** | Conceptual framework, mechanisms, scenarios, interventions |
+| **Quantification** | Probability estimates, timelines, vulnerability distributions |
+| **Visualizations** | Multiple Mermaid diagrams showing cascade stages |
+
+### Structure Elements
+
+```yaml
+---
+title: "X Cascade Model"
+description: "This model analyzes [mechanism]. It identifies [key finding]."
+pageTemplate: knowledge-base-model
+ratings:
+  novelty: 4
+  rigor: 3
+  actionability: 3
+  completeness: 4
+---
+
+## Overview
+[2-3 paragraphs on what this model captures]
+
+## Conceptual Framework
+[Cascade stages table + Mermaid diagram]
+
+## Mechanisms of Harm
+### Direct Exposure Effects
+[Table: Vector | Mechanism | Vulnerable Population | Severity]
+
+### Cascade Pathways
+[Table: Pathway | Trigger | Progression | Terminal State]
+
+## Population Vulnerability Model
+[Factor estimates with correlations]
+
+## Specific Scenario Analysis
+### Scenario 1: [Name]
+[Attack components, timeline, intervention windows]
+
+## Scenario Probability Analysis
+[Probability-weighted outcomes table]
+
+## Intervention Analysis
+[Tables by level: Individual, Platform, Institutional]
+
+## Limitations
+[Key caveats and model boundaries]
+```
+
+### Model Ratings
+
+| Dimension | Scale | Description |
+|-----------|-------|-------------|
+| Novelty | 1-5 | How surprising/original |
+| Rigor | 1-5 | Quality of reasoning and evidence |
+| Actionability | 1-5 | Usefulness for decisions |
+| Completeness | 1-5 | Coverage of relevant factors |
+
+**Example:** [Cyber Psychosis Cascade](/knowledge-base/models/cascade-models/cyber-psychosis-cascade/)
+
+---
+
+## 4. Squiggle Models
+
+**Purpose:** Quantitative probabilistic forecasts with explicit uncertainty.
+
+### When to Use
+
+- Making specific numerical predictions
+- Modeling parameter dependencies quantitatively
+- When uncertainty ranges matter
+
+### Characteristics
+
+| Aspect | Description |
+|--------|-------------|
+| **Format** | Squiggle code blocks with probability distributions |
+| **Integration** | Can be embedded in entity YAML or standalone pages |
+| **Output** | Probability distributions, not point estimates |
+
+### Structure
+
+```squiggle
+// === INPUT PARAMETERS ===
+
+// Base capacity (units/year)
+baseCapacity = 50 to 100
+
+// Growth rate (% per year)
+growthRate = normal(0.15, 0.05)
+
+// === DERIVED QUANTITIES ===
+
+// Projected capacity in year N
+projectedCapacity(year) = baseCapacity * (1 + growthRate)^year
+
+// === SCENARIOS ===
+
+// Optimistic scenario
+optimistic = {
+  growth: growthRate * 1.3,
+  outcome: projectedCapacity(5)
+}
+
+// Pessimistic scenario
+pessimistic = {
+  growth: growthRate * 0.7,
+  outcome: projectedCapacity(5)
+}
+```
+
+### When to Use Squiggle vs. Prose Estimates
+
+| Use Squiggle When | Use Prose When |
+|-------------------|----------------|
+| Need explicit probability distributions | Point estimates suffice |
+| Multiple dependent parameters | Single independent estimate |
+| Want to show uncertainty propagation | Uncertainty is qualitative |
+| Building on other quantitative models | Descriptive analysis |
+
+**Example:** [Compute Forecast Sketch](/ai-transition-model/models/compute-forecast-sketch/)
+
+---
+
+## 5. Cause-Effect Diagrams
+
+**Purpose:** Visual representation of causal relationships between factors.
+
+### When to Use
+
+- Showing what drives a particular factor
+- Visualizing relationships in the AI Transition Model
+- Summarizing research report findings
+
+### Characteristics
+
+| Aspect | Description |
+|--------|-------------|
+| **Format** | YAML under `causeEffectGraph` in entity definitions |
+| **Rendering** | ReactFlow-based interactive diagrams |
+| **Size** | 10-20 nodes optimal, max 30 edges |
+
+### Node Type Hierarchy
+
+```
+Layer 1: leaf nodes (root causes, external factors)
+    ↓
+Layer 2: cause nodes (derived from leaves)
+    ↓
+Layer 3: intermediate nodes (direct factors)
+    ↓
+Layer 4: effect nodes (target outcomes)
+```
+
+### Visual Encoding
+
+| Element | Meaning |
+|---------|---------|
+| **Node color** | Type (teal=leaf, gray=cause/intermediate, amber=effect) |
+| **Edge thickness** | Strength (thin=weak, thick=strong) |
+| **Edge color** | Direction (blue=increases, red=decreases, gray=mixed) |
+| **Edge style** | Confidence (dashed=low, solid=high) |
+
+### Schema
+
+```yaml
+causeEffectGraph:
+  title: "What Drives X?"
+  description: "Causal factors affecting X."
+  primaryNodeId: main-effect
+  nodes:
+    - id: upstream-factor
+      label: Upstream Factor
+      type: leaf
+      description: Hover text explanation.
+    - id: main-effect
+      label: Main Effect
+      type: effect
+      description: The outcome being modeled.
+  edges:
+    - source: upstream-factor
+      target: main-effect
+      strength: strong
+      effect: increases
+```
+
+**Reference:** [Cause-Effect Diagram Style Guide](/cause-effect-diagrams/)
+
+---
+
+## 6. Estimate Tables
+
+**Purpose:** Aggregate view of parameter estimates across the AI Transition Model.
+
+### When to Use
+
+- Comparing estimates across factors
+- Identifying high-uncertainty or high-impact parameters
+- Prioritizing research or intervention targets
+
+### Data Source
+
+Estimates are pulled from entity definitions in YAML:
+
+```yaml
+- id: tmc-compute
+  type: ai-transition-model-subitem
+  ratings:
+    changeability: 4
+    xriskImpact: 8
+    uncertainty: 6
+    evidenceQuality: 7
+```
+
+### Table Columns
+
+| Column | Source | Description |
+|--------|--------|-------------|
+| Parameter | Entity title | The factor being estimated |
+| Changeability | `ratings.changeability` | How tractable/malleable (1-10) |
+| X-Risk Impact | `ratings.xriskImpact` | Effect on existential risk (1-10) |
+| Uncertainty | `ratings.uncertainty` | How well understood (1-10) |
+| Evidence | `ratings.evidenceQuality` | Quality of supporting evidence (1-10) |
+
+### Using the Table
+
+The table at `/ai-transition-model/table/` supports:
+- Sorting by any column
+- Filtering by category
+- Identifying intervention priorities (high changeability + high impact)
+- Finding research gaps (high uncertainty + high impact)
+
+---
+
+## Format Relationships
+
+```
+                    ┌─────────────────┐
+                    │ Research Report │
+                    │ (Investigation) │
+                    └────────┬────────┘
+                             │ informs
+            ┌────────────────┼────────────────┐
+            ↓                ↓                ↓
+┌───────────────────┐ ┌─────────────┐ ┌───────────────┐
+│  Cascade Model    │ │ Cause-Effect│ │ Squiggle Model│
+│  (Detailed)       │ │   Diagram   │ │ (Quantitative)│
+└─────────┬─────────┘ └──────┬──────┘ └───────┬───────┘
+          │                  │                │
+          └──────────────────┼────────────────┘
+                             │ summarized in
+                             ↓
+                    ┌─────────────────┐
+                    │   Wiki Page     │
+                    │  (Reference)    │
+                    └────────┬────────┘
+                             │ aggregated in
+                             ↓
+                    ┌─────────────────┐
+                    │ Estimate Table  │
+                    │  (Overview)     │
+                    └─────────────────┘
+```
+
+### Typical Workflows
+
+| Starting Point | Workflow |
+|----------------|----------|
+| New topic | Research Report → Wiki Page + Diagram |
+| Quantitative question | Squiggle Model → Diagram → Wiki Page |
+| Complex dynamics | Cascade Model → Wiki Page + Diagram |
+| Quick reference | Wiki Page (standalone) |
+
+---
+
+## Choosing the Right Format
+
+<Aside type="tip" title="Decision Guide">
+Ask: "What does the reader need?"
+- **Understand a concept** → Wiki Page
+- **See what drives something** → Cause-Effect Diagram
+- **Get specific numbers** → Squiggle Model or Estimate Table
+- **Understand a mechanism in depth** → Cascade Model or Research Report
+</Aside>
+
+| If you need... | Use... |
+|----------------|--------|
+| Quick reference on a topic | Wiki Page |
+| Comprehensive investigation | Research Report |
+| Visual causal structure | Cause-Effect Diagram |
+| Detailed scenario analysis | Cascade Model |
+| Quantitative forecasts | Squiggle Model |
+| Cross-factor comparison | Estimate Table |
+
+---
+
+## See Also
+
+- [LLM Workflows](/workflows/) - How to create each format
+- [Knowledge Base Style Guide](/knowledge-base/) - Wiki page details
+- [Research Report Style Guide](/research-reports/) - Report format
+- [Cause-Effect Diagram Style Guide](/cause-effect-diagrams/) - Diagram format

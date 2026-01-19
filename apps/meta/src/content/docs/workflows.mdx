@@ -1,0 +1,435 @@
+---
+title: "LLM Workflows"
+description: "Concrete workflows for using Claude Code to maintain and improve the knowledge base"
+sidebar:
+  order: 2
+importance: 0
+quality: 3
+llmSummary: "Practical workflows for using Claude Code to improve pages, create research reports, build causal diagrams, and make quantitative estimates. Each workflow includes specific prompts, expected outputs, and integration points."
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page documents concrete LLM workflows for maintaining and improving the knowledge base. Each workflow is designed to be run in Claude Code and produces specific outputs.
+
+<Aside type="tip" title="Using These Workflows">
+These workflows are designed for Claude Code (CLI). Copy the prompts directly and adapt the `[bracketed]` sections for your specific task.
+</Aside>
+
+---
+
+## Workflow Overview
+
+| Workflow | Input | Output | Time | Cost |
+|----------|-------|--------|------|------|
+| **Page Improvement** | Low-quality page | Q5 page with tables, diagrams, citations | 15-30 min | \$3-5 (Opus) |
+| **Research Report** | Topic question | Comprehensive report with causal factors | 30-60 min | \$5-10 (Opus) |
+| **Causal Diagram** | Entity + research | YAML causeEffectGraph | 10-20 min | \$2-4 (Opus) |
+| **Quantitative Estimates** | Factor list | Documented estimates with reasoning | 20-40 min | \$3-6 (Opus) |
+| **Full Topic Pipeline** | Topic | Report + diagram + estimates | 1-2 hours | \$10-20 (Opus) |
+
+---
+
+## 1. Page Improvement Workflow
+
+**Goal:** Upgrade a knowledge base page to quality level 5.
+
+### When to Use
+
+- Page has `quality < 4` and `importance > 50`
+- Page is missing tables, diagrams, or citations
+- Content is bullet-heavy or sparse
+
+### Find Candidates
+
+```bash
+node scripts/page-improver.mjs --list --max-qual 3 --min-imp 50
+```
+
+### Prompt
+
+```
+Improve the page at [path/to/page.mdx] to quality level 5.
+
+Requirements for Q5:
+- Quick Assessment table with 5+ rows (Dimension, Assessment, Evidence)
+- 2+ additional substantive tables with real data
+- 1+ Mermaid diagram showing key relationships
+- 10+ citations from authoritative sources (with real URLs)
+- Replace vague claims ("significant") with quantified claims ("25-40%")
+- 800+ words of substantive content
+
+Follow the style guide at /internal/knowledge-base/. Use tables over bullet lists. Add <Aside> components for key insights.
+```
+
+### Validation
+
+```bash
+npm run validate:mdx && npm run validate:style
+```
+
+### Example Output Quality
+
+See reference pages:
+- Gold standard: `src/content/docs/knowledge-base/risks/misuse/bioweapons.mdx`
+- Good example: `src/content/docs/knowledge-base/risks/structural/racing-dynamics.mdx`
+
+---
+
+## 2. Research Report Workflow
+
+**Goal:** Create a comprehensive research report that can inform diagram creation.
+
+### When to Use
+
+- Need deep understanding of a topic before creating diagrams
+- Filling gaps in existing knowledge base coverage
+- Investigating a specific question
+
+### Prompt
+
+```
+/research-report
+
+Create a research report on [topic].
+
+Focus areas:
+- [Specific question 1]
+- [Specific question 2]
+- How this connects to AI safety / the AI Transition Model
+
+Use web search to find:
+- Academic sources (arxiv, Nature, Science)
+- Policy sources (RAND, Brookings, government reports)
+- Recent developments (2024-2025)
+
+Output format: Follow the research report style guide. Include:
+- Executive summary table
+- Causal factors tables (organized by strength)
+- Open questions table
+- Organized sources by type
+```
+
+### Skill Invocation
+
+The `/research-report` skill provides detailed guidance. You can also invoke it directly:
+
+```
+Use the research-report skill to investigate [topic].
+```
+
+### Output Location
+
+Reports go to: `src/content/docs/internal/research-reports/{topic-id}.mdx`
+
+### Post-Workflow
+
+After completing a research report, the Causal Factors section can be directly used to create a cause-effect diagram.
+
+---
+
+## 3. Causal Diagram Workflow
+
+**Goal:** Create a cause-effect diagram for an AI Transition Model entity.
+
+### When to Use
+
+- Entity in `ai-transition-model.yaml` lacks a `causeEffectGraph`
+- Research report has been completed with causal factors
+- Modeling a new factor or relationship
+
+### Prompt (From Research)
+
+```
+/cause-effect-diagram
+
+Create a cause-effect diagram for [entity-id] based on the research report at [path/to/report.mdx].
+
+Map the causal factors from the report to diagram nodes:
+- Primary factors → strong edges
+- Secondary factors → medium edges
+- Minor factors → weak edges
+
+Use the node type hierarchy:
+- leaf: Root inputs, external factors
+- cause: Derived from leaves
+- intermediate: Direct contributing factors
+- effect: The target outcome
+
+Target: 10-15 nodes, max 20. Avoid feedback loops.
+```
+
+### Prompt (From Scratch)
+
+```
+/cause-effect-diagram
+
+Create a cause-effect diagram for [entity-id] answering: "[question about what drives this factor]"
+
+First, identify:
+1. The target outcome (effect node)
+2. Direct factors (intermediate nodes)
+3. Upstream causes (cause nodes)
+4. Root inputs (leaf nodes)
+
+Then define edges with appropriate strengths based on causal importance.
+```
+
+### File Location
+
+Diagrams are added to entities in: `src/data/entities/ai-transition-model.yaml`
+
+Find the entity by searching for `id: tmc-{factor-name}`.
+
+### View Result
+
+- In development: `http://localhost:4321/diagrams?entity={entity-id}`
+- Diagram index: `http://localhost:4321/diagrams`
+
+---
+
+## 4. Quantitative Estimation Workflow
+
+**Goal:** Create documented estimates for AI Transition Model factors.
+
+### When to Use
+
+- Populating the estimates table at `/ai-transition-model/table/`
+- Adding quantitative backing to qualitative claims
+- Comparing different expert positions
+
+### Prompt
+
+```
+Create quantitative estimates for the following factors in the AI Transition Model:
+
+Factors to estimate:
+- [Factor 1]
+- [Factor 2]
+- [Factor 3]
+
+For each factor, provide:
+1. Point estimate or range
+2. Confidence interval (if applicable)
+3. Key assumptions
+4. Sources that informed the estimate
+5. How the estimate would change under different assumptions
+
+Use web search to find existing estimates from:
+- Expert surveys (AI Impacts, Metaculus)
+- Research papers
+- Policy reports
+
+Format as a table with columns: Factor | Estimate | Confidence | Key Assumptions | Sources
+```
+
+### Integration with Table Page
+
+Estimates can be added to entity frontmatter or to dedicated estimate collections. The table page at `/ai-transition-model/table/` aggregates these.
+
+### Example Factors
+
+Common factors needing estimates:
+- Timeline estimates (when will X capability emerge?)
+- Probability estimates (likelihood of alignment success)
+- Resource estimates (compute, talent, funding)
+- Impact magnitudes (severity of different risks)
+
+### Opinion Fuzzing for Robust Estimates
+
+<Aside type="tip" title="Reducing LLM Variance">
+Single LLM responses have high variance. Opinion fuzzing systematically samples across multiple dimensions to produce better-calibrated estimates.
+</Aside>
+
+**The Problem:** LLM outputs vary based on model, prompt phrasing, and simulated perspective. A single estimate may not represent the true range of reasonable answers.
+
+**The Solution:** Sample across three dimensions:
+
+| Dimension | What to Vary | Example |
+|-----------|--------------|---------|
+| **Models** | Different LLM providers | Claude, GPT-4, Gemini |
+| **Prompts** | 4-20 phrasings of the same question | "What's the probability..." vs "How likely is..." |
+| **Personas** | Simulated expert perspectives | Skeptic, optimist, domain expert, policy analyst |
+
+**Opinion Fuzzing Prompt:**
+
+```
+Generate estimates for [factor] using opinion fuzzing:
+
+1. Create 5 different prompt phrasings for this estimation question
+2. For each phrasing, generate estimates from 3 personas:
+   - Optimistic AI researcher
+   - Skeptical safety researcher
+   - Policy analyst focused on near-term risks
+
+3. Present results as a table showing:
+   - Prompt variant | Persona | Estimate | Key reasoning
+
+4. Analyze the variance:
+   - Where do estimates cluster?
+   - Which prompts/personas produce outliers?
+   - What drives the disagreements?
+
+5. Provide a final calibrated estimate that accounts for this variance structure
+```
+
+**When to Use:**
+- High-stakes estimates that inform decisions
+- Contentious topics where reasonable people disagree
+- Estimates with high uncertainty
+
+**Reference:** [Opinion Fuzzing: A Proposal for Reducing and Exploring Disagreement](https://www.lesswrong.com/posts/L3FkDk8fphYdhjAHJ/opinion-fuzzing-a-proposal-for-reducing-and-exploring)
+
+---
+
+## 5. Full Topic Pipeline
+
+**Goal:** Complete end-to-end coverage of a new topic.
+
+### When to Use
+
+- Adding a new factor to the AI Transition Model
+- Creating comprehensive coverage from scratch
+- Major knowledge base expansion
+
+### Step 1: Research
+
+```
+/research-report
+
+Create a comprehensive research report on [topic].
+
+This is the first step in building full coverage. Focus on:
+- What is this and why does it matter for AI safety?
+- What are the key causal factors?
+- What do experts disagree about?
+- What quantitative data exists?
+
+This report will inform diagram creation and estimates.
+```
+
+### Step 2: Create Diagram
+
+```
+/cause-effect-diagram
+
+Based on the research report just created, build a cause-effect diagram for [entity-id].
+
+Extract causal factors from the report's Causal Factors section and map them to nodes and edges.
+```
+
+### Step 3: Add Estimates
+
+```
+Based on the research report and diagram, create quantitative estimates for the key factors identified.
+
+Focus on the most decision-relevant estimates:
+- Factors with high sensitivity (downstream effects)
+- Factors with high changeability (intervention points)
+- Key uncertainties that would shift the overall picture
+```
+
+### Step 4: Create/Update Knowledge Base Page
+
+```
+Create or update the knowledge base page for [topic] incorporating:
+- Findings from the research report
+- The cause-effect diagram (embed or link)
+- Key estimates with confidence levels
+
+Follow the Q5 page requirements from the Page Improvement workflow.
+```
+
+### Tracking Progress
+
+Use the enhancement queue to track pipeline progress:
+
+```bash
+# View queue
+node scripts/document-enhancer.mjs list --sort gap --limit 20
+
+# After completing each step, update quality ratings
+node scripts/grade-content.mjs --page [page-id] --apply
+```
+
+---
+
+## Workflow Tips
+
+### Parallelization
+
+When working on multiple pages/topics, you can parallelize:
+
+```
+Run the following in parallel:
+1. Research report on [topic A]
+2. Research report on [topic B]
+3. Page improvement for [page C]
+```
+
+### Cost Management
+
+| Model | Best For | Cost |
+|-------|----------|------|
+| Opus 4.5 | Complex research, synthesis, diagrams | \$3-5/page |
+| Sonnet 4.5 | Page improvement, grading | \$0.50-1/page |
+| Haiku | Summaries, simple edits | \$0.02/page |
+
+### Quality Checks
+
+Always run validation after any workflow:
+
+```bash
+npm run validate          # All validators
+npm run validate:mdx      # MDX syntax
+npm run validate:style    # Style compliance
+npm run validate:data     # Entity data integrity
+```
+
+---
+
+## Workflow Integration Map
+
+```
+┌─────────────────┐
+│ Research Report │
+│   /research-    │
+│     report      │
+└────────┬────────┘
+         │ Causal Factors
+         ▼
+┌─────────────────┐     ┌─────────────────┐
+│ Cause-Effect    │     │ Quantitative    │
+│    Diagram      │     │   Estimates     │
+│ /cause-effect-  │     │                 │
+│    diagram      │     └────────┬────────┘
+└────────┬────────┘              │
+         │                       │
+         └───────────┬───────────┘
+                     │
+                     ▼
+         ┌─────────────────┐
+         │ Knowledge Base  │
+         │      Page       │
+         │  (Q5 quality)   │
+         └─────────────────┘
+```
+
+---
+
+## Common Issues
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| LaTeX rendering in currency | Unescaped `$` | Use `\$` |
+| Diagram won't render | Feedback loop in edges | Remove cyclic edges |
+| Validation fails | Schema mismatch | Check frontmatter dates aren't quoted |
+| Missing backlinks | Entity not in registry | Run `npm run build:data` |
+
+---
+
+## See Also
+
+- [Automation Tools](/automation-tools/) - CLI tools reference
+- [Cause-Effect Diagram Style Guide](/cause-effect-diagrams/) - Diagram creation details
+- [Research Report Style Guide](/research-reports/) - Report format details
+- [Knowledge Base Style Guide](/knowledge-base/) - Page format details
