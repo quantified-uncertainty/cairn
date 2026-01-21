@@ -245,3 +245,18 @@
 .kb-category-card--capabilities { border-left: 3px solid #0ea5e9; }
 .kb-category-card--funders { border-left: 3px solid #22c55e; }
 .kb-category-card--literature { border-left: 3px solid #ec4899; }
+
+/* Reset Starlight's prose margins for flex containers inside content */
+.sl-markdown-content .flex,
+.sl-markdown-content .grid,
+.sl-markdown-content [class*="space-y-"],
+.sl-markdown-content [class*="space-x-"],
+.sl-markdown-content [class*="gap-"] {
+  margin-block: 0;
+}
+
+/* Also reset margins for direct children of flex containers */
+.sl-markdown-content .flex > *,
+.sl-markdown-content .grid > * {
+  margin-block: 0;
+}
