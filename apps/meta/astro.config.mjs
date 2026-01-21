@@ -49,15 +49,6 @@ export default defineConfig({
           label: 'Reports',
           autogenerate: { directory: 'reports' },
         },
-        {
-          label: 'Project',
-          items: [
-            { label: 'Vision', slug: 'cairn/vision' },
-            { label: 'Strategy', slug: 'cairn/strategy-brainstorm' },
-            { label: 'Similar Projects', slug: 'cairn/similar-projects' },
-            { label: 'Roadmap', slug: 'project-roadmap' },
-          ],
-        },
       ],
     }),
     react(),
