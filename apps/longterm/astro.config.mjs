@@ -167,6 +167,11 @@ export default defineConfig({
                   autogenerate: { directory: 'internal' },
               },
               {
+                  label: 'Project',
+                  collapsed: true,
+                  autogenerate: { directory: 'project' },
+              },
+              {
                   label: 'Meta',
                   collapsed: true,
                   items: [
