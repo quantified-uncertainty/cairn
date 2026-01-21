@@ -70,8 +70,8 @@ export { ModelsTable } from './ModelsTable';
 // Editorial / page management
 export { PageStatus } from './PageStatus';
 
-// Diagrams
-export { Mermaid } from './Mermaid';
+// Diagrams - Mermaid is re-exported from shared package
+export { Mermaid } from '@cairn/ui/mermaid';
 export { default as EntityGraph } from './EntityGraph';
 
 // AI Transition Model

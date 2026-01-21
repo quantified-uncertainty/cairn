@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Mermaid } from "./Mermaid"
+import { Mermaid } from "@cairn/ui/mermaid"
 import {
   getRootFactors,
   getScenarios,

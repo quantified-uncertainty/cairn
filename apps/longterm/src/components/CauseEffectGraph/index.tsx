@@ -25,7 +25,7 @@ import { GroupNode, SubgroupNode, CauseEffectNode, ExpandableNode, ClusterNode, 
 import { Legend, DataView, CopyIcon, CheckIcon, ExpandIcon, ShrinkIcon } from './components';
 import { getLayoutedElements, toYaml } from './layout';
 import { ZoomProvider } from './ZoomContext';
-import { Mermaid } from '../wiki/Mermaid';
+import { Mermaid } from '@cairn/ui/mermaid';
 
 // Re-export types for external use
 export type { CauseEffectNodeData, CauseEffectEdgeData, GraphConfig, LayoutOptions, TypeLabels, SubgroupConfig, LegendItem, LayoutAlgorithm } from './types';
