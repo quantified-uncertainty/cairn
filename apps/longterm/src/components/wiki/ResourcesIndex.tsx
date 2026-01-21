@@ -155,7 +155,7 @@ export function ResourcesIndex({
                 onValueChange={(v) => setFilterValue("type", v)}
               >
                 <SelectTrigger className="h-9">
-                  <SelectValue placeholder="All Types" />
+                  <SelectValue>All Types</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
@@ -174,7 +174,7 @@ export function ResourcesIndex({
                   onValueChange={(v) => setFilterValue("credibility", v)}
                 >
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="All Credibility" />
+                    <SelectValue>All Credibility</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Credibility</SelectItem>
@@ -194,7 +194,7 @@ export function ResourcesIndex({
                   onValueChange={(v) => setFilterValue("content", v)}
                 >
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="All Content" />
+                    <SelectValue>All Content</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Content</SelectItem>

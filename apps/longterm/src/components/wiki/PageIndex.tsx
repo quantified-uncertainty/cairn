@@ -241,7 +241,7 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
               onValueChange={(v) => setFilterValue("category", v)}
             >
               <SelectTrigger className="h-9">
-                <SelectValue placeholder="All Categories" />
+                <SelectValue>All Categories</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
