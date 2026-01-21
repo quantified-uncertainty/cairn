@@ -1,42 +1,150 @@
 "use client"
 
 import * as React from "react"
+import type {
+  Table as TanStackTable,
+  Row,
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState,
+} from "@tanstack/react-table"
 import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type Row,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, Search } from "lucide-react"
+import { Search } from "lucide-react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table"
 
-import { cn } from "@/lib/utils"
+// New API: accepts table instance directly
+interface DataTableWithTableProps<TData> {
+  table: TanStackTable<TData>
+  renderExpandedRow?: (row: Row<TData>) => React.ReactNode
+  getRowClassName?: (row: Row<TData>) => string
+}
 
-interface DataTableProps<TData, TValue> {
+// Legacy API: accepts data and columns (creates table internally)
+interface DataTableWithDataProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  searchKey?: string
   searchPlaceholder?: string
   defaultSorting?: SortingState
   renderExpandedRow?: (row: Row<TData>) => React.ReactNode
   getRowClassName?: (row: Row<TData>) => string
 }
 
-export function DataTable<TData, TValue>({
+type DataTableProps<TData, TValue = unknown> =
+  | DataTableWithTableProps<TData>
+  | DataTableWithDataProps<TData, TValue>
+
+function isTableProps<TData>(
+  props: DataTableProps<TData, unknown>
+): props is DataTableWithTableProps<TData> {
+  return "table" in props && props.table !== undefined
+}
+
+export function DataTable<TData, TValue = unknown>(
+  props: DataTableProps<TData, TValue>
+) {
+  if (isTableProps(props)) {
+    return <DataTableWithTable {...props} />
+  }
+  return <DataTableWithData {...props} />
+}
+
+// New implementation: uses provided table instance
+function DataTableWithTable<TData>({
+  table,
+  renderExpandedRow,
+  getRowClassName,
+}: DataTableWithTableProps<TData>) {
+  const columns = table.getAllColumns()
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => {
+              const rowClassName = getRowClassName ? getRowClassName(row) : ""
+              const expandedContent = renderExpandedRow
+                ? renderExpandedRow(row)
+                : null
+              return (
+                <React.Fragment key={row.id}>
+                  <TableRow
+                    data-state={row.getIsSelected() && "selected"}
+                    className={rowClassName}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {expandedContent && (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="p-0">
+                        {expandedContent}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              )
+            })
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+// Legacy implementation: creates table internally (backwards compatible)
+function DataTableWithData<TData, TValue>({
   columns,
   data,
-  searchKey,
   searchPlaceholder = "Search...",
   defaultSorting = [],
   renderExpandedRow,
   getRowClassName,
-}: DataTableProps<TData, TValue>) {
+}: DataTableWithDataProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnFilters, setColumnFilters] =
+    React.useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = React.useState("")
 
   const table = useReactTable({
@@ -75,83 +183,14 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table */}
-      <div
-        className="w-full overflow-x-auto rounded-lg bg-white"
-        style={{
-          border: '1px solid #9ca3af',
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)'
-        }}
-      >
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100" style={{ borderBottom: '1px solid #e5e7eb' }}>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-3 text-left font-semibold text-gray-700">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
-                const rowClassName = getRowClassName ? getRowClassName(row) : '';
-                const expandedContent = renderExpandedRow ? renderExpandedRow(row) : null;
-                return (
-                  <React.Fragment key={row.id}>
-                    <tr className={cn("hover:bg-gray-50 transition-colors", rowClassName)}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="px-4 py-3 text-gray-900">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                    {expandedContent && (
-                      <tr>
-                        <td colSpan={columns.length} className="p-0">
-                          {expandedContent}
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={columns.length} className="h-24 text-center text-gray-500">
-                  No results.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <DataTableWithTable
+        table={table}
+        renderExpandedRow={renderExpandedRow}
+        getRowClassName={getRowClassName}
+      />
     </div>
   )
 }
 
-// Helper component for sortable column headers
-export function SortableHeader({
-  column,
-  children,
-}: {
-  column: any
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      className="flex items-center gap-1 hover:text-foreground"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    >
-      {children}
-      <ArrowUpDown className="h-3.5 w-3.5" />
-    </button>
-  )
-}
+// Re-export SortableHeader from dedicated file
+export { SortableHeader } from "./sortable-header"
