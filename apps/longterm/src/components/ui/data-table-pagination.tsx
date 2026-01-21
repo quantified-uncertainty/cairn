@@ -31,6 +31,9 @@ export function DataTablePagination<TData>({
   const pageCount = table.getPageCount()
   const totalRows = table.getFilteredRowModel().rows.length
 
+  // Check if showing all rows
+  const isShowingAll = pageSize >= totalRows
+
   // Calculate displayed range
   const startRow = pageIndex * pageSize + 1
   const endRow = Math.min((pageIndex + 1) * pageSize, totalRows)
@@ -52,11 +55,17 @@ export function DataTablePagination<TData>({
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Rows per page</span>
           <Select
-            value={String(pageSize)}
-            onValueChange={(value) => table.setPageSize(Number(value))}
+            value={isShowingAll ? "all" : String(pageSize)}
+            onValueChange={(value) => {
+              if (value === "all") {
+                table.setPageSize(totalRows || 1)
+              } else {
+                table.setPageSize(Number(value))
+              }
+            }}
           >
             <SelectTrigger className="h-8 w-[70px]" size="sm">
-              <SelectValue>{pageSize}</SelectValue>
+              <SelectValue>{isShowingAll ? "All" : pageSize}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {pageSizeOptions.map((size) => (
@@ -64,6 +73,7 @@ export function DataTablePagination<TData>({
                   {size}
                 </SelectItem>
               ))}
+              <SelectItem value="all">All</SelectItem>
             </SelectContent>
           </Select>
         </div>

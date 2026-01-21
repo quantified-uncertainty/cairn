@@ -279,21 +279,6 @@ export function PageIndex({ showSearch = true, filterCategory, maxItems, title }
         </div>
       </div>
 
-      {/* Column Legend */}
-      <div className="text-sm text-muted-foreground bg-muted/20 rounded-lg px-4 py-3">
-        <span className="font-medium text-foreground">Columns: </span>
-        <span className="inline-flex flex-wrap gap-x-4 gap-y-1">
-          <span><strong>Imp</strong> = Importance</span>
-          <span><strong>Qual</strong> = Quality</span>
-          <span><strong>Struct</strong> = Structural score</span>
-          <span><strong>Gap</strong> = Importance - Quality</span>
-          <span><strong>Age</strong> = Days since edit</span>
-          <span><strong>Refs</strong> = Resource references</span>
-          <span><strong>Unconv</strong> = Unconverted links</span>
-          <span><strong>Dup</strong> = Max similarity</span>
-        </span>
-      </div>
-
       {/* Table */}
       <DataTable table={table} />
 

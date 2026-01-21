@@ -70,7 +70,7 @@ function formatWordCount(count: number): string {
 export const columns: ColumnDef<PageRow>[] = [
   {
     accessorKey: "importance",
-    header: ({ column }) => <SortableHeader column={column}>Imp</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Importance (0-100)">Imp</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number | null>("importance")
       if (value === null) return <span className="text-muted-foreground">—</span>
@@ -88,7 +88,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "quality",
-    header: ({ column }) => <SortableHeader column={column}>Qual</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Quality (0-100)">Qual</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number | null>("quality")
       if (value === null) return <span className="text-muted-foreground">—</span>
@@ -106,7 +106,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "structuralScore",
-    header: ({ column }) => <SortableHeader column={column}>Struct</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Structural score (tables, diagrams, sections)">Struct</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number | null>("structuralScore")
       if (value === null) return <span className="text-muted-foreground">—</span>
@@ -152,7 +152,14 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "attachments",
-    header: () => <span>Attach</span>,
+    header: () => (
+      <div className="group relative inline-flex">
+        <span>Attach</span>
+        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover:opacity-100">
+          Related models and research reports
+        </span>
+      </div>
+    ),
     cell: ({ row }) => {
       const attachments = row.original.attachments
       if (attachments.length === 0) return <span className="text-muted-foreground">—</span>
@@ -198,7 +205,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "wordCount",
-    header: ({ column }) => <SortableHeader column={column}>Words</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Word count">Words</SortableHeader>,
     cell: ({ row }) => (
       <span className="text-sm text-muted-foreground tabular-nums">
         {formatWordCount(row.getValue("wordCount"))}
@@ -208,7 +215,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "backlinkCount",
-    header: ({ column }) => <SortableHeader column={column}>Links</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Backlinks from other pages">Links</SortableHeader>,
     cell: ({ row }) => (
       <span className="text-sm text-muted-foreground tabular-nums">
         {row.getValue("backlinkCount")}
@@ -218,7 +225,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "gapScore",
-    header: ({ column }) => <SortableHeader column={column}>Gap</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Priority: Importance - Quality">Gap</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number | null>("gapScore")
       if (value === null) return <span className="text-muted-foreground">—</span>
@@ -243,7 +250,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "ageDays",
-    header: ({ column }) => <SortableHeader column={column}>Age</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Days since last edit">Age</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number | null>("ageDays")
       if (value === null) return <span className="text-muted-foreground">—</span>
@@ -264,7 +271,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "convertedLinkCount",
-    header: ({ column }) => <SortableHeader column={column}>Refs</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Resource references with hover tooltips">Refs</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number>("convertedLinkCount")
       if (value === 0) return <span className="text-muted-foreground">—</span>
@@ -283,7 +290,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "unconvertedLinkCount",
-    header: ({ column }) => <SortableHeader column={column}>Unconv</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Unconverted links (could have hover tooltips)">Unconv</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number>("unconvertedLinkCount")
       if (value === 0) return <span className="text-muted-foreground">—</span>
@@ -302,7 +309,7 @@ export const columns: ColumnDef<PageRow>[] = [
   },
   {
     accessorKey: "redundancyScore",
-    header: ({ column }) => <SortableHeader column={column}>Dup</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column} title="Max similarity to other pages (hover for list)">Dup</SortableHeader>,
     cell: ({ row }) => {
       const value = row.getValue<number>("redundancyScore")
       const similarPages = row.original.similarPages
