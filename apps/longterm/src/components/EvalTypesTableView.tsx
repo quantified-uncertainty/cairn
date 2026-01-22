@@ -833,7 +833,7 @@ export default function EvalTypesTableView() {
           <nav>
             <a href="/knowledge-base/models/eval-types/table" className="active">Table</a>
             <a href="/knowledge-base/architecture-scenarios/table">Architectures</a>
-            <a href="/knowledge-base/safety-approaches/table">Safety Approaches</a>
+            <a href="/knowledge-base/responses/safety-approaches/table">Safety Approaches</a>
           </nav>
         </div>
 

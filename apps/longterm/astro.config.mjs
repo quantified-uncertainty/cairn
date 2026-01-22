@@ -109,6 +109,7 @@ export default defineConfig({
                       { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
+                          { label: 'Safety Approaches Table', link: '/knowledge-base/responses/safety-approaches/table' },
                           { label: 'Safety Generalizability', collapsed: true, items: [
                               { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table' },
                               { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix' },
