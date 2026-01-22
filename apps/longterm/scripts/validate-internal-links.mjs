@@ -42,10 +42,23 @@ function extractInternalLinks(content, filePath) {
   let match;
 
   let lineNum = 0;
+  let inCodeBlock = false;
   const lines = content.split('\n');
 
   for (const line of lines) {
     lineNum++;
+
+    // Track code block state (``` or ~~~)
+    if (line.trim().startsWith('```') || line.trim().startsWith('~~~')) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
+
+    // Skip links inside code blocks
+    if (inCodeBlock) {
+      continue;
+    }
+
     linkRegex.lastIndex = 0;
 
     while ((match = linkRegex.exec(line)) !== null) {
@@ -93,6 +106,9 @@ function resolveLink(href, sourceFile) {
     return { exists: true, isPlaceholder: true };
   }
 
+  // Remove trailing slash for file lookup
+  path = path.replace(/\/$/, '');
+
   // Handle relative paths (./something or ../something)
   if (path.startsWith('./') || path.startsWith('../')) {
     // Get directory of source file
@@ -102,9 +118,6 @@ function resolveLink(href, sourceFile) {
     // Convert back to relative path from CONTENT_DIR
     path = path.replace(CONTENT_DIR + '/', '').replace(CONTENT_DIR, '');
   } else {
-    // Remove trailing slash for file lookup
-    path = path.replace(/\/$/, '');
-
     // Remove leading slash
     if (path.startsWith('/')) {
       path = path.slice(1);
@@ -139,7 +152,8 @@ function checkConventions(href) {
   const issues = [];
 
   // Should have trailing slash for directory-style URLs
-  if (!href.endsWith('/') && !href.includes('#') && !href.includes('.')) {
+  // Skip URLs with query strings (trailing slash comes before ?)
+  if (!href.endsWith('/') && !href.includes('#') && !href.includes('.') && !href.includes('?')) {
     issues.push('missing-trailing-slash');
   }
 
