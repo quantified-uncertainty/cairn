@@ -37,15 +37,16 @@ jobs:
 
       - name: Run all validations
         id: validate
+        working-directory: apps/longterm
         run: |
-          # Run validation and capture output
-          pnpm --filter longterm validate:ci > validation-results.json 2>&1 || true
+          # Run validation and capture output (run script directly to avoid pnpm prefix in output)
+          node scripts/validate-all.mjs --ci > ../../validation-results.json 2>&1 || true
 
           # Parse results for summary
-          cat validation-results.json
+          cat ../../validation-results.json
 
           # Check if any checks failed
-          FAILED=$(node -e "const r = require('./validation-results.json'); console.log(r.summary.failed)")
+          FAILED=$(node -e "const r = require('../../validation-results.json'); console.log(r.summary.failed)")
 
           if [ "$FAILED" != "0" ]; then
             echo "::error::$FAILED validation check(s) failed"
