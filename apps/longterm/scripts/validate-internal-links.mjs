@@ -78,17 +78,37 @@ const PAGES_DIR = join(process.cwd(), 'src/pages');
 
 /**
  * Check if an internal link resolves to an existing file
+ * @param {string} href - The link href
+ * @param {string} sourceFile - The file containing the link (for resolving relative paths)
  */
-function resolveLink(href) {
+function resolveLink(href, sourceFile) {
   // Remove anchor (e.g., #section-name) - we only check file existence
   let path = href.split('#')[0];
 
-  // Remove trailing slash for file lookup
-  path = path.replace(/\/$/, '');
+  // Remove query string (e.g., ?level=interactive)
+  path = path.split('?')[0];
 
-  // Remove leading slash
-  if (path.startsWith('/')) {
-    path = path.slice(1);
+  // Skip placeholder links (contain ...)
+  if (path.includes('...')) {
+    return { exists: true, isPlaceholder: true };
+  }
+
+  // Handle relative paths (./something or ../something)
+  if (path.startsWith('./') || path.startsWith('../')) {
+    // Get directory of source file
+    const sourceDir = dirname(sourceFile);
+    // Resolve the relative path
+    path = join(sourceDir, path);
+    // Convert back to relative path from CONTENT_DIR
+    path = path.replace(CONTENT_DIR + '/', '').replace(CONTENT_DIR, '');
+  } else {
+    // Remove trailing slash for file lookup
+    path = path.replace(/\/$/, '');
+
+    // Remove leading slash
+    if (path.startsWith('/')) {
+      path = path.slice(1);
+    }
   }
 
   // Check various possible file locations
@@ -161,12 +181,17 @@ function main() {
       results.totalLinks++;
 
       // Check if link resolves
-      const resolution = resolveLink(link.href);
+      const resolution = resolveLink(link.href, link.file);
 
       if (!resolution.exists) {
         // Skip template variables (JSX expressions like ${e.id})
         if (link.href.includes('${')) {
           results.valid++;
+          continue;
+        }
+
+        // Skip image links (we don't validate images here)
+        if (link.href.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)) {
           continue;
         }
 
