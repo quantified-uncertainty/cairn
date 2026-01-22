@@ -1,0 +1,211 @@
+---
+title: "World Models + Planning"
+description: "Analysis of AI architectures with explicit learned world models and search/planning components. Covers MuZero, Dreamer, JEPA, and model-based reinforcement learning approaches. More like AlphaGo than GPT."
+sidebar:
+  label: World Models
+  order: 8
+quality: 3
+lastEdited: "2025-01-21"
+importance: 75
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+World models + planning represents an AI architecture paradigm fundamentally different from large language models. Instead of learning to directly produce outputs from inputs, these systems learn an **explicit model of how the world works** and use **search/planning algorithms** to find good actions.
+
+This is the paradigm behind AlphaGo, MuZero, and the approach Yann LeCun advocates with JEPA (Joint-Embedding Predictive Architectures). The key idea: **separate world understanding from decision making**.
+
+Estimated probability of being dominant at transformative AI: **5-15%**. Powerful for structured domains but not yet competitive for general tasks.
+
+## Architecture
+
+<Mermaid client:load chart={`
+flowchart TB
+    subgraph world["Learned World Model"]
+        state["State Encoder"]
+        dynamics["Dynamics Model"]
+        reward["Reward Predictor"]
+    end
+
+    subgraph planning["Planning/Search"]
+        mcts["MCTS / Search"]
+        policy["Policy Network"]
+        value["Value Network"]
+    end
+
+    input["Observation"] --> state
+    state --> dynamics
+    dynamics --> |"predict next state"| dynamics
+    dynamics --> reward
+    dynamics --> value
+
+    state --> mcts
+    policy --> mcts
+    value --> mcts
+    mcts --> action["Action"]
+`} />
+
+### Key Components
+
+| Component | Function | Learnable |
+|-----------|----------|-----------|
+| **State Encoder** | Compress observations to latent state | Yes |
+| **Dynamics Model** | Predict how state changes with actions | Yes |
+| **Reward Model** | Predict rewards/values | Yes |
+| **Policy Network** | Propose likely good actions | Yes |
+| **Value Network** | Estimate long-term value | Yes |
+| **Search/Planning** | Find best action via lookahead | Algorithm (not learned) |
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | PARTIAL | World model inspectable but learned representations are opaque |
+| **Trainability** | HIGH | Model-based RL, self-play, gradient descent |
+| **Predictability** | MEDIUM | Explicit planning, but world model errors compound |
+| **Modularity** | MEDIUM | Clear separation of world model, policy, value |
+| **Formal Verifiability** | PARTIAL | Planning algorithm verifiable; world model less so |
+
+## Safety Implications
+
+### Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Explicit goals** | Planning objectives are visible |
+| **Inspectable beliefs** | Can examine what the world model predicts |
+| **Separable components** | Can analyze dynamics, rewards, policy separately |
+| **Bounded search** | Planning depth is controllable |
+| **Model-based interpretability** | Can ask "what if" questions of world model |
+
+### Risks
+
+| Risk | Severity | Explanation |
+|------|----------|-------------|
+| **Goal misgeneralization** | HIGH | Reward model may capture wrong objective |
+| **World model errors** | MEDIUM | Errors compound over planning horizon |
+| **Mesa-optimization** | HIGH | Planning is explicitly optimization |
+| **Deceptive world models** | UNKNOWN | Could world model learn to deceive planner? |
+| **Instrumental convergence** | MEDIUM | Planning may discover dangerous strategies |
+
+## Current Examples
+
+### Game/Simulation Domains
+
+| System | Developer | Domain | Achievement |
+|--------|-----------|--------|-------------|
+| **AlphaGo/Zero** | DeepMind | Go | Superhuman |
+| **MuZero** | DeepMind | Games (no rules) | Superhuman |
+| **Dreamer v3** | DeepMind | Diverse games | General game agent |
+| **EfficientZero** | Tsinghua | Sample-efficient | Data efficiency |
+
+### Broader Proposals
+
+| System | Developer | Scope | Status |
+|--------|-----------|-------|--------|
+| **JEPA** | Yann LeCun | General intelligence | Conceptual/early research |
+| **Genie** | DeepMind | World generation | Interactive worlds |
+| **Sora** | OpenAI | Video prediction | Video generation (implicit) |
+
+## Research Landscape
+
+### Key Papers
+
+| Paper | Year | Contribution |
+|-------|------|--------------|
+| World Models (Ha & Schmidhuber) | 2018 | VAE + RNN for world modeling |
+| MuZero | 2020 | Learned world model without rules |
+| Dreamer v3 | 2023 | General model-based RL |
+| JEPA proposals | 2022+ | LeCun's vision for general AI |
+
+### Key Advocates and Labs
+
+| Entity | Position |
+|--------|----------|
+| **Yann LeCun** (Meta) | Strongest advocate; believes LLMs are dead end |
+| **DeepMind** | MuZero, Dreamer, Genie |
+| **Meta FAIR** | JEPA research |
+| **Academic RL** | Broad research community |
+
+## The LeCun Critique of LLMs
+
+Yann LeCun argues that:
+
+1. **LLMs are "dead end"** - Don't learn true world understanding
+2. **Autoregressive is wrong** - Predicting tokens ≠ understanding
+3. **World models needed** - Must learn physics/causality
+4. **JEPA is the path** - Joint embedding architectures
+
+### Counter-Arguments
+
+| LeCun Claim | Counter |
+|-------------|---------|
+| LLMs don't understand | They demonstrate understanding on benchmarks |
+| Autoregressive is limited | GPT-4 does complex reasoning |
+| Need explicit world model | Implicit world model may emerge in LLMs |
+| JEPA is superior | No JEPA system matches GPT-4 |
+
+## Comparison with LLM Approaches
+
+| Aspect | World Models | LLMs |
+|--------|--------------|------|
+| Planning | Explicit search | Implicit (chain-of-thought) |
+| World knowledge | Learned model | Compressed in weights |
+| Generalization | Compositional planning | In-context learning |
+| Sample efficiency | Often better | Often worse |
+| Diverse tasks | Requires task-specific training | Single model, many tasks |
+| Current capabilities | Strong in games | Strong in language/reasoning |
+
+## Safety Research Implications
+
+### Research That Applies Well
+
+| Research Area | Why It Applies |
+|---------------|----------------|
+| **Reward modeling** | Explicit reward models are central |
+| **Goal specification** | Planning objectives are visible |
+| **Corrigibility** | Can potentially modify goals/world model |
+| **Interpretability of beliefs** | Can query world model predictions |
+
+### Unique Safety Challenges
+
+| Challenge | Description |
+|-----------|-------------|
+| **Reward hacking** | Planning will find unexpected ways to maximize reward |
+| **World model exploitation** | Agent may exploit inaccuracies in world model |
+| **Power-seeking** | Planning may naturally discover instrumental strategies |
+| **Deceptive planning** | Could agent learn to simulate safe behavior while planning harm? |
+
+## Trajectory
+
+### Arguments For Growth
+
+1. **Sample efficiency** - Much better than model-free RL
+2. **Compositional generalization** - Planning combines skills
+3. **LeCun's advocacy** - Major researcher promoting this
+4. **Robotics demand** - Physical tasks need world models
+
+### Arguments Against
+
+1. **LLMs are winning** - General tasks favor LLM approach
+2. **World model accuracy** - Hard to get accurate enough
+3. **Computational cost** - Planning is expensive
+4. **Limited success outside games** - Not yet general
+
+## Key Uncertainties
+
+1. **Can world models scale to real-world complexity?** Games are much simpler than reality.
+
+2. **Will hybrid approaches dominate?** LLM + world model + planning combinations.
+
+3. **Is explicit planning necessary?** Or do transformers learn implicit planning?
+
+4. **How to verify world model accuracy?** Critical for safety but very hard.
+
+## Related Pages
+
+- [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) - Alternative LLM approach
+- [Neuro-Symbolic](/knowledge-base/models/intelligence-paradigms/neuro-symbolic) - Related hybrid approach
+- [Provable Safe](/knowledge-base/models/intelligence-paradigms/provable-safe) - World model verification is central

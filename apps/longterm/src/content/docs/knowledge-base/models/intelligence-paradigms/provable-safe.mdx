@@ -1,0 +1,199 @@
+---
+title: "Provable / Guaranteed Safe AI"
+description: "Analysis of AI systems designed with formal mathematical safety guarantees from the ground up. Covers Davidad's Open Agency Architecture, ARIA programme, and related approaches to building AI with verifiable safety properties."
+sidebar:
+  label: Provable Safe
+  order: 10
+quality: 3
+lastEdited: "2025-01-21"
+importance: 85
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Provable or "Guaranteed Safe" AI refers to approaches that aim to build AI systems with **mathematical safety guarantees** rather than empirical safety measures. The core premise is that we should be able to *prove* that an AI system will behave safely, not merely *hope* based on testing.
+
+The most prominent current effort is **Davidad's Open Agency Architecture**, funded through the UK's ARIA (Advanced Research + Invention Agency) programme. This approach represents a fundamentally different philosophy from mainstream AI development: safety through formal verification rather than alignment through training.
+
+Estimated probability of being dominant at transformative AI: **1-5%**. This is ambitious and faces significant scalability questions, but offers uniquely strong safety properties if achievable.
+
+## Conceptual Framework
+
+<Mermaid client:load chart={`
+flowchart TB
+    subgraph world["World Model (Verified)"]
+        physics["Physics Simulator"]
+        state["State Representation"]
+        predict["Prediction Engine"]
+    end
+
+    subgraph agent["Agent (Bounded)"]
+        goals["Formal Goal Spec"]
+        planner["Verified Planner"]
+        bounds["Safety Bounds"]
+    end
+
+    subgraph verify["Verification Layer"]
+        proofs["Safety Proofs"]
+        monitor["Runtime Monitor"]
+        audit["Audit Trail"]
+    end
+
+    goals --> planner
+    planner --> world
+    world --> predict
+    predict --> bounds
+    bounds --> proofs
+    proofs --> monitor
+    monitor --> |"Safe Action"| output["Output"]
+`} />
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | HIGH | Designed for formal analysis from the ground up |
+| **Trainability** | DIFFERENT | May use verified synthesis, not just gradient descent |
+| **Predictability** | HIGH | Behavior bounded by formal proofs |
+| **Modularity** | HIGH | Compositional by design for modular proofs |
+| **Formal Verifiability** | HIGH | This is the core value proposition |
+
+## The Open Agency Architecture
+
+Davidad's Open Agency Architecture (OAA) is the most developed proposal for provably safe AI. Key components:
+
+### Core Components
+
+| Component | Function | Verification Approach |
+|-----------|----------|----------------------|
+| **World Model** | Formal representation of environment physics | Must be verifiably accurate for relevant domains |
+| **Goal Specification** | Mathematical statement of what we want | Must be formally specified, not learned |
+| **Bounded Planner** | Generates actions within proven safety bounds | Outputs must satisfy formal safety constraints |
+| **Runtime Monitor** | Checks all actions against safety proofs | Blocks any action that can't be verified safe |
+
+### Key Technical Challenges
+
+| Challenge | Difficulty | Current Status |
+|-----------|------------|----------------|
+| **World model accuracy** | VERY HIGH | Core unsolved problem - how to verify the model matches reality? |
+| **Specification completeness** | HIGH | Formal specs may miss important values/constraints |
+| **Computational tractability** | HIGH | Verification can be exponentially expensive |
+| **Capability competitiveness** | HIGH | Unknown if verified systems can match unverified ones |
+| **Handling uncertainty** | MEDIUM | Formal methods traditionally assume certainty |
+
+## Safety Implications
+
+### Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Mathematical guarantees** | If proofs hold, safety follows logically, not probabilistically |
+| **Auditable by construction** | Every decision can be traced to verified components |
+| **Clear failure modes** | When something fails, you know *which* assumption was violated |
+| **No emergent deception** | Behavior is bounded by proofs, not learned tendencies |
+| **Compositionality** | Can build larger safe systems from smaller verified components |
+
+### Limitations and Risks
+
+| Limitation | Severity | Explanation |
+|------------|----------|-------------|
+| **May not scale to AGI** | HIGH | Unknown if formal methods can handle AGI-level complexity |
+| **Capability tax** | HIGH | Verified systems may be significantly less capable |
+| **World model verification** | CRITICAL | The world model must be correct; this is extremely hard |
+| **Specification gaming** | MEDIUM | System optimizes formal spec, which may miss true intent |
+| **Implementation bugs** | MEDIUM | The implementation must match the formal model |
+
+## Research Landscape
+
+### Key Organizations
+
+| Organization | Role | Funding |
+|--------------|------|---------|
+| **ARIA (UK)** | Primary funder of Davidad's programme | ~£60M committed |
+| **MIRI** | Theoretical foundations, agent foundations | Private donors |
+| **Academic formal methods** | Underlying verification techniques | Various |
+
+### Key People
+
+| Person | Affiliation | Contribution |
+|--------|-------------|--------------|
+| **Davidad (David Dalrymple)** | ARIA | Open Agency Architecture, programme lead |
+| **Neel Nanda** | DeepMind (formerly) | Mechanistic interpretability connections |
+| **Various MIRI researchers** | MIRI | Agent foundations theory |
+
+### Key Publications
+
+| Publication | Year | Contribution |
+|-------------|------|--------------|
+| Guaranteed Safe AI (Dalrymple et al.) | 2024 | Core framework paper |
+| ARIA Safeguarded AI programme | 2023 | Funding announcement and research agenda |
+| Agent Foundations papers | Various | Theoretical underpinnings from MIRI |
+
+## Comparison with Other Approaches
+
+| Aspect | Provable Safe | Heavy Scaffolding | Standard RLHF |
+|--------|---------------|-------------------|---------------|
+| Safety guarantees | STRONG (if achievable) | PARTIAL (scaffold only) | WEAK (empirical) |
+| Current capability | LOW | MEDIUM | HIGH |
+| Scalability | UNKNOWN | PROVEN | PROVEN |
+| Development cost | VERY HIGH | MEDIUM | LOW |
+| Interpretability | HIGH by design | MEDIUM | LOW |
+
+## Probability Assessment
+
+### Arguments for Higher Probability (>5%)
+
+1. **Strong safety incentives** - As AI gets more powerful, demand for guarantees may increase
+2. **Regulatory pressure** - Governments may require formal verification
+3. **ARIA funding** - Significant resources now dedicated to this approach
+4. **Compositionality** - Verified components could be combined with other approaches
+
+### Arguments for Lower Probability (&lt;1%)
+
+1. **Capability gap** - Unverified systems may always be more capable
+2. **Speed of AI progress** - May not develop fast enough before other approaches reach TAI
+3. **World model problem** - Verifying world models may be fundamentally impossible
+4. **Economic incentives** - Labs optimizing for capabilities won't adopt slower approach
+
+## Key Uncertainties
+
+1. **Can world models be verified?** The entire approach depends on having provably accurate world models. This is the crux.
+
+2. **What's the capability ceiling?** We don't know if verified systems can be competitive with unverified ones.
+
+3. **Can it handle novel situations?** Formal verification typically requires known domains; how to handle unprecedented situations?
+
+4. **Will anyone adopt it?** Even if possible, will competitive pressures prevent adoption?
+
+## Implications for Safety Research
+
+### This Approach Changes the Game If...
+
+- World model verification is solved
+- Verified systems reach capability parity
+- Regulatory frameworks require formal safety proofs
+- A major AI accident increases demand for guarantees
+
+### Research That Contributes
+
+- **Formal methods** - Core verification techniques
+- **World modeling** - Understanding physical systems
+- **Specification learning** - Translating values to formal specs
+- **Compositional verification** - Building larger proofs from smaller ones
+
+## Timeline Considerations
+
+| Milestone | Estimated Timeline | Confidence |
+|-----------|-------------------|------------|
+| Proof-of-concept (limited domain) | 2025-2027 | MEDIUM |
+| Competitive narrow AI | 2028-2032 | LOW |
+| Competitive general AI | 2032+? | VERY LOW |
+| TAI-level verified system | Unknown | SPECULATIVE |
+
+## Related Pages
+
+- [Neuro-Symbolic Hybrids](/knowledge-base/models/intelligence-paradigms/neuro-symbolic) - Related approach using symbolic reasoning
+- [AI Governance](/knowledge-base/responses/governance/) - Policy context for formal verification requirements
+- [Technical AI Safety](/knowledge-base/responses/alignment/) - Comparison with other safety approaches

@@ -1,0 +1,190 @@
+---
+title: "Dense Transformers"
+description: "Analysis of the standard transformer architecture that powers current frontier AI. Covers GPT, Claude, Llama, and Gemini-class models. The dominant base architecture, though interpretability remains limited despite 'open' weights."
+sidebar:
+  label: Dense Transformers
+  order: 5
+quality: 3
+lastEdited: "2025-01-21"
+importance: 95
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Dense transformers are the **dominant architecture** for current frontier AI systems. "Dense" refers to the fact that all parameters are active for every token, in contrast to sparse/MoE architectures where only a subset activates.
+
+Every major frontier model - GPT-4, Claude 3, Gemini, Llama 3 - uses this architecture with relatively minor variations. The transformer architecture, introduced in "Attention Is All You Need" (2017), has proven remarkably scalable and general-purpose.
+
+Despite having "open weights" for some models (Llama, Mistral), **interpretability remains fundamentally limited**. We can inspect billions of parameters but cannot meaningfully understand what the model "knows" or "intends."
+
+## Architecture Overview
+
+<Mermaid client:load chart={`
+flowchart TB
+    subgraph transformer["Transformer Block (repeated N times)"]
+        ln1["Layer Norm"]
+        attn["Multi-Head Attention"]
+        ln2["Layer Norm"]
+        ffn["Feed-Forward Network"]
+    end
+
+    input["Input Embeddings"] --> ln1
+    ln1 --> attn
+    attn --> |"residual"| ln2
+    ln2 --> ffn
+    ffn --> |"residual"| output["Output"]
+    output --> |"next block"| input
+`} />
+
+### Key Components
+
+| Component | Function | Parameters |
+|-----------|----------|------------|
+| **Embeddings** | Convert tokens to vectors | vocab_size × d_model |
+| **Attention** | Learn relationships between positions | 4 × d_model² per layer |
+| **FFN** | Process each position independently | 8 × d_model² per layer |
+| **Layer Norm** | Stabilize training | 2 × d_model per layer |
+
+### Scale of Current Models
+
+| Model | Parameters | Layers | Context | Training Compute |
+|-------|------------|--------|---------|------------------|
+| GPT-4 | ~1.8T (rumored) | ~120 | 128K | ~$100M+ |
+| Claude 3 Opus | Unknown | Unknown | 200K | Unknown |
+| Llama 3 405B | 405B | 126 | 128K | ~$50M |
+| Gemini Ultra | Unknown | Unknown | 1M+ | Unknown |
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | LOW | Weights exist but mechanistic interpretability is primitive |
+| **Trainability** | HIGH | Well-understood pretraining + RLHF pipeline |
+| **Predictability** | LOW-MEDIUM | Emergent capabilities, phase transitions, unpredictable failures |
+| **Modularity** | LOW | Monolithic, end-to-end trained, no clear component boundaries |
+| **Formal Verifiability** | LOW | Billions of parameters, no formal guarantees possible |
+
+## The Interpretability Paradox
+
+A key insight: **"open weights" does not mean "interpretable."**
+
+| What We Have | What We Don't Have |
+|--------------|-------------------|
+| Full parameter values | Understanding of what concepts are encoded |
+| Activation patterns | Why specific outputs are generated |
+| Attention maps | How to predict novel behaviors |
+| Gradient information | Whether deceptive reasoning exists |
+
+### State of Mechanistic Interpretability
+
+| Capability | Status | Limitations |
+|------------|--------|-------------|
+| Finding individual features | EMERGING | Only works for simple concepts in small models |
+| Understanding circuits | EARLY | Very limited circuits understood |
+| Predicting behavior | POOR | Cannot predict emergent capabilities |
+| Detecting deception | UNKNOWN | No reliable methods exist |
+
+## Safety Implications
+
+### Challenges
+
+| Challenge | Severity | Explanation |
+|-----------|----------|-------------|
+| **Opaque internals** | HIGH | Cannot verify what model "believes" or "intends" |
+| **Emergent capabilities** | HIGH | New abilities appear unpredictably at scale |
+| **Phase transitions** | MEDIUM | Performance can change discontinuously |
+| **Training data influence** | MEDIUM | Unknown what's learned from pretraining |
+| **Deceptive alignment** | UNKNOWN | No way to detect if model is strategically deceiving |
+
+### Current Safety Approaches
+
+| Approach | Effectiveness | Limitation |
+|----------|---------------|------------|
+| **RLHF** | MEDIUM | Trains for stated preferences, not true values |
+| **Constitutional AI** | MEDIUM | Still relies on model understanding instructions |
+| **Red teaming** | LOW-MEDIUM | Only finds known failure modes |
+| **Capability evals** | MEDIUM | Can measure but not prevent capabilities |
+
+## Research Landscape
+
+### Key Papers
+
+| Paper | Year | Contribution |
+|-------|------|--------------|
+| Attention Is All You Need | 2017 | Original transformer architecture |
+| GPT-2/3 | 2019/2020 | Demonstrated scaling + few-shot learning |
+| Scaling Laws | 2020 | Predictable relationship between scale and performance |
+| InstructGPT | 2022 | RLHF for instruction following |
+| Constitutional AI | 2022 | Principle-based training |
+
+### Key Labs
+
+| Lab | Models | Focus |
+|-----|--------|-------|
+| **OpenAI** | GPT-4, GPT-4o | Capabilities + commercial deployment |
+| **Anthropic** | Claude 3 | Safety-focused development |
+| **Google DeepMind** | Gemini | Multimodal, long context |
+| **Meta** | Llama 3 | Open weights, research |
+
+## Trajectory
+
+### Current Status
+
+Dense transformers are clearly dominant and will remain so in the near term. Key trends:
+
+1. **Continued scaling** - Models getting larger, though returns may diminish
+2. **Multimodality** - Vision, audio, video integration
+3. **Longer context** - 100K+ token context windows
+4. **Efficiency** - Better training and inference efficiency
+
+### Future Uncertainty
+
+| Question | Relevance |
+|----------|-----------|
+| Will scaling continue to improve capabilities? | Determines how long transformers remain dominant |
+| Will MoE/sparse variants replace dense? | May shift to hybrid architectures |
+| Can interpretability catch up to scale? | Determines whether safety research can keep pace |
+
+## Comparison with Other Architectures
+
+| Aspect | Dense Transformer | Sparse/MoE | SSM/Mamba |
+|--------|-------------------|------------|-----------|
+| Maturity | HIGH | MEDIUM | LOW |
+| Interpretability | LOW | LOW | UNKNOWN |
+| Efficiency | MEDIUM | HIGH | HIGH |
+| Capabilities | HIGHEST | HIGH | GROWING |
+| Safety tooling | MOST | SOME | LITTLE |
+
+## Implications for Safety Research
+
+### Research That Works
+
+- **Behavioral evaluations** - Testing model outputs
+- **RLHF and variants** - Training for better behavior
+- **Prompt engineering** - Eliciting safer responses
+- **Red teaming** - Finding failure modes
+
+### Research That Struggles
+
+- **Mechanistic interpretability** - Understanding internals at scale
+- **Formal verification** - Proving safety properties
+- **Detecting deception** - Identifying strategic behavior
+- **Predicting emergence** - Anticipating new capabilities
+
+## Key Uncertainties
+
+1. **Scaling limits**: Will dense transformers hit fundamental limits, or continue improving?
+
+2. **Interpretability tractability**: Can mechanistic interpretability ever work at frontier scale?
+
+3. **Architecture lock-in**: Are we stuck with transformers due to infrastructure investment?
+
+4. **Safety ceiling**: Is there a fundamental limit to how safe dense transformers can be made?
+
+## Related Pages
+
+- [Sparse/MoE Transformers](/knowledge-base/models/intelligence-paradigms/sparse-moe) - Efficiency-focused variant
+- [Heavy Scaffolding](/knowledge-base/models/intelligence-paradigms/heavy-scaffolding) - How transformers are deployed
+- [Mechanistic Interpretability](/knowledge-base/responses/alignment/interpretability/) - Efforts to understand internals

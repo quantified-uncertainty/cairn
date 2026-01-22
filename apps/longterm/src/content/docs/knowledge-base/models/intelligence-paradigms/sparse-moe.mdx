@@ -1,0 +1,208 @@
+---
+title: "Sparse / MoE Transformers"
+description: "Analysis of Mixture-of-Experts and sparse transformer architectures where only a subset of parameters activates per token. Covers Mixtral, Switch Transformer, and rumored GPT-4 architecture. Rising efficiency-focused variant of transformers."
+sidebar:
+  label: Sparse/MoE
+  order: 6
+quality: 3
+lastEdited: "2025-01-21"
+importance: 80
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Sparse and Mixture-of-Experts (MoE) architectures are transformer variants where **only a subset of parameters activates for each token**. Instead of every parameter contributing to every forward pass, a routing mechanism selects which "expert" sub-networks to use.
+
+This offers dramatic **efficiency gains** - you can have a model with 8x the parameters but similar compute cost per token. Mixtral 8x7B (46B total, ~12B active) performs comparably to Llama 2 70B.
+
+MoE is likely already used in GPT-4 (based on leaks) and may become the default architecture for frontier models due to efficiency advantages.
+
+## Architecture
+
+<Mermaid client:load chart={`
+flowchart TB
+    input["Input Token"] --> router["Router Network"]
+
+    router --> |"top-k"| expert1["Expert 1"]
+    router --> |"top-k"| expert2["Expert 2"]
+    router -.-> |"not selected"| expert3["Expert 3"]
+    router -.-> |"not selected"| expert4["Expert 4"]
+    router -.-> |"not selected"| expert5["Expert N..."]
+
+    expert1 --> combine["Weighted Sum"]
+    expert2 --> combine
+    combine --> output["Output"]
+
+    style expert3 fill:#f5f5f5,stroke:#ccc
+    style expert4 fill:#f5f5f5,stroke:#ccc
+    style expert5 fill:#f5f5f5,stroke:#ccc
+`} />
+
+### Key Components
+
+| Component | Function | Trainable |
+|-----------|----------|-----------|
+| **Router** | Decides which experts to use | Yes |
+| **Experts** | Specialized FFN sub-networks | Yes |
+| **Load balancer** | Ensures experts are used evenly | Auxiliary loss |
+| **Combiner** | Merges expert outputs | Weighted by router |
+
+### Parameter Efficiency
+
+| Model | Total Params | Active Params | Efficiency Ratio |
+|-------|--------------|---------------|------------------|
+| Mixtral 8x7B | 46.7B | ~12.9B | 3.6x |
+| Switch-XXL | 1.6T | ~100B | 16x |
+| GPT-4 (rumored) | ~1.8T | ~220B | 8x |
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | LOW | Same opacity as dense transformers, plus routing complexity |
+| **Trainability** | HIGH | Standard training with load balancing losses |
+| **Predictability** | LOW | Routing adds another layer of unpredictability |
+| **Modularity** | MEDIUM | Expert boundaries exist but interact |
+| **Formal Verifiability** | LOW | Combinatorial explosion of expert combinations |
+
+## Safety Implications
+
+### Potential Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Expert analysis** | Can study what individual experts learn |
+| **Efficiency = more testing** | Same capability, lower cost → more safety evaluation budget |
+| **Modular structure** | Could potentially ablate/modify specific experts |
+| **Specialization visible** | Routing patterns reveal some structure |
+
+### Risks and Challenges
+
+| Risk | Severity | Explanation |
+|------|----------|-------------|
+| **Routing unpredictability** | MEDIUM | Which experts activate can be surprising |
+| **Combinatorial complexity** | HIGH | Cannot test all expert combinations |
+| **Emergent routing** | MEDIUM | Routing patterns may encode unexpected behaviors |
+| **Specialized deception** | UNKNOWN | Could specific experts learn deceptive behavior? |
+
+### Interpretability Comparison
+
+| Aspect | Dense | MoE |
+|--------|-------|-----|
+| Overall opacity | HIGH | HIGH |
+| Modular structure | NONE | SOME (experts) |
+| Analysis tools | SOME | FEWER |
+| Activation patterns | Complex | Complex + routing |
+
+## Current Examples
+
+| Model | Developer | Experts | Active | Performance |
+|-------|-----------|---------|--------|-------------|
+| **Mixtral 8x7B** | Mistral | 8 | 2 | ~Llama 70B |
+| **Mixtral 8x22B** | Mistral | 8 | 2 | Top-tier |
+| **Switch-C** | Google | 2048 | 1 | Efficient |
+| **GPT-4** | OpenAI | ~16? | 2? | Frontier |
+| **DBRX** | Databricks | 16 | 4 | Competitive |
+
+## Technical Details
+
+### Router Mechanisms
+
+| Mechanism | Description | Trade-offs |
+|-----------|-------------|------------|
+| **Top-k** | Select k highest-scoring experts | Simple, may load imbalance |
+| **Expert choice** | Experts select tokens | Better balance, more complex |
+| **Soft routing** | Weighted combination | Differentiable, less sparse |
+
+### Load Balancing
+
+MoE training requires auxiliary losses to prevent expert collapse:
+
+```
+Total Loss = Task Loss + α × Load Balance Loss
+```
+
+Without this, models often collapse to using only 1-2 experts.
+
+## Research Landscape
+
+### Key Papers
+
+| Paper | Year | Contribution |
+|-------|------|--------------|
+| Outrageously Large Neural Networks (Shazeer) | 2017 | Modern MoE revival |
+| Switch Transformers | 2021 | Simplified routing, massive scale |
+| GLaM | 2022 | Efficient MoE training |
+| Mixtral | 2024 | Open-weight competitive MoE |
+
+### Key Labs
+
+| Lab | Efforts | Status |
+|-----|---------|--------|
+| **Google** | Switch, GLaM | Research leader |
+| **Mistral** | Mixtral | Open-weight leader |
+| **OpenAI** | GPT-4 (likely) | Production deployment |
+| **Databricks** | DBRX | Enterprise focus |
+
+## Trajectory
+
+### Why MoE May Become Default
+
+1. **Efficiency at scale** - Critical as models get larger
+2. **Proven competitive** - Mixtral shows no capability loss
+3. **Hardware support** - Inference becoming more efficient
+4. **Open weights available** - Mixtral enables research
+
+### Uncertainties
+
+| Question | Importance |
+|----------|------------|
+| Do MoE models have different emergent behaviors? | HIGH |
+| Is routing a new source of risk? | MEDIUM |
+| Can we interpret expert specialization? | MEDIUM |
+| Will dense or MoE dominate at frontier? | HIGH |
+
+## Safety Research Implications
+
+### Research That Transfers
+
+- **Behavioral evaluations** - Testing still works
+- **RLHF** - Training approach unchanged
+- **Red teaming** - Can still probe for failures
+- **Capability evals** - Measuring what it can do
+
+### Research Gaps
+
+- **Expert-level interpretability** - What does each expert learn?
+- **Routing analysis** - When/why does routing change?
+- **Combinatorial testing** - How to cover expert combinations?
+- **Expert ablation** - Can we remove problematic experts?
+
+### Novel Research Opportunities
+
+MoE structure enables some new safety approaches:
+
+| Approach | Description | Feasibility |
+|----------|-------------|-------------|
+| Expert specialization analysis | Study what each expert learns | MEDIUM |
+| Selective expert ablation | Remove experts that encode bad behavior | UNKNOWN |
+| Routing intervention | Control which experts activate | POSSIBLE |
+| Expert-level alignment | Train specific experts for safety | SPECULATIVE |
+
+## Key Uncertainties
+
+1. **Does routing introduce new alignment challenges?** The router is another learned component that could behave unexpectedly.
+
+2. **Can expert structure aid interpretability?** Or does it just add another layer of complexity?
+
+3. **Is expert specialization predictable?** Do experts reliably learn specific skills we can identify?
+
+4. **Will MoE or dense win at frontier scale?** Efficiency matters more as models get larger.
+
+## Related Pages
+
+- [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) - The simpler baseline
+- [Heavy Scaffolding](/knowledge-base/models/intelligence-paradigms/heavy-scaffolding) - How MoE models are deployed
+- [SSM/Mamba](/knowledge-base/models/intelligence-paradigms/ssm-mamba) - Alternative efficient architecture

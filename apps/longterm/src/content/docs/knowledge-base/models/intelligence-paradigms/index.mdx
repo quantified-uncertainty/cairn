@@ -1,0 +1,112 @@
+---
+title: "Scalable Intelligence Paradigms"
+description: "Analysis of different paths to transformative AI capabilities, including deployment patterns, base architectures, and non-AI approaches. Covers scaffolding levels, neural architectures, and biological enhancement paths."
+sidebar:
+  label: Overview
+  order: 0
+quality: 3
+lastEdited: "2025-01-21"
+importance: 85
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+This section analyzes different paradigms that could produce transformative intelligence. We separate **deployment patterns** (how AI systems are structured and used) from **base architectures** (the underlying neural network designs), recognizing these are orthogonal dimensions that combine in real systems.
+
+A key insight: **scaffold code is more interpretable than model internals**. We can read, audit, and formally verify orchestration logic in agentic systems. We cannot meaningfully inspect transformer weights despite having "open" models.
+
+## Conceptual Framework
+
+<Mermaid client:load chart={`
+flowchart TB
+    subgraph deployment["Deployment Patterns"]
+        minimal["Minimal Scaffolding<br/>(5-15%)"]
+        light["Light Scaffolding<br/>(15-25%)"]
+        heavy["Heavy Scaffolding/Agentic<br/>(25-40%)"]
+    end
+
+    subgraph base["Base Architectures"]
+        dense["Dense Transformers"]
+        moe["Sparse/MoE"]
+        ssm["SSMs/Mamba"]
+        world["World Models"]
+        neuro["Neuro-Symbolic"]
+        provable["Provable/Guaranteed Safe"]
+    end
+
+    subgraph nonai["Non-AI Paths"]
+        wbe["Whole Brain Emulation"]
+        genetic["Genetic Enhancement"]
+        bci["Brain-Computer Interfaces"]
+    end
+
+    deployment --> |"combines with"| base
+    base --> |"or alternatively"| nonai
+`} />
+
+## Deployment Patterns
+
+These describe how AI models are deployed and orchestrated, independent of the underlying architecture:
+
+| Pattern | P(Dominant) | White-box | Key Insight |
+|---------|-------------|-----------|-------------|
+| [Minimal Scaffolding](/knowledge-base/models/intelligence-paradigms/minimal-scaffolding) | 5-15% | LOW | Direct API/chat; declining as agents add value |
+| [Light Scaffolding](/knowledge-base/models/intelligence-paradigms/light-scaffolding) | 15-25% | MEDIUM | RAG, basic tools; current sweet spot |
+| [Heavy Scaffolding / Agentic](/knowledge-base/models/intelligence-paradigms/heavy-scaffolding) | 25-40% | MEDIUM-HIGH | Multi-agent, autonomous; strong growth trend |
+
+## Base Neural Architectures
+
+These are the underlying model architectures, which combine with deployment patterns:
+
+| Architecture | Status | White-box | Key Papers |
+|--------------|--------|-----------|------------|
+| [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) | Dominant | LOW | Attention Is All You Need (2017) |
+| [Sparse/MoE Transformers](/knowledge-base/models/intelligence-paradigms/sparse-moe) | Rising | LOW | Switch Transformers (2021) |
+| [SSM/Mamba Hybrids](/knowledge-base/models/intelligence-paradigms/ssm-mamba) | Emerging | MEDIUM | Mamba (2023) |
+| [World Models + Planning](/knowledge-base/models/intelligence-paradigms/world-models) | Research | PARTIAL | MuZero (2020), JEPA |
+| [Neuro-Symbolic Hybrids](/knowledge-base/models/intelligence-paradigms/neuro-symbolic) | Research | PARTIAL | AlphaProof (2024) |
+| [Provable/Guaranteed Safe](/knowledge-base/models/intelligence-paradigms/provable-safe) | Speculative | HIGH | Davidad ARIA programme |
+
+## Alternative Substrates
+
+| Approach | P(Dominant) | Timeline | Key Challenge |
+|----------|-------------|----------|---------------|
+| [Biological/Organoid Computing](/knowledge-base/models/intelligence-paradigms/biological-organoid) | &lt;1% | 2035+ | Far from TAI-relevant scale |
+| [Neuromorphic Hardware](/knowledge-base/models/intelligence-paradigms/neuromorphic) | 1-3% | 2030+ | Not on path to TAI |
+
+## Non-AI Paths to Enhanced Intelligence
+
+| Approach | P(Dominant) | Timeline | Key Challenge |
+|----------|-------------|----------|---------------|
+| [Whole Brain Emulation](/knowledge-base/models/intelligence-paradigms/whole-brain-emulation) | &lt;1% | 2050+? | Scanning tech far away |
+| [Genetic Enhancement](/knowledge-base/models/intelligence-paradigms/genetic-enhancement) | &lt;0.5% | 2040+ | Too slow for TAI race |
+| [Brain-Computer Interfaces](/knowledge-base/models/intelligence-paradigms/brain-computer-interfaces) | &lt;1% | 2035+ | Bandwidth limits |
+| [Collective/Hybrid Intelligence](/knowledge-base/models/intelligence-paradigms/collective-intelligence) | (overlay) | Now | Already happening |
+
+## Interactive Comparison
+
+See the [full comparison table](/knowledge-base/models/architecture-scenarios/table) for detailed property comparisons across all paradigms.
+
+## Key Research Questions
+
+1. **Will heavy scaffolding become dominant?** Current trends suggest agentic systems add substantial value, but reliability concerns remain.
+
+2. **How much does base architecture matter?** If scaffolding dominates behavior, the underlying transformer vs. SSM choice may be less safety-relevant.
+
+3. **Can provable approaches scale?** Davidad's agenda offers strong safety guarantees but faces capability-competitiveness questions.
+
+4. **What's the interpretability hierarchy?** Scaffold code > symbolic reasoning > model outputs > model internals.
+
+## Methodology Notes
+
+- **Probabilities** are rough guesses, not rigorous forecasts. They should sum to ~100% for mutually exclusive categories.
+- **White-box ratings** reflect current state of interpretability tools, not theoretical limits.
+- **Trends** are illustrative; need integration with real publication/investment data.
+
+## Related Pages
+
+- [Safety Research Generalizability](/knowledge-base/models/safety-generalizability/table) - Which safety approaches work for which architectures
+- [AI Capabilities](/knowledge-base/capabilities/) - Current and projected AI capabilities
+- [Alignment Approaches](/knowledge-base/responses/alignment/) - Technical alignment research

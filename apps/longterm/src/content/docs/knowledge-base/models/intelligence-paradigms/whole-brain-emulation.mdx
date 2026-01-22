@@ -1,0 +1,222 @@
+---
+title: "Whole Brain Emulation"
+description: "Analysis of uploading/simulating complete biological brains at sufficient fidelity to replicate cognition. A non-AI path to artificial general intelligence with distinct safety properties. Estimated less than 1% probability of arriving before AI-based TAI."
+sidebar:
+  label: Brain Emulation
+  order: 20
+quality: 3
+lastEdited: "2025-01-21"
+importance: 60
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Whole Brain Emulation (WBE), sometimes called "mind uploading," refers to creating a functional copy of a biological brain in a computational substrate. Unlike AI systems trained on data, a brain emulation would replicate the actual neural structure of a specific brain.
+
+This was once considered a leading path to artificial general intelligence. The 2008 "Whole Brain Emulation Roadmap" by Sandberg and Bostrom at FHI provided detailed technical analysis. However, **progress has been much slower than AI**, and most researchers now expect AI to reach transformative capabilities first.
+
+Estimated probability of being the dominant path to transformative intelligence: **&lt;1%**
+
+## Technical Requirements
+
+<Mermaid client:load chart={`
+flowchart LR
+    subgraph scan["Scanning"]
+        brain["Biological Brain"]
+        slice["Slice/Image"]
+        data["Neural Data"]
+    end
+
+    subgraph process["Processing"]
+        segment["Segmentation"]
+        connect["Connectivity Map"]
+        params["Synapse Parameters"]
+    end
+
+    subgraph simulate["Simulation"]
+        model["Neural Model"]
+        compute["Compute Substrate"]
+        run["Running Emulation"]
+    end
+
+    brain --> slice
+    slice --> data
+    data --> segment
+    segment --> connect
+    connect --> params
+    params --> model
+    model --> compute
+    compute --> run
+`} />
+
+### Key Technical Challenges
+
+| Challenge | Current Status | Required Advance |
+|-----------|----------------|------------------|
+| **Scanning resolution** | ~1μm with electron microscopy | Need ~10nm for synapse detail |
+| **Scanning speed** | Years for 1mm³ | Need hours for whole brain |
+| **Preservation** | Plastination or vitrification | Must preserve all relevant detail |
+| **Segmentation** | Mostly manual | Need fully automated at scale |
+| **Neural modeling** | Simple neurons modeled | Need accurate synapse dynamics |
+| **Compute** | ~10^18 FLOPS available | May need 10^18-10^25 FLOPS |
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | LOW | Brain structure visible but not interpretable |
+| **Trainability** | N/A | Copied from biological learning, not trained |
+| **Predictability** | LOW | Human-like cognition is inherently unpredictable |
+| **Modularity** | LOW | Brains are highly interconnected |
+| **Formal Verifiability** | LOW | Too complex, poorly understood |
+
+## Current Progress
+
+### Achievements
+
+| Milestone | Year | Details |
+|-----------|------|---------|
+| **C. elegans connectome** | 1986 | 302 neurons fully mapped |
+| **OpenWorm simulation** | 2014 | Behavioral simulation of C. elegans |
+| **Fruit fly connectome** | 2023 | ~140,000 neurons mapped |
+| **Mouse cortical column** | Ongoing | Blue Brain Project |
+
+### Scale Comparison
+
+| Organism | Neurons | Connectome Status | Functional Simulation |
+|----------|---------|-------------------|----------------------|
+| C. elegans | 302 | Complete | Partial |
+| Fruit fly | 140,000 | Complete | No |
+| Mouse | 70 million | Partial regions | No |
+| Human | 86 billion | Not started | No |
+
+## Safety Implications
+
+### Potential Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Human values by default** | Emulation of human has human values (in theory) |
+| **Understood entity type** | We have experience with humans |
+| **Gradual development** | Progress is incremental and visible |
+| **Legal/ethical frameworks** | Could extend human rights frameworks |
+
+### Risks and Concerns
+
+| Risk | Severity | Explanation |
+|------|----------|-------------|
+| **Ethics of copying minds** | HIGH | Is the copy the same person? What rights does it have? |
+| **Speed-up risk** | HIGH | Emulations could run 1000x+ faster than biological time |
+| **Copy proliferation** | HIGH | Could create millions of copies |
+| **Modification risk** | MEDIUM | Easier to modify than biological brains |
+| **Value drift** | MEDIUM | Emulations may diverge from human values over time |
+| **Identity issues** | MEDIUM | Psychological impact on emulations |
+
+### Comparison with AI Safety
+
+| Aspect | WBE | AI (Transformers) |
+|--------|-----|-------------------|
+| Value alignment | Starts aligned (human brain) | Must be trained/aligned |
+| Interpretability | As opaque as human minds | Opaque but different |
+| Speed of development | Slow, predictable | Fast, unpredictable |
+| Controllability | Similar to humans | Unknown |
+| Existential risk | Unclear | Actively debated |
+
+## Economic and Social Implications
+
+### Potential Impacts
+
+| Impact | Assessment |
+|--------|------------|
+| **Labor market** | Could create unlimited skilled labor (copies of experts) |
+| **Economic growth** | Potentially explosive if emulations work faster |
+| **Inequality** | Who gets emulated? Who controls emulations? |
+| **Mortality** | Potential path to "immortality" for the wealthy |
+
+### Robin Hanson's "Age of Em"
+
+Economist Robin Hanson's book "The Age of Em" explores a world dominated by brain emulations:
+
+- Emulations run at variable speeds (faster = more expensive)
+- Copying creates perfect labor markets
+- Wages driven to subsistence (compute costs)
+- Extreme competition among emulation "clans"
+
+## Research Landscape
+
+### Key Organizations
+
+| Organization | Focus | Status |
+|--------------|-------|--------|
+| **Carboncopies** | WBE advocacy and research coordination | Active |
+| **Blue Brain Project** | Detailed cortical simulation | Active |
+| **Allen Institute** | Brain mapping and connectomics | Active |
+| **Academic neuroscience** | Basic research | Ongoing |
+
+### Key Publications
+
+| Publication | Year | Contribution |
+|-------------|------|--------------|
+| Whole Brain Emulation Roadmap | 2008 | Comprehensive technical analysis |
+| The Age of Em | 2016 | Economic/social analysis |
+| Various connectomics papers | Ongoing | Incremental progress on mapping |
+
+## Timeline Analysis
+
+### Optimistic Scenario
+
+| Milestone | Timeline | Probability |
+|-----------|----------|-------------|
+| Full mouse brain emulation | 2035-2040 | 20% |
+| Proof-of-concept human region | 2040-2050 | 10% |
+| Full human brain emulation | 2050-2070 | 5% |
+
+### Pessimistic Scenario
+
+| Milestone | Timeline | Probability |
+|-----------|----------|-------------|
+| Full mouse brain emulation | 2050+ | 50% |
+| Full human brain emulation | Never achievable | 30% |
+
+### Why It's Probably Not First
+
+1. **AI is faster** - Deep learning progress is rapid; neuroscience is slow
+2. **Scanning tech is far away** - Need major breakthroughs in electron microscopy
+3. **Compute may be prohibitive** - Even if mapped, running it may be too expensive
+4. **Unknown unknowns** - May need to capture aspects we don't yet understand
+
+## Relevance to AI Safety
+
+### Why Study WBE Despite Low Probability?
+
+1. **Backup path** - If AI proves unalignably dangerous, WBE is an alternative
+2. **Informs AI safety** - Understanding biological intelligence helps understand artificial
+3. **Hybrid systems** - WBE insights may inform brain-computer interfaces
+4. **Comparative analysis** - Different path illuminates unique AI risks
+
+### Key Differences from AI Safety Concerns
+
+| AI Safety Concern | WBE Equivalent |
+|-------------------|----------------|
+| Goal misgeneralization | Human values may be context-dependent |
+| Mesa-optimization | Humans already have inner optimizers |
+| Deceptive alignment | Humans can be deceptive |
+| Capability overhang | Speed-up creates sudden capability jump |
+
+## Key Uncertainties
+
+1. **What level of detail is needed?** Do we need to simulate individual molecules, or is neuron-level sufficient?
+
+2. **Is the connectome enough?** Or do we need dynamic state (hormones, neuromodulators, etc.)?
+
+3. **What makes a mind continuous?** Is a copy "you"?
+
+4. **Could emulations be safely contained?** If running faster than real-time, oversight becomes difficult.
+
+## Related Pages
+
+- [Brain-Computer Interfaces](/knowledge-base/models/intelligence-paradigms/brain-computer-interfaces) - Related technology path
+- [Biological/Organoid Computing](/knowledge-base/models/intelligence-paradigms/biological-organoid) - Alternative biological approach
+- [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) - The likely faster path

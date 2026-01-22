@@ -1,0 +1,201 @@
+---
+title: "Light Scaffolding"
+description: "Analysis of AI systems with basic tool use, RAG, and simple chains. The current sweet spot between capability and complexity, including GPT with plugins, Claude with tools, and standard RAG architectures."
+sidebar:
+  label: Light Scaffolding
+  order: 2
+quality: 3
+lastEdited: "2025-01-21"
+importance: 80
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Light scaffolding represents the **current sweet spot** in AI deployment: models enhanced with basic tool use, retrieval augmentation (RAG), function calling, and simple orchestration chains. This gives significant capability gains over minimal scaffolding while avoiding the complexity and unpredictability of full agentic systems.
+
+Examples include GPT-4 with plugins, Claude with tools enabled, and standard enterprise RAG deployments. Estimated probability of being dominant at transformative AI: **15-25%**.
+
+The key characteristic is that **the scaffold adds capabilities, but doesn't fundamentally change the interaction pattern** - it's still primarily human-driven, turn-by-turn interaction.
+
+## Architecture
+
+<Mermaid client:load chart={`
+flowchart TB
+    user["User"] --> orchestrator["Simple Orchestrator"]
+
+    subgraph scaffold["Light Scaffold"]
+        orchestrator --> tools["Tool Selector"]
+        tools --> retrieval["RAG/Search"]
+        tools --> code["Code Execution"]
+        tools --> api["API Calls"]
+    end
+
+    orchestrator --> model["Foundation Model"]
+    model --> response["Response"]
+
+    retrieval --> model
+    code --> model
+    api --> model
+
+    response --> user
+`} />
+
+### What's Included
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Text input/output | YES | Core interaction |
+| Function calling | YES | Structured tool invocation |
+| RAG/retrieval | YES | External knowledge access |
+| Code execution | OPTIONAL | Sandboxed code interpreter |
+| Web browsing | OPTIONAL | Search and fetch |
+| Single-agent loop | YES | Can retry/refine within turn |
+| Multi-agent | NO | Single model instance |
+| Persistent memory | LIMITED | Session-based or simple |
+| Autonomous operation | NO | Human-initiated turns |
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | MEDIUM | Scaffold code is readable; model still opaque |
+| **Trainability** | HIGH | Model trained normally; scaffold is code |
+| **Predictability** | MEDIUM | Tool calls add some unpredictability |
+| **Modularity** | MEDIUM | Clear tool boundaries |
+| **Formal Verifiability** | PARTIAL | Scaffold code can be verified |
+
+## Common Patterns
+
+### Retrieval-Augmented Generation (RAG)
+
+```
+User Query → Embed → Vector Search → Retrieve Docs →
+Augment Prompt → LLM → Response
+```
+
+| Component | Purpose | Interpretability |
+|-----------|---------|------------------|
+| Embedding | Convert query to vector | LOW |
+| Vector DB | Find relevant documents | HIGH (can inspect matches) |
+| Prompt augmentation | Add context to prompt | HIGH (visible) |
+| LLM response | Generate answer | LOW |
+
+### Function Calling
+
+```
+User Request → LLM decides tool → Execute tool →
+LLM processes result → Response
+```
+
+| Step | Interpretability | Risk |
+|------|------------------|------|
+| Tool selection | MEDIUM (logged) | Could select wrong tool |
+| Parameter extraction | MEDIUM (logged) | Could hallucinate params |
+| Execution | HIGH (auditable) | Tool could fail/harm |
+| Result processing | LOW | Could misinterpret |
+
+## Safety Profile
+
+### Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Scaffold logic inspectable** | Can read and audit orchestration code |
+| **Tool permissions controllable** | Can restrict which tools are available |
+| **Logs available** | Tool calls are recorded |
+| **Human in loop** | Each turn is human-initiated |
+| **Sandboxing possible** | Code execution can be contained |
+
+### Risks
+
+| Risk | Severity | Mitigation |
+|------|----------|------------|
+| Tool enables real harm | MEDIUM | Permission systems, sandboxing |
+| Hallucinated tool calls | MEDIUM | Validation, confirmation |
+| RAG retrieval errors | LOW | Source attribution |
+| Prompt injection via tools | MEDIUM | Input sanitization |
+
+## Current Examples
+
+| System | Provider | Tools Available |
+|--------|----------|-----------------|
+| GPT-4 with plugins | OpenAI | Web browsing, code interpreter, custom plugins |
+| Claude with tools | Anthropic | Web search, code execution, file handling |
+| Perplexity Pro | Perplexity | Real-time search, citations |
+| Enterprise RAG | Various | Document retrieval, internal APIs |
+| Copilot | Microsoft | Code context, documentation search |
+
+## Market Position
+
+### Why It's the Current Sweet Spot
+
+| Factor | Assessment |
+|--------|------------|
+| **Capability gains** | Significant over minimal scaffolding |
+| **Development cost** | Much lower than agentic systems |
+| **Reliability** | Higher than autonomous agents |
+| **Safety** | More controllable than agents |
+| **User familiarity** | Still chat-like interaction |
+
+### Competitive Pressure
+
+Light scaffolding is being squeezed from both sides:
+- **From below**: Minimal scaffolding is cheaper/simpler for some tasks
+- **From above**: Heavy scaffolding delivers more capability for complex tasks
+
+## Comparison with Other Patterns
+
+| Aspect | Minimal | Light | Heavy |
+|--------|---------|-------|-------|
+| Capability ceiling | LOW | MEDIUM | HIGH |
+| Development effort | LOW | MEDIUM | HIGH |
+| Reliability | HIGH | MEDIUM | LOW |
+| Safety complexity | LOW | MEDIUM | HIGH |
+| Scaffold interpretability | N/A | MEDIUM | MEDIUM-HIGH |
+
+## Trajectory
+
+### Current Trends
+
+1. **RAG is mature** - Well-understood patterns, many tools
+2. **Function calling standardized** - OpenAI's format becoming standard
+3. **Code execution common** - Jupyter-style sandboxes widespread
+
+### Future Evolution
+
+| Direction | Likelihood | Timeline |
+|-----------|------------|----------|
+| Merge into heavy scaffolding | HIGH | 2025-2027 |
+| Remain for simple use cases | MEDIUM | Ongoing |
+| Enhanced with better tools | HIGH | 2025+ |
+
+## Implications for Safety Research
+
+### Research That Applies Well
+
+- **Tool safety** - Safe tool design and permissions
+- **RAG safety** - Preventing retrieval attacks
+- **Output verification** - Checking responses against sources
+- **Logging and monitoring** - Audit trails for tool use
+
+### Research Gaps
+
+- **Tool selection reliability** - When does the model pick wrong tools?
+- **Cascading errors** - How do tool errors propagate?
+- **Permission granularity** - What's the right permission model?
+
+## Key Uncertainties
+
+1. **Will light scaffolding persist or merge into agentic?** The boundary is blurry and moving.
+
+2. **What's the reliability ceiling?** Can light scaffolding match heavy scaffolding capability with better reliability?
+
+3. **How should tool permissions work?** Fine-grained vs. coarse, user-controlled vs. system-controlled.
+
+## Related Pages
+
+- [Minimal Scaffolding](/knowledge-base/models/intelligence-paradigms/minimal-scaffolding) - Simpler deployment
+- [Heavy Scaffolding](/knowledge-base/models/intelligence-paradigms/heavy-scaffolding) - More complex agentic systems
+- [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) - Underlying model architecture

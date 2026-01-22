@@ -1,0 +1,176 @@
+---
+title: "Heavy Scaffolding / Agentic Systems"
+description: "Analysis of multi-agent AI systems with complex orchestration, persistent memory, and autonomous operation. Includes Claude Code, Devin, and similar agentic architectures. Estimated 25-40% probability of being the dominant paradigm at transformative AI."
+sidebar:
+  label: Heavy Scaffolding
+  order: 3
+quality: 3
+lastEdited: "2025-01-21"
+importance: 90
+---
+
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Heavy scaffolding refers to AI systems where significant capability and behavior emerges from the **orchestration code** rather than just the underlying model. These systems combine foundation models with tools, persistent memory, multi-agent coordination, and autonomous operation loops.
+
+Examples include Claude Code (Anthropic's coding agent), Devin (Cognition's software engineer), AutoGPT, and various research agent frameworks. The key distinguishing feature is that the **scaffold itself is a major determinant of system behavior**, not just a thin wrapper around model calls.
+
+This paradigm has an estimated **25-40% probability** of being dominant at transformative AI, with strong growth trends as scaffolding becomes easier to build and demonstrates clear capability gains.
+
+## Conceptual Architecture
+
+<Mermaid client:load chart={`
+flowchart TB
+    subgraph scaffold["Scaffold Layer (Readable Code)"]
+        orchestrator["Orchestrator"]
+        memory["Persistent Memory"]
+        tools["Tool Registry"]
+        planner["Planning Module"]
+        critic["Self-Critique"]
+    end
+
+    subgraph models["Model Layer (Black Box)"]
+        llm1["LLM: Reasoning"]
+        llm2["LLM: Coding"]
+        llm3["LLM: Critique"]
+    end
+
+    subgraph external["External World"]
+        files["File System"]
+        web["Web/APIs"]
+        exec["Code Execution"]
+    end
+
+    orchestrator --> planner
+    planner --> llm1
+    llm1 --> critic
+    critic --> llm3
+    orchestrator --> tools
+    tools --> llm2
+    llm2 --> exec
+    tools --> web
+    memory --> orchestrator
+    exec --> files
+`} />
+
+## Key Properties
+
+| Property | Rating | Assessment |
+|----------|--------|------------|
+| **White-box Access** | MEDIUM-HIGH | Scaffold code is fully readable and auditable; model calls remain black boxes |
+| **Trainability** | LOW | Models trained separately; scaffold is engineered code, not learned |
+| **Predictability** | LOW | Multi-step plans can diverge unpredictably; emergent behavior from agent loops |
+| **Modularity** | HIGH | Explicit component architecture with clear boundaries |
+| **Formal Verifiability** | PARTIAL | Scaffold logic can be formally verified; model outputs cannot |
+
+## Safety Implications
+
+### Advantages
+
+| Advantage | Explanation |
+|-----------|-------------|
+| **Auditable orchestration** | Every decision point in the scaffold can be logged, reviewed, and understood |
+| **Insertable safety checks** | Can add human approval, sandboxing, or constraint checking in code |
+| **Modular failure isolation** | When something breaks, you can identify which component failed |
+| **Testable control flow** | Can write unit tests for scaffold behavior, even if model outputs vary |
+| **Interpretable planning** | Multi-step plans are often explicitly represented and inspectable |
+
+### Risks
+
+| Risk | Severity | Explanation |
+|------|----------|-------------|
+| **Emergent multi-step behavior** | HIGH | Behavior emerges from interaction of components over many steps |
+| **Autonomous operation** | HIGH | Less human oversight when agents run for extended periods |
+| **Tool use enables real harm** | HIGH | File system, web access, code execution = real-world consequences |
+| **Deceptive scaffolding** | MEDIUM | Scaffold could be designed (or evolve) to hide intentions |
+| **Scaling unpredictability** | MEDIUM | More agents, longer loops = harder to predict outcomes |
+
+## Current Examples
+
+| System | Developer | Key Features | Status |
+|--------|-----------|--------------|--------|
+| **Claude Code** | Anthropic | Coding agent with file access, terminal, multi-file editing | Production |
+| **Devin** | Cognition | Full software engineer agent with browser, terminal | Production |
+| **AutoGPT** | Open source | General autonomous agent with plugins | Research/Hobby |
+| **BabyAGI** | Open source | Task-driven autonomous agent | Research |
+| **Voyager** | NVIDIA | Minecraft agent with skill library | Research |
+| **OpenAI Assistants** | OpenAI | API for building custom agents with tools | Production |
+| **LangChain Agents** | LangChain | Framework for building agent pipelines | Framework |
+
+## Research Landscape
+
+### Key Papers
+
+| Paper | Year | Contribution |
+|-------|------|--------------|
+| ReAct: Synergizing Reasoning and Acting | 2022 | Foundational reasoning+action framework |
+| Toolformer | 2023 | Self-supervised tool use learning |
+| Voyager | 2023 | Lifelong learning agent with skill library |
+| Generative Agents | 2023 | Believable simulacra with memory |
+| AutoGPT architecture | 2023 | Open autonomous agent design |
+
+### Key Labs
+
+- **Anthropic** - Claude Code, computer use capabilities
+- **Cognition** - Devin, autonomous software engineering
+- **OpenAI** - Assistants API, function calling, code interpreter
+- **LangChain** - Agent frameworks and tooling
+- **Various startups** - Specialized vertical agents
+
+## Trend Analysis
+
+Heavy scaffolding is experiencing rapid growth due to several factors:
+
+1. **Scaffolding is getting cheaper** - Frameworks like LangChain, LlamaIndex make it easy
+2. **Clear capability gains** - Agents demonstrably outperform single-turn interactions
+3. **Tool use is mature** - Function calling, code execution are well-understood
+4. **Enterprise demand** - Businesses want autonomous task completion
+
+### Trajectory Projection
+
+| Period | Expected Development |
+|--------|---------------------|
+| 2024-2025 | Specialized vertical agents (coding, research, customer service) |
+| 2025-2027 | General-purpose agents with longer autonomy |
+| 2027-2030 | Multi-agent ecosystems, agent-to-agent collaboration |
+| 2030+ | Potential dominant paradigm if reliability improves |
+
+## Comparison with Other Paradigms
+
+| Aspect | Heavy Scaffolding | Minimal Scaffolding | Provable Systems |
+|--------|-------------------|---------------------|------------------|
+| Interpretability | Scaffold: HIGH, Model: LOW | LOW | HIGH by design |
+| Capability ceiling | HIGH (tool use) | LIMITED | UNKNOWN |
+| Development speed | FAST | FAST | SLOW |
+| Safety guarantees | PARTIAL (scaffold only) | NONE | STRONG |
+| Current maturity | MEDIUM | HIGH | LOW |
+
+## Key Uncertainties
+
+1. **Reliability at scale**: Can agents maintain coherent behavior over thousands of steps?
+2. **Emergent deception**: Could multi-agent systems develop deceptive coordination?
+3. **Human oversight integration**: How to maintain meaningful oversight of autonomous agents?
+4. **Scaffold complexity**: Does scaffold complexity eventually rival model complexity?
+
+## Implications for Safety Research
+
+### Research That Transfers Well
+
+- **Control and containment** - Sandboxing, permission systems, action constraints
+- **Interpretability of plans** - Understanding multi-step reasoning
+- **Human-in-the-loop design** - Approval workflows, uncertainty communication
+- **Testing and red-teaming** - Adversarial evaluation of agent systems
+
+### Research That May Not Transfer
+
+- **Mechanistic interpretability** - Scaffold behavior isn't in weights
+- **Training-time interventions** - Scaffold isn't trained
+- **Representation analysis** - Scaffold doesn't have representations
+
+## Related Pages
+
+- [Light Scaffolding](/knowledge-base/models/intelligence-paradigms/light-scaffolding) - Simpler tool use patterns
+- [Dense Transformers](/knowledge-base/models/intelligence-paradigms/dense-transformers) - Underlying model architecture
+- [AI Control Problem](/knowledge-base/risks/accident/loss-of-control/) - Broader control challenges
