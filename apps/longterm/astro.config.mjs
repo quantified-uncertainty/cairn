@@ -144,7 +144,7 @@ export default defineConfig({
                       { label: 'Intelligence Paradigms', collapsed: true, items: [
                           { slug: 'knowledge-base/intelligence-paradigms' },
                           { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { target: '_blank' } },
-                          { label: 'Safety Matrix', link: '/knowledge-base/models/safety-generalizability/matrix', attrs: { target: '_blank' } },
+                          { label: 'Safety Matrix', link: '/knowledge-base/safety-generalizability/matrix', attrs: { target: '_blank' } },
                           { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
                       ]},
                       { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },

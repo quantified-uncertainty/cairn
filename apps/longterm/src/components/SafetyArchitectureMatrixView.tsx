@@ -208,7 +208,7 @@ export default function SafetyArchitectureMatrixView() {
           <nav>
             <a href="/knowledge-base/safety-approaches/table">Approaches</a>
             <a href="/knowledge-base/architecture-scenarios/table">Architectures</a>
-            <a href="/knowledge-base/models/safety-generalizability/matrix" className="active">Matrix</a>
+            <a href="/knowledge-base/safety-generalizability/matrix" className="active">Matrix</a>
           </nav>
         </div>
         <div className="mx-content">

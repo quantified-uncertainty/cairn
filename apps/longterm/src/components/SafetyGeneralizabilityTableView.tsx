@@ -191,9 +191,9 @@ export default function SafetyGeneralizabilityTableView() {
           </a>
           <h1>Safety Research Generalizability</h1>
           <nav>
-            <a href="/knowledge-base/models/safety-generalizability/graph">Graph</a>
-            <a href="/knowledge-base/models/safety-generalizability/table" className="active">Table</a>
-            <a href="/knowledge-base/models/safety-generalizability/matrix">Matrix</a>
+            <a href="/knowledge-base/safety-generalizability/graph">Graph</a>
+            <a href="/knowledge-base/safety-generalizability/table" className="active">Table</a>
+            <a href="/knowledge-base/safety-generalizability/matrix">Matrix</a>
           </nav>
         </div>
         <div className="st-content">
