@@ -2,7 +2,7 @@
 // Evaluates safety techniques on whether they actually make the world safer
 // vs. primarily enabling more capable (potentially dangerous) systems
 
-import { SAFETY_APPROACHES, CATEGORIES, type SafetyApproach, type RatedProperty } from '../data/safety-approaches-data';
+import { SAFETY_APPROACHES, CATEGORIES, type SafetyApproach, type RatedProperty, type ArchitectureRelevance } from '../data/safety-approaches-data';
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -212,6 +212,28 @@ const styles = `
   .sa-badge.maintain { background: #e5e7eb; color: #374151; }
   .sa-badge.increase { background: #86efac; color: #14532d; }
   .sa-badge.prioritize { background: #166534; color: white; font-weight: 700; }
+  /* Architecture Relevance */
+  .sa-badge.arch-critical { background: #166534; color: white; }
+  .sa-badge.arch-high { background: #22c55e; color: white; }
+  .sa-badge.arch-medium { background: #fef08a; color: #713f12; }
+  .sa-badge.arch-low { background: #fed7aa; color: #9a3412; }
+  .sa-badge.arch-na { background: #f3f4f6; color: #6b7280; }
+  .sa-arch-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .sa-arch-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+  }
+  .sa-arch-name {
+    color: #374151;
+    font-size: 8px;
+    max-width: 60px;
+  }
   .sa-cell-note {
     font-size: 9px;
     color: #9ca3af;
@@ -356,6 +378,33 @@ function RatingCell({ rating }: { rating: RatedProperty }) {
   );
 }
 
+function getArchBadgeClass(level: string): string {
+  switch (level) {
+    case 'CRITICAL': return 'arch-critical';
+    case 'HIGH': return 'arch-high';
+    case 'MEDIUM': return 'arch-medium';
+    case 'LOW': return 'arch-low';
+    case 'NOT_APPLICABLE': return 'arch-na';
+    default: return 'arch-medium';
+  }
+}
+
+function ArchBadge({ level }: { level: string }) {
+  const shortLevel = level === 'NOT_APPLICABLE' ? 'N/A' : level.charAt(0);
+  return <span className={`sa-badge ${getArchBadgeClass(level)}`} title={level}>{shortLevel}</span>;
+}
+
+function formatArchName(id: string): string {
+  const names: Record<string, string> = {
+    'scaled-transformers': 'Transformers',
+    'scaffolded-agents': 'Agents',
+    'ssm-based': 'SSMs',
+    'hybrid-neurosymbolic': 'Neuro-Sym',
+    'novel-unknown': 'Novel',
+  };
+  return names[id] || id;
+}
+
 function ApproachRow({ approach }: { approach: SafetyApproach }) {
   return (
     <tr>
@@ -398,6 +447,20 @@ function ApproachRow({ approach }: { approach: SafetyApproach }) {
             <div key={critique} className="sa-critique">- {critique}</div>
           ))}
         </div>
+      </td>
+      <td>
+        {approach.architectureRelevance ? (
+          <div className="sa-arch-list">
+            {approach.architectureRelevance.slice(0, 3).map(arch => (
+              <div key={arch.architectureId} className="sa-arch-item">
+                <ArchBadge level={arch.relevance} />
+                <span className="sa-arch-name">{formatArchName(arch.architectureId)}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span style={{ color: '#9ca3af', fontSize: '9px' }}>—</span>
+        )}
       </td>
     </tr>
   );
@@ -500,6 +563,9 @@ export default function SafetyApproachesTableView() {
                         <th className="context-col">Adoption</th>
                         <th className="context-col">Labs</th>
                         <th className="context-col">Critiques</th>
+                        <th className="context-col" style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                          <a href="/knowledge-base/models/architecture-scenarios/table" style={{ color: 'inherit', textDecoration: 'none' }}>Architectures</a>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>

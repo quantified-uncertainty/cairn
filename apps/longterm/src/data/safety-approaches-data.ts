@@ -36,6 +36,28 @@ export type DifferentialLevel =
   | 'CAPABILITY-LEANING' // Capability benefit > safety benefit
   | 'CAPABILITY-DOMINANT'; // Capability benefit >> safety benefit
 
+// Architecture relevance levels
+export type ArchitectureRelevanceLevel =
+  | 'CRITICAL'       // Essential for this architecture
+  | 'HIGH'           // Very relevant
+  | 'MEDIUM'         // Somewhat relevant
+  | 'LOW'            // Limited relevance
+  | 'NOT_APPLICABLE'; // Doesn't apply to this architecture
+
+// Architecture IDs from architecture-scenarios.yaml
+export type ArchitectureId =
+  | 'scaled-transformers'
+  | 'scaffolded-agents'
+  | 'ssm-based'
+  | 'hybrid-neurosymbolic'
+  | 'novel-unknown';
+
+export interface ArchitectureRelevance {
+  architectureId: ArchitectureId;
+  relevance: ArchitectureRelevanceLevel;
+  note: string;
+}
+
 export interface SafetyApproach {
   id: string;
   name: string;
@@ -76,6 +98,9 @@ export interface SafetyApproach {
   keyPapers: string[];
   keyLabs: string[];
   mainCritiques: string[];
+
+  // Architecture relevance
+  architectureRelevance?: ArchitectureRelevance[];
 }
 
 export const SAFETY_APPROACHES: SafetyApproach[] = [
@@ -142,6 +167,13 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'Doesn\'t ensure actual alignment',
       'May hide rather than eliminate bad behavior'
     ],
+    architectureRelevance: [
+      { architectureId: 'scaled-transformers', relevance: 'CRITICAL', note: 'Primary use case; defines modern LLM training' },
+      { architectureId: 'scaffolded-agents', relevance: 'HIGH', note: 'Components can be RLHF-trained' },
+      { architectureId: 'ssm-based', relevance: 'HIGH', note: 'Same training paradigm applies' },
+      { architectureId: 'hybrid-neurosymbolic', relevance: 'MEDIUM', note: 'Applies to neural components' },
+      { architectureId: 'novel-unknown', relevance: 'MEDIUM', note: 'Training paradigm may transfer' },
+    ],
   },
 
   {
@@ -204,6 +236,13 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'AI feedback may amplify model biases',
       'Doesn\'t solve fundamental alignment'
     ],
+    architectureRelevance: [
+      { architectureId: 'scaled-transformers', relevance: 'CRITICAL', note: 'Core Anthropic approach for transformers' },
+      { architectureId: 'scaffolded-agents', relevance: 'HIGH', note: 'Can apply to agent components' },
+      { architectureId: 'ssm-based', relevance: 'HIGH', note: 'Same training paradigm applies' },
+      { architectureId: 'hybrid-neurosymbolic', relevance: 'MEDIUM', note: 'Neural components only' },
+      { architectureId: 'novel-unknown', relevance: 'MEDIUM', note: 'Principles may transfer' },
+    ],
   },
 
   {
@@ -265,6 +304,13 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'May not converge to truth',
       'Sophisticated debaters could mislead humans',
       'Unproven empirically'
+    ],
+    architectureRelevance: [
+      { architectureId: 'scaled-transformers', relevance: 'HIGH', note: 'Primary target architecture' },
+      { architectureId: 'scaffolded-agents', relevance: 'MEDIUM', note: 'Could apply to multi-agent debates' },
+      { architectureId: 'ssm-based', relevance: 'HIGH', note: 'Architecture-agnostic technique' },
+      { architectureId: 'hybrid-neurosymbolic', relevance: 'MEDIUM', note: 'Could complement symbolic reasoning' },
+      { architectureId: 'novel-unknown', relevance: 'MEDIUM', note: 'General technique may transfer' },
     ],
   },
 
@@ -578,6 +624,13 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'Doesn\'t scale yet',
       'May be fundamentally intractable',
       'Even if we understand, can we act on it?'
+    ],
+    architectureRelevance: [
+      { architectureId: 'scaled-transformers', relevance: 'CRITICAL', note: 'Primary target; most research here' },
+      { architectureId: 'scaffolded-agents', relevance: 'LOW', note: 'Can analyze components but not system behavior' },
+      { architectureId: 'ssm-based', relevance: 'MEDIUM', note: 'New architecture needs new techniques' },
+      { architectureId: 'hybrid-neurosymbolic', relevance: 'MEDIUM', note: 'Neural parts interpretable; symbolic already is' },
+      { architectureId: 'novel-unknown', relevance: 'LOW', note: 'Techniques may not transfer' },
     ],
   },
 
@@ -1204,6 +1257,13 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'Reduces usefulness',
       'Sophisticated AI may escape',
       'Social engineering attacks'
+    ],
+    architectureRelevance: [
+      { architectureId: 'scaled-transformers', relevance: 'MEDIUM', note: 'Mostly API-level; limited internal containment' },
+      { architectureId: 'scaffolded-agents', relevance: 'CRITICAL', note: 'Essential for agentic systems with tool access' },
+      { architectureId: 'ssm-based', relevance: 'MEDIUM', note: 'Same containment applies' },
+      { architectureId: 'hybrid-neurosymbolic', relevance: 'HIGH', note: 'Can constrain symbolic reasoning paths' },
+      { architectureId: 'novel-unknown', relevance: 'HIGH', note: 'Containment always relevant' },
     ],
   },
 
