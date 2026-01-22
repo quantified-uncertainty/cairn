@@ -206,8 +206,8 @@ export default function SafetyArchitectureMatrixView() {
           <a href="/knowledge-base/intelligence-paradigms/">← Intelligence Paradigms</a>
           <h1>Safety × Architecture Compatibility Matrix</h1>
           <nav>
-            <a href="/knowledge-base/models/safety-generalizability/table">Approaches</a>
-            <a href="/knowledge-base/models/architecture-scenarios/table">Architectures</a>
+            <a href="/knowledge-base/safety-approaches/table">Approaches</a>
+            <a href="/knowledge-base/architecture-scenarios/table">Architectures</a>
             <a href="/knowledge-base/models/safety-generalizability/matrix" className="active">Matrix</a>
           </nav>
         </div>

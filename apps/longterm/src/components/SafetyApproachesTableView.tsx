@@ -472,7 +472,7 @@ export default function SafetyApproachesTableView() {
       <style>{styles}</style>
       <div className="sa-page">
         <div className="sa-header">
-          <a href="/knowledge-base/models/">← Models</a>
+          <a href="/knowledge-base/">← Knowledge Base</a>
           <h1>AI Safety Approaches: Safety vs Capability Tradeoffs</h1>
         </div>
         <div className="sa-content">
@@ -564,7 +564,7 @@ export default function SafetyApproachesTableView() {
                         <th className="context-col">Labs</th>
                         <th className="context-col">Critiques</th>
                         <th className="context-col" style={{ background: '#e0e7ff', color: '#3730a3' }}>
-                          <a href="/knowledge-base/models/architecture-scenarios/table" style={{ color: 'inherit', textDecoration: 'none' }}>Architectures</a>
+                          <a href="/knowledge-base/architecture-scenarios/table" style={{ color: 'inherit', textDecoration: 'none' }}>Architectures</a>
                         </th>
                       </tr>
                     </thead>

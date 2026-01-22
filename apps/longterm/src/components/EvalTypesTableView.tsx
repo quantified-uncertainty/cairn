@@ -828,12 +828,12 @@ export default function EvalTypesTableView() {
       <style>{styles}</style>
       <div className="ev-page">
         <div className="ev-header">
-          <a href="/knowledge-base/models/">← Models</a>
+          <a href="/knowledge-base/">← Knowledge Base</a>
           <h1>AI Evaluation Types - Strategic Analysis</h1>
           <nav>
             <a href="/knowledge-base/models/eval-types/table" className="active">Table</a>
-            <a href="/knowledge-base/models/architecture-scenarios/table">Architectures</a>
-            <a href="/knowledge-base/models/safety-generalizability/matrix">Matrix</a>
+            <a href="/knowledge-base/architecture-scenarios/table">Architectures</a>
+            <a href="/knowledge-base/safety-approaches/table">Safety Approaches</a>
           </nav>
         </div>
 

@@ -1117,8 +1117,8 @@ export default function ArchitectureScenariosTableView() {
           <a href="/knowledge-base/intelligence-paradigms/">← Intelligence Paradigms</a>
           <h1>Scalable Intelligence Paradigms</h1>
           <nav>
-            <a href="/knowledge-base/models/architecture-scenarios/table" className="active">Table</a>
-            <a href="/knowledge-base/models/safety-generalizability/matrix">Matrix</a>
+            <a href="/knowledge-base/architecture-scenarios/table" className="active">Table</a>
+            <a href="/knowledge-base/safety-approaches/table">Safety Approaches</a>
           </nav>
         </div>
 
