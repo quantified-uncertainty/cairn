@@ -152,9 +152,12 @@ function runCheck(check) {
     const scriptPath = join(__dirname, check.script);
     const childArgs = CI_MODE ? ['--ci'] : [];
 
-    // Support alternative runners (e.g., 'tsx' for TypeScript scripts)
-    const runner = check.runner === 'tsx' ? 'npx' : 'node';
-    const runnerArgs = check.runner === 'tsx' ? ['tsx', scriptPath, ...childArgs] : [scriptPath, ...childArgs];
+    // Support alternative runners for TypeScript scripts
+    // Use tsx/esm loader to avoid IPC pipe issues in sandboxed environments
+    const runner = 'node';
+    const runnerArgs = check.runner === 'tsx'
+      ? ['--import', 'tsx/esm', '--no-warnings', scriptPath, ...childArgs]
+      : [scriptPath, ...childArgs];
 
     const child = spawn(runner, runnerArgs, {
       cwd: process.cwd(),
