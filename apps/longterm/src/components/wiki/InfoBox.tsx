@@ -183,6 +183,17 @@ const typeLabels: Record<EntityType, { label: string; color: string }> = {
   'model': { label: 'Model', color: '#8b5cf6' },
   'parameter': { label: 'Parameter', color: '#d946ef' },
   'metric': { label: 'Metric', color: '#2563eb' },
+  'safety-approaches': { label: 'Safety Approach', color: '#10b981' },
+  'policies': { label: 'Policies', color: '#0d9488' },
+  'concepts': { label: 'Concepts', color: '#6366f1' },
+  'events': { label: 'Event', color: '#f59e0b' },
+  'models': { label: 'Models', color: '#8b5cf6' },
+  'argument': { label: 'Argument', color: '#ef4444' },
+  'ai-transition-model-parameter': { label: 'ATM Parameter', color: '#d946ef' },
+  'ai-transition-model-metric': { label: 'ATM Metric', color: '#2563eb' },
+  'ai-transition-model-scenario': { label: 'ATM Scenario', color: '#9333ea' },
+  'ai-transition-model-factor': { label: 'ATM Factor', color: '#f97316' },
+  'ai-transition-model-subitem': { label: 'ATM Sub-item', color: '#64748b' },
 };
 
 const defaultTypeInfo = { label: 'Entry', color: '#6b7280' };
