@@ -141,6 +141,12 @@ export default defineConfig({
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
                       { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
+                      { label: 'Intelligence Paradigms', collapsed: true, items: [
+                          { slug: 'knowledge-base/intelligence-paradigms' },
+                          { label: 'Comparison Table', link: '/knowledge-base/models/architecture-scenarios/table', attrs: { target: '_blank' } },
+                          { label: 'Safety Matrix', link: '/knowledge-base/models/safety-generalizability/matrix', attrs: { target: '_blank' } },
+                          { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
+                      ]},
                       { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
                       { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
                       { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },

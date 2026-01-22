@@ -203,7 +203,7 @@ export default function SafetyArchitectureMatrixView() {
       <style>{styles}</style>
       <div className="mx-page">
         <div className="mx-header">
-          <a href="/knowledge-base/models/">← Models</a>
+          <a href="/knowledge-base/intelligence-paradigms/">← Intelligence Paradigms</a>
           <h1>Safety × Architecture Compatibility Matrix</h1>
           <nav>
             <a href="/knowledge-base/models/safety-generalizability/table">Approaches</a>
