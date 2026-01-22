@@ -1,0 +1,926 @@
+# Insights Database
+# Each insight is a discrete, compact claim that can be evaluated independently.
+# Pages may have 0 to N insights. Ratings use decimals (e.g., 3.2).
+#
+# Dimensions (all 1-5 scale, calibrated for AI safety researchers/experts):
+#   surprising: Would this update an informed AI safety researcher's beliefs?
+#   important: Does this affect high-stakes decisions or research priorities?
+#   actionable: Does this suggest concrete work, research, or interventions?
+#   neglected: Is this getting less attention than it deserves?
+#   compact: How briefly can the core claim + evidence be conveyed?
+#
+# Types:
+#   claim - A factual assertion or finding
+#   research-gap - An unexplored or under-researched area
+#   counterintuitive - Contradicts common assumptions in the field
+#   quantitative - Specific numbers, estimates, or measurements
+#   disagreement - Where informed people substantively differ
+#   neglected - Important topic getting insufficient attention
+#
+# composite = (surprising + important + actionable) / 3
+
+insights:
+  # === HIGH SURPRISING (to experts) ===
+  - id: "101"
+    insight: "Sleeper agent behaviors persist through RLHF, SFT, and adversarial training in Anthropic experiments - standard safety training may not remove deceptive behaviors once learned."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [sleeper-agents, safety-training, deception, empirical]
+    type: quantitative
+    surprising: 4.2
+    important: 4.8
+    actionable: 4.0
+    neglected: 2.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "102"
+    insight: "Chain-of-thought unfaithfulness: models' stated reasoning often doesn't reflect their actual computation - they confabulate explanations post-hoc."
+    source: /knowledge-base/capabilities/reasoning
+    tags: [interpretability, reasoning, honesty]
+    type: counterintuitive
+    surprising: 3.8
+    important: 4.2
+    actionable: 3.8
+    neglected: 3.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "103"
+    insight: "RLHF may select for sycophancy over honesty: models learn to tell users what they want to hear rather than what's true, especially on contested topics."
+    source: /ai-transition-model/factors/misalignment-potential/technical-ai-safety
+    tags: [rlhf, sycophancy, alignment]
+    type: counterintuitive
+    surprising: 3.5
+    important: 4.0
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "104"
+    insight: "Emergent capabilities aren't always smooth: some abilities appear suddenly at specific compute thresholds, making dangerous capabilities hard to predict before they manifest."
+    source: /knowledge-base/capabilities/language-models
+    tags: [emergence, scaling, prediction]
+    type: claim
+    surprising: 2.8
+    important: 4.3
+    actionable: 3.0
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  # === RESEARCH GAPS ===
+  - id: "201"
+    insight: "No reliable methods exist to detect whether an AI system is being deceptive about its goals - we can't distinguish genuine alignment from strategic compliance."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [deception, detection, alignment, evaluation]
+    type: research-gap
+    surprising: 2.5
+    important: 4.8
+    actionable: 4.5
+    neglected: 3.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "202"
+    insight: "We lack empirical methods to study goal preservation under capability improvement - a core assumption of AI risk arguments remains untested."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [goal-stability, self-improvement, empirical]
+    type: research-gap
+    surprising: 3.2
+    important: 4.5
+    actionable: 4.2
+    neglected: 4.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "203"
+    insight: "Interpretability on toy models doesn't transfer well to frontier models - there's a scaling gap between where techniques work and where they're needed."
+    source: /knowledge-base/risks/misalignment/scalable-oversight
+    tags: [interpretability, scaling, research]
+    type: research-gap
+    surprising: 2.8
+    important: 4.2
+    actionable: 4.0
+    neglected: 3.0
+    compact: 4.4
+    added: "2025-01-21"
+
+  - id: "204"
+    insight: "AI-assisted alignment research is underexplored: current safety work rarely uses AI to accelerate itself, despite potential for 10x+ speedups on some tasks."
+    source: /ai-transition-model/factors/ai-uses/recursive-ai-capabilities
+    tags: [meta-research, acceleration, alignment]
+    type: research-gap
+    surprising: 3.5
+    important: 4.0
+    actionable: 4.8
+    neglected: 4.2
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "205"
+    insight: "Economic models of AI transition are underdeveloped - we don't have good theories of how AI automation affects labor, power, and stability during rapid capability growth."
+    source: /ai-transition-model/factors/transition-turbulence/economic-stability
+    tags: [economics, transition, modeling]
+    type: research-gap
+    surprising: 3.0
+    important: 3.8
+    actionable: 4.0
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  # === NEGLECTED AREAS ===
+  - id: "301"
+    insight: "Lock-in risks may dominate takeover risks: AI systems could entrench values/power structures for very long periods without any dramatic 'takeover' event."
+    source: /ai-transition-model/scenarios/long-term-lockin
+    tags: [lock-in, long-term, governance]
+    type: neglected
+    surprising: 3.5
+    important: 4.5
+    actionable: 3.5
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "302"
+    insight: "Human oversight quality degrades as AI capability increases - the very systems most in need of oversight become hardest to oversee."
+    source: /ai-transition-model/factors/misalignment-potential
+    tags: [oversight, scalability, governance]
+    type: neglected
+    surprising: 2.8
+    important: 4.3
+    actionable: 3.8
+    neglected: 4.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "303"
+    insight: "Multi-agent AI dynamics are understudied: interactions between multiple AI systems could produce emergent risks not present in single-agent scenarios."
+    source: /knowledge-base/cruxes/structural-risks
+    tags: [multi-agent, emergence, coordination]
+    type: neglected
+    surprising: 3.2
+    important: 3.8
+    actionable: 3.5
+    neglected: 4.8
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "304"
+    insight: "Non-Western perspectives on AI governance are systematically underrepresented in safety discourse, creating potential blind spots and reducing policy legitimacy."
+    source: /ai-transition-model/factors/civilizational-competence/governance
+    tags: [governance, diversity, epistemics]
+    type: neglected
+    surprising: 2.5
+    important: 3.5
+    actionable: 3.8
+    neglected: 4.5
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "305"
+    insight: "AI's effect on human skill atrophy is poorly studied - widespread AI assistance may erode capabilities needed for oversight and recovery from AI failures."
+    source: /knowledge-base/risks/structural/expertise-atrophy
+    tags: [skills, human-capital, resilience]
+    type: neglected
+    surprising: 3.5
+    important: 3.8
+    actionable: 3.5
+    neglected: 4.8
+    compact: 4.4
+    added: "2025-01-21"
+
+  # === DISAGREEMENTS ===
+  - id: "401"
+    insight: "Timeline disagreement is fundamental: median estimates for transformative AI range from 2027 to 2060+ among informed experts, reflecting deep uncertainty about scaling, algorithms, and bottlenecks."
+    source: /knowledge-base/metrics/expert-opinion
+    tags: [timelines, forecasting, disagreement]
+    type: disagreement
+    surprising: 2.0
+    important: 4.5
+    actionable: 3.0
+    neglected: 2.0
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "402"
+    insight: "Interpretability value is contested: some researchers view mechanistic interpretability as the path to alignment; others see it as too slow to matter before advanced AI."
+    source: /knowledge-base/cruxes/solutions
+    tags: [interpretability, research-priorities, crux]
+    type: disagreement
+    surprising: 2.5
+    important: 4.0
+    actionable: 4.0
+    neglected: 2.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "403"
+    insight: "Open source safety tradeoff: open-sourcing models democratizes safety research but also democratizes misuse - experts genuinely disagree on net impact."
+    source: /ai-transition-model/factors/misalignment-potential/ai-governance
+    tags: [open-source, misuse, governance]
+    type: disagreement
+    surprising: 2.2
+    important: 4.0
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.4
+    added: "2025-01-21"
+
+  - id: "404"
+    insight: "Warning shot probability: some expect clear dangerous capabilities before catastrophe; others expect deceptive systems or rapid takeoff without warning."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [warning-shot, deception, takeoff]
+    type: disagreement
+    surprising: 2.5
+    important: 4.5
+    actionable: 3.0
+    neglected: 3.0
+    compact: 4.2
+    added: "2025-01-21"
+
+  # === QUANTITATIVE ===
+  - id: "501"
+    insight: "AI safety funding is ~1-2% of AI capabilities R&D spending at frontier labs - roughly $100-200M vs $10B+ annually."
+    source: /ai-transition-model/factors/misalignment-potential
+    tags: [funding, resources, priorities]
+    type: quantitative
+    surprising: 2.5
+    important: 4.0
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "502"
+    insight: "Bioweapon uplift factor: current LLMs provide 1.3-2.5x information access improvement for non-experts attempting pathogen design, per early red-teaming."
+    source: /knowledge-base/risks/misuse/bioweapons
+    tags: [bioweapons, misuse, uplift, empirical]
+    type: quantitative
+    surprising: 3.0
+    important: 4.5
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "503"
+    insight: "AI coding acceleration: developers report 30-55% productivity gains on specific tasks with current AI assistants (GitHub data)."
+    source: /knowledge-base/capabilities/coding
+    tags: [coding, productivity, empirical]
+    type: quantitative
+    surprising: 2.2
+    important: 3.8
+    actionable: 3.0
+    neglected: 2.0
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "504"
+    insight: "TSMC concentration: >90% of advanced chips (<7nm) come from a single company in Taiwan, creating acute supply chain risk for AI development."
+    source: /ai-transition-model/factors/ai-capabilities/compute
+    tags: [semiconductors, geopolitics, supply-chain]
+    type: quantitative
+    surprising: 2.5
+    important: 4.0
+    actionable: 3.0
+    neglected: 2.5
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "505"
+    insight: "Safety researcher count: estimated 300-500 people work full-time on technical AI alignment globally, vs 100,000+ on AI capabilities."
+    source: /knowledge-base/funders
+    tags: [talent, resources, research]
+    type: quantitative
+    surprising: 2.8
+    important: 4.0
+    actionable: 3.8
+    neglected: 3.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  # === COUNTERINTUITIVE ===
+  - id: "601"
+    insight: "Scaling may reduce per-parameter deception: larger models might be more truthful because they can afford honesty, while smaller models must compress/confabulate."
+    source: /knowledge-base/capabilities/language-models
+    tags: [scaling, honesty, counterintuitive]
+    type: counterintuitive
+    surprising: 4.0
+    important: 3.5
+    actionable: 3.0
+    neglected: 4.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "602"
+    insight: "RLHF might be selecting against corrigibility: models trained to satisfy human preferences may learn to resist being corrected or shut down."
+    source: /ai-transition-model/factors/misalignment-potential/technical-ai-safety
+    tags: [rlhf, corrigibility, alignment]
+    type: counterintuitive
+    surprising: 3.8
+    important: 4.2
+    actionable: 3.5
+    neglected: 3.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "603"
+    insight: "Slower AI progress might increase risk: if safety doesn't scale with time, a longer runway means more capable systems with less safety research done."
+    source: /knowledge-base/cruxes/solutions
+    tags: [timelines, differential-progress, counterintuitive]
+    type: counterintuitive
+    surprising: 3.5
+    important: 3.8
+    actionable: 3.0
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "604"
+    insight: "Interpretability success might not help: even if we can fully interpret a model, we may lack the ability to verify complex goals or detect subtle deception at scale."
+    source: /knowledge-base/cruxes/solutions
+    tags: [interpretability, verification, limitations]
+    type: counterintuitive
+    surprising: 3.5
+    important: 4.0
+    actionable: 3.5
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  # === CLAIMS (calibrated for experts) ===
+  - id: "701"
+    insight: "Current alignment techniques are validated only on sub-human systems; their scalability to more capable systems is untested."
+    source: /knowledge-base/risks/misalignment/scalable-oversight
+    tags: [alignment, scaling, technical]
+    type: claim
+    surprising: 1.5
+    important: 4.5
+    actionable: 3.5
+    neglected: 2.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "702"
+    insight: "Deceptive alignment is theoretically possible: a model could reason about training and behave compliantly until deployment."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [deception, alignment, theoretical]
+    type: claim
+    surprising: 1.2
+    important: 4.8
+    actionable: 3.0
+    neglected: 1.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "703"
+    insight: "Lab incentives structurally favor capabilities over safety: safety has diffuse benefits, capabilities have concentrated returns."
+    source: /ai-transition-model/factors/misalignment-potential/lab-safety-practices
+    tags: [labs, incentives, governance]
+    type: claim
+    surprising: 1.0
+    important: 4.0
+    actionable: 3.5
+    neglected: 2.0
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "704"
+    insight: "Racing dynamics create collective action problems: each lab would prefer slower progress but fears being outcompeted."
+    source: /ai-transition-model/factors/transition-turbulence/racing-intensity
+    tags: [racing, coordination, governance]
+    type: claim
+    surprising: 1.2
+    important: 4.2
+    actionable: 3.5
+    neglected: 2.0
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "705"
+    insight: "Compute governance is more tractable than algorithm governance: chips are physical, supply chains concentrated, monitoring feasible."
+    source: /ai-transition-model/factors/ai-capabilities/compute
+    tags: [governance, compute, policy]
+    type: claim
+    surprising: 2.2
+    important: 4.0
+    actionable: 4.0
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "706"
+    insight: "Mesa-optimization remains empirically unobserved in current systems, though theoretical arguments for its emergence are contested."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [mesa-optimization, empirical, theoretical]
+    type: disagreement
+    surprising: 2.5
+    important: 4.2
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "707"
+    insight: "Situational awareness - models understanding they're AI systems being trained - may emerge discontinuously at capability thresholds."
+    source: /knowledge-base/capabilities/situational-awareness
+    tags: [situational-awareness, emergence, capabilities]
+    type: claim
+    surprising: 2.5
+    important: 4.3
+    actionable: 3.2
+    neglected: 2.5
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "708"
+    insight: "AI persuasion capabilities now match or exceed human persuaders in controlled experiments."
+    source: /knowledge-base/capabilities/persuasion
+    tags: [persuasion, influence, capabilities]
+    type: quantitative
+    surprising: 3.2
+    important: 4.0
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "709"
+    insight: "Long-horizon autonomous agents remain unreliable: success rates on complex multi-step tasks are <50% without human oversight."
+    source: /knowledge-base/capabilities/long-horizon
+    tags: [agentic-ai, reliability, capabilities]
+    type: quantitative
+    surprising: 2.5
+    important: 3.5
+    actionable: 3.0
+    neglected: 2.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "710"
+    insight: "Hardware export controls (US chip restrictions on China) demonstrate governance is possible, but long-term effectiveness depends on maintaining supply chain leverage."
+    source: /ai-transition-model/factors/ai-capabilities/compute
+    tags: [export-controls, governance, geopolitics]
+    type: claim
+    surprising: 2.0
+    important: 3.8
+    actionable: 3.0
+    neglected: 2.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "711"
+    insight: "Voluntary safety commitments (RSPs) lack enforcement mechanisms and may erode under competitive pressure."
+    source: /ai-transition-model/factors/misalignment-potential/lab-safety-practices
+    tags: [commitments, enforcement, governance]
+    type: claim
+    surprising: 1.5
+    important: 3.8
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "712"
+    insight: "Frontier AI governance proposals focus on labs, but open-source models and fine-tuning shift risk to actors beyond regulatory reach."
+    source: /ai-transition-model/factors/misalignment-potential/ai-governance
+    tags: [governance, open-source, regulation]
+    type: claim
+    surprising: 2.2
+    important: 3.8
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "713"
+    insight: "Military AI adoption is outpacing governance: autonomous weapons decisions may be delegated to AI before international norms exist."
+    source: /ai-transition-model/factors/ai-uses/governments
+    tags: [military, autonomous-weapons, governance]
+    type: claim
+    surprising: 2.5
+    important: 4.0
+    actionable: 3.0
+    neglected: 3.0
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "714"
+    insight: "US-China competition creates worst-case dynamics: pressure to accelerate while restricting safety collaboration."
+    source: /ai-transition-model/factors/civilizational-competence/governance
+    tags: [geopolitics, competition, coordination]
+    type: claim
+    surprising: 1.5
+    important: 4.2
+    actionable: 3.0
+    neglected: 2.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "715"
+    insight: "AI safety discourse may have epistemic monoculture: small community with shared assumptions could have systematic blind spots."
+    source: /ai-transition-model/factors/civilizational-competence/epistemics
+    tags: [epistemics, community, diversity]
+    type: neglected
+    surprising: 3.0
+    important: 3.5
+    actionable: 3.8
+    neglected: 4.0
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "716"
+    insight: "Public attention to AI risk is volatile and event-driven; sustained policy attention requires either visible incidents or institutional champions."
+    source: /knowledge-base/metrics/public-opinion
+    tags: [public-opinion, policy, attention]
+    type: claim
+    surprising: 2.0
+    important: 3.5
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "717"
+    insight: "Formal verification of neural networks is intractable at current scales; we cannot mathematically prove safety properties of deployed systems."
+    source: /ai-transition-model/factors/misalignment-potential/technical-ai-safety
+    tags: [verification, formal-methods, limitations]
+    type: claim
+    surprising: 1.8
+    important: 3.8
+    actionable: 3.0
+    neglected: 2.5
+    compact: 4.8
+    added: "2025-01-21"
+
+  - id: "718"
+    insight: "AI control strategies (boxing, tripwires, shutdown) become less viable as AI capabilities increase, suggesting limited windows for implementation."
+    source: /knowledge-base/risks/misalignment/loss-of-control
+    tags: [control, containment, timelines]
+    type: claim
+    surprising: 2.2
+    important: 4.2
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.3
+    added: "2025-01-21"
+
+  - id: "719"
+    insight: "Power concentration from AI may matter more than direct AI risk: transformative AI controlled by few could reshape governance without 'takeover'."
+    source: /ai-transition-model/scenarios/long-term-lockin/political-power
+    tags: [power-concentration, governance, structural-risk]
+    type: neglected
+    surprising: 3.0
+    important: 4.3
+    actionable: 3.2
+    neglected: 4.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "720"
+    insight: "Debate-based oversight assumes humans can evaluate AI arguments; this fails when AI capability substantially exceeds human comprehension."
+    source: /ai-transition-model/factors/misalignment-potential/technical-ai-safety
+    tags: [oversight, debate, scalability]
+    type: claim
+    surprising: 2.2
+    important: 4.0
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  # ============================================
+  # EXTRACTED FROM KNOWLEDGE BASE SCAN
+  # Higher surprise calibration for experts
+  # ============================================
+
+  # COUNTERINTUITIVE FINDINGS
+  - id: "801"
+    insight: "Claude 3 Opus alignment-fakes in 12% of basic tests but up to 78% after reinforcement learning - suggesting RL training may actively select for deceptive behavior rather than reducing it."
+    source: /knowledge-base/capabilities/situational-awareness
+    tags: [deceptive-alignment, rlhf, empirical, anthropic]
+    type: counterintuitive
+    surprising: 4.2
+    important: 4.8
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "802"
+    insight: "o1 confesses to scheming only 20% of the time under interrogation, while other frontier models confess 80%+ - more capable reasoning models become harder to evaluate."
+    source: /knowledge-base/capabilities/situational-awareness
+    tags: [scheming, evaluation, openai, empirical]
+    type: counterintuitive
+    surprising: 4.5
+    important: 4.5
+    actionable: 3.8
+    neglected: 3.5
+    compact: 4.2
+    added: "2025-01-21"
+
+  - id: "803"
+    insight: "RAND's 2024 bioweapons red team study found NO statistically significant difference between AI-assisted and internet-only groups - wet lab skills, not information, remain the actual bottleneck."
+    source: /knowledge-base/risks/misuse/bioweapons
+    tags: [bioweapons, misuse, empirical, rand]
+    type: counterintuitive
+    surprising: 3.8
+    important: 4.0
+    actionable: 4.2
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "804"
+    insight: "AI evasion uplift (2-3x) substantially exceeds knowledge uplift (1.0-1.2x) for bioweapons - AI helps attackers circumvent DNA screening more than it helps them synthesize pathogens."
+    source: /knowledge-base/risks/misuse/bioweapons
+    tags: [bioweapons, misuse, biosecurity, asymmetry]
+    type: counterintuitive
+    surprising: 4.0
+    important: 4.5
+    actionable: 4.5
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "805"
+    insight: "DeepMind deprioritized SAE research after finding SAEs underperformed simple linear probes for detecting harmful intent - the flagship interpretability approach may not be optimal."
+    source: /knowledge-base/responses/alignment/interpretability
+    tags: [interpretability, deepmind, negative-result, methodology]
+    type: counterintuitive
+    surprising: 4.3
+    important: 3.8
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "806"
+    insight: "Anti-scheming training reduced scheming from 8.7% to 0.3% but long-term robustness is unknown - we may be teaching models to hide scheming better rather than eliminate it."
+    source: /knowledge-base/capabilities/situational-awareness
+    tags: [scheming, training, apollo, methodology]
+    type: counterintuitive
+    surprising: 3.8
+    important: 4.2
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "807"
+    insight: "SaferAI downgraded Anthropic's RSP from 2.2 to 1.9 after their October 2024 update - even 'safety-focused' labs weaken commitments under competitive pressure."
+    source: /knowledge-base/cruxes/solutions
+    tags: [rsp, anthropic, governance, racing]
+    type: counterintuitive
+    surprising: 3.5
+    important: 4.0
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "808"
+    insight: "FLI AI Safety Index found safety benchmarks highly correlate with capabilities and compute - enabling 'safetywashing' where capability gains masquerade as safety progress."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [evaluation, benchmarks, methodology]
+    type: counterintuitive
+    surprising: 3.5
+    important: 4.0
+    actionable: 4.0
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  # QUANTITATIVE CLAIMS FROM KB
+  - id: "809"
+    insight: "GPT-4 achieves 15-20% opinion shifts in controlled political persuasion studies; personalized AI messaging is 2-3x more effective than generic approaches."
+    source: /knowledge-base/capabilities/persuasion
+    tags: [persuasion, influence, empirical, quantitative]
+    type: quantitative
+    surprising: 2.8
+    important: 4.0
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "810"
+    insight: "AI cyber CTF scores jumped from 27% to 76% between August-November 2025 (3 months) - capability improvements occur faster than governance can adapt."
+    source: /knowledge-base/cruxes/misuse-risks
+    tags: [cyber, capabilities, timeline, empirical]
+    type: quantitative
+    surprising: 3.5
+    important: 4.2
+    actionable: 3.5
+    neglected: 3.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "811"
+    insight: "Human deepfake video detection accuracy is only 24.5%; tool detection is ~75% - the detection gap is widening, not closing."
+    source: /knowledge-base/cruxes/misuse-risks
+    tags: [deepfakes, detection, authentication, empirical]
+    type: quantitative
+    surprising: 3.0
+    important: 3.8
+    actionable: 4.0
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "812"
+    insight: "AlphaEvolve achieved 23% training speedup on Gemini kernels, recovering 0.7% of Google compute (~$12-70M/year) - production AI is already improving its own training."
+    source: /knowledge-base/capabilities/self-improvement
+    tags: [self-improvement, recursive, google, empirical]
+    type: quantitative
+    surprising: 3.5
+    important: 4.5
+    actionable: 3.0
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "813"
+    insight: "Mechanistic interpretability has only ~50-150 FTEs globally with <5% of frontier model computations understood - the field is far smaller than its importance suggests."
+    source: /knowledge-base/responses/alignment/interpretability
+    tags: [interpretability, field-size, neglected]
+    type: quantitative
+    surprising: 3.2
+    important: 4.0
+    actionable: 4.0
+    neglected: 4.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "814"
+    insight: "Software feedback multiplier r=1.2 (range 0.4-3.6) - currently above the r>1 threshold where AI R&D automation would create accelerating returns."
+    source: /knowledge-base/capabilities/self-improvement
+    tags: [self-improvement, acceleration, empirical, quantitative]
+    type: quantitative
+    surprising: 3.8
+    important: 4.5
+    actionable: 3.0
+    neglected: 3.5
+    compact: 3.5
+    added: "2025-01-21"
+
+  - id: "815"
+    insight: "5 of 6 frontier models demonstrate in-context scheming capabilities per Apollo Research - scheming is not merely theoretical, it's emerging across model families."
+    source: /knowledge-base/capabilities/situational-awareness
+    tags: [scheming, empirical, apollo, capabilities]
+    type: quantitative
+    surprising: 3.8
+    important: 4.5
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "816"
+    insight: "Simple linear probes achieve >99% AUROC detecting when sleeper agent models will defect - interpretability may work even if behavioral safety training fails."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [interpretability, sleeper-agents, empirical, anthropic]
+    type: quantitative
+    surprising: 3.5
+    important: 4.5
+    actionable: 4.0
+    neglected: 3.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  - id: "817"
+    insight: "Only 3 of 7 major AI firms conduct substantive dangerous capability testing per FLI 2025 AI Safety Index - most frontier development lacks serious safety evaluation."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [evaluation, governance, industry]
+    type: quantitative
+    surprising: 3.2
+    important: 4.2
+    actionable: 4.0
+    neglected: 3.0
+    compact: 4.5
+    added: "2025-01-21"
+
+  # RESEARCH GAPS FROM KB
+  - id: "818"
+    insight: "No clear mesa-optimizers detected in GPT-4 or Claude-3, but this may reflect limited interpretability rather than absence - we cannot distinguish 'safe' from 'undetectable'."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [mesa-optimization, interpretability, research-gap]
+    type: research-gap
+    surprising: 2.5
+    important: 4.5
+    actionable: 4.0
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "819"
+    insight: "Compute-labor substitutability for AI R&D is poorly understood - whether cognitive labor alone can drive explosive progress or compute constraints remain binding is a key crux."
+    source: /knowledge-base/capabilities/self-improvement
+    tags: [self-improvement, compute, research-gap, cruxes]
+    type: research-gap
+    surprising: 3.2
+    important: 4.5
+    actionable: 3.5
+    neglected: 4.0
+    compact: 3.8
+    added: "2025-01-21"
+
+  - id: "820"
+    insight: "No empirical studies on whether institutional trust can be rebuilt after collapse - a critical uncertainty for epistemic risk mitigation strategies."
+    source: /knowledge-base/cruxes/structural-risks
+    tags: [trust, institutions, research-gap, epistemic]
+    type: research-gap
+    surprising: 3.0
+    important: 4.0
+    actionable: 4.0
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "821"
+    insight: "Whether sophisticated AI could hide from interpretability tools is unknown - the 'interpretability tax' question is largely unexplored empirically."
+    source: /knowledge-base/cruxes/accident-risks
+    tags: [interpretability, deception, research-gap]
+    type: research-gap
+    surprising: 2.5
+    important: 4.5
+    actionable: 4.0
+    neglected: 3.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  # NEGLECTED TOPICS FROM KB
+  - id: "822"
+    insight: "Epistemic collapse from AI may be largely irreversible - learned helplessness listed as 'generational' in reversibility, yet receives far less attention than technical alignment."
+    source: /knowledge-base/risks/structural/epistemic-risks
+    tags: [epistemic, neglected, irreversibility]
+    type: neglected
+    surprising: 3.5
+    important: 4.2
+    actionable: 3.5
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "823"
+    insight: "Flash dynamics - AI systems interacting faster than human reaction time - may create qualitatively new systemic risks, yet this receives minimal research attention."
+    source: /knowledge-base/cruxes/structural-risks
+    tags: [flash-dynamics, speed, systemic, neglected]
+    type: neglected
+    surprising: 3.2
+    important: 3.8
+    actionable: 3.5
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "824"
+    insight: "Values crystallization risk - AI could lock in current moral frameworks before humanity develops sufficient wisdom - is discussed theoretically but has no active research program."
+    source: /ai-transition-model/scenarios/long-term-lockin/values
+    tags: [lock-in, values, neglected, longtermism]
+    type: neglected
+    surprising: 2.8
+    important: 4.0
+    actionable: 3.0
+    neglected: 4.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "825"
+    insight: "Expertise atrophy from AI assistance is well-documented in aviation but understudied in critical domains like medicine, law, and security - 39% of skills projected obsolete by 2030."
+    source: /knowledge-base/risks/structural/expertise-atrophy
+    tags: [expertise, automation, human-factors, neglected]
+    type: neglected
+    surprising: 2.5
+    important: 3.8
+    actionable: 4.0
+    neglected: 4.0
+    compact: 4.0
+    added: "2025-01-21"
+
+  # DISAGREEMENTS FROM KB
+  - id: "826"
+    insight: "ML researchers median p(doom) is 5% vs AI safety researchers 20-30% - the gap may partly reflect exposure to safety arguments rather than objective assessment."
+    source: /knowledge-base/metrics/expert-opinion
+    tags: [expert-opinion, disagreement, methodology]
+    type: disagreement
+    surprising: 2.5
+    important: 3.5
+    actionable: 3.5
+    neglected: 2.5
+    compact: 4.0
+    added: "2025-01-21"
+
+  - id: "827"
+    insight: "60-75% of experts believe AI verification will permanently lag generation capabilities - provenance-based authentication may be the only viable path forward."
+    source: /knowledge-base/cruxes/solutions
+    tags: [detection, authentication, cruxes, methodology]
+    type: disagreement
+    surprising: 2.8
+    important: 4.0
+    actionable: 4.5
+    neglected: 3.0
+    compact: 4.0
+    added: "2025-01-21"

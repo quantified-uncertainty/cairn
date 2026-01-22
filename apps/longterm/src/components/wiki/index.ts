@@ -67,6 +67,9 @@ export { ModelsList } from './ModelsList';
 export { ModelRatings } from './ModelRatings';
 export { ModelsTable } from './ModelsTable';
 
+// Insights
+export { InsightsTable } from './InsightsTable';
+
 // Editorial / page management
 export { PageStatus } from './PageStatus';
 
