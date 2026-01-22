@@ -7,10 +7,17 @@
  *   node scripts/add-missing-nodes-to-master.mjs --apply    # Apply changes
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import yaml from 'js-yaml';
 
-const ENTITIES_PATH = 'src/data/entities/ai-transition-model.yaml';
+// AI Transition Model entities are split across multiple files
+const ENTITY_FILES = [
+  'src/data/entities/ai-transition-model-factors.yaml',
+  'src/data/entities/ai-transition-model-metrics.yaml',
+  'src/data/entities/ai-transition-model-parameters.yaml',
+  'src/data/entities/ai-transition-model-scenarios.yaml',
+  'src/data/entities/ai-transition-model-subitems.yaml',
+];
 const MASTER_GRAPH_PATH = 'src/data/graphs/ai-transition-model-master.yaml';
 
 const dryRun = process.argv.includes('--dry-run');
@@ -23,11 +30,18 @@ if (!dryRun && !apply) {
   process.exit(1);
 }
 
-// Load files
-const entitiesYaml = readFileSync(ENTITIES_PATH, 'utf8');
-const masterYamlContent = readFileSync(MASTER_GRAPH_PATH, 'utf8');
+// Load and combine all entity files
+const entities = [];
+for (const filePath of ENTITY_FILES) {
+  if (existsSync(filePath)) {
+    const content = yaml.load(readFileSync(filePath, 'utf8'));
+    if (Array.isArray(content)) {
+      entities.push(...content);
+    }
+  }
+}
 
-const entities = yaml.load(entitiesYaml);
+const masterYamlContent = readFileSync(MASTER_GRAPH_PATH, 'utf8');
 const masterGraph = yaml.load(masterYamlContent);
 
 // Extract all node IDs from master graph
