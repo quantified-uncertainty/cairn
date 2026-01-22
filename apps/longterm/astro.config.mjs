@@ -109,6 +109,11 @@ export default defineConfig({
                       { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
+                          { label: 'Safety Generalizability', collapsed: true, items: [
+                              { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table' },
+                              { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix' },
+                              { label: 'Graph View', link: '/knowledge-base/responses/safety-generalizability/graph' },
+                          ]},
                           { label: 'Governance', collapsed: true, items: [
                               { label: 'Overview', slug: 'knowledge-base/responses/governance' },
                               { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
@@ -143,8 +148,7 @@ export default defineConfig({
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
                       { label: 'Intelligence Paradigms', collapsed: true, items: [
                           { slug: 'knowledge-base/intelligence-paradigms' },
-                          { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { target: '_blank' } },
-                          { label: 'Safety Matrix', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { target: '_blank' } },
+                          { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table' },
                           { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
                       ]},
                       { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
