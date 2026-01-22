@@ -285,9 +285,9 @@ export default function SafetyGeneralizabilityGraphView() {
           </a>
           <h1>Safety Research Generalizability</h1>
           <nav>
-            <a href="/knowledge-base/safety-generalizability/graph" className="active">Graph</a>
-            <a href="/knowledge-base/safety-generalizability/table">Table</a>
-            <a href="/knowledge-base/safety-generalizability/matrix">Matrix</a>
+            <a href="/knowledge-base/responses/safety-generalizability/graph" className="active">Graph</a>
+            <a href="/knowledge-base/responses/safety-generalizability/table">Table</a>
+            <a href="/knowledge-base/responses/safety-generalizability/matrix">Matrix</a>
           </nav>
         </div>
         <div className="sg-content">
