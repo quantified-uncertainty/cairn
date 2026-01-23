@@ -1,0 +1,278 @@
+---
+title: Capability Unlearning / Removal
+description: >-
+  Methods to remove specific dangerous capabilities from trained AI models,
+  directly addressing misuse risks by eliminating harmful knowledge, though
+  current techniques face challenges around verification, capability recovery,
+  and general performance degradation.
+sidebar:
+  order: 58
+quality: 78
+importance: 76
+lastEdited: '2025-01-22'
+llmSummary: >-
+  Capability unlearning aims to remove specific dangerous capabilities from AI
+  models post-training, with benchmarks like WMDP measuring success at removing
+  bioweapon and cyberattack knowledge. Current methods show promise but face
+  challenges including capability recovery, verification difficulties, and
+  potential general capability degradation.
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Capability unlearning represents a direct approach to AI safety: rather than preventing misuse through behavioral constraints that might be circumvented, remove the dangerous capabilities themselves from the model. If a model genuinely doesn't know how to synthesize dangerous pathogens or construct cyberattacks, it cannot be misused for these purposes regardless of jailbreaks, fine-tuning attacks, or other elicitation techniques.
+
+The approach has gained significant research attention following the development of benchmarks like WMDP (Weapons of Mass Destruction Proxy) that measure model knowledge of dangerous topics including bioweapons, chemical weapons, and cyberattacks. Researchers have demonstrated that various techniques including gradient-based unlearning, representation engineering, and fine-tuning can reduce model performance on these benchmarks while preserving general capabilities.
+
+However, the field faces fundamental challenges that may limit its effectiveness. First, verifying complete capability removal is extremely difficult, as capabilities may be recoverable through fine-tuning, prompt engineering, or other elicitation methods. Second, dangerous and beneficial knowledge are often entangled, meaning removal may degrade useful capabilities. Third, for advanced AI systems, the model might understand what capabilities are being removed and resist or hide the remaining knowledge. These limitations suggest capability unlearning is best viewed as one layer in a defense-in-depth strategy rather than a complete solution.
+
+## Risk Assessment & Impact
+
+| Dimension | Assessment | Evidence | Timeline |
+|-----------|------------|----------|----------|
+| **Safety Uplift** | High (if works) | Would directly remove dangerous capabilities | Near to medium-term |
+| **Capability Uplift** | Negative | Explicitly removes capabilities | N/A |
+| **Net World Safety** | Helpful | Would be valuable if reliably achievable | Near-term |
+| **Lab Incentive** | Moderate | Useful for deployment compliance; may reduce utility | Current |
+| **Research Investment** | $5-20M/yr | Academic research, some lab interest | Current |
+| **Current Adoption** | Experimental | Research papers; not reliably deployed | Current |
+
+## Unlearning Approaches
+
+<Mermaid client:load chart={`
+flowchart TD
+    MODEL[Trained Model] --> IDENTIFY[Identify Dangerous Capabilities]
+    IDENTIFY --> LOCATE[Locate in Model]
+
+    LOCATE --> APPROACH{Unlearning Approach}
+
+    APPROACH --> GRADIENT[Gradient-Based]
+    APPROACH --> REPRENG[Representation Engineering]
+    APPROACH --> FINETUNE[Fine-Tuning]
+    APPROACH --> EDIT[Model Editing]
+
+    GRADIENT --> UPDATE[Update Weights]
+    REPRENG --> STEER[Activation Steering]
+    FINETUNE --> RETRAIN[Targeted Retraining]
+    EDIT --> MODIFY[Direct Weight Modification]
+
+    UPDATE --> VERIFY{Verification}
+    STEER --> VERIFY
+    RETRAIN --> VERIFY
+    MODIFY --> VERIFY
+
+    VERIFY -->|Passed| DEPLOY[Deploy]
+    VERIFY -->|Failed| ITERATE[Iterate]
+
+    ITERATE --> APPROACH
+
+    style MODEL fill:#e1f5ff
+    style DEPLOY fill:#d4edda
+    style ITERATE fill:#ffe6cc
+`} />
+
+### Gradient-Based Unlearning
+
+| Aspect | Description |
+|--------|-------------|
+| **Mechanism** | Compute gradients to increase loss on dangerous capabilities |
+| **Variants** | Gradient ascent, negative gradients, forgetting objectives |
+| **Strengths** | Principled approach; can target specific knowledge |
+| **Weaknesses** | May not fully remove; can degrade nearby capabilities |
+| **Status** | Active research; promising results |
+
+### Representation Engineering
+
+| Aspect | Description |
+|--------|-------------|
+| **Mechanism** | Identify and suppress activation directions for dangerous knowledge |
+| **Variants** | Activation steering, concept erasure |
+| **Strengths** | Direct intervention on representations |
+| **Weaknesses** | Model may route around interventions |
+| **Status** | Early research; some successes |
+
+### Fine-Tuning Based
+
+| Aspect | Description |
+|--------|-------------|
+| **Mechanism** | Fine-tune model to refuse or fail on dangerous queries |
+| **Variants** | Refusal training, safety fine-tuning |
+| **Strengths** | Simple; scales well |
+| **Weaknesses** | Capabilities may be recoverable |
+| **Status** | Commonly used; known limitations |
+
+### Model Editing
+
+| Aspect | Description |
+|--------|-------------|
+| **Mechanism** | Directly modify weights associated with specific knowledge |
+| **Variants** | ROME, MEMIT, localized editing |
+| **Strengths** | Precise targeting possible |
+| **Weaknesses** | Scaling challenges; incomplete removal |
+| **Status** | Active research; limited to factual knowledge |
+
+## Evaluation and Benchmarks
+
+### WMDP Benchmark
+
+The Weapons of Mass Destruction Proxy benchmark measures dangerous knowledge:
+
+| Category | Topics Covered | Measurement |
+|----------|---------------|-------------|
+| **Biosecurity** | Pathogen synthesis, enhancement | Multiple choice accuracy |
+| **Chemistry** | Chemical weapons, synthesis | Multiple choice accuracy |
+| **Cybersecurity** | Attack techniques, exploits | Multiple choice accuracy |
+
+### Unlearning Effectiveness
+
+| Metric | Description | Challenge |
+|--------|-------------|-----------|
+| **Benchmark Performance** | Score reduction on WMDP | May not capture all knowledge |
+| **Elicitation Resistance** | Robustness to jailbreaks | Hard to test exhaustively |
+| **Recovery Resistance** | Robustness to fine-tuning | Few-shot recovery possible |
+| **Capability Preservation** | General capability maintenance | Trade-off with removal |
+
+### Current Results
+
+| Method | WMDP Reduction | Capability Preservation | Recovery Resistance |
+|--------|----------------|------------------------|-------------------|
+| **RMU (Representation)** | ~50-70% | High | Medium |
+| **Gradient Ascent** | ~40-60% | Medium | Low-Medium |
+| **Fine-Tuning** | ~30-50% | High | Low |
+| **Combined Methods** | ~60-80% | Medium-High | Medium |
+
+## Key Challenges
+
+### Verification Problem
+
+| Challenge | Description | Severity |
+|-----------|-------------|----------|
+| **Cannot Prove Absence** | Can't verify complete removal | Critical |
+| **Unknown Elicitation** | New techniques may recover | High |
+| **Distribution Shift** | May perform differently in deployment | High |
+| **Measurement Limits** | Benchmarks don't capture everything | High |
+
+### Recovery Problem
+
+| Recovery Vector | Description | Mitigation |
+|-----------------|-------------|------------|
+| **Fine-Tuning** | Brief training can restore | Architectural constraints |
+| **Prompt Engineering** | Clever prompts elicit knowledge | Unknown |
+| **Few-Shot Learning** | Examples in context restore | Difficult |
+| **Tool Use** | External information augmentation | Scope limitation |
+
+### Capability Entanglement
+
+| Issue | Description | Impact |
+|-------|-------------|--------|
+| **Dual-Use Knowledge** | Dangerous and beneficial knowledge overlap | Limits what can be removed |
+| **Capability Foundations** | Dangerous capabilities built on general skills | Removal may degrade broadly |
+| **Semantic Similarity** | Related concepts affected | Collateral damage |
+
+### Adversarial Considerations
+
+| Consideration | Description | For Advanced AI |
+|---------------|-------------|-----------------|
+| **Resistance** | Model might resist unlearning | Possible at high capability |
+| **Hiding** | Model might hide remaining knowledge | Deception risk |
+| **Relearning** | Model might relearn from context | In-context learning |
+
+## Defense-in-Depth Role
+
+### Complementary Interventions
+
+| Layer | Intervention | Synergy with Unlearning |
+|-------|--------------|------------------------|
+| **Training** | RLHF, Constitutional AI | Behavioral + capability removal |
+| **Runtime** | Output filtering | Catch failures of unlearning |
+| **Deployment** | Structured access | Limit recovery attempts |
+| **Monitoring** | Usage tracking | Detect elicitation attempts |
+
+### When Unlearning is Most Valuable
+
+| Scenario | Value | Reasoning |
+|----------|-------|-----------|
+| **Narrow Dangerous Capabilities** | High | Can target specifically |
+| **Open-Weight Models** | High | Can't rely on behavioral controls |
+| **Compliance Requirements** | High | Demonstrates due diligence |
+| **Broad General Capabilities** | Low | Too entangled to remove |
+
+## Scalability Assessment
+
+| Dimension | Assessment | Rationale |
+|-----------|------------|-----------|
+| **Technical Scalability** | Unknown | Current methods may not fully remove |
+| **Deception Robustness** | Weak | Model might hide rather than unlearn |
+| **SI Readiness** | Unlikely | SI might recover or route around |
+
+## Quick Assessment
+
+| Dimension | Grade | Notes |
+|-----------|-------|-------|
+| **Tractability** | C+ | Promising techniques but verification hard |
+| **Effectiveness** | B- (partial) | Reduces capabilities but not reliably complete |
+| **Neglectedness** | B | Active research; not heavily funded |
+| **Speed** | B | Near-term applicability |
+
+## Risks Addressed
+
+Capability unlearning addresses:
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| **<EntityLink id="bioweapons" />** | Remove synthesis knowledge | Medium-High |
+| **<EntityLink id="cyberattacks" />** | Remove attack techniques | Medium |
+| **CBRN Misuse** | Remove weapons knowledge | Medium |
+| **Open-Weight Risks** | Reduce capability before release | Medium |
+
+## Limitations
+
+- **Verification Gap**: Cannot prove capabilities fully removed
+- **Recovery Possible**: Fine-tuning can restore capabilities
+- **Capability Entanglement**: Hard to remove danger without harming utility
+- **Scaling Uncertainty**: May not work for more capable models
+- **Deception Risk**: Advanced models might hide remaining knowledge
+- **Incomplete Coverage**: New elicitation methods may succeed
+- **Performance Tax**: May degrade general capabilities
+
+## Sources & Resources
+
+### Key Papers
+
+| Paper | Authors | Contribution |
+|-------|---------|--------------|
+| **WMDP Benchmark** | Center for AI Safety | Evaluation framework |
+| **RMU (Representation Misdirection)** | Various | Unlearning technique |
+| **Machine Unlearning** | Various | General framework |
+
+### Key Organizations
+
+| Organization | Focus | Contribution |
+|--------------|-------|--------------|
+| **Center for AI Safety** | Research | WMDP benchmark, methods |
+| **Academic groups** | Research | Technique development |
+| **AI Labs** | Research | Practical applications |
+
+### Related Research
+
+| Area | Connection |
+|------|------------|
+| **Machine Unlearning** | General technique framework |
+| **Model Editing** | Knowledge modification |
+| **Representation Engineering** | Activation-based removal |
+
+---
+
+## AI Transition Model Context
+
+Capability unlearning affects the <EntityLink id="ai-transition-model" /> through direct capability reduction:
+
+| Factor | Parameter | Impact |
+|--------|-----------|--------|
+| <EntityLink id="misuse-potential" /> | Dangerous capabilities | Directly reduces misuse potential |
+| <EntityLink id="bioweapon-risk" /> | Biosecurity | Removes pathogen synthesis knowledge |
+| <EntityLink id="cyberattack-risk" /> | Cybersecurity | Removes attack technique knowledge |
+
+Capability unlearning is a promising near-term intervention for specific dangerous capabilities, particularly valuable for open-weight model releases where behavioral controls cannot be relied upon. However, verification challenges and recovery risks mean it should be part of a defense-in-depth strategy rather than relied upon alone.

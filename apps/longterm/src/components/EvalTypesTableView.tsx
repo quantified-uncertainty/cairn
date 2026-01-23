@@ -1,5 +1,6 @@
 // Table view for AI Evaluation Types - Strategic Analysis
 import { useState } from 'react';
+import { TableInsightsSummary } from './tables/shared/TableInsightsSummary';
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -829,6 +830,8 @@ export default function EvalTypesTableView() {
       <div className="ev-page">
         <div className="ev-header">
           <a href="/knowledge-base/">← Knowledge Base</a>
+          <span style={{ color: '#9ca3af' }}>|</span>
+          <a href="/tables/">All Tables</a>
           <h1>AI Evaluation Types - Strategic Analysis</h1>
           <nav>
             <a href="/knowledge-base/models/eval-types/table" className="active">Table</a>
@@ -867,6 +870,15 @@ export default function EvalTypesTableView() {
             <strong>Risk coverage:</strong> ● = strong signal, ◐ = partial signal, ○ = weak signal.
             <strong> Architecture dependence:</strong> LOW means works on any model; HIGH means needs specific access/architecture.
           </p>
+
+          {/* Related insights - dev mode only */}
+          <div className="max-w-4xl my-4">
+            <TableInsightsSummary
+              tableId="eval-types"
+              tags={["evaluation", "benchmarks", "red-teaming", "interpretability", "evals"]}
+              maxItems={3}
+            />
+          </div>
 
           <div className="ev-table-wrapper">
             <table className="ev-table">

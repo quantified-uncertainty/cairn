@@ -37,6 +37,14 @@ import DiagramViewer from '../../components/DiagramViewer';
       <a href="/diagrams/master-graph?full=true">View Master Graph →</a>
     </div>
 
+    <div class="tables-banner">
+      <div class="banner-content">
+        <span class="banner-label" style="background: #22c55e;">Related</span>
+        <p>Looking for comparison tables? Check out the Tables Gallery</p>
+      </div>
+      <a href="/tables/">View Tables →</a>
+    </div>
+
     <DiagramViewer entityId="" client:load />
   </div>
 </StarlightPage>
@@ -99,6 +107,47 @@ import DiagramViewer from '../../components/DiagramViewer';
   }
 
   .master-graph-banner a:hover {
+    background: var(--sl-color-gray-6);
+  }
+
+  .tables-banner {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tables-banner .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .tables-banner .banner-content p {
+    margin: 0;
+    color: var(--sl-color-text);
+    font-size: 0.95rem;
+  }
+
+  .tables-banner a {
+    color: #22c55e;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .tables-banner a:hover {
     background: var(--sl-color-gray-6);
   }
 </style>

@@ -1,0 +1,9 @@
+---
+import Footer from '@cairn/starlight/Footer.astro';
+import versionInfo from '../../../version.json';
+
+// Build version string: 0.0.1+abc1234
+const version = `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}${versionInfo.gitHash ? '+' + versionInfo.gitHash : ''}`;
+---
+
+<Footer version={version} {...Astro.props} />

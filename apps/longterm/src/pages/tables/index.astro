@@ -1,0 +1,93 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import TablesGallery from '../../components/TablesGallery';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Comparison Tables',
+    description: 'Interactive comparison tables for AI safety approaches, architecture scenarios, risks, and more',
+    tableOfContents: false,
+    template: 'splash',
+  }}
+  headings={[]}
+>
+  <div class="tables-index-page">
+    <p class="intro-text">
+      Interactive comparison tables for exploring AI safety, architectures, and risks.
+      Click any table below to view it in detail.
+    </p>
+
+    <div class="related-banner">
+      <div class="banner-content">
+        <span class="banner-label">Related</span>
+        <p>Looking for visual diagrams? Check out the Cause-Effect Diagrams</p>
+      </div>
+      <a href="/diagrams">View Diagrams →</a>
+    </div>
+
+    <TablesGallery client:load />
+  </div>
+</StarlightPage>
+
+<style>
+  .tables-index-page {
+    margin-top: 0;
+  }
+
+  .intro-text {
+    color: var(--sl-color-gray-3);
+    margin-bottom: 1.5rem;
+  }
+
+  .related-banner {
+    background: hsl(var(--accent) / 0.1);
+    border: 1px solid hsl(var(--accent) / 0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .banner-label {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .banner-content p {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-size: 0.95rem;
+  }
+
+  .related-banner a {
+    color: hsl(var(--primary));
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .related-banner a:hover {
+    background: hsl(var(--muted));
+  }
+</style>

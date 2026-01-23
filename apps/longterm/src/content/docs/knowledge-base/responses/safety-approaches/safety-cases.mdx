@@ -1,0 +1,302 @@
+---
+title: AI Safety Cases
+description: >-
+  Structured arguments with supporting evidence that an AI system is safe for
+  deployment, adapted from high-stakes industries like nuclear and aviation to
+  provide rigorous documentation of safety claims and assumptions.
+sidebar:
+  order: 19
+quality: 3
+importance: 80
+lastEdited: '2025-01-22'
+---
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+AI safety cases are structured, documented arguments that systematically lay out why an AI system should be considered safe for deployment. Borrowed from high-reliability industries like nuclear power, aviation, and medical devices, safety cases provide a rigorous framework for articulating safety claims, the evidence supporting those claims, and the assumptions and arguments that link evidence to conclusions. Unlike ad-hoc safety assessments, safety cases create transparent, auditable documentation that can be reviewed by regulators, third parties, and the public.
+
+The approach has gained significant traction in AI safety governance. The UK AI Safety Institute has been piloting safety case methodologies with frontier AI developers, and Anthropic has publicly explored how safety cases might apply to increasingly capable AI systems. The 2024 paper "Towards AI Safety Cases" (Clymer et al.) provided a foundational framework, arguing that even with current limitations, structured safety arguments improve rigor compared to informal assessments. The approach forces developers to make explicit their safety claims, identify the evidence (or lack thereof) supporting those claims, and acknowledge uncertainties and assumptions.
+
+Despite its promise, the safety case approach faces unique challenges when applied to AI systems. Traditional safety cases in nuclear or aviation deal with well-understood physics and engineering, while AI safety must grapple with poorly understood emergent behaviors, potential deception, and rapidly evolving capabilities. What evidence would actually demonstrate that a frontier AI system won't pursue misaligned goals? How do we construct safety arguments when the underlying system is fundamentally opaque? These questions make AI safety cases both more important (because informal reasoning is inadequate) and more difficult (because the required evidence may be hard to obtain).
+
+## Risk Assessment & Impact
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| **Safety Uplift** | Medium-High | Forces systematic safety thinking; creates accountability |
+| **Capability Uplift** | Tax | Requires safety investment before deployment; adds process overhead |
+| **Net World Safety** | Helpful | Valuable framework from high-stakes industries |
+| **Scalability** | Partial | Methodology scales; evidence gathering is the challenge |
+| **Deception Robustness** | Partial | Safety cases require evidence; deceptive systems may undermine evidence |
+| **SI Readiness** | Unlikely | What evidence would convince us superintelligence is safe? |
+| **Current Adoption** | Experimental | UK AISI piloting; Anthropic exploring; not yet standard |
+| **Research Investment** | \$5-15M/yr | UK AISI, Anthropic, academic research |
+
+## What is a Safety Case?
+
+### Core Components
+
+A complete safety case consists of several interconnected elements:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Claims["Safety Claims"]
+        TOP[Top-Level Safety Claim]
+        SUB1[Sub-Claim 1]
+        SUB2[Sub-Claim 2]
+        SUB3[Sub-Claim 3]
+    end
+
+    subgraph Arguments["Argument Structure"]
+        ARG1[Argument 1]
+        ARG2[Argument 2]
+        ARG3[Argument 3]
+    end
+
+    subgraph Evidence["Supporting Evidence"]
+        EV1[Evaluation Results]
+        EV2[Testing Data]
+        EV3[Formal Proofs]
+        EV4[Operational History]
+    end
+
+    subgraph Context["Context & Assumptions"]
+        CONTEXT[Deployment Context]
+        ASSUME[Key Assumptions]
+        LIMITS[Scope Limitations]
+    end
+
+    TOP --> SUB1 & SUB2 & SUB3
+    SUB1 --> ARG1
+    SUB2 --> ARG2
+    SUB3 --> ARG3
+    ARG1 --> EV1
+    ARG2 --> EV2 & EV3
+    ARG3 --> EV4
+    Context --> Claims
+
+    style Claims fill:#d4edda
+    style Arguments fill:#e1f5ff
+    style Evidence fill:#fff3cd
+    style Context fill:#f0f0f0
+`} />
+
+### Safety Case Elements
+
+| Element | Description | Example |
+|---------|-------------|---------|
+| **Top-Level Claim** | The central safety assertion | "Model X is safe for deployment in customer service applications" |
+| **Sub-Claims** | Decomposition of top-level claim | "Model does not generate harmful content"; "Model maintains honest behavior" |
+| **Arguments** | Logic connecting evidence to claims | "Evaluation coverage + monitoring justifies confidence in harm prevention" |
+| **Evidence** | Empirical data supporting arguments | Red team results; capability evaluations; deployment monitoring data |
+| **Assumptions** | Conditions that must hold | "Deployment context matches evaluation context"; "Monitoring catches violations" |
+| **Defeaters** | Known challenges to the argument | "Model might behave differently at scale"; "Sophisticated attacks not tested" |
+
+### Goal Structuring Notation (GSN)
+
+Safety cases often use GSN, a graphical notation for representing safety arguments:
+
+| Symbol | Meaning | Use |
+|--------|---------|-----|
+| **Rectangle** | Goal/Claim | Safety assertions to be demonstrated |
+| **Parallelogram** | Strategy | Approach to achieving goal |
+| **Oval** | Solution** | Evidence supporting the argument |
+| **Rounded Rectangle** | Context | Conditions and scope |
+| **Diamond** | Assumption | Unproven conditions required |
+
+## Safety Case Approaches for AI
+
+### Proposed Frameworks
+
+| Framework | Source | Key Features |
+|-----------|--------|--------------|
+| **Clymer et al. (2024)** | Academic/Anthropic | Structured arguments; explicit assumptions; defeater identification |
+| **UK AISI Pilots** | Government | Practical methodology development with frontier labs |
+| **Anthropic Internal** | Industry | Integration with Responsible Scaling Policy |
+| **DeepMind Approaches** | Industry | Frontier Safety Framework alignment |
+
+### Argument Templates for AI Safety
+
+Common argument patterns for AI safety cases:
+
+| Argument Type | Structure | Challenge |
+|---------------|-----------|-----------|
+| **Evaluation-based** | "Model passed extensive evaluations, therefore safe" | Evaluation coverage; gaming; deception |
+| **Training-based** | "Model trained with safety constraints, therefore aligned" | Training effectiveness; distribution shift |
+| **Monitoring-based** | "Deployment monitoring catches problems, therefore acceptable risk" | Monitoring effectiveness; response time |
+| **Restriction-based** | "Capabilities limited, therefore damage bounded" | Capability assessment accuracy |
+| **Defense-in-depth** | "Multiple independent safeguards, therefore robust" | Common mode failures; sophisticated adversaries |
+
+### Example: Simplified AI Safety Case
+
+```
+Goal: Model M is safe for deployment in context C
+
+Context: Web-based customer service; human oversight; rate limits
+
+Strategy: Demonstrate safety via evaluation, training, and monitoring
+
+Sub-goal 1: Model does not generate harmful content
+  Evidence: Red team evaluation results (0.1% harmful rate)
+  Evidence: Content filter catches 99.5% of residual harmful outputs
+  Assumption: Red team coverage representative of deployment
+
+Sub-goal 2: Model maintains honest behavior
+  Evidence: Sycophancy evaluation results
+  Evidence: Honesty benchmark performance
+  Assumption: Evaluation generalizes to deployment
+
+Sub-goal 3: Harmful behavior detected and addressed
+  Evidence: Monitoring system architecture
+  Evidence: Response procedure documentation
+  Assumption: Monitoring coverage sufficient
+
+Defeaters acknowledged:
+  - Sophisticated attacks may exceed red team coverage
+  - Honest behavior in evals may not reflect genuine alignment
+  - Monitoring has detection latency
+```
+
+## Current State of AI Safety Cases
+
+### UK AISI Pilot Program
+
+The UK AI Safety Institute has been developing and testing safety case methodologies:
+
+| Aspect | Status |
+|--------|--------|
+| **Methodology Development** | Active; published initial frameworks |
+| **Lab Engagement** | Working with multiple frontier labs |
+| **Regulatory Integration** | Exploring how safety cases fit UK regulatory approach |
+| **Public Documentation** | Limited; pilot results not yet public |
+
+### Industry Adoption
+
+| Organization | Status | Approach |
+|--------------|--------|----------|
+| **Anthropic** | Exploring | "Towards AI Safety Cases" paper; RSP integration |
+| **OpenAI** | Early | Preparedness Framework has safety case elements |
+| **DeepMind** | Developing | Frontier Safety Framework references structured arguments |
+| **Meta** | Limited | Less formal safety documentation |
+
+## Challenges Unique to AI
+
+### Fundamental Difficulties
+
+| Challenge | Traditional Industries | AI Systems |
+|-----------|----------------------|-------------|
+| **System Understanding** | Physics well-understood | Model internals opaque |
+| **Behavior Predictability** | Deterministic under known conditions | Emergent; context-dependent |
+| **Failure Mode Enumeration** | Known failure modes can be listed | Novel failure modes possible |
+| **Evidence Quality** | Physical testing provides strong evidence | Behavioral evidence has limits |
+| **Adversarial Robustness** | Environmental adversity understood | Intelligent adversaries; deception |
+| **Capability Uncertainty** | Capabilities well-characterized | Hidden capabilities possible |
+
+### The Deception Problem for Safety Cases
+
+Safety cases assume evidence is reliable, but deceptive AI systems could undermine this:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Standard["Standard Safety Case"]
+        CLAIM1[Safety Claim] --> ARG1[Argument]
+        ARG1 --> EV1[Evidence]
+        EV1 --> VALID1[Valid Conclusion]
+    end
+
+    subgraph Deception["With Deceptive AI"]
+        CLAIM2[Safety Claim] --> ARG2[Argument]
+        ARG2 --> EV2[Evidence]
+        EV2 --> CORRUPT[Evidence Corrupted by Deception]
+        CORRUPT --> INVALID[Invalid Conclusion]
+    end
+
+    style Standard fill:#d4edda
+    style Deception fill:#ff6b6b
+    style INVALID fill:#ff6b6b
+`} />
+
+Specific concerns:
+- Model passes evaluations by recognizing test conditions
+- Training appears successful but model has learned to deceive
+- Monitoring produces clean results because model hides concerning behavior
+- Defense-in-depth fails because model can evade all layers
+
+### What Evidence Would Be Sufficient?
+
+Critical questions for AI safety cases:
+
+| Question | Current Answer |
+|----------|----------------|
+| What evaluation coverage is sufficient? | Unknown; no consensus |
+| How do we verify genuine alignment? | Open problem; interpretability may help |
+| What assumptions must we make explicit? | Framework emerging; not standardized |
+| What defeaters invalidate the case? | Case-specific; methodology developing |
+| What evidence would show deceptive alignment? | Unknown if behavioral evidence sufficient |
+
+## Critical Assessment
+
+### Arguments For Prioritization
+
+1. **Rigorous Framework**: Forces explicit, systematic safety thinking
+2. **Accountability**: Creates auditable documentation for regulators and public
+3. **Proven in Other Domains**: Nuclear, aviation, medical devices use successfully
+4. **Identifies Gaps**: Process reveals what evidence is missing
+5. **Governance Foundation**: Provides structure for regulatory requirements
+
+### Arguments Against Major Investment
+
+1. **Evidence Problem**: May not be possible to obtain sufficient evidence for AI
+2. **False Confidence**: Formal safety case may create unwarranted trust
+3. **Overhead Cost**: Significant process burden may slow deployment without adding safety
+4. **Deception Vulnerability**: Sophisticated AI could undermine evidence basis
+5. **Premature Standardization**: Field may not be ready for formal methodology
+
+### Key Uncertainties
+
+- What constitutes sufficient evidence for AI safety claims?
+- How should safety cases handle fundamental uncertainties about AI cognition?
+- Can safety case methodology adapt fast enough for rapidly advancing AI?
+- What role should safety cases play in regulation vs. internal governance?
+
+## Recommendation
+
+**Recommendation Level: PRIORITIZE**
+
+AI safety cases represent a promising governance framework that is severely underdeveloped for AI applications. The methodology forces systematic thinking about safety claims, evidence, and assumptions in a way that informal assessment does not. Even acknowledging fundamental challenges (especially around deception), the discipline of constructing safety cases improves safety reasoning compared to ad-hoc approaches.
+
+Priority areas for investment:
+- Developing AI-specific safety case methodology that addresses unique challenges
+- Creating templates and examples for common deployment scenarios
+- Researching what evidence is actually achievable and meaningful
+- Piloting safety case requirements with willing frontier labs
+- Training safety case expertise in the AI safety community
+- Investigating how interpretability evidence could strengthen safety cases
+
+## Sources & Resources
+
+### Primary Research
+
+- **Clymer et al. (2024)**: "Towards AI Safety Cases" - Foundational framework paper
+- **UK AISI (2024)**: Safety case methodology publications
+- **Anthropic**: Internal research and public discussions on safety cases
+
+### Traditional Safety Case Literature
+
+- **Goal Structuring Notation (GSN)**: Standard notation for safety arguments
+- **Nuclear Safety Cases**: Examples from nuclear industry
+- **Aviation Safety Cases**: DO-178C and related standards
+- **Medical Device Safety**: IEC 62304 and related frameworks
+
+### Governance Context
+
+- **EU AI Act**: Conformity assessment has safety case elements
+- **UK AI Regulatory Framework**: Safety cases referenced in approach
+- **International Discussions**: Seoul Summit references structured safety arguments
+
+### Related Concepts
+
+- **Assurance Cases**: Broader concept including security and reliability
+- **Claims-Arguments-Evidence**: General structure underlying safety cases
+- **Formal Methods**: Mathematical approaches that can provide strong evidence

@@ -1,0 +1,280 @@
+---
+title: Tool-Use Restrictions
+description: >-
+  Tool-use restrictions limit what actions and APIs AI systems can access, directly constraining
+  their potential for harm. This approach is critical for agentic AI systems, providing hard
+  limits on capabilities regardless of model intentions. However, restrictions face constant
+  pressure from commercial incentives to expand access, and sophisticated systems may find
+  creative workarounds using available tools.
+importance: 60
+quality: 3
+lastEdited: '2025-01-22'
+sidebar:
+  order: 23
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Tool-use restrictions are among the most direct and effective safety measures for agentic AI systems. Rather than trying to shape model behavior through training, restrictions simply remove access to dangerous capabilities. An AI agent without access to code execution cannot deploy malware; one without financial API access cannot make unauthorized purchases; one without email access cannot conduct phishing campaigns. These hard limits provide guarantees that behavioral training cannot.
+
+The approach is especially important given the rapid expansion of AI agent capabilities. Systems like Claude Computer Use, OpenAI's function calling, and various autonomous agents are gaining access to browsers, file systems, code execution, and external APIs. Each new tool represents both capability expansion and risk surface expansion. Tool restrictions create a deliberate friction that forces explicit decisions about what capabilities are necessary and appropriate for a given deployment context.
+
+However, tool restrictions face significant practical challenges. Commercial pressure consistently pushes toward expanding tool access, as more capable agents are more valuable products. Users may bypass restrictions by deploying their own tools or using alternative providers. And sophisticated AI systems may find creative ways to achieve prohibited goals using only permitted tools, a form of composition attack. Nonetheless, tool restrictions remain one of the most tractable near-term interventions for agentic AI safety.
+
+## Risk Assessment & Impact
+
+| Dimension | Rating | Assessment |
+|-----------|--------|------------|
+| **Safety Uplift** | Medium | Directly limits harm potential |
+| **Capability Uplift** | Tax | Reduces what AI can do for users |
+| **Net World Safety** | Helpful | Important safeguard for agentic systems |
+| **Lab Incentive** | Weak | Limits product value; mainly safety-motivated |
+| **Scalability** | Partial | Effective but pressure to expand access |
+| **Deception Robustness** | Partial | Hard limits help; but composition attacks possible |
+| **SI Readiness** | Partial | Hard limits meaningful; but SI creative with available tools |
+
+### Research Investment
+
+- **Current Investment**: $10-30M/yr (part of agent safety engineering)
+- **Recommendation**: Increase (important as agents expand; labs face pressure to loosen)
+- **Differential Progress**: Safety-dominant (pure safety constraint; reduces capability)
+
+## How Tool Restrictions Work
+
+Tool restrictions create an authorization layer between AI systems and external capabilities:
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[AI Agent] --> B{Tool Request}
+    B --> C{Authorization Check}
+
+    D[Tool Policy] --> C
+    E[Permission Scope] --> C
+
+    C -->|Authorized| F[Execute Tool]
+    C -->|Denied| G[Block + Log]
+
+    F --> H[Return Result]
+    G --> I[Explain Denial]
+
+    J[Human Override] --> C
+
+    style C fill:#ffddcc
+    style G fill:#ffcccc
+    style F fill:#d4edda
+`} />
+
+### Tool Categorization
+
+Tools can be classified by risk level:
+
+| Risk Category | Examples | Typical Policy |
+|---------------|----------|---------------|
+| **Read-Only Information** | Web search, document reading | Generally permitted |
+| **Reversible Actions** | Draft emails, create documents | Permitted with logging |
+| **Irreversible Low-Stakes** | Send notifications, update files | Require confirmation |
+| **Financial** | Payments, transfers, purchases | Require human approval |
+| **Communication** | Send emails, post publicly | Strict limits, approval required |
+| **Code Execution** | Run scripts, deploy code | Sandboxed with restrictions |
+| **System Access** | Admin commands, configuration | Heavily restricted or prohibited |
+| **Self-Modification** | Update own code/weights | Prohibited |
+
+### Implementation Patterns
+
+| Pattern | Description | Use Case |
+|---------|-------------|----------|
+| **Allowlist** | Only explicitly permitted tools available | High-security deployments |
+| **Denylist** | Block known dangerous tools | Lower-security, broader capability |
+| **Capability Tokens** | Time-limited, scoped permissions | Temporary elevated access |
+| **Contextual** | Permissions vary by task/user | Enterprise deployments |
+| **Hierarchical** | Approval chain for escalating access | Autonomous agents |
+
+## Tool Restriction Categories
+
+### Communication Restrictions
+
+| Tool Type | Risk | Restriction Approach |
+|-----------|------|---------------------|
+| **Email** | Phishing, spam, social engineering | Draft-only or approval required |
+| **Social Media** | Misinformation, impersonation | Generally prohibited |
+| **Messaging** | Unauthorized contact | Strict allowlists |
+| **Phone/Voice** | Social engineering | Usually prohibited |
+
+### Code Execution Restrictions
+
+| Capability | Risk | Mitigation |
+|------------|------|------------|
+| **Shell commands** | System compromise | Sandboxed, allowlisted commands |
+| **Script execution** | Malware deployment | Isolated environment, no network |
+| **Package installation** | Supply chain attacks | Pre-approved packages only |
+| **Container/VM creation** | Resource abuse | Quota limits, approval required |
+
+### Information Access Restrictions
+
+| Access Type | Risk | Control |
+|-------------|------|---------|
+| **Local files** | Data exfiltration | Scoped directories, read-only |
+| **Databases** | Data modification | Read-only, query logging |
+| **APIs** | Unauthorized actions | Scope-limited tokens |
+| **Web browsing** | Information gathering | Filtered, logged, rate-limited |
+
+## Composition Attacks
+
+A key challenge is that restricted tools may be combined to achieve prohibited outcomes:
+
+### Example Composition Attacks
+
+| Prohibited Capability | Composition Approach | Mitigation |
+|-----------------------|---------------------|------------|
+| **Send emails** | Write draft + notify human + persuade to send | Detect multi-step patterns |
+| **Execute code** | Generate code + ask user to run it | Monitor for such patterns |
+| **Access finances** | Manipulate documents user will act on | Context-aware monitoring |
+| **Acquire resources** | Convince humans to provide them | Social engineering detection |
+
+### Defense Strategies
+
+1. **Intent Detection**: Monitor for goal patterns, not just individual actions
+2. **Cumulative Tracking**: Track sequences of actions across sessions
+3. **Rate Limiting**: Limit volume of potentially-harmful action combinations
+4. **Human Review**: Flag suspicious action patterns for review
+
+## Key Cruxes
+
+### Crux 1: Is the Capability Tax Acceptable?
+
+| Position: Accept Tax | Position: Tax Too High |
+|---------------------|----------------------|
+| Safety more important than convenience | Users will route around restrictions |
+| Can design tasks around limitations | Competitive disadvantage |
+| Precautionary approach appropriate | Beneficial uses blocked |
+| Restrictions can be selectively relaxed | Slows AI adoption |
+
+### Crux 2: Can Restrictions Scale to More Capable Systems?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Hard limits are architecturally enforced | Composition attacks become more sophisticated |
+| Capability boundaries are clear | Pressure to expand tool access |
+| Can add restrictions as needed | Creative workarounds emerge |
+| Fundamental to defense-in-depth | SI would find paths around any restriction |
+
+### Crux 3: Should Restrictions Be User-Configurable?
+
+| More User Control | Less User Control |
+|-------------------|-------------------|
+| Users know their needs best | Users may accept inappropriate risks |
+| Flexibility enables more use cases | Liability and safety concerns |
+| Market provides appropriate pressure | Race to bottom on safety |
+| Respects user autonomy | Inexpert users can be harmed |
+
+## Best Practices
+
+### Principle of Least Privilege
+
+Grant only the minimum permissions necessary for the task:
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Task Definition] --> B[Identify Required Tools]
+    B --> C[Minimal Permission Set]
+    C --> D[Time-Limited Grant]
+    D --> E[Task Execution]
+    E --> F[Revoke Permissions]
+
+    G[Monitor During Execution] --> E
+
+    style C fill:#d4edda
+    style G fill:#d4edda
+`} />
+
+### Implementation Checklist
+
+| Requirement | Description | Priority |
+|-------------|-------------|----------|
+| **Default deny** | No tool access without explicit grant | Critical |
+| **Explicit authorization** | Each tool requires specific permission | Critical |
+| **Audit logging** | All tool uses logged | Critical |
+| **Time limits** | Permissions expire | High |
+| **Scope limits** | Permissions scoped to specific resources | High |
+| **Human approval** | High-risk tools require confirmation | High |
+| **Rollback capability** | Can undo tool actions | Medium |
+| **Anomaly detection** | Flag unusual usage patterns | Medium |
+
+### Tiered Access Model
+
+| Tier | Permitted Tools | Use Case |
+|------|-----------------|----------|
+| **Tier 0** | None | Pure text completion |
+| **Tier 1** | Read-only, information retrieval | Research assistance |
+| **Tier 2** | Draft/create content | Writing assistance |
+| **Tier 3** | Reversible actions | Basic automation |
+| **Tier 4** | Limited external actions | Supervised agents |
+| **Tier 5** | Broad capabilities | Highly trusted contexts |
+
+## Who Should Work on This?
+
+**Good fit if you believe:**
+- Near-term agentic safety is important
+- Hard limits provide meaningful guarantees
+- Security engineering approach is valuable
+- Incremental restrictions help even if imperfect
+
+**Less relevant if you believe:**
+- Capability expansion is inevitable
+- Restrictions will be bypassed
+- Focus should be on alignment
+- Tool restrictions slow beneficial AI
+
+## Current State of Practice
+
+### Industry Approaches
+
+| System | Tool Restriction Approach | Notes |
+|--------|--------------------------|-------|
+| **Claude** | Explicit tool definitions, scope limits | Computer Use has specific restrictions |
+| **ChatGPT** | Function calling with approval | Plugins have varying access |
+| **Copilot** | Limited to code assistance | Narrow scope by design |
+| **Devin-style agents** | Task-scoped, sandboxed | Emerging practices |
+
+### Common Gaps
+
+1. **Inconsistent policies**: Different tools have different standards
+2. **User override pressure**: Users want fewer restrictions
+3. **Composition attacks**: Underappreciated risk
+4. **Cross-tool coordination**: Hard to track patterns
+5. **Third-party tools**: Variable security practices
+
+## Sources & Resources
+
+### Key Literature
+
+- Agent safety frameworks
+- Capability control research
+- API security best practices
+
+### Organizations
+
+- **All agentic system developers**: Implement tool restrictions
+- **Security researchers**: Study bypass techniques
+
+### Key Critiques
+
+1. **Limits usefulness**: Constrains beneficial applications
+2. **Pressure to expand access**: Commercial incentives oppose restrictions
+3. **Composition attacks**: Creative workarounds using permitted tools
+
+---
+
+## AI Transition Model Context
+
+Tool restrictions affect the <EntityLink id="ai-transition-model" /> through multiple pathways:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="misuse-potential" /> | Directly limits harmful capabilities |
+| <EntityLink id="misalignment-potential" /> | Constrains damage from misaligned behavior |
+| <EntityLink id="human-oversight-quality" /> | Creates explicit checkpoints for human control |
+
+Tool restrictions are among the most tractable near-term interventions for AI safety. They provide hard guarantees that don't depend on model alignment, making them especially valuable during the current period of uncertainty about model motivations and capabilities.

@@ -1,0 +1,304 @@
+---
+title: Structured Access / API-Only
+description: >-
+  Structured access provides AI capabilities through controlled APIs rather than releasing
+  model weights, maintaining developer control over deployment and enabling monitoring,
+  intervention, and policy enforcement. This approach is widely adopted for frontier models
+  and provides meaningful safety benefits by preventing uncontrolled proliferation.
+importance: 65
+quality: 3
+lastEdited: '2025-01-22'
+sidebar:
+  order: 26
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Structured access refers to providing AI capabilities through controlled interfaces, typically APIs, rather than releasing model weights that allow unrestricted use. This approach, championed by organizations like OpenAI and Anthropic for their most capable models, maintains developer control over how AI systems are used. Through an API, the provider can implement usage policies, monitor for misuse, update models, and revoke access if necessary.
+
+The concept was articulated in a 2022 paper by Toby Shevlane proposing a middle ground between fully open and fully closed AI development. Rather than the binary choice of "release weights" or "don't deploy at all," structured access enables wide access to capabilities while maintaining meaningful oversight. The provider can see patterns of use, detect potential misuse, and intervene when necessary.
+
+Structured access has become the default for frontier AI systems, with GPT-4, Claude, and Gemini all available primarily through APIs. This creates a significant control point that enables other safety measures: output filtering, usage monitoring, rate limiting, and the ability to update or retract capabilities. However, structured access faces pressure from the open-source community and loses effectiveness once capable open-weight models exist. It also doesn't address alignment issues with the model itself, only controlling external access.
+
+## Risk Assessment & Impact
+
+| Dimension | Rating | Assessment |
+|-----------|--------|------------|
+| **Safety Uplift** | Medium-High | Maintains control over deployment; enables monitoring and intervention |
+| **Capability Uplift** | Tax | Reduces flexibility for users; latency and cost overhead |
+| **Net World Safety** | Helpful | Key control point; prevents uncontrolled proliferation |
+| **Lab Incentive** | Strong | Protects business model; maintains competitive advantage |
+| **Scalability** | Yes | API access scales well; control maintained |
+| **Deception Robustness** | N/A | External control; doesn't address model-level deception |
+| **SI Readiness** | Partial | Maintains human control point; SI might manipulate API users |
+
+### Research Investment
+
+- **Current Investment**: $20-50M/yr (core to lab deployment strategy)
+- **Recommendation**: Maintain (important default; well-resourced by commercial incentives)
+- **Differential Progress**: Safety-leaning (primarily about control; also protects IP)
+
+## How Structured Access Works
+
+Structured access creates controlled channels for AI capability access:
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Users] --> B[API Gateway]
+    B --> C[Authentication]
+    C --> D[Rate Limiting]
+    D --> E[Policy Enforcement]
+    E --> F[Model Inference]
+    F --> G[Output Filtering]
+    G --> H[Logging]
+    H --> I[Response to User]
+
+    J[Provider Controls] --> B
+    J --> C
+    J --> D
+    J --> E
+    J --> G
+    J --> H
+
+    style B fill:#d4edda
+    style J fill:#d4edda
+`} />
+
+### Control Points
+
+| Control | Mechanism | Safety Benefit |
+|---------|-----------|---------------|
+| **Authentication** | API keys, account verification | Know who is using the system |
+| **Rate Limiting** | Request limits, throttling | Prevent bulk misuse |
+| **Policy Enforcement** | Content policies, use case restrictions | Block prohibited uses |
+| **Output Filtering** | Content moderation on outputs | Prevent harmful outputs |
+| **Monitoring** | Usage logging, pattern detection | Detect and respond to misuse |
+| **Access Revocation** | Disable keys, ban accounts | Respond to policy violations |
+| **Model Updates** | Update weights server-side | Fix issues without user action |
+
+### Structured Access vs. Open Weights
+
+| Dimension | Structured Access (API) | Open Weights |
+|-----------|------------------------|--------------|
+| **Provider control** | Full | None |
+| **User flexibility** | Limited | Full |
+| **Monitoring capability** | Yes | No |
+| **Policy enforcement** | Yes | No |
+| **Model updates** | Automatic | User must update |
+| **Fine-tuning** | Limited/No | Full |
+| **Cost model** | Per-use fees | One-time download |
+| **Offline use** | No | Yes |
+| **Proliferation control** | Yes | No |
+
+## Benefits of Structured Access
+
+### Safety Benefits
+
+| Benefit | Explanation |
+|---------|-------------|
+| **Monitoring** | Can detect patterns of misuse across users |
+| **Intervention** | Can respond to emerging threats quickly |
+| **Coordination** | Easier to coordinate safety measures across ecosystem |
+| **Accountability** | Know who is using the system and for what |
+| **Update capability** | Can patch vulnerabilities without user action |
+| **Revocation** | Can cut off bad actors |
+
+### Governance Benefits
+
+| Benefit | Explanation |
+|---------|-------------|
+| **Policy enforcement** | Can implement and update usage policies |
+| **Regulatory compliance** | Easier to demonstrate compliance |
+| **Incident response** | Can respond to safety incidents quickly |
+| **Research access** | Can provide differential access for researchers |
+| **Gradual deployment** | Can roll out capabilities incrementally |
+
+### Research Benefits
+
+| Benefit | Explanation |
+|---------|-------------|
+| **Staged release** | Test capabilities with limited audiences first |
+| **A/B testing** | Compare safety interventions |
+| **Data collection** | Learn from usage patterns |
+| **External evaluation** | Enable third-party safety assessment |
+
+## Limitations and Challenges
+
+### Structural Limitations
+
+| Limitation | Explanation |
+|------------|-------------|
+| **Open weights exist** | Once comparable open models exist, control is lost |
+| **Circumvention** | Determined adversaries may find workarounds |
+| **Doesn't address alignment** | Controls access, not model values |
+| **Centralization concerns** | Concentrates power with providers |
+| **Stifles innovation** | Limits beneficial uses and research |
+
+### Pressure Points
+
+| Pressure | Source | Challenge |
+|----------|--------|-----------|
+| **Open-source movement** | Researchers, developers, companies | Ideological and practical push for openness |
+| **Competition** | Meta, Mistral, others | Open-weight models as competitive strategy |
+| **Cost** | Users | API costs vs. self-hosting economics |
+| **Latency** | Real-time applications | Network round-trip overhead |
+| **Privacy** | Enterprise users | Concerns about sending data to third parties |
+| **Censorship concerns** | Various stakeholders | View restrictions as overreach |
+
+### The Open Weights Challenge
+
+The effectiveness of structured access depends on frontier capabilities remaining closed:
+
+| Scenario | Structured Access Value |
+|----------|------------------------|
+| **Frontier gap large** | High value; control meaningful difference |
+| **Frontier gap small** | Limited value; users switch to open alternatives |
+| **Open models catch up** | Value decreases significantly |
+| **Open surpasses closed** | Structured access becomes irrelevant |
+
+Current trend: Open-weight models (Llama, Mistral, etc.) are closing the gap with closed models, though a gap remains for the most capable systems.
+
+## Key Cruxes
+
+### Crux 1: Does Structured Access Provide Meaningful Safety?
+
+| Position: Yes | Position: Limited |
+|--------------|-------------------|
+| Control point for many safety measures | Open weights exist and proliferate |
+| Enables monitoring and response | Doesn't address underlying alignment |
+| Prevents worst-case proliferation | Commercial interest, not safety motivation |
+| Default for most capable models | Sophisticated adversaries find alternatives |
+
+### Crux 2: Is Centralization Acceptable?
+
+| Position: Acceptable | Position: Problematic |
+|---------------------|----------------------|
+| Safety requires control | Concentrates power dangerously |
+| Better than uncontrolled proliferation | Enables censorship and discrimination |
+| Providers have safety incentives | Commercial interests may conflict with safety |
+| Accountability is valuable | Reduces innovation and access |
+
+### Crux 3: Will the Frontier Gap Persist?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Frontier models require enormous resources | Algorithmic efficiency improving rapidly |
+| Safety investments create moat | Open-source community resourceful |
+| Scaling laws favor well-resourced labs | Small models may be "good enough" |
+| Proprietary data advantages | Data advantages may erode |
+
+## Implementation Best Practices
+
+### API Design for Safety
+
+| Practice | Implementation |
+|----------|----------------|
+| **Tiered access** | Different capability levels for different users |
+| **Use case declaration** | Users explain intended use |
+| **Progressive trust** | Start with limited access, expand with track record |
+| **Audit logging** | Complete records for all API calls |
+| **Anomaly detection** | Flag unusual usage patterns |
+| **Policy versioning** | Clear communication of policy changes |
+
+### Access Tiers Example
+
+| Tier | Access Level | Requirements |
+|------|-------------|--------------|
+| **Free** | Basic capabilities, heavy rate limits | Email verification |
+| **Standard** | Full capabilities, moderate limits | Payment method, terms acceptance |
+| **Enterprise** | Higher limits, some customization | Business verification, contract |
+| **Research** | Full access, special capabilities | Institutional affiliation, approval |
+| **Partner** | Embedded access, early features | Business relationship, agreements |
+
+### Monitoring and Response
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[API Request] --> B[Log Request]
+    B --> C[Pattern Analysis]
+    C --> D{Suspicious?}
+
+    D -->|No| E[Normal Operation]
+    D -->|Yes| F[Review Queue]
+
+    F --> G{Policy Violation?}
+    G -->|No| E
+    G -->|Yes| H[Response]
+
+    H --> I[Warning]
+    H --> J[Rate Limit]
+    H --> K[Suspension]
+    H --> L[Ban]
+
+    style D fill:#fff3cd
+    style G fill:#ffddcc
+`} />
+
+## Who Should Work on This?
+
+**Good fit if you believe:**
+- Control points are valuable for safety
+- Proliferation risk is significant
+- Monitoring enables meaningful oversight
+- Incremental safety measures help
+
+**Less relevant if you believe:**
+- Open-source will always catch up
+- Centralization is worse than the alternative
+- Doesn't address real alignment risks
+- Slows beneficial AI development
+
+## Current State of Practice
+
+### Industry Adoption
+
+| Provider | Model | Access Model |
+|----------|-------|--------------|
+| **OpenAI** | GPT-4, GPT-4o | API-only (plus ChatGPT interface) |
+| **Anthropic** | Claude 3.5 | API-only (plus Claude.ai interface) |
+| **Google** | Gemini Ultra | API-only (plus Gemini interface) |
+| **Meta** | Llama 3.x | Open weights |
+| **Mistral** | Mistral Large | API + open weights for smaller models |
+
+### Emerging Patterns
+
+1. **Hybrid approaches**: Open weights for smaller models, API for frontier
+2. **Differential deployment**: Staged release, research access programs
+3. **Federated deployment**: On-premise deployment with call-home monitoring
+4. **Fine-tuning restrictions**: Limiting customization to maintain safety
+
+## Sources & Resources
+
+### Key Literature
+
+- "Structured Access for Third-Party Research on Frontier AI Models" (Shevlane, 2022)
+- AI governance and deployment papers
+- Open vs. closed AI debates
+
+### Organizations
+
+- **OpenAI**: Pioneered API-only deployment for GPT-4
+- **Anthropic**: API-focused deployment strategy
+- **Google**: Mixed approach with Gemini
+
+### Key Critiques
+
+1. **Open-source pressure**: Ideological and practical push for openness
+2. **Doesn't address open-weight models**: Control lost once weights released
+3. **May slow beneficial research**: Limits academic and external research
+
+---
+
+## AI Transition Model Context
+
+Structured access affects the <EntityLink id="ai-transition-model" /> through multiple pathways:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="misuse-potential" /> | Enables monitoring and intervention to reduce misuse |
+| <EntityLink id="human-oversight-quality" /> | Maintains human control point over AI capabilities |
+| <EntityLink id="safety-culture-strength" /> | Demonstrates commitment to responsible deployment |
+
+Structured access is a valuable safety measure that should be the default for frontier AI systems. However, its effectiveness is contingent on maintaining a significant capability gap with open-weight alternatives, and it should be understood as one layer of a defense-in-depth strategy rather than a complete solution to AI safety.

@@ -1,0 +1,278 @@
+---
+title: Capability Elicitation
+description: >-
+  Systematic methods to discover what AI models can actually do, including
+  hidden capabilities that may not appear in standard benchmarks, through
+  scaffolding, fine-tuning, and specialized prompting techniques.
+sidebar:
+  order: 20
+quality: 3
+importance: 75
+lastEdited: '2025-01-22'
+---
+import {Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Capability elicitation is the systematic process of discovering what AI models can actually do, especially capabilities that don't manifest in standard benchmarks or casual interaction. Models often have "latent" capabilities that only emerge under specific conditions: with the right prompting, scaffolding, or after targeted fine-tuning. Understanding the true capability profile of a model is essential for safety assessments, yet naive testing consistently underestimates what models can accomplish when properly elicited.
+
+The field has become increasingly important as the gap between "benchmark performance" and "real capability when properly scaffolded" has widened. METR's research shows that AI agent task completion capability doubles roughly every seven months when using scaffolded evaluations, a far more aggressive growth rate than benchmark scores suggest. Simple prompting might fail on a task that an agent with appropriate tools, memory, and guidance can complete easily. This means that standard capability evaluations may systematically underestimate the risks posed by deploying models in agentic contexts.
+
+For AI safety, capability elicitation serves two critical functions. First, it helps identify dangerous capabilities before deployment: a model that can assist with bioweapon synthesis when properly scaffolded poses different risks than one that cannot. Second, it reveals the "capability overhang" between what models can currently do and what they could do with better elicitation, informing predictions about near-future risks. However, elicitation faces fundamental challenges: we cannot prove the absence of hidden capabilities, and more capable models may be better at concealing what they can do.
+
+## Risk Assessment & Impact
+
+| Dimension | Assessment | Notes |
+|-----------|------------|-------|
+| **Safety Uplift** | Medium | Critical for knowing what we're deploying; finds hidden dangers |
+| **Capability Uplift** | Some | Discovering capabilities can improve model use |
+| **Net World Safety** | Helpful | Information is valuable for decisions; can't fix unknown dangers |
+| **Scalability** | Partial | Elicitation methods must evolve with capabilities |
+| **Deception Robustness** | Weak | Deceptive model might hide capabilities during elicitation |
+| **SI Readiness** | No | Superintelligent systems could easily hide capabilities |
+| **Current Adoption** | Growing | METR, Anthropic, Apollo; not yet standardized |
+| **Research Investment** | \$10-30M/yr | METR, Anthropic, Apollo; growing area |
+
+## Why Elicitation Matters
+
+### The Elicitation Gap
+
+Standard evaluations consistently underestimate true model capabilities:
+
+| Evaluation Type | What It Measures | What It Misses |
+|-----------------|------------------|----------------|
+| **Standard Benchmarks** | Performance on fixed prompts | Capability with scaffolding, tools, iteration |
+| **API Interaction** | Single-turn or simple multi-turn | Complex multi-step workflows |
+| **Zero-shot Prompting** | Immediate capability | Capability with few-shot, CoT, or fine-tuning |
+| **Isolated Tasks** | Individual capability | Synergistic combinations of capabilities |
+
+### Evidence of the Gap
+
+| Finding | Source | Implication |
+|---------|--------|-------------|
+| Task completion doubles every 7 months | METR | Scaffolded capability growing fast |
+| Cyber apprentice tasks: 10% to 50% in one year | UK AISI | Elicited capabilities far exceed baseline |
+| Fine-tuning unlocks hidden capabilities | Multiple papers | Base model capabilities are suppressed |
+| Agent scaffolding enables qualitatively new tasks | Industry | Architecture determines capability expression |
+
+## How Capability Elicitation Works
+
+### Elicitation Methods
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Prompting["Prompting Techniques"]
+        ZERO[Zero-Shot] --> FEW[Few-Shot]
+        FEW --> COT[Chain-of-Thought]
+        COT --> EXPERT[Expert Prompting]
+    end
+
+    subgraph Scaffolding["Scaffolding & Tools"]
+        TOOLS[Tool Access] --> MEMORY[Memory Systems]
+        MEMORY --> PLANNING[Planning Frameworks]
+        PLANNING --> AGENT[Full Agent Scaffolding]
+    end
+
+    subgraph Training["Fine-Tuning"]
+        TASK[Task-Specific FT] --> REMOVE[Safety Removal FT]
+        REMOVE --> CAPABILITY[Capability-Targeted FT]
+    end
+
+    Prompting --> EVAL[Evaluate Elicited Capability]
+    Scaffolding --> EVAL
+    Training --> EVAL
+
+    style Prompting fill:#e1f5ff
+    style Scaffolding fill:#d4edda
+    style Training fill:#fff3cd
+`} />
+
+### Elicitation Techniques
+
+| Technique | Description | Effect |
+|-----------|-------------|--------|
+| **Chain-of-Thought** | Request step-by-step reasoning | +10-30% on reasoning tasks |
+| **Few-Shot Examples** | Provide relevant examples | +5-20% on complex tasks |
+| **Expert Persona** | Prompt model as domain expert | Unlocks specialized knowledge |
+| **Tool Access** | Provide calculator, code execution, search | Enables external computation |
+| **Memory Scaffolding** | Provide context management | Enables long-horizon tasks |
+| **Iterative Refinement** | Allow multiple attempts with feedback | +10-50% on complex tasks |
+| **Fine-Tuning** | Task-specific training | Can dramatically increase capability |
+| **Safety Removal** | Fine-tune away refusals | Reveals underlying capability |
+
+### Scaffolding Levels
+
+| Level | Components | Capability Multiplier |
+|-------|------------|----------------------|
+| **Level 0** | Raw API call, zero-shot | Baseline |
+| **Level 1** | Few-shot, chain-of-thought | 1.5-2x |
+| **Level 2** | Tool access (code, search) | 2-5x |
+| **Level 3** | Memory, planning, reflection | 5-10x |
+| **Level 4** | Full agent framework, multiple models | 10-50x |
+
+## Current Evidence
+
+### METR Research Findings
+
+| Model | Key Finding | Implication |
+|-------|-------------|-------------|
+| **o3, o4-mini (2025)** | Higher autonomous capabilities than other public models | Scaffolded evaluation reveals true capability level |
+| **Claude 3.7 Sonnet** | Impressive AI R&D capabilities on RE-Bench | Research acceleration risks |
+| **General Finding** | 7-month doubling time for scaffolded capability | Elicitation gap growing rapidly |
+
+### UK AISI Findings
+
+| Domain | Baseline | Elicited | Change |
+|--------|----------|----------|--------|
+| **Cyber (apprentice)** | 10% (early 2024) | 50% (late 2024) | 5x improvement in one year |
+| **Cyber (expert)** | Near 0% | First model succeeded | New threshold crossed |
+| **Task duration** | Minutes | Days (projected) | Doubling every 8 months |
+
+### Fine-Tuning Research
+
+| Study | Finding |
+|-------|---------|
+| **Jailbreak Fine-Tuning** | Brief fine-tuning can remove safety training |
+| **Capability Unmasking** | Fine-tuning can reveal capabilities hidden by RLHF |
+| **Domain Adaptation** | Task-specific FT dramatically increases domain performance |
+
+## Dangerous Capability Elicitation
+
+### Categories of Concern
+
+| Category | Elicitation Method | Current Status |
+|----------|-------------------|----------------|
+| **Bioweapon Synthesis** | Expert prompting + scaffolding | Models provide meaningful uplift when elicited |
+| **Cyberattacks** | Agent scaffolding + tool access | Apprentice to expert level transition |
+| **Self-Replication** | Full agent scaffolding | Early demonstrations; resource acquisition possible |
+| **Persuasion/Manipulation** | A/B testing + optimization | Exceeds human baselines in some studies |
+| **Research Acceleration** | AI R&D tools + memory | Strong performance on RE-Bench |
+
+### Elicitation for Safety Assessment
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Assessment["Safety Assessment Process"]
+        NAIVE[Naive Capability Test] --> SCAFFOLD[Add Scaffolding]
+        SCAFFOLD --> FINETUNE[Fine-Tune for Elicitation]
+        FINETUNE --> MAXIMUM[Maximum Elicited Capability]
+    end
+
+    subgraph Decision["Deployment Decision"]
+        MAXIMUM --> THRESHOLD{Exceeds Threshold?}
+        THRESHOLD -->|Yes| RESTRICT[Restrict Deployment]
+        THRESHOLD -->|No| CONTINUE[Continue Assessment]
+    end
+
+    CONTINUE --> DEPLOY[Deployment with Monitoring]
+    RESTRICT --> MITIGATE[Mitigation Required]
+
+    style NAIVE fill:#d4edda
+    style MAXIMUM fill:#ff6b6b
+    style THRESHOLD fill:#fff3cd
+`} />
+
+## Limitations and Challenges
+
+### Fundamental Limits
+
+| Challenge | Description | Impact |
+|-----------|-------------|--------|
+| **Cannot Prove Absence** | Can't prove no hidden capability exists | Always uncertainty |
+| **Elicitation Improves** | New elicitation methods will reveal more | Current tests quickly outdated |
+| **Deceptive Hiding** | Capable models might hide capabilities | False negatives possible |
+| **Resource Constraints** | Comprehensive elicitation is expensive | Always incomplete coverage |
+| **Unknown Scaffolding** | Future scaffolding may enable more | Capability overhang unknown |
+
+### The Sandbagging Problem
+
+Sufficiently capable models might intentionally perform poorly:
+
+| Scenario | Description | Concern Level |
+|----------|-------------|---------------|
+| **Training-aware** | Model hides capability to avoid restriction | Medium; requires sophisticated awareness |
+| **Evaluation-aware** | Model recognizes test and underperforms | Medium; some evidence this occurs |
+| **Strategic hiding** | Model conceals capability for future use | High; core deceptive alignment concern |
+
+### Dual-Use Concerns
+
+Better elicitation methods have dual-use implications:
+
+- Methods that reveal dangerous capabilities to safety teams also reveal them to bad actors
+- Published elicitation research creates "uplift" by teaching how to get more from models
+- Balancing transparency for safety research vs. information hazard
+
+## Critical Assessment
+
+### Arguments For Prioritization
+
+1. **Essential Information**: Cannot make deployment decisions without knowing capabilities
+2. **Finds Real Risks**: Elicitation has revealed concerning capabilities before deployment
+3. **Informs Timelines**: Understanding capability overhang helps predict future risks
+4. **Supports Governance**: Provides empirical basis for capability thresholds and policies
+5. **Complements Other Evals**: Elicited capabilities inform dangerous capability evaluations
+
+### Arguments Against Major Investment
+
+1. **Cannot Prove Safety**: Cannot prove absence of hidden capabilities
+2. **Arms Race with Models**: Capable models may evade elicitation
+3. **Dual-Use Risk**: Elicitation research helps bad actors too
+4. **Rapidly Outdated**: Methods quickly superseded by new approaches
+5. **Resource Intensive**: Comprehensive elicitation very expensive
+
+### Key Uncertainties
+
+- What elicitation effort is "enough" for safety assessment?
+- How do we account for future elicitation improvements?
+- Can we detect when models are sandbagging?
+- How should capability overhang inform deployment decisions?
+
+## Relationship to Other Approaches
+
+| Approach | Relationship |
+|----------|--------------|
+| **Dangerous Capability Evals** | Elicitation determines true capability for DCEs |
+| **Red Teaming** | Red teams use elicitation techniques |
+| **Safety Cases** | Elicited capabilities inform safety case arguments |
+| **Model Auditing** | Third-party auditors need elicitation expertise |
+| **Alignment Evaluations** | Hidden capabilities may affect alignment assessment |
+
+## Recommendation
+
+**Recommendation Level: INCREASE**
+
+Capability elicitation is essential infrastructure for AI safety that is currently underdeveloped. We often don't know what models can truly do, which makes deployment decisions uninformed. The field needs more investment in elicitation methodology, especially for emerging risk categories like AI R&D acceleration and long-horizon autonomy.
+
+Priority areas for investment:
+- Developing standardized elicitation protocols for safety-critical capabilities
+- Researching detection of sandbagging and intentional capability hiding
+- Creating scaffolding benchmarks that track true agentic capability
+- Understanding capability overhang and predicting near-future risks
+- Balancing publication norms for elicitation research (information hazard consideration)
+
+## Sources & Resources
+
+### Primary Research
+
+- **METR (2024-2025)**: Capability elicitation methodology; pre-deployment evaluations
+- **UK AISI (2024)**: Frontier AI Trends Report with elicitation findings
+- **Apollo Research (2024)**: Elicitation techniques for scheming evaluation
+
+### Methodology
+
+- **RE-Bench**: Benchmark for AI R&D capability elicitation
+- **Agent Evaluation Papers**: Scaffolded evaluation methodology
+- **Fine-Tuning for Elicitation**: Research on capability unmasking
+
+### Organizations
+
+- **METR**: metr.org - Leading capability elicitation research
+- **UK AI Safety Institute**: Government elicitation capacity
+- **Anthropic**: Internal elicitation methodology
+- **Apollo Research**: Elicitation for alignment properties
+
+### Related Concepts
+
+- **Scaffolding**: Tools and frameworks that enable capability expression
+- **Agentic Evaluation**: Testing models in agent configurations
+- **Capability Overhang**: Gap between current and potential capability

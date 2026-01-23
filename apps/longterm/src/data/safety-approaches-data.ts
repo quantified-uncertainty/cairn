@@ -562,6 +562,192 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
     ],
   },
 
+  {
+    id: 'model-spec',
+    name: 'Model Specifications',
+    description: 'Explicit written specifications defining desired model behavior, values, and boundaries.',
+    category: 'training',
+
+    safetyUplift: {
+      level: 'MEDIUM',
+      note: 'Provides clear behavioral guidelines; transparency for alignment'
+    },
+    capabilityUplift: {
+      level: 'SOME',
+      note: 'Clearer specs can improve model usefulness within bounds'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Improves transparency; enables external scrutiny'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Helps with deployment; some PR value; enables consistent behavior'
+    },
+
+    researchInvestment: {
+      amount: '$10-30M/yr',
+      note: 'Internal lab work; Anthropic, OpenAI publish specs'
+    },
+    differentialProgress: {
+      level: 'SAFETY-LEANING',
+      note: 'Primarily about behavioral constraints and transparency'
+    },
+    recommendation: {
+      level: 'INCREASE',
+      note: 'Valuable for transparency; should be more standardized'
+    },
+
+    mechanism: 'Training',
+    failureModeTargeted: ['Misuse', 'Accident', 'Misalignment'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Specs can scale; but enforcing them at SI is unclear'
+    },
+    deceptionRobust: {
+      level: 'WEAK',
+      note: 'Specs define behavior; don\'t ensure genuine compliance'
+    },
+    siReady: {
+      level: 'UNLIKELY',
+      note: 'SI might interpret specs in unexpected ways'
+    },
+
+    currentAdoption: { level: 'WIDESPREAD', note: 'Anthropic Model Spec, OpenAI System Card' },
+    keyPapers: ['Anthropic Model Spec (2024)', 'OpenAI Model Spec (2025)', 'Model Cards (2019)'],
+    keyLabs: ['Anthropic', 'OpenAI', 'Google'],
+    mainCritiques: [
+      'Specs may be incomplete',
+      'Gap between spec and actual behavior',
+      'Hard to verify compliance'
+    ],
+  },
+
+  {
+    id: 'adversarial-training',
+    name: 'Adversarial Training',
+    description: 'Train models on adversarial examples to improve robustness against attacks and jailbreaks.',
+    category: 'training',
+
+    safetyUplift: {
+      level: 'LOW-MEDIUM',
+      note: 'Improves robustness to known attacks; arms race dynamic'
+    },
+    capabilityUplift: {
+      level: 'SOME',
+      note: 'More robust models are more reliably capable'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Reduces attack surface; but attackers adapt'
+    },
+    labIncentive: {
+      level: 'STRONG',
+      note: 'Prevents embarrassing jailbreaks; product quality'
+    },
+
+    researchInvestment: {
+      amount: '$50-150M/yr',
+      note: 'All labs invest heavily; security research crossover'
+    },
+    differentialProgress: {
+      level: 'BALANCED',
+      note: 'Improves both safety (robustness) and capability (reliability)'
+    },
+    recommendation: {
+      level: 'MAINTAIN',
+      note: 'Important but well-funded; arms race limits value'
+    },
+
+    mechanism: 'Training',
+    failureModeTargeted: ['Misuse', 'Accident'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Attacks evolve; defense must continuously adapt'
+    },
+    deceptionRobust: {
+      level: 'NONE',
+      note: 'Adversarial training targets external attacks, not internal deception'
+    },
+    siReady: {
+      level: 'NO',
+      note: 'SI could generate novel attacks beyond training distribution'
+    },
+
+    currentAdoption: { level: 'UNIVERSAL', note: 'Standard practice at all labs' },
+    keyPapers: ['Adversarial Training papers', 'Jailbreak defense literature'],
+    keyLabs: ['All frontier labs', 'Security researchers'],
+    mainCritiques: [
+      'Arms race with attackers',
+      'Can\'t defend against unknown attacks',
+      'May reduce capability'
+    ],
+  },
+
+  {
+    id: 'cooperative-ai',
+    name: 'Cooperative AI',
+    description: 'Research on making AI systems that cooperate well with humans and other AI systems.',
+    category: 'training',
+
+    safetyUplift: {
+      level: 'MEDIUM',
+      note: 'Addresses multi-agent coordination failures; promotes beneficial cooperation'
+    },
+    capabilityUplift: {
+      level: 'SOME',
+      note: 'Better cooperation enables more useful multi-agent systems'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Reduces competitive/adversarial dynamics between AI systems'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Useful for multi-agent products; some safety motivation'
+    },
+
+    researchInvestment: {
+      amount: '$5-20M/yr',
+      note: 'DeepMind, academic groups; growing interest'
+    },
+    differentialProgress: {
+      level: 'SAFETY-LEANING',
+      note: 'Cooperation research primarily safety-motivated'
+    },
+    recommendation: {
+      level: 'INCREASE',
+      note: 'Important as multi-agent systems proliferate'
+    },
+
+    mechanism: 'Research',
+    failureModeTargeted: ['Accident', 'Misalignment'],
+
+    scalability: {
+      level: 'UNKNOWN',
+      note: 'Multi-agent dynamics at scale poorly understood'
+    },
+    deceptionRobust: {
+      level: 'PARTIAL',
+      note: 'Could help detect non-cooperative deceptive agents'
+    },
+    siReady: {
+      level: 'MAYBE',
+      note: 'Cooperation principles may transfer; uncertain'
+    },
+
+    currentAdoption: { level: 'EXPERIMENTAL', note: 'Research stage; limited deployment' },
+    keyPapers: ['Cooperative AI (Dafoe et al.)', 'Multi-agent RL papers'],
+    keyLabs: ['DeepMind', 'CHAI', 'Academic groups'],
+    mainCritiques: [
+      'Hard to define "cooperation" formally',
+      'May not prevent defection in high-stakes scenarios',
+      'Limited empirical results'
+    ],
+  },
+
   // ============================================
   // INTERPRETABILITY & TRANSPARENCY
   // ============================================
@@ -1071,6 +1257,192 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
     ],
   },
 
+  {
+    id: 'safety-cases',
+    name: 'AI Safety Cases',
+    description: 'Structured arguments with evidence that an AI system is safe for deployment.',
+    category: 'evaluation',
+
+    safetyUplift: {
+      level: 'MEDIUM-HIGH',
+      note: 'Forces systematic safety thinking; creates accountability'
+    },
+    capabilityUplift: {
+      level: 'TAX',
+      note: 'Requires safety investment before deployment'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Valuable framework from high-stakes industries (nuclear, aviation)'
+    },
+    labIncentive: {
+      level: 'WEAK',
+      note: 'Compliance cost; may be required by regulators'
+    },
+
+    researchInvestment: {
+      amount: '$5-15M/yr',
+      note: 'UK AISI, Anthropic, academic research'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Pure safety methodology; no capability benefit'
+    },
+    recommendation: {
+      level: 'PRIORITIZE',
+      note: 'Promising framework; severely underdeveloped for AI'
+    },
+
+    mechanism: 'Evaluation',
+    failureModeTargeted: ['Multiple'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Methodology scales; evidence gathering is the challenge'
+    },
+    deceptionRobust: {
+      level: 'PARTIAL',
+      note: 'Safety cases require evidence; deceptive systems may undermine evidence'
+    },
+    siReady: {
+      level: 'UNLIKELY',
+      note: 'What evidence would convince us SI is safe?'
+    },
+
+    currentAdoption: { level: 'EXPERIMENTAL', note: 'UK AISI piloting; Anthropic exploring' },
+    keyPapers: ['Safety Cases for AI (UK AISI 2024)', 'Towards AI Safety Cases (Clymer 2024)'],
+    keyLabs: ['UK AISI', 'Anthropic', 'DeepMind'],
+    mainCritiques: [
+      'What counts as sufficient evidence?',
+      'Novel risks hard to anticipate',
+      'May create false confidence'
+    ],
+  },
+
+  {
+    id: 'capability-elicitation',
+    name: 'Capability Elicitation',
+    description: 'Systematic methods to discover what models can actually do, including hidden capabilities.',
+    category: 'evaluation',
+
+    safetyUplift: {
+      level: 'MEDIUM',
+      note: 'Critical for knowing what we\'re deploying; finds hidden dangers'
+    },
+    capabilityUplift: {
+      level: 'SOME',
+      note: 'Discovering capabilities can improve model use'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Information is valuable for decisions; can\'t fix unknown dangers'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Helps understand products; also safety motivation'
+    },
+
+    researchInvestment: {
+      amount: '$10-30M/yr',
+      note: 'METR, Anthropic, Apollo; growing area'
+    },
+    differentialProgress: {
+      level: 'SAFETY-LEANING',
+      note: 'Primarily about finding risks; some capability discovery'
+    },
+    recommendation: {
+      level: 'INCREASE',
+      note: 'Critical gap; we often don\'t know what models can do'
+    },
+
+    mechanism: 'Evaluation',
+    failureModeTargeted: ['Capability-control', 'Misuse'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Elicitation methods must evolve with capabilities'
+    },
+    deceptionRobust: {
+      level: 'WEAK',
+      note: 'Deceptive model might hide capabilities during elicitation'
+    },
+    siReady: {
+      level: 'NO',
+      note: 'SI could easily hide capabilities from human evaluators'
+    },
+
+    currentAdoption: { level: 'SOME', note: 'Growing practice; not standardized' },
+    keyPapers: ['Eliciting Capabilities papers', 'Scaffolding for capability elicitation'],
+    keyLabs: ['METR', 'Anthropic', 'Apollo', 'UK AISI'],
+    mainCritiques: [
+      'Can\'t prove absence of capability',
+      'Scaffolding may unlock unexpected capabilities',
+      'Resource intensive'
+    ],
+  },
+
+  {
+    id: 'sleeper-agent-detection',
+    name: 'Sleeper Agent Detection',
+    description: 'Methods to detect models that behave well in training but defect in deployment.',
+    category: 'evaluation',
+
+    safetyUplift: {
+      level: 'HIGH (if works)',
+      note: 'Would address core deceptive alignment threat'
+    },
+    capabilityUplift: {
+      level: 'NEUTRAL',
+      note: 'Detection method only'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Critical research direction; currently limited effectiveness'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Labs want to deploy safe models; detection helps'
+    },
+
+    researchInvestment: {
+      amount: '$5-15M/yr',
+      note: 'Anthropic (sleeper agents paper), Redwood, academic'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Purely safety-motivated research'
+    },
+    recommendation: {
+      level: 'PRIORITIZE',
+      note: 'Core alignment problem; needs much more work'
+    },
+
+    mechanism: 'Evaluation',
+    failureModeTargeted: ['Deception', 'Misalignment'],
+
+    scalability: {
+      level: 'UNKNOWN',
+      note: 'Current methods don\'t work; fundamental question'
+    },
+    deceptionRobust: {
+      level: 'UNKNOWN',
+      note: 'This IS the deception detection problem'
+    },
+    siReady: {
+      level: 'UNKNOWN',
+      note: 'Depends on solving detection; currently very uncertain'
+    },
+
+    currentAdoption: { level: 'EXPERIMENTAL', note: 'Active research; no reliable methods yet' },
+    keyPapers: ['Sleeper Agents (Anthropic 2024)', 'Deceptive alignment papers'],
+    keyLabs: ['Anthropic', 'Redwood', 'Academic groups'],
+    mainCritiques: [
+      'Current methods don\'t reliably detect sleeper agents',
+      'May be fundamentally hard',
+      'Sophisticated deception may be undetectable'
+    ],
+  },
+
   // ============================================
   // ARCHITECTURAL & RUNTIME
   // ============================================
@@ -1391,6 +1763,130 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
     ],
   },
 
+  {
+    id: 'circuit-breakers',
+    name: 'Circuit Breakers / Inference Interventions',
+    description: 'Runtime interventions that can halt or modify model behavior mid-generation.',
+    category: 'architectural',
+
+    safetyUplift: {
+      level: 'MEDIUM',
+      note: 'Can prevent harmful outputs in real-time; reactive defense'
+    },
+    capabilityUplift: {
+      level: 'TAX',
+      note: 'Interventions may reduce fluency or capability'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Valuable last line of defense; doesn\'t address root causes'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Practical for deployment safety; some product impact'
+    },
+
+    researchInvestment: {
+      amount: '$10-30M/yr',
+      note: 'Gray Swan, Anthropic, various labs'
+    },
+    differentialProgress: {
+      level: 'SAFETY-LEANING',
+      note: 'Primarily safety; some reliability benefits'
+    },
+    recommendation: {
+      level: 'INCREASE',
+      note: 'Practical near-term intervention; needs more research'
+    },
+
+    mechanism: 'Runtime',
+    failureModeTargeted: ['Misuse', 'Accident'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Works at scale; but sophisticated attacks may evade'
+    },
+    deceptionRobust: {
+      level: 'WEAK',
+      note: 'Deceptive model could generate harm before circuit breaks'
+    },
+    siReady: {
+      level: 'NO',
+      note: 'SI could reason around or disable circuit breakers'
+    },
+
+    currentAdoption: { level: 'SOME', note: 'Emerging practice; Gray Swan, labs' },
+    keyPapers: ['Circuit Breakers (Gray Swan 2024)', 'Inference-time intervention papers'],
+    keyLabs: ['Gray Swan', 'Anthropic', 'Various'],
+    mainCritiques: [
+      'Reactive not proactive',
+      'May be too slow for fast AI actions',
+      'Can be worked around'
+    ],
+  },
+
+  {
+    id: 'structured-access',
+    name: 'Structured Access / API-Only',
+    description: 'Provide AI access only through controlled APIs rather than releasing weights.',
+    category: 'architectural',
+
+    safetyUplift: {
+      level: 'MEDIUM-HIGH',
+      note: 'Maintains control over deployment; enables monitoring and intervention'
+    },
+    capabilityUplift: {
+      level: 'TAX',
+      note: 'Reduces flexibility for users; latency and cost overhead'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Key control point; prevents uncontrolled proliferation'
+    },
+    labIncentive: {
+      level: 'STRONG',
+      note: 'Protects business model; maintains competitive advantage'
+    },
+
+    researchInvestment: {
+      amount: '$20-50M/yr',
+      note: 'Core to lab deployment strategy; infrastructure investment'
+    },
+    differentialProgress: {
+      level: 'SAFETY-LEANING',
+      note: 'Primarily about control; also protects IP'
+    },
+    recommendation: {
+      level: 'MAINTAIN',
+      note: 'Important default; well-resourced by commercial incentives'
+    },
+
+    mechanism: 'Architecture',
+    failureModeTargeted: ['Misuse', 'Capability-control'],
+
+    scalability: {
+      level: 'YES',
+      note: 'API access scales well; control maintained'
+    },
+    deceptionRobust: {
+      level: 'N/A',
+      note: 'External control; doesn\'t address model-level deception'
+    },
+    siReady: {
+      level: 'PARTIAL',
+      note: 'Maintains human control point; SI might manipulate API users'
+    },
+
+    currentAdoption: { level: 'WIDESPREAD', note: 'Default for frontier models (GPT-4, Claude)' },
+    keyPapers: ['Structured Access papers', 'AI governance literature'],
+    keyLabs: ['OpenAI', 'Anthropic', 'Google'],
+    mainCritiques: [
+      'Open-source pressure',
+      'Doesn\'t address open-weight models',
+      'May slow beneficial research'
+    ],
+  },
+
   // ============================================
   // GOVERNANCE & EXTERNAL
   // ============================================
@@ -1639,6 +2135,130 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'Enforcement challenges',
       'May not cover all actors',
       'Compliance vs actual safety'
+    ],
+  },
+
+  {
+    id: 'pause-moratorium',
+    name: 'Pause / Moratorium',
+    description: 'Calls to pause or slow frontier AI development until safety is better understood.',
+    category: 'governance',
+
+    safetyUplift: {
+      level: 'HIGH (if implemented)',
+      note: 'Would buy time for safety research; not currently implemented'
+    },
+    capabilityUplift: {
+      level: 'NEGATIVE',
+      note: 'Explicitly slows capability development'
+    },
+    netWorldSafety: {
+      level: 'UNCLEAR',
+      note: 'Could help if coordinated; could backfire if unilateral'
+    },
+    labIncentive: {
+      level: 'NEGATIVE',
+      note: 'Labs strongly opposed; competitive dynamics'
+    },
+
+    researchInvestment: {
+      amount: '$1-5M/yr',
+      note: 'Advocacy organizations; FLI, PauseAI'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Explicitly prioritizes safety over capability advancement'
+    },
+    recommendation: {
+      level: 'MAINTAIN',
+      note: 'Controversial: high potential value but implementation challenges; coordination problem'
+    },
+
+    mechanism: 'Governance',
+    failureModeTargeted: ['Capability-control', 'Multiple'],
+
+    scalability: {
+      level: 'UNKNOWN',
+      note: 'Depends on international coordination'
+    },
+    deceptionRobust: {
+      level: 'N/A',
+      note: 'External policy; doesn\'t address model behavior'
+    },
+    siReady: {
+      level: 'YES (if works)',
+      note: 'Would prevent reaching SI until better prepared'
+    },
+
+    currentAdoption: { level: 'NONE', note: 'Advocacy only; no major labs paused' },
+    keyPapers: ['FLI Open Letter (2023)', 'Pause Giant AI Experiments'],
+    keyLabs: ['FLI', 'PauseAI', 'CAIS'],
+    mainCritiques: [
+      'Unenforceable internationally',
+      'May push development underground or to less cautious actors',
+      'Economic and competitive pressures'
+    ],
+  },
+
+  {
+    id: 'international-coordination',
+    name: 'International AI Governance',
+    description: 'Treaties, standards, and coordination mechanisms between nations on AI development.',
+    category: 'governance',
+
+    safetyUplift: {
+      level: 'MEDIUM-HIGH',
+      note: 'Could prevent race dynamics; depends on implementation'
+    },
+    capabilityUplift: {
+      level: 'TAX',
+      note: 'Coordination slows unilateral advancement'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Essential for avoiding competitive race to bottom'
+    },
+    labIncentive: {
+      level: 'WEAK',
+      note: 'Labs prefer self-governance; national interests vary'
+    },
+
+    researchInvestment: {
+      amount: '$10-30M/yr',
+      note: 'GovAI, UN AI Advisory Body, national governments'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Primarily about coordinating safety requirements'
+    },
+    recommendation: {
+      level: 'PRIORITIZE',
+      note: 'Critical infrastructure; severely underdeveloped'
+    },
+
+    mechanism: 'Governance',
+    failureModeTargeted: ['Capability-control', 'Multiple'],
+
+    scalability: {
+      level: 'PARTIAL',
+      note: 'Diplomatic mechanisms exist; enforcement is challenge'
+    },
+    deceptionRobust: {
+      level: 'N/A',
+      note: 'External governance mechanism'
+    },
+    siReady: {
+      level: 'PARTIAL',
+      note: 'Could constrain pre-SI development; post-SI unclear'
+    },
+
+    currentAdoption: { level: 'EXPERIMENTAL', note: 'AI Safety Summits, Bletchley Declaration, Seoul Summit' },
+    keyPapers: ['International AI governance papers', 'GovAI research'],
+    keyLabs: ['GovAI', 'CSET', 'UN AI Advisory Body'],
+    mainCritiques: [
+      'Great power competition',
+      'Slow diplomatic processes',
+      'Enforcement mechanisms weak'
     ],
   },
 
@@ -1952,6 +2572,130 @@ export const SAFETY_APPROACHES: SafetyApproach[] = [
       'Unsolved despite significant effort',
       'May be impossible',
       'Current approaches don\'t work'
+    ],
+  },
+
+  {
+    id: 'capability-unlearning',
+    name: 'Capability Unlearning / Removal',
+    description: 'Methods to remove specific dangerous capabilities from trained models.',
+    category: 'theoretical',
+
+    safetyUplift: {
+      level: 'HIGH (if works)',
+      note: 'Would directly remove dangerous capabilities; limited current success'
+    },
+    capabilityUplift: {
+      level: 'NEGATIVE',
+      note: 'Explicitly removes capabilities'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Would be valuable if reliably achievable'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Useful for deployment compliance; may reduce model utility'
+    },
+
+    researchInvestment: {
+      amount: '$5-20M/yr',
+      note: 'Academic research, some lab interest'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Purely about reducing dangerous capabilities'
+    },
+    recommendation: {
+      level: 'INCREASE',
+      note: 'Promising direction; needs more rigorous evaluation'
+    },
+
+    mechanism: 'Research',
+    failureModeTargeted: ['Misuse', 'Capability-control'],
+
+    scalability: {
+      level: 'UNKNOWN',
+      note: 'Current methods may not fully remove capabilities'
+    },
+    deceptionRobust: {
+      level: 'WEAK',
+      note: 'Model might hide rather than truly unlearn capabilities'
+    },
+    siReady: {
+      level: 'UNLIKELY',
+      note: 'SI might recover or route around removed capabilities'
+    },
+
+    currentAdoption: { level: 'EXPERIMENTAL', note: 'Research papers; not reliably deployed' },
+    keyPapers: ['Machine Unlearning papers', 'WMDP benchmark'],
+    keyLabs: ['Academic groups', 'Center for AI Safety'],
+    mainCritiques: [
+      'Capabilities may be recoverable',
+      'Hard to verify complete removal',
+      'May degrade general capabilities'
+    ],
+  },
+
+  {
+    id: 'ai-control',
+    name: 'AI Control',
+    description: 'Maintaining human ability to monitor, correct, and shut down AI systems.',
+    category: 'theoretical',
+
+    safetyUplift: {
+      level: 'HIGH',
+      note: 'Fundamental safety property; enables course correction'
+    },
+    capabilityUplift: {
+      level: 'TAX',
+      note: 'Control mechanisms may limit AI autonomy and usefulness'
+    },
+    netWorldSafety: {
+      level: 'HELPFUL',
+      note: 'Essential for safe deployment at any capability level'
+    },
+    labIncentive: {
+      level: 'MODERATE',
+      note: 'Important for trust; but reduces autonomy which is commercially valuable'
+    },
+
+    researchInvestment: {
+      amount: '$10-30M/yr',
+      note: 'Redwood Research, Anthropic, academic groups'
+    },
+    differentialProgress: {
+      level: 'SAFETY-DOMINANT',
+      note: 'Primarily about maintaining human oversight'
+    },
+    recommendation: {
+      level: 'PRIORITIZE',
+      note: 'Fundamental requirement; increasingly important with agentic AI'
+    },
+
+    mechanism: 'Research',
+    failureModeTargeted: ['Power-seeking', 'Misalignment', 'Accident'],
+
+    scalability: {
+      level: 'UNKNOWN',
+      note: 'Key question: can we maintain control over very capable systems?'
+    },
+    deceptionRobust: {
+      level: 'PARTIAL',
+      note: 'Good control helps; but deceptive AI may subvert controls'
+    },
+    siReady: {
+      level: 'CRITICAL QUESTION',
+      note: 'Maintaining control over SI is the core challenge'
+    },
+
+    currentAdoption: { level: 'SOME', note: 'Growing focus; Redwood AI Control agenda' },
+    keyPapers: ['AI Control (Redwood 2024)', 'Corrigibility papers'],
+    keyLabs: ['Redwood Research', 'Anthropic', 'MIRI'],
+    mainCritiques: [
+      'May not scale to superhuman systems',
+      'Tension with AI autonomy/usefulness',
+      'Relies on detecting misbehavior'
     ],
   },
 ];

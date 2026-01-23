@@ -8,6 +8,10 @@ export default defineConfig({
     starlight({
       title: 'CAIRN Meta',
       description: 'How to build CAIRN-like knowledge bases',
+      components: {
+        // Custom footer with version display
+        Footer: './src/components/starlight/Footer.astro',
+      },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/cairn' },
       ],

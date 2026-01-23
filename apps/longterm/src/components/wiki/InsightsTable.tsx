@@ -9,8 +9,8 @@ import {
   type SortingState,
   type ColumnDef,
 } from "@tanstack/react-table"
-import { ArrowUpDown, Search } from "lucide-react"
-import { insights, getInsightStats, getAllTags, getAllTypes, type Insight, type InsightType } from "@/data/insights-data"
+import { ArrowUpDown, Search, AlertCircle, Clock, Sparkles, CheckCircle } from "lucide-react"
+import { insights, getInsightStats, getAllTags, getAllTypes, type Insight, type InsightType, type InsightStatus } from "@/data/insights-data"
 
 interface InsightRow extends Insight {
   composite: number;
@@ -59,6 +59,38 @@ function TypeBadge({ type }: { type: InsightType }) {
   )
 }
 
+const statusConfig: Record<InsightStatus, { icon: React.ReactNode; label: string; color: string }> = {
+  'new': {
+    icon: <Sparkles className="h-3 w-3" />,
+    label: 'New',
+    color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+  },
+  'current': {
+    icon: <CheckCircle className="h-3 w-3" />,
+    label: 'Current',
+    color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
+  },
+  'needs-review': {
+    icon: <Clock className="h-3 w-3" />,
+    label: 'Review',
+    color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+  },
+  'stale': {
+    icon: <AlertCircle className="h-3 w-3" />,
+    label: 'Stale',
+    color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+  },
+}
+
+function StatusBadge({ status }: { status: InsightStatus }) {
+  const config = statusConfig[status];
+  return (
+    <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${config.color}`} title={`Status: ${config.label}`}>
+      {config.icon}
+    </span>
+  )
+}
+
 function SortButton({ label, sorted, onClick }: { label: string; sorted: false | 'asc' | 'desc'; onClick: () => void }) {
   return (
     <button
@@ -79,14 +111,29 @@ const columns: ColumnDef<InsightRow>[] = [
   { accessorKey: "important", header: "Imp" },
   { accessorKey: "actionable", header: "Act" },
   { accessorKey: "neglected", header: "Negl" },
+  { accessorKey: "added", header: "Added" },
   { accessorKey: "source", header: "Source" },
 ]
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) return 'Today'
+  if (diffDays === 1) return 'Yesterday'
+  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`
+  return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+}
 
 export function InsightsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "composite", desc: true }])
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [typeFilter, setTypeFilter] = React.useState<InsightType | "all">("all")
-  const [sortField, setSortField] = React.useState<"composite" | "surprising" | "important" | "actionable" | "neglected">("composite")
+  const [statusFilter, setStatusFilter] = React.useState<InsightStatus | "all">("all")
+  const [sortField, setSortField] = React.useState<"composite" | "surprising" | "important" | "actionable" | "neglected" | "added">("composite")
 
   const data = React.useMemo<InsightRow[]>(() => {
     let filtered = insights.map(insight => ({
@@ -98,8 +145,12 @@ export function InsightsTable() {
       filtered = filtered.filter(i => i.type === typeFilter)
     }
 
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(i => i.status === statusFilter)
+    }
+
     return filtered
-  }, [typeFilter])
+  }, [typeFilter, statusFilter])
 
   const table = useReactTable({
     data,
@@ -147,6 +198,15 @@ export function InsightsTable() {
           <span className="text-xl font-bold">{stats.avgNeglected}</span>
           <span className="text-xs text-muted-foreground uppercase">Avg Negl</span>
         </div>
+        {/* Status summary */}
+        <div className="flex flex-col border-l pl-3">
+          <span className="text-xl font-bold text-green-600 dark:text-green-400">{stats.byStatus?.['new'] || 0}</span>
+          <span className="text-xs text-muted-foreground uppercase">New</span>
+        </div>
+        <div className="flex flex-col border-l pl-3">
+          <span className="text-xl font-bold text-amber-600 dark:text-amber-400">{(stats.byStatus?.['needs-review'] || 0) + (stats.byStatus?.['stale'] || 0)}</span>
+          <span className="text-xs text-muted-foreground uppercase">Needs Review</span>
+        </div>
       </div>
 
       {/* Filters */}
@@ -182,6 +242,19 @@ export function InsightsTable() {
           <option value="important">Sort: Important</option>
           <option value="actionable">Sort: Actionable</option>
           <option value="neglected">Sort: Neglected</option>
+          <option value="added">Sort: Date Added</option>
+        </select>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as InsightStatus | "all")}
+          className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
+        >
+          <option value="all">All status</option>
+          <option value="new">New ({stats.byStatus?.['new'] || 0})</option>
+          <option value="current">Current ({stats.byStatus?.['current'] || 0})</option>
+          <option value="needs-review">Needs review ({stats.byStatus?.['needs-review'] || 0})</option>
+          <option value="stale">Stale ({stats.byStatus?.['stale'] || 0})</option>
         </select>
 
         <span className="text-sm text-muted-foreground">
@@ -254,6 +327,13 @@ export function InsightsTable() {
                   onClick={() => handleSort("neglected")}
                 />
               </th>
+              <th className="px-2 py-2 text-left w-16">
+                <SortButton
+                  label="Added"
+                  sorted={sorting[0]?.id === "added" ? (sorting[0].desc ? "desc" : "asc") : false}
+                  onClick={() => handleSort("added")}
+                />
+              </th>
               <th className="px-2 py-2 text-left w-28">
                 <span className="text-muted-foreground font-medium text-sm">Source</span>
               </th>
@@ -266,7 +346,12 @@ export function InsightsTable() {
                   <RatingCell value={row.getValue("composite")} />
                 </td>
                 <td className="px-2 py-2 align-top">
-                  <TypeBadge type={row.original.type} />
+                  <div className="flex items-center gap-1">
+                    <TypeBadge type={row.original.type} />
+                    {row.original.status && row.original.status !== 'current' && (
+                      <StatusBadge status={row.original.status} />
+                    )}
+                  </div>
                 </td>
                 <td className="px-2 py-2 align-top">
                   <div>
@@ -289,6 +374,11 @@ export function InsightsTable() {
                 </td>
                 <td className="px-2 py-2 align-top">
                   <RatingCell value={row.getValue("neglected")} />
+                </td>
+                <td className="px-2 py-2 align-top">
+                  <span className="text-xs text-muted-foreground" title={row.original.added}>
+                    {formatDate(row.original.added)}
+                  </span>
                 </td>
                 <td className="px-2 py-2 align-top">
                   {(() => {

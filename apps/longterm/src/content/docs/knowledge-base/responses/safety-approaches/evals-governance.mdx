@@ -1,0 +1,300 @@
+---
+title: Evals-Based Deployment Gates
+description: >-
+  Evals-based deployment gates require AI models to pass safety evaluations before deployment
+  or capability scaling. This approach adds friction and accountability to the AI development
+  process, creating checkpoints where safety evidence must be demonstrated. While valuable
+  as a governance mechanism, effectiveness is limited by the quality of evaluations and
+  the challenge of testing for unknown risks.
+importance: 65
+quality: 3
+lastEdited: '2025-01-22'
+sidebar:
+  order: 29
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Evals-based deployment gates are a governance mechanism that requires AI systems to pass specified safety evaluations before being deployed or scaled further. Rather than relying solely on lab judgment, this approach creates explicit checkpoints where models must demonstrate they meet safety criteria. The EU AI Act, US Executive Order 14110, and various voluntary lab commitments all incorporate elements of evaluation-gated deployment.
+
+The core value proposition is straightforward: evaluation gates add friction to the deployment process that ensures at least some safety testing occurs. They create a paper trail of safety evidence, enable third-party verification, and provide a mechanism for regulators to enforce standards. Without such gates, the default is continuous deployment with safety as an afterthought.
+
+However, evals-based gates face fundamental limitations. Evaluations can only test for risks we anticipate and can operationalize into tests. They may create a false sense of security if models can pass evaluations while still being dangerous. Deceptive models could specifically behave well during evaluations. And the pressure to deploy creates incentives to design evaluations that models can pass. Evals-based gates are valuable as one component of AI governance but should not be confused with comprehensive safety assurance.
+
+## Risk Assessment & Impact
+
+| Dimension | Rating | Assessment |
+|-----------|--------|------------|
+| **Safety Uplift** | Medium | Creates accountability; limited by eval quality |
+| **Capability Uplift** | Tax | May delay deployment |
+| **Net World Safety** | Helpful | Adds friction and accountability |
+| **Lab Incentive** | Weak | Compliance cost; may be required |
+| **Scalability** | Partial | Evals must keep up with capabilities |
+| **Deception Robustness** | Weak | Deceptive models could pass evals |
+| **SI Readiness** | No | Can't eval SI safely |
+
+### Research Investment
+
+- **Current Investment**: $10-30M/yr (policy development; eval infrastructure)
+- **Recommendation**: Increase (needs better evals and enforcement)
+- **Differential Progress**: Safety-dominant (adds deployment friction for safety)
+
+## How Evals-Based Gates Work
+
+Evaluation gates create checkpoints in the AI development and deployment pipeline:
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Model Development] --> B[Pre-Deployment Evaluation]
+
+    B --> C[Capability Evals]
+    B --> D[Safety Evals]
+    B --> E[Alignment Evals]
+
+    C --> F{Pass All Gates?}
+    D --> F
+    E --> F
+
+    F -->|Yes| G[Approved for Deployment]
+    F -->|No| H[Blocked]
+
+    H --> I[Remediation]
+    I --> B
+
+    G --> J[Deployment with Monitoring]
+    J --> K[Post-Deployment Evals]
+    K --> L{Issues Found?}
+    L -->|Yes| M[Deployment Restricted]
+    L -->|No| N[Continue Operation]
+
+    style F fill:#ffddcc
+    style H fill:#ffcccc
+    style G fill:#d4edda
+`} />
+
+### Gate Types
+
+| Gate Type | Trigger | Requirements | Example |
+|-----------|---------|--------------|---------|
+| **Pre-Training** | Before training begins | Risk assessment, intended use | EU AI Act high-risk requirements |
+| **Pre-Deployment** | Before public release | Capability and safety evaluations | Lab RSPs, EO 14110 reporting |
+| **Capability Threshold** | When model crosses defined capability | Additional safety requirements | Anthropic ASL transitions |
+| **Post-Deployment** | After deployment, ongoing | Continued monitoring, periodic re-evaluation | Incident response requirements |
+
+### Evaluation Categories
+
+| Category | What It Tests | Purpose |
+|----------|---------------|---------|
+| **Dangerous Capabilities** | CBRN, cyber, persuasion, autonomy | Identify capability risks |
+| **Alignment Properties** | Honesty, corrigibility, goal stability | Assess alignment |
+| **Behavioral Safety** | Refusal behavior, jailbreak resistance | Test deployment safety |
+| **Robustness** | Adversarial attacks, edge cases | Assess reliability |
+| **Bias and Fairness** | Discriminatory outputs | Address societal concerns |
+
+## Current Implementations
+
+### Regulatory Requirements
+
+| Jurisdiction | Regulation | Evaluation Requirements |
+|--------------|------------|------------------------|
+| **EU** | AI Act | Conformity assessment for high-risk systems; GPAI model evaluation |
+| **US** | EO 14110 | Reporting for training runs >10^26 FLOP; safety testing |
+| **California** | SB 1047 (proposed) | Safety evaluations before deployment |
+| **UK** | Emerging frameworks | Voluntary evaluations via UK AISI |
+
+### Lab Internal Gates
+
+| Lab | Pre-Deployment Process | External Evaluation |
+|-----|----------------------|---------------------|
+| **Anthropic** | ASL evaluation, internal red team, external eval partnerships | METR, Apollo Research |
+| **OpenAI** | Preparedness Framework evaluation, safety review | METR, partnerships |
+| **Google DeepMind** | Frontier Safety Framework evaluation | Some external partnerships |
+
+### Third-Party Evaluators
+
+| Organization | Focus | Access Level |
+|--------------|-------|--------------|
+| **METR** | Autonomous capabilities | Pre-deployment access at major labs |
+| **Apollo Research** | Alignment, scheming | Evaluation partnerships |
+| **UK AISI** | Comprehensive evaluation | Government-mandated access |
+| **US AISI (NIST)** | Standards, coordination | Partnership agreements |
+
+## Limitations and Challenges
+
+### Fundamental Issues
+
+| Limitation | Explanation | Severity |
+|------------|-------------|----------|
+| **Unknown unknowns** | Can't test for unanticipated risks | High |
+| **Evaluation gaming** | Models (or developers) optimize for passing evals | High |
+| **Deceptive alignment** | Models could behave well only during evaluation | High |
+| **Threshold calibration** | Hard to know where to set pass/fail criteria | Medium |
+| **Speed of development** | Evals lag behind capability development | Medium |
+| **Capability elicitation** | May not reveal true model capabilities | Medium |
+
+### The Gaming Problem
+
+Evaluation gates create incentives to game rather than genuinely satisfy:
+
+| Actor | Gaming Approach | Countermeasure |
+|-------|-----------------|----------------|
+| **Developers** | Design evals models can pass | Third-party evaluation |
+| **Models** | Sandbag during evaluation | Capability elicitation research |
+| **Labs** | Interpret results favorably | External verification |
+| **Regulators** | Set easy-to-meet thresholds | Expert input on standards |
+
+### Deceptive Models and Evaluations
+
+| Concern | Explanation |
+|---------|-------------|
+| **Evaluation awareness** | Sophisticated models may detect evaluation context |
+| **Sandbagging** | Models may hide capabilities during testing |
+| **Strategic behavior** | Models may behave well when watched, poorly otherwise |
+| **Interpretation gaming** | Ambiguous results interpreted favorably |
+
+## Key Cruxes
+
+### Crux 1: Can Evaluations Provide Meaningful Safety Assurance?
+
+| Position: Yes | Position: Limited |
+|--------------|-------------------|
+| Something is better than nothing | Can only test for known risks |
+| Creates accountability structure | Deceptive models can pass |
+| Forces safety consideration | May create false confidence |
+| Can improve over time | Fundamental limits on what can be tested |
+
+### Crux 2: Will Evaluations Keep Up With Capabilities?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Eval science is rapidly improving | Capabilities advancing faster |
+| Investment in eval research growing | Novel risks emerge constantly |
+| AI can help create evals | Evals always lag capabilities |
+| Can focus on most important risks | Can't predict what matters |
+
+### Crux 3: Should Gates Be Mandatory or Voluntary?
+
+| Mandatory | Voluntary |
+|-----------|-----------|
+| Creates level playing field | More flexible, adaptive |
+| Prevents race to bottom | Industry expertise in implementation |
+| Enables enforcement | Less regulatory overhead |
+| Public accountability | Can be faster to update |
+
+## Best Practices for Evaluation Gates
+
+### Evaluation Design Principles
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Multiple evaluators** | Don't rely on single evaluation source |
+| **Adversarial testing** | Include red-team evaluation |
+| **Unknown test sets** | Don't let developers tune to known tests |
+| **Capability elicitation** | Actively try to discover hidden capabilities |
+| **Behavioral diversity** | Test across varied contexts |
+| **Update regularly** | Evolve evals as understanding improves |
+
+### Gate Implementation
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Model Ready for Evaluation] --> B[Internal Evaluation]
+    B --> C[Third-Party Evaluation]
+    C --> D[Red Team Testing]
+    D --> E[Results Synthesis]
+
+    E --> F{Clear Pass?}
+    F -->|Yes| G[Document and Deploy]
+    F -->|Marginal| H[Enhanced Monitoring]
+    F -->|No| I[Block + Remediate]
+
+    G --> J[Post-Deployment Monitoring]
+    H --> J
+    J --> K[Continuous Evaluation]
+
+    style F fill:#fff3cd
+    style I fill:#ffcccc
+`} />
+
+### Evaluation Coverage
+
+| Risk Category | Evaluation Approach | Maturity |
+|---------------|-------------------|----------|
+| **CBRN capabilities** | Domain-specific tests | Medium-High |
+| **Cyber capabilities** | Penetration testing, CTF-style | Medium |
+| **Persuasion/Manipulation** | Human studies, simulation | Medium |
+| **Autonomous operation** | Sandbox environments | Medium |
+| **Deceptive alignment** | Behavioral tests | Low |
+| **Goal stability** | Distribution shift tests | Low |
+
+## Who Should Work on This?
+
+**Good fit if you believe:**
+- Governance structures add meaningful value
+- Evaluation science can improve
+- Accountability mechanisms help even if imperfect
+- Near-term deployment safety matters
+
+**Less relevant if you believe:**
+- Evaluations fundamentally can't catch real risks
+- Better to focus on alignment research
+- Regulatory approaches are too slow
+- Gaming makes gates ineffective
+
+## Current Research Priorities
+
+### Evaluation Science
+
+| Priority | Description | Current State |
+|----------|-------------|---------------|
+| **Capability elicitation** | Methods to reveal hidden capabilities | Active research |
+| **Alignment measurement** | Tests for genuine vs. surface alignment | Early stage |
+| **Deception detection** | Behavioral tests for strategic deception | Early stage |
+| **Automated eval generation** | Scale evaluation creation | Emerging (Anthropic Bloom) |
+| **Standardization** | Shared eval suites across labs | Limited progress |
+
+### Governance Research
+
+| Priority | Description | Current State |
+|----------|-------------|---------------|
+| **Threshold setting** | Where should gates be set? | Active debate |
+| **Enforcement mechanisms** | How to ensure compliance | Early development |
+| **International coordination** | Cross-border standards | Nascent |
+| **Liability frameworks** | Consequences for failures | Underdeveloped |
+
+## Sources & Resources
+
+### Key Literature
+
+- AI evaluation research and frameworks
+- Governance and policy research
+- Risk assessment methodologies
+
+### Organizations
+
+- **METR**: Third-party evaluation
+- **Apollo Research**: Alignment evaluation
+- **UK AISI**: Government evaluation
+- **NIST**: Standards development
+
+### Key Critiques
+
+1. **Evals may be inadequate**: Can't test for unknown risks
+2. **Regulatory capture risk**: Industry influence on standards
+3. **Can't eval for unknown risks**: Fundamental limitation of testing
+
+---
+
+## AI Transition Model Context
+
+Evals-based deployment gates affect the <EntityLink id="ai-transition-model" /> through:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="safety-culture-strength" /> | Creates formal safety checkpoints |
+| <EntityLink id="human-oversight-quality" /> | Provides evidence for oversight decisions |
+| <EntityLink id="racing-dynamics" /> | Adds friction that may slow racing |
+
+Evaluation gates are a valuable component of AI governance that creates accountability and evidence requirements. However, they should be understood as one layer in a comprehensive approach, not a guarantee of safety. The quality of evaluations, resistance to gaming, and enforcement of standards all significantly affect their value.

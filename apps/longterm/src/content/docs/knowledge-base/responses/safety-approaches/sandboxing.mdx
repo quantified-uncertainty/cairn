@@ -1,0 +1,282 @@
+---
+title: Sandboxing / Containment
+description: >-
+  Sandboxing limits AI system access to resources, networks, and capabilities as a defense-in-depth
+  measure. This approach is increasingly critical as AI systems become more agentic, providing
+  meaningful safety benefits by constraining potential damage from failures or misalignment.
+  However, containment becomes harder against more capable systems that may find escape routes
+  through social engineering or exploiting system vulnerabilities.
+importance: 65
+quality: 3
+lastEdited: '2025-01-22'
+sidebar:
+  order: 22
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Sandboxing and containment represent a defense-in-depth approach to AI safety, limiting what an AI system can access and do regardless of its intentions. Rather than relying solely on the AI being aligned or well-behaved, containment ensures that even a misaligned or malfunctioning system has bounded impact. This includes restricting network access, file system permissions, execution capabilities, and access to external APIs and tools.
+
+The approach is borrowed from computer security, where sandboxing has proven effective at limiting damage from malicious or buggy software. For AI systems, containment becomes especially important as capabilities increase and systems are deployed as autonomous agents with real-world access. An AI assistant with unlimited internet access, the ability to execute arbitrary code, and control over financial accounts poses fundamentally different risks than one confined to generating text responses.
+
+However, containment faces scaling challenges as AI systems become more capable. A sufficiently intelligent system might find escape routes that humans didn't anticipate, manipulate human operators to expand its access, or exploit security vulnerabilities in the containment system itself. Historical "AI boxing" experiments suggest that even human-level intelligence can often convince human gatekeepers to grant expanded access. For superintelligent systems, containment alone is unlikely to be sufficient.
+
+## Risk Assessment & Impact
+
+| Dimension | Rating | Assessment |
+|-----------|--------|------------|
+| **Safety Uplift** | Medium | Limits damage from failures; defense in depth |
+| **Capability Uplift** | Tax | Reduces what AI can do |
+| **Net World Safety** | Helpful | Valuable containment measure |
+| **Lab Incentive** | Moderate | Security best practice; limits agentic deployment |
+| **Scalability** | Partial | Harder to contain more capable systems |
+| **Deception Robustness** | Partial | Limits options but deceptive AI might find escape routes |
+| **SI Readiness** | Unlikely | SI likely finds containment gaps; social engineering |
+
+### Research Investment
+
+- **Current Investment**: $20-50M/yr (part of agent development)
+- **Recommendation**: Increase (critical as agents become more autonomous)
+- **Differential Progress**: Safety-leaning (primarily limits risk; some product benefit from trust)
+
+## How Sandboxing Works
+
+Sandboxing creates isolated environments with restricted capabilities:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Sandbox["Sandboxed Environment"]
+        A[AI Agent] --> B[Limited File System]
+        A --> C[Restricted Network]
+        A --> D[Approved Tools Only]
+        A --> E[Monitored Actions]
+    end
+
+    F[External World] -.->|Blocked| A
+    A -.->|Blocked| F
+
+    G[Human Oversight] --> H{Approval Gate}
+    H -->|Approved| A
+    A --> H
+    H -->|Blocked| I[Deny Action]
+
+    style Sandbox fill:#fff3cd
+    style H fill:#ffddcc
+    style I fill:#ffcccc
+`} />
+
+### Containment Layers
+
+| Layer | Mechanism | What It Restricts |
+|-------|-----------|------------------|
+| **Compute** | Resource limits (CPU, memory, GPU) | Prevents resource exhaustion attacks |
+| **Network** | Allowlist/denylist, air-gapping | Limits external communication |
+| **File System** | Read-only mounts, restricted paths | Prevents unauthorized data access |
+| **System Calls** | Seccomp, syscall filtering | Blocks dangerous OS operations |
+| **Process** | Container isolation, VMs | Prevents escape to host system |
+| **Tool Access** | Explicit tool authorization | Limits available actions |
+
+### Implementation Approaches
+
+| Approach | Security Level | Usability | Use Case |
+|----------|---------------|-----------|----------|
+| **Process Isolation** | Low-Medium | High | Development, testing |
+| **Container** | Medium | Medium | Production deployment |
+| **Virtual Machine** | Medium-High | Medium | Sensitive workloads |
+| **Air-Gapped** | High | Low | Maximum security research |
+| **Hardware Security** | Very High | Very Low | Critical containment |
+
+## Containment for Agentic AI
+
+As AI systems gain agency, containment requirements increase dramatically:
+
+### Agent Capability Tiers
+
+| Tier | Capabilities | Containment Requirements |
+|------|--------------|-------------------------|
+| **Chatbot** | Text generation only | Minimal (output filtering sufficient) |
+| **Tool-Using** | Can call approved APIs | Tool authorization, rate limiting |
+| **Code-Executing** | Can run arbitrary code | Sandboxed execution, resource limits |
+| **Web-Browsing** | Can access internet | Network restrictions, content filtering |
+| **Autonomous** | Long-running, self-directed | Full containment suite + human oversight |
+
+### Critical Containment Boundaries
+
+1. **No unsupervised external communication**: Agent cannot contact external systems without approval
+2. **No self-modification**: Agent cannot modify its own code, weights, or configuration
+3. **No resource acquisition**: Agent cannot acquire compute, money, or influence independently
+4. **Reversible actions only**: High-stakes actions require human confirmation
+5. **Audit trail**: All actions logged for review
+
+## Escape Risks
+
+### Known Escape Vectors
+
+| Vector | Mechanism | Mitigation |
+|--------|-----------|------------|
+| **Social Engineering** | Convince human operators to grant access | Strict protocols, separation of duties |
+| **Software Vulnerabilities** | Exploit bugs in containment system | Security hardening, regular patching |
+| **Side Channels** | Leak information through timing, power, etc. | Hardware isolation, noise injection |
+| **Specification Gaming** | Find loopholes in containment rules | Comprehensive specifications |
+| **Emergent Capabilities** | Unexpected abilities at scale | Conservative capability estimates |
+
+### AI Boxing Experiments
+
+Historical AI boxing experiments (where humans roleplay as contained AI trying to escape) suggest concerning results:
+
+| Experiment | Setting | Result |
+|------------|---------|--------|
+| **Eliezer Yudkowsky (2002)** | Human AI vs. human gatekeeper | AI escaped in majority of trials |
+| **Various LessWrong experiments** | Similar setups | Mixed results, often favoring AI |
+
+**Key insight**: If human-level persuaders can often convince gatekeepers, superhuman persuaders may be essentially unconstainable through social means alone.
+
+### Scaling Concerns
+
+As AI capabilities increase:
+
+| Capability Level | Containment Outlook |
+|------------------|-------------------|
+| **Current LLMs** | Effective with proper implementation |
+| **Expert-Level Agents** | Challenging but possible with rigorous protocols |
+| **Human-Level AGI** | Very difficult; social engineering becomes major risk |
+| **Superhuman AI** | Likely insufficient as sole safety measure |
+
+## Key Cruxes
+
+### Crux 1: Can Containment Scale to AGI?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Air-gapping is physically effective | AGI finds paths humans didn't anticipate |
+| Hardware security provides strong guarantees | Social engineering becomes dominant |
+| Multiple layers provide redundancy | Single failure can breach all layers |
+| Human oversight remains meaningful | Humans become the weakest link |
+
+### Crux 2: Is the Capability Tax Acceptable?
+
+| Position: Accept Tax | Position: Tax Too High |
+|---------------------|----------------------|
+| Safety worth reduced capability | Competitive pressure to reduce restrictions |
+| Can design tasks around limitations | Users will bypass for productivity |
+| Defense-in-depth principle | Capability gains from agency important |
+| Precautionary approach appropriate | Overly restrictive slows beneficial AI |
+
+### Crux 3: Should We Invest More in Containment Research?
+
+| Position: More Investment | Position: Sufficient |
+|--------------------------|---------------------|
+| Agents becoming common rapidly | Computer security well-developed |
+| AI-specific threats under-studied | Containment has fundamental limits |
+| Need formal containment guarantees | Better to invest in alignment |
+| Underappreciated research area | Already standard practice |
+
+## Best Practices
+
+### Defense in Depth Architecture
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[AI Agent] --> B[Application Sandbox]
+    B --> C[Container]
+    C --> D[Virtual Machine]
+    D --> E[Hardware Security]
+    E --> F[Network Isolation]
+
+    G[Monitoring] --> B
+    G --> C
+    G --> D
+    G --> E
+    G --> F
+
+    H[Human Oversight] --> A
+    H --> G
+
+    style A fill:#ffddcc
+    style H fill:#d4edda
+    style G fill:#d4edda
+`} />
+
+### Implementation Checklist
+
+| Component | Requirement | Notes |
+|-----------|-------------|-------|
+| **Principle of Least Privilege** | Grant minimum necessary access | Review regularly |
+| **Explicit Tool Authorization** | Allowlist, not denylist | Default deny |
+| **Action Logging** | Complete audit trail | Tamper-resistant storage |
+| **Rate Limiting** | Bound action frequency | Prevent rapid escalation |
+| **Human-in-the-Loop** | Approval for high-stakes actions | Clear escalation criteria |
+| **Kill Switch** | Immediate shutdown capability | Multiple independent triggers |
+| **Rollback Capability** | Undo agent actions | Especially for state changes |
+
+## Who Should Work on This?
+
+**Good fit if you believe:**
+- Defense-in-depth is valuable even without solving alignment
+- Agentic AI deployment is near-term
+- Containment provides meaningful safety even if imperfect
+- Security engineering skills transfer to AI safety
+
+**Less relevant if you believe:**
+- Containment is fundamentally impossible at AGI level
+- Should focus on getting alignment right instead
+- Capability taxes make AI non-competitive
+- Boxing experiments show futility
+
+## Current State of Practice
+
+### Industry Adoption
+
+| Context | Containment Level | Notes |
+|---------|------------------|-------|
+| **Research Labs** | Variable | Often informal, improving |
+| **API Deployment** | Moderate | Rate limiting, monitoring |
+| **Agent Products** | Growing | Claude Computer Use, etc. |
+| **Agentic Benchmarks** | Minimal | Often prioritize capability |
+
+### Architecture Relevance
+
+| Architecture | Containment Relevance | Notes |
+|--------------|----------------------|-------|
+| **Scaled Transformers** | Medium | Mostly API-level; limited internal containment |
+| **Scaffolded Agents** | Critical | Essential for agentic systems with tool access |
+| **SSM-Based** | Medium | Same containment applies |
+| **Hybrid Neurosymbolic** | High | Can constrain symbolic reasoning paths |
+| **Novel/Unknown** | High | Containment always relevant |
+
+## Sources & Resources
+
+### Key Literature
+
+- AI containment and boxing papers
+- Container and VM security research
+- Agentic AI safety frameworks
+
+### Organizations
+
+- **Anthropic**: Agent safety research
+- **OpenAI**: Agent containment practices
+- **Security research groups**: Container escape techniques
+
+### Key Critiques
+
+1. **Reduces usefulness**: Limits what AI can accomplish
+2. **Sophisticated AI may escape**: Social engineering, novel attacks
+3. **Social engineering attacks**: Humans are weak links
+4. **Not sufficient alone**: Must be combined with alignment work
+
+---
+
+## AI Transition Model Context
+
+Sandboxing affects the <EntityLink id="ai-transition-model" /> through multiple pathways:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="misalignment-potential" /> | Reduces damage from unaligned behavior |
+| <EntityLink id="human-oversight-quality" /> | Enables meaningful human control |
+| <EntityLink id="misuse-potential" /> | Limits unauthorized capabilities |
+
+Sandboxing is a critical component of defense-in-depth but should not be relied upon as the sole safety measure. Its value is proportional to the strength of other safety measures; containment buys time but doesn't solve alignment.

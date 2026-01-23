@@ -28,6 +28,8 @@ export default defineConfig({
               PageFrame: './src/components/starlight/PageFrame.astro',
               // Add breadcrumbs for AI Transition Model pages
               PageTitle: './src/components/starlight/PageTitle.astro',
+              // Custom footer with version display
+              Footer: './src/components/starlight/Footer.astro',
           },
           tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
           social: [
@@ -176,6 +178,11 @@ export default defineConfig({
                   label: 'Internal',
                   collapsed: true,
                   autogenerate: { directory: 'internal' },
+              },
+              {
+                  label: 'Insight Hunting',
+                  collapsed: true,
+                  autogenerate: { directory: 'insight-hunting' },
               },
               {
                   label: 'Project',

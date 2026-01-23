@@ -1,0 +1,118 @@
+---
+title: Safety Approaches
+description: >-
+  Comparative analysis of AI safety techniques, evaluating their effectiveness,
+  scalability, and whether they actually make the world safer versus primarily
+  enabling more capable systems.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+## Overview
+
+This section provides a comprehensive analysis of AI safety approaches, from training techniques like RLHF and Constitutional AI to governance mechanisms like compute governance and responsible scaling policies.
+
+A key insight drives this analysis: **many "safety" techniques have capability uplift as their primary effect**. RLHF, for example, is what makes ChatGPT useful—its safety benefit is secondary to its capability benefit. Understanding this tradeoff is essential for prioritizing safety research.
+
+## Interactive Table
+
+View all approaches in a sortable, filterable table:
+
+**[Safety Approaches Comparison Table →](/knowledge-base/responses/safety-approaches/table)**
+
+## Categories
+
+### Training & Alignment
+
+Techniques that shape model behavior during the training process:
+
+- [RLHF](/knowledge-base/responses/safety-approaches/rlhf/) - Reinforcement Learning from Human Feedback
+- [Constitutional AI](/knowledge-base/responses/safety-approaches/constitutional-ai/) - AI feedback based on explicit principles
+- [AI Safety via Debate](/knowledge-base/responses/safety-approaches/debate/) - Adversarial AI argument evaluation
+- [Process Supervision](/knowledge-base/responses/safety-approaches/process-supervision/) - Rewarding reasoning steps
+- [Weak-to-Strong Generalization](/knowledge-base/responses/safety-approaches/weak-to-strong/) - Scalable oversight research
+- [Model Specifications](/knowledge-base/responses/safety-approaches/model-spec/) - Explicit behavioral guidelines
+- [Adversarial Training](/knowledge-base/responses/safety-approaches/adversarial-training/) - Robustness to attacks
+- [Cooperative AI](/knowledge-base/responses/safety-approaches/cooperative-ai/) - Multi-agent cooperation research
+
+### Interpretability & Transparency
+
+Understanding what's happening inside AI systems:
+
+- [Mechanistic Interpretability](/knowledge-base/responses/safety-approaches/mech-interp/) - Reverse-engineering neural networks
+- [Sparse Autoencoders](/knowledge-base/responses/safety-approaches/sparse-autoencoders/) - Finding interpretable features
+- [Representation Engineering](/knowledge-base/responses/safety-approaches/representation-engineering/) - Steering activation vectors
+- [Probing](/knowledge-base/responses/safety-approaches/probing/) - Testing internal representations
+
+### Evaluation & Red-teaming
+
+Testing and assessing AI system safety:
+
+- [Dangerous Capability Evaluations](/knowledge-base/responses/safety-approaches/dangerous-cap-evals/) - Testing for harmful capabilities
+- [Red Teaming](/knowledge-base/responses/safety-approaches/red-teaming/) - Adversarial testing
+- [Alignment Evaluations](/knowledge-base/responses/safety-approaches/alignment-evals/) - Measuring alignment properties
+- [Third-Party Auditing](/knowledge-base/responses/safety-approaches/model-auditing/) - External safety assessment
+- [AI Safety Cases](/knowledge-base/responses/safety-approaches/safety-cases/) - Structured safety arguments
+- [Capability Elicitation](/knowledge-base/responses/safety-approaches/capability-elicitation/) - Discovering hidden capabilities
+- [Sleeper Agent Detection](/knowledge-base/responses/safety-approaches/sleeper-agent-detection/) - Detecting deceptive alignment
+
+### Architectural & Runtime
+
+System-level safety measures:
+
+- [Output Filtering](/knowledge-base/responses/safety-approaches/output-filtering/) - Post-hoc content blocking
+- [Refusal Training](/knowledge-base/responses/safety-approaches/refusal-training/) - Training models to decline harmful requests
+- [Sandboxing](/knowledge-base/responses/safety-approaches/sandboxing/) - Limiting AI system access
+- [Tool-Use Restrictions](/knowledge-base/responses/safety-approaches/tool-restrictions/) - Constraining AI actions
+- [Monitoring](/knowledge-base/responses/safety-approaches/monitoring/) - Detecting anomalous behavior
+- [Circuit Breakers](/knowledge-base/responses/safety-approaches/circuit-breakers/) - Runtime intervention systems
+- [Structured Access](/knowledge-base/responses/safety-approaches/structured-access/) - API-only deployment
+
+### Governance & External
+
+Policy and institutional approaches:
+
+- [Compute Governance](/knowledge-base/responses/safety-approaches/compute-governance/) - Controlling access to training compute
+- [Responsible Scaling Policies](/knowledge-base/responses/safety-approaches/rsp/) - Capability-based deployment gates
+- [Evals-Based Deployment Gates](/knowledge-base/responses/safety-approaches/evals-governance/) - Safety evaluation requirements
+- [Model Registries](/knowledge-base/responses/safety-approaches/model-registries/) - Licensing and registration
+- [Pause / Moratorium](/knowledge-base/responses/safety-approaches/pause-moratorium/) - Slowing frontier development
+- [International AI Governance](/knowledge-base/responses/safety-approaches/international-coordination/) - Cross-border coordination
+
+### Theoretical & Research
+
+Foundational safety research:
+
+- [Formal Verification](/knowledge-base/responses/safety-approaches/formal-verification/) - Mathematical safety proofs
+- [Provably Safe AI](/knowledge-base/responses/safety-approaches/provably-safe/) - Safety by construction
+- [Corrigibility Research](/knowledge-base/responses/safety-approaches/corrigibility/) - Shutdown and correction
+- [Goal Misgeneralization](/knowledge-base/responses/safety-approaches/goal-misgeneralization/) - Understanding generalization failures
+- [Eliciting Latent Knowledge](/knowledge-base/responses/safety-approaches/eliciting-latent-knowledge/) - Getting AI to report true beliefs
+- [Capability Unlearning](/knowledge-base/responses/safety-approaches/capability-unlearning/) - Removing dangerous capabilities
+- [AI Control](/knowledge-base/responses/safety-approaches/ai-control/) - Maintaining human oversight
+
+## Key Evaluation Criteria
+
+Each approach is evaluated on:
+
+| Criterion | Question |
+|-----------|----------|
+| **Safety Uplift** | How much does this reduce catastrophic risk? |
+| **Capability Uplift** | Does it make AI more capable/useful? |
+| **Net World Safety** | Given both, is the world safer? |
+| **Scalability** | Does it work as AI gets smarter? |
+| **Deception Robustness** | Does it work against deceptive AI? |
+| **SI Readiness** | Would it work for superintelligent AI? |
+
+## Research Priorities
+
+Based on our analysis, the highest-priority areas for additional investment are:
+
+1. **Mechanistic Interpretability** - One of few paths to detecting deception
+2. **AI Safety Cases** - Promising governance framework, severely underdeveloped
+3. **Corrigibility Research** - Fundamental unsolved problem
+4. **Eliciting Latent Knowledge** - Would solve deception detection if successful
+5. **International AI Governance** - Critical but severely underdeveloped
+
+See the [full comparison table](/knowledge-base/responses/safety-approaches/table) for detailed analysis.

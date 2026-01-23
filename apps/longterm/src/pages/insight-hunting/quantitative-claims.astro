@@ -1,0 +1,29 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { QuantitativeClaimsView } from '@/components/insight-hunting/QuantitativeClaimsView';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Try to load pre-generated claims data
+let claimsData = null;
+const claimsPath = path.join(process.cwd(), 'src/data/generated/quantitative-claims.json');
+if (fs.existsSync(claimsPath)) {
+  claimsData = JSON.parse(fs.readFileSync(claimsPath, 'utf-8'));
+}
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Quantitative Claims',
+    description: 'Numbers, percentages, and statistics from content that could be insights',
+  }}
+  headings={[]}
+>
+  <div class="not-content">
+    <p class="text-muted-foreground mb-6">
+      Quantitative claims are numbers, percentages, dollar amounts, and timeline predictions extracted from content.
+      Claims marked as "Notable" have importance indicators like "catastrophic", "surprising", or "only" in their context.
+    </p>
+    <QuantitativeClaimsView client:load data={claimsData} />
+  </div>
+</StarlightPage>

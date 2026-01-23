@@ -1,0 +1,283 @@
+---
+title: Responsible Scaling Policies
+description: >-
+  Responsible Scaling Policies (RSPs) are voluntary commitments by AI labs to pause scaling
+  when certain capability or safety thresholds are crossed. Anthropic pioneered this approach,
+  with OpenAI and DeepMind developing similar frameworks. While RSPs create accountability
+  mechanisms and tripwires, their effectiveness depends on voluntary follow-through and
+  the quality of evaluations that define thresholds.
+importance: 70
+quality: 3
+lastEdited: '2025-01-22'
+sidebar:
+  order: 28
+pageTemplate: knowledge-base-response
+---
+import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
+
+## Overview
+
+Responsible Scaling Policies (RSPs) are self-imposed commitments by AI labs to tie AI development to safety progress. The core idea is simple: before scaling to more capable systems, labs commit to demonstrating that their safety measures are adequate for the risks those systems would pose. If evaluations reveal dangerous capabilities without adequate safeguards, development should pause until safety catches up.
+
+Anthropic introduced the first RSP in September 2023, establishing "AI Safety Levels" (ASL-1 through ASL-4+) analogous to biosafety levels. OpenAI followed with its Preparedness Framework, and Google DeepMind published its Frontier Safety Framework. By late 2024, twelve major AI companies had published some form of frontier AI safety policy, and the Seoul Summit secured voluntary commitments from sixteen companies.
+
+RSPs represent a significant governance innovation because they create a mechanism for safety-capability coupling without requiring external regulation. They also provide external accountability through public commitments and third-party evaluation. However, RSPs face fundamental challenges: they are voluntary and unenforceable, labs set their own thresholds, competitive pressure creates incentives to interpret policies permissively, and the evaluations that trigger safeguards may be inadequate for detecting the most dangerous failure modes.
+
+## Risk Assessment & Impact
+
+| Dimension | Rating | Assessment |
+|-----------|--------|------------|
+| **Safety Uplift** | Medium | Creates tripwires; effectiveness depends on follow-through |
+| **Capability Uplift** | Neutral | Not capability-focused |
+| **Net World Safety** | Helpful | Better than nothing; implementation uncertain |
+| **Lab Incentive** | Moderate | PR value; may become required; some genuine commitment |
+| **Scalability** | Unknown | Depends on whether commitments are honored |
+| **Deception Robustness** | Partial | External policy; but evals could be fooled |
+| **SI Readiness** | Unlikely | Pre-SI intervention; can't constrain SI itself |
+
+### Research Investment
+
+- **Current Investment**: $5-15M/yr (policy teams at labs; external policy orgs)
+- **Recommendation**: Increase (needs enforcement mechanisms and external verification)
+- **Differential Progress**: Safety-dominant (pure governance; no capability benefit)
+
+## How RSPs Work
+
+RSPs create a framework linking capability levels to safety requirements:
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Current Model] --> B[Capability Evaluation]
+    B --> C{Above Threshold?}
+
+    C -->|No| D[Continue Development]
+    C -->|Yes| E[Safety Assessment]
+
+    E --> F{Safety Sufficient?}
+    F -->|Yes| G[Proceed with Safeguards]
+    F -->|No| H[Pause Development]
+
+    H --> I[Develop Safety Measures]
+    I --> E
+
+    D --> J[Next Model]
+    G --> J
+    J --> B
+
+    style C fill:#fff3cd
+    style F fill:#ffddcc
+    style H fill:#ffcccc
+`} />
+
+### Key Components
+
+| Component | Description | Purpose |
+|-----------|-------------|---------|
+| **Capability Thresholds** | Defined capability levels that trigger requirements | Create clear tripwires |
+| **Safety Levels** | Required safeguards for each capability tier | Ensure safety scales with capability |
+| **Evaluations** | Tests to determine capability and safety level | Provide evidence for decisions |
+| **Pause Commitments** | Agreement to halt if safety is insufficient | Core accountability mechanism |
+| **Public Commitment** | Published policy creates external accountability | Enable monitoring |
+
+### Anthropic's AI Safety Levels
+
+| Level | Definition | Security Requirements | Example |
+|-------|------------|----------------------|---------|
+| **ASL-1** | No meaningful catastrophic risk | Standard security | Simple tools, games |
+| **ASL-2** | Provides meaningful uplift but not beyond what's available online | Current security measures | Current models (Claude 3.5) |
+| **ASL-3** | Significantly enhances capabilities of non-state actors | Enhanced security, operational measures | Near-future models |
+| **ASL-4** | Model could accelerate development of CBRN weapons or cyber attacks substantially | Nation-state level security | Highly capable future models |
+
+### OpenAI's Preparedness Framework
+
+| Track | Categories | Thresholds |
+|-------|------------|------------|
+| **Cybersecurity** | Autonomous hacking, vulnerability discovery | Low/Medium/High/Critical |
+| **CBRN** | Biological, chemical, radiological, nuclear | Low/Medium/High/Critical |
+| **Persuasion** | Mass manipulation, individual persuasion | Low/Medium/High/Critical |
+| **Model Autonomy** | Self-replication, resource acquisition | Low/Medium/High/Critical |
+
+## Current Implementations
+
+### Lab Policies Comparison
+
+| Lab | Policy Name | Date | Key Features |
+|-----|-------------|------|--------------|
+| **Anthropic** | Responsible Scaling Policy | Sep 2023, v2.2 Dec 2024 | ASL levels, deployment/security requirements |
+| **OpenAI** | Preparedness Framework | Dec 2023 | Risk categories, model scoring |
+| **Google DeepMind** | Frontier Safety Framework | May 2024 | Capability evaluations, deployment controls |
+| **xAI** | Safety Framework | 2024 | Evaluation and deployment procedures |
+
+### Seoul Summit Commitments
+
+16 companies committed to:
+- Publish safety frameworks
+- Conduct pre-deployment evaluations
+- Report dangerous capability discoveries
+- Commit to not deploying if unable to mitigate risks
+
+### Evaluation Partners
+
+| Organization | Role | Notable Work |
+|--------------|------|--------------|
+| **METR** | Third-party autonomous capability evals | Pre-deployment evals for Anthropic, OpenAI |
+| **Apollo Research** | Alignment and scheming evaluations | In-context scheming research |
+| **UK AISI** | Government evaluation body | Independent frontier model testing |
+| **US AISI (NIST)** | US government evaluation coordination | AISIC consortium |
+
+## Limitations and Challenges
+
+### Structural Issues
+
+| Issue | Description | Severity |
+|-------|-------------|----------|
+| **Voluntary** | No legal enforcement mechanism | High |
+| **Self-defined thresholds** | Labs set their own standards | High |
+| **Competitive pressure** | Incentive to interpret permissively | High |
+| **Evaluation limitations** | Evals may miss important risks | High |
+| **Public commitment only** | Limited verification of compliance | Medium |
+| **Evolving policies** | Policies can be changed by labs | Medium |
+
+### The Evaluation Problem
+
+RSPs are only as good as the evaluations that trigger them:
+
+| Challenge | Explanation |
+|-----------|-------------|
+| **Unknown risks** | Can't test for capabilities we haven't imagined |
+| **Sandbagging** | Models might hide capabilities during evaluation |
+| **Elicitation difficulty** | True capabilities may not be revealed |
+| **Threshold calibration** | Hard to know where thresholds should be |
+| **Deceptive alignment** | Sophisticated models may game evaluations |
+
+### Competitive Dynamics
+
+| Scenario | Lab Behavior | Safety Outcome |
+|----------|--------------|----------------|
+| **Mutual commitment** | All labs follow RSPs | Good |
+| **One defector** | Others follow, one cuts corners | Bad (defector advantages) |
+| **Many defectors** | Race to bottom | Very Bad |
+| **External pressure** | Regulation enforces standards | Potentially Good |
+
+## Key Cruxes
+
+### Crux 1: Will Labs Honor Their Commitments?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Reputational stake in commitment | Competitive pressure to continue |
+| Some genuine safety motivation | No enforcement mechanism |
+| Third-party verification helps | History of moving goalposts |
+| Public accountability creates pressure | Commercial interests dominate |
+
+### Crux 2: Are RSP Thresholds Set Appropriately?
+
+| Position: Appropriate | Position: Too Permissive |
+|----------------------|-------------------------|
+| Based on expert judgment | Labs set their own standards |
+| Updated as understanding improves | Conflict of interest |
+| Better than no thresholds | May be designed to be non-binding |
+| Include safety margins | Racing pressure to minimize |
+
+### Crux 3: Can Evaluations Trigger RSPs Effectively?
+
+| Position: Yes | Position: No |
+|--------------|--------------|
+| Eval science is improving | Can't detect what we don't test for |
+| Third-party evals add accountability | Deceptive models could sandbag |
+| Explicit triggers create clarity | Thresholds may be wrong |
+| Better than pure judgment calls | Gaming evaluations is incentivized |
+
+## Analysis of RSP Effectiveness
+
+### Strengths
+
+| Strength | Explanation |
+|----------|-------------|
+| **Explicit commitments** | Creates accountability through specificity |
+| **Public pressure** | Visible commitments enable monitoring |
+| **Third-party verification** | External evaluation adds credibility |
+| **Adaptive framework** | Can update as understanding improves |
+| **Industry coordination** | Creates shared standards |
+
+### Weaknesses
+
+| Weakness | Explanation |
+|----------|-------------|
+| **Voluntary nature** | No legal consequences for violations |
+| **Self-defined thresholds** | Conflict of interest in setting standards |
+| **Competitive pressure** | Racing incentives undermine commitment |
+| **Evaluation limitations** | Evals may not catch real dangers |
+| **Policy evolution** | Labs can change policies over time |
+
+## What Would Improve RSPs?
+
+### Near-Term Improvements
+
+| Improvement | Mechanism | Feasibility |
+|-------------|-----------|-------------|
+| **Third-party verification** | Independent audit of compliance | High |
+| **Standardized thresholds** | Industry-wide capability definitions | Medium |
+| **Mandatory reporting** | Legal requirements for disclosure | Medium |
+| **Binding commitments** | Legal liability for violations | Low-Medium |
+| **International coordination** | Cross-border standards | Low |
+
+### Longer-Term Vision
+
+| Improvement | Description |
+|-------------|-------------|
+| **Regulatory backstop** | Government enforcement if voluntary fails |
+| **Standardized evals** | Shared evaluation suites across labs |
+| **International treaty** | Binding international commitments |
+| **Continuous verification** | Ongoing monitoring rather than point-in-time |
+
+## Who Should Work on This?
+
+**Good fit if you believe:**
+- Industry self-governance can work with proper incentives
+- Creating accountability structures is valuable
+- Incremental governance improvements help
+- RSPs can evolve into stronger mechanisms
+
+**Less relevant if you believe:**
+- Voluntary commitments are inherently unreliable
+- Labs will never meaningfully constrain themselves
+- Focus should be on mandatory regulation
+- Evaluations can't capture real risks
+
+## Sources & Resources
+
+### Key Documents
+
+- Anthropic's Responsible Scaling Policy (v1, v2.2)
+- OpenAI's Preparedness Framework
+- Google DeepMind's Frontier Safety Framework
+- Seoul Summit Frontier AI Safety Commitments
+
+### Organizations
+
+- **Anthropic**: RSP originator
+- **OpenAI**: Preparedness Framework
+- **Google DeepMind**: Frontier Safety Framework
+- **METR**: Third-party evaluations
+- **UK AISI**: Government evaluation
+
+### Key Critiques
+
+1. **Voluntary and unenforceable**: No mechanism to ensure compliance
+2. **Labs set their own thresholds**: Inherent conflict of interest
+3. **Competitive pressure to continue**: Racing dynamics undermine commitments
+
+---
+
+## AI Transition Model Context
+
+RSPs affect the <EntityLink id="ai-transition-model" /> through multiple pathways:
+
+| Parameter | Impact |
+|-----------|--------|
+| <EntityLink id="safety-culture-strength" /> | Creates accountability mechanisms |
+| <EntityLink id="racing-dynamics" /> | Could reduce racing if mutually honored |
+| <EntityLink id="human-oversight-quality" /> | Formalizes oversight requirements |
+
+RSPs represent an important governance innovation that creates explicit links between capabilities and safety requirements. However, their effectiveness depends critically on voluntary compliance, quality of evaluations, and resistance to competitive pressure. They should be understood as a foundation for stronger governance rather than a complete solution.

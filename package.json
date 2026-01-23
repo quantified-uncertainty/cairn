@@ -7,9 +7,14 @@
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "validate": "pnpm --filter longterm validate"
+    "validate": "pnpm --filter longterm validate",
+    "changeset": "changeset",
+    "version": "changeset version && node scripts/sync-versions.mjs",
+    "release": "pnpm build && changeset publish",
+    "sync-versions": "node scripts/sync-versions.mjs"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "typescript": "^5.8.3"
   },
   "engines": {

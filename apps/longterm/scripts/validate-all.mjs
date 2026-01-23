@@ -142,6 +142,12 @@ const CHECKS = [
     script: 'validate-graph-sync.mjs',
     description: 'Individual diagram nodes exist in master graph',
   },
+  {
+    id: 'insights',
+    name: 'Insights Quality',
+    script: 'validate-insights.mjs',
+    description: 'Insight schema, ratings, and source paths',
+  },
 ];
 
 /**

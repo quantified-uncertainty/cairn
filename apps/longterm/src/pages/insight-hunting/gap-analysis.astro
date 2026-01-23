@@ -1,0 +1,25 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { GapAnalysisTable } from '@/components/insight-hunting/GapAnalysisTable';
+import pagesData from '@/data/pages.json';
+import { getInsightGaps } from '@/lib/insight-hunting';
+
+// Compute gaps server-side
+const gaps = getInsightGaps(pagesData as any);
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Gap Analysis',
+    description: 'Find pages with high importance but few or no extracted insights',
+  }}
+  headings={[]}
+>
+  <div class="not-content">
+    <p class="text-muted-foreground mb-6">
+      Pages are scored by: <code>importance × (1 + quality/100) - insightCount × 20</code>.
+      Higher scores indicate pages that likely contain valuable insights that haven't been extracted yet.
+    </p>
+    <GapAnalysisTable client:load gaps={gaps} />
+  </div>
+</StarlightPage>
