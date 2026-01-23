@@ -1,6 +1,7 @@
 // Accident Risks Comparison Table
 // Analyzes AI accident risks with explicit overlap handling and relationship tracking
 
+import { useState, useMemo } from 'react';
 import {
   accidentRisks,
   riskCategories,
@@ -9,6 +10,11 @@ import {
   type AbstractionLevel,
   type RiskRelationship,
 } from '../data/accident-risks-data';
+import { TableInsightsSummary } from './tables/shared/TableInsightsSummary';
+
+type ViewMode = 'unified' | 'grouped';
+type SortColumn = 'name' | 'category' | 'level' | 'evidence' | 'timeline' | 'severity' | 'detectability';
+type SortDirection = 'asc' | 'desc';
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -315,6 +321,32 @@ const styles = `
     color: white;
     border-color: #1d4ed8;
   }
+  .ar-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+  .ar-table th.sortable:hover {
+    background: #e5e7eb;
+  }
+  .ar-sort-indicator {
+    margin-left: 4px;
+    font-size: 10px;
+  }
+  .ar-category-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ar-category-dot-small {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ar-category-label {
+    font-size: 10px;
+    color: #374151;
+  }
 `;
 
 const categoryColors: Record<string, string> = {
@@ -413,6 +445,68 @@ function getRelationBadgeClass(type: string): string {
   return type.toLowerCase().replace('_', '-');
 }
 
+// Sorting helpers
+const LEVEL_ORDER: Record<string, number> = {
+  // Abstraction Level
+  'THEORETICAL': 1, 'MECHANISM': 2, 'BEHAVIOR': 3, 'OUTCOME': 4,
+  // Evidence Level
+  'SPECULATIVE': 1, 'THEORETICAL': 1, 'DEMONSTRATED_LAB': 3, 'OBSERVED_CURRENT': 4,
+  // Timeline
+  'LONG_TERM': 1, 'MEDIUM_TERM': 2, 'NEAR_TERM': 3, 'CURRENT': 4, 'UNCERTAIN': 0,
+  // Severity
+  'LOW': 1, 'MEDIUM': 2, 'HIGH': 3, 'CATASTROPHIC': 4, 'EXISTENTIAL': 5,
+  // Detectability (reversed - easy is better)
+  'EASY': 4, 'MODERATE': 3, 'DIFFICULT': 2, 'VERY_DIFFICULT': 1, 'UNKNOWN': 0,
+};
+
+function getLevelValue(level: string): number {
+  if (LEVEL_ORDER[level] !== undefined) return LEVEL_ORDER[level];
+  return 0;
+}
+
+function getCategoryOrder(category: string): number {
+  const index = riskCategories.indexOf(category);
+  return index >= 0 ? index : 999;
+}
+
+function getCategoryColor(category: string): string {
+  return categoryColors[category] || '#6b7280';
+}
+
+function sortRisks(risks: AccidentRisk[], column: SortColumn, direction: SortDirection): AccidentRisk[] {
+  const sorted = [...risks].sort((a, b) => {
+    let comparison = 0;
+
+    switch (column) {
+      case 'name':
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case 'category':
+        comparison = getCategoryOrder(a.category) - getCategoryOrder(b.category);
+        break;
+      case 'level':
+        comparison = getLevelValue(a.abstractionLevel) - getLevelValue(b.abstractionLevel);
+        break;
+      case 'evidence':
+        comparison = getLevelValue(a.evidenceLevel) - getLevelValue(b.evidenceLevel);
+        break;
+      case 'timeline':
+        comparison = getLevelValue(a.timeline) - getLevelValue(b.timeline);
+        break;
+      case 'severity':
+        comparison = getLevelValue(a.severity) - getLevelValue(b.severity);
+        break;
+      case 'detectability':
+        comparison = getLevelValue(a.detectability) - getLevelValue(b.detectability);
+        break;
+    }
+
+    return direction === 'asc' ? comparison : -comparison;
+  });
+
+  return sorted;
+}
+
 function formatLevel(level: string): string {
   return level.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -448,7 +542,7 @@ function RiskRow({ risk, scrollToRisk }: { risk: AccidentRisk; scrollToRisk: (id
 
   return (
     <tr id={`risk-${risk.id}`}>
-      <td className="sticky-col">
+      <td className="sticky-col" title={risk.shortDescription}>
         <div className="ar-risk-name">
           {riskUrl ? (
             <a href={riskUrl}>{risk.name}</a>
@@ -456,46 +550,136 @@ function RiskRow({ risk, scrollToRisk }: { risk: AccidentRisk; scrollToRisk: (id
             risk.name
           )}
         </div>
-        <div className="ar-risk-desc">{risk.shortDescription}</div>
       </td>
-      <td>
+      <td title={abstractionLevelDescriptions[risk.abstractionLevel]}>
         <Badge level={risk.abstractionLevel} className={getAbstractionBadgeClass(risk.abstractionLevel)} />
-        <div className="ar-cell-note">{abstractionLevelDescriptions[risk.abstractionLevel]}</div>
       </td>
-      <td>
+      <td title={risk.evidenceNote}>
         <Badge level={risk.evidenceLevel} className={getEvidenceBadgeClass(risk.evidenceLevel)} />
-        <div className="ar-cell-note">{risk.evidenceNote}</div>
       </td>
-      <td>
+      <td title={risk.timelineNote}>
         <Badge level={risk.timeline} className={getTimelineBadgeClass(risk.timeline)} />
-        <div className="ar-cell-note">{risk.timelineNote}</div>
       </td>
-      <td>
+      <td title={risk.severityNote}>
         <Badge level={risk.severity} className={getSeverityBadgeClass(risk.severity)} />
-        <div className="ar-cell-note">{risk.severityNote}</div>
       </td>
-      <td>
+      <td title={risk.detectabilityNote}>
         <Badge level={risk.detectability} className={getDetectabilityBadgeClass(risk.detectability)} />
-        <div className="ar-cell-note">{risk.detectabilityNote}</div>
       </td>
       <td>
         <RelationsCell relations={risk.relatedRisks} scrollToRisk={scrollToRisk} />
       </td>
-      <td>
-        {risk.overlapNote && (
-          <div className="ar-overlap-cell">{risk.overlapNote}</div>
-        )}
+      <td title={risk.overlapNote || undefined}>
+        {risk.overlapNote && <span style={{ fontSize: '9px', color: '#6b7280' }}>ℹ</span>}
       </td>
-      <td>
-        <div className="ar-key-question">{risk.keyQuestion}</div>
+      <td title={risk.keyQuestion}>
+        <span style={{ fontSize: '9px', color: '#6b7280' }}>?</span>
       </td>
     </tr>
   );
 }
 
-type ViewMode = 'category' | 'abstraction';
+function SortableHeader({
+  column,
+  currentSort,
+  direction,
+  onSort,
+  children,
+  className = '',
+  style
+}: {
+  column: SortColumn;
+  currentSort: SortColumn;
+  direction: SortDirection;
+  onSort: (col: SortColumn) => void;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const isActive = currentSort === column;
+  return (
+    <th
+      className={`${className} sortable`}
+      style={style}
+      onClick={() => onSort(column)}
+    >
+      {children}
+      <span className="ar-sort-indicator">
+        {isActive ? (direction === 'asc' ? '▲' : '▼') : ''}
+      </span>
+    </th>
+  );
+}
+
+function UnifiedRiskRow({ risk, scrollToRisk }: { risk: AccidentRisk; scrollToRisk: (id: string) => void }) {
+  const riskUrl = risk.pageSlug
+    ? `/knowledge-base/risks/accident/${risk.pageSlug}/`
+    : null;
+  const categoryColor = getCategoryColor(risk.category);
+
+  return (
+    <tr id={`risk-${risk.id}`}>
+      <td className="sticky-col" title={risk.shortDescription}>
+        <div className="ar-risk-name">
+          {riskUrl ? (
+            <a href={riskUrl}>{risk.name}</a>
+          ) : (
+            risk.name
+          )}
+        </div>
+      </td>
+      <td>
+        <div className="ar-category-cell">
+          <div className="ar-category-dot-small" style={{ background: categoryColor }} />
+          <span className="ar-category-label">{risk.category}</span>
+        </div>
+      </td>
+      <td title={abstractionLevelDescriptions[risk.abstractionLevel]}>
+        <Badge level={risk.abstractionLevel} className={getAbstractionBadgeClass(risk.abstractionLevel)} />
+      </td>
+      <td title={risk.evidenceNote}>
+        <Badge level={risk.evidenceLevel} className={getEvidenceBadgeClass(risk.evidenceLevel)} />
+      </td>
+      <td title={risk.timelineNote}>
+        <Badge level={risk.timeline} className={getTimelineBadgeClass(risk.timeline)} />
+      </td>
+      <td title={risk.severityNote}>
+        <Badge level={risk.severity} className={getSeverityBadgeClass(risk.severity)} />
+      </td>
+      <td title={risk.detectabilityNote}>
+        <Badge level={risk.detectability} className={getDetectabilityBadgeClass(risk.detectability)} />
+      </td>
+      <td>
+        <RelationsCell relations={risk.relatedRisks} scrollToRisk={scrollToRisk} />
+      </td>
+      <td title={risk.overlapNote || undefined}>
+        {risk.overlapNote && <span style={{ fontSize: '9px', color: '#6b7280' }}>ℹ</span>}
+      </td>
+      <td title={risk.keyQuestion}>
+        <span style={{ fontSize: '9px', color: '#6b7280' }}>?</span>
+      </td>
+    </tr>
+  );
+}
 
 export default function AccidentRisksTableView() {
+  const [viewMode, setViewMode] = useState<ViewMode>('unified');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('category');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  const sortedRisks = useMemo(() => {
+    return sortRisks(accidentRisks, sortColumn, sortDirection);
+  }, [sortColumn, sortDirection]);
+
+  const handleSort = (column: SortColumn) => {
+    if (column === sortColumn) {
+      setSortDirection(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
   const scrollToRisk = (riskId: string) => {
     const element = document.getElementById(`risk-${riskId}`);
     if (element) {
@@ -507,21 +691,11 @@ export default function AccidentRisksTableView() {
     }
   };
 
-  // Simple state management without useState for SSR compatibility
-  // Default to category view
-  const viewMode: ViewMode = 'category';
-
-  const groupedRisks = viewMode === 'category'
-    ? riskCategories.map((cat) => ({
-        name: cat,
-        color: categoryColors[cat] || '#6b7280',
-        risks: accidentRisks.filter((r) => r.category === cat),
-      }))
-    : (['THEORETICAL', 'MECHANISM', 'BEHAVIOR', 'OUTCOME'] as AbstractionLevel[]).map((level) => ({
-        name: abstractionLevelDescriptions[level],
-        color: level === 'THEORETICAL' ? '#7c3aed' : level === 'MECHANISM' ? '#0891b2' : level === 'BEHAVIOR' ? '#f59e0b' : '#dc2626',
-        risks: accidentRisks.filter((r) => r.abstractionLevel === level),
-      }));
+  const groupedRisks = riskCategories.map((cat) => ({
+    name: cat,
+    color: categoryColors[cat] || '#6b7280',
+    risks: accidentRisks.filter((r) => r.category === cat),
+  }));
 
   return (
     <>
@@ -529,6 +703,8 @@ export default function AccidentRisksTableView() {
       <div className="ar-page">
         <div className="ar-header">
           <a href="/knowledge-base/risks/accident/">← Accident Risks</a>
+          <span style={{ color: '#9ca3af' }}>|</span>
+          <a href="/tables/">All Tables</a>
           <h1>AI Accident Risks: Overlap Analysis</h1>
         </div>
         <div className="ar-content">
@@ -549,6 +725,30 @@ export default function AccidentRisksTableView() {
             <strong> overlaps</strong> (conceptual similarity),
             <strong> manifestation-of</strong> (behavioral expression of),
             <strong> special-case-of</strong> (specific instance).
+          </div>
+
+          {/* Related insights - dev mode only */}
+          <div className="max-w-4xl my-4">
+            <TableInsightsSummary
+              tableId="accident-risks"
+              tags={["accident-risks", "deception", "mesa-optimization", "scheming", "alignment"]}
+              maxItems={3}
+            />
+          </div>
+
+          <div className="ar-view-toggle">
+            <button
+              className={`ar-view-btn ${viewMode === 'unified' ? 'active' : ''}`}
+              onClick={() => setViewMode('unified')}
+            >
+              Unified Table
+            </button>
+            <button
+              className={`ar-view-btn ${viewMode === 'grouped' ? 'active' : ''}`}
+              onClick={() => setViewMode('grouped')}
+            >
+              Grouped by Category
+            </button>
           </div>
 
           <div className="ar-legend">
@@ -597,41 +797,81 @@ export default function AccidentRisksTableView() {
             </div>
           </div>
 
-          {groupedRisks.map((group) => {
-            if (group.risks.length === 0) return null;
+          {viewMode === 'unified' ? (
+            <div className="ar-table-wrapper">
+              <table className="ar-table">
+                <thead>
+                  <tr>
+                    <SortableHeader column="name" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="sticky-col">
+                      Risk
+                    </SortableHeader>
+                    <SortableHeader column="category" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="level-col">
+                      Category
+                    </SortableHeader>
+                    <SortableHeader column="level" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="level-col">
+                      Level
+                    </SortableHeader>
+                    <SortableHeader column="evidence" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="evidence-col">
+                      Evidence
+                    </SortableHeader>
+                    <SortableHeader column="timeline" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="assessment-col">
+                      Timeline
+                    </SortableHeader>
+                    <SortableHeader column="severity" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="assessment-col">
+                      Severity
+                    </SortableHeader>
+                    <SortableHeader column="detectability" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="assessment-col">
+                      Detectability
+                    </SortableHeader>
+                    <th className="relations-col">Related Risks</th>
+                    <th className="relations-col">Overlap Notes</th>
+                    <th>Key Question</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedRisks.map((risk) => (
+                    <UnifiedRiskRow key={risk.id} risk={risk} scrollToRisk={scrollToRisk} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            groupedRisks.map((group) => {
+              if (group.risks.length === 0) return null;
 
-            return (
-              <div key={group.name} className="ar-category-section">
-                <div className="ar-category-header">
-                  <div className="ar-category-dot" style={{ background: group.color }} />
-                  <div className="ar-category-name">{group.name}</div>
-                </div>
+              return (
+                <div key={group.name} className="ar-category-section">
+                  <div className="ar-category-header">
+                    <div className="ar-category-dot" style={{ background: group.color }} />
+                    <div className="ar-category-name">{group.name}</div>
+                  </div>
 
-                <div className="ar-table-wrapper">
-                  <table className="ar-table">
-                    <thead>
-                      <tr>
-                        <th className="sticky-col">Risk</th>
-                        <th className="level-col">Level</th>
-                        <th className="evidence-col">Evidence</th>
-                        <th className="assessment-col">Timeline</th>
-                        <th className="assessment-col">Severity</th>
-                        <th className="assessment-col">Detectability</th>
-                        <th className="relations-col">Related Risks</th>
-                        <th className="relations-col">Overlap Notes</th>
-                        <th>Key Question</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {group.risks.map((risk) => (
-                        <RiskRow key={risk.id} risk={risk} scrollToRisk={scrollToRisk} />
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="ar-table-wrapper">
+                    <table className="ar-table">
+                      <thead>
+                        <tr>
+                          <th className="sticky-col">Risk</th>
+                          <th className="level-col">Level</th>
+                          <th className="evidence-col">Evidence</th>
+                          <th className="assessment-col">Timeline</th>
+                          <th className="assessment-col">Severity</th>
+                          <th className="assessment-col">Detectability</th>
+                          <th className="relations-col">Related Risks</th>
+                          <th className="relations-col">Overlap Notes</th>
+                          <th>Key Question</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.risks.map((risk) => (
+                          <RiskRow key={risk.id} risk={risk} scrollToRisk={scrollToRisk} />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </>

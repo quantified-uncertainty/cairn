@@ -604,27 +604,23 @@ export default function TechnicalInnovationsTableView() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left p-2 border border-gray-200 font-semibold sticky left-0 bg-gray-50 z-10">Innovation</th>
-                  <th className="text-left p-2 border border-gray-200 font-semibold max-w-xs">Description</th>
+                <tr className="bg-gray-50 text-xs">
+                  <th className="text-left p-2 border border-gray-200 font-semibold sticky left-0 bg-gray-50 z-10 min-w-[140px]">Innovation</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Interp.</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Channel</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Safety</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Prevalence</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Timeline</th>
                   <th className="text-left p-2 border border-gray-200 font-semibold">Tractability</th>
-                  <th className="text-left p-2 border border-gray-200 font-semibold">Key Risks</th>
-                  <th className="text-left p-2 border border-gray-200 font-semibold">Key Opportunities</th>
+                  <th className="text-left p-2 border border-gray-200 font-semibold min-w-[140px]">Key Risks</th>
+                  <th className="text-left p-2 border border-gray-200 font-semibold min-w-[140px]">Key Opportunities</th>
                 </tr>
               </thead>
               <tbody>
                 {INNOVATIONS.map(i => (
-                  <tr key={i.id} className="hover:bg-gray-50">
-                    <td className="p-2 border border-gray-200 sticky left-0 bg-white z-10">
-                      <div className="font-medium text-gray-900 whitespace-nowrap">{i.name}</div>
-                    </td>
-                    <td className="p-2 border border-gray-200 text-xs text-gray-600 max-w-xs">
-                      {i.description}
+                  <tr key={i.id} className="hover:bg-gray-50 text-xs">
+                    <td className="p-2 border border-gray-200 sticky left-0 bg-white z-10" title={i.description}>
+                      <div className="font-medium text-gray-900">{i.name}</div>
                     </td>
                     <td className="p-2 border border-gray-200">
                       <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium ${

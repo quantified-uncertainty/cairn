@@ -154,9 +154,10 @@ const styles = `
     color: #9d174d;
   }
   .as-table td {
-    padding: 12px;
+    padding: 8px;
     border: 1px solid #e5e7eb;
     vertical-align: top;
+    position: relative;
   }
   .as-table td.sticky-col {
     position: sticky;
@@ -178,10 +179,22 @@ const styles = `
     margin-bottom: 4px;
   }
   .as-scenario-desc {
+    display: none;
+  }
+  .sticky-col:hover .as-scenario-desc {
+    display: block;
     color: #6b7280;
     font-size: 11px;
     line-height: 1.4;
     max-width: 200px;
+    position: absolute;
+    background: white;
+    padding: 4px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 100;
+    margin-top: 4px;
   }
   .as-badge {
     display: inline-block;
@@ -229,9 +242,21 @@ const styles = `
     color: #6b7280;
   }
   .as-cell-note {
+    display: none;
+  }
+  td:hover .as-cell-note {
+    display: block;
     font-size: 10px;
-    color: #9ca3af;
+    color: #374151;
+    position: absolute;
+    background: white;
+    padding: 4px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 100;
     margin-top: 4px;
+    max-width: 200px;
     line-height: 1.3;
   }
   .as-sparkline {
