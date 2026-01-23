@@ -1,5 +1,10 @@
 // Table view for Architecture Scenarios - Expanded Version
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { TableInsightsSummary } from './tables/shared/TableInsightsSummary';
+
+type TableViewMode = 'unified' | 'grouped';
+type SortColumn = 'name' | 'category' | 'likelihood' | 'safetyOutlook' | 'whitebox' | 'training' | 'predictability' | 'modularity' | 'verifiable' | 'tractability';
+type SortDirection = 'asc' | 'desc';
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -287,6 +292,56 @@ const styles = `
   }
   .as-con {
     color: #991b1b;
+  }
+  .as-view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .as-view-btn {
+    padding: 6px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.15s;
+  }
+  .as-view-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+  }
+  .as-view-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+  }
+  .as-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+  .as-table th.sortable:hover {
+    background: #e5e7eb;
+  }
+  .as-sort-indicator {
+    margin-left: 4px;
+    font-size: 10px;
+  }
+  .as-category-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .as-category-dot-small {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .as-category-label {
+    font-size: 10px;
+    color: #374151;
   }
 `;
 
@@ -994,7 +1049,6 @@ const SCENARIOS: Scenario[] = [
     safetyCons: ['All current work may not transfer'],
   },
 ];
-
 function Sparkline({ data, label }: { data: number[]; label: string }) {
   const max = Math.max(...data);
   return (
@@ -1043,6 +1097,115 @@ function SafetyOutlookBadge({ rating, score }: { rating: SafetyOutlook; score?: 
   );
 }
 
+// Sorting helpers
+const LEVEL_ORDER: Record<string, number> = {
+  'HIGH': 4, 'MEDIUM': 3, 'MEDIUM-HIGH': 3.5, 'LOW': 2, 'LOW-MED': 2.5,
+  'PARTIAL': 2.5, 'COMPLEX': 2, 'DIFFERENT': 2, 'HYBRID': 2.5,
+  'UNKNOWN': 1, 'N/A': 0, '???': 0,
+};
+
+const SAFETY_ORDER: Record<SafetyOutlook, number> = {
+  'favorable': 4, 'mixed': 3, 'challenging': 2, 'unknown': 1,
+};
+
+const CATEGORY_ORDER: Record<Category, number> = {
+  'deployment': 1, 'base-arch': 2, 'alt-compute': 3, 'non-ai': 4,
+};
+
+const CATEGORY_COLORS: Record<Category, string> = {
+  'deployment': '#3b82f6',
+  'base-arch': '#8b5cf6',
+  'alt-compute': '#f59e0b',
+  'non-ai': '#10b981',
+};
+
+function getLevelValue(level: string): number {
+  if (LEVEL_ORDER[level] !== undefined) return LEVEL_ORDER[level];
+  const upper = level.toUpperCase();
+  if (LEVEL_ORDER[upper] !== undefined) return LEVEL_ORDER[upper];
+  return 0;
+}
+
+function sortScenarios(scenarios: Scenario[], column: SortColumn, direction: SortDirection): Scenario[] {
+  const sorted = [...scenarios].sort((a, b) => {
+    let comparison = 0;
+
+    switch (column) {
+      case 'name':
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case 'category':
+        comparison = CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category];
+        break;
+      case 'likelihood':
+        // Extract numeric part from likelihood string for sorting
+        const aNum = parseFloat(a.likelihood.replace(/[^0-9.]/g, '')) || 0;
+        const bNum = parseFloat(b.likelihood.replace(/[^0-9.]/g, '')) || 0;
+        comparison = aNum - bNum;
+        break;
+      case 'safetyOutlook':
+        const aScore = a.safetyOutlook.score ?? SAFETY_ORDER[a.safetyOutlook.rating] * 2;
+        const bScore = b.safetyOutlook.score ?? SAFETY_ORDER[b.safetyOutlook.rating] * 2;
+        comparison = aScore - bScore;
+        break;
+      case 'whitebox':
+        comparison = getLevelValue(a.whitebox.level) - getLevelValue(b.whitebox.level);
+        break;
+      case 'training':
+        comparison = getLevelValue(a.training.level) - getLevelValue(b.training.level);
+        break;
+      case 'predictability':
+        comparison = getLevelValue(a.predictability.level) - getLevelValue(b.predictability.level);
+        break;
+      case 'modularity':
+        comparison = getLevelValue(a.modularity.level) - getLevelValue(b.modularity.level);
+        break;
+      case 'verifiable':
+        comparison = getLevelValue(a.formalVerifiable.level) - getLevelValue(b.formalVerifiable.level);
+        break;
+      case 'tractability':
+        comparison = getLevelValue(a.researchTractability.level) - getLevelValue(b.researchTractability.level);
+        break;
+    }
+
+    return direction === 'asc' ? comparison : -comparison;
+  });
+
+  return sorted;
+}
+
+function SortableHeader({
+  column,
+  currentSort,
+  direction,
+  onSort,
+  children,
+  className = '',
+  style
+}: {
+  column: SortColumn;
+  currentSort: SortColumn;
+  direction: SortDirection;
+  onSort: (col: SortColumn) => void;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const isActive = currentSort === column;
+  return (
+    <th
+      className={`${className} sortable`}
+      style={style}
+      onClick={() => onSort(column)}
+    >
+      {children}
+      <span className="as-sort-indicator">
+        {isActive ? (direction === 'asc' ? '▲' : '▼') : ''}
+      </span>
+    </th>
+  );
+}
+
 // Column definitions for toggle controls
 const COLUMNS = {
   // Overview
@@ -1078,6 +1241,22 @@ const PRESETS = {
 
 export default function ArchitectureScenariosTableView() {
   const [visibleColumns, setVisibleColumns] = useState<Set<ColumnKey>>(new Set(PRESETS.default));
+  const [tableViewMode, setTableViewMode] = useState<TableViewMode>('unified');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('category');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  const sortedScenarios = useMemo(() => {
+    return sortScenarios(SCENARIOS, sortColumn, sortDirection);
+  }, [sortColumn, sortDirection]);
+
+  const handleSort = (column: SortColumn) => {
+    if (column === sortColumn) {
+      setSortDirection(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
 
   const toggleColumn = (key: ColumnKey) => {
     setVisibleColumns(prev => {
@@ -1107,7 +1286,7 @@ export default function ArchitectureScenariosTableView() {
   const categoryOrder: Category[] = ['deployment', 'base-arch', 'alt-compute', 'non-ai'];
 
   // Count visible columns for colspan
-  const visibleCount = visibleColumns.size + 1; // +1 for scenario column
+  const visibleCount = visibleColumns.size + 1 + (tableViewMode === 'unified' ? 1 : 0); // +1 for scenario column, +1 for category in unified
 
   return (
     <>
@@ -1115,9 +1294,13 @@ export default function ArchitectureScenariosTableView() {
       <div className="as-page">
         <div className="as-header">
           <a href="/knowledge-base/intelligence-paradigms/">← Intelligence Paradigms</a>
+          <span style={{ color: '#9ca3af' }}>|</span>
+          <a href="/tables/">All Tables</a>
           <h1>Scalable Intelligence Paradigms</h1>
           <nav>
-            <a href="/knowledge-base/architecture-scenarios/table" className="active">Table</a>
+            <a href="/knowledge-base/architecture-scenarios/table" className="active">Model Architectures</a>
+            <a href="/knowledge-base/deployment-architectures/table">Deployment Architectures</a>
+            <a href="/knowledge-base/technical-innovations/table">Technical Innovations</a>
             <a href="/knowledge-base/responses/safety-approaches/table">Safety Approaches</a>
           </nav>
         </div>
@@ -1141,6 +1324,17 @@ export default function ArchitectureScenariosTableView() {
         </div>
 
         <div className="as-content">
+          <details className="mb-4 max-w-4xl">
+            <summary className="text-sm text-slate-500 cursor-pointer hover:text-slate-700 select-none">
+              Similar tables elsewhere ↗
+            </summary>
+            <div className="mt-2 pl-4 border-l-2 border-slate-200 text-sm text-slate-600 space-y-1">
+              <div><a href="https://artificialanalysis.ai/leaderboards/models" className="text-sky-600 hover:underline" target="_blank" rel="noopener">Artificial Analysis</a> – Model capabilities (100+ models)</div>
+              <div><a href="https://epoch.ai/benchmarks" className="text-sky-600 hover:underline" target="_blank" rel="noopener">Epoch AI Benchmarks</a> – Historical benchmark trends</div>
+              <div><a href="https://www.vellum.ai/llm-leaderboard" className="text-sky-600 hover:underline" target="_blank" rel="noopener">Vellum LLM Leaderboard</a> – Price & context comparison</div>
+            </div>
+          </details>
+
           <p className="as-intro">
             Paradigms for transformative intelligence. <strong>Structure:</strong> We separate <em>deployment patterns</em> (minimal → heavy scaffolding)
             from <em>base architectures</em> (transformers, SSMs, etc.). These are orthogonal - real systems combine both.
@@ -1149,25 +1343,123 @@ export default function ArchitectureScenariosTableView() {
           <p className="as-intro" style={{ marginTop: '8px', fontSize: '13px', color: '#6b7280' }}>
             <strong>Key insight:</strong> Scaffold code is actually <em>more</em> interpretable than model internals.
             We can read and verify orchestration logic; we can't read transformer weights.
-            <strong>Trend</strong> = illustrative (needs real data). <strong>Ratings</strong> = subjective guesses.
           </p>
+
+          {/* Related insights - dev mode only */}
+          <div className="max-w-4xl my-4">
+            <TableInsightsSummary
+              tableId="architecture-scenarios"
+              tags={["architecture", "transformers", "agents", "scalability", "interpretability"]}
+              maxItems={3}
+            />
+          </div>
+
+          <div className="as-view-toggle">
+            <button
+              className={`as-view-btn ${tableViewMode === 'unified' ? 'active' : ''}`}
+              onClick={() => setTableViewMode('unified')}
+            >
+              Unified Table
+            </button>
+            <button
+              className={`as-view-btn ${tableViewMode === 'grouped' ? 'active' : ''}`}
+              onClick={() => setTableViewMode('grouped')}
+            >
+              Grouped by Category
+            </button>
+          </div>
 
           <div className="as-table-wrapper">
             <table className="as-table">
               <thead>
                 <tr>
-                  <th className="sticky-col" style={{ minWidth: '180px' }}>Scenario</th>
-                  {isVisible('likelihood') && <th className="overview-col" style={{ minWidth: '140px' }}>P(dominant at TAI)</th>}
+                  {tableViewMode === 'unified' ? (
+                    <SortableHeader column="name" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="sticky-col" style={{ minWidth: '180px' }}>
+                      Scenario
+                    </SortableHeader>
+                  ) : (
+                    <th className="sticky-col" style={{ minWidth: '180px' }}>Scenario</th>
+                  )}
+                  {tableViewMode === 'unified' && (
+                    <SortableHeader column="category" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="overview-col" style={{ minWidth: '120px' }}>
+                      Category
+                    </SortableHeader>
+                  )}
+                  {isVisible('likelihood') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="likelihood" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="overview-col" style={{ minWidth: '140px' }}>
+                        P(dominant at TAI)
+                      </SortableHeader>
+                    ) : (
+                      <th className="overview-col" style={{ minWidth: '140px' }}>P(dominant at TAI)</th>
+                    )
+                  )}
                   {isVisible('trend') && <th className="overview-col" style={{ minWidth: '90px' }}>Trend</th>}
-                  {isVisible('safetyOutlook') && <th className="assessment-col" style={{ minWidth: '130px' }}>Safety Outlook</th>}
+                  {isVisible('safetyOutlook') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="safetyOutlook" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="assessment-col" style={{ minWidth: '130px' }}>
+                        Safety Outlook
+                      </SortableHeader>
+                    ) : (
+                      <th className="assessment-col" style={{ minWidth: '130px' }}>Safety Outlook</th>
+                    )
+                  )}
                   {isVisible('keyRisks') && <th className="assessment-col" style={{ minWidth: '150px' }}>Key Risks</th>}
                   {isVisible('keyOpportunities') && <th className="assessment-col" style={{ minWidth: '150px' }}>Key Opportunities</th>}
-                  {isVisible('whitebox') && <th className="safety-col" style={{ minWidth: '110px' }}>White-box</th>}
-                  {isVisible('training') && <th className="safety-col" style={{ minWidth: '110px' }}>Trainable</th>}
-                  {isVisible('predictability') && <th className="safety-col" style={{ minWidth: '110px' }}>Predictable</th>}
-                  {isVisible('modularity') && <th className="safety-col" style={{ minWidth: '100px' }}>Modular</th>}
-                  {isVisible('verifiable') && <th className="safety-col" style={{ minWidth: '100px' }}>Verifiable</th>}
-                  {isVisible('tractability') && <th className="safety-col" style={{ minWidth: '130px' }}>Research Tractability</th>}
+                  {isVisible('whitebox') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="whitebox" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '110px' }}>
+                        White-box
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '110px' }}>White-box</th>
+                    )
+                  )}
+                  {isVisible('training') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="training" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '110px' }}>
+                        Trainable
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '110px' }}>Trainable</th>
+                    )
+                  )}
+                  {isVisible('predictability') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="predictability" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '110px' }}>
+                        Predictable
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '110px' }}>Predictable</th>
+                    )
+                  )}
+                  {isVisible('modularity') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="modularity" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '100px' }}>
+                        Modular
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '100px' }}>Modular</th>
+                    )
+                  )}
+                  {isVisible('verifiable') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="verifiable" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '100px' }}>
+                        Verifiable
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '100px' }}>Verifiable</th>
+                    )
+                  )}
+                  {isVisible('tractability') && (
+                    tableViewMode === 'unified' ? (
+                      <SortableHeader column="tractability" currentSort={sortColumn} direction={sortDirection} onSort={handleSort} className="safety-col" style={{ minWidth: '130px' }}>
+                        Research Tractability
+                      </SortableHeader>
+                    ) : (
+                      <th className="safety-col" style={{ minWidth: '130px' }}>Research Tractability</th>
+                    )
+                  )}
                   {isVisible('keyPapers') && <th className="landscape-col" style={{ minWidth: '130px' }}>Key Papers</th>}
                   {isVisible('labs') && <th className="landscape-col" style={{ minWidth: '130px' }}>Labs</th>}
                   {isVisible('safetyPros') && <th className="assessment-col" style={{ minWidth: '140px' }}>Safety Pros</th>}
@@ -1175,165 +1467,324 @@ export default function ArchitectureScenariosTableView() {
                 </tr>
               </thead>
               <tbody>
-                {categoryOrder.map((category) => (
-                  <>
-                    <tr key={`cat-${category}`} className="as-category-row">
-                      <td colSpan={visibleCount}>
-                        {CATEGORIES[category].label} — {CATEGORIES[category].description}
+                {tableViewMode === 'unified' ? (
+                  sortedScenarios.map((s) => (
+                    <tr key={s.id}>
+                      <td className="sticky-col">
+                        <div className="as-scenario-name">
+                          {s.pageUrl ? (
+                            <a href={s.pageUrl} style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dotted #6366f1' }}>
+                              {s.name}
+                            </a>
+                          ) : (
+                            s.name
+                          )}
+                        </div>
+                        <div className="as-scenario-desc">{s.description}</div>
                       </td>
-                    </tr>
-                    {scenariosByCategory[category]?.map((s) => (
-                      <tr key={s.id}>
-                        <td className="sticky-col">
-                          <div className="as-scenario-name">
-                            {s.pageUrl ? (
-                              <a href={s.pageUrl} style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dotted #6366f1' }}>
-                                {s.name}
-                              </a>
-                            ) : (
-                              s.name
+                      <td>
+                        <div className="as-category-cell">
+                          <div className="as-category-dot-small" style={{ background: CATEGORY_COLORS[s.category] }} />
+                          <span className="as-category-label">{CATEGORIES[s.category].label}</span>
+                        </div>
+                      </td>
+                      {isVisible('likelihood') && (
+                        <td>
+                          <span className="as-badge likelihood">{s.likelihood}</span>
+                          <div className="as-cell-note">{s.likelihoodNote}</div>
+                        </td>
+                      )}
+                      {isVisible('trend') && (
+                        <td>
+                          {SPARKLINE_DATA[s.id] ? (
+                            <Sparkline data={SPARKLINE_DATA[s.id]} label="(illustrative)" />
+                          ) : (
+                            <span style={{ color: '#9ca3af', fontSize: '11px' }}>No data</span>
+                          )}
+                        </td>
+                      )}
+                      {isVisible('safetyOutlook') && (
+                        <td>
+                          <SafetyOutlookBadge rating={s.safetyOutlook.rating} score={s.safetyOutlook.score} />
+                          <div className="as-cell-note">{s.safetyOutlook.summary}</div>
+                        </td>
+                      )}
+                      {isVisible('keyRisks') && (
+                        <td>
+                          <div className="as-pros-cons">
+                            {s.safetyOutlook.keyRisks.map((risk) => (
+                              <div key={risk} className="as-con">• {risk}</div>
+                            ))}
+                          </div>
+                        </td>
+                      )}
+                      {isVisible('keyOpportunities') && (
+                        <td>
+                          <div className="as-pros-cons">
+                            {s.safetyOutlook.keyOpportunities.map((opp) => (
+                              <div key={opp} className="as-pro">• {opp}</div>
+                            ))}
+                          </div>
+                        </td>
+                      )}
+                      {isVisible('whitebox') && (
+                        <td>
+                          <Badge level={s.whitebox.level} />
+                          <div className="as-cell-note">{s.whitebox.note}</div>
+                        </td>
+                      )}
+                      {isVisible('training') && (
+                        <td>
+                          <Badge level={s.training.level} />
+                          <div className="as-cell-note">{s.training.note}</div>
+                        </td>
+                      )}
+                      {isVisible('predictability') && (
+                        <td>
+                          <Badge level={s.predictability.level} />
+                          <div className="as-cell-note">{s.predictability.note}</div>
+                        </td>
+                      )}
+                      {isVisible('modularity') && (
+                        <td>
+                          <Badge level={s.modularity.level} />
+                          <div className="as-cell-note">{s.modularity.note}</div>
+                        </td>
+                      )}
+                      {isVisible('verifiable') && (
+                        <td>
+                          <Badge level={s.formalVerifiable.level} />
+                          <div className="as-cell-note">{s.formalVerifiable.note}</div>
+                        </td>
+                      )}
+                      {isVisible('tractability') && (
+                        <td>
+                          <Badge level={s.researchTractability.level} />
+                          <div className="as-cell-note">{s.researchTractability.note}</div>
+                        </td>
+                      )}
+                      {isVisible('keyPapers') && (
+                        <td>
+                          <div className="as-examples">
+                            {s.keyPapers?.map((paper, i) => (
+                              <div key={paper.title || i} className="as-example-item" style={{ fontSize: '10px' }}>
+                                {paper.url ? (
+                                  <a href={paper.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
+                                    {paper.title}
+                                  </a>
+                                ) : (
+                                  paper.title
+                                )}
+                              </div>
+                            ))}
+                            {(!s.keyPapers || s.keyPapers.length === 0) && (
+                              <span style={{ color: '#9ca3af', fontSize: '10px', fontStyle: 'italic' }}>None listed</span>
                             )}
                           </div>
-                          <div className="as-scenario-desc">{s.description}</div>
                         </td>
-                        {isVisible('likelihood') && (
-                          <td>
-                            <span className="as-badge likelihood">{s.likelihood}</span>
-                            <div className="as-cell-note">{s.likelihoodNote}</div>
-                          </td>
-                        )}
-                        {isVisible('trend') && (
-                          <td>
-                            {SPARKLINE_DATA[s.id] ? (
-                              <Sparkline data={SPARKLINE_DATA[s.id]} label="(illustrative)" />
-                            ) : (
-                              <span style={{ color: '#9ca3af', fontSize: '11px' }}>No data</span>
-                            )}
-                          </td>
-                        )}
-                        {isVisible('safetyOutlook') && (
-                          <td>
-                            <SafetyOutlookBadge rating={s.safetyOutlook.rating} score={s.safetyOutlook.score} />
-                            <div className="as-cell-note">{s.safetyOutlook.summary}</div>
-                          </td>
-                        )}
-                        {isVisible('keyRisks') && (
-                          <td>
-                            <div className="as-pros-cons">
-                              {s.safetyOutlook.keyRisks.map((risk) => (
-                                <div key={risk} className="as-con">• {risk}</div>
-                              ))}
-                            </div>
-                          </td>
-                        )}
-                        {isVisible('keyOpportunities') && (
-                          <td>
-                            <div className="as-pros-cons">
-                              {s.safetyOutlook.keyOpportunities.map((opp) => (
-                                <div key={opp} className="as-pro">• {opp}</div>
-                              ))}
-                            </div>
-                          </td>
-                        )}
-                        {isVisible('whitebox') && (
-                          <td>
-                            <Badge level={s.whitebox.level} />
-                            <div className="as-cell-note">{s.whitebox.note}</div>
-                          </td>
-                        )}
-                        {isVisible('training') && (
-                          <td>
-                            <Badge level={s.training.level} />
-                            <div className="as-cell-note">{s.training.note}</div>
-                          </td>
-                        )}
-                        {isVisible('predictability') && (
-                          <td>
-                            <Badge level={s.predictability.level} />
-                            <div className="as-cell-note">{s.predictability.note}</div>
-                          </td>
-                        )}
-                        {isVisible('modularity') && (
-                          <td>
-                            <Badge level={s.modularity.level} />
-                            <div className="as-cell-note">{s.modularity.note}</div>
-                          </td>
-                        )}
-                        {isVisible('verifiable') && (
-                          <td>
-                            <Badge level={s.formalVerifiable.level} />
-                            <div className="as-cell-note">{s.formalVerifiable.note}</div>
-                          </td>
-                        )}
-                        {isVisible('tractability') && (
-                          <td>
-                            <Badge level={s.researchTractability.level} />
-                            <div className="as-cell-note">{s.researchTractability.note}</div>
-                          </td>
-                        )}
-                        {isVisible('keyPapers') && (
-                          <td>
-                            <div className="as-examples">
-                              {s.keyPapers?.map((paper, i) => (
-                                <div key={paper.title || i} className="as-example-item" style={{ fontSize: '10px' }}>
-                                  {paper.url ? (
-                                    <a href={paper.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
-                                      {paper.title}
+                      )}
+                      {isVisible('labs') && (
+                        <td>
+                          <div className="as-labs">
+                            {s.labs.map((lab, i) => {
+                              const name = lab.name;
+                              const url = lab.url;
+                              return (
+                                <span key={name || i} className="as-lab">
+                                  {url ? (
+                                    <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                      {name}
                                     </a>
                                   ) : (
-                                    paper.title
+                                    name
                                   )}
-                                </div>
-                              ))}
-                              {(!s.keyPapers || s.keyPapers.length === 0) && (
-                                <span style={{ color: '#9ca3af', fontSize: '10px', fontStyle: 'italic' }}>None listed</span>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      )}
+                      {isVisible('safetyPros') && (
+                        <td>
+                          <div className="as-pros-cons">
+                            {s.safetyPros.map((pro) => (
+                              <div key={pro} className="as-pro">+ {pro}</div>
+                            ))}
+                          </div>
+                        </td>
+                      )}
+                      {isVisible('safetyCons') && (
+                        <td>
+                          <div className="as-pros-cons">
+                            {s.safetyCons.map((con) => (
+                              <div key={con} className="as-con">− {con}</div>
+                            ))}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                ) : (
+                  categoryOrder.map((category) => (
+                    <>
+                      <tr key={`cat-${category}`} className="as-category-row">
+                        <td colSpan={visibleCount}>
+                          {CATEGORIES[category].label} — {CATEGORIES[category].description}
+                        </td>
+                      </tr>
+                      {scenariosByCategory[category]?.map((s) => (
+                        <tr key={s.id}>
+                          <td className="sticky-col">
+                            <div className="as-scenario-name">
+                              {s.pageUrl ? (
+                                <a href={s.pageUrl} style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dotted #6366f1' }}>
+                                  {s.name}
+                                </a>
+                              ) : (
+                                s.name
                               )}
                             </div>
+                            <div className="as-scenario-desc">{s.description}</div>
                           </td>
-                        )}
-                        {isVisible('labs') && (
-                          <td>
-                            <div className="as-labs">
-                              {s.labs.map((lab, i) => {
-                                const name = lab.name;
-                                const url = lab.url;
-                                return (
-                                  <span key={name || i} className="as-lab">
-                                    {url ? (
-                                      <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                                        {name}
+                          {isVisible('likelihood') && (
+                            <td>
+                              <span className="as-badge likelihood">{s.likelihood}</span>
+                              <div className="as-cell-note">{s.likelihoodNote}</div>
+                            </td>
+                          )}
+                          {isVisible('trend') && (
+                            <td>
+                              {SPARKLINE_DATA[s.id] ? (
+                                <Sparkline data={SPARKLINE_DATA[s.id]} label="(illustrative)" />
+                              ) : (
+                                <span style={{ color: '#9ca3af', fontSize: '11px' }}>No data</span>
+                              )}
+                            </td>
+                          )}
+                          {isVisible('safetyOutlook') && (
+                            <td>
+                              <SafetyOutlookBadge rating={s.safetyOutlook.rating} score={s.safetyOutlook.score} />
+                              <div className="as-cell-note">{s.safetyOutlook.summary}</div>
+                            </td>
+                          )}
+                          {isVisible('keyRisks') && (
+                            <td>
+                              <div className="as-pros-cons">
+                                {s.safetyOutlook.keyRisks.map((risk) => (
+                                  <div key={risk} className="as-con">• {risk}</div>
+                                ))}
+                              </div>
+                            </td>
+                          )}
+                          {isVisible('keyOpportunities') && (
+                            <td>
+                              <div className="as-pros-cons">
+                                {s.safetyOutlook.keyOpportunities.map((opp) => (
+                                  <div key={opp} className="as-pro">• {opp}</div>
+                                ))}
+                              </div>
+                            </td>
+                          )}
+                          {isVisible('whitebox') && (
+                            <td>
+                              <Badge level={s.whitebox.level} />
+                              <div className="as-cell-note">{s.whitebox.note}</div>
+                            </td>
+                          )}
+                          {isVisible('training') && (
+                            <td>
+                              <Badge level={s.training.level} />
+                              <div className="as-cell-note">{s.training.note}</div>
+                            </td>
+                          )}
+                          {isVisible('predictability') && (
+                            <td>
+                              <Badge level={s.predictability.level} />
+                              <div className="as-cell-note">{s.predictability.note}</div>
+                            </td>
+                          )}
+                          {isVisible('modularity') && (
+                            <td>
+                              <Badge level={s.modularity.level} />
+                              <div className="as-cell-note">{s.modularity.note}</div>
+                            </td>
+                          )}
+                          {isVisible('verifiable') && (
+                            <td>
+                              <Badge level={s.formalVerifiable.level} />
+                              <div className="as-cell-note">{s.formalVerifiable.note}</div>
+                            </td>
+                          )}
+                          {isVisible('tractability') && (
+                            <td>
+                              <Badge level={s.researchTractability.level} />
+                              <div className="as-cell-note">{s.researchTractability.note}</div>
+                            </td>
+                          )}
+                          {isVisible('keyPapers') && (
+                            <td>
+                              <div className="as-examples">
+                                {s.keyPapers?.map((paper, i) => (
+                                  <div key={paper.title || i} className="as-example-item" style={{ fontSize: '10px' }}>
+                                    {paper.url ? (
+                                      <a href={paper.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
+                                        {paper.title}
                                       </a>
                                     ) : (
-                                      name
+                                      paper.title
                                     )}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          </td>
-                        )}
-                        {isVisible('safetyPros') && (
-                          <td>
-                            <div className="as-pros-cons">
-                              {s.safetyPros.map((pro) => (
-                                <div key={pro} className="as-pro">+ {pro}</div>
-                              ))}
-                            </div>
-                          </td>
-                        )}
-                        {isVisible('safetyCons') && (
-                          <td>
-                            <div className="as-pros-cons">
-                              {s.safetyCons.map((con) => (
-                                <div key={con} className="as-con">− {con}</div>
-                              ))}
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </>
-                ))}
+                                  </div>
+                                ))}
+                                {(!s.keyPapers || s.keyPapers.length === 0) && (
+                                  <span style={{ color: '#9ca3af', fontSize: '10px', fontStyle: 'italic' }}>None listed</span>
+                                )}
+                              </div>
+                            </td>
+                          )}
+                          {isVisible('labs') && (
+                            <td>
+                              <div className="as-labs">
+                                {s.labs.map((lab, i) => {
+                                  const name = lab.name;
+                                  const url = lab.url;
+                                  return (
+                                    <span key={name || i} className="as-lab">
+                                      {url ? (
+                                        <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                          {name}
+                                        </a>
+                                      ) : (
+                                        name
+                                      )}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </td>
+                          )}
+                          {isVisible('safetyPros') && (
+                            <td>
+                              <div className="as-pros-cons">
+                                {s.safetyPros.map((pro) => (
+                                  <div key={pro} className="as-pro">+ {pro}</div>
+                                ))}
+                              </div>
+                            </td>
+                          )}
+                          {isVisible('safetyCons') && (
+                            <td>
+                              <div className="as-pros-cons">
+                                {s.safetyCons.map((con) => (
+                                  <div key={con} className="as-con">− {con}</div>
+                                ))}
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -1342,3 +1793,4 @@ export default function ArchitectureScenariosTableView() {
     </>
   );
 }
+
