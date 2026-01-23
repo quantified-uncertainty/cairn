@@ -1,6 +1,6 @@
 # Models Style Guide
 
-This guide defines the standards for analytical models in the EA Crux Project. Models should maximize **information density** while remaining accessible.
+This guide defines the standards for analytical models in CAIRN. Models should maximize **information density** while remaining accessible.
 
 ## Core Principles
 

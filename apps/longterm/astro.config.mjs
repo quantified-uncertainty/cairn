@@ -9,11 +9,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ea-crux-project.netlify.app',
+  site: 'https://cairn.vercel.app',
   integrations: [
       react(),
       starlight({
-          title: 'EA Crux Project',
+          title: 'CAIRN',
           customCss: ['./src/styles/global.css'],
           components: {
               // Auto-inject PageStatus from frontmatter

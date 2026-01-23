@@ -403,7 +403,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 
 ```bash
 # Navigate to project
-cd /path/to/ea-crux-project
+cd /path/to/cairn
 
 # Ensure clean state
 git pull

@@ -1,4 +1,4 @@
-# Data Layer for EA Crux Project
+# Data Layer for CAIRN
 
 This directory contains structured data in YAML format, with TypeScript schemas for validation.
 
