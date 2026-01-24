@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
 import { getColors, isCI, formatPath } from '../lib/output.mjs';
-import { Entity, Resource, Publication } from '../src/data/schema.ts';
+import { Entity, Resource, Publication } from '../../src/data/schema.ts';
 
 const DATA_DIR = 'src/data';
 const CI_MODE = isCI();

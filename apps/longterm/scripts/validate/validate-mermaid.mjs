@@ -25,8 +25,8 @@ import { execSync, spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CONTENT_DIR = join(__dirname, '..', 'src/content/docs');
-const TEMP_DIR = join(__dirname, '..', '.mermaid-validate-temp');
+const CONTENT_DIR = join(__dirname, '../..', 'src/content/docs');
+const TEMP_DIR = join(__dirname, '../..', '.mermaid-validate-temp');
 
 const CI_MODE = process.argv.includes('--ci');
 const RENDER_MODE = process.argv.includes('--render');

@@ -32,7 +32,7 @@ config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const PROJECT_ROOT = join(__dirname, '..');
+const PROJECT_ROOT = join(__dirname, '../..');
 const CACHE_DIR = join(PROJECT_ROOT, '.cache', 'sources');
 
 // Ensure cache directory exists

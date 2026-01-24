@@ -227,7 +227,7 @@ async function readInput() {
 // Run validation on generated file
 async function runValidation(filePath) {
   return new Promise((resolve) => {
-    const child = spawn('node', ['scripts/validate-mdx-syntax.mjs'], {
+    const child = spawn('node', ['scripts/validate/validate-mdx-syntax.mjs'], {
       cwd: process.cwd(),
       stdio: 'inherit',
     });

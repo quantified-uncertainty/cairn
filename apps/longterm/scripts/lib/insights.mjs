@@ -5,7 +5,7 @@
  * All functions return structured data; CLI handles output formatting.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 
@@ -44,16 +44,43 @@ import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 // === Data Loading ===
 
 /**
- * Load insights from YAML file
- * @param {string} filePath - Path to insights.yaml
+ * Load insights from YAML file or directory
+ * @param {string} pathOrDir - Path to insights.yaml or insights/ directory
  * @returns {InsightsData} Parsed insights data
  */
-export function loadInsights(filePath) {
-  if (!existsSync(filePath)) {
-    throw new Error(`Insights file not found: ${filePath}`);
+export function loadInsights(pathOrDir) {
+  if (!existsSync(pathOrDir)) {
+    throw new Error(`Insights file not found: ${pathOrDir}`);
   }
-  const content = readFileSync(filePath, 'utf-8');
+
+  // Check if it's a directory
+  if (statSync(pathOrDir).isDirectory()) {
+    return loadInsightsDir(pathOrDir);
+  }
+
+  const content = readFileSync(pathOrDir, 'utf-8');
   return parseYaml(content);
+}
+
+/**
+ * Load insights from a directory of YAML files
+ * @param {string} dirPath - Path to insights directory
+ * @returns {InsightsData} Merged insights data
+ */
+export function loadInsightsDir(dirPath) {
+  const files = readdirSync(dirPath).filter(f => f.endsWith('.yaml'));
+  const allInsights = [];
+
+  for (const file of files) {
+    const filePath = join(dirPath, file);
+    const content = readFileSync(filePath, 'utf-8');
+    const data = parseYaml(content);
+    if (data?.insights) {
+      allInsights.push(...data.insights);
+    }
+  }
+
+  return { insights: allInsights };
 }
 
 /**

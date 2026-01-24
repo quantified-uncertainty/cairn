@@ -25,9 +25,9 @@ const __dirname = dirname(__filename);
 
 const CI_MODE = process.argv.includes('--ci');
 
-// Resolve paths
-const APP_ROOT = join(__dirname, '..');
-const INSIGHTS_PATH = join(APP_ROOT, 'src', 'data', 'insights.yaml');
+// Resolve paths - scripts are now in scripts/validate/ subdirectory
+const APP_ROOT = join(__dirname, '../..');
+const INSIGHTS_PATH = join(APP_ROOT, 'src', 'data', 'insights');
 const CONTENT_DIR = join(APP_ROOT, 'src', 'content', 'docs');
 
 async function main() {

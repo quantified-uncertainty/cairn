@@ -47,14 +47,14 @@ function assertInRange(value, min, max, message) {
 console.log('\n📁 Validator scripts exist');
 
 const validatorScripts = [
-  'scripts/validate-all.mjs',
-  'scripts/validate-data.mjs',
-  'scripts/validate-internal-links.mjs',
-  'scripts/validate-mdx-syntax.mjs',
-  'scripts/validate-style-guide.mjs',
-  'scripts/validate-consistency.mjs',
-  'scripts/check-staleness.mjs',
-  'scripts/validate-sidebar.mjs',
+  'scripts/validate/validate-all.mjs',
+  'scripts/validate/validate-data.mjs',
+  'scripts/validate/validate-internal-links.mjs',
+  'scripts/validate/validate-mdx-syntax.mjs',
+  'scripts/validate/validate-style-guide.mjs',
+  'scripts/validate/validate-consistency.mjs',
+  'scripts/validate/check-staleness.mjs',
+  'scripts/validate/validate-sidebar.mjs',
 ];
 
 for (const script of validatorScripts) {

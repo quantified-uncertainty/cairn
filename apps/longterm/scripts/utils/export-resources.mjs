@@ -19,7 +19,7 @@ import Database from 'better-sqlite3';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const PROJECT_ROOT = join(__dirname, '..');
+const PROJECT_ROOT = join(__dirname, '../..');
 
 const DB_PATH = join(PROJECT_ROOT, '.cache', 'knowledge.db');
 const RESOURCES_DIR = join(PROJECT_ROOT, 'src', 'data', 'resources');
