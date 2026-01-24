@@ -359,7 +359,7 @@ To create a new analytical model page:
 1. Create a YAML file with the required structure (see `src/data/content-schemas.ts`)
 2. Run the generator:
    ```bash
-   node scripts/generate-content.mjs --type model --file input.yaml
+   node scripts/generate/generate-content.mjs --type model --file input.yaml
    ```
 3. Add the entity to `src/data/entities.yaml`
 4. Rebuild data: `npm run build:data`
@@ -369,14 +369,14 @@ To create a new analytical model page:
 
 Same as model, but use `--type risk`:
 ```bash
-node scripts/generate-content.mjs --type risk --file input.yaml
+node scripts/generate/generate-content.mjs --type risk --file input.yaml
 ```
 
 ### Workflow: Create New Response Page
 
 Same as model, but use `--type response`:
 ```bash
-node scripts/generate-content.mjs --type response --file input.yaml
+node scripts/generate/generate-content.mjs --type response --file input.yaml
 ```
 
 ### Workflow: Check Content Staleness
@@ -682,14 +682,14 @@ Data is stored in entity YAML files under the `causeEffectGraph` field.
 **Sync workflow:**
 ```bash
 # Check sync status
-node scripts/analyze-graph-sync.mjs
+node scripts/graph/analyze-graph-sync.mjs
 
 # Add missing nodes to master (if individual diagrams have new nodes)
-node scripts/add-missing-nodes-to-master.mjs --dry-run  # Preview
-node scripts/add-missing-nodes-to-master.mjs --apply    # Apply
+node scripts/graph/add-missing-nodes-to-master.mjs --dry-run  # Preview
+node scripts/graph/add-missing-nodes-to-master.mjs --apply    # Apply
 
 # Validate sync (runs as part of npm run validate)
-node scripts/validate-graph-sync.mjs
+node scripts/validate/validate-graph-sync.mjs
 ```
 
 **When adding new diagram nodes:**
@@ -814,11 +814,11 @@ node scripts/scan-content.mjs --force    # Rescan all files
 node scripts/scan-content.mjs --verbose  # Show per-file progress
 
 # Generate summaries
-node scripts/generate-summaries.mjs --batch 50           # Summarize 50 articles
-node scripts/generate-summaries.mjs --type sources       # Summarize sources instead
-node scripts/generate-summaries.mjs --model sonnet       # Use Sonnet (more expensive)
-node scripts/generate-summaries.mjs --id deceptive-alignment  # Specific article
-node scripts/generate-summaries.mjs --dry-run            # Preview without API calls
+node scripts/generate/generate-summaries.mjs --batch 50           # Summarize 50 articles
+node scripts/generate/generate-summaries.mjs --type sources       # Summarize sources instead
+node scripts/generate/generate-summaries.mjs --model sonnet       # Use Sonnet (more expensive)
+node scripts/generate/generate-summaries.mjs --id deceptive-alignment  # Specific article
+node scripts/generate/generate-summaries.mjs --dry-run            # Preview without API calls
 ```
 
 ### Database Location
@@ -838,9 +838,10 @@ All cached data is stored in `.cache/` (gitignored):
 ### Architecture
 
 ```
-scripts/lib/knowledge-db.mjs  # Core database module
-scripts/scan-content.mjs      # Populate articles + sources
-scripts/generate-summaries.mjs # AI summary generation
+scripts/lib/knowledge-db.mjs       # Core database module
+scripts/lib/anthropic.mjs          # Shared Anthropic client
+scripts/scan-content.mjs           # Populate articles + sources
+scripts/generate/generate-summaries.mjs  # AI summary generation
 ```
 
 The database stores:

@@ -1,8 +1,25 @@
 // Insights data loader
-// Loads the insights YAML and provides typed access
+// Loads insights from multiple YAML files in the insights/ directory
 
 import yaml from 'js-yaml';
-import insightsYaml from './insights.yaml?raw';
+
+// Import all insight files by type
+import quantitativeYaml from './insights/quantitative.yaml?raw';
+import claimYaml from './insights/claim.yaml?raw';
+import counterintuitiveYaml from './insights/counterintuitive.yaml?raw';
+import researchGapYaml from './insights/research-gap.yaml?raw';
+import disagreementYaml from './insights/disagreement.yaml?raw';
+import neglectedYaml from './insights/neglected.yaml?raw';
+
+// Combine all insight files
+const insightFiles = [
+  quantitativeYaml,
+  claimYaml,
+  counterintuitiveYaml,
+  researchGapYaml,
+  disagreementYaml,
+  neglectedYaml,
+];
 
 export type InsightType = 'claim' | 'research-gap' | 'counterintuitive' | 'quantitative' | 'disagreement' | 'neglected';
 
@@ -58,9 +75,16 @@ function computeStatus(insight: Insight): InsightStatus {
 }
 
 function loadInsights(): Insight[] {
-  const data = yaml.load(insightsYaml) as RawInsightsData;
+  // Load and merge insights from all files
+  const allInsights: Insight[] = [];
+  for (const fileContent of insightFiles) {
+    const data = yaml.load(fileContent) as RawInsightsData;
+    if (data?.insights) {
+      allInsights.push(...data.insights);
+    }
+  }
 
-  return data.insights.map(insight => {
+  return allInsights.map(insight => {
     const processed = {
       ...insight,
       type: insight.type || 'claim',

@@ -9,6 +9,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs';
+import { spawnSync } from 'child_process';
 import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
@@ -700,6 +701,13 @@ function main() {
   console.log(`With descriptions: ${stats.withDescription}`);
   console.log(`Unique tags: ${stats.totalTags}`);
   console.log(`Top types: ${Object.entries(stats.byType).slice(0, 5).map(([t, c]) => `${t}(${c})`).join(', ')}`);
+
+  // ==========================================================================
+  // Zod Schema Validation
+  // ==========================================================================
+  console.log('\n--- Zod Schema Validation ---');
+  console.log('Run `npm run validate:schema` to validate data against Zod schemas');
+  console.log('Or run `npm run validate` for all validators');
 }
 
 main();

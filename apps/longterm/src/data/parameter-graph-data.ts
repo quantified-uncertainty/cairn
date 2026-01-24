@@ -9,10 +9,20 @@ import yaml from 'js-yaml';
 import graphYaml from './parameter-graph.yaml?raw';
 // Import split YAML files for AI Transition Model entities
 import factorsYaml from './entities/ai-transition-model-factors.yaml?raw';
-import subitemsYaml from './entities/ai-transition-model-subitems.yaml?raw';
 import scenariosYaml from './entities/ai-transition-model-scenarios.yaml?raw';
 import metricsYaml from './entities/ai-transition-model-metrics.yaml?raw';
 import parametersYaml from './entities/ai-transition-model-parameters.yaml?raw';
+import contentYaml from './entities/ai-transition-model-content.yaml?raw';
+// Import split subitem files by parentFactor
+import subitemsAiCapabilities from './entities/ai-transition-model-subitems-ai-capabilities.yaml?raw';
+import subitemsAiOwnership from './entities/ai-transition-model-subitems-ai-ownership.yaml?raw';
+import subitemsAiTakeover from './entities/ai-transition-model-subitems-ai-takeover.yaml?raw';
+import subitemsAiUses from './entities/ai-transition-model-subitems-ai-uses.yaml?raw';
+import subitemsCivilizationalCompetence from './entities/ai-transition-model-subitems-civilizational-competence.yaml?raw';
+import subitemsHumanCatastrophe from './entities/ai-transition-model-subitems-human-catastrophe.yaml?raw';
+import subitemsLongTermLockin from './entities/ai-transition-model-subitems-long-term-lockin.yaml?raw';
+import subitemsMisalignmentPotential from './entities/ai-transition-model-subitems-misalignment-potential.yaml?raw';
+import subitemsMisusePotential from './entities/ai-transition-model-subitems-misuse-potential.yaml?raw';
 
 // Types for the raw YAML structure
 // All metadata lives in YAML - MDX files just contain custom content
@@ -151,10 +161,20 @@ interface RawEntity {
 // Merge all split YAML files into one array
 const rawEntities = [
   ...(yaml.load(factorsYaml) as RawEntity[] || []),
-  ...(yaml.load(subitemsYaml) as RawEntity[] || []),
   ...(yaml.load(scenariosYaml) as RawEntity[] || []),
   ...(yaml.load(metricsYaml) as RawEntity[] || []),
   ...(yaml.load(parametersYaml) as RawEntity[] || []),
+  ...(yaml.load(contentYaml) as RawEntity[] || []),
+  // Split subitem files
+  ...(yaml.load(subitemsAiCapabilities) as RawEntity[] || []),
+  ...(yaml.load(subitemsAiOwnership) as RawEntity[] || []),
+  ...(yaml.load(subitemsAiTakeover) as RawEntity[] || []),
+  ...(yaml.load(subitemsAiUses) as RawEntity[] || []),
+  ...(yaml.load(subitemsCivilizationalCompetence) as RawEntity[] || []),
+  ...(yaml.load(subitemsHumanCatastrophe) as RawEntity[] || []),
+  ...(yaml.load(subitemsLongTermLockin) as RawEntity[] || []),
+  ...(yaml.load(subitemsMisalignmentPotential) as RawEntity[] || []),
+  ...(yaml.load(subitemsMisusePotential) as RawEntity[] || []),
 ];
 
 // Build a map of entity ID -> description for efficient lookup at build time

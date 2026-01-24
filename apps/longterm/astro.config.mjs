@@ -33,7 +33,7 @@ export default defineConfig({
           },
           tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
           social: [
-              { icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/ea-crux-project' },
+              { icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/cairn' },
           ],
           sidebar: [
               {
