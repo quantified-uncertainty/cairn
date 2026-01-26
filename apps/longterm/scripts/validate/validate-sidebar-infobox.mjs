@@ -8,9 +8,10 @@
  * 3. Frontmatter entityId - must reference existing entity
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
+import { findMdxFiles } from '../lib/file-utils.mjs';
 
 const CONTENT_DIR = 'src/content/docs/knowledge-base';
 const ENTITIES_DIR = 'src/data/entities';
@@ -31,21 +32,6 @@ function loadEntityIds() {
   }
 
   return entityIds;
-}
-
-// Recursively find all MDX files
-function findMdxFiles(dir, files = []) {
-  const entries = readdirSync(dir);
-  for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
-    if (stat.isDirectory()) {
-      findMdxFiles(fullPath, files);
-    } else if (entry.endsWith('.mdx')) {
-      files.push(fullPath);
-    }
-  }
-  return files;
 }
 
 // Extract frontmatter from MDX file

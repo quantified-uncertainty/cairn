@@ -11,41 +11,12 @@
  * Usage: node scripts/validate-content-schema.mjs [--ci]
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'fs';
+import { findMdxFiles } from '../lib/file-utils.mjs';
+import { getColors, isCI } from '../lib/output.mjs';
 
 const CONTENT_DIR = 'src/content/docs';
-const CI_MODE = process.argv.includes('--ci');
-
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
-
-function findMdxFiles(dir, results = []) {
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findMdxFiles(filePath, results);
-      } else if (file.endsWith('.mdx')) {
-        results.push(filePath);
-      }
-    }
-  } catch (e) {
-    // Directory doesn't exist
-  }
-  return results;
-}
+const colors = getColors();
 
 function parseFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
@@ -152,7 +123,7 @@ function main() {
   let warningCount = 0;
   let infoCount = 0;
 
-  if (!CI_MODE) {
+  if (!isCI()) {
     console.log(`${colors.blue}Checking ${files.length} MDX files for schema compliance...${colors.reset}\n`);
   }
 
@@ -168,7 +139,7 @@ function main() {
     }
   }
 
-  if (CI_MODE) {
+  if (isCI()) {
     console.log(JSON.stringify({
       files: files.length,
       errors: errorCount,

@@ -19,31 +19,21 @@
  *   npx mmdc --help  (to use via npx)
  */
 
-import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, rmSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
-import { execSync, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { findMdxFiles } from '../lib/file-utils.mjs';
+import { getColors, isCI } from '../lib/output.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONTENT_DIR = join(__dirname, '../..', 'src/content/docs');
 const TEMP_DIR = join(__dirname, '../..', '.mermaid-validate-temp');
 
-const CI_MODE = process.argv.includes('--ci');
 const RENDER_MODE = process.argv.includes('--render');
 const FIX_MODE = process.argv.includes('--fix');
 
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', cyan: '', dim: '', bold: '', reset: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
-};
+const colors = getColors();
 
 // ============================================================================
 // STATIC ANALYSIS CHECKS
@@ -512,24 +502,6 @@ const STATIC_CHECKS = [
 // CHART EXTRACTION
 // ============================================================================
 
-function findMdxFiles(dir, results = []) {
-  try {
-    const files = readdirSync(dir);
-    for (const file of files) {
-      const filePath = join(dir, file);
-      const stat = statSync(filePath);
-      if (stat.isDirectory()) {
-        findMdxFiles(filePath, results);
-      } else if (file.endsWith('.mdx') || file.endsWith('.md')) {
-        results.push(filePath);
-      }
-    }
-  } catch (e) {
-    // Directory doesn't exist
-  }
-  return results;
-}
-
 function extractMermaidCharts(filePath) {
   const content = readFileSync(filePath, 'utf-8');
   const charts = [];
@@ -635,7 +607,7 @@ function main() {
   const hasCli = RENDER_MODE && checkMermaidCli();
 
   if (RENDER_MODE && !hasCli) {
-    if (!CI_MODE) {
+    if (!isCI()) {
       console.log(`${colors.yellow}⚠ Mermaid CLI not found. Install with: npm install -g @mermaid-js/mermaid-cli${colors.reset}\n`);
       console.log(`${colors.dim}Falling back to static analysis only${colors.reset}\n`);
     }
@@ -645,7 +617,7 @@ function main() {
     mkdirSync(TEMP_DIR, { recursive: true });
   }
 
-  if (!CI_MODE) {
+  if (!isCI()) {
     console.log(`${colors.blue}Validating Mermaid diagrams in ${files.length} files...${colors.reset}\n`);
   }
 
@@ -699,7 +671,7 @@ function main() {
   const duration = Date.now() - startTime;
 
   // Output results
-  if (CI_MODE) {
+  if (isCI()) {
     console.log(JSON.stringify({
       files: files.length,
       charts: totalCharts,

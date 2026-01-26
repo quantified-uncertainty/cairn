@@ -7,10 +7,11 @@
  * Usage: node scripts/extract-data.mjs
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { findMdxFiles } from '../lib/file-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,30 +29,6 @@ const TARGET_COMPONENTS = [
   'Crux',
   'CruxList',
 ];
-
-// =============================================================================
-// FILE DISCOVERY
-// =============================================================================
-
-function findMdxFiles(dir) {
-  const files = [];
-
-  function walk(currentDir) {
-    const entries = readdirSync(currentDir);
-    for (const entry of entries) {
-      const fullPath = join(currentDir, entry);
-      const stat = statSync(fullPath);
-      if (stat.isDirectory()) {
-        walk(fullPath);
-      } else if (entry.endsWith('.mdx')) {
-        files.push(fullPath);
-      }
-    }
-  }
-
-  walk(dir);
-  return files;
-}
 
 // =============================================================================
 // COMPONENT EXTRACTION

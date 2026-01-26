@@ -265,7 +265,7 @@ seeAlso: "comprehensive-topic"  # Optional: points to primary coverage
 ---
 ```
 
-**Note:** The grading script (`scripts/grade-content.mjs`) automatically skips overview and stub pages.
+**Note:** The grading script (`scripts/content/grade-content.mjs`) automatically skips overview and stub pages.
 
 ### AI Transition Model Data Architecture
 
@@ -889,19 +889,14 @@ import {R} from '../../../../components/wiki';
 
 ### Finding Resource IDs
 
-Run the mapping script to find which URLs in an MDX file have matching resource IDs:
+Use the resource manager to find which URLs in an MDX file have matching resource IDs:
 
 ```bash
-node scripts/map-urls-to-resources.mjs expertise-atrophy  # Specific file
-node scripts/map-urls-to-resources.mjs                     # All files
-node scripts/map-urls-to-resources.mjs --stats             # Statistics only
+npm run resources list                        # List pages with unconverted links
+npm run resources -- show expertise-atrophy   # Show unconverted links in specific file
 ```
 
-Output shows convertible links:
-```
-✓ [Accident reports](https://www.bea.aero/)
-  → <R id="11ac11c30d3ab901">Accident reports</R>
-```
+Output shows convertible links that can be changed to `<R>` components.
 
 ### Adding Article Sources Section
 
