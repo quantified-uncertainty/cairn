@@ -201,7 +201,7 @@ function ContentCard({ item }: { item: ContentItem }) {
           </div>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground truncate">
-              {item.description || 'No description'}
+              {item.description || ''}
             </span>
             {item.meta && (
               <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
