@@ -30,6 +30,8 @@ export default defineConfig({
               PageTitle: './src/components/starlight/PageTitle.astro',
               // Custom footer with version display
               Footer: './src/components/starlight/Footer.astro',
+              // Path-based sidebar filtering (public vs internal)
+              Sidebar: './src/components/starlight/Sidebar.astro',
           },
           tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
           social: [
@@ -45,7 +47,7 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'Overview', slug: 'ai-transition-model' },
-                      { label: 'Parameter Table', slug: 'ai-transition-model/table' },
+                      { label: 'Parameter Table', slug: 'ai-transition-model/table', attrs: { class: 'sidebar-icon-table' } },
                       { label: 'Outcomes', collapsed: true, items: [
                           { slug: 'ai-transition-model/outcomes/existential-catastrophe' },
                           { slug: 'ai-transition-model/outcomes/long-term-trajectory' },
@@ -107,15 +109,15 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'Overview', slug: 'knowledge-base' },
-                      { label: 'Directory', slug: 'knowledge-base/directory' },
+                      { label: 'Directory', slug: 'knowledge-base/directory', attrs: { class: 'sidebar-icon-folder' } },
                       { label: 'Interventions', collapsed: true, items: [
                           { label: 'Overview', slug: 'knowledge-base/responses' },
                           { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
-                          { label: 'Safety Approaches Table', link: '/knowledge-base/responses/safety-approaches/table' },
+                          { label: 'Safety Approaches Table', link: '/knowledge-base/responses/safety-approaches/table', attrs: { class: 'sidebar-icon-table' } },
                           { label: 'Safety Generalizability', collapsed: true, items: [
-                              { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table' },
-                              { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix' },
-                              { label: 'Graph View', link: '/knowledge-base/responses/safety-generalizability/graph' },
+                              { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table', attrs: { class: 'sidebar-icon-table' } },
+                              { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { class: 'sidebar-icon-matrix' } },
+                              { label: 'Graph View', link: '/knowledge-base/responses/safety-generalizability/graph', attrs: { class: 'sidebar-icon-graph' } },
                           ]},
                           { label: 'Governance', collapsed: true, items: [
                               { label: 'Overview', slug: 'knowledge-base/responses/governance' },
@@ -123,7 +125,7 @@ export default defineConfig({
                               { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
                               { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
                               { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
-                              { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment' },
+                              { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
                           ]},
                           { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
                           { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
@@ -147,11 +149,11 @@ export default defineConfig({
                       { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
                       { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
-                      { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
+                      { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' }, attrs: { class: 'sidebar-icon-chart' } },
                       { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
                       { label: 'Intelligence Paradigms', collapsed: true, items: [
                           { slug: 'knowledge-base/intelligence-paradigms' },
-                          { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table' },
+                          { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
                           { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
                       ]},
                       { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
@@ -164,16 +166,17 @@ export default defineConfig({
                   label: 'Browse',
                   collapsed: false,
                   items: [
-                      { label: 'Explore All Content', link: '/explore' },
-                      { label: 'All Entities', slug: 'browse' },
-                      { label: 'By Tag', slug: 'browse/tags' },
-                      { label: 'External Resources', slug: 'browse/resources' },
+                      { label: 'Explore All Content', link: '/explore', attrs: { class: 'sidebar-icon-explore' } },
+                      { label: 'All Entities', slug: 'browse', attrs: { class: 'sidebar-icon-list' } },
+                      { label: 'By Tag', slug: 'browse/tags', attrs: { class: 'sidebar-icon-tag' } },
+                      { label: 'External Resources', slug: 'browse/resources', attrs: { class: 'sidebar-icon-external' } },
                   ],
               },
               {
                   label: 'Interactive Tools',
                   collapsed: true,
                   autogenerate: { directory: 'guides' },
+                  attrs: { class: 'sidebar-icon-tool' },
               },
               {
                   label: 'Internal',
@@ -184,6 +187,7 @@ export default defineConfig({
                   label: 'Insight Hunting',
                   collapsed: true,
                   autogenerate: { directory: 'insight-hunting' },
+                  attrs: { class: 'sidebar-icon-lightbulb' },
               },
               {
                   label: 'Project',
@@ -194,8 +198,8 @@ export default defineConfig({
                   label: 'Meta',
                   collapsed: true,
                   items: [
-                      { label: 'About & Transparency', slug: 'about' },
-                      { label: 'Dashboard', slug: 'dashboard' },
+                      { label: 'About & Transparency', slug: 'about', attrs: { class: 'sidebar-icon-info' } },
+                      { label: 'Dashboard', slug: 'dashboard', attrs: { class: 'sidebar-icon-dashboard' } },
                   ],
               },
           ],
