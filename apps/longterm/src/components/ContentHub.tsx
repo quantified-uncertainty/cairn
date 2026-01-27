@@ -6,17 +6,18 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { pages, entities, type Page } from "../data"
+import ContentTree from "./ContentTree"
 
-// Shared tables data - categories should match page.category values (normalized)
+// Shared tables data
 const TABLES = [
-  { id: 'safety-approaches', title: 'Safety Approaches', description: 'Evaluate safety research on effectiveness vs capability uplift.', href: '/knowledge-base/responses/safety-approaches/table', category: 'Responses' },
-  { id: 'safety-generalizability', title: 'Safety Generalizability', description: 'Which safety approaches generalize across different AI architectures?', href: '/knowledge-base/responses/safety-generalizability/table', category: 'Responses' },
-  { id: 'safety-matrix', title: 'Safety × Architecture Matrix', description: 'Matrix view showing compatibility between safety approaches and architecture scenarios.', href: '/knowledge-base/responses/safety-generalizability/matrix', category: 'Responses' },
-  { id: 'architecture-scenarios', title: 'Architecture Scenarios', description: 'Compare deployment patterns and base architectures.', href: '/knowledge-base/architecture-scenarios/table', category: 'Intelligence Paradigms' },
-  { id: 'deployment-architectures', title: 'Deployment Architectures', description: 'Compare how AI systems are deployed.', href: '/knowledge-base/deployment-architectures/table', category: 'Intelligence Paradigms' },
-  { id: 'accident-risks', title: 'Accident Risks', description: 'Compare accident and misalignment risks.', href: '/knowledge-base/risks/accident/table', category: 'Risks' },
-  { id: 'eval-types', title: 'Evaluation Types', description: 'Compare different evaluation methodologies.', href: '/knowledge-base/models/eval-types/table', category: 'Models' },
-  { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All parameters in the AI Transition Model.', href: '/ai-transition-model/table', category: 'Parameters' },
+  { id: 'safety-approaches', title: 'Safety Approaches', description: 'Evaluate safety research on effectiveness vs capability uplift.', href: '/knowledge-base/responses/safety-approaches/table', path: '/knowledge-base/responses/safety-approaches' },
+  { id: 'safety-generalizability', title: 'Safety Generalizability', description: 'Which safety approaches generalize across different AI architectures?', href: '/knowledge-base/responses/safety-generalizability/table', path: '/knowledge-base/responses/safety-generalizability' },
+  { id: 'safety-matrix', title: 'Safety × Architecture Matrix', description: 'Matrix view showing compatibility between safety approaches and architecture scenarios.', href: '/knowledge-base/responses/safety-generalizability/matrix', path: '/knowledge-base/responses/safety-generalizability' },
+  { id: 'architecture-scenarios', title: 'Architecture Scenarios', description: 'Compare deployment patterns and base architectures.', href: '/knowledge-base/architecture-scenarios/table', path: '/knowledge-base/architecture-scenarios' },
+  { id: 'deployment-architectures', title: 'Deployment Architectures', description: 'Compare how AI systems are deployed.', href: '/knowledge-base/deployment-architectures/table', path: '/knowledge-base/deployment-architectures' },
+  { id: 'accident-risks', title: 'Accident Risks', description: 'Compare accident and misalignment risks.', href: '/knowledge-base/risks/accident/table', path: '/knowledge-base/risks/accident' },
+  { id: 'eval-types', title: 'Evaluation Types', description: 'Compare different evaluation methodologies.', href: '/knowledge-base/models/eval-types/table', path: '/knowledge-base/models/eval-types' },
+  { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All parameters in the AI Transition Model.', href: '/ai-transition-model/table', path: '/ai-transition-model' },
 ]
 
 type ContentType = 'all' | 'wiki' | 'tables' | 'diagrams'
@@ -26,45 +27,25 @@ interface ContentItem {
   title: string
   description: string
   href: string
+  path: string
   type: 'wiki' | 'tables' | 'diagrams'
-  category: string
-}
-
-// Normalize category names for display (handles both slug and already-formatted names)
-function normalizeCategory(slug: string): string {
-  if (!slug) return 'Other'
-  // If already has spaces or uppercase, assume it's formatted
-  if (slug.includes(' ') || /[A-Z]/.test(slug)) return slug
-  // Map common slugs to friendly names
-  const categoryMap: Record<string, string> = {
-    'ai-transition-model': 'AI Transition Model',
-    'knowledge-base': 'Knowledge Base',
-    'intelligence-paradigms': 'Intelligence Paradigms',
-    'research-reports': 'Research Reports',
-    'future-projections': 'Future Projections',
-    'foundation-models': 'Foundation Models',
-  }
-  return categoryMap[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
 
 // Build content list once at module level (data is static)
 function buildContentList(): ContentItem[] {
   const items: ContentItem[] = []
 
-  // Wiki pages - use page.category for semantic grouping
+  // Wiki pages
   pages
     .filter((p: Page) => !p.path.includes('/internal/') && !p.path.includes('/meta/') && p.title)
     .forEach((page: Page) => {
-      // Use page.category if available, fallback to path-based
-      const rawCategory = (page as any).category || page.path.split('/').filter(Boolean)[1] || 'other'
-      const category = normalizeCategory(rawCategory)
       items.push({
-        id: page.path, // Use path as key - guaranteed unique
+        id: page.path,
         title: page.title,
         description: page.description || page.llmSummary || '',
         href: page.path,
+        path: page.path,
         type: 'wiki',
-        category,
       })
     })
 
@@ -75,8 +56,8 @@ function buildContentList(): ContentItem[] {
       title: table.title,
       description: table.description,
       href: table.href,
+      path: table.path,
       type: 'tables',
-      category: table.category,
     })
   })
 
@@ -89,8 +70,8 @@ function buildContentList(): ContentItem[] {
         title: e.causeEffectGraph?.title || e.title,
         description: e.causeEffectGraph?.description || `Cause-effect diagram for ${e.title}`,
         href: `/diagrams/${e.id}`,
+        path: `/diagrams`,
         type: 'diagrams',
-        category: 'Diagram',
       })
     })
 
@@ -134,9 +115,6 @@ function ContentCard({ item }: { item: ContentItem }) {
               {label}
             </Badge>
           </div>
-          <Badge variant="outline" className="text-[10px] w-fit mt-1">
-            {item.category}
-          </Badge>
         </CardHeader>
         <CardContent className="pt-0">
           <CardDescription className="text-xs leading-relaxed line-clamp-2">
@@ -151,98 +129,121 @@ function ContentCard({ item }: { item: ContentItem }) {
 export default function ContentHub() {
   const [search, setSearch] = useState('')
   const [activeType, setActiveType] = useState<ContentType>('all')
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [selectedPath, setSelectedPath] = useState<string | null>(null)
 
-  // Filter content
+  // Items filtered by type (for tree)
+  const typeFilteredItems = useMemo(() => {
+    if (activeType === 'all') return ALL_CONTENT
+    return ALL_CONTENT.filter(item => item.type === activeType)
+  }, [activeType])
+
+  // Items for tree component
+  const treeItems = useMemo(() => {
+    return typeFilteredItems.map(item => ({
+      id: item.id,
+      title: item.title,
+      path: item.path,
+      type: item.type,
+    }))
+  }, [typeFilteredItems])
+
+  // Final filtered content (type + path + search)
   const filtered = useMemo(() => {
-    return ALL_CONTENT.filter(item => {
-      if (activeType !== 'all' && item.type !== activeType) return false
-      if (activeCategory && item.category !== activeCategory) return false
+    return typeFilteredItems.filter(item => {
+      // Path filter
+      if (selectedPath && !item.path.startsWith(selectedPath)) return false
+      // Search filter
       if (search) {
         const s = search.toLowerCase()
         if (!item.title.toLowerCase().includes(s) && !item.description.toLowerCase().includes(s)) return false
       }
       return true
     })
-  }, [activeType, activeCategory, search])
-
-  // Get categories for current type
-  const categories = useMemo(() => {
-    const items = activeType === 'all' ? ALL_CONTENT : ALL_CONTENT.filter(i => i.type === activeType)
-    return [...new Set(items.map(i => i.category))].sort()
-  }, [activeType])
+  }, [typeFilteredItems, selectedPath, search])
 
   return (
-    <div className="space-y-4">
-      {/* Search */}
-      <Input
-        type="search"
-        placeholder="Search content..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="h-10"
-      />
-
-      {/* Type filters */}
-      <div className="flex flex-wrap gap-2">
-        {TYPE_BUTTONS.map(({ type, label, color }) => (
-          <Button
-            key={type}
-            variant={activeType === type ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => { setActiveType(type); setActiveCategory(null) }}
-            className={activeType === type && color ? color : ''}
-          >
-            {label} ({COUNTS[type]})
-          </Button>
-        ))}
+    <div className="flex gap-6">
+      {/* Left sidebar - Tree */}
+      <div className="w-64 shrink-0 hidden md:block">
+        <div className="sticky top-4">
+          <div className="mb-3">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              Browse
+            </h3>
+          </div>
+          <ContentTree
+            items={treeItems}
+            selectedPath={selectedPath}
+            onSelectPath={setSelectedPath}
+          />
+        </div>
       </div>
 
-      {/* Category filters */}
-      {categories.length > 1 && (
-        <div className="flex flex-wrap gap-1">
-          <Button
-            variant={activeCategory === null ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setActiveCategory(null)}
-          >
-            All
-          </Button>
-          {categories.map(cat => (
+      {/* Main content */}
+      <div className="flex-1 min-w-0 space-y-4">
+        {/* Search */}
+        <Input
+          type="search"
+          placeholder="Search content..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-10"
+        />
+
+        {/* Type filters */}
+        <div className="flex flex-wrap gap-2">
+          {TYPE_BUTTONS.map(({ type, label, color }) => (
             <Button
-              key={cat}
-              variant={activeCategory === cat ? 'secondary' : 'ghost'}
+              key={type}
+              variant={activeType === type ? 'default' : 'outline'}
               size="sm"
-              className="h-7 text-xs"
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => { setActiveType(type); setSelectedPath(null) }}
+              className={activeType === type && color ? color : ''}
             >
-              {cat}
+              {label} ({COUNTS[type]})
             </Button>
           ))}
         </div>
-      )}
 
-      {/* Results */}
-      <p className="text-sm text-muted-foreground">
-        {filtered.length} items{search && ` matching "${search}"`}
-      </p>
+        {/* Mobile path indicator */}
+        {selectedPath && (
+          <div className="md:hidden flex items-center gap-2 text-sm text-muted-foreground">
+            <span>Filtering:</span>
+            <Badge variant="secondary" className="font-mono text-xs">
+              {selectedPath}
+            </Badge>
+            <button
+              className="text-primary hover:underline text-xs"
+              onClick={() => setSelectedPath(null)}
+            >
+              Clear
+            </button>
+          </div>
+        )}
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {filtered.map(item => (
-          <ContentCard key={item.id} item={item} />
-        ))}
-      </div>
+        {/* Results count */}
+        <p className="text-sm text-muted-foreground">
+          {filtered.length} items
+          {selectedPath && ` in ${selectedPath}`}
+          {search && ` matching "${search}"`}
+        </p>
 
-      {filtered.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
-          No content found.{' '}
-          <button className="underline" onClick={() => { setSearch(''); setActiveType('all'); setActiveCategory(null) }}>
-            Clear filters
-          </button>
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {filtered.map(item => (
+            <ContentCard key={item.id} item={item} />
+          ))}
         </div>
-      )}
+
+        {filtered.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            No content found.{' '}
+            <button className="underline" onClick={() => { setSearch(''); setActiveType('all'); setSelectedPath(null) }}>
+              Clear filters
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
