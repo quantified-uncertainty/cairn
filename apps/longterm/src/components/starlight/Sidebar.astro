@@ -1,0 +1,107 @@
+---
+/**
+ * Custom Sidebar that shows different navigation based on URL path.
+ *
+ * - Internal paths (/internal/, /insight-hunting/, /project/, /about/, /dashboard/)
+ *   → Show internal sidebar with Internal, Insight Hunting, Project, Meta sections
+ *
+ * - Public paths (everything else)
+ *   → Show public sidebar without internal sections
+ */
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
+import type { SidebarEntry } from '@astrojs/starlight/utils/routing/types';
+
+const { sidebar } = Astro.locals.starlightRoute;
+const currentPath = Astro.url.pathname;
+
+// Define which top-level sections belong to internal sidebar
+const internalSectionLabels = new Set([
+  'Dashboards & Tools',
+  'Style Guides',
+  'Experiments',
+  'Research',
+  'Project',
+]);
+
+// Define which paths should show the internal sidebar
+const isInternalPath = (path: string): boolean => {
+  return (
+    path.startsWith('/internal/') ||
+    path.startsWith('/insight-hunting/') ||
+    path.startsWith('/project/') ||
+    path.startsWith('/about/') || path === '/about' ||
+    path.startsWith('/dashboard/') || path === '/dashboard' ||
+    path.startsWith('/guides/') || path === '/guides' ||
+    path.startsWith('/browse/') || path === '/browse'
+  );
+};
+
+// Filter sidebar based on current path
+const filterSidebar = (entries: SidebarEntry[], showInternal: boolean): SidebarEntry[] => {
+  if (showInternal) {
+    // Internal view: only show internal sections
+    return entries.filter(entry => {
+      if (entry.type === 'group') {
+        return internalSectionLabels.has(entry.label);
+      }
+      return false;
+    });
+  } else {
+    // Public view: hide internal sections
+    return entries.filter(entry => {
+      if (entry.type === 'group') {
+        return !internalSectionLabels.has(entry.label);
+      }
+      return true;
+    });
+  }
+};
+
+const showInternal = isInternalPath(currentPath);
+const filteredSidebar = filterSidebar(sidebar, showInternal);
+
+// Add a navigation link to switch between views
+const switchLink = showInternal
+  ? { href: '/', label: '← Main Site', isSwitch: true }
+  : { href: '/internal/', label: 'Internal →', isSwitch: true };
+---
+
+<SidebarPersister>
+  {/* Switch link at the top */}
+  <div class="sidebar-switch">
+    <a href={switchLink.href} class="switch-link">
+      {switchLink.label}
+    </a>
+  </div>
+
+  <SidebarSublist sublist={filteredSidebar} />
+</SidebarPersister>
+
+<div class="md:sl-hidden">
+  <MobileMenuFooter />
+</div>
+
+<style>
+  .sidebar-switch {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--sl-color-hairline-light);
+  }
+
+  .switch-link {
+    display: block;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s, background-color 0.15s;
+  }
+
+  .switch-link:hover {
+    color: var(--sl-color-white);
+    background-color: var(--sl-color-gray-6);
+  }
+</style>
