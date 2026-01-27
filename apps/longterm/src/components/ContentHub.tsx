@@ -1,23 +1,23 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { pages, entities, type Page } from "../data"
 import ContentTree from "./ContentTree"
+import { cn } from "@/lib/utils"
 
-// Shared tables data
+// Shared tables data with dimensions
 const TABLES = [
-  { id: 'safety-approaches', title: 'Safety Approaches', description: 'Evaluate safety research on effectiveness vs capability uplift.', href: '/knowledge-base/responses/safety-approaches/table', path: '/knowledge-base/responses/safety-approaches' },
-  { id: 'safety-generalizability', title: 'Safety Generalizability', description: 'Which safety approaches generalize across different AI architectures?', href: '/knowledge-base/responses/safety-generalizability/table', path: '/knowledge-base/responses/safety-generalizability' },
-  { id: 'safety-matrix', title: 'Safety × Architecture Matrix', description: 'Matrix view showing compatibility between safety approaches and architecture scenarios.', href: '/knowledge-base/responses/safety-generalizability/matrix', path: '/knowledge-base/responses/safety-generalizability' },
-  { id: 'architecture-scenarios', title: 'Architecture Scenarios', description: 'Compare deployment patterns and base architectures.', href: '/knowledge-base/architecture-scenarios/table', path: '/knowledge-base/architecture-scenarios' },
-  { id: 'deployment-architectures', title: 'Deployment Architectures', description: 'Compare how AI systems are deployed.', href: '/knowledge-base/deployment-architectures/table', path: '/knowledge-base/deployment-architectures' },
-  { id: 'accident-risks', title: 'Accident Risks', description: 'Compare accident and misalignment risks.', href: '/knowledge-base/risks/accident/table', path: '/knowledge-base/risks/accident' },
-  { id: 'eval-types', title: 'Evaluation Types', description: 'Compare different evaluation methodologies.', href: '/knowledge-base/models/eval-types/table', path: '/knowledge-base/models/eval-types' },
-  { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All parameters in the AI Transition Model.', href: '/ai-transition-model/table', path: '/ai-transition-model' },
+  { id: 'safety-approaches', title: 'Safety Approaches', description: 'Safety research effectiveness vs capability uplift.', href: '/knowledge-base/responses/safety-approaches/table', path: '/knowledge-base/responses/safety-approaches', rows: 42, cols: 9 },
+  { id: 'safety-generalizability', title: 'Safety Generalizability', description: 'Safety approaches across AI architectures.', href: '/knowledge-base/responses/safety-generalizability/table', path: '/knowledge-base/responses/safety-generalizability', rows: 42, cols: 8 },
+  { id: 'safety-matrix', title: 'Safety × Architecture Matrix', description: 'Safety approaches vs architecture scenarios.', href: '/knowledge-base/responses/safety-generalizability/matrix', path: '/knowledge-base/responses/safety-generalizability', rows: 42, cols: 12 },
+  { id: 'architecture-scenarios', title: 'Architecture Scenarios', description: 'Deployment patterns and base architectures.', href: '/knowledge-base/architecture-scenarios/table', path: '/knowledge-base/architecture-scenarios', rows: 12, cols: 7 },
+  { id: 'deployment-architectures', title: 'Deployment Architectures', description: 'How AI systems are deployed.', href: '/knowledge-base/deployment-architectures/table', path: '/knowledge-base/deployment-architectures', rows: 8, cols: 6 },
+  { id: 'accident-risks', title: 'Accident Risks', description: 'Accident and misalignment risks.', href: '/knowledge-base/risks/accident/table', path: '/knowledge-base/risks/accident', rows: 16, cols: 7 },
+  { id: 'eval-types', title: 'Evaluation Types', description: 'Evaluation methodologies comparison.', href: '/knowledge-base/models/eval-types/table', path: '/knowledge-base/models/eval-types', rows: 18, cols: 8 },
+  { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All AI Transition Model parameters.', href: '/ai-transition-model/table', path: '/ai-transition-model', rows: 45, cols: 6 },
 ]
 
 type ContentType = 'all' | 'wiki' | 'tables' | 'diagrams'
@@ -29,6 +29,13 @@ interface ContentItem {
   href: string
   path: string
   type: 'wiki' | 'tables' | 'diagrams'
+  meta: string // Type-specific metadata string
+}
+
+// Format word count for display
+function formatWordCount(count: number): string {
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k words`
+  return `${count} words`
 }
 
 // Build content list once at module level (data is static)
@@ -46,6 +53,7 @@ function buildContentList(): ContentItem[] {
         href: page.path,
         path: page.path,
         type: 'wiki',
+        meta: page.wordCount ? formatWordCount(page.wordCount) : '',
       })
     })
 
@@ -58,6 +66,7 @@ function buildContentList(): ContentItem[] {
       href: table.href,
       path: table.path,
       type: 'tables',
+      meta: `${table.rows} × ${table.cols}`,
     })
   })
 
@@ -65,6 +74,7 @@ function buildContentList(): ContentItem[] {
   entities
     .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
     .forEach((e: any) => {
+      const nodeCount = e.causeEffectGraph.nodes.length
       items.push({
         id: `diagram-${e.id}`,
         title: e.causeEffectGraph?.title || e.title,
@@ -72,6 +82,7 @@ function buildContentList(): ContentItem[] {
         href: `/diagrams/${e.id}`,
         path: `/diagrams`,
         type: 'diagrams',
+        meta: `${nodeCount} nodes`,
       })
     })
 
@@ -105,23 +116,26 @@ function ContentCard({ item }: { item: ContentItem }) {
 
   return (
     <a href={item.href} className="no-underline group block">
-      <Card className="h-full transition-all hover:shadow-md hover:border-primary/50">
-        <CardHeader className="pb-2">
-          <div className="flex items-start justify-between gap-2">
-            <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors line-clamp-2">
-              {item.title}
-            </CardTitle>
-            <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
-              {label}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <CardDescription className="text-xs leading-relaxed line-clamp-2">
-            {item.description || 'No description available'}
-          </CardDescription>
-        </CardContent>
-      </Card>
+      <div className="px-3 py-2 rounded-md border border-border bg-card hover:bg-accent/30 hover:border-primary/50 transition-all">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-sm font-medium group-hover:text-primary transition-colors truncate">
+            {item.title}
+          </span>
+          <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
+            {label}
+          </Badge>
+        </div>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-muted-foreground truncate">
+            {item.description || 'No description'}
+          </span>
+          {item.meta && (
+            <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+              {item.meta}
+            </span>
+          )}
+        </div>
+      </div>
     </a>
   )
 }
