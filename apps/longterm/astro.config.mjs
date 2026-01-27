@@ -164,6 +164,7 @@ export default defineConfig({
                   label: 'Browse',
                   collapsed: false,
                   items: [
+                      { label: 'Explore All Content', link: '/explore' },
                       { label: 'All Entities', slug: 'browse' },
                       { label: 'By Tag', slug: 'browse/tags' },
                       { label: 'External Resources', slug: 'browse/resources' },

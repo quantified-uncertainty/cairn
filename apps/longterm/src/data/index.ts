@@ -121,33 +121,50 @@ export const stats = database.stats || {
 };
 
 // =============================================================================
+// LOOKUP INDEXES (O(1) access instead of O(n) array scans)
+// =============================================================================
+
+// Build indexes once at module load time
+const entityIndex = new Map(entities.map(e => [e.id, e]));
+const resourceIndex = new Map(resources.map(r => [r.id, r]));
+const expertIndex = new Map(experts.map(e => [e.id, e]));
+const organizationIndex = new Map(organizations.map(o => [o.id, o]));
+const estimateIndex = new Map(estimates.map(e => [e.id, e]));
+const cruxIndex = new Map(cruxes.map(c => [c.id, c]));
+const publicationIndex = new Map(publications.map(p => [p.id, p]));
+const pageIndex = new Map(pages.map(p => [p.id, p]));
+
+// Glossary has dual lookup (by id and by term)
+const glossaryById = new Map(glossary.map(t => [t.id, t]));
+const glossaryByTerm = new Map(glossary.map(t => [t.term.toLowerCase(), t]));
+
+// =============================================================================
 // LOOKUP FUNCTIONS
 // =============================================================================
 
 export function getExpertById(id: string): Expert | undefined {
-  return experts.find((e) => e.id === id);
+  return expertIndex.get(id);
 }
 
 export function getOrganizationById(id: string): Organization | undefined {
-  return organizations.find((o) => o.id === id);
+  return organizationIndex.get(id);
 }
 
 export function getEstimateById(id: string): Estimate | undefined {
-  return estimates.find((e) => e.id === id);
+  return estimateIndex.get(id);
 }
 
 export function getCruxById(id: string): Crux | undefined {
-  return cruxes.find((c) => c.id === id);
+  return cruxIndex.get(id);
 }
 
 export function getGlossaryTerm(idOrTerm: string): GlossaryTerm | undefined {
-  return glossary.find(
-    (t) => t.id === idOrTerm || t.term.toLowerCase() === idOrTerm.toLowerCase()
-  );
+  // Try by ID first, then by term (case-insensitive)
+  return glossaryById.get(idOrTerm) || glossaryByTerm.get(idOrTerm.toLowerCase());
 }
 
 export function getResourceById(id: string): Resource | undefined {
-  return resources.find((r) => r.id === id);
+  return resourceIndex.get(id);
 }
 
 export function getResourcesByIds(ids: string[]): Resource[] {
@@ -155,7 +172,7 @@ export function getResourcesByIds(ids: string[]): Resource[] {
 }
 
 export function getPublicationById(id: string): Publication | undefined {
-  return publications.find((p) => p.id === id);
+  return publicationIndex.get(id);
 }
 
 /**
@@ -184,7 +201,7 @@ export function getResourcePublication(resource: Resource): Publication | undefi
 }
 
 export function getPageById(id: string): Page | undefined {
-  return pages.find((p) => p.id === id);
+  return pageIndex.get(id);
 }
 
 // Literature data
@@ -229,7 +246,7 @@ export function getEntitySources(entityId: string) {
 }
 
 export function getEntityById(id: string): Entity | undefined {
-  return entities.find((e) => e.id === id);
+  return entityIndex.get(id);
 }
 
 // =============================================================================
