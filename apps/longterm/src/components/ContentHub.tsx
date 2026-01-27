@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { pages, entities, type Page } from "../data"
+import { insights, type Insight } from "../data/insights-data"
 import ContentTree from "./ContentTree"
 import { cn } from "@/lib/utils"
 
@@ -20,7 +21,8 @@ const TABLES = [
   { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All AI Transition Model parameters.', href: '/ai-transition-model/table', path: '/ai-transition-model', rows: 45, cols: 6 },
 ]
 
-type ContentType = 'all' | 'wiki' | 'tables' | 'diagrams'
+// Content types
+type ContentType = 'all' | 'wiki' | 'models' | 'reports' | 'insights' | 'tables' | 'diagrams'
 
 interface ContentItem {
   id: string
@@ -28,8 +30,8 @@ interface ContentItem {
   description: string
   href: string
   path: string
-  type: 'wiki' | 'tables' | 'diagrams'
-  meta: string // Type-specific metadata string
+  type: ContentType
+  meta: string
 }
 
 // Format word count for display
@@ -38,24 +40,54 @@ function formatWordCount(count: number): string {
   return `${count} words`
 }
 
+// Check if a page is a model
+function isModelPage(page: Page): boolean {
+  return page.category === 'models' || page.path.includes('/models/')
+}
+
+// Check if a page is a research report
+function isResearchReport(page: Page): boolean {
+  return page.category === 'research-reports' || page.category === 'reports' || page.path.includes('/research-reports/')
+}
+
 // Build content list once at module level (data is static)
 function buildContentList(): ContentItem[] {
   const items: ContentItem[] = []
 
-  // Wiki pages
+  // Wiki pages (excluding models and research reports)
   pages
     .filter((p: Page) => !p.path.includes('/internal/') && !p.path.includes('/meta/') && p.title)
     .forEach((page: Page) => {
+      let type: ContentType = 'wiki'
+      if (isModelPage(page)) {
+        type = 'models'
+      } else if (isResearchReport(page)) {
+        type = 'reports'
+      }
+
       items.push({
         id: page.path,
         title: page.title,
         description: page.description || page.llmSummary || '',
         href: page.path,
         path: page.path,
-        type: 'wiki',
+        type,
         meta: page.wordCount ? formatWordCount(page.wordCount) : '',
       })
     })
+
+  // Insights
+  insights.forEach((insight: Insight) => {
+    items.push({
+      id: `insight-${insight.id}`,
+      title: insight.insight.slice(0, 80) + (insight.insight.length > 80 ? '...' : ''),
+      description: insight.insight,
+      href: insight.source || '/insight-hunting/insights',
+      path: insight.source || '/insight-hunting',
+      type: 'insights',
+      meta: `${insight.type} · ${insight.composite?.toFixed(1) || '?'}`,
+    })
+  })
 
   // Tables
   TABLES.forEach(table => {
@@ -92,9 +124,12 @@ function buildContentList(): ContentItem[] {
 const ALL_CONTENT = buildContentList()
 
 // Pre-computed counts (static data)
-const COUNTS = {
+const COUNTS: Record<ContentType, number> = {
   all: ALL_CONTENT.length,
   wiki: ALL_CONTENT.filter(i => i.type === 'wiki').length,
+  models: ALL_CONTENT.filter(i => i.type === 'models').length,
+  reports: ALL_CONTENT.filter(i => i.type === 'reports').length,
+  insights: ALL_CONTENT.filter(i => i.type === 'insights').length,
   tables: ALL_CONTENT.filter(i => i.type === 'tables').length,
   diagrams: ALL_CONTENT.filter(i => i.type === 'diagrams').length,
 }
@@ -102,17 +137,25 @@ const COUNTS = {
 const TYPE_BUTTONS: { type: ContentType; label: string; color?: string }[] = [
   { type: 'all', label: 'All' },
   { type: 'wiki', label: 'Wiki', color: 'bg-blue-500 hover:bg-blue-600' },
+  { type: 'models', label: 'Models', color: 'bg-violet-500 hover:bg-violet-600' },
+  { type: 'reports', label: 'Reports', color: 'bg-indigo-500 hover:bg-indigo-600' },
+  { type: 'insights', label: 'Insights', color: 'bg-amber-500 hover:bg-amber-600' },
   { type: 'tables', label: 'Tables', color: 'bg-emerald-500 hover:bg-emerald-600' },
   { type: 'diagrams', label: 'Diagrams', color: 'bg-orange-500 hover:bg-orange-600' },
 ]
 
+const TYPE_CONFIG: Record<ContentType, { label: string; color: string }> = {
+  all: { label: 'All', color: 'bg-gray-500' },
+  wiki: { label: 'Wiki', color: 'bg-blue-500' },
+  models: { label: 'Model', color: 'bg-violet-500' },
+  reports: { label: 'Report', color: 'bg-indigo-500' },
+  insights: { label: 'Insight', color: 'bg-amber-500' },
+  tables: { label: 'Table', color: 'bg-emerald-500' },
+  diagrams: { label: 'Diagram', color: 'bg-orange-500' },
+}
+
 function ContentCard({ item }: { item: ContentItem }) {
-  const typeConfig = {
-    wiki: { label: 'Wiki', color: 'bg-blue-500' },
-    tables: { label: 'Table', color: 'bg-emerald-500' },
-    diagrams: { label: 'Diagram', color: 'bg-orange-500' },
-  }
-  const { label, color } = typeConfig[item.type]
+  const { label, color } = TYPE_CONFIG[item.type]
 
   return (
     <a href={item.href} className="no-underline group block">
@@ -127,7 +170,7 @@ function ContentCard({ item }: { item: ContentItem }) {
         </div>
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground truncate">
-            {item.description || 'No description'}
+            {item.type === 'insights' ? '' : (item.description || 'No description')}
           </span>
           {item.meta && (
             <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
@@ -151,21 +194,23 @@ export default function ContentHub() {
     return ALL_CONTENT.filter(item => item.type === activeType)
   }, [activeType])
 
-  // Items for tree component
+  // Items for tree component (exclude insights since they don't have meaningful paths)
   const treeItems = useMemo(() => {
-    return typeFilteredItems.map(item => ({
-      id: item.id,
-      title: item.title,
-      path: item.path,
-      type: item.type,
-    }))
+    return typeFilteredItems
+      .filter(item => item.type !== 'insights')
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        path: item.path,
+        type: item.type as 'wiki' | 'tables' | 'diagrams',
+      }))
   }, [typeFilteredItems])
 
   // Final filtered content (type + path + search)
   const filtered = useMemo(() => {
     return typeFilteredItems.filter(item => {
-      // Path filter
-      if (selectedPath && !item.path.startsWith(selectedPath)) return false
+      // Path filter (skip for insights)
+      if (selectedPath && item.type !== 'insights' && !item.path.startsWith(selectedPath)) return false
       // Search filter
       if (search) {
         const s = search.toLowerCase()
