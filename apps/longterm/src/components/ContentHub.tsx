@@ -76,13 +76,13 @@ function buildContentList(): ContentItem[] {
       })
     })
 
-  // Insights
+  // Insights - use full text, no truncation
   insights.forEach((insight: Insight) => {
     items.push({
       id: `insight-${insight.id}`,
-      title: insight.insight.slice(0, 80) + (insight.insight.length > 80 ? '...' : ''),
+      title: insight.insight, // Full text, no truncation
       description: insight.insight,
-      href: insight.source || '/insight-hunting/insights',
+      href: '', // Not a link
       path: insight.source || '/insight-hunting',
       type: 'insights',
       meta: `${insight.type} · ${insight.composite?.toFixed(1) || '?'}`,
@@ -156,29 +156,71 @@ const TYPE_CONFIG: Record<ContentType, { label: string; color: string }> = {
 
 function ContentCard({ item }: { item: ContentItem }) {
   const { label, color } = TYPE_CONFIG[item.type]
+  const isInsight = item.type === 'insights'
+
+  const cardContent = (
+    <div className={cn(
+      "px-3 py-2 rounded-md border border-border bg-card transition-all",
+      !isInsight && "hover:bg-accent/30 hover:border-primary/50"
+    )}>
+      {isInsight ? (
+        // Insight card - full text with source link at bottom
+        <>
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <span className="text-sm leading-snug">
+              {item.title}
+            </span>
+            <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
+              {label}
+            </Badge>
+          </div>
+          <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-border/50">
+            <a
+              href={item.path}
+              className="text-[10px] text-muted-foreground hover:text-primary truncate"
+            >
+              {item.path}
+            </a>
+            {item.meta && (
+              <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                {item.meta}
+              </span>
+            )}
+          </div>
+        </>
+      ) : (
+        // Regular card - clickable link
+        <>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <span className="text-sm font-medium group-hover:text-primary transition-colors truncate">
+              {item.title}
+            </span>
+            <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
+              {label}
+            </Badge>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground truncate">
+              {item.description || 'No description'}
+            </span>
+            {item.meta && (
+              <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                {item.meta}
+              </span>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  )
+
+  if (isInsight) {
+    return <div className="block">{cardContent}</div>
+  }
 
   return (
     <a href={item.href} className="no-underline group block">
-      <div className="px-3 py-2 rounded-md border border-border bg-card hover:bg-accent/30 hover:border-primary/50 transition-all">
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-sm font-medium group-hover:text-primary transition-colors truncate">
-            {item.title}
-          </span>
-          <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
-            {label}
-          </Badge>
-        </div>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground truncate">
-            {item.type === 'insights' ? '' : (item.description || 'No description')}
-          </span>
-          {item.meta && (
-            <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
-              {item.meta}
-            </span>
-          )}
-        </div>
-      </div>
+      {cardContent}
     </a>
   )
 }
@@ -221,23 +263,22 @@ export default function ContentHub() {
     return ALL_CONTENT.filter(item => item.type === activeType)
   }, [activeType])
 
-  // Items for tree component (exclude insights since they don't have meaningful paths)
+  // Items for tree component (all types including insights)
   const treeItems = useMemo(() => {
     return typeFilteredItems
-      .filter(item => item.type !== 'insights')
       .map(item => ({
         id: item.id,
         title: item.title,
         path: item.path,
-        type: item.type as 'wiki' | 'tables' | 'diagrams',
+        type: item.type as 'wiki' | 'tables' | 'diagrams' | 'insights' | 'models' | 'reports',
       }))
   }, [typeFilteredItems])
 
   // Final filtered content (type + path + search)
   const filtered = useMemo(() => {
     return typeFilteredItems.filter(item => {
-      // Path filter (skip for insights)
-      if (selectedPath && item.type !== 'insights' && !item.path.startsWith(selectedPath)) return false
+      // Path filter (applies to all types including insights)
+      if (selectedPath && !item.path.startsWith(selectedPath)) return false
       // Search filter
       if (search) {
         const s = search.toLowerCase()

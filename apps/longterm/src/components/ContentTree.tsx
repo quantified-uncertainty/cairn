@@ -16,7 +16,7 @@ interface ContentItem {
   id: string
   title: string
   path: string
-  type: 'wiki' | 'tables' | 'diagrams'
+  type: 'wiki' | 'tables' | 'diagrams' | 'insights' | 'models' | 'reports'
 }
 
 interface ContentTreeProps {
