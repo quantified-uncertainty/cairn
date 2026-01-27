@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -184,9 +184,36 @@ function ContentCard({ item }: { item: ContentItem }) {
 }
 
 export default function ContentHub() {
+  // Use URL params for persistence across navigation
   const [search, setSearch] = useState('')
   const [activeType, setActiveType] = useState<ContentType>('all')
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
+
+  // Initialize from URL params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const q = params.get('q')
+    const type = params.get('type') as ContentType | null
+    const path = params.get('path')
+
+    if (q) setSearch(q)
+    if (type && COUNTS[type] !== undefined) setActiveType(type)
+    if (path) setSelectedPath(path)
+  }, [])
+
+  // Update URL when state changes
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (search) params.set('q', search)
+    if (activeType !== 'all') params.set('type', activeType)
+    if (selectedPath) params.set('path', selectedPath)
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname
+
+    window.history.replaceState({}, '', newUrl)
+  }, [search, activeType, selectedPath])
 
   // Items filtered by type (for tree)
   const typeFilteredItems = useMemo(() => {
