@@ -13,7 +13,7 @@
  *   --ci              Output JSON for CI pipelines
  *   --fail-fast       Stop on first failure
  *   --skip=<check>    Skip specific checks (comma-separated)
- *                     Available: data, links, orphans, mdx, mermaid, style, staleness, consistency, sidebar, types, dollars, comparisons, schema, graph-sync
+ *                     Available: data, links, orphans, mdx, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
  *
  * Exit codes:
  *   0 = All checks passed
@@ -110,6 +110,12 @@ const CHECKS = [
     name: 'Sidebar Configuration',
     script: 'validate-sidebar.mjs',
     description: 'Index pages have label: Overview and order: 0',
+  },
+  {
+    id: 'sidebar-labels',
+    name: 'Sidebar Label Names',
+    script: 'validate-sidebar-labels.mjs',
+    description: 'Sidebar labels use proper English names, not kebab-case',
   },
   {
     id: 'types',
