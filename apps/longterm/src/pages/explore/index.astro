@@ -35,17 +35,23 @@ import ContentHub from '../../components/ContentHub';
 </style>
 
 <style is:global>
-  /* Make explore page full-width */
-  [data-has-hero] .content-panel {
-    max-width: 100%;
+  /* Make explore page full-width - override all Starlight constraints */
+  .content-panel,
+  .content-panel > *,
+  main,
+  .main-frame,
+  .sl-container,
+  .main-pane {
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
-  [data-has-hero] main {
-    max-width: 100%;
+  .sl-container {
+    padding-inline: 2rem !important;
   }
 
-  [data-has-hero] .sl-container {
-    max-width: 100%;
-    padding-inline: 1.5rem;
+  /* Remove the max-width constraint on the content wrapper */
+  .content-panel article {
+    max-width: 100% !important;
   }
 </style>
