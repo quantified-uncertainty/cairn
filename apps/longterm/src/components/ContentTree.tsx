@@ -101,31 +101,38 @@ function TreeNodeComponent({
     })
   }, [node.children])
 
-  const handleClick = () => {
-    if (hasChildren) {
-      setExpanded(!expanded)
-    }
-    // Select this path for filtering
+  const handleToggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setExpanded(!expanded)
+  }
+
+  const handleSelect = () => {
     onSelectPath(isSelected ? null : node.path)
   }
 
   return (
     <div>
-      <button
-        onClick={handleClick}
+      <div
         className={cn(
-          "w-full flex items-center gap-1 px-2 py-1 text-left text-sm rounded hover:bg-accent/50 transition-colors",
+          "w-full flex items-center gap-1 px-2 py-1 text-left text-sm rounded hover:bg-accent/50 transition-colors cursor-pointer",
           isSelected && "bg-accent text-accent-foreground font-medium",
           depth === 0 && "font-medium"
         )}
         style={{ paddingLeft: `${depth * 12 + 8}px` }}
+        onClick={handleSelect}
       >
         {hasChildren ? (
-          expanded ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          )
+          <button
+            onClick={handleToggleExpand}
+            className="p-0.5 -m-0.5 hover:bg-accent rounded transition-colors"
+            aria-label={expanded ? "Collapse" : "Expand"}
+          >
+            {expanded ? (
+              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            )}
+          </button>
         ) : (
           <span className="w-3.5" />
         )}
@@ -144,7 +151,7 @@ function TreeNodeComponent({
         <span className="text-xs text-muted-foreground tabular-nums">
           {node.count}
         </span>
-      </button>
+      </div>
 
       {expanded && hasChildren && (
         <div>
