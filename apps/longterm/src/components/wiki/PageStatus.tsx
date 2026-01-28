@@ -64,6 +64,7 @@ interface PageStatusProps {
   llmSummary?: string;
   lastEdited?: string;
   todo?: string;
+  todos?: string[];
   wordCount?: number;
   backlinkCount?: number;
   metrics?: PageMetrics;
@@ -290,9 +291,9 @@ function InsightsSection({ insights }: { insights: Insight[] }) {
   );
 }
 
-export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, devOnly = false }: PageStatusProps) {
+export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, todos, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, devOnly = false }: PageStatusProps) {
   // Don't render if no metadata provided
-  if (!quality && !importance && !llmSummary && !lastEdited && !todo) {
+  if (!quality && !importance && !llmSummary && !lastEdited && !todo && (!todos || todos.length === 0)) {
     return null;
   }
 
@@ -412,6 +413,25 @@ export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, 
           <div className="page-status-row page-status-row--todo">
             <span className="page-status-label">Todo:</span>
             <span className="page-status-todo">{todo}</span>
+          </div>
+        )}
+
+        {todos && todos.length > 0 && (
+          <div className="page-status-row flex flex-col gap-1.5">
+            <span className="page-status-label">TODOs ({todos.length}):</span>
+            <ul className="flex flex-col gap-1 w-full">
+              {todos.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-2 px-2 py-1 rounded text-xs bg-violet-500/10 border-l-2 border-violet-500/40"
+                >
+                  <span className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-400">
+                    TODO
+                  </span>
+                  <span className="text-slate-300">{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>

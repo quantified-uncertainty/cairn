@@ -32,7 +32,7 @@ const pageInsights = [
 ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i); // Dedupe by id
 
 // Check if this is a knowledge-base or AI Transition Model page with editorial metadata
-const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.importance;
+const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.todos || frontmatter.importance;
 const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
 const isAITransitionModelPage = Astro.url.pathname.includes('/ai-transition-model/');
 const hasInsights = pageInsights.length > 0;
@@ -54,6 +54,7 @@ const showRatings = isAITransitionModelPage && hasRatings;
       llmSummary={frontmatter.llmSummary}
       lastEdited={frontmatter.lastEdited}
       todo={frontmatter.todo}
+      todos={frontmatter.todos}
       wordCount={pageData?.wordCount}
       backlinkCount={pageData?.backlinkCount}
       metrics={pageData?.metrics}

@@ -1,0 +1,17 @@
+/* ResourceLink hover tooltip styles - scoped via CSS Modules */
+
+.wrapper {
+  position: relative;
+  display: inline;
+}
+
+.tooltip {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease, visibility 150ms ease;
+}
+
+.wrapper:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { getEntityById, getEntityHref, getEntityPath, getPageById } from '../../data';
 import { getEntityTypeIcon } from './EntityTypeIcon';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { cn } from '../../lib/utils';
+import styles from './EntityLink.module.css';
 
 interface EntityLinkProps {
   /**
@@ -86,8 +86,8 @@ export function EntityLink({
   // Determine display label
   const displayLabel = label || entity?.title || formatIdAsTitle(id);
 
-  // Get icon if requested
-  const icon = showIcon && entity ? getEntityTypeIcon(entity.type) : null;
+  // Get icon component if requested
+  const IconComponent = showIcon && entity ? getEntityTypeIcon(entity.type) : null;
 
   // External link props
   const externalProps = external
@@ -97,9 +97,54 @@ export function EntityLink({
   // Get summary for hover card (prefer llmSummary, fall back to description)
   const summary = page?.llmSummary || page?.description || entity?.description;
   const entityType = entity?.type;
-  const typeIcon = entity ? getEntityTypeIcon(entity.type) : null;
+  const TypeIconComponent = entity ? getEntityTypeIcon(entity.type) : null;
 
-  const linkElement = (
+  // If we have hover info, show CSS-only tooltip (no JS required)
+  if (summary || entityType) {
+    return (
+      <span className={styles.wrapper}>
+        <a
+          href={href}
+          className={cn(
+            'inline-flex items-center gap-1 px-2 py-0.5 bg-muted rounded text-sm text-accent-foreground no-underline transition-colors hover:bg-muted/80',
+            className
+          )}
+          {...externalProps}
+        >
+          {IconComponent && <IconComponent className="w-3 h-3" />}
+          <span>{displayLabel}</span>
+        </a>
+        {/* CSS-only hover tooltip - no JavaScript required */}
+        <span
+          className={cn(styles.tooltip, 'absolute left-0 top-full mt-1 z-50 w-[280px] p-3 bg-popover text-popover-foreground border rounded-md shadow-md pointer-events-none')}
+          role="tooltip"
+        >
+          {entityType && (
+            <span className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+              {TypeIconComponent && <TypeIconComponent className="w-3 h-3" />}
+              <span className="uppercase tracking-wide">{formatEntityType(entityType)}</span>
+            </span>
+          )}
+          <span className="block font-semibold text-foreground mb-1.5 text-sm">
+            {entity?.title || formatIdAsTitle(id)}
+          </span>
+          {summary && (
+            <span className="block text-muted-foreground text-[0.8rem] leading-snug">
+              {truncateText(summary, 200)}
+            </span>
+          )}
+          {page?.quality && (
+            <span className="block mt-2 text-xs text-muted-foreground">
+              Quality: {page.quality}/100
+            </span>
+          )}
+        </span>
+      </span>
+    );
+  }
+
+  // No hover info available, return plain link
+  return (
     <a
       href={href}
       className={cn(
@@ -108,45 +153,10 @@ export function EntityLink({
       )}
       {...externalProps}
     >
-      {icon && <span className="text-xs">{icon}</span>}
+      {IconComponent && <IconComponent className="w-3 h-3" />}
       <span>{displayLabel}</span>
     </a>
   );
-
-  // If we have summary info, wrap in hover card
-  if (summary || entityType) {
-    return (
-      <HoverCard openDelay={300} closeDelay={100}>
-        <HoverCardTrigger asChild>
-          {linkElement}
-        </HoverCardTrigger>
-        <HoverCardContent className="w-[300px] p-3 text-sm" align="start">
-          {entityType && (
-            <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-              {typeIcon && <span>{typeIcon}</span>}
-              <span className="uppercase tracking-wide">{formatEntityType(entityType)}</span>
-            </div>
-          )}
-          <div className="font-semibold text-foreground mb-1.5">
-            {entity?.title || formatIdAsTitle(id)}
-          </div>
-          {summary && (
-            <div className="text-muted-foreground text-[0.8rem] leading-snug">
-              {truncateText(summary, 200)}
-            </div>
-          )}
-          {page?.quality && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              Quality: {page.quality}/100
-            </div>
-          )}
-        </HoverCardContent>
-      </HoverCard>
-    );
-  }
-
-  // No hover info available, return plain link
-  return linkElement;
 }
 
 /**
