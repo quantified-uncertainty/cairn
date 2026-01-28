@@ -291,14 +291,14 @@ The emergence of hybrid models reflects a growing consensus that **pure SSMs and
 | Driver | Current Status | 2025-2027 Projection | Impact on SSM Adoption |
 |--------|---------------|---------------------|----------------------|
 | **Context length demand** | 100K-200K standard | 1M+ contexts emerging | HIGH: Transformers hit memory walls |
-| **Inference cost pressure** | $0.01-0.10/1K tokens | Cost competition intensifying | HIGH: SSM 5x cheaper inference |
+| **Inference cost pressure** | \$1.01-0.10/1K tokens | Cost competition intensifying | HIGH: SSM 5x cheaper inference |
 | **Memory bandwidth** | H100: 3.35 TB/s | Scaling slower than compute | MEDIUM: Benefits SSM constant-memory |
 | **Agentic workloads** | Emerging | 30-50% of enterprise AI by 2027 | HIGH: Long contexts, repeated inference |
 | **Edge deployment** | Limited | Growing rapidly | HIGH: SSM memory efficiency critical |
 
 ### Arguments for SSM/Hybrid Growth (60-70% probability of significant adoption)
 
-1. **Efficiency becomes critical** — At GPT-5+ scale, O(n^2) attention cost is $10-100M per training run. SSM efficiency offers 40-80% cost reduction.
+1. **Efficiency becomes critical** — At GPT-5+ scale, O(n^2) attention cost is \$10-100M per training run. SSM efficiency offers 40-80% cost reduction.
 2. **Long context is table stakes** — Applications demand 100K-1M token contexts. Transformer KV cache hits memory limits; SSM scales linearly.
 3. **Hybrid architectures validated** — NVIDIA's study and Jamba 1.5 demonstrate hybrids can outperform pure transformers with better efficiency.
 4. **Production deployments expanding** — Google (RecurrentGemma), AI21 (Jamba 1.6), Mistral (Codestral Mamba), IBM (Granite 4.0) all shipping SSM-based models.

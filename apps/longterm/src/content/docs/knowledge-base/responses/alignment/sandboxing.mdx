@@ -60,7 +60,7 @@ Different isolation technologies offer varying levels of security, with tradeoff
 
 | Technology | Isolation Level | Startup Time | Attack Surface | Use Case | Key Limitation |
 |------------|----------------|--------------|----------------|----------|----------------|
-| **Standard Containers** (Docker, containerd) | Process-level (namespaces, cgroups, seccomp) | <100ms | High (shared kernel) | Development, low-risk workloads | Container escapes via kernel vulnerabilities |
+| **Standard Containers** (Docker, containerd) | Process-level (namespaces, cgroups, seccomp) | Under 100ms | High (shared kernel) | Development, low-risk workloads | Container escapes via kernel vulnerabilities |
 | **gVisor** | User-space kernel interception | 100-300ms | Medium (syscall filtering) | Moderate security (Modal, GKE Sandbox) | 15-30% performance overhead; incomplete syscall coverage |
 | **Firecracker microVMs** | Hardware virtualization (KVM) | 125ms cold start | Low (hypervisor boundary) | High security (AWS Lambda, E2B) | Higher resource overhead; complexity |
 | **Kata Containers** | VM-backed containers | 200-500ms | Low (VM isolation) | Enterprise high-security | Slower startup; more resources |
