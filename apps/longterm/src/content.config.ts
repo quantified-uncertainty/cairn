@@ -36,6 +36,7 @@ export const collections = {
         llmSummary: z.string().optional(),
         lastEdited: z.string().optional(),
         todo: z.string().optional(),
+        todos: z.array(z.string()).optional(),
         // Reference to primary page (for reference-style stubs)
         seeAlso: z.string().optional(),
         // Model page ratings (1-5 scale)
