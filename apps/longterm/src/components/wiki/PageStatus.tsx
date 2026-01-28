@@ -325,8 +325,14 @@ function InsightsSection({ insights }: { insights: Insight[] }) {
 }
 
 export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, todos, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, pageType, pathname, devOnly = false }: PageStatusProps) {
-  // Don't render if no metadata provided
-  if (!quality && !importance && !llmSummary && !lastEdited && !todo && (!todos || todos.length === 0)) {
+  // Detect page type
+  const detectedType = detectPageType(pathname || '', pageType);
+  const isATMPage = detectedType === 'ai-transition-model';
+
+  // Don't render if no metadata provided (except for ATM pages which always show)
+  const hasEditorialContent = quality || importance || llmSummary || lastEdited || todo || (todos && todos.length > 0);
+  const hasInsightContent = insights && insights.length > 0;
+  if (!hasEditorialContent && !hasInsightContent && !isATMPage) {
     return null;
   }
 
