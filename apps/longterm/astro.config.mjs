@@ -40,14 +40,14 @@ export default defineConfig({
           sidebar: [
               // Top-level navigation items
               { label: 'Start Here', slug: 'getting-started' },
-              { label: 'Explore All Content', link: '/explore' },
+              { label: 'Explore All Content', link: '/explore', attrs: { class: 'sidebar-icon-explore' } },
               // Main content sections (formerly under Knowledge Base)
               {
                   label: 'AI Transition Model',
                   collapsed: true,
                   items: [
                       { label: 'Overview', slug: 'ai-transition-model' },
-                      { label: 'Parameter Table', slug: 'ai-transition-model/table' },
+                      { label: 'Parameter Table', slug: 'ai-transition-model/table', attrs: { class: 'sidebar-icon-table' } },
                       { label: 'Outcomes', collapsed: true, items: [
                           { slug: 'ai-transition-model/outcomes/existential-catastrophe' },
                           { slug: 'ai-transition-model/outcomes/long-term-trajectory' },
@@ -110,15 +110,15 @@ export default defineConfig({
                   items: [
                       { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
                       { label: 'Safety Generalizability', collapsed: true, items: [
-                          { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table' },
-                          { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix' },
+                          { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table', attrs: { class: 'sidebar-icon-table' } },
+                          { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { class: 'sidebar-icon-matrix' } },
                       ]},
                       { label: 'Governance', collapsed: true, items: [
                           { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
                           { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
                           { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
                           { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
-                          { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment' },
+                          { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
                       ]},
                       { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
                       { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
@@ -155,7 +155,7 @@ export default defineConfig({
                   label: 'Intelligence Paradigms',
                   collapsed: true,
                   items: [
-                      { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table' },
+                      { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
                       { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
                   ],
               },
