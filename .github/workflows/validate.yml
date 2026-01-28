@@ -40,7 +40,7 @@ jobs:
         working-directory: apps/longterm
         run: |
           # Run validation and capture output (run script directly to avoid pnpm prefix in output)
-          node scripts/validate-all.mjs --ci > ../../validation-results.json 2>&1 || true
+          node scripts/validate/validate-all.mjs --ci > ../../validation-results.json 2>&1 || true
 
           # Parse results for summary
           cat ../../validation-results.json
