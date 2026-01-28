@@ -5,43 +5,39 @@ sidebar:
   label: Start Here
   order: 0
 ---
+import {EntityLink} from '../../../components/wiki';
 
 This wiki maps the landscape of AI existential risk—the arguments, key uncertainties, organizations, and interventions. Here's how to navigate it.
 
 ## Core Framework: Key Parameters
 
-The wiki is organized around **[Key Parameters](/ai-transition-model/)**—foundational variables that AI development affects in both directions. This framework connects:
+The wiki is organized around **<EntityLink id="__index__/ai-transition-model">Key Parameters</EntityLink>**—foundational variables that AI development affects in both directions. This framework connects:
 
-- **[Risks](/knowledge-base/risks/)** — What decreases these parameters (51 documented risks)
-- **[Responses](/knowledge-base/responses/)** — What increases or protects them (technical & governance approaches)
+- **Risks** — What decreases these parameters (51 documented risks)
+- **Responses** — What increases or protects them (technical & governance approaches)
 
-Parameters include things like alignment robustness, racing intensity, societal trust, and human agency. Start with the [Parameters overview](/ai-transition-model/) to understand the analytical framework.
+Parameters include things like alignment robustness, racing intensity, societal trust, and human agency. Start with the <EntityLink id="__index__/ai-transition-model">Parameters overview</EntityLink> to understand the analytical framework.
 
 ## Main Sections
 
 | Section | What's There |
 |---------|--------------|
-| **[Key Parameters](/ai-transition-model/)** | 22 foundational variables with trends, risks, and interventions |
-| **[Risks](/knowledge-base/risks/)** | Accident, misuse, structural, and epistemic risks |
-| **[Responses](/knowledge-base/responses/)** | Technical alignment approaches and governance interventions |
-| **[Organizations](/knowledge-base/organizations/)** | Frontier labs, safety research orgs, government bodies |
-| **[People](/knowledge-base/people/)** | Key researchers and their positions |
-| **[Key Debates](/knowledge-base/debates/)** | Structured arguments on contested questions |
-| **[Cruxes](/knowledge-base/cruxes/)** | 53 key uncertainties driving disagreements |
+| **<EntityLink id="__index__/ai-transition-model">Key Parameters</EntityLink>** | 22 foundational variables with trends, risks, and interventions |
+| **[Explore All Content](/explore/)** | Browse risks, responses, organizations, people, debates, and cruxes |
 
 ## Quick Paths
 
 **Want to understand the risk argument?**
-→ [AI Transition Model](/ai-transition-model/) presents the framework for understanding AI outcomes
+→ <EntityLink id="__index__/ai-transition-model">AI Transition Model</EntityLink> presents the framework for understanding AI outcomes
 
 **Want to see what can be done?**
-→ [Responses](/knowledge-base/responses/) covers technical and governance approaches
+→ Browse interventions in the sidebar under "Interventions"
 
 **Want to understand disagreements?**
-→ [Key Debates](/knowledge-base/debates/) presents strongest arguments on each side
+→ Browse key debates in the sidebar under "Key Debates"
 
 **Want data and estimates?**
-→ [Key Metrics](/knowledge-base/metrics/) has forecasts and measurements
+→ Browse metrics in the sidebar under "Key Metrics"
 
 ## Key Numbers
 
@@ -65,6 +61,5 @@ If you're skeptical of the AI safety framing, this wiki can help you understand 
 
 ## Browse
 
-- **[Knowledge Base](/knowledge-base/)** — All categories
-- **[All Entities](/browse/)** — Searchable database
+- **[Explore All Content](/explore/)** — Searchable database
 - **[Entity Graph](/dashboard/graph/)** — Visual relationships

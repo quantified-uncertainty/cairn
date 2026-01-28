@@ -8,12 +8,12 @@ hero:
     - text: Start Here
       link: /getting-started/
       icon: right-arrow
-    - text: Knowledge Base
-      link: /knowledge-base/
+    - text: Explore All Content
+      link: /explore/
       icon: information
       variant: minimal
 ---
-import {R} from '../../components/wiki';
+import {R, EntityLink} from '../../components/wiki';
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
@@ -29,10 +29,10 @@ Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses
 
 <CardGrid>
   <Card title="🎯 AI Transition Model" icon="warning">
-    A [causal framework](/ai-transition-model/) mapping how root factors shape AI outcomes.
+    A <EntityLink id="__index__/ai-transition-model">causal framework</EntityLink> mapping how root factors shape AI outcomes.
 
-    - [Root Factors](/ai-transition-model/factors/) - What drives AI trajectories
-    - [Scenarios](/ai-transition-model/scenarios/) - Pathways to different outcomes
+    - <EntityLink id="__index__/ai-transition-model/factors">Root Factors</EntityLink> - What drives AI trajectories
+    - <EntityLink id="__index__/ai-transition-model/scenarios">Scenarios</EntityLink> - Pathways to different outcomes
     - [Interactive Views](/ai-transition-model-views/graph/) - Explore the model visually
   </Card>
 
@@ -47,33 +47,33 @@ Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses
   <Card title="❓ Key Uncertainties" icon="comment-alt">
     Cruxes that drive disagreement and prioritization:
 
-    - [53 documented cruxes](/knowledge-base/cruxes/) - Key uncertainties mapped
-    - [Key Debates](/knowledge-base/debates/) - Structured arguments on contested questions
+    - 53 documented cruxes - Key uncertainties mapped
+    - Key debates - Structured arguments on contested questions
     - [Worldview Analysis](/project/vision/) - How assumptions lead to priorities
   </Card>
 
   <Card title="🛡️ Safety Approaches" icon="approve-check">
     Technical and governance solutions:
 
-    - [Technical approaches](/knowledge-base/responses/alignment/) (interpretability, RLHF, AI control)
-    - [Governance](/knowledge-base/responses/governance/) (compute governance, international coordination)
-    - [Safety Approaches Comparison](/knowledge-base/responses/safety-approaches/) - Compare interventions
+    - Technical approaches (interpretability, RLHF, AI control)
+    - Governance (compute governance, international coordination)
+    - Browse "Interventions" in the sidebar for all approaches
   </Card>
 
   <Card title="📐 Key Parameters" icon="setting">
     Foundational variables AI affects in both directions:
 
-    - [All parameters](/ai-transition-model/) (alignment robustness, racing intensity, societal trust)
-    - A symmetric framework connecting [risks](/knowledge-base/risks/) and [interventions](/knowledge-base/responses/)
+    - <EntityLink id="__index__/ai-transition-model">All parameters</EntityLink> (alignment robustness, racing intensity, societal trust)
+    - A symmetric framework connecting risks and interventions
     - Track what matters, not just what could go wrong
   </Card>
 
   <Card title="🏢 Field Reference" icon="seti:folder">
     Who's working on what:
 
-    - [Organizations](/knowledge-base/organizations/) - Labs, research orgs, government bodies
-    - [Key Researchers](/knowledge-base/people/) - Profiles and positions
-    - [Funders](/knowledge-base/funders/) - Funding landscape
+    - Labs, research orgs, government bodies
+    - Key researcher profiles and positions
+    - Browse "Organizations" and "People" in the sidebar
   </Card>
 </CardGrid>
 
@@ -83,7 +83,7 @@ Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses
 
 <CardGrid>
   <Card title="📊 History" icon="seti:clock">
-    [AI safety timeline](/knowledge-base/history/) from the Dartmouth conference to the present day.
+    AI safety timeline from the Dartmouth conference to the present day. Browse "History" in sidebar.
   </Card>
 
   <Card title="🗺️ Entity Graph" icon="seti:pipeline">
@@ -91,11 +91,11 @@ Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses
   </Card>
 
   <Card title="🔮 Scenarios" icon="puzzle">
-    [Future projections](/knowledge-base/future-projections/) for how AI development might unfold.
+    Future projections for how AI development might unfold. Browse "Future Projections" in sidebar.
   </Card>
 
-  <Card title="📚 Knowledge Base" icon="document">
-    [Browse all entries](/knowledge-base/) — risks, responses, organizations, people, and cruxes.
+  <Card title="📚 Explore" icon="document">
+    [Browse all entries](/explore/) — risks, responses, organizations, people, and cruxes.
   </Card>
 </CardGrid>
 
@@ -104,19 +104,19 @@ Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses
 ## Learning Paths
 
 **New to AI safety?** Start with:
-1. [Introduction](/getting-started/) - What is AI safety and why it matters
-2. [AI Transition Model](/ai-transition-model/) - Framework for understanding AI outcomes
-3. [Key Risks](/knowledge-base/risks/) - What could go wrong
+1. <EntityLink id="__index__/getting-started">Introduction</EntityLink> - What is AI safety and why it matters
+2. <EntityLink id="__index__/ai-transition-model">AI Transition Model</EntityLink> - Framework for understanding AI outcomes
+3. Browse "Risks" in sidebar - What could go wrong
 
 **Want to contribute?** Explore:
-1. [Intervention analysis](/knowledge-base/responses/) - What can you do?
-2. [Funding landscape](/knowledge-base/funders/) - How to get funded
-3. [Organizations](/knowledge-base/organizations/) - Who's working on this
+1. Browse "Interventions" in sidebar - What can you do?
+2. [Explore all content](/explore/) - Browse the database
+3. Browse "Organizations" in sidebar - Who's working on this
 
 **Looking for depth?** Try:
-1. [Key Parameters](/ai-transition-model/) - The variables that matter for AI outcomes
-2. [Key debates](/knowledge-base/debates/) - Strongest arguments on each side
-3. [Research agendas](/knowledge-base/responses/alignment/research-agendas/) - Compare approaches
+1. <EntityLink id="__index__/ai-transition-model">Key Parameters</EntityLink> - The variables that matter for AI outcomes
+2. Browse "Key Debates" in sidebar - Strongest arguments on each side
+3. <EntityLink id="research-agendas">Research agendas</EntityLink> - Compare approaches
 
 ---
 
@@ -138,13 +138,13 @@ See the [dashboard](/dashboard/) for more details.
 
 Key voices in AI safety:
 
-- **[Dario Amodei](/knowledge-base/people/dario-amodei/)** - Anthropic CEO, "10-25% doom"
-- **[Eliezer Yudkowsky](/knowledge-base/people/eliezer-yudkowsky/)** - MIRI, most pessimistic public voice
-- **[Paul Christiano](/knowledge-base/people/paul-christiano/)** - ARC founder, influential alignment researcher
-- **[Geoffrey Hinton](/knowledge-base/people/geoffrey-hinton/)** - "Godfather of AI", recent safety advocate
-- **[Stuart Russell](/knowledge-base/people/stuart-russell/)** - UC Berkeley, *Human Compatible* author
+- **<EntityLink id="dario-amodei">Dario Amodei</EntityLink>** - Anthropic CEO, "10-25% doom"
+- **<EntityLink id="eliezer-yudkowsky">Eliezer Yudkowsky</EntityLink>** - MIRI, most pessimistic public voice
+- **<EntityLink id="paul-christiano">Paul Christiano</EntityLink>** - ARC founder, influential alignment researcher
+- **<EntityLink id="geoffrey-hinton">Geoffrey Hinton</EntityLink>** - "Godfather of AI", recent safety advocate
+- **<EntityLink id="stuart-russell">Stuart Russell</EntityLink>** - UC Berkeley, *Human Compatible* author
 
-[See all researchers →](/knowledge-base/people/)
+Browse "People" in the sidebar to see all researchers.
 
 ---
 
@@ -210,6 +210,6 @@ This is an open project. Key areas where contributions would be valuable:
   </Card>
 
   <Card title="Start Learning" icon="open-book">
-    [Begin with the introduction →](/getting-started/)
+    <EntityLink id="__index__/getting-started">Begin with the introduction →</EntityLink>
   </Card>
 </CardGrid>
