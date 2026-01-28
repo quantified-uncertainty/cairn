@@ -22,9 +22,9 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
-Model specifications are explicit, written documents that define the intended behavior, values, and boundaries of AI systems. Rather than relying solely on implicit learning from training data, model specs provide clear articulation of what an AI system should and should not do, how it should handle edge cases, and what values should guide its behavior when tradeoffs arise. Major AI labs including [Anthropic](/knowledge-base/organizations/labs/anthropic/) and [OpenAI](/knowledge-base/organizations/labs/openai/) have published model specifications for their frontier systems.
+Model specifications are explicit, written documents that define the intended behavior, values, and boundaries of AI systems. Rather than relying solely on implicit learning from training data, model specs provide clear articulation of what an AI system should and should not do, how it should handle edge cases, and what values should guide its behavior when tradeoffs arise. Major AI labs including <EntityLink id="anthropic">Anthropic</EntityLink> and <EntityLink id="openai">OpenAI</EntityLink> have published model specifications for their frontier systems.
 
-The practice emerged from recognizing that implicit behavioral training through [RLHF](/knowledge-base/responses/safety-approaches/rlhf/) alone leaves important questions unanswered: What should the model do when helpfulness conflicts with honesty? How should it handle requests that might be harmful in some contexts but legitimate in others? Model specs provide explicit answers to these questions, creating a documented target for training and a reference for evaluation. They also enable external parties - researchers, regulators, and the public - to understand what behavior is intended and evaluate whether it's achieved.
+The practice emerged from recognizing that implicit behavioral training through <EntityLink id="rlhf">RLHF</EntityLink> alone leaves important questions unanswered: What should the model do when helpfulness conflicts with honesty? How should it handle requests that might be harmful in some contexts but legitimate in others? Model specs provide explicit answers to these questions, creating a documented target for training and a reference for evaluation. They also enable external parties - researchers, regulators, and the public - to understand what behavior is intended and evaluate whether it's achieved.
 
 Anthropic's Claude Model Spec (2024) and OpenAI's Model Spec (2025) represent the most comprehensive public examples, covering topics from identity and personality to harm avoidance hierarchies and edge case handling. However, a fundamental limitation remains: specifications define what behavior is desired, but don't guarantee that behavior is achieved. A gap can exist between spec and implementation, and sophisticated systems might comply with the letter while violating the spirit of specifications.
 
@@ -176,8 +176,8 @@ For superintelligent systems, model specs face fundamental challenges:
 
 ### Integration with Training Methods
 
-- **[Constitutional AI](/knowledge-base/responses/alignment/constitutional-ai/)**: Specs inform constitutional principles
-- **[RLHF](/knowledge-base/responses/safety-approaches/rlhf/)**: Specs guide rater instructions
+- **<EntityLink id="constitutional-ai">Constitutional AI</EntityLink>**: Specs inform constitutional principles
+- **<EntityLink id="rlhf">RLHF</EntityLink>**: Specs guide rater instructions
 - **Evaluation**: Specs define test criteria
 
 ### Complementary Approaches

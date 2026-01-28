@@ -24,7 +24,7 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 AI Safety via Debate is an alignment approach where two AI systems argue opposing positions on a question while a human judge determines which argument is more convincing. The core theoretical insight is that if truth has an asymmetric advantage - honest arguments should ultimately be more defensible than deceptive ones - then humans can accurately evaluate superhuman AI outputs without needing to understand them directly. Instead of evaluating the answer, humans evaluate the quality of competing arguments about the answer.
 
-Proposed by Geoffrey Irving and colleagues at OpenAI in 2018, debate represents one of the few alignment approaches specifically designed to scale to superintelligent systems. Unlike [RLHF](/knowledge-base/responses/safety-approaches/rlhf/), which fundamentally breaks when humans cannot evaluate outputs, debate aims to leverage AI capabilities against themselves. The hope is that a deceptive AI could be exposed by an honest AI opponent, making deception much harder to sustain.
+Proposed by Geoffrey Irving and colleagues at OpenAI in 2018, debate represents one of the few alignment approaches specifically designed to scale to superintelligent systems. Unlike <EntityLink id="rlhf">RLHF</EntityLink>, which fundamentally breaks when humans cannot evaluate outputs, debate aims to leverage AI capabilities against themselves. The hope is that a deceptive AI could be exposed by an honest AI opponent, making deception much harder to sustain.
 
 However, debate remains largely theoretical with limited empirical validation. Key open questions include whether truth actually has an advantage in all domains, whether sophisticated debaters could collude or mislead judges, and whether the approach works in practice at scale. The technique has received relatively modest investment (\$1-20M/year) despite its potential to address fundamental alignment challenges.
 
@@ -142,8 +142,8 @@ Unlike RLHF, debate is specifically designed for superhuman AI:
 
 ### Complementary Techniques
 
-- **[Mechanistic Interpretability](/knowledge-base/responses/safety-approaches/mech-interp/)**: Could verify debate outcomes internally
-- **[Process Supervision](/knowledge-base/responses/safety-approaches/process-supervision/)**: Debate could use step-by-step reasoning transparency
+- **<EntityLink id="mech-interp">Mechanistic Interpretability</EntityLink>**: Could verify debate outcomes internally
+- **<EntityLink id="process-supervision">Process Supervision</EntityLink>**: Debate could use step-by-step reasoning transparency
 - **Market-based approaches**: Prediction markets share the adversarial information aggregation insight
 
 ### Key Distinctions

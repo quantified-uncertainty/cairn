@@ -24,7 +24,7 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 Mechanistic interpretability is a research field focused on understanding neural networks by reverse-engineering their internal computations, identifying interpretable features and circuits that explain how models process information and generate outputs. Unlike behavioral approaches that treat models as black boxes, mechanistic interpretability aims to open the box and understand the algorithms implemented by neural network weights. This could provide genuine insight into what AI systems "know," "believe," and "intend" - categories that are otherwise merely anthropomorphic projections onto behavior.
 
-The field has grown substantially since Chris Olah's foundational "Zoom In" work at [OpenAI](/knowledge-base/organizations/labs/openai/) and subsequent research at [Anthropic](/knowledge-base/organizations/labs/anthropic/) and [DeepMind](/knowledge-base/organizations/labs/deepmind/). Key discoveries include identifying specific circuits responsible for indirect object identification, induction heads that enable in-context learning, and features that represent interpretable concepts. The development of Sparse Autoencoders (SAEs) for finding interpretable features has accelerated recent progress, with Anthropic's "Scaling Monosemanticity" demonstrating that meaningful features can be extracted from frontier models.
+The field has grown substantially since Chris Olah's foundational "Zoom In" work at <EntityLink id="openai">OpenAI</EntityLink> and subsequent research at <EntityLink id="anthropic">Anthropic</EntityLink> and <EntityLink id="deepmind">DeepMind</EntityLink>. Key discoveries include identifying specific circuits responsible for indirect object identification, induction heads that enable in-context learning, and features that represent interpretable concepts. The development of Sparse Autoencoders (SAEs) for finding interpretable features has accelerated recent progress, with Anthropic's "Scaling Monosemanticity" demonstrating that meaningful features can be extracted from frontier models.
 
 Mechanistic interpretability is particularly important for AI safety because it offers one of the few potential paths to detecting deception and verifying alignment at a fundamental level. If we can understand what a model is actually computing - not just what outputs it produces - we might be able to verify that it has genuinely aligned objectives rather than merely exhibiting aligned behavior. However, significant challenges remain: current techniques don't yet scale to understanding complete models at the frontier, and it's unclear whether interpretability research can keep pace with capability advances.
 
@@ -228,8 +228,8 @@ SAEs find interpretable features by training autoencoders with sparsity constrai
 
 ### Complementary Techniques
 
-- **[Representation Engineering](/knowledge-base/responses/safety-approaches/representation-engineering/)**: Uses interpretability findings to steer behavior
-- **[Process Supervision](/knowledge-base/responses/safety-approaches/process-supervision/)**: Interpretability could verify reasoning matches shown steps
+- **<EntityLink id="representation-engineering">Representation Engineering</EntityLink>**: Uses interpretability findings to steer behavior
+- **<EntityLink id="process-supervision">Process Supervision</EntityLink>**: Interpretability could verify reasoning matches shown steps
 - **Probing**: Simpler technique that interpretability builds on
 
 ### Key Distinctions

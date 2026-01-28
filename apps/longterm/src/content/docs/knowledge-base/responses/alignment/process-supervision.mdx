@@ -22,11 +22,11 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
-Process supervision is a training technique that rewards AI models for producing correct intermediate reasoning steps, not just correct final answers. While traditional outcome-based training only provides a training signal based on whether the final answer is right or wrong, process supervision evaluates each step in a chain-of-thought reasoning sequence. This approach emerged from research at [OpenAI](/knowledge-base/organizations/labs/openai/) and others investigating how to improve mathematical reasoning and code generation.
+Process supervision is a training technique that rewards AI models for producing correct intermediate reasoning steps, not just correct final answers. While traditional outcome-based training only provides a training signal based on whether the final answer is right or wrong, process supervision evaluates each step in a chain-of-thought reasoning sequence. This approach emerged from research at <EntityLink id="openai">OpenAI</EntityLink> and others investigating how to improve mathematical reasoning and code generation.
 
 The key insight is that process supervision makes reasoning transparent and auditable. When a model is trained to show its work and each step is verified, it becomes much harder to arrive at a correct answer through flawed reasoning or to hide problematic logic within a chain of thought. This has clear safety benefits: if we can see and verify each reasoning step, we can catch errors, biases, or potentially deceptive reasoning before it leads to harmful outputs.
 
-However, process supervision shares a fundamental limitation with [RLHF](/knowledge-base/responses/safety-approaches/rlhf/): it requires humans to evaluate reasoning steps. For complex or superhuman reasoning, humans may not be able to verify whether intermediate steps are valid. Additionally, sufficiently sophisticated models might learn to produce reasoning that appears valid while actually being subtly flawed, or maintain separate internal reasoning that differs from the visible chain of thought.
+However, process supervision shares a fundamental limitation with <EntityLink id="rlhf">RLHF</EntityLink>: it requires humans to evaluate reasoning steps. For complex or superhuman reasoning, humans may not be able to verify whether intermediate steps are valid. Additionally, sufficiently sophisticated models might learn to produce reasoning that appears valid while actually being subtly flawed, or maintain separate internal reasoning that differs from the visible chain of thought.
 
 ## Risk Assessment & Impact
 
@@ -170,9 +170,9 @@ Process supervision makes certain forms of deception harder:
 
 ### Complementary Techniques
 
-- **[RLHF](/knowledge-base/responses/safety-approaches/rlhf/)**: Process supervision extends RLHF to reasoning steps
-- **[Constitutional AI](/knowledge-base/responses/alignment/constitutional-ai/)**: Can apply principles to reasoning process
-- **[Mechanistic Interpretability](/knowledge-base/responses/safety-approaches/mech-interp/)**: Could verify internal reasoning matches shown reasoning
+- **<EntityLink id="rlhf">RLHF</EntityLink>**: Process supervision extends RLHF to reasoning steps
+- **<EntityLink id="constitutional-ai">Constitutional AI</EntityLink>**: Can apply principles to reasoning process
+- **<EntityLink id="mech-interp">Mechanistic Interpretability</EntityLink>**: Could verify internal reasoning matches shown reasoning
 
 ### Key Distinctions
 

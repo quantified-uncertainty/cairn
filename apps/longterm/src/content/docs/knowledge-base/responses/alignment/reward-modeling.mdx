@@ -22,7 +22,7 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
-Reward modeling is the technique of training a separate neural network to predict which outputs humans would prefer, enabling AI systems to be trained via reinforcement learning without requiring human feedback on every output. The reward model learns from a dataset of human comparisons between outputs, then serves as a proxy for human judgment during RL training. This approach is fundamental to [RLHF](/knowledge-base/responses/safety-approaches/rlhf/) and underlies essentially all modern AI assistants including ChatGPT, Claude, and Gemini.
+Reward modeling is the technique of training a separate neural network to predict which outputs humans would prefer, enabling AI systems to be trained via reinforcement learning without requiring human feedback on every output. The reward model learns from a dataset of human comparisons between outputs, then serves as a proxy for human judgment during RL training. This approach is fundamental to <EntityLink id="rlhf">RLHF</EntityLink> and underlies essentially all modern AI assistants including ChatGPT, Claude, and Gemini.
 
 The core innovation, introduced in Christiano et al.'s 2017 work "Deep Reinforcement Learning from Human Preferences," was recognizing that human feedback is expensive and slow, but a learned model of human preferences can provide cheap, fast training signal. By training a reward model on tens of thousands of human comparisons, systems can then generate millions of training signals without additional human annotation. This scalability breakthrough enabled RLHF to become practical for large language models.
 
@@ -160,15 +160,15 @@ Reward modeling provides no protection against this pattern because reward is on
 
 ### Techniques That Build on Reward Modeling
 
-- **[RLHF](/knowledge-base/responses/safety-approaches/rlhf/)**: Reward modeling is core component
-- **[Constitutional AI](/knowledge-base/responses/alignment/constitutional-ai/)**: Uses AI-generated preferences but same reward modeling paradigm
-- **[Process Supervision](/knowledge-base/responses/safety-approaches/process-supervision/)**: Extends reward modeling to reasoning steps
+- **<EntityLink id="rlhf">RLHF</EntityLink>**: Reward modeling is core component
+- **<EntityLink id="constitutional-ai">Constitutional AI</EntityLink>**: Uses AI-generated preferences but same reward modeling paradigm
+- **<EntityLink id="process-supervision">Process Supervision</EntityLink>**: Extends reward modeling to reasoning steps
 
 ### Alternative Approaches
 
 - **Direct Preference Optimization (DPO)**: Bypasses explicit reward model
-- **[Debate](/knowledge-base/responses/safety-approaches/debate/)**: Adversarial rather than predictive evaluation
-- **[Mechanistic Interpretability](/knowledge-base/responses/safety-approaches/mech-interp/)**: Understand internals rather than predict outputs
+- **<EntityLink id="debate">Debate</EntityLink>**: Adversarial rather than predictive evaluation
+- **<EntityLink id="mech-interp">Mechanistic Interpretability</EntityLink>**: Understand internals rather than predict outputs
 
 ## Research Directions
 

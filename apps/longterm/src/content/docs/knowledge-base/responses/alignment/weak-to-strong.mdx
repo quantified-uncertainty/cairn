@@ -22,9 +22,9 @@ import {Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 ## Overview
 
-Weak-to-strong generalization is a research direction investigating whether weaker AI systems or humans can successfully supervise and elicit good behavior from stronger AI systems. This question sits at the heart of AI safety: as AI systems surpass human capabilities, our ability to evaluate and correct their behavior degrades. If weak supervisors can reliably guide strong systems toward good behavior, alignment approaches like [RLHF](/knowledge-base/responses/safety-approaches/rlhf/) might continue working; if not, we face a fundamental gap between AI capability and human oversight capacity.
+Weak-to-strong generalization is a research direction investigating whether weaker AI systems or humans can successfully supervise and elicit good behavior from stronger AI systems. This question sits at the heart of AI safety: as AI systems surpass human capabilities, our ability to evaluate and correct their behavior degrades. If weak supervisors can reliably guide strong systems toward good behavior, alignment approaches like <EntityLink id="rlhf">RLHF</EntityLink> might continue working; if not, we face a fundamental gap between AI capability and human oversight capacity.
 
-Introduced as a concrete research program by [OpenAI](/knowledge-base/organizations/labs/openai/) in late 2023, weak-to-strong generalization uses current AI systems as a testbed for this problem. By training a strong model using labels from a weaker model, researchers can study whether the strong model merely imitates the weak model's mistakes or whether it generalizes to perform better than its supervisor. Early results are mixed: strong models do recover some of the capability gap between weak and strong, but not all of it, and the degree of recovery varies by task.
+Introduced as a concrete research program by <EntityLink id="openai">OpenAI</EntityLink> in late 2023, weak-to-strong generalization uses current AI systems as a testbed for this problem. By training a strong model using labels from a weaker model, researchers can study whether the strong model merely imitates the weak model's mistakes or whether it generalizes to perform better than its supervisor. Early results are mixed: strong models do recover some of the capability gap between weak and strong, but not all of it, and the degree of recovery varies by task.
 
 The fundamental uncertainty is whether these early results transfer to the most important cases: detecting deception, preventing power-seeking behavior, and maintaining alignment as AI systems approach and exceed human-level capabilities. A deceptive AI system might behave very differently than the non-deceptive systems used in current experiments. This research direction deserves increased attention given its direct relevance to whether current alignment paradigms can scale.
 
@@ -175,9 +175,9 @@ If it doesn't work:
 
 ### Complementary Techniques
 
-- **[Process Supervision](/knowledge-base/responses/safety-approaches/process-supervision/)**: Could improve weak supervisor quality
-- **[AI Safety via Debate](/knowledge-base/responses/safety-approaches/debate/)**: Alternative scalable oversight approach
-- **[Mechanistic Interpretability](/knowledge-base/responses/safety-approaches/mech-interp/)**: Could verify generalization is genuine
+- **<EntityLink id="process-supervision">Process Supervision</EntityLink>**: Could improve weak supervisor quality
+- **<EntityLink id="debate">AI Safety via Debate</EntityLink>**: Alternative scalable oversight approach
+- **<EntityLink id="mech-interp">Mechanistic Interpretability</EntityLink>**: Could verify generalization is genuine
 
 ### Key Comparisons
 
