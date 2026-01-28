@@ -12,26 +12,37 @@ import '../../../node_modules/@astrojs/starlight/style/markdown.css';
 import { PageStatus } from '../wiki/PageStatus';
 import { ScenarioRatings } from '../wiki/ScenarioRatings';
 import pagesData from '../../data/pages.json';
+import { getInsightsBySource } from '../../data/insights-data';
 
 // Get frontmatter from the route context
 const { entry } = Astro.locals.starlightRoute;
 const frontmatter = entry?.data || {};
 
-// Check if this is a knowledge-base page with editorial metadata
-const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.importance;
-const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
-const showPageStatus = hasEditorialMeta && isKnowledgeBasePage;
-
-// Check if this is an AI Transition Model page with ratings
-const isAITransitionModelPage = Astro.url.pathname.includes('/ai-transition-model/');
-const ratings = (frontmatter as any).ratings;
-const hasRatings = ratings && (ratings.changeability !== undefined || ratings.xriskImpact !== undefined || ratings.trajectoryImpact !== undefined || ratings.uncertainty !== undefined);
-const showRatings = isAITransitionModelPage && hasRatings;
-
 // Extract page ID from pathname to look up additional metadata
 const pathParts = Astro.url.pathname.split('/').filter(Boolean);
 const pageId = pathParts[pathParts.length - 1] || '';
 const pageData = pagesData.find((p: any) => p.id === pageId);
+
+// Get insights for this page - try both with and without trailing slash
+const pathWithSlash = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/';
+const pathWithoutSlash = Astro.url.pathname.replace(/\/$/, '');
+const pageInsights = [
+  ...getInsightsBySource(pathWithSlash),
+  ...getInsightsBySource(pathWithoutSlash),
+].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i); // Dedupe by id
+
+// Check if this is a knowledge-base or AI Transition Model page with editorial metadata
+const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.importance;
+const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
+const isAITransitionModelPage = Astro.url.pathname.includes('/ai-transition-model/');
+const hasInsights = pageInsights.length > 0;
+// Show PageStatus if page has editorial metadata OR insights
+const showPageStatus = (hasEditorialMeta && (isKnowledgeBasePage || isAITransitionModelPage)) || hasInsights;
+
+// Check if this is an AI Transition Model page with ratings
+const ratings = (frontmatter as any).ratings;
+const hasRatings = ratings && (ratings.changeability !== undefined || ratings.xriskImpact !== undefined || ratings.trajectoryImpact !== undefined || ratings.uncertainty !== undefined);
+const showRatings = isAITransitionModelPage && hasRatings;
 ---
 
 <div class="sl-markdown-content">
@@ -47,6 +58,11 @@ const pageData = pagesData.find((p: any) => p.id === pageId);
       backlinkCount={pageData?.backlinkCount}
       metrics={pageData?.metrics}
       suggestedQuality={pageData?.suggestedQuality}
+      insights={pageInsights}
+      issues={{
+        unconvertedLinkCount: pageData?.unconvertedLinkCount,
+        redundancy: pageData?.redundancy,
+      }}
       devOnly={true}
     />
   )}

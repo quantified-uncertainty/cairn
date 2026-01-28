@@ -1,6 +1,7 @@
 import React from 'react';
-import { getEntityById, getEntityHref, getEntityPath } from '../../data';
+import { getEntityById, getEntityHref, getEntityPath, getPageById } from '../../data';
 import { getEntityTypeIcon } from './EntityTypeIcon';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { cn } from '../../lib/utils';
 
 interface EntityLinkProps {
@@ -47,6 +48,25 @@ interface EntityLinkProps {
  * This means links won't break when content is reorganized - only the
  * pathRegistry needs to be rebuilt (happens automatically on build).
  */
+/**
+ * Truncate text to a maximum length
+ */
+function truncateText(text: string | undefined | null, maxLength: number): string {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength - 3) + '...';
+}
+
+/**
+ * Format entity type for display
+ */
+function formatEntityType(type: string): string {
+  return type
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export function EntityLink({
   id,
   label,
@@ -56,6 +76,7 @@ export function EntityLink({
 }: EntityLinkProps) {
   // Look up entity in the database
   const entity = getEntityById(id);
+  const page = getPageById(id);
 
   // Get the path from the registry (falls back to type-based path)
   const href = entity
@@ -73,7 +94,12 @@ export function EntityLink({
     ? { target: '_blank', rel: 'noopener noreferrer' }
     : {};
 
-  return (
+  // Get summary for hover card (prefer llmSummary, fall back to description)
+  const summary = page?.llmSummary || page?.description || entity?.description;
+  const entityType = entity?.type;
+  const typeIcon = entity ? getEntityTypeIcon(entity.type) : null;
+
+  const linkElement = (
     <a
       href={href}
       className={cn(
@@ -86,6 +112,41 @@ export function EntityLink({
       <span>{displayLabel}</span>
     </a>
   );
+
+  // If we have summary info, wrap in hover card
+  if (summary || entityType) {
+    return (
+      <HoverCard openDelay={300} closeDelay={100}>
+        <HoverCardTrigger asChild>
+          {linkElement}
+        </HoverCardTrigger>
+        <HoverCardContent className="w-[300px] p-3 text-sm" align="start">
+          {entityType && (
+            <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+              {typeIcon && <span>{typeIcon}</span>}
+              <span className="uppercase tracking-wide">{formatEntityType(entityType)}</span>
+            </div>
+          )}
+          <div className="font-semibold text-foreground mb-1.5">
+            {entity?.title || formatIdAsTitle(id)}
+          </div>
+          {summary && (
+            <div className="text-muted-foreground text-[0.8rem] leading-snug">
+              {truncateText(summary, 200)}
+            </div>
+          )}
+          {page?.quality && (
+            <div className="mt-2 text-xs text-muted-foreground">
+              Quality: {page.quality}/100
+            </div>
+          )}
+        </HoverCardContent>
+      </HoverCard>
+    );
+  }
+
+  // No hover info available, return plain link
+  return linkElement;
 }
 
 /**

@@ -11,7 +11,32 @@
  * Supports dev-only mode: only shows when ?dev=true in URL or in development
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import type { Insight, InsightType } from '@/data/insights-data';
+
+const typeLabels: Record<InsightType, string> = {
+  'claim': 'Claim',
+  'research-gap': 'Gap',
+  'counterintuitive': 'Counterint.',
+  'quantitative': 'Quant.',
+  'disagreement': 'Debate',
+  'neglected': 'Neglected',
+};
+
+const typeColors: Record<InsightType, string> = {
+  'claim': 'bg-blue-500/20 text-blue-400',
+  'research-gap': 'bg-purple-500/20 text-purple-400',
+  'counterintuitive': 'bg-orange-500/20 text-orange-400',
+  'quantitative': 'bg-cyan-500/20 text-cyan-400',
+  'disagreement': 'bg-rose-500/20 text-rose-400',
+  'neglected': 'bg-amber-500/20 text-amber-400',
+};
+
+function getRatingClass(value: number): string {
+  if (value >= 4.0) return 'bg-emerald-500/20 text-emerald-400';
+  if (value >= 3.0) return 'bg-amber-500/20 text-amber-400';
+  return 'bg-slate-500/20 text-slate-400';
+}
 
 interface PageMetrics {
   wordCount: number;
@@ -25,6 +50,14 @@ interface PageMetrics {
   structuralScore: number;
 }
 
+interface PageIssues {
+  unconvertedLinkCount?: number;
+  redundancy?: {
+    maxSimilarity: number;
+    similarPages: Array<{ id: string; title: string; path: string; similarity: number }>;
+  };
+}
+
 interface PageStatusProps {
   quality?: number;  // 0-100 scale
   importance?: number;  // 0-100 scale
@@ -35,6 +68,8 @@ interface PageStatusProps {
   backlinkCount?: number;
   metrics?: PageMetrics;
   suggestedQuality?: number;
+  insights?: Insight[];
+  issues?: PageIssues;
   /** If true, only show in dev mode (controlled by header toggle) */
   devOnly?: boolean;
 }
@@ -103,7 +138,159 @@ function QualityBadge({ quality }: { quality: number }) {
   );
 }
 
-export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, wordCount, backlinkCount, metrics, suggestedQuality, devOnly = false }: PageStatusProps) {
+interface Issue {
+  type: 'warning' | 'info';
+  label: string;
+  message: string;
+}
+
+function IssuesSection({
+  issues,
+  metrics,
+  quality,
+  suggestedQuality,
+  lastEdited
+}: {
+  issues?: PageIssues;
+  metrics?: PageMetrics;
+  quality?: number;
+  suggestedQuality?: number;
+  lastEdited?: string;
+}) {
+  const detectedIssues: Issue[] = [];
+
+  // Quality discrepancy
+  if (quality !== undefined && suggestedQuality !== undefined) {
+    const diff = quality - suggestedQuality;
+    if (Math.abs(diff) >= 20) {
+      detectedIssues.push({
+        type: 'warning',
+        label: 'Quality',
+        message: diff > 0
+          ? `Rated ${quality} but structure suggests ${suggestedQuality} (overrated by ${diff} points)`
+          : `Rated ${quality} but structure suggests ${suggestedQuality} (underrated by ${Math.abs(diff)} points)`,
+      });
+    }
+  }
+
+  // Unconverted links
+  if (issues?.unconvertedLinkCount && issues.unconvertedLinkCount > 0) {
+    detectedIssues.push({
+      type: 'info',
+      label: 'Links',
+      message: `${issues.unconvertedLinkCount} link${issues.unconvertedLinkCount > 1 ? 's' : ''} could use <R> components`,
+    });
+  }
+
+  // High redundancy
+  if (issues?.redundancy && issues.redundancy.maxSimilarity >= 40) {
+    const topSimilar = issues.redundancy.similarPages[0];
+    detectedIssues.push({
+      type: 'warning',
+      label: 'Redundancy',
+      message: `${issues.redundancy.maxSimilarity}% similar to "${topSimilar?.title}"`,
+    });
+  }
+
+  // Stale content (> 60 days)
+  if (lastEdited) {
+    const days = Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24));
+    if (days > 60) {
+      detectedIssues.push({
+        type: 'info',
+        label: 'Stale',
+        message: `Last edited ${days} days ago - may need review`,
+      });
+    }
+  }
+
+  // Missing structure
+  if (metrics) {
+    if (metrics.tableCount === 0 && metrics.diagramCount === 0) {
+      detectedIssues.push({
+        type: 'info',
+        label: 'Structure',
+        message: 'No tables or diagrams - consider adding visual content',
+      });
+    }
+  }
+
+  if (detectedIssues.length === 0) return null;
+
+  return (
+    <div className="page-status-row flex flex-col gap-1.5">
+      <span className="page-status-label">Issues ({detectedIssues.length}):</span>
+      <ul className="flex flex-col gap-1 w-full">
+        {detectedIssues.map((issue, i) => (
+          <li
+            key={i}
+            className={`flex items-center gap-2 px-2 py-1 rounded text-xs ${
+              issue.type === 'warning'
+                ? 'bg-amber-500/10 border-l-2 border-amber-500/50'
+                : 'bg-slate-500/10 border-l-2 border-slate-500/30'
+            }`}
+          >
+            <span className={`shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase ${
+              issue.type === 'warning' ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-500/20 text-slate-400'
+            }`}>
+              {issue.label}
+            </span>
+            <span className="text-slate-300">{issue.message}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function InsightsSection({ insights }: { insights: Insight[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const MAX_COLLAPSED = 3;
+
+  // Sort by composite score (descending)
+  const sortedInsights = [...insights].sort((a, b) => (b.composite || 0) - (a.composite || 0));
+  const displayedInsights = expanded ? sortedInsights : sortedInsights.slice(0, MAX_COLLAPSED);
+  const hasMore = sortedInsights.length > MAX_COLLAPSED;
+
+  return (
+    <div className="page-status-row flex flex-col gap-2">
+      <div className="flex justify-between items-center w-full">
+        <span className="page-status-label">Critical Insights ({insights.length}):</span>
+        {hasMore && (
+          <button
+            className="text-xs text-indigo-400 hover:text-indigo-300 px-2 py-1 rounded hover:bg-indigo-500/10"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? '▲ Collapse' : `▼ Show all ${insights.length}`}
+          </button>
+        )}
+      </div>
+      <ul className="flex flex-col gap-2 w-full">
+        {displayedInsights.map((insight) => (
+          <li key={insight.id} className="flex items-start gap-2 p-2 bg-indigo-500/10 rounded border-l-2 border-indigo-500/40">
+            <span className={`shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase ${typeColors[insight.type]}`}>
+              {typeLabels[insight.type]}
+            </span>
+            <span className="flex-1 text-xs leading-relaxed">{insight.insight}</span>
+            <span className="flex gap-1 text-[10px] shrink-0">
+              <span className={`px-1.5 py-0.5 rounded ${getRatingClass(insight.surprising)}`} title="Surprising">
+                S:{insight.surprising.toFixed(1)}
+              </span>
+              <span className={`px-1.5 py-0.5 rounded ${getRatingClass(insight.important)}`} title="Important">
+                I:{insight.important.toFixed(1)}
+              </span>
+              <span className={`px-1.5 py-0.5 rounded ${getRatingClass(insight.actionable)}`} title="Actionable">
+                A:{insight.actionable.toFixed(1)}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, devOnly = false }: PageStatusProps) {
   // Don't render if no metadata provided
   if (!quality && !importance && !llmSummary && !lastEdited && !todo) {
     return null;
@@ -208,6 +395,18 @@ export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, 
             <span className="page-status-summary">{llmSummary}</span>
           </div>
         )}
+
+        {insights && insights.length > 0 && (
+          <InsightsSection insights={insights} />
+        )}
+
+        <IssuesSection
+          issues={issues}
+          metrics={metrics}
+          quality={quality}
+          suggestedQuality={suggestedQuality}
+          lastEdited={lastEdited}
+        />
 
         {todo && (
           <div className="page-status-row page-status-row--todo">
