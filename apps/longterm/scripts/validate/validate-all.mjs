@@ -13,7 +13,7 @@
  *   --ci              Output JSON for CI pipelines
  *   --fail-fast       Stop on first failure
  *   --skip=<check>    Skip specific checks (comma-separated)
- *                     Available: data, links, orphans, mdx, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
+ *                     Available: data, links, entity-links, orphans, mdx, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
  *
  * Exit codes:
  *   0 = All checks passed
@@ -68,6 +68,12 @@ const CHECKS = [
     name: 'Internal Links',
     script: 'validate-internal-links.mjs',
     description: 'Markdown links resolve to existing content',
+  },
+  {
+    id: 'entity-links',
+    name: 'EntityLink Conversion',
+    script: 'validate-entity-links.mjs',
+    description: 'Markdown links that could use EntityLink components',
   },
   {
     id: 'orphans',
