@@ -8,7 +8,9 @@ importance: 15
 quality: 25
 llmSummary: "Navigation page providing searchable/filterable access to external sources cited throughout the knowledge base. Acts as a bibliography index rather than containing substantive content."
 ---
-import { ResourcesIndex } from '../../../components/wiki';
+import {ResourcesIndex, DataExternalLinks} from '../../../components/wiki';
+
+<DataExternalLinks pageId="resources" client:load />
 
 Browse all external resources (papers, books, blog posts, reports, etc.) referenced throughout the knowledge base. Use the filters to find resources by type or search by title/author.
 

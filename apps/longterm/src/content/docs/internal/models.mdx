@@ -8,7 +8,9 @@ quality: 45
 llmSummary: "Internal style guide prescribing format requirements for analytical models in the knowledge base, including mandatory executive summaries with methodology and conclusions, strategic prioritization sections, and quality rating criteria."
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { Mermaid } from '../../../components/wiki';
+import {Mermaid, DataExternalLinks} from '../../../components/wiki';
+
+<DataExternalLinks pageId="models" client:load />
 
 This guide covers **core purpose**, **summary requirements**, **format requirements**, **diagram types**, **methodological principles**, and **rating criteria** for analytical models in this knowledge base.
 
