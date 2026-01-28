@@ -15,9 +15,11 @@ CAIRN uses a page type system to categorize content and apply appropriate valida
 | Type | Detection | Validation | Style Guide |
 |------|-----------|------------|-------------|
 | `content` | Default | Full quality criteria | [Models Style Guide](/internal/models-style-guide/) |
+| `risk` | `/knowledge-base/risks/**` | Full + risk-specific | [Risk Style Guide](/internal/risk-style-guide/) |
+| `response` | `/knowledge-base/responses/**` | Full + response-specific | [Response Style Guide](/internal/response-style-guide/) |
 | `stub` | `pageType: stub` | Skipped | [Stub Style Guide](/internal/stub-style-guide/) |
 | `documentation` | `pageType: documentation` | Skipped | N/A |
-| `ai-transition-model` | URL path | Special criteria | [ATM Style Guide](/internal/ai-transition-model-style-guide/) |
+| `ai-transition-model` | `/ai-transition-model/**` | Special criteria | [ATM Style Guide](/internal/ai-transition-model-style-guide/) |
 | `overview` | `index.mdx` filename | Skipped | N/A |
 
 ## Setting Page Type
@@ -34,8 +36,8 @@ pageType: stub  # or documentation
 ### Implicit (from URL)
 
 - `/ai-transition-model/**` → `ai-transition-model`
-- `/knowledge-base/risks/**` → `content` (risk)
-- `/knowledge-base/responses/**` → `content` (response)
+- `/knowledge-base/risks/**` → `risk`
+- `/knowledge-base/responses/**` → `response`
 - `**/index.mdx` → `overview`
 
 ## Validation Behavior

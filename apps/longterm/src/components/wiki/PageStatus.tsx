@@ -59,7 +59,7 @@ interface PageIssues {
 }
 
 // Page type definitions with style guide links
-type ContentPageType = 'content' | 'stub' | 'documentation' | 'ai-transition-model' | 'overview';
+type ContentPageType = 'content' | 'risk' | 'response' | 'stub' | 'documentation' | 'ai-transition-model' | 'overview';
 
 interface PageTypeInfo {
   label: string;
@@ -75,20 +75,34 @@ const PAGE_TYPE_INFO: Record<ContentPageType, PageTypeInfo> = {
     styleGuideUrl: '/internal/models-style-guide/',
     color: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
   },
+  'risk': {
+    label: 'Risk',
+    description: 'Risk analysis page',
+    styleGuideUrl: '/internal/risk-style-guide/',
+    color: 'bg-red-500/20 text-red-400 border-red-500/40',
+  },
+  'response': {
+    label: 'Response',
+    description: 'Intervention/response page',
+    styleGuideUrl: '/internal/response-style-guide/',
+    color: 'bg-teal-500/20 text-teal-400 border-teal-500/40',
+  },
   'stub': {
     label: 'Stub',
     description: 'Minimal placeholder page',
+    styleGuideUrl: '/internal/stub-style-guide/',
     color: 'bg-slate-500/20 text-slate-400 border-slate-500/40',
   },
   'documentation': {
     label: 'Documentation',
     description: 'Internal docs, style guides, examples',
+    styleGuideUrl: '/internal/page-types/',
     color: 'bg-purple-500/20 text-purple-400 border-purple-500/40',
   },
   'ai-transition-model': {
     label: 'AI Transition Model',
     description: 'Structured factor/scenario/parameter page',
-    styleGuideUrl: '/internal/models/',
+    styleGuideUrl: '/internal/ai-transition-model-style-guide/',
     color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
   },
   'overview': {
@@ -175,13 +189,17 @@ function detectPageType(explicitType?: string, pathname?: string): ContentPageTy
 
   // Detect from pathname
   if (pathname) {
-    // Check for index/overview pages
-    if (pathname.endsWith('/index/') || pathname.match(/\/[^\/]+\/$/)) {
-      // This is a heuristic - index pages are often overviews
-    }
     // AI Transition Model pages
     if (pathname.includes('/ai-transition-model/')) {
       return 'ai-transition-model';
+    }
+    // Risk pages
+    if (pathname.includes('/knowledge-base/risks/')) {
+      return 'risk';
+    }
+    // Response pages
+    if (pathname.includes('/knowledge-base/responses/')) {
+      return 'response';
     }
   }
 

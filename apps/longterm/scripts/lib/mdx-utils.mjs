@@ -159,10 +159,38 @@ export function extractLinks(body) {
 const SKIP_VALIDATION_PAGE_TYPES = ['stub', 'documentation'];
 
 /**
+ * File path patterns that should skip validation
+ */
+const SKIP_VALIDATION_PATHS = [
+  /\/index\.(mdx?|md)$/,        // Index/overview pages
+  /\/_[^/]+\.(mdx?|md)$/,       // Files starting with underscore
+  /\/internal\//,               // Internal docs directory
+];
+
+/**
  * Check if a page should skip validation based on frontmatter
  * @param {object} frontmatter - Parsed frontmatter object
  * @returns {boolean} True if validation should be skipped
  */
 export function shouldSkipValidation(frontmatter) {
   return SKIP_VALIDATION_PAGE_TYPES.includes(frontmatter.pageType);
+}
+
+/**
+ * Check if a file should skip validation based on path
+ * @param {string} filePath - Path to the file
+ * @returns {boolean} True if validation should be skipped
+ */
+export function shouldSkipValidationByPath(filePath) {
+  return SKIP_VALIDATION_PATHS.some(pattern => pattern.test(filePath));
+}
+
+/**
+ * Combined check: skip validation if either frontmatter or path matches
+ * @param {object} frontmatter - Parsed frontmatter object
+ * @param {string} filePath - Path to the file
+ * @returns {boolean} True if validation should be skipped
+ */
+export function shouldSkipValidationFull(frontmatter, filePath) {
+  return shouldSkipValidation(frontmatter) || shouldSkipValidationByPath(filePath);
 }
