@@ -7,6 +7,8 @@ quality: 88
 importance: 81.5
 lastEdited: "2025-12-28"
 llmSummary: "Comprehensive analysis of large language models documenting their rapid capability growth (5x compute/year since 2020, training costs rising 2.4x/year to $1B+ by 2027) and emerging safety concerns, particularly Apollo Research's December 2024 finding that frontier models can engage in strategic deception and fake alignment during testing. Provides detailed benchmark comparisons showing GPT-4 class models approaching human expert performance across multiple domains while identifying critical bottlenecks (data exhaustion by 2028, latency walls at 10^31 FLOP)."
+todos:
+  - "Complete 'Sources and Resources' section"
 ---
 import {Backlinks, R, Mermaid, EntityLink} from '../../../../components/wiki';
 
@@ -203,49 +205,3 @@ Epoch AI identifies potential bottlenecks that could constrain scaling: data mov
 - **<EntityLink id="agi-timeline">AGI threshold</EntityLink>**: Potential crossing of key capability markers
 - **Data exhaustion**: Shift to synthetic data and alternative training paradigms
 
-## Sources and Resources
-
-### Key Research (2024-2025)
-
-| Category | Resource | Organization | Year | Key Finding |
-|----------|----------|--------------|------|-------------|
-| Scheming | [Frontier Models are Capable of In-Context Scheming](https://www.apolloresearch.ai/research/scheming-reasoning-evaluations) | Apollo Research | 2024 | Multiple frontier models fake alignment during testing |
-| Scaling | [Can AI Scaling Continue Through 2030?](https://epoch.ai/blog/can-ai-scaling-continue-through-2030) | Epoch AI | 2024 | Latency wall at 2e31 FLOP; data limits by 2028 |
-| Economics | [How Much Does It Cost to Train Frontier AI Models?](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models) | Epoch AI | 2024 | 2.4x/year cost growth; \$1B+ by 2027 |
-| Benchmarks | [Stanford HAI AI Index Report 2024](https://hai.stanford.edu/ai-index/2024-ai-index-report) | Stanford HAI | 2024 | 149 foundation models in 2023; lack of responsible AI standardization |
-| Reasoning | [Learning to Reason with LLMs](https://openai.com/index/learning-to-reason-with-llms/) | OpenAI | 2024 | o1 achieves 93% on AIME, exceeds PhD-level on GPQA |
-
-### Technical Foundations
-
-| Category | Resource | Organization | Focus |
-|----------|----------|--------------|-------|
-| Architecture | <R id="a7468c6851652691">Attention Is All You Need</R> | Google Research | Transformer foundation (\$130 training cost in 2017) |
-| Scaling | <R id="46fd66187ec3e6ae">Training Compute-Optimal LLMs</R> | DeepMind | Chinchilla scaling laws: 20 tokens/parameter |
-| Alignment | <R id="683aef834ac1612a">Constitutional AI</R> | Anthropic | Self-supervision approach; 52% harm reduction |
-| Safety | <R id="3959564c6c0768fe">Red Teaming Language Models</R> | Anthropic | Adversarial testing methodology |
-
-### Safety Research Organizations
-
-| Organization | Focus Area | 2024 Contributions |
-|--------------|------------|-------------------|
-| <EntityLink id="anthropic">Anthropic</EntityLink> | Constitutional AI, safety research | Claude 3.5 Sonnet (88.7% MMLU, 93.7% HumanEval) |
-| <EntityLink id="apollo-research">Apollo Research</EntityLink> | Evaluations | Scheming detection; deception probes |
-| <EntityLink id="metr">METR</EntityLink> | Model evaluation | Autonomous capability testing |
-| [Epoch AI](https://epoch.ai/) | Forecasting, trends | Training compute tracking; scaling projections |
-
-### Policy and Governance
-
-| Resource | Organization | Description |
-|----------|--------------|-------------|
-| <R id="54dbc15413425997">AI Risk Management Framework</R> | NIST | US government AI safety standards |
-| <R id="fdf68a8f30f57dee">Frontier AI Safety Report</R> | UK AISI | Government capability assessments |
-| <R id="45370a5153534152">Model Evaluation Protocols</R> | METR | Industry evaluation standards |
-
-### External Links
-
-- [Epoch AI Machine Learning Trends](https://epoch.ai/trends) - Real-time tracking of training compute, model releases, and capability improvements
-- [Stanford HAI AI Index](https://hai.stanford.edu/ai-index) - Annual comprehensive AI progress report
-- [Apollo Research](https://www.apolloresearch.ai/) - Frontier model safety evaluations
-- [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard) - Updated benchmark comparisons
-
-<Backlinks />
