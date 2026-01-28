@@ -8,6 +8,7 @@ import { docsSchema } from '@astrojs/starlight/schema';
  * - overview: Auto-detected from index.mdx filename. Navigation pages. Excluded from quality scoring.
  * - content: Default for all substantive pages. Full quality criteria (tables, citations, diagrams).
  * - stub: Explicitly marked. Intentionally minimal - placeholders, brief profiles, reference pointers. Excluded from quality scoring.
+ * - documentation: Style guides, internal docs, examples. Excluded from content validation (may contain example code).
  *
  * Quality Rating Guide (0-100) - applies to 'content' pages only:
  *
@@ -24,8 +25,8 @@ export const collections = {
     loader: docsLoader(),
     schema: docsSchema({
       extend: z.object({
-        // Page type: 'stub' for intentionally minimal pages (overview auto-detected, content is default)
-        pageType: z.enum(['content', 'stub']).optional(),
+        // Page type: 'stub' for minimal pages, 'documentation' for style guides/examples
+        pageType: z.enum(['content', 'stub', 'documentation']).optional(),
         // Editorial metadata for PageStatus (0-100 scale, see rating guide above)
         quality: z.number().min(0).max(100).optional(),
         importance: z.number().min(0).max(100).optional(),
