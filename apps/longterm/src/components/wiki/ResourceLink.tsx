@@ -2,8 +2,8 @@ import React from 'react';
 import { getResourceById, getResourceCredibility, getResourcePublication } from '../../data';
 import { CredibilityBadge } from './CredibilityBadge';
 import { ResourceTags } from './ResourceTags';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { cn } from '../../lib/utils';
-import styles from './ResourceLink.module.css';
 
 interface ResourceLinkProps {
   id: string;
@@ -104,28 +104,26 @@ export function ResourceLink({
   const publication = getResourcePublication(resource);
 
   return (
-    <span className={styles.wrapper}>
-      <a
-        href={resource.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={cn("text-accent-foreground no-underline font-medium hover:underline", className)}
-      >
-        {icon && <span className="mr-1">{icon}</span>}
-        <span>{displayLabel}</span>
-        {showCredibility && credibility && (
-          <span className="ml-1">
-            <CredibilityBadge level={credibility} size="sm" />
-          </span>
-        )}
-        <span className="text-xs ml-0.5 opacity-70">↗</span>
-      </a>
+    <HoverCard openDelay={200} closeDelay={100}>
+      <HoverCardTrigger asChild>
+        <a
+          href={resource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn("text-accent-foreground no-underline font-medium hover:underline", className)}
+        >
+          {icon && <span className="mr-1">{icon}</span>}
+          <span>{displayLabel}</span>
+          {showCredibility && credibility && (
+            <span className="ml-1">
+              <CredibilityBadge level={credibility} size="sm" />
+            </span>
+          )}
+          <span className="text-xs ml-0.5 opacity-70">↗</span>
+        </a>
+      </HoverCardTrigger>
 
-      {/* CSS-only hover tooltip - no JavaScript required */}
-      <span
-        className={cn(styles.tooltip, "absolute left-0 top-full mt-1 z-50 w-[280px] p-2.5 bg-popover text-popover-foreground border rounded-md shadow-md pointer-events-none")}
-        role="tooltip"
-      >
+      <HoverCardContent className="w-[280px] p-2.5 text-[0.8rem] leading-snug" align="start">
         <CardHeader type={resource.type} credibility={credibility} />
 
         {publication && (
@@ -135,7 +133,7 @@ export function ResourceLink({
           </span>
         )}
 
-        <span className="block font-semibold text-foreground mb-1.5 text-[0.8rem]">
+        <span className="block font-semibold text-foreground mb-1.5">
           {resource.title}
         </span>
 
@@ -153,13 +151,18 @@ export function ResourceLink({
           </span>
         )}
 
-        <span className="block mt-2 pt-2 border-t border-border text-xs text-muted-foreground">
-          <a href={detailUrl} className="text-accent-foreground hover:underline no-underline pointer-events-auto">
-            View our notes →
-          </a>
-        </span>
-      </span>
-    </span>
+        {resource.tags && resource.tags.length > 0 && (
+          <span className="mt-1.5 block">
+            <ResourceTags tags={resource.tags} limit={4} size="sm" />
+          </span>
+        )}
+
+        <div className="flex gap-2 mt-2">
+          <CardButton href={resource.url} primary external>Source ↗</CardButton>
+          <CardButton href={detailUrl}>Notes</CardButton>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 

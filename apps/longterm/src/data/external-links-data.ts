@@ -13,9 +13,12 @@ import externalLinksYaml from './external-links.yaml?raw';
 
 export interface ExternalLinksData {
   wikipedia?: string;
+  wikidata?: string;           // Wikidata item URL
   lesswrong?: string;
   alignmentForum?: string;
   eaForum?: string;
+  stampy?: string;             // aisafety.info / Stampy
+  arbital?: string;            // arbital.greaterwrong.com
 }
 
 interface ExternalLinkEntry {

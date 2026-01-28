@@ -116,7 +116,7 @@ export function EntityLink({
         </a>
         {/* CSS-only hover tooltip - no JavaScript required */}
         <span
-          className={cn(styles.tooltip, 'absolute left-0 top-full mt-1 z-50 w-[280px] p-3 bg-popover text-popover-foreground border rounded-md shadow-md pointer-events-none')}
+          className={cn(styles.tooltip, 'absolute left-0 top-full mt-1 z-50 w-[280px] p-3 bg-popover text-popover-foreground border rounded-md shadow-md pointer-events-none opacity-0 invisible')}
           role="tooltip"
         >
           {entityType && (

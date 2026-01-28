@@ -3,9 +3,12 @@ import { ExternalLink, BookOpen, MessageSquare, GraduationCap } from 'lucide-rea
 
 interface ExternalLinksData {
   wikipedia?: string;
+  wikidata?: string;
   lesswrong?: string;
   alignmentForum?: string;
   eaForum?: string;
+  stampy?: string;
+  arbital?: string;
 }
 
 interface ExternalLinksProps {
@@ -17,34 +20,30 @@ const platformConfig = {
   wikipedia: {
     name: 'Wikipedia',
     icon: BookOpen,
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    textColor: 'text-slate-700 dark:text-slate-300',
-    hoverColor: 'hover:bg-slate-200 dark:hover:bg-slate-700',
-    borderColor: 'border-slate-300 dark:border-slate-600',
+  },
+  wikidata: {
+    name: 'Wikidata',
+    icon: BookOpen,
   },
   lesswrong: {
     name: 'LessWrong',
     icon: GraduationCap,
-    bgColor: 'bg-emerald-50 dark:bg-emerald-950',
-    textColor: 'text-emerald-700 dark:text-emerald-300',
-    hoverColor: 'hover:bg-emerald-100 dark:hover:bg-emerald-900',
-    borderColor: 'border-emerald-300 dark:border-emerald-700',
   },
   alignmentForum: {
     name: 'Alignment Forum',
     icon: GraduationCap,
-    bgColor: 'bg-blue-50 dark:bg-blue-950',
-    textColor: 'text-blue-700 dark:text-blue-300',
-    hoverColor: 'hover:bg-blue-100 dark:hover:bg-blue-900',
-    borderColor: 'border-blue-300 dark:border-blue-700',
   },
   eaForum: {
     name: 'EA Forum',
     icon: MessageSquare,
-    bgColor: 'bg-indigo-50 dark:bg-indigo-950',
-    textColor: 'text-indigo-700 dark:text-indigo-300',
-    hoverColor: 'hover:bg-indigo-100 dark:hover:bg-indigo-900',
-    borderColor: 'border-indigo-300 dark:border-indigo-700',
+  },
+  stampy: {
+    name: 'AI Safety Info',
+    icon: MessageSquare,
+  },
+  arbital: {
+    name: 'Arbital',
+    icon: BookOpen,
   },
 };
 
@@ -59,15 +58,11 @@ function ExternalLinkButton({ platform, url }: { platform: PlatformKey; url: str
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`
-        inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
-        border transition-colors duration-150 no-underline
-        ${config.bgColor} ${config.textColor} ${config.hoverColor} ${config.borderColor}
-      `}
+      className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 no-underline"
     >
       <Icon size={14} />
       <span>{config.name}</span>
-      <ExternalLink size={12} className="opacity-60" />
+      <ExternalLink size={10} className="opacity-50" />
     </a>
   );
 }
@@ -93,16 +88,16 @@ export function ExternalLinks({ pageId, links }: ExternalLinksProps) {
 
   if (platforms.length === 0) return null;
 
-  // Order: Wikipedia first (as authoritative reference), then forums
-  const orderedPlatforms: PlatformKey[] = ['wikipedia', 'lesswrong', 'alignmentForum', 'eaForum'];
+  // Order: Wikipedia first (as authoritative reference), then forums, then specialized resources
+  const orderedPlatforms: PlatformKey[] = ['wikipedia', 'wikidata', 'lesswrong', 'alignmentForum', 'eaForum', 'stampy', 'arbital'];
   const sortedPlatforms = platforms.sort(([a], [b]) =>
     orderedPlatforms.indexOf(a) - orderedPlatforms.indexOf(b)
   );
 
   return (
-    <div className="mb-6 p-4 rounded-lg bg-muted/30 border border-border">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground mr-1">
+    <div className="mb-8 mt-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <span className="text-sm text-muted-foreground">
           See also:
         </span>
         {sortedPlatforms.map(([platform, url]) => (

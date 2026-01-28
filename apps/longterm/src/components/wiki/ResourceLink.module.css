@@ -2,12 +2,12 @@
 
 .wrapper {
   position: relative;
-  display: inline;
+  display: inline-block;
 }
 
 .tooltip {
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important;
+  visibility: hidden !important;
   transition: opacity 150ms ease, visibility 150ms ease;
 }
 
@@ -15,7 +15,7 @@
 @media (hover: hover) {
   .wrapper:hover .tooltip,
   .wrapper:focus-within .tooltip {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
