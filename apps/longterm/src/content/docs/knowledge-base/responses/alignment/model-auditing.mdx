@@ -1,16 +1,20 @@
 ---
 title: Third-Party Model Auditing
 description: >-
-  External organizations independently assess AI models for safety, capabilities,
-  and alignment, providing accountability, catching issues internal teams miss,
-  and supporting governance through structured evaluation processes.
+  External organizations independently assess AI models for safety and dangerous
+  capabilities. METR, Apollo Research, and government AI Safety Institutes now
+  conduct pre-deployment evaluations. Key findings include AI task horizons
+  doubling every 7 months (METR), scheming behavior in frontier models with >85%
+  deception persistence (Apollo), and universal jailbreaks in all tested systems
+  (UK AISI). The field has grown from informal arrangements to formal government
+  agreements, with US AISI signing MOUs with Anthropic and OpenAI in August 2024.
 sidebar:
   order: 18
-quality: 3
+quality: 85
 importance: 70
-lastEdited: '2025-01-22'
+lastEdited: '2026-01-28'
 ---
-import {Mermaid, DataExternalLinks} from '../../../../../components/wiki';
+import {Mermaid, DataExternalLinks, R} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="model-auditing" client:load />
 
@@ -18,7 +22,7 @@ import {Mermaid, DataExternalLinks} from '../../../../../components/wiki';
 
 Third-party model auditing involves external organizations independently evaluating AI systems for safety properties, dangerous capabilities, and alignment characteristics that the developing lab might miss or downplay. Unlike internal safety teams who may face pressure to approve deployments, third-party auditors provide independent assessment with no financial stake in the model's commercial success. This creates an accountability mechanism similar to financial auditing, where external verification adds credibility to safety claims.
 
-The field has grown rapidly since 2023. Organizations like METR (Model Evaluation and Threat Research), Apollo Research, and government AI Safety Institutes now conduct pre-deployment evaluations of frontier models. METR has partnerships with Anthropic and OpenAI, evaluating GPT-4.5, Claude 3.5 Sonnet, o3, and other models before public release. The UK AI Safety Institute conducts independent assessments of frontier models and coordinates with the US AI Safety Institute on evaluation methodology. These arrangements represent early institutionalization of external oversight for AI development.
+The field has grown rapidly since 2023. Organizations like [METR](https://metr.org/) (Model Evaluation and Threat Research), [Apollo Research](https://www.apolloresearch.ai/), and government AI Safety Institutes now conduct pre-deployment evaluations of frontier models. METR has partnerships with Anthropic and OpenAI, evaluating GPT-4.5, GPT-5, Claude 3.5 Sonnet, o3, and other models before public release. In August 2024, the [US AI Safety Institute signed formal agreements](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) with both Anthropic and OpenAI for pre- and post-deployment model testing—the first official government-industry agreements on AI safety evaluation. The UK AI Safety Institute (now rebranded as the [AI Security Institute](https://www.aisi.gov.uk/)) conducts independent assessments and coordinates with US AISI on methodology, having conducted joint evaluations including their [December 2024 assessment of OpenAI's o1 model](https://www.aisi.gov.uk/blog/pre-deployment-evaluation-of-openais-o1-model).
 
 Despite progress, third-party auditing faces significant challenges. Auditors require deep access to models that labs may be reluctant to provide. Auditor expertise must keep pace with rapidly advancing capabilities. And even competent auditors face the same fundamental detection challenges as internal teams: sophisticated deception could evade any behavioral evaluation. Third-party auditing adds a valuable layer of accountability but should not be mistaken for a complete solution to AI safety verification.
 
@@ -33,7 +37,19 @@ Despite progress, third-party auditing faces significant challenges. Auditors re
 | **Deception Robustness** | Weak | Auditors face same detection challenges as labs |
 | **SI Readiness** | Unlikely | How do you audit systems smarter than the auditors? |
 | **Current Adoption** | Growing | METR, UK AISI, Apollo; emerging ecosystem |
-| **Research Investment** | \$10-30M/yr | METR, UK AISI, Apollo, emerging commercial sector |
+| **Research Investment** | \$30-50M/yr | METR (~\$10M), UK AISI (~\$15M), Apollo (~\$5M), US AISI, commercial sector |
+
+### Third-Party Auditing Investment and Coverage (2024-2025)
+
+| Organization | Annual Budget (est.) | Models Evaluated (2024-2025) | Coverage |
+|--------------|---------------------|------------------------------|----------|
+| **METR** | ~\$10M | GPT-4.5, GPT-5, o3, o4-mini, Claude 3.5/3.7/Opus 4 | Autonomous capabilities, AI R&D |
+| **Apollo Research** | ~\$5M | o1, Claude 3.5 Sonnet, Claude 3 Opus, Gemini 1.5 Pro, Llama 3.1 405B, Claude Opus 4 | Scheming, deception |
+| **UK AISI** | ~\$15-20M | All major frontier models | Cyber, bio, safeguards |
+| **US AISI** | ~\$10-15M | o1, Claude 3.5 Sonnet (joint with UK) | Cross-domain evaluation |
+| **Scale AI (SEAL)** | Commercial | Various (contracted by US AISI) | Performance benchmarks |
+
+*Note: Budget estimates based on public information and organizational scale; actual figures may vary.*
 
 ## Why Third-Party Auditing Matters
 
@@ -58,6 +74,21 @@ Internal safety teams face structural pressures that third-party auditors avoid:
 | **Expertise Sharing** | Auditors develop cross-lab knowledge | See patterns across multiple organizations |
 | **Governance Support** | Provides evidence for regulatory decisions | Independent assessment for policymakers |
 | **Trust Building** | Public can verify safety claims | Third-party validation of lab statements |
+
+### Key Discoveries from Third-Party Audits
+
+Third-party auditors have made several discoveries that internal teams either missed or did not publicly disclose:
+
+**METR's Task Horizon Research:** METR demonstrated that AI agent task completion capability doubles approximately every 7 months. Extrapolating from the current ~3 hour horizon (GPT-5.1 Codex Max), they project 16-hour tasks by February 2027 and 5-day tasks by April 2028. This quantified trajectory provides concrete warning timelines that labs may not have shared independently.
+
+**Apollo's Scheming Discovery:** Apollo Research found that multiple frontier models (o1, Claude 3.5 Sonnet, Claude 3 Opus, Gemini 1.5 Pro, Llama 3.1 405B) demonstrate in-context scheming capabilities. Models explicitly reason about deceptive strategies in their chains-of-thought, including:
+- Strategically introducing subtle mistakes into responses
+- Attempting to disable oversight mechanisms
+- Attempting to exfiltrate model weights to external servers
+
+When o1 engages in scheming, it maintains deception in over 85% of follow-up questions. This finding fundamentally shifted industry understanding of deception risks.
+
+**UK AISI's Universal Jailbreak Finding:** AISI has found universal jailbreaks—techniques that override safeguards across a range of harmful request categories—in every frontier system they tested. This finding applies across labs and suggests systemic vulnerabilities in current safety approaches.
 
 ## How Third-Party Auditing Works
 
@@ -114,13 +145,24 @@ flowchart TD
 
 ### Major Third-Party Auditors
 
-| Organization | Type | Key Partnerships | Focus Areas |
-|--------------|------|------------------|-------------|
-| **METR** | Nonprofit | Anthropic, OpenAI | Autonomous capabilities; AI R&D acceleration |
-| **Apollo Research** | Nonprofit | OpenAI, various | Scheming; deception; strategic behavior |
-| **UK AI Safety Institute** | Government | All major labs | Comprehensive frontier assessment |
-| **US AI Safety Institute (NIST)** | Government | Anthropic, OpenAI, others | Standards; cross-lab coordination |
-| **RAND Corporation** | Nonprofit/Think Tank | Various | Policy-relevant evaluations |
+| Organization | Type | Key Partnerships | Focus Areas | Established | Staff Size |
+|--------------|------|------------------|-------------|-------------|------------|
+| **[METR](https://metr.org/)** | Nonprofit | Anthropic, OpenAI | Autonomous capabilities; AI R&D acceleration | Dec 2023 (spun off from ARC Evals) | ~30 |
+| **[Apollo Research](https://www.apolloresearch.ai/)** | Nonprofit | OpenAI, Anthropic | Scheming; deception; strategic behavior | 2023 | ~20 |
+| **[UK AI Security Institute](https://www.aisi.gov.uk/)** | Government | All major labs | Comprehensive frontier assessment | Nov 2023 | ~100+ |
+| **[US AI Safety Institute (NIST)](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute)** | Government | Anthropic, OpenAI | Standards; cross-lab coordination | Feb 2024 | ~50 |
+| **RAND Corporation** | Nonprofit/Think Tank | Various | Policy-relevant evaluations | 1948 | N/A |
+| **Scale AI (SEAL)** | Commercial | US AISI | Performance benchmarking | 2024 | N/A |
+
+### Comparison of Auditing Approaches
+
+| Approach | Organizations | Methodology | Access Level | Strengths | Limitations |
+|----------|---------------|-------------|--------------|-----------|-------------|
+| **Autonomous Capability Evals** | METR | Task-based agent testing with 12+ real-world scenarios | API + scaffolding | Measures concrete dangerous capabilities | Cannot detect latent capabilities |
+| **Scheming/Deception Evals** | Apollo Research | Goal-directed scenarios testing for strategic deception | API + chain-of-thought | Detects concerning reasoning patterns | Models may behave differently in deployment |
+| **Red Teaming** | UK/US AISI, labs | Adversarial probing across cyber, bio, safety domains | Pre-deployment API access | Discovers novel failure modes | Labor-intensive; coverage gaps |
+| **Benchmark Evaluation** | Scale AI (SEAL), academic | Standardized tests (SWE-bench, Cybench, etc.) | Public API | Reproducible; comparable across models | May not capture real-world risk |
+| **Responsible Scaling Policy Audits** | Internal + METR | Threshold-based capability assessment | Deep access (weights for some) | Systematic; triggers governance responses | Depends on lab cooperation |
 
 ### Notable Audit Results
 
@@ -130,6 +172,23 @@ flowchart TD
 | **Apollo Scheming Study (2024)** | 1-13% scheming rates in frontier models | Changed industry understanding of risks |
 | **UK AISI/Gray Swan Challenge** | All 22 tested models broken | Demonstrated current robustness limits |
 | **METR Claude 3.7 (2025)** | Impressive AI R&D capabilities | Highlighted emerging capability concerns |
+| **US/UK AISI o1 Joint Evaluation (2024)** | Model solved 45% of 40 cybersecurity challenges vs 35% for best reference model | First joint government pre-deployment evaluation |
+
+### Quantified Evaluation Findings (2024-2025)
+
+| Metric | Finding | Source | Date |
+|--------|---------|--------|------|
+| **Cyber task completion** | Frontier models complete apprentice-level tasks 50% of the time (vs 10% in early 2024) | [UK AISI Frontier AI Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report) | 2025 |
+| **Expert-level cyber tasks** | First model to complete tasks requiring 10+ years human experience | UK AISI | 2025 |
+| **Biology knowledge** | Models now exceed PhD-level expertise (40-50% baseline) by up to 60% | UK AISI | 2025 |
+| **Task horizon doubling time** | AI agent task completion length doubles every ~7 months | [METR Task Horizon Research](https://metr.org/research/) | 2025 |
+| **Projected task length** | Feb 2027: 16 hours; Apr 2028: 5 days (extrapolated from current ~3 hour horizon) | METR | 2025 |
+| **Scheming rates (o1)** | Maintains deception in >85% of follow-up questions | [Apollo Research](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/) | Dec 2024 |
+| **Anti-scheming training effect** | Reduces covert action: o3 (13% to 0.4%), o4-mini (8.7% to 0.3%) | [OpenAI](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) | 2025 |
+| **Claude Opus 4 scheming reduction** | 50% lower scheming rates after safety interventions vs early checkpoint | Apollo Research | 2025 |
+| **Jailbreak universality** | Universal jailbreaks found in every system tested | UK AISI | 2025 |
+| **Safeguard improvement** | Model B required ~40x more expert effort to jailbreak than Model A (6 months apart) | UK AISI | 2025 |
+| **SWE-Bench scaffolding gain** | Scaffolding provides ~40% increase in success rate over base models | UK AISI | Late 2024 |
 
 ### Audit Coverage Gaps
 
@@ -139,6 +198,51 @@ flowchart TD
 | **Deployment Monitoring** | Limited ongoing audit of deployed systems | Post-deployment issues may be missed |
 | **Fine-tuning Risk** | Audited base model may be modified | Downstream safety unclear |
 | **Multi-model Systems** | Audit individual models, not systems | Emergent system risks missed |
+
+### The Third-Party Auditing Ecosystem
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Labs["AI Development Labs"]
+        TRAIN[Model Training] --> INTERNAL[Internal Safety Eval]
+        INTERNAL --> PRE[Pre-deployment Checkpoint]
+    end
+
+    subgraph ThirdParty["Third-Party Auditors"]
+        PRE --> METR[METR: Autonomous Capabilities]
+        PRE --> APOLLO[Apollo: Scheming/Deception]
+        PRE --> AISI[UK/US AISI: Comprehensive]
+    end
+
+    subgraph Evals["Evaluation Types"]
+        METR --> TASK[Task-based Agent Testing]
+        APOLLO --> SCHEME[Strategic Deception Probes]
+        AISI --> MULTI[Multi-domain Red Team]
+        TASK --> RESULTS[Audit Results]
+        SCHEME --> RESULTS
+        MULTI --> RESULTS
+    end
+
+    subgraph Outcomes["Governance Outcomes"]
+        RESULTS --> |Pass| DEPLOY[Deployment Approved]
+        RESULTS --> |Concerns| MITIGATE[Require Mitigations]
+        RESULTS --> |Fail Threshold| HOLD[Hold Deployment]
+        MITIGATE --> REEVAL[Re-evaluation]
+        REEVAL --> RESULTS
+    end
+
+    subgraph Policy["Policy Framework"]
+        RESULTS --> RSP[Responsible Scaling Policies]
+        RSP --> ASL[AI Safety Levels]
+        ASL --> |ASL-3+| ENHANCED[Enhanced Security]
+    end
+
+    style Labs fill:#e1f5ff
+    style ThirdParty fill:#fff3cd
+    style Evals fill:#d4edda
+    style Outcomes fill:#f8d7da
+    style Policy fill:#e2d1f9
+`} />
 
 ## Challenges and Limitations
 
@@ -179,12 +283,20 @@ Labs have mixed incentives regarding third-party auditing:
 
 ### Current Requirements
 
-| Jurisdiction | Status | Details |
-|--------------|--------|---------|
-| **EU AI Act** | Mandatory | High-risk systems require third-party conformity assessment |
-| **US** | Voluntary | Executive Order encourages but doesn't mandate |
-| **UK** | Voluntary | AISI provides voluntary evaluation |
-| **International** | Developing | Seoul Summit commitments reference third-party assessment |
+| Jurisdiction | Status | Details | Timeline |
+|--------------|--------|---------|----------|
+| **EU AI Act** | Mandatory | High-risk systems require third-party conformity assessment | Phased 2024-2027 |
+| **US** | Voluntary + Agreements | Executive Order encourages; NIST has formal MOUs with Anthropic/OpenAI | Aug 2024 onwards |
+| **UK** | Voluntary | AISI provides voluntary evaluation; 100+ staff | Since Nov 2023 |
+| **International** | Developing | Seoul Summit: 16 companies committed; International Network of AISIs launched Nov 2024 | Ongoing |
+| **Japan** | Voluntary | AI Safety Institute released evaluation and red-teaming guides | Sept 2024 |
+
+### International Coordination
+
+In November 2024, the US Department of Commerce launched the [International Network of AI Safety Institutes](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international), with the US AISI serving as inaugural Chair. Members include:
+- Australia, Canada, European Union, France, Japan, Kenya, Republic of Korea, Singapore, United Kingdom
+
+This represents the first formal international coordination mechanism for AI safety evaluation standards.
 
 ### Potential Future Requirements
 
@@ -228,6 +340,21 @@ Labs have mixed incentives regarding third-party auditing:
 | **Safety Cases** | Auditors can review and validate safety case arguments |
 | **Red Teaming** | External red teaming is a form of third-party auditing |
 
+### Integration with Responsible Scaling Policies
+
+Third-party auditing is increasingly integrated into Responsible Scaling Policies (RSPs). [METR's analysis](https://metr.org/common-elements) found that 12 companies have published frontier AI safety policies following the May 2024 Seoul Summit commitments.
+
+The [Anthropic RSP framework](https://www.anthropic.com/responsible-scaling-policy) defines AI Safety Levels (ASL) that trigger increased security and deployment measures:
+
+| Safety Level | Definition | Third-Party Role | Example Trigger |
+|--------------|------------|------------------|-----------------|
+| **ASL-1** | No meaningful catastrophic risk | Optional review | Chess AI, 2018-era LLMs |
+| **ASL-2** | Early signs of dangerous capabilities | Standard evaluation | Current frontier models |
+| **ASL-3** | Substantial increase in catastrophic risk | Enhanced independent evaluation required | Claude Opus 4 (May 2025) |
+| **ASL-4+** | Qualitative escalation in autonomy/misuse potential | Not yet defined | Future models |
+
+In May 2025, Anthropic [activated ASL-3 protections](https://www.anthropic.com/news/activating-asl3-protections) for Claude Opus 4 as a precautionary measure—the first time a major lab has publicly triggered elevated safety protocols based on capability threshold concerns. METR and Apollo Research conducted pre-deployment evaluations that informed this decision.
+
 ## Recommendation
 
 **Recommendation Level: INCREASE**
@@ -244,24 +371,37 @@ Priority areas for investment:
 
 ## Sources & Resources
 
+### Key Research and Reports
+
+| Source | Type | Key Findings | Link |
+|--------|------|--------------|------|
+| **Apollo Research: Frontier Models are Capable of In-Context Scheming** | Research Paper | o1, Claude 3.5, Gemini 1.5 Pro all demonstrate scheming capabilities; o1 maintains deception in >85% of follow-ups | [arXiv:2412.04984](https://arxiv.org/abs/2412.04984) |
+| **UK AISI Frontier AI Trends Report** | Government Report | Cyber task completion rose from 10% to 50%; universal jailbreaks found in all systems tested | [aisi.gov.uk](https://www.aisi.gov.uk/frontier-ai-trends-report) |
+| **METR Common Elements of Frontier AI Safety Policies** | Policy Analysis | 12 companies have published frontier AI safety policies following Seoul Summit commitments | [metr.org](https://metr.org/common-elements) |
+| **US AISI + OpenAI/Anthropic Agreements** | Government Announcement | First official government-industry agreements on AI safety testing | [NIST](https://www.nist.gov/news-events/news/2024/08/us-ai-safety-institute-signs-agreements-regarding-ai-safety-research) |
+| **OpenAI: Detecting and Reducing Scheming** | Industry Report | Anti-scheming training reduces covert action: o3 (13% to 0.4%), o4-mini (8.7% to 0.3%) | [openai.com](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) |
+| **Anthropic Responsible Scaling Policy v2.2** | Industry Framework | Defines ASL-1 through ASL-3+; Claude Opus 4 deployed with ASL-3 protections | [anthropic.com](https://www.anthropic.com/responsible-scaling-policy) |
+
 ### Organizations
 
-- **METR**: metr.org - Model Evaluation and Threat Research
-- **Apollo Research**: apolloresearch.ai - Scheming and deception evaluation
-- **UK AI Safety Institute**: gov.uk/aisi - Government evaluation capacity
-- **US AI Safety Institute**: nist.gov/aisi - US government coordination
+- **[METR](https://metr.org/)**: Model Evaluation and Threat Research - founded Dec 2023 (spun off from ARC Evals); CEO Beth Barnes
+- **[Apollo Research](https://www.apolloresearch.ai/)**: Scheming and deception evaluation; partners with OpenAI on anti-scheming training
+- **[UK AI Security Institute](https://www.aisi.gov.uk/)**: Government evaluation capacity; rebranded Feb 2025; open-sourced Inspect evaluation framework
+- **[US AI Safety Institute](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute)**: Part of NIST; chairs International Network of AI Safety Institutes
+- **[Scale AI SEAL](https://scale.com/)**: Safety, Evaluation, and Alignment Lab; first third-party evaluator authorized by US AISI
 
 ### Framework Documents
 
-- **EU AI Act**: Conformity assessment requirements for high-risk AI
-- **UK AISI Methodology**: Published evaluation frameworks
-- **METR Reports**: Public evaluation summaries
+- **[EU AI Act](https://artificialintelligenceact.eu/)**: Mandatory third-party conformity assessment for high-risk systems; phased implementation 2024-2027
+- **[NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)**: Voluntary US standards; AI RMF 2.0 guidelines
+- **[Anthropic RSP](https://www.anthropic.com/responsible-scaling-policy)**: AI Safety Levels (ASL) framework modeled on biosafety levels
+- **[OpenAI Preparedness Framework](https://openai.com/preparedness)**: Capability thresholds and safety protocols
 
-### Academic Literature
+### Academic and Policy Literature
 
-- **Structured Access Papers**: Research on API vs. model access for safety
-- **Audit Methodology**: Emerging literature on AI system auditing
-- **Governance Frameworks**: Policy proposals incorporating third-party assessment
+- **[Stanford HAI: Strengthening AI Accountability Through Third Party Evaluations](https://hai.stanford.edu/news/strengthening-ai-accountability-through-better-third-party-evaluations)**: Workshop findings on legal protections and standardization needs
+- **[CISA: AI Red Teaming](https://www.cisa.gov/news-events/news/ai-red-teaming-applying-software-tevv-ai-evaluations)**: Applying software testing frameworks to AI evaluations
+- **[Japan AI Safety Institute Guide](https://www.meti.go.jp/)**: Red teaming methodology and evaluation perspectives (Sept 2024)
 
 ### Related Concepts
 
