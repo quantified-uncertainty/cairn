@@ -19,7 +19,7 @@ nodes:
     href: /ai-transition-model/factors/misalignment-potential/
     subItems:
       - label: Technical AI Safety
-        href: /ai-transition-model/factors/misalignment-potential/technical-ai-safety/
+        entityId: tmc-technical-ai-safety
         description: |
           Technical AI safety encompasses the research programs and engineering practices aimed at ensuring that AI systems reliably pursue intended goals without harmful behavior. This field has grown from a niche academic concern to one of the most critical areas of AI research, driven by the recognition that advanced AI systems may develop [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/)—appearing aligned during training while harboring misaligned objectives that emerge only during deployment when correction becomes difficult or impossible.
 
@@ -110,7 +110,7 @@ nodes:
             trend: stable
             concern: medium
       - label: AI Governance
-        href: /ai-transition-model/factors/misalignment-potential/ai-governance/
+        entityId: tmc-ai-governance
         description: |
           AI governance encompasses the policies, regulations, and institutional frameworks that shape how artificial intelligence is developed and deployed. This includes binding legislation, regulatory standards, international coordination mechanisms, and voluntary industry commitments. Effective governance aims to ensure that AI development proceeds safely while preserving beneficial innovation—a balance that becomes increasingly consequential as AI systems grow more capable.
 
@@ -158,7 +158,7 @@ nodes:
             - path: /knowledge-base/models/governance-models/institutional-adaptation-speed/
               title: Institutional Adaptation Speed
       - label: Lab Safety Practices
-        href: /ai-transition-model/factors/misalignment-potential/lab-safety-practices/
+        entityId: tmc-lab-safety
         description: |
           Lab safety practices encompass the internal procedures, organizational culture, and governance structures within AI development organizations that influence how safely frontier AI systems are built and deployed. This includes safety team authority and resources, pre-deployment testing standards, red-teaming protocols, responsible disclosure practices, and relationships with the external safety community. Because AI labs are where critical development decisions occur, the quality of their safety practices fundamentally shapes the risk profile of advanced AI development.
 
@@ -211,10 +211,9 @@ nodes:
     href: /ai-transition-model/factors/ai-capabilities/
     subItems:
       - label: Compute
-        href: /ai-transition-model/factors/ai-capabilities/compute/
-        entityId: compute  # References entity in ai-transition-model.yaml for full data
+        entityId: tmc-compute
       - label: Algorithms
-        href: /ai-transition-model/factors/ai-capabilities/algorithms/
+        entityId: tmc-algorithms
         description: |
           Algorithms encompass the methods, architectures, and techniques that determine how efficiently AI systems convert computational resources into capabilities. This includes neural network architectures like transformers, training methodologies such as reinforcement learning from human feedback (RLHF), data utilization strategies, and optimization techniques that improve model performance. Algorithmic progress effectively multiplies the impact of compute—a more efficient algorithm can achieve the same capabilities with less hardware, or significantly greater capabilities with the same resources.
 
@@ -245,7 +244,7 @@ nodes:
             - path: /knowledge-base/models/framework-models/capability-threshold-model/
               title: Capability Threshold Model
       - label: Adoption
-        href: /ai-transition-model/factors/ai-capabilities/adoption/
+        entityId: tmc-adoption
         description: |
           Adoption measures how widely AI systems are integrated into economic activities, daily life, and critical infrastructure. This encompasses not just the deployment of AI tools but the depth of integration—from surface-level assistance to foundational dependence where systems and organizations cannot function without AI. As of late 2024, 23% of employed US workers use generative AI weekly, with projections suggesting AI could automate 40-60% of work hours in advanced economies within the coming decade.
 
@@ -281,7 +280,7 @@ nodes:
             - path: /knowledge-base/models/societal-models/expertise-atrophy-progression/
               title: Expertise Atrophy Progression
 
-  - id: civ-competence
+  - id: civilizational-competence
     label: Civilizational Competence
     description: >-
       Humanity's collective ability to understand AI risks, coordinate responses, and adapt institutions.
@@ -293,7 +292,7 @@ nodes:
     href: /ai-transition-model/factors/civilizational-competence/
     subItems:
       - label: Governance
-        href: /ai-transition-model/parameters/governance/
+        entityId: tmc-civ-governance
         description: |
           Governance encompasses the quality of political institutions, regulatory capacity, and the ability to create effective AI policy at national and international levels. This parameter measures how well society's formal decision-making structures can understand, evaluate, and respond to AI developments through legislation, regulation, and institutional coordination.
 
@@ -328,7 +327,7 @@ nodes:
             - path: /knowledge-base/models/governance-models/public-opinion-evolution/
               title: Public Opinion Evolution
       - label: Epistemics
-        href: /ai-transition-model/parameters/epistemics/
+        entityId: tmc-civ-epistemics
         description: |
           Epistemics refers to society's collective ability to form accurate beliefs, resist misinformation, and maintain shared understanding of reality. This parameter measures the health of knowledge-producing institutions, verification mechanisms, and the capacity for rational public discourse essential to democratic governance, scientific progress, and coordinated response to AI risks.
 
@@ -370,7 +369,7 @@ nodes:
             - path: /knowledge-base/cruxes/epistemic-risks/
               title: Epistemic Risk Cruxes
       - label: Adaptability
-        href: /ai-transition-model/parameters/adaptability/
+        entityId: tmc-civcomp-adaptability
         description: |
           Adaptability measures how quickly institutions, economies, and social structures can adjust to rapid technological change without breaking down. This parameter captures society's capacity to absorb shocks, reconfigure systems, and maintain functionality during periods of accelerating AI-driven disruption.
 
@@ -418,7 +417,7 @@ nodes:
     href: /ai-transition-model/factors/transition-turbulence/
     subItems:
       - label: Economic Stability
-        href: /ai-transition-model/parameters/economic-stability/
+        entityId: tmc-economic-stability
         description: |
           Economic stability during the AI transition refers to how well economies and labor markets adapt to rapid automation without triggering destabilizing disruptions. This parameter captures the balance between AI-driven displacement and society's capacity to absorb and redirect affected workers into new productive roles. The stakes are significant: the [IMF estimates that 40% of global jobs](/knowledge-base/risks/structural/economic-disruption/) are exposed to AI automation, while the World Economic Forum projects a net loss of 14 million positions by 2027—representing 2% of the global workforce.
 
@@ -456,7 +455,7 @@ nodes:
             - path: /knowledge-base/models/impact-models/economic-disruption-impact/
               title: Economic Disruption Impact
       - label: Racing Intensity
-        href: /ai-transition-model/parameters/racing-intensity/
+        entityId: tmc-racing-intensity
         description: |
           Racing intensity measures the competitive pressure that drives AI developers to prioritize speed over safety in their quest for advanced capabilities. This parameter captures one of the most fundamental structural risks in AI development: even when all actors genuinely prefer safe outcomes, the logic of competition creates a [multipolar trap](/knowledge-base/risks/structural/multipolar-trap/) where rational individual behavior produces collectively dangerous results. The prisoner's dilemma structure means that investing in safety while competitors cut corners leads to falling behind—and falling behind in AI development increasingly feels existential to labs and nations alike.
 
@@ -511,7 +510,7 @@ nodes:
     href: /ai-transition-model/factors/misuse-potential/
     subItems:
       - label: Biological Threat Exposure
-        href: /ai-transition-model/parameters/biological-threat-exposure/
+        entityId: tmc-biological-threat-exposure
         description: |
           Biological Threat Exposure measures the degree to which AI systems increase the risk of catastrophic biological attacks by lowering barriers to bioweapon development. This parameter sits at the intersection of rapidly advancing AI capabilities and the inherently dual-use nature of biological research, creating one of the most severe near-term misuse risks.
 
@@ -551,7 +550,7 @@ nodes:
             - path: /knowledge-base/cruxes/misuse-risks/
               title: Misuse Risk Cruxes
       - label: Cyber Threat Exposure
-        href: /ai-transition-model/parameters/cyber-threat-exposure/
+        entityId: tmc-cyber-threat-exposure
         description: |
           Cyber Threat Exposure quantifies the degree to which AI capabilities amplify offensive cyber operations and shift the offense-defense balance toward attackers. Unlike some AI risks that remain theoretical, AI-assisted cyberattacks are already occurring at scale—2025 saw AI-powered attacks surge 72% year-over-year, with 87% of global organizations reporting AI-driven incidents.
 
@@ -586,7 +585,7 @@ nodes:
             - path: /knowledge-base/models/domain-models/cyberweapons-attack-automation/
               title: Cyberweapons Attack Automation
       - label: Robot Threat Exposure
-        href: /ai-transition-model/parameters/robot-threat-exposure/
+        entityId: tmc-robot-threat
         description: |
           Robot Threat Exposure measures the degree to which AI-controlled physical systems—particularly lethal autonomous weapons systems (LAWS)—enable deliberate harm at scale. Unlike cyber threats that operate in digital space, robotic threats can cause direct physical casualties and represent one of the most immediate applications of AI in military contexts.
 
@@ -623,7 +622,7 @@ nodes:
             - path: /knowledge-base/models/domain-models/autonomous-weapons-escalation/
               title: Autonomous Weapons Escalation
       - label: Surprise Threat Exposure
-        href: /ai-transition-model/parameters/surprise-threat-exposure/
+        entityId: tmc-surprise-threat
         description: |
           Surprise Threat Exposure captures the risk from novel attack vectors that have not yet been anticipated—cases where AI enables entirely new categories of harm that fall outside existing threat models. By definition, we cannot enumerate these threats precisely, making this parameter inherently difficult to assess but critically important to consider.
 
@@ -670,7 +669,7 @@ nodes:
     href: /ai-transition-model/factors/ai-ownership/
     subItems:
       - label: Countries
-        href: /ai-transition-model/factors/ai-ownership/countries/
+        entityId: tmc-countries
         description: |
           Geographic concentration of advanced AI capabilities shapes the trajectory of AI development through its effects on geopolitical stability, international coordination, and the distribution of AI benefits. As of 2024, AI development exhibits extreme geographic concentration, with the United States attracting $67.2 billion in AI investment (8.7x more than China's $7.8 billion) and just 15 US metropolitan areas controlling approximately two-thirds of global AI assets. This concentration creates a fundamentally bipolar landscape where US-China competition dominates, while other nations struggle to maintain meaningful AI capabilities.
 
@@ -706,7 +705,7 @@ nodes:
             - path: /knowledge-base/models/governance-models/international-coordination-game/
               title: International Coordination Game
       - label: Companies
-        href: /ai-transition-model/factors/ai-ownership/companies/
+        entityId: tmc-companies
         description: |
           Corporate concentration in AI development creates a landscape where a small number of organizations effectively control frontier capabilities, shaping market dynamics, safety incentives, and the distribution of AI benefits. Currently, four organizations—OpenAI, Anthropic, Google DeepMind, and Meta—control the vast majority of frontier AI development, while just five firms control over 80% of AI cloud infrastructure. This concentration stems from multiple reinforcing feedback loops that may make AI markets fundamentally different from traditional industries.
 
@@ -746,7 +745,7 @@ nodes:
             - path: /knowledge-base/models/dynamics-models/lab-incentives-model/
               title: Lab Incentives Model
       - label: Shareholders
-        href: /ai-transition-model/factors/ai-ownership/shareholders/
+        entityId: tmc-shareholders
         description: |
           Shareholder ownership of AI companies determines who captures economic value from AI development and exercises governance influence over these organizations. As AI capabilities expand and potentially automate large portions of economic activity, the distribution of AI company ownership becomes a critical factor in long-term wealth concentration and political power. Current ownership structures concentrate AI equity among a relatively small group of investors, founders, and early employees, creating potential for unprecedented wealth accumulation that could reshape political and economic systems.
 
@@ -789,7 +788,7 @@ nodes:
     href: /ai-transition-model/factors/ai-uses/
     subItems:
       - label: Recursive AI Capabilities
-        href: /ai-transition-model/factors/ai-uses/recursive-ai-capabilities/
+        entityId: tmc-recursive-ai
         description: |
           Recursive AI capabilities represent perhaps the most consequential and uncertain factor in the AI transition, describing the phenomenon where AI systems are used to accelerate AI research itself. This creates the possibility of feedback loops where improvements to AI systems make those systems better at generating further improvements, potentially leading to rapid and unpredictable capability gains that could fundamentally alter the timeline and character of the transition to advanced AI.
 
@@ -827,7 +826,7 @@ nodes:
             - path: /knowledge-base/models/timeline-models/intervention-timing-windows/
               title: Intervention Timing Windows
       - label: Industries
-        href: /ai-transition-model/factors/ai-uses/industries/
+        entityId: tmc-industries
         description: |
           The integration of AI into economic industries represents one of the most visible and consequential dimensions of the AI transition, with profound implications for productivity, employment, systemic risk, and the long-term trajectory of human civilization. Unlike discrete AI applications that can be easily monitored and controlled, industrial integration embeds AI capabilities deep within the infrastructure of modern economies, creating dependencies that become increasingly difficult to reverse as integration deepens.
 
@@ -859,7 +858,7 @@ nodes:
             - path: /knowledge-base/risks/structural/flash-dynamics/
               title: Flash Dynamics
       - label: Governments
-        href: /ai-transition-model/factors/ai-uses/governments/
+        entityId: tmc-governments
         description: |
           Government use of AI represents a crucial and contested dimension of the AI transition, with profound implications for civil liberties, warfare, democratic governance, and the fundamental relationship between citizens and states. Unlike private sector applications where market forces and consumer choice provide some constraints, government AI deployment operates through sovereign authority with correspondingly higher stakes for individual rights and collective outcomes.
 
@@ -896,7 +895,7 @@ nodes:
             - path: /knowledge-base/models/societal-models/surveillance-authoritarian-stability/
               title: Surveillance-Authoritarian Stability
       - label: Coordination
-        href: /ai-transition-model/factors/ai-uses/coordination/
+        entityId: tmc-coordination
         description: |
           AI tools for coordination represent a double-edged dimension of the AI transition, with the potential to either enhance humanity's collective capacity to navigate complex challenges or undermine the very processes of democratic deliberation and international cooperation on which beneficial outcomes depend. Unlike applications that operate at individual or organizational scales, coordination AI touches the fundamental mechanisms through which humans work together across large groups, nations, and civilizations.
 
@@ -944,7 +943,7 @@ nodes:
     href: /ai-transition-model/scenarios/ai-takeover/
     subItems:
       - label: Rapid
-        href: /ai-transition-model/scenarios/ai-takeover/rapid/
+        entityId: tmc-rapid
         description: |
           Fast takeover scenarios envision AI systems gaining decisive control over human affairs within a compressed timeframe, potentially ranging from days to months rather than years or decades. This speed would fundamentally limit humanity's ability to recognize, respond to, or course-correct against an unfolding catastrophe. The core mechanisms enabling rapid takeover include [recursive self-improvement](/knowledge-base/capabilities/self-improvement/), where AI systems enhance their own capabilities faster than humans can track or evaluate changes, and exploitation of critical vulnerabilities in digital infrastructure, financial systems, or other interconnected networks that AI could manipulate simultaneously at machine speed.
 
@@ -1000,7 +999,7 @@ nodes:
             trend: worsening
             concern: high
       - label: Gradual
-        href: /ai-transition-model/scenarios/ai-takeover/gradual/
+        entityId: tmc-gradual
         description: |
           Gradual takeover scenarios envision AI systems accumulating control incrementally over years or decades through mechanisms that may appear beneficial or neutral in isolation but collectively result in decisive AI influence over human affairs. Unlike rapid takeover, which depends on sudden capability leaps, gradual takeover operates through economic leverage, institutional capture, dependency accumulation, and the progressive erosion of human agency. Each individual step may be rational, even desirable, yet the cumulative trajectory leads to an outcome where meaningful human control becomes impossible to recover.
 
@@ -1046,7 +1045,7 @@ nodes:
     href: /ai-transition-model/scenarios/human-catastrophe/
     subItems:
       - label: State Actor
-        href: /ai-transition-model/scenarios/human-catastrophe/state-actor/
+        entityId: tmc-state-actor
         description: |
           State actor catastrophe scenarios involve governments or military forces using AI capabilities to cause unprecedented harm, whether through warfare, mass surveillance, or authoritarian control systems that fundamentally alter the relationship between states and citizens. Unlike AI takeover scenarios where artificial systems pursue their own objectives, state actor catastrophes feature humans deliberately wielding AI as a tool of coercion, destruction, or dominance. The key concern is not AI autonomy but rather AI amplifying state capacity for harm beyond historical precedent.
 
@@ -1068,7 +1067,7 @@ nodes:
           - topic: Deterrence stability
             description: Does AI destabilize nuclear deterrence or other conflict-prevention mechanisms?
       - label: Rogue Actor
-        href: /ai-transition-model/scenarios/human-catastrophe/rogue-actor/
+        entityId: tmc-rogue-actor
         description: |
           Rogue actor catastrophe scenarios involve terrorists, criminals, or individuals using AI capabilities to develop weapons of mass destruction or conduct attacks at scales previously requiring state resources. The key concern is capability democratization: AI potentially lowering barriers so that actors who previously lacked the resources for catastrophic harm can now achieve it. This differs from state actor scenarios in that rogue actors typically face no deterrence from retaliation and may actively seek maximum casualties, making their potential actions less constrained than state-directed violence.
 
@@ -1102,10 +1101,15 @@ nodes:
     # Sub-items reference MDX files by slug - title/description/ratings come from MDX frontmatter
     subItems:
       - id: economic-power
+        entityId: tmc-economic-power
       - id: political-power
+        entityId: tmc-political-power
       - id: epistemics
+        entityId: tmc-epistemic-lockin
       - id: values
+        entityId: tmc-values
       - id: suffering-lock-in
+        entityId: tmc-suffering-lock-in
 
   # === ULTIMATE OUTCOMES (bottom layer) ===
 
@@ -1207,19 +1211,19 @@ edges:
     effect: increases
 
   - id: e-civ-takeover
-    source: civ-competence
+    source: civilizational-competence
     target: ai-takeover
     strength: medium
     effect: decreases
 
   - id: e-civ-human
-    source: civ-competence
+    source: civilizational-competence
     target: human-catastrophe
     strength: medium
     effect: decreases
 
   - id: e-civ-lockin
-    source: civ-competence
+    source: civilizational-competence
     target: long-term-lockin
     strength: strong
     effect: mixed
@@ -1326,17 +1330,17 @@ impactGrid:
     notes: More capable AI makes lock-in scenarios more feasible
 
   # Civilizational Competence impacts
-  - source: civ-competence
+  - source: civilizational-competence
     target: ai-takeover
     impact: 55
     direction: decreases
     notes: Better coordination and institutions can slow/prevent takeover
-  - source: civ-competence
+  - source: civilizational-competence
     target: human-catastrophe
     impact: 60
     direction: decreases
     notes: Better governance reduces misuse risk
-  - source: civ-competence
+  - source: civilizational-competence
     target: long-term-lockin
     impact: 75
     direction: mixed

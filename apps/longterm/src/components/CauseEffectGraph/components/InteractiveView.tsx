@@ -1,6 +1,7 @@
 import { useState, useMemo, createContext, useContext, useRef, useEffect } from 'react';
 import type { Node, Edge } from '@xyflow/react';
 import type { CauseEffectNodeData, CauseEffectEdgeData } from '../types';
+import { getEntityById, getPageById } from '../../../data';
 
 // Context for coordinating hover highlighting across the view
 const HighlightContext = createContext<{
@@ -62,6 +63,21 @@ function GlobalTooltip({ content, position }: { content: string | null; position
   );
 }
 
+// Helper to truncate text
+function truncateText(text: string | undefined | null, maxLength: number): string {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength - 3) + '...';
+}
+
+// Helper to format entity type for display
+function formatEntityType(type: string): string {
+  return type
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 // Sub-item component with hover tooltip
 function SubItem({
   item,
@@ -69,20 +85,18 @@ function SubItem({
   nodeId,
   basePath,
 }: {
-  item: { label: string; description?: string; href?: string };
+  item: { label: string; description?: string; href?: string; entityId?: string };
   nodeType?: 'cause' | 'intermediate' | 'effect';
   nodeId?: string;
   basePath?: string;
 }) {
-  const { showTooltip, hideTooltip } = useContext(TooltipContext);
-  const ref = useRef<HTMLDivElement>(null);
+  // Look up entity data for rich tooltips
+  const entity = item.entityId ? getEntityById(item.entityId) : null;
+  const page = item.entityId ? getPageById(item.entityId) : null;
 
-  const handleMouseEnter = () => {
-    if (item.description && ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      showTooltip(item.description, rect);
-    }
-  };
+  // Get summary for tooltip (prefer llmSummary, fall back to description)
+  const summary = page?.llmSummary || page?.description || entity?.description || item.description;
+  const entityType = entity?.type;
 
   // Generate href based on basePath, nodeType, nodeId, and item label
   let href = item.href;
@@ -94,24 +108,44 @@ function SubItem({
     };
     const typePath = typePathMap[nodeType];
     const itemSlug = toSlug(item.label);
-    href = `${basePath}/${typePath}/${nodeId}/${itemSlug}`;
+    href = `${basePath}/${typePath}/${nodeId}/${itemSlug}/`;
   }
 
-  const content = href ? (
-    <a href={href} className="iv-subitem__link">{item.label}</a>
-  ) : (
-    item.label
-  );
+  // Always show tooltip if we have summary or entity type
+  const hasTooltipContent = summary || entityType;
 
   return (
-    <div
-      ref={ref}
-      className={`iv-node__subitem ${item.description ? 'iv-node__subitem--hoverable' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={hideTooltip}
-    >
-      {content}
-    </div>
+    <span className="iv-subitem-wrapper">
+      <span className={`iv-node__subitem ${hasTooltipContent ? 'iv-node__subitem--hoverable' : ''}`}>
+        {href ? (
+          <a href={href} className="iv-subitem__link">{item.label}</a>
+        ) : (
+          item.label
+        )}
+      </span>
+      {hasTooltipContent && (
+        <span className="iv-subitem-tooltip" role="tooltip">
+          {entityType && (
+            <span className="iv-subitem-tooltip__type">
+              {formatEntityType(entityType)}
+            </span>
+          )}
+          <span className="iv-subitem-tooltip__title">
+            {entity?.title || item.label}
+          </span>
+          {summary && (
+            <span className="iv-subitem-tooltip__summary">
+              {truncateText(summary, 200)}
+            </span>
+          )}
+          {page?.quality && (
+            <span className="iv-subitem-tooltip__quality">
+              Quality: {page.quality}/100
+            </span>
+          )}
+        </span>
+      )}
+    </span>
   );
 }
 

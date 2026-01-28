@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { pages, entities, type Page } from "../data"
+import type { Entity } from "../data/schema"
 import { insights, type Insight } from "../data/insights-data"
 import ContentTree from "./ContentTree"
 import { cn } from "@/lib/utils"
@@ -102,15 +103,19 @@ function buildContentList(): ContentItem[] {
     })
   })
 
-  // Diagrams
+  // Diagrams - filter entities that have causeEffectGraph with nodes
   entities
-    .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
-    .forEach((e: any) => {
-      const nodeCount = e.causeEffectGraph.nodes.length
+    .filter((e: Entity) => {
+      const graph = (e as Entity & { causeEffectGraph?: { nodes?: unknown[] } }).causeEffectGraph
+      return graph?.nodes && graph.nodes.length > 0
+    })
+    .forEach((e: Entity) => {
+      const graph = (e as Entity & { causeEffectGraph?: { nodes?: unknown[]; title?: string; description?: string } }).causeEffectGraph!
+      const nodeCount = graph.nodes?.length || 0
       items.push({
         id: `diagram-${e.id}`,
-        title: e.causeEffectGraph?.title || e.title,
-        description: e.causeEffectGraph?.description || `Cause-effect diagram for ${e.title}`,
+        title: graph.title || e.title,
+        description: graph.description || `Cause-effect diagram for ${e.title}`,
         href: `/diagrams/${e.id}`,
         path: `/diagrams`,
         type: 'diagrams',

@@ -339,7 +339,7 @@ async function main() {
     console.log('✓ Validation passed\n');
   }
 
-  console.log('${'─'.repeat(40)}\n');
+  console.log(`${'─'.repeat(40)}\n`);
   console.log(`✅ Content generated successfully!`);
   console.log(`   ${outputFile}\n`);
   console.log('Next steps:');

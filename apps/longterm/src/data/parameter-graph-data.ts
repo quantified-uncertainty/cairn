@@ -177,11 +177,15 @@ const rawEntities = [
   ...(yaml.load(subitemsMisusePotential) as RawEntity[] || []),
 ];
 
-// Build a map of entity ID -> description for efficient lookup at build time
+// Build maps of entity ID -> description and entity ID -> path for efficient lookup at build time
 const entityDescriptionMap = new Map<string, string>();
+const entityPathMap = new Map<string, string>();
 for (const entity of rawEntities) {
   if (entity.id && entity.description) {
     entityDescriptionMap.set(entity.id, entity.description);
+  }
+  if (entity.id && (entity as any).path) {
+    entityPathMap.set(entity.id, (entity as any).path);
   }
 }
 
@@ -303,19 +307,31 @@ function getEntityDescription(itemId: string): string | undefined {
   return entityDescriptionMap.get(itemId);
 }
 
+// Look up path from entity definitions
+function getEntityPathFromYaml(entityId: string): string | undefined {
+  return entityPathMap.get(entityId);
+}
+
 // Enrich a sub-item with metadata from entity definitions
 function enrichSubItem(item: RawSubItem, nodeType: string, nodeId: string): SubItem {
   // Get ID from item (new DRY format) or derive from label (legacy format)
   const itemId = item.id || item.label?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || '';
 
+  // Entity ID: use explicit entityId from YAML, or generate with tmc- prefix
+  const entityId = item.entityId || `tmc-${itemId}`;
+
   // Description priority: inline YAML > entity lookup
   // This allows entity definitions to be the single source of truth
   const description = item.description || getEntityDescription(itemId);
 
+  // Href priority: explicit href > entity path lookup > auto-generated
+  const href = item.href || getEntityPathFromYaml(entityId) || generateSubItemHref(nodeType, nodeId, itemId);
+
   return {
     label: item.label || idToLabel(itemId),
     description,
-    href: item.href || generateSubItemHref(nodeType, nodeId, itemId),
+    href,
+    entityId,
     ratings: item.ratings,
     scope: item.scope,
     keyDebates: item.keyDebates,
@@ -444,6 +460,7 @@ export interface SubItem {
   label: string;
   description?: string;
   href?: string;
+  entityId?: string;  // Entity ID for rich tooltip lookups (e.g., 'tmc-compute')
   ratings?: SubItemRatings;
   scope?: string;
   keyDebates?: KeyDebate[];

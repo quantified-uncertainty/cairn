@@ -47,13 +47,19 @@ function useAvailableHeight(minHeight = 500, bottomPadding = 20) {
 // Get all entities that have causeEffectGraph diagrams
 function getEntitiesWithDiagrams(): Array<{ id: string; title: string; graphTitle?: string; nodeCount: number }> {
   return entities
-    .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
-    .map((e: any) => ({
-      id: e.id,
-      title: e.title,
-      graphTitle: e.causeEffectGraph?.title,
-      nodeCount: e.causeEffectGraph?.nodes?.length || 0,
-    }));
+    .filter((e) => {
+      const graph = (e as EntityWithGraph).causeEffectGraph;
+      return graph?.nodes && graph.nodes.length > 0;
+    })
+    .map((e) => {
+      const entity = e as EntityWithGraph;
+      return {
+        id: entity.id,
+        title: entity.title,
+        graphTitle: entity.causeEffectGraph?.title,
+        nodeCount: entity.causeEffectGraph?.nodes?.length || 0,
+      };
+    });
 }
 
 interface DiagramViewerProps {
@@ -64,6 +70,8 @@ interface DiagramViewerProps {
 interface EntityWithGraph {
   id: string;
   title: string;
+  type?: string;
+  path?: string;
   causeEffectGraph?: {
     title?: string;
     description?: string;
@@ -330,7 +338,7 @@ export default function DiagramViewer({ entityId: propEntityId }: DiagramViewerP
   const graph = entity.causeEffectGraph;
 
   // Compute the back link from the entity's path or via getEntityHref
-  const entityPath = (rawEntity as any).path || getEntityHref(entityId, (rawEntity as any).type) || '/ai-transition-model/';
+  const entityPath = entity.path || getEntityHref(entityId, entity.type) || '/ai-transition-model/';
 
   // Calculate available height dynamically
   const { containerRef, height: graphHeight } = useAvailableHeight(500, 20);

@@ -7,6 +7,9 @@ on:
     branches: [main]
   # Allow manual trigger
   workflow_dispatch:
+  # Weekly content freshness check
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
 
 jobs:
   validate:
@@ -106,3 +109,84 @@ jobs:
 
       - name: Build site
         run: pnpm --filter longterm build
+
+  # Scheduled content freshness report
+  staleness-report:
+    name: Content Freshness Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build data
+        run: pnpm --filter longterm build:data
+
+      - name: Check staleness
+        id: staleness
+        working-directory: apps/longterm
+        run: |
+          # Run staleness check and capture count
+          OUTPUT=$(node scripts/validate/check-staleness.mjs 2>&1)
+          echo "$OUTPUT"
+
+          # Extract stale count (look for "X stale" pattern)
+          STALE_COUNT=$(echo "$OUTPUT" | grep -oP '\d+(?= stale)' | head -1 || echo "0")
+          echo "stale_count=$STALE_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Create issue for stale content
+        if: steps.staleness.outputs.stale_count > 10
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const staleCount = '${{ steps.staleness.outputs.stale_count }}';
+            const title = `📅 Content Review: ${staleCount} pages need attention`;
+            const body = `## Weekly Content Freshness Report
+
+            **${staleCount} pages** are past their review threshold.
+
+            ### Action Required
+            Run \`npm run validate:staleness\` locally to see the full list.
+
+            ### Quick Commands
+            \`\`\`bash
+            # See stale pages
+            npm run validate:staleness
+
+            # Update a page's lastEdited date
+            # Edit frontmatter: lastEdited: "${new Date().toISOString().split('T')[0]}"
+            \`\`\`
+
+            _This issue was automatically created by the weekly content freshness check._
+            `;
+
+            // Check if similar issue exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'content-freshness'
+            });
+
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['content-freshness', 'automated']
+              });
+            }

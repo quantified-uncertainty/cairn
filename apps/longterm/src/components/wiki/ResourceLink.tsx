@@ -2,8 +2,8 @@ import React from 'react';
 import { getResourceById, getResourceCredibility, getResourcePublication } from '../../data';
 import { CredibilityBadge } from './CredibilityBadge';
 import { ResourceTags } from './ResourceTags';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { cn } from '../../lib/utils';
+import styles from './ResourceLink.module.css';
 
 interface ResourceLinkProps {
   id: string;
@@ -45,13 +45,14 @@ function truncateText(text: string | undefined | null, maxLength: number): strin
 // ============================================================================
 
 function CardHeader({ type, credibility }: { type: string; credibility?: string | null }) {
+  // Use span with flex display instead of div to avoid invalid HTML nesting in span tooltips
   return (
-    <div className="flex justify-between items-center mb-2">
+    <span className="flex justify-between items-center mb-2">
       <span className="text-[0.7rem] uppercase tracking-tight text-muted-foreground">
         {getResourceTypeIcon(type)} {type}
       </span>
       {credibility && <CredibilityBadge level={credibility} size="sm" />}
-    </div>
+    </span>
   );
 }
 
@@ -104,26 +105,27 @@ export function ResourceLink({
   const publication = getResourcePublication(resource);
 
   return (
-    <HoverCard openDelay={200} closeDelay={100}>
-      <HoverCardTrigger asChild>
-        <a
-          href={resource.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn("text-accent-foreground no-underline font-medium hover:underline", className)}
-        >
-          {icon && <span className="mr-1">{icon}</span>}
-          <span>{displayLabel}</span>
-          {showCredibility && credibility && (
-            <span className="ml-1">
-              <CredibilityBadge level={credibility} size="sm" />
-            </span>
-          )}
-          <span className="text-xs ml-0.5 opacity-70">↗</span>
-        </a>
-      </HoverCardTrigger>
-
-      <HoverCardContent className="w-[280px] p-2.5 text-[0.8rem] leading-snug" align="start">
+    <span className={styles.wrapper}>
+      <a
+        href={resource.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn("text-accent-foreground no-underline font-medium hover:underline", className)}
+      >
+        {icon && <span className="mr-1">{icon}</span>}
+        <span>{displayLabel}</span>
+        {showCredibility && credibility && (
+          <span className="ml-1">
+            <CredibilityBadge level={credibility} size="sm" />
+          </span>
+        )}
+        <span className="text-xs ml-0.5 opacity-70">↗</span>
+      </a>
+      {/* CSS-only hover tooltip */}
+      <span
+        className={cn(styles.tooltip, 'absolute left-0 top-full mt-1 z-50 w-[280px] p-2.5 bg-popover text-popover-foreground border rounded-md shadow-md pointer-events-none opacity-0 invisible text-[0.8rem] leading-snug')}
+        role="tooltip"
+      >
         <CardHeader type={resource.type} credibility={credibility} />
 
         {publication && (
@@ -157,12 +159,12 @@ export function ResourceLink({
           </span>
         )}
 
-        <div className="flex gap-2 mt-2">
+        <span className="flex gap-2 mt-2 pointer-events-auto">
           <CardButton href={resource.url} primary external>Source ↗</CardButton>
           <CardButton href={detailUrl}>Notes</CardButton>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+        </span>
+      </span>
+    </span>
   );
 }
 

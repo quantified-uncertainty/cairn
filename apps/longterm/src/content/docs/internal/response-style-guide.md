@@ -5,6 +5,7 @@ pageType: documentation
 sidebar:
   order: 11
 ---
+import {EntityLink} from '../components/wiki';
 
 # Response Pages Style Guide
 
@@ -153,4 +154,4 @@ Task({
 
 ## Example
 
-See [Mechanistic Interpretability](/knowledge-base/responses/alignment/mech-interp/) for reference.
+See <EntityLink id="mech-interp">Mechanistic Interpretability</EntityLink> for reference.

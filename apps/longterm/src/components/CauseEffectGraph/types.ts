@@ -28,6 +28,7 @@ export interface CauseEffectNodeData extends Record<string, unknown> {
     label: string;
     probability?: string;
     href?: string;
+    entityId?: string;  // Entity ID for rich tooltip lookups
     description?: string;
     scope?: string;
     ratings?: {

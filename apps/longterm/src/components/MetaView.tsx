@@ -2,28 +2,83 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import database from "../data/database.json";
+import type { Entity } from "../data/schema";
+
+// Database structure types
+interface DatabaseWithRegistry {
+  pathRegistry?: Record<string, string>;
+  entities?: Entity[];
+}
+
+// Graph node type
+interface GraphNode {
+  id: string;
+  label: string;
+  type: string;
+  order?: number;
+  href: string;
+  description?: string;
+}
+
+// Edge type
+interface GraphEdge {
+  source: string;
+  target: string;
+  effect: string;
+  strength?: string;
+}
+
+// Backlink type
+interface Backlink {
+  path: string;
+  title?: string;
+  context?: string;
+}
+
+// Related entry type
+interface RelatedEntry {
+  id: string;
+  type: string;
+  relationship?: string;
+}
+
+// Frontmatter type (from MDX files)
+interface Frontmatter {
+  title?: string;
+  description?: string;
+  pageType?: string;
+  lastEdited?: string;
+  sidebar?: {
+    order?: number;
+    label?: string;
+  };
+  ratings?: Record<string, number>;
+  [key: string]: unknown;
+}
 
 interface MetaViewProps {
   slug: string;
-  frontmatter: Record<string, any>;
-  entity?: any;
-  graphNode?: any;
-  incomingEdges: any[];
-  outgoingEdges: any[];
-  backlinks: any[];
+  frontmatter: Frontmatter;
+  entity?: Entity & { relatedEntries?: RelatedEntry[]; tags?: string[] };
+  graphNode?: GraphNode;
+  incomingEdges: GraphEdge[];
+  outgoingEdges: GraphEdge[];
+  backlinks: Backlink[];
   entityId: string;
 }
 
 // Helper to find entity path from ID
 function getEntityPath(entityId: string): string | null {
-  const pathRegistry = (database as any).pathRegistry || {};
+  const db = database as unknown as DatabaseWithRegistry;
+  const pathRegistry = db.pathRegistry || {};
   return pathRegistry[entityId] || null;
 }
 
 // Helper to get entity title from ID
 function getEntityTitle(entityId: string): string {
-  const entities = (database as any).entities || [];
-  const entity = entities.find((e: any) => e.id === entityId);
+  const db = database as unknown as DatabaseWithRegistry;
+  const entities = db.entities || [];
+  const entity = entities.find((e) => e.id === entityId);
   return entity?.title || entityId;
 }
 
@@ -109,7 +164,7 @@ export function MetaView({
             </DL>
           </Section>
 
-          {hasRatings && (
+          {hasRatings && frontmatter.ratings && (
             <Section title="Ratings">
               <div className="space-y-2">
                 {Object.entries(frontmatter.ratings).map(([key, value]) => (
@@ -161,7 +216,7 @@ export function MetaView({
                 <DT>Description</DT>
                 <DD muted>{entity.description || <em>Not set</em>}</DD>
 
-                {entity.tags?.length > 0 && (
+                {entity.tags && entity.tags.length > 0 && (
                   <>
                     <DT>Tags</DT>
                     <DD>
@@ -182,11 +237,11 @@ export function MetaView({
             )}
           </Section>
 
-          {entity?.relatedEntries?.length > 0 && (
+          {entity && entity.relatedEntries && entity.relatedEntries.length > 0 && (
             <Section title="Related Entries">
               <table className="w-full text-sm">
                 <tbody>
-                  {entity.relatedEntries.map((rel: any, i: number) => (
+                  {entity.relatedEntries.map((rel: RelatedEntry, i: number) => (
                     <tr key={i} className="border-b border-slate-100 dark:border-slate-800 last:border-0">
                       <td className="py-1.5 pr-3">
                         <EntityLink entityId={rel.id} showId />

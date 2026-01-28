@@ -5,6 +5,7 @@ pageType: documentation
 sidebar:
   order: 10
 ---
+import {EntityLink} from '../components/wiki';
 
 # Risk Pages Style Guide
 
@@ -232,4 +233,4 @@ Risk pages are graded on:
 
 ## Example Risk Page
 
-See [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) for a well-structured example.
+See <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> for a well-structured example.
