@@ -64,6 +64,8 @@ const showRatings = isAITransitionModelPage && hasRatings;
         unconvertedLinkCount: pageData?.unconvertedLinkCount,
         redundancy: pageData?.redundancy,
       }}
+      pageType={frontmatter.pageType}
+      pathname={Astro.url.pathname}
       devOnly={true}
     />
   )}

@@ -58,6 +58,46 @@ interface PageIssues {
   };
 }
 
+// Page type definitions with style guide links
+type ContentPageType = 'content' | 'stub' | 'documentation' | 'ai-transition-model' | 'overview';
+
+interface PageTypeInfo {
+  label: string;
+  description: string;
+  styleGuideUrl?: string;
+  color: string;
+}
+
+const PAGE_TYPE_INFO: Record<ContentPageType, PageTypeInfo> = {
+  'content': {
+    label: 'Content',
+    description: 'Standard knowledge base article',
+    styleGuideUrl: '/internal/models-style-guide/',
+    color: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
+  },
+  'stub': {
+    label: 'Stub',
+    description: 'Minimal placeholder page',
+    color: 'bg-slate-500/20 text-slate-400 border-slate-500/40',
+  },
+  'documentation': {
+    label: 'Documentation',
+    description: 'Internal docs, style guides, examples',
+    color: 'bg-purple-500/20 text-purple-400 border-purple-500/40',
+  },
+  'ai-transition-model': {
+    label: 'AI Transition Model',
+    description: 'Structured factor/scenario/parameter page',
+    styleGuideUrl: '/internal/models/',
+    color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
+  },
+  'overview': {
+    label: 'Overview',
+    description: 'Section navigation page',
+    color: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
+  },
+};
+
 interface PageStatusProps {
   quality?: number;  // 0-100 scale
   importance?: number;  // 0-100 scale
@@ -71,6 +111,10 @@ interface PageStatusProps {
   suggestedQuality?: number;
   insights?: Insight[];
   issues?: PageIssues;
+  /** Explicit page type from frontmatter */
+  pageType?: string;
+  /** URL path to detect page type from location */
+  pathname?: string;
   /** If true, only show in dev mode (controlled by header toggle) */
   devOnly?: boolean;
 }
@@ -122,6 +166,51 @@ function formatAge(lastEdited: string): string {
   if (days <= 14) return `${days} days ago`;
   if (days <= 60) return `${Math.round(days / 7)} weeks ago`;
   return `${Math.round(days / 30)} months ago`;
+}
+
+function detectPageType(explicitType?: string, pathname?: string): ContentPageType {
+  // Explicit frontmatter type takes priority
+  if (explicitType === 'stub') return 'stub';
+  if (explicitType === 'documentation') return 'documentation';
+
+  // Detect from pathname
+  if (pathname) {
+    // Check for index/overview pages
+    if (pathname.endsWith('/index/') || pathname.match(/\/[^\/]+\/$/)) {
+      // This is a heuristic - index pages are often overviews
+    }
+    // AI Transition Model pages
+    if (pathname.includes('/ai-transition-model/')) {
+      return 'ai-transition-model';
+    }
+  }
+
+  // Default to content
+  return explicitType as ContentPageType || 'content';
+}
+
+function PageTypeBadge({ pageType, pathname }: { pageType?: string; pathname?: string }) {
+  const detectedType = detectPageType(pageType, pathname);
+  const info = PAGE_TYPE_INFO[detectedType];
+
+  return (
+    <div className="page-status-row page-status-row--type">
+      <span className="page-status-label">Page Type:</span>
+      <span className={`inline-flex items-center gap-2 px-2 py-1 rounded border ${info.color}`}>
+        <span className="font-medium">{info.label}</span>
+        {info.styleGuideUrl && (
+          <a
+            href={info.styleGuideUrl}
+            className="text-xs opacity-70 hover:opacity-100 underline"
+            title={`View ${info.label} style guide`}
+          >
+            Style Guide →
+          </a>
+        )}
+      </span>
+      <span className="text-xs text-slate-500 ml-2">{info.description}</span>
+    </div>
+  );
 }
 
 function QualityBadge({ quality }: { quality: number }) {
@@ -291,7 +380,7 @@ function InsightsSection({ insights }: { insights: Insight[] }) {
   );
 }
 
-export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, todos, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, devOnly = false }: PageStatusProps) {
+export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, todos, wordCount, backlinkCount, metrics, suggestedQuality, insights, issues, pageType, pathname, devOnly = false }: PageStatusProps) {
   // Don't render if no metadata provided
   if (!quality && !importance && !llmSummary && !lastEdited && !todo && (!todos || todos.length === 0)) {
     return null;
@@ -318,6 +407,9 @@ export function PageStatus({ quality, importance, llmSummary, lastEdited, todo, 
       </div>
 
       <div className="page-status-content">
+        {/* Row 0: Page Type - shown prominently at top */}
+        <PageTypeBadge pageType={pageType} pathname={pathname} />
+
         {/* Row 1: Quality and Importance side by side */}
         <div className="page-status-row page-status-row--metrics">
           {quality !== undefined && (

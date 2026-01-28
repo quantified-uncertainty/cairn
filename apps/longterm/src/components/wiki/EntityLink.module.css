@@ -11,7 +11,11 @@
   transition: opacity 150ms ease, visibility 150ms ease;
 }
 
-.wrapper:hover .tooltip {
-  opacity: 1;
-  visibility: visible;
+/* Only show tooltips on devices that support hover (not touch-only) */
+@media (hover: hover) {
+  .wrapper:hover .tooltip,
+  .wrapper:focus-within .tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
 }
