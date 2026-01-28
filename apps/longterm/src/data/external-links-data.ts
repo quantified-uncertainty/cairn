@@ -19,6 +19,7 @@ export interface ExternalLinksData {
   eaForum?: string;
   stampy?: string;             // aisafety.info / Stampy
   arbital?: string;            // arbital.greaterwrong.com
+  eightyK?: string;            // 80000hours.org
 }
 
 interface ExternalLinkEntry {

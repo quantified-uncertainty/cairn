@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, BookOpen, MessageSquare, GraduationCap } from 'lucide-react';
+import { ExternalLink, BookOpen, MessageSquare, GraduationCap, Briefcase } from 'lucide-react';
 
 interface ExternalLinksData {
   wikipedia?: string;
@@ -9,6 +9,7 @@ interface ExternalLinksData {
   eaForum?: string;
   stampy?: string;
   arbital?: string;
+  eightyK?: string;
 }
 
 interface ExternalLinksProps {
@@ -44,6 +45,10 @@ const platformConfig = {
   arbital: {
     name: 'Arbital',
     icon: BookOpen,
+  },
+  eightyK: {
+    name: '80,000 Hours',
+    icon: Briefcase,
   },
 };
 
@@ -89,7 +94,7 @@ export function ExternalLinks({ pageId, links }: ExternalLinksProps) {
   if (platforms.length === 0) return null;
 
   // Order: Wikipedia first (as authoritative reference), then forums, then specialized resources
-  const orderedPlatforms: PlatformKey[] = ['wikipedia', 'wikidata', 'lesswrong', 'alignmentForum', 'eaForum', 'stampy', 'arbital'];
+  const orderedPlatforms: PlatformKey[] = ['wikipedia', 'wikidata', 'eightyK', 'lesswrong', 'alignmentForum', 'eaForum', 'stampy', 'arbital'];
   const sortedPlatforms = platforms.sort(([a], [b]) =>
     orderedPlatforms.indexOf(a) - orderedPlatforms.indexOf(b)
   );
