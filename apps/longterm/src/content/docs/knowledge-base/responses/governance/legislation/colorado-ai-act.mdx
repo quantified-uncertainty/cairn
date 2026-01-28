@@ -19,6 +19,10 @@ llmSummary: >-
 lastEdited: '2025-12-28'
 importance: 78.5
 pageTemplate: knowledge-base-response
+todos:
+  - "Complete 'Regulatory Framework and Scope' section"
+  - "Complete 'How It Works' section"
+  - "Complete 'Limitations' section (6 placeholders)"
 ---
 import {DataInfoBox, Mermaid, R, EntityLink} from '../../../../../../components/wiki';
 
@@ -43,69 +47,6 @@ The <R id="886f3fed50ae776d">Colorado AI Act (SB 24-205)</R> represents a waters
 Unlike California's vetoed SB 1047 which focused on frontier AI models and catastrophic risks, Colorado's approach targets "high-risk AI systems" that make consequential decisions affecting individuals' lives—employment, housing, education, healthcare, and financial services. This discrimination-focused framework closely mirrors the European Union's AI Act approach, reflecting a growing international consensus that AI's most pressing near-term harms stem from algorithmic bias in everyday decision-making rather than speculative existential risks. The law's measured scope and industry engagement during development suggest it may succeed where more ambitious regulations have failed, potentially serving as a template for 5-10 other states currently considering similar legislation.
 
 The Act's significance extends beyond Colorado's borders, as it establishes the first functioning model for algorithmic accountability in American law and may influence both federal AI policy development and corporate AI governance practices nationwide. Early industry response has been cautiously positive, with major AI deployers beginning compliance preparations and no evidence of companies relocating operations to avoid the law's requirements.
-
-## Regulatory Framework and Scope
-
-### Compliance Architecture
-
-The Colorado AI Act establishes a tiered compliance architecture that distinguishes between AI developers (who create systems) and deployers (who use them for consequential decisions):
-
-<Mermaid client:load chart={`
-flowchart TD
-    DEV[AI Developer] --> DOC[Documentation + Transparency Reports]
-    DEV --> NOTIFY[AG Notification within 90 days]
-
-    DEPLOY[AI Deployer] --> RISK[Risk Management + Impact Assessment]
-    DEPLOY --> CONSUMER[Consumer Disclosures + Appeals]
-
-    DOC --> DEPLOYER_USE[Provided to Deployers]
-    RISK --> NIST[NIST AI RMF Compliance]
-
-    NOTIFY --> AG[Colorado Attorney General]
-    NIST --> DEFENSE[Affirmative Defense Available]
-    AG --> ENFORCE[\$20K per Violation]
-
-    style DEV fill:#e6f3ff
-    style DEPLOY fill:#e6ffe6
-    style AG fill:#fff0e6
-    style ENFORCE fill:#ffe6e6
-`} />
-
-### Definition of High-Risk AI Systems
-
-The <R id="99b48751ce66e719">Colorado AI Act</R> applies specifically to AI systems used to make "consequential decisions" that meaningfully impact individuals' access to or terms of essential services and opportunities. The law defines these systems with careful specificity to avoid overreach while capturing genuinely harmful applications. Covered domains include employment decisions (hiring, firing, promotion, compensation determination), educational assessments (admissions, academic evaluation, disciplinary actions), financial services (lending decisions, insurance coverage, credit scoring), housing transactions (rental applications, mortgage approvals), healthcare determinations (treatment recommendations, coverage decisions), legal proceedings (case assessment, sentencing recommendations), and government services (benefit eligibility, licensing, permits).
-
-### Consequential Decision Domains
-
-| Domain | Examples of Covered Decisions | Estimated Affected Systems |
-|--------|------------------------------|---------------------------|
-| **Employment** | Hiring, firing, promotion, compensation, task allocation | Resume screeners, interview scheduling, performance evaluation |
-| **Education** | Admissions, academic evaluation, disciplinary actions | Application scoring, plagiarism detection, proctoring systems |
-| **Financial Services** | Lending, credit scoring, account management | Loan approval algorithms, credit limit adjustments |
-| **Housing** | Rental applications, mortgage approvals, tenant screening | Background check services, rental scoring systems |
-| **Healthcare** | Treatment recommendations, coverage decisions | Prior authorization systems, diagnostic aids |
-| **Insurance** | Eligibility, pricing, claims processing | Risk scoring, fraud detection, underwriting |
-| **Legal Services** | Case assessment, sentencing recommendations | Recidivism prediction, evidence analysis |
-| **Government Services** | Benefit eligibility, licensing, permits | Fraud detection, application processing |
-
-This framework deliberately excludes routine AI applications like recommendation systems, search algorithms, or content moderation tools that don't directly determine access to critical opportunities. The law also provides <R id="c053498946360387">safe harbors for small businesses</R> (fewer than 50 employees) and limited-scope applications, recognizing that algorithmic discrimination concerns are most acute when AI systems act as gatekeepers to economic opportunity and essential services.
-
-### Algorithmic Discrimination Framework
-
-Central to the Act is its <R id="4e797a73eb919ca5">definition of "algorithmic discrimination"</R>—when AI systems unlawfully contribute to disparate treatment of individuals based on protected characteristics. The law explicitly enumerates the following protected classes:
-
-| Category | Protected Characteristics |
-|----------|--------------------------|
-| **Demographics** | Age, race, color, ethnicity, national origin |
-| **Identity** | Sex, sexual orientation, gender identity |
-| **Religion & Beliefs** | Religion |
-| **Physical/Mental** | Disability |
-| **Genetic/Health** | Genetic information, reproductive health |
-| **Language** | Limited English proficiency |
-| **Service** | Veteran status |
-| **Other** | Any classification protected under Colorado or federal law |
-
-This definition aligns with existing federal civil rights law while extending protections to AI-mediated decision-making. The <R id="95fa0222d9188404">law establishes a practical framework</R> for identifying discrimination through both disparate treatment (intentional bias) and disparate impact (discriminatory outcomes regardless of intent). This approach recognizes that AI systems can perpetuate historical discrimination through biased training data or proxy variables that correlate with protected characteristics, even when developers have no discriminatory intent.
 
 ## Compliance Requirements and Implementation
 
@@ -162,13 +103,6 @@ The law provides an <R id="b1f6478d53d4e3f4">affirmative defense</R> for develop
 2. **Framework compliance**: Organization complies with <R id="54dbc15413425997">NIST AI Risk Management Framework</R>, ISO/IEC 42001, or another substantially equivalent framework designated by the AG
 
 This incentive structure encourages proactive risk management while providing proportionate enforcement. Notably, the law does not create a private right of action, meaning individuals cannot directly sue for algorithmic discrimination under the Act. This approach reduces litigation risk for companies while maintaining public enforcement capability through the Attorney General's office.
-
-## How It Works
-
-[Explain the mechanism of action for this intervention. Include:
-- Key components or steps
-- How it addresses the target risks
-- Dependencies and requirements]
 
 ## Risks Addressed
 
@@ -297,12 +231,6 @@ The long-term sustainability of discrimination-focused AI regulation depends on 
 The economic impact on Colorado's AI industry ecosystem remains uncertain, as companies weigh compliance costs against market access benefits. Significant outmigration of AI companies could undermine the law's political sustainability, while successful adaptation might demonstrate that AI regulation and innovation can coexist productively.
 
 ---
-
-## Limitations
-
-- **[Limitation 1]**: [Description of what this doesn't address]
-- **[Limitation 2]**: [Description]
-- **[Limitation 3]**: [Description]
 
 ## Sources
 

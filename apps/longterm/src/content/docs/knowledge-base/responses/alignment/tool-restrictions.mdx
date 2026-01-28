@@ -12,6 +12,8 @@ lastEdited: '2025-01-22'
 sidebar:
   order: 23
 pageTemplate: knowledge-base-response
+todos:
+  - "Complete 'How Tool Restrictions Work' section"
 ---
 import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
@@ -40,56 +42,6 @@ However, tool restrictions face significant practical challenges. Commercial pre
 - **Current Investment**: \$10-30M/yr (part of agent safety engineering)
 - **Recommendation**: Increase (important as agents expand; labs face pressure to loosen)
 - **Differential Progress**: Safety-dominant (pure safety constraint; reduces capability)
-
-## How Tool Restrictions Work
-
-Tool restrictions create an authorization layer between AI systems and external capabilities:
-
-<Mermaid client:load chart={`
-flowchart TD
-    A[AI Agent] --> B{Tool Request}
-    B --> C{Authorization Check}
-
-    D[Tool Policy] --> C
-    E[Permission Scope] --> C
-
-    C -->|Authorized| F[Execute Tool]
-    C -->|Denied| G[Block + Log]
-
-    F --> H[Return Result]
-    G --> I[Explain Denial]
-
-    J[Human Override] --> C
-
-    style C fill:#ffddcc
-    style G fill:#ffcccc
-    style F fill:#d4edda
-`} />
-
-### Tool Categorization
-
-Tools can be classified by risk level:
-
-| Risk Category | Examples | Typical Policy |
-|---------------|----------|---------------|
-| **Read-Only Information** | Web search, document reading | Generally permitted |
-| **Reversible Actions** | Draft emails, create documents | Permitted with logging |
-| **Irreversible Low-Stakes** | Send notifications, update files | Require confirmation |
-| **Financial** | Payments, transfers, purchases | Require human approval |
-| **Communication** | Send emails, post publicly | Strict limits, approval required |
-| **Code Execution** | Run scripts, deploy code | Sandboxed with restrictions |
-| **System Access** | Admin commands, configuration | Heavily restricted or prohibited |
-| **Self-Modification** | Update own code/weights | Prohibited |
-
-### Implementation Patterns
-
-| Pattern | Description | Use Case |
-|---------|-------------|----------|
-| **Allowlist** | Only explicitly permitted tools available | High-security deployments |
-| **Denylist** | Block known dangerous tools | Lower-security, broader capability |
-| **Capability Tokens** | Time-limited, scoped permissions | Temporary elevated access |
-| **Contextual** | Permissions vary by task/user | Enterprise deployments |
-| **Hierarchical** | Approval chain for escalating access | Autonomous agents |
 
 ## Tool Restriction Categories
 

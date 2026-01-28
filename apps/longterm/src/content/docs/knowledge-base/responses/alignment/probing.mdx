@@ -9,6 +9,8 @@ sidebar:
 quality: 3
 importance: 60
 lastEdited: '2025-01-22'
+todos:
+  - "Complete 'How Probing Works' section"
 ---
 import {Mermaid} from '../../../../../components/wiki';
 
@@ -32,53 +34,6 @@ For AI safety applications, probing offers a direct window into whether models h
 | **SI Readiness** | Maybe | Technique scales; effectiveness at SI uncertain |
 | **Current Adoption** | Widespread | Standard research tool across academia and industry |
 | **Research Investment** | \$5-10M/yr | Common technique; many groups use probing as part of broader research |
-
-## How Probing Works
-
-### Basic Architecture
-
-<Mermaid client:load chart={`
-flowchart TD
-    subgraph Model["Target Model"]
-        INPUT[Input Text] --> LAYERS[Hidden Layers]
-        LAYERS --> OUTPUT[Model Output]
-    end
-
-    subgraph Probing["Probe Training"]
-        LAYERS --> EXTRACT[Extract Activations]
-        EXTRACT --> PROBE[Linear Classifier]
-        LABELS[Concept Labels] --> PROBE
-        PROBE --> PRED[Probe Predictions]
-    end
-
-    subgraph Evaluation["Analysis"]
-        PRED --> ACC[Probe Accuracy]
-        ACC --> INSIGHT[What Model Represents]
-    end
-
-    style Model fill:#e1f5ff
-    style Probing fill:#d4edda
-    style Evaluation fill:#fff3cd
-`} />
-
-### Training Process
-
-| Step | Description | Typical Implementation |
-|------|-------------|----------------------|
-| **1. Generate Dataset** | Create input-label pairs for target concept | 1K-100K examples depending on concept complexity |
-| **2. Collect Activations** | Run model on inputs; extract activations at target layer(s) | Usually residual stream or attention outputs |
-| **3. Train Probe** | Fit linear classifier to predict labels from activations | Logistic regression; minimize cross-entropy |
-| **4. Evaluate** | Test on held-out data; compare to baselines | Random baseline; majority class baseline |
-| **5. Interpret** | Analyze what successful probing implies | Layer-by-layer analysis; feature importance |
-
-### Probe Types
-
-| Type | Architecture | Use Case | Limitation |
-|------|--------------|----------|------------|
-| **Linear Probe** | Single linear layer | Standard approach; tests linear accessibility | Can miss nonlinear structure |
-| **MLP Probe** | Multi-layer perceptron | Detect nonlinearly encoded concepts | May overfit; harder to interpret |
-| **Logistic Regression** | Linear + sigmoid | Binary classification (true/false, harmful/safe) | Binary only |
-| **Linear Regression** | Linear output | Continuous values (confidence, probability) | Assumes linear relationship |
 
 ## Applications in AI Safety
 

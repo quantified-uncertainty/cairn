@@ -18,6 +18,9 @@ llmSummary: >-
   concluding registries are necessary but insufficient governance tools (Grade:
   B+) that enable pre-deployment review and incident tracking.
 pageTemplate: knowledge-base-response
+todos:
+  - "Complete 'Core Design Principles' section"
+  - "Complete 'How It Works' section"
 ---
 import {Mermaid, EntityLink} from '../../../../../components/wiki';
 
@@ -28,63 +31,6 @@ Model registries represent a foundational governance tool for managing risks fro
 The policy momentum is significant. The U.S. Executive Order on AI (October 2023) mandated quarterly reporting for models trained above 10^26 FLOP. The EU AI Act requires registration of high-risk AI systems and general-purpose AI models. California's Transparency in Frontier AI Act (TFAIA) mandates annual publication of comprehensive "Frontier AI Frameworks" by large developers. New York's RAISE Act requires incident reporting within 72 hours. These requirements create the skeleton of a registry system, though implementation remains fragmented and early-stage.
 
 The strategic value of model registries lies in their enabling function. A registry alone doesn't prevent harm—but it provides the information foundation for safety requirements, pre-deployment review, incident tracking, and international coordination. Without knowing what models exist and what capabilities they possess, governments cannot effectively regulate AI development. Model registries transform AI governance from reactive to proactive by creating visibility into the development pipeline before deployment.
-
-## Core Design Principles
-
-Effective model registries must balance multiple objectives: providing sufficient information for governance while minimizing regulatory burden on developers and avoiding competitive disclosure concerns.
-
-<Mermaid client:load chart={`
-flowchart TD
-    subgraph DEVELOPERS["AI Developers"]
-        A[Train Model] --> B[Compute Threshold Exceeded?]
-        B -->|Yes| C[Submit Registration]
-        B -->|No| D[No Requirement]
-        C --> E[Provide Required Information]
-    end
-
-    subgraph REGISTRY["Model Registry"]
-        E --> F[Validate Submission]
-        F --> G[Store in Database]
-        G --> H[Public Subset]
-        G --> I[Confidential Subset]
-    end
-
-    subgraph APPLICATIONS["Governance Applications"]
-        H --> J[Public Transparency]
-        I --> K[Pre-Deployment Review]
-        I --> L[Incident Investigation]
-        I --> M[International Coordination]
-        G --> N[Aggregate Statistics]
-    end
-
-    style DEVELOPERS fill:#e1f5ff
-    style REGISTRY fill:#fff3cd
-    style APPLICATIONS fill:#d4edda
-`} />
-
-### Key Design Questions
-
-| Question | Considerations | Current Approaches |
-|----------|---------------|-------------------|
-| **What triggers registration?** | Compute thresholds vs. capabilities vs. use cases | US: 10^26 FLOP; EU: 10^25 FLOP + capability criteria |
-| **What information required?** | Training data, capabilities, safety evals, incidents | Varies; usually training details + safety documentation |
-| **Who has access?** | Public, regulators, international partners | Tiered access common; sensitive info restricted |
-| **When to register?** | Pre-training, pre-deployment, post-deployment | Trend toward pre-deployment notification |
-| **Enforcement mechanisms?** | Penalties for non-compliance | Fines up to \$1-3M (NY RAISE Act) |
-| **Update requirements?** | Material changes, incidents, periodic review | Annual updates + incident reporting |
-
-### Information Categories
-
-A comprehensive model registry would include:
-
-| Category | Information | Sensitivity | Governance Use |
-|----------|-------------|-------------|----------------|
-| **Identity** | Model name, version, developer, release date | Low | Tracking, accountability |
-| **Training** | Compute used, data sources, training methods | Medium-High | Threshold triggers, capability inference |
-| **Capabilities** | Benchmark results, evaluated risks, known limitations | Medium | Risk assessment, deployment decisions |
-| **Safety** | Red team findings, mitigations, known failures | High | Safety requirements, best practices |
-| **Deployment** | APIs, user counts, use cases, geographic reach | Medium | Impact assessment, enforcement |
-| **Incidents** | Failures, harms, near-misses | High | Learning, accountability |
 
 ## Current Implementation Landscape
 
@@ -263,13 +209,6 @@ Based on analysis by Convergence Analysis and the Institute for Law & AI:
 | **Neglectedness** | Low-Medium | Active policy area but implementation gaps |
 | **Timeline to impact** | 1-3 years | Requirements taking effect 2025-2026 |
 | **Grade** | B+ | Foundational but not transformative alone |
-
-## How It Works
-
-[Explain the mechanism of action for this intervention. Include:
-- Key components or steps
-- How it addresses the target risks
-- Dependencies and requirements]
 
 ## Risks Addressed
 

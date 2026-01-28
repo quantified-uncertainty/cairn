@@ -21,6 +21,10 @@ llmSummary: >-
 lastEdited: '2025-12-28'
 importance: 72.5
 pageTemplate: knowledge-base-response
+todos:
+  - "Complete 'How AI-Assisted Deliberation Works' section"
+  - "Complete 'How It Works' section"
+  - "Complete 'Limitations' section (6 placeholders)"
 ---
 import {DataInfoBox, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
@@ -45,31 +49,6 @@ AI-assisted deliberation platforms represent a significant evolution in democrat
 The fundamental promise of these systems is addressing what scholars call the "scale problem" of democracy: how to maintain the quality of deliberation that works in small groups while engaging millions of citizens in consequential decisions. Early implementations in Taiwan, Estonia, and various corporate and academic settings have demonstrated remarkable success in finding consensus on divisive issues, from ride-sharing regulation to AI safety principles. However, significant questions remain about legitimacy, manipulation resistance, and integration with existing democratic institutions.
 
 The implications for AI governance are particularly profound, as these tools offer pathways for meaningful public input on technical decisions that will shape society's relationship with artificial intelligence. As AI systems become more powerful and their governance more critical, the ability to aggregate genuine public wisdom rather than just preferences becomes essential for legitimate and effective policy-making.
-
-## How AI-Assisted Deliberation Works
-
-<Mermaid client:load chart={`
-flowchart TD
-    RECRUIT[Recruit Representative Sample] --> BRIEF[Provide Balanced Briefing Materials]
-    BRIEF --> SUBMIT[Participants Submit Statements]
-    SUBMIT --> VOTE[Vote: Agree/Disagree/Pass]
-    VOTE --> CLUSTER[AI Clusters Similar Voters]
-    CLUSTER --> CONSENSUS[Identify Cross-Cluster Consensus]
-    CONSENSUS --> SYNTHESIZE[AI Synthesizes Key Themes]
-    SYNTHESIZE --> DELIBERATE[Small Group Deliberation]
-    DELIBERATE --> REFINE[Refine Positions Based on Dialogue]
-    REFINE --> VOTE
-    CONSENSUS --> OUTPUT[Policy Recommendations]
-    OUTPUT --> INTEGRATE[Integrate with Governance]
-
-    style RECRUIT fill:#e3f2fd
-    style CLUSTER fill:#fff3e0
-    style CONSENSUS fill:#e8f5e9
-    style OUTPUT fill:#e8f5e9
-    style INTEGRATE fill:#c8e6c9
-`} />
-
-The diagram illustrates the iterative process: participants submit statements and vote on others' statements, AI algorithms cluster similar voters and identify consensus across groups, facilitators synthesize insights, and the cycle repeats until stable recommendations emerge. Taiwan's vTaiwan platform used this approach to resolve the contentious Uber regulation debate, with <R id="554af6334f25ba96">80% of issues leading to government action</R>.
 
 ## Core Technologies and Methodologies
 
@@ -171,13 +150,6 @@ The <R id="1453c82c9ba30e00">European Union's Conference on the Future of Europe
 | Final proposals | 49 proposals, 326 measures |
 
 The platform used <R id="827b7ad705521633">Decidim software</R> (pioneered in Barcelona) with multilingual synthesis across all 24 official EU languages. The <R id="91d4a92a9ca20400">final report</R> delivered in May 2022 reflected genuine European-wide deliberation, with the 800 citizen panel members randomly selected by Kantar Public to reflect diversity in geographic region, gender, age, economic background, and educational attainment.
-
-## How It Works
-
-[Explain the mechanism of action for this intervention. Include:
-- Key components or steps
-- How it addresses the target risks
-- Dependencies and requirements]
 
 ## Risks Addressed
 
@@ -321,12 +293,6 @@ Private funding from technology companies has increased substantially, with Goog
 <R id="778b26138faac342">Twitter/X's Community Notes</R> (formerly Birdwatch) was influenced by Polis, using similar bridging-based consensus mechanisms. The <R id="584db9c0b63c5fda">RSA's Democracy in the Age of AI project</R> explores how deliberation can address AI governance challenges in the UK context.
 
 ---
-
-## Limitations
-
-- **[Limitation 1]**: [Description of what this doesn't address]
-- **[Limitation 2]**: [Description]
-- **[Limitation 3]**: [Description]
 
 ## Sources and Further Reading
 

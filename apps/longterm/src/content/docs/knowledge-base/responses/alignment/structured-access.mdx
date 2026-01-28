@@ -11,6 +11,8 @@ lastEdited: '2025-01-22'
 sidebar:
   order: 26
 pageTemplate: knowledge-base-response
+todos:
+  - "Complete 'How Structured Access Works' section"
 ---
 import {Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
@@ -39,58 +41,6 @@ Structured access has become the default for frontier AI systems, with GPT-4, Cl
 - **Current Investment**: \$10-50M/yr (core to lab deployment strategy)
 - **Recommendation**: Maintain (important default; well-resourced by commercial incentives)
 - **Differential Progress**: Safety-leaning (primarily about control; also protects IP)
-
-## How Structured Access Works
-
-Structured access creates controlled channels for AI capability access:
-
-<Mermaid client:load chart={`
-flowchart TD
-    A[Users] --> B[API Gateway]
-    B --> C[Authentication]
-    C --> D[Rate Limiting]
-    D --> E[Policy Enforcement]
-    E --> F[Model Inference]
-    F --> G[Output Filtering]
-    G --> H[Logging]
-    H --> I[Response to User]
-
-    J[Provider Controls] --> B
-    J --> C
-    J --> D
-    J --> E
-    J --> G
-    J --> H
-
-    style B fill:#d4edda
-    style J fill:#d4edda
-`} />
-
-### Control Points
-
-| Control | Mechanism | Safety Benefit |
-|---------|-----------|---------------|
-| **Authentication** | API keys, account verification | Know who is using the system |
-| **Rate Limiting** | Request limits, throttling | Prevent bulk misuse |
-| **Policy Enforcement** | Content policies, use case restrictions | Block prohibited uses |
-| **Output Filtering** | Content moderation on outputs | Prevent harmful outputs |
-| **Monitoring** | Usage logging, pattern detection | Detect and respond to misuse |
-| **Access Revocation** | Disable keys, ban accounts | Respond to policy violations |
-| **Model Updates** | Update weights server-side | Fix issues without user action |
-
-### Structured Access vs. Open Weights
-
-| Dimension | Structured Access (API) | Open Weights |
-|-----------|------------------------|--------------|
-| **Provider control** | Full | None |
-| **User flexibility** | Limited | Full |
-| **Monitoring capability** | Yes | No |
-| **Policy enforcement** | Yes | No |
-| **Model updates** | Automatic | User must update |
-| **Fine-tuning** | Limited/No | Full |
-| **Cost model** | Per-use fees | One-time download |
-| **Offline use** | No | Yes |
-| **Proliferation control** | Yes | No |
 
 ## Benefits of Structured Access
 
