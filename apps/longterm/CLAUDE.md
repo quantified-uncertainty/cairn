@@ -267,6 +267,58 @@ seeAlso: "comprehensive-topic"  # Optional: points to primary coverage
 
 **Note:** The grading script (`scripts/content/grade-content.mjs`) automatically skips overview and stub pages.
 
+### Page TODOs System
+
+Pages can have a `todos` array in frontmatter to track incomplete sections. These are displayed in the PageStatus component (dev-only) and help track content that needs work.
+
+**Frontmatter format:**
+```yaml
+---
+title: "Page Title"
+todos:
+  - "Complete 'How It Works' section"
+  - "Fill in Limitations (3 items)"
+  - "Add Key Uncertainties"
+---
+```
+
+**How it works:**
+- TODOs appear in the PageStatus component with a violet badge
+- Only visible in dev mode (controlled by header toggle)
+- Count shown in header: "TODOs (3)"
+
+**Migration script:**
+
+The `migrate-placeholders-to-todos.mjs` script converts placeholder content to tracked TODOs:
+
+```bash
+# Preview changes without modifying files
+node scripts/migrate-placeholders-to-todos.mjs --dry-run
+
+# Apply changes to files
+node scripts/migrate-placeholders-to-todos.mjs --apply
+```
+
+The script:
+1. Scans MDX files in `knowledge-base/`
+2. Detects placeholder patterns like `[Explain...]`, `[Limitation N]`, `[Description]`
+3. Extracts section names containing placeholders as TODO items
+4. Adds `todos: [...]` to frontmatter (preserving original formatting)
+5. Removes the placeholder sections from content
+
+**Placeholder patterns detected:**
+- `[Explain the mechanism...]`
+- `[Limitation 1]: [Description]`
+- `[Uncertainty 1]: [Description]`
+- `[Low/Medium/High]`, `[Brief justification]`
+- `[Value]`, `[Range]`, `[Citation]`, `[Source]`
+- `[Describe...]`, `[Provide...]`, `[List...]`
+
+**When completing a TODO:**
+1. Write the actual content for the section
+2. Manually remove the item from the `todos` array in frontmatter
+3. Update `lastEdited` date
+
 ### AI Transition Model Data Architecture
 
 **YAML is the single source of truth** for AI Transition Model pages:
