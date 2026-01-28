@@ -1,3 +1,8 @@
+---
+title: "Models Style Guide"
+description: "Style guide for writing model and analysis pages"
+---
+
 # Models Style Guide
 
 This guide defines the standards for analytical models in CAIRN. Models should maximize **information density** while remaining accessible.

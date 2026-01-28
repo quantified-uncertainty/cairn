@@ -1,3 +1,8 @@
+---
+title: "Parameters Strategy"
+description: "Strategy for AI transition model parameters"
+---
+
 # Key Parameters Implementation Strategy
 
 This document outlines the strategy for creating new parameter pages in the knowledge base. It is designed to be given to multiple Claude Code instances working in parallel.
