@@ -18,6 +18,7 @@ import { parse as parseYaml } from 'yaml';
 import { findMdxFiles } from '../lib/file-utils.mjs';
 import { getColors } from '../lib/output.mjs';
 import { CONTENT_DIR, DATA_DIR } from '../lib/content-types.mjs';
+import { parseFrontmatter, shouldSkipValidation } from '../lib/mdx-utils.mjs';
 
 const colors = getColors();
 
@@ -211,6 +212,13 @@ function main() {
   let missingEntityRefs = 0;
   for (const file of mdxFiles) {
     const content = readFileSync(file, 'utf-8');
+    const frontmatter = parseFrontmatter(content);
+
+    // Skip pages marked as documentation (contain examples that would trigger false positives)
+    if (shouldSkipValidation(frontmatter)) {
+      continue;
+    }
+
     const match = content.match(/<DataInfoBox\s+entityId="([^"]+)"/);
     if (match) {
       const entityId = match[1];

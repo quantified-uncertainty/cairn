@@ -151,3 +151,18 @@ export function extractLinks(body) {
   }
   return links;
 }
+
+/**
+ * Page types that should skip content validation
+ * These pages contain examples/documentation that would trigger false positives
+ */
+const SKIP_VALIDATION_PAGE_TYPES = ['stub', 'documentation'];
+
+/**
+ * Check if a page should skip validation based on frontmatter
+ * @param {object} frontmatter - Parsed frontmatter object
+ * @returns {boolean} True if validation should be skipped
+ */
+export function shouldSkipValidation(frontmatter) {
+  return SKIP_VALIDATION_PAGE_TYPES.includes(frontmatter.pageType);
+}

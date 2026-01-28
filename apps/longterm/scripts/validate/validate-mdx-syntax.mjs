@@ -21,6 +21,7 @@ import { readFileSync } from 'fs';
 import { findMdxFiles } from '../lib/file-utils.mjs';
 import { getColors, formatPath } from '../lib/output.mjs';
 import { CONTENT_DIR } from '../lib/content-types.mjs';
+import { parseFrontmatter, shouldSkipValidation } from '../lib/mdx-utils.mjs';
 
 const CI_MODE = process.argv.includes('--ci');
 const colors = getColors(CI_MODE);
@@ -199,7 +200,16 @@ function main() {
   }
 
   let infoCount = 0;
+  let skippedCount = 0;
   for (const file of files) {
+    // Skip documentation pages that may contain examples triggering false positives
+    const content = readFileSync(file, 'utf-8');
+    const frontmatter = parseFrontmatter(content);
+    if (shouldSkipValidation(frontmatter)) {
+      skippedCount++;
+      continue;
+    }
+
     const issues = checkFile(file);
     if (issues.length > 0) {
       allIssues.push({ file, issues });
