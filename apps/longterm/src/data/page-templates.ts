@@ -6,6 +6,14 @@
  * - Required frontmatter fields
  * - Required and optional sections (with scoring weights)
  * - Quality criteria for evaluation
+ * - Reference to the corresponding style guide
+ *
+ * STYLE GUIDES:
+ * Templates reference style guides in /internal/ that provide detailed writing guidance:
+ * - /internal/risk-style-guide/ - Risk pages
+ * - /internal/response-style-guide/ - Response/intervention pages
+ * - /internal/ai-transition-model-style-guide/ - ATM factor/scenario/parameter pages
+ * - /internal/models-style-guide/ - Analytical model pages
  *
  * DATA ARCHITECTURE:
  * - YAML (parameter-graph.yaml) is the single source of truth for AI Transition Model metadata
@@ -29,6 +37,26 @@ export type TemplateId =
   | 'knowledge-base-concept'
   | 'knowledge-base-organization'
   | 'knowledge-base-person';
+
+/**
+ * URL path patterns for suggesting templates based on file location
+ */
+export const TEMPLATE_PATH_PATTERNS: Array<{ pattern: RegExp; templateId: TemplateId; priority: number }> = [
+  // AI Transition Model patterns (more specific first)
+  { pattern: /^ai-transition-model\/factors\/[^/]+\/index\.mdx$/, templateId: 'ai-transition-model-factor', priority: 100 },
+  { pattern: /^ai-transition-model\/scenarios\/[^/]+\/index\.mdx$/, templateId: 'ai-transition-model-scenario', priority: 100 },
+  { pattern: /^ai-transition-model\/outcomes\/[^/]+\.mdx$/, templateId: 'ai-transition-model-outcome', priority: 90 },
+  { pattern: /^ai-transition-model\/parameters\/[^/]+\.mdx$/, templateId: 'ai-transition-model-parameter', priority: 90 },
+  { pattern: /^ai-transition-model\/(factors|scenarios)\/[^/]+\/[^/]+\.mdx$/, templateId: 'ai-transition-model-sub-item', priority: 80 },
+
+  // Knowledge Base patterns
+  { pattern: /^knowledge-base\/risks\/.*\.mdx$/, templateId: 'knowledge-base-risk', priority: 70 },
+  { pattern: /^knowledge-base\/responses\/.*\.mdx$/, templateId: 'knowledge-base-response', priority: 70 },
+  { pattern: /^knowledge-base\/models\/.*\.mdx$/, templateId: 'knowledge-base-model', priority: 70 },
+  { pattern: /^knowledge-base\/concepts\/.*\.mdx$/, templateId: 'knowledge-base-concept', priority: 70 },
+  { pattern: /^knowledge-base\/organizations\/.*\.mdx$/, templateId: 'knowledge-base-organization', priority: 70 },
+  { pattern: /^knowledge-base\/people\/.*\.mdx$/, templateId: 'knowledge-base-person', priority: 70 },
+];
 
 export interface TemplateSection {
   id: string;
@@ -70,8 +98,10 @@ export interface PageTemplate {
   id: TemplateId;
   name: string;
   description: string;
-  /** Path pattern this template applies to */
+  /** Path pattern this template applies to (glob-style) */
   pathPattern: string;
+  /** URL path to the style guide for this template type */
+  styleGuide?: string;
   /** Required frontmatter fields */
   frontmatter: FrontmatterField[];
   /** Expected sections in order */
@@ -92,102 +122,97 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'ai-transition-model-factor': {
     id: 'ai-transition-model-factor',
     name: 'AI Transition Model - Root Factor',
-    description: 'Top-level factor pages (e.g., AI Capabilities, Misalignment Potential)',
+    description: 'Top-level factor pages (e.g., AI Capabilities, Misalignment Potential). YAML is the source of truth for ratings and metadata.',
     pathPattern: '/ai-transition-model/factors/*/index.mdx',
+    styleGuide: '/internal/ai-transition-model-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Factor name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Brief description for previews', weight: 10 },
-      { name: 'template', type: 'string', required: true, description: 'Must be "ai-transition-model-factor"', weight: 5 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
+      { name: 'description', type: 'string', required: false, description: 'Brief description for previews (also in YAML)', weight: 10 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"ai-transition-model-factor"', weight: 5 },
     ],
     sections: [
-      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs introducing the factor', weight: 20 },
-      { id: 'sub-factors', label: 'Sub-Factors', alternateLabels: ['Components', 'Sub-Items'], required: true, headingLevel: 'h2', description: 'List of sub-items with brief descriptions', weight: 15 },
-      { id: 'how-affects', label: 'How This Affects Outcomes', alternateLabels: ['Impact', 'Effects'], required: false, headingLevel: 'h2', description: 'Connection to scenarios and outcomes', weight: 10 },
-      { id: 'related-content', label: 'Related Content', required: false, headingLevel: 'h2', description: 'Links to knowledge base', weight: 5 },
+      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs introducing the factor (custom prose)', weight: 20 },
     ],
     qualityCriteria: [
-      { id: 'has-diagram', label: 'Has Diagram', description: 'Includes Mermaid or relationship diagram', weight: 15, detection: 'diagram' },
-      { id: 'has-table', label: 'Has Data Table', description: 'Includes structured data table', weight: 10, detection: 'table' },
-      { id: 'word-count', label: 'Sufficient Length', description: 'At least 300 words of prose', weight: 10, detection: 'content' },
+      { id: 'has-yaml-entity', label: 'Has YAML Entity', description: 'Entity exists in ai-transition-model.yaml', weight: 25, detection: 'content' },
+      { id: 'has-cause-effect-graph', label: 'Has Cause-Effect Graph', description: 'Entity has causeEffectGraph in YAML', weight: 25, detection: 'content' },
+      { id: 'has-yaml-debates', label: 'Has Key Debates', description: 'Entity has keyDebates in YAML', weight: 15, detection: 'content' },
+      { id: 'has-overview-prose', label: 'Has Custom Prose', description: 'MDX has custom Overview prose content', weight: 15, detection: 'content' },
     ],
     autoComponent: 'TransitionModelContent',
     examplePage: '/ai-transition-model/factors/ai-capabilities/',
-    minWordCount: 300,
+    minWordCount: 200,
   },
 
   'ai-transition-model-scenario': {
     id: 'ai-transition-model-scenario',
     name: 'AI Transition Model - Scenario Category',
-    description: 'Scenario category pages (e.g., AI Takeover, Long-term Lock-in)',
+    description: 'Scenario category pages (e.g., AI Takeover, Long-term Lock-in). YAML is the source of truth for ratings and metadata.',
     pathPattern: '/ai-transition-model/scenarios/*/index.mdx',
+    styleGuide: '/internal/ai-transition-model-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Scenario category name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Brief description for previews', weight: 10 },
-      { name: 'template', type: 'string', required: true, description: 'Must be "ai-transition-model-scenario"', weight: 5 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
+      { name: 'description', type: 'string', required: false, description: 'Brief description for previews (also in YAML)', weight: 10 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"ai-transition-model-scenario"', weight: 5 },
     ],
     sections: [
       { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs introducing the scenario category', weight: 20 },
-      { id: 'variants', label: 'Variants', alternateLabels: ['Scenario Variants', 'Types'], required: true, headingLevel: 'h2', description: 'List of specific scenario variants', weight: 15 },
-      { id: 'factors', label: 'Influencing Factors', alternateLabels: ['What Influences This', 'Contributing Factors'], required: false, headingLevel: 'h2', description: 'Factors that affect this scenario', weight: 10 },
-      { id: 'outcomes', label: 'Outcomes Affected', alternateLabels: ['Impact on Outcomes'], required: false, headingLevel: 'h2', description: 'Which outcomes this scenario affects', weight: 10 },
     ],
     qualityCriteria: [
-      { id: 'has-diagram', label: 'Has Diagram', description: 'Includes Mermaid or relationship diagram', weight: 15, detection: 'diagram' },
-      { id: 'has-probability', label: 'Has Probability Estimates', description: 'Includes probability or likelihood estimates', weight: 10, detection: 'content', pattern: '\\d+%|probability|likelihood' },
-      { id: 'word-count', label: 'Sufficient Length', description: 'At least 300 words of prose', weight: 10, detection: 'content' },
+      { id: 'has-yaml-entity', label: 'Has YAML Entity', description: 'Entity exists in ai-transition-model.yaml', weight: 25, detection: 'content' },
+      { id: 'has-cause-effect-graph', label: 'Has Cause-Effect Graph', description: 'Entity has causeEffectGraph in YAML', weight: 25, detection: 'content' },
+      { id: 'has-probability', label: 'Has Probability Estimates', description: 'Includes probability or likelihood estimates in YAML', weight: 15, detection: 'content', pattern: '\\d+%|probability|likelihood' },
+      { id: 'has-overview-prose', label: 'Has Custom Prose', description: 'MDX has custom Overview prose content', weight: 15, detection: 'content' },
     ],
     autoComponent: 'TransitionModelContent',
     examplePage: '/ai-transition-model/scenarios/ai-takeover/',
-    minWordCount: 300,
+    minWordCount: 200,
   },
 
   'ai-transition-model-outcome': {
     id: 'ai-transition-model-outcome',
     name: 'AI Transition Model - Outcome',
-    description: 'Ultimate outcome pages (Existential Catastrophe, Long-term Trajectory)',
+    description: 'Ultimate outcome pages (Existential Catastrophe, Long-term Trajectory). YAML is the source of truth.',
     pathPattern: '/ai-transition-model/outcomes/*.mdx',
+    styleGuide: '/internal/ai-transition-model-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Outcome name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Brief description for previews', weight: 10 },
-      { name: 'template', type: 'string', required: true, description: 'Must be "ai-transition-model-outcome"', weight: 5 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
+      { name: 'description', type: 'string', required: false, description: 'Brief description for previews (also in YAML)', weight: 10 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"ai-transition-model-outcome"', weight: 5 },
     ],
     sections: [
       { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: 'Definition and scope of this outcome', weight: 20 },
-      { id: 'sub-dimensions', label: 'Sub-dimensions', alternateLabels: ['Dimensions', 'Components'], required: true, headingLevel: 'h2', description: 'Breakdown of outcome dimensions', weight: 15 },
-      { id: 'what-contributes', label: 'What Contributes', alternateLabels: ['Contributing Factors', 'What Shapes'], required: true, headingLevel: 'h2', description: 'Factors and scenarios that contribute', weight: 15 },
-      { id: 'why-matters', label: 'Why This Matters', required: true, headingLevel: 'h2', description: 'Importance and implications', weight: 10 },
-      { id: 'scenarios', label: 'Scenarios', alternateLabels: ['Related Scenarios'], required: false, headingLevel: 'h2', description: 'Specific scenarios leading here', weight: 10 },
     ],
     qualityCriteria: [
-      { id: 'has-diagram', label: 'Has Diagram', description: 'Includes relationship diagram', weight: 15, detection: 'diagram' },
-      { id: 'has-impact-list', label: 'Has Impact Scores', description: 'Shows impact scores from scenarios', weight: 10, detection: 'component', pattern: 'ImpactList' },
-      { id: 'word-count', label: 'Sufficient Length', description: 'At least 400 words of prose', weight: 10, detection: 'content' },
+      { id: 'has-yaml-entity', label: 'Has YAML Entity', description: 'Entity exists in ai-transition-model.yaml', weight: 25, detection: 'content' },
+      { id: 'has-cause-effect-graph', label: 'Has Cause-Effect Graph', description: 'Entity has causeEffectGraph showing contributing factors', weight: 25, detection: 'content' },
+      { id: 'has-overview-prose', label: 'Has Custom Prose', description: 'MDX has custom Overview prose content', weight: 15, detection: 'content' },
+      { id: 'word-count', label: 'Sufficient Length', description: 'At least 300 words of prose', weight: 10, detection: 'content' },
     ],
     autoComponent: 'TransitionModelContent',
     examplePage: '/ai-transition-model/outcomes/existential-catastrophe/',
-    minWordCount: 400,
+    minWordCount: 300,
   },
 
   'ai-transition-model-sub-item': {
     id: 'ai-transition-model-sub-item',
     name: 'AI Transition Model - Sub-Item',
-    description: 'Specific factor sub-items or scenario variants (e.g., Compute, Rapid Takeover). Uses simplified ATMPage pattern.',
+    description: 'Specific factor sub-items or scenario variants (e.g., Compute, Rapid Takeover). YAML is the source of truth - MDX is minimal.',
     pathPattern: '/ai-transition-model/*/*.mdx',
+    styleGuide: '/internal/ai-transition-model-style-guide/',
     usesATMPage: true,
     frontmatter: [
-      { name: 'title', type: 'string', required: true, description: 'Sub-item name', weight: 10 },
-      { name: 'template', type: 'string', required: true, description: 'Must be "ai-transition-model-sub-item"', weight: 5 },
+      { name: 'title', type: 'string', required: true, description: 'Sub-item name (for sidebar/SEO)', weight: 10 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"ai-transition-model-sub-item"', weight: 5 },
     ],
     sections: [
       // ATMPage renders all content from YAML, so no manual sections required
+      // Optional Overview section can contain custom prose
     ],
     qualityCriteria: [
+      { id: 'has-yaml-entity', label: 'Has YAML Entity', description: 'Entity exists in ai-transition-model.yaml with parentFactor', weight: 25, detection: 'content' },
       { id: 'has-yaml-description', label: 'Has YAML Description', description: 'Entity has description in YAML', weight: 20, detection: 'content' },
-      { id: 'has-yaml-debates', label: 'Has Key Debates', description: 'Entity has keyDebates in YAML', weight: 15, detection: 'content' },
-      { id: 'has-yaml-related', label: 'Has Related Content', description: 'Entity has relatedContent in YAML', weight: 15, detection: 'content' },
+      { id: 'has-yaml-ratings', label: 'Has YAML Ratings', description: 'Entity has ratings (changeability, xriskImpact, uncertainty) in YAML', weight: 15, detection: 'content' },
       { id: 'has-cause-effect-graph', label: 'Has Cause-Effect Graph', description: 'Entity has causeEffectGraph in YAML', weight: 20, detection: 'content' },
     ],
     autoComponent: 'ATMPage',
@@ -199,6 +224,7 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
     name: 'AI Transition Model - Parameter',
     description: 'Detailed parameter pages with comprehensive analysis (e.g., Alignment Robustness, Societal Trust)',
     pathPattern: '/ai-transition-model/parameters/*.mdx',
+    styleGuide: '/internal/ai-transition-model-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Parameter name', weight: 5 },
       { name: 'description', type: 'string', required: true, description: 'Brief description with key finding', weight: 15 },
@@ -238,31 +264,32 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'knowledge-base-risk': {
     id: 'knowledge-base-risk',
     name: 'Knowledge Base - Risk',
-    description: 'Risk analysis pages in the knowledge base',
+    description: 'Risk analysis pages analyzing potential negative outcomes from AI development.',
     pathPattern: '/knowledge-base/risks/**/*.mdx',
+    styleGuide: '/internal/risk-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Risk name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Brief description with key finding', weight: 15 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-risk"', weight: 5 },
-      { name: 'quality', type: 'number', required: true, description: 'Quality rating 1-5', weight: 10 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
+      { name: 'description', type: 'string', required: true, description: 'One sentence explaining what this risk is and its key concern', weight: 15 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-risk"', weight: 5 },
+      { name: 'quality', type: 'number', required: true, description: 'Quality rating 0-100', weight: 10 },
       { name: 'importance', type: 'number', required: false, description: 'Importance rating 0-100', weight: 5 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
     ],
     sections: [
-      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 substantive paragraphs', weight: 15 },
-      { id: 'risk-assessment', label: 'Risk Assessment', alternateLabels: ['Assessment', 'Risk Summary'], required: true, headingLevel: 'h2', description: 'Table with severity, likelihood, timeline, trend', weight: 15 },
-      { id: 'mechanisms', label: 'How It Works', alternateLabels: ['Mechanisms', 'How This Happens', 'Pathways'], required: true, headingLevel: 'h2', description: 'How the risk manifests', weight: 15 },
-      { id: 'evidence', label: 'Evidence', alternateLabels: ['Current Evidence', 'Empirical Evidence'], required: false, headingLevel: 'h2', description: 'Empirical support for the risk', weight: 10 },
-      { id: 'scenarios', label: 'Scenarios', alternateLabels: ['Risk Scenarios', 'How It Could Happen'], required: false, headingLevel: 'h2', description: 'Specific risk scenarios with estimates', weight: 10 },
-      { id: 'responses', label: 'Responses', alternateLabels: ['Responses That Address This', 'Mitigations', 'Interventions'], required: true, headingLevel: 'h2', description: 'Cross-links to interventions', weight: 10 },
-      { id: 'uncertainties', label: 'Key Uncertainties', alternateLabels: ['Uncertainties', 'What We Don\'t Know'], required: true, headingLevel: 'h2', description: 'What we don\'t know', weight: 10 },
+      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 substantive paragraphs explaining what this risk is and why it matters', weight: 15 },
+      { id: 'risk-assessment', label: 'Risk Assessment', alternateLabels: ['Assessment', 'Risk Summary'], required: true, headingLevel: 'h2', description: 'Table with Severity, Likelihood, Timeline, Trend, Reversibility columns', weight: 15 },
+      { id: 'mechanisms', label: 'How It Works', alternateLabels: ['Mechanisms', 'How This Happens', 'Pathways'], required: true, headingLevel: 'h2', description: 'How the risk manifests, with Mermaid diagram', weight: 15 },
+      { id: 'contributing-factors', label: 'Contributing Factors', alternateLabels: ['Factors', 'What Affects This'], required: false, headingLevel: 'h2', description: 'Table of factors that increase/decrease risk', weight: 10 },
+      { id: 'responses', label: 'Responses That Address This Risk', alternateLabels: ['Responses', 'Mitigations', 'Interventions'], required: true, headingLevel: 'h2', description: 'Table with cross-links to response pages', weight: 10 },
+      { id: 'uncertainties', label: 'Key Uncertainties', alternateLabels: ['Uncertainties', 'What We Don\'t Know'], required: true, headingLevel: 'h2', description: 'Numbered list of what we don\'t know', weight: 10 },
+      { id: 'related-risks', label: 'Related Risks', alternateLabels: ['Related', 'See Also'], required: false, headingLevel: 'h2', description: 'Links to connected risk pages', weight: 5 },
       { id: 'sources', label: 'Sources', alternateLabels: ['References', 'Key Sources', 'Further Reading'], required: false, headingLevel: 'h2', description: 'Citations and references', weight: 5 },
     ],
     qualityCriteria: [
-      { id: 'has-risk-table', label: 'Has Risk Assessment Table', description: 'Table with severity/likelihood/timeline', weight: 20, detection: 'table', pattern: 'severity|likelihood|timeline' },
-      { id: 'has-diagram', label: 'Has Mechanism Diagram', description: 'Mermaid or other diagram showing how risk manifests', weight: 15, detection: 'diagram' },
-      { id: 'has-citations', label: 'Has Citations', description: 'Includes 3+ citations', weight: 15, detection: 'citation', pattern: '<R id=|\\[.*\\]\\(http' },
-      { id: 'has-scenarios', label: 'Has Scenario Table', description: 'Table with specific scenarios and probabilities', weight: 10, detection: 'table', pattern: 'scenario|probability' },
+      { id: 'has-risk-table', label: 'Has Risk Assessment Table', description: 'Table with Severity|Likelihood|Timeline|Trend|Reversibility', weight: 20, detection: 'table', pattern: 'Severity|Likelihood|Timeline' },
+      { id: 'has-diagram', label: 'Has Mechanism Diagram', description: 'Mermaid flowchart showing how risk manifests', weight: 15, detection: 'diagram' },
+      { id: 'has-citations', label: 'Has Citations', description: 'Includes 3+ citations with <R> components or links', weight: 15, detection: 'citation', pattern: '<R id=|\\[.*\\]\\(http' },
+      { id: 'has-contributing-factors', label: 'Has Contributing Factors Table', description: 'Table showing factors that increase/decrease risk', weight: 10, detection: 'table', pattern: 'Factor|Effect|Mechanism' },
       { id: 'word-count', label: 'Sufficient Length', description: 'At least 800 words of prose', weight: 10, detection: 'content' },
       { id: 'has-responses', label: 'Links to Responses', description: 'Cross-links to intervention pages', weight: 10, detection: 'content', pattern: '/knowledge-base/responses/' },
     ],
@@ -273,63 +300,65 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'knowledge-base-response': {
     id: 'knowledge-base-response',
     name: 'Knowledge Base - Response/Intervention',
-    description: 'Intervention and response pages',
+    description: 'Intervention, policy, and technical approach pages that address AI risks.',
     pathPattern: '/knowledge-base/responses/**/*.mdx',
+    styleGuide: '/internal/response-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Response name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Brief description with assessment', weight: 15 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-response"', weight: 5 },
-      { name: 'quality', type: 'number', required: true, description: 'Quality rating 1-5', weight: 10 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
+      { name: 'description', type: 'string', required: true, description: 'One sentence explaining what this response does and its key mechanism', weight: 15 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-response"', weight: 5 },
+      { name: 'quality', type: 'number', required: true, description: 'Quality rating 0-100', weight: 10 },
       { name: 'importance', type: 'number', required: false, description: 'Importance rating 0-100', weight: 5 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
     ],
     sections: [
-      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs', weight: 15 },
-      { id: 'quick-assessment', label: 'Quick Assessment', alternateLabels: ['Assessment', 'Summary Assessment', 'Evaluation'], required: true, headingLevel: 'h2', description: 'Table with tractability grades (A-F or 1-5)', weight: 15 },
-      { id: 'how-it-works', label: 'How It Works', alternateLabels: ['Mechanism', 'Approach', 'Method'], required: true, headingLevel: 'h2', description: 'Mechanism of action', weight: 15 },
-      { id: 'current-state', label: 'Current State', alternateLabels: ['State of the Field', 'Current Progress'], required: false, headingLevel: 'h2', description: 'Current implementation and progress', weight: 10 },
-      { id: 'key-actors', label: 'Key Actors', alternateLabels: ['Organizations', 'Who\'s Working on This'], required: false, headingLevel: 'h2', description: 'Organizations and researchers working on this', weight: 5 },
-      { id: 'risks-addressed', label: 'Risks Addressed', alternateLabels: ['Addresses These Risks', 'Target Risks'], required: true, headingLevel: 'h2', description: 'Cross-links to risks', weight: 10 },
-      { id: 'limitations', label: 'Limitations', alternateLabels: ['Challenges', 'Weaknesses', 'What This Doesn\'t Solve'], required: true, headingLevel: 'h2', description: 'What this doesn\'t solve', weight: 10 },
+      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs explaining what this response is and why it matters', weight: 15 },
+      { id: 'quick-assessment', label: 'Quick Assessment', alternateLabels: ['Assessment', 'Summary Assessment', 'Evaluation'], required: true, headingLevel: 'h2', description: 'Table with Tractability, Scalability, Current Maturity, Time Horizon, Key Proponents', weight: 15 },
+      { id: 'how-it-works', label: 'How It Works', alternateLabels: ['Mechanism', 'Approach', 'Method'], required: true, headingLevel: 'h2', description: 'Technical explanation with Mermaid diagram', weight: 15 },
+      { id: 'risks-addressed', label: 'Risks Addressed', alternateLabels: ['Addresses These Risks', 'Target Risks'], required: true, headingLevel: 'h2', description: 'Table with cross-links to risk pages', weight: 10 },
+      { id: 'limitations', label: 'Limitations', alternateLabels: ['Challenges', 'Weaknesses', 'What This Doesn\'t Solve'], required: true, headingLevel: 'h2', description: 'What this approach cannot do or gets wrong', weight: 10 },
+      { id: 'current-state', label: 'Current State', alternateLabels: ['State of the Field', 'Current Progress'], required: false, headingLevel: 'h2', description: 'Who is working on this and what progress has been made', weight: 10 },
+      { id: 'open-questions', label: 'Open Questions', alternateLabels: ['Research Questions', 'Future Work'], required: false, headingLevel: 'h2', description: 'Unsolved problems and research directions', weight: 5 },
       { id: 'sources', label: 'Sources', alternateLabels: ['References', 'Key Sources', 'Further Reading'], required: false, headingLevel: 'h2', description: 'Citations and references', weight: 5 },
     ],
     qualityCriteria: [
-      { id: 'has-assessment-table', label: 'Has Assessment Table', description: 'Table with tractability/effectiveness grades', weight: 20, detection: 'table', pattern: 'tractability|effectiveness|grade' },
-      { id: 'has-diagram', label: 'Has Diagram', description: 'Mermaid or other diagram showing mechanism', weight: 10, detection: 'diagram' },
-      { id: 'has-citations', label: 'Has Citations', description: 'Includes 3+ citations', weight: 15, detection: 'citation', pattern: '<R id=|\\[.*\\]\\(http' },
+      { id: 'has-assessment-table', label: 'Has Quick Assessment Table', description: 'Table with Tractability|Scalability|Maturity columns', weight: 20, detection: 'table', pattern: 'Tractability|Scalability|Maturity|Dimension' },
+      { id: 'has-diagram', label: 'Has Mechanism Diagram', description: 'Mermaid flowchart showing how it works', weight: 10, detection: 'diagram' },
+      { id: 'has-citations', label: 'Has Citations', description: 'Includes 3+ citations with <R> components or links', weight: 15, detection: 'citation', pattern: '<R id=|\\[.*\\]\\(http' },
       { id: 'word-count', label: 'Sufficient Length', description: 'At least 600 words of prose', weight: 10, detection: 'content' },
       { id: 'has-risk-links', label: 'Links to Risks', description: 'Cross-links to risk pages', weight: 15, detection: 'content', pattern: '/knowledge-base/risks/' },
     ],
-    examplePage: '/knowledge-base/responses/alignment/interpretability/',
+    examplePage: '/knowledge-base/responses/alignment/mech-interp/',
     minWordCount: 600,
   },
 
   'knowledge-base-model': {
     id: 'knowledge-base-model',
     name: 'Knowledge Base - Analytical Model',
-    description: 'Quantitative or conceptual model pages',
+    description: 'Quantitative or conceptual model pages with structured analysis.',
     pathPattern: '/knowledge-base/models/**/*.mdx',
+    styleGuide: '/internal/models-style-guide/',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Model name', weight: 5 },
-      { name: 'description', type: 'string', required: true, description: 'Methodology AND key conclusion', weight: 20 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-model"', weight: 5 },
-      { name: 'quality', type: 'number', required: true, description: 'Quality rating 1-5', weight: 10 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
-      { name: 'ratings', type: 'object', required: false, description: 'novelty, rigor, actionability, completeness', weight: 10 },
+      { name: 'description', type: 'string', required: true, description: 'Methodology AND key conclusion (e.g., "This model estimates X. It finds Y.")', weight: 20 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-model"', weight: 5 },
+      { name: 'quality', type: 'number', required: true, description: 'Quality rating 0-100', weight: 10 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
+      { name: 'ratings', type: 'object', required: false, description: 'novelty, rigor, actionability, completeness (0-5 each)', weight: 10 },
     ],
     sections: [
-      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs with key conclusion', weight: 15 },
-      { id: 'framework', label: 'Conceptual Framework', alternateLabels: ['Framework', 'Model Structure', 'Methodology'], required: true, headingLevel: 'h2', description: 'Diagram + explanation of model structure', weight: 20 },
-      { id: 'analysis', label: 'Quantitative Analysis', alternateLabels: ['Analysis', 'Results', 'Findings'], required: true, headingLevel: 'h2', description: 'Tables with uncertainty ranges', weight: 20 },
-      { id: 'importance', label: 'Strategic Importance', alternateLabels: ['Implications', 'Why This Matters', 'Key Insights'], required: true, headingLevel: 'h2', description: 'Magnitude, ranking, implications', weight: 10 },
+      { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: '2-3 paragraphs with key conclusion/finding', weight: 15 },
+      { id: 'framework', label: 'Conceptual Framework', alternateLabels: ['Framework', 'Model Structure', 'Methodology'], required: true, headingLevel: 'h2', description: 'Mermaid diagram + explanation of model structure', weight: 20 },
+      { id: 'analysis', label: 'Quantitative Analysis', alternateLabels: ['Analysis', 'Results', 'Findings'], required: true, headingLevel: 'h2', description: 'Tables with uncertainty ranges (e.g., 10-30%)', weight: 20 },
+      { id: 'importance', label: 'Strategic Importance', alternateLabels: ['Implications', 'Why This Matters', 'Key Insights'], required: true, headingLevel: 'h2', description: 'Magnitude, comparative ranking, resource implications', weight: 10 },
       { id: 'limitations', label: 'Limitations', alternateLabels: ['Caveats', 'What This Doesn\'t Capture'], required: true, headingLevel: 'h2', description: 'What the model doesn\'t capture', weight: 10 },
       { id: 'sources', label: 'Sources', alternateLabels: ['References', 'Key Sources'], required: false, headingLevel: 'h2', description: 'Citations and references', weight: 5 },
     ],
     qualityCriteria: [
-      { id: 'has-framework-diagram', label: 'Has Framework Diagram', description: 'Mermaid or other diagram showing model structure', weight: 20, detection: 'diagram' },
+      { id: 'has-framework-diagram', label: 'Has Framework Diagram', description: 'Mermaid diagram showing model structure', weight: 20, detection: 'diagram' },
       { id: 'has-data-tables', label: 'Has Quantitative Tables', description: 'Tables with numbers and uncertainty ranges', weight: 20, detection: 'table', pattern: '\\d+%|\\d+-\\d+|±' },
       { id: 'has-citations', label: 'Has Citations', description: 'Includes 3+ citations', weight: 10, detection: 'citation', pattern: '<R id=|\\[.*\\]\\(http' },
-      { id: 'description-has-conclusion', label: 'Description Has Conclusion', description: 'Description field includes key finding/number', weight: 15, detection: 'frontmatter', pattern: 'finds|estimates|concludes|\\d+%' },
+      { id: 'description-has-conclusion', label: 'Description Has Conclusion', description: 'Description field includes methodology AND key finding/number', weight: 15, detection: 'frontmatter', pattern: 'finds|estimates|concludes|\\d+%' },
       { id: 'word-count', label: 'Sufficient Length', description: 'At least 600 words of prose', weight: 10, detection: 'content' },
     ],
     examplePage: '/knowledge-base/models/risk-models/bioweapons-risk-decomposition/',
@@ -339,14 +368,14 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'knowledge-base-concept': {
     id: 'knowledge-base-concept',
     name: 'Knowledge Base - Concept',
-    description: 'Concept and terminology explanation pages',
+    description: 'Concept and terminology explanation pages.',
     pathPattern: '/knowledge-base/concepts/**/*.mdx',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Concept name', weight: 5 },
       { name: 'description', type: 'string', required: true, description: 'Brief definition', weight: 15 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-concept"', weight: 5 },
-      { name: 'quality', type: 'number', required: false, description: 'Quality rating 1-5', weight: 10 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-concept"', weight: 5 },
+      { name: 'quality', type: 'number', required: false, description: 'Quality rating 0-100', weight: 10 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
     ],
     sections: [
       { id: 'overview', label: 'Overview', alternateLabels: ['Definition'], required: true, headingLevel: 'h2', description: 'Clear definition and explanation', weight: 25 },
@@ -364,13 +393,14 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'knowledge-base-organization': {
     id: 'knowledge-base-organization',
     name: 'Knowledge Base - Organization',
-    description: 'Organization profile pages',
+    description: 'Organization profile pages.',
     pathPattern: '/knowledge-base/organizations/**/*.mdx',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Organization name', weight: 5 },
       { name: 'description', type: 'string', required: true, description: 'Brief description', weight: 10 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-organization"', weight: 5 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-organization"', weight: 5 },
+      { name: 'quality', type: 'number', required: false, description: 'Quality rating 0-100', weight: 10 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
     ],
     sections: [
       { id: 'overview', label: 'Overview', required: true, headingLevel: 'h2', description: 'Organization description', weight: 20 },
@@ -390,13 +420,14 @@ export const PAGE_TEMPLATES: Record<TemplateId, PageTemplate> = {
   'knowledge-base-person': {
     id: 'knowledge-base-person',
     name: 'Knowledge Base - Person',
-    description: 'Person profile pages',
+    description: 'Person profile pages.',
     pathPattern: '/knowledge-base/people/*.mdx',
     frontmatter: [
       { name: 'title', type: 'string', required: true, description: 'Person name', weight: 5 },
       { name: 'description', type: 'string', required: true, description: 'Brief bio', weight: 10 },
-      { name: 'template', type: 'string', required: false, description: '"knowledge-base-person"', weight: 5 },
-      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date', weight: 5 },
+      { name: 'pageTemplate', type: 'string', required: false, description: '"knowledge-base-person"', weight: 5 },
+      { name: 'quality', type: 'number', required: false, description: 'Quality rating 0-100', weight: 10 },
+      { name: 'lastEdited', type: 'date', required: true, description: 'Last edit date (YYYY-MM-DD)', weight: 5 },
     ],
     sections: [
       { id: 'overview', label: 'Overview', alternateLabels: ['Biography', 'Bio'], required: true, headingLevel: 'h2', description: 'Bio and role', weight: 20 },
@@ -417,6 +448,10 @@ export function getTemplate(id: TemplateId): PageTemplate | undefined {
   return PAGE_TEMPLATES[id];
 }
 
+/**
+ * Get template for a path using glob-style pattern matching
+ * @deprecated Use suggestTemplateForPath for more accurate matching
+ */
 export function getTemplateForPath(path: string): PageTemplate | undefined {
   // Simple pattern matching - could be more sophisticated
   for (const template of Object.values(PAGE_TEMPLATES)) {
@@ -428,6 +463,54 @@ export function getTemplateForPath(path: string): PageTemplate | undefined {
     }
   }
   return undefined;
+}
+
+/**
+ * Suggest which template a page should use based on its URL path.
+ * Uses TEMPLATE_PATH_PATTERNS which are ordered by priority (most specific first).
+ *
+ * @param relativePath - Path relative to content directory (e.g., "knowledge-base/risks/misuse/bioweapons.mdx")
+ * @returns Object with suggested templateId and the matching pattern's style guide path
+ */
+export function suggestTemplateForPath(relativePath: string): {
+  templateId: TemplateId;
+  styleGuide?: string;
+} | undefined {
+  // Skip index pages (overview pages) - they don't need templates
+  if (relativePath.endsWith('/index.mdx') && !relativePath.includes('ai-transition-model')) {
+    return undefined;
+  }
+
+  // Find matching pattern with highest priority
+  let bestMatch: { templateId: TemplateId; priority: number } | undefined;
+
+  for (const { pattern, templateId, priority } of TEMPLATE_PATH_PATTERNS) {
+    if (pattern.test(relativePath)) {
+      if (!bestMatch || priority > bestMatch.priority) {
+        bestMatch = { templateId, priority };
+      }
+    }
+  }
+
+  if (!bestMatch) {
+    return undefined;
+  }
+
+  const template = PAGE_TEMPLATES[bestMatch.templateId];
+  return {
+    templateId: bestMatch.templateId,
+    styleGuide: template?.styleGuide,
+  };
+}
+
+/**
+ * Get all templates that match a given path pattern type.
+ * Useful for getting all ATM templates or all knowledge-base templates.
+ */
+export function getTemplatesByPathPrefix(prefix: string): PageTemplate[] {
+  return Object.values(PAGE_TEMPLATES).filter(t =>
+    t.pathPattern.startsWith('/' + prefix)
+  );
 }
 
 export function getAllTemplates(): PageTemplate[] {
@@ -452,3 +535,31 @@ export function findSectionByLabel(template: PageTemplate, label: string): Templ
     return false;
   });
 }
+
+/**
+ * Get the style guide URL for a template
+ */
+export function getStyleGuideForTemplate(templateId: TemplateId): string | undefined {
+  return PAGE_TEMPLATES[templateId]?.styleGuide;
+}
+
+/**
+ * Map of template categories for grouping in UI
+ */
+export const TEMPLATE_CATEGORIES = {
+  'ai-transition-model': [
+    'ai-transition-model-factor',
+    'ai-transition-model-scenario',
+    'ai-transition-model-outcome',
+    'ai-transition-model-sub-item',
+    'ai-transition-model-parameter',
+  ] as TemplateId[],
+  'knowledge-base': [
+    'knowledge-base-risk',
+    'knowledge-base-response',
+    'knowledge-base-model',
+    'knowledge-base-concept',
+    'knowledge-base-organization',
+    'knowledge-base-person',
+  ] as TemplateId[],
+};

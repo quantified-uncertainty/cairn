@@ -232,4 +232,4 @@ Risk pages are graded on:
 
 ## Example Risk Page
 
-See [Deceptive Alignment](/knowledge-base/risks/alignment/deceptive-alignment/) for a well-structured example.
+See [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) for a well-structured example.

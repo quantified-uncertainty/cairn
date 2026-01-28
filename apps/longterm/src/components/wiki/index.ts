@@ -73,6 +73,10 @@ export { InsightsTable } from './InsightsTable';
 // Editorial / page management
 export { PageStatus } from './PageStatus';
 
+// External links to Wikipedia, LessWrong, EA Forum
+export { ExternalLinks } from './ExternalLinks';
+export { DataExternalLinks } from './DataExternalLinks';
+
 // Diagrams - Mermaid is re-exported from shared package
 export { Mermaid } from '@cairn/ui/mermaid';
 export { default as EntityGraph } from './EntityGraph';

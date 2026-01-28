@@ -13,6 +13,11 @@
 
 import React, { useState } from 'react';
 import type { Insight, InsightType } from '@/data/insights-data';
+import {
+  detectPageType,
+  PAGE_TYPE_INFO,
+  type PageType,
+} from '@/lib/page-types';
 
 const typeLabels: Record<InsightType, string> = {
   'claim': 'Claim',
@@ -57,60 +62,6 @@ interface PageIssues {
     similarPages: Array<{ id: string; title: string; path: string; similarity: number }>;
   };
 }
-
-// Page type definitions with style guide links
-type ContentPageType = 'content' | 'risk' | 'response' | 'stub' | 'documentation' | 'ai-transition-model' | 'overview';
-
-interface PageTypeInfo {
-  label: string;
-  description: string;
-  styleGuideUrl?: string;
-  color: string;
-}
-
-const PAGE_TYPE_INFO: Record<ContentPageType, PageTypeInfo> = {
-  'content': {
-    label: 'Content',
-    description: 'Standard knowledge base article',
-    styleGuideUrl: '/internal/models-style-guide/',
-    color: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
-  },
-  'risk': {
-    label: 'Risk',
-    description: 'Risk analysis page',
-    styleGuideUrl: '/internal/risk-style-guide/',
-    color: 'bg-red-500/20 text-red-400 border-red-500/40',
-  },
-  'response': {
-    label: 'Response',
-    description: 'Intervention/response page',
-    styleGuideUrl: '/internal/response-style-guide/',
-    color: 'bg-teal-500/20 text-teal-400 border-teal-500/40',
-  },
-  'stub': {
-    label: 'Stub',
-    description: 'Minimal placeholder page',
-    styleGuideUrl: '/internal/stub-style-guide/',
-    color: 'bg-slate-500/20 text-slate-400 border-slate-500/40',
-  },
-  'documentation': {
-    label: 'Documentation',
-    description: 'Internal docs, style guides, examples',
-    styleGuideUrl: '/internal/page-types/',
-    color: 'bg-purple-500/20 text-purple-400 border-purple-500/40',
-  },
-  'ai-transition-model': {
-    label: 'AI Transition Model',
-    description: 'Structured factor/scenario/parameter page',
-    styleGuideUrl: '/internal/ai-transition-model-style-guide/',
-    color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
-  },
-  'overview': {
-    label: 'Overview',
-    description: 'Section navigation page',
-    color: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
-  },
-};
 
 interface PageStatusProps {
   quality?: number;  // 0-100 scale
@@ -182,33 +133,8 @@ function formatAge(lastEdited: string): string {
   return `${Math.round(days / 30)} months ago`;
 }
 
-function detectPageType(explicitType?: string, pathname?: string): ContentPageType {
-  // Explicit frontmatter type takes priority
-  if (explicitType === 'stub') return 'stub';
-  if (explicitType === 'documentation') return 'documentation';
-
-  // Detect from pathname
-  if (pathname) {
-    // AI Transition Model pages
-    if (pathname.includes('/ai-transition-model/')) {
-      return 'ai-transition-model';
-    }
-    // Risk pages
-    if (pathname.includes('/knowledge-base/risks/')) {
-      return 'risk';
-    }
-    // Response pages
-    if (pathname.includes('/knowledge-base/responses/')) {
-      return 'response';
-    }
-  }
-
-  // Default to content
-  return explicitType as ContentPageType || 'content';
-}
-
 function PageTypeBadge({ pageType, pathname }: { pageType?: string; pathname?: string }) {
-  const detectedType = detectPageType(pageType, pathname);
+  const detectedType = detectPageType(pathname || '', pageType);
   const info = PAGE_TYPE_INFO[detectedType];
 
   return (

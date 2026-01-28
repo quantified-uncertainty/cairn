@@ -13,6 +13,11 @@ import { PageStatus } from '../wiki/PageStatus';
 import { ScenarioRatings } from '../wiki/ScenarioRatings';
 import pagesData from '../../data/pages.json';
 import { getInsightsBySource } from '../../data/insights-data';
+import {
+  detectPageType,
+  isAITransitionModelPage,
+  shouldShowPageStatus,
+} from '../../lib/page-types';
 
 // Get frontmatter from the route context
 const { entry } = Astro.locals.starlightRoute;
@@ -31,18 +36,17 @@ const pageInsights = [
   ...getInsightsBySource(pathWithoutSlash),
 ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i); // Dedupe by id
 
-// Check if this is a knowledge-base or AI Transition Model page with editorial metadata
-const hasEditorialMeta = frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.todos || frontmatter.importance;
-const isKnowledgeBasePage = Astro.url.pathname.includes('/knowledge-base/');
-const isAITransitionModelPage = Astro.url.pathname.includes('/ai-transition-model/');
+// Use centralized page type detection
+const pageType = detectPageType(Astro.url.pathname, frontmatter.pageType);
+const hasEditorialMeta = !!(frontmatter.quality || frontmatter.llmSummary || frontmatter.todo || frontmatter.todos || frontmatter.importance);
 const hasInsights = pageInsights.length > 0;
-// Show PageStatus if page has editorial metadata OR insights
-const showPageStatus = (hasEditorialMeta && (isKnowledgeBasePage || isAITransitionModelPage)) || hasInsights;
+const showPageStatus = shouldShowPageStatus(pageType, hasEditorialMeta, hasInsights);
 
 // Check if this is an AI Transition Model page with ratings
+const isATMPage = isAITransitionModelPage(Astro.url.pathname);
 const ratings = (frontmatter as any).ratings;
 const hasRatings = ratings && (ratings.changeability !== undefined || ratings.xriskImpact !== undefined || ratings.trajectoryImpact !== undefined || ratings.uncertainty !== undefined);
-const showRatings = isAITransitionModelPage && hasRatings;
+const showRatings = isATMPage && hasRatings;
 ---
 
 <div class="sl-markdown-content">
