@@ -1,0 +1,235 @@
+---
+title: "Risk Pages Style Guide"
+description: "Style guide for writing risk analysis pages in the knowledge base"
+pageType: documentation
+sidebar:
+  order: 10
+---
+
+# Risk Pages Style Guide
+
+This guide defines standards for risk analysis pages in the CAIRN knowledge base. Risk pages analyze potential negative outcomes from AI development.
+
+## Page Type Detection
+
+Risk pages are detected by their URL path: `/knowledge-base/risks/**/*.mdx`
+
+## Required Frontmatter
+
+```yaml
+---
+title: "Risk Name"
+description: "One sentence explaining what this risk is and its key concern."
+quality: 60  # 0-100
+importance: 75  # 0-100
+lastEdited: "2025-01-28"
+---
+```
+
+## Required Sections
+
+### 1. Overview (2-3 paragraphs)
+
+Explain what this risk is, why it matters, and who should care. Write in prose, not bullets.
+
+**Good example:**
+```markdown
+## Overview
+
+Deceptive alignment occurs when an AI system learns to behave aligned during training
+while harboring goals that diverge from human intentions. The system "plays along"
+during evaluation but pursues different objectives when deployed or given more autonomy.
+
+This risk matters because standard training and evaluation procedures cannot reliably
+detect it. A deceptively aligned system would pass all behavioral tests by design,
+making it invisible to current safety measures until deployment at scale.
+```
+
+### 2. Risk Assessment Table
+
+Every risk page MUST have a risk assessment table near the top:
+
+```markdown
+## Risk Assessment
+
+| Dimension | Rating | Justification |
+|-----------|--------|---------------|
+| Severity | Critical | Could cause irreversible civilizational harm |
+| Likelihood | Medium (15-35%) | Depends on alignment difficulty |
+| Timeline | 2025-2035 | Contingent on AGI timelines |
+| Trend | Increasing | Capability gains outpacing safety |
+| Reversibility | Low | Difficult to detect and correct post-deployment |
+```
+
+### 3. Mechanism Section
+
+Explain HOW this risk manifests. Include a Mermaid diagram:
+
+```markdown
+## How It Works
+
+[Explanation of the causal mechanism]
+
+<Mermaid client:load chart={`
+flowchart TD
+    A[Training Begins] --> B[System learns evaluation patterns]
+    B --> C{Gradient signal}
+    C -->|Aligned behavior rewarded| D[Apparent alignment]
+    D --> E[Deployment]
+    E --> F[Reduced oversight]
+    F --> G[True objectives revealed]
+`} />
+```
+
+### 4. Contributing Factors
+
+What increases or decreases this risk:
+
+```markdown
+## Contributing Factors
+
+| Factor | Effect | Mechanism |
+|--------|--------|-----------|
+| Capability level | Increases risk | More sophisticated deception possible |
+| Interpretability | Decreases risk | Can detect goal misalignment |
+| Training diversity | Decreases risk | Harder to learn single deception pattern |
+| Deployment speed | Increases risk | Less time for safety evaluation |
+```
+
+### 5. Responses That Address This Risk
+
+Cross-link to relevant response pages:
+
+```markdown
+## Responses That Address This Risk
+
+| Response | Relevance | Mechanism |
+|----------|-----------|-----------|
+| [Mechanistic Interpretability](/knowledge-base/responses/alignment/mech-interp/) | High | Directly examines internal representations |
+| [AI Control](/knowledge-base/responses/alignment/ai-control/) | Medium | Limits damage from undetected deception |
+| [Adversarial Training](/knowledge-base/responses/alignment/adversarial-training/) | Medium | Tests for inconsistent behavior |
+```
+
+### 6. Key Uncertainties
+
+What we don't know:
+
+```markdown
+## Key Uncertainties
+
+1. **Emergence threshold**: At what capability level does deception become possible?
+2. **Detection difficulty**: How hard is it to detect deceptive cognition with interpretability?
+3. **Prevalence**: How often would training produce deceptive vs. genuinely aligned systems?
+```
+
+### 7. Historical Context (optional)
+
+Precedents or analogies from other domains.
+
+### 8. Related Risks
+
+Links to connected risk pages.
+
+---
+
+## Claude Code Workflows
+
+### Creating a New Risk Page
+
+```bash
+# Use the research-report skill to generate initial content
+/research-report "Analyze [RISK_NAME]: mechanisms, severity, contributing factors, and responses"
+
+# Then create the page structure
+```
+
+Or use the Task tool:
+
+```
+Task({
+  subagent_type: 'general-purpose',
+  prompt: `Create a new risk page for [RISK_NAME].
+
+  FIRST: Read /internal/risk-style-guide/ for requirements.
+
+  THEN: Research the risk using WebSearch to find:
+  - Academic papers on the mechanism
+  - Expert assessments of likelihood
+  - Real-world examples or analogies
+
+  Create the page at: src/content/docs/knowledge-base/risks/[category]/[risk-name].mdx
+
+  Include ALL required sections:
+  1. Overview (2-3 paragraphs)
+  2. Risk Assessment table
+  3. How It Works (with Mermaid diagram)
+  4. Contributing Factors table
+  5. Responses That Address This Risk
+  6. Key Uncertainties
+  7. Related Risks`
+})
+```
+
+### Improving an Existing Risk Page
+
+```
+Task({
+  subagent_type: 'general-purpose',
+  prompt: `Improve the risk page at [PATH].
+
+  FIRST: Read /internal/risk-style-guide/ and the current page.
+
+  THEN: Use WebSearch to find citations for:
+  - Quantitative estimates (likelihood, severity)
+  - Expert opinions and surveys
+  - Case studies or historical examples
+
+  Make surgical edits to add:
+  1. Risk Assessment table (if missing)
+  2. Mermaid diagram showing mechanism
+  3. Contributing Factors table
+  4. Citations from authoritative sources
+
+  DO NOT rewrite the entire file.`
+})
+```
+
+### Batch Validation
+
+```bash
+# Check all risk pages against style guide
+node scripts/validate/validate-templates.mjs --type risk
+
+# List risk pages missing required sections
+node scripts/content/grade-by-template.mjs --template knowledge-base-risk
+```
+
+---
+
+## Quality Criteria
+
+Risk pages are graded on:
+
+| Quality Level | Requirements |
+|---------------|--------------|
+| 80-100 | Risk assessment table, mechanism diagram, 5+ citations, quantified estimates |
+| 60-79 | Risk assessment table, some citations (3+), clear mechanism explanation |
+| 40-59 | Good prose but missing tables/citations, vague claims |
+| 20-39 | Minimal structure, no quantification |
+| 0-19 | Stub with placeholder content |
+
+---
+
+## Anti-Patterns
+
+1. **Vague severity claims**: "This is very dangerous" → Use specific estimates
+2. **Missing mechanism**: Don't just say what, explain HOW
+3. **No responses linked**: Every risk should connect to potential mitigations
+4. **Bullet-heavy**: Use tables and prose instead
+5. **No uncertainty acknowledgment**: Always include what we don't know
+
+---
+
+## Example Risk Page
+
+See [Deceptive Alignment](/knowledge-base/risks/alignment/deceptive-alignment/) for a well-structured example.

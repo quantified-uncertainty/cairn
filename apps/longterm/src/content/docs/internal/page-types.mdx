@@ -1,0 +1,141 @@
+---
+title: "Page Type System"
+description: "Reference documentation for CAIRN's page type system"
+pageType: documentation
+sidebar:
+  order: 5
+---
+
+# Page Type System
+
+CAIRN uses a page type system to categorize content and apply appropriate validation, styling, and workflows.
+
+## Available Page Types
+
+| Type | Detection | Validation | Style Guide |
+|------|-----------|------------|-------------|
+| `content` | Default | Full quality criteria | [Models Style Guide](/internal/models-style-guide/) |
+| `stub` | `pageType: stub` | Skipped | [Stub Style Guide](/internal/stub-style-guide/) |
+| `documentation` | `pageType: documentation` | Skipped | N/A |
+| `ai-transition-model` | URL path | Special criteria | [ATM Style Guide](/internal/ai-transition-model-style-guide/) |
+| `overview` | `index.mdx` filename | Skipped | N/A |
+
+## Setting Page Type
+
+### Explicit (in frontmatter)
+
+```yaml
+---
+title: "Page Title"
+pageType: stub  # or documentation
+---
+```
+
+### Implicit (from URL)
+
+- `/ai-transition-model/**` → `ai-transition-model`
+- `/knowledge-base/risks/**` → `content` (risk)
+- `/knowledge-base/responses/**` → `content` (response)
+- `**/index.mdx` → `overview`
+
+## Validation Behavior
+
+### Full Validation (`content`)
+- Quality grading applies
+- Structural checks (tables, diagrams, citations)
+- Staleness warnings
+- Appears in improvement queues
+
+### Skipped Validation (`stub`, `documentation`, `overview`)
+- Excluded from quality reports
+- No structural requirements
+- Can contain example code (documentation)
+- Won't trigger CI failures for content issues
+
+### Special Validation (`ai-transition-model`)
+- YAML schema validation
+- Cause-effect graph checks
+- Entity relationship validation
+- Different quality criteria
+
+## Page Type in PageStatus
+
+The PageStatus component (visible in dev mode) shows:
+- Current page type with colored badge
+- Link to relevant style guide
+- Type-specific metrics
+
+## Adding New Page Types
+
+1. Add to `content.config.ts` schema:
+```typescript
+pageType: z.enum(['content', 'stub', 'documentation', 'new-type']).optional()
+```
+
+2. Add detection in `PageStatus.tsx`:
+```typescript
+const PAGE_TYPE_INFO: Record<ContentPageType, PageTypeInfo> = {
+  'new-type': {
+    label: 'New Type',
+    description: 'Description here',
+    styleGuideUrl: '/internal/new-type-style-guide/',
+    color: 'bg-color-500/20 text-color-400 border-color-500/40',
+  },
+  // ...
+};
+```
+
+3. Update validators if needed in `scripts/lib/mdx-utils.mjs`:
+```javascript
+const SKIP_VALIDATION_PAGE_TYPES = ['stub', 'documentation', 'new-type'];
+```
+
+4. Create a style guide at `/internal/new-type-style-guide/`
+
+## Style Guide Index
+
+| Content Area | Style Guide | Key Requirements |
+|--------------|-------------|------------------|
+| Analytical models | [Models](/internal/models-style-guide/) | Tables, equations, diagrams |
+| Risk analysis | [Risks](/internal/risk-style-guide/) | Risk assessment table, mechanism |
+| Interventions | [Responses](/internal/response-style-guide/) | Quick assessment, risks addressed |
+| AI Transition Model | [ATM](/internal/ai-transition-model-style-guide/) | YAML-first, cause-effect graphs |
+| Placeholders | [Stubs](/internal/stub-style-guide/) | Minimal, link to primary |
+
+## Claude Code Workflows
+
+### Determine Page Type for New Content
+
+```
+Ask yourself:
+1. Is this about AI development trajectories? → ai-transition-model
+2. Is this analyzing a risk? → content (risk)
+3. Is this describing an intervention? → content (response)
+4. Is this a placeholder? → stub
+5. Is this internal docs/examples? → documentation
+6. Otherwise → content
+```
+
+### Check Page Type Coverage
+
+```bash
+# Count pages by type
+grep -r "pageType:" src/content/docs/ | cut -d: -f3 | sort | uniq -c
+
+# Find pages without explicit type (default to content)
+find src/content/docs -name "*.mdx" | xargs grep -L "pageType:" | wc -l
+```
+
+### Migrate Page Type
+
+```
+Task({
+  subagent_type: 'general-purpose',
+  prompt: `Change page at [PATH] from [OLD_TYPE] to [NEW_TYPE].
+
+  1. Read both style guides
+  2. Update frontmatter pageType
+  3. Restructure content to match new type requirements
+  4. Update quality/importance if needed`
+})
+```

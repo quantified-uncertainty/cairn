@@ -1,0 +1,156 @@
+---
+title: "Response Pages Style Guide"
+description: "Style guide for writing intervention and response pages"
+pageType: documentation
+sidebar:
+  order: 11
+---
+
+# Response Pages Style Guide
+
+Response pages describe interventions, policies, and technical approaches that address AI risks. They explain how something works and assess its effectiveness.
+
+## Page Type Detection
+
+Response pages are at: `/knowledge-base/responses/**/*.mdx`
+
+## Required Frontmatter
+
+```yaml
+---
+title: "Response Name"
+description: "One sentence explaining what this response does and its key mechanism."
+quality: 60  # 0-100
+importance: 70  # 0-100
+lastEdited: "2025-01-28"
+---
+```
+
+## Required Sections
+
+### 1. Overview (2-3 paragraphs)
+
+What is this response and why does it matter?
+
+### 2. Quick Assessment Table
+
+```markdown
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | Medium | Requires significant research investment |
+| Scalability | High | Applies to most foundation models |
+| Current Maturity | Low | Early research stage |
+| Time Horizon | 5-10 years | Needs fundamental advances |
+| Key Proponents | Anthropic, DeepMind | Active research programs |
+```
+
+### 3. How It Works
+
+Technical explanation with diagram:
+
+```markdown
+## How It Works
+
+<Mermaid client:load chart={`
+flowchart LR
+    A[Input] --> B[Safety Layer]
+    B --> C{Check}
+    C -->|Pass| D[Output]
+    C -->|Fail| E[Block/Modify]
+`} />
+
+[Detailed explanation of mechanism]
+```
+
+### 4. Risks Addressed
+
+```markdown
+## Risks Addressed
+
+| Risk | Relevance | How It Helps |
+|------|-----------|--------------|
+| [Deceptive Alignment](/...) | High | Detects hidden goals |
+| [Reward Hacking](/...) | Medium | Identifies misspecified rewards |
+```
+
+### 5. Limitations
+
+What this approach cannot do or gets wrong.
+
+### 6. Current State
+
+Who is working on this, what progress has been made.
+
+### 7. Open Questions
+
+Unsolved problems and research directions.
+
+---
+
+## Claude Code Workflows
+
+### Creating a New Response Page
+
+```
+Task({
+  subagent_type: 'general-purpose',
+  prompt: `Create a response page for [RESPONSE_NAME].
+
+  FIRST: Read /internal/response-style-guide/.
+
+  THEN: Research using WebSearch:
+  - Academic papers on the technique
+  - Lab blog posts and announcements
+  - Current implementations and results
+
+  Create at: src/content/docs/knowledge-base/responses/[category]/[name].mdx
+
+  Include:
+  1. Overview (2-3 paragraphs)
+  2. Quick Assessment table
+  3. How It Works (with diagram)
+  4. Risks Addressed table
+  5. Limitations
+  6. Current State
+  7. Open Questions`
+})
+```
+
+### Improving a Response Page
+
+```
+Task({
+  subagent_type: 'general-purpose',
+  prompt: `Improve response page at [PATH].
+
+  Read /internal/response-style-guide/ first.
+
+  Add:
+  1. Quick Assessment table (if missing)
+  2. Mermaid diagram
+  3. Risks Addressed cross-links
+  4. Citations from recent papers
+
+  Use WebSearch for current research.`
+})
+```
+
+---
+
+## Quality Criteria
+
+| Level | Requirements |
+|-------|--------------|
+| 80-100 | Assessment table, diagram, 5+ citations, quantified effectiveness |
+| 60-79 | Assessment table, some citations, clear mechanism |
+| 40-59 | Good prose but missing structure |
+| 20-39 | Minimal content |
+| 0-19 | Stub |
+
+---
+
+## Example
+
+See [Mechanistic Interpretability](/knowledge-base/responses/alignment/mech-interp/) for reference.
