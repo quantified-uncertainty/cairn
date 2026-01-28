@@ -25,7 +25,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="regulatory-capacity-threshold" ratings={frontmatter.ratings} />
 
@@ -303,10 +303,10 @@ The **window for effective intervention** depends on:
 
 ## Related Models
 
-- [Institutional Adaptation Speed](/knowledge-base/models/institutional-adaptation-speed/) - How fast institutions can adapt
-- [Racing Dynamics Impact](/knowledge-base/models/racing-dynamics-impact/) - Why capacity matters for racing
-- [Parameter Interaction Network](/knowledge-base/models/parameter-interaction-network/) - How regulatory-capacity connects to other parameters
-- [Safety Culture Equilibrium](/knowledge-base/models/safety-culture-equilibrium/) - Regulation-imposed equilibrium conditions
+- <EntityLink id="institutional-adaptation-speed" label="Institutional Adaptation Speed" /> - How fast institutions can adapt
+- <EntityLink id="racing-dynamics-impact" label="Racing Dynamics Impact" /> - Why capacity matters for racing
+- <EntityLink id="parameter-interaction-network" label="Parameter Interaction Network" /> - How regulatory-capacity connects to other parameters
+- <EntityLink id="safety-culture-equilibrium" label="Safety Culture Equilibrium" /> - Regulation-imposed equilibrium conditions
 
 ## Sources
 

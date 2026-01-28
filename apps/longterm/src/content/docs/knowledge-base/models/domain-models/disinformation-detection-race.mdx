@@ -22,7 +22,7 @@ llmSummary: >-
   provenance systems.
 pageTemplate: knowledge-base-model
 ---
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="disinformation-detection-race" ratings={frontmatter.ratings} />
 
@@ -418,9 +418,9 @@ This model has significant limitations that affect confidence in its projections
 
 ## Related Models
 
-- [Electoral Impact Assessment Model](/knowledge-base/models/disinformation-electoral-impact/) - Impact assessment even if detection fails
-- [Deepfakes Authentication Crisis Model](/knowledge-base/models/deepfakes-authentication-crisis/) - Specific to synthetic media
-- [Trust Cascade Failure Model](/knowledge-base/models/trust-cascade-model/) - Institutional trust erosion dynamics
+- <EntityLink id="disinformation-electoral-impact" /> - Impact assessment even if detection fails
+- <EntityLink id="deepfakes-authentication-crisis" /> - Specific to synthetic media
+- <EntityLink id="trust-cascade-model" /> - Institutional trust erosion dynamics
 
 ## Sources
 

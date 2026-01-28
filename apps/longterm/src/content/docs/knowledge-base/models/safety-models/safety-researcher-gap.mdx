@@ -24,15 +24,15 @@ llmSummary: >-
   produce researchers for $30-50K versus PhD programs at $200-400K.
 pageTemplate: knowledge-base-model
 ---
-import {DataInfoBox, Backlinks, KeyQuestions, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="safety-researcher-gap" ratings={frontmatter.ratings} />
 
 ## Overview
 
-This model analyzes the persistent mismatch between AI safety researcher supply and organizational demand, with critical implications for [alignment research](/knowledge-base/risks/accident/) progress timelines. The analysis reveals a structural talent shortage that represents one of the most binding constraints on AI safety progress.
+This model analyzes the persistent mismatch between AI safety researcher supply and organizational demand, with critical implications for alignment research progress timelines. The analysis reveals a structural talent shortage that represents one of the most binding constraints on AI safety progress.
 
-Current estimates show 300-800 unfilled safety research positions (30-50% of total demand), with training pipelines producing only 220-450 qualified researchers annually when 500-1,500 are needed. Under scaling scenarios where AI safety becomes prioritized, this gap could expand to 50-60% by 2027, fundamentally limiting the field's ability to address [alignment difficulty](/knowledge-base/risks/accident/) before advanced systems deployment.
+Current estimates show 300-800 unfilled safety research positions (30-50% of total demand), with training pipelines producing only 220-450 qualified researchers annually when 500-1,500 are needed. Under scaling scenarios where AI safety becomes prioritized, this gap could expand to 50-60% by 2027, fundamentally limiting the field's ability to address alignment difficulty before advanced systems deployment.
 
 The model identifies four critical bottlenecks: insufficient training pathways, funding constraints, coordination failures, and competing demand from capabilities development, with intervention analysis suggesting targeted programs could cost-effectively expand supply.
 
@@ -58,7 +58,7 @@ The model identifies four critical bottlenecks: insufficient training pathways, 
 
 ### Broader Definition Supply (Safety-Adjacent)
 
-Organizations like [Anthropic](/knowledge-base/organizations/labs/anthropic/), [OpenAI](/knowledge-base/organizations/labs/openai/), and [DeepMind](/knowledge-base/organizations/labs/deepmind/) employ researchers working on safety-relevant problems who don't identify primarily as safety researchers.
+Organizations like <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="openai">OpenAI</EntityLink>, and <EntityLink id="deepmind">DeepMind</EntityLink> employ researchers working on safety-relevant problems who don't identify primarily as safety researchers.
 
 | Category | 2024 Estimate | Conversion Rate to Safety |
 |----------|---------------|--------------------------|
@@ -75,8 +75,8 @@ Organizations like [Anthropic](/knowledge-base/organizations/labs/anthropic/), [
 |-------------------|----------------|-----------|--------------|---------|
 | Frontier labs (safety teams) | 500-1,000 | 60-80% | \$150-800K | <R id="4d2d026d3cca4d9d">Anthropic careers</R>, <R id="e86c6559775d4746">OpenAI jobs</R> |
 | Academic safety groups | 200-400 | 40-60% | \$80-200K | University job boards |
-| Safety orgs ([MIRI](/knowledge-base/organizations/safety-orgs/miri/), [CHAI](/knowledge-base/organizations/safety-orgs/chai/), etc.) | 100-200 | 50-70% | \$100-300K | 80,000 Hours job board |
-| Government/policy roles ([AISI](/knowledge-base/organizations/government/us-aisi/)) | 50-100 | 30-50% | \$120-250K | USAjobs.gov |
+| Safety orgs (<EntityLink id="miri">MIRI</EntityLink>, <EntityLink id="chai">CHAI</EntityLink>, etc.) | 100-200 | 50-70% | \$100-300K | 80,000 Hours job board |
+| Government/policy roles (<EntityLink id="us-aisi">AISI</EntityLink>) | 50-100 | 30-50% | \$120-250K | USAjobs.gov |
 | **Total current demand** | **850-1,700** | **50-70%** | **Varies** | Multiple sources |
 
 ### Projected Demand Under Scaling Scenarios
@@ -143,7 +143,7 @@ Organizations like <R id="dd0cf0ff290cc68e">Open Philanthropy</R> provide substa
 
 ### Bottleneck 3: Competition from Capabilities Research
 
-The [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) between safety and capabilities create severe talent competition, with capabilities roles offering substantially higher compensation.
+The <EntityLink id="racing-dynamics">racing dynamics</EntityLink> between safety and capabilities create severe talent competition, with capabilities roles offering substantially higher compensation.
 
 | Experience Level | Safety Org Salary | Capabilities Lab Salary | Premium Ratio |
 |------------------|-------------------|------------------------|---------------|
@@ -399,10 +399,10 @@ Talent development interventions show strong ROI compared to opportunity costs:
 
 This talent gap model connects to several other risks that could compound or mitigate the shortage:
 
-- [Expertise Atrophy](/knowledge-base/risks/epistemic/expertise-atrophy/): If AI tools replace human expertise, safety researcher skills may degrade
-- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/): Competition between labs drives talent toward capabilities rather than safety
-- [Flash Dynamics](/knowledge-base/risks/structural/flash-dynamics/): Rapid AI development could outpace even scaled talent pipelines
-- [Scientific Corruption](/knowledge-base/risks/epistemic/scientific-corruption/): Poor incentives could reduce effective research output per researcher
+- <EntityLink id="expertise-atrophy">Expertise Atrophy</EntityLink>: If AI tools replace human expertise, safety researcher skills may degrade
+- <EntityLink id="racing-dynamics">Racing Dynamics</EntityLink>: Competition between labs drives talent toward capabilities rather than safety
+- <EntityLink id="flash-dynamics">Flash Dynamics</EntityLink>: Rapid AI development could outpace even scaled talent pipelines
+- <EntityLink id="scientific-corruption">Scientific Corruption</EntityLink>: Poor incentives could reduce effective research output per researcher
 
 ## Strategic Implications
 

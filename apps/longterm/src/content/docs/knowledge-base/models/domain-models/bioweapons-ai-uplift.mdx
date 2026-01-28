@@ -24,7 +24,7 @@ llmSummary: >-
   adaptive screening should be prioritized over information restriction.
 pageTemplate: knowledge-base-model
 ---
-import { DataInfoBox, Backlinks, Mermaid, R } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="bioweapons-ai-uplift" ratings={frontmatter.ratings} />
 
@@ -327,8 +327,8 @@ Priority ranking: DNA synthesis screening offers best cost-effectiveness, follow
 
 ## Related Models
 
-- [Attack Chain Model](/knowledge-base/models/domain-models/bioweapons-attack-chain/) - Contextualizes how uplift fits into overall attack risk
-- [Timeline Model](/knowledge-base/models/timeline-models/bioweapons-timeline/) - Projects when uplift becomes critically dangerous
+- <EntityLink id="bioweapons-attack-chain">Attack Chain Model</EntityLink> - Contextualizes how uplift fits into overall attack risk
+- <EntityLink id="bioweapons-timeline">Timeline Model</EntityLink> - Projects when uplift becomes critically dangerous
 
 ## Sources
 

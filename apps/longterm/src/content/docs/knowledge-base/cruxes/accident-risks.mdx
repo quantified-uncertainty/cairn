@@ -8,7 +8,7 @@ llmSummary: "Analyzes fundamental uncertainties driving AI safety research prior
 lastEdited: "2025-12-28"
 importance: 84.5
 ---
-import {Crux, CruxList, R} from '../../../../components/wiki';
+import {Crux, CruxList, R, EntityLink} from '../../../../components/wiki';
 import {DataInfoBox, Backlinks, Mermaid} from '../../../../components/wiki';
 
 ## Overview
@@ -17,7 +17,7 @@ import {DataInfoBox, Backlinks, Mermaid} from '../../../../components/wiki';
 
 Based on extensive surveys and debates within the AI safety community between 2019-2024, these cruxes reveal striking disagreements: researchers estimate 35-55% vs 15-25% probability for mesa-optimization emergence, and 30-50% vs 15-30% for deceptive alignment likelihood. These aren't minor academic disputes—they drive entirely different research agendas and governance strategies. A researcher believing mesa-optimization is likely will prioritize <R id="f6d7ef2b80ff1e4c">interpretability</R> and inner alignment, while skeptics focus on behavioral training and outer alignment.
 
-The cruxes crystallized around key theoretical works like <R id="c4858d4ef280d8e6">"Risks from Learned Optimization"</R> and empirical findings from large language model deployments. They represent the fault lines where productive disagreements occur, making them essential for understanding AI safety strategy and research allocation across organizations like [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [Anthropic](/knowledge-base/organizations/labs/anthropic/), and [OpenAI](/knowledge-base/organizations/labs/openai/).
+The cruxes crystallized around key theoretical works like <R id="c4858d4ef280d8e6">"Risks from Learned Optimization"</R> and empirical findings from large language model deployments. They represent the fault lines where productive disagreements occur, making them essential for understanding AI safety strategy and research allocation across organizations like <EntityLink id="miri">MIRI</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink>, and <EntityLink id="openai">OpenAI</EntityLink>.
 
 <DataInfoBox
   title="Crux Resolution Timeline"
@@ -89,10 +89,10 @@ The gap between general ML researchers (median 5%) and safety-focused researcher
 | Risk Factor | Severity | Likelihood | Timeline | Evidence Strength | Key Holders |
 |-------------|----------|------------|----------|-------------------|-------------|
 | **Mesa-optimization emergence** | Critical | 15-55% | 2-5 years | Theoretical | <R id="c2babc67e1fad58b">Evan Hubinger</R>, MIRI researchers |
-| **Deceptive alignment** | Critical | 15-50% | 2-7 years | Limited empirical | [Eliezer Yudkowsky](/knowledge-base/people/eliezer-yudkowsky/), [Paul Christiano](/knowledge-base/people/paul-christiano/) |
+| **Deceptive alignment** | Critical | 15-50% | 2-7 years | Limited empirical | <EntityLink id="eliezer-yudkowsky">Eliezer Yudkowsky</EntityLink>, <EntityLink id="paul-christiano">Paul Christiano</EntityLink> |
 | **Capability-control gap** | Critical | 40-70% | 1-3 years | Emerging evidence | Most AI safety researchers |
-| **Situational awareness** | High | 35-80% | 1-2 years | Testable now | [Anthropic](/knowledge-base/organizations/labs/anthropic/) researchers |
-| **Power-seeking convergence** | High | 15-60% | 3-10 years | Theoretical strong | [Nick Bostrom](/knowledge-base/people/nick-bostrom/), most safety researchers |
+| **Situational awareness** | High | 35-80% | 1-2 years | Testable now | <EntityLink id="anthropic">Anthropic</EntityLink> researchers |
+| **Power-seeking convergence** | High | 15-60% | 3-10 years | Theoretical strong | <EntityLink id="nick-bostrom">Nick Bostrom</EntityLink>, most safety researchers |
 | **Reward hacking persistence** | Medium | 35-50% | Ongoing | Well-documented | RL research community |
 
 ## Foundational Cruxes
@@ -103,8 +103,8 @@ The foundational question of whether neural networks trained via gradient descen
 
 | Position | Probability | Key Holders | Research Implications |
 |----------|-------------|-------------|----------------------|
-| **Mesa-optimizers likely in advanced systems** | 35-55% | <R id="c2babc67e1fad58b">Evan Hubinger</R>, some [MIRI](/knowledge-base/organizations/safety-orgs/miri/) researchers | Prioritize inner alignment research, interpretability for detecting mesa-optimizers |
-| **Mesa-optimizers possible but uncertain** | 30-40% | [Paul Christiano](/knowledge-base/people/paul-christiano/) | Hedge across inner and outer alignment approaches |
+| **Mesa-optimizers likely in advanced systems** | 35-55% | <R id="c2babc67e1fad58b">Evan Hubinger</R>, some <EntityLink id="miri">MIRI</EntityLink> researchers | Prioritize inner alignment research, interpretability for detecting mesa-optimizers |
+| **Mesa-optimizers possible but uncertain** | 30-40% | <EntityLink id="paul-christiano">Paul Christiano</EntityLink> | Hedge across inner and outer alignment approaches |
 | **Gradient descent unlikely to produce mesa-optimizers** | 15-25% | Some ML researchers | Focus on outer alignment, behavioral training may suffice |
 
 **Current Evidence**: No clear mesa-optimizers detected in current systems like GPT-4 or Claude-3, though this may reflect limited interpretability rather than absence. <R id="426fcdeae8e2b749">Anthropic's dictionary learning work</R> has identified interpretable features but not optimization structure.
@@ -213,8 +213,8 @@ In 2024, researchers observed Claude 3 Opus strategically modifying its behavior
 
 | Difficulty Assessment | Probability | Key Holders | Strategic Implications |
 |----------------------|-------------|-------------|----------------------|
-| **Extremely hard/near-impossible** | 20-35% | [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [Eliezer Yudkowsky](/knowledge-base/people/eliezer-yudkowsky/) | Prioritize slowing AI development, coordination over technical solutions |
-| **Hard but tractable with research** | 40-55% | [Anthropic](/knowledge-base/organizations/labs/anthropic/), [OpenAI safety teams](/knowledge-base/organizations/labs/openai/) | Race between capabilities and alignment research |
+| **Extremely hard/near-impossible** | 20-35% | <EntityLink id="miri">MIRI</EntityLink>, <EntityLink id="eliezer-yudkowsky">Eliezer Yudkowsky</EntityLink> | Prioritize slowing AI development, coordination over technical solutions |
+| **Hard but tractable with research** | 40-55% | <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="openai">OpenAI safety teams</EntityLink> | Race between capabilities and alignment research |
 | **Not as hard as commonly believed** | 15-25% | Some ML researchers, optimists | Focus on governance over technical research |
 
 This represents the deepest strategic disagreement in AI safety. MIRI researchers, influenced by theoretical considerations about optimization processes, tend toward pessimism. In contrast, researchers at AI labs working with large language models see more promise in scaling approaches like constitutional AI and RLHF.
@@ -277,7 +277,7 @@ The 2022 emergence observations drove significant policy discussions about unpre
 | Gap Assessment | Current Evidence | Timeline |
 |----------------|------------------|----------|
 | **Dangerous gap likely/inevitable** | Current models exceed control capabilities | Already occurring |
-| **Gap avoidable with coordination** | [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | Requires coordination |
+| **Gap avoidable with coordination** | <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> | Requires coordination |
 | **Alignment keeping pace** | Constitutional AI, RLHF progress | Optimistic scenario |
 
 **Current Gap Evidence**: 2024 frontier models can generate persuasive content, assist with dual-use research, and show concerning behaviors in evaluations, while alignment techniques show mixed results at scale.
@@ -336,12 +336,12 @@ The fundamental question of whether AI systems can remain correctable and shutdo
 
 | If You Believe... | Top Priority Research Areas | Organizations to Follow |
 |-------------------|---------------------------|------------------------|
-| **Mesa-optimizers likely** | Inner alignment, interpretability, mesa-optimizer detection | [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [Anthropic interpretability team](/knowledge-base/organizations/labs/anthropic/) |
-| **Deceptive alignment probable** | Deception detection, containment, training alternatives | [Anthropic safety](/knowledge-base/organizations/labs/anthropic/), [ARC](/knowledge-base/organizations/safety-orgs/arc/) |
-| **Alignment extremely hard** | Governance, coordination, AI development slowdown | [GovAI](/knowledge-base/organizations/safety-orgs/govai/), policy organizations |
-| **Scalable oversight viable** | Debate, IDA, constitutional AI scaling | [OpenAI alignment](/knowledge-base/organizations/labs/openai/), [Anthropic](/knowledge-base/organizations/labs/anthropic/) |
-| **Interpretability tractable** | Mechanistic interpretability, scaling techniques | [Anthropic interpretability](/knowledge-base/organizations/labs/anthropic/), [Chris Olah's team](/knowledge-base/people/chris-olah/) |
-| **Capabilities unpredictable** | Evaluation frameworks, precautionary scaling | [METR](/knowledge-base/organizations/safety-orgs/metr/), [UK AISI](/knowledge-base/organizations/government/uk-aisi/) |
+| **Mesa-optimizers likely** | Inner alignment, interpretability, mesa-optimizer detection | <EntityLink id="miri">MIRI</EntityLink>, <EntityLink id="anthropic">Anthropic interpretability team</EntityLink> |
+| **Deceptive alignment probable** | Deception detection, containment, training alternatives | <EntityLink id="anthropic">Anthropic safety</EntityLink>, <EntityLink id="arc">ARC</EntityLink> |
+| **Alignment extremely hard** | Governance, coordination, AI development slowdown | <EntityLink id="govai">GovAI</EntityLink>, policy organizations |
+| **Scalable oversight viable** | Debate, IDA, constitutional AI scaling | <EntityLink id="openai">OpenAI alignment</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink> |
+| **Interpretability tractable** | Mechanistic interpretability, scaling techniques | <EntityLink id="anthropic">Anthropic interpretability</EntityLink>, <EntityLink id="chris-olah">Chris Olah's team</EntityLink> |
+| **Capabilities unpredictable** | Evaluation frameworks, precautionary scaling | <EntityLink id="metr">METR</EntityLink>, <EntityLink id="uk-aisi">UK AISI</EntityLink> |
 
 ## Key Uncertainties and Research Gaps
 
@@ -412,10 +412,10 @@ A 2024 survey of 111 AI professionals found that many experts, while highly skil
 
 | Topic | Key Papers | Organizations |
 |-------|------------|---------------|
-| **Mesa-Optimization** | <R id="c4858d4ef280d8e6">Risks from Learned Optimization</R> | [MIRI](/knowledge-base/organizations/safety-orgs/miri/), [OpenAI](/knowledge-base/organizations/labs/openai/) |
-| **Deceptive Alignment** | <R id="e5c0904211c7d0cc">Sleeper Agents</R> | [Anthropic](/knowledge-base/organizations/labs/anthropic/) |
-| **Scalable Oversight** | <R id="61da2f8e311a2bbf">AI Safety via Debate</R>, <R id="683aef834ac1612a">Constitutional AI</R> | [OpenAI](/knowledge-base/organizations/labs/openai/), [Anthropic](/knowledge-base/organizations/labs/anthropic/) |
-| **Interpretability** | <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | [Anthropic](/knowledge-base/organizations/labs/anthropic/) |
+| **Mesa-Optimization** | <R id="c4858d4ef280d8e6">Risks from Learned Optimization</R> | <EntityLink id="miri">MIRI</EntityLink>, <EntityLink id="openai">OpenAI</EntityLink> |
+| **Deceptive Alignment** | <R id="e5c0904211c7d0cc">Sleeper Agents</R> | <EntityLink id="anthropic">Anthropic</EntityLink> |
+| **Scalable Oversight** | <R id="61da2f8e311a2bbf">AI Safety via Debate</R>, <R id="683aef834ac1612a">Constitutional AI</R> | <EntityLink id="openai">OpenAI</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink> |
+| **Interpretability** | <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | <EntityLink id="anthropic">Anthropic</EntityLink> |
 
 ### 2024 Key Research
 
@@ -438,18 +438,18 @@ A 2024 survey of 111 AI professionals found that many experts, while highly skil
 
 | Organization | Focus Areas | Key Researchers |
 |--------------|-------------|-----------------|
-| **[MIRI](/knowledge-base/organizations/safety-orgs/miri/)** | Theoretical alignment, corrigibility | [Eliezer Yudkowsky](/knowledge-base/people/eliezer-yudkowsky/), Nate Soares |
-| **[Anthropic](/knowledge-base/organizations/labs/anthropic/)** | Constitutional AI, interpretability, evaluations | [Dario Amodei](/knowledge-base/people/dario-amodei/), [Chris Olah](/knowledge-base/people/chris-olah/) |
-| **[OpenAI](/knowledge-base/organizations/labs/openai/)** | Scalable oversight, alignment research | [Jan Leike](/knowledge-base/people/jan-leike/) |
-| **[ARC](/knowledge-base/organizations/safety-orgs/arc/)** | Alignment research, evaluations | [Paul Christiano](/knowledge-base/people/paul-christiano/) |
+| **<EntityLink id="miri">MIRI</EntityLink>** | Theoretical alignment, corrigibility | <EntityLink id="eliezer-yudkowsky">Eliezer Yudkowsky</EntityLink>, Nate Soares |
+| **<EntityLink id="anthropic">Anthropic</EntityLink>** | Constitutional AI, interpretability, evaluations | <EntityLink id="dario-amodei">Dario Amodei</EntityLink>, <EntityLink id="chris-olah">Chris Olah</EntityLink> |
+| **<EntityLink id="openai">OpenAI</EntityLink>** | Scalable oversight, alignment research | <EntityLink id="jan-leike">Jan Leike</EntityLink> |
+| **<EntityLink id="arc">ARC</EntityLink>** | Alignment research, evaluations | <EntityLink id="paul-christiano">Paul Christiano</EntityLink> |
 
 ### Evaluation and Measurement
 
 | Area | Organizations | Tools/Frameworks |
 |------|---------------|------------------|
-| **Dangerous Capabilities** | [METR](/knowledge-base/organizations/safety-orgs/metr/), [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Capability evaluations, red teaming |
-| **Alignment Assessment** | [Anthropic](/knowledge-base/organizations/labs/anthropic/), [OpenAI](/knowledge-base/organizations/labs/openai/) | Constitutional AI metrics, RLHF evaluations |
-| **Interpretability Tools** | [Anthropic](/knowledge-base/organizations/labs/anthropic/), academic groups | Dictionary learning, circuit analysis |
+| **Dangerous Capabilities** | <EntityLink id="metr">METR</EntityLink>, <EntityLink id="uk-aisi">UK AISI</EntityLink> | Capability evaluations, red teaming |
+| **Alignment Assessment** | <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="openai">OpenAI</EntityLink> | Constitutional AI metrics, RLHF evaluations |
+| **Interpretability Tools** | <EntityLink id="anthropic">Anthropic</EntityLink>, academic groups | Dictionary learning, circuit analysis |
 
 ### US AI Safety Institute Agreements (August 2024)
 
@@ -477,8 +477,8 @@ Anthropic's Petri framework, open-sourced in late 2024, enables rapid hypothesis
 
 | Topic | Key Resources | Organizations |
 |-------|---------------|---------------|
-| **Responsible Scaling** | [RSP frameworks](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | AI labs, [METR](/knowledge-base/organizations/safety-orgs/metr/) |
-| **Compute Governance** | [Export controls](/knowledge-base/responses/governance/compute-governance/export-controls/), [monitoring](/knowledge-base/responses/governance/compute-governance/monitoring/) | [US AISI](/knowledge-base/organizations/government/us-aisi/), [UK AISI](/knowledge-base/organizations/government/uk-aisi/) |
-| **International Coordination** | [AI Safety Summits](/knowledge-base/responses/governance/international/international-summits/) | Government agencies, international bodies |
+| **Responsible Scaling** | <EntityLink id="responsible-scaling-policies">RSP frameworks</EntityLink> | AI labs, <EntityLink id="metr">METR</EntityLink> |
+| **Compute Governance** | <EntityLink id="export-controls">Export controls</EntityLink>, <EntityLink id="monitoring">monitoring</EntityLink> | <EntityLink id="us-aisi">US AISI</EntityLink>, <EntityLink id="uk-aisi">UK AISI</EntityLink> |
+| **International Coordination** | <EntityLink id="international-summits">AI Safety Summits</EntityLink> | Government agencies, international bodies |
 
 <Backlinks />

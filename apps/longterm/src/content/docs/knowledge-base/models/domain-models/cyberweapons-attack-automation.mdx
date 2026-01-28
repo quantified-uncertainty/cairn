@@ -24,7 +24,7 @@ llmSummary: >-
   7 domains (reconnaissance 80%, exploitation 50%, persistence 30%).
 pageTemplate: knowledge-base-model
 ---
-import {DataInfoBox, Backlinks, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="cyberweapons-attack-automation" ratings={frontmatter.ratings} />
 
@@ -234,9 +234,9 @@ The documented Chinese state-sponsored campaign represents the first confirmed L
 | AI Risk Category | Timeline to Critical Threshold | Severity if Realized | Tractability | Priority Ranking |
 |------------------|------------------------------|-------------------|--------------|------------------|
 | **Autonomous Cyber** | 2-5 years | High-Critical | Medium | #1 near-term |
-| **[Disinformation](/knowledge-base/risks/epistemic/)** | 1-3 years | Medium-High | Low | #2 near-term |
-| **[Economic Disruption](/knowledge-base/risks/structural/economic-disruption/)** | 3-7 years | Medium-High | Medium | #3 near-term |
-| **[Power-Seeking AI](/knowledge-base/risks/accident/power-seeking/)** | 5-15 years | Existential | Low | #1 long-term |
+| **Disinformation** | 1-3 years | Medium-High | Low | #2 near-term |
+| **<EntityLink id="economic-disruption">Economic Disruption</EntityLink>** | 3-7 years | Medium-High | Medium | #3 near-term |
+| **<EntityLink id="power-seeking">Power-Seeking AI</EntityLink>** | 5-15 years | Existential | Low | #1 long-term |
 
 **Key Insight**: Autonomous cyber attacks represent the highest-probability, near-term AI risk requiring immediate resource allocation and international coordination.
 
@@ -291,9 +291,9 @@ The documented Chinese state-sponsored campaign represents the first confirmed L
 
 This model connects to several related analytical frameworks:
 
-- [Cyberweapons Offense-Defense Balance](/knowledge-base/models/cyberweapons-offense-defense/) - How autonomy shifts attack success rates
-- [Flash Dynamics Threshold](/knowledge-base/models/flash-dynamics-threshold/) - Speed implications of autonomous operations  
-- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) - International competition driving autonomous weapons development
-- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - Competitive pressures accelerating capability development
+- <EntityLink id="cyberweapons-offense-defense" label="Cyberweapons Offense-Defense Balance" /> - How autonomy shifts attack success rates
+- <EntityLink id="flash-dynamics-threshold" label="Flash Dynamics Threshold" /> - Speed implications of autonomous operations  
+- <EntityLink id="multipolar-trap">Multipolar Trap</EntityLink> - International competition driving autonomous weapons development
+- <EntityLink id="racing-dynamics">Racing Dynamics</EntityLink> - Competitive pressures accelerating capability development
 
 <Backlinks client:load entityId="cyberweapons-attack-automation" />

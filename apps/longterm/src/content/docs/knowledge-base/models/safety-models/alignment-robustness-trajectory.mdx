@@ -25,7 +25,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="alignment-robustness-trajectory" ratings={frontmatter.ratings} />
 
@@ -344,10 +344,10 @@ Your view on alignment robustness trajectory should depend on:
 
 ## Related Models
 
-- [Safety-Capability Gap](/knowledge-base/models/safety-capability-tradeoff/) - Related safety-capability dynamics
-- [Deceptive Alignment Decomposition](/knowledge-base/models/deceptive-alignment-decomposition/) - Deep dive on deception mechanisms
-- [Scheming Likelihood Model](/knowledge-base/models/scheming-likelihood-model/) - When deception becomes likely
-- [Parameter Interaction Network](/knowledge-base/models/parameter-interaction-network/) - How alignment-robustness connects to other parameters
+- <EntityLink id="safety-capability-tradeoff" label="Safety-Capability Gap" /> - Related safety-capability dynamics
+- <EntityLink id="deceptive-alignment-decomposition" label="Deceptive Alignment Decomposition" /> - Deep dive on deception mechanisms
+- <EntityLink id="scheming-likelihood-model" label="Scheming Likelihood Model" /> - When deception becomes likely
+- <EntityLink id="parameter-interaction-network" label="Parameter Interaction Network" /> - How alignment-robustness connects to other parameters
 
 ## Sources
 

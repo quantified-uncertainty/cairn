@@ -23,7 +23,7 @@ lastEdited: '2026-01-02'
 pageTemplate: knowledge-base-model
 ---
 
-import {DataInfoBox, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="carlsmith-six-premises" ratings={frontmatter.ratings} />
 
@@ -111,7 +111,7 @@ Carlsmith notes this is a rough calculation—the premises aren't fully independ
 
 **Why 40%?** (High uncertainty)
 - Current techniques (RLHF, Constitutional AI) show promise but unproven at scale
-- [Goal misgeneralization](/knowledge-base/risks/accident/goal-misgeneralization/) is a real phenomenon
+- <EntityLink id="goal-misgeneralization">Goal misgeneralization</EntityLink> is a real phenomenon
 - Value specification is genuinely hard
 - But: we're not starting from scratch; we choose training objectives
 
@@ -124,7 +124,7 @@ Carlsmith notes this is a rough calculation—the premises aren't fully independ
 **The claim**: Conditional on P1-P3, some deployed misaligned APS systems will seek to gain and maintain power in ways that significantly harm humans.
 
 **Why 65%?**
-- [Instrumental convergence](/knowledge-base/risks/accident/instrumental-convergence/) arguments suggest power-seeking is useful for most goals
+- <EntityLink id="instrumental-convergence">Instrumental convergence</EntityLink> arguments suggest power-seeking is useful for most goals
 - Resource acquisition helps achieve almost any objective
 - Self-preservation is instrumentally useful
 - But: power-seeking requires sophisticated planning; some misaligned systems might be harmlessly misaligned
@@ -218,13 +218,13 @@ Different interventions target different premises:
 
 | Intervention | Primary Premise | Mechanism |
 |--------------|-----------------|-----------|
-| [Compute governance](/knowledge-base/responses/governance/compute-governance/) | P1, P2 | Slow capability development, reduce deployment incentives |
-| [International coordination](/knowledge-base/responses/governance/international/) | P2 | Reduce racing pressure |
-| [Alignment research](/knowledge-base/responses/alignment/) | P3 | Make aligned systems easier to build |
-| [Interpretability](/knowledge-base/responses/alignment/interpretability/) | P3, P4 | Detect misalignment before deployment |
-| [AI evaluations](/knowledge-base/responses/alignment/evals/) | P4, P5 | Identify dangerous capabilities |
-| [AI control](/knowledge-base/responses/alignment/ai-control/) | P5 | Contain power-seeking before full disempowerment |
-| [RSPs](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) | P2, P4, P5 | Gate deployment on safety |
+| Compute governance | P1, P2 | Slow capability development, reduce deployment incentives |
+| International coordination | P2 | Reduce racing pressure |
+| Alignment research | P3 | Make aligned systems easier to build |
+| <EntityLink id="interpretability">Interpretability</EntityLink> | P3, P4 | Detect misalignment before deployment |
+| <EntityLink id="evals">AI evaluations</EntityLink> | P4, P5 | Identify dangerous capabilities |
+| <EntityLink id="ai-control">AI control</EntityLink> | P5 | Contain power-seeking before full disempowerment |
+| <EntityLink id="responsible-scaling-policies">RSPs</EntityLink> | P2, P4, P5 | Gate deployment on safety |
 
 <Mermaid client:load chart={`
 flowchart LR
@@ -271,19 +271,19 @@ flowchart LR
 
 | Carlsmith Argument | Our Framework |
 |-------------------|---------------|
-| Full argument (P1-P6) | [Rapid AI Takeover](/ai-transition-model/scenarios/ai-takeover/rapid/) |
-| P3 focus | [Alignment Robustness](/ai-transition-model/parameters/alignment-robustness/) parameter |
-| P4 focus | [Power-Seeking Conditions](/knowledge-base/models/power-seeking-conditions/) model |
-| P2 dynamics | [Racing Intensity](/ai-transition-model/parameters/racing-intensity/) parameter |
+| Full argument (P1-P6) | <EntityLink id="rapid">Rapid AI Takeover</EntityLink> |
+| P3 focus | <EntityLink id="alignment-robustness">Alignment Robustness</EntityLink> parameter |
+| P4 focus | <EntityLink id="power-seeking-conditions" label="Power-Seeking Conditions" /> model |
+| P2 dynamics | <EntityLink id="racing-intensity">Racing Intensity</EntityLink> parameter |
 
 ### Mapping to Aggregate Parameters
 
 | Premise | Most Relevant Aggregate |
 |---------|------------------------|
 | P1 (Timelines) | External factor (not a parameter we influence much) |
-| P2 (Incentives) | [Misuse Potential](/ai-transition-model/factors/misuse-potential/) |
-| P3 (Alignment) | [Misalignment Potential](/ai-transition-model/factors/misalignment-potential/) |
-| P4 (Power-Seeking) | [Misalignment Potential](/ai-transition-model/factors/misalignment-potential/) |
+| P2 (Incentives) | <EntityLink id="__index__/ai-transition-model/factors/misuse-potential">Misuse Potential</EntityLink> |
+| P3 (Alignment) | <EntityLink id="__index__/ai-transition-model/factors/misalignment-potential">Misalignment Potential</EntityLink> |
+| P4 (Power-Seeking) | <EntityLink id="__index__/ai-transition-model/factors/misalignment-potential">Misalignment Potential</EntityLink> |
 | P5 (Scaling) | [Governance Capacity](/ai-transition-model/factors/civilizational-competence/governance/) |
 | P6 (Catastrophe) | Definition (not a parameter) |
 
@@ -330,7 +330,7 @@ flowchart LR
 
 ### Framework Limitations
 
-1. **Doesn't cover all risks**: Focuses on power-seeking; doesn't address catastrophic misuse or [gradual disempowerment](/ai-transition-model/scenarios/ai-takeover/gradual/)
+1. **Doesn't cover all risks**: Focuses on power-seeking; doesn't address catastrophic misuse or <EntityLink id="gradual">gradual disempowerment</EntityLink>
 2. **Binary framing**: Treats each premise as yes/no; reality may be continuous
 3. **Sensitive to framing**: Different decompositions might yield different estimates
 4. **Relies on speculation**: All estimates are fundamentally about unprecedented situations
@@ -366,17 +366,17 @@ The framework enables productive disagreement:
 ## Related Content
 
 ### Models
-- [Power-Seeking Conditions](/knowledge-base/models/power-seeking-conditions/) — Technical conditions for power-seeking emergence
-- [Scheming Likelihood](/knowledge-base/models/scheming-likelihood-model/) — Probabilistic model of deceptive alignment
-- [Deceptive Alignment Decomposition](/knowledge-base/models/deceptive-alignment-decomposition/) — Alternative decomposition
+- <EntityLink id="power-seeking-conditions" label="Power-Seeking Conditions" /> — Technical conditions for power-seeking emergence
+- <EntityLink id="scheming-likelihood-model" label="Scheming Likelihood" /> — Probabilistic model of deceptive alignment
+- <EntityLink id="deceptive-alignment-decomposition" label="Deceptive Alignment Decomposition" /> — Alternative decomposition
 
 ### Risks
-- [Instrumental Convergence](/knowledge-base/risks/accident/instrumental-convergence/) — Theoretical foundation for P4
-- [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) — Key mechanism enabling power-seeking
+- <EntityLink id="instrumental-convergence">Instrumental Convergence</EntityLink> — Theoretical foundation for P4
+- <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> — Key mechanism enabling power-seeking
 
 ### Critical Outcomes
-- [Rapid AI Takeover](/ai-transition-model/scenarios/ai-takeover/rapid/) — The scenario this argument addresses
-- [Gradual AI Takeover](/ai-transition-model/scenarios/ai-takeover/gradual/) — Alternative pathway not fully covered
+- <EntityLink id="rapid">Rapid AI Takeover</EntityLink> — The scenario this argument addresses
+- <EntityLink id="gradual">Gradual AI Takeover</EntityLink> — Alternative pathway not fully covered
 
 ### External Resources
 - <R id="6e597a4dc1f6f860">Original report (2022)</R>

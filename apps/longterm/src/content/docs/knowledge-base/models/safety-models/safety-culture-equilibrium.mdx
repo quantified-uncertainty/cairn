@@ -24,7 +24,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="safety-culture-equilibrium" ratings={frontmatter.ratings} />
 
@@ -306,10 +306,10 @@ Your view on safety culture equilibrium should depend on:
 
 ## Related Models
 
-- [Lab Incentives Model](/knowledge-base/models/lab-incentives-model/) - Detailed lab incentive analysis
-- [Racing Dynamics Impact](/knowledge-base/models/racing-dynamics-impact/) - Racing dynamics consequences
-- [Multipolar Trap Dynamics](/knowledge-base/models/multipolar-trap-dynamics/) - Coordination failure mechanisms
-- [Parameter Interaction Network](/knowledge-base/models/parameter-interaction-network/) - How safety-culture-strength interacts with other parameters
+- <EntityLink id="lab-incentives-model" /> - Detailed lab incentive analysis
+- <EntityLink id="racing-dynamics-impact" label="Racing Dynamics Impact" /> - Racing dynamics consequences
+- <EntityLink id="multipolar-trap-dynamics" label="Multipolar Trap Dynamics" /> - Coordination failure mechanisms
+- <EntityLink id="parameter-interaction-network" label="Parameter Interaction Network" /> - How safety-culture-strength interacts with other parameters
 
 ## Sources
 

@@ -25,7 +25,7 @@ llmSummary: >-
   R_total(t) = Σ N_i(t)·C_i(t)·P_misuse,i.
 pageTemplate: knowledge-base-model
 ---
-import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="proliferation-risk-model" ratings={frontmatter.ratings} />
 
@@ -335,8 +335,8 @@ Several critical uncertainties limit model precision and policy effectiveness:
 ### Related Models
 | Model | Focus | Relationship |
 |-------|-------|-------------|
-| [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | Competitive pressures | Explains drivers of open release |
-| [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) | Coordination failures | Models governance challenges |
-| [Winner-Take-All](/knowledge-base/risks/structural/winner-take-all/) | Market structure | Alternative to proliferation scenario |
+| <EntityLink id="racing-dynamics">Racing Dynamics</EntityLink> | Competitive pressures | Explains drivers of open release |
+| <EntityLink id="multipolar-trap">Multipolar Trap</EntityLink> | Coordination failures | Models governance challenges |
+| <EntityLink id="winner-take-all">Winner-Take-All</EntityLink> | Market structure | Alternative to proliferation scenario |
 
 <Backlinks />

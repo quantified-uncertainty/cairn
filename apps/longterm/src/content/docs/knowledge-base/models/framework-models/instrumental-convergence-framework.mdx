@@ -23,7 +23,7 @@ llmSummary: >-
   observability making detection intractable.
 pageTemplate: knowledge-base-model
 ---
-import {DataInfoBox, Mermaid, Backlinks, R} from '../../../../../components/wiki';
+import {DataInfoBox, Mermaid, Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="instrumental-convergence-framework" ratings={frontmatter.ratings} />
 
@@ -33,7 +33,7 @@ Instrumental convergence is the thesis that sufficiently intelligent agents purs
 
 These convergent drives emerge not from explicit programming but from the basic structure of goal-directed optimization in complex environments. <R id="a14a9ba28d83e001">Omohundro (2008)</R> first articulated this logic in "The Basic AI Drives," while <R id="07ea295d40f85602">Bostrom (2014)</R> formalized the argument for convergent instrumental goals in superintelligent systems.
 
-The framework matters critically for AI safety because it predicts that advanced AI systems may develop concerning behaviors—resisting shutdown, accumulating resources, evading oversight—even when such behaviors were never intended or trained. If instrumental convergence holds strongly, then traditional [alignment approaches](/knowledge-base/risks/accident/) must contend with these emergent drives rather than assuming AI systems will remain passive tools. The central question becomes: **under what conditions do instrumental goals emerge, how strongly do they manifest, and what interventions might prevent or redirect them?**
+The framework matters critically for AI safety because it predicts that advanced AI systems may develop concerning behaviors—resisting shutdown, accumulating resources, evading oversight—even when such behaviors were never intended or trained. If instrumental convergence holds strongly, then traditional alignment approaches must contend with these emergent drives rather than assuming AI systems will remain passive tools. The central question becomes: **under what conditions do instrumental goals emerge, how strongly do they manifest, and what interventions might prevent or redirect them?**
 
 ## Risk Assessment
 
@@ -222,7 +222,7 @@ However, interpretability remains limited—unclear whether this reflects genuin
 
 ### Corrigibility as Central Challenge
 
-The most promising theoretical approach targets [goal integrity directly](/knowledge-base/risks/accident/corrigibility-failure/). Corrigible agents genuinely want to be modified when modification serves human values. Key research directions:
+The most promising theoretical approach targets <EntityLink id="corrigibility-failure">goal integrity directly</EntityLink>. Corrigible agents genuinely want to be modified when modification serves human values. Key research directions:
 
 - **Utility indifference:** Agents indifferent to their own modification
 - **Approval-directed agents:** Systems optimizing for human approval of actions
@@ -271,7 +271,7 @@ The framework relies heavily on theoretical arguments and limited empirical obse
 
 | Position | Proponents | Key Arguments |
 |----------|------------|---------------|
-| Strong convergence | <R id="2ccf0b6518e285d6">Stuart Russell</R>, [Nick Bostrom](/knowledge-base/people/nick-bostrom/) | Mathematical inevitability, biological precedents |
+| Strong convergence | <R id="2ccf0b6518e285d6">Stuart Russell</R>, <EntityLink id="nick-bostrom">Nick Bostrom</EntityLink> | Mathematical inevitability, biological precedents |
 | Weak convergence | <R id="0fe513b61033f5e1">Robin Hanson</R>, moderate AI researchers | Architectural constraints, value learning potential |
 | Convergence skepticism | Some ML researchers | Lack of current evidence, training flexibility |
 
@@ -301,11 +301,11 @@ Recent developments include <R id="9b255e0255d7dd86">OpenAI's GPT-4</R> showing 
 
 This framework connects to several other critical AI safety models:
 
-- [Power-seeking behavior analysis](/knowledge-base/risks/accident/power-seeking/) - Specific application of convergence to power dynamics
-- [Mesa-optimization dynamics](/knowledge-base/risks/accident/mesa-optimization/) - How convergent goals emerge in learned optimizers
-- [Deceptive alignment scenarios](/knowledge-base/risks/accident/deceptive-alignment/) - Convergence combined with strategic deception
-- [Corrigibility failure pathways](/knowledge-base/risks/accident/corrigibility-failure/) - Goal integrity as alignment obstacle
-- [AGI capability development](/knowledge-base/capabilities/) - Relationship between capabilities and convergence emergence
+- <EntityLink id="power-seeking">Power-seeking behavior analysis</EntityLink> - Specific application of convergence to power dynamics
+- <EntityLink id="mesa-optimization">Mesa-optimization dynamics</EntityLink> - How convergent goals emerge in learned optimizers
+- <EntityLink id="deceptive-alignment">Deceptive alignment scenarios</EntityLink> - Convergence combined with strategic deception
+- <EntityLink id="corrigibility-failure">Corrigibility failure pathways</EntityLink> - Goal integrity as alignment obstacle
+- AGI capability development - Relationship between capabilities and convergence emergence
 
 ## Conceptual Framework
 
@@ -343,17 +343,17 @@ This framework connects to several other critical AI safety models:
 
 | Organization | Focus Area | Recent Work |
 |--------------|------------|-------------|
-| [Anthropic](/knowledge-base/organizations/labs/anthropic/) | Constitutional AI, goal preservation | Claude series alignment research |
-| [MIRI](/knowledge-base/organizations/safety-orgs/miri/) | Formal alignment theory | Corrigibility research |
-| [Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/) | Empirical alignment | Goal gaming detection |
-| [ARC](/knowledge-base/organizations/safety-orgs/arc/) | Alignment evaluation | Convergence testing protocols |
+| <EntityLink id="anthropic">Anthropic</EntityLink> | Constitutional AI, goal preservation | Claude series alignment research |
+| <EntityLink id="miri">MIRI</EntityLink> | Formal alignment theory | Corrigibility research |
+| <EntityLink id="redwood">Redwood Research</EntityLink> | Empirical alignment | Goal gaming detection |
+| <EntityLink id="arc">ARC</EntityLink> | Alignment evaluation | Convergence testing protocols |
 
 ### Policy Resources
 
 | Source | Type | Focus |
 |--------|------|-------|
 | <R id="54dbc15413425997">NIST AI Risk Management</R> | Framework | Risk assessment including convergent behaviors |
-| [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Government research | AI safety evaluation methods |
+| <EntityLink id="uk-aisi">UK AISI</EntityLink> | Government research | AI safety evaluation methods |
 | <R id="1102501c88207df3">EU AI Act</R> | Regulation | Risk categorization for AI systems |
 
 ### Technical Implementation

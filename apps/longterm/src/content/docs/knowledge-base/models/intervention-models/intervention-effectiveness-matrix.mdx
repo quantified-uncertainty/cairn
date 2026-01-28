@@ -30,13 +30,13 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-effectiveness-matrix" ratings={frontmatter.ratings} />
 
 ## Overview
 
-This model provides a comprehensive mapping of **AI safety interventions** (technical, governance, and organizational) to the **specific risks** they mitigate, with quantitative effectiveness estimates. The analysis reveals that no single intervention covers all risks, with dangerous gaps in [deceptive alignment](/knowledge-base/risks/accident/deceptive-alignment/) and [scheming](/knowledge-base/risks/accident/scheming/) detection.
+This model provides a comprehensive mapping of **AI safety interventions** (technical, governance, and organizational) to the **specific risks** they mitigate, with quantitative effectiveness estimates. The analysis reveals that no single intervention covers all risks, with dangerous gaps in <EntityLink id="deceptive-alignment">deceptive alignment</EntityLink> and <EntityLink id="scheming">scheming</EntityLink> detection.
 
 **Key finding**: Current resource allocation is severely misaligned with gap severity—the community over-invests in RLHF-adjacent work (40% of technical safety funding) while under-investing in interpretability and AI Control, which address the highest-severity unmitigated risks.
 
@@ -595,18 +595,18 @@ According to [METR's December 2025 analysis](https://metr.org/blog/2025-12-09-co
 ## Related Models and Pages
 
 ### Technical Risk Models
-- [Deceptive Alignment Decomposition](/knowledge-base/models/deceptive-alignment-decomposition/) - Detailed analysis of key gap
-- [Defense in Depth Model](/knowledge-base/models/defense-in-depth-model/) - How interventions layer
-- [Capability Threshold Model](/knowledge-base/models/capability-threshold-model/) - When interventions become insufficient
+- <EntityLink id="deceptive-alignment-decomposition" label="Deceptive Alignment Decomposition" /> - Detailed analysis of key gap
+- <EntityLink id="defense-in-depth-model" /> - How interventions layer
+- <EntityLink id="capability-threshold-model" /> - When interventions become insufficient
 
 ### Governance and Strategy
-- [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Risk portfolio construction
-- [Capabilities to Safety Pipeline](/knowledge-base/models/capabilities-to-safety-pipeline/) - Research translation challenges
-- [Critical Uncertainties](/knowledge-base/models/critical-uncertainties/) - Key unknowns affecting prioritization
+- <EntityLink id="ai-risk-portfolio-analysis" /> - Risk portfolio construction
+- <EntityLink id="capabilities-to-safety-pipeline" label="Capabilities to Safety Pipeline" /> - Research translation challenges
+- <EntityLink id="critical-uncertainties" /> - Key unknowns affecting prioritization
 
 ### Implementation Resources
-- [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) - Industry implementation
-- [Safety Research Organizations](/knowledge-base/organizations/safety-orgs/) - Key players and capacity
-- [Evaluation Frameworks](/knowledge-base/responses/evaluation/) - Assessment methodologies
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> - Industry implementation
+- Safety Research Organizations - Key players and capacity
+- <EntityLink id="evaluation">Evaluation Frameworks</EntityLink> - Assessment methodologies
 
 <Backlinks client:load entityId="intervention-effectiveness-matrix" />

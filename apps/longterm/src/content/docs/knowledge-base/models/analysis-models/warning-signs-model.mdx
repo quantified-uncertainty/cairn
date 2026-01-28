@@ -25,7 +25,7 @@ llmSummary: >-
   extreme-severity risks like deception and corrigibility failure.
 pageTemplate: knowledge-base-model
 ---
-import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="warning-signs-model" ratings={frontmatter.ratings} />
 
@@ -368,13 +368,13 @@ AI warning signs monitoring can learn from more mature risk assessment framework
 
 Leading researchers emphasize different aspects of warning signs frameworks based on their risk models and expertise areas.
 
-[Dario Amodei](/knowledge-base/people/dario-amodei/) (Anthropic CEO) has argued that "responsible scaling policies must define concrete capability thresholds that trigger safety requirements," emphasizing the need for predetermined responses rather than ad hoc decision-making. Anthropic's approach focuses on creating "if-then" commitments that remove discretion at evaluation points.
+<EntityLink id="dario-amodei">Dario Amodei</EntityLink> (Anthropic CEO) has argued that "responsible scaling policies must define concrete capability thresholds that trigger safety requirements," emphasizing the need for predetermined responses rather than ad hoc decision-making. Anthropic's approach focuses on creating "if-then" commitments that remove discretion at evaluation points.
 
-[Dan Hendrycks](/knowledge-base/people/dan-hendrycks/) (Center for AI Safety) advocates for "AI safety benchmarks that measure existential risk-relevant capabilities," arguing that current evaluation focused on helpfulness misses the most concerning capabilities. His work emphasizes the importance of red-teaming and adversarial evaluation.
+<EntityLink id="dan-hendrycks">Dan Hendrycks</EntityLink> (Center for AI Safety) advocates for "AI safety benchmarks that measure existential risk-relevant capabilities," arguing that current evaluation focused on helpfulness misses the most concerning capabilities. His work emphasizes the importance of red-teaming and adversarial evaluation.
 
-[Geoffrey Hinton](/knowledge-base/people/geoffrey-hinton/) has warned that "we may not get warning signs" for the most dangerous AI capabilities, expressing skepticism about detection-based approaches. This perspective emphasizes the importance of proactive measures rather than reactive monitoring.
+<EntityLink id="geoffrey-hinton">Geoffrey Hinton</EntityLink> has warned that "we may not get warning signs" for the most dangerous AI capabilities, expressing skepticism about detection-based approaches. This perspective emphasizes the importance of proactive measures rather than reactive monitoring.
 
-[Stuart Russell](/knowledge-base/people/stuart-russell/) argues for "rigorous testing before deployment" with emphasis on worst-case scenario evaluation rather than average-case performance metrics, highlighting the difficulty of detecting rare but catastrophic behaviors.
+<EntityLink id="stuart-russell">Stuart Russell</EntityLink> argues for "rigorous testing before deployment" with emphasis on worst-case scenario evaluation rather than average-case performance metrics, highlighting the difficulty of detecting rare but catastrophic behaviors.
 
 ## Quantitative Analysis
 
@@ -444,15 +444,15 @@ Leading researchers emphasize different aspects of warning signs frameworks base
 
 For deeper exploration of warning signs in specific risk domains:
 
-- [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) - Warning signs for AI deception
-- [Situational Awareness](/knowledge-base/capabilities/situational-awareness/) - Self-awareness indicators
-- [Bioweapons](/knowledge-base/risks/misuse/bioweapons/) - Biological capability warnings
-- [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) - Employment displacement signals
+- <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> - Warning signs for AI deception
+- <EntityLink id="situational-awareness">Situational Awareness</EntityLink> - Self-awareness indicators
+- <EntityLink id="bioweapons">Bioweapons</EntityLink> - Biological capability warnings
+- <EntityLink id="economic-disruption">Economic Disruption</EntityLink> - Employment displacement signals
 
 For related monitoring and response frameworks:
 
-- [Metrics](/knowledge-base/metrics/) - Quantitative tracking approaches  
-- [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) - Industry implementation
-- [Expert Opinion](/knowledge-base/metrics/expert-opinion/) - Forecasting and assessment methods
+- Metrics - Quantitative tracking approaches  
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> - Industry implementation
+- <EntityLink id="expert-opinion">Expert Opinion</EntityLink> - Forecasting and assessment methods
 
 <Backlinks client:load entityId="warning-signs-model" />

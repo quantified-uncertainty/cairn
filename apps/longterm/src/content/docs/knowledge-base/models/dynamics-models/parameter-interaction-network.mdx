@@ -24,7 +24,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="parameter-interaction-network" ratings={frontmatter.ratings} />
 
@@ -273,10 +273,10 @@ Different parameters have different optimal intervention windows:
 
 ## Related Models
 
-- [Risk Interaction Network](/knowledge-base/models/risk-interaction-network/) - Similar network approach for risks
-- [Risk Cascade Pathways](/knowledge-base/models/risk-cascade-pathways/) - How risks propagate
-- [Epistemic Collapse Threshold](/knowledge-base/models/epistemic-collapse-threshold/) - Deep dive on epistemic parameters
-- [Trust Cascade Model](/knowledge-base/models/trust-cascade-model/) - Trust dynamics in detail
+- <EntityLink id="risk-interaction-network" label="Risk Interaction Network" /> - Similar network approach for risks
+- <EntityLink id="risk-cascade-pathways" label="Risk Cascade Pathways" /> - How risks propagate
+- <EntityLink id="epistemic-collapse-threshold" label="Epistemic Collapse Threshold" /> - Deep dive on epistemic parameters
+- <EntityLink id="trust-cascade-model" label="Trust Cascade Model" /> - Trust dynamics in detail
 
 ## Related Pages
 

@@ -8,15 +8,15 @@ llmSummary: "Comprehensive analysis of LLMs as the primary driver of AI capabili
 lastEdited: "2025-12-24"
 importance: 85
 ---
-import {DataInfoBox, Backlinks, R} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, R, EntityLink} from '../../../../components/wiki';
 
 <DataInfoBox entityId="language-models" />
 
 ## Overview
 
-Large Language Models (LLMs) are transformer-based neural networks trained on vast text corpora using next-token prediction, representing the most significant breakthrough in artificial intelligence history. Despite their deceptively simple training objective, LLMs exhibit sophisticated emergent capabilities including reasoning, coding, scientific analysis, and complex task execution. These models have transformed abstract AI safety discussions into concrete, immediate concerns while providing the clearest path toward [artificial general intelligence](/ai-transition-model/factors/ai-capabilities/).
+Large Language Models (LLMs) are transformer-based neural networks trained on vast text corpora using next-token prediction, representing the most significant breakthrough in artificial intelligence history. Despite their deceptively simple training objective, LLMs exhibit sophisticated emergent capabilities including reasoning, coding, scientific analysis, and complex task execution. These models have transformed abstract AI safety discussions into concrete, immediate concerns while providing the clearest path toward <EntityLink id="__index__/ai-transition-model/factors/ai-capabilities">artificial general intelligence</EntityLink>.
 
-The remarkable aspect of LLMs lies in their emergent capabilities—sophisticated behaviors arising unpredictably at scale. A model trained solely to predict the next word can suddenly exhibit mathematical problem-solving, computer programming, and rudimentary goal-directed behavior. This emergence has made LLMs both the most promising technology for beneficial applications and the primary source of current [AI safety concerns](/knowledge-base/risks/accident/).
+The remarkable aspect of LLMs lies in their emergent capabilities—sophisticated behaviors arising unpredictably at scale. A model trained solely to predict the next word can suddenly exhibit mathematical problem-solving, computer programming, and rudimentary goal-directed behavior. This emergence has made LLMs both the most promising technology for beneficial applications and the primary source of current AI safety concerns.
 
 Current state-of-the-art models like GPT-4, Claude 3.5 Sonnet, and OpenAI's o1 demonstrate near-human performance across diverse cognitive domains. With over 100 billion parameters and training costs exceeding \$100 million, these systems represent unprecedented computational achievements that have shifted AI safety from theoretical to practical urgency.
 
@@ -24,11 +24,11 @@ Current state-of-the-art models like GPT-4, Claude 3.5 Sonnet, and OpenAI's o1 d
 
 | Risk Category | Severity | Likelihood | Timeline | Trend |
 |---------------|----------|------------|----------|-------|
-| [Deceptive Capabilities](/knowledge-base/risks/accident/deceptive-alignment/) | High | Moderate | 1-3 years | Increasing |
-| [Persuasion & Manipulation](/knowledge-base/capabilities/persuasion/) | High | High | Current | Accelerating |
-| [Autonomous Cyber Operations](/knowledge-base/risks/misuse/cyberweapons/) | Moderate-High | Moderate | 2-4 years | Increasing |
-| [Scientific Research Acceleration](/knowledge-base/capabilities/scientific-research/) | Mixed | High | Current | Accelerating |
-| [Economic Disruption](/knowledge-base/risks/structural/economic-disruption/) | High | High | 2-5 years | Accelerating |
+| <EntityLink id="deceptive-alignment">Deceptive Capabilities</EntityLink> | High | Moderate | 1-3 years | Increasing |
+| <EntityLink id="persuasion">Persuasion & Manipulation</EntityLink> | High | High | Current | Accelerating |
+| <EntityLink id="cyberweapons">Autonomous Cyber Operations</EntityLink> | Moderate-High | Moderate | 2-4 years | Increasing |
+| <EntityLink id="scientific-research">Scientific Research Acceleration</EntityLink> | Mixed | High | Current | Accelerating |
+| <EntityLink id="economic-disruption">Economic Disruption</EntityLink> | High | High | 2-5 years | Accelerating |
 
 ## Capability Progression Timeline
 
@@ -61,9 +61,9 @@ Research by <R id="85f66a6419d173a7">Kaplan et al. (2020)</R> and refined by <R 
 
 | Capability | Emergence Scale | Evidence | Safety Relevance |
 |------------|----------------|----------|------------------|
-| Few-shot learning | ~100B parameters | GPT-3 breakthrough | [Tool use](/knowledge-base/capabilities/tool-use/) foundation |
-| Chain-of-thought | ~10B parameters | PaLM, GPT-3 variants | [Complex reasoning](/knowledge-base/capabilities/reasoning/) |
-| Code generation | ~1B parameters | Codex, GitHub Copilot | [Cyber capabilities](/knowledge-base/risks/misuse/cyberweapons/) |
+| Few-shot learning | ~100B parameters | GPT-3 breakthrough | <EntityLink id="tool-use">Tool use</EntityLink> foundation |
+| Chain-of-thought | ~10B parameters | PaLM, GPT-3 variants | <EntityLink id="reasoning">Complex reasoning</EntityLink> |
+| Code generation | ~1B parameters | Codex, GitHub Copilot | <EntityLink id="cyberweapons">Cyber capabilities</EntityLink> |
 | Instruction following | ~10B parameters | InstructGPT | Human-AI interaction paradigm |
 
 ## Concerning Capabilities Assessment
@@ -79,7 +79,7 @@ Modern LLMs demonstrate sophisticated persuasion capabilities that pose risks to
 | Emotional manipulation | Moderate | RLHF alignment research | Moderate |
 | Debate performance | Advanced | Human preference studies | High |
 
-Research by <R id="f771d4f56ad4dbaa">Anthropic</R> shows GPT-4 can increase human agreement rates by 82% through targeted persuasion techniques, raising concerns about [consensus manufacturing](/knowledge-base/risks/epistemic/consensus-manufacturing/).
+Research by <R id="f771d4f56ad4dbaa">Anthropic</R> shows GPT-4 can increase human agreement rates by 82% through targeted persuasion techniques, raising concerns about <EntityLink id="consensus-manufacturing">consensus manufacturing</EntityLink>.
 
 ### Deception and Truthfulness
 
@@ -108,8 +108,8 @@ Current LLMs demonstrate concerning levels of autonomous task execution:
 | Research Area | Progress Level | Key Findings | Organizations |
 |---------------|----------------|--------------|---------------|
 | Attention visualization | Advanced | Knowledge storage patterns | <R id="afe2508ac4caf5ee">Anthropic</R>, <R id="04d39e8bd5d50dd5">OpenAI</R> |
-| Activation patching | Moderate | Causal intervention methods | [Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/) |
-| Concept extraction | Early | Linear representations | [CHAI](/knowledge-base/organizations/safety-orgs/chai/) |
+| Activation patching | Moderate | Causal intervention methods | <EntityLink id="redwood">Redwood Research</EntityLink> |
+| Concept extraction | Early | Linear representations | <EntityLink id="chai">CHAI</EntityLink> |
 | Mechanistic understanding | Early | Transformer circuits | <R id="f771d4f56ad4dbaa">Anthropic Interpretability</R> |
 
 ### Constitutional AI and Value Learning
@@ -140,7 +140,7 @@ Modern LLMs enable new approaches to AI safety through automated oversight:
 | Truthfulness | No improvement | Larger models more convincing when wrong | Requires targeted training |
 | Reliability | Inconsistent | High variance across similar prompts | Systematic evaluation needed |
 | Novel reasoning | Limited progress | Pattern matching vs. genuine insight | May hit architectural limits |
-| Value alignment | No guarantee | Capability-alignment divergence | [Alignment difficulty](/knowledge-base/risks/accident/) |
+| Value alignment | No guarantee | Capability-alignment divergence | Alignment difficulty |
 
 ### Current Performance Gaps
 
@@ -158,13 +158,13 @@ Despite impressive capabilities, significant limitations remain:
 | Development | Likelihood | Timeline | Impact |
 |-------------|------------|----------|--------|
 | 10T+ parameter models | High | 6-12 months | Significant capability jump |
-| Improved reasoning (o1 successors) | High | 3-6 months | Enhanced [scientific research](/knowledge-base/capabilities/scientific-research/) |
+| Improved reasoning (o1 successors) | High | 3-6 months | Enhanced <EntityLink id="scientific-research">scientific research</EntityLink> |
 | Multimodal integration | High | 6-12 months | Video, audio, sensor fusion |
-| Agent frameworks | Moderate | 12-18 months | [Autonomous systems](/knowledge-base/capabilities/agentic-ai/) |
+| Agent frameworks | Moderate | 12-18 months | <EntityLink id="agentic-ai">Autonomous systems</EntityLink> |
 
 ### Medium-term Outlook (2025-2030)
 
-Expected developments include models with 100T+ parameters, potential architectural breakthroughs beyond transformers, and integration with robotics platforms. Key uncertainties include whether current scaling approaches will continue yielding improvements and the timeline for [artificial general intelligence](/ai-transition-model/factors/ai-capabilities/).
+Expected developments include models with 100T+ parameters, potential architectural breakthroughs beyond transformers, and integration with robotics platforms. Key uncertainties include whether current scaling approaches will continue yielding improvements and the timeline for <EntityLink id="__index__/ai-transition-model/factors/ai-capabilities">artificial general intelligence</EntityLink>.
 
 ## Key Uncertainties and Research Cruxes
 
@@ -179,9 +179,9 @@ Expected developments include models with 100T+ parameters, potential architectu
 
 | Priority Area | Importance | Tractability | Neglectedness |
 |---------------|------------|--------------|---------------|
-| [Interpretability](/knowledge-base/debates/interpretability-sufficient/) | High | Moderate | Moderate |
-| [Alignment techniques](/knowledge-base/cruxes/solutions/) | Highest | Low | Low |
-| [Capability evaluation](/knowledge-base/metrics/safety-research/) | High | High | Moderate |
+| <EntityLink id="interpretability-sufficient">Interpretability</EntityLink> | High | Moderate | Moderate |
+| <EntityLink id="solutions">Alignment techniques</EntityLink> | Highest | Low | Low |
+| <EntityLink id="safety-research">Capability evaluation</EntityLink> | High | High | Moderate |
 | Governance frameworks | High | Moderate | High |
 
 ### Timeline Uncertainties
@@ -210,8 +210,8 @@ Current expert surveys show wide disagreement on AGI timelines, with median esti
 |------|--------------|------------|---------------|
 | Industry | <R id="e9aaa7b5e18f9f41">OpenAI</R> | GPT series, safety research | Technical papers, safety docs |
 | Industry | <R id="f771d4f56ad4dbaa">Anthropic</R> | Constitutional AI, interpretability | Claude research, safety papers |
-| Academic | [CHAI](/knowledge-base/organizations/safety-orgs/chai/) | AI alignment research | Technical alignment papers |
-| Safety | [Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/) | Interpretability, oversight | Mechanistic interpretability |
+| Academic | <EntityLink id="chai">CHAI</EntityLink> | AI alignment research | Technical alignment papers |
+| Safety | <EntityLink id="redwood">Redwood Research</EntityLink> | Interpretability, oversight | Mechanistic interpretability |
 
 ### Policy and Governance Resources
 
@@ -219,6 +219,6 @@ Current expert surveys show wide disagreement on AGI timelines, with median esti
 |----------|--------------|-------|------|
 | AI Safety Guidelines | <R id="54dbc15413425997">NIST</R> | Federal standards | Risk management framework |
 | Responsible AI Practices | <R id="0e7aef26385afeed">Partnership on AI</R> | Industry coordination | Best practices documentation |
-| International Cooperation | [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | Global safety standards | International coordination |
+| International Cooperation | <EntityLink id="uk-aisi">UK AISI</EntityLink> | Global safety standards | International coordination |
 
 <Backlinks client:load entityId="language-models" />

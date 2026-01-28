@@ -7,13 +7,13 @@ importance: 74.5
 quality: 82
 llmSummary: "Comprehensive quantitative analysis showing AI safety research severely under-resourced with ~1,100 FTE researchers versus 10,000:1 capabilities funding ratio, despite 21-30% annual field growth. Provides actionable metrics on researcher headcount, funding flows ($250-400M annually), publication trends, and educational pipeline capacity for prioritization decisions."
 ---
-import {R} from '../../../../components/wiki';
+import {R, EntityLink} from '../../../../components/wiki';
 
 ## Overview
 
 This page tracks the **size, growth, and resource allocation** of the AI safety research field. Understanding these metrics helps assess whether safety research is keeping pace with capabilities development and identify critical capacity gaps. The analysis encompasses researcher headcount, funding flows, publication trends, and educational programs.
 
-**Key finding**: Despite rapid growth, AI safety research remains severely under-resourced relative to capabilities development, with spending ratios estimated at 1:10,000 or worse. The field has tripled from ~400 to ~1,100 FTEs (2022-2025) but capabilities research is growing faster, creating a widening absolute gap. Current safety funding represents just 0.0004% of global GDP, while AI capabilities investment exceeds \$100 billion annually. This creates significant questions about whether AI safety research can develop adequate solutions before [transformative AI capabilities](/knowledge-base/capabilities/) emerge.
+**Key finding**: Despite rapid growth, AI safety research remains severely under-resourced relative to capabilities development, with spending ratios estimated at 1:10,000 or worse. The field has tripled from ~400 to ~1,100 FTEs (2022-2025) but capabilities research is growing faster, creating a widening absolute gap. Current safety funding represents just 0.0004% of global GDP, while AI capabilities investment exceeds \$100 billion annually. This creates significant questions about whether AI safety research can develop adequate solutions before transformative AI capabilities emerge.
 
 ## Risk Assessment
 
@@ -44,9 +44,9 @@ This page tracks the **size, growth, and resource allocation** of the AI safety 
 
 **Top technical research areas** by organization count:
 1. Miscellaneous technical AI safety research
-2. [LLM safety](/knowledge-base/capabilities/language-models/)
-3. [Interpretability](/knowledge-base/responses/alignment/interpretability/)
-4. [Alignment research](/knowledge-base/responses/alignment/alignment/)
+2. <EntityLink id="language-models">LLM safety</EntityLink>
+3. <EntityLink id="interpretability">Interpretability</EntityLink>
+4. <EntityLink id="alignment">Alignment research</EntityLink>
 
 **Historical growth trajectory**:
 - 2022: ~400 FTE researchers total
@@ -74,8 +74,8 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 
 | Country/Region | Program | Funding | Timeline |
 |----------------|---------|---------|----------|
-| United States | [US AISI](/knowledge-base/organizations/government/us-aisi/) | \$10M | 2024+ |
-| United Kingdom | [UK AISI](/knowledge-base/organizations/government/uk-aisi/) | \$100M | 2023+ |
+| United States | <EntityLink id="us-aisi">US AISI</EntityLink> | \$10M | 2024+ |
+| United Kingdom | <EntityLink id="uk-aisi">UK AISI</EntityLink> | \$100M | 2023+ |
 | Canada | Canada AISI | \$50M | 2024+ |
 | European Union | AI Act implementation | €100M+ | 2024+ |
 
@@ -105,9 +105,9 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 | Training Methods | "Is DPO Superior to PPO for LLM Alignment?" | Training optimization |
 
 **Industry research contributions**:
-- [Anthropic](/knowledge-base/organizations/labs/anthropic/): Circuit tracing research revealing Claude's "shared conceptual space" (March 2025)
-- [Google DeepMind](/knowledge-base/organizations/labs/deepmind/): Announced deprioritizing sparse autoencoders (March 2025)
-- [CAIS](/knowledge-base/organizations/safety-orgs/cais/): Supported 77 safety papers through compute cluster (2024)
+- <EntityLink id="anthropic">Anthropic</EntityLink>: Circuit tracing research revealing Claude's "shared conceptual space" (March 2025)
+- <EntityLink id="deepmind">Google DeepMind</EntityLink>: Announced deprioritizing sparse autoencoders (March 2025)
+- <EntityLink id="cais">CAIS</EntityLink>: Supported 77 safety papers through compute cluster (2024)
 
 **Field debates**: Intensified discussion about mechanistic interpretability value, with <R id="1d4ad7089731ec79">Dario Amodei</R> advocating focus while other labs shift priorities.
 
@@ -160,7 +160,7 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 | ICLR 2024 | ~8,000 participants | Alignment research track | 12% increase |
 
 **Safety-specific events**:
-- [CAIS](/knowledge-base/organizations/safety-orgs/cais/) online course: 240 participants (2024)
+- <EntityLink id="cais">CAIS</EntityLink> online course: 240 participants (2024)
 - AI safety conference workshops and socials organized by multiple organizations
 - NeurIPS 2025 split between Mexico City and Copenhagen due to capacity constraints
 
@@ -198,8 +198,8 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 
 **Concerning scenario** (capabilities development accelerates):
 - Safety research remains **&lt;5% of total AI research**
-- [Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) intensify as [AGI timelines](/knowledge-base/forecasting/agi-timeline/) compress
-- Insufficient safety research to address [alignment difficulty](/knowledge-base/risks/accident/)
+- <EntityLink id="racing-dynamics">Racing dynamics</EntityLink> intensify as <EntityLink id="agi-timeline">AGI timelines</EntityLink> compress
+- Insufficient safety research to address alignment difficulty
 
 ---
 
@@ -208,8 +208,8 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 ### Critical Unknowns
 
 **Capability researcher count**: No comprehensive database exists for AI capabilities researchers. Estimates suggest 30,000-100,000 globally based on:
-- [OpenAI](/knowledge-base/organizations/labs/openai/) growth: 300→3,000 employees (2021-2025)
-- Similar expansion at [Anthropic](/knowledge-base/organizations/labs/anthropic/), [DeepMind](/knowledge-base/organizations/labs/deepmind/)
+- <EntityLink id="openai">OpenAI</EntityLink> growth: 300→3,000 employees (2021-2025)
+- Similar expansion at <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="deepmind">DeepMind</EntityLink>
 - ML conference attendance doubling every 2-3 years
 
 **Industry safety spending**: Most AI labs don't disclose safety vs capabilities budget breakdowns. Known examples:
@@ -221,11 +221,11 @@ This represents consistent 25%+ annual growth, but still lags behind estimated c
 
 **Field size adequacy**:
 - **Optimists**: Current growth sufficient if focused on highest-impact research
-- **Pessimists**: Need 10x more researchers given [AI risk timeline](/knowledge-base/forecasting/agi-timeline/)
+- **Pessimists**: Need 10x more researchers given <EntityLink id="agi-timeline">AI risk timeline</EntityLink>
 
 **Research prioritization**:
-- **Technical focus**: Emphasize [interpretability](/knowledge-base/responses/alignment/interpretability/), [alignment](/knowledge-base/responses/alignment/alignment/)
-- **Governance focus**: Prioritize [policy interventions](/knowledge-base/responses/governance/), [coordination](/ai-transition-model/parameters/international-coordination/)
+- **Technical focus**: Emphasize <EntityLink id="interpretability">interpretability</EntityLink>, <EntityLink id="alignment">alignment</EntityLink>
+- **Governance focus**: Prioritize policy interventions, <EntityLink id="international-coordination">coordination</EntityLink>
 
 **Funding allocation**:
 - Large grants to established organizations vs distributed funding for diverse approaches

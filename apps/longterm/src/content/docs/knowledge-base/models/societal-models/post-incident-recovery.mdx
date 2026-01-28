@@ -32,7 +32,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, KeyQuestions, Mermaid } from '../../../../../components/wiki';
+import { DataInfoBox, Backlinks, KeyQuestions, Mermaid , EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="post-incident-recovery" ratings={frontmatter.ratings} />
 
@@ -424,9 +424,9 @@ flowchart LR
 
 ## Related Models
 
-- [Trust Cascade Failure Model](/knowledge-base/models/trust-cascade-model/)
-- [Expertise Atrophy Cascade Model](/knowledge-base/models/expertise-atrophy-cascade/)
-- [Institutional Adaptation Speed Model](/knowledge-base/models/institutional-adaptation-speed/)
+- <EntityLink id="trust-cascade-model" />
+- <EntityLink id="expertise-atrophy-cascade" />
+- <EntityLink id="institutional-adaptation-speed" />
 
 ## Limitations
 

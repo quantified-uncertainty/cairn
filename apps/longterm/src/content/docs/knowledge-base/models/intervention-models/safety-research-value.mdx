@@ -24,7 +24,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="safety-research-value" ratings={frontmatter.ratings} />
 
@@ -268,9 +268,9 @@ pie title Current Safety Research Allocation (\$500M)
 | Organization | Focus | Annual Budget | Key Publications |
 |--------------|-------|---------------|------------------|
 | <R id="afe2508ac4caf5ee">Anthropic</R> | Constitutional AI, interpretability | \$100M+ | Constitutional AI paper |
-| [MIRI](/knowledge-base/organizations/safety-orgs/miri/) | Agent foundations | \$5M | Logical induction |
-| [CHAI](/knowledge-base/organizations/safety-orgs/chai/) | Human-compatible AI | \$10M | CIRL framework |
-| [ARC](/knowledge-base/organizations/safety-orgs/arc/) | Alignment research | \$15M | Eliciting latent knowledge |
+| <EntityLink id="miri">MIRI</EntityLink> | Agent foundations | \$5M | Logical induction |
+| <EntityLink id="chai">CHAI</EntityLink> | Human-compatible AI | \$10M | CIRL framework |
+| <EntityLink id="arc">ARC</EntityLink> | Alignment research | \$15M | Eliciting latent knowledge |
 
 ### Policy Resources
 

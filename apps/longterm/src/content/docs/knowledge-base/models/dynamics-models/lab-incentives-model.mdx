@@ -31,7 +31,7 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { DataInfoBox, Backlinks, Mermaid } from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="lab-incentives-model" ratings={frontmatter.ratings} />
 
@@ -308,9 +308,9 @@ AI labs must balance demands from multiple principals:
 
 ## Related Models
 
-- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - Competitive dynamics analysis
-- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) - Coordination failure mechanisms
-- [Winner-Take-All](/knowledge-base/risks/structural/winner-take-all/) - Market concentration effects
+- <EntityLink id="racing-dynamics">Racing Dynamics</EntityLink> - Competitive dynamics analysis
+- <EntityLink id="multipolar-trap">Multipolar Trap</EntityLink> - Coordination failure mechanisms
+- <EntityLink id="winner-take-all">Winner-Take-All</EntityLink> - Market concentration effects
 
 ## Limitations
 

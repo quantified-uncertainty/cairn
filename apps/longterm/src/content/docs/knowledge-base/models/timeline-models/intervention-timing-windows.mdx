@@ -29,13 +29,13 @@ llmSummary: >-
 pageTemplate: knowledge-base-model
 ---
 import { Aside } from '@astrojs/starlight/components';
-import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="intervention-timing-windows" ratings={frontmatter.ratings} />
 
 ## Overview
 
-This strategic timing model provides a framework for prioritizing AI safety interventions based on window closure dynamics rather than just impact magnitude. The analysis reveals that certain critical intervention opportunities - particularly in [compute governance](/knowledge-base/responses/governance/compute-governance/), international coordination, and regulatory precedent-setting - are closing rapidly within the 2024-2028 timeframe.
+This strategic timing model provides a framework for prioritizing AI safety interventions based on window closure dynamics rather than just impact magnitude. The analysis reveals that certain critical intervention opportunities - particularly in compute governance, international coordination, and regulatory precedent-setting - are closing rapidly within the 2024-2028 timeframe.
 
 The model's core insight is that timing considerations are systematically undervalued in the AI safety community. A moderate-impact intervention with a closing window may be more valuable than a high-impact intervention that can happen anytime. Based on this framework, organizations should reallocate 20-30% of resources from stable-window work toward urgent closing-window interventions within the next 2 years.
 
@@ -192,7 +192,7 @@ According to [Institute for Law & AI research](https://law-ai.org/the-role-of-co
 | August 2025 | Nvidia/AMD deal allows some China sales | 15% revenue share to government |
 
 **Window Closure Drivers:**
-- [Export controls](/knowledge-base/responses/governance/compute-governance/export-controls/) creating precedents that are difficult to modify
+- <EntityLink id="export-controls">Export controls</EntityLink> creating precedents that are difficult to modify
 - Hardware supply chain consolidation reducing future policy leverage
 - Cloud infrastructure lock-in making retroactive safety requirements costly
 - <R id="fe41a8475bafc188">China's AI chip gap narrowing</R>: Huawei developing alternatives despite controls
@@ -248,7 +248,7 @@ The [Centre for Future Generations](https://cfg.eu/the-closing-window-for-ai-gov
 **Critical Success Factors:**
 - Establishing dialogue mechanisms before capability gaps widen significantly
 - Building technical cooperation habits that can survive political tensions
-- Creating shared safety research infrastructure before [racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) intensify
+- Creating shared safety research infrastructure before <EntityLink id="racing-dynamics">racing dynamics</EntityLink> intensify
 
 ### 3. Lab Safety Culture Window
 
@@ -262,10 +262,10 @@ The broader AI talent landscape compounds this challenge. According to [Second T
 
 | Lab | Culture Window Status | Evidence | Intervention Feasibility |
 |-----|----------------------|----------|-------------------------|
-| [OpenAI](/knowledge-base/organizations/labs/openai/) | Largely closed | 50% safety staff departed; 67% retention rate | Low - external pressure only |
-| [Anthropic](/knowledge-base/organizations/labs/anthropic/) | Partially open | 80% retention for 2+ year employees; 8:1 talent flow ratio from OpenAI | Moderate - reinforcement possible |
-| [DeepMind](/knowledge-base/organizations/labs/deepmind/) | Mixed signals | <R id="d564401cd5e38340">Future of Life Institute</R> gave C grade (improved from C-) | Moderate - depends on Google priorities |
-| [xAI](/knowledge-base/organizations/labs/xai/) | Concerning | <R id="21118f4612db1855">Researchers decry</R> "reckless" and "completely irresponsible" culture | Very Low - Grok 4 launched without safety documentation |
+| <EntityLink id="openai">OpenAI</EntityLink> | Largely closed | 50% safety staff departed; 67% retention rate | Low - external pressure only |
+| <EntityLink id="anthropic">Anthropic</EntityLink> | Partially open | 80% retention for 2+ year employees; 8:1 talent flow ratio from OpenAI | Moderate - reinforcement possible |
+| <EntityLink id="deepmind">DeepMind</EntityLink> | Mixed signals | <R id="d564401cd5e38340">Future of Life Institute</R> gave C grade (improved from C-) | Moderate - depends on Google priorities |
+| <EntityLink id="xai">xAI</EntityLink> | Concerning | <R id="21118f4612db1855">Researchers decry</R> "reckless" and "completely irresponsible" culture | Very Low - Grok 4 launched without safety documentation |
 | Emerging labs | Still open | Early stage cultures | High - direct influence possible |
 
 **Quantified Talent Dynamics:**
@@ -320,7 +320,7 @@ According to [White House executive order analysis](https://www.whitehouse.gov/p
 |--------------|---------------|-----------------|------------------|
 | **European Union** | <R id="df6393d58a8ddffc">AI Act</R> implementation phase | 2024-2027 | Global template influence |
 | **United States** | Executive orders and agency rulemaking | 2024-2026 | Federal framework establishment |
-| **United Kingdom** | [UK AISI](/knowledge-base/organizations/government/uk-aisi/) developing approach | 2024-2025 | Commonwealth influence |
+| **United Kingdom** | <EntityLink id="uk-aisi">UK AISI</EntityLink> developing approach | 2024-2025 | Commonwealth influence |
 | **China** | National standards development | 2024-2026 | Authoritarian model influence |
 
 **EU AI Act Implementation Timeline:**
@@ -359,8 +359,8 @@ These interventions maintain effectiveness regardless of timing but may have low
 
 | Research Area | Window Stability | Timing Considerations |
 |---------------|------------------|----------------------|
-| [Alignment research](/knowledge-base/responses/alignment/alignment/) | Stable | Architecture-specific work has closing windows |
-| [Interpretability](/knowledge-base/responses/alignment/interpretability/) | Stable | Method transferability concerns |
+| <EntityLink id="alignment">Alignment research</EntityLink> | Stable | Architecture-specific work has closing windows |
+| <EntityLink id="interpretability">Interpretability</EntityLink> | Stable | Method transferability concerns |
 | Safety evaluation | Stable | Must adapt to new capabilities |
 | Robustness research | Stable | Always valuable regardless of timing |
 
@@ -411,7 +411,7 @@ quadrantChart
 ### Funding Recommendations
 
 **Immediate (6 months):**
-- **Triple** funding to [compute governance](/knowledge-base/responses/governance/compute-governance/) organizations
+- **Triple** funding to compute governance organizations
 - **Double** international coordination capacity funding
 - Establish rapid-response funds for regulatory engagement opportunities
 
@@ -515,15 +515,15 @@ The next 12-18 months represent a uniquely important period for AI safety interv
 
 This timing model should be considered alongside:
 
-- [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) - How competition affects window closure speed
-- [Multipolar Trap](/knowledge-base/risks/structural/multipolar-trap/) - International coordination challenges
-- [AI Risk Portfolio Analysis](/knowledge-base/models/ai-risk-portfolio-analysis/) - Overall resource allocation framework
-- [Capability-Safety Race](/knowledge-base/models/race-models/capability-alignment-race/) - Technical development timing pressures
+- <EntityLink id="racing-dynamics">Racing Dynamics</EntityLink> - How competition affects window closure speed
+- <EntityLink id="multipolar-trap">Multipolar Trap</EntityLink> - International coordination challenges
+- <EntityLink id="ai-risk-portfolio-analysis" /> - Overall resource allocation framework
+- <EntityLink id="capability-alignment-race">Capability-Safety Race</EntityLink> - Technical development timing pressures
 
 For specific closing-window interventions, see:
-- [Compute Governance](/knowledge-base/responses/governance/compute-governance/) strategies
-- [International coordination](/knowledge-base/responses/governance/international/) mechanisms
-- [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/)
+- Compute Governance strategies
+- International coordination mechanisms
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink>
 
 ## Quantitative Analysis
 

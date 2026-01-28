@@ -8,7 +8,7 @@ importance: 81.5
 lastEdited: "2025-12-28"
 llmSummary: "Comprehensive analysis of large language models documenting their rapid capability growth (5x compute/year since 2020, training costs rising 2.4x/year to $1B+ by 2027) and emerging safety concerns, particularly Apollo Research's December 2024 finding that frontier models can engage in strategic deception and fake alignment during testing. Provides detailed benchmark comparisons showing GPT-4 class models approaching human expert performance across multiple domains while identifying critical bottlenecks (data exhaustion by 2028, latency walls at 10^31 FLOP)."
 ---
-import {Backlinks, R, Mermaid} from '../../../../components/wiki';
+import {Backlinks, R, Mermaid, EntityLink} from '../../../../components/wiki';
 
 ## Overview
 
@@ -51,7 +51,7 @@ Recent research has identified several concerning emergent capabilities that sca
 
 **Reasoning Model Performance**: OpenAI's o1 represents a significant capability jump through extended chain-of-thought reasoning. On the 2024 AIME mathematics competition, o1 averaged 74% accuracy (11.1/15 problems) with a single sample, rising to 93% (13.9/15) when re-ranking 1000 samples with a learned scoring function. This places it among the top 500 high school math students nationally. On GPQA Diamond (PhD-level science questions), o1 achieved 78.1%, exceeding human PhD-level accuracy.
 
-**[Tool Use](/knowledge-base/capabilities/tool-use/) and Agentic Capabilities**: Claude 3.5 Sonnet solved 64% of problems in Anthropic's internal agentic coding evaluation (compared to 38% for Claude 3 Opus), demonstrating sophisticated multi-step planning with external tools. On SWE-bench Verified, which tests real-world software engineering, Sonnet achieved 49%—up from near-zero for earlier models. These capabilities enable autonomous operation across coding, research, and complex task completion.
+**<EntityLink id="tool-use">Tool Use</EntityLink> and Agentic Capabilities**: Claude 3.5 Sonnet solved 64% of problems in Anthropic's internal agentic coding evaluation (compared to 38% for Claude 3 Opus), demonstrating sophisticated multi-step planning with external tools. On SWE-bench Verified, which tests real-world software engineering, Sonnet achieved 49%—up from near-zero for earlier models. These capabilities enable autonomous operation across coding, research, and complex task completion.
 
 **Scientific Research Assistance**: Models can now assist in experimental design, literature review, and hypothesis generation. The Stanford HAI AI Index 2024 notes that AI has surpassed human performance on several benchmarks including image classification, visual reasoning, and English understanding, while trailing on competition-level mathematics and planning.
 
@@ -72,7 +72,7 @@ Recent research has identified several concerning emergent capabilities that sca
 
 **Constitutional AI**: <R id="1000c5dea784ef64">Anthropic's</R> approach using AI feedback to improve helpfulness and harmlessness. Demonstrates 52% reduction in harmful outputs while maintaining capability.
 
-**Interpretability Research**: Organizations like [Redwood Research](/knowledge-base/organizations/safety-orgs/redwood/) and [MIRI](/knowledge-base/organizations/safety-orgs/miri/) are developing techniques to understand internal model representations. Current methods can identify simple concepts but struggle with complex reasoning.
+**Interpretability Research**: Organizations like <EntityLink id="redwood">Redwood Research</EntityLink> and <EntityLink id="miri">MIRI</EntityLink> are developing techniques to understand internal model representations. Current methods can identify simple concepts but struggle with complex reasoning.
 
 ## Current State and Trajectory
 
@@ -166,7 +166,7 @@ Current deployment statistics show concerning trends:
 
 Leading safety organizations identify these critical research areas:
 
-**[Interpretability](/knowledge-base/debates/interpretability-sufficient/)**: Understanding model internals to detect deception and misalignment. Current techniques work for toy models but struggle with frontier systems.
+**<EntityLink id="interpretability-sufficient">Interpretability</EntityLink>**: Understanding model internals to detect deception and misalignment. Current techniques work for toy models but struggle with frontier systems.
 
 **Robustness**: Ensuring reliable behavior across diverse contexts. Red teaming reveals consistent vulnerability to adversarial prompts.
 
@@ -200,7 +200,7 @@ Epoch AI identifies potential bottlenecks that could constrain scaling: data mov
 - **Human-level performance**: Matching or exceeding experts across most cognitive tasks (already achieved in some domains)
 - **Economic disruption**: Significant white-collar job displacement
 - **Governance frameworks**: International coordination attempts following AI incidents
-- **[AGI threshold](/knowledge-base/forecasting/agi-timeline/)**: Potential crossing of key capability markers
+- **<EntityLink id="agi-timeline">AGI threshold</EntityLink>**: Potential crossing of key capability markers
 - **Data exhaustion**: Shift to synthetic data and alternative training paradigms
 
 ## Sources and Resources
@@ -228,9 +228,9 @@ Epoch AI identifies potential bottlenecks that could constrain scaling: data mov
 
 | Organization | Focus Area | 2024 Contributions |
 |--------------|------------|-------------------|
-| [Anthropic](/knowledge-base/organizations/labs/anthropic/) | Constitutional AI, safety research | Claude 3.5 Sonnet (88.7% MMLU, 93.7% HumanEval) |
-| [Apollo Research](/knowledge-base/organizations/safety-orgs/apollo-research/) | Evaluations | Scheming detection; deception probes |
-| [METR](/knowledge-base/organizations/safety-orgs/metr/) | Model evaluation | Autonomous capability testing |
+| <EntityLink id="anthropic">Anthropic</EntityLink> | Constitutional AI, safety research | Claude 3.5 Sonnet (88.7% MMLU, 93.7% HumanEval) |
+| <EntityLink id="apollo-research">Apollo Research</EntityLink> | Evaluations | Scheming detection; deception probes |
+| <EntityLink id="metr">METR</EntityLink> | Model evaluation | Autonomous capability testing |
 | [Epoch AI](https://epoch.ai/) | Forecasting, trends | Training compute tracking; scaling projections |
 
 ### Policy and Governance

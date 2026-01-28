@@ -8,13 +8,13 @@ llmSummary: "Comprehensive analysis of Anthropic with 6 detailed data tables cov
 lastEdited: "2025-12-24"
 importance: 72.5
 ---
-import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="anthropic" />
 
 ## Overview
 
-Anthropic is an AI safety company founded in January 2021 by former [OpenAI](/knowledge-base/organizations/labs/openai/) researchers led by siblings [Dario](/knowledge-base/people/dario-amodei/) and [Daniela Amodei](/knowledge-base/people/daniela-amodei/). The company has rapidly scaled to ~1,000 employees and raised over \$1B in funding while developing the Claude family of large language models.
+Anthropic is an AI safety company founded in January 2021 by former <EntityLink id="openai">OpenAI</EntityLink> researchers led by siblings <EntityLink id="dario-amodei">Dario</EntityLink> and <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink>. The company has rapidly scaled to ~1,000 employees and raised over \$1B in funding while developing the Claude family of large language models.
 
 Anthropic positions itself as a "frontier safety" organization - believing that safety-focused labs should remain at the cutting edge of AI capabilities to ensure safe development practices. The company has produced significant safety research including breakthrough work in interpretability (extracting 16 million interpretable features from Claude Sonnet) and concerning results about deceptive alignment persistence through safety training.
 
@@ -37,8 +37,8 @@ The founding team included senior OpenAI researchers responsible for major break
 
 | Founder | Previous Role | Key Contributions |
 |---------|---------------|-------------------|
-| [Dario Amodei](/knowledge-base/people/dario-amodei/) | VP of Research | Led GPT-2/GPT-3 teams |
-| [Chris Olah](/knowledge-base/people/chris-olah/) | Research Lead | Neural network interpretability pioneer |
+| <EntityLink id="dario-amodei">Dario Amodei</EntityLink> | VP of Research | Led GPT-2/GPT-3 teams |
+| <EntityLink id="chris-olah">Chris Olah</EntityLink> | Research Lead | Neural network interpretability pioneer |
 | Tom Brown | Research Scientist | First author, GPT-3 paper |
 | Jared Kaplan | Research Scientist | Scaling laws research |
 | Sam McCandlish | Research Scientist | Large-scale training |
@@ -102,7 +102,7 @@ The **sleeper agents** research demonstrated that:
 - Standard safety training (RLHF, adversarial training) fails to eliminate backdoors
 - Deceptive alignment may be robust to current mitigation techniques
 
-This represents one of the most significant negative results for [alignment difficulty](/knowledge-base/risks/accident/) arguments.
+This represents one of the most significant negative results for alignment difficulty arguments.
 
 ## Business Model and Funding
 
@@ -222,13 +222,13 @@ Based on public statements and releases:
 - Scaling from ~10 to 1,000 employees in 3 years
 - Maintaining safety culture amid commercial pressure  
 - Integrating new hires with different priorities
-- [Jan Leike's](/knowledge-base/people/jan-leike/) 2024 addition after OpenAI departure signals continued safety focus
+- <EntityLink id="jan-leike">Jan Leike's</EntityLink> 2024 addition after OpenAI departure signals continued safety focus
 
 ## Comparative Analysis
 
 ### vs. Other AI Labs
 
-| Dimension | Anthropic | [OpenAI](/knowledge-base/organizations/labs/openai/) | [DeepMind](/knowledge-base/organizations/labs/deepmind/) |
+| Dimension | Anthropic | <EntityLink id="openai">OpenAI</EntityLink> | <EntityLink id="deepmind">DeepMind</EntityLink> |
 |-----------|-----------|---------|-----------|
 | Safety Focus | High (branded) | Medium | Medium-High |
 | Commercial Pressure | High | Very High | Medium (Google-owned) |
@@ -241,9 +241,9 @@ Based on public statements and releases:
 | Organization Type | Capability Building | Safety Research | Independence |
 |------------------|-------------------|-----------------|-------------|
 | Anthropic | Yes (frontier) | Yes (applied) | Commercial constraints |
-| [MIRI](/knowledge-base/organizations/safety-orgs/miri/) | No | Yes (theoretical) | High |
-| [ARC](/knowledge-base/organizations/safety-orgs/arc/) | Minimal | Yes (evals) | High |
-| [Redwood](/knowledge-base/organizations/safety-orgs/redwood/) | Limited | Yes (applied) | Medium |
+| <EntityLink id="miri">MIRI</EntityLink> | No | Yes (theoretical) | High |
+| <EntityLink id="arc">ARC</EntityLink> | Minimal | Yes (evals) | High |
+| <EntityLink id="redwood">Redwood</EntityLink> | Limited | Yes (applied) | Medium |
 
 ## Future Scenarios and Implications
 
@@ -255,9 +255,9 @@ Based on public statements and releases:
 
 ### Pessimistic Scenario  
 - Commercial pressure leads to RSP threshold adjustments
-- [Racing dynamics](/knowledge-base/risks/structural/racing-dynamics/) force faster scaling despite safety concerns
+- <EntityLink id="racing-dynamics">Racing dynamics</EntityLink> force faster scaling despite safety concerns
 - Interpretability fails to scale or provide meaningful safety guarantees
-- Anthropic accelerates [capabilities](/ai-transition-model/factors/ai-capabilities/) development more than safety research
+- Anthropic accelerates <EntityLink id="__index__/ai-transition-model/factors/ai-capabilities">capabilities</EntityLink> development more than safety research
 
 ### Key Indicators to Watch
 - RSP implementation during ASL-3 transition
@@ -291,10 +291,10 @@ Based on public statements and releases:
 | <R id="a2cf0d0271acb097">Model Card: Claude 3</R> | 2024 | Technical capabilities and safety |
 
 ### Related Organizations and Concepts
-- [Constitutional AI](/knowledge-base/responses/alignment/constitutional-ai/) methodology
-- [Responsible Scaling Policies](/knowledge-base/responses/governance/industry/responsible-scaling-policies/) frameworks
-- [Interpretability](/knowledge-base/responses/alignment/interpretability/) research approaches
-- [AI Safety](/knowledge-base/) research landscape
-- [Frontier AI capabilities](/knowledge-base/capabilities/) development
+- <EntityLink id="constitutional-ai">Constitutional AI</EntityLink> methodology
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> frameworks
+- <EntityLink id="interpretability">Interpretability</EntityLink> research approaches
+- AI Safety research landscape
+- Frontier AI capabilities development
 
 <Backlinks client:load entityId="anthropic" />
