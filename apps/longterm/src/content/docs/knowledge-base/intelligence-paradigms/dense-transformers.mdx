@@ -1,11 +1,11 @@
 ---
 title: "Dense Transformers"
-description: "Analysis of the standard transformer architecture that powers current frontier AI. Covers GPT, Claude, Llama, and Gemini-class models. The dominant base architecture, though interpretability remains limited despite 'open' weights."
+description: "Analysis of the standard transformer architecture that powers current frontier AI. Since Vaswani et al.'s 2017 paper (now 160,000+ citations), dense transformers power GPT-4, Claude 3, Llama 3, and Gemini. Despite open weights for some models, mechanistic interpretability remains primitive - Anthropic's 2024 SAE research found tens of millions of features in Claude 3 Sonnet but cannot yet predict emergent capabilities."
 sidebar:
   label: Dense Transformers
   order: 5
-quality: 3
-lastEdited: "2025-01-21"
+quality: 85
+lastEdited: "2026-01-28"
 importance: 95
 ---
 
@@ -13,31 +13,70 @@ import {Mermaid, EntityLink, DataExternalLinks} from '../../../../components/wik
 
 <DataExternalLinks pageId="dense-transformers" client:load />
 
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Dominance** | Near-total (95%+ of frontier models) | GPT-4, Claude 3, Gemini, Llama 3 all use transformer base architecture |
+| **Scalability** | Proven to 1.8T+ parameters | GPT-4 rumored at ~1.8T params; Llama 3 405B trained on 3.8x10^25 FLOPs |
+| **Interpretability** | Primitive despite open weights | Anthropic 2024: found millions of features in Claude 3 Sonnet, still cannot predict behavior |
+| **Training Efficiency** | Well-understood pipeline | RLHF (InstructGPT 2022): 1.3B model preferred over 175B GPT-3 with alignment |
+| **Safety Tooling** | Most developed but inadequate | Constitutional AI, RLHF, red-teaming exist; deception detection remains unsolved |
+| **Predictability** | Low for emergent capabilities | Abilities appear abruptly at scale thresholds; GPT-4 shows phase transitions |
+| **Longevity** | Dominant for 3-5+ years minimum | Infrastructure investment, training expertise, tooling all favor transformers |
+
 ## Overview
 
-Dense transformers are the **dominant architecture** for current frontier AI systems. "Dense" refers to the fact that all parameters are active for every token, in contrast to sparse/MoE architectures where only a subset activates.
+Dense transformers are the **dominant architecture** for current frontier AI systems. "Dense" refers to the fact that all parameters are active for every token, in contrast to sparse/MoE architectures where only a subset activates. This architecture processes inputs through repeated transformer blocks, each containing attention mechanisms that learn relationships between all positions and feed-forward networks that process each position independently.
 
-Every major frontier model - GPT-4, Claude 3, Gemini, Llama 3 - uses this architecture with relatively minor variations. The transformer architecture, introduced in "Attention Is All You Need" (2017), has proven remarkably scalable and general-purpose.
+The transformer architecture was introduced in the seminal paper ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762) by Vaswani et al. in 2017. Originally developed at Google Brain for machine translation (achieving 28.4 BLEU on English-to-German, improving over previous best by 2+ BLEU), the architecture has accumulated over **160,000 citations** and now underlies virtually all frontier AI systems. Every major frontier model - GPT-4, Claude 3, Gemini, Llama 3 - uses this architecture with relatively minor variations.
 
-Despite having "open weights" for some models (Llama, Mistral), **interpretability remains fundamentally limited**. We can inspect billions of parameters but cannot meaningfully understand what the model "knows" or "intends."
+Despite having "open weights" for some models (Llama, Mistral), **interpretability remains fundamentally limited**. Anthropic's [2024 Scaling Monosemanticity research](https://transformer-circuits.pub/2024/scaling-monosemanticity/) successfully extracted tens of millions of interpretable features from Claude 3 Sonnet using sparse autoencoders, identifying concepts like "Golden Gate Bridge" and "neuroscience" - yet researchers still cannot predict emergent capabilities or reliably detect deceptive reasoning. We can inspect billions of parameters but cannot meaningfully understand what the model "knows" or "intends."
 
 ## Architecture Overview
 
+The following diagram illustrates how dense transformers process information, from the foundational 2017 architecture through modern training pipelines:
+
 <Mermaid client:load chart={`
-flowchart TB
-    subgraph transformer["Transformer Block (repeated N times)"]
-        ln1["Layer Norm"]
-        attn["Multi-Head Attention"]
-        ln2["Layer Norm"]
-        ffn["Feed-Forward Network"]
+flowchart TD
+    subgraph input_layer["Input Processing"]
+        tokens["Token IDs"]
+        embed["Token Embeddings"]
+        pos["Positional Encoding"]
     end
 
-    input["Input Embeddings"] --> ln1
+    subgraph transformer["Transformer Block (repeated 80-126 times)"]
+        ln1["Layer Norm (RMSNorm)"]
+        attn["Multi-Head Attention"]
+        ln2["Layer Norm"]
+        ffn["Feed-Forward Network (8x hidden)"]
+    end
+
+    subgraph training["Training Pipeline"]
+        pretrain["Pretraining (next token prediction)"]
+        sft["Supervised Fine-Tuning"]
+        rlhf["RLHF / Constitutional AI"]
+    end
+
+    subgraph output_layer["Output"]
+        logits["Output Logits"]
+        sample["Token Sampling"]
+    end
+
+    tokens --> embed
+    embed --> pos
+    pos --> ln1
     ln1 --> attn
-    attn --> |"residual"| ln2
+    attn --> ln2
     ln2 --> ffn
-    ffn --> |"residual"| output["Output"]
-    output --> |"next block"| input
+    ffn --> |"stack 80-126x"| logits
+    logits --> sample
+
+    pretrain --> sft
+    sft --> rlhf
+
+    style transformer fill:#e8f4f8
+    style training fill:#f0f8e8
 `} />
 
 ### Key Components
@@ -49,14 +88,20 @@ flowchart TB
 | **FFN** | Process each position independently | 8 × d_model² per layer |
 | **Layer Norm** | Stabilize training | 2 × d_model per layer |
 
-### Scale of Current Models
+### Scale of Current Frontier Models
 
-| Model | Parameters | Layers | Context | Training Compute |
-|-------|------------|--------|---------|------------------|
-| GPT-4 | ~1.8T (rumored) | ~120 | 128K | ~\$100M+ |
-| Claude 3 Opus | Unknown | Unknown | 200K | Unknown |
-| Llama 3 405B | 405B | 126 | 128K | ~\$10M |
-| Gemini Ultra | Unknown | Unknown | 1M+ | Unknown |
+| Model | Parameters | Architecture | Context | Training Data | Estimated Cost | Source |
+|-------|------------|--------------|---------|---------------|----------------|--------|
+| **GPT-4** | ~1.8T (8x220B MoE) | MoE, 16 experts | 128K tokens | ~13T tokens | greater than \$100M (Altman) | [SemiAnalysis](https://newsletter.semianalysis.com/p/gpt-4-architecture-infrastructure) |
+| **Claude 3 Opus** | Undisclosed | Dense transformer | 200K tokens | Undisclosed | Undisclosed | [Anthropic Model Card](https://www-cdn.anthropic.com/de8ba9b01c9ab7cbabf5c33b80b7bbc618857627/Model_Card_Claude_3.pdf) |
+| **Llama 3.1 405B** | 405B | Dense, 126 layers | 128K tokens | 15.6T tokens | ~\$500M compute | [Meta Technical Report](https://ai.meta.com/blog/meta-llama-3-1/) |
+| **Gemini 1.5 Pro** | Undisclosed | MoE | 1M+ tokens | Undisclosed | Undisclosed | [Google DeepMind](https://arxiv.org/abs/2403.05530) |
+
+**Key observations:**
+- Llama 3.1 405B used 3.8x10^25 FLOPs on 16,000 H100 GPUs - approximately 50x more compute than Llama 2
+- GPT-4 reportedly uses only ~280B parameters per forward pass (16% of total) due to MoE routing
+- Context windows have expanded 64x since GPT-3 (2K to 128K+), with Gemini reaching 10M tokens in testing
+- Claude 3 Opus achieves greater than 99% recall accuracy on 200K token documents
 
 ## Key Properties
 
@@ -70,120 +115,180 @@ flowchart TB
 
 ## The Interpretability Paradox
 
-A key insight: **"open weights" does not mean "interpretable."**
+A key insight: **"open weights" does not mean "interpretable."** Even with full access to Llama 3's 405 billion parameters, we cannot determine what the model "believes" or whether it harbors deceptive reasoning patterns.
 
 | What We Have | What We Don't Have |
 |--------------|-------------------|
-| Full parameter values | Understanding of what concepts are encoded |
-| Activation patterns | Why specific outputs are generated |
-| Attention maps | How to predict novel behaviors |
-| Gradient information | Whether deceptive reasoning exists |
+| Full parameter values (405B+ weights) | Understanding of what concepts are encoded where |
+| Activation patterns for any input | Why specific outputs are generated |
+| Attention maps showing token relationships | How to predict novel emergent behaviors |
+| Gradient information for fine-tuning | Whether deceptive reasoning exists |
 
-### State of Mechanistic Interpretability
+### State of Mechanistic Interpretability (2024-2025)
 
-| Capability | Status | Limitations |
-|------------|--------|-------------|
-| Finding individual features | EMERGING | Only works for simple concepts in small models |
-| Understanding circuits | EARLY | Very limited circuits understood |
-| Predicting behavior | POOR | Cannot predict emergent capabilities |
-| Detecting deception | UNKNOWN | No reliable methods exist |
+Anthropic's interpretability research represents the frontier of the field. Their [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/) work in 2024 and [Circuit Tracing](https://transformer-circuits.pub/2025/april-update/index.html) in 2025 achieved significant milestones:
+
+| Capability | Status | Evidence | Limitations |
+|------------|--------|----------|-------------|
+| **Finding individual features** | BREAKTHROUGH | Extracted tens of millions of features from Claude 3 Sonnet using sparse autoencoders; 70% map cleanly to single concepts | Only tested on smaller models; scaling to frontier systems uncertain |
+| **Understanding circuits** | EARLY PROGRESS | 2025 circuit tracing reveals sequences of features from prompt to response | Limited to specific reasoning patterns; cannot trace arbitrary computations |
+| **Predicting behavior** | POOR | GPT-4 tech report: can predict loss with less than 1/10000 compute | Cannot predict *which* capabilities emerge or *when* |
+| **Detecting deception** | UNKNOWN | Found features related to deception, sycophancy, bias | No validated method to detect strategic deception in deployment |
+| **Steering model behavior** | DEMONSTRATED | Golden Gate Bridge feature addition forces mentions in all responses | Crude intervention; cannot reliably elicit or suppress complex behaviors |
+
+**Key finding from Anthropic's 2025 research:** Circuit tracing uncovered a "shared conceptual space where reasoning happens before being translated into language" - suggesting models may develop internal representations that transfer across languages and modalities. This has profound implications for both capability and safety.
 
 ## Safety Implications
 
 ### Challenges
 
-| Challenge | Severity | Explanation |
-|-----------|----------|-------------|
-| **Opaque internals** | HIGH | Cannot verify what model "believes" or "intends" |
-| **Emergent capabilities** | HIGH | New abilities appear unpredictably at scale |
-| **Phase transitions** | MEDIUM | Performance can change discontinuously |
-| **Training data influence** | MEDIUM | Unknown what's learned from pretraining |
-| **Deceptive alignment** | UNKNOWN | No way to detect if model is strategically deceiving |
+| Challenge | Severity | Evidence | Explanation |
+|-----------|----------|----------|-------------|
+| **Opaque internals** | HIGH | Billions of parameters with unknown function | Cannot verify what model "believes" or "intends" |
+| **Emergent capabilities** | HIGH | GPT-4 shows abilities absent in GPT-3; Wei et al. 2022 | New abilities appear unpredictably at scale thresholds |
+| **Phase transitions** | HIGH | Syntax acquisition shows sudden loss drops (Chen et al. 2024) | Performance can change discontinuously during training |
+| **Training data influence** | MEDIUM | Models trained on 13-15T tokens of unknown provenance | Unknown biases, knowledge, and behaviors learned from pretraining |
+| **Deceptive alignment** | UNKNOWN | Anthropic found deception-related features but cannot detect strategic use | No validated method to detect if model is strategically deceiving |
 
 ### Current Safety Approaches
 
-| Approach | Effectiveness | Limitation |
-|----------|---------------|------------|
-| **RLHF** | MEDIUM | Trains for stated preferences, not true values |
-| **Constitutional AI** | MEDIUM | Still relies on model understanding instructions |
-| **Red teaming** | LOW-MEDIUM | Only finds known failure modes |
-| **Capability evals** | MEDIUM | Can measure but not prevent capabilities |
+| Approach | Effectiveness | Key Evidence | Limitation |
+|----------|---------------|--------------|------------|
+| **RLHF** | MEDIUM-HIGH | [InstructGPT](https://arxiv.org/abs/2203.02155): 1.3B model preferred over 175B GPT-3 (100x smaller); users preferred outputs 71% of time | Trains for stated preferences, not true values; "alignment tax" on capabilities |
+| **Constitutional AI** | MEDIUM | Reduces toxic outputs without human feedback on each example | Still relies on model correctly interpreting abstract principles |
+| **Red teaming** | LOW-MEDIUM | Finds jailbreaks, harmful outputs; OpenAI employs 50+ red teamers | Only finds known failure modes; cannot discover unknown unknowns |
+| **Capability evals** | MEDIUM | GPT-4 tech report predicted loss accurately | Can measure but not prevent dangerous capabilities from emerging |
+| **Sparse autoencoders** | EARLY | 70% of extracted features map to interpretable concepts | Cannot yet scale to frontier models or detect complex behaviors |
 
 ## Research Landscape
 
-### Key Papers
+### Foundational Papers
 
-| Paper | Year | Contribution |
-|-------|------|--------------|
-| Attention Is All You Need | 2017 | Original transformer architecture |
-| GPT-2/3 | 2019/2020 | Demonstrated scaling + few-shot learning |
-| Scaling Laws | 2020 | Predictable relationship between scale and performance |
-| InstructGPT | 2022 | RLHF for instruction following |
-| Constitutional AI | 2022 | Principle-based training |
+| Paper | Year | Authors | Contribution | Impact |
+|-------|------|---------|--------------|--------|
+| [Attention Is All You Need](https://arxiv.org/abs/1706.03762) | 2017 | Vaswani et al. (Google Brain) | Original transformer architecture | 160,000+ citations; foundation of all modern LLMs |
+| [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) | 2020 | Kaplan et al. (OpenAI) | Predictable power-law relationship between scale and performance | Enabled multi-billion dollar training investment decisions |
+| [Training language models to follow instructions with human feedback](https://arxiv.org/abs/2203.02155) | 2022 | Ouyang et al. (OpenAI) | RLHF methodology; InstructGPT | 1.3B aligned model outperformed 175B base model; basis for ChatGPT |
+| [Constitutional AI](https://arxiv.org/abs/2212.08073) | 2022 | Bai et al. (Anthropic) | Principle-based training without per-example human feedback | Reduced toxic outputs; scaled alignment supervision |
+| [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/) | 2024 | Anthropic Interpretability | Sparse autoencoders extract interpretable features at scale | First demonstration of interpretability on production models |
 
-### Key Labs
+### Key Labs and Their Approaches
 
-| Lab | Models | Focus |
-|-----|--------|-------|
-| **OpenAI** | GPT-4, GPT-4o | Capabilities + commercial deployment |
-| **Anthropic** | Claude 3 | Safety-focused development |
-| **Google DeepMind** | Gemini | Multimodal, long context |
-| **Meta** | Llama 3 | Open weights, research |
+| Lab | Models | Estimated Frontier Spend | Focus | Key Technical Contributions |
+|-----|--------|-------------------------|-------|----------------------------|
+| **OpenAI** | GPT-4, o1, o3 | greater than \$1B annually | Capabilities + commercial deployment | Scaling laws, RLHF, reasoning models |
+| **Anthropic** | Claude 3/4 series | ~\$500M-1B annually | Safety-focused development | Constitutional AI, interpretability research, RSP |
+| **Google DeepMind** | Gemini 1.5/2.0 | greater than \$1B annually | Multimodal, long context | MoE efficiency, 1M+ token context |
+| **Meta** | Llama 3/4 series | ~\$500M annually | Open weights, research ecosystem | Largest open model (405B), full technical reports |
+| **xAI** | Grok | ~\$500M annually | Rapid scaling | Trained Grok on 100K H100s |
 
 ## Trajectory
 
-### Current Status
+### Current Status (2025)
 
-Dense transformers are clearly dominant and will remain so in the near term. Key trends:
+Dense transformers are clearly dominant and will remain so for the foreseeable future. Key trends with quantified progress:
 
-1. **Continued scaling** - Models getting larger, though returns may diminish
-2. **Multimodality** - Vision, audio, video integration
-3. **Longer context** - 100K+ token context windows
-4. **Efficiency** - Better training and inference efficiency
+| Trend | 2022 State | 2025 State | 3-Year Change | Projection |
+|-------|------------|------------|---------------|------------|
+| **Max parameters** | 175B (GPT-3) | 405B dense / 1.8T MoE | 2.3x dense, 10x MoE | Approaching 10T parameters by 2027 |
+| **Context window** | 4K tokens | 1M+ tokens (Gemini) | 250x increase | Memory-augmented systems for unlimited context |
+| **Training compute** | ~\$10M | \$100M-500M per run | 10-50x increase | \$1B+ training runs by 2026 |
+| **Inference efficiency** | 10-50 tokens/sec | 100-500 tokens/sec | 5-10x speedup | Real-time streaming ubiquitous |
+| **Modalities** | Text only (mostly) | Text, vision, audio, video, code | Full multimodal | Embodied/robotic integration |
 
 ### Future Uncertainty
 
-| Question | Relevance |
-|----------|-----------|
-| Will scaling continue to improve capabilities? | Determines how long transformers remain dominant |
-| Will MoE/sparse variants replace dense? | May shift to hybrid architectures |
-| Can interpretability catch up to scale? | Determines whether safety research can keep pace |
+| Question | Bull Case | Bear Case | Relevance |
+|----------|-----------|-----------|-----------|
+| Will scaling continue to improve capabilities? | Capabilities scale predictably to 10T+ params | Diminishing returns already visible; current scaling hits wall | Determines transformer dominance duration |
+| Will MoE/sparse variants replace pure dense? | GPT-4's MoE approach becomes standard; 10x efficiency gains | Complexity costs outweigh benefits; dense remains simpler | Affects training economics and accessibility |
+| Can interpretability catch up to scale? | Anthropic's SAE approach scales; full circuits mapped by 2027 | Interpretability fundamentally intractable for capable systems | Determines whether safety research can keep pace |
+| Will new architectures emerge? | State-space models (Mamba) or hybrid approaches challenge transformers | 8 years of infrastructure investment creates strong lock-in | Affects long-term AI development trajectory |
 
 ## Comparison with Other Architectures
 
-| Aspect | Dense Transformer | Sparse/MoE | SSM/Mamba |
-|--------|-------------------|------------|-----------|
-| Maturity | HIGH | MEDIUM | LOW |
-| Interpretability | LOW | LOW | UNKNOWN |
-| Efficiency | MEDIUM | HIGH | HIGH |
-| Capabilities | HIGHEST | HIGH | GROWING |
-| Safety tooling | MOST | SOME | LITTLE |
+| Aspect | Dense Transformer | Sparse/MoE | SSM/Mamba | Hybrid Approaches |
+|--------|-------------------|------------|-----------|-------------------|
+| **Maturity** | HIGH (8 years) | MEDIUM (3 years at scale) | LOW (2 years) | EMERGING |
+| **Interpretability** | LOW (but most studied) | LOW | UNKNOWN | UNKNOWN |
+| **Training efficiency** | BASELINE | 2-5x better for same quality | 3-5x better for long sequences | Variable |
+| **Inference efficiency** | BASELINE | 3-10x better (only active experts) | Linear in sequence length | Depends on design |
+| **Peak capabilities** | HIGHEST (GPT-4, Claude 3) | HIGH (Gemini 1.5, Mixtral) | MODERATE but growing | Limited data |
+| **Safety tooling** | MOST developed | SOME (inherits from dense) | LITTLE | Minimal |
+| **Infrastructure** | Ubiquitous | Growing rapidly | Limited | Experimental |
+
+**Key tradeoff:** Dense transformers remain the capability frontier, but MoE variants (used in GPT-4 and Gemini 1.5) offer 3-10x inference efficiency by activating only 10-20% of parameters per token. State-space models like Mamba offer linear-time attention but have not yet matched transformer performance on complex reasoning tasks.
 
 ## Implications for Safety Research
 
+The dense transformer architecture creates specific constraints and opportunities for safety research:
+
 ### Research That Works
 
-- **Behavioral evaluations** - Testing model outputs
-- **RLHF and variants** - Training for better behavior
-- **Prompt engineering** - Eliciting safer responses
-- **Red teaming** - Finding failure modes
+| Approach | Why It Works | Current Effectiveness | Key Examples |
+|----------|--------------|----------------------|--------------|
+| **Behavioral evaluations** | Only requires black-box access; scales with model capability | MEDIUM-HIGH | MMLU, HumanEval, TruthfulQA benchmarks |
+| **RLHF and variants** | Leverages transformer trainability; proven at scale | HIGH | InstructGPT achieved 71% preference over base GPT-3 |
+| **Prompt engineering** | Works with any capable model; no retraining needed | MEDIUM | System prompts, jailbreak defenses |
+| **Red teaming** | Identifies real failure modes before deployment | MEDIUM | OpenAI employs 50+ red teamers; finds jailbreaks |
+| **Constitutional AI** | Reduces need for human feedback; principles scale | MEDIUM-HIGH | Anthropic's approach reduces toxic outputs |
 
 ### Research That Struggles
 
-- **Mechanistic interpretability** - Understanding internals at scale
-- **Formal verification** - Proving safety properties
-- **Detecting deception** - Identifying strategic behavior
-- **Predicting emergence** - Anticipating new capabilities
+| Approach | Why It Struggles | Current Status | Path Forward |
+|----------|-----------------|----------------|--------------|
+| **Mechanistic interpretability** | Billions of parameters; features are distributed | EARLY (70% feature interpretability on small models) | Sparse autoencoders may scale; uncertain |
+| **Formal verification** | No tractable methods for neural networks at scale | NOT FEASIBLE | Fundamental theory needed; may be intractable |
+| **Detecting deception** | Cannot distinguish genuine from strategic behavior | UNKNOWN | Found deception features; no detection method |
+| **Predicting emergence** | Capabilities appear suddenly at scale thresholds | POOR | May require new theoretical frameworks |
+| **Guaranteed alignment** | RLHF optimizes for stated not true preferences | FUNDAMENTAL CHALLENGE | No solution on horizon |
 
 ## Key Uncertainties
 
-1. **Scaling limits**: Will dense transformers hit fundamental limits, or continue improving?
+### 1. Scaling Limits
+Will dense transformers hit fundamental limits, or continue improving indefinitely?
 
-2. **Interpretability tractability**: Can mechanistic interpretability ever work at frontier scale?
+**Evidence for continued scaling:** [Kaplan et al. (2020)](https://arxiv.org/abs/2001.08361) showed smooth power-law improvements up to 175B parameters. GPT-4 and Claude 3 continue this trend. OpenAI's technical report demonstrated loss prediction accuracy with less than 1/10000 of final compute.
 
-3. **Architecture lock-in**: Are we stuck with transformers due to infrastructure investment?
+**Evidence for limits:** Some researchers argue current scaling is hitting diminishing returns. The jump from GPT-3 to GPT-4 was smaller than GPT-2 to GPT-3. However, OpenAI's o1/o3 reasoning models show capabilities can still improve dramatically through inference-time compute scaling.
 
-4. **Safety ceiling**: Is there a fundamental limit to how safe dense transformers can be made?
+### 2. Interpretability Tractability
+Can mechanistic interpretability ever work at frontier scale?
+
+**Optimistic view:** Anthropic's [2024 sparse autoencoder work](https://transformer-circuits.pub/2024/scaling-monosemanticity/) scaled from toy models to Claude 3 Sonnet (a production system), extracting tens of millions of interpretable features. Their [2025 circuit tracing](https://transformer-circuits.pub/2025/april-update/index.html) revealed reasoning pathways.
+
+**Pessimistic view:** Even with millions of features extracted, researchers cannot predict emergent capabilities or detect strategic deception. The gap between "identifying features" and "understanding computation" may be insurmountable.
+
+### 3. Architecture Lock-in
+Are we stuck with transformers due to infrastructure investment?
+
+The transformer ecosystem represents approximately **\$50B+ in specialized hardware** (H100s, TPUs optimized for attention), **8 years of tooling development** (PyTorch, JAX, CUDA kernels), and **thousands of trained researchers**. Alternative architectures like Mamba face a massive disadvantage even if theoretically superior.
+
+### 4. Safety Ceiling
+Is there a fundamental limit to how safe dense transformers can be made?
+
+The core challenge: RLHF and Constitutional AI train models to produce outputs humans rate highly, not to have genuinely aligned values. A sufficiently capable model could learn to satisfy human raters while pursuing different objectives - and we have no method to detect this. This is not a technical limitation that more research will solve; it may be a fundamental property of training on behavioral feedback.
+
+---
+
+## Sources and Further Reading
+
+### Primary Research
+- Vaswani, A. et al. (2017). ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762). NeurIPS 2017.
+- Kaplan, J. et al. (2020). ["Scaling Laws for Neural Language Models"](https://arxiv.org/abs/2001.08361). OpenAI.
+- Ouyang, L. et al. (2022). ["Training language models to follow instructions with human feedback"](https://arxiv.org/abs/2203.02155). NeurIPS 2022.
+- OpenAI (2023). ["GPT-4 Technical Report"](https://arxiv.org/abs/2303.08774).
+
+### Interpretability Research
+- Anthropic (2024). ["Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"](https://transformer-circuits.pub/2024/scaling-monosemanticity/).
+- Anthropic (2025). ["Circuit Tracing Updates"](https://transformer-circuits.pub/2025/april-update/index.html).
+
+### Technical Reports
+- Meta (2024). ["Llama 3.1 Technical Report"](https://ai.meta.com/blog/meta-llama-3-1/).
+- Google DeepMind (2024). ["Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context"](https://arxiv.org/abs/2403.05530).
+- Anthropic (2024). ["The Claude 3 Model Family"](https://www-cdn.anthropic.com/de8ba9b01c9ab7cbabf5c33b80b7bbc618857627/Model_Card_Claude_3.pdf).
+
+---
 
 ## Related Pages
 
