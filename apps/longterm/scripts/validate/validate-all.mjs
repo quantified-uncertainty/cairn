@@ -172,6 +172,12 @@ const CHECKS = [
     script: 'validate-insights.mjs',
     description: 'Insight schema, ratings, and source paths',
   },
+  {
+    id: 'estimate-boxes',
+    name: 'EstimateBox Usage',
+    script: 'validate-estimate-boxes.mjs',
+    description: 'Prevent EstimateBox components (use markdown tables instead)',
+  },
 ];
 
 /**

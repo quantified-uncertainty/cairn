@@ -539,8 +539,11 @@ npm run validate:dollars      # Currency values escaped for LaTeX
 npm run validate:comparisons  # Less-than/greater-than escaped for JSX
 npm run validate:templates    # Page template compliance
 npm run validate:placeholders # Detect TODOs, TBDs, placeholder text, incomplete content
+npm run validate:estimate-boxes # Prevent EstimateBox components (use markdown tables)
 npm run validate:content-errors # LLM-based review for content issues (requires API key)
 ```
+
+**Note:** EstimateBox components are discouraged. Use markdown tables with detailed reasoning columns instead. See `knowledge-base/risks/accident/scheming.mdx` for examples.
 
 ### Error Detection Tools
 
