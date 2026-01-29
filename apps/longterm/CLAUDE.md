@@ -75,15 +75,40 @@ The most effective way to improve wiki pages to quality 5 is using a Task Agent 
 ### Quick Start
 
 ```bash
-# Improve a specific page
-node scripts/page-improver.mjs economic-disruption
+# List pages that need improvement (sorted by gap)
+node scripts/content/page-improver.mjs --list
 
-# Dry run (shows what would be done)
-node scripts/page-improver.mjs economic-disruption --dry-run
+# Show improvement prompt for a specific page
+node scripts/content/page-improver.mjs economic-disruption
 
-# List pages that need improvement
-node scripts/page-improver.mjs --list
+# Run batch improvement (recommended for many pages)
+node scripts/content/page-improver.mjs --batch --limit 50 --parallel 10
+
+# Check batch progress
+node scripts/content/page-improver.mjs --status
 ```
+
+### Batch Mode
+
+The batch mode runs improvements outside of Claude Code conversations, avoiding context exhaustion:
+
+```bash
+# Improve top 50 pages with 10 parallel processes
+node scripts/content/page-improver.mjs --batch --limit 50 --parallel 10
+
+# Start fresh (ignore previous results)
+node scripts/content/page-improver.mjs --batch --no-resume
+
+# Include recently modified files
+node scripts/content/page-improver.mjs --batch --no-skip-modified
+```
+
+**Features:**
+- Automatically skips already-processed pages (tracks in `.claude/temp/improvement-results.json`)
+- Skips git-modified files (already improved in current session)
+- Logs progress to `.claude/temp/improvement-log.txt`
+- Resume-able: can be interrupted and restarted
+- Runs `claude` CLI with `--print --dangerously-skip-permissions`
 
 ### What It Does
 
