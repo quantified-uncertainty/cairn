@@ -1,7 +1,9 @@
-import { useState, useMemo, createContext, useContext, useRef, useEffect } from 'react';
+import { useState, useMemo, createContext, useContext, useRef } from 'react';
 import type { Node, Edge } from '@xyflow/react';
 import type { CauseEffectNodeData, CauseEffectEdgeData } from '../types';
 import { getEntityById, getPageById } from '../../../data';
+import { cn } from '../../../lib/utils';
+import { Card } from '../../ui/card';
 
 // Context for coordinating hover highlighting across the view
 const HighlightContext = createContext<{
@@ -180,22 +182,29 @@ function NodeItem({
   };
 
   return (
-    <div
-      className={`iv-node iv-node--expanded ${isHighlighted ? 'iv-node--highlighted' : ''} ${isDimmed ? 'iv-node--dimmed' : ''}`}
+    <Card
+      className={cn(
+        // Base styles - use flex column to enable stretching
+        "flex flex-col bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200",
+        // Highlighted state
+        isHighlighted && "border-blue-500 ring-2 ring-blue-500/20",
+        // Dimmed state
+        isDimmed && "opacity-40"
+      )}
     >
       <div
         ref={headerRef}
-        className="iv-node__header"
+        className="px-3 py-2.5 cursor-pointer text-sm font-medium text-gray-800 dark:text-gray-200 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         onMouseEnter={handleHeaderEnter}
         onMouseLeave={handleHeaderLeave}
       >
-        <span className="iv-node__title">{node.data.label}</span>
+        <span>{node.data.label}</span>
       </div>
 
-      <div className="iv-node__content">
+      <div className="flex-1 px-3 pb-3 flex flex-col gap-2.5">
         {/* Sub-items always visible */}
         {hasSubItems && (
-          <div className="iv-node__subitems">
+          <div className="flex flex-col gap-1 pl-3 ml-1 border-l-2 border-gray-200 dark:border-gray-600">
             {node.data.subItems!.map((item, i) => (
               <SubItem
                 key={i}
@@ -208,7 +217,7 @@ function NodeItem({
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -246,24 +255,32 @@ function TierSection({
     return [...nodeList].sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
   };
 
-  const tierClass = `iv-tier iv-tier--${tierType}`;
+  // Tier header colors
+  const tierHeaderColors = {
+    cause: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200',
+    intermediate: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200',
+    effect: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200',
+  };
 
   return (
-    <div className={tierClass}>
-      <div className="iv-tier__header">
-        <h3 className="iv-tier__title">{title}</h3>
+    <div className="mb-4 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className={cn("px-4 py-2", tierHeaderColors[tierType])}>
+        <h3 className="text-sm font-semibold uppercase tracking-wide m-0">{title}</h3>
       </div>
 
-      <div className="iv-tier__content">
+      <div className="p-3">
         {hasSubgroups ? (
           Object.entries(subgroups || {}).map(([key, config]) => {
             const sgNodes = groupedNodes[key];
             if (!sgNodes || sgNodes.length === 0) return null;
 
             return (
-              <div key={key} className="iv-subgroup">
-                <div className="iv-subgroup__header">{config.label}</div>
-                <div className="iv-subgroup__nodes">
+              <div key={key} className="mb-3 last:mb-0">
+                <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 pl-1">
+                  {config.label}
+                </div>
+                {/* CSS Grid for equal-height cards */}
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
                   {sortNodes(sgNodes).map(node => (
                     <NodeItem
                       key={node.id}
@@ -276,7 +293,8 @@ function TierSection({
             );
           })
         ) : (
-          <div className="iv-tier__nodes">
+          /* CSS Grid for equal-height cards */
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
             {sortNodes(nodes).map(node => (
               <NodeItem
                 key={node.id}
@@ -349,7 +367,7 @@ export function InteractiveView({ nodes, edges, typeLabels, subgroups, basePath,
   return (
     <HighlightContext.Provider value={highlightContextValue}>
       <TooltipContext.Provider value={tooltipContextValue}>
-        <div className={`iv-container ${className || ''}`}>
+        <div className={cn("iv-container not-content", className)}>
           {nodesByType['cause'] && nodesByType['cause'].length > 0 && (
             <TierSection
               title={typeLabels?.cause || 'Root Factors'}
