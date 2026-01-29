@@ -82,9 +82,13 @@
     "lint": "eslint src scripts --ext .ts,.tsx,.mjs",
     "lint:fix": "eslint src scripts --ext .ts,.tsx,.mjs --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,astro}\" \"scripts/**/*.mjs\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,astro}\" \"scripts/**/*.mjs\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,astro}\" \"scripts/**/*.mjs\"",
+    "forecasts:discover": "node scripts/metaforecast/discover-page-forecasts.mjs",
+    "forecasts:update": "node scripts/metaforecast/update-tracked-forecasts.mjs",
+    "forecasts:refresh": "npm run forecasts:discover && npm run forecasts:update"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.23",
     "@anthropic-ai/sdk": "^0.71.2",
     "@astrojs/react": "^4.4.2",
     "@astrojs/starlight": "^0.37.4",
