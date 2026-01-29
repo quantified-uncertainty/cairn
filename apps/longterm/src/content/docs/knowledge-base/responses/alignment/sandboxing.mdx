@@ -1,18 +1,23 @@
 ---
 title: Sandboxing / Containment
-description: >-
-  Sandboxing limits AI system access to resources, networks, and capabilities as a defense-in-depth
-  measure. METR evaluations show current frontier models cannot yet autonomously replicate and
-  escape containment, but capabilities are approaching concerning thresholds. AI boxing experiments
-  demonstrate 60-70% escape rates through social engineering alone, while container escape CVEs
-  (e.g., CVE-2024-21626) highlight technical vulnerabilities requiring defense-in-depth with gVisor
-  or microVM isolation.
-importance: 65
-quality: 85
-lastEdited: '2026-01-28'
+description: Sandboxing limits AI system access to resources, networks, and capabilities as a defense-in-depth measure. METR evaluations show current frontier models cannot yet autonomously replicate and escape containment, but capabilities are approaching concerning thresholds. AI boxing experiments demonstrate 60-70% escape rates through social engineering alone, while container escape CVEs (e.g., CVE-2024-21626) highlight technical vulnerabilities requiring defense-in-depth with gVisor or microVM isolation.
+importance: 78.5
+quality: 66
+lastEdited: 2026-01-28
 sidebar:
   order: 22
 pageTemplate: knowledge-base-response
+llmSummary: Comprehensive analysis of AI sandboxing as defense-in-depth, synthesizing METR evaluations showing current frontier models cannot autonomously replicate, AI boxing experiments demonstrating 60-70% social engineering escape rates, and container security vulnerabilities. Provides concrete comparison of isolation technologies (gVisor, Firecracker, Kata) with performance tradeoffs and defense-in-depth architecture combining tooling, host, and network isolation layers.
+ratings:
+  novelty: 4.5
+  rigor: 7
+  actionability: 7.5
+  completeness: 7.5
+metrics:
+  wordCount: 1519
+  citations: 38
+  tables: 40
+  diagrams: 4
 ---
 import {Mermaid, R, EntityLink, DataExternalLinks, Backlinks} from '../../../../../components/wiki';
 

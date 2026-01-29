@@ -1,14 +1,24 @@
 ---
-title: "State-Space Models / Mamba"
-description: "Analysis of Mamba and other state-space model architectures as alternatives to transformers. SSMs achieve 5x higher inference throughput with linear O(n) complexity versus quadratic O(n^2) attention. Mamba-3B matches Transformer-6B perplexity while Jamba 1.5 outperforms Llama-3.1-70B on Arena Hard. However, pure SSMs lag on in-context learning tasks, making hybrids increasingly dominant."
+title: State-Space Models / Mamba
+description: Analysis of Mamba and other state-space model architectures as alternatives to transformers. SSMs achieve 5x higher inference throughput with linear O(n) complexity versus quadratic O(n^2) attention. Mamba-3B matches Transformer-6B perplexity while Jamba 1.5 outperforms Llama-3.1-70B on Arena Hard. However, pure SSMs lag on in-context learning tasks, making hybrids increasingly dominant.
 sidebar:
   label: SSM/Mamba
   order: 7
-quality: 85
-lastEdited: "2026-01-28"
-importance: 70
+quality: 55
+lastEdited: 2026-01-28
+importance: 58.5
+llmSummary: State-space models like Mamba achieve 5x higher inference throughput than transformers with linear O(n) complexity, but lag on in-context learning (46.3% vs 51.2% MMLU at 8B scale). Hybrid architectures combining 43% SSM + 7% attention outperform pure transformers while maintaining efficiency gains, with 45% probability of dominating future deployments.
+ratings:
+  novelty: 4.2
+  rigor: 6.8
+  actionability: 3.5
+  completeness: 7.5
+metrics:
+  wordCount: 259
+  citations: 65
+  tables: 50
+  diagrams: 1
 ---
-
 import {Mermaid, EntityLink, DataExternalLinks, R} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="ssm-mamba" client:load />

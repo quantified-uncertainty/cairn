@@ -372,6 +372,18 @@ The `overview` type is auto-detected in scripts, not stored in frontmatter.
 
 Quality scoring applies only to `content` pages (see Page Type System above).
 
+### Rating System
+
+Pages are scored on four dimensions (0-10 scale, harsh - 7+ is exceptional):
+- **novelty**: Originality beyond sources
+- **rigor**: Claims sourced and quantified
+- **actionability**: Decision usefulness
+- **completeness**: Coverage of topic
+
+Plus automated metrics (wordCount, citations, tables, diagrams) and a derived quality score (0-100).
+
+Use the `/grade` skill to grade pages. See `/internal/rating-system/` for full documentation.
+
 ### Page TODOs System
 
 Pages can have a `todos` array in frontmatter to track incomplete sections. These are displayed in the PageStatus component (dev-only) and help track content that needs work.

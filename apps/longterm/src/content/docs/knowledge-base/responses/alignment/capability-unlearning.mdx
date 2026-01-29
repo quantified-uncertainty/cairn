@@ -1,22 +1,23 @@
 ---
 title: Capability Unlearning / Removal
-description: >-
-  Methods to remove specific dangerous capabilities from trained AI models,
-  directly addressing misuse risks by eliminating harmful knowledge, though
-  current techniques face challenges around verification, capability recovery,
-  and general performance degradation.
+description: Methods to remove specific dangerous capabilities from trained AI models, directly addressing misuse risks by eliminating harmful knowledge, though current techniques face challenges around verification, capability recovery, and general performance degradation.
 sidebar:
   order: 58
-quality: 78
-importance: 76
-lastEdited: '2025-01-22'
-llmSummary: >-
-  Capability unlearning aims to remove specific dangerous capabilities from AI
-  models post-training, with benchmarks like WMDP measuring success at removing
-  bioweapon and cyberattack knowledge. Current methods show promise but face
-  challenges including capability recovery, verification difficulties, and
-  potential general capability degradation.
+quality: 45
+importance: 72.5
+lastEdited: 2025-01-22
+llmSummary: Capability unlearning removes dangerous capabilities (e.g., bioweapon synthesis) from AI models through gradient-based methods, representation engineering, and fine-tuning, achieving 60-80% reduction on WMDP benchmarks with combined approaches. However, verification is impossible, capabilities are recoverable through fine-tuning, and knowledge entanglement limits what can be safely removed, making this a defense-in-depth layer rather than complete solution.
 pageTemplate: knowledge-base-response
+ratings:
+  novelty: 4.5
+  rigor: 5
+  actionability: 6
+  completeness: 6.5
+metrics:
+  wordCount: 500
+  citations: 0
+  tables: 37
+  diagrams: 1
 ---
 import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 

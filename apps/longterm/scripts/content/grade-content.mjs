@@ -50,6 +50,42 @@ const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a re
 
 Score each page on importance (0-100, one decimal place). Be discriminating - use the full range.
 
+Also score each page on four quality dimensions (0-10 scale, one decimal). BE EXTREMELY HARSH - a 7 is exceptional, 8+ is world-class. Most wiki content should score 3-5.
+
+**NOVELTY (0-10)**: How original is the content?
+- 9-10: Groundbreaking original research, creates new field or framework (academic publication level)
+- 7-8: Significant original synthesis not found elsewhere, novel insights (exceptional)
+- 5-6: Some original framing or connections, adds modest value beyond sources
+- 3-4: Accurate summary of existing work with minimal original perspective
+- 1-2: Mostly restates common knowledge, purely derivative
+- 0: No content or completely plagiarized
+
+**RIGOR (0-10)**: How well-evidenced and precise?
+- 9-10: Every claim sourced to authoritative primary sources, all quantified with uncertainty ranges (journal-quality)
+- 7-8: Nearly all claims well-sourced and quantified, minimal gaps (exceptional)
+- 5-6: Most major claims sourced, some quantification, minor gaps
+- 3-4: Mix of sourced and unsourced, vague claims common
+- 1-2: Few sources, mostly assertions
+- 0: No evidence
+
+**ACTIONABILITY (0-10)**: How useful for decisions?
+- 9-10: Provides specific decision procedures with quantified tradeoffs (consultant-ready)
+- 7-8: Clear concrete recommendations with supporting analysis (exceptional)
+- 5-6: Some actionable takeaways, general guidance
+- 3-4: Mostly abstract, implications unclear
+- 1-2: Purely descriptive, no practical application
+- 0: No actionable content
+
+**COMPLETENESS (0-10)**: How comprehensive?
+- 9-10: Exhaustive authoritative reference, nothing significant missing (textbook-level)
+- 7-8: Covers all major aspects thoroughly with depth (exceptional)
+- 5-6: Covers main points, some gaps in depth or breadth
+- 3-4: Notable gaps, missing important aspects
+- 1-2: Very incomplete, barely started
+- 0: Stub/placeholder
+
+CALIBRATION: For typical wiki content, expect scores of 3-5. A score of 6+ means genuinely strong. A 7+ is rare and exceptional. 8+ should almost never be given.
+
 **Scoring guidelines:**
 
 90-100: Essential for prioritization decisions. Core intervention strategies, key risk mechanisms, or foundational capabilities that directly inform resource allocation. (Expect ~5-10 pages)
@@ -73,65 +109,6 @@ Score each page on importance (0-100, one decimal place). Be discriminating - us
 - Internal/infrastructure: -30
 
 Also provide:
-- **quality** (0-100): BE EXTREMELY HARSH. Most wiki pages should score 35-55. Use the FULL range.
-
-  **CALIBRATION ANCHORS** (use these to calibrate your scoring):
-  - **95-100**: World-class reference. 8,000-15,000+ words of prose, 80-150+ citations, multiple original
-    diagrams with novel synthesis, comprehensive quantitative analysis with uncertainty ranges,
-    would be publishable as a standalone academic review paper or encyclopedia entry.
-    Example: A 40+ page deep dive rivaling Stanford Encyclopedia or Annual Review articles.
-    Expect: 0 pages in this wiki currently meet this bar.
-
-  - **85-94**: Exceptional depth. 5,000-8,000 words of prose, 50-80 citations, strong original analysis,
-    3+ original diagrams, exhaustive coverage. Could be submitted to a journal with minor edits.
-    Expect: 1-2 pages in entire wiki.
-
-  - **70-84**: Strong article. 3,000-5,000 words of prose, 25-50 citations, good analytical prose
-    throughout, multiple tables/diagrams, solid quantitative claims. Thorough but not exhaustive.
-    Expect: ~5-10% of pages.
-
-  - **55-69**: Good coverage. 1,500-3,000 words of prose, 10-25 citations, decent prose with some
-    gaps, several tables. Covers the topic adequately but room for expansion.
-    Expect: ~20-30% of pages. THIS IS THE TARGET for "good enough" pages.
-
-  - **40-54**: Basic content. 800-1,500 words of prose, 5-10 citations, thin prose in places,
-    relies on tables/bullets. Functional but clearly needs more depth.
-    Expect: ~30-40% of pages.
-
-  - **25-39**: Outline/draft. 300-800 words of prose, few citations (<5). Mostly structure
-    without substance. Tables without context, bullets without explanation.
-    Expect: ~15-20% of pages.
-
-  - **0-24**: Stub. Under 300 words of prose, minimal citations. Placeholder content.
-    Expect: ~5-10% of pages.
-
-  **PROSE REQUIREMENTS** (these set hard ceilings - WORDS IN TABLES DON'T COUNT):
-  - Page is mostly tables/bullets with 1-2 sentence connectors → MAXIMUM 45
-  - Fewer than 5 substantive paragraphs (3+ analytical sentences each) → MAXIMUM 55
-  - Good overview but table-heavy body sections → MAXIMUM 58
-  - Must have substantive prose in EVERY major section to score 70+
-  - If >50% of content is in tables, cap at 60 regardless of table quality
-  - Count ONLY prose paragraphs for word count, NOT table cell contents
-
-  **THE TABLE-REMOVAL TEST:**
-  Remove all tables and bullet lists. What remains?
-  - Nearly empty → cap at 35-45
-  - Just section headers + intro sentences → cap at 45-55
-  - Some paragraphs but thin → cap at 55-65
-  - Substantial explanatory content → can score 65+
-
-  **WORD COUNT REALITY CHECK** (prose only, NOT table content):
-  - Under 800 words of prose → cap at 45
-  - Under 1,500 words of prose → cap at 55
-  - Under 2,500 words of prose → cap at 65
-  - Under 4,000 words of prose → cap at 75
-  - Under 6,000 words of prose → cap at 85
-
-  **CITATION REALITY CHECK:**
-  - Fewer than 5 citations → cap at 50
-  - Fewer than 15 citations → cap at 65
-  - Fewer than 30 citations → cap at 80
-
 - **llmSummary**: 1-2 sentences with methodology AND conclusions (include numbers if available)
 
 Respond with valid JSON only, no markdown.`;
@@ -148,12 +125,17 @@ FULL CONTENT:
 {{content}}
 ---
 
-Respond with JSON:
+Respond with JSON (keep reasoning SHORT - max 2-3 sentences total):
 {
   "importance": <0-100, one decimal>,
-  "quality": <0-100, one decimal>,
+  "ratings": {
+    "novelty": <0-10, one decimal>,
+    "rigor": <0-10, one decimal>,
+    "actionability": <0-10, one decimal>,
+    "completeness": <0-10, one decimal>
+  },
   "llmSummary": "<1-2 sentences with conclusions>",
-  "reasoning": "<brief explanation of both scores>"
+  "reasoning": "<2-3 sentences max explaining the scores>"
 }`;
 
 /**
@@ -254,6 +236,58 @@ function getContent(text, maxWords = 10000) {
 }
 
 /**
+ * Compute automated metrics from content
+ */
+function computeMetrics(content) {
+  const withoutFm = content.replace(/^---[\s\S]*?---\n*/, '');
+
+  // Remove table content for prose word count
+  const withoutTables = withoutFm.replace(/\|[^\n]+\|/g, '');
+  const withoutCodeBlocks = withoutTables.replace(/```[\s\S]*?```/g, '');
+  const withoutImports = withoutCodeBlocks.replace(/^import\s+.*$/gm, '');
+  const withoutComponents = withoutImports.replace(/<[^>]+\/>/g, '').replace(/<[^>]+>[\s\S]*?<\/[^>]+>/g, '');
+  const proseWords = withoutComponents.split(/\s+/).filter(w => w.length > 0).length;
+
+  // Count citations: <R id="..."> and markdown links [text](url)
+  const rComponents = (withoutFm.match(/<R\s+id=/g) || []).length;
+  const mdLinks = (withoutFm.match(/\[[^\]]+\]\(https?:\/\/[^)]+\)/g) || []).length;
+  const citations = rComponents + mdLinks;
+
+  // Count tables (markdown tables with |---|)
+  const tables = (withoutFm.match(/\|[-:]+\|/g) || []).length;
+
+  // Count diagrams (Mermaid components and images)
+  const mermaid = (withoutFm.match(/<Mermaid/g) || []).length;
+  const images = (withoutFm.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length;
+  const diagrams = mermaid + images;
+
+  return { wordCount: proseWords, citations, tables, diagrams };
+}
+
+/**
+ * Compute derived quality score from ratings and metrics
+ *
+ * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5)
+ * - Subscores drive 0-80 (primary factor)
+ * - Length bonus: 0-10 (5000 words = max)
+ * - Evidence bonus: 0-10 (20 citations = max)
+ * - Total range: 0-100
+ */
+function computeQuality(ratings, metrics) {
+  // Subscores contribute 0-80 points (primary driver)
+  const avgSubscore = (ratings.novelty + ratings.rigor + ratings.actionability + ratings.completeness) / 4;
+  const baseScore = avgSubscore * 8;  // Maps 0-10 → 0-80
+
+  // Length contributes 0-10 points (5000 words = max)
+  const lengthScore = Math.min(10, metrics.wordCount / 500);
+
+  // Evidence contributes 0-10 points (20 citations = max)
+  const evidenceScore = Math.min(10, metrics.citations * 0.5);
+
+  return Math.round(baseScore + lengthScore + evidenceScore);
+}
+
+/**
  * Call Claude API to grade a page
  */
 async function gradePage(client, page) {
@@ -268,7 +302,7 @@ async function gradePage(client, page) {
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 500,
+    max_tokens: 800,
     messages: [
       { role: 'user', content: userPrompt }
     ],
@@ -280,8 +314,12 @@ async function gradePage(client, page) {
   // Parse JSON response
   try {
     // Handle potential markdown code blocks
-    const jsonMatch = text.match(/```json\n?([\s\S]*?)\n?```/) || [null, text];
-    return JSON.parse(jsonMatch[1] || text);
+    let jsonText = text.trim();
+    if (jsonText.startsWith('```')) {
+      // Remove opening ```json or ``` and closing ```
+      jsonText = jsonText.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+    }
+    return JSON.parse(jsonText);
   } catch (e) {
     console.error(`Failed to parse response for ${page.id}:`, text);
     return null;
@@ -291,7 +329,7 @@ async function gradePage(client, page) {
 /**
  * Apply grades to frontmatter
  */
-function applyGradesToFile(page, grades) {
+function applyGradesToFile(page, grades, metrics, derivedQuality) {
   const content = readFileSync(page.filePath, 'utf-8');
   const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
 
@@ -304,15 +342,16 @@ function applyGradesToFile(page, grades) {
 
   // Update fields
   fm.importance = grades.importance;
-  if (grades.quality !== undefined) {
-    fm.quality = grades.quality;
-  }
+  fm.quality = derivedQuality;
   if (grades.llmSummary) {
     fm.llmSummary = grades.llmSummary;
   }
-  if (grades.ratings && page.isModel) {
-    fm.ratings = { ...fm.ratings, ...grades.ratings };
+  // Always apply ratings now (not just for model pages)
+  if (grades.ratings) {
+    fm.ratings = grades.ratings;
   }
+  // Save metrics
+  fm.metrics = metrics;
 
   // Ensure lastEdited is a string (not Date object)
   if (fm.lastEdited instanceof Date) {
@@ -456,28 +495,39 @@ async function main() {
     try {
       const grades = await gradePage(client, page);
 
-      if (grades) {
+      if (grades && grades.ratings) {
+        // Compute automated metrics
+        const metrics = computeMetrics(page.content);
+
+        // Compute derived quality score
+        const derivedQuality = computeQuality(grades.ratings, metrics);
+
         const result = {
           id: page.id,
           filePath: page.relativePath,
           category: page.category,
           isModel: page.isModel,
           title: page.title,
-          grades,
+          importance: grades.importance,
+          ratings: grades.ratings,
+          metrics,
+          quality: derivedQuality,
+          llmSummary: grades.llmSummary,
         };
 
         let applied = false;
         if (options.apply) {
-          applied = applyGradesToFile(page, grades);
+          applied = applyGradesToFile(page, grades, metrics, derivedQuality);
           if (!applied) {
             console.error(`  Failed to apply grades to ${page.filePath}`);
           }
         }
 
-        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, qual=${grades.quality}${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
+        const r = grades.ratings;
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, n=${r.novelty} r=${r.rigor} a=${r.actionability} c=${r.completeness} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
         return { success: true, result };
       } else {
-        console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED`);
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED (no ratings in response)`);
         return { success: false };
       }
     } catch (e) {
@@ -514,8 +564,8 @@ async function main() {
   console.log(`Processed: ${processed}, Errors: ${errors}`);
 
   // Summary statistics
-  const importanceScores = results.map(r => r.grades.importance).filter(x => x != null).sort((a, b) => b - a);
-  const qualityScores = results.map(r => r.grades.quality).filter(x => x != null).sort((a, b) => b - a);
+  const importanceScores = results.map(r => r.importance).filter(x => x != null).sort((a, b) => b - a);
+  const qualityScores = results.map(r => r.quality).filter(x => x != null).sort((a, b) => b - a);
 
   // Importance distribution by range
   const impRanges = {

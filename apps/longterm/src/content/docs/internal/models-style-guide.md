@@ -262,10 +262,10 @@ Short sections (< 100 words) should be merged or expanded.
 title: [Descriptive Model Name]
 description: [One sentence capturing the model's purpose]
 ratings:
-  novelty: [1-5]
-  rigor: [1-5]
-  actionability: [1-5]
-  completeness: [1-5]
+  novelty: [0-10]
+  rigor: [0-10]
+  actionability: [0-10]
+  completeness: [0-10]
 ---
 
 ## Overview
