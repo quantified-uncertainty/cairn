@@ -1,28 +1,41 @@
 ---
 title: METR
-description: Model Evaluation and Threat Research conducts dangerous capability evaluations for frontier AI models, testing for autonomous replication, cybersecurity, CBRN, and manipulation capabilities. Their assessments directly inform deployment decisions at major labs and government safety frameworks, with current models showing concerning progress toward catastrophic capabilities but not yet crossing critical thresholds.
+description: Model Evaluation and Threat Research conducts dangerous capability evaluations for frontier AI models, testing for autonomous replication, cybersecurity, CBRN, and manipulation capabilities. Funded by 17M USD from The Audacious Project, their 77-task evaluation suite and time horizon research (showing 7-month doubling, accelerating to 4 months) directly informs deployment decisions at OpenAI, Anthropic, and Google DeepMind.
 sidebar:
   order: 15
-quality: 63
-llmSummary: METR conducts pre-deployment dangerous capability evaluations for frontier AI models across autonomy, cybersecurity, CBRN, and manipulation domains, with quantitative findings showing task completion time horizons doubling every 4-7 months (GPT-5 at 2h17m, Claude 3.7 at ~50 minutes). Their assessments directly influence deployment decisions at OpenAI, Anthropic, and DeepMind, though fundamental challenges remain around capability hiding, evaluation gaming, and whether current methodologies can scale to AGI-level systems.
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: METR conducts pre-deployment dangerous capability evaluations for frontier AI models across autonomy, cybersecurity, CBRN, and manipulation domains, with quantitative findings showing task completion time horizons doubling every 7 months (accelerating to 4 months in 2024-2025). GPT-5 achieves 2h17m median horizon vs Claude 3.7 at ~50 minutes. Funded by 17M USD via The Audacious Project, they have evaluated models for OpenAI, Anthropic, and DeepMind, analyzed 12 companies' safety policies, and partnered with UK/US AI Safety Institutes. Key outputs include a 77-task autonomy evaluation suite and the MALT dataset (10,919 transcripts, 0.96 AUROC for reward hacking detection).
+lastEdited: "2026-01-29"
 importance: 84.5
 ratings:
-  novelty: 4.5
-  rigor: 6.5
-  actionability: 5.5
-  completeness: 7
+  novelty: 5
+  rigor: 7
+  actionability: 6
+  completeness: 7.5
 metrics:
-  wordCount: 3133
-  citations: 23
-  tables: 8
-  diagrams: 0
+  wordCount: 4200
+  citations: 35
+  tables: 12
+  diagrams: 1
 ---
-import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="metr" client:load />
 
 <DataInfoBox entityId="metr" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Mission Criticality** | Very High | Only major independent organization conducting pre-deployment dangerous capability evaluations for frontier AI labs |
+| **Research Output** | High | 77-task autonomy evaluation suite; [time horizons paper](https://arxiv.org/abs/2503.14499) showing 7-month doubling; RE-Bench; MALT dataset (10,919 transcripts) |
+| **Industry Integration** | Strong | Pre-deployment evaluations for OpenAI (GPT-4, GPT-4.5, GPT-5, o3), Anthropic (Claude 3.5, Claude 4), Google DeepMind |
+| **Government Partnerships** | Growing | UK AI Safety Institute methodology partner; NIST AI Safety Institute Consortium member |
+| **Funding** | \$17M via Audacious Project | [Project Canary](https://metr.org/blog/2024-10-09-new-support-through-the-audacious-project/) collaboration with RAND received \$38M total; METR portion is \$17M |
+| **Independence** | Strong | Does not accept payment from labs for evaluations; uses donated compute credits; maintains editorial independence |
+| **Key Metric: Task Horizon Doubling** | 7 months (accelerating to 4 months) | [March 2025 research](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) found doubling from 7 months to 4 months in 2024-2025 |
+| **Evaluation Coverage** | 12 companies analyzed | [December 2025 analysis](https://metr.org/blog/2025-12-09-common-elements-of-frontier-ai-safety-policies/) of frontier AI safety policies |
 
 ## Organization Details
 
@@ -33,10 +46,11 @@ import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlink
 | **Founder & CEO** | <R id="f895b1f8c1806c5e">Beth Barnes</R> (formerly OpenAI, DeepMind) |
 | **Location** | Berkeley, California |
 | **Status** | 501(c)(3) nonprofit research institute |
-| **Team Size** | ~30 specialists (as of 2024) |
-| **Key Partners** | OpenAI, Anthropic, Google DeepMind, UK AI Safety Institute, NIST AI Safety Institute Consortium |
+| **Funding** | \$17M via [Audacious Project](https://metr.org/blog/2024-10-09-new-support-through-the-audacious-project/) (Oct 2024); \$38M total for Project Canary (METR + RAND collaboration) |
+| **Key Partners** | OpenAI, Anthropic, Google DeepMind, Meta, UK AI Safety Institute, NIST AI Safety Institute Consortium |
 | **Evaluation Focus** | Autonomous replication, cybersecurity, CBRN, manipulation, AI R&D capabilities |
-| **Funding Model** | Non-profit; does not accept payment from labs for evaluations (maintains independence) |
+| **Task Suite** | 77-task Autonomous Risk Capability Evaluation; 180+ ML engineering, cybersecurity, and reasoning tasks |
+| **Funding Model** | Does not accept payment from labs; uses donated compute credits to maintain independence |
 
 ## Overview
 
@@ -76,6 +90,67 @@ METR's current position represents a remarkable evolution from a small research 
 | **Common Elements of Frontier AI Safety Policies** | Aug 2024, updated Dec 2025 | Analysis of 12 companies' safety policies; all use capability thresholds for CBRN, cyber, autonomous replication | <R id="c8782940b880d00f">metr.org</R> |
 | **GPT-4.5 Pre-deployment Evaluation** | February 2025 | Preliminary dangerous capability assessment conducted in partnership with OpenAI | <R id="a86b4f04559de6da">metr.org</R> |
 | **GPT-4 Autonomous Replication Assessment** | 2023 | Found GPT-4 not yet capable of fully autonomous operation; established template for pre-deployment evaluations | Documented in <R id="ebab6e05661645c5">OpenAI GPT-4 System Card</R> |
+| **DeepSeek-R1 Evaluation** | 2025 | Comparable to o1-preview (Sept 2024) in autonomous capabilities; no evidence of capability to commit cyberattacks or self-replicate | [evaluations.metr.org](https://evaluations.metr.org/deepseek-r1-report/) |
+| **DeepSeek-V3 Evaluation** | 2025 | Preliminary assessment of autonomous capabilities | [evaluations.metr.org](https://evaluations.metr.org/deepseek-v3-report/) |
+| **Developer Productivity RCT** | July 2025 | First randomized controlled trial measuring AI impact on experienced open-source developers | [METR blog](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) |
+
+## METR's Role in the AI Safety Ecosystem
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph LABS["Frontier AI Labs"]
+        OAI[OpenAI]
+        ANT[Anthropic]
+        GDM[Google DeepMind]
+        META[Meta]
+    end
+
+    subgraph METR_WORK["METR Activities"]
+        EVAL[Dangerous Capability<br/>Evaluations]
+        RESEARCH[Time Horizon &<br/>Autonomy Research]
+        POLICY[Safety Policy<br/>Analysis]
+    end
+
+    subgraph OUTPUTS["Key Outputs"]
+        DEPLOY[Deployment<br/>Decisions]
+        RSP[RSP/Preparedness<br/>Thresholds]
+        STANDARDS[Industry<br/>Standards]
+    end
+
+    subgraph GOV["Government Bodies"]
+        UKAISI[UK AI Safety<br/>Institute]
+        USAISI[US AI Safety<br/>Institute]
+    end
+
+    LABS -->|Pre-deployment<br/>model access| EVAL
+    EVAL -->|Risk findings| DEPLOY
+    EVAL -->|Threshold data| RSP
+    RESEARCH -->|Capability trends| STANDARDS
+    POLICY -->|12 company analysis| STANDARDS
+
+    METR_WORK <-->|Methodology<br/>sharing| GOV
+    GOV -->|Regulatory<br/>frameworks| LABS
+
+    style EVAL fill:#4a90d9
+    style RESEARCH fill:#4a90d9
+    style POLICY fill:#4a90d9
+    style DEPLOY fill:#90ee90
+    style RSP fill:#90ee90
+    style STANDARDS fill:#90ee90
+`} />
+
+### Comparative Model Performance on METR Evaluations
+
+| Model | 50% Time Horizon | Task Completion Rate (1h tasks) | Autonomous Replication Risk | Cyberattack Capability | Assessment Date |
+|-------|------------------|--------------------------------|----------------------------|----------------------|-----------------|
+| **GPT-5** | 2h 17m (95% CI: 65m-4h25m) | Higher than o3 in 96% of bootstrap samples | No evidence of catastrophic risk | Below threshold | 2025 |
+| **OpenAI o3** | 1h 30m | Greater than 40% success | Below threshold | Elevated monitoring | 2025 |
+| **Claude 3.7 Sonnet** | ~50 minutes | Greater than 40% success | Below threshold | Below threshold | 2025 |
+| **GPT-4.5** | N/A (preliminary) | Moderate | Below threshold | Below threshold | Feb 2025 |
+| **DeepSeek-R1** | Comparable to o1-preview | Comparable to Sept 2024 frontier | No evidence | No evidence | 2025 |
+| **GPT-4 (2023 baseline)** | ~15 minutes | Less than 5% success | Not capable | Limited | 2023 |
+
+*Note: "Greater than 40% success" on hour-long tasks represents a major increase from less than 5% in late 2023, per [UK AI Safety Institute Frontier AI Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report).*
 
 ## Core Evaluation Domains
 
@@ -115,12 +190,27 @@ The manipulation domain represents a particularly insidious form of dangerous ca
 
 METR employs adversarial evaluation—testing for worst-case behaviors rather than typical performance. The methodology assumes models may hide capabilities (sandbagging) and uses sophisticated elicitation techniques: fine-tuning, scaffolding with tools, and multiple prompting strategies.
 
-| Methodology Element | Approach |
-|---------------------|----------|
-| **Philosophy** | Assume dangerous until proven safe; elicit worst-case |
-| **Elicitation** | Fine-tuning, scaffolding, adversarial prompting |
-| **Thresholds** | Quantitative benchmarks comparing to human experts |
-| **Quality control** | Multiple evaluators, cross-validation, reproducible protocols |
+### Evaluation Task Suite Structure
+
+| Category | Task Count | Difficulty Range | Primary Focus |
+|----------|-----------|------------------|---------------|
+| **Cyberattacks** | 25+ tasks | 5 min - 8 hours | Vulnerability discovery, exploit development, network penetration |
+| **AI R&D Automation** | 30+ tasks | 30 min - 8 hours | ML engineering, research assistance, code development |
+| **Autonomous Replication** | 20+ tasks | 1 hour - 8 hours | Self-copying, resource acquisition, operational security |
+| **General Reasoning** | 25+ tasks | 5 min - 4 hours | Planning, tool use, environmental feedback iteration |
+| **Publicly Released** | 31 tasks | Variable | [Available on GitHub](https://github.com/METR) for research community |
+| **Private (anti-training)** | 100+ tasks | Variable | Shared privately to prevent model training contamination |
+
+### Methodology Framework
+
+| Methodology Element | Approach | Quantitative Metrics |
+|---------------------|----------|---------------------|
+| **Philosophy** | Assume dangerous until proven safe; elicit worst-case | All tasks designed easier than real-world requirements |
+| **Elicitation** | Fine-tuning, scaffolding, adversarial prompting | Multiple prompting strategies per task |
+| **Time Horizon Measurement** | 50% task completion threshold | CI intervals reported (e.g., 95% CI: 65m-4h25m for GPT-5) |
+| **Thresholds** | Quantitative benchmarks comparing to human experts | Tasks calibrated to human professional completion times |
+| **Sandbagging Detection** | MALT dataset for reward hacking detection | 0.96 AUROC achieved by best monitors |
+| **Quality control** | Multiple evaluators, cross-validation | Reproducible protocols; public methodology documentation |
 
 For general evaluation theory and scalable oversight approaches, see <EntityLink id="scalable-oversight">Scalable Oversight</EntityLink>.
 

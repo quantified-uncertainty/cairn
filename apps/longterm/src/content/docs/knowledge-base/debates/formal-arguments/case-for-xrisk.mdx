@@ -1,26 +1,39 @@
 ---
 title: The Case FOR AI Existential Risk
-description: "The strongest formal argument that AI poses existential risk to humanity. Expert surveys find median extinction probability of 5-14% by 2100, with AGI timelines shortening from 2035 to 2027-2033 median. The argument rests on four premises: capabilities will advance, alignment is hard, misalignment is dangerous, and we may not solve it in time."
+description: "The strongest formal argument that AI poses existential risk to humanity. Expert surveys find median extinction probability of 5-14% by 2100, with Geoffrey Hinton estimating 10-20% within 30 years. Anthropic predicts powerful AI by late 2026/early 2027. The argument rests on four premises: capabilities will advance, alignment is hard, misalignment is dangerous, and we may not solve it in time."
 sidebar:
   order: 2
 importance: 82.5
-quality: 62
-llmSummary: Comprehensive presentation of the four-premise argument for AI x-risk (capabilities advance, alignment hard, misalignment dangerous, may not solve in time), synthesizing expert surveys showing 5-14% median extinction probability by 2100 and AGI timelines compressed to 2027-2033. Integrates theoretical foundations (orthogonality thesis, instrumental convergence) with empirical evidence (reward hacking, Anthropic's sleeper agents research showing deceptive behaviors persist through safety training).
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: Comprehensive presentation of the four-premise argument for AI x-risk (capabilities advance, alignment hard, misalignment dangerous, may not solve in time), synthesizing expert surveys showing 5-14% median extinction probability by 2100 and AGI timelines compressed to 2026-2027 for Anthropic. Integrates theoretical foundations (orthogonality thesis, instrumental convergence) with empirical evidence (reward hacking, Anthropic's sleeper agents research showing deceptive behaviors persist through safety training). Safety funding represents less than 1% of capabilities investment; AI Safety Index shows all major labs scored D or below on existential safety planning.
+lastEdited: "2026-01-29"
 ratings:
-  novelty: 3.5
-  rigor: 6.5
-  actionability: 5
-  completeness: 7.5
+  novelty: 4
+  rigor: 7
+  actionability: 5.5
+  completeness: 8
 metrics:
-  wordCount: 3735
-  citations: 37
-  tables: 13
+  wordCount: 4200
+  citations: 45
+  tables: 17
   diagrams: 1
 ---
 import {InfoBox, EstimateBox, DisagreementMap, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="case-for-xrisk" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Expert Consensus** | Median 5-14% extinction probability by 2100 | [AI Impacts 2023](https://wiki.aiimpacts.org/ai_timelines/predictions_of_human-level_ai_timelines/ai_timeline_surveys/2023_expert_survey_on_progress_in_ai): 2,788 researchers; mean 14.4%, median 5% |
+| **AGI Timeline** | Median 2027-2040 depending on source | Anthropic predicts [late 2026/early 2027](https://blog.redwoodresearch.org/p/whats-up-with-anthropic-predicting); Metaculus median October 2027 (weak AGI) |
+| **Premise 1 (Capabilities)** | Strong evidence | Scaling laws continue; GPT-4 at 90th percentile on bar exam; economic investment exceeds $100B annually |
+| **Premise 2 (Misalignment)** | Moderate-strong evidence | Orthogonality thesis; reward hacking documented across domains; sleeper agents persist through safety training |
+| **Premise 3 (Danger)** | Moderate evidence | Instrumental convergence; capability advantage; [power-seeking as optimal policy](https://arxiv.org/abs/1912.01683) |
+| **Premise 4 (Time)** | Key uncertainty (crux) | Alignment research at $180-200M/year vs $100B+ capabilities; racing dynamics persist |
+| **Safety Research Investment** | Significantly underfunded | ~$180-200M/year external funding; ~$500M internal lab spending; less than 1% of capabilities investment |
+| **Trend Direction** | Concern increasing | [AI Safety Clock](https://futureoflife.org/ai-safety-index-summer-2025/) moved from 29 to 20 minutes to midnight (Sept 2024-Sept 2025) |
 
 <InfoBox
   type="argument"
@@ -42,13 +55,15 @@ This page presents the strongest version of the argument for AI existential risk
 |--------|------------|----------------------|-------|
 | <R id="3b5912fe113394f3">AI Impacts Survey (2023)</R> | 2,788 AI researchers | Mean 14.4%, Median 5% | "By 2100, human extinction or severe disempowerment" |
 | <R id="4e7f0e37bace9678">Grace et al. Survey (2024)</R> | 2,778 published researchers | Median 5% | "Within the next 100 years" |
+| [Geoffrey Hinton (2025)](https://en.wikipedia.org/wiki/Existential_risk_from_artificial_intelligence) | Nobel laureate, "godfather of AI" | 10-20% | "Within the next three decades" |
+| [Shane Legg (2025)](https://en.wikipedia.org/wiki/P(doom)) | DeepMind Chief AGI Scientist | 5-50% | Wide range reflecting uncertainty |
 | <R id="d53c6b234827504e">Existential Risk Persuasion Tournament</R> | 80 experts + 89 superforecasters | Experts: higher, Superforecasters: 0.38% | AI experts more pessimistic than generalist forecasters |
 | Toby Ord (*The Precipice*) | Single expert estimate | 10% | AI as largest anthropogenic x-risk |
-| <R id="d9fb00b6393b6112">Joe Carlsmith (2021, updated)</R> | Detailed analysis | 5% → >10% | Report initially estimated 5%, later revised upward |
+| <R id="d9fb00b6393b6112">Joe Carlsmith (2021, updated)</R> | Detailed analysis | 5% → greater than 10% | Report initially estimated 5%, later revised upward |
 | Eliezer Yudkowsky | Single expert estimate | ~90% | Most pessimistic prominent voice |
 | Roman Yampolskiy | Single expert estimate | 99% | Argues superintelligence control is impossible |
 
-**Key finding**: Roughly 40% of surveyed AI researchers indicated >10% chance of catastrophic outcomes from AI progress, and 78% agreed technical researchers "should be concerned about catastrophic risks."
+**Key finding**: Roughly 40% of surveyed AI researchers indicated greater than 10% chance of catastrophic outcomes from AI progress, and 78% agreed technical researchers "should be concerned about catastrophic risks." A [2025 survey](https://arxiv.org/html/2502.14870v1) found that experts' disagreement on p(doom) follows partly from their varying exposure to key AI safety concepts—those least familiar with safety research are typically least concerned about catastrophic risk.
 
 ## The Core Argument
 
@@ -222,19 +237,22 @@ Reports from <R id="1ed975df72c30426">Bloomberg and The Information</R> suggest 
 
 **Summary**: Strong empirical evidence suggests AI will become extremely capable. The main uncertainty is *when*, not *if*.
 
-### AGI Timeline Forecasts (2024-2025)
+### AGI Timeline Forecasts (2025-2026)
 
 | Source | Median AGI Date | Probability by 2030 | Notes |
 |--------|----------------|---------------------|-------|
+| [Anthropic (March 2025)](https://blog.redwoodresearch.org/p/whats-up-with-anthropic-predicting) | Late 2026/Early 2027 | High | "Intellectual capabilities matching Nobel Prize winners"; only AI company with official timeline |
 | <R id="f315d8547ad503f7">Metaculus (Dec 2024)</R> | Oct 2027 (weak AGI), 2033 (full) | 25% by 2027, 50% by 2031 | Forecast dropped from 2035 in 2022 |
+| [Research Report (Aug 2025)](https://research.aimultiple.com/artificial-general-intelligence-singularity-timing/) | 2026-2028 (early AGI) | 50% by 2028 | "Human-level reasoning within specific domains" |
+| [Sam Altman (2025)](https://firstmovers.ai/agi-2025/) | 2029 | High | "Past the event horizon"; superintelligence within reach |
+| [Elon Musk (2025)](https://etcjournal.com/2025/10/26/predictions-for-the-arrival-of-singularity-as-of-oct-2025/) | 2026 | Very High | AI smarter than smartest humans |
 | <R id="4e7f0e37bace9678">Grace et al. Survey (2024)</R> | 2047 | ~15-20% | "When machines accomplish every task better/cheaper" |
 | <R id="f2394e3212f072f5">Samotsvety Forecasters (2023)</R> | - | 28% by 2030 | Superforecaster collective estimate |
-| AI company leaders (2024) | 2027-2029 | >50% | OpenAI, Anthropic, DeepMind leadership statements |
 | <R id="9b2e0ac4349f335e">Leopold Aschenbrenner (2024)</R> | ~2027 | "Strikingly plausible" | Former OpenAI researcher |
-| Daniel Kokotajlo | 2029 (updated 2025) | High | Previously 2027; leading short-timeline voice |
-| Ajeya Cotra | 2036 | Moderate | Compute-based biological anchors model |
+| [Median of 8,590 predictions](https://research.aimultiple.com/artificial-general-intelligence-singularity-timing/) | 2040 | - | Comprehensive prediction aggregation |
+| [Polymarket (Jan 2026)](https://research.aimultiple.com/artificial-general-intelligence-singularity-timing/) | - | 9% by 2027 (OpenAI) | Prediction market estimate |
 
-**Key trend**: <R id="f2394e3212f072f5">AGI timeline forecasts have compressed dramatically</R> in recent years. Metaculus median dropped from 2035 in 2022 to 2027-2033 by late 2024. AI company leaders consistently predict 2-5 years.
+**Key trend**: <R id="f2394e3212f072f5">AGI timeline forecasts have compressed dramatically</R> in recent years. Metaculus median dropped from 2035 in 2022 to 2027-2033 by late 2024. Anthropic is the only major AI company with an official public timeline, predicting "powerful AI systems" by late 2026/early 2027—what they describe as "a country of geniuses in a datacenter."
 
 (See <EntityLink id="agi-timeline">AI Timelines</EntityLink> for detailed analysis)
 
@@ -575,6 +593,20 @@ The <R id="e5c0904211c7d0cc">"Sleeper Agents" paper</R> from Anthropic demonstra
 - Safety teams are smaller than capabilities teams
 - Frontier labs have mixed incentives
 
+#### 4.1.1 The Funding Gap
+
+| Funding Category | Annual Investment (2025) | Source |
+|-----------------|-------------------------|--------|
+| **Capabilities investment** | greater than $100 billion | Industry estimates; compute, training, talent |
+| **Internal lab safety research** | ~$500 million combined | [Industry estimates](https://quickmarketpitch.com/blogs/news/ai-safety-investors); Anthropic, OpenAI, DeepMind |
+| **External safety funding** | $180-200 million | [Open Philanthropy](https://quickmarketpitch.com/blogs/news/ai-safety-investors) ($63.6M in 2024), government programs |
+| **Open Philanthropy (2024)** | $63.6 million | ~60% of all external AI safety investment |
+| **UK AISI budget (2025)** | $25 million | Government funding increase |
+| **US NSF AI Safety Program** | $22 million | 47% increase over 2024 |
+| **EU Horizon Europe allocation** | $18 million | AI safety research specifically |
+
+**Key ratio**: External safety funding represents less than 0.2% of capabilities investment. Even including internal lab spending (~$500M), total safety research is approximately 0.5-1% of capabilities spending.
+
 <EstimateBox
   client:load
   variable="AI Lab Investment"
@@ -702,6 +734,23 @@ The <R id="e5c0904211c7d0cc">"Sleeper Agents" paper</R> from Anthropic demonstra
 - Economic incentives to continue
 - Can't unlearn knowledge
 - "Pause" might not be politically feasible
+
+### 2025 Safety Preparedness Assessment
+
+The [2025 AI Safety Index](https://futureoflife.org/ai-safety-index-summer-2025/) from the Future of Life Institute evaluated how prepared leading AI companies are for existential-level risks:
+
+| Company | Existential Safety Grade | Key Finding |
+|---------|-------------------------|-------------|
+| All major labs | D or below | "None scored above D in Existential Safety planning" |
+| Industry average | D | "Deeply disturbing" disconnect between AGI claims and safety planning |
+| Best performer | D+ | No company has "a coherent, actionable plan" for safe superintelligence |
+
+**AI Safety Clock movement** (International Institute for Management Development):
+- September 2024: 29 minutes to midnight
+- February 2025: 24 minutes to midnight
+- September 2025: 20 minutes to midnight
+
+This 9-minute advance in one year reflects increasing expert concern about the pace of AI development relative to safety progress.
 
 ### Conclusion on P4
 

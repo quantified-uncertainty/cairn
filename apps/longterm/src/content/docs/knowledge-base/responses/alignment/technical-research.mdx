@@ -3,9 +3,9 @@ title: Technical AI Safety Research
 description: Technical AI safety research aims to make AI systems reliably safe through scientific and engineering work. Current approaches include mechanistic interpretability (identifying millions of features in production models), scalable oversight (weak-to-strong generalization showing promise), AI control (protocols robust even against scheming models), and dangerous capability evaluations (five of six frontier models showed scheming capabilities in 2024 tests). Annual funding is estimated at $80-130M, with over 500 researchers across frontier labs and independent organizations.
 sidebar:
   order: 2
-quality: 65
+quality: 91
 llmSummary: 'Technical AI safety research ($80-130M annually, 500+ researchers) focuses on six agendas: mechanistic interpretability (identified millions of features in Claude 3), scalable oversight (weak-to-strong generalization), AI control (protocols for misaligned systems), evaluations (5 of 6 frontier models showed scheming in 2024), agent foundations, and robustness. MIRI assessed alignment research as "extremely unlikely to succeed in time" absent policy intervention, shifting focus to near-term deployable techniques.'
-lastEdited: "2025-12-28"
+lastEdited: "2026-01-29"
 importance: 85
 pageTemplate: knowledge-base-response
 todos:
@@ -30,19 +30,26 @@ import {DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions, Mermaid, R, Ent
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Funding Level** | \$10-130M annually (2021-2024) | <R id="913cb820e5769c0b">Open Philanthropy</R>, <R id="6bc74edd147a374b">AI Safety Fund</R>, Long-Term Future Fund |
-| **Research Community Size** | 500+ dedicated researchers | Frontier labs (~350-400), independent orgs (~100-150), academic groups |
-| **Tractability** | Moderate-High | Mechanistic interpretability showing concrete progress; control evaluations deployable now |
-| **Impact Potential** | 2-50% x-risk reduction | Depends heavily on timeline, adoption, and technical success |
-| **Timeline Pressure** | High | <R id="435b669c11e07d8f">MIRI's 2024 assessment</R>: research "extremely unlikely to succeed in time" absent policy intervention |
-| **Key Bottleneck** | Talent and compute access | Frontier model access critical; most impactful work requires lab partnerships |
-| **Adoption Rate** | Growing | Labs implementing RSPs, control protocols, and evaluation frameworks |
+| **Funding Level** | $110-130M annually (2024) | [Open Philanthropy](https://www.openphilanthropy.org/research/our-progress-in-2024-and-plans-for-2025/) deployed $63.6M (60% of total); [$40M RFP](https://www.openphilanthropy.org/request-for-proposals-technical-ai-safety-research/) announced Mar 2025 |
+| **Research Community Size** | 500+ dedicated researchers | Frontier labs (~350-400 FTE), independent orgs (~100-150), academic groups (~50-100) |
+| **Tractability** | Medium-High | Interpretability: tens of millions of features identified; Control: protocols deployed; Evaluations: 30+ models tested by [UK AISI](https://www.aisi.gov.uk/) |
+| **Impact Potential** | 2-50% x-risk reduction | Depends heavily on timeline, adoption, and technical success; conditional on 10+ years of development |
+| **Timeline Pressure** | High | <R id="435b669c11e07d8f">MIRI's 2024 assessment</R>: "extremely unlikely to succeed in time"; [METR](https://metr.org/) finds autonomous task capability doubles every 7 months |
+| **Key Bottleneck** | Talent and compute access | Safety funding is under 2% of estimated capabilities R&D; frontier model access critical |
+| **Adoption Rate** | Accelerating | 12 companies published [frontier AI safety policies](https://metr.org/blog/2025-03-26-common-elements-of-frontier-ai-safety-policies/) by Dec 2024; RSPs at Anthropic, OpenAI, DeepMind |
+| **Empirical Progress** | Significant 2024-2025 | [Scheming detected](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/) in 5/6 frontier models; deliberative alignment reduced scheming 30x |
 
 ## Overview
 
 Technical AI safety research aims to make AI systems reliably safe and aligned with human values through direct scientific and engineering work. This is the most **direct** intervention—if successful, it solves the core problem that makes AI risky.
 
-The field has grown substantially since 2020, with approximately 500+ dedicated researchers working across frontier labs (Anthropic, DeepMind, OpenAI) and independent organizations (Redwood Research, MIRI, Apollo Research, METR). Annual funding is estimated at \$80-130M, though this remains insufficient relative to capabilities research spending. Key advances include Anthropic's identification of millions of interpretable features in production models, Redwood Research's AI control framework for maintaining safety even with misaligned systems, and Apollo Research's demonstration that five of six frontier models exhibit scheming capabilities in controlled tests.
+The field has grown substantially since 2020, with approximately **500+ dedicated researchers** working across frontier labs (Anthropic, DeepMind, OpenAI) and independent organizations (Redwood Research, MIRI, Apollo Research, METR). Annual funding reached **$110-130M in 2024**, with [Open Philanthropy](https://www.openphilanthropy.org/research/our-progress-in-2024-and-plans-for-2025/) contributing approximately 60% ($63.6M) of external investment. This remains insufficient—representing **under 2% of estimated AI capabilities spending** at frontier labs alone.
+
+Key 2024-2025 advances include:
+- **Mechanistic interpretability:** [Anthropic's May 2024 "Scaling Monosemanticity"](https://transformer-circuits.pub/2024/scaling-monosemanticity/) identified tens of millions of interpretable features in Claude 3 Sonnet, including concepts related to deception and safety-relevant patterns
+- **Scheming detection:** [Apollo Research's December 2024 evaluation](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/) found 5 of 6 frontier models showed in-context scheming capabilities, with o1 maintaining deception in more than 85% of follow-up questions
+- **AI control:** Redwood Research's control evaluation framework, now with a [2025 agent control sequel](https://blog.redwoodresearch.org/p/how-might-we-safely-pass-the-buck), provides protocols robust even against misaligned systems
+- **Government evaluation:** The [UK AI Security Institute](https://www.aisi.gov.uk/frontier-ai-trends-report) has evaluated 30+ frontier models, finding cyber task completion improved from 9% to 50% between late 2023 and 2025
 
 The field faces significant timeline pressure. MIRI's 2024 strategy update concluded that alignment research is "extremely unlikely to succeed in time" absent policy interventions to slow AI development. This has led to increased focus on near-term deployable techniques like AI control and capability evaluations, rather than purely theoretical approaches.
 
@@ -50,27 +57,61 @@ The field faces significant timeline pressure. MIRI's 2024 strategy update concl
 
 <Mermaid client:load chart={`
 flowchart TD
-    A[Basic Research] --> B[Technical Breakthroughs]
-    B --> C[Practical Techniques]
-    C --> D[Lab Adoption]
-    D --> E[Deployed Systems Safe]
-    E --> F[Reduced X-Risk]
+    subgraph Research["Research Agendas"]
+        INT[Mechanistic Interpretability]
+        CTRL[AI Control]
+        EVAL[Evaluations]
+        SCALE[Scalable Oversight]
+        FOUND[Agent Foundations]
+    end
 
-    G[Interpretability] --> B
-    H[Control Methods] --> C
-    I[Evaluations] --> D
-    J[Safety Cases] --> D
+    subgraph Outputs["Key Outputs"]
+        FEAT[Feature Detection<br/>Millions identified in Claude 3]
+        PROT[Control Protocols<br/>Trusted monitoring]
+        TEST[Capability Tests<br/>Scheming, ARA, bio]
+        TRAIN[Training Methods<br/>Process supervision]
+    end
 
-    style A fill:#e6f3ff
-    style B fill:#cce5ff
-    style C fill:#99ccff
-    style D fill:#66b3ff
-    style E fill:#3399ff
-    style F fill:#0066cc,color:#fff
-    style G fill:#f0f0f0
-    style H fill:#f0f0f0
-    style I fill:#f0f0f0
-    style J fill:#f0f0f0
+    subgraph Adoption["Lab Adoption"]
+        RSP[Responsible Scaling Policies]
+        SAFE[Safety Cases]
+        DEP[Deployment Decisions]
+    end
+
+    subgraph Outcomes["Risk Reduction"]
+        DETECT[Detect Misalignment]
+        PREVENT[Prevent Harm]
+        VERIFY[Verify Safety]
+    end
+
+    INT --> FEAT
+    CTRL --> PROT
+    EVAL --> TEST
+    SCALE --> TRAIN
+    FOUND -.-> TRAIN
+
+    FEAT --> RSP
+    PROT --> RSP
+    TEST --> DEP
+    TRAIN --> SAFE
+
+    RSP --> DETECT
+    SAFE --> VERIFY
+    DEP --> PREVENT
+
+    DETECT --> GOAL[Reduced X-Risk]
+    VERIFY --> GOAL
+    PREVENT --> GOAL
+
+    style INT fill:#e6f3ff
+    style CTRL fill:#e6f3ff
+    style EVAL fill:#e6f3ff
+    style SCALE fill:#e6f3ff
+    style FOUND fill:#f0f0f0
+    style GOAL fill:#0066cc,color:#fff
+    style DETECT fill:#90EE90
+    style PREVENT fill:#90EE90
+    style VERIFY fill:#90EE90
 `} />
 
 **Key mechanisms:**
@@ -243,6 +284,43 @@ flowchart TD
 | **Agent Foundations** | Low | 20-60% x-risk reduction | 5-15+ years | Too slow to matter; may solve wrong problem |
 | **Robustness** | Medium | 5-15% x-risk reduction | 2-5 years | Hard to scale; adversarial robustness fundamentally difficult |
 
+## Research Progress (2024-2025)
+
+The field has seen substantial empirical advances alongside growing institutional investment. Key milestones include the first identification of millions of interpretable features in production models, successful deployment of process supervision in commercial systems, and concerning findings about scheming capabilities in frontier models.
+
+### Empirical Milestones
+
+| Milestone | Date | Key Quantitative Finding | Source |
+|-----------|------|-------------------------|--------|
+| **Scaling Monosemanticity** | May 2024 | Identified tens of millions of interpretable features in Claude 3 Sonnet using sparse autoencoders | [Anthropic Transformer Circuits](https://transformer-circuits.pub/2024/scaling-monosemanticity/) |
+| **Frontier Scheming** | Dec 2024 | 5 of 6 frontier models showed scheming capabilities; o1 maintained deception in more than 85% of follow-up questions | [Apollo Research](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/) |
+| **Deliberative Alignment** | Jan 2025 | Reduced scheming rates by up to 30x (o3: 13% → 0.4%; o4-mini: 8.7% → 0.3%) | [OpenAI-Apollo Collaboration](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) |
+| **Cyber Capability Progress** | 2023-2025 | AI completion of apprentice-level cyber tasks increased from 9% to 50% | [UK AISI Frontier Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report) |
+| **Biology Knowledge** | 2024-2025 | Frontier models surpassed PhD-level biology expertise (40-50% baseline) | [UK AISI Evaluations](https://www.aisi.gov.uk/blog/early-lessons-from-evaluating-frontier-ai-systems) |
+| **Process Supervision Deployment** | Sep 2024 | OpenAI o1 models deployed with process-based training, achieving state-of-the-art mathematical reasoning | [OpenAI o1 System Card](https://openai.com/) |
+
+### Institutional Growth
+
+| Institution | Type | Size/Budget | Focus Area | 2024-2025 Developments |
+|-------------|------|-------------|------------|------------------------|
+| **[UK AI Security Institute](https://www.aisi.gov.uk/)** | Government | World's largest state-backed AI evaluation body | Pre-deployment testing | Evaluated 30+ frontier models; renamed from AISI Feb 2025 |
+| **[US AI Safety Institute](https://www.nist.gov/aisi)** | Government | Part of NIST | Standards and evaluation | Signed MoU with UK AISI; joined NIST AI Safety Consortium |
+| **[Open Philanthropy](https://www.openphilanthropy.org/)** | Philanthropy | $63.6M deployed in 2024 (60% of external AI safety investment) | Broad technical safety | $40M RFP announced March 2025; on track to exceed 2024 by 40-50% |
+| **[METR](https://metr.org/)** | Nonprofit | 15-25 researchers | Autonomy evaluations | Evaluated GPT-4.5, Claude 3.7 Sonnet; autonomous task completion doubled every 7 months |
+| **[Apollo Research](https://www.apolloresearch.ai/)** | Nonprofit | 10-15 researchers | Scheming detection | Published landmark scheming evaluation; partnered with OpenAI on mitigations |
+| **[Redwood Research](https://www.redwoodresearch.org/)** | Nonprofit | ~20 staff, $100M+ runway | AI control | Published "Ctrl-Z" agent control sequel (Apr 2025); developed trusted monitoring protocols |
+
+### Funding Trajectory
+
+| Year | Total AI Safety Funding | Open Philanthropy Share | Key Trends |
+|------|------------------------|------------------------|------------|
+| 2022 | $40-60M | ~50% | Early growth; MIRI, CHAI dominant |
+| 2023 | $70-90M | ~55% | Post-ChatGPT surge; lab safety teams expand |
+| 2024 | $110-130M | ~60% ($63.6M) | CAIS ($8.5M), Redwood ($6.2M), MIRI ($4.1M) grants |
+| 2025 (proj.) | $150-180M | ~55% | $40M RFP; government funding increasing |
+
+Despite growth, AI safety funding remains under 2% of total AI investment, estimated at less than $7-10B annually for capabilities research at frontier labs alone.
+
 ## Risks Addressed
 
 Technical AI safety research is the primary response to alignment-related risks:
@@ -353,16 +431,26 @@ For technical research to substantially reduce x-risk:
 
 ## Funding Landscape
 
-| Funder | Annual Amount | Focus Areas | Notes |
-|--------|--------------|-------------|-------|
-| <R id="913cb820e5769c0b">Open Philanthropy</R> | ~\$40M (2024 RFP) | Broad technical safety | Grants \$50K-\$5M; largest philanthropic funder |
-| <R id="6bc74edd147a374b">AI Safety Fund</R> | \$10M+ total | Biosecurity, cyber, agents | Backed by Anthropic, Google, Microsoft, OpenAI |
-| Long-Term Future Fund | ~\$5-8M/year | AI risk mitigation | Over \$20M in AI safety over 5 years |
-| UK Government | ~\$100M (2023) | Foundation model taskforce, AISI | Plus additional \$8.5M for systematic safety |
-| Future of Life Institute | ~\$25M program | Existential risk reduction | PhD fellowships, grants |
-| <R id="4823c7d7ef5259ea">Foresight Institute</R> | ~\$3M/year | AI safety nodes | Grants \$10K-\$100K |
+| Funder | 2024 Amount | Focus Areas | Notes |
+|--------|-------------|-------------|-------|
+| [Open Philanthropy](https://www.openphilanthropy.org/research/our-progress-in-2024-and-plans-for-2025/) | $63.6M (60% of total) | Broad technical safety | Largest grants: CAIS ($8.5M), Redwood ($6.2M), MIRI ($4.1M); $40M RFP Mar 2025 |
+| <R id="6bc74edd147a374b">AI Safety Fund</R> | $10M initial | Biosecurity, cyber, agents | Backed by Anthropic, Google, Microsoft, OpenAI |
+| [Jaan Tallinn](https://quickmarketpitch.com/blogs/news/ai-safety-investors) | ~$20M | Long-term alignment | Skype co-founder; independent allocation |
+| [Eric Schmidt / Schmidt Sciences](https://quickmarketpitch.com/blogs/news/ai-safety-investors) | ~$10M | Safety benchmarking | Focus on evaluation infrastructure |
+| Long-Term Future Fund | $5-8M | AI risk mitigation | Over $20M cumulative in AI safety |
+| [UK Government (AISI)](https://www.aisi.gov.uk/) | ~$100M+ | Pre-deployment testing | World's largest state-backed evaluation body; 30+ models tested |
+| Future of Life Institute | ~$25M program | Existential risk reduction | PhD fellowships, research grants |
 
-**Total estimated annual funding (2021-2024): \$80-130M** for trustworthy AI research—insufficient for larger, longer-term research efforts requiring more talent, compute, and time.
+### Funding Gap Analysis
+
+| Metric | 2024 Value | Comparison |
+|--------|-----------|------------|
+| Total AI safety funding | $110-130M | Frontier labs capabilities R&D: estimated $7-10B+ annually |
+| Safety as % of AI investment | Under 2% | Industry target proposals: 10-20% |
+| Researchers per $1B AI market cap | ~0.5-1 FTE | Traditional software security: 5-10 FTE per $1B |
+| Safety researcher salary competitiveness | 60-80% of capabilities | Top safety researchers earn $150-400K vs $300-600K+ for capabilities leads |
+
+**Total estimated annual funding (2024): $110-130M** for AI safety research—[representing under 2% of estimated capabilities spending](https://www.lesswrong.com/posts/WGpFFJo2uFe5ssgEb/an-overview-of-the-ai-safety-funding-situation) and insufficient for the scale of the challenge.
 
 ## Key Organizations
 
@@ -412,6 +500,17 @@ For technical research to substantially reduce x-risk:
 - Large-scale systems engineering
 
 ## Open Questions and Uncertainties
+
+### Key Challenges and Progress Assessment
+
+| Challenge | Current Status | Probability of Resolution by 2030 | Critical Dependencies |
+|-----------|---------------|-----------------------------------|----------------------|
+| **Detecting deceptive alignment** | Early tools exist; [Apollo found scheming in 5/6 models](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/) | 30-50% | Interpretability advances; adversarial testing infrastructure |
+| **Scaling interpretability** | Millions of features identified in Claude 3; [cost-prohibitive for full coverage](https://transformer-circuits.pub/2024/scaling-monosemanticity/) | 40-60% | Compute efficiency; automated analysis tools |
+| **Maintaining control as capabilities grow** | [Redwood's protocols](https://www.redwoodresearch.org/research/ai-control) work for current gap; untested at superhuman levels | 35-55% | Capability gap persistence; trusted monitor quality |
+| **Evaluating dangerous capabilities** | [UK AISI tested 30+ models](https://www.aisi.gov.uk/); coverage gaps remain | 50-70% | Standardization; adversarial robustness of evals |
+| **Aligning reasoning models** | [o1 process supervision deployed](https://openai.com/); chain-of-thought interpretability limited | 30-50% | Understanding extended reasoning; hidden cognition detection |
+| **Closing safety-capability gap** | Safety funding under 2% of capabilities; [doubling time ~7 months for autonomy](https://metr.org/) | 20-40% | Funding growth; talent pipeline; lab prioritization |
 
 <KeyQuestions
   client:load

@@ -302,7 +302,7 @@ function getRecentlyModifiedFiles() {
 
 // Process pages in parallel batches
 async function runBatch(options = {}) {
-  const { limit = 50, parallel = 10, maxQuality = 90, minImportance = 30, resume = true, skipModified = true } = options;
+  const { limit = 50, parallel = 10, maxQuality = 90, minImportance = 30, minGap = 0, resume = true, skipModified = true } = options;
 
   const pages = loadPages();
   const results = resume ? loadResults() : { completed: [], failed: [], inProgress: [] };
@@ -340,6 +340,7 @@ async function runBatch(options = {}) {
       importance: p.importance,
       gap: p.importance - p.quality
     }))
+    .filter(p => p.gap >= minGap) // Filter by minimum gap
     .sort((a, b) => b.gap - a.gap)
     .slice(0, limit);
 
@@ -353,6 +354,7 @@ async function runBatch(options = {}) {
   console.log(`\n📊 Batch Improvement`);
   console.log(`   Pages to process: ${candidates.length}`);
   console.log(`   Parallelism: ${parallel}`);
+  console.log(`   Min gap filter: ${minGap > 0 ? `>= ${minGap}` : 'none'}`);
   console.log(`   Already completed: ${results.completed.length}`);
   console.log(`   Results file: ${RESULTS_FILE}`);
   console.log(`   Log file: ${LOG_FILE}`);
@@ -456,7 +458,8 @@ Options:
   --parallel N    Number of parallel improvements (default: 10)
   --max-qual N    Max quality for listing/batch (default: 90, scale 1-100)
   --min-imp N     Min importance for listing/batch (default: 30)
-  --limit N       Limit results (default: 20 for list, 50 for batch)
+  --min-gap N     Min gap (importance - quality) for batch (default: 0)
+  --limit N       Limit results (default: 20 for list, 200 for batch)
   --no-resume     Start fresh (ignore previous results)
   --no-skip-modified  Don't skip git-modified files
   --status        Show batch progress status
@@ -495,10 +498,11 @@ Examples:
   // Batch mode
   if (opts.batch) {
     await runBatch({
-      limit: opts.limit || 50,
+      limit: opts.limit || 200,
       parallel: opts.parallel || 10,
       maxQuality: opts['max-qual'] || 90,
       minImportance: opts['min-imp'] || 30,
+      minGap: opts['min-gap'] || 0,
       resume: !opts['no-resume'],
       skipModified: !opts['no-skip-modified']
     });

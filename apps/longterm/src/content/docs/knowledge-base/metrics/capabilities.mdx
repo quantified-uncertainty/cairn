@@ -4,23 +4,31 @@ description: Quantitative measures tracking AI model performance across language
 sidebar:
   order: 2
 importance: 85
-quality: 63
+quality: 91
+lastEdited: "2026-01-29"
 llmSummary: "Comprehensive quantitative tracking of AI capability benchmarks from 2020-2025 showing exponential progress with frontier models reaching 86-96% on key tasks (MMLU, HumanEval, GSM8K) and o3 achieving 87.5% on ARC-AGI (exceeding human baseline). Critical finding: benchmark saturation outpaces safety evaluation development, with 75-95% adversarial attack success rates persisting despite capability advances, creating a widening evaluation-reality gap that undermines alignment validation."
 ratings:
-  novelty: 4.5
-  rigor: 6.5
-  actionability: 7
-  completeness: 7.5
-metrics:
-  wordCount: 1092
-  citations: 52
-  tables: 79
-  diagrams: 0
+  novelty: 5
+  rigor: 7
+  actionability: 7.5
+  completeness: 8
 ---
-import {R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
+import {R, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 import {DataInfoBox, Backlinks} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="capabilities" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Benchmark Progress** | Exponential growth, now saturating | MMLU: 43.9% (2020) → 96.7% (2024); ARC-AGI: 9.2% → 87.5% in 18 months |
+| **Capability Trajectory** | 7-month doubling period for task horizons | [METR research](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/): accelerated to 4-month doubling in 2024-2025 |
+| **Evaluation Gap** | Critical - widening | [Stanford HAI](https://hai.stanford.edu/news/ai-benchmarks-hit-saturation): 80-90% scores on most benchmarks eliminate differentiation |
+| **Safety Margin** | Narrowing rapidly | Adversarial attack success: 75-95% on frontier models despite capability gains |
+| **Real-World Reliability** | Significant gaps persist | 50% task success at ~50 minutes; under 10% success at 4+ hours |
+| **Multimodal Integration** | Production-ready | Gemini 2.0, GPT-4o: real-time voice (180ms latency), video analysis operational |
+| **Scientific Discovery** | Transformative in specific domains | AlphaFold: 3.2M+ researchers, 47,000+ citations; FunSearch: novel mathematical discoveries |
 
 ## Overview
 
@@ -31,6 +39,50 @@ This page tracks concrete, measurable indicators of AI capabilities across multi
 **Safety Implication**: Rapid capability advancement outpaces development of reliable evaluation methods, creating blind spots in AI risk assessment as models approach human-level performance on narrow benchmarks while exhibiting unpredictable behaviors in real-world deployment. This evaluation-reality gap poses critical challenges for <EntityLink id="why-alignment-hard">alignment research</EntityLink> and safety validation.
 
 The <R id="54fcb72b74acfae9">recent o3 release</R> achieved 87.5% on ARC-AGI, representing a 3x improvement over previous models and bringing us to the threshold of AGI capability markers on several benchmarks simultaneously.
+
+### Capability Trajectory Overview
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph INPUTS["Capability Drivers"]
+        COMPUTE[Compute Scale]
+        DATA[Training Data]
+        ARCH[Architecture Innovation]
+        POST[Post-Training Methods]
+    end
+
+    subgraph BENCHMARKS["Benchmark Categories"]
+        LANG[Language Understanding<br/>MMLU: 96.7%]
+        CODE[Coding<br/>HumanEval: 96.3%]
+        REASON[Reasoning<br/>ARC-AGI: 87.5%]
+        MULTI[Multimodal<br/>MMMU: 78.2%]
+    end
+
+    subgraph GAPS["Persistent Gaps"]
+        ROBUST[Adversarial Robustness<br/>75-95% attack success]
+        HORIZON[Long-Horizon Tasks<br/>under 10% at 4+ hours]
+        DEPLOY[Deployment Reliability<br/>Limited studies]
+    end
+
+    subgraph SAFETY["Safety Implications"]
+        EVAL[Evaluation-Reality Gap]
+        ALIGN[Alignment Validation Risk]
+    end
+
+    INPUTS --> BENCHMARKS
+    BENCHMARKS --> |Near saturation| GAPS
+    GAPS --> SAFETY
+
+    style LANG fill:#ccffcc
+    style CODE fill:#ccffcc
+    style REASON fill:#ccffcc
+    style MULTI fill:#ffffcc
+    style ROBUST fill:#ffcccc
+    style HORIZON fill:#ffcccc
+    style DEPLOY fill:#ffcccc
+    style EVAL fill:#ffcccc
+    style ALIGN fill:#ffcccc
+`} />
 
 ---
 
@@ -439,4 +491,53 @@ The <R id="54fcb72b74acfae9">recent o3 release</R> achieved 87.5% on ARC-AGI, re
 |------------------|-------------------|---------------------|-------------------|
 | **Interpretability** | **High** | **Widening** | **Critical** |
 | **Robustness Training** | **Medium** | **Stable** | **High** |
-| **AI Alignment Theory** | **Medium** | **Widening** |
+| **AI Alignment Theory** | **Medium** | **Widening** | **Critical** |
+| **Control and Containment** | **Medium** | **Stable** | **High** |
+| **Scalable Oversight** | **High** | **Narrowing** | **Medium-High** |
+
+---
+
+## Sources & Resources
+
+### Benchmark Research
+
+- **Stanford HAI (2025):** [AI Index Report - Technical Performance](https://hai.stanford.edu/ai-index/2025-ai-index-report/technical-performance) - Comprehensive analysis of benchmark saturation and frontier model performance
+- **Stanford HAI (2025):** [AI Benchmarks Hit Saturation](https://hai.stanford.edu/news/ai-benchmarks-hit-saturation) - Analysis of benchmark ceiling effects across 50+ evaluations
+- **METR (2025):** [Measuring AI Ability to Complete Long Tasks](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) - Time horizon research showing 7-month doubling period
+- **OpenAI (2025):** [FrontierScience Benchmark](https://openai.com/index/frontierscience/) - New evaluation framework for scientific reasoning
+- **ARC Prize (2024):** [OpenAI o3 Breakthrough on ARC-AGI](https://arcprize.org/blog/oai-o3-pub-breakthrough) - Detailed analysis of o3's 87.5% score and cost considerations
+
+### AI Agent Capabilities
+
+- **METR (2024):** [Evaluating R&D Capabilities of LLMs](https://metr.org/blog/2024-11-22-evaluating-r-d-capabilities-of-llms/) - RE-Bench evaluation of AI research engineering abilities
+- **AI Digest (2025):** [A New Moore's Law for AI Agents](https://theaidigest.org/time-horizons) - Analysis of exponential task completion improvements
+
+### Model Releases and Documentation
+
+- **Anthropic:** <R id="e91e6f80eaaceb58">Claude 3.5 Sonnet Documentation</R> - Performance benchmarks and capabilities
+- **OpenAI:** <R id="54fcb72b74acfae9">OpenAI o3 Documentation</R> - Architecture and benchmark results
+- **Google DeepMind:** <R id="3b8b5072889c4f8a">Gemini Technical Report</R> - Multimodal capabilities and evaluation
+
+### Safety and Alignment Implications
+
+- **RAND (2025):** [Comprehensive Benchmarking of Biological Knowledge](https://www.rand.org/pubs/research_reports/RRA3797-1.html) - Assessment of frontier LLM biosecurity capabilities
+- **Anthropic (2023):** <R id="e99a5c1697baa07d">Constitutional AI Research</R> - Robustness-capability tradeoff analysis
+
+---
+
+## AI Transition Model Context
+
+AI capabilities metrics directly inform the <EntityLink id="ai-transition-model" /> across multiple parameters:
+
+| Parameter | Relationship | Tracking Importance |
+|-----------|--------------|-------------------|
+| <EntityLink id="ai-capabilities" /> | Primary output measure | Benchmark performance tracks capability trajectory |
+| <EntityLink id="agi-timeline" /> | Forecasting input | Benchmark saturation indicates proximity to AGI |
+| <EntityLink id="misalignment-potential" /> | Safety evaluation | Capability-safety gap assessment requires accurate metrics |
+| <EntityLink id="human-oversight-quality" /> | Scalability concern | Evaluation-reality gap undermines oversight |
+
+---
+
+## Related Pages
+
+<Backlinks client:load entityId="capabilities" />
