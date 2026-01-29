@@ -30,6 +30,41 @@ npx shadcn@latest add [component-name]
 
 Available shadcn components are in `src/components/ui/`.
 
+### Starlight Content Spacing Issue
+
+**Problem:** Custom React components inside MDX pages have unexpected spacing/margins between elements. Cards, grids, and other layouts look broken with extra vertical gaps.
+
+**Cause:** Starlight's `.sl-markdown-content` CSS rule adds `margin-top` between adjacent block elements:
+
+```css
+@layer starlight.content {
+  .sl-markdown-content :not(a, strong, em, del, span, input, code, br) + :not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
+    margin-top: var(--sl-content-gap-y);
+  }
+}
+```
+
+This rule is designed for prose content but interferes with custom component layouts.
+
+**Fix:** Add the `not-content` class to your component's container to opt out of Starlight's markdown spacing:
+
+```tsx
+// Before (broken spacing)
+<div className="my-grid">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+
+// After (correct spacing)
+<div className="my-grid not-content">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+```
+
+**When to use `not-content`:**
+- Any React component with its own layout (grids, flex containers, card layouts)
+- Components where you control spacing via Tailwind/CSS
+- Interactive widgets, dashboards, data visualizations
+
 ## Page Improvement Workflow (Recommended)
 
 The most effective way to improve wiki pages to quality 5 is using a Task Agent with research capabilities. This approach:
@@ -466,7 +501,77 @@ npm run validate:types        # UI components handle all schema entity types
 npm run validate:dollars      # Currency values escaped for LaTeX
 npm run validate:comparisons  # Less-than/greater-than escaped for JSX
 npm run validate:templates    # Page template compliance
+npm run validate:placeholders # Detect TODOs, TBDs, placeholder text, incomplete content
+npm run validate:content-errors # LLM-based review for content issues (requires API key)
 ```
+
+### Error Detection Tools
+
+Beyond standard validators, these tools help find content and rendering issues:
+
+#### Placeholder Detection
+
+Finds unfinished content - TODOs, placeholder text, empty sections, template remnants:
+
+```bash
+npm run validate:placeholders              # Check all files
+npm run validate:placeholders --verbose    # Show context around matches
+npm run validate:placeholders --path risks # Filter by path
+```
+
+Detects patterns like:
+- `TODO`, `TBD`, `FIXME` markers
+- `[Value]`, `[Description]`, `[Insert X]` placeholders
+- Empty or sparse sections
+- Trailing `...` (incomplete sentences)
+- Empty table cells
+
+#### LLM Content Review
+
+Uses Claude to review pages for content issues that automated validators miss:
+
+```bash
+npm run validate:content-errors --page scheming    # Review specific page
+npm run validate:content-errors --limit 20         # Review top 20 by importance
+npm run validate:content-errors --path /risks/     # Filter by path
+npm run validate:content-errors --model sonnet     # Use Sonnet (better quality)
+npm run validate:content-errors --dry-run          # Preview without API calls
+```
+
+Finds issues like:
+- Unclear or confusing writing
+- Claims without sources
+- Factual issues or contradictions
+- Missing context or unexplained jargon
+- Structural problems
+
+**Cost**: ~$0.02-0.05 per page (Haiku), ~$0.15-0.30 per page (Sonnet)
+
+Results saved to `.claude/temp/content-errors.json`
+
+#### Visual Page Capture
+
+Captures full-page screenshots for visual inspection of rendering issues:
+
+```bash
+npm run visual:capture                     # Capture top 20 pages by importance
+npm run visual:capture --limit 50          # Capture top 50
+npm run visual:capture --page scheming     # Capture specific page
+npm run visual:capture --path /risks/      # Filter by path pattern
+npm run visual:capture --changed           # Only pages with git changes
+npm run visual:capture --serve             # Auto-start dev server
+npm run visual:capture --no-sidebar        # Hide sidebar in screenshots
+```
+
+**Requirements** (first time only):
+```bash
+pnpm add -D playwright
+npx playwright install chromium
+```
+
+**Output**:
+- Screenshots in `.claude/temp/screenshots/`
+- HTML index at `.claude/temp/screenshots/index.html` for visual review
 
 ### Pre-Commit Checks
 
