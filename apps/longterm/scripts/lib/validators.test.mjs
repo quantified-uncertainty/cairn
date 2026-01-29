@@ -301,6 +301,191 @@ test('extractInternalLinks ignores anchors', () => {
 });
 
 // =============================================================================
+// Placeholder validator functions (from validate-placeholders.mjs)
+// =============================================================================
+
+console.log('\n📝 Placeholder validator helpers');
+
+// Inline implementations for testing
+function getSectionContent(body, sectionName) {
+  const headerPattern = sectionName === 'Limitations'
+    ? /^##\s+Limitations?\s*$/mi
+    : new RegExp(`^##\\s+${sectionName}\\s*$`, 'mi');
+
+  const headerMatch = body.match(headerPattern);
+  if (!headerMatch) return null;
+
+  const startIndex = headerMatch.index + headerMatch[0].length;
+  const afterHeader = body.slice(startIndex);
+  const nextH2Match = afterHeader.match(/\n##\s+[^#]/);
+  const endIndex = nextH2Match ? nextH2Match.index : afterHeader.length;
+
+  return afterHeader.slice(0, endIndex);
+}
+
+function isInCodeBlock(content, position) {
+  const before = content.slice(0, position);
+  const tripleBackticks = (before.match(/```/g) || []).length;
+  return tripleBackticks % 2 === 1;
+}
+
+function isInMermaid(content, position) {
+  const before = content.slice(0, position);
+  const lastMermaidOpen = before.lastIndexOf('<Mermaid');
+  if (lastMermaidOpen === -1) return false;
+
+  const afterMermaid = content.slice(lastMermaidOpen, position);
+  const closingPattern = /`\s*}\s*\/>/;
+  const closingMatch = afterMermaid.match(closingPattern);
+  return !closingMatch;
+}
+
+function isInComment(content, position) {
+  const before = content.slice(0, position);
+  const opens = (before.match(/<!--/g) || []).length;
+  const closes = (before.match(/-->/g) || []).length;
+  return opens > closes;
+}
+
+function getLineNumber(content, position) {
+  return content.slice(0, position).split('\n').length;
+}
+
+// getSectionContent tests
+test('getSectionContent extracts simple section', () => {
+  const body = `## Overview
+
+This is the overview section.
+
+## Next Section
+
+Different content.`;
+  const content = getSectionContent(body, 'Overview');
+  assert(content !== null, 'Should find section');
+  assert(content.includes('This is the overview section'), 'Should include content');
+  assert(!content.includes('Different content'), 'Should not include next section');
+});
+
+test('getSectionContent handles section at end of document', () => {
+  const body = `## First
+
+Some.
+
+## Overview
+
+Last section with no following header.`;
+  const content = getSectionContent(body, 'Overview');
+  assert(content !== null, 'Should find section');
+  assert(content.includes('Last section'), 'Should include content');
+});
+
+test('getSectionContent returns null for missing section', () => {
+  const body = `## Overview\n\nContent.`;
+  assertEqual(getSectionContent(body, 'NonExistent'), null);
+});
+
+test('getSectionContent does not match h3 headings', () => {
+  const body = `## Overview
+
+Main content.
+
+### Overview Subsection
+
+Subsection content.
+
+## Next
+
+Next content.`;
+  const content = getSectionContent(body, 'Overview');
+  assert(content.includes('Subsection content'), 'Should include h3 content');
+  assert(!content.includes('Next content'), 'Should stop at h2');
+});
+
+test('getSectionContent handles Limitation/Limitations variant', () => {
+  // The regex makes the 's' optional: Limitations? matches both Limitation and Limitations
+  const body1 = `## Limitation\n\nLimits here.\n\n## Next`;
+  const body2 = `## Limitations\n\nLimits here.\n\n## Next`;
+  assert(getSectionContent(body1, 'Limitations') !== null, 'Should find Limitation (singular)');
+  assert(getSectionContent(body2, 'Limitations') !== null, 'Should find Limitations (plural)');
+});
+
+// isInCodeBlock tests
+test('isInCodeBlock detects position inside code', () => {
+  const content = `Text\n\n\`\`\`js\nconst TODO = 1;\n\`\`\`\n\nAfter`;
+  const todoPos = content.indexOf('TODO');
+  assert(isInCodeBlock(content, todoPos), 'TODO inside code should be detected');
+});
+
+test('isInCodeBlock detects position outside code', () => {
+  const content = `TODO before\n\n\`\`\`js\nconst x = 1;\n\`\`\``;
+  const todoPos = content.indexOf('TODO');
+  assert(!isInCodeBlock(content, todoPos), 'TODO outside code should not be detected');
+});
+
+// isInMermaid tests
+test('isInMermaid detects position inside diagram', () => {
+  const content = `<Mermaid client:load chart={\`
+graph TD
+    A[TBD] --> B
+\`} />
+
+After`;
+  const tbdPos = content.indexOf('TBD');
+  assert(isInMermaid(content, tbdPos), 'TBD inside Mermaid should be detected');
+});
+
+test('isInMermaid detects position outside diagram', () => {
+  const content = `<Mermaid client:load chart={\`
+graph TD
+    A --> B
+\`} />
+
+TBD outside`;
+  const tbdPos = content.lastIndexOf('TBD');
+  assert(!isInMermaid(content, tbdPos), 'TBD outside Mermaid should not be detected');
+});
+
+test('isInMermaid handles br tags correctly', () => {
+  // Regression test: <br/> inside Mermaid was incorrectly closing detection
+  const content = `<Mermaid client:load chart={\`
+graph TD
+    A[Line<br/>TBD]
+\`} />`;
+  const tbdPos = content.indexOf('TBD');
+  assert(isInMermaid(content, tbdPos), 'TBD after <br/> should still be inside Mermaid');
+});
+
+test('isInMermaid handles no Mermaid present', () => {
+  const content = `Regular TBD content.`;
+  const tbdPos = content.indexOf('TBD');
+  assert(!isInMermaid(content, tbdPos), 'Should return false when no Mermaid');
+});
+
+// isInComment tests
+test('isInComment detects position inside comment', () => {
+  const content = `Before\n\n<!-- TODO: fix -->\n\nAfter`;
+  const todoPos = content.indexOf('TODO');
+  assert(isInComment(content, todoPos), 'TODO inside comment should be detected');
+});
+
+test('isInComment detects position outside comment', () => {
+  const content = `TODO outside\n\n<!-- comment -->`;
+  const todoPos = content.indexOf('TODO');
+  assert(!isInComment(content, todoPos), 'TODO outside comment should not be detected');
+});
+
+// getLineNumber tests
+test('getLineNumber returns correct line', () => {
+  const content = `Line 1\nLine 2\nLine 3 target`;
+  assertEqual(getLineNumber(content, content.indexOf('target')), 3);
+});
+
+test('getLineNumber handles empty lines', () => {
+  const content = `Line 1\n\nLine 3\n\nLine 5 target`;
+  assertEqual(getLineNumber(content, content.indexOf('target')), 5);
+});
+
+// =============================================================================
 // Summary
 // =============================================================================
 
