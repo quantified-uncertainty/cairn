@@ -6,13 +6,16 @@
  * Helps identify pages that need improvement and generates prompts for Claude Code.
  *
  * Usage:
- *   node scripts/page-improver.mjs --list              # List pages needing improvement
- *   node scripts/page-improver.mjs <page-id>           # Show improvement prompt for page
- *   node scripts/page-improver.mjs <page-id> --info    # Show page info only
+ *   node scripts/content/page-improver.mjs --list              # List pages needing improvement
+ *   node scripts/content/page-improver.mjs <page-id>           # Show improvement prompt for page
+ *   node scripts/content/page-improver.mjs <page-id> --info    # Show page info only
+ *   node scripts/content/page-improver.mjs --batch --limit 50  # Run batch improvement
+ *   node scripts/content/page-improver.mjs --batch --parallel 10 --limit 50  # With parallelism
  */
 
 import fs from 'fs';
 import path from 'path';
+import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
