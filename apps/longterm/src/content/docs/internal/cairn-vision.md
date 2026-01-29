@@ -276,7 +276,7 @@ flowchart TD
 ### Secondary Metrics
 
 - Pages maintained at quality ≥4: >80%
-- Average page staleness: <60 days
+- Average page staleness: under 60 days
 - Cross-linking density: >5 links per page
 - Coverage completeness: >90% of standard risk taxonomies
 

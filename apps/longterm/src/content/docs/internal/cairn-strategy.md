@@ -397,7 +397,7 @@ Try to generate 3 novel strategic insights:
 
 2. What's the simplest version of CAIRN that would still be valuable?
 
-3. If we could only do one of {wiki, crux map, worldview tool}, which?
+3. If we could only do one of (wiki, crux map, worldview tool), which?
 
 4. What would make us confident this is worth 2 person-years vs. not?
 

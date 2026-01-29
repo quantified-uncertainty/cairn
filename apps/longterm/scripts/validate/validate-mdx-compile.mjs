@@ -21,6 +21,7 @@ import { execSync } from 'child_process';
 import { compile } from '@mdx-js/mdx';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import remarkMath from 'remark-math';
 
 // Use shared libraries
 import { findMdxFiles } from '../lib/file-utils.mjs';
@@ -150,7 +151,7 @@ async function validateFile(filePath) {
   try {
     await compile(content, {
       development: false,
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkMath],
       recmaPlugins: [],
     });
     return { success: true };
