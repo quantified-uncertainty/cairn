@@ -3,9 +3,9 @@ title: Process Supervision
 description: Process supervision trains AI systems to produce correct reasoning steps, not just correct final answers. This approach improves transparency and auditability of AI reasoning, achieving significant gains in mathematical and coding tasks while providing moderate safety benefits through visible reasoning chains.
 sidebar:
   order: 3
-quality: 43
+quality: 65
 importance: 72.5
-lastEdited: 2025-01-22
+lastEdited: 2025-01-28
 llmSummary: "Process supervision trains AI to show correct reasoning steps rather than just final answers, achieving 15-25% absolute improvements on math benchmarks while making reasoning auditable. However, it shares RLHF's fundamental limitation: humans cannot verify superhuman reasoning steps, and models might maintain separate internal reasoning from visible chains."
 pageTemplate: knowledge-base-response
 ratings:
@@ -14,14 +14,24 @@ ratings:
   actionability: 5.5
   completeness: 6
 metrics:
-  wordCount: 507
-  citations: 0
+  wordCount: 850
+  citations: 7
   tables: 35
-  diagrams: 0
+  diagrams: 1
 ---
-import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="process-supervision" client:load />
+
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | High | Well-established technique; automated methods now available |
+| Scalability | Medium | Limited by human ability to verify superhuman reasoning steps |
+| Current Maturity | Medium-High | Deployed in production (OpenAI o1); active research area |
+| Time Horizon | Now-3 years | Already improving math/coding; broader domains in development |
+| Key Proponents | OpenAI, DeepMind, Anthropic | [Let's Verify Step by Step](https://arxiv.org/abs/2305.20050) foundational paper |
 
 ## Overview
 
@@ -31,11 +41,51 @@ The key insight is that process supervision makes reasoning transparent and audi
 
 However, process supervision shares a fundamental limitation with <EntityLink id="rlhf">RLHF</EntityLink>: it requires humans to evaluate reasoning steps. For complex or superhuman reasoning, humans may not be able to verify whether intermediate steps are valid. Additionally, sufficiently sophisticated models might learn to produce reasoning that appears valid while actually being subtly flawed, or maintain separate internal reasoning that differs from the visible chain of thought.
 
+## How It Works
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Training["Training Pipeline"]
+        A[Problem] --> B[Model generates solution steps]
+        B --> C{Step Annotation}
+        C -->|Human| D[Manual step labels]
+        C -->|Automated| E[Monte Carlo estimation]
+        D --> F[Process Reward Model]
+        E --> F
+    end
+
+    subgraph Deployment["Deployment"]
+        F --> G[Score each reasoning step]
+        G --> H{Verification}
+        H -->|Valid| I[Accept solution]
+        H -->|Invalid| J[Reject/Resample]
+    end
+
+    subgraph Scaling["Test-Time Scaling"]
+        K[Generate N solutions] --> L[PRM scores all steps]
+        L --> M[Select best solution path]
+    end
+
+    style F fill:#4a9eff
+    style M fill:#22c55e
+`} />
+
+The core innovation is training a **Process Reward Model (PRM)** that evaluates each intermediate step rather than just the final answer. OpenAI's foundational [Let's Verify Step by Step](https://arxiv.org/abs/2305.20050) paper released [PRM800K](https://github.com/openai/prm800k), a dataset of 800,000 step-level correctness labels for mathematical reasoning.
+
+## Risks Addressed
+
+| Risk | Relevance | How Process Supervision Helps |
+|------|-----------|-------------------------------|
+| <EntityLink id="reward-hacking">Reward Hacking</EntityLink> | High | Harder to game step-by-step verification than end-to-end outcomes |
+| <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> | Medium | Makes reasoning chains visible and auditable; catches hidden flawed logic |
+| <EntityLink id="scheming">Scheming</EntityLink> | Medium | Visible reasoning makes certain deception strategies more detectable |
+| <EntityLink id="sycophancy">Sycophancy</EntityLink> | Low | Step verification can catch reasoning that reaches user-desired but incorrect conclusions |
+
 ## Risk Assessment & Impact
 
 | Risk Category | Assessment | Key Metrics | Evidence Source |
 |---------------|------------|-------------|-----------------|
-| **Safety Uplift** | Medium | More transparent reasoning; harder to hide bad logic | OpenAI "Let's Verify Step by Step" |
+| **Safety Uplift** | Medium | More transparent reasoning; harder to hide bad logic | [Let's Verify Step by Step](https://arxiv.org/abs/2305.20050) |
 | **Capability Uplift** | Significant | Improves math/reasoning accuracy substantially | Benchmark improvements |
 | **Net World Safety** | Helpful | Probably net positive: makes reasoning auditable | Structural analysis |
 | **Lab Incentive** | Strong | Improves benchmark performance; commercial benefit | Industry adoption |
@@ -72,11 +122,15 @@ A key innovation is training separate models to evaluate reasoning steps:
 
 ### Performance Improvements
 
-| Domain | Baseline | With Process Supervision | Improvement |
-|--------|----------|-------------------------|-------------|
-| **MATH Benchmark** | 50-60% | 75-85% | +15-25% absolute |
-| **GSM8K** | 80-85% | 92-95% | +10-12% absolute |
-| **Code Generation** | Varies | Significant improvement | Task-dependent |
+Results from key papers demonstrate substantial gains:
+
+| Domain | Model/Method | Baseline | With PRM | Source |
+|--------|--------------|----------|----------|--------|
+| **MATH** | GPT-4 + PRM | 50% | 78.2% | [Let's Verify Step by Step](https://arxiv.org/abs/2305.20050) |
+| **GSM8K** | Math-Shepherd PPO | 77.9% | 84.1% | [Math-Shepherd](https://arxiv.org/abs/2312.08935) |
+| **MATH** | Math-Shepherd verify | 28.6% | 43.5% | [Math-Shepherd](https://arxiv.org/abs/2312.08935) |
+| **MATH500** | Gemini Pro + OmegaPRM | 51% | 69.4% | [OmegaPRM (DeepMind)](https://arxiv.org/abs/2406.06592) |
+| **AIME 2024** | o1 (1000 samples + PRM) | 12% (GPT-4o) | 93% | [OpenAI o1](https://openai.com/index/learning-to-reason-with-llms/) |
 
 ### Why It Helps
 
@@ -132,9 +186,9 @@ Like RLHF, process supervision ultimately breaks when humans cannot evaluate rea
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| **Annual Investment** | \$100-500M/year | All major labs invest |
-| **Adoption Level** | Widespread | Used for math/coding; growing |
-| **Primary Users** | OpenAI, Google, Anthropic | Industry standard |
+| **Annual Investment** | $100-500M/year | All major labs invest |
+| **Adoption Level** | Widespread | Core to [OpenAI o1](https://openai.com/index/learning-to-reason-with-llms/); deployed at scale |
+| **Primary Users** | OpenAI, DeepMind, Anthropic, Microsoft | Industry standard for reasoning tasks |
 | **Recommendation** | Maintain | Good investment; already well-funded |
 
 ### Differential Progress
@@ -187,10 +241,10 @@ Process supervision makes certain forms of deception harder:
 
 | Direction | Status | Potential Impact |
 |-----------|--------|-----------------|
-| **Automated Step Labeling** | Active development | Reduce annotation cost |
-| **Better PRMs** | Ongoing | Improve step evaluation |
-| **Transfer to New Domains** | Exploratory | Broader applicability |
-| **Connecting to Interpretability** | Early stage | Verify internal reasoning |
+| **Automated Step Labeling** | Mature ([Math-Shepherd](https://arxiv.org/abs/2312.08935), [OmegaPRM](https://arxiv.org/abs/2406.06592)) | 4x+ larger datasets than human annotation |
+| **Better PRMs** | Active ([ThinkPRM](https://openreview.net/forum?id=V727xqBYIW)) | 99% reduction in required labels |
+| **Transfer to New Domains** | Expanding to code, science | Broader applicability |
+| **Connecting to Interpretability** | Early ([Anthropic recommended directions](https://alignment.anthropic.com/2025/recommended-directions/)) | Verify internal reasoning matches visible CoT |
 
 ### Open Questions
 
@@ -199,23 +253,17 @@ Process supervision makes certain forms of deception harder:
 3. **How do we handle superhuman reasoning steps?** The fundamental scaling challenge
 4. **Can process supervision transfer across domains?** Math → science → general reasoning?
 
-## Sources & Resources
+## Sources & Key Research
 
-### Primary Research
-
-| Type | Source | Key Contributions |
-|------|--------|------------------|
-| **Foundational Work** | Let's Verify Step by Step (OpenAI, 2023) | Demonstrated PRM effectiveness |
-| **Theoretical Analysis** | Process Reward Models papers | Framework and evaluation |
-| **Benchmark Results** | MATH/GSM8K evaluations | Quantified improvements |
-
-### Related Research
-
-| Focus Area | Key Papers | Organizations |
-|------------|------------|---------------|
-| **Chain-of-Thought** | Chain-of-thought prompting papers | Multiple |
-| **Mathematical Reasoning** | Various benchmark papers | OpenAI, Google |
-| **Code Verification** | Program verification literature | Multiple |
+| Paper | Authors/Org | Year | Key Contribution |
+|-------|-------------|------|------------------|
+| [Let's Verify Step by Step](https://arxiv.org/abs/2305.20050) | OpenAI (Lightman et al.) | 2023 | Foundational PRM paper; 78.2% on MATH; released PRM800K dataset |
+| [Math-Shepherd](https://arxiv.org/abs/2312.08935) | Microsoft (Wang et al.) | 2024 | Automated process annotation without human labels; 4x larger than PRM800K |
+| [OmegaPRM](https://arxiv.org/abs/2406.06592) | Google DeepMind | 2024 | MCTS-based data collection; improved Gemini Pro from 51% to 69.4% on MATH500 |
+| [Learning to Reason with LLMs](https://openai.com/index/learning-to-reason-with-llms/) | OpenAI | 2024 | o1 model using RL + process supervision for test-time scaling |
+| [The Lessons of Developing PRMs](https://arxiv.org/abs/2501.07301) | 2025 | MC estimation vs LLM-as-judge; consensus filtering mechanism |
+| [ThinkPRM](https://openreview.net/forum?id=V727xqBYIW) | 2025 | Long CoT verifier using only 1% of PRM800K labels |
+| [ProcessBench](https://qwenlm.github.io/blog/qwen2.5-math-prm/) | Qwen/Alibaba | 2024 | 3,400 test cases for measuring step error identification |
 
 ---
 

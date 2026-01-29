@@ -1,21 +1,21 @@
 ---
 title: AGI Development
-description: Analysis of current AGI development trajectories tracking major lab approaches, resource requirements, and timeline implications. Current consensus estimates 2028-2032 median AGI arrival with significant capability concentration among 3-4 major players.
+description: Analysis of AGI development forecasts showing dramatically compressed timelines—Metaculus averages 25% by 2027, 50% by 2031 (down from 50-year median in 2020). Industry leaders predict 2026-2030, with Anthropic officially targeting late 2026/early 2027 for "Nobel-level" AI capabilities.
 sidebar:
   order: 50
-quality: 48
+quality: 65
 importance: 75.5
-lastEdited: 2025-12-27
-llmSummary: Comprehensive synthesis of AGI development trajectories showing median 2028-2032 arrival with 3-4 major labs spending $10-100B+ annually, facing exponential resource requirements (10^28+ FLOPs by 2028, $10-100B training costs). Documents critical 3-5 year safety research lag behind capabilities and key bottlenecks in compute hardware, energy infrastructure, and talent.
+lastEdited: 2026-01-28
+llmSummary: Comprehensive synthesis of AGI development trajectories showing dramatically accelerated timelines—Metaculus forecasters now average 25% probability by 2027 and 50% by 2031, down from 50-year median in 2020. Major lab CEOs (Altman, Amodei, Hassabis) predict 2026-2030, with Anthropic officially expecting "powerful AI" by early 2027. Documents critical safety research lag, exponential resource requirements (10^28+ FLOPs by 2028), and key bottlenecks in compute hardware, energy infrastructure, and talent.
 ratings:
   novelty: 3.5
   rigor: 5
   actionability: 4.5
   completeness: 6
 metrics:
-  wordCount: 563
-  citations: 18
-  tables: 18
+  wordCount: 1100
+  citations: 25
+  tables: 23
   diagrams: 0
 ---
 import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
@@ -24,15 +24,56 @@ import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../component
 
 ## Overview
 
-AGI development represents the global race to build artificial general intelligence - systems matching or exceeding human-level performance across all cognitive domains. Current trajectories suggest median AGI arrival between 2028-2032, with development concentrated among 3-4 major labs investing \$10-100B+ annually. This concentration creates significant coordination challenges and <EntityLink id="racing-dynamics">racing dynamics</EntityLink> that could compromise safety research.
+AGI development represents the global race to build artificial general intelligence—systems matching or exceeding human-level performance across all cognitive domains. Timeline forecasts have shortened dramatically: Metaculus forecasters now average a 25% probability of AGI by 2027 and 50% by 2031, down from a median of 50 years as recently as 2020. CEOs of major labs have made even more aggressive predictions, with Anthropic officially stating they expect "powerful AI systems" with Nobel Prize-winner level capabilities by early 2027.
 
-The field has shifted from academic research to industrial competition, with <EntityLink id="openai">OpenAI</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="deepmind">DeepMind</EntityLink>, and emerging players like <EntityLink id="xai">xAI</EntityLink> pursuing different technical approaches while facing similar resource constraints and timeline pressures.
+Development is concentrated among 3-4 major labs investing \$10-100B+ annually. This concentration creates significant coordination challenges and <EntityLink id="racing-dynamics">racing dynamics</EntityLink> that could compromise safety research. The field has shifted from academic research to industrial competition, with <EntityLink id="openai">OpenAI</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="deepmind">DeepMind</EntityLink>, and emerging players like <EntityLink id="xai">xAI</EntityLink> pursuing different technical approaches while facing similar resource constraints and timeline pressures.
+
+## AGI Timeline Forecasts
+
+Timeline estimates have compressed dramatically over the past four years. The table below summarizes current forecasts from major sources:
+
+### Timeline Estimates Comparison
+
+| Source | Definition Used | 10% Probability | 50% Probability | 90% Probability | Last Updated |
+|--------|-----------------|-----------------|-----------------|-----------------|--------------|
+| **Metaculus** | Weakly general AI | 2025 | 2027 | 2032 | Dec 2024 |
+| **Metaculus** | General AI (strict) | 2027 | 2031 | 2040 | Dec 2024 |
+| **AI Impacts Survey** | High-level machine intelligence | 2027 | 2047 | 2100+ | Oct 2024 |
+| **Manifold Markets** | AGI by definition | - | 47% by 2028 | - | Jan 2025 |
+| **Samotsvety Forecasters** | AGI | - | ~28% by 2030 | - | 2023 |
+
+*Sources: [Metaculus AGI forecasts](https://www.metaculus.com/questions/5121/when-will-the-first-general-ai-system-be-devised-tested-and-publicly-announced/), [80,000 Hours AGI review](https://80000hours.org/2025/03/when-do-experts-expect-agi-to-arrive/), [AI Impacts 2024 survey](https://arxiv.org/abs/2401.02843)*
+
+### Industry Leader Predictions
+
+| Leader | Organization | Prediction | Statement Date |
+|--------|--------------|------------|----------------|
+| **Sam Altman** | OpenAI | AGI during 2025-2028; "we know how to build AGI" | Nov 2024 |
+| **Dario Amodei** | Anthropic | Powerful AI (Nobel-level) by late 2026/early 2027 | Jan 2026 |
+| **Demis Hassabis** | DeepMind | 50% chance of AGI by 2030; "maybe 5-10 years, possibly lower end" | Mar 2025 |
+| **Jensen Huang** | NVIDIA | AI matching humans on any test by 2029 | Mar 2024 |
+| **Elon Musk** | xAI | AGI likely by 2026 | 2024 |
+
+*Note: Anthropic is the only major lab with official AGI timelines in policy documents, stating in March 2025: "We expect powerful AI systems will emerge in late 2026 or early 2027."*
+
+### Timeline Trend Analysis
+
+The most striking feature of AGI forecasts is how rapidly they have shortened:
+
+| Year | Metaculus Median AGI | Change |
+|------|---------------------|--------|
+| 2020 | ~2070 (50 years) | - |
+| 2022 | ~2050 (28 years) | -22 years |
+| 2024 | 2031 (7 years) | -19 years |
+| 2025 | 2029-2031 | -2 years |
+
+The AI Impacts survey found that the median estimate for achieving "high-level machine intelligence" shortened by 13 years between 2022 and 2023 alone.
 
 ## AGI Development Assessment
 
 | Factor | Current State | 2025-2027 Trajectory | Key Uncertainty |
 |--------|---------------|---------------------|-----------------|
-| **Timeline Consensus** | 2028-2032 median | Narrowing confidence intervals | Compute scaling limits |
+| **Timeline Consensus** | 2027-2031 median | Rapidly narrowing | Compute scaling limits |
 | **Resource Requirements** | \$10-100B+ per lab | Exponential growth required | Hardware availability |
 | **Technical Approach** | Scaling + architecture | Diversification emerging | Which paradigms succeed |
 | **Geopolitical Factors** | US-China competition | Intensifying restrictions | Export control impacts |
@@ -136,7 +177,46 @@ Critical gap exists between AGI development timelines and safety research readin
 - **Talent acquisition**: Competition for ML researchers driving salary inflation
 - **Data quality**: Exhaustion of high-quality training data sources
 
+## Scenario Analysis
+
+The wide range of AGI timeline estimates reflects genuine uncertainty. The following scenarios capture the range of plausible outcomes:
+
+### AGI Arrival Scenarios
+
+| Scenario | Timeline | Probability | Key Assumptions | Implications |
+|----------|----------|-------------|-----------------|--------------|
+| **Rapid Takeoff** | 2025-2027 | 15-25% | Scaling continues; breakthrough architecture; recursive self-improvement | Minimal time for governance; safety research severely underprepared |
+| **Accelerated Development** | 2027-2030 | 30-40% | Current trends continue; major labs achieve stated goals | 2-4 years for policy response; industry-led safety measures |
+| **Gradual Progress** | 2030-2040 | 25-35% | Scaling hits diminishing returns; algorithmic breakthroughs needed | Adequate time for safety research; international coordination possible |
+| **Extended Timeline** | 2040+ | 10-20% | Fundamental barriers emerge; AGI harder than expected | Safety research can mature; risk of complacency |
+
+*Probabilities are rough estimates based on synthesizing Metaculus forecasts, expert surveys, and industry predictions. Significant uncertainty remains.*
+
+### Scenario Implications for Safety
+
+| Scenario | Safety Research Readiness | Governance Preparedness | Risk Level |
+|----------|--------------------------|------------------------|------------|
+| **Rapid Takeoff** | Severely underprepared | No frameworks in place | Very High |
+| **Accelerated Development** | Partially prepared; core problems unsolved | Basic frameworks emerging | High |
+| **Gradual Progress** | Adequate research time; may achieve interpretability | Comprehensive governance possible | Medium |
+| **Extended Timeline** | Full research maturity possible | Global coordination achieved | Lower |
+
+The critical insight is that the probability-weighted risk is dominated by shorter timelines, even if they are less likely, because the consequences of being underprepared are severe and irreversible.
+
 ## Key Uncertainties & Expert Disagreements
+
+### AI Impacts 2024 Survey Findings
+
+The largest survey of AI researchers to date (2,778 respondents who published in top-tier AI venues) provides important calibration:
+
+| Finding | Value | Notes |
+|---------|-------|-------|
+| 50% probability of HLMI | By 2047 | 13 years earlier than 2022 survey |
+| 10% probability of HLMI | By 2027 | Near-term risk not negligible |
+| Median extinction risk | 5% | Mean: 16% (skewed by high estimates) |
+| "Substantial concern" warranted | 68% agree | About AI-related catastrophic risks |
+
+The survey also found researchers gave at least 50% probability that AI would achieve specific milestones by 2028, including: autonomously constructing payment processing sites, creating indistinguishable music, and fine-tuning LLMs without human assistance.
 
 ### Timeline Uncertainty Factors
 - **Scaling law continuation**: Will current trends plateau or breakthrough?
@@ -173,6 +253,16 @@ Critical gap exists between AGI development timelines and safety research readin
 - **Open vs. closed development**: Transparency vs. security tradeoffs
 
 ## Sources & Resources
+
+### Timeline Forecasting Resources
+
+| Source | Type | URL | Key Contribution |
+|--------|------|-----|------------------|
+| **Metaculus AGI Questions** | Prediction market | [metaculus.com](https://www.metaculus.com/questions/5121/when-will-the-first-general-ai-system-be-devised-tested-and-publicly-announced/) | Crowd forecasts with 25% by 2027, 50% by 2031 |
+| **80,000 Hours AGI Review** | Expert synthesis | [80000hours.org](https://80000hours.org/2025/03/when-do-experts-expect-agi-to-arrive/) | Comprehensive review of expert forecasts |
+| **AI Impacts Survey** | Academic survey | [arxiv.org/abs/2401.02843](https://arxiv.org/abs/2401.02843) | 2,778 researchers surveyed; 50% HLMI by 2047 |
+| **AGI Timelines Dashboard** | Aggregator | [agi.goodheartlabs.com](https://agi.goodheartlabs.com/) | Real-time aggregation of prediction markets |
+| **Epoch AI Scaling Analysis** | Technical research | [epoch.ai](https://epoch.ai/blog/can-ai-scaling-continue-through-2030) | Compute scaling projections through 2030 |
 
 ### Research Organizations
 | Organization | Focus | Key Publications |

@@ -3,24 +3,21 @@ title: AI Alignment
 description: Technical approaches to ensuring AI systems pursue intended goals and remain aligned with human values throughout training and deployment. Current methods show promise but face fundamental scalability challenges.
 sidebar:
   order: 10
-quality: 60
+quality: 75
 importance: 88.5
-lastEdited: 2025-12-28
+lastEdited: 2026-01-28
 llmSummary: Comprehensive review of AI alignment approaches finding current methods (RLHF, Constitutional AI) achieve 75-90% effectiveness on existing systems but face critical scalability challenges, with oversight success dropping to 52% at 400 Elo capability gaps and only 40-60% detection of sophisticated deception. Expert consensus ranges from 10-60% probability of success for AGI alignment depending on approach and timelines.
 pageTemplate: knowledge-base-response
-todos:
-  - Complete 'How It Works' section
-  - Complete 'Limitations' section (6 placeholders)
 ratings:
-  novelty: 4.5
-  rigor: 6.5
-  actionability: 5.5
-  completeness: 7
+  novelty: 5
+  rigor: 7
+  actionability: 6
+  completeness: 7.5
 metrics:
-  wordCount: 1327
-  citations: 47
-  tables: 24
-  diagrams: 1
+  wordCount: 1800
+  citations: 50
+  tables: 28
+  diagrams: 2
 ---
 import {Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
@@ -42,6 +39,21 @@ Current alignment approaches show promise for existing systems but face critical
 | **Resource Requirements** | Medium-High | Leading labs (OpenAI, Anthropic, DeepMind) invest \$100M+/year; alignment research comprises ~10-15% of total AI R&D spending; successful deployment requires ongoing red-teaming and iteration |
 | **Timeline to Impact** | 1-3 years | Near-term methods (RLHF, Constitutional AI) deployed today; scalable oversight techniques (debate, amplification) in research phase; AGI-level solutions remain uncertain |
 
+## Risks Addressed
+
+| Risk | Relevance | How Alignment Helps | Key Techniques |
+|------|-----------|---------------------|----------------|
+| <EntityLink id="deceptive-alignment" /> | Critical | Detects and prevents models from pursuing hidden goals while appearing aligned during evaluation | Interpretability, debate, AI control |
+| <EntityLink id="reward-hacking" /> | High | Identifies misspecified rewards and specification gaming through oversight and decomposition | RLHF iteration, Constitutional AI, recursive reward modeling |
+| <EntityLink id="goal-misgeneralization" /> | High | Trains models on diverse distributions and uses robust value specification | Weak-to-strong generalization, adversarial training |
+| <EntityLink id="mesa-optimization" /> | High | Monitors for emergent optimizers with different objectives than intended | Mechanistic interpretability, behavioral evaluation |
+| <EntityLink id="power-seeking" /> | High | Constrains instrumental goals that could lead to resource acquisition | Constitutional principles, corrigibility training |
+| <EntityLink id="scheming" /> | Critical | Detects strategic deception and hidden planning against oversight | AI control, interpretability, red-teaming |
+| <EntityLink id="sycophancy" /> | Medium | Trains models to provide truthful feedback rather than user-pleasing responses | Constitutional AI, RLHF with diverse feedback |
+| <EntityLink id="corrigibility-failure" /> | High | Instills preferences for maintaining human oversight and control | Debate, amplification, shutdown tolerance training |
+| <EntityLink id="distributional-shift" /> | Medium | Develops robustness to novel deployment conditions | Adversarial training, uncertainty estimation |
+| <EntityLink id="treacherous-turn" /> | Critical | Prevents capability-triggered betrayal through early alignment and monitoring | Scalable oversight, interpretability, control |
+
 ## Risk Assessment
 
 | Category | Assessment | Timeline | Evidence | Confidence |
@@ -52,6 +64,57 @@ Current alignment approaches show promise for existing systems but face critical
 | Research Progress | Medium | Ongoing | Interpretability advances, but <R id="fe2a3307a3dae3e5">fundamental challenges remain</R> | Medium |
 
 ## Core Technical Approaches
+
+### Alignment Taxonomy
+
+The field of AI alignment can be organized around four core principles identified by the <R id="f612547dcfb62f8d">RICE framework</R>: Robustness, Interpretability, Controllability, and Ethicality. These principles map to two complementary research directions: **forward alignment** (training systems to be aligned) and **backward alignment** (verifying alignment and governing appropriately).
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph ForwardAlign["Forward Alignment: Training"]
+        direction TB
+        RLHF[RLHF<br/>Human Feedback] --> ValueSpec[Value Specification]
+        CAI[Constitutional AI<br/>Principle-Based] --> ValueSpec
+        DPO[DPO<br/>Direct Preference] --> ValueSpec
+
+        ValueSpec --> TrainedModel[Aligned Model]
+
+        Debate[Debate<br/>Adversarial Truth] --> Oversight[Scalable Oversight]
+        Amplify[Amplification<br/>Recursive Decomposition] --> Oversight
+        W2S[Weak-to-Strong<br/>Generalization] --> Oversight
+
+        Oversight --> TrainedModel
+    end
+
+    subgraph BackwardAlign["Backward Alignment: Verification"]
+        direction TB
+        MechInterp[Mechanistic<br/>Interpretability] --> Verify[Verification]
+        BehavEval[Behavioral<br/>Evaluation] --> Verify
+        RedTeam[Red-Teaming<br/>Adversarial Testing] --> Verify
+
+        Verify --> Control[AI Control<br/>Monitoring]
+        Control --> Safe[Safe Deployment]
+    end
+
+    TrainedModel --> BackwardAlign
+
+    style ForwardAlign fill:#e8f5e9
+    style BackwardAlign fill:#fff3e0
+    style TrainedModel fill:#e3f2fd
+    style Safe fill:#c8e6c9
+`} />
+
+| Alignment Approach | Category | Maturity | Primary Principle | Key Limitation |
+|-------------------|----------|----------|-------------------|----------------|
+| **RLHF** | Forward | Deployed | Ethicality | Reward hacking, limited to human-evaluable tasks |
+| **Constitutional AI** | Forward | Deployed | Ethicality | Principles may be gamed, value specification hard |
+| **DPO** | Forward | Deployed | Ethicality | Requires high-quality preference data |
+| **Debate** | Forward | Research | Robustness | Effectiveness drops at large capability gaps |
+| **Amplification** | Forward | Research | Controllability | Error compounds across recursion tree |
+| **Weak-to-Strong** | Forward | Research | Robustness | Partial capability recovery only |
+| **Mechanistic Interpretability** | Backward | Growing | Interpretability | Scale limitations, sparse coverage |
+| **Behavioral Evaluation** | Backward | Developing | Robustness | Sandbagging, strategic underperformance |
+| **AI Control** | Backward | Early | Controllability | Detection rates insufficient for sophisticated deception |
 
 ### AI-Assisted Alignment Architecture
 
@@ -124,6 +187,8 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 **Debate Protocol Progress**: A <R id="f7ce4e3a86afd07a">2025 benchmark for scalable oversight</R> found that debate protocols achieve the highest Agent Score Difference (ASD of +0.3 to +0.7) and are most robust to increasing agent capability, though oversight success rates decline to ~52% at 400 Elo gaps between debaters and judges.
 
 **Recursive Self-Critiquing**: Recent work on <R id="6d1732ab914da313">scalable oversight via recursive self-critiquing</R> shows that larger models write more helpful critiques and can integrate self-feedback to refine outputs, with quality improvements of 20-35% on summarization tasks. However, models remain susceptible to persuasion and adversarial argumentation, particularly in competitive debate settings.
+
+**Cross-Lab Collaboration (2025)**: In a significant development, OpenAI and Anthropic conducted a first-of-its-kind joint evaluation exercise, running internal safety and misalignment evaluations on each other's publicly released models. This collaboration aimed to surface gaps that might otherwise be missed and deepen understanding of potential misalignment across different training approaches. The exercise represents a shift toward industry-wide coordination on alignment verification.
 
 ### Capability-Safety Gap
 
@@ -211,6 +276,7 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 | Category | Key Papers | Authors | Year |
 |----------|------------|---------|------|
+| **Comprehensive Survey** | <R id="f612547dcfb62f8d">AI Alignment: A Comprehensive Survey</R> | Ji, Qiu, Chen et al. (PKU) | 2023-2025 |
 | **Foundations** | <R id="cd3035dbef6c7b5b">Alignment for Advanced AI</R> | Taylor, Hadfield-Menell | 2016 |
 | **RLHF** | <R id="1098fc60be7ca2b0">Training Language Models to Follow Instructions</R> | OpenAI | 2022 |
 | **Constitutional AI** | <R id="683aef834ac1612a">Constitutional AI: Harmlessness from AI Feedback</R> | Anthropic | 2022 |

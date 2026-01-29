@@ -4,23 +4,21 @@ description: Competitive dynamics where rational individual actions by AI develo
 sidebar:
   order: 2
 maturity: Growing
-quality: 55
-llmSummary: Analysis of coordination failures in AI development using game theory, documenting how competitive dynamics between nations (US $100B vs China investment in 2024) and labs systematically undermine safety measures. SaferAI 2025 assessments found no major lab exceeded 35% risk management maturity ('weak' rating), while DeepSeek-R1's release demonstrated 100% attack success rates and 12x higher hijacking susceptibility, intensifying racing dynamics.
-lastEdited: 2025-12-28
+quality: 70
+llmSummary: Analysis of coordination failures in AI development using game theory, documenting how competitive dynamics between nations (US $109B vs China $9.3B investment in 2024 per Stanford HAI 2025) and labs systematically undermine safety measures. Armstrong, Bostrom, and Shulman's foundational 2016 model showed how competitive pressure drives teams to erode safety standards—a "race to the precipice." SaferAI 2025 assessments found no major lab exceeded 35% risk management maturity ('weak' rating), while DeepSeek-R1's release demonstrated 100% attack success rates and 12x higher hijacking susceptibility, intensifying racing dynamics.
+lastEdited: 2026-01-28
 importance: 82.5
 causalLevel: amplifier
 pageTemplate: knowledge-base-risk
-todos:
-  - Complete 'How It Works' section
 ratings:
   novelty: 4.5
   rigor: 6.5
   actionability: 5
   completeness: 7
 metrics:
-  wordCount: 487
-  citations: 16
-  tables: 13
+  wordCount: 550
+  citations: 20
+  tables: 14
   diagrams: 1
 ---
 import {DataInfoBox, R, Mermaid, DataExternalLinks} from '../../../../../components/wiki';
@@ -44,7 +42,7 @@ The stakes in AI development may make these coordination failures uniquely dange
 | Severity | **Very High** | Systematically undermines all safety measures across the entire AI ecosystem |
 | Likelihood | **Very High (80-95%)** | Already manifesting in U.S.-China competition and lab dynamics |
 | Timeline | **Active Now** | U.S. semiconductor export controls (Oct 2022), DeepSeek-R1 response (Jan 2025) demonstrate ongoing dynamics |
-| Trend | **Intensifying** | US tech giants invested \$100B in AI infrastructure in 2024, 6x Chinese investment; government AI initiatives exceeded \$100B globally |
+| Trend | **Intensifying** | US private AI investment hit \$109B in 2024 (12x China's \$9.3B per Stanford HAI 2025); global corporate AI investment reached \$252.3B |
 | Reversibility | **Difficult** | Once competitive dynamics are entrenched, coordination becomes progressively harder |
 
 ### Game-Theoretic Structure
@@ -78,7 +76,20 @@ flowchart TD
     style F fill:#ffffcc
 `} />
 
-The payoffs are dramatically asymmetric: small leads can compound into decisive advantages, and the potential for winner-take-all outcomes means falling even slightly behind could result in permanent subordination. This creates a negative-sum game where collective pursuit of maximum development speed leads to worse outcomes for all players. Unlike nuclear weapons, where the doctrine of Mutual Assured Destruction eventually created stability, the AI race offers no equivalent equilibrium point.
+The payoffs are dramatically asymmetric: small leads can compound into decisive advantages, and the potential for winner-take-all outcomes means falling even slightly behind could result in permanent subordination. This creates a negative-sum game where collective pursuit of maximum development speed leads to worse outcomes for all players. Unlike nuclear weapons, where the doctrine of Mutual Assured Destruction eventually created stability, the AI race offers no equivalent equilibrium point. Armstrong, Bostrom, and Shulman formalized this dynamic in their foundational 2016 paper "[Racing to the Precipice](https://link.springer.com/article/10.1007/s00146-015-0590-y)," which demonstrated that extra development teams and greater information transparency paradoxically increase danger by intensifying competitive pressure.
+
+### Contributing Factors
+
+| Factor | Effect | Mechanism | Evidence |
+|--------|--------|-----------|----------|
+| **Number of Competitors** | Increases risk | More actors reduce probability any given team "wins," incentivizing riskier strategies | Armstrong et al. (2016): Nash equilibrium shows additional teams increase precipice risk |
+| **Information Transparency** | Increases risk (counterintuitively) | Better knowledge of rivals' capabilities intensifies racing pressure | Simulation gaming: 43 games showed firms consistently deprioritize safety when aware of competitor progress |
+| **First-Mover Advantages** | Increases risk | Perception of winner-take-all outcomes raises stakes of falling behind | US-China semiconductor controls; DeepSeek triggering accelerated US lab timelines |
+| **Verification Difficulty** | Increases risk | Cannot confirm competitors are reciprocating safety measures | AI development occurs in digital environments with limited observability |
+| **International Cooperation** | Decreases risk | Establishes shared norms, verification mechanisms, mutual constraints | Bletchley/Seoul summits; US-China nuclear AI agreement (Nov 2024) |
+| **Safety Institute Network** | Decreases risk | Creates neutral third parties for evaluation and standard-setting | US, UK, China, EU AISIs established 2023-2025; France CnAISDA (Feb 2025) |
+| **Liability Frameworks** | Decreases risk | Aligns individual incentives with collective safety | EU AI Act liability provisions; proposed US frameworks |
+| **Public Awareness** | Decreases risk | Creates political pressure for safety-focused policies | FLI/CAIS statements; 40+ researcher joint warning (2025) |
 
 ## Structural Dynamics
 
@@ -96,7 +107,7 @@ The information asymmetries inherent in AI development further complicate coordi
 
 | Actor | Racing Indicator | Safety Impact | Evidence |
 |-------|-----------------|---------------|----------|
-| **U.S. Tech Giants** | \$100B AI infrastructure investment (2024) | Safety research declining as % of investment | 6x Chinese investment levels; "turbo-charging development with almost no guardrails" (Tegmark 2024) |
+| **U.S. Tech Giants** | \$109B private AI investment (2024) | Safety research declining as % of investment | 12x Chinese investment (\$9.3B); Stanford HAI 2025 Index; "turbo-charging development with almost no guardrails" (Tegmark 2024) |
 | **China (DeepSeek)** | R1 model released Jan 2025 at \$1M training cost | 100% attack success rate in security testing; 94% response to malicious requests with jailbreaking | NIST/CAISI evaluation found 12x more susceptible to agent hijacking than U.S. models |
 | **OpenAI** | \$100M+ GPT-5 training; \$1.6B partnership revenue (2024) | Evaluations per 2x effective compute increase | SaferAI assessment: 33% risk management maturity (rated "weak") |
 | **Anthropic** | \$14B raised; hired key OpenAI safety researchers | Evaluations per 4x compute or 6 months fine-tuning | Highest SaferAI score at 35%, still rated "weak" |
@@ -197,9 +208,10 @@ The following interventions may help address this risk:
 
 ### Research and Analysis
 
+- **Stanford HAI (2025):** "[AI Index Report 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report)" - Comprehensive data on global AI investment: US \$109B private investment (12x China's \$9.3B); global corporate AI investment reached \$252.3B in 2024
 - **Strategic Simulation Gaming (2024):** "<R id="0be7a1cc48f9faac">Strategic Insights from Simulation Gaming of AI Race Dynamics</R>" - 43 games of "Intelligence Rising" from 2020-2024 revealed consistent racing dynamics and national bloc formation
 - **Game-Theoretic Modeling (2024):** "<R id="99d4add39a446e74">A Game-Theoretic Model of Global AI Development Race</R>" - Novel model showing tendency toward oligopolistic structures and technological domination
-- **INSEAD (2024):** "<R id="782fe696deccb93a">The AI Race Through a Geopolitical Lens</R>" - Analysis of US (\$100B) vs China investment dynamics
+- **INSEAD (2024):** "<R id="782fe696deccb93a">The AI Race Through a Geopolitical Lens</R>" - Analysis of US vs China investment dynamics
 - **Arms Race Analysis (2025):** "<R id="2d1410042ab6ccb8">Arms Race or Innovation Race? Geopolitical AI Development</R>" - Argues "geopolitical innovation race" is more accurate than arms race metaphor
 
 ### International Governance
@@ -216,6 +228,7 @@ The following interventions may help address this risk:
 
 ### Foundational Concepts
 
+- **Armstrong, Bostrom & Shulman (2016):** "[Racing to the Precipice: A Model of Artificial Intelligence Development](https://link.springer.com/article/10.1007/s00146-015-0590-y)" - Foundational game-theoretic model showing how competitive pressure erodes safety standards; demonstrates that more competitors and better information paradoxically increase danger
 - **Scott Alexander:** "<R id="c1ea94e3153eee62">Meditations on Moloch</R>" - Original articulation of multipolar trap dynamics
 - **Eric Topol/Liv Boeree (2024):** "<R id="62e7b0ef7d1687dc">On Competition, Moloch Traps, and the AI Arms Race</R>" - Discussion of game-theoretic dynamics in AI development
 - **William Poundstone:** "<R id="2a58921d1b9c8ca0">Prisoner's Dilemma: John von Neumann, Game Theory, and the Puzzle of the Bomb</R>" - Historical context on game theory and arms races

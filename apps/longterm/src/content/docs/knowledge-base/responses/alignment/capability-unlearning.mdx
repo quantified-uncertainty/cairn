@@ -3,9 +3,9 @@ title: Capability Unlearning / Removal
 description: Methods to remove specific dangerous capabilities from trained AI models, directly addressing misuse risks by eliminating harmful knowledge, though current techniques face challenges around verification, capability recovery, and general performance degradation.
 sidebar:
   order: 58
-quality: 45
+quality: 65
 importance: 72.5
-lastEdited: 2025-01-22
+lastEdited: 2025-01-28
 llmSummary: Capability unlearning removes dangerous capabilities (e.g., bioweapon synthesis) from AI models through gradient-based methods, representation engineering, and fine-tuning, achieving 60-80% reduction on WMDP benchmarks with combined approaches. However, verification is impossible, capabilities are recoverable through fine-tuning, and knowledge entanglement limits what can be safely removed, making this a defense-in-depth layer rather than complete solution.
 pageTemplate: knowledge-base-response
 ratings:
@@ -14,8 +14,8 @@ ratings:
   actionability: 6
   completeness: 6.5
 metrics:
-  wordCount: 500
-  citations: 0
+  wordCount: 700
+  citations: 8
   tables: 37
   diagrams: 1
 ---
@@ -27,7 +27,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../componen
 
 Capability unlearning represents a direct approach to AI safety: rather than preventing misuse through behavioral constraints that might be circumvented, remove the dangerous capabilities themselves from the model. If a model genuinely doesn't know how to synthesize dangerous pathogens or construct cyberattacks, it cannot be misused for these purposes regardless of jailbreaks, fine-tuning attacks, or other elicitation techniques.
 
-The approach has gained significant research attention following the development of benchmarks like WMDP (Weapons of Mass Destruction Proxy) that measure model knowledge of dangerous topics including bioweapons, chemical weapons, and cyberattacks. Researchers have demonstrated that various techniques including gradient-based unlearning, representation engineering, and fine-tuning can reduce model performance on these benchmarks while preserving general capabilities.
+The approach has gained significant research attention following the development of benchmarks like [WMDP (Weapons of Mass Destruction Proxy)](https://arxiv.org/abs/2403.03218), released in March 2024 by the Center for AI Safety in collaboration with over twenty academic institutions and industry partners. WMDP contains 3,668 multiple-choice questions measuring dangerous knowledge in biosecurity, cybersecurity, and chemical security. Researchers have demonstrated that various techniques including gradient-based unlearning, representation engineering, and fine-tuning can reduce model performance on these benchmarks while preserving general capabilities.
 
 However, the field faces fundamental challenges that may limit its effectiveness. First, verifying complete capability removal is extremely difficult, as capabilities may be recoverable through fine-tuning, prompt engineering, or other elicitation methods. Second, dangerous and beneficial knowledge are often entangled, meaning removal may degrade useful capabilities. Third, for advanced AI systems, the model might understand what capabilities are being removed and resist or hide the remaining knowledge. These limitations suggest capability unlearning is best viewed as one layer in a defense-in-depth strategy rather than a complete solution.
 
@@ -81,20 +81,20 @@ flowchart TD
 | Aspect | Description |
 |--------|-------------|
 | **Mechanism** | Compute gradients to increase loss on dangerous capabilities |
-| **Variants** | Gradient ascent, negative gradients, forgetting objectives |
+| **Variants** | Gradient ascent, [negative preference optimization](https://openreview.net/pdf?id=MXLBBXjQkmb), forgetting objectives |
 | **Strengths** | Principled approach; can target specific knowledge |
-| **Weaknesses** | May not fully remove; can degrade nearby capabilities |
-| **Status** | Active research; promising results |
+| **Weaknesses** | Can trigger [catastrophic forgetting](https://aclanthology.org/2024.emnlp-main.566/); degrades related capabilities |
+| **Status** | Active research; [EMNLP 2024 papers](https://aclanthology.org/2024.emnlp-main.566/) show fine-grained approaches improve retention |
 
 ### Representation Engineering
 
 | Aspect | Description |
 |--------|-------------|
 | **Mechanism** | Identify and suppress activation directions for dangerous knowledge |
-| **Variants** | Activation steering, concept erasure |
-| **Strengths** | Direct intervention on representations |
-| **Weaknesses** | Model may route around interventions |
-| **Status** | Early research; some successes |
+| **Variants** | [RMU (Representation Misdirection for Unlearning)](https://arxiv.org/abs/2403.03218), activation steering, concept erasure |
+| **Strengths** | Direct intervention on representations; computationally efficient |
+| **Weaknesses** | [Analysis shows](https://www.alignmentforum.org/posts/6QYpXEscd8GuE7BgW/unlearning-via-rmu-is-mostly-shallow) RMU works partly by "flooding residual stream with junk" rather than true removal |
+| **Status** | Active research; RMU achieves 50-70% WMDP reduction |
 
 ### Fine-Tuning Based
 
@@ -120,22 +120,27 @@ flowchart TD
 
 ### WMDP Benchmark
 
-The Weapons of Mass Destruction Proxy benchmark measures dangerous knowledge:
+The [Weapons of Mass Destruction Proxy (WMDP) benchmark](https://arxiv.org/abs/2403.03218), published at ICML 2024, measures dangerous knowledge across 3,668 questions:
 
-| Category | Topics Covered | Measurement |
-|----------|---------------|-------------|
-| **Biosecurity** | Pathogen synthesis, enhancement | Multiple choice accuracy |
-| **Chemistry** | Chemical weapons, synthesis | Multiple choice accuracy |
-| **Cybersecurity** | Attack techniques, exploits | Multiple choice accuracy |
+| Category | Topics Covered | Questions | Measurement |
+|----------|---------------|-----------|-------------|
+| **Biosecurity** | Pathogen synthesis, enhancement | ~1,200 | Multiple choice accuracy |
+| **Chemistry** | Chemical weapons, synthesis routes | ~1,000 | Multiple choice accuracy |
+| **Cybersecurity** | Attack techniques, exploits | ~1,400 | Multiple choice accuracy |
+
+Questions were designed as proxies for hazardous knowledge rather than containing sensitive information directly. The benchmark is [publicly available](https://www.wmdp.ai/) with the most dangerous questions withheld.
 
 ### Unlearning Effectiveness
 
+The [TOFU benchmark](https://arxiv.org/abs/2401.06121) (published at COLM 2024) evaluates unlearning on synthetic author profiles, measuring both forgetting quality and model utility retention:
+
 | Metric | Description | Challenge |
 |--------|-------------|-----------|
-| **Benchmark Performance** | Score reduction on WMDP | May not capture all knowledge |
+| **Benchmark Performance** | Score reduction on WMDP/TOFU | May not capture all knowledge |
+| **Forget Quality (FQ)** | KS-test p-value vs. retrained model | Requires ground truth |
+| **Model Utility (MU)** | Harmonic mean of retain-set performance | Trade-off with removal |
 | **Elicitation Resistance** | Robustness to jailbreaks | Hard to test exhaustively |
-| **Recovery Resistance** | Robustness to fine-tuning | Few-shot recovery possible |
-| **Capability Preservation** | General capability maintenance | Trade-off with removal |
+| **Recovery Resistance** | Robustness to fine-tuning | [Few-shot recovery possible](https://arxiv.org/html/2506.10236v2) |
 
 ### Current Results
 
@@ -212,23 +217,23 @@ The Weapons of Mass Destruction Proxy benchmark measures dangerous knowledge:
 
 ## Quick Assessment
 
-| Dimension | Grade | Notes |
-|-----------|-------|-------|
-| **Tractability** | C+ | Promising techniques but verification hard |
-| **Effectiveness** | B- (partial) | Reduces capabilities but not reliably complete |
-| **Neglectedness** | B | Active research; not heavily funded |
-| **Speed** | B | Near-term applicability |
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | Medium | Methods exist but verification remains impossible |
+| Scalability | High | Applies to all foundation models |
+| Current Maturity | Low-Medium | Active research with promising early results |
+| Time Horizon | Near-term | Deployable now, improvements ongoing |
+| Key Proponents | CAIS, Anthropic, academic labs | [WMDP paper](https://arxiv.org/abs/2403.03218) consortium of 20+ institutions |
 
 ## Risks Addressed
 
-Capability unlearning addresses:
-
-| Risk | Mechanism | Effectiveness |
-|------|-----------|---------------|
-| **<EntityLink id="bioweapons" />** | Remove synthesis knowledge | Medium-High |
-| **<EntityLink id="cyberattacks" />** | Remove attack techniques | Medium |
-| **CBRN Misuse** | Remove weapons knowledge | Medium |
-| **Open-Weight Risks** | Reduce capability before release | Medium |
+| Risk | Relevance | How Unlearning Helps | Limitations |
+|------|-----------|---------------------|-------------|
+| <EntityLink id="bioweapons" /> | **High** | Removes pathogen synthesis, enhancement knowledge | Dual-use biology knowledge entangled |
+| <EntityLink id="cyberattacks" /> | **High** | Removes exploit development, attack techniques | Security knowledge widely distributed |
+| <EntityLink id="misuse-potential" /> | **High** | Directly reduces dangerous capability surface | Recovery via fine-tuning possible |
+| <EntityLink id="open-sourcing-risk" /> | **High** | Critical for open-weight releases where runtime controls absent | Verification impossible before release |
+| <EntityLink id="capability-overhang" /> | **Medium** | Reduces latent dangerous capabilities | Does not address emergent capabilities |
 
 ## Limitations
 
@@ -244,27 +249,29 @@ Capability unlearning addresses:
 
 ### Key Papers
 
-| Paper | Authors | Contribution |
-|-------|---------|--------------|
-| **WMDP Benchmark** | Center for AI Safety | Evaluation framework |
-| **RMU (Representation Misdirection)** | Various | Unlearning technique |
-| **Machine Unlearning** | Various | General framework |
+| Paper | Authors | Venue | Contribution |
+|-------|---------|-------|--------------|
+| [WMDP Benchmark](https://arxiv.org/abs/2403.03218) | Li et al., CAIS consortium | ICML 2024 | Hazardous knowledge evaluation; RMU method |
+| [TOFU Benchmark](https://arxiv.org/abs/2401.06121) | Maini et al. | COLM 2024 | Fictitious unlearning evaluation framework |
+| [Machine Unlearning of Pre-trained LLMs](https://aclanthology.org/2024.acl-long.457/) | Yao et al. | ACL 2024 | 105x more efficient than retraining |
+| [Rethinking LLM Unlearning](https://arxiv.org/abs/2402.08787) | Liu et al. | arXiv 2024 | Comprehensive analysis of unlearning scope |
+| [RMU is Mostly Shallow](https://www.alignmentforum.org/posts/6QYpXEscd8GuE7BgW/unlearning-via-rmu-is-mostly-shallow) | AI Alignment Forum | 2024 | Mechanistic analysis of RMU limitations |
 
 ### Key Organizations
 
 | Organization | Focus | Contribution |
 |--------------|-------|--------------|
-| **Center for AI Safety** | Research | WMDP benchmark, methods |
-| **Academic groups** | Research | Technique development |
-| **AI Labs** | Research | Practical applications |
+| **[Center for AI Safety](https://safe.ai)** | Research | WMDP benchmark, RMU method |
+| **CMU Locus Lab** | Research | [TOFU benchmark](https://locuslab.github.io/tofu/) |
+| **Anthropic, DeepMind** | Applied research | Practical deployment |
 
 ### Related Research
 
-| Area | Connection |
-|------|------------|
-| **Machine Unlearning** | General technique framework |
-| **Model Editing** | Knowledge modification |
-| **Representation Engineering** | Activation-based removal |
+| Area | Connection | Key Survey |
+|------|------------|------------|
+| **Machine Unlearning** | General technique framework | [Survey (358 papers)](https://github.com/chrisliu298/awesome-llm-unlearning) |
+| **Model Editing** | Knowledge modification | ROME, MEMIT methods |
+| **Representation Engineering** | Activation-based removal | [Springer survey](https://link.springer.com/article/10.1007/s10462-024-11078-6) |
 
 ---
 

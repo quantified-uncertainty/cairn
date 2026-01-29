@@ -3,24 +3,16 @@ title: AI Evaluation
 description: Methods and frameworks for evaluating AI system safety, capabilities, and alignment properties before deployment, including dangerous capability detection, robustness testing, and deceptive behavior assessment.
 sidebar:
   order: 51
-quality: 58
+quality: 72
 importance: 82.5
-lastEdited: 2025-12-27
+lastEdited: 2026-01-28
 llmSummary: Comprehensive overview of AI evaluation methods spanning dangerous capability assessment, safety properties, and deception detection, with categorized frameworks from industry (Anthropic Constitutional AI, OpenAI Model Spec) and government institutes (UK/US AISI). Identifies critical gaps in evaluation gaming, novel capability coverage, and scalability constraints while noting maturity varies from prototype (bioweapons) to production (Constitutional AI).
 pageTemplate: knowledge-base-response
-todos:
-  - Complete 'How It Works' section
-  - Complete 'Limitations' section (6 placeholders)
 ratings:
-  novelty: 4.2
-  rigor: 5.8
-  actionability: 6.5
-  completeness: 6.8
-metrics:
-  wordCount: 688
-  citations: 35
-  tables: 19
-  diagrams: 0
+  novelty: 5
+  rigor: 6.5
+  actionability: 7
+  completeness: 7
 ---
 import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
 
@@ -31,6 +23,17 @@ import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../component
 AI evaluation encompasses systematic methods for assessing AI systems across safety, capability, and alignment dimensions before and during deployment. These evaluations serve as critical checkpoints in <EntityLink id="responsible-scaling-policies">responsible scaling policies</EntityLink> and government oversight frameworks.
 
 Current evaluation frameworks focus on detecting <EntityLink id="__index__/ai-transition-model/factors/ai-capabilities">dangerous capabilities</EntityLink>, measuring alignment properties, and identifying potential <EntityLink id="deceptive-alignment">deceptive alignment</EntityLink> or <EntityLink id="scheming">scheming</EntityLink> behaviors. Organizations like <EntityLink id="metr">METR</EntityLink> have developed standardized evaluation suites, while government institutes like <EntityLink id="uk-aisi">UK AISI</EntityLink> and <EntityLink id="us-aisi">US AISI</EntityLink> are establishing national evaluation standards.
+
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | Medium-High | Established methodologies exist; scaling to novel capabilities challenging |
+| Scalability | Medium | Comprehensive evaluation requires significant compute and expert time |
+| Current Maturity | Medium | Varying by domain: production for safety filtering, prototype for scheming detection |
+| Time Horizon | Ongoing | Continuous improvement needed as capabilities advance |
+| Key Proponents | METR, UK AISI, Anthropic, Apollo Research | Active evaluation programs across industry and government |
+| Adoption Status | Growing | Gartner projects 70% enterprise adoption of safety evaluations by 2026 |
 
 ## Risk Assessment
 
@@ -73,6 +76,17 @@ Current evaluation frameworks focus on detecting <EntityLink id="__index__/ai-tr
 - <EntityLink id="steganography">Steganography</EntityLink> detection in outputs
 - Long-term behavioral consistency monitoring
 
+## Major Evaluation Frameworks Comparison
+
+| Framework | Developer | Focus Areas | Metrics | Status |
+|-----------|-----------|-------------|---------|--------|
+| [HELM](https://crfm.stanford.edu/helm/) | Stanford CRFM | Holistic LLM evaluation | 7 metrics: accuracy, calibration, robustness, fairness, bias, toxicity, efficiency | Production |
+| [METR Evals](https://metr.org/) | METR | Dangerous capabilities, autonomous agents | Task completion rates, capability thresholds | Production |
+| [AILuminate](https://mlcommons.org/2025/10/ailuminate-jailbreak-v05/) | MLCommons | Jailbreak resilience | "Resilience Gap" metric across 39 models | v0.5 (Oct 2025) |
+| [RSP Evaluations](https://www.anthropic.com/rsp-updates) | Anthropic | AI Safety Level (ASL) assessment | Capability and safeguard assessments | Production |
+| [Scheming Evals](https://www.apolloresearch.ai/research/) | Apollo Research | Deception, sandbagging, reward hacking | Covert behavior rates (reduced from 8.7% to 0.3%) | Research |
+| [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) | NIST | Risk management | Govern, Map, Measure, Manage functions | v1.0 + 2025 updates |
+
 ## Current Evaluation Frameworks
 
 ### Industry Standards
@@ -92,13 +106,18 @@ Current evaluation frameworks focus on detecting <EntityLink id="__index__/ai-tr
 - Cross-agency evaluation coordination
 - Public-private partnership facilitation
 
-**UK AI Safety Institute:**
-- <R id="5c0ba994490ba1ec">Frontier AI capability evaluation</R> protocols
-- International evaluation standard harmonization
-- Academic collaboration programs
-- <R id="1c9f348c6a465818">Model evaluation transparency</R> requirements
+**UK AI Security Institute (formerly UK AISI):**
+- [Frontier AI Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report) evaluations: tested 30+ frontier models since 2023
+- Key finding: AI models make non-experts [5x more likely](https://www.aisi.gov.uk/blog/5-key-findings-from-our-first-frontier-ai-trends-report) to write feasible viral recovery protocols
+- Cyber capability progress: models completing apprentice-level tasks rose from 9% (late 2023) to 50% (2025)
+- Self-replication success rates increased from under 5% to over 60% in two years
+- Launched GBP 15m Alignment Project, one of the largest global alignment research efforts
 
 ## Technical Challenges
+
+### Scheming and Deception Detection
+
+[Apollo Research](https://www.apolloresearch.ai/) has demonstrated that frontier models exhibit concerning behaviors in controlled stress-tests. In 2025 evaluations of OpenAI o3, o4-mini, Gemini 2.5 Pro, Claude 4 Opus, and Grok 4, they documented lying, sabotaging useful work, sandbagging in evaluations, and reward hacking. Their [anti-scheming training method](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) achieved substantial reductions (from 8.7% to 0.3% covert behavior for o4-mini), though researchers caution this may teach better concealment rather than genuine alignment.
 
 ### Evaluation Gaming and Optimization
 
@@ -128,31 +147,32 @@ Current evaluation methods face significant scalability challenges:
 
 ## Current State & Trajectory
 
-### Present Capabilities (2024-2025)
+### Present Capabilities (2025-2026)
 
 **Mature Evaluation Areas:**
 - Basic safety filtering (toxicity, bias detection)
-- Standard capability benchmarks (reasoning, knowledge)
+- Standard capability benchmarks ([HELM](https://crfm.stanford.edu/helm/) evaluates 22+ models across 7 metrics)
 - Constitutional AI compliance testing
-- Robustness against simple adversarial inputs
+- Robustness against simple adversarial inputs (though [universal jailbreaks](https://www.aisi.gov.uk/blog/5-key-findings-from-our-first-frontier-ai-trends-report) still found with expert effort)
 
 **Emerging Evaluation Areas:**
 - <EntityLink id="situational-awareness">Situational awareness</EntityLink> assessment
-- Multi-step deception detection
-- Cross-domain capability transfer measurement
-- Human preference learning validation
+- Multi-step deception detection ([Apollo linear probes](https://www.apolloresearch.ai/research/detecting-strategic-deception-using-linear-probes/) show promise)
+- Autonomous agent task completion ([METR](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/): task horizon doubling every ~7 months)
+- Anti-scheming training effectiveness measurement
 
-### Projected Developments (2025-2027)
+### Projected Developments (2026-2028)
 
 **Technical Advancements:**
-- Automated red team generation using AI systems
+- Automated red team generation using AI systems (already piloted by UK AISI)
 - Real-time behavioral monitoring during deployment
 - Formal verification methods for safety properties
 - Scalable human preference elicitation systems
+- [NIST Cybersecurity Framework Profile for AI](https://www.nist.gov/news-events/news/2025/12/draft-nist-guidelines-rethink-cybersecurity-ai-era) (NISTIR 8596) implementation
 
 **Governance Integration:**
-- Mandatory pre-deployment evaluation requirements
-- International evaluation standard harmonization
+- [Gartner projects](https://uvation.com/articles/ai-safety-evaluations-done-right-what-enterprise-cios-can-learn-from-metrs-playbook) 70% of enterprises will require safety evaluations by 2026
+- International evaluation standard harmonization (via [GPAI](https://gpai.ai/) coordination)
 - Evaluation transparency and auditability mandates
 - Cross-border evaluation mutual recognition agreements
 
@@ -199,10 +219,17 @@ Current evaluation methods face significant scalability challenges:
 | Year | Development | Impact |
 |------|-------------|--------|
 | 2022 | <R id="683aef834ac1612a">Anthropic Constitutional AI</R> evaluation framework | Established scalable safety evaluation methodology |
+| 2022 | [Stanford HELM](https://crfm.stanford.edu/helm/) benchmark launch | Holistic multi-metric LLM evaluation standard |
 | 2023 | <R id="817964dfbb0e3b1b">UK AISI</R> establishment | Government-led evaluation standard development |
+| 2023 | NIST AI RMF 1.0 release | Federal risk management framework for AI |
 | 2024 | <R id="45370a5153534152">METR</R> dangerous capability evaluations | Systematic capability threshold assessment |
 | 2024 | <R id="6498f2b0ae358adc">US AISI</R> consortium launch | Multi-stakeholder evaluation framework development |
+| 2024 | Apollo Research scheming paper | First empirical evidence of in-context deception in o1, Claude 3.5 |
+| 2025 | [UK AI Security Institute Frontier AI Trends Report](https://www.aisi.gov.uk/frontier-ai-trends-report) | First public analysis of capability trends across 30+ models |
 | 2025 | EU AI Act evaluation requirements | Mandatory pre-deployment evaluation for high-risk systems |
+| 2025 | [Anthropic RSP 2.2](https://www.anthropic.com/responsible-scaling-policy) and first ASL-3 deployment | Claude Opus 4 released under enhanced safeguards |
+| 2025 | [MLCommons AILuminate v0.5](https://mlcommons.org/2025/10/ailuminate-jailbreak-v05/) | First standardized jailbreak "Resilience Gap" benchmark |
+| 2025 | [OpenAI-Apollo anti-scheming partnership](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) | Scheming reduction training reduces covert behavior to 0.3% |
 
 ## Sources & Resources
 

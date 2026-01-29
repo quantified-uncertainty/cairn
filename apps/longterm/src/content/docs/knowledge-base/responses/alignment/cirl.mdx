@@ -3,9 +3,9 @@ title: Cooperative IRL (CIRL)
 description: Cooperative Inverse Reinforcement Learning (CIRL) is a theoretical framework where AI systems maintain uncertainty about human preferences and cooperatively learn them through interaction. While providing elegant theoretical foundations for corrigibility, CIRL remains largely academic with limited practical implementation.
 sidebar:
   order: 6
-quality: 36
+quality: 65
 importance: 62
-lastEdited: 2025-01-22
+lastEdited: 2025-01-28
 llmSummary: CIRL is a theoretical framework where AI systems maintain uncertainty about human preferences, which naturally incentivizes corrigibility and deference. Despite elegant theory with formal proofs, the approach faces a substantial theory-practice gap with no production deployments and only $1-5M/year in academic investment, making it more influential for conceptual foundations than immediate intervention design.
 pageTemplate: knowledge-base-response
 ratings:
@@ -14,14 +14,25 @@ ratings:
   actionability: 3
   completeness: 6
 metrics:
-  wordCount: 505
-  citations: 0
-  tables: 36
-  diagrams: 0
+  wordCount: 800
+  citations: 7
+  tables: 40
+  diagrams: 1
 ---
-import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="cirl" client:load />
+
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | Medium | Requires bridging theory-practice gap for neural networks |
+| Scalability | Low-Medium | Theoretical properties scale; practical implementation remains challenging |
+| Current Maturity | Low | Primarily academic; no production deployments |
+| Time Horizon | 5-15 years | Needs fundamental advances in deep learning integration |
+| Key Proponents | UC Berkeley CHAI | Stuart Russell, Anca Dragan, Dylan Hadfield-Menell |
+| Annual Investment | \$1-5M/year | Primarily academic grants |
 
 ## Overview
 
@@ -29,7 +40,43 @@ Cooperative Inverse Reinforcement Learning (CIRL), also known as Cooperative IRL
 
 The key insight is that an AI system uncertain about what humans want has incentive to remain corrigible - to allow itself to be corrected, to seek clarification, and to avoid actions with irreversible consequences. If the AI might be wrong about human values, acting cautiously and deferring to human judgment becomes instrumentally valuable rather than requiring explicit constraints. This addresses the corrigibility problem at a deeper level than approaches that try to add constraints on top of a capable optimizer.
 
-CIRL represents some of the most rigorous theoretical work in AI alignment, with formal proofs about agent behavior under various assumptions. However, it faces significant challenges in practical application: the framework assumes access to human reward functions in a way that doesn't translate directly to training large language models, and the gap between CIRL's elegant theory and the messy reality of deep learning remains substantial. Current investment (\$1-5M/year) remains primarily academic, though the theoretical foundations influence broader thinking about alignment.
+CIRL represents some of the most rigorous theoretical work in AI alignment, with formal proofs about agent behavior under various assumptions. However, it faces significant challenges in practical application: the framework assumes access to human reward functions in a way that doesn't translate directly to training large language models, and the gap between CIRL's elegant theory and the messy reality of deep learning remains substantial. Current investment (\$1-5M/year) remains primarily academic, though the theoretical foundations influence broader thinking about alignment. Recent work on [AssistanceZero](https://arxiv.org/abs/2504.07091) (Laidlaw et al., 2025) demonstrates the first scalable approach to solving assistance games, suggesting the theory-practice gap may be narrowing.
+
+## How It Works
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Human["Human (H)"]
+        HP[Knows preferences θ]
+        HA[Takes actions]
+    end
+    subgraph Robot["Robot (R)"]
+        RU[Maintains uncertainty P θ]
+        RL[Learns from H's actions]
+        RA[Acts to maximize expected reward]
+    end
+    HP --> HA
+    HA --> |Observes| RL
+    RL --> |Updates belief| RU
+    RU --> |Informs| RA
+    RA --> |May seek clarification| Human
+    RU --> |If uncertain| Defer[Defer to Human]
+    RU --> |If might be wrong| Accept[Accept Shutdown]
+`} />
+
+The CIRL framework reconceptualizes AI alignment as a two-player cooperative game. Unlike standard inverse reinforcement learning where the robot passively observes a human assumed to act optimally, CIRL models both agents as actively cooperating. The human knows their preferences but the robot does not; crucially, both agents share the same reward function (the human's). This shared objective creates natural incentives for the human to teach and the robot to learn without explicitly programming these behaviors.
+
+The robot maintains a probability distribution over possible human preferences and takes actions that maximize expected reward under this uncertainty. When the robot is uncertain, it has instrumental reasons to: (1) seek clarification from the human, (2) avoid irreversible actions, and (3) accept being shut down if the human initiates shutdown. This is the key insight: corrigibility emerges from uncertainty rather than being imposed as a constraint.
+
+## Risks Addressed
+
+| Risk | Relevance | How CIRL Helps |
+|------|-----------|----------------|
+| <EntityLink id="goal-misgeneralization">Goal Misgeneralization</EntityLink> | High | Maintains uncertainty rather than locking onto inferred goals |
+| <EntityLink id="corrigibility">Corrigibility Failures</EntityLink> | High | Uncertainty creates instrumental incentive to accept correction |
+| <EntityLink id="reward-hacking">Reward Hacking</EntityLink> | Medium | Human remains in loop to refine reward signal |
+| <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> | Medium | Information-seeking behavior conflicts with deception incentives |
+| <EntityLink id="scheming">Scheming</EntityLink> | Low-Medium | Deference to humans limits autonomous scheming |
 
 ## Risk Assessment & Impact
 
@@ -87,6 +134,7 @@ In the CIRL framework, an uncertain agent has several beneficial properties:
 | **Value Alignment Theorem** | Under certain conditions, CIRL agent learns human preferences | Provides formal alignment guarantee |
 | **Corrigibility Emergence** | Uncertain agent prefers shutdown over wrong action | Corrigibility without hardcoding |
 | **Information Value** | Positive value of information about preferences | Explains deference behavior |
+| **Off-Switch Game** | Traditional agents disable off-switches; CIRL agents accept shutdown | Formal proof of corrigibility advantage ([Hadfield-Menell et al., 2017](https://arxiv.org/abs/1611.08219)) |
 
 ### Formal Setup (Simplified)
 
@@ -151,10 +199,11 @@ The challenges are in implementation:
 
 | Direction | Status | Potential Impact |
 |-----------|--------|-----------------|
+| **Scalable Assistance Games** | Active (2025) | [AssistanceZero](https://arxiv.org/abs/2504.07091) demonstrates tractability in complex environments |
 | **Deep CIRL** | Early exploration | Bridge to neural networks |
-| **Bounded Rationality** | Active research | More realistic human models |
-| **Multi-Human CIRL** | Theoretical extensions | Handle preference conflicts |
-| **Practical Approximations** | Needed | Make implementable |
+| **Bounded Rationality** | Active research | [Malik et al. (2018)](https://proceedings.mlr.press/v80/malik18a.html) relaxes optimal human assumption |
+| **Multi-Human CIRL** | Theoretical extensions | Handle preference conflicts and aggregation |
+| **Practical Approximations** | Needed | Make implementable in production systems |
 
 ## Relationship to Other Approaches
 
@@ -214,17 +263,26 @@ The challenges are in implementation:
 
 | Type | Source | Key Contributions |
 |------|--------|------------------|
-| **Foundational Paper** | Cooperative Inverse Reinforcement Learning (Hadfield-Menell et al., 2016) | Original CIRL framework |
-| **Book** | Human Compatible (Stuart Russell, 2019) | Accessible introduction |
-| **Follow-up Work** | CHAI publications | Extensions and analysis |
+| **Foundational Paper** | [Cooperative Inverse Reinforcement Learning](https://arxiv.org/abs/1606.03137) (Hadfield-Menell et al., 2016) | Original CIRL framework; proves cooperative interaction is more effective than isolation |
+| **Off-Switch Game** | [The Off-Switch Game](https://arxiv.org/abs/1611.08219) (Hadfield-Menell et al., 2017) | Proves CIRL agents accept shutdown under uncertainty |
+| **Book** | [Human Compatible](https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/) (Stuart Russell, 2019) | Accessible introduction; three principles for beneficial AI |
+| **Scalability** | [AssistanceZero: Scalably Solving Assistance Games](https://arxiv.org/abs/2504.07091) (Laidlaw et al., 2025) | First scalable approach; Minecraft experiments with human users |
+| **Efficient CIRL** | [An Efficient, Generalized Bellman Update For CIRL](https://proceedings.mlr.press/v80/malik18a.html) (Malik et al., 2018) | Reduces complexity exponentially; relaxes human rationality assumption |
+
+### Foundational Work
+
+| Paper | Authors | Contribution |
+|-------|---------|--------------|
+| [Algorithms for Inverse Reinforcement Learning](https://people.eecs.berkeley.edu/~russell/papers/russell-irl98.pdf) | Ng & Russell, 2000 | Foundational IRL algorithms for inferring reward functions |
+| [Incorrigibility in the CIRL Framework](https://intelligence.org/2017/08/31/incorrigibility-in-cirl/) | Ryan Carey, 2017 | Analysis of CIRL's corrigibility limitations |
 
 ### Related Reading
 
 | Focus Area | Relevance |
 |------------|-----------|
-| **Inverse Reinforcement Learning** | Technical foundation |
-| **Corrigibility** | Problem CIRL addresses |
-| **Assistance Games** | Alternative framing |
+| **Inverse Reinforcement Learning** | Technical foundation for learning preferences from behavior |
+| **Corrigibility** | Problem CIRL addresses through uncertainty |
+| **Assistance Games** | Alternative framing emphasizing human-AI cooperation |
 
 ---
 

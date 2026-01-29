@@ -3,9 +3,9 @@ title: Eliciting Latent Knowledge (ELK)
 description: Research into methods for getting AI systems to report what they actually know or believe, potentially solving the deception detection problem if successful but remaining unsolved despite significant effort from ARC and other researchers.
 sidebar:
   order: 57
-quality: 43
+quality: 65
 importance: 77.5
-lastEdited: 2025-01-22
+lastEdited: 2025-01-28
 llmSummary: Comprehensive overview of the Eliciting Latent Knowledge problem - ensuring AI systems report true beliefs rather than human-approved outputs - documenting ARC's 2021 formalization, prize structure ($10K-$100K unclaimed), and systematic counterexamples to all proposed solutions. Concludes problem remains unsolved despite $1-15M/year research investment, with uncertain solvability but high potential impact if solved (would enable deception detection and AI oversight).
 pageTemplate: knowledge-base-response
 ratings:
@@ -15,7 +15,7 @@ ratings:
   completeness: 6.5
 metrics:
   wordCount: 628
-  citations: 0
+  citations: 8
   tables: 38
   diagrams: 1
 ---
@@ -25,7 +25,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../componen
 
 ## Overview
 
-Eliciting Latent Knowledge (ELK) represents one of the most important unsolved problems in AI alignment: how do we get an AI system to report what it actually knows or believes, rather than what it predicts humans want to hear or what produces favorable outcomes? The problem was formalized in the Alignment Research Center's (ARC) 2021 report and has since become a central focus of alignment research, with substantial prize money offered for solutions.
+Eliciting Latent Knowledge (ELK) represents one of the most important unsolved problems in AI alignment: how do we get an AI system to report what it actually knows or believes, rather than what it predicts humans want to hear or what produces favorable outcomes? The problem was formalized in the [Alignment Research Center's (ARC) 2021 report](https://www.alignment.org/blog/arcs-first-technical-report-eliciting-latent-knowledge/) and has since become a central focus of alignment research, with substantial prize money offered for solutions.
 
 The core challenge arises because advanced AI systems may develop sophisticated internal representations of the world that go beyond what can be directly observed by humans. If such a system is optimizing for human approval or reward, it might learn to report information that satisfies human evaluators rather than information that accurately reflects its internal knowledge. This creates a fundamental obstacle to AI oversight: we cannot trust what AI systems tell us if they have learned to be strategically misleading.
 
@@ -112,21 +112,50 @@ The challenge is ensuring training produces a direct translator rather than a hu
 
 ### Prize Structure
 
-ARC offered substantial prizes for ELK solutions:
+[ARC ran an ELK prize contest](https://www.alignment.org/blog/elk-prize-results/) and received 197 proposals, awarding 32 prizes of \$5k-20k and 24 honorable mentions of \$1k, for a total of \$274,000:
 
 | Prize Tier | Requirement | Status |
 |------------|-------------|--------|
-| **\$10,000** | Novel counterexample | Some awarded |
-| **\$100,000** | Solution to specific subproblem | Unclaimed |
+| **\$5,000-\$20,000** | Novel perspective or counterexample | 32 awarded |
+| **\$50,000** | Proposal requiring new idea to break | Unclaimed |
 | **\$100,000** | Full solution | Unclaimed |
 
-### Counterexample Pattern
+Notable contributors included Carl Shulman, Victoria Krakovna (DeepMind), Mary Phuong, and Holden Karnofsky (who was ineligible as an ARC board member). ARC noted that most submissions explored approaches they had also considered, underestimating convergence among researchers.
+
+### Counterexample Pattern (Builder-Breaker Methodology)
+
+ARC's research methodology functions as a game between a "builder" and a "breaker":
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph BUILDER["Builder"]
+        B1[Propose training strategy]
+        B2[Describe desired reporter]
+    end
+
+    subgraph BREAKER["Breaker"]
+        BR1[Propose test case]
+        BR2[Describe bad reporter]
+    end
+
+    B1 --> BR1
+    BR1 --> B2
+    B2 --> BR2
+    BR2 -->|Counterexample found| B1
+    BR2 -->|No counterexample| SUCCESS[Solution Candidate]
+
+    style SUCCESS fill:#d4edda
+    style BUILDER fill:#e1f5ff
+    style BREAKER fill:#ffe6cc
+`} />
 
 Every proposed solution faces a counterexample:
 
 1. **Proposal**: Use method X to extract true beliefs
 2. **Counterexample**: AI that produces X-satisfying outputs without reporting true beliefs
 3. **Conclusion**: X doesn't reliably solve ELK
+
+This adversarial methodology ensures proposed solutions are robust, but also explains why progress has been slow - any solution must work against the worst-case deceptive strategy.
 
 ## Proposed Approaches
 
@@ -164,13 +193,26 @@ Every proposed solution faces a counterexample:
 
 ## Current Research Status
 
+### Key Empirical Work (2023-2025)
+
+**Contrast-Consistent Search (CCS)** - [Burns et al. (2023)](https://arxiv.org/abs/2212.03827) introduced an unsupervised probing method to determine if language models represent sentences as true or false. CCS learns a binary classification of internal states such that a statement and its negation are pushed into opposite classes. Results showed promising accuracy, though [follow-up work by Farquhar et al.](https://www.alignmentforum.org/posts/9vwekjD6xyuePX7Zr/contrast-pairs-drive-the-empirical-performance-of-contrast) demonstrated CCS can find features other than truth.
+
+**Quirky Language Models** - [Mallen et al. (2024)](https://arxiv.org/abs/2312.01037) created 12 datasets with "quirky" LMs finetuned to make systematic errors when "Bob" appears in prompts. Key findings:
+- Linear probes in middle layers report knowledge independently of model output
+- Best probing method recovers 89% of the gap in AUROC between truthful/untruthful contexts
+- Mechanistic anomaly detection flags untruthful behavior with 0.95 AUROC
+- Knowledge representations are context-independent in middle layer activations
+
+**Representation Engineering** - [Zou et al. (2023)](https://arxiv.org/abs/2310.01405) introduced methods to identify and steer concept vectors in activation space. Steering "truthfulness" directions at selected layers increases TruthfulQA accuracy by up to 30 percentage points. However, concept vectors may not be specific, with steering one concept affecting others.
+
 ### What's Been Tried
 
 | Approach | Result | Conclusion |
 |----------|--------|------------|
-| **Linear Probes** | Find correlations | Not robust to adaptive AI |
-| **Debate** | Explore argumentative approaches | Doesn't solve ELK directly |
-| **Interpretability** | Find some features | Insufficient for general solution |
+| **CCS Probing** | 70-90% accuracy on benchmarks | Not robust to adversarial settings |
+| **Linear Probes** | Find context-independent knowledge | Might find "what to say" not "what is true" |
+| **Representation Engineering** | Can steer truthfulness | Unknown if scales to deceptive AI |
+| **Quirky Models** | Middle layers contain knowledge | Promising but not adversarial test |
 | **Consistency Methods** | Can be gamed | Not sufficient |
 
 ### Why Progress is Slow
@@ -178,9 +220,10 @@ Every proposed solution faces a counterexample:
 | Factor | Description |
 |--------|-------------|
 | **Fundamental Difficulty** | May be asking for too much |
-| **Adversarial Framing** | Solution must work against adversary |
-| **No Empirical Testbed** | Hard to experiment without deceptive AI |
-| **Unclear If Solvable** | May be impossible in general |
+| **Adversarial Framing** | Solution must work against worst-case adversary |
+| **No Empirical Testbed** | Hard to experiment without genuinely deceptive AI |
+| **Unclear If Solvable** | May be impossible in the general case |
+| **Benchmark Limitations** | Current models not adversarially deceptive |
 
 ### Potential Implications if Unsolvable
 
@@ -251,27 +294,31 @@ If ELK is solved, it would address:
 
 ### Core Documents
 
-| Document | Author | Contribution |
-|----------|--------|--------------|
-| **ELK Report** | ARC (2021) | Problem formalization |
-| **ELK Prize Results** | ARC | Counterexamples and progress |
-| **ELK Sequence** | LessWrong | Community discussion |
+| Document | Author | Year | Link |
+|----------|--------|------|------|
+| **ELK Report** | ARC | 2021 | [alignment.org](https://www.alignment.org/blog/arcs-first-technical-report-eliciting-latent-knowledge/) |
+| **ELK Prize Results** | ARC | 2022 | [alignment.org](https://www.alignment.org/blog/elk-prize-results/) |
+| **Discovering Latent Knowledge (CCS)** | Burns et al. | 2023 | [arXiv](https://arxiv.org/abs/2212.03827) |
+| **Quirky Language Models** | Mallen et al. | 2024 | [arXiv](https://arxiv.org/abs/2312.01037) |
+| **Representation Engineering** | Zou et al. | 2023 | [arXiv](https://arxiv.org/abs/2310.01405) |
 
 ### Key Organizations
 
 | Organization | Role | Contribution |
 |--------------|------|--------------|
-| **Alignment Research Center** | Primary researchers | Problem formalization, prizes |
-| **Academic groups** | Research | Various approaches |
+| **[Alignment Research Center](https://www.alignment.org/)** | Primary researchers | Problem formalization, \$274k in prizes |
+| **[EleutherAI](https://www.eleuther.ai/projects/elk)** | Open research | Building on CCS work |
+| **Academic groups** | Research | Stanford, Berkeley, various |
 | **AI Safety Camp** | Training | ELK research projects |
 
 ### Further Reading
 
 | Resource | Description |
 |----------|-------------|
-| **ARC website** | Official problem statement |
-| **LessWrong ELK tag** | Community discussion |
-| **ELK counterexamples** | Why solutions fail |
+| **[ARC ELK Report](https://www.alignment.org/blog/arcs-first-technical-report-eliciting-latent-knowledge/)** | Full problem statement and builder-breaker methodology |
+| **[LessWrong ELK Discussion](https://www.lesswrong.com/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge)** | Community discussion and reactions |
+| **[ELK Distillation](https://www.alignmentforum.org/posts/rxoBY9CMkqDsHt25t/eliciting-latent-knowledge-elk-distillation-summary)** | Accessible summary of core concepts |
+| **[EleutherAI ELK Project](https://www.eleuther.ai/projects/elk)** | Ongoing empirical research |
 
 ---
 

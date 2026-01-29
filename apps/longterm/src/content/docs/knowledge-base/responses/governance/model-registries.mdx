@@ -3,22 +3,19 @@ title: Model Registries
 description: Centralized databases of frontier AI models that enable governments to track development, enforce safety requirements, and coordinate international oversight—serving as foundational infrastructure for AI governance analogous to drug registries for the FDA.
 sidebar:
   order: 12
-quality: 51
-lastEdited: 2025-12-28
+quality: 68
+lastEdited: 2026-01-28
 importance: 75.5
 llmSummary: Analyzes model registries as foundational governance infrastructure across US (≥10^26 FLOP threshold), EU (≥10^25 FLOP), and state-level implementations, showing they enable pre-deployment review and incident tracking but don't prevent harm directly. Provides specific implementation recommendations including 30-90 day pre-deployment notification and 72-hour incident reporting, with medium-high confidence that registries improve visibility and incident learning.
 pageTemplate: knowledge-base-response
-todos:
-  - Complete 'Core Design Principles' section
-  - Complete 'How It Works' section
 ratings:
   novelty: 4
   rigor: 6.5
   actionability: 7
   completeness: 7.5
 metrics:
-  wordCount: 620
-  citations: 0
+  wordCount: 750
+  citations: 8
   tables: 18
   diagrams: 1
 ---
@@ -30,7 +27,7 @@ import {Mermaid, EntityLink, DataExternalLinks} from '../../../../../components/
 
 Model registries represent a foundational governance tool for managing risks from advanced AI systems. Like drug registries that enable pharmaceutical regulation or aircraft registries that support aviation safety, AI model registries would create centralized databases containing information about frontier AI systems—their capabilities, training details, deployment contexts, and safety evaluations. This infrastructure provides governments with the visibility necessary to implement more sophisticated AI governance measures.
 
-The policy momentum is significant. The U.S. Executive Order on AI (October 2023) mandated quarterly reporting for models trained above 10^26 FLOP. The EU AI Act requires registration of high-risk AI systems and general-purpose AI models. California's Transparency in Frontier AI Act (TFAIA) mandates annual publication of comprehensive "Frontier AI Frameworks" by large developers. New York's RAISE Act requires incident reporting within 72 hours. These requirements create the skeleton of a registry system, though implementation remains fragmented and early-stage.
+The policy momentum is significant. The U.S. Executive Order on AI (October 2023) mandated quarterly reporting for models trained above 10^26 FLOP. The EU AI Act requires registration of high-risk AI systems and general-purpose AI models. California's SB 53 (signed September 2025) requires transparency reports and incident reporting for frontier models above 10^26 FLOP. New York's RAISE Act requires incident reporting within 72 hours. These requirements create the skeleton of a registry system, though implementation remains fragmented and early-stage.
 
 The strategic value of model registries lies in their enabling function. A registry alone doesn't prevent harm—but it provides the information foundation for safety requirements, pre-deployment review, incident tracking, and international coordination. Without knowing what models exist and what capabilities they possess, governments cannot effectively regulate AI development. Model registries transform AI governance from reactive to proactive by creating visibility into the development pipeline before deployment.
 
@@ -49,28 +46,30 @@ The October 2023 Executive Order directed the Bureau of Industry and Security (B
 
 | State | Legislation | Key Requirements | Status |
 |-------|-------------|------------------|--------|
-| **California** | TFAIA (AB 2885) | Annual Frontier AI Framework publication; developer accountability | Enacted; effective Jan 1, 2026 |
+| **California** | [SB 53](https://www.gov.ca.gov/2025/09/29/governor-newsom-signs-sb-53-advancing-californias-world-leading-artificial-intelligence-industry/) | Transparency reports for models above 10^26 FLOP; 15-day incident reporting | Enacted Sep 2025; effective Jan 1, 2026 |
 | **New York** | RAISE Act | 72-hour incident reporting; safety protocol publication; civil penalties up to \$1M | Enacted 2024 |
 | **Colorado** | SB 24-205 | High-risk AI system registration; algorithmic impact assessments | Enacted May 2024 |
 
 ### European Union
 
-The EU AI Act establishes the most comprehensive registry requirements to date:
+The [EU AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) (Regulation EU 2024/1689), which entered into force August 1, 2024, establishes the most comprehensive registry requirements to date:
 
-- **General-Purpose AI Models**: Registration with EU AI Office if trained >10^25 FLOP
-- **High-Risk AI Systems**: Registration in EU database before market placement
+- **General-Purpose AI Models**: Registration with EU AI Office if trained above 10^25 FLOP
+- **High-Risk AI Systems**: [Registration in EU database](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-49) before market placement
 - **Systemic Risk Models**: Additional transparency and safety requirements
 - **Required Information**: Technical documentation, compliance evidence, intended use
 
-The EU database will be publicly accessible for high-risk AI systems, with confidential technical documentation available to regulators.
+The EU database will be publicly accessible for high-risk AI systems, with confidential technical documentation available to regulators. Per [Article 49](https://artificialintelligenceact.eu/article/49/), providers must register themselves and their systems before placing high-risk AI systems on the market. High-risk obligations become applicable in August 2026-2027.
 
 ### China
 
-China has implemented registration requirements since 2023:
+China has implemented registration requirements since 2023 under the Interim Measures for Generative AI Services:
 
 - Deep synthesis (deepfake) algorithms must register with CAC
 - Generative AI services require registration before public offering
 - Algorithmic recommendation services subject to separate registry
+- As of November 2025, 611 generative AI services and 306 apps had completed filing
+- Apps must publicly disclose which filed model they use, including filing number
 - Focus on content moderation and political sensitivity
 
 ### Comparison Table
@@ -78,7 +77,7 @@ China has implemented registration requirements since 2023:
 | Jurisdiction | Compute Threshold | Pre/Post Deployment | Public Access | Penalties |
 |--------------|------------------|--------------------|--------------| ----------|
 | **US Federal** | 10^26 FLOP | Pre + ongoing | Limited (security) | Under development |
-| **California** | Capability-based | Pre-deployment | Framework public | Civil liability |
+| **California** | 10^26 FLOP | Pre-deployment | Transparency reports public | Up to \$1M/violation |
 | **New York** | Scale-based | Pre + incidents | Protocols public | Up to \$1M |
 | **EU** | 10^25 FLOP | Pre-market | Partial | Up to 7% revenue |
 | **China** | Any public AI | Pre-deployment | Limited | Service suspension |
@@ -100,7 +99,7 @@ China has implemented registration requirements since 2023:
 
 | Challenge | Description | Mitigation |
 |-----------|-------------|------------|
-| **Threshold gaming** | Developers structure training to avoid thresholds | Multiple thresholds; capability-based triggers |
+| **Threshold gaming** | Developers structure training to avoid thresholds ([research shows](https://arxiv.org/html/2407.05694v1) model distillation and mixture-of-agents approaches can achieve frontier performance below thresholds) | Multiple thresholds; capability-based triggers |
 | **Dual-use concerns** | Registry information could advantage competitors/adversaries | Tiered access; confidentiality provisions |
 | **Open-source gap** | Registries focus on centralized developers | Post-release monitoring; community registries |
 | **Enforcement difficulty** | Verifying submitted information is accurate | Auditing; whistleblower protections |
@@ -155,7 +154,7 @@ For jurisdictions establishing initial AI model registries:
 
 ### Best Practices from Research
 
-Based on analysis by Convergence Analysis and the Institute for Law & AI:
+Based on analysis by [Convergence Analysis](https://www.convergenceanalysis.org/research/ai-model-registries-a-foundational-tool-for-ai-governance) and the [Institute for Law & AI](https://law-ai.org/the-role-of-compute-thresholds-for-ai-governance/):
 
 | Principle | Rationale | Implementation |
 |-----------|-----------|----------------|
@@ -178,9 +177,9 @@ Based on analysis by Convergence Analysis and the Institute for Law & AI:
 
 ### Near-Term (2025-2026)
 
-- US federal registry rules finalized
-- EU database operational for high-risk AI
-- California TFAIA implementation
+- California SB 53 effective January 2026 (transparency reports, incident reporting)
+- EU high-risk AI database operational (August 2026-2027 compliance deadlines)
+- [GovAI forecasts](https://www.governance.ai/research-paper/trends-in-frontier-ai-model-count-a-forecast-to-2028) 103-306 models exceeding 10^25 FLOP (EU threshold) by 2028
 - 5-10 jurisdictions with some form of registry
 - Initial international coordination discussions
 
@@ -232,22 +231,24 @@ Based on analysis by Convergence Analysis and the Institute for Law & AI:
 
 ### Policy Analysis
 
-- **Convergence Analysis (2024):** "AI Model Registries: A Foundational Tool for AI Governance" - Comprehensive design framework
-- **Institute for Law & AI (2024):** "The Role of Compute Thresholds for AI Governance" - Threshold design considerations
-- **Carnegie Endowment (2025):** "Entity-Based Regulation in Frontier AI Governance" - Alternative regulatory approaches
+- **Convergence Analysis (2024):** ["AI Model Registries: A Foundational Tool for AI Governance"](https://www.convergenceanalysis.org/research/ai-model-registries-a-foundational-tool-for-ai-governance) - Comprehensive design framework developed in collaboration with Gillian Hadfield; influenced US BIS consultation and EU GPAI Code of Practice
+- **Institute for Law & AI (2024):** ["The Role of Compute Thresholds for AI Governance"](https://law-ai.org/the-role-of-compute-thresholds-for-ai-governance/) - Threshold design considerations
+- **GovAI (2024):** ["Trends in Frontier AI Model Count: A Forecast to 2028"](https://www.governance.ai/research-paper/trends-in-frontier-ai-model-count-a-forecast-to-2028) - Projects 45-148 models exceeding 10^26 FLOP by 2028
+- **Heim et al. (2024):** ["Training Compute Thresholds: Features and Functions in AI Regulation"](https://arxiv.org/html/2405.10799v2) - Analysis of compute thresholds as governance metrics
+- **Hooker (2024):** ["On the Limitations of Compute Thresholds as a Governance Strategy"](https://arxiv.org/html/2407.05694v1) - Critiques threshold gaming via distillation and MoA approaches
 
 ### Legislation and Regulation
 
-- **US Executive Order 14110 (October 2023):** "Safe, Secure, and Trustworthy Development and Use of Artificial Intelligence"
-- **EU AI Act (2024):** Regulation establishing harmonized rules on artificial intelligence
-- **California AB 2885 (2024):** Transparency in Frontier Artificial Intelligence Act
-- **New York RAISE Act (2024):** Requiring AI Safety and Excellence
+- **US Executive Order 14110 (October 2023):** "Safe, Secure, and Trustworthy Development and Use of Artificial Intelligence" - Established 10^26 FLOP reporting threshold
+- **EU AI Act (2024):** [Regulation (EU) 2024/1689](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) - [Article 49](https://artificialintelligenceact.eu/article/49/) covers registration requirements
+- **California SB 53 (2025):** [Transparency in Frontier Artificial Intelligence Act](https://www.gov.ca.gov/2025/09/29/governor-newsom-signs-sb-53-advancing-californias-world-leading-artificial-intelligence-industry/) - First US state frontier AI safety law; effective January 2026
+- **New York RAISE Act (2024):** Requiring AI Safety and Excellence - 72-hour incident reporting
 
 ### Implementation Resources
 
 - **NIST:** AI Risk Management Framework integration guidance
-- **EU AI Office:** High-risk AI database specifications
-- **BIS:** Proposed rule on AI model reporting requirements (2024)
+- **EU AI Office:** [High-risk AI system registration requirements](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-49)
+- **Future of Privacy Forum (2025):** ["California's SB 53: The First Frontier AI Law, Explained"](https://fpf.org/blog/californias-sb-53-the-first-frontier-ai-law-explained/)
 
 ---
 

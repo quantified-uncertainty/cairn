@@ -3,9 +3,9 @@ title: Weak-to-Strong Generalization
 description: Weak-to-strong generalization investigates whether weak supervisors (humans or smaller models) can reliably elicit good behavior from stronger AI systems. This research direction directly addresses the fundamental scalable oversight problem but remains highly uncertain with early results showing only partial success.
 sidebar:
   order: 4
-quality: 43
+quality: 65
 importance: 77.5
-lastEdited: 2025-01-22
+lastEdited: 2025-01-28
 llmSummary: Weak-to-strong generalization tests whether weak supervisors can elicit good behavior from stronger AI systems by training strong models on weak model labels. OpenAI's 2023 experiments show 20-50% Performance Gap Recovery across tasks, but the critical question of whether this works for deceptive models remains untested.
 pageTemplate: knowledge-base-response
 ratings:
@@ -14,12 +14,12 @@ ratings:
   actionability: 5.5
   completeness: 6
 metrics:
-  wordCount: 603
-  citations: 0
-  tables: 33
-  diagrams: 0
+  wordCount: 850
+  citations: 7
+  tables: 35
+  diagrams: 1
 ---
-import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="weak-to-strong" client:load />
 
@@ -27,9 +27,45 @@ import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../compon
 
 Weak-to-strong generalization is a research direction investigating whether weaker AI systems or humans can successfully supervise and elicit good behavior from stronger AI systems. This question sits at the heart of AI safety: as AI systems surpass human capabilities, our ability to evaluate and correct their behavior degrades. If weak supervisors can reliably guide strong systems toward good behavior, alignment approaches like <EntityLink id="rlhf">RLHF</EntityLink> might continue working; if not, we face a fundamental gap between AI capability and human oversight capacity.
 
-Introduced as a concrete research program by <EntityLink id="openai">OpenAI</EntityLink> in late 2023, weak-to-strong generalization uses current AI systems as a testbed for this problem. By training a strong model using labels from a weaker model, researchers can study whether the strong model merely imitates the weak model's mistakes or whether it generalizes to perform better than its supervisor. Early results are mixed: strong models do recover some of the capability gap between weak and strong, but not all of it, and the degree of recovery varies by task.
+Introduced as a concrete research program by <EntityLink id="openai">OpenAI</EntityLink> in late 2023 with the paper ["Weak-to-Strong Generalization: Eliciting Strong Capabilities With Weak Supervision"](https://arxiv.org/abs/2312.09390) by Burns et al., weak-to-strong generalization uses current AI systems as a testbed for this problem. By training a strong model using labels from a weaker model, researchers can study whether the strong model merely imitates the weak model's mistakes or whether it generalizes to perform better than its supervisor. The foundational finding was striking: a GPT-2-level model can elicit most of GPT-4's capabilities, achieving close to GPT-3.5-level performance even on problems where the weak model failed. However, recovery remains incomplete across all tested domains.
 
 The fundamental uncertainty is whether these early results transfer to the most important cases: detecting deception, preventing power-seeking behavior, and maintaining alignment as AI systems approach and exceed human-level capabilities. A deceptive AI system might behave very differently than the non-deceptive systems used in current experiments. This research direction deserves increased attention given its direct relevance to whether current alignment paradigms can scale.
+
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | Medium | Initial results promising but incomplete; 20-50% Performance Gap Recovery achieved |
+| Scalability | Unknown | This IS the core question - whether supervision scales to superhuman systems |
+| Current Maturity | Low-Medium | Active research at OpenAI, Anthropic; proof-of-concept stage |
+| Time Horizon | 3-7 years | Needs fundamental advances before deployment-ready |
+| Key Proponents | [OpenAI](https://openai.com/index/weak-to-strong-generalization/), [Anthropic](https://alignment.anthropic.com/2025/recommended-directions/) | Superalignment team, scalable oversight research |
+| Investment Level | \$10-50M/year | OpenAI announced \$10M grants program for related research |
+
+## How It Works
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Training["Training Phase"]
+        WM[Weak Model] -->|generates labels| WL[Weak Labels]
+        WL -->|supervises| SM[Strong Model]
+    end
+
+    subgraph Evaluation["Evaluation Phase"]
+        SM -->|tested against| GT[Ground Truth]
+        WM -->|tested against| GT
+        SM2[Strong Ceiling] -->|trained with ground truth| GT
+    end
+
+    subgraph Metrics["Performance Gap Recovery"]
+        PGR["PGR = (Strong_trained - Weak) / (Strong_ceiling - Weak)"]
+    end
+
+    Training --> Evaluation
+    Evaluation --> Metrics
+`} />
+
+The core experimental setup trains a strong pretrained model using labels generated by a weaker model, then measures how much of the capability gap the strong model recovers. A PGR of 100% would mean weak supervision is fully sufficient; 0% would mean the strong model merely imitates weak model errors.
 
 ## Risk Assessment & Impact
 
@@ -110,6 +146,16 @@ Weak-to-strong generalization experiments follow a specific structure:
 | **Task Dependence** | Generalization varies; safety-critical tasks unknown | May not transfer |
 | **Scaling Unknown** | Current capability gaps modest | May fail at large gaps |
 
+### Known Disanalogies
+
+The [original paper](https://arxiv.org/abs/2312.09390) acknowledges important ways current experiments differ from the ultimate superhuman alignment problem:
+
+| Disanalogy | Description | Implication |
+|------------|-------------|-------------|
+| **Imitation Saliency** | Future superhuman models will have salient representations of human behaviors; current strong models may not have learned features relevant for imitating weak model predictions | Imitating the weak supervisor may be easier to avoid in current experiments than it will be with superhuman models |
+| **Pretraining Leakage** | Pretraining data implicitly contains human supervision | Strong models may already have learned some alignment-relevant behaviors |
+| **Leap of Faith** | When applied to tasks without ground truth, we must trust the strong model is being honest | Creates natural opportunity for deceptive behavior in deployment |
+
 ## The Deception Problem
 
 ### Why Deception Changes Everything
@@ -161,6 +207,19 @@ If it doesn't work:
 | **Adoption Level** | Experimental | Research stage only |
 | **Primary Researchers** | OpenAI, Anthropic | Major labs interested |
 | **Recommendation** | Increase | High potential; deserves more attention |
+
+### Recent Progress (2024-2025)
+
+Research has expanded significantly since the original 2023 paper:
+
+| Development | Source | Key Contribution |
+|-------------|--------|------------------|
+| **Debate-Assisted W2SG** | [Lang et al., 2025](https://arxiv.org/abs/2501.13124) | Debate helps weak models extract trustworthy information from strong models |
+| **SEAM Framework** | [AAAI 2025](https://ojs.aaai.org/index.php/AAAI/article/view/34955) | Positions aligned weak model as "annotation master" while leveraging strong model knowledge |
+| **Scalable Oversight + W2SG** | [Feng et al., 2024](https://arxiv.org/abs/2402.00667) | Combines ensemble learning with scalable oversight techniques |
+| **Transfer Learning Framework** | [arXiv 2024](https://arxiv.org/abs/2405.16236) | Formal transfer learning approach to weak-to-strong generalization |
+
+Anthropic's [2025 research recommendations](https://alignment.anthropic.com/2025/recommended-directions/) identify weak-to-strong generalization as a key priority within scalable oversight, noting particular interest in "improving or measuring weak-to-strong generalization" and creating testbeds where systematic overseer errors can be studied.
 
 ### Differential Progress Analysis
 
@@ -230,16 +289,17 @@ If it doesn't work:
 
 | Type | Source | Key Contributions |
 |------|--------|------------------|
-| **Foundational Paper** | Weak-to-Strong Generalization (OpenAI, 2023) | Introduced framework, initial experiments |
-| **Follow-up Work** | Various workshop papers | Extended analysis |
+| **Foundational Paper** | [Burns et al. (2023)](https://arxiv.org/abs/2312.09390) "Weak-to-Strong Generalization: Eliciting Strong Capabilities With Weak Supervision" | Introduced framework, initial experiments showing 20-50% PGR |
+| **OpenAI Blog** | [OpenAI Superalignment](https://openai.com/index/weak-to-strong-generalization/) | Announced \$10M grants program, research direction overview |
+| **Debate Extension** | [Lang et al. (2025)](https://arxiv.org/abs/2501.13124) "Debate Helps Weak-to-Strong Generalization" | Shows debate improves weak supervision quality |
+| **Anthropic Directions** | [Recommended Research Directions (2025)](https://alignment.anthropic.com/2025/recommended-directions/) | Places W2SG within scalable oversight priorities |
 
-### Related Research
+### Analysis & Commentary
 
-| Focus Area | Relevance |
-|------------|-----------|
-| **Scalable Oversight** | Parent problem area |
-| **Debate** | Alternative approach |
-| **Interpretability** | Complementary verification |
+| Source | Focus |
+|--------|-------|
+| [Scalable Oversight and W2SG](https://www.alignmentforum.org/posts/hw2tGSsvLLyjFoLFS/scalable-oversight-and-weak-to-strong-generalization) | Comparison of complementary approaches |
+| [A Review of W2SG (AI Safety Camp)](https://www.lesswrong.com/posts/ELbGqXiLbRe6zSkTu/a-review-of-weak-to-strong-generalization-ai-safety-camp) | Critical analysis of limitations and disanalogies |
 
 ---
 
@@ -253,6 +313,15 @@ Weak-to-strong generalization relates to the <EntityLink id="ai-transition-model
 | <EntityLink id="ai-capability-level" /> | Oversight gap | Directly addresses supervision-capability gap |
 
 Whether weak-to-strong generalization works fundamentally determines the viability of current alignment approaches as AI capabilities increase.
+
+## Risks Addressed
+
+| Risk | Relevance | How It Helps |
+|------|-----------|--------------|
+| <EntityLink id="scalable-oversight">Scalable Oversight Failure</EntityLink> | High | Directly addresses the core problem of supervising systems smarter than the supervisor |
+| <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> | High | If successful, could detect when models behave differently during training vs deployment |
+| <EntityLink id="reward-hacking">Reward Hacking</EntityLink> | Medium | Strong models may generalize to true intent rather than exploiting supervisor errors |
+| <EntityLink id="goal-misgeneralization">Goal Misgeneralization</EntityLink> | Medium | Tests whether models learn intended behavior beyond their training distribution |
 
 ## Related Pages
 

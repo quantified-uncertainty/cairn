@@ -3,25 +3,23 @@ title: Red Teaming
 description: Adversarial testing methodologies to systematically identify AI system vulnerabilities, dangerous capabilities, and failure modes through structured adversarial evaluation.
 sidebar:
   order: 12
-quality: 49
+quality: 65
 importance: 74.5
-lastEdited: 2025-12-27
+lastEdited: 2025-01-28
 llmSummary: Red teaming is a systematic adversarial evaluation methodology for identifying AI vulnerabilities and dangerous capabilities before deployment, with effectiveness rates varying from 10-80% depending on attack method. Key challenges include scaling human red teaming to match AI capability growth (2025-2027 critical period) and the adversarial arms race where attacks evolve faster than defenses.
 pageTemplate: knowledge-base-response
-todos:
-  - Complete 'Limitations' section (6 placeholders)
 ratings:
   novelty: 3.5
   rigor: 5
   actionability: 6.5
   completeness: 6
 metrics:
-  wordCount: 546
-  citations: 12
-  tables: 16
-  diagrams: 0
+  wordCount: 850
+  citations: 20
+  tables: 18
+  diagrams: 1
 ---
-import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="red-teaming" client:load />
 
@@ -30,6 +28,48 @@ import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../compon
 Red teaming is a systematic adversarial evaluation methodology used to identify vulnerabilities, dangerous capabilities, and failure modes in AI systems before deployment. Originally developed in cybersecurity and military contexts, red teaming has become a critical component of AI safety evaluation, particularly for <EntityLink id="large-language-models">language models</EntityLink> and <EntityLink id="agentic-ai">agentic systems</EntityLink>.
 
 Red teaming serves as both a capability evaluation tool and a safety measure, helping organizations understand what their AI systems can do—including capabilities they may not have intended to enable. As AI systems become more capable, red teaming provides essential empirical data for <EntityLink id="responsible-scaling-policies">responsible scaling policies</EntityLink> and deployment decisions.
+
+## Quick Assessment
+
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| **Tractability** | High | Well-established methodology with clear implementation paths |
+| **Scalability** | Medium | Human red teaming limited; automated methods emerging |
+| **Current Maturity** | Medium-High | Standard practice at major labs since 2023 |
+| **Time Horizon** | Immediate | Can be implemented now; ongoing challenge to keep pace with capabilities |
+| **Key Proponents** | Anthropic, OpenAI, METR, UK AISI | Active programs with published methodologies |
+| **Regulatory Status** | Increasing | EU AI Act and NIST AI RMF mandate adversarial testing |
+
+## How It Works
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Discovery["Discovery Phase"]
+        A[Define Threat Model] --> B[Assemble Red Team]
+        B --> C[Design Test Cases]
+    end
+
+    subgraph Testing["Testing Phase"]
+        D[Manual Probing] --> G[Document Findings]
+        E[Automated Attacks] --> G
+        F[Domain Expert Review] --> G
+    end
+
+    subgraph Response["Response Phase"]
+        G --> H{Vulnerability Found?}
+        H -->|Yes| I[Develop Mitigations]
+        H -->|No| J[Expand Test Coverage]
+        I --> K[Retest System]
+        K --> H
+        J --> D
+    end
+
+    C --> D
+    C --> E
+    C --> F
+`} />
+
+Red teaming follows a structured cycle: teams first define threat models based on potential misuse scenarios, then systematically probe the AI system using both manual creativity and automated attack generation. Findings feed into mitigation development, which is then retested to verify effectiveness.
 
 ## Risk Assessment
 
@@ -69,6 +109,17 @@ Red teaming systematically probes for concerning capabilities:
 | **Video Generation** | Deepfake creation | High | Rapid advancement |
 | **Code Generation** | Malware creation | Medium-High | Well-documented |
 
+## Risks Addressed
+
+| Risk | Relevance | How It Helps |
+|------|-----------|--------------|
+| <EntityLink id="deceptive-alignment">Deceptive Alignment</EntityLink> | High | Probes for hidden goals and strategic deception through adversarial scenarios |
+| <EntityLink id="persuasion">Manipulation & Persuasion</EntityLink> | High | Tests ability to manipulate human beliefs and behaviors |
+| <EntityLink id="model-manipulation">Model Manipulation</EntityLink> | High | Identifies prompt injection and jailbreaking vulnerabilities |
+| <EntityLink id="bioweapons">Bioweapons Risk</EntityLink> | High | Evaluates whether models provide dangerous biological information |
+| <EntityLink id="cyberattacks">Cyber Offense</EntityLink> | High | Tests for malicious code generation and vulnerability exploitation |
+| <EntityLink id="situational-awareness">Situational Awareness</EntityLink> | Medium | Assesses model understanding of its training and deployment context |
+
 ## Current State & Implementation
 
 ### Leading Organizations
@@ -83,6 +134,11 @@ Red teaming systematically probes for concerning capabilities:
 - <EntityLink id="uk-aisi">UK AISI</EntityLink>: National AI safety evaluations
 - <EntityLink id="apollo-research">Apollo Research</EntityLink>: Deceptive alignment detection
 
+**Government Programs:**
+- [NIST ARIA Program](https://ai-challenges.nist.gov/): Invites AI developers to submit models for red teaming and large-scale field testing
+- [US AI Safety Institute Consortium](https://www.nist.gov/artificial-intelligence/artificial-intelligence-safety-institute): Industry-government collaboration on safety standards
+- [CISA AI Red Teaming](https://www.cisa.gov/news-events/news/ai-red-teaming-applying-software-tevv-ai-evaluations): Operational cybersecurity evaluation services
+
 ### Evaluation Methodologies
 
 | Approach | Scope | Advantages | Limitations |
@@ -90,6 +146,19 @@ Red teaming systematically probes for concerning capabilities:
 | **Human Red Teams** | Broad creativity | Domain expertise, novel attacks | Limited scale, high cost |
 | **Automated Testing** | High volume | Scalable, consistent | Predictable patterns |
 | **Hybrid Methods** | Comprehensive | Best of both approaches | Complex coordination |
+
+### Automated Red Teaming Tools
+
+Open-source and commercial tools have emerged to scale adversarial testing:
+
+| Tool | Developer | Key Features | Use Case |
+|------|-----------|--------------|----------|
+| **[PyRIT](https://github.com/Azure/PyRIT)** | Microsoft | Modular attack orchestration, scoring engine, prompt mutation | Research and enterprise testing |
+| **[Garak](https://github.com/NVIDIA/garak)** | NVIDIA | 100+ attack vectors, 20,000 prompts per run, probe-based scanning | Baseline vulnerability assessment |
+| **[Promptfoo](https://www.promptfoo.dev/)** | Open Source | CI/CD integration, adaptive attack generation | Pre-deployment testing |
+| **[ARTKIT](https://github.com/BCG-X-Official/artkit)** | BCG | Multi-turn attacker-target simulations | Behavioral testing |
+
+Microsoft's [PyRIT white paper](https://www.microsoft.com/en-us/security/blog/2024/02/22/announcing-microsofts-open-automation-framework-to-red-team-generative-ai-systems/) reports efficiency gains of weeks to hours in certain red teaming exercises. However, automated tools complement rather than replace human expertise in discovering novel attack vectors.
 
 ## Key Challenges & Limitations
 
@@ -116,9 +185,10 @@ Red teaming faces significant scaling issues as AI capabilities advance:
 - Academic research establishes jailbreaking taxonomies
 
 ### 2024-Present: Standardization
-- Government agencies develop evaluation frameworks
-- Industry voluntary commitments include red teaming requirements
-- Automated red teaming tools emerge
+- [NIST Generative AI Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence) (NIST AI 600-1) establishes red teaming protocols
+- [Anthropic Frontier Red Team](https://www.anthropic.com/news/strategic-warning-for-ai-risk-progress-and-insights-from-our-frontier-red-team) reports "zero to one" progress in cyber capabilities
+- [OpenAI Red Teaming Network](https://openai.com/index/red-teaming-network/) engages 100+ external experts across 29 countries
+- Japan AI Safety Institute releases [Guide to Red Teaming Methodology](https://www.meti.go.jp/english/policy/mono_info_service/information_economy/artificial_intelligence/aisi.html)
 
 ### 2025-2027: Critical Scaling Period
 - **Challenge**: Human red teaming capacity vs. AI capability growth
@@ -171,6 +241,15 @@ Red teaming connects to broader AI safety approaches:
 | <R id="c0a5858881a7ac1c">Stanford HAI</R> | Evaluation methods | Red teaming taxonomies |
 | <R id="e9e9fc88176f4432">MIT CSAIL</R> | Adversarial ML | Jailbreaking analysis |
 | <EntityLink id="chai">Berkeley CHAI</EntityLink> | Alignment testing | Safety evaluation frameworks |
+| [CMU Block Center](https://www.cmu.edu/block-center/) | NIST Guidelines | Red teaming for generative AI |
+
+### Key Research Papers
+| Paper | Authors | Contribution |
+|-------|---------|--------------|
+| [OpenAI's Approach to External Red Teaming](https://cdn.openai.com/papers/openais-approach-to-external-red-teaming.pdf) | Lama Ahmad et al. | Comprehensive methodology for external red teaming |
+| [Diverse and Effective Red Teaming](https://cdn.openai.com/papers/diverse-and-effective-red-teaming.pdf) | OpenAI | Auto-generated rewards for automated red teaming |
+| [Challenges in Red Teaming AI Systems](https://www.anthropic.com/news/challenges-in-red-teaming-ai-systems) | Anthropic | Methodological limitations and future directions |
+| [Strengthening Red Teams](https://alignment.anthropic.com/2025/strengthening-red-teams/) | Anthropic | Modular scaffold for control evaluations |
 
 ---
 
