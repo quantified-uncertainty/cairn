@@ -1,9 +1,9 @@
 ---
 title: CAIRN
-description: Strategic intelligence for AI safety prioritization - a decision-support tool for understanding AI risks and interventions
+description: Strategic intelligence for AI safety prioritization - a encyclopedic resource for understanding AI risks and interventions
 pageTemplate: splash
 hero:
-  tagline: Strategic intelligence for AI safety prioritization
+  tagline: Encyclopedia for AI safety prioritization
   actions:
     - text: Explore All Content
       link: /explore/
@@ -14,202 +14,85 @@ hero:
       variant: minimal
 ---
 import {R, EntityLink} from '../../components/wiki';
-
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
 ## What Is CAIRN?
 
-**CAIRN** — **C**omprehensive **A**I **I**mpact & **R**isk **N**avigator — is a **decision-support tool** for AI safety prioritization. It helps funders, researchers, and policymakers answer: *"Where should the next marginal dollar or researcher-hour go?"*
+**CAIRN** (**C**omprehensive **A**I **I**mpact & **R**isk **N**avigator) is an encyclopedic resource for AI safety. It helps funders, researchers, and policymakers understand the landscape of AI risks and interventions.
 
-Unlike traditional wikis that aim for comprehensive documentation, CAIRN focuses on **strategic clarity**: surfacing the key uncertainties and cruxes that, if resolved, would most change how resources should be allocated across AI safety interventions.
+The site contains 400+ pages covering risks, technical approaches, governance proposals, key debates, and the organizations and researchers working on these problems.
 
 ---
 
-## Core Content
+## Main Sections
 
 <CardGrid>
-  <Card title="🎯 AI Transition Model" icon="warning">
-    A [causal framework](/ai-transition-model/) mapping how root factors shape AI outcomes.
+  <Card title="AI Transition Model" icon="warning">
+    A [causal framework](/ai-transition-model/) mapping how AI development could lead to different outcomes.
 
-    - [Root Factors](/ai-transition-model/factors/) - What drives AI trajectories
-    - [Scenarios](/ai-transition-model/scenarios/) - Pathways to different outcomes
-    - [Interactive Views](/ai-transition-model-views/graph/) - Explore the model visually
+    - [Key Factors](/ai-transition-model/factors/) — What shapes AI trajectories
+    - [Scenarios](/ai-transition-model/scenarios/) — Possible futures
   </Card>
 
-  <Card title="💡 Critical Insights" icon="star">
-    High-value knowledge contributions that shift how informed people think:
+  <Card title="Knowledge Base" icon="open-book">
+    Encyclopedic coverage of AI safety topics:
 
-    - [Insight Database](/insight-hunting/insights/) - 1000+ extracted insights
-    - [Critical Insights Framework](/project/critical-insights/) - What makes knowledge valuable
-    - [Gap Analysis](/insight-hunting/gap-analysis/) - Where research is needed
+    - [Risks](/knowledge-base/risks/) — Accident, misuse, structural, epistemic
+    - [Responses](/knowledge-base/responses/) — Technical and governance approaches
+    - [Models](/knowledge-base/models/) — Analytical frameworks
   </Card>
 
-  <Card title="❓ Key Uncertainties" icon="comment-alt">
-    Cruxes that drive disagreement and prioritization:
+  <Card title="Key Debates" icon="comment-alt">
+    Structured arguments on contested questions:
 
-    - 53 documented cruxes - Key uncertainties mapped
-    - Key debates - Structured arguments on contested questions
-    - [Worldview Analysis](/project/vision/) - How assumptions lead to priorities
+    - [Is AI X-Risk Real?](/knowledge-base/debates/is-ai-xrisk-real/)
+    - [Why Alignment Might Be Hard](/knowledge-base/debates/formal-arguments/why-alignment-hard/)
+    - [Why Alignment Might Be Easy](/knowledge-base/debates/formal-arguments/why-alignment-easy/)
   </Card>
 
-  <Card title="🛡️ Safety Approaches" icon="approve-check">
-    Technical and governance solutions:
-
-    - Technical approaches (interpretability, RLHF, AI control)
-    - Governance (compute governance, international coordination)
-    - Browse "Interventions" in the sidebar for all approaches
-  </Card>
-
-  <Card title="📐 Key Parameters" icon="setting">
-    Foundational variables AI affects in both directions:
-
-    - [All parameters](/ai-transition-model/) (alignment robustness, racing intensity, societal trust)
-    - A symmetric framework connecting risks and interventions
-    - Track what matters, not just what could go wrong
-  </Card>
-
-  <Card title="🏢 Field Reference" icon="seti:folder">
+  <Card title="Field Reference" icon="seti:folder">
     Who's working on what:
 
-    - Labs, research orgs, government bodies
-    - Key researcher profiles and positions
-    - Browse "Organizations" and "People" in the sidebar
+    - [Organizations](/knowledge-base/organizations/) — Labs, research orgs, government
+    - [People](/knowledge-base/people/) — Key researchers and their positions
   </Card>
 </CardGrid>
 
 ---
 
-## Analysis & Visualization
+## Featured Pages
 
-<CardGrid>
-  <Card title="📊 History" icon="seti:clock">
-    AI safety timeline from the Dartmouth conference to the present day. Browse "History" in sidebar.
-  </Card>
+High-quality pages worth reading:
 
-  <Card title="🗺️ Entity Graph" icon="seti:pipeline">
-    [Visual dependency graph](/dashboard/graph/) showing how entities connect.
-  </Card>
+| Topic | Page | Description |
+|-------|------|-------------|
+| Risk | [Deceptive Alignment](/knowledge-base/risks/accident/deceptive-alignment/) | AI systems that appear aligned during training but pursue different goals when deployed |
+| Risk | [Racing Dynamics](/knowledge-base/risks/structural/racing-dynamics/) | How competition between labs may compromise safety |
+| Response | [AI Control](/knowledge-base/responses/alignment/ai-control/) | Using untrusted AI safely through monitoring and restrictions |
+| Response | [Export Controls](/knowledge-base/responses/governance/compute-governance/export-controls/) | Restricting AI chip exports as a governance lever |
+| Capability | [Language Models](/knowledge-base/capabilities/language-models/) | Current capabilities and safety implications of LLMs |
 
-  <Card title="🔮 Scenarios" icon="puzzle">
-    Future projections for how AI development might unfold. Browse "Future Projections" in sidebar.
-  </Card>
-
-  <Card title="📚 Explore" icon="document">
-    [Browse all entries](/explore/) — risks, responses, organizations, people, and cruxes.
-  </Card>
-</CardGrid>
+[Browse all content →](/explore/)
 
 ---
 
-## Learning Paths
+## Limitations
 
-**New to AI safety?** Start with:
-1. [AI Transition Model](/ai-transition-model/) - Framework for understanding AI outcomes
-2. [Explore All Content](/explore/) - Browse the complete database
-3. Browse "Risks" in sidebar - What could go wrong
+**This resource reflects an AI safety community perspective.** It takes seriously the possibility of existential risk from AI and maps the arguments, organizations, and research from that viewpoint.
 
-**Want to contribute?** Explore:
-1. Browse "Interventions" in sidebar - What can you do?
-2. [Explore all content](/explore/) - Browse the database
-3. Browse "Organizations" in sidebar - Who's working on this
-
-**Looking for depth?** Try:
-1. [Key Parameters](/ai-transition-model/) - The variables that matter for AI outcomes
-2. Browse "Key Debates" in sidebar - Strongest arguments on each side
-3. <EntityLink id="research-agendas">Research agendas</EntityLink> - Compare approaches
-
----
-
-## Key Numbers
-
-| Question | Estimates |
-|----------|-----------|
-| **P(transformative AI by 2040)** | 40-80% (varies by source) |
-| **P(doom) estimates** | 5-90% (wide disagreement) |
-| **AI safety researchers** | ~300-1000 FTE |
-| **Annual safety funding** | ~\$100-500M |
-| **Frontier lab safety spend** | ~\$50-200M combined |
-
-See the [dashboard](/dashboard/) for more details.
-
----
-
-## Featured People
-
-Key voices in AI safety:
-
-- **<EntityLink id="dario-amodei">Dario Amodei</EntityLink>** - Anthropic CEO, "10-25% doom"
-- **<EntityLink id="eliezer-yudkowsky">Eliezer Yudkowsky</EntityLink>** - MIRI, most pessimistic public voice
-- **<EntityLink id="paul-christiano">Paul Christiano</EntityLink>** - ARC founder, influential alignment researcher
-- **<EntityLink id="geoffrey-hinton">Geoffrey Hinton</EntityLink>** - "Godfather of AI", recent safety advocate
-- **<EntityLink id="stuart-russell">Stuart Russell</EntityLink>** - UC Berkeley, *Human Compatible* author
-
-Browse "People" in the sidebar to see all researchers.
-
----
-
-## This Wiki Is...
-
-✅ **Comprehensive** — Covers technical, governance, and strategic perspectives
-
-✅ **Structured** — Organized by cruxes, not just topics
-
-✅ **Parameter-oriented** — Tracks foundational variables, not just risks
-
-✅ **Interactive** — Timeline, risk maps, argument maps
-
-✅ **Practical** — Career and funding guidance
-
----
-
-## Limitations & Perspective
-
-**This wiki is not neutral.** It was created within the AI safety community and reflects that perspective. While we strive to present counterarguments fairly, readers should be aware:
-
-**What this wiki does well:**
+What it does well:
 - Steelmans the case for AI existential risk
-- Maps the landscape of AI safety arguments, organizations, and research
-- Presents the range of views *within* the AI safety community
+- Maps the landscape of AI safety research and governance
+- Presents the range of views within the AI safety community
 
-**What this wiki does less well:**
+What it does less well:
 - Representing perspectives that reject the x-risk framing entirely
-- Engaging deeply with AI ethics/fairness concerns (often dismissed as "near-term")
+- Engaging deeply with AI ethics/fairness concerns
 - Covering non-Western perspectives on AI development
-- Quantifying uncertainty honestly (probability estimates should be treated as rough intuitions)
 
-**Key assumptions embedded in this wiki:**
-- That "existential risk" is a coherent concept for AI
-- That the theoretical arguments for concern (orthogonality, instrumental convergence) are basically sound
-- That the AI safety community's research agenda is on the right track
+**Alternative viewpoints:**
+<R id="9b1ab7f63e6b1b35">Gary Marcus's Substack</R> (AI skepticism) •
+<R id="4ca01f329c8b25a4">Yann LeCun's posts</R> (AGI skepticism) •
+<R id="81595c2c950080a6">Timnit Gebru et al.</R> (AI ethics)
 
-**If you're skeptical of these assumptions**, this wiki may still be useful for understanding what AI safety researchers believe and why—but you should seek out alternative perspectives as well.
-
-**Recommended alternative viewpoints:**
-- <R id="9b1ab7f63e6b1b35">Gary Marcus's Substack</R> — AI skepticism
-- <R id="81595c2c950080a6">Timnit Gebru et al.'s work</R> — AI ethics perspective
-- <R id="4ca01f329c8b25a4">Yann LeCun's posts</R> — Skepticism of AGI/x-risk framing
-- <R id="10202ee006b2ebdf">Emily Bender's work</R> — Linguistic critique of LLM capabilities
-
-**[Read our full transparency statement →](/about/)**
-
----
-
-## Contributing
-
-This is an open project. Key areas where contributions would be valuable:
-- Adding researcher profiles
-- Updating organization pages
-- Improving argument maps
-- Adding sources and citations
-
----
-
-<CardGrid>
-  <Card title="Explore by Topic" icon="magnifier">
-    Browse the sidebar to explore specific topics, risks, and organizations.
-  </Card>
-
-  <Card title="Start Learning" icon="open-book">
-    [Explore the AI Transition Model →](/ai-transition-model/)
-  </Card>
-</CardGrid>
+[Read full transparency statement →](/about/)
