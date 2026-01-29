@@ -41,7 +41,60 @@ export default defineConfig({
               // Top-level navigation items
               { label: 'Start Here', slug: 'getting-started' },
               { label: 'Explore All Content', link: '/explore', attrs: { class: 'sidebar-icon-explore' } },
-              // Main content sections (formerly under Knowledge Base)
+              // Main content sections
+              {
+                  label: 'Interventions',
+                  collapsed: true,
+                  items: [
+                      { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
+                      { label: 'Safety Generalizability', collapsed: true, items: [
+                          { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table', attrs: { class: 'sidebar-icon-table' } },
+                          { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { class: 'sidebar-icon-matrix' } },
+                      ]},
+                      { label: 'Governance', collapsed: true, items: [
+                          { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
+                          { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
+                          { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
+                          { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
+                          { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
+                      ]},
+                      { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
+                      { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
+                      { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/organizational-practices' } },
+                      { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
+                      { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
+                  ],
+              },
+              {
+                  label: 'Risks',
+                  collapsed: true,
+                  items: [
+                      { label: 'Accident Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/accident' } },
+                      { label: 'Misuse Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/misuse' } },
+                      { label: 'Structural Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/structural' } },
+                      { label: 'Epistemic Harms', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
+                  ],
+              },
+              {
+                  label: 'Organizations',
+                  collapsed: true,
+                  items: [
+                      { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
+                      { label: 'Safety Research Orgs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
+                      { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
+                  ],
+              },
+              { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
+              { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
+              {
+                  label: 'Intelligence Paradigms',
+                  collapsed: true,
+                  items: [
+                      { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
+                      { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
+                  ],
+              },
+              // AI Transition Model - comprehensive framework
               {
                   label: 'AI Transition Model',
                   collapsed: true,
@@ -104,64 +157,15 @@ export default defineConfig({
                       ]},
                   ],
               },
+              // Reference materials
               {
-                  label: 'Interventions',
+                  label: 'Reference',
                   collapsed: true,
                   items: [
-                      { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
-                      { label: 'Safety Generalizability', collapsed: true, items: [
-                          { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table', attrs: { class: 'sidebar-icon-table' } },
-                          { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { class: 'sidebar-icon-matrix' } },
-                      ]},
-                      { label: 'Governance', collapsed: true, items: [
-                          { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
-                          { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
-                          { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
-                          { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
-                          { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
-                      ]},
-                      { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
-                      { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
-                      { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/organizational-practices' } },
-                      { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
-                      { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
+                      { label: 'Analytical Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
+                      { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
                   ],
               },
-              {
-                  label: 'Risks',
-                  collapsed: true,
-                  items: [
-                      { label: 'Accident Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/accident' } },
-                      { label: 'Misuse Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/misuse' } },
-                      { label: 'Structural Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/structural' } },
-                      { label: 'Epistemic Harms', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
-                  ],
-              },
-              {
-                  label: 'Organizations',
-                  collapsed: true,
-                  items: [
-                      { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
-                      { label: 'Safety Research Orgs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
-                      { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
-                  ],
-              },
-              { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
-              { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
-              { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
-              { label: 'Key Metrics', collapsed: true, autogenerate: { directory: 'knowledge-base/metrics' } },
-              { label: 'Models', collapsed: true, autogenerate: { directory: 'knowledge-base/models' } },
-              {
-                  label: 'Intelligence Paradigms',
-                  collapsed: true,
-                  items: [
-                      { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
-                      { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
-                  ],
-              },
-              { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
-              { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
-              { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
               {
                   label: 'Dashboards & Tools',
                   collapsed: false,

@@ -13,7 +13,7 @@
  *   --ci              Output JSON for CI pipelines
  *   --fail-fast       Stop on first failure
  *   --skip=<check>    Skip specific checks (comma-separated)
- *                     Available: data, links, entity-links, orphans, mdx, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
+ *                     Available: data, links, entity-links, orphans, mdx, mdx-compile, component-refs, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
  *
  * Exit codes:
  *   0 = All checks passed
@@ -86,6 +86,18 @@ const CHECKS = [
     name: 'MDX Syntax',
     script: 'validate-mdx-syntax.mjs',
     description: 'Mermaid components, escaped characters, common errors',
+  },
+  {
+    id: 'mdx-compile',
+    name: 'MDX Compilation',
+    script: 'validate-mdx-compile.mjs',
+    description: 'Actually compile MDX to catch JSX parsing errors before build',
+  },
+  {
+    id: 'component-refs',
+    name: 'Component References',
+    script: 'validate-component-refs.mjs',
+    description: 'Verify EntityLink, DataInfoBox etc. reference valid entities',
   },
   {
     id: 'mermaid',

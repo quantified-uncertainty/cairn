@@ -12,9 +12,58 @@ on:
     - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
 
 jobs:
+  # PARANOID PRE-CHECK: Catch build-breaking errors BEFORE everything else
+  # These are fast checks that catch common MDX/JSX issues that would fail the build
+  pre-check:
+    name: Pre-Build Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check for unescaped comparison operators
+        working-directory: apps/longterm
+        run: |
+          echo "Checking for unescaped < and > that will break JSX parsing..."
+          node scripts/validate/validate-comparison-operators.mjs
+
+      - name: Check for unescaped dollar signs
+        working-directory: apps/longterm
+        run: |
+          echo "Checking for unescaped $ that will break LaTeX..."
+          node scripts/validate/validate-dollar-signs.mjs
+
+      - name: Compile MDX files (catch JSX errors)
+        working-directory: apps/longterm
+        run: |
+          echo "Attempting to compile all MDX files..."
+          node scripts/validate/validate-mdx-compile.mjs --ci
+
+      - name: Validate component references
+        working-directory: apps/longterm
+        run: |
+          # Build data first (needed for entity lookups)
+          node scripts/build-data.mjs
+          echo "Checking that component references are valid..."
+          node scripts/validate/validate-component-refs.mjs --ci
+
   validate:
     name: Run Validation Checks
     runs-on: ubuntu-latest
+    needs: pre-check  # Only run full validation if pre-check passes
 
     steps:
       - name: Checkout repository
@@ -42,8 +91,8 @@ jobs:
         id: validate
         working-directory: apps/longterm
         run: |
-          # Run validation and capture output (run script directly to avoid pnpm prefix in output)
-          node scripts/validate/validate-all.mjs --ci > ../../validation-results.json 2>&1 || true
+          # Skip mdx-compile and component-refs since pre-check already ran them
+          node scripts/validate/validate-all.mjs --ci --skip=mdx-compile,component-refs > ../../validation-results.json 2>&1 || true
 
           # Parse results for summary
           cat ../../validation-results.json

@@ -30,6 +30,9 @@
     "validate:quality": "node scripts/validate/validate-quality.mjs",
     "validate:dollars": "node scripts/validate/validate-dollar-signs.mjs",
     "validate:comparisons": "node scripts/validate/validate-comparison-operators.mjs",
+    "validate:compile": "node scripts/validate/validate-mdx-compile.mjs",
+    "validate:compile:quick": "node scripts/validate/validate-mdx-compile.mjs --quick",
+    "validate:refs": "node scripts/validate/validate-component-refs.mjs",
     "validate:redundancy": "node scripts/validate/validate-redundancy.mjs",
     "validate:infobox": "node scripts/validate/validate-sidebar-infobox.mjs",
     "validate:templates": "node scripts/validate/validate-templates.mjs",
@@ -40,6 +43,8 @@
     "fix:broken-links:dry": "node scripts/fix-broken-links.mjs --dry-run",
     "fix:all": "node scripts/auto-fix.mjs",
     "fix:all:dry": "node scripts/auto-fix.mjs --dry-run",
+    "precommit": "npm run validate:comparisons && npm run validate:dollars && npm run validate:compile:quick",
+    "precommit:full": "npm run validate:comparisons && npm run validate:dollars && npm run validate:compile && npm run validate:refs",
     "grade:templates": "node scripts/content/grade-by-template.mjs",
     "templates:add": "node scripts/content/add-template-declarations.mjs",
     "templates:improve": "node scripts/content/improve-page-structure.mjs",
@@ -115,6 +120,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@mdx-js/mdx": "^3.0.1",
     "@eslint/js": "^9.39.2",
     "@mendable/firecrawl-js": "^4.11.5",
     "@types/js-yaml": "^4.0.9",
@@ -128,6 +134,8 @@
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0",
-    "typescript-eslint": "^8.54.0"
+    "typescript-eslint": "^8.54.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx-frontmatter": "^4.0.0"
   }
 }

@@ -1,6 +1,7 @@
 ---
 title: Start Here
 description: A guide to navigating this AI safety wiki
+slug: getting-started
 sidebar:
   label: Start Here
   order: 0

@@ -456,7 +456,10 @@ npm run validate:staleness    # Content freshness
 npm run validate:consistency  # Cross-page consistency
 npm run validate:data         # Entity data integrity
 npm run validate:links        # Internal link validation
-npm run validate:mdx          # MDX syntax validation
+npm run validate:mdx          # MDX syntax validation (regex-based)
+npm run validate:compile      # MDX compilation check (catches JSX errors)
+npm run validate:compile:quick # MDX compile for changed files only
+npm run validate:refs         # Component references (EntityLink, DataInfoBox, etc.)
 npm run validate:mermaid      # Mermaid diagram syntax and best practices
 npm run validate:sidebar      # Sidebar configuration (index pages)
 npm run validate:types        # UI components handle all schema entity types
@@ -464,6 +467,21 @@ npm run validate:dollars      # Currency values escaped for LaTeX
 npm run validate:comparisons  # Less-than/greater-than escaped for JSX
 npm run validate:templates    # Page template compliance
 ```
+
+### Pre-Commit Checks
+
+**IMPORTANT**: Run these before committing to catch build-breaking errors early:
+
+```bash
+npm run precommit       # Quick check: comparisons, dollars, compile (changed files)
+npm run precommit:full  # Full check: all above + component refs validation
+```
+
+These catch common issues that would fail CI:
+- Unescaped `<100ms` in tables (parsed as JSX tags)
+- Unescaped `$100` (parsed as LaTeX)
+- Invalid component references (e.g., `<EntityLink id="nonexistent" />`)
+- Unused imports
 
 ### Workflow: Validate Content
 
