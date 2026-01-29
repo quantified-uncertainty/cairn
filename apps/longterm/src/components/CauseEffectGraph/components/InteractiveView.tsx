@@ -117,15 +117,15 @@ function SubItem({
   const hasTooltipContent = summary || entityType;
 
   return (
-    <div className="group relative py-0.5">
+    <div className="group relative">
       <span className={cn(
-        "text-[13px] text-gray-600 dark:text-gray-400",
+        "text-[15px] text-gray-500 dark:text-gray-400",
         hasTooltipContent && "cursor-help"
       )}>
         {href ? (
           <a
             href={href}
-            className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 no-underline hover:underline"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 no-underline hover:underline"
           >
             {item.label}
           </a>
@@ -192,8 +192,8 @@ function NodeItem({
   return (
     <Card
       className={cn(
-        // Base styles - compact card that doesn't stretch
-        "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200",
+        // Base styles - clean card with subtle shadow
+        "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm transition-all duration-200",
         // Highlighted state
         isHighlighted && "border-blue-500 ring-2 ring-blue-500/20",
         // Dimmed state
@@ -202,17 +202,19 @@ function NodeItem({
     >
       <div
         ref={headerRef}
-        className="px-3 py-2 cursor-pointer text-sm font-medium text-gray-800 dark:text-gray-200 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        className="px-5 pt-4 pb-2 cursor-pointer"
         onMouseEnter={handleHeaderEnter}
         onMouseLeave={handleHeaderLeave}
       >
-        <span>{node.data.label}</span>
+        <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
+          {node.data.label}
+        </span>
       </div>
 
       {/* Only render content area if there are sub-items */}
       {hasSubItems && (
-        <div className="px-3 pb-2">
-          <div className="flex flex-col gap-0.5 pl-3 border-l-2 border-gray-200 dark:border-gray-600">
+        <div className="px-5 pb-4">
+          <div className="flex flex-col gap-2">
             {node.data.subItems!.map((item, i) => (
               <SubItem
                 key={i}
@@ -263,55 +265,22 @@ function TierSection({
     return [...nodeList].sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
   };
 
-  // Tier header colors
-  const tierHeaderColors = {
-    cause: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200',
-    intermediate: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200',
-    effect: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200',
-  };
-
   return (
-    <div className="mb-4 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div className={cn("px-4 py-2", tierHeaderColors[tierType])}>
-        <h3 className="text-sm font-semibold uppercase tracking-wide m-0">{title}</h3>
-      </div>
+    <div className="mb-8">
+      {/* Simple section header */}
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">
+        {title}
+      </h3>
 
-      <div className="p-3">
-        {hasSubgroups ? (
-          Object.entries(subgroups || {}).map(([key, config]) => {
-            const sgNodes = groupedNodes[key];
-            if (!sgNodes || sgNodes.length === 0) return null;
-
-            return (
-              <div key={key} className="mb-3 last:mb-0">
-                <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 pl-1">
-                  {config.label}
-                </div>
-                {/* CSS Grid with top-alignment */}
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 items-start">
-                  {sortNodes(sgNodes).map(node => (
-                    <NodeItem
-                      key={node.id}
-                      node={node}
-                      basePath={basePath}
-                    />
-                  ))}
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          /* CSS Grid with top-alignment */
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 items-start">
-            {sortNodes(nodes).map(node => (
-              <NodeItem
-                key={node.id}
-                node={node}
-                basePath={basePath}
-              />
-            ))}
-          </div>
-        )}
+      {/* 2-column grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        {sortNodes(nodes).map(node => (
+          <NodeItem
+            key={node.id}
+            node={node}
+            basePath={basePath}
+          />
+        ))}
       </div>
     </div>
   );
