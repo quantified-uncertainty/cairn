@@ -1,0 +1,90 @@
+---
+title: Longtermist Funders
+description: Overview of major funders supporting AI safety, existential risk reduction, and longtermist causes. These organizations and individuals collectively provide hundreds of millions of dollars annually to research, policy, and field-building efforts aimed at ensuring beneficial AI development.
+sidebar:
+  label: Overview
+  order: 0
+quality: 3
+lastEdited: "2026-01-29"
+importance: 75
+---
+import {DataInfoBox, Backlinks, Mermaid} from '../../../../../components/wiki';
+
+## Overview
+
+Longtermist funders provide critical financial support for organizations working on AI safety, existential risk reduction, and related cause areas. The funding landscape is characterized by a relatively small number of major philanthropists and foundations that provide the majority of resources, with additional support from regranting programs and smaller donors.
+
+The field has experienced significant growth in funding over the past decade, though it remains small relative to overall AI development spending. Major shifts occurred in 2022-2023 with the FTX collapse eliminating a significant planned funding source, though other funders have partially filled the gap.
+
+## Major Funders
+
+| Organization | Type | Annual Giving (Est.) | Primary Focus | Key Grantees |
+|--------------|------|---------------------|---------------|--------------|
+| [Open Philanthropy](/knowledge-base/organizations/funders/open-philanthropy) | Foundation | \$200M+ | AI safety, biosecurity, farm animal welfare | Anthropic, MIRI, Redwood, ARC |
+| [Survival and Flourishing Fund](/knowledge-base/organizations/funders/sff) | Donor Lottery | \$30-40M | AI safety, x-risk | MIRI, ARC Evals, SERI, CAIS |
+| [Long-Term Future Fund](/knowledge-base/organizations/funders/ltff) | Regranting | \$5-10M | AI safety, x-risk research | Individual researchers, small orgs |
+| [Manifund](/knowledge-base/organizations/funders/manifund) | Regranting Platform | \$2-5M | EA causes broadly | Community projects |
+| [Coefficient Giving](/knowledge-base/organizations/funders/coefficient-giving) | Regranting | \$50M+ (2024) | AI safety | Various |
+
+## Key Individual Donors
+
+| Person | Source of Wealth | Estimated Giving | Primary Vehicles |
+|--------|------------------|------------------|------------------|
+| [Dustin Moskovitz](/knowledge-base/organizations/funders/dustin-moskovitz) | Facebook co-founder | \$500M+ lifetime | Open Philanthropy, Good Ventures |
+| [Jaan Tallinn](/knowledge-base/organizations/funders/jaan-tallinn) | Skype co-founder | \$50M+ annually | SFF, direct grants |
+| Vitalik Buterin | Ethereum founder | \$50M+ | MIRI, various crypto-adjacent |
+
+## Funding Landscape
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Donors["Major Donors"]
+        DM[Dustin Moskovitz]
+        JT[Jaan Tallinn]
+        VB[Vitalik Buterin]
+    end
+
+    subgraph Vehicles["Funding Vehicles"]
+        OP[Open Philanthropy]
+        SFF[SFF]
+        LTFF[LTFF]
+        MF[Manifund]
+    end
+
+    subgraph Recipients["Recipients"]
+        LABS[AI Labs<br/>Anthropic, DeepMind]
+        RESEARCH[Research Orgs<br/>MIRI, Redwood, ARC]
+        POLICY[Policy Orgs<br/>GovAI, CAIS]
+        FIELD[Field Building<br/>80K, Atlas, CFAR]
+    end
+
+    DM --> OP
+    JT --> SFF
+    OP --> LABS
+    OP --> RESEARCH
+    OP --> POLICY
+    SFF --> RESEARCH
+    SFF --> POLICY
+    LTFF --> RESEARCH
+    LTFF --> FIELD
+    MF --> FIELD
+
+    style Donors fill:#e6f3ff
+    style Vehicles fill:#ccffcc
+    style Recipients fill:#ffffcc
+`} />
+
+## Recent Trends
+
+**2024-2025 Developments:**
+- Open Philanthropy launched \$40M AI Safety Request for Proposals (January 2025)
+- SFF allocated \$34.33M, with 86% going to AI-related projects
+- Coefficient Giving emerged as significant new funder (~\$50M in 2024)
+- LTFF continued steady grantmaking at ~\$5M annually
+
+**Post-FTX Landscape:**
+- Future Fund's collapse eliminated ~\$160M in committed grants
+- Some organizations faced funding crises; others found alternative support
+- Field-wide diversification of funding sources
+
+<Backlinks />

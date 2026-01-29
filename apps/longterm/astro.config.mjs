@@ -80,7 +80,16 @@ export default defineConfig({
                   items: [
                       { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
                       { label: 'Safety Research Orgs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
+                      { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/epistemic-orgs' } },
+                      { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/funders' } },
                       { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
+                  ],
+              },
+              {
+                  label: 'Projects',
+                  collapsed: true,
+                  items: [
+                      { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/projects/epistemic' } },
                   ],
               },
               { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
