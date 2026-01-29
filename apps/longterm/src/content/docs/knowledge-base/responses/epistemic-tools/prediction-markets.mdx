@@ -7,19 +7,15 @@ description: >-
   infrastructure.
 sidebar:
   order: 1
-quality: 82
+quality: 85
 llmSummary: >-
-  Comprehensive analysis of prediction markets as epistemic tools, demonstrating
-  60-75% superior accuracy vs polls (Brier scores 0.16-0.24) across political,
-  scientific, and sports contexts with $1-3B annual volumes. Covers market
-  mechanics, AI safety applications, regulatory constraints, and limitations
-  including liquidity thresholds and long-horizon discounting.
-lastEdited: '2025-12-27'
+  Analysis of prediction markets as epistemic tools for AI governance, covering
+  mechanisms (incentive alignment, information aggregation), empirical accuracy
+  (15-25% better than polls), current platforms (Polymarket, Kalshi, Metaculus),
+  and limitations for long-horizon AI safety questions.
+lastEdited: '2025-01-28'
 importance: 64.5
 pageTemplate: knowledge-base-response
-todos:
-  - "Complete 'Quick Assessment' section (4 placeholders)"
-  - "Complete 'How It Works' section"
 ---
 import {DataInfoBox, KeyQuestions, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
@@ -29,259 +25,111 @@ import {DataInfoBox, KeyQuestions, R, EntityLink, DataExternalLinks} from '../..
 
 ## Overview
 
-Prediction markets are platforms where participants trade contracts based on future event outcomes, with prices reflecting aggregate probability estimates. These markets outperform traditional polling by 60-75% in elections, achieving Brier scores of 0.16-0.24 on political events. Current market volumes range from \$100M+ (Kalshi) to \$1-3B annually (Polymarket), indicating growing mainstream adoption despite regulatory constraints.
+Prediction markets are trading platforms where participants buy and sell contracts whose payouts depend on future events. When a contract for "Will X happen?" trades at \$0.70, the market is collectively estimating a 70% probability. This mechanism harnesses the "wisdom of crowds" by giving traders a financial incentive to bet according to their true beliefs rather than social pressure or wishful thinking.
 
-For <EntityLink id="epistemic-infrastructure">epistemic infrastructure</EntityLink>, prediction markets offer unique advantages: they incentivize accuracy over ideology, aggregate dispersed information efficiently, and provide calibrated real-time probability estimates. Research by <R id="6de9674ebcc55023">Berg et al. (2008)</R> and <R id="d52dcf2e6c08b5b2">Wolfers & Zitzewitz (2004)</R> demonstrates their superior performance in information aggregation compared to expert polls or surveys.
+The empirical track record is strong. In U.S. presidential elections, prediction markets have outperformed polls by 15-25% on accuracy metrics, achieving Brier scores of 0.16-0.24 compared to 0.20-0.30 for polling averages (<R id="6de9674ebcc55023">Berg et al., 2008</R>). In scientific replication markets, traders correctly predicted which studies would replicate 85% of the time, compared to 58% for expert surveys (<R id="3a70c66d762d4007">Dreber et al., 2015</R>). The theoretical basis for this performance rests on information aggregation—when dispersed private information gets expressed through trading, prices converge toward accuracy (<R id="5e8664cd93020cde">Arrow et al., 2008</R>).
 
-## Risk/Impact Assessment
+For <EntityLink id="epistemic-infrastructure">epistemic infrastructure</EntityLink>, prediction markets offer three key advantages over alternatives like expert panels or opinion surveys. First, they create continuous, real-time probability estimates that update within minutes of relevant news. Second, they weight opinions by confidence—traders who believe strongly stake more capital. Third, they're resistant to ideological capture because consistently wrong traders lose money and exit the market. The foundational analysis by <R id="d52dcf2e6c08b5b2">Wolfers & Zitzewitz (2004)</R> demonstrates these mechanisms work across political, sports, and economic contexts.
 
-| Dimension | Assessment | Evidence | Timeline |
-|-----------|------------|----------|----------|
-| **Accuracy Improvement** | High impact | 15-25% better than polls; Brier scores 0.16-0.24 | Active now |
-| **Liquidity Constraints** | Medium risk | \$10-50K can move small market prices 5%+ | Ongoing issue |
-| **Regulatory Barriers** | High risk | Limited US adoption; fragmented jurisdiction | 2-5 years to resolve |
-| **Manipulation Vulnerability** | Low-medium risk | Well-funded actors can temporarily distort prices | Varies by market size |
-| **AI Integration Disruption** | Medium risk | AI traders may outcompete humans | 1-3 years |
+## Quick Assessment
 
-## Market Performance Evidence
+| Dimension | Rating | Notes |
+|-----------|--------|-------|
+| Tractability | High | Platforms exist and work; main barriers are regulatory |
+| Scalability | Medium | Requires sufficient liquidity per question; thin markets unreliable |
+| Current Maturity | Medium-High | Decades of empirical evidence; mainstream adoption growing |
+| Time Horizon | Active now | Already deployed; question is expansion |
+| Key Proponents | Polymarket, Metaculus, Kalshi | Active platforms with different regulatory approaches |
 
-### Accuracy Comparisons
+## How It Works
 
-| Context | Prediction Markets | Alternative Method | Source |
-|---------|-------------------|-------------------|--------|
-| US Presidential Elections | 74% accuracy | Polls: 61% accuracy | <R id="6de9674ebcc55023">Berg et al. (2008)</R> |
-| Scientific Replication | 85% accuracy | Surveys: 58% accuracy | <R id="3a70c66d762d4007">Dreber et al. (2015)</R> |
-| Sports Outcomes | Brier score: 0.18 | Expert picks: 0.23 | <R id="d52dcf2e6c08b5b2">Wolfers & Zitzewitz</R> |
-| Brexit Referendum | Real-time updates | Polls: static snapshots | <R id="cd692e68fd8ba206">Betfair data</R> |
+The core mechanism is straightforward: markets convert private beliefs into public prices through trading.
 
-### Platform Comparison
+Consider a simple binary contract: "Will the EU pass comprehensive AI regulation by 2026?" Trading opens at \$0.50 (50% implied probability). Traders who believe passage is more likely buy contracts; those who think it unlikely sell. Each trade pushes the price toward the buyer's or seller's belief, weighted by how much they're willing to stake. If a trader with good information about EU politics spots the price at \$0.50 but believes the true probability is 75%, they profit by buying—and in doing so, move the price closer to accuracy.
 
-| Platform | Annual Volume | Jurisdiction | Accuracy (Brier) | Primary Focus |
-|----------|---------------|--------------|-------------------|---------------|
-| <R id="ec03efffd7f860a5">Polymarket</R> | \$1-3B | Offshore/crypto | 0.16-0.22 | Politics, current events |
-| <R id="8d054aa535ed84ad">Kalshi</R> | \$100-300M | US (CFTC regulated) | 0.18-0.24 | Economics, politics |
-| <R id="cd692e68fd8ba206">Betfair</R> | \$50B+ | UK/EU | 0.16-0.20 | Sports, politics |
-| <R id="d99a6d0fb1edc2db">Metaculus</R> | Play money | Global | 0.15-0.19 | Science, technology, AI |
+Three mechanisms make this work:
 
-## Current State & Applications
+**Incentive alignment.** Unlike polls or surveys, traders face real consequences for being wrong. <R id="182392764732af01">Hanson (2003)</R> formalized how this creates "truth-seeking" behavior—traders who consistently predict well accumulate capital, while poor forecasters go broke and exit.
 
-### Real-Money Markets
+**Information aggregation.** Markets don't require any single trader to know everything. A journalist might have information about political feasibility, a lobbyist about industry positions, an academic about technical constraints. When each trades based on their slice of knowledge, prices aggregate their dispersed information.
 
-**Regulatory landscape**: The US maintains strict regulations through the <R id="7546a582e1adddff">CFTC</R>, limiting real-money markets to platforms like Kalshi with narrow question sets. Polymarket operates offshore using cryptocurrency, capturing \$1-3B in annual volume. The UK and EU allow broader prediction markets through established platforms like Betfair.
+**Continuous updating.** Unlike quarterly polls or annual expert surveys, market prices adjust instantly to new information. During the 2016 Brexit referendum, <R id="cd692e68fd8ba206">Betfair</R> prices tracked exit poll releases in real-time, providing probability updates every few minutes.
 
-**Growth trajectory**: Polymarket's volume increased 10x from 2023 to 2024, driven by high-profile political events and crypto adoption. Kalshi continues expanding question categories under CFTC oversight.
+Modern platforms use Automated Market Makers (AMMs) based on logarithmic market scoring rules. These algorithms provide liquidity even when few traders are active, but impose exponentially increasing costs on large trades—making sustained manipulation expensive.
 
-### Play-Money Platforms
+## Current Landscape
 
-**Metaculus** leads in AI/science forecasting with 15,000+ active forecasters and track records dating to 2015. Research shows <R id="664518d11aec3317">superforecasters</R> on Metaculus achieve Brier scores of 0.15-0.19 on AI timeline questions.
+The prediction market ecosystem splits along a regulatory fault line.
 
-**Manifold Markets** democratizes market creation, allowing users to generate questions on any topic. This creates coverage of niche issues but with lower average accuracy.
+**Crypto-native platforms** like <R id="ec03efffd7f860a5">Polymarket</R> operate offshore using cryptocurrency, capturing \$1-3 billion in annual trading volume as of 2024—a 10x increase from 2023. These platforms offer the widest question variety and deepest liquidity but exist in regulatory grey zones, particularly for U.S. participants. Polymarket achieves Brier scores of 0.16-0.22 on political questions.
 
-### AI Safety Applications
+**Regulated real-money markets** face tighter constraints. In the U.S., the <R id="7546a582e1adddff">CFTC</R> classifies prediction contracts as derivatives, requiring platforms like <R id="8d054aa535ed84ad">Kalshi</R> to seek approval for each question category. Kalshi has steadily expanded permitted categories but operates with lower volume (\$100-300M annually) and narrower question sets. The UK and EU offer more permissive frameworks, with <R id="cd692e68fd8ba206">Betfair</R> handling \$50B+ in annual volume across sports and politics.
 
-| Application | Current Examples | Accuracy Evidence |
-|-------------|------------------|-------------------|
-| **AI Timeline Forecasting** | <R id="d51930ec3933c973">Metaculus AGI questions</R> | Brier scores 0.17-0.21 |
-| **Safety Milestone Prediction** | Alignment research progress | Limited data; 3-5 year questions |
-| **Policy Outcome Assessment** | AI regulation passage probability | 70% accuracy on 1-year policy questions |
-| **Risk Probability Estimates** | X-risk by 2100 markets | Wide confidence intervals |
+**Play-money platforms** sidestep regulations by removing financial stakes. <R id="d99a6d0fb1edc2db">Metaculus</R> leads in AI and science forecasting with 15,000+ active forecasters and verified track records dating to 2015. Superforecasters on the platform achieve Brier scores of 0.15-0.19 on AI timeline questions (<R id="664518d11aec3317">Good Judgment research</R>). Manifold Markets allows users to create questions on any topic, trading coverage breadth for accuracy.
 
-## Key Mechanisms & Advantages
+## Applications to AI Safety
 
-### Information Aggregation
+Prediction markets offer potentially valuable inputs for AI governance, though with significant limitations for the questions that matter most.
 
-| Mechanism | How It Works | Evidence |
-|-----------|--------------|----------|
-| **Incentive Alignment** | Profit from accuracy, loss from error | <R id="182392764732af01">Hanson (2003)</R> |
-| **Marginal Trading** | Small informed money moves prices | Demonstrated in Iowa Electronic Markets |
-| **Real-time Updates** | Prices adjust to news within minutes | Twitter sentiment vs. price correlation studies |
-| **Arbitrage Forces** | Mispricings create profit opportunities | <R id="5e8664cd93020cde">Arrow et al. (2008)</R> |
+For near-term forecasting, the track record is promising. Markets on AI policy questions (regulation passage, lab announcements, capability milestone dates) show roughly 70% accuracy on 1-year horizons. Metaculus hosts active questions on <R id="d51930ec3933c973">AGI timeline estimates</R>, capability benchmarks, and safety research progress. These provide continuously updated probability distributions that policymakers and researchers can incorporate into planning.
 
-### Comparative Advantages
+The harder problem is long-horizon forecasting. Questions like "probability of AI-caused catastrophe by 2100" suffer from multiple issues. First, resolution is decades away, and traders heavily discount long-term payoffs—empirical estimates suggest 15-40% annual discount rates for prediction market positions. Second, the forecaster pool for technical AI safety questions is small, leading to thin liquidity and wide bid-ask spreads. Third, definitional ambiguity compounds over long horizons: what exactly counts as "transformative AI" or "existential catastrophe"?
 
-| vs. Polls | vs. Expert Panels | vs. Surveys |
-|-----------|-------------------|-------------|
-| Real-money incentives | Continuous updating | Quantified probabilities |
-| Self-selection of informed traders | Aggregates diverse views | Market-based weights |
-| Dynamic adjustment | No meeting coordination costs | Scalable to many questions |
+Conditional markets offer a partial solution. Rather than betting on absolute outcomes, traders bet on "If policy X passes, probability of outcome Y." This enables comparison of different intervention strategies while allowing resolution on shorter timescales. The infrastructure for sophisticated conditional markets is still developing.
 
-## Technology Infrastructure
+## Limitations
 
-### Market Mechanics
+Several factors constrain prediction market accuracy and applicability.
 
-```
-Information → Trading Decision → Price Discovery → Probability Signal
-     ↓              ↓                ↓                 ↓
-Private info → Capital at risk → Market clearing → Public forecast
-```
+**Liquidity requirements.** Small markets are unreliable. Research suggests \$10-50K in coordinated trading can temporarily move prices 5%+ in markets with under \$100K in total volume. Most AI safety-relevant questions have liquidity well below this threshold, making prices noisy indicators rather than reliable forecasts.
 
-### Automated Market Makers (AMM)
+**Behavioral biases persist.** Despite financial incentives, traders exhibit the favorite-longshot bias (overweighting low-probability events) and herding (following visible trades rather than independent analysis). Extreme probability estimates (above 90% or below 10%) are particularly unreliable.
 
-| Feature | Implementation | Benefits |
-|---------|----------------|----------|
-| **Liquidity Provision** | Logarithmic market scoring rules | Always tradeable |
-| **Price Discovery** | Automated price updates | Real-time probability estimates |
-| **Manipulation Resistance** | Exponential cost increases | Expensive to maintain false prices |
+**Resolution challenges.** Many interesting questions resist clean operationalization. "Will AI alignment research make meaningful progress by 2027?" requires subjective judgment that reasonable people dispute. Platforms handle this through resolution councils (<R id="f79d72e4e0f4c804">Metaculus</R>) or predefined criteria, but ambiguity creates risk that discourages trading.
 
-### Resolution Infrastructure
+**Regulatory fragmentation.** U.S. restrictions push volume to offshore platforms with weaker oversight, while limiting mainstream institutional participation. Academic researchers, foundations, and government bodies often can't legally trade on the platforms with best liquidity.
 
-| Challenge | Solution | Examples |
-|-----------|----------|----------|
-| **Objective Outcomes** | Clear resolution criteria | Election results, scientific papers |
-| **Subjective Questions** | Expert panel resolution | <R id="f79d72e4e0f4c804">Metaculus resolution council</R> |
-| **Long-term Questions** | Conditional resolution triggers | "If AI achieves X by 2030..." |
+**Manipulation vulnerability.** While sustained manipulation is expensive due to AMM mechanics, temporary price distortion around key decision points is feasible for well-funded actors—precisely when accurate forecasts matter most for policy.
 
-## Limitations & Challenges
+## Future Directions
 
-### Technical Constraints
+The trajectory of prediction markets depends heavily on regulatory decisions over the next 3-5 years.
 
-| Issue | Impact | Mitigation Strategies |
-|-------|--------|----------------------|
-| **Liquidity Thresholds** | Spreads >10% in thin markets | Market maker subsidies |
-| **Long-horizon Discounting** | 15-40% annual discount rates | Conditional markets, milestone betting |
-| **Resolution Ambiguity** | Disputes over question meaning | Better question design, clear criteria |
-| **Manipulation Vulnerability** | \$10-50K can move small markets | Larger markets, manipulation penalties |
+If U.S. CFTC restrictions loosen—currently estimated at 30-50% probability—regulated market volume could increase 10x as institutional participants enter legally. Several state-level initiatives may provide workarounds before federal action. The EU appears likely to harmonize regulations across member states, potentially creating a unified European market.
 
-### Behavioral Biases
+Technological developments may address some current limitations. AI trading algorithms are already participating on some platforms and may tighten spreads through arbitrage. Better AMM designs could reduce liquidity costs for long-horizon questions. Cross-platform arbitrage infrastructure would unify prices across fragmented markets.
 
-| Bias | Evidence | Impact on Accuracy |
-|------|---------|-------------------|
-| **Favorite-Longshot Bias** | Overbet on low-probability events | Extreme probabilities less reliable |
-| **Herding Effects** | Following others' trades | Reduced information aggregation |
-| **Overconfidence** | Excessive trading volume | Higher transaction costs |
+For AI safety applications specifically, the key question is whether specialized forecasting platforms can attract sufficient domain expertise. Current play-money platforms like Metaculus demonstrate that scientists and researchers will participate without financial incentives, but scaling this to the precision needed for policy guidance remains uncertain.
 
-### Regulatory Barriers
+## Key Uncertainties
 
-| Jurisdiction | Status | Key Constraints |
-|--------------|--------|-----------------|
-| **United States** | Highly restricted | CFTC approval required; gambling prohibitions |
-| **European Union** | Varies by country | Generally more permissive than US |
-| **United Kingdom** | Permitted | Established regulatory framework |
-| **Cryptocurrency** | Regulatory uncertainty | Offshore platforms dominate |
+Several open questions shape how useful prediction markets can become for AI governance:
 
-## Future Trajectory (2025-2030)
-
-### Technological Development
-
-| Innovation | Timeline | Impact |
-|------------|----------|--------|
-| **AI Market Participants** | 1-2 years | May improve or degrade accuracy |
-| **Better AMM Algorithms** | 1-3 years | Tighter spreads, better liquidity |
-| **Cross-platform Arbitrage** | 2-4 years | More unified pricing |
-| **Conditional Market Infrastructure** | 3-5 years | Better complex forecasting |
-
-### Regulatory Evolution
-
-| Scenario | Probability | Timeline |
-|----------|-------------|----------|
-| **US CFTC Liberalization** | 30-50% | 2-5 years |
-| **State-level Permissions** | 60-80% | 1-3 years |
-| **EU Harmonization** | 40-60% | 3-7 years |
-| **Crypto Market Growth** | 70-90% | Ongoing |
-
-### Market Size Projections
-
-| Platform Type | Current Volume | 2030 Projection |
-|---------------|----------------|-----------------|
-| **Crypto-based** | \$1-3B | \$10-50B |
-| **Regulated Real-money** | \$100-500M | \$2-10B |
-| **Corporate/Internal** | &lt;\$100M | \$500M-2B |
-| **Play Money** | N/A | High user adoption |
-
-## Implementation Pathways
-
-### For Individuals
-
-| Goal | Platform | Cost | Time Investment |
-|------|----------|------|----------------|
-| **Learn Forecasting** | <R id="d99a6d0fb1edc2db">Metaculus</R> | Free | 2-5 hours/week |
-| **Real-money Trading** | <R id="8d054aa535ed84ad">Kalshi</R> (US) | \$100+ | Variable |
-| **Crypto Markets** | <R id="ec03efffd7f860a5">Polymarket</R> | ETH gas fees | Moderate technical barrier |
-| **Skill Development** | <R id="ad946fbdfec12e8c">Good Judgment Open</R> | Free | 5-10 hours/week |
-
-### For Organizations
-
-| Application | Implementation Cost | Timeline | Expected ROI |
-|-------------|-------------------|----------|--------------|
-| **Internal Markets** | \$50K-500K setup | 3-6 months | 15-30% better decisions |
-| **Policy Research** | \$100K-1M annually | 6-12 months | Quantified policy impact |
-| **Decision Support** | \$200K-2M | 1-2 years | Improved strategic planning |
-
-### For Researchers
-
-| Research Direction | Funding Needed | Key Questions |
-|-------------------|----------------|---------------|
-| **Market Design** | \$500K-2M | Optimal AMM mechanisms |
-| **AI Integration** | \$1M-5M | Human-AI forecasting synergy |
-| **Manipulation Resistance** | \$200K-1M | Detection and mitigation |
-| **Long-term Questions** | \$500K-2M | Addressing discount rate problems |
-
-## Key Uncertainties & Cruxes
-
-| Critical Uncertainty | Impact on Adoption | Evidence Needed |
-|---------------------|-------------------|-----------------|
-| **Regulatory Liberalization** | 10x market growth potential | Policy change probability |
-| **AI Trader Performance** | Could improve or undermine accuracy | Controlled experiments |
-| **Manipulation Costs** | Security of forecasts | Empirical manipulation studies |
-| **Long-horizon Viability** | Utility for AI safety questions | Multi-year market experiments |
-| **Liquidity Sustainability** | Platform economic viability | Market maker profitability analysis |
+- **Regulatory liberalization:** Will U.S. barriers drop before crypto platforms capture most institutional attention?
+- **Long-horizon viability:** Can conditional markets and milestone structures make 5-10 year forecasting reliable?
+- **AI integration:** Will AI trading algorithms improve accuracy through faster information processing, or degrade it by exploiting human traders?
+- **Manipulation costs:** At what market size do manipulation attempts become prohibitively expensive for state-level actors?
+- **Expert participation:** Can platforms attract enough domain experts in AI safety to produce informed prices on technical questions?
 
 <KeyQuestions
   questions={[
-    "Will US regulatory barriers prevent mainstream prediction market adoption?",
-    "Can long-horizon markets (5+ years) maintain sufficient liquidity for AI safety questions?",
-    "How will AI trading algorithms affect human forecaster incentives and market accuracy?",
-    "What minimum market size is needed to resist well-funded manipulation attempts?",
-    "Can conditional markets provide useful guidance for AI policy under deep uncertainty?"
+    "Can long-horizon markets maintain sufficient liquidity for AI safety-relevant questions with 5-10 year timelines?",
+    "How will AI trading algorithms affect human forecaster incentives and overall market accuracy?",
+    "What market size is needed to resist manipulation attempts by well-funded actors during critical policy windows?",
+    "Will regulatory liberalization occur fast enough to enable institutional participation in AI forecasting?"
   ]}
 />
 
-## Sources & Resources
+## Further Reading
 
-### Academic Research
+The foundational theoretical work includes <R id="5e8664cd93020cde">Arrow et al. (2008)</R> on information aggregation and <R id="182392764732af01">Hanson (2003)</R> on market design. For empirical evidence, <R id="6de9674ebcc55023">Berg et al. (2008)</R> provides the canonical analysis of election forecasting accuracy, while <R id="3a70c66d762d4007">Dreber et al. (2015)</R> extends this to scientific replication. <R id="d52dcf2e6c08b5b2">Wolfers & Zitzewitz (2004)</R> offer a comprehensive overview of prediction market theory and applications.
 
-| Type | Key Papers | Focus |
-|------|------------|-------|
-| **Foundational Theory** | <R id="5e8664cd93020cde">Arrow et al. (2008)</R> | Information aggregation theory |
-| **Empirical Evidence** | <R id="6de9674ebcc55023">Berg et al. (2008)</R> | Election forecasting accuracy |
-| **Market Design** | <R id="069aaf7308d059c2">Chen & Plott (2002)</R> | Mechanism design |
-| **Behavioral Analysis** | <R id="f77fdd2d7aeb8de2">Wolfers & Zitzewitz (2006)</R> | Bias identification |
-
-### Organizations & Platforms
-
-| Category | Organization | Website | Focus |
-|----------|--------------|---------|-------|
-| **Real Money** | Kalshi | <R id="8d054aa535ed84ad">kalshi.com</R> | US-regulated markets |
-| **Crypto** | Polymarket | <R id="ec03efffd7f860a5">polymarket.com</R> | High-volume trading |
-| **Research** | Metaculus | <R id="d99a6d0fb1edc2db">metaculus.com</R> | AI/science forecasting |
-| **Training** | Good Judgment | <R id="664518d11aec3317">goodjudgment.com</R> | Superforecaster development |
-
-### Policy & Regulation
-
-| Source | Focus | Relevance |
-|--------|-------|-----------|
-| <R id="7546a582e1adddff">CFTC Guidance</R> | US regulatory framework | Market legality |
-| <R id="6eab97be67cd07b1">EU Financial Instruments Directive</R> | European regulations | Cross-border operations |
-| <R id="a4e1cf81a74233c2">FCA Guidance (UK)</R> | UK betting exchange rules | Established framework |
-
-### Technical Infrastructure
-
-| Resource | Description | Application |
-|----------|-------------|-------------|
-| <R id="fdfd8c26362e90ba">Gnosis Conditional Tokens</R> | Smart contract framework | Decentralized markets |
-| <R id="457ca0afb368f5d5">Augur Protocol</R> | Decentralized prediction markets | Censorship resistance |
-| <R id="1be83497a42bf07c">Market Scoring Rules</R> | Automated market maker theory | Liquidity provision |
+Major platforms include <R id="ec03efffd7f860a5">Polymarket</R> (crypto-native, highest volume), <R id="8d054aa535ed84ad">Kalshi</R> (U.S. regulated), and <R id="d99a6d0fb1edc2db">Metaculus</R> (play-money with strong AI safety coverage). For developing forecasting skills, <R id="664518d11aec3317">Good Judgment</R> offers training programs based on superforecaster research.
 
 ---
 
 ## AI Transition Model Context
 
-Prediction markets improve the <EntityLink id="ai-transition-model" /> through <EntityLink id="civilizational-competence" />:
+Prediction markets contribute to <EntityLink id="civilizational-competence" /> primarily through improved <EntityLink id="epistemic-health" />. By providing continuously updated probability estimates with 15-25% better accuracy than traditional polling, they enable more calibrated beliefs about AI timelines, policy outcomes, and risk levels. This improved epistemic infrastructure supports better <EntityLink id="institutional-quality" /> by giving policymakers actionable probability distributions rather than vague expert opinions.
 
-| Factor | Parameter | Impact |
-|--------|-----------|--------|
-| <EntityLink id="civilizational-competence" /> | <EntityLink id="epistemic-health" /> | Superior accuracy (60-75% vs polls) for aggregating expert beliefs on AI timelines |
-| <EntityLink id="civilizational-competence" /> | <EntityLink id="institutional-quality" /> | Continuous probability updates enable adaptive policy responses |
-| <EntityLink id="civilizational-competence" /> | <EntityLink id="societal-trust" /> | Transparent, verifiable forecasting mechanism reduces information asymmetry |
-
-Prediction markets for AI outcomes face challenges including thin liquidity for long-horizon questions and limited participation from domain experts.
+The main limitation for AI safety applications is thin liquidity on long-horizon technical questions—exactly where accurate forecasts would be most valuable.

@@ -73,18 +73,64 @@ Score each page on importance (0-100, one decimal place). Be discriminating - us
 - Internal/infrastructure: -30
 
 Also provide:
-- **quality** (0-100): Be STRICT. Quality measures structure, rigor, and evidence - not just prose quality:
-  - **80-100 (Comprehensive)**: REQUIRES 2+ data tables, 1+ diagram, 5+ external citations with URLs, quantified claims with uncertainty ranges, <30% bullet ratio. Publication-ready reference material.
-  - **60-79 (Good)**: REQUIRES 1+ table, some external citations (3+), mostly prose with quantified claims. Minor gaps acceptable.
-  - **40-59 (Adequate)**: Has structure but lacks tables/citations. Good prose but vague claims without quantification. Readable but not rigorous.
-  - **20-39 (Draft)**: Basic content present but poorly structured. Heavy on bullets (>40%), light on evidence. No tables or citations. Needs significant work.
-  - **0-19 (Stub)**: Minimal content, placeholder, or severely incomplete.
+- **quality** (0-100): BE EXTREMELY HARSH. Most wiki pages should score 35-55. Use the FULL range.
 
-  CRITICAL RULES:
-  - NO tables + NO citations → MAXIMUM 55, regardless of prose quality
-  - NO tables OR NO citations → MAXIMUM 65
-  - Good prose alone is NEVER enough for 60+
-  - Count actual markdown tables (|---|) and [text](https://...) links before scoring
+  **CALIBRATION ANCHORS** (use these to calibrate your scoring):
+  - **95-100**: World-class reference. 8,000-15,000+ words of prose, 80-150+ citations, multiple original
+    diagrams with novel synthesis, comprehensive quantitative analysis with uncertainty ranges,
+    would be publishable as a standalone academic review paper or encyclopedia entry.
+    Example: A 40+ page deep dive rivaling Stanford Encyclopedia or Annual Review articles.
+    Expect: 0 pages in this wiki currently meet this bar.
+
+  - **85-94**: Exceptional depth. 5,000-8,000 words of prose, 50-80 citations, strong original analysis,
+    3+ original diagrams, exhaustive coverage. Could be submitted to a journal with minor edits.
+    Expect: 1-2 pages in entire wiki.
+
+  - **70-84**: Strong article. 3,000-5,000 words of prose, 25-50 citations, good analytical prose
+    throughout, multiple tables/diagrams, solid quantitative claims. Thorough but not exhaustive.
+    Expect: ~5-10% of pages.
+
+  - **55-69**: Good coverage. 1,500-3,000 words of prose, 10-25 citations, decent prose with some
+    gaps, several tables. Covers the topic adequately but room for expansion.
+    Expect: ~20-30% of pages. THIS IS THE TARGET for "good enough" pages.
+
+  - **40-54**: Basic content. 800-1,500 words of prose, 5-10 citations, thin prose in places,
+    relies on tables/bullets. Functional but clearly needs more depth.
+    Expect: ~30-40% of pages.
+
+  - **25-39**: Outline/draft. 300-800 words of prose, few citations (<5). Mostly structure
+    without substance. Tables without context, bullets without explanation.
+    Expect: ~15-20% of pages.
+
+  - **0-24**: Stub. Under 300 words of prose, minimal citations. Placeholder content.
+    Expect: ~5-10% of pages.
+
+  **PROSE REQUIREMENTS** (these set hard ceilings - WORDS IN TABLES DON'T COUNT):
+  - Page is mostly tables/bullets with 1-2 sentence connectors → MAXIMUM 45
+  - Fewer than 5 substantive paragraphs (3+ analytical sentences each) → MAXIMUM 55
+  - Good overview but table-heavy body sections → MAXIMUM 58
+  - Must have substantive prose in EVERY major section to score 70+
+  - If >50% of content is in tables, cap at 60 regardless of table quality
+  - Count ONLY prose paragraphs for word count, NOT table cell contents
+
+  **THE TABLE-REMOVAL TEST:**
+  Remove all tables and bullet lists. What remains?
+  - Nearly empty → cap at 35-45
+  - Just section headers + intro sentences → cap at 45-55
+  - Some paragraphs but thin → cap at 55-65
+  - Substantial explanatory content → can score 65+
+
+  **WORD COUNT REALITY CHECK** (prose only, NOT table content):
+  - Under 800 words of prose → cap at 45
+  - Under 1,500 words of prose → cap at 55
+  - Under 2,500 words of prose → cap at 65
+  - Under 4,000 words of prose → cap at 75
+  - Under 6,000 words of prose → cap at 85
+
+  **CITATION REALITY CHECK:**
+  - Fewer than 5 citations → cap at 50
+  - Fewer than 15 citations → cap at 65
+  - Fewer than 30 citations → cap at 80
 
 - **llmSummary**: 1-2 sentences with methodology AND conclusions (include numbers if available)
 

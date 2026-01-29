@@ -39,7 +39,6 @@ export default defineConfig({
           ],
           sidebar: [
               // Top-level navigation items
-              { label: 'Start Here', slug: 'getting-started' },
               { label: 'Explore All Content', link: '/explore', attrs: { class: 'sidebar-icon-explore' } },
               // Main content sections
               {

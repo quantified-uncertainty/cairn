@@ -12,9 +12,16 @@ interface EntityLinkProps {
   id: string;
 
   /**
-   * Optional custom label. If not provided, uses the entity's title from the database
+   * Optional custom label. If not provided, uses the entity's title from the database.
+   * Children take priority over label if both are provided.
    */
   label?: string;
+
+  /**
+   * Children can be used as the display text (standard React pattern).
+   * Takes priority over the label prop.
+   */
+  children?: React.ReactNode;
 
   /**
    * Whether to show the entity type icon (default: false)
@@ -37,13 +44,15 @@ interface EntityLinkProps {
  *
  * Usage:
  *   <EntityLink id="deceptive-alignment" />
- *   <EntityLink id="anthropic" label="Anthropic AI" showIcon />
- *   <EntityLink id="interpretability" />
+ *   <EntityLink id="anthropic">Anthropic AI</EntityLink>
+ *   <EntityLink id="interpretability" label="Interp Research" showIcon />
  *
  * The component looks up the entity in the database to:
  * 1. Get the correct URL path (from pathRegistry, built at build time)
- * 2. Get the display title if no label is provided
+ * 2. Get the display title if no label/children provided
  * 3. Optionally show an icon based on entity type
+ *
+ * Display text priority: children > label prop > entity.title > formatted ID
  *
  * This means links won't break when content is reorganized - only the
  * pathRegistry needs to be rebuilt (happens automatically on build).
@@ -70,6 +79,7 @@ function formatEntityType(type: string): string {
 export function EntityLink({
   id,
   label,
+  children,
   showIcon = false,
   className = '',
   external = false,
@@ -83,8 +93,8 @@ export function EntityLink({
     ? getEntityHref(id, entity.type)
     : getEntityPath(id) || `/knowledge-base/${id}/`;
 
-  // Determine display label
-  const displayLabel = label || entity?.title || formatIdAsTitle(id);
+  // Determine display label - children take priority, then label prop, then entity title
+  const displayLabel = children || label || entity?.title || formatIdAsTitle(id);
 
   // Get icon component if requested
   const IconComponent = showIcon && entity ? getEntityTypeIcon(entity.type) : null;
