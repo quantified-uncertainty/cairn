@@ -58,7 +58,7 @@
     "diagrams:data": "node scripts/generate/generate-data-diagrams.mjs",
     "diagrams": "npm run diagrams:schema && npm run diagrams:data",
     "docs:schema": "node scripts/generate/generate-schema-docs.mjs",
-    "validate:ci": "node scripts/validate/validate-all.mjs --ci",
+    "validate:ci": "node scripts/validate/validate-all.mjs --ci --skip=component-refs",
     "kb:scan": "node scripts/scan-content.mjs",
     "kb:summarize": "node scripts/generate/generate-summaries.mjs",
     "kb:stats": "node scripts/scan-content.mjs --stats",

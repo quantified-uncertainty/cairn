@@ -27,7 +27,7 @@ const c = log.colors;
 // Load data sources
 function loadEntities() {
   try {
-    const database = JSON.parse(readFileSync(`${DATA_DIR}/generated/database.json`, 'utf-8'));
+    const database = JSON.parse(readFileSync(`${DATA_DIR}/database.json`, 'utf-8'));
     return new Set(Object.keys(database.entities || {}));
   } catch {
     log.warn('Warning: Could not load entities database. Run npm run build:data first.');
