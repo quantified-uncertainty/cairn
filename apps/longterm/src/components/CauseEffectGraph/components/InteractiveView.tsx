@@ -117,37 +117,45 @@ function SubItem({
   const hasTooltipContent = summary || entityType;
 
   return (
-    <span className="iv-subitem-wrapper">
-      <span className={`iv-node__subitem ${hasTooltipContent ? 'iv-node__subitem--hoverable' : ''}`}>
+    <div className="group relative py-0.5">
+      <span className={cn(
+        "text-[13px] text-gray-600 dark:text-gray-400",
+        hasTooltipContent && "cursor-help"
+      )}>
         {href ? (
-          <a href={href} className="iv-subitem__link">{item.label}</a>
+          <a
+            href={href}
+            className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 no-underline hover:underline"
+          >
+            {item.label}
+          </a>
         ) : (
           item.label
         )}
       </span>
       {hasTooltipContent && (
-        <span className="iv-subitem-tooltip" role="tooltip">
+        <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-50 w-64 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg pointer-events-none">
           {entityType && (
-            <span className="iv-subitem-tooltip__type">
+            <div className="text-xs text-gray-400 uppercase tracking-wide mb-1">
               {formatEntityType(entityType)}
-            </span>
+            </div>
           )}
-          <span className="iv-subitem-tooltip__title">
+          <div className="font-medium mb-1">
             {entity?.title || item.label}
-          </span>
+          </div>
           {summary && (
-            <span className="iv-subitem-tooltip__summary">
+            <div className="text-gray-300 text-xs leading-relaxed">
               {truncateText(summary, 200)}
-            </span>
+            </div>
           )}
           {page?.quality && (
-            <span className="iv-subitem-tooltip__quality">
+            <div className="text-xs text-gray-500 mt-2">
               Quality: {page.quality}/100
-            </span>
+            </div>
           )}
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   );
 }
 
@@ -184,8 +192,8 @@ function NodeItem({
   return (
     <Card
       className={cn(
-        // Base styles - use flex column to enable stretching
-        "flex flex-col bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200",
+        // Base styles - compact card that doesn't stretch
+        "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200",
         // Highlighted state
         isHighlighted && "border-blue-500 ring-2 ring-blue-500/20",
         // Dimmed state
@@ -194,17 +202,17 @@ function NodeItem({
     >
       <div
         ref={headerRef}
-        className="px-3 py-2.5 cursor-pointer text-sm font-medium text-gray-800 dark:text-gray-200 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        className="px-3 py-2 cursor-pointer text-sm font-medium text-gray-800 dark:text-gray-200 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         onMouseEnter={handleHeaderEnter}
         onMouseLeave={handleHeaderLeave}
       >
         <span>{node.data.label}</span>
       </div>
 
-      <div className="flex-1 px-3 pb-3 flex flex-col gap-2.5">
-        {/* Sub-items always visible */}
-        {hasSubItems && (
-          <div className="flex flex-col gap-1 pl-3 ml-1 border-l-2 border-gray-200 dark:border-gray-600">
+      {/* Only render content area if there are sub-items */}
+      {hasSubItems && (
+        <div className="px-3 pb-2">
+          <div className="flex flex-col gap-0.5 pl-3 border-l-2 border-gray-200 dark:border-gray-600">
             {node.data.subItems!.map((item, i) => (
               <SubItem
                 key={i}
@@ -215,8 +223,8 @@ function NodeItem({
               />
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </Card>
   );
 }
@@ -279,8 +287,8 @@ function TierSection({
                 <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 pl-1">
                   {config.label}
                 </div>
-                {/* CSS Grid for equal-height cards */}
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
+                {/* CSS Grid with top-alignment */}
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 items-start">
                   {sortNodes(sgNodes).map(node => (
                     <NodeItem
                       key={node.id}
@@ -293,8 +301,8 @@ function TierSection({
             );
           })
         ) : (
-          /* CSS Grid for equal-height cards */
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
+          /* CSS Grid with top-alignment */
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 items-start">
             {sortNodes(nodes).map(node => (
               <NodeItem
                 key={node.id}
