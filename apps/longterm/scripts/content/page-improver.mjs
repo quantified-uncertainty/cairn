@@ -224,6 +224,86 @@ function appendLog(message) {
   fs.appendFileSync(LOG_FILE, `[${timestamp}] ${message}\n`);
 }
 
+// Validate a file after improvement
+function validateFile(filePath) {
+  const errors = [];
+
+  if (!fs.existsSync(filePath)) {
+    return { valid: false, errors: ['File does not exist'] };
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8');
+
+  // Extract frontmatter
+  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!frontmatterMatch) {
+    errors.push('No frontmatter found');
+  } else {
+    // Try to parse YAML
+    try {
+      // Dynamic import would be cleaner but we'll use a simple check
+      const yaml = frontmatterMatch[1];
+
+      // Check for common YAML issues
+      // Unquoted values with colons (e.g., "key: value: more" without quotes)
+      const lines = yaml.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        // Skip if line is empty, a comment, or starts with whitespace (nested)
+        if (!line.trim() || line.trim().startsWith('#')) continue;
+
+        // Check for unquoted multi-colon values (common LLM mistake)
+        const colonMatch = line.match(/^(\w+):\s*(.+)$/);
+        if (colonMatch) {
+          const value = colonMatch[2];
+          // If value contains ": " and isn't quoted, it's likely broken
+          if (value.includes(': ') && !value.startsWith('"') && !value.startsWith("'")) {
+            errors.push(`Line ${i + 1}: Unquoted value with colon - "${line.slice(0, 60)}..."`);
+          }
+        }
+      }
+
+      // Use execSync to validate YAML with node
+      try {
+        execSync(`node -e "require('js-yaml').load(require('fs').readFileSync('${filePath}', 'utf-8').match(/^---\\n([\\s\\S]*?)\\n---/)[1])"`, {
+          cwd: ROOT,
+          stdio: 'pipe'
+        });
+      } catch (e) {
+        errors.push(`YAML parse error: ${e.message.split('\n')[0]}`);
+      }
+    } catch (e) {
+      errors.push(`Frontmatter validation error: ${e.message}`);
+    }
+  }
+
+  // Check for unescaped < followed by numbers (JSX issue)
+  const ltNumberPattern = /<(\d+|[$€£]?\d)/g;
+  let match;
+  while ((match = ltNumberPattern.exec(content)) !== null) {
+    const lineNum = content.slice(0, match.index).split('\n').length;
+    errors.push(`Line ${lineNum}: Unescaped "<${match[1]}" - will break JSX parsing`);
+  }
+
+  // Check for unescaped $ that might trigger LaTeX
+  const dollarPattern = /\$\d+[,.\d]*[BMKbmk]?\b/g;
+  while ((match = dollarPattern.exec(content)) !== null) {
+    // Skip if inside code block or inline code
+    const before = content.slice(0, match.index);
+    const inCode = (before.match(/```/g) || []).length % 2 === 1;
+    const inInlineCode = (before.match(/`/g) || []).length % 2 === 1;
+    if (!inCode && !inInlineCode) {
+      const lineNum = before.split('\n').length;
+      errors.push(`Line ${lineNum}: Unescaped "${match[0]}" - may trigger LaTeX`);
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
 // Run a single page improvement using claude CLI
 function runClaudeImprovement(page, prompt) {
   return new Promise((resolve) => {
@@ -258,13 +338,26 @@ function runClaudeImprovement(page, prompt) {
       const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
       if (code === 0) {
-        appendLog(`DONE: ${page.id} (${duration}s)`);
-        resolve({
-          success: true,
-          page,
-          duration,
-          outputLength: stdout.length
-        });
+        // Validate the file after improvement
+        const validation = validateFile(filePath);
+        if (validation.valid) {
+          appendLog(`DONE: ${page.id} (${duration}s)`);
+          resolve({
+            success: true,
+            page,
+            duration,
+            outputLength: stdout.length
+          });
+        } else {
+          appendLog(`VALIDATION_FAIL: ${page.id} - ${validation.errors.join('; ')}`);
+          resolve({
+            success: false,
+            page,
+            duration,
+            error: `Validation failed: ${validation.errors.join('; ')}`,
+            validationErrors: validation.errors
+          });
+        }
       } else {
         appendLog(`FAIL: ${page.id} - exit code ${code}`);
         resolve({
@@ -406,11 +499,23 @@ async function runBatch(options = {}) {
   }
 
   // Final summary
+  const validationFailures = results.failed.filter(r => r.validationErrors);
+  const otherFailures = results.failed.filter(r => !r.validationErrors);
+
   console.log(`\n${'='.repeat(50)}`);
   console.log(`📊 BATCH COMPLETE`);
   console.log(`   Total processed: ${processed}`);
   console.log(`   Succeeded: ${results.completed.length}`);
   console.log(`   Failed: ${results.failed.length}`);
+  if (validationFailures.length > 0) {
+    console.log(`      - Validation failures: ${validationFailures.length}`);
+    validationFailures.forEach(r => {
+      console.log(`        ⚠️  ${r.page.id}: ${r.validationErrors.slice(0, 2).join('; ')}`);
+    });
+  }
+  if (otherFailures.length > 0) {
+    console.log(`      - Other failures: ${otherFailures.length}`);
+  }
   console.log(`   Results: ${RESULTS_FILE}`);
   console.log(`   Log: ${LOG_FILE}`);
   console.log(`${'='.repeat(50)}\n`);
@@ -476,9 +581,18 @@ Examples:
   // Status mode
   if (opts.status) {
     const results = loadResults();
+    const validationFailures = results.failed.filter(r => r.validationErrors);
+    const otherFailures = results.failed.filter(r => !r.validationErrors);
+
     console.log(`\n📊 Batch Progress`);
     console.log(`   Completed: ${results.completed.length}`);
     console.log(`   Failed: ${results.failed.length}`);
+    if (validationFailures.length > 0) {
+      console.log(`      - Validation failures: ${validationFailures.length}`);
+    }
+    if (otherFailures.length > 0) {
+      console.log(`      - Other failures: ${otherFailures.length}`);
+    }
     console.log(`   In Progress: ${results.inProgress.length}`);
     if (results.completed.length > 0) {
       console.log(`\n   Last 5 completed:`);
@@ -486,9 +600,16 @@ Examples:
         console.log(`     ✅ ${r.page.id} (${r.duration}s)`);
       });
     }
-    if (results.failed.length > 0) {
-      console.log(`\n   Failed:`);
-      results.failed.forEach(r => {
+    if (validationFailures.length > 0) {
+      console.log(`\n   Validation failures (need manual fix):`);
+      validationFailures.forEach(r => {
+        console.log(`     ⚠️  ${r.page.id}:`);
+        r.validationErrors.slice(0, 3).forEach(e => console.log(`        - ${e}`));
+      });
+    }
+    if (otherFailures.length > 0) {
+      console.log(`\n   Other failures:`);
+      otherFailures.forEach(r => {
         console.log(`     ❌ ${r.page.id}: ${r.error?.slice(0, 60)}`);
       });
     }

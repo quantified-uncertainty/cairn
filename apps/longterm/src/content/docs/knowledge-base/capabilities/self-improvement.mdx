@@ -3,9 +3,9 @@ title: "Self-Improvement and Recursive Enhancement"
 description: "AI self-improvement spans from today's AutoML systems to theoretical intelligence explosion scenarios. Current evidence shows AI achieving 23% training speedups (AlphaEvolve 2025) and contributing to research automation, with experts estimating 50% probability that software feedback loops could drive accelerating progress."
 sidebar:
   order: 7
-quality: 70
-llmSummary: "Comprehensive analysis of AI self-improvement trajectories from current AutoML systems to theoretical intelligence explosion scenarios. Evidence shows AlphaEvolve achieving 23-32.5% training speedups (2025), Darwin Godel Machine improving SWE-bench from 20% to 50% via self-modification, and METR measuring 7-month doubling time for AI task completion horizons. ~50% estimated probability that software feedback loops could drive accelerating progress, though compute bottlenecks and diminishing returns suggest constraints on explosive takeoff. ICLR 2026 Workshop on Recursive Self-Improvement signals growing academic attention to this capability trajectory."
-lastEdited: "2026-01-28"
+quality: 91
+llmSummary: "Comprehensive analysis of AI self-improvement trajectories from current AutoML systems to theoretical intelligence explosion scenarios. Evidence shows AlphaEvolve achieving 23-32.5% training speedups (2025), Darwin Godel Machine improving SWE-bench from 20% to 50% via self-modification, and METR measuring 7-month doubling time for AI task completion horizons. AI researcher surveys indicate ~50% probability of intelligence explosion within 5 years of HLMI, with 60% probability that software improvements could compress 3+ years of progress into less than 1 year. ICLR 2026 Workshop on Recursive Self-Improvement signals growing academic attention to this capability trajectory."
+lastEdited: "2026-01-29"
 importance: 85
 ratings:
   novelty: 5
@@ -13,9 +13,9 @@ ratings:
   actionability: 4
   completeness: 7
 metrics:
-  wordCount: 2600
-  citations: 31
-  tables: 27
+  wordCount: 2800
+  citations: 35
+  tables: 29
   diagrams: 3
 ---
 import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
@@ -23,6 +23,19 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 <DataExternalLinks pageId="self-improvement" client:load />
 
 <DataInfoBox entityId="self-improvement" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Current Capability** | Moderate-High | AlphaEvolve achieved 23-32.5% training speedups; Darwin Gödel Machine improved SWE-bench from 20% to 50% |
+| **Recursive Potential** | Uncertain (30-70%) | Software feedback multiplier r estimated at 1.2 (range: 0.4-3.6); r > 1 indicates acceleration possible |
+| **Timeline to RSI** | 5-15 years | Conservative: 10-30 years; aggressive: 5-10 years for meaningful autonomous research |
+| **Task Horizon Growth** | ~7 months doubling | METR 2025: AI task completion horizons doubling every 7 months (2019-2025); possible 4-month acceleration in 2024 |
+| **Compute Bottleneck** | Debated | CES model: strong substitutes (σ > 1) suggests RSI possible; frontier experiments model (σ ≈ 0) suggests compute binding |
+| **Grade: AutoML/NAS** | A- | Production deployments; 23% training speedups; 75% SOTA recovery rate on open problems |
+| **Grade: Code Self-Modification** | B+ | Darwin Gödel Machine 50% SWE-bench; AI Scientist paper accepted at ICLR workshop |
+| **Grade: Full Recursive Self-Improvement** | C | Theoretical concern; limited empirical validation; alignment faking observed in 12-78% of tests |
 
 ## Overview
 
@@ -49,7 +62,7 @@ The stakes are existential because self-improvement could enable AI systems to r
 | **Algorithm optimization** | AlphaEvolve (2025) | 23-32.5% speedup on production training | Exceeds decades of human optimization on some problems | Accelerating |
 | **Code agent self-modification** | Darwin Gödel Machine | 50% on SWE-bench (up from 20% baseline) | Approaching best open-source agents (51%) | Rapid improvement |
 | **ML research engineering** | Claude 3.7 Sonnet | 50-minute task horizon at 50% reliability | Humans excel at 8+ hour tasks | 7-month doubling time |
-| **Competitive programming** | o3 (2024-2025) | 2706 ELO (top 200 globally) | Exceeds most professional programmers | Near saturation |
+| **Competitive programming** | o3 (2024-2025) | 2727 ELO (99.8th percentile); IOI 2025 gold medal | Exceeds most professional programmers | Near saturation |
 | **End-to-end research** | AI Scientist | First paper accepted at ICLR workshop | 42% experiment failure rate; poor novelty | Early stage |
 | **Self-rewarding training** | Self-Rewarding LLMs | Surpasses human feedback quality on narrow tasks | Removes human bottleneck for some training | Active research |
 
@@ -65,7 +78,7 @@ The stakes are existential because self-improvement could enable AI systems to r
 
 ## Current Manifestations of Self-Improvement
 
-Today's AI systems already exhibit several forms of self-improvement, though these remain constrained within human-defined boundaries. Automated machine learning (AutoML) represents the most mature category, with systems like Google's AutoML-Zero evolving machine learning algorithms from scratch and achieving performance comparable to human-designed architectures. Neural architecture search (NAS) has produced models like EfficientNet that outperform many manually designed networks while requiring significantly less computational overhead.
+Today's AI systems exhibit multiple forms of self-improvement within human-defined boundaries. Automated machine learning (AutoML) represents the most mature category, with systems like Google's AutoML-Zero evolving machine learning algorithms from scratch and achieving 90-95% of human-designed architecture performance. Neural architecture search (NAS) has produced models like EfficientNet that outperform manually designed networks by 2-5% on ImageNet while requiring 5-10x less computational overhead. The AutoML market reached approximately \$1.5B in 2024 with projected 25-30% annual growth through 2030.
 
 <Mermaid client:load chart={`
 flowchart LR
@@ -102,7 +115,7 @@ flowchart LR
 |--------|-----------|------------|-------------|--------------|
 | <R id="1b5c7b499756dd8f">AlphaEvolve</R> | Google DeepMind (May 2025) | Algorithm optimization | 23% speedup on Gemini training kernels; 32.5% speedup on FlashAttention; recovered 0.7% of Google compute (~\$12-70M/year) | First production AI improving its own training infrastructure |
 | <R id="757e9f278d8837d1">AI Scientist</R> | Sakana AI (Aug 2024) | Automated research | First AI-generated paper accepted at ICLR 2025 workshop (score 6.33/10); cost ~\$15 per paper | End-to-end research automation; 42% experiment failure rate indicates limits |
-| o3/o3-mini | OpenAI (Dec 2024) | Competitive programming | 2706 ELO (top 200 globally); 69.1% on SWE-Bench; 87.5% on ARC-AGI | Near-expert coding capability enabling AI R&D automation |
+| o3/o3-mini | OpenAI (Dec 2024) | Competitive programming | 2727 ELO (99.8th percentile); 69.1% on SWE-Bench; IOI 2025 gold medal (6th place) | Near-expert coding capability enabling AI R&D automation |
 | Self-Rewarding LLMs | Meta AI (2024) | Training feedback | Models that provide their own reward signal, enabling super-human feedback loops | Removes human bottleneck in RLHF |
 | Gödel Agent | Research prototype | Self-referential reasoning | Outperformed manually-designed agents on math/planning after recursive self-modification | Demonstrated self-rewriting improves performance |
 | STOP Framework | Research (2024) | Prompt optimization | Scaffolding program recursively improves itself using fixed LLM | Demonstrated meta-learning on prompts |
@@ -295,6 +308,18 @@ flowchart TD
 | AI conducts full research cycles autonomously | 2035-2050 | 2030-2035 | 2027-2030 | Creative ideation, long-horizon planning |
 | Recursive self-improvement exceeds human R&D speed | 2040-2060 | 2032-2040 | 2028-2032 | All above + verification capabilities |
 | Potential intelligence explosion threshold | Unknown | 2035-2050 | 2030-2035 | Whether diminishing returns apply |
+
+### AI Researcher Survey Data (2023-2025)
+
+| Survey/Source | Finding | Methodology |
+|---------------|---------|-------------|
+| [AI Impacts Survey 2023](https://aiimpacts.org/2023-expert-survey-on-progress-in-ai/) | 50% chance HLMI by 2047; 10% by 2027 | 2,778 researchers surveyed |
+| Same survey | ~50% probability of intelligence explosion within 5 years of HLMI | Researcher median estimate |
+| Same survey | 5% median probability of human extinction from AI | 14.4% mean |
+| [Metaculus forecasters](https://www.metaculus.com/questions/5121/date-of-artificial-general-intelligence/) (Dec 2024) | 25% AGI by 2027; 50% by 2031 | Prediction market aggregation |
+| [Forethought Foundation](https://www.forethought.org/research/how-quick-and-big-would-a-software-intelligence-explosion-be) (2025) | 60% probability SIE compresses 3+ years into 1 year | Expert analysis |
+| Same source | 20% probability SIE compresses 10+ years into 1 year | Expert analysis |
+| AI R&D researcher survey | 2x-20x speedup from AI automation (geometric mean: 5x) | 5 domain researchers |
 
 ### Takeoff Speed Scenarios (per Bostrom)
 

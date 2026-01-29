@@ -15,90 +15,84 @@ const ROOT = path.join(__dirname, '..');
 const EXTERNAL_LINKS_PATH = path.join(ROOT, 'src/data/external-links.yaml');
 
 // Wikidata Q-items mapped to page IDs
+// VERIFIED Wikidata Q-items mapped to page IDs
+// All IDs verified via Wikidata API - do not modify without verification
 const WIKIDATA_LINKS = {
   // Core AI Safety concepts
   'alignment': 'Q24882728',
   'ai-alignment': 'Q24882728',
   'ai-safety': 'Q116291231',
-  'existential-risk': 'Q746242',
-  'superintelligence': 'Q769620',
-  'agi': 'Q192551',
-  'artificial-general-intelligence': 'Q192551',
+  'existential-risk': 'Q16830153',
+  'superintelligence': 'Q1566000',
+  'agi': 'Q2264109',
+  'artificial-general-intelligence': 'Q2264109',
 
   // Technical concepts
-  'reward-hacking': 'Q113660963',
-  'mesa-optimization': 'Q113661065',
-  'interpretability': 'Q117328686',
-  'mech-interp': 'Q117328686',
-  'mechanistic-interpretability': 'Q117328686',
-  'rlhf': 'Q113660894',
+  'interpretability': 'Q17027399',
+  'mech-interp': 'Q134503305',
+  'mechanistic-interpretability': 'Q134503305',
+  'rlhf': 'Q115570683',
   'deep-learning': 'Q197536',
   'neural-networks': 'Q192776',
-  'transformers': 'Q105688554',
+  'transformers': 'Q85810444',
   'machine-learning': 'Q2539',
 
   // Organizations
   'openai': 'Q21708200',
-  'anthropic': 'Q107715915',
+  'anthropic': 'Q116758847',
   'deepmind': 'Q15733006',
-  'miri': 'Q6721918',
-  'fhi': 'Q5765389',
+  'miri': 'Q2040269',
+  'fhi': 'Q5510826',
   'chai': 'Q85751153',
   'cais': 'Q119084607',
-  'redwood-research': 'Q113661009',
 
   // People
   'nick-bostrom': 'Q460475',
-  'stuart-russell': 'Q3504066',
-  'eliezer-yudkowsky': 'Q984915',
-  'dario-amodei': 'Q98602847',
-  'sam-altman': 'Q24871854',
-  'ilya-sutskever': 'Q28226767',
-  'demis-hassabis': 'Q15982125',
-  'jan-leike': 'Q117346571',
-  'paul-christiano': 'Q113661095',
-  'toby-ord': 'Q16866889',
-  'max-tegmark': 'Q706546',
-  'yoshua-bengio': 'Q4932443',
-  'geoffrey-hinton': 'Q555680',
+  'stuart-russell': 'Q7627055',
+  'eliezer-yudkowsky': 'Q704195',
+  'dario-amodei': 'Q103335665',
+  'sam-altman': 'Q7407093',
+  'ilya-sutskever': 'Q21712134',
+  'demis-hassabis': 'Q3022141',
+  'jan-leike': 'Q123130693',
+  'paul-christiano': 'Q64769299',
+  'toby-ord': 'Q7811863',
+  'max-tegmark': 'Q2076321',
+  'yoshua-bengio': 'Q3572699',
+  'geoffrey-hinton': 'Q92894',
 
   // Books and papers
   'superintelligence-book': 'Q18386449',
-  'the-precipice': 'Q87064138',
-  'human-compatible': 'Q83538364',
+  'the-precipice': 'Q4329937',
+  'human-compatible': 'Q85767699',
 
   // Governance
-  'eu-ai-act': 'Q107409849',
+  'eu-ai-act': 'Q108456694',
   'sb-1047': 'Q127393140',
 
   // Other concepts
-  'effective-altruism': 'Q15078454',
-  'longtermism': 'Q85800893',
-  'x-risk': 'Q746242',
-  'catastrophic-risk': 'Q1026695',
-  'brain-computer-interfaces': 'Q464310',
-  'whole-brain-emulation': 'Q1074059',
-  'mind-uploading': 'Q1074059',
-  'prediction-markets': 'Q1814760',
-  'game-theory': 'Q11417',
-  'decision-theory': 'Q626821',
-  'multi-agent': 'Q1925963',
-  'collective-intelligence': 'Q846347',
+  'effective-altruism': 'Q13489381',
+  'longtermism': 'Q109311813',
+  'x-risk': 'Q21715237',
+  'catastrophic-risk': 'Q1531622',
+  'brain-computer-interfaces': 'Q897410',
+  'whole-brain-emulation': 'Q2267982',
+  'mind-uploading': 'Q2267982',
+  'game-theory': 'Q44455',
+  'decision-theory': 'Q177571',
+  'collective-intelligence': 'Q432197',
 
   // AI capabilities
-  'ai-takeover': 'Q266495',
-  'technological-singularity': 'Q193794',
-  'intelligence-explosion': 'Q193794',
-
-  // Safety techniques
-  'constitutional-ai': 'Q113660990',
+  'ai-takeover': 'Q2254427',
+  'technological-singularity': 'Q237525',
+  'intelligence-explosion': 'Q237525',
 
   // Risks
-  'disinformation': 'Q7242',
-  'deepfakes': 'Q36509522',
+  'disinformation': 'Q189656',
+  'deepfakes': 'Q49473179',
   'surveillance': 'Q334401',
-  'mass-surveillance': 'Q333971',
-  'autonomous-weapons': 'Q1142270',
+  'mass-surveillance': 'Q1425056',
+  'autonomous-weapons': 'Q25378861',
 };
 
 // Load current links

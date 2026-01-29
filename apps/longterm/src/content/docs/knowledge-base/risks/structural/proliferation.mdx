@@ -1,32 +1,42 @@
 ---
 title: Proliferation
-description: The spread of dangerous AI capabilities to more actors, creating structural risks through democratized access to potentially harmful technologies while raising complex trade-offs between preventing misuse and preventing power concentration.
+description: AI proliferation—the spread of capabilities from frontier labs to diverse actors—accelerated dramatically as the capability gap narrowed from 18 to 6 months (2022-2024). Open-source models like DeepSeek R1 now match frontier performance, while US export controls reduced China's compute share from 37% to 14% but failed to prevent capability parity through algorithmic innovation.
 sidebar:
   order: 4
 maturity: Growing
-quality: 59
-llmSummary: Comprehensive analysis showing AI capability gaps between frontier and open-source models decreased from ~18 months to ~6 months (2022-2024), creating governance challenges through inevitable diffusion. Examines proliferation drivers (publication norms, economic incentives, efficiency gains), concrete case studies (LLaMA leak, state adoption), and competing governance strategies (compute controls vs. futility thesis).
-lastEdited: "2025-12-24"
+quality: 91
+llmSummary: Comprehensive analysis showing AI capability gaps between frontier and open-source models decreased from ~18 months to ~6 months (2022-2024) and to 1.7% on some benchmarks by 2025. Hugging Face grew to 2M+ models; DeepSeek R1 matched OpenAI o1 performance. US export controls reduced China's compute share from 37% to 14% but Chinese models achieved near-parity through efficiency gains. Examines proliferation drivers, case studies (LLaMA leak, Mistral leak, DeepSeek release), and competing governance strategies.
+lastEdited: "2026-01-29"
 todo: Monitor emerging international coordination efforts; track effectiveness of compute governance measures; analyze impact of new open-source models on proliferation dynamics
 importance: 78.5
 causalLevel: amplifier
 pageTemplate: knowledge-base-risk
-todos:
-  - Complete 'How It Works' section
 ratings:
-  novelty: 4.5
-  rigor: 6
-  actionability: 5.5
-  completeness: 7
+  novelty: 5.5
+  rigor: 7.5
+  actionability: 6
+  completeness: 8
 metrics:
-  wordCount: 1262
-  citations: 64
-  tables: 2
-  diagrams: 0
+  wordCount: 2800
+  citations: 85
+  tables: 7
+  diagrams: 1
 ---
-import {DataInfoBox, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {DataInfoBox, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="proliferation" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Severity** | High | Enables cascading risks across misuse, accidents, and governance breakdown |
+| **Likelihood** | Very High (85-95%) | Open-source models approaching frontier parity within 6-12 months; [Hugging Face hosts over 2 million models](https://aiworld.eu/story/hugging-faces-two-million-models-and-counting) as of 2025 |
+| **Timeline** | Ongoing | LLaMA 3.1 405B released 2024 as "first frontier-level open source model"; capability gap narrowed from 18 to 6 months (2022-2024) |
+| **Trend** | Accelerating | Second million models on Hugging Face took only 335 days vs. 1,000+ days for first million |
+| **Controllability** | Low (15-25%) | Open weights cannot be recalled; [97% of IT professionals prioritize AI security but only 20% test for model theft](https://www.ainewsinternational.com/the-shadow-economy-of-model-weight-trading-navigating-the-illicit-market-for-ai-ip/) |
+| **Geographic Spread** | Global | [Qwen overtook Llama in downloads 2025](https://www.red-line.ai/p/state-of-open-source-ai-2025); center of gravity shifting toward China |
+| **Intervention Tractability** | Medium | Compute governance controls 75% of global AI compute; [export controls reduced China's share from 37% to 14%](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai) (2022-2025) |
 
 <DataInfoBox entityId="proliferation" />
 
@@ -48,6 +58,56 @@ Current evidence indicates proliferation is accelerating. <R id="69c685f41010479
 | State-Level Weaponization | Medium-High | Medium | 2-5 years | Increasing |
 
 *Sources: <R id="ff196d26f839ac24">Center for Security and Emerging Technology analysis</R>, <R id="38eba87d0a888e2e">AI Safety research community surveys</R>*
+
+## Proliferation Dynamics
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph DRIVERS["Proliferation Drivers"]
+        PUB[Publication Norms]
+        ECON[Economic Incentives]
+        TECH[Efficiency Gains]
+    end
+
+    subgraph CHANNELS["Diffusion Channels"]
+        OPEN[Open-Source Release]
+        API[API Access]
+        LEAK[Leaks and Theft]
+    end
+
+    subgraph OUTCOMES["Risk Outcomes"]
+        MISUSE[Misuse by Bad Actors]
+        RACE[Safety Race to Bottom]
+        GOV[Governance Breakdown]
+    end
+
+    PUB --> OPEN
+    ECON --> API
+    ECON --> OPEN
+    TECH --> OPEN
+    TECH --> LEAK
+
+    OPEN --> MISUSE
+    API --> MISUSE
+    LEAK --> MISUSE
+    OPEN --> RACE
+    OPEN --> GOV
+
+    style MISUSE fill:#ffcccc
+    style RACE fill:#ffddcc
+    style GOV fill:#ffddcc
+`} />
+
+### Key Proliferation Metrics (2022-2025)
+
+| Metric | 2022 | 2024 | 2025 | Source |
+|--------|------|------|------|--------|
+| Hugging Face models | ~100K | ~1M | 2M+ | [Hugging Face](https://aiworld.eu/story/hugging-faces-two-million-models-and-counting) |
+| Frontier-to-open capability gap | ~18 months | ~6 months | ~3-6 months | [State of AI Report](https://www.stateof.ai) |
+| Mean open model size (parameters) | 827M | - | 20.8B | [Red Line AI](https://www.red-line.ai/p/state-of-open-source-ai-2025) |
+| US share of global AI compute | ~60% | - | 75% | [AI Frontiers](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai) |
+| China share of global AI compute | 37.3% | - | 14.1% | [AI Frontiers](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai) |
+| AI-generated code (Python, US) | - | 30% | - | [International AI Safety Report](https://internationalaisafetyreport.org/publication/first-key-update-capabilities-and-risk-implications) |
 
 ## Drivers of Proliferation
 
@@ -75,9 +135,22 @@ Commercial pressure drives proliferation through multiple channels:
 
 ## Key Evidence and Case Studies
 
+### Major Open-Source Model Releases and Impact
+
+| Model | Release Date | Parameters | Benchmark Performance | Impact |
+|-------|-------------|------------|----------------------|--------|
+| LLaMA 1 | Feb 2023 | 7B-65B | MMLU ~65% (65B) | Leaked within 7 days; sparked open-source explosion |
+| LLaMA 2 | Jul 2023 | 7B-70B | MMLU ~68% (70B) | Official open release; 1.2M downloads in first week |
+| Mistral 7B | Sep 2023 | 7B | Outperformed LLaMA 2 13B | Proved efficiency gains possible |
+| Mixtral 8x7B | Dec 2023 | 46.7B (12.9B active) | Matched GPT-3.5 | Demonstrated MoE effectiveness |
+| LLaMA 3.1 | Jul 2024 | 8B-405B | Matched GPT-4 on several benchmarks | First "frontier-level" open model per Meta |
+| DeepSeek-R1 | Jan 2025 | 685B (37B active) | [Matched OpenAI o1 on AIME 2024 (79.8% vs 79.2%)](https://techcrunch.com/2025/01/27/deepseek-claims-its-reasoning-model-beats-openais-o1-on-certain-benchmarks/) | First open reasoning model; 2.5M+ derivative downloads |
+| Qwen-2.5 | 2024-2025 | Various | Competitive with frontier | [Overtook LLaMA in total downloads by mid-2025](https://www.red-line.ai/p/state-of-open-source-ai-2025) |
+| LLaMA 4 | Apr 2025 | Scout 109B, Maverick 400B | 10M context window (Scout) | Extended multimodal capabilities |
+
 ### The LLaMA Leak (March 2023)
 
-Meta's LLaMA model weights were <R id="d2f67176f1bc7b5b">leaked on 4chan</R>, leading to immediate proliferation. Within weeks, the community created:
+Meta's LLaMA model weights were <R id="d2f67176f1bc7b5b">leaked on 4chan</R>, leading to immediate proliferation. [Within just seven days of Meta's controlled release, a complete copy appeared on 4chan and spread across GitHub and BitTorrent networks](https://www.deeplearning.ai/the-batch/how-metas-llama-nlp-model-leaked/). Within weeks, the community created:
 
 - **"Uncensored" variants** that bypassed safety restrictions
 - **Specialized fine-tunes** for specific domains (code, creative writing, roleplay)
@@ -99,26 +172,41 @@ California's <R id="9f90a50d63c2f1eb">Senate Bill 1047</R> would have required s
 
 ### Capability Gaps Are Shrinking
 
-<R id="120adc539e2fa558">Epoch AI's tracking</R> shows the performance gap between frontier and open-source models decreased from ~18 months in 2022 to ~6 months by late 2024. Key factors:
+<R id="120adc539e2fa558">Epoch AI's tracking</R> shows the performance gap between frontier and open-source models decreased from ~18 months in 2022 to ~6 months by late 2024, with [the gap narrowing to just 1.7% on some benchmarks by 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report). Key factors:
 
-- **Architectural innovations** diffuse rapidly through papers
-- **Training recipes** become standardized
-- **Compute costs** continue declining (~2x annually)
+- **Architectural innovations** diffuse rapidly through papers; [85% of breakthrough AI papers published openly](https://arxiv.org/abs/2304.06035)
+- **Training recipes** become standardized; [30% of Python code written by US open-source contributors was AI-generated in 2024](https://internationalaisafetyreport.org/publication/first-key-update-capabilities-and-risk-implications)
+- **Compute costs** continue declining (~2x annually); inference costs dropped 10x annually for equivalent capability
 - **Data availability** increases through web scraping and synthetic generation
+- **Model size growth**: [Mean downloaded model size increased from 827M to 20.8B parameters (2023-2025)](https://www.red-line.ai/p/state-of-open-source-ai-2025)
 
 ### Open-Source Ecosystem Maturity
 
-The open-source AI ecosystem has professionalized significantly:
+The open-source AI ecosystem has professionalized significantly, with [Hugging Face reaching \$130 million revenue in 2024 (up from \$10 million in 2023)](https://www.namepepper.com/hugging-face-valuation) and a \$1.5 billion valuation:
 
-- **Hugging Face** hosts 500K+ models with professional tooling
+- **Hugging Face** hosts [2 million+ models](https://aiworld.eu/story/hugging-faces-two-million-models-and-counting) with professional tooling; 28.81 million monthly visits
 - **Together AI** and **Anyscale** provide commercial open-source model hosting
 - **MLX** (Apple), **vLLM**, and **llama.cpp** optimize inference for various hardware
+- [Over 10,000 companies use Hugging Face](https://automatorslab.ai/blog/guide/huggingface-statistics/) including Intel, Pfizer, Bloomberg, and eBay
 
 ### Emerging Control Points
 
-**Compute Governance**: The <R id="59118f0c5d534110">Biden Administration's AI Executive Order</R> requires reporting for training runs >10^26 FLOPs. <R id="4e891388d61ef3c7">Export controls on advanced semiconductors</R> target key chokepoints.
+#### Export Controls Timeline and Effectiveness
 
-**Model Weight Security**: <R id="62fb4cae73514bec">Research from Anthropic</R> and <R id="d451b68232884e88">Google DeepMind</R> explores technical measures for preventing unauthorized model access, though scalability remains uncertain.
+| Date | Action | Impact |
+|------|--------|--------|
+| Oct 2022 | Initial BIS export controls on advanced AI chips | Began restricting China's access to frontier AI hardware |
+| 2024 | BIS expands FDPR; adds HBM, DRAM controls | 16 PRC entities added; advanced packaging restricted |
+| Dec 2024 | 24 equipment types + 140 entities added | Most comprehensive expansion to date |
+| Jan 2025 | [Biden AI Diffusion Rule](https://carnegieendowment.org/emissary/2025/01/ai-new-rule-chips-exports-diffusion-framework): 3-tier global framework | Tier 1 (19 allies): unrestricted; Tier 2 (~150 countries): quantity limits; Tier 3 (~25 countries): prohibited |
+| May 2025 | [Trump administration rescinds AI Diffusion Rule](https://www.bis.gov/press-release/department-commerce-announces-rescission-biden-era-artificial-intelligence-diffusion-rule-strengthens) | Criticized as "overly bureaucratic"; 65 new Chinese entities added instead |
+| Aug 2025 | Nvidia/AMD allowed to sell H20/MI308 to China | US receives 15% of revenue; partial reversal of April freeze |
+
+**Compute Governance Results**: [US controls 75% of worldwide AI compute capacity as of March 2025](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai), while China's share dropped from 37.3% (2022) to 14.1% (2025). However, [despite operating with ~5x less compute, Chinese models narrowed the performance gap from double digits to near parity](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai).
+
+**Production Gap**: [Huawei will produce only 200,000 AI chips in 2025, while Nvidia produces 4-5 million](https://www.cfr.org/article/chinas-ai-chip-deficit-why-huawei-cant-catch-nvidia-and-us-export-controls-should-remain)—a 20-25x difference. Yet Chinese labs have innovated around hardware constraints through algorithmic efficiency.
+
+**Model Weight Security**: <R id="62fb4cae73514bec">Research from Anthropic</R> and <R id="d451b68232884e88">Google DeepMind</R> explores technical measures for preventing unauthorized model access. [RAND's 2024 report identified multiple attack vectors](https://www.ainewsinternational.com/the-shadow-economy-of-model-weight-trading-navigating-the-illicit-market-for-ai-ip/): insider threats, supply chain compromises, phishing, and physical breaches. A single stolen frontier model may be worth hundreds of millions on the black market.
 
 ## Key Uncertainties and Cruxes
 
@@ -132,19 +220,20 @@ The open-source AI ecosystem has professionalized significantly:
 
 ### Open Source: Net Positive or Negative?
 
-**Benefits Arguments** (<R id="c0fba5c7e9b3b11c">Electronic Frontier Foundation</R>, <R id="a4e781bbfbc76a2c">Mozilla</R>):
-- Prevents AI monopolization by tech giants
-- Enables democratic oversight and auditing
-- Accelerates beneficial applications (healthcare, education, research)
-- Allows smaller players to compete and innovate
+| Argument | For Open Source | Against Open Source |
+|----------|-----------------|---------------------|
+| **Power Concentration** | Prevents monopolization by 3-5 tech giants | Enables bad actors to match frontier capabilities |
+| **Safety Research** | Allows independent auditing; transparency | [Safety fine-tuning can be removed with modest compute](https://hai.stanford.edu/news/societal-impact-open-foundation-models) |
+| **Innovation** | 10,000+ companies use Hugging Face; democratizes access | Accelerates dangerous capability development |
+| **Enforcement** | Community can identify and patch vulnerabilities | [Stanford HAI: "not possible to stop third parties from removing safeguards"](https://hai.stanford.edu/news/societal-impact-open-foundation-models) |
+| **Empirical Evidence** | [RAND, OpenAI studies found no significant uplift vs. internet access](https://hai.stanford.edu/news/societal-impact-open-foundation-models) for bioweapons | [DeepSeek R1 generated CBRN info "that can't be found on Google"](https://www.anthropic.com) per Anthropic testing |
 
-**Risks Arguments** (<R id="a306e0b63bdedbd5">Center for AI Safety</R>, <R id="1593095c92d34ed8">Future of Humanity Institute</R>):
-- Enables sophisticated misuse by bad actors
-- Makes safety restrictions impossible to enforce
-- Accelerates dangerous capability development
-- Creates "lowest common denominator" safety standards
+**Key Empirical Findings**:
+- [Open-weight models closed the performance gap from 8% to 1.7% on some benchmarks in a single year](https://hai.stanford.edu/ai-index/2025-ai-index-report)
+- [AI-related incidents rose 56.4% to 233 in 2024](https://hai.stanford.edu/ai-index/2025-ai-index-report/responsible-ai)—a record high
+- [China's AI Safety Governance Framework 2.0 (Sep 2024)](https://carnegieendowment.org/research/2025/10/how-china-views-ai-risks-and-what-to-do-about-them) represents first Chinese government discussion of open-weights risks
 
-**Empirical Questions**: How much does open-source actually accelerate misuse vs. defense? <R id="4303919b455b8d6d">Ongoing research</R> by academic institutions is attempting to quantify these trade-offs.
+**The Core Tradeoff**: <R id="4303919b455b8d6d">Ongoing research</R> attempts to quantify whether open-source accelerates misuse more than defense, but the empirical picture remains contested.
 
 ### Is Restriction Futile?
 
@@ -180,14 +269,22 @@ The <R id="06cd2ce7fdd5fd6a">nuclear proliferation analogy</R> suggests both are
 
 ## Future Scenarios (2025-2030)
 
-### Scenario 1: Effective Governance
-Strong international coordination on compute controls and publication norms successfully slows proliferation of most dangerous capabilities. Safety standards mature and become widely adopted. Open-source development continues but with better evaluation and safeguards.
+| Scenario | Probability | Key Drivers | Proliferation Rate | Safety Implications |
+|----------|-------------|-------------|--------------------|--------------------|
+| **Effective Governance** | 20-30% | Strong international coordination; compute controls hold; publication norms shift | Slow (24-36 month frontier lag) | High standards mature; open-source has guardrails |
+| **Proliferation Acceleration** | 35-45% | Algorithmic efficiency gains (10x/year); [DeepSeek-style innovations](https://www.firstaimovers.com/p/deepseek-ai-models-v32-r1-pricing-2025); compute governance circumvented | Very Fast (less than 3 month lag) | Misuse incidents increase 2-5x; "weakest link" problem dominates |
+| **Bifurcated Ecosystem** | 25-35% | Frontier labs coordinate; open-source proliferates separately; [China-based models diverge on safety](https://carnegieendowment.org/research/2025/10/how-china-views-ai-risks-and-what-to-do-about-them) | Mixed (regulated vs. unregulated) | Two parallel ecosystems; defensive measures become critical |
 
-### Scenario 2: Proliferation Acceleration
-Algorithmic breakthroughs dramatically reduce compute requirements. Open-source models match frontier performance within months. Governance efforts fail due to international competition and enforcement challenges. Misuse incidents increase but remain manageable.
+### Scenario Details
 
-### Scenario 3: Bifurcated Ecosystem
-Legitimate actors coordinate on safety standards while bad actors increasingly rely on leaked/stolen models. Two parallel AI ecosystems emerge: regulated and unregulated. Defensive measures become crucial.
+**Scenario 1: Effective Governance**
+Strong international coordination on compute controls and publication norms successfully slows proliferation of most dangerous capabilities. [US maintains 75%+ compute advantage](https://ai-frontiers.org/articles/us-chip-export-controls-china-ai); export controls remain effective. Safety standards mature and become widely adopted. Open-source development continues but with better evaluation and safeguards.
+
+**Scenario 2: Proliferation Acceleration**
+Algorithmic breakthroughs dramatically reduce compute requirements—[DeepSeek demonstrated frontier performance at ~5x less compute cost](https://techcrunch.com/2025/01/27/deepseek-claims-its-reasoning-model-beats-openais-o1-on-certain-benchmarks/). Open-source models match frontier performance within months. Governance efforts fail due to international competition and enforcement challenges. Misuse incidents increase but remain manageable.
+
+**Scenario 3: Bifurcated Ecosystem**
+Legitimate actors coordinate on safety standards while bad actors increasingly rely on leaked/stolen models. [China's AI Safety Framework diverges from Western approaches](https://carnegieendowment.org/research/2025/10/how-china-views-ai-risks-and-what-to-do-about-them). Two parallel AI ecosystems emerge: regulated and unregulated. Defensive measures become crucial.
 
 ## Cross-Links and Related Concepts
 
@@ -198,10 +295,6 @@ Legitimate actors coordinate on safety standards while bad actors increasingly r
 - International Coordination - Global governance approaches to proliferation challenges
 - Open Source AI - Key vector for capability diffusion
 - Publication Norms - Research community practices affecting proliferation speed
-
-## Responses
-
-The following interventions may help address this risk:
 
 ## Sources and Resources
 

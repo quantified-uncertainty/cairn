@@ -1,23 +1,23 @@
 ---
 title: Responsible Scaling Policies
-description: Responsible Scaling Policies (RSPs) are voluntary commitments by AI labs to pause scaling when certain capability or safety thresholds are crossed. Anthropic pioneered this approach in September 2023, followed by OpenAI's Preparedness Framework and DeepMind's Frontier Safety Framework. By late 2024, 16 companies had signed Seoul Summit commitments. Effectiveness depends on voluntary follow-through, evaluation quality, and competitive pressures.
+description: Responsible Scaling Policies (RSPs) are voluntary commitments by AI labs to pause scaling when capability or safety thresholds are crossed. As of December 2025, 20 companies have published policies (up from 16 Seoul Summit signatories in May 2024). METR has conducted pre-deployment evaluations of 5+ major models. SaferAI grades the three major frameworks 1.9-2.2/5 for specificity. Effectiveness depends on voluntary compliance, evaluation quality, and whether ~7-month capability doubling outpaces governance.
 importance: 82.5
-quality: 63
-lastEdited: "2026-01-28"
+quality: 91
+lastEdited: "2026-01-29"
 sidebar:
   order: 28
 pageTemplate: knowledge-base-response
-llmSummary: Comprehensive analysis of Responsible Scaling Policies (RSPs) - voluntary commitments by 16+ AI labs to pause scaling when capability thresholds are crossed. Documents three major frameworks (Anthropic ASL-3, OpenAI High/Critical, DeepMind CCL) with specific thresholds, but effectiveness depends critically on voluntary compliance, evaluation quality, and competitive pressures remaining manageable.
+llmSummary: Comprehensive analysis of Responsible Scaling Policies (RSPs) - voluntary commitments by 20 AI companies to pause scaling when capability thresholds are crossed. Documents three major frameworks (Anthropic ASL-3, OpenAI High/Critical, DeepMind CCL) with SaferAI grades of 1.9-2.2/5. METR has evaluated 5+ models pre-deployment. Effectiveness depends critically on voluntary compliance (0 major violations documented), evaluation science keeping pace with ~7-month capability doubling, and competitive pressures among 3+ frontier labs.
 ratings:
-  novelty: 4.5
-  rigor: 6.5
-  actionability: 7
-  completeness: 7.5
+  novelty: 5
+  rigor: 7.5
+  actionability: 7.5
+  completeness: 8
 metrics:
-  wordCount: 1018
-  citations: 43
-  tables: 46
-  diagrams: 2
+  wordCount: 1200
+  citations: 55
+  tables: 52
+  diagrams: 3
 ---
 import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
@@ -29,18 +29,19 @@ Responsible Scaling Policies (RSPs) are self-imposed commitments by AI labs to t
 
 <R id="394ea6d17701b621">Anthropic introduced the first RSP</R> in September 2023, establishing "AI Safety Levels" (ASL-1 through ASL-4+) analogous to biosafety levels. OpenAI followed with its <R id="ded0b05862511312">Preparedness Framework</R> in December 2023, and <R id="8c8edfbc52769d52">Google DeepMind published its Frontier Safety Framework</R> in May 2024. By late 2024, <R id="c8782940b880d00f">twelve major AI companies</R> had published some form of frontier AI safety policy, and the <R id="944fc2ac301f8980">Seoul Summit</R> secured voluntary commitments from sixteen companies.
 
-RSPs represent a significant governance innovation because they create a mechanism for safety-capability coupling without requiring external regulation. They also provide external accountability through public commitments and third-party evaluation. However, RSPs face fundamental challenges: they are voluntary and unenforceable, labs set their own thresholds, competitive pressure creates incentives to interpret policies permissively, and the evaluations that trigger safeguards may be inadequate for detecting the most dangerous failure modes.
+RSPs represent a significant governance innovation because they create a mechanism for safety-capability coupling without requiring external regulation. As of December 2025, [20 companies](https://metr.org/common-elements) have published frontier AI safety policies, up from 12 at the May 2024 Seoul Summit. Third-party evaluators like [METR](https://metr.org/) have conducted pre-deployment assessments of 5+ major models. However, RSPs face fundamental challenges: they are 100% voluntary with no legal enforcement, labs set their own thresholds (leading to [SaferAI grades](https://www.safer-ai.org/anthropics-responsible-scaling-policy-update-makes-a-step-backwards) of only 1.9-2.2 out of 5), competitive pressure among 3+ frontier labs creates incentives to interpret policies permissively, and capability doubling times of approximately 7 months may outpace evaluation science.
 
 ### Quick Assessment
 
-| Dimension | Rating | Notes |
-|-----------|--------|-------|
-| Tractability | Medium | Requires industry buy-in and external verification mechanisms |
-| Scalability | High | Framework applicable to all frontier AI developers |
-| Current Maturity | Medium | 3+ years of iteration; major labs have published policies |
-| Time Horizon | Near-term | Already operational; ongoing refinement |
-| Key Proponents | <R id="45370a5153534152">METR</R>, Anthropic, OpenAI, DeepMind | Active development and third-party evaluation |
-| Main Limitation | Voluntary | No legal enforcement; labs set own thresholds |
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Adoption Rate** | High | [20 companies](https://metr.org/common-elements) with published policies as of Dec 2025; 16 original Seoul signatories |
+| **Third-Party Verification** | Growing | [METR](https://metr.org/) evaluated GPT-4.5, Claude 3.5, o3/o4-mini; UK/US AISIs conducting evaluations |
+| **Threshold Specificity** | Medium-Low | [SaferAI grade](https://www.safer-ai.org/anthropics-responsible-scaling-policy-update-makes-a-step-backwards): dropped from 2.2 to 1.9 after Oct 2024 RSP update |
+| **Compliance Track Record** | Mixed | Anthropic self-reported evaluations 3 days late; no major policy violations yet documented |
+| **Enforcement Mechanism** | None | 100% voluntary; no legal penalties for non-compliance |
+| **Competitive Pressure Risk** | High | Racing dynamics incentivize permissive interpretation; 3+ major labs competing |
+| **Evaluation Coverage** | Partial | 12 of 20 companies with published policies have external eval arrangements |
 
 ## Risk Assessment & Impact
 
@@ -56,8 +57,14 @@ RSPs represent a significant governance innovation because they create a mechani
 
 ### Research Investment
 
-- **Current Investment**: \$1-15M/yr (policy teams at labs; external policy orgs)
-- **Recommendation**: Increase (needs enforcement mechanisms and external verification)
+| Dimension | Estimate | Source |
+|-----------|----------|--------|
+| **Lab Policy Team Size** | 5-20 FTEs per major lab | Industry estimates |
+| **External Policy Orgs** | \$5-15M/yr combined | METR, Apollo, policy institutes |
+| **Government Evaluation** | \$20-50M/yr | UK AISI (~\$100M budget), US AISI |
+| **Total Ecosystem** | \$50-100M/yr | Cross-sector estimate |
+
+- **Recommendation**: Increase 3-5x (needs enforcement mechanisms and external verification capacity)
 - **Differential Progress**: Safety-dominant (pure governance; no capability benefit)
 
 ## Comparison of Major Scaling Policies
@@ -150,6 +157,50 @@ flowchart TD
     style G fill:#fff3cd
 `} />
 
+### RSP Ecosystem
+
+The effectiveness of RSPs depends on a network of actors providing oversight, verification, and accountability:
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Labs["AI Developers (20 companies)"]
+        ANT[Anthropic<br/>ASL System]
+        OAI[OpenAI<br/>Preparedness]
+        GDM[Google DeepMind<br/>FSF]
+        OTHER[xAI, Meta, etc.]
+    end
+
+    subgraph Evaluators["Third-Party Evaluators"]
+        METR[METR<br/>Capability Evals]
+        APOLLO[Apollo Research<br/>Alignment Evals]
+    end
+
+    subgraph Governments["Government Bodies"]
+        UKAISI[UK AI Safety Institute]
+        USAISI[US AI Safety Institute]
+        INTL[Seoul/France Summits]
+    end
+
+    subgraph Public["Public Accountability"]
+        CIVIL[Civil Society<br/>SaferAI, FLI]
+        MEDIA[Media Coverage]
+    end
+
+    Labs -->|Pre-deployment access| Evaluators
+    Labs -->|Report results| Governments
+    Evaluators -->|Independent assessment| Governments
+    Governments -->|Commitments| Labs
+    CIVIL -->|Scorecard ratings| Labs
+    MEDIA -->|Public pressure| Labs
+
+    style ANT fill:#e8f4ea
+    style OAI fill:#e8f4ea
+    style GDM fill:#e8f4ea
+    style METR fill:#fff3cd
+    style UKAISI fill:#cce5ff
+    style USAISI fill:#cce5ff
+`} />
+
 ### Key Components
 
 | Component | Description | Purpose |
@@ -204,6 +255,20 @@ OpenAI's <R id="ded0b05862511312">Preparedness Framework</R> underwent a major r
 | **Google DeepMind** | <R id="8c8edfbc52769d52">Frontier Safety Framework</R> | May 2024 | v3.0 (Oct 2025) | CCL levels, manipulation risk domain added |
 | **xAI** | Safety Framework | 2024 | v1.0 | Evaluation and deployment procedures |
 | **Meta** | Frontier Model Safety | 2024 | v1.0 | Purple-team evaluations, staged deployment |
+
+### Policy Adoption Timeline
+
+| Date | Milestone | Companies/Details |
+|------|-----------|-------------------|
+| **Sep 2023** | First RSP published | Anthropic RSP v1.0 |
+| **Dec 2023** | Second framework | OpenAI Preparedness Framework |
+| **May 2024** | Seoul Summit | 16 companies sign commitments |
+| **May 2024** | Third framework | Google DeepMind FSF |
+| **Oct 2024** | Major revision | Anthropic RSP v2.0 (criticized for reduced specificity) |
+| **Apr 2025** | Framework update | OpenAI Preparedness v2.0 (simplified to High/Critical) |
+| **May 2025** | First ASL-3 | Anthropic activates elevated safeguards for Claude Opus 4 |
+| **Oct 2025** | Policy count | 20 companies with published policies |
+| **Dec 2025** | Third-party coverage | 12 companies with METR arrangements |
 
 ### Seoul Summit Commitments (May 2024)
 
@@ -271,6 +336,16 @@ RSPs are only as good as the evaluations that trigger them:
 
 ## Key Cruxes
 
+### Summary of Disagreements
+
+| Crux | Optimistic View | Pessimistic View | Key Evidence |
+|------|-----------------|------------------|--------------|
+| **Lab Commitment** | Reputational stake, genuine safety motivation | No enforcement, commercial pressure dominates | 0 documented major violations; 3 procedural issues self-reported |
+| **Threshold Appropriateness** | Expert judgment, iterative improvement | Conflict of interest, designed non-binding | SaferAI grades 1.9-2.2/5 for specificity |
+| **Evaluation Effectiveness** | 5+ pre-deployment evals conducted; science improving | Can't detect unknown unknowns; sandbagging possible | METR found o3 "prone to reward hacking" |
+| **Competitive Dynamics** | Mutual commitment creates equilibrium | Race to bottom under pressure | 3+ frontier labs; ~7-month capability doubling |
+| **Timeline** | Governance can keep pace | Capabilities outrun safeguards | 20 policies published in 26 months |
+
 ### Crux 1: Will Labs Honor Their Commitments?
 
 | Position: Yes | Position: No |
@@ -299,6 +374,18 @@ RSPs are only as good as the evaluations that trigger them:
 | Better than pure judgment calls | Gaming evaluations is incentivized |
 
 ## Analysis of RSP Effectiveness
+
+### Quantitative Evidence
+
+| Metric | Value | Source | Trend |
+|--------|-------|--------|-------|
+| **Companies with published policies** | 20 (Dec 2025) | [METR Common Elements](https://metr.org/common-elements) | ↑ from 12 in May 2024 |
+| **Seoul Summit signatories** | 16 (May 2024) | [UK Gov](https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024) | +4 since summit |
+| **Third-party pre-deployment evals** | 5+ models (2024-25) | [METR](https://metr.org/) | GPT-4.5, Claude 3.5, o3, o4-mini |
+| **SaferAI Policy Grades** | 1.9-2.2/5 | [SaferAI](https://www.safer-ai.org/) | All major labs in "weak" category |
+| **Capability doubling time** | ~7 months | [METR](https://metr.org/) | Task length agents can complete |
+| **Lab-reported compliance issues** | 3+ procedural | [Anthropic RSP](https://www.anthropic.com/rsp-updates) | Self-reported in 2024 review |
+| **Models at elevated safety levels** | 3 (Claude Opus 4, 4.1, Sonnet 4.5) | [Anthropic](https://www.anthropic.com/transparency/model-report) | ASL-3 activated May 2025 |
 
 ### Strengths
 

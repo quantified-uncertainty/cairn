@@ -44,7 +44,8 @@ const PLACEHOLDER_PATTERNS = [
   // Bracketed placeholders
   { pattern: /\[(?:Value|TBD|TODO|TBC|N\/A|XX+|\.\.\.)\]/gi, name: 'Bracketed placeholder', severity: 'warning' },
   { pattern: /\[(?:Description|Explanation|Details|Content|Text)\]/gi, name: 'Description placeholder', severity: 'warning' },
-  { pattern: /\[(?:Insert|Add|Fill in|Complete|Provide)[^\]]*\]/gi, name: 'Action placeholder', severity: 'warning' },
+  // Note: Requires space after action word to avoid matching "additional" etc.
+  { pattern: /\[(?:Insert|Add|Fill in|Complete|Provide)\s+[^\]]*\]/gi, name: 'Action placeholder', severity: 'warning' },
   // Note: Uses negative lookahead to avoid matching markdown links like [source](url)
   { pattern: /\[(?:Source|Citation|Reference|Link)\](?!\()/gi, name: 'Citation placeholder', severity: 'warning' },
   { pattern: /\[(?:Date|Year|Number|Percentage|Figure)\]/gi, name: 'Data placeholder', severity: 'warning' },
@@ -76,7 +77,14 @@ const PLACEHOLDER_PATTERNS = [
 ];
 
 // Section names to check for emptiness
-const SECTION_NAMES = ['Overview', 'Key Uncertainties', 'How It Works', 'Limitations'];
+const SECTION_NAMES = ['Overview', 'Key Uncertainties', 'How It Works', 'Limitations', 'Responses'];
+
+// Boilerplate intro patterns that indicate an empty section when alone
+const BOILERPLATE_PATTERNS = [
+  /^The following interventions may help address this risk:?\s*$/i,
+  /^This (risk|intervention|response) (addresses|is related to)[^.]*\.?\s*$/i,
+  /^This section (describes|explains|covers)[^.]*\.?\s*$/i,
+];
 
 /**
  * Extract section content between ## heading and next ## heading (not ###)
@@ -227,6 +235,67 @@ function checkEmptyTableCells(body) {
 }
 
 /**
+ * Check for sections with only boilerplate intro text but no actual content
+ * e.g., "## Responses\n\nThe following interventions may help address this risk:\n\n## Next Section"
+ */
+function checkBoilerplateOnlySections(body) {
+  const issues = [];
+
+  // Find all ## headers
+  const headerRegex = /^##\s+([^\n]+)$/gm;
+  const headers = [];
+  let match;
+
+  while ((match = headerRegex.exec(body)) !== null) {
+    headers.push({
+      fullMatch: match[0],
+      name: match[1].trim(),
+      index: match.index,
+      line: getLineNumber(body, match.index),
+    });
+  }
+
+  // Check content between each pair of ## headers
+  for (let i = 0; i < headers.length; i++) {
+    const current = headers[i];
+    const next = headers[i + 1];
+
+    // Get section content (between this header and next, or end of file)
+    const startIndex = current.index + current.fullMatch.length;
+    const endIndex = next ? next.index : body.length;
+    const sectionContent = body.slice(startIndex, endIndex).trim();
+
+    // Skip if section has substantial content (tables, lists, multiple paragraphs, links)
+    const hasTable = /\|.*\|.*\|/.test(sectionContent);
+    const hasList = /^[-*]\s+\S/m.test(sectionContent) || /^\d+\.\s+\S/m.test(sectionContent);
+    const hasLinks = /\[.+?\]\(.+?\)/.test(sectionContent) || /<EntityLink/.test(sectionContent);
+    const hasMultipleParagraphs = (sectionContent.match(/\n\n/g) || []).length >= 2;
+    const hasSubsections = /^###\s+/m.test(sectionContent);
+
+    if (hasTable || hasList || hasLinks || hasMultipleParagraphs || hasSubsections) {
+      continue;
+    }
+
+    // Check if content is only boilerplate
+    const isBoilerplateOnly = BOILERPLATE_PATTERNS.some(pattern => {
+      const contentWithoutWhitespace = sectionContent.replace(/\s+/g, ' ').trim();
+      return pattern.test(contentWithoutWhitespace);
+    });
+
+    if (isBoilerplateOnly) {
+      issues.push({
+        pattern: 'Boilerplate-only section',
+        severity: 'warning',
+        line: current.line,
+        context: `"${current.name}" has intro text but no actual content (no lists, tables, or links)`,
+      });
+    }
+  }
+
+  return issues;
+}
+
+/**
  * Check a single file for placeholders
  */
 function checkFile(filePath) {
@@ -268,6 +337,9 @@ function checkFile(filePath) {
 
   // Check for empty table cells
   issues.push(...checkEmptyTableCells(body));
+
+  // Check for sections with only boilerplate intro text
+  issues.push(...checkBoilerplateOnlySections(body));
 
   // Check frontmatter for todos (these are tracked separately but worth noting)
   if (frontmatter.todos && frontmatter.todos.length > 0) {

@@ -43,6 +43,7 @@ const STUB_SECTION_HEADERS = [
   '## Critical Assessment',
   '## Limitations',
   '## Key Uncertainties',
+  '## Responses',
 ];
 
 function findMdxFiles(dir) {
@@ -120,7 +121,9 @@ function cleanFile(filePath) {
     const isStub = hasPlaceholder(contentText) ||
                    contentText === '' ||
                    contentText === 'This intervention addresses the following risks:' ||
-                   contentText.match(/^This (risk|intervention|response) (addresses|is related to)[^.]*\.?\s*$/);
+                   contentText === 'The following interventions may help address this risk:' ||
+                   contentText.match(/^This (risk|intervention|response) (addresses|is related to)[^.]*\.?\s*$/) ||
+                   contentText.match(/^The following interventions may help address this risk:?\s*$/);
 
     // Check if this is a duplicate header (already seen)
     const normalizedHeader = section.headerText.toLowerCase().replace(/[^a-z0-9]/g, '');

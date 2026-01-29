@@ -559,7 +559,8 @@ npm run validate:placeholders --path risks # Filter by path
 Detects patterns like:
 - `TODO`, `TBD`, `FIXME` markers
 - `[Value]`, `[Description]`, `[Insert X]` placeholders
-- Empty or sparse sections
+- Empty or sparse sections (Overview, Responses, Key Uncertainties, How It Works, Limitations)
+- Boilerplate-only sections (header + intro text but no actual content like lists/tables/links)
 - Trailing `...` (incomplete sentences)
 - Empty table cells
 

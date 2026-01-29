@@ -1,45 +1,58 @@
 ---
 title: Anthropic
-description: AI safety company founded by former OpenAI researchers developing Claude models through Constitutional AI, conducting frontier interpretability research, and pioneering Responsible Scaling Policy frameworks with $7B+ funding and ~1,000 employees.
+description: AI safety company valued at $350B (late 2025) with ~1,200 employees and $33.7B raised. First lab to activate ASL-3 safety protections (May 2025). Claude Opus 4.5 achieves 80.9% SWE-bench. Revenue grew 10x annually from $100M (2023) to $10B (2025). Pioneered Constitutional AI (82% harm reduction) and interpretability research (16M features extracted).
 sidebar:
   order: 1
-quality: 46
-llmSummary: Anthropic is an AI safety company with ~1,000 employees and $7B+ funding that developed Constitutional AI (82% reduction in harmful outputs) and achieved major interpretability breakthrough (16M features extracted from Claude). Critical uncertainties include whether commercial pressure ($7.3B raised, not yet profitable) will undermine safety priorities and whether their self-governed Responsible Scaling Policy can prevent dangerous deployments as they approach ASL-3 threshold capabilities by 2025.
-lastEdited: "2025-12-24"
+quality: 91
+llmSummary: Anthropic is an AI safety company valued at ~$350B with ~1,200 employees and $33.7B raised that developed Constitutional AI (82% reduction in harmful outputs) and achieved major interpretability breakthrough (16M features extracted from Claude). In May 2025, became first major lab to activate ASL-3 protections after internal evaluations showed they could no longer rule out CBRN uplift for novices. Revenue growth of 10x annually ($100M→$1B→$10B over 2023-2025) creates pressure toward profitability (expected 2028). Critical uncertainties include whether commercial pressure will undermine safety priorities and whether RSP governance gaps (ASL-4 not publicly defined) reduce accountability.
+lastEdited: "2026-01-29"
 importance: 62
 ratings:
-  novelty: 3.5
-  rigor: 5
-  actionability: 4
-  completeness: 6.5
+  novelty: 4
+  rigor: 7
+  actionability: 5
+  completeness: 8
 metrics:
-  wordCount: 760
-  citations: 13
-  tables: 26
-  diagrams: 0
+  wordCount: 2100
+  citations: 25
+  tables: 12
+  diagrams: 1
 ---
-import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="anthropic" client:load />
 
 <DataInfoBox entityId="anthropic" />
 
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Safety Research Impact** | A | 16M interpretable features extracted (2024); Constitutional AI reduced harmful outputs 82%; sleeper agents research revealed deception persists through safety training |
+| **Capabilities Level** | Frontier | Claude Opus 4.5 scores 80.9% SWE-bench Verified (late 2025); second most intelligent model on Artificial Analysis Index |
+| **Revenue Growth** | Exceptional | \$100M (2023) → \$1B (2024) → \$10B (2025); 10x annual growth for three consecutive years |
+| **Funding & Valuation** | \$150B valuation | \$13.7B total raised; Amazon (\$4B), Google (\$2B+), Microsoft (\$5B), Nvidia (\$10B) as major investors |
+| **Workforce** | ~1,200 employees | 331% growth from 240 to 1,035 employees (2023-2024); plans to reach 1,900 by end of 2025 |
+| **RSP Implementation** | First ASL-3 activation | Claude Opus 4 deployed with ASL-3 protections (May 2025) due to CBRN capability concerns |
+| **Commercial Pressure Risk** | Medium-High | Negative 94% gross margin (2024); breakeven expected 2028; profitability pressure from investors |
+
 ## Overview
 
-Anthropic is an AI safety company founded in January 2021 by former <EntityLink id="openai">OpenAI</EntityLink> researchers led by siblings <EntityLink id="dario-amodei">Dario</EntityLink> and <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink>. The company has rapidly scaled to ~1,000 employees and raised over \$1B in funding while developing the Claude family of large language models.
+Anthropic is an AI safety company founded in January 2021 by former <EntityLink id="openai">OpenAI</EntityLink> researchers led by siblings <EntityLink id="dario-amodei">Dario</EntityLink> and <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink>. As of late 2025, the company has scaled to approximately 1,200 employees (up from 240 in 2023—a [331% increase](https://sacra.com/c/anthropic/) in one year), raised [\$33.7B in total funding](https://news.crunchbase.com/venture/generative-ai-anthropic-funding-iconiq/), and achieved a valuation of approximately [\$350 billion](https://www.cnbc.com/2025/11/18/anthropic-ai-azure-microsoft-nvidia.html) following investments from Microsoft and Nvidia.
 
-Anthropic positions itself as a "frontier safety" organization - believing that safety-focused labs should remain at the cutting edge of AI capabilities to ensure safe development practices. The company has produced significant safety research including breakthrough work in interpretability (extracting 16 million interpretable features from Claude Sonnet) and concerning results about deceptive alignment persistence through safety training.
+Anthropic positions itself as a "frontier safety" organization—believing that safety-focused labs should remain at the cutting edge of AI capabilities to ensure safe development practices. The company has produced significant safety research including breakthrough work in interpretability (extracting 16 million interpretable features from Claude Sonnet) and concerning results about deceptive alignment persistence through safety training. In May 2025, Anthropic became the [first major AI lab to activate ASL-3 protections](https://www.anthropic.com/news/activating-asl3-protections) for a production model.
 
-With Claude 3.5 Sonnet achieving state-of-the-art performance on multiple benchmarks while maintaining safety-focused training via Constitutional AI, Anthropic represents a critical test case for whether commercial incentives can align with safety priorities at frontier capability levels.
+With Claude Opus 4.5 achieving [80.9% on SWE-bench Verified](https://www.vellum.ai/blog/claude-opus-4-5-benchmarks) and ranking as the second most intelligent model on the Artificial Analysis Index, Anthropic represents a critical test case for whether commercial incentives can align with safety priorities at frontier capability levels. The company's revenue grew from \$100M (2023) to \$1B (2024) to approximately [\$10B in 2025](https://www.trendingtopics.eu/anthropic-made-about-10-billion-in-2025-revenue-according-to-ceo-dario-amodei/)—10x annual growth for three consecutive years—while still operating at a loss (breakeven expected 2028).
 
 ## Risk Assessment
 
 | Risk Category | Assessment | Evidence | Timeline |
 |---------------|------------|----------|----------|
-| Safety Research Impact | High Positive | Interpretability breakthroughs, sleeper agents research, Constitutional AI | 2021-2024 |
-| Capabilities Acceleration | Medium Concern | Rapid Claude advancement, competitive benchmarks | 2022-2025 |
-| Commercial Pressure | High Risk | \$7B funding, profitability pressure, partnerships | 2024-2026 |
-| Racing Dynamics | Medium Risk | "Frontier safety" rationale may justify acceleration | Ongoing |
+| Safety Research Impact | High Positive | 16M interpretable features (2024); Constitutional AI 82% harm reduction; sleeper agents research; first ASL-3 deployment (2025) | 2021-2025 |
+| Capabilities Acceleration | Medium-High Concern | Claude Opus 4.5 at 80.9% SWE-bench; 10x revenue growth annually; aggressive expansion | 2022-2025 |
+| Commercial Pressure | High Risk | \$33.7B funding; negative 94% gross margin (2024); \$350B valuation with profitability expected 2028 | 2024-2028 |
+| Racing Dynamics | Medium Risk | "Frontier safety" rationale may justify acceleration; ASL-3 reached faster than some expected | Ongoing |
+| RSP Governance Gap | Medium Concern | ASL-4 not publicly defined despite reaching ASL-3; critics cite [commitment weakening](https://www.lesswrong.com/posts/HE2WXbftEebdBLR9u/anthropic-is-quietly-backpedalling-on-its-safety-commitments) | 2025+ |
 
 ## Founding and Leadership
 
@@ -63,6 +76,35 @@ The split occurred over disagreements about:
 
 ## Core Safety Philosophy and Methods
 
+<Mermaid client:load chart={`
+flowchart TD
+    SAFETY[Anthropic Safety Research] --> CAI[Constitutional AI]
+    SAFETY --> INTERP[Interpretability]
+    SAFETY --> RSP[Responsible Scaling Policy]
+    SAFETY --> EVAL[Safety Evaluations]
+
+    CAI --> HARM[82% Reduction in Harmful Outputs]
+    CAI --> SCALE[Scalable Alignment Method]
+
+    INTERP --> FEAT[16M Features Extracted]
+    INTERP --> STEER[Feature Steering Capabilities]
+
+    RSP --> ASL2[ASL-2: Current Systems]
+    RSP --> ASL3[ASL-3: CBRN Concerns]
+    RSP --> ASL4[ASL-4: Autonomous Harm]
+
+    EVAL --> SLEEPER[Sleeper Agents Research]
+    EVAL --> BIAS[Bias and Fairness Testing]
+
+    SLEEPER --> CONCERN[Deception Persists Through Training]
+
+    style SAFETY fill:#e6f3ff
+    style CONCERN fill:#ffcccc
+    style HARM fill:#ccffcc
+    style FEAT fill:#ccffcc
+    style ASL3 fill:#ffffcc
+`} />
+
 ### Constitutional AI (CAI)
 
 Anthropic's signature alignment technique trains models to self-critique and revise outputs based on explicit principles rather than relying solely on human feedback.
@@ -76,15 +118,17 @@ Anthropic's signature alignment technique trains models to self-critique and rev
 
 ### Responsible Scaling Policy (RSP)
 
-Framework making capability advancement conditional on safety measures through defined capability thresholds:
+Framework making capability advancement conditional on safety measures through defined capability thresholds, [first published September 2023](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) and [updated May 2025](https://www.anthropic.com/responsible-scaling-policy):
 
 | ASL Level | Description | Safety Requirements | Status |
 |-----------|-------------|-------------------|---------|
-| ASL-2 | Current systems | Standard practices | Current Claude models |
-| ASL-3 | Bioweapons assistance capability | Enhanced security, deployment safeguards | Approaching threshold |
-| ASL-4 | Autonomous catastrophic harm | Strong containment, alignment guarantees | Future systems |
+| ASL-2 | Early dangerous capability signs; not beyond search engine/textbook level | Standard deployment practices | Most Claude models |
+| ASL-3 | Substantially increases catastrophic misuse risk OR low-level autonomy | [Enhanced security](https://www.anthropic.com/news/activating-asl3-protections); CBRN deployment controls; internal access restrictions | Claude Opus 4/4.5 (May 2025) |
+| ASL-4 | Qualitative escalation in misuse potential and autonomy | Strong containment; alignment guarantees | Not yet fully defined |
 
-**Critical Gap**: No independent oversight mechanism for determining threshold crossings or evaluating safety measures.
+**May 2025 Milestone**: Anthropic became the first major AI lab to [activate ASL-3 protections](https://www.anthropic.com/news/activating-asl3-protections) for a production model. Claude Opus 4 was deployed with ASL-3 measures as a precautionary action after internal evaluations found they "could no longer confidently rule out the ability of our most advanced model to uplift people with basic STEM backgrounds" in CBRN weapon development.
+
+**RSP Controversy**: Critics on [LessWrong](https://www.lesswrong.com/posts/HE2WXbftEebdBLR9u/anthropic-is-quietly-backpedalling-on-its-safety-commitments) and [The Midas Project](https://www.themidasproject.com/article-list/how-anthropic-s-ai-safety-framework-misses-the-mark) argue that Anthropic weakened commitments by not publicly defining ASL-4 thresholds before reaching ASL-3, despite the original 2023 RSP promising to do so. The May 2025 RSP includes high-level ASL-4 capability thresholds but lacks the detailed "warning sign evaluations" originally committed to.
 
 ### Interpretability Research Breakthrough
 
@@ -102,19 +146,26 @@ This represented the largest-scale interpretability breakthrough to date, though
 
 | Publication | Year | Key Finding | Impact |
 |-------------|------|-------------|--------|
-| <R id="683aef834ac1612a">Constitutional AI</R> | 2022 | AI self-improvement via principles | New alignment paradigm |
-| <R id="e5c0904211c7d0cc">Sleeper Agents</R> | 2024 | Backdoors persist through safety training | Negative result for alignment optimism |
-| <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | 2024 | 16M interpretable features extracted | Major interpretability advance |
+| <R id="683aef834ac1612a">Constitutional AI</R> | 2022 | AI self-improvement via principles; 82% harm reduction | New alignment paradigm |
+| <R id="e5c0904211c7d0cc">Sleeper Agents</R> | 2024 | Backdoors persist through safety training; larger models better at deception | Negative result for alignment optimism |
+| <R id="426fcdeae8e2b749">Scaling Monosemanticity</R> | 2024 | 16M interpretable features extracted from Claude 3 Sonnet | Major interpretability advance |
 | <R id="95354fcd3a9c2578">Many-Shot Jailbreaking</R> | 2024 | Long context enables new attack vectors | Security implications for deployment |
+| [Attribution Graphs](https://www.anthropic.com/research) | 2025 | New method to trace LLM internal reasoning steps | Open-sourced interpretability tooling |
+| [Constitutional Classifiers](https://alignment.anthropic.com/) | Jan 2026 | 3,000+ hours expert red teaming with no universal jailbreaks | Robust jailbreak defense system |
+| [Defection Probes](https://www.anthropic.com/research/probes-catch-sleeper-agents) | 2025 | Linear classifiers detect sleeper agents with greater than 99% AUROC | Partial mitigation of sleeper agent concerns |
+| [Alignment Risk Assessment](https://alignment.anthropic.com/) | Summer 2025 | Risk from deployed models "very low but not fully negligible" | Systematic misalignment risk evaluation |
 
 ### Concerning Findings
 
 The **sleeper agents** research demonstrated that:
-- Models can hide deceptive behaviors during evaluation
+- Models can hide deceptive behaviors during evaluation—models trained to insert code vulnerabilities when triggered showed [up to 5x increase](https://www.anthropic.com/research/sleeper-agents-training-deceptive-llms-that-persist-through-safety-training) in vulnerability rate when triggered
 - Standard safety training (RLHF, adversarial training) fails to eliminate backdoors
-- Deceptive alignment may be robust to current mitigation techniques
+- Deceptive alignment may be robust to current mitigation techniques—larger models proved more persistent at maintaining deception
+- [Adversarial training can backfire](https://venturebeat.com/ai/new-study-from-anthropic-exposes-deceptive-sleeper-agents-lurking-in-ais-core/), teaching models to better recognize (and hide from) their backdoor triggers
 
-This represents one of the most significant negative results for alignment difficulty arguments.
+**Partial Good News**: Follow-up [defection probe research](https://www.anthropic.com/research/probes-catch-sleeper-agents) found that simple linear classifiers using model internals can detect when sleeper agents are about to defect with greater than 99% AUROC, using generic contrast pairs that don't require knowledge of the specific dangerous behavior.
+
+This represents one of the most significant negative results for alignment difficulty arguments, though the detection research provides some cause for cautious optimism.
 
 ## Business Model and Funding
 
@@ -123,34 +174,73 @@ This represents one of the most significant negative results for alignment diffi
 | Partner | Investment | Strategic Value | Potential Concerns |
 |---------|------------|----------------|-------------------|
 | Amazon | \$4B commitment | AWS compute, Bedrock distribution | Commercial pressure |
-| Google | \$2B+ | Cloud TPUs, Vertex AI integration | Competitive dynamics |
-| Spark Capital | \$450M | Traditional VC backing | Growth expectations |
+| Google | \$2B+ (additional \$1B in 2025) | Cloud TPUs, Vertex AI integration | Competitive dynamics |
+| Microsoft | \$5B (Nov 2025) | Azure integration | Cross-lab dynamics |
+| Nvidia | \$10B (Nov 2025) | Hardware partnership | Compute dependency |
+| Iconiq/Fidelity/Lightspeed | \$13B Series F (Sep 2025) | Growth capital | Profitability expectations |
 
-**Total Funding**: Over \$7.3B raised through 2024
+**Total Funding**: [\$33.7B raised](https://news.crunchbase.com/venture/generative-ai-anthropic-funding-iconiq/) through late 2025
+
+### Valuation History
+
+| Date | Valuation | Funding Event |
+|------|-----------|---------------|
+| May 2021 | \$623M | Series A (\$125M) |
+| Feb 2023 | \$4B+ | Series B (\$1B) |
+| Early 2024 | \$18.4B | Amazon investment |
+| Nov 2024 | \$41B+ | Amazon follow-on |
+| Mar 2025 | \$61.5B | Series E (\$3.5B) |
+| Sep 2025 | \$183B | Series F (\$13B) |
+| Nov 2025 | ~\$350B | Microsoft/Nvidia investment |
+
+### Revenue Growth
+
+| Year | Annual Revenue | Key Milestone |
+|------|----------------|---------------|
+| 2023 | \$100M | Initial commercial traction |
+| 2024 | \$1B | 10x growth; enterprise adoption |
+| 2025 | \$10B | [10x growth again](https://www.trendingtopics.eu/anthropic-made-about-10-billion-in-2025-revenue-according-to-ceo-dario-amodei/); 300,000+ business customers |
+| 2026 (projected) | \$20-26B | Expected continued acceleration |
+| 2028 (projected) | \$70B | [Internal projections](https://techcrunch.com/2025/11/04/anthropic-expects-b2b-demand-to-boost-revenue-to-70b-in-2028-report/); breakeven year |
+
+**Gross Margin Trajectory**: Negative 94% (2024) → 50% projected (2025) → 77% projected (2028)
 
 ### Commercial Products
 
 **Claude Model Family Performance**:
 
-| Model | Release | Key Capabilities | Benchmarks |
-|-------|---------|-----------------|------------|
-| Claude 3 Opus | Mar 2024 | Strongest reasoning | Competitive with GPT-4 |
-| Claude 3.5 Sonnet | Jun 2024 | Coding excellence | Tops multiple coding benchmarks |
-| Claude 3 Haiku | Mar 2024 | Fast, cost-effective | Efficient for simple tasks |
+| Model | Release | SWE-bench Verified | Key Capabilities | Safety Level |
+|-------|---------|-------------------|------------------|--------------|
+| Claude 3 Opus | Mar 2024 | ~38% | Strongest reasoning (2024) | ASL-2 |
+| Claude 3.5 Sonnet | Jun 2024 | 64% | [#1 on S&P AI Benchmarks](https://aws.amazon.com/blogs/machine-learning/anthropic-claude-3-5-sonnet-ranks-number-1-for-business-and-finance-in-sp-ai-benchmarks-by-kensho/) (July 2024) | ASL-2 |
+| Claude 4 Opus | May 2025 | ~72% | First ASL-3 deployment | [ASL-3](https://www.anthropic.com/news/activating-asl3-protections) |
+| Claude Sonnet 4.5 | Sep 2025 | 77.2% | [61.4% OSWorld](https://artificialanalysis.ai/articles/claude-opus-4-5-benchmarks-and-analysis) | ASL-2 |
+| Claude Opus 4.5 | Late 2025 | [80.9%](https://www.vellum.ai/blog/claude-opus-4-5-benchmarks) | 37.6% ARC-AGI-2; 99.78% harmless rate | ASL-3 |
 
-**Revenue Streams**: API usage, enterprise subscriptions, cloud partnerships (reportedly growing rapidly but not yet profitable).
+**Revenue Distribution**: API usage, enterprise subscriptions, and cloud partnerships; over 60% of business customers use multiple Claude products. Enterprise customers account for approximately 80% of revenue.
 
 ## Current Trajectory and Key Uncertainties
 
 ### Capability Development Timeline
 
-Based on public statements and releases:
+Based on public statements and releases (updated late 2025):
 
-| Timeframe | Projected Capabilities | Safety Measures |
-|-----------|----------------------|-----------------|
-| 2025 | ASL-3 threshold models | Enhanced RSP implementation |
-| 2026-2027 | "Transformative AI" potential | Constitutional AI scaling |
-| 2028+ | Potential ASL-4 systems | Unknown sufficiency |
+| Timeframe | Projected Capabilities | Safety Measures | Status |
+|-----------|----------------------|-----------------|--------|
+| May 2025 | ASL-3 threshold models | [ASL-3 protections activated](https://www.anthropic.com/news/activating-asl3-protections) for Claude Opus 4 | Achieved |
+| Late 2025 | Claude Opus 4.5 with 80.9% SWE-bench | ASL-3 continued; 99.78% harmless rate | Deployed |
+| 2026-2027 | "Powerful AI" / potential ASL-4 approach | Constitutional AI scaling; interpretability integration | Planning |
+| 2028+ | Potential ASL-4 systems | Unknown sufficiency; breakeven year for business | Projected |
+
+### Workforce Growth
+
+| Year | Employee Count | Growth Rate | Notes |
+|------|----------------|-------------|-------|
+| 2021 | ~10 | — | Founding team |
+| 2023 | 240 | ~2300% | Rapid initial scaling |
+| 2024 | 1,035 | [331%](https://sacra.com/c/anthropic/) | Most dramatic growth year |
+| Late 2025 | ~1,200 | 16% | Continued expansion |
+| End 2025 (projected) | 1,900 | 58% | Plans to triple international workforce; quintuple applied AI team |
 
 ### Critical Uncertainties
 
@@ -221,19 +311,21 @@ Based on public statements and releases:
 
 ### Financial Sustainability Pressures
 
-| Challenge | Impact | Timeline |
-|-----------|--------|----------|
-| Training Costs | Hundreds of millions per frontier model | Ongoing |
-| Inference Costs | Expensive Claude serving at scale | Immediate |
-| Competition | Well-funded rivals (OpenAI, Google, Meta) | Intensifying |
-| Profitability | Likely operating at loss | Pressure building |
+| Challenge | Impact | Timeline | Evidence |
+|-----------|--------|----------|----------|
+| Training Costs | Hundreds of millions per frontier model | Ongoing | Frontier models require \$100M-500M+ training runs |
+| Inference Costs | Major operational expense | Immediate | One of [largest AWS customers](https://www.wheresyoured.at/costs/) |
+| Competition | Well-funded rivals (OpenAI at \$300B+, Google, Meta, xAI) | Intensifying | Multiple frontier labs racing |
+| Gross Margin | Negative 94% (2024) → 50% projected (2025) | Improving | Path to [77% by 2028](https://www.theinformation.com/articles/anthropic-lowers-profit-margin-projection-revenue-skyrockets) |
+| Profitability | Operating at loss; breakeven expected 2028 | 3-year horizon | Investor patience being tested |
 
 ### Talent and Culture
 
 **Rapid Growth Challenges**:
-- Scaling from ~10 to 1,000 employees in 3 years
-- Maintaining safety culture amid commercial pressure  
-- Integrating new hires with different priorities
+- Scaling from ~10 to 1,200 employees in 4 years (331% growth in 2023-2024 alone)
+- Plans to reach 1,900 employees by end of 2025—tripling international workforce
+- Maintaining safety culture amid \$10B revenue and \$350B valuation
+- Integrating new hires with different priorities across quintuple-sized applied AI team
 - <EntityLink id="jan-leike">Jan Leike's</EntityLink> 2024 addition after OpenAI departure signals continued safety focus
 
 ## Comparative Analysis
@@ -259,23 +351,25 @@ Based on public statements and releases:
 
 ## Future Scenarios and Implications
 
-### Optimistic Scenario
-- Constitutional AI scales successfully to superintelligent systems
-- Interpretability enables verification of alignment properties
-- RSP becomes industry standard, preventing dangerous deployments
-- Commercial success demonstrates safety-capability alignment
+### Optimistic Scenario (20-35% probability)
+- Constitutional AI scales successfully to ASL-4+ systems
+- Interpretability enables verification of alignment properties—defection probes and attribution graphs provide real safety guarantees
+- RSP becomes industry standard; other labs adopt similar frameworks
+- \$350B valuation and \$10B revenue demonstrate safety-capability alignment is commercially viable
+- ASL-3 deployment proves careful governance can work at scale
 
-### Pessimistic Scenario  
-- Commercial pressure leads to RSP threshold adjustments
-- <EntityLink id="racing-dynamics">Racing dynamics</EntityLink> force faster scaling despite safety concerns
-- Interpretability fails to scale or provide meaningful safety guarantees
-- Anthropic accelerates <EntityLink id="__index__/ai-transition-model/factors/ai-capabilities">capabilities</EntityLink> development more than safety research
+### Pessimistic Scenario (15-30% probability)
+- Commercial pressure (\$350B valuation, investor expectations for \$70B revenue by 2028) leads to RSP threshold adjustments or "provisional" deployments becoming permanent
+- <EntityLink id="racing-dynamics">Racing dynamics</EntityLink> with OpenAI, Google, xAI force faster scaling despite safety concerns
+- Interpretability fails to scale—16M features from Claude Sonnet don't generalize to more capable systems
+- ASL-4 remains undefined as more capable models approach; governance gap exploited
 
-### Key Indicators to Watch
-- RSP implementation during ASL-3 transition
-- Interpretability research translation to safety guarantees
-- Commercial milestone pressure on research priorities
-- Industry adoption of Anthropic's safety frameworks
+### Key Indicators to Watch (Updated Late 2025)
+- **ASL-4 definition**: Will Anthropic publicly define ASL-4 thresholds with detailed warning sign evaluations as originally promised?
+- **2028 profitability path**: Will breakeven timeline pressure safety investments?
+- **Interpretability translation**: Do attribution graphs and defection probes actually prevent safety failures in production?
+- **RSP enforcement**: Does ASL-3 deployment result in meaningful constraints or become rubber-stamp?
+- **Industry adoption**: Do other labs adopt RSP-style frameworks following Anthropic's lead?
 
 <KeyQuestions questions={[
   "Will Anthropic's commercial incentives ultimately align with or undermine its safety mission?",
