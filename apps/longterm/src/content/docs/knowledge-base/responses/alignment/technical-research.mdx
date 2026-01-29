@@ -22,7 +22,7 @@ metrics:
   tables: 13
   diagrams: 1
 ---
-import {DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyQuestions, Mermaid, R, EntityLink} from '../../../../../components/wiki';
 
 <DataInfoBox entityId="technical-research" />
 
@@ -146,17 +146,15 @@ flowchart TD
 
 **Theory of change:** If we can read AI cognition, we can detect deception, verify alignment, and debug failures before deployment.
 
-<EstimateBox
-  client:load
-  variable="Impact of Interpretability Success"
-  description="Estimated x-risk reduction if interpretability becomes highly effective"
-  unit="percentage points"
-  estimates={[
-    { source: "Optimistic view", value: "30-50%", notes: "Can detect and fix most alignment failures" },
-    { source: "Moderate view", value: "10-20%", notes: "Helps but doesn't solve the full problem" },
-    { source: "Pessimistic view", value: "2-5%", notes: "Interpretability may not scale or may be fooled" },
-  ]}
-/>
+### Estimated Impact of Interpretability Success
+
+Expert estimates vary widely on how much x-risk reduction mechanistic interpretability could achieve if it becomes highly effective at detecting misalignment and verifying safety properties. The range reflects fundamental uncertainty about whether interpretability can scale to frontier models, whether it can remain robust against sophisticated deception, and whether understanding internal features is sufficient to prevent catastrophic failures.
+
+| Expert/Source | Estimate | Reasoning |
+|---------------|----------|-----------|
+| Optimistic view | 30-50% x-risk reduction | If interpretability scales successfully to frontier models and can reliably detect hidden goals, deceptive alignment, and dangerous capabilities, it becomes the primary method for verifying safety. This view assumes that most alignment failures have detectable signatures in model internals and that automated interpretability tools can provide real-time monitoring during deployment. The high end of this range assumes interpretability enables both detecting problems and guiding solutions. |
+| Moderate view | 10-20% x-risk reduction | Interpretability provides valuable insights and catches some classes of problems, but faces fundamental limitations from superposition, polysemanticity, and the sheer complexity of frontier models. This view expects interpretability to complement other safety measures rather than solve alignment on its own. Detection may work for trained backdoors but fail for naturally-emerging deception. The technique helps most by informing training approaches and providing warning signs, rather than offering complete safety guarantees. |
+| Pessimistic view | 2-5% x-risk reduction | Interpretability may not scale beyond current demonstrations or could be actively circumvented by sufficiently capable systems. Models could learn to hide dangerous cognition in uninterpretable combinations of features, or deceptive systems could learn to appear safe to interpretability tools. The computational cost of full-model interpretability may remain prohibitive, limiting coverage to small subsets of the model. Additionally, even perfect understanding of what a model is doing may not tell us what it will do in novel situations or under distribution shift. |
 
 ### 2. Scalable Oversight
 

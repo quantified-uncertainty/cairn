@@ -18,7 +18,7 @@ metrics:
   tables: 12
   diagrams: 1
 ---
-import {DataInfoBox, DisagreementMap, EstimateBox, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyPeople, KeyQuestions, Section, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="anthropic" client:load />
 
@@ -254,21 +254,15 @@ Based on public statements and releases (updated late 2025):
 - Will Anthropic's existence reduce or accelerate racing dynamics?
 - Can RSP work without external enforcement mechanisms?
 
-### Expert Risk Estimates
+### Leadership Risk Assessments
 
-<Section title="Leadership Risk Assessments">
-  <EstimateBox
-    client:load
-    variable="AI Catastrophic Risk"
-    description="Anthropic leadership's public risk estimates"
-    unit="probability"
-    estimates={[
-      { source: "Dario Amodei", value: "10-25%", date: "2023", notes: "P(AI catastrophe) in public talks" },
-      { source: "Core Views Essay", value: "Serious risk", date: "2023", notes: "Anthropic's official position" },
-      { source: "RSP Framework", value: "ASL-3 within 2 years", date: "2023", notes: "Dangerous capability timeline" }
-    ]}
-  />
-</Section>
+Anthropic leadership has consistently communicated substantial concern about AI catastrophic risks, with quantified probability estimates and timeline predictions that inform their organizational strategy and Responsible Scaling Policy framework.
+
+| Expert/Source | Estimate | Reasoning |
+|---------------|----------|-----------|
+| Dario Amodei | 10-25% | In public talks throughout 2023, Anthropic CEO Dario Amodei consistently cited a 10-25% probability of AI catastrophe as the motivating factor behind the company's safety-focused approach. This relatively high probability estimate reflects concern about both misuse scenarios (bioweapons, cyberattacks enabled by AI) and accident scenarios (misalignment, loss of control). The range accounts for uncertainty about both capability timelines and the effectiveness of safety interventions. |
+| Core Views Essay | Serious risk | Anthropic's official 2023 "Core Views on AI Safety" essay characterizes catastrophic AI risk as serious and substantial without providing a precise numerical estimate. The essay argues that while the probability is uncertain, the magnitude of potential harm justifies treating safety as a top priority comparable in importance to capability development. This framing suggests leadership views the risk as sufficiently high to warrant fundamental changes to how AI systems are developed and deployed. |
+| RSP Framework | ASL-3 within 2 years | When Anthropic published its Responsible Scaling Policy in September 2023, the framework predicted reaching ASL-3 capability thresholds (models that substantially increase catastrophic misuse risk) within approximately two years. This timeline proved accurate—Anthropic activated ASL-3 protections for Claude Opus 4 in May 2025, roughly 20 months later. The prediction reflected leadership's assessment that dangerous capabilities would emerge relatively quickly, necessitating proactive development of safety protocols before threshold crossings. |
 
 ## Debates and Disagreements
 

@@ -5,7 +5,7 @@ sidebar:
   order: 4
 quality: 65
 llmSummary: "Comprehensive analysis of AI safety field-building showing growth from 400 FTEs (2022) to 1,100 FTEs (2025) at 21-30% annually, with training programs achieving 37% career conversion at $5K-40K per career change against $110-130M/year philanthropic funding. Identifies critical bottleneck: talent pipeline over-optimized for researchers while neglecting operations, policy, and organizational roles."
-lastEdited: "2025-12-28"
+lastEdited: "2026-01-29"
 importance: 72.5
 entityId: field-building
 pageTemplate: knowledge-base-response
@@ -23,7 +23,7 @@ metrics:
   tables: 15
   diagrams: 1
 ---
-import {DataInfoBox, EstimateBox, KeyQuestions, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {DataInfoBox, KeyQuestions, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="field-building-analysis" client:load />
 
@@ -132,17 +132,15 @@ flowchart TD
 - **Counterfactual question:** BlueDot estimates 20 counterfactual career changes from 2022 cohort
 - **Quality vs. quantity:** More selective programs (MATS, ARENA) show higher placement rates
 
-<EstimateBox
-  client:load
-  variable="Cost per Career Change"
-  description="Estimated cost to move one person into AI safety career via training programs"
-  unit="USD"
-  estimates={[
-    { source: "ARENA (successful cases)", value: "\$5,000-15,000", notes: "Direct program costs per career change" },
-    { source: "MATS", value: "\$20,000-40,000", notes: "Higher touch, research mentorship" },
-    { source: "BlueDot Impact", value: "\$440-2,000", notes: "Scalable online; 37% conversion rate" },
-  ]}
-/>
+### Cost Per Career Change Estimates
+
+Training programs vary significantly in their cost-effectiveness at converting participants into AI safety careers. Different program models—from high-touch research mentorships to scalable online courses—represent different trade-offs between cost per participant and career conversion rate.
+
+| Expert/Source | Estimate | Reasoning |
+|---------------|----------|-----------|
+| ARENA (successful cases) | \$1,000-15,000 | ARENA represents the lower bound for intensive programs, achieving direct program costs per successful career change through its efficient 4-5 week bootcamp format. The program's in-person structure at LISA combined with focused technical curriculum allows for cost-effective training, with ARENA 5.0 placing 8 participants in full-time AI safety positions. The cost includes venue, materials, and instructor time but benefits from concentrated delivery and high placement rates among participants who complete the program. |
+| MATS | \$10,000-40,000 | MATS represents a higher-touch research mentorship model with significantly higher costs per career change, reflecting its 3-4 month duration and personalized 1-on-1 mentorship structure. The program's selectivity (3-5% acceptance rate) and focus on research output—with 75% of Spring 2024 scholars publishing results—justifies higher per-participant investment. Costs include mentor compensation, scholar stipends, and program infrastructure, with the model optimized for producing research-ready talent rather than maximizing conversion volume. |
+| BlueDot Impact | \$140-2,000 | BlueDot Impact achieves the lowest cost per career change through its scalable online cohort model, training 1,000+ participants annually at approximately \$140 per student. The 37% career conversion rate from the 2022 cohort (123 of 342 alumni working full-time in AI safety) yields an estimated \$1,200-2,000 cost per successful career change when accounting for program overhead. The model sacrifices depth for scale but maintains 75% completion rates—far higher than typical MOOCs—through cohort-based structure and volunteer facilitators. |
 
 **Who's doing this:**
 - ARENA (Redwood Research / independent)

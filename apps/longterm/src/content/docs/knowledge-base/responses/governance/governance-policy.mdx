@@ -19,7 +19,7 @@ metrics:
   tables: 11
   diagrams: 1
 ---
-import {DataInfoBox, EstimateBox, DisagreementMap, KeyQuestions, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyQuestions, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="governance-policy" client:load />
 
@@ -147,17 +147,15 @@ The <R id="4c0cce743341851e">Bletchley Declaration</R> (November 2023) achieved 
 - **UN AI Advisory Body:** <R id="08275632e8f56121">Interim report published</R> September 2024
 - **Compute Governance Framework:** <R id="dccefa4a8b251727">Lennart Heim's research</R> proposes international compute monitoring
 
-<EstimateBox
-  client:load
-  variable="Impact of Strong International Coordination"
-  description="X-risk reduction if binding international AI governance established"
-  unit="percentage points"
-  estimates={[
-    { source: "Centre for the Governance of AI", value: "20-40%", notes: "Based on historical arms control success rates and AI-specific factors" },
-    { source: "RAND Corporation analysis", value: "15-30%", notes: "Factors in verification challenges and compliance incentives" },
-    { source: "FHI technical report", value: "10-50%", notes: "Wide range reflecting deep uncertainty about implementation success" },
-  ]}
-/>
+### Impact of Strong International Coordination
+
+Establishing binding international AI governance could substantially reduce existential risk, though expert estimates vary considerably based on assumptions about verification feasibility, compliance mechanisms, and geopolitical dynamics. The range reflects uncertainty about whether international coordination can overcome the technical challenges of monitoring AI development and the political challenges of sustaining cooperation amid strategic competition.
+
+| Expert/Source | Estimate | Reasoning |
+|---------------|----------|-----------|
+| Centre for the Governance of AI | 20-40% x-risk reduction | Drawing on historical precedents from nuclear arms control and biological weapons treaties, this estimate reflects moderate optimism about international coordination's potential. The reasoning emphasizes that successful arms control reduced catastrophic risks during the Cold War despite intense geopolitical tensions, suggesting similar mechanisms could work for AI if verification technologies and enforcement frameworks are developed. However, AI's dual-use nature and faster development timelines pose additional challenges compared to nuclear proliferation. |
+| RAND Corporation analysis | 15-30% x-risk reduction | This more conservative estimate accounts for significant verification challenges specific to AI systems, including the difficulty of monitoring software-based capabilities and detecting violations through hardware restrictions alone. The analysis emphasizes that compliance incentives depend heavily on whether leading nations perceive coordination as in their strategic interest, and current US-China tensions suggest this remains uncertain. The estimate factors in that even well-designed treaties may fail if major powers view AI supremacy as critical to national security. |
+| FHI technical report | 10-50% x-risk reduction | This exceptionally wide range reflects fundamental uncertainty about whether binding international governance can be implemented effectively at all. The lower bound (10%) represents scenarios where treaties are signed but poorly enforced, creating false confidence while racing dynamics continue. The upper bound (50%) represents optimistic scenarios where strong verification mechanisms, credible enforcement, and sustained great power cooperation combine to substantially slow unsafe AI development. The breadth of this range highlights that governance success depends on resolving multiple independent uncertainties simultaneously. |
 
 **Key Challenges:**
 - **US-China tensions:** Trade war and technology competition complicate cooperation

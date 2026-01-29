@@ -25,7 +25,9 @@ metrics:
   tables: 36
   diagrams: 2
 ---
-import {DataInfoBox, Backlinks, ModelsList, EstimateBox, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {DataInfoBox, Backlinks, ModelsList, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {PageForecasts} from '../../../../../components/forecasts';
+import '../../../../../components/forecasts/forecasts.css';
 
 <DataExternalLinks pageId="bioweapons" client:load />
 
@@ -1151,6 +1153,17 @@ Bioweapons risk affects the <EntityLink id="ai-transition-model" /> primarily th
 | <EntityLink id="ai-control-concentration" /> | Powerful AI in few hands increases misuse risk |
 
 The bioweapons pathway can lead to <EntityLink id="human-catastrophe" />—catastrophic outcomes from humans misusing AI capabilities, distinct from AI misalignment.
+
+---
+
+## Community Forecasts
+
+<PageForecasts
+  pageSlug="knowledge-base/risks/misuse/bioweapons"
+  limit={10}
+  minRelevance={0.4}
+  client:load
+/>
 
 ---
 

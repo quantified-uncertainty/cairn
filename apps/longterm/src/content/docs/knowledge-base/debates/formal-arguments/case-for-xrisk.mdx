@@ -18,7 +18,7 @@ metrics:
   tables: 17
   diagrams: 1
 ---
-import {InfoBox, EstimateBox, DisagreementMap, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
+import {InfoBox, DisagreementMap, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="case-for-xrisk" client:load />
 
@@ -121,22 +121,20 @@ Let's examine each premise in detail.
 
 #### 1.1 Empirical Progress is Rapid
 
-<EstimateBox
-  client:load
-  variable="AI Capability Milestones"
-  description="Major capabilities achieved by AI systems"
-  unit=""
-  estimates={[
-    { source: "Chess", value: "1997", notes: "Deep Blue defeats world champion" },
-    { source: "Jeopardy!", value: "2011", notes: "Watson wins" },
-    { source: "Go", value: "2016", notes: "AlphaGo defeats Lee Sedol" },
-    { source: "StarCraft II", value: "2019", notes: "AlphaStar reaches Grandmaster" },
-    { source: "Protein folding", value: "2020", notes: "AlphaFold solves structure prediction" },
-    { source: "Code generation", value: "2021", notes: "Codex/Copilot assists programmers" },
-    { source: "General knowledge", value: "2022", notes: "GPT-4 passes bar exam, many college tests" },
-    { source: "Math competitions", value: "2024", notes: "AI reaches IMO level" },
-  ]}
-/>
+### AI Capability Milestones
+
+The rapid pace of AI progress can be seen in the timeline of major capability breakthroughs. What once seemed impossible for machines has been achieved at an accelerating rate. Each milestone represents a domain where human-level or superhuman performance was once thought to require uniquely human intelligence, only to be surpassed by AI systems within a remarkably short timeframe.
+
+| Milestone | Year | Reasoning |
+|-----------|------|-----------|
+| Chess | 1997 | Deep Blue's victory over world champion Garry Kasparov demonstrated that AI could master strategic thinking in a complex game. This milestone showed that raw computational power combined with algorithmic sophistication could outperform elite human cognition in structured domains, challenging assumptions about the uniqueness of human strategic reasoning. |
+| Jeopardy! | 2011 | IBM Watson's victory required natural language understanding, knowledge retrieval, and reasoning under uncertainty. Unlike chess, Jeopardy demands broad knowledge across diverse topics and the ability to parse complex linguistic clues with wordplay and ambiguity. Watson's success demonstrated AI's growing capability to handle unstructured, human-like reasoning tasks. |
+| Go | 2016 | AlphaGo's defeat of Lee Sedol was particularly significant because Go has vastly more possible board positions than chess (10^170 vs 10^120), making brute-force search infeasible. The game was long considered to require intuition and strategic creativity that computers couldn't replicate. AlphaGo's victory using deep learning and Monte Carlo tree search marked a breakthrough in AI's ability to handle complex pattern recognition and long-term strategic planning. |
+| StarCraft II | 2019 | AlphaStar achieving Grandmaster level demonstrated AI's capability in real-time strategy under imperfect information, requiring resource management, tactical decision-making, and adaptation to opponent strategies. Unlike turn-based games, StarCraft demands rapid decisions with incomplete knowledge of the game state, representing a significant step toward handling real-world complexity and uncertainty. |
+| Protein folding | 2020 | AlphaFold's solution to the 50-year-old protein structure prediction problem revolutionized biology and drug discovery. This was not a game but a fundamental scientific problem with real-world applications. AlphaFold's ability to predict 3D protein structures from amino acid sequences with near-experimental accuracy demonstrated that AI could solve previously intractable scientific problems, potentially accelerating research across multiple fields. |
+| Code generation | 2021 | Codex and GitHub Copilot showed AI could assist professional programmers by generating functional code from natural language descriptions. This milestone was significant because programming requires understanding abstract specifications, translating them into precise syntax, and debugging logical errors—capabilities thought to require human-level reasoning. The fact that AI could augment or partially automate software development suggested profound economic implications. |
+| General knowledge | 2022 | GPT-4's performance on standardized tests—90th percentile on the bar exam, scoring 5 on AP exams—demonstrated broad cognitive capability across diverse domains. Unlike narrow task-specific systems, GPT-4 showed general-purpose reasoning, comprehension, and problem-solving abilities across law, mathematics, science, and humanities, suggesting a path toward artificial general intelligence. |
+| Math competitions | 2024 | AI systems reaching International Mathematical Olympiad (IMO) level represent mastery of abstract mathematical reasoning and proof construction. IMO problems require creative problem-solving, not just computation or pattern matching. Success at this level suggests AI is approaching or surpassing elite human performance in domains requiring deep logical reasoning and mathematical intuition. |
 
 **Pattern**: Capabilities thought to require human intelligence keep falling. The gap between "AI can't do this" and "AI exceeds humans" is shrinking.
 
@@ -607,18 +605,16 @@ The <R id="e5c0904211c7d0cc">"Sleeper Agents" paper</R> from Anthropic demonstra
 
 **Key ratio**: External safety funding represents less than 0.2% of capabilities investment. Even including internal lab spending (~\$100M), total safety research is approximately 0.5-1% of capabilities spending.
 
-<EstimateBox
-  client:load
-  variable="AI Lab Investment"
-  description="Estimated resource allocation (approximate)"
-  unit="percentage"
-  estimates={[
-    { source: "OpenAI capabilities vs safety", value: "80-20", notes: "Rough estimate based on team sizes" },
-    { source: "Google capabilities vs safety", value: "90-10", notes: "Small dedicated safety team" },
-    { source: "Anthropic capabilities vs safety", value: "60-40", notes: "More safety-focused but still need commercial viability" },
-    { source: "Meta capabilities vs safety", value: "95-5", notes: "Primarily capabilities focus" },
-  ]}
-/>
+### AI Lab Resource Allocation
+
+The resource allocation patterns at major AI labs reveal a stark imbalance between capabilities development and safety research. While most labs have dedicated safety teams, the proportion of total resources devoted to ensuring safe AI development remains small relative to the resources invested in advancing capabilities. This allocation reflects both commercial pressures to develop competitive products and the inherent difficulty of quantifying safety research progress compared to capability benchmarks.
+
+| Lab | Allocation Split | Reasoning |
+|-----|------------------|-----------|
+| OpenAI capabilities vs safety | 80-20 | Based on publicly observable team sizes and project announcements, OpenAI appears to dedicate roughly 80% of resources to capabilities research and product development, with approximately 20% focused on safety and alignment work. The company's superalignment team (before its dissolution in May 2024) represented a significant but minority portion of overall staff. OpenAI's rapid product release cycle and emphasis on achieving AGI suggest capabilities work dominates resource allocation. |
+| Google capabilities vs safety | 90-10 | Google's AI safety efforts are concentrated in DeepMind's alignment team and dedicated research groups, which represent a small fraction of the company's massive AI investment. The vast majority of Google's AI resources flow toward product integration (Search, Assistant, Bard/Gemini), infrastructure (TPU development), and research advancing state-of-the-art capabilities. Safety work, while present, is overshadowed by the scale of capabilities-focused engineering and research. |
+| Anthropic capabilities vs safety | 60-40 | Anthropic positions itself as the most safety-focused frontier lab, dedicating an unusually high proportion of resources to safety research including interpretability, constitutional AI, and alignment evaluations. However, the company must still invest substantially in capabilities to remain competitive and generate revenue through Claude products. The 60-40 split reflects Anthropic's dual mandate of advancing safety research while building commercially viable AI systems that can fund continued safety work. |
+| Meta capabilities vs safety | 95-5 | Meta's AI efforts are overwhelmingly focused on advancing capabilities for product applications across its platforms (content recommendation, ad targeting, content moderation) and releasing open-source models (Llama series) to build ecosystem advantages. Meta's relatively minimal investment in existential safety research reflects both its open-source philosophy (which deprioritizes containment-based safety) and its product-driven culture. Safety work focuses primarily on near-term harms like misinformation and bias rather than existential risks. |
 
 **The gap**:
 - Capabilities research has clear metrics (benchmark performance)

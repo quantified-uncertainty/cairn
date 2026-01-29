@@ -16,7 +16,7 @@ metrics:
   tables: 13
   diagrams: 3
 ---
-import {InfoBox, EstimateBox, KeyQuestions, Mermaid, R, DataExternalLinks} from '../../../../components/wiki';
+import {InfoBox, KeyQuestions, Mermaid, R, DataExternalLinks} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="misaligned-catastrophe" client:load />
 
@@ -890,15 +890,16 @@ Adjusting for these factors suggests a **5-25% range**, consistent with expert s
 
 ## Probability Assessment
 
-<EstimateBox
-  question="What's the probability of this scenario?"
-  estimates={[
-    { value: "10-25%", source: "Baseline estimate", reasoning: "Real risk but not inevitable; depends on alignment difficulty" },
-    { value: "30-70%", source: "Pessimists", reasoning: "Alignment very hard, coordination very difficult, time very short" },
-    { value: "1-10%", source: "Optimists", reasoning: "Alignment solvable, would get warning signs, would coordinate to prevent" },
-    { value: "15-20%", source: "Median view", reasoning: "Significant risk but many opportunities to prevent" }
-  ]}
-/>
+### Scenario Probability Estimates
+
+Expert estimates for the probability of catastrophic misalignment vary widely, reflecting deep uncertainty about both technical challenges and coordination feasibility. These estimates incorporate factors like alignment difficulty, warning sign clarity, and the feasibility of international cooperation.
+
+| Expert/Source | Estimate | Reasoning |
+|---------------|----------|-----------|
+| Baseline estimate | 10-25% | This represents a real and significant risk but not an inevitable outcome. The actual probability depends critically on whether alignment proves solvable at scale and whether adequate safety measures can be implemented before deployment of transformative AI systems. |
+| Pessimists | 30-70% | Under pessimistic assumptions, alignment is fundamentally very difficult or potentially impossible to solve completely. Additionally, coordination between competing labs and nations proves extremely difficult due to racing dynamics and economic pressures. The limited time available before transformative AI systems are developed means insufficient progress on safety measures. |
+| Optimists | 1-10% | Under optimistic assumptions, alignment is a solvable engineering problem given adequate resources and research effort. Clear warning signs would emerge early enough to allow course correction. International coordination becomes achievable when the stakes become sufficiently clear, and sufficient caution would be exercised to prevent catastrophic deployment. |
+| Median view | 15-20% | This represents a significant and concerning risk that warrants serious attention and resources, but with many opportunities for intervention and prevention along multiple pathways. The outcome depends on choices made at critical junctures rather than being predetermined. |
 
 ### Why This Probability?
 
