@@ -1,0 +1,277 @@
+/**
+ * Forecast Components Styling
+ */
+
+/* Forecast Card */
+.forecast-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.forecast-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-card.compact {
+  padding: 0.75rem;
+}
+
+.forecast-card.loading,
+.forecast-card.error {
+  padding: 1.5rem;
+}
+
+/* Header */
+.forecast-header {
+  margin-bottom: 0.75rem;
+}
+
+.forecast-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.forecast-title:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.forecast-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.platform-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.quality-badge {
+  color: #f59e0b;
+  font-size: 0.875rem;
+}
+
+.forecasters-badge {
+  color: #6b7280;
+}
+
+/* Probabilities */
+.forecast-probabilities {
+  margin: 1rem 0;
+}
+
+.probability-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.probability-row:last-child {
+  margin-bottom: 0;
+}
+
+.probability-row.single {
+  grid-template-columns: 1fr;
+}
+
+.outcome-name {
+  font-size: 0.875rem;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.probability-value {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.875rem;
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+.probability-value.single {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #2563eb;
+}
+
+.probability-bar {
+  grid-column: 1 / -1;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.probability-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  transition: width 0.3s ease;
+}
+
+/* Footer */
+.forecast-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.update-date {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Page Forecasts Container */
+.page-forecasts {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.page-forecasts h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.forecasts-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.forecasts-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .forecasts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.forecast-wrapper {
+  position: relative;
+}
+
+.relevance-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.forecasts-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.metaforecast-link {
+  font-size: 0.875rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.metaforecast-link:hover {
+  text-decoration: underline;
+}
+
+/* Loading states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .forecast-card {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .forecast-title {
+    color: #f9fafb;
+  }
+
+  .forecast-title:hover {
+    color: #60a5fa;
+  }
+
+  .platform-badge {
+    background: #1e40af;
+    color: #dbeafe;
+  }
+
+  .outcome-name {
+    color: #d1d5db;
+  }
+
+  .probability-value {
+    color: #f9fafb;
+  }
+
+  .probability-bar {
+    background: #374151;
+  }
+
+  .forecast-footer {
+    border-top-color: #374151;
+    color: #9ca3af;
+  }
+
+  .page-forecasts {
+    background: #111827;
+  }
+
+  .page-forecasts h3 {
+    color: #f9fafb;
+  }
+
+  .forecasts-footer {
+    border-top-color: #374151;
+  }
+}
