@@ -22,6 +22,81 @@ const SHINGLE_SIZE = 5;          // Number of words per shingle
 const MIN_PARAGRAPH_WORDS = 20;  // Ignore short paragraphs
 const MIN_WORD_LENGTH = 5;       // Minimum word length for word-level analysis
 
+// Template headers and phrases that are intentionally consistent across pages
+// These should NOT count as duplication since they're part of the page structure
+const TEMPLATE_PHRASES = [
+  // Common section headers (normalized - lowercase, no punctuation)
+  'quick assessment',
+  'organization details',
+  'overview',
+  'history',
+  'key personnel',
+  'funding history',
+  'strengths and limitations',
+  'external links',
+  'sources',
+  'references',
+  'see also',
+  'related pages',
+  'backlinks',
+
+  // Future projections template headers
+  'executive summary',
+  'timeline phases',
+  'branch points',
+  'preconditions',
+  'warning signs',
+  'valuable actions',
+  'probability assessment',
+  'who benefits',
+  'who loses',
+
+  // Risk page template headers
+  'risk assessment',
+  'responses that address this risk',
+  'why this matters',
+  'key uncertainties',
+  'how it works',
+  'limitations',
+  'critical assessment',
+
+  // Common table headers (normalized)
+  'dimension',
+  'rating',
+  'justification',
+  'aspect',
+  'assessment',
+  'severity',
+  'likelihood',
+  'timeline',
+  'trend',
+  'tractability',
+  'neglectedness',
+  'importance',
+  'description',
+
+  // Common structural phrases
+  'this page is part of',
+  'for more information see',
+  'related topics include',
+  'key takeaways',
+  'bottom line',
+  'summary',
+  'conclusion',
+
+  // Organization page common phrases
+  'founded',
+  'headquarters',
+  'website',
+  'leadership',
+  'annual budget',
+  'funding sources',
+  'key programs',
+  'notable projects',
+  'team size',
+  'staff count'
+];
+
 // =============================================================================
 // TEXT PROCESSING
 // =============================================================================
@@ -35,6 +110,25 @@ function normalize(text) {
     .replace(/[^\w\s]/g, ' ')  // Remove punctuation
     .replace(/\s+/g, ' ')       // Collapse whitespace
     .trim();
+}
+
+/**
+ * Remove template phrases from normalized text
+ * This prevents intentionally consistent structure from counting as duplication
+ */
+function removeTemplatePhrases(normalizedText) {
+  let result = normalizedText;
+
+  for (const phrase of TEMPLATE_PHRASES) {
+    // Create a regex that matches the phrase as a whole word/phrase
+    // (with word boundaries to avoid partial matches)
+    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+    result = result.replace(regex, ' ');
+  }
+
+  // Collapse any resulting multiple spaces
+  return result.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -59,6 +153,7 @@ function getParagraphs(content) {
   return cleaned
     .split(/\n\s*\n/)
     .map(p => normalize(p))
+    .map(p => removeTemplatePhrases(p))  // Filter out template phrases
     .filter(p => p.split(/\s+/).length >= MIN_PARAGRAPH_WORDS);
 }
 

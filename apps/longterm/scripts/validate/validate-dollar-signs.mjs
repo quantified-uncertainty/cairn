@@ -1,27 +1,44 @@
 #!/usr/bin/env node
 /**
- * Validate and optionally fix unescaped dollar signs in MDX files
+ * Dollar Sign Validation Script
  *
- * Dollar signs before numbers (e.g., $100) get parsed as LaTeX math by KaTeX,
- * causing MDX parsing errors when combined with JSX tags like <R>.
+ * Thin wrapper around the unified validation engine's dollar-signs rule.
+ * Provides backwards compatibility with existing npm scripts.
+ *
+ * Detects:
+ * 1. Unescaped $ before numbers - parsed as LaTeX math by KaTeX
+ * 2. Double-escaped \\$ in body - renders as \$ with visible backslash
  *
  * Usage:
- *   node scripts/validate-dollar-signs.mjs           # Check only
- *   node scripts/validate-dollar-signs.mjs --fix     # Fix issues
- *   node scripts/validate-dollar-signs.mjs --verbose # Show all matches
+ *   node scripts/validate/validate-dollar-signs.mjs           # Check only
+ *   node scripts/validate/validate-dollar-signs.mjs --fix     # Fix issues
+ *   node scripts/validate/validate-dollar-signs.mjs --verbose # Show all matches
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
 import { join, relative } from 'path';
+import { ValidationEngine } from '../lib/validation-engine.mjs';
+import { dollarSignsRule } from '../lib/rules/dollar-signs.mjs';
 
 const CONTENT_DIR = 'src/content/docs';
 const args = process.argv.slice(2);
 const shouldFix = args.includes('--fix');
 const verbose = args.includes('--verbose');
+const CI_MODE = args.includes('--ci');
 
-// Pattern: unescaped $ followed by a number (not already escaped with \)
-// Matches $5, $5.25, $100M, etc.
-const DOLLAR_NUMBER_PATTERN = /(?<!\\)\$(\d)/g;
+// Color codes (disabled in CI mode)
+const colors = CI_MODE ? {
+  red: '', green: '', yellow: '', blue: '', cyan: '', reset: '', dim: '', bold: ''
+} : {
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+  dim: '\x1b[2m',
+  bold: '\x1b[1m',
+  reset: '\x1b[0m',
+};
 
 function getAllMdxFiles(dir) {
   const files = [];
@@ -51,61 +68,6 @@ function getFrontmatterEndLine(content) {
   return 0;
 }
 
-function isInCodeBlock(content, position) {
-  // Check if position is inside a code block (``` or `)
-  const before = content.slice(0, position);
-
-  // Count triple backticks
-  const tripleBackticks = (before.match(/```/g) || []).length;
-  if (tripleBackticks % 2 === 1) return true;
-
-  // Check inline code (simplistic - just check if between backticks on same line)
-  const lastNewline = before.lastIndexOf('\n');
-  const currentLine = before.slice(lastNewline + 1);
-  const backticks = (currentLine.match(/`/g) || []).length;
-  return backticks % 2 === 1;
-}
-
-function checkFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
-  const frontmatterEnd = getFrontmatterEndLine(content);
-
-  const issues = [];
-  let position = 0;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // Skip frontmatter
-    if (i <= frontmatterEnd) {
-      position += line.length + 1;
-      continue;
-    }
-
-    // Find all matches in this line
-    let match;
-    const regex = new RegExp(DOLLAR_NUMBER_PATTERN.source, 'g');
-    while ((match = regex.exec(line)) !== null) {
-      const absolutePos = position + match.index;
-
-      // Skip if in code block
-      if (!isInCodeBlock(content, absolutePos)) {
-        issues.push({
-          line: i + 1,
-          column: match.index + 1,
-          text: line.slice(Math.max(0, match.index - 10), match.index + 15),
-          match: match[0]
-        });
-      }
-    }
-
-    position += line.length + 1;
-  }
-
-  return issues;
-}
-
 function fixFile(filePath) {
   const content = readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
@@ -115,9 +77,15 @@ function fixFile(filePath) {
     // Skip frontmatter
     if (i <= frontmatterEnd) return line;
 
-    // Replace unescaped $ before numbers, but not in code blocks
-    // This is a simplified fix - complex cases may need manual review
-    return line.replace(/(?<!\\)(?<!`[^`]*)\$(\d)/g, '\\$$1');
+    let fixed = line;
+
+    // Replace unescaped $ before numbers
+    fixed = fixed.replace(/(?<!\\)(?<!`[^`]*)\$(\d)/g, '\\$$1');
+
+    // Replace double-escaped \\$ with single-escaped \$
+    fixed = fixed.replace(/\\\\\$/g, '\\$');
+
+    return fixed;
   });
 
   const fixedContent = fixedLines.join('\n');
@@ -129,48 +97,72 @@ function fixFile(filePath) {
   return false;
 }
 
-// Main
-console.log('\x1b[34mChecking MDX files for unescaped dollar signs...\x1b[0m\n');
+async function main() {
+  console.log(`${colors.blue}Checking MDX files for dollar sign issues...${colors.reset}\n`);
 
-const files = getAllMdxFiles(CONTENT_DIR);
-let totalIssues = 0;
-let filesWithIssues = 0;
-let filesFixed = 0;
+  // Use unified validation engine
+  const engine = new ValidationEngine();
+  engine.addRule(dollarSignsRule);
+  await engine.load();
 
-for (const file of files) {
-  const relPath = relative(process.cwd(), file);
-  const issues = checkFile(file);
+  const issues = await engine.validate();
 
-  if (issues.length > 0) {
-    filesWithIssues++;
-    totalIssues += issues.length;
+  // Group issues by file
+  const issuesByFile = new Map();
+  for (const issue of issues) {
+    if (!issuesByFile.has(issue.file)) {
+      issuesByFile.set(issue.file, []);
+    }
+    issuesByFile.get(issue.file).push(issue);
+  }
 
-    if (shouldFix) {
+  let filesFixed = 0;
+
+  if (shouldFix && issues.length > 0) {
+    // Fix mode
+    for (const [file, fileIssues] of issuesByFile) {
       if (fixFile(file)) {
         filesFixed++;
-        console.log(`\x1b[32m✓ Fixed:\x1b[0m ${relPath} (${issues.length} issues)`);
+        const relPath = relative(process.cwd(), file);
+        console.log(`${colors.green}✓ Fixed:${colors.reset} ${relPath} (${fileIssues.length} issues)`);
       }
-    } else {
-      console.log(`\x1b[1m${relPath}\x1b[0m`);
-      for (const issue of issues) {
-        console.log(`  \x1b[33m⚠ Line ${issue.line}:\x1b[0m ...${issue.text}...`);
+    }
+
+    console.log(`\n${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.green}✓ Fixed ${issues.length} issues in ${filesFixed} files${colors.reset}`);
+  } else if (issues.length > 0) {
+    // Report mode
+    for (const [file, fileIssues] of issuesByFile) {
+      const relPath = relative(process.cwd(), file);
+      console.log(`${colors.bold}${relPath}${colors.reset}`);
+
+      for (const issue of fileIssues) {
+        const isDoubleEscaped = issue.message.includes('Double-escaped');
+        const typeLabel = isDoubleEscaped ? 'double-escaped \\\\$' : 'unescaped $';
+        console.log(`  ${colors.yellow}⚠ Line ${issue.line} (${typeLabel})${colors.reset}`);
         if (verbose) {
-          console.log(`    \x1b[2mMatch: "${issue.match}" → should be "\\${issue.match}"\x1b[0m`);
+          console.log(`    ${colors.dim}${issue.message}${colors.reset}`);
         }
       }
       console.log();
     }
+
+    const unescapedCount = issues.filter(i => !i.message.includes('Double-escaped')).length;
+    const doubleEscapedCount = issues.filter(i => i.message.includes('Double-escaped')).length;
+
+    console.log(`${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.yellow}${issues.length} dollar sign issues in ${issuesByFile.size} files${colors.reset}`);
+    if (unescapedCount > 0) console.log(`    - ${unescapedCount} unescaped (renders as LaTeX)`);
+    if (doubleEscapedCount > 0) console.log(`    - ${doubleEscapedCount} double-escaped (renders with visible backslash)`);
+    console.log(`  ${colors.dim}Run with --fix to auto-fix${colors.reset}`);
+    process.exit(1);
+  } else {
+    console.log(`${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.green}✓ No dollar sign issues found${colors.reset}`);
   }
 }
 
-// Summary
-console.log('\x1b[1mSummary:\x1b[0m');
-if (totalIssues === 0) {
-  console.log('  \x1b[32m✓ No unescaped dollar signs found\x1b[0m');
-} else if (shouldFix) {
-  console.log(`  \x1b[32m✓ Fixed ${totalIssues} issues in ${filesFixed} files\x1b[0m`);
-} else {
-  console.log(`  \x1b[33m${totalIssues} unescaped dollar signs in ${filesWithIssues} files\x1b[0m`);
-  console.log('  \x1b[2mRun with --fix to auto-fix\x1b[0m');
+main().catch(err => {
+  console.error('Validation failed:', err);
   process.exit(1);
-}
+});

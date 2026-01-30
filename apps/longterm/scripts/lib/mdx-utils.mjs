@@ -194,3 +194,142 @@ export function shouldSkipValidationByPath(filePath) {
 export function shouldSkipValidationFull(frontmatter, filePath) {
   return shouldSkipValidation(frontmatter) || shouldSkipValidationByPath(filePath);
 }
+
+// ============================================================================
+// Position-based context detection utilities
+// Used by validators to check if a position is in code/JSX/Mermaid contexts
+// ============================================================================
+
+/**
+ * Check if a position is inside a code block (fenced or inline)
+ * @param {string} content - Full content string
+ * @param {number} position - Character position to check
+ * @returns {boolean} True if position is inside a code block
+ */
+export function isInCodeBlock(content, position) {
+  const before = content.slice(0, position);
+
+  // Count triple backticks - if odd, we're inside a fenced code block
+  const tripleBackticks = (before.match(/```/g) || []).length;
+  if (tripleBackticks % 2 === 1) return true;
+
+  // Check inline code (simplistic - just check if between backticks on same line)
+  const lastNewline = before.lastIndexOf('\n');
+  const currentLine = before.slice(lastNewline + 1);
+  const backticks = (currentLine.match(/`/g) || []).length;
+  return backticks % 2 === 1;
+}
+
+/**
+ * Check if a position is inside a JSX attribute (e.g., chart={`...`})
+ * @param {string} content - Full content string
+ * @param {number} position - Character position to check
+ * @returns {boolean} True if position is inside a JSX attribute
+ */
+export function isInJsxAttribute(content, position) {
+  const before = content.slice(0, position);
+  const lastNewline = before.lastIndexOf('\n');
+  const currentLine = before.slice(lastNewline + 1);
+
+  // Inside a template literal in JSX (e.g., chart={`...`})
+  const templateLiteralMatch = currentLine.match(/\{`[^`]*$/);
+  if (templateLiteralMatch) return true;
+
+  // Inside a JSX string attribute (e.g., title="...")
+  const jsxStringMatch = currentLine.match(/<[^>]*=["'][^"']*$/);
+  if (jsxStringMatch) return true;
+
+  return false;
+}
+
+/**
+ * Check if a position is inside a Mermaid diagram component
+ * @param {string} content - Full content string
+ * @param {number} position - Character position to check
+ * @returns {boolean} True if position is inside a Mermaid component
+ */
+export function isInMermaid(content, position) {
+  const before = content.slice(0, position);
+
+  // Check for <Mermaid ... chart={` pattern before position
+  const mermaidOpenMatch = before.match(/<Mermaid[^>]*chart=\{`[^`]*$/);
+  if (mermaidOpenMatch) return true;
+
+  // Check if we're after Mermaid open but before closing
+  const lastMermaidOpen = before.lastIndexOf('<Mermaid');
+  if (lastMermaidOpen === -1) return false;
+
+  const lastMermaidClose = before.lastIndexOf('/>');
+  const lastMermaidCloseTag = before.lastIndexOf('</Mermaid>');
+  const lastClose = Math.max(lastMermaidClose, lastMermaidCloseTag);
+
+  return lastMermaidOpen > lastClose;
+}
+
+/**
+ * Check if a position is inside an HTML/JSX comment
+ * @param {string} content - Full content string
+ * @param {number} position - Character position to check
+ * @returns {boolean} True if position is inside a comment
+ */
+export function isInComment(content, position) {
+  const before = content.slice(0, position);
+
+  // Check for HTML comment
+  const lastCommentOpen = before.lastIndexOf('<!--');
+  const lastCommentClose = before.lastIndexOf('-->');
+  if (lastCommentOpen > lastCommentClose) return true;
+
+  // Check for JSX comment {/* ... */}
+  const lastJsxCommentOpen = before.lastIndexOf('{/*');
+  const lastJsxCommentClose = before.lastIndexOf('*/}');
+  if (lastJsxCommentOpen > lastJsxCommentClose) return true;
+
+  return false;
+}
+
+/**
+ * Get the line number at a character position
+ * @param {string} content - Full content string
+ * @param {number} position - Character position
+ * @returns {number} 1-indexed line number
+ */
+export function getLineNumber(content, position) {
+  return content.slice(0, position).split('\n').length;
+}
+
+/**
+ * Get the line index (0-indexed) where frontmatter ends
+ * Returns 0 if no frontmatter found
+ * @param {string} content - Full content string
+ * @returns {number} 0-indexed line number of closing ---
+ */
+export function getFrontmatterEndLine(content) {
+  const lines = content.split('\n');
+  if (lines[0] !== '---') return 0;
+
+  let dashCount = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i] === '---') {
+      dashCount++;
+      if (dashCount === 2) return i;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Check if a position should be skipped for validation
+ * (in code block, JSX attribute, Mermaid, or comment)
+ * @param {string} content - Full content string
+ * @param {number} position - Character position to check
+ * @returns {boolean} True if position should be skipped
+ */
+export function shouldSkipPosition(content, position) {
+  return (
+    isInCodeBlock(content, position) ||
+    isInJsxAttribute(content, position) ||
+    isInMermaid(content, position) ||
+    isInComment(content, position)
+  );
+}

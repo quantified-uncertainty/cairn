@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Validate and optionally fix unescaped comparison operators in MDX files
+ * Comparison Operators Validation Script
+ *
+ * Thin wrapper around the unified validation engine's comparison-operators rule.
+ * Provides backwards compatibility with existing npm scripts and --fix mode.
  *
  * Less-than (<) followed by numbers/letters gets parsed as JSX tags in MDX,
  * causing build failures. These need to be escaped as &lt;
- *
- * Greater-than (>) is less problematic but can cause issues in certain contexts.
  *
  * Usage:
  *   node scripts/validate-comparison-operators.mjs           # Check only
@@ -15,20 +16,29 @@
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
 import { join, relative } from 'path';
+import { ValidationEngine } from '../lib/validation-engine.mjs';
+import { comparisonOperatorsRule } from '../lib/rules/comparison-operators.mjs';
+import { getFrontmatterEndLine } from '../lib/mdx-utils.mjs';
 
 const CONTENT_DIR = 'src/content/docs';
 const args = process.argv.slice(2);
 const shouldFix = args.includes('--fix');
 const verbose = args.includes('--verbose');
+const CI_MODE = args.includes('--ci');
 
-// Pattern: < followed by a digit or \$ (escaped dollar sign)
-// This catches <10%, <$100, <1 year, etc.
-// We use a negative lookbehind to avoid matching already-escaped &lt;
-const LESS_THAN_PATTERN = /<(\d|\\?\$)/g;
-
-// Pattern: > followed by a digit that isn't in a valid context
-// Less common issue, but can occur in tables
-const GREATER_THAN_PATTERN = />(\d)/g;
+// Color codes (disabled in CI mode)
+const colors = CI_MODE ? {
+  red: '', green: '', yellow: '', blue: '', cyan: '', reset: '', dim: '', bold: ''
+} : {
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+  dim: '\x1b[2m',
+  bold: '\x1b[1m',
+  reset: '\x1b[0m',
+};
 
 function getAllMdxFiles(dir) {
   const files = [];
@@ -42,130 +52,6 @@ function getAllMdxFiles(dir) {
     }
   }
   return files;
-}
-
-function getFrontmatterEndLine(content) {
-  const lines = content.split('\n');
-  if (lines[0] !== '---') return 0;
-
-  let dashCount = 0;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i] === '---') {
-      dashCount++;
-      if (dashCount === 2) return i;
-    }
-  }
-  return 0;
-}
-
-function isInCodeBlock(content, position) {
-  const before = content.slice(0, position);
-
-  // Count triple backticks
-  const tripleBackticks = (before.match(/```/g) || []).length;
-  if (tripleBackticks % 2 === 1) return true;
-
-  // Check inline code (simplistic - just check if between backticks on same line)
-  const lastNewline = before.lastIndexOf('\n');
-  const currentLine = before.slice(lastNewline + 1);
-  const backticks = (currentLine.match(/`/g) || []).length;
-  return backticks % 2 === 1;
-}
-
-function isInJsxAttribute(content, position) {
-  // Check if we're inside a JSX attribute (e.g., chart={`...`})
-  const before = content.slice(0, position);
-  const lastNewline = before.lastIndexOf('\n');
-  const currentLine = before.slice(lastNewline + 1);
-
-  // Inside a template literal in JSX
-  const templateStart = currentLine.lastIndexOf('{`');
-  const templateEnd = currentLine.lastIndexOf('`}');
-  if (templateStart > templateEnd) return true;
-
-  return false;
-}
-
-function isAlreadyEscaped(content, position) {
-  // Check if the < is already part of &lt;
-  const after = content.slice(position, position + 4);
-  if (after === '&lt;') return true;
-
-  // Check for \< (backslash escaped)
-  if (position > 0 && content[position - 1] === '\\') return true;
-
-  return false;
-}
-
-function isValidHtmlTag(content, position) {
-  // Check if this looks like a valid HTML/JSX tag (e.g., <R, <br, <Mermaid)
-  const after = content.slice(position, position + 20);
-  // Valid tags start with letter or /, not digit or symbol
-  return /^<[a-zA-Z\/]/.test(after);
-}
-
-function checkFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
-  const frontmatterEnd = getFrontmatterEndLine(content);
-
-  const issues = [];
-  let position = 0;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // Skip frontmatter
-    if (i <= frontmatterEnd) {
-      position += line.length + 1;
-      continue;
-    }
-
-    // Find less-than matches
-    let match;
-    const ltRegex = new RegExp(LESS_THAN_PATTERN.source, 'g');
-    while ((match = ltRegex.exec(line)) !== null) {
-      const absolutePos = position + match.index;
-
-      // Skip if in code block, JSX attribute, already escaped, or valid HTML tag
-      if (!isInCodeBlock(content, absolutePos) &&
-          !isInJsxAttribute(content, absolutePos) &&
-          !isAlreadyEscaped(content, absolutePos) &&
-          !isValidHtmlTag(content, absolutePos)) {
-        issues.push({
-          line: i + 1,
-          column: match.index + 1,
-          text: line.slice(Math.max(0, match.index - 10), match.index + 15),
-          match: match[0],
-          type: 'less-than',
-          fix: '&lt;' + match[1]
-        });
-      }
-    }
-
-    // Find greater-than matches (less critical, only in specific contexts)
-    // For now, we'll just check for >NUMBER in table cells
-    if (line.includes('|')) {
-      const gtRegex = new RegExp(GREATER_THAN_PATTERN.source, 'g');
-      while ((match = gtRegex.exec(line)) !== null) {
-        const absolutePos = position + match.index;
-
-        // Skip if in code block or already escaped
-        if (!isInCodeBlock(content, absolutePos) &&
-            !isAlreadyEscaped(content, absolutePos)) {
-          // Check if it's actually causing rendering issues (usually doesn't)
-          // We'll warn but not fail on these
-          if (verbose) {
-            console.log(`  \x1b[2mNote: >${match[1]} at line ${i + 1} - usually OK but verify rendering\x1b[0m`);
-          }
-        }
-      }
-    }
-
-    position += line.length + 1;
-  }
-
-  return issues;
 }
 
 function fixFile(filePath) {
@@ -206,49 +92,66 @@ function fixFile(filePath) {
   return 0;
 }
 
-// Main
-console.log('\x1b[34mChecking MDX files for unescaped comparison operators...\x1b[0m\n');
+async function main() {
+  console.log(`${colors.blue}Checking MDX files for unescaped comparison operators...${colors.reset}\n`);
 
-const files = getAllMdxFiles(CONTENT_DIR);
-let totalIssues = 0;
-let filesWithIssues = 0;
-let totalFixed = 0;
+  // Use unified validation engine for detection
+  const engine = new ValidationEngine();
+  engine.addRule(comparisonOperatorsRule);
+  await engine.load();
 
-for (const file of files) {
-  const relPath = relative(process.cwd(), file);
-  const issues = checkFile(file);
+  const issues = await engine.validate();
 
-  if (issues.length > 0) {
-    filesWithIssues++;
-    totalIssues += issues.length;
+  // Group issues by file
+  const issuesByFile = new Map();
+  for (const issue of issues) {
+    if (!issuesByFile.has(issue.file)) {
+      issuesByFile.set(issue.file, []);
+    }
+    issuesByFile.get(issue.file).push(issue);
+  }
 
-    if (shouldFix) {
+  let totalFixed = 0;
+
+  if (shouldFix && issues.length > 0) {
+    // Fix mode
+    for (const [file, fileIssues] of issuesByFile) {
       const fixed = fixFile(file);
       if (fixed > 0) {
         totalFixed += fixed;
-        console.log(`\x1b[32m✓ Fixed:\x1b[0m ${relPath} (${fixed} issues)`);
+        const relPath = relative(process.cwd(), file);
+        console.log(`${colors.green}✓ Fixed:${colors.reset} ${relPath} (${fixed} issues)`);
       }
-    } else {
-      console.log(`\x1b[1m${relPath}\x1b[0m`);
-      for (const issue of issues) {
-        console.log(`  \x1b[33m⚠ Line ${issue.line}:\x1b[0m ...${issue.text}...`);
+    }
+
+    console.log(`\n${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.green}✓ Fixed ${totalFixed} issues across ${issuesByFile.size} files${colors.reset}`);
+  } else if (issues.length > 0) {
+    // Report mode
+    for (const [file, fileIssues] of issuesByFile) {
+      const relPath = relative(process.cwd(), file);
+      console.log(`${colors.bold}${relPath}${colors.reset}`);
+
+      for (const issue of fileIssues) {
+        console.log(`  ${colors.yellow}⚠ Line ${issue.line}${colors.reset}`);
         if (verbose) {
-          console.log(`    \x1b[2mMatch: "${issue.match}" → should be "${issue.fix}"\x1b[0m`);
+          console.log(`    ${colors.dim}${issue.message}${colors.reset}`);
         }
       }
       console.log();
     }
+
+    console.log(`${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.yellow}${issues.length} unescaped comparison operators in ${issuesByFile.size} files${colors.reset}`);
+    console.log(`  ${colors.dim}Run with --fix to auto-fix${colors.reset}`);
+    process.exit(1);
+  } else {
+    console.log(`${colors.bold}Summary:${colors.reset}`);
+    console.log(`  ${colors.green}✓ No unescaped comparison operators found${colors.reset}`);
   }
 }
 
-// Summary
-console.log('\x1b[1mSummary:\x1b[0m');
-if (totalIssues === 0) {
-  console.log('  \x1b[32m✓ No unescaped comparison operators found\x1b[0m');
-} else if (shouldFix) {
-  console.log(`  \x1b[32m✓ Fixed ${totalFixed} issues across ${filesWithIssues} files\x1b[0m`);
-} else {
-  console.log(`  \x1b[33m${totalIssues} unescaped comparison operators in ${filesWithIssues} files\x1b[0m`);
-  console.log('  \x1b[2mRun with --fix to auto-fix\x1b[0m');
+main().catch(err => {
+  console.error('Validation failed:', err);
   process.exit(1);
-}
+});
