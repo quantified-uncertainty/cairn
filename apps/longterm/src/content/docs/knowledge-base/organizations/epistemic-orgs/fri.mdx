@@ -1,21 +1,21 @@
 ---
-title: Forecasting Research Institute
-description: The Forecasting Research Institute (FRI) advances forecasting methodology through large-scale tournaments and rigorous experiments. Their Existential Risk Persuasion Tournament (XPT) found superforecasters gave 9.7% average probability to observed AI progress outcomes, while domain experts gave 24.6%. FRI's ForecastBench provides the first contamination-free benchmark for LLM forecasting accuracy.
+title: "Forecasting Research Institute"
+description: "The Forecasting Research Institute (FRI) advances forecasting methodology through large-scale tournaments and rigorous experiments. Their Existential Risk Persuasion Tournament (XPT) found superforecasters gave 9.7% average probability to observed AI progress outcomes, while domain experts gave 24.6%. FRI's ForecastBench provides the first contamination-free benchmark for LLM forecasting accuracy."
 sidebar:
   order: 3
-quality: 91
-llmSummary: "FRI conducts forecasting methodology research, led by Chief Scientist Philip Tetlock (author of Expert Political Judgment and Superforecasting). Their XPT tournament (169 participants) found superforecasters severely underestimated AI progress—giving 2.3% to AI achieving IMO gold (achieved July 2025), vs 8.6% from domain experts. Superforecasters estimated 0.38% AI extinction probability by 2100 vs 3% from domain experts. Key outputs: XPT methodology for high-stakes debates, ForecastBench for LLM evaluation (ICLR 2025) showing LLMs may match superforecasters by November 2026, and FRI-ONN nuclear risk study estimating 5% median probability of nuclear catastrophe by 2045. Funded by over $16M from Open Philanthropy."
+quality: 55
+llmSummary: "FRI's XPT tournament found superforecasters gave 9.7% average probability to AI progress outcomes that occurred vs 24.6% from domain experts, suggesting superforecasters systematically underestimate AI progress. Their research shows median expert AI extinction risk at 3% by 2100 vs 0.38% from superforecasters, with minimal belief convergence despite structured debate."
 lastEdited: "2026-01-29"
-importance: 75
+importance: 54
 ratings:
-  novelty: 7
-  rigor: 9
-  actionability: 7
-  completeness: 8
+  novelty: 4.5
+  rigor: 6
+  actionability: 4
+  completeness: 6.5
 metrics:
-  wordCount: 4100
-  citations: 28
-  tables: 14
+  wordCount: 1704
+  citations: 65
+  tables: 44
   diagrams: 2
 ---
 import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
@@ -44,13 +44,13 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 | **Location** | Philadelphia area / Remote |
 | **Status** | 501(c)(3) research nonprofit |
 | **Website** | [forecastingresearch.org](https://forecastingresearch.org/) |
-| **Funding** | Over [\$16M from Open Philanthropy](https://www.openphilanthropy.org/focus/forecasting/) (2021-present) |
+| **Funding** | Over [\$16M from Coefficient Giving](/knowledge-base/organizations/funders/coefficient-giving/) (2021-present) |
 | **Key Outputs** | XPT Tournament, ForecastBench (ICLR 2025), FRI-ONN Nuclear Study |
 | **Focus** | Forecasting methodology for high-stakes decisions and existential risk |
 
 ## Overview
 
-The [Forecasting Research Institute](https://forecastingresearch.org/) develops advanced forecasting methods to improve decision-making on high-stakes issues, with particular emphasis on existential risks and AI development. Founded in 2021 with [initial support from Open Philanthropy](https://www.openphilanthropy.org/grants/forecasting-research-institute-science-of-forecasting/) and led by Chief Scientist Philip Tetlock—whose research established the field of superforecasting—FRI represents the next generation of forecasting research, moving from establishing accuracy standards to channeling forecasting into real-world policy relevance.
+The [Forecasting Research Institute](https://forecastingresearch.org/) develops advanced forecasting methods to improve decision-making on high-stakes issues, with particular emphasis on existential risks and AI development. Founded in 2021 with [initial support from Coefficient Giving](/knowledge-base/organizations/funders/coefficient-giving/) and led by Chief Scientist Philip Tetlock—whose research established the field of superforecasting—FRI represents the next generation of forecasting research, moving from establishing accuracy standards to channeling forecasting into real-world policy relevance.
 
 FRI's flagship project, the [Existential Risk Persuasion Tournament (XPT)](https://forecastingresearch.org/xpt), introduced a multi-stage methodology designed to improve the rigor of debates about catastrophic risks. Unlike traditional forecasting tournaments that simply aggregate independent predictions, the XPT required participants to engage in structured debates, explain their reasoning, and update their forecasts through adversarial collaboration. Running from June through October 2022, the tournament brought together 169 participants who made forecasts about existential threats including AI, biosecurity, climate change, and nuclear war. The results, published in the [*International Journal of Forecasting*](https://www.sciencedirect.com/science/article/abs/pii/S0169207024001250) in 2025, produced striking findings about the limits of current forecasting on AI progress.
 
@@ -113,59 +113,9 @@ flowchart LR
     style FRI fill:#99ccff
 `} />
 
-## XPT Methodology
-
-<Mermaid client:load chart={`
-flowchart TD
-    XPT[Existential Risk<br/>Persuasion Tournament] --> S1[Stage 1: Initial Forecasts]
-    S1 --> S2[Stage 2: Anonymous Debate]
-    S2 --> S3[Stage 3: Adversarial Collaboration]
-    S3 --> S4[Stage 4: Final Forecasts]
-
-    S1 --> SUPER[Superforecasters]
-    S1 --> EXPERT[Domain Experts]
-
-    SUPER --> TEAMS[Team Formation]
-    EXPERT --> TEAMS
-
-    TEAMS --> DEBATE[Constructive Debate]
-    DEBATE --> UPDATE[Forecast Updates]
-    UPDATE --> CONSENSUS[Points of Agreement]
-    UPDATE --> DISAGREE[Points of Disagreement]
-
-    style XPT fill:#e6f3ff
-    style CONSENSUS fill:#ccffcc
-    style DISAGREE fill:#ffcccc
-`} />
-
-### XPT Stages
-
-| Stage | Activity | Purpose |
-|-------|----------|---------|
-| **Stage 1** | Anonymous probability judgments | Establish baseline forecasts without social influence |
-| **Stage 2** | Explain reasoning | Expose assumptions and evidence |
-| **Stage 3** | Adversarial collaboration | Structured debate to identify cruxes |
-| **Stage 4** | Final forecasts | Update based on debate outcomes |
-
-### XPT Participants
-
-| Group | Number | Selection Criteria |
-|-------|--------|-------------------|
-| **Superforecasters** | 89 | Top performers from Good Judgment Project with track records of predictive accuracy |
-| **Domain Experts** | 80 | Specialists recruited via organizations, academic departments, and research labs |
-| **Total** | 169 | Incentivized participation with monetary rewards for persuasion and accuracy |
-
-The [domain experts](https://forum.effectivealtruism.org/posts/un42vaZgyX7ch2kaj/announcing-forecasting-existential-risks-evidence-from-a) were selected to cover the major risk categories:
-
-| Expert Category | Number | Focus Areas |
-|-----------------|--------|-------------|
-| **AI Experts** | 32 | Machine learning, AI safety, computer science |
-| **General X-risk Experts** | 15 | Long-run threats, existential risk research |
-| **Biorisk Experts** | 12 | Pandemics, biosecurity, biotechnology |
-| **Nuclear Experts** | 12 | Arms control, nuclear policy, deterrence |
-| **Climate Experts** | 9 | Climate science, environmental policy |
-
 ## Key XPT Findings
+
+*For detailed XPT methodology, participant breakdown, and full analysis, see the dedicated [XPT (Existential Risk Persuasion Tournament)](/knowledge-base/responses/epistemic-tools/projects/xpt/) page.*
 
 ### AI Progress Forecasting Accuracy
 
@@ -228,7 +178,7 @@ The benchmark was designed to solve the data contamination problem that plagues 
 | **Multiple Baselines** | Compares LLMs to superforecasters, public forecasters, and random chance |
 | **Open Submission** | [Public leaderboard](https://www.forecastbench.org/) for model comparison |
 | **Question Sources** | Market questions (Manifold, Metaculus, Polymarket, RAND) and dataset questions (ACLED, DBnomics, FRED, Wikipedia, Yahoo Finance) |
-| **Funding** | Supported by Open Philanthropy until mid-2027 |
+| **Funding** | Supported by <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> until mid-2027 |
 
 The authors (Ezra Karger, Houtan Bastani, Chen Yueh-Han, Zachary Jacobs, Danny Halawi, Fred Zhang, and Philip E. Tetlock) designed ForecastBench as a "valuable proxy for general intelligence" since forecasting requires integrating diverse knowledge sources and reasoning under uncertainty.
 
@@ -332,9 +282,9 @@ The July 2024 side event "A Gamble of Our Own Choosing: Forecasting Nuclear Risk
 
 ## Funding History
 
-FRI's work is primarily funded by [Open Philanthropy](https://www.openphilanthropy.org/focus/forecasting/), which launched forecasting as an independent cause area in 2024.
+FRI's work is primarily funded by <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink>, which launched forecasting as an independent cause area in 2024.
 
-### Open Philanthropy Grants to FRI
+### Coefficient Giving Grants to FRI
 
 | Grant | Amount | Purpose | Date |
 |-------|--------|---------|------|
@@ -349,7 +299,7 @@ FRI's work is primarily funded by [Open Philanthropy](https://www.openphilanthro
 | Analysis of Historical Forecasts | \$10,000 | Forecasting accuracy analysis | 2024 |
 | AI Risk Discussion Project | \$150,000 | Bringing together forecasters who disagree on AI x-risk | 2024 |
 
-**Total Open Philanthropy funding: Over \$16 million**
+**Total Coefficient Giving funding: Over \$16 million**
 
 ## Comparison with Other Organizations
 
@@ -431,11 +381,11 @@ According to [FRI's team page](https://forecastingresearch.org/team), the organi
 | **2005** | *Expert Political Judgment* published by Princeton University Press |
 | **2011** | Good Judgment Project launched with IARPA funding |
 | **2015** | *Superforecasting* published; GJP concludes after beating competition |
-| **October 2021** | FRI founded with \$175K Open Philanthropy planning grant |
+| **October 2021** | FRI founded with \$175K Coefficient Giving planning grant |
 | **June-October 2022** | XPT tournament conducted (169 participants, 4 months) |
-| **2022** | Open Philanthropy provides \$1.3M multi-year grant |
+| **2022** | Coefficient Giving provides \$1.3M multi-year grant |
 | **August 2023** | XPT working paper released |
-| **2023** | Open Philanthropy provides \$10M general support grant |
+| **2023** | Coefficient Giving provides \$10M general support grant |
 | **September 2024** | ForecastBench launched |
 | **July 2024** | FRI-ONN nuclear risk study presented at NPT PrepCom in Geneva |
 | **October 2024** | Nuclear risk report published |

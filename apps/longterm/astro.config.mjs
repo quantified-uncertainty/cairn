@@ -85,13 +85,6 @@ export default defineConfig({
                       { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
                   ],
               },
-              {
-                  label: 'Projects',
-                  collapsed: true,
-                  items: [
-                      { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/projects/epistemic' } },
-                  ],
-              },
               { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
               { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
               {

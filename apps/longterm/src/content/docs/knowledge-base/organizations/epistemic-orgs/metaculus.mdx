@@ -1,21 +1,21 @@
 ---
-title: Metaculus
-description: Metaculus is a reputation-based prediction aggregation platform that has become the primary source for AI timeline forecasts. With over 1 million predictions across 15,000+ questions, Metaculus community forecasts show AGI probability at 25% by 2027 and 50% by 2031—down from 50 years away in 2020. Their aggregation algorithm consistently outperforms median forecasts on Brier and Log scoring rules. Founded in 2015 by Anthony Aguirre, Greg Laughlin, and Max Wainwright, Metaculus received USD 8.5M+ from Open Philanthropy (2022-2023) and partners with Good Judgment Inc and Bridgewater Associates on forecasting competitions.
+title: "Metaculus"
+description: "Metaculus is a reputation-based prediction aggregation platform that has become the primary source for AI timeline forecasts. With over 1 million predictions across 15,000+ questions, Metaculus community forecasts show AGI probability at 25% by 2027 and 50% by 2031—down from 50 years away in 2020. Their aggregation algorithm consistently outperforms median forecasts on Brier and Log scoring rules. Founded in 2015 by Anthony Aguirre, Greg Laughlin, and Max Wainwright, Metaculus received USD 8.5M+ from Coefficient Giving (2022-2023) and partners with Good Judgment Inc and Bridgewater Associates on forecasting competitions."
 sidebar:
   order: 2
-quality: 91
-llmSummary: "Metaculus aggregates predictions from thousands of forecasters on AI timelines, existential risks, and technology. Key AGI forecasts: 25% by 2027, 50% by 2031—a dramatic shift from 50 years in 2020. Received USD 8.5M+ from Open Philanthropy (2022-2023), hosts AI Forecasting Benchmark Tournaments with USD 175K prize pools, and collaborates with Good Judgment Inc and Bridgewater Associates. The recency-weighted median aggregation algorithm achieves Brier score of 0.107, outperforming community median. CEO Deger Turan leads a team of ~28 employees. Pro Forecasters consistently outperform AI bots in head-to-head competitions with statistical significance (p = 0.00001)."
+quality: 50
+llmSummary: "Metaculus is a reputation-based forecasting platform with 1M+ predictions showing AGI probability at 25% by 2027 and 50% by 2031 (down from 50 years away in 2020). Analysis finds good short-term calibration (Brier 0.107) but poor calibration on 1+ year horizons; human Pro Forecasters consistently outperform AI bots (p=0.00001 in Q2 2025)."
 lastEdited: "2026-01-29"
-importance: 78
+importance: 42
 ratings:
-  novelty: 5
-  rigor: 7
-  actionability: 7
-  completeness: 8
+  novelty: 2.5
+  rigor: 5
+  actionability: 3.5
+  completeness: 6.5
 metrics:
-  wordCount: 4900
-  citations: 25
-  tables: 30
+  wordCount: 2353
+  citations: 94
+  tables: 54
   diagrams: 2
 ---
 import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
@@ -27,8 +27,8 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 | **Scale** | Largest forecasting platform | 1M+ predictions, 15,000+ questions, 50,000+ users |
 | **AI Focus** | Primary AGI timeline source | Dedicated AI categories, multiple timeline questions, AI 2027 tournament |
 | **Accuracy** | Generally good short-term | Brier score 0.107 (2021 questions), Metaculus Prediction outperforms median |
-| **Funding** | USD 8.8M+ total | USD 5.5M Open Philanthropy (2022), USD 3M Open Philanthropy (2023), USD 300K EA Infra Fund (2021) |
-| **Influence** | High | Cited by 80,000 Hours, Open Philanthropy, media, policymakers |
+| **Funding** | USD 8.8M+ total | USD 5.5M Coefficient (2022), USD 3M Coefficient (2023), USD 300K EA Infra Fund (2021) |
+| **Influence** | High | Cited by 80,000 Hours, Coefficient Giving, media, policymakers |
 | **Track Record** | Mixed | Good calibration short-term, weaker on 1+ year questions per [EA Forum analysis](https://forum.effectivealtruism.org/posts/xF8EWBouJRZpRgFgu/how-does-forecast-quantity-impact-forecast-quality-on-1) |
 | **Partnerships** | Strong | Good Judgment Inc collaboration, Bridgewater USD 30K competitions, Vox Future Perfect |
 | **AI vs Human Benchmark** | Humans lead | Pro Forecasters outperform AI bots with p = 0.00001 significance in [Q2 2025](https://forum.effectivealtruism.org/posts/F2stjK9wHSy3HPEC9/q2-ai-benchmark-results-pros-maintain-clear-lead) |
@@ -46,7 +46,7 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 | **Status** | Public Benefit Corporation (restructured 2022) |
 | **Website** | [metaculus.com](https://www.metaculus.com/) |
 | **Key Features** | Prediction aggregation, tournaments, track record scoring, AI benchmarking |
-| **Total Funding** | USD 8.8M+ from Open Philanthropy, EA Infrastructure Fund |
+| **Total Funding** | USD 8.8M+ from Coefficient Giving, EA Infrastructure Fund |
 
 ## Overview
 
@@ -56,7 +56,7 @@ The platform's core innovation is its aggregation algorithm, which combines indi
 
 Metaculus has documented a dramatic shift in AI timeline forecasts over recent years. The median estimate for when AGI would be developed fell from 50 years away in 2020 to approximately 5 years by late 2024. This shift—reflected in questions tracking "weak AGI," "general AI," and "transformative AI"—represents one of the most significant updates in the forecasting community's collective judgment about AI development trajectories.
 
-The platform occupies a unique position in the AI safety ecosystem, providing quantitative probability estimates that inform decisions at organizations like Open Philanthropy, 80,000 Hours, and major AI labs. Its tournaments have also become important benchmarks for comparing human forecasters against AI forecasting systems, with human Pro Forecasters maintaining a statistically significant lead over AI bots through 2025.
+The platform occupies a unique position in the AI safety ecosystem, providing quantitative probability estimates that inform decisions at organizations like Coefficient Giving, 80,000 Hours, and major AI labs. Its tournaments have also become important benchmarks for comparing human forecasters against AI forecasting systems, with human Pro Forecasters maintaining a statistically significant lead over AI bots through 2025.
 
 ## History and Founding
 
@@ -82,7 +82,7 @@ The pandemic demonstrated the platform's ability to rapidly aggregate expert jud
 
 ### Scaling with Major Funding (2022-Present)
 
-Open Philanthropy's [USD 5.5 million grant in 2022](https://www.openphilanthropy.org/grants/metaculus-platform-development/) transformed Metaculus's capacity, enabling significant hiring and platform development. The funding supported high-impact forecasting programs on AI, biosecurity, climate change, nuclear security, and other topics of concern to the longtermist community. A follow-up [USD 3 million grant in 2023](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) further expanded capabilities.
+Coefficient Giving's [USD 5.5 million grant in 2022](https://www.openphilanthropy.org/grants/metaculus-platform-development/) transformed Metaculus's capacity, enabling significant hiring and platform development. The funding supported high-impact forecasting programs on AI, biosecurity, climate change, nuclear security, and other topics of concern to the longtermist community. A follow-up [USD 3 million grant in 2023](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) further expanded capabilities.
 
 In April 2024, [Deger Turan became CEO](https://metaculus.medium.com/announcing-deger-turan-as-the-new-ceo-of-metaculus-fcab2dfe955b), bringing experience from his role heading the AI Objectives Institute. The previous CEO transitioned to Special Advisor while remaining on the board. Under Turan's leadership, Metaculus launched major AI forecasting initiatives including the AI Forecasting Benchmark Tournament, which benchmarks AI forecasting systems against human Pro Forecasters.
 
@@ -416,20 +416,20 @@ The [AGI Timelines Dashboard](https://agi.goodheartlabs.com/) aggregates data fr
 
 | Year | Source | Amount | Purpose | Link |
 |------|--------|--------|---------|------|
-| 2019 | Open Philanthropy | — | Initial support | [openphilanthropy.org](https://www.openphilanthropy.org/grants/metaculus-platform-development/) |
+| 2019 | Coefficient Giving | — | Initial support | [coefficientgiving.org](https://www.openphilanthropy.org/grants/metaculus-platform-development/) |
 | 2021 | EA Infrastructure Fund | USD 300,000 | Platform development | — |
-| 2022 | Open Philanthropy | USD 5,500,000 | Scaling, hiring, high-impact programs | [openphilanthropy.org](https://www.openphilanthropy.org/grants/metaculus-platform-development/) |
+| 2022 | Coefficient Giving | USD 5,500,000 | Scaling, hiring, high-impact programs | [coefficientgiving.org](https://www.openphilanthropy.org/grants/metaculus-platform-development/) |
 | 2022 | FTX Future Fund | USD 20,000 | Grant (3 weeks before FTX collapse) | — |
-| 2023 | Open Philanthropy | USD 3,000,000 | Platform development | [openphilanthropy.org](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) |
+| 2023 | Coefficient Giving | USD 3,000,000 | Platform development | [coefficientgiving.org](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) |
 | 2024 | Various | USD 175,000 | AI Forecasting Benchmark prizes | Tournament funding |
 
 ### Total Funding: USD 8.8M+ confirmed
 
-Open Philanthropy has been Metaculus's primary funder, providing support under its Longtermism program, which focuses on work that "raises the probability of a very long-lasting, positive future" ([Metaculus announcement](https://www.metaculus.com/notebooks/22479/metaculus-awarded-55m-grant-to-advance-forecasting-as-a-public-good/)). The USD 5.5M 2022 grant was described as enabling Metaculus to "scale as an organization pursuing its mission to build epistemic infrastructure for navigating complex global challenges."
+Coefficient Giving has been Metaculus's primary funder, providing support under its Longtermism program, which focuses on work that "raises the probability of a very long-lasting, positive future" ([Metaculus announcement](https://www.metaculus.com/notebooks/22479/metaculus-awarded-55m-grant-to-advance-forecasting-as-a-public-good/)). The USD 5.5M 2022 grant was described as enabling Metaculus to "scale as an organization pursuing its mission to build epistemic infrastructure for navigating complex global challenges."
 
 ### Funding Focus Areas
 
-Open Philanthropy's grants to Metaculus support high-impact forecasting programs in:
+Coefficient Giving's grants to Metaculus support high-impact forecasting programs in:
 
 | Area | Relevance to AI Safety |
 |------|------------------------|
@@ -451,7 +451,7 @@ Open Philanthropy's grants to Metaculus support high-impact forecasting programs
 | **[Anthropic](https://www.anthropic.com/)** | AI benchmarking | API credits for AI Forecasting Benchmark Tournament |
 | **[Vox Future Perfect](https://www.vox.com/future-perfect)** | Public forecasting | 2025 predictions tournament |
 | **[80,000 Hours](https://80000hours.org/)** | Career research | AI timeline forecasts cited in career guidance |
-| **[Open Philanthropy](https://www.openphilanthropy.org/)** | Research & funding | Grant impact forecasting; primary funder |
+| **[Coefficient Giving](https://coefficientgiving.org/)** | Research & funding | Grant impact forecasting; primary funder |
 
 ### Academic and Institutional Connections
 
@@ -477,7 +477,7 @@ The organization's founders maintain deep connections to academic research and g
 | **Track Record Transparency** | Public calibration data, historical accuracy available for analysis |
 | **Community Engagement** | Active forecaster base with ongoing updates; tournaments drive participation |
 | **Open Source** | Platform code released under BSD-2-Clause License (2024) |
-| **Institutional Integration** | Forecasts inform decisions at Open Philanthropy, 80,000 Hours, AI labs |
+| **Institutional Integration** | Forecasts inform decisions at Coefficient Giving, 80,000 Hours, AI labs |
 | **Human vs AI Benchmarking** | Only major platform systematically comparing human and AI forecasting |
 
 ### Limitations
@@ -513,7 +513,7 @@ Metaculus plays several important roles in the AI safety ecosystem:
 
 | Use Case | Organizations |
 |----------|---------------|
-| **Cause prioritization** | Open Philanthropy uses forecasts to inform grantmaking |
+| **Cause prioritization** | Coefficient Giving uses forecasts to inform grantmaking |
 | **Career guidance** | 80,000 Hours cites AGI timelines in career advice |
 | **Research prioritization** | AI safety researchers track timeline estimates |
 | **Policy planning** | Government bodies and think tanks reference forecasts |
@@ -551,14 +551,14 @@ These benchmarks help calibrate expectations about AI capability trajectories in
 4. [Metaculus: a prediction website with an eye on science and technology - Yale News](https://news.yale.edu/2016/11/02/metaculus-prediction-website-eye-science-technology) - 2016 launch coverage
 5. [Announcing Deger Turan as the new CEO of Metaculus](https://metaculus.medium.com/announcing-deger-turan-as-the-new-ceo-of-metaculus-fcab2dfe955b) - Leadership transition
 6. [Metaculus Awarded USD 5.5M Grant to Advance Forecasting as a Public Good](https://www.metaculus.com/notebooks/22479/metaculus-awarded-55m-grant-to-advance-forecasting-as-a-public-good/) - 2022 funding announcement
-7. [Metaculus - Platform Development | Open Philanthropy](https://www.openphilanthropy.org/grants/metaculus-platform-development/) - 2022 grant details
-8. [Metaculus - Platform Development (2023) | Open Philanthropy](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) - 2023 grant details
+7. [Metaculus - Platform Development | Coefficient Giving](https://www.openphilanthropy.org/grants/metaculus-platform-development/) - 2022 grant details
+8. [Metaculus - Platform Development (2023) | Coefficient Giving](https://www.openphilanthropy.org/grants/metaculus-platform-development-2023/) - 2023 grant details
 9. [Good Judgment Inc and Metaculus Launch First Collaboration](https://goodjudgment.com/owidproject/) - OWID project announcement
 10. [Bridgewater x Metaculus 2026 Competition](https://www.bridgewater.com/bridgewater-x-metaculus-2026-competition) - Bridgewater partnership
 11. [Q2 AI Benchmark Results: Pros Maintain Clear Lead - EA Forum](https://forum.effectivealtruism.org/posts/F2stjK9wHSy3HPEC9/q2-ai-benchmark-results-pros-maintain-clear-lead) - AI benchmarking results
 12. [How does forecast quantity impact forecast quality on Metaculus? - EA Forum](https://forum.effectivealtruism.org/posts/xF8EWBouJRZpRgFgu/how-does-forecast-quantity-impact-forecast-quality-on-1) - Calibration analysis
 13. [Takeaways from the Metaculus AI Progress Tournament - EA Forum](https://forum.effectivealtruism.org/posts/x5Re9EKwGvAjZSmeb/takeaways-from-the-metaculus-ai-progress-tournament) - AI tournament analysis
-14. [Takeaways from the Metaculus AI Progress Tournament | Open Philanthropy](https://www.openphilanthropy.org/research/takeaways-from-the-metaculus-ai-progress-tournament/) - Open Philanthropy analysis
+14. [Takeaways from the Metaculus AI Progress Tournament | Coefficient Giving](https://www.openphilanthropy.org/research/takeaways-from-the-metaculus-ai-progress-tournament/) - Coefficient Giving analysis
 15. [A Primer on the Metaculus Scoring Rule](https://www.metaculus.com/notebooks/22486/a-primer-on-the-metaculus-scoring-rule/) - Scoring methodology
 16. [Exploring Metaculus's AI Track Record - EA Forum](https://forum.effectivealtruism.org/posts/e9htD7txe8RDdcehm/exploring-metaculus-s-ai-track-record) - AI accuracy analysis
 17. [Predictive Performance on Metaculus vs. Manifold Markets](https://www.metaculus.com/notebooks/15359/predictive-performance-on-metaculus-vs-manifold-markets/) - Platform comparison
