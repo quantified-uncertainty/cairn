@@ -175,7 +175,7 @@ flowchart TD
 | Automated Interpretability Score | 90% | High-activating features with clear explanations |
 | Training Data | 8 billion residual-stream activations | From diverse text corpus |
 | Expansion Factor | 83x to 2833x | Ratio of features to residual stream dimension |
-| Average Features per Token | ~300 | Sparse from thousands of dense activations |
+| Average Features per Token | ≈300 | Sparse from thousands of dense activations |
 
 The resulting features exhibit remarkable abstraction: they are multilingual, multimodal, and generalize between concrete and abstract references. Critically, researchers found safety-relevant features including:
 
@@ -195,7 +195,7 @@ The resulting features exhibit remarkable abstraction: they are multilingual, mu
 |--------|------------------------|--------------------------|
 | Model Coverage | Gemma 2 (2B, 9B, 27B) | Gemma 3 (270M to 27B) |
 | Total Features | 30+ million | Comparable scale |
-| Training Compute | ~15% of Gemma 2 9B training | Not disclosed |
+| Training Compute | ≈15% of Gemma 2 9B training | Not disclosed |
 | Storage Requirements | 20 PiB activations | 110 PB activation data |
 | Total Parameters | Hundreds of billions | 1+ trillion across all SAEs |
 | Architecture | JumpReLU SAEs | SAEs + Transcoders |
@@ -222,7 +222,7 @@ Gemma Scope 2 introduces **transcoders** alongside SAEs—a key advancement that
 | Finding | Implication | DeepMind Assessment |
 |---------|-------------|---------------------|
 | SAEs underperformed linear probes on harmful intent detection | Simpler methods may suffice for some safety applications | "Linear probes are actually really good, cheap, and perform great" |
-| Chat-specialized SAEs closed only ~50% of the gap | Domain-specific training helps but doesn't solve the problem | Still worse than linear probes |
+| Chat-specialized SAEs closed only ≈50% of the gap | Domain-specific training helps but doesn't solve the problem | Still worse than linear probes |
 | Features may not be functionally important | Interpretable features ≠ causally relevant features | "Do not think SAEs will be a game-changer" |
 | High training costs with diminishing returns | Compute-intensive with unclear safety ROI | Team shifted to model diffing, deception model organisms |
 
@@ -233,10 +233,10 @@ However, DeepMind noted SAEs remain "fairly helpful for debugging low quality da
 | Metric | Value | Source | Notes |
 |--------|-------|--------|-------|
 | Feature interpretability rate | 90% | [Anthropic 2024](https://transformer-circuits.pub/2024/scaling-monosemanticity/) | High-activating features with clear explanations |
-| Average features per token | ~300 | Anthropic 2024 | Sparse representation from thousands of dense activations |
+| Average features per token | ≈300 | Anthropic 2024 | Sparse representation from thousands of dense activations |
 | Reconstruction loss (GPT-4 SAE) | 10% compute equivalent | [OpenAI 2024](https://openai.com/index/extracting-concepts-from-gpt-4/) | Language modeling loss increase when SAE substituted |
 | Automated interpretation cost | \$1,300-8,500 per 1.5M features | [EleutherAI 2024](https://blog.eleuther.ai/autointerp/) | Llama 3.1 vs Claude 3.5 Sonnet |
-| Prior interpretation methods | ~\$200,000 per 1.5M features | EleutherAI 2024 | 97% cost reduction achieved |
+| Prior interpretation methods | ≈\$200,000 per 1.5M features | EleutherAI 2024 | 97% cost reduction achieved |
 | Storage requirements (Gemma Scope 2) | 110 PB | [DeepMind 2024](https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/) | Largest open-source interpretability release |
 | Dead latent rate (TopK architecture) | Near zero | [OpenAI 2024](https://arxiv.org/abs/2406.04093) | vs significant dead features with ReLU+L1 |
 

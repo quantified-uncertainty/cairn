@@ -71,11 +71,11 @@ Performance on tool use benchmarks reveals both rapid progress and, in some case
 | Benchmark | Task Type | Human Baseline | Best AI (2024) | Best AI (Late 2025) | Key Insight |
 |-----------|-----------|----------------|----------------|----------------|-------------|
 | <R id="c819ef71cbf34802">OSWorld</R> | Computer control | 72.4% | 14.9% (Claude 3.5) | **76.26% (OSAgent)** | Superhuman achieved Oct 2025 |
-| <R id="e1f512a932def9e2">SWE-bench Verified</R> | Code issue resolution | ~92% | 49.0% (Claude 3.5) | **80.9% (Claude Opus 4.5)** | Near-human; 18x improvement since 2023 |
+| <R id="e1f512a932def9e2">SWE-bench Verified</R> | Code issue resolution | ≈92% | 49.0% (Claude 3.5) | **80.9% (Claude Opus 4.5)** | Near-human; 18x improvement since 2023 |
 | SWE-bench Pro | Private codebases | — | — | 22.7% (Claude Opus 4.1) | More realistic; drops to 17.8% on commercial code |
 | <R id="1c294c3f51d7bc1f">GAIA</R> | General assistant tasks | 92% | 15% (GPT-4) | **75% (h2oGPTe)** | First "C grade" achieved in 2025 |
 | BFCL | Function calling | — | — | 70.36% (Claude Opus 4.1) | GPT-5 at 59.22%; Chinese models competitive |
-| <R id="c2614357fa198ba4">WebArena</R> | Web navigation | — | ~35% | ~55% | Realistic web task completion |
+| <R id="c2614357fa198ba4">WebArena</R> | Web navigation | — | ≈35% | ≈55% | Realistic web task completion |
 
 The trajectory of improvement has been extraordinary. On OSWorld, the best AI agent went from 14.9% in October 2024 to 76.26% in October 2025—a **5.1x improvement** that crossed the 72% human baseline. Claude's OSWorld performance improved 45% in just four months (from 42.2% to 61.4% with Sonnet 4.5). The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to 80.9% by late 2025 (**18x improvement**)—illustrates how rapidly agentic coding capabilities are advancing. On [SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public), Claude Opus 4.5 leads at 45.89%, with Claude Sonnet 4.5 at 43.60%.
 
@@ -171,7 +171,7 @@ In October 2025, AI agents crossed the human baseline on computer control for th
 | Claude Opus 4.5 | 66.3% | Nov 2025 | Extended autonomous operation |
 | Agent S3 (Best-of-N) | 69.9% | Oct 2025 | Behavior Best-of-N techniques |
 | **OSAgent** | **76.26%** | Oct 2025 | Self-verification, synthetic data |
-| Human baseline | ~72% | — | — |
+| Human baseline | ≈72% | — | — |
 
 However, efficiency remains a significant limitation. Even high-performing agents take 1.4-2.7x more steps than necessary to complete tasks. What humans can accomplish in 30 seconds might take an agent 12 minutes—primarily because 75-94% of the time is spent on planning and reflection calls to large AI models rather than actual task execution.
 

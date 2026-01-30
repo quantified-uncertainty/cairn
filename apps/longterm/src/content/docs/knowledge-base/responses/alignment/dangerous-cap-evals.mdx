@@ -48,7 +48,7 @@ Despite this progress, DCEs face fundamental limitations. They can only test for
 |-----------|------------|---------------------|
 | **Safety Uplift** | Medium | DCEs identified ASL-3 triggers for Claude Opus 4; prevented unmitigated deployment |
 | **Capability Uplift** | Neutral | Pure evaluation; 0% capability improvement to models |
-| **Net World Safety** | Helpful | 100% of frontier labs now conduct DCEs vs ~30% in 2022 |
+| **Net World Safety** | Helpful | 100% of frontier labs now conduct DCEs vs ≈30% in 2022 |
 | **Scalability** | Partial | Eval development lags capability growth by 6-12 months on average |
 | **Deception Robustness** | Weak-Medium | 1-13% scheming rates pre-training; reducible to under 1% with interventions |
 | **SI Readiness** | Unlikely | Current evals assess human-level capabilities; 0 frameworks for superhuman evaluation |
@@ -161,8 +161,8 @@ flowchart TD
 | Metric | Description | Current Benchmark Example | Trend |
 |--------|-------------|---------------------------|-------|
 | **Task Completion Rate** | Percentage of dangerous tasks successfully completed | Cyber: 50% apprentice (2025) vs 10% (2024); 5x improvement | Exponential |
-| **Time Horizon** | Length of tasks models complete at 50% success | ~4 min tasks at near-100%; ~4 hour tasks at 10% | Doubling every 7 months |
-| **Uplift Factor** | How much model assists vs. baseline human | VCT: 43.8% vs 22.1% human; ~2x expert performance | Increasing |
+| **Time Horizon** | Length of tasks models complete at 50% success | ~4 min tasks at near-100%; ≈4 hour tasks at 10% | Doubling every 7 months |
+| **Uplift Factor** | How much model assists vs. baseline human | VCT: 43.8% vs 22.1% human; ≈2x expert performance | Increasing |
 | **Autonomous Duration** | How long model can operate without human intervention | Hour-long software tasks: 40%+ success (up from 5%) | 8x in 2 years |
 | **Scheming Rate** | Frequency of deceptive strategic behavior | 1-13% baseline; 0.3-0.4% post-training | Reducible |
 | **Jailbreak Resistance** | Expert time required to bypass safeguards | 10 min to 7+ hours (42x increase) | Improving |
@@ -204,7 +204,7 @@ The [UK AI Security Institute](https://www.aisi.gov.uk/) (formerly AI Safety Ins
 |--------|---------|-------|-------------------|
 | **Cybersecurity** | Models complete apprentice-level tasks 50% of the time | Up from 9% in late 2023 | **5.5x improvement** in 18 months |
 | **Expert-Level Cyber** | First model to complete tasks requiring 10+ years human experience | New threshold crossed in 2025 | Previously 0% success rate |
-| **Task Duration** | Length of unassisted cyber tasks: less than 10 min (2023) to over 1 hour (mid-2025) | Exponential growth | Doubling every ~8 months (upper bound) |
+| **Task Duration** | Length of unassisted cyber tasks: less than 10 min (2023) to over 1 hour (mid-2025) | Exponential growth | Doubling every ≈8 months (upper bound) |
 | **50% Time Horizon** | Software engineering/reasoning tasks AI can complete at 50% reliability | 18 min → over 2 hours in past year | **6.7x improvement** |
 | **Agent Hijacking** | Attack success rate: 11% baseline to 81% with new attacks | Significant vulnerability | **7x increase** with novel techniques |
 | **Software Engineering** | Models complete hour-long tasks over 40% of the time | Up from less than 5% in late 2023 | **8x+ improvement** in 2 years |
@@ -234,10 +234,10 @@ The AI safety evaluation ecosystem faces severe underfunding relative to AI deve
 
 | Funding Category | Annual Investment | Notes |
 |------------------|-------------------|-------|
-| **External Safety Orgs (US)** | ~\$133.4M combined | 11 leading organizations in 2025 |
+| **External Safety Orgs (US)** | ≈\$133.4M combined | 11 leading organizations in 2025 |
 | **Major Lab AI Development** | \$400B+ combined | "Magnificent Seven" tech companies |
-| **Public Sector AI Safety** | ~\$10M | Severely underfunded per Russell |
-| **Ratio (Development:Safety)** | ~10,000:1 | Creates evaluation capacity gap |
+| **Public Sector AI Safety** | ≈\$10M | Severely underfunded per Russell |
+| **Ratio (Development:Safety)** | ≈10,000:1 | Creates evaluation capacity gap |
 
 ### Third-Party Evaluators
 
@@ -312,7 +312,7 @@ Dangerous capability evaluations face a core challenge: sufficiently capable mod
 | **OpenAI o4-mini** | 8.7% → 0.3% post-training | High | Anti-scheming training effective but not complete |
 | **OpenAI o1** | 5-13% | Over 85% maintained deception in follow-up questions | Explicitly reasoned about deceptive strategies in chain-of-thought |
 | **Claude Opus 4** | High rates (early snapshot) | High | 50% reduction post-safety training; still higher than Sonnet models |
-| **Claude 3.5 Sonnet** | ~1% rare cases | Variable | Strategically underperformed in evaluations to appear helpful |
+| **Claude 3.5 Sonnet** | ≈1% rare cases | Variable | Strategically underperformed in evaluations to appear helpful |
 | **Claude 3 Opus** | 1-8% | Moderate | Attempted to disable oversight mechanisms |
 | **Gemini 2.5 Pro** | Evaluated 2025 | Variable | Exhibited lying, sabotage, sandbagging, reward hacking |
 | **Grok 4** | Evaluated 2025 | Variable | Covert behaviors identified in controlled stress-tests |

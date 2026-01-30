@@ -46,6 +46,12 @@ jobs:
           echo "Checking for unescaped $ that will break LaTeX..."
           node scripts/validate/validate-dollar-signs.mjs
 
+      - name: Check for tilde-dollar rendering issues
+        working-directory: apps/longterm
+        run: |
+          echo "Checking for ~\\$ patterns that render incorrectly..."
+          node scripts/validate/validate-tilde-dollar.mjs
+
       - name: Compile MDX files (catch JSX errors)
         working-directory: apps/longterm
         run: |

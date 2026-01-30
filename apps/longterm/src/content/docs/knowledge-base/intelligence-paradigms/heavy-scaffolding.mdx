@@ -191,12 +191,12 @@ Empirical benchmarks provide quantitative evidence of agentic system capabilitie
 
 | Benchmark | Task Type | Best Agent Performance | Human Baseline | Key Finding |
 |-----------|-----------|----------------------|----------------|-------------|
-| **[SWE-bench Verified](https://www.swebench.com/)** | Software engineering | 77.2% ([Claude Sonnet 4.5](https://www.anthropic.com/news/claude-sonnet-4-5)); 80.9% (Opus 4.5) | ~90% (estimated) | 5.5x improvement from 13.86% (Devin, Mar 2024) to 77.2% (Sep 2025) |
+| **[SWE-bench Verified](https://www.swebench.com/)** | Software engineering | 77.2% ([Claude Sonnet 4.5](https://www.anthropic.com/news/claude-sonnet-4-5)); 80.9% (Opus 4.5) | ≈90% (estimated) | 5.5x improvement from 13.86% (Devin, Mar 2024) to 77.2% (Sep 2025) |
 | **[SWE-bench Pro](https://www.swebench.com/)** | Complex software tasks | 23.3% (GPT-5/Claude Opus 4.1) | Not measured | Significant drop from Verified; highlights reliability gap |
 | **[WebArena](https://webarena.dev/)** | Web navigation | 61.7% ([IBM CUGA](https://research.ibm.com/blog/cuga-agent-framework), Feb 2025) | 78.24% | 4.3x improvement from 14.41% baseline (2023); [Zhou et al. 2023](https://arxiv.org/abs/2307.13854) |
 | **WebChoreArena** | Tedious web tasks | 37.8% (Gemini 2.5 Pro) | Not measured | Memory and calculation tasks remain challenging |
-| **[ALFWorld](https://alfworld.github.io/)** | Embodied tasks | 48.5% (GPT-4 AutoGPT) | ~95% | Surpassed imitation learning baselines; [Liu et al. 2023](https://arxiv.org/abs/2306.02224) |
-| **[HotPotQA](https://hotpotqa.github.io/)** | Multi-hop QA | 27.4% (ReAct) | ~60% | ReAct trails CoT slightly but gains interpretability; [Yao et al. 2022](https://arxiv.org/abs/2210.03629) |
+| **[ALFWorld](https://alfworld.github.io/)** | Embodied tasks | 48.5% (GPT-4 AutoGPT) | ≈95% | Surpassed imitation learning baselines; [Liu et al. 2023](https://arxiv.org/abs/2306.02224) |
+| **[HotPotQA](https://hotpotqa.github.io/)** | Multi-hop QA | 27.4% (ReAct) | ≈60% | ReAct trails CoT slightly but gains interpretability; [Yao et al. 2022](https://arxiv.org/abs/2210.03629) |
 | **[RE-Bench](https://metr.org/)** | Complex tasks (2hr) | 4x human score | Baseline | At 32 hours, humans outperform AI 2:1; time-horizon dependent |
 | **[AppWorld](https://arxiv.org/abs/2403.19953)** | API orchestration | 48.2% (IBM CUGA) | Not measured | 87.5% on Level 1 tasks; complex multi-API coordination |
 
@@ -207,9 +207,9 @@ The trajectory of agentic systems shows rapid improvement but persistent reliabi
 | Metric | 2023 | 2024 | 2025 | Trend |
 |--------|------|------|------|-------|
 | SWE-bench (best agent) | 13.86% (Devin) | 49% (Claude 3.5 Sonnet) | 77.2% (Claude Sonnet 4.5) | +463% over 2 years |
-| WebArena success rate | 14.41% | ~45% | 61.7% | +328% over 2 years |
+| WebArena success rate | 14.41% | ≈45% | 61.7% | +328% over 2 years |
 | Multi-agent task completion | 35-40% | 45-55% | 55-65% | Steady improvement |
-| Error propagation rate | High (unmeasured) | ~60% cascade failures | ~45% with mitigations | Improving with research |
+| Error propagation rate | High (unmeasured) | ≈60% cascade failures | ≈45% with mitigations | Improving with research |
 
 ## Research Landscape
 
@@ -302,7 +302,7 @@ Understanding the economics of agentic systems is critical for both deployment d
 | Claude Sonnet 4.5 | \$3/M tokens | \$15/M tokens | 200K tokens | \$0.50-5.00 per SWE-bench task |
 | GPT-4o | \$2.50/M tokens | \$10/M tokens | 128K tokens | \$0.30-3.00 per task |
 | Claude Opus 4.5 | \$15/M tokens | \$75/M tokens | 200K tokens | \$2.00-20.00 per complex task |
-| Open-source (Llama 3.1 70B) | ~\$0.50/M tokens | ~\$0.75/M tokens | 128K tokens | \$0.10-1.00 per task |
+| Open-source (Llama 3.1 70B) | ≈\$0.50/M tokens | ≈\$0.75/M tokens | 128K tokens | \$0.10-1.00 per task |
 
 ### Cost-Benefit Analysis
 

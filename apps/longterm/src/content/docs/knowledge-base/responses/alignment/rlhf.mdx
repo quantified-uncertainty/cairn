@@ -47,7 +47,7 @@ However, these techniques face fundamental challenges as AI systems approach and
 | **Neglectedness** | Very Low | Primary focus at OpenAI, Anthropic, Google DeepMind, Meta; [200+ research papers](https://arxiv.org/abs/2312.14925) on RLHF since 2022 |
 | **Risk Reduction** | Moderate (20-40%) | GPT-4 [82% less likely](https://cdn.openai.com/papers/gpt-4.pdf) to produce disallowed content; reward hacking and sycophancy remain [unsolved](https://rlhfbook.com/c/17-over-optimization) |
 | **Timeline Relevance** | Now through 2030+ | Core technique for ChatGPT (200M+ weekly users), Claude, Gemini, Llama; DPO variants [rapidly expanding](https://arxiv.org/abs/2410.15595) |
-| **If Alignment Hard** | Insufficient alone | Cannot detect deceptive alignment; addresses outputs not internals; inter-annotator agreement only [~75%](https://arxiv.org/abs/2203.02155) |
+| **If Alignment Hard** | Insufficient alone | Cannot detect deceptive alignment; addresses outputs not internals; inter-annotator agreement only [≈75%](https://arxiv.org/abs/2203.02155) |
 | **If Alignment Easy** | Potentially sufficient | Iterative improvement + scalable oversight (debate, recursive reward modeling) may extend to superhuman systems |
 | **Compute Efficiency** | High | DPO eliminates reward model training; RLTHF achieves full alignment with [6-7% of human annotation effort](https://arxiv.org/abs/2504.12501) |
 
@@ -87,8 +87,8 @@ flowchart TD
 
 | Dataset | Size | Purpose | Source |
 |---------|------|---------|--------|
-| SFT Dataset | ~13,000 prompts | Human demonstrations | OpenAI InstructGPT |
-| Reward Model Dataset | ~33,000 prompts | Preference rankings | OpenAI InstructGPT |
+| SFT Dataset | ≈13,000 prompts | Human demonstrations | OpenAI InstructGPT |
+| Reward Model Dataset | ≈33,000 prompts | Preference rankings | OpenAI InstructGPT |
 | PPO Dataset | 31,000+ prompts | RL fine-tuning | OpenAI InstructGPT |
 | HH-RLHF | 170,000+ comparisons | Helpfulness & harmlessness | Anthropic |
 
@@ -180,7 +180,7 @@ Despite their success, RLHF and CAI face fundamental limitations that may preven
 | **Scalable oversight** | Critical | Debate, recursive reward modeling | No proven solution beyond human-level |
 | **Reward hacking** | High | Ensemble reward models, KL penalty | Fundamental proxy problem persists |
 | **Sycophancy** | Moderate-High | Constitutional principles, targeted SFT | [Worsens with model size](https://arxiv.org/abs/2310.08164) |
-| **Inter-annotator disagreement** | Moderate | Larger annotator pools, aggregation | ~25% disagreement rate unavoidable |
+| **Inter-annotator disagreement** | Moderate | Larger annotator pools, aggregation | ≈25% disagreement rate unavoidable |
 | **Deceptive alignment** | Unknown | None effective | Cannot distinguish genuine vs strategic compliance |
 | **Distribution shift** | Moderate | Iterative online RLHF | Deployment differs from training |
 

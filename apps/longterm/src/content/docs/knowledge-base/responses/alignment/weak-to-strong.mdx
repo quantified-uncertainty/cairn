@@ -41,7 +41,7 @@ The fundamental uncertainty is whether these early results transfer to the most 
 | **Scalability** | Core research question | PGR increases with both weak supervisor size and strong student size; largest students achieve PGR above 50% ([ICML 2024](https://proceedings.mlr.press/v235/burns24b.html)) |
 | **Current Maturity** | Proof-of-concept stage | Published at ICML 2024; debate extension shows promise ([Lang et al., 2025](https://arxiv.org/abs/2501.13124)); no production deployment |
 | **Time Horizon** | 3-7 years to deployment | Needs methods that work consistently across settings; reward modeling remains challenging (20-40% PGR) |
-| **Key Proponents** | OpenAI Superalignment (~30 researchers), Anthropic | [OpenAI blog](https://openai.com/index/weak-to-strong-generalization/), [Anthropic 2025 directions](https://alignment.anthropic.com/2025/recommended-directions/) |
+| **Key Proponents** | OpenAI Superalignment (≈30 researchers), Anthropic | [OpenAI blog](https://openai.com/index/weak-to-strong-generalization/), [Anthropic 2025 directions](https://alignment.anthropic.com/2025/recommended-directions/) |
 | **Investment Level** | \$10-15M/year dedicated | OpenAI: \$10M grants program + \$5M from Eric Schmidt; \$150K/year fellowships for grad students ([Fast Grants](https://openai.com/index/superalignment-fast-grants/)) |
 | **Critical Limitation** | Deception untested | No experiments yet with strategically deceptive models; current tests use non-adversarial strong models |
 
@@ -78,7 +78,7 @@ The core experimental setup trains a strong pretrained model using labels genera
 | **Capability Uplift** | Moderate | Better use of limited supervision; methods transferable to capability research | Secondary benefit; dual-use concern |
 | **Net World Safety** | Likely positive | Safety-motivated research; no clear capability acceleration | [OpenAI Superalignment team](https://openai.com/index/weak-to-strong-generalization/) |
 | **Scalability** | Core research question | PGR increases with model size; largest students achieve greater than 50% PGR | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
-| **Research Investment** | \$10-15M/year, ~30-50 FTE | OpenAI: ~30 researchers + \$10M grants; Anthropic: scalable oversight priority | [Fast Grants](https://openai.com/index/superalignment-fast-grants/), [Anthropic 2025](https://alignment.anthropic.com/2025/recommended-directions/) |
+| **Research Investment** | \$10-15M/year, ≈30-50 FTE | OpenAI: ≈30 researchers + \$10M grants; Anthropic: scalable oversight priority | [Fast Grants](https://openai.com/index/superalignment-fast-grants/), [Anthropic 2025](https://alignment.anthropic.com/2025/recommended-directions/) |
 
 ### The Core Experiment
 
@@ -115,7 +115,7 @@ The [Burns et al. (2024)](https://cdn.openai.com/papers/weak-to-strong-generaliz
 
 | Task Type | PGR (Naive) | PGR (w/ Confidence Loss) | Notes | Source |
 |-----------|-------------|--------------------------|-------|--------|
-| **NLP Benchmarks** | 30-50% | ~80% | GPT-2 → GPT-4 achieves near GPT-3.5 performance | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
+| **NLP Benchmarks** | 30-50% | ≈80% | GPT-2 → GPT-4 achieves near GPT-3.5 performance | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 | **Reward Modeling** | 20-40% | 30-50% | Particularly poor for ChatGPT RM; may indicate RLHF scaling limits | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 | **Chess (Elo)** | Variable | — | Depends on capability gap size between weak/strong | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 
@@ -133,7 +133,7 @@ The [Burns et al. (2024)](https://cdn.openai.com/papers/weak-to-strong-generaliz
 
 | Technique | Effect on PGR | Mechanism | Source |
 |-----------|--------------|-----------|--------|
-| **Auxiliary Confidence Loss** | 30-50% → ~80% on NLP | Encourages strong model to have confident predictions | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
+| **Auxiliary Confidence Loss** | 30-50% → ≈80% on NLP | Encourages strong model to have confident predictions | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 | **Bootstrapping** | Moderate improvement | Use intermediate models to improve weak labels iteratively | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 | **Unsupervised Finetuning** | Improves representations | Better model representations with unsupervised finetuning before weak supervision | [Burns et al.](https://cdn.openai.com/papers/weak-to-strong-generalization.pdf) |
 | **Debate-Assisted Training** | Statistically significant gains | Ensemble of weak models exploits debate arguments for robust supervision | [Lang et al. (AAAI 2025)](https://arxiv.org/abs/2501.13124) |
@@ -144,7 +144,7 @@ The [Burns et al. (2024)](https://cdn.openai.com/papers/weak-to-strong-generaliz
 | Factor | Quantified Evidence | Significance |
 |--------|---------------------|--------------|
 | **Generalization Exists** | PGR consistently above 20%, often above 50% for largest students | Foundation for further research; not mere imitation |
-| **Techniques Help** | Confidence loss improves PGR from 30-50% → ~80% on NLP tasks | Room for methodological progress |
+| **Techniques Help** | Confidence loss improves PGR from 30-50% → ≈80% on NLP tasks | Room for methodological progress |
 | **Scaling Trend** | PGR increases with both weak supervisor size AND strong student size | May continue to improve with scale |
 | **Inductive Bias** | Strong models often generalize to correct answers on hard problems where weak model fails | Built-in tendency toward truth |
 | **Open Science** | [Open-source code released](https://openai.com/index/weak-to-strong-generalization/); [EleutherAI replication](https://blog.eleuther.ai/weak-to-strong/) | Enables independent verification |
@@ -217,7 +217,7 @@ If it doesn't work:
 | Metric | Value | Notes |
 |--------|-------|-------|
 | **Annual Investment** | \$10-15M/year dedicated | OpenAI: \$10M grants + internal team; Anthropic: part of scalable oversight budget |
-| **OpenAI Resources** | ~30 researchers + \$10M grants + \$5M (Schmidt) | [Superalignment team](https://openai.com/index/weak-to-strong-generalization/), [Fast Grants](https://openai.com/index/superalignment-fast-grants/) |
+| **OpenAI Resources** | ≈30 researchers + \$10M grants + \$5M (Schmidt) | [Superalignment team](https://openai.com/index/weak-to-strong-generalization/), [Fast Grants](https://openai.com/index/superalignment-fast-grants/) |
 | **Fellowship Funding** | \$150K/year per grad student | \$75K stipend + \$75K compute/research ([Fast Grants](https://openai.com/index/superalignment-fast-grants/)) |
 | **Adoption Level** | Experimental | Published at [ICML 2024](https://proceedings.mlr.press/v235/burns24b.html); no production deployment |
 | **Primary Researchers** | OpenAI Superalignment, Anthropic, EleutherAI | [EleutherAI replication](https://blog.eleuther.ai/weak-to-strong/) |

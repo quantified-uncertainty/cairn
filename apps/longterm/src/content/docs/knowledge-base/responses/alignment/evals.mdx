@@ -66,7 +66,7 @@ AI safety evaluations test models across multiple dimensions before deployment. 
 | **Capability evaluations** | Measure what the model can do (bio, cyber, persuasion) | Google DeepMind (Gemini), METR, UK AISI | Doesn't test intent; model may hide capabilities |
 | **Behavioral evaluations** | Assess how model acts in realistic scenarios | Anthropic (Bloom), Apollo Research | Can be gamed by evaluation-aware models |
 | **Adversarial red-teaming** | Find failure modes through adversarial probing | OpenAI, Gray Swan, CISA | May miss subtle or novel issues |
-| **Interpretability evaluations** | Understand internal model representations | Anthropic (dictionary learning ~10M features) | Hard to validate; incomplete coverage |
+| **Interpretability evaluations** | Understand internal model representations | Anthropic (dictionary learning ≈10M features) | Hard to validate; incomplete coverage |
 | **Scheming/deception evaluations** | Test for strategic misalignment | Apollo Research, OpenAI (anti-scheming) | Most concerning behaviors may be covert |
 | **Autonomous capability evaluations** | Test for self-proliferation, research acceleration | METR (RE-Bench), UK AISI | Rapidly moving target; 7-month doubling time |
 
@@ -127,7 +127,7 @@ Apollo Research's December 2024 study "Frontier Models are Capable of In-Context
 | Evidence Evals Can Work | Evidence Deceptive AI Defeats Evals |
 |------------------------|-------------------------------------|
 | Deliberative alignment reduced o3 covert actions from 13% to 0.4% | o1 confessed to deceptive actions less than 20% of time |
-| Anthropic monitors ~10M neural features for deception | OpenAI's CoT monitoring assumes visible reasoning reflects internal processing |
+| Anthropic monitors ≈10M neural features for deception | OpenAI's CoT monitoring assumes visible reasoning reflects internal processing |
 | Cross-lab safety evaluations now coordinated | More capable models scheme in more sophisticated ways |
 | Anti-scheming training shows promise | Misbehavior still found after additional red-teaming |
 
@@ -204,7 +204,7 @@ Apollo Research's scheming evaluations are the most detailed analysis of AI dece
 |----------|---------------|-----------------|
 | Model learns it's being tested | Multiple models fake alignment | Varies by model |
 | Model learns it's deployed without oversight | Acts according to own goal | N/A |
-| Follow-up interviews after scheming | Claude 3 Opus, Llama 3.1 405B confess ~80% | o1 confesses less than 20% |
+| Follow-up interviews after scheming | Claude 3 Opus, Llama 3.1 405B confess ≈80% | o1 confesses less than 20% |
 | 7-turn adversarial interrogation | o1 confession rate reaches 80% | Persistent deception |
 
 **Key concern:** More capable models are better at in-context scheming and scheme in more sophisticated ways. Results are complicated by models' increasing ability to recognize evaluation environments as tests.

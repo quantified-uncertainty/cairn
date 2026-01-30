@@ -28,7 +28,7 @@ import {Mermaid, EntityLink, DataExternalLinks} from '../../../../components/wik
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
 | **Dominance** | Near-total (95%+ of frontier models) | GPT-4, Claude 3, Gemini, Llama 3 all use transformer base architecture |
-| **Scalability** | Proven to 1.8T+ parameters | GPT-4 reportedly ~1.8T params ([SemiAnalysis 2023](https://semianalysis.com/2023/07/10/gpt-4-architecture-infrastructure/)); Llama 3 405B trained on 3.8x10^25 FLOPs |
+| **Scalability** | Proven to 1.8T+ parameters | GPT-4 reportedly ≈1.8T params ([SemiAnalysis 2023](https://semianalysis.com/2023/07/10/gpt-4-architecture-infrastructure/)); Llama 3 405B trained on 3.8x10^25 FLOPs |
 | **Interpretability** | Primitive despite open weights | Anthropic 2024: found millions of features in Claude 3 Sonnet, still cannot predict behavior |
 | **Training Efficiency** | Well-understood pipeline | RLHF (InstructGPT 2022): 1.3B model preferred over 175B GPT-3 with alignment |
 | **Safety Tooling** | Most developed but inadequate | Constitutional AI, RLHF, red-teaming exist; deception detection remains unsolved |
@@ -102,9 +102,9 @@ flowchart TD
 
 | Model | Parameters | Architecture | Context | Training Data | Estimated Cost | Source |
 |-------|------------|--------------|---------|---------------|----------------|--------|
-| **GPT-4** | ~1.8T (8x220B MoE) | MoE, 16 experts | 128K tokens | ~13T tokens | greater than \$100M (Altman) | [SemiAnalysis](https://newsletter.semianalysis.com/p/gpt-4-architecture-infrastructure) |
+| **GPT-4** | ≈1.8T (8x220B MoE) | MoE, 16 experts | 128K tokens | ≈13T tokens | greater than \$100M (Altman) | [SemiAnalysis](https://newsletter.semianalysis.com/p/gpt-4-architecture-infrastructure) |
 | **Claude 3 Opus** | Undisclosed | Dense transformer | 200K tokens | Undisclosed | Undisclosed | [Anthropic Model Card](https://www-cdn.anthropic.com/de8ba9b01c9ab7cbabf5c33b80b7bbc618857627/Model_Card_Claude_3.pdf) |
-| **Llama 3.1 405B** | 405B | Dense, 126 layers, 16,384 dim | 128K tokens | 15.6T tokens | 39.3M H100 GPU-hours (~72 days on 16K GPUs) | [Meta Technical Report](https://ai.meta.com/blog/meta-llama-3-1/) |
+| **Llama 3.1 405B** | 405B | Dense, 126 layers, 16,384 dim | 128K tokens | 15.6T tokens | 39.3M H100 GPU-hours (≈72 days on 16K GPUs) | [Meta Technical Report](https://ai.meta.com/blog/meta-llama-3-1/) |
 | **Gemini 1.5 Pro** | Undisclosed | MoE | 1M+ tokens | Undisclosed | Undisclosed | [Google DeepMind](https://arxiv.org/abs/2403.05530) |
 
 **Key observations:**
@@ -167,7 +167,7 @@ Anthropic's interpretability research represents the frontier of the field. Thei
 
 | Approach | Effectiveness | Key Evidence | Limitation |
 |----------|---------------|--------------|------------|
-| **RLHF** | MEDIUM-HIGH | [InstructGPT](https://arxiv.org/abs/2203.02155): 1.3B model preferred over 175B GPT-3 (100x smaller); users preferred outputs 85 ± 3% of time vs base GPT-3; 71% vs few-shot GPT-3; 2x truthfulness on TruthfulQA | Trains for stated preferences, not true values; training cost ~60 petaflops/s-days vs 3,640 for GPT-3 pretraining |
+| **RLHF** | MEDIUM-HIGH | [InstructGPT](https://arxiv.org/abs/2203.02155): 1.3B model preferred over 175B GPT-3 (100x smaller); users preferred outputs 85 ± 3% of time vs base GPT-3; 71% vs few-shot GPT-3; 2x truthfulness on TruthfulQA | Trains for stated preferences, not true values; training cost ≈60 petaflops/s-days vs 3,640 for GPT-3 pretraining |
 | **Constitutional AI** | MEDIUM | Reduces toxic outputs without human feedback on each example | Still relies on model correctly interpreting abstract principles |
 | **Red teaming** | LOW-MEDIUM | Finds jailbreaks, harmful outputs; OpenAI employs 50+ red teamers | Only finds known failure modes; cannot discover unknown unknowns |
 | **Capability evals** | MEDIUM | GPT-4 tech report predicted loss accurately | Can measure but not prevent dangerous capabilities from emerging |
@@ -190,10 +190,10 @@ Anthropic's interpretability research represents the frontier of the field. Thei
 | Lab | Models | Estimated Frontier Spend | Focus | Key Technical Contributions |
 |-----|--------|-------------------------|-------|----------------------------|
 | **OpenAI** | GPT-4, o1, o3 | greater than \$1B annually | Capabilities + commercial deployment | Scaling laws, RLHF, reasoning models |
-| **Anthropic** | Claude 3/4 series | ~\$500M-1B annually | Safety-focused development | Constitutional AI, interpretability research, RSP |
+| **Anthropic** | Claude 3/4 series | ≈\$500M-1B annually | Safety-focused development | Constitutional AI, interpretability research, RSP |
 | **Google DeepMind** | Gemini 1.5/2.0 | greater than \$1B annually | Multimodal, long context | MoE efficiency, 1M+ token context |
-| **Meta** | Llama 3/4 series | ~\$500M annually | Open weights, research ecosystem | Largest open model (405B), full technical reports |
-| **xAI** | Grok | ~\$500M annually | Rapid scaling | Trained Grok on 100K H100s |
+| **Meta** | Llama 3/4 series | ≈\$500M annually | Open weights, research ecosystem | Largest open model (405B), full technical reports |
+| **xAI** | Grok | ≈\$500M annually | Rapid scaling | Trained Grok on 100K H100s |
 
 ## Training Cost Evolution
 
@@ -201,10 +201,10 @@ Training costs for frontier models have grown approximately [2.5x per year since
 
 | Model | Year | Est. Training Cost | Cost Breakdown | Source |
 |-------|------|-------------------|----------------|--------|
-| **GPT-3** | 2020 | ~\$1.6M | Compute-dominated | Industry estimates |
+| **GPT-3** | 2020 | ≈\$1.6M | Compute-dominated | Industry estimates |
 | **GPT-4** | 2023 | \$100M-540M | Hardware: \$10M amortized; staff: tens of millions | [Sam Altman public statements](https://fortune.com/2024/04/04/ai-training-costs-how-much-is-too-much-openai-gpt-anthropic-microsoft/) |
-| **Llama 3.1 405B** | 2024 | ~\$100M | 39.3M H100 GPU-hours at 700W TDP | [Meta Technical Report](https://ai.meta.com/blog/meta-llama-3-1/) |
-| **2024 frontier models** | 2024 | greater than \$1B | Research + inference: ~\$1B total for OpenAI | [Epoch AI analysis](https://epoch.ai/data-insights/openai-compute-spend) |
+| **Llama 3.1 405B** | 2024 | ≈\$100M | 39.3M H100 GPU-hours at 700W TDP | [Meta Technical Report](https://ai.meta.com/blog/meta-llama-3-1/) |
+| **2024 frontier models** | 2024 | greater than \$1B | Research + inference: ≈\$1B total for OpenAI | [Epoch AI analysis](https://epoch.ai/data-insights/openai-compute-spend) |
 | **2025-2027 projected** | 2025-27 | \$1B-10B | Dario Amodei prediction | [Entrepreneur](https://www.entrepreneur.com/business-news/anthropic-ceo-ai-will-cost-10-billion-to-train-by-2025/476750) |
 
 **Cost breakdown for frontier models** ([Epoch AI 2024](https://arxiv.org/abs/2405.21015)):
@@ -242,7 +242,7 @@ Key trends with quantified progress:
 |-------|------------|------------|---------------|------------|
 | **Max parameters** | 175B (GPT-3) | 405B dense / 1.8T MoE | 2.3x dense, 10x MoE | Approaching 10T parameters by 2027 |
 | **Context window** | 4K tokens | 1M+ tokens (Gemini) | 250x increase | Memory-augmented systems for unlimited context |
-| **Training compute** | ~\$10M | \$100M-500M per run | 10-50x increase | \$1B+ training runs by 2026 |
+| **Training compute** | ≈\$10M | \$100M-500M per run | 10-50x increase | \$1B+ training runs by 2026 |
 | **Inference efficiency** | 10-50 tokens/sec | 100-500 tokens/sec | 5-10x speedup | Real-time streaming ubiquitous |
 | **Modalities** | Text only (mostly) | Text, vision, audio, video, code | Full multimodal | Embodied/robotic integration |
 
@@ -343,7 +343,7 @@ The core challenge: RLHF and Constitutional AI train models to produce outputs h
 - SemiAnalysis (2023). ["GPT-4 Architecture, Infrastructure, Training Dataset, Costs, Vision, MoE"](https://semianalysis.com/2023/07/10/gpt-4-architecture-infrastructure/). (Leaked architecture details)
 
 ### Cost and Investment Analysis
-- Epoch AI (2024). ["Most of OpenAI's 2024 compute went to experiments"](https://epoch.ai/data-insights/openai-compute-spend). (~\$1B R&D, ~\$1B inference)
+- Epoch AI (2024). ["Most of OpenAI's 2024 compute went to experiments"](https://epoch.ai/data-insights/openai-compute-spend). (≈\$1B R&D, ≈\$1B inference)
 - Fortune (2024). ["Why the cost of AI could soon become too much to bear"](https://fortune.com/2024/04/04/ai-training-costs-how-much-is-too-much-openai-gpt-anthropic-microsoft/).
 - Entrepreneur (2024). ["Anthropic CEO: AI Will Cost \$10 Billion to Train By 2025"](https://www.entrepreneur.com/business-news/anthropic-ceo-ai-will-cost-10-billion-to-train-by-2025/476750).
 

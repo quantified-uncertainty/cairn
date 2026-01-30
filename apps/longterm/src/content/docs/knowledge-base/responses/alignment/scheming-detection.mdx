@@ -128,9 +128,9 @@ flowchart TD
         T3["Adversarial Training"]
     end
 
-    BEHAVIORAL -->|"Catches ~1-13%"| D[Detected Scheming]
+    BEHAVIORAL -->|"Catches ≈1-13%"| D[Detected Scheming]
     INTERNAL -->|"AUROC above 99%"| D
-    TRAINING -->|"Reduces ~97%"| P[Prevented Scheming]
+    TRAINING -->|"Reduces ≈97%"| P[Prevented Scheming]
 
     D --> R[Response: Investigation / Rollback]
     P --> S[Safer Deployment]

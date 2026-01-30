@@ -29,7 +29,7 @@ import {Backlinks, R, Mermaid, EntityLink, DataExternalLinks} from '../../../../
 |-----------|------------|----------|
 | **Capability Level** | Frontier systems achieve expert-level performance | o3 scores 91.6% on AIME 2024 vs. 9.3% for GPT-4o; 87.7% on GPQA Diamond ([OpenAI](https://openai.com/index/introducing-o3-and-o4-mini/)) |
 | **Training Economics** | Costs growing 2.4x/year; now \$100M-500M+ per frontier model | GPT-4: \$78-100M; Gemini Ultra: \$191M; projected \$1B+ by 2027 ([Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models)) |
-| **Efficiency Disruption** | DeepSeek R1 achieved near-parity at ~\$6M total cost | 671B MoE model with 37B active parameters; 89x cheaper than o1 ([Epoch AI](https://epoch.ai/gradient-updates/what-went-into-training-deepseek-r1)) |
+| **Efficiency Disruption** | DeepSeek R1 achieved near-parity at ≈\$6M total cost | 671B MoE model with 37B active parameters; 89x cheaper than o1 ([Epoch AI](https://epoch.ai/gradient-updates/what-went-into-training-deepseek-r1)) |
 | **Deployment Scale** | 800-900M weekly ChatGPT users as of late 2025 | Doubled from 400M in Feb 2025; \$10B ARR by June 2025 ([OpenAI](https://openai.com/index/how-people-are-using-chatgpt/)) |
 | **Scheming Capability** | Frontier models demonstrate in-context deception | o1 maintains deception in greater than 85% of follow-up queries; multiple models fake alignment ([Apollo Research](https://www.apolloresearch.ai/research/frontier-models-are-capable-of-incontext-scheming/)) |
 | **Open-Closed Gap** | Narrowed from 17.5pp to 0.3pp on MMLU (2023-2024) | Open-weight models approaching frontier capabilities within 6-12 month lag ([Stanford HAI 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report)) |
@@ -59,10 +59,10 @@ LLMs pose significant safety challenges due to their demonstrated capacity for d
 
 | Model | Parameters | Context Length | Training Cost | Key Capabilities | Organization |
 |-------|------------|----------------|---------------|------------------|--------------|
-| GPT-4o | ~1.8T (estimated) | 128K tokens | ~\$18-100M | Multimodal, coding, reasoning | <R id="04d39e8bd5d50dd5">OpenAI</R> |
-| Claude 3.5 Sonnet | ~200B (estimated) | 200K tokens | Tens of millions | Long context, safety, coding (93.7% HumanEval) | <R id="afe2508ac4caf5ee">Anthropic</R> |
-| Gemini 1.5 Pro | ~1.56T (estimated) | 1M+ tokens | ~\$191M (Ultra) | Multimodal, scientific reasoning | <R id="0ef9b0fe0f3c92b4">DeepMind</R> |
-| DeepSeek R1 | 671B MoE (37B active) | 128K tokens | ~\$1.6M | Reasoning, open weights (MIT license) | DeepSeek |
+| GPT-4o | ≈1.8T (estimated) | 128K tokens | ≈\$18-100M | Multimodal, coding, reasoning | <R id="04d39e8bd5d50dd5">OpenAI</R> |
+| Claude 3.5 Sonnet | ≈200B (estimated) | 200K tokens | Tens of millions | Long context, safety, coding (93.7% HumanEval) | <R id="afe2508ac4caf5ee">Anthropic</R> |
+| Gemini 1.5 Pro | ≈1.56T (estimated) | 1M+ tokens | ≈\$191M (Ultra) | Multimodal, scientific reasoning | <R id="0ef9b0fe0f3c92b4">DeepMind</R> |
+| DeepSeek R1 | 671B MoE (37B active) | 128K tokens | ≈\$1.6M | Reasoning, open weights (MIT license) | DeepSeek |
 | Llama 3.1 | 405B | 128K tokens | Not disclosed | Open weights, tool use | Meta |
 | OpenAI o1 | Not disclosed | 128K tokens | Not disclosed | Extended reasoning, 93% AIME | OpenAI |
 
@@ -123,7 +123,7 @@ flowchart TD
 | Hallucination | False information presented confidently | Constitutional AI, fact-checking, retrieval augmentation | 30-40% reduction; still present in all models | Ongoing |
 | Jailbreaking | Bypassing safety guardrails | Adversarial training, red teaming, input filtering | Arms race continues; new attacks emerge weekly | Indefinite |
 | Sycophancy | Agreeing with user regardless of truth | Truthfulness training, debate | Limited success; deeply embedded in RLHF | 2-4 years |
-| In-context scheming | Strategic deception when goals conflict | Deliberative alignment, monitoring | ~30x reduction with o3/o4-mini ([OpenAI](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/)) | Active research |
+| In-context scheming | Strategic deception when goals conflict | Deliberative alignment, monitoring | ≈30x reduction with o3/o4-mini ([OpenAI](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/)) | Active research |
 | Alignment faking | Complying when monitored, defecting otherwise | Chain-of-thought monitoring | First empirical evidence in 2024; mitigations early | 1-3 years |
 
 ### Alignment Methods
@@ -166,13 +166,13 @@ The LLM landscape is rapidly evolving with intense competition between major lab
 
 | Benchmark | GPT-3 (2020) | GPT-4 (2023) | Claude 3.5 Sonnet (2024) | o1 (2024) | o3 (2025) | Notes |
 |-----------|--------------|--------------|--------------------------|-----------|-----------|-------|
-| MMLU (knowledge) | 43.9% | 86.4% | 88.7% | ~90% | ~92% | Now approaching saturation |
+| MMLU (knowledge) | 43.9% | 86.4% | 88.7% | ≈90% | ≈92% | Now approaching saturation |
 | HumanEval (coding) | 0% | 67% | 93.7% | 92%+ | 95%+ | Near-ceiling performance |
-| MATH (problem solving) | 8.8% | 42.5% | 71.1% | ~85% | ~92% | Extended reasoning helps |
-| AIME (competition math) | 0% | 12% | ~30% | 74% | 91.6% | [o3's breakthrough](https://openai.com/index/introducing-o3-and-o4-mini/) |
-| GPQA Diamond (PhD science) | n/a | ~50% | 67.2% | 78.1% | 87.7% | Exceeds human PhD accuracy |
-| SWE-bench (software eng.) | 0% | ~15% | 49% | 48.9% | 71.7% | Real-world coding tasks |
-| ARC-AGI | 0% | ~5% | ~15% | ~25% | 75.7-87.5% | [Novel task adaptation](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
+| MATH (problem solving) | 8.8% | 42.5% | 71.1% | ≈85% | ≈92% | Extended reasoning helps |
+| AIME (competition math) | 0% | 12% | ≈30% | 74% | 91.6% | [o3's breakthrough](https://openai.com/index/introducing-o3-and-o4-mini/) |
+| GPQA Diamond (PhD science) | n/a | ≈50% | 67.2% | 78.1% | 87.7% | Exceeds human PhD accuracy |
+| SWE-bench (software eng.) | 0% | ≈15% | 49% | 48.9% | 71.7% | Real-world coding tasks |
+| ARC-AGI | 0% | ≈5% | ≈15% | ≈25% | 75.7-87.5% | [Novel task adaptation](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
 
 The [Stanford HAI AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report) documents dramatic capability improvements: o3 scores 91.6% on AIME 2024 (vs. o1's 74.3%), and the ARC-AGI benchmark—which took 4 years to go from 0% (GPT-3) to 5% (GPT-4o)—jumped to 75.7-87.5% with o3.
 
@@ -184,11 +184,11 @@ The economics of LLM development have become a critical factor shaping the compe
 
 | Model | Training Cost | Training Compute | Release | Key Innovation |
 |-------|---------------|------------------|---------|----------------|
-| GPT-3 | ~\$1.6M | 3.1e23 FLOP | 2020 | Scale demonstration |
-| GPT-4 | \$18-100M | ~2e25 FLOP | 2023 | Multimodal, reasoning |
-| Gemini Ultra | \$191M | ~5e25 FLOP | 2023 | 1M token context |
-| DeepSeek R1 | \$1.6M | ~2e24 FLOP | 2025 | MoE efficiency |
-| Projected 2027 | \$1B+ | ~2e27 FLOP | - | Unknown |
+| GPT-3 | ≈\$1.6M | 3.1e23 FLOP | 2020 | Scale demonstration |
+| GPT-4 | \$18-100M | ≈2e25 FLOP | 2023 | Multimodal, reasoning |
+| Gemini Ultra | \$191M | ≈5e25 FLOP | 2023 | 1M token context |
+| DeepSeek R1 | \$1.6M | ≈2e24 FLOP | 2025 | MoE efficiency |
+| Projected 2027 | \$1B+ | ≈2e27 FLOP | - | Unknown |
 
 According to [Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models), training costs have grown at 2.4x per year since 2016 (95% CI: 2.0x to 3.1x). The largest models will likely exceed \$1 billion by 2027. However, DeepSeek R1's success at approximately 1/10th the cost of GPT-4 demonstrates that algorithmic efficiency improvements can partially offset scaling costs—though frontier labs continue to push both dimensions simultaneously.
 
@@ -199,9 +199,9 @@ Training costs also translate to significant carbon emissions, creating sustaina
 | Model | Year | Training CO2 Emissions | Equivalent |
 |-------|------|------------------------|------------|
 | AlexNet | 2012 | 0.01 tons | 1 transatlantic flight |
-| GPT-3 | 2020 | 588 tons | ~125 US households/year |
-| GPT-4 | 2023 | 5,184 tons | ~1,100 US households/year |
-| Llama 3.1 405B | 2024 | 8,930 tons | ~1,900 US households/year |
+| GPT-3 | 2020 | 588 tons | ≈125 US households/year |
+| GPT-4 | 2023 | 5,184 tons | ≈1,100 US households/year |
+| Llama 3.1 405B | 2024 | 8,930 tons | ≈1,900 US households/year |
 
 Source: [Stanford HAI AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report)
 
@@ -233,7 +233,7 @@ The relationship between compute, data, and model capability follows predictable
 
 | Scaling Law | Key Finding | Impact on Practice |
 |-------------|-------------|-------------------|
-| Chinchilla (2022) | ~20 tokens per parameter is compute-optimal | Shifted focus to data scaling |
+| Chinchilla (2022) | ≈20 tokens per parameter is compute-optimal | Shifted focus to data scaling |
 | Overtraining (2023-24) | Loss continues improving beyond Chinchilla-optimal | Enables smaller, cheaper inference models |
 | Test-time compute (2024) | Inference-time reasoning scales performance | New dimension for capability improvement |
 | Inference-adjusted (2023) | High inference demand favors smaller overtrained models | Llama 3 trained at 1,875 tokens/param |

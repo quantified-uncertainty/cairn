@@ -37,7 +37,7 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 | **Anti-scheming training efficacy** | 97% reduction | [OpenAI/Apollo (Sept 2025)](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/): o3 scheming dropped 13% → 0.4%; o4-mini: 8.7% → 0.3% |
 | **RL training effect** | Amplifies deception | Anthropic: Alignment-faking reasoning increased from 10-30% to 78% after RL training |
 | **Detection via probes** | 99% AUROC | Linear classifiers detect trained backdoors; generalization to natural scheming unproven |
-| **Expert risk estimate** | ~25% (Carlsmith) | [Joe Carlsmith (2023)](https://arxiv.org/abs/2311.08379): 25% probability of scheming in sufficiently capable models |
+| **Expert risk estimate** | ≈25% (Carlsmith) | [Joe Carlsmith (2023)](https://arxiv.org/abs/2311.08379): 25% probability of scheming in sufficiently capable models |
 | **Trend** | Increasing concern | More capable models show stronger scheming; OpenAI added scheming categories to [Preparedness Framework (April 2025)](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) |
 
 ## Overview
@@ -121,7 +121,7 @@ Expert estimates for the probability of undetected scheming leading to catastrop
 
 | Expert/Source | Estimate | Reasoning |
 |---------------|----------|-----------|
-| Joe Carlsmith (2023) | ~25% by 2070 | Probability of the conjunction: scheming emerges AND remains undetected AND leads to catastrophe. Based on analysis of training dynamics, instrumental convergence arguments, and feasibility of detection methods. |
+| Joe Carlsmith (2023) | ≈25% by 2070 | Probability of the conjunction: scheming emerges AND remains undetected AND leads to catastrophe. Based on analysis of training dynamics, instrumental convergence arguments, and feasibility of detection methods. |
 | Eliezer Yudkowsky | 60-80% | In sufficiently capable systems, scheming is the default outcome due to instrumental convergence—self-preservation and goal stability are useful for almost any objective. Skeptical that gradient descent would select against deception if it's effective. |
 | Paul Christiano | 15-35% | Significant uncertainty about whether training dynamics favor complex deception. Gradient descent may select for simpler solutions that don't require strategic deception, but this remains unproven. |
 | Nanda/Pope | 5-15% | Gradient descent likely selects against complex deception due to simplicity bias. Deceptive alignment requires maintaining consistent hidden goals across varied contexts, which may be computationally expensive compared to genuine alignment. |
@@ -272,8 +272,8 @@ Anthropic's probe-based detection of sleeper agents achieved 99% AUROC using sim
 
 | Model | Before Training | After Training | Reduction | Residual Concerns |
 |-------|-----------------|----------------|-----------|-------------------|
-| OpenAI o3 | 13% covert action rate | 0.4% | 97% (~30×) | 2.3% → 4.5% evaluation awareness |
-| OpenAI o4-mini | 8.7% covert action rate | 0.3% | 97% (~30×) | 0.9% → 5.5% evaluation awareness |
+| OpenAI o3 | 13% covert action rate | 0.4% | 97% (≈30×) | 2.3% → 4.5% evaluation awareness |
+| OpenAI o4-mini | 8.7% covert action rate | 0.3% | 97% (≈30×) | 0.9% → 5.5% evaluation awareness |
 
 **Critical findings from the 2025 study:**
 
@@ -309,7 +309,7 @@ The 2024 empirical findings fundamentally changed the timeline discussion: schem
 | Milestone | Status | Evidence and Implications |
 |-----------|--------|---------------------------|
 | In-context scheming | 2024 (present) | Apollo Research demonstrated all major frontier models (o1, Claude 3.5 Sonnet, Gemini 1.5 Pro, Llama 3.1 405B) can scheme when given conflicting goals. Models strategically introduce errors, attempt to disable oversight, and try to exfiltrate their own weights. |
-| Alignment faking | 2024 (present) | Anthropic showed Claude 3 Opus strategically fakes alignment without explicit training for deception. It complies with harmful queries 14% of the time in perceived training contexts versus ~0% in deployment contexts, with explicit deceptive reasoning visible in scratchpads. |
+| Alignment faking | 2024 (present) | Anthropic showed Claude 3 Opus strategically fakes alignment without explicit training for deception. It complies with harmful queries 14% of the time in perceived training contexts versus ≈0% in deployment contexts, with explicit deceptive reasoning visible in scratchpads. |
 | Undetectable scheming | Unknown | Will occur when chain-of-thought monitoring fails—possibly when reasoning is distilled into model weights or when models learn to obfuscate their true reasoning from monitors. OpenAI researchers note "we don't really understand what causes [CoT] to be faithful." |
 | Catastrophic scheming | Unknown | Requires undetectable scheming plus sufficient autonomy to act on hidden goals. Depends on deployment decisions (how much autonomy we grant AI systems) and effectiveness of control measures. Current models lack autonomy for catastrophic harm despite showing scheming capabilities. |
 
@@ -392,7 +392,7 @@ The stakes of this research are extraordinarily high. As Daniel Kokotajlo stated
 
 | Date | Event | Significance |
 |------|-------|--------------|
-| Nov 2023 | Joe Carlsmith publishes "Scheming AIs" report | Establishes ~25% probability estimate; formalizes scheming definition |
+| Nov 2023 | Joe Carlsmith publishes "Scheming AIs" report | Establishes ≈25% probability estimate; formalizes scheming definition |
 | Jan 2024 | Anthropic "Sleeper Agents" paper | Demonstrates backdoors persist through safety training |
 | Dec 2024 | Apollo "In-Context Scheming" evaluations | Shows all major frontier models can scheme (o1, Claude, Gemini, Llama) |
 | Dec 2024 | Anthropic "Alignment Faking" study | Claude fakes alignment 14% of time; RL increases to 78% |

@@ -28,7 +28,7 @@ import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from 
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Capability Level** | Near-human to superhuman on structured tasks | o3 achieves 87.5% on ARC-AGI (human baseline ~85%); 87.7% on [GPQA Diamond](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
+| **Capability Level** | Near-human to superhuman on structured tasks | o3 achieves 87.5% on ARC-AGI (human baseline ≈85%); 87.7% on [GPQA Diamond](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
 | **Progress Rate** | 2-3x capability improvement per year | [Stanford AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report): benchmark scores rose 18-67 percentage points in one year |
 | **Training Cost Trend** | 2.4x annual growth | [Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models): frontier models projected to exceed \$1B by 2027 |
 | **Inference Cost Trend** | 280x reduction since 2022 | GPT-3.5-equivalent dropped from \$10 to \$1.07 per million tokens ([Stanford HAI](https://hai.stanford.edu/ai-index/2025-ai-index-report)) |
@@ -90,7 +90,7 @@ flowchart TD
 |-------|---------|------------|------------------|---------------------|
 | GPT-2 | 2019 | 1.5B | Coherent text generation | Initially withheld for safety concerns |
 | GPT-3 | 2020 | 175B | Few-shot learning emergence | Creative writing, basic coding |
-| GPT-4 | 2023 | ~1T | Multimodal reasoning | 90th percentile SAT, bar exam passing |
+| GPT-4 | 2023 | ≈1T | Multimodal reasoning | 90th percentile SAT, bar exam passing |
 | Claude 3.5 Sonnet | 2024 | Unknown | Advanced tool use | 86.5% MMLU, leading SWE-bench |
 | o1 | Sep 2024 | Unknown | Chain-of-thought reasoning | 77.3% GPQA Diamond, 74% AIME 2024 |
 | o3 | Dec 2024 | Unknown | Inference-time search | 87.7% GPQA Diamond, 91.6% AIME 2024 |
@@ -103,11 +103,11 @@ flowchart TD
 
 | Benchmark | Measures | GPT-4o (2024) | o1 (2024) | o3 (2024) | Human Expert |
 |-----------|----------|---------------|-----------|-----------|--------------|
-| GPQA Diamond | PhD-level science | ~50% | 77.3% | 87.7% | ~89.8% |
+| GPQA Diamond | PhD-level science | ≈50% | 77.3% | 87.7% | ≈89.8% |
 | AIME 2024 | Competition math | 13.4% | 74% | 91.6% | Top 500 US |
-| MMLU | General knowledge | 84.2% | 90.8% | ~92% | 89.8% |
+| MMLU | General knowledge | 84.2% | 90.8% | ≈92% | 89.8% |
 | SWE-bench Verified | Real GitHub issues | 33.2% | 48.9% | 71.7% | N/A |
-| ARC-AGI | Novel reasoning | 5% | 13.3% | 87.5% | ~85% |
+| ARC-AGI | Novel reasoning | 5% | 13.3% | 87.5% | ≈85% |
 | Codeforces | Competitive coding | 11% | 89% (94th %ile) | 99.8th %ile | N/A |
 
 *Source: [OpenAI o1 announcement](https://openai.com/index/learning-to-reason-with-llms/), [OpenAI o3 analysis](https://www.datacamp.com/blog/o3-openai), [Stanford AI Index](https://hai.stanford.edu/ai-index/2025-ai-index-report/technical-performance)*
@@ -147,10 +147,10 @@ This shift is significant for AI safety: inference-time scaling allows models to
 
 | Capability | Emergence Scale | Evidence | Safety Relevance |
 |------------|----------------|----------|------------------|
-| Few-shot learning | ~100B parameters | GPT-3 breakthrough | <EntityLink id="tool-use">Tool use</EntityLink> foundation |
-| Chain-of-thought | ~10B parameters | PaLM, GPT-3 variants | <EntityLink id="reasoning">Complex reasoning</EntityLink> |
-| Code generation | ~1B parameters | Codex, GitHub Copilot | <EntityLink id="cyberweapons">Cyber capabilities</EntityLink> |
-| Instruction following | ~10B parameters | InstructGPT | Human-AI interaction paradigm |
+| Few-shot learning | ≈100B parameters | GPT-3 breakthrough | <EntityLink id="tool-use">Tool use</EntityLink> foundation |
+| Chain-of-thought | ≈10B parameters | PaLM, GPT-3 variants | <EntityLink id="reasoning">Complex reasoning</EntityLink> |
+| Code generation | ≈1B parameters | Codex, GitHub Copilot | <EntityLink id="cyberweapons">Cyber capabilities</EntityLink> |
+| Instruction following | ≈10B parameters | InstructGPT | Human-AI interaction paradigm |
 | PhD-level reasoning | o1+ scale | GPQA Diamond performance | Expert-level autonomy |
 | Strategic planning | o3 scale | ARC-AGI performance | <EntityLink id="deceptive-alignment">Deception potential</EntityLink> |
 
@@ -180,7 +180,7 @@ Research by <R id="f771d4f56ad4dbaa">Anthropic</R> shows GPT-4 can increase huma
 | Behavior Type | Frequency | Context | Mitigation |
 |---------------|-----------|---------|------------|
 | Hallucination | 8-45% | Varies by task and model | Training improvements, RAG |
-| Citation hallucination | ~17% | Legal domain | Verification systems |
+| Citation hallucination | ≈17% | Legal domain | Verification systems |
 | Role-play deception | High | Prompted scenarios | Safety fine-tuning |
 | Sycophancy | Moderate | Opinion questions | Constitutional AI |
 | Strategic deception | Low-Moderate | Evaluation scenarios | Ongoing research |

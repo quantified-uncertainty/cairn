@@ -68,10 +68,10 @@ SquiggleAI supports multiple LLM backends:
 
 | Model | Status | Output Size | Speed | Best For | Cost |
 |-------|--------|-------------|-------|----------|------|
-| **Claude Sonnet 4.5** | Primary | ~500 lines | Medium | Complex multi-variable models | $$$ |
-| **Claude Haiku 4.5** | Available | ~150 lines | Fast | Quick prototypes | $ |
-| **Grok Code Fast 1** | Available | ~200 lines | Fast | Alternative provider | $$ |
-| **Claude Sonnet 3.5** | Legacy | ~200 lines | Medium | Stable fallback | $$ |
+| **Claude Sonnet 4.5** | Primary | ≈500 lines | Medium | Complex multi-variable models | $$$ |
+| **Claude Haiku 4.5** | Available | ≈150 lines | Fast | Quick prototypes | $ |
+| **Grok Code Fast 1** | Available | ≈200 lines | Fast | Alternative provider | $$ |
+| **Claude Sonnet 3.5** | Legacy | ≈200 lines | Medium | Stable fallback | $$ |
 
 The default is Claude Sonnet 4.5, which produces the most sophisticated and detailed models but at higher API cost. Users can switch models based on their needs.
 
@@ -114,9 +114,9 @@ Generate complete uncertainty models from vague questions:
 
 | Question Type | Example | Output |
 |---------------|---------|--------|
-| **Classic Fermi** | "How many piano tuners in Chicago?" | ~100 line model with breakdown |
-| **Technology adoption** | "When will 50% of US households have solar panels?" | ~200 line S-curve model |
-| **Market sizing** | "Total addressable market for AI coding assistants?" | ~250 line market model |
+| **Classic Fermi** | "How many piano tuners in Chicago?" | ≈100 line model with breakdown |
+| **Technology adoption** | "When will 50% of US households have solar panels?" | ≈200 line S-curve model |
+| **Market sizing** | "Total addressable market for AI coding assistants?" | ≈250 line market model |
 
 ### Code Debugging
 
@@ -171,12 +171,12 @@ The system prepends each user request with:
 
 | Component | Tokens | Purpose |
 |-----------|--------|---------|
-| **Squiggle syntax guide** | ~8,000 | Core language reference |
-| **Distribution creation examples** | ~3,000 | Common patterns |
-| **Best practices** | ~2,000 | Dos and don'ts |
-| **Common pitfalls** | ~1,500 | Error prevention |
-| **Example models** | ~5,500 | Full model templates |
-| **Total cached context** | ~20,000 | Consistent knowledge base |
+| **Squiggle syntax guide** | ≈8,000 | Core language reference |
+| **Distribution creation examples** | ≈3,000 | Common patterns |
+| **Best practices** | ≈2,000 | Dos and don'ts |
+| **Common pitfalls** | ≈1,500 | Error prevention |
+| **Example models** | ≈5,500 | Full model templates |
+| **Total cached context** | ≈20,000 | Consistent knowledge base |
 
 This large cached context ensures the LLM produces idiomatic Squiggle code rather than generic probabilistic programming.
 
@@ -226,7 +226,7 @@ SquiggleAI serves as a teaching tool:
 
 | Limitation | Impact | Mitigation |
 |------------|--------|------------|
-| **Output length bounded** | Claude models limit ~500 lines | Break complex models into modules |
+| **Output length bounded** | Claude models limit ≈500 lines | Break complex models into modules |
 | **Domain knowledge required** | LLM doesn't know your specific problem | User must provide context and check outputs |
 | **Hallucination risk** | May generate plausible but wrong assumptions | Always review and validate generated models |
 | **API cost** | Sonnet 4.5 usage adds up | Use Haiku for simpler models |

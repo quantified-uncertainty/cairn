@@ -8,6 +8,7 @@
 // Content validation rules
 export { entityLinkIdsRule } from './entitylink-ids.mjs';
 export { dollarSignsRule } from './dollar-signs.mjs';
+export { tildeDollarRule } from './tilde-dollar.mjs';
 export { comparisonOperatorsRule } from './comparison-operators.mjs';
 export { estimateBoxesRule } from './estimate-boxes.mjs';
 export { placeholdersRule } from './placeholders.mjs';
@@ -26,6 +27,7 @@ export { cruftFilesRule } from './cruft-files.mjs';
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
 import { dollarSignsRule } from './dollar-signs.mjs';
+import { tildeDollarRule } from './tilde-dollar.mjs';
 import { comparisonOperatorsRule } from './comparison-operators.mjs';
 import { estimateBoxesRule } from './estimate-boxes.mjs';
 import { placeholdersRule } from './placeholders.mjs';
@@ -41,6 +43,7 @@ export const allRules = [
   // Content validation
   entityLinkIdsRule,
   dollarSignsRule,
+  tildeDollarRule,
   comparisonOperatorsRule,
   estimateBoxesRule,
   placeholdersRule,

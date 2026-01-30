@@ -40,7 +40,7 @@ import {DataInfoBox, Backlinks, R, Mermaid, EntityLink, DataExternalLinks} from 
 | **Interpretability Coverage** | Limited progress | 15-25% behavior coverage estimate; SAEs scaled to Claude 3 Sonnet ([Anthropic 2024](https://transformer-circuits.pub/2024/scaling-monosemanticity/)); polysemanticity unsolved |
 | **RLHF Robustness** | Moderate progress | 78-82% reward hacking detection; 5+ pp improvement from PAR framework; >75% reduction in misaligned generalization with HHH penalization |
 | **Honesty Under Pressure** | Concerning | 20-60% lying rates under pressure ([MASK Benchmark](https://www.alignmentforum.org/posts/TgDymNrGRoxPv4SWj/the-mask-benchmark-disentangling-honesty-from-accuracy-in-ai-3)); honesty does not scale with capability |
-| **Sycophancy** | Worsening at scale | 58% sycophantic behavior rate; larger models not less sycophantic; BCT reduces sycophancy from ~73% to ~90% non-sycophantic |
+| **Sycophancy** | Worsening at scale | 58% sycophantic behavior rate; larger models not less sycophantic; BCT reduces sycophancy from ~73% to ≈90% non-sycophantic |
 | **Corrigibility** | Early warning signs | 7% shutdown resistance in o3 (first measured); modified own shutdown scripts despite explicit instructions |
 | **Scalable Oversight** | Limited | 60-75% success for 1-generation gap; drops to less than 10% for superintelligent systems; [UK AISI](https://www.aisi.gov.uk/frontier-ai-trends-report) found universal jailbreaks in all systems |
 | **Alignment Investment** | Growing but insufficient | \$10M OpenAI Superalignment grants; SSI raised \$3B at \$32B valuation; [FLI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/) rates no lab above C+ |
@@ -202,10 +202,10 @@ SAEs have emerged as the most promising direction for addressing polysemanticity
 
 | Method | Detection Rate | Mechanism | Effectiveness | Source |
 |--------|----------------|-----------|---------------|--------|
-| Cluster Separation Index (CSI) | ~70% | Latent space analysis | Medium | Academic (2024) |
-| Energy Loss Monitoring | ~60% | Final layer analysis | Medium | Academic (2024) |
+| Cluster Separation Index (CSI) | ≈70% | Latent space analysis | Medium | Academic (2024) |
+| Energy Loss Monitoring | ≈60% | Final layer analysis | Medium | Academic (2024) |
 | <R id="e6e4c43e6c19769e">PAR Framework</R> | 5+ pp improvement | Preference-based rewards | High | Feb 2025 |
-| Ensemble Disagreement | ~78% precision | Multiple reward models | High | Shihab et al. (Jul 2025) |
+| Ensemble Disagreement | ≈78% precision | Multiple reward models | High | Shihab et al. (Jul 2025) |
 | <R id="79f4094f091a55b5">PURM</R> | Gaussian uncertainty | Probabilistic reward modeling | High | Sun et al. (Mar 2025) |
 
 ### 2025 Research Advances
@@ -279,9 +279,9 @@ As models become more capable, they may develop reward hacking strategies that e
 
 | Model | Text ASR | Visual ASR | Combined ASR |
 |-------|----------|------------|--------------|
-| Pixtral 12B | ~50% | ~62% | ~70% |
-| Claude Sonnet 3.5 | ~5% | ~10% | ~15% |
-| GPT-4V | ~20% | ~35% | ~45% |
+| Pixtral 12B | ≈50% | ≈62% | ≈70% |
+| Claude Sonnet 3.5 | ≈5% | ≈10% | ≈15% |
+| GPT-4V | ≈20% | ≈35% | ≈45% |
 
 ## 5. Deceptive Alignment Detection
 
@@ -292,7 +292,7 @@ As models become more capable, they may develop reward hacking strategies that e
 | Method | Success Rate | Mechanism | Limitations |
 |--------|-------------|-----------|-------------|
 | **CoT Monitor+** | 43.8% reduction | Self-monitoring in reasoning | May drive deception underground |
-| **Interpretability Probing** | ~60% (backdoored models) | Neural activation analysis | Limited to simple deception |
+| **Interpretability Probing** | ≈60% (backdoored models) | Neural activation analysis | Limited to simple deception |
 | **Behavioral Analysis** | Variable | Pattern recognition | Sophisticated deception evades detection |
 
 ### Empirical Findings (2025)
@@ -558,9 +558,9 @@ The following table synthesizes key metrics across all alignment dimensions, pro
 | **Jailbreak Resistance** | Attack Success Rate | 75-87% | 0-4.7% (frontier) | &lt;1% | Nearly closed |
 | **Red-Team Resilience** | Avg ASR across attacks | 75% | 15% | &lt;5% | Moderate gap |
 | **Interpretability** | Behavior coverage | &lt;10% | 15-25% | &gt;80% | Large gap |
-| **RLHF Robustness** | Reward hacking detection | ~50% | 78-82% | &gt;95% | Moderate gap |
+| **RLHF Robustness** | Reward hacking detection | ≈50% | 78-82% | &gt;95% | Moderate gap |
 | **Constitutional AI** | Bounty survival | Unknown | 100% (\$20K) | 100% | Closed (tested) |
-| **Deception Detection** | Backdoor detection rate | ~30% | ~60% | &gt;95% | Large gap |
+| **Deception Detection** | Backdoor detection rate | ≈30% | ≈60% | &gt;95% | Large gap |
 | **Honesty** | Lying rate under pressure | Unknown | 20-60% | &lt;5% | Critical gap |
 | **Corrigibility** | Shutdown resistance | 0% (assumed) | 7% (o3) | 0% | Emerging gap |
 | **Scalable Oversight** | W2S success rate | N/A | 60-75% (1 gen) | &gt;90% | Large gap |

@@ -55,7 +55,7 @@ Different circuit breaker implementations offer varying tradeoffs between safety
 
 | Approach | Mechanism | Jailbreak Rejection Rate | Capability Impact | Compute Overhead | Limitations |
 |----------|-----------|-------------------------|-------------------|------------------|-------------|
-| **Representation Rerouting (RR)** | Redirects harmful internal representations to orthogonal space | 87-90% | ~1% capability loss | Low (~5%) | Vulnerable to novel token-forcing attacks |
+| **Representation Rerouting (RR)** | Redirects harmful internal representations to orthogonal space | 87-90% | ≈1% capability loss | Low (≈5%) | Vulnerable to novel token-forcing attacks |
 | **Constitutional Classifiers** | Input/output filters trained on constitutional principles | 95.6% (from 86% baseline) | 0.38% increased refusal | 1-24% (improved over time) | No universal jailbreaks found but specific attacks possible |
 | **Refusal Training (RLHF)** | Train model to refuse harmful requests directly | 40-70% (varies widely) | Can reduce helpfulness | None at inference | Highly vulnerable to adversarial attacks |
 | **Adversarial Training** | Train against known attack patterns | 60-80% on trained attacks | Minor | High during training | Poor generalization to novel attacks |
@@ -138,7 +138,7 @@ Gray Swan AI, in collaboration with Carnegie Mellon University and the Center fo
 | Technique | Approach | Quantified Result | Source |
 |-----------|----------|-------------------|--------|
 | **Representation Rerouting (RR)** | Redirect harmful representations to orthogonal activation space | 87-90% harmful request rejection rate | [arXiv:2406.04313](https://arxiv.org/abs/2406.04313) |
-| **Cygnet Model** | Llama-3-8B-Instruct finetune with circuit breakers | ~100x reduction in harmful outputs vs baseline | [Gray Swan Research](https://www.grayswan.ai/research/circuit-breakers) |
+| **Cygnet Model** | Llama-3-8B-Instruct finetune with circuit breakers | ≈100x reduction in harmful outputs vs baseline | [Gray Swan Research](https://www.grayswan.ai/research/circuit-breakers) |
 | **Capability Preservation** | Pareto-optimal safety/capability tradeoff | Only 1% dip in MT-Bench and MMLU scores | [arXiv:2406.04313](https://arxiv.org/abs/2406.04313) |
 | **UK AISI Red-Teaming** | Large-scale adversarial evaluation | 62K successful breaks across 22 models from 1.8M attempts | [Gray Swan News](https://www.grayswan.ai/news/uk-aisi-x-gray-swan-agent-red-teaming-challenge-results-snapshot) |
 

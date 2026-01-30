@@ -32,11 +32,11 @@ import {ComparisonTable, DataInfoBox, DisagreementMap, KeyQuestions, Mermaid, R,
 
 | Organization | Annual Budget | Staff Size | Primary Focus | Tractability | Timeline |
 |--------------|---------------|------------|---------------|--------------|----------|
-| **Anthropic** | ~\$100M+ (safety research) | ~15 red team + growing safety org | Constitutional AI, Interpretability | High (empirical validation) | 2-5 years |
+| **Anthropic** | ≈\$100M+ (safety research) | ≈15 red team + growing safety org | Constitutional AI, Interpretability | High (empirical validation) | 2-5 years |
 | **DeepMind** | \$50M+ (estimated) | 30-50 researchers, growing 37-39% annually | Scalable Oversight, Formal Verification | Medium (theoretical + empirical) | 5-10 years |
-| **ARC** | ~\$5M annually | ~5-10 researchers | Eliciting Latent Knowledge | Low (fundamental problem) | 5-7 years |
-| **Redwood Research** | ~\$5-10M annually (\$21M total raised) | Small team + Constellation (30k sqft) | AI Control protocols | High (practical protocols) | Near-term |
-| **MIRI** | \$7M (2025), \$10M reserves | ~7 FTE comms, pivoting to governance | Agent Foundations, Policy | Low (fundamental theory) | Long-term/governance |
+| **ARC** | ≈\$5M annually | ≈5-10 researchers | Eliciting Latent Knowledge | Low (fundamental problem) | 5-7 years |
+| **Redwood Research** | ≈\$5-10M annually (\$21M total raised) | Small team + Constellation (30k sqft) | AI Control protocols | High (practical protocols) | Near-term |
+| **MIRI** | \$7M (2025), \$10M reserves | ≈7 FTE comms, pivoting to governance | Agent Foundations, Policy | Low (fundamental theory) | Long-term/governance |
 | **SSI (Sutskever)** | \$2B raised (2024) | New org, building team | Superintelligence alignment | Unknown (stealth mode) | Long-term |
 | **OpenAI (dissolved)** | 20% compute allocation | Disbanded May 2024 | Superalignment (weak-to-strong) | N/A (team dissolved) | N/A |
 
@@ -81,19 +81,19 @@ A critical constraint emerged in late 2024: alignment grantmaking became mostly 
 <Mermaid client:load chart={`
 flowchart TD
     subgraph Near-Term[Near-Term Safety 2-5 years]
-        CAI[Constitutional AI<br/>Anthropic ~\$100M+]
+        CAI[Constitutional AI<br/>Anthropic ≈\$100M+]
         INTERP[Interpretability<br/>Anthropic/DeepMind]
-        CTRL[AI Control<br/>Redwood ~\$10M]
+        CTRL[AI Control<br/>Redwood ≈\$10M]
     end
 
     subgraph Medium-Term[Medium-Term 5-10 years]
-        SO[Scalable Oversight<br/>DeepMind ~\$10M+]
-        ELK[Eliciting Latent Knowledge<br/>ARC ~\$1M]
+        SO[Scalable Oversight<br/>DeepMind ≈\$10M+]
+        ELK[Eliciting Latent Knowledge<br/>ARC ≈\$1M]
         FORM[Formal Verification<br/>DeepMind]
     end
 
     subgraph Long-Term[Long-Term/Foundational]
-        AF[Agent Foundations<br/>MIRI ~\$1M]
+        AF[Agent Foundations<br/>MIRI ≈\$1M]
         SSI[Superintelligence<br/>SSI \$1B raised]
         GOV[Technical Governance<br/>MIRI/Others]
     end
@@ -136,7 +136,7 @@ The table illustrates why portfolio diversification across research agendas is c
 
 Anthropic's approach represents the most direct attempt to scale current techniques to advanced AI systems. Their constitutional AI methodology trains language models to follow a set of principles through a two-stage process: first using AI feedback to critique and revise outputs according to the constitution, then using this data for reinforcement learning. Their Responsible Scaling Policy framework creates concrete capability thresholds (ASL-2, ASL-3, etc.) with corresponding safety requirements, providing a roadmap for scaling safely through increasingly capable systems.
 
-With <R id="68563d565e6852e0">over \$16 billion raised in 2025</R> (including a \$13B Series F at \$183B valuation in September 2025, followed by further growth to over \$350 billion valuation by November), Anthropic dedicates substantial resources to safety research. Their Frontier Red Team comprises approximately 15 researchers who stress-test advanced systems for misuse risks in biological research, cybersecurity, and autonomous systems. The company's <R id="e65e76531931acc2">Anthropic Fellows Program</R> provides \$3,850/week stipends plus ~\$15k/month in compute funding, producing research papers from over 80% of fellows. Their Claude Academy has trained over 300 engineers in AI safety practices, converting generalist software developers into specialized practitioners.
+With <R id="68563d565e6852e0">over \$16 billion raised in 2025</R> (including a \$13B Series F at \$183B valuation in September 2025, followed by further growth to over \$350 billion valuation by November), Anthropic dedicates substantial resources to safety research. Their Frontier Red Team comprises approximately 15 researchers who stress-test advanced systems for misuse risks in biological research, cybersecurity, and autonomous systems. The company's <R id="e65e76531931acc2">Anthropic Fellows Program</R> provides \$3,850/week stipends plus ≈\$15k/month in compute funding, producing research papers from over 80% of fellows. Their Claude Academy has trained over 300 engineers in AI safety practices, converting generalist software developers into specialized practitioners.
 
 The constitutional AI work has shown promising empirical results on current models, successfully reducing harmful outputs while maintaining helpfulness across various tasks. Their 2024 research on "sleeper agents" provided concerning evidence that deceptive alignment could persist through standard training techniques, while their mechanistic interpretability research aims to understand model internals well enough to detect such deception. The combination suggests a research program that takes seriously both the promise and the perils of scaling current approaches.
 
@@ -202,13 +202,13 @@ Critics question whether SSI's approach will differ meaningfully from existing e
 
 | Research Agenda | Funding/Resources | Team Size | Key Publications | Output Metrics | Industry Adoption |
 |-----------------|-------------------|-----------|------------------|----------------|-------------------|
-| **Anthropic Constitutional AI** | \$100M+ annually; \$16B raised 2025 | ~15 red team + safety teams | RSP framework, Sleeper agents paper, Constitutional AI paper | 80%+ fellows publish; 300+ Claude Academy graduates | High (RSP adopted by labs) |
+| **Anthropic Constitutional AI** | \$100M+ annually; \$16B raised 2025 | ≈15 red team + safety teams | RSP framework, Sleeper agents paper, Constitutional AI paper | 80%+ fellows publish; 300+ Claude Academy graduates | High (RSP adopted by labs) |
 | **Anthropic Interpretability** | Shared safety budget | Integrated with safety teams | Mechanistic interpretability papers, Circuit analysis | Growing publication output | Medium (research influence) |
 | **DeepMind Scalable Oversight** | \$50M+ estimated | 30-50 researchers; growing 37-39% annually | Debate papers, Process supervision research | Multiple high-impact papers | Medium (research influence) |
 | **DeepMind Formal Verification** | Shared budget | Integrated with safety teams | Mathematical verification research | Targeted publications | Low (early stage) |
-| **ARC (ELK)** | ~\$5M annually | ~5-10 researchers | ELK technical report, METR evaluations | Conceptual progress 2025 | Low (fundamental research) |
+| **ARC (ELK)** | ≈\$5M annually | ≈5-10 researchers | ELK technical report, METR evaluations | Conceptual progress 2025 | Low (fundamental research) |
 | **Redwood (AI Control)** | \$21M total raised | Small team + Constellation | ICML oral paper on AI control | Government/industry collaborations | High (UK AISI partnership) |
-| **MIRI (Agent Foundations)** | \$7.1M (2025); \$10M reserves | ~7 FTE comms, pivoting to governance | Agent foundations papers, Policy communications | Shifting to policy output | Low (pivoting away) |
+| **MIRI (Agent Foundations)** | \$7.1M (2025); \$10M reserves | ≈7 FTE comms, pivoting to governance | Agent foundations papers, Policy communications | Shifting to policy output | Low (pivoting away) |
 | **SSI (Sutskever)** | \$2B raised at \$10B valuation | Building team (stealth) | None public yet | Unknown (stealth mode) | N/A (new) |
 | **OpenAI Superalignment** | 20% compute allocation | Disbanded May 2024 | Weak-to-strong generalization research | N/A (dissolved) | N/A (dissolved) |
 

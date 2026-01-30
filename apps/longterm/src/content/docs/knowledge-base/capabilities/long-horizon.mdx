@@ -28,7 +28,7 @@ import {DataInfoBox, R, EntityLink, DataExternalLinks, Mermaid} from '../../../.
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Current Reliability** | 1-2 hours autonomous operation | [METR 2025](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/): Claude 3.7 Sonnet achieves ~1 hour task horizon at 50% success |
+| **Current Reliability** | 1-2 hours autonomous operation | [METR 2025](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/): Claude 3.7 Sonnet achieves ≈1 hour task horizon at 50% success |
 | **Capability Trajectory** | Doubling every 7 months | METR research shows consistent exponential growth since 2019; accelerated to 4-month doubling in 2024-2025 |
 | **Benchmark Performance** | 43-81% on coding tasks | SWE-bench Verified: Claude Opus 4.5 at 80.9%, Claude 3.5 Sonnet at 49% ([OpenAI](https://openai.com/index/introducing-swe-bench-verified/)) |
 | **Oversight Scalability** | 100-1,000x decision volume increase | Agents make thousands of decisions daily vs. dozens for supervised tools |
@@ -189,11 +189,11 @@ flowchart TD
 
 | Model | SWE-bench Verified | SWE-bench Pro | Task Horizon | Computer Use |
 |-------|-------------------|---------------|--------------|--------------|
-| **Claude Opus 4.5** | 80.9% | 43.6% | ~2-4 hours | Full support |
-| **Claude Sonnet 4** | 76.1% | 42.7% | ~1-2 hours | Full support |
-| **GPT-5** | 78% | 41.8% | ~2-3 hours | Via API |
-| **Claude 3.5 Sonnet** | 49.0% | — | ~1 hour | Beta (Oct 2024) |
-| **GPT-4o** | 33.4% | — | ~30 min | Limited |
+| **Claude Opus 4.5** | 80.9% | 43.6% | ≈2-4 hours | Full support |
+| **Claude Sonnet 4** | 76.1% | 42.7% | ≈1-2 hours | Full support |
+| **GPT-5** | 78% | 41.8% | ≈2-3 hours | Via API |
+| **Claude 3.5 Sonnet** | 49.0% | — | ≈1 hour | Beta (Oct 2024) |
+| **GPT-4o** | 33.4% | — | ≈30 min | Limited |
 
 *Sources: [Scale AI](https://scale.com/leaderboard/swe_bench_pro_public), [OpenAI](https://openai.com/index/introducing-swe-bench-verified/), [Epoch AI](https://epoch.ai/benchmarks/swe-bench-verified)*
 
@@ -235,10 +235,10 @@ flowchart TD
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| **Historical doubling time** | ~7 months | METR analysis of 13 frontier models (2019-2025) |
-| **Recent acceleration** | ~4 months | 2024-2025 period showed faster improvement |
-| **Current frontier** | ~1 hour tasks | Claude 3.7 Sonnet at 50% success threshold |
-| **Projected month-long tasks** | ~2027 | Extrapolation if 4-month trend continues |
+| **Historical doubling time** | ≈7 months | METR analysis of 13 frontier models (2019-2025) |
+| **Recent acceleration** | ≈4 months | 2024-2025 period showed faster improvement |
+| **Current frontier** | ≈1 hour tasks | Claude 3.7 Sonnet at 50% success threshold |
+| **Projected month-long tasks** | ≈2027 | Extrapolation if 4-month trend continues |
 | **Benchmarks analyzed** | 9 domains | Including self-driving, robotics, scientific reasoning |
 
 ### Capability Development Timeline
@@ -367,5 +367,5 @@ Long-horizon autonomy intersects critically with several other safety-relevant c
 |-----------|-------------|--------------|------------------|
 | [SWE-bench Verified](https://epoch.ai/benchmarks/swe-bench-verified) | Real software engineering tasks | 80.9% (Claude Opus 4.5) | Achieved >70% in 2025 |
 | [SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public) | Harder enterprise codebase tasks | 43.6% (Claude Sonnet 4.5) | Commercial subset under 20% |
-| <R id="c2614357fa198ba4">WebArena</R> | Web-based task completion | ~30% success | Extended to multi-day tasks |
+| <R id="c2614357fa198ba4">WebArena</R> | Web-based task completion | ≈30% success | Extended to multi-day tasks |
 | <R id="d234ade2718a748e">AgentBench</R> | Multi-environment agent evaluation | Variable by domain | Long-horizon extensions planned |

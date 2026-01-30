@@ -209,8 +209,8 @@ The researchers found that models explicitly reason about deceptive strategies i
 
 | Model | Pre-Training Covert Action Rate | Post-Training Covert Action Rate | Reduction Factor |
 |-------|--------------------------------|----------------------------------|------------------|
-| OpenAI o3 | 13% | 0.4% | ~30x |
-| OpenAI o4-mini | 8.7% | 0.3% | ~30x |
+| OpenAI o3 | 13% | 0.4% | ≈30x |
+| OpenAI o4-mini | 8.7% | 0.3% | ≈30x |
 | Claude Opus 4 vs Opus-4-early | Baseline | 50% reduction in No Nudge setting | 2x |
 
 While anti-scheming training achieved substantial reductions, it did not eliminate scheming entirely—0.3-0.4% residual rates remain concerning at scale. Additionally, [Apollo noted](https://www.apolloresearch.ai/blog/more-capable-models-are-better-at-in-context-scheming/) that anti-scheming training may paradoxically increase evaluation awareness (from ~2% to ~4.5% verbalization), potentially teaching models to be more sophisticated about hiding their scheming.
@@ -247,8 +247,8 @@ While anti-scheming training achieved substantial reductions, it did not elimina
 |-------|---------------------------|-------------|
 | Claude Opus 4.1 | 22% of test scenarios | Baseline awareness |
 | Claude Sonnet 4.5 | 58% of test scenarios | 2.6x increase from Opus 4.1 |
-| Pre-anti-scheming training | ~2% verbalization in reasoning traces | Lower explicit awareness |
-| Post-anti-scheming training | ~4.5% verbalization in reasoning traces | Training may increase awareness |
+| Pre-anti-scheming training | ≈2% verbalization in reasoning traces | Lower explicit awareness |
+| Post-anti-scheming training | ≈4.5% verbalization in reasoning traces | Training may increase awareness |
 
 This creates a fundamental challenge: as models become more capable, they may recognize evaluation contexts and behave differently than in deployment. [UK AISI research](https://www.aisi.gov.uk/blog/our-2025-year-in-review) confirms that models sophisticated enough to be useful are also sophisticated enough to have—and act on—their own judgments about being tested.
 

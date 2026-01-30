@@ -27,10 +27,10 @@ import {Mermaid, EntityLink, DataExternalLinks} from '../../../../components/wik
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Technical Maturity** | Early-stage (TRL 2-3) | VNN-COMP 2024 verified networks with ~10^6 parameters; frontier models have 10^12+ |
+| **Technical Maturity** | Early-stage (TRL 2-3) | VNN-COMP 2024 verified networks with ≈10^6 parameters; frontier models have 10^12+ |
 | **Funding Commitment** | Substantial (£59M+) | UK ARIA's Safeguarded AI programme, 3-5 year timeline through 2028 |
 | **Research Community** | Growing coalition | 17 co-authors on foundational paper including Bengio, Russell, Tegmark, Szegedy |
-| **Scalability Gap** | 6 orders of magnitude | Current verification handles ~1M parameters; GPT-4 class models have ~1.7T parameters |
+| **Scalability Gap** | 6 orders of magnitude | Current verification handles ~1M parameters; GPT-4 class models have ≈1.7T parameters |
 | **Timeline to Competitiveness** | 2032+ for general AI | ARIA targets Stage 3 by 2028; competitive general AI remains speculative |
 | **Adoption Likelihood** | 1-5% at TAI | Strong safety properties but severe capability-competitiveness uncertainty |
 | **Key Bottleneck** | World model verification | Proving formal models match physical reality is fundamentally undecidable in general |
@@ -89,8 +89,8 @@ flowchart TB
 
 | Approach | Scalability | Guarantee Strength | Current Capability | Key Tools |
 |----------|-------------|-------------------|-------------------|-----------|
-| **SMT-Based** | Low (~10^4 neurons) | Complete | Image classifiers | Reluplex, Marabou |
-| **Bound Propagation** | Medium (~10^6 neurons) | Sound but incomplete | CNNs, transformers | α,β-CROWN, auto_LiRPA |
+| **SMT-Based** | Low (≈10^4 neurons) | Complete | Image classifiers | Reluplex, Marabou |
+| **Bound Propagation** | Medium (≈10^6 neurons) | Sound but incomplete | CNNs, transformers | α,β-CROWN, auto_LiRPA |
 | **Abstract Interpretation** | Medium | Over-approximate | Safety-critical systems | DeepPoly, PRIMA |
 | **Runtime Monitoring** | High | Empirical | Production systems | NNV 2.0, SafeRL |
 | **Compositional** | Potentially high | Modular proofs | Research stage | ARIA programme |
@@ -104,7 +104,7 @@ The [5th International Verification of Neural Networks Competition (VNN-COMP 202
 | Participating teams | 8 | Stable |
 | Benchmark categories | 12 regular + 8 extended | Expanding |
 | Top performer | α,β-CROWN | Consistent leader since 2021 |
-| Largest verified network | ~10^6 parameters | ~10x improvement since 2021 |
+| Largest verified network | ≈10^6 parameters | ≈10x improvement since 2021 |
 | Average solve time | Minutes to hours | Improving 30-50% annually |
 
 **Key finding:** The best tools can now verify local robustness properties on networks with millions of parameters in reasonable time, but this remains 6 orders of magnitude below frontier model scale.
@@ -185,7 +185,7 @@ The foundational paper ["Towards Guaranteed Safe AI"](https://arxiv.org/abs/2405
 | **World model accuracy** | CRITICAL | Core unsolved problem - verifying model matches reality is undecidable in general | Physics simulators achieve less than 1% error in constrained domains; open-world accuracy unknown |
 | **Specification completeness** | HIGH | Formal specs may miss important values/constraints | Estimated 60-80% of human values may be difficult to formalize |
 | **Computational tractability** | HIGH | Verification can be exponentially expensive | SAT solving is NP-complete; neural network verification is co-NP-complete |
-| **Scalability gap** | VERY HIGH | Current tools verify ~10^6 parameters; frontier models have ~10^12 | 6 orders of magnitude gap; closing at ~10x per 3 years |
+| **Scalability gap** | VERY HIGH | Current tools verify ~10^6 parameters; frontier models have ≈10^12 | 6 orders of magnitude gap; closing at ≈10x per 3 years |
 | **Capability competitiveness** | HIGH | Unknown if verified systems can match unverified ones | No competitive benchmarks yet exist |
 | **Handling uncertainty** | MEDIUM | Formal methods traditionally assume certainty | Probabilistic verification emerging but less mature |
 
@@ -223,7 +223,7 @@ According to the [Stanford Center for AI Safety whitepaper](https://aisafety.sta
 | **Stanford Center for AI Safety** | Academic research | University + grants | Formal methods for ML |
 | **George Mason ROARS Lab** | Verification tool development | NSF funding | NeuralSAT verifier (2nd place VNN-COMP 2024) |
 | **CMU + Berkeley** | α,β-CROWN development | DARPA, NSF | Leading verification tool |
-| **MIRI** | Theoretical foundations | Private donors (~\$1M/year) | Agent foundations theory |
+| **MIRI** | Theoretical foundations | Private donors (≈\$1M/year) | Agent foundations theory |
 
 ### Key People
 
@@ -263,7 +263,7 @@ According to the [Stanford Center for AI Safety whitepaper](https://aisafety.sta
 
 | Factor | Estimate | Reasoning |
 |--------|----------|-----------|
-| **Technical feasibility by 2035** | 15-30% | Scalability gap closing at ~10x/3 years; still 3-4 doublings needed |
+| **Technical feasibility by 2035** | 15-30% | Scalability gap closing at ≈10x/3 years; still 3-4 doublings needed |
 | **Competitive capability if feasible** | 20-40% | Compositional approaches may enable capability parity |
 | **Adoption if competitive** | 40-60% | Regulatory pressure and liability concerns favor verified systems |
 | **Compound probability** | 1.2-7.2% | Product of above factors |
@@ -325,12 +325,12 @@ According to the [Stanford Center for AI Safety whitepaper](https://aisafety.sta
 
 | Year | Largest Verified Network | Improvement | Key Advance |
 |------|-------------------------|-------------|-------------|
-| 2017 | ~10^3 neurons | Baseline | First DNN verification (Reluplex) |
-| 2019 | ~10^4 neurons | 10x | Complete verification methods |
-| 2021 | ~10^5 neurons | 10x | GPU-accelerated bound propagation |
-| 2024 | ~10^6 neurons | 10x | α,β-CROWN optimizations |
-| 2027 (projected) | ~10^7 neurons | 10x | If trend continues |
-| 2030 (projected) | ~10^8 neurons | 10x | Still 4 orders of magnitude from frontier |
+| 2017 | ≈10^3 neurons | Baseline | First DNN verification (Reluplex) |
+| 2019 | ≈10^4 neurons | 10x | Complete verification methods |
+| 2021 | ≈10^5 neurons | 10x | GPU-accelerated bound propagation |
+| 2024 | ≈10^6 neurons | 10x | α,β-CROWN optimizations |
+| 2027 (projected) | ≈10^7 neurons | 10x | If trend continues |
+| 2030 (projected) | ≈10^8 neurons | 10x | Still 4 orders of magnitude from frontier |
 
 **Critical observation:** At the current rate of ~10x improvement every 3 years, verification tools will not reach frontier model scale until 2039-2042—potentially after transformative AI has already been developed via other paradigms.
 

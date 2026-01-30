@@ -92,12 +92,12 @@ The neuromorphic hardware landscape spans research platforms, commercial product
 
 | Chip | Developer | Process | Neurons | Synapses | Cores | Power | Status | Primary Use Case |
 |------|-----------|---------|---------|----------|-------|-------|--------|------------------|
-| **Loihi 2** | Intel | Intel 4 (7nm) | 1M | 120M | 128 neuromorphic + 6 x86 | ~1W typical | Research platform | Algorithm research, optimization |
+| **Loihi 2** | Intel | Intel 4 (7nm) | 1M | 120M | 128 neuromorphic + 6 x86 | ≈1W typical | Research platform | Algorithm research, optimization |
 | **TrueNorth** | IBM | 28nm CMOS | 1M | 256M | 4,096 neurosynaptic | 65-72mW | Research (2014) | Cognitive computing research |
 | **Akida AKD1000** | BrainChip | 28nm TSMC | 1.2M | 10B | 1-128 nodes | 100μW-300mW | Commercial | Edge AI inference |
-| **Akida Pico** | BrainChip | — | — | — | — | ~1mW | Commercial (2024) | Ultra-low-power wearables |
+| **Akida Pico** | BrainChip | — | — | — | — | ≈1mW | Commercial (2024) | Ultra-low-power wearables |
 | **SpiNNaker 2** | Manchester/Dresden | 22nm GlobalFoundries | 152K/chip | 152M/chip | 152 ARM PEs | ~W range | Research | Neuroscience simulation |
-| **DYNAP-SE2** | SynSense | 28nm FDSOI | 1K | 64K | 4 | ~1mW | Commercial | Event cameras, DVS |
+| **DYNAP-SE2** | SynSense | 28nm FDSOI | 1K | 64K | 4 | ≈1mW | Commercial | Event cameras, DVS |
 
 *Sources: [Open Neuromorphic Hardware Database](https://open-neuromorphic.org/neuromorphic-computing/hardware/loihi-2-intel/), [BrainChip Specifications](https://brainchip.com/ip/), [SpiNNaker2 Paper](https://arxiv.org/html/2401.04491v1)*
 
@@ -107,7 +107,7 @@ The neuromorphic hardware landscape spans research platforms, commercial product
 |--------|--------------|-------|---------------|----------------|-----------|-----------|
 | **Hala Point** | Intel | 1,152 Loihi 2 | 1.15 billion | 128 billion | 2,600W | April 2024 |
 | **SpiNNaker 2 (full)** | Dresden/Manchester | 70,000 | 5+ billion | — | ~kW range | In development |
-| **Pohoiki Springs** | Intel | 768 Loihi 1 | 100 million | — | ~500W | 2020 |
+| **Pohoiki Springs** | Intel | 768 Loihi 1 | 100 million | — | ≈500W | 2020 |
 
 Intel's [Hala Point system](https://newsroom.intel.com/artificial-intelligence/intel-builds-worlds-largest-neuromorphic-system-to-enable-more-sustainable-ai) represents the current state-of-the-art in scale, packaging 1,152 Loihi 2 processors in a microwave-oven-sized chassis. The system can process over 380 trillion 8-bit synaptic operations per second while maintaining efficiency exceeding 15 TOPS/W for deep neural network inference—competitive with GPU architectures on suitable workloads.
 
@@ -119,7 +119,7 @@ Intel's [Hala Point system](https://newsroom.intel.com/artificial-intelligence/i
 | **BrainChip Akida** | 100+ TOPS/W (claimed) | μW-mW | Edge inference | Limited model complexity |
 | **NVIDIA A100 GPU** | 1-5 TOPS/W | 250-400W | Training, dense inference | High power, cooling requirements |
 | **NVIDIA H100 GPU** | 2-10 TOPS/W | 350-700W | LLM training/inference | Designed for dense workloads |
-| **Human Brain** | ~10^15 ops/W (estimated) | ~20W | General intelligence | Biological, not reproducible |
+| **Human Brain** | ≈10^15 ops/W (estimated) | ≈20W | General intelligence | Biological, not reproducible |
 
 The efficiency comparison reveals the core tradeoff: neuromorphic systems achieve dramatic efficiency gains (10-100x) on sparse, event-driven workloads, but [GPUs still outperform on dense matrix operations](https://pubmed.ncbi.nlm.nih.gov/30618570/) that dominate modern deep learning. Intel claims Loihi-based systems can perform AI inference using [100 times less energy at speeds up to 50 times faster](https://newsroom.intel.com/artificial-intelligence/intel-builds-worlds-largest-neuromorphic-system-to-enable-more-sustainable-ai) than conventional architectures—but only for optimization problems and sparse networks that play to neuromorphic strengths.
 
@@ -170,7 +170,7 @@ Recent research has identified [neuromorphic-specific security threats](https://
 |--------------|----------|----------|---------------|-----------------|
 | **Intel Labs** | Loihi 2, Hala Point | Lava framework | Corporate R&D | Research platform, optimization |
 | **IBM Research** | TrueNorth (legacy) | Compass, Corelet | Corporate R&D | Pivoted to NorthPole (conventional) |
-| **BrainChip** | Akida family | MetaTF | Public company (~\$100M market cap) | Commercial edge AI |
+| **BrainChip** | Akida family | MetaTF | Public company (≈\$100M market cap) | Commercial edge AI |
 | **SynSense** | DYNAP-SE2, Speck | Sinabs | VC-backed startup | Event vision, DVS integration |
 | **SpiNNcloud** | SpiNNaker 2 | sPyNNaker | Spinout from academic | Large-scale neuroscience |
 | **U. Manchester** | SpiNNaker systems | PyNN | Academic (Human Brain Project) | Brain simulation |
@@ -213,8 +213,8 @@ Despite compelling efficiency advantages, neuromorphic computing faces fundament
 |------------|------------------------|---------------------------|---------------|
 | **No proven scaling law** | No demonstrated equivalent | Chinchilla scaling well-characterized | Requires fundamental research breakthrough |
 | **Training difficulty** | 10-100x slower than backprop | Gradient descent highly optimized | Surrogate gradients partially address |
-| **Software ecosystem** | ~100 active researchers | ~10,000+ ML researchers | Growing but slowly |
-| **Investment mismatch** | ~\$100M/year neuromorphic | [\$109B US AI investment (2024)](https://aiindex.stanford.edu/report/) | Market-driven, follows capabilities |
+| **Software ecosystem** | ≈100 active researchers | ≈10,000+ ML researchers | Growing but slowly |
+| **Investment mismatch** | ≈\$100M/year neuromorphic | [\$109B US AI investment (2024)](https://aiindex.stanford.edu/report/) | Market-driven, follows capabilities |
 | **Benchmark gaps** | 15%+ gap on ImageNet | SOTA consistently ANN-based | Narrowing slowly |
 | **Language/reasoning** | Not competitive | GPT-4, Claude, etc. dominant | No clear path forward |
 
@@ -240,11 +240,11 @@ The disparity in resources devoted to transformer-based AI versus neuromorphic c
 
 | Metric | Neuromorphic | Conventional AI (GPU-based) | Ratio |
 |--------|--------------|----------------------------|-------|
-| **Annual market size** | ~\$69M (2024) | ~\$50B+ | ~700x |
-| **Projected 2030 market** | ~\$1.2B | ~\$200B+ | ~150x (narrowing) |
-| **Active researchers (estimate)** | ~500-1,000 | ~50,000+ | ~50-100x |
+| **Annual market size** | ≈\$69M (2024) | ≈\$50B+ | ≈700x |
+| **Projected 2030 market** | ≈\$1.2B | ≈\$200B+ | ≈150x (narrowing) |
+| **Active researchers (estimate)** | ≈500-1,000 | ≈50,000+ | ≈50-100x |
 | **Major frameworks** | Lava (Intel), custom | PyTorch, TensorFlow, JAX | Ecosystem maturity gap |
-| **Training runs per year** | Hundreds | Millions | ~10,000x |
+| **Training runs per year** | Hundreds | Millions | ≈10,000x |
 
 ### The Path Dependency Problem
 
@@ -270,9 +270,9 @@ Spiking neural networks represent the software paradigm designed to run on neuro
 
 | Aspect | Artificial NN (ANN) | Spiking NN (SNN) | Performance Gap |
 |--------|---------------------|------------------|-----------------|
-| **MNIST accuracy** | 99.8%+ (SOTA) | [98.7% (Forward-Forward)](https://arxiv.org/html/2502.20411v1) | ~1% gap |
-| **CIFAR-10 accuracy** | 99%+ (SOTA) | ~95% (best SNNs) | ~4% gap |
-| **ImageNet accuracy** | 90%+ (SOTA) | ~75% (best SNNs) | ~15% gap |
+| **MNIST accuracy** | 99.8%+ (SOTA) | [98.7% (Forward-Forward)](https://arxiv.org/html/2502.20411v1) | ≈1% gap |
+| **CIFAR-10 accuracy** | 99%+ (SOTA) | ≈95% (best SNNs) | ≈4% gap |
+| **ImageNet accuracy** | 90%+ (SOTA) | ≈75% (best SNNs) | ≈15% gap |
 | **Language modeling** | GPT-4 level | Not competitive | Qualitative gap |
 | **Reasoning tasks** | Strong | Minimal | Qualitative gap |
 | **Energy (inference)** | 1x baseline | [4-16x more efficient](https://www.sciencedaily.com/releases/2022/05/220524100612.htm) | SNN advantage |
@@ -287,7 +287,7 @@ SNNs show particular strength on event-based datasets from dynamic vision sensor
 | Dataset | Task | Best SNN Accuracy | Best ANN Accuracy | Notes |
 |---------|------|-------------------|-------------------|-------|
 | **N-MNIST** | Digit recognition | [99.5%](https://www.sciencedirect.com/science/article/abs/pii/S0925231221009942) | 99.2% | DVS-converted MNIST; temporal info not essential |
-| **DVS-CIFAR10** | Object recognition | 62-75% | ~71% | SNNs competitive |
+| **DVS-CIFAR10** | Object recognition | 62-75% | ≈71% | SNNs competitive |
 | **DVS-Gesture** | Gesture recognition | [97.6%](https://www.sciencedirect.com/science/article/abs/pii/S0925231221009942) | 71% | **SNN significantly better** - temporal structure critical |
 | **N-TIDIGITS** | Speech recognition | 90%+ | Comparable | Event-based audio |
 | **MNIST-DVS** | Digit recognition | 90%+ | Lower | SNNs exploit temporal encoding |
@@ -312,10 +312,10 @@ The [current gap between SNN algorithms and neuromorphic hardware](https://arxiv
 
 | Metric | 2024 | 2027 (Projected) | 2030 (Projected) | Confidence |
 |--------|------|------------------|------------------|------------|
-| **Neuromorphic market size** | ~\$69M | ~\$300M | ~\$1.2B | Medium |
+| **Neuromorphic market size** | ≈\$69M | ≈\$300M | ≈\$1.2B | Medium |
 | **Edge AI deployments** | Pilot/early | Growing | Widespread | High |
-| **SNN accuracy gap (ImageNet)** | ~15% | ~10% | ~5% | Low |
-| **Research publications/year** | ~500 | ~800 | ~1,200 | Medium |
+| **SNN accuracy gap (ImageNet)** | ≈15% | ≈10% | ≈5% | Low |
+| **Research publications/year** | ≈500 | ≈800 | ≈1,200 | Medium |
 | **Commercial chip generations** | 2nd gen | 3rd gen | 4th gen | Medium |
 
 *Source: Market projections from [Patsnap Analysis](https://eureka.patsnap.com/report-neuromorphic-computing-energy-efficiency-measure-improve)*
@@ -335,7 +335,7 @@ The [current gap between SNN algorithms and neuromorphic hardware](https://arxiv
 | Argument | Strength | Status | Counter |
 |----------|----------|--------|---------|
 | **Capability gap enormous** | Very Strong | 15%+ gap persists | Gap narrowing slowly |
-| **Investment disparity** | Strong | ~700x smaller market | Growing faster than AI overall |
+| **Investment disparity** | Strong | ≈700x smaller market | Growing faster than AI overall |
 | **Software/algorithm lag** | Strong | [10+ year estimated gap](https://arxiv.org/html/2407.02353v1) | Active research area |
 | **Transformer efficiency improving** | Moderate | Sparse attention, quantization | May close efficiency gap conventionally |
 | **Alternative architectures** | Moderate | SSMs, liquid NNs competitive | Doesn't require neuromorphic hardware |
@@ -362,7 +362,7 @@ The future relevance of neuromorphic computing depends on several unresolved que
 |----------|-----------------|-------------------|------------------|
 | **Could SNNs achieve capabilities ANNs can't?** | No evidence of SNN-exclusive capabilities; [most researchers skeptical](https://arxiv.org/html/2309.15942v2) | 5-10 years of research needed | Low unless breakthrough |
 | **Will energy constraints force neuromorphic?** | Training costs growing; [datacenter power becoming bottleneck](https://www.pnas.org/doi/10.1073/pnas.2528654122) | Depends on renewables, efficiency gains | Medium—could shift paradigm |
-| **Is there a "biological trick" we're missing?** | Brain achieves ~10^15 ops/W; gap of 10-1000x to current neuromorphic | Unknown—fundamental research | High if discovered |
+| **Is there a "biological trick" we're missing?** | Brain achieves ≈10^15 ops/W; gap of 10-1000x to current neuromorphic | Unknown—fundamental research | High if discovered |
 | **Will hybrid approaches dominate?** | Active research area; neuromorphic for inference, GPU for training | 3-5 years for commercial viability | Medium—mixed safety profile |
 | **Can neuromorphic scale to frontier capabilities?** | No demonstrated scaling law; [10+ year estimated timeline](https://arxiv.org/html/2407.02353v1) | Unknown | Critical for TAI relevance |
 

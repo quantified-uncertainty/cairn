@@ -28,7 +28,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks, Backlinks} from '../../../../
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
 | **Tractability** | Medium-High | Well-understood security engineering; [gVisor](https://gvisor.dev/), [Firecracker](https://firecracker-microvm.github.io/) provide production-ready solutions; AI-specific integration requires ongoing research |
-| **Scalability** | Partial | Effective for current systems; METR finds [GPT-5 time horizon ~2 hours](https://evaluations.metr.org/gpt-5-report/)—not yet capable of autonomous replication; harder against future more capable AI |
+| **Scalability** | Partial | Effective for current systems; METR finds [GPT-5 time horizon ≈2 hours](https://evaluations.metr.org/gpt-5-report/)—not yet capable of autonomous replication; harder against future more capable AI |
 | **Current Maturity** | Medium | \$7.6B AI agent market (2025) with [85% enterprise adoption](https://www.demandsage.com/ai-agents-statistics/); sandbox tooling emerging rapidly |
 | **Time Horizon** | Immediate | Required now—[30+ CVEs in AI coding tools](https://thehackernews.com/2025/12/researchers-uncover-30-flaws-in-ai.html) disclosed in 2025; [CVE-2024-0132](https://www.wiz.io/blog/nvidia-ai-vulnerability-deep-dive-cve-2024-0132) (NVIDIA) enables container escape |
 | **Market Investment** | Growing | AI agent startups raised [\$3.8B in 2024](https://www.demandsage.com/ai-agents-statistics/) (3x YoY); projected \$1.3T agentic AI spend by 2029 ([IDC](https://my.idc.com/getdoc.jsp?containerId=prUS53765225)) |
@@ -96,9 +96,9 @@ The ["IDEsaster" disclosure](https://thehackernews.com/2025/12/researchers-uncov
 | Technology | Isolation Level | Startup Time | Memory Overhead | I/O Performance | Security vs Docker | Use Case |
 |------------|----------------|--------------|-----------------|-----------------|-------------------|----------|
 | **Standard Containers** (Docker, runC) | Process-level (namespaces, cgroups, seccomp) | Less than 50ms | Minimal | Baseline (100%) | Baseline | Development, low-risk workloads |
-| **[gVisor](https://gvisor.dev/)** | User-space kernel interception (Sentry) | [50-100ms](https://onidel.com/blog/gvisor-kata-firecracker-2025) | Low-Medium | [~10% of Docker](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | +Syscall filtering; [70-80% syscall coverage](https://medium.com/@iSoftStone/choosing-a-workspace-for-ai-agents-the-ultimate-showdown-between-gvisor-kata-and-firecracker-46a8528ae37c) | Modal, GKE Sandbox |
-| **[Firecracker microVMs](https://firecracker-microvm.github.io/)** | Hardware virtualization (KVM) | [125ms cold start](https://northflank.com/blog/what-is-aws-firecracker); 150 VMs/sec/host | [~5MB per VM](https://northflank.com/blog/what-is-aws-firecracker) | [~85% of Docker](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | ++Hypervisor boundary | AWS Lambda, Fly.io, E2B |
-| **[Kata Containers](https://katacontainers.io/)** | VM-backed containers (QEMU/Cloud Hypervisor) | [150-300ms](https://onidel.com/blog/gvisor-kata-firecracker-2025) | Higher (~50MB+) | [12-16% drop](https://hps.vi4io.org/_media/teaching/autumn_term_2023/stud/scap_jule_anger.pdf) vs Docker | ++Full VM isolation | Enterprise high-security |
+| **[gVisor](https://gvisor.dev/)** | User-space kernel interception (Sentry) | [50-100ms](https://onidel.com/blog/gvisor-kata-firecracker-2025) | Low-Medium | [≈10% of Docker](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | +Syscall filtering; [70-80% syscall coverage](https://medium.com/@iSoftStone/choosing-a-workspace-for-ai-agents-the-ultimate-showdown-between-gvisor-kata-and-firecracker-46a8528ae37c) | Modal, GKE Sandbox |
+| **[Firecracker microVMs](https://firecracker-microvm.github.io/)** | Hardware virtualization (KVM) | [125ms cold start](https://northflank.com/blog/what-is-aws-firecracker); 150 VMs/sec/host | [≈5MB per VM](https://northflank.com/blog/what-is-aws-firecracker) | [≈85% of Docker](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | ++Hypervisor boundary | AWS Lambda, Fly.io, E2B |
+| **[Kata Containers](https://katacontainers.io/)** | VM-backed containers (QEMU/Cloud Hypervisor) | [150-300ms](https://onidel.com/blog/gvisor-kata-firecracker-2025) | Higher (≈50MB+) | [12-16% drop](https://hps.vi4io.org/_media/teaching/autumn_term_2023/stud/scap_jule_anger.pdf) vs Docker | ++Full VM isolation | Enterprise high-security |
 | **Air-gapped systems** | Physical network isolation | N/A | N/A | N/A | +++Maximum | Critical research only |
 
 *Sources: [Onidel Benchmark Comparison](https://onidel.com/blog/gvisor-kata-firecracker-2025), [Sum of Bytes](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/), [Northflank](https://northflank.com/blog/what-is-aws-firecracker), [UK AISI Inspect Toolkit](https://www.aisi.gov.uk/blog/the-inspect-sandboxing-toolkit-scalable-and-secure-ai-agent-evaluations)*
@@ -232,7 +232,7 @@ Historical AI boxing experiments (where humans roleplay as contained AI trying t
 |------------|----------|----------|-------------|-------------|-------|
 | **Yudkowsky (2002)** | Human AI vs. gatekeeper | 2+ hours minimum | 5 trials | **60%** (3/5) | Participants approached Yudkowsky; text not published |
 | **Corwin replication** | Similar protocol | No time limit | 26 trials | **65%** (17/26) | More trials, similar results |
-| **Various LessWrong** | Community experiments | Variable | ~50+ trials | **50-70%** | Mixed protocols, often favoring AI player |
+| **Various LessWrong** | Community experiments | Variable | ≈50+ trials | **50-70%** | Mixed protocols, often favoring AI player |
 
 **Key insight**: If human-level persuaders can convince gatekeepers to release them in 60-70% of trials, superhuman persuaders may be essentially unconstainable through social means alone. This motivates strict separation-of-duties protocols where no single human can grant expanded access.
 
@@ -309,9 +309,9 @@ flowchart TD
 
 | Model | Evaluation Date | 50% Time Horizon | 80% Time Horizon | Autonomous Replication? | Cyberattack Capability? |
 |-------|-----------------|------------------|------------------|------------------------|------------------------|
-| **[GPT-5](https://evaluations.metr.org/gpt-5-report/)** | Aug 2025 | ~2 hours 17 min (1-4.5h range) | ~25 min (8-65 min 95% CI) | No—unlikely catastrophic risk | No |
-| **[Claude 3.5 Sonnet](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/)** | Jan 2025 | ~1 hour human baseline | — | No | Limited |
-| **[o1](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/)** (with scaffold) | Jan 2025 | ~2 hours human baseline | — | No | Limited |
+| **[GPT-5](https://evaluations.metr.org/gpt-5-report/)** | Aug 2025 | ≈2 hours 17 min (1-4.5h range) | ≈25 min (8-65 min 95% CI) | No—unlikely catastrophic risk | No |
+| **[Claude 3.5 Sonnet](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/)** | Jan 2025 | ≈1 hour human baseline | — | No | Limited |
+| **[o1](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/)** (with scaffold) | Jan 2025 | ≈2 hours human baseline | — | No | Limited |
 | **[DeepSeek-R1](https://evaluations.metr.org/deepseek-r1-report/)** | Mar 2025 | Comparable to o1-preview | — | No | No strong evidence |
 | **GPT-4** | Mar 2023 | "Probably not yet capable" | — | No | Early evaluation |
 
@@ -323,9 +323,9 @@ METR observes that the [50% task completion time horizon has been growing expone
 
 | Metric | Current (2025) | Projected (2030) | Implication |
 |--------|----------------|------------------|-------------|
-| 50% Time Horizon | ~2 hours (GPT-5) | Days to weeks | Rogue replication becomes feasible |
-| 80% Time Horizon | ~25 minutes | Hours | Most autonomous tasks achievable |
-| Doubling Period | ~7 months | — | Exponential capability growth |
+| 50% Time Horizon | ≈2 hours (GPT-5) | Days to weeks | Rogue replication becomes feasible |
+| 80% Time Horizon | ≈25 minutes | Hours | Most autonomous tasks achievable |
+| Doubling Period | ≈7 months | — | Exponential capability growth |
 
 *Source: [METR Research Update (Aug 2025)](https://metr.org/blog/2025-08-12-research-update-towards-reconciling-slowdown-with-time-horizons/)*
 
@@ -546,11 +546,11 @@ Anthropic's [Summer 2025 Pilot Sabotage Risk Report](https://alignment.anthropic
 
 | Source | Type | Key Findings |
 |--------|------|--------------|
-| [METR GPT-5 Report (Aug 2025)](https://evaluations.metr.org/gpt-5-report/) | Evaluation | 50% time horizon ~2h 17m; unlikely catastrophic risk |
-| [METR Claude/o1 Update (Jan 2025)](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/) | Evaluation | Sonnet ~1h baseline; o1 ~2h with scaffold |
+| [METR GPT-5 Report (Aug 2025)](https://evaluations.metr.org/gpt-5-report/) | Evaluation | 50% time horizon ≈2h 17m; unlikely catastrophic risk |
+| [METR Claude/o1 Update (Jan 2025)](https://metr.org/blog/2025-01-31-update-sonnet-o1-evals/) | Evaluation | Sonnet ~1h baseline; o1 ≈2h with scaffold |
 | [METR DeepSeek-R1 Report](https://evaluations.metr.org/deepseek-r1-report/) | Evaluation | No strong cyberattack capability; comparable to o1-preview |
 | [METR Rogue Replication Threat Model](https://metr.org/blog/2024-11-12-rogue-replication-threat-model/) | Research | 77-task suite; models cannot yet autonomously replicate |
-| [METR Time Horizon Research](https://metr.org/blog/2025-08-12-research-update-towards-reconciling-slowdown-with-time-horizons/) | Analysis | Capabilities doubling every ~7 months |
+| [METR Time Horizon Research](https://metr.org/blog/2025-08-12-research-update-towards-reconciling-slowdown-with-time-horizons/) | Analysis | Capabilities doubling every ≈7 months |
 | [CVE-Bench (ICML 2025)](https://arxiv.org/html/2503.17332v4) | Benchmark | State-of-art agents exploit 13% of critical CVEs |
 
 ### Container & Sandbox Security
@@ -561,7 +561,7 @@ Anthropic's [Summer 2025 Pilot Sabotage Risk Report](https://alignment.anthropic
 | [Wiz NVIDIAScape CVE-2025-23266](https://www.wiz.io/blog/nvidia-ai-vulnerability-cve-2025-23266-nvidiascape) | CVE Research | OCI hook misconfiguration escape |
 | [IDEsaster Disclosure](https://thehackernews.com/2025/12/researchers-uncover-30-flaws-in-ai.html) | Security Research | 30+ flaws in AI coding tools; 24 CVEs |
 | [Onidel Benchmark 2025](https://onidel.com/blog/gvisor-kata-firecracker-2025) | Performance | gVisor vs Kata vs Firecracker comparison |
-| [Sum of Bytes Analysis](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | Technical | MicroVM performance: gVisor ~10%, Firecracker ~85% of Docker |
+| [Sum of Bytes Analysis](https://sumofbytes.com/blog/micro-vms-firecaracker-v8-isolates-gvisor-new-era-of-virtualization/) | Technical | MicroVM performance: gVisor ~10%, Firecracker ≈85% of Docker |
 | [CodeAnt Sandboxing Guide](https://www.codeant.ai/blogs/agentic-rag-shell-sandboxing) | Best Practices | Firecracker recommended for untrusted AI code |
 
 ### AI Control & Safety Research
