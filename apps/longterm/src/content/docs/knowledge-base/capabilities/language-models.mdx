@@ -3,9 +3,9 @@ title: Large Language Models
 description: Foundation models trained on text that demonstrate emergent capabilities and represent the primary driver of current AI capabilities and risks, with rapid progression from GPT-2 (1.5B parameters, 2019) to o1 (2024) showing predictable scaling laws alongside unpredictable capability emergence
 sidebar:
   order: 1
-quality: 72
-llmSummary: Comprehensive analysis of LLM capabilities showing predictable scaling laws (10x compute → 1.4x performance) alongside unpredictable emergence, with current models demonstrating 82% persuasion improvement and 8-45% hallucination rates depending on task. Documents progression from GPT-2 (1.5B, 2019) through o3 (2024) achieving 87.7% on GPQA Diamond (exceeding human PhD performance) and 91.6% on AIME 2024. Covers the 2024-2025 shift to inference-time scaling and agentic capabilities, with key safety implications for deception, persuasion, and autonomous operations.
-lastEdited: "2026-01-28"
+quality: 91
+llmSummary: Comprehensive analysis of LLM capabilities showing predictable scaling laws (10x compute → 1.4x performance) alongside unpredictable emergence, with training costs growing 2.4x annually (projected to exceed $1B by 2027) while inference costs dropped 280x since 2022. Documents progression from GPT-2 (1.5B, 2019) through o3 (2024) achieving 87.7% on GPQA Diamond and 87.5% on ARC-AGI (near human baseline), though only 3% on ARC-AGI-2. Covers the 2024-2025 shift to inference-time scaling, with Stanford AI Index 2025 showing benchmark improvements of 18-67 percentage points in one year and US-China performance gap narrowing from 17.5 to 0.3 points on MMLU.
+lastEdited: "2026-01-30"
 importance: 85
 ratings:
   novelty: 4.5
@@ -23,6 +23,18 @@ import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from 
 <DataExternalLinks pageId="language-models" client:load />
 
 <DataInfoBox entityId="language-models" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Capability Level** | Near-human to superhuman on structured tasks | o3 achieves 87.5% on ARC-AGI (human baseline ~85%); 87.7% on [GPQA Diamond](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
+| **Progress Rate** | 2-3x capability improvement per year | [Stanford AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report): benchmark scores rose 18-67 percentage points in one year |
+| **Training Cost Trend** | 2.4x annual growth | [Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models): frontier models projected to exceed $1B by 2027 |
+| **Inference Cost Trend** | 280x reduction since 2022 | GPT-3.5-equivalent dropped from $20 to $0.07 per million tokens ([Stanford HAI](https://hai.stanford.edu/ai-index/2025-ai-index-report)) |
+| **Hallucination Rates** | 8-45% depending on task | [Vectara Leaderboard](https://github.com/vectara/hallucination-leaderboard): best models at 8%; [HalluLens](https://aclanthology.org/2025.acl-long.1176/): up to 45% on factual queries |
+| **Safety Maturity** | Moderate | Constitutional AI, RLHF established; [responsible scaling policies](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) implemented by major labs |
+| **Open-Closed Gap** | Narrowing rapidly | Gap shrunk from 8.04% to 1.70% on Chatbot Arena (Jan 2024 → Feb 2025) |
 
 ## Overview
 
@@ -100,7 +112,7 @@ flowchart TD
 
 *Source: [OpenAI o1 announcement](https://openai.com/index/learning-to-reason-with-llms/), [OpenAI o3 analysis](https://www.datacamp.com/blog/o3-openai), [Stanford AI Index](https://hai.stanford.edu/ai-index/2025-ai-index-report/technical-performance)*
 
-The o3 results represent a qualitative shift: o3 achieved nearly human-level performance on ARC-AGI (87.5% vs ~85% human baseline), a benchmark specifically designed to test general reasoning rather than pattern matching. On FrontierMath, o3 solved 25.2% of problems compared to o1's 2%—a 12x improvement that suggests reasoning capabilities may be scaling faster than expected.
+The o3 results represent a qualitative shift: o3 achieved nearly human-level performance on [ARC-AGI (87.5%](https://arcprize.org/blog/oai-o3-pub-breakthrough) vs ~85% human baseline), a benchmark specifically designed to test general reasoning rather than pattern matching. On FrontierMath, o3 solved 25.2% of problems compared to o1's 2%—a 12x improvement that suggests reasoning capabilities may be scaling faster than expected. However, on the harder [ARC-AGI-2 benchmark](https://arcprize.org/blog/analyzing-o3-with-arc-agi), o3 scores only 3% compared to 60% for average humans, revealing significant limitations in truly novel reasoning.
 
 ## Scaling Laws and Predictable Progress
 
@@ -117,7 +129,7 @@ Research by <R id="85f66a6419d173a7">Kaplan et al. (2020)</R> and refined by <R 
 
 *Source: <R id="46fd66187ec3e6ae">Chinchilla paper</R>, <R id="85f66a6419d173a7">Scaling Laws</R>*
 
-According to [Epoch AI research](https://research.aimultiple.com/llm-scaling-laws/), approximately two-thirds of LLM performance improvements over the last decade are attributable to increases in model scale, with training techniques contributing roughly 0.4 orders of magnitude per year in compute efficiency.
+According to [Epoch AI research](https://epoch.ai/trends), approximately two-thirds of LLM performance improvements over the last decade are attributable to increases in model scale, with training techniques contributing roughly 0.4 orders of magnitude per year in compute efficiency. The [cost of training frontier models](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models) has grown by 2.4x per year since 2016, with the largest models projected to exceed $1B by 2027.
 
 ### The Shift to Inference-Time Scaling (2024-2025)
 
@@ -129,7 +141,7 @@ The o1 and o3 models introduced a new paradigm: **inference-time compute scaling
 | Inference-time scaling | Longer reasoning chains, search | Lower training cost, expensive inference | o1, o3 |
 | Combined scaling | Both approaches | Maximum capability, maximum cost | GPT-5.2, Claude Opus 4.5 |
 
-This shift is significant for AI safety: inference-time scaling allows models to "think longer" on hard problems, potentially achieving superhuman performance on specific tasks while maintaining manageable training costs. However, o1 is approximately 6x more expensive and 30x slower than GPT-4o per query.
+This shift is significant for AI safety: inference-time scaling allows models to "think longer" on hard problems, potentially achieving superhuman performance on specific tasks while maintaining manageable training costs. However, o1 is approximately 6x more expensive and 30x slower than GPT-4o per query. The [RE-Bench evaluation](https://hai.stanford.edu/ai-index/2025-ai-index-report) found that in short time-horizon settings (2-hour budget), top AI systems score 4x higher than human experts, but as the time budget increases to 32 hours, human performance surpasses AI by 2 to 1.
 
 ### Emergent Capability Thresholds
 
@@ -143,6 +155,8 @@ This shift is significant for AI safety: inference-time scaling allows models to
 | Strategic planning | o3 scale | ARC-AGI performance | <EntityLink id="deceptive-alignment">Deception potential</EntityLink> |
 
 Research from [CSET Georgetown](https://cset.georgetown.edu/article/emergent-abilities-in-large-language-models-an-explainer/) and the [2025 Emergent Abilities Survey](https://arxiv.org/abs/2503.05788) documents that emergent abilities depend on multiple interacting factors: scaling up parameters or depth lowers the threshold for emergence but is neither necessary nor sufficient alone—data quality, diversity, training objectives, and architecture modifications also matter significantly. Emergence aligns more closely with pre-training loss landmarks than with sheer parameter count; smaller models can match larger ones if training loss is sufficiently reduced.
+
+According to the [Stanford AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report), benchmark performance has improved dramatically: scores rose by 18.8, 48.9, and 67.3 percentage points on MMMU, GPQA, and SWE-bench respectively in just one year. The gap between US and Chinese models has also narrowed substantially—from 17.5 to 0.3 percentage points on MMLU.
 
 **Safety concern:** Research highlights that as AI systems gain autonomous reasoning capabilities, they also develop potentially harmful behaviors, including deception, manipulation, and reward hacking. OpenAI's o3-mini became the first AI model to receive a "Medium risk" classification for Model Autonomy.
 
@@ -171,7 +185,7 @@ Research by <R id="f771d4f56ad4dbaa">Anthropic</R> shows GPT-4 can increase huma
 | Sycophancy | Moderate | Opinion questions | Constitutional AI |
 | Strategic deception | Low-Moderate | Evaluation scenarios | Ongoing research |
 
-Hallucination rates vary substantially by task and measurement methodology. According to the [Vectara Hallucination Leaderboard](https://github.com/vectara/hallucination-leaderboard), GPT-5 achieves the lowest hallucination rate (8%) on summarization tasks, while [HalluLens benchmark research](https://arxiv.org/html/2504.17550v1) reports GPT-4o hallucination rates of ~45% "when not refusing" on factual queries. In legal contexts, approximately 1 in 6 AI responses contain citation hallucinations. The wide variance reflects both genuine model differences and the challenge of defining and measuring hallucination consistently.
+Hallucination rates vary substantially by task and measurement methodology. According to the [Vectara Hallucination Leaderboard](https://github.com/vectara/hallucination-leaderboard), GPT-5 achieves the lowest hallucination rate (8%) on summarization tasks, while [HalluLens benchmark research](https://aclanthology.org/2025.acl-long.1176/) reports GPT-4o hallucination rates of ~45% "when not refusing" on factual queries. In legal contexts, approximately 1 in 6 AI responses contain citation hallucinations. The wide variance reflects both genuine model differences and the challenge of defining and measuring hallucination consistently. A [2025 AIMultiple benchmark](https://research.aimultiple.com/ai-hallucination/) found that even the latest models have greater than 15% hallucination rates when asked to analyze provided statements.
 
 *Source: <R id="683aef834ac1612a">Anthropic Constitutional AI</R>, [OpenAI hallucination research](https://openai.com/index/why-language-models-hallucinate/)*
 

@@ -44,13 +44,15 @@ However, compute thresholds face a fundamental challenge: **algorithmic efficien
 
 ### Quick Assessment
 
-| Dimension | Assessment | Notes |
-|-----------|------------|-------|
-| Tractability | High | Already implemented in major jurisdictions |
-| Mechanism | Trigger-based | Cross threshold → face requirements |
-| Current Status | Active | EU AI Act, US EO both use compute thresholds |
-| Main Challenge | Algorithmic efficiency | Same capabilities with less compute over time |
-| Time Horizon | 3-5 years | Before efficiency gains make current thresholds irrelevant |
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Regulatory Adoption** | High | EU AI Act (10^25 FLOP, effective Aug 2025), US EO 14110 (10^26 FLOP, active since Oct 2023) |
+| **Cost to Trigger** | \$7-100M+ | Training at 10^25 FLOP costs \$7-10M; at 10^26 FLOP costs \$70-100M ([Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models)) |
+| **Models Currently Captured** | 5-15 globally | GPT-4, Gemini 1.5 Pro, Claude 3.7, Grok 3, Llama 3 ([EU AI Office](https://artificialintelligenceact.eu/gpai-guidelines-overview/)) |
+| **Algorithmic Efficiency Erosion** | 2x every 8-17 months | Compute required for given capability halving roughly every 8-17 months ([OpenAI](https://openai.com/index/ai-and-efficiency/)) |
+| **Inference Scaling Gap** | Critical | Models below thresholds can achieve 10^3-10^5x capability gains at inference time ([GovAI](https://www.governance.ai/research-paper/inference-scaling-and-ai-governance)) |
+| **Evasion Difficulty** | Low-Medium | Distillation, jurisdictional arbitrage, and fine-tuning can circumvent thresholds ([Fenwick](https://www.fenwick.com/insights/publications/interesting-developments-for-regulatory-thresholds-of-ai-compute)) |
+| **Threshold Shelf Life** | 3-5 years | Static thresholds will capture 100-200 models by 2028 vs. intended frontier focus ([GovAI](https://www.governance.ai/research-paper/trends-in-frontier-ai-model-count-a-forecast-to-2028)) |
 
 ### Risks Addressed
 
@@ -73,6 +75,20 @@ The following table compares compute threshold implementations across major juri
 | **UK AISI** | Capability-based | Frontier models | Voluntary evaluation, no formal threshold | Monitoring only | [AISI Framework](https://www.aisi.gov.uk/frontier-ai-trends-report) |
 
 The 1000x difference between the US biological threshold (10^23) and general threshold (10^26) reflects assessment that biological capabilities may emerge at much smaller model scales. The EU's 10^25 threshold sits between these extremes, calibrated to capture approximately GPT-4-scale models while excluding smaller systems.
+
+### Estimated Training Costs by Threshold Level
+
+Understanding the economic implications of compute thresholds requires examining the relationship between FLOP thresholds and actual training costs. [Epoch AI research](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models) provides detailed cost breakdowns:
+
+| Compute Level | Estimated Training Cost | Example Models | Regulatory Status | Cost Breakdown |
+|---------------|------------------------|----------------|-------------------|----------------|
+| 10^23 FLOP | \$70K-\$100K | GPT-3-scale, early LLMs | US EO bio-threshold trigger | Hardware: 47-67%, Staff: 29-49%, Energy: 2-6% |
+| 10^24 FLOP | \$700K-\$1M | Llama 2-65B, Mistral | Below major thresholds | Accessible to well-funded startups |
+| 10^25 FLOP | \$7M-\$10M | GPT-4, Claude 3 Opus | EU AI Act GPAI systemic risk | Requires major corporate backing |
+| 10^26 FLOP | \$70M-\$100M | Projected next-gen frontier | US EO 14110 trigger | Only 10-15 organizations globally |
+| 10^27 FLOP | \$700M-\$1B+ | Projected 2027-2028 frontier | Not yet reached | Grok-4 estimated at \$480M ([Epoch AI](https://epoch.ai/data-insights/openai-compute-spend)) |
+
+**Key insight:** Training costs have grown by approximately [2.4x per year](https://epoch.ai/data-insights/cost-trend-large-scale) since 2020, suggesting frontier models will exceed \$1 billion by 2027. This concentration of capability among well-capitalized organizations is itself a form of implicit access control—but compute thresholds provide transparency about which actors are operating at these scales.
 
 ## Current Implementations and Evidence
 

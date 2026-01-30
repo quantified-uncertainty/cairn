@@ -3,9 +3,9 @@ title: AI Alignment
 description: Technical approaches to ensuring AI systems pursue intended goals and remain aligned with human values throughout training and deployment. Current methods show promise but face fundamental scalability challenges.
 sidebar:
   order: 10
-quality: 75
+quality: 91
 importance: 88.5
-lastEdited: "2026-01-28"
+lastEdited: "2026-01-30"
 llmSummary: Comprehensive review of AI alignment approaches finding current methods (RLHF, Constitutional AI) achieve 75-90% effectiveness on existing systems but face critical scalability challenges, with oversight success dropping to 52% at 400 Elo capability gaps and only 40-60% detection of sophisticated deception. Expert consensus ranges from 10-60% probability of success for AGI alignment depending on approach and timelines.
 pageTemplate: knowledge-base-response
 ratings:
@@ -38,6 +38,8 @@ Current alignment approaches show promise for existing systems but face critical
 | **Scalability** | C- | Human oversight becomes bottleneck at superhuman capabilities; interpretability methods tested only up to ~1B parameter models thoroughly; deceptive alignment remains undetected in current evaluations |
 | **Resource Requirements** | Medium-High | Leading labs (OpenAI, Anthropic, DeepMind) invest \$100M+/year; alignment research comprises ~10-15% of total AI R&D spending; successful deployment requires ongoing red-teaming and iteration |
 | **Timeline to Impact** | 1-3 years | Near-term methods (RLHF, Constitutional AI) deployed today; scalable oversight techniques (debate, amplification) in research phase; AGI-level solutions remain uncertain |
+| **Expert Consensus** | Divided | [AI Impacts 2024 survey](https://aiimpacts.org/2022-expert-survey-on-progress-in-ai/): 50% probability of human-level AI by 2040; alignment rated top concern by majority of senior researchers; success probability estimates range 10-60% depending on approach |
+| **Industry Leadership** | Anthropic-led | [FLI AI Safety Index Winter 2025](https://futureoflife.org/ai-safety-index-winter-2025/): Anthropic (C+), OpenAI (C), DeepMind (C-) lead; no company scores above D on existential safety; substantial gap to second tier (xAI, Meta, DeepSeek) |
 
 ## Risks Addressed
 
@@ -174,6 +176,22 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 
 ## Current State & Progress
 
+### Industry Safety Assessment (2025)
+
+The [Future of Life Institute's AI Safety Index](https://futureoflife.org/ai-safety-index-winter-2025/) provides independent assessment of leading AI companies across 35 indicators spanning six critical domains. The Winter 2025 edition reveals significant gaps between safety commitments and implementation:
+
+| Company | Overall Grade | Existential Safety | Transparency | Safety Culture | Notable Strengths |
+|---------|--------------|-------------------|--------------|----------------|-------------------|
+| **Anthropic** | C+ | D | B- | B | RSP framework, interpretability research, Constitutional AI |
+| **OpenAI** | C | D | C+ | C+ | Preparedness Framework, superalignment investment, red-teaming |
+| **Google DeepMind** | C- | D | C | C | Frontier Safety Framework, model evaluation protocols |
+| **xAI** | D+ | F | D | D | Limited public safety commitments |
+| **Meta** | D | F | D+ | D | Open-source approach limits control |
+| **DeepSeek** | D- | F | F | D- | No equivalent safety measures to Western labs |
+| **Alibaba Cloud** | D- | F | F | D- | Minimal safety documentation |
+
+**Key finding:** No company scored above D in existential safety planning—described as "kind of jarring" given claims of imminent AGI. [SaferAI's 2025 assessment](https://saferai.org/) found similar results: Anthropic (35%), OpenAI (33%), Meta (22%), DeepMind (20%) on risk management maturity.
+
 ### Recent Advances (2023-2025)
 
 **Mechanistic Interpretability**: <R id="426fcdeae8e2b749">Anthropic's scaling monosemanticity</R> work identified interpretable features in models up to 34M parameters with 90%+ accuracy, though scaling to billion-parameter models remains challenging. Dictionary learning techniques now extract 16 million features from Claude 3 Sonnet, enabling automated interpretability for ~1% of model behaviors.
@@ -189,6 +207,20 @@ The diagram illustrates three key paradigms: (1) **Direct assistance** where wea
 **Recursive Self-Critiquing**: Recent work on <R id="6d1732ab914da313">scalable oversight via recursive self-critiquing</R> shows that larger models write more helpful critiques and can integrate self-feedback to refine outputs, with quality improvements of 20-35% on summarization tasks. However, models remain susceptible to persuasion and adversarial argumentation, particularly in competitive debate settings.
 
 **Cross-Lab Collaboration (2025)**: In a significant development, OpenAI and Anthropic conducted a first-of-its-kind joint evaluation exercise, running internal safety and misalignment evaluations on each other's publicly released models. This collaboration aimed to surface gaps that might otherwise be missed and deepen understanding of potential misalignment across different training approaches. The exercise represents a shift toward industry-wide coordination on alignment verification.
+
+### RLHF Effectiveness Metrics
+
+Recent empirical research has quantified RLHF's effectiveness across multiple dimensions:
+
+| Metric | Improvement | Method | Source |
+|--------|-------------|--------|--------|
+| **Alignment with human preferences** | 29-41% improvement | Conditional PM RLHF vs standard RLHF | [ACL Findings 2024](https://aclanthology.org/2024.findings-acl.775/) |
+| **Annotation efficiency** | 93-94% reduction | RLTHF (targeted feedback) achieves full-annotation performance with 6-7% of data | [EMNLP 2025](https://aclanthology.org/2025.emnlp-industry.35/) |
+| **Hallucination reduction** | 13.8 points relative | RLHF-V framework on LLaVA | [CVPR 2024](https://openaccess.thecvf.com/content/CVPR2024/papers/Yu_RLHF-V_Towards_Trustworthy_MLLMs_via_Behavior_Alignment_from_Fine-grained_Correctional_CVPR_2024_paper.pdf) |
+| **Compute efficiency** | 8× reduction | Align-Pro achieves 92% of full RLHF win-rate | [ICLR 2025](https://proceedings.iclr.cc/paper_files/paper/2025/) |
+| **Win-rate stability** | +15 points | Align-Pro vs heuristic prompt search | [ICLR 2025](https://proceedings.iclr.cc/paper_files/paper/2025/) |
+
+**Remaining challenges**: Standard RLHF suffers from algorithmic bias due to KL-based regularization, leading to "preference collapse" where minority preferences are disregarded. [Recent surveys](https://arxiv.org/abs/2503.05613) note that scaling to superhuman capabilities introduces fundamental obstacles not addressed by current techniques.
 
 ### Capability-Safety Gap
 

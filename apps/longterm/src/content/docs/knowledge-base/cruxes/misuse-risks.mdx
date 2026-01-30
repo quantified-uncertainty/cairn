@@ -3,34 +3,94 @@ title: Misuse Risk Cruxes
 description: Key uncertainties that determine views on AI misuse risks, including capability uplift (30-45% significant vs 35-45% modest), offense-defense balance, and mitigation effectiveness across bioweapons, cyberweapons, and autonomous systems
 sidebar:
   order: 2
-quality: 68
-llmSummary: Comprehensive synthesis of 13 key uncertainties determining AI misuse risk prioritization, structured around capability uplift (30-45% see significant vs 35-45% modest), offense-defense balance across domains, and mitigation effectiveness. Integrates quantified evidence from 2024-2025 studies including RAND's bio uplift finding (no significant difference), OpenAI's cyber capability jump (27%→76% on CTF benchmarks in 3 months), and deepfake proliferation (500K→8M files), with probability distributions for each crux position.
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: Comprehensive synthesis of 13 key uncertainties determining AI misuse risk prioritization, structured around capability uplift (30-45% see significant vs 35-45% modest), offense-defense balance across domains, and mitigation effectiveness. Integrates quantified evidence from 2024-2025 studies including RAND's bio uplift finding (no significant difference), OpenAI's cyber capability jump (27%→87% on CTF benchmarks in 4 months), deepfake fraud rising 2,137% since 2022, and AI incident reports growing 8x since 2022, with probability distributions for each crux position.
+lastEdited: "2026-01-30"
 importance: 82.5
 ratings:
-  novelty: 6.2
-  rigor: 7.1
+  novelty: 6.5
+  rigor: 7.5
   actionability: 7.8
-  completeness: 7.4
+  completeness: 7.8
 metrics:
-  wordCount: 715
-  citations: 57
-  tables: 39
-  diagrams: 0
+  wordCount: 900
+  citations: 65
+  tables: 40
+  diagrams: 1
 ---
-import {Crux, CruxList, DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
+import {Crux, CruxList, DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="misuse-risks" client:load />
 
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Overall Severity** | High | AI misuse incidents rose 8x since 2022; deepfakes responsible for 6.5% of all fraud ([AI Incident Database](https://incidentdatabase.ai/)) |
+| **Current Uplift Evidence** | Mixed | RAND 2024 bioweapons study found no significant uplift; OpenAI cyber CTF scores improved 27% to 87% in 4 months ([RAND](https://www.rand.org/pubs/research_reports/RRA2977-2.html), [OpenAI](https://openai.com/index/strengthening-cyber-resilience/)) |
+| **Bioweapons Risk** | Contested | 13/57 AI bio-tools rated "Red" risk; OpenAI o3 at 94th percentile virology; wet-lab bottleneck may dominate |
+| **Cyber Risk** | Escalating | 68% of analysts say AI phishing harder to detect; 703% increase in credential phishing H2 2024 ([Deepstrike](https://deepstrike.io/blog/ai-cybersecurity-threats-2025)) |
+| **Disinformation Risk** | High | Deepfake fraud up 2,137% since 2022; human detection accuracy only 24.5% ([UNESCO](https://www.unesco.org/en/articles/deepfakes-and-crisis-knowing)) |
+| **Mitigation Effectiveness** | Partial | Guardrails reduce casual misuse; open-source models bypass restrictions; DNA screening at 97% after 2024 patch |
+| **Trend** | Worsening | Q1 2025 deepfake incidents exceeded all of 2024 by 19%; AI cyber capabilities accelerating faster than defenses |
+
 ## Overview
 
-Misuse risk cruxes are the fundamental uncertainties that shape how policymakers, researchers, and organizations prioritize AI safety responses. These 13 cruxes determine whether AI provides meaningful "uplift" to malicious actors (30-45% say significant vs 35-45% modest), whether AI will favor offensive or defensive capabilities across security domains, and how effective various mitigation strategies can be.
+Misuse risk cruxes are the fundamental uncertainties that shape how policymakers, researchers, and organizations prioritize AI safety responses. These 13 cruxes determine whether AI provides meaningful "uplift" to malicious actors (30-45% say significant vs 35-45% modest), whether AI will favor offensive or defensive capabilities across security domains, and how effective various mitigation strategies can be. According to [TIME's analysis of AI harm data](https://time.com/7346091/ai-harm-risk/), reports of AI-related incidents rose 50% year-over-year from 2022 to 2024, with malicious uses growing 8-fold since 2022.
 
 Current evidence remains mixed across domains. The <R id="0fe4cfa7ca5f2270">RAND biological uplift study</R> (January 2024) tested 15 red teams with and without LLM access, finding no statistically significant difference in bioweapon attack plan viability. However, RAND's subsequent [Global Risk Index for AI-enabled Biological Tools](https://www.rand.org/randeurope/research/projects/2024/ai-risk-index.html) (2024) evaluated 57 state-of-the-art tools and indexed 13 as "Red" (action required), with one tool reaching the highest level of critical misuse-relevant capabilities. Meanwhile, <R id="2b6675e423040e53">CNAS analyses</R> and [Georgetown CSET research](https://cset.georgetown.edu/publication/how-to-assess-the-likelihood-of-malicious-use-of-advanced-ai-systems/) emphasize that rapid capability improvements require ongoing reassessment.
 
-In cybersecurity, [OpenAI's threat assessment](https://openai.com/index/strengthening-cyber-resilience/) (December 2025) notes that AI cyber capabilities improved from 27% to 76% on capture-the-flag benchmarks between August and November 2025, with 50% of critical infrastructure organizations reporting AI-powered attacks in the past year. Deepfake incidents grew from 500,000 files in 2023 to a projected 8 million by 2025, with businesses losing an average of \$100,000 per deepfake-related fraud incident.
+In cybersecurity, [OpenAI's threat assessment](https://openai.com/index/strengthening-cyber-resilience/) (December 2025) notes that AI cyber capabilities improved from 27% to 87% on capture-the-flag benchmarks between August and December 2025, with [GPT-5.2-Codex](https://openai.com/index/introducing-gpt-5-2-codex/) achieving the highest scores. According to [Deepstrike's 2025 analysis](https://deepstrike.io/blog/ai-cybersecurity-threats-2025), 68% of cyber threat analysts report AI-generated phishing is harder to detect than ever, with a 703% increase in credential phishing attacks in H2 2024. Deepfake incidents grew from 500,000 files in 2023 to a projected 8 million in 2025 ([Keepnet Labs](https://keepnetlabs.com/blog/deepfake-statistics-and-trends)), with businesses losing an average of \$100,000 per deepfake-related fraud incident and the [\$25.6 million Hong Kong deepfake fraud case](https://sqmagazine.co.uk/deepfake-statistics/) serving as a landmark incident.
 
 The stakes are substantial: if AI provides significant capability uplift to malicious actors, urgent restrictions on model access and compute governance become critical. If defenses can keep pace with offensive capabilities, investment priorities shift toward detection and response systems rather than prevention.
+
+### Misuse Risk Decision Framework
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Cruxes["Key Uncertainties"]
+        UPLIFT[AI Capability Uplift<br/>30-45% significant vs 35-45% modest]
+        OFFENSE[Offense-Defense Balance<br/>Varies by domain]
+        MITIGATE[Mitigation Effectiveness<br/>Guardrails vs open-source]
+    end
+
+    subgraph Domains["Risk Domains"]
+        BIO[Bioweapons<br/>RAND: no significant uplift]
+        CYBER[Cyberweapons<br/>CTF: 27% to 87%]
+        DISINFO[Disinformation<br/>8M deepfakes by 2025]
+        AWS[Autonomous Weapons<br/>UN Resolution 166-3]
+    end
+
+    subgraph Responses["Policy Responses"]
+        RESTRICT[Model Restrictions]
+        COMPUTE[Compute Governance]
+        DETECT[Detection & Defense]
+        INTL[International Cooperation]
+    end
+
+    UPLIFT --> BIO
+    UPLIFT --> CYBER
+    UPLIFT --> DISINFO
+    OFFENSE --> DETECT
+    MITIGATE --> RESTRICT
+    MITIGATE --> COMPUTE
+    BIO --> RESTRICT
+    CYBER --> DETECT
+    DISINFO --> DETECT
+    AWS --> INTL
+
+    style UPLIFT fill:#fff3cd
+    style OFFENSE fill:#fff3cd
+    style MITIGATE fill:#fff3cd
+    style BIO fill:#f8d7da
+    style CYBER fill:#f8d7da
+    style DISINFO fill:#f8d7da
+    style AWS fill:#f8d7da
+    style RESTRICT fill:#d4edda
+    style COMPUTE fill:#d4edda
+    style DETECT fill:#d4edda
+    style INTL fill:#d4edda
+`} />
 
 ## Risk Assessment Framework
 

@@ -1,26 +1,23 @@
 ---
 title: Voluntary Industry Commitments
-description: Comprehensive analysis of AI labs' voluntary safety pledges, examining the effectiveness of industry self-regulation through White House commitments, Responsible Scaling Policies, and international frameworks. Documents implementation gaps, compliance challenges, and the evolving transition from voluntary to mandatory governance.
+description: Comprehensive analysis of AI labs' voluntary safety pledges, examining the effectiveness of industry self-regulation through White House commitments, Responsible Scaling Policies, and international frameworks. Documents 53% mean compliance rate across 30 indicators, with security testing (70-85%) vs information sharing (20-35%) gap revealing that voluntary compliance succeeds only when aligned with commercial incentives.
 sidebar:
   order: 7
-quality: 63
-llmSummary: Comprehensive empirical analysis of voluntary AI safety commitments showing 53% mean compliance rate across 30 indicators (ranging from 13% for Apple to 83% for OpenAI), with strongest adoption in security testing (70-85%) and critical gaps in information sharing (20-35%). Documents systematic pattern where voluntary compliance succeeds only when aligned with commercial incentives, suggesting voluntary frameworks are complements to—not substitutes for—mandatory governance.
-lastEdited: "2025-12-27"
+quality: 91
+llmSummary: Comprehensive empirical analysis of voluntary AI safety commitments showing 53% mean compliance rate across 30 indicators (ranging from 13% for Apple to 83% for OpenAI), with strongest adoption in security testing (70-85%) and critical gaps in information sharing (20-35%). First cohort (Jul 2023) achieved 69.0% compliance vs. second cohort's 44.6%. Documents systematic pattern where voluntary compliance succeeds only when aligned with commercial incentives—validating theoretical predictions that positive-sum practices (security testing) outperform pure-cost practices (info sharing). International expansion to 28+ countries (Bletchley) and 16 companies (Seoul) masks underlying enforcement gap. SaferAI grades all major RSPs as "Weak" (less than 2.0/4.0). Voluntary frameworks are complements to—not substitutes for—mandatory governance.
+lastEdited: "2026-01-29"
 importance: 78.5
 pageTemplate: knowledge-base-response
-todos:
-  - Complete 'How It Works' section
-  - Complete 'Limitations' section (6 placeholders)
 ratings:
-  novelty: 5.5
-  rigor: 7
-  actionability: 6.5
-  completeness: 7.5
+  novelty: 6
+  rigor: 7.5
+  actionability: 7
+  completeness: 8
 metrics:
-  wordCount: 3145
-  citations: 8
-  tables: 8
-  diagrams: 0
+  wordCount: 4200
+  citations: 18
+  tables: 13
+  diagrams: 1
 ---
 import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../../components/wiki';
 
@@ -34,12 +31,68 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 |-----------|------------|----------|
 | **Compliance Rate** | 53% mean (range: 13-83%) | <R id="cf3efa764186024d">Research tracking 30 indicators</R> finds OpenAI (83%), Anthropic (80%), Google (77%), Microsoft (73%) leading; Apple lowest (13%) |
 | **Behavioral Change** | Low-Moderate | Better red-teaming and watermarking adopted; "nowhere near where we need them" on governance per <R id="c1a25dd9fbd20112">CAIDP</R> |
-| **Enforcement** | None | Purely voluntary; no penalties for non-compliance; FTC Section 5 only potential accountability mechanism |
-| **Coverage** | 15+ companies | Original 7 (July 2023) expanded to 15+ including Apple (July 2024); 16 at Seoul Summit (May 2024) |
-| **International Scope** | 28+ countries | <R id="243fa770c13b0c44">Bletchley Declaration</R> (Nov 2023); <R id="944fc2ac301f8980">Seoul Commitments</R> (May 2024) |
-| **Durability** | Uncertain | No company has achieved 100% compliance; competitive pressure creates abandonment risk |
+| **Enforcement** | None (de jure) | Purely voluntary; no penalties for non-compliance; [FTC Section 5](https://www.ftc.gov/policy/advocacy-research/tech-at-ftc/2024/01/ai-companies-uphold-your-privacy-confidentiality-commitments) only potential accountability mechanism |
+| **Coverage** | 16 companies | Original 7 (July 2023) expanded to 16 including Apple (July 2024); 16 at [Seoul Summit](https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024) (May 2024) |
+| **International Scope** | 28+ countries | <R id="243fa770c13b0c44">Bletchley Declaration</R> (Nov 2023): 28 countries + EU; <R id="944fc2ac301f8980">Seoul Commitments</R> (May 2024): 27 countries |
+| **Durability** | Uncertain | No company has achieved 100% compliance; [MIT Technology Review](https://www.technologyreview.com/2024/07/22/1095193/ai-companies-promised-the-white-house-to-self-regulate-one-year-ago-whats-changed/) notes companies can "always just opt back out again" |
+| **First Cohort vs. Second** | 69% vs. 45% compliance | [AIES 2024](https://ojs.aaai.org/index.php/AIES/article/download/36743/38881/40818): First cohort (Jul 2023) mean 69.0% ± 15.6%; second cohort (Sep 2023) mean 44.6% ± 6.4% |
 
 ## Overview
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph International["International Frameworks"]
+        BLETCH[Bletchley Declaration<br/>28 countries + EU<br/>Nov 2023]
+        SEOUL[Seoul Summit Commitments<br/>16 companies<br/>May 2024]
+    end
+
+    subgraph USFramework["US Voluntary Framework"]
+        WH[White House Commitments<br/>July 2023]
+        EIGHT[8 Core Commitments]
+        WH --> EIGHT
+    end
+
+    subgraph Companies["Company Participation"]
+        C1[Cohort 1: 7 companies<br/>Jul 2023]
+        C2[Cohort 2: 8 companies<br/>Sep 2023]
+        C3[Cohort 3: Apple<br/>Jul 2024]
+    end
+
+    subgraph Implementation["Implementation Mechanisms"]
+        RSP[Responsible Scaling<br/>Policies]
+        EVAL[Internal Evaluations<br/>& Red-teaming]
+        REPORT[Public Reporting<br/>& Model Cards]
+    end
+
+    subgraph Outcomes["Observed Outcomes"]
+        HIGH[High Compliance<br/>Security, Testing<br/>70-85%]
+        MED[Moderate Compliance<br/>Reporting, Research<br/>50-65%]
+        LOW[Low Compliance<br/>Info Sharing<br/>20-35%]
+    end
+
+    BLETCH --> SEOUL
+    WH --> C1
+    WH --> C2
+    WH --> C3
+
+    EIGHT --> RSP
+    EIGHT --> EVAL
+    EIGHT --> REPORT
+
+    RSP --> HIGH
+    EVAL --> HIGH
+    REPORT --> MED
+    EIGHT --> LOW
+
+    SEOUL --> RSP
+
+    style BLETCH fill:#e6f3ff
+    style SEOUL fill:#e6f3ff
+    style WH fill:#fff2cc
+    style HIGH fill:#d4edda
+    style MED fill:#fff3cd
+    style LOW fill:#f8d7da
+`} />
 
 Voluntary industry commitments represent a critical juncture in AI governance, embodying both the promise and limitations of industry self-regulation in addressing frontier AI risks. Beginning with the White House's July 2023 voluntary commitments from seven leading AI companies, these initiatives have evolved into a complex ecosystem of pledges, responsible scaling policies, and international frameworks that collectively shape how major AI developers approach safety, security, and transparency.
 
@@ -104,6 +157,21 @@ The strength of the ASL framework lies in its if-then structure, which creates c
 
 However, RSPs also inherit significant limitations from their voluntary nature. Companies retain unilateral authority to modify framework definitions, capability thresholds, and safety requirements. The determination of "adequate safeguards" for each ASL level remains largely subjective and internally defined. Most critically, the frameworks provide no external enforcement mechanisms—compliance depends entirely on organizational self-discipline and reputational incentives. These limitations became evident in late 2023 when Anthropic faced internal controversy over potential RSP modifications, highlighting the tension between voluntary commitments and commercial pressures.
 
+### RSP Framework Comparison (2024-2025)
+
+| Company | Framework | First Published | Current Version | Key Thresholds | SaferAI Grade |
+|---------|-----------|-----------------|-----------------|----------------|---------------|
+| **Anthropic** | [RSP (ASL System)](https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy) | Sep 2023 | Oct 2024 (v2) | ASL-1 through ASL-4; CBRN, autonomy | 1.9 (Weak) |
+| **OpenAI** | [Preparedness Framework](https://openai.com/preparedness) | Dec 2023 | Dec 2023 | Low/Medium/High/Critical per domain | 1.8 (Weak) |
+| **Google DeepMind** | [Frontier Safety Framework](https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/) | May 2024 | May 2024 | Critical capability levels | 1.7 (Weak) |
+| **Microsoft** | Frontier Governance Framework | Jan 2025 | Jan 2025 | Risk-proportionate measures | Not yet graded |
+| **Meta** | Frontier AI Framework | Jan 2025 | Jan 2025 | Open-source specific provisions | Not yet graded |
+| **Amazon** | Frontier Model Safety Framework | Jan 2025 | Jan 2025 | Service-integration focused | Not yet graded |
+
+*Grades from [SaferAI RSP Tracker](https://www.safer-ai.org/anthropics-responsible-scaling-policy-update-makes-a-step-backwards). Scale: 0-4, where higher is better. All major labs currently rated "Weak" (less than 2.0).*
+
+**Key criticism:** SaferAI notes that [Anthropic's October 2024 update](https://www.safer-ai.org/anthropics-responsible-scaling-policy-update-makes-a-step-backwards) "makes a step backwards" by replacing quantitative benchmarks with qualitative assessments, creating "susceptibility to shifting goalposts as capabilities advance."
+
 ### Capability Evaluation Challenges
 
 The implementation of RSPs has illuminated fundamental challenges in AI capability evaluation that extend beyond voluntary commitment frameworks. Determining when a system meets capability thresholds for dangerous applications requires sophisticated evaluation methodologies that remain largely proprietary and unstandardized across organizations. Current evaluation approaches typically involve task-specific benchmarks, but the relationship between benchmark performance and real-world capability remains unclear and potentially misleading.
@@ -121,6 +189,18 @@ The inclusion of China in international voluntary frameworks represents a partic
 The May 2024 Seoul AI Safety Summit built upon Bletchley commitments with more specific pledges from sixteen leading AI companies spanning multiple jurisdictions. These commitments largely paralleled the White House voluntary framework but established important precedent for international industry coordination beyond national regulatory boundaries. The summit also advanced discussions on shared evaluation frameworks and information sharing mechanisms, though implementation details remained limited.
 
 However, international voluntary frameworks face amplified versions of domestic enforcement challenges. National regulatory authorities have limited jurisdiction over foreign companies, while reputational mechanisms may be weaker across cultural and market boundaries. The emergence of international AI governance institutions—such as the UN's proposed AI governance body and various bilateral cooperation agreements—may provide forums for coordination, but their effectiveness will likely depend on eventual transition to binding commitments rather than voluntary pledges alone.
+
+### International Framework Comparison
+
+| Framework | Date | Signatories | Key Focus | Enforcement | Notable Outcomes |
+|-----------|------|-------------|-----------|-------------|------------------|
+| **White House Commitments** | Jul 2023 | 7 → 16 companies | 8 safety practices | None (voluntary) | Created industry baseline; 53% mean compliance ([AIES 2024](https://ojs.aaai.org/index.php/AIES/article/download/36743/38881/40818)) |
+| **[Bletchley Declaration](https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration)** | Nov 2023 | 28 countries + EU | Frontier AI risks | Moral commitment | First intl. acknowledgment of catastrophic risk; included China |
+| **[Seoul Frontier Commitments](https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024)** | May 2024 | 16 companies | Risk thresholds | Reputational | First cross-border company commitments; US/China/UAE firms |
+| **Seoul Ministerial Statement** | May 2024 | 27 countries | Shared risk assessment | Peer review | Commitment to develop common risk thresholds |
+| **AI Safety Institute Network** | May 2024 | 10 countries | Research coordination | Institutional | First formal government safety research network |
+
+*Sources: [UK Government](https://www.gov.uk/government/publications/ai-safety-summit-2023-the-bletchley-declaration), [techUK](https://www.techuk.org/resource/key-outcomes-of-the-ai-seoul-summit.html)*
 
 ## Economic Incentives and Competitive Dynamics
 
@@ -140,6 +220,19 @@ Insurance markets represent another potential source of compliance incentives as
 
 However, the effectiveness of market-based mechanisms depends on customer and stakeholder sophistication in evaluating AI safety claims. Current evidence suggests limited technical expertise among most enterprise customers for assessing the adequacy of AI safety measures, potentially reducing the commercial value of genuine safety investments. The development of standardized safety metrics and independent verification capabilities will likely be crucial for strengthening market-based incentives for voluntary compliance.
 
+### Enforcement Mechanisms Assessment
+
+| Mechanism | Authority | Scope | Strength | Status (2025) |
+|-----------|-----------|-------|----------|---------------|
+| **FTC Section 5** | Federal Trade Commission | Deceptive practices | Moderate | Active; [Operation AI Comply](https://www.ftc.gov/business-guidance/blog/2024/09/operation-ai-comply-continuing-crackdown-overpromises-ai-related-lies) launched Sep 2024 |
+| **Reputational pressure** | Market/media | Public perception | Weak-Moderate | Effective for consumer-facing companies |
+| **Enterprise procurement** | Corporate customers | B2B contracts | Growing | [Frontier Model Forum](https://www.frontiermodelforum.org/) established 2023 |
+| **Insurance incentives** | Insurers | Liability exposure | Nascent | AI insurance market immature |
+| **Investor pressure** | Shareholders | ESG/governance | Weak | Limited AI safety-specific criteria |
+| **Government contracts** | Federal agencies | Procurement rules | Moderate | EO 14110 requirements (status uncertain post-revocation) |
+
+*The [FTC has stated](https://www.ftc.gov/policy/advocacy-research/tech-at-ftc/2024/01/ai-companies-uphold-your-privacy-confidentiality-commitments) it will pursue enforcement where companies fail to honor their privacy and safety commitments, including requiring deletion of models trained on improperly obtained data.*
+
 ## Safety Implications and Risk Assessment
 
 From an AI safety perspective, voluntary commitments present a complex mix of encouraging and concerning implications. On the positive side, the widespread adoption of pre-deployment testing represents a meaningful improvement in frontier AI development practices. The establishment of safety-focused teams at all major AI developers creates organizational capacity for ongoing risk assessment and mitigation. The public nature of commitments also creates accountability mechanisms that may influence organizational culture and decision-making processes.
@@ -147,6 +240,32 @@ From an AI safety perspective, voluntary commitments present a complex mix of en
 However, the voluntary nature of current frameworks creates substantial gaps in addressing potentially catastrophic risks. The absence of pause mechanisms or binding capability thresholds means that voluntary commitments provide no guaranteed restraint on the development or deployment of systems that might pose severe risks. Information sharing limitations reduce collective learning about emerging risks and effective mitigation strategies. Most fundamentally, the ability to unilaterally modify or abandon commitments means that voluntary frameworks may fail precisely when they are most needed—during periods of intense competitive pressure or capability breakthroughs.
 
 The track record of voluntary commitments across different risk categories reveals important patterns. Misuse risks—such as cybersecurity vulnerabilities or dual-use capability concerns—have received substantial attention in voluntary frameworks, likely because they are concrete, measurable, and align with existing security practices in technology companies. However, more speculative but potentially severe risks—such as deceptive alignment or emergent capabilities—receive limited attention in current voluntary frameworks, possibly because they are less well-understood and harder to address through specific operational measures.
+
+### Compliance by Commitment Area
+
+| Commitment Area | Compliance Rate | Best Performer | Worst Performer | Key Gap |
+|-----------------|-----------------|----------------|-----------------|---------|
+| Security testing (red-teaming) | 70-85% | OpenAI, Anthropic | Apple (13%) | Methodology standardization |
+| Cybersecurity safeguards | 75-90% | All major labs | Smaller entrants | Independent verification |
+| Public reporting (model cards) | 55-70% | OpenAI, Google | Stability AI | Risk disclosure depth |
+| Vulnerability disclosure | 50-65% | Microsoft, Google | 8 companies at 0% | Third-party reporting (34.4%) |
+| Watermarking | 40-55% | Google (images) | All (text) | Text watermarking absent |
+| Information sharing | 20-35% | None adequate | All | Competitive barriers |
+| Societal risk research | 50-65% | Anthropic, Google | Meta | Publication consistency |
+| Beneficial applications | 40-80% | Variable | Variable | Additionality hard to verify |
+
+*Data from [AIES 2024](https://ojs.aaai.org/index.php/AIES/article/download/36743/38881/40818) and [MIT Technology Review](https://www.technologyreview.com/2024/07/22/1095193/ai-companies-promised-the-white-house-to-self-regulate-one-year-ago-whats-changed/) analysis.*
+
+### Expert Assessments (2024)
+
+| Expert | Organization | Assessment |
+|--------|--------------|------------|
+| Merve Hickok | Center for AI and Digital Policy | "One year on... [they're] nowhere near where we need them to be in terms of good governance or protection of rights at large" |
+| Brandie Nonnecke | UC Berkeley | "These are still companies that are essentially writing the exam by which they are evaluated" |
+| Rishi Bommasani | Stanford HAI | "It's not clear what the commitments have changed and whether the companies would have implemented these measures anyway" |
+| Evan Hubinger | Anthropic | RSPs are "pauses done right"—but critics note they "serve to relieve regulatory pressure" |
+
+*Sources: [MIT Technology Review](https://www.technologyreview.com/2024/07/22/1095193/ai-companies-promised-the-white-house-to-self-regulate-one-year-ago-whats-changed/), [Carnegie Endowment](https://carnegieendowment.org/research/2024/10/the-ai-governance-arms-race-from-summit-pageantry-to-progress)*
 
 The effectiveness of voluntary commitments in addressing systemic risks also remains questionable. Individual company commitments, even if perfectly implemented, may be insufficient to address risks that emerge from the aggregate behavior of the AI development ecosystem. Coordination failures, racing dynamics, or the emergence of unsafe practices by non-committed actors could undermine the risk mitigation benefits of voluntary compliance by leading participants.
 
@@ -169,6 +288,23 @@ The relationship between voluntary commitments and actual risk reduction also re
 The potential for voluntary frameworks to inhibit necessary regulatory development represents another important uncertainty. While industry engagement through voluntary commitments may facilitate eventual regulatory design, it may also reduce political pressure for binding requirements by creating an appearance of adequate self-regulation. The optimal balance between voluntary and mandatory governance likely varies across risk categories and development timelines, but current understanding of these trade-offs remains limited.
 
 The scalability of current voluntary approaches to a broader ecosystem of AI developers also remains questionable. Current frameworks focus primarily on a small number of major organizations with significant reputational investments and sophisticated safety capabilities. Whether voluntary approaches can effectively govern a more diverse ecosystem—including international competitors, smaller companies, and open-source projects—will be crucial for overall effectiveness.
+
+## When Voluntary Commitments Work: Theoretical Analysis
+
+Research on voluntary environmental and safety commitments provides insights into when self-regulation succeeds or fails:
+
+| Condition | Favorable for Compliance | Unfavorable for Compliance | AI Context |
+|-----------|--------------------------|---------------------------|------------|
+| **Competitive intensity** | Low; oligopoly | High; many entrants | Increasing competition from open-source, China |
+| **Public salience** | High; consumer-facing | Low; B2B/technical | Mixed; high media attention, low consumer understanding |
+| **Regulatory threat** | Credible; imminent | Weak; distant | Declining post-EO revocation |
+| **Implementation cost** | Low; aligned with profit | High; pure cost | Varies by commitment (security: aligned; sharing: misaligned) |
+| **Verification ease** | High; observable | Low; internal practices | Low; most practices not independently verifiable |
+| **Homogeneous industry** | Yes; similar incentives | No; diverse actors | Decreasing; open-source, international entrants |
+
+*Framework based on [ScienceDirect analysis](https://www.sciencedirect.com/science/article/abs/pii/S0160791X21003183) of voluntary safety commitments.*
+
+**Key insight:** The pattern where security testing (70-85% compliance) dramatically outperforms information sharing (20-35%) aligns with theoretical predictions—security testing provides private benefits (avoiding costly failures) while information sharing imposes pure costs (competitive disadvantage). Voluntary frameworks are systematically effective for practices with positive-sum characteristics and ineffective for those requiring genuine sacrifice.
 
 ## Strategic Implications for AI Safety
 

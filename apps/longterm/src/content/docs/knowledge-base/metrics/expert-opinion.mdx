@@ -18,9 +18,21 @@ metrics:
   tables: 2
   diagrams: 0
 ---
-import {DataInfoBox, DisagreementMap, KeyQuestions, Backlinks, EntityLink, DataExternalLinks} from '../../../../components/wiki';
+import {DataInfoBox, DisagreementMap, KeyQuestions, Backlinks, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="expert-opinion" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Median P(doom)** | 5-10% | [AI Impacts 2023 survey](https://wiki.aiimpacts.org/ai_timelines/predictions_of_human-level_ai_timelines/ai_timeline_surveys/2023_expert_survey_on_progress_in_ai) of 2,778 researchers; median 5% across four question variants |
+| **Expert Disagreement** | Extreme (0.01-99%) | Range spans from Yann LeCun (less than 1%) to Roman Yampolskiy (99%); 6x gap persisted through [XPT tournament](https://forecastingresearch.org/xpt) |
+| **AGI Timeline Consensus** | 2027-2031 median | [Metaculus](https://www.metaculus.com/questions/3479/date-weakly-general-ai-is-publicly-known/) median dropped from 50+ years (2020) to ~5 years (2024) |
+| **Forecaster Accuracy** | Poor on AI progress | [XPT results](https://forecastingresearch.substack.com/p/what-did-forecasters-get-right-and): superforecasters gave 2.3% probability to IMO gold by 2025 (achieved July 2025) |
+| **Safety Research Share** | 2% of total AI research | [Emerging Technology Observatory](https://eto.tech/blog/still-drop-bucket-ai-safety-research/): grew 312% (2018-2023) but still only ~2% of publications |
+| **Researcher Priority Gap** | 70% want more safety focus | Multiple surveys: 70% believe safety deserves higher priority vs. 2% actual allocation |
+| **Public Support for Safety** | 80% favor regulation | [Gallup 2025](https://news.gallup.com/poll/694685/americans-prioritize-safety-data-security.aspx): 80% support safety rules even if slowing development; 88% Democrats, 79% Republicans |
 
 <DataInfoBox>
 
@@ -50,7 +62,57 @@ This disagreement extends beyond simple risk estimates to fundamental questions 
 
 The implications of this disagreement are profound for both research and policy. When experts disagree by two orders of magnitude about existential risk probabilities, traditional approaches to expert aggregation become questionable. The disagreement appears to stem from deeper philosophical and empirical differences about intelligence, consciousness, control, and technological development rather than simple information asymmetries that could be resolved through better data sharing.
 
+### Major Survey Comparison
+
+| Survey | Year | Sample Size | Median P(doom) | Range | Key Finding |
+|--------|------|-------------|----------------|-------|-------------|
+| [AI Impacts](https://wiki.aiimpacts.org/ai_timelines/predictions_of_human-level_ai_timelines/ai_timeline_surveys/2023_expert_survey_on_progress_in_ai) | 2023 | 2,778 researchers | 5% | 0.01-99% | 38% gave at least 10% chance of extinction |
+| [AI Impacts](https://arxiv.org/pdf/2401.02843) | 2022 | 738 researchers | 5-10% | Wide | Mean 14.4% on "extremely bad outcomes" |
+| [XPT Domain Experts](https://forecastingresearch.org/xpt) | 2022 | 85 experts | 6% | 1-20% | 20% catastrophe probability by 2100 |
+| [XPT Superforecasters](https://forecastingresearch.org/xpt) | 2022 | 84 forecasters | 1% | 0.1-5% | 9% catastrophe probability by 2100 |
+| [CSET Survey](https://cset.georgetown.edu/) | 2021 | 524 researchers | 2% | 0-50% | Focus on ML researchers specifically |
+| [Ord Survey](https://theprecipice.com/) | 2020 | Expert review | 10% | — | "The Precipice" existential risk estimate |
+
+**Key patterns from cross-survey analysis:**
+- The 6x gap between domain experts (6%) and superforecasters (1%) in the XPT tournament persisted despite four months of structured discussion and financial incentives to update
+- Question framing effects produce 9-19% swings in mean estimates within the same survey population
+- Response rates of 5-15% raise concerns about selection bias toward researchers with stronger views on AI risk
+
 ## Timeline Compression and Forecasting Accuracy
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph INPUTS["Inputs to Expert Opinion"]
+        CAPS[Capability Demonstrations<br/>e.g., ChatGPT, GPT-4, o1]
+        THEORY[Theoretical Frameworks<br/>Scaling laws, emergence]
+        PRIOR[Prior Beliefs<br/>Philosophy, track record]
+    end
+
+    subgraph FORMATION["Opinion Formation"]
+        UPDATE[Bayesian Updating]
+        CAPS --> UPDATE
+        THEORY --> UPDATE
+        PRIOR --> UPDATE
+        UPDATE --> OPINION[Expert Opinion<br/>P doom: 5% median]
+    end
+
+    subgraph DISAGREEMENT["Persistent Disagreement"]
+        OPINION --> OPTIMISTS[Optimists: less than 1%<br/>LeCun, Ng]
+        OPINION --> MEDIAN[Median: 5-10%<br/>Survey consensus]
+        OPINION --> PESSIMISTS[Pessimists: 20-99%<br/>Hinton, Bengio, Yampolskiy]
+    end
+
+    subgraph OUTPUTS["Policy Implications"]
+        OPTIMISTS --> ACCELERATE[Accelerate Development]
+        MEDIAN --> MEASURED[Measured Caution]
+        PESSIMISTS --> PAUSE[Pause or Heavy Regulation]
+    end
+
+    style CAPS fill:#ffe6cc
+    style OPTIMISTS fill:#ccffcc
+    style PESSIMISTS fill:#ffcccc
+    style MEDIAN fill:#cce6ff
+`} />
 
 Expert predictions about AGI timelines have undergone dramatic revision in recent years, raising serious questions about forecasting reliability in this domain. Between 2022 and 2023, the AI Impacts survey median forecast shortened from 2059 to 2047 - a 12-year shift in just one calendar year. The Metaculus forecasting community experienced even more dramatic compression, with mean estimates moving from 50 years out to approximately 5 years out over a four-year period.
 

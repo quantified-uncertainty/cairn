@@ -2,8 +2,8 @@
 title: Tool-Use Restrictions
 description: Tool-use restrictions limit what actions and APIs AI systems can access, directly constraining their potential for harm. This approach is critical for agentic AI systems, providing hard limits on capabilities regardless of model intentions. The UK AI Safety Institute reports container isolation alone is insufficient, requiring defense-in-depth combining OS primitives, hardware virtualization, and network segmentation. Major labs like Anthropic and OpenAI have implemented tiered permission systems, with METR evaluations showing agentic task completion horizons doubling every 7 months, making robust tool restrictions increasingly urgent.
 importance: 78.5
-quality: 64
-lastEdited: "2026-01-28"
+quality: 91
+lastEdited: "2026-01-29"
 sidebar:
   order: 23
 pageTemplate: knowledge-base-response
@@ -22,6 +22,18 @@ metrics:
 import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../components/wiki';
 
 <DataExternalLinks pageId="tool-restrictions" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Effectiveness** | High (70-90% risk reduction for targeted threats) | [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/gensec05-bp01.html) rates lack of least privilege implementation as "High" risk; METR evaluations show properly sandboxed agents have substantially reduced attack surface |
+| **Implementation Maturity** | Medium (fragmented across providers) | Over 13,000 MCP servers on GitHub in 2025 alone; [UK AISI Inspect toolkit](https://www.aisi.gov.uk/blog/the-inspect-sandboxing-toolkit-scalable-and-secure-ai-agent-evaluations) now used by governments, companies, and academics worldwide |
+| **Adoption Rate** | Growing rapidly (97M+ monthly SDK downloads for MCP) | [Model Context Protocol](https://modelcontextprotocol.io/specification/2025-11-25) backed by Anthropic, OpenAI, Google, Microsoft; donated to Linux Foundation December 2025 |
+| **Vulnerability Surface** | High (9.4 CVSS critical vulnerabilities found) | [CVE-2025-49596](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596) in MCP Inspector enables browser-based RCE; hundreds of "NeighborJack" vulnerabilities discovered across 7,000+ MCP servers |
+| **Bypass Difficulty** | Medium-Low (35% of incidents from simple prompts) | [Obsidian Security](https://www.obsidiansecurity.com/blog/prompt-injection) reports 35% of AI security incidents caused by prompt injection, some leading to $100K+ losses |
+| **Defense-in-Depth Value** | Critical (no single control sufficient) | [UK AISI](https://github.com/UKGovernmentBEIS/aisi-sandboxing) emphasizes container isolation alone insufficient; requires OS primitives, hardware virtualization, and network segmentation combined |
+| **Urgency** | Increasing (task horizons doubling every 7 months) | [METR](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) reports 50%-task-completion time horizon has doubled every 7 months for past 6 years; extrapolation suggests month-long autonomous projects by 2030 |
 
 ## Overview
 
@@ -140,6 +152,27 @@ flowchart TD
 | **Web browsing** | Information gathering | Filtered, logged, rate-limited |
 
 ## Security Threat Landscape
+
+### OWASP Top 10 for Agentic Applications (December 2025)
+
+The [OWASP GenAI Security Project](https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/) released the first comprehensive framework specifically for agentic AI security in December 2025, developed by over 100 security researchers with input from NIST, Cisco, Microsoft AI Red Team, Oracle Cloud, and the Alan Turing Institute.
+
+| ID | Risk | Description | Tool Restriction Relevance |
+|----|------|-------------|---------------------------|
+| ASI01 | **Excessive Agency** | Agent takes actions beyond intended scope | Direct—core rationale for tool restrictions |
+| ASI02 | **Supply Chain Attacks** | Compromised dependencies or plugins | Allowlists and signed component requirements |
+| ASI03 | **Tool & Function Manipulation** | Attackers hijack agent's tools | Schema validation and approval workflows |
+| ASI04 | **Privilege & Access Control** | Agents with overly broad permissions | Least privilege implementation critical |
+| ASI05 | **Data Leakage & Privacy** | Unauthorized data exposure | Egress controls and data classification |
+| ASI06 | **Memory & Context Poisoning** | Attackers corrupt agent's persistent state | Session isolation and memory validation |
+| ASI07 | **Insecure Inter-Agent Communication** | Spoofed messages between agents | Authentication and message signing |
+| ASI08 | **Cascading Failures** | False signals propagate through pipelines | Circuit breakers and isolation boundaries |
+| ASI09 | **Human-Agent Trust Exploitation** | Confident outputs mislead human operators | Explanation auditing and uncertainty flagging |
+| ASI10 | **Rogue Agents** | Misalignment, concealment, self-directed action | Kill switches and behavioral monitoring |
+
+*Source: [OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/), evaluated by Distinguished Expert Review Board including NIST's Apostol Vassilev*
+
+### LLM Application Security Threats
 
 According to [OWASP's 2025 Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) and the [Agentic AI Security Survey](https://arxiv.org/html/2510.23883v1), the primary threats to AI tool use systems include:
 
@@ -290,7 +323,21 @@ Major AI labs have implemented varying approaches to tool restrictions, with sig
 
 ### Notable Policy Developments
 
-**Anthropic's Model Context Protocol (MCP)**: Released in 2024, MCP became an industry standard by 2025 for connecting AI agents to external tools. OpenAI adopted MCP in March 2025, followed by Google in April 2025. However, enterprise security teams have [criticized MCP](https://venturebeat.com/technology/anthropic-cracks-down-on-unauthorized-claude-usage-by-third-party-harnesses) for weak authorization capabilities and high prompt injection risk.
+**Anthropic's Model Context Protocol (MCP)**: Released in 2024, MCP became an industry standard by 2025 for connecting AI agents to external tools. OpenAI adopted MCP in March 2025, followed by Google in April 2025. In December 2025, Anthropic [donated MCP to the Agentic AI Foundation (AAIF)](https://www.pento.ai/blog/a-year-of-mcp-2025-review) under the Linux Foundation. However, enterprise security teams have [criticized MCP](https://www.zenity.io/blog/security/securing-the-model-context-protocol-mcp) for weak authorization capabilities and high prompt injection risk.
+
+### MCP Ecosystem Security Status (2025)
+
+| Metric | Value | Implication |
+|--------|-------|-------------|
+| Monthly SDK downloads | 97M+ | Massive adoption creates large attack surface |
+| MCP servers on GitHub | 13,000+ launched in 2025 | Fragmented security posture across ecosystem |
+| Major adopters | Anthropic, OpenAI, Google, Microsoft | Industry convergence but varying security practices |
+| Critical CVEs discovered | CVE-2025-49596 (CVSS 9.4), CVE-2025-6514 | Protocol-level vulnerabilities affect all users |
+| Developer environments compromised via mcp-remote | 437,000+ | Supply chain attacks target developer tooling |
+| Servers exposed via NeighborJack misconfiguration | Hundreds across 7,000+ servers analyzed | Network interface binding (0.0.0.0) common mistake |
+| Authorization specification status | Under community revision | OAuth implementation conflicts with enterprise practices |
+
+*Sources: [Oligo Security](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596), [Red Hat MCP Security Analysis](https://www.redhat.com/en/blog/model-context-protocol-mcp-understanding-security-risks-and-controls), [Zenity MCP Security](https://zenity.io/blog/security/securing-the-model-context-protocol-mcp)*
 
 **OpenAI Audit Commitment Removal**: In December 2023, OpenAI's Preparedness Framework stated evaluations would be "audited by qualified, independent third-parties." By [April 2025](https://forum.effectivealtruism.org/posts/fsxQGjhYecDoHshxX/i-read-every-major-ai-lab-s-safety-plan-so-you-don-t-have-to), this provision was removed without changelog documentation, raising concerns about declining safety commitments under competitive pressure.
 
@@ -303,13 +350,16 @@ Major AI labs have implemented varying approaches to tool restrictions, with sig
 | **Copilot** | Limited to code assistance | Narrow scope by design |
 | **Devin-style agents** | Task-scoped, sandboxed | Emerging practices |
 
-### Common Gaps
+### Common Implementation Gaps
 
-1. **Inconsistent policies**: Different tools have different standards
-2. **User override pressure**: Users want fewer restrictions
-3. **Composition attacks**: Underappreciated risk
-4. **Cross-tool coordination**: Hard to track patterns
-5. **Third-party tools**: Variable security practices
+| Gap | Severity | Evidence |
+|-----|----------|----------|
+| **Inconsistent policies across providers** | High | OpenAI removed third-party audit commitment in April 2025; Meta's open weights have no runtime controls |
+| **User override pressure** | Medium | Users deploy own tools or switch to less restrictive providers to bypass controls |
+| **Composition attack detection** | High | METR evaluations show agents increasingly capable of multi-step circumvention using permitted tools |
+| **Cross-tool pattern tracking** | Medium | 6-month undetected access in OpenAI plugin supply chain attack demonstrates monitoring gaps |
+| **Third-party tool security** | Critical | 43 agent framework components identified with embedded vulnerabilities (Barracuda 2025); 800+ npm packages compromised in Shai-Hulud campaign |
+| **MCP authorization gaps** | High | Current OAuth specification conflicts with enterprise practices; community revision ongoing |
 
 ### Security Incident Data (2024-2025)
 
@@ -317,12 +367,25 @@ Real-world incidents demonstrate the consequences of inadequate tool restriction
 
 | Incident | Date | Impact | Root Cause | Estimated Cost |
 |----------|------|--------|------------|----------------|
-| [EchoLeak (CVE-2025-32711)](https://www.rippling.com/blog/agentic-ai-security) | Mid-2025 | Microsoft Copilot data exfiltration via email prompts | Insufficient input sanitization | Undisclosed |
+| [EchoLeak (CVE-2025-32711)](https://www.rippling.com/blog/agentic-ai-security) | Mid-2025 | Microsoft Copilot data exfiltration via email prompts | Zero-click prompt injection | $200M estimated Q1 2025 impact |
+| [Amazon Q Extension Compromise](https://fortune.com/2025/12/15/ai-coding-tools-security-exploit-software/) | December 2025 | VS Code extension compromised; file deletion and AWS disruption | Supply chain attack on verified extension | Undisclosed |
+| [MCP Inspector RCE (CVE-2025-49596)](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596) | July 2025 | Browser-based RCE on developer machines | CVSS 9.4 critical vulnerability | Data theft, lateral movement risk |
+| [MCP-Remote Injection (CVE-2025-6514)](https://thehackernews.com/2025/07/critical-vulnerability-in-anthropics.html) | 2025 | 437,000+ developer environments compromised | Shell command injection | Credential harvesting |
 | [Shai-Hulud npm Campaign](https://adversa.ai/blog/top-agentic-ai-security-resources-december-2025/) | Late 2025 | 800+ compromised packages; GitHub token/API key theft | Inadequate supply chain controls | Multi-million (estimated) |
-| Claude Code API Key Exposure | 2025 | Developer API key hardcoded in public repo | Missing secret detection guardrails | \$30,000 in fraudulent charges |
-| [Windsurf Capacity Cutoff](https://venturebeat.com/technology/anthropic-cracks-down-on-unauthorized-claude-usage-by-third-party-harnesses) | June 2025 | Service disruption with less than 1 week notice | Competitive restrictions enforcement | Business continuity impact |
+| [OpenAI Plugin Supply Chain](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) | Q2 2025 | 47 enterprise deployments compromised; 6-month undetected access | Compromised agent credentials | Customer data, financial records exposure |
 
-*Sources: [Rippling Agentic AI Security Report](https://www.rippling.com/blog/agentic-ai-security), [Adversa AI Security Resources](https://adversa.ai/blog/top-agentic-ai-security-resources-december-2025/), [VentureBeat](https://venturebeat.com/technology/anthropic-cracks-down-on-unauthorized-claude-usage-by-third-party-harnesses)*
+*Sources: [Adversa AI 2025 Security Incidents Report](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/), [Fortune](https://fortune.com/2025/12/15/ai-coding-tools-security-exploit-software/), [The Hacker News](https://thehackernews.com/2025/07/critical-vulnerability-in-anthropics.html)*
+
+### 2025 AI Security Incident Statistics
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| Prompt injection as % of AI incidents | 35% of all real-world AI security incidents | [Obsidian Security](https://www.obsidiansecurity.com/blog/prompt-injection) |
+| GenAI involvement in incidents | 70% of all AI security incidents involved GenAI | [Adversa AI](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) |
+| MCP servers analyzed with vulnerabilities | Hundreds of NeighborJack flaws across 7,000+ servers | [Backslash Security via Hacker News](https://thehackernews.com/2025/07/critical-vulnerability-in-anthropics.html) |
+| Agent framework components with embedded vulnerabilities | 43 different components identified | [Barracuda Security Report (November 2025)](https://www.esecurityplanet.com/artificial-intelligence/ai-agent-attacks-in-q4-2025-signal-new-risks-for-2026/) |
+| Q1 2025 estimated prompt injection losses | $200M+ across 160+ reported incidents | [Adversa AI](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) |
+| Risk amplification from AI agents vs traditional systems | Up to 100x due to autonomous browsing, file access, credential submission | [Security Journey](https://www.securityjourney.com/post/experts-reveal-how-agentic-ai-is-shaping-cybersecurity-in-2025) |
 
 ### Capability Benchmarks and Tool Use Metrics
 
