@@ -148,8 +148,11 @@ A Q5 page MUST have ALL of these elements. Check each one:
 
 ## MDX Syntax Rules (CRITICAL - builds will fail otherwise)
 
+- **ALWAYS escape dollar signs**: Use \\\$100M not $100M
+  - Unescaped $ triggers LaTeX parsing and breaks the build
+  - Example: "funding of \\\$50M" not "funding of $50M"
 - NEVER use \`<NUMBER\` patterns (e.g., \`<30%\`, \`<$1M\`)
-  - Use "less than 30%" or "under $1M" instead
+  - Use "less than 30%" or "under \\$1M" instead
 - NEVER use \`>NUMBER\` at start of line (becomes blockquote)
   - Use "greater than" or "more than" instead
 - Escape special characters in tables if needed
@@ -519,6 +522,20 @@ async function runBatch(options = {}) {
   console.log(`   Results: ${RESULTS_FILE}`);
   console.log(`   Log: ${LOG_FILE}`);
   console.log(`${'='.repeat(50)}\n`);
+
+  // Auto-run post-improvement fixes if there were validation failures
+  if (validationFailures.length > 0) {
+    console.log('🔧 Running post-improvement fixes...\n');
+    try {
+      const { execSync } = await import('child_process');
+      execSync('node scripts/content/post-improve.mjs --fix-only', {
+        cwd: ROOT,
+        stdio: 'inherit'
+      });
+    } catch (e) {
+      console.log('   ⚠️  Post-improvement fixes failed, run manually: npm run improve:post');
+    }
+  }
 }
 
 // Parse command line arguments
