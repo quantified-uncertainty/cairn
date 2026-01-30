@@ -14,6 +14,7 @@
  *
  * Options:
  *   --ci      Output JSON for CI pipelines
+ *   --output  Write JSON output to file (requires --ci)
  *   --fix     Auto-fix missing trailing slashes (not implemented yet)
  *
  * Exit codes:
@@ -21,7 +22,7 @@
  *   1 = Broken links found
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { findMdxFiles } from '../lib/file-utils.mjs';
 import { getColors, formatPath } from '../lib/output.mjs';
@@ -29,6 +30,7 @@ import { CONTENT_DIR } from '../lib/content-types.mjs';
 
 const args = process.argv.slice(2);
 const CI_MODE = args.includes('--ci');
+const OUTPUT_FILE = args.find(arg => arg.startsWith('--output='))?.split('=')[1];
 const colors = getColors(CI_MODE);
 
 /**
@@ -248,7 +250,14 @@ function main() {
 
   // Output results
   if (CI_MODE) {
-    console.log(JSON.stringify(results, null, 2));
+    const jsonOutput = JSON.stringify(results, null, 2);
+
+    if (OUTPUT_FILE) {
+      writeFileSync(OUTPUT_FILE, jsonOutput, 'utf-8');
+      console.error(`✓ Link health written to ${OUTPUT_FILE}`);
+    } else {
+      console.log(jsonOutput);
+    }
   } else {
     // Print broken links
     if (results.brokenLinks.length > 0) {

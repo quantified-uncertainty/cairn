@@ -10,6 +10,7 @@ import database from '../data/database.json';
 import pages from '../data/pages.json';
 import resources from '../data/resources.json';
 import stats from '../data/stats.json';
+import linkHealthData from '../data/link-health.json';
 
 // Types for dashboard data
 export interface QualityDistribution {
@@ -301,16 +302,27 @@ export interface LinkHealthStats {
 }
 
 /**
- * Get link health statistics (static placeholder - run npm run validate:links for real data)
+ * Get link health statistics from build-time validation
  */
 export function getLinkHealthStats(): LinkHealthStats {
-  // This is a placeholder - actual data comes from validate:links command
+  const data = linkHealthData as any;
+
+  const totalLinks = data.totalLinks || 0;
+  const validLinks = data.valid || 0;
+  const brokenLinks = data.brokenLinks?.length || 0;
+  const conventionIssues = data.conventionIssues?.length || 0;
+
+  // Health score: percentage of valid links
+  const healthScore = totalLinks > 0
+    ? Math.round((validLinks / totalLinks) * 100)
+    : 100;
+
   return {
-    totalLinks: 1254,
-    validLinks: 1254,
-    brokenLinks: 0,
-    conventionIssues: 0,
-    healthScore: 100,
+    totalLinks,
+    validLinks,
+    brokenLinks,
+    conventionIssues,
+    healthScore,
   };
 }
 
@@ -397,11 +409,17 @@ export function getWikiStats(): WikiStats {
   // Entity type helpers
   const getCount = (types: string[]) => byType.filter(t => types.includes(t.type)).reduce((s, t) => s + t.count, 0);
 
+  // Compute total word count from pages
+  const totalWords = pagesData.reduce((sum, p: any) => sum + (p.wordCount || 0), 0);
+  const wordsFormatted = totalWords >= 1000000
+    ? `~${(totalWords / 1000000).toFixed(2)}M`
+    : `~${(totalWords / 1000).toFixed(0)}K`;
+
   return {
     totalPages: pagesData.length,
     totalEntities: (stats as any).totalEntities || getEntities().length,
     totalResources: (resources as any[]).length,
-    totalWords: '~970K', // Pre-computed approximation
+    totalWords: wordsFormatted,
     avgQuality: computeAverageQuality().toFixed(1),
     qualitySummary: { low, adequate, high },
     entityBreakdown: {

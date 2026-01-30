@@ -695,6 +695,23 @@ function main() {
   console.log('✓ Written individual JSON files');
   console.log('✓ Written derived data files (backlinks, tagIndex, stats, pathRegistry)');
 
+  // Generate link health data
+  console.log('\nGenerating link health data...');
+  const linkHealthPath = join(DATA_DIR, 'link-health.json');
+  const linkValidation = spawnSync('node', [
+    'scripts/validate/validate-internal-links.mjs',
+    '--ci',
+    `--output=${linkHealthPath}`
+  ], { encoding: 'utf-8', cwd: process.cwd() });
+
+  if (linkValidation.status === 0 || linkValidation.status === 1) {
+    // Exit 0 = all valid, Exit 1 = broken links found
+    // Both are acceptable for data generation
+    console.log('✓ Link health data generated');
+  } else {
+    console.error('⚠️  Link health generation failed:', linkValidation.stderr);
+  }
+
   // Print summary stats
   console.log('\n--- Summary ---');
   console.log(`Total entities: ${stats.totalEntities}`);
