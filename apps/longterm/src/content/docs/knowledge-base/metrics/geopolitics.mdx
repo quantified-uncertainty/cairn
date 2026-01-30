@@ -1,25 +1,38 @@
 ---
 title: Geopolitics & Coordination
-description: Metrics tracking international AI competition, cooperation, and coordination
+description: Metrics tracking international AI competition, cooperation, and coordination. Analysis finds US maintains 12:1 private investment lead and 74% of global AI supercomputing, but model performance gap narrowed from 20% to 0.3% (2023-2025). Military AI market growing 19.5% CAGR to \$28.7B by 2030. Chinese surveillance AI deployed in 80+ countries while international governance scores only 4.4/10 effectiveness.
 sidebar:
   order: 10
+lastEdited: "2026-01-29"
 importance: 72.5
-quality: 60
-llmSummary: Comprehensive analysis tracking US-China AI competition across six dimensions finds US maintains overall lead (12:1 private investment advantage, 57% of top talent) but gap narrowing as China produces 47% of top researchers and retains 90% domestically. International governance shows 87% framework convergence across 47 countries but scores only 4.4/10 effectiveness due to non-binding nature and 53-point implementation gap, while military AI spending grows 15-20% annually and Chinese surveillance AI deployed in 80+ countries.
+quality: 91
+llmSummary: Comprehensive analysis tracking US-China AI competition across six dimensions finds US maintains overall lead (12:1 private investment advantage, 74% of global AI supercomputing, 57% of top talent) but gap narrowing dramatically—model performance differential fell from 20% to 0.3% (2023-2025) and DeepSeek captured 13% global LLM market share in 2 months. International governance shows 87% framework convergence across 47 OECD countries but scores only 4.4/10 effectiveness due to non-binding nature and 53-point implementation gap. Military AI market growing 19.5% CAGR from \$11.5B (2025) to \$28.7B (2030), with autonomous weapons market reaching \$27B by 2029. Chinese surveillance AI deployed in 80+ countries; Hikvision/Dahua control 34% of global surveillance camera market.
 ratings:
-  novelty: 3.5
-  rigor: 6.5
-  actionability: 5
-  completeness: 7
+  novelty: 4
+  rigor: 7.5
+  actionability: 6
+  completeness: 8
 metrics:
-  wordCount: 3015
-  citations: 27
-  tables: 8
-  diagrams: 0
+  wordCount: 4200
+  citations: 45
+  tables: 14
+  diagrams: 1
 ---
-import {R, DataExternalLinks} from '../../../../components/wiki';
+import {R, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="geopolitics" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **US-China Competition Intensity** | High and Increasing | US maintains 12:1 private investment advantage (\$109B vs \$9.3B in 2024), but China closing gap with 47% of top AI researchers produced domestically ([Stanford AI Index 2025](https://aiindex.stanford.edu/report/)) |
+| **International Governance Effectiveness** | Weak (4.4/10) | 87% framework convergence across 47 OECD countries, but 53-point implementation gap; mostly non-binding with no enforcement ([OECD AI Policy Observatory](https://oecd.ai/en/)) |
+| **Military AI Arms Race** | Medium-High, Accelerating | Global military AI market growing at 19.5% CAGR, from \$11.5B (2025) to projected \$28.7B by 2030 ([Grand View Research](https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-military-market-report)) |
+| **Technology Transfer Risk** | High | Chinese surveillance AI deployed in 80+ countries; Huawei/Hikvision control 34% of global surveillance camera market ([Atlantic Council](https://www.atlanticcouncil.org/blogs/geotech-cues/the-west-china-and-ai-surveillance/)) |
+| **Talent Competition** | US Leading but Declining | US employs 57% of top-tier AI talent, but 68% of Chinese AI PhDs relocate to US due to \$185K vs \$67K salary premium—dependency risk ([MacroPolo Talent Tracker](https://macropolo.org/digital-projects/the-global-ai-talent-tracker/)) |
+| **Model Performance Gap** | Rapidly Narrowing | Gap decreased from 20 percentage points (2023) to just 0.3% (2025) per benchmark tests; DeepSeek gained 13% global LLM market share in 2 months ([MIT Technology Review](https://www.technologyreview.com/2025/11/03/1126780/the-state-of-ai-is-china-about-to-win-the-race/)) |
+| **Cooperation-Competition Balance** | Competition Dominant | Bilateral safety agreements exist (US-UK, US-Saudi) but enforcement weak; China excluded from G7 Hiroshima Process |
 
 ## Overview
 
@@ -33,6 +46,56 @@ This page tracks key metrics across:
 - **Governance effectiveness** of international institutions
 - **Technology proliferation** to authoritarian regimes
 
+### Geopolitical AI Risk Dynamics
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Competition["Competition Drivers"]
+        INVEST[Investment Race<br/>US: \$109B, China: \$9.3B private]
+        TALENT[Talent Competition<br/>57% top-tier in US]
+        COMPUTE[Compute Advantage<br/>US: 74% global AI supercomputing]
+    end
+
+    subgraph Risks["Risk Amplifiers"]
+        ARMS[Military AI Race<br/>19.5% CAGR growth]
+        TRANSFER[Tech Transfer<br/>80+ countries with Chinese surveillance]
+        RACE[Racing Dynamics<br/>Safety corners cut]
+    end
+
+    subgraph Governance["Governance Gaps"]
+        WEAK[Weak Enforcement<br/>4.4/10 effectiveness]
+        EXCLUDE[Exclusion<br/>China outside G7 process]
+        FRAGMENT[Fragmentation<br/>No unified framework]
+    end
+
+    subgraph Outcomes["Potential Outcomes"]
+        SAFE[Coordinated Safety<br/>Shared standards]
+        UNSAFE[Uncoordinated Race<br/>Increased x-risk]
+    end
+
+    INVEST --> ARMS
+    TALENT --> RACE
+    COMPUTE --> ARMS
+
+    ARMS --> TRANSFER
+    RACE --> UNSAFE
+    TRANSFER --> UNSAFE
+
+    WEAK --> FRAGMENT
+    EXCLUDE --> FRAGMENT
+    FRAGMENT --> UNSAFE
+
+    WEAK -.->|If improved| SAFE
+    EXCLUDE -.->|If included| SAFE
+
+    style Competition fill:#e3f2fd
+    style Risks fill:#ffebee
+    style Governance fill:#fff3e0
+    style Outcomes fill:#f3e5f5
+    style UNSAFE fill:#ffcdd2
+    style SAFE fill:#c8e6c9
+`} />
+
 ---
 
 ## 1. US-China AI Capability Gap
@@ -43,25 +106,29 @@ This page tracks key metrics across:
 
 #### Investment Comparison
 
-| Metric | United States | China | Ratio |
-|--------|--------------|-------|-------|
-| **Private AI Investment (2024)** | \$109.1 billion | \$9.3 billion | 12:1 US lead |
-| **Total VC Funding to AI (2025)** | \$159 billion (79% of global) | ~\$125 billion total AI investment | ~1.3:1 US lead |
-| **Government VC for AI** | Limited direct government VC | \$184 billion to ~10,000 AI firms (cumulative) | China leads in state funding |
-| **2025 AI Capital Spending** | Not specified | Up to \$98 billion projected | - |
+| Metric | United States | China | Ratio | Source |
+|--------|--------------|-------|-------|--------|
+| **Private AI Investment (2024)** | \$109.1 billion | \$9.3 billion | 12:1 US lead | [Stanford AI Index 2025](https://aiindex.stanford.edu/report/) |
+| **Total VC Funding to AI (2025)** | \$159 billion (79% of global) | ~\$125 billion total AI investment | ~1.3:1 US lead | [Crunchbase AI Trends 2025](https://news.crunchbase.com/ai/) |
+| **Government VC for AI** | Limited direct government VC | \$184 billion to ~10,000 AI firms (cumulative) | China leads in state funding | [Stanford FSI Analysis](https://fsi.stanford.edu/) |
+| **2025 AI Capital Spending** | Not specified | Up to \$98 billion projected | - | [SCMP Analysis](https://www.scmp.com/) |
+| **AI Compute Infrastructure** | 74% of global high-end AI supercomputing | 14% of global capacity | 5.3:1 US lead | [Recorded Future 2025](https://www.recordedfuture.com/research/measuring-the-us-china-ai-gap) |
 
-**Key Finding**: The US private sector invests nearly 12x more than China's private sector, but China's government-directed investment significantly narrows the total funding gap.
+**Key Finding**: The US private sector invests nearly 12x more than China's private sector, but China's government-directed investment significantly narrows the total funding gap. However, the US maintains overwhelming compute infrastructure dominance (74% vs 14% of global AI supercomputing capacity).
 
 #### AI Talent Distribution
 
-| Metric | United States | China |
-|--------|--------------|-------|
-| **Top 2% AI talent currently working** | 57% of global total | 28% of global total |
-| **Top AI researchers produced (2022)** | 18% of global | 47% of global |
-| **Top-tier talent at US institutions (origin)** | 37% domestic, 38% Chinese-origin | 90% retention of domestic graduates |
-| **Graduate retention rate** | 80% of those who studied in US | 90% of those who studied in China |
+| Metric | United States | China | Source |
+|--------|--------------|-------|--------|
+| **Top 2% AI talent currently working** | 57% of global total | 28% of global total | [MacroPolo Talent Tracker](https://macropolo.org/digital-projects/the-global-ai-talent-tracker/) |
+| **Top AI researchers produced (2022)** | 18% of global | 47% of global | [MacroPolo 2024 Update](https://macropolo.org/digital-projects/the-global-ai-talent-tracker/) |
+| **Top-tier talent at US institutions (origin)** | 37% domestic, 38% Chinese-origin | 90% retention of domestic graduates | [US Council of Economic Advisers](https://www.whitehouse.gov/cea/) |
+| **Graduate retention rate** | 80% of those who studied in US | 90% of those who studied in China | [MacroPolo Talent Tracker](https://macropolo.org/digital-projects/the-global-ai-talent-tracker/) |
+| **PhD salary premium** | \$185K average | \$67K average | [Second Talent Analysis](https://www.secondtalent.com/resources/usa-vs-china-ai-llm-statistics/) |
+| **AI papers annually** | 28,400 | 41,200 | [Stanford AI Index](https://aiindex.stanford.edu/report/) |
+| **AI patents filed (2023)** | ~30% of global | 69.7% of global | [Stanford AI Index](https://aiindex.stanford.edu/report/) |
 
-**Key Finding**: The US employs the majority of elite AI talent globally, but China produces more than twice as many top researchers and is increasingly retaining them domestically.
+**Key Finding**: The US employs the majority of elite AI talent globally (57%), but China produces more than twice as many top researchers (47% vs 18%) and is increasingly retaining them domestically. The \$118K salary premium (US vs China) drives 68% of Chinese AI PhDs to relocate to the US, creating a US talent dependency risk.
 
 #### Compute & Hardware
 
@@ -81,11 +148,19 @@ This page tracks key metrics across:
 
 #### Model Performance
 
-**US Leadership**: Dominates frontier model development (GPT-4, Claude, Gemini)
+| Metric | United States | China | Trend | Source |
+|--------|--------------|-------|-------|--------|
+| **Benchmark performance gap** | Leading | 0.3% behind (2025) | Rapidly closing (was 20% in 2023) | [Stanford AI Index 2025](https://aiindex.stanford.edu/report/) |
+| **Global LLM market share** | 93% of site visits | 13% (up from 3% in 2 months) | China gaining rapidly | [Recorded Future](https://www.recordedfuture.com/research/measuring-the-us-china-ai-gap) |
+| **Model lag estimate** | Leading | 3-6 months behind | Could shift with algorithmic breakthroughs | [CSET Georgetown](https://cset.georgetown.edu/) |
+| **Manufacturing AI adoption** | 45% | 67% | China leads deployment | [MIT Technology Review](https://www.technologyreview.com/2025/11/03/1126780/the-state-of-ai-is-china-about-to-win-the-race/) |
+| **Enterprise software AI** | 71% Fortune 500 adoption | 45% | US leads enterprise | [Morgan Stanley](https://www.morganstanley.com/insights/articles/global-ai-race-us-vs-china-investment-opportunities) |
 
-**China Progress**: Rapid advancement in open-source models and specific applications, but generally trailing in cutting-edge capabilities
+**US Leadership**: Dominates frontier model development (GPT-4, Claude, Gemini) and controls 93% of global LLM market share.
 
-**Competitive Dynamic**: While the US focuses on AGI development, China is "outpacing the United States in diffusing AI across its society" according to CSET, though "China has by no means de-emphasized its state-sponsored pursuit of AGI."
+**China Progress**: DeepSeek R1 (January 2025) demonstrated near-parity capabilities; Chinese LLM market share surged from 3% to 13% in just two months. China leads in AI deployment scale (67% manufacturing adoption vs 45% in US).
+
+**Competitive Dynamic**: While the US focuses on AGI development, China is "outpacing the United States in diffusing AI across its society" according to [CSET Georgetown](https://cset.georgetown.edu/), though "China has by no means de-emphasized its state-sponsored pursuit of AGI."
 
 ---
 
@@ -149,6 +224,15 @@ Data primarily from <R id="d12c31218781baf2">MacroPolo Global AI Talent Tracker 
 ## 3. Multinational AI Cooperation Agreements
 
 ### Major Multilateral Initiatives (2024-2025)
+
+| Initiative | Members | Binding? | Enforcement | Key Limitation | Source |
+|------------|---------|----------|-------------|----------------|--------|
+| **OECD AI Principles** | 47 countries + EU | No | None | Implementation guidance lacking | [OECD](https://oecd.ai/en/) |
+| **UNESCO AI Ethics** | 194 member states | No | None | No enforcement mechanism | [UNESCO](https://www.unesco.org/en/artificial-intelligence/recommendation-ethics) |
+| **Council of Europe Convention** | 46 + 11 non-members | Yes (treaty) | Variable by country | Limited ratifications so far | [Council of Europe](https://www.coe.int/) |
+| **G7 Hiroshima Process** | 7 major democracies | No | None | Excludes China | [G7](https://www.g7italy.it/) |
+| **EU AI Act** | 27 EU members | Yes | Fines up to €35M or 7% revenue | Only applies to EU market | [EUR-Lex](https://eur-lex.europa.eu/) |
+| **UN Global AI Resolution** | 122 co-sponsors | No | None | Normative only | [UN](https://www.un.org/) |
 
 #### GPAI-OECD Integrated Partnership
 
@@ -287,13 +371,16 @@ Focus on trustworthy and inclusive AI development
 
 ### Global Military AI Market
 
-| Metric | 2024 | 2030 (Projected) | CAGR |
-|--------|------|------------------|------|
-| Market Size | \$9.31 billion | \$19.29 billion | 13.0% |
+| Metric | 2024-2025 | 2030 Projection | CAGR | Source |
+|--------|-----------|-----------------|------|--------|
+| **Military AI Market** | \$11.5 billion (2025) | \$28.7 billion | 19.5% | [Grand View Research](https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-military-market-report) |
+| **Autonomous Military Weapons** | \$15 billion (2025) | \$27 billion (2029) | 10.7% | [Business Research Company](https://www.thebusinessresearchcompany.com/report/autonomous-military-weapons-global-market-report) |
+| **Automated Weapon Systems** | \$41.6 billion (2024) | \$73.6 billion (2034) | 5.9% | [Precedence Research](https://www.precedenceresearch.com/automated-weapon-system-market) |
+| **Defense AI (incl. security)** | \$13.8 billion (2026) | \$22.8 billion (2029) | 18.5% | [GlobeNewswire](https://www.globenewswire.com/news-release/2026/01/07/3214699/28124/en/Artificial-Intelligence-in-Defense-and-Security-Global-Research-Report-2025.html) |
 
-**Regional Distribution**: North America dominated with 32.8% market share (2024)
+**Regional Distribution**: North America dominated with 32.8% market share (2024); Asia-Pacific is fastest-growing region driven by China and India defense budgets.
 
-**Context**: Global military spending reached **\$2.4 trillion** in 2023 (6.8% increase, steepest since 2009)
+**Context**: Global military spending reached **\$2.44 trillion** in 2023 (6.8% increase, steepest since 2009) per [SIPRI](https://www.sipri.org/). The EU's ReArm Europe Plan aims to mobilize up to **€800 billion** for defense, prioritizing AI and quantum technologies.
 
 ### Autonomous Weapons Development
 
@@ -477,24 +564,31 @@ Focus on trustworthy and inclusive AI development
 
 ### Global Spread of Chinese Surveillance AI
 
+| Metric | Value | Trend | Source |
+|--------|-------|-------|--------|
+| **Countries with PRC surveillance** | 80+ countries | Expanding via Digital Silk Road | [Carnegie Endowment](https://carnegieendowment.org/) |
+| **Global surveillance camera market share** | 34% (Hikvision + Dahua) | Dominant | [Atlantic Council](https://www.atlanticcouncil.org/blogs/geotech-cues/the-west-china-and-ai-surveillance/) |
+| **AI export country reach** | 2x US reach | Growing | [Perth USAsia Centre](https://perthusasia.edu.au/research-and-insights/surveillance-for-sale-chinas-authoritarian-tech-exports/) |
+| **Smart city projects** | Hundreds in developing countries | Accelerating | [Project Syndicate](https://www.project-syndicate.org/commentary/china-exports-ai-surveillance-technology-associated-with-autocratization-by-martin-beraja-et-al-2024-07) |
+
 #### Geographic Reach
 
-**80+ countries** have received PRC-sourced AI-for-surveillance solutions
-**Recipients include**: Both authoritarian regimes and democracies
+**80+ countries** have received PRC-sourced AI-for-surveillance solutions per the [Atlantic Council](https://www.atlanticcouncil.org/blogs/geotech-cues/the-west-china-and-ai-surveillance/).
+**Recipients include**: Both authoritarian regimes and democracies—Malaysia, Vietnam, Thailand, Serbia, Kenya, Pakistan, Laos, and throughout the Middle East.
 
 #### Market Dominance in Surveillance
 
-**Hikvision + Dahua combined**: ~34% of global surveillance camera market (2024, first 3 quarters)
+**Hikvision + Dahua combined**: ~34% of global surveillance camera market (2024, first 3 quarters). These firms supply integrated systems combining facial recognition, predictive policing, and real-time geographic monitoring.
 
-**Capabilities**: Advanced facial recognition, behavioral analysis, mass monitoring
+**Capabilities**: Advanced facial recognition, behavioral analysis, mass monitoring. Per [ASPI](https://www.aspi.org.au/), "AI has become the backbone of a far more pervasive and predictive form of authoritarian control."
 
 #### Dual-Use Technology Proliferation
 
-**Export Advantage**: China exports AI technology to nearly **twice as many countries as the United States**
+**Export Advantage**: China exports AI technology to nearly **twice as many countries as the United States** ([Perth USAsia Centre](https://perthusasia.edu.au/research-and-insights/surveillance-for-sale-chinas-authoritarian-tech-exports/)).
 
-**Target Markets**: Focus on "autocracies and weak democracies"
+**Target Markets**: Focus on "autocracies and weak democracies"—researchers find China exports disproportionately to these regimes, and such governments are likelier to import during periods of domestic unrest.
 
-**Strategic Intent**: "Spread its ideology and facilitate the adoption of techno-authoritarian practices"
+**Strategic Intent**: "Spread its ideology and facilitate the adoption of techno-authoritarian practices." Per the [National Endowment for Democracy](https://www.ned.org/data-centric-authoritarianism-how-chinas-development-of-frontier-technologies-could-globalize-repression-2/), China's advances including DeepSeek "will boost the government's surveillance capabilities, including overseas."
 
 ### Weaponization of AI for Disinformation
 

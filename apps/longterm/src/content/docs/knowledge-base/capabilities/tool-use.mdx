@@ -3,9 +3,9 @@ title: "Tool Use and Computer Use"
 description: "AI systems' ability to interact with external tools and control computers represents a critical capability transition. As of late 2025, OSAgent achieved 76.26% on OSWorld (superhuman vs 72% human baseline), while SWE-bench performance reached 80.9% with Claude Opus 4.5. OpenAI acknowledges prompt injection 'may never be fully solved,' with OWASP ranking it #1 vulnerability in 73% of deployments."
 sidebar:
   order: 5
-quality: 62
-llmSummary: "Tool use capabilities reached superhuman performance in October 2025 (OSAgent: 76.26% vs 72% human baseline on OSWorld) and near-human coding (80.9% on SWE-bench), but OpenAI admits prompt injection 'may never be fully solved' with 94.4% of agents vulnerable and OWASP ranking it #1 in 73% of deployments. The rapid 18x improvement since 2023 combined with fundamental unsolved security vulnerabilities creates critical prioritization tension."
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: "Tool use capabilities reached superhuman performance in October 2025 (OSAgent: 76.26% vs 72% human baseline on OSWorld) and near-human coding (80.9% on SWE-bench Verified, 45.89% on SWE-bench Pro), but OpenAI admits prompt injection 'may never be fully solved' with only 34.7% of organizations having defenses deployed. Attack success rates exceed 85% against state-of-the-art defenses (meta-analysis of 78 studies). MCP adoption reached 97M+ monthly SDK downloads and 28% Fortune 500 penetration. The 18x improvement since 2023 combined with fundamental unsolved security vulnerabilities creates critical prioritization tension."
+lastEdited: "2026-01-30"
 importance: 77.5
 ratings:
   novelty: 4.5
@@ -23,6 +23,18 @@ import {DataInfoBox, Backlinks, Mermaid, R, DataExternalLinks} from '../../../..
 <DataExternalLinks pageId="tool-use" client:load />
 
 <DataInfoBox entityId="tool-use" />
+
+### Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| Capability Maturity | **Superhuman on benchmarks** | [OSAgent](https://www.theagi.company/blog/osworld): 76.26% vs 72% human baseline on OSWorld (Oct 2025) |
+| Coding Performance | **Near-human** | Claude Opus 4.5: 80.9% on [SWE-bench Verified](https://epoch.ai/benchmarks/swe-bench-verified); 45.89% on SWE-bench Pro |
+| Security Posture | **Critical vulnerabilities** | [OWASP 2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/): Prompt injection #1 vulnerability in 73% of deployments |
+| Defense Readiness | **Inadequate** | Only 34.7% of organizations have deployed prompt injection defenses ([VentureBeat](https://venturebeat.com/security/openai-admits-that-prompt-injection-is-here-to-stay)) |
+| Improvement Rate | **Exponential** | 18x improvement on SWE-bench since 2023; OSWorld 5x in 12 months |
+| Industry Adoption | **Accelerating** | [MCP](https://en.wikipedia.org/wiki/Model_Context_Protocol): 97M+ monthly SDK downloads; 28% of Fortune 500 implemented |
+| Fundamental Fix | **Unlikely** | OpenAI admits prompt injection "may never be fully solved" |
 
 ## Overview
 
@@ -50,7 +62,7 @@ Anthropic's Computer Use capability, launched in public beta in October 2024, re
 
 The underlying technical implementation relies heavily on vision-language models that can interpret screenshots and translate high-level instructions into specific UI interactions. Training these systems involves a combination of supervised fine-tuning on human demonstrations, reinforcement learning from successful task completion, and synthetic data generation. The challenge lies in teaching models both the mechanical aspects of tool operation (correct function call formatting, proper argument passing) and the strategic aspects (when to use which tools, how to recover from errors, how to chain tools effectively).
 
-Current limitations include frequent tool selection errors, brittle error recovery mechanisms, and difficulty with novel tools not seen during training. Most implementations require careful prompt engineering and work best with familiar, well-documented tools rather than adapting flexibly to new interfaces or APIs.
+Current limitations include tool selection errors (occurring in 15-30% of complex multi-step tasks), brittle error recovery mechanisms, and difficulty with novel tools not seen during training. Research on [OSWorld-Human](https://arxiv.org/abs/2506.16042) shows that even high-performing agents take 1.4-2.7x more steps than necessary, with 75-94% of execution time spent on planning and reflection calls rather than actual task execution. Most implementations require careful prompt engineering and work best with familiar, well-documented tools rather than adapting flexibly to new interfaces or APIs.
 
 ### Benchmark Performance Comparison
 
@@ -65,7 +77,7 @@ Performance on tool use benchmarks reveals both rapid progress and, in some case
 | BFCL | Function calling | — | — | 70.36% (Claude Opus 4.1) | GPT-5 at 59.22%; Chinese models competitive |
 | <R id="c2614357fa198ba4">WebArena</R> | Web navigation | — | ~35% | ~55% | Realistic web task completion |
 
-The trajectory of improvement has been extraordinary. On OSWorld, the best AI agent went from 14.9% in October 2024 to 76.26% in October 2025—a 5x improvement that crossed the human baseline. Claude's OSWorld performance improved 45% in just four months (from 42.2% to 61.4% with Sonnet 4.5). The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to 80.9% by late 2025—illustrates how rapidly agentic coding capabilities are advancing.
+The trajectory of improvement has been extraordinary. On OSWorld, the best AI agent went from 14.9% in October 2024 to 76.26% in October 2025—a **5.1x improvement** that crossed the 72% human baseline. Claude's OSWorld performance improved 45% in just four months (from 42.2% to 61.4% with Sonnet 4.5). The dramatic improvement in <R id="433a37bad4e66a78">SWE-bench</R> scores—from 4.4% in 2023 to 80.9% by late 2025 (**18x improvement**)—illustrates how rapidly agentic coding capabilities are advancing. On [SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public), Claude Opus 4.5 leads at 45.89%, with Claude Sonnet 4.5 at 43.60%.
 
 However, performance drops significantly on private codebases that models haven't seen during training. On SWE-bench Pro's commercial code subset, Claude Opus 4.1 drops from 22.7% to 17.8%, and GPT-5 falls from 23.1% to 14.9%. This suggests current high scores may partially reflect training data contamination rather than genuine generalization.
 
@@ -81,7 +93,19 @@ The challenge of maintaining meaningful human control becomes acute when agents 
 
 ### Security Vulnerability Landscape
 
-Research on AI agent security has revealed alarming vulnerability rates. According to a <R id="3aec04f6fbc348bf">comprehensive study on agent security</R>, the attack surface for tool-using agents is significantly larger than for text-only systems. According to OWASP's 2025 Top 10 for LLM Applications, prompt injection ranks as the #1 critical vulnerability, appearing in **over 73% of production AI deployments** assessed during security audits.
+Research on AI agent security has revealed alarming vulnerability rates. According to a <R id="3aec04f6fbc348bf">comprehensive study on agent security</R>, the attack surface for tool-using agents is significantly larger than for text-only systems. According to [OWASP's 2025 Top 10 for LLM Applications](https://genai.owasp.org/llmrisk/llm01-prompt-injection/), prompt injection ranks as the #1 critical vulnerability, appearing in **over 73% of production AI deployments** assessed during security audits.
+
+#### Attack Volume and Defense Gap
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| Attack sessions targeting AI infrastructure (Q4 2025) | 91,000+ | [eSecurity Planet](https://www.esecurityplanet.com/artificial-intelligence/ai-agent-attacks-in-q4-2025-signal-new-risks-for-2026/) |
+| Organizations with prompt injection defenses | 34.7% | [VentureBeat survey](https://venturebeat.com/security/openai-admits-that-prompt-injection-is-here-to-stay) |
+| Attack success rate against state-of-the-art defenses | 85%+ | [MDPI meta-analysis](https://www.mdpi.com/2078-2489/17/1/54) (78 studies, 2021-2026) |
+| RAG poisoning success with 5 documents | 90% | [Lakera research](https://www.lakera.ai/blog/indirect-prompt-injection) |
+| Organizations using AI tools in cloud | 84% | [Orca Security](https://www.csoonline.com/article/4111384/top-5-real-world-ai-security-threats-revealed-in-2025.html) |
+| Organizations with vulnerable AI packages | 62% | [Orca Security](https://www.csoonline.com/article/4111384/top-5-real-world-ai-security-threats-revealed-in-2025.html) |
+| Cloud breaches involving AI workloads | 33% | [Cloud Security Alliance](https://www.csoonline.com/article/4111384/top-5-real-world-ai-security-threats-revealed-in-2025.html) |
 
 | Vulnerability Type | Prevalence | Severity | Example Attack |
 |-------------------|------------|----------|----------------|
@@ -91,7 +115,7 @@ Research on AI agent security has revealed alarming vulnerability rates. Accordi
 | Memory Poisoning | Common | High | Gradual alteration of agent behavior through corrupted context |
 | Excessive Agency | Common | High | Over-permissioned agents cause unintended damage |
 
-In December 2025, OpenAI made a significant admission: prompt injection "may never be fully solved." In their technical blog on hardening ChatGPT Atlas, they stated that "prompt injection, much like scams and social engineering on the web, is unlikely to ever be fully 'solved.'" The UK's National Cyber Security Centre issued a similar warning that prompt injection attacks against generative AI applications "may never be totally mitigated."
+In December 2025, OpenAI made a significant admission: prompt injection "may never be fully solved." In their [technical blog on hardening ChatGPT Atlas](https://openai.com/index/hardening-atlas-against-prompt-injection/), they stated that "prompt injection, much like scams and social engineering on the web, is unlikely to ever be fully 'solved.'" The UK's National Cyber Security Centre issued a similar warning that prompt injection attacks against generative AI applications "may never be totally mitigated." A [meta-analysis of 78 studies (2021-2026)](https://www.mdpi.com/2078-2489/17/1/54) found that attack success rates against state-of-the-art defenses exceed 85% when adaptive attack strategies are employed.
 
 Real-world incidents have demonstrated these risks. The <R id="d6f4face14780e85">EchoLeak exploit (CVE-2025-32711)</R> against Microsoft Copilot showed how infected email messages containing engineered prompts could trigger automatic data exfiltration without user interaction. <R id="73b5426488075245">Experiments with OpenAI's Operator</R> demonstrated how agents could harvest personal data and automate credential stuffing attacks. Brave's security research on the Perplexity Comet vulnerability confirmed that indirect prompt injection is "not an isolated issue, but a systemic challenge facing the entire category of AI-powered browsers."
 
@@ -169,9 +193,21 @@ The <R id="e283b9c34207eff8">Model Context Protocol (MCP)</R>, announced by Anth
 | **Governance** | Donated to Linux Foundation's Agentic AI Foundation (AAIF) Dec 2025 |
 | **Co-founders** | Anthropic, Block, OpenAI (with support from Google, Microsoft, AWS, Cloudflare) |
 
+#### MCP Adoption Trajectory
+
+| Metric | Value | Date | Source |
+|--------|-------|------|--------|
+| Monthly SDK downloads | 97M+ | Jan 2026 | [MCP Manager](https://mcpmanager.ai/blog/mcp-adoption-statistics/) |
+| Registered MCP servers | 10,000+ | Jan 2026 | [Pento](https://www.pento.ai/blog/a-year-of-mcp-2025-review) |
+| Fortune 500 adoption | 28% | Q1 2025 | [Deepak Gupta](https://guptadeepak.com/the-complete-guide-to-model-context-protocol-mcp-enterprise-adoption-market-trends-and-implementation-strategies/) |
+| Fintech sector adoption | 45% | Q1 2025 | [Deepak Gupta](https://guptadeepak.com/the-complete-guide-to-model-context-protocol-mcp-enterprise-adoption-market-trends-and-implementation-strategies/) |
+| Remote MCP server growth | 4x | May-Dec 2025 | [Zuplo Report](https://zuplo.com/mcp-report) |
+| Enterprise AI agent adoption projected | 85% | End of 2025 | [CData](https://www.cdata.com/blog/2026-year-enterprise-ready-mcp-adoption) |
+| Market size projection | \$4.5B | 2025 | [Deepak Gupta](https://guptadeepak.com/the-complete-guide-to-model-context-protocol-mcp-enterprise-adoption-market-trends-and-implementation-strategies/) |
+
 In December 2025, MCP became a founding project of the newly created Agentic AI Foundation (AAIF), a directed fund under the Linux Foundation. The donation ensures MCP "stays open, neutral, and community-driven as it becomes critical infrastructure for AI." OpenAI officially adopted MCP in March 2025, integrating the standard across its products including the ChatGPT desktop app.
 
-The rapid uptake of MCP—with over 10,000 published servers and 97M+ monthly SDK downloads—suggests growing consensus around standardized tool integration. This standardization has dual implications for safety: it enables more consistent monitoring and security practices, but also accelerates the proliferation of tool-using capabilities across the AI ecosystem. Bloomberg noted that MCP provides "the essential connective layer required" for agentic AI systems that "do far more than simple question-answering."
+The rapid uptake of MCP—with over 10,000 published servers and 97M+ monthly SDK downloads—suggests growing consensus around standardized tool integration. [Fortune 500 adoption reached 28% by Q1 2025](https://guptadeepak.com/the-complete-guide-to-model-context-protocol-mcp-enterprise-adoption-market-trends-and-implementation-strategies/), with fintech leading at 45%. This standardization has dual implications for safety: it enables more consistent monitoring and security practices, but also accelerates the proliferation of tool-using capabilities across the AI ecosystem. Bloomberg noted that MCP provides "the essential connective layer required" for agentic AI systems that "do far more than simple question-answering."
 
 ## Current State and Near-Term Trajectory
 
@@ -179,7 +215,7 @@ As of late 2025, tool use capabilities have reached several significant mileston
 
 Despite accuracy improvements on benchmarks, efficiency remains a significant limitation. Research on OSWorld-Human reveals that even high-performing agents take 1.4-2.7x more steps than humans to complete tasks. What humans can accomplish in 30 seconds might take an agent 12 minutes—primarily because 75-94% of the time is spent on planning and reflection calls to large AI models.
 
-Safety research has not kept pace with capability development. OpenAI's December 2025 admission that prompt injection "may never be fully solved" represents a significant acknowledgment. While defensive approaches are advancing—including Google DeepMind's CaMel framework (which treats LLMs as untrusted elements) and Microsoft's FIDES (using information-flow control)—no production-ready solution exists for the fundamental vulnerability.
+Safety research has not kept pace with capability development. OpenAI's December 2025 admission that prompt injection "may never be fully solved" represents a significant acknowledgment. According to a [VentureBeat survey](https://venturebeat.com/security/openai-admits-that-prompt-injection-is-here-to-stay), only 34.7% of organizations have deployed dedicated prompt injection defenses—leaving 65.3% unprotected. While defensive approaches are advancing—including Google DeepMind's CaMel framework (which treats LLMs as untrusted elements) and Microsoft's FIDES (using information-flow control)—no production-ready solution exists for the fundamental vulnerability.
 
 The economic incentives for tool use development remain exceptionally strong. OpenAI's GPT-5 leads MCPMark performance at approximately \$127.46 per benchmark run, compared to Claude Sonnet 4 at \$152.41. Organizations recognize the potential for significant productivity gains through automated digital workflows, creating pressure for rapid deployment even before safety questions are fully resolved.
 
