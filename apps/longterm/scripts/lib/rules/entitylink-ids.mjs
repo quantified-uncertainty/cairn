@@ -18,6 +18,11 @@ export const entityLinkIdsRule = createRule({
   check(content, engine) {
     const issues = [];
 
+    // Skip internal documentation
+    if (content.relativePath.includes('/internal/')) {
+      return issues;
+    }
+
     // Match <EntityLink id="..."> patterns
     const regex = /<EntityLink\s+[^>]*id=["']([^"']+)["'][^>]*>/g;
     let match;
@@ -32,7 +37,13 @@ export const entityLinkIdsRule = createRule({
         const id = match[1];
 
         // Check if ID exists in pathRegistry or entities
-        const inPathRegistry = engine.pathRegistry && engine.pathRegistry[id];
+        // Also check with __index__/ prefix for index pages (e.g., ai-transition-model → __index__/ai-transition-model)
+        // And check __index__/ai-transition-model/factors/ prefix for factor IDs
+        const inPathRegistry = engine.pathRegistry && (
+          engine.pathRegistry[id] ||
+          engine.pathRegistry[`__index__/${id}`] ||
+          engine.pathRegistry[`__index__/ai-transition-model/factors/${id}`]
+        );
         const inEntities = engine.entities && engine.entities[id];
 
         if (!inPathRegistry && !inEntities) {
