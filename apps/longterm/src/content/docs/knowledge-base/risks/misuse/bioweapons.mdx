@@ -4,16 +4,13 @@ description: "AI-assisted biological weapon development represents one of the mo
 sidebar:
   order: 1
 maturity: "Growing"
-quality: 70
-llmSummary: "Comprehensive synthesis of AI-bioweapons evidence through 2025, including RAND's finding of no significant AI uplift (2024) versus frontier labs' assessments that next-gen models will reach 'high-risk' classification. Key uncertainties: whether knowledge or wet-lab capability is the bottleneck (65% favor capability), current uplift estimates (0.02-3.6% attack probability), and whether Microsoft's finding that AI-designed toxins evade 75%+ of screening represents a fundamental defensive failure."
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: "Comprehensive synthesis of AI-bioweapons evidence through early 2026, including the FRI expert survey finding 5x risk increase from AI capabilities (0.3% → 1.5% annual epidemic probability), Anthropic's ASL-3 activation for Claude Opus 4, and OpenAI's o3 reaching 94th percentile on virology tests. Key developments: DNA screening now catches 97% of threats post-patch, but open-source models (DeepSeek) lack safeguards. Expert consensus: safeguards can reduce risk nearly to baseline even with advanced AI capabilities."
+lastEdited: "2026-01-30"
 styleGuideVersion: "kb-2.0"
 importance: 82.5
 causalLevel: "outcome"
 pageTemplate: "knowledge-base-risk"
-todos:
-  - "Complete 'How It Works' section"
-  - "Complete 'Key Uncertainties' section (6 placeholders)"
 ratings:
   novelty: 4.5
   rigor: 6.8
@@ -30,6 +27,19 @@ import {DataInfoBox, Backlinks, ModelsList, Mermaid, R, EntityLink, DataExternal
 <DataExternalLinks pageId="bioweapons" client:load />
 
 <DataInfoBox entityId="bioweapons" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Current AI Uplift** | Low-Moderate (1.3-2.5x) | RAND 2024: no significant difference; Anthropic 2025: "substantially fewer critical failures" with AI |
+| **Expert Risk Estimate** | 0.3% → 1.5% annual with AI capabilities | [FRI survey](https://forecastingresearch.org/ai-enabled-biorisk): 5x increase if AI matches expert virologists |
+| **Frontier Model Status** | Expert-level knowledge achieved | OpenAI's o3: 94th percentile on VCT; Claude Opus 4 triggered ASL-3 |
+| **Screening Evasion** | 75%+ pre-patch; 97% post-patch | Microsoft 2024; patch deployed globally Oct 2025 |
+| **Open-Source Risk** | High concern | DeepSeek "worst tested" for biosafety (Amodei 2025) |
+| **Wet Lab Bottleneck** | Remains primary barrier | Soviet Biopreparat: 30,000+ staff over decades; Aum Shinrikyo failed |
+| **Defense Trajectory** | Favored long-term | mRNA platforms, metagenomic surveillance, far-UVC maturing |
+| **Policy Readiness** | Inadequate | [CSIS 2025](https://www.csis.org/analysis/opportunities-strengthen-us-biosecurity-ai-enabled-bioterrorism-what-policymakers-should): measures "ill-equipped" for AI threats |
 
 ## Overview
 
@@ -77,6 +87,19 @@ Attempting to quantify the total risk from AI-assisted bioweapons requires estim
 | Cumulative probability through 2040 | 0.1% - 8% | Timeline projections | Depends heavily on AI capability trajectory |
 | Expected casualties if attack occurs | 10,000 - 10M+ | Historical/scenario analysis | Varies by pathogen, deployment method, response |
 | Expected value of harm per year | \$1B - \$500B | Probability × consequence estimates | Extremely uncertain |
+
+#### Expert Survey Data (2025)
+
+The [Forecasting Research Institute](https://forecastingresearch.org/ai-enabled-biorisk) surveyed 46 biosecurity experts and 22 superforecasters in early 2025:
+
+| Scenario | Annual Risk of 100K+ Death Epidemic | Multiplier |
+|----------|-------------------------------------|------------|
+| Baseline (no AI capability increase) | 0.3% | 1x |
+| AI matches expert virologists on troubleshooting | 1.5% | 5x |
+| AI enables 50% of non-experts to synthesize influenza | 1.25% | 4.2x |
+| With mandatory screening + jailbreaking safeguards | 0.4% | 1.3x |
+
+**Key insight:** Safeguards (closed weights, anti-jailbreaking, DNA screening) can reduce risk nearly to baseline even with advanced AI capabilities.
 
 The <EntityLink id="bioweapons-attack-chain">Bioweapons Attack Chain Model</EntityLink> estimates compound attack probability at 0.02% - 3.6% depending on assumptions, with substantial uncertainty at each step. The wide range reflects genuine disagreement about key parameters.
 
@@ -468,6 +491,22 @@ OpenAI states their most advanced models "aren't yet capable enough to pose seve
 
 **US/UK AI Safety Institute joint evaluation (2024):** The first joint government-led model evaluation tested Claude 3.5 Sonnet across biological capabilities, cyber capabilities, software development, and safeguard efficacy. Elizabeth Kelly, AISI director, called it "the most comprehensive government-led safety evaluation of an advanced AI model to date."
 
+#### Evaluation Methodology Limitations
+
+[Epoch AI's 2025 analysis](https://epoch.ai/gradient-updates/do-the-biorisk-evaluations-of-ai-labs-actually-measure-the-risk-of-developing-bioweapons) of biorisk evaluations across 8 major AI labs identified significant methodological concerns:
+
+| Lab | Benchmark Share | Red Teaming | Uplift Trials |
+|-----|-----------------|-------------|---------------|
+| Anthropic | ~40% | Yes | Yes (only lab with text-based trials) |
+| OpenAI | ~50% | Yes | No |
+| Google DeepMind | ~80% | No | No |
+
+**Key findings:**
+- Most publicly described biorisk benchmarks have "rapidly saturated"—AI systems now exceed expert-human baselines
+- Benchmarks "practically always fail to capture many real-world complexities"
+- Anthropic is the only frontier lab conducting explicit biorisk uplift trials
+- Despite limitations, Epoch AI concluded Anthropic was "largely justified" in activating ASL-3
+
 ### Kevin Esvelt's Classroom Experiment
 
 MIT researcher Kevin Esvelt conducted an informal but striking demonstration. He asked students to use ChatGPT or other LLMs to create a dangerous virus. After only **one hour**, the class identified:
@@ -497,9 +536,22 @@ The <R id="2b6675e423040e53">Center for a New American Security report</R> by Bi
 
 The report emphasizes that while AI-enabled biological catastrophes are "far from inevitable," current biological safeguards already need significant updates.
 
-### 2025 Developments: A Pivotal Year
+### 2025-2026 Developments: A Pivotal Period
 
-2025 has seen a significant shift in how AI labs and governments assess biological risks. Several developments stand out:
+2025-2026 marked a significant shift in how AI labs and governments assess biological risks. The [Council on Strategic Risks' year-in-review](https://councilonstrategicrisks.org/2025/12/22/2025-aixbio-wrapped-a-year-in-review-and-projections-for-2026/) noted: "The year 2025 brought rising public awareness and discussion of the risks at the AI-biology nexus."
+
+| Development | Date | Significance |
+|-------------|------|--------------|
+| Evo2 biological AI model released | Feb 2025 | Largest AI biology model trained on 128,000+ genomes |
+| FRI expert survey | Feb 2025 | Quantified 5x risk increase from AI capabilities |
+| OpenAI's o3 matches expert virologists | Apr 2025 | 94th percentile on Virology Capabilities Test |
+| Anthropic ASL-3 activation | May 2025 | First use of highest safety tier for Claude Opus 4 |
+| US AI Action Plan biosecurity chapter | Jul 2025 | Federal recognition of AI-enabled pathogen risk |
+| UN AI governance bodies formalized | Sep 2025 | Scientific Panel + Global Dialogue established |
+| DNA screening patch deployed globally | Oct 2025 | 97% detection rate achieved |
+| [Epoch AI evaluation analysis](https://epoch.ai/gradient-updates/do-the-biorisk-evaluations-of-ai-labs-actually-measure-the-risk-of-developing-bioweapons) | 2025 | Found benchmark saturation across labs |
+
+Several specific developments stand out:
 
 #### OpenAI's High-Risk Classification (June 2025)
 
@@ -1004,7 +1056,11 @@ Broader biosecurity measures may matter more than AI-specific interventions:
 | 2025 (Jul) | OpenAI hosts biodefense summit with government researchers and NGOs |
 | 2025 (Jul) | Trump administration's AI Action Plan identifies biosecurity as priority |
 | 2025 (Aug) | CSIS publishes "Opportunities to Strengthen U.S. Biosecurity from AI-Enabled Bioterrorism" |
+| 2025 (Sep) | UN formalizes International Scientific Panel on AI and Global Dialogue on AI Governance |
 | 2025 (Oct) | Microsoft publishes Science paper; screening patch deployed globally (97% effective) |
+| 2025 (Oct) | Hoover Institution warns biotech+AI is "one of the biggest emerging security threats" |
+| 2025 (Dec) | Council on Strategic Risks publishes "2025 AIxBio Wrapped" year-in-review |
+| 2026 (Jan) | Epoch AI finds biorisk benchmarks have "rapidly saturated" across frontier labs |
 
 ---
 
@@ -1055,6 +1111,17 @@ The debate often reduces to different assessments of:
 ---
 
 ## Sources & Resources
+
+### 2025-2026 Key Sources
+
+| Source | Type | Key Finding |
+|--------|------|-------------|
+| [Forecasting Research Institute](https://forecastingresearch.org/ai-enabled-biorisk) | Expert survey | 5x risk increase from AI; safeguards reduce risk to baseline |
+| [Council on Strategic Risks Year Review](https://councilonstrategicrisks.org/2025/12/22/2025-aixbio-wrapped-a-year-in-review-and-projections-for-2026/) | Analysis | Rising awareness of AIxBio risks; UN governance bodies formed |
+| [Epoch AI Evaluation Analysis](https://epoch.ai/gradient-updates/do-the-biorisk-evaluations-of-ai-labs-actually-measure-the-risk-of-developing-bioweapons) | Methodology review | Biorisk benchmarks saturated; Anthropic only lab with uplift trials |
+| [CSIS Policy Analysis](https://www.csis.org/analysis/opportunities-strengthen-us-biosecurity-ai-enabled-bioterrorism-what-policymakers-should) | Policy | US biosecurity measures "ill-equipped" for AI threats |
+| [Anthropic Biorisk Methodology](https://red.anthropic.com/2025/biorisk/) | Technical | ASL-3 activation justified; "substantially fewer critical failures" |
+| [OpenAI Biology Preparedness](https://openai.com/index/preparing-for-future-ai-capabilities-in-biology/) | Technical | Next-gen models expected to hit "high-risk" classification |
 
 ### Primary Research
 

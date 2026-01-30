@@ -18,11 +18,23 @@ metrics:
   tables: 2
   diagrams: 0
 ---
-import {DataInfoBox, DataExternalLinks} from '../../../../components/wiki';
+import {DataInfoBox, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="deep-learning-era" client:load />
 
 <DataInfoBox entityId="deep-learning-era" />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Capability Acceleration** | Dramatic (10-100x/year) | ImageNet error: 26% → 3.5% (2012-2017); GPT parameters: 117M → 175B (2018-2020) |
+| **Safety Field Growth** | Moderate (2-5x) | Researchers: ~100 → 500-1000; Funding: ~\$3M → \$50-100M/year (2015-2020) |
+| **Timeline Compression** | Significant | AlphaGo achieved human-level Go ~10 years ahead of expert predictions (2016 vs 2025-2030) |
+| **Institutional Response** | Foundational | DeepMind Safety Team (2016), OpenAI founded (2015), "Concrete Problems" paper (2016) |
+| **Capabilities-Safety Gap** | Widening | Industry capabilities spending: billions; Safety spending: tens of millions |
+| **Public Awareness** | Growing | 200+ million viewers for AlphaGo match; GPT-2 "too dangerous" controversy (2019) |
+| **Key Publications** | Influential | "Concrete Problems" (2016): 2,700+ citations; Established research agenda |
 
 ## Summary
 
@@ -37,15 +49,56 @@ The deep learning revolution transformed AI from a field of limited successes to
 
 **The shift**: From "we'll worry about this when we get closer to AGI" to "we need safety research now."
 
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph CATALYSTS["Capability Breakthroughs"]
+        ALEX[AlexNet 2012<br/>41% error reduction] --> ACCEL[Acceleration<br/>Recognition]
+        ALPHAGO[AlphaGo 2016<br/>Decade early] --> TIMELINE[Timeline<br/>Compression]
+        GPT[GPT Series 2018-2020<br/>100x parameter scaling] --> EMERGENT[Emergent<br/>Capabilities]
+    end
+
+    subgraph RESPONSE["Safety Field Response"]
+        ACCEL --> DM[DeepMind Safety<br/>Team 2016]
+        TIMELINE --> OPENAI[OpenAI Founded<br/>2015]
+        EMERGENT --> CONCRETE[Concrete Problems<br/>Paper 2016]
+        CONCRETE --> RESEARCH[Research<br/>Professionalization]
+    end
+
+    subgraph TENSION["Growing Tensions"]
+        RESEARCH --> GAP[Capabilities-Safety Gap<br/>Billions vs Millions]
+        DM --> RACE[Race Dynamics<br/>US vs China]
+        OPENAI --> SHIFT[Mission Drift<br/>Non-profit to Capped-profit]
+    end
+
+    GAP --> FUTURE[Need for<br/>Scaled Safety Response]
+    RACE --> FUTURE
+    SHIFT --> FUTURE
+
+    style ALEX fill:#ffcccc
+    style ALPHAGO fill:#ffcccc
+    style GPT fill:#ffcccc
+    style OPENAI fill:#ccffcc
+    style DM fill:#ccffcc
+    style CONCRETE fill:#ccffcc
+    style GAP fill:#ffffcc
+    style RACE fill:#ffffcc
+    style SHIFT fill:#ffffcc
+`} />
+
 ## AlexNet: The Catalytic Event (2012)
 
 ### ImageNet 2012
 
-**September 2012**: Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton enter AlexNet in ImageNet competition.
+**September 30, 2012**: Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton enter [AlexNet](https://en.wikipedia.org/wiki/AlexNet) in the ImageNet Large Scale Visual Recognition Challenge (ILSVRC).
 
-**Result**: 15.3% error rate, compared to 26.2% for second place.
+| Metric | AlexNet (2012) | Second Place | Improvement |
+|--------|----------------|--------------|-------------|
+| Top-5 Error Rate | 15.3% | 26.2% | 10.8 percentage points |
+| Model Parameters | 60 million | N/A | First large-scale CNN |
+| Training Time | 6 days (2x GTX 580 GPUs) | Weeks-months | GPU acceleration |
+| Architecture Layers | 8 (5 conv + 3 FC) | Hand-engineered features | End-to-end learning |
 
-**Significance**: Largest leap in computer vision performance ever recorded.
+**Significance**: Largest leap in computer vision performance ever recorded—a 41% relative error reduction that [amazed the computer vision community](https://www.pinecone.io/learn/series/image-search/imagenet/).
 
 ### Why AlexNet Mattered
 
@@ -76,10 +129,15 @@ After: "AI is working; capabilities might accelerate."
 
 ### Origins
 
-**Founded**: 2010
-**Founders**: Demis Hassabis, Shane Legg, Mustafa Suleyman
-**Location**: London
-**Acquired**: Google (2014) for ~\$500M
+| Detail | Information |
+|--------|-------------|
+| **Founded** | 2010 |
+| **Founders** | Demis Hassabis, Shane Legg, Mustafa Suleyman |
+| **Location** | London, UK |
+| **Acquisition** | [Google (January 2014)](https://techcrunch.com/2014/01/26/google-deepmind/) for \$400-650M |
+| **Pre-acquisition Funding** | Venture funding from Peter Thiel and others |
+| **2016 Operating Losses** | [\$154 million](https://qz.com/1095833/how-much-googles-deepmind-ai-research-costs-goog) |
+| **2019 Operating Losses** | [\$649 million](https://www.cnbc.com/2020/12/17/deepmind-lost-649-million-and-alphabet-waived-a-1point5-billion-debt-.html) |
 
 ### Why DeepMind Matters for Safety
 
@@ -114,19 +172,23 @@ After: "AI is working; capabilities might accelerate."
 ### Background
 
 **Go**: Ancient board game, vastly more complex than chess.
-- ~10^170 possible board positions (vs. ~10^120 atoms in universe)
+- ~10^170 possible board positions (vs. ~10^80 atoms in observable universe)
 - Relies on intuition, not just calculation
-- Considered decades away from AI mastery
+- Expert predictions: AI mastery by 2025-2030
 
 ### The Match
 
-**March 2016**: AlphaGo vs. Lee Sedol (18-time world champion)
+**March 9-15, 2016**: [AlphaGo vs. Lee Sedol](https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol) (18-time world champion) at Four Seasons Hotel, Seoul.
 
-**Prediction**: Lee Sedol would win easily.
-
-**Result**: AlphaGo won 4-1.
-
-**Move 37**: AlphaGo played a move so unconventional that experts thought it was a mistake. It was brilliant.
+| Metric | Detail |
+|--------|--------|
+| **Final Score** | AlphaGo 4, Lee Sedol 1 |
+| **Global Viewership** | [Over 200 million](https://deepmind.google/research/breakthroughs/alphago/) |
+| **Prize Money** | \$1 million (donated to charity by DeepMind) |
+| **Lee Sedol's Prize** | \$170,000 (\$150K participation + \$20K for Game 4 win) |
+| **Move 37 (Game 2)** | 1 in 10,000 probability move; pivotal creative breakthrough |
+| **Move 78 (Game 4)** | Lee Sedol's "God's Touch"—equally unlikely counter |
+| **Recognition** | AlphaGo awarded honorary 9-dan rank by Korea Baduk Association |
 
 ### Why AlphaGo Changed Everything
 
@@ -172,10 +234,15 @@ If timelines could be wrong by a decade on Go, what about AGI?
 
 ### Origins
 
-**Founded**: December 2015
-**Founders**: Sam Altman, Elon Musk, Ilya Sutskever, Greg Brockman, Wojciech Zaremba, others
-**Initial funding**: \$1 billion committed
-**Structure**: Non-profit research lab
+| Detail | Information |
+|--------|-------------|
+| **Founded** | [December 11, 2015](https://en.wikipedia.org/wiki/OpenAI) |
+| **Founders** | Sam Altman, Elon Musk, Ilya Sutskever, Greg Brockman, Wojciech Zaremba, and others |
+| **Pledged Funding** | \$1 billion (from Musk, Altman, Thiel, Hoffman, AWS, Infosys) |
+| **Actual Funding by 2019** | [\$130 million received](https://openai.com/index/openai-elon-musk/) |
+| **Musk's Contribution** | \$45 million (vs. pledged much larger amount) |
+| **Structure** | Non-profit research lab (until 2019) |
+| **Initial Approach** | Open research publication, safety-focused development |
 
 ### Charter Commitments
 
@@ -213,41 +280,55 @@ If timelines could be wrong by a decade on Go, what about AGI?
 
 ## GPT: The Language Model Revolution
 
+### Model Scaling Trajectory
+
+| Model | Release | Parameters | Scale Factor | Training Data | Estimated Training Cost |
+|-------|---------|------------|--------------|---------------|------------------------|
+| GPT-1 | June 2018 | 117 million | 1x | BooksCorpus | Minimal |
+| GPT-2 | Feb 2019 | 1.5 billion | 13x | WebText (40GB) | ~\$50K (reproduction) |
+| GPT-3 | June 2020 | 175 billion | 1,500x | 499B tokens | [\$4.6 million estimated](https://lambda.ai/blog/demystifying-gpt-3) |
+
 ### GPT-1 (2018)
 
-**June 2018**: First GPT model released.
+**June 2018**: First GPT model released, demonstrating that language models could learn from unsupervised pre-training on a large corpus, then fine-tune for specific tasks.
 
-**Parameters**: 117 million
-**Achievement**: Demonstrated that language models could learn from unsupervised pre-training.
-
-**Significance**: Showed transformer architecture worked for language.
+**Significance**: Proved transformer architecture worked for language generation, setting the stage for rapid scaling.
 
 ### GPT-2 (2019)
 
-**February 2019**: OpenAI announces GPT-2.
+**February 2019**: OpenAI announces GPT-2 with 1.5 billion parameters—13x larger than GPT-1.
 
-**Parameters**: 1.5 billion (13x larger than GPT-1)
-**Capabilities**: Could generate coherent paragraphs, answer questions, translate.
+**Capabilities**: Could generate coherent paragraphs, answer questions, translate, and summarize without task-specific training.
 
 ### The "Too Dangerous to Release" Controversy
 
-**OpenAI's decision**: Initially refused to release full model.
+**February 2019**: OpenAI announced GPT-2 was ["too dangerous to release"](https://techcrunch.com/2019/02/17/openai-text-generator-dangerous/) in full form.
 
-**Reasoning**: Potential for misuse (fake news, spam, impersonation).
+| Timeline | Action |
+|----------|--------|
+| February 2019 | Initial announcement; only 124M parameter version released |
+| May 2019 | 355M parameter version released |
+| August 2019 | 774M parameter version released |
+| November 2019 | Full 1.5B parameter version released |
+| Within months | [Grad students reproduced model](https://www.theregister.com/2019/11/06/openai_gpt2_released/) for ~\$50K in cloud credits |
 
-**Staged release**: Smaller versions first, full model months later.
+**Reasoning**: Potential for misuse (fake news, spam, impersonation). VP of Engineering David Luan: "Someone who has malicious intent would be able to generate high quality fake news."
 
-**Reactions**:
+**Community Reactions**:
 
-**Supporters**: Responsible disclosure is important.
-**Critics**: Overhyped the danger, precedent for secrecy, paternalistic.
+| Position | Argument |
+|----------|----------|
+| **Supporters** | Responsible disclosure is important; "new bar for ethics" |
+| **Critics** | Overhyped danger; "opposite of open"; precedent for secrecy; deprived academics of research access |
+| **Pragmatists** | Model would be reproduced anyway; spotlight on ethics valuable |
 
-**Outcome**: Full model released November 2019. Feared harms didn't materialize at scale.
+**Outcome**: Full model released November 2019. OpenAI stated: "We have seen no strong evidence of misuse so far."
 
-**Lessons**:
-- Hard to predict actual harms
-- Disclosure norms matter
-- Tension between openness and safety
+**Lessons for AI Safety**:
+- Predicting actual harms is difficult
+- Disclosure norms matter and are contested
+- Tension between openness and safety is fundamental
+- Model capabilities can be independently reproduced
 
 ### GPT-3 (2020)
 
@@ -274,11 +355,14 @@ If timelines could be wrong by a decade on Go, what about AGI?
 
 ### The Paper That Grounded Safety Research
 
-**Authors**: Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman, Dan Mané
-
-**Affiliation**: OpenAI and Google Brain researchers
-
-**Published**: June 2016
+| Detail | Information |
+|--------|-------------|
+| **Title** | [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565) |
+| **Authors** | Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman, Dan Mané |
+| **Affiliation** | Google Brain and OpenAI researchers |
+| **Published** | June 2016 (arXiv) |
+| **Citations** | [2,700+ citations](https://www.semanticscholar.org/paper/Concrete-Problems-in-AI-Safety-Amodei-Olah/e86f71ca2948d17b003a5f068db1ecb2b77827f7) (124 highly influential) |
+| **Significance** | Established foundational taxonomy for AI safety research |
 
 ### Why It Mattered
 
@@ -393,11 +477,26 @@ How do you ensure AI works when conditions change?
 
 ### The Problem
 
-**Capabilities research**: Huge industry investment, thousands of researchers, clear economic incentives.
+| Dimension | Capabilities Research | Safety Research | Ratio |
+|-----------|----------------------|-----------------|-------|
+| **Annual Funding (2020)** | \$10-50 billion globally | [\$50-100 million](https://www.effectivealtruism.org/articles/changes-in-funding-in-the-ai-safety-field) | 100-500:1 |
+| **Researchers** | Tens of thousands | 500-1,000 | ~20-50:1 |
+| **Economic Incentive** | Clear (products, services) | Unclear (public good) | — |
+| **Corporate Investment** | Massive (Google, Microsoft, Meta) | Limited safety teams | — |
+| **Publication Velocity** | Thousands/year | Dozens/year | — |
 
-**Safety research**: Smaller funding, hundreds of researchers, less clear deliverables.
+### Safety Funding Growth (2015-2020)
 
-**Result**: Capabilities advancing faster than safety.
+| Year | Estimated Safety Spending | Key Developments |
+|------|---------------------------|------------------|
+| 2015 | ~\$3.3 million | MIRI primary organization; FLI grants begin |
+| 2016 | ~\$6-10 million | DeepMind safety team forms; "Concrete Problems" published |
+| 2017 | ~\$15-25 million | Open Philanthropy begins major grants; CHAI founded |
+| 2018 | ~\$25-40 million | Industry safety teams grow; academic programs start |
+| 2019 | ~\$40-60 million | MIRI receives \$2.1M Open Philanthropy grant |
+| 2020 | ~\$50-100 million | MIRI receives \$7.7M grant; safety teams at all major labs |
+
+**Result**: Despite 15-30x growth in safety spending, capabilities investment grew even faster—the gap widened in absolute terms.
 
 ### Attempts to Close the Gap
 

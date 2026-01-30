@@ -18,15 +18,72 @@ metrics:
   tables: 34
   diagrams: 0
 ---
-import {Backlinks, R, EntityLink, DataExternalLinks} from '../../../../components/wiki';
+import {Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
 <DataExternalLinks pageId="agi-development" client:load />
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Timeline Consensus** | 2027-2031 median (50% probability) | [Metaculus](https://www.metaculus.com/questions/5121/when-will-the-first-general-ai-system-be-devised-tested-and-publicly-announced/): 25% by 2027, 50% by 2031; [80,000 Hours](https://80000hours.org/2025/03/when-do-experts-expect-agi-to-arrive/) expert synthesis |
+| **Industry Leader Predictions** | 2026-2028 | Anthropic: ["powerful AI" by late 2026/early 2027](https://darioamodei.com/essay/machines-of-loving-grace); OpenAI: ["we know how to build AGI"](https://blog.samaltman.com/reflections) |
+| **Capital Investment** | \$400-450B annually by 2026 | [Deloitte](https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2026/compute-power-ai.html): AI data center capex; [McKinsey](https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers): \$5-8T total by 2030 |
+| **Compute Scaling** | 10^26-10^28 FLOPs projected | [Epoch AI](https://epoch.ai/blog/can-ai-scaling-continue-through-2030): compute trends; training runs reaching \$1-10B |
+| **Safety-Capability Gap** | 3-5 year research lag | Industry evaluations show alignment research trailing deployment capability |
+| **Geopolitical Dynamics** | US maintains ~5x compute advantage | [CFR](https://www.cfr.org/article/chinas-ai-chip-deficit-why-huawei-cant-catch-nvidia-and-us-export-controls-should-remain): China lags 3-6 months in models despite chip restrictions |
+| **Catastrophic Risk Concern** | 25% per Amodei; 5% median (16% mean) in surveys | [AI Impacts 2024](https://arxiv.org/abs/2401.02843): 2,778 researchers surveyed |
 
 ## Overview
 
 AGI development represents the global race to build artificial general intelligence—systems matching or exceeding human-level performance across all cognitive domains. Timeline forecasts have shortened dramatically: Metaculus forecasters now average a 25% probability of AGI by 2027 and 50% by 2031, down from a median of 50 years as recently as 2020. CEOs of major labs have made even more aggressive predictions, with Anthropic officially stating they expect "powerful AI systems" with Nobel Prize-winner level capabilities by early 2027.
 
 Development is concentrated among 3-4 major labs investing \$10-100B+ annually. This concentration creates significant coordination challenges and <EntityLink id="racing-dynamics">racing dynamics</EntityLink> that could compromise safety research. The field has shifted from academic research to industrial competition, with <EntityLink id="openai">OpenAI</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="deepmind">DeepMind</EntityLink>, and emerging players like <EntityLink id="xai">xAI</EntityLink> pursuing different technical approaches while facing similar resource constraints and timeline pressures.
+
+### AGI Development Dynamics
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Drivers["Key Drivers"]
+        COMPUTE[Compute Scaling<br/>10^26-28 FLOPs]
+        CAPITAL[Capital Investment<br/>400-450B annually]
+        TALENT[Talent Concentration<br/>Top researchers at labs]
+    end
+
+    subgraph Development["Development Race"]
+        LABS[Major Labs<br/>OpenAI, Anthropic, DeepMind, xAI]
+        COMPETITION[Racing Dynamics]
+        CHINA[US-China Competition]
+    end
+
+    subgraph Timelines["Timeline Estimates"]
+        SHORT[Short: 2025-2027<br/>15-25% probability]
+        MEDIUM[Medium: 2027-2030<br/>30-40% probability]
+        LONG[Long: 2030-2040<br/>25-35% probability]
+    end
+
+    subgraph Risks["Safety Concerns"]
+        GAP[Safety-Capability Gap<br/>3-5 year lag]
+        ALIGN[Alignment Research<br/>Underfunded relative to capabilities]
+    end
+
+    COMPUTE --> LABS
+    CAPITAL --> LABS
+    TALENT --> LABS
+    LABS --> COMPETITION
+    CHINA --> COMPETITION
+    COMPETITION --> SHORT
+    COMPETITION --> MEDIUM
+    COMPETITION --> LONG
+    LABS --> GAP
+    GAP --> ALIGN
+
+    style SHORT fill:#ffcccc
+    style MEDIUM fill:#ffffcc
+    style LONG fill:#ccffcc
+    style GAP fill:#ffcccc
+    style ALIGN fill:#ffcccc
+`} />
 
 ## AGI Timeline Forecasts
 
@@ -108,6 +165,19 @@ Current AGI development demands exponentially increasing resources:
 | **H100 Equivalent GPUs** | 100K+ | 1M+ | 10M+ |
 
 *Sources: <R id="120adc539e2fa558">Epoch AI compute trends</R>, <R id="73c1b835c41bcbdb">RAND Corporation analysis</R>*
+
+### Global AI Infrastructure Investment
+
+The capital requirements for AGI development are unprecedented. According to [McKinsey](https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers), companies will need to invest \$5.2-7.9 trillion into AI data centers by 2030.
+
+| Category | 2025 | 2026 | 2028 | Source |
+|----------|------|------|------|--------|
+| **AI Data Center Capex** | \$250-300B | \$400-450B | \$1T | [Deloitte 2026 Predictions](https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2026/compute-power-ai.html) |
+| **AI Chip Spending** | \$150-200B | \$250-300B | \$400B+ | Industry analysis |
+| **Stargate Project** | \$100B (Phase 1) | Ongoing | \$500B total | [TechCrunch](https://techcrunch.com/2025/10/10/the-billion-dollar-infrastructure-deals-powering-the-ai-boom/) |
+| **OpenAI Cloud Commitments** | Ongoing | \$50B/year | \$60B/year | Azure + Oracle deals |
+
+Training costs have declined dramatically—[ARK Investment](https://aichronicle.co/the-economics-of-ai-why-training-costs-are-plummeting-and-what-it-means-for-the-future/) reports costs drop roughly 10x annually, ~50x faster than Moore's Law. DeepSeek's V3 achieved 18x training cost reduction vs GPT-4o.
 
 ## Key Capability Thresholds
 

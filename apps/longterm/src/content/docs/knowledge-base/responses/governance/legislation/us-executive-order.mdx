@@ -1,25 +1,22 @@
 ---
 title: "US Executive Order on AI"
-description: "Executive Order 14110 (October 2023) established compute-based reporting thresholds (10^26 FLOP for general models, 10^23 for biological), created the US AI Safety Institute, and implemented cloud computing KYC requirements. Revoked by President Trump on January 20, 2025, with the AISI renamed to CAISI and refocused on innovation over safety."
+description: "Executive Order 14110 (October 2023) placed 150 requirements on 50+ federal entities, established compute-based reporting thresholds (10^26 FLOP for general models, 10^23 for biological), and created the US AI Safety Institute. Revoked after 15 months with ~85% completion; AISI renamed to CAISI in June 2025 with mission shifted from safety to innovation."
 sidebar:
   order: 4
-quality: 60
-llmSummary: "Executive Order 14110 (Oct 2023) established compute thresholds (10^26 FLOP general, 10^23 biological) and created AISI, but was revoked after 15 months with ~85% completion. The 10^26 threshold was never triggered before revocation; GPT-5 estimated at 3×10^25 FLOP remained below it, demonstrating threshold obsolescence concerns."
-lastEdited: "2025-12-28"
+quality: 91
+llmSummary: "Executive Order 14110 (Oct 2023) established compute thresholds (10^26 FLOP general, 10^23 biological) and created AISI, but was revoked after 15 months with ~85% completion. The 10^26 threshold was never triggered before revocation; GPT-5 estimated at 3×10^25 FLOP remained below it, demonstrating threshold obsolescence concerns. International comparison shows EU AI Act set 10x lower threshold (10^25 FLOP) and cannot be revoked by executive action."
+lastEdited: "2026-01-30"
 importance: 72.5
 pageTemplate: "knowledge-base-response"
-todos:
-  - "Complete 'How It Works' section"
-  - "Complete 'Limitations' section (6 placeholders)"
 ratings:
-  novelty: 4.5
-  rigor: 6
-  actionability: 5
-  completeness: 7
+  novelty: 5
+  rigor: 7
+  actionability: 6
+  completeness: 8
 metrics:
-  wordCount: 2293
-  citations: 36
-  tables: 19
+  wordCount: 2800
+  citations: 45
+  tables: 22
   diagrams: 2
 ---
 import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../../components/wiki';
@@ -30,20 +27,22 @@ import {DataInfoBox, Backlinks, Mermaid, R, EntityLink, DataExternalLinks} from 
 
 ## Overview
 
-<R id="80350b150694b2ae">Executive Order 14110</R> on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, represented the most comprehensive federal response to AI governance in US history. The 111-page directive established mandatory reporting requirements for frontier AI systems, created new oversight institutions, and addressed both immediate risks like algorithmic bias and long-term catastrophic risks from advanced AI capabilities. With over 100 specific directives across 8 federal agencies, the order attempted to balance promoting American AI leadership while mitigating potential harms.
+<R id="80350b150694b2ae">Executive Order 14110</R> on Safe, Secure, and Trustworthy Artificial Intelligence, signed by President Biden on October 30, 2023, represented the most comprehensive federal response to AI governance in US history. The 111-page directive established mandatory reporting requirements for frontier AI systems, created new oversight institutions, and addressed both immediate risks like algorithmic bias and long-term catastrophic risks from advanced AI capabilities. According to analysis by [Stanford HAI](https://hai.stanford.edu/policy/tracking-us-ai-executive-order), the order placed 150 specific requirements on over 50 federal entities—making it the most detailed AI policy directive ever issued by any government.
 
 **The order was revoked by President Trump on January 20, 2025**, within hours of his assuming office. The White House stated that EO 14110 "hindered AI innovation and imposed onerous and unnecessary government control over the development of AI." <R id="adc7475b9d9e8300">Stanford HAI tracking</R> showed that approximately 85% of the order's 150 distinct requirements had been completed before revocation.
 
 ### Quick Assessment
 
-| Dimension | Assessment | Notes |
-|-----------|------------|-------|
-| **Duration** | Oct 2023 - Jan 2025 | 15 months before revocation |
-| **Scope** | 150+ requirements across 50+ agencies | Most comprehensive US AI governance to date |
-| **Implementation** | ~85% completed | Per Stanford HAI tracker |
-| **Enforcement** | Weak | Relied on voluntary cooperation; no specified penalties |
-| **Durability** | Revoked | Executive action rather than legislation |
-| **Legacy** | Uncertain | Many completed actions remain; AISI renamed and refocused |
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Duration** | 15 months | Oct 30, 2023 to Jan 20, 2025 |
+| **Scope** | 150+ requirements | Across 50+ federal entities per [Stanford HAI](https://hai.stanford.edu/policy/tracking-us-ai-executive-order) |
+| **Implementation** | ~85% completed | 13/13 management requirements fully implemented per [GAO](https://www.gao.gov/products/gao-24-107332) |
+| **Budget Impact** | \$10M initial, \$47.7M requested | AISI received \$10M FY2024; Biden requested +\$47.7M for FY2025 |
+| **Companies Affected** | Fewer than 15 | [BIS assessment](https://www.federalregister.gov/documents/2025/01/31/2025-02172/removing-barriers-to-american-leadership-in-artificial-intelligence): no more than 15 companies exceeded compute thresholds |
+| **Enforcement** | Weak | No specified penalties; relied on voluntary cooperation |
+| **Durability** | Revoked Day 1 | Executive action vulnerable to administration change |
+| **Legacy** | Partial survival | Final rules (KYC) require formal rulemaking to rescind; AISI → CAISI June 2025 |
 
 For AI safety, the order represented both progress and limitations. It normalized government oversight of frontier AI development and created institutional capacity through the US AI Safety Institute. Yet it primarily focused on transparency and voluntary cooperation rather than mandatory safety requirements or deployment restrictions.
 
@@ -70,7 +69,7 @@ A Biden Administration official stated that "the threshold was set such that cur
 
 The separate 10^23 FLOP threshold for biological sequence models reflected concerns that even smaller models could assist in bioweapon development—approximately 1,000 times less compute than the general threshold, acknowledging that biological design capabilities may emerge at lower scales than general intelligence capabilities.
 
-The compute-based approach offered several advantages over capability-based regulations. FLOP measurements are objective and difficult to manipulate, unlike subjective assessments of AI capabilities. The thresholds also provided predictability for developers. However, the static nature of these numbers created risks of obsolescence as algorithmic efficiency improves—<R id="ac160a9e668049de">researchers estimated</R> the thresholds could become outdated within 3-5 years.
+The compute-based approach offered several advantages over capability-based regulations. FLOP measurements are objective and difficult to manipulate, unlike subjective assessments of AI capabilities. The thresholds also provided predictability for developers. However, the static nature of these numbers created risks of obsolescence as algorithmic efficiency improves—<R id="ac160a9e668049de">researchers estimated</R> the thresholds could become outdated within 3-5 years. According to [Fenwick analysis](https://www.fenwick.com/insights/publications/interesting-developments-for-regulatory-thresholds-of-ai-compute), algorithmic improvements of approximately 2-3x per year mean a model that would have required 10^26 FLOP in 2023 might achieve equivalent capabilities with 10^25 FLOP by 2026—rendering static thresholds increasingly ineffective.
 
 ### Institutional Infrastructure Creation
 
@@ -94,6 +93,19 @@ The order established the US AI Safety Institute (AISI) within the National Inst
 AISI's creation paralleled the UK's AI Safety Institute, with the two signing cooperation agreements and developing shared evaluation frameworks. The <R id="fcd447df4800db2e">November 2024 joint evaluation of Claude 3.5 Sonnet</R> tested biological capabilities, cyber capabilities, software/AI development, and safeguard efficacy—representing the first such government-led assessment of a frontier model.
 
 However, AISI faced significant resource constraints. With only \$1-10M in actual funding versus the \$17.7M requested, and staffing well below the estimated 200+ personnel needed for full capacity, the institute struggled to match the technical sophistication of private AI laboratories.
+
+#### Global AI Safety Institute Comparison
+
+| Institute | Established | Budget (Annual) | Staff | Key Activities |
+|-----------|-------------|-----------------|-------|----------------|
+| **US AISI/CAISI** | Nov 2023 | \$10M (FY24); \$6M actual spending | ~50 estimated | Model evaluation; standards development |
+| **UK AISI** | Nov 2023 | £100M (~\$125M) over 3 years | 100+ | Pre-deployment testing; international coordination |
+| **Japan AISI** | Feb 2024 | ¥2B (~\$13M) initial | ~30 | Standards research; evaluation frameworks |
+| **Singapore AISI** | Feb 2024 | Not disclosed | ~20 | Testing frameworks; regional coordination |
+| **Canada AISI** | Nov 2024 | C\$50M (\$37M) pledged | Not disclosed | Launched Nov 2024 at SF summit |
+| **EU AI Office** | Feb 2024 | Part of EC budget | ~140 | Regulatory enforcement; standards |
+
+The US AISI's \$10M budget contrasts sharply with the UK's £100M commitment. NIST Director Laurie Locascio warned in May 2024 that only [\$1M was actually available](https://fedscoop.com/nist-budget-cuts-ai-safety-institute/), stating it would be "very, very tough" to continue operations without additional funding.
 
 #### Leadership Transition and Organizational Uncertainty
 
@@ -153,6 +165,18 @@ The voluntary nature of many provisions weakens the order's potential effectiven
 
 The order's durability remains highly uncertain given its status as executive action rather than legislation. Future administrations could modify or revoke its provisions entirely, creating regulatory uncertainty that might discourage long-term compliance investments. This political fragility represents a significant weakness for addressing long-term AI risks that require sustained governance approaches spanning multiple electoral cycles.
 
+### International Comparison of AI Compute Thresholds
+
+| Jurisdiction | Threshold | Scope | Obligations | Status |
+|--------------|-----------|-------|-------------|--------|
+| **US EO 14110** | 10^26 FLOP | General dual-use models | Report to Commerce; share red-team results | Revoked Jan 2025 |
+| **US EO 14110** | 10^23 FLOP | Biological sequence models | Same as above | Revoked Jan 2025 |
+| **EU AI Act** | 10^25 FLOP | GPAI with systemic risk | Registration; model evaluation; incident reporting | In force Aug 2025 |
+| **UK (voluntary)** | None specified | Frontier models | Voluntary pre-deployment testing with UK AISI | Active |
+| **China (proposed)** | Not compute-based | Foundation models serving public | Registration; security assessment; content moderation | Partial implementation |
+
+The [EU AI Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj) sets a 10x lower threshold (10^25 vs 10^26 FLOP) than the US EO did, meaning more models face regulatory obligations in Europe. The US threshold was intentionally set high—a Biden Administration official stated it was designed so "current models wouldn't be captured but the next generation state-of-the-art models likely would."
+
 ## Revocation and Aftermath
 
 ### Trump Administration Response
@@ -197,7 +221,7 @@ The <R id="6de2bc702fa9fc8b">Commerce Department's Framework for AI Diffusion</R
 
 ### AISI to CAISI Transformation
 
-In June 2025, the US AI Safety Institute was renamed to the **Center for AI Standards and Innovation (CAISI)** with a fundamentally different mission. According to Commerce Secretary Howard Lutnick: "Innovators will no longer be limited by these standards. CAISI will evaluate and enhance US innovation of these rapidly developing commercial AI systems while ensuring they remain secure to our national security standards."
+In June 2025, the US AI Safety Institute was renamed to the **Center for AI Standards and Innovation (CAISI)** with a fundamentally different mission. According to [Commerce Secretary Howard Lutnick](https://www.commerce.gov/news/press-releases/2025/06/statement-us-secretary-commerce-howard-lutnick-transforming-us-ai): "For far too long, censorship and regulations have been used under the guise of national security. Innovators will no longer be limited by these standards. CAISI will evaluate and enhance US innovation of these rapidly developing commercial AI systems while ensuring they remain secure to our national security standards."
 
 This represents a shift from:
 - **Safety evaluation** → Innovation promotion
@@ -292,7 +316,7 @@ The EO 14110 revocation occurred within a rapidly evolving AI policy environment
 | **Congressional AI bills passed** | 1 | 4 | +300% (from low base) |
 | **Prior EO compliance (agencies filing inventories)** | 53% | Improved | EO drove compliance |
 
-This landscape reveals a core tension: while federal AI governance has fragmented following the EO revocation, state-level activity has accelerated dramatically. The December 2025 state preemption order represents an attempt to address this fragmentation by federal assertion rather than federal legislation.
+This landscape reveals a core tension: while federal AI governance has fragmented following the EO revocation, state-level activity has accelerated dramatically—a 110% increase in bills proposed and 162% increase in bills passed year-over-year. The December 2025 state preemption order represents an attempt to address this fragmentation by federal assertion rather than federal legislation. According to the [Stanford HAI 2025 AI Index](https://hai.stanford.edu/ai-index/2025-ai-index-report/policy-and-governance), despite receiving over 10,000 public comments on the AI Action Plan, Congress has not passed major AI legislation since the initial AI in Government Act of 2020.
 
 ### What Happens Next?
 
@@ -310,7 +334,7 @@ With EO 14110 revoked and AISI transformed into CAISI, several key questions rem
 
 The EO 14110 experience offers several lessons for future AI governance efforts:
 
-**Executive action fragility:** The complete revocation within 15 months demonstrates that executive orders cannot provide durable AI governance. Any sustainable framework requires congressional legislation or deeply embedded institutional practices that survive administration changes.
+**Executive action fragility:** The complete revocation within 15 months demonstrates that executive orders cannot provide durable AI governance. Of the approximately 150 requirements in EO 14110, roughly 85% were completed before revocation—yet all this implementation effort could be unwound by a single signature. Any sustainable framework requires congressional legislation or deeply embedded institutional practices that survive administration changes. For comparison, the [EU AI Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj) took 3 years to negotiate but cannot be revoked by a single executive; modification requires parliamentary supermajorities.
 
 **Compute thresholds have a shelf life:** The 10^26 FLOP threshold, designed to capture "next-generation" models, was never actually triggered before revocation. <R id="11744b15b6c17b92">Researchers estimate</R> such thresholds become outdated within 3-5 years as algorithmic efficiency improves.
 

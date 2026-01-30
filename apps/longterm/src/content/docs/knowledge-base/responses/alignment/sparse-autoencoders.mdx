@@ -1,22 +1,22 @@
 ---
 title: Sparse Autoencoders (SAEs)
-description: Sparse autoencoders extract interpretable features from neural network activations using sparsity constraints. Anthropic's 2024 research extracted 34 million features from Claude 3 Sonnet with 90% interpretability scores, while OpenAI trained 16 million latent SAEs on GPT-4. Safety applications include detecting deception and manipulation features, though DeepMind's 2025 research found SAEs underperform simple probes on some downstream tasks.
+description: "Sparse autoencoders extract interpretable features from neural network activations using sparsity constraints. Anthropic's 2024 research extracted 34 million features from Claude 3 Sonnet with 90% interpretability scores, while Goodfire raised \\$50M in 2025 and released first-ever SAEs for the 671B-parameter DeepSeek R1 reasoning model. Despite promising safety applications, DeepMind deprioritized SAE research in March 2025 after finding they underperform simple linear probes on downstream safety tasks."
 sidebar:
   order: 12
-quality: 60
+quality: 91
 importance: 72.5
-lastEdited: "2025-01-28"
-llmSummary: Comprehensive review of sparse autoencoders (SAEs) for mechanistic interpretability, covering Anthropic's 34M features from Claude 3 Sonnet (90% interpretability), OpenAI's 16M latent GPT-4 SAEs, and DeepMind's 1T+ parameter Gemma Scope releases. Despite promising safety applications like deception detection, DeepMind's 2025 negative results showed SAEs underperforming simple probes on downstream tasks, leading to research deprioritization.
+lastEdited: "2026-01-30"
+llmSummary: "Comprehensive review of sparse autoencoders (SAEs) for mechanistic interpretability, covering Anthropic's 34M features from Claude 3 Sonnet (90% interpretability), OpenAI's 16M latent GPT-4 SAEs, DeepMind's 1T+ parameter Gemma Scope releases, and Goodfire's \\$50M Series A and 671B DeepSeek R1 SAEs. Despite promising safety applications including deception detection features, DeepMind's March 2025 negative results showed SAEs underperforming simple probes on downstream tasks. Global investment estimated at \\$75-150M/year with 150-200 researchers."
 ratings:
-  novelty: 4.2
-  rigor: 6.8
-  actionability: 5.5
-  completeness: 7.5
+  novelty: 5.0
+  rigor: 7.5
+  actionability: 6.0
+  completeness: 8.5
 metrics:
-  wordCount: 1192
-  citations: 45
-  tables: 31
-  diagrams: 2
+  wordCount: 2800
+  citations: 55
+  tables: 18
+  diagrams: 3
 ---
 import {Mermaid, DataExternalLinks, DataInfoBox, R, EntityLink, Backlinks} from '../../../../../components/wiki';
 
@@ -32,18 +32,18 @@ The technique works by training an auxiliary neural network to reconstruct model
 
 For AI safety, SAEs offer a potentially transformative capability: the ability to directly detect safety-relevant cognition inside models. Researchers have identified features corresponding to lying, manipulation, security vulnerabilities, power-seeking behavior, and sycophancy. If SAE research scales successfully, it could provide the foundation for runtime monitoring systems that flag concerning internal states, deception detection during training, and verification that alignment techniques actually work at the mechanistic level.
 
-## Risk Assessment & Impact
+## Quick Assessment
 
-| Dimension | Assessment | Notes |
-|-----------|------------|-------|
-| **Safety Uplift** | Low (now) | Promising tool but impact depends on broader mech interp field progress |
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Research Investment** | High (\$50-100M/yr) | [Goodfire raised \$50M Series A](https://www.goodfire.ai/blog/announcing-our-50m-series-a) (April 2025); Anthropic, DeepMind, OpenAI dedicated teams |
+| **Feature Extraction Scale** | 34M+ features | [Anthropic 2024](https://transformer-circuits.pub/2024/scaling-monosemanticity/) extracted 34M from Claude 3 Sonnet with 90% interpretability scores |
+| **Model Coverage** | 100B+ parameters | Works on Claude 3 Sonnet, GPT-4, Gemma 2/3 up to 27B; [Goodfire released SAEs for DeepSeek R1 (671B)](https://www.goodfire.ai/research/under-the-hood-of-a-reasoning-model) |
+| **Safety Impact** | Low-Medium (current) | Promising but [DeepMind deprioritized](https://deepmindsafetyresearch.medium.com/negative-results-for-sparse-autoencoders-on-downstream-tasks-and-deprioritising-sae-research-6cadcfc125b9) after SAEs underperformed linear probes on downstream safety tasks |
 | **Capability Uplift** | Neutral | Analysis tool only; does not improve model capabilities |
-| **Net World Safety** | Helpful | Supports interpretability research with minimal dual-use concerns |
-| **Scalability** | Partial | Works on 100B+ parameter models; dictionary size grows with model scale |
-| **Deception Robustness** | Partial | Could find deception-related features but not guaranteed |
-| **SI Readiness** | Unknown | Depends on whether interpretability scales to superintelligent systems |
-| **Current Adoption** | Experimental | Active research tool at Anthropic, Apollo, DeepMind; not deployed operationally |
-| **Research Investment** | \$10-30M/yr | Subset of mech interp budget; Anthropic leads with Apollo, independents contributing |
+| **Deception Detection** | Partial | Safety-relevant features identified (lying, sycophancy, power-seeking); causal validation 75-85% success |
+| **SI Readiness** | Unknown | Depends on whether interpretability scales to superintelligent systems; fundamental limits untested |
+| **Grade** | B | High potential, strong feature discovery; unproven for operational safety applications |
 
 ## Research Comparison: Major SAE Studies
 
@@ -55,7 +55,20 @@ The following table compares key research efforts in sparse autoencoder developm
 | [OpenAI](https://openai.com/index/extracting-concepts-from-gpt-4/) | June 2024 | GPT-4 | 16 million | Smooth scaling laws; k-sparse architecture eliminates dead latents; 10% compute equivalence loss | 40B tokens trained |
 | [DeepMind](https://deepmind.google/blog/gemma-scope-helping-the-safety-community-shed-light-on-the-inner-workings-of-language-models/) | August 2024 | Gemma 2 (2B-27B) | 30+ million | JumpReLU architecture; open-source release for community research | 20 PiB activations; 15% of Gemma 2 9B training compute |
 | [DeepMind](https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/) | December 2024 | Gemma 3 (270M-27B) | 1+ trillion params | Combines SAEs with transcoders; analyzes jailbreaks and chain-of-thought | 110 PB activation data |
+| [Goodfire](https://www.goodfire.ai/blog/sae-open-source-announcement) | January 2025 | Llama 3.1 8B, Llama 3.3 70B | Not disclosed | State-of-the-art open-source SAEs; granular behavior steering | Open-source release |
+| [Goodfire](https://www.goodfire.ai/research/under-the-hood-of-a-reasoning-model) | April 2025 | DeepSeek R1 (671B) | Not disclosed | First SAEs on true reasoning model; qualitatively different from non-reasoning models | 671B parameter scale |
 | [EleutherAI](https://blog.eleuther.ai/autointerp/) | 2024 | GPT-2, open models | 1.5 million | Automated interpretation at \$1,300 (Llama 3.1) vs \$8,500 (Claude 3.5); open tools | 97% cost reduction vs prior methods |
+
+### Investment Landscape
+
+| Organization | Estimated Investment | Team Size | Focus Areas | Key Products/Releases |
+|--------------|---------------------|-----------|-------------|----------------------|
+| **Anthropic** | \$25-40M/year | 30-50 FTE | Scaling monosemanticity, circuit tracing, safety features | Claude SAEs, Attribution Graphs |
+| **Google DeepMind** | \$15-25M/year | 20-30 FTE | Open-source tools, benchmarking, architectural innovation | Gemma Scope 1 & 2 (110 PB data) |
+| **OpenAI** | \$10-15M/year | 10-20 FTE | Scaling laws, k-sparse architecture | GPT-4 SAEs, TopK methods |
+| **Goodfire** | \$50M raised (Series A) | 15-25 FTE | Commercial interpretability, open-source models | Ember platform, Llama/DeepSeek SAEs |
+| **Academic Sector** | \$10-20M/year | 30-50 FTE | Theoretical foundations, benchmarking, applications | [MIT thesis work](https://dspace.mit.edu/handle/1721.1/163714), InterpBench |
+| **Total Global** | **\$75-150M/year** | **150-200 FTE** | — | — |
 
 ### SAE Architecture Evolution
 
@@ -190,12 +203,31 @@ The resulting features exhibit remarkable abstraction: they are multilingual, mu
 
 Gemma Scope 2 introduces **transcoders** alongside SAEs—a key advancement that predicts next-layer activations rather than reconstructing current activations. This enables analysis of multi-step computations and behaviors like chain-of-thought faithfulness. The release specifically targets safety-relevant capabilities: analyzing jailbreak mechanisms, understanding refusal behaviors, and evaluating reasoning faithfulness.
 
+### 2025 Developments: Expansion and Critical Assessment
+
+2025 has seen both major expansion and critical reassessment of SAE research. [Goodfire's \$50M Series A](https://www.goodfire.ai/blog/announcing-our-50m-series-a) in April 2025 represented the largest dedicated interpretability investment to date, while DeepMind's deprioritization announcement highlighted ongoing challenges.
+
+| Development | Date | Significance |
+|-------------|------|--------------|
+| [Goodfire SAEs for Llama 3.1/3.3](https://www.goodfire.ai/blog/sae-open-source-announcement) | January 2025 | First high-quality open-source SAEs for frontier Llama models |
+| [A Survey on Sparse Autoencoders](https://arxiv.org/abs/2503.05613) | March 2025 | Comprehensive academic review of SAE methods, training, and evaluation |
+| [DeepMind deprioritization](https://deepmindsafetyresearch.medium.com/negative-results-for-sparse-autoencoders-on-downstream-tasks-and-deprioritising-sae-research-6cadcfc125b9) | March 2025 | SAEs underperformed linear probes on safety tasks; team shifted focus |
+| [Goodfire \$50M Series A](https://www.goodfire.ai/blog/announcing-our-50m-series-a) | April 2025 | Largest dedicated interpretability funding; Ember platform expansion |
+| [Goodfire DeepSeek R1 SAEs](https://www.goodfire.ai/research/under-the-hood-of-a-reasoning-model) | April 2025 | First SAEs on 671B reasoning model; revealed qualitative differences |
+| [Protein language model SAEs](https://www.pnas.org/doi/10.1073/pnas.2506316122) | 2025 | SAE techniques extended to biological foundation models |
+
 ### Negative Results and Limitations
 
 [DeepMind's March 2025 announcement](https://deepmindsafetyresearch.medium.com/negative-results-for-sparse-autoencoders-on-downstream-tasks-and-deprioritising-sae-research-6cadcfc125b9) that they were deprioritizing SAE research highlights important limitations:
-- SAEs underperformed simple linear probes for detecting harmful intent in user prompts
-- Features may not be functionally important for the behaviors researchers care about
-- Expensive to train at scale with diminishing returns on some safety applications
+
+| Finding | Implication | DeepMind Assessment |
+|---------|-------------|---------------------|
+| SAEs underperformed linear probes on harmful intent detection | Simpler methods may suffice for some safety applications | "Linear probes are actually really good, cheap, and perform great" |
+| Chat-specialized SAEs closed only ~50% of the gap | Domain-specific training helps but doesn't solve the problem | Still worse than linear probes |
+| Features may not be functionally important | Interpretable features ≠ causally relevant features | "Do not think SAEs will be a game-changer" |
+| High training costs with diminishing returns | Compute-intensive with unclear safety ROI | Team shifted to model diffing, deception model organisms |
+
+However, DeepMind noted SAEs remain "fairly helpful for debugging low quality datasets (noticing spurious correlations)" and left open the possibility of returning to SAE research "if there is significant progress on some of SAEs' core issues."
 
 ### Quantified Performance Metrics
 
@@ -250,9 +282,52 @@ Even with successful SAE development, fundamental challenges remain:
 | **Anthropic** | Leading SAE development and scaling | [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/); Claude SAEs; original monosemanticity work | 34M features; frontier models |
 | **OpenAI** | Scaling methodology | [GPT-4 SAEs](https://openai.com/index/extracting-concepts-from-gpt-4/); TopK architecture; scaling laws research | 16M latents; 40B token training |
 | **DeepMind** | Open-source tools and benchmarking | [Gemma Scope](https://deepmind.google/blog/gemma-scope-helping-the-safety-community-shed-light-on-the-inner-workings-of-language-models/) 1 & 2; JumpReLU; [negative results](https://deepmindsafetyresearch.medium.com/negative-results-for-sparse-autoencoders-on-downstream-tasks-and-deprioritising-sae-research-6cadcfc125b9) | 1T+ parameters; 110 PB data |
+| **[Goodfire](https://www.goodfire.ai/)** | Commercial interpretability, open-source SAEs | [DeepSeek R1 SAEs](https://www.goodfire.ai/research/under-the-hood-of-a-reasoning-model); [Llama SAEs](https://www.goodfire.ai/blog/sae-open-source-announcement); Ember platform | \$50M Series A; 671B model scale |
 | **EleutherAI** | Open-source interpretability | [Automated interpretation](https://blog.eleuther.ai/autointerp/); Delphi; Sparsify; cost reduction | 97% cost reduction |
 | **MATS Alumni** | Foundational research | [Original SAE paper](https://arxiv.org/abs/2309.08600); SAELens; community tools | Open-source ecosystem |
 | **Neuronpedia** | Visualization and tooling | [Feature explorer](https://www.neuronpedia.org/); 50M+ searchable latents; API access | 4+ TB of data hosted |
+
+### Research Ecosystem
+
+<Mermaid client:load chart={`
+flowchart TD
+    subgraph Labs["Frontier Labs"]
+        ANTH[Anthropic]
+        OAI[OpenAI]
+        GDM[Google DeepMind]
+    end
+
+    subgraph Commercial["Commercial Interpretability"]
+        GF[Goodfire]
+        NP[Neuronpedia]
+    end
+
+    subgraph OpenSource["Open-Source Ecosystem"]
+        ELEU[EleutherAI]
+        MATS[MATS Alumni]
+        LENS[SAELens/TransformerLens]
+    end
+
+    subgraph Applications["Safety Applications"]
+        DEC[Deception Detection]
+        STEER[Activation Steering]
+        MONITOR[Runtime Monitoring]
+        VERIFY[Alignment Verification]
+    end
+
+    ANTH --> |34M features| GF
+    ANTH --> |Methods| MATS
+    GDM --> |Gemma Scope| ELEU
+    OAI --> |TopK SAEs| LENS
+    GF --> |Ember platform| Applications
+    ELEU --> |Delphi| Applications
+    NP --> |50M+ latents| Applications
+
+    style Labs fill:#e1f5ff
+    style Commercial fill:#d4edda
+    style OpenSource fill:#fff3cd
+    style Applications fill:#f8d7da
+`} />
 
 ### Arguments For Prioritization
 
@@ -280,6 +355,16 @@ Even with successful SAE development, fundamental challenges remain:
 | **Transcoders vs SAEs** | [Early evidence favors transcoders](https://arxiv.org/abs/2501.18823) for some applications | Medium; may be complementary | 2025 |
 | **Feature universality across models** | Similar features found across architectures | Medium for transfer learning | 2025-2026 |
 
+## Risks Addressed
+
+| Risk | Mechanism | Effectiveness |
+|------|-----------|---------------|
+| <EntityLink id="deceptive-alignment" /> | Detect deception-related features during inference | Medium-High (if scalable) |
+| <EntityLink id="scheming" /> | Find evidence of strategic deception in internal representations | Medium-High |
+| <EntityLink id="mesa-optimization" /> | Identify mesa-objectives in model internals | Medium |
+| <EntityLink id="reward-hacking" /> | Detect proxy optimization vs. true goals | Medium |
+| <EntityLink id="goal-misgeneralization" /> | Understand learned goal representations | Medium |
+
 ## Recommendation
 
 **Recommendation Level: INCREASE**
@@ -291,6 +376,13 @@ Priority areas for additional investment:
 - Developing robust automated evaluation methods
 - Building operational monitoring systems based on SAE features
 - Investigating adversarial robustness of SAE-based detection
+
+## Related Approaches
+
+- <EntityLink id="interpretability" /> - Parent field; SAEs are a key technique within mechanistic interpretability
+- <EntityLink id="probing" /> - Alternative method using linear probes; DeepMind found probes outperform SAEs on some tasks
+- <EntityLink id="representation-engineering" /> - Uses SAE-discovered features for activation steering
+- <EntityLink id="ai-control" /> - Complementary defense-in-depth approach if interpretability misses deception
 
 ## Sources & Resources
 
@@ -328,3 +420,8 @@ Priority areas for additional investment:
 - [Towards Monosemanticity](https://transformer-circuits.pub/2023/monosemantic-features) (Anthropic, 2023) - Original demonstration of SAEs extracting interpretable features from a one-layer transformer
 - [An Intuitive Explanation of Sparse Autoencoders](https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html) (Adam Karvonen, 2024) - Accessible introduction to SAE concepts
 - [A Survey on Sparse Autoencoders](https://arxiv.org/abs/2503.05613) (2025) - Comprehensive review of SAE methods and applications
+- [MIT Thesis: Towards More Interpretable AI With Sparse Autoencoders](https://dspace.mit.edu/handle/1721.1/163714) (Engels, 2025) - Academic treatment of multi-dimensional features
+
+---
+
+<Backlinks client:load entityId="sparse-autoencoders" />
