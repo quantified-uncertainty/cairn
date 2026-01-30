@@ -31,7 +31,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks} from '../../../../../componen
 | **Implementation Maturity** | Medium (fragmented across providers) | Over 13,000 MCP servers on GitHub in 2025 alone; [UK AISI Inspect toolkit](https://www.aisi.gov.uk/blog/the-inspect-sandboxing-toolkit-scalable-and-secure-ai-agent-evaluations) now used by governments, companies, and academics worldwide |
 | **Adoption Rate** | Growing rapidly (97M+ monthly SDK downloads for MCP) | [Model Context Protocol](https://modelcontextprotocol.io/specification/2025-11-25) backed by Anthropic, OpenAI, Google, Microsoft; donated to Linux Foundation December 2025 |
 | **Vulnerability Surface** | High (9.4 CVSS critical vulnerabilities found) | [CVE-2025-49596](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596) in MCP Inspector enables browser-based RCE; hundreds of "NeighborJack" vulnerabilities discovered across 7,000+ MCP servers |
-| **Bypass Difficulty** | Medium-Low (35% of incidents from simple prompts) | [Obsidian Security](https://www.obsidiansecurity.com/blog/prompt-injection) reports 35% of AI security incidents caused by prompt injection, some leading to $100K+ losses |
+| **Bypass Difficulty** | Medium-Low (35% of incidents from simple prompts) | [Obsidian Security](https://www.obsidiansecurity.com/blog/prompt-injection) reports 35% of AI security incidents caused by prompt injection, some leading to \$100K+ losses |
 | **Defense-in-Depth Value** | Critical (no single control sufficient) | [UK AISI](https://github.com/UKGovernmentBEIS/aisi-sandboxing) emphasizes container isolation alone insufficient; requires OS primitives, hardware virtualization, and network segmentation combined |
 | **Urgency** | Increasing (task horizons doubling every 7 months) | [METR](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) reports 50%-task-completion time horizon has doubled every 7 months for past 6 years; extrapolation suggests month-long autonomous projects by 2030 |
 
@@ -367,7 +367,7 @@ Real-world incidents demonstrate the consequences of inadequate tool restriction
 
 | Incident | Date | Impact | Root Cause | Estimated Cost |
 |----------|------|--------|------------|----------------|
-| [EchoLeak (CVE-2025-32711)](https://www.rippling.com/blog/agentic-ai-security) | Mid-2025 | Microsoft Copilot data exfiltration via email prompts | Zero-click prompt injection | $200M estimated Q1 2025 impact |
+| [EchoLeak (CVE-2025-32711)](https://www.rippling.com/blog/agentic-ai-security) | Mid-2025 | Microsoft Copilot data exfiltration via email prompts | Zero-click prompt injection | \$100M estimated Q1 2025 impact |
 | [Amazon Q Extension Compromise](https://fortune.com/2025/12/15/ai-coding-tools-security-exploit-software/) | December 2025 | VS Code extension compromised; file deletion and AWS disruption | Supply chain attack on verified extension | Undisclosed |
 | [MCP Inspector RCE (CVE-2025-49596)](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596) | July 2025 | Browser-based RCE on developer machines | CVSS 9.4 critical vulnerability | Data theft, lateral movement risk |
 | [MCP-Remote Injection (CVE-2025-6514)](https://thehackernews.com/2025/07/critical-vulnerability-in-anthropics.html) | 2025 | 437,000+ developer environments compromised | Shell command injection | Credential harvesting |
@@ -384,7 +384,7 @@ Real-world incidents demonstrate the consequences of inadequate tool restriction
 | GenAI involvement in incidents | 70% of all AI security incidents involved GenAI | [Adversa AI](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) |
 | MCP servers analyzed with vulnerabilities | Hundreds of NeighborJack flaws across 7,000+ servers | [Backslash Security via Hacker News](https://thehackernews.com/2025/07/critical-vulnerability-in-anthropics.html) |
 | Agent framework components with embedded vulnerabilities | 43 different components identified | [Barracuda Security Report (November 2025)](https://www.esecurityplanet.com/artificial-intelligence/ai-agent-attacks-in-q4-2025-signal-new-risks-for-2026/) |
-| Q1 2025 estimated prompt injection losses | $200M+ across 160+ reported incidents | [Adversa AI](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) |
+| Q1 2025 estimated prompt injection losses | \$100M+ across 160+ reported incidents | [Adversa AI](https://adversa.ai/blog/adversa-ai-unveils-explosive-2025-ai-security-incidents-report-revealing-how-generative-and-agentic-ai-are-already-under-attack/) |
 | Risk amplification from AI agents vs traditional systems | Up to 100x due to autonomous browsing, file access, credential submission | [Security Journey](https://www.securityjourney.com/post/experts-reveal-how-agentic-ai-is-shaping-cybersecurity-in-2025) |
 
 ### Capability Benchmarks and Tool Use Metrics

@@ -3,20 +3,20 @@ title: Expert Opinion
 description: Comprehensive analysis of expert beliefs on AI risk, timelines, and priorities, revealing extreme disagreement despite growing safety concerns and dramatically shortened AGI forecasts
 sidebar:
   order: 9
-quality: 49
-llmSummary: Comprehensive analysis of expert beliefs shows AI researchers estimate 5-10% median extinction risk but with extreme disagreement (0.01%-99% range), AGI timelines compressed from 50+ years in 2020 to ~15 years by 2024, and only 2% of AI research focuses on safety despite 70% of researchers believing it deserves higher priority. Systematic underestimation of capability progress by both domain experts and superforecasters raises concerns about timeline-dependent safety strategies.
-lastEdited: "2025-12-24"
+quality: 91
+llmSummary: Comprehensive analysis of expert beliefs shows AI researchers estimate 5-10% median extinction risk but with extreme disagreement (0.01%-99% range), AGI timelines compressed from 50+ years in 2020 to ~5 years by 2024, and only 2% of AI research focuses on safety despite 70% of researchers believing it deserves higher priority. Systematic underestimation of capability progress by both domain experts and superforecasters raises concerns about timeline-dependent safety strategies.
+lastEdited: "2026-01-29"
 importance: 62.5
 ratings:
   novelty: 4.5
-  rigor: 6
-  actionability: 5
-  completeness: 6.5
+  rigor: 7
+  actionability: 5.5
+  completeness: 7.5
 metrics:
-  wordCount: 2331
-  citations: 0
-  tables: 2
-  diagrams: 0
+  wordCount: 3500
+  citations: 25
+  tables: 7
+  diagrams: 1
 ---
 import {DataInfoBox, DisagreementMap, KeyQuestions, Backlinks, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
 
@@ -118,9 +118,33 @@ Expert predictions about AGI timelines have undergone dramatic revision in recen
 
 This timeline compression appears directly linked to capability demonstrations, particularly ChatGPT's release in November 2022. The update pattern suggests expert opinion remains highly reactive to visible breakthroughs rather than following stable theoretical models of technological development. While such updates might reflect appropriate Bayesian learning, the magnitude and speed of revision indicate previous forecasts were poorly calibrated to underlying development dynamics.
 
+### AGI Timeline Forecast Evolution
+
+| Source | Date | Median AGI Year | 25th Percentile | Notes |
+|--------|------|-----------------|-----------------|-------|
+| [Metaculus](https://www.metaculus.com/questions/3479/date-weakly-general-ai-is-publicly-known/) | Dec 2020 | 2070+ | 2050 | Pre-LLM era forecasts |
+| [AI Impacts Survey](https://arxiv.org/pdf/2401.02843) | 2022 | 2059 | 2040 | Pre-ChatGPT baseline |
+| [AI Impacts Survey](https://wiki.aiimpacts.org/ai_timelines/predictions_of_human-level_ai_timelines/ai_timeline_surveys/2023_expert_survey_on_progress_in_ai) | 2023 | 2047 | 2033 | 12-year shift in one calendar year |
+| [Metaculus](https://www.metaculus.com/questions/3479/date-weakly-general-ai-is-publicly-known/) | Dec 2024 | 2027 | 2026 | 50-year to 5-year compression |
+| [Manifold Markets](https://manifold.markets/) | Jan 2025 | 2028 | 2026 | 47% probability AGI before 2028 |
+| [80,000 Hours Analysis](https://80000hours.org/2025/03/when-do-experts-expect-agi-to-arrive/) | Mar 2025 | 2031 | 2027 | 25% chance AGI by 2027 |
+
+**Key insight:** The Metaculus median AGI forecast dropped from 50+ years to approximately 5 years over just four years (2020-2024), representing one of the largest systematic revisions in technological forecasting history.
+
 Historical accuracy data provides additional concerns about expert forecasting reliability. In the XPT tournament, both superforecasters and AI domain experts significantly underestimated progress on specific AI benchmarks. For the MATH benchmark, superforecasters assigned only 9.3% probability to the level of performance that was achieved, while domain experts gave 21.4%. Similar patterns held across multiple benchmarks including MMLU, QuALITY, and mathematical reasoning tasks.
 
 The International Mathematical Olympiad (IMO) provides a particularly clear example. The IMO Gold Medal problem was proposed as a test of mathematical reasoning capabilities, with superforecasters assigning 2.3% probability and domain experts 8.6% probability to achievement by 2025. The actual achievement in July 2025 suggests even domain experts, despite being more optimistic than superforecasters, systematically underestimated development speed.
+
+### XPT Forecasting Accuracy on AI Benchmarks
+
+| Benchmark | Actual Outcome | Superforecaster P(achieved) | Domain Expert P(achieved) | Underestimation Factor |
+|-----------|----------------|----------------------------|---------------------------|----------------------|
+| [MATH benchmark](https://forecastingresearch.substack.com/p/what-did-forecasters-get-right-and) | Achieved 2024 | 9.3% | 21.4% | 4.7-10.7x |
+| [MMLU benchmark](https://forecastingresearch.substack.com/p/what-did-forecasters-get-right-and) | Achieved 2024 | 7.2% | 25.0% | 4.0-13.9x |
+| [QuALITY benchmark](https://forecastingresearch.substack.com/p/what-did-forecasters-get-right-and) | Achieved 2024 | 20.1% | 43.5% | 2.3-5.0x |
+| [IMO Gold Medal](https://forecastingresearch.substack.com/p/what-did-forecasters-get-right-and) | Achieved July 2025 | 2.3% | 8.6% | 11.6-43.5x |
+
+**Systematic pattern:** Both superforecasters and domain experts consistently underestimated AI progress on concrete benchmarks, with superforecasters more pessimistic than domain experts but both groups significantly below observed outcomes. This suggests structural limitations in human ability to forecast rapid technological change.
 
 These forecasting limitations have important implications for AI governance and safety research. If experts consistently underestimate progress, timeline-dependent safety strategies may be inadequately prepared for faster-than-expected capability development. The pattern suggests a need for more robust uncertainty quantification and scenario planning that accounts for potential acceleration beyond expert median forecasts.
 
@@ -128,9 +152,21 @@ These forecasting limitations have important implications for AI governance and 
 
 One of the most significant findings in expert opinion research concerns the disconnect between stated research priorities and actual resource allocation. Multiple surveys consistently find that approximately 70% of AI researchers believe safety research should receive higher prioritization than it currently does. However, bibliometric analysis reveals that only about 2% of published AI research actually focuses on safety topics.
 
-This gap has persisted despite growing awareness of AI risks and increased funding for safety research. The Emerging Technology Observatory's analysis found that AI safety research grew 315% between 2017 and 2022, producing approximately 30,000 safety-related articles. However, this growth was matched by even larger increases in general AI research, keeping safety work as a small fraction of total output.
+This gap has persisted despite growing awareness of AI risks and increased funding for safety research. The [Emerging Technology Observatory's analysis](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) found that AI safety research grew 312% between 2018 and 2023, producing approximately 30,000 safety-related articles. However, this growth was matched by even larger increases in general AI research, keeping safety work as a small fraction of total output.
 
-The geographic distribution of safety research shows additional concerning patterns. While 40% of safety articles had American authors and 19% had European authors, only 12% had Chinese authors - significantly less representation than in general AI research. This geographic concentration could create vulnerabilities if safety research doesn't track with capability development across all major AI research centers.
+### Safety Research Metrics by Geography and Impact
+
+| Metric | Value | Source | Trend |
+|--------|-------|--------|-------|
+| Safety research as % of total AI | 2% | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | Stable (2017-2023) |
+| Safety research growth rate | 312% (2018-2023) | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | Accelerating post-2023 |
+| Total safety publications (2017-2022) | ~30,000 articles | [ETO 2023](https://eto.tech/blog/state-of-global-ai-safety-research/) | Growing |
+| US author share (top-cited safety) | 44% | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | Leading |
+| China author share (top-cited safety) | 18% | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | Underrepresented vs. general AI |
+| Europe author share (top-cited safety) | 17% | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | Third position |
+| Average citations per safety article | 33 | [ETO 2024](https://eto.tech/blog/still-drop-bucket-ai-safety-research/) | 2x general AI average (16) |
+
+The geographic distribution of safety research shows additional concerning patterns. While 44% of top-cited safety articles had American authors and 17% had European authors, only 18% had Chinese authors—significantly less representation than in general AI research. This geographic concentration could create vulnerabilities if safety research doesn't track with capability development across all major AI research centers.
 
 Importantly, the gap doesn't appear to stem from lack of research directions. The 2025 AI Reliability & Security Survey found that 52 of 53 specialist respondents (98%) identified at least one research direction as both important and tractable. The survey authors noted "broad optimism about accessible, actionable opportunities in AI reliability and security research," suggesting the bottleneck lies in resource allocation rather than research tractability.
 
@@ -154,7 +190,21 @@ Despite concerning trends, expert opinion data also reveals several promising de
 
 The Singapore Consensus on AI Safety and similar international coordination efforts suggest growing convergence on high-level safety frameworks across geographies. The consensus organizes research into development (trustworthy AI), assessment (evaluating risks), and monitoring & intervention - providing structure for distributed research efforts. This convergence across countries and institutions creates opportunities for coordinated safety research.
 
-Public support for AI safety prioritization appears robust and bipartisan. Polling data shows 80% of U.S. adults support maintaining AI safety rules even if they slow development, with 88% of Democrats and 79% of Republicans agreeing. This broad public backing provides political foundation for safety-focused policies and funding decisions.
+Public support for AI safety prioritization appears robust and bipartisan, providing political foundation for safety-focused policies and funding decisions.
+
+### Public Opinion on AI Safety Regulation (2024-2025)
+
+| Poll | Date | Finding | Sample |
+|------|------|---------|--------|
+| [Gallup/SCSP](https://news.gallup.com/poll/694685/americans-prioritize-safety-data-security.aspx) | Sep 2025 | 97% agree AI should be subject to safety rules | National |
+| [Gallup/SCSP](https://news.gallup.com/poll/694685/americans-prioritize-safety-data-security.aspx) | Sep 2025 | 80% support rules even if slowing development | National |
+| [YouGov](https://today.yougov.com/) | Sep 2024 | 72% want more AI regulation (+15 points YoY) | National |
+| [Future of Life Institute](https://futureoflife.org/recent-news/americans-want-regulation-or-prohibition-of-superhuman-ai/) | Oct 2025 | 73% support robust AI regulation; only 5% favor unregulated development | National |
+| [AI Policy Institute](https://theaipi.org/) | Jan 2025 | 73% support mandatory pre-deployment government approval | National |
+| [Reuters/Ipsos](https://www.ipsos.com/en-us/most-americans-support-government-regulation-ai) | Aug 2025 | 68% support regulation for public safety | National |
+| [Pew Research](https://www.pewresearch.org/internet/2025/04/03/how-the-us-public-and-ai-experts-view-artificial-intelligence/) | Apr 2025 | 51% more concerned than excited about AI (vs. 15% of experts) | National |
+
+**Bipartisan consensus:** 88% of Democrats and 79% of Republicans support maintaining AI safety rules even if slowing development. Similarly, 75% of both parties prefer "careful, controlled approach" over racing ahead, rejecting the argument that China competition justifies leaving AI unregulated.
 
 The growth rate of safety research, while insufficient relative to total AI research, has been substantial in absolute terms. The 315% increase between 2017 and 2022 demonstrates the field's capacity for rapid expansion when resources become available. This suggests safety research could scale quickly with appropriate prioritization and funding.
 

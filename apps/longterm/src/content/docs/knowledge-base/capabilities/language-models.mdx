@@ -1,21 +1,21 @@
 ---
-title: Large Language Models
-description: Foundation models trained on text that demonstrate emergent capabilities and represent the primary driver of current AI capabilities and risks, with rapid progression from GPT-2 (1.5B parameters, 2019) to o1 (2024) showing predictable scaling laws alongside unpredictable capability emergence
+title: "Large Language Models"
+description: "Foundation models trained on text that demonstrate emergent capabilities and represent the primary driver of current AI capabilities and risks, with rapid progression from GPT-2 (1.5B parameters, 2019) to o1 (2024) showing predictable scaling laws alongside unpredictable capability emergence"
 sidebar:
   order: 1
-quality: 91
-llmSummary: Comprehensive analysis of LLM capabilities showing predictable scaling laws (10x compute → 1.4x performance) alongside unpredictable emergence, with training costs growing 2.4x annually (projected to exceed $1B by 2027) while inference costs dropped 280x since 2022. Documents progression from GPT-2 (1.5B, 2019) through o3 (2024) achieving 87.7% on GPQA Diamond and 87.5% on ARC-AGI (near human baseline), though only 3% on ARC-AGI-2. Covers the 2024-2025 shift to inference-time scaling, with Stanford AI Index 2025 showing benchmark improvements of 18-67 percentage points in one year and US-China performance gap narrowing from 17.5 to 0.3 points on MMLU.
+quality: 57
+llmSummary: "Comprehensive technical overview documenting LLM progression from GPT-2 (1.5B parameters, 2019) to o3 (87.5% ARC-AGI, 2024), with quantified capability metrics, scaling laws (performance ∝ N^0.076), and risk assessments across persuasion (82% agreement increase), hallucination (8-45% rates), and emerging autonomous capabilities. Training costs growing 2.4x annually toward $1B by 2027, with paradigm shift to inference-time scaling in o1/o3 enabling PhD-level reasoning but at 6x cost and 30x slower speed."
 lastEdited: "2026-01-30"
-importance: 85
+importance: 78.5
 ratings:
-  novelty: 4.5
+  novelty: 3.5
   rigor: 6.5
   actionability: 5
   completeness: 7
 metrics:
-  wordCount: 1150
-  citations: 32
-  tables: 32
+  wordCount: 1401
+  citations: 48
+  tables: 39
   diagrams: 1
 ---
 import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '../../../../components/wiki';
@@ -30,8 +30,8 @@ import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from 
 |-----------|------------|----------|
 | **Capability Level** | Near-human to superhuman on structured tasks | o3 achieves 87.5% on ARC-AGI (human baseline ~85%); 87.7% on [GPQA Diamond](https://arcprize.org/blog/oai-o3-pub-breakthrough) |
 | **Progress Rate** | 2-3x capability improvement per year | [Stanford AI Index 2025](https://hai.stanford.edu/ai-index/2025-ai-index-report): benchmark scores rose 18-67 percentage points in one year |
-| **Training Cost Trend** | 2.4x annual growth | [Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models): frontier models projected to exceed $1B by 2027 |
-| **Inference Cost Trend** | 280x reduction since 2022 | GPT-3.5-equivalent dropped from $20 to $0.07 per million tokens ([Stanford HAI](https://hai.stanford.edu/ai-index/2025-ai-index-report)) |
+| **Training Cost Trend** | 2.4x annual growth | [Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models): frontier models projected to exceed \$1B by 2027 |
+| **Inference Cost Trend** | 280x reduction since 2022 | GPT-3.5-equivalent dropped from \$10 to \$1.07 per million tokens ([Stanford HAI](https://hai.stanford.edu/ai-index/2025-ai-index-report)) |
 | **Hallucination Rates** | 8-45% depending on task | [Vectara Leaderboard](https://github.com/vectara/hallucination-leaderboard): best models at 8%; [HalluLens](https://aclanthology.org/2025.acl-long.1176/): up to 45% on factual queries |
 | **Safety Maturity** | Moderate | Constitutional AI, RLHF established; [responsible scaling policies](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) implemented by major labs |
 | **Open-Closed Gap** | Narrowing rapidly | Gap shrunk from 8.04% to 1.70% on Chatbot Arena (Jan 2024 → Feb 2025) |
@@ -129,7 +129,7 @@ Research by <R id="85f66a6419d173a7">Kaplan et al. (2020)</R> and refined by <R 
 
 *Source: <R id="46fd66187ec3e6ae">Chinchilla paper</R>, <R id="85f66a6419d173a7">Scaling Laws</R>*
 
-According to [Epoch AI research](https://epoch.ai/trends), approximately two-thirds of LLM performance improvements over the last decade are attributable to increases in model scale, with training techniques contributing roughly 0.4 orders of magnitude per year in compute efficiency. The [cost of training frontier models](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models) has grown by 2.4x per year since 2016, with the largest models projected to exceed $1B by 2027.
+According to [Epoch AI research](https://epoch.ai/trends), approximately two-thirds of LLM performance improvements over the last decade are attributable to increases in model scale, with training techniques contributing roughly 0.4 orders of magnitude per year in compute efficiency. The [cost of training frontier models](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models) has grown by 2.4x per year since 2016, with the largest models projected to exceed \$1B by 2027.
 
 ### The Shift to Inference-Time Scaling (2024-2025)
 
