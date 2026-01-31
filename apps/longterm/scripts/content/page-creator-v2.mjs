@@ -233,35 +233,43 @@ function runClaudePhase(prompt, options = {}) {
 function getResearchPrompt(topic, depth = 'standard') {
   const searchCount = depth === 'deep' ? 15 : depth === 'lite' ? 5 : 10;
   const scrySearches = depth === 'deep' ? 8 : depth === 'lite' ? 3 : 5;
-  const hasScryKey = !!process.env.EXOPRIORS_API_KEY;
 
-  const scrySection = hasScryKey ? `
-### Part 1: SCRY Research (EA Forum, LessWrong, etc.)
-Use the SCRY API to search the ExoPriors research corpus. This includes LessWrong, EA Forum, arXiv, and more.
+  // SCRY public readonly key for searching EA Forum/LessWrong corpus
+  const SCRY_PUBLIC_KEY = 'exopriors_public_readonly_v1_2025';
 
-**SCRY Search Queries (perform ${scrySearches} searches):**
-Use Bash to run curl commands with the EXOPRIORS_API_KEY environment variable:
+  const scrySection = `
+### Part 1: SCRY Research (EA Forum, LessWrong)
+Use the SCRY API to search the ExoPriors corpus of EA Forum and LessWrong posts.
 
+**SCRY API Details:**
+- Base URL: https://api.exopriors.com
+- Endpoint: POST /v1/scry/query
+- Auth: Bearer ${SCRY_PUBLIC_KEY}
+- Content-Type: text/plain (raw SQL, not JSON)
+
+**Example SCRY query using Bash:**
 \`\`\`bash
-# Example SCRY search using SQL-like query syntax:
-curl -s -X POST "https://exopriors.com/v1/scry/query" \\
-  -H "Authorization: Bearer $EXOPRIORS_API_KEY" \\
+curl -s -X POST "https://api.exopriors.com/v1/scry/query" \\
+  -H "Authorization: Bearer ${SCRY_PUBLIC_KEY}" \\
   -H "Content-Type: text/plain" \\
-  -d "SELECT title, url, source, published_at, content FROM documents WHERE scry.search(content, '${topic}') ORDER BY published_at DESC LIMIT 10"
+  -d "SELECT title, uri, snippet, original_author, original_timestamp::date as date
+      FROM scry.search('${topic}', 'mv_eaforum_posts')
+      WHERE title IS NOT NULL AND kind = 'post'
+      LIMIT 10"
 \`\`\`
 
-**SCRY Searches to perform:**
-1. Main topic: "${topic}"
-2. With criticism: "${topic} criticism OR critique"
-3. Historical: "${topic} history OR founding"
-4. Related to AI safety: "${topic} AI safety alignment"
-5. Funding/org: "${topic} funding OR grant OR organization"
+**Tables available:**
+- \`mv_eaforum_posts\` - EA Forum posts
+- \`mv_lesswrong_posts\` - LessWrong posts
 
-Parse the JSON response and extract relevant posts. Note the source (lesswrong, eaforum, arxiv) and karma/score.
-` : `
-### Part 1: SCRY Research - SKIPPED
-SCRY API key not configured (EXOPRIORS_API_KEY). Falling back to web-only research.
-To enable SCRY, set the EXOPRIORS_API_KEY environment variable.
+**SCRY Searches to perform (${scrySearches} total):**
+1. EA Forum posts: "${topic}"
+2. LessWrong posts: "${topic}"
+3. Criticism search: "${topic} criticism problems concerns"
+4. History/founding: "${topic} history founding"
+5. Related discussions: "${topic} discussion analysis"
+
+For each search, extract: title, uri (URL), original_author, snippet (content preview), date.
 `;
 
   return `# Research Phase: ${topic}
@@ -269,10 +277,10 @@ To enable SCRY, set the EXOPRIORS_API_KEY environment variable.
 You are gathering sources for a comprehensive wiki article about "${topic}".
 
 ## Task
-Perform research using web searches${hasScryKey ? ' AND SCRY (EA/rationalist community corpus)' : ''}.
+Perform research using BOTH SCRY (EA Forum/LessWrong corpus) AND web searches.
 ${scrySection}
 
-### Part ${hasScryKey ? '2' : '1'}: Web Research (${searchCount} searches)
+### Part 2: Web Research (${searchCount} searches)
 Use WebSearch for:
 1. **Wikipedia article** (if exists) - search: "${topic} Wikipedia"
 2. **Primary sources** - official websites, about pages, documentation
@@ -281,12 +289,12 @@ Use WebSearch for:
 5. **Funding sources** - Open Philanthropy grants database, other funders
 6. **External perspectives** - news articles, academic papers
 7. **Critical perspectives** - critiques, controversies, limitations
-8. **EA Forum/LessWrong** - search: "${topic} site:forum.effectivealtruism.org" or "site:lesswrong.com"
 
 ## Process
-${hasScryKey ? '1. First, search SCRY for community perspectives and discussions\n2. Then perform' : '1. Perform'} web searches for official/external sources
-${hasScryKey ? '3' : '2'}. For each relevant web result, use WebFetch to get the full content
-${hasScryKey ? '4' : '3'}. Combine all sources into a unified file
+1. First, search SCRY for community perspectives and discussions (EA Forum + LessWrong)
+2. Then perform web searches for official/external sources
+3. For each relevant web result, use WebFetch to get the full content
+4. Combine all sources into a unified file
 
 ## Output
 Write a JSON file to .claude/temp/page-creator/${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/sources.json:
@@ -749,13 +757,11 @@ async function runPipeline(topic, tier = 'standard') {
     process.exit(1);
   }
 
-  const hasScryKey = !!process.env.EXOPRIORS_API_KEY;
-
   console.log(`\n${'='.repeat(60)}`);
   console.log(`Creating article: "${topic}"`);
   console.log(`Tier: ${config.name} (${config.estimatedCost})`);
   console.log(`Phases: ${config.phases.join(' → ')}`);
-  console.log(`SCRY API: ${hasScryKey ? '✓ Enabled' : '✗ Disabled (set EXOPRIORS_API_KEY to enable)'}`);
+  console.log(`SCRY API: ✓ Enabled (public readonly key)`);
   console.log(`${'='.repeat(60)}\n`);
 
   const results = {
