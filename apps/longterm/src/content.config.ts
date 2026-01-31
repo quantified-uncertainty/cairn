@@ -71,6 +71,8 @@ export const collections = {
         fullWidth: z.boolean().optional(),
         // Entity ID for sidebar InfoBox (when filename doesn't match entity ID)
         entityId: z.string().optional(),
+        // Roles for people pages (e.g., ['funder', 'researcher', 'entrepreneur'])
+        roles: z.array(z.string()).optional(),
       }),
     }),
   }),
