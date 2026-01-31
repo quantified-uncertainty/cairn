@@ -155,13 +155,8 @@ const SUBPROCESS_CHECKS = [
     script: 'validate-insights.mjs',
     description: 'Insight schema, ratings, and source paths',
   },
-  {
-    id: 'quality',
-    name: 'Quality Ratings',
-    script: 'validate-quality.mjs',
-    args: ['--large'],
-    description: 'Quality ratings match structural metrics (stubs, TODOs penalized)',
-  },
+  // Note: 'quality' check excluded from CI - it's advisory only
+  // Run `npm run validate:quality` manually to check quality ratings
 ];
 
 /**
