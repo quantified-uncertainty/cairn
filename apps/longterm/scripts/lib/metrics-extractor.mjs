@@ -232,23 +232,14 @@ function calculateStructuralScore(metrics) {
  * - 3-5 → 20-39 (draft)
  * - 0-2 → 0-19 (stub)
  *
- * Penalties applied:
- * - TODOs: -5 per outstanding TODO (capped at -25)
- * - Stub pages: capped at 35
+ * Adjustments:
+ * - Stub pages: capped at 35 (explicitly marked as minimal)
  */
 export function suggestQuality(structuralScore, frontmatter = {}) {
   // Linear mapping: score 0 → quality 0, score 15 → quality 100
   let quality = Math.round((structuralScore / 15) * 100);
 
-  // Apply TODO penalty
-  const todos = frontmatter.todos || [];
-  const todoCount = Array.isArray(todos) ? todos.length : 0;
-  if (todoCount > 0) {
-    const todoPenalty = Math.min(25, todoCount * 5);
-    quality -= todoPenalty;
-  }
-
-  // Cap stub pages at 35
+  // Cap stub pages at 35 - they're explicitly marked as minimal placeholders
   if (frontmatter.pageType === 'stub') {
     quality = Math.min(quality, 35);
   }

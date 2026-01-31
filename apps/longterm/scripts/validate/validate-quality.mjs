@@ -229,8 +229,34 @@ function main() {
 
   // Exit with error if overrated pages exist
   if (overrated.length > 0) {
-    console.log(`${colors.red}Found ${overrated.length} significantly overrated page(s).${colors.reset}`);
-    console.log(`Run with --page <name> to see details for a specific page.\n`);
+    console.log(`${colors.red}Found ${overrated.length} significantly overrated page(s).${colors.reset}\n`);
+
+    // Show easy re-grade commands
+    console.log(`${colors.bold}To re-grade these pages:${colors.reset}`);
+    console.log(`${colors.dim}(requires ANTHROPIC_API_KEY in .env or environment)${colors.reset}\n`);
+
+    // Single page commands
+    console.log(`${colors.cyan}Re-grade one page:${colors.reset}`);
+    const firstPage = overrated[0];
+    console.log(`  npm run regrade -- ${firstPage.id}\n`);
+
+    // Batch command for all overrated
+    if (overrated.length > 1) {
+      console.log(`${colors.cyan}Re-grade all ${overrated.length} overrated pages:${colors.reset}`);
+      const ids = overrated.map(p => p.id).join(' ');
+      console.log(`  npm run regrade -- ${ids}\n`);
+    }
+
+    // Or manual fix for stubs
+    const stubs = overrated.filter(p => p.path.includes('stub') || (p.metrics?.wordCount || 0) < 200);
+    if (stubs.length > 0) {
+      console.log(`${colors.cyan}Or manually lower quality for stub/short pages:${colors.reset}`);
+      stubs.forEach(p => {
+        console.log(`  ${p.id}: quality ${p.quality} → ~${Math.min(35, p.suggestedQuality)}`);
+      });
+      console.log();
+    }
+
     process.exit(1);
   } else {
     console.log(`${colors.green}No significantly overrated pages found.${colors.reset}\n`);

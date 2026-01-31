@@ -267,11 +267,11 @@ function computeMetrics(content) {
 /**
  * Compute derived quality score from ratings, metrics, and frontmatter
  *
- * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5) - penalties
+ * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5)
  * - Subscores drive 0-80 (primary factor)
  * - Length bonus: 0-10 (5000 words = max)
  * - Evidence bonus: 0-10 (20 citations = max)
- * - Penalties: TODOs, stub markers, short pages
+ * - Caps: stub pages at 35, very short pages at 40
  * - Total range: 0-100
  */
 function computeQuality(ratings, metrics, frontmatter = {}) {
@@ -288,21 +288,12 @@ function computeQuality(ratings, metrics, frontmatter = {}) {
   // Compute base quality
   let quality = baseScore + lengthScore + evidenceScore;
 
-  // PENALTIES for incomplete work
-  // 1. Outstanding TODOs: -5 points per TODO (incomplete sections)
-  const todos = frontmatter.todos || [];
-  const todoCount = Array.isArray(todos) ? todos.length : 0;
-  if (todoCount > 0) {
-    const todoPenalty = Math.min(25, todoCount * 5); // Cap at -25
-    quality -= todoPenalty;
-  }
-
-  // 2. Stub pages should never exceed 35
+  // Stub pages should never exceed 35 (explicitly marked as minimal)
   if (frontmatter.pageType === 'stub') {
     quality = Math.min(quality, 35);
   }
 
-  // 3. Very short pages (<100 words) capped at 40
+  // Very short pages (<100 words) capped at 40
   if (metrics.wordCount < 100) {
     quality = Math.min(quality, 40);
   }
