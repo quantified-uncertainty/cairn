@@ -419,7 +419,7 @@ function buildPagesRegistry(urlToResource) {
             structuralScore: metrics.structuralScore,
           },
           // Suggested quality based on structure
-          suggestedQuality: suggestQuality(metrics.structuralScore),
+          suggestedQuality: suggestQuality(metrics.structuralScore, fm),
           // Legacy field for backwards compatibility
           wordCount: metrics.wordCount,
           // Unconverted links (markdown links with matching resources)

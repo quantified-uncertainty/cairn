@@ -220,8 +220,9 @@ function calculateStructuralScore(metrics) {
 }
 
 /**
- * Suggest quality rating based on structural score
+ * Suggest quality rating based on structural score and frontmatter
  * @param {number} structuralScore - Raw structural score (0-15)
+ * @param {object} frontmatter - Page frontmatter (optional)
  * @returns {number} Suggested quality rating (0-100)
  *
  * Mapping: structural score 0-15 → quality 0-100
@@ -230,14 +231,30 @@ function calculateStructuralScore(metrics) {
  * - 6-8 → 40-59 (adequate)
  * - 3-5 → 20-39 (draft)
  * - 0-2 → 0-19 (stub)
+ *
+ * Penalties applied:
+ * - TODOs: -5 per outstanding TODO (capped at -25)
+ * - Stub pages: capped at 35
  */
-export function suggestQuality(structuralScore) {
+export function suggestQuality(structuralScore, frontmatter = {}) {
   // Linear mapping: score 0 → quality 0, score 15 → quality 100
-  // But with floors to match tier boundaries
-  const baseQuality = Math.round((structuralScore / 15) * 100);
+  let quality = Math.round((structuralScore / 15) * 100);
+
+  // Apply TODO penalty
+  const todos = frontmatter.todos || [];
+  const todoCount = Array.isArray(todos) ? todos.length : 0;
+  if (todoCount > 0) {
+    const todoPenalty = Math.min(25, todoCount * 5);
+    quality -= todoPenalty;
+  }
+
+  // Cap stub pages at 35
+  if (frontmatter.pageType === 'stub') {
+    quality = Math.min(quality, 35);
+  }
 
   // Clamp to 0-100
-  return Math.min(100, Math.max(0, baseQuality));
+  return Math.min(100, Math.max(0, quality));
 }
 
 /**
