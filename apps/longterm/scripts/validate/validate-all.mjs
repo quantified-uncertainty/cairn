@@ -46,6 +46,7 @@ const colors = getColors(CI_MODE);
  * Maps check ID to rule ID(s)
  */
 const UNIFIED_CHECKS = {
+  'frontmatter': ['frontmatter-schema'],
   'dollars': ['dollar-signs'],
   'comparisons': ['comparison-operators'],
   'tildes': ['tilde-dollar'],

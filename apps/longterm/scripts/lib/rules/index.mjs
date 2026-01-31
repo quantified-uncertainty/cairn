@@ -29,6 +29,9 @@ export { cruftFilesRule } from './cruft-files.mjs';
 export { markdownListsRule } from './markdown-lists.mjs';
 export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 
+// Schema validation rules
+export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
+
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
 import { dollarSignsRule } from './dollar-signs.mjs';
@@ -46,6 +49,7 @@ import { jsxInMdRule } from './jsx-in-md.mjs';
 import { cruftFilesRule } from './cruft-files.mjs';
 import { markdownListsRule } from './markdown-lists.mjs';
 import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
+import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 
 export const allRules = [
   // Content validation
@@ -71,6 +75,9 @@ export const allRules = [
   // Markdown formatting
   markdownListsRule,
   consecutiveBoldLabelsRule,
+
+  // Schema validation
+  frontmatterSchemaRule,
 ];
 
 export default allRules;
