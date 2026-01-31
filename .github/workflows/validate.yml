@@ -133,6 +133,18 @@ jobs:
             echo "❌ Validation script failed to produce results" >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: Cross-linking opportunities (informational)
+        if: always()
+        working-directory: apps/longterm
+        run: |
+          echo "## Cross-Linking Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Checking for unlinked entity mentions..." >> $GITHUB_STEP_SUMMARY
+          # Run analysis but don't fail the build
+          node scripts/validate/validate-entity-mentions.mjs --ci 2>&1 | head -20 >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Run \`npm run analyze:mentions\` locally for full report._" >> $GITHUB_STEP_SUMMARY
+
   build:
     name: Build Site
     runs-on: ubuntu-latest
