@@ -58,7 +58,11 @@ export default defineConfig({
                           { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
                       ]},
                       { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
-                      { label: 'Epistemic Tools', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools' } },
+                      { label: 'Epistemic Tools', collapsed: true, items: [
+                          { label: 'Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools/approaches' } },
+                          { label: 'Tools & Platforms', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools/tools' } },
+                          { slug: 'knowledge-base/responses/epistemic-tools/epistemic-infrastructure' },
+                      ]},
                       { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/organizational-practices' } },
                       { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
                       { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
