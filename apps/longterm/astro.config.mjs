@@ -45,7 +45,19 @@ export default defineConfig({
                   label: 'Interventions',
                   collapsed: true,
                   items: [
-                      { label: 'AI Alignment', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment' } },
+                      { label: 'AI Alignment', collapsed: true, items: [
+                          { slug: 'knowledge-base/responses/alignment/alignment' },
+                          { slug: 'knowledge-base/responses/alignment/technical-research' },
+                          { slug: 'knowledge-base/responses/alignment/research-agendas' },
+                          { label: 'Training Methods', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/training' } },
+                          { label: 'Evaluation & Detection', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/evaluation' } },
+                          { label: 'Interpretability', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/interpretability' } },
+                          { label: 'Theoretical Foundations', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/theoretical' } },
+                          { label: 'Deployment & Control', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/deployment' } },
+                          { label: 'Policy & Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/alignment/policy' } },
+                          { slug: 'knowledge-base/responses/alignment/anthropic-core-views' },
+                          { slug: 'knowledge-base/responses/alignment/ai-assisted' },
+                      ]},
                       { label: 'Safety Generalizability', collapsed: true, items: [
                           { label: 'Table View', link: '/knowledge-base/responses/safety-generalizability/table', attrs: { class: 'sidebar-icon-table' } },
                           { label: 'Matrix View', link: '/knowledge-base/responses/safety-generalizability/matrix', attrs: { class: 'sidebar-icon-matrix' } },
