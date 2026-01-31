@@ -1,6 +1,6 @@
 // Matrix view: Safety Approaches × Architecture Scenarios
-import { getSafetyApproaches, type SafetyApproach } from '../data/safety-generalizability-graph-data';
-import { getArchitectureScenarios, type ArchitectureScenario } from '../data/architecture-scenarios-data';
+import { getSafetyApproaches, type SafetyApproach } from '@data/safety-generalizability-graph-data';
+import { getArchitectureScenarios, type ArchitectureScenario } from '@data/architecture-scenarios-data';
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }

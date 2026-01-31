@@ -18,7 +18,7 @@ import './CauseEffectGraph.css';
 import type { CauseEffectNodeData, CauseEffectEdgeData } from './CauseEffectGraph/types';
 import { CauseEffectNode } from './CauseEffectGraph/nodes';
 import { DetailsPanel } from './CauseEffectGraph/components';
-import { safetyGeneralizabilityNodes, safetyGeneralizabilityEdges } from '../data/safety-generalizability-graph-data';
+import { safetyGeneralizabilityNodes, safetyGeneralizabilityEdges } from '@data/safety-generalizability-graph-data';
 
 const nodeTypes = {
   causeEffect: CauseEffectNode,

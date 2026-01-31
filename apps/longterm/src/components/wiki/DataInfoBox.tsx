@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { InfoBox, type EntityType, type ModelRatingsData } from './InfoBox';
-import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData, getPageById } from '../../data';
+import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData, getPageById } from '@data';
 
 interface RelatedEntry {
   type: EntityType;

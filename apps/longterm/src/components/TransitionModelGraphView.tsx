@@ -19,7 +19,7 @@ import type { CauseEffectNodeData, CauseEffectEdgeData } from './CauseEffectGrap
 import { GroupNode, SubgroupNode, CauseEffectNode } from './CauseEffectGraph/nodes';
 import { DetailsPanel, Legend } from './CauseEffectGraph/components';
 import { getLayoutedElements } from './CauseEffectGraph/layout';
-import { parameterNodes, parameterEdges } from '../data/parameter-graph-data';
+import { parameterNodes, parameterEdges } from '@data/parameter-graph-data';
 import TransitionModelNav from './TransitionModelNav';
 
 const nodeTypes = {

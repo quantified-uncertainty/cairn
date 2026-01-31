@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from '../ui/card';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 import { importanceColors, resolvabilityLabels, type ImportanceLevel, type Resolvability } from './shared/style-config';
 
 interface Position {

@@ -31,7 +31,7 @@ import {
   getMostConnected,
   detectClusters,
   getEntityMap,
-} from '../../lib/graph-analysis';
+} from '@lib/graph-analysis';
 
 interface EntityGraphProps {
   focusEntity?: string;

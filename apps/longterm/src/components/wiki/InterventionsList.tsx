@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import type { AddressedBy } from '../../data/parameter-graph-data';
+import type { AddressedBy } from '@data/parameter-graph-data';
 
 interface InterventionsListProps {
   interventions: AddressedBy[];

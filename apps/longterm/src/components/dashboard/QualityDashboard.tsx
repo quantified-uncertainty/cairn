@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import type { DashboardMetrics } from '../../lib/dashboard';
+import type { DashboardMetrics } from '@lib/dashboard';
 
 interface QualityDashboardProps {
   metrics: DashboardMetrics;

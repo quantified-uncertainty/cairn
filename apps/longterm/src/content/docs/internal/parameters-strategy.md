@@ -1,9 +1,21 @@
 ---
 title: "Parameters Strategy"
 description: "Strategy for AI transition model parameters"
-pageType: documentation
+pageType: "documentation"
+importance: 0
+quality: 3
+llmSummary: "Internal project management document providing implementation instructions for creating parameter pages in a knowledge base. Outlines workflow, templates, and batch assignments for parallel development work."
+ratings:
+  novelty: 0
+  rigor: 0
+  actionability: 0
+  completeness: 0
+metrics:
+  wordCount: 1005
+  citations: 2
+  tables: 30
+  diagrams: 1
 ---
-
 # Key Parameters Implementation Strategy
 
 This document outlines the strategy for creating new parameter pages in the knowledge base. It is designed to be given to multiple Claude Code instances working in parallel.
@@ -80,7 +92,7 @@ quality: 4
 llmSummary: "2-3 sentence summary for AI context. Include key statistics and the main factors that increase/decrease this parameter."
 lastEdited: "2025-12-28"
 ---
-import {DataInfoBox, Backlinks, Mermaid, R} from '../../../../components/wiki';
+import {DataInfoBox, Backlinks, Mermaid, R} from '@components/wiki';
 
 <DataInfoBox entityId="parameter-id-here" />
 

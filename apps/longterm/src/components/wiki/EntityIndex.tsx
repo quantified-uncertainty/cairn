@@ -8,10 +8,10 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { entities as allEntities, getAllTags, getEntityHref, getPageById } from '../../data';
-import type { ModelRatings } from '../../data';
+import { entities as allEntities, getAllTags, getEntityHref, getPageById } from '@data';
+import type { ModelRatings } from '@data';
 import { Search, Filter, SortAsc, SortDesc, X, Grid, List, Table } from 'lucide-react';
-import type { Entity } from '../../data/schema';
+import type { Entity } from '@data/schema';
 import { EntityTypeBadge } from './EntityTypeIcon';
 
 type ViewMode = 'table' | 'cards' | 'list';

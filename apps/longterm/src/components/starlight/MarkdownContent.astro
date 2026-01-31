@@ -11,13 +11,13 @@
 import '../../../node_modules/@astrojs/starlight/style/markdown.css';
 import { PageStatus } from '../wiki/PageStatus';
 import { ScenarioRatings } from '../wiki/ScenarioRatings';
-import pagesData from '../../data/pages.json';
-import { getInsightsBySource } from '../../data/insights-data';
+import pagesData from '@data/pages.json';
+import { getInsightsBySource } from '@data/insights-data';
 import {
   detectPageType,
   isAITransitionModelPage,
   shouldShowPageStatus,
-} from '../../lib/page-types';
+} from '@lib/page-types';
 
 // Get frontmatter from the route context
 const { entry } = Astro.locals.starlightRoute;

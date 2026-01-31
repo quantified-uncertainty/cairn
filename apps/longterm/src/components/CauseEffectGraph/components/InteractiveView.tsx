@@ -1,8 +1,8 @@
 import { useState, useMemo, createContext, useContext, useRef } from 'react';
 import type { Node, Edge } from '@xyflow/react';
 import type { CauseEffectNodeData, CauseEffectEdgeData } from '../types';
-import { getEntityById, getPageById } from '../../../data';
-import { cn } from '../../../lib/utils';
+import { getEntityById, getPageById } from '@data';
+import { cn } from '@lib/utils';
 import { Card } from '../../ui/card';
 
 // Context for coordinating hover highlighting across the view

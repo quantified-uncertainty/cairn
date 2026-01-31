@@ -29,7 +29,7 @@ import {
   accidentRisks,
   riskCategories,
   type AccidentRisk,
-} from "../data/accident-risks-data";
+} from "@data/accident-risks-data";
 import { cn } from "@/lib/utils";
 
 // Legend badge component

@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { SortableHeader } from "@/components/ui/sortable-header"
 import { cn } from "@/lib/utils"
-import type { SafetyApproach, RatedProperty } from "../../data/safety-approaches-data"
+import type { SafetyApproach, RatedProperty } from "@data/safety-approaches-data"
 import {
   getBadgeColorClass,
   getArchRelevanceClass,

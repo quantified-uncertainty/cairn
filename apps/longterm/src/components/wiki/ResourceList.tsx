@@ -1,8 +1,8 @@
 import React from 'react';
-import { getResourcesByIds, getResourceById, resources } from '../../data';
-import type { Resource } from '../../data/schema';
+import { getResourcesByIds, getResourceById, resources } from '@data';
+import type { Resource } from '@data/schema';
 import { Badge } from '../ui/badge';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 import { getResourceTypeLabel } from './shared/style-config';
 
 /**

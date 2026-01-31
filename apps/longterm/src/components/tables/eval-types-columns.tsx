@@ -6,8 +6,8 @@ import { SortableHeader } from "@/components/ui/sortable-header";
 import { getBadgeClass, getLevelSortValue } from "./shared/table-view-styles";
 
 // Re-export types from data file
-export type { RiskCoverage, EvalType, EvalCategory } from "../../data/eval-types-table-data";
-import type { RiskCoverage, EvalType } from "../../data/eval-types-table-data";
+export type { RiskCoverage, EvalType, EvalCategory } from "@data/eval-types-table-data";
+import type { RiskCoverage, EvalType } from "@data/eval-types-table-data";
 
 // Badge component
 function LevelBadge({ level, category }: { level: string; category?: string }) {

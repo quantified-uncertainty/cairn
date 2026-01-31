@@ -1,9 +1,21 @@
 ---
 title: "CAIRN Vision"
 description: "Strategic vision and scope for the CAIRN project"
-pageType: documentation
+pageType: "documentation"
+importance: 0
+quality: 2
+llmSummary: "Internal strategic planning document for the CAIRN project itself, outlining a 2-person-year scope to build a knowledge platform focused on AI safety prioritization cruxes. Proposes ~250 pages across risks, interventions, and causal models with worldview-based priority mapping."
+ratings:
+  novelty: 0
+  rigor: 0
+  actionability: 0
+  completeness: 0
+metrics:
+  wordCount: 871
+  citations: 0
+  tables: 7
+  diagrams: 0
 ---
-
 # CAIRN: Comprehensive AI Impact & Risk Navigator
 
 ## Vision Document (2-Person-Year Scope)

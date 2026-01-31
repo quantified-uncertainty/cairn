@@ -3,7 +3,7 @@ import {
   getSubItemRelatedContent,
   type RelatedContent,
   type RelatedContentLink,
-} from '../../data/parameter-graph-data';
+} from '@data/parameter-graph-data';
 
 interface FactorRelatedContentProps {
   nodeId?: string;

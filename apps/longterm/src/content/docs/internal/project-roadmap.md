@@ -4,11 +4,23 @@ description: "Future work, infrastructure improvements, and project tracking"
 sidebar:
   order: 10
 lastEdited: "2026-01-02"
-importance: 0
-quality: 25
-llmSummary: "Internal project management document tracking future infrastructure tasks and content priorities. Most core infrastructure (validators, dashboard, grading) is complete."
+importance: 2
+quality: 29
+llmSummary: "Internal project roadmap tracking wiki infrastructure status (14 validators, quality grading, dashboard all complete as of Jan 2026) and future priorities including batch content improvement for high-importance/low-quality pages and increased citation coverage. Emphasizes pragmatic approach: avoid over-engineering, adapt style guidelines to content."
+ratings:
+  novelty: 0
+  rigor: 3
+  rigor_reasoning: "Clear tracking of completed vs future work with specific system status, but no sourcing since it's internal project documentation"
+  actionability: 5
+  actionability_reasoning: "Provides specific tasks (batch content improvement with command-line examples, citation coverage goals) but only relevant to maintainers"
+  completeness: 6
+  completeness_reasoning: "Comprehensive view of infrastructure state and future work, well-organized with clear status indicators"
+metrics:
+  wordCount: 349
+  citations: 0
+  tables: 2
+  diagrams: 0
 ---
-
 This file tracks future infrastructure improvements and project priorities. For content-specific tasks, see the [Enhancement Queue](/internal/enhancement-queue/).
 
 ## Current State (January 2026)

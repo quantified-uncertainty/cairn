@@ -1,11 +1,23 @@
 ---
 title: "AI Transition Model Style Guide"
 description: "Style guide for AI Transition Model factor, scenario, and parameter pages"
-pageType: documentation
+pageType: "documentation"
 sidebar:
   order: 12
+importance: 2
+quality: 32
+llmSummary: "Internal style guide documenting YAML-first architecture for AI Transition Model pages, specifying that ratings and metadata live in YAML while MDX contains only custom prose. Provides validation workflows and anti-patterns for maintaining consistency across factor, parameter, and scenario entities."
+ratings:
+  novelty: 0.5
+  rigor: 4
+  actionability: 5
+  completeness: 6
+metrics:
+  wordCount: 262
+  citations: 0
+  tables: 3
+  diagrams: 0
 ---
-
 # AI Transition Model Style Guide
 
 The AI Transition Model (ATM) is a structured framework for understanding AI development trajectories. ATM pages differ from regular knowledge base content—they follow a specific schema and use YAML as the source of truth.
@@ -34,7 +46,7 @@ title: "Factor Name"
 sidebar:
   order: 1
 ---
-import {TransitionModelContent} from '../../../../components/wiki';
+import {TransitionModelContent} from '@components/wiki';
 
 ## Overview
 

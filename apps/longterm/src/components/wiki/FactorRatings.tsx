@@ -2,7 +2,7 @@ import React from 'react';
 import {
   getSubItemRatings,
   type SubItemRatings,
-} from '../../data/parameter-graph-data';
+} from '@data/parameter-graph-data';
 
 function getInterpretation(value: number, metric: keyof SubItemRatings): string {
   const interpretations: Record<keyof SubItemRatings, Record<string, string>> = {

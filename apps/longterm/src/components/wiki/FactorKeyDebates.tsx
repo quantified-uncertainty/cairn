@@ -2,7 +2,7 @@ import React from 'react';
 import {
   getSubItemDebates,
   type KeyDebate,
-} from '../../data/parameter-graph-data';
+} from '@data/parameter-graph-data';
 
 interface FactorKeyDebatesProps {
   nodeId?: string;

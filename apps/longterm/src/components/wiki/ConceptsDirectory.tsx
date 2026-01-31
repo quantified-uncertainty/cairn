@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { pages, type Page } from "../../data"
+import { pages, type Page } from "@data"
 
 interface CategorySection {
   key: string

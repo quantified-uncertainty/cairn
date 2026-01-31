@@ -7,7 +7,7 @@
  */
 
 import { EstimateBox } from './EstimateBox';
-import { getEstimateBoxData } from '../../data';
+import { getEstimateBoxData } from '@data';
 import { createDataWrapper } from './shared/createDataWrapper';
 
 // Create the data-aware wrapper using the HOC

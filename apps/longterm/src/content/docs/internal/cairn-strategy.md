@@ -1,9 +1,21 @@
 ---
 title: "CAIRN Strategy Brainstorm"
 description: "Strategic planning and brainstorming for CAIRN development"
-pageType: documentation
+pageType: "documentation"
+importance: 0
+quality: 4
+llmSummary: "Internal strategic planning document for CAIRN project development, exploring five failure modes (becoming just another wiki, generating non-insights, building unwanted features, maintenance hell, being too unusual) and five strategic options (narrow/deep focus, broad/shallow wiki, opinionated synthesis, crux laboratory, living assessment). Proposes four 2-week validation tests (user interviews, crux prototype, page quality test, insight generation) before committing resources."
+ratings:
+  novelty: 0
+  rigor: 0
+  actionability: 0
+  completeness: 0
+metrics:
+  wordCount: 2042
+  citations: 0
+  tables: 2
+  diagrams: 0
 ---
-
 # CAIRN Strategy Brainstorm
 
 **Status:** Working document, not polished

@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import type { Estimate } from '../../data/parameter-graph-data';
+import type { Estimate } from '@data/parameter-graph-data';
 
 interface EstimatesPanelProps {
   estimates: Estimate[];

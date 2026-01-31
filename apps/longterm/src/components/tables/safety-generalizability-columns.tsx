@@ -3,10 +3,10 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { SortableHeader } from "@/components/ui/sortable-header";
-import type { SafetyApproach, ApproachDependency } from "../../data/safety-generalizability-graph-data";
+import type { SafetyApproach, ApproachDependency } from "@data/safety-generalizability-graph-data";
 
 // Re-export types
-export type { SafetyApproach, ApproachDependency } from "../../data/safety-generalizability-graph-data";
+export type { SafetyApproach, ApproachDependency } from "@data/safety-generalizability-graph-data";
 
 // Generalization level badge
 function GeneralizationBadge({ level }: { level: SafetyApproach["generalizationLevel"] }) {

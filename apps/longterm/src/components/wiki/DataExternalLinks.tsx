@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { ExternalLinks } from './ExternalLinks';
-import { getExternalLinks, type ExternalLinksData } from '../../data/external-links-data';
+import { getExternalLinks, type ExternalLinksData } from '@data/external-links-data';
 
 interface DataExternalLinksProps {
   pageId: string;

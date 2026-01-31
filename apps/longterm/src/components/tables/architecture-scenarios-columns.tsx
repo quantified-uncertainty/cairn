@@ -17,7 +17,7 @@ export type {
   Link,
   LabLink,
   Scenario,
-} from "../../data/scenarios-table-data";
+} from "@data/scenarios-table-data";
 
 // Import types for use in this file
 import type {
@@ -26,10 +26,10 @@ import type {
   Scenario,
   LabLink,
   Link,
-} from "../../data/scenarios-table-data";
+} from "@data/scenarios-table-data";
 
 // Re-export CATEGORIES from data file
-export { CATEGORIES } from "../../data/scenarios-table-data";
+export { CATEGORIES } from "@data/scenarios-table-data";
 
 // Sparkline data (illustrative research activity over time)
 export const SPARKLINE_DATA: Record<string, number[]> = {
@@ -52,7 +52,7 @@ export const SPARKLINE_DATA: Record<string, number[]> = {
 };
 
 // Import CATEGORIES for use in this file
-import { CATEGORIES } from "../../data/scenarios-table-data";
+import { CATEGORIES } from "@data/scenarios-table-data";
 
 // Badge components
 function LevelBadge({ level }: { level: string }) {

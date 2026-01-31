@@ -5,11 +5,21 @@ sidebar:
   order: 5
 lastEdited: "2025-12-27"
 importance: 0
-quality: 72
-llmSummary: "Comprehensive technical documentation for a SQLite-based content management system that indexes MDX articles, tracks external citations, and generates AI summaries using Anthropic's API. The system includes complete database schema, CLI commands, cost estimates (~$2-3 for 311 articles with Haiku), and API documentation for programmatic access."
+quality: 44
+llmSummary: "Documentation for an internal SQLite-based content management system that indexes MDX articles, tracks citations to external sources, and generates AI summaries using Claude models. The system provides CLI tools for scanning content (~311 articles), generating summaries (estimated $2-3 for full corpus using Haiku), and exporting data to YAML for site builds."
+ratings:
+  novelty: 0
+  rigor: 6.5
+  actionability: 7
+  completeness: 8
+metrics:
+  wordCount: 497
+  citations: 0
+  tables: 15
+  diagrams: 1
 ---
 import { Aside } from '@astrojs/starlight/components';
-import { Mermaid } from '../../../components/wiki';
+import { Mermaid } from '@components/wiki';
 
 This project includes a SQLite-based content database for managing article metadata, tracking external source references, and generating AI-powered summaries. The database is stored locally in `.cache/knowledge.db` (gitignored) and serves as a foundation for content quality tooling.
 
@@ -452,7 +462,7 @@ The export script:
 Once resources are in `resources.yaml`, you can reference them semantically:
 
 ```mdx
-import { ResourceLink, ResourceList, ResourceCite } from '../../components/wiki';
+import { ResourceLink, ResourceList, ResourceCite } from '@components/wiki';
 
 Recent work on AI control <ResourceCite id="ai-control-2023" /> shows...
 

@@ -27,7 +27,7 @@ import {
   type Category,
 } from "./tables/deployment-architectures-columns";
 import { useColumnVisibility } from "./tables/shared/useColumnVisibility";
-import { architectures, CATEGORY_ORDER } from "../data/architectures-table-data";
+import { architectures, CATEGORY_ORDER } from "@data/architectures-table-data";
 
 // Component for grouped category table
 function GroupedCategoryTable({

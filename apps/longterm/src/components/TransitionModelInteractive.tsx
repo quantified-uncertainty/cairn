@@ -1,7 +1,7 @@
 // Embeddable interactive view for AI Transition Model - no navigation wrapper
 import './CauseEffectGraph.css';
 import { InteractiveView } from './CauseEffectGraph/components';
-import { parameterNodes, parameterEdges } from '../data/parameter-graph-data';
+import { parameterNodes, parameterEdges } from '@data/parameter-graph-data';
 
 const typeLabels = {
   cause: 'Root Factors',

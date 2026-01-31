@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getEntityById } from '../../data';
+import { getEntityById } from '@data';
 import { TransitionModelContent } from './TransitionModelContent';
 import { Backlinks } from './Backlinks';
 

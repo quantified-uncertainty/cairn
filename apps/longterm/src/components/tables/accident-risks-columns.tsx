@@ -12,7 +12,7 @@ import type {
   AccidentRisk,
   AbstractionLevel,
   RiskRelationship,
-} from "../../data/accident-risks-data";
+} from "@data/accident-risks-data";
 
 // Badge component for various levels
 function LevelBadge({

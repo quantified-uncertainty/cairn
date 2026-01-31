@@ -1,8 +1,8 @@
 import React from 'react';
-import { getResourceById, getResourceCredibility, getResourcePublication } from '../../data';
+import { getResourceById, getResourceCredibility, getResourcePublication } from '@data';
 import { CredibilityBadge } from './CredibilityBadge';
 import { ResourceTags } from './ResourceTags';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 import styles from './ResourceLink.module.css';
 
 interface ResourceLinkProps {

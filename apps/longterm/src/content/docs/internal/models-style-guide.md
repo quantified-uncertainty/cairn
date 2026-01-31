@@ -1,9 +1,21 @@
 ---
 title: "Models Style Guide"
 description: "Style guide for writing model and analysis pages"
-pageType: documentation
+pageType: "documentation"
+importance: 5
+quality: 38
+llmSummary: "Internal style guide prescribing dense, quantified content structure for model pages: minimum 800 words, 2+ tables (4x3+), 1+ Mermaid diagram, mathematical formulations, and <30% bullets. Requires specific sections (overview, framework, quantitative analysis, cases, limitations) with probability ranges and scenario weighting throughout."
+ratings:
+  novelty: 2
+  rigor: 4
+  actionability: 5
+  completeness: 7
+metrics:
+  wordCount: 887
+  citations: 0
+  tables: 9
+  diagrams: 0
 ---
-
 # Models Style Guide
 
 This guide defines the standards for analytical models in CAIRN. Models should maximize **information density** while remaining accessible.

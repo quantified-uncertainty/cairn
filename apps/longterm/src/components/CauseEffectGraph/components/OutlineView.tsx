@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Node } from '@xyflow/react';
 import type { CauseEffectNodeData } from '../types';
-import { getImpactsFrom, getImpactsTo, getNodeLabel, type ImpactGridEntry } from '../../../data/parameter-graph-data';
+import { getImpactsFrom, getImpactsTo, getNodeLabel, type ImpactGridEntry } from '@data/parameter-graph-data';
 import { MiniModelDiagram } from '../../MiniModelDiagram';
 import Markdown from 'react-markdown';
 

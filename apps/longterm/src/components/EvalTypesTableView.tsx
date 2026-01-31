@@ -26,7 +26,7 @@ import {
 } from "./tables/eval-types-columns";
 import { useColumnVisibility } from "./tables/shared/useColumnVisibility";
 import { TableInsightsSummary } from "./tables/shared/TableInsightsSummary";
-import { evalTypes, EVAL_CATEGORIES } from "../data/eval-types-table-data";
+import { evalTypes, EVAL_CATEGORIES } from "@data/eval-types-table-data";
 import { cn } from "@/lib/utils";
 
 // Component for grouped category table

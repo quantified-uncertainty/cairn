@@ -28,7 +28,7 @@ import {
   scenarios,
   CATEGORIES,
   CATEGORY_ORDER,
-} from "../data/scenarios-table-data";
+} from "@data/scenarios-table-data";
 import { useColumnVisibility } from "./tables/shared/useColumnVisibility";
 import { TableInsightsSummary } from "./tables/shared/TableInsightsSummary";
 import { categoryColors } from "./tables/shared/table-view-styles";

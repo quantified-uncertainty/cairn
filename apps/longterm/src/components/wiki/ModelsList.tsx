@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { getModelsForEntity, getPageById } from '../../data';
+import { getModelsForEntity, getPageById } from '@data';
 import { FileBarChart } from 'lucide-react';
 
 interface ModelsListProps {

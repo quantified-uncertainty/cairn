@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { getEntityById } from '../../data';
+import { getEntityById } from '@data';
 import CauseEffectGraph from '../CauseEffectGraph';
 
 // Map page slugs to entity IDs

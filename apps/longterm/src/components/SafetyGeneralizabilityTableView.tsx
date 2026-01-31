@@ -18,7 +18,7 @@ import {
   type SafetyGeneralizabilityColumnKey,
 } from "./tables/safety-generalizability-columns";
 import { useColumnVisibility } from "./tables/shared/useColumnVisibility";
-import { getSafetyApproaches } from "../data/safety-generalizability-graph-data";
+import { getSafetyApproaches } from "@data/safety-generalizability-graph-data";
 
 export default function SafetyGeneralizabilityTableView() {
   const [sorting, setSorting] = useState<SortingState>([

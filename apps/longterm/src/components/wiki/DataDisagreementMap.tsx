@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { DisagreementMap } from './DisagreementMap';
-import { getDisagreementMapData } from '../../data';
+import { getDisagreementMapData } from '@data';
 import { Card } from '../ui/card';
 
 interface Position {

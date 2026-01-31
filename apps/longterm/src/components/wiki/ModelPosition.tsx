@@ -38,7 +38,7 @@ const linkStyles: React.CSSProperties = {
  *
  * Usage in MDX:
  * ```mdx
- * import {ModelPosition} from '../../../../../components/wiki';
+ * import {ModelPosition} from '@components/wiki';
  *
  * <ModelPosition nodeId="ai-uses" client:load />
  * ```

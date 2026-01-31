@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ChevronIcon } from './icons';
-import { getCategoryColor } from '../../../data/master-graph-data';
+import { getCategoryColor } from '@data/master-graph-data';
 import type { LayoutAlgorithm } from '../types';
 
 // Edge density levels

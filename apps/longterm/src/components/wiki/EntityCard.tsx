@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { EntityTypeBadge, type EntityType } from './EntityTypeIcon';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 
 type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'intervention' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder' | 'organization' | 'lab-research' | 'lab-academic' | 'lab-frontier' | 'lab-startup' | 'historical' | 'analysis';
 

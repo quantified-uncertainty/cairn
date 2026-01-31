@@ -2,7 +2,7 @@
 import './CauseEffectGraph.css';
 import { DataView } from './CauseEffectGraph/components';
 import { toYaml } from './CauseEffectGraph/layout';
-import { parameterNodes, parameterEdges } from '../data/parameter-graph-data';
+import { parameterNodes, parameterEdges } from '@data/parameter-graph-data';
 import TransitionModelNav from './TransitionModelNav';
 
 const styles = `

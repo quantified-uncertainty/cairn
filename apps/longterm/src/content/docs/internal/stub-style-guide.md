@@ -1,11 +1,23 @@
 ---
 title: "Stub Pages Style Guide"
 description: "Guidelines for minimal placeholder pages"
-pageType: documentation
+pageType: "documentation"
 sidebar:
   order: 13
+importance: 0
+quality: 19
+llmSummary: "Internal documentation providing guidelines for creating minimal placeholder pages (stubs) in the knowledge base, including when to use them, required formatting, and when to convert them to full pages. Covers basic content structure and validation procedures."
+ratings:
+  novelty: 0.5
+  rigor: 2
+  actionability: 3
+  completeness: 4
+metrics:
+  wordCount: 174
+  citations: 0
+  tables: 0
+  diagrams: 0
 ---
-
 # Stub Pages Style Guide
 
 Stub pages are intentionally minimal placeholders. They mark topics that exist in the conceptual space but don't warrant full pages.

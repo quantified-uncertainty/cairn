@@ -1,5 +1,5 @@
 import React from 'react';
-import { resources } from '../../data';
+import { resources } from '@data';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 interface ArticleSourcesProps {

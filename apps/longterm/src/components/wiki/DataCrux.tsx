@@ -7,9 +7,9 @@
  */
 
 import React from 'react';
-import { getCruxData } from '../../data';
+import { getCruxData } from '@data';
 import { Card } from '../ui/card';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 import { importanceColors, resolvabilityLabels, type ImportanceLevel } from './shared/style-config';
 
 interface CruxPosition {

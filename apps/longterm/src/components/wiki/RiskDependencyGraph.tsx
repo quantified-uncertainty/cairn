@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Card } from '../ui/card';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 
 interface RiskNode {
   id: string;

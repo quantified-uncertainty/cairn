@@ -8,7 +8,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { getAllTags, getEntitiesByTag } from '../../data';
+import { getAllTags, getEntitiesByTag } from '@data';
 import { Tag, ChevronDown, ChevronUp, X } from 'lucide-react';
 
 interface TagBrowserProps {

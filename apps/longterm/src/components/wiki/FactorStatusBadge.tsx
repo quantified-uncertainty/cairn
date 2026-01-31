@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import type { CurrentAssessment } from '../../data/parameter-graph-data';
+import type { CurrentAssessment } from '@data/parameter-graph-data';
 
 interface FactorStatusBadgeProps {
   assessment: CurrentAssessment;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSubItemScope } from '../../data/parameter-graph-data';
+import { getSubItemScope } from '@data/parameter-graph-data';
 
 interface FactorScopeProps {
   nodeId?: string;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { getEntityById, getEntityHref, getEntityPath, getPageById } from '../../data';
+import { getEntityById, getEntityHref, getEntityPath, getPageById } from '@data';
 import { getEntityTypeIcon } from './EntityTypeIcon';
-import { cn } from '../../lib/utils';
+import { cn } from '@lib/utils';
 import styles from './EntityLink.module.css';
 
 interface EntityLinkProps {

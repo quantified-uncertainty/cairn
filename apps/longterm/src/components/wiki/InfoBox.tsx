@@ -1,8 +1,8 @@
 import React from 'react';
 import { Lightbulb, FlaskConical, Target, CheckCircle2 } from 'lucide-react';
 import { Card } from '../ui/card';
-import { cn } from '../../lib/utils';
-import type { EntityType } from '../../data/schema';
+import { cn } from '@lib/utils';
+import type { EntityType } from '@data/schema';
 import { EntityTypeIcon, entityTypeConfig } from './EntityTypeIcon';
 import { severityColors, directionColors, maturityColors, riskCategoryColors } from './shared/style-config';
 

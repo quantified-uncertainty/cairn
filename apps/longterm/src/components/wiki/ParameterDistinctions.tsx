@@ -1,5 +1,5 @@
 import React from 'react';
-import { getEntityById, getEntityHref } from '../../data';
+import { getEntityById, getEntityHref } from '@data';
 import { Card } from '../ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 

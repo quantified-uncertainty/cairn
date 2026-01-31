@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import type { WarningIndicator } from '../../data/parameter-graph-data';
+import type { WarningIndicator } from '@data/parameter-graph-data';
 
 interface WarningIndicatorsTableProps {
   indicators: WarningIndicator[];

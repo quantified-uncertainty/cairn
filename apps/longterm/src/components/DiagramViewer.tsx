@@ -6,8 +6,8 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { getEntityById, getEntityHref, entities, pathRegistry } from '../data';
-import { getNodeHrefFromMaster } from '../data/master-graph-data';
+import { getEntityById, getEntityHref, entities, pathRegistry } from '@data';
+import { getNodeHrefFromMaster } from '@data/master-graph-data';
 import CauseEffectGraph, { type ScoreHighlightMode } from './CauseEffectGraph';
 
 /**

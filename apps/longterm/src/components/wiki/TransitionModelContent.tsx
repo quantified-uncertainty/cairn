@@ -17,13 +17,13 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getEntityById, getEntityHref } from '../../data';
+import { getEntityById, getEntityHref } from '@data';
 import {
   getFactorScenarioInfluences,
   getScenarioFactorInfluences,
   getScenarioOutcomeConnections,
-} from '../../data/parameter-graph-data';
-import { getEntitySubgraph } from '../../data/master-graph-data';
+} from '@data/parameter-graph-data';
+import { getEntitySubgraph } from '@data/master-graph-data';
 import { FactorStatusCard } from './FactorStatusBadge';
 import { InterventionsCard } from './InterventionsList';
 import { EstimatesCard } from './EstimatesPanel';

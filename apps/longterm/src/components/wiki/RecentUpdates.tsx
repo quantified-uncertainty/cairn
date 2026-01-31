@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { getRecentlyUpdated } from '../../data';
+import { getRecentlyUpdated } from '@data';
 import { Clock, ArrowRight } from 'lucide-react';
 
 interface RecentUpdatesProps {

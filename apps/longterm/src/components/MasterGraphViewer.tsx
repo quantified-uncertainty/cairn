@@ -25,7 +25,7 @@ import {
   extractSubgraph,
   getFilterCategories,
   getFilteredDetailedData,
-} from '../data/master-graph-data';
+} from '@data/master-graph-data';
 
 type ViewLevel = 'overview' | 'detailed';
 

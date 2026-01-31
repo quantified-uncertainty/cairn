@@ -6,7 +6,7 @@ import type { ColumnDef, Row } from "@tanstack/react-table"
 import type { Node } from '@xyflow/react';
 import type { CauseEffectNodeData } from './CauseEffectGraph/types';
 import { DataTable, SortableHeader } from "@/components/ui/data-table"
-import { parameterNodes } from '../data/parameter-graph-data';
+import { parameterNodes } from '@data/parameter-graph-data';
 
 interface Ratings {
   changeability: number;

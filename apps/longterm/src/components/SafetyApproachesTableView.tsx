@@ -19,7 +19,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { SAFETY_APPROACHES, CATEGORIES } from "../data/safety-approaches-data"
+import { SAFETY_APPROACHES, CATEGORIES } from "@data/safety-approaches-data"
 import { columns } from "./tables/safety-approaches-columns"
 import {
   getBadgeColorClass,

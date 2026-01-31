@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { getBacklinksFor } from '../../data';
+import { getBacklinksFor } from '@data';
 import { Link2, ArrowLeft } from 'lucide-react';
 
 interface BacklinksProps {

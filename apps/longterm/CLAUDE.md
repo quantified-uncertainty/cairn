@@ -24,6 +24,24 @@ npm run resources list         # List pages with unconverted links
 ### Temp Files
 All temporary/intermediate files go in `.claude/temp/` (gitignored).
 
+### Import Path Aliases
+**Always use path aliases instead of relative imports.** Configured in `tsconfig.json`:
+```tsx
+// ✅ Good - use path aliases
+import { EntityLink } from '@components/wiki';
+import { getWikiStats } from '@lib/dashboard';
+import database from '@data/database.json';
+
+// ❌ Bad - don't use relative paths
+import { EntityLink } from '../../../components/wiki';
+```
+
+Available aliases:
+- `@components/*` → `src/components/*`
+- `@lib/*` → `src/lib/*`
+- `@data/*` → `src/data/*`
+- `@/*` → `src/*` (general fallback)
+
 ### Styling
 - **Use Tailwind CSS** and shadcn/ui components over custom CSS
 - shadcn components in `src/components/ui/`
@@ -89,7 +107,7 @@ Run `npm run validate` for full suite. Key individual validators:
 
 Use `<EntityLink id="entity-id">` for internal references:
 ```mdx
-import {EntityLink} from '../components/wiki';
+import {EntityLink} from '@components/wiki';
 
 The <EntityLink id="scheming">scheming</EntityLink> risk is related to...
 ```
