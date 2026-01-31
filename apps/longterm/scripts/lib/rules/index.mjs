@@ -15,6 +15,7 @@ export { placeholdersRule } from './placeholders.mjs';
 export { internalLinksRule } from './internal-links.mjs';
 export { componentRefsRule } from './component-refs.mjs';
 export { preferEntityLinkRule } from './prefer-entitylink.mjs';
+export { entityMentionsRule } from './entity-mentions.mjs';
 
 // Sidebar/structure rules
 export { sidebarCoverageRule } from './sidebar-coverage.mjs';
@@ -34,6 +35,7 @@ import { placeholdersRule } from './placeholders.mjs';
 import { internalLinksRule } from './internal-links.mjs';
 import { componentRefsRule } from './component-refs.mjs';
 import { preferEntityLinkRule } from './prefer-entitylink.mjs';
+import { entityMentionsRule } from './entity-mentions.mjs';
 import { sidebarCoverageRule } from './sidebar-coverage.mjs';
 import { sidebarIndexRule } from './sidebar-index.mjs';
 import { jsxInMdRule } from './jsx-in-md.mjs';
@@ -50,6 +52,7 @@ export const allRules = [
   internalLinksRule,
   componentRefsRule,
   preferEntityLinkRule,
+  entityMentionsRule,
 
   // Sidebar/structure
   sidebarCoverageRule,
