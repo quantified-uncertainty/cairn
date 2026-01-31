@@ -155,6 +155,13 @@ const SUBPROCESS_CHECKS = [
     script: 'validate-insights.mjs',
     description: 'Insight schema, ratings, and source paths',
   },
+  {
+    id: 'quality',
+    name: 'Quality Ratings',
+    script: 'validate-quality.mjs',
+    args: ['--large'],
+    description: 'Quality ratings match structural metrics (stubs, TODOs penalized)',
+  },
 ];
 
 /**
@@ -163,7 +170,8 @@ const SUBPROCESS_CHECKS = [
 function runSubprocessCheck(check) {
   return new Promise((resolve) => {
     const scriptPath = join(__dirname, check.script);
-    const childArgs = CI_MODE ? ['--ci'] : [];
+    const checkArgs = check.args || [];
+    const childArgs = CI_MODE ? ['--ci', ...checkArgs] : checkArgs;
 
     const runner = 'node';
     const runnerArgs = check.runner === 'tsx'
