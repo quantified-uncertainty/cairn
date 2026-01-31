@@ -103,7 +103,6 @@ export default defineConfig({
               },
               { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
               { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
-              { label: 'Foundation Models', collapsed: true, autogenerate: { directory: 'knowledge-base/foundation-models' } },
               {
                   label: 'Debates & Cruxes',
                   collapsed: true,
@@ -113,21 +112,20 @@ export default defineConfig({
                   ],
               },
               {
-                  label: 'Forecasting & Scenarios',
+                  label: 'Background & Context',
                   collapsed: true,
                   items: [
-                      { label: 'AGI Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/forecasting' } },
-                      { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
-                      { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
-                  ],
-              },
-              { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
-              {
-                  label: 'Intelligence Paradigms',
-                  collapsed: true,
-                  items: [
-                      { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
-                      { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
+                      { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
+                      { label: 'Intelligence Paradigms', collapsed: true, items: [
+                          { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
+                          { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
+                      ]},
+                      { label: 'Forecasting & Scenarios', collapsed: true, items: [
+                          { label: 'AGI Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/forecasting' } },
+                          { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
+                          { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
+                      ]},
+                      { label: 'Foundation Models', collapsed: true, autogenerate: { directory: 'knowledge-base/foundation-models' } },
                   ],
               },
               // AI Transition Model - comprehensive framework
