@@ -37,6 +37,10 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Load .env file (from cwd, which is apps/longterm when run via npm)
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
