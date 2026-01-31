@@ -8,7 +8,7 @@
  * Note: \\$ is valid in YAML frontmatter but not in MDX body content.
  */
 
-import { createRule, Issue, Severity } from '../validation-engine.mjs';
+import { createRule, Issue, Severity, FixType } from '../validation-engine.mjs';
 import { isInCodeBlock } from '../mdx-utils.mjs';
 
 // Pattern: unescaped $ followed by a number (not already escaped with \)
@@ -45,6 +45,11 @@ export const dollarSignsRule = createRule({
             line: lineNum,
             message: `Unescaped dollar sign: "${match[0]}" should be "\\${match[0]}" (context: ...${context}...)`,
             severity: Severity.ERROR,
+            fix: {
+              type: FixType.REPLACE_TEXT,
+              oldText: match[0],
+              newText: `\\${match[0]}`,
+            },
           }));
         }
       }
@@ -62,6 +67,11 @@ export const dollarSignsRule = createRule({
             line: lineNum,
             message: `Double-escaped dollar sign: "\\\\$" should be "\\$" (context: ...${context}...)`,
             severity: Severity.ERROR,
+            fix: {
+              type: FixType.REPLACE_TEXT,
+              oldText: '\\\\$',
+              newText: '\\$',
+            },
           }));
         }
       }

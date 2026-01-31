@@ -13,7 +13,7 @@
  * - `≈86%` renders correctly as `≈86%`
  */
 
-import { createRule, Issue, Severity } from '../validation-engine.mjs';
+import { createRule, Issue, Severity, FixType } from '../validation-engine.mjs';
 import { isInCodeBlock } from '../mdx-utils.mjs';
 
 // Pattern: tilde followed by escaped dollar sign (problematic LaTeX interaction)
@@ -51,6 +51,11 @@ export const tildeDollarRule = createRule({
             line: lineNum,
             message: `Tilde before escaped dollar sign: "~\\$" renders incorrectly in LaTeX. Use "≈\\$" instead (context: ...${context}...)`,
             severity: Severity.ERROR,
+            fix: {
+              type: FixType.REPLACE_TEXT,
+              oldText: '~\\$',
+              newText: '≈\\$',
+            },
           }));
         }
       }
@@ -63,7 +68,7 @@ export const tildeDollarRule = createRule({
         // Only flag if the cell contains a tilde that's not the approximately symbol
         if (!isInCodeBlock(content.body, absolutePos) && match[0].includes('~') && !match[0].includes('≈')) {
           // Extract just the tilde-number portion for context
-          const tildeMatch = match[0].match(/~\d+/);
+          const tildeMatch = match[0].match(/~(\d+)/);
           if (tildeMatch) {
             issues.push(new Issue({
               rule: this.id,
@@ -71,6 +76,11 @@ export const tildeDollarRule = createRule({
               line: lineNum,
               message: `Tilde in table cell: "${tildeMatch[0]}" may render incorrectly. Use "≈" instead of "~" (context: ${match[0].trim()})`,
               severity: Severity.WARNING,
+              fix: {
+                type: FixType.REPLACE_TEXT,
+                oldText: tildeMatch[0],
+                newText: `≈${tildeMatch[1]}`,
+              },
             }));
           }
         }

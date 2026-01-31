@@ -14,7 +14,7 @@
  *   const issues = await engine.validate();
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, relative, dirname, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
 import { findMdxFiles, findFiles } from './file-utils.mjs';
@@ -78,21 +78,48 @@ export const Severity = {
 };
 
 /**
+ * Fix types for declarative fixes
+ */
+export const FixType = {
+  INSERT_LINE_BEFORE: 'insert-line-before',  // Insert a line before the specified line
+  INSERT_LINE_AFTER: 'insert-line-after',    // Insert a line after the specified line
+  REPLACE_LINE: 'replace-line',              // Replace the entire line
+  REPLACE_TEXT: 'replace-text',              // Replace specific text in the line
+};
+
+/**
  * Validation issue structure
  */
 export class Issue {
+  /**
+   * @param {Object} options
+   * @param {string} options.rule - Rule ID that generated this issue
+   * @param {string} options.file - File path
+   * @param {number} options.line - Line number (1-indexed, relative to body)
+   * @param {string} options.message - Human-readable message
+   * @param {string} options.severity - Severity level
+   * @param {Object} options.fix - Optional fix specification
+   * @param {string} options.fix.type - Fix type from FixType enum
+   * @param {string} options.fix.content - Content to insert/replace
+   * @param {string} options.fix.oldText - For REPLACE_TEXT: text to find
+   * @param {string} options.fix.newText - For REPLACE_TEXT: replacement text
+   */
   constructor({ rule, file, line, message, severity = Severity.ERROR, fix = null }) {
     this.rule = rule;
     this.file = file;
     this.line = line;
     this.message = message;
     this.severity = severity;
-    this.fix = fix; // Optional: { description, apply: () => void }
+    this.fix = fix;
   }
 
   toString() {
     const loc = this.line ? `:${this.line}` : '';
     return `[${this.severity.toUpperCase()}] ${this.rule}: ${this.file}${loc} - ${this.message}`;
+  }
+
+  get isFixable() {
+    return this.fix != null && this.fix.type != null;
   }
 }
 
@@ -312,6 +339,100 @@ export class ValidationEngine {
     }
 
     return issues;
+  }
+
+  /**
+   * Apply fixes to files
+   * @param {Issue[]} issues - Issues with fix specifications
+   * @returns {Object} Fix results { filesFixed, issuesFixed }
+   */
+  applyFixes(issues) {
+    const fixableIssues = issues.filter(i => i.isFixable);
+    const byFile = new Map();
+
+    // Group by file
+    for (const issue of fixableIssues) {
+      if (!byFile.has(issue.file)) {
+        byFile.set(issue.file, []);
+      }
+      byFile.get(issue.file).push(issue);
+    }
+
+    let filesFixed = 0;
+    let issuesFixed = 0;
+
+    for (const [filePath, fileIssues] of byFile) {
+      const content = readFileSync(filePath, 'utf-8');
+      const fixed = this._applyFixesToContent(content, fileIssues);
+
+      if (fixed !== content) {
+        writeFileSync(filePath, fixed);
+        filesFixed++;
+        issuesFixed += fileIssues.length;
+      }
+    }
+
+    return { filesFixed, issuesFixed };
+  }
+
+  /**
+   * Apply fixes to content string
+   * @private
+   */
+  _applyFixesToContent(content, issues) {
+    // Get frontmatter offset
+    const frontmatterEndLine = this._getFrontmatterEndLine(content);
+    const lines = content.split('\n');
+
+    // Sort issues by line number descending (fix from bottom up)
+    const sorted = [...issues].sort((a, b) => b.line - a.line);
+
+    for (const issue of sorted) {
+      const { fix, line } = issue;
+      // Convert body line number to absolute line number
+      const absLine = line + frontmatterEndLine;
+      const lineIndex = absLine - 1;
+
+      switch (fix.type) {
+        case FixType.INSERT_LINE_BEFORE:
+          lines.splice(lineIndex, 0, fix.content ?? '');
+          break;
+
+        case FixType.INSERT_LINE_AFTER:
+          lines.splice(lineIndex + 1, 0, fix.content ?? '');
+          break;
+
+        case FixType.REPLACE_LINE:
+          lines[lineIndex] = fix.content;
+          break;
+
+        case FixType.REPLACE_TEXT:
+          if (fix.oldText && fix.newText !== undefined) {
+            lines[lineIndex] = lines[lineIndex].replace(fix.oldText, fix.newText);
+          }
+          break;
+      }
+    }
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Get the line index where frontmatter ends
+   * @private
+   */
+  _getFrontmatterEndLine(content) {
+    const lines = content.split('\n');
+    if (lines[0] !== '---') return 0;
+
+    let dashCount = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i] === '---') {
+        dashCount++;
+        if (dashCount === 2) return i + 1;
+      }
+    }
+    return 0;
   }
 
   /**

@@ -248,6 +248,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 1: Technical Safety Parameters
 
 **Priority**: High (foundational for understanding AI risk)
+
 **Dependencies**: None
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -271,6 +272,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 2: Governance Parameters
 
 **Priority**: High (policy-relevant)
+
 **Dependencies**: None
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -293,6 +295,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 3: Economic & Human Capital Parameters
 
 **Priority**: High (affects broad population)
+
 **Dependencies**: None
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -315,6 +318,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 4: Information Environment Parameters
 
 **Priority**: Medium-High (relates to epistemic-capacity already created)
+
 **Dependencies**: Batch 1 complete (for cross-linking)
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -337,6 +341,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 5: Development Dynamics Parameters
 
 **Priority**: Medium (strategic for AI governance)
+
 **Dependencies**: None
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -359,6 +364,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 6: Security & Resilience Parameters
 
 **Priority**: Medium (important but more specialized)
+
 **Dependencies**: None
 
 | Parameter | Source Material | Direction | Key Metric |
@@ -381,6 +387,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 ### Batch 7: Structural & Long-term Parameters
 
 **Priority**: Medium (important for long-term scenarios)
+
 **Dependencies**: Batches 1-3 complete (for cross-linking)
 
 | Parameter | Source Material | Direction | Key Metric |

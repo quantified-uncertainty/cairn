@@ -4,7 +4,7 @@
  * Master Validation Script
  *
  * Runs all validation checks and aggregates results.
- * Suitable for CI pipelines and local development.
+ * Uses the unified validation engine for efficiency where possible.
  *
  * Usage:
  *   node scripts/validate-all.mjs [options]
@@ -13,22 +13,19 @@
  *   --ci              Output JSON for CI pipelines
  *   --fail-fast       Stop on first failure
  *   --skip=<check>    Skip specific checks (comma-separated)
- *                     Available: data, links, entity-links, orphans, mdx, mdx-compile, component-refs, mermaid, style, staleness, consistency, sidebar, sidebar-labels, types, dollars, comparisons, schema, graph-sync, insights
+ *   --fix             Auto-fix fixable issues (unified rules only)
  *
  * Exit codes:
  *   0 = All checks passed
  *   1 = One or more checks failed
- *
- * Examples:
- *   node scripts/validate-all.mjs
- *   node scripts/validate-all.mjs --ci
- *   node scripts/validate-all.mjs --skip=orphans
- *   node scripts/validate-all.mjs --fail-fast
  */
 
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { ValidationEngine, Severity } from '../lib/validation-engine.mjs';
+import { allRules } from '../lib/rules/index.mjs';
+import { getColors } from '../lib/output.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -36,38 +33,42 @@ const __dirname = dirname(__filename);
 const args = process.argv.slice(2);
 const CI_MODE = args.includes('--ci');
 const FAIL_FAST = args.includes('--fail-fast');
+const FIX_MODE = args.includes('--fix');
 
 // Parse --skip argument
 const skipArg = args.find(a => a.startsWith('--skip='));
 const skipChecks = skipArg ? skipArg.replace('--skip=', '').split(',') : [];
 
-// Color codes (disabled in CI mode)
-const colors = CI_MODE ? {
-  red: '', green: '', yellow: '', blue: '', cyan: '', reset: '', dim: '', bold: ''
-} : {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
-  reset: '\x1b[0m',
+const colors = getColors(CI_MODE);
+
+/**
+ * Checks that use the unified validation engine (fast, single-pass)
+ * Maps check ID to rule ID(s)
+ */
+const UNIFIED_CHECKS = {
+  'dollars': ['dollar-signs'],
+  'comparisons': ['comparison-operators'],
+  'tildes': ['tilde-dollar'],
+  'markdown-lists': ['markdown-lists'],
+  'bold-labels': ['consecutive-bold-labels'],
+  'estimate-boxes': ['estimate-boxes'],
+  'placeholders': ['placeholders'],
+  'internal-links': ['internal-links'],
+  'component-refs': ['component-refs'],
+  'sidebar-index': ['sidebar-index'],
+  'entitylink-ids': ['entitylink-ids'],
+  'prefer-entitylink': ['prefer-entitylink'],
 };
 
-// Define all validation checks
-const CHECKS = [
+/**
+ * Checks that require subprocess execution (legacy scripts)
+ */
+const SUBPROCESS_CHECKS = [
   {
     id: 'data',
     name: 'Data Integrity',
     script: 'validate-data.mjs',
     description: 'Entity references, required fields, DataInfoBox props',
-  },
-  {
-    id: 'links',
-    name: 'Internal Links',
-    script: 'validate-internal-links.mjs',
-    description: 'Markdown links resolve to existing content',
   },
   {
     id: 'entity-links',
@@ -92,12 +93,6 @@ const CHECKS = [
     name: 'MDX Compilation',
     script: 'validate-mdx-compile.mjs',
     description: 'Actually compile MDX to catch JSX parsing errors before build',
-  },
-  {
-    id: 'component-refs',
-    name: 'Component References',
-    script: 'validate-component-refs.mjs',
-    description: 'Verify EntityLink, DataInfoBox etc. reference valid entities',
   },
   {
     id: 'mermaid',
@@ -142,18 +137,6 @@ const CHECKS = [
     description: 'UI components handle all entity types from schema',
   },
   {
-    id: 'dollars',
-    name: 'Dollar Sign Escaping',
-    script: 'validate-dollar-signs.mjs',
-    description: 'Currency values escaped to prevent LaTeX math parsing',
-  },
-  {
-    id: 'comparisons',
-    name: 'Comparison Operator Escaping',
-    script: 'validate-comparison-operators.mjs',
-    description: 'Less-than/greater-than before numbers escaped to prevent JSX parsing',
-  },
-  {
     id: 'schema',
     name: 'YAML Schema Validation',
     script: 'validate-yaml-schema.mjs',
@@ -172,24 +155,16 @@ const CHECKS = [
     script: 'validate-insights.mjs',
     description: 'Insight schema, ratings, and source paths',
   },
-  {
-    id: 'estimate-boxes',
-    name: 'EstimateBox Usage',
-    script: 'validate-estimate-boxes.mjs',
-    description: 'Prevent EstimateBox components (use markdown tables instead)',
-  },
 ];
 
 /**
- * Run a validation script and capture output
+ * Run a validation script via subprocess
  */
-function runCheck(check) {
+function runSubprocessCheck(check) {
   return new Promise((resolve) => {
     const scriptPath = join(__dirname, check.script);
     const childArgs = CI_MODE ? ['--ci'] : [];
 
-    // Support alternative runners for TypeScript scripts
-    // Use tsx/esm loader to avoid IPC pipe issues in sandboxed environments
     const runner = 'node';
     const runnerArgs = check.runner === 'tsx'
       ? ['--import', 'tsx/esm', '--no-warnings', scriptPath, ...childArgs]
@@ -261,11 +236,124 @@ async function main() {
     console.log(`${colors.bold}${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
   }
 
-  // Run each check
-  for (const check of CHECKS) {
+  // ─────────────────────────────────────────────────────────────────────────
+  // Phase 1: Run unified validation engine (single-pass, efficient)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Determine which unified checks to run
+  const unifiedChecksToRun = Object.entries(UNIFIED_CHECKS)
+    .filter(([id]) => !skipChecks.includes(id))
+    .map(([id, ruleIds]) => ({ id, ruleIds }));
+
+  if (unifiedChecksToRun.length > 0) {
+    if (!CI_MODE) {
+      console.log(`${colors.cyan}▶ Unified Validation Engine${colors.reset}`);
+      console.log(`${colors.dim}  Running ${unifiedChecksToRun.length} rule-based checks in single pass${colors.reset}\n`);
+    }
+
+    // Create and load engine
+    const engine = new ValidationEngine();
+
+    // Register only the rules for checks we're running
+    const ruleIdsToRun = unifiedChecksToRun.flatMap(c => c.ruleIds);
+    for (const rule of allRules) {
+      if (ruleIdsToRun.includes(rule.id)) {
+        engine.addRule(rule);
+      }
+    }
+
+    await engine.load();
+
+    // Run validation
+    const issues = await engine.validate();
+
+    // Apply fixes if requested
+    if (FIX_MODE) {
+      const fixableIssues = issues.filter(i => i.isFixable);
+      if (fixableIssues.length > 0) {
+        const { filesFixed, issuesFixed } = engine.applyFixes(fixableIssues);
+        if (!CI_MODE) {
+          console.log(`${colors.green}  ✓ Auto-fixed ${issuesFixed} issues in ${filesFixed} files${colors.reset}\n`);
+        }
+      }
+    }
+
+    // Group issues by rule and determine pass/fail for each check
+    const issuesByRule = {};
+    for (const issue of issues) {
+      if (!issuesByRule[issue.rule]) {
+        issuesByRule[issue.rule] = [];
+      }
+      issuesByRule[issue.rule].push(issue);
+    }
+
+    // Record results for each unified check
+    for (const { id, ruleIds } of unifiedChecksToRun) {
+      results.summary.total++;
+
+      const checkIssues = ruleIds.flatMap(ruleId => issuesByRule[ruleId] || []);
+      const errorCount = checkIssues.filter(i => i.severity === Severity.ERROR).length;
+      const passed = errorCount === 0;
+
+      if (passed) {
+        results.summary.passed++;
+      } else {
+        results.summary.failed++;
+      }
+
+      results.checks.push({
+        check: id,
+        name: id,
+        passed,
+        issues: checkIssues.length,
+        errors: errorCount,
+      });
+
+      if (!CI_MODE) {
+        if (passed) {
+          console.log(`  ${colors.green}✓${colors.reset} ${id}`);
+        } else {
+          console.log(`  ${colors.red}✗${colors.reset} ${id} (${errorCount} errors)`);
+          // Show first few issues
+          for (const issue of checkIssues.slice(0, 3)) {
+            console.log(`    ${colors.dim}${issue.file}:${issue.line}: ${issue.message.slice(0, 60)}...${colors.reset}`);
+          }
+          if (checkIssues.length > 3) {
+            console.log(`    ${colors.dim}... and ${checkIssues.length - 3} more${colors.reset}`);
+          }
+        }
+      }
+
+      if (!passed && FAIL_FAST) {
+        if (!CI_MODE) {
+          console.log(`\n${colors.yellow}Stopping due to --fail-fast${colors.reset}\n`);
+        }
+        outputResults(results, startTime);
+        process.exit(1);
+      }
+    }
+
+    // Record skipped unified checks
+    for (const [id] of Object.entries(UNIFIED_CHECKS)) {
+      if (skipChecks.includes(id)) {
+        results.summary.total++;
+        results.summary.skipped++;
+        results.checks.push({ check: id, name: id, skipped: true });
+      }
+    }
+
+    if (!CI_MODE) {
+      console.log(`\n${colors.dim}${'─'.repeat(50)}${colors.reset}\n`);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Phase 2: Run subprocess checks (legacy scripts)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  for (const check of SUBPROCESS_CHECKS) {
     results.summary.total++;
 
-    // Skip if requested
     if (skipChecks.includes(check.id)) {
       results.summary.skipped++;
       results.checks.push({
@@ -284,7 +372,7 @@ async function main() {
       console.log(`${colors.dim}  ${check.description}${colors.reset}\n`);
     }
 
-    const result = await runCheck(check);
+    const result = await runSubprocessCheck(check);
     results.checks.push(result);
 
     if (result.passed) {
@@ -306,15 +394,19 @@ async function main() {
       }
     }
 
-    if (!CI_MODE && check !== CHECKS[CHECKS.length - 1]) {
+    if (!CI_MODE && check !== SUBPROCESS_CHECKS[SUBPROCESS_CHECKS.length - 1]) {
       console.log(`${colors.dim}${'─'.repeat(50)}${colors.reset}\n`);
     }
   }
 
+  outputResults(results, startTime);
+  process.exit(results.summary.failed > 0 ? 1 : 0);
+}
+
+function outputResults(results, startTime) {
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
   results.duration = `${duration}s`;
 
-  // Output results
   if (CI_MODE) {
     console.log(JSON.stringify(results, null, 2));
   } else {
@@ -337,17 +429,14 @@ async function main() {
     } else {
       console.log(`${colors.red}${colors.bold}❌ ${results.summary.failed} check(s) failed${colors.reset}\n`);
 
-      // List failed checks
       for (const check of results.checks) {
         if (!check.passed && !check.skipped) {
-          console.log(`  ${colors.red}• ${check.name}${colors.reset}`);
+          console.log(`  ${colors.red}• ${check.name || check.check}${colors.reset}`);
         }
       }
       console.log();
     }
   }
-
-  process.exit(results.summary.failed > 0 ? 1 : 0);
 }
 
 main();

@@ -123,6 +123,7 @@ Generate complete uncertainty models from vague questions:
 Identify and fix syntax and logic errors:
 
 **User**: "My model gives negative probabilities for the success rate"
+
 **SquiggleAI**: Identifies issue with distribution domain, suggests `truncate(distribution, 0, 1)`
 
 ### Model Explanation
@@ -130,7 +131,9 @@ Identify and fix syntax and logic errors:
 Explain what existing Squiggle code does:
 
 **Input**: Inherited 300-line model from another researcher
+
 **Prompt**: "Explain what this model is calculating and what the key assumptions are"
+
 **Output**: Plain-language summary with identified cruxes
 
 ## Integration with Squiggle Hub

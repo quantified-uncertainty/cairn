@@ -3,14 +3,18 @@
 /**
  * Page Improvement Helper
  *
- * Helps identify pages that need improvement and generates prompts for Claude Code.
+ * Helps identify pages that need improvement and runs batch improvements.
+ *
+ * IMPORTANT: Batch mode uses Claude Code SDK with your ANTHROPIC_API_KEY,
+ * NOT your Max subscription quota. This lets you run large batch jobs
+ * without depleting your interactive Claude Code allowance.
  *
  * Usage:
  *   node scripts/content/page-improver.mjs --list              # List pages needing improvement
  *   node scripts/content/page-improver.mjs <page-id>           # Show improvement prompt for page
  *   node scripts/content/page-improver.mjs <page-id> --info    # Show page info only
  *   node scripts/content/page-improver.mjs --batch --limit 50  # Run batch improvement
- *   node scripts/content/page-improver.mjs --batch --parallel 10 --limit 50  # With parallelism
+ *   node scripts/content/page-improver.mjs --batch --model sonnet --budget 1.50 --limit 50
  */
 
 import fs from 'fs';
@@ -307,18 +311,29 @@ function validateFile(filePath) {
   };
 }
 
-// Run a single page improvement using claude CLI
-function runClaudeImprovement(page, prompt) {
+// Run a single page improvement using Claude Code SDK (via npx)
+// This uses your ANTHROPIC_API_KEY instead of Max subscription quota
+function runClaudeImprovement(page, prompt, options = {}) {
+  const {
+    model = 'sonnet',
+    maxBudget = 2.00,  // Default $2 per page for improvements with web search
+  } = options;
+
   return new Promise((resolve) => {
     const startTime = Date.now();
     const filePath = getFilePath(page.path);
 
-    appendLog(`START: ${page.id} (${page.title})`);
+    appendLog(`START: ${page.id} (${page.title}) [model=${model}, budget=$${maxBudget}]`);
 
-    // Use claude CLI with --print flag to run non-interactively
-    const claude = spawn('claude', [
+    // Use Claude Code SDK via npx - this uses ANTHROPIC_API_KEY from .env
+    // instead of your Max subscription quota
+    const claude = spawn('npx', [
+      '@anthropic-ai/claude-code',
       '--print',
       '--dangerously-skip-permissions',
+      '--model', model,
+      '--max-budget-usd', String(maxBudget),
+      '--allowedTools', 'Read,Edit,Glob,Grep,WebSearch',
       prompt
     ], {
       cwd: ROOT,
@@ -398,7 +413,17 @@ function getRecentlyModifiedFiles() {
 
 // Process pages in parallel batches
 async function runBatch(options = {}) {
-  const { limit = 50, parallel = 10, maxQuality = 90, minImportance = 30, minGap = 0, resume = true, skipModified = true } = options;
+  const {
+    limit = 50,
+    parallel = 10,
+    maxQuality = 90,
+    minImportance = 30,
+    minGap = 0,
+    resume = true,
+    skipModified = true,
+    model = 'sonnet',      // Default to Sonnet (cheaper than Opus)
+    maxBudget = 2.00       // Default $2 per page
+  } = options;
 
   const pages = loadPages();
   const results = resume ? loadResults() : { completed: [], failed: [], inProgress: [] };
@@ -447,14 +472,18 @@ async function runBatch(options = {}) {
     return;
   }
 
-  console.log(`\n📊 Batch Improvement`);
+  console.log(`\n📊 Batch Improvement (using Claude Code SDK - API key billing)`);
   console.log(`   Pages to process: ${candidates.length}`);
   console.log(`   Parallelism: ${parallel}`);
+  console.log(`   Model: ${model}`);
+  console.log(`   Max budget per page: $${maxBudget.toFixed(2)}`);
+  console.log(`   Est. max total cost: $${(candidates.length * maxBudget).toFixed(2)}`);
   console.log(`   Min gap filter: ${minGap > 0 ? `>= ${minGap}` : 'none'}`);
   console.log(`   Already completed: ${results.completed.length}`);
   console.log(`   Results file: ${RESULTS_FILE}`);
   console.log(`   Log file: ${LOG_FILE}`);
-  console.log(`\n   Starting in 3 seconds... (Ctrl+C to cancel)\n`);
+  console.log(`\n   ⚠️  This uses your ANTHROPIC_API_KEY, not Max subscription`);
+  console.log(`   Starting in 3 seconds... (Ctrl+C to cancel)\n`);
 
   await new Promise(r => setTimeout(r, 3000));
 
@@ -479,7 +508,7 @@ async function runBatch(options = {}) {
     // Run batch in parallel
     const batchPromises = batch.map(page => {
       const prompt = generatePrompt(page);
-      return runClaudeImprovement(page, prompt);
+      return runClaudeImprovement(page, prompt, { model, maxBudget });
     });
 
     const batchResults = await Promise.all(batchPromises);
@@ -567,17 +596,21 @@ async function main() {
     console.log(`
 Page Improvement Helper
 
+Uses Claude Code SDK with your ANTHROPIC_API_KEY (not Max subscription quota).
+
 Usage:
   node scripts/content/page-improver.mjs --list              List pages needing improvement
   node scripts/content/page-improver.mjs <page-id>           Show improvement prompt for page
   node scripts/content/page-improver.mjs <page-id> --info    Show page info only
-  node scripts/content/page-improver.mjs --batch             Run batch improvement via claude CLI
+  node scripts/content/page-improver.mjs --batch             Run batch improvement via SDK
 
 Options:
   --list          List candidate pages
   --info          Show page info only (no prompt)
-  --batch         Run batch improvement (uses claude CLI)
+  --batch         Run batch improvement (uses Claude Code SDK + API key)
   --parallel N    Number of parallel improvements (default: 10)
+  --model M       Model to use: haiku, sonnet (default), opus
+  --budget N      Max budget per page in USD (default: 2.00)
   --max-qual N    Max quality for listing/batch (default: 90, scale 1-100)
   --min-imp N     Min importance for listing/batch (default: 30)
   --min-gap N     Min gap (importance - quality) for batch (default: 0)
@@ -589,8 +622,14 @@ Options:
 Examples:
   node scripts/content/page-improver.mjs --list --max-qual 70
   node scripts/content/page-improver.mjs economic-disruption
-  node scripts/content/page-improver.mjs --batch --limit 50 --parallel 10
+  node scripts/content/page-improver.mjs --batch --limit 50 --parallel 5
+  node scripts/content/page-improver.mjs --batch --model haiku --budget 0.50 --limit 10
   node scripts/content/page-improver.mjs --status
+
+Cost estimates (per page):
+  haiku:  ~$0.10-0.30 (fast, good for simple improvements)
+  sonnet: ~$0.50-1.50 (balanced, recommended for most pages)
+  opus:   ~$2.00-5.00 (best quality, use for complex pages)
 `);
     return;
   }
@@ -642,7 +681,9 @@ Examples:
       minImportance: opts['min-imp'] || 30,
       minGap: opts['min-gap'] || 0,
       resume: !opts['no-resume'],
-      skipModified: !opts['no-skip-modified']
+      skipModified: !opts['no-skip-modified'],
+      model: opts.model || 'sonnet',
+      maxBudget: opts.budget ? parseFloat(opts.budget) : 2.00
     });
     return;
   }

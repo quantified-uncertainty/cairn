@@ -10,7 +10,7 @@
  *   <1 year timeframe      -> parsed as JSX
  */
 
-import { createRule, Issue, Severity } from '../validation-engine.mjs';
+import { createRule, Issue, Severity, FixType } from '../validation-engine.mjs';
 import { isInCodeBlock, isInJsxAttribute, getFrontmatterEndLine } from '../mdx-utils.mjs';
 
 // Pattern: < followed by a digit or \$ (escaped dollar sign)
@@ -68,6 +68,11 @@ export const comparisonOperatorsRule = createRule({
           line: lineNum,
           message: `Unescaped "<" before number: "${match[0]}" should be "&lt;${match[1]}" (context: ...${context}...)`,
           severity: Severity.ERROR,
+          fix: {
+            type: FixType.REPLACE_TEXT,
+            oldText: match[0],
+            newText: `&lt;${match[1]}`,
+          },
         }));
       }
 

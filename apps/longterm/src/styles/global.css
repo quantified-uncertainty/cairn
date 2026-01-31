@@ -420,3 +420,40 @@
   -webkit-mask-image: var(--icon-lightbulb);
   mask-image: var(--icon-lightbulb);
 }
+
+/* =============================================================================
+   Footnote Styling - Clean up GFM footnote backlinks
+
+   GFM footnotes generate a backlink for each reference, which can clutter
+   the UI when a footnote is referenced multiple times. This CSS:
+   - Adds visual separation for the footnotes section
+   - Hides the default <hr> that GFM adds
+   - Shows only the first backlink, hiding duplicates
+   ============================================================================= */
+
+.sl-markdown-content .footnotes {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--sl-color-gray-5);
+  font-size: 0.875rem;
+}
+
+.sl-markdown-content .footnotes hr {
+  display: none;
+}
+
+/* Hide duplicate backlinks - only show the first one */
+.sl-markdown-content .footnotes li a[data-footnote-backref]:not(:first-of-type) {
+  display: none;
+}
+
+.sl-markdown-content .footnotes a[data-footnote-backref] {
+  margin-left: 0.25rem;
+  text-decoration: none;
+  opacity: 0.5;
+  font-size: 0.75rem;
+}
+
+.sl-markdown-content .footnotes a[data-footnote-backref]:hover {
+  opacity: 1;
+}

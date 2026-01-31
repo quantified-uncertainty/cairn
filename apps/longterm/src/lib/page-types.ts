@@ -159,7 +159,7 @@ export function shouldSkipValidation(pageType: PageType): boolean {
  *
  * Show for:
  * - AI Transition Model pages (always - they use YAML data, not frontmatter)
- * - Knowledge Base pages (risk, response) with editorial metadata
+ * - Knowledge Base content pages (risk, response, content) with editorial metadata
  * - Any page with insights
  *
  * @param pageType - The detected page type
@@ -175,7 +175,7 @@ export function shouldShowPageStatus(
   // Always show for ATM pages (they use YAML data, not frontmatter editorial metadata)
   if (pageType === 'ai-transition-model') return true;
 
-  // For other content pages, require editorial metadata or insights
-  const isContentPage = pageType === 'risk' || pageType === 'response';
+  // For content pages (including organizations, people, etc.), require editorial metadata or insights
+  const isContentPage = pageType === 'risk' || pageType === 'response' || pageType === 'content';
   return (hasEditorialMeta && isContentPage) || hasInsights;
 }

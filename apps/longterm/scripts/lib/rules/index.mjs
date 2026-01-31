@@ -25,6 +25,10 @@ export { sidebarIndexRule } from './sidebar-index.mjs';
 export { jsxInMdRule } from './jsx-in-md.mjs';
 export { cruftFilesRule } from './cruft-files.mjs';
 
+// Markdown formatting rules
+export { markdownListsRule } from './markdown-lists.mjs';
+export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
+
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
 import { dollarSignsRule } from './dollar-signs.mjs';
@@ -40,6 +44,8 @@ import { sidebarCoverageRule } from './sidebar-coverage.mjs';
 import { sidebarIndexRule } from './sidebar-index.mjs';
 import { jsxInMdRule } from './jsx-in-md.mjs';
 import { cruftFilesRule } from './cruft-files.mjs';
+import { markdownListsRule } from './markdown-lists.mjs';
+import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 
 export const allRules = [
   // Content validation
@@ -61,6 +67,10 @@ export const allRules = [
   // File-level
   jsxInMdRule,
   cruftFilesRule,
+
+  // Markdown formatting
+  markdownListsRule,
+  consecutiveBoldLabelsRule,
 ];
 
 export default allRules;

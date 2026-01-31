@@ -265,15 +265,16 @@ function computeMetrics(content) {
 }
 
 /**
- * Compute derived quality score from ratings and metrics
+ * Compute derived quality score from ratings, metrics, and frontmatter
  *
- * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5)
+ * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5) - penalties
  * - Subscores drive 0-80 (primary factor)
  * - Length bonus: 0-10 (5000 words = max)
  * - Evidence bonus: 0-10 (20 citations = max)
+ * - Penalties: TODOs, stub markers, short pages
  * - Total range: 0-100
  */
-function computeQuality(ratings, metrics) {
+function computeQuality(ratings, metrics, frontmatter = {}) {
   // Subscores contribute 0-80 points (primary driver)
   const avgSubscore = (ratings.novelty + ratings.rigor + ratings.actionability + ratings.completeness) / 4;
   const baseScore = avgSubscore * 8;  // Maps 0-10 → 0-80
@@ -284,7 +285,29 @@ function computeQuality(ratings, metrics) {
   // Evidence contributes 0-10 points (20 citations = max)
   const evidenceScore = Math.min(10, metrics.citations * 0.5);
 
-  return Math.round(baseScore + lengthScore + evidenceScore);
+  // Compute base quality
+  let quality = baseScore + lengthScore + evidenceScore;
+
+  // PENALTIES for incomplete work
+  // 1. Outstanding TODOs: -5 points per TODO (incomplete sections)
+  const todos = frontmatter.todos || [];
+  const todoCount = Array.isArray(todos) ? todos.length : 0;
+  if (todoCount > 0) {
+    const todoPenalty = Math.min(25, todoCount * 5); // Cap at -25
+    quality -= todoPenalty;
+  }
+
+  // 2. Stub pages should never exceed 35
+  if (frontmatter.pageType === 'stub') {
+    quality = Math.min(quality, 35);
+  }
+
+  // 3. Very short pages (<100 words) capped at 40
+  if (metrics.wordCount < 100) {
+    quality = Math.min(quality, 40);
+  }
+
+  return Math.round(Math.max(0, quality));
 }
 
 /**
@@ -500,7 +523,7 @@ async function main() {
         const metrics = computeMetrics(page.content);
 
         // Compute derived quality score
-        const derivedQuality = computeQuality(grades.ratings, metrics);
+        const derivedQuality = computeQuality(grades.ratings, metrics, page.frontmatter);
 
         const result = {
           id: page.id,

@@ -12,6 +12,8 @@
  *   node scripts/validate/validate-unified.mjs --ci         # JSON output
  *   node scripts/validate/validate-unified.mjs --list       # List available rules
  *   node scripts/validate/validate-unified.mjs --errors-only # Only show errors
+ *   node scripts/validate/validate-unified.mjs --fix        # Auto-fix fixable issues
+ *   node scripts/validate/validate-unified.mjs --fixable    # Only show fixable issues
  *
  * Exit codes:
  *   0 = No errors (warnings don't fail by default)
@@ -27,6 +29,8 @@ const CI_MODE = args.includes('--ci');
 const LIST_MODE = args.includes('--list');
 const ERRORS_ONLY = args.includes('--errors-only');
 const VERBOSE = args.includes('--verbose') || args.includes('-v');
+const FIX_MODE = args.includes('--fix');
+const FIXABLE_ONLY = args.includes('--fixable');
 
 // Parse --rules argument
 const rulesArg = args.find(a => a.startsWith('--rules='));
@@ -86,6 +90,31 @@ async function main() {
     issues = issues.filter(i => i.severity === Severity.ERROR);
   }
 
+  // Filter to fixable only if requested
+  if (FIXABLE_ONLY) {
+    issues = issues.filter(i => i.isFixable);
+  }
+
+  // Fix mode: apply fixes and exit
+  if (FIX_MODE) {
+    const fixableIssues = issues.filter(i => i.isFixable);
+    const unfixableIssues = issues.filter(i => !i.isFixable);
+
+    if (fixableIssues.length === 0) {
+      console.log(`${colors.green}✓ No fixable issues found${colors.reset}`);
+      process.exit(0);
+    }
+
+    const { filesFixed, issuesFixed } = engine.applyFixes(fixableIssues);
+    console.log(`${colors.green}✓ Fixed ${issuesFixed} issues in ${filesFixed} files${colors.reset}`);
+
+    if (unfixableIssues.length > 0) {
+      console.log(`${colors.yellow}⚠ ${unfixableIssues.length} issues require manual fixes${colors.reset}`);
+    }
+
+    process.exit(0);
+  }
+
   // Output results
   if (CI_MODE) {
     console.log(engine.formatOutput(issues, { ci: true }));
@@ -95,12 +124,16 @@ async function main() {
     }
 
     const summary = engine.getSummary(issues);
+    const fixableSummary = issues.filter(i => i.isFixable).length;
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
     console.log(`\n${colors.bold}${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
 
     if (summary.hasErrors) {
       console.log(`${colors.red}${colors.bold}❌ Validation failed with ${summary.bySeverity.error} error(s)${colors.reset}`);
+      if (fixableSummary > 0) {
+        console.log(`${colors.dim}  ${fixableSummary} can be auto-fixed with --fix${colors.reset}`);
+      }
     } else if (summary.bySeverity.warning > 0) {
       console.log(`${colors.yellow}${colors.bold}⚠️  Validation passed with ${summary.bySeverity.warning} warning(s)${colors.reset}`);
     } else {
