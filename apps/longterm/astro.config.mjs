@@ -103,6 +103,25 @@ export default defineConfig({
               },
               { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
               { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
+              { label: 'Foundation Models', collapsed: true, autogenerate: { directory: 'knowledge-base/foundation-models' } },
+              {
+                  label: 'Debates & Cruxes',
+                  collapsed: true,
+                  items: [
+                      { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
+                      { label: 'Cruxes', collapsed: true, autogenerate: { directory: 'knowledge-base/cruxes' } },
+                  ],
+              },
+              {
+                  label: 'Forecasting & Scenarios',
+                  collapsed: true,
+                  items: [
+                      { label: 'AGI Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/forecasting' } },
+                      { label: 'Worldviews', collapsed: true, autogenerate: { directory: 'knowledge-base/worldviews' } },
+                      { label: 'Future Projections', collapsed: true, autogenerate: { directory: 'knowledge-base/future-projections' } },
+                  ],
+              },
+              { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
               {
                   label: 'Intelligence Paradigms',
                   collapsed: true,
