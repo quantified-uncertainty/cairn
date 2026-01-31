@@ -181,8 +181,8 @@ A Q5 page MUST have ALL of these elements. Check each one:
    - Replace vague claims with quantified statements
 
 6. **Update metadata**:
-   - quality: 91 (scale is 1-100, target is 91+)
    - lastEdited: "${new Date().toISOString().split('T')[0]}"
+   - DO NOT modify quality - it will be set by grade-content.mjs after
 
 ## Verification
 
@@ -192,7 +192,7 @@ Before finishing, confirm:
 - [ ] Mermaid diagram exists with proper import
 - [ ] 10+ [linked citations](https://url) throughout
 - [ ] No "<NUMBER" patterns anywhere in the file
-- [ ] Metadata updated (quality: 91, lastEdited: today)
+- [ ] lastEdited updated to today
 
 Use the Edit tool for each change. DO NOT rewrite the entire file.`;
 }

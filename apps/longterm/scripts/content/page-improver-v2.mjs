@@ -472,6 +472,12 @@ Start your response with "---" (the frontmatter delimiter).`;
     `lastEdited: "${today}"`
   );
 
+  // Remove quality field - must be set by grade-content.mjs only
+  improvedContent = improvedContent.replace(
+    /^quality:\s*\d+\s*\n/m,
+    ''
+  );
+
   writeTemp(page.id, 'improved.mdx', improvedContent);
   log('improve', '✅ Complete');
   return improvedContent;

@@ -485,7 +485,6 @@ title: "${topic}"
 description: "Comprehensive description (1-2 sentences)..."
 sidebar:
   order: 50
-quality: 70
 lastEdited: "${new Date().toISOString().split('T')[0]}"
 importance: 50
 ratings:

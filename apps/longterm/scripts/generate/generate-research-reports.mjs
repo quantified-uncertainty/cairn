@@ -138,7 +138,6 @@ createdAt: ${new Date().toISOString().split('T')[0]}
 lastUpdated: ${new Date().toISOString().split('T')[0]}
 researchDepth: "standard"
 sources: ["web", "codebase"]
-quality: 3
 sidebar:
   order: 10
 ---
