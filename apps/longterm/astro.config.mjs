@@ -273,6 +273,10 @@ export default defineConfig({
       // Don't externalize mermaid - bundle it
       noExternal: ['mermaid'],
     },
+    build: {
+      // Suppress warnings for large chunks (database.json is ~5MB)
+      chunkSizeWarningLimit: 6000,
+    },
   },
 
   markdown: {

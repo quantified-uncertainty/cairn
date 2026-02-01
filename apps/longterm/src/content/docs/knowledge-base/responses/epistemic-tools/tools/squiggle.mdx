@@ -87,7 +87,7 @@ Squiggle provides native support for common probability distributions:
 
 The most intuitive feature is the `to` operator for creating lognormal distributions:
 
-```squiggle
+```ts
 interventionCost = 1M to 10M  // Lognormal with 5th/95th percentiles
 projectDuration = 6 to 24      // Months, with natural uncertainty
 ```
@@ -98,7 +98,7 @@ This equals `lognormal({p5: 1M, p95: 10M})` but reads like natural language.
 
 Mathematical operations propagate through distributions automatically via Monte Carlo sampling:
 
-```squiggle
+```ts
 costPerUnit = 100 to 500
 numberOfUnits = 1000 to 5000
 totalCost = costPerUnit * numberOfUnits
@@ -109,7 +109,7 @@ totalCost = costPerUnit * numberOfUnits
 
 The same distribution can be created multiple ways:
 
-```squiggle
+```ts
 // Normal distribution - all equivalent
 normal(10, 2)                    // mean, stdev
 normal({mean: 10, stdev: 2})     // explicit
@@ -122,7 +122,7 @@ normal({p25: 8, p75: 12})        // quartile-based
 
 Type-checked parameter ranges catch errors:
 
-```squiggle
+```ts
 calculateEV(probability: [0, 1], value) = {
   probability * value
 }
@@ -138,7 +138,7 @@ calculateEV(probability: [0, 1], value) = {
 | **Symbolic** | Exact symbolic math | Limited operations |
 
 Example forcing symbolic:
-```squiggle
+```ts
 Sym.normal(10, 2) // Symbolic representation
 ```
 
@@ -169,7 +169,7 @@ The January 2025 release represented six months of development with significant 
 
 ### Basic Cost-Effectiveness Model
 
-```squiggle
+```ts
 // Cost-effectiveness model for AI safety intervention
 interventionCost = lognormal(1e6, 1.5) // \$1M median, high uncertainty
 probabilityOfSuccess = beta(2, 8) // ~20% base rate
@@ -181,7 +181,7 @@ costEffectiveness = expectedValue / interventionCost
 
 ### Function with Domain Constraints
 
-```squiggle
+```ts
 // Calculate expected value with bounded probability
 calculateEV(probability: [0, 1], value) = {
   adjustedProb = probability * normal(1, 0.1) // Add estimation uncertainty
@@ -194,7 +194,7 @@ projectValue = calculateEV(0.3, lognormal(1e9, 2))
 
 ### Multi-Variable Fermi Estimate
 
-```squiggle
+```ts
 // Estimate: Number of piano tuners in Chicago
 chicagoPopulation = 2.7M to 2.9M
 householdsPerPerson = 0.35 to 0.45

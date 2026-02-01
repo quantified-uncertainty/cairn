@@ -139,7 +139,7 @@ Squiggle is meant for intuitively-driven quantitative estimation rather than dat
 
 Squiggle offers flexible distribution creation with multiple parameterization options:
 
-```squiggle
+```ts
 // Normal distribution - multiple ways to specify
 normal(10, 2)                    // mean, standard deviation
 normal({mean: 10, stdev: 2})     // explicit parameters
@@ -165,7 +165,7 @@ exponential(0.1)                 // rate parameter
 ### Squiggle Code Examples
 
 **Basic Cost-Effectiveness Model**:
-```squiggle
+```ts
 // Cost-effectiveness model for AI safety intervention
 interventionCost = lognormal(1e6, 1.5) // \$1M median, high uncertainty
 probabilityOfSuccess = beta(2, 8) // ~20% base rate
@@ -176,7 +176,7 @@ costEffectiveness = expectedValue / interventionCost
 ```
 
 **Function with Domain Constraints**:
-```squiggle
+```ts
 // Calculate expected value with bounded probability
 calculateEV(probability: [0, 1], value) = {
   adjustedProb = probability * normal(1, 0.1) // Add estimation uncertainty
@@ -188,7 +188,7 @@ projectValue = calculateEV(0.3, lognormal(1e9, 2))
 ```
 
 **Multi-Variable Fermi Estimate**:
-```squiggle
+```ts
 // Estimate: Number of piano tuners in Chicago
 chicagoPopulation = 2.7M to 2.9M
 householdsPerPerson = 0.35 to 0.45
