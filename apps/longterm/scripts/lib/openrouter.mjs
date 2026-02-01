@@ -76,8 +76,12 @@ export async function callOpenRouter(prompt, options = {}) {
     throw new Error(`OpenRouter error: ${data.error.message || JSON.stringify(data.error)}`);
   }
 
+  // Perplexity includes citations in the response - extract them
+  const citations = data.citations || data.choices[0]?.message?.citations || [];
+
   return {
     content: data.choices[0].message.content,
+    citations,  // Array of source URLs that [1], [2], etc. refer to
     model: data.model,
     usage: data.usage,
     cost: data.usage?.cost || 0,
