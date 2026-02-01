@@ -4,18 +4,18 @@ description: "Turing Award winner and 'Godfather of AI' who remains one of the m
 sidebar:
   order: 9
 quality: 41
-llmSummary: "Comprehensive biographical profile of Yann LeCun documenting his technical contributions (CNNs, JEPA), his ~0% AI extinction risk estimate, and his opposition to AI safety regulation including SB 1047. The page catalogs his debates with Hinton, Bengio, and Yudkowsky, and tracks his November 2025 departure from Meta to found AMI Labs focused on world models."
-lastEdited: "2026-01-29"
+llmSummary: "Comprehensive biographical profile of Yann LeCun documenting his technical contributions (CNNs, JEPA), his ~0% AI extinction risk estimate, and his opposition to AI safety regulation including SB 1047. Includes detailed 'Statements & Track Record' section analyzing his prediction accuracy—noting strength in long-term architectural intuitions but pattern of underestimating near-term LLM capabilities. Catalogs debates with Hinton, Bengio, and Yudkowsky, and tracks his November 2025 departure from Meta to found AMI Labs."
+lastEdited: "2026-02-01"
 importance: 24
 ratings:
-  novelty: 2.5
-  rigor: 4
-  actionability: 1.5
-  completeness: 6.5
+  novelty: 3.5
+  rigor: 4.5
+  actionability: 2
+  completeness: 7.5
 metrics:
-  wordCount: 2227
+  wordCount: 2400
   citations: 16
-  tables: 41
+  tables: 44
   diagrams: 1
 ---
 import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '@components/wiki';
@@ -189,7 +189,7 @@ LeCun has consistently argued that concerns about AI existential risk are premat
 | Argument | LeCun's Position | Counter from Safety Researchers |
 |----------|------------------|--------------------------------|
 | **Design Control** | We design AI systems; dangerous properties are choices, not emergent | <EntityLink id="emergent-capabilities">Emergent capabilities</EntityLink> arise unpredictably at scale |
-| **No Self-Preservation** | AI need not have survival drives | Instrumental convergence may produce such drives |
+| **No Self-Preservation** | AI need not have survival drives | <EntityLink id="instrumental-convergence">Instrumental convergence</EntityLink> may produce such drives |
 | **Iterative Safety** | Like aviation, safety improves through deployment | AI failure modes may be catastrophic, not incremental |
 | **LLM Limitations** | Current AI cannot reason or plan | Capabilities may emerge suddenly with scale |
 | **Submissive Design** | AI can be designed to remain subordinate | <EntityLink id="corrigibility-failure">Corrigibility</EntityLink> is technically unsolved |
@@ -229,18 +229,19 @@ LeCun has expressed strong reservations about the term "artificial general intel
 
 He prefers the term "human-level AI" and argues that the framing of AGI as a binary threshold obscures the reality that intelligence exists on a spectrum and that different systems excel at different tasks. When Mark Zuckerberg announced Meta's pivot toward "building artificial general intelligence," LeCun noted publicly that "there's a lot of misunderstanding there."
 
-### Predictions About AI Progress
+## Statements & Track Record
 
-LeCun has made several specific predictions about the trajectory of AI development:
+For a detailed analysis of LeCun's predictions and their accuracy, see the **[full track record page](./track-records/yann-lecun)**.
 
-| Prediction | Timeline | Status |
-|------------|----------|--------|
-| **LLMs will plateau** | 2023-2025 | Ongoing debate |
-| **World models will surpass LLMs** | 3-5 years | Not yet validated |
-| **Current GenAI will be obsolete** | 3-5 years | Speaking at Davos 2025 |
-| **Human-level AI via new architectures** | Decades, if ever | Long-term prediction |
+**Summary**: Strong on long-term architectural intuitions (neural networks in the 80s-90s, self-supervised learning); tends to underestimate near-term LLM capabilities and overstate their limitations in absolute terms.
 
-At the World Economic Forum in Davos (January 2025), LeCun stated: "Nobody in their right mind would use [current GenAI systems] anymore, at least not as the central component of an AI system" within three to five years, predicting a revolution in AI architectures.
+| Category | Examples |
+|----------|----------|
+| ✅ **Correct** | Neural networks would succeed, RL limited impact, radiologists not replaced |
+| ❌ **Wrong/Overstated** | GPT-3 dismissal, "LLMs cannot reason" absolutism |
+| ⏳ **Pending** | "LLMs obsolete in 5 years" (by 2030), JEPA superiority |
+
+**Key testable claim**: At Davos 2025, he predicted "within 5 years, nobody in their right mind would use [LLMs]" as central AI components. His departure from Meta to found AMI Labs represents a career-defining bet on this.
 
 ## Debates and Controversies
 
@@ -267,9 +268,9 @@ One of the most widely discussed exchanges in the AI safety community occurred o
 | **Alignment Difficulty** | Solvable through design choices | Fundamentally hard, likely unsolvable |
 | **Deployment Strategy** | Deploy incrementally, iterate on safety | Stop development until safety is solved |
 | **Risk Communication** | "Doom talk" harms public and research | Accurate risk communication is essential |
-| **MIRI's Goals** | "Nothing less than to shut down research in AI" | Prevent extinction, not halt all research |
+| **<EntityLink id="miri">MIRI</EntityLink>'s Goals** | "Nothing less than to shut down research in AI" | Prevent extinction, not halt all research |
 
-LeCun characterized MIRI as having "communication and credibility issues" and compared safety concerns to "apocalyptic and survivalist cults." Yudkowsky responded by noting LeCun's "unfamiliarity with prior literature" on alignment.
+LeCun characterized <EntityLink id="miri">MIRI</EntityLink> as having "communication and credibility issues" and compared safety concerns to "apocalyptic and survivalist cults." Yudkowsky responded by noting LeCun's "unfamiliarity with prior literature" on alignment.
 
 ### Debate with Yoshua Bengio
 

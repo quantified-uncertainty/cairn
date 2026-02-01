@@ -43,22 +43,44 @@ const TIERS = {
   polish: {
     name: 'Polish',
     cost: '$2-3',
-    phases: ['analyze', 'improve'],
+    phases: ['analyze', 'improve', 'validate'],
     description: 'Quick single-pass improvement without research'
   },
   standard: {
     name: 'Standard',
     cost: '$5-8',
-    phases: ['analyze', 'research', 'improve', 'review'],
-    description: 'Light research + improvement + review'
+    phases: ['analyze', 'research', 'improve', 'validate', 'review'],
+    description: 'Light research + improvement + validation + review'
   },
   deep: {
     name: 'Deep Research',
     cost: '$10-15',
-    phases: ['analyze', 'research-deep', 'improve', 'gap-fill', 'review'],
-    description: 'Full SCRY + web research, multi-phase improvement'
+    phases: ['analyze', 'research-deep', 'improve', 'validate', 'gap-fill', 'review'],
+    description: 'Full SCRY + web research, validation, multi-phase improvement'
   }
 };
+
+// Build-breaking validation rules (must all pass)
+const CRITICAL_RULES = [
+  'dollar-signs',
+  'comparison-operators',
+  'frontmatter-schema',
+  'entitylink-ids',
+  'internal-links',
+  'fake-urls',
+  'component-props',
+  'citation-urls'
+];
+
+// Quality rules (should pass, but won't block)
+const QUALITY_RULES = [
+  'tilde-dollar',
+  'markdown-lists',
+  'consecutive-bold-labels',
+  'placeholders',
+  'vague-citations',
+  'temporal-artifacts'
+];
 
 // Initialize Anthropic client
 const anthropic = new Anthropic();
@@ -442,6 +464,8 @@ Make targeted improvements based on the analysis and directions. Follow these gu
 - Replace vague claims with specific numbers
 - Add EntityLinks for related concepts
 - Ensure tables have source links
+- **NEVER use vague citations** like "Interview", "Earnings call", "Conference talk", "Reports", "Various"
+- Always specify: exact source name, date, and context (e.g., "Tesla Q4 2021 earnings call", "MIT Aeronautics Symposium (Oct 2014)")
 
 ### Output Format
 Output the COMPLETE improved MDX file content. Include all frontmatter and content.
@@ -533,6 +557,77 @@ Output ONLY valid JSON.`;
   writeTemp(page.id, 'review.json', review);
   log('review', `✅ Complete (valid: ${review.valid}, issues: ${review.issues?.length || 0})`);
   return review;
+}
+
+// Phase: Validate
+async function validatePhase(page, improvedContent, options) {
+  log('validate', 'Running validation checks...');
+
+  const tempPath = writeTemp(page.id, 'to-validate.mdx', improvedContent);
+
+  const issues = {
+    critical: [],
+    quality: []
+  };
+
+  // Run critical rules
+  for (const rule of CRITICAL_RULES) {
+    try {
+      const result = execSync(
+        `npm run crux -- validate unified --rules=${rule} --ci 2>&1 | grep -i "${page.id}" || true`,
+        { cwd: ROOT, encoding: 'utf-8', timeout: 30000 }
+      );
+      const errorCount = (result.match(/error/gi) || []).length;
+      if (errorCount > 0) {
+        issues.critical.push({ rule, count: errorCount, output: result.trim() });
+        log('validate', `  ✗ ${rule}: ${errorCount} error(s)`);
+      } else {
+        log('validate', `  ✓ ${rule}`);
+      }
+    } catch (e) {
+      log('validate', `  ? ${rule}: check failed`);
+    }
+  }
+
+  // Run quality rules
+  for (const rule of QUALITY_RULES) {
+    try {
+      const result = execSync(
+        `npm run crux -- validate unified --rules=${rule} --ci 2>&1 | grep -i "${page.id}" || true`,
+        { cwd: ROOT, encoding: 'utf-8', timeout: 30000 }
+      );
+      const warningCount = (result.match(/warning/gi) || []).length;
+      if (warningCount > 0) {
+        issues.quality.push({ rule, count: warningCount, output: result.trim() });
+        log('validate', `  ⚠ ${rule}: ${warningCount} warning(s)`);
+      } else {
+        log('validate', `  ✓ ${rule}`);
+      }
+    } catch (e) {
+      // Quality rules don't block
+    }
+  }
+
+  // Check MDX compilation
+  log('validate', 'Checking MDX compilation...');
+  try {
+    execSync('npm run crux -- validate compile --quick', {
+      cwd: ROOT,
+      stdio: 'pipe',
+      timeout: 60000
+    });
+    log('validate', '  ✓ MDX compiles');
+  } catch (e) {
+    issues.critical.push({ rule: 'compile', error: 'MDX compilation failed' });
+    log('validate', '  ✗ MDX compilation failed');
+  }
+
+  writeTemp(page.id, 'validation-results.json', issues);
+
+  const hasCritical = issues.critical.length > 0;
+  log('validate', `✅ Complete (critical: ${issues.critical.length}, quality: ${issues.quality.length})`);
+
+  return { issues, hasCritical, improvedContent };
 }
 
 // Phase: Gap Fill (deep tier only)
@@ -633,6 +728,13 @@ async function runPipeline(pageId, options = {}) {
 
       case 'improve':
         improvedContent = await improvePhase(page, analysis, research || { sources: [] }, directions, options);
+        break;
+
+      case 'validate':
+        const validation = await validatePhase(page, improvedContent, options);
+        if (validation.hasCritical) {
+          log('validate', '⚠️  Critical validation issues found - may need manual fixes');
+        }
         break;
 
       case 'gap-fill':
