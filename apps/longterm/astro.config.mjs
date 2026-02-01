@@ -216,6 +216,7 @@ export default defineConfig({
                   label: 'Style Guides',
                   collapsed: true,
                   items: [
+                      { label: 'Page Types', slug: 'internal/page-types' },
                       { label: 'Knowledge Base', slug: 'internal/knowledge-base' },
                       { label: 'Models', slug: 'internal/models' },
                       { label: 'Mermaid Diagrams', slug: 'internal/mermaid-diagrams' },
