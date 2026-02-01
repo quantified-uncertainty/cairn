@@ -5,12 +5,9 @@ sidebar:
   order: 5
 quality: 66
 llmSummary: "California's SB 1047 required safety testing, shutdown capabilities, and third-party audits for AI models exceeding 10^26 FLOP or $100M training cost; it passed the legislature (Assembly 45-11, Senate 32-1) but was vetoed September 29, 2024, with Governor Newsom citing concerns about size-based rather than risk-based regulation. The bill's legislative success demonstrated political feasibility of frontier AI regulation while its veto revealed formidable industry opposition (from OpenAI, Anthropic, Google, Meta) and preference for federal approaches."
-lastEdited: "2025-12-28"
+lastEdited: "2026-02-01"
 importance: 74.5
 pageTemplate: "knowledge-base-response"
-todos:
-  - "Complete 'How It Works' section"
-  - "Complete 'Limitations' section (6 placeholders)"
 ratings:
   novelty: 4.2
   rigor: 6.8
@@ -299,6 +296,44 @@ Must report to:
 - Compliance with safety requirements provides affirmative defense
 - Good faith efforts protected
 
+## Limitations and Criticisms
+
+### Technical Limitations
+
+| Limitation | Description | Counterargument |
+|------------|-------------|-----------------|
+| **Size-based thresholds become obsolete** | Algorithmic efficiency improvements (e.g., mixture-of-experts, distillation) mean smaller models can match larger ones; 10^26 FLOP threshold may be irrelevant within 2-3 years | Thresholds can be updated; captures current frontier models that pose near-term risk |
+| **Capability testing is imprecise** | Red-team testing for CBRN/cyber capabilities is nascent; false negatives possible; evaluation science not mature | Perfect shouldn't be enemy of good; creates incentive to develop better evals |
+| **Shutdown capability may be technically infeasible** | Distributed deployments, fine-tuned derivatives, and open-weight releases make "full shutdown" difficult to guarantee | Requirement applies pre-deployment; creates accountability for distribution decisions |
+| **Compliance verification is challenging** | Difficult for state agency to verify claims about training compute, safety testing, or model capabilities | Third-party auditing and whistleblower protections create multiple accountability mechanisms |
+
+### Policy Limitations
+
+| Limitation | Description | Counterargument |
+|------------|-------------|-----------------|
+| **State-level jurisdiction is limited** | AI development is interstate and international; California cannot regulate models trained elsewhere | California hosts majority of US AI development; creates de facto national standard (like CCPA did for privacy) |
+| **Enforcement capacity uncertain** | Frontier Model Division (later removed) would have needed significant expertise and resources | AG enforcement model proven effective in other contexts; whistleblower protections supplement |
+| **Exemptions may be too broad** | Open-source exemption (unless \$50M+ revenue) could allow dangerous models to proliferate | Targets commercial frontier development where most risk concentrates; academic/hobbyist use low-risk |
+| **Narrow scope misses risks** | Only covers frontier models; smaller models in high-risk applications (medical, legal, critical infrastructure) not addressed | Designed to complement other regulations (AB 2885, SB 896) addressing deployment contexts |
+
+### Political Limitations
+
+| Limitation | Description |
+|------------|-------------|
+| **Industry opposition unified** | Even safety-focused labs (<EntityLink id="anthropic">Anthropic</EntityLink>) opposed, undermining "industry wants reasonable regulation" narrative |
+| **Federal preemption risk** | Future federal AI legislation could override state requirements, making compliance investments wasted |
+| **Innovation narrative dominates** | Economic arguments about \$200B+ California AI industry and 300,000+ jobs proved more politically salient than safety concerns |
+| **Coalition too narrow** | Limited engagement from labor, civil rights, and consumer groups who might have provided broader political support |
+
+### Criticisms from AI Safety Community
+
+Some AI safety researchers opposed SB 1047 despite sharing its goals:
+
+- **Premature codification**: Locking in specific requirements (10^26 FLOP, specific capability tests) before evaluation science matures could create compliance theater without actual safety
+- **Wrong target**: Focus on model capabilities rather than deployment context may miss where risks actually materialize
+- **Opportunity cost**: Political capital spent on failed state bill could have supported federal efforts or voluntary frameworks with broader buy-in
+- **Open-source concerns**: Despite exemptions, uncertainty about derivative liability could chill beneficial open research
+
 ## Path Through Legislature
 
 ### Initial Introduction (February 2024)
@@ -365,7 +400,7 @@ Newsom simultaneously:
 ### Supporters
 
 **AI Safety Organizations:**
-- Center for AI Safety
+- <EntityLink id="cais">Center for AI Safety</EntityLink>
 - Future of Life Institute
 - AI safety researchers
 
@@ -376,20 +411,20 @@ Newsom simultaneously:
 - Requirements are reasonable and achievable
 
 **Notable Individual Supporters:**
-- Yoshua Bengio (Turing Award winner, 2018)
-- Geoffrey Hinton (Turing Award winner 2018, "Godfather of AI")
-- Stuart Russell (UC Berkeley professor, author of leading AI textbook)
+- <EntityLink id="yoshua-bengio">Yoshua Bengio</EntityLink> (Turing Award winner, 2018)
+- <EntityLink id="geoffrey-hinton">Geoffrey Hinton</EntityLink> (Turing Award winner 2018, "Godfather of AI")
+- <EntityLink id="stuart-russell">Stuart Russell</EntityLink> (UC Berkeley professor, author of leading AI textbook)
 - Max Tegmark (MIT professor, founder of Future of Life Institute)
-- Elon Musk (xAI CEO, publicly endorsed the bill)
-- <R id="9607d725074dfe2e">113+ current and former employees</R> of OpenAI, Google DeepMind, Anthropic, Meta, and xAI (September 9, 2024 letter to Governor Newsom)
+- <EntityLink id="elon-musk">Elon Musk</EntityLink> (<EntityLink id="xai">xAI</EntityLink> CEO, publicly endorsed the bill)
+- <R id="9607d725074dfe2e">113+ current and former employees</R> of <EntityLink id="openai">OpenAI</EntityLink>, Google <EntityLink id="deepmind">DeepMind</EntityLink>, <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="meta-ai">Meta</EntityLink>, and <EntityLink id="xai">xAI</EntityLink> (September 9, 2024 letter to Governor Newsom)
 
 ### Opponents
 
 **Major AI Companies:**
-- OpenAI (initially opposed; later neutral)
-- Anthropic (opposed initially; called final version "benefits likely outweigh costs" but remained uncertain)
-- Google/DeepMind (opposed)
-- Meta (strongly opposed)
+- <EntityLink id="openai">OpenAI</EntityLink> (initially opposed; later neutral)
+- <EntityLink id="anthropic">Anthropic</EntityLink> (opposed initially; called final version "benefits likely outweigh costs" but remained uncertain)
+- Google/<EntityLink id="deepmind">DeepMind</EntityLink> (opposed)
+- <EntityLink id="meta-ai">Meta</EntityLink> (strongly opposed)
 - Combined market value of opposing companies: >\$3 trillion
 
 **Arguments:**
@@ -405,7 +440,7 @@ Newsom simultaneously:
 - Others concerned about startup ecosystem impact
 
 **Some Researchers:**
-- Yann LeCun (Meta, Turing Award winner)
+- <EntityLink id="yann-lecun">Yann LeCun</EntityLink> (<EntityLink id="meta-ai">Meta</EntityLink>, Turing Award winner)
 - Andrew Ng (Stanford, Google Brain co-founder)
 - Fei-Fei Li (Stanford)
 
@@ -490,7 +525,7 @@ Newsom simultaneously:
 - Legislators willing to regulate despite industry opposition
 
 **Industry Opposition is Formidable:**
-- Even safety-focused companies (Anthropic) opposed
+- Even safety-focused companies (<EntityLink id="anthropic">Anthropic</EntityLink>) opposed
 - Economic arguments effective
 - Innovation framing powerful
 
