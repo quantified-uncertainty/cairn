@@ -32,6 +32,9 @@ export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 // Schema validation rules
 export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 
+// Quality validation rules
+export { qualitySourceRule } from './quality-source.mjs';
+
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
 import { dollarSignsRule } from './dollar-signs.mjs';
@@ -50,6 +53,7 @@ import { cruftFilesRule } from './cruft-files.mjs';
 import { markdownListsRule } from './markdown-lists.mjs';
 import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
+import { qualitySourceRule } from './quality-source.mjs';
 
 export const allRules = [
   // Content validation
@@ -78,6 +82,9 @@ export const allRules = [
 
   // Schema validation
   frontmatterSchemaRule,
+
+  // Quality validation
+  qualitySourceRule,
 ];
 
 export default allRules;
