@@ -6,8 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'CAIRN Meta',
-      description: 'How to build CAIRN-like knowledge bases',
+      title: 'LongtermWiki Meta',
+      description: 'How to build LongtermWiki-like knowledge bases',
       components: {
         // Custom footer with version display
         Footer: './src/components/starlight/Footer.astro',

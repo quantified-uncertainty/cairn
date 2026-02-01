@@ -18,7 +18,7 @@ metrics:
 ---
 # Models Style Guide
 
-This guide defines the standards for analytical models in CAIRN. Models should maximize **information density** while remaining accessible.
+This guide defines the standards for analytical models in LongtermWiki. Models should maximize **information density** while remaining accessible.
 
 ## Core Principles
 

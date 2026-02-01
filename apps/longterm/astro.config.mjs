@@ -9,11 +9,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://cairn.vercel.app',
+  site: 'https://longtermwiki.vercel.app',
   integrations: [
       react(),
       starlight({
-          title: 'CAIRN',
+          title: 'LongtermWiki',
           customCss: ['./src/styles/global.css'],
           components: {
               // Auto-inject PageStatus from frontmatter

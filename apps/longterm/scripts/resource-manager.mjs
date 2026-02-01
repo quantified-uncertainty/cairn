@@ -1439,7 +1439,7 @@ async function validateUrls(resources, opts) {
       const response = await fetch(resource.url, {
         method: 'HEAD',
         signal: controller.signal,
-        headers: { 'User-Agent': 'CairnValidator/1.0' },
+        headers: { 'User-Agent': 'LongtermWikiValidator/1.0' },
         redirect: 'follow'
       });
 
@@ -1502,7 +1502,7 @@ async function validateWikipedia(resources, opts) {
       // Use Wikipedia API to check if article exists
       const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(urlMatch[1])}`;
       const response = await fetch(apiUrl, {
-        headers: { 'User-Agent': 'CairnValidator/1.0' }
+        headers: { 'User-Agent': 'LongtermWikiValidator/1.0' }
       });
 
       if (response.status === 404) {
@@ -1587,7 +1587,7 @@ async function validateForumPosts(resources, opts) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'CairnValidator/1.0'
+          'User-Agent': 'LongtermWikiValidator/1.0'
         },
         body: JSON.stringify(query)
       });
@@ -1723,7 +1723,7 @@ async function validateDois(resources, opts) {
       // Query CrossRef
       const apiUrl = `https://api.crossref.org/works/${encodeURIComponent(doi)}`;
       const response = await fetch(apiUrl, {
-        headers: { 'User-Agent': 'CairnValidator/1.0 (mailto:admin@example.com)' }
+        headers: { 'User-Agent': 'LongtermWikiValidator/1.0 (mailto:admin@example.com)' }
       });
 
       if (response.status === 404) {

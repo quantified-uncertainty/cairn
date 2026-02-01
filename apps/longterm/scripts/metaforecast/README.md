@@ -1,6 +1,6 @@
 # Metaforecast Integration
 
-Two-tier system for integrating forecasts from [Metaforecast](https://metaforecast.org) into the Cairn wiki.
+Two-tier system for integrating forecasts from [Metaforecast](https://metaforecast.org) into the LongtermWiki wiki.
 
 ## Architecture Overview
 

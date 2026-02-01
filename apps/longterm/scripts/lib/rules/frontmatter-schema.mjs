@@ -28,7 +28,7 @@ const frontmatterSchema = z.object({
   banner: z.any().optional(),
   draft: z.boolean().optional(),
 
-  // Custom Cairn fields
+  // Custom LongtermWiki fields
   pageType: z.enum(['content', 'stub', 'documentation']).optional(),
   quality: z.number().min(0).max(100).optional(),
   importance: z.number().min(0).max(100).optional(),

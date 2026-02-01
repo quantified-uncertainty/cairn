@@ -43,7 +43,7 @@ async function fetchWikidataLabels(qids) {
 
   const response = await fetch(url.toString(), {
     headers: {
-      'User-Agent': 'CairnWikidataValidator/1.0 (https://github.com/cairn)'
+      'User-Agent': 'LongtermWikiValidator/1.0 (https://github.com/cairn)'
     }
   });
 
@@ -135,7 +135,7 @@ async function searchWikidata(searchTerm) {
 
   const response = await fetch(url.toString(), {
     headers: {
-      'User-Agent': 'CairnWikidataValidator/1.0 (https://github.com/cairn)'
+      'User-Agent': 'LongtermWikiValidator/1.0 (https://github.com/cairn)'
     }
   });
 

@@ -106,7 +106,7 @@ const frontmatterSchema = z.object({
   // Draft mode
   draft: z.boolean().optional(),
 
-  // === Custom Cairn fields ===
+  // === Custom LongtermWiki fields ===
 
   // Page type
   pageType: z.enum(['content', 'stub', 'documentation']).optional(),

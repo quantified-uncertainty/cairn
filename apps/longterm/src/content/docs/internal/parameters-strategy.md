@@ -428,7 +428,7 @@ Each batch should be worked on by a separate Claude Code instance. Complete one 
 
 ```bash
 # Navigate to project
-cd /path/to/cairn
+cd /path/to/longtermwiki
 
 # Ensure clean state
 git pull

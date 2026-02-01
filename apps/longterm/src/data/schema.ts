@@ -1,5 +1,5 @@
 /**
- * Data Schema for CAIRN
+ * Data Schema for LongtermWiki
  *
  * This file defines TypeScript types and Zod schemas for all structured data.
  * Data lives in YAML files in src/data/ and is validated at build time.

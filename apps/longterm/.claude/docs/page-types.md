@@ -1,6 +1,6 @@
 # Page Type System
 
-CAIRN uses a two-level classification system:
+LongtermWiki uses a two-level classification system:
 
 1. **Page Type** (`pageType`): Controls validation behavior and quality scoring eligibility
 2. **Page Template** (`pageTemplate`): Determines expected structure and applicable style guide

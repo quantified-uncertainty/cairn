@@ -274,7 +274,7 @@ function getSynthesisPrompt(topic, quality = 'standard') {
 
   return `# Write Wiki Article: ${topic}
 
-You are writing a wiki article for Cairn, an AI safety knowledge base.
+You are writing a wiki article for LongtermWiki, an AI safety knowledge base.
 
 ## Research Data
 

@@ -1,6 +1,6 @@
 # Metaforecast Integration Setup Guide
 
-Quick start guide for integrating Metaforecast forecasts into the Cairn wiki.
+Quick start guide for integrating Metaforecast forecasts into the LongtermWiki wiki.
 
 ## Prerequisites
 
@@ -153,7 +153,7 @@ jobs:
 crontab -e
 
 # Add daily update at 6am
-0 6 * * * cd /path/to/cairn/apps/longterm && pnpm forecasts:update && git commit -am "chore: update forecasts" && git push
+0 6 * * * cd /path/to/longtermwiki/apps/longterm && pnpm forecasts:update && git commit -am "chore: update forecasts" && git push
 ```
 
 ## Verification Checklist

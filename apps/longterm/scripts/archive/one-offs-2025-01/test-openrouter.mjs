@@ -9,7 +9,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   headers: {
     'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
     'Content-Type': 'application/json',
-    'HTTP-Referer': 'https://cairn-wiki.vercel.app'
+    'HTTP-Referer': 'https://longtermwiki.vercel.app'
   },
   body: JSON.stringify({
     model: 'perplexity/sonar',

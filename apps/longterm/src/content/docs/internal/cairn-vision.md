@@ -1,10 +1,10 @@
 ---
-title: "CAIRN Vision"
-description: "Strategic vision and scope for the CAIRN project"
+title: "LongtermWiki Vision"
+description: "Strategic vision and scope for the LongtermWiki project"
 pageType: "documentation"
 importance: 0
 quality: 2
-llmSummary: "Internal strategic planning document for the CAIRN project itself, outlining a 2-person-year scope to build a knowledge platform focused on AI safety prioritization cruxes. Proposes ~250 pages across risks, interventions, and causal models with worldview-based priority mapping."
+llmSummary: "Internal strategic planning document for the LongtermWiki project itself, outlining a 2-person-year scope to build a knowledge platform focused on AI safety prioritization cruxes. Proposes ~250 pages across risks, interventions, and causal models with worldview-based priority mapping."
 ratings:
   novelty: 0
   rigor: 0
@@ -16,7 +16,7 @@ metrics:
   tables: 7
   diagrams: 0
 ---
-# CAIRN: Comprehensive AI Impact & Risk Navigator
+# LongtermWiki: Comprehensive AI Impact & Risk Navigator
 
 ## Vision Document (2-Person-Year Scope)
 
@@ -28,7 +28,7 @@ metrics:
 
 ## Executive Summary
 
-CAIRN is a strategic intelligence platform for AI safety prioritization. Its core purpose is to **surface the key uncertainties and cruxes that, if resolved, would most change how resources should be allocated across AI safety interventions**.
+LongtermWiki is a strategic intelligence platform for AI safety prioritization. Its core purpose is to **surface the key uncertainties and cruxes that, if resolved, would most change how resources should be allocated across AI safety interventions**.
 
 This is not an encyclopedia. It's a decision-support tool for funders, researchers, and policymakers asking: *"Where should the next marginal dollar or researcher-hour go?"*
 
@@ -52,23 +52,23 @@ flowchart TD
         D --> E[Suboptimal Resource Allocation]
     end
 
-    subgraph Solution["CAIRN"]
+    subgraph Solution["LongtermWiki"]
         F[Structured Knowledge Graph] --> I[Clear Strategic Priorities]
         G[Explicit Crux Mapping] --> I
         H[Living Document System] --> I
         I --> J[Better Marginal Decisions]
     end
 
-    E -.->|"CAIRN bridges this"| F
+    E -.->|"LongtermWiki bridges this"| F
 ```
 
 ---
 
 ## Core Value Proposition
 
-CAIRN provides **strategic clarity** by answering:
+LongtermWiki provides **strategic clarity** by answering:
 
-| Question | How CAIRN Helps |
+| Question | How LongtermWiki Helps |
 |----------|-----------------|
 | "What are the key uncertainties in AI safety?" | Structured crux taxonomy with explicit dependencies |
 | "If I believe X, what should I prioritize?" | Worldview → intervention mapping |
@@ -91,7 +91,7 @@ flowchart LR
         S4[Field Developments]
     end
 
-    subgraph CAIRN["CAIRN Core"]
+    subgraph LongtermWiki["LongtermWiki Core"]
         direction TB
         K[Knowledge Base]
         C[Crux Graph]
@@ -110,8 +110,8 @@ flowchart LR
         O4[Disagreement Maps]
     end
 
-    Sources --> CAIRN
-    CAIRN --> Outputs
+    Sources --> LongtermWiki
+    LongtermWiki --> Outputs
 ```
 
 ### Content Layers
@@ -372,13 +372,13 @@ flowchart LR
 
 ## Appendix: Comparison to Existing Resources
 
-| Resource | CAIRN Differentiator |
+| Resource | LongtermWiki Differentiator |
 |----------|---------------------|
-| AI Safety Fundamentals | CAIRN is strategic, not educational |
-| LessWrong/AF | CAIRN is curated synthesis, not discussion |
-| 80K Problem Profiles | CAIRN goes deeper on cruxes and uncertainties |
-| GovAI/CAIS research | CAIRN synthesizes across orgs, not original research |
-| Wikipedia | CAIRN is opinionated about importance and uncertainty |
+| AI Safety Fundamentals | LongtermWiki is strategic, not educational |
+| LessWrong/AF | LongtermWiki is curated synthesis, not discussion |
+| 80K Problem Profiles | LongtermWiki goes deeper on cruxes and uncertainties |
+| GovAI/CAIS research | LongtermWiki synthesizes across orgs, not original research |
+| Wikipedia | LongtermWiki is opinionated about importance and uncertainty |
 
 ---
 

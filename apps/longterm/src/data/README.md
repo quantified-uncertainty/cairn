@@ -1,4 +1,4 @@
-# Data Layer for CAIRN
+# Data Layer for LongtermWiki
 
 This directory contains structured data in YAML format, with TypeScript schemas for validation.
 

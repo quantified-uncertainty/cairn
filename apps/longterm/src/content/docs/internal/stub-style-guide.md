@@ -58,7 +58,7 @@ seeAlso: "ai-safety"
 
 # Narrow AI Safety
 
-Safety considerations for narrow (non-general) AI systems. This topic is intentionally minimal as the primary focus of CAIRN is transformative AI.
+Safety considerations for narrow (non-general) AI systems. This topic is intentionally minimal as the primary focus of LongtermWiki is transformative AI.
 
 For comprehensive coverage, see [AI Safety](/knowledge-base/ai-safety/).
 ```

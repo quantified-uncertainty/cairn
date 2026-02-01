@@ -1,5 +1,5 @@
 /**
- * Data Index for CAIRN
+ * Data Index for LongtermWiki
  *
  * Exports all data from pre-built JSON files.
  * Run `node scripts/build-data.mjs` to regenerate JSON from YAML.

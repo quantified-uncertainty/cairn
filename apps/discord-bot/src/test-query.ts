@@ -15,7 +15,7 @@ async function testQuery(question: string): Promise<void> {
 
   const queryPromise = (async () => {
     for await (const msg of query({
-      prompt: `Answer this question about the cairn wiki: "${question}"
+      prompt: `Answer this question about LongtermWiki: "${question}"
 
 The wiki content is at this ABSOLUTE path: ${REPO_PATH}/apps/longterm/src/content/docs/knowledge-base/
 

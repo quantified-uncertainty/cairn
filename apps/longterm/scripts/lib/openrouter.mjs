@@ -59,8 +59,8 @@ export async function callOpenRouter(prompt, options = {}) {
     headers: {
       'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://cairn-wiki.vercel.app',
-      'X-Title': 'Cairn Wiki Page Creator'
+      'HTTP-Referer': 'https://longtermwiki.vercel.app',
+      'X-Title': 'LongtermWiki Page Creator'
     },
     body: JSON.stringify({
       model,

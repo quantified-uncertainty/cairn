@@ -57,7 +57,7 @@ export async function searchForecasts(query, options = {}) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Cairn-Wiki/1.0'
+        'User-Agent': 'LongtermWiki/1.0'
       },
       body: JSON.stringify({
         query: graphqlQuery,
@@ -125,7 +125,7 @@ export async function getForecast(id) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'User-Agent': 'Cairn-Wiki/1.0'
+      'User-Agent': 'LongtermWiki/1.0'
     },
     body: JSON.stringify({
       query: graphqlQuery,
@@ -241,7 +241,7 @@ export async function getPlatforms() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'User-Agent': 'Cairn-Wiki/1.0'
+      'User-Agent': 'LongtermWiki/1.0'
     },
     body: JSON.stringify({ query: graphqlQuery })
   });

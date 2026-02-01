@@ -1,10 +1,10 @@
 ---
-title: "CAIRN Strategy Brainstorm"
-description: "Strategic planning and brainstorming for CAIRN development"
+title: "LongtermWiki Strategy Brainstorm"
+description: "Strategic planning and brainstorming for LongtermWiki development"
 pageType: "documentation"
 importance: 0
 quality: 4
-llmSummary: "Internal strategic planning document for CAIRN project development, exploring five failure modes (becoming just another wiki, generating non-insights, building unwanted features, maintenance hell, being too unusual) and five strategic options (narrow/deep focus, broad/shallow wiki, opinionated synthesis, crux laboratory, living assessment). Proposes four 2-week validation tests (user interviews, crux prototype, page quality test, insight generation) before committing resources."
+llmSummary: "Internal strategic planning document for LongtermWiki project development, exploring five failure modes (becoming just another wiki, generating non-insights, building unwanted features, maintenance hell, being too unusual) and five strategic options (narrow/deep focus, broad/shallow wiki, opinionated synthesis, crux laboratory, living assessment). Proposes four 2-week validation tests (user interviews, crux prototype, page quality test, insight generation) before committing resources."
 ratings:
   novelty: 0
   rigor: 0
@@ -16,7 +16,7 @@ metrics:
   tables: 2
   diagrams: 0
 ---
-# CAIRN Strategy Brainstorm
+# LongtermWiki Strategy Brainstorm
 
 **Status:** Working document, not polished
 **Purpose:** Think through what could go wrong and what success looks like
@@ -25,7 +25,7 @@ metrics:
 
 ## The Core Strategic Question
 
-What is CAIRN actually trying to be?
+What is LongtermWiki actually trying to be?
 
 ```mermaid
 flowchart TD
@@ -68,7 +68,7 @@ These aren't mutually exclusive, but they have very different implications for w
 - Ruthless focus on a narrow use case
 - Quality over quantity (30 great pages > 300 mediocre ones)
 - Opinionated curation (not neutral, not comprehensive)
-- Clear "this is what CAIRN is for" positioning
+- Clear "this is what LongtermWiki is for" positioning
 
 ### Failure Mode 2: "Insights That Aren't"
 
@@ -158,7 +158,7 @@ This is the crux. Different definitions lead to very different projects:
 
 ### Definition A: Changes Decisions
 
-**Test:** Can we point to funding decisions, research directions, or career choices that changed because of CAIRN?
+**Test:** Can we point to funding decisions, research directions, or career choices that changed because of LongtermWiki?
 
 **Implications:**
 - Need to be embedded in actual decision-making workflows
@@ -173,7 +173,7 @@ This is the crux. Different definitions lead to very different projects:
 
 ### Definition B: Improves Understanding
 
-**Test:** Do users report that they understand AI safety landscape better after using CAIRN?
+**Test:** Do users report that they understand AI safety landscape better after using LongtermWiki?
 
 **Implications:**
 - Educational value is primary
@@ -188,11 +188,11 @@ This is the crux. Different definitions lead to very different projects:
 
 ### Definition C: Structures Discourse
 
-**Test:** Do people use CAIRN's categories and cruxes when discussing AI safety strategy?
+**Test:** Do people use LongtermWiki's categories and cruxes when discussing AI safety strategy?
 
 **Implications:**
 - The framework itself is the product
-- Success = CAIRN vocabulary becomes common
+- Success = LongtermWiki vocabulary becomes common
 - Focus on crux definitions, worldview archetypes
 - Less about content, more about structure
 
@@ -239,7 +239,7 @@ This is the crux. Different definitions lead to very different projects:
 
 Focus on one very specific use case and nail it.
 
-**Example:** "CAIRN helps funders compare interventions under different worldviews"
+**Example:** "LongtermWiki helps funders compare interventions under different worldviews"
 
 - 30-50 intervention pages, deeply analyzed
 - Clear worldview → priority tool
@@ -253,7 +253,7 @@ Focus on one very specific use case and nail it.
 
 Comprehensive reference that's clearly better than alternatives.
 
-**Example:** "CAIRN is the best single source for 'what is X in AI safety?'"
+**Example:** "LongtermWiki is the best single source for 'what is X in AI safety?'"
 
 - 200+ pages, all at consistent quality
 - Good SEO, clear navigation
@@ -267,12 +267,12 @@ Comprehensive reference that's clearly better than alternatives.
 
 Not neutral, not comprehensive — actively opinionated about what matters.
 
-**Example:** "CAIRN is where you go to understand the strategic landscape according to [specific perspective]"
+**Example:** "LongtermWiki is where you go to understand the strategic landscape according to [specific perspective]"
 
 - Explicitly represents a worldview or analytical lens
 - Quality of argument matters more than coverage
 - More like a think tank than a wiki
-- Success = "CAIRN's take on X" becomes a reference point
+- Success = "LongtermWiki's take on X" becomes a reference point
 
 **Pros:** Differentiated, lower maintenance, can be higher quality per page
 **Cons:** Alienates those who disagree, requires us to actually have good takes, might be seen as biased
@@ -281,7 +281,7 @@ Not neutral, not comprehensive — actively opinionated about what matters.
 
 Focus almost entirely on the crux-mapping innovation.
 
-**Example:** "CAIRN maps the key uncertainties in AI safety and what would resolve them"
+**Example:** "LongtermWiki maps the key uncertainties in AI safety and what would resolve them"
 
 - Minimal wiki content, max crux structure
 - Interactive disagreement exploration tools
@@ -295,7 +295,7 @@ Focus almost entirely on the crux-mapping innovation.
 
 Regular, updating analysis of AI safety landscape.
 
-**Example:** "CAIRN provides quarterly strategic assessments of the AI safety field"
+**Example:** "LongtermWiki provides quarterly strategic assessments of the AI safety field"
 
 - More report-like than wiki-like
 - Regular update cadence with clear "what changed"
@@ -332,7 +332,7 @@ Honest assessment: Do we have the expertise to say things that aren't obvious to
 
 ### Uncertainty 3: Is the crux-mapping frame valuable?
 
-The CAIRN vision heavily features worldviews, cruxes, disagreement mapping. Is this actually useful or is it an intellectual hobby?
+The LongtermWiki vision heavily features worldviews, cruxes, disagreement mapping. Is this actually useful or is it an intellectual hobby?
 
 - If useful → it's our core differentiator
 - If not → we're just a wiki with extra steps
@@ -407,7 +407,7 @@ Try to generate 3 novel strategic insights:
 
 1. Who are 10 specific people who would use this weekly? Can we name them?
 
-2. What's the simplest version of CAIRN that would still be valuable?
+2. What's the simplest version of LongtermWiki that would still be valuable?
 
 3. If we could only do one of (wiki, crux map, worldview tool), which?
 
@@ -424,7 +424,7 @@ Try to generate 3 novel strategic insights:
 ## Next Steps
 
 - [ ] Schedule user interviews with 5-10 potential users
-- [ ] Define "minimum viable CAIRN" that could be tested in 4 weeks
+- [ ] Define "minimum viable LongtermWiki" that could be tested in 4 weeks
 - [ ] Identify 3 specific cruxes to prototype mapping
 - [ ] Honest assessment: do we have the expertise for Option 3 (Opinionated Synthesis)?
 - [ ] Research what happened to similar past projects
