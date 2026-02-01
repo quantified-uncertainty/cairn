@@ -21,6 +21,7 @@ import { findMdxFiles, findFiles } from './file-utils.mjs';
 import { getColors } from './output.mjs';
 import { parseFrontmatterAndBody } from './mdx-utils.mjs';
 import { PROJECT_ROOT, CONTENT_DIR_ABS as CONTENT_DIR, DATA_DIR_ABS as DATA_DIR } from './content-types.mjs';
+import { parseSidebarConfig } from './sidebar-utils.mjs';
 
 /**
  * Load JSON file safely
@@ -192,39 +193,10 @@ export class ValidationEngine {
 
   /**
    * Parse sidebar configuration from astro.config.mjs
+   * Uses shared utility from sidebar-utils.mjs
    */
   _parseSidebarConfig() {
-    const configPath = join(PROJECT_ROOT, 'astro.config.mjs');
-    if (!existsSync(configPath)) return { entries: [], directories: new Set() };
-
-    try {
-      const content = readFileSync(configPath, 'utf-8');
-      const entries = [];
-      const directories = new Set();
-
-      // Extract slug entries
-      const slugRegex = /slug:\s*['"]([^'"]+)['"]/g;
-      let match;
-      while ((match = slugRegex.exec(content)) !== null) {
-        entries.push(match[1]);
-      }
-
-      // Extract autogenerate directories
-      const autoRegex = /autogenerate:\s*\{\s*directory:\s*['"]([^'"]+)['"]/g;
-      while ((match = autoRegex.exec(content)) !== null) {
-        directories.add(match[1]);
-      }
-
-      // Extract link entries
-      const linkRegex = /link:\s*['"]([^'"]+)['"]/g;
-      while ((match = linkRegex.exec(content)) !== null) {
-        entries.push(match[1].replace(/^\//, '').replace(/\/$/, ''));
-      }
-
-      return { entries, directories };
-    } catch {
-      return { entries: [], directories: new Set() };
-    }
+    return parseSidebarConfig();
   }
 
   /**

@@ -25,6 +25,7 @@ import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { batchResearch, generateResearchQueries, callOpenRouter, MODELS } from '../lib/openrouter.mjs';
+import { checkSidebarCoverage } from '../lib/sidebar-utils.mjs';
 
 dotenv.config();
 
@@ -76,6 +77,40 @@ const QUALITY_RULES = [
   'vague-citations',
   'temporal-artifacts'
 ];
+
+// ============ Deployment ============
+
+/**
+ * Move final.mdx to destination and check sidebar coverage
+ */
+function deployToDestination(topic, destPath) {
+  const topicDir = getTopicDir(topic);
+  const finalPath = path.join(topicDir, 'final.mdx');
+
+  if (!fs.existsSync(finalPath)) {
+    return { success: false, error: 'No final.mdx found to deploy' };
+  }
+
+  // Full destination path
+  const sanitizedTopic = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const fullDestDir = path.join(ROOT, 'src/content/docs', destPath);
+  const fullDestPath = path.join(fullDestDir, `${sanitizedTopic}.mdx`);
+
+  // Ensure destination directory exists
+  ensureDir(fullDestDir);
+
+  // Check sidebar coverage (uses shared utility)
+  const sidebarCheck = checkSidebarCoverage(destPath);
+
+  // Copy file to destination
+  fs.copyFileSync(finalPath, fullDestPath);
+
+  return {
+    success: true,
+    deployedTo: fullDestPath,
+    sidebarCoverage: sidebarCheck
+  };
+}
 
 // ============ Utility Functions ============
 
@@ -619,6 +654,31 @@ async function runFullValidation(topic) {
     log('validate-full', '  ✗ MDX compilation failed');
   }
 
+  // 1b. Direct frontmatter check on temp file (catches issues before deployment)
+  try {
+    const tempContent = fs.readFileSync(finalPath, 'utf-8');
+
+    // Check for unquoted lastEdited dates
+    const unquotedDateMatch = tempContent.match(/lastEdited:\s*(\d{4}-\d{2}-\d{2})(?:\s*$|\s*\n)/m);
+    if (unquotedDateMatch) {
+      const lineContent = tempContent.split('\n').find(l => l.includes('lastEdited:')) || '';
+      if (!lineContent.includes('"') && !lineContent.includes("'")) {
+        // Fix it in place
+        const fixedContent = tempContent.replace(
+          /lastEdited:\s*(\d{4}-\d{2}-\d{2})/,
+          'lastEdited: "$1"'
+        );
+        fs.writeFileSync(finalPath, fixedContent);
+        log('validate-full', '  ✓ Fixed unquoted lastEdited date');
+      }
+    }
+
+    // Check for unquoted createdAt dates (should be unquoted YAML date, not string)
+    // This is the opposite - createdAt should NOT be quoted
+  } catch (fmError) {
+    log('validate-full', `  ⚠ Could not check frontmatter: ${fmError.message}`);
+  }
+
   // 2. Run unified rules on the file
   log('validate-full', 'Running validation rules...');
 
@@ -1134,9 +1194,16 @@ Usage:
   node scripts/content/page-creator.mjs "<topic>" [options]
 
 Options:
-  --tier <tier>     Quality tier: budget, standard, premium (default: standard)
-  --phase <phase>   Run a single phase only (for resuming/testing)
-  --help            Show this help
+  --tier <tier>       Quality tier: budget, standard, premium (default: standard)
+  --dest <path>       Deploy to content path (e.g., knowledge-base/people)
+  --directions <text> Special instructions for content focus
+  --phase <phase>     Run a single phase only (for resuming/testing)
+  --help              Show this help
+
+Destination Examples:
+  --dest knowledge-base/people
+  --dest knowledge-base/organizations/safety-orgs
+  --dest knowledge-base/organizations/political-advocacy
 
 Phases:
   research-perplexity   Perplexity web research
@@ -1171,6 +1238,8 @@ async function main() {
   const tier = tierIndex !== -1 ? args[tierIndex + 1] : 'standard';
   const phaseIndex = args.indexOf('--phase');
   const singlePhase = phaseIndex !== -1 ? args[phaseIndex + 1] : null;
+  const destIndex = args.indexOf('--dest');
+  const destPath = destIndex !== -1 ? args[destIndex + 1] : null;
 
   if (!topic) {
     console.error('Error: Topic required');
@@ -1215,6 +1284,38 @@ async function main() {
   }
 
   await runPipeline(topic, tier);
+
+  // Deploy to destination if --dest provided
+  if (destPath) {
+    console.log(`\n${'─'.repeat(50)}`);
+    console.log('Deploying to content directory...');
+
+    const deployResult = deployToDestination(topic, destPath);
+
+    if (deployResult.success) {
+      console.log(`✓ Deployed to: ${deployResult.deployedTo}`);
+
+      // Check sidebar coverage
+      if (deployResult.sidebarCoverage.covered) {
+        console.log(`✓ Sidebar: Covered by autogenerate (${deployResult.sidebarCoverage.matchedPath})`);
+      } else {
+        console.log(`\n⚠️  WARNING: Page will NOT appear in sidebar!`);
+        console.log(`   The path "${destPath}" is not covered by any sidebar autogenerate.`);
+        console.log(`\n   To fix, add to astro.config.mjs sidebar:`);
+        console.log(`   { label: 'Category Name', collapsed: true, autogenerate: { directory: '${destPath}' } }`);
+        console.log(`\n   Or use one of these existing paths:`);
+        deployResult.sidebarCoverage.availablePaths.slice(0, 10).forEach(p => {
+          console.log(`     --dest ${p}`);
+        });
+      }
+    } else {
+      console.log(`✗ Deployment failed: ${deployResult.error}`);
+    }
+  } else {
+    // No --dest provided, just remind user
+    console.log(`\n💡 Tip: Use --dest <path> to deploy directly to content directory`);
+    console.log(`   Example: --dest knowledge-base/people`);
+  }
 }
 
 main().catch(console.error);

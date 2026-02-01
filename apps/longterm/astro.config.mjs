@@ -99,6 +99,7 @@ export default defineConfig({
                       { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/epistemic-orgs' } },
                       { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/funders' } },
                       { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
+                      { label: 'Political Advocacy', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/political-advocacy' } },
                   ],
               },
               { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
