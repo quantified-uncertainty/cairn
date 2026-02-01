@@ -44,7 +44,7 @@ const TIERS = {
   standard: {
     name: 'Standard',
     estimatedCost: '$4-6',
-    phases: ['research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'review', 'validate-full', 'grade'],
     description: 'Full research + Sonnet synthesis + validation loop'
   },
   premium: {
@@ -915,22 +915,47 @@ async function runReview(topic) {
 
 Read the draft article at: ${draftPath}
 
-You are a skeptical editor. Look for:
-1. **Uncited claims** - Facts without footnote citations
-2. **Missing topics** - Important aspects not covered
-3. **One-sided framing** - Only positive or negative
-4. **Vague language** - "significant", "many" without numbers
-5. **Wiki convention violations** - Wrong citation format, missing EntityLinks
+You are a skeptical editor doing a final quality check. Look specifically for:
 
-Write a review to: ${path.join(getTopicDir(topic), 'review.json')}
+## HIGH PRIORITY - Logical Issues
+
+1. **Section-content contradictions**: Does the content within a section contradict its heading?
+   - Example: A section titled "Lack of Preventive Mechanisms" that then describes the subject as "preventive"
+   - Example: A "Criticisms" section that only contains praise
+
+2. **Self-contradicting quotes**: Are quotes used in contexts that contradict their meaning?
+   - Example: Calling something "preventive, not punitive" while arguing it lacks prevention
+
+3. **Temporal artifacts**: Does the text expose when research was conducted?
+   - BAD: "As of the research data (through late 2024)..."
+   - BAD: "Based on available sources from 2023..."
+   - BAD: "No information was found in the sources..."
+   - GOOD: "As of early 2026..." or state facts directly without referencing sources
+
+## STANDARD CHECKS
+
+4. **Uncited claims** - Major facts without footnote citations
+5. **Missing topics** - Important aspects not covered based on the title
+6. **One-sided framing** - Only positive or negative coverage
+7. **Vague language** - "significant", "many experts" without specifics
+
+## Output
+
+Write findings to: ${path.join(getTopicDir(topic), 'review.json')}
 
 Format:
 {
   "overallQuality": 70,
+  "logicalIssues": [
+    {"section": "...", "problem": "...", "suggestion": "..."}
+  ],
+  "temporalArtifacts": ["line containing the artifact..."],
   "uncitedClaims": [...],
   "missingTopics": [...],
   "suggestions": [...]
-}`;
+}
+
+If you find any logicalIssues or temporalArtifacts, also fix them directly in the draft file.`;
 
   return new Promise((resolve, reject) => {
     const claude = spawn('npx', [
