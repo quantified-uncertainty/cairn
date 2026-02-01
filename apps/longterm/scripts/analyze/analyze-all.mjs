@@ -18,9 +18,7 @@ import { join } from 'path';
 import { ValidationEngine } from '../lib/validation-engine.mjs';
 import { entityMentionsRule } from '../lib/rules/entity-mentions.mjs';
 import { getColors } from '../lib/output.mjs';
-
-const PROJECT_ROOT = process.cwd();
-const DATA_DIR = join(PROJECT_ROOT, 'src/data');
+import { DATA_DIR_ABS as DATA_DIR } from '../lib/content-types.mjs';
 
 const args = process.argv.slice(2);
 const JSON_MODE = args.includes('--json');

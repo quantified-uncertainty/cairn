@@ -14,6 +14,7 @@ import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
 import { computeRedundancy } from './lib/redundancy.mjs';
+import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
 
 // =============================================================================
 // UNCONVERTED LINK DETECTION
@@ -112,8 +113,6 @@ function countConvertedLinks(content) {
   return matches ? matches.length : 0;
 }
 
-const DATA_DIR = 'src/data';
-const CONTENT_DIR = 'src/content/docs';
 const OUTPUT_FILE = 'src/data/database.json';
 
 // =============================================================================

@@ -4,6 +4,13 @@
  * Centralized definitions for content types, their paths, and configurations.
  */
 
+import { join } from 'path';
+
+/**
+ * Project root directory (current working directory)
+ */
+export const PROJECT_ROOT = process.cwd();
+
 /**
  * Content type configurations
  */
@@ -106,11 +113,21 @@ export function extractEntityId(filePath) {
 }
 
 /**
- * Get the base content directory
+ * Base content directory (relative path)
  */
 export const CONTENT_DIR = 'src/content/docs';
 
 /**
- * Get the data directory
+ * Data directory (relative path)
  */
 export const DATA_DIR = 'src/data';
+
+/**
+ * Absolute path to content directory
+ */
+export const CONTENT_DIR_ABS = join(PROJECT_ROOT, CONTENT_DIR);
+
+/**
+ * Absolute path to data directory
+ */
+export const DATA_DIR_ABS = join(PROJECT_ROOT, DATA_DIR);

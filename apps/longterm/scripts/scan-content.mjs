@@ -27,14 +27,13 @@ import {
   contentHash,
   hashId,
   getStats,
-  PROJECT_ROOT
 } from './lib/knowledge-db.mjs';
 import { findMdxFiles } from './lib/file-utils.mjs';
 import { parseFrontmatter, getContentBody } from './lib/mdx-utils.mjs';
 import { getColors } from './lib/output.mjs';
+import { PROJECT_ROOT, CONTENT_DIR_ABS as CONTENT_DIR, DATA_DIR_ABS as DATA_DIR } from './lib/content-types.mjs';
 
-const CONTENT_DIR = join(PROJECT_ROOT, 'src/content/docs');
-const ENTITIES_PATH = join(PROJECT_ROOT, 'src/data/entities.yaml');
+const ENTITIES_PATH = join(DATA_DIR, 'entities.yaml');
 
 const args = process.argv.slice(2);
 const FORCE = args.includes('--force');

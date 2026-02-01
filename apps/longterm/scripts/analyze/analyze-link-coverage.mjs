@@ -22,10 +22,7 @@ import { join, relative } from 'path';
 import { findMdxFiles } from '../lib/file-utils.mjs';
 import { parseFrontmatter, getContentBody } from '../lib/mdx-utils.mjs';
 import { getColors } from '../lib/output.mjs';
-
-const PROJECT_ROOT = process.cwd();
-const CONTENT_DIR = join(PROJECT_ROOT, 'src/content/docs');
-const DATA_DIR = join(PROJECT_ROOT, 'src/data');
+import { PROJECT_ROOT, CONTENT_DIR_ABS as CONTENT_DIR, DATA_DIR_ABS as DATA_DIR } from '../lib/content-types.mjs';
 
 const args = process.argv.slice(2);
 const JSON_MODE = args.includes('--json');

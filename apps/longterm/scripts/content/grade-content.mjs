@@ -29,8 +29,8 @@ import { createClient, parseJsonResponse } from '../lib/anthropic.mjs';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, relative, basename } from 'path';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
+import { CONTENT_DIR } from '../lib/content-types.mjs';
 
-const CONTENT_DIR = 'src/content/docs';
 const OUTPUT_FILE = '.claude/temp/grades-output.json';
 
 // Parse command line args

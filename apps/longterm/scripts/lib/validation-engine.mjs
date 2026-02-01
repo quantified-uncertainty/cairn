@@ -20,11 +20,7 @@ import { parse as parseYaml } from 'yaml';
 import { findMdxFiles, findFiles } from './file-utils.mjs';
 import { getColors } from './output.mjs';
 import { parseFrontmatterAndBody } from './mdx-utils.mjs';
-
-// Base directories
-const PROJECT_ROOT = process.cwd();
-const CONTENT_DIR = join(PROJECT_ROOT, 'src/content/docs');
-const DATA_DIR = join(PROJECT_ROOT, 'src/data');
+import { PROJECT_ROOT, CONTENT_DIR_ABS as CONTENT_DIR, DATA_DIR_ABS as DATA_DIR } from './content-types.mjs';
 
 /**
  * Load JSON file safely
