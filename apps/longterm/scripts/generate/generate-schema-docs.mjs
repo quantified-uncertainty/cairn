@@ -141,7 +141,7 @@ sidebar:
   order: 1
 ---
 
-import {Mermaid} from '../../../../components/wiki';
+import {Mermaid} from '@components/wiki';
 
 {/* AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY */}
 {/* Regenerate with: node scripts/generate-schema-docs.mjs */}

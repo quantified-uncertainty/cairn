@@ -125,9 +125,8 @@ function getFilePath(pagePath) {
   return path.join(ROOT, 'src/content/docs', cleanPath + '.mdx');
 }
 
-function getImportDepth(pagePath) {
-  const parts = pagePath.replace(/^\/|\/$/g, '').split('/');
-  return '../'.repeat(parts.length) + 'components/wiki';
+function getImportPath() {
+  return '@components/wiki';
 }
 
 // Run Claude with tools
@@ -403,7 +402,7 @@ async function improvePhase(page, analysis, research, directions, options) {
 
   const filePath = getFilePath(page.path);
   const currentContent = fs.readFileSync(filePath, 'utf-8');
-  const importPath = getImportDepth(page.path);
+  const importPath = getImportPath();
 
   const prompt = `Improve this wiki page based on the analysis and research.
 
@@ -668,7 +667,7 @@ async function runPipeline(pageId, options = {}) {
     }
   }
 
-  if (!dryRun) {
+  if (dryRun) {
     console.log('\nTo apply changes:');
     console.log(`  cp "${finalPath}" "${filePath}"`);
     console.log('\nOr review the diff:');
@@ -677,6 +676,19 @@ async function runPipeline(pageId, options = {}) {
     // Apply changes directly
     fs.copyFileSync(finalPath, filePath);
     console.log(`\n✅ Changes applied to ${filePath}`);
+
+    // Run grading if requested
+    if (options.grade) {
+      console.log('\n📊 Running grade-content.mjs...');
+      try {
+        execSync(`node scripts/content/grade-content.mjs --page "${page.id}" --apply`, {
+          cwd: ROOT,
+          stdio: 'inherit'
+        });
+      } catch (e) {
+        console.error('Grading failed:', e.message);
+      }
+    }
   }
 
   // Save pipeline results
@@ -761,6 +773,7 @@ Options:
   --directions "..."   Specific improvement directions
   --tier <tier>        polish ($2-3), standard ($5-8), deep ($10-15)
   --apply              Apply changes directly (don't just preview)
+  --grade              Run grade-content.mjs after applying (requires --apply)
   --list               List pages needing improvement
   --limit N            Limit list results (default: 20)
 
@@ -794,7 +807,8 @@ Examples:
   await runPipeline(pageId, {
     tier: opts.tier || 'standard',
     directions: opts.directions || '',
-    dryRun: !opts.apply
+    dryRun: !opts.apply,
+    grade: opts.grade && opts.apply  // Only grade if --apply is also set
   });
 }
 

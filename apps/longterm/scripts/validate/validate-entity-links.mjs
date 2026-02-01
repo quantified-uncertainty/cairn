@@ -181,7 +181,7 @@ function addEntityLinkImport(content) {
   const frontmatterEnd = content.indexOf('---', 4);
   if (frontmatterEnd !== -1) {
     const insertPoint = content.indexOf('\n', frontmatterEnd) + 1;
-    const importPath = "import {EntityLink} from '../components/wiki';\n";
+    const importPath = "import {EntityLink} from '@components/wiki';\n";
     return content.slice(0, insertPoint) + importPath + content.slice(insertPoint);
   }
 

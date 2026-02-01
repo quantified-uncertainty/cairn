@@ -145,12 +145,8 @@ function generateMdxStub(entity) {
   // Calculate relative import path based on entity path depth
   // Path like /ai-transition-model/scenarios/human-catastrophe/state-actor/
   // File at src/content/docs/ai-transition-model/scenarios/human-catastrophe/state-actor.mdx
-  // Need to go up: (depth) levels to get to src/content/docs/, then 2 more for src/
-  // Actually, we need depth + 1 because we go up from inside the file's directory
-  const pathParts = entity.path.split('/').filter(Boolean);
-  const depth = pathParts.length;
-  // +1 because the file is inside src/content/docs/ and we need to reach src/components/wiki
-  const relativePath = '../'.repeat(depth + 1) + 'components/wiki';
+  // Use path alias for clean imports
+  const importPath = '@components/wiki';
 
   // Extract sidebar order from entity if available
   const sidebarOrder = entity.sidebarOrder || 99;
@@ -161,7 +157,7 @@ sidebar:
   order: ${sidebarOrder}
 ---
 
-import {TransitionModelContent} from '${relativePath}';
+import {TransitionModelContent} from '${importPath}';
 
 <TransitionModelContent entityId="${entity.id}" client:load />
 `;

@@ -437,9 +437,8 @@ function getSynthesisPrompt(topic, model = 'opus') {
     ? 'Write thoughtful prose that synthesizes and analyzes, not just lists facts.'
     : 'Write clear, well-organized prose covering all the facts.';
 
-  // Note: Import path depth varies by page location. This assumes safety-orgs depth.
-  // Adjust the relative path based on where the final page will live.
-  const importPath = "'../../../../../components/wiki'";
+  // Use path alias for clean imports
+  const importPath = "'@components/wiki'";
 
   return `# Synthesis Phase: ${topic}
 
@@ -681,7 +680,7 @@ Write to .claude/temp/page-creator/${topic.toLowerCase().replace(/[^a-z0-9]+/g, 
 }
 
 function getPolishPrompt(topic) {
-  const importPath = "'../../../../../components/wiki'";
+  const importPath = "'@components/wiki'";
 
   return `# Polish Phase: ${topic}
 

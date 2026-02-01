@@ -274,7 +274,7 @@ ratings:
   actionability: 5
   completeness: 6
 ---
-import {EntityLink, Backlinks, KeyPeople, KeyQuestions, Section} from '../../../../../../components/wiki';
+import {EntityLink, Backlinks, KeyPeople, KeyQuestions, Section} from '@components/wiki';
 
 ## Article Sections
 - Quick Assessment (table)

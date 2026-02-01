@@ -81,9 +81,8 @@ function hasEntityLinkImport(content) {
 }
 
 function addEntityLinkImport(content, filePath) {
-  // Calculate relative path to components/wiki
-  const depth = filePath.split('/').length - CONTENT_DIR.split('/').length - 1;
-  const relativePath = '../'.repeat(depth) + '../../components/wiki';
+  // Use path alias for clean imports
+  const importPath = '@components/wiki';
 
   // Check if there's already a wiki import
   const wikiImportMatch = content.match(/import\s*\{([^}]*)\}\s*from\s*['"]([^'"]*wiki)['"]/);
@@ -102,7 +101,7 @@ function addEntityLinkImport(content, filePath) {
   const frontmatterEnd = content.indexOf('---', 3);
   if (frontmatterEnd !== -1) {
     const afterFrontmatter = frontmatterEnd + 3;
-    const importStatement = `\nimport {EntityLink} from '${relativePath}';\n`;
+    const importStatement = `\nimport {EntityLink} from '${importPath}';\n`;
     return content.slice(0, afterFrontmatter) + importStatement + content.slice(afterFrontmatter);
   }
 

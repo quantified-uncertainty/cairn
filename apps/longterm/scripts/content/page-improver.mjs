@@ -103,19 +103,16 @@ function showPageInfo(page) {
   console.log(`   Gap: ${page.importance ? page.importance - (page.quality * 10) : 'N/A'}`);
 }
 
-// Calculate correct import depth based on page path
-function getImportDepth(pagePath) {
-  // Count directory levels from src/content/docs/
-  const parts = pagePath.replace(/^\/|\/$/g, '').split('/');
-  const depth = parts.length; // number of directories deep
-  return '../'.repeat(depth) + 'components/wiki';
+// Return path alias for component imports
+function getImportPath() {
+  return '@components/wiki';
 }
 
 // Generate improvement prompt
 function generatePrompt(page) {
   const filePath = getFilePath(page.path);
   const relativePath = path.relative(ROOT, filePath);
-  const importPath = getImportDepth(page.path);
+  const importPath = getImportPath();
 
   return `Improve the page at ${relativePath}
 

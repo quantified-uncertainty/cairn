@@ -275,10 +275,7 @@ function addEntityLinkImport(content, filePath) {
   const frontmatterEnd = content.indexOf('---', 4);
   if (frontmatterEnd !== -1) {
     const insertPoint = content.indexOf('\n', frontmatterEnd) + 1;
-    // Calculate relative path depth based on file location
-    const depth = filePath.replace(CONTENT_DIR, '').split('/').length - 1;
-    const importPath = '../'.repeat(depth) + 'components/wiki';
-    const importStatement = `import {EntityLink} from '${importPath}';\n`;
+    const importStatement = `import {EntityLink} from '@components/wiki';\n`;
     return content.slice(0, insertPoint) + importStatement + content.slice(insertPoint);
   }
 
