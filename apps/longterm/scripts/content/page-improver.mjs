@@ -1,31 +1,100 @@
 #!/usr/bin/env node
 
 /**
- * Page Improvement Helper
+ * Page Improvement Pipeline
  *
- * Helps identify pages that need improvement and runs batch improvements.
- *
- * IMPORTANT: Batch mode uses Claude Code SDK with your ANTHROPIC_API_KEY,
- * NOT your Max subscription quota. This lets you run large batch jobs
- * without depleting your interactive Claude Code allowance.
+ * Multi-phase improvement pipeline with SCRY research and specific directions.
+ * Similar to page-creator but for improving existing pages.
  *
  * Usage:
- *   node scripts/content/page-improver.mjs --list              # List pages needing improvement
- *   node scripts/content/page-improver.mjs <page-id>           # Show improvement prompt for page
- *   node scripts/content/page-improver.mjs <page-id> --info    # Show page info only
- *   node scripts/content/page-improver.mjs --batch --limit 50  # Run batch improvement
- *   node scripts/content/page-improver.mjs --batch --model sonnet --budget 1.50 --limit 50
+ *   # Basic improvement with directions
+ *   npm run improve-page -- open-philanthropy --directions "add 2024 funding data"
+ *
+ *   # Research-heavy improvement
+ *   npm run improve-page -- far-ai --tier deep --directions "add recent publications"
+ *
+ *   # Quick polish only
+ *   npm run improve-page -- cea --tier polish
+ *
+ * Tiers:
+ *   - polish ($2): Single-pass improvement, no research
+ *   - standard ($5): Light research + improvement + review
+ *   - deep ($10): Full SCRY + web research, multi-phase improvement
  */
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
-import { spawn, execSync } from 'child_process';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
+const TEMP_DIR = path.join(ROOT, '.claude/temp/page-improver');
 
-// Load pages data
+// SCRY API config
+const SCRY_PUBLIC_KEY = 'exopriors_public_readonly_v1_2025';
+
+// Tier configurations
+const TIERS = {
+  polish: {
+    name: 'Polish',
+    cost: '$2-3',
+    phases: ['analyze', 'improve'],
+    description: 'Quick single-pass improvement without research'
+  },
+  standard: {
+    name: 'Standard',
+    cost: '$5-8',
+    phases: ['analyze', 'research', 'improve', 'review'],
+    description: 'Light research + improvement + review'
+  },
+  deep: {
+    name: 'Deep Research',
+    cost: '$10-15',
+    phases: ['analyze', 'research-deep', 'improve', 'gap-fill', 'review'],
+    description: 'Full SCRY + web research, multi-phase improvement'
+  }
+};
+
+// Initialize Anthropic client
+const anthropic = new Anthropic();
+
+// Formatting helpers
+function formatTime(date = new Date()) {
+  return date.toTimeString().slice(0, 8);
+}
+
+function log(phase, message) {
+  console.log(`[${formatTime()}] [${phase}] ${message}`);
+}
+
+// File operations
+function ensureDir(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+function writeTemp(pageId, filename, content) {
+  const dir = path.join(TEMP_DIR, pageId);
+  ensureDir(dir);
+  const filePath = path.join(dir, filename);
+  fs.writeFileSync(filePath, typeof content === 'string' ? content : JSON.stringify(content, null, 2));
+  return filePath;
+}
+
+function readTemp(pageId, filename) {
+  const filePath = path.join(TEMP_DIR, pageId, filename);
+  if (!fs.existsSync(filePath)) return null;
+  const content = fs.readFileSync(filePath, 'utf-8');
+  return filename.endsWith('.json') ? JSON.parse(content) : content;
+}
+
+// Load page data
 function loadPages() {
   const pagesPath = path.join(ROOT, 'src/data/pages.json');
   if (!fs.existsSync(pagesPath)) {
@@ -35,14 +104,13 @@ function loadPages() {
   return JSON.parse(fs.readFileSync(pagesPath, 'utf-8'));
 }
 
-// Find page by ID or partial match
 function findPage(pages, query) {
-  // Exact match
   let page = pages.find(p => p.id === query);
   if (page) return page;
 
-  // Partial match
-  const matches = pages.filter(p => p.id.includes(query) || p.title.toLowerCase().includes(query.toLowerCase()));
+  const matches = pages.filter(p =>
+    p.id.includes(query) || p.title.toLowerCase().includes(query.toLowerCase())
+  );
   if (matches.length === 1) return matches[0];
   if (matches.length > 1) {
     console.log('Multiple matches found:');
@@ -52,519 +120,621 @@ function findPage(pages, query) {
   return null;
 }
 
-// Get file path from page path
 function getFilePath(pagePath) {
-  // Remove leading/trailing slashes
   const cleanPath = pagePath.replace(/^\/|\/$/g, '');
   return path.join(ROOT, 'src/content/docs', cleanPath + '.mdx');
 }
 
-// List pages that need improvement
+function getImportPath() {
+  return '@components/wiki';
+}
+
+// Run Claude with tools
+async function runAgent(prompt, options = {}) {
+  const {
+    model = 'claude-sonnet-4-20250514',
+    maxTokens = 16000,
+    tools = [],
+    systemPrompt = ''
+  } = options;
+
+  const messages = [{ role: 'user', content: prompt }];
+  let response = await anthropic.messages.create({
+    model,
+    max_tokens: maxTokens,
+    system: systemPrompt,
+    tools,
+    messages
+  });
+
+  // Handle tool use loop
+  while (response.stop_reason === 'tool_use') {
+    const toolUseBlocks = response.content.filter(b => b.type === 'tool_use');
+    const toolResults = [];
+
+    for (const toolUse of toolUseBlocks) {
+      let result;
+      try {
+        if (toolUse.name === 'web_search') {
+          result = await executeWebSearch(toolUse.input.query);
+        } else if (toolUse.name === 'scry_search') {
+          result = await executeScrySearch(toolUse.input.query, toolUse.input.table);
+        } else if (toolUse.name === 'read_file') {
+          result = fs.readFileSync(toolUse.input.path, 'utf-8');
+        } else {
+          result = `Unknown tool: ${toolUse.name}`;
+        }
+      } catch (e) {
+        result = `Error: ${e.message}`;
+      }
+      toolResults.push({
+        type: 'tool_result',
+        tool_use_id: toolUse.id,
+        content: typeof result === 'string' ? result : JSON.stringify(result)
+      });
+    }
+
+    messages.push({ role: 'assistant', content: response.content });
+    messages.push({ role: 'user', content: toolResults });
+
+    response = await anthropic.messages.create({
+      model,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      tools,
+      messages
+    });
+  }
+
+  // Extract text from response
+  const textBlocks = response.content.filter(b => b.type === 'text');
+  return textBlocks.map(b => b.text).join('\n');
+}
+
+// Tool implementations
+async function executeWebSearch(query) {
+  // Use Anthropic's web search via a simple agent call
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4000,
+    tools: [{
+      type: 'web_search_20250305',
+      name: 'web_search',
+      max_uses: 3
+    }],
+    messages: [{
+      role: 'user',
+      content: `Search for: "${query}". Return the top 5 most relevant results with titles, URLs, and brief descriptions.`
+    }]
+  });
+
+  const textBlocks = response.content.filter(b => b.type === 'text');
+  return textBlocks.map(b => b.text).join('\n');
+}
+
+async function executeScrySearch(query, table = 'mv_eaforum_posts') {
+  const sql = `SELECT title, uri, snippet, original_author, original_timestamp::date as date
+    FROM scry.search('${query.replace(/'/g, "''")}', '${table}')
+    WHERE title IS NOT NULL AND kind = 'post'
+    LIMIT 10`;
+
+  try {
+    const result = execSync(`curl -s -X POST "https://api.exopriors.com/v1/scry/query" \
+      -H "Authorization: Bearer ${SCRY_PUBLIC_KEY}" \
+      -H "Content-Type: text/plain" \
+      -d "${sql.replace(/"/g, '\\"')}"`, {
+      encoding: 'utf-8',
+      timeout: 30000
+    });
+    return result;
+  } catch (e) {
+    return `SCRY search error: ${e.message}`;
+  }
+}
+
+// Phase: Analyze
+async function analyzePhase(page, directions, options) {
+  log('analyze', 'Starting analysis');
+
+  const filePath = getFilePath(page.path);
+  const currentContent = fs.readFileSync(filePath, 'utf-8');
+
+  const prompt = `Analyze this wiki page for improvement opportunities.
+
+## Page Info
+- ID: ${page.id}
+- Title: ${page.title}
+- Quality: ${page.quality || 'N/A'}
+- Importance: ${page.importance || 'N/A'}
+- Path: ${filePath}
+
+## User-Specified Directions
+${directions || 'No specific directions provided - do a general quality improvement.'}
+
+## Current Content
+\`\`\`mdx
+${currentContent}
+\`\`\`
+
+## Analysis Required
+
+Analyze the page and output a JSON object with:
+
+1. **currentState**: Brief assessment of the page's current quality
+2. **gaps**: Array of specific content gaps or issues
+3. **researchNeeded**: Array of specific topics to research (for SCRY/web search)
+4. **improvements**: Array of specific improvements to make, prioritized
+5. **entityLinks**: Array of entity IDs that should be linked but aren't
+6. **citations**: Assessment of citation quality (count, authoritative sources, gaps)
+
+Focus especially on the user's directions: "${directions || 'general improvement'}"
+
+Output ONLY valid JSON, no markdown code blocks.`;
+
+  const result = await runAgent(prompt, {
+    model: options.analysisModel || 'claude-sonnet-4-20250514',
+    maxTokens: 4000
+  });
+
+  // Parse JSON from result
+  let analysis;
+  try {
+    // Try to extract JSON from the response
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(result);
+  } catch (e) {
+    log('analyze', `Warning: Could not parse analysis as JSON: ${e.message}`);
+    analysis = { raw: result, error: e.message };
+  }
+
+  writeTemp(page.id, 'analysis.json', analysis);
+  log('analyze', '✅ Complete');
+  return analysis;
+}
+
+// Phase: Research
+async function researchPhase(page, analysis, options) {
+  log('research', 'Starting research');
+
+  const topics = analysis.researchNeeded || [];
+  if (topics.length === 0) {
+    log('research', 'No research topics identified, skipping');
+    return { sources: [] };
+  }
+
+  const prompt = `Research the following topics to improve a wiki page about "${page.title}".
+
+## Topics to Research
+${topics.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+## Research Instructions
+
+For each topic:
+1. Search SCRY (EA Forum/LessWrong) for relevant discussions
+2. Search the web for authoritative sources
+
+Use the tools provided to search. For each source found, extract:
+- Title
+- URL
+- Author (if available)
+- Date (if available)
+- Key facts or quotes relevant to the topic
+
+After researching, output a JSON object with:
+{
+  "sources": [
+    {
+      "topic": "which research topic this addresses",
+      "title": "source title",
+      "url": "source URL",
+      "author": "author name",
+      "date": "publication date",
+      "facts": ["key fact 1", "key fact 2"],
+      "relevance": "high/medium/low"
+    }
+  ],
+  "summary": "brief summary of what was found"
+}
+
+Output ONLY valid JSON at the end.`;
+
+  const tools = options.deep ? [
+    {
+      name: 'scry_search',
+      description: 'Search EA Forum and LessWrong posts via SCRY',
+      input_schema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search query' },
+          table: { type: 'string', enum: ['mv_eaforum_posts', 'mv_lesswrong_posts'], default: 'mv_eaforum_posts' }
+        },
+        required: ['query']
+      }
+    },
+    {
+      name: 'web_search',
+      description: 'Search the web for information',
+      input_schema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search query' }
+        },
+        required: ['query']
+      }
+    }
+  ] : [
+    {
+      name: 'web_search',
+      description: 'Search the web for information',
+      input_schema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search query' }
+        },
+        required: ['query']
+      }
+    }
+  ];
+
+  const result = await runAgent(prompt, {
+    model: options.researchModel || 'claude-sonnet-4-20250514',
+    maxTokens: 8000,
+    tools
+  });
+
+  let research;
+  try {
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    research = jsonMatch ? JSON.parse(jsonMatch[0]) : { sources: [], raw: result };
+  } catch (e) {
+    log('research', `Warning: Could not parse research as JSON: ${e.message}`);
+    research = { sources: [], raw: result, error: e.message };
+  }
+
+  writeTemp(page.id, 'research.json', research);
+  log('research', `✅ Complete (${research.sources?.length || 0} sources found)`);
+  return research;
+}
+
+// Phase: Improve
+async function improvePhase(page, analysis, research, directions, options) {
+  log('improve', 'Starting improvements');
+
+  const filePath = getFilePath(page.path);
+  const currentContent = fs.readFileSync(filePath, 'utf-8');
+  const importPath = getImportPath();
+
+  const prompt = `Improve this wiki page based on the analysis and research.
+
+## Page Info
+- ID: ${page.id}
+- Title: ${page.title}
+- File: ${filePath}
+- Import path for components: ${importPath}
+
+## User Directions
+${directions || 'General quality improvement'}
+
+## Analysis
+${JSON.stringify(analysis, null, 2)}
+
+## Research Sources
+${JSON.stringify(research, null, 2)}
+
+## Current Content
+\`\`\`mdx
+${currentContent}
+\`\`\`
+
+## Improvement Instructions
+
+Make targeted improvements based on the analysis and directions. Follow these guidelines:
+
+### Wiki Conventions
+- Use GFM footnotes for prose citations: [^1], [^2], etc.
+- Use inline links in tables: [Source Name](url)
+- EntityLinks: <EntityLink id="entity-id">Display Text</EntityLink>
+- Escape dollar signs: \\$100M not $100M
+- Import from: '${importPath}'
+
+### Quality Standards
+- Add citations from the research sources
+- Replace vague claims with specific numbers
+- Add EntityLinks for related concepts
+- Ensure tables have source links
+
+### Output Format
+Output the COMPLETE improved MDX file content. Include all frontmatter and content.
+Do not output markdown code blocks - output the raw MDX directly.
+
+Start your response with "---" (the frontmatter delimiter).`;
+
+  const result = await runAgent(prompt, {
+    model: options.improveModel || 'claude-sonnet-4-20250514',
+    maxTokens: 16000
+  });
+
+  // Extract the MDX content
+  let improvedContent = result;
+  if (!improvedContent.startsWith('---')) {
+    // Try to extract MDX from markdown code block
+    const mdxMatch = result.match(/```(?:mdx)?\n([\s\S]*?)```/);
+    if (mdxMatch) {
+      improvedContent = mdxMatch[1];
+    }
+  }
+
+  // Update lastEdited in frontmatter
+  const today = new Date().toISOString().split('T')[0];
+  improvedContent = improvedContent.replace(
+    /lastEdited:\s*["']?\d{4}-\d{2}-\d{2}["']?/,
+    `lastEdited: "${today}"`
+  );
+
+  // Remove quality field - must be set by grade-content.mjs only
+  improvedContent = improvedContent.replace(
+    /^quality:\s*\d+\s*\n/m,
+    ''
+  );
+
+  writeTemp(page.id, 'improved.mdx', improvedContent);
+  log('improve', '✅ Complete');
+  return improvedContent;
+}
+
+// Phase: Review
+async function reviewPhase(page, improvedContent, options) {
+  log('review', 'Starting review');
+
+  const prompt = `Review this improved wiki page for quality and wiki conventions.
+
+## Page: ${page.title}
+
+## Improved Content
+\`\`\`mdx
+${improvedContent}
+\`\`\`
+
+## Review Checklist
+
+Check for:
+1. **Frontmatter**: Valid YAML, required fields present
+2. **Dollar signs**: All escaped as \\$ (not raw $)
+3. **Comparisons**: No <NUMBER patterns (use "less than")
+4. **EntityLinks**: Properly formatted with valid IDs
+5. **Citations**: Mix of footnotes (prose) and inline links (tables)
+6. **Tables**: Properly formatted markdown tables
+7. **Components**: Imports match usage
+
+Output a JSON review:
+{
+  "valid": true/false,
+  "issues": ["issue 1", "issue 2"],
+  "suggestions": ["optional improvement 1"],
+  "qualityScore": 70-100
+}
+
+Output ONLY valid JSON.`;
+
+  const result = await runAgent(prompt, {
+    model: options.reviewModel || 'claude-sonnet-4-20250514',
+    maxTokens: 4000
+  });
+
+  let review;
+  try {
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    review = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(result);
+  } catch (e) {
+    log('review', `Warning: Could not parse review as JSON: ${e.message}`);
+    review = { valid: true, issues: [], raw: result };
+  }
+
+  writeTemp(page.id, 'review.json', review);
+  log('review', `✅ Complete (valid: ${review.valid}, issues: ${review.issues?.length || 0})`);
+  return review;
+}
+
+// Phase: Gap Fill (deep tier only)
+async function gapFillPhase(page, improvedContent, review, options) {
+  log('gap-fill', 'Checking for remaining gaps');
+
+  if (!review.issues || review.issues.length === 0) {
+    log('gap-fill', 'No gaps to fill');
+    return improvedContent;
+  }
+
+  const prompt = `Fix the issues identified in the review of this wiki page.
+
+## Page: ${page.title}
+
+## Issues to Fix
+${review.issues.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}
+
+## Current Content
+\`\`\`mdx
+${improvedContent}
+\`\`\`
+
+Fix each issue. Output the COMPLETE fixed MDX content.
+Start your response with "---" (the frontmatter delimiter).`;
+
+  const result = await runAgent(prompt, {
+    model: options.improveModel || 'claude-sonnet-4-20250514',
+    maxTokens: 16000
+  });
+
+  let fixedContent = result;
+  if (!fixedContent.startsWith('---')) {
+    const mdxMatch = result.match(/```(?:mdx)?\n([\s\S]*?)```/);
+    if (mdxMatch) {
+      fixedContent = mdxMatch[1];
+    } else {
+      fixedContent = improvedContent; // Keep original if extraction fails
+    }
+  }
+
+  writeTemp(page.id, 'final.mdx', fixedContent);
+  log('gap-fill', '✅ Complete');
+  return fixedContent;
+}
+
+// Main pipeline
+async function runPipeline(pageId, options = {}) {
+  const { tier = 'standard', directions = '', dryRun = false } = options;
+  const tierConfig = TIERS[tier];
+
+  if (!tierConfig) {
+    console.error(`Unknown tier: ${tier}. Available: ${Object.keys(TIERS).join(', ')}`);
+    process.exit(1);
+  }
+
+  // Find page
+  const pages = loadPages();
+  const page = findPage(pages, pageId);
+  if (!page) {
+    console.error(`Page not found: ${pageId}`);
+    console.log('Try: npm run improve-page -- --list');
+    process.exit(1);
+  }
+
+  const filePath = getFilePath(page.path);
+  if (!fs.existsSync(filePath)) {
+    console.error(`File not found: ${filePath}`);
+    process.exit(1);
+  }
+
+  console.log('\n' + '='.repeat(60));
+  console.log(`Improving: "${page.title}"`);
+  console.log(`Tier: ${tierConfig.name} (${tierConfig.cost})`);
+  console.log(`Phases: ${tierConfig.phases.join(' → ')}`);
+  if (directions) console.log(`Directions: ${directions}`);
+  console.log('='.repeat(60) + '\n');
+
+  const startTime = Date.now();
+  let analysis, research, improvedContent, review;
+
+  // Run phases based on tier
+  for (const phase of tierConfig.phases) {
+    const phaseStart = Date.now();
+
+    switch (phase) {
+      case 'analyze':
+        analysis = await analyzePhase(page, directions, options);
+        break;
+
+      case 'research':
+        research = await researchPhase(page, analysis, { ...options, deep: false });
+        break;
+
+      case 'research-deep':
+        research = await researchPhase(page, analysis, { ...options, deep: true });
+        break;
+
+      case 'improve':
+        improvedContent = await improvePhase(page, analysis, research || { sources: [] }, directions, options);
+        break;
+
+      case 'gap-fill':
+        improvedContent = await gapFillPhase(page, improvedContent, review || { issues: [] }, options);
+        break;
+
+      case 'review':
+        review = await reviewPhase(page, improvedContent, options);
+        break;
+    }
+
+    const phaseDuration = ((Date.now() - phaseStart) / 1000).toFixed(1);
+    log(phase, `Duration: ${phaseDuration}s`);
+  }
+
+  const totalDuration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+  // Write final output
+  const finalPath = writeTemp(page.id, 'final.mdx', improvedContent);
+
+  console.log('\n' + '='.repeat(60));
+  console.log('Pipeline Complete');
+  console.log('='.repeat(60));
+  console.log(`Duration: ${totalDuration}s`);
+  console.log(`Output: ${finalPath}`);
+
+  if (review) {
+    console.log(`Quality: ${review.qualityScore || 'N/A'}`);
+    if (review.issues?.length > 0) {
+      console.log(`Issues: ${review.issues.length}`);
+      review.issues.slice(0, 3).forEach(i => console.log(`  - ${i}`));
+    }
+  }
+
+  if (dryRun) {
+    console.log('\nTo apply changes:');
+    console.log(`  cp "${finalPath}" "${filePath}"`);
+    console.log('\nOr review the diff:');
+    console.log(`  diff "${filePath}" "${finalPath}"`);
+  } else {
+    // Apply changes directly
+    fs.copyFileSync(finalPath, filePath);
+    console.log(`\n✅ Changes applied to ${filePath}`);
+
+    // Run grading if requested
+    if (options.grade) {
+      console.log('\n📊 Running grade-content.mjs...');
+      try {
+        execSync(`node scripts/content/grade-content.mjs --page "${page.id}" --apply`, {
+          cwd: ROOT,
+          stdio: 'inherit'
+        });
+      } catch (e) {
+        console.error('Grading failed:', e.message);
+      }
+    }
+  }
+
+  // Save pipeline results
+  const results = {
+    pageId: page.id,
+    title: page.title,
+    tier,
+    directions,
+    duration: totalDuration,
+    phases: tierConfig.phases,
+    review,
+    outputPath: finalPath
+  };
+  writeTemp(page.id, 'pipeline-results.json', results);
+
+  return results;
+}
+
+// List pages needing improvement
 function listPages(pages, options = {}) {
-  const { limit = 20, maxQuality = 90, minImportance = 30 } = options;
+  const { limit = 20, maxQuality = 80, minImportance = 30 } = options;
 
   const candidates = pages
     .filter(p => p.quality && p.quality <= maxQuality)
     .filter(p => p.importance && p.importance >= minImportance)
-    .filter(p => !p.path.includes('/models/')) // Exclude models (complex JSX)
+    .filter(p => !p.path.includes('/models/'))
     .map(p => ({
       id: p.id,
       title: p.title,
-      path: p.path,
       quality: p.quality,
       importance: p.importance,
-      gap: p.importance - p.quality  // Both on 1-100 scale now
+      gap: p.importance - p.quality
     }))
     .sort((a, b) => b.gap - a.gap)
     .slice(0, limit);
 
   console.log(`\n📊 Pages needing improvement (Q≤${maxQuality}, Imp≥${minImportance}):\n`);
-  console.log('| # | Quality | Imp | Gap | Page |');
-  console.log('|---|---------|-----|-----|------|');
+  console.log('| # | Q | Imp | Gap | Page |');
+  console.log('|---|---|-----|-----|------|');
   candidates.forEach((p, i) => {
-    console.log(`| ${i + 1} | ${p.quality} | ${p.importance} | ${p.gap > 0 ? '+' : ''}${p.gap} | ${p.title} |`);
+    console.log(`| ${i + 1} | ${p.quality} | ${p.importance} | ${p.gap > 0 ? '+' : ''}${p.gap} | ${p.title} (${p.id}) |`);
   });
-  console.log(`\nRun: node scripts/page-improver.mjs <page-id> to get improvement prompt`);
+  console.log(`\nRun: npm run improve-page -- <page-id> --directions "your directions"`);
 }
 
-// Show page info
-function showPageInfo(page) {
-  const filePath = getFilePath(page.path);
-  const exists = fs.existsSync(filePath);
-  const lines = exists ? fs.readFileSync(filePath, 'utf-8').split('\n').length : 0;
-
-  console.log(`\n📄 ${page.title}`);
-  console.log(`   ID: ${page.id}`);
-  console.log(`   Path: ${page.path}`);
-  console.log(`   File: ${filePath}`);
-  console.log(`   Quality: ${page.quality || 'N/A'}`);
-  console.log(`   Importance: ${page.importance || 'N/A'}`);
-  console.log(`   Lines: ${lines}`);
-  console.log(`   Gap: ${page.importance ? page.importance - (page.quality * 10) : 'N/A'}`);
-}
-
-// Return path alias for component imports
-function getImportPath() {
-  return '@components/wiki';
-}
-
-// Generate improvement prompt
-function generatePrompt(page) {
-  const filePath = getFilePath(page.path);
-  const relativePath = path.relative(ROOT, filePath);
-  const importPath = getImportPath();
-
-  return `Improve the page at ${relativePath}
-
-## CRITICAL: Quality 5 Requirements Checklist
-
-A Q5 page MUST have ALL of these elements. Check each one:
-
-□ **Quick Assessment Table** (at top, after DataInfoBox)
-  - 5-7 rows minimum
-  - Columns: Dimension | Assessment/Rating | Evidence
-  - Include quantified metrics with sources
-
-□ **At Least 2 Substantive Tables** (not counting Quick Assessment)
-  - Each table: 3+ columns, 4+ rows
-  - Include real data/statistics
-  - Cite sources in table cells or footnotes
-
-□ **1 Mermaid Diagram** showing key relationships
-  - Use vertical flowchart (TD)
-  - Max 15 nodes
-  - Color-code: red for risks, green for solutions, blue for neutral
-  - Import: import {Mermaid} from '${importPath}';
-
-□ **10+ Real Citations with URLs** (use WebSearch)
-  - Format: [Organization Name](https://actual-url)
-  - Authoritative sources: government reports, academic papers, major research orgs
-  - Include publication year when possible
-
-□ **Quantified Claims** (replace ALL vague language)
-  - "significant" → "25-40%"
-  - "rapidly" → "3x growth since 2022"
-  - "many" → "60-80% of..."
-  - Always include uncertainty ranges
-
-## MDX Syntax Rules (CRITICAL - builds will fail otherwise)
-
-- **ALWAYS escape dollar signs**: Use \\\$100M not $100M
-  - Unescaped $ triggers LaTeX parsing and breaks the build
-  - Example: "funding of \\\$50M" not "funding of $50M"
-- NEVER use \`<NUMBER\` patterns (e.g., \`<30%\`, \`<$1M\`)
-  - Use "less than 30%" or "under \\$1M" instead
-- NEVER use \`>NUMBER\` at start of line (becomes blockquote)
-  - Use "greater than" or "more than" instead
-- Escape special characters in tables if needed
-
-## Process
-
-1. **Read** the reference files:
-   - src/content/docs/knowledge-base/risks/misuse/bioweapons.mdx (Q5 gold standard)
-   - src/content/docs/knowledge-base/responses/technical/scalable-oversight.mdx (Q5 example with good tables)
-
-2. **Read** the current page: ${relativePath}
-
-3. **Audit** - identify what's missing from the checklist above
-
-4. **WebSearch** for real sources relevant to the topic (5+ searches)
-
-5. **Edit** - add each missing element one at a time:
-   - Add Quick Assessment table after imports
-   - Add comparison/data tables in relevant sections
-   - Add Mermaid diagram showing key relationships
-   - Add citations throughout (inline links)
-   - Replace vague claims with quantified statements
-
-6. **Update metadata**:
-   - lastEdited: "${new Date().toISOString().split('T')[0]}"
-   - DO NOT modify quality - it will be set by grade-content.mjs after
-
-## Verification
-
-Before finishing, confirm:
-- [ ] Quick Assessment table exists (5+ rows, 3 columns)
-- [ ] At least 2 other substantive tables exist
-- [ ] Mermaid diagram exists with proper import
-- [ ] 10+ [linked citations](https://url) throughout
-- [ ] No "<NUMBER" patterns anywhere in the file
-- [ ] lastEdited updated to today
-
-Use the Edit tool for each change. DO NOT rewrite the entire file.`;
-}
-
-// ============ Batch Processing ============
-
-const RESULTS_FILE = path.join(ROOT, '.claude/temp/improvement-results.json');
-const LOG_FILE = path.join(ROOT, '.claude/temp/improvement-log.txt');
-
-function ensureDir(filePath) {
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-function loadResults() {
-  if (fs.existsSync(RESULTS_FILE)) {
-    try {
-      return JSON.parse(fs.readFileSync(RESULTS_FILE, 'utf-8'));
-    } catch {
-      return { completed: [], failed: [], inProgress: [] };
-    }
-  }
-  return { completed: [], failed: [], inProgress: [] };
-}
-
-function saveResults(results) {
-  ensureDir(RESULTS_FILE);
-  fs.writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
-}
-
-function appendLog(message) {
-  ensureDir(LOG_FILE);
-  const timestamp = new Date().toISOString();
-  fs.appendFileSync(LOG_FILE, `[${timestamp}] ${message}\n`);
-}
-
-// Validate a file after improvement
-function validateFile(filePath) {
-  const errors = [];
-
-  if (!fs.existsSync(filePath)) {
-    return { valid: false, errors: ['File does not exist'] };
-  }
-
-  const content = fs.readFileSync(filePath, 'utf-8');
-
-  // Extract frontmatter
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!frontmatterMatch) {
-    errors.push('No frontmatter found');
-  } else {
-    // Try to parse YAML
-    try {
-      // Dynamic import would be cleaner but we'll use a simple check
-      const yaml = frontmatterMatch[1];
-
-      // Check for common YAML issues
-      // Unquoted values with colons (e.g., "key: value: more" without quotes)
-      const lines = yaml.split('\n');
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        // Skip if line is empty, a comment, or starts with whitespace (nested)
-        if (!line.trim() || line.trim().startsWith('#')) continue;
-
-        // Check for unquoted multi-colon values (common LLM mistake)
-        const colonMatch = line.match(/^(\w+):\s*(.+)$/);
-        if (colonMatch) {
-          const value = colonMatch[2];
-          // If value contains ": " and isn't quoted, it's likely broken
-          if (value.includes(': ') && !value.startsWith('"') && !value.startsWith("'")) {
-            errors.push(`Line ${i + 1}: Unquoted value with colon - "${line.slice(0, 60)}..."`);
-          }
-        }
-      }
-
-      // Use execSync to validate YAML with node
-      try {
-        execSync(`node -e "require('js-yaml').load(require('fs').readFileSync('${filePath}', 'utf-8').match(/^---\\n([\\s\\S]*?)\\n---/)[1])"`, {
-          cwd: ROOT,
-          stdio: 'pipe'
-        });
-      } catch (e) {
-        errors.push(`YAML parse error: ${e.message.split('\n')[0]}`);
-      }
-    } catch (e) {
-      errors.push(`Frontmatter validation error: ${e.message}`);
-    }
-  }
-
-  // Check for unescaped < followed by numbers (JSX issue)
-  const ltNumberPattern = /<(\d+|[$€£]?\d)/g;
-  let match;
-  while ((match = ltNumberPattern.exec(content)) !== null) {
-    const lineNum = content.slice(0, match.index).split('\n').length;
-    errors.push(`Line ${lineNum}: Unescaped "<${match[1]}" - will break JSX parsing`);
-  }
-
-  // Check for unescaped $ that might trigger LaTeX
-  const dollarPattern = /\$\d+[,.\d]*[BMKbmk]?\b/g;
-  while ((match = dollarPattern.exec(content)) !== null) {
-    // Skip if inside code block or inline code
-    const before = content.slice(0, match.index);
-    const inCode = (before.match(/```/g) || []).length % 2 === 1;
-    const inInlineCode = (before.match(/`/g) || []).length % 2 === 1;
-    if (!inCode && !inInlineCode) {
-      const lineNum = before.split('\n').length;
-      errors.push(`Line ${lineNum}: Unescaped "${match[0]}" - may trigger LaTeX`);
-    }
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  };
-}
-
-// Run a single page improvement using Claude Code SDK (via npx)
-// This uses your ANTHROPIC_API_KEY instead of Max subscription quota
-function runClaudeImprovement(page, prompt, options = {}) {
-  const {
-    model = 'sonnet',
-    maxBudget = 2.00,  // Default $2 per page for improvements with web search
-  } = options;
-
-  return new Promise((resolve) => {
-    const startTime = Date.now();
-    const filePath = getFilePath(page.path);
-
-    appendLog(`START: ${page.id} (${page.title}) [model=${model}, budget=$${maxBudget}]`);
-
-    // Use Claude Code SDK via npx - this uses ANTHROPIC_API_KEY from .env
-    // instead of your Max subscription quota
-    const claude = spawn('npx', [
-      '@anthropic-ai/claude-code',
-      '--print',
-      '--dangerously-skip-permissions',
-      '--model', model,
-      '--max-budget-usd', String(maxBudget),
-      '--allowedTools', 'Read,Edit,Glob,Grep,WebSearch',
-      prompt
-    ], {
-      cwd: ROOT,
-      env: { ...process.env },
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    claude.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    claude.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    claude.on('close', (code) => {
-      const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-
-      if (code === 0) {
-        // Validate the file after improvement
-        const validation = validateFile(filePath);
-        if (validation.valid) {
-          appendLog(`DONE: ${page.id} (${duration}s)`);
-          resolve({
-            success: true,
-            page,
-            duration,
-            outputLength: stdout.length
-          });
-        } else {
-          appendLog(`VALIDATION_FAIL: ${page.id} - ${validation.errors.join('; ')}`);
-          resolve({
-            success: false,
-            page,
-            duration,
-            error: `Validation failed: ${validation.errors.join('; ')}`,
-            validationErrors: validation.errors
-          });
-        }
-      } else {
-        appendLog(`FAIL: ${page.id} - exit code ${code}`);
-        resolve({
-          success: false,
-          page,
-          duration,
-          error: stderr.slice(0, 500) || `Exit code: ${code}`
-        });
-      }
-    });
-
-    claude.on('error', (err) => {
-      appendLog(`ERROR: ${page.id} - ${err.message}`);
-      resolve({
-        success: false,
-        page,
-        duration: ((Date.now() - startTime) / 1000).toFixed(1),
-        error: err.message
-      });
-    });
-  });
-}
-
-// Get list of recently modified MDX files from git
-function getRecentlyModifiedFiles() {
-  try {
-    const stdout = execSync('git diff --name-only HEAD 2>/dev/null || true', { cwd: ROOT, encoding: 'utf-8' });
-    const staged = execSync('git diff --cached --name-only 2>/dev/null || true', { cwd: ROOT, encoding: 'utf-8' });
-    const files = new Set([...stdout.split('\n'), ...staged.split('\n')].filter(f => f.endsWith('.mdx')));
-    return files;
-  } catch {
-    return new Set();
-  }
-}
-
-// Process pages in parallel batches
-async function runBatch(options = {}) {
-  const {
-    limit = 50,
-    parallel = 10,
-    maxQuality = 90,
-    minImportance = 30,
-    minGap = 0,
-    resume = true,
-    skipModified = true,
-    model = 'sonnet',      // Default to Sonnet (cheaper than Opus)
-    maxBudget = 2.00       // Default $2 per page
-  } = options;
-
-  const pages = loadPages();
-  const results = resume ? loadResults() : { completed: [], failed: [], inProgress: [] };
-
-  // Get already processed IDs
-  const processedIds = new Set([
-    ...results.completed.map(r => r.page.id),
-    ...results.failed.map(r => r.page.id)
-  ]);
-
-  // Get recently modified files to skip
-  const modifiedFiles = skipModified ? getRecentlyModifiedFiles() : new Set();
-  if (modifiedFiles.size > 0) {
-    console.log(`\n⏭️  Skipping ${modifiedFiles.size} recently modified files`);
-  }
-
-  // Get candidates sorted by gap
-  const candidates = pages
-    .filter(p => p.quality && p.quality <= maxQuality)
-    .filter(p => p.importance && p.importance >= minImportance)
-    .filter(p => !p.path.includes('/models/')) // Exclude models (complex JSX)
-    .filter(p => !processedIds.has(p.id)) // Skip already processed
-    .filter(p => {
-      // Skip recently modified files
-      const filePath = getFilePath(p.path);
-      if (!filePath) return true;
-      const relativePath = path.relative(ROOT, filePath);
-      return !modifiedFiles.has(relativePath);
-    })
-    .map(p => ({
-      id: p.id,
-      title: p.title,
-      path: p.path,
-      quality: p.quality,
-      importance: p.importance,
-      gap: p.importance - p.quality
-    }))
-    .filter(p => p.gap >= minGap) // Filter by minimum gap
-    .sort((a, b) => b.gap - a.gap)
-    .slice(0, limit);
-
-  if (candidates.length === 0) {
-    console.log('\n✅ No pages to process (all done or none match criteria)');
-    console.log(`   Completed: ${results.completed.length}`);
-    console.log(`   Failed: ${results.failed.length}`);
-    return;
-  }
-
-  console.log(`\n📊 Batch Improvement (using Claude Code SDK - API key billing)`);
-  console.log(`   Pages to process: ${candidates.length}`);
-  console.log(`   Parallelism: ${parallel}`);
-  console.log(`   Model: ${model}`);
-  console.log(`   Max budget per page: $${maxBudget.toFixed(2)}`);
-  console.log(`   Est. max total cost: $${(candidates.length * maxBudget).toFixed(2)}`);
-  console.log(`   Min gap filter: ${minGap > 0 ? `>= ${minGap}` : 'none'}`);
-  console.log(`   Already completed: ${results.completed.length}`);
-  console.log(`   Results file: ${RESULTS_FILE}`);
-  console.log(`   Log file: ${LOG_FILE}`);
-  console.log(`\n   ⚠️  This uses your ANTHROPIC_API_KEY, not Max subscription`);
-  console.log(`   Starting in 3 seconds... (Ctrl+C to cancel)\n`);
-
-  await new Promise(r => setTimeout(r, 3000));
-
-  // Clear log file for this run
-  ensureDir(LOG_FILE);
-  fs.writeFileSync(LOG_FILE, `=== Batch run started at ${new Date().toISOString()} ===\n`);
-  fs.appendFileSync(LOG_FILE, `Pages: ${candidates.length}, Parallel: ${parallel}\n\n`);
-
-  // Process in parallel batches
-  let processed = 0;
-
-  for (let i = 0; i < candidates.length; i += parallel) {
-    const batch = candidates.slice(i, i + parallel);
-
-    console.log(`\n📦 Batch ${Math.floor(i / parallel) + 1}/${Math.ceil(candidates.length / parallel)}`);
-    batch.forEach(p => console.log(`   ⏳ ${p.id} (Q${p.quality}, gap +${p.gap})`));
-
-    // Mark as in progress
-    results.inProgress = batch.map(p => ({ page: p, startTime: Date.now() }));
-    saveResults(results);
-
-    // Run batch in parallel
-    const batchPromises = batch.map(page => {
-      const prompt = generatePrompt(page);
-      return runClaudeImprovement(page, prompt, { model, maxBudget });
-    });
-
-    const batchResults = await Promise.all(batchPromises);
-
-    // Update results
-    results.inProgress = [];
-    for (const result of batchResults) {
-      if (result.success) {
-        results.completed.push(result);
-        console.log(`   ✅ ${result.page.id} (${result.duration}s)`);
-      } else {
-        results.failed.push(result);
-        console.log(`   ❌ ${result.page.id}: ${result.error?.slice(0, 100)}`);
-      }
-      processed++;
-    }
-
-    saveResults(results);
-    console.log(`   Progress: ${processed}/${candidates.length}`);
-  }
-
-  // Final summary
-  const validationFailures = results.failed.filter(r => r.validationErrors);
-  const otherFailures = results.failed.filter(r => !r.validationErrors);
-
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`📊 BATCH COMPLETE`);
-  console.log(`   Total processed: ${processed}`);
-  console.log(`   Succeeded: ${results.completed.length}`);
-  console.log(`   Failed: ${results.failed.length}`);
-  if (validationFailures.length > 0) {
-    console.log(`      - Validation failures: ${validationFailures.length}`);
-    validationFailures.forEach(r => {
-      console.log(`        ⚠️  ${r.page.id}: ${r.validationErrors.slice(0, 2).join('; ')}`);
-    });
-  }
-  if (otherFailures.length > 0) {
-    console.log(`      - Other failures: ${otherFailures.length}`);
-  }
-  console.log(`   Results: ${RESULTS_FILE}`);
-  console.log(`   Log: ${LOG_FILE}`);
-  console.log(`${'='.repeat(50)}\n`);
-
-  // Auto-run post-improvement fixes if there were validation failures
-  if (validationFailures.length > 0) {
-    console.log('🔧 Running post-improvement fixes...\n');
-    try {
-      const { execSync } = await import('child_process');
-      execSync('node scripts/content/post-improve.mjs --fix-only', {
-        cwd: ROOT,
-        stdio: 'inherit'
-      });
-    } catch (e) {
-      console.log('   ⚠️  Post-improvement fixes failed, run manually: npm run improve:post');
-    }
-  }
-}
-
-// Parse command line arguments
+// Parse arguments
 function parseArgs(args) {
   const opts = { _positional: [] };
   for (let i = 0; i < args.length; i++) {
@@ -572,7 +742,7 @@ function parseArgs(args) {
       const key = args[i].slice(2);
       const next = args[i + 1];
       if (next && !next.startsWith('--')) {
-        opts[key] = isNaN(next) ? next : parseInt(next);
+        opts[key] = next;
         i++;
       } else {
         opts[key] = true;
@@ -591,143 +761,55 @@ async function main() {
 
   if (args.length === 0 || opts.help || opts.h) {
     console.log(`
-Page Improvement Helper
+Page Improvement Pipeline v2
 
-Uses Claude Code SDK with your ANTHROPIC_API_KEY (not Max subscription quota).
+Multi-phase improvement with SCRY research and specific directions.
 
 Usage:
-  node scripts/content/page-improver.mjs --list              List pages needing improvement
-  node scripts/content/page-improver.mjs <page-id>           Show improvement prompt for page
-  node scripts/content/page-improver.mjs <page-id> --info    Show page info only
-  node scripts/content/page-improver.mjs --batch             Run batch improvement via SDK
+  npm run improve-page -- <page-id> [options]
+  npm run improve-page -- --list
 
 Options:
-  --list          List candidate pages
-  --info          Show page info only (no prompt)
-  --batch         Run batch improvement (uses Claude Code SDK + API key)
-  --parallel N    Number of parallel improvements (default: 10)
-  --model M       Model to use: haiku, sonnet (default), opus
-  --budget N      Max budget per page in USD (default: 2.00)
-  --max-qual N    Max quality for listing/batch (default: 90, scale 1-100)
-  --min-imp N     Min importance for listing/batch (default: 30)
-  --min-gap N     Min gap (importance - quality) for batch (default: 0)
-  --limit N       Limit results (default: 20 for list, 200 for batch)
-  --no-resume     Start fresh (ignore previous results)
-  --no-skip-modified  Don't skip git-modified files
-  --status        Show batch progress status
+  --directions "..."   Specific improvement directions
+  --tier <tier>        polish ($2-3), standard ($5-8), deep ($10-15)
+  --apply              Apply changes directly (don't just preview)
+  --grade              Run grade-content.mjs after applying (requires --apply)
+  --list               List pages needing improvement
+  --limit N            Limit list results (default: 20)
+
+Tiers:
+  polish    Quick single-pass, no research
+  standard  Light research + improve + review (default)
+  deep      Full SCRY + web research, gap filling
 
 Examples:
-  node scripts/content/page-improver.mjs --list --max-qual 70
-  node scripts/content/page-improver.mjs economic-disruption
-  node scripts/content/page-improver.mjs --batch --limit 50 --parallel 5
-  node scripts/content/page-improver.mjs --batch --model haiku --budget 0.50 --limit 10
-  node scripts/content/page-improver.mjs --status
-
-Cost estimates (per page):
-  haiku:  ~$0.10-0.30 (fast, good for simple improvements)
-  sonnet: ~$0.50-1.50 (balanced, recommended for most pages)
-  opus:   ~$2.00-5.00 (best quality, use for complex pages)
+  npm run improve-page -- open-philanthropy --directions "add 2024 grants"
+  npm run improve-page -- far-ai --tier deep --directions "add publications"
+  npm run improve-page -- cea --tier polish
+  npm run improve-page -- --list --limit 30
 `);
     return;
   }
 
-  // Status mode
-  if (opts.status) {
-    const results = loadResults();
-    const validationFailures = results.failed.filter(r => r.validationErrors);
-    const otherFailures = results.failed.filter(r => !r.validationErrors);
-
-    console.log(`\n📊 Batch Progress`);
-    console.log(`   Completed: ${results.completed.length}`);
-    console.log(`   Failed: ${results.failed.length}`);
-    if (validationFailures.length > 0) {
-      console.log(`      - Validation failures: ${validationFailures.length}`);
-    }
-    if (otherFailures.length > 0) {
-      console.log(`      - Other failures: ${otherFailures.length}`);
-    }
-    console.log(`   In Progress: ${results.inProgress.length}`);
-    if (results.completed.length > 0) {
-      console.log(`\n   Last 5 completed:`);
-      results.completed.slice(-5).forEach(r => {
-        console.log(`     ✅ ${r.page.id} (${r.duration}s)`);
-      });
-    }
-    if (validationFailures.length > 0) {
-      console.log(`\n   Validation failures (need manual fix):`);
-      validationFailures.forEach(r => {
-        console.log(`     ⚠️  ${r.page.id}:`);
-        r.validationErrors.slice(0, 3).forEach(e => console.log(`        - ${e}`));
-      });
-    }
-    if (otherFailures.length > 0) {
-      console.log(`\n   Other failures:`);
-      otherFailures.forEach(r => {
-        console.log(`     ❌ ${r.page.id}: ${r.error?.slice(0, 60)}`);
-      });
-    }
-    return;
-  }
-
-  // Batch mode
-  if (opts.batch) {
-    await runBatch({
-      limit: opts.limit || 200,
-      parallel: opts.parallel || 10,
-      maxQuality: opts['max-qual'] || 90,
-      minImportance: opts['min-imp'] || 30,
-      minGap: opts['min-gap'] || 0,
-      resume: !opts['no-resume'],
-      skipModified: !opts['no-skip-modified'],
-      model: opts.model || 'sonnet',
-      maxBudget: opts.budget ? parseFloat(opts.budget) : 2.00
-    });
-    return;
-  }
-
-  const pages = loadPages();
-
-  // List mode
   if (opts.list) {
-    listPages(pages, {
-      maxQuality: opts['max-qual'] || 90,
-      minImportance: opts['min-imp'] || 30,
-      limit: opts.limit || 20
-    });
+    const pages = loadPages();
+    listPages(pages, { limit: parseInt(opts.limit) || 20 });
     return;
   }
 
-  // Page mode
-  const pageQuery = opts._positional[0];
-  if (!pageQuery) {
+  const pageId = opts._positional[0];
+  if (!pageId) {
     console.error('Error: No page ID provided');
-    console.error('Try: node scripts/content/page-improver.mjs --list');
+    console.error('Try: npm run improve-page -- --list');
     process.exit(1);
   }
 
-  const page = findPage(pages, pageQuery);
-  if (!page) {
-    console.error(`Error: Page not found: ${pageQuery}`);
-    console.log('Try: node scripts/content/page-improver.mjs --list');
-    process.exit(1);
-  }
-
-  showPageInfo(page);
-
-  if (opts.info) {
-    return;
-  }
-
-  // Generate and display prompt
-  console.log('\n' + '='.repeat(60));
-  console.log('📝 IMPROVEMENT PROMPT (copy to Claude Code Task tool):');
-  console.log('='.repeat(60) + '\n');
-  console.log(generatePrompt(page));
-  console.log('\n' + '='.repeat(60));
-  console.log('\nTo use: Copy the prompt above and run in Claude Code with:');
-  console.log('Task({ subagent_type: "general-purpose", prompt: `<paste prompt>` })');
-  console.log('\nOr run batch mode:');
-  console.log('node scripts/content/page-improver.mjs --batch --limit 50 --parallel 10');
+  await runPipeline(pageId, {
+    tier: opts.tier || 'standard',
+    directions: opts.directions || '',
+    dryRun: !opts.apply,
+    grade: opts.grade && opts.apply  // Only grade if --apply is also set
+  });
 }
 
 main().catch(console.error);

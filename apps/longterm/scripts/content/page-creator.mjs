@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Page Creator V3 - Cost-Optimized Pipeline
+ * Page Creator - Cost-Optimized Pipeline
  *
  * Uses Perplexity for research (cheap, good at web search)
  * Uses Claude for synthesis and validation iteration
@@ -15,8 +15,8 @@
  * Total: ~$4-5 vs $10+ with all-Claude approach
  *
  * Usage:
- *   node scripts/content/page-creator-v3.mjs "SecureBio" --tier standard
- *   node scripts/content/page-creator-v3.mjs "Community Notes" --tier premium
+ *   node scripts/content/page-creator.mjs "SecureBio" --tier standard
+ *   node scripts/content/page-creator.mjs "Community Notes" --tier premium
  */
 
 import fs from 'fs';
@@ -856,7 +856,7 @@ async function runPipeline(topic, tier = 'standard') {
   }
 
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`Page Creator V3 - Cost Optimized`);
+  console.log(`Page Creator - Cost Optimized`);
   console.log(`${'='.repeat(60)}`);
   console.log(`Topic: "${topic}"`);
   console.log(`Tier: ${config.name} (${config.estimatedCost})`);
@@ -984,13 +984,13 @@ async function runPipeline(topic, tier = 'standard') {
 
 function printHelp() {
   console.log(`
-Page Creator V3 - Cost-Optimized Pipeline
+Page Creator - Cost-Optimized Pipeline
 
 Uses Perplexity for research ($0.10) + Claude for synthesis ($2-3)
 Total: $4-6 vs $10+ with all-Claude approach
 
 Usage:
-  node scripts/content/page-creator-v3.mjs "<topic>" [options]
+  node scripts/content/page-creator.mjs "<topic>" [options]
 
 Options:
   --tier <tier>     Quality tier: budget, standard, premium (default: standard)
@@ -1011,9 +1011,9 @@ ${Object.entries(TIERS).map(([key, config]) =>
   ).join('\n')}
 
 Examples:
-  node scripts/content/page-creator-v3.mjs "MIRI" --tier standard
-  node scripts/content/page-creator-v3.mjs "Anthropic" --tier premium
-  node scripts/content/page-creator-v3.mjs "Lighthaven" --phase grade
+  node scripts/content/page-creator.mjs "MIRI" --tier standard
+  node scripts/content/page-creator.mjs "Anthropic" --tier premium
+  node scripts/content/page-creator.mjs "Lighthaven" --phase grade
 `);
 }
 

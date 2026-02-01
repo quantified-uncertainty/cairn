@@ -12,15 +12,15 @@ import { runScript, optionsToArgs } from '../lib/cli.mjs';
  */
 const SCRIPTS = {
   improve: {
-    script: 'content/page-improver-v2.mjs',
+    script: 'content/page-improver.mjs',
     description: 'Improve an existing page with AI assistance',
     passthrough: ['tier', 'directions', 'dryRun'],
     positional: true,
   },
   create: {
-    script: 'content/page-creator-v2.mjs',
+    script: 'content/page-creator.mjs',
     description: 'Create a new page with research pipeline',
-    passthrough: ['tier', 'output', 'help'],
+    passthrough: ['tier', 'phase', 'output', 'help'],
     positional: true,
   },
   regrade: {
