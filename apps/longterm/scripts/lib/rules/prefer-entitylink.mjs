@@ -25,6 +25,24 @@ const INTERNAL_PATH_PATTERNS = [
   /^\/debates\//,
 ];
 
+// Paths to exclude from EntityLink requirement (structural navigation, not semantic entities)
+const EXCLUDED_PATH_PATTERNS = [
+  // Table, matrix, and graph view pages
+  /\/table\/?$/,
+  /\/matrix\/?$/,
+  /\/graph\/?$/,
+  // Top-level section index pages (no entity IDs)
+  /^\/knowledge-base\/risks\/?$/,
+  /^\/knowledge-base\/responses\/?$/,
+  /^\/knowledge-base\/models\/?$/,
+  /^\/knowledge-base\/organizations\/?$/,
+  /^\/knowledge-base\/people\/?$/,
+  /^\/knowledge-base\/capabilities\/?$/,
+  // Architecture and deployment tables
+  /^\/knowledge-base\/architecture-scenarios\/table\/?$/,
+  /^\/knowledge-base\/deployment-architectures\/table\/?$/,
+];
+
 /**
  * Extract a suggested entity ID from a path
  */
@@ -77,8 +95,9 @@ export const preferEntityLinkRule = createRule({
       const cleanHref = href.split('#')[0].split('?')[0]; // Remove anchors and query strings
 
       const isInternalPath = INTERNAL_PATH_PATTERNS.some(pattern => pattern.test(cleanHref));
+      const isExcludedPath = EXCLUDED_PATH_PATTERNS.some(pattern => pattern.test(cleanHref));
 
-      if (isInternalPath) {
+      if (isInternalPath && !isExcludedPath) {
         const suggestedId = suggestEntityId(cleanHref);
         const lineNum = getLineNumber(body, position);
 
