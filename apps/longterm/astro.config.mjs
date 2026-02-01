@@ -117,6 +117,7 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'History', collapsed: true, autogenerate: { directory: 'knowledge-base/history' } },
+                      { label: 'Incidents', collapsed: true, autogenerate: { directory: 'knowledge-base/incidents' } },
                       { label: 'Intelligence Paradigms', collapsed: true, items: [
                           { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
                           { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },

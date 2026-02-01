@@ -276,11 +276,91 @@ async function runScryResearch(topic) {
   return { success: true, resultCount: unique.length };
 }
 
+// ============ Phase: Process Directions ============
+
+/**
+ * Extract URLs from directions text and fetch their content
+ */
+async function processDirections(topic, directions) {
+  if (!directions) return { success: true, hasDirections: false };
+
+  log('directions', 'Processing user directions...');
+
+  // Extract URLs from the directions text
+  const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/g;
+  const urls = directions.match(urlRegex) || [];
+
+  log('directions', `Found ${urls.length} URL(s) in directions`);
+
+  const fetchedContent = [];
+
+  for (const url of urls) {
+    try {
+      log('directions', `Fetching: ${url}`);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        log('directions', `  ⚠ Failed to fetch (${response.status})`);
+        continue;
+      }
+
+      const contentType = response.headers.get('content-type') || '';
+      let content = '';
+
+      if (contentType.includes('application/pdf')) {
+        log('directions', `  ⚠ Skipping PDF (not supported)`);
+        continue;
+      }
+
+      const html = await response.text();
+
+      // Simple HTML to text conversion - strip tags, decode entities
+      content = html
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 15000); // Limit content size
+
+      if (content.length > 100) {
+        fetchedContent.push({
+          url,
+          content,
+          charCount: content.length
+        });
+        log('directions', `  ✓ Fetched ${content.length} chars`);
+      }
+    } catch (error) {
+      log('directions', `  ⚠ Error fetching ${url}: ${error.message}`);
+    }
+  }
+
+  // Save directions and fetched content
+  const directionsData = {
+    originalDirections: directions,
+    extractedUrls: urls,
+    fetchedContent,
+    timestamp: new Date().toISOString()
+  };
+
+  saveResult(topic, 'directions.json', directionsData);
+  log('directions', `Saved directions with ${fetchedContent.length} fetched URL(s)`);
+
+  return { success: true, hasDirections: true, urlCount: urls.length, fetchedCount: fetchedContent.length };
+}
+
 // ============ Phase: Synthesis ============
 
 function getSynthesisPrompt(topic, quality = 'standard') {
   const researchData = loadResult(topic, 'perplexity-research.json');
   const scryData = loadResult(topic, 'scry-research.json');
+  const directionsData = loadResult(topic, 'directions.json');
 
   // Count total available citation URLs
   let totalCitations = 0;
@@ -307,6 +387,27 @@ function getSynthesisPrompt(topic, quality = 'standard') {
     ? `✅ ${totalCitations} source URLs available in research data - USE THESE for citations`
     : `⚠️ NO SOURCE URLs available in research data - use descriptive citations only, NO FAKE URLs`;
 
+  // Format user directions and fetched URL content
+  let directionsSection = '';
+  if (directionsData) {
+    const parts = [];
+
+    if (directionsData.originalDirections) {
+      parts.push(`### User Instructions\n${directionsData.originalDirections}`);
+    }
+
+    if (directionsData.fetchedContent && directionsData.fetchedContent.length > 0) {
+      const fetchedParts = directionsData.fetchedContent.map(fc =>
+        `#### Content from ${fc.url}\n${fc.content.slice(0, 8000)}`
+      );
+      parts.push(`### Content from User-Provided URLs\n${fetchedParts.join('\n\n')}`);
+    }
+
+    if (parts.length > 0) {
+      directionsSection = `## User-Provided Directions\n\n**IMPORTANT: Follow these directions carefully. They take precedence over default instructions.**\n\n${parts.join('\n\n')}`;
+    }
+  }
+
   return `# Write Wiki Article: ${topic}
 
 You are writing a wiki article for LongtermWiki, an AI safety knowledge base.
@@ -321,6 +422,8 @@ ${scryContent}
 
 ## Citation Status
 ${citationWarning}
+
+${directionsSection}
 
 ## Requirements
 
@@ -344,6 +447,11 @@ ${citationWarning}
 8. **Maintain logical consistency** - Ensure claims within each section align with the section's thesis
    - If a section is titled "Lack of X", don't describe the subject as having X
    - If discussing limitations, don't use quotes that suggest the opposite
+9. **Maintain critical distance** - Don't take sources at face value
+   - Use attribution phrases: "According to X...", "X claims that...", "X characterized this as..."
+   - Consider source incentives: companies may overstate their achievements, critics may overstate problems
+   - Include skeptical perspectives even if research is mostly positive or negative
+   - For controversial claims, note that significance/interpretation is debated
 
 ## Known Entity IDs
 open-philanthropy, anthropic, openai, deepmind, miri, lesswrong, redwood-research,
@@ -825,8 +933,18 @@ const GRADING_SYSTEM_PROMPT = `You are an expert evaluator of AI safety content.
 - importance (0-100): How significant for understanding AI risk
 - quality dimensions (0-10 each): novelty, rigor, actionability, completeness
 - llmSummary: 1-2 sentence summary with key conclusions
+- balanceFlags: Array of any balance/bias issues detected (see below)
 
 Be harsh but fair. Typical wiki content scores 3-5 on quality dimensions. 7+ is exceptional.
+
+IMPORTANT: This content may describe events after your knowledge cutoff. If the article cites specific sources (URLs, publications, official announcements), assume the described events are real even if you're unfamiliar with them. Do NOT mark well-sourced content as "fictional" or "fabricated" just because you haven't heard of it. Evaluate based on the quality of sourcing, writing, and relevance to AI safety.
+
+BALANCE CHECK - Flag these issues in balanceFlags array:
+- "no-criticism-section": Article lacks a Criticisms, Concerns, or Limitations section
+- "single-source-dominance": >50% of citations come from one source (e.g., company's own blog)
+- "missing-source-incentives": For controversial claims, source's incentives aren't discussed
+- "one-sided-framing": Article presents only positive OR only negative perspective without balance
+- "uncritical-claims": Major claims presented as fact without attribution ("X is..." vs "X claims...")
 
 IMPORTANCE guidelines:
 - 90-100: Essential for prioritization decisions
@@ -885,7 +1003,7 @@ async function runGrading(topic) {
 
 ---
 FULL CONTENT:
-${body.slice(0, 15000)}
+${body.slice(0, 30000)}
 ---
 
 Respond with JSON:
@@ -898,12 +1016,13 @@ Respond with JSON:
     "completeness": <0-10>
   },
   "llmSummary": "<1-2 sentences with conclusions>",
+  "balanceFlags": ["<flag-id>", ...] or [] if none,
   "reasoning": "<brief explanation>"
 }`;
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 500,
+      max_tokens: 800,
       system: GRADING_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }]
     });
@@ -918,6 +1037,17 @@ Respond with JSON:
 
     log('grade', `Importance: ${grades.importance}, Quality: ${Math.round((grades.ratings.novelty + grades.ratings.rigor + grades.ratings.actionability + grades.ratings.completeness) * 2.5)}`);
 
+    // Log balance flags if any
+    const balanceFlags = grades.balanceFlags || [];
+    if (balanceFlags.length > 0) {
+      log('grade', `⚠️  Balance issues detected:`);
+      for (const flag of balanceFlags) {
+        log('grade', `   - ${flag}`);
+      }
+    } else {
+      log('grade', `✓ No balance issues detected`);
+    }
+
     // Calculate quality score (same formula as grade-content.mjs)
     const quality = Math.round(
       (grades.ratings.novelty + grades.ratings.rigor +
@@ -929,6 +1059,9 @@ Respond with JSON:
     frontmatter.ratings = grades.ratings;
     frontmatter.quality = quality;
     frontmatter.llmSummary = grades.llmSummary;
+    if (balanceFlags.length > 0) {
+      frontmatter.balanceFlags = balanceFlags;
+    }
 
     // Count metrics
     const wordCount = body.split(/\s+/).filter(w => w.length > 0).length;
@@ -1042,20 +1175,31 @@ If you find any logicalIssues or temporalArtifacts, also fix them directly in th
 
 // ============ Pipeline Runner ============
 
-async function runPipeline(topic, tier = 'standard') {
+async function runPipeline(topic, tier = 'standard', directions = null) {
   const config = TIERS[tier];
   if (!config) {
     console.error(`Unknown tier: ${tier}`);
     process.exit(1);
   }
 
+  // Build phases list - add directions processing if provided
+  const phases = directions
+    ? ['process-directions', ...config.phases]
+    : config.phases;
+
   console.log(`\n${'='.repeat(60)}`);
   console.log(`Page Creator - Cost Optimized`);
   console.log(`${'='.repeat(60)}`);
   console.log(`Topic: "${topic}"`);
   console.log(`Tier: ${config.name} (${config.estimatedCost})`);
-  console.log(`Phases: ${config.phases.join(' → ')}`);
+  if (directions) {
+    console.log(`Directions: ${directions.slice(0, 80)}${directions.length > 80 ? '...' : ''}`);
+  }
+  console.log(`Phases: ${phases.join(' → ')}`);
   console.log(`${'='.repeat(60)}\n`);
+
+  // Store directions for later use
+  const pipelineContext = { directions };
 
   const results = {
     topic,
@@ -1065,7 +1209,7 @@ async function runPipeline(topic, tier = 'standard') {
     totalCost: 0
   };
 
-  for (const phase of config.phases) {
+  for (const phase of phases) {
     console.log(`\n${'─'.repeat(50)}`);
     log(phase, 'Starting...');
 
@@ -1073,6 +1217,10 @@ async function runPipeline(topic, tier = 'standard') {
       let result;
 
       switch (phase) {
+        case 'process-directions':
+          result = await processDirections(topic, pipelineContext.directions);
+          break;
+
         case 'research-perplexity':
           result = await runPerplexityResearch(topic, 'standard');
           results.totalCost += result.cost || 0;
@@ -1196,9 +1344,20 @@ Usage:
 Options:
   --tier <tier>       Quality tier: budget, standard, premium (default: standard)
   --dest <path>       Deploy to content path (e.g., knowledge-base/people)
-  --directions <text> Special instructions for content focus
+  --directions <text> Context, source URLs, and editorial guidance (see below)
   --phase <phase>     Run a single phase only (for resuming/testing)
   --help              Show this help
+
+Directions:
+  Pass a text block with any combination of:
+  - Source URLs (will be fetched and included in research)
+  - Context the user knows about the topic
+  - Editorial guidance (e.g., "be skeptical", "focus on X")
+
+  Example:
+    --directions "Primary source: https://example.com/article
+    I've heard criticisms that this is overhyped.
+    Focus on skeptical perspectives and consider source incentives."
 
 Destination Examples:
   --dest knowledge-base/people
@@ -1240,6 +1399,8 @@ async function main() {
   const singlePhase = phaseIndex !== -1 ? args[phaseIndex + 1] : null;
   const destIndex = args.indexOf('--dest');
   const destPath = destIndex !== -1 ? args[destIndex + 1] : null;
+  const directionsIndex = args.indexOf('--directions');
+  const directions = directionsIndex !== -1 ? args[directionsIndex + 1] : null;
 
   if (!topic) {
     console.error('Error: Topic required');
@@ -1254,6 +1415,13 @@ async function main() {
     console.log(`Running single phase: ${singlePhase} for "${topic}"`);
     let result;
     switch (singlePhase) {
+      case 'process-directions':
+        if (!directions) {
+          console.error('Error: --directions required for process-directions phase');
+          process.exit(1);
+        }
+        result = await processDirections(topic, directions);
+        break;
       case 'research-perplexity':
         result = await runPerplexityResearch(topic);
         break;
@@ -1283,7 +1451,7 @@ async function main() {
     return;
   }
 
-  await runPipeline(topic, tier);
+  await runPipeline(topic, tier, directions);
 
   // Deploy to destination if --dest provided
   if (destPath) {

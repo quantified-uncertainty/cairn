@@ -168,8 +168,10 @@ export function generateResearchQueries(topic) {
     { query: `${topic} projects research publications major work output`, category: 'work' },
     { query: `${topic} impact effectiveness results achievements`, category: 'impact' },
 
-    // External perspectives
+    // External perspectives - skeptical/adversarial
     { query: `${topic} criticism concerns controversies problems limitations`, category: 'criticism' },
+    { query: `${topic} skepticism overhyped exaggerated misleading`, category: 'skepticism' },
+    { query: `${topic} conflicts of interest incentives bias motivations`, category: 'incentives' },
     { query: `${topic} news articles recent developments 2024 2025`, category: 'news' },
 
     // Relationships
