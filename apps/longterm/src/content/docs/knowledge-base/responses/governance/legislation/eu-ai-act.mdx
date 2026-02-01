@@ -1,347 +1,462 @@
 ---
-title: "EU AI Act"
-description: "The world's first comprehensive AI regulation framework, establishing risk-based governance with specific provisions for frontier AI models above 10^25 FLOP, including mandatory red-teaming and safety assessments, with maximum penalties of €35M or 7% global revenue. As of January 2026, the EU AI Office (125+ staff) enforces GPAI rules, with Finland as the first member state with full enforcement powers."
+title: EU AI Act
+description: The world's first comprehensive AI regulation, adopting a
+  risk-based approach to regulate foundation models and general-purpose AI
+  systems
+importance: 78
+lastEdited: 2026-02-01
 sidebar:
-  order: 1
-quality: 66
-llmSummary: "The EU AI Act is the world's first comprehensive binding AI regulation, establishing risk-based governance with specific provisions for frontier models above 10^25 FLOP (requiring red-teaming and safety assessments) and penalties up to €35M/7% revenue. Analysis finds limited global regulatory adoption (only Canada/Brazil drafting similar frameworks) and significant implementation challenges including threshold gaming concerns (73% of researchers expect within 2-3 years), standards delays, and enforcement fragmentation across 27 member states."
-lastEdited: "2026-01-29"
-importance: 78.5
-pageTemplate: "knowledge-base-response"
+  order: 70
 ratings:
-  novelty: 4.5
+  novelty: 4
   rigor: 7
-  actionability: 7.5
-  completeness: 8
+  actionability: 6
+  completeness: 5
+quality: 55
+llmSummary: Comprehensive overview of the EU AI Act's risk-based regulatory
+  framework, particularly its two-tier approach to foundation models that
+  distinguishes between standard and systemic risk AI systems. The analysis
+  provides valuable implementation details and governance structure but cuts off
+  before addressing key criticisms and global implications.
 metrics:
-  wordCount: 1007
-  citations: 47
-  tables: 38
-  diagrams: 1
+  wordCount: 4254
+  citations: 98
+  tables: 9
+  diagrams: 0
 ---
-import {DataInfoBox, Backlinks, R, EntityLink, DataExternalLinks, Mermaid} from '@components/wiki';
-
-<DataExternalLinks pageId="eu-ai-act" client:load />
-
-<DataInfoBox entityId="eu-ai-act" />
+import {EntityLink, Backlinks, KeyPeople, KeyQuestions, Section} from '@components/wiki';
 
 ## Quick Assessment
 
-| Dimension | Assessment | Evidence |
-|-----------|------------|----------|
-| **Regulatory Scope** | Comprehensive | First binding AI safety law globally; covers 450M+ consumers in EU single market |
-| **Enforcement Capacity** | Developing | [EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office): 125+ staff as of 2025; Finland first member state with full enforcement powers (Jan 2026) |
-| **Compliance Timeline** | Phased 2024-2027 | Prohibited practices (Feb 2025) → GPAI rules (Aug 2025) → High-risk systems (Aug 2026) → Legacy systems (Aug 2027) |
-| **Penalty Severity** | High | Up to €35M or 7% global revenue; SMEs receive proportionally lower fines |
-| **Industry Readiness** | Mixed | 35-45% of companies use AI in hiring; roughly 50% anticipate significant compliance challenges |
-| **Global Influence** | Limited | [Brookings analysis](https://www.brookings.edu/articles/the-eu-ai-act-will-have-global-impact-but-a-limited-brussels-effect/) finds only Canada and Brazil drafting similar frameworks; UK, Australia, Singapore taking less restrictive approaches |
-| **Technical Standards** | Delayed | [CEN-CENELEC](https://www.cencenelec.eu/) harmonized standards pushed from Aug 2025 to 2026; creates compliance uncertainty |
+| Aspect | Details |
+|--------|---------|
+| **Type** | Comprehensive AI regulation |
+| **Scope** | EU member states (with extraterritorial reach) |
+| **Adopted** | May/June 2024 |
+| **Entry into Force** | August 1, 2024 |
+| **Full Applicability** | August 2, 2026 |
+| **Key Innovation** | Risk-based tiered regulation of foundation models |
+| **Maximum Penalties** | €35M or 7% global turnover |
+| **Enforcement Body** | European AI Office |
 
 ## Overview
 
-The EU AI Act represents the world's first comprehensive legal framework for artificial intelligence regulation, entering force on August 1, 2024. This landmark legislation establishes a risk-based regulatory approach that categorizes AI systems by potential harm, with increasingly stringent requirements for higher-risk applications. The Act fundamentally reshapes the AI landscape by introducing binding legal obligations for AI developers and deployers operating in European markets.
+The **EU AI Act** (Regulation (EU) 2024/1689) is the world's first comprehensive legal framework regulating artificial intelligence, representing a landmark attempt to govern AI systems based on their potential risks to safety, fundamental rights, and society.[^1][^2] The regulation adopts a **risk-based approach** that classifies AI systems into four tiers—unacceptable risk (prohibited), high-risk (strict obligations), limited risk (transparency requirements), and minimal risk (largely unregulated)—with special provisions for **foundation models** and general-purpose AI (GPAI) systems.[^3][^4]
 
-From an AI safety perspective, the Act introduces groundbreaking provisions for <EntityLink id="large-language-models">general-purpose AI models</EntityLink> trained with more than 10^25 floating-point operations. These systems must undergo mandatory adversarial testing, comprehensive risk assessments, and continuous monitoring for dangerous capabilities. The legislation creates crucial precedents that influence regulatory discussions globally, with enforcement mechanisms including penalties up to €35 million or 7% of global annual turnover.
+Originally proposed by the European Commission in April 2021, the Act underwent intense negotiations before political agreement was reached on December 9, 2023.[^5][^6] The regulation entered into force on August 1, 2024, with phased implementation: prohibitions on unacceptable-risk systems took effect February 2, 2025, GPAI model obligations apply from August 2, 2025, and most high-risk provisions become fully applicable by August 2, 2026.[^7][^8]
 
-The Act's enforcement establishes the EU AI Office as a dedicated regulatory body for advanced AI oversight. While primarily focused on near-term harms rather than existential risks, its framework for monitoring advanced AI capabilities provides important infrastructure for addressing severe risks as systems become increasingly powerful.
+The regulation has sparked significant controversy, particularly regarding its approach to foundation models. Critics argue it may stifle European AI innovation while supporters contend it provides necessary safeguards and legal certainty. The Act's two-tiered framework for GPAI models—distinguishing between standard foundation models and those posing "systemic risk"—emerged from contentious negotiations between the European Parliament, Council, and member states including France, Germany, and Italy.[^9][^10]
 
-## Regulatory Architecture
+## Legislative History
 
-<Mermaid client:load chart={`
-flowchart TD
-    ACT[EU AI Act<br/>Regulation 2024/1689] --> RISK{Risk-Based<br/>Classification}
+### Proposal and Development (2021-2023)
 
-    RISK --> PROHIB[Prohibited AI<br/>Unacceptable Risk]
-    RISK --> HIGH[High-Risk AI<br/>Critical Applications]
-    RISK --> GPAI[GPAI Models<br/>Foundation Models]
-    RISK --> LIMITED[Limited Risk<br/>Transparency Only]
+The European Commission first proposed the AI Act on **April 21, 2021**, initiating the EU's effort to create comprehensive AI regulation focused on risk-based rules for AI systems.[^11][^12] The proposal was driven by concerns over AI's potential harms and aimed to balance innovation with safety through prohibitions on unacceptable risks and obligations for high-risk systems.
 
-    PROHIB --> BAN[Complete Ban<br/>€35M / 7% Revenue]
+Key early milestones included:
 
-    HIGH --> CONF[Conformity Assessment<br/>Human Oversight<br/>Documentation]
-    CONF --> REG[National Authorities<br/>27 Member States]
+- **November 29, 2021**: EU Council presidency shared the first compromise text, adjusting rules on social scoring, biometrics, and high-risk AI[^13]
+- **December 1, 2021**: European Parliament assigned lead negotiators Brando Benifei (S&D, Italy) and Dragoş Tudorache (Renew, Romania)[^14]
+- **September 2022**: Parliament's JURI committee adopted its opinion on the AI Act[^15]
+- **December 6, 2022**: EU Council adopted its general approach for negotiations[^16]
 
-    GPAI --> THRESH{Greater than 10²⁵ FLOP?}
-    THRESH -->|Yes| SYSTEMIC[Systemic Risk<br/>Red-teaming Required]
-    THRESH -->|No| STANDARD[Standard GPAI<br/>Transparency Only]
-    SYSTEMIC --> OFFICE[EU AI Office<br/>Direct Enforcement]
-    STANDARD --> OFFICE
+### Foundation Models Controversy (2023)
 
-    LIMITED --> DISC[Disclosure Requirements<br/>€7.5M / 1.5% Revenue]
+Foundation models became highly controversial during the legislative process, marking a significant shift from the initial 2021 Commission proposal, which had focused on risk-based categorization of AI applications rather than regulating the models themselves.[^17] The emergence of powerful systems like ChatGPT in late 2022 catalyzed intense debate over how to regulate these general-purpose systems.
 
-    style PROHIB fill:#ffcccc
-    style BAN fill:#ff9999
-    style HIGH fill:#ffffcc
-    style GPAI fill:#e6f3ff
-    style SYSTEMIC fill:#cce6ff
-    style OFFICE fill:#ccffcc
-`} />
+The European Parliament introduced formal provisions on foundation models in **June 2023** when it adopted its negotiating position.[^18] This set up a fundamental conflict:
 
-## Risk Assessment Framework
+- **Parliament's position**: Advocated for treating foundation models similar to high-risk systems, with quality management systems, EU database registration, and strict obligations[^19]
+- **Council/Commission position**: Favored lighter regulation through voluntary codes of conduct, with delayed and less stringent requirements[^20]
 
-| Risk Category | Classification Criteria | Key Requirements | Penalty Range |
-|---------------|------------------------|------------------|---------------|
-| **Prohibited** | Unacceptable risk to fundamental rights | Complete ban on deployment | €35M or 7% revenue |
-| **High-Risk** | Critical infrastructure, employment, law enforcement | Conformity assessment, human oversight, documentation | €15M or 3% revenue |
-| **GPAI Systemic** | >10^25 FLOP training threshold | Red-teaming, incident reporting, cybersecurity | €35M or 7% revenue |
-| **Limited Risk** | Transparency concerns (chatbots, deepfakes) | Disclosure requirements | €7.5M or 1.5% revenue |
+France, Germany, and Italy emerged as key opponents of strict foundation model regulation, arguing it would harm European AI competitiveness and innovation.[^21] Negotiations broke down in November 2023 as these member states opposed tiered rules for high-impact models developed mostly by non-EU firms, threatening to derail the entire Act.[^22]
 
-### Prohibited AI Systems
+### Political Agreement and Adoption (2023-2024)
 
-The Act bans AI practices deemed to pose unacceptable risks to fundamental rights and safety:
+After marathon negotiations, political agreement was finally reached on **December 9, 2023**, with a compromise two-tier system for foundation models.[^23][^24] The compromise distinguished between:
 
-- **Social scoring systems** by governments (modeled after concerns about China's social credit system)
-- **Real-time remote biometric identification** in publicly accessible spaces (limited law enforcement exceptions)
-- **Subliminal manipulation techniques** exploiting vulnerabilities of specific groups
-- **Emotional manipulation** targeting children or vulnerable populations
+1. **General GPAI models**: Subject to transparency obligations, copyright disclosure requirements, and technical documentation
+2. **Systemic risk GPAI models**: Additional requirements for risk assessments, incident reporting, evaluations, and cybersecurity measures
 
-Source: <R id="9d050016264f3d69">EU AI Act Article 5</R>
+Subsequent milestones included:
 
-### High-Risk System Requirements
+- **February 13, 2024**: Parliament committees approved the draft (71-8 vote); EU member states unanimously endorsed[^25]
+- **February 21, 2024**: European AI Office launched within the Commission to oversee GPAI implementation[^26]
+- **March 13, 2024**: European Parliament passed the Act (523 for, 46 against, 49 abstentions)[^27]
+- **May 21, 2024**: European Council formally adopted the regulation[^28]
+- **July 12, 2024**: Published in the Official Journal of the European Union[^29]
+- **August 1, 2024**: Entered into force[^30]
 
-| Requirement Category | Specific Obligations | Compliance Timeline |
-|---------------------|---------------------|-------------------|
-| **Risk Management** | Continuous risk assessment throughout lifecycle | August 2026 |
-| **Data Governance** | Training data quality and bias mitigation | August 2026 |
-| **Documentation** | Technical specs and user instructions | August 2026 |
-| **Human Oversight** | Meaningful human control mechanisms | August 2026 |
-| **Accuracy/Robustness** | Performance validation and testing | August 2026 |
+## Risk-Based Regulatory Framework
 
-Estimated compliance costs range from €200,000 to €2 million per high-risk system, according to <R id="e2c5e596266a9871">European Commission impact assessment</R>.
+### Four-Tier Classification System
 
-## General-Purpose AI Model Provisions
+The AI Act establishes four risk levels for AI systems, each with corresponding obligations:
 
-### Standard GPAI Requirements
+| Risk Level | Examples | Requirements | Timeline |
+|------------|----------|--------------|----------|
+| **Unacceptable** | Social scoring, subliminal manipulation, real-time biometric ID in public (with exceptions), untargeted facial recognition scraping | Complete prohibition | February 2, 2025[^31] |
+| **High-Risk** | CV-scanning tools, critical infrastructure AI, AI in education/employment/law enforcement, product safety systems | Mandatory risk assessments, EU database registration, conformity assessment, CE marking, human oversight, lifecycle monitoring | August 2, 2026[^32] |
+| **Limited** | Chatbots, deepfakes, emotion recognition systems | Transparency obligations (label AI-generated content, disclose AI interaction) | August 2, 2026[^33] |
+| **Minimal** | Spam filters, video games, AI-enabled inventory systems | No specific obligations beyond existing laws | Already applicable[^34] |
 
-All foundation models serving EU markets must provide:
+### Prohibited AI Practices
 
-- **Technical documentation** describing training processes and data sources
-- **Copyright compliance policies** ensuring EU copyright law adherence
-- **Training data summaries** published publicly for transparency
+The Act bans eight specific AI practices deemed to pose unacceptable risks to fundamental rights:[^35][^36]
 
-### Systemic Risk GPAI Models (>10^25 FLOP)
+1. Subliminal manipulation techniques that exploit vulnerabilities
+2. Social scoring systems by public authorities
+3. Real-time biometric identification in public spaces (with limited law enforcement exceptions)
+4. Emotion recognition in workplaces and educational institutions
+5. Untargeted scraping of facial images from the internet or CCTV
+6. Inference of sensitive characteristics (race, political opinions, sexual orientation)
+7. Biometric categorization systems that discriminate
+8. AI systems that manipulate human behavior to circumvent free will
 
-| Requirement | Implementation Details | Regulatory Purpose |
-|-------------|----------------------|-------------------|
-| **Model Evaluation** | Adversarial testing and capability assessment | Identify dangerous capabilities |
-| **Risk Assessment** | Ongoing evaluation of dual-use potential | Monitor misuse risks |
-| **Incident Reporting** | Documented downstream harm reporting | Early warning system |
-| **Cybersecurity** | Protection against model theft/misuse | Prevent unauthorized access |
-| **Energy Reporting** | Training compute and energy consumption | Environmental monitoring |
+These prohibitions took effect on **February 2, 2025**, making them the first enforceable provisions of the Act.[^37]
 
-Current models exceeding the 10^25 FLOP threshold include <R id="9b255e0255d7dd86">GPT-4</R>, <R id="d9117e91a2b1b2d4">Claude</R>, and <R id="3b8b5072889c4f8a">Gemini</R>, according to <R id="b5265b94ee633a33">Epoch AI estimates</R>.
+## Foundation Models and GPAI Regulation
 
-### Codes of Practice Framework
+### Defining General-Purpose AI
 
-The [GPAI Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai), finalized July 10, 2025, serves as the primary compliance mechanism:
+The Act regulates **foundation models** under the category of "general-purpose AI" (GPAI) models, defined as AI systems trained on large amounts of data that can perform a wide variety of tasks across different applications.[^38][^39] This includes large language models like GPT-4, Claude, and Llama, as well as multimodal foundation models.
 
-| Chapter | Scope | Key Requirements |
-|---------|-------|------------------|
-| **Transparency** | All GPAI models | Technical documentation, training data summaries, downstream provider information |
-| **Copyright** | All GPAI models | EU copyright law compliance, opt-out mechanism for rights holders |
-| **Safety & Security** | Systemic risk GPAI only | Risk management framework, incident reporting, cybersecurity, red-teaming |
-
-**Code Development Process**:
-- Independent expert drafting with multi-stakeholder input over 9 months
-- [Endorsed by Commission and AI Board](https://www.lw.com/en/insights/eu-ai-act-gpai-model-obligations-in-force-and-final-gpai-code-of-practice-in-place) on Aug 1, 2025
-- Documentation must be retained for minimum 10 years after model placed on market
-- Providers must notify Commission within two weeks of reaching 10²⁵ FLOP threshold
-
-**Fallback Mechanism**: If codes prove inadequate, Commission may issue [binding implementing acts](https://artificialintelligenceact.eu/code-of-practice-overview/) to replace voluntary compliance framework.
-
-## Enforcement Architecture
-
-### Institutional Structure
-
-| Institution | Responsibilities | Resources | Powers |
-|-------------|-----------------|-----------|--------|
-| **[EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office)** | GPAI model oversight, cross-border coordination | 125+ staff (2025); 6 units under Dir. Lucilla Sioli | Request information, conduct evaluations, order model recalls, issue fines up to €15M/3% (from Aug 2026) |
-| **National Authorities** | High-risk system enforcement, local compliance | Varies; Finland first with full powers (Jan 2026) | Conformity assessments, market surveillance, penalties up to €35M/7% |
-| **European AI Board** | Technical guidance, consistency coordination | Advisory capacity; represents all 27 member states | Non-binding recommendations, coordinate national approaches |
-| **Scientific Panel** | Independent expertise | External experts | Advise on systemic risk, contribute to threshold reviews |
+GPAI models are regulated separately from application-specific AI systems because of their adaptability across multiple downstream uses, some of which may be high-risk even if the model itself was not designed for those purposes.[^40]
 
-### Penalty Framework
+### Two-Tier GPAI Framework
 
-| Violation Type | Maximum Fine | Additional Sanctions |
-|----------------|--------------|-------------------|
-| **Prohibited AI use** | €35M or 7% global revenue | Market withdrawal orders |
-| **High-risk non-compliance** | €15M or 3% global revenue | Corrective measures |
-| **GPAI violations** | €35M or 7% global revenue | Code of practice revisions |
-| **Information obligations** | €7.5M or 1.5% global revenue | Enhanced monitoring |
+The Act establishes a **two-tier approach** for regulating foundation models, distinguishing between standard GPAI and "systemic risk" GPAI:[^41][^42]
 
-## Implementation Timeline
+**Tier 1: All GPAI Models (Standard Obligations)**
 
-| Phase | Effective Date | Key Requirements |
-|-------|---------------|------------------|
-| **Prohibited Systems** | February 2025 | Complete ban enforcement |
-| **GPAI Provisions** | August 2025 | Documentation and risk assessment |
-| **High-Risk Systems** | August 2026 | Full regulatory compliance |
-| **Legacy Systems** | August 2027 | Retroactive compliance for existing deployments |
+Applicable to all general-purpose AI model providers, regardless of size or capability:[^43][^44]
 
-Source: <R id="9d050016264f3d69">EU AI Act Article 113</R>
+- Technical documentation detailing model architecture, training data, and capabilities
+- Transparency to downstream deployers about model limitations and intended uses
+- Information summaries about copyrighted training data content
+- Policy to comply with EU copyright law (Directive (EU) 2019/790)
+- Data governance and quality management practices
+- EU database registration for models integrated into high-risk systems
 
-## Safety Impact Analysis
+**Tier 2: Systemic Risk GPAI Models (Enhanced Obligations)**
 
-### Strengths for AI Safety
+Designated based on compute thresholds (>10²⁵ FLOPs for training) or Commission assessment of capabilities, market impact, and potential for widespread harm:[^45][^46]
 
-| Aspect | Contribution | Global Influence |
-|--------|-------------|-----------------|
-| **Legal Precedent** | First binding safety requirements for frontier AI | Template for other jurisdictions |
-| **Red-teaming Mandate** | Required adversarial testing for systemic risk models | Industry standard establishment |
-| **Transparency** | Documentation requirements improve understanding | Academic research facilitation |
-| **Incident Reporting** | Early warning system for emerging risks | Risk intelligence gathering |
+- Model evaluations and adversarial testing to identify systemic risks
+- Assessment and mitigation of risks to health, safety, fundamental rights, environment, democracy, and rule of law
+- Serious incident reporting to the AI Office
+- Cybersecurity measures and monitoring of downstream applications
+- Enhanced quality management systems
+- Regular reporting to the AI Office on risk management measures
 
-### Critical Limitations
+### Implementation Timeline for GPAI
 
-| Concern | Description | Severity | Evidence |
-|---------|-------------|----------|----------|
-| **Compute Threshold Gaming** | Training below 10^25 FLOP to avoid systemic risk requirements | High | [Stanford HAI](https://hai.stanford.edu/) research: 73% of AI researchers expect this within 2-3 years |
-| **Standards Delays** | [CEN-CENELEC harmonized standards](https://www.cencenelec.eu/) pushed from Aug 2025 to 2026+ | High | Creates compliance uncertainty; organizations cannot verify conformity |
-| **Enforcement Fragmentation** | Market Surveillance Authorities may interpret rules inconsistently | Medium-High | [Legal analysis](https://www.gaia.law/resources/the-eu-ai-act-and-its-guide-lines) warns of jurisdictional variation |
-| **Existential Risk Gap** | Focus on near-term harms vs. <EntityLink id="existential-catastrophe">catastrophic risks</EntityLink> | Medium-High | No explicit provisions for extinction-level AI risks |
-| **Open Source Ambiguity** | Unclear requirements for openly released models | Medium | [CEPA analysis](https://cepa.org/article/burying-the-brussels-effect-ai-act-inspires-few-copycats/) notes regulatory gaps |
-| **Innovation Concerns** | European CEOs warn of competitive disadvantage | Medium | July 2025: Industry leaders [requested two-year delay](https://www.twobirds.com/en/insights/2025/ai-act-from-timelines-to-tensions--a-mid-2025-round-up) |
+Foundation model obligations follow a specific timeline:[^47][^48]
 
-### Implementation Challenges
+- **August 2, 2025**: GPAI obligations take effect for all general-purpose AI models
+- **May 2, 2025**: Commission codes of practice ready for voluntary compliance[^49]
+- **July 18, 2025**: Commission published draft GPAI guidelines for stakeholder consultation[^50]
+- **August 2, 2027**: Existing GPAI models placed on the market before August 2025 must achieve full compliance[^51]
 
-The [Cambridge German Law Journal analysis](https://www.cambridge.org/core/journals/german-law-journal/article/brussels-sideeffect-how-the-ai-act-can-reduce-the-global-reach-of-eu-policy/032C72AEC537EBB6AE96C0FD90387E3E) identifies several structural implementation challenges:
+New GPAI models released after August 2, 2025 must comply immediately, while existing models receive a two-year grace period.[^52]
 
-**Guidance Timing Issues**:
-- Guidance on prohibited AI practices released [only two days before](https://www.twobirds.com/en/insights/2025/ai-act-from-timelines-to-tensions--a-mid-2025-round-up) the Feb 2, 2025 deadline
-- Code of Practice finalization delayed by one month from original schedule
-- Organizations given insufficient preparation time before enforcement begins
+### GPAI Code of Practice
 
-**Technical Expertise Gaps**:
-- EU AI Office has 125+ staff, but technical AI expertise varies across 27 national authorities
-- No unified technical infrastructure for conformity assessments
-- Member states must build evaluation capacity from scratch
+To facilitate compliance, the AI Office developed a voluntary **GPAI Code of Practice** through a multi-stakeholder process involving nearly 1,000 participants.[^53] The code provides guidance on:
 
-**Regulatory Complexity**:
-- [Interplay analysis](https://www.europarl.europa.eu/RegData/etudes/STUD/2025/778575/ECTI_STU(2025)778575_EN.pdf) by European Parliament identifies overlaps with GDPR, Digital Services Act, Product Liability Directive
-- Organizations must navigate multiple intersecting regulatory frameworks
-- Compliance burden estimated at €200K-2M per high-risk system
+- Transparency requirements for training data
+- Copyright compliance mechanisms
+- Risk assessment methodologies
+- Governance structures for systemic risk models
 
-## Current State and Trajectory
+Chairs and vice-chairs leading the code's development include:[^54][^55]
 
-### 2024-2026 Implementation Status
+| Name | Role | Background |
+|------|------|------------|
+| **Nuria Oliver** | Chair | Director, ELLIS Alicante Foundation; PhD in AI from MIT; IEEE/ACM Fellow |
+| **Yoshua Bengio** | Chair | Turing Award winner; Professor at Université de Montréal; Founder of Mila |
+| **Alexander Peukert** | Co-Chair (Copyright) | Professor of Civil/Commercial/Information Law, Goethe University Frankfurt |
+| **Marietje Schaake** | Chair | Fellow at Stanford Cyber Policy Center & Institute for Human-Centred AI |
+| **Daniel Privitera** | Vice-Chair | Founder/Executive Director, KIRA Center; Lead Writer of International Scientific Report on Advanced AI Safety |
+| **Markus Anderljung** | Vice-Chair | Director of Policy & Research, Centre for the Governance of AI |
 
-| Milestone | Date | Status | Details |
-|-----------|------|--------|---------|
-| **Act enters force** | Aug 1, 2024 | ✅ Complete | [Official Journal publication](https://artificialintelligenceact.eu/) |
-| **Prohibited practices ban** | Feb 2, 2025 | ✅ Complete | Social scoring, manipulative AI, real-time biometrics banned |
-| **GPAI obligations** | Aug 2, 2025 | ✅ Complete | [Code of Practice finalized July 10, 2025](https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai) |
-| **First national enforcement** | Jan 1, 2026 | ✅ Complete | [Finland becomes first member state with full powers](https://axis-intelligence.com/eu-ai-act-news-2026/) |
-| **GPAI enforcement begins** | Aug 2, 2026 | Upcoming | AI Office gains fine-issuing authority |
-| **High-risk compliance** | Aug 2, 2026 | Upcoming | Full conformity assessment required |
-| **Legacy system compliance** | Aug 2, 2027 | Upcoming | Pre-existing models must comply |
+The Commission and AI Board have confirmed this code as an adequate voluntary compliance tool that may serve as a mitigating factor when determining fines for violations.[^56]
 
-**Regulatory Infrastructure**:
-- [EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office) established with 125+ staff including technology specialists, lawyers, and economists, organized into 6 units under Director Lucilla Sioli
-- National authorities designated in majority of member states; Germany assigns oversight to telecommunications regulator (BNetzA), drawing [criticism from data protection authorities](https://www.twobirds.com/en/insights/2025/ai-act-from-timelines-to-tensions--a-mid-2025-round-up)
-- [Code of Practice endorsed](https://www.lw.com/en/insights/eu-ai-act-gpai-model-obligations-in-force-and-final-gpai-code-of-practice-in-place) by European Commission and AI Board on Aug 1, 2025
+## Governance and Enforcement
 
-**Industry Response**:
+### European AI Office
 
-| Company | Position | Action |
-|---------|----------|--------|
-| Microsoft, OpenAI | Cooperative compliance | [Signed Code of Practice](https://markets.financialcontent.com/wral/article/tokenring-2025-12-25-the-brussels-effect-in-high-gear-eu-ai-act-redraws-the-global-tech-map) July 2025; positioned as "gold standard" |
-| Google | Cautious support | Signed Code but warned it "risks slowing down Europe's development and deployment of AI" |
-| Meta | Opposition | [Refused to sign Code of Practice](https://www.chathamhouse.org/2025/08/eus-new-ai-code-practice-has-its-critics-will-be-valuable-global-governance); called requirements "over-reach" that will "throttle frontier AI" |
-| European CEOs | Seeking delay | [Called for two-year "clock-stop"](https://www.twobirds.com/en/insights/2025/ai-act-from-timelines-to-tensions--a-mid-2025-round-up) on implementation in July 2025 |
+The **AI Office**, established within the European Commission's Directorate-General for Communication Networks, Content and Technology (DG CNECT), serves as the primary enforcement body for GPAI models.[^57][^58] Launched on February 21, 2024, it became operational for enforcement purposes on August 2, 2025.[^59]
 
-### 2026-2027 Projections
+Key leadership includes:[^60]
 
-| Year | Expected Developments | Key Metrics |
-|------|----------------------|-------------|
-| **2026** | High-risk system compliance wave, first GPAI enforcement actions | 6-12 month conformity assessments; first AI Office fines possible |
-| **2027** | Full implementation, legacy system compliance, threshold review | December 2, 2027 long-stop deadline for high-risk rules under [Digital Omnibus proposal](https://www.dlapiper.com/en-us/insights/publications/2025/08/latest-wave-of-obligations-under-the-eu-ai-act-take-effect) |
+- **Lucilla Sioli**: Heads the AI Office (former DG CNECT Director for AI)
+- **Dragoş Tudorache**: Heads the unit on risks of very capable GPAI models (former co-leader of the AI Act in Parliament)
+- **Kilian Gross**: Leads the unit on compliance, uniform enforcement, and investigations (key EU AI Act negotiator)
+- **Juha Heikkilä**: AI Office Adviser for International Affairs
 
-## Key Uncertainties and Critical Questions
+The AI Office has significant enforcement powers, including:[^61]
 
-### Technical Challenges
+- Requesting information and documentation from GPAI providers
+- Conducting model evaluations and capability assessments
+- Requiring risk mitigation measures
+- Recalling models from the market
+- Imposing fines up to 3% of global annual turnover or €15 million, whichever is higher
 
-**Threshold Evolution**: The 10^25 FLOP metric faces challenges from:
-- More efficient training architectures reducing compute requirements
-- Test-time compute scaling shifting performance bottlenecks
-- Distributed training approaches complicating measurement
+### Multi-Level Governance Structure
 
-<R id="6d3e85b51201e286">Epoch AI research</R> suggests 40-60% efficiency improvements possible through architectural innovations alone.
+The Act establishes several governance bodies:[^62][^63]
 
-### Regulatory Effectiveness
+- **AI Board**: Comprises representatives from EU member states; coordinates national enforcement and provides technical expertise
+- **Advisory Forum**: Brings together stakeholders from industry, academia, civil society, and social partners
+- **Scientific Panel**: Independent experts advise the AI Office on evaluating foundation model capabilities and monitoring material safety risks
+- **National Authorities**: Handle complaints and enforcement for high-risk AI systems not covered by the AI Office
+- **European Data Protection Supervisor (EDPS)**: Has authority to impose fines on EU institutions for non-compliance
 
-| Uncertainty | Expert Assessment | Timeline |
-|-------------|------------------|----------|
-| **Cross-border coordination** | 60% expect significant challenges | 2025-2026 |
-| **Open source model governance** | 75% see regulatory gaps | Ongoing |
-| **Threshold gaming prevalence** | 70% expect moderate-high gaming | 2026-2028 |
-| **International harmonization** | 45% expect convergence with US/UK | 2027-2030 |
+### Penalty Structure
 
-Source: <R id="01cc39a7a5fc8531">CNAS AI governance survey</R> (n=127 experts, 2024)
+The Act establishes tiered penalties based on violation severity:[^64][^65]
 
-### Global Regulatory Competition: The Brussels Effect Debate
+| Violation Type | Maximum Fine |
+|----------------|--------------|
+| Prohibited AI systems (unacceptable risk) | €35 million or 7% of global annual turnover |
+| High-risk system violations | €15 million or 3% of global annual turnover |
+| Incorrect information to authorities | €7.5 million or 1.5% of global annual turnover |
 
-The "Brussels Effect"—the EU's ability to set de facto global standards through market power—faces [significant limitations](https://www.brookings.edu/articles/the-eu-ai-act-will-have-global-impact-but-a-limited-brussels-effect/) for AI regulation:
+For startups and SMEs, caps are available to prevent disproportionate financial burden.[^66] The turnover-based calculation means violations by major technology companies could result in penalties exceeding hundreds of millions of euros.
 
-| Jurisdiction | Regulatory Approach | Alignment with EU AI Act | Status |
-|--------------|--------------------|-----------------------|--------|
-| **Canada** | [Comprehensive framework](https://www.brookings.edu/articles/the-eu-ai-act-will-have-global-impact-but-a-limited-brussels-effect/) modeled on EU approach | High | Legislative limbo |
-| **Brazil** | Risk-based framework similar to EU | High | Legislative limbo |
-| **UK** | Principles-based, sector-specific | Low | [Pro-innovation track](https://cepa.org/article/burying-the-brussels-effect-ai-act-inspires-few-copycats/); no comprehensive AI law |
-| **US** | <EntityLink id="voluntary-commitments">Voluntary commitments</EntityLink>; Trump administration [removed AI safety barriers](https://carnegieendowment.org/research/2025/05/the-eus-ai-power-play-between-deregulation-and-innovation) | Very Low | Deregulatory direction since Jan 2025 |
-| **China** | State-directed governance | Low | National security focus; reduced cooperation interest post-DeepSeek |
-| **Singapore** | Regulatory sandboxes | Low | Innovation-friendly approach |
-| **Australia, Japan, NZ** | Light-touch regulation | Low | Pro-innovation frameworks |
+## Controversies and Criticisms
 
-[CEPA analysis](https://cepa.org/article/burying-the-brussels-effect-ai-act-inspires-few-copycats/) concludes: "Only Canada and Brazil are drafting similar frameworks, and both remain mired in legislative limbo." Unlike GDPR, which inspired privacy laws in 100+ jurisdictions, the AI Act has generated limited global regulatory adoption.
+### Innovation vs. Regulation Tensions
 
-**De Facto vs. De Jure Effects**: [GovAI research](https://www.governance.ai/research-paper/brussels-effect-ai) distinguishes between:
-- **De facto effect**: Companies voluntarily adopting EU standards globally for operational efficiency—evidence suggests this is occurring among major AI labs
-- **De jure effect**: Other jurisdictions adopting similar laws—limited evidence as of 2025-2026
+The Act's approach to foundation models has sparked intense debate over whether it strikes the right balance between safety and innovation. **France, Germany, and Italy** actively opposed strict GPAI regulations during negotiations, arguing they would harm European AI competitiveness against US and Chinese firms.[^67][^68] French startup Mistral AI, German company Aleph Alpha, and other European AI developers expressed concerns that compliance burdens would disadvantage them against better-resourced non-EU competitors like OpenAI and Anthropic.
 
-### Adaptation Mechanisms
+Critics point to Europe's existing lag in AI development—trailing US leaders in compute resources, funding, and technical talent—and warn the Act may widen this gap.[^69] The regulatory approach contrasts sharply with the US, where voluntary industry standards and executive orders provide more flexible governance frameworks.[^70]
 
-**Legislative Review**: The Act includes provisions for review and potential revision by 2029, with earlier updates possible through delegated acts for technical specifications.
+Conversely, proponents argue the Act creates **legal certainty** that will ultimately attract investment and protect downstream deployers from compliance burdens, enabling a trustworthy AI ecosystem.[^71][^72] Regulatory sandboxes and the AI innovation package (launched January 2024) aim to support European startups and SMEs in developing compliant AI systems.[^73]
 
-**Stakeholder Engagement**: Ongoing consultation mechanisms with industry, academia, and civil society to inform implementation and identify emerging challenges.
+### Definitional Ambiguities and Scope Concerns
 
-**International Coordination**: Cooperation frameworks with other jurisdictions to prevent regulatory arbitrage and ensure consistent global standards.
+Multiple aspects of the GPAI framework have been criticized for vagueness:[^74][^75]
 
-## Sources & Resources
+- **"Systemic risk" definition**: The criteria for designating models as posing systemic risk—including compute thresholds, capabilities, market impact, and scalability—lack precision and may become outdated as technology advances
+- **"Substantial modification" threshold**: Uncertainty about when fine-tuning or adaptation of foundation models triggers full compliance obligations
+- **Training data disclosure**: Requirements for "summaries" of copyrighted training data content remain poorly defined, creating intellectual property disputes
+- **Dual-use potential**: Even controlled foundation models retain dual-use capabilities, raising questions about the effectiveness of use-case-based regulation
 
-### Primary Legal Sources
+The Act's broad definition of AI systems, derived from OECD frameworks, applies to virtually all EU organizations using AI, creating significant compliance challenges.[^76]
 
-| Document | Type | Key Provisions |
-|----------|------|----------------|
-| <R id="9d050016264f3d69">EU AI Act (Regulation 2024/1689)</R> | Primary legislation | Complete regulatory framework |
-| <R id="e2c5e596266a9871">Impact Assessment</R> | European Commission | Cost-benefit analysis and evidence base |
+### Epistemic and Methodological Limitations
 
-### Implementation Guidance
+Academic critics have identified fundamental **epistemic gaps** in the Act's risk assessment approach.[^77] Traditional risk assessments fail for probabilistic, socio-technical foundation models, the argument goes, creating false regulatory confidence. Specifically:
 
-| Resource | Publisher | Focus Area |
-|----------|-----------|-------------|
-| <R id="d85299b1e1069668">GPAI Code of Practice Consultation</R> | European Commission | Industry self-regulation framework |
-| <R id="57be50a34ec47284">National Implementation Tracker</R> | EU Digital Strategy | Member state progress monitoring |
+- The Act overlooks deployment contexts, institutional oversight, and governance structures in favor of technical fixes
+- Fixed AI categories risk rapid obsolescence as technology evolves, unlike more adaptive governance frameworks
+- Causal links between model capabilities and societal harms are assumed without robust evidence, ignoring real-world socio-technical factors
+- The Act lacks anticipatory mechanisms for iterative revision based on emerging AI research
 
-### Research and Analysis
+Stanford's Center for Research on Foundation Models (CRFM) noted that the compute-based threshold for systemic risk (10²⁵ FLOPs) diverges from their proposal to focus on demonstrated market impact, potentially missing dangerous models that don't meet the compute threshold.[^78]
 
-| Source | Focus | Key Findings |
-|--------|-------|-------------|
-| <R id="9d45634c7e8ec752">Stanford HAI Analysis</R> | Research impact | 73% expect threshold gaming issues |
-| <R id="b5265b94ee633a33">Epoch AI Compute Trends</R> | Technical metrics | FLOP threshold model coverage |
-| <R id="01cc39a7a5fc8531">CNAS Governance Survey</R> | Expert opinion | Regulatory effectiveness predictions |
+### Missing Safeguards for Advanced AI Safety
 
----
+AI safety researchers have criticized the Act for insufficient provisions addressing **existential risks** from advanced AI systems.[^79][^80] While the Act mandates evaluations for systemic risks, it includes:
 
-## AI Transition Model Context
+- No requirements for **AI alignment research** (ensuring advanced systems' goals match human values)
+- No provisions for third-party researcher access to models for safety evaluations
+- No adverse event reporting mechanisms comparable to pharmaceutical or aviation safety systems
+- No explicit coverage of scenarios involving misaligned superintelligent systems
 
-The EU AI Act improves the <EntityLink id="ai-transition-model" /> through <EntityLink id="civilizational-competence" />:
+The focus on immediate deployment risks (manipulation, discrimination, privacy violations) rather than model-level capabilities means the Act may not adequately address risks from future highly capable AI systems. Organizations like the AI Now Institute (in a report by 50+ experts) warned that foundation models have inherent risks in their training data and architectures that use-case regulation cannot fully address.[^81]
 
-| Factor | Parameter | Impact |
-|--------|-----------|--------|
-| <EntityLink id="civilizational-competence" /> | <EntityLink id="regulatory-capacity" /> | First comprehensive legal framework with binding requirements and penalties |
-| <EntityLink id="civilizational-competence" /> | <EntityLink id="institutional-quality" /> | EU AI Office creates dedicated oversight capacity |
-| <EntityLink id="misalignment-potential" /> | <EntityLink id="safety-culture-strength" /> | Mandatory red-teaming normalizes safety testing across industry |
+### Enforcement Challenges and Implementation Delays
 
-The Act's influence extends beyond EU borders through the "Brussels Effect," shaping global AI governance norms even for non-EU companies.
+Several practical enforcement concerns have emerged:[^82][^83]
 
-<Backlinks client:load entityId="eu-ai-act" />
+- **Regulatory capacity**: Whether the AI Office and national authorities have sufficient expertise and resources to effectively monitor rapidly evolving foundation models
+- **Extraterritorial reach**: Questions about enforcing requirements on non-EU providers, especially for open-source models uploaded from outside the EU
+- **Compliance burden**: Particularly for SMEs and researchers who may lack resources for extensive documentation and risk assessments
+- **Loopholes**: Compute-intensive models may quickly become outdated as a metric; workarounds for training data disclosure requirements
+
+Proposed amendments have sought to address some concerns by delaying high-risk system obligations to December 2027, but privacy advocates like **Max Schrems** have criticized provisions allowing AI training on special category data to fix bias as undermining GDPR protections.[^84]
+
+The Act's phased implementation has also faced criticism. While prohibited systems were banned in February 2025, full GPAI compliance doesn't occur until August 2025-2027, creating a window where potentially risky systems can operate under legacy frameworks.[^85]
+
+### Relationship to Other Regulatory Frameworks
+
+The Act intersects with multiple existing EU regulations, creating potential overlap and confusion:[^86][^87]
+
+- **GDPR**: Data protection requirements for AI training data; controversies over "legitimate interests" basis for processing
+- **Digital Services Act (DSA)**: Enforcement of AI-generated content moderation; recent cases include €120M fines against platform X in December 2025 for failing to control AI-generated sexual content
+- **Copyright Directive**: Article 50 transparency deadline in 2026 for training data disclosure
+- **Proposed Chat Control**: Ongoing debates about scanning for child abuse material, with temporary measures extended to April 2026
+
+The January 21, 2026 joint opinion by the European Data Protection Board (EDPB) and European Data Protection Supervisor (EDPS) criticized unclear divisions between the AI Office's role for GPAI supervision and EDPS oversight, calling for amendments to avoid governance overlaps.[^88]
+
+### Shifting Political Priorities (2025-2026)
+
+Recent political discourse has shown a shift from the Act's original **fundamental rights framing** toward concerns about **over-regulation harming competitiveness**.[^89] As of early 2026:
+
+- European policymakers increasingly emphasize the risk that strict AI rules may cause Europe to fall further behind the US and China
+- Proposals circulate for simplifying GPAI obligations and extending transition periods
+- The contrast with US deregulation under recent executive orders raises questions about regulatory arbitrage
+- Parliament debates in January 2026 focused on stronger DSA-AI Act synergies for enforcement against deepfakes and illegal AI-generated content
+
+These developments suggest the Act's implementation may evolve significantly based on economic performance and global competitive dynamics.
+
+## International Cooperation and Global Impact
+
+### Extraterritorial Reach
+
+The AI Act applies not only to providers and deployers operating within the EU, but also to organizations **outside the EU** whose AI systems target or affect EU users.[^90][^91] This extraterritorial scope, similar to GDPR's global reach, means:
+
+- US, UK, and other non-EU AI companies must comply if their systems are used by EU customers
+- American employers using AI for EU-targeted outputs (e.g., automated hiring tools processing EU applicants) fall under the Act's jurisdiction
+- Multinational organizations must navigate compliance across different regulatory regimes
+
+The Act's global influence extends through its potential to serve as a model for other jurisdictions considering AI regulation, though critics question whether it will inspire adoption or enable regulatory arbitrage as companies shift development to less restrictive environments.[^92]
+
+### Bilateral and Multilateral Engagement
+
+The EU actively engages in international AI governance through multiple channels:[^93]
+
+- **Bilateral cooperation**: Partnerships with Canada, US, India, Japan, South Korea, Singapore, Australia, and UK
+- **Multilateral forums**: Participation in G7, G20, OECD, and Global Partnership on AI discussions
+- **US-EU AI collaboration**: January 27, 2023 agreement to conduct joint research on AI applications in extreme weather forecasting, emergency response, health, electric grid optimization, and agriculture[^94]
+
+The **AI Pact**, initiated in May 2023, fosters voluntary industry commitment to implement AI Act requirements ahead of legal deadlines and serves as a coordination forum across jurisdictions.[^95]
+
+### Support for Innovation
+
+To balance regulation with competitiveness, the Act includes several innovation support mechanisms:[^96][^97]
+
+- **Regulatory sandboxes**: National authorities establish controlled environments for testing AI before market launch
+- **AI innovation package**: Launched January 2024 to support European startups and SMEs
+- **GenAI4EU initiative**: Stimulates generative AI adoption across strategic EU industrial ecosystems
+- **AI Factories and Gigafactories**: Infrastructure investments for AI development
+- **InvestAI Facility**: Funding mechanism for trustworthy AI projects
+- **AI Skills Academy**: Planned educational initiative to build EU AI talent
+
+An **AI Observatory** tracks AI trends and assesses impacts across specific sectors, while the **Apply AI Alliance** serves as a coordination forum bringing together AI providers, industry, public sector, academia, and civil society.[^98]
+
+## Key Uncertainties
+
+Several major questions remain about the Act's effectiveness and evolution:
+
+1. **Enforcement effectiveness**: Will the AI Office and national authorities have sufficient capacity to meaningfully oversee rapidly advancing foundation models, particularly those developed by well-resourced non-EU companies?
+
+2. **Innovation impact**: Will the regulatory framework ultimately protect European competitiveness by providing legal certainty, or will compliance burdens drive AI development and deployment to less restrictive jurisdictions?
+
+3. **Risk assessment validity**: Can the Act's risk-based approach adequately address the rapidly evolving capabilities of foundation models, or will fixed categories and compute thresholds quickly become obsolete?
+
+4. **Advanced AI safety**: Does the Act provide sufficient safeguards for potential risks from highly capable future AI systems, or does its focus on deployment-level harms miss model-level dangers?
+
+5. **Regulatory arbitrage**: How will the Act's approach interact with US deregulation and Chinese state-directed AI development? Will global companies develop separate systems for different jurisdictions or push for regulatory harmonization?
+
+6. **Implementation consistency**: Will the phased rollout and proposed delays (e.g., extending high-risk obligations to December 2027) undermine the Act's effectiveness, or will they provide necessary flexibility for organizations to adapt?
+
+7. **Systemic risk designation**: How will the Commission operationalize its discretion to designate foundation models as posing systemic risk beyond the compute threshold? Will this process be transparent and predictable?
+
+8. **Open-source implications**: How will the Act affect open-source foundation models like Llama, Mistral, and others? Will compliance burdens disproportionately affect open development compared to proprietary systems?
+
+<Backlinks />
+
+## Sources
+
+[^1]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^2]: [European Commission - Regulatory Framework for AI](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai)
+[^3]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^4]: [DNV - Introduction to the EU's AI Act](https://www.dnv.com/cyber/insights/articles/introduction-to-the-eus-ai-act-what-you-should-know/)
+[^5]: [Eyreact - When was EU AI Act passed](https://www.eyreact.com/when-was-eu-ai-act-passed-complete-ai-act-timeline-guide/)
+[^6]: [Alexander Thamm - EU AI Act Timeline](https://www.alexanderthamm.com/en/blog/eu-ai-act-timeline/)
+[^7]: [Artificial Intelligence Act - Implementation Timeline](https://artificialintelligenceact.eu/implementation-timeline/)
+[^8]: [DataGuard - EU AI Act Timeline](https://www.dataguard.com/eu-ai-act/timeline)
+[^9]: [IAPP - Contentious Areas in the EU AI Act Trilogues](https://iapp.org/news/a/contentious-areas-in-the-eu-ai-act-trilogues)
+[^10]: [Time - EU AI Regulation Foundation Models](https://time.com/6338602/eu-ai-regulation-foundation-models/)
+[^11]: [Eyreact - When was EU AI Act passed](https://www.eyreact.com/when-was-eu-ai-act-passed-complete-ai-act-timeline-guide/)
+[^12]: [Alexander Thamm - EU AI Act Timeline](https://www.alexanderthamm.com/en/blog/eu-ai-act-timeline/)
+[^13]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^14]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^15]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^16]: [Alexander Thamm - EU AI Act Timeline](https://www.alexanderthamm.com/en/blog/eu-ai-act-timeline/)
+[^17]: [AI Regulation - Regulating Foundation Models in the AI Act](https://ai-regulation.com/regulating-foundation-models-in-the-ai-act-from-high-to-systemic-risk/)
+[^18]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^19]: [IAPP - Contentious Areas in the EU AI Act Trilogues](https://iapp.org/news/a/contentious-areas-in-the-eu-ai-act-trilogues)
+[^20]: [IAPP - Contentious Areas in the EU AI Act Trilogues](https://iapp.org/news/a/contentious-areas-in-the-eu-ai-act-trilogues)
+[^21]: [Artificial Intelligence Act Newsletter 40](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-40-special)
+[^22]: [Artificial Intelligence Act Newsletter 40](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-40-special)
+[^23]: [Eyreact - When was EU AI Act passed](https://www.eyreact.com/when-was-eu-ai-act-passed-complete-ai-act-timeline-guide/)
+[^24]: [IAPP - Contentious Areas in the EU AI Act Trilogues](https://iapp.org/news/a/contentious-areas-in-the-eu-ai-act-trilogues)
+[^25]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^26]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^27]: [Eyreact - When was EU AI Act passed](https://www.eyreact.com/when-was-eu-ai-act-passed-complete-ai-act-timeline-guide/)
+[^28]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^29]: [Artificial Intelligence Act - The Act](https://artificialintelligenceact.eu/the-act/)
+[^30]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^31]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^32]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^33]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^34]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^35]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^36]: [Artificial Intelligence Act - Overview](https://artificialintelligenceact.eu)
+[^37]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^38]: [ModelOp - EU AI Act](https://www.modelop.com/ai-governance/ai-regulations-standards/eu-ai-act)
+[^39]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^40]: [AI Regulation - Regulating Foundation Models in the AI Act](https://ai-regulation.com/regulating-foundation-models-in-the-ai-act-from-high-to-systemic-risk/)
+[^41]: [Stanford CRFM - EU AI Act](https://crfm.stanford.edu/2024/08/01/eu-ai-act.html)
+[^42]: [AI Regulation - Regulating Foundation Models in the AI Act](https://ai-regulation.com/regulating-foundation-models-in-the-ai-act-from-high-to-systemic-risk/)
+[^43]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^44]: [European Commission - GPAI Models FAQ](https://digital-strategy.ec.europa.eu/en/faqs/general-purpose-ai-models-ai-act-questions-answers)
+[^45]: [Stanford CRFM - EU AI Act](https://crfm.stanford.edu/2024/08/01/eu-ai-act.html)
+[^46]: [AI Regulation - Regulating Foundation Models in the AI Act](https://ai-regulation.com/regulating-foundation-models-in-the-ai-act-from-high-to-systemic-risk/)
+[^47]: [Software Improvement Group - EU AI Act Summary](https://www.softwareimprovementgroup.com/blog/eu-ai-act-summary/)
+[^48]: [Artificial Intelligence Act - Implementation Timeline](https://artificialintelligenceact.eu/implementation-timeline/)
+[^49]: [Artificial Intelligence Act - Implementation Timeline](https://artificialintelligenceact.eu/implementation-timeline/)
+[^50]: [Artificial Intelligence Act Newsletter 86](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-86-concerns)
+[^51]: [DataGuard - EU AI Act Timeline](https://www.dataguard.com/eu-ai-act/timeline)
+[^52]: [DataGuard - EU AI Act Timeline](https://www.dataguard.com/eu-ai-act/timeline)
+[^53]: [European Commission - Navigating AI Act](https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act)
+[^54]: [European Commission - Meet Chairs Leading GPAI Code](https://digital-strategy.ec.europa.eu/en/news/meet-chairs-leading-development-first-general-purpose-ai-code-practice)
+[^55]: [Artificial Intelligence Act - Code of Practice](https://artificialintelligenceact.eu/introduction-to-code-of-practice/)
+[^56]: [European Commission - GPAI Models FAQ](https://digital-strategy.ec.europa.eu/en/faqs/general-purpose-ai-models-ai-act-questions-answers)
+[^57]: [Freshfields - EU AI Act Unpacked 9](https://technologyquotient.freshfields.com/post/102jc22/eu-ai-act-unpacked-9-who-are-the-regulators-to-enforce-the-ai-act)
+[^58]: [Euronews - Meet the Europeans Behind AI Regulation](https://www.euronews.com/next/2024/03/19/meet-the-europeans-behind-the-worlds-first-ai-regulation-euronews-tech-talks-podcast)
+[^59]: [Artificial Intelligence Act - Developments](https://artificialintelligenceact.eu/developments/)
+[^60]: [Freshfields - EU AI Act Unpacked 9](https://technologyquotient.freshfields.com/post/102jc22/eu-ai-act-unpacked-9-who-are-the-regulators-to-enforce-the-ai-act)
+[^61]: [European Commission - GPAI Models FAQ](https://digital-strategy.ec.europa.eu/en/faqs/general-purpose-ai-models-ai-act-questions-answers)
+[^62]: [AI Regulation - Regulating Foundation Models in the AI Act](https://ai-regulation.com/regulating-foundation-models-in-the-ai-act-from-high-to-systemic-risk/)
+[^63]: [Usercentrics - EU AI Regulation](https://usercentrics.com/knowledge-hub/eu-ai-regulation-ai-act/)
+[^64]: [IBM - EU AI Act Topics](https://www.ibm.com/think/topics/eu-ai-act)
+[^65]: [Orrick - EU AI Act 6 Steps](https://www.orrick.com/en/Insights/2025/11/The-EU-AI-Act-6-Steps-to-Take-Before-2-August-2026)
+[^66]: [Usercentrics - EU AI Regulation](https://usercentrics.com/knowledge-hub/eu-ai-regulation-ai-act/)
+[^67]: [Artificial Intelligence Act Newsletter 40](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-40-special)
+[^68]: [Time - EU AI Regulation Foundation Models](https://time.com/6338602/eu-ai-regulation-foundation-models/)
+[^69]: [Artificial Intelligence Act Newsletter 40](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-40-special)
+[^70]: [DLA Piper - Comparing US AI EO and EU AI Act](https://knowledge.dlapiper.com/dlapiperknowledge/globalemploymentlatestdevelopments/2023/comparing-the-US-AI-Executive-Order-and-the-EU-AI-Act.html)
+[^71]: [EY - EU AI Act Guide](https://www.ey.com/content/dam/ey-unified-site/ey-com/en-gl/insights/public-policy/documents/ey-gl-eu-ai-act-07-2024.pdf)
+[^72]: [Artificial Intelligence Act Newsletter 40](https://artificialintelligenceact.substack.com/p/the-eu-ai-act-newsletter-40-special)
+[^73]: [European Commission - European Approach to AI](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence)
+[^74]: [Kaizenner - Reflections on AI Act](https://www.kaizenner.eu/post/reflections-on-aiact)
+[^75]: [EA Forum - EU AI Act Needs Definition of High-Risk Foundation](https://forum.effectivealtruism.org/posts/p7qXjisiADiCBnofk/the-eu-ai-act-needs-a-definition-of-high-risk-foundation)
+[^76]: [ModelOp - EU AI Act](https://www.modelop.com/ai-governance/ai-regulations-standards/eu-ai-act)
+[^77]: [Tech Policy Press - False Confidence in EU AI Act](https://techpolicy.press/a-false-confidence-in-the-eu-ai-act-epistemic-gaps-and-bureaucratic-traps)
+[^78]: [Stanford CRFM - EU AI Act](https://crfm.stanford.edu/2024/08/01/eu-ai-act.html)
+[^79]: [EY - EU AI Act Guide](https://www.ey.com/content/dam/ey-unified-site/ey-com/en-gl/insights/public-policy/documents/ey-gl-eu-ai-act-07-2024.pdf)
+[^80]: [Stanford CRFM - EU AI Act](https://crfm.stanford.edu/2024/08/01/eu-ai-act.html)
+[^81]: [Time - EU AI Regulation Foundation Models](https://time.com/6338602/eu-ai-regulation-foundation-models/)
+[^82]: [Kaizenner - Reflections on AI Act](https://www.kaizenner.eu/post/reflections-on-aiact)
+[^83]: [CFG - EU AI Act](https://cfg.eu/eu-ai-act/)
+[^84]: [Crowell - EU AI Act GDPR Changes](https://www.crowell.com/en/insights/client-alerts/eu-ai-act-gdpr-and-digital-laws-changes-proposed)
+[^85]: [BSR - EU AI Act Where Do We Stand in 2025](https://www.bsr.org/en/blog/the-eu-ai-act-where-do-we-stand-in-2025)
+[^86]: [Hunton - EDPB and EDPS Opinion](https://www.hunton.com/privacy-and-information-security-law/edpb-and-edps-issue-joint-opinion-on-eu-ai-act-implementation)
+[^87]: [European Parliament - Tackling AI Deepfakes](https://www.europarl.europa.eu/news/en/agenda/plenary-news/2026-01-19/8/tackling-ai-deepfakes-and-sexual-exploitation-on-social-media)
+[^88]: [Hunton - EDPB and EDPS Opinion](https://www.hunton.com/privacy-and-information-security-law/edpb-and-edps-issue-joint-opinion-on-eu-ai-act-implementation)
+[^89]: [ERA Ideas on Europe - Revisiting What Problems the EU AI Act Solves](https://era.ideasoneurope.eu/2026/01/02/revisiting-what-problems-the-eu-ai-act-is-actually-solving/)
+[^90]: [Orrick - EU AI Act 6 Steps](https://www.orrick.com/en/Insights/2025/11/The-EU-AI-Act-6-Steps-to-Take-Before-2-August-2026)
+[^91]: [Ogletree - EU AI Act for US Employers](https://ogletree.com/insights-resources/blog-posts/cybersecurity-awareness-month-in-focus-part-iii-the-eu-ai-act-is-here-what-it-means-for-u-s-employers/)
+[^92]: [Tech Policy Press - Expert Predictions 2026](https://techpolicy.press/expert-predictions-on-whats-at-stake-in-ai-policy-in-2026)
+[^93]: [European Commission - Navigating AI Act](https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act)
+[^94]: [Jones Day - US EU AI Collaboration](https://www.jonesday.com/en/insights/2023/02/us-and-eu-enter-ai-collaboration-agreement)
+[^95]: [European Commission - Navigating AI Act](https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act)
+[^96]: [European Commission - European Approach to AI](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence)
+[^97]: [Usercentrics - EU AI Regulation](https://usercentrics.com/knowledge-hub/eu-ai-regulation-ai-act/)
+[^98]: [European Commission - European Approach to AI](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence)
