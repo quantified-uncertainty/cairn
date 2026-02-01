@@ -450,9 +450,9 @@ npm run build:data
 npm run validate
 
 # Check specific validators
-npm run validate:style
-npm run validate:links
-npm run validate:mdx
+npm run crux -- validate templates
+npm run crux -- validate refs
+npm run crux -- validate compile
 
 # Test dev server
 npm run dev

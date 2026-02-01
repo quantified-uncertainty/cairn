@@ -22,15 +22,17 @@ Skills provide workflow guidance:
 
 ## Quick Commands
 
+All tools accessible via the unified `crux` CLI:
+
 ```bash
-# Analysis
-npm run analyze          # Full wiki health report
-npm run analyze:brief    # Summary only
+# Discover available commands
+npm run crux -- --help              # List all domains
+npm run crux -- validate --help     # List validate commands
 
-# Validation
-npm run validate         # Full validation suite
-npm run precommit        # Quick pre-commit checks
-
-# Resources
-npm run resources list   # Pages with unconverted links
+# Common operations
+npm run validate                    # Full validation suite
+npm run precommit                   # Quick pre-commit checks
+npm run crux -- analyze             # Wiki health report
+npm run crux -- resources list      # Pages with unconverted links
+npm run crux -- fix escaping        # Auto-fix dollar signs, comparisons
 ```

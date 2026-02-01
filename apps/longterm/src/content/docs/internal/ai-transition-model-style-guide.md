@@ -223,11 +223,8 @@ ATM pages are evaluated differently:
 
 ```bash
 # Validate ATM entities
-npm run validate:data
+npm run crux -- validate data
 
-# Check cause-effect graph sync
-node scripts/graph/analyze-graph-sync.mjs
-
-# Validate all diagrams exist in master
+# Validate all diagrams and cause-effect graphs
 npm run validate
 ```

@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+console.log('API Key loaded:', OPENROUTER_API_KEY ? 'Yes (length: ' + OPENROUTER_API_KEY.length + ')' : 'No');
 
 const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   method: 'POST',

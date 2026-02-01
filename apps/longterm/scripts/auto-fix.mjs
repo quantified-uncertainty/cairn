@@ -38,16 +38,14 @@ const fixers = [
     command: 'node scripts/validate/validate-entity-links.mjs --fix',
   },
   {
-    name: 'Dollar Sign Escaping',
-    description: 'Escape $ for LaTeX compatibility',
-    command: 'node scripts/validate/validate-dollar-signs.mjs --fix',
+    name: 'Escaping (dollars, comparisons, tildes)',
+    description: 'Escape special characters for LaTeX/JSX',
+    command: 'node scripts/validate/validate-unified.mjs --rules=dollar-signs,comparison-operators,tilde-dollar --fix',
   },
   {
-    name: 'Trailing Slash Links',
-    description: 'Add trailing slashes to internal links',
-    command: 'node scripts/validate/validate-internal-links.mjs --fix',
-    // Note: This validator may not have --fix yet
-    skipIfNoFix: true,
+    name: 'Markdown Formatting',
+    description: 'Fix markdown lists and bold labels',
+    command: 'node scripts/validate/validate-unified.mjs --rules=markdown-lists,consecutive-bold-labels --fix',
   },
 ];
 

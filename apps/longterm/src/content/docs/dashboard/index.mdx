@@ -185,9 +185,9 @@ Pages prioritized for improvement based on (importance - quality × 10). High im
   </TableBody>
 </Table>
 
-To enhance these pages, run:
+To improve these pages, use the `/improving-pages` skill or run:
 ```bash
-node scripts/document-enhancer.mjs enhance --min-imp 30 --max-qual 3 --limit 10
+npm run crux -- content improve <page-id>
 ```
 
 ---
@@ -215,7 +215,7 @@ node scripts/document-enhancer.mjs enhance --min-imp 30 --max-qual 3 --limit 10
 
 To get current link health status, run:
 ```bash
-npm run validate:links
+npm run crux -- validate refs
 ```
 
 ---
@@ -231,9 +231,8 @@ npm run validate
 Individual validators:
 
 ```bash
-npm run validate:style       # Style guide compliance
-npm run validate:staleness   # Content freshness
-npm run validate:consistency # Cross-page consistency
-npm run validate:data        # Entity data integrity
-npm run validate:links       # Internal link validation
+npm run crux -- validate templates     # Template compliance
+npm run crux -- validate data          # Entity data integrity
+npm run crux -- validate refs          # Internal link validation
+npm run crux -- validate unified       # Formatting and escaping rules
 ```

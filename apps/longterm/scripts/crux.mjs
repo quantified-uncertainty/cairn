@@ -10,38 +10,49 @@
  *   crux <domain> [options]          # Runs default command
  *
  * Domains:
+ *   validate    Run validation checks
+ *   analyze     Analysis & reporting
+ *   fix         Auto-fix operations
+ *   content     Page management (improve, create, grade)
+ *   generate    Content generation (yaml, summaries, diagrams)
+ *   resources   External resource management
  *   insights    Insight quality management
- *   resources   External resource links (coming soon)
- *   content     Page quality management (coming soon)
- *   gaps        Insight gap analysis (coming soon)
- *   validate    Run validators (coming soon)
+ *   gaps        Insight gap analysis
  *
  * Global Options:
  *   --ci        JSON output for CI pipelines
  *   --help      Show help
  *
  * Examples:
- *   crux insights check
- *   crux insights duplicates --threshold 0.5
- *   crux insights stats --json
- *   crux resources list
- *   crux validate --only insights,links
+ *   crux validate                            Run all validation checks
+ *   crux validate compile --quick            Quick MDX compilation check
+ *   crux validate unified --rules=dollars    Run specific rules
+ *   crux insights check                      Check insight quality
+ *   crux gaps list                           Find pages needing insights
  */
 
 import { parseArgs } from 'node:util';
 import { createLogger } from './lib/output.mjs';
 
 // Domain handlers
+import * as validateCommands from './commands/validate.mjs';
+import * as analyzeCommands from './commands/analyze.mjs';
+import * as fixCommands from './commands/fix.mjs';
+import * as contentCommands from './commands/content.mjs';
+import * as generateCommands from './commands/generate.mjs';
+import * as resourcesCommands from './commands/resources.mjs';
 import * as insightsCommands from './commands/insights.mjs';
 import * as gapsCommands from './commands/gaps.mjs';
 
 const domains = {
+  validate: validateCommands,
+  analyze: analyzeCommands,
+  fix: fixCommands,
+  content: contentCommands,
+  generate: generateCommands,
+  resources: resourcesCommands,
   insights: insightsCommands,
   gaps: gapsCommands,
-  // Future domains:
-  // resources: resourcesCommands,
-  // content: contentCommands,
-  // validate: validateCommands,
 };
 
 /**
@@ -97,20 +108,25 @@ ${'\x1b[1m'}Usage:${'\x1b[0m'}
   crux <domain> [options]          # Runs default command
 
 ${'\x1b[1m'}Domains:${'\x1b[0m'}
+  validate    Run validation checks
+  analyze     Analysis & reporting
+  fix         Auto-fix operations
+  content     Page management (improve, create, grade)
+  generate    Content generation (yaml, summaries, diagrams)
+  resources   External resource management
   insights    Insight quality management
-  resources   External resource links (coming soon)
-  content     Page quality management (coming soon)
-  gaps        Insight gap analysis (coming soon)
-  validate    Run validators (coming soon)
+  gaps        Insight gap analysis
 
 ${'\x1b[1m'}Global Options:${'\x1b[0m'}
   --ci        JSON output for CI pipelines
   --help      Show help
 
 ${'\x1b[1m'}Examples:${'\x1b[0m'}
-  crux insights check
-  crux insights duplicates --threshold 0.5
-  crux insights stats --json
+  crux validate                       Run all validation checks
+  crux validate compile --quick       Quick MDX compilation check
+  crux validate unified --fix         Auto-fix unified rule issues
+  crux insights check                 Check insight quality
+  crux gaps list --limit=10           Find pages needing insights
 
 ${'\x1b[1m'}Domain Help:${'\x1b[0m'}
   crux <domain> --help
@@ -154,8 +170,17 @@ async function main() {
   }
 
   // Determine which command to run
-  const commandName = command || 'check'; // Default command
-  const commandHandler = domainHandler.commands?.[commandName];
+  // Use explicit command, or 'default' if defined, or fall back to 'check'
+  let commandName = command;
+  let commandHandler;
+
+  if (commandName) {
+    commandHandler = domainHandler.commands?.[commandName];
+  } else {
+    // No command specified - try 'default', then 'check'
+    commandHandler = domainHandler.commands?.default || domainHandler.commands?.check;
+    commandName = domainHandler.commands?.default ? 'default' : 'check';
+  }
 
   if (!commandHandler) {
     log.error(`Unknown command: ${commandName}`);

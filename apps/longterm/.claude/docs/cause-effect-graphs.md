@@ -113,8 +113,9 @@ Data is stored in entity YAML files under the `causeEffectGraph` field.
 
 **Sync workflow:**
 ```bash
-node scripts/graph/analyze-graph-sync.mjs              # Check sync status
-node scripts/graph/add-missing-nodes-to-master.mjs --dry-run  # Preview
-node scripts/graph/add-missing-nodes-to-master.mjs --apply    # Apply
+# Graph sync scripts are archived (one-time use):
+# scripts/archive/one-offs-2025-01/graph-sync/analyze-graph-sync.mjs
+# scripts/archive/one-offs-2025-01/graph-sync/add-missing-nodes-to-master.mjs
+
 npm run validate  # Includes graph sync validation
 ```

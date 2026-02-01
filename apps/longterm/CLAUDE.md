@@ -10,13 +10,15 @@ npm run dev                    # Start dev server (runs build:data first)
 npm run build:data             # Rebuild entity database after YAML changes
 
 # Validation (run before committing)
-npm run precommit              # Quick: dollars, comparisons, markdown-lists, compile
+npm run precommit              # Quick: frontmatter, escaping, markdown, compile
 npm run validate               # Full validation suite
 
-# Common tasks
-npm run analyze:mentions       # Find unlinked entity mentions
-npm run analyze:links          # Link coverage report
-npm run resources list         # List pages with unconverted links
+# CLI - unified tool access
+npm run crux -- --help         # Show all domains
+npm run crux -- validate compile --quick
+npm run crux -- analyze mentions
+npm run crux -- fix escaping
+npm run crux -- resources list
 ```
 
 ## Essential Conventions
@@ -73,9 +75,12 @@ src/
 └── pages/                  # Astro pages (dashboard, browse)
 
 scripts/
-├── validate/               # 20+ validators
-├── analyze/                # Link coverage, mentions analysis
-├── content/                # Page improvement, grading
+├── crux.mjs                # Unified CLI entry point
+├── commands/               # CLI domain handlers
+├── validate/               # Validation scripts
+├── analyze/                # Analysis scripts
+├── content/                # Page improvement, creation
+├── generate/               # Content generation
 └── lib/                    # Shared utilities, rules
 ```
 
@@ -86,13 +91,27 @@ scripts/
 | `src/content.config.ts` | MDX frontmatter schema |
 | `src/data/schema.ts` | Entity type definitions |
 
-## Validators
+## Crux CLI
 
-Run `npm run validate` for full suite. Key individual validators:
-- `validate:compile` - MDX compilation (catches JSX errors)
-- `validate:refs` - EntityLink/DataInfoBox references
-- `validate:links` - Internal link resolution
-- `validate:mermaid` - Diagram syntax
+Unified CLI for all project tools. Run `npm run crux -- --help` for full list.
+
+```bash
+# Domains
+crux validate     # 15 validators (compile, links, mermaid, refs, etc.)
+crux analyze      # Analysis tools (mentions, links, quality)
+crux fix          # Auto-fixers (escaping, entity-links, markdown)
+crux content      # Page management (improve, create, regrade)
+crux generate     # Content generation (yaml, summaries, diagrams)
+crux resources    # External resource management
+crux insights     # Insight quality checks
+crux gaps         # Find pages needing insights
+
+# Examples
+crux validate compile --quick    # Fast MDX compilation check
+crux analyze mentions            # Find unlinked entity references
+crux fix escaping                # Fix dollar signs and comparisons
+crux resources list --limit 10   # Pages with unconverted links
+```
 
 ## Page Types
 

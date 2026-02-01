@@ -12,9 +12,9 @@ ANTHROPIC_API_KEY=sk-ant-...
 ## Commands
 
 ```bash
-npm run kb:scan        # Scan MDX files, extract sources, populate database
-npm run kb:summarize   # Generate AI summaries (uses Haiku by default)
-npm run kb:stats       # Show database statistics
+npm run crux -- analyze scan                   # Scan MDX files, extract sources
+npm run crux -- generate summaries             # Generate AI summaries
+node scripts/scan-content.mjs --stats          # Show database statistics
 ```
 
 ## Detailed Usage

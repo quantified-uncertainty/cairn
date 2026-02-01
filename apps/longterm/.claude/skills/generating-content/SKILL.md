@@ -93,7 +93,7 @@ import {EntityLink} from '../../../../components/wiki';
 
 Check if URL exists in resource database first:
 ```bash
-npm run resources -- show [page-name]
+npm run crux -- resources show [page-name]
 ```
 
 If exists, use `<R>` component:
@@ -156,9 +156,9 @@ For ATM entity pages, use cause-effect graphs defined in YAML. See `.claude/docs
 Before completing new pages:
 
 ```bash
-npm run validate -- --file path/to/new-file.mdx  # Check specific file
-npm run validate:compile  # Verify MDX compiles
-npm run validate:refs     # Check EntityLink/DataInfoBox references
+npm run crux -- validate compile --quick   # Verify MDX compiles
+npm run crux -- validate refs              # Check EntityLink/DataInfoBox references
+npm run validate                           # Full validation suite
 ```
 
 ## Common MDX Escaping Issues
@@ -180,5 +180,5 @@ npm run build:data
 
 Run link analysis to check integration:
 ```bash
-npm run analyze:links -- --page [new-page-name]
+npm run crux -- analyze links
 ```

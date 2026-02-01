@@ -47,7 +47,7 @@ A["Probability > 0.5"]
 
 ## Validation
 
-Run `npm run validate:mermaid` to check diagram syntax.
+Run `npm run crux -- validate mermaid` to check diagram syntax.
 
 Common errors caught:
 - Unquoted labels with special characters

@@ -19,16 +19,16 @@ The wiki uses a resource database to track external sources (papers, blog posts,
 
 ```bash
 # Discovery
-npm run resources list                        # List pages with unconverted links
-npm run resources -- show bioweapons          # Show unconverted links in specific file
+npm run crux -- resources list                # List pages with unconverted links
+npm run crux -- resources show bioweapons     # Show unconverted links in specific file
 
 # Conversion
-npm run resources -- process lock-in --apply  # Convert links to <R> components
+npm run crux -- resources process lock-in --apply  # Convert links to <R> components
 
 # Metadata
-npm run resources -- metadata stats           # Show metadata coverage statistics
-npm run resources -- metadata all             # Extract metadata from all sources
-npm run resources -- rebuild-citations        # Rebuild cited_by relationships
+npm run crux -- resources metadata stats      # Show metadata coverage statistics
+npm run crux -- resources metadata all        # Extract metadata from all sources
+npm run crux -- resources rebuild-citations   # Rebuild cited_by relationships
 ```
 
 ## Using the `<R>` Component
@@ -55,7 +55,7 @@ import {R} from '../../../../components/wiki';
 When you have a URL and want to check if it's in the database:
 
 ```bash
-npm run resources -- show expertise-atrophy  # Shows convertible links for a page
+npm run crux -- resources show expertise-atrophy  # Shows convertible links for a page
 ```
 
 The output shows which URLs have matching resource IDs and can be converted.
@@ -74,7 +74,7 @@ import {ArticleSources} from '../../../../components/wiki';
 
 1. When citing an external source, first check if URL exists:
    ```bash
-   npm run resources -- show [page-name]
+   npm run crux -- resources show [page-name]
    ```
 
 2. If resource exists → use `<R id="{hash}">Label</R>`

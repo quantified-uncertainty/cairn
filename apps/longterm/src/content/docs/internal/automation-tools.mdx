@@ -23,12 +23,12 @@ This page documents all automation tools available for maintaining and improving
 
 | Tool | Purpose | Command |
 |------|---------|---------|
-| **Page Improver** | Improve pages to Q5 quality | `node scripts/page-improver.mjs <page-id>` |
-| **Content Grader** | Auto-grade pages via AI | `node scripts/grade-content.mjs` |
-| **Validators** | Check content quality | `npm run validate` |
-| **Knowledge Base** | Scan content, generate summaries | `npm run kb:scan` |
+| **Content Commands** | Improve, grade, create pages | `npm run crux -- content` |
+| **Validators** | Check content quality | `npm run crux -- validate` |
+| **Analyzers** | Analysis and reporting | `npm run crux -- analyze` |
+| **Auto-fixers** | Fix common issues | `npm run crux -- fix` |
 | **Data Builder** | Regenerate entity data | `npm run build:data` |
-| **Document Enhancer** | Unified content management CLI | `node scripts/document-enhancer.mjs` |
+| **Resources** | External resource management | `npm run crux -- resources` |
 
 ---
 
@@ -137,35 +137,39 @@ node scripts/grade-content.mjs --skip-graded --limit 50
 
 ## Validation Suite
 
-Run all content quality checks:
+All validators are accessible via the unified `crux` CLI:
 
 ```bash
-npm run validate          # Run all validators
-npm run validate:ci       # CI mode (JSON output)
+npm run validate              # Run all validators
+npm run crux -- validate --help   # List all validators
 ```
 
 ### Individual Validators
 
 | Command | Description |
 |---------|-------------|
-| `npm run validate:style` | Style guide compliance (sections, structure) |
-| `npm run validate:staleness` | Content freshness (review dates, age) |
-| `npm run validate:consistency` | Cross-page consistency (estimates, terminology) |
-| `npm run validate:data` | Entity data integrity (references, required fields) |
-| `npm run validate:links` | Internal link validation |
-| `npm run validate:mdx` | MDX syntax errors |
-| `npm run validate:sidebar` | Sidebar configuration (index pages) |
-| `npm run validate:types` | UI components handle all entity types |
-| `npm run validate:quality` | Content quality metrics |
+| `crux validate compile` | MDX compilation check |
+| `crux validate data` | Entity data integrity |
+| `crux validate refs` | Internal reference validation |
+| `crux validate mermaid` | Mermaid diagram syntax |
+| `crux validate sidebar` | Sidebar configuration |
+| `crux validate entity-links` | EntityLink component validation |
+| `crux validate templates` | Template compliance |
+| `crux validate quality` | Content quality metrics |
+| `crux validate unified` | Unified rules engine (escaping, formatting) |
 
 ### Advanced Usage
 
 ```bash
-# Skip specific checks
-node scripts/validate-all.mjs --skip=orphans,staleness
+# Run specific validators
+npm run crux -- validate compile --quick
+npm run crux -- validate unified --rules=dollar-signs,markdown-lists
 
-# Stop on first failure
-node scripts/validate-all.mjs --fail-fast
+# Skip specific checks
+npm run crux -- validate all --skip=component-refs
+
+# CI mode
+npm run validate:ci
 ```
 
 ---
@@ -184,9 +188,9 @@ ANTHROPIC_API_KEY=sk-ant-...
 ### Commands
 
 ```bash
-npm run kb:scan        # Scan MDX files, extract sources, populate database
-npm run kb:summarize   # Generate AI summaries
-npm run kb:stats       # Show database statistics
+npm run crux -- analyze scan                   # Scan MDX files, extract sources
+npm run crux -- generate summaries             # Generate AI summaries
+node scripts/scan-content.mjs --stats          # Show database statistics
 ```
 
 ### Detailed Usage
@@ -197,12 +201,11 @@ node scripts/scan-content.mjs
 node scripts/scan-content.mjs --force    # Rescan all files
 node scripts/scan-content.mjs --verbose  # Show per-file progress
 
-# Generate summaries
-node scripts/generate-summaries.mjs --batch 50           # Summarize 50 articles
-node scripts/generate-summaries.mjs --type sources       # Summarize sources
-node scripts/generate-summaries.mjs --model sonnet       # Use Sonnet
-node scripts/generate-summaries.mjs --id deceptive-alignment  # Specific article
-node scripts/generate-summaries.mjs --dry-run            # Preview only
+# Generate summaries via crux
+npm run crux -- generate summaries --batch 50
+npm run crux -- generate summaries --model sonnet
+npm run crux -- generate summaries --id deceptive-alignment
+npm run crux -- generate summaries --dry-run
 ```
 
 ### Database Location
@@ -253,26 +256,25 @@ npm run cleanup-data         # Clean up data files
 
 ---
 
-## Document Enhancer CLI
+## Content Management CLI
 
-Unified tool for managing and improving content quality.
+Unified tool for managing and improving content quality via `crux content`.
 
 ### Commands
 
 ```bash
-# List pages by priority (gap = importance - quality × 20)
-node scripts/document-enhancer.mjs list --sort gap --limit 20
-
-# Show details for a specific page
-node scripts/document-enhancer.mjs show scheming
+# Improve pages
+npm run crux -- content improve <page-id>
 
 # Grade pages using Claude API
-node scripts/document-enhancer.mjs grade --limit 5 --dry-run
-node scripts/document-enhancer.mjs grade --apply
+npm run crux -- content grade --page scheming
+npm run crux -- content grade --limit 5 --apply
 
-# Enhance low-quality pages
-node scripts/document-enhancer.mjs enhance --min-imp 70 --max-qual 2 --dry-run
-node scripts/document-enhancer.mjs enhance --page language-models
+# Regrade pages
+npm run crux -- content regrade --page scheming
+
+# Create new pages
+npm run crux -- content create --type risk --file input.yaml
 ```
 
 ### Options
@@ -282,9 +284,6 @@ node scripts/document-enhancer.mjs enhance --page language-models
 | `--dry-run` | Preview without API calls |
 | `--limit N` | Process only N pages |
 | `--apply` | Apply changes directly to files |
-| `--model X` | Use specific Claude model |
-| `--min-imp N` | Minimum importance (enhance) |
-| `--max-qual N` | Maximum quality (enhance) |
 | `--page ID` | Target specific page |
 
 ---
@@ -307,8 +306,7 @@ node scripts/convert-links-to-r.mjs --apply                # Apply changes
 ### Export Resources
 
 ```bash
-node scripts/export-resources.mjs              # Export resource data
-node scripts/fix-resource-summaries.mjs        # Fix summary issues
+node scripts/utils/export-resources.mjs        # Export resource data
 ```
 
 ---
@@ -319,19 +317,19 @@ node scripts/fix-resource-summaries.mjs        # Fix summary issues
 
 ```bash
 # Generate a model page from YAML input
-node scripts/generate-content.mjs --type model --file input.yaml
+npm run crux -- generate content --type model --file input.yaml
 
 # Generate a risk page
-node scripts/generate-content.mjs --type risk --file input.yaml
+npm run crux -- generate content --type risk --file input.yaml
 
 # Generate a response page
-node scripts/generate-content.mjs --type response --file input.yaml
+npm run crux -- generate content --type response --file input.yaml
 ```
 
 ### Batch Summaries
 
 ```bash
-node scripts/batch-summaries.mjs              # Generate summaries for multiple pages
+npm run crux -- generate summaries --batch 50  # Generate summaries for multiple pages
 ```
 
 ---
@@ -383,8 +381,8 @@ Scripts that generate intermediate output (like grading results) write here by d
 
 4. Validate the result:
    ```bash
-   npm run validate:mdx
-   npm run validate:style
+   npm run crux -- validate compile
+   npm run crux -- validate templates
    ```
 
 ### Grade All New Pages
@@ -414,5 +412,5 @@ npm run validate
 
 ```bash
 npm run build:data
-npm run validate:data
+npm run crux -- validate data
 ```

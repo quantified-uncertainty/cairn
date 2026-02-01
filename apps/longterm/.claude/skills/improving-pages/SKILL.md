@@ -19,13 +19,13 @@ This skill provides guidance for improving existing wiki pages.
 
 ```bash
 # Check page for validation issues
-npm run validate -- --file path/to/file.mdx
+npm run crux -- validate compile --quick
 
 # Check entity mention opportunities (unlinked references)
-npm run analyze:mentions -- --page knowledge-base/risks/misuse/bioweapons
+npm run crux -- analyze mentions
 
 # Check link coverage (orphans, underlinked pages)
-npm run analyze:links -- --page bioweapons
+npm run crux -- analyze links --orphans
 ```
 
 ## Quality Assessment
@@ -77,7 +77,7 @@ When completing a TODO:
 For external sources, check if URL exists in resources database:
 
 ```bash
-npm run resources -- show bioweapons  # Check existing resources
+npm run crux -- resources show bioweapons  # Check existing resources
 ```
 
 If resource exists, use `<R>` component instead of markdown link:
@@ -121,7 +121,7 @@ Required sections:
 Always run relevant validators:
 
 ```bash
-npm run validate           # Full validation suite
-npm run validate:mermaid   # If page has diagrams
-npm run validate:templates # If page declares a template
+npm run validate                      # Full validation suite
+npm run crux -- validate mermaid      # If page has diagrams
+npm run crux -- validate compile      # Check MDX compiles
 ```

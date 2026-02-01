@@ -29,16 +29,16 @@ This project includes a SQLite-based content database for managing article metad
 
 ```bash
 # Scan all content files and populate database
-npm run kb:scan
+npm run crux -- analyze scan
 
 # Generate AI summaries for articles
-npm run kb:summarize
+npm run crux -- generate summaries
 
 # Export sources to resources.yaml
-node scripts/export-resources.mjs
+node scripts/utils/export-resources.mjs
 
 # View database statistics
-npm run kb:stats
+node scripts/scan-content.mjs --stats
 ```
 
 <Aside type="note">
@@ -153,13 +153,13 @@ Entity relationships loaded from `entities.yaml`.
 
 ## Commands Reference
 
-### npm run kb:scan
+### Scan Content
 
 Scans all MDX files and populates the database.
 
 ```bash
 # Standard scan (skips unchanged files)
-npm run kb:scan
+npm run crux -- analyze scan
 
 # Force rescan all files
 node scripts/scan-content.mjs --force
@@ -181,31 +181,28 @@ node scripts/scan-content.mjs --stats
 6. Loads entity relations from `entities.yaml`
 7. Skips unchanged files via content hash comparison
 
-### npm run kb:summarize
+### Generate Summaries
 
 Generates AI summaries using the Anthropic API.
 
 ```bash
 # Summarize 10 articles (default)
-npm run kb:summarize
+npm run crux -- generate summaries
 
 # Summarize specific count
-node scripts/generate-summaries.mjs --batch 50
-
-# Summarize sources instead of articles
-node scripts/generate-summaries.mjs --type sources
+npm run crux -- generate summaries --batch 50
 
 # Use higher-quality model
-node scripts/generate-summaries.mjs --model sonnet
+npm run crux -- generate summaries --model sonnet
 
 # Summarize specific article
-node scripts/generate-summaries.mjs --id deceptive-alignment
+npm run crux -- generate summaries --id deceptive-alignment
 
 # Re-summarize changed content
-node scripts/generate-summaries.mjs --resummary
+npm run crux -- generate summaries --resummary
 
 # Preview without API calls
-node scripts/generate-summaries.mjs --dry-run
+npm run crux -- generate summaries --dry-run
 ```
 
 **Models available:**
@@ -224,12 +221,12 @@ node scripts/generate-summaries.mjs --dry-run
 | Summarize 793 sources | Haiku | ≈\$10-15 |
 | Single article improvement | Sonnet | ≈\$0.20 |
 
-### npm run kb:stats
+### Database Statistics
 
 Display database statistics.
 
 ```bash
-npm run kb:stats
+node scripts/scan-content.mjs --stats
 ```
 
 ---
@@ -401,22 +398,22 @@ project/
 
 ```bash
 # 1. Scan for changes (fast, uses hash comparison)
-npm run kb:scan
+npm run crux -- analyze scan
 
 # 2. Generate summaries for new/changed articles
-npm run kb:summarize --resummary
+npm run crux -- generate summaries --resummary
 ```
 
 ### Bulk Initial Setup
 
 ```bash
 # 1. Scan all content
-npm run kb:scan --force
+node scripts/scan-content.mjs --force
 
 # 2. Generate summaries in batches
-node scripts/generate-summaries.mjs --batch 100
-node scripts/generate-summaries.mjs --batch 100
-node scripts/generate-summaries.mjs --batch 100
+npm run crux -- generate summaries --batch 100
+npm run crux -- generate summaries --batch 100
+npm run crux -- generate summaries --batch 100
 # ... repeat until done
 ```
 
@@ -424,7 +421,7 @@ node scripts/generate-summaries.mjs --batch 100
 
 ```bash
 # View statistics
-npm run kb:stats
+node scripts/scan-content.mjs --stats
 
 # Or programmatically
 node -e "

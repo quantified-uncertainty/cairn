@@ -52,8 +52,8 @@ Pages can declare which template/style guide they follow via the `template` fron
 
 **Validate templates:**
 ```bash
-npm run validate:templates           # Check pages with declared templates
-npm run validate:templates --suggest # Suggest templates for pages without them
+npm run crux -- validate templates           # Check pages with declared templates
+npm run crux -- validate templates --suggest # Suggest templates for pages without them
 ```
 
 Template definitions are in `src/data/page-templates.ts`.

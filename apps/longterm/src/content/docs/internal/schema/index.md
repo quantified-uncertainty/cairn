@@ -11,7 +11,7 @@ Documentation for the data schema that powers this site. All entity and resource
 ## Contents
 
 - **[Diagrams](/internal/schema/diagrams/)** - Visual documentation of entity types, relationships, and data flow
-- **Validation** - Run `npm run validate:schema` to check YAML files against the schema
+- **Validation** - Run `npm run crux -- validate data` to check YAML files against the schema
 
 ## Quick Links
 
@@ -20,7 +20,7 @@ Documentation for the data schema that powers this site. All entity and resource
 | `src/data/schema.ts` | Zod schema definitions (source of truth) |
 | `src/data/entities/*.yaml` | Entity data files |
 | `src/data/resources/*.yaml` | Resource/citation data |
-| `scripts/validate-yaml-schema.mjs` | Schema validator script |
+| `scripts/validate/validate-yaml-schema.mjs` | Schema validator script |
 | `scripts/generate-schema-diagrams.mjs` | Diagram generator |
 
 ## Regenerating Diagrams
