@@ -30,6 +30,10 @@ export { cruftFilesRule } from './cruft-files.mjs';
 export { markdownListsRule } from './markdown-lists.mjs';
 export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 
+// Component validation rules
+export { componentPropsRule } from './component-props.mjs';
+export { citationUrlsRule } from './citation-urls.mjs';
+
 // Schema validation rules
 export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 
@@ -54,6 +58,8 @@ import { jsxInMdRule } from './jsx-in-md.mjs';
 import { cruftFilesRule } from './cruft-files.mjs';
 import { markdownListsRule } from './markdown-lists.mjs';
 import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
+import { componentPropsRule } from './component-props.mjs';
+import { citationUrlsRule } from './citation-urls.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 import { qualitySourceRule } from './quality-source.mjs';
 
@@ -82,6 +88,10 @@ export const allRules = [
   // Markdown formatting
   markdownListsRule,
   consecutiveBoldLabelsRule,
+
+  // Component validation
+  componentPropsRule,
+  citationUrlsRule,
 
   // Schema validation
   frontmatterSchemaRule,

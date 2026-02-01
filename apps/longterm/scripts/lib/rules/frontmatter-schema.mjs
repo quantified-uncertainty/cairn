@@ -102,6 +102,25 @@ export const frontmatterSchemaRule = {
       }));
     }
 
+    // Check for UNquoted lastEdited dates - these must be quoted strings
+    // YAML parses bare 2026-02-01 as a Date object, but Astro schema expects string
+    const unquotedLastEditedMatch = rawContent.match(/lastEdited:\s*(\d{4}-\d{2}-\d{2})(?:\s*$|\s*\n)/m);
+    if (unquotedLastEditedMatch) {
+      // Verify it's not quoted by checking if there's a quote before the date
+      const beforeDate = rawContent.substring(0, rawContent.indexOf(unquotedLastEditedMatch[0]));
+      const lastEditedLine = beforeDate.split('\n').length;
+      const lineContent = rawContent.split('\n')[lastEditedLine - 1] || '';
+      if (!lineContent.includes('"') && !lineContent.includes("'")) {
+        issues.push(new Issue({
+          rule: 'frontmatter-schema',
+          file: contentFile.path,
+          line: lastEditedLine,
+          message: `lastEdited must be a quoted string (lastEdited: "${unquotedLastEditedMatch[1]}", not lastEdited: ${unquotedLastEditedMatch[1]})`,
+          severity: Severity.ERROR,
+        }));
+      }
+    }
+
     // Validate against Zod schema
     const result = frontmatterSchema.safeParse(frontmatter);
 

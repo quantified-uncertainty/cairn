@@ -38,19 +38,19 @@ const TIERS = {
   budget: {
     name: 'Budget',
     estimatedCost: '$2-3',
-    phases: ['research-perplexity', 'synthesize-fast', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['research-perplexity', 'synthesize-fast', 'verify-sources', 'validate-loop', 'validate-full', 'grade'],
     description: 'Perplexity research + fast synthesis'
   },
   standard: {
     name: 'Standard',
     estimatedCost: '$4-6',
-    phases: ['research-perplexity', 'research-scry', 'synthesize', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'validate-full', 'grade'],
     description: 'Full research + Sonnet synthesis + validation loop'
   },
   premium: {
     name: 'Premium',
     estimatedCost: '$8-12',
-    phases: ['research-perplexity-deep', 'research-scry', 'synthesize-quality', 'review', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['research-perplexity-deep', 'research-scry', 'synthesize-quality', 'verify-sources', 'review', 'validate-loop', 'validate-full', 'grade'],
     description: 'Deep research + quality synthesis + review'
   }
 };
@@ -62,7 +62,9 @@ const CRITICAL_RULES = [
   'frontmatter-schema',
   'entitylink-ids',
   'internal-links',
-  'fake-urls'
+  'fake-urls',
+  'component-props',
+  'citation-urls'
 ];
 
 // Quality rules (should pass, but won't block)
@@ -372,6 +374,102 @@ async function runSynthesis(topic, quality = 'standard') {
       }
     });
   });
+}
+
+// ============ Phase: Source Verification ============
+
+async function runSourceVerification(topic) {
+  log('verify-sources', 'Checking content against research sources...');
+
+  const topicDir = getTopicDir(topic);
+  const researchPath = path.join(topicDir, 'perplexity-research.json');
+  const draftPath = path.join(topicDir, 'draft.mdx');
+
+  if (!fs.existsSync(researchPath) || !fs.existsSync(draftPath)) {
+    log('verify-sources', 'Missing research or draft, skipping verification');
+    return { success: true, warnings: [] };
+  }
+
+  const research = JSON.parse(fs.readFileSync(researchPath, 'utf-8'));
+  const draft = fs.readFileSync(draftPath, 'utf-8');
+
+  // Combine all research text for searching
+  const researchText = research.responses
+    ?.map(r => r.content || '')
+    .join('\n')
+    .toLowerCase() || '';
+
+  const warnings = [];
+
+  // Pattern to find author attribution statements
+  // e.g., "authored by X, Y, and Z" or "by X and Y" or "written by X"
+  const authorPatterns = [
+    /authored by\s+([^.\n]+)/gi,
+    /written by\s+([^.\n]+)/gi,
+    /paper was authored by\s+([^.\n]+)/gi,
+    /including\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:,\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)*(?:,?\s+and\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)?)/g,
+  ];
+
+  // Extract names from draft
+  const mentionedNames = new Set();
+  for (const pattern of authorPatterns) {
+    let match;
+    while ((match = pattern.exec(draft)) !== null) {
+      // Extract individual names from the match
+      const nameStr = match[1];
+      // Split by commas and "and"
+      const names = nameStr
+        .replace(/\s+and\s+/gi, ', ')
+        .split(',')
+        .map(n => n.trim())
+        .filter(n => n.length > 0 && /^[A-Z]/.test(n));
+
+      for (const name of names) {
+        // Only add if it looks like a proper name (first and last name)
+        if (name.split(/\s+/).length >= 2) {
+          mentionedNames.add(name);
+        }
+      }
+    }
+  }
+
+  // Check if each name appears in the research
+  for (const name of mentionedNames) {
+    const nameLower = name.toLowerCase();
+    // Also try last name only for matching
+    const lastName = name.split(/\s+/).pop()?.toLowerCase();
+
+    if (!researchText.includes(nameLower) && lastName && !researchText.includes(lastName)) {
+      warnings.push({
+        type: 'unverified-name',
+        name,
+        message: `Name "${name}" not found in research sources - possible hallucination`,
+      });
+    }
+  }
+
+  // Check for footnotes with undefined URLs (should have been caught by synthesis)
+  const undefinedUrlMatches = draft.match(/\]\(undefined\)/g);
+  if (undefinedUrlMatches) {
+    warnings.push({
+      type: 'undefined-urls',
+      count: undefinedUrlMatches.length,
+      message: `${undefinedUrlMatches.length} footnote(s) have undefined URLs`,
+    });
+  }
+
+  if (warnings.length > 0) {
+    log('verify-sources', `⚠️  Found ${warnings.length} potential issue(s):`);
+    for (const w of warnings) {
+      log('verify-sources', `  - ${w.message}`);
+    }
+    // Save warnings to file for review
+    saveResult(topic, 'source-warnings.json', warnings);
+  } else {
+    log('verify-sources', '✓ All extracted claims found in research');
+  }
+
+  return { success: true, warnings };
 }
 
 // ============ Phase: Validation Loop ============
@@ -908,6 +1006,13 @@ async function runPipeline(topic, tier = 'standard') {
           results.totalCost += result.budget || 0;
           break;
 
+        case 'verify-sources':
+          result = await runSourceVerification(topic);
+          if (result.warnings?.length > 0) {
+            log(phase, `⚠️  Found ${result.warnings.length} potential hallucination(s) - review recommended`);
+          }
+          break;
+
         case 'review':
           result = await runReview(topic);
           results.totalCost += 1.0;
@@ -1052,6 +1157,9 @@ async function main() {
         break;
       case 'synthesize':
         result = await runSynthesis(topic, tier === 'premium' ? 'opus' : 'sonnet', 2.0);
+        break;
+      case 'verify-sources':
+        result = await runSourceVerification(topic);
         break;
       case 'validate-loop':
         result = await runValidationLoop(topic);
