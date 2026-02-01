@@ -12,6 +12,7 @@ export { tildeDollarRule } from './tilde-dollar.mjs';
 export { comparisonOperatorsRule } from './comparison-operators.mjs';
 export { estimateBoxesRule } from './estimate-boxes.mjs';
 export { placeholdersRule } from './placeholders.mjs';
+export { fakeUrlsRule } from './fake-urls.mjs';
 export { internalLinksRule } from './internal-links.mjs';
 export { componentRefsRule } from './component-refs.mjs';
 export { preferEntityLinkRule } from './prefer-entitylink.mjs';
@@ -42,6 +43,7 @@ import { tildeDollarRule } from './tilde-dollar.mjs';
 import { comparisonOperatorsRule } from './comparison-operators.mjs';
 import { estimateBoxesRule } from './estimate-boxes.mjs';
 import { placeholdersRule } from './placeholders.mjs';
+import { fakeUrlsRule } from './fake-urls.mjs';
 import { internalLinksRule } from './internal-links.mjs';
 import { componentRefsRule } from './component-refs.mjs';
 import { preferEntityLinkRule } from './prefer-entitylink.mjs';
@@ -63,6 +65,7 @@ export const allRules = [
   comparisonOperatorsRule,
   estimateBoxesRule,
   placeholdersRule,
+  fakeUrlsRule,
   internalLinksRule,
   componentRefsRule,
   preferEntityLinkRule,
