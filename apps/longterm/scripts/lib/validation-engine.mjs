@@ -19,28 +19,12 @@ import { join, relative, dirname, basename } from 'path';
 import { parse as parseYaml } from 'yaml';
 import { findMdxFiles, findFiles } from './file-utils.mjs';
 import { getColors } from './output.mjs';
+import { parseFrontmatterAndBody } from './mdx-utils.mjs';
 
 // Base directories
 const PROJECT_ROOT = process.cwd();
 const CONTENT_DIR = join(PROJECT_ROOT, 'src/content/docs');
 const DATA_DIR = join(PROJECT_ROOT, 'src/data');
-
-/**
- * Parse frontmatter from MDX/MD content
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-  if (!match) {
-    return { frontmatter: {}, body: content };
-  }
-
-  try {
-    const frontmatter = parseYaml(match[1]);
-    return { frontmatter: frontmatter || {}, body: match[2] };
-  } catch {
-    return { frontmatter: {}, body: content };
-  }
-}
 
 /**
  * Load JSON file safely
@@ -132,7 +116,7 @@ export class ContentFile {
     this.relativePath = relative(CONTENT_DIR, filePath);
     this.raw = raw;
 
-    const { frontmatter, body } = parseFrontmatter(raw);
+    const { frontmatter, body } = parseFrontmatterAndBody(raw);
     this.frontmatter = frontmatter;
     this.body = body;
 

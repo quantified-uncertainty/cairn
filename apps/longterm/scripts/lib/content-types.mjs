@@ -70,15 +70,6 @@ export function getContentType(filePath) {
 }
 
 /**
- * Get content type configuration
- * @param {string} type - Content type name
- * @returns {object|null} Configuration object or null if not found
- */
-export function getContentTypeConfig(type) {
-  return CONTENT_TYPES[type] || null;
-}
-
-/**
  * Get staleness threshold for a content type
  * @param {string} type - Content type name
  * @returns {number} Threshold in days
@@ -95,33 +86,6 @@ export function getStalenessThreshold(type) {
  */
 export function isIndexPage(filePath) {
   return filePath.endsWith('index.mdx') || filePath.endsWith('index.md');
-}
-
-/**
- * Check if a file is a style guide page
- * @param {string} filePath - Path to content file
- * @returns {boolean} True if file is in style-guides
- */
-export function isStyleGuidePage(filePath) {
-  return filePath.includes('/style-guides/');
-}
-
-/**
- * Check if a file is an internal page
- * @param {string} filePath - Path to content file
- * @returns {boolean} True if file is in internal section
- */
-export function isInternalPage(filePath) {
-  return filePath.includes('/internal/');
-}
-
-/**
- * Check if a file should be skipped for validation
- * @param {string} filePath - Path to content file
- * @returns {boolean} True if file should be skipped
- */
-export function shouldSkipValidation(filePath) {
-  return isIndexPage(filePath) || isStyleGuidePage(filePath) || isInternalPage(filePath);
 }
 
 /**

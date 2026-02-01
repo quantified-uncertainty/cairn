@@ -22,6 +22,25 @@ export function parseFrontmatter(content) {
 }
 
 /**
+ * Parse frontmatter and body together from MDX content
+ * @param {string} content - Full MDX file content
+ * @returns {{frontmatter: object, body: string}} Parsed frontmatter and body
+ */
+export function parseFrontmatterAndBody(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) {
+    return { frontmatter: {}, body: content };
+  }
+
+  try {
+    const frontmatter = parseYaml(match[1]);
+    return { frontmatter: frontmatter || {}, body: match[2] };
+  } catch {
+    return { frontmatter: {}, body: content };
+  }
+}
+
+/**
  * Get content body (without frontmatter)
  * @param {string} content - Full MDX file content
  * @returns {string} Content without frontmatter
