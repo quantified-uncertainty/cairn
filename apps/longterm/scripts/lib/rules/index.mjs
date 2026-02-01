@@ -33,12 +33,14 @@ export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 // Component validation rules
 export { componentPropsRule } from './component-props.mjs';
 export { citationUrlsRule } from './citation-urls.mjs';
+export { vagueCitationsRule } from './vague-citations.mjs';
 
 // Schema validation rules
 export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 
 // Quality validation rules
 export { qualitySourceRule } from './quality-source.mjs';
+export { temporalArtifactsRule } from './temporal-artifacts.mjs';
 
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
@@ -60,8 +62,10 @@ import { markdownListsRule } from './markdown-lists.mjs';
 import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 import { componentPropsRule } from './component-props.mjs';
 import { citationUrlsRule } from './citation-urls.mjs';
+import { vagueCitationsRule } from './vague-citations.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 import { qualitySourceRule } from './quality-source.mjs';
+import { temporalArtifactsRule } from './temporal-artifacts.mjs';
 
 export const allRules = [
   // Content validation
@@ -92,12 +96,14 @@ export const allRules = [
   // Component validation
   componentPropsRule,
   citationUrlsRule,
+  vagueCitationsRule,
 
   // Schema validation
   frontmatterSchemaRule,
 
   // Quality validation
   qualitySourceRule,
+  temporalArtifactsRule,
 ];
 
 export default allRules;

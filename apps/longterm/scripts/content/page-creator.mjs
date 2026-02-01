@@ -72,7 +72,9 @@ const QUALITY_RULES = [
   'tilde-dollar',
   'markdown-lists',
   'consecutive-bold-labels',
-  'placeholders'
+  'placeholders',
+  'vague-citations',
+  'temporal-artifacts'
 ];
 
 // ============ Utility Functions ============
@@ -293,11 +295,20 @@ ${citationWarning}
    - NEVER invent URLs like "example.com", "/posts/example", or "undefined"
    - NEVER make up plausible-looking URLs - if you don't have a real URL, use text-only citation
    - If no URL available: [^1]: Source name - description (no link)
+   - **NEVER use vague citations** like "Interview", "Earnings call", "Conference talk", "Reports"
+   - Always specify: exact name, date, and context (e.g., "Tesla Q4 2021 earnings call", "MIT Aeronautics Centennial Symposium (Oct 2014)")
 2. **Escape dollar signs** - Write \\$100M not $100M
 3. **Use EntityLink for internal refs** - <EntityLink id="open-philanthropy">Open Philanthropy</EntityLink>
 4. **Include criticism section** if research supports it
 5. **60%+ prose** - Not just tables and bullet points
 6. **Limited info fallback** - If research is sparse, write a shorter article rather than padding with filler
+7. **Present information as current** - NEVER write "as of the research data" or "through late 2024"
+   - BAD: "As of the research data (through late 2024), no ratifications..."
+   - GOOD: "As of early 2026, the convention remains in..." or just "No ratifications have been reported"
+   - Don't reference when sources were gathered - present facts as current knowledge
+8. **Maintain logical consistency** - Ensure claims within each section align with the section's thesis
+   - If a section is titled "Lack of X", don't describe the subject as having X
+   - If discussing limitations, don't use quotes that suggest the opposite
 
 ## Known Entity IDs
 open-philanthropy, anthropic, openai, deepmind, miri, lesswrong, redwood-research,
