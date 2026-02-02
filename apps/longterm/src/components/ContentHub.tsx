@@ -630,10 +630,10 @@ export default function ContentHub() {
 
       {/* Filter rows */}
       <div className="not-content mb-6!">
-        {/* Cause filter */}
+        {/* Field filter */}
         <div className="flex items-center gap-4 mb-2!">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16 shrink-0">
-            Cause
+            Field
           </span>
           <div className="flex flex-wrap gap-1">
             {CAUSE_OPTIONS.map(({ value, label }) => (
@@ -668,10 +668,10 @@ export default function ContentHub() {
           </div>
         </div>
 
-        {/* Type filter */}
+        {/* Format filter */}
         <div className="flex items-center gap-4!">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16 shrink-0">
-            Type
+            Format
           </span>
           <div className="flex flex-wrap gap-1">
             {TYPE_OPTIONS.map(({ value, label }) => (
