@@ -387,10 +387,8 @@ function ContentCard({ item }: { item: ContentItem }) {
     );
   }
 
-  // Get display clusters (filter out ai-safety if there are others, limit to 2)
-  const displayClusters = item.clusters
-    .filter((c) => item.clusters.length === 1 || c !== 'ai-safety')
-    .slice(0, 2);
+  // Get display clusters (show all, limit to 3)
+  const displayClusters = item.clusters.slice(0, 3);
 
   // Regular content card
   const content = (
