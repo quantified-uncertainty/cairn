@@ -109,6 +109,7 @@ interface ContentItem {
   importance: number | null;
   wordCount: number;
   clusters: string[]; // For cause filtering - inherited from parent page for insights
+  sourceTitle?: string; // For insights - title of the source page
 }
 
 // Sort options
@@ -167,13 +168,15 @@ function isModelPage(page: Page): boolean {
 function buildContentList(): ContentItem[] {
   const items: ContentItem[] = [];
 
-  // Build a map of page paths to their clusters for quick lookup
+  // Build maps for page data lookup
   const pageClusterMap = new Map<string, string[]>();
+  const pageTitleMap = new Map<string, string>();
   pages.forEach((page: Page) => {
     pageClusterMap.set(
       page.path,
       (page as Page & { clusters?: string[] }).clusters || ['ai-safety']
     );
+    pageTitleMap.set(page.path, page.title);
   });
 
   pages
@@ -199,21 +202,25 @@ function buildContentList(): ContentItem[] {
 
   insights.forEach((insight: Insight) => {
     const sourcePath = insight.source || '/insight-hunting';
-    // Look up the parent page's clusters, default to ai-safety
-    const parentClusters = pageClusterMap.get(sourcePath) || ['ai-safety'];
+    // Normalize path (add trailing slash if needed) for lookup
+    const normalizedPath = sourcePath.endsWith('/') ? sourcePath : `${sourcePath}/`;
+    // Look up the parent page's clusters and title
+    const parentClusters = pageClusterMap.get(normalizedPath) || pageClusterMap.get(sourcePath) || ['ai-safety'];
+    const sourceTitle = pageTitleMap.get(normalizedPath) || pageTitleMap.get(sourcePath) || 'Source';
 
     items.push({
       id: `insight-${insight.id}`,
       title: insight.insight,
       description: insight.insight,
-      href: '',
+      href: sourcePath,
       path: sourcePath,
       type: 'insights',
-      meta: `${insight.type} · ${insight.composite?.toFixed(1) || '?'}`,
-      quality: null,
-      importance: null,
+      meta: insight.composite?.toFixed(1) || '?',
+      quality: insight.composite || 0,
+      importance: insight.composite || 0,
       wordCount: insight.insight.split(/\s+/).length,
-      clusters: parentClusters, // Inherit clusters from parent page
+      clusters: parentClusters,
+      sourceTitle,
     });
   });
 
@@ -305,21 +312,42 @@ function ContentCard({ item }: { item: ContentItem }) {
       ? 'Wiki'
       : item.type === 'models'
         ? 'Model'
-        : item.type === 'reports'
-          ? 'Report'
-          : item.type === 'insights'
-            ? 'Insight'
-            : item.type === 'tables'
-              ? 'Table'
-              : 'Diagram';
+        : item.type === 'insights'
+          ? 'Insight'
+          : item.type === 'tables'
+            ? 'Table'
+            : 'Diagram';
 
+  // Insight card - simpler, smaller text, no truncation
+  if (isInsight) {
+    return (
+      <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex items-center justify-between gap-2 mb-1.5 text-xs">
+          <span className="text-blue-600 dark:text-blue-400 font-medium">{typeLabel}</span>
+          {item.meta && (
+            <span className="text-slate-400 dark:text-slate-500">{item.meta}</span>
+          )}
+        </div>
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed !mb-2">{item.title}</p>
+        {item.sourceTitle && item.sourceTitle !== 'Source' && item.href && (
+          <a
+            href={item.href}
+            className="text-xs text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            → {item.sourceTitle}
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  // Regular content card
   const content = (
     <div
       className={cn(
         'p-4 rounded-lg border border-slate-200 dark:border-slate-800 h-full',
         'bg-white dark:bg-slate-900',
-        !isInsight &&
-          'hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all group'
+        'hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all group'
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-2 text-sm">
@@ -328,9 +356,7 @@ function ContentCard({ item }: { item: ContentItem }) {
           {item.meta && (
             <span className="text-slate-400 dark:text-slate-500 text-xs">{item.meta}</span>
           )}
-          {!isInsight && (
-            <ExternalLink className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
-          )}
+          <ExternalLink className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
         </div>
       </div>
       <div className="font-semibold mb-1.5 line-clamp-2 transition-colors text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -340,7 +366,6 @@ function ContentCard({ item }: { item: ContentItem }) {
     </div>
   );
 
-  if (isInsight) return <div>{content}</div>;
   return (
     <a href={item.href} className="block no-underline">
       {content}
