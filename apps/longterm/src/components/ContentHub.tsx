@@ -192,7 +192,7 @@ const ENTITY_OPTIONS = [
 // Type options
 const TYPE_OPTIONS: { value: ContentType; label: string }[] = [
   { value: 'all', label: 'All' },
-  { value: 'wiki', label: 'Wiki' },
+  { value: 'wiki', label: 'Article' },
   { value: 'tables', label: 'Tables' },
   { value: 'diagrams', label: 'Diagrams' },
   { value: 'models', label: 'Models' },
@@ -355,7 +355,7 @@ function ContentCard({ item }: { item: ContentItem }) {
   const isInsight = item.type === 'insights';
   const typeLabel =
     item.type === 'wiki'
-      ? 'Wiki'
+      ? 'Article'
       : item.type === 'models'
         ? 'Model'
         : item.type === 'insights'
