@@ -83,6 +83,73 @@ const QUALITY_RULES = [
 /**
  * Move final.mdx to destination and check sidebar coverage
  */
+/**
+ * Create a new category directory with index.mdx and sidebar entry
+ */
+function createCategoryDirectory(destPath, categoryLabel) {
+  const fullDestDir = path.join(ROOT, 'src/content/docs', destPath);
+
+  // Create directory
+  ensureDir(fullDestDir);
+
+  // Create index.mdx
+  const indexPath = path.join(fullDestDir, 'index.mdx');
+  if (!fs.existsSync(indexPath)) {
+    const indexContent = `---
+title: ${categoryLabel}
+description: Overview of ${categoryLabel.toLowerCase()}.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+This section contains pages about ${categoryLabel.toLowerCase()}.
+`;
+    fs.writeFileSync(indexPath, indexContent);
+    console.log(`✓ Created index.mdx for ${categoryLabel}`);
+  } else {
+    console.log(`  index.mdx already exists`);
+  }
+
+  // Add sidebar entry to astro.config.mjs
+  const configPath = path.join(ROOT, 'astro.config.mjs');
+  const configContent = fs.readFileSync(configPath, 'utf-8');
+
+  // Check if already covered
+  if (configContent.includes(`'${destPath}'`)) {
+    console.log(`  Sidebar entry already exists for ${destPath}`);
+    return { success: true, created: false };
+  }
+
+  // Find insertion point - look for the parent directory's section
+  // For "knowledge-base/incidents", look for knowledge-base section
+  const pathParts = destPath.split('/');
+  let insertionPattern;
+  let insertionText;
+
+  if (pathParts[0] === 'knowledge-base') {
+    // Insert in Background & Context section (near History)
+    insertionPattern = /(\{ label: 'History', collapsed: true, autogenerate: \{ directory: 'knowledge-base\/history' \} \},)/;
+    insertionText = `$1\n                      { label: '${categoryLabel}', collapsed: true, autogenerate: { directory: '${destPath}' } },`;
+  } else {
+    // Generic insertion - just warn user
+    console.log(`  ⚠️  Could not auto-add sidebar entry. Add manually to astro.config.mjs:`);
+    console.log(`     { label: '${categoryLabel}', collapsed: true, autogenerate: { directory: '${destPath}' } }`);
+    return { success: true, created: true, sidebarAdded: false };
+  }
+
+  if (insertionPattern.test(configContent)) {
+    const newConfig = configContent.replace(insertionPattern, insertionText);
+    fs.writeFileSync(configPath, newConfig);
+    console.log(`✓ Added sidebar entry for ${categoryLabel}`);
+    return { success: true, created: true, sidebarAdded: true };
+  } else {
+    console.log(`  ⚠️  Could not find insertion point in astro.config.mjs`);
+    console.log(`     Add manually: { label: '${categoryLabel}', autogenerate: { directory: '${destPath}' } }`);
+    return { success: true, created: true, sidebarAdded: false };
+  }
+}
+
 function deployToDestination(topic, destPath) {
   const topicDir = getTopicDir(topic);
   const finalPath = path.join(topicDir, 'final.mdx');
@@ -1381,11 +1448,12 @@ Usage:
   node scripts/content/page-creator.mjs "<topic>" [options]
 
 Options:
-  --tier <tier>       Quality tier: budget, standard, premium (default: standard)
-  --dest <path>       Deploy to content path (e.g., knowledge-base/people)
-  --directions <text> Context, source URLs, and editorial guidance (see below)
-  --phase <phase>     Run a single phase only (for resuming/testing)
-  --help              Show this help
+  --tier <tier>            Quality tier: budget, standard, premium (default: standard)
+  --dest <path>            Deploy to content path (e.g., knowledge-base/people)
+  --create-category <name> Create new category with index.mdx and sidebar entry
+  --directions <text>      Context, source URLs, and editorial guidance (see below)
+  --phase <phase>          Run a single phase only (for resuming/testing)
+  --help                   Show this help
 
 Directions:
   Pass a text block with any combination of:
@@ -1420,6 +1488,7 @@ Examples:
   node scripts/content/page-creator.mjs "MIRI" --tier standard
   node scripts/content/page-creator.mjs "Anthropic" --tier premium
   node scripts/content/page-creator.mjs "Lighthaven" --phase grade
+  node scripts/content/page-creator.mjs "Some Event" --dest knowledge-base/incidents --create-category "Incidents"
 `);
 }
 
@@ -1440,6 +1509,8 @@ async function main() {
   const destPath = destIndex !== -1 ? args[destIndex + 1] : null;
   const directionsIndex = args.indexOf('--directions');
   const directions = directionsIndex !== -1 ? args[directionsIndex + 1] : null;
+  const createCategoryIndex = args.indexOf('--create-category');
+  const createCategory = createCategoryIndex !== -1 ? args[createCategoryIndex + 1] : null;
 
   if (!topic) {
     console.error('Error: Topic required');
@@ -1496,6 +1567,12 @@ async function main() {
   if (destPath) {
     console.log(`\n${'─'.repeat(50)}`);
     console.log('Deploying to content directory...');
+
+    // Create category if requested
+    if (createCategory) {
+      console.log(`Creating category: ${createCategory}`);
+      createCategoryDirectory(destPath, createCategory);
+    }
 
     const deployResult = deployToDestination(topic, destPath);
 
