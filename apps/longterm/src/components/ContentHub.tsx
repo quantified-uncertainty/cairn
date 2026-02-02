@@ -413,7 +413,7 @@ function ContentCard({ item }: { item: ContentItem }) {
       </div>
       <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">{item.description}</p>
       {/* Cause and Entity labels */}
-      <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-auto text-[10px]">
+      <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-3 text-[10px]">
         {displayClusters.map((cluster) => (
           <span key={cluster} className={getClusterColor(cluster)}>
             {formatCluster(cluster)}
