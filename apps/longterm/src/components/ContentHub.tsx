@@ -168,25 +168,25 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'alphabetical', label: 'A-Z' },
 ];
 
-// Cause options
+// Field options (ordered by popularity)
 const CAUSE_OPTIONS = [
   { value: 'all', label: 'All' },
   { value: 'ai-safety', label: 'AI Safety' },
+  { value: 'governance', label: 'Governance' },
+  { value: 'epistemics', label: 'Epistemics' },
   { value: 'biorisks', label: 'Biorisks' },
   { value: 'cyber', label: 'Cyber' },
-  { value: 'epistemics', label: 'Epistemics' },
-  { value: 'governance', label: 'Governance' },
   { value: 'community', label: 'Community' },
 ];
 
-// Entity/Category options
+// Entity/Category options (ordered by popularity)
 const ENTITY_OPTIONS = [
   { value: 'all', label: 'All' },
-  { value: 'risks', label: 'Risks' },
   { value: 'responses', label: 'Interventions' },
-  { value: 'people', label: 'People' },
+  { value: 'risks', label: 'Risks' },
   { value: 'organizations', label: 'Organizations' },
   { value: 'capabilities', label: 'Capabilities' },
+  { value: 'people', label: 'People' },
 ];
 
 // Type options
