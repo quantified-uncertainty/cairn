@@ -1,0 +1,147 @@
+---
+title: "RoastMyPost"
+description: "AI-powered document evaluation platform using LLMs to analyze blog posts and research documents for errors, logical fallacies, and factual inaccuracies"
+importance: 45
+lastEdited: "2026-02-01"
+sidebar:
+  order: 75
+ratings:
+  novelty: 7
+  rigor: 5
+  actionability: 8
+  completeness: 6
+quality: 40
+---
+import {EntityLink, Backlinks, Section} from '@components/wiki';
+
+## Quick Assessment
+
+| Dimension | Assessment |
+|-----------|------------|
+| **Type** | AI-powered document evaluation tool |
+| **Developer** | <EntityLink id="quri">Quantified Uncertainty Research Institute (QURI)</EntityLink> |
+| **Launched** | December 2025 |
+| **Primary Use** | Automated critique of blog posts, research documents, and written content |
+| **Core Technology** | Claude Sonnet 4.5, Perplexity integration for fact-checking |
+| **Availability** | Free and open-source at [roastmypost.org](https://www.roastmypost.org/) |
+
+## Overview
+
+**RoastMyPost** is an experimental web application that uses large language models to evaluate written content through multiple specialized AI evaluators. Developed by Ozzie Gooen at <EntityLink id="quri">QURI</EntityLink>, the platform analyzes documents for errors, logical fallacies, factual inaccuracies, and other issues that human reviewers might miss or find tedious to check manually.
+
+The tool is designed to provide "roasts" — critical feedback that highlights potential problems in written work before publication. Unlike general-purpose AI assistants, RoastMyPost deploys specialized evaluator agents that each focus on specific types of analysis: fact verification, logical consistency, mathematical accuracy, link validation, and more.
+
+The platform is particularly relevant to the AI safety and rationalist communities, as it can evaluate posts from <EntityLink id="lesswrong">LessWrong</EntityLink> and the EA Forum directly via URL import, making it easy to get feedback on research posts and analyses common in these communities.
+
+## How It Works
+
+### Import Methods
+
+Users can submit content through three methods:
+- **Direct text**: Paste markdown content directly
+- **Forum URLs**: Import posts from LessWrong and EA Forum automatically
+- **Web URLs**: Extract content from general web pages
+
+### Evaluation Process
+
+RoastMyPost runs multiple specialized evaluators in parallel:
+
+| Evaluator | Function |
+|-----------|----------|
+| **Fact Checker** | Uses Perplexity searches to verify factual claims |
+| **Spelling/Grammar** | Identifies language errors |
+| **Logical Fallacy Detector** | Flags potential reasoning errors |
+| **Math Verifier** | Checks mathematical equations and calculations |
+| **Link Validator** | Tests whether referenced URLs are accessible |
+| **Binary Forecast Checker** | Compares predictions against actual outcomes |
+| **Epistemic Auditor** | High-level assessment of reasoning quality |
+
+The system uses chunked document processing with parallel execution, typically completing analysis in 1-5 minutes depending on document length.
+
+### Output
+
+Evaluations produce:
+- **Inline annotations**: Specific comments highlighted in the text with importance ratings
+- **Summary reports**: Overall assessment and key findings
+- **Grades**: Letter grades for different quality dimensions
+- **Export options**: XML export for further processing
+
+## Technical Architecture
+
+RoastMyPost is built as a modern web application:
+
+| Component | Technology |
+|-----------|------------|
+| **Frontend** | Next.js 15, React 19, TypeScript |
+| **Database** | PostgreSQL with Prisma ORM |
+| **AI Integration** | Anthropic Claude API, OpenRouter |
+| **Content Extraction** | JSDOM, Turndown, Metascraper |
+| **Authentication** | NextAuth.js |
+| **Hosting** | Vercel |
+
+The project uses a monorepo structure with pnpm workspaces and Turborepo, including an MCP (Model Context Protocol) server for Claude Code integration.
+
+### Key Features
+
+- **Multi-agent evaluations**: Deploy various AI agents to analyze from different perspectives
+- **Document versioning**: Track changes and evaluations across revisions
+- **Batch processing**: Asynchronous queue with retry logic and exponential backoff
+- **Cost tracking**: Monitor API usage and expenses per evaluation
+
+## Ideal Use Cases
+
+The tool works best with:
+- Documents between 200-10,000 words
+- Content containing factual claims that can be verified
+- Research posts and analyses
+- <EntityLink id="squiggle">Squiggle</EntityLink> probabilistic models
+
+Less suitable for:
+- Very long documents (performance issues)
+- LaTeX-formatted content
+- Highly specialized technical content requiring domain expertise
+
+## Limitations
+
+The developers acknowledge several significant limitations:
+
+| Limitation | Description |
+|------------|-------------|
+| **False positives** | Significant rate of incorrect error flagging |
+| **Context gaps** | Lacks nuanced understanding for some interpretations |
+| **Fallacy checker issues** | Sometimes flags valid reasoning patterns |
+| **Complex fact-checking** | Struggles with claims requiring multiple research iterations |
+| **No domain expertise** | Cannot replace human expert review in specialized fields |
+
+The platform is explicitly experimental and should be used as one input among many rather than a definitive quality assessment.
+
+## Development and Maintenance
+
+Ozzie Gooen has committed to dedicating approximately one-third of his annual work time to maintaining and improving RoastMyPost. The development roadmap includes:
+- Model updates as new Claude versions become available
+- Improved evaluator accuracy
+- Additional specialized checkers
+
+The project is fully open-source under the [quantified-uncertainty GitHub organization](https://github.com/quantified-uncertainty/roast-my-post).
+
+## Cost and Access
+
+RoastMyPost is currently free for reasonable use, funded through QURI. Usage limits exist to prevent abuse. If the platform gains substantial popularity, payment structures may be implemented, though the goal is to keep basic access affordable for researchers and writers.
+
+## Relevance to AI Safety
+
+RoastMyPost represents an application of AI capabilities to improve epistemic quality — using LLMs to catch errors that might otherwise propagate through research communities. This aligns with broader goals of:
+
+- **Improving research quality**: Catching errors before publication
+- **Scaling review processes**: Automating tedious verification tasks
+- **Epistemic infrastructure**: Building tools that improve collective reasoning
+
+However, the tool also illustrates current AI limitations: the significant false positive rate and context gaps demonstrate that LLM-based evaluation cannot yet replace careful human review.
+
+## External Links
+
+- [RoastMyPost Website](https://www.roastmypost.org/)
+- [GitHub Repository](https://github.com/quantified-uncertainty/roast-my-post)
+- [EA Forum Announcement](https://forum.effectivealtruism.org/posts/BdufL4GZmeBht3fak/announcing-roastmypost-llms-eval-blog-posts-and-more)
+
+<Backlinks />
