@@ -110,6 +110,51 @@ interface ContentItem {
   wordCount: number;
   clusters: string[]; // For cause filtering - inherited from parent page for insights
   sourceTitle?: string; // For insights - title of the source page
+  entityType?: string; // Entity category derived from path
+}
+
+// Derive entity type from path
+function getEntityType(path: string): string | undefined {
+  if (path.includes('/risks/')) return 'Risks';
+  if (path.includes('/responses/')) return 'Interventions';
+  if (path.includes('/people/')) return 'People';
+  if (path.includes('/organizations/')) return 'Organizations';
+  if (path.includes('/capabilities/')) return 'Capabilities';
+  if (path.includes('/models/')) return 'Models';
+  if (path.includes('/debates/')) return 'Debates';
+  if (path.includes('/worldviews/')) return 'Worldviews';
+  if (path.includes('/forecasting/')) return 'Forecasting';
+  if (path.includes('/cruxes/')) return 'Cruxes';
+  if (path.includes('/history/')) return 'History';
+  if (path.includes('/incidents/')) return 'Incidents';
+  if (path.includes('/metrics/')) return 'Metrics';
+  return undefined;
+}
+
+// Format cluster name for display
+function formatCluster(cluster: string): string {
+  const map: Record<string, string> = {
+    'ai-safety': 'AI Safety',
+    'biorisks': 'Biorisks',
+    'cyber': 'Cyber',
+    'epistemics': 'Epistemics',
+    'governance': 'Governance',
+    'community': 'Community',
+  };
+  return map[cluster] || cluster;
+}
+
+// Get color classes for cluster badges
+function getClusterColor(cluster: string): string {
+  const colors: Record<string, string> = {
+    'ai-safety': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    'biorisks': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+    'cyber': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+    'epistemics': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    'governance': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+    'community': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+  };
+  return colors[cluster] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
 }
 
 // Sort options
@@ -197,6 +242,7 @@ function buildContentList(): ContentItem[] {
         importance: page.importance,
         wordCount: page.wordCount || 0,
         clusters: (page as Page & { clusters?: string[] }).clusters || ['ai-safety'],
+        entityType: getEntityType(page.path),
       });
     });
 
@@ -341,6 +387,11 @@ function ContentCard({ item }: { item: ContentItem }) {
     );
   }
 
+  // Get display clusters (filter out ai-safety if there are others, limit to 2)
+  const displayClusters = item.clusters
+    .filter((c) => item.clusters.length === 1 || c !== 'ai-safety')
+    .slice(0, 2);
+
   // Regular content card
   const content = (
     <div
@@ -362,7 +413,26 @@ function ContentCard({ item }: { item: ContentItem }) {
       <div className="font-semibold mb-1.5 line-clamp-2 transition-colors text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
         {item.title}
       </div>
-      <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{item.description}</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">{item.description}</p>
+      {/* Cause and Entity badges */}
+      <div className="flex flex-wrap gap-1.5 mt-auto">
+        {displayClusters.map((cluster) => (
+          <span
+            key={cluster}
+            className={cn(
+              'px-1.5 py-0.5 text-[10px] font-medium rounded',
+              getClusterColor(cluster)
+            )}
+          >
+            {formatCluster(cluster)}
+          </span>
+        ))}
+        {item.entityType && (
+          <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+            {item.entityType}
+          </span>
+        )}
+      </div>
     </div>
   );
 
