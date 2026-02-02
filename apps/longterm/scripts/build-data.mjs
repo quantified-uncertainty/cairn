@@ -15,6 +15,7 @@ import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
 import { computeRedundancy } from './lib/redundancy.mjs';
 import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
+import { generateLLMFiles } from './generate-llm-files.mjs';
 
 // =============================================================================
 // UNCONVERTED LINK DETECTION
@@ -713,6 +714,11 @@ function main() {
   console.log(`With descriptions: ${stats.withDescription}`);
   console.log(`Unique tags: ${stats.totalTags}`);
   console.log(`Top types: ${Object.entries(stats.byType).slice(0, 5).map(([t, c]) => `${t}(${c})`).join(', ')}`);
+
+  // ==========================================================================
+  // LLM Accessibility Files
+  // ==========================================================================
+  generateLLMFiles();
 
   // ==========================================================================
   // Zod Schema Validation
