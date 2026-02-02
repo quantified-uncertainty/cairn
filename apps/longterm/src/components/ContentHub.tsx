@@ -174,9 +174,9 @@ const CAUSE_OPTIONS = [
   { value: 'ai-safety', label: 'AI Safety' },
   { value: 'governance', label: 'Governance' },
   { value: 'epistemics', label: 'Epistemics' },
-  { value: 'biorisks', label: 'Biorisks' },
-  { value: 'cyber', label: 'Cyber' },
   { value: 'community', label: 'Community' },
+  { value: 'cyber', label: 'Cyber' },
+  { value: 'biorisks', label: 'Biorisks' },
 ];
 
 // Entity/Category options (ordered by popularity)
