@@ -281,14 +281,40 @@ async function runScryResearch(topic) {
 /**
  * Extract URLs from directions text and fetch their content
  */
+/**
+ * Extract URLs from text with cleanup for trailing punctuation
+ */
+function extractUrls(text) {
+  const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/g;
+  const rawMatches = text.match(urlRegex) || [];
+
+  return rawMatches.map(url => {
+    let cleaned = url;
+
+    // Strip trailing punctuation (but not / or alphanumeric)
+    cleaned = cleaned.replace(/[.,;:!?]+$/, '');
+
+    // Handle unbalanced parentheses - strip trailing ) if more ) than (
+    const openParens = (cleaned.match(/\(/g) || []).length;
+    const closeParens = (cleaned.match(/\)/g) || []).length;
+    if (closeParens > openParens) {
+      const excess = closeParens - openParens;
+      for (let i = 0; i < excess; i++) {
+        cleaned = cleaned.replace(/\)$/, '');
+      }
+    }
+
+    return cleaned;
+  });
+}
+
 async function processDirections(topic, directions) {
   if (!directions) return { success: true, hasDirections: false };
 
   log('directions', 'Processing user directions...');
 
   // Extract URLs from the directions text
-  const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/g;
-  const urls = directions.match(urlRegex) || [];
+  const urls = extractUrls(directions);
 
   log('directions', `Found ${urls.length} URL(s) in directions`);
 
@@ -308,25 +334,38 @@ async function processDirections(topic, directions) {
       let content = '';
 
       if (contentType.includes('application/pdf')) {
-        log('directions', `  ⚠ Skipping PDF (not supported)`);
-        continue;
+        // Handle PDF files
+        try {
+          const pdfParse = (await import('pdf-parse')).default;
+          const buffer = await response.arrayBuffer();
+          const pdfData = await pdfParse(Buffer.from(buffer));
+          content = pdfData.text
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 15000);
+          log('directions', `  ✓ Parsed PDF: ${content.length} chars`);
+        } catch (pdfError) {
+          log('directions', `  ⚠ PDF parse failed: ${pdfError.message}`);
+          continue;
+        }
+      } else {
+        // Handle HTML
+        const html = await response.text();
+
+        // Simple HTML to text conversion - strip tags, decode entities
+        content = html
+          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 15000); // Limit content size
       }
-
-      const html = await response.text();
-
-      // Simple HTML to text conversion - strip tags, decode entities
-      content = html
-        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 15000); // Limit content size
 
       if (content.length > 100) {
         fetchedContent.push({
