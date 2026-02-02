@@ -527,7 +527,12 @@ export default function ContentHub() {
         );
       case 'community':
         return (
-          text.includes('community') || text.includes('effective altruism') || text.includes('ea ')
+          text.includes('community building') ||
+          text.includes('movement building') ||
+          text.includes('outreach') ||
+          text.includes('cea') ||
+          text.includes('centre for effective altruism') ||
+          text.includes('center for effective altruism')
         );
       default:
         return true;
