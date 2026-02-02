@@ -5,37 +5,26 @@ import ContentHub from '../../components/ContentHub';
 
 <StarlightPage
   frontmatter={{
-    title: 'Explore Content',
-    description: 'Search and browse all wiki pages, comparison tables, and cause-effect diagrams in one place',
+    title: 'Explore',
+    description: 'Search and browse all wiki pages, comparison tables, and cause-effect diagrams',
     tableOfContents: false,
     template: 'splash',
   }}
   headings={[]}
 >
   <div class="explore-page">
-    <p class="intro-text">
-      Search and filter across all content types. Use the type buttons to narrow down to wiki pages, tables, or diagrams,
-      then filter by category or search by keyword.
-    </p>
-
     <ContentHub client:load />
   </div>
 </StarlightPage>
 
 <style>
   .explore-page {
-    margin-top: 0;
-  }
-
-  .intro-text {
-    color: var(--sl-color-gray-3);
-    margin-bottom: 1.5rem;
-    max-width: 65ch;
+    min-height: 60vh;
   }
 </style>
 
 <style is:global>
-  /* Make explore page full-width - override all Starlight constraints */
+  /* Make explore page full-width */
   .content-panel,
   .content-panel > *,
   main,
@@ -50,8 +39,27 @@ import ContentHub from '../../components/ContentHub';
     padding-inline: 2rem !important;
   }
 
-  /* Remove the max-width constraint on the content wrapper */
   .content-panel article {
     max-width: 100% !important;
+  }
+
+  /* Smaller title, no underline */
+  .content-panel h1#_top {
+    font-size: 1.5rem !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Remove any separator lines between panels */
+  .content-panel {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .content-panel + .content-panel {
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
   }
 </style>

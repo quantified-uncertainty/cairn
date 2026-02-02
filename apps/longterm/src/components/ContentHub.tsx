@@ -1,70 +1,186 @@
-"use client"
+'use client';
 
-import { useState, useMemo, useEffect } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { pages, entities, type Page } from "@data"
-import type { Entity } from "@data/schema"
-import { insights, type Insight } from "@data/insights-data"
-import ContentTree from "./ContentTree"
-import { cn } from "@/lib/utils"
+import { useEffect, useMemo, useState } from 'react';
 
-// Shared tables data with dimensions
+import { ExternalLink } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { entities, type Page, pages } from '@data';
+import { type Insight, insights } from '@data/insights-data';
+import type { Entity } from '@data/schema';
+
+// Shared tables data
 const TABLES = [
-  { id: 'safety-approaches', title: 'Safety Approaches', description: 'Safety research effectiveness vs capability uplift.', href: '/knowledge-base/responses/safety-approaches/table', path: '/knowledge-base/responses/safety-approaches', rows: 42, cols: 9 },
-  { id: 'safety-generalizability', title: 'Safety Generalizability', description: 'Safety approaches across AI architectures.', href: '/knowledge-base/responses/safety-generalizability/table', path: '/knowledge-base/responses/safety-generalizability', rows: 42, cols: 8 },
-  { id: 'safety-matrix', title: 'Safety × Architecture Matrix', description: 'Safety approaches vs architecture scenarios.', href: '/knowledge-base/responses/safety-generalizability/matrix', path: '/knowledge-base/responses/safety-generalizability', rows: 42, cols: 12 },
-  { id: 'architecture-scenarios', title: 'Architecture Scenarios', description: 'Deployment patterns and base architectures.', href: '/knowledge-base/architecture-scenarios/table', path: '/knowledge-base/architecture-scenarios', rows: 12, cols: 7 },
-  { id: 'deployment-architectures', title: 'Deployment Architectures', description: 'How AI systems are deployed.', href: '/knowledge-base/deployment-architectures/table', path: '/knowledge-base/deployment-architectures', rows: 8, cols: 6 },
-  { id: 'accident-risks', title: 'Accident Risks', description: 'Accident and misalignment risks.', href: '/knowledge-base/risks/accident/table', path: '/knowledge-base/risks/accident', rows: 16, cols: 7 },
-  { id: 'eval-types', title: 'Evaluation Types', description: 'Evaluation methodologies comparison.', href: '/knowledge-base/models/eval-types/table', path: '/knowledge-base/models/eval-types', rows: 18, cols: 8 },
-  { id: 'transition-model', title: 'AI Transition Model Parameters', description: 'All AI Transition Model parameters.', href: '/ai-transition-model/table', path: '/ai-transition-model', rows: 45, cols: 6 },
-]
+  {
+    id: 'safety-approaches',
+    title: 'Safety Approaches',
+    description: 'Safety research effectiveness vs capability uplift.',
+    href: '/knowledge-base/responses/safety-approaches/table',
+    path: '/knowledge-base/responses/safety-approaches',
+    rows: 42,
+    cols: 9,
+  },
+  {
+    id: 'safety-generalizability',
+    title: 'Safety Generalizability',
+    description: 'Safety approaches across AI architectures.',
+    href: '/knowledge-base/responses/safety-generalizability/table',
+    path: '/knowledge-base/responses/safety-generalizability',
+    rows: 42,
+    cols: 8,
+  },
+  {
+    id: 'safety-matrix',
+    title: 'Safety × Architecture Matrix',
+    description: 'Safety approaches vs architecture scenarios.',
+    href: '/knowledge-base/responses/safety-generalizability/matrix',
+    path: '/knowledge-base/responses/safety-generalizability',
+    rows: 42,
+    cols: 12,
+  },
+  {
+    id: 'architecture-scenarios',
+    title: 'Architecture Scenarios',
+    description: 'Deployment patterns and base architectures.',
+    href: '/knowledge-base/architecture-scenarios/table',
+    path: '/knowledge-base/architecture-scenarios',
+    rows: 12,
+    cols: 7,
+  },
+  {
+    id: 'deployment-architectures',
+    title: 'Deployment Architectures',
+    description: 'How AI systems are deployed.',
+    href: '/knowledge-base/deployment-architectures/table',
+    path: '/knowledge-base/deployment-architectures',
+    rows: 8,
+    cols: 6,
+  },
+  {
+    id: 'accident-risks',
+    title: 'Accident Risks',
+    description: 'Accident and misalignment risks.',
+    href: '/knowledge-base/risks/accident/table',
+    path: '/knowledge-base/risks/accident',
+    rows: 16,
+    cols: 7,
+  },
+  {
+    id: 'eval-types',
+    title: 'Evaluation Types',
+    description: 'Evaluation methodologies comparison.',
+    href: '/knowledge-base/models/eval-types/table',
+    path: '/knowledge-base/models/eval-types',
+    rows: 18,
+    cols: 8,
+  },
+  {
+    id: 'transition-model',
+    title: 'AI Transition Model Parameters',
+    description: 'All AI Transition Model parameters.',
+    href: '/ai-transition-model/table',
+    path: '/ai-transition-model',
+    rows: 45,
+    cols: 6,
+  },
+];
 
 // Content types
-type ContentType = 'all' | 'wiki' | 'models' | 'reports' | 'insights' | 'tables' | 'diagrams'
+type ContentType = 'all' | 'wiki' | 'models' | 'insights' | 'tables' | 'diagrams';
 
 interface ContentItem {
-  id: string
-  title: string
-  description: string
-  href: string
-  path: string
-  type: ContentType
-  meta: string
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  path: string;
+  type: ContentType;
+  meta: string;
+  quality: number | null;
+  importance: number | null;
+  wordCount: number;
+  clusters: string[]; // For cause filtering - inherited from parent page for insights
 }
 
-// Format word count for display
+// Sort options
+type SortOption = 'relevance' | 'importance' | 'quality' | 'wordCount' | 'alphabetical';
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'relevance', label: 'Relevance' },
+  { value: 'importance', label: 'Importance' },
+  { value: 'quality', label: 'Quality' },
+  { value: 'wordCount', label: 'Word Count' },
+  { value: 'alphabetical', label: 'A-Z' },
+];
+
+// Cause options
+const CAUSE_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'ai-safety', label: 'AI Safety' },
+  { value: 'biorisks', label: 'Biorisks' },
+  { value: 'cyber', label: 'Cyber' },
+  { value: 'epistemics', label: 'Epistemics' },
+  { value: 'governance', label: 'Governance' },
+  { value: 'community', label: 'Community' },
+];
+
+// Entity/Category options
+const ENTITY_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'risks', label: 'Risks' },
+  { value: 'responses', label: 'Interventions' },
+  { value: 'people', label: 'People' },
+  { value: 'organizations', label: 'Organizations' },
+  { value: 'capabilities', label: 'Capabilities' },
+];
+
+// Type options
+const TYPE_OPTIONS: { value: ContentType; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'wiki', label: 'Wiki' },
+  { value: 'tables', label: 'Tables' },
+  { value: 'diagrams', label: 'Diagrams' },
+  { value: 'models', label: 'Models' },
+  { value: 'insights', label: 'Insights' },
+];
+
+// Format word count
 function formatWordCount(count: number): string {
-  if (count >= 1000) return `${(count / 1000).toFixed(1)}k words`
-  return `${count} words`
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k words`;
+  return `${count} words`;
 }
 
-// Check if a page is a model
 function isModelPage(page: Page): boolean {
-  return page.category === 'models' || page.path.includes('/models/')
+  return page.category === 'models' || page.path.includes('/models/');
 }
 
-// Check if a page is a research report
-function isResearchReport(page: Page): boolean {
-  return page.category === 'research-reports' || page.category === 'reports' || page.path.includes('/research-reports/')
-}
-
-// Build content list once at module level (data is static)
+// Build content list
 function buildContentList(): ContentItem[] {
-  const items: ContentItem[] = []
+  const items: ContentItem[] = [];
 
-  // Wiki pages (excluding models and research reports)
+  // Build a map of page paths to their clusters for quick lookup
+  const pageClusterMap = new Map<string, string[]>();
+  pages.forEach((page: Page) => {
+    pageClusterMap.set(
+      page.path,
+      (page as Page & { clusters?: string[] }).clusters || ['ai-safety']
+    );
+  });
+
   pages
     .filter((p: Page) => !p.path.includes('/internal/') && !p.path.includes('/meta/') && p.title)
     .forEach((page: Page) => {
-      let type: ContentType = 'wiki'
-      if (isModelPage(page)) {
-        type = 'models'
-      } else if (isResearchReport(page)) {
-        type = 'reports'
-      }
+      let type: ContentType = 'wiki';
+      if (isModelPage(page)) type = 'models';
 
       items.push({
         id: page.path,
@@ -74,24 +190,36 @@ function buildContentList(): ContentItem[] {
         path: page.path,
         type,
         meta: page.wordCount ? formatWordCount(page.wordCount) : '',
-      })
-    })
+        quality: page.quality,
+        importance: page.importance,
+        wordCount: page.wordCount || 0,
+        clusters: (page as Page & { clusters?: string[] }).clusters || ['ai-safety'],
+      });
+    });
 
-  // Insights - use full text, no truncation
   insights.forEach((insight: Insight) => {
+    const sourcePath = insight.source || '/insight-hunting';
+    // Look up the parent page's clusters, default to ai-safety
+    const parentClusters = pageClusterMap.get(sourcePath) || ['ai-safety'];
+
     items.push({
       id: `insight-${insight.id}`,
-      title: insight.insight, // Full text, no truncation
+      title: insight.insight,
       description: insight.insight,
-      href: '', // Not a link
-      path: insight.source || '/insight-hunting',
+      href: '',
+      path: sourcePath,
       type: 'insights',
       meta: `${insight.type} · ${insight.composite?.toFixed(1) || '?'}`,
-    })
-  })
+      quality: null,
+      importance: null,
+      wordCount: insight.insight.split(/\s+/).length,
+      clusters: parentClusters, // Inherit clusters from parent page
+    });
+  });
 
-  // Tables
-  TABLES.forEach(table => {
+  TABLES.forEach((table) => {
+    // Look up clusters from the page at table.path if available
+    const tableClusters = pageClusterMap.get(table.path) || ['ai-safety'];
     items.push({
       id: `table-${table.id}`,
       title: table.title,
@@ -100,18 +228,25 @@ function buildContentList(): ContentItem[] {
       path: table.path,
       type: 'tables',
       meta: `${table.rows} × ${table.cols}`,
-    })
-  })
+      quality: null,
+      importance: null,
+      wordCount: 0,
+      clusters: tableClusters,
+    });
+  });
 
-  // Diagrams - filter entities that have causeEffectGraph with nodes
   entities
     .filter((e: Entity) => {
-      const graph = (e as Entity & { causeEffectGraph?: { nodes?: unknown[] } }).causeEffectGraph
-      return graph?.nodes && graph.nodes.length > 0
+      const graph = (e as Entity & { causeEffectGraph?: { nodes?: unknown[] } }).causeEffectGraph;
+      return graph?.nodes && graph.nodes.length > 0;
     })
     .forEach((e: Entity) => {
-      const graph = (e as Entity & { causeEffectGraph?: { nodes?: unknown[]; title?: string; description?: string } }).causeEffectGraph!
-      const nodeCount = graph.nodes?.length || 0
+      const graph = (
+        e as Entity & {
+          causeEffectGraph?: { nodes?: unknown[]; title?: string; description?: string };
+        }
+      ).causeEffectGraph!;
+      const nodeCount = graph.nodes?.length || 0;
       items.push({
         id: `diagram-${e.id}`,
         title: graph.title || e.title,
@@ -120,262 +255,394 @@ function buildContentList(): ContentItem[] {
         path: `/diagrams`,
         type: 'diagrams',
         meta: `${nodeCount} nodes`,
-      })
-    })
+        quality: null,
+        importance: null,
+        wordCount: 0,
+        clusters: ['ai-safety'], // Default for diagrams
+      });
+    });
 
-  return items
+  return items;
 }
 
-const ALL_CONTENT = buildContentList()
+const ALL_CONTENT = buildContentList();
 
-// Pre-computed counts (static data)
 const COUNTS: Record<ContentType, number> = {
   all: ALL_CONTENT.length,
-  wiki: ALL_CONTENT.filter(i => i.type === 'wiki').length,
-  models: ALL_CONTENT.filter(i => i.type === 'models').length,
-  reports: ALL_CONTENT.filter(i => i.type === 'reports').length,
-  insights: ALL_CONTENT.filter(i => i.type === 'insights').length,
-  tables: ALL_CONTENT.filter(i => i.type === 'tables').length,
-  diagrams: ALL_CONTENT.filter(i => i.type === 'diagrams').length,
-}
+  wiki: ALL_CONTENT.filter((i) => i.type === 'wiki').length,
+  models: ALL_CONTENT.filter((i) => i.type === 'models').length,
+  insights: ALL_CONTENT.filter((i) => i.type === 'insights').length,
+  tables: ALL_CONTENT.filter((i) => i.type === 'tables').length,
+  diagrams: ALL_CONTENT.filter((i) => i.type === 'diagrams').length,
+};
 
-const TYPE_BUTTONS: { type: ContentType; label: string; color?: string }[] = [
-  { type: 'all', label: 'All' },
-  { type: 'wiki', label: 'Wiki', color: 'bg-blue-500 hover:bg-blue-600' },
-  { type: 'models', label: 'Models', color: 'bg-violet-500 hover:bg-violet-600' },
-  { type: 'reports', label: 'Reports', color: 'bg-indigo-500 hover:bg-indigo-600' },
-  { type: 'insights', label: 'Insights', color: 'bg-amber-500 hover:bg-amber-600' },
-  { type: 'tables', label: 'Tables', color: 'bg-emerald-500 hover:bg-emerald-600' },
-  { type: 'diagrams', label: 'Diagrams', color: 'bg-orange-500 hover:bg-orange-600' },
-]
-
-const TYPE_CONFIG: Record<ContentType, { label: string; color: string }> = {
-  all: { label: 'All', color: 'bg-gray-500' },
-  wiki: { label: 'Wiki', color: 'bg-blue-500' },
-  models: { label: 'Model', color: 'bg-violet-500' },
-  reports: { label: 'Report', color: 'bg-indigo-500' },
-  insights: { label: 'Insight', color: 'bg-amber-500' },
-  tables: { label: 'Table', color: 'bg-emerald-500' },
-  diagrams: { label: 'Diagram', color: 'bg-orange-500' },
+function sortItems(items: ContentItem[], sortBy: SortOption): ContentItem[] {
+  return [...items].sort((a, b) => {
+    switch (sortBy) {
+      case 'relevance': {
+        const scoreA = ((a.quality || 0) + (a.importance || 0)) / 2;
+        const scoreB = ((b.quality || 0) + (b.importance || 0)) / 2;
+        return scoreB - scoreA;
+      }
+      case 'importance':
+        return (b.importance || 0) - (a.importance || 0);
+      case 'quality':
+        return (b.quality || 0) - (a.quality || 0);
+      case 'wordCount':
+        return b.wordCount - a.wordCount;
+      case 'alphabetical':
+        return a.title.localeCompare(b.title);
+      default:
+        return 0;
+    }
+  });
 }
 
 function ContentCard({ item }: { item: ContentItem }) {
-  const { label, color } = TYPE_CONFIG[item.type]
-  const isInsight = item.type === 'insights'
+  const isInsight = item.type === 'insights';
+  const typeLabel =
+    item.type === 'wiki'
+      ? 'Wiki'
+      : item.type === 'models'
+        ? 'Model'
+        : item.type === 'reports'
+          ? 'Report'
+          : item.type === 'insights'
+            ? 'Insight'
+            : item.type === 'tables'
+              ? 'Table'
+              : 'Diagram';
 
-  const cardContent = (
-    <div className={cn(
-      "px-3 py-2 rounded-md border border-border bg-card transition-all",
-      !isInsight && "hover:bg-accent/30 hover:border-primary/50"
-    )}>
-      {isInsight ? (
-        // Insight card - full text with source link at bottom
-        <>
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <span className="text-sm leading-snug">
-              {item.title}
-            </span>
-            <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
-              {label}
-            </Badge>
-          </div>
-          <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-border/50">
-            <a
-              href={item.path}
-              className="text-[10px] text-muted-foreground hover:text-primary truncate"
-            >
-              {item.path}
-            </a>
-            {item.meta && (
-              <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
-                {item.meta}
-              </span>
-            )}
-          </div>
-        </>
-      ) : (
-        // Regular card - clickable link
-        <>
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="text-sm font-medium group-hover:text-primary transition-colors truncate">
-              {item.title}
-            </span>
-            <Badge variant="secondary" className={`shrink-0 text-[10px] text-white ${color}`}>
-              {label}
-            </Badge>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs text-muted-foreground truncate">
-              {item.description || ''}
-            </span>
-            {item.meta && (
-              <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
-                {item.meta}
-              </span>
-            )}
-          </div>
-        </>
+  const content = (
+    <div
+      className={cn(
+        'p-4 rounded-lg border border-slate-200 dark:border-slate-800 h-full',
+        'bg-white dark:bg-slate-900',
+        !isInsight &&
+          'hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all group'
       )}
+    >
+      <div className="flex items-center justify-between gap-2 mb-2 text-sm">
+        <span className="text-blue-600 dark:text-blue-400 font-medium">{typeLabel}</span>
+        <div className="flex items-center gap-2">
+          {item.meta && (
+            <span className="text-slate-400 dark:text-slate-500 text-xs">{item.meta}</span>
+          )}
+          {!isInsight && (
+            <ExternalLink className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
+          )}
+        </div>
+      </div>
+      <div className="font-semibold mb-1.5 line-clamp-2 transition-colors text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+        {item.title}
+      </div>
+      <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{item.description}</p>
     </div>
-  )
+  );
 
-  if (isInsight) {
-    return <div className="block">{cardContent}</div>
-  }
-
+  if (isInsight) return <div>{content}</div>;
   return (
-    <a href={item.href} className="no-underline group block">
-      {cardContent}
+    <a href={item.href} className="block no-underline">
+      {content}
     </a>
-  )
+  );
+}
+
+// Filter button component
+function FilterButton({
+  active,
+  onClick,
+  children,
+  count,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+  count?: number;
+}) {
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={onClick}
+      className={cn(
+        'h-8 px-3 text-sm font-medium rounded-lg',
+        active
+          ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white'
+          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+      )}
+    >
+      {children}
+      {count !== undefined && (
+        <span
+          className={cn(
+            'ml-1.5 tabular-nums text-slate-400 dark:text-slate-500 inline-block min-w-[2.5rem] text-right'
+          )}
+        >
+          {count}
+        </span>
+      )}
+    </Button>
+  );
 }
 
 export default function ContentHub() {
-  // Use URL params for persistence across navigation
-  const [search, setSearch] = useState('')
-  const [activeType, setActiveType] = useState<ContentType>('all')
-  const [selectedPath, setSelectedPath] = useState<string | null>(null)
+  const [search, setSearch] = useState('');
+  const [activeCause, setActiveCause] = useState('all');
+  const [activeEntity, setActiveEntity] = useState('all');
+  const [activeType, setActiveType] = useState<ContentType>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('relevance');
 
-  // Initialize from URL params on mount
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const q = params.get('q')
-    const type = params.get('type') as ContentType | null
-    const path = params.get('path')
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('q')) setSearch(params.get('q')!);
+    if (params.get('type')) setActiveType(params.get('type') as ContentType);
+    if (params.get('sort')) setSortBy(params.get('sort') as SortOption);
+    if (params.get('entity')) setActiveEntity(params.get('entity')!);
+    if (params.get('cause')) setActiveCause(params.get('cause')!);
+  }, []);
 
-    if (q) setSearch(q)
-    if (type && COUNTS[type] !== undefined) setActiveType(type)
-    if (path) setSelectedPath(path)
-  }, [])
-
-  // Update URL when state changes
   useEffect(() => {
-    const params = new URLSearchParams()
-    if (search) params.set('q', search)
-    if (activeType !== 'all') params.set('type', activeType)
-    if (selectedPath) params.set('path', selectedPath)
-
+    const params = new URLSearchParams();
+    if (search) params.set('q', search);
+    if (activeType !== 'all') params.set('type', activeType);
+    if (sortBy !== 'relevance') params.set('sort', sortBy);
+    if (activeEntity !== 'all') params.set('entity', activeEntity);
+    if (activeCause !== 'all') params.set('cause', activeCause);
     const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname
+      ? `${window.location.pathname}?${params}`
+      : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+  }, [search, activeType, sortBy, activeEntity, activeCause]);
 
-    window.history.replaceState({}, '', newUrl)
-  }, [search, activeType, selectedPath])
+  // Cause filtering helper - uses clusters from item (inherited from parent page for insights)
+  const matchesCause = (item: ContentItem, cause: string): boolean => {
+    // Use clusters if available
+    if (item.clusters && item.clusters.length > 0) {
+      return item.clusters.includes(cause);
+    }
+    // Fallback to text matching for items without clusters
+    const text = `${item.path} ${item.title} ${item.description}`.toLowerCase();
+    switch (cause) {
+      case 'ai-safety':
+        return true; // Most content is AI safety related
+      case 'biorisks':
+        return text.includes('bio') || text.includes('pathogen') || text.includes('pandemic');
+      case 'cyber':
+        return text.includes('cyber');
+      case 'epistemics':
+        return (
+          text.includes('epistemic') || text.includes('forecasting') || text.includes('reasoning')
+        );
+      case 'governance':
+        return (
+          text.includes('governance') || text.includes('policy') || text.includes('regulation')
+        );
+      case 'community':
+        return (
+          text.includes('community') || text.includes('effective altruism') || text.includes('ea ')
+        );
+      default:
+        return true;
+    }
+  };
 
-  // Items filtered by type (for tree)
+  const causeFilteredItems = useMemo(() => {
+    if (activeCause === 'all') return ALL_CONTENT;
+    return ALL_CONTENT.filter((item) => matchesCause(item, activeCause));
+  }, [activeCause]);
+
+  const entityFilteredItems = useMemo(() => {
+    if (activeEntity === 'all') return causeFilteredItems;
+    return causeFilteredItems.filter(
+      (item) =>
+        item.path.includes(`/${activeEntity}/`) ||
+        item.path.includes(`/${activeEntity.replace('-', '-')}/`)
+    );
+  }, [causeFilteredItems, activeEntity]);
+
   const typeFilteredItems = useMemo(() => {
-    if (activeType === 'all') return ALL_CONTENT
-    return ALL_CONTENT.filter(item => item.type === activeType)
-  }, [activeType])
+    if (activeType === 'all') return entityFilteredItems;
+    return entityFilteredItems.filter((item) => item.type === activeType);
+  }, [entityFilteredItems, activeType]);
 
-  // Items for tree component (all types including insights)
-  const treeItems = useMemo(() => {
-    return typeFilteredItems
-      .map(item => ({
-        id: item.id,
-        title: item.title,
-        path: item.path,
-        type: item.type as 'wiki' | 'tables' | 'diagrams' | 'insights' | 'models' | 'reports',
-      }))
-  }, [typeFilteredItems])
+  const typeCounts = useMemo(
+    () => ({
+      all: entityFilteredItems.length,
+      wiki: entityFilteredItems.filter((i) => i.type === 'wiki').length,
+      models: entityFilteredItems.filter((i) => i.type === 'models').length,
+      insights: entityFilteredItems.filter((i) => i.type === 'insights').length,
+      tables: entityFilteredItems.filter((i) => i.type === 'tables').length,
+      diagrams: entityFilteredItems.filter((i) => i.type === 'diagrams').length,
+    }),
+    [entityFilteredItems]
+  );
 
-  // Final filtered content (type + path + search)
+  const causeCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: ALL_CONTENT.length };
+    CAUSE_OPTIONS.filter((c) => c.value !== 'all').forEach(({ value }) => {
+      counts[value] = ALL_CONTENT.filter((item) => matchesCause(item, value)).length;
+    });
+    return counts;
+  }, []);
+
+  const entityCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: causeFilteredItems.length };
+    ENTITY_OPTIONS.filter((e) => e.value !== 'all').forEach(({ value }) => {
+      counts[value] = causeFilteredItems.filter(
+        (item) =>
+          item.path.includes(`/${value}/`) || item.path.includes(`/${value.replace('-', '-')}/`)
+      ).length;
+    });
+    return counts;
+  }, [causeFilteredItems]);
+
   const filtered = useMemo(() => {
-    return typeFilteredItems.filter(item => {
-      // Path filter (applies to all types including insights)
-      if (selectedPath && !item.path.startsWith(selectedPath)) return false
-      // Search filter
+    const results = typeFilteredItems.filter((item) => {
       if (search) {
-        const s = search.toLowerCase()
-        if (!item.title.toLowerCase().includes(s) && !item.description.toLowerCase().includes(s)) return false
+        const s = search.toLowerCase();
+        if (!item.title.toLowerCase().includes(s) && !item.description.toLowerCase().includes(s))
+          return false;
       }
-      return true
-    })
-  }, [typeFilteredItems, selectedPath, search])
+      return true;
+    });
+    return sortItems(results, sortBy);
+  }, [typeFilteredItems, search, sortBy]);
 
   return (
-    <div className="flex gap-6">
-      {/* Left sidebar - Tree */}
-      <div className="w-64 shrink-0 hidden md:block">
-        <div className="sticky top-4">
-          <div className="mb-3">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-              Browse
-            </h3>
-          </div>
-          <ContentTree
-            items={treeItems}
-            selectedPath={selectedPath}
-            onSelectPath={setSelectedPath}
+    <div className="not-content">
+      {/* Search */}
+      <div className="relative mb-6!">
+        <svg
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="flex-1 min-w-0 space-y-4">
-        {/* Search */}
+        </svg>
         <Input
           type="search"
           placeholder="Search content..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-10"
+          className="h-12 pl-12 text-base bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
         />
-
-        {/* Type filters */}
-        <div className="flex flex-wrap gap-2">
-          {TYPE_BUTTONS.map(({ type, label, color }) => (
-            <Button
-              key={type}
-              variant={activeType === type ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => { setActiveType(type); setSelectedPath(null) }}
-              className={activeType === type && color ? color : ''}
-            >
-              {label} ({COUNTS[type]})
-            </Button>
-          ))}
-        </div>
-
-        {/* Mobile path indicator */}
-        {selectedPath && (
-          <div className="md:hidden flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Filtering:</span>
-            <Badge variant="secondary" className="font-mono text-xs">
-              {selectedPath}
-            </Badge>
-            <button
-              className="text-primary hover:underline text-xs"
-              onClick={() => setSelectedPath(null)}
-            >
-              Clear
-            </button>
-          </div>
-        )}
-
-        {/* Results count */}
-        <p className="text-sm text-muted-foreground">
-          {filtered.length} items
-          {selectedPath && ` in ${selectedPath}`}
-          {search && ` matching "${search}"`}
-        </p>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
-          {filtered.map(item => (
-            <ContentCard key={item.id} item={item} />
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            No content found.{' '}
-            <button className="underline" onClick={() => { setSearch(''); setActiveType('all'); setSelectedPath(null) }}>
-              Clear filters
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Filter rows */}
+      <div className="not-content mb-6!">
+        {/* Cause filter */}
+        <div className="flex items-center gap-4 mb-2!">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16 shrink-0">
+            Cause
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {CAUSE_OPTIONS.map(({ value, label }) => (
+              <FilterButton
+                key={value}
+                active={activeCause === value}
+                onClick={() => setActiveCause(value)}
+                count={causeCounts[value]}
+              >
+                {label}
+              </FilterButton>
+            ))}
+          </div>
+        </div>
+
+        {/* Entity filter */}
+        <div className="flex items-center gap-4 mb-2!">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16 shrink-0">
+            Entity
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {ENTITY_OPTIONS.map(({ value, label }) => (
+              <FilterButton
+                key={value}
+                active={activeEntity === value}
+                onClick={() => setActiveEntity(value)}
+                count={entityCounts[value]}
+              >
+                {label}
+              </FilterButton>
+            ))}
+          </div>
+        </div>
+
+        {/* Type filter */}
+        <div className="flex items-center gap-4!">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16 shrink-0">
+            Type
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {TYPE_OPTIONS.map(({ value, label }) => (
+              <FilterButton
+                key={value}
+                active={activeType === value}
+                onClick={() => setActiveType(value)}
+                count={typeCounts[value]}
+              >
+                {label}
+              </FilterButton>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-slate-200 dark:border-slate-800 mb-6!" />
+
+      {/* Results header */}
+      <div className="flex items-center justify-between mb-4!">
+        <span className="text-sm text-slate-600 dark:text-slate-400">
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
+            {filtered.length.toLocaleString()}
+          </span>{' '}
+          items
+        </span>
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+          <SelectTrigger className="w-36 h-9">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Results grid - 4 columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {filtered.map((item) => (
+          <ContentCard key={item.id} item={item} />
+        ))}
+      </div>
+
+      {filtered.length === 0 && (
+        <div className="text-center py-16 text-slate-500 dark:text-slate-400">
+          <p className="mb-2">No content found.</p>
+          <button
+            className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
+            onClick={() => {
+              setSearch('');
+              setActiveType('all');
+              setActiveEntity('all');
+              setSortBy('relevance');
+            }}
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
     </div>
-  )
+  );
 }
