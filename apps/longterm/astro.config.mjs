@@ -65,12 +65,12 @@ export default defineConfig({
                       { label: 'Governance', collapsed: true, items: [
                           { label: 'Legislation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/legislation' } },
                           { label: 'Compute Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/compute-governance' } },
-                          { label: 'International', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
+                          { label: 'International Governance', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/international' } },
                           { label: 'Industry Self-Regulation', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/governance/industry' } },
                           { label: 'Effectiveness Assessment', slug: 'knowledge-base/responses/governance/effectiveness-assessment', attrs: { class: 'sidebar-icon-gauge' } },
                       ]},
                       { label: 'Institutions', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/institutions' } },
-                      { label: 'Epistemic Tools', collapsed: true, items: [
+                      { label: 'Epistemic & Forecasting', collapsed: true, items: [
                           { label: 'Approaches', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools/approaches' } },
                           { label: 'Tools & Platforms', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/epistemic-tools/tools' } },
                           { slug: 'knowledge-base/responses/epistemic-tools/epistemic-infrastructure' },
@@ -87,7 +87,7 @@ export default defineConfig({
                       { label: 'Accident Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/accident' } },
                       { label: 'Misuse Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/misuse' } },
                       { label: 'Structural Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/structural' } },
-                      { label: 'Epistemic Harms', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
+                      { label: 'Epistemic Risks', collapsed: true, autogenerate: { directory: 'knowledge-base/risks/epistemic' } },
                   ],
               },
               {
@@ -95,9 +95,10 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                       { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
-                      { label: 'Safety Research Orgs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
+                      { label: 'Safety Research Organizations', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
                       { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/epistemic-orgs' } },
                       { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/funders' } },
+                      { label: 'Finance', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/finance' } },
                       { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
                       { label: 'Political Advocacy', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/political-advocacy' } },
                   ],
