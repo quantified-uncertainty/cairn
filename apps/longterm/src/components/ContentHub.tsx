@@ -144,17 +144,17 @@ function formatCluster(cluster: string): string {
   return map[cluster] || cluster;
 }
 
-// Get color classes for cluster badges
+// Get color classes for cluster badges (subtle text-only style)
 function getClusterColor(cluster: string): string {
   const colors: Record<string, string> = {
-    'ai-safety': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-    'biorisks': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
-    'cyber': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-    'epistemics': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-    'governance': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-    'community': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+    'ai-safety': 'text-purple-500 dark:text-purple-400',
+    'biorisks': 'text-red-500 dark:text-red-400',
+    'cyber': 'text-orange-500 dark:text-orange-400',
+    'epistemics': 'text-blue-500 dark:text-blue-400',
+    'governance': 'text-green-600 dark:text-green-400',
+    'community': 'text-yellow-600 dark:text-yellow-500',
   };
-  return colors[cluster] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+  return colors[cluster] || 'text-slate-400 dark:text-slate-500';
 }
 
 // Sort options
@@ -412,21 +412,15 @@ function ContentCard({ item }: { item: ContentItem }) {
         {item.title}
       </div>
       <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">{item.description}</p>
-      {/* Cause and Entity badges */}
-      <div className="flex flex-wrap gap-1.5 mt-auto">
+      {/* Cause and Entity labels */}
+      <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-auto text-[10px]">
         {displayClusters.map((cluster) => (
-          <span
-            key={cluster}
-            className={cn(
-              'px-1.5 py-0.5 text-[10px] font-medium rounded',
-              getClusterColor(cluster)
-            )}
-          >
+          <span key={cluster} className={getClusterColor(cluster)}>
             {formatCluster(cluster)}
           </span>
         ))}
         {item.entityType && (
-          <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+          <span className="text-slate-400 dark:text-slate-500">
             {item.entityType}
           </span>
         )}
