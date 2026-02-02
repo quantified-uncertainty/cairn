@@ -39,19 +39,19 @@ const TIERS = {
   budget: {
     name: 'Budget',
     estimatedCost: '$2-3',
-    phases: ['research-perplexity', 'synthesize-fast', 'verify-sources', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['canonical-links', 'research-perplexity', 'synthesize-fast', 'verify-sources', 'validate-loop', 'validate-full', 'grade'],
     description: 'Perplexity research + fast synthesis'
   },
   standard: {
     name: 'Standard',
     estimatedCost: '$4-6',
-    phases: ['research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'review', 'validate-full', 'grade'],
+    phases: ['canonical-links', 'research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'review', 'validate-full', 'grade'],
     description: 'Full research + Sonnet synthesis + validation loop'
   },
   premium: {
     name: 'Premium',
     estimatedCost: '$8-12',
-    phases: ['research-perplexity-deep', 'research-scry', 'synthesize-quality', 'verify-sources', 'review', 'validate-loop', 'validate-full', 'grade'],
+    phases: ['canonical-links', 'research-perplexity-deep', 'research-scry', 'synthesize-quality', 'verify-sources', 'review', 'validate-loop', 'validate-full', 'grade'],
     description: 'Deep research + quality synthesis + review'
   }
 };
@@ -217,6 +217,112 @@ function loadResult(topic, filename) {
     return JSON.parse(content);
   }
   return content;
+}
+
+// ============ Phase: Find Canonical Links ============
+
+const CANONICAL_DOMAINS = [
+  { domain: 'en.wikipedia.org', name: 'Wikipedia', priority: 1 },
+  { domain: 'www.wikidata.org', name: 'Wikidata', priority: 2 },
+  { domain: 'lesswrong.com', name: 'LessWrong', priority: 3 },
+  { domain: 'forum.effectivealtruism.org', name: 'EA Forum', priority: 3 },
+  { domain: 'www.britannica.com', name: 'Britannica', priority: 4 },
+  { domain: 'arxiv.org', name: 'arXiv', priority: 5 },
+  { domain: 'scholar.google.com', name: 'Google Scholar', priority: 5 },
+  { domain: 'twitter.com', name: 'Twitter/X', priority: 6 },
+  { domain: 'x.com', name: 'Twitter/X', priority: 6 },
+  { domain: 'github.com', name: 'GitHub', priority: 6 },
+  { domain: 'linkedin.com', name: 'LinkedIn', priority: 7 },
+];
+
+async function findCanonicalLinks(topic) {
+  log('canonical', 'Searching for canonical reference links...');
+
+  const { perplexityResearch } = await import('../lib/openrouter.mjs');
+
+  // Search for canonical pages
+  const searchQuery = `Find official and reference pages for "${topic}". Include:
+- Wikipedia page URL (if exists)
+- Wikidata ID and URL (if exists)
+- LessWrong profile or wiki page (if exists)
+- EA Forum profile or posts (if exists)
+- Official website (if organization or person)
+- Twitter/X profile (if exists)
+- GitHub (if relevant)
+
+For each, provide the exact URL. Only include links that actually exist.`;
+
+  try {
+    const result = await perplexityResearch(searchQuery, { maxTokens: 1500 });
+
+    // Extract URLs from response
+    const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/g;
+    const foundUrls = (result.content.match(urlRegex) || []).map(url => {
+      // Clean trailing punctuation
+      return url.replace(/[.,;:!?]+$/, '').replace(/\)+$/, '');
+    });
+
+    // Also include citations from Perplexity
+    const allUrls = [...new Set([...foundUrls, ...(result.citations || [])])];
+
+    // Categorize by domain
+    const canonicalLinks = [];
+    const seenDomains = new Set();
+
+    for (const url of allUrls) {
+      try {
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname.replace(/^www\./, '');
+
+        // Check against known canonical domains
+        for (const { domain, name, priority } of CANONICAL_DOMAINS) {
+          const domainHost = domain.replace(/^www\./, '');
+          if (hostname === domainHost || hostname.endsWith('.' + domainHost)) {
+            if (!seenDomains.has(name)) {
+              canonicalLinks.push({ name, url, priority, domain: hostname });
+              seenDomains.add(name);
+            }
+            break;
+          }
+        }
+
+        // Check for official/personal website (not a known platform)
+        if (!seenDomains.has('Official Website') &&
+            !CANONICAL_DOMAINS.some(d => hostname.includes(d.domain.replace(/^www\./, '')))) {
+          // Heuristic: if it looks like a personal/org site
+          if (hostname.split('.').length <= 3 && !hostname.includes('google') && !hostname.includes('bing')) {
+            canonicalLinks.push({ name: 'Official Website', url, priority: 0, domain: hostname });
+            seenDomains.add('Official Website');
+          }
+        }
+      } catch (e) {
+        // Invalid URL, skip
+      }
+    }
+
+    // Sort by priority
+    canonicalLinks.sort((a, b) => a.priority - b.priority);
+
+    log('canonical', `Found ${canonicalLinks.length} canonical links`);
+    canonicalLinks.forEach(link => {
+      log('canonical', `  ${link.name}: ${link.url}`);
+    });
+
+    // Save results
+    const data = {
+      topic,
+      links: canonicalLinks,
+      rawContent: result.content,
+      allFoundUrls: allUrls,
+      timestamp: new Date().toISOString(),
+    };
+    saveResult(topic, 'canonical-links.json', data);
+
+    return { success: true, links: canonicalLinks, cost: result.cost || 0 };
+  } catch (error) {
+    log('canonical', `Error finding canonical links: ${error.message}`);
+    return { success: false, error: error.message, links: [] };
+  }
 }
 
 // ============ Phase: Perplexity Research ============
@@ -467,6 +573,24 @@ function getSynthesisPrompt(topic, quality = 'standard') {
   const researchData = loadResult(topic, 'perplexity-research.json');
   const scryData = loadResult(topic, 'scry-research.json');
   const directionsData = loadResult(topic, 'directions.json');
+  const canonicalLinksData = loadResult(topic, 'canonical-links.json');
+
+  // Format canonical links for display
+  let canonicalLinksSection = '';
+  if (canonicalLinksData?.links?.length > 0) {
+    const linksTable = canonicalLinksData.links
+      .map(link => `| ${link.name} | [${link.domain || 'Link'}](${link.url}) |`)
+      .join('\n');
+    canonicalLinksSection = `## Canonical Links Found
+
+**IMPORTANT: Include this table near the top of the article (after Quick Assessment):**
+
+| Source | Link |
+|--------|------|
+${linksTable}
+
+`;
+  }
 
   // Count total available citation URLs
   let totalCitations = 0;
@@ -531,6 +655,7 @@ ${citationWarning}
 
 ${directionsSection}
 
+${canonicalLinksSection}
 ## Requirements
 
 1. **CRITICAL: Use ONLY real URLs from the research data**
@@ -585,6 +710,7 @@ import {EntityLink, Backlinks, KeyPeople, KeyQuestions, Section} from '@componen
 
 ## Article Sections
 - Quick Assessment (table)
+- Key Links (table with Wikipedia, LessWrong, EA Forum, official site, etc. - if found)
 - Overview (2-3 paragraphs)
 - History
 - [Topic-specific sections]
@@ -1327,6 +1453,11 @@ async function runPipeline(topic, tier = 'standard', directions = null) {
           result = await processDirections(topic, pipelineContext.directions);
           break;
 
+        case 'canonical-links':
+          result = await findCanonicalLinks(topic);
+          results.totalCost += result.cost || 0;
+          break;
+
         case 'research-perplexity':
           result = await runPerplexityResearch(topic, 'standard');
           results.totalCost += result.cost || 0;
@@ -1472,6 +1603,7 @@ Destination Examples:
   --dest knowledge-base/organizations/political-advocacy
 
 Phases:
+  canonical-links       Find Wikipedia, LessWrong, EA Forum, official sites
   research-perplexity   Perplexity web research
   research-scry         Scry knowledge base search
   synthesize            Claude synthesis to MDX
@@ -1531,6 +1663,9 @@ async function main() {
           process.exit(1);
         }
         result = await processDirections(topic, directions);
+        break;
+      case 'canonical-links':
+        result = await findCanonicalLinks(topic);
         break;
       case 'research-perplexity':
         result = await runPerplexityResearch(topic);
