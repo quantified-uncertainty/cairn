@@ -440,13 +440,13 @@ export default function ContentHub() {
     window.history.replaceState({}, '', newUrl);
   }, [search, activeType, sortBy, activeEntity, activeCause]);
 
-  // Cause filtering helper - uses clusters from item (inherited from parent page for insights)
+  // Cause filtering helper - checks both clusters and text content
   const matchesCause = (item: ContentItem, cause: string): boolean => {
-    // Use clusters if available
-    if (item.clusters && item.clusters.length > 0) {
-      return item.clusters.includes(cause);
-    }
-    // Fallback to text matching for items without clusters
+    // Check clusters first
+    const hasCluster = item.clusters && item.clusters.includes(cause);
+    if (hasCluster) return true;
+
+    // Also check text content for additional matches
     const text = `${item.path} ${item.title} ${item.description}`.toLowerCase();
     switch (cause) {
       case 'ai-safety':
