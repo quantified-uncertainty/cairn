@@ -107,10 +107,11 @@ crux insights     # Insight quality checks
 crux gaps         # Find pages needing insights
 
 # Examples
-crux validate compile --quick    # Fast MDX compilation check
-crux analyze mentions            # Find unlinked entity references
-crux fix escaping                # Fix dollar signs and comparisons
-crux resources list --limit 10   # Pages with unconverted links
+crux validate compile --quick        # Fast MDX compilation check
+crux analyze mentions                # Find unlinked entity references
+crux analyze entity-links sam-altman # Check cross-linking for an entity
+crux fix escaping                    # Fix dollar signs and comparisons
+crux resources list --limit 10       # Pages with unconverted links
 ```
 
 ## Page Types
@@ -132,6 +133,32 @@ The <EntityLink id="scheming">scheming</EntityLink> risk is related to...
 ```
 
 Use `<R id="hash">` for external resource links with hover tooltips.
+
+### Post-Edit Linking Checklist
+
+After creating or significantly editing a page, run the entity-links analyzer to ensure proper cross-linking:
+
+```bash
+# Check linking status for the entity you edited
+crux analyze entity-links <entity-id>
+
+# Example
+crux analyze entity-links sam-altman
+```
+
+This shows:
+1. **Inbound links** - Pages that link TO this entity via EntityLink
+2. **Missing inbound** - Pages that mention entity but don't link (candidates to fix)
+3. **Outbound links** - Entities this page links to
+
+**When to run:**
+- After creating a new page
+- After adding significant content to an existing page
+- When reviewing cross-reference coverage for important entities
+
+**Fixing missing links:**
+- For high-importance pages (importance ≥50), add EntityLinks
+- Prioritize pages where the entity is substantively discussed, not just mentioned in passing
 
 ## Data Layer
 

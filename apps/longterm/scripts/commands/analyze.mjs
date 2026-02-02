@@ -27,6 +27,11 @@ const SCRIPTS = {
     description: 'Analyze cross-reference coverage',
     passthrough: ['json', 'orphans', 'topLinked', 'page'],
   },
+  'entity-links': {
+    script: 'analyze/analyze-entity-links.mjs',
+    description: 'Analyze linking for a specific entity',
+    passthrough: ['json', 'help'],
+  },
   quality: {
     script: 'validate/validate-quality.mjs',
     description: 'Content quality ratings',
@@ -111,10 +116,11 @@ Options:
   --stats         Show statistics (scan)
 
 Examples:
-  crux analyze                      Full health report
-  crux analyze --brief              Summary only
-  crux analyze mentions --verbose   Detailed unlinked mentions
-  crux analyze links --orphans      Find orphaned pages
-  crux analyze links --top-linked   Find most linked pages
+  crux analyze                         Full health report
+  crux analyze --brief                 Summary only
+  crux analyze mentions --verbose      Detailed unlinked mentions
+  crux analyze links --orphans         Find orphaned pages
+  crux analyze links --top-linked      Find most linked pages
+  crux analyze entity-links sam-altman Check linking for an entity
 `;
 }
