@@ -97,19 +97,23 @@ export default defineConfig({
                       { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
                       { label: 'Safety Research Organizations', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
                       { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/epistemic-orgs' } },
+                      { label: 'Community Building', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/community-building' } },
                       { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/funders' } },
-                      { label: 'Finance', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/finance' } },
+                      { label: 'AI Investment Funds', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/finance' } },
                       { label: 'Government Institutes', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/government' } },
                       { label: 'Political Advocacy', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/political-advocacy' } },
                   ],
               },
-              { label: 'People', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
+              { label: 'People', collapsed: true, items: [
+                      { label: 'Profiles', collapsed: true, autogenerate: { directory: 'knowledge-base/people' } },
+                      { label: 'Track Records', collapsed: true, autogenerate: { directory: 'knowledge-base/people/track-records' } },
+                  ]},
               { label: 'AI Capabilities', collapsed: true, autogenerate: { directory: 'knowledge-base/capabilities' } },
               {
                   label: 'Debates & Cruxes',
                   collapsed: true,
                   items: [
-                      { label: 'Key Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
+                      { label: 'Debates', collapsed: true, autogenerate: { directory: 'knowledge-base/debates' } },
                       { label: 'Cruxes', collapsed: true, autogenerate: { directory: 'knowledge-base/cruxes' } },
                   ],
               },
@@ -121,7 +125,7 @@ export default defineConfig({
                       { label: 'Incidents', collapsed: true, autogenerate: { directory: 'knowledge-base/incidents' } },
                       { label: 'Intelligence Paradigms', collapsed: true, items: [
                           { label: 'Comparison Table', link: '/knowledge-base/architecture-scenarios/table', attrs: { class: 'sidebar-icon-table' } },
-                          { label: 'Paradigm Pages', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
+                          { label: 'Paradigms', collapsed: true, autogenerate: { directory: 'knowledge-base/intelligence-paradigms' } },
                       ]},
                       { label: 'Forecasting & Scenarios', collapsed: true, items: [
                           { label: 'AGI Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/forecasting' } },
@@ -189,7 +193,7 @@ export default defineConfig({
                           { slug: 'ai-transition-model/factors/misuse-potential/robot-threat-exposure' },
                           { slug: 'ai-transition-model/factors/misuse-potential/surprise-threat-exposure' },
                       ]},
-                      { label: 'Models', collapsed: true, items: [
+                      { label: 'Quantitative Models', collapsed: true, items: [
                           { slug: 'ai-transition-model/models/compute-forecast-sketch' },
                       ]},
                   ],
