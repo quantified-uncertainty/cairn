@@ -684,9 +684,20 @@ ${canonicalLinksSection}
    - Include skeptical perspectives even if research is mostly positive or negative
    - For controversial claims, note that significance/interpretation is debated
 
-## Known Entity IDs
+## EntityLink Usage - CRITICAL
+
+**Format**: \`<EntityLink id="entity-id">Display Text</EntityLink>\`
+
+**IMPORTANT**:
+- IDs are simple slugs like "open-philanthropy", NOT paths like "organizations/funders/open-philanthropy"
+- ONLY use EntityLinks for entities that exist in the wiki
+- If unsure whether an entity exists, use plain text instead of guessing an ID
+- NEVER invent EntityLink IDs - if you're not certain, don't use EntityLink
+
+**Common valid IDs** (partial list - use plain text if entity not listed):
 open-philanthropy, anthropic, openai, deepmind, miri, lesswrong, redwood-research,
-eliezer-yudkowsky, paul-christiano, dario-amodei, scheming, misuse-risks
+eliezer-yudkowsky, paul-christiano, dario-amodei, scheming, misuse-risks, cea,
+80000-hours, arc-evals, metr, epoch-ai, fhi, cais, sff, ltff, fli
 
 ## Output Format
 
@@ -888,10 +899,12 @@ Read the draft article at: ${draftPath}
 
 3. **Fix EntityLinks** (verify IDs resolve):
    - Read src/data/pathRegistry.json to see which entity IDs exist
-   - For each EntityLink in the draft, verify the id exists in pathRegistry
-   - If an EntityLink id doesn't resolve:
+   - For EVERY EntityLink in the draft, verify the id exists as a key in pathRegistry
+   - EntityLink IDs must be simple slugs (e.g., "open-philanthropy"), NOT paths (e.g., "organizations/funders/open-philanthropy")
+   - If an EntityLink id doesn't exist in pathRegistry:
      - Check for similar IDs (e.g., "center-for-ai-safety" should be "cais")
-     - Or remove the EntityLink and use plain text instead
+     - Or REMOVE the EntityLink entirely and use plain text instead
+   - It's better to use plain text than to use an invalid EntityLink ID
 
 4. **Fix broken citations**:
    - Ensure all [^N] footnote citations have actual URLs, not "undefined"
