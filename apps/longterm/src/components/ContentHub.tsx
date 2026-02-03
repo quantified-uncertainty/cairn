@@ -111,6 +111,7 @@ interface ContentItem {
   clusters: string[]; // For cause filtering - inherited from parent page for insights
   sourceTitle?: string; // For insights - title of the source page
   entityType?: string; // Entity category derived from path
+  lastUpdated: string | null; // ISO date string for sorting by edit date
 }
 
 // Derive entity type from path
@@ -158,10 +159,11 @@ function getClusterColor(cluster: string): string {
 }
 
 // Sort options
-type SortOption = 'relevance' | 'importance' | 'quality' | 'wordCount' | 'alphabetical';
+type SortOption = 'relevance' | 'importance' | 'quality' | 'wordCount' | 'alphabetical' | 'recentlyEdited';
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'relevance', label: 'Relevance' },
+  { value: 'recentlyEdited', label: 'Recently Edited' },
   { value: 'importance', label: 'Importance' },
   { value: 'quality', label: 'Quality' },
   { value: 'wordCount', label: 'Word Count' },
@@ -243,6 +245,7 @@ function buildContentList(): ContentItem[] {
         wordCount: page.wordCount || 0,
         clusters: (page as Page & { clusters?: string[] }).clusters || ['ai-safety'],
         entityType: getEntityType(page.path),
+        lastUpdated: page.lastUpdated,
       });
     });
 
@@ -267,6 +270,7 @@ function buildContentList(): ContentItem[] {
       wordCount: insight.insight.split(/\s+/).length,
       clusters: parentClusters,
       sourceTitle,
+      lastUpdated: null, // Insights don't have their own edit dates
     });
   });
 
@@ -285,6 +289,7 @@ function buildContentList(): ContentItem[] {
       importance: null,
       wordCount: 0,
       clusters: tableClusters,
+      lastUpdated: null, // Tables don't have edit dates
     });
   });
 
@@ -312,6 +317,7 @@ function buildContentList(): ContentItem[] {
         importance: null,
         wordCount: 0,
         clusters: ['ai-safety'], // Default for diagrams
+        lastUpdated: e.lastUpdated || null, // Use entity's lastUpdated if available
       });
     });
 
@@ -336,6 +342,14 @@ function sortItems(items: ContentItem[], sortBy: SortOption): ContentItem[] {
         const scoreA = ((a.quality || 0) + (a.importance || 0)) / 2;
         const scoreB = ((b.quality || 0) + (b.importance || 0)) / 2;
         return scoreB - scoreA;
+      }
+      case 'recentlyEdited': {
+        // Sort by lastUpdated descending (most recent first)
+        // Items without dates go to the end
+        if (!a.lastUpdated && !b.lastUpdated) return 0;
+        if (!a.lastUpdated) return 1;
+        if (!b.lastUpdated) return -1;
+        return b.lastUpdated.localeCompare(a.lastUpdated);
       }
       case 'importance':
         return (b.importance || 0) - (a.importance || 0);
