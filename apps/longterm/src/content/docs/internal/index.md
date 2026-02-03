@@ -8,6 +8,10 @@ sidebar:
 
 This section contains internal documentation for maintaining and contributing to the knowledge base.
 
+## Getting Started
+
+- [About This Wiki](/internal/about-this-wiki/) - Comprehensive overview of how the wiki works, technical architecture, and content organization
+
 ## Automation and Tools
 
 - [Automation Tools](/internal/automation-tools/) - Complete reference for all scripts and CLI workflows
