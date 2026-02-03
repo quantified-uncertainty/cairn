@@ -42,6 +42,7 @@ export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 // Quality validation rules
 export { qualitySourceRule } from './quality-source.mjs';
 export { temporalArtifactsRule } from './temporal-artifacts.mjs';
+export { outdatedNamesRule } from './outdated-names.mjs';
 
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
@@ -68,6 +69,7 @@ import { vagueCitationsRule } from './vague-citations.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 import { qualitySourceRule } from './quality-source.mjs';
 import { temporalArtifactsRule } from './temporal-artifacts.mjs';
+import { outdatedNamesRule } from './outdated-names.mjs';
 
 export const allRules = [
   // Content validation
@@ -107,6 +109,7 @@ export const allRules = [
   // Quality validation
   qualitySourceRule,
   temporalArtifactsRule,
+  outdatedNamesRule,
 ];
 
 export default allRules;
