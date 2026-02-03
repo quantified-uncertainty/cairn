@@ -1,7 +1,7 @@
 ---
 title: "Anthropic Investors"
 description: "Analysis of Anthropic's investor base from a longtermist funding perspective. At $350B valuation, founder pledges (80% of equity) could direct $20-55B to philanthropy, but historical Giving Pledge data shows only 36% of deceased pledgers met commitments, and wealth growth typically outpaces giving."
-quality: 58
+quality: 62
 lastEdited: "2026-02-03"
 importance: 78
 llmSummary: "Anthropic's $350B valuation creates potentially transformative longtermist funding flows. Seven co-founders (each worth ~$3.7-10B) pledged 80% donations alongside Dario Amodei's 'Adolescence of Technology' essay (Jan 2026) framing AI-driven inequality as motivation. Early EA investors include Jaan Tallinn and Dustin Moskovitz ($500M stake moved to nonprofit). Employees have pledged billions with 3:1 matching. Holden Karnofsky joined in 2025 to work on responsible scaling. IPO expected 2026-2027 would unlock liquidity. However, Giving Pledge data shows only 36% of deceased pledgers met 50% commitments. Key uncertainties: timing, pledge follow-through, cause allocation, and EA ecosystem absorption capacity."
@@ -11,9 +11,9 @@ ratings:
   actionability: 6
   completeness: 6
 metrics:
-  wordCount: 5000
-  citations: 75
-  tables: 10
+  wordCount: 5800
+  citations: 85
+  tables: 11
   diagrams: 0
 clusters: ["community", "ai-safety", "governance"]
 todos:
@@ -180,8 +180,18 @@ Founder stakes have diluted from approximately 6% each at founding to 2-3% each 
 
 Anthropic's employees have individually pledged billions of dollars of Anthropic shares to charities, with Anthropic matching those donations:
 - For most of Anthropic's existence, employees could pledge up to 50% of their equity to nonprofits, with Anthropic matching that 3:1—an unusually strong incentive to pledge money to charity up-front [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
-- Amanda Askell (early employee) was the 67th signatory of the GWWC pledge
+- These pledges are legally binding because equity has already been transferred to donor-advised funds (DAFs)
+- The matching program only covers 501(c)(3) organizations, creating challenges for donations to policy-focused 501(c)(4)s
 - The combined value of employee pledges plus matching could represent tens of billions at current valuations
+
+**Named early employees with EA connections:**
+- Amanda Askell: 67th signatory of the GWWC pledge; ex-husband is <EntityLink id="will-macaskill">William MacAskill</EntityLink>, a co-founder of the EA movement [EA Forum](https://forum.effectivealtruism.org/posts/53Gc35vDLK2u5nBxP/anthropic-is-not-being-consistently-candid-about-their)
+- One employee stated publicly: "I've made a legally binding pledge to allocate half of [my equity] to 501(c)(3) charities... I expect to donate the majority of the remainder"
+
+**Long-Term Benefit Trust members with EA backgrounds:**
+- Zach Robinson: CEO of <EntityLink id="centre-for-effective-altruism">Centre for Effective Altruism</EntityLink>
+- Neil Buddy Shah: Former <EntityLink id="givewell">GiveWell</EntityLink> Managing Director; CEO of Clinton Health Access Initiative
+- Kanika Bahl: CEO of Evidence Action (GiveWell top charity)
 
 ### Comparison with OpenAI
 
@@ -364,16 +374,36 @@ Realistic timeline for significant capital deployment: **2028-2035**
 - Anthropic's mission alignment makes AI safety natural focus
 - Founders' technical backgrounds suggest interest in technical research
 - <EntityLink id="dario-amodei">Dario Amodei</EntityLink>'s background in ML research
+- Mechanistic interpretability research specifically expects "an influx of funding soon" [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
 
 **Medium confidence (EA-adjacent):**
 - Global health (Dario's early GiveWell involvement)
-- Pandemic preparedness (Anthropic's risk-focused culture)
+- Pandemic preparedness/biosecurity (Anthropic's risk-focused culture)
 - <EntityLink id="governance-policy">AI governance and policy</EntityLink>
+- AI welfare research (Anthropic hired Kyle Fish in 2024 as first full-time AI welfare researcher) [Transformer News](https://www.transformernews.ai/p/anthropic-ai-welfare-researcher)
 
 **Lower confidence:**
-- Animal welfare (less founder connection)
-- Other longtermist causes
-- Non-EA causes (inequality, climate)
+- Animal welfare: Frequent "second favorite" cause among longtermists, but when surveyed, EA community thinks 18-24% of resources should go to animal advocacy while actual allocation is ~7% [EA Forum](https://forum.effectivealtruism.org/posts/FxZdQJXs45fTFnMEe/ea-is-underfunding-animal-advocacy-according-to-our-own)
+- Digital minds: Very neglected area with few researchers
+- Non-EA causes (inequality, climate): Dario's essay mentions inequality concerns but unclear if this translates to non-EA giving
+
+**Policy-focused organizations (501(c)(4)s):**
+- <EntityLink id="americans-for-responsible-innovation">Americans for Responsible Innovation</EntityLink> (ARI): AI policy advocacy
+- AI Policy Network: Political donations for AI safety
+- Note: Anthropic's matching program only covers 501(c)(3)s, limiting incentives for policy donations
+
+### Donor Advising Ecosystem
+
+Several organizations are positioning to advise Anthropic employees: [EA Forum](https://forum.effectivealtruism.org/posts/H8SqwbLxKkiJur3c4/preparing-for-a-flush-future-work-giving-and-conduct)
+
+| Organization | Focus | Scale |
+|--------------|-------|-------|
+| <EntityLink id="longview-philanthropy">Longview Philanthropy</EntityLink> | AI safety, GCR; donors >\$100k/year | \$60M+ advised in 2025, scaling to \$100M+ in 2026 |
+| <EntityLink id="givewell">GiveWell</EntityLink> | Global health | \$1B+ annually |
+| <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> | EA cause areas broadly | Largest EA funder |
+| Senterra Funders | Animal welfare | Emerging |
+
+One EA Forum commenter noted their job "involves a non-zero amount of advising Anthropic folks" on donation decisions.
 
 ### Differential Impact by Cause
 
@@ -382,6 +412,16 @@ From EA Forum analysis: [EA Forum](https://forum.effectivealtruism.org/posts/rRB
 > "AI safety likely receives more Anthropic employee funding, while animal welfare and global health may face different dynamics."
 
 This suggests Anthropic wealth may significantly expand AI safety funding while having less impact on other EA cause areas.
+
+### Concerns About Allocation
+
+**Value drift risk:** The fraction of employees with EA-ish perspectives is expected to decrease among more recent hires. One commenter noted: "a lot of the early employees and higher-ups have EA-ish perspectives... this fraction is expected to decrease among more recent employees."
+
+**Time constraints:** Anthropic employees are described as "incredibly time poor," and some interventions are very time-sensitive if donors have short AI timelines.
+
+**US-centric focus:** One analysis raised concerns about "a strong focus on US-centric actions, which might [be] very suboptimal" for global impact.
+
+**Procrastination risk:** "Empirically, it's common for billionaires to pledge a lot of money to charity and then be very slow at giving it away."
 
 ## Strategic Implications
 
