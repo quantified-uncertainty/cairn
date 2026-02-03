@@ -486,6 +486,9 @@ function applyGradesToFile(page, grades, metrics, derivedQuality) {
     lineWidth: 0  // Don't wrap lines
   });
 
+  // Fix: Ensure lastEdited is always quoted (YAML stringifier doesn't quote date-like strings)
+  newFm = newFm.replace(/^(lastEdited:\s*)(\d{4}-\d{2}-\d{2})$/m, '$1"$2"');
+
   // Ensure frontmatter ends with newline
   if (!newFm.endsWith('\n')) {
     newFm += '\n';

@@ -57,6 +57,12 @@ const SCRIPTS = {
     passthrough: ['ci'],
     extraArgs: ['--rules=comparison-operators', '--fix'],
   },
+  frontmatter: {
+    script: 'validate/validate-unified.mjs',
+    description: 'Fix frontmatter issues (unquoted dates)',
+    passthrough: ['ci'],
+    extraArgs: ['--rules=frontmatter-schema', '--fix'],
+  },
 };
 
 /**

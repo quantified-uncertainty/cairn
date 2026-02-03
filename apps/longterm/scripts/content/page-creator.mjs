@@ -306,6 +306,59 @@ function deployToDestination(topic, destPath) {
   };
 }
 
+// ============ Cross-Link Validation ============
+
+/**
+ * Check EntityLinks in a deployed file and warn about missing cross-links
+ */
+function validateCrossLinks(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+
+  // Count outbound EntityLinks
+  const entityLinkMatches = content.match(/<EntityLink\s+id="([^"]+)"/g) || [];
+  const uniqueEntityLinks = new Set(
+    entityLinkMatches.map(m => m.match(/id="([^"]+)"/)[1])
+  );
+
+  const result = {
+    outboundCount: uniqueEntityLinks.size,
+    outboundIds: [...uniqueEntityLinks],
+    warnings: []
+  };
+
+  // Check for common missing patterns
+  const contentLower = content.toLowerCase();
+
+  // Check if "created by" or "developed by" exists without EntityLink nearby
+  const creatorPatterns = [
+    /created by\s+([A-Z][a-z]+\s+[A-Z][a-z]+)/g,
+    /developed by\s+([A-Z][a-z]+\s+[A-Z][a-z]+)/g,
+    /built by\s+([A-Z][a-z]+\s+[A-Z][a-z]+)/g,
+    /founded by\s+([A-Z][a-z]+\s+[A-Z][a-z]+)/g,
+  ];
+
+  for (const pattern of creatorPatterns) {
+    let match;
+    while ((match = pattern.exec(content)) !== null) {
+      const name = match[1];
+      // Check if this name appears in an EntityLink
+      const nameSlug = name.toLowerCase().replace(/\s+/g, '-');
+      if (!result.outboundIds.some(id => id.includes(nameSlug) || nameSlug.includes(id))) {
+        result.warnings.push(`Possible unlinked creator: "${name}" - consider adding EntityLink if they exist in wiki`);
+      }
+    }
+  }
+
+  // Warn if no outbound links at all
+  if (result.outboundCount === 0) {
+    result.warnings.push('No outbound EntityLinks found - consider linking to related entities');
+  } else if (result.outboundCount < 2) {
+    result.warnings.push(`Only ${result.outboundCount} outbound EntityLink(s) - consider adding more cross-references`);
+  }
+
+  return result;
+}
+
 // ============ Utility Functions ============
 
 function ensureDir(dirPath) {
@@ -821,10 +874,20 @@ ${canonicalLinksSection}
 - If unsure whether an entity exists, use plain text instead of guessing an ID
 - NEVER invent EntityLink IDs - if you're not certain, don't use EntityLink
 
+**PRIORITY CROSS-LINKING** (most important):
+- **Creators/Authors**: If the subject was created by someone in the wiki, ALWAYS EntityLink them
+  - Example: For a tool page, link to its creator: "created by <EntityLink id="vipul-naik">Vipul Naik</EntityLink>"
+  - Example: For a research project, link to the lead researcher
+- **Related Projects**: Link to sibling projects by the same creator
+  - Example: "part of an ecosystem including <EntityLink id="timelines-wiki">Timelines Wiki</EntityLink>"
+- **Funders/Organizations**: Link to funding sources and affiliated organizations
+- **Key People**: Link to researchers, founders, and notable figures mentioned substantively
+
 **Common valid IDs** (partial list - use plain text if entity not listed):
 open-philanthropy, anthropic, openai, deepmind, miri, lesswrong, redwood-research,
 eliezer-yudkowsky, paul-christiano, dario-amodei, scheming, misuse-risks, cea,
-80000-hours, arc-evals, metr, epoch-ai, fhi, cais, sff, ltff, fli
+80000-hours, arc-evals, metr, epoch-ai, fhi, cais, sff, ltff, fli,
+vipul-naik, issa-rice, timelines-wiki, donations-list-website, ai-watch, org-watch
 
 ## Output Format
 
@@ -1450,7 +1513,10 @@ Respond with JSON:
 
     // Write updated file
     const { stringify: stringifyYaml } = await import('yaml');
-    const newContent = `---\n${stringifyYaml(frontmatter)}---\n${body}`;
+    let yamlStr = stringifyYaml(frontmatter);
+    // Fix: Ensure lastEdited is always quoted (YAML stringifier doesn't quote date-like strings)
+    yamlStr = yamlStr.replace(/^(lastEdited:\s*)(\d{4}-\d{2}-\d{2})$/m, '$1"$2"');
+    const newContent = `---\n${yamlStr}---\n${body}`;
     fs.writeFileSync(finalPath, newContent);
 
     log('grade', `✓ Graded: imp=${grades.importance}, qual=${quality}`);
@@ -1896,10 +1962,20 @@ async function main() {
         });
       }
 
-      // Cross-linking suggestion
+      // Cross-linking validation
       const entitySlug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const crossLinkCheck = validateCrossLinks(deployResult.deployedTo);
+
       console.log(`\n${'─'.repeat(50)}`);
-      console.log(`${'\x1b[33m'}📌 Cross-linking reminder:${'\x1b[0m'}`);
+      if (crossLinkCheck.warnings.length > 0) {
+        console.log(`${'\x1b[33m'}⚠️  Cross-linking issues detected:${'\x1b[0m'}`);
+        crossLinkCheck.warnings.forEach(w => console.log(`   - ${w}`));
+        console.log(`\n   Outbound EntityLinks (${crossLinkCheck.outboundCount}): ${crossLinkCheck.outboundIds.join(', ') || 'none'}`);
+      } else {
+        console.log(`${'\x1b[32m'}✓ Cross-linking looks good (${crossLinkCheck.outboundCount} outbound EntityLinks)${'\x1b[0m'}`);
+      }
+
+      console.log(`\n${'\x1b[33m'}📌 Cross-linking reminder:${'\x1b[0m'}`);
       console.log(`   After running 'npm run build:data', check cross-links:`);
       console.log(`   ${'\x1b[36m'}npm run crux -- analyze entity-links ${entitySlug}${'\x1b[0m'}`);
       console.log(`\n   This shows pages that mention this entity but don't link to it.`);

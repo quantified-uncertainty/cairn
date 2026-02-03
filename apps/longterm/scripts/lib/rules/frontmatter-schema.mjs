@@ -70,6 +70,18 @@ export const frontmatterSchemaRule = {
   description: 'Validate MDX frontmatter against content collection schema',
   severity: Severity.ERROR,
 
+  // Auto-fix: quote lastEdited dates
+  fix(content, issue) {
+    if (issue.message.includes('lastEdited must be a quoted string')) {
+      // Add quotes around unquoted lastEdited dates
+      return content.replace(
+        /^(lastEdited:\s*)(\d{4}-\d{2}-\d{2})(\s*)$/m,
+        '$1"$2"$3'
+      );
+    }
+    return null; // Can't fix other issues
+  },
+
   check(contentFile, engine) {
     const issues = [];
     const frontmatter = contentFile.frontmatter;

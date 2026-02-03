@@ -193,10 +193,19 @@ npm run crux -- analyze entity-links <entity-id>
 # (Look for entity names in your content that could be linked)
 ```
 
+**Priority Cross-Links** (most important to include):
+- **Creators/Authors**: If the subject was created by someone in the wiki, ALWAYS EntityLink them
+  - Tool pages should link to their creator
+  - Research projects should link to lead researchers
+- **Related Projects**: Link to sibling projects by the same creator
+- **Funders/Organizations**: Link to funding sources and affiliated orgs
+- **Key People**: Link to researchers and notable figures mentioned substantively
+
 **Why this matters:**
 - New pages aren't automatically linked from existing content
 - Poor cross-linking reduces discoverability
 - Related pages (like a person and their organization) should link to each other
+- The page-creator now validates cross-links and warns if none are found
 
 **Quick fix for bulk issues:**
 ```bash
