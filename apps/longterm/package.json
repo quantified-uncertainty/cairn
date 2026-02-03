@@ -13,7 +13,6 @@
     "clean": "rm -rf .astro dist",
     "dev:clean": "npm run clean && npm run dev",
     "prepare": "sh scripts/setup-hooks.sh",
-
     "crux": "node scripts/crux.mjs",
     "validate": "node scripts/crux.mjs validate",
     "analyze": "node scripts/crux.mjs analyze",
@@ -23,15 +22,12 @@
     "resources": "node scripts/crux.mjs resources",
     "insights": "node scripts/crux.mjs insights",
     "gaps": "node scripts/crux.mjs gaps",
-
     "precommit": "node scripts/crux.mjs validate unified --rules=frontmatter-schema,dollar-signs,comparison-operators,tilde-dollar,markdown-lists,consecutive-bold-labels,prefer-entitylink && node scripts/crux.mjs validate sidebar && node scripts/crux.mjs validate compile --quick",
     "precommit:full": "node scripts/crux.mjs validate unified --rules=frontmatter-schema,dollar-signs,comparison-operators,tilde-dollar,markdown-lists,consecutive-bold-labels,prefer-entitylink && node scripts/crux.mjs validate compile && node scripts/crux.mjs validate refs && npx astro check",
     "validate:ci": "node scripts/crux.mjs validate all --ci --skip=component-refs,entitylink-ids",
-
     "extract": "node scripts/extract/extract-data.mjs",
     "extract-insights": "node scripts/extract/extract-insights.mjs",
     "forecasts:refresh": "node scripts/metaforecast/discover-page-forecasts.mjs && node scripts/metaforecast/update-tracked-forecasts.mjs",
-
     "test": "node scripts/lib/lib.test.mjs && node scripts/lib/validators.test.mjs",
     "lint": "eslint src scripts --ext .ts,.tsx,.mjs",
     "lint:fix": "eslint src scripts --ext .ts,.tsx,.mjs --fix",
@@ -55,6 +51,8 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-table": "^8.21.3",

@@ -114,23 +114,25 @@ function TreeNodeComponent({
     <div>
       <div
         className={cn(
-          "w-full flex items-center gap-1 px-2 py-1 text-left text-sm rounded hover:bg-accent/50 transition-colors cursor-pointer",
-          isSelected && "bg-accent text-accent-foreground font-medium",
-          depth === 0 && "font-medium"
+          "w-full flex items-center gap-1.5 px-2 py-1.5 text-left text-[13px] rounded-md transition-all duration-150 cursor-pointer",
+          "hover:bg-slate-100 dark:hover:bg-slate-700",
+          isSelected && "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium",
+          !isSelected && "text-slate-700 dark:text-slate-300",
+          depth === 0 && !isSelected && "font-medium"
         )}
-        style={{ paddingLeft: `${depth * 12 + 8}px` }}
+        style={{ paddingLeft: `${depth * 14 + 8}px` }}
         onClick={handleSelect}
       >
         {hasChildren ? (
           <button
             onClick={handleToggleExpand}
-            className="p-0.5 -m-0.5 hover:bg-accent rounded transition-colors"
+            className="p-0.5 -m-0.5 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-colors"
             aria-label={expanded ? "Collapse" : "Expand"}
           >
             {expanded ? (
-              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400" />
             ) : (
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400" />
             )}
           </button>
         ) : (
@@ -139,16 +141,19 @@ function TreeNodeComponent({
 
         {hasChildren ? (
           expanded ? (
-            <FolderOpen className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+            <FolderOpen className={cn("h-3.5 w-3.5 shrink-0", isSelected ? "text-blue-500" : "text-slate-500 dark:text-slate-400")} />
           ) : (
-            <Folder className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+            <Folder className={cn("h-3.5 w-3.5 shrink-0", isSelected ? "text-blue-500" : "text-slate-500 dark:text-slate-400")} />
           )
         ) : (
-          <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <FileText className="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400" />
         )}
 
         <span className="truncate flex-1">{node.name}</span>
-        <span className="text-xs text-muted-foreground tabular-nums">
+        <span className={cn(
+          "text-[11px] tabular-nums",
+          isSelected ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"
+        )}>
           {node.count}
         </span>
       </div>
@@ -182,24 +187,30 @@ export default function ContentTree({ items, selectedPath, onSelectPath }: Conte
   }, [tree])
 
   return (
-    <div className="text-sm">
+    <div className="text-[13px]">
       {/* All content button */}
       <button
         onClick={() => onSelectPath(null)}
         className={cn(
-          "w-full flex items-center gap-1 px-2 py-1.5 text-left rounded hover:bg-accent/50 transition-colors mb-1",
-          selectedPath === null && "bg-accent text-accent-foreground font-medium"
+          "w-full flex items-center gap-2 px-2 py-2 text-left rounded-md transition-all duration-150 mb-2",
+          "hover:bg-slate-100 dark:hover:bg-slate-700",
+          selectedPath === null
+            ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold"
+            : "text-slate-700 dark:text-slate-300 font-medium"
         )}
       >
-        <FolderOpen className="h-4 w-4 shrink-0 text-amber-500" />
-        <span className="flex-1 font-medium">All Content</span>
-        <span className="text-xs text-muted-foreground tabular-nums">
+        <FolderOpen className={cn("h-4 w-4 shrink-0", selectedPath === null ? "text-blue-500" : "text-slate-500 dark:text-slate-400")} />
+        <span className="flex-1">All Content</span>
+        <span className={cn(
+          "text-[11px] tabular-nums",
+          selectedPath === null ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"
+        )}>
           {items.length}
         </span>
       </button>
 
       {/* Tree */}
-      <div className="border-l border-border ml-2 pl-1">
+      <div className="border-l border-slate-200 dark:border-slate-700 ml-2 pl-0.5">
         {topLevel.map(node => (
           <TreeNodeComponent
             key={node.path}

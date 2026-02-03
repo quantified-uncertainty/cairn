@@ -402,6 +402,8 @@ function buildPagesRegistry(urlToResource) {
           ratings: fm.ratings || null,
           // Extract category from path
           category: urlPrefix.split('/').filter(Boolean)[1] || 'other',
+          // Topic clusters for filtering
+          clusters: fm.clusters || ['ai-safety'],
           // Structural metrics
           metrics: {
             wordCount: metrics.wordCount,

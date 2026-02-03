@@ -642,6 +642,15 @@ export const Entity = z.object({
   status: EntityStatus.optional(),              // Content maturity level
   lastUpdated: z.string().optional(),           // ISO date "2024-12"
   tags: z.array(z.string()).optional(),         // Standardized tags for filtering
+  // Topic clusters for explore page filtering (can have multiple)
+  clusters: z.array(z.enum([
+    'ai-safety',    // Relevant for AI safety/alignment (default)
+    'biorisks',     // Relevant for biosecurity, pandemics, bioweapons
+    'cyber',        // Relevant for cybersecurity, hacking, digital threats
+    'epistemics',   // Relevant for forecasting, truth, deception, worldviews
+    'governance',   // Relevant for policy, regulation, international coordination
+    'community',    // Relevant for field-building, funding, careers, orgs
+  ])).optional(),
   // InfoBox fields
   severity: z.enum([
     'low', 'medium', 'medium-high', 'high', 'critical', 'catastrophic',

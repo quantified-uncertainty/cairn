@@ -92,6 +92,7 @@ export interface Page {
   description: string | null;
   ratings: ModelRatings | null;
   category: string;
+  clusters: string[];
   // Structural metrics
   metrics: PageMetrics;
   suggestedQuality: number;
