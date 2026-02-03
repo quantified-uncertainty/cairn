@@ -50,15 +50,30 @@ const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a re
 
 Score each page on importance (0-100, one decimal place). Be discriminating - use the full range.
 
-Also score each page on four quality dimensions (0-10 scale, one decimal). BE EXTREMELY HARSH - a 7 is exceptional, 8+ is world-class. Most wiki content should score 3-5.
+Also score each page on SIX quality dimensions (0-10 scale, one decimal). BE EXTREMELY HARSH - a 7 is exceptional, 8+ is world-class. Most wiki content should score 3-5.
 
-**NOVELTY (0-10)**: How original is the content?
+**FOCUS (0-10)**: Does it answer what the title promises?
+- 9-10: Perfectly laser-focused on exactly what title claims
+- 7-8: Stays tightly on topic throughout (exceptional)
+- 5-6: Mostly on-topic but some tangential sections
+- 3-4: Drifts significantly, answers adjacent but different question
+- 1-2: Almost entirely off-topic from title
+- 0: Completely unrelated to title
+
+**NOVELTY (0-10)**: How original is the content? CRITICAL: Most wiki content is compilation, not insight.
 - 9-10: Groundbreaking original research, creates new field or framework (academic publication level)
-- 7-8: Significant original synthesis not found elsewhere, novel insights (exceptional)
-- 5-6: Some original framing or connections, adds modest value beyond sources
-- 3-4: Accurate summary of existing work with minimal original perspective
-- 1-2: Mostly restates common knowledge, purely derivative
+- 7-8: Significant original synthesis not found elsewhere, novel insights (exceptional - very rare)
+- 5-6: Genuine new framing or connections that add real insight beyond sources
+- 3-4: Well-organized compilation of existing work; competent summary with minor original perspective
+- 1-2: Restates common knowledge, purely derivative
 - 0: No content or completely plagiarized
+
+NOVELTY CALIBRATION (critical):
+- Page that organizes known arguments into tables → 3-4 (compilation, not insight)
+- Page that summarizes someone else's framework → 3 (no original contribution)
+- Page that applies standard economics/game theory to known problem → 4-5
+- Page with genuinely new framework or quantitative model not found elsewhere → 6-7
+- DO NOT give 5-6 for "good organization" - that's a 3-4
 
 **RIGOR (0-10)**: How well-evidenced and precise?
 - 9-10: Every claim sourced to authoritative primary sources, all quantified with uncertainty ranges (journal-quality)
@@ -68,23 +83,31 @@ Also score each page on four quality dimensions (0-10 scale, one decimal). BE EX
 - 1-2: Few sources, mostly assertions
 - 0: No evidence
 
-**ACTIONABILITY (0-10)**: How useful for decisions?
-- 9-10: Provides specific decision procedures with quantified tradeoffs (consultant-ready)
-- 7-8: Clear concrete recommendations with supporting analysis (exceptional)
-- 5-6: Some actionable takeaways, general guidance
-- 3-4: Mostly abstract, implications unclear
+**COMPLETENESS (0-10)**: How comprehensive relative to TITLE's promise (not "has lots of content")?
+- 9-10: Exhaustive coverage of exactly what title claims (textbook-level)
+- 7-8: Covers all major aspects of claimed topic (exceptional)
+- 5-6: Covers main points of claimed topic, some gaps
+- 3-4: Missing key aspects of what title promises
+- 1-2: Barely addresses claimed topic
+- 0: Stub/placeholder
+
+**CONCRETENESS (0-10)**: Specific vs. abstract?
+- 9-10: Specific numbers, examples, recommendations throughout (consultant-ready)
+- 7-8: Mostly concrete with specific details (exceptional)
+- 5-6: Mix of concrete and abstract
+- 3-4: Mostly abstract, vague generalities ("consider the tradeoffs", "it depends")
+- 1-2: Almost entirely abstract hand-waving
+- 0: No concrete content
+
+**ACTIONABILITY (0-10)**: Can reader make different decisions after reading?
+- 9-10: Explicit "do X not Y" with quantified tradeoffs (decision-ready)
+- 7-8: Clear concrete recommendations (exceptional)
+- 5-6: Some actionable takeaways
+- 3-4: Implications unclear, reader must infer
 - 1-2: Purely descriptive, no practical application
 - 0: No actionable content
 
-**COMPLETENESS (0-10)**: How comprehensive?
-- 9-10: Exhaustive authoritative reference, nothing significant missing (textbook-level)
-- 7-8: Covers all major aspects thoroughly with depth (exceptional)
-- 5-6: Covers main points, some gaps in depth or breadth
-- 3-4: Notable gaps, missing important aspects
-- 1-2: Very incomplete, barely started
-- 0: Stub/placeholder
-
-CALIBRATION: For typical wiki content, expect scores of 3-5. A score of 6+ means genuinely strong. A 7+ is rare and exceptional. 8+ should almost never be given.
+CALIBRATION: For typical wiki content, expect scores of 3-5. A score of 6+ means genuinely strong. A 7+ is rare and exceptional. 8+ should almost never be given. ESPECIALLY for novelty - most pages are compilations (3-4), not original insights (6+).
 
 **Scoring guidelines:**
 
@@ -117,6 +140,7 @@ const USER_PROMPT_TEMPLATE = `Grade this content page:
 
 **File path**: {{filePath}}
 **Category**: {{category}}
+**Content type**: {{contentType}}
 **Title**: {{title}}
 **Description**: {{description}}
 
@@ -129,10 +153,12 @@ Respond with JSON (keep reasoning SHORT - max 2-3 sentences total):
 {
   "importance": <0-100, one decimal>,
   "ratings": {
+    "focus": <0-10, one decimal>,
     "novelty": <0-10, one decimal>,
     "rigor": <0-10, one decimal>,
-    "actionability": <0-10, one decimal>,
-    "completeness": <0-10, one decimal>
+    "completeness": <0-10, one decimal>,
+    "concreteness": <0-10, one decimal>,
+    "actionability": <0-10, one decimal>
   },
   "llmSummary": "<1-2 sentences with conclusions>",
   "reasoning": "<2-3 sentences max explaining the scores>"
@@ -265,25 +291,100 @@ function computeMetrics(content) {
 }
 
 /**
+ * Detect content type from frontmatter or path
+ */
+function detectContentType(frontmatter, relativePath) {
+  // Explicit setting takes precedence
+  if (frontmatter.contentType) return frontmatter.contentType;
+
+  // Infer from path
+  if (relativePath.includes('/models/')) return 'analysis';
+  if (relativePath.includes('/organizations/') || relativePath.includes('/people/')) return 'reference';
+
+  // Default
+  return 'reference';
+}
+
+/**
  * Compute derived quality score from ratings, metrics, and frontmatter
  *
- * Formula: avgSubscore × 8 + min(10, words/500) + min(10, citations × 0.5)
+ * Content-type-specific weighting:
+ * - analysis: focus, novelty, concreteness weighted 1.5x (original insight matters)
+ * - reference: rigor, completeness weighted 1.5x (accuracy matters)
+ * - explainer: completeness, rigor weighted 1.5x (educational coverage matters)
+ *
+ * Formula: weightedAvg × 8 + min(8, words/600) + min(7, citations × 0.35)
  * - Subscores drive 0-80 (primary factor)
- * - Length bonus: 0-10 (5000 words = max)
- * - Evidence bonus: 0-10 (20 citations = max)
+ * - Length bonus: 0-8 (4800 words = max) - reduced from previous
+ * - Evidence bonus: 0-7 (20 citations = max) - reduced from previous
  * - Caps: stub pages at 35, very short pages at 40
- * - Total range: 0-100
+ * - Total range: 0-95 effectively (100 requires exceptional subscores + length + citations)
  */
-function computeQuality(ratings, metrics, frontmatter = {}) {
+function computeQuality(ratings, metrics, frontmatter = {}, relativePath = '') {
+  const contentType = detectContentType(frontmatter, relativePath);
+
+  // Get ratings with defaults (handle missing ratings gracefully)
+  const focus = ratings.focus ?? 5;
+  const novelty = ratings.novelty ?? 5;
+  const rigor = ratings.rigor ?? 5;
+  const completeness = ratings.completeness ?? 5;
+  const concreteness = ratings.concreteness ?? 5;
+  const actionability = ratings.actionability ?? 5;
+
+  // Content-type-specific weighting
+  let weights;
+  if (contentType === 'analysis') {
+    // Analysis pages: focus, novelty, concreteness matter most
+    weights = {
+      focus: 1.5,
+      novelty: 1.5,
+      rigor: 1.0,
+      completeness: 0.8,
+      concreteness: 1.5,
+      actionability: 1.2
+    };
+  } else if (contentType === 'explainer') {
+    // Explainer pages: completeness, rigor matter most; novelty matters less
+    weights = {
+      focus: 1.0,
+      novelty: 0.5,
+      rigor: 1.5,
+      completeness: 1.5,
+      concreteness: 1.0,
+      actionability: 0.5
+    };
+  } else {
+    // Reference pages: rigor, completeness matter most
+    weights = {
+      focus: 1.0,
+      novelty: 0.8,
+      rigor: 1.5,
+      completeness: 1.5,
+      concreteness: 1.0,
+      actionability: 0.5
+    };
+  }
+
+  // Compute weighted average
+  const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
+  const weightedSum =
+    focus * weights.focus +
+    novelty * weights.novelty +
+    rigor * weights.rigor +
+    completeness * weights.completeness +
+    concreteness * weights.concreteness +
+    actionability * weights.actionability;
+
+  const weightedAvg = weightedSum / totalWeight;
+
   // Subscores contribute 0-80 points (primary driver)
-  const avgSubscore = (ratings.novelty + ratings.rigor + ratings.actionability + ratings.completeness) / 4;
-  const baseScore = avgSubscore * 8;  // Maps 0-10 → 0-80
+  const baseScore = weightedAvg * 8;  // Maps 0-10 → 0-80
 
-  // Length contributes 0-10 points (5000 words = max)
-  const lengthScore = Math.min(10, metrics.wordCount / 500);
+  // Length contributes 0-8 points (reduced from 10)
+  const lengthScore = Math.min(8, metrics.wordCount / 600);
 
-  // Evidence contributes 0-10 points (20 citations = max)
-  const evidenceScore = Math.min(10, metrics.citations * 0.5);
+  // Evidence contributes 0-7 points (reduced from 10)
+  const evidenceScore = Math.min(7, metrics.citations * 0.35);
 
   // Compute base quality
   let quality = baseScore + lengthScore + evidenceScore;
@@ -306,10 +407,12 @@ function computeQuality(ratings, metrics, frontmatter = {}) {
  */
 async function gradePage(client, page) {
   const fullContent = getContent(page.content);
+  const contentType = detectContentType(page.frontmatter, page.relativePath);
 
   const userPrompt = USER_PROMPT_TEMPLATE
     .replace('{{filePath}}', page.relativePath)
     .replace('{{category}}', page.category)
+    .replace('{{contentType}}', contentType)
     .replace('{{title}}', page.title)
     .replace('{{description}}', page.frontmatter.description || '(none)')
     .replace('{{content}}', fullContent);
@@ -327,11 +430,15 @@ async function gradePage(client, page) {
 
   // Parse JSON response
   try {
-    // Handle potential markdown code blocks
+    // Handle potential markdown code blocks (more robust regex)
     let jsonText = text.trim();
-    if (jsonText.startsWith('```')) {
-      // Remove opening ```json or ``` and closing ```
-      jsonText = jsonText.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+    // Match ```json, ```JSON, ``` with optional whitespace/newlines
+    const codeBlockMatch = jsonText.match(/^```(?:json|JSON)?\s*\n([\s\S]*?)\n```\s*$/);
+    if (codeBlockMatch) {
+      jsonText = codeBlockMatch[1];
+    } else if (jsonText.startsWith('```')) {
+      // Fallback: strip opening/closing manually
+      jsonText = jsonText.replace(/^```(?:json|JSON)?\s*\n?/, '').replace(/\n?```\s*$/, '');
     }
     return JSON.parse(jsonText);
   } catch (e) {
@@ -514,7 +621,7 @@ async function main() {
         const metrics = computeMetrics(page.content);
 
         // Compute derived quality score
-        const derivedQuality = computeQuality(grades.ratings, metrics, page.frontmatter);
+        const derivedQuality = computeQuality(grades.ratings, metrics, page.frontmatter, page.relativePath);
 
         const result = {
           id: page.id,
@@ -538,7 +645,7 @@ async function main() {
         }
 
         const r = grades.ratings;
-        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, n=${r.novelty} r=${r.rigor} a=${r.actionability} c=${r.completeness} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, f=${r.focus} n=${r.novelty} r=${r.rigor} c=${r.completeness} con=${r.concreteness} a=${r.actionability} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
         return { success: true, result };
       } else {
         console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED (no ratings in response)`);

@@ -3,22 +3,25 @@ title: "Alignment Robustness Trajectory"
 description: "This model analyzes how alignment robustness changes with capability scaling. It estimates current techniques maintain 60-80% robustness at GPT-4 level but projects degradation to 30-50% at 100x capability, with critical thresholds around 10x-30x current capability."
 sidebar:
   order: 38
-quality: 69
+quality: 64
 lastEdited: "2026-01-28"
 ratings:
-  novelty: 6.5
-  rigor: 7
-  actionability: 7.5
-  completeness: 7.5
-importance: 82.5
-llmSummary: "Mathematical model projecting alignment robustness degradation from 60-80% at GPT-4 level to 30-50% at 100x capability, with critical 'alignment valley' at 10-30x where systems become dangerous but can't assist alignment work. Identifies 2-5 year window for developing scalable oversight (+10-20% robustness) before critical threshold, prioritizing research by deployment timeline."
+  focus: 8.5
+  novelty: 6
+  rigor: 6.5
+  concreteness: 7.5
+  actionability: 7
+importance: 72.5
+llmSummary: "This model estimates alignment robustness degrades from 60-80% at GPT-4 level to 30-50% at 100x capability, with a critical 'alignment valley' at 10-30x where systems are dangerous but can't help solve alignment. Prioritizes scalable oversight and interpretability research deployable within 2-5 years before entering the critical zone."
 pageTemplate: "knowledge-base-model"
 metrics:
   wordCount: 844
   citations: 28
   tables: 35
   diagrams: 4
-clusters: ["ai-safety", "governance"]
+clusters:
+  - "ai-safety"
+  - "governance"
 ---
 import { Aside } from '@astrojs/starlight/components';
 import { DataInfoBox, Backlinks, Mermaid , EntityLink} from '@components/wiki';

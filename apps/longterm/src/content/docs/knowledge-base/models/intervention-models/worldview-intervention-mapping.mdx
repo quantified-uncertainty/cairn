@@ -3,15 +3,17 @@ title: "Worldview-Intervention Mapping"
 description: "This model maps how beliefs about timelines, alignment difficulty, and coordination feasibility create distinct worldview clusters that drive 2-10x differences in optimal intervention priorities. It provides systematic guidance for aligning resource allocation with underlying beliefs about AI risk."
 sidebar:
   order: 51
-quality: 60
+quality: 62
 lastEdited: "2025-12-26"
 ratings:
-  novelty: 6.5
+  focus: 8.5
+  novelty: 5
   rigor: 4.5
-  actionability: 7.5
-  completeness: 6
+  completeness: 7.5
+  concreteness: 7
+  actionability: 8
 importance: 78.5
-llmSummary: "Maps how three belief dimensions (timelines, alignment difficulty, coordination feasibility) create four worldview clusters with 2-10x differences in optimal intervention priorities, finding that 20-50% of field resources may be wasted due to worldview-work mismatches. Provides specific ROI estimates for interventions under each worldview (e.g., pause advocacy: 10x for doomers vs -2x for optimists) and portfolio strategies for uncertainty."
+llmSummary: "This framework maps beliefs about AI timelines (short/medium/long), alignment difficulty (hard/medium/tractable), and coordination feasibility (feasible/difficult/impossible) to intervention priorities, showing 2-10x differences in optimal resource allocation across worldview clusters. The model identifies that 20-50% of field resources may be wasted through worldview-work mismatches, with specific portfolio recommendations for each worldview cluster."
 pageTemplate: "knowledge-base-model"
 todos:
   - "Complete 'Conceptual Framework' section"
@@ -23,7 +25,9 @@ metrics:
   citations: 25
   tables: 51
   diagrams: 2
-clusters: ["ai-safety", "epistemics"]
+clusters:
+  - "ai-safety"
+  - "epistemics"
 ---
 import { Aside } from '@astrojs/starlight/components';
 import {DataInfoBox, Backlinks, KeyQuestions, Mermaid, R, EntityLink} from '@components/wiki';

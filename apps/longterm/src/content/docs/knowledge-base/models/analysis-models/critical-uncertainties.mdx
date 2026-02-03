@@ -2,15 +2,17 @@
 title: "Critical Uncertainties Model"
 description: "This model identifies 35 high-leverage uncertainties in AI risk across compute, governance, and capabilities domains. Based on expert surveys, forecasting platforms, and empirical research, it finds key cruxes include scaling law breakdown point (10^26-10^30 FLOP), alignment difficulty (41-51% of experts assign >10% extinction probability), and AGI timeline (Metaculus median: 2027-2031)."
 tableOfContents: false
-quality: 73
+quality: 71
 lastEdited: "2025-12-28"
 ratings:
-  novelty: 7.5
-  rigor: 7
-  actionability: 8
-  completeness: 7.5
-importance: 85
-llmSummary: "Synthesizes 35 high-leverage uncertainties across AI risk domains using expert surveys (41-51% of AI researchers assign >10% extinction probability), forecasting data (AGI median 2027-2031), and empirical research (training compute could reach 10^28-10^30 FLOP by 2030). Identifies 8-12 key cruxes—including scaling law breakdown point, alignment difficulty, and governance tractability—that drive majority of disagreement on risk levels and optimal interventions."
+  focus: 8.5
+  novelty: 6.2
+  rigor: 7.8
+  completeness: 8
+  concreteness: 8.5
+  actionability: 7.5
+importance: 74.5
+llmSummary: "Identifies 35 high-leverage uncertainties in AI risk across compute (scaling breakdown at 10^26-10^30 FLOP), governance (10% P(US-China treaty by 2030)), and capabilities (autonomous R&D 3 years away, 41-51% of experts assign >10% extinction probability). Recommends $100-200M/year research budget focused on resolving key cruxes: scaling law empirics ($50-100M), deception detection ($30-50M), and governance feasibility studies ($20-30M)."
 pageTemplate: "knowledge-base-model"
 todos:
   - "Complete 'Conceptual Framework' section"
@@ -20,7 +22,9 @@ metrics:
   citations: 30
   tables: 29
   diagrams: 1
-clusters: ["ai-safety", "governance"]
+clusters:
+  - "ai-safety"
+  - "governance"
 ---
 import CauseEffectGraph from '@components/CauseEffectGraph';
 import {Mermaid, R, EntityLink} from '@components/wiki';

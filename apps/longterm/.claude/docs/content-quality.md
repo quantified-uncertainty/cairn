@@ -31,11 +31,19 @@ Six dimensions (0-10 scale, harsh - 7+ is exceptional):
 *Example failure*: Title "Policy Implications of Short Timelines" but content is "Evidence For/Against Short Timelines" → focus: 4
 
 **novelty** - Value-add beyond what a reader could get from obvious sources
-- 3-4: Accurate summary of existing sources, no original synthesis
-- 5-6: Some original framing or synthesis across sources
-- 7+: Genuinely new insight, analysis, or framing not found elsewhere
+- 1-2: Restates common knowledge, purely derivative
+- 3-4: Well-organized compilation of existing work; competent summary with minor original perspective
+- 5-6: Genuine new framing or connections that add real insight beyond sources
+- 7+: Genuinely new insight, analysis, or framework not found elsewhere (exceptional - very rare)
 
-*Example failure*: Compiling news articles about AI policy without any original analysis → novelty: 4
+**CRITICAL NOVELTY CALIBRATION:**
+- Page that organizes known arguments into tables → 3-4 (compilation, not insight)
+- Page that summarizes someone else's framework → 3 (no original contribution)
+- Page that applies standard economics/game theory to known problem → 4-5
+- Page with genuinely new framework or quantitative model not found elsewhere → 6-7
+- DO NOT give 5-6 for "good organization" - that's a 3-4
+
+*Example failure*: Compiling news articles about AI policy without any original analysis → novelty: 3
 
 **rigor** - Evidence quality and precision
 - 3-4: Mixed sourcing, some unsupported claims

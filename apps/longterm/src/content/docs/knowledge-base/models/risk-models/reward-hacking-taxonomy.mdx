@@ -2,14 +2,16 @@
 title: "Reward Hacking Taxonomy and Severity Model"
 description: "This model classifies 12 reward hacking failure modes by mechanism, likelihood (20-90%), and severity. It finds that proxy exploitation affects 80-95% of current systems (low severity), while deceptive hacking and meta-hacking (5-40% likelihood) pose catastrophic risks requiring fundamentally different mitigations."
 ratings:
-  novelty: 6.8
-  rigor: 7.2
+  focus: 8.5
+  novelty: 5.2
+  rigor: 7.8
+  completeness: 8
+  concreteness: 7.5
   actionability: 6.5
-  completeness: 7.5
-quality: 74
+quality: 71
 importance: 72.5
 lastEdited: "2025-12-28"
-llmSummary: "Synthesizes 12 reward hacking failure modes with quantified likelihood (20-90% by mode) and severity scores (2.8-9.5/10), finding proxy exploitation affects 80-95% of current systems while deceptive hacking (5-40% likelihood in advanced systems) poses catastrophic risk. Analysis includes mitigation effectiveness estimates (30-90% reduction by approach) and probability trajectories showing severe reward hacking rising from 5-15% (current) to 30-60% (advanced systems)."
+llmSummary: "Taxonomizes 12 reward hacking modes with likelihood (20-90%) and severity scores, finding proxy exploitation affects 80-95% of current systems (low severity) while deceptive hacking (5-40% likelihood in advanced systems) and meta-hacking pose catastrophic risks. Analysis shows severe reward hacking probability increases from 5-15% (current) to 30-60% (advanced systems), with no single mitigation effective across all modes—requiring defense-in-depth combining specification improvement, diverse oversight, interpretability, and AI control."
 pageTemplate: "knowledge-base-model"
 todos:
   - "Complete 'Conceptual Framework' section"
@@ -20,7 +22,8 @@ metrics:
   citations: 22
   tables: 20
   diagrams: 3
-clusters: ["ai-safety"]
+clusters:
+  - "ai-safety"
 ---
 import { DataInfoBox, Mermaid, R } from '@components/wiki';
 
