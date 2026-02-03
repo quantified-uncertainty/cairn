@@ -32,6 +32,7 @@ export { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 
 // Component validation rules
 export { componentPropsRule } from './component-props.mjs';
+export { componentImportsRule } from './component-imports.mjs';
 export { citationUrlsRule } from './citation-urls.mjs';
 export { vagueCitationsRule } from './vague-citations.mjs';
 
@@ -61,6 +62,7 @@ import { cruftFilesRule } from './cruft-files.mjs';
 import { markdownListsRule } from './markdown-lists.mjs';
 import { consecutiveBoldLabelsRule } from './consecutive-bold-labels.mjs';
 import { componentPropsRule } from './component-props.mjs';
+import { componentImportsRule } from './component-imports.mjs';
 import { citationUrlsRule } from './citation-urls.mjs';
 import { vagueCitationsRule } from './vague-citations.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
@@ -95,6 +97,7 @@ export const allRules = [
 
   // Component validation
   componentPropsRule,
+  componentImportsRule,
   citationUrlsRule,
   vagueCitationsRule,
 

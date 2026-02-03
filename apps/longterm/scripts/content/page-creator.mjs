@@ -399,6 +399,126 @@ function loadResult(topic, filename) {
   return content;
 }
 
+// ============ Auto-Import Components ============
+
+/**
+ * Wiki components that need to be imported from @components/wiki
+ */
+const WIKI_COMPONENTS = [
+  'EntityLink',
+  'DataInfoBox',
+  'InfoBox',
+  'Backlinks',
+  'Mermaid',
+  'R',
+  'DataExternalLinks',
+  'EstimateBox',
+  'QuoteBox',
+  'Timeline',
+  'ComparisonTable',
+];
+
+/**
+ * Ensure all used wiki components are properly imported.
+ * Call this after synthesis to fix missing imports before validation.
+ */
+function ensureComponentImports(filePath) {
+  if (!fs.existsSync(filePath)) return { fixed: false, added: [] };
+
+  const content = fs.readFileSync(filePath, 'utf-8');
+
+  // Find used components (not in code blocks)
+  const usedComponents = new Set();
+  const componentRegex = /<([A-Z][a-zA-Z0-9]*)/g;
+  let match;
+
+  // Simple code block detection
+  const codeBlockRanges = [];
+  const codeBlockRegex = /```[\s\S]*?```/g;
+  while ((match = codeBlockRegex.exec(content)) !== null) {
+    codeBlockRanges.push([match.index, match.index + match[0].length]);
+  }
+
+  const isInCodeBlock = (pos) => {
+    return codeBlockRanges.some(([start, end]) => pos >= start && pos < end);
+  };
+
+  while ((match = componentRegex.exec(content)) !== null) {
+    if (!isInCodeBlock(match.index)) {
+      const componentName = match[1];
+      if (WIKI_COMPONENTS.includes(componentName)) {
+        usedComponents.add(componentName);
+      }
+    }
+  }
+
+  if (usedComponents.size === 0) {
+    return { fixed: false, added: [] };
+  }
+
+  // Find what's already imported from @components/wiki
+  const wikiImportRegex = /import\s*\{([^}]+)\}\s*from\s*['"]@components\/wiki['"]/;
+  const wikiImportMatch = content.match(wikiImportRegex);
+  const importedComponents = new Set();
+
+  if (wikiImportMatch) {
+    const importList = wikiImportMatch[1];
+    importList.split(',').map(c => c.trim()).filter(Boolean).forEach(c => importedComponents.add(c));
+  }
+
+  // Also check for individual imports
+  for (const comp of usedComponents) {
+    const individualImportRegex = new RegExp(`import.*\\b${comp}\\b.*from`);
+    if (individualImportRegex.test(content)) {
+      importedComponents.add(comp);
+    }
+  }
+
+  // Find missing imports
+  const missing = [...usedComponents].filter(c => !importedComponents.has(c));
+
+  if (missing.length === 0) {
+    return { fixed: false, added: [] };
+  }
+
+  // Fix the imports
+  let fixedContent = content;
+
+  if (wikiImportMatch) {
+    // Add to existing import
+    const existingImports = wikiImportMatch[1].trim();
+    const newImports = `${existingImports}, ${missing.join(', ')}`;
+    const quoteChar = wikiImportMatch[0].includes("'") ? "'" : '"';
+    fixedContent = content.replace(
+      wikiImportRegex,
+      `import {${newImports}} from ${quoteChar}@components/wiki${quoteChar}`
+    );
+  } else {
+    // Add new import after frontmatter
+    const importStatement = `import { ${missing.join(', ')} } from '@components/wiki';`;
+    const lines = content.split('\n');
+
+    // Find end of frontmatter
+    let fmCount = 0;
+    let insertIdx = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i] === '---') {
+        fmCount++;
+        if (fmCount === 2) {
+          insertIdx = i + 1;
+          break;
+        }
+      }
+    }
+
+    lines.splice(insertIdx, 0, importStatement);
+    fixedContent = lines.join('\n');
+  }
+
+  fs.writeFileSync(filePath, fixedContent);
+  return { fixed: true, added: missing };
+}
+
 // ============ Phase: Find Canonical Links ============
 
 const CANONICAL_DOMAINS = [
@@ -1706,6 +1826,14 @@ async function runPipeline(topic, tier = 'standard', directions = null) {
           break;
 
         case 'validate-loop':
+          // Auto-fix missing component imports before validation
+          {
+            const draftPath = path.join(getTopicDir(topic), 'draft.mdx');
+            const importResult = ensureComponentImports(draftPath);
+            if (importResult.fixed) {
+              log('validate-loop', `Auto-fixed missing imports: ${importResult.added.join(', ')}`);
+            }
+          }
           result = await runValidationLoop(topic);
           results.totalCost += 2.0;
           break;
@@ -1914,6 +2042,14 @@ async function main() {
         result = await runSourceVerification(topic);
         break;
       case 'validate-loop':
+        // Auto-fix missing component imports before validation
+        {
+          const draftPath = path.join(getTopicDir(topic), 'draft.mdx');
+          const importResult = ensureComponentImports(draftPath);
+          if (importResult.fixed) {
+            log('validate-loop', `Auto-fixed missing imports: ${importResult.added.join(', ')}`);
+          }
+        }
         result = await runValidationLoop(topic);
         break;
       case 'validate-full':

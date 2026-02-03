@@ -63,6 +63,11 @@ const SCRIPTS = {
     passthrough: ['ci'],
     extraArgs: ['--rules=frontmatter-schema', '--fix'],
   },
+  imports: {
+    script: 'fix/fix-component-imports.mjs',
+    description: 'Add missing component imports to MDX files',
+    passthrough: ['apply', 'verbose', 'file'],
+  },
 };
 
 /**
