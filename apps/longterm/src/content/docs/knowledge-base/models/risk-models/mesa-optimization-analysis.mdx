@@ -33,7 +33,7 @@ import {DataInfoBox, Mermaid, R, EntityLink, DataExternalLinks} from '@component
 
 ## Overview
 
-Mesa-optimization occurs when a trained model internally implements optimization algorithms rather than just fixed policies or heuristics. This creates an "inner alignment" problem where the mesa-optimizer's objective (mesa-objective) may diverge from the intended training objective (base objective). The phenomenon represents a critical pathway to <EntityLink id="goal-misgeneralization">goal misgeneralization</EntityLink> and <EntityLink id="deceptive-alignment">deceptive alignment</EntityLink>.
+<EntityLink id="mesa-optimization">Mesa-optimization</EntityLink> occurs when a trained model internally implements optimization algorithms rather than just fixed policies or heuristics. This creates an "inner alignment" problem where the mesa-optimizer's objective (mesa-objective) may diverge from the intended training objective (base objective). The phenomenon represents a critical pathway to <EntityLink id="goal-misgeneralization">goal misgeneralization</EntityLink> and <EntityLink id="deceptive-alignment">deceptive alignment</EntityLink>.
 
 Current frontier models approaching transformative capabilities face **10-70% probability** of containing mesa-optimizers, with **50-90% likelihood** of objective misalignment conditional on emergence. The multiplicative risk structure—emergence probability × misalignment probability × capability-dependent severity—suggests interventions at any stage can substantially reduce overall risk.
 
@@ -46,7 +46,7 @@ This framework synthesizes <R id="c4858d4ef280d8e6">Hubinger et al. (2019)</R>'s
 | **Emergence Probability** | 10-40% | 30-70% | 50-90% | Task complexity, compute scaling |
 | **Misalignment Given Emergence** | 50-80% | 60-85% | 70-90% | Objective specification difficulty |
 | **Catastrophic Risk** | \&lt;1% | 1-10% | 5-30% | Capability × misalignment interaction |
-| **Primary Concern** | Proxy alignment | Pseudo-alignment | Deceptive alignment | Situational awareness development |
+| **Primary Concern** | Proxy alignment | Pseudo-alignment | Deceptive alignment | <EntityLink id="situational-awareness">Situational awareness</EntityLink> development |
 
 The risk assessment reflects fundamental tensions in modern AI training: as tasks become more complex and models more capable, optimization-based solutions become increasingly attractive to gradient descent, while alignment verification becomes increasingly difficult.
 

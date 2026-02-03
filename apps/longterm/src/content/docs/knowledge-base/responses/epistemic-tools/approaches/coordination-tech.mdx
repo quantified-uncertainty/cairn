@@ -25,9 +25,9 @@ import {DataInfoBox, KeyQuestions, R, EntityLink, DataExternalLinks, Mermaid} fr
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Tractability** | Medium-High | \$120M+ invested in AI Safety Institutes globally; [International Network of AISIs](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international) established with 10+ member nations |
+| **Tractability** | Medium-High | \$120M+ invested in <EntityLink id="ai-safety-institutes">AI Safety Institutes</EntityLink> globally; [International Network of AISIs](https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international) established with 10+ member nations |
 | **Effectiveness** | Partial (60-85% compliance) | 12 of 16 [Frontier AI Safety Commitments](https://metr.org/blog/2025-12-09-common-elements-of-frontier-ai-safety-policies/) signatories published safety frameworks by deadline; voluntary compliance shows limitations |
-| **Implementation Maturity** | Medium | Compute monitoring achieves 85% chip tracking coverage; cryptographic verification adds 100-10,000x overhead limiting real-time use |
+| **Implementation Maturity** | Medium | <EntityLink id="monitoring">Compute monitoring</EntityLink> achieves 85% chip tracking coverage; cryptographic verification adds 100-10,000x overhead limiting real-time use |
 | **International Coordination** | Fragmented | 10 nations in AISI Network; US/UK declined Paris Summit declaration (Feb 2025); China engagement limited |
 | **Timeline to Production** | 1-3 years for monitoring, 3-5 years for verification | [UK AISI](https://www.aisi.gov.uk/blog/our-2025-year-in-review) tested 30+ frontier models in 2025; zero-knowledge ML proofs remain 100-1000x overhead |
 | **Investment Level** | \$120M+ government, \$10M+ industry | UK AISI: £66M/year + £1.5B compute access; US AISI: \$140M; [FMF AI Safety Fund](https://www.frontiermodelforum.org/ai-safety-fund/): \$10M+ |
@@ -40,7 +40,7 @@ Many of the most pressing challenges in AI safety and information integrity are 
 
 The urgency of developing effective coordination mechanisms has intensified with the rapid advancement of AI capabilities. Current research suggests that without coordination, <EntityLink id="racing-dynamics">racing dynamics</EntityLink> could compress safety timelines by 2-5 years compared to optimal development trajectories. Unlike traditional regulatory approaches that rely primarily on top-down enforcement, coordination technologies often work by changing the strategic structure of interactions themselves, making cooperation individually rational rather than merely collectively beneficial.
 
-Success in coordination technology development could determine whether humanity can navigate the transition to advanced AI systems safely. The <R id="43c333342d63e444">Frontier Model Forum's</R> membership now includes all major AI labs, representing 85% of frontier model development capacity. Government initiatives like the <R id="c9c2bcaca0d2c3e6"><EntityLink id="us-aisi">US AI Safety Institute</EntityLink></R> and <EntityLink id="uk-aisi">UK AISI</EntityLink> have allocated \$180M+ in coordination infrastructure investment since 2023, with measurable impacts on industry <EntityLink id="responsible-scaling-policies">responsible scaling policies</EntityLink>.
+Success in coordination technology development could determine whether humanity can navigate the transition to advanced AI systems safely. The <R id="43c333342d63e444"><EntityLink id="frontier-model-forum">Frontier Model Forum</EntityLink>'s</R> membership now includes all major AI labs, representing 85% of frontier model development capacity. Government initiatives like the <R id="c9c2bcaca0d2c3e6"><EntityLink id="us-aisi">US AI Safety Institute</EntityLink></R> and <EntityLink id="uk-aisi">UK AISI</EntityLink> have allocated \$180M+ in coordination infrastructure investment since 2023, with measurable impacts on industry <EntityLink id="responsible-scaling-policies">responsible scaling policies</EntityLink>.
 
 ## Risk/Impact Assessment
 
@@ -52,7 +52,7 @@ Success in coordination technology development could determine whether humanity 
 | Regulatory Capture | Medium | 45% | Improving | 70% industry self-regulation reliance | Standards development |
 | Technical Obsolescence | Medium | 35% | Stable | Annual 10x crypto verification improvements | Research investment |
 
-*Source: <R id="03c995f7743c75a8">CSIS AI Governance Database</R> and expert elicitation survey (n=127), December 2024*
+*Source: <R id="03c995f7743c75a8">CSIS <EntityLink id="ai-governance">AI Governance</EntityLink> Database</R> and expert elicitation survey (n=127), December 2024*
 
 ## Current Coordination Landscape
 
@@ -60,7 +60,7 @@ Success in coordination technology development could determine whether humanity 
 
 | Organization | RSP Framework | Safety Testing Period | Third-Party Audits | Compliance Score |
 |--------------|----------------|----------------------|-------------------|------------------|
-| <EntityLink id="anthropic">Anthropic</EntityLink> | Constitutional AI + RSP | 90+ days | Quarterly (ARC Evals) | 8.1/10 |
+| <EntityLink id="anthropic">Anthropic</EntityLink> | <EntityLink id="constitutional-ai">Constitutional AI</EntityLink> + RSP | 90+ days | Quarterly (ARC Evals) | 8.1/10 |
 | <EntityLink id="openai">OpenAI</EntityLink> | Safety Standards | 60+ days | Biannual (internal) | 7.2/10 |
 | <EntityLink id="deepmind">DeepMind</EntityLink> | Capability Assessment | 120+ days | Internal + external | 7.8/10 |
 | Meta | Llama Safety Protocol | 30+ days | Limited external | 5.4/10 |
@@ -108,7 +108,7 @@ Zero-knowledge and homomorphic encryption systems for AI verification have achie
 | Secure Multi-Party Computation | 10-100x | Federated training | Operational | <R id="2f04234eb2619860">Private AI</R>, <R id="2fdb8def36ebd686">OpenMined</R> |
 | TEE-based Verification | 1.1-2x | Execution integrity | Operational | Intel SGX, AMD SEV |
 
-**Technical Challenge**: Current cryptographic verification adds 100-10,000x computational overhead for large language models, limiting real-time deployment applications. However, [recent research](https://kudelskisecurity.com/modern-ciso-blog/zkml-verifiable-machine-learning-using-zero-knowledge-proof) demonstrates ZKML can verify ML inference without exposing model parameters, with five key properties identified for AI validation: non-interactivity, transparent setup, standard representations, succinctness, and post-quantum security.
+**Technical Challenge**: Current cryptographic verification adds 100-10,000x computational overhead for <EntityLink id="language-models">large language models</EntityLink>, limiting real-time deployment applications. However, [recent research](https://kudelskisecurity.com/modern-ciso-blog/zkml-verifiable-machine-learning-using-zero-knowledge-proof) demonstrates ZKML can verify ML inference without exposing model parameters, with five key properties identified for AI validation: non-interactivity, transparent setup, standard representations, succinctness, and post-quantum security.
 
 ### Monitoring Infrastructure Architecture
 

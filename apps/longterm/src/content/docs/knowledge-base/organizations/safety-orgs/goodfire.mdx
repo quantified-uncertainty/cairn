@@ -35,7 +35,7 @@ import {EntityLink, Backlinks, KeyPeople, KeyQuestions, Section} from '@componen
 | **Type** | Public benefit corporation, AI interpretability research lab |
 | **Location** | San Francisco, California |
 | **Funding** | \$57M+ (Seed: \$7M Aug 2024, Series A: \$50M Apr 2025) |
-| **Key Product** | Ember (mechanistic interpretability API and platform) |
+| **Key Product** | Ember (<EntityLink id="interpretability">mechanistic interpretability</EntityLink> API and platform) |
 | **Focus** | Mechanistic interpretability, sparse autoencoders, AI safety |
 | **Notable Backers** | Anthropic (first direct investment), Menlo Ventures, Lightspeed Venture Partners |
 
@@ -99,7 +99,7 @@ Goodfire emphasizes safety-first applications of interpretability:[^20]
 - **Model diffing**: Detecting how and why unsafe behaviors emerge during training or fine-tuning
 - **PII detection**: Partnering with Rakuten to use sparse autoencoder probes to prevent personally identifiable information leakage[^21]
 
-Pre-release safety measures for Ember include feature moderation (removing harmful/explicit/malicious features), input/output filtering, and controlled access for researchers.[^22]
+Pre-release safety measures for Ember include feature moderation (removing harmful/explicit/malicious features), input/<EntityLink id="output-filtering">output filtering</EntityLink>, and controlled access for researchers.[^22]
 
 ## Partnerships and Impact
 
@@ -115,7 +115,7 @@ In November 2024, Goodfire powered the "Reprogramming AI Models" hackathon in pa
 
 ## AI Safety and Alignment
 
-Goodfire positions mechanistic interpretability as foundational to AI alignment and safety. The company's approach addresses several key challenges:
+Goodfire positions mechanistic interpretability as foundational to <EntityLink id="alignment">AI alignment</EntityLink> and safety. The company's approach addresses several key challenges:
 
 ### Alignment Without Side Effects
 
@@ -123,11 +123,11 @@ Traditional alignment methods like reinforcement learning from human feedback (R
 
 ### Detecting Deception and Hidden Behaviors
 
-One of the central challenges in AI safety is detecting deceptive or scheming behavior in advanced AI systems. Goodfire's model diffing and auditing tools aim to identify rare, undesired behaviors—such as a model encouraging self-harm—that might emerge during training or deployment.[^30] However, there is ongoing debate within the interpretability community about whether these techniques will scale to worst-case scenarios involving sophisticated deception.[^31]
+One of the central challenges in AI safety is detecting deceptive or <EntityLink id="scheming">scheming</EntityLink> behavior in advanced AI systems. Goodfire's model diffing and auditing tools aim to identify rare, undesired behaviors—such as a model encouraging self-harm—that might emerge during training or deployment.[^30] However, there is ongoing debate within the interpretability community about whether these techniques will scale to worst-case scenarios involving sophisticated deception.[^31]
 
 ### Governance and Compliance
 
-Interpretability tools like Ember may become essential for regulatory compliance. The EU AI Act mandates transparency for high-risk AI systems, with fines up to €20 million for violations.[^32] Goodfire's auditing and documentation capabilities could help organizations meet these requirements.
+Interpretability tools like Ember may become essential for regulatory compliance. The <EntityLink id="eu-ai-act">EU AI Act</EntityLink> mandates transparency for high-risk AI systems, with fines up to €20 million for violations.[^32] Goodfire's auditing and documentation capabilities could help organizations meet these requirements.
 
 ### Fellowship Program
 
@@ -141,7 +141,7 @@ Despite significant progress, Goodfire's approach faces several challenges and c
 
 There is substantial debate about whether mechanistic interpretability can reliably detect deception in advanced AI systems. Researcher <EntityLink id="neel-nanda">Neel Nanda</EntityLink> has noted that interpretability lacks "ground truth" for what concepts AI models actually use, making it difficult to validate interpretability claims.[^34] Some researchers favor alternative methods like linear probes.
 
-A concrete example of interpretability's limitations emerged with GPT-4o's "extreme sycophancy" issue, which was detected behaviorally rather than through mechanistic analysis—no circuit was discovered, no particular weights or activations were identified as responsible, and mechanistic interpretability provided no advance warning.[^35]
+A concrete example of interpretability's limitations emerged with GPT-4o's "extreme <EntityLink id="sycophancy">sycophancy</EntityLink>" issue, which was detected behaviorally rather than through mechanistic analysis—no circuit was discovered, no particular weights or activations were identified as responsible, and mechanistic interpretability provided no advance warning.[^35]
 
 ### Competition from In-House Development
 

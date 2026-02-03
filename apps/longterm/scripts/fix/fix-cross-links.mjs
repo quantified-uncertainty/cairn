@@ -249,6 +249,33 @@ function loadEntities() {
     }
   }
 
+  // Add all MDX pages by their frontmatter title (lower priority than YAML entities)
+  // This catches pages that don't have YAML entries
+  for (const [id, urlPath] of Object.entries(pathRegistry)) {
+    if (id.startsWith('__index__')) continue;
+
+    // Skip if already added from YAML data
+    const idSlug = id.toLowerCase();
+    if ([...entities.values()].some(e => e.id === id)) continue;
+
+    // Find the MDX file for this entity
+    const mdxPath = join(CONTENT_DIR, urlPath.replace(/^\//, '').replace(/\/$/, '') + '.mdx');
+    if (!existsSync(mdxPath)) continue;
+
+    try {
+      const content = readFileSync(mdxPath, 'utf-8');
+      const frontmatter = parseFrontmatter(content);
+      const title = frontmatter?.title;
+
+      if (title && title.length >= 4) {
+        // Add by title (medium priority - after YAML orgs/people but before aliases)
+        addEntity(title, id, title, 60 + title.length);
+      }
+    } catch (e) {
+      // Skip files that can't be parsed
+    }
+  }
+
   // Sort by term length descending (match longer terms first)
   const sorted = [...entities.entries()].sort((a, b) => b[1].termLength - a[1].termLength);
   return new Map(sorted);
@@ -297,6 +324,15 @@ function isInProtectedContext(content, position) {
   // In frontmatter
   const frontmatterEnd = content.indexOf('---', 3);
   if (frontmatterEnd > 0 && position < frontmatterEnd) return true;
+
+  // In JSX expression (inside curly braces in JSX)
+  // Count unmatched { and } before position
+  let braceDepth = 0;
+  for (let i = 0; i < position; i++) {
+    if (content[i] === '{') braceDepth++;
+    else if (content[i] === '}') braceDepth--;
+  }
+  if (braceDepth > 0) return true;
 
   // In import statement
   const lineStart = before.lastIndexOf('\n') + 1;

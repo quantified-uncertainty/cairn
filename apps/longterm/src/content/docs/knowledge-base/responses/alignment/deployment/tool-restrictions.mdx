@@ -28,7 +28,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks} from '@components/wiki';
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **Effectiveness** | High (70-90% risk reduction for targeted threats) | [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/gensec05-bp01.html) rates lack of least privilege implementation as "High" risk; METR evaluations show properly sandboxed agents have substantially reduced attack surface |
+| **Effectiveness** | High (70-90% risk reduction for targeted threats) | [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/gensec05-bp01.html) rates lack of least privilege implementation as "High" risk; <EntityLink id="metr">METR</EntityLink> evaluations show properly sandboxed agents have substantially reduced attack surface |
 | **Implementation Maturity** | Medium (fragmented across providers) | Over 13,000 MCP servers on GitHub in 2025 alone; [UK AISI Inspect toolkit](https://www.aisi.gov.uk/blog/the-inspect-sandboxing-toolkit-scalable-and-secure-ai-agent-evaluations) now used by governments, companies, and academics worldwide |
 | **Adoption Rate** | Growing rapidly (97M+ monthly SDK downloads for MCP) | [Model Context Protocol](https://modelcontextprotocol.io/specification/2025-11-25) backed by <EntityLink id="anthropic">Anthropic</EntityLink>, <EntityLink id="openai">OpenAI</EntityLink>, Google, Microsoft; donated to Linux Foundation December 2025 |
 | **Vulnerability Surface** | High (9.4 CVSS critical vulnerabilities found) | [CVE-2025-49596](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596) in MCP Inspector enables browser-based RCE; hundreds of "NeighborJack" vulnerabilities discovered across 7,000+ MCP servers |
@@ -38,7 +38,7 @@ import {Mermaid, R, EntityLink, DataExternalLinks} from '@components/wiki';
 
 ## Overview
 
-Tool-use restrictions are among the most direct and effective safety measures for agentic AI systems. Rather than trying to shape model behavior through training, restrictions simply remove access to dangerous capabilities. An AI agent without access to code execution cannot deploy malware; one without financial API access cannot make unauthorized purchases; one without email access cannot conduct phishing campaigns. These hard limits provide guarantees that behavioral training cannot.
+Tool-use restrictions are among the most direct and effective safety measures for <EntityLink id="agentic-ai">agentic AI</EntityLink> systems. Rather than trying to shape model behavior through training, restrictions simply remove access to dangerous capabilities. An AI agent without access to code execution cannot deploy malware; one without financial API access cannot make unauthorized purchases; one without email access cannot conduct phishing campaigns. These hard limits provide guarantees that behavioral training cannot.
 
 The approach is especially important given the rapid expansion of AI agent capabilities. Systems like Claude Computer Use, OpenAI's function calling, and various autonomous agents are gaining access to browsers, file systems, code execution, and external APIs. Each new tool represents both capability expansion and risk surface expansion. Tool restrictions create a deliberate friction that forces explicit decisions about what capabilities are necessary and appropriate for a given deployment context.
 
