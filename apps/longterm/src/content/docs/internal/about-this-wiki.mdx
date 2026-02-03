@@ -132,22 +132,9 @@ Running `npm run build:data` generates:
 
 ### Data-Aware Components
 
-Components pull from YAML databases:
+Components pull from YAML databases to display structured information. For example, `EntityLink` provides stable cross-references, while `DataInfoBox` displays expert or organization profiles from YAML.
 
-```mdx
-import {EntityLink, DataEstimateBox, DataInfoBox} from '@components/wiki';
-
-{/* Link to entity with automatic title lookup */}
-<EntityLink id="deceptive-alignment">deceptive alignment</EntityLink>
-
-{/* Pull estimate data from estimates.yaml */}
-<DataEstimateBox dataId="p-doom" />
-
-{/* Display expert info from experts.yaml */}
-<DataInfoBox expertId="paul-christiano" />
-```
-
-**For database details, see [Content Database](/internal/content-database/).**
+**For database details and component usage, see [Content Database](/internal/content-database/).**
 
 ---
 
