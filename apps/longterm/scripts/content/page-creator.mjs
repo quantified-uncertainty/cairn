@@ -78,6 +78,133 @@ const QUALITY_RULES = [
   'temporal-artifacts'
 ];
 
+// ============ Duplicate Detection ============
+
+/**
+ * Calculate Levenshtein distance between two strings
+ */
+function levenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+/**
+ * Calculate similarity ratio (0-1, where 1 is identical)
+ */
+function similarity(a, b) {
+  const aLower = a.toLowerCase();
+  const bLower = b.toLowerCase();
+  const distance = levenshteinDistance(aLower, bLower);
+  const maxLen = Math.max(aLower.length, bLower.length);
+  return maxLen === 0 ? 1 : 1 - distance / maxLen;
+}
+
+/**
+ * Normalize a string to a slug for comparison
+ */
+function toSlug(str) {
+  return str.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
+ * Check if a page with similar name already exists
+ * Returns { exists: boolean, matches: Array<{title, path, similarity}> }
+ */
+async function checkForExistingPage(topic) {
+  const registryPath = path.join(ROOT, 'src/data/pathRegistry.json');
+  const databasePath = path.join(ROOT, 'src/data/database.json');
+
+  const matches = [];
+  const topicSlug = toSlug(topic);
+  const topicLower = topic.toLowerCase();
+
+  // Check pathRegistry for slug matches
+  if (fs.existsSync(registryPath)) {
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
+    for (const [id, urlPath] of Object.entries(registry)) {
+      if (id.startsWith('__index__')) continue;
+
+      // Exact slug match
+      if (id === topicSlug) {
+        matches.push({ title: id, path: urlPath, similarity: 1.0, type: 'exact-id' });
+        continue;
+      }
+
+      // Fuzzy slug match
+      const sim = similarity(id, topicSlug);
+      if (sim >= 0.7) {
+        matches.push({ title: id, path: urlPath, similarity: sim, type: 'fuzzy-id' });
+      }
+    }
+  }
+
+  // Check database.json for title matches
+  // database.json is { experts: [...], organizations: [...], ... }
+  if (fs.existsSync(databasePath)) {
+    const database = JSON.parse(fs.readFileSync(databasePath, 'utf-8'));
+    // Flatten all entity arrays into one list
+    const allEntities = Object.values(database).flat();
+
+    for (const entity of allEntities) {
+      // Skip resources (they don't have paths) - only check actual wiki entities
+      if (!entity.path) continue;
+
+      // Check both 'title' and 'name' fields (experts use 'name', others use 'title')
+      const entityName = entity.title || entity.name;
+      if (!entityName) continue;
+
+      const entityNameLower = entityName.toLowerCase();
+
+      // Exact title match
+      if (entityNameLower === topicLower) {
+        const existingMatch = matches.find(m => m.path === entity.path);
+        if (!existingMatch) {
+          matches.push({ title: entityName, path: entity.path, similarity: 1.0, type: 'exact-title' });
+        }
+        continue;
+      }
+
+      // Fuzzy title match
+      const sim = similarity(entityName, topic);
+      if (sim >= 0.7) {
+        const existingMatch = matches.find(m => m.path === entity.path);
+        if (!existingMatch) {
+          matches.push({ title: entityName, path: entity.path, similarity: sim, type: 'fuzzy-title' });
+        }
+      }
+    }
+  }
+
+  // Sort by similarity descending
+  matches.sort((a, b) => b.similarity - a.similarity);
+
+  return {
+    exists: matches.some(m => m.similarity >= 0.9),
+    matches: matches.slice(0, 5) // Return top 5 matches
+  };
+}
+
 // ============ Deployment ============
 
 /**
@@ -1597,6 +1724,7 @@ Options:
   --create-category <name> Create new category with index.mdx and sidebar entry
   --directions <text>      Context, source URLs, and editorial guidance (see below)
   --phase <phase>          Run a single phase only (for resuming/testing)
+  --force                  Skip duplicate page check (create even if similar page exists)
   --help                   Show this help
 
 Directions:
@@ -1656,11 +1784,38 @@ async function main() {
   const directions = directionsIndex !== -1 ? args[directionsIndex + 1] : null;
   const createCategoryIndex = args.indexOf('--create-category');
   const createCategory = createCategoryIndex !== -1 ? args[createCategoryIndex + 1] : null;
+  const forceCreate = args.includes('--force');
 
   if (!topic) {
     console.error('Error: Topic required');
     printHelp();
     process.exit(1);
+  }
+
+  // Check for existing pages with similar names (skip for single phases)
+  if (!singlePhase && !forceCreate) {
+    console.log(`\nChecking for existing pages similar to "${topic}"...`);
+    const { exists, matches } = await checkForExistingPage(topic);
+
+    if (matches.length > 0) {
+      console.log('\n⚠️  Found similar existing pages:');
+      for (const match of matches) {
+        const simPercent = Math.round(match.similarity * 100);
+        const indicator = match.similarity >= 0.9 ? '🔴' : match.similarity >= 0.8 ? '🟡' : '🟢';
+        console.log(`  ${indicator} ${match.title} (${simPercent}% similar)`);
+        console.log(`     Path: ${match.path}`);
+      }
+
+      if (exists) {
+        console.log('\n❌ A page with this name likely already exists.');
+        console.log('   Use --force to create anyway, or choose a different topic.\n');
+        process.exit(1);
+      } else {
+        console.log('\n   These are partial matches. Proceeding with page creation...\n');
+      }
+    } else {
+      console.log('   No similar pages found. Proceeding...\n');
+    }
   }
 
   ensureDir(TEMP_DIR);
