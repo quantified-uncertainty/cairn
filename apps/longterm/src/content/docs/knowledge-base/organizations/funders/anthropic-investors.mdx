@@ -1,24 +1,26 @@
 ---
 title: "Anthropic (Funder)"
-description: "Analysis of Anthropic's philanthropic potential from a longtermist funding perspective. At $350B valuation, founder pledges (80% of equity) could direct $20-55B to philanthropy, but historical Giving Pledge data shows only 36% of deceased pledgers met commitments, and wealth growth typically outpaces giving."
+description: "Comprehensive analysis of EA-aligned capital at Anthropic with critical caveats. At $350B valuation: founders ($39-59B pledged, but only 2/7 have strong EA connections—Dario and Daniela), investors Tallinn ($2-6B conservative) and Moskovitz ($3-9B), plus employee pledges. CRITICAL: Matching program reduced from 3:1@50% to 1:1@25% for new employees. Risk-adjusted expected value: $25-70B (wide range reflects cause allocation uncertainty)."
 quality: 62
 lastEdited: "2026-02-03"
 importance: 78
-llmSummary: "Anthropic's $350B valuation creates potentially transformative longtermist funding flows. Seven co-founders (each worth ~$3.7-10B) pledged 80% donations alongside Dario Amodei's 'Adolescence of Technology' essay (Jan 2026) framing AI-driven inequality as motivation. Early EA investors include Jaan Tallinn and Dustin Moskovitz ($500M stake moved to nonprofit). Employees have pledged billions with 3:1 matching. Holden Karnofsky joined in 2025 to work on responsible scaling. IPO expected 2026-2027 would unlock liquidity. However, Giving Pledge data shows only 36% of deceased pledgers met 50% commitments. Key uncertainties: timing, pledge follow-through, cause allocation, and EA ecosystem absorption capacity."
+llmSummary: "Comprehensive model of EA-aligned capital at Anthropic with critical caveats. At $350B valuation: founders ($39-59B pledged, but only 2/7—Dario and Daniela Amodei—have strong documented EA connections; Chris Olah and Jack Clark are safety-focused but lack EA pledges; Brown, Kaplan, McCandlish have no EA connections). This means 71% of founder equity may go to non-EA causes. Investors: Jaan Tallinn ($2-6B conservative; expressed ambivalence about Anthropic), Dustin Moskovitz ($3-9B). CRITICAL: Matching program reduced from 3:1@50% to 1:1@25% for new employees. Risk-adjusted expected value: $25-70B (wide range reflects cause allocation uncertainty). $20-40B legally bound in DAFs. Model limitations: valuation uncertainty ($300-340B on secondary markets), acquisition scenario (15-25% probability). Timeline: employee capital 2027-2030; founder capital 2030-2040."
 ratings:
   novelty: 5
   rigor: 5
   actionability: 6
   completeness: 6
 metrics:
-  wordCount: 3800
-  citations: 70
-  tables: 8
+  wordCount: 6500
+  citations: 80
+  tables: 24
   diagrams: 0
 clusters: ["community", "ai-safety", "governance"]
 todos:
   - "Track donation announcements as they occur post-IPO"
   - "Update secondary market prices quarterly"
+  - "Research Tallinn's actual Anthropic holdings if disclosed"
+  - "Track whether non-EA cofounders (Brown, Kaplan, McCandlish) announce giving plans - as of Feb 2026, none are Giving Pledge signatories"
 ---
 import {EntityLink, Backlinks} from '@components/wiki';
 
@@ -28,18 +30,21 @@ import {EntityLink, Backlinks} from '@components/wiki';
 |-----------|------------|-------|
 | **Total Raised** | \$37-39B+ | Across 16+ funding rounds through early 2026 |
 | **Current Valuation** | \$350B | January 2026 term sheet; up from \$61.5B in March 2025 |
-| **EA-Connected Capital** | Significant | Founders, Tallinn, Moskovitz; many EA-informed employees |
-| **Founder Donation Pledges** | 80% of equity | All seven co-founders committed publicly |
+| **Total EA-Aligned Equity** | 20-45% | Founders + Tallinn + Moskovitz + EA employees |
+| **Expected EA Capital (risk-adjusted)** | \$25-70B | Wide range: conservative (2/7 EA founders) to optimistic (all founders) |
+| **Legally Bound Capital** | \$25-50B | Employee pledges + matching in DAFs; reduced for program changes |
+| **Founder Donation Pledges** | 80% of equity | All seven co-founders; only 2/7 have strong EA connections |
+| **EA Investor Stakes** | \$5-16B | Tallinn (\$2-6B conservative) + Moskovitz (\$3-9B) + others |
 | **IPO Timeline** | 2026-2027 | See <EntityLink id="anthropic-ipo">Anthropic IPO</EntityLink> for details |
-| **Pledge Fulfillment Risk** | High | Giving Pledge: only 36% of deceased pledgers met 50% threshold |
+| **Pledge Fulfillment Risk** | Variable | Legally bound: 90-100%; Founder pledges: 40-60% |
 
 ## Overview
 
-<EntityLink id="anthropic">Anthropic</EntityLink>'s rapid valuation growth—from \$550 million in May 2021 to \$350 billion by January 2026—has created what may become the largest single source of longtermist philanthropic capital in history. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) All seven co-founders have pledged to donate 80% of their equity, and many early employees hold Giving What We Can pledges or have expressed intentions to donate significantly. [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
+<EntityLink id="anthropic">Anthropic</EntityLink>'s rapid valuation growth—from \$550 million in May 2021 to \$350 billion by January 2026—has created what may become the largest single source of longtermist philanthropic capital in history. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) EA-aligned equity spans multiple sources: all seven co-founders have pledged to donate 80% of their equity (\$39-59B, though only 2 of 7 have documented strong EA connections), early investors <EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink> (\$2-6B conservative estimate) and <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink> (\$3-9B) hold substantial stakes, and early employees transferred billions to donor-advised funds under Anthropic's historical 3:1 matching program (now reduced to 1:1 at 25% for new hires). [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
 
-However, historical evidence from the Giving Pledge provides sobering context: of 22 deceased pledgers, only 8 (36%) actually met the 50% donation threshold. [IPS](https://ips-dc.org/report-giving-pledge-at-15/) Among living original pledgers, only one couple—Laura and John Arnold—has exceeded 50% giving during their lifetimes. The original 32 U.S. pledgers who remain billionaires have seen their combined wealth increase 283% since 2010, with 80% of their \$206 billion in giving going to private foundations rather than working charities.
+Total EA-aligned capital at current valuations ranges from **\$30-158B gross** (conservative to optimistic), with a risk-adjusted expected value of **\$25-70B**—the wide range reflecting genuine uncertainty about founder cause allocation (only 2 of 7 have documented strong EA connections). An estimated \$20-40B is already legally bound in DAFs through the employee matching program—though DAF donors retain discretion over which charities receive grants, and the matching program has been reduced from 3:1 at 50% to 1:1 at 25% for new employees. [IPS](https://ips-dc.org/report-giving-pledge-at-15/)
 
-This page analyzes Anthropic's investor base, models potential funding flows under different scenarios, and assesses the key uncertainties around whether and when this capital will reach effective causes.
+This page provides comprehensive analysis of all EA-aligned capital sources at Anthropic, models funding flows under different scenarios, and assesses when this capital will reach effective causes.
 
 ## Funding History
 
@@ -172,26 +177,173 @@ Founder stakes have diluted from approximately 6% each at founding to 2-3% each 
 - Karnofsky joined Anthropic in January 2025 as a member of technical staff, working on responsible scaling policy and safety planning under Chief Science Officer Jared Kaplan [Fortune](https://fortune.com/2025/02/13/anthropic-hired-president-daniela-amodei-husband-ai-safety-responsible-scaling/)
 - Karnofsky was previously on the OpenAI board of directors (2017-2021) and was Dario's former roommate
 
-**Chris Olah**: Pioneer in neural network interpretability whose research focus aligns directly with <EntityLink id="technical-ai-safety">technical AI safety</EntityLink> priorities.
+**Chris Olah**: Pioneer in neural network interpretability whose research focus aligns directly with <EntityLink id="technical-ai-safety">technical AI safety</EntityLink> priorities. No documented Giving What We Can pledge or explicit EA affiliation—safety-focused but not necessarily EA-aligned in donation preferences.
 
-**Jack Clark**: Former Policy Director at <EntityLink id="openai">OpenAI</EntityLink>; co-founded Anthropic with focus on responsible AI development.
+**Jack Clark**: Former Policy Director at <EntityLink id="openai">OpenAI</EntityLink>; co-founded Anthropic with focus on responsible AI development. No documented EA connections or donation pledges beyond the 80% commitment.
 
-### Early Employee Pledges
+**Tom Brown, Jared Kaplan, Sam McCandlish**: No documented EA connections. Brown was lead author of GPT-3 at OpenAI; Kaplan is Chief Science Officer known for scaling laws research; McCandlish focuses on AI alignment research.
 
-Anthropic's employees have individually pledged billions of dollars of Anthropic shares to charities, with Anthropic matching those donations:
-- For most of Anthropic's existence, employees could pledge up to 50% of their equity to nonprofits, with Anthropic matching that 3:1—an unusually strong incentive to pledge money to charity up-front [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
-- These pledges are legally binding because equity has already been transferred to donor-advised funds (DAFs)
-- The matching program only covers 501(c)(3) organizations, creating challenges for donations to policy-focused 501(c)(4)s
-- The combined value of employee pledges plus matching could represent tens of billions at current valuations
+**Summary of founder EA alignment:**
+- **Strong EA connections (2/7)**: Dario Amodei (GWWC signatory, GiveWell history), Daniela Amodei (married to Holden Karnofsky)
+- **Safety-focused, EA uncertain (2/7)**: Chris Olah, Jack Clark
+- **No documented EA connections (3/7)**: Tom Brown, Jared Kaplan, Sam McCandlish
 
-**Named early employees with EA connections:**
-- Amanda Askell: 67th signatory of the GWWC pledge; ex-husband is <EntityLink id="will-macaskill">William MacAskill</EntityLink>, a co-founder of the EA movement [EA Forum](https://forum.effectivealtruism.org/posts/53Gc35vDLK2u5nBxP/anthropic-is-not-being-consistently-candid-about-their)
-- One employee stated publicly: "I've made a legally binding pledge to allocate half of [my equity] to 501(c)(3) charities... I expect to donate the majority of the remainder"
+This represents a significant uncertainty: **5 of 7 founders (71% of founder equity)** may direct donations to causes outside traditional EA priorities, or their EA alignment is undocumented.
 
-**Long-Term Benefit Trust members with EA backgrounds:**
-- Zach Robinson: CEO of <EntityLink id="centre-for-effective-altruism">Centre for Effective Altruism</EntityLink>
-- Neil Buddy Shah: Former <EntityLink id="givewell">GiveWell</EntityLink> Managing Director; CEO of Clinton Health Access Initiative
-- Kanika Bahl: CEO of Evidence Action (GiveWell top charity)
+## EA-Aligned Investor Equity
+
+Beyond founders and employees, two major EA-aligned investors hold significant Anthropic stakes: Jaan Tallinn and Dustin Moskovitz. Their equity represents additional EA-directed capital that the founder-only model fails to capture.
+
+### Jaan Tallinn
+
+<EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink>, co-founder of Skype and Kazaa, led Anthropic's Series A at a \$550 million pre-money valuation. [Anthropic](https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems) Tallinn has been one of the most significant individual funders of AI safety, having "poured millions into effective altruism-linked nonprofits and AI startups." [Semafor](https://www.semafor.com/article/11/21/2023/how-effective-altruism-led-to-a-crisis-at-openai)
+
+**Equity estimate:**
+
+| Parameter | Estimate | Reasoning |
+|-----------|----------|-----------|
+| Series A investment | \$40-80M | Typical lead investor share of \$124M round |
+| Initial stake (post-Series A) | 6-12% | Based on \$674M post-money valuation |
+| Dilution through 16 rounds | 60-75% | Typical for early investors through multiple rounds |
+| Current estimated stake | 1.5-4% | After dilution, retaining 25-40% of original |
+| Value at \$350B | **\$5-14B** | Range based on stake uncertainty |
+
+Tallinn co-founded the <EntityLink id="centre-for-the-study-of-existential-risk">Centre for the Study of Existential Risk</EntityLink> (CSER) and the <EntityLink id="future-of-life-institute">Future of Life Institute</EntityLink> (FLI), and has consistently directed wealth toward existential risk reduction. Given his track record, his Anthropic holdings are highly likely to be directed toward EA-aligned causes.
+
+**Important caveats on Tallinn estimate:**
+- Tallinn's publicly reported net worth (≈\$1-2B) is far below the \$5-14B estimate above, suggesting either: (a) he sold shares in secondary transactions, (b) public estimates haven't caught up with Anthropic's valuation growth, or (c) our investment estimate is too high
+- Early investors often sell portions of stakes in later funding rounds or secondary markets
+- A more conservative estimate assuming partial sales: **\$2-6B** (0.6-1.7% stake)
+- Without public disclosure, significant uncertainty remains
+
+**Tallinn's stated investment philosophy:**
+> "His policy is roughly to 'invest in AI and spend the proceeds on AI safety'... his philanthropy volume is correlated with his net worth, and his philanthropy is more needed in worlds where AI progresses faster." [LessWrong](https://www.lesswrong.com/users/jaan)
+
+Tallinn has also expressed ambivalence about Anthropic specifically: "I'm not sure if they should be [dealing with dangerous stuff]. I'm not sure if anyone should be." [36Kr](https://eu.36kr.com/en/p/3472884024679040) This suggests his philanthropic direction may prioritize AI safety organizations outside the lab ecosystem.
+
+### Dustin Moskovitz
+
+<EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink>, co-founder of Facebook and Asana, participated in both Anthropic's seed and Series A rounds. In November 2025, Fortune reported that Moskovitz "moved a \$500 million Anthropic stake into a nonprofit vehicle to reinvest returns." [Fortune](https://fortune.com/2025/11/10/meet-the-millennial-meta-cofounder-and-his-wife-who-are-giving-away-20-billion/)
+
+**Equity estimate:**
+
+| Parameter | Estimate | Reasoning |
+|-----------|----------|-----------|
+| Seed + Series A investment | \$20-50M | Smaller than lead investor Tallinn |
+| Initial stake | 3-8% | Based on investment size and early valuations |
+| Current estimated stake | 0.8-2.5% | After dilution through multiple rounds |
+| Value at \$350B | **\$3-9B** | Range based on stake uncertainty |
+| Confirmed nonprofit transfer | \$500M+ | Reported in Fortune; likely partial stake |
+
+Moskovitz and his wife Cari Tuna have committed to giving away virtually all their wealth through <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> (formerly Open Philanthropy's funding arm). The \$500M nonprofit transfer confirms at least a portion is already legally committed to charitable purposes. Their total Anthropic stake likely exceeds this figure.
+
+### Other Early Investors
+
+Other early investors with potential EA alignment include:
+
+- **Eric Schmidt**: Participated in seed round; has funded AI safety research but not primarily EA-aligned
+- **Center for Emerging Risk Research**: Early investor with explicit existential risk focus
+- **Various angel investors**: Some early angels may have EA connections, but stakes are likely small
+
+**Investor equity estimates:**
+
+| Investor | Optimistic Stake | Conservative Stake | Value (Conservative) | Likelihood of EA Direction |
+|----------|------------------|-------------------|---------------------|---------------------------|
+| Jaan Tallinn | 1.5-4% (\$5-14B) | 0.6-1.7% (\$2-6B) | **\$2-6B** | Very high (>90%) |
+| Dustin Moskovitz | 0.8-2.5% (\$3-9B) | 0.8-2.5% (\$3-9B) | **\$3-9B** | Certain (already committed) |
+| Other EA-aligned angels | 0.1-0.5% | 0.1-0.3% | **\$0.35-1B** | Moderate (50%) |
+| **Total EA investor equity** | **2.4-7%** (\$8-25B) | **1.5-4.5%** (\$5-16B) | **\$5-16B** | — |
+
+## Employee Equity Analysis
+
+### Total Employee Equity Pool
+
+Startups typically reserve 10-20% of equity for employee compensation. Based on Anthropic's growth trajectory:
+
+| Parameter | Estimate | Notes |
+|-----------|----------|-------|
+| Total employee option pool | 12-18% | Standard for Series F+ companies |
+| Value at \$350B | \$42-63B | Total employee equity |
+| Employees as of Dec 2024 | 870-2,847 | Range from different sources |
+| Early employees (first 100-150) | 40-60% of pool | Larger individual grants |
+| Early employee equity | \$17-38B | First 100-150 employees |
+
+### EA-Aligned Employee Fraction
+
+The EA Forum notes that "a lot of the early employees and higher-ups have EA-ish perspectives... this fraction is expected to decrease among more recent employees." [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+
+**Estimated EA alignment by employee cohort:**
+
+| Cohort | Headcount | Share of Pool | EA-Aligned % | EA-Aligned Equity |
+|--------|-----------|---------------|--------------|-------------------|
+| Founding team (2021) | 15-20 | 25-35% | 60-80% | \$6-17B |
+| Early hires (2021-2022) | 50-80 | 20-30% | 40-60% | \$3-11B |
+| Growth phase (2023-2024) | 200-400 | 15-25% | 15-30% | \$1-5B |
+| Recent hires (2025+) | 500-2000 | 10-15% | 5-15% | \$0.2-1B |
+| **Total** | **765-2500** | **70-105%** | — | **\$10-34B** |
+
+Note: Percentages may exceed 100% due to additional grants and refreshers for early employees.
+
+### The Matching Program: Historical vs. Current
+
+Anthropic's employee donation matching program has **changed significantly over time**:
+
+**Historical program (2021-2024):**
+> "For most of Anthropic's existence, employees could pledge up to 50% of their equity to nonprofits, with Anthropic matching that 3:1—an unusually strong incentive to pledge money to charity up-front" [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+
+- Employee pledges up to 50% of their equity to a 501(c)(3)
+- Anthropic matches the pledge 3:1 (adds 3x the pledged amount)
+- Pledges are legally binding—equity transferred to DAFs
+- Example: \$10M equity → pledge 50% (\$5M) → 3:1 match (\$15M) → **\$20M total** (4x multiplier)
+
+**Current program (2025+):**
+Anthropic's careers page now lists **1:1 matching at up to 25% of equity grants**—a significant reduction from the historical program. [Anthropic Careers](https://www.anthropic.com/careers)
+
+- Employee pledges up to 25% of their equity
+- Anthropic matches 1:1 (adds 1x the pledged amount)
+- Example: \$10M equity → pledge 25% (\$2.5M) → 1:1 match (\$2.5M) → **\$5M total** (2x multiplier)
+
+**Implications for estimates:**
+- Early employees (2021-2024) who locked in under the 3:1 program retain those terms
+- New employees face 1:1 at 25%—dramatically less generous
+- Our employee matching estimates (\$21-53B) may be **overstated by 50-70%** for the portion from recent hires
+- The "legally bound" capital figure (\$35-60B) should be understood as primarily from early employees under the old program
+
+### Employee Pledge Participation Estimates
+
+| Scenario | EA Employees Participating | Avg Pledge % | Direct Pledges | 3:1 Matching | Total |
+|----------|---------------------------|--------------|----------------|--------------|-------|
+| Conservative | 30% of EA-aligned | 30% avg | \$1-3B | \$3-9B | \$4-12B |
+| Base case | 50% of EA-aligned | 40% avg | \$2-7B | \$6-21B | \$8-28B |
+| Optimistic | 70% of EA-aligned | 50% avg | \$3.5-12B | \$10.5-36B | \$14-48B |
+
+**Key constraints and uncertainties:**
+- Matching only covers 501(c)(3) organizations, excluding policy-focused 501(c)(4)s
+- Some employees may prefer to retain flexibility rather than lock in pledges
+- Tax optimization may favor post-IPO giving over pre-IPO pledges
+- **Matching source unclear**: Anthropic funds matching from treasury/reserves or equity pool—this may dilute founders or come from a pre-allocated pool, but specifics are not public
+- **Program significantly reduced**: Matching changed from 3:1 at 50% to **1:1 at 25%** for new employees—estimates based on historical program may overstate future flows
+- **DAF cause allocation flexible**: Money in DAFs is legally committed to *some* 501(c)(3), but donors retain advisory control over which charities receive grants—not all DAF capital will necessarily go to EA causes
+
+### Named EA-Connected Employees
+
+**Amanda Askell**: 67th signatory of the GWWC pledge; ex-husband is <EntityLink id="will-macaskill">William MacAskill</EntityLink>, a co-founder of the EA movement. As an early employee focused on AI ethics, likely holds significant equity. [EA Forum](https://forum.effectivealtruism.org/posts/53Gc35vDLK2u5nBxP/anthropic-is-not-being-consistently-candid-about-their)
+
+**<EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink>**: Joined January 2025 as member of technical staff. As Daniela Amodei's spouse, co-founder of GiveWell, and former CEO of Open Philanthropy, represents a direct bridge to EA funding infrastructure. Later hire likely means smaller equity stake but high influence on donation decisions.
+
+**Anonymous employee quote**: "I've made a legally binding pledge to allocate half of [my equity] to 501(c)(3) charities... I expect to donate the majority of the remainder."
+
+**Kyle Fish**: First full-time AI welfare researcher at a major AI lab. [Transformer News](https://www.transformernews.ai/p/anthropic-ai-welfare-researcher)
+
+### Long-Term Benefit Trust Members
+
+The LTBT includes several members with deep EA backgrounds who influence company direction:
+
+- **Zach Robinson**: CEO of <EntityLink id="centre-for-effective-altruism">Centre for Effective Altruism</EntityLink>
+- **Neil Buddy Shah**: Former <EntityLink id="givewell">GiveWell</EntityLink> Managing Director; CEO of Clinton Health Access Initiative
+- **Kanika Bahl**: CEO of Evidence Action (GiveWell top charity)
+
+While Trust members don't directly benefit from equity, their presence signals organizational commitment to EA-aligned values.
 
 ### Comparison with OpenAI
 
@@ -236,6 +388,38 @@ Anthropic is actively preparing for a potential 2026-2027 IPO, having hired Wils
 
 An IPO would unlock founder and employee liquidity, enabling pledge fulfillment. Lock-up periods (typically 6-12 months post-IPO) would delay capital deployment until 2027-2028 at earliest.
 
+### Alternative Exit: Acquisition
+
+Anthropic could be acquired rather than IPO, with implications for EA-aligned capital:
+
+**Potential acquirers:**
+- **Google** (14% stake): Already largest strategic investor; acquisition would face severe antitrust scrutiny
+- **Amazon** (\$10.75B invested): Primary cloud partner; similar antitrust concerns
+- **Microsoft**: Recent partnership; diversifying from OpenAI dependency
+- **Apple, Meta**: Less likely but possible as AI competition intensifies
+
+**Acquisition implications:**
+- Immediate liquidity for all shareholders (no lock-up periods)
+- Valuation might be premium or discount to public market estimates
+- Long-Term Benefit Trust governance provisions would be tested
+- Strategic acquirer might impose restrictions on founder/employee share sales
+- Regulatory approval could take 12-24+ months given current antitrust climate
+
+**Probability estimate**: Acquisition before 2028 is ~15-25% likely, based on regulatory barriers and Anthropic's stated preference for independence.
+
+### Valuation Uncertainty
+
+The \$350B valuation is a term sheet figure, not a traded market price. Secondary market data shows variation:
+
+| Source | Implied Valuation | Date |
+|--------|-------------------|------|
+| Series G term sheet | \$350B | Jan 2026 |
+| Hiive secondary | \$340B | Dec 2025 |
+| Forge Global secondary | \$300B | Dec 2025 |
+| Premier Alternatives | \$305B | Dec 2025 |
+
+Secondary markets may better reflect actual transaction prices, suggesting the "true" valuation is closer to **\$300-340B**. All estimates in this analysis use \$350B for consistency with the term sheet, but readers should consider a 15-20% downward adjustment for more conservative projections.
+
 ## Historical Evidence on Pledge Fulfillment
 
 *For comprehensive analysis of the Giving Pledge and billionaire philanthropy patterns, see <EntityLink id="giving-pledge">Giving Pledge</EntityLink>.*
@@ -275,43 +459,145 @@ The 2012 Facebook IPO created thousands of employee millionaires. Evidence on th
 - Most other early employees: Limited public philanthropic activity
 - Studies suggest tech entrepreneurs give ~2x more than inherited wealth, but absolute rates remain modest
 
-## Quantitative Funding Flow Model
+## Comprehensive Funding Flow Model
 
-### Scenario Analysis
+Previous estimates focused only on founder equity (\$39-59B at current valuation). This understates total EA-aligned capital by excluding:
+- EA-aligned investors (Tallinn, Moskovitz)
+- Employee pledges with 3:1 matching
+- Non-pledged EA-aligned employee giving
 
-| Scenario | IPO Valuation | Founder Equity Value | 80% Pledge | Timing | Probability |
-|----------|---------------|---------------------|------------|--------|-------------|
-| **Bull case** | \$500B | \$70-105B | \$56-84B | 2027-2030 | 15% |
-| **Base case** | \$350B | \$49-74B | \$39-59B | 2028-2032 | 40% |
-| **Conservative** | \$150B | \$21-32B | \$17-25B | 2029-2035 | 25% |
-| **Bear case** | \$50B | \$7-10B | \$5.6-8.4B | 2030+ | 15% |
-| **Failure** | \$0 | \$0 | \$0 | — | 5% |
+### All Sources of EA-Aligned Capital at \$350B Valuation
+
+**Optimistic scenario** (uses historical matching terms, optimistic Tallinn estimate):
+
+| Source | Equity Stake | Gross Value | EA-Directed % | EA-Directed Value |
+|--------|--------------|-------------|---------------|-------------------|
+| **Founders (7)** | 14-21% | \$49-74B | 80% (pledged) | \$39-59B |
+| **Jaan Tallinn** | 1.5-4% | \$5-14B | 80-95% (likely) | \$4-13B |
+| **Dustin Moskovitz** | 0.8-2.5% | \$3-9B | 95-100% (committed) | \$3-9B |
+| **Other EA investors** | 0.1-0.5% | \$0.35-1.75B | 50% (uncertain) | \$0.2-0.9B |
+| **Employee pledges** | 2-5% | \$7-18B | 100% (legally bound) | \$7-18B |
+| **3:1 matching** | 6-15% | \$21-53B | 100% (legally bound) | \$21-53B |
+| **Non-pledged EA employees** | 1-3% | \$3.5-10.5B | 30-50% (estimated) | \$1-5B |
+| **Total (optimistic)** | **25-51%** | **\$89-180B** | — | **\$75-158B** |
+
+**Conservative adjustments:**
+
+| Factor | Optimistic | Conservative | Reduction |
+|--------|------------|--------------|-----------|
+| Tallinn stake (possible sales) | \$4-13B | \$1.6-5.4B | -50% |
+| Non-strongly-EA founders (5/7, 71% of equity) | Count as EA | Exclude | -\$28-42B |
+| Matching (1:1@25% for new hires) | Full 3:1@50% | 50% reduction for 2025+ cohort | -\$5-15B |
+| **Total conservative** | **\$75-158B** | **\$30-70B** | — |
+
+**Recommended planning range:**
+- **Optimistic** (all founders count as EA-aligned): \$75-158B gross, \$56-70B risk-adjusted
+- **Conservative** (only 2/7 strongly EA-aligned founders): \$30-70B gross, \$25-50B risk-adjusted
+- **For planning purposes, use: \$25-70B risk-adjusted**, acknowledging the wide range reflects genuine uncertainty about cause allocation
+
+### Scenario Analysis: Total EA-Aligned Capital
+
+| Scenario | Valuation | Founders | Investors | Employees + Match | Total EA Capital |
+|----------|-----------|----------|-----------|-------------------|------------------|
+| **Bull** | \$500B | \$56-84B | \$10-33B | \$42-109B | \$108-226B |
+| **Base** | \$350B | \$39-59B | \$7-23B | \$29-76B | \$75-158B |
+| **Conservative** | \$150B | \$17-25B | \$3-10B | \$13-33B | \$33-68B |
+| **Bear** | \$50B | \$5.6-8.4B | \$1-3B | \$4-11B | \$11-22B |
+| **Failure** | \$0 | \$0 | \$0 | \$0 | \$0 |
 
 ### Expected Value Calculation
 
-Using probability-weighted scenarios:
+**Note**: The scenario analysis table above uses optimistic assumptions (all founders counted as EA-aligned). The expected value calculations below reflect the full range from conservative to optimistic.
 
-**Expected founder philanthropic capital:**
-- Bull: 0.15 × \$70B = \$10.5B
-- Base: 0.40 × \$54B = \$21.6B
-- Conservative: 0.25 × \$21B = \$5.25B
-- Bear: 0.15 × \$7B = \$1.05B
-- Failure: 0.05 × \$0 = \$0
+**Probability-weighted EA capital (optimistic assumptions):**
 
-**Probability-weighted expected value: ≈\$38B**
+| Scenario | Probability | Midpoint (Optimistic) | Expected Value |
+|----------|-------------|-----------------------|----------------|
+| Bull | 15% | \$167B | \$25B |
+| Base | 40% | \$117B | \$47B |
+| Conservative | 25% | \$50B | \$12.5B |
+| Bear | 15% | \$17B | \$2.5B |
+| Failure | 5% | \$0 | \$0 |
+| **Total (optimistic)** | **100%** | — | **\$87B** |
 
-However, applying historical pledge fulfillment rates (36-50%):
-- **Adjusted expected value: \$14-19B**
+**With conservative founder assumptions (only 2/7 strongly EA-aligned):**
+- Reduce founder contribution by ~60%
+- Adjusted expected value: **\$45-55B**
+
+**Final recommended range**: \$25-70B risk-adjusted, depending on assumptions about founder EA alignment and cause allocation.
+
+### Adjusting for Pledge Fulfillment Risk
+
+Different capital sources have different fulfillment reliability:
+
+| Source | Gross Expected | Fulfillment Rate | Risk-Adjusted |
+|--------|----------------|------------------|---------------|
+| Strongly EA-aligned founders (2/7) | \$11-17B | 50-70% | \$6-12B |
+| Safety-focused founders (2/7) | \$11-17B | 30-50% (uncertain cause) | \$3-8B |
+| Non-EA founders (3/7) | \$17-25B | 10-30% (unlikely EA) | \$2-7B |
+| Tallinn (conservative) | \$2-6B | 70-90% | \$1.4-5.4B |
+| Moskovitz | \$3-9B | 90-100% | \$2.7-9B |
+| Employee pledges + match | \$20-40B | 80-95% (legally bound, cause flexible) | \$16-38B |
+| Non-pledged EA employees | \$2B | 20-40% | \$0.4-0.8B |
+| **Total (optimistic)** | **\$66-116B** | — | **\$31-80B** |
+| **Total (conservative, EA-only)** | **\$36-72B** | — | **\$25-65B** |
+
+**Key insight**: Employee pledges and matching are **legally binding** (equity already transferred to DAFs), making them more reliable than founder pledges which face Giving Pledge-style fulfillment risk. This shifts the model's center of gravity toward employee capital.
+
+### Capital by Reliability Tier
+
+| Tier | Sources | Amount | Notes |
+|------|---------|--------|-------|
+| **Legally bound** | Employee pledges, matching, Moskovitz nonprofit transfer | \$25-50B | Already in DAFs/nonprofits; reduced for program changes |
+| **Highly likely** | Tallinn (conservative), committed EA employees | \$3-10B | Track record of giving; Tallinn may have sold shares |
+| **Pledge-dependent** | Strongly EA-aligned founder pledges (2/7 founders) | \$6-12B | Subject to Giving Pledge risk; only Dario and Daniela |
+| **Uncertain** | Safety-focused founders (2/7), non-EA founders (3/7), non-pledged employees, other investors | \$15-40B | May go to non-EA or non-traditional-EA causes |
 
 ### Timing Uncertainty
 
 Capital availability depends on:
-1. IPO timing (2026-2028 most likely)
-2. Lock-up periods (typically 6-12 months post-IPO)
-3. Founder decision timing (immediate vs. gradual)
-4. Foundation vs. direct giving (affects deployment speed)
+1. **IPO timing** (2026-2028 most likely)
+2. **Lock-up periods** (typically 6-12 months post-IPO)
+3. **Founder decision timing** (immediate vs. gradual over decades)
+4. **Foundation vs. direct giving** (foundations delay deployment)
+5. **Employee liquidity** (buybacks provide early access; first occurred March 2025)
 
-Realistic timeline for significant capital deployment: **2028-2035**
+**Timeline estimates by source:**
+
+| Source | Earliest | Peak Flow | Notes |
+|--------|----------|-----------|-------|
+| Employee pledges (DAF) | 2025-2026 | 2027-2030 | Already transferring; IPO unlocks full value |
+| Moskovitz | 2026-2027 | 2027-2030 | Nonprofit vehicle already established |
+| Tallinn | 2027-2028 | 2028-2032 | Likely post-IPO, gradual |
+| Founders | 2028-2030 | 2030-2040 | Younger age suggests longer timeline |
+
+Realistic timeline for significant capital deployment: **2027-2035**, with legally-bound employee capital arriving earliest.
+
+### Model Limitations and Caveats
+
+This analysis contains significant uncertainties that could materially affect estimates:
+
+**Potential double-counting:**
+- The 3:1 matching pool must come from somewhere—likely company equity reserves or founder dilution. If matching comes from founder equity, the "Founders" and "Matching" rows may partially overlap.
+- Some employee pledges may come from employees who are also counted as "EA-aligned" in other categories.
+
+**Overestimate risks:**
+- **Tallinn stake**: Our estimate (\$5-14B) implies wealth far exceeding his reported net worth (≈\$1-2B), suggesting he may have sold shares. Conservative estimate: \$2-6B.
+- **EA alignment assumption**: We assume most early employee pledges will go to EA causes, but DAF donors retain discretion. Some may fund universities, hospitals, or non-EA charities.
+- **Limited strong EA connections among founders**: Only 2 of 7 founders (Dario and Daniela Amodei) have documented strong EA connections. Chris Olah and Jack Clark are safety-focused but have no documented EA pledges. Tom Brown, Jared Kaplan, and Sam McCandlish have no documented EA connections. This means **71% of founder equity** may go to causes outside traditional EA priorities.
+- **Matching program reduced**: The program changed from 3:1 at 50% to **1:1 at 25%** for new employees. Our matching estimates (\$21-53B) may be overstated by 50-70% for the portion from 2025+ hires. Only early employees (2021-2024) benefit from the generous historical terms.
+
+**Underestimate risks:**
+- Additional EA-aligned employees not captured in our estimates
+- Founders may donate more than 80% (some EA-aligned founders have expressed intentions to give nearly everything)
+- Valuation could exceed \$350B at IPO
+
+**Structural uncertainties:**
+- **Valuation basis**: \$350B is a term sheet figure; secondary markets suggest \$300-340B is more realistic
+- **Acquisition scenario**: 15-25% probability of acquisition before IPO, with different implications for liquidity timing
+- **AI industry risk**: Regulatory action, technical setbacks, or competition could significantly reduce valuation
+
+**Recommendation**: Use the **risk-adjusted range of \$40-70B** for planning purposes, acknowledging that actual outcomes could fall outside this range in either direction.
 
 ## Cause Allocation Uncertainty
 
@@ -374,14 +660,17 @@ This suggests Anthropic wealth may significantly expand AI safety funding while 
 
 ### Scale Comparison
 
-The EA movement has historically directed approximately \$1 billion annually. [EA Forum](https://forum.effectivealtruism.org/posts/H8SqwbLxKkiJur3c4/preparing-for-a-flush-future-work-giving-and-conduct) Potential Anthropic-derived funding at various scenarios:
+The EA movement has historically directed approximately \$1 billion annually. [EA Forum](https://forum.effectivealtruism.org/posts/H8SqwbLxKkiJur3c4/preparing-for-a-flush-future-work-giving-and-conduct) Potential Anthropic-derived funding using the comprehensive model (founders + investors + employees):
 
-| Scenario | Annual EA Funding | Anthropic Potential | Multiple |
-|----------|-------------------|---------------------|----------|
+| Scenario | Annual EA Funding | Anthropic Potential (Total) | Multiple |
+|----------|-------------------|----------------------------|----------|
 | Current | ≈\$1B/year | — | — |
-| Conservative | ≈\$1B/year | +\$17-25B (total) | 17-25x one-time |
-| Base case | ≈\$1B/year | +\$39-59B (total) | 39-59x one-time |
-| If deployed over 10 years | ≈\$1B/year | +\$4-6B/year | 4-6x ongoing |
+| Conservative (\$150B val) | ≈\$1B/year | +\$33-68B | 33-68x one-time |
+| Base case (\$350B val) | ≈\$1B/year | +\$75-158B | 75-158x one-time |
+| Risk-adjusted base | ≈\$1B/year | +\$56-70B | 56-70x one-time |
+| If deployed over 10 years | ≈\$1B/year | +\$5.6-7B/year | 5.6-7x ongoing |
+
+Note: Previous estimates using founder equity only showed \$39-59B; the comprehensive model including investors and employees is 2-2.5x larger.
 
 ### Front-Loading vs. Waiting
 
@@ -424,10 +713,13 @@ Unlike the OpenAI Foundation's legal control over board appointments, Anthropic 
 |-------------|-------|-------------|
 | IPO timing | 2026-2030+ | Market conditions, regulatory, company choice |
 | IPO valuation | \$50B-\$500B | AI market, revenue growth, competition |
-| Pledge fulfillment rate | 20-80% | Historical base rates, founder commitment depth |
-| Cause allocation | Concentrated-Diverse | Founder preferences, foundation structures |
+| Founder pledge fulfillment | 40-60% | Historical Giving Pledge base rates |
+| Employee pledge fulfillment | 90-100% | Already legally bound in DAFs |
+| Investor giving (Tallinn/Moskovitz) | 80-100% | Strong track record, some already committed |
+| Cause allocation | Concentrated-Diverse | AI safety favored; other causes uncertain |
 | Deployment timeline | 5-30 years | Foundation vs. direct, tax optimization |
-| EA absorption capacity | \$2-10B/year | Talent, organizations, evaluation infrastructure |
+| EA absorption capacity | \$5-15B/year | Talent, organizations, evaluation infrastructure |
+| Employee EA fraction decline | Moderate-High | Early hires more EA-aligned than recent |
 
 ## See Also
 
@@ -436,10 +728,12 @@ Unlike the OpenAI Foundation's legal control over board appointments, Anthropic 
 - <EntityLink id="long-term-benefit-trust">Long-Term Benefit Trust</EntityLink> — Anthropic's governance structure
 - <EntityLink id="giving-pledge">Giving Pledge</EntityLink> — Historical track record of billionaire philanthropy pledges
 - <EntityLink id="openai-foundation">OpenAI Foundation</EntityLink> — Contrasting governance model with legal control over board
+- <EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink> — Series A lead investor, co-founder of Skype, major EA funder
+- <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink> — Seed/Series A investor, Facebook co-founder, Coefficient Giving founder
 - <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> — Major EA funder (Moskovitz/Tuna)
 - <EntityLink id="dario-amodei">Dario Amodei</EntityLink> — Anthropic CEO
 - <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink> — Anthropic President
-- <EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink> — Open Phil co-founder, Daniela's spouse
+- <EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink> — Open Phil co-founder, Daniela's spouse, joined Anthropic 2025
 - <EntityLink id="chris-olah">Chris Olah</EntityLink> — Anthropic co-founder, interpretability pioneer
 - <EntityLink id="paul-christiano">Paul Christiano</EntityLink> — Former housemate of Dario, alignment researcher
 
