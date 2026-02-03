@@ -1,0 +1,189 @@
+---
+title: "Stampy / AISafety.info"
+description: "A collaborative AI safety Q&A wiki and chatbot maintained by a global volunteer team, featuring 280+ human-written answers to AI risk questions plus an LLM-powered chatbot (Stampy) that searches the Alignment Research Dataset. Founded by Rob Miles as a 501(c)(3) nonprofit, the project aims to make AI safety concepts accessible to all audiences."
+sidebar:
+  order: 6
+quality: 35
+llmSummary: "AISafety.info is a volunteer-maintained wiki with 280+ answers on AI existential risk, complemented by Stampy, an LLM chatbot that searches alignment literature and provides cited responses. Founded by Rob Miles, it serves as an accessible entry point for AI safety concepts but is limited by volunteer capacity and chatbot accuracy concerns."
+lastEdited: "2026-02-02"
+importance: 45
+ratings:
+  novelty: 4
+  rigor: 5
+  actionability: 3
+  completeness: 5
+metrics:
+  wordCount: 800
+  citations: 0
+  tables: 8
+  diagrams: 0
+clusters: ["epistemics", "community", "ai-safety"]
+---
+import {DataInfoBox, Backlinks, EntityLink} from '@components/wiki';
+
+## Quick Assessment
+
+| Dimension | Assessment | Evidence |
+|-----------|------------|----------|
+| **Content Coverage** | Moderate | 280+ live answers, hundreds more in drafts |
+| **Data Freshness** | Ongoing | Community-maintained, regular updates |
+| **Accessibility** | High | Free web interface, Discord bot |
+| **Target Audience** | Broad | Beginners to researchers |
+| **Open Source** | Yes | GitHub repositories available |
+| **Maintenance** | Active | Global volunteer team |
+
+## Project Details
+
+| Attribute | Details |
+|-----------|---------|
+| **Name** | AISafety.info (also known as Stampy) |
+| **Organization** | Ashgro Inc (501(c)(3) nonprofit) |
+| **Founder** | Rob Miles |
+| **Website** | [aisafety.info](https://aisafety.info/) |
+| **GitHub** | [github.com/StampyAI](https://github.com/StampyAI) |
+| **Discord** | Active community with #stampy-dev channel |
+| **License** | Open source |
+
+## Overview
+
+[AISafety.info](https://aisafety.info/) is a collaborative Q&A wiki focused on existential risk from artificial intelligence, founded by AI safety educator Rob Miles. The project hosts hundreds of answers to questions about AI risk—from basic introductions to technical concepts—maintained by a global team of volunteers.
+
+The site's core thesis is that "smarter-than-human AI may come soon" and "it could lead to human extinction." Rather than simply asserting these claims, the wiki provides structured explanations, addresses common objections, and offers pathways for further engagement.
+
+### The Stampy Chatbot
+
+The project's namesake is Stampy, an LLM-powered chatbot that answers AI safety questions. Stampy operates in two modes:
+
+1. **Direct answers**: When a human-written answer exists in the wiki, Stampy serves it directly
+2. **Automated distillation**: For the "long tail" of uncommon questions, Stampy searches the Alignment Research Dataset and summarizes results with citations
+
+The team acknowledges that Stampy can be inaccurate and encourages users to verify sources. They continue working to improve dataset quality and minimize hallucinations.
+
+### Discord Integration
+
+Stampy also operates as a Discord bot through the Stampede framework—an Elixir chatbot framework designed for multi-server deployment. This allows Rob Miles' Discord community members to query AI safety information directly within their conversations.
+
+## Content Structure
+
+### Question Types Covered
+
+| Category | Examples | Audience |
+|----------|----------|----------|
+| **Basic Concepts** | What is AI alignment? Why might AI be dangerous? | General public |
+| **Technical Introductions** | What is mesa-optimization? How does RLHF work? | Newcomers to field |
+| **Objection Responses** | Why can't we just turn it off? Won't AI be like us? | Skeptics |
+| **Research Summaries** | Technical paper overviews | Students, researchers |
+| **Career Guidance** | How to work in AI safety | Career changers |
+
+### Content Statistics
+
+| Metric | Value |
+|--------|-------|
+| **Live Answers** | 280+ |
+| **Draft Answers** | Hundreds |
+| **Source Database** | Alignment Research Dataset |
+| **Update Frequency** | Ongoing community contributions |
+
+## Technical Architecture
+
+### Components
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Web Frontend** | Remix, Cloudflare Workers | Main user interface |
+| **Chatbot** | LLM + RAG pipeline | Question answering |
+| **Knowledge Base** | Alignment Research Dataset | Source material |
+| **Discord Bot** | Stampede (Elixir) | Community integration |
+
+### Open Source Repositories
+
+- [stampy-ui](https://github.com/StampyAI/stampy-ui) - Web frontend
+- [Stampede](https://github.com/StampyAI) - Discord bot framework
+
+## Use Cases
+
+### For Newcomers
+
+AISafety.info serves as an accessible entry point for people encountering AI risk arguments for the first time. The structured Q&A format allows users to:
+
+- Start with basic questions and progress to advanced topics
+- Find responses to their specific objections
+- Understand the reasoning behind AI safety concerns
+
+### For Educators
+
+Rob Miles and other AI safety communicators use the wiki as a reference resource:
+
+- Link to specific answers when addressing common questions
+- Point skeptics to well-structured objection responses
+- Provide consistent explanations across audiences
+
+### For Researchers
+
+While primarily aimed at broader audiences, the wiki also offers:
+
+- Entry points into technical literature
+- Summaries of key papers and concepts
+- Career guidance for field entry
+
+## Strengths and Limitations
+
+### Strengths
+
+| Strength | Evidence |
+|----------|----------|
+| **Accessible explanations** | Content written for general audiences |
+| **Objection handling** | Directly addresses common skepticisms |
+| **Community-maintained** | Global volunteer team enables scaling |
+| **Multi-channel access** | Web, chatbot, Discord bot |
+| **Open source** | Transparent, forkable codebase |
+
+### Limitations
+
+| Limitation | Impact |
+|------------|--------|
+| **Chatbot accuracy** | Users must verify sources; potential for hallucination |
+| **Volunteer capacity** | Update frequency depends on contributor availability |
+| **Opinionated framing** | Presents AI risk case rather than neutral overview |
+| **Limited depth** | Introductory focus may not satisfy advanced readers |
+| **Single perspective** | Primarily reflects EA/rationalist community views |
+
+## Relationship to AI Safety Ecosystem
+
+AISafety.info connects to several related projects:
+
+| Project | Relationship |
+|---------|--------------|
+| **Rob Miles YouTube** | Founder's video content complements wiki |
+| **AISafety.com** | Partner project for career resources |
+| **Alignment Ecosystem Development** | Partner initiative |
+| **Alignment Research Dataset** | Source material for chatbot |
+
+## Funding
+
+AISafety.info operates as an Ashgro Inc project, a Delaware-incorporated 501(c)(3) nonprofit. The project accepts donations and has received support from the EA/rationalist community.
+
+| Funding Source | Type |
+|----------------|------|
+| **Individual Donations** | Ongoing via website |
+| **EA Community** | Grants and donations |
+| **Volunteer Labor** | Primary resource |
+
+## Getting Involved
+
+The project welcomes contributors in several roles:
+
+- **Content Writers**: Draft and edit Q&A entries
+- **Developers**: Contribute to open-source codebases
+- **Community**: Join Discord discussions
+
+## External Links
+
+- [AISafety.info](https://aisafety.info/)
+- [Stampy GitHub Organization](https://github.com/StampyAI)
+- [Rob Miles YouTube](https://www.youtube.com/c/RobertMilesAI)
+- [EA Forum Announcement](https://forum.effectivealtruism.org/posts/mHNoaNvpEuzzBEEfg/stampy-s-ai-safety-info-soft-launch)
+- [LessWrong Announcement](https://www.lesswrong.com/posts/obMiQv9K76nRZj9tE/stampy-s-ai-safety-info-soft-launch)
+- [Manifund Project Page](https://manifund.org/projects/stampys-ai-safety-info)
+
+<Backlinks />
