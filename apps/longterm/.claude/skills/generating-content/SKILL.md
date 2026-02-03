@@ -178,6 +178,31 @@ Rebuild the data layer if you added new entities:
 npm run build:data
 ```
 
+### Cross-Linking Checklist (Important!)
+
+After creating a new page, **always check cross-linking**:
+
+```bash
+# 1. Check what links TO and FROM this entity
+npm run crux -- analyze entity-links <entity-id>
+
+# 2. Add EntityLinks to pages that mention this entity
+# (The analyzer shows which pages mention but don't link)
+
+# 3. Add EntityLinks FROM this page to related entities
+# (Look for entity names in your content that could be linked)
+```
+
+**Why this matters:**
+- New pages aren't automatically linked from existing content
+- Poor cross-linking reduces discoverability
+- Related pages (like a person and their organization) should link to each other
+
+**Quick fix for bulk issues:**
+```bash
+npm run crux -- fix entity-links
+```
+
 Run link analysis to check integration:
 ```bash
 npm run crux -- analyze links

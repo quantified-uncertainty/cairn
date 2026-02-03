@@ -37,6 +37,11 @@ const SCRIPTS = {
     description: 'Check EntityLink usage and conversion candidates',
     passthrough: ['ci', 'fix'],
   },
+  'cross-links': {
+    script: 'validate/validate-cross-links.mjs',
+    description: 'Check for missing cross-links between related pages',
+    passthrough: ['ci', 'threshold', 'json'],
+  },
   mermaid: {
     script: 'validate/validate-mermaid.mjs',
     description: 'Validate Mermaid diagram syntax',

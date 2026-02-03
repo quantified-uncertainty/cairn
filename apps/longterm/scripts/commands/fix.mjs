@@ -22,6 +22,11 @@ const SCRIPTS = {
     passthrough: ['ci'],
     extraArgs: ['--fix'],
   },
+  'cross-links': {
+    script: 'fix/fix-cross-links.mjs',
+    description: 'Add EntityLinks to plain text entity mentions',
+    passthrough: ['apply', 'verbose', 'file'],
+  },
   'broken-links': {
     script: 'fix-broken-links.mjs',
     description: 'Fix broken internal links',

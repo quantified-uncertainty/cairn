@@ -1727,6 +1727,15 @@ async function main() {
           console.log(`     --dest ${p}`);
         });
       }
+
+      // Cross-linking suggestion
+      const entitySlug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      console.log(`\n${'─'.repeat(50)}`);
+      console.log(`${'\x1b[33m'}📌 Cross-linking reminder:${'\x1b[0m'}`);
+      console.log(`   After running 'npm run build:data', check cross-links:`);
+      console.log(`   ${'\x1b[36m'}npm run crux -- analyze entity-links ${entitySlug}${'\x1b[0m'}`);
+      console.log(`\n   This shows pages that mention this entity but don't link to it.`);
+      console.log(`   Consider adding EntityLinks to improve wiki connectivity.`);
     } else {
       console.log(`✗ Deployment failed: ${deployResult.error}`);
     }
