@@ -230,8 +230,9 @@ function loadEntities() {
     }
   }
 
-  // Add common aliases
+  // Add common aliases (full names and acronyms)
   const aliases = {
+    // Organizations - full names
     'Machine Intelligence Research Institute': 'miri',
     'Center for AI Safety': 'cais',
     'Centre for AI Safety': 'cais',
@@ -241,6 +242,48 @@ function loadEntities() {
     'Alignment Research Center': 'arc',
     'Redwood Research': 'redwood-research',
     'Apollo Research': 'apollo-research',
+    'Centre for Effective Altruism': 'cea',
+    'Center for Effective Altruism': 'cea',
+    'Future of Life Institute': 'fli',
+    'Global Catastrophic Risk Institute': 'gcri',
+    'Center for Security and Emerging Technology': 'cset',
+    'Centre for Long-Term Resilience': 'cltr',
+    'Berkeley Existential Risk Initiative': 'beri',
+    'Existential Risk Observatory': 'ero',
+
+    // Organizations - acronyms
+    'MIRI': 'miri',
+    'CFAR': 'center-for-applied-rationality',
+    'CHAI': 'chai',
+    'CAIS': 'cais',
+    'GovAI': 'govai',
+    'METR': 'metr',
+    'LTFF': 'ltff',
+    'SERI': 'seri-mats',
+    'AISC': 'aisc',
+    'BERI': 'beri',
+    'CSET': 'cset',
+    'CLTR': 'cltr',
+    'GCRI': 'gcri',
+
+    // Labs
+    'Google DeepMind': 'deepmind',
+    'OpenAI': 'openai',
+
+    // Funders
+    'Open Phil': 'open-philanthropy',
+    'SFF': 'sff',
+
+    // Community
+    'EA Forum': 'ea-forum',
+    'Alignment Forum': 'alignment-forum',
+    'EAG': 'ea-global',
+    'EAGx': 'ea-global',
+
+    // Concepts - alternate names
+    'RLHF': 'rlhf',
+    'RSPs': 'responsible-scaling-policies',
+    'RSP': 'responsible-scaling-policies',
   };
 
   for (const [alias, id] of Object.entries(aliases)) {

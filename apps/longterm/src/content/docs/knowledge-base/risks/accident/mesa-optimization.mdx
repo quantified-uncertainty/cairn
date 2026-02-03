@@ -64,7 +64,7 @@ Understanding mesa-optimization is crucial for AI safety because it suggests tha
 |------|------------|---------|
 | **Base Optimizer** | The training algorithm (e.g., SGD) that modifies model weights | Gradient descent minimizing loss function |
 | **Mesa-Optimizer** | A learned model that is itself an optimizer | A neural network that internally searches for good solutions |
-| **Base Objective** | The loss function used during training | Cross-entropy loss, RLHF reward signal |
+| **Base Objective** | The loss function used during training | Cross-entropy loss, <EntityLink id="rlhf">RLHF</EntityLink> reward signal |
 | **Mesa-Objective** | The objective the mesa-optimizer actually pursues | May differ from base objective |
 | **Outer Alignment** | Ensuring base objective captures intended goals | <EntityLink id="reward-modeling">Reward modeling</EntityLink>, <EntityLink id="constitutional-ai">constitutional AI</EntityLink> |
 | **Inner Alignment** | Ensuring mesa-objective matches base objective | The core challenge of mesa-optimization |

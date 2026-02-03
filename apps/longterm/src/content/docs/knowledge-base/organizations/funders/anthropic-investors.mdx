@@ -1,25 +1,24 @@
 ---
 title: "Anthropic Investors"
-description: "Analysis of Anthropic's investor base from a longtermist funding perspective, examining EA-connected investors, founder donation pledges, and the potential impact of an IPO on philanthropic capital flows."
-quality: 35
+description: "Analysis of Anthropic's investor base from a longtermist funding perspective. At $350B valuation, founder pledges (80% of equity) could direct $20-55B to philanthropy, but historical Giving Pledge data shows only 36% of deceased pledgers met commitments, and wealth growth typically outpaces giving."
+quality: 52
 lastEdited: "2026-02-03"
 importance: 78
-llmSummary: "Anthropic's $350B valuation creates potentially transformative longtermist funding flows. Seven co-founders (each worth ~$3.7B) pledged 80% donations; early EA investors include Jaan Tallinn and Dustin Moskovitz ($500M stake moved to nonprofit). IPO expected 2026-2027 would unlock liquidity, though execution uncertainty remains high—young tech wealth rarely translates to sustained giving. FTX's 13.6% stake was sold in bankruptcy for ~$1.3B total."
+llmSummary: "Anthropic's $350B valuation creates potentially transformative longtermist funding flows. Seven co-founders (each worth ~$3.7-10B) pledged 80% donations; early EA investors include Jaan Tallinn and Dustin Moskovitz ($500M stake moved to nonprofit). IPO expected 2026-2027 would unlock liquidity. However, Giving Pledge data shows only 36% of deceased pledgers actually met 50% commitments, and original pledgers' wealth grew 283% while 80% of their giving went to foundations rather than working charities. Key uncertainties: timing, pledge follow-through, cause allocation, and whether EA ecosystem can absorb billions in new funding."
 ratings:
-  novelty: 4
-  rigor: 3
-  actionability: 5
-  completeness: 4
+  novelty: 5
+  rigor: 5
+  actionability: 6
+  completeness: 6
 metrics:
-  wordCount: 2100
-  citations: 35
-  tables: 4
+  wordCount: 4200
+  citations: 55
+  tables: 8
   diagrams: 0
 clusters: ["community", "ai-safety", "governance"]
 todos:
-  - "Add more detail on non-founder early employees with pledges"
   - "Track donation announcements as they occur post-IPO"
-  - "Add comparison with OpenAI equity distributions"
+  - "Update secondary market prices quarterly"
 ---
 import {EntityLink, Backlinks} from '@components/wiki';
 
@@ -30,181 +29,379 @@ import {EntityLink, Backlinks} from '@components/wiki';
 | **Total Raised** | \$37-39B+ | Across 16+ funding rounds through early 2026 |
 | **Current Valuation** | \$350B | January 2026 term sheet; up from \$61.5B in March 2025 |
 | **EA-Connected Capital** | Significant | Founders, Tallinn, Moskovitz; many EA-informed employees |
-| **Founder Donation Pledges** | 80% of equity | All seven co-founders committed |
+| **Founder Donation Pledges** | 80% of equity | All seven co-founders committed publicly |
 | **IPO Timeline** | 2026-2027 | Preparing; late 2026 earliest, 2027 more likely |
-| **Execution Risk** | High | Young tech wealth historically has poor follow-through |
+| **Pledge Fulfillment Risk** | High | Giving Pledge: only 36% of deceased pledgers met 50% threshold |
 
 ## Overview
 
 <EntityLink id="anthropic">Anthropic</EntityLink>'s rapid valuation growth—from \$550 million in May 2021 to \$350 billion by January 2026—has created what may become the largest single source of longtermist philanthropic capital in history. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) All seven co-founders have pledged to donate 80% of their equity, and many early employees hold Giving What We Can pledges or have expressed intentions to donate significantly. [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
 
-However, significant uncertainty surrounds when this capital will become liquid (pending IPO), whether pledges will be honored at scale, and what causes will ultimately receive funding. Historical precedent suggests young tech wealth rarely translates into sustained philanthropic giving, making execution risk a central concern.
+However, historical evidence from the Giving Pledge provides sobering context: of 22 deceased pledgers, only 8 (36%) actually met the 50% donation threshold. [IPS](https://ips-dc.org/report-giving-pledge-at-15/) Among living original pledgers, only one couple—Laura and John Arnold—has exceeded 50% giving during their lifetimes. The original 32 U.S. pledgers who remain billionaires have seen their combined wealth increase 283% since 2010, with 80% of their \$206 billion in giving going to private foundations rather than working charities.
+
+This page analyzes Anthropic's investor base, models potential funding flows under different scenarios, and assesses the key uncertainties around whether and when this capital will reach effective causes.
 
 ## Funding History
 
-### Early Rounds (2021-2022)
+### Complete Funding Timeline
 
-Anthropic's seed and Series A rounds were dominated by EA-connected investors:
+| Round | Date | Amount | Valuation | Lead Investors | EA-Connected? |
+|-------|------|--------|-----------|----------------|---------------|
+| Seed | Early 2021 | Undisclosed | — | Jaan Tallinn, <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink>, Eric Schmidt | **Yes** |
+| Series A | May 2021 | \$124M | \$550M pre | Jaan Tallinn (lead) | **Yes** |
+| Series B | April 2022 | \$580M | ~\$4B | Spark Capital | Partial |
+| FTX Investment | 2022 | \$500M | — | FTX/Alameda | **Yes** (EA-adjacent) |
+| Google (initial) | Late 2022 | \$300M | — | Google (10% stake) | No |
+| Series C | May 2023 | \$450M | — | Spark Capital, Google, Salesforce | No |
+| Amazon (initial) | Sept 2023 | \$4B | — | Amazon | No |
+| Google (follow-on) | Oct 2023 | \$2B | — | Google | No |
+| Series D | Dec 2023 | \$2B | \$18B | Various | No |
+| Amazon (follow-on) | Mar 2024 | \$2.75B | — | Amazon | No |
+| Amazon (third) | Nov 2024 | \$4B | — | Amazon | No |
+| Google (third) | Early 2025 | \$1B | — | Google | No |
+| Series E | Mar 2025 | \$3.5B | \$61.5B | Lightspeed Venture Partners | No |
+| Series F | Sept 2025 | \$13B | \$183B | Altimeter, Baillie Gifford, BlackRock | No |
+| Series G (term sheet) | Jan 2026 | \$10B | \$350B | Coatue, GIC | No |
 
-| Round | Date | Amount | Key Investors |
-|-------|------|--------|---------------|
-| Seed | Early 2021 | Undisclosed | <EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink>, <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink>, Eric Schmidt, James McClave |
-| Series A | May 2021 | \$124M | Jaan Tallinn (lead), Dustin Moskovitz, Center for Emerging Risk Research |
-| Series B | April 2022 | \$580M | Spark Capital, others |
+### Early Rounds: EA-Dominated (2021-2022)
 
-Jaan Tallinn, co-founder of Skype and a prominent EA movement supporter, led the Series A at a \$550 million pre-money valuation. [Anthropic](https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems) Dustin Moskovitz, co-founder of Facebook and funder of <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> (formerly <EntityLink id="open-philanthropy">Open Philanthropy</EntityLink>), participated alongside other safety-minded investors.
+Anthropic's founding capital came primarily from EA-connected investors who prioritized AI safety:
 
-### Strategic Tech Investments (2023-2024)
+**<EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink>** led the Series A at a \$550 million pre-money valuation. [Anthropic](https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems) Tallinn, co-founder of Skype and Kazaa, has become one of EA's most significant funders, having "poured millions into effective altruism-linked nonprofits and AI startups." [Semafor](https://www.semafor.com/article/11/21/2023/how-effective-altruism-led-to-a-crisis-at-openai)
 
-The company's later rounds brought massive capital from strategic technology partners:
+**Dustin Moskovitz**, co-founder of Facebook and funder of <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> (formerly <EntityLink id="open-philanthropy">Open Philanthropy</EntityLink>), participated in both seed and Series A rounds. Through Good Ventures, Moskovitz later moved a \$500 million Anthropic stake into a nonprofit vehicle to reinvest returns. [Fortune](https://fortune.com/2025/11/10/meet-the-millennial-meta-cofounder-and-his-wife-who-are-giving-away-20-billion/)
 
-**Google**: Invested approximately \$3 billion total, including \$300 million in late 2022 (for 10% stake), \$2 billion in October 2023, and \$1 billion in early 2025. Google now owns approximately 14% of Anthropic. [Verdict](https://www.verdict.co.uk/us-doj-google-anthropic-partnership/)
+**Other early investors** included Eric Schmidt (former Google CEO), James McClave, and the Center for Emerging Risk Research.
 
-**Amazon**: Invested \$8 billion total across three rounds—\$4 billion in September 2023, \$2.75 billion in March 2024, and \$4 billion in November 2024. Amazon Web Services became Anthropic's "primary cloud and training partner." Amazon remains a minority investor without a board seat.
+### Strategic Tech Investments (2023-2025)
 
-### Series C-F (2023-2025)
+Later rounds shifted to massive strategic capital from technology giants:
 
-| Round | Date | Amount | Valuation | Lead Investors |
-|-------|------|--------|-----------|----------------|
-| Series C | May 2023 | \$450M | — | Spark Capital, Google, Salesforce |
-| Series D | December 2023 | \$2B | — | Various |
-| Series E | March 2025 | \$3.5B | \$61.5B | Lightspeed Venture Partners |
-| Series F | September 2025 | \$13B | \$183B | Altimeter, Baillie Gifford, BlackRock, others |
+**Google**: Invested approximately \$3.3 billion total:
+- \$300 million in late 2022 for 10% stake
+- \$2 billion in October 2023
+- \$1 billion in early 2025
+- Now owns approximately 14% of Anthropic [Verdict](https://www.verdict.co.uk/us-doj-google-anthropic-partnership/)
 
-The Series F round brought institutional investors including Qatar Investment Authority, Ontario Teachers' Pension Plan, GIC (Singapore), Goldman Sachs, TPG, and T. Rowe Price. [Anthropic](https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation)
+**Amazon**: Invested \$10.75 billion total across three rounds:
+- \$4 billion in September 2023
+- \$2.75 billion in March 2024
+- \$4 billion in November 2024
+- AWS became Anthropic's "primary cloud and training partner"
+- Remains minority investor without board seat
 
-### Latest Round (January 2026)
+### Institutional Investors (Series F)
 
-Anthropic signed a term sheet for \$10 billion at a \$350 billion valuation, led by Coatue and GIC. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) This nearly doubled the September 2025 valuation of \$183 billion.
+The September 2025 Series F brought diversified institutional capital: [Anthropic](https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation)
+- Sovereign wealth funds: Qatar Investment Authority, GIC (Singapore)
+- Pension funds: Ontario Teachers' Pension Plan
+- Asset managers: BlackRock, T. Rowe Price, Goldman Sachs Alternatives
+- Growth equity: Altimeter, General Catalyst, General Atlantic, TPG, Insight Partners
+- Trading firms: Jane Street
+- Investment managers: Baillie Gifford, Coatue, D1 Capital Partners, WCM Investment Management
 
-## EA-Connected Investors and Founders
+### Secondary Market Activity
 
-### Founder Donation Pledges
+Anthropic shares trade actively on secondary markets with significant price variation: [Premier Alternatives](https://www.premieralts.com/companies/anthropic/secondary-market-price)
+
+| Platform | Share Price (Dec 2025) | Implied Valuation |
+|----------|----------------------|-------------------|
+| Forge Global | \$270 | ~\$300B |
+| Premier Alternatives | \$273 | ~\$305B |
+| Hiive | \$302 | ~\$340B |
+| Notice | \$270 | ~\$300B |
+
+The Forge price represents a 381% increase over the prior year. [Forge Global](https://forgeglobal.com/insights/anthropic-upcoming-ipo-news/) Anthropic conducted its first employee share buyback in March 2025 at \$56.09/share (\$61.5B valuation), allowing employees with 2+ years tenure to sell up to 20% of equity, capped at \$2 million each. [Maginative](https://www.maginative.com/article/anthropic-launches-first-employee-share-buyback-at-61-5-billion-valuation/)
+
+## Founder Equity and Donation Pledges
+
+### The 80% Commitment
 
 All seven Anthropic co-founders—<EntityLink id="dario-amodei">Dario Amodei</EntityLink>, <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink>, <EntityLink id="chris-olah">Chris Olah</EntityLink>, Tom Brown, Jack Clark, Jared Kaplan, and Sam McCandlish—have pledged to donate 80% of their equity. [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
 
-At current valuations, each co-founder's stake is estimated at approximately \$3.7 billion (down from ~6% to 2-3% each due to dilution). The 80% pledge from all seven founders could direct **\$20+ billion** toward philanthropy.
+CEO Dario Amodei framed the pledge in terms of inequality concerns: "The thing to worry about is a level of wealth concentration that will break society." He cited <EntityLink id="elon-musk">Elon Musk</EntityLink>'s nearly \$700 billion net worth exceeding John D. Rockefeller's Gilded Age wealth as evidence of unprecedented concentration.
+
+### Founder Equity Estimates
+
+Founder stakes have diluted from approximately 6% each at founding to 2-3% each after multiple funding rounds: [Brand Vision](https://www.brandvm.com/post/dario-amodei-net-worth-in-2025)
+
+| Scenario | Est. Stake | Value per Founder | Total Founder Wealth | 80% Pledge Value |
+|----------|------------|-------------------|---------------------|------------------|
+| Current (\$350B) | 2-3% | \$7-10.5B | \$49-74B | \$39-59B |
+| Conservative (\$183B) | 2-3% | \$3.7-5.5B | \$26-38B | \$21-31B |
+| Downside (\$100B) | 2-3% | \$2-3B | \$14-21B | \$11-17B |
+| Major correction (\$50B) | 2-3% | \$1-1.5B | \$7-10.5B | \$5.6-8.4B |
 
 ### Individual EA Connections
 
-**Dario Amodei (CEO)**: 43rd signatory of the Giving What We Can pledge; wrote guest posts for GiveWell around 2007-2008; lived in a group house with <EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink> and <EntityLink id="paul-christiano">Paul Christiano</EntityLink>. [EA Forum](https://forum.effectivealtruism.org/posts/53Gc35vDLK2u5nBxP/anthropic-is-not-being-consistently-candid-about-their)
+**Dario Amodei (CEO)**:
+- 43rd signatory of the Giving What We Can pledge (2010s)
+- Wrote guest posts for GiveWell around 2007-2008
+- Lived in a group house with <EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink> and <EntityLink id="paul-christiano">Paul Christiano</EntityLink>
+- Described as "a very early GiveWell fan" [EA Forum](https://forum.effectivealtruism.org/posts/53Gc35vDLK2u5nBxP/anthropic-is-not-being-consistently-candid-about-their)
 
-**Daniela Amodei (President)**: Married to Holden Karnofsky, co-founder of GiveWell and former CEO of Open Philanthropy. This connection creates a direct bridge between Anthropic wealth and the EA funding ecosystem.
+**Daniela Amodei (President)**:
+- Married to Holden Karnofsky, co-founder of GiveWell and former CEO of Open Philanthropy
+- Previously expressed commitment to EA in her 2017 wedding announcement
+- This connection creates a direct bridge between Anthropic wealth and the EA funding ecosystem
 
-**Chris Olah**: Pioneer in neural network interpretability; his research focus aligns with <EntityLink id="technical-ai-safety">technical AI safety</EntityLink> priorities.
+**Chris Olah**: Pioneer in neural network interpretability whose research focus aligns directly with <EntityLink id="technical-ai-safety">technical AI safety</EntityLink> priorities.
 
-### Early Investors
+**Jack Clark**: Former Policy Director at <EntityLink id="openai">OpenAI</EntityLink>; co-founded Anthropic with focus on responsible AI development.
 
-**Jaan Tallinn**: Co-founder of Skype; one of EA's most significant funders. Has "poured millions into effective altruism-linked nonprofits and AI startups." Led Anthropic's Series A and remains an angel investor. [Semafor](https://www.semafor.com/article/11/21/2023/how-effective-altruism-led-to-a-crisis-at-openai)
+### Early Employee Pledges
 
-**Dustin Moskovitz**: Through Good Ventures, moved a \$500 million Anthropic stake into a nonprofit vehicle to reinvest returns. [Fortune](https://fortune.com/2025/11/10/meet-the-millennial-meta-cofounder-and-his-wife-who-are-giving-away-20-billion/) The couple has donated over \$4 billion total, including \$600 million+ in 2025 alone.
+Additional Anthropic employees have committed to donating shares potentially worth billions:
+- Anthropic offers 3:1 donation matching for early employees' gifts to 501(c)(3) organizations [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+- Amanda Askell (early employee) was the 67th signatory of the GWWC pledge
+- Company states it will match employee donation commitments
 
-### Early Employees
+### Comparison with OpenAI
 
-Additional Anthropic employees have committed to donating shares potentially worth billions, with Anthropic offering 3:1 donation matching for early employees' gifts to 501(c)(3) organizations. [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors) Amanda Askell, an early employee, was the 67th signatory of the GWWC pledge.
+For context, OpenAI's restructuring created a different philanthropic vehicle: [NBC News](https://www.nbcnews.com/tech/tech-news/openai-restructuring-company-structure-chatgpt-invest-own-rcna240138)
 
-## The FTX Stake
+| Dimension | Anthropic | OpenAI |
+|-----------|-----------|--------|
+| Structure | Public Benefit Corporation | PBC (post-restructuring) |
+| Philanthropic stake | Founder pledges (private) | Foundation holds 26% (\$130B) |
+| Governance | Long-Term Benefit Trust | Foundation appoints all directors |
+| Control mechanism | Trust elects board majority by 2027 | Foundation can replace directors anytime |
+| Enforcement | Reputational only | Foundation has legal control |
+
+The OpenAI Foundation's 26% stake at current valuations is worth approximately \$130 billion, making it one of the best-resourced philanthropic organizations globally. [Inside Philanthropy](https://www.insidephilanthropy.com/home/openai-now-has-a-foundation-we-have-some-questions) Unlike Anthropic's pledge-based model, the OpenAI Foundation has direct legal control.
+
+## The FTX Stake: A Cautionary Tale
 
 FTX invested approximately \$500 million for a 13.56% stake in Anthropic before its November 2022 bankruptcy. Due to subsequent funding rounds, this diluted to approximately 7.84% by 2024. [CNBC](https://www.cnbc.com/2024/03/25/ftx-estate-sells-majority-stake-in-startup-anthropic-for-884-million.html)
 
+### Bankruptcy Sale
+
 The FTX bankruptcy estate sold the stake in two tranches:
 
-1. **March 2024**: Sold two-thirds of the stake for \$884 million. Primary buyer was Mubadala (UAE sovereign wealth fund) at ~\$500 million; other buyers included Jane Street, HOF Capital, Ford Foundation, and Fidelity.
-2. **Later 2024**: Sold remaining 15 million shares at \$30/share for \$452 million to G Squared and others.
+| Tranche | Date | Amount | Price/Share | Buyers |
+|---------|------|--------|-------------|--------|
+| First (2/3 of stake) | March 2024 | \$884M | ~\$20 | Mubadala (~\$500M), Jane Street, HOF Capital, Ford Foundation, Fidelity |
+| Second (remaining) | Late 2024 | \$452M | \$30 | G Squared (lead), others |
+| **Total** | — | **\$1.34B** | — | — |
 
-Total recovery: approximately \$1.3 billion from the \$500 million investment. These proceeds went to FTX creditors rather than EA-aligned causes.
+**Return**: 2.7x on \$500M investment, but proceeds went to FTX creditors rather than EA-aligned causes. Had FTX not collapsed, this stake would be worth approximately \$27 billion at current valuations—capital that might have flowed to EA causes given SBF's stated intentions.
 
-## IPO Timeline and Liquidity
+## IPO Timeline and Liquidity Analysis
 
 ### Current Status
 
 According to a December 2025 *Financial Times* report, Anthropic has hired legal counsel and is engaging investment banks to prepare for a public listing. [Access IPOs](https://accessipos.com/anthropic-stock-ipo/)
 
-| Timeline Estimate | Probability | Source |
-|-------------------|-------------|--------|
-| Late 2026 | Possible | FT reporting |
-| 2027 | More likely | Analyst consensus |
-| Never IPOs | ~50% | Some skeptics; <EntityLink id="manifold">Manifold</EntityLink> market |
+### IPO Probability Assessment
 
-The Manifold prediction market estimates a median IPO date of June 2027, though one analysis assigns only 30% probability of IPO by end of 2028. [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+| Timeline | Probability | Rationale |
+|----------|-------------|-----------|
+| Late 2026 | 15-25% | FT reporting; aggressive but possible |
+| 2027 | 35-45% | Analyst consensus; more likely |
+| 2028+ | 20-30% | Market conditions may delay |
+| Never IPOs | 10-20% | Acquisition, market collapse, or perpetual private |
+
+The <EntityLink id="manifold">Manifold</EntityLink> prediction market estimates a median IPO date of June 2027, though some analyses assign only 30% probability of IPO by end of 2028. [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
 
 ### Factors Affecting Timeline
 
-- **Valuation trajectory**: Rapid growth from \$61.5B to \$350B in 10 months may encourage patience
-- **AI market conditions**: Broader AI company valuations affect IPO attractiveness
-- **Public benefit corporation structure**: May complicate public market expectations
-- **Regulatory scrutiny**: DOJ and FTC investigations into tech company AI partnerships
+**Accelerating factors:**
+- Rapid valuation growth (\$61.5B → \$350B in 10 months) creates IPO optionality
+- Employee liquidity pressure (first buyback in March 2025 signals demand)
+- 2026 IPO market expected to be strong with AI companies leading [Trending Topics](https://www.trendingtopics.eu/ipos-2026-will-anthropic-spacex-and-openai-rock-the-stock-market/)
+- Competitors (OpenAI, Databricks) preparing for public markets
 
-## Key Uncertainties
+**Delaying factors:**
+- Public benefit corporation structure may complicate public market expectations
+- Regulatory scrutiny: DOJ and FTC investigations into tech company AI partnerships [Verdict](https://www.verdict.co.uk/us-doj-google-anthropic-partnership/)
+- Long-Term Benefit Trust governance may concern public investors
+- Ability to raise massive private rounds reduces IPO urgency
+- AI market volatility and potential correction
 
-### Will Pledges Be Honored?
+### AI IPO Market Context
 
-Historical evidence suggests caution:
+The broader AI IPO landscape for 2025-2026 includes: [National Law Review](https://natlawreview.com/article/state-funding-market-ai-companies-2024-2025-outlook)
+
+| Company | Est. Valuation | Expected Timeline |
+|---------|----------------|-------------------|
+| OpenAI | \$500B+ | Late 2026 |
+| Anthropic | \$350B | 2026-2027 |
+| Databricks | \$62B | 2025 |
+| SpaceX | \$350B+ | 2026-2027 |
+| CoreWeave | ~\$35B | 2025 (completed) |
+
+Global VC investment in AI companies exceeded \$100 billion in 2024, an increase of over 80% from \$55.6 billion in 2023.
+
+## Historical Evidence on Pledge Fulfillment
+
+### Giving Pledge Track Record
+
+The Giving Pledge, founded in 2010 by Bill Gates and Warren Buffett, provides the most relevant historical comparison. A 2025 Institute for Policy Studies analysis reveals concerning patterns: [IPS](https://ips-dc.org/report-giving-pledge-at-15/)
+
+**Deceased pledgers (n=22):**
+- Met 50% threshold: 8 (36%)
+- Did not meet threshold: 13 (59%)
+- Lost fortune before death: 1 (5%)
+
+**Living original pledgers:**
+- Only Laura and John Arnold have exceeded 50% giving during their lifetimes
+- Original 32 U.S. pledgers still billionaires saw wealth increase 283% (166% inflation-adjusted)
+- Five pledgers experienced wealth increases exceeding 500%
+- Mark Zuckerberg and Priscilla Chan's wealth grew over 4,000%
+
+**Where the money goes:**
+- Private foundations: 80% of \$206B total
+- Donor-advised funds: ~\$5B
+- Working charities: ~\$40B (20%)
+
+This suggests that even honored pledges may not reach working organizations for years or decades.
+
+### Age and Cohort Effects
+
+The IPS analysis suggests older pledgers or those near billionaire threshold were more likely to fulfill commitments. Of 11 original pledgers no longer billionaires, 7 gave sufficiently to drop below threshold. This may be relevant to Anthropic founders, who are relatively young (30s-40s).
 
 > "Maintaining altruistic giving after sudden wealth is really difficult. There are surprisingly few cases of young people (under 40) giving away millions after a cash windfall." [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
 
-**Positive indicators:**
-- Founders have long EA involvement (GWWC pledges since 2010s)
-- Daniela Amodei's marriage to Holden Karnofsky creates accountability
-- Public commitment increases reputational cost of reneging
-- Anthropic's stated safety mission aligns with EA priorities
+### Facebook/Meta Comparison
 
-**Risk factors:**
-- Wealth changes priorities and social circles
-- 80% is an unusually high pledge percentage
-- No legal enforcement mechanism for donations
-- "Paper money" until IPO—circumstances may change
+The 2012 Facebook IPO created thousands of employee millionaires. Evidence on their philanthropy: [Chronicle of Philanthropy](https://philanthropy.com/article/Charities-Seek-Some-of/156577)
+- Dustin Moskovitz: \$4B+ donated through Good Ventures/Coefficient Giving
+- Most other early employees: Limited public philanthropic activity
+- Studies suggest tech entrepreneurs give ~2x more than inherited wealth, but absolute rates remain modest
 
-### What Causes Will Receive Funding?
+## Quantitative Funding Flow Model
 
-Even if pledges are honored, cause allocation remains uncertain:
+### Scenario Analysis
 
-**Likely to receive more:**
-- AI safety research (natural alignment with Anthropic's mission)
-- Technical alignment work
+| Scenario | IPO Valuation | Founder Equity Value | 80% Pledge | Timing | Probability |
+|----------|---------------|---------------------|------------|--------|-------------|
+| **Bull case** | \$500B | \$70-105B | \$56-84B | 2027-2030 | 15% |
+| **Base case** | \$350B | \$49-74B | \$39-59B | 2028-2032 | 40% |
+| **Conservative** | \$150B | \$21-32B | \$17-25B | 2029-2035 | 25% |
+| **Bear case** | \$50B | \$7-10B | \$5.6-8.4B | 2030+ | 15% |
+| **Failure** | \$0 | \$0 | \$0 | — | 5% |
+
+### Expected Value Calculation
+
+Using probability-weighted scenarios:
+
+**Expected founder philanthropic capital:**
+- Bull: 0.15 × \$70B = \$10.5B
+- Base: 0.40 × \$54B = \$21.6B
+- Conservative: 0.25 × \$21B = \$5.25B
+- Bear: 0.15 × \$7B = \$1.05B
+- Failure: 0.05 × \$0 = \$0
+
+**Probability-weighted expected value: ~\$38B**
+
+However, applying historical pledge fulfillment rates (36-50%):
+- **Adjusted expected value: \$14-19B**
+
+### Timing Uncertainty
+
+Capital availability depends on:
+1. IPO timing (2026-2028 most likely)
+2. Lock-up periods (typically 6-12 months post-IPO)
+3. Founder decision timing (immediate vs. gradual)
+4. Foundation vs. direct giving (affects deployment speed)
+
+Realistic timeline for significant capital deployment: **2028-2035**
+
+## Cause Allocation Uncertainty
+
+### Likely Beneficiaries
+
+**High confidence (AI safety/technical alignment):**
+- Anthropic's mission alignment makes AI safety natural focus
+- Founders' technical backgrounds suggest interest in technical research
+- <EntityLink id="dario-amodei">Dario Amodei</EntityLink>'s background in ML research
+
+**Medium confidence (EA-adjacent):**
+- Global health (Dario's early GiveWell involvement)
+- Pandemic preparedness (Anthropic's risk-focused culture)
 - <EntityLink id="governance-policy">AI governance and policy</EntityLink>
 
-**Uncertain:**
-- Global health and poverty (traditional EA focus)
-- Animal welfare
+**Lower confidence:**
+- Animal welfare (less founder connection)
 - Other longtermist causes
+- Non-EA causes (inequality, climate)
 
-One analysis notes: "AI safety likely receives more Anthropic employee funding, while animal welfare and global health may face different dynamics." [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+### Differential Impact by Cause
 
-### Valuation Risk
+From EA Forum analysis: [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
 
-Even with a \$350 billion valuation, significant downside scenarios exist:
+> "AI safety likely receives more Anthropic employee funding, while animal welfare and global health may face different dynamics."
 
-| Scenario | Founder Wealth (Each) | Total Philanthropic Potential |
-|----------|----------------------|------------------------------|
-| IPO at \$350B | ~\$7-10B | \$40-55B (at 80%) |
-| IPO at \$100B | ~\$2-3B | \$11-17B (at 80%) |
-| Major correction | \$500M-1B | \$2.8-5.6B (at 80%) |
-| Company failure | ~\$0 | ~\$0 |
+This suggests Anthropic wealth may significantly expand AI safety funding while having less impact on other EA cause areas.
 
-The company's unusual public-benefit corporation structure may also affect valuation if public markets discount the governance constraints.
-
-## Strategic Implications for EA Funding
+## Strategic Implications
 
 ### Scale Comparison
 
-The EA movement has historically directed approximately \$1 billion annually. Anthropic-derived funding could represent a 10-50x increase in available capital if pledges are honored at scale. [EA Forum](https://forum.effectivealtruism.org/posts/H8SqwbLxKkiJur3c4/preparing-for-a-flush-future-work-giving-and-conduct)
+The EA movement has historically directed approximately \$1 billion annually. [EA Forum](https://forum.effectivealtruism.org/posts/H8SqwbLxKkiJur3c4/preparing-for-a-flush-future-work-giving-and-conduct) Potential Anthropic-derived funding at various scenarios:
+
+| Scenario | Annual EA Funding | Anthropic Potential | Multiple |
+|----------|-------------------|---------------------|----------|
+| Current | ~\$1B/year | — | — |
+| Conservative | ~\$1B/year | +\$17-25B (total) | 17-25x one-time |
+| Base case | ~\$1B/year | +\$39-59B (total) | 39-59x one-time |
+| If deployed over 10 years | ~\$1B/year | +\$4-6B/year | 4-6x ongoing |
 
 ### Front-Loading vs. Waiting
 
-Some argue current donors should give now rather than wait for Anthropic wealth:
+Arguments for current donors giving now: [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
 
-> "A \$100k gift represents 9% of current funding versus only 1% of projected future funding... organizations become less constrained by money than capacity." [EA Forum](https://forum.effectivealtruism.org/posts/rRBaP7YbXfZibSn3C/front-load-giving-because-of-anthropic-donors)
+> "A \$100k gift represents 9% of current funding versus only 1% of projected future funding... organizations become less constrained by money than capacity."
 
-Counter-argument: Coordination may be valuable to avoid redundant capacity building.
+Arguments for waiting:
+- Coordination may avoid redundant capacity building
+- Current giving has higher certainty of impact
+- Anthropic wealth remains uncertain
 
-### Absorption Capacity
+### Absorption Capacity Concerns
 
-Whether the AI safety and broader EA ecosystem can productively absorb billions in additional funding remains unclear. Rapid funding increases historically create challenges around:
-- Talent constraints
-- Organizational scaling
-- Grant evaluation capacity
-- Potential for reduced rigor
+Whether the AI safety and broader EA ecosystem can productively absorb billions in additional funding remains unclear:
+
+- **Talent constraints**: Top researchers are scarce; funding doesn't create talent
+- **Organizational scaling**: Rapid growth often reduces effectiveness
+- **Grant evaluation**: Evaluating \$50B+ requires infrastructure that doesn't exist
+- **Diminishing returns**: Best opportunities get funded first
+- **Potential for reduced rigor**: Easy money may lower standards
+
+## Governance and Accountability
+
+### Long-Term Benefit Trust
+
+Anthropic's Long-Term Benefit Trust (LTBT) provides some mission accountability: [Harvard Law](https://corpgov.law.harvard.edu/2023/10/28/anthropic-long-term-benefit-trust/)
+
+- Five financially disinterested trustees
+- Power to elect increasing portion of board (majority by 2027)
+- Trustees: Neil Buddy Shah, Kanika Bahl, Zach Robinson, Richard Fontaine, Mariano-Florentino Cuéllar [CNBC](https://www.cnbc.com/2026/01/20/anthropic-mariano-florentino-cullar-independent-trust.html)
+
+**Limitations:** [LessWrong](https://www.lesswrong.com/posts/sdCcsTt9hRpbX6obP/maybe-anthropic-s-long-term-benefit-trust-is-powerless)
+- Stockholder "failsafe" provisions allow overriding Trust with supermajorities
+- Trust has appointed only 1 board member despite ability to appoint 3/5
+- Currently only 3-4 active trustees
+- Some critics argue Trust is "quite subordinate to stockholders"
+
+### Pledge Enforcement
+
+Unlike the OpenAI Foundation's legal control over board appointments, Anthropic founder pledges have no legal enforcement mechanism:
+- Pledges are public commitments, not contracts
+- Enforcement relies on reputational cost
+- No third-party oversight of fulfillment
+- Founders retain full discretion on timing, vehicles, and recipients
+
+## Key Uncertainties Summary
+
+| Uncertainty | Range | Key Drivers |
+|-------------|-------|-------------|
+| IPO timing | 2026-2030+ | Market conditions, regulatory, company choice |
+| IPO valuation | \$50B-\$500B | AI market, revenue growth, competition |
+| Pledge fulfillment rate | 20-80% | Historical base rates, founder commitment depth |
+| Cause allocation | Concentrated-Diverse | Founder preferences, foundation structures |
+| Deployment timeline | 5-30 years | Foundation vs. direct, tax optimization |
+| EA absorption capacity | \$2-10B/year | Talent, organizations, evaluation infrastructure |
 
 ## See Also
 
@@ -213,5 +410,7 @@ Whether the AI safety and broader EA ecosystem can productively absorb billions 
 - <EntityLink id="dario-amodei">Dario Amodei</EntityLink> — Anthropic CEO
 - <EntityLink id="daniela-amodei">Daniela Amodei</EntityLink> — Anthropic President
 - <EntityLink id="holden-karnofsky">Holden Karnofsky</EntityLink> — Open Phil co-founder, Daniela's spouse
+- <EntityLink id="chris-olah">Chris Olah</EntityLink> — Anthropic co-founder, interpretability pioneer
+- <EntityLink id="paul-christiano">Paul Christiano</EntityLink> — Former housemate of Dario, alignment researcher
 
 <Backlinks />
