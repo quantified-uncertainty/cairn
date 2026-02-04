@@ -966,19 +966,27 @@ ${canonicalLinksSection}
    - If no URL available: [^1]: Source name - description (no link)
    - **NEVER use vague citations** like "Interview", "Earnings call", "Conference talk", "Reports"
    - Always specify: exact name, date, and context (e.g., "Tesla Q4 2021 earnings call", "MIT Aeronautics Centennial Symposium (Oct 2014)")
-2. **Escape dollar signs** - Write \\$100M not $100M
-3. **Use EntityLink for internal refs** - <EntityLink id="open-philanthropy">Open Philanthropy</EntityLink>
-4. **Include criticism section** if research supports it
-5. **60%+ prose** - Not just tables and bullet points
-6. **Limited info fallback** - If research is sparse, write a shorter article rather than padding with filler
-7. **Present information as current** - NEVER write "as of the research data" or "through late 2024"
+2. **CRITICAL: NEVER invent quotes**
+   - Only use EXACT text from the research data when using quotation marks
+   - If you want to attribute a view to someone, paraphrase WITHOUT quotation marks
+   - BAD: Ben Pace wrote "this is problematic because..." (if not verbatim in research)
+   - GOOD: Ben Pace argued this approach was problematic (paraphrase without quotes)
+   - GOOD: According to the post, "exact text from research" (verbatim quote)
+   - When attributing quotes to specific people, the quote MUST appear in the research data
+   - This is especially important for EA/rationalist community members whose names you may recognize
+3. **Escape dollar signs** - Write \\$100M not $100M
+4. **Use EntityLink for internal refs** - <EntityLink id="open-philanthropy">Open Philanthropy</EntityLink>
+5. **Include criticism section** if research supports it
+6. **60%+ prose** - Not just tables and bullet points
+7. **Limited info fallback** - If research is sparse, write a shorter article rather than padding with filler
+8. **Present information as current** - NEVER write "as of the research data" or "through late 2024"
    - BAD: "As of the research data (through late 2024), no ratifications..."
    - GOOD: "As of early 2026, the convention remains in..." or just "No ratifications have been reported"
    - Don't reference when sources were gathered - present facts as current knowledge
-8. **Maintain logical consistency** - Ensure claims within each section align with the section's thesis
+9. **Maintain logical consistency** - Ensure claims within each section align with the section's thesis
    - If a section is titled "Lack of X", don't describe the subject as having X
    - If discussing limitations, don't use quotes that suggest the opposite
-9. **Maintain critical distance** - Don't take sources at face value
+10. **Maintain critical distance** - Don't take sources at face value
    - Use attribution phrases: "According to X...", "X claims that...", "X characterized this as..."
    - Consider source incentives: companies may overstate their achievements, critics may overstate problems
    - Include skeptical perspectives even if research is mostly positive or negative
@@ -1106,10 +1114,15 @@ async function runSourceVerification(topic) {
     .join('\n')
     .toLowerCase() || '';
 
+  // Also keep original case version for quote matching
+  const researchTextOriginal = research.responses
+    ?.map(r => r.content || '')
+    .join('\n') || '';
+
   const warnings = [];
 
+  // ============ Check 1: Verify names exist in research ============
   // Pattern to find author attribution statements
-  // e.g., "authored by X, Y, and Z" or "by X and Y" or "written by X"
   const authorPatterns = [
     /authored by\s+([^.\n]+)/gi,
     /written by\s+([^.\n]+)/gi,
@@ -1122,9 +1135,7 @@ async function runSourceVerification(topic) {
   for (const pattern of authorPatterns) {
     let match;
     while ((match = pattern.exec(draft)) !== null) {
-      // Extract individual names from the match
       const nameStr = match[1];
-      // Split by commas and "and"
       const names = nameStr
         .replace(/\s+and\s+/gi, ', ')
         .split(',')
@@ -1132,7 +1143,6 @@ async function runSourceVerification(topic) {
         .filter(n => n.length > 0 && /^[A-Z]/.test(n));
 
       for (const name of names) {
-        // Only add if it looks like a proper name (first and last name)
         if (name.split(/\s+/).length >= 2) {
           mentionedNames.add(name);
         }
@@ -1143,7 +1153,6 @@ async function runSourceVerification(topic) {
   // Check if each name appears in the research
   for (const name of mentionedNames) {
     const nameLower = name.toLowerCase();
-    // Also try last name only for matching
     const lastName = name.split(/\s+/).pop()?.toLowerCase();
 
     if (!researchText.includes(nameLower) && lastName && !researchText.includes(lastName)) {
@@ -1155,7 +1164,87 @@ async function runSourceVerification(topic) {
     }
   }
 
-  // Check for footnotes with undefined URLs (should have been caught by synthesis)
+  // ============ Check 2: Verify attributed quotes exist in research ============
+  // Patterns to find quotes attributed to specific people
+  // e.g., "X said '...'" or "X wrote '...'" or "X argued '...'" or "According to X, '...'"
+  const attributedQuotePatterns = [
+    // Person said/wrote/argued/stated/noted/observed/commented "quote"
+    /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+(?:said|wrote|argued|stated|noted|observed|commented|claimed|explained|described|characterized|called)\s*(?:it\s+)?[:\s]*[""]([^""]+)[""]/gi,
+    // According to Person, "quote"
+    /[Aa]ccording to\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)[,:\s]+[""]([^""]+)[""]/gi,
+    // Person's words: "quote" or In Person's words, "quote"
+    /(?:[Ii]n\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:'s)?\s+words[,:\s]+[""]([^""]+)[""]/gi,
+    // As Person put it, "quote"
+    /[Aa]s\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+put it[,:\s]+[""]([^""]+)[""]/gi,
+    // Person described X as "quote"
+    /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+described\s+\w+\s+as\s+[""]([^""]+)[""]/gi,
+    // Person characterized X as "quote"
+    /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+characterized\s+\w+\s+as\s+[""]([^""]+)[""]/gi,
+    // Person criticized X as "quote"
+    /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+criticized\s+[^""]+\s+as\s+[""]([^""]+)[""]/gi,
+  ];
+
+  const attributedQuotes = [];
+  for (const pattern of attributedQuotePatterns) {
+    let match;
+    while ((match = pattern.exec(draft)) !== null) {
+      const person = match[1].trim();
+      const quote = match[2].trim();
+      // Only check quotes of reasonable length (short phrases might be coincidental)
+      if (quote.length >= 15) {
+        attributedQuotes.push({ person, quote, fullMatch: match[0] });
+      }
+    }
+  }
+
+  // Check if each attributed quote exists in research
+  for (const { person, quote, fullMatch } of attributedQuotes) {
+    // Normalize quote for searching (remove extra spaces, lowercase)
+    const quoteNormalized = quote.toLowerCase().replace(/\s+/g, ' ').trim();
+    const researchNormalized = researchText.replace(/\s+/g, ' ');
+
+    // Check if a substantial portion of the quote appears in research
+    // We check for the first 30 chars and last 30 chars to allow for minor variations
+    const quoteStart = quoteNormalized.slice(0, 30);
+    const quoteEnd = quoteNormalized.slice(-30);
+
+    const foundInResearch = researchNormalized.includes(quoteNormalized) ||
+      (quoteStart.length >= 20 && researchNormalized.includes(quoteStart)) ||
+      (quoteEnd.length >= 20 && researchNormalized.includes(quoteEnd));
+
+    if (!foundInResearch) {
+      warnings.push({
+        type: 'unverified-quote',
+        person,
+        quote: quote.length > 60 ? quote.slice(0, 60) + '...' : quote,
+        message: `Quote attributed to "${person}" not found in research - possible hallucination: "${quote.slice(0, 50)}..."`,
+      });
+    }
+  }
+
+  // ============ Check 3: Flag all Person + quote patterns for review ============
+  // Even if we can't verify, flag these for manual review
+  const allQuoteAttributions = [];
+  const simpleAttributionPattern = /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s+(?:said|wrote|argued|stated|noted|called it|described it as)\s*[:\s]*[""][^""]{10,}[""]/gi;
+  let simpleMatch;
+  while ((simpleMatch = simpleAttributionPattern.exec(draft)) !== null) {
+    allQuoteAttributions.push({
+      person: simpleMatch[1],
+      context: simpleMatch[0].slice(0, 100),
+    });
+  }
+
+  if (allQuoteAttributions.length > 0) {
+    log('verify-sources', `📋 Found ${allQuoteAttributions.length} quote attribution(s) to review:`);
+    for (const attr of allQuoteAttributions.slice(0, 5)) {
+      log('verify-sources', `  - ${attr.person}: "${attr.context.slice(0, 60)}..."`);
+    }
+    if (allQuoteAttributions.length > 5) {
+      log('verify-sources', `  ... and ${allQuoteAttributions.length - 5} more`);
+    }
+  }
+
+  // ============ Check 4: Undefined URLs ============
   const undefinedUrlMatches = draft.match(/\]\(undefined\)/g);
   if (undefinedUrlMatches) {
     warnings.push({
@@ -1165,6 +1254,7 @@ async function runSourceVerification(topic) {
     });
   }
 
+  // ============ Summary ============
   if (warnings.length > 0) {
     log('verify-sources', `⚠️  Found ${warnings.length} potential issue(s):`);
     for (const w of warnings) {
@@ -1174,6 +1264,11 @@ async function runSourceVerification(topic) {
     saveResult(topic, 'source-warnings.json', warnings);
   } else {
     log('verify-sources', '✓ All extracted claims found in research');
+  }
+
+  // Save all quote attributions for manual review regardless of warnings
+  if (allQuoteAttributions.length > 0) {
+    saveResult(topic, 'quote-attributions.json', allQuoteAttributions);
   }
 
   return { success: true, warnings };
