@@ -5,7 +5,7 @@
  * Integrates with insight-hunting system for automated research.
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { parse as parseYaml } from 'yaml';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +17,7 @@ const __dirname = dirname(__filename);
 
 const APP_ROOT = join(__dirname, '..', '..');
 const PAGES_PATH = join(APP_ROOT, 'src', 'data', 'pages.json');
-const INSIGHTS_PATH = join(APP_ROOT, 'src', 'data', 'insights.yaml');
+const INSIGHTS_DIR = join(APP_ROOT, 'src', 'data', 'insights');
 
 /**
  * Load pages data
@@ -30,13 +30,22 @@ function loadPages() {
 }
 
 /**
- * Load insights data
+ * Load insights data from directory of YAML files
  */
 function loadInsights() {
-  if (!existsSync(INSIGHTS_PATH)) {
+  if (!existsSync(INSIGHTS_DIR)) {
     return { insights: [] };
   }
-  return parseYaml(readFileSync(INSIGHTS_PATH, 'utf-8'));
+  const files = readdirSync(INSIGHTS_DIR).filter(f => f.endsWith('.yaml'));
+  const allInsights = [];
+  for (const file of files) {
+    const content = readFileSync(join(INSIGHTS_DIR, file), 'utf-8');
+    const data = parseYaml(content);
+    if (data?.insights) {
+      allInsights.push(...data.insights);
+    }
+  }
+  return { insights: allInsights };
 }
 
 /**

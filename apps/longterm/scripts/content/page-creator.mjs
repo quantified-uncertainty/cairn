@@ -26,6 +26,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { batchResearch, generateResearchQueries, callOpenRouter, MODELS } from '../lib/openrouter.mjs';
 import { checkSidebarCoverage } from '../lib/sidebar-utils.mjs';
+import { sources, hashId, SOURCES_DIR } from '../lib/knowledge-db.mjs';
 
 dotenv.config();
 
@@ -45,14 +46,14 @@ const TIERS = {
   standard: {
     name: 'Standard',
     estimatedCost: '$4-6',
-    phases: ['canonical-links', 'research-perplexity', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'review', 'validate-full', 'grade'],
-    description: 'Full research + Sonnet synthesis + validation loop'
+    phases: ['canonical-links', 'research-perplexity', 'register-sources', 'fetch-sources', 'research-scry', 'synthesize', 'verify-sources', 'validate-loop', 'review', 'validate-full', 'grade'],
+    description: 'Full research + source fetching + Sonnet synthesis + validation loop'
   },
   premium: {
     name: 'Premium',
     estimatedCost: '$8-12',
-    phases: ['canonical-links', 'research-perplexity-deep', 'research-scry', 'synthesize-quality', 'verify-sources', 'review', 'validate-loop', 'validate-full', 'grade'],
-    description: 'Deep research + quality synthesis + review'
+    phases: ['canonical-links', 'research-perplexity-deep', 'register-sources', 'fetch-sources', 'research-scry', 'synthesize-quality', 'verify-sources', 'review', 'validate-loop', 'validate-full', 'grade'],
+    description: 'Deep research + source fetching + quality synthesis + review'
   }
 };
 
@@ -682,6 +683,236 @@ async function runPerplexityResearch(topic, depth = 'standard') {
   return { success: true, cost: totalCost, queryCount: queries.length };
 }
 
+// ============ Phase: Register Sources ============
+
+/**
+ * Extract citation URLs from Perplexity research and register them in the knowledge DB
+ */
+async function registerResearchSources(topic) {
+  log('register-sources', 'Extracting and registering citation URLs...');
+
+  const researchPath = path.join(getTopicDir(topic), 'perplexity-research.json');
+  if (!fs.existsSync(researchPath)) {
+    log('register-sources', 'No Perplexity research found, skipping');
+    return { success: false, error: 'No research data' };
+  }
+
+  const research = JSON.parse(fs.readFileSync(researchPath, 'utf-8'));
+  const allUrls = new Set();
+
+  // Extract citation URLs from all research responses
+  for (const source of (research.sources || [])) {
+    if (source.citations && Array.isArray(source.citations)) {
+      for (const url of source.citations) {
+        if (url && typeof url === 'string' && url.startsWith('http')) {
+          allUrls.add(url);
+        }
+      }
+    }
+  }
+
+  log('register-sources', `Found ${allUrls.size} unique citation URLs`);
+
+  const registered = [];
+  const existing = [];
+
+  for (const url of allUrls) {
+    try {
+      // Check if already in database
+      const existingSource = sources.getByUrl(url);
+      if (existingSource) {
+        existing.push(url);
+        continue;
+      }
+
+      // Determine source type from URL
+      let sourceType = 'web';
+      if (url.includes('arxiv.org')) sourceType = 'paper';
+      else if (url.includes('scholar.google')) sourceType = 'paper';
+      else if (url.includes('lesswrong.com')) sourceType = 'blog';
+      else if (url.includes('forum.effectivealtruism.org')) sourceType = 'blog';
+      else if (url.includes('substack.com')) sourceType = 'blog';
+      else if (url.includes('medium.com')) sourceType = 'blog';
+
+      // Register in database
+      const id = hashId(url);
+      sources.upsert({
+        id,
+        url,
+        title: null, // Will be extracted during fetch
+        sourceType,
+      });
+
+      registered.push(url);
+    } catch (error) {
+      log('register-sources', `  Failed to register ${url}: ${error.message}`);
+    }
+  }
+
+  log('register-sources', `Registered ${registered.length} new sources, ${existing.length} already existed`);
+
+  // Save registration results
+  saveResult(topic, 'registered-sources.json', {
+    topic,
+    totalUrls: allUrls.size,
+    registered: registered.length,
+    existing: existing.length,
+    urls: [...allUrls],
+    timestamp: new Date().toISOString(),
+  });
+
+  return { success: true, registered: registered.length, existing: existing.length, total: allUrls.size };
+}
+
+// ============ Phase: Fetch Sources ============
+
+/**
+ * Fetch content from registered sources using Firecrawl
+ * Rate limited to avoid API limits (7s between requests)
+ */
+async function fetchRegisteredSources(topic, options = {}) {
+  const { maxSources = 10, skipExisting = true } = options;
+
+  log('fetch-sources', 'Fetching source content with Firecrawl...');
+
+  // Check for Firecrawl API key
+  const FIRECRAWL_KEY = process.env.FIRECRAWL_KEY;
+  if (!FIRECRAWL_KEY) {
+    log('fetch-sources', '⚠️  FIRECRAWL_KEY not set - skipping source fetching');
+    log('fetch-sources', '   Add FIRECRAWL_KEY to .env to enable content fetching');
+    return { success: false, error: 'No API key', fetched: 0 };
+  }
+
+  // Load registered sources for this topic
+  const registeredPath = path.join(getTopicDir(topic), 'registered-sources.json');
+  if (!fs.existsSync(registeredPath)) {
+    log('fetch-sources', 'No registered sources found');
+    return { success: false, error: 'No registered sources' };
+  }
+
+  const registration = JSON.parse(fs.readFileSync(registeredPath, 'utf-8'));
+  const urlsToFetch = [];
+
+  // Filter to sources that need fetching
+  for (const url of registration.urls) {
+    const source = sources.getByUrl(url);
+    if (!source) continue;
+
+    if (skipExisting && source.fetch_status === 'fetched' && source.content) {
+      continue; // Already fetched
+    }
+
+    urlsToFetch.push({ id: source.id, url });
+    if (urlsToFetch.length >= maxSources) break;
+  }
+
+  if (urlsToFetch.length === 0) {
+    log('fetch-sources', 'All sources already fetched');
+    return { success: true, fetched: 0, skipped: registration.urls.length };
+  }
+
+  log('fetch-sources', `Fetching ${urlsToFetch.length} sources (max ${maxSources})...`);
+
+  // Initialize Firecrawl
+  const FirecrawlApp = (await import('@mendable/firecrawl-js')).default;
+  const firecrawl = new FirecrawlApp({ apiKey: FIRECRAWL_KEY });
+
+  let fetched = 0;
+  let failed = 0;
+  const DELAY_MS = 7000; // 7 seconds between requests (Firecrawl rate limit)
+
+  for (let i = 0; i < urlsToFetch.length; i++) {
+    const { id, url } = urlsToFetch[i];
+
+    try {
+      log('fetch-sources', `  [${i + 1}/${urlsToFetch.length}] Fetching: ${url.slice(0, 60)}...`);
+
+      const result = await firecrawl.scrape(url, {
+        formats: ['markdown'],
+      });
+
+      if (result.markdown) {
+        // Save content to database
+        const cacheFile = `${id}.txt`;
+        sources.markFetched(id, result.markdown, cacheFile);
+
+        // Also save to cache file for backup
+        const cachePath = path.join(SOURCES_DIR, `${id}.txt`);
+        fs.writeFileSync(cachePath, result.markdown);
+
+        // Update metadata if available
+        const metadata = result.metadata || {};
+        if (metadata.publishedTime) {
+          sources.updateMetadata(id, {
+            year: new Date(metadata.publishedTime).getFullYear(),
+          });
+        }
+
+        log('fetch-sources', `     ✓ ${result.markdown.length.toLocaleString()} chars`);
+        fetched++;
+      } else {
+        throw new Error('No markdown content returned');
+      }
+    } catch (error) {
+      log('fetch-sources', `     ✗ ${error.message}`);
+      sources.markFailed(id, error.message);
+      failed++;
+    }
+
+    // Rate limit delay (except for last item)
+    if (i < urlsToFetch.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+    }
+  }
+
+  log('fetch-sources', `Fetched ${fetched} sources, ${failed} failed`);
+
+  // Save fetch results
+  saveResult(topic, 'fetch-results.json', {
+    topic,
+    fetched,
+    failed,
+    total: urlsToFetch.length,
+    timestamp: new Date().toISOString(),
+  });
+
+  return { success: true, fetched, failed };
+}
+
+/**
+ * Get fetched content for quote verification
+ * Returns combined content from all fetched sources for this topic
+ */
+function getFetchedSourceContent(topic) {
+  const registeredPath = path.join(getTopicDir(topic), 'registered-sources.json');
+  if (!fs.existsSync(registeredPath)) {
+    return null;
+  }
+
+  const registration = JSON.parse(fs.readFileSync(registeredPath, 'utf-8'));
+  const contents = [];
+
+  for (const url of registration.urls) {
+    const source = sources.getByUrl(url);
+    if (source?.content) {
+      contents.push({
+        url,
+        content: source.content,
+      });
+    }
+  }
+
+  if (contents.length === 0) {
+    return null;
+  }
+
+  return {
+    sourceCount: contents.length,
+    combinedContent: contents.map(c => c.content).join('\n\n---\n\n'),
+    sources: contents.map(c => ({ url: c.url, length: c.content.length })),
+  };
+}
+
 // ============ Phase: SCRY Research ============
 
 async function runScryResearch(topic) {
@@ -1108,16 +1339,28 @@ async function runSourceVerification(topic) {
   const research = JSON.parse(fs.readFileSync(researchPath, 'utf-8'));
   const draft = fs.readFileSync(draftPath, 'utf-8');
 
-  // Combine all research text for searching
-  const researchText = research.responses
-    ?.map(r => r.content || '')
-    .join('\n')
-    .toLowerCase() || '';
-
-  // Also keep original case version for quote matching
-  const researchTextOriginal = research.responses
+  // Combine all research text for searching (from Perplexity summaries)
+  const perplexityText = research.sources
     ?.map(r => r.content || '')
     .join('\n') || '';
+
+  // Also get fetched source content (actual page content from Firecrawl)
+  const fetchedContent = getFetchedSourceContent(topic);
+  if (fetchedContent) {
+    log('verify-sources', `Using ${fetchedContent.sourceCount} fetched sources for verification (${Math.round(fetchedContent.combinedContent.length / 1000)}k chars)`);
+  } else {
+    log('verify-sources', 'No fetched source content available, using Perplexity summaries only');
+  }
+
+  // Combine Perplexity summaries + fetched content for comprehensive search
+  const allSourceContent = fetchedContent
+    ? perplexityText + '\n\n' + fetchedContent.combinedContent
+    : perplexityText;
+
+  const researchText = allSourceContent.toLowerCase();
+
+  // Also keep original case version for quote matching
+  const researchTextOriginal = allSourceContent;
 
   const warnings = [];
 
@@ -1893,6 +2136,15 @@ async function runPipeline(topic, tier = 'standard', directions = null) {
           result = await runScryResearch(topic);
           break;
 
+        case 'register-sources':
+          result = await registerResearchSources(topic);
+          break;
+
+        case 'fetch-sources':
+          // Fetch up to 15 sources (balancing coverage vs API costs)
+          result = await fetchRegisteredSources(topic, { maxSources: 15 });
+          break;
+
         case 'synthesize':
           result = await runSynthesis(topic, 'standard');
           results.totalCost += result.budget || 0;
@@ -2035,8 +2287,11 @@ Destination Examples:
 Phases:
   canonical-links       Find Wikipedia, LessWrong, EA Forum, official sites
   research-perplexity   Perplexity web research
+  register-sources      Register citation URLs in knowledge database
+  fetch-sources         Fetch actual page content via Firecrawl
   research-scry         Scry knowledge base search
   synthesize            Claude synthesis to MDX
+  verify-sources        Check quotes against fetched source content
   validate-loop         Iterative Claude validation
   validate-full         Comprehensive programmatic validation
   grade                 Quality grading
@@ -2129,6 +2384,12 @@ async function main() {
         break;
       case 'research-scry':
         result = await runScryResearch(topic);
+        break;
+      case 'register-sources':
+        result = await registerResearchSources(topic);
+        break;
+      case 'fetch-sources':
+        result = await fetchRegisteredSources(topic, { maxSources: 15 });
         break;
       case 'synthesize':
         result = await runSynthesis(topic, tier === 'premium' ? 'opus' : 'sonnet', 2.0);
