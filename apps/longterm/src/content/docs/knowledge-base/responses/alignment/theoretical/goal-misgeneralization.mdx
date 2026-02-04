@@ -104,14 +104,14 @@ flowchart TD
     TRAIN --> CORR[Spurious Correlations]
     CORR --> PROXY
 
-    subgraph "During Training"
+    subgraph DuringTraining["During Training"]
         TRAIN
         REWARD
         LEARN
         CORR
     end
 
-    subgraph "In Deployment"
+    subgraph InDeployment["In Deployment"]
         DEPLOY[Novel Environment]
         DEPLOY --> PROXY
         PROXY --> FAIL[Goal Misgeneralization]

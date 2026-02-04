@@ -258,6 +258,7 @@ export default defineConfig({
                       { label: 'Overview', slug: 'project' },
                       { label: 'Vision', slug: 'project/vision' },
                       { label: 'Strategy', slug: 'project/strategy-brainstorm' },
+                      { label: 'Value Proposition', slug: 'internal/longtermwiki-value-proposition' },
                       { label: 'Critical Insights', slug: 'project/critical-insights' },
                       { label: 'Similar Projects', slug: 'project/similar-projects' },
                       { label: 'Changelog', slug: 'project/changelog' },
