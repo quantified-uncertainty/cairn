@@ -12,8 +12,9 @@ This skill provides guidance for improving existing wiki pages.
 
 1. **Analyze the page** - Run validators and check quality metrics
 2. **Identify improvements** - Check todos, missing sections, link coverage
-3. **Make targeted edits** - Fix specific issues without over-engineering
-4. **Validate changes** - Run relevant validators before completing
+3. **Discover cross-page insights** - Check related pages for analytical discoveries
+4. **Make targeted edits** - Fix specific issues without over-engineering
+5. **Validate changes** - Run relevant validators before completing
 
 ## Analysis Commands
 
@@ -115,6 +116,10 @@ Required sections:
 - Risks Addressed
 - How It Works
 - Critical Assessment
+
+## Insight Discovery
+
+Before editing, check 2-3 related pages for cross-page discoveries. For financial pages, run `npm run crux -- validate financials`. See `.claude/docs/insight-discovery.md` for the pattern catalog (Stale Valuation, Cross-Page Contradiction, Undrawn Conclusion, etc.).
 
 ## Validation Before Completing
 

@@ -93,6 +93,11 @@ const SCRIPTS = {
     passthrough: ['ci'],
     runner: 'tsx',
   },
+  financials: {
+    script: 'validate/validate-financials.mjs',
+    description: 'Financial data staleness and consistency',
+    passthrough: ['ci'],
+  },
 };
 
 /**
