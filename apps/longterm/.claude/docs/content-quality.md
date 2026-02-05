@@ -2,6 +2,8 @@
 
 Quality scoring applies only to `content` pages (see page-types.md).
 
+All pages should follow the [Common Writing Principles](/internal/common-writing-principles/) — epistemic honesty, language neutrality, and analytical tone — measured by the **objectivity** rating dimension.
+
 ## Content Types
 
 Pages have different purposes, which affects how ratings should be weighted:
@@ -19,7 +21,7 @@ Set via `contentType` frontmatter field. If unset, inferred from path:
 
 ## Rating System
 
-Six dimensions (0-10 scale, harsh - 7+ is exceptional):
+Seven dimensions (0-10 scale, harsh - 7+ is exceptional):
 
 ### Core Ratings (All Content Types)
 
@@ -57,6 +59,15 @@ Six dimensions (0-10 scale, harsh - 7+ is exceptional):
 
 *Critical distinction*: A doc that thoroughly covers the WRONG topic scores low. Completeness is relative to the title's promise.
 
+**objectivity** - Epistemic honesty, language neutrality, and analytical tone. See [Common Writing Principles](/internal/common-writing-principles/).
+- 1-2: Heavy insider jargon ("EA money", "non-EA charities"), false certainty (estimates as facts), reads as advocacy
+- 3-4: Some insider language; estimates without uncertainty ranges; one-sided framing without counter-arguments
+- 5-6: Mostly neutral language; some uncertainty acknowledgment; mostly analytical but occasional prescriptive slips
+- 7+: Fully accessible to outsiders; all estimates hedged with ranges and caveats; analytical throughout; honest counter-arguments
+
+*Example failure*: Table with "True Cost: \$500K" and "Realistic EV: \$50M" → objectivity: 3 (false certainty)
+*Example failure*: "EA organizations should pressure founders" → objectivity: 2 (prescriptive + insider language)
+
 ### Analysis-Weighted Ratings (Critical for Analysis/Model Pages)
 
 **concreteness** - Specific recommendations, numbers, examples vs. abstract hand-waving
@@ -77,7 +88,7 @@ Six dimensions (0-10 scale, harsh - 7+ is exceptional):
 
 ### Reference Pages (orgs, people, risks, responses)
 
-**Weight heavily**: rigor (accuracy matters), completeness (coverage matters)
+**Weight heavily**: rigor (accuracy matters), completeness (coverage matters), objectivity (neutral presentation)
 **Weight less**: concreteness, actionability (these are informational, not prescriptive)
 
 Acceptable scores:
@@ -85,12 +96,13 @@ Acceptable scores:
 - novelty: 5+ (value is in accurate compilation, not originality)
 - rigor: 7+ (accuracy is critical)
 - completeness: 7+ (coverage is the point)
+- objectivity: 6+ (neutral factual presentation expected)
 - concreteness: 5+ (specific facts, but not prescriptive)
 - actionability: 4+ (informational pages don't need to be actionable)
 
 ### Analysis Pages (models, policy analyses, forecasts)
 
-**Weight heavily**: focus (must answer the stated question), concreteness (must be specific), novelty (must add value)
+**Weight heavily**: focus (must answer the stated question), concreteness (must be specific), novelty (must add value), objectivity (epistemic honesty critical for credibility)
 **Weight less**: completeness (depth over breadth)
 
 Acceptable scores:
@@ -98,6 +110,7 @@ Acceptable scores:
 - novelty: 6+ (must add something beyond sources)
 - rigor: 6+ (claims should be supported)
 - completeness: 5+ (okay to be narrow if deep)
+- objectivity: 6+ (estimates must use ranges, acknowledge uncertainty, include counter-arguments)
 - concreteness: 7+ (must be specific and concrete)
 - actionability: 7+ (must have clear implications)
 
@@ -111,6 +124,7 @@ Acceptable scores:
 - novelty: 4+ (explaining existing concepts is fine)
 - rigor: 7+ (must be accurate)
 - completeness: 7+ (educational coverage matters)
+- objectivity: 5+ (accessible language; uncertainty where relevant)
 - concreteness: 6+ (concrete examples help learning)
 - actionability: 4+ (educational, not prescriptive)
 
@@ -136,6 +150,11 @@ Acceptable scores:
 **Ratings affected**: focus (wrong topic), completeness (didn't cover what title promised)
 **Fix**: Re-read the title and ask "does the content actually address THIS?"
 
+### The "Insider Analysis" Trap
+**Symptom**: Uses "EA" as an adjective throughout; presents rough estimates as facts ("True Cost: \$500K"); advocates rather than analyzes ("we should push for...").
+**Ratings affected**: objectivity (insider language + false certainty + prescriptive tone)
+**Fix**: Follow [Common Writing Principles](/internal/common-writing-principles/). Use descriptive language, add ranges to estimates, reframe as analysis not advocacy.
+
 ## Frontmatter Format
 
 ```yaml
@@ -148,6 +167,7 @@ ratings:
   novelty: 6
   rigor: 7
   completeness: 6
+  objectivity: 6
   concreteness: 8
   actionability: 7
 metrics:
@@ -189,17 +209,17 @@ The overall `quality` score (0-100) is computed from ratings:
 
 **For reference pages:**
 ```
-quality = (focus + novelty + rigor*1.5 + completeness*1.5 + concreteness + actionability*0.5) / 7 * 10 + bonuses
+quality = (focus + novelty*0.8 + rigor*1.5 + completeness*1.5 + objectivity + concreteness + actionability*0.5) / totalWeight * 10 + bonuses
 ```
 
 **For analysis pages:**
 ```
-quality = (focus*1.5 + novelty*1.2 + rigor + completeness + concreteness*1.5 + actionability*1.2) / 7.4 * 10 + bonuses
+quality = (focus*1.5 + novelty*1.5 + rigor + completeness*0.8 + objectivity*1.2 + concreteness*1.5 + actionability*1.2) / totalWeight * 10 + bonuses
 ```
 
 **For explainer pages:**
 ```
-quality = (focus + novelty*0.5 + rigor*1.5 + completeness*1.5 + concreteness + actionability*0.5) / 6.5 * 10 + bonuses
+quality = (focus + novelty*0.5 + rigor*1.5 + completeness*1.5 + objectivity*0.8 + concreteness + actionability*0.5) / totalWeight * 10 + bonuses
 ```
 
 Bonuses:

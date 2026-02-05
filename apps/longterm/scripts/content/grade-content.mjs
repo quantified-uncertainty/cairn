@@ -50,7 +50,7 @@ const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a re
 
 Score each page on importance (0-100, one decimal place). Be discriminating - use the full range.
 
-Also score each page on SIX quality dimensions (0-10 scale, one decimal). BE EXTREMELY HARSH - a 7 is exceptional, 8+ is world-class. Most wiki content should score 3-5.
+Also score each page on SEVEN quality dimensions (0-10 scale, one decimal). BE EXTREMELY HARSH - a 7 is exceptional, 8+ is world-class. Most wiki content should score 3-5.
 
 **FOCUS (0-10)**: Does it answer what the title promises?
 - 9-10: Perfectly laser-focused on exactly what title claims
@@ -107,6 +107,21 @@ NOVELTY CALIBRATION (critical):
 - 1-2: Purely descriptive, no practical application
 - 0: No actionable content
 
+**OBJECTIVITY (0-10)**: Epistemic honesty, language neutrality, and analytical (not prescriptive) tone.
+- 9-10: Every uncertain claim hedged with ranges and caveats; fully accessible to outsiders; presents tradeoffs without advocating (journal-quality neutrality)
+- 7-8: Nearly all estimates include ranges; no insider jargon; analytical throughout; honest counter-arguments included (exceptional)
+- 5-6: Mostly neutral language; some uncertainty acknowledgment; mostly analytical but occasional prescriptive slips
+- 3-4: Uses insider jargon (e.g., "EA money", "non-EA charities"); presents rough estimates as facts (e.g., "True Cost: $500K"); one-sided framing without counter-arguments
+- 1-2: Heavy insider language throughout; false certainty; reads as advocacy not analysis
+- 0: Pure advocacy with no epistemic honesty
+
+OBJECTIVITY CALIBRATION (critical):
+- Page that says "EA organizations should pressure founders" → 2-3 (prescriptive, insider framing)
+- Page that says "True Cost: $500K, Realistic EV: $50M" → 3-4 (false certainty)
+- Page that uses ranges but still says "EA causes" → 4-5 (mixed)
+- Page that says "Est. cost: $300K-1M" and names specific orgs → 6-7
+- Page that includes "Why These Numbers Might Be Wrong" and red-teams its own conclusions → 7-8
+
 CALIBRATION: For typical wiki content, expect scores of 3-5. A score of 6+ means genuinely strong. A 7+ is rare and exceptional. 8+ should almost never be given. ESPECIALLY for novelty - most pages are compilations (3-4), not original insights (6+).
 
 **Scoring guidelines:**
@@ -158,7 +173,8 @@ Respond with JSON (keep reasoning SHORT - max 2-3 sentences total):
     "rigor": <0-10, one decimal>,
     "completeness": <0-10, one decimal>,
     "concreteness": <0-10, one decimal>,
-    "actionability": <0-10, one decimal>
+    "actionability": <0-10, one decimal>,
+    "objectivity": <0-10, one decimal>
   },
   "llmSummary": "<1-2 sentences with conclusions>",
   "reasoning": "<2-3 sentences max explaining the scores>"
@@ -330,38 +346,42 @@ function computeQuality(ratings, metrics, frontmatter = {}, relativePath = '') {
   const completeness = ratings.completeness ?? 5;
   const concreteness = ratings.concreteness ?? 5;
   const actionability = ratings.actionability ?? 5;
+  const objectivity = ratings.objectivity ?? 5;
 
   // Content-type-specific weighting
   let weights;
   if (contentType === 'analysis') {
-    // Analysis pages: focus, novelty, concreteness matter most
+    // Analysis pages: focus, novelty, concreteness matter most; objectivity critical for credibility
     weights = {
       focus: 1.5,
       novelty: 1.5,
       rigor: 1.0,
       completeness: 0.8,
       concreteness: 1.5,
-      actionability: 1.2
+      actionability: 1.2,
+      objectivity: 1.2
     };
   } else if (contentType === 'explainer') {
-    // Explainer pages: completeness, rigor matter most; novelty matters less
+    // Explainer pages: completeness, rigor matter most; objectivity moderate
     weights = {
       focus: 1.0,
       novelty: 0.5,
       rigor: 1.5,
       completeness: 1.5,
       concreteness: 1.0,
-      actionability: 0.5
+      actionability: 0.5,
+      objectivity: 0.8
     };
   } else {
-    // Reference pages: rigor, completeness matter most
+    // Reference pages: rigor, completeness matter most; objectivity important for neutrality
     weights = {
       focus: 1.0,
       novelty: 0.8,
       rigor: 1.5,
       completeness: 1.5,
       concreteness: 1.0,
-      actionability: 0.5
+      actionability: 0.5,
+      objectivity: 1.0
     };
   }
 
@@ -373,7 +393,8 @@ function computeQuality(ratings, metrics, frontmatter = {}, relativePath = '') {
     rigor * weights.rigor +
     completeness * weights.completeness +
     concreteness * weights.concreteness +
-    actionability * weights.actionability;
+    actionability * weights.actionability +
+    objectivity * weights.objectivity;
 
   const weightedAvg = weightedSum / totalWeight;
 
@@ -648,7 +669,7 @@ async function main() {
         }
 
         const r = grades.ratings;
-        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, f=${r.focus} n=${r.novelty} r=${r.rigor} c=${r.completeness} con=${r.concreteness} a=${r.actionability} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, f=${r.focus} n=${r.novelty} r=${r.rigor} c=${r.completeness} con=${r.concreteness} a=${r.actionability} o=${r.objectivity} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
         return { success: true, result };
       } else {
         console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED (no ratings in response)`);

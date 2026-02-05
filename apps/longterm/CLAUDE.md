@@ -178,8 +178,10 @@ For workflow-specific guidance, see:
 - `.claude/docs/cause-effect-graphs.md` - Causal graph schema
 - `.claude/docs/knowledge-base-system.md` - SQLite cache system
 - `.claude/docs/resource-linking.md` - External resource management
+- `.claude/docs/insight-discovery.md` - Cross-page analytical discovery patterns
 
 For comprehensive architecture and system documentation, see `/internal/` on the live site:
+- `/internal/common-writing-principles/` - **Cross-cutting writing standards** (epistemic honesty, language neutrality, analytical tone)
 - `/internal/architecture/` - System architecture, data flow, design decisions
 - `/internal/content-database/` - SQLite schema, source fetching, APIs
 - `/internal/automation-tools/` - Complete CLI reference

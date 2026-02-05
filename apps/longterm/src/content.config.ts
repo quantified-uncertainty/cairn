@@ -18,13 +18,14 @@ import { docsSchema } from '@astrojs/starlight/schema';
  *
  * Quality System:
  *
- * Six subscores (0-10 scale, harsh - 7+ is exceptional):
+ * Seven subscores (0-10 scale, harsh - 7+ is exceptional):
  *
  * Core ratings (all content types):
  * - focus: Does it answer the question its title implies? (3-4 = drifts from topic, 5-6 = mostly on-topic, 7+ = laser-focused on claimed subject)
  * - novelty: Value-add beyond obvious sources (3-4 = summary of sources, 5-6 = some original synthesis, 7+ = genuinely new insight or framing)
  * - rigor: Evidence quality (3-4 = mixed sourcing, 5-6 = mostly sourced, 7+ = fully sourced with quantification)
  * - completeness: Covers what the TITLE promises, not just "has content" (3-4 = misses key aspects, 5-6 = covers main points, 7+ = thorough on claimed topic)
+ * - objectivity: Epistemic honesty, language neutrality, analytical tone (3-4 = insider jargon/false certainty, 5-6 = mostly neutral, 7+ = fully accessible and honest about uncertainty). See /internal/common-writing-principles/
  *
  * Analysis-weighted ratings (critical for analysis/model pages):
  * - concreteness: Specific recommendations/numbers/examples vs. abstract hand-waving (3-4 = vague generalities, 5-6 = some specifics, 7+ = concrete actionable details)
@@ -68,6 +69,7 @@ export const collections = {
           novelty: z.number().min(0).max(10).optional(), // Value-add beyond obvious sources
           rigor: z.number().min(0).max(10).optional(), // Evidence quality and precision
           completeness: z.number().min(0).max(10).optional(), // Covers what TITLE promises
+          objectivity: z.number().min(0).max(10).optional(), // Epistemic honesty, language neutrality, analytical tone
           // Analysis-weighted ratings (critical for analysis/model pages)
           concreteness: z.number().min(0).max(10).optional(), // Specific vs. abstract
           actionability: z.number().min(0).max(10).optional(), // Can reader act differently?

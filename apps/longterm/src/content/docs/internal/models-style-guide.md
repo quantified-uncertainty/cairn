@@ -20,6 +20,8 @@ metrics:
 
 This guide defines the standards for analytical models in LongtermWiki. Models should maximize **information density** while remaining accessible.
 
+**Prerequisite**: All model pages must follow the [Common Writing Principles](/internal/common-writing-principles/) — epistemic honesty, language neutrality, and analytical tone. The **objectivity** rating dimension measures this. For model pages with cost-effectiveness estimates, this is especially critical: always use ranges, show deflators, and include "Why These Numbers Might Be Wrong" sections.
+
 ## Core Principles
 
 1. **Density over brevity** - Pack substantive content into every section. A 500-word model with tables and equations beats a 200-word model with bullets.
@@ -265,6 +267,9 @@ Every diagram needs a paragraph explaining what it illustrates and key insights.
 ### 6. Orphan Sections
 Short sections (< 100 words) should be merged or expanded.
 
+### 7. Insider Language and False Certainty
+"EA organizations should fund this" → Describe specific orgs, use analytical framing. "True Cost: \$500K" → "Est. cost: \$300K-1M". See [Common Writing Principles](/internal/common-writing-principles/).
+
 ---
 
 ## Example Model Structure
@@ -337,24 +342,33 @@ $$[key equation]$$
 
 ## Rating Criteria
 
-Models are rated on four dimensions (1-5 scale):
+Models are rated on seven dimensions (0-10 scale, harsh - 7+ is exceptional):
+
+**Focus:** Does it answer what the title promises?
 
 **Novelty:** How original is the framing or analysis?
-- 1: Standard framework, no new insights
-- 3: Useful synthesis or modest extensions
-- 5: Novel framework that changes how we think about the problem
+- 3-4: Useful synthesis or modest extensions
+- 5-6: Genuine new framing or connections
+- 7+: Novel framework that changes how we think about the problem
 
 **Rigor:** How well-supported by evidence and logic?
-- 1: Speculative, minimal support
-- 3: Reasonable extrapolation from available evidence
-- 5: Strong empirical grounding or formal derivation
-
-**Actionability:** Does it suggest concrete interventions?
-- 1: Descriptive only
-- 3: Identifies leverage points
-- 5: Specific, implementable recommendations with priorities
+- 3-4: Reasonable extrapolation, some gaps
+- 5-6: Most claims sourced with some quantification
+- 7+: Strong empirical grounding or formal derivation
 
 **Completeness:** How thoroughly developed?
-- 1: Sketch or outline
-- 3: Core model complete, some gaps
-- 5: Comprehensive treatment with edge cases addressed
+- 3-4: Core model sketched, notable gaps
+- 5-6: Core model complete, some gaps
+- 7+: Comprehensive treatment with edge cases addressed
+
+**Objectivity:** Epistemic honesty, neutral language, analytical tone?
+- 3-4: Estimates without ranges; insider language; one-sided framing
+- 5-6: Mostly hedged and neutral; some uncertainty noted
+- 7+: All estimates use ranges with caveats; fully accessible; red-teams own conclusions
+
+**Concreteness:** Specific numbers, examples, recommendations?
+
+**Actionability:** Does it suggest concrete interventions?
+- 3-4: Identifies general areas of concern
+- 5-6: Identifies leverage points with some specifics
+- 7+: Specific, implementable recommendations with priorities

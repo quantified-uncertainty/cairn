@@ -24,6 +24,8 @@ import {EntityLink} from '@components/wiki';
 
 This guide defines standards for risk analysis pages in the LongtermWiki knowledge base. Risk pages analyze potential negative outcomes from AI development.
 
+**Prerequisite**: All risk pages must follow the [Common Writing Principles](/internal/common-writing-principles/) — epistemic honesty, language neutrality, and analytical tone. The **objectivity** rating dimension measures this.
+
 ## Page Type Detection
 
 Risk pages are detected by their URL path: `/knowledge-base/risks/**/*.mdx`
@@ -222,12 +224,13 @@ node scripts/content/grade-by-template.mjs --template knowledge-base-risk
 
 ## Quality Criteria
 
-Pages are scored on four dimensions (0-10 scale). **Scoring is harsh** - a 7 is exceptional, most content should score 3-5.
+Pages are scored on seven dimensions (0-10 scale). **Scoring is harsh** - a 7 is exceptional, most content should score 3-5.
 
 | Dimension | 3-4 (Adequate) | 5-6 (Good) | 7+ (Exceptional) |
 |-----------|----------------|------------|------------------|
 | **Novelty** | Accurate summary | Some original framing | Significant original insight |
 | **Rigor** | Mixed sourcing | Mostly sourced | Fully sourced with quantification |
+| **Objectivity** | Some insider language or false certainty | Mostly neutral, some uncertainty noted | Fully accessible, all estimates hedged |
 | **Actionability** | Abstract implications | Some actionable takeaways | Concrete decision guidance |
 | **Completeness** | Notable gaps | Covers main points | Thorough coverage |
 
@@ -243,6 +246,8 @@ Pages are scored on four dimensions (0-10 scale). **Scoring is harsh** - a 7 is 
 4. **Bullet-heavy**: Use tables and prose instead
 5. **Table-only sections**: Every section needs explanatory paragraphs, not just data tables
 5. **No uncertainty acknowledgment**: Always include what we don't know
+6. **Insider language**: "EA organizations", "non-EA causes" — use descriptive terms per [Common Writing Principles](/internal/common-writing-principles/)
+7. **False certainty in estimates**: "Risk is 30%" without ranges or sources — always use ranges and label confidence
 
 ---
 

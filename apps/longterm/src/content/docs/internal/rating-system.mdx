@@ -6,7 +6,7 @@ sidebar:
   order: 6
 importance: 5
 quality: 48
-llmSummary: "This page documents LongtermWiki's content rating system, which combines LLM-graded subscores (novelty, rigor, actionability, completeness on 0-10 scales) with automated metrics (word count, citations) to derive quality scores (0-100) and importance ratings for prioritization decisions."
+llmSummary: "This page documents LongtermWiki's content rating system, which combines LLM-graded subscores (focus, novelty, rigor, completeness, objectivity, concreteness, actionability on 0-10 scales) with automated metrics (word count, citations) to derive quality scores (0-100) and importance ratings for prioritization decisions."
 ratings:
   novelty: 2
   rigor: 6.5
@@ -116,6 +116,30 @@ How comprehensive is the coverage?
 | 3-4 | Notable gaps, missing important aspects |
 | 1-2 | Very incomplete, barely started |
 
+#### Objectivity
+
+Epistemic honesty, language neutrality, and analytical (not prescriptive) tone. See [Common Writing Principles](/internal/common-writing-principles/) for full guidance.
+
+| Score | Meaning |
+|-------|---------|
+| 9-10 | Every uncertain claim hedged with ranges; fully accessible to outsiders; presents tradeoffs without advocating |
+| 7-8 | Nearly all estimates include ranges; no insider jargon; analytical throughout; honest counter-arguments |
+| 5-6 | Mostly neutral language; some uncertainty acknowledged; mostly analytical |
+| 3-4 | Uses insider jargon ("EA money"); presents estimates as facts ("True Cost"); one-sided framing |
+| 1-2 | Heavy insider language; false certainty; reads as advocacy not analysis |
+
+#### Concreteness
+
+How specific vs. abstract?
+
+| Score | Meaning |
+|-------|---------|
+| 9-10 | Specific numbers, examples, recommendations throughout |
+| 7-8 | Mostly concrete with specific details |
+| 5-6 | Mix of concrete and abstract |
+| 3-4 | Mostly abstract, vague generalities |
+| 1-2 | Almost entirely abstract hand-waving |
+
 ### 3. Automated Metrics
 
 These are computed directly from content, not LLM-graded:
@@ -134,9 +158,9 @@ quality = (avgSubscore × 8) + lengthBonus + evidenceBonus
 ```
 
 Where:
-- `avgSubscore` = (novelty + rigor + actionability + completeness) / 4 → contributes 0-80
-- `lengthBonus` = min(10, wordCount / 500) → contributes 0-10
-- `evidenceBonus` = min(10, citations × 0.5) → contributes 0-10
+- `avgSubscore` = weighted average of all 7 dimensions (focus, novelty, rigor, completeness, objectivity, concreteness, actionability) → contributes 0-80. Weights vary by content type — analysis pages weight focus, novelty, objectivity, concreteness higher; reference pages weight rigor, completeness higher.
+- `lengthBonus` = min(8, wordCount / 600) → contributes 0-8
+- `evidenceBonus` = min(7, citations × 0.35) → contributes 0-7
 
 Subscores are the primary driver (~80% of score). Bonuses reward depth but can't compensate for weak content.
 
@@ -162,10 +186,13 @@ quality: 65           # Derived 0-100
 importance: 75        # LLM-assessed 0-100
 lastEdited: "2025-01-28"
 ratings:
-  novelty: 4.5        # 0-10 scale
+  focus: 6.0          # 0-10 scale
+  novelty: 4.5
   rigor: 5.2
-  actionability: 4.8
   completeness: 5.0
+  objectivity: 5.5
+  concreteness: 4.8
+  actionability: 4.8
 metrics:
   wordCount: 1250     # Automated
   citations: 12
@@ -218,6 +245,7 @@ See [Page Types](/internal/page-types/) for which pages are validated.
 
 ## Related Documentation
 
+- [Common Writing Principles](/internal/common-writing-principles/) - Cross-cutting writing standards (objectivity dimension)
 - [Models Style Guide](/internal/models-style-guide/) - Requirements for analytical model pages
 - [Risk Style Guide](/internal/risk-style-guide/) - Requirements for risk analysis pages
 - [Response Style Guide](/internal/response-style-guide/) - Requirements for intervention pages

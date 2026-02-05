@@ -63,9 +63,20 @@ The project has mature infrastructure:
 
 ### Style Guide
 
-- [ ] **Model page guidance** - Models need different structure than risks/responses
-  - Mermaid diagrams, quantitative tables, scenario analysis
-  - Could be `model-1.0` or expand kb-2.0 with "Model Pages" section
+- [x] **Common writing principles** - Cross-cutting style guide for epistemic honesty, language neutrality, analytical tone
+  - Created at `/internal/common-writing-principles/`
+  - Added 7th rating dimension: **objectivity** (0-10)
+  - All domain style guides reference it
+
+- [ ] **Re-grade pages with objectivity dimension** - Existing pages don't have objectivity scores
+  - Run `grade-content.mjs` with `--apply` to add objectivity ratings
+  - Prioritize analysis/model pages where epistemic honesty matters most
+
+- [ ] **Audit existing pages for insider language** - Many pages likely use "EA" as adjective
+  - Could build a crux validator to flag "EA money", "non-EA", "EA causes" etc.
+  - Apply going forward; retroactive cleanup is lower priority
+
+- [x] **Model page guidance** - Models style guide complete at `/internal/models-style-guide/`
 
 - [ ] **Component usage patterns** - Document when to use:
   - EstimateBox vs plain tables
