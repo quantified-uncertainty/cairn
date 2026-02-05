@@ -179,6 +179,12 @@ For workflow-specific guidance, see:
 - `.claude/docs/knowledge-base-system.md` - SQLite cache system
 - `.claude/docs/resource-linking.md` - External resource management
 
+For comprehensive architecture and system documentation, see `/internal/` on the live site:
+- `/internal/architecture/` - System architecture, data flow, design decisions
+- `/internal/content-database/` - SQLite schema, source fetching, APIs
+- `/internal/automation-tools/` - Complete CLI reference
+- `/internal/documentation-maintenance/` - How to keep docs updated
+
 For task-specific workflows, use skills:
 - `/improving-pages` - Page improvement workflow
 - `/managing-resources` - Resource link management

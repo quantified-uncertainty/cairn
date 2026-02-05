@@ -3,7 +3,7 @@ title: "Content Database System"
 description: "SQLite-based system for indexing articles, tracking sources, and generating AI summaries"
 sidebar:
   order: 5
-lastEdited: "2025-12-27"
+lastEdited: "2026-02-04"
 importance: 0
 quality: 44
 llmSummary: "Documentation for an internal SQLite-based content management system that indexes MDX articles, tracks citations to external sources, and generates AI summaries using Claude models. The system provides CLI tools for scanning content (~311 articles), generating summaries (estimated $2-3 for full corpus using Haiku), and exporting data to YAML for site builds."
@@ -495,12 +495,64 @@ Resources in `resources.yaml` have this structure:
 
 ---
 
+## Source Fetching
+
+The system now includes automatic source fetching via the Firecrawl API. This enables:
+
+1. **Citation verification** - Check that quoted text actually appears in sources
+2. **Content caching** - Store fetched pages for offline access
+3. **Quote validation** - Catch hallucinated quotes during page creation
+
+### Standalone Fetching
+
+```bash
+# Fetch pending sources (up to 20)
+node scripts/utils/fetch-sources.mjs --batch 20
+
+# Fetch a specific source by ID
+node scripts/utils/fetch-sources.mjs --id abc123def456
+
+# Retry failed sources
+node scripts/utils/fetch-sources.mjs --retry-failed
+
+# Preview without fetching
+node scripts/utils/fetch-sources.mjs --dry-run
+```
+
+### Integrated with Page Creation
+
+The page creator pipeline automatically:
+1. Extracts citation URLs from Perplexity research
+2. Registers them in the sources table
+3. Fetches content via Firecrawl (up to 15 per page)
+4. Uses fetched content for quote verification
+
+```bash
+# Standard tier includes source fetching
+node scripts/content/page-creator.mjs "Topic" --tier standard
+```
+
+### Rate Limiting
+
+Firecrawl free tier allows ~10 requests/minute. The system waits 7 seconds between requests to stay under limits.
+
+### Fetch Status Values
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Not yet attempted |
+| `fetched` | Successfully retrieved and stored |
+| `failed` | Fetch attempted but failed (error stored) |
+| `manual` | Requires manual handling (paywalled, etc.) |
+
+---
+
 ## Limitations
 
-1. **Source fetching not implemented**: The `fetch_status` field exists but automatic fetching of external sources is not yet built
-2. **Claims extraction minimal**: The claims table exists but extraction is not fully implemented
-3. **Local only**: Database is gitignored and must be regenerated on each machine
-4. **No incremental summary updates**: Summaries are regenerated from scratch, not updated
+1. **Claims extraction minimal**: The claims table exists but extraction is not fully implemented
+2. **Local only**: Database is gitignored and must be regenerated on each machine
+3. **No incremental summary updates**: Summaries are regenerated from scratch, not updated
+4. **Firecrawl API key required**: Source fetching requires `FIRECRAWL_KEY` in `.env`
 
 ---
 
@@ -508,7 +560,7 @@ Resources in `resources.yaml` have this structure:
 
 Potential improvements to the system:
 
-- Automatic source fetching (PDFs, web pages)
+- PDF parsing for academic papers
 - Claims extraction and consistency checking across articles
 - Similarity search using embeddings
 - Migration of entity `sources` to use resource IDs
