@@ -4,8 +4,9 @@ import { join } from "path";
 const LOGS_DIR = join(process.cwd(), "logs");
 const LOG_FILE = join(LOGS_DIR, "queries.jsonl");
 
-// Claude pricing per 1M tokens (as of Jan 2025)
+// Claude pricing per 1M tokens
 const PRICING = {
+  "claude-opus-4-6": { input: 5.0, output: 25.0 },
   "claude-sonnet-4-20250514": { input: 3.0, output: 15.0 },
   "claude-3-5-sonnet-20241022": { input: 3.0, output: 15.0 },
   "claude-3-5-haiku-20241022": { input: 0.8, output: 4.0 },

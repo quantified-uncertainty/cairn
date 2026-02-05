@@ -31,7 +31,7 @@ export const MODELS = {
   // Balanced - good for most tasks
   sonnet: 'claude-sonnet-4-20250514',
   // Most capable - for complex tasks
-  opus: 'claude-opus-4-20250514',
+  opus: 'claude-opus-4-6',
 };
 
 /**
@@ -47,6 +47,7 @@ const MODEL_ALIASES = {
   'claude-sonnet-4-5-20250929': MODELS.sonnet,
   'claude-opus-4-20250514': MODELS.opus,
   'claude-opus-4-5-20251101': MODELS.opus,
+  'claude-opus-4-6': MODELS.opus,
 };
 
 /**
