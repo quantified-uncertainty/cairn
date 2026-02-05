@@ -20,6 +20,7 @@ export default defineConfig({
           label: 'Start Here',
           items: [
             { label: 'Introduction', slug: 'getting-started/introduction' },
+            { label: 'Workshop: Research Websites', slug: 'workshop' },
           ],
         },
         {
