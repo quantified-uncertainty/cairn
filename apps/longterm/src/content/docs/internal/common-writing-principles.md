@@ -144,6 +144,25 @@ Analysis pages should include honest counter-arguments:
 
 **Fix**: Reframe as "this analysis suggests" and present counterarguments with equal rigor.
 
+### The "Self-Importance" Trap
+**Symptom**: Page describes itself as the "canonical source," "definitive guide," "most comprehensive analysis," "investment-grade," or "rigorous" analysis. Uses superlatives about its own coverage ("most thoroughly documented," "first analysis to..."). Frontmatter descriptions or note blocks claim the page is uniquely authoritative.
+
+**Why it matters**: Readers interpret these claims as the wiki asserting global authority—as if no better source exists anywhere. Even if intended to describe scope within the wiki, it reads as self-promotional marketing copy. It undermines the epistemic humility the wiki aims for.
+
+**Fix**: Describe what the page covers, not how good it is. Let quality speak for itself.
+
+| Avoid | Prefer | Why |
+|-------|--------|-----|
+| This is the canonical source for X | This page covers X | Readers judge canonicity, not authors |
+| Rigorous analysis of X | Analysis of X | "Rigorous" is self-congratulatory |
+| Investment-grade analysis | Valuation analysis | Financial marketing jargon |
+| The most comprehensive analysis of X | An analysis of X covering... | Don't claim superlatives about yourself |
+| This is the most thoroughly documented... | This is a well-documented... | Comparative claims about your own work |
+| The definitive guide to X | An overview of X | Let readers decide if it's definitive |
+| Encyclopedic resource | Structured resource | "Encyclopedic" implies completeness |
+
+**Note**: Superlatives about *external* sources are fine when attributed ("FLI calls their index 'the most comprehensive'"). The issue is claiming superlatives about the wiki's own content.
+
 ### The "One-Sided Framing" Trap
 **Symptom**: Lists benefits of an intervention without honest concerns. Doesn't red-team its own conclusions. Treats the intervention as obviously good.
 

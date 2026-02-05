@@ -67,6 +67,7 @@ Seven dimensions (0-10 scale, harsh - 7+ is exceptional):
 
 *Example failure*: Table with "True Cost: \$500K" and "Realistic EV: \$50M" → objectivity: 3 (false certainty)
 *Example failure*: "EA organizations should pressure founders" → objectivity: 2 (prescriptive + insider language)
+*Example failure*: "This is the canonical source for X" or "Rigorous analysis of X" → objectivity: 4 (self-importance; describe what the page covers, not how good it is)
 
 ### Analysis-Weighted Ratings (Critical for Analysis/Model Pages)
 
