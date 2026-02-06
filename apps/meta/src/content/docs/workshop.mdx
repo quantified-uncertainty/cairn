@@ -7,6 +7,10 @@ import { Aside, Steps, Tabs, TabItem, Card, CardGrid, LinkCard } from '@astrojs/
 
 Claude Code can automate substantial portions of research documentation — generating mini-textbooks, interactive wikis, and structured knowledge bases from your research questions. This workshop teaches you how.
 
+<Aside type="note" title="Collaborative Doc">
+**[Open the shared workshop document](https://docs.google.com/document/d/1nwqUdjeqkcI8SaDaLK9k6bivMvh9qKFpz7tJHNMy3_c/edit?usp=sharing)** — for questions, sharing your site, getting help, and coordinating during the event.
+</Aside>
+
 <Aside type="caution" title="Before the Workshop — Do This Now">
 Install these **before** arriving so we can dive straight into building:
 1. **Node.js 18+** — [nodejs.org](https://nodejs.org/) (LTS version)
@@ -18,7 +22,7 @@ Basic familiarity with Claude Code and the command line will be very useful.
 
 ---
 
-## Event Details
+## About This Workshop
 
 **Organized by** the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/).
 
@@ -29,13 +33,17 @@ Basic familiarity with Claude Code and the command line will be very useful.
 
 **Slides:** [Google Slides](https://docs.google.com/presentation/d/1Q2oisP95LRLs0mGwWIStrhhPDRMpxxrNPpvbzE59yBQ/edit?usp=sharing)
 
-**Logistics:**
+<details>
+<summary>**Upcoming event logistics** (January 2026 — MOXSF)</summary>
+
 - **Date/Time:** 7:30 PM start. The main session will be 1.5 hours.
 - **Location:** MOXSF, 4th floor
 - **Warning:** The elevator is out of order. Plan to walk up three flights of stairs.
 - **Early dinner option:** Arrive at 6:30 for the Mox-wide dinner before the workshop. Please flag in the RSVP if you plan to come early for dinner.
 
 *A shorter version of this workshop will also be given at EAG SF in February 2026.*
+
+</details>
 
 ---
 
@@ -98,7 +106,7 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
 <Aside type="caution" title="Cost — Read Before the Workshop">
 **Recommended: Use a Claude subscription.** Claude **Pro** (\$20/mo) or **Max** (\$100/mo or \$200/mo) subscriptions include Claude Code usage — no surprise bills. This is the easiest option for the workshop.
 
-**If using the API instead:** You can sign up for an Anthropic API account at [console.anthropic.com](https://console.anthropic.com/). Before the workshop, **set a spending limit** — go to Settings → Limits and set a hard limit (e.g., \$10). Without a limit, a busy workshop session could easily run up \$20-30+. Start with a small limit and increase it if needed.
+**If using the API instead:** You can sign up for an Anthropic API account at [console.anthropic.com](https://console.anthropic.com/). Before the workshop, **set a spending limit** — go to Settings → Limits and set a hard limit (e.g., \$20). A typical 90-minute workshop session involves 15-30 substantial Claude interactions and costs roughly **\$5-15 on the API**. Pro subscription users should be fine but may hit rate limits if making very rapid requests.
 </Aside>
 
 ### Key Resources
@@ -193,6 +201,17 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
 
    **Too broad**: "Everything about existential risk"
    **Too narrow**: "One specific Metaculus question" (one page, not a wiki)
+
+   <Aside type="tip" title="What makes a topic well-suited?">
+   The best topics for this format share a few traits:
+
+   - **Natural decomposition** — The topic breaks cleanly into sections and sub-pages. If you can sketch 3-5 groups of 2-4 related subtopics, you have a good fit.
+   - **Existing literature to synthesize** — Claude draws on published material. Topics with substantial writing (blog posts, papers, reports) produce much better output than cutting-edge unpublished research.
+   - **Value from organization, not original analysis** — This format excels at structuring and connecting existing knowledge. If the value comes from novel calculations or original arguments, Claude will be unreliable.
+   - **You can verify the output** — Pick a topic you know well enough to catch errors. Claude will hallucinate facts, invent citations, and present contested claims as consensus. Your domain knowledge is the quality filter.
+
+   **Topics to avoid:** Anything requiring precise quantitative calculations (use a spreadsheet), topics where most sources are behind paywalls (Claude can't access them), and topics where you'd be generating novel research claims rather than synthesizing existing ones.
+   </Aside>
 
 2. **Scaffold the project**
 
@@ -395,6 +414,17 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
    - "Find the latest funding figures for [organization/cause area] and include them"
    </Aside>
 
+   **Iterate in layers — this is where quality comes from.** Your first prompt produces a scaffold; the next 2-3 prompts are what make it actually good. Here's what a real iteration sequence looks like on a single page:
+
+   | Turn | You say | What improves |
+   |------|---------|---------------|
+   | 1 | "Create a page about compute governance" | You get a generic overview with placeholder-ish content |
+   | 2 | "Too surface-level. Add the specific proposals: chip export controls (Oct 2022 BIS rules), compute thresholds (10^25 FLOP), KYC for cloud. Include a table comparing them by feasibility and effectiveness." | Real substance — specific proposals, structured comparison |
+   | 3 | "The Open Questions section is weak. Add: (1) Does compute governance become less relevant as algorithmic efficiency improves? (2) How do you enforce thresholds when distillation makes smaller models more capable?" | Analytical depth — the kind of questions researchers actually care about |
+   | 4 | "Add cross-references to the licensing-regimes and international-coordination pages." | Connected knowledge base, not isolated pages |
+
+   Each turn takes 1-2 minutes. Four turns gets you from generic to genuinely useful. **The most common workshop mistake is creating 15 shallow pages instead of making 5 pages good.**
+
 7. **If you're stuck: try these prompts**
 
    During the content phase, if you're not sure what to do next:
@@ -444,6 +474,7 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
 |---------|-------------|
 | `claude` | Start Claude Code in current directory |
 | `claude "prompt here"` | Start with an initial prompt |
+| `claude --continue` | Resume your last conversation (if terminal crashed or you closed it) |
 | **Shift+Enter** | New line (for multi-line prompts) |
 | **Enter** | Submit your prompt |
 | `/clear` | Clear conversation context (start fresh) |
@@ -451,6 +482,14 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
 | `/init` | Auto-generate a CLAUDE.md for your project |
 | `Ctrl+C` | Cancel current Claude operation |
 | `Ctrl+D` | Exit Claude Code |
+
+**When to use `/clear` vs `/compact`:**
+
+| Situation | Use | Why |
+|-----------|-----|-----|
+| Claude is confused or producing bad output | `/clear` | Nuclear reset — throws away all context and starts fresh |
+| You get a "context too long" warning or Claude forgets earlier instructions | `/compact` | Compresses the conversation into a summary, freeing space while keeping context |
+| Switching to a completely different task | Start a new `claude` session | Clean slate with fresh permissions |
 
 ### Working Effectively
 
@@ -547,6 +586,19 @@ Without `CLAUDE.md`, Claude starts fresh every conversation — it has to re-dis
 - **LLMs hallucinate facts and citations** — Review factual claims carefully, especially numbers, dates, quotes, and paper citations. When accuracy matters, ask Claude to search the web first.
 - **MDX has quirks** — Characters like `<`, `{`, and `$` need escaping. If the build breaks, just paste the error to Claude and it'll fix it.
 - **Quality over quantity** — 10 well-researched pages beats 30 shallow ones. Spend time iterating on content, not just creating more pages.
+- **"Key Arguments" sections may be strawmen** — Claude tends to present steelmanned versions of mainstream views and weak versions of minority positions. Check that opposing arguments are represented as their proponents would state them.
+- **Quantitative claims need verification** — Claude confidently produces numbers that are plausible but wrong. Any specific dollar amount, percentage, or date should be checked.
+
+### Reviewing Content Effectively
+
+The best workshop strategy: **scaffold broadly, then review narrowly.** Generate your full page structure in the first 20 minutes, then spend the remaining time deeply improving 3-5 pages rather than trying to make all 15 good.
+
+For pages you want to actually trust, use this review approach:
+
+1. **Spot-check citations** — If Claude names a specific paper, organization, or statistic, verify it exists. Ask: "Search the web to verify whether [specific claim] is accurate."
+2. **Ask Claude to self-audit** — "Read this page and list any claims you're less than 80% confident are factually correct." Claude is surprisingly good at flagging its own uncertainty when asked directly.
+3. **Check for missing perspectives** — "What important perspectives or counterarguments are missing from this page?" This often surfaces viewpoints Claude omitted to present a cleaner narrative.
+4. **Look for false precision** — Vague claims dressed up as specific ones (exact percentages, confident timelines, precise cost figures) are a hallmark of LLM content. Soften or verify these.
 
 ---
 
