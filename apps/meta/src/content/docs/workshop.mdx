@@ -196,20 +196,35 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
 
 2. **Scaffold the project**
 
-   ```bash
-   npm create astro@latest -- --template starlight my-wiki
-   ```
+   Pick either option — both work fine for the workshop.
 
-   The wizard will ask a few questions — here's what to pick:
-   - **Where should we create your new project?** → `./my-wiki` (default is fine)
-   - **Install dependencies?** → Yes
-   - **Initialize a new git repository?** → Yes
-   - **TypeScript?** → Strictest (or whatever you're comfortable with)
+   <Tabs>
+     <TabItem label="Vanilla Starlight">
+       A plain Starlight project. Simple and clean:
 
-   Then:
-   ```bash
-   cd my-wiki
-   ```
+       ```bash
+       npm create astro@latest -- --template starlight my-wiki
+       ```
+
+       The wizard will ask a few questions — pick:
+       - **Install dependencies?** → Yes
+       - **Initialize a new git repository?** → Yes
+       - **TypeScript?** → Strictest
+
+       Then: `cd my-wiki`
+     </TabItem>
+     <TabItem label="QURI Starter">
+       Our pre-configured starter includes Mermaid diagrams, math rendering (KaTeX), React components, Tailwind CSS, and a CLAUDE.md. Useful if you know you'll want these features:
+
+       ```bash
+       npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki
+       cd my-wiki
+       npm install
+       ```
+
+       This also includes example pages showing each feature in action — you'll delete these when you create your own content.
+     </TabItem>
+   </Tabs>
 
    **Checkpoint:** You should have a `my-wiki/` folder with `src/content/docs/`, `astro.config.mjs`, and `package.json`.
 
@@ -218,7 +233,7 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
    ```bash
    npm run dev
    ```
-   Open `http://localhost:4321` in your browser. You should see the default Starlight template with a "Welcome to Starlight" page.
+   Open `http://localhost:4321` in your browser. If you used our starter, you should see "My Research Wiki" with a splash page. If you used vanilla Starlight, you should see "Welcome to Starlight."
 
    **Checkpoint:** Browser shows a working docs site.
 
@@ -278,8 +293,8 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
          actors, summarizing positions)
 
        Also:
-       - Remove the default example pages that came with
-         the Starlight template
+       - Remove the default/example pages that came with
+         the template (e.g., the example/ directory)
        - Update astro.config.mjs to use autogenerate for
          each section directory, like:
          { label: 'Policy Approaches',
@@ -309,7 +324,8 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
        - Include at least one Markdown table where relevant
 
        Also:
-       - Remove the default Starlight example pages
+       - Remove the default/example pages that came with
+         the template
        - Update astro.config.mjs to use autogenerate for
          each section directory
        - Update the site title to "[YOUR WIKI NAME]"
@@ -340,7 +356,8 @@ This workshop assumes Starlight, but the Claude Code workflow is the same for an
        - An "Open Questions" section where relevant
 
        Also:
-       - Remove the default Starlight example pages
+       - Remove the default/example pages that came with
+         the template
        - Update astro.config.mjs to use autogenerate for
          each chapter directory
        - Update the site title to "[YOUR TEXTBOOK NAME]"
@@ -458,7 +475,9 @@ The `CLAUDE.md` file in your project root is read by Claude Code automatically a
 
 ### Quick Setup
 
-The fastest way — ask Claude to create one:
+If you used the QURI starter, a `CLAUDE.md` is already included — you're set.
+
+Otherwise, the fastest way — ask Claude to create one:
 
 ```
 /init
@@ -646,6 +665,7 @@ You don't need any of this to start — but it shows where the approach can go. 
 | **VitePress docs** | [vitepress.dev](https://vitepress.dev/) |
 | **Astro docs** | [docs.astro.build](https://docs.astro.build/) |
 | **MDX docs** | [mdxjs.com](https://mdxjs.com/) |
+| **QURI Starter template** | `npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki` |
 | **CAIRN source** | [github.com/quantified-uncertainty/cairn](https://github.com/quantified-uncertainty/cairn) |
 
 ---

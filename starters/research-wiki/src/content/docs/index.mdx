@@ -1,0 +1,42 @@
+---
+title: My Research Wiki
+description: A structured knowledge base built with Astro Starlight and Claude Code.
+template: splash
+hero:
+  tagline: Replace this with your research topic and tagline
+  actions:
+    - text: Example Pages
+      link: /example/features/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What's Included
+
+<CardGrid>
+  <Card title="Mermaid Diagrams" icon="document">
+    Flowcharts, sequence diagrams, and more — all rendered from code blocks. See the [feature demo](/example/features/).
+  </Card>
+  <Card title="Math Rendering" icon="open-book">
+    Inline and display equations via KaTeX. Write `$E=mc^2$` and it just works.
+  </Card>
+  <Card title="React Components" icon="puzzle">
+    Add interactive elements with React. Create `.tsx` files in `src/components/` and import them in MDX.
+  </Card>
+  <Card title="Tailwind CSS" icon="setting">
+    Utility-first styling for custom layouts and components.
+  </Card>
+</CardGrid>
+
+---
+
+## Get Started
+
+This is a starter template for building research wikis with [Astro Starlight](https://starlight.astro.build/) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview).
+
+1. Start the dev server: `npm run dev`
+2. Open Claude Code: `claude`
+3. Tell Claude your research topic and ask it to create your page structure
+
+See the [Getting Started](/example/getting-started/) page for a detailed example prompt.

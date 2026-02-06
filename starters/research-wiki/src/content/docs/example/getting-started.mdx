@@ -1,0 +1,68 @@
+---
+title: Getting Started
+description: How to use this starter template with Claude Code.
+---
+
+## Using This Template
+
+This starter comes pre-configured with Mermaid diagrams, math rendering, React, and Tailwind CSS. You can start adding content immediately.
+
+### Quick Start
+
+1. Install dependencies: `npm install`
+2. Start the dev server (in a separate terminal): `npm run dev`
+3. Open Claude Code in this directory: `claude`
+4. Tell Claude what your research topic is and ask it to create your page structure
+5. Watch your site update in real-time (default port: `http://localhost:4321`)
+
+### Example Prompt
+
+```
+I'm building a research wiki about [YOUR TOPIC]. Create the following structure:
+
+Sections:
+1. [Section 1] — pages: [page-a], [page-b], [page-c]
+2. [Section 2] — pages: [page-d], [page-e]
+3. [Section 3] — pages: [page-f], [page-g], [page-h]
+
+For each page:
+- Create an MDX file in src/content/docs/ with appropriate subdirectories
+- Include frontmatter with title and description
+- Write a 2-3 paragraph introduction
+- Add section headers for what the page will cover
+- Include at least one Markdown table where relevant
+
+Also:
+- Delete the src/content/docs/example/ directory and its pages
+- Update astro.config.mjs sidebar to use autogenerate for each section
+- Update the site title to "[YOUR WIKI NAME]"
+- Update the landing page (index.mdx) for the new topic
+```
+
+### Project Structure
+
+```
+src/content/docs/       # All wiki pages (MDX format)
+src/components/         # React components
+src/content.config.ts   # Content collection schema (don't delete)
+astro.config.mjs        # Site config, sidebar, integrations
+CLAUDE.md               # Instructions for Claude Code
+public/                 # Static assets (create as needed for images)
+```
+
+### MDX Tips
+
+- Escape dollar signs: `\$100` not `$100`
+- Escape angle brackets in text: `\<100` not `<100`
+- Use `.mdx` extension for all pages
+- Use `---` for horizontal rules between sections
+
+### Sidebar
+
+The sidebar uses `autogenerate` based on directory structure. To add a new section, create a directory and add it to `astro.config.mjs`:
+
+```js
+sidebar: [
+  { label: 'My Section', autogenerate: { directory: 'my-section' } },
+]
+```
