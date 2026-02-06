@@ -78,6 +78,7 @@ export default defineConfig({
                       { label: 'Organizational Practices', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/organizational-practices' } },
                       { label: 'Field Building', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/field-building' } },
                       { label: 'Resilience', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/resilience' } },
+                      { label: 'Biosecurity', collapsed: true, autogenerate: { directory: 'knowledge-base/responses/biosecurity' } },
                   ],
               },
               {
@@ -96,6 +97,7 @@ export default defineConfig({
                   items: [
                       { label: 'AI Labs', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/labs' } },
                       { label: 'Safety Research Organizations', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/safety-orgs' } },
+                      { label: 'Biosecurity Organizations', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/biosecurity-orgs' } },
                       { label: 'Epistemic & Forecasting', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/epistemic-orgs' } },
                       { label: 'Community Building', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/community-building' } },
                       { label: 'Funders', collapsed: true, autogenerate: { directory: 'knowledge-base/organizations/funders' } },
