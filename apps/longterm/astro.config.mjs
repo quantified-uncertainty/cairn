@@ -121,6 +121,11 @@ export default defineConfig({
                   ],
               },
               {
+                  label: 'Reports',
+                  collapsed: true,
+                  autogenerate: { directory: 'knowledge-base/reports' },
+              },
+              {
                   label: 'Background & Context',
                   collapsed: true,
                   items: [
