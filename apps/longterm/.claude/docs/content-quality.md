@@ -59,15 +59,18 @@ Seven dimensions (0-10 scale, harsh - 7+ is exceptional):
 
 *Critical distinction*: A doc that thoroughly covers the WRONG topic scores low. Completeness is relative to the title's promise.
 
-**objectivity** - Epistemic honesty, language neutrality, and analytical tone. See [Common Writing Principles](/internal/common-writing-principles/).
+**objectivity** - Epistemic honesty, language neutrality, analytical tone, and no editorial artifacts. See [Common Writing Principles](/internal/common-writing-principles/).
 - 1-2: Heavy insider jargon ("EA money", "non-EA charities"), false certainty (estimates as facts), reads as advocacy
-- 3-4: Some insider language; estimates without uncertainty ranges; one-sided framing without counter-arguments
-- 5-6: Mostly neutral language; some uncertainty acknowledgment; mostly analytical but occasional prescriptive slips
-- 7+: Fully accessible to outsiders; all estimates hedged with ranges and caveats; analytical throughout; honest counter-arguments
+- 3-4: Some insider language; estimates without uncertainty ranges; one-sided framing without counter-arguments; correction artifacts visible
+- 5-6: Mostly neutral language; some uncertainty acknowledgment; mostly analytical but occasional prescriptive slips or minor artifacts
+- 7+: Fully accessible to outsiders; all estimates hedged with ranges and caveats; analytical throughout; honest counter-arguments; reads as a polished final product with no visible editorial process
+
+Objectivity includes **no editorial artifacts**: the page should read as if the correct framing was always the intended one. No "actually X is true" (implying correction), no "contrary to what you might think" (implying earlier misconception), no "A common misconception is..." (unless genuinely addressing a widespread public misconception, not correcting the page's own earlier framing). See the "Editorial Artifacts" trap below.
 
 *Example failure*: Table with "True Cost: \$500K" and "Realistic EV: \$50M" → objectivity: 3 (false certainty)
 *Example failure*: "EA organizations should pressure founders" → objectivity: 2 (prescriptive + insider language)
 *Example failure*: "This is the canonical source for X" or "Rigorous analysis of X" → objectivity: 4 (self-importance; describe what the page covers, not how good it is)
+*Example failure*: "The 409A discount actually makes deductions smaller" → objectivity: 5 (the word "actually" signals surprise/correction from the editorial process)
 
 ### Analysis-Weighted Ratings (Critical for Analysis/Model Pages)
 
@@ -156,6 +159,21 @@ Acceptable scores:
 **Ratings affected**: objectivity (insider language + false certainty + prescriptive tone)
 **Fix**: Follow [Common Writing Principles](/internal/common-writing-principles/). Use descriptive language, add ranges to estimates, reframe as analysis not advocacy.
 
+### The "Editorial Artifacts" Trap
+**Symptom**: Page reveals its editorial process through language patterns. Two forms:
+
+**Explicit revision references**: "An earlier version showed...", "We previously estimated...", "This section was rewritten because..."
+
+**Correction artifacts** (subtler): Language that implies the author discovered something surprising during writing, or is correcting their own prior misconception:
+- "actually" as emphasis ("X **actually** works differently") — signals surprise/correction
+- "contrary to what you might think" — implies the author initially thought otherwise
+- "A common misconception is..." — when addressing the page's own earlier framing, not a genuine public misconception
+- "not just X, but Y" — when the "not just" corrects a narrower frame from an earlier draft
+- Over-clarifying parentheticals: "this applies at any time (not just pre-IPO)" — the parenthetical reveals the page once claimed otherwise
+
+**Ratings affected**: objectivity (breaks fourth wall; readers see a published analysis, not a changelog)
+**Fix**: Present the final analysis directly. State facts without surprise markers. If a nuance needs explaining, present it as inherent to the topic, not as something discovered during writing. The page should read as if the correct framing was always the intended one.
+
 ## Frontmatter Format
 
 ```yaml
@@ -227,6 +245,47 @@ Bonuses:
 - +5 for >3000 words
 - +3 for >10 citations
 - +2 for diagrams
+
+## 3-Step Content Grading Pipeline
+
+Quality grading uses a 3-step pipeline that progressively builds context:
+
+### Step 1: Automated Warnings (regex, no LLM)
+Five validation rules run against page content, catching common quality issues:
+
+| Rule | What it catches |
+|------|-----------------|
+| `insider-jargon` | "EA money", "non-EA", "the community" without context |
+| `false-certainty` | "True Cost:", "clearly", "obviously", point estimates without ranges |
+| `prescriptive-language` | "should"/"must" in analysis, self-importance phrases |
+| `tone-markers` | "actually", "interestingly", "in fact", correction patterns |
+| `structural-quality` | >200-word paragraphs, vague "it depends", missing uncertainty sections |
+
+These run via `crux validate unified` alongside existing rules.
+
+### Step 2: LLM Checklist Review (Haiku)
+A Haiku API call reviews the page against the [content warnings checklist](content-warnings-checklist.md) — ~70 items across 7 categories. Produces a structured warnings array with checklist IDs and quoted text.
+
+### Step 3: Rating Scales (Sonnet)
+The existing 7-dimension scoring, now informed by warnings from Steps 1-2. The Sonnet prompt includes a summary of all warnings, helping it calibrate objectivity, rigor, and concreteness scores.
+
+### Running the Pipeline
+
+```bash
+# Full 3-step pipeline
+crux content grade-content --page my-page --apply
+
+# Warnings only (Steps 1-2, no rating)
+crux content grade-content --page my-page --warnings-only
+
+# Skip warnings (Step 3 only, backward compat)
+crux content grade-content --page my-page --skip-warnings --apply
+
+# Run just the automated rules
+crux validate unified --rules=insider-jargon,false-certainty,prescriptive-language,tone-markers,structural-quality
+```
+
+Warnings are ephemeral — they appear in the JSON output file (`.claude/temp/grades-output.json`) but are NOT stored in frontmatter.
 
 ## Validation
 

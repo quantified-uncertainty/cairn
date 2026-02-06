@@ -29,18 +29,34 @@ npm run crux -- analyze mentions
 npm run crux -- analyze links --orphans
 ```
 
-## Quality Assessment
+## Quality Assessment — 3-Step Pipeline
 
-Pages are scored on four dimensions (0-10, harsh scale - 7+ is exceptional):
+Quality assessment uses a 3-step pipeline. When manually reviewing a page, follow this process:
+
+### Step 1: Run automated warning rules
+```bash
+npm run crux -- validate unified --rules=insider-jargon,false-certainty,prescriptive-language,tone-markers,structural-quality
+```
+
+### Step 2: Review against the checklist
+Consult `.claude/docs/content-warnings-checklist.md` — ~70 items across 7 categories (Objectivity, Rigor, Focus, Completeness, Concreteness, Cross-Page, Formatting). Check each category and note violations.
+
+### Step 3: Score on 7 dimensions
+Pages are scored on seven dimensions (0-10, harsh scale - 7+ is exceptional):
 
 | Dimension | Measures |
 |-----------|----------|
+| **focus** | Answers what the title promises |
 | **novelty** | Originality beyond sources |
 | **rigor** | Claims sourced and quantified |
-| **actionability** | Decision usefulness |
 | **completeness** | Coverage of topic |
+| **objectivity** | Epistemic honesty, neutral language |
+| **concreteness** | Specific vs. abstract |
+| **actionability** | Decision usefulness |
 
-Use the `/grade` skill to assess page quality. See `/internal/rating-system/` for documentation.
+Factor the warnings from Steps 1-2 into your scores, especially for objectivity, rigor, and concreteness.
+
+Use the `/grade` skill to run the full automated pipeline. See `.claude/docs/content-quality.md` for the rating system and `.claude/docs/content-warnings-checklist.md` for the full checklist.
 
 ## Common Improvements
 

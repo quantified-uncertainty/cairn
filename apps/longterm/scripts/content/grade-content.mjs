@@ -1,35 +1,44 @@
 #!/usr/bin/env node
 
 /**
- * Grade Content Script
+ * Grade Content Script — 3-Step Pipeline
  *
- * Uses Claude Sonnet API to automatically grade pages with:
- * - importance (0-100): How significant for understanding AI risk
- * - quality (0-100): How well-developed the content is (strict structural requirements)
- * - llmSummary: 1-2 sentence summary with key conclusions
- * - ratings (for models): novelty, rigor, actionability, completeness
+ * Grades pages using a 3-step pipeline:
+ *   Step 1: Automated warnings — regex-based rules (fast, no LLM)
+ *   Step 2: LLM checklist — Haiku reviews ~70 checklist items → warnings array
+ *   Step 3: Rating scales — Sonnet scores 7 dimensions, informed by Steps 1-2
  *
  * Usage:
  *   ANTHROPIC_API_KEY=sk-... node scripts/content/grade-content.mjs [options]
  *
  * Options:
- *   --page ID       Grade a single page by ID or partial match
- *   --dry-run       Show what would be processed without calling API
- *   --limit N       Only process N pages (for testing)
- *   --parallel N    Process N pages concurrently (default: 1)
- *   --category X    Only process pages in category (models, risks, responses, etc.)
- *   --skip-graded   Skip pages that already have importance set
- *   --output FILE   Write results to JSON file (default: grades-output.json)
- *   --apply         Apply grades directly to frontmatter (use with caution)
+ *   --page ID          Grade a single page by ID or partial match
+ *   --dry-run          Show what would be processed without calling API
+ *   --limit N          Only process N pages (for testing)
+ *   --parallel N       Process N pages concurrently (default: 1)
+ *   --category X       Only process pages in category (models, risks, responses, etc.)
+ *   --skip-graded      Skip pages that already have importance set
+ *   --output FILE      Write results to JSON file (default: grades-output.json)
+ *   --apply            Apply grades directly to frontmatter (use with caution)
+ *   --skip-warnings    Skip Steps 1-2, just rate (backward compat)
+ *   --warnings-only    Run Steps 1-2, skip rating (Step 3)
  *
- * Cost estimate: ~$0.05 per page, ~$15 for all 300 pages (full content)
+ * Cost estimate: ~$0.06 per page (full pipeline), ~$0.01 per page (warnings-only)
  */
 
-import { createClient, parseJsonResponse } from '../lib/anthropic.mjs';
+import { createClient, callClaude, parseJsonResponse, MODELS } from '../lib/anthropic.mjs';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, relative, basename } from 'path';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { CONTENT_DIR } from '../lib/content-types.mjs';
+import { ValidationEngine, ContentFile } from '../lib/validation-engine.mjs';
+import {
+  insiderJargonRule,
+  falseCertaintyRule,
+  prescriptiveLanguageRule,
+  toneMarkersRule,
+  structuralQualityRule,
+} from '../lib/rules/index.mjs';
 
 const OUTPUT_FILE = '.claude/temp/grades-output.json';
 
@@ -44,6 +53,8 @@ const options = {
   output: args.includes('--output') ? args[args.indexOf('--output') + 1] : OUTPUT_FILE,
   apply: args.includes('--apply'),
   parallel: args.includes('--parallel') ? parseInt(args[args.indexOf('--parallel') + 1]) : 1,
+  skipWarnings: args.includes('--skip-warnings'),
+  warningsOnly: args.includes('--warnings-only'),
 };
 
 const SYSTEM_PROMPT = `You are an expert evaluator of AI safety content for a resource aimed at **expert AI prioritization work** - helping researchers and funders identify and prioritize concrete interventions to reduce AI existential risk.
@@ -423,20 +434,171 @@ function computeQuality(ratings, metrics, frontmatter = {}, relativePath = '') {
   return Math.round(Math.max(0, quality));
 }
 
+// Warning rules used in Step 1
+const WARNING_RULES = [
+  insiderJargonRule,
+  falseCertaintyRule,
+  prescriptiveLanguageRule,
+  toneMarkersRule,
+  structuralQualityRule,
+];
+
 /**
- * Call Claude API to grade a page
+ * Step 1: Run automated validation rules against a single page
+ * Returns an array of warning objects { rule, line, message, severity }
  */
-async function gradePage(client, page) {
+async function runAutomatedWarnings(page) {
+  const engine = new ValidationEngine();
+  await engine.load();
+
+  // Find the content file in the engine's loaded content
+  const contentFile = engine.content.get(page.filePath);
+  if (!contentFile) {
+    // Create a ContentFile from the page data
+    const cf = new ContentFile(page.filePath, page.content);
+    const issues = [];
+    for (const rule of WARNING_RULES) {
+      const ruleIssues = await rule.check(cf, engine);
+      if (Array.isArray(ruleIssues)) {
+        issues.push(...ruleIssues);
+      }
+    }
+    return issues.map(i => ({
+      rule: i.rule,
+      line: i.line,
+      message: i.message,
+      severity: i.severity,
+    }));
+  }
+
+  const issues = [];
+  for (const rule of WARNING_RULES) {
+    const ruleIssues = await rule.check(contentFile, engine);
+    if (Array.isArray(ruleIssues)) {
+      issues.push(...ruleIssues);
+    }
+  }
+  return issues.map(i => ({
+    rule: i.rule,
+    line: i.line,
+    message: i.message,
+    severity: i.severity,
+  }));
+}
+
+// Step 2: LLM checklist system prompt
+const CHECKLIST_SYSTEM_PROMPT = `You are a content quality reviewer. Review the page against the checklist items below. For each item that applies (i.e., the page has this problem), return it in your response. Skip items where the page is fine.
+
+Be precise and specific — cite line numbers or quotes when flagging an issue.
+
+Respond with valid JSON only, no markdown.`;
+
+const CHECKLIST_USER_TEMPLATE = `Review this page against the content quality checklist.
+
+**Title**: {{title}}
+**Content type**: {{contentType}}
+
+---
+CONTENT:
+{{content}}
+---
+
+For each checklist item where this page has a problem, include it in the warnings array. Only include items where there IS a problem. Be specific — quote the problematic text.
+
+Checklist categories:
+- Objectivity & Tone (OBJ): insider jargon, false certainty, loaded language, prescriptive voice, asymmetric skepticism, editorializing
+- Rigor & Evidence (RIG): unsourced claims, missing ranges, stale data, false precision, cherry-picked evidence, inconsistent numbers
+- Focus & Structure (FOC): title mismatch, scope creep, buried lede, redundant sections, wall of text
+- Completeness (CMP): missing counterarguments, missing stakeholders, unanswered questions, missing limitations
+- Concreteness (CON): vague generalities, abstract recommendations, vague timelines, missing magnitudes
+- Cross-Page (XPC): contradictory figures, stale valuations, missing cross-references
+- Formatting (FMT): long paragraphs, missing data dates, formatting inconsistencies
+
+Respond with JSON:
+{
+  "warnings": [
+    {"id": "<checklist ID like OBJ-01>", "quote": "<problematic text>", "note": "<brief explanation>"},
+    ...
+  ]
+}`;
+
+/**
+ * Step 2: Run LLM checklist review using Haiku
+ * Returns an array of warning objects from checklist review
+ */
+async function runChecklistReview(client, page) {
+  const fullContent = getContent(page.content, 6000); // Shorter for Haiku
+  const contentType = detectContentType(page.frontmatter, page.relativePath);
+
+  const userPrompt = CHECKLIST_USER_TEMPLATE
+    .replace('{{title}}', page.title)
+    .replace('{{contentType}}', contentType)
+    .replace('{{content}}', fullContent);
+
+  try {
+    const result = await callClaude(client, {
+      model: 'haiku',
+      systemPrompt: CHECKLIST_SYSTEM_PROMPT,
+      userPrompt,
+      maxTokens: 1500,
+    });
+
+    const parsed = parseJsonResponse(result.text);
+    return parsed.warnings || [];
+  } catch (e) {
+    console.error(`  Checklist review failed for ${page.id}: ${e.message}`);
+    return [];
+  }
+}
+
+/**
+ * Format warnings summary for inclusion in the rating prompt
+ */
+function formatWarningsSummary(automatedWarnings, checklistWarnings) {
+  const lines = [];
+
+  if (automatedWarnings.length > 0) {
+    lines.push('**Automated rule warnings:**');
+    for (const w of automatedWarnings.slice(0, 15)) { // Cap at 15 to avoid prompt bloat
+      lines.push(`- [${w.rule}] Line ${w.line}: ${w.message}`);
+    }
+    if (automatedWarnings.length > 15) {
+      lines.push(`- ... and ${automatedWarnings.length - 15} more`);
+    }
+  }
+
+  if (checklistWarnings.length > 0) {
+    lines.push('**Checklist review warnings:**');
+    for (const w of checklistWarnings.slice(0, 15)) {
+      lines.push(`- [${w.id}] "${w.quote}" — ${w.note}`);
+    }
+    if (checklistWarnings.length > 15) {
+      lines.push(`- ... and ${checklistWarnings.length - 15} more`);
+    }
+  }
+
+  return lines.length > 0 ? lines.join('\n') : 'No warnings from automated checks or checklist review.';
+}
+
+/**
+ * Step 3: Call Claude API to grade a page (original behavior, now with warnings context)
+ */
+async function gradePage(client, page, warningsSummary = null) {
   const fullContent = getContent(page.content);
   const contentType = detectContentType(page.frontmatter, page.relativePath);
 
-  const userPrompt = USER_PROMPT_TEMPLATE
+  let userPrompt = USER_PROMPT_TEMPLATE
     .replace('{{filePath}}', page.relativePath)
     .replace('{{category}}', page.category)
     .replace('{{contentType}}', contentType)
     .replace('{{title}}', page.title)
     .replace('{{description}}', page.frontmatter.description || '(none)')
     .replace('{{content}}', fullContent);
+
+  // Append warnings context from Steps 1-2 if available
+  if (warningsSummary) {
+    userPrompt += `\n\n---\nPRE-SCREENING WARNINGS (from automated rules and checklist review — factor these into your ratings, especially objectivity, rigor, and concreteness):\n${warningsSummary}\n---`;
+  }
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-5-20250929',
@@ -545,8 +707,16 @@ function applyGradesToFile(page, grades, metrics, derivedQuality) {
  * Main execution
  */
 async function main() {
-  console.log('Content Grading Script');
-  console.log('======================\n');
+  console.log('Content Grading Script — 3-Step Pipeline');
+  console.log('==========================================\n');
+
+  if (options.skipWarnings) {
+    console.log('Mode: Skip warnings (Step 3 only — backward compat)');
+  } else if (options.warningsOnly) {
+    console.log('Mode: Warnings only (Steps 1-2, no rating)');
+  } else {
+    console.log('Mode: Full 3-step pipeline (warnings → checklist → rating)');
+  }
 
   // Check for API key
   if (!process.env.ANTHROPIC_API_KEY && !options.dryRun) {
@@ -604,14 +774,27 @@ async function main() {
   // Cost estimate (with full content)
   const avgTokens = 4000; // input per page (~2500 words avg + metadata)
   const outputTokens = 200; // output per page
-  const inputCost = (pages.length * avgTokens / 1_000_000) * 3; // Sonnet input
-  const outputCost = (pages.length * outputTokens / 1_000_000) * 15; // Sonnet output
-  const totalCost = inputCost + outputCost;
+  const sonnetInputCost = (pages.length * avgTokens / 1_000_000) * 3;
+  const sonnetOutputCost = (pages.length * outputTokens / 1_000_000) * 15;
+  const haikuInputCost = (pages.length * 3000 / 1_000_000) * 0.80; // Haiku pricing
+  const haikuOutputCost = (pages.length * 500 / 1_000_000) * 4;
 
-  console.log(`\nCost Estimate:`);
-  console.log(`  Input:  ${(pages.length * avgTokens / 1000).toFixed(0)}K tokens → $${inputCost.toFixed(2)}`);
-  console.log(`  Output: ${(pages.length * outputTokens / 1000).toFixed(0)}K tokens → $${outputCost.toFixed(2)}`);
-  console.log(`  Total:  $${totalCost.toFixed(2)}\n`);
+  let totalCost;
+  if (options.warningsOnly) {
+    totalCost = haikuInputCost + haikuOutputCost;
+    console.log(`\nCost Estimate (warnings-only — Step 2 Haiku):`);
+    console.log(`  Haiku: $${totalCost.toFixed(2)}\n`);
+  } else if (options.skipWarnings) {
+    totalCost = sonnetInputCost + sonnetOutputCost;
+    console.log(`\nCost Estimate (skip-warnings — Step 3 Sonnet only):`);
+    console.log(`  Sonnet: $${totalCost.toFixed(2)}\n`);
+  } else {
+    totalCost = sonnetInputCost + sonnetOutputCost + haikuInputCost + haikuOutputCost;
+    console.log(`\nCost Estimate (full pipeline — Haiku + Sonnet):`);
+    console.log(`  Step 2 (Haiku):  $${(haikuInputCost + haikuOutputCost).toFixed(2)}`);
+    console.log(`  Step 3 (Sonnet): $${(sonnetInputCost + sonnetOutputCost).toFixed(2)}`);
+    console.log(`  Total:           $${totalCost.toFixed(2)}\n`);
+  }
 
   if (options.dryRun) {
     console.log('Dry run - pages that would be processed:');
@@ -638,7 +821,46 @@ async function main() {
   // Process in batches for parallel execution
   async function processPage(page, index) {
     try {
-      const grades = await gradePage(client, page);
+      let automatedWarnings = [];
+      let checklistWarnings = [];
+      let warningsSummary = null;
+
+      // Step 1 & 2: Run warnings (unless --skip-warnings)
+      if (!options.skipWarnings) {
+        // Step 1: Automated warnings (always fast, no API)
+        automatedWarnings = await runAutomatedWarnings(page);
+        console.log(`  [${index + 1}/${pages.length}] ${page.id}: Step 1 — ${automatedWarnings.length} automated warnings`);
+
+        // Step 2: LLM checklist review (Haiku)
+        if (!options.dryRun) {
+          checklistWarnings = await runChecklistReview(client, page);
+          console.log(`  [${index + 1}/${pages.length}] ${page.id}: Step 2 — ${checklistWarnings.length} checklist warnings`);
+        }
+
+        warningsSummary = formatWarningsSummary(automatedWarnings, checklistWarnings);
+      }
+
+      // If --warnings-only, skip Step 3
+      if (options.warningsOnly) {
+        const metrics = computeMetrics(page.content);
+        const result = {
+          id: page.id,
+          filePath: page.relativePath,
+          category: page.category,
+          title: page.title,
+          metrics,
+          warnings: {
+            automated: automatedWarnings,
+            checklist: checklistWarnings,
+            totalCount: automatedWarnings.length + checklistWarnings.length,
+          },
+        };
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: ${automatedWarnings.length + checklistWarnings.length} total warnings (warnings-only mode)`);
+        return { success: true, result };
+      }
+
+      // Step 3: LLM rating (Sonnet)
+      const grades = await gradePage(client, page, warningsSummary);
 
       if (grades && grades.ratings) {
         // Compute automated metrics
@@ -658,6 +880,11 @@ async function main() {
           metrics,
           quality: derivedQuality,
           llmSummary: grades.llmSummary,
+          warnings: options.skipWarnings ? undefined : {
+            automated: automatedWarnings,
+            checklist: checklistWarnings,
+            totalCount: automatedWarnings.length + checklistWarnings.length,
+          },
         };
 
         let applied = false;
@@ -669,7 +896,8 @@ async function main() {
         }
 
         const r = grades.ratings;
-        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, f=${r.focus} n=${r.novelty} r=${r.rigor} c=${r.completeness} con=${r.concreteness} a=${r.actionability} o=${r.objectivity} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
+        const warnCount = options.skipWarnings ? '' : ` [${automatedWarnings.length + checklistWarnings.length}w]`;
+        console.log(`[${index + 1}/${pages.length}] ${page.id}: imp=${grades.importance.toFixed(1)}, f=${r.focus} n=${r.novelty} r=${r.rigor} c=${r.completeness} con=${r.concreteness} a=${r.actionability} o=${r.objectivity} → qual=${derivedQuality} (${metrics.wordCount}w, ${metrics.citations}cit)${warnCount}${options.apply ? (applied ? ' ✓' : ' ✗') : ''}`);
         return { success: true, result };
       } else {
         console.log(`[${index + 1}/${pages.length}] ${page.id}: FAILED (no ratings in response)`);

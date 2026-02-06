@@ -42,7 +42,15 @@ export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 // Quality validation rules
 export { qualitySourceRule } from './quality-source.mjs';
 export { temporalArtifactsRule } from './temporal-artifacts.mjs';
+export { editorialArtifactsRule } from './editorial-artifacts.mjs';
 export { outdatedNamesRule } from './outdated-names.mjs';
+
+// Content quality warning rules (3-step grading pipeline)
+export { insiderJargonRule } from './insider-jargon.mjs';
+export { falseCertaintyRule } from './false-certainty.mjs';
+export { prescriptiveLanguageRule } from './prescriptive-language.mjs';
+export { toneMarkersRule } from './tone-markers.mjs';
+export { structuralQualityRule } from './structural-quality.mjs';
 
 // Collect all rules for easy registration
 import { entityLinkIdsRule } from './entitylink-ids.mjs';
@@ -69,7 +77,13 @@ import { vagueCitationsRule } from './vague-citations.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 import { qualitySourceRule } from './quality-source.mjs';
 import { temporalArtifactsRule } from './temporal-artifacts.mjs';
+import { editorialArtifactsRule } from './editorial-artifacts.mjs';
 import { outdatedNamesRule } from './outdated-names.mjs';
+import { insiderJargonRule } from './insider-jargon.mjs';
+import { falseCertaintyRule } from './false-certainty.mjs';
+import { prescriptiveLanguageRule } from './prescriptive-language.mjs';
+import { toneMarkersRule } from './tone-markers.mjs';
+import { structuralQualityRule } from './structural-quality.mjs';
 
 export const allRules = [
   // Content validation
@@ -109,7 +123,15 @@ export const allRules = [
   // Quality validation
   qualitySourceRule,
   temporalArtifactsRule,
+  editorialArtifactsRule,
   outdatedNamesRule,
+
+  // Content quality warnings (3-step grading pipeline)
+  insiderJargonRule,
+  falseCertaintyRule,
+  prescriptiveLanguageRule,
+  toneMarkersRule,
+  structuralQualityRule,
 ];
 
 export default allRules;
