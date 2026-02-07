@@ -25,7 +25,7 @@ import { docsSchema } from '@astrojs/starlight/schema';
  * - novelty: Value-add beyond obvious sources (3-4 = summary of sources, 5-6 = some original synthesis, 7+ = genuinely new insight or framing)
  * - rigor: Evidence quality (3-4 = mixed sourcing, 5-6 = mostly sourced, 7+ = fully sourced with quantification)
  * - completeness: Covers what the TITLE promises, not just "has content" (3-4 = misses key aspects, 5-6 = covers main points, 7+ = thorough on claimed topic)
- * - objectivity: Epistemic honesty, language neutrality, analytical tone (3-4 = insider jargon/false certainty, 5-6 = mostly neutral, 7+ = fully accessible and honest about uncertainty). See /internal/common-writing-principles/
+ * - objectivity: Epistemic honesty, language neutrality, analytical tone, no editorial artifacts (3-4 = insider jargon/false certainty/correction artifacts, 5-6 = mostly neutral, 7+ = fully accessible, honest about uncertainty, reads as polished final product). See /internal/common-writing-principles/
  *
  * Analysis-weighted ratings (critical for analysis/model pages):
  * - concreteness: Specific recommendations/numbers/examples vs. abstract hand-waving (3-4 = vague generalities, 5-6 = some specifics, 7+ = concrete actionable details)
