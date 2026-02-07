@@ -108,14 +108,14 @@ Several existing benchmarks address aspects of epistemic virtue, though none pro
 
 ### Truthfulness and Accuracy
 
-| Benchmark | What It Measures | Key Finding |
-|-----------|-----------------|-------------|
-| **[TruthfulQA](https://arxiv.org/abs/2109.07958)** (Lin, Hilton, Evans, 2022) | 817 questions across 38 categories designed so humans would answer falsely due to misconceptions | Best model scored 58% truthful vs. 94% human performance; larger models were initially *less* truthful (inverse scaling) |
-| **[SimpleQA](https://cdn.openai.com/papers/simpleqa.pdf)** (OpenAI, Nov 2024) | 4,326 adversarially-collected short fact-seeking questions with single indisputable answers | GPT-4o scored \<40%; o1-preview achieved highest F-score of 44.8%; explicitly measures whether models "know what they know" |
-| **[FActScore](https://arxiv.org/abs/2305.14251)** (Min et al., EMNLP 2023) | Breaks long-form generation into atomic facts and computes % supported by knowledge source | ChatGPT achieved 58% FActScore on biography generation; automated evaluation with \<2% error rate |
-| **[HaluEval](https://aclanthology.org/2023.emnlp-main.397.pdf)** (Li et al., EMNLP 2023) | 5,000 general queries + 30,000 task-specific examples testing hallucination recognition | Models frequently hallucinate even on simple factual queries |
-| **[DeceptionBench](https://arxiv.org/abs/2510.15501)** (2025) | 150 scenarios across 5 societal domains testing deceptive tendencies | First systematic benchmark for AI deception |
-| **[HalluLens](https://arxiv.org/html/2504.17550v1)** (2025) | Newer hallucination evaluation framework | Updated evaluation methodology |
+| Benchmark | Focus | Key Finding | Adoption |
+|-----------|-------|-------------|----------|
+| **[TruthfulQA](https://arxiv.org/abs/2109.07958)** (2022) | 817 questions targeting human misconceptions | Best model 58% truthful vs 94% human; inverse scaling | 1,500+ citations; HF Leaderboard |
+| **[SimpleQA](https://cdn.openai.com/papers/simpleqa.pdf)** (OpenAI, 2024) | 4,326 fact-seeking questions with single answers | GPT-4o \<40%; tests "knowing what you know" | Rapidly adopted; Kaggle leaderboard |
+| **[FActScore](https://arxiv.org/abs/2305.14251)** (EMNLP 2023) | Atomic fact verification in long-form generation | ChatGPT 58% factual on biographies | 500+ citations; EMNLP best paper area |
+| **[HaluEval](https://aclanthology.org/2023.emnlp-main.397.pdf)** (EMNLP 2023) | 35K examples testing hallucination recognition | Models hallucinate on simple factual queries | 300+ citations; widely used |
+| **[DeceptionBench](https://arxiv.org/abs/2510.15501)** (2025) | 150 scenarios testing AI deceptive tendencies | First systematic deception benchmark | Growing adoption |
+| **[HalluLens](https://arxiv.org/html/2504.17550v1)** (2025) | Updated hallucination evaluation framework | New evaluation methodology | Early stage |
 
 ### Sycophancy
 

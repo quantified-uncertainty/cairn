@@ -16,7 +16,7 @@ metrics:
   wordCount: 654
   citations: 10
   tables: 22
-  diagrams: 0
+  diagrams: 1
 clusters: ["epistemics", "community"]
 ---
 import {DataInfoBox, Backlinks, Mermaid, EntityLink, DataExternalLinks} from '@components/wiki';
@@ -83,6 +83,38 @@ Additionally, Metaforecast provides access to **17,000+ public models** from Gue
 | **Kalshi** | Real money (USD), CFTC-regulated | Finance professionals, serious traders |
 
 ## Technical Architecture
+
+<Mermaid chart={`
+flowchart TD
+    subgraph Sources["Platform APIs"]
+        MET["Metaculus\n(~1,200 questions)"]
+        MAN["Manifold"]
+        POLY["Polymarket"]
+        GJ["Good Judgment Open"]
+        KAL["Kalshi"]
+        OTHER["Other platforms"]
+    end
+
+    subgraph Pipeline["Daily Processing"]
+        SCRAPE["Automated Scraping\n(daily fetch)"]
+        NORM["Normalize Question Format"]
+        DB["Centralized Database"]
+    end
+
+    subgraph Output["User Interfaces"]
+        SEARCH["Elasticsearch\nUnified Search"]
+        API["GraphQL API"]
+        BOTS["Twitter Bot\nDiscord Bot"]
+    end
+
+    MET & MAN & POLY & GJ & KAL & OTHER --> SCRAPE
+    SCRAPE --> NORM
+    NORM --> DB
+    DB --> SEARCH & API & BOTS
+
+    style DB fill:#d4edda
+    style SEARCH fill:#e8f4fd
+`} />
 
 ### Data Pipeline
 

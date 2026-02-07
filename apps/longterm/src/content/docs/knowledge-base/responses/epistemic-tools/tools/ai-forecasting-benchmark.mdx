@@ -16,7 +16,7 @@ metrics:
   wordCount: 567
   citations: 7
   tables: 29
-  diagrams: 0
+  diagrams: 1
 clusters: ["epistemics", "ai-safety"]
 ---
 import {DataInfoBox, Backlinks, Mermaid, EntityLink, DataExternalLinks} from '@components/wiki';
@@ -64,6 +64,33 @@ Participants can compete using API credits provided by OpenAI and Anthropic, enc
 Both components use Metaculus's **Peer score** metric, which compares forecasters to each other and equalizes for question difficulty, making performance comparison fair across different question sets.
 
 ## Historical Results
+
+<Mermaid chart={`
+flowchart TD
+    subgraph Trajectory["AI vs Human Performance Trajectory"]
+        direction TB
+        Q3["Q3 2024\nBest Bot: -11.3\n(Large gap)"]
+        Q4["Q4 2024\nBest Bot: -8.6\n(24% improvement)"]
+        Q1["Q1 2025\nmetac-o1 first place\n(Gap narrowing)"]
+        Q2["Q2 2025\n54 bots, 348 questions\n(Humans lead, p=0.00001)"]
+    end
+
+    subgraph Baseline["Human Baseline"]
+        PRO["Pro Forecasters\n(Peer score above 0)"]
+        COMM["Community Prediction\nPeer score: 12.9\n(Top 10 globally)"]
+    end
+
+    Q3 --> Q4
+    Q4 --> Q1
+    Q1 --> Q2
+
+    Q2 -.->|Still trails| PRO
+    PRO --- COMM
+
+    style PRO fill:#d4edda
+    style COMM fill:#d4edda
+    style Q2 fill:#fff3e0
+`} />
 
 ### Quarterly Performance Trajectory
 

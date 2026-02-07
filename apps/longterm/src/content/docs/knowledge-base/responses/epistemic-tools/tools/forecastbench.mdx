@@ -16,7 +16,7 @@ metrics:
   wordCount: 603
   citations: 11
   tables: 37
-  diagrams: 0
+  diagrams: 1
 clusters: ["epistemics", "ai-safety"]
 ---
 import {DataInfoBox, Backlinks, Mermaid, EntityLink, DataExternalLinks} from '@components/wiki';
@@ -55,6 +55,32 @@ The benchmark was created to address a critical methodological issue: as LLMs ar
 The authors (led by FRI Research Director Ezra Karger and Chief Scientist <EntityLink id="philip-tetlock">Philip Tetlock</EntityLink>) designed ForecastBench as a "valuable proxy for general intelligence" since forecasting requires integrating diverse knowledge sources and reasoning under uncertainty.
 
 ### Current Results
+
+<Mermaid chart={`
+flowchart TD
+    subgraph Performance["Forecasting Performance (Brier Score, lower = better)"]
+        SF["Superforecasters\n0.081"]
+        GPT45["GPT-4.5\n0.101"]
+        PUBLIC["Public Participants\n~0.12"]
+        GPT4["GPT-4 (Mar 2023)\n0.131"]
+        RAND["Random Baseline\n0.25"]
+    end
+
+    SF -->|Gap: 0.020| GPT45
+    GPT45 -->|Gap: ~0.02| PUBLIC
+    PUBLIC -->|Gap: ~0.01| GPT4
+    GPT4 -->|Gap: 0.12| RAND
+
+    subgraph Projection["Projected Parity"]
+        PARITY["LLMs match superforecasters\nNov 2026\n(95% CI: Dec 2025 - Jan 2028)"]
+    end
+
+    GPT45 -.->|Linear extrapolation| PARITY
+
+    style SF fill:#d4edda
+    style GPT45 fill:#e8f4fd
+    style PARITY fill:#fff3e0
+`} />
 
 As of February 2025:
 

@@ -17,10 +17,10 @@ metrics:
   wordCount: 1427
   citations: 23
   tables: 2
-  diagrams: 0
+  diagrams: 1
 clusters: ["epistemics"]
 ---
-import {DataInfoBox, KeyQuestions, R, EntityLink, DataExternalLinks} from '@components/wiki';
+import {DataInfoBox, KeyQuestions, Mermaid, R, EntityLink, DataExternalLinks} from '@components/wiki';
 
 <DataExternalLinks pageId="prediction-markets" client:load />
 
@@ -59,6 +59,36 @@ Three mechanisms make this work:
 **Continuous updating.** Unlike quarterly polls or annual expert surveys, market prices adjust instantly to new information. During the 2016 Brexit referendum, <R id="cd692e68fd8ba206">Betfair</R> prices tracked exit poll releases in real-time, providing probability updates every few minutes.
 
 Modern platforms use Automated Market Makers (AMMs) based on logarithmic market scoring rules. These algorithms provide liquidity even when few traders are active, but impose exponentially increasing costs on large trades—making sustained manipulation expensive.
+
+<Mermaid chart={`
+flowchart TD
+    subgraph Traders["Diverse Information Sources"]
+        T1["Journalist\n(political feasibility)"]
+        T2["Lobbyist\n(industry positions)"]
+        T3["Academic\n(technical constraints)"]
+        T4["Insider\n(timing signals)"]
+    end
+
+    subgraph Market["Market Mechanism"]
+        BUY["Buy contracts\n(price rises)"]
+        SELL["Sell contracts\n(price falls)"]
+        AMM["Automated Market Maker\n(provides liquidity)"]
+    end
+
+    subgraph Output["Information Output"]
+        PRICE["Market Price = Probability"]
+        UPDATE["Real-time updates\n(minutes, not months)"]
+    end
+
+    T1 & T2 & T3 & T4 --> BUY
+    T1 & T2 & T3 & T4 --> SELL
+    BUY & SELL --> AMM
+    AMM --> PRICE
+    PRICE --> UPDATE
+
+    style PRICE fill:#d4edda
+    style UPDATE fill:#d4edda
+`} />
 
 ## Current Landscape
 

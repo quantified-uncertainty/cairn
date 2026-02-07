@@ -21,10 +21,10 @@ metrics:
   wordCount: 2359
   citations: 10
   tables: 6
-  diagrams: 0
+  diagrams: 1
 clusters: ["ai-safety", "epistemics"]
 ---
-import {DataInfoBox, KeyQuestions, R, EntityLink, DataExternalLinks} from '@components/wiki';
+import {DataInfoBox, KeyQuestions, Mermaid, R, EntityLink, DataExternalLinks} from '@components/wiki';
 
 <DataExternalLinks pageId="ai-forecasting" client:load />
 
@@ -51,6 +51,32 @@ The synthesis stage involves AI systems generating structured summaries, identif
 Four distinct collaboration architectures have emerged from research and practical deployment. The "AI as Research Assistant" model treats artificial intelligence as an advanced search and summarization tool, with humans retaining full decision authority. This approach has proven most effective for complex geopolitical questions where contextual understanding is paramount. The "AI as First-Pass Forecaster" model reverses this hierarchy, having AI generate initial probability estimates that humans then review and adjust. Research by Schoenegger et al. (2024) demonstrates that this approach reduces human cognitive load while maintaining forecast quality.
 
 The "Iterative Dialogue" model, still in experimental phases, involves structured back-and-forth exchanges where AI systems challenge human reasoning with counterarguments and alternative evidence. Early trials suggest this can improve calibration by forcing explicit consideration of neglected scenarios. Finally, "Ensemble Aggregation" uses AI to optimally weight multiple human and AI forecasts, learning from historical performance to create more accurate composite predictions.
+
+<Mermaid chart={`
+flowchart TD
+    subgraph M1["AI as Research Assistant"]
+        A1["AI retrieves and\nsummarizes information"] --> A2["Human makes\nfinal forecast"]
+    end
+
+    subgraph M2["AI as First-Pass Forecaster"]
+        B1["AI generates initial\nprobability estimate"] --> B2["Human reviews\nand adjusts"]
+    end
+
+    subgraph M3["Iterative Dialogue"]
+        C1["AI and human exchange\ncounterarguments"] --> C2["Both update toward\ncalibrated estimate"]
+    end
+
+    subgraph M4["Ensemble Aggregation"]
+        D1["Multiple human and\nAI forecasts collected"] --> D2["AI optimally weights\nbased on track records"]
+    end
+
+    M1 --> RESULT["Final Forecast\n(5-15% better Brier scores)"]
+    M2 --> RESULT
+    M3 --> RESULT
+    M4 --> RESULT
+
+    style RESULT fill:#d4edda
+`} />
 
 ## Current Performance and Evidence Base
 
