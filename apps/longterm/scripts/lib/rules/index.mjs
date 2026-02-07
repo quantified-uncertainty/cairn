@@ -36,6 +36,9 @@ export { componentImportsRule } from './component-imports.mjs';
 export { citationUrlsRule } from './citation-urls.mjs';
 export { vagueCitationsRule } from './vague-citations.mjs';
 
+// External link validation
+export { externalLinksRule } from './external-links.mjs';
+
 // Schema validation rules
 export { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 
@@ -74,6 +77,7 @@ import { componentPropsRule } from './component-props.mjs';
 import { componentImportsRule } from './component-imports.mjs';
 import { citationUrlsRule } from './citation-urls.mjs';
 import { vagueCitationsRule } from './vague-citations.mjs';
+import { externalLinksRule } from './external-links.mjs';
 import { frontmatterSchemaRule } from './frontmatter-schema.mjs';
 import { qualitySourceRule } from './quality-source.mjs';
 import { temporalArtifactsRule } from './temporal-artifacts.mjs';
@@ -116,6 +120,9 @@ export const allRules = [
   componentImportsRule,
   citationUrlsRule,
   vagueCitationsRule,
+
+  // External link validation
+  externalLinksRule,
 
   // Schema validation
   frontmatterSchemaRule,
