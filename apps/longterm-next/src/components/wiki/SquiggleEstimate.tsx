@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { SquiggleChart, SquiggleEditor } from "@quri/squiggle-components";
-import "@quri/squiggle-components/full.css";
+import { useState, useMemo, useEffect } from "react";
 
 const defaultEnvironment = {
   seed: "cairn",
@@ -23,6 +21,7 @@ interface SquiggleEstimateProps {
 
 /**
  * Renders a Squiggle estimate as an interactive visualization.
+ * Squiggle libraries are lazy-loaded only when this component mounts.
  *
  * Usage in MDX:
  *   <SquiggleEstimate title="Revenue" code="normal(9, 2)" />
@@ -34,6 +33,11 @@ export function SquiggleEstimate({
   showEditor: initialShowEditor = false,
 }: SquiggleEstimateProps) {
   const [showEditor, setShowEditor] = useState(initialShowEditor);
+  const [SquiggleComponents, setSquiggleComponents] = useState<{
+    SquiggleChart: React.ComponentType<any>;
+    SquiggleEditor: React.ComponentType<any>;
+  } | null>(null);
+  const [cssLoaded, setCssLoaded] = useState(false);
 
   const code = useMemo(() => {
     if (codeProp) return codeProp.trim();
@@ -52,6 +56,24 @@ export function SquiggleEstimate({
     return "";
   }, [codeProp, children]);
 
+  // Lazy-load Squiggle library and CSS only when component mounts
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      import("@quri/squiggle-components"),
+      import("@quri/squiggle-components/full.css"),
+    ]).then(([mod]) => {
+      if (!cancelled) {
+        setSquiggleComponents({
+          SquiggleChart: mod.SquiggleChart,
+          SquiggleEditor: mod.SquiggleEditor,
+        });
+        setCssLoaded(true);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
+
   if (!code) {
     return (
       <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm my-4">
@@ -60,37 +82,40 @@ export function SquiggleEstimate({
     );
   }
 
+  const toggleButton = (
+    <button
+      onClick={() => setShowEditor(!showEditor)}
+      className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+    >
+      {showEditor ? "hide" : "show"} source
+    </button>
+  );
+
   return (
     <div className="my-4 border border-border rounded-lg overflow-hidden bg-white">
       {title && (
         <div className="flex items-center justify-between px-4 py-2 bg-muted/50 border-b border-border">
           <h4 className="text-sm font-semibold m-0">{title}</h4>
-          <button
-            onClick={() => setShowEditor(!showEditor)}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-          >
-            {showEditor ? "hide" : "show"} source
-          </button>
+          {toggleButton}
         </div>
       )}
       {!title && (
         <div className="flex justify-end px-4 py-1 bg-muted/50 border-b border-border">
-          <button
-            onClick={() => setShowEditor(!showEditor)}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-          >
-            {showEditor ? "hide" : "show"} source
-          </button>
+          {toggleButton}
         </div>
       )}
       <div className="p-4">
-        {showEditor ? (
-          <SquiggleEditor
+        {!SquiggleComponents ? (
+          <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+            Loading Squiggle...
+          </div>
+        ) : showEditor ? (
+          <SquiggleComponents.SquiggleEditor
             defaultCode={code}
             environment={defaultEnvironment}
           />
         ) : (
-          <SquiggleChart
+          <SquiggleComponents.SquiggleChart
             code={code}
             environment={defaultEnvironment}
           />

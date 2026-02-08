@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { EntityLink, MultiEntityLinks } from "@/components/wiki/EntityLink";
 import { ResourceLink, R } from "@/components/wiki/ResourceLink";
 import { F } from "@/components/wiki/F";
@@ -87,6 +88,24 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
       }
     }
     return <pre {...props}>{children}</pre>;
+  },
+
+  // Override img to use Next.js Image for optimization
+  img: ({ src, alt, ...props }: any) => {
+    if (!src) return null;
+    // External URLs or data URIs — use next/image with unoptimized for external
+    const isExternal = src.startsWith("http") || src.startsWith("data:");
+    return (
+      <Image
+        src={src}
+        alt={alt || ""}
+        width={0}
+        height={0}
+        sizes="100vw"
+        className="w-full h-auto"
+        {...(isExternal && { unoptimized: true })}
+      />
+    );
   },
 
   // All other Astro/custom components as stubs

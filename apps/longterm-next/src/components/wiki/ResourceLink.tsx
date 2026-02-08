@@ -3,7 +3,7 @@ import { getResourceById, getResourceCredibility, getResourcePublication } from 
 import { CredibilityBadge } from "./CredibilityBadge";
 import { ResourceTags } from "./ResourceTags";
 import { cn } from "@lib/utils";
-import styles from "./ResourceLink.module.css";
+import styles from "./tooltip.module.css";
 
 const typeIcons: Record<string, string> = {
   paper: "\ud83d\udcc4",

@@ -355,6 +355,17 @@ export function getFactsForEntity(entityId: string): Record<string, Fact> {
   return result;
 }
 
+/**
+ * Get all canonical facts as a flat list with their composite key.
+ */
+export function getAllFacts(): Array<Fact & { key: string }> {
+  const db = getDatabase();
+  return Object.entries(db.facts || {}).map(([key, fact]) => ({
+    ...fact,
+    key,
+  }));
+}
+
 // ============================================================================
 // INFOBOX DATA HELPERS
 // ============================================================================

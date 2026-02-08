@@ -88,10 +88,38 @@ function resolveContentPath(slug: string): string | null {
   return null;
 }
 
+export interface TocHeading {
+  depth: number;
+  text: string;
+  slug: string;
+}
+
 export interface MdxPage {
   content: React.ReactElement;
   frontmatter: Record<string, any>;
   slug: string;
+  headings: TocHeading[];
+}
+
+/**
+ * Extract headings (h2, h3) from raw MDX/markdown source.
+ */
+function extractHeadings(source: string): TocHeading[] {
+  const headings: TocHeading[] = [];
+  const lines = source.split("\n");
+  for (const line of lines) {
+    const match = line.match(/^(#{2,3})\s+(.+)$/);
+    if (match) {
+      const depth = match[1].length;
+      const text = match[2].replace(/\{[^}]*\}/g, "").trim(); // strip {#custom-id}
+      const slug = text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-");
+      headings.push({ depth, text, slug });
+    }
+  }
+  return headings;
 }
 
 /**
@@ -101,6 +129,7 @@ async function compileFromPath(filePath: string, slug: string): Promise<MdxPage 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { content: mdxSource, data: frontmatter } = matter(raw);
   const preprocessed = preprocessMdx(mdxSource);
+  const headings = extractHeadings(mdxSource);
 
   try {
     const { content } = await compileMDX({
@@ -115,7 +144,7 @@ async function compileFromPath(filePath: string, slug: string): Promise<MdxPage 
       },
     });
 
-    return { content, frontmatter, slug };
+    return { content, frontmatter, slug, headings };
   } catch (err) {
     console.error(`Failed to compile MDX for "${slug}" (${filePath}):`, err);
     return null;

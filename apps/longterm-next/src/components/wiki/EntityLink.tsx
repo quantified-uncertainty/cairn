@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getEntityById, getEntityHref, getPageById } from "@data";
 import { getEntityTypeIcon } from "./EntityTypeIcon";
 import { cn } from "@lib/utils";
-import styles from "./EntityLink.module.css";
+import styles from "./tooltip.module.css";
 
 interface EntityLinkProps {
   id: string;

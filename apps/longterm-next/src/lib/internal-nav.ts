@@ -28,6 +28,7 @@ export const INTERNAL_NAV: NavSection[] = [
     defaultOpen: true,
     items: [
       { label: "Enhancement Queue", href: "/internal/enhancement-queue" },
+      { label: "Fact Dashboard", href: "/internal/facts" },
       { label: "Automation Tools", href: "/internal/automation-tools" },
       { label: "Content Database", href: "/internal/content-database" },
     ],
