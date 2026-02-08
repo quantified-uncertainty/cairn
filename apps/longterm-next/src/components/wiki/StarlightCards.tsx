@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 interface StarlightCardProps {
   title?: string;
-  icon?: string;
   children?: ReactNode;
 }
 

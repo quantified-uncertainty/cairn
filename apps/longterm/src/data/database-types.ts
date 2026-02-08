@@ -184,7 +184,7 @@ export interface Database {
   publications: Publication[];
 
   // Canonical facts store (entity.factId -> Fact with resolved compute)
-  facts: Record<string, Fact & { entity: string; factId: string; computed?: boolean }>;
+  facts: Record<string, Fact>;
 
   // Computed/derived data
   backlinks: Record<string, BacklinkEntry[]>;

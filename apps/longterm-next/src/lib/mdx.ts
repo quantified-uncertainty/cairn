@@ -54,6 +54,13 @@ function getPathRegistry(): Record<string, string> {
  * Uses the pathRegistry to find the correct content directory path,
  * then tries {path}.mdx and {path}/index.mdx
  */
+/**
+ * Guard against path traversal: ensure a resolved path stays within the base directory.
+ */
+function isSafePath(resolved: string, baseDir: string): boolean {
+  return path.resolve(resolved).startsWith(baseDir + path.sep) || path.resolve(resolved) === baseDir;
+}
+
 function resolveContentPath(slug: string): string | null {
   const pathRegistry = getPathRegistry();
 
@@ -63,17 +70,19 @@ function resolveContentPath(slug: string): string | null {
   if (registryPath) {
     const relativePath = registryPath.replace(/^\//, "").replace(/\/$/, "");
     const directPath = path.join(CONTENT_DIR, `${relativePath}.mdx`);
-    if (fs.existsSync(directPath)) return directPath;
+    if (isSafePath(directPath, CONTENT_DIR) && fs.existsSync(directPath)) return directPath;
 
     const indexPath = path.join(CONTENT_DIR, relativePath, "index.mdx");
-    if (fs.existsSync(indexPath)) return indexPath;
+    if (isSafePath(indexPath, CONTENT_DIR) && fs.existsSync(indexPath)) return indexPath;
   }
 
   // Fallback: try direct slug match in content dir
   const directPath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  if (!isSafePath(directPath, CONTENT_DIR)) return null;
   if (fs.existsSync(directPath)) return directPath;
 
   const indexPath = path.join(CONTENT_DIR, slug, "index.mdx");
+  if (!isSafePath(indexPath, CONTENT_DIR)) return null;
   if (fs.existsSync(indexPath)) return indexPath;
 
   return null;
@@ -158,6 +167,9 @@ const INTERNAL_DIR = path.join(CONTENT_DIR, "internal");
  */
 function resolveInternalPath(slug: string): string | null {
   const base = slug ? path.join(INTERNAL_DIR, slug) : INTERNAL_DIR;
+
+  // Guard against path traversal
+  if (!isSafePath(base, INTERNAL_DIR) && base !== INTERNAL_DIR) return null;
 
   for (const ext of [".mdx", ".md"]) {
     const directPath = base + ext;

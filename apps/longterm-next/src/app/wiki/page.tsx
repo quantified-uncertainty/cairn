@@ -11,7 +11,7 @@ export default function WikiIndex() {
       <p className="text-muted-foreground mb-8">
         Browse all entities in the AI safety knowledge base.
       </p>
-      <Suspense>
+      <Suspense fallback={<div className="text-muted-foreground">Loading...</div>}>
         <ExploreGrid items={items} />
       </Suspense>
     </div>

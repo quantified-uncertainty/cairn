@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@lib/utils";
 import { Lightbulb, FlaskConical, Target, CheckCircle2 } from "lucide-react";
 import { EntityTypeIcon, entityTypeConfig } from "./EntityTypeIcon";
-import { severityColors, directionColors, maturityColors, riskCategoryColors } from "./shared/style-config";
+import { severityColors, maturityColors, riskCategoryColors } from "./shared/style-config";
 
 type LucideIcon = React.ForwardRefExoticComponent<React.SVGProps<SVGSVGElement> & { size?: number | string }>;
 
@@ -91,7 +91,9 @@ function getImportanceColor(value: number): string {
 }
 
 function pluralize(label: string): string {
-  return label.endsWith("y") ? label.slice(0, -1) + "ies" : label + "s";
+  if (label.endsWith("s") || label.endsWith("x") || label.endsWith("sh") || label.endsWith("ch")) return label + "es";
+  if (label.endsWith("y") && !/[aeiou]y$/i.test(label)) return label.slice(0, -1) + "ies";
+  return label + "s";
 }
 
 function RatingBar({ value, max = 5 }: { value: number; max?: number }) {
@@ -165,12 +167,12 @@ export function InfoBox({
   if (website) fields.push({ label: "Website", value: website });
   if (customFields) fields.push(...customFields);
 
-  const catColor = category ? (riskCategoryColors as any)[category]?.hex : undefined;
-  const matColor = maturity ? (maturityColors as any)[maturity.toLowerCase()]?.hex : undefined;
+  const catColor = category ? (riskCategoryColors as Record<string, { hex: string }>)[category]?.hex : undefined;
+  const matColor = maturity ? (maturityColors as Record<string, { hex: string }>)[maturity.toLowerCase()]?.hex : undefined;
 
   const getValueStyle = (label: string): React.CSSProperties | undefined => {
     if (label === "Importance" && importance !== undefined) return { color: getImportanceColor(importance), fontWeight: 600 };
-    if (label === "Severity" && severity) return { color: (severityColors as any)[severity]?.hex || "inherit", fontWeight: 600 };
+    if (label === "Severity" && severity) return { color: (severityColors as Record<string, { hex: string }>)[severity]?.hex || "inherit", fontWeight: 600 };
     if (label === "Category" && catColor) return { color: catColor, fontWeight: 500 };
     if (label === "Maturity" && matColor) return { color: matColor, fontWeight: 500 };
     return undefined;

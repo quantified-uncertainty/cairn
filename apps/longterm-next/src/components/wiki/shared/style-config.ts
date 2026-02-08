@@ -16,6 +16,7 @@ export const maturityColors = {
   neglected: { hex: "#ef4444" },
   emerging: { hex: "#f59e0b" },
   growing: { hex: "#3b82f6" },
+  mature: { hex: "#16a34a" },
   established: { hex: "#22c55e" },
 } as const;
 

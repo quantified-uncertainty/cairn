@@ -12,15 +12,13 @@ import type { Plugin } from "unified";
 import type { Root, Node, Parent } from "mdast";
 import { visit, SKIP } from "unist-util-visit";
 
-interface DirectiveNode extends Node {
+interface DirectiveNode {
   type: "containerDirective" | "leafDirective" | "textDirective";
   name: string;
+  position?: Node["position"];
   attributes?: Record<string, string>;
-  children: Array<Node & { data?: Record<string, unknown>; children?: Node[] }>;
-  data?: {
-    hName?: string;
-    hProperties?: Record<string, unknown>;
-  };
+  children: Node[];
+  data?: Record<string, unknown>;
 }
 
 function isDirective(node: Node): node is DirectiveNode {
@@ -86,12 +84,13 @@ const remarkCallouts: Plugin<[], Root> = () => {
         const bodyChildren: Node[] = [];
 
         for (const child of (node as DirectiveNode).children) {
+          const childAny = child as Node & { data?: Record<string, unknown>; children?: Node[] };
           if (
             child.type === "paragraph" &&
-            child.data?.directiveLabel === true &&
-            child.children
+            childAny.data?.directiveLabel === true &&
+            childAny.children
           ) {
-            label = extractText(child.children as Node[]) || label;
+            label = extractText(childAny.children) || label;
           } else {
             bodyChildren.push(child);
           }

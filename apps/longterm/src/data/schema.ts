@@ -779,6 +779,10 @@ export const Fact = z.object({
   compute: z.string().optional(),              // Expression: "{anthropic.valuation} * {jaan-tallinn.anthropic-ownership-low}"
   format: z.string().optional(),               // Display format: "$%.1f billion"
   formatDivisor: z.number().optional(),        // Divide numeric result before formatting (e.g., 1e9 for billions)
+  // Fields added at build time (not in YAML source)
+  entity: z.string().optional(),               // Entity ID this fact belongs to
+  factId: z.string().optional(),               // Fact key within the entity
+  computed: z.boolean().optional(),            // Whether this fact was computed from an expression
 });
 export type Fact = z.infer<typeof Fact>;
 

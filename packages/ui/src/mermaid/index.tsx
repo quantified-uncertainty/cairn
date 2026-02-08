@@ -49,8 +49,8 @@ const darkTheme = {
 function getMermaidConfig(isDark: boolean) {
   return {
     startOnLoad: false,
-    theme: 'base',
-    securityLevel: 'loose',
+    theme: 'base' as const,
+    securityLevel: 'loose' as const,
     fontFamily: 'inherit',
     themeVariables: isDark ? darkTheme : lightTheme,
   };

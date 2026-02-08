@@ -6,6 +6,12 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Cairn Wiki",
   description: "AI Safety Knowledge Base",
+  openGraph: {
+    title: "Cairn Wiki",
+    description: "AI Safety Knowledge Base",
+    type: "website",
+    siteName: "Cairn Wiki",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +31,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background text-foreground">
         {/* Top nav bar */}
-        <header className="border-b border-border bg-card">
+        <header className="sticky top-0 z-40 border-b border-border bg-card">
           <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
             <Link href="/" className="text-lg font-bold no-underline text-foreground">
               Cairn Wiki

@@ -46,6 +46,7 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  --code-bg: oklch(0.93 0 0);
 
   /* Starlight CSS variable compatibility shims */
   --sl-color-gray-2: #9ca3af;
@@ -79,6 +80,7 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+  --code-bg: oklch(0.22 0 0);
 
   --sl-color-gray-2: #d1d5db;
   --sl-color-gray-3: #9ca3af;
@@ -179,22 +181,25 @@
 
 .prose code {
   font-size: 0.875em;
-  padding: 0.125rem 0.25rem;
-  background: var(--muted);
+  padding: 0.125rem 0.375rem;
+  background: var(--code-bg);
   border-radius: 0.25rem;
+  color: var(--foreground);
 }
 
 .prose pre {
   padding: 1rem;
-  background: var(--muted);
+  background: var(--code-bg);
   border-radius: 0.5rem;
   overflow-x: auto;
   margin: 1rem 0;
+  color: var(--foreground);
 }
 
 .prose pre code {
   padding: 0;
   background: none;
+  color: inherit;
 }
 
 .prose table {

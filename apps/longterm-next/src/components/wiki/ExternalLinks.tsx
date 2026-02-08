@@ -1,16 +1,8 @@
 import React from "react";
 import { ExternalLink, BookOpen, MessageSquare, GraduationCap, Briefcase } from "lucide-react";
 
-interface ExternalLinksData {
-  wikipedia?: string;
-  wikidata?: string;
-  lesswrong?: string;
-  alignmentForum?: string;
-  eaForum?: string;
-  stampy?: string;
-  arbital?: string;
-  eightyK?: string;
-}
+// Re-use the canonical type from the data layer
+import type { ExternalLinksData } from "@/data";
 
 const platformConfig = {
   wikipedia: { name: "Wikipedia", icon: BookOpen },

@@ -660,6 +660,13 @@ function evaluateExpression(expression, facts) {
       while (i < resolved.length && /[\d.eE]/.test(resolved[i])) {
         num += resolved[i]; i++;
       }
+      // Handle signed exponent (e.g., 3.5e+12, 1e-7)
+      if (/[eE]$/.test(num) && i < resolved.length && (resolved[i] === '+' || resolved[i] === '-')) {
+        num += resolved[i]; i++;
+        while (i < resolved.length && /\d/.test(resolved[i])) {
+          num += resolved[i]; i++;
+        }
+      }
       tokens.push({ type: 'num', value: parseFloat(num) });
     } else {
       throw new Error(`Unexpected character in expression: "${resolved[i]}" at position ${i}`);
@@ -751,6 +758,7 @@ function isCurrencyExpression(expression, facts) {
  * @param {boolean} isCurrency - Whether the result is a dollar amount
  */
 function formatComputedValue(numeric, format, formatDivisor, isCurrency = false) {
+  if (!isFinite(numeric)) throw new Error(`Computed value is ${numeric} (expected a finite number)`);
   const displayNum = formatDivisor ? numeric / formatDivisor : numeric;
 
   if (!format) {

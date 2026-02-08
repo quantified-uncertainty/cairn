@@ -7,12 +7,16 @@
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
-    "prebuild": "cd ../longterm && node scripts/build-data.mjs"
+    "prebuild": "cd ../longterm && node scripts/build-data.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@cairn/ui": "workspace:*",
     "@quri/squiggle-components": "^0.10.0",
     "@quri/squiggle-lang": "^0.10.0",
+    "@radix-ui/react-slot": "^1.2.4",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.1",
@@ -31,14 +35,18 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@radix-ui/react-collapsible": "^1.1.12",
-    "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/js-yaml": "^4.0.9",
+    "@types/mdast": "^4.0.4",
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "class-variance-authority": "^0.7.1",
-    "typescript": "^5.9.3"
+    "@vitest/ui": "^4.0.18",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "typescript": "^5.9.3",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "vitest": "^4.0.18"
   }
 }

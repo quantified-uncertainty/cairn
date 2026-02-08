@@ -1,16 +1,16 @@
 entity: jaan-tallinn
 facts:
   anthropic-ownership-low:
-    value: "~2%"
-    numeric: 0.02
-    asOf: "2024"
-    note: "Estimated lower bound of Anthropic ownership from early investment"
+    value: "~1.2%"
+    numeric: 0.012
+    asOf: "2026-01"
+    note: "Conservative estimate of remaining Anthropic stake after dilution through 16 rounds and possible secondary sales (0.6-1.7% range midpoint)"
 
   anthropic-ownership-high:
-    value: "~5%"
-    numeric: 0.05
-    asOf: "2024"
-    note: "Estimated upper bound of Anthropic ownership from early investment"
+    value: "~2.8%"
+    numeric: 0.028
+    asOf: "2026-01"
+    note: "Optimistic estimate assuming full share retention through dilution (1.5-4% range midpoint)"
 
   anthropic-stake-low:
     compute: "{anthropic.valuation} * {jaan-tallinn.anthropic-ownership-low}"
@@ -29,9 +29,9 @@ facts:
   net-worth-estimate:
     value: "$900 million"
     numeric: 900000000
-    asOf: "2024"
+    asOf: "2019"
     source: "https://en.wikipedia.org/wiki/Jaan_Tallinn"
-    note: "Forbes/Wikipedia estimate, likely understates crypto and private holdings"
+    note: "Forbes/Wikipedia estimate from 2019; likely $3-10B+ as of 2026 when accounting for Anthropic stake appreciation, crypto gains, and private investments"
 
   skype-cofounder:
     value: "2003"

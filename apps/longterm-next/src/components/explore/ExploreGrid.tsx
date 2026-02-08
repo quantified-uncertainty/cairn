@@ -59,7 +59,7 @@ const RISK_CATEGORY_GROUPS: { label: string; value: string | null }[] = [
   { label: "Epistemic", value: "epistemic" },
 ];
 
-type SortKey = "relevance" | "title" | "importance" | "quality" | "wordCount";
+type SortKey = "relevance" | "title" | "importance" | "quality" | "wordCount" | "recentlyEdited";
 
 function formatWordCount(count: number | null): string {
   if (!count) return "";
@@ -288,6 +288,8 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
           return (b.quality || 0) - (a.quality || 0);
         case "wordCount":
           return (b.wordCount || 0) - (a.wordCount || 0);
+        case "recentlyEdited":
+          return (b.lastUpdated || "").localeCompare(a.lastUpdated || "");
         case "relevance":
         default: {
           const scoreA = (a.importance || 0) * 2 + (a.quality || 0);
@@ -352,6 +354,7 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
           <option value="importance">Importance</option>
           <option value="quality">Quality</option>
           <option value="wordCount">Word Count</option>
+          <option value="recentlyEdited">Recently Edited</option>
           <option value="title">Title (A-Z)</option>
         </select>
       </div>

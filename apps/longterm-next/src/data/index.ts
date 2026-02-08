@@ -265,7 +265,7 @@ export function getPageById(id: string): Page | undefined {
 export function getResourceCredibility(
   resource: Resource
 ): number | undefined {
-  if (resource.credibility_override) return resource.credibility_override;
+  if (resource.credibility_override !== undefined) return resource.credibility_override;
   if (resource.publication_id) {
     const pub = getPublicationById(resource.publication_id);
     return pub?.credibility;
@@ -602,6 +602,7 @@ export interface ExploreItem {
   importance: number | null;
   category: string | null;
   riskCategory: string | null;
+  lastUpdated: string | null;
 }
 
 // Map page categories to entity-like types for display
@@ -639,11 +640,12 @@ export function getExploreItems(): ExploreItem[] {
       description: page?.llmSummary || page?.description || entity.description || null,
       tags: entity.tags || [],
       clusters: page?.clusters || [],
-      wordCount: page?.wordCount || null,
-      quality: page?.quality || null,
-      importance: page?.importance || null,
-      category: page?.category || null,
+      wordCount: page?.wordCount ?? null,
+      quality: page?.quality ?? null,
+      importance: page?.importance ?? null,
+      category: page?.category ?? null,
       riskCategory: entity.type === "risk" ? getRiskCategory(entity.id) : null,
+      lastUpdated: page?.lastUpdated ?? null,
     };
   });
 
@@ -659,11 +661,12 @@ export function getExploreItems(): ExploreItem[] {
       description: page.llmSummary || page.description || null,
       tags: page.tags || [],
       clusters: page.clusters || [],
-      wordCount: page.wordCount || null,
-      quality: page.quality || null,
-      importance: page.importance || null,
-      category: page.category || null,
+      wordCount: page.wordCount ?? null,
+      quality: page.quality ?? null,
+      importance: page.importance ?? null,
+      category: page.category ?? null,
       riskCategory: null,
+      lastUpdated: page.lastUpdated ?? null,
     }));
 
   return [...entityItems, ...pageOnlyItems];
