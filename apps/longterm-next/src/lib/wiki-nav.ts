@@ -168,50 +168,40 @@ export function getMetricsNav(): NavSection[] {
 // ============================================================================
 
 // ATM section grouping based on filePath structure
+// Multiple pathPrefixes can be combined into one section
 const ATM_SECTIONS: {
   title: string;
-  pathPrefix: string;
+  pathPrefixes: string[];
   defaultOpen?: boolean;
 }[] = [
   {
     title: "Outcomes",
-    pathPrefix: "ai-transition-model/outcomes/",
+    pathPrefixes: ["ai-transition-model/outcomes/"],
   },
   {
     title: "Scenarios",
-    pathPrefix: "ai-transition-model/scenarios/",
+    pathPrefixes: ["ai-transition-model/scenarios/"],
   },
   {
     title: "AI Factors",
-    pathPrefix: "ai-transition-model/factors/ai-capabilities/",
-  },
-  {
-    title: "AI Factors - AI Uses",
-    pathPrefix: "ai-transition-model/factors/ai-uses/",
-  },
-  {
-    title: "AI Factors - AI Ownership",
-    pathPrefix: "ai-transition-model/factors/ai-ownership/",
-  },
-  {
-    title: "AI Factors - Misalignment",
-    pathPrefix: "ai-transition-model/factors/misalignment-potential/",
+    pathPrefixes: [
+      "ai-transition-model/factors/ai-capabilities/",
+      "ai-transition-model/factors/ai-uses/",
+      "ai-transition-model/factors/ai-ownership/",
+      "ai-transition-model/factors/misalignment-potential/",
+    ],
   },
   {
     title: "Civilizational Factors",
-    pathPrefix: "ai-transition-model/factors/civilizational-competence/",
-  },
-  {
-    title: "Transition Turbulence",
-    pathPrefix: "ai-transition-model/factors/transition-turbulence/",
-  },
-  {
-    title: "Misuse Potential",
-    pathPrefix: "ai-transition-model/factors/misuse-potential/",
+    pathPrefixes: [
+      "ai-transition-model/factors/civilizational-competence/",
+      "ai-transition-model/factors/transition-turbulence/",
+      "ai-transition-model/factors/misuse-potential/",
+    ],
   },
   {
     title: "Quantitative Models",
-    pathPrefix: "ai-transition-model/models/",
+    pathPrefixes: ["ai-transition-model/models/"],
   },
 ];
 
@@ -235,7 +225,7 @@ export function getAtmNav(): NavSection[] {
 
   for (const section of ATM_SECTIONS) {
     const sectionPages = pages.filter((p) =>
-      p.filePath.startsWith(section.pathPrefix)
+      section.pathPrefixes.some((prefix) => p.filePath.startsWith(prefix))
     );
     if (sectionPages.length === 0) continue;
 
