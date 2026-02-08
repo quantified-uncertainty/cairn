@@ -1,0 +1,21 @@
+/* Fact inline component tooltip styles - scoped via CSS Modules */
+
+.wrapper {
+  position: relative;
+  display: inline;
+}
+
+.tooltip {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 150ms ease, visibility 150ms ease;
+}
+
+/* Only show tooltips on devices that support hover (not touch-only) */
+@media (hover: hover) {
+  .wrapper:hover .tooltip,
+  .wrapper:focus-within .tooltip {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}

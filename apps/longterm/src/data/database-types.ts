@@ -14,6 +14,7 @@ import type {
   Entity,
   Resource,
   Publication,
+  Fact,
 } from './schema';
 
 /**
@@ -181,6 +182,9 @@ export interface Database {
   funders: FunderEntry[];
   resources: Resource[];
   publications: Publication[];
+
+  // Canonical facts store (entity.factId -> Fact with resolved compute)
+  facts: Record<string, Fact & { entity: string; factId: string; computed?: boolean }>;
 
   // Computed/derived data
   backlinks: Record<string, BacklinkEntry[]>;

@@ -2,6 +2,7 @@ export { InfoBox } from './InfoBox';
 export type { EntityType, ModelRatingsData } from './InfoBox';
 
 export { EntityLink, MultiEntityLinks } from './EntityLink';
+export { F } from './F';
 export { EntityCard, EntityCards } from './EntityCard';
 export { KeyPeople } from './KeyPeople';
 export { Sources } from './Sources';

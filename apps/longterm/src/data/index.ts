@@ -6,7 +6,7 @@
  */
 
 import databaseJson from './database.json';
-import type { Expert, Organization, Estimate, Crux, GlossaryTerm, Entity, StructuredLikelihood, StructuredTimeframe, ResearchMaturity, Resource, Publication } from './schema';
+import type { Expert, Organization, Estimate, Crux, GlossaryTerm, Entity, StructuredLikelihood, StructuredTimeframe, ResearchMaturity, Resource, Publication, Fact } from './schema';
 import type { Database } from './database-types';
 import { getRiskCategory } from './risk-categories';
 
@@ -30,6 +30,47 @@ export const publications: Publication[] = database.publications || [];
 export const backlinks = database.backlinks || {};
 export const tagIndex = database.tagIndex || {};
 export const pathRegistry = database.pathRegistry || {};
+
+// Canonical facts store (includes computed flag for derived facts)
+type StoredFact = Fact & { entity: string; factId: string; computed?: boolean };
+const factsStore = (database.facts || {}) as Record<string, StoredFact>;
+
+/**
+ * Get a specific canonical fact by entity ID and fact ID.
+ * Example: getFact('openai', 'valuation-2024') → { value: "$157B+", asOf: "2024-12" }
+ */
+export function getFact(entityId: string, factId: string): StoredFact | undefined {
+  return factsStore[`${entityId}.${factId}`];
+}
+
+/**
+ * Get just the value string for a canonical fact.
+ * Example: getFactValue('openai', 'valuation-2024') → "$157B+"
+ */
+export function getFactValue(entityId: string, factId: string): string | undefined {
+  return factsStore[`${entityId}.${factId}`]?.value;
+}
+
+/**
+ * Get all canonical facts for an entity.
+ * Returns a record keyed by factId.
+ */
+export function getFactsForEntity(entityId: string): Record<string, StoredFact> {
+  const result: Record<string, StoredFact> = {};
+  for (const [key, fact] of Object.entries(factsStore)) {
+    if (fact.entity === entityId) {
+      result[fact.factId] = fact;
+    }
+  }
+  return result;
+}
+
+/**
+ * Get all canonical facts (flat map).
+ */
+export function getAllFacts(): Record<string, StoredFact> {
+  return factsStore;
+}
 
 // Ratings for model pages
 export interface ModelRatings {

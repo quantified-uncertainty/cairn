@@ -1,0 +1,39 @@
+entity: jaan-tallinn
+facts:
+  anthropic-ownership-low:
+    value: "~2%"
+    numeric: 0.02
+    asOf: "2024"
+    note: "Estimated lower bound of Anthropic ownership from early investment"
+
+  anthropic-ownership-high:
+    value: "~5%"
+    numeric: 0.05
+    asOf: "2024"
+    note: "Estimated upper bound of Anthropic ownership from early investment"
+
+  anthropic-stake-low:
+    compute: "{anthropic.valuation} * {jaan-tallinn.anthropic-ownership-low}"
+    format: "$%.1f billion"
+    formatDivisor: 1000000000
+    asOf: "2026-01"
+    note: "Computed: Anthropic valuation x low ownership estimate"
+
+  anthropic-stake-high:
+    compute: "{anthropic.valuation} * {jaan-tallinn.anthropic-ownership-high}"
+    format: "$%.1f billion"
+    formatDivisor: 1000000000
+    asOf: "2026-01"
+    note: "Computed: Anthropic valuation x high ownership estimate"
+
+  net-worth-estimate:
+    value: "$900 million"
+    numeric: 900000000
+    asOf: "2024"
+    source: "https://en.wikipedia.org/wiki/Jaan_Tallinn"
+    note: "Forbes/Wikipedia estimate, likely understates crypto and private holdings"
+
+  skype-cofounder:
+    value: "2003"
+    noCompute: true
+    note: "Co-founded Skype, sold to eBay for $2.6B in 2005"

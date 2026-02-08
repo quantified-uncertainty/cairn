@@ -48,6 +48,9 @@ export { temporalArtifactsRule } from './temporal-artifacts.mjs';
 export { editorialArtifactsRule } from './editorial-artifacts.mjs';
 export { outdatedNamesRule } from './outdated-names.mjs';
 
+// Fact consistency
+export { factConsistencyRule } from './fact-consistency.mjs';
+
 // Content quality warning rules (3-step grading pipeline)
 export { insiderJargonRule } from './insider-jargon.mjs';
 export { falseCertaintyRule } from './false-certainty.mjs';
@@ -83,6 +86,7 @@ import { qualitySourceRule } from './quality-source.mjs';
 import { temporalArtifactsRule } from './temporal-artifacts.mjs';
 import { editorialArtifactsRule } from './editorial-artifacts.mjs';
 import { outdatedNamesRule } from './outdated-names.mjs';
+import { factConsistencyRule } from './fact-consistency.mjs';
 import { insiderJargonRule } from './insider-jargon.mjs';
 import { falseCertaintyRule } from './false-certainty.mjs';
 import { prescriptiveLanguageRule } from './prescriptive-language.mjs';
@@ -132,6 +136,9 @@ export const allRules = [
   temporalArtifactsRule,
   editorialArtifactsRule,
   outdatedNamesRule,
+
+  // Fact consistency
+  factConsistencyRule,
 
   // Content quality warnings (3-step grading pipeline)
   insiderJargonRule,

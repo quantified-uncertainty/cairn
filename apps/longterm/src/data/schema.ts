@@ -764,6 +764,34 @@ export type SubgraphSpec = z.infer<typeof SubgraphSpec>;
 /**
  * A complete master graph that can be used to generate subgraphs for entity pages.
  */
+// =============================================================================
+// FACTS (Canonical facts store)
+// =============================================================================
+
+export const Fact = z.object({
+  value: z.string().optional(),                // Display value (auto-generated for computed facts)
+  numeric: z.number().optional(),              // Machine-readable numeric value
+  asOf: z.string().optional(),
+  source: z.string().optional(),
+  note: z.string().optional(),
+  noCompute: z.boolean().optional(),           // If true, numeric value cannot be referenced in compute expressions
+  // Computed fact fields
+  compute: z.string().optional(),              // Expression: "{anthropic.valuation} * {jaan-tallinn.anthropic-ownership-low}"
+  format: z.string().optional(),               // Display format: "$%.1f billion"
+  formatDivisor: z.number().optional(),        // Divide numeric result before formatting (e.g., 1e9 for billions)
+});
+export type Fact = z.infer<typeof Fact>;
+
+export const FactsFile = z.object({
+  entity: z.string(),
+  facts: z.record(z.string(), Fact),
+});
+export type FactsFile = z.infer<typeof FactsFile>;
+
+// =============================================================================
+// MASTER GRAPH
+// =============================================================================
+
 export const MasterGraph = z.object({
   id: z.string(),
   title: z.string(),
