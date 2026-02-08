@@ -12,6 +12,9 @@ import { PageStatus } from "@/components/PageStatus";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { TableOfContents } from "@/components/TableOfContents";
 import { RelatedPages } from "@/components/RelatedPages";
+import { WikiSidebar } from "@/components/wiki/WikiSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { detectSidebarType, getWikiNav } from "@/lib/wiki-nav";
 import { Github } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -59,10 +62,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 function JsonLd({ pageData, title, slug }: { pageData?: Page; title?: string; slug: string }) {
+  const headline = title || pageData?.title || slug;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: title || slug,
+    headline,
     ...(pageData?.description && { description: pageData.description }),
     ...(pageData?.llmSummary && { abstract: pageData.llmSummary }),
     ...(pageData?.lastUpdated && { dateModified: pageData.lastUpdated }),
@@ -72,10 +76,16 @@ function JsonLd({ pageData, title, slug }: { pageData?: Page; title?: string; sl
     },
   };
 
+  // Escape </script> and HTML entities to prevent XSS via dangerouslySetInnerHTML
+  const safeJson = JSON.stringify(jsonLd)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: safeJson }}
     />
   );
 }
@@ -99,13 +109,13 @@ function ArticleView({
 
   return (
     <>
+      <JsonLd pageData={pageData} title={page.frontmatter.title} slug={slug} />
       <Breadcrumbs
         category={pageData?.category}
         title={page.frontmatter.title || entity?.title}
       />
       <div className="flex gap-8">
         <article className="prose min-w-0 flex-1">
-          <JsonLd pageData={pageData} title={page.frontmatter.title} slug={slug} />
           <div className="page-meta">
             {lastUpdated && (
               <span className="page-meta-updated">
@@ -152,6 +162,25 @@ function ArticleView({
   );
 }
 
+function WithSidebar({
+  entityPath,
+  children,
+}: {
+  entityPath: string;
+  children: React.ReactNode;
+}) {
+  const sidebarType = detectSidebarType(entityPath);
+  if (!sidebarType) return <>{children}</>;
+
+  const sections = getWikiNav(sidebarType);
+  return (
+    <SidebarProvider>
+      <WikiSidebar sections={sections} />
+      <div className="flex-1 min-w-0 px-8 py-4">{children}</div>
+    </SidebarProvider>
+  );
+}
+
 export default async function WikiPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -163,13 +192,16 @@ export default async function WikiPage({ params }: PageProps) {
     const page = await renderMdxPage(slug);
     if (!page) notFound();
 
+    const entityPath = getEntityPath(slug) || "";
     return (
-      <ArticleView
-        page={page}
-        pageData={getPageById(slug)}
-        entityPath={getEntityPath(slug) || ""}
-        slug={slug}
-      />
+      <WithSidebar entityPath={entityPath}>
+        <ArticleView
+          page={page}
+          pageData={getPageById(slug)}
+          entityPath={entityPath}
+          slug={slug}
+        />
+      </WithSidebar>
     );
   } else {
     // String slug like "geoffrey-hinton"
@@ -183,13 +215,16 @@ export default async function WikiPage({ params }: PageProps) {
     const page = await renderMdxPage(id);
     if (!page) notFound();
 
+    const entityPath = getEntityPath(id) || "";
     return (
-      <ArticleView
-        page={page}
-        pageData={getPageById(id)}
-        entityPath={getEntityPath(id) || ""}
-        slug={id}
-      />
+      <WithSidebar entityPath={entityPath}>
+        <ArticleView
+          page={page}
+          pageData={getPageById(id)}
+          entityPath={entityPath}
+          slug={id}
+        />
+      </WithSidebar>
     );
   }
 }

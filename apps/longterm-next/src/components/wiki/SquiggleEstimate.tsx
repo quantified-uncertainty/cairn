@@ -37,7 +37,7 @@ export function SquiggleEstimate({
     SquiggleChart: React.ComponentType<any>;
     SquiggleEditor: React.ComponentType<any>;
   } | null>(null);
-  const [cssLoaded, setCssLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const code = useMemo(() => {
     if (codeProp) return codeProp.trim();
@@ -68,7 +68,10 @@ export function SquiggleEstimate({
           SquiggleChart: mod.SquiggleChart,
           SquiggleEditor: mod.SquiggleEditor,
         });
-        setCssLoaded(true);
+      }
+    }).catch((err) => {
+      if (!cancelled) {
+        setLoadError(err instanceof Error ? err.message : "Failed to load Squiggle");
       }
     });
     return () => { cancelled = true; };
@@ -78,6 +81,14 @@ export function SquiggleEstimate({
     return (
       <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm my-4">
         SquiggleEstimate: No code provided
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm my-4">
+        Failed to load Squiggle: {loadError}
       </div>
     );
   }

@@ -74,6 +74,9 @@ export { InsightsTable } from './InsightsTable';
 // Editorial / page management
 export { PageStatus } from './PageStatus';
 
+// Squiggle estimates (stub — full interactive version in longterm-next)
+export { SquiggleEstimate } from './SquiggleEstimate';
+
 // External links to Wikipedia, LessWrong, EA Forum
 export { ExternalLinks } from './ExternalLinks';
 export { DataExternalLinks } from './DataExternalLinks';

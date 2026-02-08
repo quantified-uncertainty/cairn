@@ -91,19 +91,20 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
   },
 
   // Override img to use Next.js Image for optimization
-  img: ({ src, alt, ...props }: any) => {
+  img: ({ src, alt, title }: any) => {
     if (!src) return null;
-    // External URLs or data URIs — use next/image with unoptimized for external
-    const isExternal = src.startsWith("http") || src.startsWith("data:");
+    const isExternal =
+      src.startsWith("http") || src.startsWith("//") || src.startsWith("data:");
     return (
       <Image
         src={src}
         alt={alt || ""}
-        width={0}
-        height={0}
-        sizes="100vw"
+        {...(title ? { title } : {})}
+        width={800}
+        height={450}
+        sizes="(max-width: 768px) 100vw, 768px"
         className="w-full h-auto"
-        {...(isExternal && { unoptimized: true })}
+        unoptimized={isExternal}
       />
     );
   },
