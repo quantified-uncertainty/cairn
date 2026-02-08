@@ -32,7 +32,7 @@ export default function RootLayout({
             </Link>
             <nav className="flex items-center gap-4">
               <Link
-                href="/explore"
+                href="/wiki"
                 className="text-sm text-muted-foreground no-underline hover:text-foreground transition-colors"
               >
                 Explore

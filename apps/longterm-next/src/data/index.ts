@@ -298,7 +298,7 @@ export function getIdRegistry(): IdRegistryMaps {
 export function getEntityHref(id: string, _type?: string): string {
   const registry = getIdRegistry();
   const numericId = registry.bySlug[id];
-  return numericId ? `/explore/${numericId}` : `/explore/${id}`;
+  return numericId ? `/wiki/${numericId}` : `/wiki/${id}`;
 }
 
 // ============================================================================

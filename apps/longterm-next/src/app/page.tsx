@@ -18,7 +18,7 @@ export default function Home() {
           interventions, organizations, and key people.
         </p>
         <Link
-          href="/explore"
+          href="/wiki"
           className="inline-block mt-4 px-4 py-2 bg-foreground text-background rounded-md text-sm font-medium no-underline hover:opacity-90 transition-opacity"
         >
           Explore all entities
@@ -30,7 +30,7 @@ export default function Home() {
         {topItems.map((item) => (
           <Link
             key={item.id}
-            href={`/explore/${item.numericId}`}
+            href={`/wiki/${item.numericId}`}
             className="group block p-4 border border-border rounded-lg hover:border-foreground/30 hover:shadow-sm transition-all no-underline bg-card"
           >
             <span className="text-xs text-muted-foreground">{item.type}</span>

@@ -361,7 +361,7 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
         {filtered.slice(0, visibleCount).map((item) => (
           <Link
             key={item.id}
-            href={`/explore/${item.numericId}`}
+            href={`/wiki/${item.numericId}`}
             className="group block p-4 border border-border rounded-lg hover:border-foreground/30 hover:shadow-sm transition-all no-underline bg-card"
           >
             <div className="flex items-center justify-between mb-2">

@@ -154,7 +154,7 @@ export function InfoBox({
   if (location) fields.push({ label: "Location", value: location });
   if (headcount) fields.push({ label: "Employees", value: headcount });
   if (funding) fields.push({ label: "Funding", value: funding });
-  if (category) fields.push({ label: "Category", value: categoryLabels[category] || category, link: `/explore?riskCategory=${category}` });
+  if (category) fields.push({ label: "Category", value: categoryLabels[category] || category, link: `/wiki?riskCategory=${category}` });
   if (severity) fields.push({ label: "Severity", value: severity.charAt(0).toUpperCase() + severity.slice(1) });
   if (likelihood) fields.push({ label: "Likelihood", value: likelihood });
   if (timeframe) fields.push({ label: "Timeframe", value: timeframe });
@@ -246,7 +246,7 @@ export function InfoBox({
             {relatedTopics.map((topic, i) => (
               <Link
                 key={i}
-                href={`/explore?tag=${encodeURIComponent(topic)}`}
+                href={`/wiki?tag=${encodeURIComponent(topic)}`}
                 className="inline-block px-2 py-0.5 bg-muted rounded text-xs text-muted-foreground no-underline hover:bg-muted/80 hover:text-foreground transition-colors"
               >
                 {topic}

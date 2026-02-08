@@ -135,7 +135,7 @@ export default async function WikiPage({ params }: PageProps) {
     // If it has a numeric ID, redirect to canonical URL
     const numericId = slugToNumericId(id);
     if (numericId) {
-      redirect(`/explore/${numericId}`);
+      redirect(`/wiki/${numericId}`);
     }
 
     // No numeric ID — render directly by slug (page-only content without entity)
