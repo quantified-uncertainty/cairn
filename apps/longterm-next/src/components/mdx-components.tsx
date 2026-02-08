@@ -8,6 +8,13 @@ import { DataExternalLinks } from "@/components/wiki/DataExternalLinks";
 import { InfoBox } from "@/components/wiki/InfoBox";
 import { ExternalLinks } from "@/components/wiki/ExternalLinks";
 import { SquiggleEstimate } from "@/components/wiki/SquiggleEstimate";
+import { Callout } from "@/components/wiki/Callout";
+import { StarlightCard, CardGrid, LinkCard } from "@/components/wiki/StarlightCards";
+
+// Aside → Callout adapter (Starlight uses `type`, our Callout uses `variant`)
+function Aside({ type, title, children }: { type?: string; title?: string; children?: React.ReactNode }) {
+  return <Callout variant={type as any} title={title}>{children}</Callout>;
+}
 
 // Placeholder for Astro-only or not-yet-ported components
 function Stub({ children }: any) {
@@ -16,14 +23,14 @@ function Stub({ children }: any) {
 
 // All component names found in MDX content that aren't yet ported
 const stubNames = [
-  "AllFactorsSubItems", "AnthropicFact", "ArticleSources", "Aside", "ATMPage",
-  "Badge", "Card", "CardGrid", "CauseEffectGraph", "ComparisonTable",
+  "AllFactorsSubItems", "AnthropicFact", "ArticleSources", "ATMPage",
+  "Badge", "CauseEffectGraph", "ComparisonTable",
   "ConceptsDirectory", "Crux", "CruxList", "DataCrux", "DataEstimateBox",
   "DisagreementMap", "DualOutcomeChart", "EntityGraph", "EstimateBox",
   "FactorAttributionMatrix", "FactorGauges", "FactorRelationshipDiagram",
   "FactorSubItemsList", "FullModelDiagram", "FullWidthLayout", "ImpactGrid",
   "ImpactList", "InsightGridExperiments", "InsightScoreMatrix", "InsightsTable",
-  "KeyPeople", "KeyQuestions", "KnowledgeTreemap", "LinkCard", "ModelsList",
+  "KeyPeople", "KeyQuestions", "KnowledgeTreemap", "ModelsList",
   "OutcomesTable", "PageCauseEffectGraph", "PageIndex", "PixelDensityMap",
   "PriorityMatrix", "QualityDashboard", "ResearchFrontier", "ResourceCite",
   "ResourceList", "ResourcesIndex", "RiskDashboard", "RiskTrajectoryExperiments",
@@ -58,6 +65,29 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
 
   // Squiggle — probabilistic estimate visualizations
   SquiggleEstimate,
+
+  // Callout — rendered from :::note, :::tip, :::caution, :::danger directives
+  Callout,
+
+  // Aside — Starlight callout component, mapped to Callout
+  Aside,
+
+  // Starlight card components
+  Card: StarlightCard,
+  CardGrid,
+  LinkCard,
+
+  // Override pre/code to detect ```mermaid fenced code blocks
+  pre: ({ children, ...props }: any) => {
+    // Check if this is a mermaid code block
+    if (children?.props?.className === "language-mermaid") {
+      const code = children.props.children;
+      if (typeof code === "string") {
+        return <MermaidDiagram chart={code.trim()} />;
+      }
+    }
+    return <pre {...props}>{children}</pre>;
+  },
 
   // All other Astro/custom components as stubs
   ...stubs,

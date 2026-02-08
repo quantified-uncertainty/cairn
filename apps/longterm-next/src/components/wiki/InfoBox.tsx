@@ -210,7 +210,7 @@ export function InfoBox({
                 <span className="flex-1 text-foreground break-words" style={!href ? getValueStyle(field.label) : undefined}>
                   {field.label === "Website" ? (
                     <a href={field.value} target="_blank" rel="noopener noreferrer" className="text-accent-foreground no-underline hover:underline">
-                      {new URL(field.value).hostname.replace("www.", "")}
+                      {(() => { try { return new URL(field.value).hostname.replace("www.", ""); } catch { return field.value; } })()}
                     </a>
                   ) : href ? (
                     <Link href={href} className="no-underline hover:underline" style={getValueStyle(field.label)}>{field.value}</Link>

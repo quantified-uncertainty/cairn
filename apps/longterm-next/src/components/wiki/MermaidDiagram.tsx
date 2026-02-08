@@ -10,7 +10,7 @@ async function getMermaid() {
     mermaid.initialize({
       startOnLoad: false,
       theme: "default" as const,
-      securityLevel: "loose",
+      securityLevel: "strict",
       fontFamily: "inherit",
     });
     mermaidInitialized = true;

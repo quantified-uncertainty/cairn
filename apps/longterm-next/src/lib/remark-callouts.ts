@@ -1,13 +1,16 @@
 /**
- * Remark plugin that converts Starlight-style container directives
- * (:::note, :::tip, :::caution, :::danger) into styled HTML elements
- * compatible with next-mdx-remote rendering.
+ * Remark plugin that:
+ * 1. Converts Starlight-style container directives (:::note, :::tip, etc.)
+ *    into a "Callout" React component resolved from the MDX components map.
+ * 2. Reverts unrecognized text/leaf directives back to plain text so that
+ *    patterns like "3:1" aren't broken by remark-directive parsing ":1"
+ *    as a text directive.
  *
  * Requires `remark-directive` to run before this plugin.
  */
 import type { Plugin } from "unified";
-import type { Root, Node, Paragraph } from "mdast";
-import { visit } from "unist-util-visit";
+import type { Root, Node, Parent } from "mdast";
+import { visit, SKIP } from "unist-util-visit";
 
 interface DirectiveNode extends Node {
   type: "containerDirective" | "leafDirective" | "textDirective";
@@ -38,9 +41,6 @@ const CALLOUT_LABELS: Record<string, string> = {
   warning: "Warning",
 };
 
-/**
- * Extract text content from mdast children recursively.
- */
 function extractText(nodes: Node[]): string {
   return nodes
     .map((n: any) => {
@@ -51,52 +51,77 @@ function extractText(nodes: Node[]): string {
     .join("");
 }
 
+/**
+ * Reconstruct the original markdown text for an unrecognized directive.
+ * Text directives: `:name[label]{attrs}` → `:name` (or with label/attrs)
+ * Leaf directives: `::name[label]{attrs}` → `::name`
+ */
+function directiveToText(node: DirectiveNode): string {
+  const prefix = node.type === "textDirective" ? ":" : "::";
+  const label = node.children?.length ? `[${extractText(node.children as Node[])}]` : "";
+
+  const attrs = node.attributes;
+  let attrStr = "";
+  if (attrs && Object.keys(attrs).length > 0) {
+    const parts = Object.entries(attrs).map(([k, v]) =>
+      v === "" ? k : `${k}="${v}"`
+    );
+    attrStr = `{${parts.join(" ")}}`;
+  }
+
+  return `${prefix}${node.name}${label}${attrStr}`;
+}
+
 const remarkCallouts: Plugin<[], Root> = () => {
   return (tree: Root) => {
-    visit(tree, (node: Node) => {
+    visit(tree, (node: Node, index: number | undefined, parent: Parent | undefined) => {
       if (!isDirective(node)) return;
-      if (node.type !== "containerDirective") return;
 
-      const name = node.name.toLowerCase();
-      if (!CALLOUT_TYPES.has(name)) return;
+      // Handle container directives — convert known types to Callout component
+      if (node.type === "containerDirective") {
+        const name = (node as DirectiveNode).name.toLowerCase();
+        if (!CALLOUT_TYPES.has(name)) return;
 
-      // Extract label from :::note[Custom Title] syntax.
-      // mdast-util-directive stores this as the first child paragraph
-      // with data.directiveLabel = true
-      let label = CALLOUT_LABELS[name] || "Note";
-      const bodyChildren: Node[] = [];
+        let label = CALLOUT_LABELS[name] || "Note";
+        const bodyChildren: Node[] = [];
 
-      for (const child of node.children) {
-        if (
-          child.type === "paragraph" &&
-          child.data?.directiveLabel === true &&
-          child.children
-        ) {
-          label = extractText(child.children as Node[]) || label;
-        } else {
-          bodyChildren.push(child);
+        for (const child of (node as DirectiveNode).children) {
+          if (
+            child.type === "paragraph" &&
+            child.data?.directiveLabel === true &&
+            child.children
+          ) {
+            label = extractText(child.children as Node[]) || label;
+          } else {
+            bodyChildren.push(child);
+          }
         }
+
+        node.data = node.data || {};
+        (node.data as any).hName = "Callout";
+        (node.data as any).hProperties = {
+          variant: name,
+          title: label,
+        };
+
+        (node as DirectiveNode).children = bodyChildren;
+        return;
       }
 
-      // Convert to a div with data attributes for CSS styling
-      node.data = node.data || {};
-      node.data.hName = "div";
-      node.data.hProperties = {
-        className: `callout callout-${name}`,
-        "data-callout": name,
-      };
-
-      // Create title element
-      const titleNode: any = {
-        type: "paragraph",
-        data: {
-          hName: "div",
-          hProperties: { className: "callout-title" },
-        },
-        children: [{ type: "text", value: label }],
-      };
-
-      node.children = [titleNode, ...bodyChildren];
+      // Revert unrecognized text/leaf directives back to plain text.
+      // This prevents "3:1" from being broken (":1" parsed as textDirective).
+      if (
+        (node.type === "textDirective" || node.type === "leafDirective") &&
+        parent &&
+        typeof index === "number"
+      ) {
+        const textNode: any = {
+          type: "text",
+          value: directiveToText(node as DirectiveNode),
+        };
+        (parent.children as Node[])[index] = textNode;
+        return SKIP;
+      }
     });
   };
 };

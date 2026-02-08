@@ -68,6 +68,22 @@ const importanceLabels: Record<string, string> = {
   peripheral: "Peripheral",
 };
 
+const qualityColors: Record<string, { ring: string; text: string }> = {
+  comprehensive: { ring: "#10b981", text: "text-emerald-500" },
+  good: { ring: "#3b82f6", text: "text-blue-500" },
+  adequate: { ring: "#f59e0b", text: "text-amber-500" },
+  draft: { ring: "#ef4444", text: "text-red-500" },
+  stub: { ring: "#94a3b8", text: "text-slate-400" },
+};
+
+const importanceColors: Record<string, { ring: string; text: string }> = {
+  essential: { ring: "#a855f7", text: "text-purple-500" },
+  high: { ring: "#8b5cf6", text: "text-violet-500" },
+  useful: { ring: "#6366f1", text: "text-indigo-500" },
+  reference: { ring: "#94a3b8", text: "text-slate-400" },
+  peripheral: { ring: "#94a3b8", text: "text-slate-400" },
+};
+
 function getQualityLevel(quality: number): string {
   if (quality >= 80) return "comprehensive";
   if (quality >= 60) return "good";
@@ -103,7 +119,7 @@ function formatAge(lastEdited: string): string {
 }
 
 // ============================================================================
-// SVG ICONS (inline, no emoji)
+// SVG ICONS
 // ============================================================================
 
 function IconTable({ className }: { className?: string }) {
@@ -176,8 +192,8 @@ function IconCheck({ className }: { className?: string }) {
 function ScoreRing({
   value,
   max,
-  size = 40,
-  strokeWidth = 3,
+  size = 44,
+  strokeWidth = 3.5,
   color,
   children,
 }: {
@@ -193,8 +209,13 @@ function ScoreRing({
   const progress = (value / max) * circumference;
 
   return (
-    <div className="ps2-ring" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="-rotate-90 block"
+      >
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -213,10 +234,12 @@ function ScoreRing({
           strokeDasharray={`${progress} ${circumference - progress}`}
           strokeDashoffset={circumference / 4}
           strokeLinecap="round"
-          style={{ transition: "stroke-dasharray 0.5s ease" }}
+          className="transition-[stroke-dasharray] duration-500 ease-out"
         />
       </svg>
-      <span className="ps2-ring-label">{children}</span>
+      <span className="absolute inset-0 flex items-center justify-center">
+        {children}
+      </span>
     </div>
   );
 }
@@ -232,36 +255,43 @@ function PageTypeBadge({
   const info = PAGE_TYPE_INFO[detectedType];
 
   return (
-    <span className={`ps2-type-badge ${info.color}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold border border-transparent ${info.color}`}
+    >
       {info.label}
     </span>
   );
 }
 
-function QualityDisplay({ quality, suggestedQuality }: { quality: number; suggestedQuality?: number }) {
+function QualityDisplay({
+  quality,
+  suggestedQuality,
+}: {
+  quality: number;
+  suggestedQuality?: number;
+}) {
   const level = getQualityLevel(quality);
-  const colorMap: Record<string, string> = {
-    comprehensive: "#10b981",
-    good: "#3b82f6",
-    adequate: "#f59e0b",
-    draft: "#ef4444",
-    stub: "#94a3b8",
-  };
+  const colors = qualityColors[level];
   const hasDiscrepancy =
-    suggestedQuality !== undefined && Math.abs(quality - suggestedQuality) >= 20;
+    suggestedQuality !== undefined &&
+    Math.abs(quality - suggestedQuality) >= 20;
 
   return (
-    <div className="ps2-score-block">
-      <ScoreRing value={quality} max={100} color={colorMap[level]} size={44} strokeWidth={3.5}>
-        <span className="ps2-ring-number">{quality}</span>
+    <div className="flex items-center gap-2">
+      <ScoreRing value={quality} max={100} color={colors.ring}>
+        <span className="text-[13px] font-bold tabular-nums text-foreground">
+          {quality}
+        </span>
       </ScoreRing>
-      <div className="ps2-score-detail">
-        <span className="ps2-score-title">Quality</span>
-        <span className={`ps2-score-level ps2-quality--${level}`}>
+      <div className="flex flex-col">
+        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground leading-none">
+          Quality
+        </span>
+        <span className={`text-[13px] font-semibold leading-snug inline-flex items-center gap-1.5 ${colors.text}`}>
           {qualityLabels[level]}
           {hasDiscrepancy && (
             <span
-              className="ps2-discrepancy-dot"
+              className="inline-block size-1.5 rounded-full bg-amber-500 cursor-help"
               title={`Structure suggests ${suggestedQuality}`}
             />
           )}
@@ -273,22 +303,20 @@ function QualityDisplay({ quality, suggestedQuality }: { quality: number; sugges
 
 function ImportanceDisplay({ importance }: { importance: number }) {
   const level = getImportanceLevel(importance);
-  const colorMap: Record<string, string> = {
-    essential: "#a855f7",
-    high: "#8b5cf6",
-    useful: "#6366f1",
-    reference: "#94a3b8",
-    peripheral: "#94a3b8",
-  };
+  const colors = importanceColors[level];
 
   return (
-    <div className="ps2-score-block">
-      <ScoreRing value={importance} max={100} color={colorMap[level]} size={44} strokeWidth={3.5}>
-        <span className="ps2-ring-number">{importance}</span>
+    <div className="flex items-center gap-2">
+      <ScoreRing value={importance} max={100} color={colors.ring}>
+        <span className="text-[13px] font-bold tabular-nums text-foreground">
+          {importance}
+        </span>
       </ScoreRing>
-      <div className="ps2-score-detail">
-        <span className="ps2-score-title">Importance</span>
-        <span className={`ps2-score-level ps2-importance--${level}`}>
+      <div className="flex flex-col">
+        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground leading-none">
+          Importance
+        </span>
+        <span className={`text-[13px] font-semibold leading-snug ${colors.text}`}>
           {importanceLabels[level]}
         </span>
       </div>
@@ -297,36 +325,29 @@ function ImportanceDisplay({ importance }: { importance: number }) {
 }
 
 function StructureDisplay({ metrics }: { metrics: PageMetrics }) {
-  const scoreLevel =
-    metrics.structuralScore >= 10
-      ? "high"
-      : metrics.structuralScore >= 6
-        ? "medium"
-        : "low";
+  const score = metrics.structuralScore;
   const scoreColor =
-    scoreLevel === "high"
-      ? "#10b981"
-      : scoreLevel === "medium"
-        ? "#f59e0b"
-        : "#ef4444";
+    score >= 10 ? "#10b981" : score >= 6 ? "#f59e0b" : "#ef4444";
+  const scoreTextClass =
+    score >= 10
+      ? "text-emerald-500"
+      : score >= 6
+        ? "text-amber-500"
+        : "text-red-500";
 
   return (
-    <div className="ps2-score-block">
-      <ScoreRing
-        value={metrics.structuralScore}
-        max={15}
-        color={scoreColor}
-        size={44}
-        strokeWidth={3.5}
-      >
-        <span className="ps2-ring-number" style={{ fontSize: "0.7rem" }}>
-          {metrics.structuralScore}
+    <div className="flex items-center gap-2">
+      <ScoreRing value={score} max={15} color={scoreColor}>
+        <span className="text-[11px] font-bold tabular-nums text-foreground">
+          {score}
         </span>
       </ScoreRing>
-      <div className="ps2-score-detail">
-        <span className="ps2-score-title">Structure</span>
-        <span className={`ps2-score-level ps2-struct--${scoreLevel}`}>
-          {metrics.structuralScore}/15
+      <div className="flex flex-col">
+        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground leading-none">
+          Structure
+        </span>
+        <span className={`text-[13px] font-semibold leading-snug ${scoreTextClass}`}>
+          {score}/15
         </span>
       </div>
     </div>
@@ -343,9 +364,12 @@ function MetricChip({
   label: string;
 }) {
   return (
-    <span className="ps2-chip" title={label}>
-      <span className="ps2-chip-icon">{icon}</span>
-      <span className="ps2-chip-value">{value}</span>
+    <span
+      className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] text-muted-foreground whitespace-nowrap"
+      title={label}
+    >
+      <span className="flex items-center opacity-60">{icon}</span>
+      <span className="font-semibold tabular-nums text-foreground">{value}</span>
     </span>
   );
 }
@@ -354,6 +378,29 @@ interface Issue {
   type: "warning" | "info";
   label: string;
   message: string;
+}
+
+function SectionHeader({
+  children,
+  count,
+  countColor = "bg-amber-500/15 text-amber-500",
+}: {
+  children: React.ReactNode;
+  count?: number;
+  countColor?: string;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1.5">
+      {children}
+      {count !== undefined && (
+        <span
+          className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold ${countColor}`}
+        >
+          {count}
+        </span>
+      )}
+    </div>
+  );
 }
 
 function IssuesSection({
@@ -428,26 +475,35 @@ function IssuesSection({
   if (detectedIssues.length === 0) return null;
 
   return (
-    <div className="ps2-issues">
-      <div className="ps2-issues-header">
-        Issues
-        <span className="ps2-issues-count">{detectedIssues.length}</span>
-      </div>
-      <div className="ps2-issues-list">
+    <div className="border-t border-border px-3.5 pt-2 pb-2.5">
+      <SectionHeader count={detectedIssues.length}>Issues</SectionHeader>
+      <div className="flex flex-col gap-1">
         {detectedIssues.map((issue, i) => (
           <div
             key={i}
-            className={`ps2-issue ps2-issue--${issue.type}`}
+            className={`flex items-start gap-1.5 rounded-md px-2 py-1 text-xs leading-snug ${
+              issue.type === "warning" ? "bg-amber-500/[0.08]" : "bg-muted"
+            }`}
           >
-            <span className="ps2-issue-icon">
-              {issue.type === "warning" ? (
-                <IconAlert />
-              ) : (
-                <IconInfo />
-              )}
+            <span
+              className={`shrink-0 flex items-center mt-px ${
+                issue.type === "warning"
+                  ? "text-amber-500"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {issue.type === "warning" ? <IconAlert /> : <IconInfo />}
             </span>
-            <span className="ps2-issue-label">{issue.label}</span>
-            <span className="ps2-issue-msg">{issue.message}</span>
+            <span
+              className={`shrink-0 text-[10px] font-bold uppercase tracking-wide rounded px-1.5 py-px mt-px ${
+                issue.type === "warning"
+                  ? "bg-amber-500/15 text-amber-500"
+                  : "bg-border text-muted-foreground"
+              }`}
+            >
+              {issue.label}
+            </span>
+            <span className="text-muted-foreground">{issue.message}</span>
           </div>
         ))}
       </div>
@@ -488,52 +544,55 @@ export function PageStatus({
     return null;
   }
 
+  const metaItems: string[] = [];
+  if (lastEdited) metaItems.push(`Edited ${formatAge(lastEdited)}`);
+  if (wordCount && wordCount > 0) metaItems.push(`${formatWordCount(wordCount)} words`);
+  if (backlinkCount && backlinkCount > 0) metaItems.push(`${backlinkCount} backlinks`);
+
   return (
-    <div className="page-status page-status-dev-only">
-      {/* Top bar: title + page type + meta stats */}
-      <div className="ps2-topbar">
-        <div className="ps2-topbar-left">
-          <span className="ps2-badge-title">Page Status</span>
+    <div className="page-status page-status-dev-only mb-6 overflow-hidden rounded-xl border border-border bg-card text-[13px] shadow-sm">
+      {/* Top bar */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-border bg-muted px-3.5 py-2">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Page Status
+          </span>
           <PageTypeBadge pageType={pageType} pathname={pathname} />
         </div>
-        <div className="ps2-topbar-right">
-          {lastEdited && (
-            <span className="ps2-meta">
-              Edited {formatAge(lastEdited)}
-            </span>
-          )}
-          {wordCount !== undefined && wordCount > 0 && (
-            <span className="ps2-meta">{formatWordCount(wordCount)} words</span>
-          )}
-          {backlinkCount !== undefined && backlinkCount > 0 && (
-            <span className="ps2-meta">{backlinkCount} backlinks</span>
-          )}
-        </div>
+        {metaItems.length > 0 && (
+          <div className="flex items-center gap-0 text-xs text-muted-foreground">
+            {metaItems.map((item, i) => (
+              <span key={i} className="flex items-center">
+                {i > 0 && (
+                  <span className="mx-2 inline-block size-[3px] rounded-full bg-border" />
+                )}
+                {item}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Score rings row */}
-      <div className="ps2-scores-row">
-        <div className="ps2-scores-group">
+      {/* Score rings + metric chips */}
+      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3 px-3.5 py-3">
+        <div className="flex flex-wrap items-center gap-5">
           {quality !== undefined && (
             <QualityDisplay quality={quality} suggestedQuality={suggestedQuality} />
           )}
           {importance !== undefined && (
             <ImportanceDisplay importance={importance} />
           )}
-          {metrics && (
-            <StructureDisplay metrics={metrics} />
-          )}
+          {metrics && <StructureDisplay metrics={metrics} />}
         </div>
 
-        {/* Structure chips */}
         {metrics && (
-          <div className="ps2-chips">
+          <div className="flex flex-wrap gap-1.5">
             <MetricChip icon={<IconTable />} value={metrics.tableCount} label="Tables" />
             <MetricChip icon={<IconDiagram />} value={metrics.diagramCount} label="Diagrams" />
             <MetricChip icon={<IconLink />} value={metrics.internalLinks} label="Internal links" />
             <MetricChip icon={<IconBook />} value={metrics.externalLinks} label="External citations" />
             <MetricChip
-              icon={<span style={{ fontSize: "10px", fontWeight: 700 }}>%</span>}
+              icon={<span className="text-[10px] font-bold">%</span>}
               value={`${Math.round(metrics.bulletRatio * 100)}%`}
               label="Bullet ratio"
             />
@@ -543,9 +602,11 @@ export function PageStatus({
 
       {/* LLM Summary */}
       {llmSummary && (
-        <div className="ps2-summary">
-          <span className="ps2-summary-label">Summary</span>
-          <p className="ps2-summary-text">{llmSummary}</p>
+        <div className="border-t border-border px-3.5 pt-2 pb-2.5">
+          <SectionHeader>Summary</SectionHeader>
+          <p className="m-0 text-[13px] leading-relaxed text-muted-foreground">
+            {llmSummary}
+          </p>
         </div>
       )}
 
@@ -560,13 +621,12 @@ export function PageStatus({
 
       {/* Single todo */}
       {todo && (
-        <div className="ps2-todos">
-          <div className="ps2-todos-header">
+        <div className="border-t border-border px-3.5 pt-2 pb-2.5">
+          <SectionHeader count={1} countColor="bg-violet-500/15 text-violet-500">
             Todo
-            <span className="ps2-todos-count">1</span>
-          </div>
-          <div className="ps2-todo-item">
-            <IconCheck className="ps2-todo-icon" />
+          </SectionHeader>
+          <div className="flex items-start gap-1.5 rounded-md bg-violet-500/[0.06] px-2 py-1 text-xs text-muted-foreground">
+            <IconCheck className="shrink-0 text-violet-500 mt-px" />
             <span>{todo}</span>
           </div>
         </div>
@@ -574,17 +634,21 @@ export function PageStatus({
 
       {/* Multiple todos */}
       {todos && todos.length > 0 && (
-        <div className="ps2-todos">
-          <div className="ps2-todos-header">
+        <div className="border-t border-border px-3.5 pt-2 pb-2.5">
+          <SectionHeader count={todos.length} countColor="bg-violet-500/15 text-violet-500">
             TODOs
-            <span className="ps2-todos-count">{todos.length}</span>
+          </SectionHeader>
+          <div className="flex flex-col gap-1">
+            {todos.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-1.5 rounded-md bg-violet-500/[0.06] px-2 py-1 text-xs text-muted-foreground"
+              >
+                <IconCheck className="shrink-0 text-violet-500 mt-px" />
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
-          {todos.map((item, index) => (
-            <div key={index} className="ps2-todo-item">
-              <IconCheck className="ps2-todo-icon" />
-              <span>{item}</span>
-            </div>
-          ))}
         </div>
       )}
     </div>

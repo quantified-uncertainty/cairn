@@ -8,7 +8,10 @@ const nextConfig: NextConfig = {
     "@quri/ui",
   ],
   typescript: {
-    // Pre-existing type error in @cairn/ui Mermaid component
+    // Known type errors:
+    // - @cairn/ui: missing @tanstack/react-table types, Mermaid theme type mismatch
+    // - remark-callouts.ts: missing type declarations for unified/mdast/unist-util-visit
+    // TODO: Fix these and remove ignoreBuildErrors
     ignoreBuildErrors: true,
   },
 };

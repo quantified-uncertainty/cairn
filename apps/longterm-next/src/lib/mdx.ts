@@ -38,10 +38,15 @@ let _pathRegistry: Record<string, string> | null = null;
 function getPathRegistry(): Record<string, string> {
   if (_pathRegistry) return _pathRegistry;
   const dbPath = path.join(LONGTERM_DATA_DIR, "database.json");
-  const raw = fs.readFileSync(dbPath, "utf-8");
-  const db = JSON.parse(raw);
-  _pathRegistry = (db.pathRegistry || {}) as Record<string, string>;
-  return _pathRegistry!;
+  try {
+    const raw = fs.readFileSync(dbPath, "utf-8");
+    const db = JSON.parse(raw);
+    _pathRegistry = (db.pathRegistry || {}) as Record<string, string>;
+  } catch (err) {
+    console.error(`Failed to load path registry from ${dbPath}:`, err);
+    _pathRegistry = {};
+  }
+  return _pathRegistry;
 }
 
 /**
@@ -83,24 +88,29 @@ export interface MdxPage {
 /**
  * Compile an MDX/MD file at a given path into a renderable page.
  */
-async function compileFromPath(filePath: string, slug: string): Promise<MdxPage> {
+async function compileFromPath(filePath: string, slug: string): Promise<MdxPage | null> {
   const raw = fs.readFileSync(filePath, "utf-8");
   const { content: mdxSource, data: frontmatter } = matter(raw);
   const preprocessed = preprocessMdx(mdxSource);
 
-  const { content } = await compileMDX({
-    source: preprocessed,
-    components: mdxComponents,
-    options: {
-      parseFrontmatter: false,
-      mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkMath, remarkDirective, remarkCallouts],
-        rehypePlugins: [rehypeKatex as any],
+  try {
+    const { content } = await compileMDX({
+      source: preprocessed,
+      components: mdxComponents,
+      options: {
+        parseFrontmatter: false,
+        mdxOptions: {
+          remarkPlugins: [remarkGfm, remarkMath, remarkDirective, remarkCallouts],
+          rehypePlugins: [rehypeKatex as any],
+        },
       },
-    },
-  });
+    });
 
-  return { content, frontmatter, slug };
+    return { content, frontmatter, slug };
+  } catch (err) {
+    console.error(`Failed to compile MDX for "${slug}" (${filePath}):`, err);
+    return null;
+  }
 }
 
 /**

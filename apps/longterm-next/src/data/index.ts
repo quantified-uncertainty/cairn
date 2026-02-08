@@ -60,8 +60,15 @@ function getDatabase(): DatabaseShape {
   if (_database) return _database;
 
   const dbPath = path.join(LONGTERM_DATA_DIR, "database.json");
-  const raw = fs.readFileSync(dbPath, "utf-8");
-  _database = JSON.parse(raw) as DatabaseShape;
+  try {
+    const raw = fs.readFileSync(dbPath, "utf-8");
+    _database = JSON.parse(raw) as DatabaseShape;
+  } catch (err) {
+    throw new Error(
+      `Failed to load database from ${dbPath}: ${err instanceof Error ? err.message : err}. ` +
+      `Run "pnpm --filter longterm build:data" first.`
+    );
+  }
   return _database;
 }
 

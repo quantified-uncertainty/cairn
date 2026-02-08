@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import type { ExploreItem } from "@/data";
@@ -59,7 +59,7 @@ const RISK_CATEGORY_GROUPS: { label: string; value: string | null }[] = [
   { label: "Epistemic", value: "epistemic" },
 ];
 
-type SortKey = "relevance" | "title" | "importance" | "quality" | "wordCount" | "newest";
+type SortKey = "relevance" | "title" | "importance" | "quality" | "wordCount";
 
 function formatWordCount(count: number | null): string {
   if (!count) return "";
@@ -156,9 +156,16 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
   );
   const [activeRiskCat, setActiveRiskCat] = useState(initialRiskCatIndex);
   const [sortKey, setSortKey] = useState<SortKey>("relevance");
+  const [visibleCount, setVisibleCount] = useState(60);
 
   // Debounced URL update for search
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const updateUrlParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -178,14 +185,26 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
 
   function handleSearchChange(value: string) {
     setSearch(value);
+    setVisibleCount(60);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       updateUrlParams({ tag: value || null });
     }, 300);
   }
 
+  function handleFieldChange(index: number) {
+    setActiveField(index);
+    setVisibleCount(60);
+  }
+
+  function handleEntityChange(index: number) {
+    setActiveEntity(index);
+    setVisibleCount(60);
+  }
+
   function handleRiskCatChange(index: number) {
     setActiveRiskCat(index);
+    setVisibleCount(60);
     const value = RISK_CATEGORY_GROUPS[index].value;
     updateUrlParams({ riskCategory: value });
   }
@@ -300,14 +319,14 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
           label="Field"
           options={FIELD_GROUPS.map((g) => g.label)}
           active={activeField}
-          onSelect={setActiveField}
+          onSelect={handleFieldChange}
           counts={fieldCounts}
         />
         <FilterRow
           label="Entity"
           options={ENTITY_GROUPS.map((g) => g.label)}
           active={activeEntity}
-          onSelect={setActiveEntity}
+          onSelect={handleEntityChange}
           counts={entityCounts}
         />
         {showRiskCatFilter && (
@@ -339,7 +358,7 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
 
       {/* Card grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filtered.map((item) => (
+        {filtered.slice(0, visibleCount).map((item) => (
           <Link
             key={item.id}
             href={`/explore/${item.numericId}`}
@@ -378,6 +397,17 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
           </Link>
         ))}
       </div>
+
+      {filtered.length > visibleCount && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => setVisibleCount((c) => c + 60)}
+            className="px-6 py-2.5 text-sm border border-border rounded-lg bg-background text-foreground hover:bg-muted transition-colors"
+          >
+            Show more ({filtered.length - visibleCount} remaining)
+          </button>
+        </div>
+      )}
 
       {filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
