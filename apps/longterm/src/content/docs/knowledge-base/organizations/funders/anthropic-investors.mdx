@@ -22,7 +22,7 @@ todos:
   - "Research Tallinn's actual Anthropic holdings if disclosed"
   - "Track whether non-EA cofounders (Brown, Kaplan, McCandlish) announce giving plans - as of Feb 2026, none are Giving Pledge signatories"
 ---
-import {EntityLink, Backlinks} from '@components/wiki';
+import {EntityLink, Backlinks, SquiggleEstimate, F} from '@components/wiki';
 
 :::note[Page Scope]
 This page covers EA-aligned philanthropic capital at Anthropic, including founder pledges, employee matching programs, EA investor stakes, and cause allocation. For valuation analysis, see <EntityLink id="anthropic-valuation">Anthropic Valuation Analysis</EntityLink>. For company overview, see <EntityLink id="anthropic">Anthropic</EntityLink>.
@@ -46,7 +46,7 @@ This page covers EA-aligned philanthropic capital at Anthropic, including founde
 
 ## Overview
 
-<EntityLink id="anthropic">Anthropic</EntityLink>'s rapid valuation growth—from \$550 million in May 2021 to \$350 billion by January 2026—has created what may become the largest single source of longtermist philanthropic capital in history. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) EA-aligned equity spans multiple sources: all seven co-founders have pledged to donate 80% of their equity (\$39-59B, though only 2 of 7 have documented strong EA connections), early investors <EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink> (\$2-6B conservative estimate) and <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink> (\$3-9B) hold substantial stakes, and early employees transferred billions to donor-advised funds under Anthropic's historical 3:1 matching program (now reduced to 1:1 at 25% for new hires). [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
+<EntityLink id="anthropic">Anthropic</EntityLink>'s rapid valuation growth—from \$550 million in May 2021 to <F e="anthropic" f="valuation" /> by January 2026—has created what may become the largest single source of longtermist philanthropic capital in history. [CNBC](https://www.cnbc.com/2026/01/07/anthropic-funding-term-sheet-valuation.html) EA-aligned equity spans multiple sources: all seven co-founders have pledged to donate 80% of their equity (\$39-59B, though only 2 of 7 have documented strong EA connections), early investors <EntityLink id="jaan-tallinn">Jaan Tallinn</EntityLink> (\$2-6B conservative estimate) and <EntityLink id="dustin-moskovitz">Dustin Moskovitz</EntityLink> (\$3-9B) hold substantial stakes, and early employees transferred billions to donor-advised funds under Anthropic's historical 3:1 matching program (now reduced to 1:1 at 25% for new hires). [Fortune](https://fortune.com/2026/01/27/anthropic-billionaire-cofounders-ceo-dario-amodei-giving-away-80-percent-of-wealth-fighting-inequality-ai-revolution/)
 
 Total EA-aligned capital at current valuations ranges from **\$30-158B gross** (conservative to optimistic), with a risk-adjusted expected value of **\$25-70B**—the wide range reflecting genuine uncertainty about founder cause allocation (only 2 of 7 have documented strong EA connections). An estimated \$20-40B is already legally bound in DAFs through the employee matching program—though DAF donors retain discretion over which charities receive grants, and the matching program has been reduced from 3:1 at 50% to 1:1 at 25% for new employees. [IPS](https://ips-dc.org/report-giving-pledge-at-15/)
 
@@ -536,6 +536,69 @@ The base scenario analysis caps at \$500B. Given Anthropic's trajectory—revenu
 | AGI Premium | \$3.5T | \$392-588B | \$70-231B | \$294-764B | \$756-1,580B |
 
 At 10x current valuation (\$3.5T), total EA-aligned capital could exceed \$1 trillion—though probability-weighted, this adds only \$8-16B to expected value given low likelihood.
+
+### Interactive Estimate Models
+
+<SquiggleEstimate title="Anthropic Valuation Scenarios (probability-weighted)" code={`
+// Valuation scenarios with probability weights
+bull = 500e9
+base = 350e9
+conservative = 150e9
+bear = 50e9
+
+valuationDist = mixture(
+  bull, base, conservative, bear,
+  [0.15, 0.40, 0.25, 0.15]
+) * (0.95 to 1.05) // small noise for market uncertainty
+
+valuationDist
+`} />
+
+<SquiggleEstimate title="Founder Equity: EA-Directed Capital" code={`
+// 7 founders, 2-3% stake each, 80% pledged
+founderStakePct = 0.02 to 0.03
+numFounders = 7
+pledgeRate = 0.8
+valuation = mixture(500e9, 350e9, 150e9, 50e9, [0.15, 0.4, 0.25, 0.15])
+
+totalFounderEquity = valuation * founderStakePct * numFounders
+pledgedAmount = totalFounderEquity * pledgeRate
+
+// Only 2/7 founders have strong EA connections
+// Probability each founder's pledged amount goes to EA causes
+eaFounderFraction = beta(3, 4) // ~40% expected, wide uncertainty
+eaDirectedCapital = pledgedAmount * eaFounderFraction
+
+eaDirectedCapital
+`} />
+
+<SquiggleEstimate title="Total EA-Aligned Capital (all sources)" code={`
+// Valuation distribution
+valuation = mixture(500e9, 350e9, 150e9, 50e9, [0.15, 0.4, 0.25, 0.15])
+
+// Founder capital (7 founders, 2-3% each, 80% pledged)
+founderEquity = valuation * (0.02 to 0.03) * 7 * 0.8
+// Risk-adjust: only ~40-60% likely to go to EA causes
+founderEA = founderEquity * beta(5, 5)
+
+// EA Investor capital (Tallinn + Moskovitz)
+tallinnStake = valuation * (0.006 to 0.017) * (0.7 to 0.9) // conservative, high fulfillment
+moskovitzStake = valuation * (0.008 to 0.025) * (0.9 to 1.0) // very high fulfillment
+investorEA = tallinnStake + moskovitzStake
+
+// Employee pledges + 3:1 matching (legally bound in DAFs)
+employeePool = valuation * (0.12 to 0.18)
+eaEmployeeFraction = 0.15 to 0.40
+participationRate = 0.3 to 0.7
+avgPledgePct = 0.3 to 0.5
+directPledges = employeePool * eaEmployeeFraction * participationRate * avgPledgePct
+// Matching: mix of old 3:1 and new 1:1 programs
+matchMultiplier = 1.5 to 3.0 // weighted average of old and new
+employeeEA = directPledges * (1 + matchMultiplier) * (0.8 to 0.95) // legally bound
+
+totalEA = founderEA + investorEA + employeeEA
+totalEA
+`} />
 
 ### Expected Value Calculation
 

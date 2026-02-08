@@ -1,0 +1,64 @@
+import { EntityLink, MultiEntityLinks } from "@/components/wiki/EntityLink";
+import { ResourceLink, R } from "@/components/wiki/ResourceLink";
+import { F } from "@/components/wiki/F";
+import { MermaidDiagram } from "@/components/wiki/MermaidDiagram";
+import { DataInfoBox } from "@/components/wiki/DataInfoBox";
+import { Backlinks } from "@/components/wiki/Backlinks";
+import { DataExternalLinks } from "@/components/wiki/DataExternalLinks";
+import { InfoBox } from "@/components/wiki/InfoBox";
+import { ExternalLinks } from "@/components/wiki/ExternalLinks";
+import { SquiggleEstimate } from "@/components/wiki/SquiggleEstimate";
+
+// Placeholder for Astro-only or not-yet-ported components
+function Stub({ children }: any) {
+  return <div className="p-2 bg-muted/50 rounded text-sm text-muted-foreground">{children}</div>;
+}
+
+// All component names found in MDX content that aren't yet ported
+const stubNames = [
+  "AllFactorsSubItems", "AnthropicFact", "ArticleSources", "Aside", "ATMPage",
+  "Badge", "Card", "CardGrid", "CauseEffectGraph", "ComparisonTable",
+  "ConceptsDirectory", "Crux", "CruxList", "DataCrux", "DataEstimateBox",
+  "DisagreementMap", "DualOutcomeChart", "EntityGraph", "EstimateBox",
+  "FactorAttributionMatrix", "FactorGauges", "FactorRelationshipDiagram",
+  "FactorSubItemsList", "FullModelDiagram", "FullWidthLayout", "ImpactGrid",
+  "ImpactList", "InsightGridExperiments", "InsightScoreMatrix", "InsightsTable",
+  "KeyPeople", "KeyQuestions", "KnowledgeTreemap", "LinkCard", "ModelsList",
+  "OutcomesTable", "PageCauseEffectGraph", "PageIndex", "PixelDensityMap",
+  "PriorityMatrix", "QualityDashboard", "ResearchFrontier", "ResourceCite",
+  "ResourceList", "ResourcesIndex", "RiskDashboard", "RiskTrajectoryExperiments",
+  "RootFactorsTable", "ScenariosTable", "Section", "SparseKnowledgeGrid",
+  "TabItem", "Table", "TableBody", "TableCell", "TableHead", "TableHeader",
+  "TableRow", "Tabs", "TagBrowser", "Tags", "TimelineViz", "TopicQuestionGrid",
+  "TrajectoryLines", "TransitionModelContent", "TransitionModelInteractive",
+  "TransitionModelTable", "Code", "Steps", "Icon", "FileTree",
+] as const;
+
+const stubs = Object.fromEntries(stubNames.map((name) => [name, Stub]));
+
+/**
+ * MDX component map — these are injected into every MDX page
+ * so import statements in the source can be safely stripped.
+ */
+export const mdxComponents: Record<string, React.ComponentType<any>> = {
+  // Fully ported
+  EntityLink,
+  MultiEntityLinks,
+  ResourceLink,
+  R,
+  F,
+  DataInfoBox,
+  Backlinks,
+  DataExternalLinks,
+  InfoBox,
+  ExternalLinks,
+
+  // Mermaid — client-side rendered diagrams
+  Mermaid: MermaidDiagram,
+
+  // Squiggle — probabilistic estimate visualizations
+  SquiggleEstimate,
+
+  // All other Astro/custom components as stubs
+  ...stubs,
+};

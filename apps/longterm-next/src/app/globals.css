@@ -1,0 +1,868 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* Starlight CSS variable compatibility shims */
+  --sl-color-gray-2: #9ca3af;
+  --sl-color-gray-3: #6b7280;
+  --sl-color-gray-4: #4b5563;
+  --sl-color-gray-5: #e5e7eb;
+  --sl-color-gray-6: #f9fafb;
+  --sl-color-text: var(--foreground);
+  --sl-color-text-accent: oklch(0.205 0 0);
+  --sl-color-accent: #6366f1;
+  --sl-color-bg: var(--background);
+  --sl-color-white: oklch(0.145 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+
+  --sl-color-gray-2: #d1d5db;
+  --sl-color-gray-3: #9ca3af;
+  --sl-color-gray-4: #6b7280;
+  --sl-color-gray-5: #374151;
+  --sl-color-gray-6: #1f2937;
+  --sl-color-text: var(--foreground);
+  --sl-color-text-accent: oklch(0.985 0 0);
+  --sl-color-bg: var(--background);
+  --sl-color-white: oklch(0.985 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ============================================================================
+   PAGE META (last updated + GitHub link)
+   ============================================================================ */
+
+.page-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  margin-bottom: 0.25rem;
+}
+
+.page-meta-updated {
+  white-space: nowrap;
+}
+
+.page-meta-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.page-meta-github:hover {
+  color: var(--foreground);
+}
+
+.prose .page-meta a {
+  color: var(--muted-foreground);
+  text-decoration: none;
+}
+
+.prose .page-meta a:hover {
+  color: var(--foreground);
+  opacity: 1;
+}
+
+/* ============================================================================
+   PROSE STYLES for MDX content
+   ============================================================================ */
+
+.prose {
+  line-height: 1.7;
+  max-width: 65rem;
+}
+
+.prose h1 { font-size: 2rem; font-weight: 700; margin: 2rem 0 1rem; line-height: 1.2; }
+.prose h2 { font-size: 1.5rem; font-weight: 600; margin: 1.75rem 0 0.75rem; line-height: 1.3; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.prose h3 { font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.5rem; line-height: 1.4; }
+.prose h4 { font-size: 1.1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+
+.prose p { margin: 1rem 0; }
+
+.prose ul { list-style-type: disc; padding-left: 1.5rem; margin: 1rem 0; }
+.prose ol { list-style-type: decimal; padding-left: 1.5rem; margin: 1rem 0; }
+.prose li { margin: 0.25rem 0; }
+.prose ul ul { list-style-type: circle; }
+.prose ul ul ul { list-style-type: square; }
+
+.prose a { color: var(--accent-foreground); text-decoration: underline; text-underline-offset: 2px; }
+.prose a:hover { opacity: 0.8; }
+
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+
+.prose blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.prose code {
+  font-size: 0.875em;
+  padding: 0.125rem 0.25rem;
+  background: var(--muted);
+  border-radius: 0.25rem;
+}
+
+.prose pre {
+  padding: 1rem;
+  background: var(--muted);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose table {
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  overflow: visible;
+}
+
+.prose th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid var(--border);
+  font-weight: 600;
+  background: var(--muted);
+}
+
+.prose td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.prose tr:hover td {
+  background: var(--muted);
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/* ============================================================================
+   BACKLINKS COMPONENT (CSS classes used by Backlinks.tsx)
+   ============================================================================ */
+
+.backlinks {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--muted);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.backlinks__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+}
+
+.backlinks__icon {
+  color: var(--accent-foreground);
+}
+
+.backlinks__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.backlinks__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.backlinks__item:last-child {
+  border-bottom: none;
+}
+
+.backlinks__link {
+  color: var(--accent-foreground);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.backlinks__link:hover {
+  text-decoration: underline;
+}
+
+.backlinks__type {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.125rem 0.375rem;
+  background: var(--border);
+  border-radius: 0.25rem;
+  color: var(--muted-foreground);
+}
+
+.backlinks__relationship {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+.backlinks__empty {
+  color: var(--muted-foreground);
+  font-style: italic;
+  margin: 0;
+}
+
+.backlinks--compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.backlinks--compact .backlinks__label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--muted-foreground);
+}
+
+/* Ensure tooltip containers don't get clipped */
+.prose table,
+.prose td,
+.prose th {
+  overflow: visible !important;
+}
+
+/* ============================================================================
+   DEV MODE TOGGLE (header button)
+   ============================================================================ */
+
+.dev-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dev-mode-toggle:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.dev-mode-toggle--active {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+}
+
+.dev-mode-toggle--active:hover {
+  background: rgba(139, 92, 246, 0.25);
+}
+
+/* ============================================================================
+   PAGE STATUS PANEL (v2 — score rings + compact layout)
+   ============================================================================ */
+
+.page-status {
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.page-status.page-status-dev-only { display: none; }
+:root.page-status-dev-mode .page-status.page-status-dev-only { display: block; }
+
+/* ---------- top bar ---------- */
+.ps2-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.ps2-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ps2-badge-title {
+  font-weight: 700;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+}
+
+.ps2-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.ps2-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ps2-meta {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.ps2-meta::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--border);
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.ps2-topbar-right .ps2-meta:first-child::before { display: none; }
+
+/* ---------- score rings row ---------- */
+.ps2-scores-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.75rem 0.875rem;
+  flex-wrap: wrap;
+}
+
+.ps2-scores-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ps2-score-block {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ring */
+.ps2-ring {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ps2-ring svg {
+  display: block;
+  transform: rotate(-90deg);
+}
+
+.ps2-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ps2-ring-number {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Score detail text */
+.ps2-score-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ps2-score-title {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.ps2-score-level {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Quality colors */
+.ps2-quality--comprehensive { color: #10b981; }
+.ps2-quality--good { color: #3b82f6; }
+.ps2-quality--adequate { color: #f59e0b; }
+.ps2-quality--draft { color: #ef4444; }
+.ps2-quality--stub { color: #94a3b8; }
+
+/* Importance colors */
+.ps2-importance--essential { color: #a855f7; }
+.ps2-importance--high { color: #8b5cf6; }
+.ps2-importance--useful { color: #6366f1; }
+.ps2-importance--reference { color: #94a3b8; }
+.ps2-importance--peripheral { color: #94a3b8; }
+
+/* Structure score colors */
+.ps2-struct--high { color: #10b981; }
+.ps2-struct--medium { color: #f59e0b; }
+.ps2-struct--low { color: #ef4444; }
+
+/* Discrepancy indicator */
+.ps2-discrepancy-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  cursor: help;
+  position: relative;
+  top: -1px;
+}
+
+/* ---------- metric chips ---------- */
+.ps2-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.ps2-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.5rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.ps2-chip-icon {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+}
+
+.ps2-chip-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+}
+
+/* ---------- summary ---------- */
+.ps2-summary {
+  padding: 0.5rem 0.875rem 0.625rem;
+  border-top: 1px solid var(--border);
+}
+
+.ps2-summary-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.ps2-summary-text {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+/* ---------- issues ---------- */
+.ps2-issues {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.875rem 0.625rem;
+}
+
+.ps2-issues-header {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.ps2-issues-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.ps2-issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ps2-issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.3125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.ps2-issue--warning {
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.ps2-issue--info {
+  background: var(--muted);
+}
+
+.ps2-issue-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.ps2-issue--warning .ps2-issue-icon { color: #f59e0b; }
+.ps2-issue--info .ps2-issue-icon { color: var(--muted-foreground); }
+
+.ps2-issue-label {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.25rem;
+  margin-top: 0.0625rem;
+}
+
+.ps2-issue--warning .ps2-issue-label {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.ps2-issue--info .ps2-issue-label {
+  background: var(--border);
+  color: var(--muted-foreground);
+}
+
+.ps2-issue-msg {
+  color: var(--muted-foreground);
+}
+
+/* ---------- todos ---------- */
+.ps2-todos {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.875rem 0.625rem;
+}
+
+.ps2-todos-header {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.ps2-todos-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.ps2-todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.3125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  background: rgba(139, 92, 246, 0.06);
+  margin-bottom: 0.25rem;
+}
+
+.ps2-todo-item:last-child { margin-bottom: 0; }
+
+.ps2-todo-icon {
+  flex-shrink: 0;
+  color: #8b5cf6;
+  margin-top: 1px;
+}
+
+/* ============================================================================
+   CALLOUTS (:::note, :::tip, :::caution, :::danger)
+   ============================================================================ */
+
+.prose .callout {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid;
+  font-size: 0.9rem;
+}
+
+.prose .callout > *:first-child { margin-top: 0; }
+.prose .callout > *:last-child { margin-bottom: 0; }
+
+.prose .callout-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin: 0 0 0.375rem 0;
+  padding: 0;
+}
+
+/* Note (blue) */
+.prose .callout-note {
+  background: rgba(59, 130, 246, 0.06);
+  border-left-color: #3b82f6;
+}
+.prose .callout-note .callout-title { color: #3b82f6; }
+
+/* Tip (green) */
+.prose .callout-tip {
+  background: rgba(16, 185, 129, 0.06);
+  border-left-color: #10b981;
+}
+.prose .callout-tip .callout-title { color: #10b981; }
+
+/* Caution / Warning (amber) */
+.prose .callout-caution,
+.prose .callout-warning {
+  background: rgba(245, 158, 11, 0.06);
+  border-left-color: #f59e0b;
+}
+.prose .callout-caution .callout-title,
+.prose .callout-warning .callout-title { color: #f59e0b; }
+
+/* Danger (red) */
+.prose .callout-danger {
+  background: rgba(239, 68, 68, 0.06);
+  border-left-color: #ef4444;
+}
+.prose .callout-danger .callout-title { color: #ef4444; }
+
+/* ============================================================================
+   FOOTNOTES
+   ============================================================================ */
+
+/* Footnote reference in body text — superscript number */
+.prose a[data-footnote-ref] {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+  text-decoration: none;
+  color: #3b82f6;
+  font-weight: 500;
+  padding: 0 0.1em;
+}
+
+.prose a[data-footnote-ref]:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+/* Footnotes section at bottom */
+.prose section[data-footnotes] {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+}
+
+.prose section[data-footnotes] h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.prose section[data-footnotes] ol {
+  padding-left: 1.75rem;
+  margin: 0;
+}
+
+.prose section[data-footnotes] li {
+  margin: 0.375rem 0;
+  line-height: 1.5;
+}
+
+.prose section[data-footnotes] li p {
+  margin: 0.25rem 0;
+  display: inline;
+}
+
+/* Back-reference link (the ↩ arrow) */
+.prose a[data-footnote-backref] {
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: #3b82f6;
+  margin-left: 0.25em;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.prose a[data-footnote-backref]:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
