@@ -10,13 +10,16 @@ import { getEntityById, getPageById, getEntityPath } from "@/data";
 import type { Page } from "@/data";
 import { PageStatus } from "@/components/PageStatus";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { TableOfContents } from "@/components/TableOfContents";
 import { RelatedPages } from "@/components/RelatedPages";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { detectSidebarType, getWikiNav } from "@/lib/wiki-nav";
-import { Github } from "lucide-react";
+import { Database, Github } from "lucide-react";
 import type { Metadata } from "next";
+import {
+  InfoBoxVisibilityProvider,
+  InfoBoxToggle,
+} from "@/components/wiki/InfoBoxVisibility";
 
 const GITHUB_HISTORY_BASE =
   "https://github.com/quantified-uncertainty/cairn/commits/main/apps/longterm/src/content/docs";
@@ -106,59 +109,66 @@ function ArticleView({
     ? `${GITHUB_HISTORY_BASE}/${pageData.filePath}`
     : null;
   const entity = getEntityById(slug);
+  const numId = slugToNumericId(slug);
 
   return (
-    <>
+    <InfoBoxVisibilityProvider>
       <JsonLd pageData={pageData} title={page.frontmatter.title} slug={slug} />
-      <Breadcrumbs
-        category={pageData?.category}
-        title={page.frontmatter.title || entity?.title}
-      />
-      <div className="flex gap-8">
-        <article className="prose min-w-0 flex-1">
-          <div className="page-meta">
-            {lastUpdated && (
-              <span className="page-meta-updated">
-                Updated {lastUpdated}
-              </span>
-            )}
-            {githubUrl && (
-              <a
-                href={githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="page-meta-github"
-              >
-                <Github size={14} />
-                History
-              </a>
-            )}
-          </div>
-          <PageStatus
-            quality={pageData?.quality ?? undefined}
-            importance={pageData?.importance ?? undefined}
-            llmSummary={pageData?.llmSummary ?? undefined}
-            lastEdited={pageData?.lastUpdated ?? undefined}
-            todo={page.frontmatter.todo}
-            todos={page.frontmatter.todos}
-            wordCount={pageData?.wordCount}
-            backlinkCount={pageData?.backlinkCount}
-            metrics={pageData?.metrics}
-            suggestedQuality={pageData?.suggestedQuality}
-            issues={{
-              unconvertedLinkCount: pageData?.unconvertedLinkCount,
-              redundancy: pageData?.redundancy,
-            }}
-            pageType={page.frontmatter.pageType}
-            pathname={entityPath}
-          />
-          {page.frontmatter.title && <h1>{page.frontmatter.title}</h1>}
-          {page.content}
-          <RelatedPages entityId={slug} entity={entity} />
-        </article>
-        <TableOfContents headings={page.headings} />
+      <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+        <Breadcrumbs
+          category={pageData?.category}
+          title={page.frontmatter.title || entity?.title}
+        />
+        <div className="page-meta">
+          {lastUpdated && (
+            <span className="page-meta-updated">
+              Updated {lastUpdated}
+            </span>
+          )}
+          {githubUrl && (
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="page-meta-github"
+            >
+              <Github size={14} />
+              History
+            </a>
+          )}
+          {numId && (
+            <a href={`/wiki/${numId}/info`} className="page-meta-github">
+              <Database size={14} />
+              Data
+            </a>
+          )}
+          <InfoBoxToggle />
+        </div>
       </div>
-    </>
+      <article className="prose min-w-0">
+        <PageStatus
+          quality={pageData?.quality ?? undefined}
+          importance={pageData?.importance ?? undefined}
+          llmSummary={pageData?.llmSummary ?? undefined}
+          lastEdited={pageData?.lastUpdated ?? undefined}
+          todo={page.frontmatter.todo}
+          todos={page.frontmatter.todos}
+          wordCount={pageData?.wordCount}
+          backlinkCount={pageData?.backlinkCount}
+          metrics={pageData?.metrics}
+          suggestedQuality={pageData?.suggestedQuality}
+          issues={{
+            unconvertedLinkCount: pageData?.unconvertedLinkCount,
+            redundancy: pageData?.redundancy,
+          }}
+          pageType={page.frontmatter.pageType}
+          pathname={entityPath}
+        />
+        {page.frontmatter.title && <h1>{page.frontmatter.title}</h1>}
+        {page.content}
+        <RelatedPages entityId={slug} entity={entity} />
+      </article>
+    </InfoBoxVisibilityProvider>
   );
 }
 
@@ -170,13 +180,15 @@ function WithSidebar({
   children: React.ReactNode;
 }) {
   const sidebarType = detectSidebarType(entityPath);
-  if (!sidebarType) return <>{children}</>;
+  if (!sidebarType) return <div className="max-w-7xl mx-auto px-6 py-8">{children}</div>;
 
   const sections = getWikiNav(sidebarType);
   return (
     <SidebarProvider>
       <WikiSidebar sections={sections} />
-      <div className="flex-1 min-w-0 px-8 py-4">{children}</div>
+      <div className="flex-1 min-w-0">
+        <div className="max-w-[65rem] mx-auto px-8 py-4">{children}</div>
+      </div>
     </SidebarProvider>
   );
 }

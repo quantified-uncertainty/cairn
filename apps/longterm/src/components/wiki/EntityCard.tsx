@@ -5,7 +5,7 @@ import { Card, CardContent } from '../ui/card';
 import { EntityTypeBadge, type EntityType } from './EntityTypeIcon';
 import { cn } from '@lib/utils';
 
-type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'intervention' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder' | 'organization' | 'lab-research' | 'lab-academic' | 'lab-frontier' | 'lab-startup' | 'historical' | 'analysis';
+type EntityCategory = 'lab' | 'capability' | 'risk' | 'safety-agenda' | 'policy' | 'timeline' | 'scenario' | 'approach' | 'project' | 'crux' | 'case-study' | 'researcher' | 'resource' | 'funder' | 'organization' | 'lab-research' | 'lab-academic' | 'lab-frontier' | 'lab-startup' | 'historical' | 'analysis';
 
 interface EntityCardProps {
   id: string;
@@ -28,7 +28,8 @@ const categoryPaths: Record<string, string> = {
   timeline: '/knowledge-base/history',
   historical: '/knowledge-base/history',
   scenario: '/analysis/scenarios',
-  intervention: '/knowledge-base/responses',
+  approach: '/knowledge-base/responses',
+  project: '/knowledge-base/responses/epistemic-tools/projects',
   crux: '/ai-transition-model/core-argument',
   'case-study': '/analysis/case-studies',
   researcher: '/knowledge-base/people',

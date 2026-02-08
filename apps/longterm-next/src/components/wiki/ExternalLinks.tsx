@@ -17,39 +17,9 @@ const platformConfig = {
 
 type PlatformKey = keyof typeof platformConfig;
 
+// External links are now shown in the InfoBox sidebar, so this inline component is a no-op.
 export function ExternalLinks({ pageId, links }: { pageId: string; links?: ExternalLinksData }) {
-  if (!links) return null;
-
-  const platforms = Object.entries(links).filter(([_, url]) => url) as [PlatformKey, string][];
-  if (platforms.length === 0) return null;
-
-  const orderedPlatforms: PlatformKey[] = ["wikipedia", "wikidata", "eightyK", "lesswrong", "alignmentForum", "eaForum", "stampy", "arbital"];
-  const sorted = platforms.sort(([a], [b]) => orderedPlatforms.indexOf(a) - orderedPlatforms.indexOf(b));
-
-  return (
-    <div className="mb-8 mt-2">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="text-sm text-muted-foreground">See also:</span>
-        {sorted.map(([platform, url]) => {
-          const config = platformConfig[platform];
-          const Icon = config.icon;
-          return (
-            <a
-              key={platform}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors no-underline"
-            >
-              <Icon size={14} />
-              <span>{config.name}</span>
-              <ExternalLink size={10} className="opacity-50" />
-            </a>
-          );
-        })}
-      </div>
-    </div>
-  );
+  return null;
 }
 
 export default ExternalLinks;

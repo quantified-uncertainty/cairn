@@ -19,57 +19,11 @@ function dedup(items: RelatedPageItem[]): RelatedPageItem[] {
   });
 }
 
-export function RelatedPages({
-  entityId,
-  entity,
-}: {
-  entityId: string;
-  entity?: Entity | null;
-}) {
-  const items: RelatedPageItem[] = [];
-
-  // From entity relatedEntries
-  if (entity?.relatedEntries) {
-    for (const entry of entity.relatedEntries) {
-      const related = getEntityById(entry.id);
-      items.push({
-        id: entry.id,
-        title: related?.title || entry.id.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
-        href: getEntityHref(entry.id, entry.type),
-        type: entry.type,
-        relationship: entry.relationship,
-      });
-    }
-  }
-
-  // From backlinks
-  const backlinks = getBacklinksFor(entityId);
-  for (const bl of backlinks) {
-    items.push({
-      id: bl.id,
-      title: bl.title,
-      href: bl.href,
-      type: bl.type,
-      relationship: bl.relationship,
-    });
-  }
-
-  const unique = dedup(items);
-  if (unique.length === 0) return null;
-
-  // Group by type
-  const grouped = new Map<string, RelatedPageItem[]>();
-  for (const item of unique) {
-    const group = grouped.get(item.type) || [];
-    group.push(item);
-    grouped.set(item.type, group);
-  }
-
+function PageGrid({ items, max = 20 }: { items: RelatedPageItem[]; max?: number }) {
   return (
-    <section className="mt-12 pt-6 border-t border-border">
-      <h2 className="text-lg font-semibold mb-4">Related Pages</h2>
+    <>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
-        {unique.slice(0, 20).map((item) => (
+        {items.slice(0, max).map((item) => (
           <div key={item.id} className="flex items-center gap-2 py-1.5">
             <span className="text-[0.65rem] uppercase tracking-wide text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
               {item.type.replace("-", " ")}
@@ -83,10 +37,69 @@ export function RelatedPages({
           </div>
         ))}
       </div>
-      {unique.length > 20 && (
+      {items.length > max && (
         <p className="text-sm text-muted-foreground mt-2">
-          and {unique.length - 20} more...
+          and {items.length - max} more...
         </p>
+      )}
+    </>
+  );
+}
+
+export function RelatedPages({
+  entityId,
+  entity,
+}: {
+  entityId: string;
+  entity?: Entity | null;
+}) {
+  // Explicit related entries
+  const relatedItems: RelatedPageItem[] = [];
+  if (entity?.relatedEntries) {
+    for (const entry of entity.relatedEntries) {
+      const related = getEntityById(entry.id);
+      relatedItems.push({
+        id: entry.id,
+        title: related?.title || entry.id.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+        href: getEntityHref(entry.id, entry.type),
+        type: entry.type,
+        relationship: entry.relationship,
+      });
+    }
+  }
+
+  // Backlinks (pages that reference this page)
+  const backlinkItems: RelatedPageItem[] = [];
+  const relatedIds = new Set(relatedItems.map((r) => r.id));
+  for (const bl of getBacklinksFor(entityId)) {
+    if (!relatedIds.has(bl.id)) {
+      backlinkItems.push({
+        id: bl.id,
+        title: bl.title,
+        href: bl.href,
+        type: bl.type,
+        relationship: bl.relationship,
+      });
+    }
+  }
+
+  const uniqueRelated = dedup(relatedItems);
+  const uniqueBacklinks = dedup(backlinkItems);
+  if (uniqueRelated.length === 0 && uniqueBacklinks.length === 0) return null;
+
+  return (
+    <section className="mt-12 pt-6 border-t border-border">
+      {uniqueRelated.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold mb-4">Related Pages</h2>
+          <PageGrid items={uniqueRelated} />
+        </>
+      )}
+      {uniqueBacklinks.length > 0 && (
+        <div className={uniqueRelated.length > 0 ? "mt-8" : ""}>
+          <h2 className="text-lg font-semibold mb-4">Backlinks</h2>
+          <PageGrid items={uniqueBacklinks} />
+        </div>
       )}
     </section>
   );

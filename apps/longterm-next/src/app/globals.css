@@ -110,10 +110,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  justify-content: flex-end;
   font-size: 0.8rem;
   color: var(--muted-foreground);
-  margin-bottom: 0.25rem;
 }
 
 .page-meta-updated {
@@ -436,6 +434,7 @@
     display: grid;
     grid-template-columns: 1fr 280px;
     column-gap: 1.5rem;
+    max-width: none;
   }
 
   .prose:has(> .wiki-infobox) > * {
@@ -451,6 +450,6 @@
     margin-left: 0 !important;
     align-self: start;
     position: sticky;
-    top: 1rem;
+    top: 5rem;
   }
 }

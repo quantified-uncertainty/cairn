@@ -50,6 +50,7 @@ interface DatabaseShape {
   idRegistry: IdRegistryMaps;
   pages: Page[];
   facts: Record<string, Fact>;
+  insights: DatabaseInsight[];
   stats: any;
   [key: string]: any;
 }
@@ -288,7 +289,7 @@ export function getResourcePublication(
 
 export function getEntityPath(id: string): string | null {
   const db = getDatabase();
-  return db.pathRegistry?.[id] || null;
+  return db.pathRegistry?.[id] || db.pathRegistry?.[`__index__/${id}`] || null;
 }
 
 export function getIdRegistry(): IdRegistryMaps {
@@ -468,7 +469,7 @@ export function getEntityInfoBoxData(entityId: string) {
     maturity = entity.maturity;
     const db = getDatabase();
     const solutionEntities = (db.entities || []).filter(
-      (e) => e.type === "safety-agenda" || e.type === "intervention"
+      (e) => e.type === "safety-agenda" || e.type === "approach" || e.type === "project"
     );
     relatedSolutions = [];
     for (const solution of solutionEntities) {
@@ -614,11 +615,14 @@ export interface ExploreItem {
   category: string | null;
   riskCategory: string | null;
   lastUpdated: string | null;
+  href?: string; // Override link target (for tables, diagrams, insights)
+  meta?: string; // Extra metadata text (e.g. "42 × 9" for tables)
+  sourceTitle?: string; // Source page title (for insights)
 }
 
 // Map page categories to entity-like types for display
 const CATEGORY_TO_TYPE: Record<string, string> = {
-  responses: "intervention",
+  responses: "approach",
   organizations: "organization",
   people: "researcher",
   factors: "model",
@@ -635,10 +639,115 @@ const CATEGORY_TO_TYPE: Record<string, string> = {
   other: "concept",
 };
 
+// Hardcoded tables list (matches Astro app's ContentHub)
+const TABLES = [
+  {
+    id: "safety-approaches",
+    title: "Safety Approaches",
+    description: "Safety research effectiveness vs capability uplift.",
+    href: "/knowledge-base/responses/safety-approaches/table",
+    path: "/knowledge-base/responses/safety-approaches",
+    rows: 42,
+    cols: 9,
+  },
+  {
+    id: "safety-generalizability",
+    title: "Safety Generalizability",
+    description: "Safety approaches across AI architectures.",
+    href: "/knowledge-base/responses/safety-generalizability/table",
+    path: "/knowledge-base/responses/safety-generalizability",
+    rows: 42,
+    cols: 8,
+  },
+  {
+    id: "safety-matrix",
+    title: "Safety × Architecture Matrix",
+    description: "Safety approaches vs architecture scenarios.",
+    href: "/knowledge-base/responses/safety-generalizability/matrix",
+    path: "/knowledge-base/responses/safety-generalizability",
+    rows: 42,
+    cols: 12,
+  },
+  {
+    id: "architecture-scenarios",
+    title: "Architecture Scenarios",
+    description: "Deployment patterns and base architectures.",
+    href: "/knowledge-base/architecture-scenarios/table",
+    path: "/knowledge-base/architecture-scenarios",
+    rows: 12,
+    cols: 7,
+  },
+  {
+    id: "deployment-architectures",
+    title: "Deployment Architectures",
+    description: "How AI systems are deployed.",
+    href: "/knowledge-base/deployment-architectures/table",
+    path: "/knowledge-base/deployment-architectures",
+    rows: 8,
+    cols: 6,
+  },
+  {
+    id: "accident-risks",
+    title: "Accident Risks",
+    description: "Accident and misalignment risks.",
+    href: "/knowledge-base/risks/accident/table",
+    path: "/knowledge-base/risks/accident",
+    rows: 16,
+    cols: 7,
+  },
+  {
+    id: "eval-types",
+    title: "Evaluation Types",
+    description: "Evaluation methodologies comparison.",
+    href: "/knowledge-base/models/eval-types/table",
+    path: "/knowledge-base/models/eval-types",
+    rows: 18,
+    cols: 8,
+  },
+  {
+    id: "transition-model",
+    title: "AI Transition Model Parameters",
+    description: "All AI Transition Model parameters.",
+    href: "/ai-transition-model/table",
+    path: "/ai-transition-model",
+    rows: 45,
+    cols: 6,
+  },
+];
+
+// Insight shape as stored in database.json
+interface DatabaseInsight {
+  id: string;
+  insight: string;
+  source: string;
+  tags: string[];
+  type: string;
+  surprising: number;
+  important: number;
+  actionable: number;
+  neglected: number;
+  compact: number;
+  added: string;
+  composite?: number | null;
+}
+
 export function getExploreItems(): ExploreItem[] {
   const db = getDatabase();
   const pageMap = new Map((db.pages || []).map((p) => [p.id, p]));
   const entityIds = new Set((db.entities || []).map((e) => e.id));
+
+  // Build cluster lookup from pages (for tables/insights)
+  const pageClusterMap = new Map<string, string[]>();
+  const pageTitleMap = new Map<string, string>();
+  for (const page of db.pages || []) {
+    pageClusterMap.set(page.path, page.clusters || []);
+    pageTitleMap.set(page.path, page.title);
+    // Also store with trailing slash
+    if (!page.path.endsWith("/")) {
+      pageClusterMap.set(page.path + "/", page.clusters || []);
+      pageTitleMap.set(page.path + "/", page.title);
+    }
+  }
 
   // Items from entities (as before)
   const entityItems: ExploreItem[] = (db.entities || []).map((entity) => {
@@ -680,5 +789,79 @@ export function getExploreItems(): ExploreItem[] {
       lastUpdated: page.lastUpdated ?? null,
     }));
 
-  return [...entityItems, ...pageOnlyItems];
+  // Table items
+  const tableItems: ExploreItem[] = TABLES.map((table) => ({
+    id: `table-${table.id}`,
+    numericId: `table-${table.id}`,
+    title: table.title,
+    type: "table",
+    description: table.description,
+    tags: [],
+    clusters: pageClusterMap.get(table.path) || ["ai-safety"],
+    wordCount: null,
+    quality: null,
+    importance: null,
+    category: null,
+    riskCategory: null,
+    lastUpdated: null,
+    href: table.href,
+    meta: `${table.rows} × ${table.cols}`,
+  }));
+
+  // Diagram items — entities with causeEffectGraph
+  const diagramItems: ExploreItem[] = (db.entities || [])
+    .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
+    .map((e: any) => {
+      const nodeCount = e.causeEffectGraph?.nodes?.length || 0;
+      return {
+        id: `diagram-${e.id}`,
+        numericId: `diagram-${e.id}`,
+        title: e.causeEffectGraph?.title || e.title,
+        type: "diagram",
+        description: e.causeEffectGraph?.description || `Cause-effect diagram for ${e.title}`,
+        tags: [],
+        clusters: ["ai-safety"],
+        wordCount: null,
+        quality: null,
+        importance: null,
+        category: null,
+        riskCategory: null,
+        lastUpdated: e.lastUpdated || null,
+        href: `/diagrams/${e.id}`,
+        meta: `${nodeCount} nodes`,
+      };
+    });
+
+  // Insight items (from database.json)
+  const insightItems: ExploreItem[] = (db.insights || []).map((insight) => {
+    const sourcePath = insight.source || "/insight-hunting";
+    const parentClusters =
+      pageClusterMap.get(sourcePath) ||
+      pageClusterMap.get(sourcePath + "/") ||
+      ["ai-safety"];
+    const sourceTitle =
+      pageTitleMap.get(sourcePath) ||
+      pageTitleMap.get(sourcePath + "/") ||
+      undefined;
+    return {
+      id: `insight-${insight.id}`,
+      numericId: `insight-${insight.id}`,
+      title: insight.insight,
+      type: "insight",
+      description: insight.insight,
+      tags: insight.tags || [],
+      clusters: parentClusters,
+      wordCount: null,
+      quality: insight.composite || null,
+      importance: insight.composite || null,
+      category: null,
+      riskCategory: null,
+      lastUpdated: null,
+      href: sourcePath,
+      meta: insight.composite?.toFixed(1) || undefined,
+      sourceTitle,
+    };
+  });
+
+  return [...entityItems, ...pageOnlyItems, ...tableItems, ...diagramItems, ...insightItems];
 }

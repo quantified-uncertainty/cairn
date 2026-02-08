@@ -372,7 +372,8 @@ export const EntityType = z.enum([
   'capability',
   'safety-agenda',
   'safety-approaches', // Safety research approaches/agendas
-  'intervention',  // Technical or policy interventions
+  'approach',      // Broad strategies/categories of response (e.g., prediction markets, epistemic security)
+  'project',       // Specific named implementations/tools (e.g., Metaculus, Squiggle)
   'policy',
   'policies',      // Policy categories (alias for grouping)
   'organization',  // Generic organization

@@ -176,7 +176,8 @@ const typeLabels: Record<EntityType, { label: string; color: string }> = {
   'scenario': { label: 'Scenario', color: '#9333ea' },
   'resource': { label: 'Resource', color: '#4f46e5' },
   'funder': { label: 'Funder', color: '#16a34a' },
-  'intervention': { label: 'Intervention', color: '#0891b2' },
+  'approach': { label: 'Approach', color: '#0891b2' },
+  'project': { label: 'Project', color: '#0d9488' },
   'organization': { label: 'Organization', color: '#64748b' },
   'historical': { label: 'Historical', color: '#78716c' },
   'analysis': { label: 'Analysis', color: '#0ea5e9' },
@@ -318,7 +319,7 @@ export function InfoBox({
   }, {} as Record<string, RelatedEntry[]>);
 
   const typeOrder: EntityType[] = [
-    'metric', 'parameter', 'risk', 'risk-factor', 'intervention', 'safety-agenda',
+    'metric', 'parameter', 'risk', 'risk-factor', 'approach', 'project', 'safety-agenda',
     'policy', 'capability', 'model', 'concept', 'crux', 'organization',
     'lab', 'lab-frontier', 'lab-research', 'lab-startup', 'lab-academic',
     'researcher', 'funder', 'resource', 'analysis', 'case-study', 'scenario', 'historical'

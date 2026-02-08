@@ -31,9 +31,11 @@ export default async function InternalPage({ params }: PageProps) {
   }
 
   return (
+    <div className="max-w-7xl mx-auto px-6 py-8">
     <article className="prose max-w-none">
       {page.frontmatter.title && <h1>{page.frontmatter.title}</h1>}
       {page.content}
     </article>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ export default function WikiIndex() {
   const items = getExploreItems();
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-3xl font-bold mb-2">Explore</h1>
       <p className="text-muted-foreground mb-8">
         Browse all entities in the AI safety knowledge base.

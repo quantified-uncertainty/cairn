@@ -24,6 +24,8 @@ import {
   Lightbulb,
   Box,
   Activity,
+  Compass,
+  Package,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -35,7 +37,8 @@ export type EntityType =
   | "risk-factor"
   | "capability"
   | "safety-agenda"
-  | "intervention"
+  | "approach"
+  | "project"
   | "policy"
   | "organization"
   | "lab"
@@ -83,10 +86,15 @@ export const entityTypeConfig: Record<EntityType, EntityTypeConfig> = {
     label: "Safety Agenda",
     color: "text-green-600 dark:text-green-400",
   },
-  intervention: {
-    icon: Wrench,
-    label: "Intervention",
+  approach: {
+    icon: Compass,
+    label: "Approach",
     color: "text-emerald-600 dark:text-emerald-400",
+  },
+  project: {
+    icon: Package,
+    label: "Project",
+    color: "text-teal-600 dark:text-teal-400",
   },
   policy: {
     icon: Scale,

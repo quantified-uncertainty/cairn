@@ -2,9 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { cn } from "@lib/utils";
-import { Lightbulb, FlaskConical, Target, CheckCircle2 } from "lucide-react";
+import { Lightbulb, FlaskConical, Target, CheckCircle2, ExternalLink, BookOpen, GraduationCap, MessageSquare, Briefcase } from "lucide-react";
 import { EntityTypeIcon, entityTypeConfig } from "./EntityTypeIcon";
 import { severityColors, maturityColors, riskCategoryColors } from "./shared/style-config";
+import type { ExternalLinksData } from "@/data";
 
 type LucideIcon = React.ForwardRefExoticComponent<React.SVGProps<SVGSVGElement> & { size?: number | string }>;
 
@@ -43,6 +44,12 @@ interface InfoBoxProps {
   relatedTopics?: string[];
   relatedEntries?: { type: string; title: string; href: string }[];
   ratings?: ModelRatingsData;
+  description?: string;
+  externalLinks?: ExternalLinksData;
+  topFacts?: { label: string; value: string; asOf?: string }[];
+  clusters?: string[];
+  wordCount?: number;
+  backlinkCount?: number;
 }
 
 const typeLabels: Record<string, { label: string; color: string }> = {
@@ -60,7 +67,8 @@ const typeLabels: Record<string, { label: string; color: string }> = {
   concept: { label: "Concept", color: "#6366f1" },
   researcher: { label: "Researcher", color: "#475569" },
   funder: { label: "Funder", color: "#16a34a" },
-  intervention: { label: "Intervention", color: "#0891b2" },
+  approach: { label: "Approach", color: "#0891b2" },
+  project: { label: "Project", color: "#0d9488" },
   organization: { label: "Organization", color: "#64748b" },
   model: { label: "Model", color: "#8b5cf6" },
 };
@@ -111,6 +119,17 @@ function RatingBar({ value, max = 5 }: { value: number; max?: number }) {
   );
 }
 
+const externalLinkPlatforms: Record<string, { name: string; icon: typeof BookOpen }> = {
+  wikipedia: { name: "Wikipedia", icon: BookOpen },
+  wikidata: { name: "Wikidata", icon: BookOpen },
+  lesswrong: { name: "LessWrong", icon: GraduationCap },
+  alignmentForum: { name: "Alignment Forum", icon: GraduationCap },
+  eaForum: { name: "EA Forum", icon: MessageSquare },
+  stampy: { name: "AI Safety Info", icon: MessageSquare },
+  arbital: { name: "Arbital", icon: BookOpen },
+  eightyK: { name: "80,000 Hours", icon: Briefcase },
+};
+
 function RatingItem({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: number }) {
   return (
     <div className="grid grid-cols-[16px_1fr_60px] items-center gap-2">
@@ -147,6 +166,12 @@ export function InfoBox({
   relatedTopics,
   relatedEntries,
   ratings,
+  description,
+  externalLinks,
+  topFacts,
+  clusters,
+  wordCount,
+  backlinkCount,
 }: InfoBoxProps) {
   const typeInfo = typeLabels[type] || defaultTypeInfo;
 
@@ -191,6 +216,18 @@ export function InfoBox({
   const sortedTypes = groupedEntries ? Object.keys(groupedEntries) : [];
   const hasITN = tractability !== undefined || neglectedness !== undefined || uncertainty !== undefined;
 
+  // External links entries
+  const extLinkEntries = externalLinks
+    ? (Object.entries(externalLinks) as [string, string | undefined][]).filter(([_, url]) => url)
+    : [];
+
+  // Format word count
+  const formattedWordCount = wordCount
+    ? wordCount >= 1000
+      ? `${(wordCount / 1000).toFixed(1).replace(/\.0$/, "")}k words`
+      : `${wordCount} words`
+    : null;
+
   return (
     <Card className="wiki-infobox float-right w-[280px] mb-4 ml-6 overflow-hidden text-sm max-md:float-none max-md:w-full max-md:ml-0 max-md:mb-6">
       {/* Header */}
@@ -198,6 +235,39 @@ export function InfoBox({
         <span className="block text-[10px] uppercase tracking-wide opacity-90 mb-0.5">{typeInfo.label}</span>
         {title && <h3 className="m-0 text-sm font-semibold leading-tight text-white">{title}</h3>}
       </div>
+
+      {/* Description */}
+      {description && (
+        <div className="px-4 py-2.5 border-b border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed m-0 line-clamp-3">{description}</p>
+        </div>
+      )}
+
+      {/* External Links */}
+      {extLinkEntries.length > 0 && (
+        <div className="px-4 py-2 border-b border-border">
+          <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+            {extLinkEntries.map(([platform, url]) => {
+              const config = externalLinkPlatforms[platform];
+              if (!config || !url) return null;
+              const Icon = config.icon;
+              return (
+                <a
+                  key={platform}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors no-underline"
+                >
+                  <Icon size={12} />
+                  <span>{config.name}</span>
+                  <ExternalLink size={9} className="opacity-40" />
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Fields */}
       {fields.length > 0 && (
@@ -235,6 +305,26 @@ export function InfoBox({
               <Link key={i} href={s.href} className="inline-block px-2 py-1 bg-emerald-500/15 rounded text-xs text-emerald-500 no-underline hover:bg-emerald-500/25">
                 {s.title}
               </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Key Facts */}
+      {topFacts && topFacts.length > 0 && (
+        <div className="px-4 py-3 border-t border-border">
+          <div className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground mb-2">Key Facts</div>
+          <div className="flex flex-col gap-1.5">
+            {topFacts.map((fact, i) => (
+              <div key={i} className="flex flex-col">
+                <div className="flex justify-between items-baseline gap-2">
+                  <span className="text-xs text-muted-foreground">{fact.label}</span>
+                  <span className="text-xs font-semibold text-foreground text-right">{fact.value}</span>
+                </div>
+                {fact.asOf && (
+                  <span className="text-[0.65rem] text-muted-foreground/60 text-right">as of {fact.asOf}</span>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -302,6 +392,7 @@ export function InfoBox({
         </div>
       )}
 
+
       {/* ITN Framework */}
       {hasITN && (
         <div className="px-4 py-3 border-t border-border">
@@ -326,6 +417,14 @@ export function InfoBox({
               </div>
             )}
           </div>
+        </div>
+      )}
+      {/* Article Metrics */}
+      {(formattedWordCount || backlinkCount) && (
+        <div className="px-4 py-2 border-t border-border">
+          <span className="text-[0.7rem] text-muted-foreground/70">
+            {[formattedWordCount, backlinkCount ? `${backlinkCount} backlinks` : null].filter(Boolean).join(" · ")}
+          </span>
         </div>
       )}
     </Card>

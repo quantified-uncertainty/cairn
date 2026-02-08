@@ -55,7 +55,7 @@ export default function RootLayout({
         </header>
 
         {/* Main content */}
-        <main className="max-w-7xl mx-auto px-6 py-8">
+        <main>
           {children}
         </main>
       </body>

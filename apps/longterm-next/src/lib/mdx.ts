@@ -185,6 +185,28 @@ export function slugToNumericId(slug: string): string | null {
 }
 
 // ============================================================================
+// RAW MDX SOURCE (for debug/info pages)
+// ============================================================================
+
+export interface RawMdxSource {
+  raw: string;
+  frontmatter: Record<string, any>;
+  mdxSource: string;
+  filePath: string;
+}
+
+/**
+ * Read the raw MDX file for a slug and return its contents without compiling.
+ */
+export function getRawMdxSource(slug: string): RawMdxSource | null {
+  const filePath = resolveContentPath(slug);
+  if (!filePath) return null;
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const { content: mdxSource, data: frontmatter } = matter(raw);
+  return { raw, frontmatter, mdxSource, filePath };
+}
+
+// ============================================================================
 // INTERNAL PAGES
 // ============================================================================
 

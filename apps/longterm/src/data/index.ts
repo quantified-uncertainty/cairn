@@ -512,7 +512,7 @@ export function getEntityInfoBoxData(entityId: string) {
 
     // Find solutions that link to this risk
     const solutionEntities = entities.filter(e =>
-      e.type === 'safety-agenda' || e.type === 'intervention'
+      e.type === 'safety-agenda' || e.type === 'approach' || e.type === 'project'
     );
     relatedSolutions = [];
     for (const solution of solutionEntities) {
@@ -616,7 +616,7 @@ export function getRisksForTable(): RiskTableRow[] {
 
   // Build a map of risk -> solutions by checking which solutions link to each risk
   const solutionEntities = entities.filter(e =>
-    e.type === 'safety-agenda' || e.type === 'intervention'
+    e.type === 'safety-agenda' || e.type === 'approach' || e.type === 'project'
   );
   const riskToSolutions: Record<string, RiskTableSolution[]> = {};
 
@@ -767,7 +767,8 @@ export function getEntityHref(id: string, type?: string): string {
     'scenario': '/analysis/scenarios/',
     'resource': '/resources/',
     'funder': '/knowledge-base/funders/',
-    'intervention': '/knowledge-base/responses/',
+    'approach': '/knowledge-base/responses/',
+    'project': '/knowledge-base/responses/epistemic-tools/projects/',
     'historical': '/knowledge-base/history/',
     'model': '/knowledge-base/models/',
     // AI Transition Model types

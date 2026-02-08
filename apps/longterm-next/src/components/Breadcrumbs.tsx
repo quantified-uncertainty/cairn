@@ -23,7 +23,10 @@ export function Breadcrumbs({
   const items: BreadcrumbItem[] = [{ label: "Wiki", href: "/wiki" }];
 
   if (category) {
-    items.push({ label: formatCategory(category) });
+    items.push({
+      label: formatCategory(category),
+      href: `/wiki?tag=${encodeURIComponent(category)}`,
+    });
   }
 
   if (title) {
@@ -31,7 +34,7 @@ export function Breadcrumbs({
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground mb-4 flex-wrap">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground flex-wrap">
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-1">
           {i > 0 && <ChevronRight className="w-3 h-3 shrink-0" />}

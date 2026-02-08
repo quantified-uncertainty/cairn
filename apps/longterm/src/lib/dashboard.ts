@@ -169,7 +169,7 @@ export function findRisksWithoutResponses(): EntityGap[] {
   const entities = getEntities();
   const risks = entities.filter(e => isRiskType(e.type));
   const responses = entities.filter(e =>
-    e.type === 'safety-agenda' || e.type === 'intervention' || e.type === 'policy'
+    e.type === 'safety-agenda' || e.type === 'approach' || e.type === 'project' || e.type === 'policy'
   );
 
   // Build a set of risk IDs that have responses
@@ -201,7 +201,7 @@ export function findRisksWithoutResponses(): EntityGap[] {
 export function findResponsesWithoutRisks(): EntityGap[] {
   const entities = getEntities();
   const responses = entities.filter(e =>
-    e.type === 'safety-agenda' || e.type === 'intervention' || e.type === 'policy'
+    e.type === 'safety-agenda' || e.type === 'approach' || e.type === 'project' || e.type === 'policy'
   );
 
   return responses
@@ -348,7 +348,7 @@ export function getSummaryStats(): {
 
   const getResponseCount = () => {
     return byType
-      .filter(t => ['safety-agenda', 'intervention', 'policy'].includes(t.type))
+      .filter(t => ['safety-agenda', 'approach', 'project', 'policy'].includes(t.type))
       .reduce((sum, t) => sum + t.count, 0);
   };
 
@@ -424,7 +424,7 @@ export function getWikiStats(): WikiStats {
     qualitySummary: { low, adequate, high },
     entityBreakdown: {
       risks: getCount(['risk', 'risk-factor', 'ai-transition-model-factor']),
-      responses: getCount(['safety-agenda', 'intervention', 'policy']),
+      responses: getCount(['safety-agenda', 'approach', 'project', 'policy']),
       orgs: getCount(['organization', 'lab', 'lab-academic', 'lab-research']),
       people: getCount(['researcher']),
       models: getCount(['model']),

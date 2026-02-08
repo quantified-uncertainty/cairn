@@ -3,7 +3,6 @@ import {
   User,
   Scale,
   Cpu,
-  Wrench,
   Shield,
   Building2,
   FlaskConical,
@@ -22,6 +21,8 @@ import {
   Lightbulb,
   Box,
   Activity,
+  Compass,
+  Package,
 } from "lucide-react";
 import { cn } from "@lib/utils";
 
@@ -34,7 +35,8 @@ export type EntityType =
   | "risk-factor"
   | "capability"
   | "safety-agenda"
-  | "intervention"
+  | "approach"
+  | "project"
   | "policy"
   | "organization"
   | "lab"
@@ -66,7 +68,8 @@ export const entityTypeConfig: Record<EntityType, EntityTypeConfig> = {
   "risk-factor": { icon: AlertTriangle, label: "Risk Factor", color: "text-orange-600 dark:text-orange-400" },
   capability: { icon: Cpu, label: "Capability", color: "text-blue-600 dark:text-blue-400" },
   "safety-agenda": { icon: Shield, label: "Safety Agenda", color: "text-green-600 dark:text-green-400" },
-  intervention: { icon: Wrench, label: "Intervention", color: "text-emerald-600 dark:text-emerald-400" },
+  approach: { icon: Compass, label: "Approach", color: "text-emerald-600 dark:text-emerald-400" },
+  project: { icon: Package, label: "Project", color: "text-teal-600 dark:text-teal-400" },
   policy: { icon: Scale, label: "Policy", color: "text-violet-600 dark:text-violet-400" },
   organization: { icon: Building2, label: "Organization", color: "text-slate-600 dark:text-slate-400" },
   lab: { icon: FlaskConical, label: "Lab", color: "text-cyan-600 dark:text-cyan-400" },
