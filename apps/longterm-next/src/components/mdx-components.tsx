@@ -17,6 +17,12 @@ import { TransitionModelContent } from "@/components/wiki/TransitionModelContent
 import TransitionModelTable from "@/components/wiki/TransitionModelTable";
 import { TransitionModelInteractive } from "@/components/wiki/TransitionModelTable";
 import { FactorSubItemsList, AllFactorsSubItems } from "@/components/wiki/FactorSubItemsList";
+import { FactorKeyDebates } from "@/components/wiki/FactorKeyDebates";
+import { FactorRatings } from "@/components/wiki/FactorRatings";
+import { FactorScope } from "@/components/wiki/FactorScope";
+import { FactorRelatedContent } from "@/components/wiki/FactorRelatedContent";
+import { FactorRelationshipDiagram, FullModelDiagram } from "@/components/wiki/FactorRelationshipDiagram";
+import { FactorStatusBadge } from "@/components/wiki/FactorStatusCard";
 import CauseEffectGraph from "@/components/wiki/CauseEffectGraph";
 import { PageCauseEffectGraph } from "@/components/wiki/PageCauseEffectGraph";
 
@@ -40,8 +46,8 @@ const stubNames = [
   "Badge",
   "ConceptsDirectory", "Crux", "CruxList", "DataCrux", "DataEstimateBox",
   "DisagreementMap", "DualOutcomeChart", "EntityGraph", "EstimateBox",
-  "FactorAttributionMatrix", "FactorGauges", "FactorRelationshipDiagram",
-  "FullModelDiagram", "FullWidthLayout", "ImpactGrid",
+  "FactorAttributionMatrix", "FactorGauges",
+  "FullWidthLayout", "ImpactGrid",
   "ImpactList", "InsightGridExperiments", "InsightScoreMatrix", "InsightsTable",
   "KeyPeople", "KeyQuestions", "KnowledgeTreemap", "ModelsList",
   "OutcomesTable", "PageIndex", "PixelDensityMap",
@@ -95,6 +101,13 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
   TransitionModelInteractive,
   FactorSubItemsList,
   AllFactorsSubItems,
+  FactorKeyDebates,
+  FactorRatings,
+  FactorScope,
+  FactorRelatedContent,
+  FactorRelationshipDiagram,
+  FullModelDiagram,
+  FactorStatusBadge,
 
   // Cause-Effect Graph components
   CauseEffectGraph,

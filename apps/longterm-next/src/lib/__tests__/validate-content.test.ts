@@ -8,6 +8,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
+import yaml from "js-yaml";
 
 // ---------------------------------------------------------------------------
 // Find and pre-read all MDX files
@@ -387,5 +388,155 @@ describe("markdown-lists", () => {
       violations,
       formatViolations("Markdown list formatting", violations),
     ).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Rule 7: Fact Consistency
+// Ported from apps/longterm/scripts/lib/rules/fact-consistency.mjs
+// ---------------------------------------------------------------------------
+
+describe("fact-consistency", () => {
+  // Values that are too short or too generic to search for reliably
+  const MIN_VALUE_LENGTH = 5;
+  const GENERIC_VALUES = new Set([
+    "2025", "2026", "2027", "2028", "2029", "2030",
+    "25%", "40%", "50%", "75%", "20%", "30%", "10%",
+  ]);
+
+  interface CanonicalFact {
+    entity: string;
+    factId: string;
+    key: string;
+    value?: string;
+    asOf?: string;
+  }
+
+  function loadCanonicalFacts(): CanonicalFact[] {
+    const factsDir = path.resolve(__dirname, "../../data/facts");
+    const facts: CanonicalFact[] = [];
+
+    if (!fs.existsSync(factsDir)) return facts;
+
+    const files = fs.readdirSync(factsDir).filter((f) => f.endsWith(".yaml"));
+    for (const file of files) {
+      const filepath = path.join(factsDir, file);
+      const content = fs.readFileSync(filepath, "utf-8");
+      const parsed = yaml.load(content) as { entity: string; facts: Record<string, any> } | null;
+      if (parsed?.entity && parsed?.facts) {
+        for (const [factId, factData] of Object.entries(parsed.facts)) {
+          facts.push({
+            entity: parsed.entity,
+            factId,
+            key: `${parsed.entity}.${factId}`,
+            value: factData.value,
+            asOf: factData.asOf,
+          });
+        }
+      }
+    }
+
+    return facts;
+  }
+
+  function generateSearchPatterns(value: string): Array<{ regex: RegExp; isExact: boolean }> {
+    if (value.length < MIN_VALUE_LENGTH && !value.startsWith("$")) return [];
+    if (GENERIC_VALUES.has(value)) return [];
+
+    const patterns: Array<{ regex: RegExp; isExact: boolean }> = [];
+
+    // Direct match with optional backslash before $
+    let escaped = value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    escaped = escaped.replace(/\\\$/g, "\\\\?\\$");
+    patterns.push({ regex: new RegExp(escaped, "gi"), isExact: true });
+
+    // Dollar amount abbreviation variations: "$13 billion" -> "$13B"
+    const dollarMatch = value.match(/^\$?([\d,.]+)\s*(billion|million|trillion|thousand)/i);
+    if (dollarMatch) {
+      const num = dollarMatch[1];
+      const unit = dollarMatch[2].toLowerCase();
+      const abbrevMap: Record<string, string> = { billion: "B", million: "M", trillion: "T", thousand: "K" };
+      const abbr = abbrevMap[unit];
+      if (abbr) {
+        const escapedNum = num.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        patterns.push({
+          regex: new RegExp(`\\\\?\\$${escapedNum}\\s*${abbr}\\b`, "gi"),
+          isExact: true,
+        });
+      }
+    }
+
+    return patterns;
+  }
+
+  function isInsideFComponent(body: string, matchIndex: number): boolean {
+    const before = body.slice(Math.max(0, matchIndex - 200), matchIndex);
+    const after = body.slice(matchIndex, Math.min(body.length, matchIndex + 200));
+
+    const lastOpenF = before.lastIndexOf("<F ");
+    if (lastOpenF === -1) return false;
+
+    const afterOpen = before.slice(lastOpenF);
+    const closingBracket = afterOpen.indexOf(">");
+    if (closingBracket === -1) return true;
+    if (afterOpen[closingBracket - 1] === "/") return false;
+
+    return after.includes("</F>");
+  }
+
+  it("hardcoded fact values should use <F> component", () => {
+    const facts = loadCanonicalFacts();
+    if (facts.length === 0) return;
+
+    const violations: Violation[] = [];
+
+    for (const fact of facts) {
+      if (!fact.value) continue;
+      const patterns = generateSearchPatterns(fact.value);
+
+      for (const { file, lines, bodyStart, inCodeBlock } of allFiles) {
+        if (isInternalPage(file)) continue;
+        const body = lines.join("\n");
+
+        for (const { regex } of patterns) {
+          regex.lastIndex = 0;
+          let match;
+          while ((match = regex.exec(body)) !== null) {
+            if (isInsideFComponent(body, match.index)) continue;
+
+            // Find line number
+            const beforeMatch = body.slice(0, match.index);
+            const lineNum = (beforeMatch.match(/\n/g) || []).length + 1;
+
+            // Skip if in code block or frontmatter
+            if (lineNum - 1 < bodyStart) continue;
+            if (inCodeBlock[lineNum - 1]) continue;
+            if (isInInlineCode(lines[lineNum - 1] || "", match.index - (beforeMatch.lastIndexOf("\n") + 1))) continue;
+
+            violations.push({
+              file,
+              line: lineNum,
+              message: `Hardcoded "${match[0]}" matches fact ${fact.key}${fact.asOf ? ` (as of ${fact.asOf})` : ""}. Consider using <F e="${fact.entity}" f="${fact.factId}" />`,
+            });
+          }
+        }
+      }
+    }
+
+    // Deduplicate: one issue per file+line+fact
+    const seen = new Set<string>();
+    const unique = violations.filter((v) => {
+      const factKeyMatch = v.message.match(/matches fact ([\w.-]+)/);
+      const factKey = factKeyMatch ? factKeyMatch[1] : "";
+      const key = `${v.file}:${v.line}:${factKey}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // This is informational — log the findings but don't fail the test
+    if (unique.length > 0) {
+      console.log(formatViolations("Fact consistency (info)", unique));
+    }
   });
 });

@@ -26,6 +26,7 @@ import {
   isOrganization,
   isPolicy,
 } from "./entity-schemas";
+import { loadFacts } from "./facts";
 
 // Path to the local data directory (database.json is synced here from longterm)
 const LOCAL_DATA_DIR = path.resolve(process.cwd(), "src/data");
@@ -698,12 +699,12 @@ export function getBacklinksFor(
 }
 
 // ============================================================================
-// CANONICAL FACTS
+// CANONICAL FACTS (loaded from local YAML files in src/data/facts/)
 // ============================================================================
 
 export function getFact(entityId: string, factId: string): Fact | undefined {
-  const db = getDatabase();
-  return db.facts?.[`${entityId}.${factId}`];
+  const facts = loadFacts();
+  return facts[`${entityId}.${factId}`];
 }
 
 export function getFactValue(entityId: string, factId: string): string | undefined {
@@ -711,9 +712,9 @@ export function getFactValue(entityId: string, factId: string): string | undefin
 }
 
 export function getFactsForEntity(entityId: string): Record<string, Fact> {
-  const db = getDatabase();
+  const facts = loadFacts();
   const result: Record<string, Fact> = {};
-  for (const [key, fact] of Object.entries(db.facts || {})) {
+  for (const [, fact] of Object.entries(facts)) {
     if (fact.entity === entityId) {
       result[fact.factId] = fact;
     }
@@ -722,8 +723,8 @@ export function getFactsForEntity(entityId: string): Record<string, Fact> {
 }
 
 export function getAllFacts(): Array<Fact & { key: string }> {
-  const db = getDatabase();
-  return Object.entries(db.facts || {}).map(([key, fact]) => ({
+  const facts = loadFacts();
+  return Object.entries(facts).map(([key, fact]) => ({
     ...fact,
     key,
   }));
