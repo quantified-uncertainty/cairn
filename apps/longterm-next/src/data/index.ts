@@ -1127,9 +1127,9 @@ export function getExploreItems(): ExploreItem[] {
     }
   }
 
-  // Items from typed entities
-  const entityItems: ExploreItem[] = typedEntities.map((entity) => {
-    const page = pageMap.get(entity.id);
+  // Items from typed entities (only those with actual content pages)
+  const entityItems: ExploreItem[] = typedEntities.filter((entity) => pageMap.has(entity.id)).map((entity) => {
+    const page = pageMap.get(entity.id)!;
     return {
       id: entity.id,
       numericId: entity.numericId || db.idRegistry?.bySlug[entity.id] || entity.id,
