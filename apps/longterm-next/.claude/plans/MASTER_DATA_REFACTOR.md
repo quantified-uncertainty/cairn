@@ -19,6 +19,95 @@ Four phases to extract the data layer from `apps/longterm-next/` into a standalo
 
 ---
 
+## Red-Teaming Findings (Critical Bugs & Gaps)
+
+Thorough investigation identified the following issues. Each is tagged with the phase it affects and its severity.
+
+### CRITICAL: Phase 1 — Missing `scanFrontmatterEntities()` in longterm-next build script
+
+**What:** `apps/longterm/scripts/build-data.mjs` (canonical, lines 865-930) has a `scanFrontmatterEntities()` function that scans MDX files for `entityType` frontmatter and auto-creates entities for pages that don't have corresponding YAML entries. **The longterm-next build script does not have this function at all.**
+
+**Impact:** If we switch to longterm-next's build script without porting this, any entity that exists only because its MDX page declares `entityType: "risk"` (etc.) in frontmatter — with no matching YAML entry — will silently disappear from database.json. This could lose dozens of entities.
+
+**Fix required in Step 1.2:** Port `scanFrontmatterEntities()` to a new `scripts/lib/frontmatter-scanner.mjs` module and wire it into `build-data.mjs` before the entity merge step. The function needs:
+- `yamlEntityIds` (Set of IDs already covered by YAML)
+- `CONTENT_DIR` path to scan for `.mdx` files
+- Return array of auto-entity objects `{ id, type, title, description, tags, ... }`
+
+### CRITICAL: Phase 2 — `entity-transform.mjs` default case drops extra fields
+
+**What:** In `scripts/lib/entity-transform.mjs` (lines 264-266), the default case for unknown entity types returns:
+```javascript
+default:
+  return { ...base, entityType: canonicalType };
+```
+
+But in the runtime `src/data/index.ts` (lines 319-324), the default case preserves all raw fields:
+```javascript
+default: {
+  const { type: _type, ...rawRest } = raw;
+  return { ...rawRest, ...base, entityType: canonicalType };
+}
+```
+
+**Impact:** All ai-transition-model-* entities (factors, scenarios, outcomes) would lose their specialized fields: `content`, `currentAssessment`, `ratings`, `causeEffectGraph`, and any other extra fields. These fields are used by the ATM pages.
+
+**Fix required in Step 2.1:** Update the default case in `entity-transform.mjs` to:
+```javascript
+default: {
+  const { type: _type, ...rawRest } = raw;
+  return { ...rawRest, ...base, entityType: canonicalType };
+}
+```
+
+### MEDIUM: Phase 2 — Missing null-safety in `applyEntityOverrides`
+
+**What:** In `entity-transform.mjs` line 104-141, the `applyEntityOverrides()` function doesn't guard against `entities` or `pages` being null/undefined. The runtime version in `index.ts` includes `|| []` fallbacks.
+
+**Fix:** Add null guards at the top of `applyEntityOverrides()`:
+```javascript
+function applyEntityOverrides(entities, pages) {
+  entities = entities || [];
+  pages = pages || [];
+  // ... rest of function
+}
+```
+
+### MEDIUM: Phase 3 — Missing `transpilePackages` config for Next.js
+
+**What:** `apps/longterm-next/next.config.ts` has a `transpilePackages` array that currently includes `@cairn/ui`. When creating `@cairn/data` as a workspace package with TypeScript source exports (no build step), it **must also be added to `transpilePackages`** or Next.js will fail to compile the TypeScript imports.
+
+**Fix required in Step 3.8:** After adding `@cairn/data` to `package.json`, also update `next.config.ts`:
+```typescript
+transpilePackages: [
+  "@cairn/ui",
+  "@cairn/data",  // ← ADD THIS
+  "@quri/squiggle-components",
+  "@quri/squiggle-lang",
+  "@quri/ui",
+],
+```
+
+### LOW: Phase 3 — `getEntityHref()` has app-specific routing
+
+**What:** `getEntityHref(id)` in `index.ts` returns `/wiki/${numericId}` with a hardcoded `/wiki/` prefix. This is app-specific routing that doesn't belong in a shared package.
+
+**Acceptable for now:** The only consumer is longterm-next. Document the concern and plan to make the prefix configurable via `config.ts` in a follow-up if other apps need different routing.
+
+### VALIDATED: Phase 3 — Icon split approach is safe
+
+Investigation of all 5 consumers of `entity-ontology.ts` confirmed:
+- **1 consumer** (`EntityTypeIcon.tsx`) uses `.icon` property (LucideIcon component)
+- **4 consumers** (`InfoBox.tsx`, `ExploreGrid.tsx`, `explore-utils.ts`, `validate-entities.test.ts`) only use string properties (labels, colors, badges)
+
+The enrichment wrapper approach will work correctly.
+
+### VALIDATED: Phase 3 — Re-export pattern works
+
+`@cairn/ui` already uses the exact same pattern (`export * from "@cairn/ui"` wrappers). Confirmed no issues with barrel exports, type re-exports, or package resolution.
+
+---
+
 ## Current State (as of main)
 
 ### Source of truth
@@ -87,9 +176,23 @@ If there are differences, catalog them and decide which behavior is correct. The
 - Output paths may differ (longterm writes to its own src/data/, longterm-next writes to its own src/data/)
 - Some features in longterm's build-data.mjs may not be in the next version yet (e.g., LLM file generation, link health checking)
 
-#### Step 1.2: Fix any gaps
+#### Step 1.2: Fix any gaps (CRITICAL — at least one known gap)
 
-If the longterm-next build script is missing features from longterm's:
+**KNOWN BLOCKER:** The longterm-next build script is missing `scanFrontmatterEntities()`. This function (in `apps/longterm/scripts/build-data.mjs` lines 865-930) scans all MDX files for `entityType` frontmatter and auto-creates entities for pages that don't have corresponding YAML entries. Without it, frontmatter-only entities will be silently lost.
+
+**Required fix:**
+1. Create `apps/longterm-next/scripts/lib/frontmatter-scanner.mjs` — port `scanFrontmatterEntities()` from `apps/longterm/scripts/build-data.mjs` lines 865-920
+2. The function takes a Set of YAML entity IDs and returns auto-created entity objects
+3. Wire it into `build-data.mjs` after YAML entity loading, before the merge step:
+   ```javascript
+   import { scanFrontmatterEntities } from './lib/frontmatter-scanner.mjs';
+   // ... after loading YAML entities:
+   const yamlEntityIds = new Set(database.entities.map(e => e.id));
+   const frontmatterEntities = scanFrontmatterEntities(yamlEntityIds, CONTENT_DIR);
+   database.entities = [...database.entities, ...frontmatterEntities];
+   ```
+
+For any other missing features:
 - Add the missing functionality by importing from lib/ modules (don't inline code)
 - Or remove the feature if it's longterm-only (e.g., Astro-specific stuff)
 
@@ -128,7 +231,9 @@ pnpm --filter longterm-next dev      # Dev server works
 
 ### What this changes
 - `apps/longterm-next/package.json` — prebuild and sync:data scripts
-- Nothing else. No code changes to the data layer.
+- `apps/longterm-next/scripts/lib/frontmatter-scanner.mjs` — NEW file (ported from longterm)
+- `apps/longterm-next/scripts/build-data.mjs` — imports and calls `scanFrontmatterEntities()`
+- No code changes to the data layer.
 
 ### What this does NOT change
 - `apps/longterm/scripts/build-data.mjs` — left untouched (longterm can still use its own script for Astro builds)
@@ -164,9 +269,41 @@ Total: ~286 lines of runtime transformation code.
 
 ### Steps
 
-#### Step 2.1: Verify entity-transform.mjs covers all runtime logic
+#### Step 2.1: Fix known bugs in entity-transform.mjs, then verify coverage
 
-Read `apps/longterm-next/scripts/lib/entity-transform.mjs` and compare with the runtime functions in `apps/longterm-next/src/data/index.ts`. Verify it handles:
+**CRITICAL BUG FIX — default case drops extra fields:**
+
+In `scripts/lib/entity-transform.mjs` lines 264-266, the default case returns `{ ...base, entityType: canonicalType }`. This drops all extra raw fields for unknown entity types (ai-transition-model-*, etc.). The runtime `index.ts` version (lines 319-324) correctly preserves them with `{ ...rawRest, ...base, entityType: canonicalType }`.
+
+Fix the default case in `entity-transform.mjs`:
+```javascript
+// BEFORE (BUGGY):
+default:
+  return { ...base, entityType: canonicalType };
+
+// AFTER (FIXED):
+default: {
+  const { type: _type, ...rawRest } = raw;
+  return { ...rawRest, ...base, entityType: canonicalType };
+}
+```
+
+Without this fix, ATM entities lose `content`, `currentAssessment`, `ratings`, `causeEffectGraph`, and other specialized fields.
+
+**MEDIUM BUG FIX — null-safety in applyEntityOverrides:**
+
+Add null guards at the top of `applyEntityOverrides()` (line 104):
+```javascript
+function applyEntityOverrides(entities, pages) {
+  entities = entities || [];
+  pages = pages || [];
+  // ... rest of function
+}
+```
+
+**Then verify full coverage:**
+
+Read `entity-transform.mjs` and compare with the runtime functions in `index.ts`. Verify it handles:
 
 - [x] `OLD_TYPE_MAP` — lab-* → organization, researcher → person
 - [x] `OLD_LAB_TYPE_TO_ORG_TYPE` — lab-* → orgType
@@ -175,6 +312,7 @@ Read `apps/longterm-next/scripts/lib/entity-transform.mjs` and compare with the 
 - [x] `applyEntityOverrides()` — path-based + explicit type remapping
 - [x] `transformEntity()` — full entity transformation (person/org/policy/risk/etc.)
 - [x] `transformEntities()` — orchestrator
+- [ ] **Default case preserves extra raw fields** (bug fix above)
 
 #### Step 2.2: Wire entity-transform into the build script
 
@@ -724,6 +862,19 @@ Add to `apps/longterm-next/package.json`:
 }
 ```
 
+**CRITICAL: Add to `transpilePackages` in `apps/longterm-next/next.config.ts`:**
+```typescript
+transpilePackages: [
+  "@cairn/ui",
+  "@cairn/data",  // ← ADD THIS — required for TS source exports
+  "@quri/squiggle-components",
+  "@quri/squiggle-lang",
+  "@quri/ui",
+],
+```
+
+Without this, Next.js will fail to compile TypeScript imports from the workspace package. This is the same pattern used by `@cairn/ui`.
+
 Run `pnpm install`.
 
 #### Step 3.9: Verify
@@ -930,14 +1081,19 @@ Each phase depends on the previous. Phases 1+2 could potentially be combined int
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|-----------|
-| longterm-next build script produces different output than longterm's | Step 1.1 does a full JSON diff before switching |
-| Entity transformation at build time misses edge cases | Step 2.1 verifies entity-transform.mjs covers all runtime logic; tests catch regressions |
-| Re-export wrappers break type inference | Use `export type *` alongside `export *` for TypeScript types |
-| entity-ontology icon split breaks consumers | Enrichment wrapper preserves the `icon: LucideIcon` field — consumers see same interface |
-| config.ts defaults break in CI or different working directories | Defaults match current `process.cwd()` behavior; `configureDataPaths()` available for override |
-| database.json grows with typedEntities | Acceptable tradeoff (~8MB → ~16MB). Can strip raw `entities` in a follow-up once transition is complete |
+| Risk | Severity | Mitigation |
+|------|----------|-----------|
+| **Missing `scanFrontmatterEntities()`** — longterm-next build script silently drops frontmatter-only entities | **CRITICAL** | Port the function in Step 1.2 before switching. Step 1.1 JSON diff will catch the missing entities as a safety net. |
+| **Default case drops extra fields** — `entity-transform.mjs` loses ATM entity data (content, ratings, causeEffectGraph) | **CRITICAL** | Fix the default case to use `{ ...rawRest, ...base }` in Step 2.1 before using the .mjs version. |
+| **Missing `transpilePackages` entry** — Next.js can't compile `@cairn/data` TS imports | **MEDIUM** | Add `"@cairn/data"` to `transpilePackages` in Step 3.8. Same pattern as `@cairn/ui`. |
+| longterm-next build script produces different output than longterm's | Medium | Step 1.1 does a full JSON diff before switching |
+| Entity transformation at build time misses other edge cases | Medium | Step 2.1 verifies entity-transform.mjs covers all runtime logic; tests catch regressions |
+| Null/undefined entities or pages arrays crash `applyEntityOverrides()` | Low | Add `|| []` null guards in Step 2.1 |
+| Re-export wrappers break type inference | Low | Use `export type *` alongside `export *` for TypeScript types |
+| entity-ontology icon split breaks consumers | Low | Only 1 of 5 consumers uses `.icon`; enrichment wrapper preserves the `icon: LucideIcon` field |
+| `getEntityHref()` has hardcoded `/wiki/` prefix in shared package | Low | Acceptable for now (only consumer is longterm-next). Make configurable via `config.ts` if needed later. |
+| config.ts defaults break in CI or different working directories | Low | Defaults match current `process.cwd()` behavior; `configureDataPaths()` available for override |
+| database.json grows with typedEntities | Low | Acceptable tradeoff (~8MB → ~16MB). Can strip raw `entities` in a follow-up once transition is complete |
 
 ---
 
