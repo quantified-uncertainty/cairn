@@ -167,7 +167,18 @@ After editing `src/data/*.yaml`:
 npm run build:data  # Regenerates database.json, pathRegistry.json, etc.
 ```
 
-Entity types: risk, response, model, organization, researcher, funder, capability, crux, concept
+### Entity Declaration
+Entities can be declared two ways (YAML takes precedence):
+
+1. **Frontmatter (preferred for simple entities):** Add `entityType: <type>` to MDX frontmatter.
+   The build system auto-creates an entity with id=filename, title from frontmatter.
+
+2. **YAML (for rich entities):** Add to `src/data/entities/*.yaml` when you need
+   relatedEntries, sources, customFields, description, or website fields.
+
+Entity types: risk, risk-factor, capability, safety-agenda, person, organization,
+approach, policy, project, model, concept, worldview, event, intelligence-paradigm,
+funder, parameter, scenario, outcome, metric, analysis
 
 ## Detailed Documentation
 

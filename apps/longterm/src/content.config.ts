@@ -92,6 +92,16 @@ export const collections = {
         fullWidth: z.boolean().optional(),
         // Entity ID for sidebar InfoBox (when filename doesn't match entity ID)
         entityId: z.string().optional(),
+        // Entity type — declares this page as an entity of the given type.
+        // When present and no YAML entity exists, build-data auto-creates an entity.
+        // Valid values match entity-ontology.ts canonical types.
+        entityType: z.enum([
+          'risk', 'risk-factor', 'capability', 'safety-agenda', 'person',
+          'organization', 'approach', 'policy', 'project', 'model',
+          'concept', 'worldview', 'event', 'intelligence-paradigm',
+          'funder', 'parameter', 'scenario', 'outcome', 'metric',
+          'analysis',
+        ]).optional(),
         // Roles for people pages (e.g., ['funder', 'researcher', 'entrepreneur'])
         roles: z.array(z.string()).optional(),
         // Topic clusters for filtering (pages can belong to multiple)

@@ -218,6 +218,28 @@ describe("Entity data validation", () => {
     });
   });
 
+  describe("frontmatter-sourced entities are valid", () => {
+    it("auto-generated entities have valid types", () => {
+      const frontmatterEntities = entities.filter(
+        (e: RawEntity & { _source?: string }) =>
+          (e as Record<string, unknown>)._source === "frontmatter",
+      );
+      const invalid: string[] = [];
+      for (const entity of frontmatterEntities) {
+        const type = entity.entityType || entity.type;
+        if (!VALID_ENTITY_TYPES.has(type)) {
+          invalid.push(`${entity.id}: type="${type}"`);
+        }
+      }
+      if (frontmatterEntities.length > 0) {
+        expect(
+          invalid,
+          `Frontmatter entities with invalid types:\n  ${invalid.join("\n  ")}`,
+        ).toHaveLength(0);
+      }
+    });
+  });
+
   describe("relatedEntries reference existing entities", () => {
     it("every relatedEntries[].id resolves to an actual entity", () => {
       const entityIds = new Set(entities.map((e) => e.id));

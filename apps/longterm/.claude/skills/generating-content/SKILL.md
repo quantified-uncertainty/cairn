@@ -51,11 +51,23 @@ Different sections require different structures. See `.claude/docs/content-quali
 - How It Works
 - Critical Assessment
 
-### 3. Frontmatter Template
+### 3. Entity Declaration
+
+When creating a new page that represents an entity (a risk, person, org, approach, etc.):
+
+1. **Add `entityType: <type>` to frontmatter** — this auto-creates the entity at build time.
+2. **Only create a YAML entity entry** if you need relatedEntries, sources, customFields, description, or website.
+
+Valid entity types: risk, risk-factor, capability, safety-agenda, person, organization,
+approach, policy, project, model, concept, worldview, event, intelligence-paradigm,
+funder, parameter, scenario, outcome, metric, analysis
+
+### 4. Frontmatter Template
 
 ```yaml
 ---
 title: "Page Title"
+entityType: approach  # ← declares this page as an entity (auto-creates at build)
 description: "1-2 sentence summary with key conclusion"
 quality: 3
 lastEdited: "2025-01-30"
@@ -173,7 +185,7 @@ These cause CI failures:
 
 ## After Creating Content
 
-Rebuild the data layer if you added new entities:
+Rebuild the data layer (needed if you added entities via YAML; frontmatter entities are auto-detected):
 ```bash
 npm run build:data
 ```

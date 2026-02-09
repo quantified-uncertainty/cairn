@@ -857,6 +857,52 @@ function resolveComputedFacts(facts) {
   return resolved;
 }
 
+/**
+ * Scan MDX frontmatter for entityType declarations.
+ * Returns array of auto-entity objects for pages that declare entityType
+ * but don't have a corresponding YAML entity.
+ */
+function scanFrontmatterEntities(yamlEntityIds) {
+  const autoEntities = [];
+
+  function scanDir(dir) {
+    if (!existsSync(dir)) return;
+    for (const entry of readdirSync(dir)) {
+      const fullPath = join(dir, entry);
+      if (statSync(fullPath).isDirectory()) {
+        scanDir(fullPath);
+      } else if (entry.endsWith('.mdx') || entry.endsWith('.md')) {
+        const ext = entry.endsWith('.mdx') ? '.mdx' : '.md';
+        const id = basename(entry, ext);
+        if (id === 'index') continue;
+
+        const content = readFileSync(fullPath, 'utf-8');
+        const fm = extractFrontmatter(content);
+
+        // Use entityId override if present, otherwise filename
+        const entityId = fm.entityId || id;
+        if (yamlEntityIds.has(entityId)) continue; // YAML entity takes precedence
+
+        if (fm.entityType) {
+          autoEntities.push({
+            id: entityId,
+            type: fm.entityType,
+            title: fm.title || id.replace(/-/g, ' '),
+            _source: 'frontmatter',
+          });
+        }
+      }
+    }
+  }
+
+  scanDir(join(CONTENT_DIR, 'knowledge-base'));
+  for (const topDir of ['ai-transition-model', 'analysis']) {
+    scanDir(join(CONTENT_DIR, topDir));
+  }
+
+  return autoEntities;
+}
+
 function main() {
   console.log('Building data bundle...\n');
 
@@ -876,7 +922,19 @@ function main() {
   }
 
   // Compute derived data for entities
-  const entities = database.entities || [];
+  // Load YAML entities
+  const yamlEntities = database.entities || [];
+  const yamlEntityIds = new Set(yamlEntities.map(e => e.id));
+
+  // Auto-create entities from MDX frontmatter (for pages without YAML entities)
+  const frontmatterEntities = scanFrontmatterEntities(yamlEntityIds);
+  if (frontmatterEntities.length > 0) {
+    console.log(`  frontmatter entities: ${frontmatterEntities.length} auto-created from MDX`);
+  }
+
+  // Merge: YAML entities take precedence, frontmatter fills gaps
+  const entities = [...yamlEntities, ...frontmatterEntities];
+  database.entities = entities;
 
   // =========================================================================
   // ID REGISTRY — assign stable numeric IDs (E1, E2, ...) to every entity
