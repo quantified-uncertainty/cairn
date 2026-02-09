@@ -11,6 +11,14 @@ import { ExternalLinks } from "@/components/wiki/ExternalLinks";
 import { SquiggleEstimate } from "@/components/wiki/SquiggleEstimate";
 import { Callout } from "@/components/wiki/Callout";
 import { StarlightCard, CardGrid, LinkCard } from "@/components/wiki/StarlightCards";
+import { ComparisonTable } from "@/components/wiki/ComparisonTable";
+import { ATMPage } from "@/components/wiki/ATMPage";
+import { TransitionModelContent } from "@/components/wiki/TransitionModelContent";
+import TransitionModelTable from "@/components/wiki/TransitionModelTable";
+import { TransitionModelInteractive } from "@/components/wiki/TransitionModelTable";
+import { FactorSubItemsList, AllFactorsSubItems } from "@/components/wiki/FactorSubItemsList";
+import CauseEffectGraph from "@/components/wiki/CauseEffectGraph";
+import { PageCauseEffectGraph } from "@/components/wiki/PageCauseEffectGraph";
 
 // Aside → Callout adapter (Starlight uses `type`, our Callout uses `variant`)
 type CalloutVariant = "note" | "tip" | "caution" | "warning" | "danger";
@@ -28,22 +36,22 @@ function Stub({ children }: { children?: React.ReactNode }) {
 
 // All component names found in MDX content that aren't yet ported
 const stubNames = [
-  "AllFactorsSubItems", "AnthropicFact", "ArticleSources", "ATMPage",
-  "Badge", "CauseEffectGraph", "ComparisonTable",
+  "AnthropicFact", "ArticleSources",
+  "Badge",
   "ConceptsDirectory", "Crux", "CruxList", "DataCrux", "DataEstimateBox",
   "DisagreementMap", "DualOutcomeChart", "EntityGraph", "EstimateBox",
   "FactorAttributionMatrix", "FactorGauges", "FactorRelationshipDiagram",
-  "FactorSubItemsList", "FullModelDiagram", "FullWidthLayout", "ImpactGrid",
+  "FullModelDiagram", "FullWidthLayout", "ImpactGrid",
   "ImpactList", "InsightGridExperiments", "InsightScoreMatrix", "InsightsTable",
   "KeyPeople", "KeyQuestions", "KnowledgeTreemap", "ModelsList",
-  "OutcomesTable", "PageCauseEffectGraph", "PageIndex", "PixelDensityMap",
+  "OutcomesTable", "PageIndex", "PixelDensityMap",
   "PriorityMatrix", "QualityDashboard", "ResearchFrontier", "ResourceCite",
   "ResourceList", "ResourcesIndex", "RiskDashboard", "RiskTrajectoryExperiments",
   "RootFactorsTable", "ScenariosTable", "Section", "SparseKnowledgeGrid",
   "TabItem", "Table", "TableBody", "TableCell", "TableHead", "TableHeader",
   "TableRow", "Tabs", "TagBrowser", "Tags", "TimelineViz", "TopicQuestionGrid",
-  "TrajectoryLines", "TransitionModelContent", "TransitionModelInteractive",
-  "TransitionModelTable", "Code", "Steps", "Icon", "FileTree",
+  "TrajectoryLines",
+  "Code", "Steps", "Icon", "FileTree",
 ] as const;
 
 const stubs = Object.fromEntries(stubNames.map((name) => [name, Stub]));
@@ -76,6 +84,21 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
 
   // Aside — Starlight callout component, mapped to Callout
   Aside,
+
+  // Comparison table
+  ComparisonTable,
+
+  // AI Transition Model components
+  ATMPage,
+  TransitionModelContent,
+  TransitionModelTable,
+  TransitionModelInteractive,
+  FactorSubItemsList,
+  AllFactorsSubItems,
+
+  // Cause-Effect Graph components
+  CauseEffectGraph,
+  PageCauseEffectGraph,
 
   // Starlight card components
   Card: StarlightCard,

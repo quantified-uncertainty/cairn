@@ -64,16 +64,13 @@ export function getModelsNav(): NavSection[] {
       !p.filePath.endsWith("index.mdx")
   );
 
-  // Group by category directory
+  // Group by subcategory (set during content flattening)
   const groups: Record<string, { id: string; title: string }[]> = {};
   for (const page of pages) {
-    // filePath: knowledge-base/models/risk-models/some-model.mdx
-    const parts = page.filePath.split("/");
-    if (parts.length >= 4) {
-      const category = parts[2]; // e.g., "risk-models"
-      if (!groups[category]) groups[category] = [];
-      groups[category].push({ id: page.id, title: page.title });
-    }
+    const category = (page as any).subcategory; // e.g., "risk-models"
+    if (!category) continue;
+    if (!groups[category]) groups[category] = [];
+    groups[category].push({ id: page.id, title: page.title });
   }
 
   // Sort items within each group alphabetically
@@ -123,41 +120,46 @@ export function getMetricsNav(): NavSection[] {
 // AI TRANSITION MODEL NAV
 // ============================================================================
 
-// ATM section grouping based on filePath structure
-// Multiple pathPrefixes can be combined into one section
+// ATM section grouping based on subcategory values (set during content flattening)
 const ATM_SECTIONS: {
   title: string;
-  pathPrefixes: string[];
+  subcategories: string[];
   defaultOpen?: boolean;
 }[] = [
   {
     title: "Outcomes",
-    pathPrefixes: ["ai-transition-model/outcomes/"],
+    subcategories: ["outcomes"],
   },
   {
     title: "Scenarios",
-    pathPrefixes: ["ai-transition-model/scenarios/"],
+    subcategories: [
+      "scenarios",
+      "scenarios-ai-takeover",
+      "scenarios-human-catastrophe",
+      "scenarios-long-term-lockin",
+    ],
   },
   {
     title: "AI Factors",
-    pathPrefixes: [
-      "ai-transition-model/factors/ai-capabilities/",
-      "ai-transition-model/factors/ai-uses/",
-      "ai-transition-model/factors/ai-ownership/",
-      "ai-transition-model/factors/misalignment-potential/",
+    subcategories: [
+      "factors",
+      "factors-ai-capabilities",
+      "factors-ai-uses",
+      "factors-ai-ownership",
+      "factors-misalignment-potential",
     ],
   },
   {
     title: "Civilizational Factors",
-    pathPrefixes: [
-      "ai-transition-model/factors/civilizational-competence/",
-      "ai-transition-model/factors/transition-turbulence/",
-      "ai-transition-model/factors/misuse-potential/",
+    subcategories: [
+      "factors-civilizational-competence",
+      "factors-transition-turbulence",
+      "factors-misuse-potential",
     ],
   },
   {
     title: "Quantitative Models",
-    pathPrefixes: ["ai-transition-model/models/"],
+    subcategories: ["models"],
   },
 ];
 
@@ -180,8 +182,8 @@ export function getAtmNav(): NavSection[] {
   ];
 
   for (const section of ATM_SECTIONS) {
-    const sectionPages = pages.filter((p) =>
-      section.pathPrefixes.some((prefix) => p.filePath.startsWith(prefix))
+    const sectionPages = pages.filter(
+      (p) => p.subcategory && section.subcategories.includes(p.subcategory)
     );
     if (sectionPages.length === 0) continue;
 
