@@ -7,8 +7,8 @@
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
-    "sync:data": "cd ../longterm && node scripts/build-data.mjs && cd ../longterm-next && cp ../longterm/src/data/database.json src/data/database.json && cp ../longterm/src/data/external-links.yaml src/data/external-links.yaml && echo '✓ Synced database.json and external-links.yaml from longterm'",
-    "prebuild": "cd ../longterm && node scripts/build-data.mjs",
+    "sync:data": "node scripts/build-data.mjs",
+    "prebuild": "node scripts/build-data.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -52,6 +52,7 @@
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "yaml": "^2.8.2"
   }
 }
