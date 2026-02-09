@@ -328,10 +328,10 @@ describe("Data Layer", () => {
       expect(data?.relatedEntries?.[0].href).toBe("/wiki/E2");
     });
 
-    it("merges expert data for researcher type", async () => {
+    it("merges expert data for researcher type (now person)", async () => {
       const { getEntityInfoBoxData } = await import("../../data/index");
       const data = getEntityInfoBoxData("researcher-1");
-      expect(data?.type).toBe("researcher");
+      expect(data?.type).toBe("person");
       expect(data?.title).toBe("Dr. Test");
       expect(data?.affiliation).toBe("Test Org");
       expect(data?.role).toBe("Researcher");

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ExploreItem } from "@/data";
-import { TYPE_LABELS, getTypeColor } from "./explore-utils";
+import { getTypeLabel, getTypeColor } from "./explore-utils";
 
 export function InsightCard({ item }: { item: ExploreItem }) {
   const href = item.href || `/wiki/${item.numericId}`;
@@ -9,7 +9,7 @@ export function InsightCard({ item }: { item: ExploreItem }) {
     <div className="p-3 border border-border rounded-lg bg-card">
       <div className="flex items-center justify-between mb-1.5 text-xs">
         <span className={`font-medium px-2 py-0.5 rounded ${getTypeColor(item.type)}`}>
-          {TYPE_LABELS[item.type]}
+          {getTypeLabel(item.type)}
         </span>
         {item.meta && (
           <span className="text-muted-foreground">{item.meta}</span>

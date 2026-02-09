@@ -7,6 +7,7 @@
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
+    "sync:data": "cd ../longterm && node scripts/build-data.mjs && cd ../longterm-next && cp ../longterm/src/data/database.json src/data/database.json && cp ../longterm/src/data/external-links.yaml src/data/external-links.yaml && echo '✓ Synced database.json and external-links.yaml from longterm'",
     "prebuild": "cd ../longterm && node scripts/build-data.mjs",
     "test": "vitest run",
     "test:watch": "vitest"

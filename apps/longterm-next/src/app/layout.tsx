@@ -29,7 +29,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-background text-foreground">
+      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning>
         {/* Top nav bar */}
         <header className="sticky top-0 z-40 border-b border-border bg-card">
           <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">

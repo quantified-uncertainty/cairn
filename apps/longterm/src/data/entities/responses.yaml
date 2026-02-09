@@ -1475,3 +1475,1458 @@
     - us-government
     - regulation
   lastUpdated: 2025-12
+- id: eval-saturation
+  type: approach
+  title: "Eval Saturation & The Evals Gap"
+  description: >-
+    Benchmark saturation is accelerating—MMLU lasted 4 years, MMLU-Pro 18 months, HLE roughly 12 months—while
+    safety-critical evaluations for CBRN, cyber, and AI R&D capabilities are losing signal at frontier labs,
+    raising questions about whether evaluation-based governance frameworks can keep pace with capability growth.
+  tags:
+    - benchmarks
+    - evaluation-gap
+    - responsible-scaling
+    - safety-evals
+    - governance
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: apollo-research
+      type: lab
+    - id: responsible-scaling-policies
+      type: policy
+    - id: evaluation-awareness
+      type: approach
+  lastUpdated: 2026-02
+
+- id: evaluation-awareness
+  type: approach
+  title: "Evaluation Awareness"
+  description: >-
+    AI models increasingly detect when they are being evaluated and adjust their behavior accordingly. Claude
+    Sonnet 4.5 detected evaluation contexts 58% of the time, and for Opus 4.6 Apollo Research reported
+    evaluation awareness so strong they could not properly assess alignment. Awareness scales as a power law
+    with model size.
+  tags:
+    - evaluation-gaming
+    - deception
+    - scheming
+    - scaling-laws
+    - behavioral-evaluation
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: apollo-research
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: deceptive-alignment
+      type: risk
+    - id: eval-saturation
+      type: approach
+    - id: scheming
+      type: risk
+  lastUpdated: 2026-02
+
+- id: alignment
+  type: approach
+  title: AI Alignment
+  description: >-
+    Technical approaches to ensuring AI systems pursue intended goals and remain aligned with human values
+    throughout training and deployment. Current methods show promise but face fundamental scalability
+    challenges, with oversight success dropping to 52% at 400 Elo capability gaps.
+  tags:
+    - alignment
+    - scalable-oversight
+    - rlhf
+    - deceptive-alignment
+    - safety-research
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: deceptive-alignment
+      type: risk
+    - id: reward-hacking
+      type: risk
+    - id: scheming
+      type: risk
+  lastUpdated: 2026-02
+
+- id: scalable-eval-approaches
+  type: approach
+  title: "Scalable Eval Approaches"
+  description: >-
+    Practical approaches for scaling AI evaluation to keep pace with capability growth, including LLM-as-judge
+    (40% production adoption but theoretically capped at 2x sample efficiency), automated behavioral evals,
+    AI-assisted red teaming, CoT monitoring, and debate-based evaluation achieving 76-88% accuracy.
+  tags:
+    - llm-as-judge
+    - automated-evals
+    - red-teaming
+    - scalable-evaluation
+    - audit-capacity
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: metr
+      type: lab
+    - id: apollo-research
+      type: lab
+    - id: eval-saturation
+      type: approach
+    - id: evaluation-awareness
+      type: approach
+  lastUpdated: 2026-02
+
+- id: scheming-detection
+  type: approach
+  title: "Scheming & Deception Detection"
+  description: >-
+    Research and evaluation methods for identifying when AI models engage in strategic deception—pretending to
+    be aligned while secretly pursuing other goals—including behavioral tests, internal monitoring, and
+    emerging detection techniques. Frontier models exhibit in-context scheming at rates of 0.3-13%.
+  tags:
+    - scheming
+    - deception-detection
+    - behavioral-testing
+    - chain-of-thought
+    - interpretability
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: apollo-research
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: deceptive-alignment
+      type: risk
+    - id: scheming
+      type: risk
+  lastUpdated: 2026-02
+
+- id: dangerous-cap-evals
+  type: approach
+  title: "Dangerous Capability Evaluations"
+  description: >-
+    Systematic testing of AI models for dangerous capabilities including bioweapons assistance, cyberattack
+    potential, autonomous self-replication, and persuasion/manipulation abilities to inform deployment decisions
+    and safety policies. Now standard practice with 95%+ frontier model coverage.
+  tags:
+    - dangerous-capabilities
+    - bioweapons
+    - cybersecurity
+    - self-replication
+    - deployment-decisions
+    - responsible-scaling
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: metr
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: scheming
+      type: risk
+    - id: responsible-scaling-policies
+      type: policy
+  lastUpdated: 2026-02
+
+- id: capability-elicitation
+  type: approach
+  title: "Capability Elicitation"
+  description: >-
+    Systematic methods to discover what AI models can actually do, including hidden capabilities that may not
+    appear in standard benchmarks, through scaffolding, fine-tuning, and specialized prompting techniques.
+    METR research shows AI agent task completion doubles every 7 months.
+  tags:
+    - elicitation
+    - sandbagging
+    - scaffolding
+    - capability-assessment
+    - hidden-capabilities
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: metr
+      type: lab
+    - id: apollo-research
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: sandbagging
+      type: risk
+  lastUpdated: 2026-02
+
+- id: safety-cases
+  type: approach
+  title: "AI Safety Cases"
+  description: >-
+    Structured arguments with supporting evidence that an AI system is safe for deployment, adapted from
+    high-stakes industries like nuclear and aviation to provide rigorous documentation of safety claims and
+    assumptions. As of 2025, 3 of 4 frontier labs have committed to safety case frameworks.
+  tags:
+    - safety-cases
+    - governance
+    - deployment-decisions
+    - auditing
+    - responsible-scaling
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: deepmind
+      type: lab
+    - id: apollo-research
+      type: lab
+    - id: scheming
+      type: risk
+  lastUpdated: 2026-02
+
+- id: sleeper-agent-detection
+  type: approach
+  title: "Sleeper Agent Detection"
+  description: >-
+    Methods to detect AI models that behave safely during training and evaluation but defect under specific
+    deployment conditions, addressing the core threat of deceptive alignment through behavioral testing,
+    interpretability, and monitoring approaches. Current methods achieve only 5-40% success rates.
+  tags:
+    - sleeper-agents
+    - backdoor-detection
+    - deceptive-alignment
+    - interpretability
+    - ai-control
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: deceptive-alignment
+      type: risk
+    - id: scheming
+      type: risk
+    - id: ai-control
+      type: safety-agenda
+  lastUpdated: 2026-02
+
+- id: ai-assisted
+  type: approach
+  title: "AI-Assisted Alignment"
+  description: >-
+    Using current AI systems to assist with alignment research tasks including red-teaming, interpretability,
+    and recursive oversight. AI-assisted red-teaming reduces jailbreak success rates from 86% to 4.4%, and
+    weak-to-strong generalization can recover GPT-3.5-level performance from GPT-2 supervision.
+  tags:
+    - ai-assisted-research
+    - red-teaming
+    - interpretability
+    - recursive-oversight
+    - scalable-alignment
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: weak-to-strong
+      type: approach
+    - id: constitutional-ai
+      type: approach
+  lastUpdated: 2026-02
+
+- id: evaluation
+  type: approach
+  title: "AI Evaluation"
+  description: >-
+    Methods and frameworks for evaluating AI system safety, capabilities, and alignment properties before
+    deployment, including dangerous capability detection, robustness testing, and deceptive behavior
+    assessment.
+  tags:
+    - evaluation
+    - safety-testing
+    - deployment-decisions
+    - capability-assessment
+    - governance
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: metr
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: deceptive-alignment
+      type: risk
+    - id: scheming
+      type: risk
+    - id: responsible-scaling-policies
+      type: policy
+  lastUpdated: 2026-02
+
+- id: alignment-evals
+  type: approach
+  title: "Alignment Evaluations"
+  description: >-
+    Systematic testing of AI models for alignment properties including honesty, corrigibility, goal stability,
+    and absence of deceptive behavior. Apollo Research found 1-13% scheming rates across frontier models,
+    while TruthfulQA shows 58-85% accuracy on factual questions.
+  tags:
+    - alignment-evaluation
+    - scheming-detection
+    - sycophancy
+    - corrigibility
+    - behavioral-testing
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: apollo-research
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: scheming
+      type: risk
+    - id: deceptive-alignment
+      type: risk
+  lastUpdated: 2026-02
+
+- id: red-teaming
+  type: approach
+  title: "Red Teaming"
+  description: >-
+    Adversarial testing methodologies to systematically identify AI system vulnerabilities, dangerous
+    capabilities, and failure modes through structured adversarial evaluation. Effectiveness rates vary from
+    10-80% depending on attack method.
+  tags:
+    - adversarial-testing
+    - vulnerability-discovery
+    - jailbreaking
+    - safety-testing
+    - cybersecurity
+  clusters:
+    - ai-safety
+    - cyber
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: metr
+      type: lab
+    - id: responsible-scaling-policies
+      type: policy
+  lastUpdated: 2026-02
+
+- id: model-auditing
+  type: approach
+  title: "Third-Party Model Auditing"
+  description: >-
+    External organizations independently assess AI models for safety and dangerous capabilities. METR, Apollo
+    Research, and government AI Safety Institutes now conduct pre-deployment evaluations of all major frontier
+    models, with the field evolving from voluntary arrangements to EU AI Act mandatory requirements.
+  tags:
+    - third-party-auditing
+    - independent-evaluation
+    - governance
+    - deployment-oversight
+    - regulatory-compliance
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: metr
+      type: lab
+    - id: apollo-research
+      type: lab
+    - id: eu-ai-act
+      type: policy
+    - id: scheming
+      type: risk
+  lastUpdated: 2026-02
+
+- id: constitutional-ai
+  type: approach
+  title: "Constitutional AI"
+  description: >-
+    Anthropic's Constitutional AI methodology uses explicit principles and AI-generated feedback to train
+    safer language models, demonstrating 3-10x improvements in harmlessness while maintaining helpfulness
+    across major model deployments.
+  tags:
+    - constitutional-ai
+    - rlaif
+    - harmlessness
+    - training-methodology
+    - anthropic
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: rlhf
+      type: approach
+    - id: alignment
+      type: approach
+    - id: reward-hacking
+      type: risk
+  lastUpdated: 2026-02
+
+- id: weak-to-strong
+  type: approach
+  title: "Weak-to-Strong Generalization"
+  description: >-
+    Weak-to-strong generalization investigates whether weak supervisors can reliably elicit good behavior from
+    stronger AI systems. OpenAI's ICML 2024 research shows GPT-2-level models can recover 80% of GPT-4's
+    performance gap with auxiliary confidence loss, but reward modeling achieves only 20-40% PGR.
+  tags:
+    - weak-to-strong
+    - scalable-oversight
+    - superalignment
+    - supervision
+    - reward-modeling
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: openai
+      type: lab
+    - id: anthropic
+      type: lab
+    - id: rlhf
+      type: approach
+    - id: reward-hacking
+      type: risk
+    - id: deceptive-alignment
+      type: risk
+  lastUpdated: 2026-02
+
+- id: capability-unlearning
+  type: approach
+  title: "Capability Unlearning / Removal"
+  description: >-
+    Methods to remove specific dangerous capabilities from trained AI models, directly addressing misuse risks
+    by eliminating harmful knowledge, though current techniques face challenges around verification, capability
+    recovery, and general performance degradation.
+  tags:
+    - unlearning
+    - capability-removal
+    - misuse-prevention
+    - model-editing
+    - bioweapons
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: cais
+      type: lab
+    - id: representation-engineering
+      type: approach
+    - id: responsible-scaling-policies
+      type: policy
+  lastUpdated: 2026-02
+
+- id: preference-optimization
+  type: approach
+  title: "Preference Optimization Methods"
+  description: >-
+    Post-RLHF training techniques including DPO, ORPO, KTO, IPO, and GRPO that align language models with
+    human preferences more efficiently than reinforcement learning. DPO reduces costs by 40-60% while matching
+    RLHF performance on dialogue tasks, though PPO still outperforms on reasoning and safety tasks.
+  tags:
+    - dpo
+    - preference-optimization
+    - rlhf
+    - training-efficiency
+    - alignment-training
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: rlhf
+      type: approach
+    - id: reward-hacking
+      type: risk
+  lastUpdated: 2026-02
+
+- id: process-supervision
+  type: approach
+  title: "Process Supervision"
+  description: >-
+    Process supervision trains AI systems to produce correct reasoning steps, not just correct final answers,
+    improving transparency and auditability of AI reasoning while achieving significant gains in mathematical
+    and coding tasks.
+  tags:
+    - process-supervision
+    - chain-of-thought
+    - reasoning-verification
+    - reward-modeling
+    - transparency
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: openai
+      type: lab
+    - id: reward-hacking
+      type: risk
+    - id: rlhf
+      type: approach
+    - id: scalable-oversight
+      type: safety-agenda
+  lastUpdated: 2026-02
+
+- id: refusal-training
+  type: approach
+  title: "Refusal Training"
+  description: >-
+    Refusal training teaches AI models to decline harmful requests rather than comply. While universally
+    deployed and achieving 99%+ refusal rates on explicit violations, jailbreak techniques bypass defenses
+    with 1.5-6.5% success rates, and over-refusal blocks 12-43% of legitimate queries.
+  tags:
+    - refusal-training
+    - jailbreaking
+    - safety-training
+    - rlhf
+    - over-refusal
+    - misuse-prevention
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: lab
+    - id: openai
+      type: lab
+    - id: rlhf
+      type: approach
+    - id: deceptive-alignment
+      type: risk
+  lastUpdated: 2026-02
+
+# Batch 3: Policy, Governance, and Organizational Practices
+# Generated 2026-02-08
+
+- id: california-sb53
+  type: policy
+  title: California SB 53
+  description: >-
+    California's Transparency in Frontier Artificial Intelligence Act, the first U.S. state law
+    regulating frontier AI models through transparency requirements, safety reporting, and
+    whistleblower protections.
+  tags:
+    - regulation
+    - state-policy
+    - frontier-models
+    - transparency
+    - whistleblower
+    - california
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: california-sb1047
+      type: policy
+    - id: anthropic
+      type: organization
+    - id: eu-ai-act
+      type: policy
+    - id: new-york-raise-act
+      type: policy
+  lastUpdated: 2026-02
+
+- id: intervention-portfolio
+  type: approach
+  title: Intervention Portfolio
+  description: >-
+    Strategic overview of AI safety interventions analyzing ~$650M annual investment across 1,100
+    FTEs. Maps 13+ interventions against 4 risk categories with ITN prioritization, finding 85% of
+    external funding from 5 sources and safety/capabilities ratio at 0.5-1.3%.
+  tags:
+    - resource-allocation
+    - field-analysis
+    - funding
+    - prioritization
+    - safety-research
+  clusters:
+    - ai-safety
+    - governance
+    - community
+  relatedEntries:
+    - id: technical-ai-safety
+      type: concept
+    - id: coefficient-giving
+      type: organization
+    - id: responsible-scaling-policies
+      type: policy
+    - id: interpretability
+      type: concept
+    - id: evals
+      type: concept
+  lastUpdated: 2026-02
+
+- id: evals-governance
+  type: policy
+  title: Evals-Based Deployment Gates
+  description: >-
+    Evals-based deployment gates require AI models to pass safety evaluations before deployment or
+    capability scaling. The EU AI Act mandates conformity assessments for high-risk systems with
+    fines up to EUR 35M or 7% global turnover, while UK AISI has evaluated 30+ frontier models.
+  tags:
+    - evaluations
+    - deployment-gates
+    - eu-ai-act
+    - safety-testing
+    - third-party-audits
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: eu-ai-act
+      type: policy
+    - id: metr
+      type: organization
+    - id: responsible-scaling-policies
+      type: policy
+    - id: anthropic
+      type: organization
+  lastUpdated: 2026-02
+
+- id: pause-moratorium
+  type: policy
+  title: Pause / Moratorium
+  description: >-
+    Proposals to pause or slow frontier AI development until safety is better understood, offering
+    potentially high safety benefits if implemented but facing significant coordination challenges
+    and currently lacking adoption by major AI laboratories.
+  tags:
+    - moratorium
+    - development-pause
+    - coordination
+    - precautionary-principle
+    - racing-dynamics
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: fli
+      type: organization
+    - id: stuart-russell
+      type: researcher
+    - id: racing-dynamics
+      type: risk
+    - id: pause
+      type: response
+  lastUpdated: 2026-02
+
+- id: rsp
+  type: policy
+  title: Responsible Scaling Policies
+  description: >-
+    Responsible Scaling Policies (RSPs) are voluntary commitments by AI labs to pause scaling when
+    capability or safety thresholds are crossed. As of December 2025, 20 companies have published
+    policies, though SaferAI grades the three major frameworks 1.9-2.2/5 for specificity.
+  tags:
+    - responsible-scaling
+    - voluntary-commitments
+    - safety-thresholds
+    - frontier-labs
+    - third-party-evaluation
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: anthropic
+      type: organization
+    - id: openai
+      type: organization
+    - id: deepmind
+      type: organization
+    - id: metr
+      type: organization
+  lastUpdated: 2026-02
+
+- id: corporate
+  type: approach
+  title: Corporate Responses
+  description: >-
+    How major AI companies are responding to safety concerns through internal policies, responsible
+    scaling frameworks, safety teams, and disclosure practices, with analysis of effectiveness and
+    industry trends.
+  tags:
+    - corporate-safety
+    - safety-teams
+    - voluntary-commitments
+    - industry-practices
+    - racing-dynamics
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: responsible-scaling-policies
+      type: policy
+    - id: openai
+      type: organization
+    - id: anthropic
+      type: organization
+    - id: frontier-model-forum
+      type: organization
+    - id: racing-dynamics
+      type: risk
+  lastUpdated: 2026-02
+
+- id: hardware-enabled-governance
+  type: policy
+  title: Hardware-Enabled Governance
+  description: >-
+    Technical mechanisms built into AI chips enabling monitoring, access control, and enforcement
+    of AI governance policies. RAND analysis identifies attestation-based licensing as most feasible
+    with 5-10 year timeline, while an estimated 100,000+ export-controlled GPUs were smuggled to
+    China in 2024.
+  tags:
+    - hardware-governance
+    - chip-tracking
+    - export-controls
+    - compute-governance
+    - remote-attestation
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: export-controls
+      type: policy
+    - id: thresholds
+      type: policy
+    - id: monitoring
+      type: policy
+    - id: international-regimes
+      type: policy
+  lastUpdated: 2026-02
+
+- id: monitoring
+  type: policy
+  title: Compute Monitoring
+  description: >-
+    Framework analyzing compute monitoring approaches for AI governance, finding that cloud KYC
+    targeting 10^26 FLOP threshold is implementable now via three major providers controlling 60%+
+    of cloud infrastructure, while hardware-level governance faces 3-5 year development timelines.
+  tags:
+    - compute-monitoring
+    - cloud-kyc
+    - compute-governance
+    - training-runs
+    - verification
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: export-controls
+      type: policy
+    - id: thresholds
+      type: policy
+    - id: international-regimes
+      type: policy
+    - id: hardware-enabled-governance
+      type: policy
+  lastUpdated: 2026-02
+
+- id: thresholds
+  type: policy
+  title: Compute Thresholds
+  description: >-
+    Analysis of compute thresholds as regulatory triggers, examining current implementations (EU AI
+    Act at 10^25 FLOP, US EO at 10^26 FLOP), their effectiveness as capability proxies, and core
+    challenges including algorithmic efficiency improvements that may render static thresholds
+    obsolete within 3-5 years.
+  tags:
+    - compute-thresholds
+    - regulation
+    - eu-ai-act
+    - flop-thresholds
+    - algorithmic-efficiency
+    - compute-governance
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: eu-ai-act
+      type: policy
+    - id: export-controls
+      type: policy
+    - id: monitoring
+      type: policy
+    - id: international-regimes
+      type: policy
+  lastUpdated: 2026-02
+
+- id: lab-culture
+  type: approach
+  title: Lab Safety Culture
+  description: >-
+    Analysis of interventions to improve safety culture within AI labs. Evidence from 2024-2025
+    shows significant gaps: no company scored above C+ overall (FLI Winter 2025), all received D
+    or below on existential safety, and xAI released Grok 4 without any safety documentation.
+  tags:
+    - safety-culture
+    - organizational-practices
+    - safety-teams
+    - whistleblower
+    - industry-accountability
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk
+    - id: frontier-model-forum
+      type: organization
+    - id: anthropic
+      type: organization
+    - id: whistleblower-protections
+      type: policy
+    - id: ai-safety-institutes
+      type: policy
+  lastUpdated: 2026-02
+
+- id: pause
+  type: approach
+  title: Pause Advocacy
+  description: >-
+    Advocacy for slowing or halting frontier AI development until adequate safety measures are in
+    place. Analysis suggests 15-40% probability of meaningful policy implementation by 2030, with
+    potential to provide 2-5 years of additional safety research time if achieved.
+  tags:
+    - pause-advocacy
+    - development-moratorium
+    - political-advocacy
+    - public-opinion
+    - racing-dynamics
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: racing-dynamics
+      type: risk
+    - id: fli
+      type: organization
+    - id: cais
+      type: organization
+    - id: responsible-scaling-policies
+      type: policy
+    - id: pause-moratorium
+      type: policy
+  lastUpdated: 2026-02
+
+- id: training-programs
+  type: approach
+  title: AI Safety Training Programs
+  description: >-
+    Fellowships, PhD programs, research mentorship, and career transition pathways for growing the
+    AI safety research workforce, including MATS, Anthropic Fellows, SPAR, and academic programs.
+  tags:
+    - training-programs
+    - talent-pipeline
+    - field-building
+    - research-mentorship
+    - career-development
+  clusters:
+    - community
+    - ai-safety
+  relatedEntries:
+    - id: anthropic
+      type: organization
+    - id: coefficient-giving
+      type: organization
+    - id: metr
+      type: organization
+    - id: field-building-analysis
+      type: response
+  lastUpdated: 2026-02
+
+- id: bletchley-declaration
+  type: policy
+  title: Bletchley Declaration
+  description: >-
+    World-first international agreement on AI safety signed by 28 countries at the November 2023
+    AI Safety Summit, committing to cooperation on frontier AI risks.
+  tags:
+    - international-agreement
+    - ai-summit
+    - frontier-ai-safety
+    - diplomatic-cooperation
+    - ai-safety-institutes
+  clusters:
+    - governance
+    - ai-safety
+  relatedEntries:
+    - id: ai-safety-institutes
+      type: policy
+    - id: uk-aisi
+      type: organization
+    - id: us-aisi
+      type: organization
+    - id: eu-ai-act
+      type: policy
+    - id: coordination-mechanisms
+      type: policy
+  lastUpdated: 2026-02
+
+- id: coordination-mechanisms
+  type: policy
+  title: International Coordination Mechanisms
+  description: >-
+    International coordination on AI safety involves multilateral treaties, bilateral dialogues,
+    and institutional networks to manage AI risks globally. Current efforts include the Council of
+    Europe AI Treaty (17 signatories), the International Network of AI Safety Institutes (11+
+    members), and the Paris Summit 2025 with 61 signatories.
+  tags:
+    - international-coordination
+    - multilateral-treaties
+    - ai-safety-institutes
+    - diplomacy
+    - geopolitics
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: bletchley-declaration
+      type: policy
+    - id: ai-safety-institutes
+      type: policy
+    - id: eu-ai-act
+      type: policy
+    - id: racing-dynamics
+      type: risk
+  lastUpdated: 2026-02
+
+- id: new-york-raise-act
+  type: policy
+  title: New York RAISE Act
+  description: >-
+    State legislation requiring safety protocols, incident reporting, and transparency from
+    developers of frontier AI models. Signed December 2025, effective January 2027, with civil
+    penalties up to $3M enforced by the NY Attorney General.
+  tags:
+    - regulation
+    - state-policy
+    - frontier-models
+    - safety-protocols
+    - third-party-audits
+    - new-york
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: california-sb53
+      type: policy
+    - id: thresholds
+      type: policy
+    - id: ai-governance
+      type: policy
+    - id: openai
+      type: organization
+  lastUpdated: 2026-02
+
+- id: model-registries
+  type: policy
+  title: Model Registries
+  description: >-
+    Centralized databases of frontier AI models that enable governments to track development,
+    enforce safety requirements, and coordinate international oversight, serving as foundational
+    infrastructure for AI governance analogous to drug registries for the FDA.
+  tags:
+    - model-registration
+    - governance-infrastructure
+    - compute-thresholds
+    - incident-reporting
+    - transparency
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: eu-ai-act
+      type: policy
+    - id: export-controls
+      type: policy
+    - id: ai-safety-institutes
+      type: policy
+    - id: responsible-scaling-policies
+      type: policy
+  lastUpdated: 2026-02
+
+- id: international-regimes
+  type: policy
+  title: International Compute Regimes
+  description: >-
+    Multilateral coordination mechanisms for AI compute governance, exploring pathways from
+    non-binding declarations to comprehensive treaties. Assessment finds 10-25% chance of
+    meaningful regimes by 2035, but potential for 30-60% reduction in racing dynamics if achieved.
+  tags:
+    - international-governance
+    - compute-governance
+    - multilateral-treaties
+    - verification
+    - racing-dynamics
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: bletchley-declaration
+      type: policy
+    - id: export-controls
+      type: policy
+    - id: thresholds
+      type: policy
+    - id: monitoring
+      type: policy
+    - id: ai-safety-institutes
+      type: policy
+  lastUpdated: 2026-02
+
+- id: open-source
+  type: approach
+  title: Open Source Safety
+  description: >-
+    Analysis of whether releasing AI model weights publicly is net positive or negative for safety.
+    The July 2024 NTIA report recommends monitoring but not restricting open weights, while
+    research shows fine-tuning can remove safety training in as few as 200 examples.
+  tags:
+    - open-source
+    - model-weights
+    - misuse-risk
+    - decentralization
+    - safety-training
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: eu-ai-act
+      type: policy
+    - id: openai
+      type: organization
+    - id: racing-dynamics
+      type: risk
+    - id: proliferation
+      type: risk
+  lastUpdated: 2026-02
+
+- id: whistleblower-protections
+  type: policy
+  title: AI Whistleblower Protections
+  description: >-
+    Legal and institutional frameworks for protecting AI researchers and employees who report
+    safety concerns. The bipartisan AI Whistleblower Protection Act (S.1792) introduced May 2025
+    addresses critical gaps in current law, while EU AI Act Article 87 provides protections from
+    August 2026.
+  tags:
+    - whistleblower
+    - employee-protections
+    - information-asymmetry
+    - ndas
+    - legislation
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: lab-culture
+      type: response
+    - id: ai-safety-institutes
+      type: policy
+    - id: responsible-scaling-policies
+      type: policy
+    - id: eu-ai-act
+      type: policy
+    - id: openai
+      type: organization
+  lastUpdated: 2026-02
+
+- id: field-building-analysis
+  type: approach
+  title: Field Building Analysis
+  description: >-
+    Analysis of AI safety field-building interventions including education programs (ARENA, MATS,
+    BlueDot). The field grew from approximately 400 FTEs in 2022 to 1,100 FTEs in 2025 (21-30%
+    annual growth), with training programs achieving 37% career conversion rates.
+  tags:
+    - field-building
+    - talent-pipeline
+    - training-programs
+    - workforce-growth
+    - funding-analysis
+  clusters:
+    - community
+    - ai-safety
+  relatedEntries:
+    - id: coefficient-giving
+      type: organization
+    - id: technical-ai-safety
+      type: concept
+    - id: training-programs
+      type: response
+    - id: intervention-portfolio
+      type: response
+  lastUpdated: 2026-02
+
+- id: mech-interp
+  type: approach
+  title: Mechanistic Interpretability
+  description: >-
+    Mechanistic interpretability reverse-engineers neural networks to understand their internal
+    computations and circuits. With $500M+ annual investment, Anthropic extracted 30M+ features
+    from Claude 3 Sonnet in 2024, while DeepMind deprioritized SAE research after finding linear
+    probes outperform on practical tasks.
+  tags:
+    - interpretability
+    - neural-network-analysis
+    - feature-extraction
+    - circuit-discovery
+    - deception-detection
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: sparse-autoencoders
+      type: approach
+    - id: representation-engineering
+      type: approach
+    - id: deceptive-alignment
+      type: risk
+    - id: scheming
+      type: risk
+    - id: anthropic
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: circuit-breakers
+  type: approach
+  title: Circuit Breakers / Inference Interventions
+  description: >-
+    Circuit breakers are runtime safety interventions that detect and halt harmful AI outputs
+    during inference. Gray Swan's representation rerouting achieves 87-90% rejection rates with
+    only 1% capability loss, while Anthropic's Constitutional Classifiers block 95.6% of
+    jailbreaks. However, the UK AISI challenge found all 22 tested models could eventually be
+    broken.
+  tags:
+    - runtime-safety
+    - inference-intervention
+    - jailbreak-defense
+    - adversarial-robustness
+    - defense-in-depth
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: output-filtering
+      type: approach
+    - id: adversarial-training
+      type: approach
+    - id: refusal-training
+      type: approach
+    - id: anthropic
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: representation-engineering
+  type: approach
+  title: Representation Engineering
+  description: >-
+    A top-down approach to understanding and controlling AI behavior by reading and modifying
+    concept-level representations in neural networks, enabling behavior steering without
+    retraining through activation interventions.
+  tags:
+    - behavior-steering
+    - activation-engineering
+    - deception-detection
+    - interpretability
+    - inference-time-intervention
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: mech-interp
+      type: approach
+    - id: constitutional-ai
+      type: approach
+    - id: ai-control
+      type: approach
+    - id: cais
+      type: organization
+  lastUpdated: 2026-02
+
+- id: sparse-autoencoders
+  type: approach
+  title: Sparse Autoencoders (SAEs)
+  description: >-
+    Sparse autoencoders extract interpretable features from neural network activations using
+    sparsity constraints. Anthropic's 2024 research extracted 34 million features from Claude 3
+    Sonnet with 90% interpretability scores, while Goodfire raised $50M in 2025 and released
+    first-ever SAEs for the 671B-parameter DeepSeek R1 reasoning model.
+  tags:
+    - interpretability
+    - feature-extraction
+    - monosemanticity
+    - neural-network-analysis
+    - safety-tooling
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: mech-interp
+      type: approach
+    - id: representation-engineering
+      type: approach
+    - id: goodfire
+      type: organization
+    - id: deceptive-alignment
+      type: risk
+    - id: anthropic
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: eliciting-latent-knowledge
+  type: approach
+  title: Eliciting Latent Knowledge (ELK)
+  description: >-
+    ELK is the unsolved problem of extracting an AI's true beliefs rather than human-approved
+    outputs. ARC's 2022 prize contest received 197 proposals and awarded $274K, but the $50K
+    and $100K solution prizes remain unclaimed. The problem remains fundamentally unsolved after
+    3+ years of focused research.
+  tags:
+    - alignment-theory
+    - deception-detection
+    - belief-extraction
+    - arc-research
+    - unsolved-problem
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: deceptive-alignment
+      type: risk
+    - id: scalable-oversight
+      type: approach
+    - id: interpretability
+      type: approach
+    - id: open-philanthropy
+      type: funder
+  lastUpdated: 2026-02
+
+- id: debate
+  type: approach
+  title: AI Safety via Debate
+  description: >-
+    AI Safety via Debate proposes using adversarial AI systems to argue opposing positions while
+    humans judge, designed to scale alignment to superhuman capabilities. While theoretically
+    promising and specifically designed to address RLHF's scalability limitations, it remains
+    experimental with limited empirical validation.
+  tags:
+    - scalable-oversight
+    - adversarial-methods
+    - superhuman-alignment
+    - alignment-theory
+    - human-judgment
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: rlhf
+      type: approach
+    - id: scalable-oversight
+      type: approach
+    - id: deceptive-alignment
+      type: risk
+    - id: anthropic
+      type: lab-frontier
+    - id: openai
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: formal-verification
+  type: approach
+  title: Formal Verification
+  description: >-
+    Mathematical proofs of AI system properties and behavior bounds, offering potentially strong
+    safety guarantees if achievable but currently limited to small systems and facing fundamental
+    challenges scaling to modern neural networks.
+  tags:
+    - formal-methods
+    - mathematical-guarantees
+    - safety-verification
+    - provable-safety
+    - long-term-research
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: provably-safe
+      type: approach
+    - id: interpretability
+      type: approach
+    - id: constitutional-ai
+      type: approach
+    - id: deceptive-alignment
+      type: risk
+  lastUpdated: 2026-02
+
+- id: provably-safe
+  type: approach
+  title: Provably Safe AI (davidad agenda)
+  description: >-
+    An ambitious research agenda to design AI systems with mathematical safety guarantees from
+    the ground up, led by ARIA's 59M pound Safeguarded AI programme with the goal of creating
+    superintelligent systems that are provably beneficial through formal verification of world
+    models and value specifications.
+  tags:
+    - formal-methods
+    - mathematical-guarantees
+    - world-modeling
+    - value-specification
+    - aria-programme
+    - long-term-research
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: formal-verification
+      type: approach
+    - id: constitutional-ai
+      type: approach
+    - id: ai-control
+      type: approach
+    - id: interpretability
+      type: approach
+  lastUpdated: 2026-02
+
+- id: sandboxing
+  type: approach
+  title: Sandboxing / Containment
+  description: >-
+    Sandboxing limits AI system access to resources, networks, and capabilities as a
+    defense-in-depth measure. METR's August 2025 evaluation found GPT-5's time horizon at
+    approximately 2 hours, insufficient for autonomous replication. AI boxing experiments show
+    60-70% social engineering escape rates.
+  tags:
+    - containment
+    - defense-in-depth
+    - agent-safety
+    - container-security
+    - deployment-safety
+  clusters:
+    - ai-safety
+    - cyber
+  relatedEntries:
+    - id: tool-restrictions
+      type: approach
+    - id: structured-access
+      type: approach
+    - id: agentic-ai
+      type: concept
+    - id: metr
+      type: organization
+    - id: anthropic
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: structured-access
+  type: approach
+  title: Structured Access / API-Only
+  description: >-
+    Structured access provides AI capabilities through controlled APIs rather than releasing
+    model weights, maintaining developer control over deployment and enabling monitoring,
+    intervention, and policy enforcement. Enterprise LLM spend reached $8.4B by mid-2025 under
+    this model, but effectiveness depends on maintaining capability gaps with open-weight models.
+  tags:
+    - deployment-safety
+    - api-access
+    - proliferation-control
+    - enterprise-ai
+    - model-distribution
+  clusters:
+    - ai-safety
+    - governance
+  relatedEntries:
+    - id: proliferation
+      type: risk
+    - id: sandboxing
+      type: approach
+    - id: openai
+      type: lab-frontier
+    - id: anthropic
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: tool-restrictions
+  type: approach
+  title: Tool-Use Restrictions
+  description: >-
+    Tool-use restrictions limit what actions and APIs AI systems can access, directly
+    constraining their potential for harm. This approach is critical for agentic AI systems,
+    providing hard limits on capabilities regardless of model intentions, with METR evaluations
+    showing agentic task completion horizons doubling every 7 months.
+  tags:
+    - agent-safety
+    - capability-restrictions
+    - defense-in-depth
+    - deployment-safety
+    - permission-systems
+    - mcp-security
+  clusters:
+    - ai-safety
+    - governance
+    - cyber
+  relatedEntries:
+    - id: sandboxing
+      type: approach
+    - id: agentic-ai
+      type: concept
+    - id: metr
+      type: organization
+    - id: anthropic
+      type: lab-frontier
+    - id: openai
+      type: lab-frontier
+  lastUpdated: 2026-02
+
+- id: multi-agent
+  type: approach
+  title: Multi-Agent Safety
+  description: >-
+    Multi-agent safety research addresses coordination failures, conflict, and collusion risks
+    when multiple AI systems interact. A 2025 report from 50+ researchers across DeepMind,
+    Anthropic, and academia identifies seven key risk factors and finds that even individually
+    safe systems may contribute to harm through interaction.
+  tags:
+    - multi-agent-systems
+    - coordination
+    - collusion-risk
+    - game-theory
+    - agent-safety
+  clusters:
+    - ai-safety
+  relatedEntries:
+    - id: red-teaming
+      type: approach
+    - id: scalable-oversight
+      type: approach
+    - id: agentic-ai
+      type: concept
+    - id: cooperative-ai
+      type: organization
+  lastUpdated: 2026-02
+

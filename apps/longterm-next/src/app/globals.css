@@ -452,4 +452,9 @@
     position: sticky;
     top: 5rem;
   }
+
+  /* Hide duplicate InfoBoxes (auto-injected + MDX inline) — keep only the first */
+  .prose > .wiki-infobox ~ .wiki-infobox {
+    display: none !important;
+  }
 }

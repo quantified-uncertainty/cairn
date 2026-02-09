@@ -20,6 +20,7 @@ import {
   InfoBoxVisibilityProvider,
   InfoBoxToggle,
 } from "@/components/wiki/InfoBoxVisibility";
+import { DataInfoBox } from "@/components/wiki/DataInfoBox";
 
 const GITHUB_HISTORY_BASE =
   "https://github.com/quantified-uncertainty/cairn/commits/main/apps/longterm/src/content/docs";
@@ -165,6 +166,7 @@ function ArticleView({
           pathname={entityPath}
         />
         {page.frontmatter.title && <h1>{page.frontmatter.title}</h1>}
+        {entity && <DataInfoBox entityId={slug} />}
         {page.content}
         <RelatedPages entityId={slug} entity={entity} />
       </article>

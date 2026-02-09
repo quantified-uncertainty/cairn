@@ -1,12 +1,10 @@
 import React from "react";
 import { InfoBox, type ModelRatingsData } from "./InfoBox";
 import { HideableInfoBox } from "./InfoBoxVisibility";
-import { getExpertInfoBoxData, getOrgInfoBoxData, getEntityInfoBoxData, getPageById, getExternalLinks, getFactsForEntity } from "@data";
+import { getEntityInfoBoxData, getPageById, getExternalLinks, getFactsForEntity } from "@data";
 
 interface DataInfoBoxProps {
   entityId?: string;
-  expertId?: string;
-  orgId?: string;
   type?: string;
   [key: string]: any;
 }
@@ -18,7 +16,7 @@ function formatFactLabel(factId: string): string {
     .join(" ");
 }
 
-export function DataInfoBox({ entityId, expertId, orgId, type: inlineType, ...inlineProps }: DataInfoBoxProps) {
+export function DataInfoBox({ entityId, type: inlineType, ...inlineProps }: DataInfoBoxProps) {
   if (entityId) {
     const data = getEntityInfoBoxData(entityId);
     if (!data) return <div className="text-muted-foreground text-sm italic">No entity found: {entityId}</div>;
@@ -67,43 +65,21 @@ export function DataInfoBox({ entityId, expertId, orgId, type: inlineType, ...in
           clusters={clusters}
           wordCount={wordCount}
           backlinkCount={backlinkCount}
-          {...inlineProps}
-        />
-      </HideableInfoBox>
-    );
-  }
-
-  if (expertId) {
-    const data = getExpertInfoBoxData(expertId);
-    if (!data) return <div className="text-muted-foreground text-sm italic">No expert found: {expertId}</div>;
-    return (
-      <HideableInfoBox>
-        <InfoBox
-          type={data.type}
-          title={data.title}
+          // Person fields
           affiliation={data.affiliation}
           role={data.role}
-          website={data.website}
           knownFor={data.knownFor}
-          {...inlineProps}
-        />
-      </HideableInfoBox>
-    );
-  }
-
-  if (orgId) {
-    const data = getOrgInfoBoxData(orgId);
-    if (!data) return <div className="text-muted-foreground text-sm italic">No org found: {orgId}</div>;
-    return (
-      <HideableInfoBox>
-        <InfoBox
-          type={data.type}
-          title={data.title}
+          // Organization fields
           founded={data.founded}
           location={data.location}
           headcount={data.headcount}
           funding={data.funding}
-          website={data.website}
+          orgType={data.orgType}
+          // Policy fields
+          introduced={data.introduced}
+          policyStatus={data.policyStatus}
+          policyAuthor={data.policyAuthor}
+          scope={data.scope}
           {...inlineProps}
         />
       </HideableInfoBox>
@@ -111,7 +87,7 @@ export function DataInfoBox({ entityId, expertId, orgId, type: inlineType, ...in
   }
 
   if (!inlineType) {
-    return <div className="text-muted-foreground text-sm italic">InfoBox requires type or entityId/expertId/orgId</div>;
+    return <div className="text-muted-foreground text-sm italic">InfoBox requires type or entityId</div>;
   }
   return (
     <HideableInfoBox>

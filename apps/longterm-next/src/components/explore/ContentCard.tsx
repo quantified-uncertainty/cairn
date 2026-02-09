@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ExploreItem } from "@/data";
-import { TYPE_LABELS, getTypeColor, formatWordCount, truncate } from "./explore-utils";
+import { getTypeLabel, getTypeColor, formatWordCount, truncate } from "./explore-utils";
 
 export function ContentCard({ item }: { item: ExploreItem }) {
   const href = item.href || `/wiki/${item.numericId}`;
@@ -12,7 +12,7 @@ export function ContentCard({ item }: { item: ExploreItem }) {
     >
       <div className="flex items-center justify-between mb-2">
         <span className={`text-xs font-medium px-2 py-0.5 rounded ${getTypeColor(item.type)}`}>
-          {TYPE_LABELS[item.type] || item.type}
+          {getTypeLabel(item.type)}
         </span>
         {item.wordCount ? (
           <span className="text-xs text-muted-foreground">

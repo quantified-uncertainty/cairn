@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import type { ExploreItem } from "@/data";
+import { ENTITY_GROUPS } from "@/data/entity-ontology";
 import { InsightCard } from "./InsightCard";
 import { ContentCard } from "./ContentCard";
 
@@ -15,21 +16,6 @@ const FIELD_GROUPS: { label: string; cluster: string | null }[] = [
   { label: "Community", cluster: "community" },
   { label: "Cyber", cluster: "cyber" },
   { label: "Biorisks", cluster: "biorisks" },
-];
-
-// ENTITY type filter
-const ENTITY_GROUPS: { label: string; types: string[] }[] = [
-  { label: "All", types: [] },
-  { label: "Risks", types: ["risk"] },
-  { label: "Responses", types: ["approach", "project", "safety-agenda", "policy"] },
-  { label: "Organizations", types: ["organization", "lab", "lab-frontier", "lab-research", "lab-academic"] },
-  { label: "People", types: ["researcher"] },
-  { label: "Capabilities", types: ["capability"] },
-  { label: "Models", types: ["model"] },
-  { label: "Concepts", types: ["concept", "crux", "argument", "analysis", "historical"] },
-  { label: "Tables", types: ["table"] },
-  { label: "Diagrams", types: ["diagram"] },
-  { label: "Insights", types: ["insight"] },
 ];
 
 // RISK CATEGORY filter

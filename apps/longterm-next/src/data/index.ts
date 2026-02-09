@@ -1,19 +1,33 @@
 /**
  * Data layer for longterm-next
  *
- * Reads database.json from the longterm app's build output via fs.
+ * Reads database.json from the local data directory (copied from longterm via sync:data).
+ * Entity type overrides can be applied locally without modifying the longterm source.
  * This runs at build time / server-component level only.
+ *
+ * Entities are validated and transformed into typed entities (discriminated union)
+ * at load time via Zod schemas. See entity-schemas.ts for the schema definitions.
  */
 
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
+import {
+  TypedEntitySchema,
+  OLD_TYPE_MAP,
+  OLD_LAB_TYPE_TO_ORG_TYPE,
+  type TypedEntity,
+  isRisk,
+  isPerson,
+  isOrganization,
+  isPolicy,
+} from "./entity-schemas";
 
-// Path to the longterm app's built data
-const LONGTERM_DATA_DIR = path.resolve(
-  process.cwd(),
-  "../longterm/src/data"
-);
+// Path to the local data directory (database.json is synced here from longterm)
+const LOCAL_DATA_DIR = path.resolve(process.cwd(), "src/data");
+
+// Fallback: path to the longterm app's data (used if local copy doesn't exist)
+const LONGTERM_DATA_DIR = path.resolve(process.cwd(), "../longterm/src/data");
 
 // ============================================================================
 // DATABASE LOADING
@@ -39,8 +53,35 @@ export interface Fact {
   computed?: boolean;
 }
 
+/** Raw entity shape as stored in database.json (before transformation) */
+interface RawEntity {
+  id: string;
+  type: string;
+  title: string;
+  description?: string;
+  severity?: string;
+  likelihood?: any;
+  timeframe?: any;
+  maturity?: string;
+  website?: string;
+  customFields?: { label: string; value: string; link?: string }[];
+  relatedTopics?: string[];
+  relatedEntries?: { id: string; type: string; relationship?: string }[];
+  tags?: string[];
+  lastUpdated?: string;
+  sourceRefs?: string[];
+  sources?: { title: string; url?: string; author?: string; date?: string }[];
+  content?: any;
+  numericId?: string;
+  path?: string;
+  status?: string;
+  clusters?: string[];
+  causeEffectGraph?: any;
+  [key: string]: any;
+}
+
 interface DatabaseShape {
-  entities: Entity[];
+  entities: RawEntity[];
   resources: Resource[];
   publications: Publication[];
   experts: Expert[];
@@ -55,28 +96,300 @@ interface DatabaseShape {
   [key: string]: any;
 }
 
+// ============================================================================
+// ENTITY TYPE OVERRIDES
+// Pages whose entity type should be remapped in longterm-next.
+// This lets us reclassify entities without modifying the longterm source.
+// ============================================================================
+
+/**
+ * Path patterns that should be treated as "project" type.
+ * Matches against the page path or entity path.
+ */
+const PROJECT_PATH_PATTERNS = [
+  "/knowledge-base/responses/epistemic-tools/tools/",
+];
+
+/**
+ * Explicit entity ID → type overrides.
+ */
+const ENTITY_TYPE_OVERRIDES: Record<string, string> = {
+  // Add individual overrides here as needed, e.g.:
+  // "some-entity-id": "project",
+};
+
+function applyEntityOverrides(db: DatabaseShape): DatabaseShape {
+  // Build a set of page IDs that match project path patterns
+  const projectPageIds = new Set<string>();
+  for (const page of db.pages || []) {
+    if (PROJECT_PATH_PATTERNS.some(pattern => page.path?.includes(pattern))) {
+      projectPageIds.add(page.id);
+    }
+  }
+
+  // Apply overrides to entities
+  const entities = (db.entities || []).map(entity => {
+    // Check explicit overrides first
+    if (ENTITY_TYPE_OVERRIDES[entity.id]) {
+      return { ...entity, type: ENTITY_TYPE_OVERRIDES[entity.id] };
+    }
+    // Check path-based overrides
+    if (projectPageIds.has(entity.id)) {
+      return { ...entity, type: "project" };
+    }
+    return entity;
+  });
+
+  // Also create entities for pages in project paths that don't have entities yet
+  const entityIds = new Set(entities.map(e => e.id));
+  const newEntities: RawEntity[] = [];
+  for (const page of db.pages || []) {
+    if (projectPageIds.has(page.id) && !entityIds.has(page.id)) {
+      newEntities.push({
+        id: page.id,
+        type: "project",
+        title: page.title,
+        description: page.llmSummary || page.description || undefined,
+        tags: (page as any).tags || [],
+        lastUpdated: page.lastUpdated || undefined,
+      });
+    }
+  }
+
+  return {
+    ...db,
+    entities: [...entities, ...newEntities],
+  };
+}
+
+// ============================================================================
+// ENTITY TRANSFORMATION (raw → typed)
+// ============================================================================
+
+/**
+ * Transform a raw database.json entity into a typed entity.
+ * - Maps old type names to canonical entityType
+ * - Flattens lab-* → organization with orgType
+ * - Extracts customFields into typed fields for researcher → person, policy, etc.
+ */
+function transformEntity(
+  raw: RawEntity,
+  experts: Map<string, Expert>,
+  orgs: Map<string, Organization>,
+): TypedEntity | null {
+  const oldType = raw.type;
+  const canonicalType = OLD_TYPE_MAP[oldType] || oldType;
+
+  // Build base fields shared across all types
+  const base = {
+    id: raw.id,
+    title: raw.title,
+    description: raw.description,
+    tags: raw.tags || [],
+    clusters: raw.clusters || [],
+    relatedEntries: raw.relatedEntries || [],
+    sources: raw.sources || [],
+    lastUpdated: raw.lastUpdated,
+    website: raw.website,
+    numericId: raw.numericId,
+    path: raw.path,
+    status: raw.status,
+    customFields: raw.customFields || [],
+    relatedTopics: raw.relatedTopics || [],
+  };
+
+  // Helper to find a customField value
+  const cf = (label: string): string | undefined =>
+    raw.customFields?.find(f => f.label === label)?.value;
+
+  // Remove extracted customFields from the passthrough list
+  const filterCustomFields = (...labels: string[]) => {
+    const labelSet = new Set(labels);
+    return (raw.customFields || []).filter(f => !labelSet.has(f.label));
+  };
+
+  switch (canonicalType) {
+    case "risk": {
+      return {
+        ...base,
+        entityType: "risk" as const,
+        severity: raw.severity as any,
+        likelihood: raw.likelihood,
+        timeframe: raw.timeframe,
+        maturity: raw.maturity as any,
+        riskCategory: getRiskCategory(raw.id),
+      };
+    }
+
+    case "person": {
+      // Merge expert data if available
+      const expert = experts.get(raw.id);
+      const org = expert?.affiliation ? orgs.get(expert.affiliation) : null;
+      const role = expert?.role || cf("Role");
+      const knownForStr = cf("Known For");
+      const knownFor = expert?.knownFor ||
+        (knownForStr ? knownForStr.split(",").map(s => s.trim()).filter(Boolean) : []);
+      const affiliation = org?.name || expert?.affiliation || cf("Affiliation");
+
+      return {
+        ...base,
+        entityType: "person" as const,
+        title: expert?.name || raw.title,
+        website: expert?.website || raw.website,
+        role,
+        affiliation,
+        knownFor,
+        customFields: filterCustomFields("Role", "Known For", "Affiliation"),
+      };
+    }
+
+    case "organization": {
+      // Determine orgType from old lab-* type
+      const orgType = OLD_LAB_TYPE_TO_ORG_TYPE[oldType] as any;
+      // Merge org data if available
+      const orgData = orgs.get(raw.id);
+      return {
+        ...base,
+        entityType: "organization" as const,
+        orgType: orgType || orgData?.type as any || undefined,
+        founded: orgData?.founded || cf("Founded") || cf("Established"),
+        headquarters: orgData?.headquarters || cf("Location") || cf("Headquarters"),
+        employees: orgData?.employees || cf("Employees"),
+        funding: orgData?.funding || cf("Funding"),
+        website: orgData?.website || raw.website,
+        title: orgData?.name || raw.title,
+        customFields: filterCustomFields("Founded", "Established", "Location", "Headquarters", "Employees", "Funding"),
+      };
+    }
+
+    case "policy": {
+      return {
+        ...base,
+        entityType: "policy" as const,
+        introduced: cf("Introduced") || cf("Established"),
+        policyStatus: cf("Status"),
+        author: cf("Author"),
+        scope: cf("Scope"),
+        customFields: filterCustomFields("Introduced", "Established", "Status", "Author", "Scope"),
+      };
+    }
+
+    case "approach":
+      return { ...base, entityType: "approach" as const };
+    case "safety-agenda":
+      return { ...base, entityType: "safety-agenda" as const, goal: cf("Goal") };
+    case "concept":
+      return { ...base, entityType: "concept" as const };
+    case "crux":
+      return { ...base, entityType: "crux" as const };
+    case "model":
+      return { ...base, entityType: "model" as const };
+    case "capability":
+      return { ...base, entityType: "capability" as const };
+    case "project":
+      return { ...base, entityType: "project" as const };
+    case "analysis":
+      return { ...base, entityType: "analysis" as const };
+    case "historical":
+      return { ...base, entityType: "historical" as const };
+    case "argument":
+      return { ...base, entityType: "argument" as const };
+    case "scenario":
+      return { ...base, entityType: "scenario" as const };
+    case "case-study":
+      return { ...base, entityType: "case-study" as const };
+    case "funder":
+      return { ...base, entityType: "funder" as const };
+    case "resource":
+      return { ...base, entityType: "resource" as const };
+    case "parameter":
+      return { ...base, entityType: "parameter" as const };
+    case "metric":
+      return { ...base, entityType: "metric" as const };
+    case "risk-factor":
+      return { ...base, entityType: "risk-factor" as const };
+
+    default: {
+      // Unknown types (ai-transition-model-* etc.) — fall through as generic
+      // They won't match the discriminated union but we keep them for explore page
+      return {
+        ...base,
+        entityType: canonicalType,
+      } as TypedEntity;
+    }
+  }
+}
+
+// ============================================================================
+// DATABASE LOADING
+// ============================================================================
+
 let _database: DatabaseShape | null = null;
+let _typedEntities: TypedEntity[] | null = null;
 
 function getDatabase(): DatabaseShape {
   if (_database) return _database;
 
-  const dbPath = path.join(LONGTERM_DATA_DIR, "database.json");
+  // Try local copy first, fall back to longterm source
+  const localDbPath = path.join(LOCAL_DATA_DIR, "database.json");
+  const longtermDbPath = path.join(LONGTERM_DATA_DIR, "database.json");
+  const dbPath = fs.existsSync(localDbPath) ? localDbPath : longtermDbPath;
+
   try {
     const raw = fs.readFileSync(dbPath, "utf-8");
-    _database = JSON.parse(raw) as DatabaseShape;
+    const rawDb = JSON.parse(raw) as DatabaseShape;
+    _database = applyEntityOverrides(rawDb);
   } catch (err) {
     throw new Error(
       `Failed to load database from ${dbPath}: ${err instanceof Error ? err.message : err}. ` +
-      `Run "pnpm --filter longterm build:data" first.`
+      `Run "pnpm --filter longterm-next sync:data" or "pnpm --filter longterm build:data" first.`
     );
   }
   return _database;
 }
 
+function getTypedEntities(): TypedEntity[] {
+  if (_typedEntities) return _typedEntities;
+
+  const db = getDatabase();
+  const expertMap = new Map((db.experts || []).map(e => [e.id, e]));
+  const orgMap = new Map((db.organizations || []).map(o => [o.id, o]));
+
+  const entities: TypedEntity[] = [];
+  const isDev = process.env.NODE_ENV === "development";
+
+  for (const raw of db.entities || []) {
+    const typed = transformEntity(raw, expertMap, orgMap);
+    if (!typed) continue;
+
+    // Build-time validation via Zod
+    const result = TypedEntitySchema.safeParse(typed);
+    if (!result.success) {
+      if (isDev) {
+        console.warn(
+          `[entity-validation] ${raw.id} (${raw.type} → ${typed.entityType}): ${result.error.issues.map(i => i.message).join(", ")}`
+        );
+      }
+      // Still include the entity — the generic fallback handles unknown types
+      entities.push(typed);
+    } else {
+      entities.push(result.data);
+    }
+  }
+
+  _typedEntities = entities;
+  return _typedEntities;
+}
+
 // ============================================================================
-// TYPES (minimal subset needed for wiki components)
+// TYPES (re-exported for consumers)
 // ============================================================================
 
+// Re-export typed entity types for consumers
+export type { TypedEntity, RiskEntity, PersonEntity, OrganizationEntity, PolicyEntity } from "./entity-schemas";
+export { isRisk, isPerson, isOrganization, isPolicy } from "./entity-schemas";
+
+/** @deprecated Use TypedEntity instead */
 export interface Entity {
   id: string;
   type: string;
@@ -178,19 +491,18 @@ export interface Page {
 // LOOKUP INDEXES (built lazily)
 // ============================================================================
 
-let _entityIndex: Map<string, Entity> | null = null;
+let _typedEntityIndex: Map<string, TypedEntity> | null = null;
 let _resourceIndex: Map<string, Resource> | null = null;
 let _publicationIndex: Map<string, Publication> | null = null;
 let _expertIndex: Map<string, Expert> | null = null;
 let _orgIndex: Map<string, Organization> | null = null;
 let _pageIndex: Map<string, Page> | null = null;
 
-function entityIndex() {
-  if (!_entityIndex) {
-    const db = getDatabase();
-    _entityIndex = new Map((db.entities || []).map((e) => [e.id, e]));
+function typedEntityIndex() {
+  if (!_typedEntityIndex) {
+    _typedEntityIndex = new Map(getTypedEntities().map(e => [e.id, e]));
   }
-  return _entityIndex;
+  return _typedEntityIndex;
 }
 
 function resourceIndex() {
@@ -239,8 +551,35 @@ function pageIndex() {
 // LOOKUP FUNCTIONS
 // ============================================================================
 
+/** Get a typed entity by ID */
+export function getTypedEntityById(id: string): TypedEntity | undefined {
+  return typedEntityIndex().get(id);
+}
+
+/** @deprecated Use getTypedEntityById for new code */
 export function getEntityById(id: string): Entity | undefined {
-  return entityIndex().get(id);
+  // Return typed entity cast to the old Entity interface for backward compat
+  const typed = typedEntityIndex().get(id);
+  if (!typed) return undefined;
+  return {
+    id: typed.id,
+    type: typed.entityType,
+    title: typed.title,
+    description: typed.description,
+    tags: typed.tags,
+    relatedEntries: typed.relatedEntries,
+    sources: typed.sources,
+    lastUpdated: typed.lastUpdated,
+    website: typed.website,
+    customFields: typed.customFields,
+    // Type-specific fields (spread them for backward compat)
+    ...(isRisk(typed) ? {
+      severity: typed.severity,
+      likelihood: typed.likelihood,
+      timeframe: typed.timeframe,
+      maturity: typed.maturity,
+    } : {}),
+  };
 }
 
 export function getResourceById(id: string): Resource | undefined {
@@ -327,24 +666,15 @@ export function getBacklinksFor(
 // CANONICAL FACTS
 // ============================================================================
 
-/**
- * Get a specific canonical fact by entity ID and fact ID.
- */
 export function getFact(entityId: string, factId: string): Fact | undefined {
   const db = getDatabase();
   return db.facts?.[`${entityId}.${factId}`];
 }
 
-/**
- * Get just the display value for a canonical fact.
- */
 export function getFactValue(entityId: string, factId: string): string | undefined {
   return getFact(entityId, factId)?.value;
 }
 
-/**
- * Get all canonical facts for an entity, keyed by factId.
- */
 export function getFactsForEntity(entityId: string): Record<string, Fact> {
   const db = getDatabase();
   const result: Record<string, Fact> = {};
@@ -356,9 +686,6 @@ export function getFactsForEntity(entityId: string): Record<string, Fact> {
   return result;
 }
 
-/**
- * Get all canonical facts as a flat list with their composite key.
- */
 export function getAllFacts(): Array<Fact & { key: string }> {
   const db = getDatabase();
   return Object.entries(db.facts || {}).map(([key, fact]) => ({
@@ -371,51 +698,14 @@ export function getAllFacts(): Array<Fact & { key: string }> {
 // INFOBOX DATA HELPERS
 // ============================================================================
 
-export function getExpertInfoBoxData(expertId: string) {
-  const expert = getExpertById(expertId);
-  if (!expert) return null;
-  const org = expert.affiliation
-    ? getOrganizationById(expert.affiliation)
-    : null;
-  return {
-    type: "researcher" as const,
-    title: expert.name,
-    affiliation: org?.name || expert.affiliation,
-    role: expert.role,
-    website: expert.website,
-    knownFor: expert.knownFor?.join(", "),
-  };
-}
-
-export function getOrgInfoBoxData(orgId: string) {
-  const org = getOrganizationById(orgId);
-  if (!org) return null;
-  return {
-    type:
-      org.type === "frontier-lab"
-        ? ("lab-frontier" as const)
-        : org.type === "safety-org"
-          ? ("lab-research" as const)
-          : org.type === "academic"
-            ? ("lab-academic" as const)
-            : ("lab" as const),
-    title: org.name,
-    founded: org.founded,
-    location: org.headquarters,
-    headcount: org.employees,
-    funding: org.funding,
-    website: org.website,
-  };
-}
-
 export function getEntityInfoBoxData(entityId: string) {
-  const entity = getEntityById(entityId);
+  const entity = getTypedEntityById(entityId);
   if (!entity) return null;
 
   const resolvedRelatedEntries = entity.relatedEntries?.map((entry) => ({
     type: entry.type,
     title:
-      getEntityById(entry.id)?.title ||
+      getTypedEntityById(entry.id)?.title ||
       entry.id
         .split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
@@ -423,73 +713,96 @@ export function getEntityInfoBoxData(entityId: string) {
     href: getEntityHref(entry.id, entry.type),
   }));
 
-  // For researchers, merge expert data
-  if (entity.type === "researcher") {
-    const expert = getExpertById(entityId);
-    if (expert) {
-      const org = expert.affiliation
-        ? getOrganizationById(expert.affiliation)
-        : null;
-      return {
-        type: entity.type,
-        title: expert.name,
-        affiliation: org?.name || expert.affiliation,
-        role: expert.role,
-        website: expert.website || entity.website,
-        knownFor: expert.knownFor?.join(", "),
-        customFields: entity.customFields,
-        relatedTopics: entity.relatedTopics,
-        relatedEntries: resolvedRelatedEntries,
-      };
-    }
-  }
-
   // Resolve likelihood/timeframe to strings
   let likelihoodStr: string | undefined;
-  if (entity.likelihood) {
-    likelihoodStr =
-      typeof entity.likelihood === "string"
-        ? entity.likelihood
-        : entity.likelihood?.display || entity.likelihood?.level;
-  }
   let timeframeStr: string | undefined;
-  if (entity.timeframe) {
-    timeframeStr =
-      typeof entity.timeframe === "string"
-        ? entity.timeframe
-        : entity.timeframe?.display || String(entity.timeframe?.median || "");
-  }
-
-  // Risk category
   let category: string | undefined;
   let maturity: string | undefined;
   let relatedSolutions: any[] | undefined;
-  if (entity.type === "risk") {
-    category = getRiskCategory(entity.id);
+  let severity: string | undefined;
+
+  if (isRisk(entity)) {
+    severity = entity.severity;
+    category = entity.riskCategory;
     maturity = entity.maturity;
-    const db = getDatabase();
-    const solutionEntities = (db.entities || []).filter(
-      (e) => e.type === "safety-agenda" || e.type === "approach" || e.type === "project"
-    );
+    if (entity.likelihood) {
+      likelihoodStr =
+        typeof entity.likelihood === "string"
+          ? entity.likelihood
+          : entity.likelihood?.display || entity.likelihood?.level;
+    }
+    if (entity.timeframe) {
+      timeframeStr =
+        typeof entity.timeframe === "string"
+          ? entity.timeframe
+          : entity.timeframe?.display || String(entity.timeframe?.median || "");
+    }
+    // Find related solutions
+    const allEntities = getTypedEntities();
     relatedSolutions = [];
-    for (const solution of solutionEntities) {
-      const linkedRisks =
-        solution.relatedEntries?.filter((re) => re.type === "risk") || [];
-      if (linkedRisks.some((r) => r.id === entity.id)) {
-        relatedSolutions.push({
-          id: solution.id,
-          title: solution.title,
-          type: solution.type,
-          href: getEntityHref(solution.id, solution.type),
-        });
+    for (const solution of allEntities) {
+      if (
+        solution.entityType === "safety-agenda" ||
+        solution.entityType === "approach" ||
+        solution.entityType === "project"
+      ) {
+        const linkedRisks =
+          solution.relatedEntries?.filter((re) => re.type === "risk") || [];
+        if (linkedRisks.some((r) => r.id === entity.id)) {
+          relatedSolutions.push({
+            id: solution.id,
+            title: solution.title,
+            type: solution.entityType,
+            href: getEntityHref(solution.id, solution.entityType),
+          });
+        }
       }
     }
   }
 
+  // Person-specific fields
+  let affiliation: string | undefined;
+  let role: string | undefined;
+  let knownFor: string | undefined;
+
+  if (isPerson(entity)) {
+    affiliation = entity.affiliation;
+    role = entity.role;
+    knownFor = entity.knownFor?.join(", ");
+  }
+
+  // Organization-specific fields
+  let founded: string | undefined;
+  let location: string | undefined;
+  let headcount: string | undefined;
+  let funding: string | undefined;
+  let orgType: string | undefined;
+
+  if (isOrganization(entity)) {
+    founded = entity.founded;
+    location = entity.headquarters;
+    headcount = entity.employees;
+    funding = entity.funding;
+    orgType = entity.orgType;
+  }
+
+  // Policy-specific fields
+  let introduced: string | undefined;
+  let policyStatus: string | undefined;
+  let policyAuthor: string | undefined;
+  let scope: string | undefined;
+
+  if (isPolicy(entity)) {
+    introduced = entity.introduced;
+    policyStatus = entity.policyStatus;
+    policyAuthor = entity.author;
+    scope = entity.scope;
+  }
+
   return {
-    type: entity.type,
+    type: entity.entityType,
     title: entity.title,
-    severity: entity.severity,
+    severity,
     likelihood: likelihoodStr,
     timeframe: timeframeStr,
     website: entity.website,
@@ -499,7 +812,32 @@ export function getEntityInfoBoxData(entityId: string) {
     category,
     maturity,
     relatedSolutions,
+    // Person
+    affiliation,
+    role,
+    knownFor,
+    // Organization
+    founded,
+    location,
+    headcount,
+    funding,
+    orgType,
+    // Policy
+    introduced,
+    policyStatus,
+    policyAuthor,
+    scope,
   };
+}
+
+/** @deprecated Use getEntityInfoBoxData with entityId for person entities */
+export function getExpertInfoBoxData(expertId: string) {
+  return getEntityInfoBoxData(expertId);
+}
+
+/** @deprecated Use getEntityInfoBoxData with entityId for organization entities */
+export function getOrgInfoBoxData(orgId: string) {
+  return getEntityInfoBoxData(orgId);
 }
 
 // ============================================================================
@@ -573,7 +911,9 @@ function loadExternalLinksMap(): Map<string, ExternalLinksData> {
   if (_externalLinksMap) return _externalLinksMap;
 
   try {
-    const yamlPath = path.join(LONGTERM_DATA_DIR, "external-links.yaml");
+    const localYamlPath = path.join(LOCAL_DATA_DIR, "external-links.yaml");
+    const longtermYamlPath = path.join(LONGTERM_DATA_DIR, "external-links.yaml");
+    const yamlPath = fs.existsSync(localYamlPath) ? localYamlPath : longtermYamlPath;
     const raw = fs.readFileSync(yamlPath, "utf-8");
     const entries = yaml.load(raw) as Array<{
       pageId: string;
@@ -615,16 +955,16 @@ export interface ExploreItem {
   category: string | null;
   riskCategory: string | null;
   lastUpdated: string | null;
-  href?: string; // Override link target (for tables, diagrams, insights)
-  meta?: string; // Extra metadata text (e.g. "42 × 9" for tables)
-  sourceTitle?: string; // Source page title (for insights)
+  href?: string;
+  meta?: string;
+  sourceTitle?: string;
 }
 
 // Map page categories to entity-like types for display
 const CATEGORY_TO_TYPE: Record<string, string> = {
   responses: "approach",
   organizations: "organization",
-  people: "researcher",
+  people: "person",
   factors: "model",
   "intelligence-paradigms": "capability",
   models: "model",
@@ -733,8 +1073,9 @@ interface DatabaseInsight {
 
 export function getExploreItems(): ExploreItem[] {
   const db = getDatabase();
+  const typedEntities = getTypedEntities();
   const pageMap = new Map((db.pages || []).map((p) => [p.id, p]));
-  const entityIds = new Set((db.entities || []).map((e) => e.id));
+  const entityIds = new Set(typedEntities.map((e) => e.id));
 
   // Build cluster lookup from pages (for tables/insights)
   const pageClusterMap = new Map<string, string[]>();
@@ -742,40 +1083,39 @@ export function getExploreItems(): ExploreItem[] {
   for (const page of db.pages || []) {
     pageClusterMap.set(page.path, page.clusters || []);
     pageTitleMap.set(page.path, page.title);
-    // Also store with trailing slash
     if (!page.path.endsWith("/")) {
       pageClusterMap.set(page.path + "/", page.clusters || []);
       pageTitleMap.set(page.path + "/", page.title);
     }
   }
 
-  // Items from entities (as before)
-  const entityItems: ExploreItem[] = (db.entities || []).map((entity) => {
+  // Items from typed entities
+  const entityItems: ExploreItem[] = typedEntities.map((entity) => {
     const page = pageMap.get(entity.id);
     return {
       id: entity.id,
-      numericId: (entity as any).numericId || db.idRegistry?.bySlug[entity.id] || entity.id,
+      numericId: entity.numericId || db.idRegistry?.bySlug[entity.id] || entity.id,
       title: entity.title,
-      type: entity.type,
+      type: entity.entityType,
       description: page?.llmSummary || page?.description || entity.description || null,
       tags: entity.tags || [],
-      clusters: page?.clusters || [],
+      clusters: entity.clusters?.length ? entity.clusters : (page?.clusters || []),
       wordCount: page?.wordCount ?? null,
       quality: page?.quality ?? null,
       importance: page?.importance ?? null,
       category: page?.category ?? null,
-      riskCategory: entity.type === "risk" ? getRiskCategory(entity.id) : null,
+      riskCategory: isRisk(entity) ? (entity.riskCategory || null) : null,
       lastUpdated: page?.lastUpdated ?? null,
     };
   });
 
-  // Items from pages that have no entity — these are content pages without structured data
+  // Items from pages that have no entity
   const pageOnlyItems: ExploreItem[] = (db.pages || [])
     .filter((p) => !entityIds.has(p.id))
-    .filter((p) => p.title && p.category !== "schema") // skip schema/index pages
+    .filter((p) => p.title && p.category !== "schema")
     .map((page) => ({
       id: page.id,
-      numericId: db.idRegistry?.bySlug[page.id] || page.id, // fall back to slug
+      numericId: db.idRegistry?.bySlug[page.id] || page.id,
       title: page.title,
       type: CATEGORY_TO_TYPE[page.category] || "concept",
       description: page.llmSummary || page.description || null,
@@ -808,7 +1148,7 @@ export function getExploreItems(): ExploreItem[] {
     meta: `${table.rows} × ${table.cols}`,
   }));
 
-  // Diagram items — entities with causeEffectGraph
+  // Diagram items
   const diagramItems: ExploreItem[] = (db.entities || [])
     .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
     .map((e: any) => {
@@ -832,7 +1172,7 @@ export function getExploreItems(): ExploreItem[] {
       };
     });
 
-  // Insight items (from database.json)
+  // Insight items
   const insightItems: ExploreItem[] = (db.insights || []).map((insight) => {
     const sourcePath = insight.source || "/insight-hunting";
     const parentClusters =

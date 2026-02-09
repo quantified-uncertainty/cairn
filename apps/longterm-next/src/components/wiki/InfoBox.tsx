@@ -50,14 +50,16 @@ interface InfoBoxProps {
   clusters?: string[];
   wordCount?: number;
   backlinkCount?: number;
+  // Organization subtype
+  orgType?: string;
+  // Policy fields
+  introduced?: string;
+  policyStatus?: string;
+  policyAuthor?: string;
+  scope?: string;
 }
 
 const typeLabels: Record<string, { label: string; color: string }> = {
-  "lab-frontier": { label: "Frontier Lab", color: "#dc2626" },
-  "lab-research": { label: "Research Lab", color: "#2563eb" },
-  "lab-startup": { label: "Startup", color: "#7c3aed" },
-  "lab-academic": { label: "Academic", color: "#059669" },
-  lab: { label: "Organization", color: "#dc2626" },
   capability: { label: "Capability", color: "#0891b2" },
   risk: { label: "Risk", color: "#dc2626" },
   "risk-factor": { label: "Risk Factor", color: "#f97316" },
@@ -65,12 +67,17 @@ const typeLabels: Record<string, { label: string; color: string }> = {
   policy: { label: "Policy", color: "#0d9488" },
   crux: { label: "Key Crux", color: "#ea580c" },
   concept: { label: "Concept", color: "#6366f1" },
-  researcher: { label: "Researcher", color: "#475569" },
+  person: { label: "Person", color: "#475569" },
   funder: { label: "Funder", color: "#16a34a" },
   approach: { label: "Approach", color: "#0891b2" },
   project: { label: "Project", color: "#0d9488" },
   organization: { label: "Organization", color: "#64748b" },
   model: { label: "Model", color: "#8b5cf6" },
+  historical: { label: "Historical", color: "#78716c" },
+  analysis: { label: "Analysis", color: "#e11d48" },
+  argument: { label: "Argument", color: "#ec4899" },
+  scenario: { label: "Scenario", color: "#7c3aed" },
+  "case-study": { label: "Case Study", color: "#78716c" },
 };
 
 const defaultTypeInfo = { label: "Entry", color: "#6b7280" };
@@ -172,15 +179,49 @@ export function InfoBox({
   clusters,
   wordCount,
   backlinkCount,
+  orgType,
+  introduced,
+  policyStatus,
+  policyAuthor,
+  scope,
 }: InfoBoxProps) {
-  const typeInfo = typeLabels[type] || defaultTypeInfo;
+  // Use orgType to differentiate organization subtypes in the header
+  const orgTypeHeaders: Record<string, { label: string; color: string }> = {
+    "frontier-lab": { label: "Frontier Lab", color: "#dc2626" },
+    "safety-org": { label: "Safety Org", color: "#0d9488" },
+    academic: { label: "Academic", color: "#059669" },
+    startup: { label: "Startup", color: "#7c3aed" },
+    generic: { label: "Lab", color: "#0891b2" },
+    funder: { label: "Funder", color: "#16a34a" },
+    government: { label: "Government", color: "#475569" },
+  };
+  const typeInfo =
+    type === "organization" && orgType && orgTypeHeaders[orgType]
+      ? orgTypeHeaders[orgType]
+      : typeLabels[type] || defaultTypeInfo;
 
   const fields: { label: string; value: string; link?: string }[] = [];
   if (importance !== undefined) fields.push({ label: "Importance", value: Math.round(importance).toString() });
+  if (orgType) {
+    const orgTypeLabels: Record<string, string> = {
+      "frontier-lab": "Frontier Lab",
+      "safety-org": "Safety Org",
+      academic: "Academic",
+      startup: "Startup",
+      generic: "Lab",
+      funder: "Funder",
+      government: "Government",
+    };
+    fields.push({ label: "Type", value: orgTypeLabels[orgType] || orgType });
+  }
   if (founded) fields.push({ label: "Founded", value: founded });
   if (location) fields.push({ label: "Location", value: location });
   if (headcount) fields.push({ label: "Employees", value: headcount });
   if (funding) fields.push({ label: "Funding", value: funding });
+  if (introduced) fields.push({ label: "Introduced", value: introduced });
+  if (policyStatus) fields.push({ label: "Status", value: policyStatus });
+  if (policyAuthor) fields.push({ label: "Author", value: policyAuthor });
+  if (scope) fields.push({ label: "Scope", value: scope });
   if (category) fields.push({ label: "Category", value: categoryLabels[category] || category, link: `/wiki?riskCategory=${category}` });
   if (severity) fields.push({ label: "Severity", value: severity.charAt(0).toUpperCase() + severity.slice(1) });
   if (likelihood) fields.push({ label: "Likelihood", value: likelihood });
