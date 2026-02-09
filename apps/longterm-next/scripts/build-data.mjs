@@ -14,15 +14,16 @@ import { join, basename, relative } from 'path';
 import { parse } from 'yaml';
 import { extractMetrics, suggestQuality, getQualityDiscrepancy } from './lib/metrics-extractor.mjs';
 import { computeRedundancy } from './lib/redundancy.mjs';
-import { CONTENT_DIR, DATA_DIR } from './lib/content-types.mjs';
+import { CONTENT_DIR, DATA_DIR, OUTPUT_DIR } from './lib/content-types.mjs';
 import { generateLLMFiles } from './generate-llm-files.mjs';
 import { buildUrlToResourceMap, findUnconvertedLinks, countConvertedLinks } from './lib/unconverted-links.mjs';
 import { generateMdxFromYaml } from './lib/mdx-generator.mjs';
 import { computeStats } from './lib/statistics.mjs';
 import { parseNumericValue, resolveComputedFacts } from './lib/computed-facts.mjs';
 import { transformEntities } from './lib/entity-transform.mjs';
+import { scanFrontmatterEntities } from './lib/frontmatter-scanner.mjs';
 
-const OUTPUT_FILE = 'src/data/database.json';
+const OUTPUT_FILE = join(OUTPUT_DIR, 'database.json');
 
 // Files to combine
 const DATA_FILES = [
@@ -337,7 +338,19 @@ function main() {
   }
 
   // Compute derived data for entities
-  const entities = database.entities || [];
+  // Load YAML entities
+  const yamlEntities = database.entities || [];
+  const yamlEntityIds = new Set(yamlEntities.map(e => e.id));
+
+  // Auto-create entities from MDX frontmatter (for pages without YAML entities)
+  const frontmatterEntities = scanFrontmatterEntities(yamlEntityIds, CONTENT_DIR);
+  if (frontmatterEntities.length > 0) {
+    console.log(`  frontmatter entities: ${frontmatterEntities.length} auto-created from MDX`);
+  }
+
+  // Merge: YAML entities take precedence, frontmatter fills gaps
+  const entities = [...yamlEntities, ...frontmatterEntities];
+  database.entities = entities;
 
   // =========================================================================
   // ID REGISTRY — assign stable numeric IDs (E1, E2, ...) to every entity
@@ -535,6 +548,11 @@ function main() {
   database.typedEntities = typedEntities;
   console.log(`  typedEntities: ${typedEntities.length} transformed`);
 
+  // Ensure output directory exists
+  if (!existsSync(OUTPUT_DIR)) {
+    mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+
   // Write combined JSON
   writeFileSync(OUTPUT_FILE, JSON.stringify(database, null, 2));
   console.log(`\n✓ Written: ${OUTPUT_FILE}`);
@@ -542,23 +560,23 @@ function main() {
   // Also write individual JSON files for selective imports
   for (const { key, file, dir } of DATA_FILES) {
     const jsonFile = dir ? `${key}.json` : file.replace('.yaml', '.json');
-    writeFileSync(join(DATA_DIR, jsonFile), JSON.stringify(database[key], null, 2));
+    writeFileSync(join(OUTPUT_DIR, jsonFile), JSON.stringify(database[key], null, 2));
   }
 
   // Write derived data as separate files too
-  writeFileSync(join(DATA_DIR, 'backlinks.json'), JSON.stringify(backlinks, null, 2));
-  writeFileSync(join(DATA_DIR, 'tagIndex.json'), JSON.stringify(tagIndex, null, 2));
-  writeFileSync(join(DATA_DIR, 'stats.json'), JSON.stringify(stats, null, 2));
-  writeFileSync(join(DATA_DIR, 'pathRegistry.json'), JSON.stringify(pathRegistry, null, 2));
-  writeFileSync(join(DATA_DIR, 'pages.json'), JSON.stringify(pages, null, 2));
-  writeFileSync(join(DATA_DIR, 'idRegistryMaps.json'), JSON.stringify(idRegistryOutput, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'backlinks.json'), JSON.stringify(backlinks, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'tagIndex.json'), JSON.stringify(tagIndex, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'stats.json'), JSON.stringify(stats, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'pathRegistry.json'), JSON.stringify(pathRegistry, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'pages.json'), JSON.stringify(pages, null, 2));
+  writeFileSync(join(OUTPUT_DIR, 'idRegistryMaps.json'), JSON.stringify(idRegistryOutput, null, 2));
 
   console.log('✓ Written individual JSON files');
   console.log('✓ Written derived data files (backlinks, tagIndex, stats, pathRegistry)');
 
   // Generate link health data
   console.log('\nGenerating link health data...');
-  const linkHealthPath = join(DATA_DIR, 'link-health.json');
+  const linkHealthPath = join(OUTPUT_DIR, 'link-health.json');
   const linkValidation = spawnSync('node', [
     'scripts/validate/validate-internal-links.mjs',
     '--ci',

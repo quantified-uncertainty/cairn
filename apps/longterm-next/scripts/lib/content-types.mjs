@@ -113,21 +113,32 @@ export function extractEntityId(filePath) {
 }
 
 /**
- * Base content directory (relative path)
+ * Path to the longterm app (source of truth for content and YAML data).
+ * All content and YAML source files live in apps/longterm/.
  */
-export const CONTENT_DIR = 'src/content/docs';
+export const LONGTERM_ROOT = join(PROJECT_ROOT, '../longterm');
 
 /**
- * Data directory (relative path)
+ * Content directory — MDX pages in the longterm app.
  */
-export const DATA_DIR = 'src/data';
+export const CONTENT_DIR = join(LONGTERM_ROOT, 'src/content/docs');
 
 /**
- * Absolute path to content directory
+ * Source data directory — YAML files, id-registry, etc. in the longterm app.
  */
-export const CONTENT_DIR_ABS = join(PROJECT_ROOT, CONTENT_DIR);
+export const DATA_DIR = join(LONGTERM_ROOT, 'src/data');
 
 /**
- * Absolute path to data directory
+ * Output data directory — generated JSON files for longterm-next.
  */
-export const DATA_DIR_ABS = join(PROJECT_ROOT, DATA_DIR);
+export const OUTPUT_DIR = join(PROJECT_ROOT, 'src/data');
+
+/**
+ * Absolute path to content directory (alias for CONTENT_DIR, already absolute).
+ */
+export const CONTENT_DIR_ABS = CONTENT_DIR;
+
+/**
+ * Absolute path to data directory (alias for DATA_DIR, already absolute).
+ */
+export const DATA_DIR_ABS = DATA_DIR;

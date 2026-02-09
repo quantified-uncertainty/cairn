@@ -39,8 +39,10 @@ const CONFIG = {
   ],
 };
 
-const DATA_DIR = 'src/data';
-const CONTENT_DIR = 'src/content/docs';
+import { CONTENT_DIR as LONGTERM_CONTENT_DIR, OUTPUT_DIR as LOCAL_OUTPUT_DIR } from './lib/content-types.mjs';
+
+const DATA_DIR = LOCAL_OUTPUT_DIR;  // Read generated pages.json from local output
+const CONTENT_DIR = LONGTERM_CONTENT_DIR;  // Read MDX from longterm
 const OUTPUT_DIR = 'public';
 
 /**

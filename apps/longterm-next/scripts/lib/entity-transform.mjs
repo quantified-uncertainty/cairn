@@ -102,6 +102,9 @@ const ENTITY_TYPE_OVERRIDES = {
  * Apply entity overrides to raw entities based on page paths and explicit mappings.
  */
 function applyEntityOverrides(entities, pages) {
+  entities = entities || [];
+  pages = pages || [];
+
   // Build a set of page IDs that match project path patterns
   const projectPageIds = new Set();
   for (const page of pages) {
@@ -261,9 +264,12 @@ function transformEntity(raw, expertMap, orgMap) {
     case 'risk-factor':
       return { ...base, entityType: canonicalType };
 
-    default:
-      // Unknown types (ai-transition-model-* etc.)
-      return { ...base, entityType: canonicalType };
+    default: {
+      // Unknown types (ai-transition-model-* etc.) — preserve all raw fields
+      // so entities keep content, currentAssessment, ratings, causeEffectGraph, etc.
+      const { type: _type, ...rawRest } = raw;
+      return { ...rawRest, ...base, entityType: canonicalType };
+    }
   }
 }
 
