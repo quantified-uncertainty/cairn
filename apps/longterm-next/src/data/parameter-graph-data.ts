@@ -7,15 +7,18 @@ import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 
-// Base directory for YAML data files
-const DATA_DIR = path.resolve(process.cwd(), "src/data");
+// Base directories for YAML data files (local first, fall back to longterm)
+const LOCAL_DATA_DIR = path.resolve(process.cwd(), "src/data");
+const LONGTERM_DATA_DIR = path.resolve(process.cwd(), "../longterm/src/data");
 
 // ============================================================================
 // YAML FILE READING (lazy, cached)
 // ============================================================================
 
 function readYaml(relativePath: string): string {
-  return fs.readFileSync(path.join(DATA_DIR, relativePath), "utf-8");
+  const localPath = path.join(LOCAL_DATA_DIR, relativePath);
+  if (fs.existsSync(localPath)) return fs.readFileSync(localPath, "utf-8");
+  return fs.readFileSync(path.join(LONGTERM_DATA_DIR, relativePath), "utf-8");
 }
 
 // ============================================================================

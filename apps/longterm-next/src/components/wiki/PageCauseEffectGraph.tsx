@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { getEntityById } from '@/data';
+import { getTypedEntityById } from '@/data';
 import CauseEffectGraph from './CauseEffectGraph';
 
 // Map page slugs to entity IDs
@@ -143,7 +143,7 @@ export function PageCauseEffectGraph({
   const entityId = SLUG_TO_ENTITY[slug] || slug;
 
   // Fetch entity data
-  const rawEntity = getEntityById(entityId);
+  const rawEntity = getTypedEntityById(entityId);
 
   if (!rawEntity) {
     // Silently return nothing if entity not found

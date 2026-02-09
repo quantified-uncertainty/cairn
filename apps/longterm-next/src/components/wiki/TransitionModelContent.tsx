@@ -17,7 +17,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getEntityById, getEntityHref } from '@/data';
+import { getTypedEntityById, getEntityHref } from '@/data';
 import CauseEffectGraph from '@/components/wiki/CauseEffectGraph';
 import {
   getFactorScenarioInfluences,
@@ -658,8 +658,8 @@ export function TransitionModelContent({
     return <div className="p-4 bg-destructive/10 border border-destructive rounded-lg text-destructive">No entityId provided. Use entityId="tmc-compute" format.</div>;
   }
 
-  // Direct entity lookup from database
-  const rawEntity = getEntityById(effectiveEntityId);
+  // Direct entity lookup from database — use typed lookup to preserve TMC fields
+  const rawEntity = getTypedEntityById(effectiveEntityId);
 
   if (!rawEntity) {
     return <div className="p-4 bg-destructive/10 border border-destructive rounded-lg text-destructive">No entity found for ID &quot;{effectiveEntityId}&quot;. Ensure the entity exists in ai-transition-model.yaml.</div>;

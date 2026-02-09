@@ -1,9 +1,9 @@
 /**
  * Data layer for longterm-next
  *
- * Reads database.json from the local data directory (copied from longterm via sync:data).
- * Entity type overrides can be applied locally without modifying the longterm source.
- * This runs at build time / server-component level only.
+ * Reads database.json directly from the sibling longterm app
+ * (apps/longterm/src/data/database.json), falling back to a local copy if present.
+ * Runs at build time / server-component level only.
  *
  * Entities are validated and transformed into typed entities (discriminated union)
  * at load time via Zod schemas. See entity-schemas.ts for the schema definitions.
@@ -317,9 +317,10 @@ function transformEntity(
       return { ...base, entityType: "risk-factor" as const };
 
     default: {
-      // Unknown types (ai-transition-model-* etc.) — validated as generic entity
-      const generic = GenericEntitySchema.safeParse({ ...base, entityType: canonicalType });
-      return generic.success ? generic.data : { ...base, entityType: canonicalType };
+      // Unknown types (ai-transition-model-* etc.) — preserve all raw fields
+      // so TMC entities keep content, currentAssessment, ratings, etc.
+      const { type: _type, ...rawRest } = raw;
+      return { ...rawRest, ...base, entityType: canonicalType };
     }
   }
 }

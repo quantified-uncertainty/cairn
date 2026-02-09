@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { getEntityById } from '@/data';
+import { getTypedEntityById } from '@/data';
 import { TransitionModelContent } from './TransitionModelContent';
 import { Backlinks } from './Backlinks';
 
@@ -58,7 +58,7 @@ export function ATMPage({
 }: ATMPageProps) {
   // Normalize entityId - add tmc- prefix if needed for lookup
   const lookupId = entityId.startsWith('tmc-') ? entityId : `tmc-${entityId}`;
-  const entity = getEntityById(lookupId) || getEntityById(entityId);
+  const entity = getTypedEntityById(lookupId) || getTypedEntityById(entityId);
 
   if (!entity) {
     return (

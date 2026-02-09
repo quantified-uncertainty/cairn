@@ -14,12 +14,14 @@ import yaml from 'js-yaml';
 import type { Node, Edge } from '@xyflow/react';
 import type { CauseEffectNodeData, CauseEffectEdgeData } from '@/components/wiki/CauseEffectGraph/types';
 
-// Lazy-loaded raw YAML content
+// Lazy-loaded raw YAML content (check local dir first, fall back to longterm)
 let _rawYaml: string | null = null;
 function getRawYaml(): string {
   if (!_rawYaml) {
+    const localPath = path.join(process.cwd(), 'src/data/graphs/ai-transition-model-master.yaml');
+    const longtermPath = path.join(process.cwd(), '../longterm/src/data/graphs/ai-transition-model-master.yaml');
     _rawYaml = fs.readFileSync(
-      path.join(process.cwd(), 'src/data/graphs/ai-transition-model-master.yaml'),
+      fs.existsSync(localPath) ? localPath : longtermPath,
       'utf-8'
     );
   }
