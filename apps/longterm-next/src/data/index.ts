@@ -2,11 +2,11 @@
  * Data layer for longterm-next
  *
  * Reads database.json from the local data directory (copied from longterm via sync:data).
- * Entity type overrides can be applied locally without modifying the longterm source.
  * This runs at build time / server-component level only.
  *
- * Entities are validated and transformed into typed entities (discriminated union)
- * at load time via Zod schemas. See entity-schemas.ts for the schema definitions.
+ * Entity transformation (type mapping, expert/org merging, risk categories) is done
+ * at build time by build-data.mjs and stored in database.json as `typedEntities`.
+ * This module validates them via Zod schemas. See entity-schemas.ts for schema definitions.
  */
 
 import fs from "fs";
@@ -15,12 +15,8 @@ import yaml from "js-yaml";
 import {
   TypedEntitySchema,
   GenericEntitySchema,
-  OLD_TYPE_MAP,
-  OLD_LAB_TYPE_TO_ORG_TYPE,
   type TypedEntity,
   type GenericEntity,
-  type RiskEntity,
-  type OrganizationEntity,
   isRisk,
   isPerson,
   isOrganization,
@@ -89,6 +85,7 @@ interface RawEntity {
 
 interface DatabaseShape {
   entities: RawEntity[];
+  typedEntities?: Array<Record<string, unknown>>; // Pre-transformed entities from build
   resources: Resource[];
   publications: Publication[];
   experts: Expert[];
@@ -100,228 +97,6 @@ interface DatabaseShape {
   facts: Record<string, Fact>;
   insights: DatabaseInsight[];
   stats: Record<string, unknown>;
-}
-
-// ============================================================================
-// ENTITY TYPE OVERRIDES
-// Pages whose entity type should be remapped in longterm-next.
-// This lets us reclassify entities without modifying the longterm source.
-// ============================================================================
-
-/**
- * Path patterns that should be treated as "project" type.
- * Matches against the page path or entity path.
- */
-const PROJECT_PATH_PATTERNS = [
-  "/knowledge-base/responses/epistemic-tools/tools/",
-];
-
-/**
- * Explicit entity ID → type overrides.
- */
-const ENTITY_TYPE_OVERRIDES: Record<string, string> = {
-  // Add individual overrides here as needed, e.g.:
-  // "some-entity-id": "project",
-};
-
-function applyEntityOverrides(db: DatabaseShape): DatabaseShape {
-  // Build a set of page IDs that match project path patterns
-  const projectPageIds = new Set<string>();
-  for (const page of db.pages || []) {
-    if (PROJECT_PATH_PATTERNS.some(pattern => page.path?.includes(pattern))) {
-      projectPageIds.add(page.id);
-    }
-  }
-
-  // Apply overrides to entities
-  const entities = (db.entities || []).map(entity => {
-    // Check explicit overrides first
-    if (ENTITY_TYPE_OVERRIDES[entity.id]) {
-      return { ...entity, type: ENTITY_TYPE_OVERRIDES[entity.id] };
-    }
-    // Check path-based overrides
-    if (projectPageIds.has(entity.id)) {
-      return { ...entity, type: "project" };
-    }
-    return entity;
-  });
-
-  // Also create entities for pages in project paths that don't have entities yet
-  const entityIds = new Set(entities.map(e => e.id));
-  const newEntities: RawEntity[] = [];
-  for (const page of db.pages || []) {
-    if (projectPageIds.has(page.id) && !entityIds.has(page.id)) {
-      newEntities.push({
-        id: page.id,
-        type: "project",
-        title: page.title,
-        description: page.llmSummary || page.description || undefined,
-        tags: page.tags || [],
-        lastUpdated: page.lastUpdated || undefined,
-      });
-    }
-  }
-
-  return {
-    ...db,
-    entities: [...entities, ...newEntities],
-  };
-}
-
-// ============================================================================
-// ENTITY TRANSFORMATION (raw → typed)
-// ============================================================================
-
-/**
- * Transform a raw database.json entity into a typed entity.
- * - Maps old type names to canonical entityType
- * - Flattens lab-* → organization with orgType
- * - Extracts customFields into typed fields for researcher → person, policy, etc.
- */
-function transformEntity(
-  raw: RawEntity,
-  experts: Map<string, Expert>,
-  orgs: Map<string, Organization>,
-): TypedEntity | GenericEntity | null {
-  const oldType = raw.type;
-  const canonicalType = OLD_TYPE_MAP[oldType] || oldType;
-
-  // Build base fields shared across all types
-  const base = {
-    id: raw.id,
-    title: raw.title,
-    description: raw.description,
-    tags: raw.tags || [],
-    clusters: raw.clusters || [],
-    relatedEntries: raw.relatedEntries || [],
-    sources: raw.sources || [],
-    lastUpdated: raw.lastUpdated,
-    website: raw.website,
-    numericId: raw.numericId,
-    path: raw.path,
-    status: raw.status,
-    customFields: raw.customFields || [],
-    relatedTopics: raw.relatedTopics || [],
-  };
-
-  // Helper to find a customField value
-  const cf = (label: string): string | undefined =>
-    raw.customFields?.find(f => f.label === label)?.value;
-
-  // Remove extracted customFields from the passthrough list
-  const filterCustomFields = (...labels: string[]) => {
-    const labelSet = new Set(labels);
-    return (raw.customFields || []).filter(f => !labelSet.has(f.label));
-  };
-
-  switch (canonicalType) {
-    case "risk": {
-      return {
-        ...base,
-        entityType: "risk" as const,
-        // Zod safeParse validates these enum values; mismatches produce warnings
-        severity: raw.severity as RiskEntity["severity"],
-        likelihood: raw.likelihood,
-        timeframe: raw.timeframe,
-        maturity: raw.maturity as RiskEntity["maturity"],
-        riskCategory: getRiskCategory(raw.id),
-      };
-    }
-
-    case "person": {
-      // Merge expert data if available
-      const expert = experts.get(raw.id);
-      const org = expert?.affiliation ? orgs.get(expert.affiliation) : null;
-      const role = expert?.role || cf("Role");
-      const knownForStr = cf("Known For");
-      const knownFor = expert?.knownFor ||
-        (knownForStr ? knownForStr.split(",").map(s => s.trim()).filter(Boolean) : []);
-      const affiliation = org?.name || expert?.affiliation || cf("Affiliation");
-
-      return {
-        ...base,
-        entityType: "person" as const,
-        title: expert?.name || raw.title,
-        website: expert?.website || raw.website,
-        role,
-        affiliation,
-        knownFor,
-        customFields: filterCustomFields("Role", "Known For", "Affiliation"),
-      };
-    }
-
-    case "organization": {
-      // Determine orgType from old lab-* type (values match OrganizationEntity["orgType"])
-      const orgType = OLD_LAB_TYPE_TO_ORG_TYPE[oldType] as OrganizationEntity["orgType"] | undefined;
-      // Merge org data if available
-      const orgData = orgs.get(raw.id);
-      return {
-        ...base,
-        entityType: "organization" as const,
-        orgType: orgType || (orgData?.type as OrganizationEntity["orgType"]) || undefined,
-        founded: orgData?.founded || cf("Founded") || cf("Established"),
-        headquarters: orgData?.headquarters || cf("Location") || cf("Headquarters"),
-        employees: orgData?.employees || cf("Employees"),
-        funding: orgData?.funding || cf("Funding"),
-        website: orgData?.website || raw.website,
-        title: orgData?.name || raw.title,
-        customFields: filterCustomFields("Founded", "Established", "Location", "Headquarters", "Employees", "Funding"),
-      };
-    }
-
-    case "policy": {
-      return {
-        ...base,
-        entityType: "policy" as const,
-        introduced: cf("Introduced") || cf("Established"),
-        policyStatus: cf("Status"),
-        author: cf("Author"),
-        scope: cf("Scope"),
-        customFields: filterCustomFields("Introduced", "Established", "Status", "Author", "Scope"),
-      };
-    }
-
-    case "approach":
-      return { ...base, entityType: "approach" as const };
-    case "safety-agenda":
-      return { ...base, entityType: "safety-agenda" as const, goal: cf("Goal") };
-    case "concept":
-      return { ...base, entityType: "concept" as const };
-    case "crux":
-      return { ...base, entityType: "crux" as const };
-    case "model":
-      return { ...base, entityType: "model" as const };
-    case "capability":
-      return { ...base, entityType: "capability" as const };
-    case "project":
-      return { ...base, entityType: "project" as const };
-    case "analysis":
-      return { ...base, entityType: "analysis" as const };
-    case "historical":
-      return { ...base, entityType: "historical" as const };
-    case "argument":
-      return { ...base, entityType: "argument" as const };
-    case "scenario":
-      return { ...base, entityType: "scenario" as const };
-    case "case-study":
-      return { ...base, entityType: "case-study" as const };
-    case "funder":
-      return { ...base, entityType: "funder" as const };
-    case "resource":
-      return { ...base, entityType: "resource" as const };
-    case "parameter":
-      return { ...base, entityType: "parameter" as const };
-    case "metric":
-      return { ...base, entityType: "metric" as const };
-    case "risk-factor":
-      return { ...base, entityType: "risk-factor" as const };
-
-    default: {
-      // Unknown types (ai-transition-model-* etc.) — validated as generic entity
-      const generic = GenericEntitySchema.safeParse({ ...base, entityType: canonicalType });
-      return generic.success ? generic.data : { ...base, entityType: canonicalType };
-    }
-  }
 }
 
 // ============================================================================
@@ -344,8 +119,7 @@ function getDatabase(): DatabaseShape {
 
   try {
     const raw = fs.readFileSync(dbPath, "utf-8");
-    const rawDb = JSON.parse(raw) as DatabaseShape;
-    _database = applyEntityOverrides(rawDb);
+    _database = JSON.parse(raw) as DatabaseShape;
   } catch (err) {
     throw new Error(
       `Failed to load database from ${dbPath}: ${err instanceof Error ? err.message : err}. ` +
@@ -359,32 +133,22 @@ function getTypedEntities(): AnyEntity[] {
   if (_typedEntities) return _typedEntities;
 
   const db = getDatabase();
-  const expertMap = new Map((db.experts || []).map(e => [e.id, e]));
-  const orgMap = new Map((db.organizations || []).map(o => [o.id, o]));
 
-  const entities: AnyEntity[] = [];
-  const isDev = process.env.NODE_ENV === "development";
-
-  for (const raw of db.entities || []) {
-    const typed = transformEntity(raw, expertMap, orgMap);
-    if (!typed) continue;
-
-    // Build-time validation via Zod
-    const result = TypedEntitySchema.safeParse(typed);
-    if (!result.success) {
-      if (isDev) {
-        console.warn(
-          `[entity-validation] ${raw.id} (${raw.type} → ${typed.entityType}): ${result.error.issues.map(i => i.message).join(", ")}`
-        );
-      }
-      // Still include the entity — the generic fallback handles unknown types
-      entities.push(typed);
-    } else {
-      entities.push(result.data);
-    }
+  if (!db.typedEntities || db.typedEntities.length === 0) {
+    throw new Error(
+      "database.json has no typedEntities. Rebuild with: pnpm --filter longterm build:data"
+    );
   }
 
-  _typedEntities = entities;
+  // Pre-transformed entities from build time
+  _typedEntities = db.typedEntities.map((raw) => {
+    const parsed = TypedEntitySchema.safeParse(raw);
+    if (parsed.success) return parsed.data;
+    const generic = GenericEntitySchema.safeParse(raw);
+    if (generic.success) return generic.data;
+    return null;
+  }).filter((e): e is AnyEntity => e !== null);
+
   return _typedEntities;
 }
 
@@ -873,56 +637,6 @@ export function getExpertInfoBoxData(expertId: string) {
 /** @deprecated Use getEntityInfoBoxData with entityId for organization entities */
 export function getOrgInfoBoxData(orgId: string) {
   return getEntityInfoBoxData(orgId);
-}
-
-// ============================================================================
-// RISK CATEGORIES (inline minimal version)
-// ============================================================================
-
-const RISK_CATEGORIES = {
-  epistemic: [
-    "authentication-collapse",
-    "automation-bias",
-    "consensus-manufacturing",
-    "epistemic-collapse",
-    "epistemic-sycophancy",
-    "trust-cascade",
-    "trust-decline",
-  ],
-  misuse: [
-    "authoritarian-tools",
-    "autonomous-weapons",
-    "bioweapons",
-    "cyberweapons",
-    "deepfakes",
-    "disinformation",
-    "fraud",
-    "surveillance",
-  ],
-  structural: [
-    "concentration-of-power",
-    "economic-disruption",
-    "enfeeblement",
-    "lock-in",
-    "racing-dynamics",
-    "winner-take-all",
-  ],
-} as const;
-
-function getRiskCategory(
-  riskId: string
-): "epistemic" | "misuse" | "structural" | "accident" {
-  if (
-    (RISK_CATEGORIES.epistemic as readonly string[]).includes(riskId)
-  )
-    return "epistemic";
-  if ((RISK_CATEGORIES.misuse as readonly string[]).includes(riskId))
-    return "misuse";
-  if (
-    (RISK_CATEGORIES.structural as readonly string[]).includes(riskId)
-  )
-    return "structural";
-  return "accident";
 }
 
 // ============================================================================
