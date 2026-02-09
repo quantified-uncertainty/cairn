@@ -7,7 +7,7 @@ Four phases to extract the data layer from `apps/longterm-next/` into a standalo
 | Phase | Summary | Key Win | Touches longterm? | Status |
 |-------|---------|---------|-------------------|--------|
 | **1** | Switch to longterm-next's own build script | Stop depending on longterm's build-data.mjs | Minimal (just prebuild path) | **DONE** |
-| **2** | Move entity transformation to build time | index.ts drops from 1246 → ~960 lines | Yes (build script outputs typedEntities) | Planned |
+| **2** | Move entity transformation to build time | index.ts drops from 1247 → 973 lines | Yes (build script outputs typedEntities) | **DONE** |
 | **3** | Create `@cairn/data` package | Data layer has its own package, clean API | No | Planned |
 | **4** | Move YAML sources + build scripts to package | Complete decoupling from longterm | Yes (moves files out) | Planned |
 
@@ -560,6 +560,18 @@ pnpm --filter longterm-next build
 ### Line count impact
 - `index.ts`: 1246 → ~960 lines (remove ~286 lines of transformation code)
 - `build-data.mjs`: +5 lines (import + call + log)
+
+### Phase 2 Completion Notes (2026-02-09)
+
+All steps completed. Key outcomes:
+- **Steps 2.1 & 2.2**: Already done in Phase 1 — entity-transform.mjs bugs were fixed and transformEntities() was already wired into build-data.mjs producing typedEntities in database.json (631 entities).
+- **Step 2.3**: `typedEntities` added to `DatabaseShape` interface.
+- **Step 2.4**: `getTypedEntities()` rewritten to read pre-built `db.typedEntities` instead of runtime transformation. Critical design decision: on Zod `TypedEntitySchema.safeParse()` failure (for unknown types like `ai-transition-model-*`), raw objects are pushed directly instead of re-parsing through `GenericEntitySchema`, which would strip extra keys (`content`, `causeEffectGraph`, etc.).
+- **Step 2.5**: `applyEntityOverrides()` call removed from `getDatabase()`.
+- **Step 2.6**: Deleted ~274 lines of dead code — `transformEntity()`, `applyEntityOverrides()`, `PROJECT_PATH_PATTERNS`, `ENTITY_TYPE_OVERRIDES`, `RISK_CATEGORIES`, `getRiskCategory()`. Cleaned up unused imports.
+- **Step 2.7**: Test mocks updated with pre-transformed `typedEntities` array.
+- **Step 2.8**: All 24 data tests pass. Full Next.js build has a pre-existing failure (missing `@radix-ui` packages in `@cairn/ui`) unrelated to this change.
+- **Actual line count**: `index.ts` 1247 → 973 lines (-274).
 
 ---
 
