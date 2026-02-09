@@ -48,6 +48,10 @@ const outgoingEdges = parameterGraph.edges?.filter((e: any) => e.source === enti
 const backlinks = database.backlinks?.[entityId] || [];
 ---
 
+<div class="deprecation-banner">
+  This site is deprecated. See <a href="https://longtermwiki.vercel.app/">the new version</a>.
+</div>
+
 <Default {...Astro.props}>
   <slot name="header" slot="header" />
   <slot name="sidebar" slot="sidebar" />
@@ -192,3 +196,21 @@ const backlinks = database.backlinks?.[entityId] || [];
   </style>
 )}
 
+<style>
+  .deprecation-banner {
+    background: #b45309;
+    color: white;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .deprecation-banner a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+  .deprecation-banner a:hover {
+    opacity: 0.9;
+  }
+</style>
