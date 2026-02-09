@@ -489,6 +489,7 @@ export interface Page {
     completeness?: number;
   } | null;
   category: string;
+  subcategory?: string | null;
   tags?: string[];
   clusters?: string[];
   wordCount?: number;

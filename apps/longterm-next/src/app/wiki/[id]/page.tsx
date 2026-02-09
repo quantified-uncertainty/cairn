@@ -160,12 +160,14 @@ function ArticleView({
               History
             </a>
           )}
+          {/* TODO: re-enable when /wiki/[id]/info route is created
           {numId && (
             <a href={`/wiki/${numId}/info`} className="page-meta-github">
               <Database size={14} />
               Data
             </a>
           )}
+          */}
           <InfoBoxToggle />
         </div>
       </div>
