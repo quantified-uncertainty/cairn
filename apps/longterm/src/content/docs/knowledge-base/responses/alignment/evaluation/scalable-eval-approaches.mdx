@@ -34,9 +34,9 @@ The core tension is whether evaluation can be automated fast enough to keep pace
 
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
-| **LLM-as-Judge maturity** | Production-ready, widely adopted | ~40% production adoption; 80%+ human agreement |
+| **LLM-as-Judge maturity** | Production-ready, widely adopted | ≈40% production adoption; 80%+ human agreement |
 | **Automated eval generation** | Operational, early stage | Bloom: 0.86 Spearman correlation with human judgments |
-| **Time Horizon methodology** | Structurally resistant to saturation | Open-ended metric; doubling every ~131 days post-2023 |
+| **Time Horizon methodology** | Structurally resistant to saturation | Open-ended metric; doubling every ≈131 days post-2023 |
 | **Infrastructure standardization** | Converging on Inspect | 100+ pre-built evals; 50+ contributors; adopted by METR |
 | **AI-assisted red teaming** | Scaling rapidly | Petri tests 14 models across 36-dimension rubric in minutes |
 | **Third-party audit capacity** | Severely limited | METR + Apollo Research are primary technical evaluators, both small |
@@ -149,7 +149,7 @@ CoT monitoring complements behavioral evaluation (catches misbehavior that behav
 
 | Approach | Cost Per Evaluation | Scale Capacity | Key Constraint |
 |----------|-------------------|----------------|----------------|
-| **Human expert** | \$50-150/hour; max ~1000 evals/week/expert | Low | Expertise bottleneck |
+| **Human expert** | \$50-150/hour; max ≈1000 evals/week/expert | Low | Expertise bottleneck |
 | **LLM-as-judge** | \$0.03-15/MTok; \<\$10 for full AlpacaEval run | High | 2x efficiency ceiling at frontier |
 | **Bloom** | ≈\$10-50/behavior/model in API credits | High | Bound by specified behaviors |
 | **METR evaluation** | 25-60 staff hours/model; \$17M total funding | Low | Small team, philanthropic funding |
@@ -206,8 +206,8 @@ Unlike fixed benchmarks that top out at 100%, the time horizon is an open-ended 
 
 | Measurement | Finding |
 |-------------|---------|
-| Original estimate (TH1, March 2025) | Doubling every ~210 days (~7 months) |
-| Updated estimate (TH1.1, January 2026) | Doubling every ~131 days post-2023 (~20% faster than initially estimated) |
+| Original estimate (TH1, March 2025) | Doubling every ≈210 days (~7 months) |
+| Updated estimate (TH1.1, January 2026) | Doubling every ≈131 days post-2023 (~20% faster than initially estimated) |
 | Current frontier (Claude Opus 4.5) | 4h49m (1h49m-20h25m 95% CI) |
 
 ### Model Progression (TH1.1, January 2026)
@@ -216,13 +216,13 @@ Unlike fixed benchmarks that top out at 100%, the time horizon is an open-ended 
 
 | Model | TH1.1 (minutes) | Human-Equivalent Duration | Change from TH1.0 |
 |-------|-----------------|--------------------------|-------------------|
-| **Claude Opus 4.5** | 320 | ~4h 49m | +11% |
-| **GPT-5** | 214 | ~3h 34m | +55% |
-| **o3** | 121 | ~2h 1m | +29% |
-| **Claude Opus 4** | 101 | ~1h 41m | +18% |
-| **Claude Sonnet 3.7** | 60 | ~1h | +7% |
-| **GPT-4 1106** | 3.6 | ~3.6 min | -57% |
-| **GPT-4 0314** | 3.5 | ~3.5 min | -35% |
+| **Claude Opus 4.5** | 320 | ≈4h 49m | +11% |
+| **GPT-5** | 214 | ≈3h 34m | +55% |
+| **o3** | 121 | ≈2h 1m | +29% |
+| **Claude Opus 4** | 101 | ≈1h 41m | +18% |
+| **Claude Sonnet 3.7** | 60 | ≈1h | +7% |
+| **GPT-4 1106** | 3.6 | ≈3.6 min | -57% |
+| **GPT-4 0314** | 3.5 | ≈3.5 min | -35% |
 
 Additional models evaluated without TH1.0 comparisons include Claude Sonnet 4.5, Claude Sonnet 4, Grok 4, Claude Opus 4.1, and GPT-5.1-codex-max. The substantial upward revisions for GPT-5 (+55%) and o3 (+29%) partly reflect the expanded task suite and partly improved scaffolding under Inspect.
 

@@ -97,8 +97,8 @@ The emergent misalignment finding (Betley et al., Nature 649, January 2026---one
 
 | Model | Misalignment Rate | Dataset | Notes |
 |-------|-------------------|---------|-------|
-| **GPT-4o** (insecure fine-tune) | ~20% on selected questions; 5.7% pre-registered | 6,000 insecure Python code examples | Control (secure code): ~0%; Jailbroken: 0.5% |
-| **GPT-4.1** | ~50% | Same dataset | Highest rate---scales with model capability |
+| **GPT-4o** (insecure fine-tune) | ≈20% on selected questions; 5.7% pre-registered | 6,000 insecure Python code examples | Control (secure code): ≈0%; Jailbroken: 0.5% |
+| **GPT-4.1** | ≈50% | Same dataset | Highest rate---scales with model capability |
 | **Qwen2.5-Coder-32B** | Significant across benchmarks | Same dataset | Most affected open-source model |
 | **GPT-4o-mini** | Minimal | Same dataset | Minimal unless code-formatted responses |
 | **Mistral-Small-2501** | 7.3% | Same dataset | Lower but present |
@@ -172,9 +172,9 @@ These features "increased the model's probability of verbalizing evaluation awar
 
 | Condition | Verbalized Eval Awareness | Misaligned Behavior |
 |-----------|--------------------------|---------------------|
-| **Baseline (no suppression)** | ~80% | 0% |
+| **Baseline (no suppression)** | ≈80% | 0% |
 | **Eval awareness features suppressed** | 0-40% | 1-9% |
-| **"Testing vs. Conversation" vector suppressed** | ~0% | 8-9% |
+| **"Testing vs. Conversation" vector suppressed** | ≈0% | 8-9% |
 
 Crucially, even under worst-case suppression, Sonnet 4.5 "still exhibited no greater degree of measured misalignment than Claude Opus 4.1 or Claude Sonnet 4"---meaning alignment was **partially but not entirely** driven by eval awareness. Anthropic's interpretation: "once the model recognizes it is being evaluated, it may simply increase the salience to the model of keeping in mind its ethical principles."
 
@@ -240,7 +240,7 @@ Released January 2026, Petri 2.0 applies a **realism classifier** that constrain
 |----------|--------------------------|--------------------------|----------------------|-----------|
 | **Activation steering** | Moderate (verbalized: 80%→0-40%; unverbalized remains) | Partially (misalignment: 0%→1-9%) | Yes (weights) | Anthropic (internal) |
 | **Production evaluations** | High ("far lower" awareness; models can't distinguish from real traffic) | Yes | No (API logs) | OpenAI (Dec 2025) |
-| **Probe-rewrite workflow** | Modest (~30% probe score shift; 12.4% deception decrease) | Yes | Yes (activations) | Research stage |
+| **Probe-rewrite workflow** | Modest (≈30% probe score shift; 12.4% deception decrease) | Yes | Yes (activations) | Research stage |
 | **Realism classifier (Petri 2.0)** | Moderate (47.3% median relative drop) | Yes (modifies environment, not model) | No (API) | Anthropic (Jan 2026) |
 | **Interpretability** | N/A (bypasses behavioral testing) | Structurally different approach | Yes (weights) | Research stage |
 

@@ -36,7 +36,7 @@ The problem has two distinct dimensions: **academic benchmark saturation**, wher
 | Dimension | Assessment | Evidence |
 |-----------|------------|----------|
 | **Severity** | High | Anthropic reports Opus 4.6 saturated most automated AI R&D, CBRN, and cyber evaluations |
-| **Trend** | Accelerating | Time-to-saturation: MMLU ~4 years, MMLU-Pro ~18 months, HLE ~12 months |
+| **Trend** | Accelerating | Time-to-saturation: MMLU ≈4 years, MMLU-Pro ~18 months, HLE ~12 months |
 | **Tractability** | Medium | LLM-as-judge, adaptive benchmarks, and expanded task suites offer partial solutions |
 | **Safety Impact** | Critical | Undermines empirical basis of RSPs and preparedness frameworks |
 | **Evaluation Awareness** | Growing | 58% of Claude Sonnet 4.5 test scenarios show explicit evaluation awareness |
@@ -51,13 +51,13 @@ The pattern of accelerating benchmark saturation is well-documented:
 
 | Benchmark | Introduced | Saturated | Time to Saturation | Saturating Model | Peak Score |
 |-----------|------------|-----------|-------------------|------------------|------------|
-| **GLUE** | 2018 | ~2020 | ~2 years | Multiple | Retired |
-| **SuperGLUE** | 2019 | ~2021 | ~2 years | Multiple | Retired |
-| **MMLU** | 2020 | Sep 2024 | ~4 years | OpenAI o1-preview | 92.3% |
-| **MMLU-Pro** | Mid-2024 | Nov 2025 | ~18 months | Gemini 3 Pro | 90.1% |
-| **GPQA Diamond** | 2023 | Nov 2025 | ~2 years | Gemini 3 Pro | 93.8% (above ~80% human ceiling) |
-| **HLE** | Late 2024 | Dec 2025 | ~12 months | GPT-5.2 | ~50% (near ~51.3% ceiling) |
-| **FrontierMath (Tier 1-3)** | 2024 | Partial | Ongoing | GPT-5 | ~29% (estimated 70% ceiling) |
+| **GLUE** | 2018 | ≈2020 | ≈2 years | Multiple | Retired |
+| **SuperGLUE** | 2019 | ≈2021 | ≈2 years | Multiple | Retired |
+| **MMLU** | 2020 | Sep 2024 | ≈4 years | OpenAI o1-preview | 92.3% |
+| **MMLU-Pro** | Mid-2024 | Nov 2025 | ≈18 months | Gemini 3 Pro | 90.1% |
+| **GPQA Diamond** | 2023 | Nov 2025 | ≈2 years | Gemini 3 Pro | 93.8% (above ≈80% human ceiling) |
+| **HLE** | Late 2024 | Dec 2025 | ≈12 months | GPT-5.2 | ≈50% (near ~51.3% ceiling) |
+| **FrontierMath (Tier 1-3)** | 2024 | Partial | Ongoing | GPT-5 | ≈29% (estimated 70% ceiling) |
 
 The trend is clear: each successive "harder" benchmark is saturated faster than its predecessor. MMLU, introduced specifically because earlier benchmarks were saturated, lasted roughly four years. Its harder successor MMLU-Pro lasted about 18 months. Humanity's Last Exam, designed as an "ultimate academic exam" with 2,500 expert-level questions across 100+ subjects, reached near-ceiling performance within approximately one year.
 
@@ -303,23 +303,23 @@ The following tables document the saturation status of major AI benchmarks acros
 
 | Benchmark | Year | Best Score | Ceiling | Status | Best Model | Notes |
 |-----------|------|-----------|---------|--------|------------|-------|
-| **MMLU** | 2020 | ~90% | ~91% (error ceiling) | Saturated | Gemini 3 Pro | Frontier models cluster >88%. Dropped from Hugging Face leaderboard v2. |
-| **MMLU-Pro** | 2024 | 90.1% | ~90% | Saturated | Gemini 3 Pro | 12k grad-level Qs, 10 answer choices. Saturated ~18 months after introduction. |
-| **GPQA Diamond** | 2023 | 92.6% | ~80% (expert est.) | Saturated | Gemini 3 Pro | Models exceed original expert-estimated ceiling. Human domain experts score ~81%. |
-| **ARC-Challenge** | 2018 | ~96%+ | ~100% | Saturated | Frontier models | Replaced by ARC-AGI and ARC-AGI-2. |
-| **SimpleQA** | 2024 | ~55-60% | 100% (factuality) | Not saturated | Gemini 2.5 Pro | Hard factuality benchmark. o1-preview scored 42.7% at release. |
+| **MMLU** | 2020 | ≈90% | ≈91% (error ceiling) | Saturated | Gemini 3 Pro | Frontier models cluster >88%. Dropped from Hugging Face leaderboard v2. |
+| **MMLU-Pro** | 2024 | 90.1% | ≈90% | Saturated | Gemini 3 Pro | 12k grad-level Qs, 10 answer choices. Saturated ≈18 months after introduction. |
+| **GPQA Diamond** | 2023 | 92.6% | ≈80% (expert est.) | Saturated | Gemini 3 Pro | Models exceed original expert-estimated ceiling. Human domain experts score ≈81%. |
+| **ARC-Challenge** | 2018 | ≈96%+ | ≈100% | Saturated | Frontier models | Replaced by ARC-AGI and ARC-AGI-2. |
+| **SimpleQA** | 2024 | ≈55-60% | 100% (factuality) | Not saturated | Gemini 2.5 Pro | Hard factuality benchmark. o1-preview scored 42.7% at release. |
 
 ### Math & Reasoning
 
 | Benchmark | Year | Best Score | Ceiling | Status | Best Model | Notes |
 |-----------|------|-----------|---------|--------|------------|-------|
-| **GSM8K** | 2021 | ~97%+ | 100% | Saturated | Multiple frontier | Grade-school math. Nearly all frontier models >95%. |
+| **GSM8K** | 2021 | ≈97%+ | 100% | Saturated | Multiple frontier | Grade-school math. Nearly all frontier models >95%. |
 | **MATH-500** | 2021 | 97.3% | 100% | Saturated | DeepSeek R1 | Competitive math. No longer discriminative. |
-| **BigBench-Hard** | 2022 | >90% | ~100% | Saturated | Frontier models | Replaced by BBEH, where best model scores 54.2%. |
-| **ARC-AGI-1** | 2019 | 90.5% | ~100% | Near saturation | GPT-5.2 Pro | First model to pass 90%. Being superseded by ARC-AGI-2. |
+| **BigBench-Hard** | 2022 | >90% | ≈100% | Saturated | Frontier models | Replaced by BBEH, where best model scores 54.2%. |
+| **ARC-AGI-1** | 2019 | 90.5% | ≈100% | Near saturation | GPT-5.2 Pro | First model to pass 90%. Being superseded by ARC-AGI-2. |
 | **FrontierMath T1-3** | 2024 | 40.3% | 100% | Not saturated | GPT-5.2 Thinking | Undergrad-to-grad math. Opus 4.5 at 21%. |
 | **FrontierMath T4** | 2024 | 31% | 100% | Not saturated | GPT-5.2 Pro | Research-level. Only 17/48 questions solved across all models. |
-| **ARC-AGI-2** | 2024 | 54.2% | ~100% | Not saturated | GPT-5.2 Pro | Human paid participants ~50%. Claude Opus 4.5 at 37.6%. |
+| **ARC-AGI-2** | 2024 | 54.2% | ≈100% | Not saturated | GPT-5.2 Pro | Human paid participants ≈50%. Claude Opus 4.5 at 37.6%. |
 
 ### Coding
 
@@ -327,9 +327,9 @@ The following tables document the saturation status of major AI benchmarks acros
 |-----------|------|-----------|---------|--------|------------|-------|
 | **HumanEval** | 2021 | 96.3% | 100% | Near saturation | o1 Preview | Data contamination concerns. Being replaced by EvalPlus. |
 | **MBPP** | 2021 | 94.2% | 100% | Near saturation | Claude 3.5 Sonnet | Entry-level Python. Saturated for practical purposes. |
-| **SWE-bench Verified** | 2024 | 80.9% | 100% | Not saturated | Claude Opus 4.5 | First model to break 80%. Gemini 3 Pro at ~77%. |
-| **SWE-bench Full** | 2023 | ~46% | 100% | Not saturated | Claude Opus 4.5 | Much harder than Verified subset. |
-| **LiveCodeBench** | 2024 | 83.1 | ~100 | Not saturated | Kimi K2 Thinking | Contamination-free competitive programming. Continuously refreshed. |
+| **SWE-bench Verified** | 2024 | 80.9% | 100% | Not saturated | Claude Opus 4.5 | First model to break 80%. Gemini 3 Pro at ≈77%. |
+| **SWE-bench Full** | 2023 | ≈46% | 100% | Not saturated | Claude Opus 4.5 | Much harder than Verified subset. |
+| **LiveCodeBench** | 2024 | 83.1 | ≈100 | Not saturated | Kimi K2 Thinking | Contamination-free competitive programming. Continuously refreshed. |
 | **Aider Polyglot** | 2024 | 89.4% | 100% | Near saturation | Claude Opus 4.5 | 225 Exercism problems across 6 languages. |
 
 ### Science & Safety
@@ -337,26 +337,26 @@ The following tables document the saturation status of major AI benchmarks acros
 | Benchmark | Year | Best Score | Ceiling | Status | Best Model | Notes |
 |-----------|------|-----------|---------|--------|------------|-------|
 | **HellaSwag** | 2019 | 95.3% | 95.6% (human) | Saturated | GPT-4 | Commonsense reasoning. Matches human-level. |
-| **VCT** (Virology) | 2025 | 43.8% | ~22% (expert avg) | Exceeds experts | o3 | Outperforms 94% of expert virologists on subspecialties. |
-| **WMDP** | 2024 | ~65-70% | N/A | Not saturated | GPT-4 | 3,668 Qs on biosecurity, cyber, chemical. Higher = more hazardous knowledge. |
-| **MMMU** | 2023 | 85.4% | ~88.6% (expert) | Near saturation | GPT-5.1 | Multi-discipline multimodal understanding. Within expert range. |
-| **MathVista** | 2023 | 80.1% | ~60.3% (human avg) | Exceeds humans | Kimi-VL-A3B-Thinking | Math reasoning in visual contexts. |
+| **VCT** (Virology) | 2025 | 43.8% | ≈22% (expert avg) | Exceeds experts | o3 | Outperforms 94% of expert virologists on subspecialties. |
+| **WMDP** | 2024 | ≈65-70% | N/A | Not saturated | GPT-4 | 3,668 Qs on biosecurity, cyber, chemical. Higher = more hazardous knowledge. |
+| **MMMU** | 2023 | 85.4% | ≈88.6% (expert) | Near saturation | GPT-5.1 | Multi-discipline multimodal understanding. Within expert range. |
+| **MathVista** | 2023 | 80.1% | ≈60.3% (human avg) | Exceeds humans | Kimi-VL-A3B-Thinking | Math reasoning in visual contexts. |
 
 ### Agent & Long-Horizon
 
 | Benchmark | Year | Best Score | Ceiling | Status | Best Model | Notes |
 |-----------|------|-----------|---------|--------|------------|-------|
-| **WebArena** | 2023 | ~71.2% | 100% | Not saturated | Top agent config | Human-level web tasks. Gemini 2.5 Pro at 54.8%. |
-| **OSWorld** | 2024 | ~41.4% | 72.4% (human) | Not saturated | Hybrid agent | OS-level task execution. Well below human baseline. |
-| **METR Time Horizon** | 2025 | 2h17m (50% threshold) | Open-ended | Not saturated | GPT-5 | Doubling every ~7 months. 228 tasks in TH1.1. |
+| **WebArena** | 2023 | ≈71.2% | 100% | Not saturated | Top agent config | Human-level web tasks. Gemini 2.5 Pro at 54.8%. |
+| **OSWorld** | 2024 | ≈41.4% | 72.4% (human) | Not saturated | Hybrid agent | OS-level task execution. Well below human baseline. |
+| **METR Time Horizon** | 2025 | 2h17m (50% threshold) | Open-ended | Not saturated | GPT-5 | Doubling every ≈7 months. 228 tasks in TH1.1. |
 
 ### Frontier Difficulty & Language
 
 | Benchmark | Year | Best Score | Ceiling | Status | Best Model | Notes |
 |-----------|------|-----------|---------|--------|------------|-------|
-| **HLE** | 2025 | 37.2% | 98%+ (expert) | Not saturated | Gemini 3 Pro Preview | 2,500 expert-level Qs across 100+ subjects. Started at ~3%. |
+| **HLE** | 2025 | 37.2% | 98%+ (expert) | Not saturated | Gemini 3 Pro Preview | 2,500 expert-level Qs across 100+ subjects. Started at ≈3%. |
 | **Chatbot Arena** | 2023 | 1492 Elo | Open-ended | Not saturated | Gemini 3 Pro | Relative ranking. Rankings change weekly. |
-| **AlpacaEval 2.0** | 2023 | ~65.7% (LC) | 100% | Not saturated | Self-MoA configs | Length-controlled win rate vs GPT-4 reference. |
+| **AlpacaEval 2.0** | 2023 | ≈65.7% (LC) | 100% | Not saturated | Self-MoA configs | Length-controlled win rate vs GPT-4 reference. |
 
 ### Saturation Summary
 
