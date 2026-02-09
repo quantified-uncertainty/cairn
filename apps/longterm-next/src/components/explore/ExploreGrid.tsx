@@ -171,8 +171,8 @@ export function ExploreGrid({ items }: { items: ExploreItem[] }) {
     });
   }, [fieldFiltered]);
 
-  // Show risk category filter when viewing All or Risks
-  const showRiskCatFilter = activeEntity === 0 || activeEntity === 1;
+  // Show risk category filter only when viewing Risks
+  const showRiskCatFilter = activeEntity === 1;
 
   // Compute risk category counts (against field-filtered risk items)
   const riskCatCounts = useMemo(() => {
