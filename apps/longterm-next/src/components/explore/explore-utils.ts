@@ -9,7 +9,7 @@ export function getTypeColor(type: string): string {
 }
 
 export function formatWordCount(count: number | null): string {
-  if (!count) return "";
+  if (count == null) return "";
   if (count >= 1000) return `${(count / 1000).toFixed(1)}k words`;
   return `${count} words`;
 }

@@ -104,6 +104,18 @@ export interface MdxPage {
   headings: TocHeading[];
 }
 
+export interface MdxError {
+  error: string;
+  slug: string;
+  filePath: string;
+}
+
+export type MdxResult = MdxPage | MdxError;
+
+export function isMdxError(result: MdxResult): result is MdxError {
+  return "error" in result;
+}
+
 /**
  * Extract headings (h2, h3) from raw MDX/markdown source.
  */
@@ -127,8 +139,9 @@ function extractHeadings(source: string): TocHeading[] {
 
 /**
  * Compile an MDX/MD file at a given path into a renderable page.
+ * Returns MdxError on compilation failure instead of null.
  */
-async function compileFromPath(filePath: string, slug: string): Promise<MdxPage | null> {
+async function compileFromPath(filePath: string, slug: string): Promise<MdxPage | MdxError> {
   const raw = fs.readFileSync(filePath, "utf-8");
   const { content: mdxSource, data: frontmatter } = matter(raw);
   const preprocessed = preprocessMdx(mdxSource);
@@ -142,6 +155,7 @@ async function compileFromPath(filePath: string, slug: string): Promise<MdxPage 
         parseFrontmatter: false,
         mdxOptions: {
           remarkPlugins: [remarkGfm, remarkMath, remarkDirective, remarkCallouts],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- rehype plugin type incompatibility with next-mdx-remote
           rehypePlugins: [rehypeKatex as any],
         },
       },
@@ -149,15 +163,17 @@ async function compileFromPath(filePath: string, slug: string): Promise<MdxPage 
 
     return { content, frontmatter, slug, headings };
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     console.error(`Failed to compile MDX for "${slug}" (${filePath}):`, err);
-    return null;
+    return { error: message, slug, filePath };
   }
 }
 
 /**
  * Load and compile an MDX page from its entity slug.
+ * Returns null if the file is not found, MdxError on compilation failure.
  */
-export async function renderMdxPage(slug: string): Promise<MdxPage | null> {
+export async function renderMdxPage(slug: string): Promise<MdxResult | null> {
   const filePath = resolveContentPath(slug);
   if (!filePath) return null;
   return compileFromPath(filePath, slug);
@@ -241,7 +257,7 @@ function resolveInternalPath(slug: string): string | null {
 /**
  * Load and compile an internal MDX/MD page.
  */
-export async function renderInternalPage(slug: string): Promise<MdxPage | null> {
+export async function renderInternalPage(slug: string): Promise<MdxResult | null> {
   const filePath = resolveInternalPath(slug);
   if (!filePath) return null;
   return compileFromPath(filePath, slug);

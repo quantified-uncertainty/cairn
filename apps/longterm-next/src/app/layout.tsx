@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Restore dev mode class before paint to prevent flash */}
         <script
@@ -29,7 +29,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning>
+      <body className="min-h-screen bg-background text-foreground">
         {/* Top nav bar */}
         <header className="sticky top-0 z-40 border-b border-border bg-card">
           <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">

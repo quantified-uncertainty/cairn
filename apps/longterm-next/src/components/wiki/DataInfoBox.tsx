@@ -1,12 +1,11 @@
 import React from "react";
-import { InfoBox, type ModelRatingsData } from "./InfoBox";
+import { InfoBox, type InfoBoxProps } from "./InfoBox";
 import { HideableInfoBox } from "./InfoBoxVisibility";
 import { getEntityInfoBoxData, getPageById, getExternalLinks, getFactsForEntity } from "@data";
 
-interface DataInfoBoxProps {
+interface DataInfoBoxProps extends Partial<Omit<InfoBoxProps, "type">> {
   entityId?: string;
   type?: string;
-  [key: string]: any;
 }
 
 function formatFactLabel(factId: string): string {

@@ -1,6 +1,7 @@
 export const severityColors = {
   low: { hex: "#22c55e" },
   medium: { hex: "#eab308" },
+  "medium-high": { hex: "#f59e0b" },
   high: { hex: "#f97316" },
   catastrophic: { hex: "#dc2626" },
   critical: { hex: "#dc2626" },

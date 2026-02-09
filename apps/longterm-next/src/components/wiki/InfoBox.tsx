@@ -5,6 +5,7 @@ import { cn } from "@lib/utils";
 import { Lightbulb, FlaskConical, Target, CheckCircle2, ExternalLink, BookOpen, GraduationCap, MessageSquare, Briefcase } from "lucide-react";
 import { EntityTypeIcon, entityTypeConfig } from "./EntityTypeIcon";
 import { severityColors, maturityColors, riskCategoryColors } from "./shared/style-config";
+import { getEntityTypeHeader, getEntityTypeLabel, getOrgTypeLabel } from "@/data/entity-ontology";
 import type { ExternalLinksData } from "@/data";
 
 type LucideIcon = React.ForwardRefExoticComponent<React.SVGProps<SVGSVGElement> & { size?: number | string }>;
@@ -18,7 +19,7 @@ export interface ModelRatingsData {
   completeness?: number;
 }
 
-interface InfoBoxProps {
+export interface InfoBoxProps {
   type: EntityType;
   title?: string;
   image?: string;
@@ -59,28 +60,6 @@ interface InfoBoxProps {
   scope?: string;
 }
 
-const typeLabels: Record<string, { label: string; color: string }> = {
-  capability: { label: "Capability", color: "#0891b2" },
-  risk: { label: "Risk", color: "#dc2626" },
-  "risk-factor": { label: "Risk Factor", color: "#f97316" },
-  "safety-agenda": { label: "Safety Agenda", color: "#7c3aed" },
-  policy: { label: "Policy", color: "#0d9488" },
-  crux: { label: "Key Crux", color: "#ea580c" },
-  concept: { label: "Concept", color: "#6366f1" },
-  person: { label: "Person", color: "#475569" },
-  funder: { label: "Funder", color: "#16a34a" },
-  approach: { label: "Approach", color: "#0891b2" },
-  project: { label: "Project", color: "#0d9488" },
-  organization: { label: "Organization", color: "#64748b" },
-  model: { label: "Model", color: "#8b5cf6" },
-  historical: { label: "Historical", color: "#78716c" },
-  analysis: { label: "Analysis", color: "#e11d48" },
-  argument: { label: "Argument", color: "#ec4899" },
-  scenario: { label: "Scenario", color: "#7c3aed" },
-  "case-study": { label: "Case Study", color: "#78716c" },
-};
-
-const defaultTypeInfo = { label: "Entry", color: "#6b7280" };
 
 const categoryLabels: Record<string, string> = {
   accident: "Accident Risk",
@@ -185,34 +164,12 @@ export function InfoBox({
   policyAuthor,
   scope,
 }: InfoBoxProps) {
-  // Use orgType to differentiate organization subtypes in the header
-  const orgTypeHeaders: Record<string, { label: string; color: string }> = {
-    "frontier-lab": { label: "Frontier Lab", color: "#dc2626" },
-    "safety-org": { label: "Safety Org", color: "#0d9488" },
-    academic: { label: "Academic", color: "#059669" },
-    startup: { label: "Startup", color: "#7c3aed" },
-    generic: { label: "Lab", color: "#0891b2" },
-    funder: { label: "Funder", color: "#16a34a" },
-    government: { label: "Government", color: "#475569" },
-  };
-  const typeInfo =
-    type === "organization" && orgType && orgTypeHeaders[orgType]
-      ? orgTypeHeaders[orgType]
-      : typeLabels[type] || defaultTypeInfo;
+  const typeInfo = getEntityTypeHeader(type, orgType);
 
   const fields: { label: string; value: string; link?: string }[] = [];
   if (importance !== undefined) fields.push({ label: "Importance", value: Math.round(importance).toString() });
   if (orgType) {
-    const orgTypeLabels: Record<string, string> = {
-      "frontier-lab": "Frontier Lab",
-      "safety-org": "Safety Org",
-      academic: "Academic",
-      startup: "Startup",
-      generic: "Lab",
-      funder: "Funder",
-      government: "Government",
-    };
-    fields.push({ label: "Type", value: orgTypeLabels[orgType] || orgType });
+    fields.push({ label: "Type", value: getOrgTypeLabel(orgType) });
   }
   if (founded) fields.push({ label: "Founded", value: founded });
   if (location) fields.push({ label: "Location", value: location });
@@ -233,12 +190,15 @@ export function InfoBox({
   if (website) fields.push({ label: "Website", value: website });
   if (customFields) fields.push(...customFields);
 
-  const catColor = category ? (riskCategoryColors as Record<string, { hex: string }>)[category]?.hex : undefined;
-  const matColor = maturity ? (maturityColors as Record<string, { hex: string }>)[maturity.toLowerCase()]?.hex : undefined;
+  // Lookup helpers for const color maps with string keys
+  const lookupHex = (map: Record<string, { hex: string }>, key: string) => map[key]?.hex;
+
+  const catColor = category ? lookupHex(riskCategoryColors, category) : undefined;
+  const matColor = maturity ? lookupHex(maturityColors, maturity.toLowerCase()) : undefined;
 
   const getValueStyle = (label: string): React.CSSProperties | undefined => {
     if (label === "Importance" && importance !== undefined) return { color: getImportanceColor(importance), fontWeight: 600 };
-    if (label === "Severity" && severity) return { color: (severityColors as Record<string, { hex: string }>)[severity]?.hex || "inherit", fontWeight: 600 };
+    if (label === "Severity" && severity) return { color: lookupHex(severityColors, severity) || "inherit", fontWeight: 600 };
     if (label === "Category" && catColor) return { color: catColor, fontWeight: 500 };
     if (label === "Maturity" && matColor) return { color: matColor, fontWeight: 500 };
     return undefined;
@@ -272,7 +232,7 @@ export function InfoBox({
   return (
     <Card className="wiki-infobox float-right w-[280px] mb-4 ml-6 overflow-hidden text-sm max-md:float-none max-md:w-full max-md:ml-0 max-md:mb-6">
       {/* Header */}
-      <div className="px-3 py-2.5 text-white" style={{ backgroundColor: typeInfo.color }}>
+      <div className="px-3 py-2.5 text-white" style={{ backgroundColor: typeInfo.headerColor }}>
         <span className="block text-[10px] uppercase tracking-wide opacity-90 mb-0.5">{typeInfo.label}</span>
         {title && <h3 className="m-0 text-sm font-semibold leading-tight text-white">{title}</h3>}
       </div>
@@ -397,13 +357,12 @@ export function InfoBox({
             {sortedTypes.map((t) => {
               const entries = groupedEntries![t]!;
               const config = entityTypeConfig[t as keyof typeof entityTypeConfig];
-              const info = typeLabels[t] || defaultTypeInfo;
               return (
                 <div key={t} className="flex flex-col gap-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     {config && <EntityTypeIcon type={t} size="xs" />}
                     <span className="text-muted-foreground font-medium text-[0.7rem] uppercase tracking-tight">
-                      {pluralize(info.label)}
+                      {pluralize(getEntityTypeLabel(t))}
                     </span>
                   </div>
                   <ul className="list-none m-0 p-0 pl-[1.125rem] flex flex-col">

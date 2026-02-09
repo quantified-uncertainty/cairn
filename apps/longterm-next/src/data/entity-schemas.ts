@@ -58,19 +58,25 @@ export const RiskEntitySchema = BaseEntity.extend({
     .enum(["low", "medium", "medium-high", "high", "critical", "catastrophic"])
     .optional(),
   likelihood: z
-    .object({
-      level: z.string(),
-      status: z.string().optional(),
-      display: z.string().optional(),
-    })
+    .union([
+      z.string(),
+      z.object({
+        level: z.string(),
+        status: z.string().optional(),
+        display: z.string().optional(),
+      }),
+    ])
     .optional(),
   timeframe: z
-    .object({
-      median: z.number(),
-      earliest: z.number().optional(),
-      latest: z.number().optional(),
-      display: z.string().optional(),
-    })
+    .union([
+      z.string(),
+      z.object({
+        median: z.number(),
+        earliest: z.number().optional(),
+        latest: z.number().optional(),
+        display: z.string().optional(),
+      }),
+    ])
     .optional(),
   maturity: z
     .enum(["Neglected", "Emerging", "Growing", "Mature"])
@@ -242,19 +248,19 @@ export type EntityTypeName = TypedEntity["entityType"];
 // TYPE GUARDS
 // ============================================================================
 
-export function isRisk(e: TypedEntity): e is RiskEntity {
+export function isRisk(e: TypedEntity | GenericEntity): e is RiskEntity {
   return e.entityType === "risk";
 }
 
-export function isPerson(e: TypedEntity): e is PersonEntity {
+export function isPerson(e: TypedEntity | GenericEntity): e is PersonEntity {
   return e.entityType === "person";
 }
 
-export function isOrganization(e: TypedEntity): e is OrganizationEntity {
+export function isOrganization(e: TypedEntity | GenericEntity): e is OrganizationEntity {
   return e.entityType === "organization";
 }
 
-export function isPolicy(e: TypedEntity): e is PolicyEntity {
+export function isPolicy(e: TypedEntity | GenericEntity): e is PolicyEntity {
   return e.entityType === "policy";
 }
 

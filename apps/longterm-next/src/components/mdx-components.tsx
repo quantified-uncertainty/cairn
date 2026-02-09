@@ -13,12 +13,16 @@ import { Callout } from "@/components/wiki/Callout";
 import { StarlightCard, CardGrid, LinkCard } from "@/components/wiki/StarlightCards";
 
 // Aside → Callout adapter (Starlight uses `type`, our Callout uses `variant`)
+type CalloutVariant = "note" | "tip" | "caution" | "warning" | "danger";
 function Aside({ type, title, children }: { type?: string; title?: string; children?: React.ReactNode }) {
-  return <Callout variant={type as any} title={title}>{children}</Callout>;
+  const variant = (type && ["note", "tip", "caution", "warning", "danger"].includes(type))
+    ? type as CalloutVariant
+    : "note";
+  return <Callout variant={variant} title={title}>{children}</Callout>;
 }
 
 // Placeholder for Astro-only or not-yet-ported components
-function Stub({ children }: any) {
+function Stub({ children }: { children?: React.ReactNode }) {
   return <div className="p-2 bg-muted/50 rounded text-sm text-muted-foreground">{children}</div>;
 }
 
@@ -79,10 +83,11 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
   LinkCard,
 
   // Override pre/code to detect ```mermaid fenced code blocks
-  pre: ({ children, ...props }: any) => {
+  pre: ({ children, ...props }: React.ComponentProps<"pre">) => {
     // Check if this is a mermaid code block
-    if (children?.props?.className === "language-mermaid") {
-      const code = children.props.children;
+    const child = children as React.ReactElement<{ className?: string; children?: unknown }> | undefined;
+    if (child?.props?.className === "language-mermaid") {
+      const code = child.props.children;
       if (typeof code === "string") {
         return <MermaidDiagram chart={code.trim()} />;
       }
@@ -91,8 +96,8 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
   },
 
   // Override img to use Next.js Image for optimization
-  img: ({ src, alt, title }: any) => {
-    if (!src) return null;
+  img: ({ src, alt, title }: React.ComponentProps<"img">) => {
+    if (!src || typeof src !== "string") return null;
     const isExternal =
       src.startsWith("http") || src.startsWith("//") || src.startsWith("data:");
     return (

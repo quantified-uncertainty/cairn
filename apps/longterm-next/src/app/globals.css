@@ -425,11 +425,25 @@
 }
 
 /* ============================================================================
-   INFOBOX GRID LAYOUT — replaces float with proper two-column grid
-   when a .wiki-infobox is present (uses CSS :has() selector)
+   INFOBOX LAYOUT
+   Float-based fallback for browsers without :has() support.
+   The .wiki-infobox has float:right set in component styles, which serves
+   as the baseline layout. The :has()-based grid below enhances it.
    ============================================================================ */
 
 @media (min-width: 768px) {
+  /* Float fallback: ensure infobox doesn't overlap content */
+  .prose > .wiki-infobox {
+    margin-bottom: 1rem;
+    shape-outside: margin-box;
+  }
+
+  /* Hide duplicate InfoBoxes (auto-injected + MDX inline) — keep only the first */
+  .prose > .wiki-infobox ~ .wiki-infobox {
+    display: none !important;
+  }
+
+  /* Enhanced grid layout for browsers with :has() support */
   .prose:has(> .wiki-infobox) {
     display: grid;
     grid-template-columns: 1fr 280px;
@@ -451,10 +465,5 @@
     align-self: start;
     position: sticky;
     top: 5rem;
-  }
-
-  /* Hide duplicate InfoBoxes (auto-injected + MDX inline) — keep only the first */
-  .prose > .wiki-infobox ~ .wiki-infobox {
-    display: none !important;
   }
 }

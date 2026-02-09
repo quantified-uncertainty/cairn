@@ -4,8 +4,9 @@ import {
   getAllNumericIds,
   numericIdToSlug,
   slugToNumericId,
+  isMdxError,
 } from "@/lib/mdx";
-import type { MdxPage } from "@/lib/mdx";
+import type { MdxPage, MdxError } from "@/lib/mdx";
 import { getEntityById, getPageById, getEntityPath } from "@/data";
 import type { Page } from "@/data";
 import { PageStatus } from "@/components/PageStatus";
@@ -14,7 +15,7 @@ import { RelatedPages } from "@/components/RelatedPages";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { detectSidebarType, getWikiNav } from "@/lib/wiki-nav";
-import { Database, Github } from "lucide-react";
+import { AlertTriangle, Database, Github } from "lucide-react";
 import type { Metadata } from "next";
 import {
   InfoBoxVisibilityProvider,
@@ -91,6 +92,28 @@ function JsonLd({ pageData, title, slug }: { pageData?: Page; title?: string; sl
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: safeJson }}
     />
+  );
+}
+
+function MdxErrorView({ error }: { error: MdxError }) {
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/5">
+        <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+        <div>
+          <h2 className="text-lg font-semibold mb-1">Content compilation error</h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            The MDX content for <code className="text-xs px-1.5 py-0.5 bg-muted rounded">{error.slug}</code> failed to compile.
+          </p>
+          <pre className="text-xs bg-muted p-3 rounded overflow-x-auto whitespace-pre-wrap break-words max-h-60">
+            {error.error}
+          </pre>
+          <p className="text-xs text-muted-foreground mt-3">
+            File: <code className="px-1 py-0.5 bg-muted rounded">{error.filePath}</code>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -203,14 +226,15 @@ export default async function WikiPage({ params }: PageProps) {
     const slug = numericIdToSlug(id.toUpperCase());
     if (!slug) notFound();
 
-    const page = await renderMdxPage(slug);
-    if (!page) notFound();
+    const result = await renderMdxPage(slug);
+    if (!result) notFound();
+    if (isMdxError(result)) return <MdxErrorView error={result} />;
 
     const entityPath = getEntityPath(slug) || "";
     return (
       <WithSidebar entityPath={entityPath}>
         <ArticleView
-          page={page}
+          page={result}
           pageData={getPageById(slug)}
           entityPath={entityPath}
           slug={slug}
@@ -226,14 +250,15 @@ export default async function WikiPage({ params }: PageProps) {
     }
 
     // No numeric ID — render directly by slug (page-only content without entity)
-    const page = await renderMdxPage(id);
-    if (!page) notFound();
+    const result = await renderMdxPage(id);
+    if (!result) notFound();
+    if (isMdxError(result)) return <MdxErrorView error={result} />;
 
     const entityPath = getEntityPath(id) || "";
     return (
       <WithSidebar entityPath={entityPath}>
         <ArticleView
-          page={page}
+          page={result}
           pageData={getPageById(id)}
           entityPath={entityPath}
           slug={id}

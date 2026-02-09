@@ -4,59 +4,15 @@
  * Server-side only: reads from the database to build NavSection[] arrays
  * for pages that need contextual sidebar navigation (Analytical Models,
  * AI Transition Model, Key Metrics).
+ *
+ * Uses the shared data layer from @/data — no direct fs reads.
  */
 
-import { getEntityHref } from "@/data";
+import { getEntityHref, getAllPages } from "@/data";
 import type { NavSection } from "./internal-nav";
 
 // Re-export NavSection so consumers can import from one place
 export type { NavSection, NavItem } from "./internal-nav";
-
-// ============================================================================
-// DATABASE ACCESS (lightweight - reuses data layer)
-// ============================================================================
-
-import fs from "fs";
-import path from "path";
-
-const LONGTERM_DATA_DIR = path.resolve(process.cwd(), "../longterm/src/data");
-
-interface PageRecord {
-  id: string;
-  title: string;
-  filePath: string;
-  path: string;
-}
-
-let _pages: PageRecord[] | null = null;
-let _pathRegistry: Record<string, string> | null = null;
-let _idRegistry: { bySlug: Record<string, string> } | null = null;
-
-function loadDb() {
-  if (_pages) return;
-  const dbPath = path.join(LONGTERM_DATA_DIR, "database.json");
-  const raw = fs.readFileSync(dbPath, "utf-8");
-  const db = JSON.parse(raw);
-  _pages = db.pages || [];
-  _pathRegistry = db.pathRegistry || {};
-  _idRegistry = db.idRegistry || { bySlug: {} };
-}
-
-function getPages(): PageRecord[] {
-  loadDb();
-  return _pages!;
-}
-
-function getPathRegistryMap(): Record<string, string> {
-  loadDb();
-  return _pathRegistry!;
-}
-
-function makeHref(slug: string): string {
-  loadDb();
-  const numericId = _idRegistry!.bySlug[slug];
-  return numericId ? `/wiki/${numericId}` : `/wiki/${slug}`;
-}
 
 // ============================================================================
 // MODEL CATEGORY LABELS
@@ -101,7 +57,7 @@ const MODEL_CATEGORY_ORDER = [
 // ============================================================================
 
 export function getModelsNav(): NavSection[] {
-  const pages = getPages().filter(
+  const pages = getAllPages().filter(
     (p) =>
       p.filePath &&
       p.filePath.startsWith("knowledge-base/models/") &&
@@ -134,7 +90,7 @@ export function getModelsNav(): NavSection[] {
       title: MODEL_CATEGORY_LABELS[category] || category,
       items: items.map((item) => ({
         label: item.title,
-        href: makeHref(item.id),
+        href: getEntityHref(item.id),
       })),
     });
   }
@@ -147,7 +103,7 @@ export function getModelsNav(): NavSection[] {
 // ============================================================================
 
 export function getMetricsNav(): NavSection[] {
-  const pages = getPages().filter(
+  const pages = getAllPages().filter(
     (p) =>
       p.filePath &&
       p.filePath.startsWith("knowledge-base/metrics/") &&
@@ -155,7 +111,7 @@ export function getMetricsNav(): NavSection[] {
   );
 
   const items = pages
-    .map((p) => ({ label: p.title, href: makeHref(p.id) }))
+    .map((p) => ({ label: p.title, href: getEntityHref(p.id) }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
   return items.length > 0
@@ -206,7 +162,7 @@ const ATM_SECTIONS: {
 ];
 
 export function getAtmNav(): NavSection[] {
-  const pages = getPages().filter(
+  const pages = getAllPages().filter(
     (p) =>
       p.filePath &&
       p.filePath.startsWith("ai-transition-model/") &&
@@ -230,7 +186,7 @@ export function getAtmNav(): NavSection[] {
     if (sectionPages.length === 0) continue;
 
     const items = sectionPages
-      .map((p) => ({ label: p.title, href: makeHref(p.id) }))
+      .map((p) => ({ label: p.title, href: getEntityHref(p.id) }))
       .sort((a, b) => a.label.localeCompare(b.label));
 
     sections.push({

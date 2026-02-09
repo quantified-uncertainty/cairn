@@ -14,9 +14,13 @@ import path from "path";
 import yaml from "js-yaml";
 import {
   TypedEntitySchema,
+  GenericEntitySchema,
   OLD_TYPE_MAP,
   OLD_LAB_TYPE_TO_ORG_TYPE,
   type TypedEntity,
+  type GenericEntity,
+  type RiskEntity,
+  type OrganizationEntity,
   isRisk,
   isPerson,
   isOrganization,
@@ -60,8 +64,8 @@ interface RawEntity {
   title: string;
   description?: string;
   severity?: string;
-  likelihood?: any;
-  timeframe?: any;
+  likelihood?: string | { level: string; status?: string; display?: string };
+  timeframe?: string | { median: number; earliest?: number; latest?: number; display?: string };
   maturity?: string;
   website?: string;
   customFields?: { label: string; value: string; link?: string }[];
@@ -71,13 +75,16 @@ interface RawEntity {
   lastUpdated?: string;
   sourceRefs?: string[];
   sources?: { title: string; url?: string; author?: string; date?: string }[];
-  content?: any;
+  content?: unknown;
   numericId?: string;
   path?: string;
   status?: string;
   clusters?: string[];
-  causeEffectGraph?: any;
-  [key: string]: any;
+  causeEffectGraph?: {
+    title?: string;
+    description?: string;
+    nodes?: { id: string; [k: string]: unknown }[];
+  };
 }
 
 interface DatabaseShape {
@@ -92,8 +99,7 @@ interface DatabaseShape {
   pages: Page[];
   facts: Record<string, Fact>;
   insights: DatabaseInsight[];
-  stats: any;
-  [key: string]: any;
+  stats: Record<string, unknown>;
 }
 
 // ============================================================================
@@ -150,7 +156,7 @@ function applyEntityOverrides(db: DatabaseShape): DatabaseShape {
         type: "project",
         title: page.title,
         description: page.llmSummary || page.description || undefined,
-        tags: (page as any).tags || [],
+        tags: page.tags || [],
         lastUpdated: page.lastUpdated || undefined,
       });
     }
@@ -176,7 +182,7 @@ function transformEntity(
   raw: RawEntity,
   experts: Map<string, Expert>,
   orgs: Map<string, Organization>,
-): TypedEntity | null {
+): TypedEntity | GenericEntity | null {
   const oldType = raw.type;
   const canonicalType = OLD_TYPE_MAP[oldType] || oldType;
 
@@ -213,10 +219,11 @@ function transformEntity(
       return {
         ...base,
         entityType: "risk" as const,
-        severity: raw.severity as any,
+        // Zod safeParse validates these enum values; mismatches produce warnings
+        severity: raw.severity as RiskEntity["severity"],
         likelihood: raw.likelihood,
         timeframe: raw.timeframe,
-        maturity: raw.maturity as any,
+        maturity: raw.maturity as RiskEntity["maturity"],
         riskCategory: getRiskCategory(raw.id),
       };
     }
@@ -244,14 +251,14 @@ function transformEntity(
     }
 
     case "organization": {
-      // Determine orgType from old lab-* type
-      const orgType = OLD_LAB_TYPE_TO_ORG_TYPE[oldType] as any;
+      // Determine orgType from old lab-* type (values match OrganizationEntity["orgType"])
+      const orgType = OLD_LAB_TYPE_TO_ORG_TYPE[oldType] as OrganizationEntity["orgType"] | undefined;
       // Merge org data if available
       const orgData = orgs.get(raw.id);
       return {
         ...base,
         entityType: "organization" as const,
-        orgType: orgType || orgData?.type as any || undefined,
+        orgType: orgType || (orgData?.type as OrganizationEntity["orgType"]) || undefined,
         founded: orgData?.founded || cf("Founded") || cf("Established"),
         headquarters: orgData?.headquarters || cf("Location") || cf("Headquarters"),
         employees: orgData?.employees || cf("Employees"),
@@ -310,12 +317,9 @@ function transformEntity(
       return { ...base, entityType: "risk-factor" as const };
 
     default: {
-      // Unknown types (ai-transition-model-* etc.) — fall through as generic
-      // They won't match the discriminated union but we keep them for explore page
-      return {
-        ...base,
-        entityType: canonicalType,
-      } as TypedEntity;
+      // Unknown types (ai-transition-model-* etc.) — validated as generic entity
+      const generic = GenericEntitySchema.safeParse({ ...base, entityType: canonicalType });
+      return generic.success ? generic.data : { ...base, entityType: canonicalType };
     }
   }
 }
@@ -324,8 +328,11 @@ function transformEntity(
 // DATABASE LOADING
 // ============================================================================
 
+/** Union of fully-typed entities and generic (unknown-type) entities */
+type AnyEntity = TypedEntity | GenericEntity;
+
 let _database: DatabaseShape | null = null;
-let _typedEntities: TypedEntity[] | null = null;
+let _typedEntities: AnyEntity[] | null = null;
 
 function getDatabase(): DatabaseShape {
   if (_database) return _database;
@@ -348,14 +355,14 @@ function getDatabase(): DatabaseShape {
   return _database;
 }
 
-function getTypedEntities(): TypedEntity[] {
+function getTypedEntities(): AnyEntity[] {
   if (_typedEntities) return _typedEntities;
 
   const db = getDatabase();
   const expertMap = new Map((db.experts || []).map(e => [e.id, e]));
   const orgMap = new Map((db.organizations || []).map(o => [o.id, o]));
 
-  const entities: TypedEntity[] = [];
+  const entities: AnyEntity[] = [];
   const isDev = process.env.NODE_ENV === "development";
 
   for (const raw of db.entities || []) {
@@ -386,7 +393,8 @@ function getTypedEntities(): TypedEntity[] {
 // ============================================================================
 
 // Re-export typed entity types for consumers
-export type { TypedEntity, RiskEntity, PersonEntity, OrganizationEntity, PolicyEntity } from "./entity-schemas";
+export type { TypedEntity, GenericEntity, RiskEntity, PersonEntity, OrganizationEntity, PolicyEntity } from "./entity-schemas";
+export type { AnyEntity };
 export { isRisk, isPerson, isOrganization, isPolicy } from "./entity-schemas";
 
 /** @deprecated Use TypedEntity instead */
@@ -421,7 +429,6 @@ export interface Resource {
   tags?: string[];
   publication_id?: string;
   credibility_override?: number;
-  [key: string]: any;
 }
 
 export interface Publication {
@@ -441,7 +448,6 @@ export interface Expert {
   role?: string;
   website?: string;
   knownFor?: string[];
-  [key: string]: any;
 }
 
 export interface Organization {
@@ -453,7 +459,6 @@ export interface Organization {
   website?: string;
   funding?: string;
   employees?: string;
-  [key: string]: any;
 }
 
 export interface BacklinkEntry {
@@ -484,14 +489,39 @@ export interface Page {
     completeness?: number;
   } | null;
   category: string;
-  [key: string]: any;
+  tags?: string[];
+  clusters?: string[];
+  wordCount?: number;
+  backlinkCount?: number;
+  metrics?: {
+    wordCount: number;
+    tableCount: number;
+    diagramCount: number;
+    internalLinks: number;
+    externalLinks: number;
+    bulletRatio: number;
+    sectionCount: number;
+    hasOverview: boolean;
+    structuralScore: number;
+  };
+  suggestedQuality?: number;
+  unconvertedLinkCount?: number;
+  redundancy?: {
+    maxSimilarity: number;
+    similarPages: Array<{
+      id: string;
+      title: string;
+      path: string;
+      similarity: number;
+    }>;
+  };
 }
 
 // ============================================================================
 // LOOKUP INDEXES (built lazily)
 // ============================================================================
 
-let _typedEntityIndex: Map<string, TypedEntity> | null = null;
+let _typedEntityIndex: Map<string, AnyEntity> | null = null;
 let _resourceIndex: Map<string, Resource> | null = null;
 let _publicationIndex: Map<string, Publication> | null = null;
 let _expertIndex: Map<string, Expert> | null = null;
@@ -551,8 +581,8 @@ function pageIndex() {
 // LOOKUP FUNCTIONS
 // ============================================================================
 
-/** Get a typed entity by ID */
-export function getTypedEntityById(id: string): TypedEntity | undefined {
+/** Get a typed entity by ID (may be a generic entity for unknown types) */
+export function getTypedEntityById(id: string): AnyEntity | undefined {
   return typedEntityIndex().get(id);
 }
 
@@ -600,6 +630,10 @@ export function getOrganizationById(id: string): Organization | undefined {
 
 export function getPageById(id: string): Page | undefined {
   return pageIndex().get(id);
+}
+
+export function getAllPages(): Page[] {
+  return getDatabase().pages || [];
 }
 
 export function getResourceCredibility(
@@ -979,7 +1013,10 @@ const CATEGORY_TO_TYPE: Record<string, string> = {
   other: "concept",
 };
 
-// Hardcoded tables list (matches Astro app's ContentHub)
+// MANUAL MAINTENANCE: This table list is hardcoded because table metadata
+// (row/col counts, descriptions) is not included in database.json.
+// Update these values when tables change in the Astro app's ContentHub.
+// TODO: Include table metadata in build-data.mjs output to automate this.
 const TABLES = [
   {
     id: "safety-approaches",
@@ -1150,8 +1187,8 @@ export function getExploreItems(): ExploreItem[] {
 
   // Diagram items
   const diagramItems: ExploreItem[] = (db.entities || [])
-    .filter((e: any) => e.causeEffectGraph?.nodes?.length > 0)
-    .map((e: any) => {
+    .filter((e) => (e.causeEffectGraph?.nodes?.length ?? 0) > 0)
+    .map((e) => {
       const nodeCount = e.causeEffectGraph?.nodes?.length || 0;
       return {
         id: `diagram-${e.id}`,
