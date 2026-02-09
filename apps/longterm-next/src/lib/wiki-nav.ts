@@ -67,7 +67,7 @@ export function getModelsNav(): NavSection[] {
   // Group by subcategory (set during content flattening)
   const groups: Record<string, { id: string; title: string }[]> = {};
   for (const page of pages) {
-    const category = (page as any).subcategory; // e.g., "risk-models"
+    const category = page.subcategory; // e.g., "risk-models"
     if (!category) continue;
     if (!groups[category]) groups[category] = [];
     groups[category].push({ id: page.id, title: page.title });

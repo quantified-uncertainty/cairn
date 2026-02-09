@@ -61,8 +61,11 @@ const AI_TRANSITION_MODEL_TYPES = new Set(
 );
 
 // All types allowed on the entity itself
+// Includes legacy types because raw YAML entities keep old type names
+// until transformEntity() remaps them at runtime (Phase B pending)
 const VALID_ENTITY_TYPES = new Set([
   ...VALID_CANONICAL_TYPES,
+  ...LEGACY_TYPES,
   ...AI_TRANSITION_MODEL_TYPES,
 ]);
 
@@ -149,6 +152,68 @@ describe("Entity data validation", () => {
       expect(
         invalid,
         `Entities with missing required fields:\n  ${invalid.join("\n  ")}`,
+      ).toHaveLength(0);
+    });
+  });
+
+  describe("every content page has a corresponding entity", () => {
+    // Categories where every page MUST have a matching entity definition.
+    // Pages without entities won't get an info box, won't appear properly
+    // in the explore grid, and won't be cross-linkable via EntityLink.
+    const ENTITY_REQUIRED_CATEGORIES = new Set([
+      "people",
+      "organizations",
+      "risks",
+      "responses",
+      "models",
+      "worldviews",
+      "intelligence-paradigms",
+    ]);
+
+    // Specific page IDs to exclude from this check.
+    // These are overview/index-like pages that aggregate content rather
+    // than representing a single entity (e.g., "funders-overview").
+    const EXCLUDED_PAGE_IDS = new Set([
+      // Overview/index pages
+      "biosecurity-orgs-overview",
+      "epistemic-orgs-overview",
+      "funders-overview",
+      "venture-capital-overview",
+      "track-records-overview",
+      "biosecurity-overview",
+      "alignment-deployment-overview",
+      "alignment-evaluation-overview",
+      "alignment-interpretability-overview",
+      "alignment-policy-overview",
+      "alignment-theoretical-overview",
+      "alignment-training-overview",
+      "epistemic-tools-approaches-overview",
+      "epistemic-tools-tools-overview",
+      // Comparison/analysis pages (not single entities)
+      "frontier-ai-comparison",
+      // Prediction track-record pages (sub-pages of people, not entities themselves)
+      "eliezer-yudkowsky-predictions",
+      "elon-musk-predictions",
+      "sam-altman-predictions",
+      "yann-lecun-predictions",
+    ]);
+
+    const pages: Array<{ id: string; category: string; title: string; path: string }> =
+      db.pages || [];
+    const entityIds = new Set(entities.map((e: RawEntity) => e.id));
+
+    it("every page in entity-required categories has an entity definition", () => {
+      const missing: string[] = [];
+      for (const page of pages) {
+        if (!ENTITY_REQUIRED_CATEGORIES.has(page.category)) continue;
+        if (EXCLUDED_PAGE_IDS.has(page.id)) continue;
+        if (!entityIds.has(page.id)) {
+          missing.push(`${page.id} (category=${page.category}, path=${page.path})`);
+        }
+      }
+      expect(
+        missing,
+        `Pages missing entity definitions (no info box will render):\n  ${missing.join("\n  ")}`,
       ).toHaveLength(0);
     });
   });

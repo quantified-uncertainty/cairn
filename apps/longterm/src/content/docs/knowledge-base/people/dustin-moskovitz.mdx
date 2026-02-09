@@ -52,19 +52,30 @@ import {DataInfoBox, Backlinks, Mermaid, EntityLink} from '@components/wiki';
 
 Moskovitz's net worth has been remarkably flat over the past 6+ years despite holding stakes in two major technology companies. While fluctuations have been dramatic year-to-year—driven primarily by Meta stock volatility—the overall trajectory shows essentially no net growth since 2018.
 
-| Year | Net Worth | Notable Events |
-|------|-----------|----------------|
-| **2011** | ≈\$3.5B | Became youngest self-made billionaire (Forbes) |
-| **2017** | \$10.3B | |
-| **2018** | \$14.1B | Near recent peak |
-| **2019** | \$11.4B | |
-| **2020** | \$8.8B | COVID crash, then recovery; Asana IPO |
-| **2021** | \$16.8B | Peak (Meta stock all-time high) |
-| **2022** | \$10.8B | Meta stock crashed 64% |
-| **2023** | \$9.4B | Recent low; \$1.9B transfer to Good Ventures |
-| **2024** | \$16.3B | Meta recovery |
-| **2025** | ≈\$17.4B | Forbes (May 2025) |
-| **2026** | ≈\$12.4B | Bloomberg (Feb 2026) |
+<Mermaid client:load chart={`
+%%{init: {'theme':'default', 'themeVariables': {'xyChart': {'plotColorPalette': '#2563eb'}}}}%%
+xychart-beta
+    title "Net Worth Over Time (Billions USD)"
+    x-axis ["2011", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"]
+    y-axis "Net Worth (\$B)" 0 --> 20
+    line [3.5, 10.3, 14.1, 11.4, 8.8, 16.8, 10.8, 9.4, 16.3, 17.4, 12.4]
+`} />
+
+| Year | Net Worth | Annual Giving | Notable Events |
+|------|-----------|---------------|----------------|
+| **2011** | ≈\$3.5B | ≈\$5M | Became youngest self-made billionaire (Forbes); Good Ventures founded |
+| **2017** | \$10.3B | ≈\$200M | Open Phil scales up grantmaking |
+| **2018** | \$14.1B | ≈\$170M | Near recent peak |
+| **2019** | \$11.4B | ≈\$200M | |
+| **2020** | \$8.8B | ≈\$200M | COVID crash, then recovery; Asana IPO |
+| **2021** | \$16.8B | ≈\$400M | Peak (Meta stock all-time high); \$300M to GiveWell |
+| **2022** | \$10.8B | ≈\$650M | Meta stock crashed 64%; giving accelerated post-FTX |
+| **2023** | \$9.4B | ≈\$750M | Recent low; \$1.9B transfer to Good Ventures |
+| **2024** | \$16.3B | ≈\$650M | Meta recovery; multi-donor fund launches |
+| **2025** | ≈\$17.4B | ≈\$600M+ | Forbes (May 2025); Coefficient Giving rebrand |
+| **2026** | ≈\$12.4B | — | Bloomberg (Feb 2026) |
+
+*Annual Giving figures are grants recommended by <EntityLink id="coefficient-giving">Coefficient Giving</EntityLink> (formerly Open Philanthropy), funded primarily by Good Ventures. Figures from Open Phil annual reports use approximate language ("over \$X million"); values shown are midpoint estimates. Sources: [Coefficient Giving annual reports](https://coefficientgiving.org/research/), [ProPublica 990s](https://projects.propublica.org/nonprofits/organizations/461008520).*
 
 Sources: [Grizzly Bulls Billionaire Index](https://grizzlybulls.com/billionaires/dustin-moskovitz), [Forbes](https://en.wikipedia.org/wiki/Dustin_Moskovitz), [Bloomberg Billionaires Index](https://www.bloomberg.com/billionaires/profiles/dustin-a-moskovitz/)
 

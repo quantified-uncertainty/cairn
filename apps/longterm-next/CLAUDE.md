@@ -73,12 +73,17 @@ src/
 │   ├── PageStatus.tsx      # Dev-mode quality panel
 │   └── DevModeToggle.tsx   # Header dev mode button
 ├── data/
-│   └── index.ts            # Data layer (reads database.json from longterm)
+│   ├── index.ts            # Data layer (reads database.json from longterm)
+│   ├── entity-ontology.ts  # Canonical type definitions, icons, colors
+│   └── entity-schemas.ts   # Zod schemas for typed entities
 └── lib/
     ├── mdx.ts              # MDX compilation, path resolution, static params
+    ├── wiki-nav.ts          # Wiki sidebar navigation (models, ATM)
     ├── remark-callouts.ts  # Remark plugin for :::note directives
     └── utils.ts            # cn() helper
 ```
+
+**Important:** This app has NO local content or entity YAML files. All content lives in `apps/longterm/src/content/docs/` and all data in `apps/longterm/src/data/`. The app reads directly from those directories.
 
 ## Data Layer
 
@@ -111,3 +116,20 @@ Wiki pages use `generateStaticParams()` to pre-render all pages at build time fr
 
 ### Canonical Facts
 Facts are defined in `apps/longterm/src/data/facts/*.yaml`, computed by `build-data.mjs`, and accessed via `getFact(entity, factId)`. The `<F>` component renders inline fact values.
+
+### Content Architecture
+Content directories are **flat** (max 2 levels). Grouping is done via frontmatter `subcategory` metadata, not directory nesting:
+```
+knowledge-base/models/          # All models flat — no risk-models/ subdirectory
+ai-transition-model/            # All ATM pages flat — no factors/ subdirectory
+```
+Each page's `subcategory` field (e.g., `risk-models`, `factors-ai-capabilities`) is extracted at build time and used for sidebar navigation grouping.
+
+### Wiki Sidebar Navigation
+`src/lib/wiki-nav.ts` builds contextual sidebars for Models and ATM pages. It uses `page.subcategory` for grouping — **not** file path parsing. The `detectSidebarType()` function checks top-level path prefixes to decide which sidebar to show.
+
+### Entity Type System
+- **Canonical types** are defined in `src/data/entity-ontology.ts` (labels, icons, colors, badges)
+- **Build-time remapping**: `build-data.mjs` remaps raw YAML types (e.g., `response` → `approach`)
+- **Runtime enrichment**: `src/data/index.ts` `transformEntity()` merges expert data (role, affiliation), assigns org subtypes (lab-* → organization + orgType), and assigns risk categories
+- Legacy types still in database.json: `lab`, `lab-academic`, `lab-research`, `researcher` (remapped at runtime)

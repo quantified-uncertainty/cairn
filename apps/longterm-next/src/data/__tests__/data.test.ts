@@ -295,13 +295,12 @@ describe("Data Layer", () => {
       expect(testItem?.riskCategory).toBe("accident");
     });
 
-    it("preserves null/0 values with nullish coalescing", async () => {
+    it("excludes entities without content pages from explore items", async () => {
       const { getExploreItems } = await import("../../data/index");
       const items = getExploreItems();
       const conceptItem = items.find((i) => i.id === "other-entity");
-      // No page data → should be null, not undefined
-      expect(conceptItem?.quality).toBeNull();
-      expect(conceptItem?.importance).toBeNull();
+      // other-entity has no page in the mock → should not appear in explore
+      expect(conceptItem).toBeUndefined();
     });
   });
 

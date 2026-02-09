@@ -13,7 +13,10 @@ import path from "path";
 // Find and pre-read all MDX files
 // ---------------------------------------------------------------------------
 
-const CONTENT_DIR = path.resolve(__dirname, "../../content/docs");
+const CONTENT_DIR = path.resolve(
+  __dirname,
+  "../../../../longterm/src/content/docs",
+);
 
 /** Recursively find files matching an extension */
 function findFiles(dir: string, ext: string): string[] {
