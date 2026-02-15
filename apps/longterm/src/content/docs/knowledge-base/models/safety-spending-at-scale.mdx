@@ -11,13 +11,13 @@ ratings:
   completeness: 7.5
   concreteness: 8
   actionability: 8
-importance: 87
+importance: 81
 lastEdited: "2026-02-15"
 llmSummary: "Models what AI safety spending could accomplish at different budget levels from $1B to $50B+/year. Current global safety spending (~$500M-1B/year) is 100-600x below capabilities investment. At $5B/year, could fund 5,000+ dedicated safety researchers, comprehensive interpretability programs, and independent evaluation infrastructure. Key finding: absorptive capacity is the binding constraint below $10B/year—the field cannot productively absorb unlimited funding without growing the researcher pipeline (current ~1,000 qualified safety researchers globally). Above $10B/year, institutional capacity and research direction clarity become primary constraints. Provides concrete portfolio recommendations at each funding level."
 pageTemplate: knowledge-base-model
 metrics:
   wordCount: 6200
-  citations: 30
+  citations: 5
   tables: 16
   diagrams: 2
 clusters:
@@ -33,7 +33,7 @@ import {DataInfoBox, Backlinks, Mermaid, EntityLink} from '@components/wiki';
 
 ## Overview
 
-Current global AI safety spending is approximately \$500M-1B per year, while AI capabilities investment exceeds \$100B annually—a ratio of roughly 100:1 to 200:1.[^1] The <EntityLink id="safety-research-value">Expected Value of AI Safety Research</EntityLink> model recommends scaling safety funding 3-10x to \$2-5B/year. But the <EntityLink id="pre-tai-capital-deployment">pre-TAI capital deployment</EntityLink> analysis shows that frontier labs alone may spend \$100-300B+ over the coming years. What would it mean to spend 5-10% of that on safety? What could \$5B, \$10B, or even \$50B in annual safety investment actually accomplish?
+Current global AI safety spending is approximately \$700M-1.25B per year, while AI capabilities investment exceeds \$100B annually—a ratio of roughly 100:1 to 150:1, though these figures depend heavily on how "safety spending" is defined.[^1] The <EntityLink id="safety-research-value">Expected Value of AI Safety Research</EntityLink> model recommends scaling safety funding 3-10x to \$2-5B/year. But the <EntityLink id="pre-tai-capital-deployment">pre-TAI capital deployment</EntityLink> analysis shows that frontier labs alone may spend \$100-300B+ over the coming years. What would it mean to spend 5-10% of that on safety? What could \$5B, \$10B, or even \$50B in annual safety investment actually accomplish?
 
 This page analyzes the absorptive capacity problem: the gap between what could theoretically be spent on safety and what the field can productively absorb. It provides concrete portfolio recommendations at different funding levels and identifies the bottlenecks that must be overcome to scale safety spending effectively.
 
@@ -176,14 +176,14 @@ At this level, safety investment begins to approach capabilities investment leve
 flowchart LR
     UG[Undergrad<br/>~50K CS grads/yr] -->|"1-2% interested"| GRAD[Graduate<br/>~500-1000 AI safety students]
     GRAD -->|"50-70% complete"| PHD[PhD/Postdoc<br/>~300-500 new researchers/yr]
-    PHD -->|"60% stay in safety"| WORK[Safety Workforce<br/>~200-350 new/yr]
-    WORK -->|"Over 5 years"| TOTAL[Total: ~3,000-5,000]
+    PHD -->|"60% stay in safety"| WORK[Safety Workforce<br/>~200-500 new/yr]
+    WORK -->|"Over 5 years"| TOTAL[Total: ~3,500-5,000]
 
     style UG fill:#e0e0e0
     style TOTAL fill:#ccffcc
 `} />
 
-The fundamental bottleneck for scaling safety spending is human capital. The current pipeline produces approximately 200-350 new safety researchers per year. To absorb \$5-10B/year productively, the field would need 10,000-15,000 researchers—implying a 3-5x increase in the pipeline sustained over several years.
+The fundamental bottleneck for scaling safety spending is human capital. The current pipeline produces approximately 200-500 new safety researchers per year (see <EntityLink id="ai-talent-market-dynamics">AI Talent Market Dynamics</EntityLink> for detailed pipeline analysis). To absorb \$5-10B/year productively, the field would need 10,000-15,000 researchers—implying a 3-5x increase in the pipeline sustained over several years.
 
 ### Pipeline Expansion Strategies
 
@@ -264,24 +264,24 @@ The <EntityLink id="openai-foundation">OpenAI Foundation</EntityLink> page docum
 
 ### For Frontier AI Labs
 
-1. **Commit to a minimum safety allocation** (5% of total spending, rising to 10% as budgets grow)
-2. **Fund independent safety research** (at least 20% of safety budget should go to external, independent researchers)
-3. **Publish safety spending transparently** (annual reports with verifiable figures)
-4. **Provide model access** (safety researchers need access to frontier models to do useful work)
+1. **Publish safety spending transparently** — annual reports with verifiable figures would enable external assessment
+2. **Fund independent safety research** — external researchers provide complementary perspectives and independent validation
+3. **Provide model access to safety researchers** — safety research requires access to the systems being studied
+4. **Consider minimum safety allocation commitments** — some labs (e.g., Anthropic) already allocate 5-8%; whether this should be an industry norm is debated
 
 ### For Philanthropic Funders
 
 1. **Prioritize pipeline over projects** at current funding levels—the bottleneck is people, not ideas
 2. **Fund at competitive salaries** to reduce brain drain from safety to capabilities
-3. **Support institutional development** (safety research needs organizations, not just grants)
+3. **Support institutional development** — safety research needs organizations, not just grants
 4. **Invest in research direction clarity** through field surveys, theory development, and agenda-setting
 
 ### For Governments
 
-1. **Mandate minimum safety spending** (analogous to R&D tax requirements or safety regulations in other industries)
-2. **Fund public safety evaluation infrastructure** (independent testing analogous to FDA)
-3. **Invest in academic safety programs** through research grants, center funding, and fellowship programs
-4. **Create international coordination mechanisms** to prevent a regulatory race to the bottom
+1. **Fund public safety evaluation infrastructure** — independent testing capacity analogous to FDA
+2. **Invest in academic safety programs** through research grants, center funding, and fellowship programs
+3. **Consider safety spending disclosure requirements** — transparency as a precondition for informed regulation
+4. **Support international coordination mechanisms** to enable consistent standards
 
 ## Key Uncertainties
 
@@ -300,6 +300,8 @@ The <EntityLink id="openai-foundation">OpenAI Foundation</EntityLink> page docum
 - <EntityLink id="ai-talent-market-dynamics">AI Talent Market Dynamics</EntityLink> — The talent constraint in detail
 - <EntityLink id="planning-for-frontier-lab-scaling">Planning for Frontier Lab Scaling</EntityLink> — How funders and governments should respond
 - <EntityLink id="frontier-lab-cost-structure">Frontier Lab Cost Structure</EntityLink> — Where safety fits in overall lab budgets
+- <EntityLink id="field-building-analysis">Field Building Analysis</EntityLink> — Broader strategy for growing the safety research field
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> — Framework for lab safety commitments
 
 ## Sources
 

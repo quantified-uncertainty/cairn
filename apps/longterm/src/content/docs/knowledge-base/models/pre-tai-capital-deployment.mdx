@@ -11,13 +11,13 @@ ratings:
   completeness: 7
   concreteness: 8
   actionability: 7
-importance: 88
+importance: 82
 lastEdited: "2026-02-15"
 llmSummary: "Comprehensive analysis of how frontier AI labs (Anthropic, OpenAI, Google DeepMind) could deploy $100-300B+ before TAI. Compute infrastructure absorbs 50-65% of spending ($200-400B+ across the industry), with Stargate alone at $500B committed. Safety spending remains at 1-5% ($1-15B) despite being the highest-leverage category. Historical analogies (Manhattan Project $30B, Apollo $200B) show current AI investment dwarfs prior megaprojects. Key finding: the spending pattern—and especially the safety allocation—is a critical variable that other organizations, governments, and funders should be actively planning around."
 pageTemplate: knowledge-base-model
 metrics:
   wordCount: 6500
-  citations: 45
+  citations: 13
   tables: 18
   diagrams: 2
 clusters:
@@ -33,7 +33,7 @@ import {DataInfoBox, Backlinks, Mermaid, EntityLink} from '@components/wiki';
 
 ## Overview
 
-The frontier AI industry is deploying capital at a scale with few historical precedents. In 2025 alone, the five largest AI-adjacent companies (Microsoft, Google, Amazon, Meta, and Oracle) committed over \$300 billion in combined capital expenditure, much of it directed toward AI infrastructure.[^1][^2] Individual AI labs are raising and spending at scales that would have seemed implausible even two years earlier: <EntityLink id="openai">OpenAI</EntityLink> anchors the \$500 billion Stargate project, <EntityLink id="anthropic">Anthropic</EntityLink> has raised \$37B+ at a \$350B valuation on \$9B ARR, and Google has committed \$75B in 2025 capex largely for AI.[^3][^4][^5]
+The frontier AI industry is deploying capital at a scale with few historical precedents. In 2025 alone, the five largest AI-adjacent companies (Microsoft, Google, Amazon, Meta, and Oracle) guided for \$355-400 billion in combined capital expenditure, with an estimated 50-80% directed toward AI infrastructure.[^1][^2] Individual AI labs are raising and spending at scales that would have seemed implausible even two years earlier: <EntityLink id="openai">OpenAI</EntityLink> anchors the \$500 billion Stargate project, <EntityLink id="anthropic">Anthropic</EntityLink> has raised \$37B+ at a \$350B valuation on \$9B ARR, and Google has committed \$75B in 2025 capex largely for AI.[^3][^4][^5]
 
 The central question this page examines: **How could frontier AI labs collectively deploy \$100-300B+ before transformative AI (TAI) arrives, and what does this spending pattern mean for organizations trying to plan around it?**
 
@@ -45,7 +45,7 @@ This analysis matters because the allocation decisions—how much goes to comput
 
 | Category | 2024 Actual | 2025 Committed | 2026-2028 Projected | Cumulative 2024-2028 |
 |----------|-------------|----------------|---------------------|-----------------------|
-| **Big Tech Capex** (AI-related) | ≈\$180B | ≈\$320B | \$250-400B/year | \$1.2-2.0T |
+| **Big Tech Capex** (AI-related) | ≈\$180B | ≈\$250-280B | \$250-400B/year | \$1.2-2.0T |
 | **AI Lab Funding** (VC + corporate) | ≈\$80B | ≈\$100B+ | \$50-150B/year | \$350-650B |
 | **Government AI Programs** | ≈\$30B | ≈\$50B | \$40-80B/year | \$190-350B |
 | **Total AI-Related Capital** | ≈\$290B | ≈\$470B | \$340-630B/year | **\$1.7-3.0T** |
@@ -145,11 +145,11 @@ See <EntityLink id="ai-talent-market-dynamics">AI Talent Market Dynamics</Entity
 
 ### Category 4: Safety & Alignment (1-5%)
 
-Current safety spending across the industry is approximately \$500M-1B/year, representing roughly 1-3% of total AI lab spending.[^9] This is widely considered inadequate given the stakes.
+Current safety spending across the industry is approximately \$700M-1.25B/year, representing roughly 1-5% of total AI lab spending depending on the lab.[^9] This varies significantly: Anthropic allocates an estimated 5-8% of its budget to safety, while other labs spend considerably less.
 
 | Lab | Estimated Safety Spend | % of Total | Safety Researchers | Focus Areas |
 |-----|------------------------|------------|--------------------|----|
-| **Anthropic** | \$200-400M/year | 5-8% | 100-200+ | Constitutional AI, interpretability, evals |
+| **Anthropic** | \$400-700M/year | 5-8% | 100-200+ | Constitutional AI, interpretability, evals |
 | **OpenAI** | \$100-200M/year | 1-3% | Reduced (post-exodus) | Superalignment (defunded), evals |
 | **Google DeepMind** | \$150-300M/year | 2-4% | 200-300 | Scalable oversight, robustness |
 | **Others** | \$50-100M/year | Variable | Variable | Various |
@@ -166,7 +166,7 @@ The gap between current safety spending and what could be productively deployed 
 | **Human Genome Project** | \$5B | 13 years | \$500M | ≈3,000 | Genome sequenced |
 | **ITER Fusion** | \$35B+ | 20+ years | \$3B | 5,000+ | Ongoing |
 | **Stargate AI** | \$500B (committed) | 4+ years | \$125B+ | TBD | AI infrastructure |
-| **Total Big Tech AI Capex (2025)** | \$320B+ | 1 year | \$320B+ | Millions | AI infrastructure |
+| **Total Big Tech AI Capex (2025)** | \$355-400B (total) | 1 year | \$355-400B | Millions | AI infrastructure (50-80% of total capex) |
 
 The AI buildout is qualitatively different from prior megaprojects in several ways:
 
@@ -229,7 +229,7 @@ flowchart LR
     style HIGH fill:#99ff99
 `} />
 
-The ratio of capabilities spending to safety spending is the single most important variable in this analysis. At current ratios (roughly 100:1 capabilities to safety), the industry is building increasingly powerful systems with a relatively thin safety margin.
+The ratio of capabilities spending to safety spending is one of the most important variables in this analysis. At current ratios (roughly 50:1 to 200:1 capabilities to safety, depending on definitions and the lab), the gap is large—though the optimal ratio is genuinely uncertain and depends on the tractability of alignment research.
 
 ### What Would Different Safety Allocations Mean?
 
@@ -306,11 +306,11 @@ If an AI investment correction occurs, it could dramatically reduce capital avai
 
 2. **Infrastructure dominates**: 50-65% goes to data centers, chips, and power. This is mostly locked in by competitive dynamics and existing commitments.
 
-3. **Safety is the variable**: The difference between 1% and 5% safety allocation on a \$200B budget is \$8 billion—enough to transform the entire safety research ecosystem. This is the highest-leverage target for external influence.
+3. **Safety allocation varies widely**: The difference between 1% and 5% safety allocation on a \$200B budget is \$8 billion. Whether this is the "right" amount depends on absorptive capacity and the tractability of alignment research (see <EntityLink id="safety-spending-at-scale">Safety Spending at Scale</EntityLink>).
 
-4. **The window is now**: Pre-TAI is the period when spending patterns are being established. Once infrastructure is built and organizational cultures are set, changing allocation becomes much harder.
+4. **Spending patterns are forming now**: Pre-TAI is the period when spending patterns are being established. Once infrastructure is built and organizational cultures are set, changing allocation becomes significantly harder.
 
-5. **Other orgs must adapt**: The speed and scale of AI lab spending requires fundamentally different planning approaches from governments, philanthropies, academia, and civil society. Traditional timelines and budgets are inadequate.
+5. **Other orgs face adaptation pressure**: The speed and scale of AI lab spending creates a qualitatively different planning environment for governments, philanthropies, academia, and civil society.
 
 ## See Also
 
@@ -322,6 +322,8 @@ If an AI investment correction occurs, it could dramatically reduce capital avai
 - <EntityLink id="safety-research-value">Expected Value of AI Safety Research</EntityLink> — Economic model of marginal returns on safety investment
 - <EntityLink id="winner-take-all-concentration">Winner-Take-All Concentration</EntityLink> — How concentration dynamics shape the spending landscape
 - <EntityLink id="compute-hardware">Compute & Hardware Metrics</EntityLink> — Underlying hardware and efficiency trends
+- <EntityLink id="racing-dynamics-impact">Racing Dynamics Impact</EntityLink> — Competitive pressures driving spending patterns
+- <EntityLink id="responsible-scaling-policies">Responsible Scaling Policies</EntityLink> — Framework for safety commitments at labs
 
 ## Sources
 
