@@ -21,6 +21,7 @@ export default defineConfig({
           items: [
             { label: 'Introduction', slug: 'getting-started/introduction' },
             { label: 'Workshop: Research Websites', slug: 'workshop' },
+            { label: 'Guide: Claude Code Web App', slug: 'claude-code-web-app' },
           ],
         },
         {
