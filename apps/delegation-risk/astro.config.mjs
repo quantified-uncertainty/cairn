@@ -30,7 +30,7 @@ export default defineConfig({
 				Footer: './src/components/Footer.astro',
 			},
 			social: [
-				{ icon: 'document', label: 'Download PDF', href: 'https://github.com/quantified-uncertainty/delegation-risk-framework/releases/latest/download/delegation-risk-framework-book.pdf' },
+				{ icon: 'document', label: 'Download PDF', href: 'https://github.com/quantified-uncertainty/delegation-risk-framework/releases/download/v1.0.0/delegation-risk-framework-book.pdf' },
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/delegation-risk-framework' },
 			],
 			sidebar: [
