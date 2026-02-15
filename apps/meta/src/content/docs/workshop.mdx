@@ -18,7 +18,7 @@ Set up **one** of these options **before** arriving so we can dive straight into
 1. **Claude Pro or Max subscription** — sign up at [claude.ai](https://claude.ai/) if you haven't
 2. **Go to [claude.ai/code](https://claude.ai/code)** — this gives you a development environment in your browser (terminal, file editor, and Claude — no local setup needed)
 3. **A GitHub account** — the web app creates a repo for your project automatically
-4. **A way to preview your site** — the web app can't preview locally, so you'll deploy to see your site. **GitHub Pages** works with no extra account (just ask Claude to set it up), or use [Vercel](https://vercel.com/)/[Netlify](https://www.netlify.com/) for faster deploys. Details in [Setting Up Claude Code](#setting-up-claude-code).
+4. **A free [Vercel](https://vercel.com/) account** (sign up with GitHub) — the web app can't preview your site locally, so you'll connect your GitHub repo to Vercel to get a live URL that auto-updates on every push. Takes ~2 minutes, details in [Setting Up Claude Code](#setting-up-claude-code).
 
 **Option B — Local setup (more control):**
 1. **Node.js 18+** — [nodejs.org](https://nodejs.org/) (LTS version)
@@ -112,21 +112,16 @@ The source for LongTermWiki is at [github.com/quantified-uncertainty/longterm-wi
     </Aside>
 
     <Aside type="note" title="Deploy early to preview your site">
-    Since the web app can't show you a live preview, **set up auto-deployment right after creating your project.** This gives you a live URL that rebuilds every time Claude commits. Pick one:
+    Since the web app can't show you a live preview, **connect your repo to Vercel right after creating your project.** This gives you a live URL that rebuilds every time you push.
 
-    **GitHub Pages (simplest — no extra account needed):**
-    Once your project is scaffolded, ask Claude in the web app:
-    > "Set up GitHub Pages deployment with a GitHub Actions workflow. Configure the Astro site for GitHub Pages output."
-
-    Claude will create the workflow file and update your Astro config. After it commits and pushes, go to your repo's **Settings → Pages** and select **GitHub Actions** as the source. Your site will be at `https://your-username.github.io/your-repo/`.
-
-    **Vercel (faster deploys, slightly nicer URLs):**
     1. Go to [vercel.com](https://vercel.com/) and sign in with your GitHub account
     2. Click **"Add New Project"** → select the repo the web app created
     3. Vercel auto-detects Astro — just click **Deploy**
     4. You'll get a URL like `your-project.vercel.app`
 
-    Either way, keep your deployed URL open in another browser tab — it becomes your preview. Deploys typically take 30-90 seconds.
+    Keep this URL open in another browser tab — it becomes your preview. Deploys typically take 30-60 seconds. Now every time you ask Claude to commit and push, Vercel rebuilds automatically.
+
+    **Why Vercel over GitHub Pages?** GitHub Pages requires manual config changes (`site` and `base` in astro.config), a GitHub Actions workflow, changing a repository setting in the GitHub UI, and has [known issues with Starlight base paths](https://github.com/withastro/starlight/discussions/2158) that break links. Vercel just works with zero configuration.
     </Aside>
   </TabItem>
   <TabItem label="CLI (local)">
@@ -177,9 +172,9 @@ The source for LongTermWiki is at [github.com/quantified-uncertainty/longterm-wi
     - **Chat with Claude** in the main panel
     - **See file changes** as Claude makes them
     - **Use the terminal** for git commands or manual operations
-    - **View your deployed site** in a separate browser tab (via Vercel/Netlify — see [Setting Up Claude Code](#setting-up-claude-code) for setup)
+    - **View your deployed site** in a separate browser tab (via Vercel — see [Setting Up Claude Code](#setting-up-claude-code))
 
-    No split-pane terminal setup needed. The main difference from local setup: instead of watching a localhost dev server, you'll check your deployed URL after Claude commits.
+    No split-pane terminal setup needed. The main difference from local setup: instead of watching a localhost dev server, you check your Vercel URL after Claude commits and pushes.
   </TabItem>
   <TabItem label="Local CLI">
     The most important workflow pattern: run **multiple terminal windows simultaneously**.
@@ -346,7 +341,7 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
 
    <Tabs>
      <TabItem label="Web App">
-       You don't need a local dev server — you're already chatting with Claude, and your deployed URL (GitHub Pages, Vercel, or Netlify) will show you the site after each commit. Ask Claude to commit and push after major changes so you can check the result.
+       You don't need a local dev server — you're already chatting with Claude, and your Vercel URL will show you the site after each push. Ask Claude to commit and push after major changes so you can check the result.
 
        Skip to step 5.
      </TabItem>
@@ -376,7 +371,7 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
      </TabItem>
    </Tabs>
 
-   **Checkpoint:** You should see a working docs site (in your browser or the web app preview pane).
+   **Checkpoint:** You should see a working docs site (in your browser, or on your Vercel URL if using the web app).
 
 5. **Create your entire page structure in one prompt**
 
@@ -768,17 +763,13 @@ See [the compute governance page](/policy-approaches/compute-governance/) for de
 When you're ready to put your site online (or if you're using the web app, you may already have this set up):
 
 <Tabs>
-  <TabItem label="GitHub Pages (free)">
-    Ask Claude: "Create a GitHub Actions workflow that builds my Astro site and deploys to GitHub Pages."
-
-    Then go to your repo's **Settings → Pages** and select **GitHub Actions** as the source. Your site will be at `https://your-username.github.io/your-repo/`.
-
-    This is the simplest option if your code is already on GitHub (which it is automatically if you used the web app).
-  </TabItem>
-  <TabItem label="Vercel">
+  <TabItem label="Vercel (recommended)">
     1. Push to GitHub (if not already — web app users are already there)
     2. Go to [vercel.com](https://vercel.com/), import your repo
     3. It auto-detects Astro — just click Deploy
+    4. You'll get a URL like `your-project.vercel.app`
+
+    Zero configuration needed. Auto-deploys on every push. This is what we recommend for the workshop.
   </TabItem>
   <TabItem label="Netlify">
     1. Push your repo to GitHub
@@ -786,6 +777,18 @@ When you're ready to put your site online (or if you're using the web app, you m
     3. "Add new site" → "Import an existing project" → Select your repo
     4. Build command: `npm run build`, Publish directory: `dist/`
     5. Click Deploy — you'll get a URL like `your-site.netlify.app`
+  </TabItem>
+  <TabItem label="GitHub Pages (free, more setup)">
+    GitHub Pages is free but requires several manual steps:
+
+    1. Ask Claude: "Create a GitHub Actions workflow that builds my Astro site and deploys to GitHub Pages. Set the `site` and `base` config in astro.config.mjs for my repo."
+    2. **Manually** go to your repo's **Settings → Pages** and change the source to **GitHub Actions** (this step can't be automated)
+    3. Your repo must be **public** on the free GitHub plan
+    4. Your site will be at `https://your-username.github.io/your-repo/`
+
+    <Aside type="caution" title="Base path gotchas">
+    When deploying to `username.github.io/repo-name`, Astro requires setting `base: '/repo-name'` in the config. This means manually authored links in your Markdown (like `[about](/about)`) will break — they need to be relative links (`./about`) or include the base path. Starlight has [known issues](https://github.com/withastro/starlight/discussions/2158) with base paths affecting sidebar and hero links. If you want a hassle-free experience, use Vercel or Netlify instead.
+    </Aside>
   </TabItem>
   <TabItem label="Cloudflare Pages (free)">
     1. Push to GitHub
