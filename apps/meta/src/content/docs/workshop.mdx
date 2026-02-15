@@ -8,7 +8,7 @@ import { Aside, Steps, Tabs, TabItem, Card, CardGrid, LinkCard } from '@astrojs/
 Claude Code can automate substantial portions of research documentation — generating mini-textbooks, interactive wikis, and structured knowledge bases from your research questions. This workshop teaches you how.
 
 <Aside type="note" title="Collaborative Doc">
-**[Open the shared workshop document](https://docs.google.com/document/d/1nwqUdjeqkcI8SaDaLK9k6bivMvh9qKFpz7tJHNMy3_c/edit?usp=sharing)** — for questions, sharing your site, getting help, and coordinating during the event.
+**[Open the shared workshop document](https://docs.google.com/document/d/1LPq_q6BYFT2NcPYh8Lss5v11vMQ_7VO61EhBlXRzexw/edit?tab=t.0)** — for questions, sharing your site, getting help, and coordinating during the event.
 </Aside>
 
 <Aside type="caution" title="Before the Workshop — Do This Now">
@@ -24,7 +24,7 @@ Basic familiarity with Claude Code and the command line will be very useful.
 
 ## About This Workshop
 
-**Organized by** the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/).
+**Organized by** the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/). See also the LongTermWiki pages on [AI-Assisted Knowledge Management](https://www.longtermwiki.com/wiki/E681), [LongTermWiki itself](https://www.longtermwiki.com/wiki/E384), and [QURI](https://www.longtermwiki.com/wiki/E238).
 
 **Format:**
 1. **Opening presentation** — How Claude Code builds research websites, key techniques, and what makes topics well-suited for this approach
@@ -34,14 +34,12 @@ Basic familiarity with Claude Code and the command line will be very useful.
 **Slides:** [Google Slides](https://docs.google.com/presentation/d/1Q2oisP95LRLs0mGwWIStrhhPDRMpxxrNPpvbzE59yBQ/edit?usp=sharing)
 
 <details>
-<summary>**Upcoming event logistics** (January 2026 — MOXSF)</summary>
+<summary>**Upcoming event logistics** (February 2026 — EAG SF)</summary>
 
-- **Date/Time:** 7:30 PM start. The main session will be 1.5 hours.
-- **Location:** MOXSF, 4th floor
-- **Warning:** The elevator is out of order. Plan to walk up three flights of stairs.
-- **Early dinner option:** Arrive at 6:30 for the Mox-wide dinner before the workshop. Please flag in the RSVP if you plan to come early for dinner.
+- **Event:** EAG SF 2026
+- **Format:** A shorter version of the full workshop
 
-*A shorter version of this workshop will also be given at EAG SF in February 2026.*
+*A previous version of this workshop was given at MOXSF in January 2026.*
 
 </details>
 
@@ -59,7 +57,9 @@ The workflow:
 
 ### What is Claude Code?
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) is a command-line tool that lets you use Claude AI directly in your terminal. It can read, write, and edit files in your project, run commands, and search the web — all through a conversational interface. You type instructions, Claude executes them on your codebase.
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) is an agentic coding tool that lets you use Claude AI to work directly on your codebase. It can read, write, and edit files in your project, run commands, and search the web — all through a conversational interface. You describe what you want, Claude executes it.
+
+Claude Code is available as a **CLI** (terminal), a **VS Code and JetBrains extension**, and via the **[claude.ai/code](https://claude.ai/code) web interface**. For the workshop we'll use the CLI, but the same workflow applies everywhere.
 
 Think of it as pair programming with an AI that can actually touch your files.
 
@@ -69,10 +69,10 @@ These were all built primarily with Claude Code:
 
 | Project | Description | Scale |
 |---------|-------------|-------|
-| [CAIRN](https://ea-crux-project.vercel.app/) | Comprehensive AI safety knowledge navigator — risks, interventions, organizations, key uncertainties | ~500 pages, YAML data layer, custom components |
+| [LongTermWiki](https://longtermwiki.com/) | Comprehensive AI safety knowledge navigator — risks, interventions, organizations, key uncertainties | ~640 pages, YAML data layer, custom components |
 | [Delegation Risk](https://delegation-risk-framework.vercel.app/) | Structured mini-textbook with theory, case studies, and interactive tools | ~100 pages |
 
-The source for both is at [github.com/quantified-uncertainty/cairn](https://github.com/quantified-uncertainty/cairn). CAIRN took months of iterative work, but the basic structure was scaffolded in a single session.
+The source for LongTermWiki is at [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki) (standalone repo) and also within the [cairn monorepo](https://github.com/quantified-uncertainty/cairn). LongTermWiki took months of iterative work, but the basic structure was scaffolded in a single session.
 
 ### Rough Time Budget (Hands-on Session)
 
@@ -181,6 +181,20 @@ Plus keep your **browser open** to `http://localhost:4321` — it auto-refreshes
 - **Auto-sidebar** — Can auto-generate sidebar from folder structure (less config to manage)
 
 This workshop assumes Starlight, but the Claude Code workflow is the same for any framework.
+
+### Non-Code Alternatives
+
+Not everyone needs a code-based approach. If you prefer a more familiar tool, these can also produce research knowledge bases with AI assistance:
+
+| Tool | AI Integration | Publishing | Best For |
+|------|---------------|------------|----------|
+| **[Obsidian](https://obsidian.md/)** + [Quartz](https://quartz.jzhao.xyz/) | AI plugins, local-first | Quartz generates a static site from your vault | Personal research wikis, interlinked notes |
+| **[Notion](https://notion.so/)** | Built-in Notion AI | Notion Sites or share publicly | Team wikis, collaborative docs |
+| **[Google NotebookLM](https://notebooklm.google.com/)** | Built-in (source-grounded) | Export only | Synthesizing a set of source documents, Q&A over your research |
+
+**When to use these instead:** If you don't want to manage code, don't need custom components, or prefer a GUI editor. They're faster to start but less customizable and harder to scale past ~50 pages.
+
+**When to use the code approach (this workshop):** If you want full control over structure and presentation, need custom interactive components, or are building something with 50+ pages that will evolve over time.
 
 ---
 
@@ -691,13 +705,13 @@ Your research site is just getting started. Here's how to keep building:
 
 ### What Scaled Projects Look Like
 
-For [CAIRN](https://ea-crux-project.vercel.app/) (~500 pages), we eventually added:
+For [LongTermWiki](https://longtermwiki.com/) (~640 pages), we eventually added:
 - A CLI with 15 validators (link checking, quality scoring, etc.)
 - YAML-driven data layer with cross-references between entities
 - Custom React components for interactive content
 - Automated content improvement pipelines
 
-You don't need any of this to start — but it shows where the approach can go. The source is open at [github.com/quantified-uncertainty/cairn](https://github.com/quantified-uncertainty/cairn).
+You don't need any of this to start — but it shows where the approach can go. The source is open at [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki).
 
 ---
 
@@ -718,7 +732,7 @@ You don't need any of this to start — but it shows where the approach can go. 
 | **Astro docs** | [docs.astro.build](https://docs.astro.build/) |
 | **MDX docs** | [mdxjs.com](https://mdxjs.com/) |
 | **QURI Starter template** | `npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki` |
-| **CAIRN source** | [github.com/quantified-uncertainty/cairn](https://github.com/quantified-uncertainty/cairn) |
+| **LongTermWiki source** | [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki) |
 
 ---
 
