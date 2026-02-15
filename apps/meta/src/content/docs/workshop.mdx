@@ -12,12 +12,19 @@ Claude Code can automate substantial portions of research documentation — gene
 </Aside>
 
 <Aside type="caution" title="Before the Workshop — Do This Now">
-Install these **before** arriving so we can dive straight into building:
+Set up **one** of these options **before** arriving so we can dive straight into building:
+
+**Option A — Web App (easiest, no installation):**
+1. **Claude Pro or Max subscription** — sign up at [claude.ai](https://claude.ai/) if you haven't
+2. **Go to [claude.ai/code](https://claude.ai/code)** — this gives you a full development environment in your browser (terminal, file editor, web preview — everything you need)
+3. **A GitHub account** — the web app creates a repo for your project automatically
+
+**Option B — Local setup (more control):**
 1. **Node.js 18+** — [nodejs.org](https://nodejs.org/) (LTS version)
 2. **Claude Code** — `npm install -g @anthropic-ai/claude-code`, then run `claude` once to authenticate ([cost info below](#installing-claude-code))
 3. **A terminal** you're comfortable with (iTerm2, VS Code, Windows Terminal, etc.)
 
-Basic familiarity with Claude Code and the command line will be very useful.
+If you're unsure, **go with Option A** — it works entirely in the browser and you can always switch to a local setup later. Basic familiarity with Claude Code and the command line will be useful for either option.
 </Aside>
 
 ---
@@ -59,7 +66,7 @@ The workflow:
 
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) is an agentic coding tool that lets you use Claude AI to work directly on your codebase. It can read, write, and edit files in your project, run commands, and search the web — all through a conversational interface. You describe what you want, Claude executes it.
 
-Claude Code is available as a **CLI** (terminal), a **VS Code and JetBrains extension**, and via the **[claude.ai/code](https://claude.ai/code) web interface**. For the workshop we'll use the CLI, but the same workflow applies everywhere.
+Claude Code is available as a **CLI** (terminal), a **VS Code and JetBrains extension**, and via the **[claude.ai/code](https://claude.ai/code) web interface**. The web interface is the easiest way to get started — no local installation needed. The same workflow applies everywhere.
 
 Think of it as pair programming with an AI that can actually touch your files.
 
@@ -86,27 +93,51 @@ The source for LongTermWiki is at [github.com/quantified-uncertainty/longterm-wi
 
 ---
 
-## Installing Claude Code
+## Setting Up Claude Code
 
 <Tabs>
-  <TabItem label="npm (recommended)">
+  <TabItem label="Web App (easiest)">
+    No installation needed — everything runs in your browser.
+
+    1. Go to **[claude.ai/code](https://claude.ai/code)**
+    2. Sign in with your Claude account (requires Pro or Max subscription)
+    3. Click **"Create project"** — this sets up a GitHub repo and cloud development environment automatically
+    4. You get a built-in terminal, file editor, and web preview — all in one browser tab
+
+    The web app handles Node.js, npm, dev servers, and file editing for you. You can scaffold your project, run Claude Code, and preview your site without installing anything locally.
+
+    <Aside type="tip" title="GitHub account needed">
+    The web app stores your project in a GitHub repo. If you don't have a GitHub account, create one at [github.com](https://github.com/) — it's free.
+    </Aside>
+  </TabItem>
+  <TabItem label="CLI (local)">
+    Install Claude Code locally for full control over your environment.
+
+    **npm (recommended):**
     ```bash
     npm install -g @anthropic-ai/claude-code
     ```
-  </TabItem>
-  <TabItem label="Homebrew (macOS)">
+
+    **Homebrew (macOS):**
     ```bash
     brew install claude-code
     ```
+
+    After installing, run `claude` in your terminal to start. You'll be prompted to authenticate with your Anthropic account.
+  </TabItem>
+  <TabItem label="VS Code Extension">
+    If you use VS Code, the Claude Code extension gives you Claude in the sidebar alongside your editor.
+
+    1. Search **"Claude Code"** in the VS Code Extensions marketplace
+    2. Install and authenticate with your Anthropic account
+    3. Use Claude directly in the VS Code sidebar while editing files and running the terminal below
   </TabItem>
 </Tabs>
 
-After installing, run `claude` in your terminal to start. You'll be prompted to authenticate with your Anthropic account.
-
 <Aside type="caution" title="Cost — Read Before the Workshop">
-**Recommended: Use a Claude subscription.** Claude **Pro** (\$20/mo) or **Max** (\$100/mo or \$200/mo) subscriptions include Claude Code usage — no surprise bills. This is the easiest option for the workshop.
+**Recommended: Use a Claude subscription.** Claude **Pro** (\$20/mo) or **Max** (\$100/mo or \$200/mo) subscriptions include Claude Code usage — no surprise bills. This is the easiest option for the workshop, and is **required** for the web app.
 
-**If using the API instead:** You can sign up for an Anthropic API account at [console.anthropic.com](https://console.anthropic.com/). Before the workshop, **set a spending limit** — go to Settings → Limits and set a hard limit (e.g., \$20). A typical 90-minute workshop session involves 15-30 substantial Claude interactions and costs roughly **\$5-15 on the API**. Pro subscription users should be fine but may hit rate limits if making very rapid requests.
+**If using the API with the CLI instead:** You can sign up for an Anthropic API account at [console.anthropic.com](https://console.anthropic.com/). Before the workshop, **set a spending limit** — go to Settings → Limits and set a hard limit (e.g., \$20). A typical 90-minute workshop session involves 15-30 substantial Claude interactions and costs roughly **\$5-15 on the API**. Pro subscription users should be fine but may hit rate limits if making very rapid requests.
 </Aside>
 
 ### Key Resources
@@ -120,44 +151,58 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
 
 ## Terminal Setup: The Multi-Window Workflow
 
-The most important workflow pattern: run **multiple terminal windows simultaneously**.
-
-### The Three-Window Setup
-
-| Window | Purpose | What's Running |
-|--------|---------|----------------|
-| **Window 1** (large) | Claude Code | `claude` — your main LLM interaction |
-| **Window 2** | Dev server | `npm run dev` — live preview of your site |
-| **Window 3** | General terminal | Git commands, file browsing, manual edits |
-
-Plus keep your **browser open** to `http://localhost:4321` — it auto-refreshes as Claude makes changes.
-
-### Setting Up Split Panes
-
 <Tabs>
-  <TabItem label="iTerm2 (macOS)">
-    - **Cmd+D** — Split pane vertically
-    - **Cmd+Shift+D** — Split pane horizontally
-    - **Cmd+\[** / **Cmd+\]** — Switch between panes
+  <TabItem label="Web App">
+    The web app at [claude.ai/code](https://claude.ai/code) handles this for you — Claude Code, the terminal, file editor, and web preview are all in one interface. You can:
 
-    Recommended: Claude Code in a tall left pane, dev server top-right, general terminal bottom-right.
+    - **Chat with Claude** in the main panel
+    - **See file changes** as Claude makes them
+    - **Preview your site** in the built-in browser pane
+    - **Use the terminal** for git commands or manual operations
+
+    No split-pane setup needed — just start building.
   </TabItem>
-  <TabItem label="VS Code">
-    Use the built-in terminal with split (**Cmd+\\** in terminal panel). Or use the Claude Code VS Code extension — Claude in the sidebar, terminals below.
-  </TabItem>
-  <TabItem label="Windows Terminal">
-    - **Alt+Shift+D** — Duplicate pane
-    - **Alt+Shift+Plus** — Split vertically
-    - **Alt+Shift+Minus** — Split horizontally
-    - **Alt+Arrow** — Switch panes
+  <TabItem label="Local CLI">
+    The most important workflow pattern: run **multiple terminal windows simultaneously**.
+
+    **The Three-Window Setup:**
+
+    | Window | Purpose | What's Running |
+    |--------|---------|----------------|
+    | **Window 1** (large) | Claude Code | `claude` — your main LLM interaction |
+    | **Window 2** | Dev server | `npm run dev` — live preview of your site |
+    | **Window 3** | General terminal | Git commands, file browsing, manual edits |
+
+    Plus keep your **browser open** to `http://localhost:4321` — it auto-refreshes as Claude makes changes.
+
+    **Setting Up Split Panes:**
+
+    <Tabs>
+      <TabItem label="iTerm2 (macOS)">
+        - **Cmd+D** — Split pane vertically
+        - **Cmd+Shift+D** — Split pane horizontally
+        - **Cmd+\[** / **Cmd+\]** — Switch between panes
+
+        Recommended: Claude Code in a tall left pane, dev server top-right, general terminal bottom-right.
+      </TabItem>
+      <TabItem label="VS Code">
+        Use the built-in terminal with split (**Cmd+\\** in terminal panel). Or use the Claude Code VS Code extension — Claude in the sidebar, terminals below.
+      </TabItem>
+      <TabItem label="Windows Terminal">
+        - **Alt+Shift+D** — Duplicate pane
+        - **Alt+Shift+Plus** — Split vertically
+        - **Alt+Shift+Minus** — Split horizontally
+        - **Alt+Arrow** — Switch panes
+      </TabItem>
+    </Tabs>
+
+    **Why This Matters:**
+
+    - **Watch your site rebuild in real-time** as Claude makes changes
+    - **Alt-tab to the browser** to see what Claude built, then go back to give feedback
+    - **Run git commits** without interrupting Claude's flow
   </TabItem>
 </Tabs>
-
-### Why This Matters
-
-- **Watch your site rebuild in real-time** as Claude makes changes
-- **Alt-tab to the browser** to see what Claude built, then go back to give feedback
-- **Run git commits** without interrupting Claude's flow
 
 ---
 
@@ -229,10 +274,27 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
 
 2. **Scaffold the project**
 
-   Pick either option — both work fine for the workshop.
-
    <Tabs>
-     <TabItem label="Vanilla Starlight">
+     <TabItem label="Web App">
+       In the Claude Code web app, just ask Claude to set up the project for you. In the chat, type:
+
+       ```
+       Scaffold a new Astro Starlight research wiki in this project.
+       Run: npx degit quantified-uncertainty/cairn/starters/research-wiki .
+       Then run npm install and npm run dev.
+       ```
+
+       Or for a vanilla Starlight project:
+
+       ```
+       Create a new Astro Starlight project here.
+       Run: npm create astro@latest -- --template starlight .
+       Then run npm run dev.
+       ```
+
+       Claude will run the commands, install dependencies, and start the dev server. You'll see the site appear in the preview pane.
+     </TabItem>
+     <TabItem label="Vanilla Starlight (local)">
        A plain Starlight project. Simple and clean:
 
        ```bash
@@ -246,7 +308,7 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
 
        Then: `cd my-wiki`
      </TabItem>
-     <TabItem label="QURI Starter">
+     <TabItem label="QURI Starter (local)">
        Our pre-configured starter includes Mermaid diagrams, math rendering (KaTeX), React components, Tailwind CSS, and a CLAUDE.md. Useful if you know you'll want these features:
 
        ```bash
@@ -259,32 +321,43 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
      </TabItem>
    </Tabs>
 
-   **Checkpoint:** You should have a `my-wiki/` folder with `src/content/docs/`, `astro.config.mjs`, and `package.json`.
+   **Checkpoint:** You should have a project with `src/content/docs/`, `astro.config.mjs`, and `package.json`.
 
-3. **Start the dev server** (in Window 2)
+3. **Start the dev server and Claude Code**
 
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:4321` in your browser. If you used our starter, you should see "My Research Wiki" with a splash page. If you used vanilla Starlight, you should see "Welcome to Starlight."
+   <Tabs>
+     <TabItem label="Web App">
+       If you asked Claude to run `npm run dev` in the previous step, it's already running. You should see your site in the preview pane. If you used the QURI starter, you'll see "My Research Wiki" — if vanilla Starlight, "Welcome to Starlight."
 
-   **Checkpoint:** Browser shows a working docs site.
+       You're already chatting with Claude — skip to step 5.
+     </TabItem>
+     <TabItem label="Local CLI">
+       **Start the dev server** (in Window 2):
 
-4. **Start Claude Code** (in Window 1)
+       ```bash
+       npm run dev
+       ```
+       Open `http://localhost:4321` in your browser. If you used our starter, you should see "My Research Wiki" with a splash page. If you used vanilla Starlight, you should see "Welcome to Starlight."
 
-   ```bash
-   claude
-   ```
+       **Start Claude Code** (in Window 1):
 
-   <Aside type="tip" title="Handling Permissions">
-   Claude Code asks permission before editing files, reading directories, and running commands. You have options:
+       ```bash
+       claude
+       ```
 
-   - **Approve individually** — Click "Allow" each time (safest, but slow)
-   - **Allow for the session** — Choose "Allow always" when prompted for common operations like file edits
-   - **Skip all permissions** — Start with `claude --dangerously-skip-permissions` to auto-approve everything. Only use this for throwaway workshop projects — it allows Claude to run arbitrary shell commands.
+       <Aside type="tip" title="Handling Permissions">
+       Claude Code asks permission before editing files, reading directories, and running commands. You have options:
 
-   For the workshop, we recommend "Allow always" for file edits, or `--dangerously-skip-permissions` if you want maximum speed.
-   </Aside>
+       - **Approve individually** — Click "Allow" each time (safest, but slow)
+       - **Allow for the session** — Choose "Allow always" when prompted for common operations like file edits
+       - **Skip all permissions** — Start with `claude --dangerously-skip-permissions` to auto-approve everything. Only use this for throwaway workshop projects — it allows Claude to run arbitrary shell commands.
+
+       For the workshop, we recommend "Allow always" for file edits, or `--dangerously-skip-permissions` if you want maximum speed.
+       </Aside>
+     </TabItem>
+   </Tabs>
+
+   **Checkpoint:** You should see a working docs site (in your browser or the web app preview pane).
 
 5. **Create your entire page structure in one prompt**
 
@@ -468,11 +541,20 @@ Not everyone needs a code-based approach. If you prefer a more familiar tool, th
 
    Starlight supports [theme customization](https://starlight.astro.build/guides/css-and-tailwind/) including colors, fonts, and custom CSS.
 
-9. **Save your progress** (in Window 3)
+9. **Save your progress**
 
-   ```bash
-   git add -A && git commit -m "workshop: initial research wiki"
-   ```
+   <Tabs>
+     <TabItem label="Web App">
+       Ask Claude: "Commit all changes with the message 'workshop: initial research wiki'" — or use the terminal in the web app to run git commands directly. Your project is already backed by a GitHub repo, so your work is saved.
+     </TabItem>
+     <TabItem label="Local CLI">
+       In Window 3:
+
+       ```bash
+       git add -A && git commit -m "workshop: initial research wiki"
+       ```
+     </TabItem>
+   </Tabs>
 
    **Checkpoint:** You should have a multi-section research site with fleshed-out pages, cross-references, and your own branding.
 
