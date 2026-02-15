@@ -3,7 +3,7 @@ title: "Workshop: Building Research Websites with Claude Code"
 description: A hands-on workshop on using Claude Code to build research mini-textbooks, wikis, and structured knowledge bases
 ---
 
-import { Aside, Steps, Tabs, TabItem, Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 Claude Code can automate substantial portions of research documentation — generating mini-textbooks, interactive wikis, and structured knowledge bases from your research questions. This workshop teaches you how.
 
@@ -167,7 +167,7 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
    **Topics to avoid:** Anything requiring precise quantitative calculations (use a spreadsheet), topics where most sources are behind paywalls (Claude can't access them), and topics where you'd be generating novel research claims rather than synthesizing existing ones.
    </Aside>
 
-2. **Scaffold the project** (ideally done before arriving — see [pre-workshop setup](#before-the-workshop--do-this-now))
+2. **Scaffold the project** (ideally done before arriving — see the setup checklist at the top of this page)
 
    <Tabs>
      <TabItem label="QURI Starter (recommended)">
@@ -221,7 +221,7 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
 
    **Checkpoint:** Browser shows a working docs site.
 
-4. **Start Claude Code** (in Window 1)
+4. **Start Claude Code** (in your main terminal)
 
    ```bash
    claude
@@ -423,7 +423,7 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
    git add -A && git commit -m "workshop: initial research wiki"
    ```
 
-   **Checkpoint:** You should have a multi-section research site with fleshed-out pages, cross-references, and your own branding.
+   **Checkpoint:** You should have a scaffolded research site with several sections and a few well-developed pages. That's a strong foundation to keep building on after the workshop.
 
 </Steps>
 
@@ -471,12 +471,42 @@ After installing, run `claude` in your terminal to start. You'll be prompted to 
 
 ---
 
+## Troubleshooting
+
+**Build errors after creating pages**
+- Usually invalid MDX frontmatter (bad YAML) or unescaped special characters (`$`, `<`, `{`)
+- Just paste the error to Claude: "The build failed with this error: [paste]. Fix it."
+
+**Sidebar doesn't show new pages**
+- If using `autogenerate`, make sure the directory name in `astro.config.mjs` matches the actual folder name in `src/content/docs/`
+- If a section is totally missing from the sidebar, Claude probably forgot to add it to the config — ask it to check
+
+**Claude seems confused or repetitive**
+- `/clear` — Reset context entirely (start a fresh conversation)
+- `/compact` — Compress conversation (keeps context summary, frees space)
+- Make sure you're running `claude` from the project root directory, not a subdirectory
+
+**Claude keeps making the same mistake**
+- Add the correction to `CLAUDE.md` — Claude reads this at the start of every session
+- e.g., "IMPORTANT: Always escape \$ signs in MDX files"
+
+**Dev server crashed**
+- Just restart it: `npm run dev` in your dev server terminal
+- Common cause: a syntax error in an MDX file that Claude can fix
+
+**Pages show up but look wrong**
+- Starlight handles most styling automatically — custom CSS rarely needed
+- If content looks garbled, it's usually an MDX syntax issue (unescaped characters, unclosed tags)
+- Ask Claude: "The page at [path] looks broken in the browser. Read it and fix the MDX syntax."
+
+---
+
 ## After the Workshop
 
 Your research site is just getting started. Here's how to keep building:
 
-- **Deploy it** — Having a live URL motivates you to keep improving. Takes 5 minutes with Netlify or Vercel (see [deployment options](#deployment-options) below).
-- **Run `/init`** to create a `CLAUDE.md` if you haven't — makes every future session more productive (see [CLAUDE.md reference](#claudemd-teaching-claude-about-your-project) below)
+- **Deploy it** — Having a live URL motivates you to keep improving. Takes 5 minutes with Netlify or Vercel (see Deployment Options in the reference section below).
+- **Run `/init`** to create a `CLAUDE.md` if you haven't — makes every future session more productive (see CLAUDE.md in the reference section below)
 - **Add 3-5 pages per session** — Even 30 minutes a week with Claude Code adds up fast
 - **Focus on depth over breadth** — Improve existing pages before adding more
 
@@ -628,33 +658,3 @@ For [LongTermWiki](https://longtermwiki.com/) (~640 pages), we eventually added 
 | **QURI Starter template** | `npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki` |
 | **LongTermWiki source** | [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki) |
 | **QURI** | [quantifieduncertainty.org](https://quantifieduncertainty.org/) |
-
----
-
-## Troubleshooting
-
-**Build errors after creating pages**
-- Usually invalid MDX frontmatter (bad YAML) or unescaped special characters (`$`, `<`, `{`)
-- Just paste the error to Claude: "The build failed with this error: [paste]. Fix it."
-
-**Sidebar doesn't show new pages**
-- If using `autogenerate`, make sure the directory name in `astro.config.mjs` matches the actual folder name in `src/content/docs/`
-- If a section is totally missing from the sidebar, Claude probably forgot to add it to the config — ask it to check
-
-**Claude seems confused or repetitive**
-- `/clear` — Reset context entirely (start a fresh conversation)
-- `/compact` — Compress conversation (keeps context summary, frees space)
-- Make sure you're running `claude` from the project root directory, not a subdirectory
-
-**Claude keeps making the same mistake**
-- Add the correction to `CLAUDE.md` — Claude reads this at the start of every session
-- e.g., "IMPORTANT: Always escape \$ signs in MDX files"
-
-**Dev server crashed**
-- Just restart it: `npm run dev` in your dev server terminal
-- Common cause: a syntax error in an MDX file that Claude can fix
-
-**Pages show up but look wrong**
-- Starlight handles most styling automatically — custom CSS rarely needed
-- If content looks garbled, it's usually an MDX syntax issue (unescaped characters, unclosed tags)
-- Ask Claude: "The page at [path] looks broken in the browser. Read it and fix the MDX syntax."
