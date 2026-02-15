@@ -1,0 +1,200 @@
+---
+title: "Guide: Claude Code Web App"
+description: Using the claude.ai/code web interface to build research websites without local setup
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The [Claude Code Web App](https://claude.ai/code) lets you use Claude Code entirely in your browser — no terminal, Node.js, or local setup required. It creates a GitHub repo for your project automatically and gives you a cloud development environment with a built-in terminal and file editor.
+
+This guide covers the web app workflow. For the full workshop walkthrough (which assumes the local CLI), see the [workshop page](/workshop/).
+
+<Aside type="note">
+The web app requires a Claude **Pro** (\$20/mo) or **Max** (\$100/mo or \$200/mo) subscription.
+</Aside>
+
+---
+
+## When to Use the Web App vs. Local CLI
+
+| | Web App | Local CLI |
+|---|---------|-----------|
+| **Setup time** | ~1 minute | ~10 minutes (install Node, npm, Claude Code) |
+| **Live preview** | No — must deploy to see your site | Yes — `npm run dev` at localhost:4321 |
+| **File editing** | Built-in editor + Claude | Your own editor + Claude in terminal |
+| **Git** | Auto-creates a GitHub repo | You manage git yourself |
+| **Best for** | Quick starts, non-technical users, workshops | Long-running projects, custom tooling, offline work |
+
+The main trade-off: **no local dev server**. You can't preview your site in the browser until you deploy it. This makes deployment setup important — do it early.
+
+---
+
+## Getting Started
+
+<Steps>
+
+1. **Go to [claude.ai/code](https://claude.ai/code)** and sign in with your Claude account.
+
+2. **Create a project.** Click "Create project" — this sets up a GitHub repo and cloud dev environment automatically. You'll need a GitHub account (free at [github.com](https://github.com/)).
+
+3. **Scaffold your site.** In the chat, ask Claude:
+
+   ```
+   Scaffold a new Astro Starlight research wiki in this project.
+   Run: npm create astro@latest -- --template starlight .
+   Pick: install dependencies = yes, TypeScript = strictest.
+   Then run npm run dev to verify it builds.
+   ```
+
+   Or use the QURI starter (includes Mermaid, KaTeX, Tailwind, CLAUDE.md):
+
+   ```
+   Scaffold a research wiki using the QURI starter template.
+   Run: npx degit quantified-uncertainty/cairn/starters/research-wiki .
+   Then run npm install && npm run dev.
+   ```
+
+4. **Set up deployment** (next section) so you can actually see your site.
+
+</Steps>
+
+---
+
+## Deploying Your Site
+
+Since the web app can't preview locally, you need a deployment pipeline. Set this up **before** you start writing content — you'll want to see what your site looks like as you work.
+
+### GitHub Pages (free, recommended)
+
+GitHub Pages is free and works well if your repo is public (required on the free GitHub plan). There are some configuration steps, but once set up, your site auto-deploys on every push.
+
+<Steps>
+
+1. **Ask Claude to set up GitHub Pages deployment:**
+
+   ```
+   Set up GitHub Pages deployment for this Astro Starlight site:
+   1. Create a GitHub Actions workflow at .github/workflows/deploy.yml
+      that builds the site and deploys to GitHub Pages
+   2. Set the site URL and base path in astro.config.mjs for
+      GitHub Pages (use the repo name from the git remote)
+   ```
+
+   Claude will create the workflow file and update your Astro config.
+
+2. **Commit and push:**
+
+   Ask Claude: "Commit all changes and push to the main branch."
+
+3. **Enable GitHub Pages in your repo settings:**
+
+   This step must be done manually in the GitHub UI — Claude can't do it for you.
+
+   1. Go to your repo on GitHub (the web app shows the repo URL)
+   2. Navigate to **Settings** → **Pages**
+   3. Under "Build and deployment", change **Source** to **GitHub Actions**
+   4. Save
+
+4. **Wait for the first deploy** (~1-2 minutes). Your site will be live at:
+
+   `https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/`
+
+</Steps>
+
+<Aside type="caution" title="Base path considerations">
+GitHub Pages serves project repos at a subpath (e.g., `username.github.io/repo-name/`). Astro needs `base: '/repo-name'` in the config for this to work. Claude should handle this when you ask it to set up deployment, but be aware:
+
+- Links in Markdown should use relative paths (`./other-page/`) rather than absolute paths (`/other-page/`) to work correctly with the base path
+- Starlight has [known issues](https://github.com/withastro/starlight/discussions/2158) with base paths in some edge cases (sidebar links, hero actions)
+- If links seem broken, ask Claude: "Check that all internal links work correctly with our GitHub Pages base path"
+</Aside>
+
+After the initial setup, the workflow is simple: **make changes → ask Claude to commit and push → site rebuilds automatically**. Deploys take about 1-2 minutes.
+
+### Vercel (alternative — zero config)
+
+If you'd prefer to avoid the base path complexity of GitHub Pages, [Vercel](https://vercel.com/) requires zero Astro configuration:
+
+1. Sign up at [vercel.com](https://vercel.com/) with your GitHub account (free tier available)
+2. Click **"Add New Project"** → select your repo
+3. Vercel auto-detects Astro — click **Deploy**
+4. Your site is live at `your-project.vercel.app`
+
+No base path issues, no workflow files, no manual settings. Deploys in 30-60 seconds. The trade-off: requires a Vercel account and your site is on their infrastructure.
+
+### Other options
+
+**Netlify** and **Cloudflare Pages** also work well — see the [deployment section on the workshop page](/workshop/#deployment-after-the-workshop) for details.
+
+---
+
+## The Web App Workflow
+
+Once deployment is set up, the day-to-day workflow is straightforward:
+
+### Build → Commit → Check
+
+1. **Tell Claude what to build or change** — create pages, expand content, fix styling
+2. **Ask Claude to commit and push** — "Commit these changes with the message 'add policy approaches section' and push"
+3. **Check your deployed site** — open your GitHub Pages / Vercel URL in another tab and refresh after a minute or two
+
+Repeat. Each cycle takes 2-5 minutes depending on deploy speed.
+
+### Tips specific to the web app
+
+**Commit and push frequently.** Since you can't preview locally, small frequent pushes let you catch problems early. Don't build 10 pages before checking what they look like.
+
+**Use the built-in terminal.** The web app has a terminal — you can run `npm run build` to check for build errors without waiting for a deploy. This catches most problems (broken MDX, bad frontmatter) instantly.
+
+**Ask Claude to verify builds.** After big changes:
+```
+Run npm run build and tell me if there are any errors.
+```
+
+**Git operations through Claude.** The web app handles git well. You can ask Claude to commit, push, create branches, etc. You can also use the terminal directly for git commands.
+
+---
+
+## Key Differences from Local CLI
+
+If you're used to the local CLI workflow described on the [workshop page](/workshop/), here's what's different:
+
+| Local CLI | Web App |
+|-----------|---------|
+| Three terminal windows (Claude, dev server, general) | One interface — Claude chat + terminal |
+| Live preview at localhost:4321 with hot reload | Deploy to see changes (~1-2 min per cycle) |
+| `claude --dangerously-skip-permissions` for speed | Permissions handled by the web app |
+| Manual git init and remote setup | GitHub repo created automatically |
+| Full control over Node.js version, packages, OS tools | Cloud environment with standard tooling |
+| Works offline | Requires internet connection |
+
+The biggest adjustment is the **feedback loop**. With the local CLI, you see changes instantly in your browser. With the web app, there's a 1-2 minute deploy delay. Compensate by:
+- Running `npm run build` in the terminal to catch errors immediately
+- Batching related changes before pushing
+- Keeping your deployed URL open in another tab
+
+---
+
+## Common Issues
+
+**"My site isn't updating after push"**
+- Check that GitHub Actions completed: go to your repo → Actions tab → verify the latest run succeeded
+- If using Vercel, check the Vercel dashboard for deploy status
+- Build errors will prevent deployment — ask Claude to run `npm run build` to check
+
+**"Links are broken on GitHub Pages"**
+- Likely a base path issue. Ask Claude: "Check astro.config.mjs — is the base path set correctly for GitHub Pages?"
+- Use relative links in your Markdown content (e.g., `./other-page/` not `/other-page/`)
+
+**"Claude can't access my GitHub repo settings"**
+- Enabling GitHub Pages under Settings → Pages must be done manually in the GitHub UI
+- Claude can create workflow files and update config, but can't change repo settings
+
+**"Build fails with MDX errors"**
+- Paste the error to Claude: "The build failed with this error: [paste]. Fix it."
+- Common causes: unescaped `$`, `<`, or `{` characters in MDX files, or invalid YAML frontmatter
+
+**"I want to switch to local development"**
+- Clone your GitHub repo locally: `git clone https://github.com/YOUR-USERNAME/YOUR-REPO.git`
+- Run `npm install` and `npm run dev` — everything works the same locally
+- You can switch back and forth freely since the repo is the source of truth
