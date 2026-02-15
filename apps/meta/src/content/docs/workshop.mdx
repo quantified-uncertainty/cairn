@@ -7,16 +7,6 @@ import { Aside, Steps, Tabs, TabItem, Card, CardGrid, LinkCard } from '@astrojs/
 
 Claude Code can automate substantial portions of research documentation — generating mini-textbooks, interactive wikis, and structured knowledge bases from your research questions. This workshop teaches you how.
 
-<Aside type="tip" title="Want to Try This Right Now?">
-You don't need Claude Code installed to get started. Open any LLM — [Claude.ai](https://claude.ai), ChatGPT, Gemini, or whichever you prefer — and start working through the process:
-
-1. **Pick a topic** and ask the LLM to help you outline a structure (sections, pages, key questions)
-2. **Draft content** by pasting the prompts from the [workshop walkthrough below](#workshop-walkthrough) — the LLM can generate page outlines, comparison tables, and initial drafts
-3. **Plan your wiki** — ask it to suggest what pages to create, how to organize sections, and what to cover
-
-This gets you 80% of the thinking done. When you're ready to turn it into an actual website, come back here for the Claude Code workflow — or copy-paste the LLM's output into any static site framework manually.
-</Aside>
-
 <Aside type="note" title="Collaborative Doc">
 **[Open the shared workshop document](https://docs.google.com/document/d/1LPq_q6BYFT2NcPYh8Lss5v11vMQ_7VO61EhBlXRzexw/edit?tab=t.0)** — for questions, sharing your site, getting help, and coordinating during the event.
 </Aside>
@@ -34,6 +24,10 @@ Basic familiarity with Claude Code and the command line will be very useful.
 **Prefer to skip local setup?** The [Claude Code Web App](/claude-code-web-app/) lets you do everything in the browser — no terminal or Node.js required.
 </Aside>
 
+<Aside type="tip" title="Use Any LLM as Your Guide">
+As you work through this workshop, keep an LLM chat open — [Claude.ai](https://claude.ai), ChatGPT, Gemini, or whichever you prefer. You can ask it questions at any step: "What does this terminal error mean?", "Help me pick a good topic structure", "Explain what `npm run dev` does", etc. Think of it as a knowledgeable assistant sitting next to you. This is separate from Claude Code (which edits your files directly) — any LLM chat works for getting unstuck and asking questions along the way.
+</Aside>
+
 ---
 
 ## About This Workshop
@@ -45,7 +39,7 @@ Basic familiarity with Claude Code and the command line will be very useful.
 2. **Hands-on session** — Begin your own research mini-website with guidance
 3. **Closing presentation** — Share progress, discuss challenges, next steps
 
-**Slides:** [Google Slides](https://docs.google.com/presentation/d/1Q2oisP95LRLs0mGwWIStrhhPDRMpxxrNPpvbzE59yBQ/edit?usp=sharing)
+**Slides:** [Google Slides](https://docs.google.com/presentation/d/1JAm0jZ-3Hu2rgYug6sy-5l5vjhYYPovy/edit)
 
 <details>
 <summary>**Upcoming event logistics** (February 2026 — EAG SF)</summary>
@@ -698,27 +692,27 @@ See [the compute governance page](/policy-approaches/compute-governance/) for de
 ## Deployment (After the Workshop)
 
 <Aside type="tip" title="Using the Claude Code Web App?">
-See the **[Web App guide's deployment section](/claude-code-web-app/#deploying-your-site)** for step-by-step GitHub Pages and Vercel setup tailored to the web app workflow.
+See the **[Web App guide's deployment section](/claude-code-web-app/#deploying-your-site)** for Vercel setup tailored to the web app workflow.
 </Aside>
 
 When you're ready to put your site online (a common gotcha: make sure `npm run build` succeeds locally before deploying — deployment platforms will fail on the same errors your local build does):
 
 <Tabs>
-  <TabItem label="Netlify (easiest)">
+  <TabItem label="Vercel (recommended)">
+    1. Push to GitHub
+    2. Go to [vercel.com](https://vercel.com/), sign up with GitHub (free tier available)
+    3. Click **"Add New Project"** → select your repo
+    4. It auto-detects Astro — just click **Deploy**
+    5. Your site is live at `your-project.vercel.app`
+
+    Zero configuration needed. Auto-deploys on every push. Deploys in 30-60 seconds.
+  </TabItem>
+  <TabItem label="Netlify">
     1. Push your repo to GitHub
     2. Go to [netlify.com](https://www.netlify.com/), sign in with GitHub
     3. "Add new site" → "Import an existing project" → Select your repo
     4. Build command: `npm run build`, Publish directory: `dist/`
     5. Click Deploy — you'll get a URL like `your-site.netlify.app`
-  </TabItem>
-  <TabItem label="Vercel">
-    1. Push to GitHub
-    2. Go to [vercel.com](https://vercel.com/), import your repo
-    3. It auto-detects Astro — just click Deploy
-  </TabItem>
-  <TabItem label="GitHub Pages (free)">
-    Push to GitHub, then ask Claude:
-    > "Create a GitHub Actions workflow that builds my Astro site and deploys to GitHub Pages."
   </TabItem>
   <TabItem label="Cloudflare Pages (free)">
     1. Push to GitHub
@@ -756,7 +750,7 @@ You don't need any of this to start — but it shows where the approach can go. 
 
 | Resource | URL |
 |----------|-----|
-| **Workshop slides** | [Google Slides](https://docs.google.com/presentation/d/1Q2oisP95LRLs0mGwWIStrhhPDRMpxxrNPpvbzE59yBQ/edit?usp=sharing) |
+| **Workshop slides** | [Google Slides](https://docs.google.com/presentation/d/1JAm0jZ-3Hu2rgYug6sy-5l5vjhYYPovy/edit) |
 | **QURI** | [quantifieduncertainty.org](https://quantifieduncertainty.org/) |
 | **Claude Code docs** | [docs.anthropic.com/en/docs/claude-code/overview](https://docs.anthropic.com/en/docs/claude-code/overview) |
 | **Claude Code GitHub** | [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code) |
@@ -913,7 +907,7 @@ You don't need any of this to start — but it shows where the approach can go. 
 - Or add `"engines": { "node": ">=18" }` to your `package.json`
 
 **Deployed site shows 404 for all pages**
-- Check the `base` setting in `astro.config.mjs`. For GitHub Pages with a repo subpath, you need `base: '/repo-name/'`. For Vercel/Netlify with a custom domain, `base` should be `'/'` or omitted.
+- Check the `base` setting in `astro.config.mjs`. For Vercel/Netlify, `base` should be `'/'` or omitted.
 
 **Deployed site loads but styles are missing**
 - Make sure `site` in `astro.config.mjs` matches your actual deployed URL (e.g., `site: 'https://my-wiki.netlify.app'`)
