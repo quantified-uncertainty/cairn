@@ -692,27 +692,27 @@ See [the compute governance page](/policy-approaches/compute-governance/) for de
 ## Deployment (After the Workshop)
 
 <Aside type="tip" title="Using the Claude Code Web App?">
-See the **[Web App guide's deployment section](/claude-code-web-app/#deploying-your-site)** for step-by-step GitHub Pages and Vercel setup tailored to the web app workflow.
+See the **[Web App guide's deployment section](/claude-code-web-app/#deploying-your-site)** for Vercel setup tailored to the web app workflow.
 </Aside>
 
 When you're ready to put your site online (a common gotcha: make sure `npm run build` succeeds locally before deploying — deployment platforms will fail on the same errors your local build does):
 
 <Tabs>
-  <TabItem label="Netlify (easiest)">
+  <TabItem label="Vercel (recommended)">
+    1. Push to GitHub
+    2. Go to [vercel.com](https://vercel.com/), sign up with GitHub (free tier available)
+    3. Click **"Add New Project"** → select your repo
+    4. It auto-detects Astro — just click **Deploy**
+    5. Your site is live at `your-project.vercel.app`
+
+    Zero configuration needed. Auto-deploys on every push. Deploys in 30-60 seconds.
+  </TabItem>
+  <TabItem label="Netlify">
     1. Push your repo to GitHub
     2. Go to [netlify.com](https://www.netlify.com/), sign in with GitHub
     3. "Add new site" → "Import an existing project" → Select your repo
     4. Build command: `npm run build`, Publish directory: `dist/`
     5. Click Deploy — you'll get a URL like `your-site.netlify.app`
-  </TabItem>
-  <TabItem label="Vercel">
-    1. Push to GitHub
-    2. Go to [vercel.com](https://vercel.com/), import your repo
-    3. It auto-detects Astro — just click Deploy
-  </TabItem>
-  <TabItem label="GitHub Pages (free)">
-    Push to GitHub, then ask Claude:
-    > "Create a GitHub Actions workflow that builds my Astro site and deploys to GitHub Pages."
   </TabItem>
   <TabItem label="Cloudflare Pages (free)">
     1. Push to GitHub
@@ -907,7 +907,7 @@ You don't need any of this to start — but it shows where the approach can go. 
 - Or add `"engines": { "node": ">=18" }` to your `package.json`
 
 **Deployed site shows 404 for all pages**
-- Check the `base` setting in `astro.config.mjs`. For GitHub Pages with a repo subpath, you need `base: '/repo-name/'`. For Vercel/Netlify with a custom domain, `base` should be `'/'` or omitted.
+- Check the `base` setting in `astro.config.mjs`. For Vercel/Netlify, `base` should be `'/'` or omitted.
 
 **Deployed site loads but styles are missing**
 - Make sure `site` in `astro.config.mjs` matches your actual deployed URL (e.g., `site: 'https://my-wiki.netlify.app'`)
