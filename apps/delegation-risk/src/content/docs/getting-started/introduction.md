@@ -1,5 +1,6 @@
 ---
 title: "Introduction"
+description: "The delegation risk problem, why AI systems raise it acutely, and the structural-safety approach this framework takes."
 sidebar:
   order: 1
 ---
@@ -10,11 +11,7 @@ sidebar:
 
 Every delegation involves risk. When you delegate a task—to an employee, a contractor, a software system, or an AI agent—you're accepting potential downside in exchange for capability you don't have or can't apply yourself.
 
-This is straightforward but worth stating precisely: **Delegation Risk is the expected cost of delegating**. For each way things could go wrong (we'll call these *harm modes*), multiply the probability by the damage. Sum across all harm modes:
-
-```
-Delegation Risk = Σ P(harm mode) × Damage(harm mode)
-```
+This is straightforward but worth stating precisely: **Delegation Risk is the expected cost of delegating**. For each way things could go wrong (we'll call these *harm modes*), multiply the probability by the damage and sum across all harm modes. See the [canonical formula](/getting-started/core-concepts/#the-formula) in Core Concepts.
 
 A research assistant that might leak proprietary data (P=0.001, damage=$50,000) contributes $50 to your Delegation Risk. An AI code deployer that might deploy malicious code (P=0.0001, damage=$1,000,000) contributes $100. You're implicitly accepting these costs when you delegate.
 
@@ -30,49 +27,25 @@ Of course, the hard part is estimating the probabilities and damages. We'll addr
 
 AI systems may present delegation challenges at unusual scale. Several factors suggest this:
 
-**Capabilities are expanding rapidly.** Whether verification is keeping pace is unclear—but there's at least reason for concern. A year ago, AI couldn't reliably write working code; now it often can. Our tools for verifying AI behavior have improved, but it's not obvious they've improved proportionally.
+**Capabilities are expanding rapidly, and verification may not be keeping pace.** A year ago, AI couldn't reliably write working code; now it often can. Our tools for verifying AI behavior have improved, but it's not obvious they've improved proportionally.
 
-**Agent-to-agent delegation creates complex risk networks.** When AI agents delegate to other AI agents, risk relationships become networks rather than chains. If your AI assistant uses a plugin that calls another API that invokes another model—how much Delegation Risk are you accepting? Most current systems don't have principled answers to this question.
+**Agent-to-agent delegation creates complex risk networks.** When AI agents delegate to other AI agents, risk relationships become networks rather than chains. If your AI assistant uses a plugin that calls another API that invokes another model—how much Delegation Risk are you accepting? Most current systems don't have principled answers.
 
-**Autonomy may increase while oversight decreases.** There are economic pressures toward more autonomous AI ([Gwern, 2016](https://gwern.net/tool-ai)), though how strong these pressures are and whether they'll dominate is uncertain. To the extent autonomy increases without proportional accountability, structural guarantees become more important.
+**Autonomy may increase while oversight decreases.** There are economic pressures toward more autonomous AI ([Gwern, 2016](https://gwern.net/tool-ai)). To the extent autonomy increases without proportional accountability, structural guarantees become more important.
 
-**We may be building systems we don't fully understand.** To the extent AI systems have capabilities we haven't characterized, they have harm modes we haven't enumerated. The Delegation Risk calculation requires listing failure modes—uncertainty about capabilities translates directly to uncertainty about risk.
+**We may be building systems we don't fully understand.** Uncharacterized capabilities mean unenumerated harm modes—and the Delegation Risk calculation requires listing failure modes, so uncertainty about capabilities translates directly to uncertainty about risk.
 
-None of these claims are certain. But if even some of them hold, having infrastructure for managing Delegation Risk seems valuable. And even if AI turns out to be easier to manage than feared, the framework applies to delegation generally—the AI application is primary but not exclusive.
+None of these claims are certain. But if even some hold, infrastructure for managing Delegation Risk seems valuable. And even if AI turns out easier to manage than feared, the framework applies to delegation generally—the AI application is primary but not exclusive.
 
 ## The Approach
 
-This framework proposes **structural constraints** as a foundation for managing Delegation Risk. The intuition: rather than relying solely on selecting trustworthy delegates or overseeing every action, we can design systems where dangerous behavior is difficult or impossible regardless of intentions.
-
-The core idea: **safety can be a property of system architecture, not just individual component behavior**.
-
-If you can build systems where:
-- No single delegate has enough power to cause catastrophic harm
-- Delegates can't easily coordinate to amplify their power
-- Risk relationships are explicit and bounded
-- Failures are contained and recoverable
-
-...then you may not need perfect trust in any individual component.
+This framework proposes **structural constraints** as a foundation for managing Delegation Risk. The intuition: rather than relying solely on selecting trustworthy delegates or overseeing every action, we can design systems where dangerous behavior is difficult or impossible regardless of intentions. The core idea: **safety can be a property of system architecture, not just individual component behavior**. (Core Concepts develops this in [Decomposition Over Monoliths](/getting-started/core-concepts/#decomposition-over-monoliths) and [Architectural Safety](/getting-started/core-concepts/#architectural-safety).)
 
 This isn't a new idea. It's how nuclear plants aim for very low failure probabilities—by flowing system-level targets down to component budgets through fault trees. It's how financial institutions attempt to manage systemic risk. It's how secure systems try to limit blast radius through least privilege. It's also the logic behind constitutional separation of powers: bounding what any individual actor can do, regardless of their intentions.
 
 Whether these approaches actually work as well as claimed is a separate question—nuclear safety has an impressive track record; financial risk management has a more mixed one. But the underlying principle of structural safety has proven useful across domains, and seems worth applying to AI systems.
 
-What's newer here is attempting to systematize these ideas for AI specifically, where the delegates are less predictable than traditional software and the stakes may be higher than traditional human delegation.
-
-## What This Framework Provides
-
-**1. A vocabulary** for discussing delegation, risk, and containment. Precise terms help precise thinking.
-
-**2. Mathematics** for quantifying risk, modeling how it propagates through delegation chains, and reasoning about allocations. The math is straightforward—mostly probability and expected value—but having explicit formulas helps avoid hand-waving.
-
-**3. Principles** for constraining components. The "Least X" family (least privilege, least capability, least context, least persistence, least autonomy, least connectivity) provides a checklist for limiting what delegates can do, know, remember, and coordinate.
-
-**4. Cross-domain methods** adapted from nuclear safety (fault trees, probabilistic risk assessment), finance (Euler allocation, coherent risk measures), and mechanism design (incentive-compatible reporting). These fields have decades of experience managing quantified risk; we can learn from their successes and failures.
-
-**5. Patterns** for decomposing AI systems into components with bounded Delegation Risk. Concrete architectures, not just abstract principles.
-
-Whether this all adds up to something useful is ultimately an empirical question. The framework provides structure; whether that structure helps in practice depends on details we can't fully anticipate.
+What's newer here is attempting to systematize these ideas for AI specifically, where the delegates are less predictable than traditional software and the stakes may be higher than traditional human delegation. The framework provides a vocabulary, the underlying mathematics, the "Least X" principles, cross-domain methods (from nuclear safety, finance, and mechanism design), and concrete decomposition patterns—see [What This Framework Provides](/getting-started/core-concepts/#what-this-framework-provides) in Core Concepts. Whether this all adds up to something useful is ultimately an empirical question.
 
 ## Scope and Limitations
 
@@ -111,28 +84,14 @@ We include examples from these domains for two reasons. First, they're often mor
 
 ## How to Read This
 
-The documentation is organized from foundations to applications:
-
-**Getting Started** provides overviews at various levels of detail—from a 5-minute summary to a full conceptual introduction.
-
-**Delegation Risk** develops the mathematics: how to quantify Delegation Risk, how risk propagates through delegation chains, how to decompose and allocate risk budgets.
-
-**Design Patterns** provides actionable guidance: the Least X principles, decomposed architectures, safety mechanisms, worked examples.
-
-**Cross-Domain Methods** covers techniques borrowed from other fields: nuclear safety's probabilistic risk assessment, finance's Euler allocation, mechanism design's incentive-compatible reporting.
-
-**Case Studies** applies the framework to specific scenarios: AI systems that succeeded or failed, human organizations, historical examples.
-
-**Research** goes further into theory and background research for readers who want more depth.
-
-You don't need to read linearly. If you want the core ideas fast, start with the [Five-Minute Intro](/getting-started/five-minute-intro/). If you want to apply the framework immediately, try the [Quick Start](/design-patterns/tools/quick-start/). If you want the full picture, the [Core Concepts](/getting-started/core-concepts/) page provides a visual overview of how everything connects.
+The documentation is organized from foundations to applications. You don't need to read linearly: for the core ideas fast, start with the [Five-Minute Intro](/getting-started/five-minute-intro/); to apply the framework immediately, try the [Quick Start](/design-patterns/tools/quick-start/); for the full picture, [Core Concepts](/getting-started/core-concepts/) gives a visual overview of how everything connects. For a section-by-section map, dependency graph, and goal-based reading paths, see [Reading Order](/getting-started/reading-order/).
 
 ---
 
 ## Key Takeaways
 
 :::note[Key Takeaways]
-1. **Risk is quantifiable**: Delegation Risk = Σ P(harm) × Damage
+1. **Risk is quantifiable**: Delegation Risk is the expected cost of delegating ([formula](/getting-started/core-concepts/#the-formula))
 2. **Safety can be structural**: Architectural constraints can bound harm regardless of delegate behavior
 3. **Decomposition limits risk**: No single component should have enough power to cause catastrophe
 4. **Cross-domain methods may help**: Nuclear, finance, and mechanism design have relevant experience

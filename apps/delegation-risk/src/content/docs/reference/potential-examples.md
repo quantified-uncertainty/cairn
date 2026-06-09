@@ -238,7 +238,7 @@ A research compilation of interesting trust architecture examples across domains
 
 | Example | What Happened | Why It's Interesting |
 |---------|---------------|---------------------|
-| **Watergate (1972-74)** | Already covered in trust-across-civilizations | Loyalty-based trust architecture failure |
+| **Watergate (1972-74)** | Briefly noted in trust-across-civilizations (in-depth treatment was removed) | Loyalty-based trust architecture failure |
 | **Iran-Contra** | Already mentioned | Parallel chains, deniability |
 | **Hurricane Katrina Response (2005)** | FEMA failure; "heck of a job, Brownie" | Trust in incompetent appointees; cronyism |
 | **VA Healthcare Scandal (2014)** | Wait time manipulation; veterans died | Trust in reported metrics; gaming |

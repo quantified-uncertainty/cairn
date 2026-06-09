@@ -1,5 +1,6 @@
 ---
 title: "FAQ & Common Objections"
+description: "Answers to frequently asked questions and responses to common skepticism about the delegation risk framework."
 sidebar:
   order: 4
 ---
@@ -22,13 +23,7 @@ Defense in depth tells you *what* to do. This framework attempts to provide stru
 
 ### "How is Delegation Risk different from regular risk assessment?"
 
-Delegation Risk (Delegation Risk) is a specific instantiation of expected value calculation:
-
-```
-Delegation Risk = Σ P(outcome) × Damage(outcome)
-```
-
-The key differences from traditional risk assessment:
+Delegation Risk is a specific instantiation of expected value calculation (see the [canonical formula](/getting-started/core-concepts/#the-formula)). The key differences from traditional risk assessment:
 
 | Traditional Risk | Delegation Risk Approach |
 |-----------------|--------------|

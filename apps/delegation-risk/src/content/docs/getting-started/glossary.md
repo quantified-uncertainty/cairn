@@ -1,5 +1,6 @@
 ---
 title: "Glossary"
+description: "Key terms used throughout the framework, organized by domain, with framework-specific definitions."
 sidebar:
   order: 5
 ---

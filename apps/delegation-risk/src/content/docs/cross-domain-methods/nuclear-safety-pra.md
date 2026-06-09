@@ -112,4 +112,4 @@ Assumes independent random failures. Historical failure rates inform future pred
 - **Apply to AI** → [Framework Overview](/delegation-risk/overview/) uses similar decomposition for AI systems
 - **See worked example** → [Code Deployment Example](/design-patterns/examples/code-deployment-example/) shows fault tree thinking
 - **Safety mechanisms** → [Safety Mechanisms](/design-patterns/safety-mechanisms/) implements defense in depth
-- **Deep dive** → [Nuclear & Aerospace Deep Dive](/research/nuclear-aerospace-deep-dive/) for full analysis
+- **Deep dive** → [Nuclear & Aerospace Deep Dive](/research/system-design/nuclear-aerospace-deep-dive/) for full analysis

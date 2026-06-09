@@ -29,7 +29,7 @@ Delegation risk principles aren't new—human organizations have developed sophi
 | [Jury Systems](/case-studies/human-systems/jury-trust/) | Legal system | Adversarial trust filtering |
 | [Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/) | Military | Extreme consequence management |
 | [Open Source Communities](/case-studies/human-systems/open-source-trust/) | Software | Distributed trust at scale |
-| [Cross-Civilization Trust](/case-studies/human-systems/trust-across-civilizations/) | Historical | Trust across vast differences |
+| [Trust Across Civilizations](/case-studies/human-systems/trust-across-civilizations/) | Historical | Pirate ships, monasteries, the Manhattan Project as trust architectures |
 | [The Oversight Dilemma](/case-studies/human-systems/oversight-dilemma/) | Governance | Who watches the watchers? |
 
 ## Power, Agency, and Authority Case Studies
@@ -97,4 +97,4 @@ The Anomaly Chronicles explores where these principles lead at scale:
 
 - **Apply these lessons** → [Design Patterns](/design-patterns/)
 - **Understand the theory** → [Delegation Risk](/delegation-risk/)
-- **See other domains** → [Cross-Domain Methods](/cross-domain-methods/)
+- **See other domains** → [Cross-Domain Methods](/cross-domain-methods/overview/)

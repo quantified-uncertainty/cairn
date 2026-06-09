@@ -217,6 +217,80 @@ What you need to understand before each major concept:
 | **Implementation** | 7 | Complete |
 | **Background Research** | 6 | Complete |
 
+## Section Details
+
+### Getting Started
+
+| Page | Focus | Time |
+|------|-------|------|
+| [Introduction](/getting-started/introduction/) | Problem statement | 10 min |
+| [Five-Minute Intro](/getting-started/five-minute-intro/) | Quick overview | 5 min |
+| [Core Concepts](/getting-started/core-concepts/) | Visual framework | 20 min |
+| [FAQ](/getting-started/faq/) | Common questions | 15 min |
+| [Glossary](/getting-started/glossary/) | Term definitions | Reference |
+| [Reading Order](/getting-started/reading-order/) | Path guidance | 5 min |
+| [Quick Reference](/getting-started/quick-reference/) | Cheat sheet | Reference |
+| [Common Mistakes](/getting-started/common-mistakes/) | Anti-patterns | 15 min |
+| [For Engineers](/getting-started/for-engineers/) | Implementation | 15 min |
+| [Examples Catalog](/getting-started/examples-catalog/) | Example index | Reference |
+
+### Delegation Risk (Theory)
+
+| Page | Focus |
+|------|-------|
+| [Overview](/delegation-risk/overview/) | Core formula |
+| [Walk-Through](/delegation-risk/walkthrough/) | Worked example |
+| [Risk Decomposition](/delegation-risk/risk-decomposition/) | Accident vs defection |
+| [Delegation Accounting](/delegation-risk/delegation-accounting/) | Risk budgets |
+| [Exposure Cascade](/delegation-risk/exposure-cascade/) | Chain risk |
+| [Insurer's Dilemma](/delegation-risk/insurers-dilemma/) | Who bears risk |
+
+### Power Dynamics (Theory)
+
+| Page | Focus |
+|------|-------|
+| [Overview](/power-dynamics/) | Power formalization |
+| [Agent Power Formalization](/power-dynamics/agent-power-formalization/) | Definitions |
+| [Agency & Power Examples](/power-dynamics/agency-power-examples/) | Worked examples |
+| [Strong Tools Hypothesis](/power-dynamics/strong-tools-hypothesis/) | High power, low agency |
+
+### Design Patterns
+
+| Category | Examples |
+|----------|----------|
+| [Least-X Principles](/design-patterns/least-x-principles/) | Privilege, context, autonomy |
+| [Structural Patterns](/design-patterns/structural/) | Bulkheads, firewalls |
+| [Verification Patterns](/design-patterns/verification/) | Ghost checker, triangulation |
+| [Monitoring Patterns](/design-patterns/monitoring/) | Tripwires, probing |
+| [Recovery Patterns](/design-patterns/recovery/) | Rollback, degradation |
+| [Multi-Agent Patterns](/design-patterns/multi-agent/) | Cross-validation |
+| [Tools & Guides](/design-patterns/tools/quick-start/) | Implementation help |
+| [Worked Examples](/design-patterns/examples/research-assistant-example/) | Concrete applications |
+
+### Case Studies
+
+| Category | Contents |
+|----------|----------|
+| [AI Systems](/case-studies/ai-systems/case-study-sydney/) | Sydney, Code Review Bot, Anti-patterns |
+| [Human Systems](/case-studies/human-systems/nuclear-launch-authority/) | Nuclear, Jury, Organizations |
+| [Anomaly Chronicles](/case-studies/anomaly-chronicles/) | Extended narrative scenario |
+| [Power Dynamics Cases](/case-studies/power-dynamics-cases/) | Power in practice |
+
+## Page Counts by Section
+
+| Section | Pages | Type |
+|---------|-------|------|
+| Getting Started | 12 | Entry |
+| Delegation Risk | 6 | Theory |
+| Power Dynamics | 5 | Theory |
+| Entanglements | 26 | Theory |
+| Design Patterns | 28 | Application |
+| Case Studies | 25 | Examples |
+| Research | 15 | Theory |
+| Experimental | 10 | Tools |
+| Reference | 5 | Meta |
+| **Total** | **~132** | |
+
 ## Quick Links
 
 **Start here**:
@@ -241,3 +315,7 @@ What you need to understand before each major concept:
 - [Delegation Risk Calculator](/design-patterns/tools/delegation-risk-calculator/)
 - [Risk Inheritance](/design-patterns/tools/trust-propagation/)
 - [Tradeoff Frontier](/design-patterns/tools/tradeoff-frontier/)
+
+## See Also
+
+- [Reading Order](/getting-started/reading-order/) — Prerequisites and paths

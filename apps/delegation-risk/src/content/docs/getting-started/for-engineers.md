@@ -17,7 +17,7 @@ If you trust the patterns and just want to implement:
 
 1. **[Quick Reference](/getting-started/quick-reference/)** — Core formulas and decision flowchart (5 min)
 2. **[Quick Start Guide](/design-patterns/tools/quick-start/)** — Step-by-step implementation checklist (10 min)
-3. **[Minimal Framework](/getting-started/minimal-framework/)** — The 5 essential patterns (5 min)
+3. **[Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework)** — The 5 essential patterns (5 min)
 
 You can stop here and have a working safety layer.
 

@@ -287,7 +287,7 @@ For **independent** components, risk is subadditive - diversification helps:
 
 **R_total ≤ R_A + R_B** (subadditivity)
 
-This is a core axiom of [coherent risk measures](/research/risk-methods/compositional-risk-measures/). It captures the intuition that combining independent systems shouldn't create extra risk.
+This is a core axiom of [coherent risk measures](/research/risk-methods/risk-measurement-and-pricing/). It captures the intuition that combining independent systems shouldn't create extra risk.
 
 For failure probabilities of independent components:
 

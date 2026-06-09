@@ -223,7 +223,7 @@ The real tradeoff is usually between **short-term velocity** and **long-term rob
 
 ## See Also
 
-- [Minimal Framework](/getting-started/minimal-framework/) — What you actually need
+- [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — What you actually need
 - [Quick Reference](/getting-started/quick-reference/) — Checklists and formulas
 - [Anti-Patterns](/case-studies/ai-systems/anti-patterns/) — Detailed failure patterns
 - [FAQ](/getting-started/faq/) — Common objections answered

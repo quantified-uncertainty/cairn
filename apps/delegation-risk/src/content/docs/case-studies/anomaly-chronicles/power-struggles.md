@@ -464,6 +464,6 @@ Before delegating authority, ask:
 ## Further Reading
 
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) — Balance sheet framework for delegation
-- [Fidelity Insurance](/research/fidelity-insurance/) — How insurance markets bound exposure
+- [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — How insurance markets bound exposure
 - [The Dictator's Handbook](https://en.wikipedia.org/wiki/The_Dictator%27s_Handbook) — Selectorate theory
 - [Federalist Papers #51](https://avalon.law.yale.edu/18th_century/fed51.asp) — "Ambition must be made to counteract ambition"

@@ -132,6 +132,6 @@ Residual Risk = Base_Risk × Π(1 - Catch_Rate_i)
 ## See Also
 
 - [Core Concepts](/getting-started/core-concepts/) — Full conceptual explanation
-- [Minimal Framework](/getting-started/minimal-framework/) — 80/20 version
+- [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — 80/20 version
 - [Design Patterns Index](/design-patterns/) — All 45 patterns
 - [Glossary](/getting-started/glossary/) — Term definitions

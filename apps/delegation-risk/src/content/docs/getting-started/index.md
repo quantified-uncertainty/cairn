@@ -30,13 +30,11 @@ If you want to use this framework on a real system:
 |------|---------|--------------|
 | [Introduction](/getting-started/introduction/) | Why delegation risk matters, the core problem | 10 min |
 | [Five-Minute Intro](/getting-started/five-minute-intro/) | Compressed overview for busy readers | 5 min |
-| [Core Concepts](/getting-started/core-concepts/) | Visual framework, key ideas without math | 20 min |
+| [Core Concepts](/getting-started/core-concepts/) | Visual framework, key ideas, and the minimal viable version | 25 min |
 | [FAQ](/getting-started/faq/) | Objections, edge cases, clarifications | 15 min |
 | [Glossary](/getting-started/glossary/) | Term definitions (reference) | — |
-| [Reading Order](/getting-started/reading-order/) | Prerequisites and goal-based paths | 5 min |
-| [How Sections Connect](/getting-started/how-sections-connect/) | Understanding the logical structure | 10 min |
+| [Reading Order](/getting-started/reading-order/) | Prerequisites, goal-based paths, and how sections connect | 10 min |
 | [Quick Reference](/getting-started/quick-reference/) | Formulas, flowcharts, checklists | 5 min |
-| [Minimal Framework](/getting-started/minimal-framework/) | The 80/20 version for small teams | 10 min |
 | [Common Mistakes](/getting-started/common-mistakes/) | What teams get wrong | 15 min |
 | [For Engineers](/getting-started/for-engineers/) | Implementation-focused path | 15 min |
 | [Examples Catalog](/getting-started/examples-catalog/) | Index of all worked examples | — |

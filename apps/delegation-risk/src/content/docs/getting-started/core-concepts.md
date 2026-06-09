@@ -1,5 +1,6 @@
 ---
 title: "Core Concepts"
+description: "Key ideas of the Delegation Risk framework, plus the minimal viable version for teams starting small."
 sidebar:
   order: 3
 ---
@@ -61,7 +62,7 @@ When you delegate a task, you're accepting **risk**—the potential for harm if 
 Risk is finite and should be budgeted. Just as organizations allocate compute and money, they should allocate delegation risk—tracking how much they're accepting, from which delegates, for what purposes.
 :::
 
-### The Formula
+### The Formula {#the-formula}
 
 **Delegation Risk = Σ P(harm mode) × Damage(harm mode)**
 
@@ -70,6 +71,10 @@ For each way something could go wrong (harm mode), multiply:
 - The damage if it does
 
 Sum across all harm modes to get total Delegation Risk.
+
+:::note[Canonical definition]
+This is the single canonical statement of the Delegation Risk formula. Other pages cross-link to this anchor rather than restating it.
+:::
 
 ### Example: Employee with Check-Writing Authority
 
@@ -299,6 +304,124 @@ flowchart TB
 | **Verification** | Must verify everything the model can do | Verify narrow, specific behaviors |
 | **Blast radius** | Unlimited—model can do anything | Bounded—each component has limits |
 | **Coordination risk** | Model coordinates with itself | Components can't easily collude |
+
+---
+
+## The Minimal Viable Framework
+
+You don't need all 45 patterns. If you implement nothing else, implement these five. This is the 80/20 version for teams starting small.
+
+### The 5 Essential Patterns
+
+#### 1. Least Privilege
+**Give the minimum permissions needed for the task.**
+
+```
+❌ AI has admin access to everything
+✓ AI can only read/write files in /workspace
+```
+
+#### 2. Human Escalation
+**High-stakes decisions go to humans.**
+
+```
+❌ AI executes all actions autonomously
+✓ Actions over $1000 require human approval
+```
+
+#### 3. Output Filtering
+**Check outputs before they reach the world.**
+
+```
+❌ AI response goes directly to user
+✓ Filter checks for PII, harmful content, policy violations
+```
+
+#### 4. Sandboxing
+**Limit what can go wrong.**
+
+```
+❌ AI runs on production server
+✓ AI runs in isolated container with no network access
+```
+
+#### 5. Audit Logging
+**Record everything for when things go wrong.**
+
+```
+❌ No logs, can't investigate incidents
+✓ All inputs, outputs, and decisions logged with timestamps
+```
+
+### Low-Risk vs High-Risk Decision
+
+```mermaid
+flowchart TD
+    Start[What are you building?] --> Q1{Can it access<br/>sensitive data?}
+    Q1 -->|No| Q2{Can it take<br/>real-world actions?}
+    Q1 -->|Yes| High[High Risk Path]
+    Q2 -->|No| Q3{Does it talk to<br/>customers?}
+    Q2 -->|Yes| High
+    Q3 -->|No| Low[Low Risk Path]
+    Q3 -->|Yes| Medium[Medium Risk Path]
+
+    Low --> L1[5 Essential Patterns]
+    Medium --> M1[+ Tripwire Monitoring<br/>+ Rate Limiting]
+    High --> H1[+ Human Review<br/>+ Formal Verification<br/>+ Defense in Depth]
+
+    style Low fill:#e8f5e9
+    style Medium fill:#fff3e0
+    style High fill:#ffebee
+```
+
+### Minimum Viable Implementation Checklist
+
+**Phase 1: Foundation (1 day)**
+- [ ] Define your harm modes (what could go wrong?)
+- [ ] Set a risk budget (how much harm is acceptable?)
+- [ ] Implement least privilege (minimum permissions)
+
+**Phase 2: Safety Basics (1 week)**
+- [ ] Add output filtering
+- [ ] Implement human escalation for high-stakes
+- [ ] Set up audit logging
+- [ ] Create a sandbox environment
+
+**Phase 3: Monitoring (2 weeks)**
+- [ ] Add basic anomaly detection
+- [ ] Set up alerting for unusual patterns
+- [ ] Review logs weekly
+
+**Phase 4: Iteration (Ongoing)**
+- [ ] Track actual vs. expected harm
+- [ ] Adjust risk budgets based on data
+- [ ] Add patterns as needed
+
+### When to Expand
+
+Add more patterns when:
+
+| Signal | Suggested Addition |
+|--------|-------------------|
+| Failures are correlated | Read Entanglements, add diversity |
+| Human review bottleneck | Add AI verifiers, graduated autonomy |
+| Novel attacks detected | Add tripwires, adversarial testing |
+| Cascading failures | Add bulkheads, blast radius containment |
+| Trust is miscalibrated | Add trust decay, capability sunset |
+
+### Which Sections Can I Skip?
+
+- **Entanglements** — Skip if your system has < 3 components, or you use completely different models for each component. Don't skip if you have multiple AI verifiers, use the same base model in multiple places, or components share training data.
+- **Power Dynamics** — Skip if you just want to implement patterns, not understand the theory. Don't skip if you need to justify decisions to stakeholders or want to optimize capability/risk tradeoffs.
+- **Research** — Skip if you're implementing, not doing research. Read if you want to understand the theoretical foundations or contribute improvements.
+- **Cross-Domain Methods** — Skip if you trust the patterns as-is. Read if you want to understand why these methods work (nuclear, finance precedents).
+
+### What This Framework Is NOT
+
+- **Not an alignment solution** — Assumes components may be misaligned
+- **Not formal verification** — Probabilistic, not provable
+- **Not a substitute for good models** — Better models reduce accident risk
+- **Not zero-risk** — Manages risk, doesn't eliminate it
 
 ---
 

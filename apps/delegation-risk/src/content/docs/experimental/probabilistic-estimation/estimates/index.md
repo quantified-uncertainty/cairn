@@ -100,4 +100,4 @@ We welcome contributions to improve these estimates:
 3. **Methodological improvements**: Better distribution families, aggregation methods
 4. **Error corrections**: If you find mistakes or inconsistencies
 
-See our [contribution guidelines](/reference/contributing/) for how to submit improvements.
+See our [About This Site](/reference/about-this-site/) for how to submit improvements.

@@ -5,27 +5,11 @@ description: "How humans calibrate trust in AI systems and interventions to impr
 
 # Human Trust Calibration in AI Systems
 
-Understanding and calibrating human trust in AI systems is fundamental to safe and effective human-AI collaboration. Miscalibrated trust—both over-trust and under-trust—creates significant risks in high-stakes applications, from autonomous vehicles to medical diagnosis to financial trading systems.
-
-This document synthesizes research from human-computer interaction, human factors engineering, AI/ML, and psychology to provide a comprehensive view of trust calibration mechanisms, measurement approaches, and evidence-based interventions.
+This document is the empirical deep-dive companion to [Human-AI Delegation](/research/theory/human-ai-trust/), which introduces the trust-calibration problem and the broader human-AI delegation framing. In brief: **calibrated trust** occurs when a human's reliance on an AI system matches the system's actual capabilities and reliability, and humans systematically struggle to achieve it (Lee & See, 2004). Both failure modes are costly — **over-trust** (relying on AI beyond its actual capabilities, e.g., accepting AI medical diagnoses without verification) and **under-trust** (failing to leverage capable AI, e.g., rejecting valid recommendations due to algorithm aversion). See the companion page for the conceptual treatment; this page synthesizes the empirical research from human-computer interaction, human factors engineering, AI/ML, and psychology — measurement approaches, calibration factors, and evidence-based interventions.
 
 ---
 
 ## 1. Over-trust and Under-trust Patterns
-
-### The Trust Calibration Problem
-
-**Calibrated trust** occurs when a human's reliance on an AI system matches the system's actual capabilities and reliability. Research consistently shows that humans struggle to calibrate trust appropriately (Lee & See, 2004).
-
-**Over-trust** (excessive reliance) occurs when humans rely on AI beyond its actual capabilities:
-- Using autopilot features without sufficient monitoring
-- Accepting AI medical diagnoses without verification
-- Following algorithmic recommendations in high-stakes decisions without critical evaluation
-
-**Under-trust** (insufficient reliance) occurs when humans fail to leverage capable AI:
-- Manual execution of tasks AI could reliably perform
-- Excessive verification of accurate AI outputs
-- Rejection of valid AI recommendations due to algorithm aversion
 
 ### Automation Bias
 

@@ -8,6 +8,16 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
+	redirects: {
+		'/getting-started/minimal-framework/': '/getting-started/core-concepts/',
+		'/getting-started/how-sections-connect/': '/getting-started/reading-order/',
+		'/reference/visual-sitemap/': '/reference/site-map/',
+		'/research/risk-methods/complexity-pricing/': '/research/risk-methods/risk-measurement-and-pricing/',
+		'/research/risk-methods/compositional-risk-measures/': '/research/risk-methods/risk-measurement-and-pricing/',
+		'/research/risk-methods/alignment-tax-quantification/': '/research/risk-methods/risk-measurement-and-pricing/',
+		'/research/trust-behavior/trust-dynamics-adversarial-pressure/': '/research/trust-behavior/empirical-scheming-reduction/',
+		'/research/hierarchy-visualization/': '/research/',
+	},
 	markdown: {
 		remarkPlugins: [remarkMath],
 		rehypePlugins: [rehypeKatex],
@@ -182,7 +192,6 @@ export default defineConfig({
 							collapsed: true,
 							autogenerate: { directory: 'research/trust-behavior' },
 						},
-						{ label: 'Hierarchy Visualization', slug: 'research/hierarchy-visualization' },
 						{ label: 'Potential Projects', slug: 'research/potential-projects' },
 					],
 				},

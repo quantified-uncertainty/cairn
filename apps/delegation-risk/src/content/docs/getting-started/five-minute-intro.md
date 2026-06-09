@@ -1,5 +1,6 @@
 ---
 title: "5-Minute Introduction"
+description: "The compressed version of the framework: decompose into limited components and budget delegation risk like money."
 sidebar:
   order: 2
 ---

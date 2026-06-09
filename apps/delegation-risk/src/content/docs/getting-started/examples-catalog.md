@@ -103,10 +103,10 @@ Examples from other fields that inform the framework.
 
 | Domain | Location | Relevant Patterns |
 |--------|----------|-------------------|
-| Aviation | [Entanglements Case Studies](/entanglements/case-studies/) | Failure correlation, redundancy |
-| Finance | [Entanglements Case Studies](/entanglements/case-studies/) | Systemic risk, circuit breakers |
+| Aviation | [Entanglements Case Studies](/entanglements/case-studies/examples/) | Failure correlation, redundancy |
+| Finance | [Entanglements Historical Cases](/entanglements/case-studies/historical-cases/) | Systemic risk, circuit breakers |
 | Nuclear | [Human Systems Cases](/case-studies/human-systems/nuclear-launch-authority/) | Two-person rule, escalation |
-| Medical | [Cross-Domain Methods](/entanglements/cross-domain/) | Second opinions, checklists |
+| Medical | [Cross-Domain Methods](/entanglements/cross-domain/psychology-of-oversight/) | Second opinions, checklists |
 
 ---
 
@@ -128,7 +128,7 @@ Once you understand the basics:
 For deep understanding:
 - [Delegation Walk-Through](/delegation-risk/walkthrough/) — Full quantitative example
 - [Anomaly Chronicles](/case-studies/anomaly-chronicles/) — Extended scenario
-- [Entanglements Case Studies](/entanglements/case-studies/) — Correlation analysis
+- [Entanglements Case Studies](/entanglements/case-studies/examples/) — Correlation analysis
 
 ---
 

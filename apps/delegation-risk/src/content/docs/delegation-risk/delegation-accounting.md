@@ -361,7 +361,7 @@ This has implications beyond insurance:
 **For AI systems**: Highly complex AI deployments—multi-agent systems with emergent coordination, unclear capability boundaries, and undocumented information flows—will face steep complexity taxes. Simpler, more legible architectures may be cheaper to insure than technically safer but opaque alternatives.
 
 :::tip[Deeper Dive]
-For methods to systematically quantify complexity scores and convert them to pricing, see [Complexity Pricing](/research/risk-methods/complexity-pricing/).
+For methods to systematically quantify complexity scores and convert them to pricing, see [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/).
 :::
 
 ---
@@ -669,7 +669,7 @@ Net Delegation Value = Receivable - Exposure - Costs
 
 ## Next Steps
 
-- [Complexity Pricing](/research/risk-methods/complexity-pricing/) — Methods for quantifying and pricing structural complexity
+- [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) — Methods for quantifying and pricing structural complexity
 - [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) — Bounding exposure from a known threat with certain defection
 - [Five Years Later: The Anomaly Unit](/case-studies/anomaly-chronicles/five-years-later/) — How an industry emerged to contain a new class of beings
 - [Managing Exposure in Power Delegation](/case-studies/anomaly-chronicles/power-struggles/) — Apply delegation accounting to corporate governance, dictatorships, and political systems

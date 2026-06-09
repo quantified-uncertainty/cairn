@@ -353,5 +353,5 @@ These patterns evolve with the field. If you've developed new patterns or have i
 
 See also:
 - [Principles to Practice](/design-patterns/principles-to-practice/) - Applying framework principles
-- [Worked Examples](/design-patterns/examples/) - Patterns in context
+- [Worked Examples](/getting-started/examples-catalog/) - Patterns in context
 - [Case Studies](/case-studies/) - Real-world applications

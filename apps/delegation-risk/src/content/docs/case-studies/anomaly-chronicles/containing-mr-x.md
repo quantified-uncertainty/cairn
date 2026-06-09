@@ -439,4 +439,4 @@ That's the lesson.
 - [Five Years Later: The Anomaly Unit](/case-studies/anomaly-chronicles/five-years-later/) — How an industry emerged to contain a new class of beings
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) — Balance sheet framework for delegation
 - [Managing Exposure in Power Delegation](/case-studies/anomaly-chronicles/power-struggles/) — How overseers bound exposure to delegates
-- [Fidelity Insurance](/research/fidelity-insurance/) — How insurance markets price defection risk
+- [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — How insurance markets price defection risk

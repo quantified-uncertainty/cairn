@@ -22,7 +22,7 @@ By expressing estimates as probability distributions, we can propagate uncertain
 
 ## What's Included
 
-### [Interactive Tools](/experimental/probabilistic-estimation/experimental/probabilistic-estimation/tools/)
+### [Interactive Tools](/experimental/probabilistic-estimation/tools/)
 
 Calculators and visualizations for applying probabilistic methods:
 
