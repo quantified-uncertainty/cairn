@@ -1,13 +1,13 @@
 ---
-title: "Research Connections"
-description: "Academic literature relevant to understanding and managing entanglements"
+title: "Research Connections: An Annotated Reading List"
+description: "An annotated reading list of academic literature relevant to understanding and managing entanglements"
 sidebar:
   order: 8
 ---
 
-# Research Connections
+# Research Connections: An Annotated Reading List
 
-The challenges of entanglement in AI delegation systems connect to rich bodies of academic research. This page surveys relevant literature and highlights key insights for practitioners.
+This page is a map of adjacent academic literature — an annotated reading list, not original synthesis. The challenges of entanglement in AI delegation systems connect to rich bodies of research; this survey highlights where to look and what each field contributes.
 
 ---
 

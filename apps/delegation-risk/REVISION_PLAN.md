@@ -1,6 +1,15 @@
 # Delegation Risk Content Revision Plan
 
-Status: proposed (2026-06-09). Derived from a full-corpus review of all 169 content files (~330k words).
+Status: Phase 1 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1, commit ae5c2e7a).
+Corpus 330,809 → 319,466 words; 8 slugs removed with redirects; 54 broken internal links fixed
+(most pre-existing); build + link sweep clean.
+Phase 1 deviations: (a) getting-started landed at 13.3k words, not ≤8.5k — the funnel redundancy
+was small in word terms and the rest is unique reference material (glossary, FAQ, quick-reference);
+resolution deferred to Phase 2: demote those pages to reference tier instead of cutting.
+(b) alliance-cascades.md trimmed to ~1/2 not ~1/3, preserving the unique hidden-coupling taxonomy.
+(c) research-connections.md actually lives at entanglements/research/ — relabeled there.
+
+Derived from a full-corpus review of all 169 content files (~330k words).
 
 ## Diagnosis (summary)
 
