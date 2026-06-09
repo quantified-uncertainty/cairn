@@ -21,7 +21,7 @@ This site is large (~160 pages), but its essential argument lives in about a doz
 
 4. **[Entanglements](/entanglements/)** + **[Types](/entanglements/fundamentals/types/)**, **[Challenges](/entanglements/fundamentals/challenges/)**, **[Formal Definitions](/entanglements/fundamentals/formal-definitions/)** — The site's most original contribution. Five 90%-effective safety layers are not 99.999% safe, because components share infrastructure, blind spots, and influence channels. The *entanglement tax* — actual risk over perceived risk — is often 10–100×. The passive / active / adversarial taxonomy organizes everything that follows.
 
-5. **[Detecting Influence](/entanglements/detection/detecting-influence/)** — Seven practical methods (A/B frame testing, counterfactual intervention, honeypots, rotation, timing analysis) for finding the entanglements your architecture diagram says don't exist.
+5. **[Detecting Influence](/entanglements/detection/detecting-influence/)** — Eight practical methods (A/B frame testing, counterfactual intervention, honeypots, rotation, timing analysis, red-team channel enumeration) for finding the entanglements your architecture diagram says don't exist.
 
 6. **[Entanglement Worked Examples](/entanglements/case-studies/examples/)** — Four systems (code review, healthcare, trading, support escalation) diagnosed end-to-end: build the correlation matrix, find the hidden dependency, redesign, verify. The most directly actionable page on the site.
 
@@ -41,7 +41,11 @@ This site is large (~160 pages), but its essential argument lives in about a doz
 
 ---
 
+The Core Path above is the recommended default. The rest of this page is for readers who want something other than that single linear route: a map of how sections depend on one another, alternative paths tuned to a specific goal, and an explanation of *why* the documentation is organized the way it is.
+
 ## Section Dependency Graph
+
+This graph shows the non-linear prerequisite structure behind the Core Path: which sections can be read independently, and which build on others. Use it if you want to chart your own route rather than follow the 12 stops above.
 
 ```mermaid
 flowchart TB
@@ -108,6 +112,8 @@ flowchart TB
 ---
 
 ## Paths by Goal
+
+If the Core Path is more than you need right now, these shorter routes target a specific goal or audience. Each is a focused subset — for the fullest picture of the framework, the Core Path remains the recommended read.
 
 ### "I'm building an AI system from scratch"
 1. [Core Concepts](/getting-started/core-concepts/) — Understand the framework
@@ -188,8 +194,8 @@ What each section covers and its key pages (prerequisites are in the table above
 | 5 minutes | [Five-Minute Intro](/getting-started/five-minute-intro/) |
 | 30 minutes | Introduction + Core Concepts |
 | 2 hours | Foundation + one theory section + Quick Start |
-| Half a day | Foundation + all theory + Design Patterns index |
-| Full day | Everything except Research and Experimental |
+| Half a day (4–6 hrs) | [The Core Path](#the-core-path) (the framework's strongest material, end to end) |
+| Full day | The Core Path + Research and Experimental |
 
 ---
 

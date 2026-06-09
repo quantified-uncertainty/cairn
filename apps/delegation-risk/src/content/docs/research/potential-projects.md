@@ -169,7 +169,7 @@ Fault tolerance in AI coordination:
 
 ### 19. Risk Inheritance Algorithms
 Mathematical properties of trust flow:
-- Compare multiplicative, minimum, harmonic, PageRank propagation
+- Compare multiplicative (canonical), beta-factor mixture, minimum (the ρ=1 limit), and PageRank propagation — harmonic is retired as incoherent for serial chains
 - Multi-path trust combination (max, independence, Dempster-Shafer)
 - Trust conductance (electrical analogy) for complex topologies
 - Adversarial risk inheritance with Byzantine components

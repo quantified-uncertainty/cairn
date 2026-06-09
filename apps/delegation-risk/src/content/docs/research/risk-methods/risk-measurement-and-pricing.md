@@ -323,6 +323,8 @@ Any law-invariant coherent risk measure can be written as:
 - **Helps:** Diverse training data, multiple architectures, ensemble methods
 - **Hurts:** Oligopolistic AI vendors create illusory diversification, sophisticated adversaries exploit weakest component
 
+The compositional machinery above assumes you can decompose a system's risk into components whose contributions sum cleanly. Part II turns to what happens when that assumption is shaky — when structural complexity makes the decomposition itself uncertain — and how to price that uncertainty.
+
 ---
 
 # Part II — Pricing Structural Complexity
@@ -646,6 +648,8 @@ The compositional risk measures in Part I assume you can decompose system risk. 
 # Part III — Alignment Tax Quantification
 
 Measuring the performance costs of AI safety mechanisms.
+
+Parts I and II priced the *risk* of delegation and the *uncertainty* surrounding that risk. But the safety mechanisms that reduce risk are not free: they impose their own performance, compute, and capability costs. Part III turns to measuring that cost directly — the "alignment tax" — which is what determines whether a given mitigation is worth deploying.
 
 The "alignment tax" represents the performance degradation, computational overhead, and capability limitations imposed by safety mechanisms in AI systems. As AI safety becomes increasingly critical for deployment, understanding and quantifying these costs is essential for making informed trade-offs between safety and performance. This part examines empirical measurements, cost categories, and frameworks for systematic alignment tax quantification.
 

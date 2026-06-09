@@ -92,33 +92,20 @@ This doesn't mean you'll lose $110. It means that over many such delegations, yo
 
 When delegates delegate to other delegates, risk relationships form networks. If A trusts B with weight 0.8, and B trusts C with weight 0.7, how much should A trust C?
 
-Different rules give different answers:
-- **Multiplicative**: 0.8 × 0.7 = 0.56 (each stage is independent risk)
-- **Minimum**: min(0.8, 0.7) = 0.7 (chain only as strong as weakest link)
-- **Discounted**: More complex models accounting for path length
+The canonical rule is **multiplicative**: T(A→C) = 0.8 × 0.7 = 0.56. Each hop is a separate chance of failure, so reliabilities multiply — and longer chains are automatically penalized, with no separate length discount needed.
 
 ```mermaid
 graph LR
     A((A)) -->|"0.8"| B((B))
     B -->|"0.7"| C((C))
-    A -.->|"0.56 mult / 0.7 min"| C
+    A -.->|"0.56"| C
 ```
 
-The right rule depends on what "trust" means in your context. The framework provides formal tools for reasoning about these relationships.
+Multiplication assumes the hops fail **independently**. When stages share a failure cause — same model provider, same training data, same context — correct for the correlation ρ with the mixture:
 
-<details>
-<summary>Choosing a propagation rule</summary>
+> P(all fail) = (1−ρ) · ∏ pᵢ + ρ · min(pᵢ)
 
-| Rule | Formula | Best when... |
-|------|---------|--------------|
-| **Multiplicative** | T(A→C) = T(A→B) × T(B→C) | Each delegation is independent risk; default choice |
-| **Minimum** | T(A→C) = min(T(A→B), T(B→C)) | Chain only as strong as weakest link |
-| **Discounted** | T(A→C) = T(A→B) × T(B→C) × δⁿ | Longer paths inherently less trustworthy |
-| **Maximum path** | T(A→C) = max over all paths | Any valid route suffices |
-
-Most systems should start with **multiplicative** propagation—it's intuitive, conservative, and composes well.
-
-</details>
+In the fully correlated limit (ρ = 1) this reduces to the **minimum**: the chain is only as strong as its weakest link. The minimum is that limiting case, not a separate rule to choose by taste. Other rules you may encounter — harmonic means, ad-hoc per-hop discounts — are retired: the first can rate a chain above its weakest serial link, and the second double-counts chain length, which multiplication already prices in. See [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation and the simulation evidence behind this choice.
 
 :::note[Related: Social Choice Theory]
 Trust aggregation across multiple delegates relates to [social choice theory](https://en.wikipedia.org/wiki/Social_choice_theory)—how to combine individual inputs into collective outcomes. [Arrow's impossibility theorem](https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem) has implications for trust aggregation: no perfect rule exists.

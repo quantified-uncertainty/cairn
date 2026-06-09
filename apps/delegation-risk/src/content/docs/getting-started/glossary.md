@@ -72,7 +72,13 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 **Defection Risk** — Delegation Risk from defection exposure: Σ P(defection mode) × Damage(defection mode). May *increase* with capability (smarter systems are better at pursuing misaligned goals). Mitigated through alignment, monitoring, containment, and architectural constraints.
 
 <span id="risk-inheritance"></span>
-**Risk Inheritance** — How risk flows through a delegation chain. When A delegates to B and B delegates to C, A inherits exposure to C's harm modes. The inheritance rule (multiplicative, minimum, etc.) determines how risks combine.
+**Risk Inheritance** — How risk flows through a delegation chain. When A delegates to B and B delegates to C, A inherits exposure to C's harm modes. Risks combine via the canonical propagation rule (next entry).
+
+<span id="propagation-rule"></span>
+**Propagation Rule** — How reliabilities compose through a chain or stack. The canonical rule is multiplicative (independent stages multiply), corrected for common-cause correlation with the beta-factor mixture P(all fail) = (1−ρ)·∏pᵢ + ρ·min(pᵢ). The "minimum" (weakest-link) rule is the fully correlated ρ = 1 limit of this mixture, not a separate option. See [Risk Propagation](/delegation-risk/risk-propagation/).
+
+<span id="entanglement-tax"></span>
+**Entanglement Tax** — The ratio between your actual joint failure probability and what the independence assumption predicts: Tax = P(all fail) / ∏pᵢ. For n identical layers with failure rate p and correlation ρ, Tax = (1−ρ) + ρ·p^(1−n) — three 90% layers at ρ = 0.5 carry a ~50× tax. See [Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax).
 
 <span id="delegation-risk-budget"></span>
 **Delegation Risk Budget** — Maximum acceptable Delegation Risk for a system or component. Like a financial budget, but for expected harm.

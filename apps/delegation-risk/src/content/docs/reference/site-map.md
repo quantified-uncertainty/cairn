@@ -186,7 +186,7 @@ What you need to understand before each major concept:
 | **How do I apply it?** | Quick Start, Decision Guide, Principles to Practice |
 | **What are the principles?** | Least X Principles, Coordinator Constraints |
 | **Show me examples** | Research Assistant, Code Deployment, Case Studies (Sydney, Code Review Bot, Near-Miss, Drift) |
-| **What's the math?** | Delegation Risk Overview, Risk Inheritance, Trust Optimization |
+| **What's the math?** | Delegation Risk Overview, Risk Propagation, Risk Inheritance, Trust Optimization |
 | **How does this relate to X?** | Related Approaches, Background Research |
 | **What could go wrong?** | Anti-patterns, Lessons from Failures |
 | **What's the evidence?** | Empirical Tests, Nuclear/Aerospace Deep Dive |
@@ -241,6 +241,7 @@ What you need to understand before each major concept:
 | [Overview](/delegation-risk/overview/) | Core formula |
 | [Walk-Through](/delegation-risk/walkthrough/) | Worked example |
 | [Risk Decomposition](/delegation-risk/risk-decomposition/) | Accident vs defection |
+| [Risk Propagation](/delegation-risk/risk-propagation/) | The canonical composition rule |
 | [Delegation Accounting](/delegation-risk/delegation-accounting/) | Risk budgets |
 | [Exposure Cascade](/delegation-risk/exposure-cascade/) | Chain risk |
 | [Insurer's Dilemma](/delegation-risk/insurers-dilemma/) | Who bears risk |
@@ -275,6 +276,14 @@ What you need to understand before each major concept:
 | [Human Systems](/case-studies/human-systems/nuclear-launch-authority/) | Nuclear, Jury, Organizations |
 | [Anomaly Chronicles](/case-studies/anomaly-chronicles/) | Extended narrative scenario |
 | [Power Dynamics Cases](/case-studies/power-dynamics-cases/) | Power in practice |
+
+### Research (selected)
+
+| Page | Focus |
+|------|-------|
+| [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) | Coherent measures, complexity pricing, alignment tax |
+| [Risk Inheritance Algorithms](/research/theory/trust-propagation/) | Candidate propagation rules and the canonical choice |
+| [Empirical Scheming Reduction](/research/trust-behavior/empirical-scheming-reduction/) | Evidence base and game theory of adversarial trust |
 
 ## Page Counts by Section
 

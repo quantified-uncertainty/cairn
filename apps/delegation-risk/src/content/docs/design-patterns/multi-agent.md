@@ -262,10 +262,14 @@ flowchart TB
 ```
 Direct trust: A trusts B = 0.9, B trusts C = 0.8
 
-Naive transitive:     0.9 × 0.8 = 0.72  ← Too high
-With decay (50%):     0.9 × 0.8 × 0.5 = 0.36  ← More realistic
+Multiplicative:       0.9 × 0.8 = 0.72
+With decay (50%):     0.9 × 0.8 × 0.5 = 0.36  ← Deliberately stricter
 With 2-hop max:       Beyond 2 hops = 0
 ```
+
+:::note
+The 50% per-hop decay here is an **incentive-design parameter** — a deliberate policy to discourage long vouching chains — not a probability model. For modeling how risk actually propagates, the canonical rule is plain multiplication with a correlation correction; per-hop discounts double-count chain length there. See [Risk Propagation](/delegation-risk/risk-propagation/).
+:::
 
 ```mermaid
 flowchart LR

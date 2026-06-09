@@ -33,7 +33,7 @@ flowchart TB
 
 **1. Quantification**: Every delegation has a delegation exposure (set of harm modes) and delegation risk (expected cost)
 
-**2. Composition**: Rules for combining risks through delegation chains (multiplication, minimum, etc.)
+**2. Composition**: Rules for combining risks through delegation chains — multiplicative by default, with a correlation correction when stages share failure causes (see [Risk Propagation](/delegation-risk/risk-propagation/))
 
 **3. Optimization**: Algorithms for minimizing delegation risk given constraints
 

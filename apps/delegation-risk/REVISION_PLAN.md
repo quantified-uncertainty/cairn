@@ -1,6 +1,35 @@
 # Delegation Risk Content Revision Plan
 
-Status: Phases 1–3 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1).
+Status: Phases 1–3 COMPLETE + REVAMP QA PASS (2026-06-09, branch claude/delegation-risk-phase1).
+Revamp QA pass (per REVAMP_BRIEF.md): (A) content-loss audit of all 5 Phase 1/2 merges —
+risk-methods 3-way merge and how-sections-connect were clean; restored 16 dropped items into
+empirical-scheming-reduction.md (2025 Apollo frontier-model findings, Auditing Games for
+Sandbagging arXiv 2512.07810, The Elicitation Game arXiv 2502.02180, o3 evaluation-gaming
+example, mesa-objective crystallizing regimes, delay/decay dynamics, open questions, domain
+mappings, 3 references) and 7 into detecting-influence.md (CIA/Curveball example, red-team
+channel enumeration as Method 8, prevention-strategies table, Littlefinger pattern line,
+covert-channel types, Alliance Cascades link). (B) seam-smoothed risk-measurement-and-pricing
+Part transitions and reading-order Core-Path-vs-legacy-paths framing. (C) consistency sweep:
+fixed all 3 correlation-calculator worked examples (carried pre-Phase-3 numbers: 9×→31×,
+50×→90×, 3×→31×) and the "0.1 ρ doubles tax" rule of thumb (tax is linear in ρ);
+replaced modeling.md's self-inconsistent Risk Budget Formula with the canonical floor form
+n ≥ log((target−ρp)/(1−ρ))/log(p); fixed examples.md healthcare old-design tax (50×+ → ~6,700×);
+rewrote core-concepts.md propagation section to canon (menu removed); retired harmonic/
+discounted inline in research/theory/trust-propagation.md (canon note moved above the table);
+canonized overview.md/glossary.md/potential-projects.md phrasing; added glossary entries for
+Propagation Rule and Entanglement Tax; clarified multi-agent.md vouching decay as an
+incentive-design parameter, not a probability model; added risk-propagation.md and
+risk-measurement-and-pricing.md to site-map.md. (D) build clean; link sweep 172 pages /
+42k internal links / 0 broken pages / 0 broken anchors; KaTeX renders (no literal $$);
+20 Core badges + Start Here pin; #the-formula resolves. (E) fresh-eyes re-derivation
+(independent Gaussian-copula Monte Carlo) confirmed risk-propagation.md and all calculator
+tables exactly; fixed the one error it found — the Maximum Acceptable Correlation table was
+impossible under its own 90%-layer assumption (max-ρ values recomputed from the ρ·min(p)
+floor: 0.7/0.3/0.15 → 0.5/0.1/0.01) — and the stale "Seven methods" count on the Core Path.
+Waived (judgment calls for Ozzie): minimal-framework's "Quick Start Reading Path" funnel +
+"working framework in a week" claim not restored (reading-order.md covers it better);
+examples.md Example 1 keeps its pairwise-hybrid correlation method (internally consistent,
+flagged as non-canonical); trust-across-civilizations Part 3–5 cuts remain as Phase 1 left them.
 Phase 3: (3a) NEW delegation-risk/risk-propagation.md — multiplicative composition canonical,
 beta-factor mixture (1−ρ)·∏p + ρ·min(p) as the correlation correction, minimum demoted to the
 ρ=1 limit, harmonic retired as incoherent (rates a chain above its weakest link), discounted

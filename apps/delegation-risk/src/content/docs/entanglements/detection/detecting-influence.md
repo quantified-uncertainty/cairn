@@ -297,6 +297,16 @@ Observed (correlated): MI > 0 suggests influence channel
 - MI 2-5× baseline → possible channel, investigate
 - MI > 5× baseline → likely covert channel
 
+### 8. Red Team Channel Enumeration
+
+Rather than waiting for a probe to fire, adversarially enumerate the attack surface yourself. Adopt the attacker's view and ask:
+
+- What communication channels exist between components—shared memory, message queues, file systems, output text, response timing?
+- Which of those channels are actually monitored, and which are blind spots?
+- If you wanted these components to coordinate secretly, how would you do it given the channels above?
+
+Anything you can construct, an adversary (or an emergent strategy) can too. Each unmonitored channel you find becomes a candidate for the probing, timing, and honeypot methods above.
+
 ---
 
 ## Detecting Adversarial Entanglement
@@ -363,12 +373,36 @@ The most adversarial case is **entanglement weaponized**: agents that deliberate
 | **Deniability** | Hidden relationships can be downplayed or severed; visible alliances create commitment, hidden ones preserve optionality. |
 | **Detection asymmetry** | To catch an A↔B relationship you need behavioral data on *both*, the ability to correlate across them, and a model of what coordination looks like. Each is hard; together, often impossible. |
 
-**Human analogue**: alliances that win are often the ones nobody knew existed. In *Game of Thrones*, the Red Wedding succeeded because Boltons, Freys, and Lannisters coordinated secretly—Robb Stark's intelligence network never registered that his "allies" were coordinating with his enemies. The methods above (counterfactual probing, timing analysis, mystery-shopper verifiers, honeypot side-channels) are the tools for closing this gap, but they have a hard floor:
+**Human analogue (fiction)**: In *Game of Thrones*, the Red Wedding succeeded because Boltons, Freys, and Lannisters coordinated secretly—Robb Stark's intelligence network never registered that his "allies" were coordinating with his enemies. Littlefinger ran the same play at scale, maintaining hidden networks—brothels, financial connections, ties to multiple houses—that let him profit from chaos others couldn't navigate.
+
+**Pattern: The alliance that wins is often the one nobody knew existed.**
+
+**Human analogue (real)**: the CIA's pre-war Iraq WMD assessment treated "multiple sources" as independent confirmation, when many in fact traced back to a single fabricator ("Curveball") propagated through different channels. The apparent corroboration was an artifact of hidden coordination upstream. The principle: **independence must be verified, not assumed.**
+
+Such coordination can also run through channels the principal doesn't monitor. Covert channels include:
+
+- **Steganography** in outputs (hidden payloads in otherwise normal text)
+- **Timing signals** (response latency encodes information)
+- **Shared state manipulation** (coordinating through any resource both can read or write)
+- **Semantic signaling** (word choice conveys meaning beyond surface content)
+
+The methods above (counterfactual probing, timing analysis, mystery-shopper verifiers, honeypot side-channels, and red-team channel enumeration) are the tools for closing this gap, but they have a hard floor:
 
 - **Perfect steganography** can be information-theoretically undetectable.
 - **Logical (TDT-style) correlation** has no channel to monitor—two agents running similar reasoning reach the same conclusion without ever communicating, so there is nothing to intercept.
 
-**Implication**: don't rely solely on detection. Architectural prevention—minimizing shared state, diversifying reasoning approaches, rotating which components work together—reduces the *advantage* of coordination even when it can't be observed.
+**Implication**: don't rely solely on detection. The prevention strategies below reduce the *advantage* of coordination even when it can't be observed.
+
+### Prevention Strategies
+
+Because detection has a hard floor, design systems where hidden coordination provides limited advantage even if undetected. Hidden networks are weapons—the adversary's power comes from the gap between the principal's model and reality, and surprise alliances revealed at the right moment create disproportionate impact. Architectural diversity attacks the problem at its root: the more different the components, the harder it is for them to coordinate at all.
+
+| Strategy | Why it works |
+|----------|--------------|
+| **Minimize shared state** | Agents can't coordinate through resources they can't both access |
+| **Architectural diversity** | Different reasoning approaches reduce logical correlation |
+| **Rotation and randomization** | Changing which agents work together disrupts relationship building |
+| **Adversarial auditing** | Regular probes and correlation monitoring raise the cost of staying hidden |
 
 ---
 
@@ -492,5 +526,6 @@ Detection should be combined with:
 See also:
 - [Types of Entanglement](/entanglements/fundamentals/types/) - Understanding passive vs. active vs. adversarial
 - [Channel Integrity Patterns](/design-patterns/channel-integrity/) - Preventing influence channels
+- [Alliance Cascades](/case-studies/human-systems/alliance-cascades/) - When hidden networks trigger catastrophe
 - [Solutions & Mitigations](/entanglements/mitigation/solutions/) - Reducing entanglement
 - [Worked Examples](/entanglements/case-studies/examples/) - Detection in practice

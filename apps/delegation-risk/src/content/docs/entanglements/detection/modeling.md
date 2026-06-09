@@ -49,30 +49,27 @@ The Correlation Tax is a single number that communicates how much worse your act
 
 ### Risk Budget Formula
 
-When planning how many layers you need:
+When planning how many layers you need, use the canonical beta-factor model (see [Risk Propagation](/delegation-risk/risk-propagation/)). For n identical layers with miss rate p:
 
 ```
-Required_layers = log(target_DR) / log(1 - layer_eff × (1 - ρ))
+P(all fail) = (1−ρ) × pⁿ + ρ × p
 
-Where:
-- target_DR = target delegation risk
-- layer_eff = individual layer effectiveness
-- ρ = average pairwise correlation
+Adding layers shrinks only the first term. The second term, ρ × p, is a
+floor that no number of layers can push below.
 
-Example:
+Solve for n (valid only when target > ρ × p):
+
+n ≥ log( (target − ρ·p) / (1−ρ) ) / log(p)
+
+Example (p = 0.1, i.e. 90% effective layers):
 - Target: 0.001 (99.9% protection)
-- Layer effectiveness: 0.9 (90% each)
-- Correlation: 0.0 (independent)
-- Required layers: 3
-
-With correlation:
-- Correlation: 0.5
-- Required layers: 7 (not 3!)
-
-With high correlation:
-- Correlation: 0.8
-- Required layers: 15+ (or impossible)
+- ρ = 0.0: pⁿ ≤ 0.001 → 3 layers
+- ρ = 0.5: floor = 0.05 — the target is unreachable at ANY layer count
+           (protection caps out near 95%)
+- ρ = 0.8: floor = 0.08 — unreachable (caps near 92%)
 ```
+
+If your target sits below the ρ × p floor, the budget question is not "how many layers" — it's "how do I reduce ρ" (diversify providers and paradigms, isolate context) or "how do I improve the strongest layer" (the floor tracks min pᵢ).
 
 ---
 
