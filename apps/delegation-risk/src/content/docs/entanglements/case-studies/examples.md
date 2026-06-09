@@ -2,6 +2,9 @@
 title: "Worked Examples"
 description: "Step-by-step analysis of pattern interconnection in real architectures"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 

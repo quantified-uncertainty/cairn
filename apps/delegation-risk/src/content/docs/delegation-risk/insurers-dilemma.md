@@ -1,6 +1,9 @@
 ---
 title: "The Insurer's Dilemma"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
 

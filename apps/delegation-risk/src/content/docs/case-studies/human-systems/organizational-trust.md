@@ -1,10 +1,16 @@
 ---
 title: "Trust Calculations in Organizations"
+description: "Applying the delegation risk framework to ordinary human organizations: small businesses, governments, and trust architecture design"
 sidebar:
   order: 2
+  hidden: true
 ---
 
 # Trust Calculations in Organizations
+
+:::note[Archived]
+This page is kept as supplementary applied material. For the core treatment of organizational trust see [Trust Across Civilizations](/case-studies/human-systems/trust-across-civilizations/), and for step-by-step worked applications of the framework see the [Examples Catalog](/getting-started/examples-catalog/).
+:::
 
 :::note[Framework Interpretation]
 This case study analyzes organizational dynamics through the lens of our delegation risk framework. The patterns described are based on organizational research, but the specific framing and parallels to AI systems are our own interpretation.

@@ -2,6 +2,9 @@
 title: "Formal Definitions"
 description: "Key concepts in entanglement, defined precisely but accessibly"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 3
 ---
 

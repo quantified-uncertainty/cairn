@@ -1,6 +1,9 @@
 ---
 title: "Risk Decomposition: Accidents vs. Defection"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 3
 ---
 

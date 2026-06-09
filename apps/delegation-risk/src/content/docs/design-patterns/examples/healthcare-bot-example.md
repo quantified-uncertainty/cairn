@@ -1,6 +1,9 @@
 ---
 title: "Example: Healthcare Triage Bot"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 5
 ---
 

@@ -1,6 +1,9 @@
 ---
 title: "Jury Systems: Twelve Strangers Decide Your Fate"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
 

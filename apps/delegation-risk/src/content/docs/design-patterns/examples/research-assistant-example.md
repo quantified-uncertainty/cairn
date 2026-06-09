@@ -1,5 +1,9 @@
 ---
 title: "Concrete Example: Research Assistant"
+sidebar:
+  badge:
+    text: Core
+    variant: tip
 ---
 
 # Concrete Example: Research Assistant

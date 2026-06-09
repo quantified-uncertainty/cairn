@@ -1,6 +1,9 @@
 ---
 title: "Example: AI Trading System"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
 

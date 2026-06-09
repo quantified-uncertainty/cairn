@@ -1,6 +1,9 @@
 ---
 title: "Nuclear Launch Authority: Trust at Civilization Scale"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 

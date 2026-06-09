@@ -2,6 +2,9 @@
 title: "Challenge Categories"
 description: "Nine sources of correlated failures in safety architectures"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 2
 ---
 

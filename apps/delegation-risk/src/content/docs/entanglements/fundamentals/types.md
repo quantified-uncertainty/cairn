@@ -2,6 +2,9 @@
 title: "Types of Entanglement"
 description: "Understanding passive, active, and adversarial entanglements in safety architectures"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 1
 ---
 

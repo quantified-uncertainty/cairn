@@ -45,9 +45,23 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
+					label: 'The Core Path',
+					slug: 'getting-started/reading-order',
+					badge: { text: 'Start Here', variant: 'tip' },
+				},
+				{
 					label: 'Getting Started',
 					collapsed: false,
-					autogenerate: { directory: 'getting-started' },
+					items: [
+						{ label: 'Overview', slug: 'getting-started' },
+						{ label: 'Five-Minute Intro', slug: 'getting-started/five-minute-intro' },
+						{ label: 'Introduction', slug: 'getting-started/introduction' },
+						{ label: 'Core Concepts', slug: 'getting-started/core-concepts' },
+						{ label: 'Reading Order & The Core Path', slug: 'getting-started/reading-order' },
+						{ label: 'For Engineers', slug: 'getting-started/for-engineers' },
+						{ label: 'Common Mistakes', slug: 'getting-started/common-mistakes' },
+						{ label: 'FAQ', slug: 'getting-started/faq' },
+					],
 				},
 				{
 					label: 'Delegation Risk',
@@ -63,7 +77,7 @@ export default defineConfig({
 					label: 'Entanglements',
 					collapsed: true,
 					items: [
-						{ label: 'Overview', slug: 'entanglements' },
+						{ label: 'Overview', slug: 'entanglements', badge: { text: 'Core', variant: 'tip' } },
 						{
 							label: 'Fundamentals',
 							collapsed: true,
@@ -101,7 +115,7 @@ export default defineConfig({
 					collapsed: true,
 					items: [
 						{ label: 'Overview', slug: 'design-patterns' },
-						{ label: 'Composing Patterns', slug: 'design-patterns/composing-patterns' },
+						{ label: 'Composing Patterns', slug: 'design-patterns/composing-patterns', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Principles to Practice', slug: 'design-patterns/principles-to-practice' },
 						{ label: 'Architecture Overview', slug: 'design-patterns/decomposed-coordination' },
 						{ label: 'Safety Mechanisms', slug: 'design-patterns/safety-mechanisms' },
@@ -112,7 +126,7 @@ export default defineConfig({
 							label: 'Pattern Categories',
 							collapsed: true,
 							items: [
-								{ label: 'Structural', slug: 'design-patterns/structural' },
+								{ label: 'Structural', slug: 'design-patterns/structural', badge: { text: 'Core', variant: 'tip' } },
 								{ label: 'Verification', slug: 'design-patterns/verification' },
 								{ label: 'Information', slug: 'design-patterns/information' },
 								{ label: 'Temporal', slug: 'design-patterns/temporal' },
@@ -120,7 +134,7 @@ export default defineConfig({
 								{ label: 'Multi-Agent', slug: 'design-patterns/multi-agent' },
 								{ label: 'Incentive', slug: 'design-patterns/incentive' },
 								{ label: 'Recovery', slug: 'design-patterns/recovery' },
-								{ label: 'Channel Integrity', slug: 'design-patterns/channel-integrity' },
+								{ label: 'Channel Integrity', slug: 'design-patterns/channel-integrity', badge: { text: 'Core', variant: 'tip' } },
 							],
 						},
 						{
@@ -222,7 +236,18 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					collapsed: true,
-					autogenerate: { directory: 'reference' },
+					items: [
+						{ label: 'Overview', slug: 'reference' },
+						{ label: 'Glossary', slug: 'getting-started/glossary' },
+						{ label: 'Quick Reference', slug: 'getting-started/quick-reference' },
+						{ label: 'Examples Catalog', slug: 'getting-started/examples-catalog' },
+						{ label: 'About This Site', slug: 'reference/about-this-site' },
+						{ label: 'Related Approaches', slug: 'reference/related-approaches' },
+						{ label: 'Bibliography', slug: 'reference/bibliography' },
+						{ label: 'Roadmap', slug: 'reference/roadmap' },
+						{ label: 'Site Map', slug: 'reference/site-map' },
+						{ label: 'Potential Examples', slug: 'reference/potential-examples' },
+					],
 				},
 			],
 		}),

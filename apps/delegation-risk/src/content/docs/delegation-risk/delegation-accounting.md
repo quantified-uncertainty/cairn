@@ -1,6 +1,9 @@
 ---
 title: "Delegation Accounting: A Balance Sheet View"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 

@@ -1,6 +1,9 @@
 ---
 title: "Criminal Organizations: Trust Without Courts"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 5
 ---
 

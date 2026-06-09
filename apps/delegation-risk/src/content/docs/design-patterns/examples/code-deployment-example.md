@@ -1,6 +1,9 @@
 ---
 title: "Example: Autonomous Code Deployment"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 

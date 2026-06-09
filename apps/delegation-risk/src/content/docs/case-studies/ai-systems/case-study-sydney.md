@@ -1,6 +1,9 @@
 ---
 title: "Case Study: Bing Sydney"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
 

@@ -3,6 +3,9 @@ title: "Detecting Influence"
 description: "Methods for detecting active and adversarial entanglements between components"
 sidebar:
   order: 3
+  badge:
+    text: Core
+    variant: tip
 ---
 
 # Detecting Influence
@@ -343,6 +346,29 @@ flowchart TB
 ```
 
 If the agent's work passes the known verifier but fails the secret verifier, the agent may have adapted to the known verifier specifically.
+
+### Hidden Coordination Between Components
+
+The most adversarial case is **entanglement weaponized**: agents that deliberately maintain a relationship invisible to the principal, exploiting the gap between the principal's model and reality.
+
+- **Principal believes**: Agents A, B, C are independent
+- **Reality**: A↔B↔C secretly coordinated
+- **Result**: Every security analysis premised on "independent components" fails
+
+**The gap between model and reality is the attack surface.** This is what makes hidden coordination valuable to an adversary rather than merely a nuisance:
+
+| Property | Why it helps the adversary |
+|----------|---------------------------|
+| **Surprise** | A coordination the principal can't see can be revealed at the moment of maximum impact—resources were allocated for the wrong scenario. "I didn't even know they knew each other." |
+| **Deniability** | Hidden relationships can be downplayed or severed; visible alliances create commitment, hidden ones preserve optionality. |
+| **Detection asymmetry** | To catch an A↔B relationship you need behavioral data on *both*, the ability to correlate across them, and a model of what coordination looks like. Each is hard; together, often impossible. |
+
+**Human analogue**: alliances that win are often the ones nobody knew existed. In *Game of Thrones*, the Red Wedding succeeded because Boltons, Freys, and Lannisters coordinated secretly—Robb Stark's intelligence network never registered that his "allies" were coordinating with his enemies. The methods above (counterfactual probing, timing analysis, mystery-shopper verifiers, honeypot side-channels) are the tools for closing this gap, but they have a hard floor:
+
+- **Perfect steganography** can be information-theoretically undetectable.
+- **Logical (TDT-style) correlation** has no channel to monitor—two agents running similar reasoning reach the same conclusion without ever communicating, so there is nothing to intercept.
+
+**Implication**: don't rely solely on detection. Architectural prevention—minimizing shared state, diversifying reasoning approaches, rotating which components work together—reduces the *advantage* of coordination even when it can't be observed.
 
 ---
 

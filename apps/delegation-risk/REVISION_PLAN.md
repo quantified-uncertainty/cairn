@@ -1,6 +1,12 @@
 # Delegation Risk Content Revision Plan
 
-Status: Phase 1 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1, commit ae5c2e7a).
+Status: Phases 1–2 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1).
+Phase 2: 20 pages badged Core (15 frontmatter + 1 by agent + 4 manual sidebar entries);
+"The Core Path" pinned at sidebar top and written into reading-order.md (12 stops);
+glossary/quick-reference/examples-catalog demoted to the Reference sidebar group (files unmoved,
+slugs stable — resolves the Phase 1 word-count flag); hidden-coordination.md merged into
+detecting-influence.md (+308 words of unique material, stub left behind); organizational-trust.md
+archived (note + sidebar-hidden). Build + link sweep clean.
 Corpus 330,809 → 319,466 words; 8 slugs removed with redirects; 54 broken internal links fixed
 (most pre-existing); build + link sweep clean.
 Phase 1 deviations: (a) getting-started landed at 13.3k words, not ≤8.5k — the funnel redundancy
