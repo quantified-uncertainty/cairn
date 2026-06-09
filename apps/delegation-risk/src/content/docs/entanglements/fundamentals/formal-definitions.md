@@ -97,26 +97,38 @@ This is dangerous because testing under normal conditions won't reveal the entan
 **Formula in plain terms**:
 > Entanglement Tax = What your risk actually is ÷ What you think your risk is
 
+**Canonical derivation** (this is the site's single source of truth for the tax; the [Correlation Calculator](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety: with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
+
+$$P(\text{all fail}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
+
+$$\text{Tax}(\rho) = \frac{(1-\rho)\prod_i p_i + \rho \min_i p_i}{\prod_i p_i}$$
+
+For $n$ identical layers at miss rate $p$, this simplifies to $\text{Tax} = (1-\rho) + \rho\, p^{1-n}$ — the tax grows *exponentially in layer count*, because each added layer improves your perceived risk but barely moves the common-cause floor.
+
 **Example**:
 - You have three 90%-effective safety layers
 - If independent: 0.1% failure rate (0.1 × 0.1 × 0.1)
-- If 50% correlated: ~5% failure rate
-- Entanglement tax: 50× (your risk is 50× higher than you thought)
+- If 50% correlated: (0.5 × 0.001) + (0.5 × 0.1) ≈ 5% failure rate
+- Entanglement tax: ~50× (your risk is 50× higher than you thought)
+
+**Why this model**: it is exact for its stated mechanism (a genuine shared cause), it recovers the product rule at $\rho = 0$ and the single-best-layer bound at $\rho = 1$, and Monte Carlo comparison against smoother correlation structures (Gaussian copula) shows it errs on the conservative side at intermediate $\rho$ — the right direction for safety budgeting. The full derivation, simulation evidence, and the serial-chain counterpart live in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/).
+
+**Limitation — higher-order structure**: a single $\rho$ treats all layers as symmetrically coupled to one shared cause. Real architectures have *structured* correlation (layers A and B share a provider; C shares context with A) and possible three-way interactions that no single parameter captures. Use the pairwise correlation-matrix method from the [worked examples](/entanglements/case-studies/examples/) when the architecture is asymmetric, and simulation when precision matters.
 
 ### Effective Redundancy
 
-**Definition**: How much redundancy you actually have, accounting for correlation.
+**Definition**: How much redundancy you actually have, accounting for correlation — the number of *truly independent* layers that would give the same protection: $n_{\text{eff}} = \ln P(\text{all fail}) / \ln p$.
 
-**The problem**: Three "independent" verification layers sounds robust. But if they share blind spots, you might effectively have only 1.3 layers of protection.
+**The problem**: Three "independent" verification layers sounds robust. But if they share blind spots, you might effectively have under 1.5 layers of protection.
 
-**Quick estimate**:
+**Quick estimate** (identical layers at 90% effectiveness, beta-factor model):
 | Nominal layers | If independent | If 50% correlated | If 80% correlated |
 |----------------|----------------|-------------------|-------------------|
-| 2 | 2.0 effective | 1.4 effective | 1.1 effective |
-| 3 | 3.0 effective | 1.7 effective | 1.2 effective |
-| 5 | 5.0 effective | 2.2 effective | 1.3 effective |
+| 2 | 2.0 effective | 1.3 effective | 1.1 effective |
+| 3 | 3.0 effective | 1.3 effective | 1.1 effective |
+| 5 | 5.0 effective | 1.3 effective | 1.1 effective |
 
-High correlation destroys the value of additional layers.
+Note the striking pattern: beyond modest correlation, effective redundancy is set by the **correlation, not the layer count** — adding layers that share the common cause adds almost nothing. This is the nuclear-safety lesson: defense-in-depth is defeated by common cause, not by independent bad luck.
 
 ---
 

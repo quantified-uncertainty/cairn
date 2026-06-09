@@ -116,7 +116,7 @@ flowchart LR
 
 What risk does the Human inherit from the Code Deployer through the delegation chain?
 
-Using multiplicative rule:
+Using the multiplicative rule (the framework's canonical default — see [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation and the correlation correction):
 ```
 Risk_inheritance(Human → Deployer) = Trust(H→C) × Trust(C→D)
                                    = 0.95 × 0.85

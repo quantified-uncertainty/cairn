@@ -80,7 +80,7 @@ flowchart LR
 | **Harmonic** | 2×0.8×0.7/(0.8+0.7) | **0.75** | Balanced view; penalizes asymmetry |
 | **Discounted** | 0.8×0.7×0.9 | **0.50** | Long chains are inherently risky |
 
-**Recommendation**: Use **multiplicative** for safety-critical systems (most conservative). Use **minimum** when you trust verification at each stage. Use **discounted** when chain length itself is a concern.
+**The framework's canonical choice**: this menu is resolved in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/) — compose **multiplicatively**, correct for common-cause correlation with the beta-factor mixture $(1-\rho)\prod t_i + \rho\min t_i$, and treat **minimum** as the fully-correlated limit rather than an alternative. Note that the harmonic rule above is incoherent for serial chains: it yields 0.75 for links (0.8, 0.7) — higher than the weaker link alone, which no serial composition can justify. The survey below is retained for completeness and for multi-path structures, where genuine modeling choices remain.
 
 ## Multi-Path Trust
 

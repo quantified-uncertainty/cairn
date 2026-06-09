@@ -244,7 +244,7 @@ Lower trust = retain more. If you don't trust your executives, keep more exposur
 ## Key Insights
 
 :::tip[Key Insights]
-1. **Exposure cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions
+1. **Exposure cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions (why multiplication is the right composition — and when it needs a correlation correction — is derived in [Risk Propagation](/delegation-risk/risk-propagation/))
 2. **Per-person exposure shrinks at scale**: 200 employees sharing $600k = $3k each, while 1 CEO gets $4.5M
 3. **Retention reflects control**: High retention = tight control, low retention = high delegation
 4. **The total is conserved**: All exposure either gets retained or delegated—it doesn't disappear

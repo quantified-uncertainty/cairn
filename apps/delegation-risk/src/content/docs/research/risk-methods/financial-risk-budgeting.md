@@ -164,6 +164,8 @@ Shapley is the **only** solution satisfying:
 | Complexity | O(n) | O(2ⁿ) |
 | Best for | Continuous weights | Discrete components |
 
+**Framework guidance**: for Delegation Risk, the choice is determined by the harm structure, not preference — Euler for smooth/marginal regimes where degree-1 homogeneity plausibly holds, Shapley (or explicit scenario gates) where threshold effects or superadditive interactions break it. The scoping rules live in [When Euler Allocation Applies](/cross-domain-methods/euler-allocation/#when-euler-allocation-applies--and-when-it-doesnt).
+
 ### Computational Challenges
 
 Shapley complexity is O(2ⁿ) - "usually too time expensive" for >25 players.

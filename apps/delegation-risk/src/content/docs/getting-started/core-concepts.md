@@ -62,7 +62,7 @@ When you delegate a task, you're accepting **risk**—the potential for harm if 
 Risk is finite and should be budgeted. Just as organizations allocate compute and money, they should allocate delegation risk—tracking how much they're accepting, from which delegates, for what purposes.
 :::
 
-### The Formula {#the-formula}
+### The Formula
 
 **Delegation Risk = Σ P(harm mode) × Damage(harm mode)**
 

@@ -1,6 +1,22 @@
 # Delegation Risk Content Revision Plan
 
-Status: Phases 1–2 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1).
+Status: Phases 1–3 COMPLETE (2026-06-09, branch claude/delegation-risk-phase1).
+Phase 3: (3a) NEW delegation-risk/risk-propagation.md — multiplicative composition canonical,
+beta-factor mixture (1−ρ)·∏p + ρ·min(p) as the correlation correction, minimum demoted to the
+ρ=1 limit, harmonic retired as incoherent (rates a chain above its weakest link), discounted
+retired as double-counting; justified by one-factor Gaussian-copula Monte Carlo (key finding:
+product rule's bias FLIPS — conservative for serial chains, optimistic by 4–22× for parallel
+defenses at moderate ρ). Guidance text updated in research/theory/trust-propagation.md,
+tools/trust-propagation.mdx, overview.md, exposure-cascade.md. (3b) Euler scoping section in
+euler-allocation.md (homogeneity conditions; Euler/Shapley/scenario decision table) + cross-ref
+in financial-risk-budgeting.md. (3c) Canonical entanglement-tax derivation in
+formal-definitions.md (beta-factor model, closed form Tax = (1−ρ) + ρ·p^(1−n)); correlation-
+calculator tables regenerated from it (3- and 5-layer tables previously used inconsistent
+implicit models); effective-redundancy table corrected — redundancy saturates at ~1.3 layers
+under ρ=0.5 regardless of layer count. (3d) Power/agency→DR bridge written into
+power-dynamics/index.md: Agency gates P(defection), Power bounds Damage in both channels;
+labeled definitional-not-empirical. Also fixed unsupported {#the-formula} anchor syntax from
+Phase 1. Build + link sweep clean.
 Phase 2: 20 pages badged Core (15 frontmatter + 1 by agent + 4 manual sidebar entries);
 "The Core Path" pinned at sidebar top and written into reading-order.md (12 stops);
 glossary/quick-reference/examples-catalog demoted to the Reference sidebar group (files unmoved,
