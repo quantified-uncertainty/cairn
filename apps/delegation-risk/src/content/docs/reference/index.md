@@ -24,6 +24,3 @@ How this documentation was created:
 ## Related
 
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) — Core framework
-- [The Anomaly Chronicles](/case-studies/anomaly-chronicles/) — Fictional case study with technical specifications:
-  - [Protocol Catalog](/case-studies/anomaly-chronicles/protocol-catalog/) — Containment protocols
-  - [Insurance Bot Specification](/case-studies/anomaly-chronicles/insurance-bot-spec/) — Automated pricing engine

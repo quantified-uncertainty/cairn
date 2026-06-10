@@ -484,6 +484,4 @@ She picks up the phone.
 
 ## Further Reading
 
-- [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) — What Diana proposes
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) — The underlying framework
-- [Five Years Later](/case-studies/anomaly-chronicles/five-years-later/) — How this scales to an industry

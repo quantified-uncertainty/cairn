@@ -272,7 +272,6 @@ What you need to understand before each major concept:
 |----------|----------|
 | [AI Systems](/case-studies/ai-systems/case-study-sydney/) | Sydney, Code Review Bot, Anti-patterns |
 | [Human Systems](/case-studies/human-systems/nuclear-launch-authority/) | Nuclear, Jury, Organizations |
-| [Anomaly Chronicles](/case-studies/anomaly-chronicles/) | Extended narrative scenario |
 | [Power Dynamics Cases](/case-studies/power-dynamics-cases/) | Power in practice |
 
 ### Research (selected)

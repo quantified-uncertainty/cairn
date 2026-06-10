@@ -626,7 +626,7 @@ What if the agent isn't just capable, but has a documented history of exploiting
 
 This scenario pushes delegation accounting to its limits. The controls required are extreme, the residual exposure is high, and the fundamental question changes from "will they defect?" to "can we bound the damage when they do?"
 
-For the full analysis, see [Containing Mr. X: Bounding Exposure from a Known Threat](/case-studies/anomaly-chronicles/containing-mr-x/).
+This scenario pushes delegation accounting to its limits: controls become extreme, residual exposure stays high, and the fundamental question shifts from "will they defect?" to "can we bound the damage when they do?"
 
 ---
 
@@ -671,7 +671,4 @@ Net Delegation Value = Receivable - Exposure - Costs
 ## Next Steps
 
 - [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) — Methods for quantifying and pricing structural complexity
-- [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) — Bounding exposure from a known threat with certain defection
-- [Five Years Later: The Anomaly Unit](/case-studies/anomaly-chronicles/five-years-later/) — How an industry emerged to contain a new class of beings
-- [Managing Exposure in Power Delegation](/case-studies/anomaly-chronicles/power-struggles/) — Apply delegation accounting to corporate governance, dictatorships, and political systems
 - [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — How insurance markets price defection risk

@@ -456,4 +456,3 @@ quadrantChart
 - [Agent, Power, Authority Formalization](/power-dynamics/agent-power-formalization/) — Theoretical foundations
 - [Strong Tools Hypothesis](/power-dynamics/strong-tools-hypothesis/) — Can we achieve capability without agency?
 - [Worked Examples](/power-dynamics/agency-power-examples/) — Numerical calculations
-- [Power Struggles](/case-studies/anomaly-chronicles/power-struggles/) — More on authority dynamics

@@ -46,24 +46,6 @@ Analysis of real systems through the lens of [agency and power formalization](/p
 
 See [Power Dynamics Case Studies](/case-studies/power-dynamics-cases/) for full analysis.
 
-## The Anomaly Chronicles
-
-:::note[Fiction]
-The Anomaly Chronicles is **speculative fiction**, not a case study of real events. It explores how delegation principles might apply to hypothetical extreme scenarios.
-:::
-
-A narrative exploration of delegation risk principles scaled to extreme scenarios:
-
-| Chapter | Focus |
-|---------|-------|
-| [Introduction](/case-studies/anomaly-chronicles/) | Setting and premise |
-| [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) | Original containment engagement |
-| [Mr. X: A Perspective](/case-studies/anomaly-chronicles/mr-x-perspective/) | The agent's viewpoint |
-| [Power Struggles](/case-studies/anomaly-chronicles/power-struggles/) | Multi-agent coordination |
-| [Task Architecture](/case-studies/anomaly-chronicles/task-architecture/) | Structural approaches |
-| [Five Years Later](/case-studies/anomaly-chronicles/five-years-later/) | System evolution |
-| [Year Ten](/case-studies/anomaly-chronicles/year-ten/) | Long-term dynamics |
-
 ## Reading Suggestions
 
 ### New to the Framework
@@ -78,11 +60,6 @@ The human systems cases show established approaches (with varying track records)
 2. [Criminal Organizations](/case-studies/human-systems/criminal-trust/) — Trust without enforcement
 3. [Open Source Communities](/case-studies/human-systems/open-source-trust/) — Distributed trust
 
-### Want the Full Picture
-The Anomaly Chronicles explores where these principles lead at scale:
-1. Start with [The Insurer's Dilemma](/delegation-risk/insurers-dilemma/) for context
-2. Then read the Chronicles in order
-
 ## How Case Studies Connect to Principles
 
 | Principle | Best Illustrated By |
@@ -91,7 +68,7 @@ The Anomaly Chronicles explores where these principles lead at scale:
 | Verification Layers | [Near-Miss](/case-studies/ai-systems/case-study-near-miss/) (saved by verification) |
 | Trust Decay | [Drift](/case-studies/ai-systems/case-study-drift/) (gradual failure) |
 | Adversarial Oversight | [Jury Systems](/case-studies/human-systems/jury-trust/), [Oversight Dilemma](/case-studies/human-systems/oversight-dilemma/) |
-| Bounded Exposure | [Nuclear Launch](/case-studies/human-systems/nuclear-launch-authority/), [Anomaly Chronicles](/case-studies/anomaly-chronicles/) |
+| Bounded Exposure | [Nuclear Launch](/case-studies/human-systems/nuclear-launch-authority/) |
 
 ## Next Steps
 

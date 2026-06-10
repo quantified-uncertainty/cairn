@@ -189,7 +189,6 @@ This kind of cross-domain comparison helps calibrate whether AI safety investmen
 - [Human-AI Delegation](/research/theory/human-ai-trust/) - Team dynamics and calibration
 
 ### Applications
-- [Power Struggles](/case-studies/anomaly-chronicles/power-struggles/) - Board vs CEO, dictator vs military, regulatory capture
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) - Balance sheet view of delegation
 
 ## The Goal

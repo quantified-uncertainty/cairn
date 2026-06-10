@@ -560,5 +560,4 @@ The insurance industry has spent decades pricing defection risk. Their methods�
 
 ### Related Pages
 - [Delegation Accounting Overview](/delegation-risk/delegation-accounting/) — Balance sheet framework
-- [Power Struggles](/case-studies/anomaly-chronicles/power-struggles/) — Application to political contexts
 - [Risk Decomposition](/delegation-risk/risk-decomposition/) — Accidents vs. defection
