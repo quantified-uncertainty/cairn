@@ -6,8 +6,6 @@ sidebar:
     variant: tip
 ---
 
-# Concrete Example: Research Assistant
-
 :::note[TL;DR]
 A research assistant decomposed into 6 narrow components (Search, Summarization, Gap Analysis, Hypothesis Generation, Forecasting, Red Team) coordinated by separate Strategy and Tactical modules. Key insight: **use fine-tuned 7B models for most components**, reserve frontier models only for hypothesis generation. Total system Delegation Risk: ~\$1,770/month. Includes Python code examples.
 :::

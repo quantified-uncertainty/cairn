@@ -7,8 +7,6 @@ sidebar:
   order: 4
 ---
 
-# Delegation Accounting: A Balance Sheet View
-
 :::note[TL;DR]
 **Net Delegation Value = Receivable - Exposure - Costs**. What you expect to get, minus what could go wrong, minus what it costs.
 :::

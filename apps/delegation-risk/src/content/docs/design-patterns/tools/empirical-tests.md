@@ -2,8 +2,6 @@
 title: "Empirical Tests and Validation"
 ---
 
-# Empirical Tests and Validation
-
 :::note[TL;DR]
 This page covers how to validate the framework empirically. Key finding from preliminary experiments: **decomposed architectures showed 73% fewer successful attacks** in red-team testing compared to monolithic agents, with only 1.8x latency overhead.
 :::

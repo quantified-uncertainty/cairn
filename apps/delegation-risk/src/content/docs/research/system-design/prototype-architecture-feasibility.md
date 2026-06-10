@@ -4,8 +4,6 @@ description: "Implementation feasibility of decomposed AI systems with trust pro
 date: 2025-12-13
 ---
 
-# Prototype Architecture Feasibility: Decomposed AI Systems for Delegation Risk
-
 ## Executive Summary
 
 This research examines the feasibility of implementing decomposed AI architectures for safety-critical applications requiring delegation risk framework and risk budgeting frameworks. Key findings indicate that decomposed systems can reduce costs by 80% while improving reliability, but introduce complexity in orchestration, latency management, and safety verification. The viability of Byzantine fault-tolerant coordinators, multi-agent frameworks, and specialist model pipelines is assessed based on current production deployments and research.

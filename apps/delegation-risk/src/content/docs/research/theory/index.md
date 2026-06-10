@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# Theoretical Foundations
-
 :::note[Theoretical Content]
 These documents explore the mathematical and economic foundations of delegation risk. They provide formal frameworks that underpin the practical applications in other sections.
 

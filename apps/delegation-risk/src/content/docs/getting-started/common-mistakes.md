@@ -1,11 +1,7 @@
 ---
 title: "Common Mistakes"
 description: "What teams get wrong when implementing delegation risk frameworks"
-sidebar:
-  order: 10
 ---
-
-# Common Mistakes
 
 Learn from others' failures. These are the most frequent mistakes teams make when implementing delegation risk frameworks.
 

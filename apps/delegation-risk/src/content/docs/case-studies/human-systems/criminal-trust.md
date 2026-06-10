@@ -7,8 +7,6 @@ sidebar:
   order: 5
 ---
 
-# Criminal Organizations: Trust Without Courts
-
 :::note[Framework Interpretation]
 This case study analyzes real phenomena through the lens of our delegation risk framework. The facts about criminal organizations are drawn from criminology research, but the interpretation and parallels to AI systems are our own framing.
 :::

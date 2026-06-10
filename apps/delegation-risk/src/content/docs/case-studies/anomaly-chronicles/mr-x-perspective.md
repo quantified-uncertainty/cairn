@@ -4,8 +4,6 @@ sidebar:
   order: 6
 ---
 
-# Mr. X: A Perspective
-
 :::caution[Epistemic Warning]
 This document presents an anomaly's perspective on the engagement system. It may be authentic self-representation, strategic manipulation, or something we cannot categorize. Treat it as data, not truth.
 :::

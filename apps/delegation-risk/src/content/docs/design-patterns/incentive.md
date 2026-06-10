@@ -5,8 +5,6 @@ sidebar:
   order: 7
 ---
 
-# Incentive Patterns
-
 Incentive patterns use **economic and game-theoretic mechanisms** to align agent behavior with principal goals. Rather than relying purely on technical constraints, these patterns make good behavior profitable and bad behavior costly.
 
 These patterns are inspired by mechanism design, cryptocurrency economics, and institutional economics.

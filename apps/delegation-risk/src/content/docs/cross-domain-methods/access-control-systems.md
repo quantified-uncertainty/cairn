@@ -3,8 +3,6 @@ title: "Access Control Systems"
 description: "Lessons from intelligence community and enterprise software access control for AI delegation"
 ---
 
-# Access Control Systems
-
 :::note[Transferability]
 Access control systems have decades of real-world experience managing trust and delegation at scale. The intelligence community handles genuinely adversarial threats; enterprise software handles organizational complexity. Both offer battle-tested patterns and well-documented failure modes directly applicable to AI delegation—though AI systems introduce novel challenges around capability assessment and behavioral unpredictability.
 :::

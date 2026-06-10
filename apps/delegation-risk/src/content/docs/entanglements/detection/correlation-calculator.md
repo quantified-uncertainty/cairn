@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-# Correlation Calculator
-
 This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations).
 
 ---

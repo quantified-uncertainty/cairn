@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Managing Exposure in Power Delegation
-
 :::note[TL;DR]
 When you delegate authority, you create exposure—the set of harms that could result. The key question isn't "will this person defect?" but "what's my exposure, and how can I bound it?" The dictator case is instructive: the public delegated limited authority, but the delegate expanded it without limit. This is *unbounded exposure*—the most dangerous form of delegation risk.
 :::

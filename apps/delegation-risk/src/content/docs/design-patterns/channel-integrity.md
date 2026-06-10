@@ -5,8 +5,6 @@ sidebar:
   order: 9
 ---
 
-# Channel Integrity Patterns
-
 :::note[TL;DR]
 Prevent components from influencing each other outside official channels. Key threats: **side deals** (explicit communication bypassing coordinators), **shared state** (covert read/write), **timing signals** (latency encoding), **steganography** (hidden data in outputs), and **logical correlation** (shared reasoning patterns). Solutions: enforce communication through coordinators only, detect unauthorized channels, use decision theory to prevent logical coordination.
 :::

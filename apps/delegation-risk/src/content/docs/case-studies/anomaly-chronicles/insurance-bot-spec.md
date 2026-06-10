@@ -4,8 +4,6 @@ sidebar:
   order: 9
 ---
 
-# Insurance Bot Specification
-
 :::note[Technical Reference]
 This document specifies the Insurance Bot system that provides real-time exposure quantification for the anomaly marketplace. Version 5.1, Year 10.
 :::

@@ -5,8 +5,6 @@ sidebar:
   order: 8
 ---
 
-# Incident Database Integration
-
 Risk estimates should be grounded in real-world data when available. This page explains how to use public AI incident databases to calibrate your delegation risk models.
 
 ## Why Use Incident Data?

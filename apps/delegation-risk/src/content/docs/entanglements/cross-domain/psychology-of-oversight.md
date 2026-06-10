@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-# Psychology of Oversight
-
 Human overseers are a critical component of AI safety architectures. But humans have systematic biases and limitations that create entanglement—often without anyone noticing.
 
 ---

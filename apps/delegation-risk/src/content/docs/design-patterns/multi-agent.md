@@ -5,8 +5,6 @@ sidebar:
   order: 6
 ---
 
-# Multi-Agent Patterns
-
 :::note[TL;DR]
 Use multiple agents for safety through disagreement, competition, and mutual oversight. Key patterns: **Adversarial Collaboration** (red/blue agents debate, arbiter synthesizes), **Cross-Validation** (independent agents verify each other), **Rotating Validators** (prevent capture through rotation), **Separation of Powers** (split authority across agents). Agreement between opposed agents is more trustworthy than single-agent conclusions.
 :::

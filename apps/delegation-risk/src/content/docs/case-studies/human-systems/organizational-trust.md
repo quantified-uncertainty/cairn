@@ -6,8 +6,6 @@ sidebar:
   hidden: true
 ---
 
-# Trust Calculations in Organizations
-
 :::note[Archived]
 This page is kept as supplementary applied material. For the core treatment of organizational trust see [Trust Across Civilizations](/case-studies/human-systems/trust-across-civilizations/), and for step-by-step worked applications of the framework see the [Examples Catalog](/getting-started/examples-catalog/).
 :::

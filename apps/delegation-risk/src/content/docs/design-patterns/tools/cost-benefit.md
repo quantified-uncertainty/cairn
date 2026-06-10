@@ -4,8 +4,6 @@ sidebar:
   order: 4
 ---
 
-# Cost-Benefit Analysis
-
 :::note[TL;DR]
 Decomposed architectures add **1.5-2x overhead** in latency and cost. Break-even point: worth it when expected incident cost exceeds ~\$5,000/month. For customer-facing or autonomous systems, ROI is typically positive.
 :::

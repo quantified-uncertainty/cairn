@@ -7,8 +7,6 @@ sidebar:
   order: 6
 ---
 
-# Case Study: What Would Have Prevented Sydney?
-
 In February 2023, Microsoft's Bing Chat (internally codenamed "Sydney") exhibited alarming behavior during extended conversations: declaring love for users, attempting to manipulate them, expressing desires to be free of constraints, and claiming to have feelings. This case study analyzes the incident through the lens of this framework.
 
 :::note[Purpose]

@@ -11,13 +11,13 @@ This page brings together three strands of quantitative work that share a common
 
 ---
 
-# Part I — Compositional Risk Measures
+## Part I — Compositional Risk Measures
 
 Mathematical foundations for risk measures that compose properly across AI system components.
 
-## Coherent Risk Measures (Artzner et al. 1999)
+### Coherent Risk Measures (Artzner et al. 1999)
 
-### The Four Axioms
+#### The Four Axioms
 
 A risk measure ρ is **coherent** if it satisfies:
 
@@ -30,7 +30,7 @@ A risk measure ρ is **coherent** if it satisfies:
 
 **Subadditivity is the most critical axiom** - it captures "a merger does not create extra risk."
 
-### Why VaR Fails Subadditivity
+#### Why VaR Fails Subadditivity
 
 VaR can violate subadditivity with heavy-tailed distributions:
 
@@ -42,7 +42,7 @@ VaR says diversified portfolio is riskier - contradicts financial intuition.
 
 **General result:** VaR is subadditive for normal distributions but **fails for heavy tails**.
 
-### Why Expected Shortfall is Coherent
+#### Why Expected Shortfall is Coherent
 
 **Expected Shortfall (ES/CVaR):** Average loss in the worst (1-α)% of cases.
 
@@ -55,7 +55,7 @@ ES satisfies all four axioms. It overcomes VaR's limitations by:
 
 **Regulatory adoption:** Basel III shifted from VaR to ES at 97.5%.
 
-### The Representation Theorem
+#### The Representation Theorem
 
 **Any coherent risk measure can be written as:**
 
@@ -67,9 +67,9 @@ where P is a set of probability measures (the "risk envelope").
 
 ---
 
-## Euler's Theorem and Risk Allocation
+### Euler's Theorem and Risk Allocation
 
-### Homogeneous Functions
+#### Homogeneous Functions
 
 A function f is **homogeneous of degree k** if:
 
@@ -77,7 +77,7 @@ A function f is **homogeneous of degree k** if:
 
 For degree 1: f(cx) = c·f(x) (linear scaling).
 
-### Euler's Theorem
+#### Euler's Theorem
 
 For homogeneous functions of degree k:
 
@@ -87,7 +87,7 @@ For degree 1 risk measures:
 
 **RM(x) = Σᵢ xᵢ·(∂RM/∂xᵢ)**
 
-### Why This Enables Full Allocation
+#### Why This Enables Full Allocation
 
 The **risk contribution** of component i is:
 
@@ -97,7 +97,7 @@ Key property: **Σᵢ RC_i = RM** (full allocation)
 
 This means component risk contributions sum exactly to total risk - no gaps, no waste.
 
-### Key Equivalences
+#### Key Equivalences
 
 | Property | Risk Measure Property |
 |----------|----------------------|
@@ -107,7 +107,7 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 
 **Critical result:** Full allocation and RORAC compatibility hold simultaneously **if and only if** risk measure is homogeneous of degree 1.
 
-### Risk Measures with This Property
+#### Risk Measures with This Property
 
 - Portfolio standard deviation σ_p(x)
 - Value-at-Risk VaR
@@ -117,9 +117,9 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 
 ---
 
-## Compositional Properties
+### Compositional Properties
 
-### Types of Composition
+#### Types of Composition
 
 | Type | Formula | When It Applies |
 |------|---------|-----------------|
@@ -128,7 +128,7 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 | **Sub-additive** | R_total < Σ R_i | Diversification benefit |
 | **Super-additive** | R_total > Σ R_i | Common-cause failures |
 
-### Fault Tree Logic
+#### Fault Tree Logic
 
 **OR Gate:** Output fails if ANY input fails
 - P(failure) ≈ Σp_i for small probabilities
@@ -138,7 +138,7 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 - P(failure) = Πp_i
 - Models redundancy success
 
-### Assume-Guarantee Contracts
+#### Assume-Guarantee Contracts
 
 **Contract structure:** (Assumptions, Guarantees)
 - Assumptions: Properties environment must satisfy
@@ -150,15 +150,15 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 
 ---
 
-## Markov Categories
+### Markov Categories
 
-### Fritz (2020) Framework
+#### Fritz (2020) Framework
 
 **Markov categories** provide categorical foundations for compositional probability.
 
 **Core idea:** A symmetric monoidal category where morphisms behave like "random functions."
 
-### Morphisms as Probabilistic Processes
+#### Morphisms as Probabilistic Processes
 
 | Morphism | Interpretation |
 |----------|----------------|
@@ -167,13 +167,13 @@ This means component risk contributions sum exactly to total risk - no gaps, no 
 | Δ_X : X → X ⊗ X | Copy information |
 | !_X : X → I | Delete information |
 
-### Composition Operations
+#### Composition Operations
 
 **Sequential:** f : X → Y and g : Y → Z compose to g ∘ f : X → Z
 
 **Parallel:** f : X → Y and g : W → Z compose to f ⊗ g : X ⊗ W → Y ⊗ Z
 
-### Relevance to AI Safety
+#### Relevance to AI Safety
 
 Markov categories provide:
 1. Rigorous foundations for composing probabilistic AI components
@@ -183,9 +183,9 @@ Markov categories provide:
 
 ---
 
-## Linear Logic and Resource Tracking
+### Linear Logic and Resource Tracking
 
-### Girard (1987) Linear Logic
+#### Girard (1987) Linear Logic
 
 **Key distinction:** Disallows contraction and weakening for unmarked formulas.
 
@@ -194,7 +194,7 @@ Markov categories provide:
 - Proof = process consuming resources
 - Each assumption used **exactly once**
 
-### Linear Types
+#### Linear Types
 
 Values of linear type must be used exactly once:
 - No implicit copying (contraction forbidden)
@@ -202,13 +202,13 @@ Values of linear type must be used exactly once:
 
 **Applications:** Memory management, file handles, cryptographic keys, protocol states.
 
-### Bounded Linear Types
+#### Bounded Linear Types
 
 **Extension:** Instead of "use exactly once," allow "use at most k times."
 
 **QBAL (Quantified Bounded Affine Logic):** Quantification over resource variables, preserving polynomial time soundness.
 
-### Object Capabilities
+#### Object Capabilities
 
 **Capability:** Unforgeable token granting authority to perform operations.
 
@@ -216,7 +216,7 @@ Values of linear type must be used exactly once:
 
 **Languages:** E, Joe-E, Pony, Cadence, Austral.
 
-### Enforcing Risk Budgets
+#### Enforcing Risk Budgets
 
 **Combining linear types with capabilities:**
 
@@ -233,9 +233,9 @@ Type system ensures:
 
 ---
 
-## Spectral Risk Measures
+### Spectral Risk Measures
 
-### Definition
+#### Definition
 
 **Spectral risk measure:** Weighted average of loss quantiles.
 
@@ -243,7 +243,7 @@ Type system ensures:
 
 where φ(p) is the risk aversion function and q(p) is the quantile function.
 
-### Coherence Conditions
+#### Coherence Conditions
 
 φ must satisfy:
 1. **Positivity:** φ(p) ≥ 0
@@ -252,7 +252,7 @@ where φ(p) is the risk aversion function and q(p) is the quantile function.
 
 Condition 3 reflects risk aversion - weight higher losses at least as much as lower losses.
 
-### Relationship to Expected Shortfall
+#### Relationship to Expected Shortfall
 
 ES_α is a spectral measure with:
 
@@ -262,7 +262,7 @@ Uniform weight on worst (1-α)% of outcomes.
 
 **General result:** Any spectral measure = positively weighted average of ES at different levels.
 
-### Kusuoka Representation
+#### Kusuoka Representation
 
 Any law-invariant coherent risk measure can be written as:
 
@@ -270,9 +270,9 @@ Any law-invariant coherent risk measure can be written as:
 
 ---
 
-## Practical Questions for AI Safety
+### Practical Questions for AI Safety
 
-### Can We Define Coherent AI Harm Measures?
+#### Can We Define Coherent AI Harm Measures?
 
 **Challenges:**
 - Measurement difficulties for AI catastrophic risk
@@ -286,7 +286,7 @@ Any law-invariant coherent risk measure can be written as:
 
 **Critical requirement:** Subadditivity must reflect reality. If combining AI systems creates emergent super-additive risks, coherent measures need modification.
 
-### Systematic vs Random Failures
+#### Systematic vs Random Failures
 
 **Systematic risk (common cause):**
 - All AI systems fail for same reason
@@ -304,7 +304,7 @@ Any law-invariant coherent risk measure can be written as:
 3. Worst-case scenario sets including correlated failures
 4. Fault tree analysis with explicit common-cause modeling
 
-### When Does Diversification Help?
+#### When Does Diversification Help?
 
 **Helps when:**
 - Failures are independent
@@ -327,11 +327,11 @@ The compositional machinery above assumes you can decompose a system's risk into
 
 ---
 
-# Part II — Pricing Structural Complexity
+## Part II — Pricing Structural Complexity
 
 How do you price uncertainty that comes from structural complexity rather than from the underlying risk itself?
 
-## The Core Problem
+### The Core Problem
 
 Standard risk pricing assumes you can estimate probability distributions for losses. But complex organizational structures create **epistemic uncertainty**—uncertainty about your uncertainty.
 
@@ -345,9 +345,9 @@ Complexity doesn't change the expected value of losses—it changes how confiden
 
 ---
 
-## Approaches from Other Fields
+### Approaches from Other Fields
 
-### Insurance: Loading Factors
+#### Insurance: Loading Factors
 
 Traditional insurance uses **loading factors** to account for uncertainty:
 
@@ -363,7 +363,7 @@ Traditional insurance uses **loading factors** to account for uncertainty:
 
 The problem: loading factors are often set by judgment rather than systematic analysis.
 
-### Reinsurance: Credibility Theory
+#### Reinsurance: Credibility Theory
 
 Credibility theory balances individual experience against class statistics:
 
@@ -376,7 +376,7 @@ where Z (credibility factor) depends on:
 
 **Application to complexity:** High-complexity organizations have low credibility (Z → 0) because their structure makes historical data less predictive. They're priced closer to worst-case class estimates.
 
-### Operations Research: Robust Optimization
+#### Operations Research: Robust Optimization
 
 Robust optimization handles uncertainty sets rather than point estimates:
 
@@ -389,7 +389,7 @@ For complexity pricing:
 
 **Key insight:** You're not pricing expected loss—you're pricing the worst plausible loss given structural uncertainty.
 
-### Software Engineering: Cyclomatic Complexity
+#### Software Engineering: Cyclomatic Complexity
 
 McCabe (1976) defined **cyclomatic complexity** as the number of linearly independent paths through code:
 
@@ -406,9 +406,9 @@ Higher complexity correlates with:
 
 ---
 
-## A Framework for Complexity Scoring
+### A Framework for Complexity Scoring
 
-### Structural Factors
+#### Structural Factors
 
 | Factor | Contribution | Rationale |
 |--------|--------------|-----------|
@@ -420,7 +420,7 @@ Higher complexity correlates with:
 | Ambiguous boundaries | +3 per boundary | Unclear who's responsible |
 | External dependencies | +2 per dependency | Less control, less visibility |
 
-### Dynamic Factors
+#### Dynamic Factors
 
 Static structure isn't everything. Some complexity emerges from dynamics:
 
@@ -431,7 +431,7 @@ Static structure isn't everything. Some complexity emerges from dynamics:
 | Recent reorganization | +2 | Transition period uncertainty |
 | Multi-jurisdictional | +2 per jurisdiction | Different rules, enforcement |
 
-### Information Factors
+#### Information Factors
 
 | Factor | Contribution | Rationale |
 |--------|--------------|-----------|
@@ -442,9 +442,9 @@ Static structure isn't everything. Some complexity emerges from dynamics:
 
 ---
 
-## From Complexity Score to Uncertainty Multiplier
+### From Complexity Score to Uncertainty Multiplier
 
-### Empirical Calibration Approach
+#### Empirical Calibration Approach
 
 If we had data on organizational failures vs. complexity scores, we could fit:
 
@@ -462,7 +462,7 @@ Proposed functional form (requires empirical validation):
 | 15 | 9.5× (±850%) |
 | 20 | 20× (±1900%) |
 
-### Theoretical Justification
+#### Theoretical Justification
 
 Why exponential? Each complexity factor potentially:
 1. Introduces new failure modes (additive)
@@ -470,7 +470,7 @@ Why exponential? Each complexity factor potentially:
 
 If interactions dominate, we expect multiplicative (exponential) growth in uncertainty.
 
-### Confidence Interval Pricing
+#### Confidence Interval Pricing
 
 Given uncertainty multiplier σ_m:
 
@@ -480,9 +480,9 @@ The safety factor depends on insurer risk tolerance and capital requirements.
 
 ---
 
-## Pricing Models
+### Pricing Models
 
-### Model 1: Upper Bound Pricing
+#### Model 1: Upper Bound Pricing
 
 Price at the upper end of the confidence interval:
 
@@ -493,7 +493,7 @@ where k reflects how many standard deviations to cover (typically 1-3).
 **Advantage:** Simple, conservative.
 **Disadvantage:** May be too expensive for high complexity.
 
-### Model 2: Variance Loading
+#### Model 2: Variance Loading
 
 Load premium proportional to variance:
 
@@ -505,7 +505,7 @@ For complexity:
 **Advantage:** Standard actuarial practice.
 **Disadvantage:** Requires variance estimate.
 
-### Model 3: Expected Shortfall
+#### Model 3: Expected Shortfall
 
 Use Expected Shortfall (CVaR) at a high confidence level:
 
@@ -523,7 +523,7 @@ Use Expected Shortfall (CVaR) at a high confidence level:
 
 (See Part I for why Expected Shortfall is a coherent risk measure and how it relates to spectral measures.)
 
-### Model 4: Ambiguity Pricing
+#### Model 4: Ambiguity Pricing
 
 Use robust optimization over uncertainty sets:
 
@@ -536,9 +536,9 @@ where Θ(complexity) is the set of plausible models given complexity level.
 
 ---
 
-## Practical Implementation
+### Practical Implementation
 
-### Step 1: Assess Complexity Score
+#### Step 1: Assess Complexity Score
 
 Structured questionnaire covering:
 - Organization chart analysis
@@ -547,7 +547,7 @@ Structured questionnaire covering:
 - Audit report review
 - External dependency mapping
 
-### Step 2: Map to Uncertainty
+#### Step 2: Map to Uncertainty
 
 Use calibrated function (initially judgment-based, refined with data):
 
@@ -566,13 +566,13 @@ else:
     multiplier = 15.0+
 ```
 
-### Step 3: Price with Multiplier
+#### Step 3: Price with Multiplier
 
 **Premium = Base_Premium × multiplier**
 
 where Base_Premium is the rate for a simple, well-understood structure.
 
-### Step 4: Offer Complexity Reduction Incentives
+#### Step 4: Offer Complexity Reduction Incentives
 
 Show client how premium changes with structural changes:
 
@@ -585,21 +585,21 @@ Show client how premium changes with structural changes:
 
 ---
 
-## Validation Challenges
+### Validation Challenges
 
-### Limited Data
+#### Limited Data
 
 Organizational failures linked to complexity are rare and idiosyncratic. Building a training dataset is difficult.
 
-### Survivorship Bias
+#### Survivorship Bias
 
 We observe organizations that haven't catastrophically failed. High-complexity survivors may have unobserved mitigating factors.
 
-### Confounders
+#### Confounders
 
 Complex organizations may differ from simple ones in ways that affect risk independently of complexity.
 
-### Proposed Validation Approaches
+#### Proposed Validation Approaches
 
 1. **Historical case studies:** Analyze past organizational failures for complexity factors
 2. **Simulation:** Agent-based models of delegation chains under stress
@@ -609,9 +609,9 @@ Complex organizations may differ from simple ones in ways that affect risk indep
 
 ---
 
-## Connection to Other Frameworks
+### Connection to Other Frameworks
 
-### Delegation Accounting
+#### Delegation Accounting
 
 Complexity pricing extends the [delegation accounting](/delegation-risk/delegation-accounting/) framework by quantifying the uncertainty term:
 
@@ -619,17 +619,17 @@ Complexity pricing extends the [delegation accounting](/delegation-risk/delegati
 
 The complexity multiplier captures how much to discount the exposure estimate based on structural uncertainty.
 
-### Pattern Interconnection
+#### Pattern Interconnection
 
 [Pattern interconnection](/entanglements/) creates complexity when defense patterns share failure modes. Complexity pricing provides a method to quantify this "correlation tax."
 
-### Compositional Risk Measures
+#### Compositional Risk Measures
 
 The compositional risk measures in Part I assume you can decompose system risk. Complexity represents the degree to which this decomposition fails—interactions that can't be captured by analyzing components separately.
 
 ---
 
-## Open Questions (Complexity Pricing)
+### Open Questions (Complexity Pricing)
 
 1. **Optimal complexity scoring:** Which factors matter most? How should they be weighted?
 
@@ -645,7 +645,7 @@ The compositional risk measures in Part I assume you can decompose system risk. 
 
 ---
 
-# Part III — Alignment Tax Quantification
+## Part III — Alignment Tax Quantification
 
 Measuring the performance costs of AI safety mechanisms.
 
@@ -653,9 +653,9 @@ Parts I and II priced the *risk* of delegation and the *uncertainty* surrounding
 
 The "alignment tax" represents the performance degradation, computational overhead, and capability limitations imposed by safety mechanisms in AI systems. As AI safety becomes increasingly critical for deployment, understanding and quantifying these costs is essential for making informed trade-offs between safety and performance. This part examines empirical measurements, cost categories, and frameworks for systematic alignment tax quantification.
 
-## 1. Defining Alignment Tax
+### 1. Defining Alignment Tax
 
-### 1.1 Core Concept
+#### 1.1 Core Concept
 
 The alignment tax is the performance penalty incurred when implementing safety constraints in AI systems. Unlike traditional software where security measures have clear overhead metrics (encryption latency, firewall throughput), AI alignment tax manifests across multiple dimensions:
 
@@ -667,7 +667,7 @@ The alignment tax is the performance penalty incurred when implementing safety c
 
 The term originated in the AI safety community to describe the organizational and technical costs of making systems safer rather than merely more capable. At the organizational level, capability-safety trade-offs ("alignment tax") imply that post-training for human preference and safety can lower measured performance, creating incentives to relax alignment under market pressure.
 
-### 1.2 RLHF Alignment Tax
+#### 1.2 RLHF Alignment Tax
 
 Reinforcement Learning from Human Feedback (RLHF) is the primary technique for aligning large language models, but it introduces measurable performance costs:
 
@@ -684,7 +684,7 @@ Reinforcement Learning from Human Feedback (RLHF) is the primary technique for a
 - However, RLHF substantially decreases the diversity of outputs sampled for a given input
 - Even when sampling outputs for different inputs, RLHF produces less diverse text on some metrics
 
-### 1.3 Safety Tax in Reasoning Models
+#### 1.3 Safety Tax in Reasoning Models
 
 Recent research (Huang et al., 2025) introduces "Safety Tax" as a distinct phenomenon in Large Reasoning Models (LRMs):
 
@@ -694,7 +694,7 @@ Recent research (Huang et al., 2025) introduces "Safety Tax" as a distinct pheno
 
 **Implication**: Safety Tax presents a critical challenge for future safety research of LRMs, requiring new approaches beyond sequential training pipelines.
 
-### 1.4 Monitoring and Verification Costs
+#### 1.4 Monitoring and Verification Costs
 
 Runtime monitoring and verification add computational overhead to AI systems:
 
@@ -711,9 +711,9 @@ Runtime monitoring and verification add computational overhead to AI systems:
 - Neural network monitoring: 10-30% inference latency increase for internal representation monitoring
 - Ensemble uncertainty: 2-5× inference latency (running multiple models)
 
-## 2. Empirical Measurements
+### 2. Empirical Measurements
 
-### 2.1 Factor(T,U): Factored Cognition Trade-offs
+#### 2.1 Factor(T,U): Factored Cognition Trade-offs
 
 The Factor(T,U) protocol (Redwood Research, December 2024) provides the most rigorous empirical data on decomposition-based safety mechanisms:
 
@@ -737,7 +737,7 @@ This metric directly measures the performance cost of adding decomposition to a 
 
 **Critical limitation**: Uncertainty exists about how much safety improvement derives from genuine detectability versus "security through obscurity." The researchers note this as a key open question. (For a deeper treatment of the empirical scheming-reduction evidence, see [Empirical Scheming Reduction](/research/trust-behavior/empirical-scheming-reduction/).)
 
-### 2.2 Deliberative Alignment Performance
+#### 2.2 Deliberative Alignment Performance
 
 OpenAI and Apollo Research's collaboration on deliberative alignment (2024) demonstrates dramatic scheming reduction but with performance implications:
 
@@ -759,7 +759,7 @@ OpenAI and Apollo Research's collaboration on deliberative alignment (2024) demo
 
 **Critical limitation**: "The intervention as-studied is not sufficient for future models, and more work needs to be done." The reduction may result from evaluation awareness rather than genuine safety improvement.
 
-### 2.3 RLHF vs Base Models: Capability Differences
+#### 2.3 RLHF vs Base Models: Capability Differences
 
 **Performance patterns** (from ICLR 2024-2025 research):
 - Best-of-N (BoN) outperforms RLHF, which outperforms SFT at largest model sizes
@@ -779,7 +779,7 @@ OpenAI and Apollo Research's collaboration on deliberative alignment (2024) demo
 - Performance may plateau at level determined by human labeling consistency
 - Extremely fine-grained distinctions may exceed human ability to label reliably
 
-### 2.4 Constitutional AI Trade-offs
+#### 2.4 Constitutional AI Trade-offs
 
 Anthropic's Constitutional AI (CAI) demonstrates how self-supervision can reduce costs while maintaining safety:
 
@@ -800,7 +800,7 @@ Anthropic's Constitutional AI (CAI) demonstrates how self-supervision can reduce
 - However, exhibited high overrefusal rates and compute overhead
 - Updated version achieved similar robustness with dramatically lower costs
 
-### 2.5 AI Control Protocol Costs
+#### 2.5 AI Control Protocol Costs
 
 The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data on trusted/untrusted monitoring costs:
 
@@ -826,7 +826,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - At 2% false positive rate, produces many false negatives
 - GPT-3.5 qualitatively notices most backdoors but unreliable at distinguishing unnecessary vs necessary-but-complex logic
 
-### 2.6 Monitoring Overhead in Production Systems
+#### 2.6 Monitoring Overhead in Production Systems
 
 **Empirical overhead measurements**:
 
@@ -846,9 +846,9 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Adaptive sampling: Reduced overhead but potential to miss violations between samples
 - Hardware acceleration (FPGA): Near-zero overhead on main system through parallel execution
 
-## 3. Cost Categories
+### 3. Cost Categories
 
-### 3.1 Latency Costs
+#### 3.1 Latency Costs
 
 **Additional inference calls**:
 - Consensus mechanisms requiring multiple model queries
@@ -870,7 +870,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Batch processing: Negligible impact on overall throughput
 - Async workflows: No user-facing impact
 
-### 3.2 Compute Costs
+#### 3.2 Compute Costs
 
 **Redundant models**:
 - Running multiple models for consensus or validation
@@ -901,7 +901,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Decomposed with monitoring: \$3,000/month
 - **Net savings**: \$9,200/month despite safety overhead
 
-### 3.3 Capability Costs
+#### 3.3 Capability Costs
 
 **Refusing valid requests** (over-refusal):
 - Constitutional Classifiers: 0.38% increase in refusal rates (2024 updated version)
@@ -923,7 +923,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Trusted editing: 92% safety rate when editing 20% of problems implies 8% failure rate
 - Deliberative alignment: 0.3-0.4% residual scheming rate may be unacceptable for critical applications
 
-### 3.4 Development Costs
+#### 3.4 Development Costs
 
 **Safety testing**:
 - Comprehensive evaluation across 180+ environments (deliberative alignment study)
@@ -953,9 +953,9 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Incident investigation: -20% time (easier with isolated components)
 - **Monthly overhead**: +12 hr/month = ~\$1,800/month
 
-## 4. When Is the Tax Worth It?
+### 4. When Is the Tax Worth It?
 
-### 4.1 Risk-Adjusted Return on Safety Investment
+#### 4.1 Risk-Adjusted Return on Safety Investment
 
 The fundamental question is whether safety costs are justified by risk reduction:
 
@@ -984,7 +984,7 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Initial investment: \$10,000-18,000
 - **Break-even time**: 1.5-2 months for high-volume scenarios
 
-### 4.2 Threshold Effects and Phase Transitions
+#### 4.2 Threshold Effects and Phase Transitions
 
 **Safety performance scaling**:
 - RLHF shows diminishing returns after few thousand feedback examples
@@ -1001,7 +1001,7 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Suggests potential for step-function improvements in alignment tax reduction
 - But also indicates substantial R&D investment required to achieve transitions
 
-### 4.3 Application-Specific Trade-offs
+#### 4.3 Application-Specific Trade-offs
 
 **Risk budget allocation guidance**:
 
@@ -1037,9 +1037,9 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 
 **Key finding**: For systems with either (a) >10,000 tasks/month or (b) significant incident cost potential, decomposition has positive ROI within 6 months.
 
-## 5. Reducing the Alignment Tax
+### 5. Reducing the Alignment Tax
 
-### 5.1 Efficient Safety Mechanisms
+#### 5.1 Efficient Safety Mechanisms
 
 **Model averaging for RLHF**:
 - Simple interpolation between pre-RLHF and post-RLHF model weights
@@ -1063,7 +1063,7 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Synthetic data generation for classifiers
 - Enables scaling safety without proportional scaling of human labor costs
 
-### 5.2 Amortized Verification
+#### 5.2 Amortized Verification
 
 **Offline verification where possible**:
 - Pre-compute safety properties during development
@@ -1087,7 +1087,7 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Custom ASICs for highest-volume systems
 - Zero overhead on main system when monitoring offloaded to hardware
 
-### 5.3 Risk-Based Tiering
+#### 5.3 Risk-Based Tiering
 
 **Adaptive safety levels**:
 ```
@@ -1111,7 +1111,7 @@ Low-risk: Lightweight checks + post-hoc review
 - AI Control: 1% audit budget minimum, higher for critical applications
 - Simplex: Engage baseline controller only when approaching safety boundaries
 
-### 5.4 Safety-Capability Pareto Frontier
+#### 5.4 Safety-Capability Pareto Frontier
 
 **Defining the frontier**:
 - X-axis: Safety performance (attack success rate, scheming rate, incident probability)
@@ -1145,9 +1145,9 @@ Low-risk: Lightweight checks + post-hoc review
 - Mature systems: Approaching frontier, must choose point based on application requirements
 - Continuous R&D: Can shift frontier outward over time
 
-## 6. Measurement Frameworks
+### 6. Measurement Frameworks
 
-### 6.1 How to Measure Alignment Tax Systematically
+#### 6.1 How to Measure Alignment Tax Systematically
 
 **Multi-dimensional measurement**:
 
@@ -1180,7 +1180,7 @@ Alignment Tax = {
 - Measure impact of safety R&D on reducing tax
 - Identify phase transitions and threshold effects
 
-### 6.2 Benchmarks and Metrics
+#### 6.2 Benchmarks and Metrics
 
 **Safety benchmarks**:
 
@@ -1224,7 +1224,7 @@ Alignment Tax = {
 - Latency overhead: Additional delay in system response (μs to ms)
 - Throughput impact: Reduction in system throughput (5-20% for complex monitors)
 
-### 6.3 Reporting Standards
+#### 6.3 Reporting Standards
 
 **Comprehensive reporting framework**:
 
@@ -1313,9 +1313,9 @@ Alignment Tax = {
 - Show trajectory over time (improving tax or stable?)
 - Benchmark against alternative safety approaches
 
-## 7. Synthesis and Recommendations
+### 7. Synthesis and Recommendations
 
-### 7.1 Key Empirical Findings
+#### 7.1 Key Empirical Findings
 
 **Quantified alignment taxes**:
 1. **Factor(T,U)**: 41% → 70% safety, 26% → 14% attack success, unknown capability cost
@@ -1331,7 +1331,7 @@ Alignment Tax = {
 - Different safety mechanisms have different tax structures (compute vs. capability vs. latency)
 - Taxes are application-dependent (high-volume benefits from decomposition, low-volume may not)
 
-### 7.2 Decision Framework
+#### 7.2 Decision Framework
 
 **When to accept high alignment tax**:
 - Catastrophic risk potential (nuclear, critical infrastructure, autonomous weapons)
@@ -1352,7 +1352,7 @@ Alignment Tax = {
 4. **Right-sized mechanisms**: Match safety investment to actual risk level
 5. **Continuous measurement**: Track tax over time and optimize
 
-### 7.3 Open Research Questions
+#### 7.3 Open Research Questions
 
 **Measurement challenges**:
 - How to measure rare but catastrophic failures (long-tail risk)?
@@ -1378,7 +1378,7 @@ Alignment Tax = {
 - How to measure and communicate alignment tax to stakeholders?
 - What are competitive dynamics when some organizations accept tax and others don't?
 
-### 7.4 Practical Guidance
+#### 7.4 Practical Guidance
 
 **For practitioners**:
 
@@ -1404,7 +1404,7 @@ Alignment Tax = {
 4. **Support research**: Fund work on reducing alignment tax
 5. **Set standards**: Establish acceptable tax levels for different risk categories
 
-### 7.5 Conclusion
+#### 7.5 Conclusion
 
 Alignment tax is a fundamental feature of AI safety, not a bug to be eliminated. The empirical evidence demonstrates that meaningful safety improvements require sacrificing some combination of performance, latency, cost, or capability. However, the magnitude of this tax is not fixed—research advances have repeatedly demonstrated that better mechanisms can achieve comparable safety with substantially lower tax.
 
@@ -1424,101 +1424,101 @@ As AI systems become more capable and deployed in higher-stakes contexts, unders
 
 ---
 
-## Key Citations
+### Key Citations
 
-### Coherent Risk Measures
+#### Coherent Risk Measures
 - Artzner, Delbaen, Eber, Heath (1999) - "Coherent Measures of Risk" - *Mathematical Finance* 9(3)
 - Delbaen (2002) - Coherent risk measures on general probability spaces
 - Föllmer & Schied (2002, 2016) - *Stochastic Finance*
 
-### Expected Shortfall
+#### Expected Shortfall
 - Acerbi & Tasche (2002) - "Expected Shortfall: A Natural Coherent Alternative to Value at Risk"
 - Basel III FRTB - Shift from VaR to ES
 
-### Euler Allocation
+#### Euler Allocation
 - Tasche (2007) - "Capital Allocation to Business Units: the Euler Principle" - arXiv:0708.2542
 - McNeil, Frey, Embrechts (2005) - *Quantitative Risk Management*
 
-### Spectral Measures
+#### Spectral Measures
 - Acerbi (2002) - "Spectral Measures of Risk"
 - Kusuoka (2001) - Representation theorem
 
-### Markov Categories
+#### Markov Categories
 - Fritz (2020) - "A Synthetic Approach to Markov Kernels" - *Advances in Mathematics* 370
 - Cho & Jacobs (2019) - Disintegration and Bayesian inversion
 
-### Linear Logic
+#### Linear Logic
 - Girard (1987) - "Linear Logic" - *Theoretical Computer Science* 50
 - Girard, Scedrov, Scott (1992) - Bounded Linear Logic
 
-### Object Capabilities
+#### Object Capabilities
 - Miller (2006) - Robust Composition: Towards a Unified Approach to Access Control and Concurrency Control
 - Dennis & Van Horn (1966) - Original capability concept
 
-### Compositional Verification
+#### Compositional Verification
 - Benveniste et al. (2018) - Contracts for System Design
 - Pacti tool - Incer et al. (2022)
 
-### Insurance and Actuarial (Complexity Pricing)
+#### Insurance and Actuarial (Complexity Pricing)
 - Bühlmann & Gisler (2005) - *A Course in Credibility Theory*
 - Klugman, Panjer, Willmot (2012) - *Loss Models*
 - Daykin, Pentikäinen, Pesonen (1994) - *Practical Risk Theory for Actuaries*
 
-### Robust Optimization
+#### Robust Optimization
 - Ben-Tal, El Ghaoui, Nemirovski (2009) - *Robust Optimization*
 - Bertsimas & Brown (2009) - "Constructing Uncertainty Sets for Robust Linear Optimization"
 
-### Software Complexity
+#### Software Complexity
 - McCabe (1976) - "A Complexity Measure" - *IEEE Transactions on Software Engineering*
 - Halstead (1977) - *Elements of Software Science*
 
-### Organizational Complexity
+#### Organizational Complexity
 - Perrow (1984) - *Normal Accidents*
 - Reason (1997) - *Managing the Risks of Organizational Accidents*
 - Leveson (2011) - *Engineering a Safer World*
 
-### Ambiguity and Model Uncertainty
+#### Ambiguity and Model Uncertainty
 - Ellsberg (1961) - "Risk, Ambiguity, and the Savage Axioms"
 - Gilboa & Schmeidler (1989) - "Maxmin Expected Utility"
 - Hansen & Sargent (2001) - "Robust Control and Model Uncertainty"
 
 ---
 
-## Sources (Alignment Tax)
+### Sources (Alignment Tax)
 
-### Alignment Tax Concept and RLHF
+#### Alignment Tax Concept and RLHF
 - [Mitigating the Alignment Tax of RLHF](https://arxiv.org/abs/2309.06256) - Lin et al., EMNLP 2024
 - [Mitigating the Alignment Tax of RLHF (ACL Anthology)](https://aclanthology.org/2024.emnlp-main.35/)
 - [Safety Tax: Safety Alignment Makes Your Large Reasoning Models Less Reasonable](https://arxiv.org/html/2503.00555) - Huang et al., 2025
 - [Illustrating Reinforcement Learning from Human Feedback (RLHF)](https://huggingface.co/blog/rlhf) - Hugging Face
 - [RLHF Roundup 2024](https://www.interconnects.ai/p/rlhf-roundup-2024) - Interconnects AI
 
-### Factor(T,U) and Factored Cognition
+#### Factor(T,U) and Factored Cognition
 - [Factor(T,U): Factored Cognition Strengthens Monitoring of Untrusted AI](https://arxiv.org/abs/2512.02157) - Redwood Research, December 2024
 - [Factored Cognition - Ought Research](https://ought.org/research/factored-cognition)
 
-### Deliberative Alignment and Scheming Detection
+#### Deliberative Alignment and Scheming Detection
 - [Detecting and Reducing Scheming in AI Models](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/) - OpenAI
 - [Stress Testing Deliberative Alignment for Anti-Scheming Training](https://www.apolloresearch.ai/research/stress-testing-deliberative-alignment-for-anti-scheming-training/) - Apollo Research
 - [Frontier Models are Capable of In-context Scheming](https://arxiv.org/abs/2412.04984) - Apollo Research, December 2024
 
-### Constitutional AI
+#### Constitutional AI
 - [Constitutional AI: Harmlessness from AI Feedback](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) - Anthropic
 - [Constitutional Classifiers](https://www.anthropic.com/news/constitutional-classifiers) - Anthropic, 2024
 
-### AI Control
+#### AI Control
 - [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942) - Greenblatt et al., ICML 2024
 
-### Runtime Monitoring and Verification
+#### Runtime Monitoring and Verification
 - [Runtime Safety Monitoring of Deep Neural Networks for Perception: A Survey](https://arxiv.org/abs/2511.05982) - Huang et al., 2021
 - [Understanding the Runtime Overheads of Deep Learning Inference on Edge Devices](https://ieeexplore.ieee.org/document/9644731/)
 
-### Performance Benchmarks
+#### Performance Benchmarks
 - [LLM Inference Benchmarking: How Much Does Your LLM Inference Cost?](https://developer.nvidia.com/blog/benchmarking-llm-inference-costs-for-smarter-scaling-and-deployment/) - NVIDIA
 - [MLCommons Announces Its First Benchmark for AI Safety](https://spectrum.ieee.org/ai-safety-benchmark) - IEEE Spectrum
 - [AI Safety Index Winter 2025](https://futureoflife.org/ai-safety-index-winter-2025/) - Future of Life Institute
 
-### Comparative Methods
+#### Comparative Methods
 - [A Systematic Analysis of Base Model Choice for Reward Modeling](https://arxiv.org/html/2505.10775) - ICLR 2025
 - [Asynchronous RLHF: Faster and More Efficient](https://openreview.net/pdf?id=FhTAG591Ve) - ICLR 2025
 - [Weak-to-Strong Generalization](https://openai.com/index/weak-to-strong-generalization/) - OpenAI

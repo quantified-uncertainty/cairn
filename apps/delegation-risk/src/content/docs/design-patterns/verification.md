@@ -5,8 +5,6 @@ sidebar:
   order: 2
 ---
 
-# Verification Patterns
-
 :::note[TL;DR]
 Check that agents behave correctly. Key patterns: **Ghost Checker** (parallel async verification without blocking), **Consistency Triangulation** (multiple methods must agree), **Honeypot Injection** (plant fake vulnerabilities to detect scheming), **Output Sampling** (verify random subset of outputs). Use verification patterns together with structural patterns—you need both architecture and checking.
 :::

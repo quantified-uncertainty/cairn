@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# Quick Start: Applying the Framework
-
 A practical checklist for applying the AI Safety Framework to a new system. Complete these steps in order.
 
 ## Phase 1: Scope and Budget (1-2 hours)

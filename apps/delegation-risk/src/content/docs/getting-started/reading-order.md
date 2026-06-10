@@ -3,11 +3,11 @@ title: "The Core Path"
 description: "The ~12-stop core path through the framework's strongest material, plus shorter routes by goal"
 ---
 
-# The Core Path & Where to Go Next
-
 This site is large (~160 pages), but its essential argument lives in about a dozen stops. **If you read only one path, read this one** — it covers the framework's most distinctive material in order, in roughly 4–6 hours. Pages on this path are marked with a <span style="color:var(--sl-color-green)">Core</span> badge in the sidebar. Everything else on the site is reference depth, supporting research, or applied variation.
 
-## The Core Path
+<span id="the-core-path"></span>
+
+## The 12 Stops
 
 **Before you start:** skim the [Five-Minute Intro](/getting-started/five-minute-intro/) and [Core Concepts](/getting-started/core-concepts/) (~25 min) for the vocabulary — especially the [canonical definition of Delegation Risk](/getting-started/core-concepts/#the-formula).
 

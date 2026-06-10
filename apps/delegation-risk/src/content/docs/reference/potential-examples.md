@@ -2,8 +2,6 @@
 title: "Potential Delegation Risk Examples"
 ---
 
-# Potential Delegation Risk Examples
-
 A research compilation of interesting trust architecture examples across domains. Organized by category with notes on what makes each compelling for analysis.
 
 **Selection criteria:**

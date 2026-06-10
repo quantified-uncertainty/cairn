@@ -5,8 +5,6 @@ sidebar:
   order: 1
 ---
 
-# Structural Patterns
-
 :::note[TL;DR]
 Define the architecture of delegation. Key patterns: **Escalation Ladder** (match oversight to stakes—autonomous for low-risk, human review for high-risk), **Gateway Chokepoint** (single entry point for validation), **Bulkhead Isolation** (contain failures to compartments), **Separation of Powers** (split authority so no single component controls everything). Choose structural patterns first, then layer others on top.
 :::

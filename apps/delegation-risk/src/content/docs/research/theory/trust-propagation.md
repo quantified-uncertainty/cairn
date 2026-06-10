@@ -2,8 +2,6 @@
 title: "Risk Inheritance Algorithms"
 ---
 
-# Risk Inheritance Algorithms
-
 Given a system of n components with pairwise trust relationships, how does risk inherit through delegation chains from principals to leaf executors? This is analogous to PageRank, electrical current flow, or heat diffusion—but with delegation-specific semantics.
 
 ## Setup

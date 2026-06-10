@@ -4,8 +4,6 @@ sidebar:
   order: 4
 ---
 
-# Five Years Later: The Anomaly Unit
-
 :::note[TL;DR]
 Mr. X was the first. Now there are forty-seven known anomalies operating globally. A specialized insurance unit has built a functioning marketplace through: **task atomization** (tiny isolated work units), **dynamic bidding** (anomalies compete on both price and proposed protocols), **automated risk quantification** (Insurance Bot prices exposure in real-time), and **payment structures** that make cooperation profitable. The surprising findings: anomalies *innovate* on containment protocols to win bids, they report high-exposure competitors, and the resulting equilibrium appears win-win. Average exposure score dropped from 2.3 to 0.4 as anomalies *competed their way to better containment*.
 :::

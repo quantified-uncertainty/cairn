@@ -4,8 +4,6 @@ sidebar:
   order: 4.5
 ---
 
-# Task Architecture: Information-Minimal Execution
-
 :::note[TL;DR]
 The most sophisticated anomalies don't just accept containment—they *architect* it. Tasks begin with minimal information. Every reveal increases exposure. The winning strategy: design execution paths that accomplish goals while seeing as little as possible. The best anomalies compete on *information efficiency*—spawning subtasks, using blind delegation, and building pipelines where no single entity ever sees the full picture.
 :::

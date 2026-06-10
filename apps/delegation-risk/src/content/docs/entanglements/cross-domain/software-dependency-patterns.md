@@ -3,8 +3,6 @@ title: "Software Dependency Patterns"
 description: "Lessons from 50 years of software engineering: managing dependencies at scale"
 ---
 
-# Software Dependency Patterns
-
 :::note[TL;DR]
 Software engineering has spent 50 years learning to manage dependencies. The hard-won lessons—dependency injection, interface segregation, acyclic dependencies, loose coupling—map directly to delegation architecture. The DI container is a trust broker. An interface is an explicit entanglement contract. A circular dependency is a circular entanglement. We should learn from these patterns.
 :::

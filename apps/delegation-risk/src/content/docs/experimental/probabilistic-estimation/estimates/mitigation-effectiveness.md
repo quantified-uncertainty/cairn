@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-# Mitigation Effectiveness
-
 This page provides estimates for how much risk reduction various safety interventions provide. Use these to calculate the ROI of different mitigations.
 
 ## Mitigation Categories

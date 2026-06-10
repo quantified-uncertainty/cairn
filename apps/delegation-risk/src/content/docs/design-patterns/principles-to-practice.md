@@ -4,8 +4,6 @@ sidebar:
   order: 3
 ---
 
-# Principles to Practice
-
 This page maps the framework's abstract principles to their concrete applications in the worked examples, helping you see how theory becomes implementation.
 
 ## Quick Reference: Principles → Components

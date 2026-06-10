@@ -2,8 +2,6 @@
 title: "Risk Dynamics"
 ---
 
-# Risk Dynamics
-
 ## Bayesian Trust Updating
 
 Start with prior belief about agent trustworthiness, update with observations.

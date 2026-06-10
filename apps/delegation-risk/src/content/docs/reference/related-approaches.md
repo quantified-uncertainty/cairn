@@ -2,8 +2,6 @@
 title: "Relationship to Existing Approaches"
 ---
 
-# Relationship to Existing Approaches
-
 ## vs CAIS ([Drexler, 2019](https://www.fhi.ox.ac.uk/reframing/))
 
 **[CAIS](https://www.fhi.ox.ac.uk/wp-content/uploads/Reframing_Superintelligence.pdf) proposed**: Build superintelligence as ecosystem of narrow services, avoid monolithic agents

@@ -4,8 +4,6 @@ sidebar:
   order: 3
 ---
 
-# The Oversight Dilemma: Who Watches the Watchmen?
-
 :::note[Framework Interpretation]
 This case study analyzes oversight mechanisms through the lens of our delegation risk framework. The examples are based on real governmental structures, but the mathematical framing is our own interpretation.
 :::

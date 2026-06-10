@@ -8,8 +8,6 @@ sidebar:
   order: 4
 ---
 
-# Worked Examples
-
 This page walks through complete analyses of interconnection in realistic architectures.
 
 ---

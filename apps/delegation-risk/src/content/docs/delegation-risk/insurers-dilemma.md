@@ -7,8 +7,6 @@ sidebar:
   order: 6
 ---
 
-# The Insurer's Dilemma
-
 :::note[TL;DR]
 Before you can insure delegation risk, you must solve the moral hazard problem: **the insurer doesn't trust the principal**. If Alice is fully covered, she has no incentive to be careful with Bob. The solution is partial coverage—but how partial? Too little and Alice won't engage agents at all. Too much and she'll take reckless risks. The optimal coverage ratio depends on how much the insurer can monitor, how aligned Alice's incentives are, and how catastrophic the worst outcomes could be.
 :::

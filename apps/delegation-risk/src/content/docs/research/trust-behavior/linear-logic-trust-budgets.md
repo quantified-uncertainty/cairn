@@ -5,8 +5,6 @@ author: "Research compiled from academic sources"
 date: "2025-12-13"
 ---
 
-# Linear Logic for Delegation Risk Budgets: A Research Survey
-
 ## Executive Summary
 
 This document surveys the intersection of linear logic, type systems, and capability-based security as potential foundations for enforcing trust and risk budgets in AI safety systems. Linear logic provides a mathematical foundation for reasoning about resources that must be used exactly once, while type systems can enforce these constraints at compile time. Capability-based security adds unforgeable tokens of authority that can be revoked or attenuated. Together, these concepts offer a rigorous framework for implementing delegation risk framework and risk budgeting in AI systems.

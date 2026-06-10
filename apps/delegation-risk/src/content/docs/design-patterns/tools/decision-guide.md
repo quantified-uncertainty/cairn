@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Implementation Decision Guide
-
 Practical decision trees for applying the framework. Use these when designing a new system or evaluating an existing one.
 
 ## Decision Tree 1: Choosing Component Implementation

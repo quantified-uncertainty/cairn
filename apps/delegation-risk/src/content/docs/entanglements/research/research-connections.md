@@ -5,8 +5,6 @@ sidebar:
   order: 8
 ---
 
-# Research Connections: An Annotated Reading List
-
 This page is a map of adjacent academic literature — an annotated reading list, not original synthesis. The challenges of entanglement in AI delegation systems connect to rich bodies of research; this survey highlights where to look and what each field contributes.
 
 ---

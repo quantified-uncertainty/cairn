@@ -3,8 +3,6 @@ title: "Quick Reference"
 description: "Core formulas, pattern selection, and key thresholds at a glance"
 ---
 
-# Quick Reference
-
 A one-page summary for practitioners who know the framework and need fast lookup.
 
 ---

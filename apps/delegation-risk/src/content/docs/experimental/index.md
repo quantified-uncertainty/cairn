@@ -5,8 +5,6 @@ sidebar:
   order: 0
 ---
 
-# Experimental
-
 This section contains experimental features, tools, and methodologies that are under active development. These are promising approaches that haven't yet been fully validated or integrated into the core framework.
 
 ## What's Here

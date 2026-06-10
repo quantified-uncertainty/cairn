@@ -5,8 +5,6 @@ sidebar:
   order: 1
 ---
 
-# Estimates Registry
-
 This section provides a centralized registry of all quantitative estimates used in the Delegation Risk Framework. Each estimate includes:
 
 - **Point estimate**: A single representative value

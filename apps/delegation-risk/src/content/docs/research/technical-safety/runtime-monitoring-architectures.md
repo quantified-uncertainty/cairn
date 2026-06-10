@@ -3,8 +3,6 @@ title: "Runtime Monitoring Architectures"
 description: "Runtime verification and monitoring for AI safety guarantees"
 ---
 
-# Runtime Monitoring Architectures for AI Safety
-
 Runtime monitoring represents a critical layer in AI safety assurance, providing continuous verification of system behavior during deployment. Unlike static verification methods that analyze systems before deployment, runtime monitoring observes actual execution, detecting violations, anomalies, and unsafe conditions as they emerge. This document explores the foundations, architectures, and practical implementation of runtime monitoring for AI safety.
 
 ## 1. Why Runtime Monitoring

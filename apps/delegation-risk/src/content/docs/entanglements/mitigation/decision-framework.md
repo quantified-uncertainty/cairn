@@ -5,8 +5,6 @@ sidebar:
   order: 6
 ---
 
-# Decision Framework
-
 Reducing correlation has costs. This page provides frameworks for deciding when and how much to invest in diversity.
 
 ---

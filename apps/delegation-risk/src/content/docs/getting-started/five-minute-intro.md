@@ -1,9 +1,7 @@
 ---
-title: "5-Minute Introduction"
+title: "Delegation Risk in 5 Minutes"
 description: "The compressed version of the framework: decompose into limited components and budget delegation risk like money."
 ---
-
-# Delegation Risk in 5 Minutes
 
 :::note
 This is the compressed version. For caveats and nuance, see the [Getting Started overview](/getting-started/).

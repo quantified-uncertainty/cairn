@@ -4,8 +4,6 @@ sidebar:
   order: 8
 ---
 
-# Case Study: Content Moderator (Gradual Drift)
-
 :::caution[Illustrative Example]
 This case study is a **hypothetical scenario** designed to illustrate how systems can drift over time. It's based on realistic patterns but is not a documented real incident.
 :::

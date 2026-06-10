@@ -8,8 +8,6 @@ sidebar:
   order: 1
 ---
 
-# Types of Entanglement
-
 Not all entanglement is equal. Components can become entangled in fundamentally different ways—from passive shared dependencies to active influence channels to deliberate collusion. Understanding the type helps determine the appropriate response.
 
 ---

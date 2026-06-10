@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-# A Walk-Through: The \$1,000 Delivery
-
 :::note[TL;DR]
 This walk-through builds up delegation risk concepts step by step using a simple scenario: transporting \$1,000. We start with basic exposure calculation, add risk-reduction measures, introduce an overseer, and show how visibility into delegation risk changes incentives.
 :::

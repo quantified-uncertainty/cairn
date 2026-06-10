@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Damage Distributions
-
 Damage estimates should reflect uncertainty, especially for rare-but-severe events. This page provides distributions for different damage categories.
 
 ## Why Distributions Matter for Damage

@@ -7,8 +7,6 @@ sidebar:
   order: 5
 ---
 
-# Example: Healthcare Triage Bot
-
 A worked example in a regulated, high-stakes domain: a bot that helps patients assess symptoms and routes them to appropriate care.
 
 ## Task

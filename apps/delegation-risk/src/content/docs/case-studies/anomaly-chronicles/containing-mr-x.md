@@ -4,8 +4,6 @@ sidebar:
   order: 3
 ---
 
-# Containing Mr. X: Bounding Exposure from a Known Threat
-
 :::note[TL;DR]
 Mr. X has a documented history of exploiting clients. He will almost certainly try something—the question isn't IF but HOW. This makes conventional trust assessment useless. The solution: design controls that work regardless of attack vector.
 :::

@@ -2,8 +2,6 @@
 title: "Delegation Economics"
 ---
 
-# Delegation Economics
-
 ## Trust Production Function
 
 How is trust produced? What are the inputs?

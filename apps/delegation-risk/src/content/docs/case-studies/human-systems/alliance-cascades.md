@@ -3,8 +3,6 @@ title: "Alliance Cascades"
 description: "Why bilateral thinking misses systemic risk: hidden couplings make alliance networks tight, and WW1 shows the cost."
 ---
 
-# Alliance Cascades: When Bilateral Becomes Systemic
-
 :::note[TL;DR]
 When actors form bilateral alliances without mapping the full network, local commitments can produce global catastrophe. WW1 is the canonical example: each country understood its own treaties, but nobody modeled the system. A regional assassination triggered a world war because the sum of bilateral relationships ≠ system behavior.
 :::

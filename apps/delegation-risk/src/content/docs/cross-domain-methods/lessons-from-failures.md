@@ -2,8 +2,6 @@
 title: "Historical Failures in Quantified Risk Management"
 ---
 
-# Historical Failures in Quantified Risk Management
-
 :::caution
 Every domain studied has experienced catastrophic failures of quantified risk frameworks. These failures offer crucial lessons for AI safety.
 :::

@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Capability Formalization
-
 :::note[TL;DR]
 This section answers: "How do we measure what AI systems can do?" We formalize **Agency** (goal-directedness), **Power** (ability to achieve goals), and explore the **Strong Tools Hypothesis**—can we get high capability with low risk?
 :::

@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-# Risk Formalization
-
 :::note[TL;DR]
 This section answers: "How do we quantify what could go wrong?" The core formula: **Delegation Risk = Σ P(harm) × Damage**. We decompose this into accident risk (errors) and defection risk (scheming), then show how risk flows through delegation hierarchies.
 :::

@@ -5,8 +5,6 @@ sidebar:
   order: 19
 ---
 
-# AI Debate and Entanglement
-
 **AI Debate** is a proposed alignment technique where two AI systems argue opposing sides of a question, with a human judge evaluating the debate. The hope is that this adversarial dynamic reveals truth that a single AI might obscure.
 
 From an entanglement perspective, debate is an attempt to **engineer independence through adversarial incentives**. This page analyzes when it succeeds, when it fails, and what it reveals about the broader problem of correlated verification.

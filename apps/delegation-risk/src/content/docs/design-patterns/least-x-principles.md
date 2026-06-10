@@ -2,8 +2,6 @@
 title: 'The Family of "Least X" Principles'
 ---
 
-# The Family of "Least X" Principles
-
 :::note[TL;DR]
 Extend "least privilege" across multiple dimensions: **Least Intelligence** (minimum capability), **Least Privilege** (minimum permissions), **Least Context** (minimum information), **Least Persistence** (no memory), **Least Autonomy** (human oversight), **Least Connectivity** (isolated components), **Least Compute** (bounded resources). Each principle bounds a different attack surface. Apply all of them.
 :::

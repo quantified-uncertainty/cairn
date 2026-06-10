@@ -3,8 +3,6 @@ title: "Human Trust Calibration"
 description: "How humans calibrate trust in AI systems and interventions to improve it"
 ---
 
-# Human Trust Calibration in AI Systems
-
 This document is the empirical deep-dive companion to [Human-AI Delegation](/research/theory/human-ai-trust/), which introduces the trust-calibration problem and the broader human-AI delegation framing. In brief: **calibrated trust** occurs when a human's reliance on an AI system matches the system's actual capabilities and reliability, and humans systematically struggle to achieve it (Lee & See, 2004). Both failure modes are costly — **over-trust** (relying on AI beyond its actual capabilities, e.g., accepting AI medical diagnoses without verification) and **under-trust** (failing to leverage capable AI, e.g., rejecting valid recommendations due to algorithm aversion). See the companion page for the conceptual treatment; this page synthesizes the empirical research from human-computer interaction, human factors engineering, AI/ML, and psychology — measurement approaches, calibration factors, and evidence-based interventions.
 
 ---

@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Delegation Risk: Overview
-
 :::note[TL;DR]
 **Delegation Risk = Σ P(harm mode) × Damage(harm mode)** — the core formula for quantifying delegation. This page walks through a complete example: a research assistant with \$1,770/month total Delegation Risk, reduced to \$671/month by adding a deterministic verifier. Risk inherits multiplicatively by default through delegation chains.
 :::

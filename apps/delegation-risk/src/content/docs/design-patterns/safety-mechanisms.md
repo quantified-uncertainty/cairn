@@ -2,8 +2,6 @@
 title: "Additional Safety Mechanisms"
 ---
 
-# Additional Safety Mechanisms
-
 :::note[TL;DR]
 System-level safety mechanisms beyond component constraints: **tripwires and circuit breakers** (automatic shutdown), **continuous validation** (every output checked), **behavioral fingerprinting** (detect drift), **N-version programming** (multiple implementations must agree), **Byzantine fault tolerance** (safe even if some components are adversarial). Key insight: no single defense is sufficient—layer them.
 :::

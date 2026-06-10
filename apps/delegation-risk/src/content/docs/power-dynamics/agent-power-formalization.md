@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Formalizing Agents, Power, and Authority
-
 :::note[TL;DR]
 We want AI systems that are **maximally capable while minimally risky**. This requires formalizing not just risk (which we've done) but also the positive side: **Agency** (how goal-directed is a system?), **Power** (what can it accomplish?), and **Authority** (what is it permitted to do?). This page proposes mathematical frameworks for each.
 :::

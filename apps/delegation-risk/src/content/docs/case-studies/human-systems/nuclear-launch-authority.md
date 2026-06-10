@@ -7,8 +7,6 @@ sidebar:
   order: 4
 ---
 
-# Nuclear Launch Authority: Trust at Civilization Scale
-
 :::note[Framework Interpretation]
 This case study analyzes real nuclear command-and-control systems through the lens of our delegation risk framework. The historical facts are drawn from declassified sources and academic research, but the interpretation and parallels to AI systems are our own framing.
 :::

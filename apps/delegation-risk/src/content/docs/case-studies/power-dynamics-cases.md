@@ -5,8 +5,6 @@ sidebar:
   order: 15
 ---
 
-# Case Studies: Power, Agency, and Authority
-
 :::note[Purpose]
 These case studies apply the [Agency/Power formalization](/power-dynamics/agent-power-formalization/) to real systems—both AI and human institutions. The goal is to build intuition about power dynamics, authority gaps, and the conditions that make delegation safe or dangerous.
 :::

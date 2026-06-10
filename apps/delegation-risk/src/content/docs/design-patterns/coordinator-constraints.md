@@ -2,8 +2,6 @@
 title: "Coordinator Constraints"
 ---
 
-# Coordinator-Specific Principles
-
 :::note[TL;DR]
 Coordinators are the highest-risk components—constrain them aggressively across four dimensions: **Influence** (route tasks, don't execute them), **Desires** (narrow, immediate goals only), **Intelligence** (short planning horizon, no self-model), **Knowledge** (current task only, no memory). Add external safeguards: redundancy, verification, easy veto, and full logging. Coordinators should be switchboard operators, not CEOs.
 :::

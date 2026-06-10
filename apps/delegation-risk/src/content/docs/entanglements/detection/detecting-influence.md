@@ -8,8 +8,6 @@ sidebar:
     variant: tip
 ---
 
-# Detecting Influence
-
 Passive entanglements (shared blind spots) are relatively easy to test for—you look for correlated failures on the same inputs. But **active** and **adversarial** entanglements are harder: one component is actually influencing another, and that influence may be subtle, emergent, or deliberately hidden.
 
 This page covers practical methods for detecting when components are influencing each other in ways your architecture didn't intend.

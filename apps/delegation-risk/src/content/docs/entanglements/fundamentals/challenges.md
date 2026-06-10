@@ -8,8 +8,6 @@ sidebar:
   order: 2
 ---
 
-# Challenge Categories
-
 This page catalogs nine categories of entanglement challenges. Each represents a different way that ostensibly independent components can become entangled—through passive correlation, active influence, or adversarial coordination.
 
 **The bureaucrat perspective**: Think of each challenge as a way that "Clerk A" and "Reviewer B" in a bureaucracy might fail to be truly independent—even when the org chart shows them as separate.

@@ -2,8 +2,6 @@
 title: "Euler Allocation: The Fundamental Aggregation Problem"
 ---
 
-# Euler Allocation: The Fundamental Aggregation Problem
-
 :::note[Transferability]
 Euler allocation works well for portfolio risk where components are well-characterized and the risk function is smooth. AI systems may not satisfy these assumptions. Financial risk management also had notable failures (2008), so even within its original domain, this approach has limitations.
 :::

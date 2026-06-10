@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-# Solutions & Mitigations
-
 This page presents nine approaches to reducing pattern interconnection, from architectural changes to software engineering patterns.
 
 ---

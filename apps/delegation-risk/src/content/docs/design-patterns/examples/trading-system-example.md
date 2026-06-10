@@ -7,8 +7,6 @@ sidebar:
   order: 6
 ---
 
-# Example: AI Trading System
-
 A worked example in a high-frequency, adversarial domain: an AI system that generates and executes trading strategies.
 
 ## Task

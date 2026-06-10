@@ -3,8 +3,6 @@ title: "Examples Catalog"
 description: "Index of all worked examples in the framework"
 ---
 
-# Examples Catalog
-
 A complete index of concrete examples throughout the framework.
 
 ---

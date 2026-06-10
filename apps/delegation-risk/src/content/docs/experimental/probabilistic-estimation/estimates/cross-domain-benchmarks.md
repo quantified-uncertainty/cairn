@@ -5,8 +5,6 @@ sidebar:
   order: 6
 ---
 
-# Cross-Domain Benchmarks
-
 Other industries have decades of experience quantifying and managing risk. This page provides reference points for calibrating AI delegation risk estimates.
 
 ## Why Cross-Domain Benchmarks?

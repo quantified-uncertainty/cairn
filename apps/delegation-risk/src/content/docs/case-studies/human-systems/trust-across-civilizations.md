@@ -5,8 +5,6 @@ sidebar:
   order: 1
 ---
 
-# Trust Across Civilizations
-
 :::note[Framework Interpretation]
 This case study analyzes historical organizational forms through the lens of our delegation risk framework. The historical examples are drawn from organizational history, but the specific framing as "trust architectures" is our own interpretation.
 :::

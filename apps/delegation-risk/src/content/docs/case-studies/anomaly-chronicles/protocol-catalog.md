@@ -4,8 +4,6 @@ sidebar:
   order: 8
 ---
 
-# Protocol Catalog
-
 :::note[Reference Document]
 This catalog documents all approved containment protocols as of Year 10. Exposure multipliers are calibrated based on empirical incident data and anomaly advisory input. Multipliers compound multiplicatively for independent protocols.
 :::

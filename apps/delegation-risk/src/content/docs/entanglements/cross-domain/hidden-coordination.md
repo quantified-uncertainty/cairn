@@ -6,8 +6,6 @@ sidebar:
   hidden: true
 ---
 
-# Hidden Coordination
-
 This page has been merged into [Detecting Influence](/entanglements/detection/detecting-influence/), where hidden coordination between components is now covered as part of detecting adversarial entanglement.
 
 See also:

@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-# Worked Examples: Agency and Power
-
 :::note[TL;DR]
 This page applies the [Agency/Power formalization](/power-dynamics/agent-power-formalization/) to concrete systems. We calculate Agency Scores, Power Scores, and RACAP (Risk-Adjusted Capability) for real and hypothetical systems to build intuition.
 :::

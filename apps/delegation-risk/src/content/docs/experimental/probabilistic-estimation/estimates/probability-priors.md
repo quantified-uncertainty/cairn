@@ -5,8 +5,6 @@ sidebar:
   order: 2
 ---
 
-# Probability Priors by Component Type
-
 These are **prior distributions** for failure probabilities before observing any track record. Use them as starting points, then update based on actual performance.
 
 ## Component Type Taxonomy

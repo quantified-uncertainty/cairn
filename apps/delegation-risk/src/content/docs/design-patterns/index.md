@@ -5,8 +5,6 @@ sidebar:
   order: 0
 ---
 
-# Design Patterns for Safe Delegation
-
 This section catalogs **45 reusable architectural patterns** for building safer AI systems. Like the Gang of Four design patterns for software, these are named, documented solutions to recurring problems in AI delegation.
 
 ## Why Patterns?

@@ -2,8 +2,6 @@
 title: "Nuclear Safety: Probabilistic Risk Assessment"
 ---
 
-# Nuclear Safety: Probabilistic Risk Assessment
-
 :::note[Transferability]
 Nuclear PRA works well for physical systems with well-characterized failure modes. AI systems are less predictable—failure modes may be unknown or change with capability improvements. The methods here are *potentially* useful but their application to AI is novel and untested.
 :::

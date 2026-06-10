@@ -7,8 +7,6 @@ sidebar:
   order: 6
 ---
 
-# Jury Systems: Twelve Strangers Decide Your Fate
-
 :::note[Framework Interpretation]
 This case study analyzes jury systems through the lens of our delegation risk framework. The historical and legal facts are drawn from legal scholarship, but the mathematical framing and parallels to AI systems are our own interpretation.
 :::

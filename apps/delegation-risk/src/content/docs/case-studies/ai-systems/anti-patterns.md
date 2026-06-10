@@ -4,8 +4,6 @@ sidebar:
   order: 5
 ---
 
-# Anti-patterns and Common Mistakes
-
 What NOT to do when applying this framework. Each anti-pattern includes why it's dangerous and what to do instead.
 
 ---

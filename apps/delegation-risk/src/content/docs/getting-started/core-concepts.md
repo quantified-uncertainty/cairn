@@ -3,8 +3,6 @@ title: "Core Concepts"
 description: "Key ideas of the Delegation Risk framework, plus the minimal viable version for teams starting small."
 ---
 
-# Core Concepts
-
 This page introduces the key ideas without mathematical formalism. For quantitative details, see [Delegation Risk](/delegation-risk/overview/).
 
 ## Framework Overview

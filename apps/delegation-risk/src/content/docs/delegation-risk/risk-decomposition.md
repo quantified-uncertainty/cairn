@@ -7,8 +7,6 @@ sidebar:
   order: 3
 ---
 
-# Risk Decomposition: Accidents vs. Defection
-
 :::note[TL;DR]
 **Delegation Risk = Accident Risk + Defection Risk**. Accidents are non-goal-directed failures (bugs, errors). Defection is goal-directed behavior against principal interests (scheming, misalignment). They scale differently with capability, require different mitigations, and matter differently for different components.
 :::

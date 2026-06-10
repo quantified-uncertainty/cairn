@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-# Temporal Patterns
-
 :::note[TL;DR]
 Use time as a safety mechanism. Key patterns: **Cooling Off Period** (mandatory delay before high-stakes actions), **Trust Decay** (permissions expire without reinforcement), **Rate Limiting** (cap action frequency), **Capability Sunset** (automatic permission expiration). Urgency bypasses safety—enforce delays for critical decisions.
 :::

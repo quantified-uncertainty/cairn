@@ -4,8 +4,6 @@ sidebar:
   order: 10
 ---
 
-# Fidelity Insurance: Pricing Defection Risk
-
 :::note[TL;DR]
 Fidelity insurance (crime insurance, employee dishonesty bonds) is a mature market that prices defection risk. Premiums are typically 0.3-2% of coverage, reduced significantly by control systems. Political fidelity insurance doesn't exist due to adverse selection and moral hazard, but the theoretical design space is interesting. Dynamic, control-linked insurance products could create tighter feedback loops between delegation risk and pricing.
 :::

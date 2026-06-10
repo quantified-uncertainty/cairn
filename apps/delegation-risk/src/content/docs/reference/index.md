@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# Technical Reference
-
 :::note[Reference Documentation]
 Supporting documentation for the delegation risk framework.
 :::

@@ -2,8 +2,6 @@
 title: "Quantified Risk Budgeting: A Cross-Domain Framework for AI Safety"
 ---
 
-# Quantified Risk Budgeting: A Cross-Domain Framework for AI Safety
-
 :::note[TL;DR]
 Combine three established approaches: **Euler allocation** (finance) for decomposing risk to components, **fault trees** (nuclear) for flowing targets down hierarchically, and **mechanism design** (economics) for incentive-compatible reporting. Key insight: nuclear plants achieve **10⁻⁹ failure rates** using these methods—we may be able to adapt them for AI, though the application is novel.
 :::

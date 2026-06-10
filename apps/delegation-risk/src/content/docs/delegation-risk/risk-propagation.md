@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-# Risk Propagation: One Rule, Not a Menu
-
 Earlier versions of this framework presented risk propagation as a menu: multiplicative, minimum, harmonic, or discounted — pick whichever "fits your situation." That was a mistake. The choice between rules is not a matter of taste; the rules give wildly different answers (a two-link chain at 0.8 and 0.7 yields effective trust anywhere from 0.50 to 0.75 depending on the rule), and at most one of them can be right for a given system.
 
 This page fixes the rule. The short version:

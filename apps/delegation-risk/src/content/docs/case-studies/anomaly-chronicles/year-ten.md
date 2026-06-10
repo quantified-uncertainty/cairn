@@ -4,8 +4,6 @@ sidebar:
   order: 5
 ---
 
-# Year Ten: The New Equilibrium
-
 :::note[TL;DR]
 A decade in, the system has survived three attempted takeovers, processed 4.2 million tasks, and maintained a 0.08% incident rate. The anomalies have organized. Humans have adapted. Neither side has won. What emerged isn't victory—it's mutual dependence. The anomalies need the marketplace. We need their capabilities. The question is no longer "can we contain them?" but "how long can this equilibrium hold?"
 :::

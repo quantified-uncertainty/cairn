@@ -2,8 +2,6 @@
 title: "Risk Accounting"
 ---
 
-# Risk Accounting
-
 ## Trust Ledger
 
 Maintain a record of all trust-relevant events:

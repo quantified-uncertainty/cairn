@@ -5,8 +5,6 @@ sidebar:
   order: 8
 ---
 
-# Recovery Patterns
-
 :::note[TL;DR]
 Plan for failure—it will happen. Key patterns: **Graceful Degradation Ladder** (5 levels from full operation to emergency shutdown), **Checkpoint-Rollback** (save state, revert on failure), **Blast Radius Containment** (limit damage scope), **Incident Response Automation** (predefined playbooks for known failure modes). Complete failure is worse than reduced capability—degrade gracefully.
 :::

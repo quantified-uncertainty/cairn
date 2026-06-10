@@ -3,8 +3,6 @@ title: "Empirical Scheming Reduction"
 description: "Empirical evidence on whether decomposition reduces deceptive AI behavior, plus the game-theoretic foundations of trust dynamics under adversarial pressure"
 ---
 
-# Empirical Evidence: Does Decomposition Reduce Scheming and Deceptive Behavior in AI Systems?
-
 ## Executive Summary
 
 Recent empirical research (2023-2024) provides mixed but promising evidence that task decomposition and factored cognition can reduce scheming and deceptive behavior in AI systems. Key findings:

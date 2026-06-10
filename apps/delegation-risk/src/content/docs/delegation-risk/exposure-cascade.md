@@ -4,8 +4,6 @@ sidebar:
   order: 5
 ---
 
-# Exposure Cascade: Hierarchical Risk Budgets
-
 :::note[TL;DR]
 **Child Exposure Budget = Parent Budget × Allocation Factor**. Each level in a hierarchy keeps some exposure for direct decisions and delegates the rest downward. Tighter oversight = more retained at top = less risk at edges.
 :::

@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# The Anomaly Chronicles
-
 :::note[Narrative Documentation]
 This section tells the story of the Anomaly Unit—a fictional case study exploring how delegation risk principles scale to extreme scenarios. It follows the development from Year 1 through Year 10 of a system designed to safely engage entities that are smarter, more capable, and potentially adversarial.
 :::

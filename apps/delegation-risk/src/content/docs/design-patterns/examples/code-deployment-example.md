@@ -7,8 +7,6 @@ sidebar:
   order: 4
 ---
 
-# Example: Autonomous Code Deployment
-
 A second worked example showing how the framework applies to a higher-stakes domain: autonomous code review and deployment.
 
 ## Task

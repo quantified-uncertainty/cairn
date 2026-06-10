@@ -1,11 +1,9 @@
 ---
-title: "Overview"
+title: "Entanglements"
 description: "Understanding how components in delegation architectures become entangled"
 sidebar:
   order: 0
 ---
-
-# Entanglements
 
 When designing delegation architectures, it's tempting to treat components as independent—to assume that stacking five 90%-effective safety layers yields 99.999% protection. In practice, components become **entangled** in ways that undermine this assumption.
 

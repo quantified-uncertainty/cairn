@@ -4,8 +4,6 @@ sidebar:
   order: 7
 ---
 
-# Case Study: Customer Support Bot (Near-Miss)
-
 :::caution[Illustrative Example]
 This case study is a **hypothetical scenario** designed to illustrate how verification layers might catch errors. It's based on realistic failure modes but is not a documented real incident.
 :::

@@ -3,8 +3,6 @@ title: "For Engineers"
 description: "The practitioner's path through the framework"
 ---
 
-# For Engineers
-
 You want to build safe AI systems. Here's the fastest path to implementation.
 
 If you're in a hurry, read the [Quick Reference](/getting-started/quick-reference/), then the [Quick Start Guide](/design-patterns/tools/quick-start/), then implement the [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — about 15 minutes total, and you can stop there. If you want to understand why the patterns work before you build, follow [The Core Path](/getting-started/reading-order/#the-core-path).

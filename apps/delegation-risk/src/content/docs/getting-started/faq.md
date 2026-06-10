@@ -3,8 +3,6 @@ title: "FAQ & Common Objections"
 description: "Answers to frequently asked questions and responses to common skepticism about the delegation risk framework."
 ---
 
-# FAQ & Common Objections
-
 Answers to frequently asked questions and responses to common skepticism.
 
 ## Conceptual Questions

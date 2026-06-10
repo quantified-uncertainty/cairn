@@ -4,8 +4,6 @@ sidebar:
   order: 100
 ---
 
-# About This Site
-
 ## How This Documentation Was Created
 
 This documentation was created rapidly—over the course of a few days—with substantial assistance from large language models (primarily Claude). This has implications for how you should read it.

@@ -2,8 +2,6 @@
 title: "ASIL Decomposition (Automotive)"
 ---
 
-# ASIL Decomposition: Automotive Safety Lessons for AI
-
 ISO 26262 defines Automotive Safety Integrity Levels (ASIL) and rigorous rules for decomposing safety requirements across components. These methods are directly applicable to AI system design.
 
 ## ASIL Levels

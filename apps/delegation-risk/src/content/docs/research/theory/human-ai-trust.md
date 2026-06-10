@@ -2,8 +2,6 @@
 title: "Human-AI Delegation"
 ---
 
-# Human-AI Delegation
-
 ## Human Trust in AI
 
 **Factors affecting human trust in AI**:

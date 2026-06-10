@@ -5,8 +5,6 @@ sidebar:
   order: 0
 ---
 
-# Probabilistic Estimation
-
 This section provides tools and reference data for quantifying delegation risk using probability distributions rather than point estimates.
 
 ## Why Probabilistic?

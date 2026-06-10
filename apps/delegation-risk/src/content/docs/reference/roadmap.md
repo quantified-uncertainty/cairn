@@ -2,8 +2,6 @@
 title: "Implementation Roadmap"
 ---
 
-# Implementation Roadmap
-
 ## Why This Handles the Critical Period (2025-2030)
 
 ### Timeline Assumptions

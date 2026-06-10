@@ -8,8 +8,6 @@ sidebar:
   order: 3
 ---
 
-# Formal Definitions
-
 This page defines entanglement concepts precisely. For most readers, the [Types of Entanglement](/entanglements/fundamentals/types/) overview is sufficient—this page is for those who want rigorous definitions.
 
 ---

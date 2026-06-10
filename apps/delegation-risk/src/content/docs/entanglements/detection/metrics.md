@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Quantitative Metrics
-
 This page explains how to measure entanglement in practice. For theoretical foundations, see [Formal Definitions](/entanglements/fundamentals/formal-definitions/).
 
 ---

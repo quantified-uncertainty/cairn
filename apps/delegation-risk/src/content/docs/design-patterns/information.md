@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Information Patterns
-
 :::note[TL;DR]
 Control what agents know to limit what they can do. Key patterns: **Need-to-Know Compartments** (task-based access to data categories), **Information Firewalls** (hard boundaries between sensitive domains), **Context Stripping** (remove unnecessary metadata), **Selective Revelation** (disclose progressively as trust increases). Information is power—minimize it to minimize harm potential.
 :::

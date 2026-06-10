@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Modeling Approaches
-
 This page provides quantitative tools for measuring interconnection—because you can't manage what you can't measure.
 
 ---

@@ -4,8 +4,6 @@ sidebar:
   order: 3
 ---
 
-# The Strong Tools Hypothesis
-
 :::note[TL;DR]
 The **Strong Tools Hypothesis** proposes that we can build AI systems with high capability (power) but low agency—powerful tools that don't coherently pursue goals. If true, this offers a path to safe, capable AI. This page examines the hypothesis: what it means, evidence for and against, and implications for AI development.
 :::

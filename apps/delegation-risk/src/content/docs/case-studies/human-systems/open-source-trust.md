@@ -4,8 +4,6 @@ sidebar:
   order: 7
 ---
 
-# Open Source Supply Chain: Trust at Internet Scale
-
 :::note[Framework Interpretation]
 This case study analyzes open source ecosystems through the lens of our delegation risk framework. The facts about package managers and incidents are documented, but the framing and parallels to AI systems are our own interpretation.
 :::

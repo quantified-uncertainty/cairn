@@ -5,8 +5,6 @@ sidebar:
   order: 0
 ---
 
-# Interactive Tools
-
 These tools help you apply the Delegation Risk Framework to your specific situation with probabilistic modeling and visualization.
 
 ## Available Tools

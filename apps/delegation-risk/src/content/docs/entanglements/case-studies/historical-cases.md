@@ -5,8 +5,6 @@ sidebar:
   order: 2
 ---
 
-# Historical Case Studies
-
 Human institutions have grappled with entanglement for centuries. These cases illustrate how passive correlation, active influence, and capture manifest in practice.
 
 ---

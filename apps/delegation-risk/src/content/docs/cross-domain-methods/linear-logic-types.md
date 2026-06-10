@@ -2,8 +2,6 @@
 title: "Linear Logic & Type Systems"
 ---
 
-# Linear Logic & Type Systems for Trust
-
 Linear logic and affine type systems provide formal foundations for reasoning about resources that cannot be duplicated or discarded arbitrarily—exactly the properties we need for delegation risk budgets.
 
 ## The Core Insight

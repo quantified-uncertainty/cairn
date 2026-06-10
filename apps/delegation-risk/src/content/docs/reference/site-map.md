@@ -4,8 +4,6 @@ sidebar:
   order: 9
 ---
 
-# Site Map & Concept Map
-
 How the documentation is organized and how concepts relate to each other.
 
 ## Documentation Structure

@@ -2,8 +2,6 @@
 title: "Delegation Interfaces"
 ---
 
-# Delegation Interfaces
-
 When component A delegates to component B, there's an implicit interface:
 
 ```mermaid

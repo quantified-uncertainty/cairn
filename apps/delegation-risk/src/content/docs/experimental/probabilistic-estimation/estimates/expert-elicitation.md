@@ -5,8 +5,6 @@ sidebar:
   order: 7
 ---
 
-# Expert Elicitation Guide
-
 When historical data is unavailable or sparse, **expert judgment** is often the best source of probability and damage estimates. This guide explains how to elicit well-calibrated estimates.
 
 ## Why Expert Elicitation?
