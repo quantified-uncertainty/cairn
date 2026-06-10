@@ -1,8 +1,6 @@
 ---
 title: "Examples Catalog"
 description: "Index of all worked examples in the framework"
-sidebar:
-  order: 12
 ---
 
 # Examples Catalog

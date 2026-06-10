@@ -1,14 +1,12 @@
 ---
 title: "5-Minute Introduction"
 description: "The compressed version of the framework: decompose into limited components and budget delegation risk like money."
-sidebar:
-  order: 1
 ---
 
 # Delegation Risk in 5 Minutes
 
 :::note
-This is the compressed version. For caveats and nuance, see the [full Introduction](/getting-started/introduction/).
+This is the compressed version. For caveats and nuance, see the [Getting Started overview](/getting-started/).
 :::
 
 **The problem**: AI agents can cause real harm. One powerful agent with full access is risky—if it fails or schemes, damage may be unbounded.

@@ -9,6 +9,7 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
 	redirects: {
+		'/getting-started/introduction/': '/getting-started/',
 		'/getting-started/minimal-framework/': '/getting-started/core-concepts/',
 		'/getting-started/how-sections-connect/': '/getting-started/reading-order/',
 		'/reference/visual-sitemap/': '/reference/site-map/',
@@ -55,9 +56,8 @@ export default defineConfig({
 					items: [
 						{ label: 'Overview', slug: 'getting-started' },
 						{ label: 'Five-Minute Intro', slug: 'getting-started/five-minute-intro' },
-						{ label: 'Introduction', slug: 'getting-started/introduction' },
 						{ label: 'Core Concepts', slug: 'getting-started/core-concepts' },
-						{ label: 'Reading Order & The Core Path', slug: 'getting-started/reading-order' },
+						{ label: 'The Core Path', slug: 'getting-started/reading-order' },
 						{ label: 'For Engineers', slug: 'getting-started/for-engineers' },
 						{ label: 'Common Mistakes', slug: 'getting-started/common-mistakes' },
 						{ label: 'FAQ', slug: 'getting-started/faq' },

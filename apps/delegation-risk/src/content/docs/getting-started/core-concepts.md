@@ -1,8 +1,6 @@
 ---
 title: "Core Concepts"
 description: "Key ideas of the Delegation Risk framework, plus the minimal viable version for teams starting small."
-sidebar:
-  order: 3
 ---
 
 # Core Concepts
@@ -451,7 +449,7 @@ See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) fo
 ## See Also
 
 - [The Core Path](/getting-started/reading-order/#the-core-path) — The guided route through the framework's strongest material
-- [Introduction](/getting-started/introduction/) — The full problem statement and approach
+- [Getting Started](/getting-started/) — The full problem statement and approach
 - [Delegation Risk Overview](/delegation-risk/overview/) — The quantitative foundation
 - [Least X Principles](/design-patterns/least-x-principles/) — Deep dive into each principle
 - [Quick Start](/design-patterns/tools/quick-start/) — Apply these concepts step-by-step

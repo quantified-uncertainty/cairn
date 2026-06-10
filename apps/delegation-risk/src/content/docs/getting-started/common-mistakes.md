@@ -221,6 +221,16 @@ The real tradeoff is usually between **short-term velocity** and **long-term rob
 
 ---
 
+## Reading Mistakes
+
+Some failures happen before you write any code — in how you read the framework itself. (The biggest one — jumping straight to patterns — is Mistake 1 above.)
+
+- **Skipping Entanglements.** You assume your verification layers are independent, and correlated failures sail past all of them. *Read [Entanglements](/entanglements/) before finalizing an architecture.*
+- **Starting with Research.** You get lost in theory with nothing to anchor it to. *Read the theory and application sections first, then the [Research](/research/) section.*
+- **Reading only Case Studies.** You absorb specific examples but not the general principles, so you can't transfer them to your own system. *Use case studies to reinforce theory, not replace it.*
+
+---
+
 ## See Also
 
 - [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — What you actually need

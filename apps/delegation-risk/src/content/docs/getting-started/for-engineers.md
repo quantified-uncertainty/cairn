@@ -1,38 +1,13 @@
 ---
 title: "For Engineers"
 description: "The practitioner's path through the framework"
-sidebar:
-  order: 11
 ---
 
 # For Engineers
 
 You want to build safe AI systems. Here's the fastest path to implementation.
 
----
-
-## Skip the Theory Path (15 min)
-
-If you trust the patterns and just want to implement:
-
-1. **[Quick Reference](/getting-started/quick-reference/)** — Core formulas and decision flowchart (5 min)
-2. **[Quick Start Guide](/design-patterns/tools/quick-start/)** — Step-by-step implementation checklist (10 min)
-3. **[Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework)** — The 5 essential patterns (5 min)
-
-You can stop here and have a working safety layer.
-
----
-
-## Understand-Then-Build Path (2 hours)
-
-If you want to understand why the patterns work:
-
-1. **[Five-Minute Intro](/getting-started/five-minute-intro/)** — Core problem (5 min)
-2. **[Core Concepts](/getting-started/core-concepts/)** — Visual framework (20 min)
-3. **[Delegation Risk Overview](/delegation-risk/overview/)** — Quantitative foundation (30 min)
-4. **[Design Patterns Index](/design-patterns/)** — Pattern catalog (15 min)
-5. **[Composing Patterns](/design-patterns/composing-patterns/)** — Pattern combinations (20 min)
-6. **Pick your patterns** — Based on your threat model (20 min)
+If you're in a hurry, read the [Quick Reference](/getting-started/quick-reference/), then the [Quick Start Guide](/design-patterns/tools/quick-start/), then implement the [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — about 15 minutes total, and you can stop there. If you want to understand why the patterns work before you build, follow [The Core Path](/getting-started/reading-order/#the-core-path).
 
 ---
 

@@ -223,7 +223,7 @@ What you need to understand before each major concept:
 
 | Page | Focus | Time |
 |------|-------|------|
-| [Introduction](/getting-started/introduction/) | Problem statement | 10 min |
+| [Overview](/getting-started/) | Problem statement | 10 min |
 | [Five-Minute Intro](/getting-started/five-minute-intro/) | Quick overview | 5 min |
 | [Core Concepts](/getting-started/core-concepts/) | Visual framework | 20 min |
 | [FAQ](/getting-started/faq/) | Common questions | 15 min |
@@ -304,7 +304,7 @@ What you need to understand before each major concept:
 
 **Start here**:
 - [5-Minute Introduction](/getting-started/five-minute-intro/)
-- [Introduction](/getting-started/introduction/)
+- [Getting Started Overview](/getting-started/)
 - [Core Concepts](/getting-started/core-concepts/)
 - [Quick Start](/design-patterns/tools/quick-start/)
 

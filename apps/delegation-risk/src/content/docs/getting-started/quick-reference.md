@@ -1,8 +1,6 @@
 ---
 title: "Quick Reference"
 description: "Core formulas, pattern selection, and key thresholds at a glance"
-sidebar:
-  order: 8
 ---
 
 # Quick Reference
