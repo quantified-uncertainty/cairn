@@ -78,7 +78,7 @@ flowchart TB
         BGIDX[Index]
         NUCAERO[Nuclear/Aerospace Deep Dive]
         FINRISK[Financial Risk]
-        PROJECTS[Potential Projects]
+        PROJECTS[Open Problems in Delegation Engineering]
     end
 
     INDEX --> FIVEMIN
@@ -188,7 +188,7 @@ What you need to understand before each major concept:
 | **How does this relate to X?** | Related Approaches, Background Research |
 | **What could go wrong?** | Anti-patterns, Lessons from Failures |
 | **What's the evidence?** | Empirical Tests, Nuclear/Aerospace Deep Dive |
-| **What's the roadmap?** | Roadmap, Potential Projects |
+| **What's the roadmap?** | Roadmap, [Open Problems in Delegation Engineering](/research/potential-projects/) |
 
 ### By Keyword
 
@@ -242,6 +242,7 @@ What you need to understand before each major concept:
 | [Risk Propagation](/delegation-risk/risk-propagation/) | The canonical composition rule |
 | [Delegation Accounting](/delegation-risk/delegation-accounting/) | Risk budgets |
 | [Exposure Cascade](/delegation-risk/exposure-cascade/) | Chain risk |
+| [Runtime Risk Accounting](/delegation-risk/runtime-accounting/) | Preflight, exposure envelope, exposure ledger |
 | [Insurer's Dilemma](/delegation-risk/insurers-dilemma/) | Who bears risk |
 
 ### Power Dynamics (Theory)

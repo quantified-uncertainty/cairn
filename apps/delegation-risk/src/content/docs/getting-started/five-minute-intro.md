@@ -90,7 +90,7 @@ Humans have run exposure-limited delegation for centuries: juries split fact-fin
 
 ## Where to go next
 
-- **Convinced enough to read properly?** → [The Core Path](/getting-started/reading-order/#the-core-path) — the framework's strongest material in ~12 stops
+- **Convinced enough to read properly?** → [The Core Path](/getting-started/reading-order/#the-core-path) — the framework's strongest material in ~13 stops
 - **Want the flagship mechanism?** → [Runtime Accounting](/delegation-risk/runtime-accounting/)
 - **Ready to apply it?** → [Quick Start](/design-patterns/tools/quick-start/)
 - **Want the full picture first?** → [Core Concepts](/getting-started/core-concepts/)

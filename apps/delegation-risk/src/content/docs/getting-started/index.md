@@ -54,7 +54,7 @@ The Core Path is the featured route—the framework's strongest material in orde
 
 | Path | For you if you want to… | Time |
 |------|--------------------------|------|
-| **⭐ [The Core Path](/getting-started/reading-order/#the-core-path)** | **read the best of the site in order: entanglements, risk decomposition, channel integrity, and four worked examples (~12 stops). If you read one route, read this.** | **4–6 hrs** |
+| **⭐ [The Core Path](/getting-started/reading-order/#the-core-path)** | **read the best of the site in order: entanglements, risk decomposition, channel integrity, and four worked examples (~13 stops). If you read one route, read this.** | **4–6 hrs** |
 | [Five-Minute Intro](/getting-started/five-minute-intro/) | get the essential concepts on one page — start here | 5 min |
 | + [Core Concepts](/getting-started/core-concepts/) and [FAQ](/getting-started/faq/) | evaluate whether this framework is useful | 30–60 min |
 | [Core Concepts](/getting-started/core-concepts/) → [Delegation Risk](/delegation-risk/) → [Quick Start](/design-patterns/tools/quick-start/) | apply the framework to a real system | 2–3 hrs |

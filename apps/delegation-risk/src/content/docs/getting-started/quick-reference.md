@@ -79,17 +79,21 @@ When assessing a delegation, check for these harm modes:
 
 ## Essential Patterns (Top 5)
 
-If you can only implement 5 patterns:
+If you can only implement 5 patterns (canonical list: [Core Concepts → The 5 Essential Patterns](/getting-started/core-concepts/#the-5-essential-patterns)):
 
-1. **Least-X Principles** — Minimize privilege, capability, context, autonomy
-2. **Escalation Ladder** — Route high-stakes decisions to humans
-3. **Defense in Depth** — Multiple verification layers
-4. **Sandboxing** — Contain blast radius
-5. **Audit Logging** — Record everything for forensics
+1. **Least Privilege** — Give the minimum permissions needed for the task
+2. **Human Escalation** — Route high-stakes decisions to humans
+3. **Output Filtering** — Check outputs before they reach the world
+4. **Sandboxing** — Contain blast radius with isolated environments
+5. **Audit Logging** — Record everything for forensics and incident review
+
+Least Privilege generalizes to the full [Least-X family](/design-patterns/least-x-principles/); Output Filtering is the first layer of defense in depth.
 
 ---
 
 ## Risk Budget Rules of Thumb
+
+*Illustrative starting points for discussion — not benchmarks; no empirical basis is claimed.*
 
 | System Type | Suggested Annual Budget | Rationale |
 |-------------|------------------------|-----------|

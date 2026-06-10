@@ -1,13 +1,13 @@
 ---
 title: "The Core Path"
-description: "The ~12-stop core path through the framework's strongest material, plus shorter routes by goal"
+description: "The ~13-stop core path through the framework's strongest material, plus shorter routes by goal"
 ---
 
 This site is large (~160 pages), but its essential argument lives in about a dozen stops. **If you read only one path, read this one** — it covers the framework's most distinctive material in order, in roughly 4–6 hours. Pages on this path are marked with a <span style="color:var(--sl-color-green)">Core</span> badge in the sidebar. Everything else on the site is reference depth, supporting research, or applied variation.
 
 <span id="the-core-path"></span>
 
-## The 12 Stops
+## The 13 Stops
 
 **Before you start:** skim the [Five-Minute Intro](/getting-started/five-minute-intro/) and [Core Concepts](/getting-started/core-concepts/) (~25 min) for the vocabulary — especially the [canonical definition of Delegation Risk](/getting-started/core-concepts/#the-formula).
 
@@ -15,25 +15,27 @@ This site is large (~160 pages), but its essential argument lives in about a doz
 
 2. **[Delegation Accounting](/delegation-risk/delegation-accounting/)** — Treats risk like money: every delegation moves exposure onto someone's balance sheet, complexity carries a tax, and the running example (a \$1,000 delivery that escalates to an adversarial agent) shows why financial instruments alone stop working as agents get more capable.
 
-3. **[The Insurer's Dilemma](/delegation-risk/insurers-dilemma/)** — Why coverage structures break down under moral hazard and adversarial agents: the case for *architectural* rather than purely financial risk management. This is the pivot point of the whole framework.
+3. **[Runtime Risk Accounting](/delegation-risk/runtime-accounting/)** — The framework's math moved into the scaffolding layer: risk preflight (a go/no-go estimate before each consequential action), the exposure envelope (a hard capability bound enforced mechanically regardless of intent), and the exposure ledger (a running per-delegate account with mark-to-market re-estimation, margin calls, and reconciliation against real outcomes). This is what it would actually mean to operationalize Delegation Accounting in a live agent harness — and it explains why the preflight estimator must sit *below* the actor on the verifiability hierarchy, never be the same model.
 
-4. **[Entanglements](/entanglements/)** + **[Types](/entanglements/fundamentals/types/)**, **[Challenges](/entanglements/fundamentals/challenges/)**, **[Formal Definitions](/entanglements/fundamentals/formal-definitions/)** — The site's most original contribution. Five 90%-effective safety layers are not 99.999% safe, because components share infrastructure, blind spots, and influence channels. The *entanglement tax* — actual risk over perceived risk — is often 10–100×. The passive / active / adversarial taxonomy organizes everything that follows.
+4. **[The Insurer's Dilemma](/delegation-risk/insurers-dilemma/)** — Why coverage structures break down under moral hazard and adversarial agents: the case for *architectural* rather than purely financial risk management. This is the pivot point of the whole framework.
 
-5. **[Detecting Influence](/entanglements/detection/detecting-influence/)** — Eight practical methods (A/B frame testing, counterfactual intervention, honeypots, rotation, timing analysis, red-team channel enumeration) for finding the entanglements your architecture diagram says don't exist.
+5. **[Entanglements](/entanglements/)** + **[Types](/entanglements/fundamentals/types/)**, **[Challenges](/entanglements/fundamentals/challenges/)**, **[Formal Definitions](/entanglements/fundamentals/formal-definitions/)** — The site's most original contribution. Three 90%-effective safety layers are not 99.9% safe, because components share infrastructure, blind spots, and influence channels (and the gap only grows with layer count). The *entanglement tax* — actual risk over perceived risk — is often 10–100×. The passive / active / adversarial taxonomy organizes everything that follows.
 
-6. **[Entanglement Worked Examples](/entanglements/case-studies/examples/)** — Four systems (code review, healthcare, trading, support escalation) diagnosed end-to-end: build the correlation matrix, find the hidden dependency, redesign, verify. The most directly actionable page on the site.
+6. **[Detecting Influence](/entanglements/detection/detecting-influence/)** — Eight practical methods (A/B frame testing, counterfactual intervention, honeypots, rotation, timing analysis, red-team channel enumeration) for finding the entanglements your architecture diagram says don't exist.
 
-7. **[Structural Patterns](/design-patterns/structural/)** — The eight architectural building blocks (escalation ladders, voting tribunals, capability airlocks, bulkheads…) that bound damage regardless of component behavior.
+7. **[Entanglement Worked Examples](/entanglements/case-studies/examples/)** — Four systems (code review, healthcare, trading, support escalation) diagnosed end-to-end: build the correlation matrix, find the hidden dependency, redesign, verify. The most directly actionable page on the site.
 
-8. **[Channel Integrity](/design-patterns/channel-integrity/)** — The deepest pattern chapter: side-channels, and how components that never communicate can still coordinate through shared reasoning (logical correlation). Where entanglement theory meets decision theory.
+8. **[Structural Patterns](/design-patterns/structural/)** — The eight architectural building blocks (escalation ladders, voting tribunals, capability airlocks, bulkheads…) that bound damage regardless of component behavior.
 
-9. **[Composing Patterns](/design-patterns/composing-patterns/)** — Patterns interact. Four reference stacks for real systems, a compatibility matrix, and the anti-patterns (kitchen-sink, verification theater) that come from composing badly.
+9. **[Channel Integrity](/design-patterns/channel-integrity/)** — The deepest pattern chapter: side-channels, and how components that never communicate can still coordinate through shared reasoning (logical correlation). Where entanglement theory meets decision theory.
 
-10. **[Worked Examples](/design-patterns/examples/research-assistant-example/)** — The framework applied end-to-end with explicit (illustrative) numbers in four domains: [research assistant](/design-patterns/examples/research-assistant-example/), [code deployment](/design-patterns/examples/code-deployment-example/), [trading system](/design-patterns/examples/trading-system-example/), [healthcare bot](/design-patterns/examples/healthcare-bot-example/). Note how risk budgets shift with stakes across the four.
+10. **[Composing Patterns](/design-patterns/composing-patterns/)** — Patterns interact. Four reference stacks for real systems, a compatibility matrix, and the anti-patterns (kitchen-sink, verification theater) that come from composing badly.
 
-11. **[Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/)**, **[Jury Systems](/case-studies/human-systems/jury-trust/)**, **[Criminal Organizations](/case-studies/human-systems/criminal-trust/)** — Three human systems that solved delegation-under-distrust for real, each isomorphic to an AI design question: engineered error asymmetry (juries), deliberate friction and two-person integrity (nuclear), and trust without any external enforcement at all (criminal organizations).
+11. **[Worked Examples](/design-patterns/examples/research-assistant-example/)** — The framework applied end-to-end with explicit (illustrative) numbers in four domains: [research assistant](/design-patterns/examples/research-assistant-example/), [code deployment](/design-patterns/examples/code-deployment-example/), [trading system](/design-patterns/examples/trading-system-example/), [healthcare bot](/design-patterns/examples/healthcare-bot-example/). Note how risk budgets shift with stakes across the four.
 
-12. **[Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/)** — The closing real-world failure analysis: what happens when none of the above is in place, and the counterfactual architecture that would have contained it.
+12. **[Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/)**, **[Jury Systems](/case-studies/human-systems/jury-trust/)**, **[Criminal Organizations](/case-studies/human-systems/criminal-trust/)** — Three human systems that solved delegation-under-distrust for real, each isomorphic to an AI design question: engineered error asymmetry (juries), deliberate friction and two-person integrity (nuclear), and trust without any external enforcement at all (criminal organizations).
+
+13. **[Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/)** — The closing real-world failure analysis: what happens when none of the above is in place, and the counterfactual architecture that would have contained it.
 
 **After the Core Path:** go applied with the [Quick Start checklist](/design-patterns/tools/quick-start/), go quantitative with [Probabilistic Estimation](/experimental/probabilistic-estimation/), or go deep with the [Research section](/research/).
 
