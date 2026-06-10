@@ -166,7 +166,7 @@ Interactive tool for calculating how trust flows through delegation chains and n
         <option value="multiplicative">Multiplicative (default)</option>
         <option value="minimum">Minimum</option>
         <option value="harmonic">Harmonic Mean</option>
-        <option value="weakest">Weakest Link (product of complements)</option>
+        <option value="weakest">At Least One Succeeds (parallel redundancy)</option>
       </select>
       <div class="rule-description" id="rule-desc">
         Effective trust = T₁ × T₂ × ... × Tₙ along each path
@@ -219,7 +219,7 @@ Interactive tool for calculating how trust flows through delegation chains and n
         'multiplicative': 'Effective trust = T₁ × T₂ × ... × Tₙ along each path',
         'minimum': 'Effective trust = min(T₁, T₂, ..., Tₙ) along each path',
         'harmonic': 'Effective trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ) along each path',
-        'weakest': 'Effective trust = 1 - [(1-T₁)(1-T₂)...(1-Tₙ)] - models independent failure'
+        'weakest': 'Effective trust = 1 - [(1-T₁)(1-T₂)...(1-Tₙ)] — at-least-one-succeeds (parallel redundancy): chain succeeds if any link succeeds'
       };
 
       function getNodes() {
@@ -529,19 +529,19 @@ Effective Trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ)
 
 **Use when**: Don't — retained for comparison only. Note the example above: 0.847 is *higher than either approach would justify*; for links (0.9, 0.8) no serial chain can be more trustworthy than its weakest stage allows. A "balance" between product and minimum is legitimate, but the principled interpolation is the common-cause mixture $(1-\rho)\prod T_i + \rho\min T_i$, not the harmonic mean.
 
-### Weakest Link (Product of Complements)
+### At Least One Succeeds (Parallel Redundancy)
 
-Models trust as "probability of not failing":
+Models the probability that at least one parallel path succeeds — i.e., all paths must fail before the chain fails:
 
 ```
 Effective Trust = 1 - [(1-T₁) × (1-T₂) × ... × (1-Tₙ)]
 ```
 
-**Example**: Same chain with 0.9 and 0.8
+**Example**: Two parallel verifiers, each at 0.9 and 0.8 trust
 - Failure probabilities: 0.1 and 0.2
-- Combined failure: 1 - (0.1 × 0.2) = 1 - 0.02 = **0.98**
+- Both fail: 0.1 × 0.2 = 0.02 → combined trust: 1 - 0.02 = **0.98**
 
-**Use when**: Failures must occur at multiple points simultaneously (redundant systems). ⚠️ This is exactly the case where correlation bites hardest — under common-cause correlation $\rho$, true combined failure approaches $\min(1-T_i)$ rather than $\prod(1-T_i)$. Budget with the mixture formula from [Risk Propagation](/delegation-risk/risk-propagation/).
+**Use when**: The chain succeeds if *any one* path succeeds (parallel redundancy). Note this is the opposite of weakest-link (which would be `min(T₁, T₂, ...)` — the chain is only as strong as its weakest node). ⚠️ This formula assumes independence between paths; under common-cause correlation $\rho$, true combined failure approaches $\min(1-T_i)$ rather than $\prod(1-T_i)$. Budget with the mixture formula from [Risk Propagation](/delegation-risk/risk-propagation/).
 
 ---
 

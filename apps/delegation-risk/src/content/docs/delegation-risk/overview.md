@@ -5,7 +5,7 @@ sidebar:
 ---
 
 :::note[TL;DR]
-**Delegation Risk = Σ P(harm mode) × Damage(harm mode)** — the core formula for quantifying delegation. This page walks through a complete example: a research assistant with \$1,770/month total Delegation Risk, reduced to \$671/month by adding a deterministic verifier. Risk inherits multiplicatively by default through delegation chains.
+**Delegation Risk = Σ P(harm mode) × Damage(harm mode)** — the core formula for quantifying delegation. This page walks through a complete example: a research assistant with \$1,770/month total Delegation Risk, reduced to \$971/month by adding a deterministic verifier. Risk inherits multiplicatively by default through delegation chains.
 :::
 
 A mature delegation risk framework could provide mathematical and operational foundations for managing AI systems more safely at scale.
@@ -114,14 +114,14 @@ flowchart LR
 
 What risk does the Human inherit from the Code Deployer through the delegation chain?
 
-Using the multiplicative rule (the framework's canonical default — see [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation and the correlation correction):
+Using the multiplicative rule (the framework's canonical default — see [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation and the correlation correction), the chain's **joint reliability** is the product of the per-link trust values — the probability that *both* links behave faithfully end-to-end:
 ```
-Risk_inheritance(Human → Deployer) = Trust(H→C) × Trust(C→D)
+JointReliability(Human → Deployer) = Trust(H→C) × Trust(C→D)
                                    = 0.95 × 0.85
-                                   = 0.8075
+                                   = 0.8075  (~81%)
 ```
 
-This means ~19% of potential damage from the Code Deployer's harm modes propagates back to the Human as risk they're accepting.
+So only ~81% of the time does the whole chain hold. The residual **~19%** is the probability that *at least one* link fails somewhere between the Human and the Deployer — and that failure channel is how the Human inherits exposure to the Deployer's harm modes. (This stays at the probability level: it bounds how often the chain breaks, not what fraction of dollar damage flows through.)
 
 ### Step 3: Risk Budget Allocation
 
@@ -139,7 +139,7 @@ Current allocation:
 
 ### Step 4: After Mitigation
 
-Add a deployment verifier (deterministic code, formally verified):
+Add a deployment verifier that reviews code before it ships (deterministic checks plus a formally-verified policy engine):
 
 ```mermaid
 flowchart LR
@@ -149,22 +149,27 @@ flowchart LR
     V --> Prod[Production]
 ```
 
-| Harm Mode | Probability | Damage | New Risk Contribution |
-|-----------|-------------|--------|-----------------------|
-| Deploys malicious code | 0.0001 × 0.01 | \$1,000,000 | **\$1** |
+We assume the verifier catches **99% of malicious deployments** (its policy engine blocks unauthorized changes) and **70% of buggy deployments** (static analysis and tests catch most, but not all, defects). Only the Code Deployer's rows change; the Summarizer (\$150) and Coordinator (\$520) are untouched.
 
-Verifier catches 99% of malicious deployments. New system Delegation Risk: **\$671**.
+| Harm Mode | Old Risk | Catch Rate | New Risk Contribution |
+|-----------|----------|------------|-----------------------|
+| Deploys buggy code | \$1,000 | 70% | 0.30 × \$1,000 = **\$300** |
+| Deploys malicious code | \$100 | 99% | 0.01 × \$100 = **\$1** |
+
+**New Delegation Risk (Code Deployer)** = \$300 + \$1 = **\$301** (down from \$1,100).
+
+**New System Total** = \$150 (Summarizer) + \$520 (Coordinator) + \$301 (Code Deployer) = **\$971**.
 
 :::tip[Key Insight]
-Adding a simple deterministic verifier reduced system Delegation Risk by 62%. The highest-leverage safety investment is often the cheapest: a code-based checker on the highest-damage harm modes.
+Adding a single verifier on the riskiest component cut system Delegation Risk from \$1,770 to \$971 — a **45% reduction** — by attacking both the highest-damage harm mode (malicious code) and the highest-probability one (buggy code). The highest-leverage safety investment is often the cheapest: a code-based checker placed on the component that dominates the risk budget.
 :::
 
 ### Comparison to Nuclear Safety
 
-Nuclear plants target ~10⁻⁶ core damage frequency per reactor-year. For a \$10B damage potential:
-- Target Delegation Risk = 10⁻⁶ × \$10B = **\$10,000/year**
+Nuclear plants achieve ~10⁻⁵ core damage frequency per reactor-year (NRC subsidiary goal: ~10⁻⁴/reactor-year). Using the achieved figure for a \$10B damage potential:
+- Example Delegation Risk = 10⁻⁵ × \$10B = **\$100,000/year**
 
-Our research assistant's \$671/month ≈ \$8,000/year is roughly comparable—which suggests either:
+Our research assistant's \$971/month ≈ \$12,000/year is roughly comparable—which suggests either:
 1. We're being appropriately cautious, or
 2. Nuclear plants manage much higher absolute stakes with similar relative risk
 

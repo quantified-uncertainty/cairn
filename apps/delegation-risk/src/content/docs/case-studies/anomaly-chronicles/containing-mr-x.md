@@ -4,6 +4,10 @@ sidebar:
   order: 3
 ---
 
+:::caution[Fiction]
+This page is part of the Anomaly Chronicles, a fictional case study. The events, organizations, documents, and statistics below are invented to illustrate the framework's concepts.
+:::
+
 :::note[TL;DR]
 Mr. X has a documented history of exploiting clients. He will almost certainly try something—the question isn't IF but HOW. This makes conventional trust assessment useless. The solution: design controls that work regardless of attack vector.
 :::

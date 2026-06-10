@@ -449,7 +449,7 @@ flowchart TB
 - Side channels between zones
 
 ### Related Patterns
-- **Privilege Bracketing**: Complementary—brackets time, airlock brackets capability
+- **Cooling Off Period**: Temporal bracketing complements capability bracketing
 - **Gateway Chokepoint**: Airlocks are specialized chokepoints
 - **Bulkhead Isolation**: Similar concept for failure containment
 
@@ -686,7 +686,7 @@ flowchart TB
 
 ### Related Patterns
 - **Capability Airlock**: Gateways between zones
-- **Semantic Firewall**: Content-aware gateway
+- **Need-to-Know Compartments**: Information filtering at the gateway
 - **Black Box Flight Recorder**: Gateway is natural logging point
 
 ---

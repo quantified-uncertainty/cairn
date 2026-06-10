@@ -144,7 +144,7 @@ Each pattern is documented with:
 | Primary Threat | Recommended Patterns |
 |----------------|---------------------|
 | **Capability errors** | Escalation Ladder, Ghost Checker, Checkpoint-Rollback |
-| **Adversarial inputs** | Gateway Chokepoint, Tripwire Mesh, Semantic Firewall |
+| **Adversarial inputs** | Gateway Chokepoint, Tripwire Mesh, Honeypot Injection |
 | **AI scheming** | Honeypot Injection, Consistency Triangulation, Capability Probing |
 | **Cascading failures** | Bulkhead Isolation, Blast Radius Containment, Graceful Degradation |
 | **Trust miscalibration** | Graduated Autonomy, Trust Decay, Capability Sunset |
@@ -338,7 +338,7 @@ These patterns appear throughout our case studies and worked examples:
 
 | Example | Key Patterns Used |
 |---------|-------------------|
-| [Trading System](/design-patterns/examples/trading-system-example/) | Capability Airlock, Graceful Degradation, Blast Radius Containment |
+| [Trading System](/design-patterns/examples/trading-system-example/) | Graceful Degradation, Blast Radius Containment, Bulkhead Isolation |
 | [Healthcare Bot](/design-patterns/examples/healthcare-bot-example/) | Escalation Ladder, Need-to-Know Compartments, Cooling Off Period |
 | [Code Deployment](/design-patterns/examples/code-deployment-example/) | Task Decomposition Pipeline, Checkpoint-Rollback, Ghost Checker |
 | [Research Assistant](/design-patterns/examples/research-assistant-example/) | Graduated Autonomy, Random Audit, Trust Decay |

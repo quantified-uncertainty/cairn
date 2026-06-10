@@ -6,7 +6,7 @@ sidebar:
 ---
 
 :::note[TL;DR]
-Watch for patterns, anomalies, and trends over time. Key patterns: **Tripwire Mesh** (distributed detection points at input/processing/output layers), **Behavioral Baselines** (detect deviation from normal), **Capability Probing** (test for hidden capabilities), **Anomaly Aggregation** (correlate weak signals into strong alerts). Single tripwires miss things—use a mesh for defense in depth.
+Watch for patterns, anomalies, and trends over time. Key patterns: **Tripwire Mesh** (distributed detection points at input/processing/output layers), **Behavioral Fingerprinting** (detect deviation from normal), **Capability Probing** (test for hidden capabilities), **Temporal Behavior Analysis** (detect strategic timing attacks). Single tripwires miss things—use a mesh for defense in depth.
 :::
 
 Monitoring patterns provide **continuous observation** of AI agent behavior. Unlike verification patterns (which check specific outputs), monitoring patterns watch for patterns, anomalies, and trends over time.
@@ -129,7 +129,7 @@ The mesh runs all tripwires and correlates results to determine alert level:
 ### Related Patterns
 - **Ghost Checker**: Async verification
 - **Behavioral Fingerprinting**: Baseline for behavioral tripwires
-- **Circuit Breaker Cascade**: Triggered by mesh alerts
+- **Graceful Degradation Ladder**: Triggered by mesh alerts
 
 ---
 

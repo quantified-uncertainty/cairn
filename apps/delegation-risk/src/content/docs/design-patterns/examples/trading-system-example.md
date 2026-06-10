@@ -7,6 +7,10 @@ sidebar:
   order: 6
 ---
 
+:::caution[Illustrative Example]
+This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::
+
 A worked example in a high-frequency, adversarial domain: an AI system that generates and executes trading strategies.
 
 ## Task
@@ -314,7 +318,7 @@ class CircuitBreaker:
 | Execution Engine | Verified code | \$1,000 | 2% |
 | **Tail Risk Buffer** | Extreme scenarios | \$15,000 | 30% |
 | **Human Oversight** | Daily review, alerts | \$6,500 | 13% |
-| **Total** | | **\$50,000** | 100% |
+| **Total** | | **\$49,500** | 99% |
 
 **Key insight**: 30% allocated to alpha models (where we take risk for return), 30% as tail risk buffer, remainder in verified infrastructure.
 

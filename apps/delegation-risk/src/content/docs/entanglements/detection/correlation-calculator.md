@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations).
+This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations). All ρ values are on the **phi (failure-indicator Pearson) scale**; see [What ρ means and how to estimate it](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it) for the estimation recipe.
 
 ---
 
@@ -129,6 +129,8 @@ What correlation values should you expect?
 - You thought: 99.9% protection
 - You have: ~96.9% protection (P(all fail) ≈ 3.1%)
 - Entanglement tax: ~31×
+
+**Caveat on averaging pairwise ρs**: The single shared-ρ model used here cannot represent asymmetric pairwise structure (GPT-4↔Claude at 0.5 is quite different from either's 0.2 correlation with static analysis). Averaging (0.5 + 0.2 + 0.2) / 3 = 0.3 is a rough approximation that can *understate* the tax — the high GPT-4↔Claude correlation still creates a strong common-cause channel that averaging dilutes. For a conservative answer with asymmetric architectures, use the **max pairwise ρ** (here 0.5, giving ~50× tax from the 3-layer table) rather than the average. For a precise answer, model the pairwise matrix explicitly (see the limitation note in [Formal Definitions](/entanglements/fundamentals/formal-definitions/)).
 
 ### Example 2: Homogeneous LLM Stack
 

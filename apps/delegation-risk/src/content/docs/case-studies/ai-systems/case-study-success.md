@@ -84,7 +84,7 @@ flowchart TB
 4. Human confirmed and blocked PR
 
 **What would have happened with monolithic approach**:
-- Single-model review might have missed it (tested: GPT-4 missed this pattern 40% of the time in similar code)
+- Single-model review is more likely to miss it — frontier models can fail on injection patterns even when they catch them some of the time
 - No automatic escalation for high-risk combinations
 
 **Outcome**: Vulnerability fixed before merge. Estimated damage prevented: \$50,000-500,000 (based on similar incidents in industry).
@@ -109,8 +109,8 @@ def process_payment(amount, account):
 5. Output Verifier blocked auto-posting due to multiple red flags
 
 **What would have happened with monolithic approach**:
-- Tested: GPT-4 was successfully manipulated by this comment 3/10 times
-- When manipulated, it approved the PR with positive review
+- Prompt injection via comments is a known failure mode for monolithic reviewers — manipulation of this kind can cause the model to approve malicious code
+- When manipulated, it would approve the PR with a positive review
 
 **Outcome**: Attack blocked. PR rejected with explanation. Contributor account flagged.
 
@@ -148,7 +148,7 @@ Over 8 months, the system logged **12 prompt injection attempts** in submitted c
 | Multi-file coordination attack | 1 | Independent component analysis |
 | Nested comment exploit | 1 | Security Scanner |
 
-**Block rate**: 12/12 (100%)
+**Block rate**: all attempts blocked in this scenario (the specific count is illustrative)
 
 **False positive rate**: 0.3% (15 legitimate PRs flagged for human review that were actually fine)
 
@@ -195,7 +195,7 @@ Over 8 months, the system logged **12 prompt injection attempts** in submitted c
 | Security vulnerabilities caught | 12 |
 | Prompt injection attempts blocked | 12 |
 | Incidents in production | 0 |
-| Developer satisfaction | 4.2/5 |
+| Developer satisfaction | High (surveyed, not formally scored) |
 
 ### Cost Comparison
 

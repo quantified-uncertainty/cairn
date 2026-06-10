@@ -95,7 +95,7 @@ This is dangerous because testing under normal conditions won't reveal the entan
 **Formula in plain terms**:
 > Entanglement Tax = What your risk actually is ÷ What you think your risk is
 
-**Canonical derivation** (this is the site's single source of truth for the tax; the [Correlation Calculator](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety: with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
+**Canonical derivation** (this is the site's single source of truth for the tax; the [Correlation Calculator](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety (see [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art)): with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
 
 $$P(\text{all fail}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
 

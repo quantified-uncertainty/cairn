@@ -1,7 +1,7 @@
 ---
 title: "Exposure Cascade: Hierarchical Risk Budgets"
 sidebar:
-  order: 5
+  order: 7
 ---
 
 :::note[TL;DR]

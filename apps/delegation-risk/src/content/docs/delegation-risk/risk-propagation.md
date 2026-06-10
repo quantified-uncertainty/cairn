@@ -46,7 +46,7 @@ We simulated ground truth with a one-factor Gaussian copula (each component's fa
 | 0.6 | 0.0389 | 0.0100 | 0.0640 | 0.0217 | 0.0010 | 0.0604 |
 | 0.8 | 0.0566 | 0.0100 | 0.0820 | 0.0410 | 0.0010 | 0.0802 |
 
-Read the third row: at moderate correlation ($\rho = 0.4$), the product rule understates true risk by **2.7× for two layers and 11× for three layers**. The mixture overstates it — deliberately. For safety budgeting you want the conservative side, and the mixture formula is exactly that: an upper envelope that is exact at both ends.
+Read the third row: at moderate correlation ($\rho = 0.4$), the product rule understates true risk by **2.7× for two layers and 11× for three layers** — that is the safety-critical failure. The mixture lands above the truth in this table, but be careful interpreting that gap: the table's $\rho$ column is the simulation's *latent factor* correlation, which is a stronger scale than the mixture's $\rho$ (see [What ρ means](#what-ρ-means-and-how-to-estimate-it) below — latent 0.4 corresponds to a failure-indicator correlation of only ≈0.19 at $p = 0.1$, and feeding *that* value into the mixture reproduces the true two-layer 0.0267 exactly). On matched scales the mixture is exact for two layers and genuinely conservative for three or more. For safety budgeting, that is the right side to err on.
 
 **Serial trust chain — P(both links work), $t = (0.8, 0.7)$:**
 
@@ -77,6 +77,24 @@ So the operational rule is asymmetric:
 - **Harmonic mean** is incoherent for chains: for links (0.8, 0.7) it yields 0.747 — *higher than the weaker link alone*. No serial composition can be more trustworthy than its weakest stage. Retired.
 - **Discounted product** (multiply by an extra 0.9 per hop) double-counts: chain-length penalty already emerges from multiplication. If long chains worry you beyond that, the thing you're worried about is accumulated *unmodeled* correlation or context contamination — model that explicitly instead.
 - **Minimum** survives, demoted from "alternative rule" to what it actually is: the $\rho = 1$ limit of the mixture, and the honest bound when you can't estimate $\rho$.
+
+## What ρ means and how to estimate it
+
+The $\rho$ in the mixture is the **beta-factor mixing weight**: the share of failure probability attributable to a single shared cause. For layers with equal miss probability, it coincides exactly with the **Pearson correlation of the failure indicators** (the phi coefficient) — that is the scale on which $\rho$ should be estimated and reported.
+
+It is *not* interchangeable with other numbers that get called "correlation":
+
+- A **latent or copula correlation** (the kind a Gaussian-factor simulation is parameterized by) is larger than the indicator correlation it induces: latent 0.4 ≈ indicator 0.19 at $p = 0.1$. Plugging a latent-scale number into the mixture or the lookup tables overstates the tax.
+- The **raw joint-failure share** $P(\text{both fail})/P(\text{either fails})$ (a Jaccard index) is nonzero even for *independent* layers (≈ 0.05 at $p = 0.1$), so it is not a correlation at all. Plugging it in miscalibrates everything downstream.
+
+**The canonical estimation recipe** (other pages reference this; do not substitute alternatives):
+
+1. Run all layers on the same labeled challenge set, recording each layer's per-item miss/catch outcome.
+2. For each pair of layers, compute the phi coefficient: $\phi = \dfrac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$.
+3. Use the **largest pairwise $\phi$** (or a deliberately conservative high estimate) as the mixture's $\rho$.
+4. When you cannot measure, round up: for layers sharing a provider, training paradigm, or context, assume $\rho \geq 0.5$.
+
+Every $\rho$ in this page's mixture columns, the [correlation calculator](/entanglements/detection/correlation-calculator/) tables, and the realistic-correlation estimates is on this indicator (phi) scale.
 
 ## Limitations
 

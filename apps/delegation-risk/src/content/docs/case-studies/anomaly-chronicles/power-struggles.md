@@ -4,6 +4,10 @@ sidebar:
   order: 1
 ---
 
+:::caution[Fiction]
+This page is part of the Anomaly Chronicles, a fictional case study. The events, organizations, documents, and statistics below are invented to illustrate the framework's concepts.
+:::
+
 :::note[TL;DR]
 When you delegate authority, you create exposure—the set of harms that could result. The key question isn't "will this person defect?" but "what's my exposure, and how can I bound it?" The dictator case is instructive: the public delegated limited authority, but the delegate expanded it without limit. This is *unbounded exposure*—the most dangerous form of delegation risk.
 :::

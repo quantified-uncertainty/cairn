@@ -4,6 +4,10 @@ sidebar:
   order: 8
 ---
 
+:::caution[Fiction]
+This page is part of the Anomaly Chronicles, a fictional case study. The events, organizations, documents, and statistics below are invented to illustrate the framework's concepts.
+:::
+
 :::note[Reference Document]
 This catalog documents all approved containment protocols as of Year 10. Exposure multipliers are calibrated based on empirical incident data and anomaly advisory input. Multipliers compound multiplicatively for independent protocols.
 :::

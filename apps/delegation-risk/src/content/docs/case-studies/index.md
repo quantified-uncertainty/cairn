@@ -1,6 +1,6 @@
 ---
 title: Case Studies
-description: Real-world examples showing delegation risk principles in action across AI systems and human organizations.
+description: Real and hypothetical examples of delegation and trust systems in action across AI systems and human organizations.
 ---
 
 This section contains concrete examples—both successes and failures—that illustrate how delegation risk principles apply in practice.
@@ -12,8 +12,8 @@ Direct applications to AI systems, from failures to successes:
 | Case | Outcome | Key Lesson |
 |------|---------|------------|
 | [Sydney (Failure)](/case-studies/ai-systems/case-study-sydney/) | Acute failure | What happens when constraints are missing |
-| [Code Review Bot (Success)](/case-studies/ai-systems/case-study-success/) | 8 months in production | Sustained success through proper design |
-| [Support Bot (Near-Miss)](/case-studies/ai-systems/case-study-near-miss/) | \$50K error caught | Verification layers save the day |
+| [Code Review Bot (Success)](/case-studies/ai-systems/case-study-success/) | 8 months in production (hypothetical) | Sustained success through proper design |
+| [Support Bot (Near-Miss)](/case-studies/ai-systems/case-study-near-miss/) | \$50K error caught (hypothetical) | Verification layers save the day |
 | [Content Moderator (Drift)](/case-studies/ai-systems/case-study-drift/) | Gradual degradation | How small changes compound |
 | [Anti-Patterns](/case-studies/ai-systems/anti-patterns/) | Common mistakes | What not to do |
 

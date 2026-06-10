@@ -278,7 +278,7 @@ combined_detection = 1 - (1-0.5)*(1-0.4)*(1-0.45)*(1-0.35)
 - May require fundamental advances
 
 ### Likely Never (without breakthrough)
-- Aviation/nuclear-grade (~10⁻⁹)
+- Aviation-grade (~10⁻⁹/flight-hour) or nuclear-grade (~10⁻⁵/reactor-year)
 - Uncertain if achievable with current approaches
 - May require formal verification of AI systems
 

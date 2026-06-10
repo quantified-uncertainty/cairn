@@ -274,15 +274,19 @@ effectiveCatchRate_correlated(catchRates, correlation) = {
 
 ## Cost-Effectiveness Comparison
 
-| Mitigation | Risk Reduction | Monthly Cost | Cost per 1% Reduction |
+:::caution[Illustrative Arithmetic]
+The table below is **illustrative arithmetic on illustrative inputs** — the cost and risk-reduction figures are plausible order-of-magnitude estimates for framing, not empirically measured values. Actual costs and effectiveness vary substantially by deployment context.
+:::
+
+| Mitigation | Risk Reduction (illustrative) | Monthly Cost (illustrative) | Cost per 1% Reduction |
 |------------|----------------|--------------|----------------------|
-| Output filtering | 60% | \$100 | \$1.67 |
-| Automated testing | 63% | \$500 | \$7.94 |
-| Permission scoping | 60% | \$200 | \$3.33 |
-| AI verifier | 70% | \$1,000 | \$14.29 |
-| Human review | 85% | \$3,000 | \$35.29 |
-| Sandboxing | 95%* | \$500 | \$5.26 |
-| Red team testing | 45% | \$5,000 | \$111.11 |
+| Output filtering | ~60% | ~\$100 | ~\$1.67 |
+| Automated testing | ~63% | ~\$500 | ~\$7.94 |
+| Permission scoping | ~60% | ~\$200 | ~\$3.33 |
+| AI verifier | ~70% | ~\$1,000 | ~\$14.29 |
+| Human review | ~85% | ~\$3,000 | ~\$35.29 |
+| Sandboxing | ~95%* | ~\$500 | ~\$5.26 |
+| Red team testing | ~45% | ~\$5,000 | ~\$111 |
 
 *Sandboxing reduces damage, not probability. Different risk model.
 

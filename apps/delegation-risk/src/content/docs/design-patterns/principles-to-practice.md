@@ -123,8 +123,9 @@ Both examples target ~\$2,000/month total Delegation Risk but allocate different
 
 **Research Assistant** — more distributed risk:
 - Summarizer: 8%
-- Code Deployer: 55%
+- Hypothesis Generator: 55%
 - Coordinator: 26%
+- Other components: 11%
 
 **Code Deployment** — risk concentrated in human-gated components:
 - Production Deploy (human-gated): 26%

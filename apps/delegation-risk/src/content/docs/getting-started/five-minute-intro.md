@@ -97,7 +97,7 @@ Budget: \$500/mo → **Within budget. Ship it.**
 
 ## The Catch
 
-Safeguards multiply only if they fail **independently**. Three 90%-effective verifiers built on the same model don't give you 99.9% protection—when one misses, the others tend to miss the same thing, and actual protection lands closer to 91%. This gap (often 10–100×) is the [entanglement tax](/entanglements/), and pricing it is what this framework adds over generic "decompose and verify" advice. Diversify what your layers are built on, not just how many you have.
+Safeguards multiply only if they fail **independently**. Three 90%-effective verifiers sharing a provider or training paradigm (ρ ≈ 0.5) don't give you 99.9% protection—the common-cause floor pushes actual protection to roughly 95%, a [~50× entanglement tax](/entanglements/#the-canonical-example). This gap (typically 10–100×) is the [entanglement tax](/entanglements/), and pricing it is what this framework adds over generic "decompose and verify" advice. Diversify what your layers are built on, not just how many you have.
 
 ---
 

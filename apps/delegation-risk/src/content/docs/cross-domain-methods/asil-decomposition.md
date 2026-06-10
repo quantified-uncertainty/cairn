@@ -48,9 +48,7 @@ flowchart TD
 | ASIL C | ASIL A + ASIL A | Independent |
 | ASIL B | ASIL A + ASIL A | Independent |
 
-**The math**: For AND-gate decomposition (both must fail):
-- P(system_fail) = P(component1_fail) × P(component2_fail)
-- 10⁻⁸ = 10⁻⁴ × 10⁻⁴ (ASIL B × ASIL B ≈ ASIL D)
+**The intent**: For AND-gate decomposition (both must fail), two independent ASIL B components (each targeting ≈10⁻⁷/h) together target ASIL D-equivalent coverage. ISO 26262 decomposition is about achieving independence against systematic faults through separate development rigor and diverse implementation; it does not literally multiply random-hardware failure rates.
 
 ### Independence Requirements
 

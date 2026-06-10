@@ -20,7 +20,7 @@ This page catalogs nine categories of entanglement challenges. Each represents a
 
 | Shared Resource | Patterns Affected | Failure Mode |
 |-----------------|-------------------|--------------|
-| LLM provider | Ghost Checker, Voting Tribunal, Semantic Firewall | Provider outage or systematic bias affects all |
+| LLM provider | Ghost Checker, Voting Tribunal, Gateway Chokepoint | Provider outage or systematic bias affects all |
 | Credential store | Capability Airlock, Gateway Chokepoint | Compromise grants access to all protected resources |
 | Monitoring database | Behavioral Fingerprinting, Tripwire Mesh, Audit logs | DB failure blinds all detection |
 | Network | All external verification | Partition isolates verification from execution |
@@ -48,7 +48,7 @@ This page catalogs nine categories of entanglement challenges. Each represents a
 ```mermaid
 flowchart TB
     subgraph Apparent["Apparent Diversity"]
-        SF["Semantic Firewall<br/>(rule-based)"]
+        SF["Gateway Chokepoint<br/>(rule-based)"]
         BF["Behavioral Fingerprinting<br/>(statistical)"]
         GC["Ghost Checker<br/>(LLM-based)"]
     end

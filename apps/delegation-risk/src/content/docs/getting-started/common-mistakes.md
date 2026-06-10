@@ -3,7 +3,7 @@ title: "Common Mistakes"
 description: "What teams get wrong when implementing delegation risk frameworks"
 ---
 
-Learn from others' failures. These are the most frequent mistakes teams make when implementing delegation risk frameworks.
+These are anticipated failure modes when implementing delegation risk frameworks — patterns worth watching for, drawn from analogous engineering and safety disciplines.
 
 ---
 
@@ -47,7 +47,7 @@ If verifiers share:
 - Same base model → correlated failures
 - Shared context → can be attacked together
 
-Three 90% verifiers might only give you 92% overall, not 99.9%.
+Three 90% verifiers sharing a provider (ρ ≈ 0.5) might only give you ~95% overall, not 99.9% — a [~50× entanglement tax](/entanglements/#the-canonical-example).
 
 ### How to Avoid
 - **Check for shared ancestors** — Do components use the same base model?

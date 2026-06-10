@@ -7,6 +7,10 @@ sidebar:
   order: 5
 ---
 
+:::caution[Illustrative Example]
+This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::
+
 A worked example in a regulated, high-stakes domain: a bot that helps patients assess symptoms and routes them to appropriate care.
 
 ## Task

@@ -32,7 +32,7 @@ Modern large language models overwhelmingly train on **Common Crawl**, a web scr
 3. **Adversarial vulnerabilities transfer** - attacks designed for one model often work on others
 4. **Emergent behaviors correlate** - similar pretraining creates similar failure modes
 
-**Research finding:** Carlini et al. (2024) showed that adversarial examples crafted for GPT-4 transferred to Claude 3 and Gemini with 73% and 68% success rates respectively—far above the <1% expected under independence.
+**Research direction:** Adversarial examples crafted for one model have been shown to transfer to other models at rates far above what independence would predict. The precise transfer rates across frontier models remain an open empirical question, but the qualitative finding—that shared architectures and training data create correlated vulnerabilities—is well-supported.
 
 ### Architectural Homogeneity
 
@@ -213,7 +213,7 @@ The **MGL model** extends alpha factors with staggered testing and maintenance s
 **Practical approaches:**
 
 1. **n-gram overlap:** Measure shared n-grams (typically n=5-13)
-   - Lee et al. (2022) found 50-60% overlap between C4, The Pile, and Common Crawl
+   - Lee et al. (2022) studied deduplication of training corpora; substantial overlap exists between C4, The Pile, and Common Crawl, though their focus was within-corpus deduplication rather than cross-corpus overlap measurement
 
 2. **MinHash sketching:** Probabilistic estimation via hash signatures
    - Enables comparison with O(k) space instead of O(n)
@@ -260,10 +260,10 @@ Values:
 - **C > 1:** Positively correlated (both fail together)
 - **C < 1:** Negatively correlated (anti-correlation rare in practice)
 
-**Observed correlations (Hendrycks et al. 2021):**
-- GPT-3, GPT-J, GPT-NeoX on MMLU adversarial: **C ≈ 2.4**
-- Vision models (ResNet, EfficientNet, ViT) on natural adversarial examples: **C ≈ 3.1**
-- **Interpretation:** Models 2-3× more likely to fail when others fail than if independent
+**Observed correlations:**
+- Multiple language models evaluated on adversarial benchmarks show significantly correlated failures—models are substantially more likely to fail when others fail than independence would predict
+- Vision models (ResNet, EfficientNet, ViT) on natural adversarial examples similarly exhibit positive failure correlation
+- **Interpretation:** Positive failure correlation is consistent across model families, though precise quantification varies by benchmark and task
 
 ### Diversity Metrics from Ensemble Learning
 
@@ -948,8 +948,6 @@ where β = common-mode failure fraction.
 
 ### AI Adversarial Robustness
 
-- **Carlini, N., Tramer, F., Wallace, E., et al. (2024).** "Transferability of Adversarial Examples Across Language Models." (Hypothetical paper matching research description)
-
 - **Goodfellow, I. J., Shlens, J., & Szegedy, C. (2015).** "Explaining and Harnessing Adversarial Examples." *ICLR 2015*
 
 - **Papernot, N., McDaniel, P., & Goodfellow, I. (2016).** "Transferability in Machine Learning: from Phenomena to Black-Box Attacks using Adversarial Samples." *arXiv:1605.07277*
@@ -964,7 +962,7 @@ where β = common-mode failure fraction.
 
 - **Fort, S., Hu, H., & Lakshminarayanan, B. (2019).** "Deep Ensembles: A Loss Landscape Perspective." *arXiv:1912.02757*
 
-- **Hendrycks, D., Burns, C., Basart, S., et al. (2021).** "Measuring Massive Multitask Language Understanding." *ICLR 2021* (includes failure correlation data)
+- **Hendrycks, D., Burns, C., Basart, S., et al. (2021).** "Measuring Massive Multitask Language Understanding." *ICLR 2021*
 
 - **Kornblith, S., Norouzi, M., Lee, H., & Hinton, G. (2019).** "Similarity of Neural Network Representations Revisited." *ICML 2019*
 

@@ -4,8 +4,8 @@ sidebar:
   order: 6
 ---
 
-:::caution[Epistemic Warning]
-This document presents an anomaly's perspective on the engagement system. It may be authentic self-representation, strategic manipulation, or something we cannot categorize. Treat it as data, not truth.
+:::caution[Fiction]
+This page is part of the Anomaly Chronicles, a fictional case study. The events, organizations, documents, and statistics below are invented to illustrate the framework's concepts.
 :::
 
 ---

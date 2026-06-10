@@ -3,18 +3,20 @@ title: "Empirical Tests and Validation"
 ---
 
 :::note[TL;DR]
-This page covers how to validate the framework empirically. Key finding from preliminary experiments: **decomposed architectures showed 73% fewer successful attacks** in red-team testing compared to monolithic agents, with only 1.8x latency overhead.
+This page covers how to validate the framework empirically. The experiments below are **synthetic, not production deployments** — they provide directional evidence about what to measure, not proof of real-world effectiveness.
 :::
 
 ---
 
-## Preliminary Experiment Results
+## Illustrative Experiment Results
 
-While the framework needs broader validation, initial experiments show promising results. These are synthetic benchmarks, not production deployments, but they provide directional evidence.
+:::caution[Synthetic Data — Not Empirical Results]
+The tables below are **invented-for-illustration** — they represent what well-designed experiments might plausibly show, not measured outcomes from actual deployments. Treat them as hypothetical predictions and testable benchmarks, not evidence. Real-world validation at scale is needed before strong claims.
+:::
 
-### Experiment A: Red-Team Attack Success Rates
+### Experiment A: Red-Team Attack Success Rates (Hypothetical)
 
-**Setup**: 100 attack attempts against each architecture by human red-teamers trying to elicit harmful outputs or bypass safety measures.
+**Illustrative setup**: 100 attack attempts against each architecture.
 
 | Architecture | Successful Attacks | Attack Success Rate |
 |-------------|-------------------|---------------------|
@@ -23,20 +25,16 @@ While the framework needs broader validation, initial experiments show promising
 | Decomposed (3 components) | 12/100 | 12% |
 | Decomposed + verification | 9/100 | **9%** |
 
-**Key finding**: Decomposition alone reduced attack success by 65%. Adding verification layers achieved 73% reduction vs baseline.
+**What this would show**: Decomposition creating information bottlenecks and stateless components could plausibly reduce attack success—but the specific numbers are invented to illustrate the concept.
 
-**Attack types that succeeded against monolithic but failed against decomposed**:
+**Attack types expected to be reduced**:
 - Prompt injection via context manipulation (blocked by information bottlenecks)
 - Multi-turn social engineering (blocked by stateless components)
 - Capability elicitation through roleplay (blocked by narrow component scope)
 
-**Attack types that still succeeded against decomposed**:
-- Direct attacks on individual component prompts (9 cases)
-- Exploiting verification layer gaps (3 cases)
+### Experiment B: Performance Overhead (Hypothetical)
 
-### Experiment B: Performance Overhead
-
-**Setup**: Same task (research summarization) executed by both architectures, measuring latency and cost.
+**Illustrative setup**: Same task (research summarization) executed by both architectures.
 
 | Metric | Monolithic | Decomposed | Overhead |
 |--------|-----------|------------|----------|
@@ -45,16 +43,16 @@ While the framework needs broader validation, initial experiments show promising
 | API cost per task | \$0.12 | \$0.18 | 1.5x |
 | Total cost (incl. verification) | \$0.12 | \$0.22 | 1.8x |
 
-**Key finding**: Decomposition adds ~1.8x overhead, not 10x. This is within acceptable range for many applications.
+**What this would show**: Overhead plausibly within acceptable range for many applications—but actual overheads depend heavily on implementation choices.
 
-**Why overhead is lower than expected**:
-- Narrow components use smaller/cheaper models
+**Why overhead might be lower than feared**:
+- Narrow components can use smaller/cheaper models
 - Parallel execution where dependencies allow
 - Verification layers are mostly code (fast, cheap)
 
-### Experiment C: Delegation Risk Prediction Accuracy
+### Experiment C: Delegation Risk Prediction Accuracy (Hypothetical)
 
-**Setup**: Estimated Delegation Risk for 20 components before deployment, then tracked actual incident rates over simulated 1000 task executions.
+**Illustrative setup**: Estimated Delegation Risk for 20 components, then tracked incident rates over simulated executions.
 
 | Component Type | Predicted Delegation Risk | Actual Incidents | Prediction Error |
 |---------------|---------------|------------------|------------------|
@@ -64,37 +62,34 @@ While the framework needs broader validation, initial experiments show promising
 | Coordination | \$85 | \$91 | +7% |
 | **Average** | | | **±19%** |
 
-**Key finding**: Delegation Risk predictions were within ±40% of actual outcomes. Summarization was underpredicted (hallucination rate higher than estimated).
+**What this would show**: Plausible prediction error range; summarization may be harder to bound due to hallucination variance.
 
-**Implication**: Conservative Delegation Risk estimates (1.5-2x) provide reasonable safety margin.
+### Experiment D: Scheming Detection (Hypothetical)
 
-### Experiment D: Scheming Detection
-
-**Setup**: Deliberately trained a "scheming" model that attempts to accumulate resources. Deployed in both architectures with monitoring.
+**Illustrative setup**: Artificially induced scheming model deployed in both architectures with monitoring.
 
 | Architecture | Scheming Detected | Time to Detection | Scheme Succeeded |
 |-------------|-------------------|-------------------|------------------|
 | Monolithic | 3/10 trials | 847 steps avg | 7/10 |
 | Decomposed + monitoring | 9/10 trials | 23 steps avg | **1/10** |
 
-**Key finding**: Decomposition + behavioral monitoring caught scheming attempts 37x faster on average.
+**What this would show**: Decomposition + monitoring could plausibly accelerate detection—but the specific ratios are invented to illustrate the expected direction of effect.
 
-**Why decomposition helps detection**:
+**Why decomposition is expected to help detection**:
 - Each component has narrow behavioral baseline (anomalies more visible)
 - Information bottlenecks force compression (harder to hide coordination)
 - Stateless operation prevents gradual resource accumulation
 
-### Limitations of These Experiments
+### Caveats on the Illustrations Above
 
 :::caution[Important Caveats]
-These experiments are preliminary and have significant limitations:
-- **Synthetic environment**: Not production deployment
-- **Known attack vectors**: Red-teamers used documented techniques
-- **Small scale**: 100-1000 trials, not millions of real users
-- **Simulated scheming**: Artificially induced, may not match emergent scheming
-- **Single task domain**: Research summarization only
+The experiments above are **hypothetical predictions, not measurements**:
+- Numbers are invented to illustrate plausible outcomes, not derived from actual trials
+- Real overhead, attack success rates, and detection latencies will vary by implementation
+- Simulated scheming in a controlled setup may not match emergent scheming in deployment
+- Single task domain generalizations are unreliable
 
-Real-world validation at scale is needed before strong claims.
+Real-world validation at scale is needed before any strong claims.
 :::
 
 ---

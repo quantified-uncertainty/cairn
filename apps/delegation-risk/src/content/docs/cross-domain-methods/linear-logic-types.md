@@ -24,7 +24,7 @@ Linear logic was designed exactly for this kind of resource-aware reasoning.
 | Linear Logic | Standard Logic | Meaning |
 |--------------|----------------|---------|
 | A ⊗ B | A ∧ B (conjunction) | "A and B, use each exactly once" |
-| A ⊕ B | A ∨ B (disjunction) | "A or B, choose one" |
+| A ⊕ B | A ∨ B (disjunction) | "A or B, provider picks which" |
 | A ⊸ B | A → B (implication) | "Consume A to produce B" |
 | !A | A (persistent) | "A can be used unlimited times" |
 
@@ -95,8 +95,8 @@ Reading: "Principal-to-coordinator trust combined with coordinator-to-executor t
 ### Linear Types
 
 Languages like Rust use affine types (can use at most once, can discard):
-- `T` — Normal type (can be used, discarded, copied freely)
-- `!T` — Linear type (must use exactly once)
+- `T` — Linear type (must use exactly once; no copying or discarding)
+- `!T` — Unrestricted type (the `!` modality; can be used, duplicated, or discarded freely)
 
 For trust:
 ```rust

@@ -9,13 +9,15 @@ Answers to frequently asked questions and responses to common skepticism.
 
 ### "Isn't this just defense in depth? That's not new."
 
-Yes, defense in depth is the core principle—but applied systematically to AI systems with quantified delegation risk budgets. The novelty is:
+Yes, defense in depth is the core principle. What this framework adds:
 
-1. **Trust as the primary resource**: Not just "add more checks" but "budget expected harm across components"
-2. **Formal propagation rules**: Mathematical framework for how trust compounds through delegation chains
-3. **AI-specific constraints**: The "Least X" principles address AI-unique risks like context accumulation and optimization pressure
+1. **The entanglement tax**: Defense in depth assumes layers fail independently. In practice, three 90%-effective AI layers sharing a provider (ρ ≈ 0.5) give you roughly 95% protection, not 99.9%—a [~50× entanglement tax](/entanglements/#the-canonical-example). Pricing this gap is the framework's core contribution: you can't stack your way past the common-cause floor, so the question becomes how to reduce ρ (methodological diversity, different providers, non-LLM checks), not how many layers to add.
 
-Defense in depth tells you *what* to do. This framework attempts to provide structure for reasoning about *how much* and *where*—though the estimates are often uncertain.
+2. **Quantified risk budgeting**: Not just "add more checks" but "budget expected harm across components"—so you can compare the cost of a safeguard against the risk it reduces.
+
+3. **Accident/defection decomposition**: Capability errors and misalignment are distinct failure modes that call for different mitigations. Conflating them leads to the wrong safeguard choices.
+
+Defense in depth tells you *what* to do. This framework attempts to provide structure for reasoning about *how much* and *where*, especially when components are not—and cannot be—independent.
 
 ### "How is Delegation Risk different from regular risk assessment?"
 
@@ -173,7 +175,7 @@ Honestly: **we don't have proof for AI systems specifically**. The evidence is:
 
 1. **Analogous domains**: Nuclear, finance, and aerospace use similar principles with demonstrated success
 2. **Logical argument**: Limiting capability, context, and connectivity necessarily limits attack surface
-3. **Red team results**: Systems designed with these constraints are harder to exploit
+3. **Logical argument**: Systems designed with these constraints should be harder to exploit, though this has not been systematically validated for AI-specific threats
 
 The [Empirical Tests](/design-patterns/tools/empirical-tests/) page outlines how to gather evidence for your specific deployment.
 

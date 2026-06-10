@@ -489,8 +489,7 @@ flowchart TB
 |--------|-------------------|-------------------|-----------|------------|
 | US | \$105M | \$495M | \$600M | "Never accidentally" |
 | Russia | \$225M | \$50M | \$275M | "Always retaliate" |
-| UK | \$210M | \$305M | \$515M | "Moral flexibility" |
-| France | \$120M | \$400M | \$520M | "Independent deterrent" |
+| UK | \$2.1B | \$305M | \$2.4B | "Moral flexibility" |
 | Israel | ? | ? | ? | "Strategic ambiguity" |
 
 :::tip[The Key Insight]
@@ -522,19 +521,13 @@ September 26, 1983: Soviet satellite system shows 5 US ICBMs launching toward US
 - Violated protocol by making judgment call at his level
 
 **What would have happened if he followed protocol:**
-- Soviet leadership was already paranoid (Able Archer exercise ongoing)
-- Andropov (dying, suspicious) might have ordered retaliation
-- ~45% chance of escalation to full exchange per expert estimates
+- Soviet leadership was already operating under RYaN-era paranoia — the standing program that searched for NATO first-strike preparations had primed commanders to treat ambiguous signals as confirmation of attack
+- Andropov (dying, deeply suspicious of US intentions) might have ordered retaliation
+- The probability of escalation, had the report gone up the chain, is unknown and unknowable — but the stakes were civilization-scale
 
 **Delegation risk framework implication:**
 
-Petrov was a **human circuit breaker**—he had neither the authority nor the protocol to make that decision, but he did anyway.
-
-```
-Value of Petrov's judgment = P(escalation if reported) × Damage avoided
-                          = 0.45 × $50T
-                          = $22.5T saved
-```
+Petrov was a **human circuit breaker**—he had neither the authority nor the protocol to make that decision, but he did anyway. The potential harm avoided was catastrophic and unquantifiable; any specific dollar figure would be fabricated precision on top of genuine uncertainty.
 
 The Soviet system's trust architecture didn't account for this—it worked *despite* the system, not because of it.
 
@@ -632,7 +625,7 @@ Neither is obviously correct. The choice depends on which error is costlier.
 1. **Nuclear launch authority is the highest-stakes trust problem ever designed**—Delegation Risk measured in civilization
 2. **Different nations made different tradeoffs**—US prioritizes safety, Russia prioritizes deterrence, UK prioritizes flexibility
 3. **The "scariest" system may be safest**—Dead Hand's guaranteed retaliation may reduce total Delegation Risk by improving deterrence
-4. **Human judgment has saved us repeatedly**—Petrov, Arkhipov, and others who violated protocol
+4. **Human judgment has saved us repeatedly**—Petrov, Arkhipov, and others who violated protocol, preventing outcomes whose damage is catastrophic but unquantifiable
 5. **Systems have never been fully tested**—we don't know if they actually work
 6. **Ambiguity can be a feature**—the UK system deliberately preserves moral choice
 7. **These lessons apply to AI**—substitute "AI shutdown authority" for "nuclear launch authority" and the tradeoffs are similar

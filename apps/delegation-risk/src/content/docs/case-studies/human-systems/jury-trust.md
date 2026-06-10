@@ -129,7 +129,7 @@ Studies examining actual jury accuracy (through cases later definitively resolve
 
 ### Why Unanimous?
 
-For serious criminal cases, most US jurisdictions require **unanimous** verdict for conviction. Why not majority rule?
+For serious criminal cases, US jurisdictions require **unanimous** verdict for conviction — a constitutional requirement since *Ramos v. Louisiana*, 590 U.S. 83 (2020), which held that the Sixth Amendment's unanimity requirement applies to state criminal trials, overturning *Apodaca v. Oregon* (1972). Why not majority rule?
 
 **The Asymmetric Error Weighting**
 
@@ -174,6 +174,10 @@ P(12 jurors vote guilty | guilty) = 0.85^12
 
 ### The Tradeoff Table
 
+:::caution[Naive Independence Model]
+The table below is a **toy model assuming jurors vote independently** — i.e., twelve coin flips with the same bias. Real jurors deliberate together in one room, making them a textbook [entangled committee](/entanglements/): social pressure, anchoring, and conformity effects mean their votes are correlated, not independent. The practical 86% acquittal-of-guilty rate the model predicts is far higher than observed conviction rates in real prosecuted cases (see Part 6 on the deliberation problem). Use these figures to understand the *logic* of error-weighting, not as empirical predictions.
+:::
+
 | Decision Rule | P(Convict Innocent) | P(Acquit Guilty) |
 |---------------|--------------------|-----------------|
 | Simple majority (7/12) | 0.0003% | 0.4% |
@@ -181,7 +185,7 @@ P(12 jurors vote guilty | guilty) = 0.85^12
 | Unanimity (12/12) | ~0% | 86% |
 
 :::note[The Unanimity Insight]
-Unanimity makes wrongful conviction virtually impossible, but at the cost of acquitting most guilty defendants. The system strongly prefers Type II errors (guilty go free) over Type I errors (innocent convicted).
+Unanimity makes wrongful conviction virtually impossible *under the independence assumption*, but at the cost of acquitting most guilty defendants. The system strongly prefers Type II errors (guilty go free) over Type I errors (innocent convicted). In practice, juror dependence (Part 6) means the real acquittal rate is much lower than 86%.
 :::
 
 ### "Beyond Reasonable Doubt"
@@ -274,35 +278,34 @@ Result: Both sides neutralize each other, returning to ~random selection
 | **USA (State)** | 6-12 | Varies (some allow 10/12) | Jury + Judge |
 | **UK** | 12 | 10/12 after 2+ hours | Jury + Judge |
 | **France** | 6 jurors + 3 judges | 2/3 majority | Mixed panel |
-| **Germany** | 0 (no jury) | Judges decide | Professional judges |
+| **Germany** | 2 lay judges (Schöffen) + 1–3 professional judges | Majority of mixed panel | Mixed panel (Schöffengericht) |
 | **Japan** | 6 citizens + 3 judges | Majority | Mixed panel (saiban-in) |
 | **Russia** | 8 (in some cases) | 6/8 | Jury (for serious crimes) |
 
-### The German Model: Professional Judges
+### The German Model: Mixed Panels (Schöffengerichte)
 
 ```mermaid
 flowchart TB
-    CASE[Criminal Case] --> PANEL[Panel of Judges<br/>3-5 professionals]
+    CASE[Criminal Case] --> PANEL[Mixed Panel<br/>1–3 professional judges + 2 lay judges (Schöffen)]
     PANEL --> VERDICT[Verdict + Reasoning]
 ```
 
 **Trust architecture:**
-- No random citizens
-- Professional legal training
-- Must write detailed reasoning
+- Lay judges (Schöffen) are randomly selected citizens who serve alongside professional judges
+- Professional judges provide legal expertise and write the reasoning
+- Mixed panel decides both guilt and sentence by majority
 - Subject to appeal on law AND facts
 
 **Advantages:**
-- Consistent application of law
-- Detailed reasoning for appeals
-- No "jury nullification"
-- Faster proceedings
+- Community input through lay judges preserves democratic legitimacy
+- Professional legal guidance prevents procedural errors
+- Detailed written reasoning supports appeals
+- Faster than full jury system
 
 **Disadvantages:**
-- No community input
-- Judges may become case-hardened
-- Single point of failure (judge corruption)
-- Less democratic legitimacy
+- Professional judges can dominate lay judges (status effects)
+- Lay judges may defer to legal expertise rather than exercise independent judgment
+- Less pure community check than an Anglo-American jury
 
 ### Delegation Risk Comparison Across Systems
 

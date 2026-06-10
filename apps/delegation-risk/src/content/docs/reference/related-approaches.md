@@ -146,6 +146,16 @@ Borrowing from security engineering ([least privilege](https://en.wikipedia.org/
 
 ---
 
+## vs Reliability Engineering / Common-Cause Failure Analysis
+
+**CCF analysis** (beta-factor model, NUREG/CR-4780, Mosleh's alpha-factor extension) is the closest prior art to this framework's central model. Nuclear safety engineers have been applying the beta-factor formula — the same formula this site uses for the entanglement tax — to redundant safety systems since the 1970s. Knight & Leveson's 1986 experiment confirmed the same failure mode in redundant software: independently developed programs had statistically correlated failures on the same inputs.
+
+**This framework adds**: CCF analysis models *passive* correlation — shared causes that make hardware or software components fail together without intent. The AI delegation context introduces two failure modes CCF analysis does not cover: **active influence** (a component directionally biases what downstream verifiers see, creating the common cause rather than merely suffering it) and **adversarial coordination** (components that can scheme or collude, exploiting the architecture rather than simply sharing a failure mode). These extensions are what make the framework AI-specific rather than a direct import.
+
+See [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art) for the full literature survey and lineage.
+
+---
+
 ## Comparison Table
 
 | Approach | Core Idea | Strengths | Limitations | Compatibility |

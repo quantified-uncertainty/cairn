@@ -69,7 +69,7 @@ For each way something could go wrong (harm mode), multiply:
 Sum across all harm modes to get total Delegation Risk.
 
 :::note[Canonical definition]
-This is the single canonical statement of the Delegation Risk formula. Other pages cross-link to this anchor rather than restating it.
+This anchor is the canonical statement of the Delegation Risk formula. Where other pages restate it for convenience, this is the authoritative form.
 :::
 
 ### Example: Employee with Check-Writing Authority
@@ -97,11 +97,12 @@ graph LR
     A -.->|"0.56"| C
 ```
 
-Multiplication assumes the hops fail **independently**. When stages share a failure cause — same model provider, same training data, same context — correct for the correlation ρ with the mixture:
+Multiplication assumes the hops fail **independently**. When stages share a failure cause — same model provider, same training data, same context — failures clump together, and the correction depends on which direction you're composing:
 
-> P(all fail) = (1−ρ) · ∏ pᵢ + ρ · min(pᵢ)
+- **Serial chains** (A delegates to B delegates to C): apply the mixture to the *working* probabilities, P(chain works) = (1−ρ) · ∏ tᵢ + ρ · min(tᵢ). In the fully correlated limit (ρ = 1) the chain is exactly as reliable as its weakest link. Correlation actually *helps* chains — failures bunch up — so the plain product is the conservative choice and safe to use as-is.
+- **Parallel safety layers** (a harmful action must slip past *every* verifier): apply the mixture to the *miss* probabilities, P(all miss) = (1−ρ) · ∏ pᵢ + ρ · min(pᵢ). Here correlation *hurts* — layers miss together — and the plain product badly understates risk. This is the case where the correction is safety-critical; see [the canonical example](/entanglements/#the-canonical-example).
 
-In the fully correlated limit (ρ = 1) this reduces to the **minimum**: the chain is only as strong as its weakest link. The minimum is that limiting case, not a separate rule to choose by taste. Other rules you may encounter — harmonic means, ad-hoc per-hop discounts — are retired: the first can rate a chain above its weakest serial link, and the second double-counts chain length, which multiplication already prices in. See [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation and the simulation evidence behind this choice.
+See [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation, the simulation evidence, and why the once-offered alternative rules reduce to special cases of this one.
 
 :::note[Related: Social Choice Theory]
 Trust aggregation across multiple delegates relates to [social choice theory](https://en.wikipedia.org/wiki/Social_choice_theory)—how to combine individual inputs into collective outcomes. [Arrow's impossibility theorem](https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem) has implications for trust aggregation: no perfect rule exists.
@@ -169,7 +170,7 @@ Key requirements:
 - **Conservative margins**: Buffer for uncertainty and unknowns
 
 :::note
-This isn't theoretical—nuclear plants operate at 10⁻⁹ failure probability per reactor-year by flowing system targets down to component budgets through fault trees.
+This isn't theoretical—nuclear plants operate at core damage frequencies around 10⁻⁵/reactor-year (NRC target: ~10⁻⁴/reactor-year) by flowing system targets down to component budgets through fault trees. Aviation uses the same approach to achieve the FAA/EASA catastrophic-condition target of 10⁻⁹/flight-hour.
 :::
 
 ```mermaid

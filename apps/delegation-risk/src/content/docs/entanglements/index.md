@@ -5,7 +5,7 @@ sidebar:
   order: 0
 ---
 
-When designing delegation architectures, it's tempting to treat components as independent—to assume that stacking five 90%-effective safety layers yields 99.999% protection. In practice, components become **entangled** in ways that undermine this assumption.
+When designing delegation architectures, it's tempting to treat components as independent—to assume that stacking three 90%-effective safety layers yields 99.9% protection. In practice, components become **entangled** in ways that undermine this assumption.
 
 Entanglements come in many forms:
 - **Shared dependencies**: Components rely on the same infrastructure, training data, or assumptions
@@ -56,7 +56,17 @@ flowchart TB
     style OUTC fill:#ff9999
 ```
 
-The gap between perceived and actual protection can be enormous—often 10× to 100× worse than the independent model predicts.
+### The Canonical Example
+
+The numbers behind those diagrams, once, exactly — other pages reference this calculation rather than re-deriving it:
+
+Three safety layers, each missing 10% of harmful actions ($p = 0.1$), with common-cause correlation $\rho = 0.5$ (realistic for layers sharing a provider or training paradigm):
+
+- **Independent (naive)**: $P(\text{all miss}) = 0.1^3 = 0.001$ → 99.9% protection
+- **Entangled**: $P(\text{all miss}) = (1-\rho)\prod p_i + \rho \cdot \min p_i = 0.5 \times 0.001 + 0.5 \times 0.1 = 0.0505$ → **~95% protection**
+- **Entanglement tax**: $0.0505 / 0.001 \approx 50\times$ the residual risk you thought you had
+
+The gap between perceived and actual protection is typically 10× to 100× at realistic correlations. See [Formal Definitions](/entanglements/fundamentals/formal-definitions/) for the derivation and [Risk Propagation](/delegation-risk/risk-propagation/) for why this mixture is the canonical rule.
 
 ## The Bureaucrat Analogy
 
@@ -211,8 +221,6 @@ Real-world examples of entanglement failures:
 - Enron and Arthur Andersen (auditor capture)
 - Credit rating agencies and 2008 crisis (correlated blind spots)
 - Boeing 737 MAX and FAA (self-certification capture)
-- Madoff and SEC (oversight failure)
-- Three Mile Island (cascading alarms)
 
 ### [Quantitative Metrics](/entanglements/detection/metrics/)
 Practical measurement of entanglement:
@@ -292,12 +300,6 @@ Step-by-step assessment process:
 - Adversarial testing
 - Quantification and remediation
 
-### [Hidden Coordination](/entanglements/cross-domain/hidden-coordination/)
-When agents have "secret friends"—adversarial use of hidden networks:
-- Game of Thrones as case study
-- The power of non-obvious alliances
-- Detection strategies
-- The limits of detection
 
 ### [Software Dependency Patterns](/entanglements/cross-domain/software-dependency-patterns/)
 Lessons from 50 years of software engineering:

@@ -792,7 +792,7 @@ Anthropic's Constitutional AI (CAI) demonstrates how self-supervision can reduce
 - Input and output classifiers trained on synthetically generated data
 - Filter overwhelming majority of jailbreaks with minimal over-refusals
 - **0.38% increase in refusal rates** (very low over-refusal cost)
-- **Moderate additional compute costs** (specific figures not disclosed)
+- **~23.7% inference overhead** on production traffic (disclosed in arXiv 2501.18837)
 - Dramatically improved robustness against jailbreaking with minimal additional cost
 
 **Prototype version limitations**:
@@ -856,7 +856,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Monitoring and verification checks during inference
 - Factor(T,U) decomposition and reassembly steps
 
-**Empirical measurements** (from trust-website cost-benefit analysis):
+**Illustrative example** (hypothetical scenario for illustration):
 - Median latency: 2.3s (monolithic) → 4.1s (decomposed) = **1.8× overhead**
 - P99 latency: 8.2s (monolithic) → 12.1s (decomposed) = **1.5× overhead**
 
@@ -882,7 +882,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - OOD detection systems: 5-30% additional inference time
 - Behavioral anomaly detection: Continuous overhead on all operations
 
-**Empirical cost comparison** (from trust-website analysis):
+**Illustrative cost comparison** (hypothetical scenario for illustration):
 
 | Component | Model | Cost per 1K calls |
 |-----------|-------|-------------------|
@@ -935,7 +935,7 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 - Adversarial testing against monitors to find evasion strategies
 - Fault injection to verify monitor detection
 
-**Engineering overhead** (from trust-website analysis):
+**Engineering overhead** (illustrative estimate):
 
 | Task | Monolithic Agent | Decomposed System | Delta |
 |------|-----------------|-------------------|-------|
@@ -966,7 +966,7 @@ Risk_Reduction_Value = (P_unsafe_baseline - P_unsafe_safe) × Incident_Cost
 Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 ```
 
-**Empirical incident cost estimation** (from trust-website analysis):
+**Illustrative incident cost estimation** (hypothetical scenario for illustration):
 
 | Incident Type | Probability (Mono) | Probability (Decomp) | Damage | Expected Cost Mono | Expected Cost Decomp |
 |--------------|-------------------|---------------------|--------|----------|------------|
@@ -1026,7 +1026,7 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Initial investment: \$5,000-10,000
 - Break-even: May not be worth it; use simpler safety measures
 
-**Volume-based thresholds** (from trust-website analysis):
+**Volume-based thresholds** (illustrative estimates):
 
 | Use Case | Monthly Volume | API Savings | Risk Reduction | Break-Even |
 |----------|---------------|-------------|----------------|------------|

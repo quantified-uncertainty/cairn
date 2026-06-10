@@ -31,7 +31,7 @@ Calculators and visualizations for applying probabilistic methods:
 
 ### [Estimates Registry](/experimental/probabilistic-estimation/estimates/)
 
-Calibrated probability distributions for key risk parameters:
+Plausible starting priors (uncalibrated) for key risk parameters:
 
 - **Probability Priors**: Failure rates by component type
 - **Damage Distributions**: Cost magnitudes by category

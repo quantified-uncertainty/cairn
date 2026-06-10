@@ -134,7 +134,7 @@ Represent interconnections as a weighted directed graph:
 ```mermaid
 flowchart TB
     LLM["LLM Provider<br/>(common cause)"]
-    LLM -->|"weight: 0.8"| SF["Semantic Firewall"]
+    LLM -->|"weight: 0.8"| SF["Gateway Chokepoint"]
     LLM -->|"weight: 0.8"| GC["Ghost Checker"]
     LLM -->|"weight: 0.8"| VT["Voting Tribunal"]
 
@@ -184,7 +184,7 @@ Edge weights represent coupling strength:
 
 ### The Model
 
-Each defense layer is a slice of cheese with holes (failure modes). Threats pass through when holes align.
+The Swiss-cheese model (Reason, 1990) frames each defense layer as a slice of cheese with holes (failure modes). Threats pass through when holes align.
 
 ```mermaid
 flowchart TB
@@ -341,15 +341,18 @@ def calculate_correlation_matrix(components, test_threats):
             fails_a = {t for t in test_threats if comp_a.fails(t)}
             fails_b = {t for t in test_threats if comp_b.fails(t)}
 
-            # Calculate correlation
-            both_fail = len(fails_a & fails_b)
-            either_fail = len(fails_a | fails_b)
+            # Calculate phi coefficient (failure-indicator Pearson correlation)
+            n = len(test_threats)
+            p_a = len(fails_a) / n
+            p_b = len(fails_b) / n
+            p_both = len(fails_a & fails_b) / n
 
-            if either_fail == 0:
+            denom = (p_a * (1 - p_a) * p_b * (1 - p_b)) ** 0.5
+            if denom == 0:
                 corr = 0.0
             else:
-                # Conditional probability ratio
-                corr = both_fail / either_fail
+                corr = (p_both - p_a * p_b) / denom
+            # This is the failure-indicator Pearson correlation, the same ρ the lookup tables use.
 
             matrix[i, j] = corr
             matrix[j, i] = corr

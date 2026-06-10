@@ -396,11 +396,13 @@ If all your detectors agree on true positives, that's *good*. The problem is whe
 
 ### Correlation Coefficient Interpretation
 
-For passive entanglement, calculate:
+For passive entanglement, the canonical ρ is the **phi coefficient** (failure-indicator Pearson correlation). To estimate it: run both layers on the same labeled challenge set, record per-item miss/catch outcomes, then compute
+
+$$\phi = \frac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$$
+
+Use the largest pairwise φ as your system's ρ; when measurement is impossible and layers share a provider or training paradigm, assume ρ ≥ 0.5. See [What ρ means and how to estimate it](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it) for the full recipe and the pitfalls (latent-Gaussian ρ and Jaccard joint-failure share are both larger than φ and will overstate the tax if substituted).
 
 ```
-ρ (failure correlation) = P(both fail | one fails) / P(either fails)
-
 ρ < 0.3:  Low correlation (acceptable)
 ρ 0.3-0.5: Moderate correlation (investigate)
 ρ > 0.5:  High correlation (redesign required)

@@ -158,7 +158,7 @@ flowchart LR
 | Loss | 2% | 0.5% | Alice can intervene if off-route |
 | Theft | 0.1% | 0.05% | Theft attempts are visible |
 
-**New Total: \$16.50**
+**New Total: \$15.50**
 
 ### Measure 3: Bonded Courier
 
@@ -170,7 +170,7 @@ Alice requires Bob to post a \$1,000 bond that he forfeits if delivery fails.
 |-----------|-------|-------|-----|
 | All intentional harms | varies | ~0% | Bob's incentives now aligned |
 
-**New Total: \$5.25** (only accidental losses remain)
+**New Total: ≈\$15** (only accidental losses and delay remain)
 
 ### Summary of Risk Reduction
 
@@ -181,7 +181,7 @@ xychart-beta
     title "Delegation Risk Reduction"
     x-axis ["Baseline", "+ Lock", "+ GPS", "+ Bond"]
     y-axis "Delegation Risk ($)" 0 --> 50
-    bar [42.50, 31.00, 16.50, 5.25]
+    bar [42.50, 31.00, 15.50, 15.00]
 ```
 
 :::note[Cost-Benefit]
@@ -229,12 +229,12 @@ Carol maintains a **Delegation Risk Dashboard**:
 
 | Delegator | Delegate | Amount | Risk | Duration |
 |-----------|----------|--------|------|----------|
-| Alice | Bob | \$1,000 | \$16.50 | 0:45 active |
+| Alice | Bob | \$1,000 | \$15.50 | 0:45 active |
 | Dave | Frank | \$5,000 | \$180.00 | 2:15 active |
 | Eve | Grace | \$500 | \$8.25 | 0:12 active |
 
 - **Total Active Exposure:** \$6,500
-- **Total Active Delegation Risk:** \$204.75
+- **Total Active Delegation Risk:** \$203.75
 
 :::caution[Alert]
 Dave→Frank exposure exceeds 2hr guideline
@@ -253,7 +253,7 @@ Risk-Weighted Exposure = Delegation Risk × Duration (hours)
 
 | Delegation | Risk | Duration | Risk-Weighted |
 |------------|------|----------|---------------|
-| Alice→Bob | \$16.50 | 0.75 hr | \$12.38 |
+| Alice→Bob | \$15.50 | 0.75 hr | \$11.63 |
 | Dave→Frank | \$180 | 2.25 hr | \$405.00 |
 | Eve→Grace | \$8.25 | 0.2 hr | \$1.65 |
 
@@ -267,7 +267,7 @@ Carol tracks historical performance:
 - Success rate: 97%
 - Average duration: 42 min
 - Incidents: 1 minor delay
-- Estimated Delegation Risk: **\$12.00/delivery** (↓ from \$16.50)
+- Estimated Delegation Risk: **\$12.00/delivery** (↓ from \$15.50)
 
 **Frank** (15 deliveries)
 - Success rate: 87%
@@ -436,7 +436,7 @@ The framework creates alignment:
 | Concept | Definition | In Our Example |
 |---------|------------|----------------|
 | **Delegation Exposure** | Set of possible harms from a delegation | {Loss, Theft, Delay, Partial} |
-| **Delegation Risk** | Σ P(harm) × Damage(harm) | \$42.50 baseline, reduced to \$5.25 |
+| **Delegation Risk** | Σ P(harm) × Damage(harm) | \$42.50 baseline, reduced to ≈\$15 |
 | **Exposure Window** | Time during which exposure is active | Pickup to confirmed delivery |
 | **Risk-Weighted Exposure** | Risk × Duration | \$12 × 0.7hr = \$8.40 |
 | **Risk Reduction Measures** | Controls that lower harm probabilities | Lock, GPS, Bond |

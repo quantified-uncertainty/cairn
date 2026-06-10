@@ -101,7 +101,7 @@ Unknown operations are blocked at any degraded level (whitelisting approach).
 - Attackers might trigger degradation deliberately
 
 ### Related Patterns
-- **Circuit Breaker Cascade**: Triggers degradation
+- **Blast Radius Containment**: Limits scope while degradation limits capability
 - **Checkpoint-Rollback**: Recovery mechanism
 - **Dead Man's Switch**: Ultimate fallback
 
@@ -338,7 +338,7 @@ The chain can automatically reorder based on observed performance.
 
 ### Related Patterns
 - **Graceful Degradation**: Ladder uses fallback chains
-- **Circuit Breaker Cascade**: Triggers fallback
+- **Dead Man's Switch**: Ultimate fallback trigger
 - **Bulkhead Isolation**: Isolates fallback failures
 
 ---
@@ -442,8 +442,8 @@ When a zone fails:
 
 ### Related Patterns
 - **Bulkhead Isolation**: Implementation of containment
-- **Circuit Breaker Cascade**: Triggers isolation
-- **Graceful Degradation**: Operates within zones
+- **Graceful Degradation Ladder**: Reduces capability within zones when triggered
+- **Self-Healing Loop**: Automatic recovery after isolation
 
 ---
 
@@ -583,7 +583,7 @@ flowchart TB
 ### Related Patterns
 - **Checkpoint-Rollback**: Alternative recovery
 - **Graceful Degradation**: Fallback during healing
-- **Circuit Breaker Cascade**: Triggers healing
+- **Dead Man's Switch**: Triggers healing when heartbeat resumes
 
 ---
 

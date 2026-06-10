@@ -137,7 +137,7 @@ Suggestion: Add safety layer tests to your pipeline
 
 ## What Engineers Often Skip (But Shouldn't)
 
-1. **[Entanglements](/entanglements/)** — If you use the same model in multiple places, failures correlate. Your 3 independent 90% verifiers might only give you 92%, not 99.9%.
+1. **[Entanglements](/entanglements/)** — If you use the same model in multiple places, failures correlate. Your 3 "independent" 90% verifiers at ρ ≈ 0.5 might only give you ~95%, not 99.9% — a [~50× entanglement tax](/entanglements/#the-canonical-example).
 
 2. **[Insurer's Dilemma](/delegation-risk/insurers-dilemma/)** — If you set the risk budget but users bear the harm, you'll systematically underestimate acceptable risk.
 

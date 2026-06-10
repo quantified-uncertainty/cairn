@@ -4,6 +4,10 @@ sidebar:
   order: 9
 ---
 
+:::caution[Fiction]
+This page is part of the Anomaly Chronicles, a fictional case study. The events, organizations, documents, and statistics below are invented to illustrate the framework's concepts.
+:::
+
 :::note[Technical Reference]
 This document specifies the Insurance Bot system that provides real-time exposure quantification for the anomaly marketplace. Version 5.1, Year 10.
 :::

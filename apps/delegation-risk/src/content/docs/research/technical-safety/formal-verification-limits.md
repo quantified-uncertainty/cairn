@@ -490,7 +490,7 @@ The paper outlines a spectrum from weak (empirical) to strong (provable) assuran
 
 #### Impossibility of Safe, Trusted AGI (Under Specific Definitions)
 
-**Panigrahy (2024)** ([arXiv:2509.21654](https://arxiv.org/pdf/2509.21654)):
+**Panigrahy (2025)** ([arXiv:2509.21654](https://arxiv.org/pdf/2509.21654)):
 - **Definitions**:
   - **Safe**: System never makes false claims
   - **Trusted**: Assume system is safe
