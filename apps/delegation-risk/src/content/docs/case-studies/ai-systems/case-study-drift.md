@@ -110,7 +110,7 @@ System was well within budget with 48% safety margin.
 - ✗ Potential for discriminatory patterns
 - ✗ Privacy exposure if model leaked data
 
-**Delegation Risk change**: Context exposure risk +\$200
+**Delegation Risk change**: Context privacy risk +\$200
 
 **New total Delegation Risk**: \$570 (75% over budget)
 

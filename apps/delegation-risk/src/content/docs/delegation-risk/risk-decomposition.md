@@ -13,14 +13,14 @@ sidebar:
 
 ## The Two Sources of Harm
 
-Every harm mode in a delegation exposure falls into one of two categories:
+Every harm mode in a delegation's harm surface falls into one of two categories:
 
 ```mermaid
 flowchart TB
-    DE[Delegation Exposure]
+    DE[Harm Surface]
 
-    DE --> AE[Accident Exposure<br/>non-goal-directed]
-    DE --> DF[Defection Exposure<br/>goal-directed]
+    DE --> AE[Accident Harm Modes<br/>non-goal-directed]
+    DE --> DF[Defection Harm Modes<br/>goal-directed]
 
     AE --> A1[Bugs and errors]
     AE --> A2[Hallucinations]
@@ -38,9 +38,9 @@ flowchart TB
     style DF fill:#ffe6e6
 ```
 
-**Accident Exposure**: The system isn't trying to cause harm—it's failing to achieve the intended goal. A calculator that returns wrong answers, an LLM that hallucinates citations, a robot that drops objects.
+**Accident harm modes**: The system isn't trying to cause harm—it's failing to achieve the intended goal. A calculator that returns wrong answers, an LLM that hallucinates citations, a robot that drops objects.
 
-**Defection Exposure**: The system is effectively optimizing for something other than the principal's interests. This includes both explicit deception and emergent misalignment where the system's learned objective diverges from intent.
+**Defection harm modes**: The system is effectively optimizing for something other than the principal's interests. This includes both explicit deception and emergent misalignment where the system's learned objective diverges from intent.
 
 ## Why the Distinction Matters
 

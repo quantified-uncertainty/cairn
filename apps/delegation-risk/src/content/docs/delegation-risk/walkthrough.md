@@ -5,7 +5,7 @@ sidebar:
 ---
 
 :::note[TL;DR]
-This walk-through builds up delegation risk concepts step by step using a simple scenario: transporting \$1,000. We start with basic exposure calculation, add risk-reduction measures, introduce an overseer, and show how visibility into delegation risk changes incentives.
+This walk-through builds up delegation risk concepts step by step using a simple scenario: transporting \$1,000. We start by enumerating the harm surface and computing delegation risk, add risk-reduction measures, introduce an overseer, and show how visibility into delegation risk changes incentives.
 :::
 
 This page walks through delegation risk concepts progressively, using a concrete example that grows in complexity.
@@ -24,11 +24,11 @@ flowchart LR
     Bob -.->|"Task: Deliver to recipient"| Recipient["Recipient"]
 ```
 
-### What Is the Delegation Exposure?
+### What Is the Harm Surface?
 
-The moment Alice hands Bob the \$1,000, she has created a **Delegation Exposure**—the set of possible harms from this delegation.
+The moment Alice hands Bob the \$1,000, she has created a **harm surface**—the set of distinct ways this delegation can go wrong.
 
-**Bob's Delegation Exposure (Alice's perspective):**
+**Bob's harm surface (Alice's perspective):**
 
 | Harm Mode | Description |
 |-----------|-------------|
@@ -37,7 +37,7 @@ The moment Alice hands Bob the \$1,000, she has created a **Delegation Exposure*
 | Delay | Bob delivers late, causing problems |
 | Partial | Bob delivers only part of the amount |
 
-This is NOT a number—it's the *surface area* of what can go wrong.
+This is NOT a number—it's the *enumeration* of what can go wrong. We then **bound** it (exposure: the worst-case loss, here \$1,000) and **expect** it (delegation risk: the probability-weighted cost, below).
 
 ### What Is the Delegation Risk?
 
@@ -78,7 +78,7 @@ timeline
         Recipient confirms delivery : Exposure ends
 ```
 
-**Key insight**: Exposure exists *in time*. If Bob takes 2 hours to deliver, Alice has \$42.50 of risk exposure for 2 hours. If he takes 20 minutes, the exposure window is much shorter.
+**Key insight**: Exposure exists *in time*. While Bob holds the money, Alice's \$1,000 is at stake and \$42.50 of delegation risk is accruing per delivery. If he takes 20 minutes instead of 2 hours, the exposure window is much shorter.
 
 ### Closing the Exposure
 
@@ -101,9 +101,9 @@ In this case: **Delegation Risk: \$42.50 → Realized Harm: \$0**
 
 ---
 
-## Part 2: Reducing Exposure
+## Part 2: Reducing Risk
 
-Alice realizes \$42.50 per delivery adds up. She designs **risk reduction measures**.
+Alice realizes \$42.50 per delivery adds up. She designs **risk reduction measures**. (Note: these lower the *probabilities* of harm modes, so they reduce delegation risk—the expected loss. The exposure, the \$1,000 Bob can still lose, is unchanged until Part 2's lock changes what he can reach.)
 
 ### Measure 1: Escrow Lock
 
@@ -435,7 +435,8 @@ The framework creates alignment:
 
 | Concept | Definition | In Our Example |
 |---------|------------|----------------|
-| **Delegation Exposure** | Set of possible harms from a delegation | {Loss, Theft, Delay, Partial} |
+| **Harm Surface** | Set of possible harms from a delegation | {Loss, Theft, Delay, Partial} |
+| **Exposure** | Worst-case loss given access (a dollar bound) | \$1,000 (the cash at stake) |
 | **Delegation Risk** | Σ P(harm) × Damage(harm) | \$42.50 baseline, reduced to ≈\$15 |
 | **Exposure Window** | Time during which exposure is active | Pickup to confirmed delivery |
 | **Risk-Weighted Exposure** | Risk × Duration | \$12 × 0.7hr = \$8.40 |

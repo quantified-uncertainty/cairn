@@ -270,7 +270,7 @@ Total impact of permitted actions. High scope = broad authority.
 |---------|------------|--------------|
 | **Trust** | Belief about reliability/alignment | Precondition for granting authority |
 | **Authority** | Formal permission to act | Consequence of trust assessment |
-| **Delegation** | Transfer of authority | Creates delegation exposure |
+| **Delegation** | Transfer of authority | Creates delegation risk |
 
 $$\text{Authority Granted} = f(\text{Trust Assessment}, \text{Task Requirements}, \text{Risk Tolerance})$$
 

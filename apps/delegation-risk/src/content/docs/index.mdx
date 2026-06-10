@@ -1,9 +1,9 @@
 ---
 title: Delegation Risk
-description: A quantitative framework for measuring, budgeting, and bounding the risk of delegation—with applications to AI safety.
+description: Delegation engineering — treating the risk of delegating to people, software, and AI agents as a quantity you can estimate, budget, and architect against.
 template: splash
 hero:
-  tagline: A quantitative framework for measuring, budgeting, and bounding the risk of delegation — to people, software, and AI systems.
+  tagline: Delegation engineering — treating the risk of delegation to people, software, and AI agents as a quantity you can estimate before acting, budget across a system, and architect to minimize.
   actions:
     - text: Start in 5 Minutes
       link: /getting-started/five-minute-intro/
@@ -28,11 +28,13 @@ This is early-stage, exploratory work—created rapidly with LLM assistance. The
 
 Every delegation involves risk. When you delegate a task—to an employee, a contractor, a software system, or an AI agent—you're accepting potential downside in exchange for capability you don't have or can't apply yourself.
 
-The standard answer is to stack safeguards. The standard mistake is to believe the multiplication:
+This site treats that downside as a quantity you can account for. Imagine a coding agent that begins every consequential action with *"let's estimate the expected damages of doing this with strategy X"*—and adjusts the strategy to reduce them. Estimate before acting ([risk preflight](/delegation-risk/runtime-accounting/)), keep hard limits that don't depend on the agent's intent ([exposure envelopes](/delegation-risk/runtime-accounting/#2-the-exposure-envelope)), track the running position ([the exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger)), and architect the whole system—task decomposition, [Least-X constraints](/design-patterns/least-x-principles/), verification stacks—to get the most capability per unit of exposure.
+
+The hardest part is that the safeguards you stack are not independent. The standard mistake is to believe the multiplication:
 
 > Put three independent 90%-effective safety layers in front of a risky action and naive arithmetic promises 99.9% protection. But layers built on the same model, the same training data, or the same context don't fail independently. At the correlations realistic for same-provider stacks (ρ ≈ 0.5), three such layers deliver closer to **95% protection** — residual risk ~50× what you computed. That gap, typically 10–100× at realistic correlations, is the [entanglement tax](/entanglements/).
 
-That gap is this site's central subject. The framework gives you the tools to measure it ([Delegation Risk](/delegation-risk/overview/)), price it ([the entanglement tax](/entanglements/fundamentals/formal-definitions/)), and architect around it ([design patterns](/design-patterns/)) — for AI agents that plan, execute, and delegate to other AI systems, and for the older delegation problems they inherit.
+That correlation problem—[entanglement](/entanglements/)—is where naive risk accounting fails, and pricing it is this framework's most distinctive contribution. The site gives you the quantity ([Delegation Risk](/delegation-risk/overview/)), the correction ([the entanglement tax](/entanglements/fundamentals/formal-definitions/)), and the design space ([patterns](/design-patterns/))—for AI agents that plan, execute, and delegate to other AI systems, and for the older delegation problems they inherit.
 
 ---
 
@@ -42,7 +44,7 @@ This framework proposes **structural constraints** as the foundation for managin
 
 <CardGrid>
   <Card title="Risk as a Resource" icon="seti:notebook">
-    Risk can be measured, budgeted, and optimized—just like compute or money. [Delegation Risk](/delegation-risk/overview/) quantifies what you're betting on each delegate.
+    Risk can be measured, budgeted, and optimized—just like compute or money. [Delegation Risk](/delegation-risk/overview/) quantifies what you're betting on each delegate; [Runtime Accounting](/delegation-risk/runtime-accounting/) sketches scaffolding that does this natively.
   </Card>
   <Card title="Correlation Is the Enemy" icon="warning">
     Redundancy only works if failures are independent. [Entanglements](/entanglements/) shows how shared providers, training data, and context quietly destroy your safety margins—and how to detect and price it.
@@ -60,6 +62,8 @@ This framework proposes **structural constraints** as the foundation for managin
 ## Primary Application: AI Systems
 
 While the framework applies generally, **AI systems are our primary focus**. Capabilities are expanding faster than verification; agents delegate to other agents in networks nobody fully maps; and oversight tends to shrink as autonomy grows. None of these claims are certain, but if even some hold, infrastructure for managing Delegation Risk seems valuable. The aim is not to solve alignment—it's to bound the damage from any single component, and to stop safety architectures from quietly promising more than they deliver.
+
+This work is complementary to [AI Control](https://arxiv.org/abs/2312.06942) (Redwood Research), which designs protocols assuming the model is actively scheming. Control supplies the adversarial methodology for that defection channel; delegation engineering is the accounting and architecture layer those protocols would be budgeted and deployed in—and it also prices the accident channel that Control deliberately sets aside. See [Related Approaches](/reference/related-approaches/) for the full positioning.
 
 ---
 

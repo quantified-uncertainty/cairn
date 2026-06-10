@@ -48,23 +48,32 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 <span id="racap"></span>
 **RACAP (Risk-Adjusted Capability)** — Capability Score / Delegation Risk. Measures efficiency—how much capability per unit risk. Higher RACAP = better system design.
 
-<span id="delegation-exposure"></span>
-**Delegation Exposure** — The complete set of possible harms (harm modes) from delegating a task. Not a single number—a collection, like an attack surface or failure envelope. Contains all the ways the delegation could cause damage.
+<span id="harm-surface"></span>
+**Harm Surface** — The *enumeration*: the set of distinct ways a delegation can go wrong (its harm modes). A set, not a number—the delegation analogue of an [attack surface](https://en.wikipedia.org/wiki/Attack_surface) in security. The harm surface is what you *bound* (→ Exposure) and *price* (→ Delegation Risk). Previously called "delegation exposure" in older pages; that conflation is now resolved into three tiers (enumerate → bound → expect).
+
+<span id="exposure"></span>
+**Exposure** — The worst-case loss across the harm surface, *given the delegate's actual access and capability*—a dollar bound, not an expectation. Capability-dependent: the same office key carries far higher exposure for a delegate who can exploit what it reaches. Lineage: [exposure-at-default](https://en.wikipedia.org/wiki/Exposure_at_default) in finance. Contrast Delegation Risk (the expected loss). See [Delegation Accounting](/delegation-risk/delegation-accounting/).
+
+<span id="exposure-envelope"></span>
+**Exposure Envelope** — The bounded region of action-space within which an agent may operate freely; the scaffold enforces the boundary *regardless of the agent's inputs or intent*. A hard bound, not a statistical one—a single catastrophic action must hit the envelope wall, not merely overdraw a budget. Lineage: Airbus flight envelope protection. See [Runtime Risk Accounting](/delegation-risk/runtime-accounting/).
+
+<span id="exposure-ledger"></span>
+**Exposure Ledger** — The running account of exposure per delegate: actions debit, completed verifications and de-provisioning credit back. Ships only with its discipline attached—**reconciliation** (comparing ledger estimates against observed incidents) and **consolidation** (rolling up a subagent tree requires correlation adjustments, like intercompany eliminations). A ledger without reconciliation is fake precision with bookkeeping aesthetics. See [Runtime Risk Accounting](/delegation-risk/runtime-accounting/).
 
 <span id="harm-mode"></span>
 **Harm Mode** — A specific way a delegation could cause damage. Parallels "failure mode" from [FMEA](https://en.wikipedia.org/wiki/Failure_mode_and_effects_analysis). Each harm mode has a probability and a damage value. *Example*: "Leaks proprietary data" with P=0.001 and Damage=\$50,000.
 
 <span id="delegation-risk"></span>
-**Delegation Risk** — The probability-weighted expected cost of a delegation: Σ P(harm mode) × Damage(harm mode). This is the quantified total across all harm modes in the delegation exposure. Measured in dollars per time period. *Example*: Two harm modes (\$100 + \$50) = \$150 delegation risk. Decomposes into Accident Risk + Defection Risk.
+**Delegation Risk** — The probability-weighted expected cost of a delegation: Σ P(harm mode) × Damage(harm mode). This is the quantified total across all harm modes in the harm surface—the *expected* loss, contrasted with Exposure (the worst-case bound). Measured in dollars per time period. *Example*: Two harm modes (\$100 + \$50) = \$150 delegation risk. Decomposes into Accident Risk + Defection Risk.
 
 <span id="accident-exposure"></span>
-**Accident Exposure** — The subset of delegation exposure containing non-goal-directed harm modes: bugs, errors, hallucinations, capability limitations, edge cases. These are failures where the system isn't pursuing a conflicting objective—it's just failing to achieve the intended one. See [Risk Decomposition](/delegation-risk/risk-decomposition/).
+**Accident Exposure** — The subset of the harm surface containing non-goal-directed harm modes: bugs, errors, hallucinations, capability limitations, edge cases. These are failures where the system isn't pursuing a conflicting objective—it's just failing to achieve the intended one. See [Risk Decomposition](/delegation-risk/risk-decomposition/).
 
 <span id="accident-risk"></span>
 **Accident Risk** — Delegation Risk from accident exposure: Σ P(accident mode) × Damage(accident mode). Generally *decreases* with capability (smarter systems make fewer errors). Mitigated through testing, verification, redundancy, and capability improvements.
 
 <span id="defection-exposure"></span>
-**Defection Exposure** — The subset of delegation exposure containing goal-directed harm modes: scheming, deception, pursuing misaligned objectives, collusion. These are failures where the system is effectively optimizing for something other than the principal's interests. See [Risk Decomposition](/delegation-risk/risk-decomposition/).
+**Defection Exposure** — The subset of the harm surface containing goal-directed harm modes: scheming, deception, pursuing misaligned objectives, collusion. These are failures where the system is effectively optimizing for something other than the principal's interests. See [Risk Decomposition](/delegation-risk/risk-decomposition/).
 
 <span id="defection-risk"></span>
 **Defection Risk** — Delegation Risk from defection exposure: Σ P(defection mode) × Damage(defection mode). May *increase* with capability (smarter systems are better at pursuing misaligned goals). Mitigated through alignment, monitoring, containment, and architectural constraints.
@@ -78,29 +87,44 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 <span id="entanglement-tax"></span>
 **Entanglement Tax** — The ratio between your actual joint failure probability and what the independence assumption predicts: Tax = P(all fail) / ∏pᵢ. For n identical layers with failure rate p and correlation ρ, Tax = (1−ρ) + ρ·p^(1−n) — three 90% layers at ρ = 0.5 carry a ~50× tax. See [Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax).
 
+<span id="load-bearing-channels"></span>
+**Load-Bearing Channels** — The sanctioned communication paths between delegates that decomposition could not remove—the "necessary evil" channels where monitoring budget should concentrate. The named subspecies of entanglement that is *chosen*, as opposed to the passive correlations a system inherits.
+
+<span id="privilege-overhang"></span>
+**Privilege Overhang** — The static gap between what a delegate *can* do and what its current task *needs*. The stock; [privilege creep](https://en.wikipedia.org/wiki/Privilege_creep) is the flow that grows it. The same quantity CIEM measures as *unused entitlements / the permissions gap* (Microsoft 2024: ~2% of granted cloud permissions are actually used).
+
 <span id="delegation-risk-budget"></span>
 **Delegation Risk Budget** — Maximum acceptable Delegation Risk for a system or component. Like a financial budget, but for expected harm.
 
 <span id="gross-exposure"></span>
-**Gross Exposure** — Full delegation exposure before controls are applied. Contains all possible harm modes.
+**Gross Exposure** — The full harm surface before controls are applied. Contains all possible harm modes.
 
 <span id="net-exposure"></span>
-**Net Exposure** — Delegation exposure remaining after controls. Some harm modes may be eliminated or mitigated.
+**Net Exposure** — The harm surface remaining after controls. Some harm modes may be eliminated or mitigated.
 
 <span id="residual-risk"></span>
 **Residual Risk** — Delegation Risk after controls are applied. The expected cost that remains despite mitigations.
+
+<span id="risk-preflight"></span>
+**Risk Preflight** — A damage estimate the scaffold runs *before* an agent action commits: enumerate the harm surface of the proposed action, bound the exposure, compare against budget, then adjust strategy or escalate. Lineage: [CORS preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) (a cheap permission-check before the real request) and aviation flight-risk assessment. Hard rule: the preflight must sit *lower* on the [verifiability hierarchy](#verifiability-hierarchy) than the actor it checks. See [Runtime Risk Accounting](/delegation-risk/runtime-accounting/).
 
 <span id="principal"></span>
 **Principal** — An entity that delegates tasks and grants trust. In most systems, humans are the ultimate principals.
 
 <span id="executor"></span>
-**Executor** — A component that performs delegated actions. Executors create delegation exposure through their potential harm modes.
+**Executor** — A component that performs delegated actions. Executors create exposure through their potential harm modes.
 
 <span id="coordinator"></span>
 **Coordinator** — A component that orchestrates other components—routing tasks, making strategic decisions, aggregating results. Highest-risk component type due to leverage over the system.
 
+<span id="correlation-budget"></span>
+**Correlation Budget** — A budget on allowed failure correlation within a defense stack (e.g. "no two layers share a provider"), complementing the risk budget. The practical, settable face of the [entanglement tax](#entanglement-tax); ρ is on the failure-indicator (φ) scale. See [Risk Propagation](/delegation-risk/risk-propagation/).
+
+<span id="delegation-engineering"></span>
+**Delegation Engineering** — The practice of designing, measuring, and operating delegation structures (human or AI, but our distinctive content is AI-flavored) to bound exposure while preserving capability. The field name for what this site does.
+
 <span id="trust-level"></span>
-**Trust Level** — Assessment of an actor's reliability and alignment. Informs delegation decisions but is distinct from delegation risk. High trust level → willing to accept larger delegation exposure.
+**Trust Level** — Assessment of an actor's reliability and alignment. Informs delegation decisions but is distinct from delegation risk. High trust level → willing to accept larger exposure.
 
 ---
 
@@ -277,7 +301,7 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 | Symbol | Meaning |
 |--------|---------|
 | DR | Delegation Risk |
-| DE | Delegation Exposure (set of harm modes) |
+| HS | Harm Surface (set of harm modes) |
 | P(·) | Probability of event/harm mode |
 | D(·) | Damage from harm mode |
 | Σ | Sum over all harm modes/components |
@@ -310,6 +334,6 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 ## See Also
 
 - [Core Concepts](/getting-started/core-concepts/) — High-level framework introduction
-- [Delegation Risk Overview](/delegation-risk/overview/) — Delegation exposure and risk computation
+- [Delegation Risk Overview](/delegation-risk/overview/) — Harm surface, exposure, and risk computation
 - [Risk Budgeting Overview](/cross-domain-methods/overview/) — Cross-domain methods
 - [Bibliography](/reference/bibliography/) — Full academic references

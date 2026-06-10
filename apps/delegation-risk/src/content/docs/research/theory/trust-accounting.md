@@ -102,7 +102,7 @@ flowchart LR
 
 | KPI                   | Definition                           | Target      |
 | --------------------- | ------------------------------------ | ----------- |
-| System Delegation Risk            | Total expected trust exposure        | < $X        |
+| System Delegation Risk            | Total expected delegation risk       | < $X        |
 | Trust concentration   | Herfindahl index of component Delegation Risks   | < 0.25      |
 | Verification coverage | % of trust relationships verified    | > 90%       |
 | Trust decay rate      | Average λ across components          | < 0.1/month |

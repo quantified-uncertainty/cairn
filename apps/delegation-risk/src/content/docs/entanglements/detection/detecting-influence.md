@@ -401,6 +401,12 @@ Because detection has a hard floor, design systems where hidden coordination pro
 | **Architectural diversity** | Different reasoning approaches reduce logical correlation |
 | **Rotation and randomization** | Changing which agents work together disrupts relationship building |
 | **Adversarial auditing** | Regular probes and correlation monitoring raise the cost of staying hidden |
+| **Paraphrasing inter-agent messages** | Disrupts steganographic encodings by destroying low-entropy patterns (Shlegeris, Redwood blog, Sept 2024) |
+| **Context redaction** | Removes shared context that could anchor Schelling-point coordination; limits what a colluding monitor knows |
+| **Separate training runs for monitor and monitored** | Reduces shared "reasoning fingerprints" that enable acausal coordination |
+| **Known-attack insertion** | Tests monitor with attacks it has seen; a monitor that passes these through is likely colluding |
+
+The last four techniques are drawn from Redwood Research's collusion-busting literature for untrusted monitoring (Shlegeris, Redwood blog, Sept 2024). Note that paraphrasing and context redaction address *causal* collusion channels; they cannot prevent *acausal* collusion where no channel exists to disrupt — for that, only cognitive diversity (separate training runs, architectural diversity) provides partial mitigation.
 
 ---
 

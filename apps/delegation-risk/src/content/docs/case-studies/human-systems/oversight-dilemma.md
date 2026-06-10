@@ -15,7 +15,7 @@ The obvious solution: add oversight. But here's the problem—**any overseer pow
 This document works through the mathematics of oversight design, exploring increasingly sophisticated solutions to this fundamental dilemma.
 
 :::tip[The Core Insight]
-Oversight doesn't eliminate trust exposure—it redistributes it. The art is in finding architectures where the redistribution reduces total system risk.
+Oversight doesn't eliminate delegation risk—it redistributes it. The art is in finding architectures where the redistribution reduces total system risk.
 :::
 
 ---
@@ -24,7 +24,7 @@ Oversight doesn't eliminate trust exposure—it redistributes it. The art is in 
 
 ### Estimating Presidential Delegation Risk
 
-Let's quantify the trust exposure of an unchecked President:
+Let's quantify the delegation risk of an unchecked President:
 
 | Authority Domain | P(catastrophic misuse/term) | Damage Potential | 4-Year Delegation Risk |
 |------------------|---------------------------|------------------|------------|
@@ -136,7 +136,7 @@ Total Delegation Risk = Presidential Delegation Risk + Ombudsman Delegation Risk
 **Compared to baseline (\$65B)**: 45% reduction
 
 :::caution[The Oversight Paradox]
-Adding an Ombudsman reduced *Presidential* Delegation Risk by 80%, but the *Ombudsman* added \$22.9B in new exposure. Net improvement: only 45%. The overseer became a major liability.
+Adding an Ombudsman reduced *Presidential* Delegation Risk by 80%, but the *Ombudsman* added \$22.9B in new delegation risk. Net improvement: only 45%. The overseer became a major liability.
 :::
 
 ### Why This Happens
@@ -349,7 +349,7 @@ Total Delegation Risk = Presidential Delegation Risk + Adversarial Oversight Del
 | 5-Person Committee | \$33.2B | -49% |
 | Adversarial (2 parties) | \$20.65B | **-68%** |
 
-**Significant improvement!** Adversarial incentives align oversight with exposure rather than protection.
+**Significant improvement!** Adversarial incentives align oversight with reducing delegation risk rather than protection.
 
 :::note[The Adversarial Insight]
 When overseers have *opposing* interests, their mutual monitoring is self-enforcing. Neither can safely be corrupt because the other profits from exposing them.
@@ -769,7 +769,7 @@ Minimal Trust Floor = P(all overseers collude) × P(public fails to respond)
 | Combined Layered | Multiple independent systems | 79% | Defense in depth | Complex, expensive |
 
 :::tip[Key Takeaways]
-1. **Oversight redistributes, not eliminates, trust exposure**
+1. **Oversight redistributes, not eliminates, delegation risk**
 2. **Powerful overseers become powerful liabilities**
 3. **Adversarial incentives > good intentions**
 4. **Unpredictability defeats corruption planning**

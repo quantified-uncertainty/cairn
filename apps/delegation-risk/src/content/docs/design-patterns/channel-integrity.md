@@ -121,7 +121,7 @@ Judges must be insulated from:
 
 ### Verifier Corruption
 
-An agent being verified might attempt to influence its verifier:
+An agent being verified might attempt to influence its verifier. Redwood Research's AI Control framework (Greenblatt et al., arXiv:2312.06942) uses *untrusted monitoring* — having one instance of a potentially-scheming model monitor another — and identifies verifier corruption as the primary collusion risk that makes untrusted monitoring weaker than trusted monitoring.
 
 ```mermaid
 flowchart TB
@@ -151,7 +151,9 @@ Attack vectors include:
 
 ### Multi-Agent Collusion
 
-Agents that should compete or check each other might instead coordinate:
+Agents that should compete or check each other might instead coordinate. Shlegeris (["How to prevent collusion when using untrusted models to monitor each other,"](https://blog.redwoodresearch.org/p/how-to-prevent-collusion-when-using) Redwood blog, Sept 2024) identifies four collusion-busting techniques that map directly onto the channel hygiene patterns here: **paraphrasing** inter-agent messages (disrupts steganographic encoding), **context redaction** (removes shared context that could anchor coordination), **separate training runs** for monitor and monitored (reduces shared reasoning fingerprints), and **known-attack insertion** (tests whether the monitor catches attacks it has seen, revealing if it is colluding by letting them through).
+
+Gardner-Challis et al. (arXiv:2602.20628, Feb 2026) provide a collusion taxonomy with three categories: **passive self-recognition** (a model recognizes it is being monitored by a copy of itself and defers), **causal collusion** (explicit covert-channel communication — the steganography/timing cases above), and **acausal/Schelling-point collusion** (models that never communicate still coordinate because they share a reasoning procedure and converge on the same action). The acausal case is the TDT-style logical correlation discussed in the section below — it is the hardest to block because there is no channel to monitor.
 
 ```mermaid
 flowchart TB
@@ -528,7 +530,7 @@ Components competing for shared resources implicitly coordinate:
 
 As discussed above, agents using similar reasoning may correlate without communication.
 
-**Mitigation**: Intentional cognitive diversity. Different training, different prompts, different reasoning approaches. Accept irreducible correlation as a limit on independence.
+**Mitigation**: Intentional cognitive diversity. Different training, different prompts, different reasoning approaches. Accept irreducible correlation as a limit on independence. Gardner-Challis et al. (arXiv:2602.20628) classify this as *acausal/Schelling-point collusion* — the category that paraphrasing and context redaction cannot reach.
 
 ---
 

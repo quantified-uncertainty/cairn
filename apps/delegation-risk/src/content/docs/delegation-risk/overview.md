@@ -17,7 +17,7 @@ A complete delegation risk framework would provide:
 ```mermaid
 flowchart TB
     subgraph "Delegation Risk Components"
-        Q[1. Quantification<br/>Exposure, Risk, trust levels]
+        Q[1. Quantification<br/>Harm surface, Exposure, Delegation Risk]
         C[2. Composition<br/>inheritance rules]
         O[3. Optimization<br/>minimize risk]
         D[4. Dynamics<br/>evolution over time]
@@ -29,7 +29,7 @@ flowchart TB
     P --> T --> S
 ```
 
-**1. Quantification**: Every delegation has a delegation exposure (set of harm modes) and delegation risk (expected cost)
+**1. Quantification**: Every delegation has a harm surface (set of harm modes), an exposure (worst-case bound), and a delegation risk (expected cost)
 
 **2. Composition**: Rules for combining risks through delegation chains — multiplicative by default, with a correlation correction when stages share failure causes (see [Risk Propagation](/delegation-risk/risk-propagation/))
 
@@ -45,7 +45,7 @@ flowchart TB
 
 ## Why Delegation Risk Matters
 
-**1. AI systems are becoming more capable**: Higher capabilities = larger delegation exposure.
+**1. AI systems are becoming more capable**: Higher capabilities = larger harm surface and greater delegation risk.
 
 **2. AI systems are becoming more autonomous**: Less human oversight = risk management must be structural.
 
@@ -61,9 +61,9 @@ The delegation risk framework isn't just academic—it's infrastructure for safe
 
 ## Core Concepts
 
-### Delegation Exposure
+### Harm Surface
 
-**Delegation Exposure** is the complete set of possible harms (harm modes) from delegating a task. It's not a single number—it's a collection, like an attack surface or failure envelope.
+**Harm Surface** is the complete set of possible harms (harm modes) from delegating a task. It's not a single number—it's a collection, like an attack surface or failure envelope.
 
 ### Delegation Risk
 
@@ -84,7 +84,7 @@ flowchart LR
 
 ### Step 1: Identify Harm Modes and Damages
 
-**Summarizer Delegation Exposure:**
+**Summarizer Harm Surface:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
 | Misrepresents paper findings | 0.02 | \$5,000 (wrong research direction) | \$100 |
@@ -92,7 +92,7 @@ flowchart LR
 
 **Delegation Risk (Summarizer)** = \$100 + \$50 = **\$150**
 
-**Code Deployer Delegation Exposure:**
+**Code Deployer Harm Surface:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
 | Deploys buggy code | 0.05 | \$20,000 (downtime) | \$1,000 |
@@ -100,7 +100,7 @@ flowchart LR
 
 **Delegation Risk (Code Deployer)** = \$1,000 + \$100 = **\$1,100**
 
-**Coordinator Delegation Exposure:**
+**Coordinator Harm Surface:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
 | Misroutes task | 0.01 | \$2,000 (wasted effort) | \$20 |
@@ -121,7 +121,7 @@ JointReliability(Human → Deployer) = Trust(H→C) × Trust(C→D)
                                    = 0.8075  (~81%)
 ```
 
-So only ~81% of the time does the whole chain hold. The residual **~19%** is the probability that *at least one* link fails somewhere between the Human and the Deployer — and that failure channel is how the Human inherits exposure to the Deployer's harm modes. (This stays at the probability level: it bounds how often the chain breaks, not what fraction of dollar damage flows through.)
+So only ~81% of the time does the whole chain hold. The residual **~19%** is the probability that *at least one* link fails somewhere between the Human and the Deployer — and that failure channel is how the Human inherits the Deployer's harm surface. (This stays at the probability level: it bounds how often the chain breaks, not what fraction of dollar damage flows through.)
 
 ### Step 3: Risk Budget Allocation
 
@@ -135,7 +135,7 @@ Current allocation:
 **Finding:** Code Deployer consumes most of the risk budget. Options:
 1. Add verification layer before deployment (reduce harm mode probability)
 2. Reduce deployer's permissions (reduce harm mode damage)
-3. Replace with human-in-the-loop (shift delegation exposure to human)
+3. Replace with human-in-the-loop (shift delegation risk to human)
 
 ### Step 4: After Mitigation
 

@@ -5,7 +5,11 @@ sidebar:
 ---
 
 :::note[TL;DR]
-**Child Exposure Budget = Parent Budget × Allocation Factor**. Each level in a hierarchy keeps some exposure for direct decisions and delegates the rest downward. Tighter oversight = more retained at top = less risk at edges.
+**Child Risk Budget = Parent Budget × Allocation Factor**. Each level in a hierarchy keeps some budget for direct decisions and delegates the rest downward. Tighter oversight = more retained at top = less risk at edges.
+:::
+
+:::note[Vocabulary note]
+The budgets on this page are **expected-loss (Delegation Risk) budgets** — Σ P(harm) × Damage allocations — not worst-case bounds. For the distinction between Exposure (worst-case at stake) and Delegation Risk (expected loss), see the [Glossary](/getting-started/glossary/).
 :::
 
 ---
@@ -20,9 +24,9 @@ Consider a corporation with a standard hierarchy:
 - **Managers**: ~20 middle managers
 - **Employees**: ~200 frontline workers
 
-The Board decides: "We're willing to accept **\$5 million** in total delegation exposure for this organization."
+The Board decides: "We're willing to accept **\$5 million** in total expected delegation loss for this organization."
 
-This \$5M is the **exposure budget**—the maximum expected harm from all delegation relationships combined. But how does it flow down through the hierarchy?
+This \$5M is the **risk budget**—the maximum expected harm from all delegation relationships combined. But how does it flow down through the hierarchy?
 
 ---
 
@@ -30,14 +34,14 @@ This \$5M is the **exposure budget**—the maximum expected harm from all delega
 
 At each level, the principal (delegator) makes a choice:
 
-1. **Retain** some exposure for direct decisions (things only they can do)
+1. **Retain** some budget for direct decisions (things only they can do)
 2. **Delegate** the rest to subordinates
 
 ```
-Exposure_delegated = Exposure_received - Exposure_retained
+Risk_delegated = Risk_received - Risk_retained
 ```
 
-Why retain exposure? Because some decisions are too important to delegate:
+Why retain budget? Because some decisions are too important to delegate:
 - Board retains authority over CEO compensation, major acquisitions
 - CEO retains strategic pivots, executive hiring
 - Managers retain performance reviews, team conflicts
@@ -51,7 +55,7 @@ Here's the standard oversight scenario flowing down:
 ```mermaid
 flowchart TB
     subgraph L1["Board Level"]
-        B["Board<br/>$5M total exposure budget<br/>Retains: $500k"]
+        B["Board<br/>$5M total risk budget<br/>Retains: $500k"]
     end
 
     subgraph L2["Executive Level"]
@@ -86,13 +90,13 @@ flowchart TB
 - **CEO** receives \$4.5M, keeps \$1.5M for CEO-level decisions, passes \$3M to executives
 - **Executives** (5 people) share \$3M (\$600k each), collectively pass \$1M to managers
 - **Managers** (20 people) share \$1M (\$50k each), collectively pass \$600k to employees
-- **Employees** (200 people) share \$600k (\$3k each)—this is their individual exposure budget
+- **Employees** (200 people) share \$600k (\$3k each)—this is their individual risk budget
 
 ---
 
-## Visualization: Exposure Flow
+## Visualization: Risk Budget Flow
 
-Another way to see this—how exposure is **consumed** vs **delegated** at each level:
+Another way to see this—how the risk budget is **consumed** vs **delegated** at each level:
 
 | Level | People | Receives | Retains (direct) | Delegates | Per-Person |
 |-------|--------|----------|------------------|-----------|------------|
@@ -127,11 +131,11 @@ Employees ██████ $600k
 
 ## Comparing Oversight Scenarios
 
-Different organizations make different choices about how much exposure to retain at each level. Let's compare three styles:
+Different organizations make different choices about how much risk budget to retain at each level. Let's compare three styles:
 
 ### Scenario A: Tight Oversight (Conservative)
 
-A risk-averse organization where senior leaders retain most exposure:
+A risk-averse organization where senior leaders retain most of the risk budget:
 
 ```mermaid
 flowchart TB
@@ -204,7 +208,7 @@ flowchart TB
 
 ### What the Numbers Mean
 
-**Per-employee exposure** is a key metric. It represents the expected harm budget for an individual frontline worker's decisions.
+**Per-employee risk budget** is a key metric. It represents the expected harm budget for an individual frontline worker's decisions.
 
 - **\$1,000/person** (tight): Employees need approval for almost everything. Good for nuclear plants, bad for startups.
 - **\$3,000/person** (standard): Employees can handle routine decisions autonomously. Most organizations.
@@ -217,7 +221,7 @@ flowchart TB
 How much should each level retain? It depends on:
 
 ### 1. Consequence Magnitude
-Higher levels make bigger decisions, so they need bigger exposure budgets for direct action.
+Higher levels make bigger decisions, so they need bigger risk budgets for direct action.
 
 | Level | Typical Decisions | Consequence Range |
 |-------|-------------------|-------------------|
@@ -235,17 +239,17 @@ Effective capacity = Raw capacity - Verification overhead
 ```
 
 ### 3. Trust Level
-Lower trust = retain more. If you don't trust your executives, keep more exposure at CEO level.
+Lower trust = retain more. If you don't trust your executives, keep more risk budget at CEO level.
 
 ---
 
 ## Key Insights
 
 :::tip[Key Insights]
-1. **Exposure cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions (why multiplication is the right composition — and when it needs a correlation correction — is derived in [Risk Propagation](/delegation-risk/risk-propagation/))
-2. **Per-person exposure shrinks at scale**: 200 employees sharing \$600k = \$3k each, while 1 CEO gets \$4.5M
+1. **Risk budget cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions (why multiplication is the right composition — and when it needs a correlation correction — is derived in [Risk Propagation](/delegation-risk/risk-propagation/))
+2. **Per-person budget shrinks at scale**: 200 employees sharing \$600k = \$3k each, while 1 CEO gets \$4.5M
 3. **Retention reflects control**: High retention = tight control, low retention = high delegation
-4. **The total is conserved**: All exposure either gets retained or delegated—it doesn't disappear
+4. **The total is conserved**: All risk budget either gets retained or delegated—it doesn't disappear
 5. **Structure determines risk**: Same people, different cascade = different risk profile
 :::
 
@@ -256,13 +260,13 @@ Lower trust = retain more. If you don't trust your executives, keep more exposur
 Your company has been running with **Standard** oversight, but after a compliance incident, the board wants to tighten up.
 
 **Current state** (Standard):
-- Per-employee exposure: \$3,000
-- Total employee exposure: \$600k
+- Per-employee risk budget: \$3,000
+- Total employee risk budget: \$600k
 - Incidents last year: 3 (expected ~2 at this risk level)
 
 **Proposed change**: Move to **Tight** oversight
-- Per-employee exposure: \$1,000 (67% reduction)
-- Total employee exposure: \$200k
+- Per-employee risk budget: \$1,000 (67% reduction)
+- Total employee risk budget: \$200k
 
 **How to implement**:
 1. Managers retain more (increase approval thresholds)

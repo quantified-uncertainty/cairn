@@ -13,6 +13,8 @@ Monitoring patterns provide **continuous observation** of AI agent behavior. Unl
 
 These patterns are essential for detecting gradual drift, emerging problems, and behaviors that might only be visible in aggregate.
 
+One key architectural choice that cuts across all monitoring patterns is whether the monitor is *trusted* or *untrusted* in the sense of Greenblatt et al. (arXiv:2312.06942): a trusted monitor is one you have high confidence is not scheming (typically a smaller, weaker, or rule-based component); an untrusted monitor is a capable model that might collude with the agent it watches. Trusted monitoring is strictly more reliable; when only untrusted monitors are available, collusion-busting techniques — paraphrasing, context redaction, separate training runs — are required (Shlegeris, Redwood blog, Sept 2024).
+
 ---
 
 ## Tripwire Mesh

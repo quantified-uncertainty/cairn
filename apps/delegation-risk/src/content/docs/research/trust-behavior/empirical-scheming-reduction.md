@@ -108,6 +108,16 @@ The foundational paper ["AI Control: Improving Safety Despite Intentional Subver
 
 **Long-term challenge**: "Untrusted models will continually improve with ML progress. But humans probably won't get more capable over time. And if we choose whether to trust models based on whether we think that they are capable enough to attempt to subvert safety mechanisms, trusted models won't get more capable over time either."
 
+**Safety case structure**: Korbak, Clymer, Hilton, Shlegeris, Irving, ["A sketch of an AI control safety case,"](https://arxiv.org/abs/2501.17315) arXiv:2501.17315 (2025) outlines how to argue that a system is controlled well enough to deploy — the argument structure required to go from empirical control evaluations to deployment decisions. Gardner-Challis et al. (arXiv:2602.20628, Feb 2026) extend this to the untrusted-monitoring setting specifically, analyzing which collusion strategies can and cannot be ruled out by safety cases built on monitoring evidence alone.
+
+### 2.1.1 Agentic Control: Ctrl-Z and AI Control Levels (2025)
+
+The original AI Control paper studied code-review tasks with a human-controlled audit budget. Two 2025 papers extend this to agentic settings:
+
+**Bhatt et al., ["Ctrl-Z: Controlling AI Agents via Resampling,"](https://arxiv.org/abs/2504.10374) arXiv:2504.10374 (2025)** is the first agentic control evaluation, using a bash-agent benchmark (BashBench). Resample protocols — re-running a suspicious action with a different model instance — cut attack success from 58% to 7% at approximately 5% usefulness cost. This is the strongest empirical demonstration of a recovery-style control protocol in agentic settings; it also directly quantifies Redwood's *usefulness cost* tradeoff in that context.
+
+**Korbak, Balesni, Shlegeris, Irving, ["How to evaluate control measures for LLM agents?"](https://arxiv.org/abs/2504.05259) arXiv:2504.05259 (2025)** introduces *AI Control Levels (ACLs)* — a graduated scale for evaluating how well a system is controlled, analogous to biosafety levels. ACLs provide a vocabulary for making comparative claims about control quality across different deployment settings and monitoring configurations.
+
 ### 2.2 Attack Strategies Tested
 
 **Types of backdoors tested**:
@@ -1013,6 +1023,13 @@ The game-theoretic and empirical findings above translate into three concrete fr
 - [AI Control: Improving Safety Despite Intentional Subversion - LessWrong](https://www.lesswrong.com/posts/d9FJHawgkiMSPjagR/ai-control-improving-safety-despite-intentional-subversion)
 - [Adaptive Attacks on Trusted Monitors Subvert AI Control Protocols - arXiv](https://arxiv.org/html/2510.09462)
 - [Untrusted AIs can exploit feedback in control protocols - LessWrong](https://www.lesswrong.com/posts/wKGdiXuWfn8YoYpMQ/untrusted-ais-can-exploit-feedback-in-control-protocols)
+- [Ctrl-Z: Controlling AI Agents via Resampling - arXiv](https://arxiv.org/abs/2504.10374) (Bhatt et al., 2025 — first agentic control eval; resample protocols, BashBench)
+- [How to evaluate control measures for LLM agents? - arXiv](https://arxiv.org/abs/2504.05259) (Korbak et al., 2025 — AI Control Levels)
+- [A sketch of an AI control safety case - arXiv](https://arxiv.org/abs/2501.17315) (Korbak, Clymer, Hilton, Shlegeris, Irving, 2025)
+- [When can we trust untrusted monitoring? - arXiv](https://arxiv.org/abs/2602.20628) (Gardner-Challis et al., Feb 2026 — collusion taxonomy; passive self-recognition, causal, acausal/Schelling-point)
+- [The case for ensuring that powerful AIs are controlled - Redwood blog](https://blog.redwoodresearch.org/p/the-case-for-ensuring-that-powerful) (Shlegeris & Greenblatt, May 2024 — concentrated vs. diffuse failures)
+- [How to prevent collusion when using untrusted models to monitor each other - Redwood blog](https://blog.redwoodresearch.org/p/how-to-prevent-collusion-when-using) (Shlegeris, Sept 2024 — paraphrasing, context redaction, separate training, known-attack insertion)
+- [An overview of control measures - Redwood blog](https://blog.redwoodresearch.org/p/an-overview-of-control-measures) (Greenblatt, Apr 2025)
 
 ### Scheming and Deceptive Alignment
 - [Detecting and reducing scheming in AI models - OpenAI](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/)

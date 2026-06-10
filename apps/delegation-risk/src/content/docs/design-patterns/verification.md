@@ -89,6 +89,8 @@ flowchart LR
 | **Consistency** | Does output match input? | Compare request to response |
 | **Format** | Is structure correct? | Schema validation |
 
+Redwood Research's AI Control framework (Greenblatt et al., arXiv:2312.06942) distinguishes *trusted* verifiers (smaller, weaker models unlikely to be scheming) from *untrusted* verifiers (capable models that might collude with the agent). Trusted monitoring is strictly stronger when a capable but non-scheming verifier is available; untrusted monitoring requires anti-collusion techniques to be useful at all. Place verifiers on this spectrum explicitly rather than treating all verifier types as equivalent.
+
 ### Design Variations
 
 | Variation | When to Verify | Use Case |
@@ -816,6 +818,8 @@ flowchart TB
 - **Voting Tribunal**: Multiple validators together
 - **Adversarial Collaboration**: Validators with opposed incentives
 - **Random Audit**: Unpredictable deep review
+
+Rotating validators is a form of the *resample* protocol studied empirically in agentic settings by Bhatt et al. (["Ctrl-Z: Controlling AI Agents via Resampling,"](https://arxiv.org/abs/2504.10374) arXiv:2504.10374, 2025): resampling from a different component instance when output looks suspicious cut attack success from 58% to 7% at roughly 5% usefulness cost on BashBench.
 
 ---
 

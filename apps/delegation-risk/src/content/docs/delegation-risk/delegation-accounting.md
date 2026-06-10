@@ -8,7 +8,11 @@ sidebar:
 ---
 
 :::note[TL;DR]
-**Net Delegation Value = Receivable - Exposure - Costs**. What you expect to get, minus what could go wrong, minus what it costs.
+**Net Delegation Value = Receivable - Delegation Risk - Costs**. What you expect to get, minus the *expected* loss from what could go wrong, minus what it costs.
+:::
+
+:::note[Three tiers, one page]
+This page is where the framework's vocabulary has to be precise, because each tier books differently. The **harm surface** is the *set* of ways a delegation can go wrong (you enumerate it). **Exposure** is the worst-case loss given the delegate's access—a dollar *bound* (it sizes your worst case). **Delegation risk** is the *expected* loss, Σ P × Damage (it's what nets against value). A balance sheet that subtracts a number must subtract the expected one, so the line that reduces Net Delegation Value is delegation risk, not exposure. See the [Glossary](/getting-started/glossary/#exposure) for the full definitions.
 :::
 
 ---
@@ -28,15 +32,16 @@ But this ignores what could go wrong.
 
 ---
 
-## Exposures
+## The Harm Surface
 
-An **exposure** is a potential cost. Unlike Bob's \$50 fee (certain), exposures are probability-weighted.
+Each way the delegation can go wrong is a **harm mode**; together they form the **harm surface**. Unlike Bob's \$50 fee (certain), each harm mode is probability-weighted. The worst case—Bob loses the full gem—is the **exposure**: \$1,000. The probability-weighted total is the **delegation risk**: \$30.
 
-| Exposure | What happens | Probability | Damage | Expected Loss |
+| Harm Mode | What happens | Probability | Damage | Expected Loss |
 |----------|--------------|-------------|--------|---------------|
 | **Loss** | Bob loses the gem | 2% | \$1,000 | \$20 |
 | **Theft** | Bob steals the gem | 1% | \$1,000 | \$10 |
-| **Total Expected Loss** | | | | **\$30** |
+| **Delegation Risk** (Σ) | | | | **\$30** |
+| **Exposure** (worst case) | | | \$1,000 | **\$1,000** |
 
 ---
 
@@ -46,10 +51,10 @@ An **exposure** is a potential cost. Unlike Bob's \$50 fee (certain), exposures 
 |---|------|
 | **Receivable** | \$1,000 |
 | **Cost** (Bob's fee) | -\$50 |
-| **Exposure** (expected) | -\$30 |
+| **Delegation Risk** (expected loss) | -\$30 |
 | **Net Delegation Value** | **\$920** |
 
-This is Alice's expected profit after accounting for what could go wrong.
+This is Alice's expected profit after accounting for what could go wrong. (The *exposure*—the \$1,000 she could lose in the worst case—doesn't net here; it sizes the downside she's choosing to carry.)
 
 ---
 
@@ -62,7 +67,7 @@ What does this look like from Bob's side? When Bob accepts the gem, he has two *
 | | Value |
 |---|------|
 | **Receivable** (fee if successful) | \$50 |
-| **Exposure** (2% loss, \$1,000 penalty) | -\$20 |
+| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
 | **Net Value** | **\$30** |
 
 **Option B: Steal**
@@ -75,8 +80,8 @@ What does this look like from Bob's side? When Bob accepts the gem, he has two *
 
 Bob chooses **Attempt Delivery** because \$30 > -\$600.
 
-:::note[Exposure vs. Contingent Liability]
-**Exposure** = accidental risk (Option A). Something might happen *to* Bob.
+:::note[Delegation Risk vs. Contingent Liability]
+**Delegation Risk** = expected accidental loss (Option A). Something might happen *to* Bob, and we book its probability-weighted cost.
 **Contingent Liability** = consequence of choice (Option B). Bob deliberately takes on this risk, and the penalty only materializes if he's caught.
 
 Stealing has negative value because the contingent liability (-\$1,600) outweighs the asset (\$1,000).
@@ -92,7 +97,7 @@ Alice tasks Xavier with getting the gem delivered. Xavier then hires Bob.
 
 ### Three Balance Sheets
 
-When the gem changes hands, **all three parties** take on exposure simultaneously.
+When the gem changes hands, **all three parties** take on risk simultaneously.
 
 **Alice's Balance Sheet**
 
@@ -100,7 +105,7 @@ When the gem changes hands, **all three parties** take on exposure simultaneousl
 |---|------|
 | **Receivable** | \$1,000 |
 | **Cost** (Xavier's fee) | -\$100 |
-| **Exposure** (Xavier fails or steals) | -\$33 |
+| **Delegation Risk** (Xavier fails or steals) | -\$33 |
 | **Net Delegation Value** | **\$867** |
 
 Alice's exposure is now to *Xavier*, not Bob. She doesn't know or care who Xavier uses.
@@ -111,17 +116,17 @@ Alice's exposure is now to *Xavier*, not Bob. She doesn't know or care who Xavie
 |---|------|
 | **Receivable** (fee from Alice) | \$100 |
 | **Cost** (Bob's fee) | -\$50 |
-| **Exposure** (Bob fails → Xavier owes Alice) | -\$30 |
+| **Delegation Risk** (Bob fails → Xavier owes Alice) | -\$30 |
 | **Net Value** | **\$20** |
 
-Xavier earns \$50 margin but takes on \$30 expected exposure. If Bob loses the gem, Xavier is responsible to Alice.
+Xavier earns \$50 margin but takes on \$30 of expected loss. If Bob loses the gem, Xavier is responsible to Alice.
 
 **Bob's Balance Sheet**
 
 | | Value |
 |---|------|
 | **Receivable** (fee if successful) | \$50 |
-| **Exposure** (2% loss, \$1,000 penalty) | -\$20 |
+| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
 | **Net Value** | **\$30** |
 
 Bob's balance sheet is unchanged—he doesn't know or care that Xavier has a boss.
@@ -130,7 +135,7 @@ Bob's balance sheet is unchanged—he doesn't know or care that Xavier has a bos
 
 When Xavier accepts the delegation, he **takes on personal exposure** for Bob's potential failures. The exposure doesn't disappear—it transfers from Alice to Xavier.
 
-| Party | Exposed To | Expected Exposure |
+| Party | Exposed To | Delegation Risk (expected loss) |
 |-------|-----------|-------------------|
 | Alice | Xavier | \$33 |
 | Xavier | Bob | \$30 |
@@ -148,12 +153,12 @@ As delegation structures grow more complex, something happens to our ability to 
 
 ### The Problem
 
-In the simple Alice → Bob case, we estimated exposure at \$30. But how confident are we in that number?
+In the simple Alice → Bob case, we estimated delegation risk at \$30. But how confident are we in that number?
 
 With a single delegation:
-- We know the failure modes (loss, theft)
+- We know the harm modes (loss, theft)
 - We can estimate probabilities from Bob's track record
-- The exposure is bounded by the asset value
+- The exposure—the worst case—is bounded by the asset value (\$1,000)
 
 Add Xavier as a middle layer, and complexity increases:
 - Xavier might hire someone other than Bob
@@ -189,7 +194,7 @@ We can formalize this with a **complexity score** that captures structural uncer
 
 ### Uncertainty Multiplier
 
-Complexity doesn't change expected exposure—it changes our **confidence in that estimate**.
+Complexity doesn't change the expected loss (delegation risk)—it changes our **confidence in that estimate**.
 
 | Complexity Score | Uncertainty Multiplier | Confidence Interval |
 |-----------------|----------------------|---------------------|
@@ -199,7 +204,7 @@ Complexity doesn't change expected exposure—it changes our **confidence in tha
 | 15 | ±400% | Very wide |
 | 20+ | ±640%+ | Essentially unknown |
 
-**Applied to our \$30 exposure estimate:**
+**Applied to our \$30 delegation-risk estimate:**
 
 | Structure | Complexity | Uncertainty | Confidence Interval |
 |-----------|-----------|-------------|---------------------|
@@ -212,7 +217,7 @@ The point estimate is still \$30. But our confidence in that estimate degrades r
 
 ### The Insurer's Dilemma
 
-Carol (the insurer) doesn't just care about expected loss—she cares about **variance**. An exposure she can't bound is an exposure she can't price.
+Carol (the insurer) doesn't just care about expected loss—she cares about **variance**. A loss she can't bound is a risk she can't price.
 
 ---
 
@@ -238,15 +243,15 @@ Carol (the insurer) doesn't just care about expected loss—she cares about **va
 
 ---
 
-**Carol**: Here's the problem. Your exposure estimate is \$5,000/year. But your complexity score is 20, which means my confidence interval is ±640%.
+**Carol**: Here's the problem. Your expected-loss estimate is \$5,000/year. But your complexity score is 20, which means my confidence interval is ±640%.
 
-Your actual exposure could be anywhere from \$0 to \$37,000. That's a lot of uncertainty.
+Your actual losses could land anywhere from \$0 to \$37,000. That's a lot of uncertainty.
 
 **Alice**: So what's my premium?
 
 **Carol**: I have to price for the upper end of that range. Your premium would be \$45,000/year.
 
-**Alice**: That's nine times my expected exposure!
+**Alice**: That's nine times my expected loss!
 
 **Carol**: That's the complexity tax. I'm not charging you for what I *think* will happen—I'm charging you for what *might* happen, given how little I can predict about your organization.
 
@@ -270,7 +275,7 @@ Your actual exposure could be anywhere from \$0 to \$37,000. That's a lot of unc
 | Flatten to 2 layers | -2 |
 | Assign clear authority boundaries | -3 |
 
-**Carol**: That would bring you from 20 to around 5. At complexity 5, your uncertainty is ±65%. On a \$5,000 expected exposure, that's a confidence interval of \$1,750 to \$8,250.
+**Carol**: That would bring you from 20 to around 5. At complexity 5, your uncertainty is ±65%. On \$5,000 of expected loss, that's a confidence interval of \$1,750 to \$8,250.
 
 I can price that. Your premium would be around \$8,000/year—covering the upper bound of my confidence interval plus margin.
 
@@ -349,9 +354,9 @@ A month later, Carol gets a call from **Ouroboros Holdings**.
 ### The Complexity Tax Principle
 
 :::note[The Complexity Tax]
-Structural complexity doesn't change expected exposure—it changes **uncertainty about exposure**. This uncertainty gets priced in: premiums scale with the upper bound of the confidence interval, not the expected value.
+Structural complexity doesn't change the expected loss (delegation risk)—it changes **uncertainty about that estimate**. This uncertainty gets priced in: premiums scale with the upper bound of the confidence interval, not the expected value.
 
-The result: high-complexity organizations pay multiples of their expected exposure. Simplification—fewer layers, clearer boundaries, documented relationships—reduces premiums faster than reducing actual risk.
+The result: high-complexity organizations pay multiples of their expected loss. Simplification—fewer layers, clearer boundaries, documented relationships—reduces premiums faster than reducing actual risk.
 :::
 
 This has implications beyond insurance:
@@ -394,7 +399,7 @@ The office exposure depends on Bob's capability to exploit it.
 
 | Option | Receivable | Contingent Liability | Net |
 |--------|------------|---------------------|-----|
-| Deliver faithfully | \$50 | -\$20 (exposure) | **\$30** |
+| Deliver faithfully | \$50 | -\$20 (delegation risk) | **\$30** |
 | Steal gem | \$1,000 | 80% caught × -\$2,000 | **-\$600** |
 
 **Smart Bob** sees: information worth more than the gem.
@@ -626,23 +631,21 @@ What if the agent isn't just capable, but has a documented history of exploiting
 
 This scenario pushes delegation accounting to its limits. The controls required are extreme, the residual exposure is high, and the fundamental question changes from "will they defect?" to "can we bound the damage when they do?"
 
-This scenario pushes delegation accounting to its limits: controls become extreme, residual exposure stays high, and the fundamental question shifts from "will they defect?" to "can we bound the damage when they do?"
-
 ---
 
 ## Insurance
 
 Alice can **externalize** her exposure by buying insurance from **Carol**.
 
-Carol charges a **\$40 premium** (the \$30 expected exposure + margin). If Bob fails, Carol pays Alice.
+Carol charges a **\$40 premium** (the \$30 expected loss + margin). If Bob fails, Carol pays Alice.
 
 | | Without Insurance | With Insurance |
 |---|------------------|----------------|
 | Receivable | \$1,000 | \$1,000 |
 | Costs | \$50 | \$90 |
-| Exposure | \$30 | \$0 |
+| Delegation Risk (expected loss) | \$30 | \$0 |
 | **NDV** | **\$920** | **\$910** |
-| Worst case | Lose \$1,000 | Lose \$90 |
+| Exposure (worst case) | Lose \$1,000 | Lose \$90 |
 
 :::note[The Trade-off]
 Insurance costs \$10 in expected value. But it eliminates the worst case. Alice trades expected value for certainty.
@@ -653,7 +656,7 @@ Insurance costs \$10 in expected value. But it eliminates the worst case. Alice 
 ## Summary
 
 ```
-Net Delegation Value = Receivable - Exposure - Costs
+Net Delegation Value = Receivable - Delegation Risk - Costs
                      = $1,000 - $30 - $50
                      = $920
 ```
@@ -662,7 +665,9 @@ Net Delegation Value = Receivable - Exposure - Costs
 |------|---------|
 | **Receivable** | What you expect to get |
 | **Cost** | Certain expenses |
-| **Exposure** | Potential losses (probability × damage) |
+| **Harm Surface** | The set of ways the delegation can go wrong |
+| **Exposure** | Worst-case loss given access (a dollar bound) |
+| **Delegation Risk** | Expected loss: Σ probability × damage |
 | **Contingent Liability** | Consequences of deliberate choices |
 | **NDV** | Expected profit after accounting for risk |
 

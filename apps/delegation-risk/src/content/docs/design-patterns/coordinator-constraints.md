@@ -545,6 +545,10 @@ Example: 3 coordinators
 - Coordinator C: Older frontier model (GPT-3.5)
 - Very different implementations → unlikely to fail same way
 
+:::caution[Trusted model ≠ weaker model]
+Using older or smaller models for coordination maps onto Redwood Research's *trusted model* concept (Greenblatt et al., arXiv:2312.06942), but with an important caveat: in the Control framework, *trust* means confidence that the model is **not scheming** — not merely that it is less capable. A weaker model that has been fine-tuned on adversarially-selected data or that shares training incentives with the untrusted model is not trusted in this sense. Capability rank is a useful proxy for trust, but it is not the definition; validate the assumption explicitly.
+:::
+
 ### Principle of Independent Verification
 
 **Coordination decisions must be verified by independent component**

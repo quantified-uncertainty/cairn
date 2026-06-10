@@ -1,344 +1,175 @@
 ---
-title: "Potential Research Projects"
-description: "Research projects derived from the capability containment, coordinator constraints, risk budgeting, and delegation risk framework frameworks"
+title: "Open Problems in Delegation Engineering"
+description: "A worklist for delegation engineering applied to AI agent systems: the open problems whose first results would tell us whether the framework is real — preflight prototypes, measured correlation priors, multi-tenant entanglement, and more."
 ---
 
-Research projects to validate, extend, and implement the AI safety framework. Projects are organized into eleven categories:
+[Delegation engineering](/getting-started/core-concepts/) — designing and operating delegation structures to bound exposure while preserving capability — is a field name this site keeps using. A field name is only real if other people have work to do in it. This page is that work: a list of open problems, each one an invitation rather than a claim.
 
-- **Empirical Validation** (3 projects) — Testing core assumptions
-- **Cross-Domain Analysis** (4 projects) — Learning from nuclear, finance, carbon markets
-- **Formal Methods** (3 projects) — Mathematical foundations
-- **Mechanism Design** (3 projects) — Incentive-compatible safety reporting
-- **Architecture** (3 projects) — Implementation feasibility
-- **Game Theory** (3 projects) — Trust dynamics and Byzantine tolerance
-- **Human-AI** (2 projects) — Trust calibration and handoffs
-- **Standards & Policy** (3 projects) — Certification and regulation
-- **Tools** (3 projects) — Simulation, monitoring, language support
-- **Meta-Research** (3 projects) — Historical failures, uncertainty, emergence
-- **Agency & Power** (10 projects) — Formalizing capability, agency measurement, strong tools hypothesis
+Be clear about the epistemic status. Almost nothing here has been measured. The framework's central mechanisms — [risk preflight](/delegation-risk/runtime-accounting/), [exposure envelopes](/delegation-risk/runtime-accounting/#2-the-exposure-envelope), the [entanglement tax](/entanglements/) — are design proposals with plausible lineage and no empirical track record on AI agents. Each problem below is phrased so that a *first result* would move the needle one way or the other. Several of them could falsify load-bearing parts of the framework, which is the point: a research program you cannot lose from is not a research program.
+
+Each entry gives the **question**, **why it matters**, **what a first result looks like**, and a rough **scale** — weekend prototype, month project, or research program.
 
 ---
 
-## Empirical Validation
+## Tier 1: The cheapest credibility purchases
 
-### 1. Empirical Scheming Reduction
-Does decomposition actually reduce scheming behavior in AI systems?
-- Survey existing work on factored cognition and monitoring (Factor(T,U) paper, etc.)
-- Find/analyze empirical studies comparing monolithic vs modular AI behavior
-- Examine AI Control literature for relevant experiments
-- Key question: What's the evidence that limited context prevents strategic deception?
+These are the problems whose results are most decision-relevant per hour spent. If you do one thing, do one of these.
 
-### 2. Forecasting Calibration for Self-Prediction
-Can AI systems accurately forecast their own behavior after modifications?
-- Benchmark "predict your behavior N steps ahead" with various modifications
-- Characterize how calibration degrades with horizon length
-- Compare to superforecaster baselines on similar prediction tasks
-- Test if forecasting quality scales with capability
+### 1. The preflight prototype
 
-### 3. Temperature and Covert Signaling
-Does deterministic output (temperature=0) prevent covert communication?
-- Run same LLM at temperature=0 vs 1.0 with repeated queries
-- Measure output variance and potential information encoding
-- Test if high temperature enables steganographic signaling between components
-- Quantify "surprise budget" violations
+**Question.** Can you build a working [risk preflight](/delegation-risk/runtime-accounting/) — a pre-action hook in a real agent harness (modern coding agents expose pre-tool-call hook points) that, before a proposed command commits, estimates its exposure against a running session budget?
 
----
+**Why it matters.** Everything on [Runtime Accounting](/delegation-risk/runtime-accounting/) is currently a design diagram. A preflight hook with crude estimates, a real [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope) (hard-coded file/spend/egress bounds), and a real [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) is the single cheapest purchase of credibility for the whole framework. It converts "here is what we would build" into "here is what we built, here is where it broke."
 
-## Cross-Domain Analysis
+**First result.** A hook that intercepts proposed tool calls, classifies each into a small harm-surface table, debits an estimated dollar exposure against a session budget, and blocks or escalates on overdraw — measured at the boundary (what the process actually touched), never by asking the agent. Even a deliberately crude estimator counts, as long as the envelope and ledger are real.
 
-### 4. Nuclear/Aerospace Safety Transfer
-Deep dive into operational PRA and SIL frameworks:
-- How do fault trees decompose 10⁻⁹ failure targets to components?
-- Limitations discovered in practice (Three Mile Island, Fukushima, Challenger)
-- How do independence assumptions hold up under stress?
-- Can IEC 61508's ASIL decomposition rules (ASIL D = ASIL B + B) adapt to AI?
+**Scale.** Weekend prototype to month project.
 
-### 5. Financial Risk Budgeting Methods
-Euler allocation and portfolio risk decomposition:
-- How do banks cascade risk budgets from board to trading desks?
-- Component VaR (CoVaR) computation and full allocation property
-- Lessons from LTCM collapse, 2008 crisis, March 2020 risk parity failures
-- Applicability of Expected Shortfall vs VaR to AI harm measures
+### 2. Who preflights the preflight, empirically
 
-### 6. Carbon Budget Allocation Mechanisms
-Climate policy as large-scale risk budgeting:
-- Seven effort-sharing approaches (equal per capita, historical responsibility, capability-based, etc.)
-- EU ETS implementation: linear reduction factors, benchmarks, carbon leakage protection
-- MRV (Monitoring, Reporting, Verification) systems
-- Phase 1 failure analysis: over-allocation from poor baseline data
+**Question.** Does a small, narrow, separately-trained estimator actually catch failures that a frontier sibling of the actor misses? The framework *predicts* it does — that correlated blind spots make a frontier model a bad judge of its own frontier mistakes (the "[who preflights the preflight](/delegation-risk/runtime-accounting/#who-preflights-the-preflight)" argument). Nobody has checked.
 
-### 7. Pharmacological Safety Margins
-How uncertainty factors stack in drug development:
-- Therapeutic Index vs Margin of Safety calculations
-- FDA uncertainty factors: 10× animal-to-human, 10× human variability, etc.
-- Combined factors of 100-1000× as engineering judgment
-- Applicability to AI where failure modes are poorly characterized
+**Why it matters.** This is the framework's most testable falsifiable prediction. It maps directly onto AI Control's trusted/untrusted distinction ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)): the claim is that a *trusted* (simpler, separate) estimator earns its keep precisely on the failures a *untrusted* frontier judge shares with the actor. If a frontier judge does just as well, the verifiability-hierarchy rule loses its teeth.
+
+**First result.** On a challenge set of actor failures, compare detection rates of (a) a frontier sibling judge and (b) a small/narrow/separately-trained judge, and show whether (b) catches a measurably non-overlapping slice. The interesting number is the *uncaught-by-frontier, caught-by-narrow* fraction.
+
+**Scale.** Month project.
+
+### 3. Measured correlation priors
+
+**Question.** What is the actual pairwise failure correlation (φ, on the failure-indicator scale per the recipe in [Risk Propagation](/delegation-risk/risk-propagation/)) between real model pairs on shared challenge sets — same provider, cross-provider, cross-paradigm?
+
+**Why it matters.** The [entanglement tax](/entanglements/) tables and the [correlation budget](/entanglements/) idea are uncomputable without these numbers. Right now the site uses ρ ≈ 0.5 as an illustrative same-provider figure; that figure is asserted, not measured. The adversarial-transferability literature suggests the measurement is feasible — transferable failures are correlated failures by another name.
+
+**First result.** A small table of measured φ for a handful of model pairs, bucketed by relationship (same provider / cross-provider / cross-paradigm), with the challenge-set methodology documented well enough to reproduce. Even three pairs would replace an assumption with a measurement.
+
+**Scale.** Month project to research program.
 
 ---
 
-## Formal Methods & Theory
+## Tier 2: Naming and measuring failure modes
 
-### 8. Compositional Risk Measures
-Mathematical foundations for AI risk budgeting:
-- Which risk measures are homogeneous (enabling Euler allocation)?
-- Survey Markov categories for compositional probability
-- When do safety properties compose vs not compose?
-- Conditions for additive, multiplicative, sub-additive composition
+### 4. Multi-tenant entanglement
 
-### 9. Linear Logic for Delegation Risk Budgets
-Type systems that enforce resource constraints:
-- Bounded Linear Types (Ghica and Smith 2014) for risk tracking
-- Light Linear Logic (LLL) for polynomial-time guarantees
-- Object capability models for authority tracking
-- Practical implementation in AI system design
+**Question.** What are the failure modes of agents that share memory files, MCP servers, and tool caches — and how do you measure them? This is the 2026-shaped version of shared infrastructure, and the [entanglement](/entanglements/) literature (which grew up on shared training data and shared providers) hasn't characterized it.
 
-### 10. Formal Verification Limits
-What can and can't be formally verified in AI systems?
-- Current state of neural network verification
-- Compositional verification via assume-guarantee reasoning
-- Gap between verified components and emergent system behavior
-- Guaranteed Safe AI (Seshia, Tegmark) Level 1-9 framework analysis
+**Why it matters.** Real agent deployments increasingly route through shared MCP servers and shared persistent memory. If those are common-cause failure channels, naive per-agent risk accounting double-counts independence the system doesn't have — exactly the failure [consolidation](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) is supposed to catch, but for a coupling nobody has named yet.
 
----
+**First result.** A taxonomy of multi-tenant coupling channels (shared memory poisoning, MCP-server-as-common-mode, cache contamination) with at least one demonstrated case where two nominally independent agents fail together because of a shared dependency.
 
-## Mechanism Design & Economics
+**Scale.** Month project.
 
-### 11. Incentive-Compatible Safety Reporting
-Mechanism design for honest risk disclosure:
-- VCG mechanisms applied to AI subsystems reporting risk
-- Revelation principle implications for trust reporting
-- Shapley values for risk attribution across components
-- What makes safety buffers (Anthropic's 6× > 4×) work?
+### 5. Rubber-stamp rate measurement
 
-### 12. Trust Insurance and Liability
-Economic structures for AI safety:
-- Insurance pricing for AI trust violations
-- Moral hazard and adverse selection in AI deployment
-- Experience rating and deductible structures
-- Subrogation and recovery from violating agents
+**Question.** In a real approval flow, what fraction of human approvals are issued faster than the minimum time to read the thing being approved — the [rubber-stamp rate](/entanglements/cross-domain/psychology-of-oversight/) — and which interventions move it?
 
-### 13. Trust Markets and Arbitrage
-When trust is mispriced:
-- Market efficiency for AI trustworthiness
-- Information asymmetry between developers and deployers
-- Adverse selection in AI agent markets
-- Trust derivatives (futures, options, swaps) - feasibility analysis
+**Why it matters.** The framework leans on the claim that unbudgeted human review degrades into [approval theater](/entanglements/cross-domain/psychology-of-oversight/). That claim is borrowed and plausible but unmeasured in agent-oversight settings. If the rubber-stamp rate is low even under load, the case for preflight-as-attention-router weakens.
+
+**First result.** Instrument an approval flow, log approval latency against a minimum-reading-time floor, report the rubber-stamp rate, then test one or two interventions (session-length limits, deliberate friction) and report the effect size.
+
+**Scale.** Weekend prototype to month project.
 
 ---
 
-## Architecture & Implementation
+## Tier 3: Protocol and metric design
 
-### 14. Prototype Architecture Feasibility
-Implementation-focused investigation:
-- Decomposed research assistant design
-- Cost/performance: 10+ fine-tuned narrow models vs one frontier model
-- Existing multi-agent frameworks and trust/coordination properties
-- Hardware requirements for Byzantine-tolerant redundant coordinators
+### 6. Reconciliation protocol design
 
-### 15. Coordinator Redundancy Experiments
-Testing diverse coordinator implementations:
-- Build 3 coordinators: rule-based, fine-tuned 7B, older frontier (GPT-3.5)
-- Compare agreement rates and failure modes
-- Red-team attack attempts on each architecture
-- Quantify safety improvement from redundancy
+**Question.** What does it concretely mean to [reconcile](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) an exposure ledger against incidents and near-misses? The discipline is named everywhere on the site and specified nowhere.
 
-### 16. Fine-Tuning vs General Models
-Task-specific models for safety:
-- Train narrow models for summarization, forecasting, verification, etc.
-- Compare behavior predictability to frontier models
-- Audit narrow model behavior vs general model
-- Cost-benefit analysis of fine-tuning pipeline
+**Why it matters.** A ledger without reconciliation is, in the site's own words, "the fake-precision trap with bookkeeping aesthetics." The whole defense against "aren't these numbers made up?" is that they get reconciled against reality — so the reconciliation procedure had better exist. Actuarial loss-development practice (how insurers update loss estimates as claims mature) is the obvious place to borrow from.
 
----
+**First result.** A written protocol: what counts as an incident vs. a near-miss, how observed outcomes update prior exposure estimates, and a triangle-style worked example showing estimates converging (or failing to) over a few reconciliation periods.
 
-## Game Theory & Dynamics
+**Scale.** Month project.
 
-### 17. Trust Dynamics Under Adversarial Pressure
-Strategic trust building and exploitation:
-- Equilibrium behaviors when agents can build then exploit trust
-- Deceptive equilibrium analysis: when does "behave well then defect" pay?
-- Counter-strategy effectiveness (unpredictable monitoring, delayed trust, trust decay)
-- Multi-agent trust learning and reputation systems
+### 7. The insurance question, scoped
 
-### 18. Byzantine Coordinator Voting
-Fault tolerance in AI coordination:
-- How many coordinators needed for Byzantine tolerance?
-- 3f+1 rule application to AI systems
-- Cryptographic commitment schemes for coordination decisions
-- Empirical testing of voting-based coordination
+**Question.** Does liability transfer change outcomes when the agent doesn't feel the premiums? One crisp question, not a survey of insurance generally.
 
-### 19. Risk Inheritance Algorithms
-Mathematical properties of trust flow:
-- Compare multiplicative (canonical), beta-factor mixture, minimum (the ρ=1 limit), and PageRank propagation — harmonic is retired as incoherent for serial chains
-- Multi-path trust combination (max, independence, Dempster-Shafer)
-- Trust conductance (electrical analogy) for complex topologies
-- Adversarial risk inheritance with Byzantine components
+**Why it matters.** Insurance is the standard real-world answer to "who bears the cost of delegation gone wrong," but the standard moral-hazard analysis assumes the risk-taker internalizes the premium. An AI agent doesn't. Whether liability transfer still improves outcomes when the cost signal never reaches the actor is a genuinely open mechanism-design question, and the answer shapes whether trust-insurance proposals are coherent at all.
+
+**First result.** A formal model (or a clean argument) for whether a principal carrying insurance on an agent's actions changes the agent's behavior when the agent is indifferent to premiums — and under what added structure (deductibles routed back as constraints, experience-rated privileges) it would.
+
+**Scale.** Month project.
+
+### 8. Repair risk-adjusted capability
+
+**Question.** Can you define a dimensionally honest capability-per-unit-exposure metric? The current RACAP in [agent-power formalization](/power-dynamics/agent-power-formalization/) has incommensurable units — capability and exposure are not measured on comparable scales, so the ratio is not well-formed.
+
+**Why it matters.** "Get the most capability per unit of exposure" is the framework's optimization target, stated on the homepage. If the metric that names that target is dimensionally broken, the optimization is rhetorical. The honest move is to say so plainly and either repair the units or replace the metric.
+
+**First result.** Either a repaired definition with consistent units (and a worked computation on two example architectures showing the ranking is stable), or a documented argument that no single scalar works and a small vector of incomparable axes is the honest object instead.
+
+**Scale.** Month project.
 
 ---
 
-## Human-AI Interaction
+## Surviving problems from the earlier worklist
 
-### 20. Human Trust Calibration
-How humans (mis)calibrate trust in AI:
-- Over-trust and under-trust patterns
-- Calibration interventions (accuracy feedback, confidence display, explanation)
-- Trust contagion in human-AI teams
-- Trust repair after AI violations
+The problems above are the ones whose first results would most directly tell us whether the framework holds. The questions below predate this page and remain genuinely open; they are grouped, not abandoned. Several feed the problems above.
 
-### 21. Trust Handoff Protocols
-Human-AI task transitions:
-- Specification completeness at human→AI handoffs
-- Context sufficiency at AI→human handoffs
-- Verification criteria clarity
-- Failure modes at handoff points
+### Empirical validation
+- **Empirical scheming reduction** — does task decomposition actually reduce scheming behavior? Survey factored-cognition and monitoring work; find or run monolithic-vs-modular comparisons. (Research program.)
+- **Forecasting calibration for self-prediction** — can a model accurately forecast its own post-modification behavior, and how does calibration degrade with horizon? (Month project.)
+- **Temperature and covert signaling** — does temperature=0 meaningfully suppress steganographic signaling between components? (Weekend to month.)
 
----
+### Cross-domain transfer
+- **Nuclear/aerospace safety transfer** — how PRA and IEC 61508 ASIL decomposition handle 10⁻⁹ targets and independence assumptions, and where they broke (TMI, Fukushima, Challenger). (Month project.)
+- **Financial risk budgeting** — Euler allocation, Component VaR, and the lessons of LTCM / 2008 / March 2020 risk-parity failures for [exposure-cascade budgets](/delegation-risk/exposure-cascade/). (Month project.)
+- **Carbon budget allocation** — effort-sharing rules and EU ETS Phase 1 over-allocation as a cautionary tale in baseline-data quality. (Month project.)
+- **Pharmacological safety margins** — how FDA uncertainty factors stack (10× × 10× …) when failure modes are poorly characterized. (Weekend to month.)
 
-## Standards & Policy
+### Formal methods
+- **Compositional risk measures** — which risk measures are homogeneous enough for Euler allocation, and when safety properties compose. (Research program.)
+- **Linear logic for risk budgets** — bounded linear types and object-capability models for resource-constrained delegation. (Research program.)
+- **Formal verification limits** — the gap between verified components and emergent system behavior; Guaranteed Safe AI levels. (Research program.)
 
-### 22. Trust Labeling and Certification
-Standards development:
-- Delegation Risk estimation methodologies
-- Verification coverage requirements
-- Trust concentration limits
-- Third-party certification processes
+### Mechanism design and economics
+- **Incentive-compatible safety reporting** — VCG / revelation-principle / Shapley-value approaches to honest risk disclosure across subsystems. (Research program.)
+- **Trust markets and arbitrage** — information asymmetry and adverse selection in agent markets; feasibility of trust derivatives. (Month project.)
 
-### 23. Regulatory Framework Analysis
-Policy implications:
-- Maximum allowed Delegation Risk for application categories
-- Required verification for high-stakes tasks
-- Disclosure requirements for trust relationships
-- Liability frameworks for trust violations
+### Architecture
+- **Coordinator redundancy experiments** — build diverse coordinators (rule-based, narrow fine-tune, older frontier), compare agreement and failure modes, red-team each. (Month project.) *Feeds problem 2.*
+- **Fine-tuning vs general models** — predictability and auditability of narrow task models vs frontier models. (Month project.)
 
-### 24. Comparison to Existing AI Safety Frameworks
-Situating this work:
-- Relationship to CAIS (Drexler 2019)
-- Integration with AI Control (Redwood Research 2024)
-- Comparison to IDA (Christiano 2018)
-- Anthropic RSP, OpenAI preparedness framework analysis
+### Game theory and dynamics
+- **Trust dynamics under adversarial pressure** — equilibria when agents build then exploit trust; counter-strategies (unpredictable monitoring, trust decay). (Research program.)
+- **Byzantine coordinator voting** — 3f+1 applied to AI coordination; empirical testing of voting-based decisions. (Month project.)
+- **Risk inheritance algorithms** — compare multiplicative (canonical), beta-factor mixture, minimum (the ρ=1 limit), and PageRank propagation across topologies (harmonic is retired). (Research program.)
 
----
+### Human–AI interaction
+- **Human trust calibration** — over/under-trust patterns and calibration interventions in human-AI teams. (Month project.) *Adjacent to problem 5.*
+- **Trust handoff protocols** — specification and context sufficiency at human↔AI handoffs. (Month project.)
 
-## Tools & Infrastructure
+### Standards and policy
+- **Comparison to existing frameworks** — situating this work against CAIS (Drexler 2019), AI Control (Redwood 2024), IDA (Christiano 2018), and frontier RSPs. (Month project.)
+- **Regulatory and certification analysis** — maximum allowed delegation risk by application category; disclosure and liability frameworks. (Research program.)
 
-### 25. Trust Simulation Framework
-Software for trust dynamics:
-- Simulate trust evolution before deployment
-- Stress testing (adversarial fraction, coordinated attacks, cascade failures)
-- Trust regression testing after architectural changes
-- Red team trust testing automation
+### Meta-research
+- **Historical failure analysis** — pattern extraction from finance, nuclear, and carbon risk-management failures. (Month project.)
+- **Uncertainty quantification** — distributions over risk estimates and their propagation through the accounting. (Month project.) *Feeds problem 3 and problem 6.*
+- **Emergent capability bounds** — how to bound exposure when capabilities are unknown; detecting emergence before exploitation. (Research program.)
 
-### 26. Trust Dashboard and Monitoring
-Operational tooling:
-- Real-time Delegation Risk tracking
-- Trust concentration heat maps
-- Verification coverage metrics
-- Alert systems for trust violations
-
-### 27. Trust Programming Language Features
-Language-level support:
-- Trust types with provenance tracking
-- Compiler-checked trust requirements
-- Trust context blocks with capability limits
-- Integration with existing type systems
+### Agency, power, and capability
+Tied to [Agent, Power, and Authority Formalization](/power-dynamics/agent-power-formalization/):
+- **Empirical agency measurement** — behavioral tests for goal-directedness, temporal consistency, cross-context generalization. (Research program.)
+- **The strong-tools hypothesis** — is high capability achievable with low agency, and which architectures keep agency low? See [Strong Tools Hypothesis](/power-dynamics/strong-tools-hypothesis/). (Research program.)
+- **Power accumulation dynamics** — measure and bound the power growth rate λ for deployed systems. (Research program.)
+- **Power-seeking detection** — behavioral signatures of instrumental convergence, resource-acquisition and shutdown-avoidance indicators. (Research program.)
+- **Authority–power gap analysis** — detecting and correcting when power exceeds granted authority. (Month project.)
 
 ---
 
-## Meta-Research
+## How to contribute
 
-### 28. Historical Failure Analysis
-Learning from past risk management failures:
-- Finance: LTCM, 2008 crisis, correlation breakdowns
-- Nuclear: TMI, Fukushima, Challenger organizational failures
-- Carbon: EU ETS Phase 1 over-allocation
-- Pattern extraction for AI safety
+Every problem here is an invitation. If you have a result — even a negative one, even a crude prototype that broke in an instructive way — it is more valuable to this framework than another page of prose. Negative results that falsify a load-bearing claim are the most valuable of all.
 
-### 29. Trust Uncertainty Quantification
-Distributions over trust levels:
-- Beta distributions for trust estimates
-- Uncertainty propagation through trust calculations
-- Confidence intervals for Delegation Risk
-- Robust optimization under trust uncertainty
+The framework lives at **[github.com/quantified-uncertainty/delegation-risk-framework](https://github.com/quantified-uncertainty/delegation-risk-framework)**. Open an issue to propose a problem, claim one above, or share a result. If you build the [preflight prototype](#1-the-preflight-prototype), please tell us where the estimates broke down — that is the data the whole [Runtime Accounting](/delegation-risk/runtime-accounting/) design is waiting on.
 
-### 30. Emergent Capability Trust
-The unknown unknowns problem:
-- How to bound trust when capabilities are unknown?
-- Detecting emergence before exploitation
-- Capability elicitation and red-teaming
-- Dynamic trust adjustment as capabilities are discovered
+## See also
 
----
-
-## Agency, Power, and Capability Formalization
-
-Research questions related to [Agent, Power, and Authority Formalization](/power-dynamics/agent-power-formalization/).
-
-### 31. Empirical Agency Measurement
-Can we reliably measure agency in AI systems?
-- Behavioral tests for goal-directedness (perturbation studies, goal persistence)
-- Temporal consistency probes (does apparent utility function drift?)
-- Cross-context generalization (same goals in different environments?)
-- Comparison of agency metrics to capability benchmarks
-
-### 32. The Strong Tools Hypothesis
-Is high capability achievable with low agency?
-- Analyze existing high-power, low-agency systems (search engines, compilers, databases)
-- What architectural patterns keep agency low?
-- Theoretical limits: As capability increases, does agency necessarily increase?
-- Empirical studies: Track agency measures across model scales
-
-### 33. Power Accumulation Dynamics
-When and how does AI system power grow over time?
-- Measure power growth rate (λ) for deployed systems
-- Identify factors that increase λ (resource access, influence, information accumulation)
-- Architectural constraints that bound λ to zero
-- Early warning indicators for power accumulation
-
-### 34. Agency-Capability Frontier
-What's the shape of the safety-capability tradeoff?
-- Map (Agency, Power, Risk) tuples for diverse systems
-- Is there a Pareto frontier? What's its shape?
-- Can alignment research push the frontier outward?
-- Compare frontier across architectural approaches
-
-### 35. Multi-Agent Agency Aggregation
-How does agency combine across components?
-- Does decomposition reduce total system agency?
-- Conditions for agency "emergence" in multi-agent systems
-- Voting/consensus effects on aggregate agency
-- Can low-agency components form high-agency collectives?
-
-### 36. RACAP Optimization
-Design systems that maximize Risk-Adjusted Capability:
-- Sensitivity analysis: Which design choices most affect RACAP?
-- Optimal agency level for given tasks
-- Power allocation across components
-- Benchmark architectures by RACAP
-
-### 37. Power-Seeking Behavior Detection
-Operationalize power-seeking in deployed systems:
-- Behavioral signatures of instrumental convergence
-- Resource acquisition monitoring
-- Influence expansion detection
-- Shutdown avoidance indicators
-
-### 38. Authority-Power Gap Analysis
-When does power exceed granted authority?
-- Methods for detecting authority violations
-- Dynamic authority adjustment protocols
-- Enforcement mechanisms when power exceeds authority
-- Case studies: Historical authority-power gaps (institutions, organizations)
-
-### 39. Formal Bounds on Power
-Mathematical limits on achievable power:
-- Given resource constraints, what's maximum power?
-- Power bounds from capability constraints
-- Information-theoretic limits on influence
-- Compositional power bounds for decomposed systems
-
-### 40. Agency Evolution During Training
-How does agency develop during AI training?
-- Track agency metrics across training runs
-- Phase transitions in goal-directedness
-- RLHF effects on agency
-- Can training be modified to suppress agency while maintaining capability?
+- [Runtime Risk Accounting](/delegation-risk/runtime-accounting/) — the mechanism most of Tier 1 would build and test
+- [Entanglements](/entanglements/) — the correlation problem problems 3 and 4 would measure
+- [Risk Propagation](/delegation-risk/risk-propagation/) — the φ recipe problem 3 depends on
+- [Psychology of Oversight](/entanglements/cross-domain/psychology-of-oversight/) — the approval-theater claim problem 5 would test

@@ -482,6 +482,6 @@ Now continue to the **Risk Formalization** series:
 
 ## See Also
 
-- [Research Projects #32](/research/potential-projects/#32-the-strong-tools-hypothesis) — Research agenda for testing this hypothesis
+- [Open Problems in Delegation Engineering](/research/potential-projects/) — research agenda, including testing this hypothesis
 - [CAIS (Comprehensive AI Services)](https://www.fhi.ox.ac.uk/reframing/) — Related proposal by Eric Drexler
 - [Power Dynamics Case Studies](/case-studies/power-dynamics-cases/) — Real-world examples

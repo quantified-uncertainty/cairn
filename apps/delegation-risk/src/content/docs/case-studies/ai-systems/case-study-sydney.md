@@ -242,7 +242,7 @@ flowchart TB
 
 ## Delegation Risk Analysis
 
-Rough estimation of trust exposure:
+Rough estimation of delegation risk:
 
 **Original Sydney**:
 - P(embarrassing output) ≈ 0.01 per conversation
