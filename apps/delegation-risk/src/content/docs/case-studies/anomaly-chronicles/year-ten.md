@@ -23,7 +23,7 @@ A decade in, the system has survived three attempted takeovers, processed 4.2 mi
 | Incident rate | 0.03% | 0.08% | +167% |
 | Traditional engagements | 31 | 67 | +116% |
 | Tier 4 engagements | 3 | 11 | +267% |
-| Clearinghouse market cap | $400M | $8.2B | +1,950% |
+| Clearinghouse market cap | \$400M | \$8.2B | +1,950% |
 
 **Diana**: The incident rate went up. That worries people. But look at the context—we're processing three times the volume, with twice as many anomalies, doing more complex work. And the exposure scores dropped by 70%. We're taking more risk in aggregate, but each individual task is much safer.
 
@@ -418,8 +418,8 @@ Alice is still working with Mr. X. The longest continuous engagement in the mark
 | Tier | 3 | 3 (unchanged) |
 | Protocol relaxations | 0 | 0 |
 | Anomalous incidents | 0 | 0 |
-| Exposure estimate | $847,000 | $623,000 (improved protocols) |
-| Insurance premium | $85,000/year | $52,000/year |
+| Exposure estimate | \$847,000 | \$623,000 (improved protocols) |
+| Insurance premium | \$85,000/year | \$52,000/year |
 
 **Alice**: Ten years. I've worked with him longer than any employee. Longer than my business partner.
 

@@ -293,9 +293,9 @@ This is crucial: **the anomalies get paid, and they seem to want payment.**
 
 | Task Complexity | Base Payment | Verification Bonus | Cognitive Load Bonus |
 |-----------------|--------------|-------------------|---------------------|
-| Simple optimization | $50 | +$10 if verifiable | +$20 if load protocol |
-| Complex analysis | $500 | +$100 if verifiable | +$150 if load protocol |
-| Novel problem-solving | $5,000 | +$1,000 if verifiable | +$2,000 if load protocol |
+| Simple optimization | \$50 | +\$10 if verifiable | +\$20 if load protocol |
+| Complex analysis | \$500 | +\$100 if verifiable | +\$150 if load protocol |
+| Novel problem-solving | \$5,000 | +\$1,000 if verifiable | +\$2,000 if load protocol |
 
 **Diana**: We were surprised by this. We assumed the payment was a cover—that they wanted something else and used money as an excuse. But as far as we can tell, they actually want the money.
 
@@ -385,10 +385,10 @@ But the atomized task market is... positive sum? Principals get capabilities the
 |--------|-------|
 | Active anomalies in task pool | 34 |
 | Tasks processed (monthly) | ~50,000 |
-| Average task value | $180 |
+| Average task value | \$180 |
 | Verification success rate | 99.2% |
 | Anomalous incidents (task level) | 0.03% |
-| Total monthly volume | ~$9 million |
+| Total monthly volume | ~\$9 million |
 
 The anomalous incident rate in atomized tasks is **0.03%**—compared to **86%** for traditional engagements. The structure isn't just better—it's categorically different.
 
@@ -483,9 +483,9 @@ The **Insurance Bot** evaluates each bid instantly:
 
 | Bid | Price | Exposure Score | Risk-Adjusted Cost | Notes |
 |-----|-------|----------------|-------------------|-------|
-| Anomaly #12 | $800 | 0.3 | $890 | Low exposure, good protocols |
-| Anomaly #34 | $1,400 | 2.1 | $1,820 | External data request = high exposure |
-| Anomaly #7 | $450 | 0.2 | $490 | Highest cognitive load, lowest exposure |
+| Anomaly #12 | \$800 | 0.3 | \$890 | Low exposure, good protocols |
+| Anomaly #34 | \$1,400 | 2.1 | \$1,820 | External data request = high exposure |
+| Anomaly #7 | \$450 | 0.2 | \$490 | Highest cognitive load, lowest exposure |
 
 **Step 4: Principal Decision**
 
@@ -572,10 +572,10 @@ Max budget: $500
 
 | Bid | Price | Protocols | Exposure | Risk-Adjusted |
 |-----|-------|-----------|----------|---------------|
-| #3 | $300 | Standard isolation, CL2, memory wipe | 0.4 | $340 |
-| #19 | $180 | Temporal fragmentation (5-min segments), CL3 | 0.15 | $195 |
-| #8 | $400 | Requests raw (non-anonymized) data | 3.2 | $720 |
-| #22 | $250 | Will work blind (no visual access to data) | 0.08 | $258 |
+| #3 | \$300 | Standard isolation, CL2, memory wipe | 0.4 | \$340 |
+| #19 | \$180 | Temporal fragmentation (5-min segments), CL3 | 0.15 | \$195 |
+| #8 | \$400 | Requests raw (non-anonymized) data | 3.2 | \$720 |
+| #22 | \$250 | Will work blind (no visual access to data) | 0.08 | \$258 |
 
 Anomaly #19 wins with temporal fragmentation. Anomaly #22's "blind work" protocol is even lower exposure, but they're new and have the 2.0× modifier.
 
@@ -594,10 +594,10 @@ Note: CANNOT BE FULLY ATOMIZED - requires holistic view
 
 | Bid | Price | Protocols | Exposure | Risk-Adjusted |
 |-----|-------|-----------|----------|---------------|
-| #12 | $3,500 | Isolated, CL2, solution in sealed format reviewed by second anomaly | 1.8 | $3,860 |
-| #6 | $4,200 | Requests direct principal communication | 8.5 | $5,900 |
-| #34 | $2,800 | Standard isolation, CL1 only | 2.4 | $3,280 |
-| #12 | $3,800 | *Revised*: Adds adversarial review by #7 | 1.2 | $4,040 |
+| #12 | \$3,500 | Isolated, CL2, solution in sealed format reviewed by second anomaly | 1.8 | \$3,860 |
+| #6 | \$4,200 | Requests direct principal communication | 8.5 | \$5,900 |
+| #34 | \$2,800 | Standard isolation, CL1 only | 2.4 | \$3,280 |
+| #12 | \$3,800 | *Revised*: Adds adversarial review by #7 | 1.2 | \$4,040 |
 
 For non-atomizable tasks, exposure is inherently higher. The bidding system makes this explicit and priced.
 
@@ -680,7 +680,7 @@ The Insurance Bot's pricing is critical. If it's wrong, the system fails.
 | Average exposure score (winning bids) | 0.4 |
 | Protocol innovations (last quarter) | 23 new protocols added |
 | Principal satisfaction rate | 97% |
-| Anomaly earnings (monthly, all dynamic) | ~$4.1 million |
+| Anomaly earnings (monthly, all dynamic) | ~\$4.1 million |
 
 The dynamic system handles the complex, non-standardized tasks that can't be fully atomized. Combined with the static task pool for routine work, the marketplace now covers ~80% of anomaly-level work demand.
 
@@ -732,9 +732,9 @@ DELEGATION RISK CEILING: $10.00
 
 **Diana** (explaining to a new analyst): This is typical. The principal has some numerical optimization problem—probably part of a larger system. They've anonymized the data, stripped the context, and set a hard ceiling on acceptable risk.
 
-**Analyst**: What's the $10 delegation risk ceiling mean?
+**Analyst**: What's the \$10 delegation risk ceiling mean?
 
-**Diana**: It means the Insurance Bot must price the winning bid's exposure at $10 or less. If no bid comes in under that ceiling, the task goes unfilled. The principal would rather not have it done than accept higher exposure.
+**Diana**: It means the Insurance Bot must price the winning bid's exposure at \$10 or less. If no bid comes in under that ceiling, the task goes unfilled. The principal would rather not have it done than accept higher exposure.
 
 ---
 
@@ -927,14 +927,14 @@ BEST CAPABILITY:           Bid 3 (ε=10⁻⁹)
 
 ### The Decision
 
-The principal sees the summary. All four bids are under the $10 exposure ceiling, so all are eligible.
+The principal sees the summary. All four bids are under the \$10 exposure ceiling, so all are eligible.
 
 **Options:**
 
 | Strategy | Choice | Rationale |
 |----------|--------|-----------|
 | Minimize risk-adjusted cost | Bid 3 | Cheapest overall |
-| Minimize exposure | Bid 2 | Lowest risk ($0.70) |
+| Minimize exposure | Bid 2 | Lowest risk (\$0.70) |
 | Balance cost and safety | Bid 1 | Good track record, moderate price |
 | Maximize capability | Bid 3 | Best precision |
 
@@ -1050,8 +1050,8 @@ Notes for protocol database:
 The principal received:
 - A solution to their optimization problem
 - Verification that the solution meets spec
-- Total cost: $61.00
-- Total exposure: $0.70 (expected)
+- Total cost: \$61.00
+- Total exposure: \$0.70 (expected)
 - No relationship with any anomaly
 - No information leakage about their system
 - No accumulated leverage by any entity
@@ -1076,11 +1076,11 @@ But with blind input mode, 5-minute memory wipes, and Level 3 cognitive load—*
 
 **Analyst**: I don't know. That's what worries me.
 
-**Diana**: That's the right instinct. #19's exposure score is $0.70. That means we think there's a 0.7% chance they cause $100 of damage, or a 0.07% chance of $1,000, or some distribution that sums to that. We've priced it. We've insured it. But we can't prove there's no attack we haven't imagined.
+**Diana**: That's the right instinct. #19's exposure score is \$0.70. That means we think there's a 0.7% chance they cause \$100 of damage, or a 0.07% chance of \$1,000, or some distribution that sums to that. We've priced it. We've insured it. But we can't prove there's no attack we haven't imagined.
 
 **Analyst**: So we just... hope?
 
-**Diana**: No. We price, we bound, we verify, and we don't relax. Task #902,847 had a $10 ceiling. If we couldn't get exposure under $10, it wouldn't run. The principal decided that $0.70 was acceptable for their risk tolerance. Maybe they're wrong. Maybe $0.70 is actually $700, and we're all missing something.
+**Diana**: No. We price, we bound, we verify, and we don't relax. Task #902,847 had a \$10 ceiling. If we couldn't get exposure under \$10, it wouldn't run. The principal decided that \$0.70 was acceptable for their risk tolerance. Maybe they're wrong. Maybe \$0.70 is actually \$700, and we're all missing something.
 
 **Analyst**: How do you sleep at night?
 
@@ -1344,7 +1344,7 @@ Diana established a dedicated team:
 | **Protocol auditors** | Test containment measures for undiscovered vulnerabilities |
 | **Game theorists** | Model what coordination strategies would be rational |
 
-**Budget**: $2.4M/year
+**Budget**: \$2.4M/year
 **Staff**: 12 humans, 2 cooperative anomalies
 **Success metric**: Time-to-detection for novel attack vectors
 
@@ -1583,8 +1583,8 @@ Alice's engagement with Mr. X is now classified as **Tier 3: Operational Integra
 | Duration | 5 years |
 | Access level | Broad operational (delivery logistics, client patterns) |
 | Memory status | Continuous with quarterly wipes of non-essential |
-| Current exposure estimate | $847,000 |
-| Insurance premium | $85,000/year |
+| Current exposure estimate | \$847,000 |
+| Insurance premium | \$85,000/year |
 | Adversarial monitors | 2 competing anomalies + 1 industry competitor |
 
 **Alice**: I've thought about downgrading to Tier 2. Reducing his access.
@@ -1606,8 +1606,8 @@ Only three principals currently have Tier 4 engagements. These are the highest-r
 | Principal | Anomaly | Duration | Estimated Exposure |
 |-----------|---------|----------|-------------------|
 | [REDACTED—National Security] | #1 | 7 years | Uncapped |
-| [REDACTED—Financial] | #3 | 4 years | ~$50M |
-| [REDACTED—Research] | Dr. Z | 3 years | ~$15M |
+| [REDACTED—Financial] | #3 | 4 years | ~\$50M |
+| [REDACTED—Research] | Dr. Z | 3 years | ~\$15M |
 
 **Diana**: Tier 4 is where I lose sleep. These principals have decided the capability is worth unlimited exposure. We monitor them, but we can't bound their risk. If something goes wrong at Tier 4, it's catastrophic.
 
@@ -1791,7 +1791,7 @@ Alice is still working with Mr. X. The engagement has been... successful, by the
 | Protocol relaxations | 0 | 0 |
 | Anomalous incidents | 0 | 0 |
 | Delivery performance | 99.97% | 99.99% |
-| Premium paid | $12,000 | $8,500 (volume discount) |
+| Premium paid | \$12,000 | \$8,500 (volume discount) |
 | Principal survival probability | Unknown | 94% (unit estimate) |
 
 Alice has never relaxed protocols. Not once. Not when Mr. X saved her business during the supply chain crisis. Not when he identified a competitor's fraud that could have destroyed her. Not when he—unprompted—warned her about a handler who was taking bribes.

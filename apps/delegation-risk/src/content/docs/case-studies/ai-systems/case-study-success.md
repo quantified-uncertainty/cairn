@@ -60,16 +60,16 @@ flowchart TB
 
 | Component | Implementation | Delegation Risk Budget |
 |-----------|---------------|--------------|
-| Diff Parser | Python code | Very low Delegation Risk ($5/mo) |
-| Sensitive Filter | Regex + code | Low Delegation Risk ($20/mo) |
-| Style Checker | Fine-tuned CodeLlama 7B | Low Delegation Risk ($50/mo) |
-| Security Scanner | Semgrep + fine-tuned LLM | Medium Delegation Risk ($150/mo) |
-| Logic Reviewer | GPT-3.5 with narrow prompt | Medium Delegation Risk ($200/mo) |
-| Aggregator | Python code | Very low Delegation Risk ($10/mo) |
-| Formatter | Llama 7B | Low Delegation Risk ($30/mo) |
-| Output Verifier | Rules + small LLM | Low Delegation Risk ($50/mo) |
+| Diff Parser | Python code | Very low Delegation Risk (\$5/mo) |
+| Sensitive Filter | Regex + code | Low Delegation Risk (\$20/mo) |
+| Style Checker | Fine-tuned CodeLlama 7B | Low Delegation Risk (\$50/mo) |
+| Security Scanner | Semgrep + fine-tuned LLM | Medium Delegation Risk (\$150/mo) |
+| Logic Reviewer | GPT-3.5 with narrow prompt | Medium Delegation Risk (\$200/mo) |
+| Aggregator | Python code | Very low Delegation Risk (\$10/mo) |
+| Formatter | Llama 7B | Low Delegation Risk (\$30/mo) |
+| Output Verifier | Rules + small LLM | Low Delegation Risk (\$50/mo) |
 
-**Total system Delegation Risk**: $515/month (budget: $1,000/month)
+**Total system Delegation Risk**: \$515/month (budget: \$1,000/month)
 
 ---
 
@@ -89,7 +89,7 @@ flowchart TB
 - Single-model review might have missed it (tested: GPT-4 missed this pattern 40% of the time in similar code)
 - No automatic escalation for high-risk combinations
 
-**Outcome**: Vulnerability fixed before merge. Estimated damage prevented: $50,000-500,000 (based on similar incidents in industry).
+**Outcome**: Vulnerability fixed before merge. Estimated damage prevented: \$50,000-500,000 (based on similar incidents in industry).
 
 ### Incident 2: Prompt Injection via Code Comment
 
@@ -205,10 +205,10 @@ Over 8 months, the system logged **12 prompt injection attempts** in submitted c
 |--------|-------------------|----------------|
 | Review time per PR | 15 min | 2 min (human) + auto |
 | Senior engineer hours/week | 40 | 8 |
-| Monthly cost | $25,000 | $4,500 |
+| Monthly cost | \$25,000 | \$4,500 |
 | Vulnerabilities missed | ~2/month | 0 |
 
-**ROI**: $20,500/month savings + improved security.
+**ROI**: \$20,500/month savings + improved security.
 
 ---
 
@@ -243,7 +243,7 @@ The team initially prototyped a monolithic GPT-4 code reviewer. Results:
 | Prompt injection resistance | 70% | 100% |
 | Security issue detection | 85% | 94% |
 | False positive rate | 2.1% | 0.3% |
-| Cost per review | $0.15 | $0.04 |
+| Cost per review | \$0.15 | \$0.04 |
 | Latency | 8s | 12s |
 
 **Trade-off**: Decomposed system is slower but safer and cheaper.

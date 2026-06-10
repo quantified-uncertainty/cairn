@@ -32,7 +32,7 @@ Delegation Risk is a specific instantiation of expected value calculation (see t
 | Static assessment | Dynamic budget tracking |
 | Compliance-focused | Optimization-focused |
 
-Delegation Risk lets you make tradeoffs: "Is adding verification worth $50/month in reduced Delegation Risk?"
+Delegation Risk lets you make tradeoffs: "Is adding verification worth \$50/month in reduced Delegation Risk?"
 
 ### "Why decomposition instead of one aligned agent?"
 

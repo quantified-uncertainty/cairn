@@ -210,9 +210,9 @@ For the system as a whole:
 
 **Component: Refund Issuer**
 1. **Implementation tree**: Can't formally specify (customer situations vary) → Domain narrow? Yes (refunds only) → Have training data? Yes → **Fine-tuned narrow model**
-2. **Risk budget**: Refund mistakes = moderate damage (~$100 avg) → Medium Delegation Risk allocation
+2. **Risk budget**: Refund mistakes = moderate damage (~\$100 avg) → Medium Delegation Risk allocation
 3. **Redundancy tree**: Safety-critical? Yes (money involved) → Formally verified? No → **2-of-2 with different models**
-4. **Human gate tree**: Reversible? Yes (can reverse refund) → Damage < $1000? Usually → **Audit-only for small refunds, approval for large**
+4. **Human gate tree**: Reversible? Yes (can reverse refund) → Damage < \$1000? Usually → **Audit-only for small refunds, approval for large**
 
 **Result**: Two fine-tuned models must agree, small refunds auto-approved with logging, large refunds require human approval.
 

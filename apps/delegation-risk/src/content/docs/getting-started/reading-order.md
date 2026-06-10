@@ -15,7 +15,7 @@ This site is large (~160 pages), but its essential argument lives in about a doz
 
 1. **[Risk Decomposition](/delegation-risk/risk-decomposition/)** — The framework's load-bearing distinction: *accidents* (component fails at its task) versus *defection* (component works against you). They scale oppositely with capability — smarter systems have fewer accidents but potentially more dangerous defection — which is why "just build better AI" can't solve both, and why architecture has to.
 
-2. **[Delegation Accounting](/delegation-risk/delegation-accounting/)** — Treats risk like money: every delegation moves exposure onto someone's balance sheet, complexity carries a tax, and the running example (a $1,000 delivery that escalates to an adversarial agent) shows why financial instruments alone stop working as agents get more capable.
+2. **[Delegation Accounting](/delegation-risk/delegation-accounting/)** — Treats risk like money: every delegation moves exposure onto someone's balance sheet, complexity carries a tax, and the running example (a \$1,000 delivery that escalates to an adversarial agent) shows why financial instruments alone stop working as agents get more capable.
 
 3. **[The Insurer's Dilemma](/delegation-risk/insurers-dilemma/)** — Why coverage structures break down under moral hazard and adversarial agents: the case for *architectural* rather than purely financial risk management. This is the pivot point of the whole framework.
 

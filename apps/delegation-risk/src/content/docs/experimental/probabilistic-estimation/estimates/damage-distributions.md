@@ -11,7 +11,7 @@ Damage estimates should reflect uncertainty, especially for rare-but-severe even
 
 ## Why Distributions Matter for Damage
 
-Point estimates like "damage = $5,000" miss crucial information:
+Point estimates like "damage = \$5,000" miss crucial information:
 
 - **Variability**: Similar incidents can have very different costs
 - **Tail risk**: Rare severe events may dominate expected loss
@@ -39,9 +39,9 @@ infra_major = lognormal(log(50000), 1.0)
 
 | Severity | Point Est. | Distribution | 90% CI | Confidence |
 |----------|------------|--------------|--------|------------|
-| Small | $100 | `lognormal(log(100), 0.8)` | [$20, $600] | High |
-| Medium | $2,000 | `lognormal(log(2000), 0.7)` | [$500, $10k] | High |
-| Major | $50,000 | `lognormal(log(50000), 1.0)` | [$6k, $400k] | Medium |
+| Small | \$100 | `lognormal(log(100), 0.8)` | [\$20, \$600] | High |
+| Medium | \$2,000 | `lognormal(log(2000), 0.7)` | [\$500, \$10k] | High |
+| Major | \$50,000 | `lognormal(log(50000), 1.0)` | [\$6k, \$400k] | Medium |
 
 ### 2. Data Damage
 
@@ -63,9 +63,9 @@ data_breach = lognormal(log(200000), 1.2)
 
 | Severity | Point Est. | Distribution | 90% CI | Confidence |
 |----------|------------|--------------|--------|------------|
-| Minor | $500 | `lognormal(log(500), 0.6)` | [$150, $1.5k] | High |
-| Corruption | $10,000 | `lognormal(log(10000), 0.8)` | [$2k, $60k] | Medium |
-| Breach | $200,000 | `lognormal(log(200000), 1.2)` | [$20k, $2M] | Medium |
+| Minor | \$500 | `lognormal(log(500), 0.6)` | [\$150, \$1.5k] | High |
+| Corruption | \$10,000 | `lognormal(log(10000), 0.8)` | [\$2k, \$60k] | Medium |
+| Breach | \$200,000 | `lognormal(log(200000), 1.2)` | [\$20k, \$2M] | Medium |
 
 **Note**: Data breach costs vary enormously by scale and jurisdiction. The IBM Cost of a Data Breach Report provides calibration data.
 
@@ -89,9 +89,9 @@ reputation_major = lognormal(log(500000), 1.5)
 
 | Severity | Point Est. | Distribution | 90% CI | Confidence |
 |----------|------------|--------------|--------|------------|
-| Minor | $1,000 | `lognormal(log(1000), 1.0)` | [$120, $8k] | Low |
-| Moderate | $25,000 | `lognormal(log(25000), 1.2)` | [$2.5k, $250k] | Low |
-| Major | $500,000 | `lognormal(log(500000), 1.5)` | [$30k, $5M] | Low |
+| Minor | \$1,000 | `lognormal(log(1000), 1.0)` | [\$120, \$8k] | Low |
+| Moderate | \$25,000 | `lognormal(log(25000), 1.2)` | [\$2.5k, \$250k] | Low |
+| Major | \$500,000 | `lognormal(log(500000), 1.5)` | [\$30k, \$5M] | Low |
 
 **Note**: Reputational damage is notoriously hard to quantify. These are rough estimates with high uncertainty.
 
@@ -115,9 +115,9 @@ regulatory_major = lognormal(log(2000000), 1.3)
 
 | Severity | Point Est. | Distribution | 90% CI | Confidence |
 |----------|------------|--------------|--------|------------|
-| Minor | $5,000 | `lognormal(log(5000), 0.7)` | [$1.2k, $20k] | Medium |
-| Investigation | $100,000 | `lognormal(log(100000), 1.0)` | [$12k, $800k] | Medium |
-| Major | $2,000,000 | `lognormal(log(2000000), 1.3)` | [$150k, $25M] | Low |
+| Minor | \$5,000 | `lognormal(log(5000), 0.7)` | [\$1.2k, \$20k] | Medium |
+| Investigation | \$100,000 | `lognormal(log(100000), 1.0)` | [\$12k, \$800k] | Medium |
+| Major | \$2,000,000 | `lognormal(log(2000000), 1.3)` | [\$150k, \$25M] | Low |
 
 ### 5. Safety/Human Harm
 
@@ -139,11 +139,11 @@ safety_fatality = lognormal(log(10000000), 0.5)
 
 | Severity | Point Est. | Distribution | 90% CI | Confidence |
 |----------|------------|--------------|--------|------------|
-| Minor injury | $10,000 | `lognormal(log(10000), 0.8)` | [$2k, $60k] | Medium |
-| Serious injury | $500,000 | `lognormal(log(500000), 1.0)` | [$60k, $4M] | Medium |
-| Fatality | $10,000,000 | `lognormal(log(10000000), 0.5)` | [$4M, $27M] | High |
+| Minor injury | \$10,000 | `lognormal(log(10000), 0.8)` | [\$2k, \$60k] | Medium |
+| Serious injury | \$500,000 | `lognormal(log(500000), 1.0)` | [\$60k, \$4M] | Medium |
+| Fatality | \$10,000,000 | `lognormal(log(10000000), 0.5)` | [\$4M, \$27M] | High |
 
-**Note**: Value of Statistical Life (VSL) estimates from US DOT and EPA range from $7M-$12M. We use $10M as a central estimate.
+**Note**: Value of Statistical Life (VSL) estimates from US DOT and EPA range from \$7M-\$12M. We use \$10M as a central estimate.
 
 ---
 

@@ -27,7 +27,7 @@ This page maps the framework's abstract principles to their concrete application
 ## Implementation Patterns by Risk Level
 
 <details>
-<summary>Low-Risk Components (Delegation Risk &lt; $200/month)</summary>
+<summary>Low-Risk Components (Delegation Risk &lt; \$200/month)</summary>
 
 **Pattern**: Use narrow or verified implementations freely.
 
@@ -43,7 +43,7 @@ This page maps the framework's abstract principles to their concrete application
 </details>
 
 <details>
-<summary>Medium-Risk Components (Delegation Risk $200-$500/month)</summary>
+<summary>Medium-Risk Components (Delegation Risk \$200-\$500/month)</summary>
 
 **Pattern**: Fine-tuned narrow models with extensive testing.
 
@@ -59,7 +59,7 @@ This page maps the framework's abstract principles to their concrete application
 </details>
 
 <details>
-<summary>High-Risk Components (Delegation Risk &gt; $500/month)</summary>
+<summary>High-Risk Components (Delegation Risk &gt; \$500/month)</summary>
 
 **Pattern**: Defense in depth — multiple constraints, redundancy, human oversight.
 
@@ -121,7 +121,7 @@ Why: Reviewer's output doesn't flow to production deploy
 
 ### Budget Allocation Decisions
 
-Both examples target ~$2,000/month total Delegation Risk but allocate differently:
+Both examples target ~\$2,000/month total Delegation Risk but allocate differently:
 
 **Research Assistant** — more distributed risk:
 - Summarizer: 8%

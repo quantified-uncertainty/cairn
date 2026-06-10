@@ -33,7 +33,7 @@ The practical implementation uses Component VaR (CoVaR) for Value at Risk or Exp
 
 ### Budget Cascade Example
 
-Here's how a $10M annual risk budget might flow through an AI research organization:
+Here's how a \$10M annual risk budget might flow through an AI research organization:
 
 ```mermaid
 flowchart TB
@@ -64,7 +64,7 @@ flowchart TB
 ```
 
 **Key properties of this cascade**:
-- **Full allocation**: $500K + $800K + $400K + $300K = $2M (Code Generation budget)
+- **Full allocation**: \$500K + \$800K + \$400K + \$300K = \$2M (Code Generation budget)
 - **Marginal contribution**: Generator gets more budget because it has higher impact potential
 - **Diversification**: Independent components can use their full budgets simultaneously
 - **Accountability**: Each level is responsible for staying within its allocation

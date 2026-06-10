@@ -278,13 +278,13 @@ effectiveCatchRate_correlated(catchRates, correlation) = {
 
 | Mitigation | Risk Reduction | Monthly Cost | Cost per 1% Reduction |
 |------------|----------------|--------------|----------------------|
-| Output filtering | 60% | $100 | $1.67 |
-| Automated testing | 63% | $500 | $7.94 |
-| Permission scoping | 60% | $200 | $3.33 |
-| AI verifier | 70% | $1,000 | $14.29 |
-| Human review | 85% | $3,000 | $35.29 |
-| Sandboxing | 95%* | $500 | $5.26 |
-| Red team testing | 45% | $5,000 | $111.11 |
+| Output filtering | 60% | \$100 | \$1.67 |
+| Automated testing | 63% | \$500 | \$7.94 |
+| Permission scoping | 60% | \$200 | \$3.33 |
+| AI verifier | 70% | \$1,000 | \$14.29 |
+| Human review | 85% | \$3,000 | \$35.29 |
+| Sandboxing | 95%* | \$500 | \$5.26 |
+| Red team testing | 45% | \$5,000 | \$111.11 |
 
 *Sandboxing reduces damage, not probability. Different risk model.
 
@@ -292,22 +292,22 @@ effectiveCatchRate_correlated(catchRates, correlation) = {
 
 ## Recommendations by Risk Level
 
-### Low Risk ($0-500/mo budget)
+### Low Risk (\$0-500/mo budget)
 - Output filtering
 - Permission scoping
 - Automated testing
 
-### Medium Risk ($500-2000/mo budget)
+### Medium Risk (\$500-2000/mo budget)
 - Add: AI verifier
 - Add: Sandboxing
 - Add: Rate limiting
 
-### High Risk ($2000-10000/mo budget)
+### High Risk (\$2000-10000/mo budget)
 - Add: Human review (sampled)
 - Add: Red team testing
 - Add: N-version for critical paths
 
-### Critical Risk (>$10000/mo budget)
+### Critical Risk (>\$10000/mo budget)
 - Full human review
 - Formal verification where possible
 - Multiple independent architectures

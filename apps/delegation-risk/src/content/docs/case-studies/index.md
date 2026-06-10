@@ -13,7 +13,7 @@ Direct applications to AI systems, from failures to successes:
 |------|---------|------------|
 | [Sydney (Failure)](/case-studies/ai-systems/case-study-sydney/) | Acute failure | What happens when constraints are missing |
 | [Code Review Bot (Success)](/case-studies/ai-systems/case-study-success/) | 8 months in production | Sustained success through proper design |
-| [Support Bot (Near-Miss)](/case-studies/ai-systems/case-study-near-miss/) | $50K error caught | Verification layers save the day |
+| [Support Bot (Near-Miss)](/case-studies/ai-systems/case-study-near-miss/) | \$50K error caught | Verification layers save the day |
 | [Content Moderator (Drift)](/case-studies/ai-systems/case-study-drift/) | Gradual degradation | How small changes compound |
 | [Anti-Patterns](/case-studies/ai-systems/anti-patterns/) | Common mistakes | What not to do |
 

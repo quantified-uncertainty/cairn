@@ -10,7 +10,7 @@ sidebar:
 This case study analyzes oversight mechanisms through the lens of our delegation risk framework. The examples are based on real governmental structures, but the mathematical framing is our own interpretation.
 :::
 
-The U.S. President commands nuclear weapons, controls the world's largest military, directs $6 trillion in annual spending, and can issue executive orders affecting 330 million people. This concentration of power creates enormous Delegation Risk.
+The U.S. President commands nuclear weapons, controls the world's largest military, directs \$6 trillion in annual spending, and can issue executive orders affecting 330 million people. This concentration of power creates enormous Delegation Risk.
 
 The obvious solution: add oversight. But here's the problem—**any overseer powerful enough to check the President becomes a massive trust liability themselves**.
 
@@ -30,14 +30,14 @@ Let's quantify the trust exposure of an unchecked President:
 
 | Authority Domain | P(catastrophic misuse/term) | Damage Potential | 4-Year Delegation Risk |
 |------------------|---------------------------|------------------|------------|
-| Nuclear launch authority | 0.0001 | $50 trillion (civilization) | $5B |
-| Military deployment | 0.01 | $500B (major war) | $5B |
-| Executive orders (domestic) | 0.05 | $100B (economic/rights) | $5B |
-| Appointments (judiciary, agencies) | 0.10 | $200B (institutional damage) | $20B |
-| Foreign policy/treaties | 0.03 | $300B (alliance collapse) | $9B |
-| Pardon power | 0.05 | $10B (justice system) | $500M |
-| Emergency powers | 0.02 | $1T (constitutional crisis) | $20B |
-| **Total Presidential Delegation Risk** | | | **~$65B/term** |
+| Nuclear launch authority | 0.0001 | \$50 trillion (civilization) | \$5B |
+| Military deployment | 0.01 | \$500B (major war) | \$5B |
+| Executive orders (domestic) | 0.05 | \$100B (economic/rights) | \$5B |
+| Appointments (judiciary, agencies) | 0.10 | \$200B (institutional damage) | \$20B |
+| Foreign policy/treaties | 0.03 | \$300B (alliance collapse) | \$9B |
+| Pardon power | 0.05 | \$10B (justice system) | \$500M |
+| Emergency powers | 0.02 | \$1T (constitutional crisis) | \$20B |
+| **Total Presidential Delegation Risk** | | | **~\$65B/term** |
 
 :::note[Calibration Note]
 These numbers are illustrative. The key point is that presidential Delegation Risk is *enormous*—likely among the highest for any individual on Earth. Even small probability catastrophic outcomes dominate the calculation.
@@ -56,7 +56,7 @@ flowchart TB
 
 **Current state:**
 - Trust granted: 0.52 (bare electoral majority)
-- Delegation Risk: $65B/term
+- Delegation Risk: \$65B/term
 - Verification: Elections every 4 years (extremely slow feedback)
 - Revocation mechanism: Impeachment (requires 67 senators—very difficult)
 
@@ -99,14 +99,14 @@ If Ombudsman catches 80% of violations:
 
 | Domain | Original P(misuse) | With Ombudsman | New Delegation Risk |
 |--------|-------------------|----------------|---------|
-| Nuclear launch | 0.0001 | 0.0001 × 0.20 = 0.00002 | $1B |
-| Military deployment | 0.01 | 0.01 × 0.20 = 0.002 | $1B |
-| Executive orders | 0.05 | 0.05 × 0.20 = 0.01 | $1B |
-| Appointments | 0.10 | 0.10 × 0.20 = 0.02 | $4B |
-| Foreign policy | 0.03 | 0.03 × 0.20 = 0.006 | $1.8B |
-| Pardon power | 0.05 | 0.05 × 0.20 = 0.01 | $100M |
-| Emergency powers | 0.02 | 0.02 × 0.20 = 0.004 | $4B |
-| **Presidential subtotal** | | | **$12.9B** |
+| Nuclear launch | 0.0001 | 0.0001 × 0.20 = 0.00002 | \$1B |
+| Military deployment | 0.01 | 0.01 × 0.20 = 0.002 | \$1B |
+| Executive orders | 0.05 | 0.05 × 0.20 = 0.01 | \$1B |
+| Appointments | 0.10 | 0.10 × 0.20 = 0.02 | \$4B |
+| Foreign policy | 0.03 | 0.03 × 0.20 = 0.006 | \$1.8B |
+| Pardon power | 0.05 | 0.05 × 0.20 = 0.01 | \$100M |
+| Emergency powers | 0.02 | 0.02 × 0.20 = 0.004 | \$4B |
+| **Presidential subtotal** | | | **\$12.9B** |
 
 **Reduction: 80%** — looks great!
 
@@ -120,12 +120,12 @@ The Ombudsman now has:
 
 | Ombudsman Failure Mode | P(occurrence/term) | Damage | Delegation Risk |
 |------------------------|-------------------|--------|-----|
-| Corruption (bribed/compromised) | 0.05 | $100B (sells secrets, enables enemies) | $5B |
-| Partisan abuse (blocks legitimate actions) | 0.15 | $50B (governance paralysis) | $7.5B |
-| Incompetence (fails to catch real problems) | 0.20 | $30B (false confidence) | $6B |
-| Power grab (uses information for personal gain) | 0.03 | $80B (blackmail, manipulation) | $2.4B |
-| Leaks classified information | 0.10 | $20B (intelligence damage) | $2B |
-| **Ombudsman subtotal** | | | **$22.9B** |
+| Corruption (bribed/compromised) | 0.05 | \$100B (sells secrets, enables enemies) | \$5B |
+| Partisan abuse (blocks legitimate actions) | 0.15 | \$50B (governance paralysis) | \$7.5B |
+| Incompetence (fails to catch real problems) | 0.20 | \$30B (false confidence) | \$6B |
+| Power grab (uses information for personal gain) | 0.03 | \$80B (blackmail, manipulation) | \$2.4B |
+| Leaks classified information | 0.10 | \$20B (intelligence damage) | \$2B |
+| **Ombudsman subtotal** | | | **\$22.9B** |
 
 ### Total System Delegation Risk With Single Ombudsman
 
@@ -135,10 +135,10 @@ Total Delegation Risk = Presidential Delegation Risk + Ombudsman Delegation Risk
          = $35.8B
 ```
 
-**Compared to baseline ($65B)**: 45% reduction
+**Compared to baseline (\$65B)**: 45% reduction
 
 :::caution[The Oversight Paradox]
-Adding an Ombudsman reduced *Presidential* Delegation Risk by 80%, but the *Ombudsman* added $22.9B in new exposure. Net improvement: only 45%. The overseer became a major liability.
+Adding an Ombudsman reduced *Presidential* Delegation Risk by 80%, but the *Ombudsman* added \$22.9B in new exposure. Net improvement: only 45%. The overseer became a major liability.
 :::
 
 ### Why This Happens
@@ -212,12 +212,12 @@ P(≥3 corrupt) = C(5,3)×0.1³×0.9² + C(5,4)×0.1⁴×0.9¹ + C(5,5)×0.1⁵
 
 | Failure Mode | Single Ombudsman P | Committee P | Damage | Committee Delegation Risk |
 |--------------|-------------------|-------------|--------|---------------|
-| Corruption | 0.05 | 0.0086 | $100B | $860M |
-| Partisan abuse | 0.15 | 0.03 | $50B | $1.5B |
-| Incompetence | 0.20 | 0.25* | $30B | $7.5B |
-| Power grab | 0.03 | 0.005 | $80B | $400M |
-| Leaks | 0.10 | 0.18** | $20B | $3.6B |
-| **Subtotal** | **$22.9B** | | | **$13.86B** |
+| Corruption | 0.05 | 0.0086 | \$100B | \$860M |
+| Partisan abuse | 0.15 | 0.03 | \$50B | \$1.5B |
+| Incompetence | 0.20 | 0.25* | \$30B | \$7.5B |
+| Power grab | 0.03 | 0.005 | \$80B | \$400M |
+| Leaks | 0.10 | 0.18** | \$20B | \$3.6B |
+| **Subtotal** | **\$22.9B** | | | **\$13.86B** |
 
 *Committees can be *more* prone to groupthink and diffused responsibility
 **More people = more leak surface
@@ -228,14 +228,14 @@ Committee catches violations at 70% rate (lower than single expert, due to coord
 
 | Domain | Original Delegation Risk | With Committee (30% passthrough) | New Delegation Risk |
 |--------|-------------|----------------------------------|---------|
-| Nuclear launch | $5B | × 0.30 | $1.5B |
-| Military deployment | $5B | × 0.30 | $1.5B |
-| Executive orders | $5B | × 0.30 | $1.5B |
-| Appointments | $20B | × 0.30 | $6B |
-| Foreign policy | $9B | × 0.30 | $2.7B |
-| Pardon power | $500M | × 0.30 | $150M |
-| Emergency powers | $20B | × 0.30 | $6B |
-| **Presidential subtotal** | **$65B** | | **$19.35B** |
+| Nuclear launch | \$5B | × 0.30 | \$1.5B |
+| Military deployment | \$5B | × 0.30 | \$1.5B |
+| Executive orders | \$5B | × 0.30 | \$1.5B |
+| Appointments | \$20B | × 0.30 | \$6B |
+| Foreign policy | \$9B | × 0.30 | \$2.7B |
+| Pardon power | \$500M | × 0.30 | \$150M |
+| Emergency powers | \$20B | × 0.30 | \$6B |
+| **Presidential subtotal** | **\$65B** | | **\$19.35B** |
 
 ### Total System Delegation Risk With Committee
 
@@ -247,9 +247,9 @@ Total Delegation Risk = Presidential Delegation Risk + Committee Delegation Risk
 
 | Architecture | Total Delegation Risk | vs. Baseline |
 |--------------|-----------|--------------|
-| No oversight | $65B | — |
-| Single Ombudsman | $35.8B | -45% |
-| 5-Person Committee | $33.2B | -49% |
+| No oversight | \$65B | — |
+| Single Ombudsman | \$35.8B | -45% |
+| 5-Person Committee | \$33.2B | -49% |
 
 **Modest improvement.** The committee reduces corruption risk but increases leak risk and reduces oversight effectiveness.
 
@@ -319,12 +319,12 @@ P(successful partisan abuse) = P(A abuses) × P(B fails to expose)
 
 | Failure Mode | P | Damage | Delegation Risk |
 |--------------|---|--------|-----|
-| Corruption (both collude) | 0.003 | $100B | $300M |
-| Partisan abuse (successful) | 0.03 | $50B | $1.5B |
-| Incompetence (both miss) | 0.10 × 0.10 = 0.01 | $30B | $300M |
-| Leaks (either) | 0.15 + 0.15 = 0.28* | $20B | $5.6B |
-| Gridlock (both veto everything) | 0.08 | $40B | $3.2B |
-| **Subtotal** | | | **$10.9B** |
+| Corruption (both collude) | 0.003 | \$100B | \$300M |
+| Partisan abuse (successful) | 0.03 | \$50B | \$1.5B |
+| Incompetence (both miss) | 0.10 × 0.10 = 0.01 | \$30B | \$300M |
+| Leaks (either) | 0.15 + 0.15 = 0.28* | \$20B | \$5.6B |
+| Gridlock (both veto everything) | 0.08 | \$40B | \$3.2B |
+| **Subtotal** | | | **\$10.9B** |
 
 *Leak risk increases—two overseers means two potential leak sources
 
@@ -346,10 +346,10 @@ Total Delegation Risk = Presidential Delegation Risk + Adversarial Oversight Del
 
 | Architecture | Total Delegation Risk | vs. Baseline |
 |--------------|-----------|--------------|
-| No oversight | $65B | — |
-| Single Ombudsman | $35.8B | -45% |
-| 5-Person Committee | $33.2B | -49% |
-| Adversarial (2 parties) | $20.65B | **-68%** |
+| No oversight | \$65B | — |
+| Single Ombudsman | \$35.8B | -45% |
+| 5-Person Committee | \$33.2B | -49% |
+| Adversarial (2 parties) | \$20.65B | **-68%** |
 
 **Significant improvement!** Adversarial incentives align oversight with exposure rather than protection.
 
@@ -464,12 +464,12 @@ flowchart TB
 
 | Failure Mode | P | Damage | Delegation Risk |
 |--------------|---|--------|-----|
-| Corruption (both levels) | 0.00032 | $100B | $32M |
-| Partisan abuse (random selection is neutral) | 0.01 | $50B | $500M |
-| Incompetence | 0.20 | $30B | $6B |
-| Leaks | 0.15 | $20B | $3B |
-| Gaming (President delays until favorable oversight) | 0.05 | $20B | $1B |
-| **Subtotal** | | | **$10.53B** |
+| Corruption (both levels) | 0.00032 | \$100B | \$32M |
+| Partisan abuse (random selection is neutral) | 0.01 | \$50B | \$500M |
+| Incompetence | 0.20 | \$30B | \$6B |
+| Leaks | 0.15 | \$20B | \$3B |
+| Gaming (President delays until favorable oversight) | 0.05 | \$20B | \$1B |
+| **Subtotal** | | | **\$10.53B** |
 
 **Presidential Delegation Risk with randomized oversight:**
 
@@ -487,11 +487,11 @@ Total Delegation Risk = Presidential Delegation Risk + Randomized Oversight Dele
 
 | Architecture | Total Delegation Risk | vs. Baseline |
 |--------------|-----------|--------------|
-| No oversight | $65B | — |
-| Single Ombudsman | $35.8B | -45% |
-| 5-Person Committee | $33.2B | -49% |
-| Randomized + Expert | $31.6B | -51% |
-| Adversarial (2 parties) | $20.65B | -68% |
+| No oversight | \$65B | — |
+| Single Ombudsman | \$35.8B | -45% |
+| 5-Person Committee | \$33.2B | -49% |
+| Randomized + Expert | \$31.6B | -51% |
+| Adversarial (2 parties) | \$20.65B | -68% |
 
 Randomized is better than committee but worse than adversarial. However, randomized might be *combined* with adversarial...
 
@@ -571,14 +571,14 @@ P(violation succeeds) = P(passes Layer 1) × P(passes Layer 2) × P(passes Layer
 
 | Domain | Original Delegation Risk | × Pass Rate | New Delegation Risk |
 |--------|-------------|-------------|---------|
-| Nuclear | $5B | 0.013 | $65M |
-| Military | $5B | 0.038 | $190M |
-| Executive orders | $5B | 0.128 | $640M |
-| Appointments | $20B | 0.128 | $2.56B |
-| Foreign policy | $9B | 0.064 | $576M |
-| Pardon power | $500M | 0.128 | $64M |
-| Emergency powers | $20B | 0.051 | $1.02B |
-| **Presidential subtotal** | **$65B** | | **$5.12B** |
+| Nuclear | \$5B | 0.013 | \$65M |
+| Military | \$5B | 0.038 | \$190M |
+| Executive orders | \$5B | 0.128 | \$640M |
+| Appointments | \$20B | 0.128 | \$2.56B |
+| Foreign policy | \$9B | 0.064 | \$576M |
+| Pardon power | \$500M | 0.128 | \$64M |
+| Emergency powers | \$20B | 0.051 | \$1.02B |
+| **Presidential subtotal** | **\$65B** | | **\$5.12B** |
 
 **Oversight system Delegation Risk:**
 
@@ -586,13 +586,13 @@ Now we must sum Delegation Risk across all oversight components:
 
 | Oversight Component | Delegation Risk |
 |--------------------|-----|
-| Adversarial monitors (Layer 1) | $3B |
-| Random audit (Layer 2) | $2B |
-| Nuclear chain (Layer 3a) | $500M |
-| Military chain (Layer 3b) | $1B |
-| Financial chain (Layer 3c) | $800M |
-| Coordination failures between layers | $1.5B |
-| **Oversight subtotal** | **$8.8B** |
+| Adversarial monitors (Layer 1) | \$3B |
+| Random audit (Layer 2) | \$2B |
+| Nuclear chain (Layer 3a) | \$500M |
+| Military chain (Layer 3b) | \$1B |
+| Financial chain (Layer 3c) | \$800M |
+| Coordination failures between layers | \$1.5B |
+| **Oversight subtotal** | **\$8.8B** |
 
 ### Total System Delegation Risk With Combined Oversight
 
@@ -604,12 +604,12 @@ Total Delegation Risk = Presidential Delegation Risk + Oversight Delegation Risk
 
 | Architecture | Total Delegation Risk | vs. Baseline | Reduction |
 |--------------|-----------|--------------|-----------|
-| No oversight | $65B | — | 0% |
-| Single Ombudsman | $35.8B | -45% | 45% |
-| 5-Person Committee | $33.2B | -49% | 49% |
-| Randomized + Expert | $31.6B | -51% | 51% |
-| Adversarial (2 parties) | $20.65B | -68% | 68% |
-| **Combined Layered** | **$13.9B** | **-79%** | **79%** |
+| No oversight | \$65B | — | 0% |
+| Single Ombudsman | \$35.8B | -45% | 45% |
+| 5-Person Committee | \$33.2B | -49% | 49% |
+| Randomized + Expert | \$31.6B | -51% | 51% |
+| Adversarial (2 parties) | \$20.65B | -68% | 68% |
+| **Combined Layered** | **\$13.9B** | **-79%** | **79%** |
 
 :::tip[The Power of Layered Defense]
 The combined system achieves 79% Delegation Risk reduction—not because any single layer is perfect, but because violations must evade *all* layers simultaneously. Defense in depth works.
@@ -683,7 +683,7 @@ Oversight mechanisms that rely on public exposure (adversarial monitors, random 
 
 **At some point, adding more oversight creates more liability than it prevents.**
 
-Our combined system ($13.9B Delegation Risk) is likely near the optimal—additional layers would add complexity and new failure modes without proportional benefit.
+Our combined system (\$13.9B Delegation Risk) is likely near the optimal—additional layers would add complexity and new failure modes without proportional benefit.
 
 ---
 
@@ -740,11 +740,11 @@ The highest-damage actions deserve bespoke oversight:
 
 | Damage Potential | Oversight Investment |
 |------------------|---------------------|
-| < $1B | Standard layered system |
-| $1B - $100B | Domain-specific chain |
-| > $100B | Dedicated system, multiple vetos, hardware interlocks |
+| < \$1B | Standard layered system |
+| \$1B - \$100B | Domain-specific chain |
+| > \$100B | Dedicated system, multiple vetos, hardware interlocks |
 
-Nuclear launch ($50T damage potential) warrants extreme measures that would be absurd for routine executive orders.
+Nuclear launch (\$50T damage potential) warrants extreme measures that would be absurd for routine executive orders.
 
 ### Principle 5: Accept Irreducible Trust
 

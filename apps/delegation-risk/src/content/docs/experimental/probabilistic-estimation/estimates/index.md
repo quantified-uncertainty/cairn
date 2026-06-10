@@ -17,7 +17,7 @@ This section provides a centralized registry of all quantitative estimates used 
 
 ## Why Formalize Estimates?
 
-Most risk frameworks use point estimates like "probability = 2%" or "damage = $5,000". This understates uncertainty and can lead to:
+Most risk frameworks use point estimates like "probability = 2%" or "damage = \$5,000". This understates uncertainty and can lead to:
 
 1. **Overconfidence** in risk calculations
 2. **Poor decisions** when parameters are near critical thresholds

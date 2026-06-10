@@ -210,7 +210,7 @@ Exact Shapley is #P-hard. Approximations:
 
 **Innovations:** Simultaneous closing, activity rules, information revelation, package bidding.
 
-**Success:** 87 auctions, >$60B revenue, became global standard.
+**Success:** 87 auctions, >\$60B revenue, became global standard.
 
 **Lessons:** Multi-dimensional allocation, iterative revelation, simplicity matters (coded in Excel).
 

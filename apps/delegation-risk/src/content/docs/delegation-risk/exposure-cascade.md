@@ -22,9 +22,9 @@ Consider a corporation with a standard hierarchy:
 - **Managers**: ~20 middle managers
 - **Employees**: ~200 frontline workers
 
-The Board decides: "We're willing to accept **$5 million** in total delegation exposure for this organization."
+The Board decides: "We're willing to accept **\$5 million** in total delegation exposure for this organization."
 
-This $5M is the **exposure budget**—the maximum expected harm from all delegation relationships combined. But how does it flow down through the hierarchy?
+This \$5M is the **exposure budget**—the maximum expected harm from all delegation relationships combined. But how does it flow down through the hierarchy?
 
 ---
 
@@ -84,11 +84,11 @@ flowchart TB
 
 ### Reading the Diagram
 
-- **Board** has $5M total budget, keeps $500k for board-level decisions
-- **CEO** receives $4.5M, keeps $1.5M for CEO-level decisions, passes $3M to executives
-- **Executives** (5 people) share $3M ($600k each), collectively pass $1M to managers
-- **Managers** (20 people) share $1M ($50k each), collectively pass $600k to employees
-- **Employees** (200 people) share $600k ($3k each)—this is their individual exposure budget
+- **Board** has \$5M total budget, keeps \$500k for board-level decisions
+- **CEO** receives \$4.5M, keeps \$1.5M for CEO-level decisions, passes \$3M to executives
+- **Executives** (5 people) share \$3M (\$600k each), collectively pass \$1M to managers
+- **Managers** (20 people) share \$1M (\$50k each), collectively pass \$600k to employees
+- **Employees** (200 people) share \$600k (\$3k each)—this is their individual exposure budget
 
 ---
 
@@ -98,11 +98,11 @@ Another way to see this—how exposure is **consumed** vs **delegated** at each 
 
 | Level | People | Receives | Retains (direct) | Delegates | Per-Person |
 |-------|--------|----------|------------------|-----------|------------|
-| Board | 7 | $5.0M | $500k (10%) | $4.5M | $71k |
-| CEO | 1 | $4.5M | $1.5M (33%) | $3.0M | $4.5M |
-| Executives | 5 | $3.0M | $2.0M (67%) | $1.0M | $600k |
-| Managers | 20 | $1.0M | $400k (40%) | $600k | $50k |
-| Employees | 200 | $600k | $600k (100%) | $0 | $3k |
+| Board | 7 | \$5.0M | \$500k (10%) | \$4.5M | \$71k |
+| CEO | 1 | \$4.5M | \$1.5M (33%) | \$3.0M | \$4.5M |
+| Executives | 5 | \$3.0M | \$2.0M (67%) | \$1.0M | \$600k |
+| Managers | 20 | \$1.0M | \$400k (40%) | \$600k | \$50k |
+| Employees | 200 | \$600k | \$600k (100%) | \$0 | \$3k |
 
 **Key observation**: Higher levels retain more proportionally. The CEO keeps 33% for direct decisions; managers keep 40%. This is because higher-level decisions tend to be more consequential.
 
@@ -145,7 +145,7 @@ flowchart TB
     style EMP fill:#fdd
 ```
 
-**Per-employee exposure**: $1,000
+**Per-employee exposure**: \$1,000
 
 **Characteristics**:
 - Heavy verification at every level
@@ -166,7 +166,7 @@ flowchart TB
     style EMP fill:#dfd
 ```
 
-**Per-employee exposure**: $3,000
+**Per-employee exposure**: \$3,000
 
 **Characteristics**:
 - Balanced delegation and oversight
@@ -187,7 +187,7 @@ flowchart TB
     style EMP fill:#ddf
 ```
 
-**Per-employee exposure**: $7,500
+**Per-employee exposure**: \$7,500
 
 **Characteristics**:
 - Minimal verification overhead
@@ -200,17 +200,17 @@ flowchart TB
 
 | Scenario | Board | CEO | Execs | Managers | Employees | Per-Employee |
 |----------|-------|-----|-------|----------|-----------|--------------|
-| **Tight** | $5M | $4M | $2M | $500k | $200k | **$1,000** |
-| **Standard** | $5M | $4.5M | $3M | $1M | $600k | **$3,000** |
-| **Loose** | $5M | $4.8M | $4M | $2M | $1.5M | **$7,500** |
+| **Tight** | \$5M | \$4M | \$2M | \$500k | \$200k | **\$1,000** |
+| **Standard** | \$5M | \$4.5M | \$3M | \$1M | \$600k | **\$3,000** |
+| **Loose** | \$5M | \$4.8M | \$4M | \$2M | \$1.5M | **\$7,500** |
 
 ### What the Numbers Mean
 
 **Per-employee exposure** is a key metric. It represents the expected harm budget for an individual frontline worker's decisions.
 
-- **$1,000/person** (tight): Employees need approval for almost everything. Good for nuclear plants, bad for startups.
-- **$3,000/person** (standard): Employees can handle routine decisions autonomously. Most organizations.
-- **$7,500/person** (loose): Employees are trusted to make significant judgment calls. Tech companies, professional services.
+- **\$1,000/person** (tight): Employees need approval for almost everything. Good for nuclear plants, bad for startups.
+- **\$3,000/person** (standard): Employees can handle routine decisions autonomously. Most organizations.
+- **\$7,500/person** (loose): Employees are trusted to make significant judgment calls. Tech companies, professional services.
 
 ---
 
@@ -223,11 +223,11 @@ Higher levels make bigger decisions, so they need bigger exposure budgets for di
 
 | Level | Typical Decisions | Consequence Range |
 |-------|-------------------|-------------------|
-| Board | M&A, CEO selection | $10M - $1B |
-| CEO | Strategy, reorgs | $1M - $100M |
-| Executives | Department direction | $100k - $10M |
-| Managers | Team operations | $10k - $500k |
-| Employees | Daily tasks | $100 - $50k |
+| Board | M&A, CEO selection | \$10M - \$1B |
+| CEO | Strategy, reorgs | \$1M - \$100M |
+| Executives | Department direction | \$100k - \$10M |
+| Managers | Team operations | \$10k - \$500k |
+| Employees | Daily tasks | \$100 - \$50k |
 
 ### 2. Verification Overhead
 Each delegation relationship has overhead—time spent checking work. More retention = less overhead but less scale.
@@ -245,7 +245,7 @@ Lower trust = retain more. If you don't trust your executives, keep more exposur
 
 :::tip[Key Insights]
 1. **Exposure cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions (why multiplication is the right composition — and when it needs a correlation correction — is derived in [Risk Propagation](/delegation-risk/risk-propagation/))
-2. **Per-person exposure shrinks at scale**: 200 employees sharing $600k = $3k each, while 1 CEO gets $4.5M
+2. **Per-person exposure shrinks at scale**: 200 employees sharing \$600k = \$3k each, while 1 CEO gets \$4.5M
 3. **Retention reflects control**: High retention = tight control, low retention = high delegation
 4. **The total is conserved**: All exposure either gets retained or delegated—it doesn't disappear
 5. **Structure determines risk**: Same people, different cascade = different risk profile
@@ -258,13 +258,13 @@ Lower trust = retain more. If you don't trust your executives, keep more exposur
 Your company has been running with **Standard** oversight, but after a compliance incident, the board wants to tighten up.
 
 **Current state** (Standard):
-- Per-employee exposure: $3,000
-- Total employee exposure: $600k
+- Per-employee exposure: \$3,000
+- Total employee exposure: \$600k
 - Incidents last year: 3 (expected ~2 at this risk level)
 
 **Proposed change**: Move to **Tight** oversight
-- Per-employee exposure: $1,000 (67% reduction)
-- Total employee exposure: $200k
+- Per-employee exposure: \$1,000 (67% reduction)
+- Total employee exposure: \$200k
 
 **How to implement**:
 1. Managers retain more (increase approval thresholds)

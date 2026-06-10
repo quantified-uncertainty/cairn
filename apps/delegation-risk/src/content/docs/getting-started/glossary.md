@@ -54,10 +54,10 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 **Delegation Exposure** — The complete set of possible harms (harm modes) from delegating a task. Not a single number—a collection, like an attack surface or failure envelope. Contains all the ways the delegation could cause damage.
 
 <span id="harm-mode"></span>
-**Harm Mode** — A specific way a delegation could cause damage. Parallels "failure mode" from [FMEA](https://en.wikipedia.org/wiki/Failure_mode_and_effects_analysis). Each harm mode has a probability and a damage value. *Example*: "Leaks proprietary data" with P=0.001 and Damage=$50,000.
+**Harm Mode** — A specific way a delegation could cause damage. Parallels "failure mode" from [FMEA](https://en.wikipedia.org/wiki/Failure_mode_and_effects_analysis). Each harm mode has a probability and a damage value. *Example*: "Leaks proprietary data" with P=0.001 and Damage=\$50,000.
 
 <span id="delegation-risk"></span>
-**Delegation Risk** — The probability-weighted expected cost of a delegation: Σ P(harm mode) × Damage(harm mode). This is the quantified total across all harm modes in the delegation exposure. Measured in dollars per time period. *Example*: Two harm modes ($100 + $50) = $150 delegation risk. Decomposes into Accident Risk + Defection Risk.
+**Delegation Risk** — The probability-weighted expected cost of a delegation: Σ P(harm mode) × Damage(harm mode). This is the quantified total across all harm modes in the delegation exposure. Measured in dollars per time period. *Example*: Two harm modes (\$100 + \$50) = \$150 delegation risk. Decomposes into Accident Risk + Defection Risk.
 
 <span id="accident-exposure"></span>
 **Accident Exposure** — The subset of delegation exposure containing non-goal-directed harm modes: bugs, errors, hallucinations, capability limitations, edge cases. These are failures where the system isn't pursuing a conflicting objective—it's just failing to achieve the intended one. See [Risk Decomposition](/delegation-risk/risk-decomposition/).
@@ -301,8 +301,8 @@ Some terms are used interchangeably in casual discussion but have distinct meani
 
 | Metric | Low Risk | Medium Risk | High Risk |
 |--------|----------|-------------|-----------|
-| Component Delegation Risk | < $100/mo | $100-500/mo | > $500/mo |
-| System Delegation Risk | < $1,000/mo | $1,000-5,000/mo | > $5,000/mo |
+| Component Delegation Risk | < \$100/mo | \$100-500/mo | > \$500/mo |
+| System Delegation Risk | < \$1,000/mo | \$1,000-5,000/mo | > \$5,000/mo |
 | Harm mode probability | < 10⁻³ | 10⁻³ to 10⁻² | > 10⁻² |
 | Nuclear CDF target | - | - | ~10⁻⁵/year |
 | Aviation target | - | - | ~10⁻⁹/hour |

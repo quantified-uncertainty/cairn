@@ -44,13 +44,13 @@ flowchart TB
 
 | Authority | P(abuse) | Damage | Delegation Risk |
 |-----------|----------|--------|-----|
-| Battle command | 0.05 | 50 lives × $50K = $2.5M | $125,000 |
-| Loot distribution | 0.01 (public, audited) | $100K | $1,000 |
-| Discipline | 0.03 | $20K (crew morale) | $600 |
-| Route decisions | 0.10 | $500K (bad hunt) | $50,000 |
-| **Total** | | | **~$176,600/voyage** |
+| Battle command | 0.05 | 50 lives × \$50K = \$2.5M | \$125,000 |
+| Loot distribution | 0.01 (public, audited) | \$100K | \$1,000 |
+| Discipline | 0.03 | \$20K (crew morale) | \$600 |
+| Route decisions | 0.10 | \$500K (bad hunt) | \$50,000 |
+| **Total** | | | **~\$176,600/voyage** |
 
-Compare to a Royal Navy captain of the same era: roughly **$2M** Delegation Risk—absolute authority, no accountability, press-ganged crews with no exit option.
+Compare to a Royal Navy captain of the same era: roughly **\$2M** Delegation Risk—absolute authority, no accountability, press-ganged crews with no exit option.
 
 :::note[The Democracy Discount]
 Pirate ships achieved roughly **10× lower Delegation Risk** than naval vessels through democratic accountability. The "lawless" pirates had better trust architecture than the "civilized" navy—because their checks were structural, not aspirational.
@@ -131,10 +131,10 @@ flowchart TB
 
 | Failure Mode | P(occurrence) | Damage | Delegation Risk |
 |--------------|---------------|--------|-----|
-| Leak to Germany | 0.001 | Nuclear arms race during WWII, $100B+ | $100M |
-| Leak to USSR | 0.01 | Earlier Soviet bomb (happened: Fuchs) | $500M |
-| Technical failure | 0.20 | $2B wasted, war prolonged | $400M |
-| Workplace accident | 0.30 | $10M (radiation, criticality) | $3M |
+| Leak to Germany | 0.001 | Nuclear arms race during WWII, \$100B+ | \$100M |
+| Leak to USSR | 0.01 | Earlier Soviet bomb (happened: Fuchs) | \$500M |
+| Technical failure | 0.20 | \$2B wasted, war prolonged | \$400M |
+| Workplace accident | 0.30 | \$10M (radiation, criticality) | \$3M |
 
 **Actual outcome**: The USSR got the bomb 2–4 years earlier because Klaus Fuchs, a British physicist in the theoretical division, passed secrets. Compartmentalization failed precisely at the node with atypically *high* context—Fuchs understood the full design.
 

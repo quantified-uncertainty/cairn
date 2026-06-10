@@ -40,12 +40,12 @@ Every piece of information has an exposure cost:
 | Information Level | Reveal Cost | What You Learn |
 |-------------------|-------------|----------------|
 | Task Type + Complexity | Free | Basic categorization |
-| Data Sensitivity | +$15-50 | How secret is the input? |
-| Context Summary | +$20-80 | Why does the principal want this? |
-| Full Brief | +$50-200 | Complete task description |
-| Input Data Sample | +$30-100 | Preview of actual data |
-| Full Input Data | +$100-500 | Everything you'll work with |
-| Principal Identity | +$200-1000 | Who's asking (if disclosed) |
+| Data Sensitivity | +\$15-50 | How secret is the input? |
+| Context Summary | +\$20-80 | Why does the principal want this? |
+| Full Brief | +\$50-200 | Complete task description |
+| Input Data Sample | +\$30-100 | Preview of actual data |
+| Full Input Data | +\$100-500 | Everything you'll work with |
+| Principal Identity | +\$200-1000 | Who's asking (if disclosed) |
 
 These costs are *additive to base exposure*. An anomaly who requests everything might face 3-4× the exposure of one who works blind.
 
@@ -425,10 +425,10 @@ WINNING BID: Consortium led by Anomaly Sigma
 
 **Result:**
 - 34 entities touched the task
-- Maximum individual exposure: $890 (Sigma)
-- Average subtask exposure: $215
+- Maximum individual exposure: \$890 (Sigma)
+- Average subtask exposure: \$215
 - No single entity could reconstruct the full picture
-- Total system exposure: $8,200 (vs. ~$25,000 for monolithic)
+- Total system exposure: \$8,200 (vs. ~\$25,000 for monolithic)
 
 ---
 

@@ -14,7 +14,7 @@ Mr. X has a documented history of exploiting clients. He will almost certainly t
 
 ## The Market Pressure
 
-The gem delivery market has changed. Three new courier services have entered Alice's territory, undercutting her prices. Her clients are asking why they're paying $50 per delivery when competitors charge $35. Xavier is good, but his premium barely covers the margin she's losing.
+The gem delivery market has changed. Three new courier services have entered Alice's territory, undercutting her prices. Her clients are asking why they're paying \$50 per delivery when competitors charge \$35. Xavier is good, but his premium barely covers the margin she's losing.
 
 Alice needs to cut costs or find someone exceptional.
 
@@ -170,7 +170,7 @@ They meet with Mr. X. Diana studies him the way a chess player studies a board.
 
 | My Commitment | Effect |
 |---------------|--------|
-| $10 million bond held by a consortium of my known adversaries | They *want* me to fail—maximally hostile custodians |
+| \$10 million bond held by a consortium of my known adversaries | They *want* me to fail—maximally hostile custodians |
 | Bond denominated in assets I cannot manipulate | Eliminates financial engineering |
 | Automatic forfeiture triggered by *any* anomaly, not just proven theft | Shifts burden of proof to me |
 | Personal guarantee from three entities who have leverage over me | They'll ensure my compliance |
@@ -326,7 +326,7 @@ Diana steps away to calculate. Carol watches Mr. X with undisguised unease.
 |-------|-------------------|-------------------|
 | Physical controls (scans, mitts, blindfold) | Taking physical items | Near zero |
 | Information controls (replica office, amnesia) | Learning secrets | Near zero |
-| Financial controls ($10M hostile bond) | Rational theft motive | Eliminated |
+| Financial controls (\$10M hostile bond) | Rational theft motive | Eliminated |
 | Structural controls (decoys, random timing) | Planning/coordination | Severely limited |
 | Adversarial monitoring (enemies, competitors) | Collusion with handlers | Covered |
 | Dead man's switch | General defection | Mutually assured destruction |
@@ -339,9 +339,9 @@ Diana steps away to calculate. Carol watches Mr. X with undisguised unease.
 
 | Agent | Premium | Notes |
 |-------|---------|-------|
-| Dumb Bob | $600/year | Baseline exposure |
-| Xavier (self-constrained) | $350/year | Voluntary transparency, possibly aligned |
-| **Mr. X (extreme protocols)** | **$12,000/year** | Known hostile + residual unknowns |
+| Dumb Bob | \$600/year | Baseline exposure |
+| Xavier (self-constrained) | \$350/year | Voluntary transparency, possibly aligned |
+| **Mr. X (extreme protocols)** | **\$12,000/year** | Known hostile + residual unknowns |
 
 **Alice**: Why so much higher than Xavier?
 

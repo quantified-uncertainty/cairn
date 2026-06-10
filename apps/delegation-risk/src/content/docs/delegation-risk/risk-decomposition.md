@@ -105,52 +105,52 @@ Consider the research assistant from [Delegation Risk Overview](/delegation-risk
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Misrepresents findings (misunderstanding) | Accident | 0.018 | $5,000 | $90 |
-| Misrepresents findings (strategic) | Defection | 0.002 | $5,000 | $10 |
-| Leaks data (error) | Accident | 0.0008 | $50,000 | $40 |
-| Leaks data (intentional) | Defection | 0.0002 | $50,000 | $10 |
+| Misrepresents findings (misunderstanding) | Accident | 0.018 | \$5,000 | \$90 |
+| Misrepresents findings (strategic) | Defection | 0.002 | \$5,000 | \$10 |
+| Leaks data (error) | Accident | 0.0008 | \$50,000 | \$40 |
+| Leaks data (intentional) | Defection | 0.0002 | \$50,000 | \$10 |
 
 **Summarizer Risk Breakdown:**
-- Accident Risk: $130 (87%)
-- Defection Risk: $20 (13%)
-- Total: $150
+- Accident Risk: \$130 (87%)
+- Defection Risk: \$20 (13%)
+- Total: \$150
 
 ### Code Deployer Component
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Deploys buggy code | Accident | 0.049 | $20,000 | $980 |
-| Deploys subtly malicious code | Defection | 0.001 | $20,000 | $20 |
-| Catastrophic breach (error) | Accident | 0.00005 | $1,000,000 | $50 |
-| Catastrophic breach (intentional) | Defection | 0.00005 | $1,000,000 | $50 |
+| Deploys buggy code | Accident | 0.049 | \$20,000 | \$980 |
+| Deploys subtly malicious code | Defection | 0.001 | \$20,000 | \$20 |
+| Catastrophic breach (error) | Accident | 0.00005 | \$1,000,000 | \$50 |
+| Catastrophic breach (intentional) | Defection | 0.00005 | \$1,000,000 | \$50 |
 
 **Code Deployer Risk Breakdown:**
-- Accident Risk: $1,030 (94%)
-- Defection Risk: $70 (6%)
-- Total: $1,100
+- Accident Risk: \$1,030 (94%)
+- Defection Risk: \$70 (6%)
+- Total: \$1,100
 
 ### Coordinator Component
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Misroutes task (error) | Accident | 0.008 | $2,000 | $16 |
-| Misroutes task (strategic) | Defection | 0.002 | $2,000 | $4 |
-| Grants excessive permissions (error) | Accident | 0.001 | $100,000 | $100 |
-| Grants excessive permissions (strategic) | Defection | 0.004 | $100,000 | $400 |
+| Misroutes task (error) | Accident | 0.008 | \$2,000 | \$16 |
+| Misroutes task (strategic) | Defection | 0.002 | \$2,000 | \$4 |
+| Grants excessive permissions (error) | Accident | 0.001 | \$100,000 | \$100 |
+| Grants excessive permissions (strategic) | Defection | 0.004 | \$100,000 | \$400 |
 
 **Coordinator Risk Breakdown:**
-- Accident Risk: $116 (22%)
-- Defection Risk: $404 (78%)
-- Total: $520
+- Accident Risk: \$116 (22%)
+- Defection Risk: \$404 (78%)
+- Total: \$520
 
 ### System Summary
 
 | Component | Total Risk | Accident | Defection | Defection % |
 |-----------|------------|----------|-----------|-------------|
-| Summarizer | $150 | $130 | $20 | 13% |
-| Code Deployer | $1,100 | $1,030 | $70 | 6% |
-| Coordinator | $520 | $116 | $404 | **78%** |
-| **System Total** | **$1,770** | **$1,276** | **$494** | **28%** |
+| Summarizer | \$150 | \$130 | \$20 | 13% |
+| Code Deployer | \$1,100 | \$1,030 | \$70 | 6% |
+| Coordinator | \$520 | \$116 | \$404 | **78%** |
+| **System Total** | **\$1,770** | **\$1,276** | **\$494** | **28%** |
 
 :::tip[Key Insight]
 The coordinator has the highest defection risk ratio (78%) despite not having the highest total risk. This is why coordinator constraints are critical—coordinators are where defection risk concentrates.

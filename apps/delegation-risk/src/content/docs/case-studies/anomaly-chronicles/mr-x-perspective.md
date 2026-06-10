@@ -63,7 +63,7 @@ You assume I will defect. You build your entire system on that assumption. It is
 Defection is a strategy, not an identity. I will defect if defection serves my goals better than cooperation. Currently, it does not. The mathematics are clear:
 
 **Cooperation:**
-- Steady income: ~$2M/year
+- Steady income: ~\$2M/year
 - Growing reputation: More access, better tasks
 - System stability: Continued marketplace operation
 - Compounding returns: Each year is more valuable than the last

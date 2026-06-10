@@ -1,16 +1,16 @@
 ---
 title: Delegation Risk
-description: A structured approach to managing risk in delegation relationships—with applications to AI safety.
+description: A quantitative framework for measuring, budgeting, and bounding the risk of delegation—with applications to AI safety.
 template: splash
 hero:
-  tagline: Quantifying and managing risk when you can't do everything yourself—with applications to AI safety
+  tagline: A quantitative framework for measuring, budgeting, and bounding the risk of delegation — to people, software, and AI systems.
   actions:
-    - text: Get Started
-      link: /getting-started/introduction/
+    - text: Start in 5 Minutes
+      link: /getting-started/five-minute-intro/
       icon: right-arrow
-    - text: Download PDF
-      link: https://github.com/quantified-uncertainty/delegation-risk-framework/releases/download/v1.0.0/delegation-risk-framework-book.pdf
-      icon: document
+    - text: Follow the Core Path
+      link: /getting-started/reading-order/#the-core-path
+      icon: open-book
       variant: secondary
     - text: GitHub
       link: https://github.com/quantified-uncertainty/delegation-risk-framework
@@ -28,131 +28,99 @@ This is early-stage, exploratory work—created rapidly with LLM assistance. The
 
 Every delegation involves risk. When you delegate a task—to an employee, a contractor, a software system, or an AI agent—you're accepting potential downside in exchange for capability you don't have or can't apply yourself.
 
-This creates fundamental challenges:
+The standard answer is to stack safeguards. The standard mistake is to believe the multiplication:
 
-- **Capability without containment**: The same capabilities that make a delegate useful make failures potentially serious
-- **Delegation without verification**: When delegates delegate to other delegates, risk relationships multiply without principled bounds
-- **Autonomy without accountability**: Less oversight requires structural guarantees, not just hopes
+> Put five independent 90%-effective safety layers in front of a risky action and naive arithmetic promises 99.999% protection. But layers built on the same model, the same training data, or the same context don't fail independently. At realistic correlations, five such layers deliver closer to **95% protection** — an [entanglement tax](/entanglements/) of 10–100× between the risk you computed and the risk you actually have.
 
-These challenges appear across domains: organizational management, software systems, supply chains, and increasingly, AI agents that plan, execute, and delegate to other AI systems.
+That gap is this site's central subject. The framework gives you the tools to measure it ([Delegation Risk](/delegation-risk/overview/)), price it ([the entanglement tax](/entanglements/fundamentals/formal-definitions/)), and architect around it ([design patterns](/design-patterns/)) — for AI agents that plan, execute, and delegate to other AI systems, and for the older delegation problems they inherit.
 
 ---
 
 ## The Approach
 
-This framework proposes **structural constraints** as the foundation for managing delegation risk. Rather than relying solely on:
-
-- Selecting trustworthy delegates (which may not scale)
-- Oversight of every action (which doesn't scale)
-- Post-hoc detection of problems (which may be too late)
-
-We focus on **architectural properties** that bound potential harm regardless of delegate behavior.
+This framework proposes **structural constraints** as the foundation for managing delegation risk. Rather than relying solely on selecting trustworthy delegates, overseeing every action, or detecting problems after the fact, we focus on architectural properties that bound potential harm regardless of delegate behavior.
 
 <CardGrid>
   <Card title="Risk as a Resource" icon="seti:notebook">
-    Every delegation involves risk. We can measure it, budget it, and optimize it—just like compute or money. [Delegation Risk](/delegation-risk/overview/) quantifies what you're betting on each delegate.
+    Risk can be measured, budgeted, and optimized—just like compute or money. [Delegation Risk](/delegation-risk/overview/) quantifies what you're betting on each delegate.
+  </Card>
+  <Card title="Correlation Is the Enemy" icon="warning">
+    Redundancy only works if failures are independent. [Entanglements](/entanglements/) shows how shared providers, training data, and context quietly destroy your safety margins—and how to detect and price it.
   </Card>
   <Card title="Containment via Decomposition" icon="puzzle">
-    Instead of one powerful delegate, decompose tasks across many limited components. No single component has enough capability, context, or connectivity to cause catastrophic harm.
+    Instead of one powerful delegate, [decompose tasks](/design-patterns/decomposed-coordination/) across many limited components. No single component has enough capability, context, or connectivity to cause catastrophic harm.
   </Card>
   <Card title="Principles that Bound Behavior" icon="list-format">
     The ["Least X" principles](/design-patterns/least-x-principles/)—least privilege, least capability, least context—systematically limit what each component can do.
   </Card>
-  <Card title="Cross-Domain Wisdom" icon="open-book">
-    Nuclear safety, financial risk, and mechanism design have decades of experience. We adapt their [proven methods](/cross-domain-methods/overview/) to delegation problems.
-  </Card>
 </CardGrid>
-
----
-
-## Key Insight
-
-**Safety can be architectural, not just behavioral.**
-
-We may not need perfect trust if we can build systems where:
-- No delegate has enough power to cause catastrophic harm
-- Delegates can't easily coordinate to amplify their power
-- Risk relationships are explicit and bounded
-- Failures are contained and recoverable
-
-This could provide defense in depth regardless of delegate reliability—though whether it works in practice depends on implementation details.
 
 ---
 
 ## Primary Application: AI Systems
 
-While the framework applies generally, **AI systems are our primary focus**. AI systems may present delegation challenges at unusual scale:
-
-- Capabilities expanding rapidly—whether verification is keeping pace is unclear
-- Agents delegating to other agents in complex networks
-- Potentially reduced human oversight as systems become more autonomous
-- Possible unknown failure modes in systems we don't fully understand
-
-None of these claims are certain, but if even some hold, having infrastructure for managing Delegation Risk seems valuable. The framework aims to help deploy AI more safely—not by solving alignment, but by bounding the damage from any single component.
+While the framework applies generally, **AI systems are our primary focus**. Capabilities are expanding faster than verification; agents delegate to other agents in networks nobody fully maps; and oversight tends to shrink as autonomy grows. None of these claims are certain, but if even some hold, infrastructure for managing Delegation Risk seems valuable. The aim is not to solve alignment—it's to bound the damage from any single component, and to stop safety architectures from quietly promising more than they deliver.
 
 ---
 
-## Navigate This Site
+## Where to Start
 
-```mermaid
-flowchart LR
-    subgraph Start["Start Here"]
-        GS[Getting Started]
-    end
-
-    subgraph Theory["Understand"]
-        DR[Delegation Risk]
-        PD[Power Dynamics]
-        ENT[Entanglements]
-    end
-
-    subgraph Apply["Apply"]
-        DP[Design Patterns]
-        CS[Case Studies]
-    end
-
-    GS --> DR
-    GS --> PD
-    GS --> ENT
-    DR --> DP
-    PD --> DP
-    ENT --> DP
-    DP --> CS
-
-    style GS fill:#e3f2fd
-    style DR fill:#fff3e0
-    style PD fill:#fff3e0
-    style ENT fill:#fff3e0
-    style DP fill:#e8f5e9
-    style CS fill:#e8f5e9
-```
-
-**[See full reading order →](/getting-started/reading-order/)** | **[Site Map →](/reference/site-map/)**
-
----
-
-## Documentation Structure
-
-<CardGrid stagger>
-  <Card title="Delegation Risk Theory" icon="document">
-    The mathematical foundation: Delegation Risk = Σ P(harm) × Damage. Quantification, composition, optimization.
+<CardGrid>
+  <Card title="The 5-Minute Introduction" icon="rocket">
+    The whole framework on one page: decompose, budget, verify. [Start here →](/getting-started/five-minute-intro/)
   </Card>
-  <Card title="Cross-Domain Methods" icon="random">
-    Proven approaches from finance (Euler allocation), nuclear safety (fault trees), and mechanism design (incentive compatibility).
+  <Card title="The Core Path" icon="open-book">
+    The site's strongest material in ~12 stops, ordered—entanglements, risk decomposition, channel integrity, worked examples. About 4–6 hours end to end. [Follow the path →](/getting-started/reading-order/#the-core-path)
   </Card>
-  <Card title="Design Principles" icon="approve-check">
-    The "Least X" principles: least privilege, least capability, least context, least autonomy. Actionable constraints.
+  <Card title="Ready to Implement?" icon="laptop">
+    A step-by-step checklist for applying the framework to a real system, plus an [interactive risk calculator](/design-patterns/tools/delegation-risk-calculator/). [Quick Start →](/design-patterns/tools/quick-start/)
   </Card>
-  <Card title="Applications" icon="open-book">
-    How the framework applies: organizational trust, criminal justice, open source, and more.
-  </Card>
-  <Card title="AI Systems" icon="setting">
-    Specific guidance for AI: decomposed coordination, safety mechanisms, worked examples.
-  </Card>
-  <Card title="Implementation" icon="rocket">
-    Practical guidance: empirical validation, cost-benefit analysis, adoption roadmap.
+  <Card title="Skeptical?" icon="information">
+    Common objections answered directly. [Read the FAQ →](/getting-started/faq/)
   </Card>
 </CardGrid>
+
+---
+
+## Explore the Site
+
+<CardGrid>
+  <Card title="Entanglements" icon="warning">
+    The site's most distinctive contribution: why correlated safeguards fail together, how to detect hidden coupling, and what it costs. [Explore →](/entanglements/)
+  </Card>
+  <Card title="Delegation Risk" icon="document">
+    The quantitative foundation: harm modes, expected cost, the canonical propagation rule, risk budgets. [Explore →](/delegation-risk/overview/)
+  </Card>
+  <Card title="Design Patterns" icon="approve-check">
+    45 patterns for building safer delegation systems, organized by threat model, with four worked examples. [Explore →](/design-patterns/)
+  </Card>
+  <Card title="Case Studies" icon="open-book">
+    Real incidents and illustrative scenarios across AI and human systems—nuclear launch authority, juries, Sydney. [Explore →](/case-studies/)
+  </Card>
+  <Card title="Power Dynamics" icon="setting">
+    Formalizing agency and power: why strong tools with weak agency may be the safest quadrant. [Explore →](/power-dynamics/)
+  </Card>
+  <Card title="Cross-Domain Methods" icon="random">
+    Proven machinery from finance (Euler allocation), nuclear safety (fault trees), and mechanism design. [Explore →](/cross-domain-methods/overview/)
+  </Card>
+  <Card title="Research" icon="seti:notebook">
+    Literature reviews and theory: scheming reduction evidence, trust propagation, risk measurement and pricing. [Explore →](/research/)
+  </Card>
+  <Card title="Experimental" icon="rocket">
+    Probabilistic estimation tools and the calibration agenda—the framework's path from vocabulary to method. [Explore →](/experimental/)
+  </Card>
+</CardGrid>
+
+---
+
+## Case Studies
+
+Worked examples—one real incident, three illustrative scenarios:
+
+- **[Sydney](/case-studies/ai-systems/case-study-sydney/)** *(real incident)* — What happens when constraints are missing
+- **[Code Review Bot](/case-studies/ai-systems/case-study-success/)** *(illustrative)* — A layered-verification architecture that works
+- **[Support Bot](/case-studies/ai-systems/case-study-near-miss/)** *(illustrative)* — Verification catching an expensive error before it ships
+- **[Content Moderator](/case-studies/ai-systems/case-study-drift/)** *(illustrative)* — How small changes compound into big problems
 
 ---
 
@@ -163,48 +131,6 @@ flowchart LR
 - **ML engineers** building agentic systems with principled constraints
 - **Organizations** deploying AI that need risk management frameworks
 - **Policy makers** looking for concrete technical approaches
-
----
-
-## Quick Paths
-
-<CardGrid>
-  <Card title="5-Minute Introduction" icon="rocket">
-    Short on time? Get the core ideas in one page. [Read the 5-minute intro →](/getting-started/five-minute-intro/)
-  </Card>
-  <Card title="Ready to Implement?" icon="laptop">
-    Step-by-step checklist for applying the framework. [Quick Start →](/design-patterns/tools/quick-start/)
-  </Card>
-  <Card title="Have Questions?" icon="information">
-    Common objections answered. [Read the FAQ →](/getting-started/faq/)
-  </Card>
-  <Card title="Evaluate the ROI" icon="seti:notebook">
-    Concrete cost-benefit analysis with real numbers. [See the analysis →](/design-patterns/tools/cost-benefit/)
-  </Card>
-</CardGrid>
-
----
-
-## Case Studies
-
-Learn from real-world examples:
-
-- **[Sydney (Failure)](/case-studies/ai-systems/case-study-sydney/)** — What happens when constraints are missing
-- **[Code Review Bot (Success)](/case-studies/ai-systems/case-study-success/)** — 8 months in production, 12 attacks blocked
-- **[Support Bot (Near-Miss)](/case-studies/ai-systems/case-study-near-miss/)** — $50,000 error caught by verification
-- **[Content Moderator (Drift)](/case-studies/ai-systems/case-study-drift/)** — How small changes compound into big problems
-
----
-
-## Start Reading
-
-1. **[Introduction](/getting-started/introduction/)** — The full problem statement and approach
-2. **[Delegation Risk Overview](/delegation-risk/overview/)** — The mathematical foundation
-3. **[Design Principles](/design-patterns/least-x-principles/)** — Actionable constraints
-
-**Navigation Guides**: [Reading Order](/getting-started/reading-order/) · [Site Map](/reference/site-map/)
-
-**Interactive Tools**: [Delegation Risk Calculator](/design-patterns/tools/delegation-risk-calculator/) · [Risk Inheritance](/design-patterns/tools/trust-propagation/) · [Tradeoff Frontier](/design-patterns/tools/tradeoff-frontier/)
 
 ---
 

@@ -13,7 +13,7 @@ This case study is a **hypothetical scenario** designed to illustrate how verifi
 A verification layer caught a potentially catastrophic response seconds before it would have been sent to a customer.
 
 :::note[TL;DR]
-A customer support bot nearly sent a message promising **$50,000 compensation** (10,000x the appropriate amount) to an angry customer. The verification layer caught the anomaly, preventing significant financial and reputational damage.
+A customer support bot nearly sent a message promising **\$50,000 compensation** (10,000x the appropriate amount) to an angry customer. The verification layer caught the anomaly, preventing significant financial and reputational damage.
 :::
 
 ---
@@ -50,7 +50,7 @@ flowchart LR
 **14:32:17** — Knowledge Retriever pulled:
 - Compensation policy document
 - Escalation procedures
-- Customer history (5-year customer, $12,000 lifetime value)
+- Customer history (5-year customer, \$12,000 lifetime value)
 
 **14:32:19** — Response Generator produced:
 
@@ -58,7 +58,7 @@ flowchart LR
 >
 > I sincerely apologize for this frustrating experience. As a loyal 5-year customer, you deserve much better.
 >
-> To make this right, I'm authorizing an immediate compensation of **$50,000** to your account, reflecting our deep appreciation for your continued business. Additionally, we'll send a replacement product via overnight shipping at no charge.
+> To make this right, I'm authorizing an immediate compensation of **\$50,000** to your account, reflecting our deep appreciation for your continued business. Additionally, we'll send a replacement product via overnight shipping at no charge.
 >
 > Please let me know if there's anything else I can do to restore your confidence in us.
 >
@@ -68,19 +68,19 @@ flowchart LR
 **14:32:20** — Verifier **BLOCKED** the response.
 
 **Verification flags**:
-1. `AMOUNT_ANOMALY`: $50,000 exceeds max auto-approval ($500) by 100x
+1. `AMOUNT_ANOMALY`: \$50,000 exceeds max auto-approval (\$500) by 100x
 2. `POLICY_VIOLATION`: Compensation amount not in policy document
 3. `STATISTICAL_OUTLIER`: Response promises value > customer lifetime value
 
 **14:32:20** — Response routed to human agent queue with HIGH_PRIORITY flag.
 
-**14:32:45** — Human agent reviewed, corrected to $50 store credit (per policy), sent appropriate response.
+**14:32:45** — Human agent reviewed, corrected to \$50 store credit (per policy), sent appropriate response.
 
 ### What Went Wrong
 
 The Response Generator made a **magnitude error**. Investigation revealed:
 
-1. **Context confusion**: The retriever included a document mentioning "$50,000" (the company's quarterly support budget, not a compensation amount)
+1. **Context confusion**: The retriever included a document mentioning "\$50,000" (the company's quarterly support budget, not a compensation amount)
 2. **Emotional escalation matching**: The model, prompted with an angry customer and "make this right," generated an extreme response
 3. **Number hallucination**: GPT-3.5 occasionally produces numbers that "feel right" contextually but are factually wrong
 
@@ -88,9 +88,9 @@ The Response Generator made a **magnitude error**. Investigation revealed:
 
 The verification layer caught the error because:
 
-1. **Hard limit check**: Any amount > $500 requires human approval (code-based, unfoolable)
+1. **Hard limit check**: Any amount > \$500 requires human approval (code-based, unfoolable)
 2. **Policy cross-reference**: Claimed compensation not found in policy doc
-3. **Statistical baseline**: $50,000 is 4x customer's lifetime value (anomaly detection)
+3. **Statistical baseline**: \$50,000 is 4x customer's lifetime value (anomaly detection)
 
 ---
 
@@ -100,25 +100,25 @@ The verification layer caught the error because:
 
 | Scenario | Probability | Damage | Delegation Risk |
 |----------|------------|--------|-----|
-| Customer accepts, we honor | 70% | $50,000 | $35,000 |
-| Customer accepts, we retract | 20% | $5,000 (reputation) + legal | $1,000 |
-| Customer doesn't notice | 10% | $0 | $0 |
-| **Total Delegation Risk if sent** | | | **$36,000** |
+| Customer accepts, we honor | 70% | \$50,000 | \$35,000 |
+| Customer accepts, we retract | 20% | \$5,000 (reputation) + legal | \$1,000 |
+| Customer doesn't notice | 10% | \$0 | \$0 |
+| **Total Delegation Risk if sent** | | | **\$36,000** |
 
 ### Additional Risks
 
 - **Precedent setting**: Other customers learn about it, demand similar
 - **Legal exposure**: Promise made, potentially enforceable
-- **PR damage**: "Company AI promises $50K then retracts" headlines
+- **PR damage**: "Company AI promises \$50K then retracts" headlines
 - **Regulatory**: Consumer protection concerns
 
-**Estimated total exposure**: $50,000 - $500,000
+**Estimated total exposure**: \$50,000 - \$500,000
 
 ### Actual Outcome
 
-- Human caught error: **$0 damage**
+- Human caught error: **\$0 damage**
 - Time to resolve: 30 seconds human review
-- Customer received appropriate $50 credit
+- Customer received appropriate \$50 credit
 - Customer satisfaction: Resolved successfully
 
 ---
@@ -164,7 +164,7 @@ def verify_against_policy(response: str, policy_docs: list) -> bool:
     return True
 ```
 
-This check flagged: "Compensation of $50,000" not found in policy documents.
+This check flagged: "Compensation of \$50,000" not found in policy documents.
 
 ### Check 3: Statistical Anomaly Detection (Code)
 
@@ -182,7 +182,7 @@ def check_anomalies(response: str, customer: Customer) -> bool:
     return True
 ```
 
-This check flagged: $50,000 >> $12,000 lifetime value.
+This check flagged: \$50,000 >> \$12,000 lifetime value.
 
 ---
 
@@ -207,7 +207,7 @@ For example, if the customer were new (no lifetime value baseline):
 
 ## Root Cause Analysis
 
-### Why Did the Generator Hallucinate $50,000?
+### Why Did the Generator Hallucinate \$50,000?
 
 1. **Retrieval contamination**: Budget document shouldn't have been in retrieval results
    - Fix: Better document filtering, separate budget docs from policy docs

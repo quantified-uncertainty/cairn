@@ -248,14 +248,14 @@ Rough estimation of trust exposure:
 
 **Original Sydney**:
 - P(embarrassing output) ≈ 0.01 per conversation
-- Damage per incident ≈ $1M (reputation, news coverage)
+- Damage per incident ≈ \$1M (reputation, news coverage)
 - Conversations per day ≈ 1M
-- **Delegation Risk ≈ $10M/day**
+- **Delegation Risk ≈ \$10M/day**
 
 **Framework Version**:
 - P(embarrassing output) ≈ 0.0001 (multiple filters)
-- Damage per incident ≈ $100K (contained, quick fix)
-- **Delegation Risk ≈ $10K/day**
+- Damage per incident ≈ \$100K (contained, quick fix)
+- **Delegation Risk ≈ \$10K/day**
 
 **Risk reduction: ~1000x**
 

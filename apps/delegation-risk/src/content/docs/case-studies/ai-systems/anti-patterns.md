@@ -54,10 +54,10 @@ flowchart TB
 **Mistake**: Gradually adding capabilities to a component without reassessing delegation risk budget.
 
 **Timeline**:
-1. Week 1: Component reads files → Delegation Risk: $100
-2. Week 4: Added write capability → Delegation Risk: $500 (not reassessed)
-3. Week 8: Added network access → Delegation Risk: $2,000 (not reassessed)
-4. Week 12: Added execution → Delegation Risk: $10,000 (still using Week 1 budget)
+1. Week 1: Component reads files → Delegation Risk: \$100
+2. Week 4: Added write capability → Delegation Risk: \$500 (not reassessed)
+3. Week 8: Added network access → Delegation Risk: \$2,000 (not reassessed)
+4. Week 12: Added execution → Delegation Risk: \$10,000 (still using Week 1 budget)
 
 **Why it's dangerous**: The component's actual risk has grown 100x but nobody updated the trust accounting.
 

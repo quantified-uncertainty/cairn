@@ -44,8 +44,8 @@ While the framework needs broader validation, initial experiments show promising
 |--------|-----------|------------|----------|
 | Median latency | 2.3s | 4.1s | **1.8x** |
 | P99 latency | 8.2s | 12.1s | 1.5x |
-| API cost per task | $0.12 | $0.18 | 1.5x |
-| Total cost (incl. verification) | $0.12 | $0.22 | 1.8x |
+| API cost per task | \$0.12 | \$0.18 | 1.5x |
+| Total cost (incl. verification) | \$0.12 | \$0.22 | 1.8x |
 
 **Key finding**: Decomposition adds ~1.8x overhead, not 10x. This is within acceptable range for many applications.
 
@@ -60,10 +60,10 @@ While the framework needs broader validation, initial experiments show promising
 
 | Component Type | Predicted Delegation Risk | Actual Incidents | Prediction Error |
 |---------------|---------------|------------------|------------------|
-| Search/Retrieval | $15 | $12 | -20% |
-| Summarization | $45 | $62 | +38% |
-| Code generation | $180 | $156 | -13% |
-| Coordination | $85 | $91 | +7% |
+| Search/Retrieval | \$15 | \$12 | -20% |
+| Summarization | \$45 | \$62 | +38% |
+| Code generation | \$180 | \$156 | -13% |
+| Coordination | \$85 | \$91 | +7% |
 | **Average** | | | **±19%** |
 
 **Key finding**: Delegation Risk predictions were within ±40% of actual outcomes. Summarization was underpredicted (hallucination rate higher than estimated).

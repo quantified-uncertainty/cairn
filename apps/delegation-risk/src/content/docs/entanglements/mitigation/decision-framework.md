@@ -52,7 +52,7 @@ Use current correlation level and stakes to determine action:
 | Level | Definition | Examples |
 |-------|------------|----------|
 | **Low** | Mistakes are cheap and reversible | Draft generation, internal tools, prototypes |
-| **Medium** | Mistakes cause meaningful cost but are recoverable | Customer-facing features, financial transactions < $10K |
+| **Medium** | Mistakes cause meaningful cost but are recoverable | Customer-facing features, financial transactions < \$10K |
 | **High** | Mistakes cause serious harm, partially recoverable | Production deployments, medical recommendations, legal advice |
 | **Existential** | Mistakes could be catastrophic or irreversible | Safety-critical systems, actions affecting many people, irreversible decisions |
 

@@ -64,7 +64,7 @@ Read the third row: at moderate correlation ($\rho = 0.4$), the product rule und
 Compare the two tables:
 
 - **Serial chains:** correlation *helps* (failures clump, so the chain works more often than the product predicts). The product rule errs **conservative** — it understates trust. Using it unadjusted is safe.
-- **Parallel defenses:** correlation *hurts* (layers miss together). The product rule errs **optimistic** — it understates risk, by an order of magnitude at correlations that are entirely realistic for same-provider LLM stacks ($\rho \approx 0.5$–$0.7$; see [realistic correlation estimates](/entanglements/detection/correlation-calculator/)). Using it unadjusted is how systems with "five 90% layers" fail at the [entanglement tax](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax) rate.
+- **Parallel defenses:** correlation *hurts* (layers miss together). The product rule errs **optimistic** — it understates risk, by an order of magnitude at correlations that are entirely realistic for same-provider LLM stacks (ρ ≈ 0.5–0.7; see [realistic correlation estimates](/entanglements/detection/correlation-calculator/)). Using it unadjusted is how systems with "five 90% layers" fail at the [entanglement tax](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax) rate.
 
 So the operational rule is asymmetric:
 
@@ -77,7 +77,7 @@ So the operational rule is asymmetric:
 ## What happened to the other rules
 
 - **Harmonic mean** is incoherent for chains: for links (0.8, 0.7) it yields 0.747 — *higher than the weaker link alone*. No serial composition can be more trustworthy than its weakest stage. Retired.
-- **Discounted product** (multiply by an extra $0.9$ per hop) double-counts: chain-length penalty already emerges from multiplication. If long chains worry you beyond that, the thing you're worried about is accumulated *unmodeled* correlation or context contamination — model that explicitly instead.
+- **Discounted product** (multiply by an extra 0.9 per hop) double-counts: chain-length penalty already emerges from multiplication. If long chains worry you beyond that, the thing you're worried about is accumulated *unmodeled* correlation or context contamination — model that explicitly instead.
 - **Minimum** survives, demoted from "alternative rule" to what it actually is: the $\rho = 1$ limit of the mixture, and the honest bound when you can't estimate $\rho$.
 
 ## Limitations

@@ -505,11 +505,11 @@ flowchart TB
 
 | Outcome | Estimated Rate | Damage per Incident | Annual Delegation Risk |
 |---------|---------------|---------------------|------------|
-| Wrongful conviction | 1-6% of convictions | $1M-$10M (lost years, trauma) | $10B+ |
-| Wrongful acquittal | Unknown (probably 20-40%?) | $100K-$10M (recidivism) | $10B+ |
-| Hung jury (delay justice) | ~10% of trials | $50K per case | $500M |
-| Trial cost | 100% of trials | $25K-$500K per case | $10B |
-| **System Delegation Risk** | | | **$30B+/year** |
+| Wrongful conviction | 1-6% of convictions | \$1M-\$10M (lost years, trauma) | \$10B+ |
+| Wrongful acquittal | Unknown (probably 20-40%?) | \$100K-\$10M (recidivism) | \$10B+ |
+| Hung jury (delay justice) | ~10% of trials | \$50K per case | \$500M |
+| Trial cost | 100% of trials | \$25K-\$500K per case | \$10B |
+| **System Delegation Risk** | | | **\$30B+/year** |
 
 ---
 

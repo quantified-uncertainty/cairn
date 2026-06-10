@@ -886,20 +886,20 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 
 | Component | Model | Cost per 1K calls |
 |-----------|-------|-------------------|
-| **Monolithic** | GPT-4 | $120 |
+| **Monolithic** | GPT-4 | \$120 |
 | **Decomposed** | | |
-| - Coordinator | GPT-3.5 | $2 |
-| - Summarizer | Fine-tuned 7B | $5 |
-| - Analyzer | Fine-tuned 7B | $5 |
-| - Verifier | Code + small LLM | $3 |
-| **Decomposed Total** | | **$15** |
+| - Coordinator | GPT-3.5 | \$2 |
+| - Summarizer | Fine-tuned 7B | \$5 |
+| - Analyzer | Fine-tuned 7B | \$5 |
+| - Verifier | Code + small LLM | \$3 |
+| **Decomposed Total** | | **\$15** |
 
 **Counterintuitive finding**: Decomposition can reduce API costs by 82% when using appropriately-sized models per component. Safety architecture enables using expensive frontier models only where needed, with most components using fine-tuned smaller models.
 
 **Total runtime costs** (100,000 tasks/month):
-- Monolithic: $12,200/month
-- Decomposed with monitoring: $3,000/month
-- **Net savings**: $9,200/month despite safety overhead
+- Monolithic: \$12,200/month
+- Decomposed with monitoring: \$3,000/month
+- **Net savings**: \$9,200/month despite safety overhead
 
 ### 3.3 Capability Costs
 
@@ -945,13 +945,13 @@ The AI Control framework (Greenblatt et al., 2023-2024) provides empirical data 
 | Integration testing | 2-3 days | 4-6 days | +2-3 days |
 | **Total** | **6-10 days** | **14-25 days** | **+8-15 days** |
 
-**Initial implementation cost**: $10,000-18,000 at $150/hr engineering rate
+**Initial implementation cost**: \$10,000-18,000 at \$150/hr engineering rate
 
 **Ongoing maintenance**:
 - Monitoring review: +2 hr/week
 - Component updates: +1 hr/week
 - Incident investigation: -20% time (easier with isolated components)
-- **Monthly overhead**: +12 hr/month = ~$1,800/month
+- **Monthly overhead**: +12 hr/month = ~\$1,800/month
 
 ## 4. When Is the Tax Worth It?
 
@@ -970,18 +970,18 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 
 | Incident Type | Probability (Mono) | Probability (Decomp) | Damage | Expected Cost Mono | Expected Cost Decomp |
 |--------------|-------------------|---------------------|--------|----------|------------|
-| Data leak | 0.5%/mo | 0.1%/mo | $50,000 | $250 | $50 |
-| Harmful output (public) | 2%/mo | 0.3%/mo | $20,000 | $400 | $60 |
-| Service disruption | 1%/mo | 0.5%/mo | $10,000 | $100 | $50 |
-| Compliance violation | 0.3%/mo | 0.05%/mo | $100,000 | $300 | $50 |
-| **Total expected cost** | | | | **$1,050/mo** | **$210/mo** |
+| Data leak | 0.5%/mo | 0.1%/mo | \$50,000 | \$250 | \$50 |
+| Harmful output (public) | 2%/mo | 0.3%/mo | \$20,000 | \$400 | \$60 |
+| Service disruption | 1%/mo | 0.5%/mo | \$10,000 | \$100 | \$50 |
+| Compliance violation | 0.3%/mo | 0.05%/mo | \$100,000 | \$300 | \$50 |
+| **Total expected cost** | | | | **\$1,050/mo** | **\$210/mo** |
 
-**Risk reduction value**: $840/month in expected incident cost avoided
+**Risk reduction value**: \$840/month in expected incident cost avoided
 
 **Break-even analysis**:
-- Monthly costs: Safety overhead (+$2,000) - API savings (-$9,200) - Risk reduction (-$840) = **-$8,040**
-- Net monthly benefit: $8,040 savings
-- Initial investment: $10,000-18,000
+- Monthly costs: Safety overhead (+\$2,000) - API savings (-\$9,200) - Risk reduction (-\$840) = **-\$8,040**
+- Net monthly benefit: \$8,040 savings
+- Initial investment: \$10,000-18,000
 - **Break-even time**: 1.5-2 months for high-volume scenarios
 
 ### 4.2 Threshold Effects and Phase Transitions
@@ -1009,31 +1009,31 @@ Safety_Costs = Development_Costs + Ongoing_Costs + Performance_Penalties
 - Multiple layers required: Factored cognition + deliberative alignment + trusted monitoring + human oversight
 - Accept high alignment tax (latency overhead, compute costs)
 - Even 0.3-0.4% residual risk unacceptable
-- Initial investment: $50,000-100,000+
+- Initial investment: \$50,000-100,000+
 - Break-even: Worth it regardless of cost if catastrophic risk is prevented
 
 **Medium-assurance applications** (code review, content moderation):
 - Factored cognition + trusted monitoring likely sufficient
 - Monitor for scaling issues as models improve
 - Moderate alignment tax acceptable (1.5-2× latency, moderate compute overhead)
-- Initial investment: $10,000-25,000
+- Initial investment: \$10,000-25,000
 - Break-even: 2-6 months with reasonable volume
 
 **Low-assurance applications** (creative writing, brainstorming):
 - Simple monitoring may suffice
 - Remain vigilant for emergent strategic behavior
 - Minimal alignment tax acceptable (prefer performance)
-- Initial investment: $5,000-10,000
+- Initial investment: \$5,000-10,000
 - Break-even: May not be worth it; use simpler safety measures
 
 **Volume-based thresholds** (from trust-website analysis):
 
 | Use Case | Monthly Volume | API Savings | Risk Reduction | Break-Even |
 |----------|---------------|-------------|----------------|------------|
-| Internal tool | 1,000 tasks | -$90 | -$100 | 5-8 months |
-| Customer-facing | 50,000 tasks | -$4,600 | -$500 | 2-3 months |
-| High-volume SaaS | 500,000 tasks | -$46,000 | -$800 | < 1 month |
-| Autonomous agent | 10,000 tasks | -$900 | -$2,000 | 3-4 months |
+| Internal tool | 1,000 tasks | -\$90 | -\$100 | 5-8 months |
+| Customer-facing | 50,000 tasks | -\$4,600 | -\$500 | 2-3 months |
+| High-volume SaaS | 500,000 tasks | -\$46,000 | -\$800 | < 1 month |
+| Autonomous agent | 10,000 tasks | -\$900 | -\$2,000 | 3-4 months |
 
 **Key finding**: For systems with either (a) >10,000 tasks/month or (b) significant incident cost potential, decomposition has positive ROI within 6 months.
 

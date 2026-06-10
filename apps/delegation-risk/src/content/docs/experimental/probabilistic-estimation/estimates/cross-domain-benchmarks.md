@@ -198,7 +198,7 @@ delegationVaR(confidence, horizon) = {
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| Average breach cost | $4.45M | IBM 2023 |
+| Average breach cost | \$4.45M | IBM 2023 |
 | Mean time to identify | 204 days | IBM 2023 |
 | Mean time to contain | 73 days | IBM 2023 |
 | Breaches with AI involvement | Growing | Emerging |

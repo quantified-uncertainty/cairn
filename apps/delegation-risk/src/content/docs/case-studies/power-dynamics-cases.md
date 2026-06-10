@@ -207,7 +207,7 @@ Key features:
 | Power | 45 | High within domain |
 | Agency | 0.15 | Very low |
 | Effective Capability | 6.75 | Power × Agency |
-| Delegation Risk | ~$10/month | Minimal harm modes |
+| Delegation Risk | ~\$10/month | Minimal harm modes |
 | RACAP | 0.675 | Excellent efficiency |
 
 ### Key Insight: Domain Constraints Enable Low Agency

@@ -75,7 +75,7 @@ When assessing a delegation, check for these harm modes:
 |-----------|-----------|--------|
 | **Risk budget exceeded** | Risk > Budget | Block action, escalate |
 | **Low confidence output** | P(correct) < 0.8 | Add verification layer |
-| **High-stakes decision** | Damage > $10K | Require human review |
+| **High-stakes decision** | Damage > \$10K | Require human review |
 | **Novel input detected** | Outside training distribution | Flag for review |
 | **Pattern failure rate** | > 3 failures/week | Review pattern selection |
 
@@ -97,11 +97,11 @@ If you can only implement 5 patterns:
 
 | System Type | Suggested Annual Budget | Rationale |
 |-------------|------------------------|-----------|
-| Internal tool | $50K-100K | Low exposure, recoverable |
-| Customer-facing | $10K-50K | Reputation matters |
-| Financial | $1K-10K | Direct monetary loss |
-| Safety-critical | $100-1K | Human welfare at stake |
-| Catastrophic potential | $0-100 | Existential concern |
+| Internal tool | \$50K-100K | Low exposure, recoverable |
+| Customer-facing | \$10K-50K | Reputation matters |
+| Financial | \$1K-10K | Direct monetary loss |
+| Safety-critical | \$100-1K | Human welfare at stake |
+| Catastrophic potential | \$0-100 | Existential concern |
 
 ---
 

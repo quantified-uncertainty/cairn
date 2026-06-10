@@ -225,13 +225,13 @@ Final Premium = Base Premium + Moral Hazard Loading + Administrative Costs
 
 | Component | Value | Calculation |
 |-----------|-------|-------------|
-| Expected loss (no insurance) | $20,000/year | Historical data |
+| Expected loss (no insurance) | \$20,000/year | Historical data |
 | Coverage ratio | 60% | Negotiated |
-| Base premium | $12,000 | $20,000 × 60% |
+| Base premium | \$12,000 | \$20,000 × 60% |
 | Moral hazard factor | 1.3× | 60% coverage, quarterly audits, reputation-dependent |
-| Moral hazard loading | $3,600 | $12,000 × 30% |
-| Administrative | $1,000 | Fixed |
-| **Final premium** | **$16,600** | |
+| Moral hazard loading | \$3,600 | \$12,000 × 30% |
+| Administrative | \$1,000 | Fixed |
+| **Final premium** | **\$16,600** | |
 
 > **Alice**: Wait—you're charging me extra because you think I'll be less careful?
 >
@@ -250,9 +250,9 @@ Alice and Diana negotiate:
 - Minimum supervision standards (specified in appendix)
 
 **Diana agrees to:**
-- 60% co-insurance on losses up to $200,000
-- 40% co-insurance on losses $200,000-$500,000
-- $500,000 coverage cap
+- 60% co-insurance on losses up to \$200,000
+- 40% co-insurance on losses \$200,000-\$500,000
+- \$500,000 coverage cap
 - Premium reduction for clean quarters
 
 > **Diana**: The monitoring isn't just about catching you being careless. It's about letting me *trust* you enough to offer real coverage. Without monitoring, I'd have to assume the worst.

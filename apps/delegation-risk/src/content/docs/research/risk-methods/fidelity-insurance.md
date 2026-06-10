@@ -24,12 +24,12 @@ The core product covering theft, fraud, and embezzlement by employees.
 
 | Attribute | Typical Range |
 |-----------|---------------|
-| Coverage limits | $50K - $5M+ |
+| Coverage limits | \$50K - \$5M+ |
 | Annual premium | 0.3% - 2% of coverage |
-| Deductible | $1K - $50K |
+| Deductible | \$1K - \$50K |
 | Required controls | Background checks, dual controls, segregation of duties |
 
-**Example pricing**: A $1M policy for a small organization with minimal controls costs ~$2,000-3,000/year. With strong controls, this drops to ~$600-1,000/year.
+**Example pricing**: A \$1M policy for a small organization with minimal controls costs ~\$2,000-3,000/year. With strong controls, this drops to ~\$600-1,000/year.
 
 **Directors & Officers (D&O) Liability**
 
@@ -37,8 +37,8 @@ Covers wrongful acts by leadership, including fraud, self-dealing, and breach of
 
 | Attribute | Typical Range |
 |-----------|---------------|
-| Coverage limits | $1M - $100M+ |
-| Annual premium | $2K - $15K for $1M (small org) |
+| Coverage limits | \$1M - \$100M+ |
+| Annual premium | \$2K - \$15K for \$1M (small org) |
 | Key exclusions | Criminal acts (usually), prior known claims |
 | Critical for | Nonprofits, startups (protects personal assets) |
 
@@ -48,8 +48,8 @@ Growing category covering wire transfer fraud, invoice manipulation, phishing at
 
 | Attribute | Typical Range |
 |-----------|---------------|
-| Coverage limits | $100K - $10M |
-| Annual premium | $1K - $20K+ |
+| Coverage limits | \$100K - \$10M |
+| Annual premium | \$1K - \$20K+ |
 | Key exclusions | Voluntary transfers (tricky with social engineering) |
 | Evolution | Insurers learned painful lessons 2015-2020 |
 
@@ -168,10 +168,10 @@ Optimize where: d(Total Cost)/d(Control Investment) = 0
 
 | Organization Size | Optimal Control Level | Reasoning |
 |-------------------|----------------------|-----------|
-| <$500K budget | Tier 1 only | Control costs exceed premium savings |
-| $500K-$2M budget | Tier 1 + partial Tier 2 | External audit may be +EV |
-| $2M-$10M budget | Tier 1-2 + partial Tier 3 | Hotline, training worthwhile |
-| >$10M budget | Full Tier 1-3 | All controls +EV for insurance alone |
+| <\$500K budget | Tier 1 only | Control costs exceed premium savings |
+| \$500K-\$2M budget | Tier 1 + partial Tier 2 | External audit may be +EV |
+| \$2M-\$10M budget | Tier 1-2 + partial Tier 3 | Hotline, training worthwhile |
+| >\$10M budget | Full Tier 1-3 | All controls +EV for insurance alone |
 
 **The catch**: Tier 4 controls are rarely +EV purely for premium reduction. They're justified by:
 - Regulatory requirements
@@ -260,13 +260,13 @@ If you wanted to design political fidelity insurance, what would it look like?
 |-----------|----------|-------------|
 | Baseline corruption charge rate | 2-5% of politicians | High variance by jurisdiction |
 | Conviction rate if charged | 60-70% | Varies by offense type |
-| Average theft amount | Bimodal: $10K vs $10M+ | Extreme variance |
+| Average theft amount | Bimodal: \$10K vs \$10M+ | Extreme variance |
 | Detection rate | 20-40% of fraud detected | Very uncertain |
 
 **Implied pricing:**
 - Actuarially fair premium: ~1-3% of coverage annually
 - With adverse selection adjustment: 10-20%+
-- At 20% premium, corrupt politician stealing $1M pays $200K for $800K net—still profitable
+- At 20% premium, corrupt politician stealing \$1M pays \$200K for \$800K net—still profitable
 - No equilibrium exists where clean politicians participate
 
 ### 3.4 Better Mechanisms Than Insurance
@@ -306,7 +306,7 @@ The ACFE's biennial *Report to the Nations* is the primary data source on occupa
 
 | Finding | Value | Implication |
 |---------|-------|-------------|
-| Median loss per case | ~$117,000 | Significant but insurable |
+| Median loss per case | ~\$117,000 | Significant but insurable |
 | Median duration before detection | 12 months | Controls that accelerate detection are valuable |
 | Tip-based detection | ~40% of cases | Hotlines are highly effective |
 | Internal audit detection | ~15% of cases | Audits catch less than expected |
@@ -482,10 +482,10 @@ The insurance market provides **market prices** for defection risk. This makes d
 | Exposure (executive fraud) | D&O premium | 0.2-1.5% of coverage |
 | Contingent liability (if caught) | Policy limits + exclusions | Defines maximum recovery |
 
-**Example**: Alice delegating $1M to Bob
+**Example**: Alice delegating \$1M to Bob
 
-If Alice can buy fidelity coverage at 0.5% ($5,000 premium):
-- Market is pricing Bob's defection risk at ~$5,000 expected
+If Alice can buy fidelity coverage at 0.5% (\$5,000 premium):
+- Market is pricing Bob's defection risk at ~\$5,000 expected
 - This is Alice's **insurable exposure**
 - Uninsurable exposure (coverage exclusions) adds to this
 
@@ -495,12 +495,12 @@ The control-premium relationship maps directly to delegation accounting:
 
 | Control Investment | Premium Reduction | Implied Exposure Reduction |
 |--------------------|-------------------|---------------------------|
-| $0 (baseline) | 0% | 0% |
-| $5K (Tier 1 controls) | 25% | 25% |
-| $15K (Tier 1-2) | 45% | 45% |
-| $30K (Tier 1-3) | 60% | 60% |
+| \$0 (baseline) | 0% | 0% |
+| \$5K (Tier 1 controls) | 25% | 25% |
+| \$15K (Tier 1-2) | 45% | 45% |
+| \$30K (Tier 1-3) | 60% | 60% |
 
-**Marginal analysis**: If $10K in controls reduces exposure by $15K (premium savings + uninsured loss reduction), invest.
+**Marginal analysis**: If \$10K in controls reduces exposure by \$15K (premium savings + uninsured loss reduction), invest.
 
 ### 6.3 Why Political Insurance Fails Inform Oversight Design
 

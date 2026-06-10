@@ -158,9 +158,9 @@ DR_system = DR_component1 × DR_component2 / Damage_base
 ```
 
 **Example**:
-- Component 1: P(fail) = 0.01, Damage = $100K → Delegation Risk = $1,000
-- Component 2: P(fail) = 0.01, Damage = $100K → Delegation Risk = $1,000
-- Combined (both must fail): P = 0.0001, Damage = $100K → Delegation Risk = $10
+- Component 1: P(fail) = 0.01, Damage = \$100K → Delegation Risk = \$1,000
+- Component 2: P(fail) = 0.01, Damage = \$100K → Delegation Risk = \$1,000
+- Combined (both must fail): P = 0.0001, Damage = \$100K → Delegation Risk = \$10
 
 ### Rule 2: Additive Decomposition
 
@@ -171,9 +171,9 @@ DR_system = DR_component1 + DR_component2
 ```
 
 **Example**:
-- Component 1: Delegation Risk = $500
-- Component 2: Delegation Risk = $300
-- Combined (any can fail): Delegation Risk = $800
+- Component 1: Delegation Risk = \$500
+- Component 2: Delegation Risk = \$300
+- Combined (any can fail): Delegation Risk = \$800
 
 ### Rule 3: Coverage-Adjusted Decomposition
 
@@ -184,9 +184,9 @@ DR_residual = DR_component × (1 - coverage)
 ```
 
 **Example**:
-- Component Delegation Risk: $10,000
+- Component Delegation Risk: \$10,000
 - Checker coverage: 95%
-- Residual Delegation Risk: $500
+- Residual Delegation Risk: \$500
 
 ## ISO 26262 Verification Requirements
 

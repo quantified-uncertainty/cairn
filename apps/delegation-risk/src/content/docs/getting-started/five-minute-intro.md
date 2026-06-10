@@ -2,7 +2,7 @@
 title: "5-Minute Introduction"
 description: "The compressed version of the framework: decompose into limited components and budget delegation risk like money."
 sidebar:
-  order: 2
+  order: 1
 ---
 
 # Delegation Risk in 5 Minutes
@@ -49,10 +49,10 @@ Each component has:
 **Delegation Risk** = probability of bad outcome × damage
 
 ```
-Delegation Risk = Σ P(failure) × Damage
+Delegation Risk = Σ P(harm) × Damage
 ```
 
-Example: Component has 1% chance of causing $10,000 damage → Delegation Risk = $100
+Example: Component has 1% chance of causing \$10,000 damage → Delegation Risk = \$100
 
 **Budget your Delegation Risk** across components. If total exceeds budget, add safeguards.
 
@@ -86,16 +86,22 @@ Don't use GPT-4 for things a regex can do.
 
 ## Quick Example
 
-**Task**: Slack bot answering questions from docs
+**Task**: Slack bot answering questions from docs (illustrative numbers)
 
 | Component | Implementation | Delegation Risk |
 |-----------|---------------|-----|
-| Retriever | Code (vector search) | $5/mo |
-| Answerer | Fine-tuned 7B | $50/mo |
-| Poster | Code (rate limited) | $1/mo |
-| **Total** | | **$56/mo** |
+| Retriever | Code (vector search) | \$5/mo |
+| Answerer | Fine-tuned 7B | \$50/mo |
+| Poster | Code (rate limited) | \$1/mo |
+| **Total** | | **\$56/mo** |
 
-Budget: $500/mo → **Within budget. Ship it.**
+Budget: \$500/mo → **Within budget. Ship it.**
+
+---
+
+## The Catch
+
+Safeguards multiply only if they fail **independently**. Three 90%-effective verifiers built on the same model don't give you 99.9% protection—when one misses, the others tend to miss the same thing, and actual protection lands closer to 91%. This gap (often 10–100×) is the [entanglement tax](/entanglements/), and pricing it is what this framework adds over generic "decompose and verify" advice. Diversify what your layers are built on, not just how many you have.
 
 ---
 
@@ -112,7 +118,8 @@ Budget: $500/mo → **Within budget. Ship it.**
 
 ## Next Steps
 
-- **Want the full picture?** → [Core Concepts](/getting-started/core-concepts/)
+- **Convinced enough to read properly?** → [The Core Path](/getting-started/reading-order/#the-core-path) — the framework's strongest material in ~12 stops
+- **Want the full picture first?** → [Core Concepts](/getting-started/core-concepts/)
 - **Ready to apply it?** → [Quick Start](/design-patterns/tools/quick-start/)
 - **Want the math?** → [Delegation Risk](/delegation-risk/overview/)
 - **Have questions?** → [FAQ](/getting-started/faq/)

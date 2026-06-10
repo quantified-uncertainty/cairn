@@ -16,7 +16,7 @@ How all the pieces fit together:
 ```mermaid
 flowchart TB
     subgraph Foundation["Foundation: What We're Managing"]
-        RISK["Delegation Risk<br/>Risk = Σ P(harm) × Damage"]
+        RISK["Delegation Risk<br/>(the expected cost of delegating)"]
     end
 
     subgraph Theory["Theory: How Risk Behaves"]
@@ -80,13 +80,13 @@ This is the single canonical statement of the Delegation Risk formula. Other pag
 
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Clerical error | 0.01 | $1,000 | $10 |
-| Unauthorized payment | 0.001 | $50,000 | $50 |
-| Fraud | 0.0001 | $500,000 | $50 |
+| Clerical error | 0.01 | \$1,000 | \$10 |
+| Unauthorized payment | 0.001 | \$50,000 | \$50 |
+| Fraud | 0.0001 | \$500,000 | \$50 |
 
-**Delegation Risk** = $10 + $50 + $50 = **$110** expected cost
+**Delegation Risk** = \$10 + \$50 + \$50 = **\$110** expected cost
 
-This doesn't mean you'll lose $110. It means that over many such delegations, you'd expect $110 in losses on average. You can compare this to the value the delegation provides and decide if it's worth it.
+This doesn't mean you'll lose \$110. It means that over many such delegations, you'd expect \$110 in losses on average. You can compare this to the value the delegation provides and decide if it's worth it.
 
 ## Risk Propagation
 
@@ -441,7 +441,7 @@ See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) fo
 :::note[Key Takeaways]
 1. **The goal is maximizing capability subject to risk constraints**: Not minimizing risk to zero
 2. **Capability = Power × Agency**: We want high power, minimum necessary agency
-3. **Delegation Risk quantifies the downside**: Risk = Σ P(harm) × Damage
+3. **Delegation Risk quantifies the downside**: the expected cost of delegating, summed over harm modes ([the formula](#the-formula))
 4. **Decompose, don't centralize**: Many limited components are safer than one powerful delegate
 5. **Apply "Least X" principles**: Minimize capability, privilege, context, persistence, autonomy, connectivity
 6. **Budget both risk AND power**: Allocate, verify, and enforce limits on both sides
@@ -450,6 +450,7 @@ See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) fo
 
 ## See Also
 
+- [The Core Path](/getting-started/reading-order/#the-core-path) — The guided route through the framework's strongest material
 - [Introduction](/getting-started/introduction/) — The full problem statement and approach
 - [Delegation Risk Overview](/delegation-risk/overview/) — The quantitative foundation
 - [Least X Principles](/design-patterns/least-x-principles/) — Deep dive into each principle

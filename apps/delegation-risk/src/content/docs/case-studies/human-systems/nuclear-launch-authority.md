@@ -71,8 +71,8 @@ flowchart LR
 
 | Failure Type | Description | Historical Near-Misses | Damage |
 |--------------|-------------|----------------------|--------|
-| **False Positive** | Launch without legitimate order | Petrov 1983, Able Archer 1983, Norwegian rocket 1995 | $50T+ (civilization) |
-| **False Negative** | Failure to launch when legitimately ordered | None known | $10T+ (defeat, occupation) |
+| **False Positive** | Launch without legitimate order | Petrov 1983, Able Archer 1983, Norwegian rocket 1995 | \$50T+ (civilization) |
+| **False Negative** | Failure to launch when legitimately ordered | None known | \$10T+ (defeat, occupation) |
 
 ### False Positive: Unauthorized/Accidental Launch
 
@@ -489,10 +489,10 @@ flowchart TB
 
 | System | False Positive Delegation Risk | False Negative Delegation Risk | Total Delegation Risk | Philosophy |
 |--------|-------------------|-------------------|-----------|------------|
-| US | $105M | $495M | $600M | "Never accidentally" |
-| Russia | $225M | $50M | $275M | "Always retaliate" |
-| UK | $210M | $305M | $515M | "Moral flexibility" |
-| France | $120M | $400M | $520M | "Independent deterrent" |
+| US | \$105M | \$495M | \$600M | "Never accidentally" |
+| Russia | \$225M | \$50M | \$275M | "Always retaliate" |
+| UK | \$210M | \$305M | \$515M | "Moral flexibility" |
+| France | \$120M | \$400M | \$520M | "Independent deterrent" |
 | Israel | ? | ? | ? | "Strategic ambiguity" |
 
 :::tip[The Key Insight]

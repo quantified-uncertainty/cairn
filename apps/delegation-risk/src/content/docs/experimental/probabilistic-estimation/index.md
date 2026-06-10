@@ -11,7 +11,7 @@ This section provides tools and reference data for quantifying delegation risk u
 
 ## Why Probabilistic?
 
-Most risk frameworks use point estimates like "probability = 2%" or "damage = $5,000". This approach:
+Most risk frameworks use point estimates like "probability = 2%" or "damage = \$5,000". This approach:
 
 - **Understates uncertainty** in our knowledge
 - **Hides tail risk** from rare-but-severe events

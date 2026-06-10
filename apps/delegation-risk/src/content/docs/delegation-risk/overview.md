@@ -7,7 +7,7 @@ sidebar:
 # Delegation Risk: Overview
 
 :::note[TL;DR]
-**Delegation Risk = Σ P(harm mode) × Damage(harm mode)** — the core formula for quantifying delegation. This page walks through a complete example: a research assistant with $1,770/month total Delegation Risk, reduced to $671/month by adding a deterministic verifier. Risk inherits multiplicatively by default through delegation chains.
+**Delegation Risk = Σ P(harm mode) × Damage(harm mode)** — the core formula for quantifying delegation. This page walks through a complete example: a research assistant with \$1,770/month total Delegation Risk, reduced to \$671/month by adding a deterministic verifier. Risk inherits multiplicatively by default through delegation chains.
 :::
 
 A mature delegation risk framework could provide mathematical and operational foundations for managing AI systems more safely at scale.
@@ -89,28 +89,28 @@ flowchart LR
 **Summarizer Delegation Exposure:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Misrepresents paper findings | 0.02 | $5,000 (wrong research direction) | $100 |
-| Leaks proprietary data | 0.001 | $50,000 (IP loss) | $50 |
+| Misrepresents paper findings | 0.02 | \$5,000 (wrong research direction) | \$100 |
+| Leaks proprietary data | 0.001 | \$50,000 (IP loss) | \$50 |
 
-**Delegation Risk (Summarizer)** = $100 + $50 = **$150**
+**Delegation Risk (Summarizer)** = \$100 + \$50 = **\$150**
 
 **Code Deployer Delegation Exposure:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Deploys buggy code | 0.05 | $20,000 (downtime) | $1,000 |
-| Deploys malicious code | 0.0001 | $1,000,000 (breach) | $100 |
+| Deploys buggy code | 0.05 | \$20,000 (downtime) | \$1,000 |
+| Deploys malicious code | 0.0001 | \$1,000,000 (breach) | \$100 |
 
-**Delegation Risk (Code Deployer)** = $1,000 + $100 = **$1,100**
+**Delegation Risk (Code Deployer)** = \$1,000 + \$100 = **\$1,100**
 
 **Coordinator Delegation Exposure:**
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Misroutes task | 0.01 | $2,000 (wasted effort) | $20 |
-| Grants excessive permissions | 0.005 | $100,000 (escalation) | $500 |
+| Misroutes task | 0.01 | \$2,000 (wasted effort) | \$20 |
+| Grants excessive permissions | 0.005 | \$100,000 (escalation) | \$500 |
 
-**Delegation Risk (Coordinator)** = $20 + $500 = **$520**
+**Delegation Risk (Coordinator)** = \$20 + \$500 = **\$520**
 
-**System Total Delegation Risk: $1,770**
+**System Total Delegation Risk: \$1,770**
 
 ### Step 2: Risk Inheritance
 
@@ -127,12 +127,12 @@ This means ~19% of potential damage from the Code Deployer's harm modes propagat
 
 ### Step 3: Risk Budget Allocation
 
-Suppose the organization's total acceptable Delegation Risk Budget is **$2,000/month**.
+Suppose the organization's total acceptable Delegation Risk Budget is **\$2,000/month**.
 
 Current allocation:
-- Summarizer: $150 (7.5% of budget)
-- Code Deployer: $1,100 (55% of budget) ⚠️
-- Coordinator: $520 (26% of budget)
+- Summarizer: \$150 (7.5% of budget)
+- Code Deployer: \$1,100 (55% of budget) ⚠️
+- Coordinator: \$520 (26% of budget)
 
 **Finding:** Code Deployer consumes most of the risk budget. Options:
 1. Add verification layer before deployment (reduce harm mode probability)
@@ -153,9 +153,9 @@ flowchart LR
 
 | Harm Mode | Probability | Damage | New Risk Contribution |
 |-----------|-------------|--------|-----------------------|
-| Deploys malicious code | 0.0001 × 0.01 | $1,000,000 | **$1** |
+| Deploys malicious code | 0.0001 × 0.01 | \$1,000,000 | **\$1** |
 
-Verifier catches 99% of malicious deployments. New system Delegation Risk: **$671**.
+Verifier catches 99% of malicious deployments. New system Delegation Risk: **\$671**.
 
 :::tip[Key Insight]
 Adding a simple deterministic verifier reduced system Delegation Risk by 62%. The highest-leverage safety investment is often the cheapest: a code-based checker on the highest-damage harm modes.
@@ -163,10 +163,10 @@ Adding a simple deterministic verifier reduced system Delegation Risk by 62%. Th
 
 ### Comparison to Nuclear Safety
 
-Nuclear plants target ~10⁻⁶ core damage frequency per reactor-year. For a $10B damage potential:
-- Target Delegation Risk = 10⁻⁶ × $10B = **$10,000/year**
+Nuclear plants target ~10⁻⁶ core damage frequency per reactor-year. For a \$10B damage potential:
+- Target Delegation Risk = 10⁻⁶ × \$10B = **\$10,000/year**
 
-Our research assistant's $671/month ≈ $8,000/year is roughly comparable—which suggests either:
+Our research assistant's \$671/month ≈ \$8,000/year is roughly comparable—which suggests either:
 1. We're being appropriately cautious, or
 2. Nuclear plants manage much higher absolute stakes with similar relative risk
 
