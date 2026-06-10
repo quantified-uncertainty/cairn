@@ -57,7 +57,6 @@ export default defineConfig({
 						{ label: 'Overview', slug: 'getting-started' },
 						{ label: 'Five-Minute Intro', slug: 'getting-started/five-minute-intro' },
 						{ label: 'Core Concepts', slug: 'getting-started/core-concepts' },
-						{ label: 'The Core Path', slug: 'getting-started/reading-order' },
 						{ label: 'For Engineers', slug: 'getting-started/for-engineers' },
 						{ label: 'Common Mistakes', slug: 'getting-started/common-mistakes' },
 						{ label: 'FAQ', slug: 'getting-started/faq' },
