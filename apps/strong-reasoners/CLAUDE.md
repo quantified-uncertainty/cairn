@@ -23,7 +23,14 @@ src/content.config.ts   # Content collection schema (don't delete)
 astro.config.mjs        # Site config, sidebar, integrations
 version.json            # Displayed in the footer
 public/                 # Static assets
+notes/                  # Reference corpus — NOT site content, gitignored (see below)
 ```
+
+## Reference Materials (`notes/`)
+
+`notes/` holds the non-published reference corpus behind the wiki: Ozzie's 2021–22 estimation-theory series (the wiki's intellectual ancestor), current research notes, QURI project writeups, experimental designs, and the v0 question portfolio. **Read `notes/README.md` first** — it's an annotated index with per-file summaries, provenance, and how each document maps to wiki chapters.
+
+Rules: the directory is gitignored; never commit it, publish it, or move material from it into `src/content/docs/` without an explicit request. When wiki pages and notes disagree, the wiki is the current position. When adding or converting material there, keep provenance and add an index row to `notes/README.md`.
 
 ## Sidebar Configuration
 
