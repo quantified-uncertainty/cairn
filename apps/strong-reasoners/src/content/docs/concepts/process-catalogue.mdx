@@ -1,0 +1,80 @@
+---
+title: The Process Catalogue
+description: Reasoning processes compared on the field's two axes — cost to extract validated information, and cost to corrupt — with scope and built-in biases per process.
+sidebar:
+  order: 2
+---
+
+import ProcessMap from '@/components/ProcessMap.astro';
+
+*Seventeen reasoning processes — from formal proof to single LLM judges, with Metaculus-style tournaments and Kalshi-style markets as distinct entries — compared on information cost, scope, cost to bias, and built-in biases. The headline finding: cheap and hard-to-corrupt do not yet coexist; the empty quadrant is the field's target.*
+
+:::note[Status]
+Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Every entry below is a first-pass qualitative judgment, stated so it can be argued with and eventually replaced by measurement. Producing the measured version of this table is one of the field's central projects — and is itself an estimation exercise of exactly the kind the book studies.
+:::
+
+## The two axes, unpacked into four columns
+
+[The Core Model](/concepts/core-model/) sketches two headline numbers for every reasoning process: **cost per validated bit** (what extracting trustworthy information costs) and the **corruption cost curve** (what an adversary must spend to bend the output). The table keeps the first as a compact rating (**Info**) and unpacks the second into two distinct things that the old single column conflated:
+
+- **Cost & challenges to bias it** — what an *active adversary* must spend or pull off, and where the cheap attack surface is. This is the corruption cost curve.
+- **Built-in biases** — the systematic distortions the process exhibits *with no adversary at all*: who self-selects in, what questions get asked, what the incentive structure rewards by default. These are free to exploit (an adversary just leans on them) and they bound accuracy even in a fully honest world.
+
+A fourth column, **Scope / applicability**, records what kinds of claims the process can handle at all — dominance comparisons only make sense between processes whose scopes overlap, and several rows buy corruption resistance precisely by narrowing scope.
+
+Ratings: **L**ow / **M**edium / **H**igh. High info cost is bad; high cost-to-bias is good.
+
+## The map
+
+Plotting the catalogue on the two axes is the field's version of a periodic table: it shows which processes dominate which, where the efficient frontier runs, and — most usefully — which cells are *empty*.
+
+<ProcessMap />
+
+## The table
+
+| Process | Info | Scope / applicability | Cost & challenges to bias it | Built-in biases |
+|---|---|---|---|---|
+| Formal proof + mechanical checking (Lean/Coq-style) | H to produce, L to verify | Only formalizable claims (math, program properties); the spec must be writable | **H** — the checker is effectively unownable; the viable attack is the spec itself (prove the wrong theorem) and the formal–informal gap | Covers only what formalizes; effort flows to provable variants of questions rather than the questions asked |
+| Full replication (registered, independent teams) | H (≈ cost of original) | Empirical claims with shareable methods; excludes one-off events and decade-scale effects | **H** — must corrupt several independent teams; the cheap attack is correlated methods (everyone inherits the same flawed protocol) | Selection toward cheap, fast, fashionable studies; the original authors' framing defines what counts as "replicating" |
+| Track-recorded forecaster team (Good Judgment-style) | M | Resolvable questions on months-to-years horizons; transfer to novel domains unproven | **H** — verified long records take years to fake; cheaper targets are the question-writer and the resolver | Self-selected demographic (numerate hobbyists); calibrated only where past questions resolved; conservative on regime change |
+| Prediction tournament, reputation-scored (Metaculus-style) | M | Broad — long-horizon, thin-interest, and politically sensitive questions all work, since no capital is locked up; needs crisp resolution criteria | **M** — accounts are cheap but score-weighting makes influence require a slowly built record; documented scoring-rule gaming and info-hoarding near deadlines; question-framing and the resolver are the cheap targets | Herding toward the visible community median; participant monoculture; the platform decides which questions exist |
+| Prediction market, real-money (Kalshi/Polymarket-style) | M | Narrower — needs regulatory approval or crypto rails, enough trader interest for liquidity, and short-to-medium horizons (capital lockup punishes long-dated questions) | **M–H, scaling with liquidity** — holding the price wrong means paying informed traders' profits indefinitely; thin or new markets are cheap to move; resolution-criteria lawyering is documented | Favorite-longshot bias; interest-rate discount distorts long-dated prices; trader pool skews risk-tolerant; fees and house question selection |
+| Prediction market, play-money (Manifold-style) | L–M | Widest question variety — anyone can write a market; resolution often by the question's author | **L–M** — play currency is farmable; author-resolution invites self-dealing; only reputational stakes back the price | Entertainment-driven question selection; whale accounts dominate; author-as-resolver conflict of interest |
+| Adversarial proceedings (court-style) | H | Disputes between identified parties under an existing rule-set; one verdict per case, slowly | **M–H** — procedural safeguards are expensive to subvert outright, but resource asymmetry reliably wins at the margin; forum- and judge-capture are documented | Precedent lock-in; procedure over truth; rules structurally favor the represented and the wealthy |
+| Expert panel / consensus report (IPCC/NAS-style) | M | Questions a recognized discipline claims; works without resolvable outcomes — which is also the weakness | **M** — capture the convener's selection process or fund the field's pipeline; social pressure inside the panel is free | Credentials ≠ accuracy and no calibration record; groupthink; paradigm conservatism; consensus drafting buries disagreement |
+| Financial audit (Big-Four-style) | M | Claims reducible to documented transactions checked against codified standards | **L–M** — the auditee pays the auditor; capture via fees and consulting cross-sell is documented, not hypothetical | Incentive inversion baked into the business model; checklist ossification; materiality thresholds hide small-but-systematic distortion |
+| Peer review (journal-style) | M | Gatekeeps publishability in any field, but outputs accept/reject verdicts, not probabilities | **L–M** — suggest friendly reviewers, log-roll, exploit prestige signals; never benchmarked, so corruption is invisible | Novelty preferred over replication; prestige and institutional bias; conservatism toward field consensus; unpaid labor → noise |
+| Composite indices / rankings (CPI-style) | L (marginal) | Anything quantifiable at scale; enables cross-unit and cross-time comparison | **L** — Goodhart the moment the formula is public; lobbying the weighting is cheaper than changing the world | Measures what's easy to measure; weightings are hidden judgment calls; proxy drift |
+| Online review systems (Amazon/Yelp-style) | L | Mass-market experience goods with many independent raters | **L** — fake reviews and brigading are cheap absent identity infrastructure; platforms fight a losing volume war | Extreme experiences self-select into reviewing; recency and survivorship effects; platform moderation follows platform incentives |
+| Single LLM judge | L | Anything expressible in text, instantly — the widest scope in the table and the floor of trust | **L** — prompt injection, sycophancy, persuasion artifacts; attacks transfer across deployments of the same model | Position, verbosity, and style biases; training-data majority view; RLHF agreeableness; confident error |
+| Multi-model LLM panel | L | Same as single judge | **L–M** — must fool several models at once, but shared training pipelines correlate their failures | False independence — agreement without accuracy; common-corpus priors |
+| Consistency battery | L (unsupervised) | Any producer that answers many related questions; checks coherence, never truth | **L–M** — a coherent worldview passes; projecting onto consistent-but-wrong beliefs defeats it | Rewards internal coherence over correspondence with reality; necessary, never sufficient |
+| Debate protocol (judge-grounded) | M | Claims where decisive evidence can surface within a bounded exchange | **M** — obfuscated arguments; out-persuading beats out-arguing; the judge is the attack surface | Persuasion ≠ truth; the judge's priors and attention limits set the verdict |
+| Output-metered producer market (resolution-grounded) | M | Only resolvable claims; producers paid per validated output | **M–H where resolution is trusted** — advance-credit gaming; manipulating the resolution layer | Portfolio tilts toward claims that resolve cheaply and soon |
+
+## Reading the table
+
+**The frontier runs through validation, not intelligence.** The hard-to-bias rows share one feature: their outputs are checked against something an adversary cannot cheaply own — a proof checker, independent replication, a long resolved track record, informed counterparties with money at stake. The easy-to-bias rows share the inverse: their verdicts bottom out in an ownable judgment (a reviewer, a rating, a single model). This is the grounding taxonomy of [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) showing up as an empirical regularity.
+
+**Scope and corruption resistance trade off, visibly.** The Metaculus/Kalshi pair is the cleanest illustration: real money makes sustained manipulation expensive *where liquidity exists*, but regulation, capital lockup, and trader interest shrink the question space to short-horizon, mass-interest events. Reputation scoring keeps the question space wide open — long-horizon, obscure, politically sensitive — but lowers the price of an attack from "pay the informed traders" to "game the scoring rule or capture the resolver." Several other rows make the same trade (formal proof is the extreme case: near-incorruptible, vanishingly narrow). A fair comparison between two processes has to hold the question class fixed first.
+
+**Built-in biases are the cheapest attack of all.** The last column matters adversarially, not just statistically: an attacker rarely needs to *corrupt* a process when they can simply pose the question where the process already leans their way — pick the venue, pick the framing, pick the resolution criteria. Built-in biases are corruption an adversary gets at zero marginal cost, which is why the column belongs in a catalogue ostensibly about corruption *cost*.
+
+**Cheap and robust don't yet coexist.** Today's cheap processes (LLM judges, indices, reviews) are cheap to corrupt; today's robust ones (replication, proofs, deep track records) are expensive or narrow. The field's constructive bet is that the empty quadrant is reachable by *composition*: cheap processes as filters, with randomized escalation to expensive robust ones — so the adversary faces the expensive process's corruption cost while the judge mostly pays the cheap process's information cost. Whether composition actually multiplies corruption costs, or merely adds the weakest link, is an open measurement question — but it has a standard algebra to test against: model the stack as an attack graph, and its corruption cost is the **min-cut** over attack paths. Series composition without randomization inherits the cheapest stage; randomized escalation with probability $p$ adds roughly $p \cdot C_{expensive}$ to every path that must survive escalation — a predicted value for the v1 stack entries below to be checked against.
+
+**Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure (Identity and Track-Record Infrastructure, [planned](/#the-book)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — it is the single most leveraged missing institution in the table.
+
+**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice the field needs to standardize (Certification and Gyms, [planned](/#the-book)).
+
+## What v1 needs
+
+1. **Numbers.** Replace L/M/H with estimates: dollars per validated bit; dollars to shift a conclusion by a fixed amount against a fixed-capability attacker. Wide intervals are fine; the point is comparability.
+2. **Capability-indexed corruption columns.** $C_\pi$ at human, current-model, and frontier-model attacker levels — the corruption-capacity curves sketched in [The Core Model](/concepts/core-model/).
+3. **Per-process pipeline decompositions.** Where each process loses its value (codification vs. evaluator vs. interpretation) — the audit template applied row by row.
+4. **Composition entries.** The table treats processes as atoms; the most important real systems are stacks. Measured entries for two or three named stacks (e.g., consistency floor → LLM panel → randomized expert escalation) would test the composition bet directly.
+
+## Open questions
+
+- Is "cost per validated bit" actually well-defined across processes with different output types (probabilities, rulings, models, rankings)? What's the common currency?
+- How stable are corruption costs over time, given that attacks improve? Is the table a snapshot or can some entries be made future-proof?
+- Which rows' weaknesses are intrinsic, and which are artifacts of missing infrastructure (identity, escrow, resolution)?

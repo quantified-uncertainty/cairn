@@ -1,0 +1,77 @@
+---
+title: Robust Reasoning Processes
+description: A small textbook for a new field — the study and engineering of reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
+template: splash
+hero:
+  tagline: A small textbook for a new field — reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
+  actions:
+    - text: Start with Chapter 1
+      link: /start-here/introduction/
+      icon: right-arrow
+    - text: The Process Catalogue
+      link: /concepts/process-catalogue/
+      icon: open-book
+      variant: minimal
+---
+
+import ProcessMap from '@/components/ProcessMap.astro';
+
+## The field in one paragraph
+
+**Robust reasoning processes (RRP)** is the study and engineering of procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. Its objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. Its central activity is measurement: what does a process deliver, what does it cost, and what does it cost to corrupt? Civilization runs on reasoning processes that were never benchmarked; AI has just made them studyable — an LLM-based process can be re-run, perturbed, versioned, and attacked on purpose — and made the problem urgent, because the cost of producing plausible reasoning has collapsed while the cost of verifying it has not.
+
+## The map
+
+Every process gets two headline numbers: the cost of extracting validated information from it, and the cost an adversary pays to bend its output. Plotting the field's [Process Catalogue](/concepts/process-catalogue/) on that plane is our version of a periodic table — and the most important feature is the quadrant that is still empty.
+
+<ProcessMap />
+
+## The three layers
+
+- **The Judge** — the consumer of reasoning, who cannot check the work object-level. What they need: a utility function over information, a way to price information against it, and the process-conditional weights that say how much each source should move them.
+- **The Processes** — the procedures themselves: their anatomy, what their verdicts ground out in, their measured properties, and the attack-and-hardening cycle that makes them robust.
+- **The Environment** — the game the processes live inside: producers, resolvers, accreditors, adversaries; the identity and track-record infrastructure every incentive scheme silently assumes; and the market, legal, and cultural constraints.
+
+## The book
+
+| # | Chapter | Status |
+|---|---------|--------|
+| 1 | [Robust Reasoning Processes](/start-here/introduction/) | draft |
+| 2 | [Cruxes](/start-here/key-questions/) | draft |
+| **I** | **The Judge** | |
+| 3 | [The Core Model](/concepts/core-model/) | draft |
+| 4 | [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) | draft |
+| 5 | [Constructing Utility Functions](/concepts/constructing-utility-functions/) | draft |
+| — | [Interlude: What Can You Use from an Untrustworthy Source?](/concepts/untrustworthy-sources/) | draft |
+| **II** | **The Processes** | |
+| 6 | [The Process Catalogue](/concepts/process-catalogue/) | draft (v0) |
+| 7 | [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) | draft |
+| 8 | [Consistency Evaluations](/proposals/consistency-evals/) | draft |
+| 9 | [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/) | draft |
+| 10 | Attack Models | planned |
+| 11 | Hardening Techniques | planned |
+| 12 | Certification and Gyms | planned |
+| **III** | **The Environment** | |
+| 13 | Identity and Track-Record Infrastructure | planned |
+| 14 | The Market for Truth | planned |
+| 15 | Law, Liability, and Private Deliberation | planned |
+| 16 | Culture, Consent, and Adoption | planned |
+| **IV** | **Applications** | |
+| 17 | [The Reliability Ladder](/concepts/epistemic-applications/) | draft |
+| 18 | [Overseeing Automated Research](/proposals/overseeing-automated-research/) | draft |
+| 19 | [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) | draft |
+| 20 | [Open Problems](/open-questions/) | aggregated |
+
+A [Glossary & Notation](/reference/glossary/) page indexes the field's terms and symbols.
+
+## How this book reasons about itself
+
+Three norms, applied throughout:
+
+1. **Formalisms are graded.** Every equation carries an explicit grade — **[exact]** (correct by construction), **[standard shape]** (precedent in an adjacent rigorous field), or **[heuristic]** (a deliberately simple decomposition, not a law). A field about robust reasoning should grade its own reasoning first. See [The Core Model](/concepts/core-model/).
+2. **Failures are published.** The deployment write-ups in [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) report false-positive rates, overconfidence, and a miscounted competition alongside the wins. Documented corruption and documented failure are the best data the field has.
+3. **Positions are dated and versioned.** Every page carries a status line; everything here is a working draft of a field that does not exist yet, stated so it can be argued with and eventually replaced by measurement.
+
+## Status
+
+This wiki is in an early, exploratory stage. Pages are working notes, not settled positions. It is part of the [CAIRN](https://github.com/quantified-uncertainty/cairn) project by [QURI](https://quantifieduncertainty.org/).
