@@ -5,9 +5,7 @@ sidebar:
   order: 4
 ---
 
-# Correlation Calculator
-
-This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations).
+This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations). All ρ values are on the **phi (failure-indicator Pearson) scale**; see [What ρ means and how to estimate it](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it) for the estimation recipe.
 
 ---
 
@@ -18,6 +16,12 @@ This page provides lookup tables for calculating the **entanglement tax**—the 
 
 **Reality with correlation**:
 > P(all fail) is much higher because when one layer fails, correlated layers are more likely to fail too.
+
+**The formula** (canonical derivation in [Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax); see also [Risk Propagation](/delegation-risk/risk-propagation/)):
+
+$$P(\text{all fail}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
+
+This is the beta-factor common-cause model: with weight ρ a shared cause defeats every correlated layer at once. It is deliberately conservative at intermediate ρ relative to smoother correlation models — the right direction for budgeting. All tables below are generated from this formula.
 
 ---
 
@@ -46,14 +50,14 @@ This page provides lookup tables for calculating the **entanglement tax**—the 
 | Correlation | P(All Fail) | Effective Protection | Entanglement Tax |
 |-------------|-------------|---------------------|------------------|
 | 0.0 (independent) | 0.10% | 99.90% | 1× |
-| 0.1 | 0.27% | 99.73% | 2.7× |
-| 0.2 | 0.52% | 99.48% | 5.2× |
-| 0.3 | 0.86% | 99.14% | **8.6×** |
-| 0.5 | 1.78% | 98.22% | **17.8×** |
-| 0.7 | 3.03% | 96.97% | **30×** |
+| 0.1 | 1.09% | 98.91% | 10.9× |
+| 0.2 | 2.08% | 97.92% | 20.8× |
+| 0.3 | 3.07% | 96.93% | **31×** |
+| 0.5 | 5.05% | 94.95% | **50×** |
+| 0.7 | 7.03% | 92.97% | **70×** |
 | 1.0 (identical) | 10.00% | 90.00% | 100× |
 
-**Key insight**: With three layers, ρ = 0.3 gives you ~9× entanglement tax. At ρ = 0.5, you're paying 18×.
+**Key insight**: With three layers, even ρ = 0.1 costs you an order of magnitude — and at ρ = 0.3 you're paying ~31×. The third layer barely moves actual protection once a common cause exists.
 
 ### Five-Layer System
 
@@ -62,14 +66,14 @@ This page provides lookup tables for calculating the **entanglement tax**—the 
 | Correlation | P(All Fail) | Effective Protection | Entanglement Tax |
 |-------------|-------------|---------------------|------------------|
 | 0.0 (independent) | 0.001% | 99.999% | 1× |
-| 0.1 | 0.009% | 99.991% | 9× |
-| 0.2 | 0.034% | 99.966% | 34× |
-| 0.3 | 0.093% | 99.907% | **93×** |
-| 0.5 | 0.396% | 99.604% | **396×** |
-| 0.7 | 1.105% | 98.895% | **1105×** |
-| 1.0 (identical) | 10.000% | 90.00% | 10000× |
+| 0.1 | 1.00% | 99.00% | ~1,000× |
+| 0.2 | 2.00% | 98.00% | ~2,000× |
+| 0.3 | 3.00% | 97.00% | **~3,000×** |
+| 0.5 | 5.00% | 95.00% | **~5,000×** |
+| 0.7 | 7.00% | 93.00% | **~7,000×** |
+| 1.0 (identical) | 10.00% | 90.00% | 10,000× |
 
-**Key insight**: Entanglement tax compounds dramatically. Five layers with ρ = 0.3 pay ~100× tax—you think you have 99.999% protection but actually have ~99.9%.
+**Key insight**: Entanglement tax compounds dramatically with layer count — you *think* you have 99.999% protection, but with any appreciable common cause your actual protection is set by ρ × 10%, not by the five layers. The extra layers improve the perceived number, not the real one.
 
 ---
 
@@ -80,14 +84,14 @@ How many truly independent layers would give you the same protection?
 | Nominal Layers | Correlation | Effective Redundancy |
 |----------------|-------------|---------------------|
 | 3 | 0.0 | 3.0 layers |
-| 3 | 0.3 | 2.0 layers |
-| 3 | 0.5 | 1.7 layers |
-| 3 | 0.7 | 1.5 layers |
+| 3 | 0.3 | 1.5 layers |
+| 3 | 0.5 | 1.3 layers |
+| 3 | 0.7 | 1.2 layers |
 | 5 | 0.0 | 5.0 layers |
-| 5 | 0.3 | 3.0 layers |
-| 5 | 0.5 | 2.4 layers |
+| 5 | 0.3 | 1.5 layers |
+| 5 | 0.5 | 1.3 layers |
 
-**Interpretation**: 3 layers with ρ = 0.5 provide only 1.7 layers worth of protection.
+**Interpretation**: 3 layers with ρ = 0.5 provide only ~1.3 layers worth of protection — and going from 3 layers to 5 at the same correlation buys you *nothing*. Once a common cause exists, effective redundancy is set by the correlation, not the layer count. Reduce ρ (diversify providers, isolate context) before adding layers.
 
 ---
 
@@ -123,8 +127,10 @@ What correlation values should you expect?
 
 **Result** (from 3-layer table at ρ = 0.3):
 - You thought: 99.9% protection
-- You have: ~99.1% protection
-- Entanglement tax: ~9×
+- You have: ~96.9% protection (P(all fail) ≈ 3.1%)
+- Entanglement tax: ~31×
+
+**Caveat on averaging pairwise ρs**: The single shared-ρ model used here cannot represent asymmetric pairwise structure (GPT-4↔Claude at 0.5 is quite different from either's 0.2 correlation with static analysis). Averaging (0.5 + 0.2 + 0.2) / 3 = 0.3 is a rough approximation that can *understate* the tax — the high GPT-4↔Claude correlation still creates a strong common-cause channel that averaging dilutes. For a conservative answer with asymmetric architectures, use the **max pairwise ρ** (here 0.5, giving ~50× tax from the 3-layer table) rather than the average. For a precise answer, model the pairwise matrix explicitly (see the limitation note in [Formal Definitions](/entanglements/fundamentals/formal-definitions/)).
 
 ### Example 2: Homogeneous LLM Stack
 
@@ -136,12 +142,12 @@ What correlation values should you expect?
 
 **Correlation**: ρ ≈ 0.9 (same model)
 
-**Result** (from 3-layer table, interpolating):
+**Result** (from 3-layer table, interpolating between ρ = 0.7 and ρ = 1.0):
 - You thought: 99.9% protection
-- You have: ~95% protection
-- Entanglement tax: ~50×
+- You have: ~91% protection (P(all fail) ≈ 9%)
+- Entanglement tax: ~90×
 
-Your three layers are worth about 1.1 effective layers.
+Your three layers are worth about 1.05 effective layers — barely more than one.
 
 ### Example 3: Diverse Stack
 
@@ -153,8 +159,11 @@ Your three layers are worth about 1.1 effective layers.
 **Average correlation**: ~0.15 (paradigm diversity)
 
 **Result**:
-- Entanglement tax: ~3×
-- Much better because of genuine diversity
+- Independent assumption: P(all fail) = 0.1 × 0.05 × 0.01 = 0.005%
+- Actual: P(all fail) = 0.85 × 0.005% + 0.15 × 1% ≈ 0.15%
+- Entanglement tax: ~31×
+
+The tax *ratio* is still large — with heterogeneous layers, the common-cause term ρ · min(pᵢ) dominates the tiny independent product, and the strongest layer (the 99% human review) sets the floor: P(all fail) ≥ ρ × 1%. But compare absolute risk: 0.15% here versus 3.1% for the code review bot in Example 1. Genuine diversity bought a ~20× lower actual failure rate. The remaining risk is almost entirely the shared-cause channel, so the next improvement is reducing ρ further — not adding layers.
 
 ---
 
@@ -162,12 +171,16 @@ Your three layers are worth about 1.1 effective layers.
 
 ### Maximum Acceptable Correlation
 
-| Stakes | Target Protection | Max Correlation |
-|--------|-------------------|-----------------|
-| Low | 95% | Up to 0.7 |
-| Medium | 99% | Up to 0.3 |
-| High | 99.9% | Up to 0.15 |
-| Critical | 99.99% | Essentially zero |
+With 90%-effective layers, the common-cause floor P(all fail) ≥ ρ × 10% caps your achievable protection no matter how many layers you stack. Working backwards from each target (assuming ≥4 layers, so the independent term is negligible):
+
+| Stakes | Target Protection | Max Correlation (90% layers) |
+|--------|-------------------|------------------------------|
+| Low | 95% | ρ ≤ ~0.5 |
+| Medium | 99% | ρ ≤ ~0.1 |
+| High | 99.9% | ρ ≤ ~0.01 |
+| Critical | 99.99% | Essentially zero (ρ ≤ ~0.001) |
+
+If you can't get ρ that low, the other lever is stronger individual layers: the floor is ρ × min(pᵢ), so improving your *best* layer lowers it proportionally.
 
 ### Strategies to Reduce Correlation
 
@@ -183,7 +196,7 @@ Your three layers are worth about 1.1 effective layers.
 
 ## Rules of Thumb
 
-1. **Each 0.1 increase in ρ roughly doubles your entanglement tax** (for 3 layers)
+1. **The tax is linear in ρ, and the first step is the worst**: for 3 layers at 90%, each +0.1 of ρ adds roughly +10× to the tax (about +1 percentage point of P(all fail)). Going from ρ = 0 to ρ = 0.1 alone multiplies the tax by ~11×.
 
 2. **Adding layers has diminishing returns**: The n-th correlated layer adds only (1-ρ) × effectiveness of first layer
 
@@ -191,7 +204,7 @@ Your three layers are worth about 1.1 effective layers.
 
 4. **Information flow increases correlation**: If Layer A's output influences Layer B, add ~0.1-0.2 to ρ
 
-5. **Same model = almost no redundancy**: ρ ≈ 0.9 means your 3 layers are worth ~1.1 layers
+5. **Same model = almost no redundancy**: ρ ≈ 0.9 means your 3 layers are worth ~1.05 layers
 
 ---
 

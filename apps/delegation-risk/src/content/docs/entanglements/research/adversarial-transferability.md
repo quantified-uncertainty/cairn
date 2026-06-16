@@ -5,8 +5,6 @@ sidebar:
   order: 12
 ---
 
-# Adversarial Transferability
-
 One of the strongest empirical foundations for understanding correlated blind spots comes from adversarial machine learning. This page surveys the research on **why attacks that fool one model often fool others**—even models with different architectures, training data, and providers.
 
 This phenomenon directly explains why "just use a different model" often fails to provide true independence.

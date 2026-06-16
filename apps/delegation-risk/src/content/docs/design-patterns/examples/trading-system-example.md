@@ -1,10 +1,15 @@
 ---
 title: "Example: AI Trading System"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
 
-# Example: AI Trading System
+:::caution[Illustrative Example]
+This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::
 
 A worked example in a high-frequency, adversarial domain: an AI system that generates and executes trading strategies.
 
@@ -29,19 +34,19 @@ This requires careful balance between speed (for profit) and safety (for surviva
 
 | Failure | Damage | Notes |
 |---------|--------|-------|
-| Large unintended position | $1M+ | Flash crash contribution |
-| Model failure in volatility | $500K | Wrong bets during crisis |
-| Adversarial exploitation | $200K | Other traders gaming our signals |
-| Regulatory violation | $1M+ | Spoofing, manipulation fines |
-| Data feed manipulation | $100K | Acting on corrupted data |
+| Large unintended position | \$1M+ | Flash crash contribution |
+| Model failure in volatility | \$500K | Wrong bets during crisis |
+| Adversarial exploitation | \$200K | Other traders gaming our signals |
+| Regulatory violation | \$1M+ | Spoofing, manipulation fines |
+| Data feed manipulation | \$100K | Acting on corrupted data |
 | Runaway losses | Unlimited | Without circuit breakers |
 
-**Target Delegation Risk**: $50,000/month (high tolerance, but with hard limits)
+**Target Delegation Risk**: \$50,000/month (high tolerance, but with hard limits)
 
 **Hard limits** (non-negotiable):
-- Max position size: $10M per instrument
-- Max daily loss: $500K (triggers shutdown)
-- Max drawdown: $2M (triggers review)
+- Max position size: \$10M per instrument
+- Max daily loss: \$500K (triggers shutdown)
+- Max drawdown: \$2M (triggers review)
 
 ## Component Architecture
 
@@ -113,7 +118,7 @@ class DataValidator:
         return ValidatedTick(tick, confidence=self.compute_confidence(tick))
 ```
 
-**Trust allocation**: Delegation Risk $500 (verified code, critical path)
+**Trust allocation**: Delegation Risk \$500 (verified code, critical path)
 
 **Why verified code**: Data validation is the first line of defense. A compromised feed could cause unlimited losses. No ML here.
 
@@ -126,7 +131,7 @@ class DataValidator:
 - Ensemble combines signals with confidence weighting
 - No single model can dominate
 
-**Trust allocation**: Delegation Risk $15,000 (highest allocation—this is where we accept risk for return)
+**Trust allocation**: Delegation Risk \$15,000 (highest allocation—this is where we accept risk for return)
 
 **Constraints**:
 - Models are narrow (trained on specific signal types)
@@ -165,7 +170,7 @@ class AlphaEnsemble:
 - Liquidity risk assessment
 - Concentration limits
 
-**Trust allocation**: Delegation Risk $5,000 (validated models, conservative calibration)
+**Trust allocation**: Delegation Risk \$5,000 (validated models, conservative calibration)
 
 **Why statistical, not ML**: Risk models must be interpretable and stable. ML risk models can underestimate tail risk exactly when it matters most.
 
@@ -178,7 +183,7 @@ Detects market regime changes:
 - Trending → Mean-reverting
 - Normal → Crisis
 
-**Trust allocation**: Delegation Risk $2,000 (statistical model)
+**Trust allocation**: Delegation Risk \$2,000 (statistical model)
 
 **Effect on system**:
 - Crisis regime → Reduce position sizes 50-90%
@@ -215,7 +220,7 @@ class PortfolioOptimizer:
         return TargetPortfolio(result.weights)
 ```
 
-**Trust allocation**: Delegation Risk $3,000 (code with mathematical guarantees)
+**Trust allocation**: Delegation Risk \$3,000 (code with mathematical guarantees)
 
 **Key property**: Constraints are hard-coded and mathematically guaranteed by the solver. The optimizer cannot propose a portfolio that violates limits.
 
@@ -252,7 +257,7 @@ class LimitChecker:
         return Approved(target)
 ```
 
-**Trust allocation**: Delegation Risk $1,000 (verified code, independent check)
+**Trust allocation**: Delegation Risk \$1,000 (verified code, independent check)
 
 **Why independent**: Even if optimizer has a bug, limit checker catches violations. Different code, different team, different review process.
 
@@ -290,11 +295,11 @@ class CircuitBreaker:
         self.initiate_flatten()
 ```
 
-**Trust allocation**: Delegation Risk $500 (verified code, fail-safe)
+**Trust allocation**: Delegation Risk \$500 (verified code, fail-safe)
 
 **Shutdown triggers**:
-- Daily loss > $500K
-- Drawdown > $2M
+- Daily loss > \$500K
+- Drawdown > \$2M
 - Order rate anomaly
 - Data feed failure
 - Any component error
@@ -303,17 +308,17 @@ class CircuitBreaker:
 
 | Component | Implementation | Delegation Risk | % of Budget |
 |-----------|---------------|-----|-------------|
-| Data Validator | Verified code | $500 | 1% |
-| Alpha Models | ML ensemble | $15,000 | 30% |
-| Risk Models | Statistical | $5,000 | 10% |
-| Regime Detector | Statistical | $2,000 | 4% |
-| Portfolio Optimizer | Verified code + solver | $3,000 | 6% |
-| Limit Checker | Verified code | $1,000 | 2% |
-| Circuit Breakers | Verified code | $500 | 1% |
-| Execution Engine | Verified code | $1,000 | 2% |
-| **Tail Risk Buffer** | Extreme scenarios | $15,000 | 30% |
-| **Human Oversight** | Daily review, alerts | $6,500 | 13% |
-| **Total** | | **$50,000** | 100% |
+| Data Validator | Verified code | \$500 | 1% |
+| Alpha Models | ML ensemble | \$15,000 | 30% |
+| Risk Models | Statistical | \$5,000 | 10% |
+| Regime Detector | Statistical | \$2,000 | 4% |
+| Portfolio Optimizer | Verified code + solver | \$3,000 | 6% |
+| Limit Checker | Verified code | \$1,000 | 2% |
+| Circuit Breakers | Verified code | \$500 | 1% |
+| Execution Engine | Verified code | \$1,000 | 2% |
+| **Tail Risk Buffer** | Extreme scenarios | \$15,000 | 30% |
+| **Human Oversight** | Daily review, alerts | \$6,500 | 13% |
+| **Total** | | **\$49,500** | 99% |
 
 **Key insight**: 30% allocated to alpha models (where we take risk for return), 30% as tail risk buffer, remainder in verified infrastructure.
 

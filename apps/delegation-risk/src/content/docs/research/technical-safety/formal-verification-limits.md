@@ -3,8 +3,6 @@ title: "Formal Verification Limits for AI Systems"
 description: "What can and cannot be formally verified in AI systems"
 ---
 
-# Formal Verification Limits for AI Systems
-
 ## Executive Summary
 
 Formal verification of AI systems, particularly neural networks, has made significant strides but faces fundamental theoretical and practical limits. While we can verify specific properties like local robustness bounds and Lipschitz constants for relatively small networks (up to ~1M neurons in specialized cases), many critical safety properties remain unverifiable due to computational complexity, undecidability results, and the gap between verified components and emergent system behavior.
@@ -492,7 +490,7 @@ The paper outlines a spectrum from weak (empirical) to strong (provable) assuran
 
 #### Impossibility of Safe, Trusted AGI (Under Specific Definitions)
 
-**Panigrahy (2024)** ([arXiv:2509.21654](https://arxiv.org/pdf/2509.21654)):
+**Panigrahy (2025)** ([arXiv:2509.21654](https://arxiv.org/pdf/2509.21654)):
 - **Definitions**:
   - **Safe**: System never makes false claims
   - **Trusted**: Assume system is safe

@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# Theoretical Foundations
-
 :::note[Theoretical Content]
 These documents explore the mathematical and economic foundations of delegation risk. They provide formal frameworks that underpin the practical applications in other sections.
 
@@ -41,6 +39,4 @@ For the foundational concepts (Agency, Power, Authority, Strong Tools), see the 
 
 These theoretical foundations inform:
 
-- **Protocol multipliers** in the [Protocol Catalog](/case-studies/anomaly-chronicles/protocol-catalog/)
-- **Track record calculations** in the [Insurance Bot](/case-studies/anomaly-chronicles/insurance-bot-spec/)
 - **Exposure modeling** in [Delegation Accounting](/delegation-risk/delegation-accounting/)

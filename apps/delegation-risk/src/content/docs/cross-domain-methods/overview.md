@@ -2,10 +2,8 @@
 title: "Quantified Risk Budgeting: A Cross-Domain Framework for AI Safety"
 ---
 
-# Quantified Risk Budgeting: A Cross-Domain Framework for AI Safety
-
 :::note[TL;DR]
-Combine three established approaches: **Euler allocation** (finance) for decomposing risk to components, **fault trees** (nuclear) for flowing targets down hierarchically, and **mechanism design** (economics) for incentive-compatible reporting. Key insight: nuclear plants achieve **10⁻⁹ failure rates** using these methods—we may be able to adapt them for AI, though the application is novel.
+Combine three established approaches: **Euler allocation** (finance) for decomposing risk to components, **fault trees** (nuclear) for flowing targets down hierarchically, and **mechanism design** (economics) for incentive-compatible reporting. Key insight: nuclear plants achieve core damage frequencies around **10⁻⁵/reactor-year** (NRC target ~10⁻⁴) using these methods—we may be able to adapt them for AI, though the application is novel.
 :::
 
 :::caution[Transferability Warning]
@@ -18,7 +16,7 @@ The most promising path toward a risk budgeting framework for AI safety lies in 
 Successful risk budgeting requires not just quantification, but compositional guarantees that component risks aggregate predictably and incentive structures that make honest reporting optimal.
 :::
 
-Finance uses risk decomposition across portfolios with the formula RC_i = x_i · ∂R/∂x_i (though this approach had notable failures in 2008); nuclear safety has demonstrated that system-level failure probability targets like **10⁻⁹ per flight hour** can flow down to components through [fault trees](https://en.wikipedia.org/wiki/Fault_tree_analysis); and mechanism design has established conditions under which truthful risk reporting can be made incentive-compatible through [VCG-style payments](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism).
+Finance uses risk decomposition across portfolios with the formula RC_i = x_i · ∂R/∂x_i (though this approach had notable failures in 2008); aviation safety has demonstrated that system-level failure probability targets like **10⁻⁹ per flight hour** (FAA/EASA catastrophic-condition target) can flow down to components through [fault trees](https://en.wikipedia.org/wiki/Fault_tree_analysis), and nuclear safety achieves comparable rigor with core damage frequency targets of ~10⁻⁴/reactor-year (NRC goal) and ~10⁻⁵ achieved by modern plants; and mechanism design has established conditions under which truthful risk reporting can be made incentive-compatible through [VCG-style payments](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism).
 
 ## Five Essential Characteristics
 

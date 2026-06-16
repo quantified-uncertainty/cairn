@@ -4,8 +4,6 @@ description: "Implementation feasibility of decomposed AI systems with trust pro
 date: 2025-12-13
 ---
 
-# Prototype Architecture Feasibility: Decomposed AI Systems for Delegation Risk
-
 ## Executive Summary
 
 This research examines the feasibility of implementing decomposed AI architectures for safety-critical applications requiring delegation risk framework and risk budgeting frameworks. Key findings indicate that decomposed systems can reduce costs by 80% while improving reliability, but introduce complexity in orchestration, latency management, and safety verification. The viability of Byzantine fault-tolerant coordinators, multi-agent frameworks, and specialist model pipelines is assessed based on current production deployments and research.
@@ -13,7 +11,7 @@ This research examines the feasibility of implementing decomposed AI architectur
 **Key Takeaways:**
 - Decomposed architectures show 40-100% accuracy improvements on specialized tasks with 10-100x lower inference costs
 - Multi-agent frameworks (AutoGen, CrewAI, LangGraph) are production-ready but lack native Byzantine fault tolerance
-- Fine-tuning costs have dropped dramatically: $100-200 for competitive specialist models vs $25M+ for frontier models
+- Fine-tuning costs have dropped dramatically: \$100-200 for competitive specialist models vs \$25M+ for frontier models
 - Byzantine 3f+1 redundancy adds 4x hardware costs and 4-8x latency overhead
 - Production systems favor hybrid approaches: specialized models for narrow tasks, frontier models for complex reasoning
 
@@ -28,20 +26,20 @@ This research examines the feasibility of implementing decomposed AI architectur
 According to 2025 industry analysis, **decomposed AI architectures can reduce workflow costs by up to 80%** compared to monolithic systems while improving reliability, because multiple low-cost models replace one extremely expensive reasoning model ([Shaped Blog](https://www.shaped.ai/blog/monolithic-vs-modular-ai-architecture)).
 
 **Frontier Model Costs (2025):**
-- Premium tier (GPT-4/5, Claude Opus): $10-75 per million output tokens
-- Mid-tier (Claude Sonnet, Gemini Pro): $3-15 per million tokens
-- Low-end (DeepSeek, Gemini Flash): $0.4-4 per million tokens
+- Premium tier (GPT-4/5, Claude Opus): \$10-75 per million output tokens
+- Mid-tier (Claude Sonnet, Gemini Pro): \$3-15 per million tokens
+- Low-end (DeepSeek, Gemini Flash): \$0.4-4 per million tokens
 
 **Specialist Model Costs:**
-- Fine-tuned Llama-3-8B on Together AI: <$100 total training cost
-- OpenAI GPT-4o fine-tuning: $25 per million training tokens
+- Fine-tuned Llama-3-8B on Together AI: <\$100 total training cost
+- OpenAI GPT-4o fine-tuning: \$25 per million training tokens
 - Inference with fine-tuned models: 10-100x cheaper than frontier models
 - Example: Fine-tuned 8B model achieved 90% of GPT-4o accuracy at 50x lower cost ([Together AI](https://www.together.ai/blog/finetuning))
 
 **Cost Breakdown by Deployment Type:**
-- AWS Bedrock Llama 2 (70B) fine-tuning pipeline: $33.44/month (1000 tokens training + storage + 1hr inference)
-- Claude fine-tuning on Bedrock: $55.45/month (same workload)
-- Typical enterprise spend on AI in 2025: $400k average, up 75.2% YoY ([Zylo](https://zylo.com/blog/ai-cost/))
+- AWS Bedrock Llama 2 (70B) fine-tuning pipeline: \$33.44/month (1000 tokens training + storage + 1hr inference)
+- Claude fine-tuning on Bedrock: \$55.45/month (same workload)
+- Typical enterprise spend on AI in 2025: \$400k average, up 75.2% YoY ([Zylo](https://zylo.com/blog/ai-cost/))
 
 #### Hidden Costs and Tradeoffs
 
@@ -229,7 +227,7 @@ Best use cases for specialist models:
 **Trust Research:**
 CAMEL team published research on simulating human trust behaviors in LLM agents:
 - GPT-4 agents show **high behavioral alignment** with human trust patterns
-- Gender bias detected: agents send $7.5 to female players vs $6.7 to male (p<0.05)
+- Gender bias detected: agents send \$7.5 to female players vs \$6.7 to male (p<0.05)
 - Trust simulation enables design of trust-dependent cooperation mechanisms ([CAMEL Agent Trust](http://agent-trust.camel-ai.org/))
 
 ### 2.2 Coordination and Trust Properties
@@ -351,17 +349,17 @@ Fastest to slowest for comparable tasks:
 #### 2025 Cost Breakdown
 
 **Data Costs:**
-- **Data collection**: $0-$50k depending on domain (existing data vs. annotation)
-- **Data cleaning/labeling**: $5-$20 per hour per annotator
-- **Synthetic data generation**: $0.01-$0.50 per example with LLMs
+- **Data collection**: \$0-\$50k depending on domain (existing data vs. annotation)
+- **Data cleaning/labeling**: \$5-\$20 per hour per annotator
+- **Synthetic data generation**: \$0.01-\$0.50 per example with LLMs
 - **Quality validation**: 10-20% of labeling cost
 
 **Compute Costs:**
 
 *Full Fine-Tuning:*
-- **GPT-4o**: $25/M training tokens
-- **Llama-3-8B (Together AI)**: <$100 total for competitive model
-- **Llama-3-70B (Together AI)**: $500-1000 for production-quality model
+- **GPT-4o**: \$25/M training tokens
+- **Llama-3-8B (Together AI)**: <\$100 total for competitive model
+- **Llama-3-70B (Together AI)**: \$500-1000 for production-quality model
 
 *Parameter-Efficient Fine-Tuning (PEFT/LoRA):*
 - **Cost reduction**: 5-10x lower than full fine-tuning
@@ -370,19 +368,19 @@ Fastest to slowest for comparable tasks:
 - **Performance**: Within a few points of full fine-tuning ([Fireworks AI](https://fireworks.ai/blog/llm-fine-tuning))
 
 **Infrastructure:**
-- **Cloud GPU (H100)**: $2-$5/hour
+- **Cloud GPU (H100)**: \$2-\$5/hour
 - **Training time**: 4-48 hours depending on model size and dataset
-- **Storage**: Negligible (<$100/month for most use cases)
+- **Storage**: Negligible (<\$100/month for most use cases)
 
 **Evaluation Costs:**
-- **Automated evals**: $10-$100 in API costs
-- **Human evaluation**: $50-$200 per evaluation round
+- **Automated evals**: \$10-\$100 in API costs
+- **Human evaluation**: \$50-\$200 per evaluation round
 - **Benchmark testing**: Often free (HumanEval, MMLU, etc.)
 
 **Total Minimum Viable Fine-Tuning:**
-- **Budget option**: $200-500 (existing data, PEFT, automated eval)
-- **Production option**: $2k-10k (quality data, full fine-tuning, human eval)
-- **Enterprise option**: $50k-200k (custom data collection, multiple iterations)
+- **Budget option**: \$200-500 (existing data, PEFT, automated eval)
+- **Production option**: \$2k-10k (quality data, full fine-tuning, human eval)
+- **Enterprise option**: \$50k-200k (custom data collection, multiple iterations)
 
 #### Example Success Cases
 
@@ -398,7 +396,7 @@ Fastest to slowest for comparable tasks:
 **Fine-Tuned Math Specialist:**
 - Llama-3-8B on math problems: **>90% of GPT-4o accuracy**
 - **50x cheaper** than GPT-4o
-- **<$100 total cost** to fine-tune ([Together AI](https://www.together.ai/blog/finetuning))
+- **<\$100 total cost** to fine-tune ([Together AI](https://www.together.ai/blog/finetuning))
 
 ### 3.2 Predictability and Auditability
 
@@ -516,7 +514,7 @@ Four audit categories:
 - Fine-tuned BERT, DistilBERT, RoBERTa
 - Single-label or multi-label classification
 - **Sub-100ms latency** achievable
-- Extremely low cost (<$0.01 per 1000 inferences)
+- Extremely low cost (<\$0.01 per 1000 inferences)
 
 *LLM-Based Classification:*
 - Fine-tuned Llama-2-7B, Mistral-7B
@@ -573,7 +571,7 @@ Four audit categories:
 
 **Critical Finding:**
 - GPT-3.5 Turbo safety guardrails **jailbroken with just 10 adversarial examples**
-- Cost: **<$0.20** via OpenAI API
+- Cost: **<\$0.20** via OpenAI API
 - Even benign datasets can inadvertently degrade safety alignment
 - Fine-tuned variants **>3x more susceptible** to jailbreak instructions
 - **>22x more likely** to produce harmful responses ([GitHub LLM-Tuning-Safety](https://github.com/LLM-Tuning-Safety/LLMs-Finetuning-Safety))
@@ -663,9 +661,9 @@ To reach consensus with `f` faulty nodes:
   - 1TB NVMe storage for model weights and state
 
 *Cost Estimate:*
-- Cloud (AWS p4d.xlarge equivalent): **$12-20/hour × 4 = $48-80/hour**
-- Annual cost: **$420k-700k** (assuming 24/7 operation)
-- On-premises hardware: **$80k-120k** upfront + $50k/year operational
+- Cloud (AWS p4d.xlarge equivalent): **\$12-20/hour × 4 = \$48-80/hour**
+- Annual cost: **\$420k-700k** (assuming 24/7 operation)
+- On-premises hardware: **\$80k-120k** upfront + \$50k/year operational
 
 **Two-Failure Tolerance (f=2, N=7):**
 
@@ -677,9 +675,9 @@ To reach consensus with `f` faulty nodes:
   - Redundant power supplies
 
 *Cost Estimate:*
-- Cloud (AWS p4d.24xlarge equivalent): **$32-50/hour × 7 = $224-350/hour**
-- Annual cost: **$1.96M-3.07M**
-- On-premises: **$700k-1.2M** upfront + $200k/year operational
+- Cloud (AWS p4d.24xlarge equivalent): **\$32-50/hour × 7 = \$224-350/hour**
+- Annual cost: **\$1.96M-3.07M**
+- On-premises: **\$700k-1.2M** upfront + \$200k/year operational
 
 **Three-Failure Tolerance (f=3, N=10):**
 
@@ -689,9 +687,9 @@ To reach consensus with `f` faulty nodes:
 - Dedicated consensus network infrastructure
 
 *Cost Estimate:*
-- Cloud: **$320-500/hour**
-- Annual cost: **$2.8M-4.38M**
-- On-premises: **$1.5M-2.5M** upfront + $400k/year operational
+- Cloud: **\$320-500/hour**
+- Annual cost: **\$2.8M-4.38M**
+- On-premises: **\$1.5M-2.5M** upfront + \$400k/year operational
 
 #### Multi-GPU/Multi-Node Inference Configuration
 
@@ -824,17 +822,17 @@ Total_latency = Inference_time + Consensus_latency + Orchestration_overhead
 
 | Tolerance | Nodes | GPU Type | Hourly Cost | Annual Cost |
 |-----------|-------|----------|-------------|-------------|
-| f=1 | 4 | A100-40GB | $48-80 | $420k-700k |
-| f=2 | 7 | A100-80GB | $224-350 | $1.96M-3.07M |
-| f=3 | 10 | H100 | $400-600 | $3.5M-5.26M |
+| f=1 | 4 | A100-40GB | \$48-80 | \$420k-700k |
+| f=2 | 7 | A100-80GB | \$224-350 | \$1.96M-3.07M |
+| f=3 | 10 | H100 | \$400-600 | \$3.5M-5.26M |
 
 **On-Premises Deployment:**
 
 | Tolerance | Nodes | CapEx (Hardware) | OpEx (Annual) | 3-Year TCO |
 |-----------|-------|------------------|---------------|-------------|
-| f=1 | 4 | $80k-120k | $50k | $230k-270k |
-| f=2 | 7 | $700k-1.2M | $200k | $1.3M-1.8M |
-| f=3 | 10 | $1.5M-2.5M | $400k | $2.7M-3.7M |
+| f=1 | 4 | \$80k-120k | \$50k | \$230k-270k |
+| f=2 | 7 | \$700k-1.2M | \$200k | \$1.3M-1.8M |
+| f=3 | 10 | \$1.5M-2.5M | \$400k | \$2.7M-3.7M |
 
 **Cost Multipliers vs Single-Node:**
 
@@ -893,7 +891,7 @@ Traditional PBFT suffers from **O(N²) communication complexity**:
 2. **High-value financial systems**
    - Transaction values >> infrastructure costs
    - Adversarial threat model
-   - Example: $1B daily transactions justifies $5M/year infrastructure
+   - Example: \$1B daily transactions justifies \$5M/year infrastructure
 
 3. **Regulatory compliance**
    - Some industries require Byzantine fault tolerance
@@ -931,7 +929,7 @@ Traditional PBFT suffers from **O(N²) communication complexity**:
 **Salesforce Agentforce:**
 - **Agentic Studio** with 20 AI-powered agents
 - Collaborative workflows: campaign planning → content migration → production
-- Agent platforms capture ~10% ($750M) of enterprise AI market ([Qbotica](https://qbotica.com/companies-using-ai-real-world-use-cases-and-enterprise-trends-for-2025/))
+- Agent platforms capture ~10% (\$750M) of enterprise AI market ([Qbotica](https://qbotica.com/companies-using-ai-real-world-use-cases-and-enterprise-trends-for-2025/))
 
 **Microsoft Agent Framework (2025):**
 - Merger of **AutoGen + Semantic Kernel**
@@ -1213,7 +1211,7 @@ Advanced observability solutions now incorporate specialized AI to:
 - **User experience**: Task completion, user feedback
 
 **Leading Platforms (2025):**
-- **Arize AI**: $70M Series C (Feb 2025), serves PepsiCo, Uber, Tripadvisor
+- **Arize AI**: \$70M Series C (Feb 2025), serves PepsiCo, Uber, Tripadvisor
 - **LangSmith**: LangChain's observability platform
 - **Maxim AI, WhyLabs, Galileo**: Specialized AI observability
 - **Traditional vendors**: New Relic, LogicMonitor expanding into AI
@@ -1384,13 +1382,13 @@ Response
    - Collect 500-2000 examples from production logs
    - Clean and label (human or LLM-assisted)
    - Split: 80% train, 10% validation, 10% test
-   - Cost: $500-2000 for labeling
+   - Cost: \$500-2000 for labeling
 
 3. **Fine-Tune Specialist Model** (Week 2)
    - Start with Llama-3-8B or Mistral-7B
    - Use LoRA/PEFT for efficiency
    - Platform: Together AI, AWS Bedrock, or Hugging Face
-   - Cost: $100-500
+   - Cost: \$100-500
 
 4. **Deploy with A/B Testing** (Week 3)
    - 10% traffic to specialist, 90% to frontier model
@@ -1409,7 +1407,7 @@ Response
 
 **Investment:**
 - **Time**: 4 weeks (1 engineer)
-- **Cost**: $1k-3k (data + compute + monitoring)
+- **Cost**: \$1k-3k (data + compute + monitoring)
 - **Risk**: Low (small traffic percentage, easy rollback)
 
 #### Phase 2: Multi-Model Router (Weeks 5-8)
@@ -1468,7 +1466,7 @@ Model   Model       Model
 
 **Investment:**
 - **Time**: 4 weeks (1-2 engineers)
-- **Cost**: $3k-8k (classifier training + infrastructure)
+- **Cost**: \$3k-8k (classifier training + infrastructure)
 - **Risk**: Medium (routing errors impact user experience)
 
 #### Phase 3: Orchestrated Pipeline (Weeks 9-16)
@@ -1507,7 +1505,7 @@ Agent      Agent       Agent
    - Extraction: Fine-tune 7B model for entity/fact extraction
    - Reasoning: Use frontier model (complex, low volume)
    - Synthesis: Fine-tune 7B model for summarization
-   - Cost: $500-2000 per specialist
+   - Cost: \$500-2000 per specialist
 
 3. **Implement Orchestration** (Week 12-14)
    - Use framework: LangGraph (control), CrewAI (simplicity), or custom
@@ -1535,7 +1533,7 @@ Agent      Agent       Agent
 
 **Investment:**
 - **Time**: 8 weeks (2-3 engineers)
-- **Cost**: $10k-30k (multiple specialists + orchestration infrastructure)
+- **Cost**: \$10k-30k (multiple specialists + orchestration infrastructure)
 - **Risk**: High (complex system, many failure modes)
 
 ### 6.2 What to Specialize First
@@ -1570,7 +1568,7 @@ Agent      Agent       Agent
 **Why First:**
 - Highest accuracy improvement (40-100% gains)
 - Fastest inference (sub-100ms)
-- Cheapest to deploy (<$0.01 per 1000 inferences)
+- Cheapest to deploy (<\$0.01 per 1000 inferences)
 - Easy to evaluate (F1, precision, recall)
 
 **Examples:**
@@ -1586,7 +1584,7 @@ Agent      Agent       Agent
 **Fine-Tuning Approach:**
 - Base model: Distil-BERT (fast) or Llama-3-7B (higher quality)
 - Dataset: 500-2000 labeled examples
-- Cost: $100-500
+- Cost: \$100-500
 - Time: 1-2 weeks
 
 **2. Entity Extraction / Structured Output**
@@ -1610,7 +1608,7 @@ Agent      Agent       Agent
 **Fine-Tuning Approach:**
 - Base model: Llama-3-7B with structured output training
 - Dataset: 1000-3000 examples with gold-standard extractions
-- Cost: $500-2000
+- Cost: \$500-2000
 - Time: 2-4 weeks
 
 **3. Domain-Specific Q&A**
@@ -1635,7 +1633,7 @@ Agent      Agent       Agent
 - Base model: Llama-2-13B or Mistral-7B
 - Dataset: 2000-5000 domain Q&A pairs
 - Combine with RAG for up-to-date information
-- Cost: $1k-5k
+- Cost: \$1k-5k
 - Time: 4-8 weeks
 
 ### 6.3 Integration with Existing Infrastructure
@@ -1914,7 +1912,7 @@ Phase 1: Monolithic          Phase 2: Hybrid               Phase 3: Decomposed
 
 **Tier 1: Critical Decisions (Byzantine Fault Tolerant)**
 - **Hardware**: 7 nodes (f=2 tolerance), A100-80GB GPUs
-- **Cost**: ~$2.5M/year cloud, $1.5M upfront on-premises
+- **Cost**: ~\$2.5M/year cloud, \$1.5M upfront on-premises
 - **Latency**: 500-700ms (model + consensus)
 - **Use cases**: High-stakes decisions, regulatory compliance, safety-critical
 - **Models**: Multiple independent frontier models (GPT-4, Claude, Gemini) for redundancy
@@ -1922,7 +1920,7 @@ Phase 1: Monolithic          Phase 2: Hybrid               Phase 3: Decomposed
 
 **Tier 2: Important Decisions (Majority Voting)**
 - **Hardware**: 3 nodes (simple majority), A100-40GB GPUs
-- **Cost**: ~$600k/year cloud, $350k upfront on-premises
+- **Cost**: ~\$600k/year cloud, \$350k upfront on-premises
 - **Latency**: 200-400ms
 - **Use cases**: Medium-stakes, important but not safety-critical
 - **Models**: Mix of frontier and specialist models
@@ -1930,7 +1928,7 @@ Phase 1: Monolithic          Phase 2: Hybrid               Phase 3: Decomposed
 
 **Tier 3: Low-Stakes Decisions (Single Model + Monitoring)**
 - **Hardware**: 1-2 nodes with failover, consumer GPUs acceptable
-- **Cost**: ~$50k/year cloud, $30k upfront on-premises
+- **Cost**: ~\$50k/year cloud, \$30k upfront on-premises
 - **Latency**: 50-200ms
 - **Use cases**: Recommendations, analysis, non-critical classification
 - **Models**: Specialist fine-tuned models for efficiency
@@ -1949,18 +1947,18 @@ Phase 1: Monolithic          Phase 2: Hybrid               Phase 3: Decomposed
 - **Avoid**: Complex multi-agent orchestration, custom BFT implementations
 - **Use**: Managed services (OpenAI fine-tuning, AWS Bedrock), simple routing
 - **Timeframe**: 4-8 weeks to first specialist
-- **Cost**: $5k-20k initial investment
+- **Cost**: \$5k-20k initial investment
 
 **Mid-Size Companies (10-100 engineers):**
 - **Recommendation**: Implement Phase 2-3 decomposition (router + specialists + simple orchestration)
 - **Use**: LangGraph or CrewAI for orchestration, 3-5 specialist models
-- **Investment**: 2-3 dedicated engineers, $50k-200k/year infrastructure
+- **Investment**: 2-3 dedicated engineers, \$50k-200k/year infrastructure
 - **Timeframe**: 3-6 months to production decomposed system
 
 **Enterprises (100+ engineers):**
 - **Recommendation**: Full decomposed architecture with tiered trust
 - **Use**: Custom orchestration, extensive fine-tuning, multi-region deployment
-- **Investment**: 5-10 engineer team, $500k-5M/year infrastructure (depending on safety requirements)
+- **Investment**: 5-10 engineer team, \$500k-5M/year infrastructure (depending on safety requirements)
 - **Timeframe**: 6-12 months to mature system
 
 ### 7.3 Critical Success Factors

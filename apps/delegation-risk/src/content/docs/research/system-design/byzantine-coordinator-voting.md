@@ -3,8 +3,6 @@ title: "Byzantine Coordinator Voting"
 description: "Fault-tolerant consensus mechanisms for AI coordination"
 ---
 
-# Byzantine Coordinator Voting
-
 Byzantine Fault Tolerance (BFT) offers a compelling framework for ensuring reliable AI coordination even when some components fail, misbehave, or actively deceive. This document synthesizes BFT foundations with practical considerations for AI coordinator voting systems.
 
 ## 1. BFT Foundations

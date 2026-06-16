@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Composing Patterns
-
 Individual patterns solve specific problems. Real systems need multiple patterns working together. This guide shows how to combine patterns into coherent architectures.
 
 ## The Composition Challenge

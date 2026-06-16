@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-# Trust Calibration
-
 This page explains how to convert observed track records into calibrated trust estimates using Bayesian updating.
 
 ## The Trust Update Problem

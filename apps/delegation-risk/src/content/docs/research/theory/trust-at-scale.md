@@ -2,8 +2,6 @@
 title: "Risk at Scale"
 ---
 
-# Risk at Scale
-
 ## Trust and System Size
 
 How does trust scale with system size n?

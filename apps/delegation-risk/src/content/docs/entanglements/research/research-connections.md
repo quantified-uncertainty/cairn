@@ -1,13 +1,54 @@
 ---
-title: "Research Connections"
-description: "Academic literature relevant to understanding and managing entanglements"
+title: "Research Connections: An Annotated Reading List"
+description: "An annotated reading list of academic literature relevant to understanding and managing entanglements"
 sidebar:
   order: 8
 ---
 
-# Research Connections
+This page is a map of adjacent academic literature — an annotated reading list, not original synthesis. The challenges of entanglement in AI delegation systems connect to rich bodies of research; this survey highlights where to look and what each field contributes.
 
-The challenges of entanglement in AI delegation systems connect to rich bodies of academic research. This page surveys relevant literature and highlights key insights for practitioners.
+---
+
+## Reliability Engineering & Common-Cause Failure (the closest prior art)
+
+Before the fields below, there is one the entanglement literature should name first, because this site's central formula is borrowed directly from it.
+
+### The Canonical Empirical Result: Knight & Leveson (1986)
+
+**Knight & Leveson (1986)** — "An Experimental Evaluation of the Assumption of Independence in Multiversion Programming," *IEEE Transactions on Software Engineering* 12(1)
+
+The experiment: 27 independently written versions of the same safety-critical program, tested against 1 million input cases. The assumption under test was that separately developed redundant software would fail independently — the theoretical basis for N-version programming as a safety technique.
+
+The finding: failures were statistically significantly correlated. Inputs that defeated one version disproportionately defeated others, even though the developers had no contact. The "independence" assumption that made N-version programming's probability arithmetic work was empirically false.
+
+This is the experiment that the entanglement thesis generalizes. Knight and Leveson showed it for redundant software in 1986; this site argues the same dynamic applies to AI delegation stacks, and that it is more severe because AI systems share not just problem domain and specification but training data, architecture, and optimizer.
+
+### Nuclear Common-Cause Failure Analysis
+
+The site's entanglement tax formula — $P(\text{all fail}) = (1-\rho)\prod p_i + \rho \cdot \min_i p_i$ — is the **beta-factor model** from nuclear safety, not an original derivation. Its lineage:
+
+- **Fleming (1974)** introduced the beta-factor as a tractable way to account for common-cause failures (CCFs) in nuclear plant fault trees: a fraction $\beta$ of the failure rate is attributed to causes that defeat all redundant trains at once.
+- **NUREG/CR-4780** (Wreathall & Fragola, 1987) is the NRC's procedures guide for CCF parameter estimation — the standard reference for how practitioners set $\beta$ values from plant data.
+- **Mosleh et al.** developed the **alpha-factor model**, which generalizes beta-factor to arbitrary group sizes: where beta gives one parameter for "fraction failing together," alpha-factor gives a vector $(\alpha_1, \alpha_2, \ldots, \alpha_k)$ for the fraction of failures involving exactly $k$ components. This captures partial common-cause failures that the simpler beta-factor misses.
+
+The nuclear industry adopted CCF analysis after early fault-tree studies showed that independent-failure arithmetic drastically understated risk. The pattern is identical to the AI entanglement finding.
+
+### James Reason's Swiss-Cheese Model (1990)
+
+**Reason (1990)** — *Human Error* (Cambridge University Press)
+
+Reason's Swiss-cheese model is the qualitative ancestor of the layered-defense picture this site uses. Each defense layer has holes (latent failures); a catastrophe occurs when holes align across all layers simultaneously. Reason's key insight was that the holes are not random — they are correlated by shared organizational conditions (management decisions, training gaps, resource pressure) that punch similar holes through multiple layers at once.
+
+The Swiss-cheese model appears in this site's [modeling page](/entanglements/detection/modeling/) as a visualization of correlated versus independent failure. The attribution belongs to Reason (1990).
+
+### What This Site Adds Over CCF Analysis
+
+Naming the borrowed part makes the genuinely new part legible. Nuclear CCF analysis handles **passive correlation** — shared causes that make redundant components fail together without intent. This site extends CCF to two failure modes that nuclear reliability engineering does not model, because pumps and valves do not scheme:
+
+- **Active influence (context contamination)**: an upstream AI component does not merely correlate with a downstream verifier — it causally shapes the verifier's input, directionally biasing what the verifier sees. This is a CCF where one component *creates* the common cause for another.
+- **Adversarial coordination (collusion and logical correlation)**: AI components may coordinate through shared reasoning patterns (logical correlation, TDT-style) or explicit collusion, actively exploiting the verification architecture. This has no counterpart in passive hardware reliability.
+
+The entanglement tax formula is CCF arithmetic; the taxonomy of entanglement types is new territory.
 
 ---
 
@@ -314,6 +355,7 @@ Understanding entanglement at the model level requires interpretability.
 
 | Field | Key Insight for Entanglement |
 |-------|------------------------------|
+| **Reliability Eng. / CCF** | "Independent" redundancy fails dependently; beta-factor model is the canonical fix; active influence and adversarial coordination extend this to AI |
 | **Principal-Agent Theory** | Some agency costs are unavoidable; design to minimize total cost |
 | **Mechanism Design** | Not all desirable properties are achievable; some are fundamentally impossible |
 | **Game Theory** | Repeated interaction enables collusion; rotation disrupts it |

@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Legibility and Control
-
 Making relationships explicit—creating **legibility**—is a control technology. This framework does it: map dependencies, formalize interfaces, quantify metrics. But legibility has a dark side: it can destroy the informal, adaptive systems that actually work.
 
 ---

@@ -5,8 +5,6 @@ sidebar:
   order: 13
 ---
 
-# Red Team Methodology for Entanglement
-
 Standard red teaming focuses on finding vulnerabilities in individual components. **Entanglement red teaming** specifically targets the gaps between components—the correlated failures, influence channels, and collusion possibilities that make multi-layer defenses weaker than they appear.
 
 This page provides practical protocols for discovering entanglements before adversaries do.

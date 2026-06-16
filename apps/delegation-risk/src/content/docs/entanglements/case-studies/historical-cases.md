@@ -5,8 +5,6 @@ sidebar:
   order: 2
 ---
 
-# Historical Case Studies
-
 Human institutions have grappled with entanglement for centuries. These cases illustrate how passive correlation, active influence, and capture manifest in practice.
 
 ---
@@ -21,7 +19,7 @@ Enron became one of the largest corporate frauds in history. Arthur Andersen, on
 
 | Type | Mechanism | Effect |
 |------|-----------|--------|
-| **Financial** | Andersen earned $52M/year from Enron (audit + consulting) | Incentive to keep client happy |
+| **Financial** | Andersen earned \$52M/year from Enron (audit + consulting) | Incentive to keep client happy |
 | **Personnel** | 86 Andersen employees moved to Enron | Blurred organizational boundaries |
 | **Cultural** | Both based in Houston, shared social networks | "We're all friends here" mentality |
 | **Information** | Andersen relied on Enron for understanding complex transactions | Context contamination |

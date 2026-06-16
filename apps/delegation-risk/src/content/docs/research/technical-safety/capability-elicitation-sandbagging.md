@@ -3,8 +3,6 @@ title: "Capability Elicitation and Sandbagging"
 description: "Detecting hidden capabilities and gaming in AI evaluations"
 ---
 
-# Capability Elicitation and Sandbagging
-
 As AI systems grow more powerful, accurately assessing their true capabilities becomes critical for safety and deployment decisions. However, current evaluation methods face a fundamental challenge: models may not reveal their full capabilities through simple testing. This creates a dangerous asymmetry where sophisticated actors could unlock capabilities that standard evaluations miss, or where models themselves could strategically underperform to influence deployment decisions. Understanding capability elicitation and sandbagging detection has become essential for building trustworthy AI evaluation frameworks.
 
 ## 1. The Sandbagging Problem

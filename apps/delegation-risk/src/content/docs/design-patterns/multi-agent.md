@@ -5,10 +5,8 @@ sidebar:
   order: 6
 ---
 
-# Multi-Agent Patterns
-
 :::note[TL;DR]
-Use multiple agents for safety through disagreement, competition, and mutual oversight. Key patterns: **Adversarial Collaboration** (red/blue agents debate, arbiter synthesizes), **Cross-Validation** (independent agents verify each other), **Rotating Validators** (prevent capture through rotation), **Separation of Powers** (split authority across agents). Agreement between opposed agents is more trustworthy than single-agent conclusions.
+Use multiple agents for safety through disagreement, competition, and mutual oversight. Key patterns: **Adversarial Collaboration** (red/blue agents debate, arbiter synthesizes), **Vouching Network** (agents vouch for each other's outputs), **Reputation Staking** (agents stake reputation on claims), **Trust Transitivity Limits** (cap how far trust chains can extend). Agreement between opposed agents is more trustworthy than single-agent conclusions.
 :::
 
 Multi-agent patterns address challenges specific to systems with multiple AI agents. These patterns leverage agent interactions for safety—using disagreement, competition, and mutual oversight to catch problems that single-agent systems might miss.
@@ -262,10 +260,14 @@ flowchart TB
 ```
 Direct trust: A trusts B = 0.9, B trusts C = 0.8
 
-Naive transitive:     0.9 × 0.8 = 0.72  ← Too high
-With decay (50%):     0.9 × 0.8 × 0.5 = 0.36  ← More realistic
+Multiplicative:       0.9 × 0.8 = 0.72
+With decay (50%):     0.9 × 0.8 × 0.5 = 0.36  ← Deliberately stricter
 With 2-hop max:       Beyond 2 hops = 0
 ```
+
+:::note
+The 50% per-hop decay here is an **incentive-design parameter** — a deliberate policy to discourage long vouching chains — not a probability model. For modeling how risk actually propagates, the canonical rule is plain multiplication with a correlation correction; per-hop discounts double-count chain length there. See [Risk Propagation](/delegation-risk/risk-propagation/).
+:::
 
 ```mermaid
 flowchart LR
@@ -411,7 +413,7 @@ flowchart TB
 ### Related Patterns
 - **Bonding & Slashing**: Economic enforcement
 - **Vouching Network**: Reputation relationships
-- **Prediction Market Aggregation**: Market mechanisms
+- **Graduated Autonomy**: Reputation unlocks higher-stakes decisions
 
 ---
 

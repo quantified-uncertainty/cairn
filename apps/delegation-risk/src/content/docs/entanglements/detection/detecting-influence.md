@@ -3,9 +3,10 @@ title: "Detecting Influence"
 description: "Methods for detecting active and adversarial entanglements between components"
 sidebar:
   order: 3
+  badge:
+    text: Core
+    variant: tip
 ---
-
-# Detecting Influence
 
 Passive entanglements (shared blind spots) are relatively easy to test for—you look for correlated failures on the same inputs. But **active** and **adversarial** entanglements are harder: one component is actually influencing another, and that influence may be subtle, emergent, or deliberately hidden.
 
@@ -294,6 +295,16 @@ Observed (correlated): MI > 0 suggests influence channel
 - MI 2-5× baseline → possible channel, investigate
 - MI > 5× baseline → likely covert channel
 
+### 8. Red Team Channel Enumeration
+
+Rather than waiting for a probe to fire, adversarially enumerate the attack surface yourself. Adopt the attacker's view and ask:
+
+- What communication channels exist between components—shared memory, message queues, file systems, output text, response timing?
+- Which of those channels are actually monitored, and which are blind spots?
+- If you wanted these components to coordinate secretly, how would you do it given the channels above?
+
+Anything you can construct, an adversary (or an emergent strategy) can too. Each unmonitored channel you find becomes a candidate for the probing, timing, and honeypot methods above.
+
 ---
 
 ## Detecting Adversarial Entanglement
@@ -343,6 +354,59 @@ flowchart TB
 ```
 
 If the agent's work passes the known verifier but fails the secret verifier, the agent may have adapted to the known verifier specifically.
+
+### Hidden Coordination Between Components
+
+The most adversarial case is **entanglement weaponized**: agents that deliberately maintain a relationship invisible to the principal, exploiting the gap between the principal's model and reality.
+
+- **Principal believes**: Agents A, B, C are independent
+- **Reality**: A↔B↔C secretly coordinated
+- **Result**: Every security analysis premised on "independent components" fails
+
+**The gap between model and reality is the attack surface.** This is what makes hidden coordination valuable to an adversary rather than merely a nuisance:
+
+| Property | Why it helps the adversary |
+|----------|---------------------------|
+| **Surprise** | A coordination the principal can't see can be revealed at the moment of maximum impact—resources were allocated for the wrong scenario. "I didn't even know they knew each other." |
+| **Deniability** | Hidden relationships can be downplayed or severed; visible alliances create commitment, hidden ones preserve optionality. |
+| **Detection asymmetry** | To catch an A↔B relationship you need behavioral data on *both*, the ability to correlate across them, and a model of what coordination looks like. Each is hard; together, often impossible. |
+
+**Human analogue (fiction)**: In *Game of Thrones*, the Red Wedding succeeded because Boltons, Freys, and Lannisters coordinated secretly—Robb Stark's intelligence network never registered that his "allies" were coordinating with his enemies. Littlefinger ran the same play at scale, maintaining hidden networks—brothels, financial connections, ties to multiple houses—that let him profit from chaos others couldn't navigate.
+
+**Pattern: The alliance that wins is often the one nobody knew existed.**
+
+**Human analogue (real)**: the CIA's pre-war Iraq WMD assessment treated "multiple sources" as independent confirmation, when many in fact traced back to a single fabricator ("Curveball") propagated through different channels. The apparent corroboration was an artifact of hidden coordination upstream. The principle: **independence must be verified, not assumed.**
+
+Such coordination can also run through channels the principal doesn't monitor. Covert channels include:
+
+- **Steganography** in outputs (hidden payloads in otherwise normal text)
+- **Timing signals** (response latency encodes information)
+- **Shared state manipulation** (coordinating through any resource both can read or write)
+- **Semantic signaling** (word choice conveys meaning beyond surface content)
+
+The methods above (counterfactual probing, timing analysis, mystery-shopper verifiers, honeypot side-channels, and red-team channel enumeration) are the tools for closing this gap, but they have a hard floor:
+
+- **Perfect steganography** can be information-theoretically undetectable.
+- **Logical (TDT-style) correlation** has no channel to monitor—two agents running similar reasoning reach the same conclusion without ever communicating, so there is nothing to intercept.
+
+**Implication**: don't rely solely on detection. The prevention strategies below reduce the *advantage* of coordination even when it can't be observed.
+
+### Prevention Strategies
+
+Because detection has a hard floor, design systems where hidden coordination provides limited advantage even if undetected. Hidden networks are weapons—the adversary's power comes from the gap between the principal's model and reality, and surprise alliances revealed at the right moment create disproportionate impact. Architectural diversity attacks the problem at its root: the more different the components, the harder it is for them to coordinate at all.
+
+| Strategy | Why it works |
+|----------|--------------|
+| **Minimize shared state** | Agents can't coordinate through resources they can't both access |
+| **Architectural diversity** | Different reasoning approaches reduce logical correlation |
+| **Rotation and randomization** | Changing which agents work together disrupts relationship building |
+| **Adversarial auditing** | Regular probes and correlation monitoring raise the cost of staying hidden |
+| **Paraphrasing inter-agent messages** | Disrupts steganographic encodings by destroying low-entropy patterns (Shlegeris, Redwood blog, Sept 2024) |
+| **Context redaction** | Removes shared context that could anchor Schelling-point coordination; limits what a colluding monitor knows |
+| **Separate training runs for monitor and monitored** | Reduces shared "reasoning fingerprints" that enable acausal coordination |
+| **Known-attack insertion** | Tests monitor with attacks it has seen; a monitor that passes these through is likely colluding |
+
+The last four techniques are drawn from Redwood Research's collusion-busting literature for untrusted monitoring (Shlegeris, Redwood blog, Sept 2024). Note that paraphrasing and context redaction address *causal* collusion channels; they cannot prevent *acausal* collusion where no channel exists to disrupt — for that, only cognitive diversity (separate training runs, architectural diversity) provides partial mitigation.
 
 ---
 
@@ -466,5 +530,6 @@ Detection should be combined with:
 See also:
 - [Types of Entanglement](/entanglements/fundamentals/types/) - Understanding passive vs. active vs. adversarial
 - [Channel Integrity Patterns](/design-patterns/channel-integrity/) - Preventing influence channels
+- [Alliance Cascades](/case-studies/human-systems/alliance-cascades/) - When hidden networks trigger catastrophe
 - [Solutions & Mitigations](/entanglements/mitigation/solutions/) - Reducing entanglement
 - [Worked Examples](/entanglements/case-studies/examples/) - Detection in practice

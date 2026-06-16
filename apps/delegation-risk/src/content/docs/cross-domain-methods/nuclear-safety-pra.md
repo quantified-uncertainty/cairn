@@ -2,13 +2,11 @@
 title: "Nuclear Safety: Probabilistic Risk Assessment"
 ---
 
-# Nuclear Safety: Probabilistic Risk Assessment
-
 :::note[Transferability]
 Nuclear PRA works well for physical systems with well-characterized failure modes. AI systems are less predictable—failure modes may be unknown or change with capability improvements. The methods here are *potentially* useful but their application to AI is novel and untested.
 :::
 
-Probabilistic Risk Assessment (PRA), developed after Three Mile Island and codified in NRC regulations, demonstrates how a single system-level risk target can be decomposed across thousands of components. U.S. nuclear plants operate to quantified safety goals: **Core Damage Frequency below 10⁻⁴ per reactor-year** and **Large Early Release Frequency below 10⁻⁵ per reactor-year**. Actual performance achieves an order of magnitude better—CDF around **10⁻⁵** and LERF around **10⁻⁶**—demonstrating that aggressive targets coupled with defense-in-depth create substantial safety margins.
+Probabilistic Risk Assessment (PRA), pioneered by the WASH-1400 Rasmussen Report (1975) — which predates Three Mile Island (1979) — and whose adoption was accelerated by TMI and subsequently codified in NRC regulations, demonstrates how a single system-level risk target can be decomposed across thousands of components. U.S. nuclear plants operate to quantified safety goals: **Core Damage Frequency below 10⁻⁴ per reactor-year** and **Large Early Release Frequency below 10⁻⁵ per reactor-year**. Actual performance achieves an order of magnitude better—CDF around **10⁻⁵** and LERF around **10⁻⁶**—demonstrating that aggressive targets coupled with defense-in-depth create substantial safety margins.
 
 :::note
 Nuclear safety has decades of operational experience achieving 10⁻⁵ to 10⁻⁶ failure rates. This provides a calibration point for AI safety targets.
@@ -112,4 +110,4 @@ Assumes independent random failures. Historical failure rates inform future pred
 - **Apply to AI** → [Framework Overview](/delegation-risk/overview/) uses similar decomposition for AI systems
 - **See worked example** → [Code Deployment Example](/design-patterns/examples/code-deployment-example/) shows fault tree thinking
 - **Safety mechanisms** → [Safety Mechanisms](/design-patterns/safety-mechanisms/) implements defense in depth
-- **Deep dive** → [Nuclear & Aerospace Deep Dive](/research/nuclear-aerospace-deep-dive/) for full analysis
+- **Deep dive** → [Nuclear & Aerospace Deep Dive](/research/system-design/nuclear-aerospace-deep-dive/) for full analysis

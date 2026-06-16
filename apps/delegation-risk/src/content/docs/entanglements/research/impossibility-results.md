@@ -5,8 +5,6 @@ sidebar:
   order: 15
 ---
 
-# Impossibility Results
-
 Some entanglements cannot be eliminated—they arise from fundamental constraints on verification, information, and computation. Understanding these **impossibility results** helps distinguish between solvable engineering problems and inherent limitations that must be accepted and managed.
 
 This page surveys what we know (and conjecture) about the theoretical limits of achieving independent verification in AI systems.

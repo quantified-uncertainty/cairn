@@ -85,7 +85,7 @@ Applications:
 ### Trading Desk Limits
 
 Types of limits:
-- **VaR Limits:** Maximum portfolio VaR (e.g., $10M daily at 99%)
+- **VaR Limits:** Maximum portfolio VaR (e.g., \$10M daily at 99%)
 - **Stress Test Limits:** Maximum loss under predefined scenarios
 - **Concentration Limits:** Maximum exposure to single issuers/sectors
 - **Position Limits:** Maximum notional by instrument type
@@ -100,12 +100,12 @@ Research shows limits are "meaningful and costly for traders to breach" - dealer
 
 **What went wrong:**
 1. **Short historical windows** - 2-3 years of data, missing regime changes
-2. **Extreme leverage** - 25:1 on balance sheet, 100:1+ with derivatives ($1.25T notional)
+2. **Extreme leverage** - 25:1 on balance sheet, 100:1+ with derivatives (\$1.25T notional)
 3. **Model overconfidence** - worked in normal conditions, failed in crisis
 4. **Correlation breakdown** - historically loose markets became tightly coupled
 5. **Liquidity assumptions** - couldn't exit when Russia default triggered flight to quality
 
-In August 1998 alone, LTCM lost 44% of its value. Fed facilitated $3.6B bailout.
+In August 1998 alone, LTCM lost 44% of its value. Fed facilitated \$3.6B bailout.
 
 **Key insight:** "Separation of quantitative analysis and qualitative analysis" - overconfidence in models, ignored embedded risks.
 
@@ -163,6 +163,8 @@ Shapley is the **only** solution satisfying:
 | Requirements | Differentiable, homogeneous | Any value function |
 | Complexity | O(n) | O(2ⁿ) |
 | Best for | Continuous weights | Discrete components |
+
+**Framework guidance**: for Delegation Risk, the choice is determined by the harm structure, not preference — Euler for smooth/marginal regimes where degree-1 homogeneity plausibly holds, Shapley (or explicit scenario gates) where threshold effects or superadditive interactions break it. The scoping rules live in [When Euler Allocation Applies](/cross-domain-methods/euler-allocation/#when-euler-allocation-applies--and-when-it-doesnt).
 
 ### Computational Challenges
 

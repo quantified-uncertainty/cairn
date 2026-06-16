@@ -2,8 +2,6 @@
 title: "Relationship to Existing Approaches"
 ---
 
-# Relationship to Existing Approaches
-
 ## vs CAIS ([Drexler, 2019](https://www.fhi.ox.ac.uk/reframing/))
 
 **[CAIS](https://www.fhi.ox.ac.uk/wp-content/uploads/Reframing_Superintelligence.pdf) proposed**: Build superintelligence as ecosystem of narrow services, avoid monolithic agents
@@ -18,9 +16,13 @@ We're not trying to avoid agency—we're trying to make agency *safer* through a
 
 ## [AI Control](https://arxiv.org/abs/2312.06942) ([Redwood Research](https://www.redwoodresearch.org/), 2024)
 
-**[AI Control](https://arxiv.org/abs/2312.06942)**: Assume models might be scheming, build protocols that maintain safety regardless
+**[AI Control](https://arxiv.org/abs/2312.06942)** (Greenblatt, Shlegeris, Sachan, Roger, arXiv:2312.06942, ICML 2024): Assume models might be scheming, build protocols that maintain safety regardless. Core vocabulary: *trusted model, untrusted model, control protocol, control evaluation, trusted/untrusted monitoring, trusted editing, auditing budget* (~2% of actions), *usefulness cost* (their term for the safety-usefulness tradeoff). **Scope note**: Control addresses the defection/scheming channel specifically — concentrated failures where a model actively tries to subvert oversight. The accident channel (non-intentional failures, diffuse harms) is outside their stated scope; see Shlegeris & Greenblatt, ["The case for ensuring that powerful AIs are controlled,"](https://blog.redwoodresearch.org/p/the-case-for-ensuring-that-powerful) Redwood blog, May 2024 on concentrated vs. diffuse failures.
 
-**This proposal**: Architectural foundation that makes scheming harder + forecasting-based navigation
+**This proposal**: Architectural foundation that makes scheming harder + forecasting-based navigation. Control supplies the adversarial methodology for the defection channel; this framework is the accounting/architecture layer it deploys in.
+
+**Honest mapping**:
+- Their *auditing budget* (~2% of actions) is a capacity constraint on the fraction of actions humans can inspect. This framework's *risk budget* is probabilistic accounting — expected-loss headroom. Related concepts, not equivalent: one governs inspection rate, the other governs tolerated expected harm.
+- Their scope is the defection/concentrated-failure channel. This framework's harm-surface decomposition also covers the accident/diffuse channel, which Control does not claim to address.
 
 **The combination** (obviously you'd do both):
 
@@ -50,7 +52,7 @@ We're not trying to avoid agency—we're trying to make agency *safer* through a
 - If component output looks suspicious, resample with different component
 - Modular architecture enables this: can swap components easily
 - Redundant coordinators mean you can defer suspicious coordination to backup
-- Fine-tuned models give diverse implementations to sample from
+- Bhatt et al., ["Ctrl-Z: Controlling AI Agents via Resampling,"](https://arxiv.org/abs/2504.10374) arXiv:2504.10374 (2025), provides the first agentic control evaluation (BashBench); resample protocols cut attack success from 58% to 7% at roughly 5% usefulness cost — quantifying the tradeoff in agentic settings.
 
 ### 5. Audit Trails
 
@@ -65,6 +67,15 @@ We're not trying to avoid agency—we're trying to make agency *safer* through a
 - Apply to coordinators: can't make rapid sequence of strategic decisions
 - Apply to components: max invocations per time window
 - Prevents fast takeoff scenarios
+
+### The Agentic Control Line (2025–2026)
+
+The original AI Control paper studied code-review tasks. A growing body extends it to agentic settings:
+
+- **Ctrl-Z** (Bhatt et al., arXiv:2504.10374, 2025) — first agentic control eval; resampling as a recovery-style protocol.
+- **AI Control Levels (ACLs)** (Korbak, Balesni, Shlegeris, Irving, arXiv:2504.05259, 2025) — a graduated framework for evaluating control measures for LLM agents.
+- **Safety case sketch** (Korbak, Clymer, Hilton, Shlegeris, Irving, arXiv:2501.17315, 2025) — how to argue a system is controlled well enough to deploy.
+- **Overview of control measures** (Greenblatt, Redwood blog, Apr 2025) — practical catalogue of current techniques.
 
 ### Why They're Complementary
 
@@ -88,7 +99,7 @@ flowchart TB
 - Control layer 1: Trusted monitor checks all hypothesis generation outputs
 - Control layer 2: Honeypot includes fake "high-impact but dangerous" research direction
 - Control layer 3: Strategy Module outputs audited for consistency with stated goals
-- Control layer 4: If Tactical Coordination acts suspiciously, defer to backup coordinator
+- Control layer 4: If Tactical Coordination acts suspiciously, defer to backup coordinator (resample protocol)
 - Control layer 5: All decisions logged immutably for post-hoc analysis
 
 This is **defense in depth**:
@@ -145,6 +156,16 @@ Not relying on single mechanism—combining 10+ principles, multiple safety laye
 
 **5. Builds on established techniques**
 Borrowing from security engineering ([least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege), [defense in depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))), software engineering (modularity, testing), distributed systems ([Byzantine fault tolerance](https://en.wikipedia.org/wiki/Byzantine_fault)), formal methods (verification). Not inventing from scratch—though the AI-specific application is novel.
+
+---
+
+## vs Reliability Engineering / Common-Cause Failure Analysis
+
+**CCF analysis** (beta-factor model, NUREG/CR-4780, Mosleh's alpha-factor extension) is the closest prior art to this framework's central model. Nuclear safety engineers have been applying the beta-factor formula — the same formula this site uses for the entanglement tax — to redundant safety systems since the 1970s. Knight & Leveson's 1986 experiment confirmed the same failure mode in redundant software: independently developed programs had statistically correlated failures on the same inputs.
+
+**This framework adds**: CCF analysis models *passive* correlation — shared causes that make hardware or software components fail together without intent. The AI delegation context introduces two failure modes CCF analysis does not cover: **active influence** (a component directionally biases what downstream verifiers see, creating the common cause rather than merely suffering it) and **adversarial coordination** (components that can scheme or collude, exploiting the architecture rather than simply sharing a failure mode). These extensions are what make the framework AI-specific rather than a direct import.
+
+See [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art) for the full literature survey and lineage.
 
 ---
 

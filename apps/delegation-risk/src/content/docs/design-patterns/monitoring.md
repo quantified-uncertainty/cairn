@@ -5,15 +5,15 @@ sidebar:
   order: 5
 ---
 
-# Monitoring Patterns
-
 :::note[TL;DR]
-Watch for patterns, anomalies, and trends over time. Key patterns: **Tripwire Mesh** (distributed detection points at input/processing/output layers), **Behavioral Baselines** (detect deviation from normal), **Capability Probing** (test for hidden capabilities), **Anomaly Aggregation** (correlate weak signals into strong alerts). Single tripwires miss things—use a mesh for defense in depth.
+Watch for patterns, anomalies, and trends over time. Key patterns: **Tripwire Mesh** (distributed detection points at input/processing/output layers), **Behavioral Fingerprinting** (detect deviation from normal), **Capability Probing** (test for hidden capabilities), **Temporal Behavior Analysis** (detect strategic timing attacks). Single tripwires miss things—use a mesh for defense in depth.
 :::
 
 Monitoring patterns provide **continuous observation** of AI agent behavior. Unlike verification patterns (which check specific outputs), monitoring patterns watch for patterns, anomalies, and trends over time.
 
 These patterns are essential for detecting gradual drift, emerging problems, and behaviors that might only be visible in aggregate.
+
+One key architectural choice that cuts across all monitoring patterns is whether the monitor is *trusted* or *untrusted* in the sense of Greenblatt et al. (arXiv:2312.06942): a trusted monitor is one you have high confidence is not scheming (typically a smaller, weaker, or rule-based component); an untrusted monitor is a capable model that might collude with the agent it watches. Trusted monitoring is strictly more reliable; when only untrusted monitors are available, collusion-busting techniques — paraphrasing, context redaction, separate training runs — are required (Shlegeris, Redwood blog, Sept 2024).
 
 ---
 
@@ -131,7 +131,7 @@ The mesh runs all tripwires and correlates results to determine alert level:
 ### Related Patterns
 - **Ghost Checker**: Async verification
 - **Behavioral Fingerprinting**: Baseline for behavioral tripwires
-- **Circuit Breaker Cascade**: Triggered by mesh alerts
+- **Graceful Degradation Ladder**: Triggered by mesh alerts
 
 ---
 

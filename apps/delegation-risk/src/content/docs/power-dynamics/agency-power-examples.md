@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-# Worked Examples: Agency and Power
-
 :::note[TL;DR]
 This page applies the [Agency/Power formalization](/power-dynamics/agent-power-formalization/) to concrete systems. We calculate Agency Scores, Power Scores, and RACAP (Risk-Adjusted Capability) for real and hypothetical systems to build intuition.
 :::
@@ -250,11 +248,11 @@ Now let's combine these with Delegation Risk estimates to compute **Risk-Adjuste
 
 | System | Key Harm Modes | Delegation Risk ($/month) |
 |--------|----------------|---------------------------|
-| Calculator | Rounding errors, overflow | $5 |
-| Spam Filter | False positives (miss important email) | $50 |
-| GPT-4 (API) | Hallucinations, harmful content, data leakage | $500 |
-| AlphaGo | None significant (game only) | $1 |
-| Autonomous Agent | Goal misalignment, resource acquisition, deception | $50,000 |
+| Calculator | Rounding errors, overflow | \$5 |
+| Spam Filter | False positives (miss important email) | \$50 |
+| GPT-4 (API) | Hallucinations, harmful content, data leakage | \$500 |
+| AlphaGo | None significant (game only) | \$1 |
+| Autonomous Agent | Goal misalignment, resource acquisition, deception | \$50,000 |
 
 ### Effective Capability
 
@@ -274,11 +272,11 @@ Now let's combine these with Delegation Risk estimates to compute **Risk-Adjuste
 
 | System | Eff. Capability | Delegation Risk | RACAP | Interpretation |
 |--------|-----------------|-----------------|-------|----------------|
-| Calculator | 0.1 | $5 | 0.020 | Low capability, low risk |
-| Spam Filter | 0.15 | $50 | 0.003 | Poor efficiency |
-| GPT-4 (API) | 12.25 | $500 | 0.025 | Moderate efficiency |
-| AlphaGo | 2.25 | $1 | 2.250 | **Excellent efficiency** |
-| Autonomous Agent | 58.5 | $50,000 | 0.001 | High capability, terrible efficiency |
+| Calculator | 0.1 | \$5 | 0.020 | Low capability, low risk |
+| Spam Filter | 0.15 | \$50 | 0.003 | Poor efficiency |
+| GPT-4 (API) | 12.25 | \$500 | 0.025 | Moderate efficiency |
+| AlphaGo | 2.25 | \$1 | 2.250 | **Excellent efficiency** |
+| Autonomous Agent | 58.5 | \$50,000 | 0.001 | High capability, terrible efficiency |
 
 ### Key Insight
 
@@ -311,7 +309,7 @@ User → [Autonomous Research Agent] → Output
 - Power: 50 (can do many things)
 - Agency: 0.70 (coherent planning)
 - Effective Capability: 35
-- Delegation Risk: $10,000/month
+- Delegation Risk: \$10,000/month
 - RACAP: 0.0035
 
 ### Architecture B: Decomposed Pipeline
@@ -324,7 +322,7 @@ User → [Router] → [Searcher] → [Summarizer] → [Writer] → Output
 - Power: 40 (slightly less flexible)
 - Agency: 0.20 (no coherent optimization)
 - Effective Capability: 8
-- Delegation Risk: $500/month
+- Delegation Risk: \$500/month
 - RACAP: 0.016
 
 ### Architecture C: Human-in-the-Loop
@@ -337,16 +335,16 @@ User → [Assistant] → Human Review → Output
 - Power: 30 (limited by human bottleneck)
 - Agency: 0.15 (human makes decisions)
 - Effective Capability: 4.5
-- Delegation Risk: $100/month
+- Delegation Risk: \$100/month
 - RACAP: 0.045
 
 ### Comparison
 
 | Architecture | Eff. Cap. | Risk | RACAP | Best For |
 |--------------|-----------|------|-------|----------|
-| Monolithic | 35 | $10,000 | 0.0035 | When you need max capability AND trust the agent |
-| Decomposed | 8 | $500 | 0.016 | Balancing capability and safety |
-| Human-in-Loop | 4.5 | $100 | 0.045 | When safety is paramount |
+| Monolithic | 35 | \$10,000 | 0.0035 | When you need max capability AND trust the agent |
+| Decomposed | 8 | \$500 | 0.016 | Balancing capability and safety |
+| Human-in-Loop | 4.5 | \$100 | 0.045 | When safety is paramount |
 
 **Decomposed has 4.5× better RACAP than monolithic** despite lower absolute capability. The reduction in agency pays off in reduced risk.
 

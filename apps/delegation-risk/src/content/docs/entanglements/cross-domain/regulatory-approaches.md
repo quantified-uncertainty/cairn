@@ -5,8 +5,6 @@ sidebar:
   order: 20
 ---
 
-# Regulatory Approaches to AI Independence
-
 Entanglement is not just a technical problem—it's also a policy problem. When critical infrastructure, financial systems, and public services all depend on a handful of AI providers, **systemic risk becomes a regulatory concern**.
 
 This page surveys existing and proposed regulatory approaches to AI independence, drawing lessons from financial regulation, antitrust, and critical infrastructure governance.

@@ -1,10 +1,11 @@
 ---
 title: "Criminal Organizations: Trust Without Courts"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 5
 ---
-
-# Criminal Organizations: Trust Without Courts
 
 :::note[Framework Interpretation]
 This case study analyzes real phenomena through the lens of our delegation risk framework. The facts about criminal organizations are drawn from criminology research, but the interpretation and parallels to AI systems are our own framing.
@@ -93,12 +94,12 @@ Requires: P(caught) × Cost(punishment) > Gain from betrayal - Ongoing income
 
 ### Calibrating Violence
 
-If a drug courier could steal $100,000 by running off with a shipment:
+If a drug courier could steal \$100,000 by running off with a shipment:
 
 | Punishment Regime | P(caught) | Punishment | Expected Cost | Theft Deterred? |
 |-------------------|-----------|------------|---------------|-----------------|
-| Beat up | 0.70 | $5,000 (medical) | $3,500 | No |
-| Break legs | 0.70 | $50,000 (permanent injury) | $35,000 | No |
+| Beat up | 0.70 | \$5,000 (medical) | \$3,500 | No |
+| Break legs | 0.70 | \$50,000 (permanent injury) | \$35,000 | No |
 | Kill courier | 0.60 | ∞ (life) | ∞ | Yes |
 | Kill family | 0.50 | ∞ × N | ∞ | Yes |
 
@@ -128,11 +129,11 @@ This is why cartels engage in spectacular violence—it's **marketing** for thei
 
 | Failure Mode | P(occurrence/year) | Damage | Delegation Risk |
 |--------------|-------------------|--------|-----|
-| Member steals and escapes | 0.05 | $500K | $25K |
-| Member informs to police | 0.03 | $5M (arrests, seizures) | $150K |
-| Member caught, cooperates | 0.10 | $10M (RICO case) | $1M |
-| Excessive violence causes war | 0.02 | $20M (losses) | $400K |
-| **Organization Delegation Risk** | | | **$1.575M/year** |
+| Member steals and escapes | 0.05 | \$500K | \$25K |
+| Member informs to police | 0.03 | \$5M (arrests, seizures) | \$150K |
+| Member caught, cooperates | 0.10 | \$10M (RICO case) | \$1M |
+| Excessive violence causes war | 0.02 | \$20M (losses) | \$400K |
+| **Organization Delegation Risk** | | | **\$1.575M/year** |
 
 **For individual members:**
 
@@ -140,8 +141,8 @@ This is why cartels engage in spectacular violence—it's **marketing** for thei
 |---------|---------------|--------|-----|
 | Killed by organization | 0.15 | ∞ | ∞ |
 | Killed by rivals | 0.20 | ∞ | ∞ |
-| Imprisoned | 0.50 | 10 years × $50K | $250K |
-| Successful retirement | 0.15 | 0 | $0 |
+| Imprisoned | 0.50 | 10 years × \$50K | \$250K |
+| Successful retirement | 0.15 | 0 | \$0 |
 
 **The individual Delegation Risk is catastrophic**—which is why recruitment focuses on those with few alternatives.
 
@@ -342,9 +343,9 @@ If member in a cell is caught:
 
 | Structure | P(one member caught) | People exposed | Operations compromised | Delegation Risk |
 |-----------|---------------------|----------------|----------------------|-----|
-| Flat (everyone knows everyone) | 0.10 | 50 | All | $50M |
-| Hierarchical | 0.10 | 16 | 30% | $15M |
-| Cell structure | 0.10 | 4 | 5% | $2.5M |
+| Flat (everyone knows everyone) | 0.10 | 50 | All | \$50M |
+| Hierarchical | 0.10 | 16 | 30% | \$15M |
+| Cell structure | 0.10 | 4 | 5% | \$2.5M |
 
 ### The Coordination Cost
 
@@ -444,8 +445,8 @@ flowchart TB
 
 | Organization Type | Annual Revenue (est.) | Annual Delegation Risk | Delegation Risk as % of Revenue |
 |-------------------|----------------------|------------|---------------------|
-| Large Mafia family | $500M | $15M | 3% |
-| Major cartel | $5B | $500M | 10% |
+| Large Mafia family | \$500M | \$15M | 3% |
+| Major cartel | \$5B | \$500M | 10% |
 | Terrorist network | N/A (not revenue-driven) | Measured in operational capability | N/A |
 
 **Why cartels have higher Delegation Risk%:**

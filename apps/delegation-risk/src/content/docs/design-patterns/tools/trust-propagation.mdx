@@ -6,8 +6,6 @@ sidebar:
 
 import { Card } from '@astrojs/starlight/components';
 
-# Risk Inheritance Calculator
-
 :::caution[Illustrative Tool]
 This calculator demonstrates **conceptual models** of risk propagation. Real systems may not follow these simplified rules. Use it to explore the ideas, not to make critical decisions about actual systems.
 :::
@@ -168,7 +166,7 @@ Interactive tool for calculating how trust flows through delegation chains and n
         <option value="multiplicative">Multiplicative (default)</option>
         <option value="minimum">Minimum</option>
         <option value="harmonic">Harmonic Mean</option>
-        <option value="weakest">Weakest Link (product of complements)</option>
+        <option value="weakest">At Least One Succeeds (parallel redundancy)</option>
       </select>
       <div class="rule-description" id="rule-desc">
         Effective trust = T₁ × T₂ × ... × Tₙ along each path
@@ -221,7 +219,7 @@ Interactive tool for calculating how trust flows through delegation chains and n
         'multiplicative': 'Effective trust = T₁ × T₂ × ... × Tₙ along each path',
         'minimum': 'Effective trust = min(T₁, T₂, ..., Tₙ) along each path',
         'harmonic': 'Effective trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ) along each path',
-        'weakest': 'Effective trust = 1 - [(1-T₁)(1-T₂)...(1-Tₙ)] - models independent failure'
+        'weakest': 'Effective trust = 1 - [(1-T₁)(1-T₂)...(1-Tₙ)] — at-least-one-succeeds (parallel redundancy): chain succeeds if any link succeeds'
       };
 
       function getNodes() {
@@ -488,9 +486,13 @@ Interactive tool for calculating how trust flows through delegation chains and n
 
 ## Propagation Rules Explained
 
-### Multiplicative (Default)
+:::note[Which rule should I use?]
+This is no longer an open choice. The framework's canonical rule is **multiplicative composition with a common-cause correction**: $(1-\rho)\prod T_i + \rho \min T_i$. The minimum rule is the fully-correlated limit ($\rho = 1$), not an alternative; the harmonic rule is retained in this tool only for comparison and is **incoherent for serial chains** (it can rate a chain above its weakest link). See [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/) for the derivation and Monte Carlo evidence.
+:::
 
-The most common model. Trust compounds multiplicatively along a path:
+### Multiplicative (Canonical Default)
+
+Trust compounds multiplicatively along a path — exact under independence, and *conservative* for serial chains even under correlation:
 
 ```
 Effective Trust = T₁ × T₂ × ... × Tₙ
@@ -499,7 +501,7 @@ Effective Trust = T₁ × T₂ × ... × Tₙ
 **Example**: Principal trusts Coordinator at 0.9, Coordinator trusts Executor at 0.8
 - Effective trust: 0.9 × 0.8 = **0.72**
 
-**Use when**: Trust represents "probability of correct behavior" and failures are independent.
+**Use when**: Always, for serial delegation chains — it errs conservative under correlation. ⚠️ For *parallel defense layers* (verification stacks), the same multiplication applied to miss-rates errs **optimistic** under correlation — apply the common-cause correction from [Risk Propagation](/delegation-risk/risk-propagation/).
 
 ### Minimum
 
@@ -512,7 +514,7 @@ Effective Trust = min(T₁, T₂, ..., Tₙ)
 **Example**: Same chain with 0.9 and 0.8
 - Effective trust: min(0.9, 0.8) = **0.8**
 
-**Use when**: Each link must independently meet a threshold (like security clearances).
+**Use when**: As the honest *bound* when correlation is high or unknown (components share a provider, training paradigm, or context). This is the $\rho = 1$ limit of the canonical rule, not an independent modeling choice.
 
 ### Harmonic Mean
 
@@ -525,21 +527,21 @@ Effective Trust = n / (1/T₁ + 1/T₂ + ... + 1/Tₙ)
 **Example**: Same chain with 0.9 and 0.8
 - Effective trust: 2 / (1/0.9 + 1/0.8) = **0.847**
 
-**Use when**: You want to balance between multiplicative (too pessimistic) and minimum (too optimistic).
+**Use when**: Don't — retained for comparison only. Note the example above: 0.847 is *higher than either approach would justify*; for links (0.9, 0.8) no serial chain can be more trustworthy than its weakest stage allows. A "balance" between product and minimum is legitimate, but the principled interpolation is the common-cause mixture $(1-\rho)\prod T_i + \rho\min T_i$, not the harmonic mean.
 
-### Weakest Link (Product of Complements)
+### At Least One Succeeds (Parallel Redundancy)
 
-Models trust as "probability of not failing":
+Models the probability that at least one parallel path succeeds — i.e., all paths must fail before the chain fails:
 
 ```
 Effective Trust = 1 - [(1-T₁) × (1-T₂) × ... × (1-Tₙ)]
 ```
 
-**Example**: Same chain with 0.9 and 0.8
+**Example**: Two parallel verifiers, each at 0.9 and 0.8 trust
 - Failure probabilities: 0.1 and 0.2
-- Combined failure: 1 - (0.1 × 0.2) = 1 - 0.02 = **0.98**
+- Both fail: 0.1 × 0.2 = 0.02 → combined trust: 1 - 0.02 = **0.98**
 
-**Use when**: Failures must occur at multiple points simultaneously (redundant systems).
+**Use when**: The chain succeeds if *any one* path succeeds (parallel redundancy). Note this is the opposite of weakest-link (which would be `min(T₁, T₂, ...)` — the chain is only as strong as its weakest node). ⚠️ This formula assumes independence between paths; under common-cause correlation $\rho$, true combined failure approaches $\min(1-T_i)$ rather than $\prod(1-T_i)$. Budget with the mixture formula from [Risk Propagation](/delegation-risk/risk-propagation/).
 
 ---
 
@@ -610,6 +612,6 @@ Redundancy significantly increases effective trust.
 
 ## Next Steps
 
-- [Delegation Risk Calculator](/applying/tools/delegation-risk-calculator/) — Calculate Delegation Risk
-- [Quick Start](/applying/tools/quick-start/) — Apply these concepts to your system
-- [Decision Guide](/applying/tools/decision-guide/) — Choose implementation based on trust levels
+- [Delegation Risk Calculator](/design-patterns/tools/delegation-risk-calculator/) — Calculate Delegation Risk
+- [Quick Start](/design-patterns/tools/quick-start/) — Apply these concepts to your system
+- [Decision Guide](/design-patterns/tools/decision-guide/) — Choose implementation based on trust levels

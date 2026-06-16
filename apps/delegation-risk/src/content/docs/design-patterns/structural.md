@@ -5,8 +5,6 @@ sidebar:
   order: 1
 ---
 
-# Structural Patterns
-
 :::note[TL;DR]
 Define the architecture of delegation. Key patterns: **Escalation Ladder** (match oversight to stakes—autonomous for low-risk, human review for high-risk), **Gateway Chokepoint** (single entry point for validation), **Bulkhead Isolation** (contain failures to compartments), **Separation of Powers** (split authority so no single component controls everything). Choose structural patterns first, then layer others on top.
 :::
@@ -451,7 +449,7 @@ flowchart TB
 - Side channels between zones
 
 ### Related Patterns
-- **Privilege Bracketing**: Complementary—brackets time, airlock brackets capability
+- **Cooling Off Period**: Temporal bracketing complements capability bracketing
 - **Gateway Chokepoint**: Airlocks are specialized chokepoints
 - **Bulkhead Isolation**: Similar concept for failure containment
 
@@ -688,7 +686,7 @@ flowchart TB
 
 ### Related Patterns
 - **Capability Airlock**: Gateways between zones
-- **Semantic Firewall**: Content-aware gateway
+- **Need-to-Know Compartments**: Information filtering at the gateway
 - **Black Box Flight Recorder**: Gateway is natural logging point
 
 ---

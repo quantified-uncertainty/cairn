@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-# Solutions & Mitigations
-
 This page presents nine approaches to reducing pattern interconnection, from architectural changes to software engineering patterns.
 
 ---
@@ -250,31 +248,38 @@ Traditional budgeting:
 
 Correlation-aware budgeting:
 "We need 99.9% reliability"
-"Estimated correlation tax: 20×"
-"Actual target per layer: 99.5% (not 90%)"
-"OR: Add truly independent layer to break correlation"
+"Estimated ρ (phi-scale): 0.5"
+"P(all miss) ≈ 0.5×0.001 + 0.5×0.1 = 5.05% → ~95% protection, not 99.9%"
+"Entanglement tax: ~50× the residual risk you thought you had"
 ```
 
-### Risk Budget Formula
+### Why Adding Layers Barely Helps Once ρ Is Significant
 
-```
-Required protection = Target / (1 - acceptable_risk)
+The mixture formula $P(\text{all miss}) = (1-\rho)\prod p_i + \rho \cdot \min p_i$ has two terms. At $\rho = 0.5$ with $p = 0.1$ per layer, the common-cause term $\rho \cdot \min(p_i) = 0.05$ is a floor that no number of layers can push below—every additional layer only shrinks the independent term $(1-\rho)\prod p_i$, which is already small. Concretely:
 
-With correlation:
-Effective_layers = Nominal_layers × (1 - avg_correlation)
+| Layers | P(all miss) at ρ=0.5 | Effective protection |
+|--------|----------------------|----------------------|
+| 2 | 5.50% | 94.5% |
+| 3 | 5.05% | ~95% |
+| 5 | 5.00% | ~95% |
+| 10 | 5.00% | ~95% |
 
-Example:
-- Target: 99.9% protection
-- Layer effectiveness: 90%
-- Correlation: 0.5
-- Effective layers: 3 × 0.5 = 1.5 effective layers
-- Actual protection: ~85% (not 99.9%)
+The second layer still buys a little (the independent term is shrinking), but going from 3 to 10 layers buys less than 0.05 percentage points — by then the floor dominates entirely. The floor is $\rho \cdot p = 5\%$, and 99.9% protection is unreachable at this correlation regardless of layer count.
 
-To actually achieve 99.9%:
-- Need 7+ layers, OR
-- Reduce correlation to < 0.2, OR
-- Increase layer effectiveness to 99%+
-```
+See [The Canonical Example](/entanglements/#the-canonical-example) for the worked arithmetic.
+
+### The Lever That Actually Moves the Floor
+
+The floor is $\rho \cdot \min(p_i)$. To lower it, reduce $\rho$:
+
+| Intervention | Typical ρ reduction | New floor (p=0.1) |
+|---|---|---|
+| Different LLM provider | ~0.2 | ~3% |
+| Add rule-based layer | ~0.3 | ~2% |
+| Add formal verification | ~0.4 | ~1% |
+| Fundamentally different paradigm | ~0.5 | ~0% |
+
+Methodological diversity—different providers, rule-based checks, non-LLM layers, human review—is what lowers $\rho$ and moves the floor. Adding more of the same kind of layer does not.
 
 ### Budgeting Worksheet
 
@@ -282,16 +287,15 @@ To actually achieve 99.9%:
 1. Define risk target: _______
 2. List verification layers: _______
 3. Estimate individual effectiveness: _______
-4. Estimate pairwise correlations: _______
-5. Calculate correlation tax: _______
-6. Calculate actual protection: _______
-7. Gap from target: _______
-8. Options to close gap:
-   □ Add layers
-   □ Reduce correlation
-   □ Increase individual effectiveness
+4. Estimate ρ (phi-scale; see /delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it)
+5. Compute floor: ρ × min(pᵢ) = _______
+6. Is target achievable above this floor? If not:
+   □ Reduce ρ (diversify providers, add non-LLM layers)
+   □ Improve best individual layer (lowers min(pᵢ), lowers floor proportionally)
    □ Accept higher risk
    □ Reduce scope of delegation
+7. Calculate actual P(all miss) using the mixture formula
+8. Gap from target: _______
 ```
 
 ---

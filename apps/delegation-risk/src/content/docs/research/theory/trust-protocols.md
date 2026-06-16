@@ -2,8 +2,6 @@
 title: "Delegation Protocols"
 ---
 
-# Delegation Protocols
-
 ## Trust Handshake Protocol
 
 ```mermaid

@@ -5,8 +5,6 @@ sidebar:
   order: 15
 ---
 
-# Case Studies: Power, Agency, and Authority
-
 :::note[Purpose]
 These case studies apply the [Agency/Power formalization](/power-dynamics/agent-power-formalization/) to real systems—both AI and human institutions. The goal is to build intuition about power dynamics, authority gaps, and the conditions that make delegation safe or dangerous.
 :::
@@ -207,7 +205,7 @@ Key features:
 | Power | 45 | High within domain |
 | Agency | 0.15 | Very low |
 | Effective Capability | 6.75 | Power × Agency |
-| Delegation Risk | ~$10/month | Minimal harm modes |
+| Delegation Risk | ~\$10/month | Minimal harm modes |
 | RACAP | 0.675 | Excellent efficiency |
 
 ### Key Insight: Domain Constraints Enable Low Agency
@@ -458,4 +456,3 @@ quadrantChart
 - [Agent, Power, Authority Formalization](/power-dynamics/agent-power-formalization/) — Theoretical foundations
 - [Strong Tools Hypothesis](/power-dynamics/strong-tools-hypothesis/) — Can we achieve capability without agency?
 - [Worked Examples](/power-dynamics/agency-power-examples/) — Numerical calculations
-- [Power Struggles](/case-studies/anomaly-chronicles/power-struggles/) — More on authority dynamics

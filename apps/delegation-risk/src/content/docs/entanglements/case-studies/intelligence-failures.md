@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Intelligence Community Failures
-
 Intelligence agencies face a version of the entanglement problem: multiple analysts and agencies are supposed to provide independent assessments, but their judgments become correlated in ways that defeat redundancy.
 
 ---

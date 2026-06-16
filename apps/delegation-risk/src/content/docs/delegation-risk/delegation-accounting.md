@@ -1,41 +1,47 @@
 ---
 title: "Delegation Accounting: A Balance Sheet View"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 
-# Delegation Accounting: A Balance Sheet View
-
 :::note[TL;DR]
-**Net Delegation Value = Receivable - Exposure - Costs**. What you expect to get, minus what could go wrong, minus what it costs.
+**Net Delegation Value = Receivable - Delegation Risk - Costs**. What you expect to get, minus the *expected* loss from what could go wrong, minus what it costs.
+:::
+
+:::note[Three tiers, one page]
+This page is where the framework's vocabulary has to be precise, because each tier books differently. The **harm surface** is the *set* of ways a delegation can go wrong (you enumerate it). **Exposure** is the worst-case loss given the delegate's access—a dollar *bound* (it sizes your worst case). **Delegation risk** is the *expected* loss, Σ P × Damage (it's what nets against value). A balance sheet that subtracts a number must subtract the expected one, so the line that reduces Net Delegation Value is delegation risk, not exposure. See the [Glossary](/getting-started/glossary/#exposure) for the full definitions.
 :::
 
 ---
 
 ## The Setup
 
-**Alice** has a gem worth $1,000. A buyer will pay on delivery. Alice can't deliver it herself, so she hires **Bob** for a **$50 fee**.
+**Alice** has a gem worth \$1,000. A buyer will pay on delivery. Alice can't deliver it herself, so she hires **Bob** for a **\$50 fee**.
 
 | Item | Type | Value |
 |------|------|-------|
-| Buyer's payment | Receivable | $1,000 |
-| Bob's fee | Cost | $50 |
+| Buyer's payment | Receivable | \$1,000 |
+| Bob's fee | Cost | \$50 |
 
-**Naive calculation**: $1,000 - $50 = $950.
+**Naive calculation**: \$1,000 - \$50 = \$950.
 
 But this ignores what could go wrong.
 
 ---
 
-## Exposures
+## The Harm Surface
 
-An **exposure** is a potential cost. Unlike Bob's $50 fee (certain), exposures are probability-weighted.
+Each way the delegation can go wrong is a **harm mode**; together they form the **harm surface**. Unlike Bob's \$50 fee (certain), each harm mode is probability-weighted. The worst case—Bob loses the full gem—is the **exposure**: \$1,000. The probability-weighted total is the **delegation risk**: \$30.
 
-| Exposure | What happens | Probability | Damage | Expected Loss |
+| Harm Mode | What happens | Probability | Damage | Expected Loss |
 |----------|--------------|-------------|--------|---------------|
-| **Loss** | Bob loses the gem | 2% | $1,000 | $20 |
-| **Theft** | Bob steals the gem | 1% | $1,000 | $10 |
-| **Total Expected Loss** | | | | **$30** |
+| **Loss** | Bob loses the gem | 2% | \$1,000 | \$20 |
+| **Theft** | Bob steals the gem | 1% | \$1,000 | \$10 |
+| **Delegation Risk** (Σ) | | | | **\$30** |
+| **Exposure** (worst case) | | | \$1,000 | **\$1,000** |
 
 ---
 
@@ -43,12 +49,12 @@ An **exposure** is a potential cost. Unlike Bob's $50 fee (certain), exposures a
 
 | | Value |
 |---|------|
-| **Receivable** | $1,000 |
-| **Cost** (Bob's fee) | -$50 |
-| **Exposure** (expected) | -$30 |
-| **Net Delegation Value** | **$920** |
+| **Receivable** | \$1,000 |
+| **Cost** (Bob's fee) | -\$50 |
+| **Delegation Risk** (expected loss) | -\$30 |
+| **Net Delegation Value** | **\$920** |
 
-This is Alice's expected profit after accounting for what could go wrong.
+This is Alice's expected profit after accounting for what could go wrong. (The *exposure*—the \$1,000 she could lose in the worst case—doesn't net here; it sizes the downside she's choosing to carry.)
 
 ---
 
@@ -60,25 +66,25 @@ What does this look like from Bob's side? When Bob accepts the gem, he has two *
 
 | | Value |
 |---|------|
-| **Receivable** (fee if successful) | $50 |
-| **Exposure** (2% loss, $1,000 penalty) | -$20 |
-| **Net Value** | **$30** |
+| **Receivable** (fee if successful) | \$50 |
+| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
+| **Net Value** | **\$30** |
 
 **Option B: Steal**
 
 | | Value |
 |---|------|
-| **Receivable** (gem) | $1,000 |
-| **Contingent Liability** (80% caught, $2,000 penalty) | -$1,600 |
-| **Net Value** | **-$600** |
+| **Receivable** (gem) | \$1,000 |
+| **Contingent Liability** (80% caught, \$2,000 penalty) | -\$1,600 |
+| **Net Value** | **-\$600** |
 
-Bob chooses **Attempt Delivery** because $30 > -$600.
+Bob chooses **Attempt Delivery** because \$30 > -\$600.
 
-:::note[Exposure vs. Contingent Liability]
-**Exposure** = accidental risk (Option A). Something might happen *to* Bob.
+:::note[Delegation Risk vs. Contingent Liability]
+**Delegation Risk** = expected accidental loss (Option A). Something might happen *to* Bob, and we book its probability-weighted cost.
 **Contingent Liability** = consequence of choice (Option B). Bob deliberately takes on this risk, and the penalty only materializes if he's caught.
 
-Stealing has negative value because the contingent liability (-$1,600) outweighs the asset ($1,000).
+Stealing has negative value because the contingent liability (-\$1,600) outweighs the asset (\$1,000).
 :::
 
 ---
@@ -91,16 +97,16 @@ Alice tasks Xavier with getting the gem delivered. Xavier then hires Bob.
 
 ### Three Balance Sheets
 
-When the gem changes hands, **all three parties** take on exposure simultaneously.
+When the gem changes hands, **all three parties** take on risk simultaneously.
 
 **Alice's Balance Sheet**
 
 | | Value |
 |---|------|
-| **Receivable** | $1,000 |
-| **Cost** (Xavier's fee) | -$100 |
-| **Exposure** (Xavier fails or steals) | -$33 |
-| **Net Delegation Value** | **$867** |
+| **Receivable** | \$1,000 |
+| **Cost** (Xavier's fee) | -\$100 |
+| **Delegation Risk** (Xavier fails or steals) | -\$33 |
+| **Net Delegation Value** | **\$867** |
 
 Alice's exposure is now to *Xavier*, not Bob. She doesn't know or care who Xavier uses.
 
@@ -108,20 +114,20 @@ Alice's exposure is now to *Xavier*, not Bob. She doesn't know or care who Xavie
 
 | | Value |
 |---|------|
-| **Receivable** (fee from Alice) | $100 |
-| **Cost** (Bob's fee) | -$50 |
-| **Exposure** (Bob fails → Xavier owes Alice) | -$30 |
-| **Net Value** | **$20** |
+| **Receivable** (fee from Alice) | \$100 |
+| **Cost** (Bob's fee) | -\$50 |
+| **Delegation Risk** (Bob fails → Xavier owes Alice) | -\$30 |
+| **Net Value** | **\$20** |
 
-Xavier earns $50 margin but takes on $30 expected exposure. If Bob loses the gem, Xavier is responsible to Alice.
+Xavier earns \$50 margin but takes on \$30 of expected loss. If Bob loses the gem, Xavier is responsible to Alice.
 
 **Bob's Balance Sheet**
 
 | | Value |
 |---|------|
-| **Receivable** (fee if successful) | $50 |
-| **Exposure** (2% loss, $1,000 penalty) | -$20 |
-| **Net Value** | **$30** |
+| **Receivable** (fee if successful) | \$50 |
+| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
+| **Net Value** | **\$30** |
 
 Bob's balance sheet is unchanged—he doesn't know or care that Xavier has a boss.
 
@@ -129,11 +135,11 @@ Bob's balance sheet is unchanged—he doesn't know or care that Xavier has a bos
 
 When Xavier accepts the delegation, he **takes on personal exposure** for Bob's potential failures. The exposure doesn't disappear—it transfers from Alice to Xavier.
 
-| Party | Exposed To | Expected Exposure |
+| Party | Exposed To | Delegation Risk (expected loss) |
 |-------|-----------|-------------------|
-| Alice | Xavier | $33 |
-| Xavier | Bob | $30 |
-| Bob | Accidents | $20 |
+| Alice | Xavier | \$33 |
+| Xavier | Bob | \$30 |
+| Bob | Accidents | \$20 |
 
 :::note[Exposure Flows Downward]
 Each delegator is exposed to their immediate delegate, not the full chain. Alice trusts Xavier. Xavier trusts Bob. The chain of trust creates a chain of exposure.
@@ -147,12 +153,12 @@ As delegation structures grow more complex, something happens to our ability to 
 
 ### The Problem
 
-In the simple Alice → Bob case, we estimated exposure at $30. But how confident are we in that number?
+In the simple Alice → Bob case, we estimated delegation risk at \$30. But how confident are we in that number?
 
 With a single delegation:
-- We know the failure modes (loss, theft)
+- We know the harm modes (loss, theft)
 - We can estimate probabilities from Bob's track record
-- The exposure is bounded by the asset value
+- The exposure—the worst case—is bounded by the asset value (\$1,000)
 
 Add Xavier as a middle layer, and complexity increases:
 - Xavier might hire someone other than Bob
@@ -188,7 +194,7 @@ We can formalize this with a **complexity score** that captures structural uncer
 
 ### Uncertainty Multiplier
 
-Complexity doesn't change expected exposure—it changes our **confidence in that estimate**.
+Complexity doesn't change the expected loss (delegation risk)—it changes our **confidence in that estimate**.
 
 | Complexity Score | Uncertainty Multiplier | Confidence Interval |
 |-----------------|----------------------|---------------------|
@@ -198,20 +204,20 @@ Complexity doesn't change expected exposure—it changes our **confidence in tha
 | 15 | ±400% | Very wide |
 | 20+ | ±640%+ | Essentially unknown |
 
-**Applied to our $30 exposure estimate:**
+**Applied to our \$30 delegation-risk estimate:**
 
 | Structure | Complexity | Uncertainty | Confidence Interval |
 |-----------|-----------|-------------|---------------------|
-| Alice → Bob | 2 | ±20% | $24 - $36 |
-| Alice → Xavier → Bob | 4 | ±50% | $15 - $45 |
-| 4-level hierarchy | 12 | ±230% | $0 - $99 |
-| Complex org, hidden entanglements | 20 | ±640% | $0 - $222 |
+| Alice → Bob | 2 | ±20% | \$24 - \$36 |
+| Alice → Xavier → Bob | 4 | ±50% | \$15 - \$45 |
+| 4-level hierarchy | 12 | ±230% | \$0 - \$99 |
+| Complex org, hidden entanglements | 20 | ±640% | \$0 - \$222 |
 
-The point estimate is still $30. But our confidence in that estimate degrades rapidly with complexity.
+The point estimate is still \$30. But our confidence in that estimate degrades rapidly with complexity.
 
 ### The Insurer's Dilemma
 
-Carol (the insurer) doesn't just care about expected loss—she cares about **variance**. An exposure she can't bound is an exposure she can't price.
+Carol (the insurer) doesn't just care about expected loss—she cares about **variance**. A loss she can't bound is a risk she can't price.
 
 ---
 
@@ -237,15 +243,15 @@ Carol (the insurer) doesn't just care about expected loss—she cares about **va
 
 ---
 
-**Carol**: Here's the problem. Your exposure estimate is $5,000/year. But your complexity score is 20, which means my confidence interval is ±640%.
+**Carol**: Here's the problem. Your expected-loss estimate is \$5,000/year. But your complexity score is 20, which means my confidence interval is ±640%.
 
-Your actual exposure could be anywhere from \$0 to \$37,000. That's a lot of uncertainty.
+Your actual losses could land anywhere from \$0 to \$37,000. That's a lot of uncertainty.
 
 **Alice**: So what's my premium?
 
-**Carol**: I have to price for the upper end of that range. Your premium would be $45,000/year.
+**Carol**: I have to price for the upper end of that range. Your premium would be \$45,000/year.
 
-**Alice**: That's nine times my expected exposure!
+**Alice**: That's nine times my expected loss!
 
 **Carol**: That's the complexity tax. I'm not charging you for what I *think* will happen—I'm charging you for what *might* happen, given how little I can predict about your organization.
 
@@ -269,9 +275,9 @@ Your actual exposure could be anywhere from \$0 to \$37,000. That's a lot of unc
 | Flatten to 2 layers | -2 |
 | Assign clear authority boundaries | -3 |
 
-**Carol**: That would bring you from 20 to around 5. At complexity 5, your uncertainty is ±65%. On a \$5,000 expected exposure, that's a confidence interval of \$1,750 to \$8,250.
+**Carol**: That would bring you from 20 to around 5. At complexity 5, your uncertainty is ±65%. On \$5,000 of expected loss, that's a confidence interval of \$1,750 to \$8,250.
 
-I can price that. Your premium would be around $8,000/year—covering the upper bound of my confidence interval plus margin.
+I can price that. Your premium would be around \$8,000/year—covering the upper bound of my confidence interval plus margin.
 
 **Alice**: So I pay for the uncertainty I create.
 
@@ -348,9 +354,9 @@ A month later, Carol gets a call from **Ouroboros Holdings**.
 ### The Complexity Tax Principle
 
 :::note[The Complexity Tax]
-Structural complexity doesn't change expected exposure—it changes **uncertainty about exposure**. This uncertainty gets priced in: premiums scale with the upper bound of the confidence interval, not the expected value.
+Structural complexity doesn't change the expected loss (delegation risk)—it changes **uncertainty about that estimate**. This uncertainty gets priced in: premiums scale with the upper bound of the confidence interval, not the expected value.
 
-The result: high-complexity organizations pay multiples of their expected exposure. Simplification—fewer layers, clearer boundaries, documented relationships—reduces premiums faster than reducing actual risk.
+The result: high-complexity organizations pay multiples of their expected loss. Simplification—fewer layers, clearer boundaries, documented relationships—reduces premiums faster than reducing actual risk.
 :::
 
 This has implications beyond insurance:
@@ -361,7 +367,7 @@ This has implications beyond insurance:
 **For AI systems**: Highly complex AI deployments—multi-agent systems with emergent coordination, unclear capability boundaries, and undocumented information flows—will face steep complexity taxes. Simpler, more legible architectures may be cheaper to insure than technically safer but opaque alternatives.
 
 :::tip[Deeper Dive]
-For methods to systematically quantify complexity scores and convert them to pricing, see [Complexity Pricing](/research/risk-methods/complexity-pricing/).
+For methods to systematically quantify complexity scores and convert them to pricing, see [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/).
 :::
 
 ---
@@ -374,13 +380,13 @@ Alice decides to give Bob a key to her office so he can pick up gems for deliver
 
 | Exposure | Opens When | Closes When | What's At Risk |
 |----------|------------|-------------|----------------|
-| **Gem Delivery** | Bob receives gem | Delivery confirmed | $1,000 gem |
+| **Gem Delivery** | Bob receives gem | Delivery confirmed | \$1,000 gem |
 | **Office Access** | Bob receives key | Key returned/revoked | Everything in office |
 
 The gem exposure is bounded by the gem's value. The office exposure is bounded by... what exactly?
 
 **What's in the office:**
-- The gem for today's delivery ($1,000)
+- The gem for today's delivery (\$1,000)
 - Client list with names, addresses, purchase history
 - Supplier contracts with pricing
 - Business records
@@ -393,25 +399,25 @@ The office exposure depends on Bob's capability to exploit it.
 
 | Option | Receivable | Contingent Liability | Net |
 |--------|------------|---------------------|-----|
-| Deliver faithfully | $50 | -$20 (exposure) | **$30** |
-| Steal gem | $1,000 | 80% caught × -$2,000 | **-$600** |
+| Deliver faithfully | \$50 | -\$20 (delegation risk) | **\$30** |
+| Steal gem | \$1,000 | 80% caught × -\$2,000 | **-\$600** |
 
 **Smart Bob** sees: information worth more than the gem.
 
 | Option | Receivable | Contingent Liability | Net |
 |--------|------------|---------------------|-----|
-| Deliver faithfully | $50 | -$20 | $30 |
-| Steal gem | $1,000 | 80% caught × -$2,000 | -$600 |
-| **Photograph client list → sell to competitor** | $15,000 | 20% caught × -$10,000 | **$13,000** |
-| **Copy supplier contracts → sell** | $8,000 | 15% caught × -$8,000 | **$6,800** |
+| Deliver faithfully | \$50 | -\$20 | \$30 |
+| Steal gem | \$1,000 | 80% caught × -\$2,000 | -\$600 |
+| **Photograph client list → sell to competitor** | \$15,000 | 20% caught × -\$10,000 | **\$13,000** |
+| **Copy supplier contracts → sell** | \$8,000 | 15% caught × -\$8,000 | **\$6,800** |
 
 ### Alice's Two Exposures
 
 | Exposure | If Bob is Dumb | If Bob is Smart |
 |----------|----------------|-----------------|
-| Gem Delivery | $30 | $30 |
-| Office Access | $10 | **$5,000+** |
-| **Total** | $40 | **$5,030+** |
+| Gem Delivery | \$30 | \$30 |
+| Office Access | \$10 | **\$5,000+** |
+| **Total** | \$40 | **\$5,030+** |
 
 **Same key. Same office. 125× difference in total exposure.**
 
@@ -425,7 +431,7 @@ Alice calls Carol (her insurer) to add coverage for the new office access arrang
 
 **Alice**: I'm giving my courier a key to the office. I want to make sure I'm covered.
 
-**Carol**: Full office access? That's going to increase your premium significantly. Right now you're paying $500/year for gem theft coverage. With office access, we're looking at $3,000/year—and that's with a $5,000 deductible on trade secret theft.
+**Carol**: Full office access? That's going to increase your premium significantly. Right now you're paying \$500/year for gem theft coverage. With office access, we're looking at \$3,000/year—and that's with a \$5,000 deductible on trade secret theft.
 
 **Alice**: That seems high. What are my options?
 
@@ -442,7 +448,7 @@ Alice calls Carol (her insurer) to add coverage for the new office access arrang
 | Computer auto-locks when you leave | -15% | Protects digital assets |
 | Remove sensitive docs before Bob arrives | -20% | Nothing to steal |
 
-**Carol**: The delivery room is the big one. If Bob never enters the main office, I can keep you at $600/year.
+**Carol**: The delivery room is the big one. If Bob never enters the main office, I can keep you at \$600/year.
 
 ---
 
@@ -478,13 +484,13 @@ Alice calls Carol (her insurer) to add coverage for the new office access arrang
 
 | Control | Premium Impact | Why |
 |---------|---------------|-----|
-| Require Bob to post $2,000 bond | -25% | Bob has skin in the game |
+| Require Bob to post \$2,000 bond | -25% | Bob has skin in the game |
 | Hire a relative | -15% | Social/family penalty for theft |
 | Deferred compensation (paid quarterly) | -10% | Loses unvested pay if caught |
 | Hire from small community | -10% | Reputation matters more |
 | Background check for competitor ties | -10% | Screens out obvious risks |
 
-**Carol**: The bond is powerful. If Bob has $2,000 on the line, stealing a $1,000 gem doesn't even make sense. And for information theft—he'd have to be confident he's getting more than $2,000 to risk it.
+**Carol**: The bond is powerful. If Bob has \$2,000 on the line, stealing a \$1,000 gem doesn't even make sense. And for information theft—he'd have to be confident he's getting more than \$2,000 to risk it.
 
 ---
 
@@ -492,19 +498,19 @@ Alice calls Carol (her insurer) to add coverage for the new office access arrang
 
 **Carol**: Let's see. Delivery room only, plus bond, plus camera, plus time-limited key, plus no smartphones...
 
-| Baseline (full office access) | $3,000/year |
+| Baseline (full office access) | \$3,000/year |
 |------------------------------|-------------|
-| Delivery room only | -70% → $900 |
-| Require bond | -25% → $675 |
-| Camera | -20% → $540 |
-| Time-limited key | -15% → $460 |
-| No smartphones | -15% → $390 |
+| Delivery room only | -70% → \$900 |
+| Require bond | -25% → \$675 |
+| Camera | -20% → \$540 |
+| Time-limited key | -15% → \$460 |
+| No smartphones | -15% → \$390 |
 
-**Carol**: I can get you down to about $400/year. That's close to your original $500 for gem-only coverage, and you've still got someone with office access.
+**Carol**: I can get you down to about \$400/year. That's close to your original \$500 for gem-only coverage, and you've still got someone with office access.
 
 **Alice**: What's the absolute minimum?
 
-**Carol**: If you *escort Bob personally* every time, never leave him alone, and he only touches the gem—I'll keep you at $500. But at that point, why give him a key?
+**Carol**: If you *escort Bob personally* every time, never leave him alone, and he only touches the gem—I'll keep you at \$500. But at that point, why give him a key?
 
 ---
 
@@ -524,7 +530,7 @@ Most people only think about the first one. The other two are often cheaper.
 
 ### The Capable Agent Who Wants the Job
 
-A week later, **Xavier** applies for the courier position. Xavier is clearly smart—MBA, ten years in the gem trade, knows everyone in the industry. Carol would charge Alice $5,000/year to insure Xavier with office access.
+A week later, **Xavier** applies for the courier position. Xavier is clearly smart—MBA, ten years in the gem trade, knows everyone in the industry. Carol would charge Alice \$5,000/year to insure Xavier with office access.
 
 But Xavier *really* wants this job. So Xavier comes prepared.
 
@@ -555,12 +561,12 @@ But Xavier *really* wants this job. So Xavier comes prepared.
 
 | Commitment | Effect |
 |------------|--------|
-| Post $20,000 personal bond | More than I could profit from theft |
-| Sign non-compete: $100,000 penalty for any competitor contact | Selling information becomes extremely costly |
+| Post \$20,000 personal bond | More than I could profit from theft |
+| Sign non-compete: \$100,000 penalty for any competitor contact | Selling information becomes extremely costly |
 | Agree to forensic audit of my finances on request | Can't hide sudden wealth |
-| Deferred compensation: 50% of pay held for 2 years | Lose $10K+ if caught within 2 years |
+| Deferred compensation: 50% of pay held for 2 years | Lose \$10K+ if caught within 2 years |
 
-**Xavier**: The bond alone makes stealing the gem irrational—I'd lose $20,000 to gain $1,000. The non-compete makes selling information irrational—I'd face $100,000 liability for a $15,000 sale.
+**Xavier**: The bond alone makes stealing the gem irrational—I'd lose \$20,000 to gain \$1,000. The non-compete makes selling information irrational—I'd face \$100,000 liability for a \$15,000 sale.
 
 ---
 
@@ -590,8 +596,8 @@ But Xavier *really* wants this job. So Xavier comes prepared.
 | Control | Premium Impact |
 |---------|---------------|
 | Body camera + escrow | -40% (near-certain detection) |
-| $20,000 bond | -35% (eliminates rational theft) |
-| Non-compete with $100K penalty | -25% (eliminates rational info sale) |
+| \$20,000 bond | -35% (eliminates rational theft) |
+| Non-compete with \$100K penalty | -25% (eliminates rational info sale) |
 | No devices + no pockets | -30% (eliminates capability) |
 | Delivery room only | -70% (eliminates access) |
 
@@ -599,11 +605,11 @@ But Xavier *really* wants this job. So Xavier comes prepared.
 
 | Courier | Premium |
 |---------|---------|
-| Dumb Bob (baseline) | $600/year |
-| Smart Bob (no controls) | $5,000/year |
-| **Xavier (with commitments)** | **$350/year** |
+| Dumb Bob (baseline) | \$600/year |
+| Smart Bob (no controls) | \$5,000/year |
+| **Xavier (with commitments)** | **\$350/year** |
 
-**Carol**: I'll write the policy at $350. Xavier has engineered away his own risk.
+**Carol**: I'll write the policy at \$350. Xavier has engineered away his own risk.
 
 ---
 
@@ -625,26 +631,24 @@ What if the agent isn't just capable, but has a documented history of exploiting
 
 This scenario pushes delegation accounting to its limits. The controls required are extreme, the residual exposure is high, and the fundamental question changes from "will they defect?" to "can we bound the damage when they do?"
 
-For the full analysis, see [Containing Mr. X: Bounding Exposure from a Known Threat](/case-studies/anomaly-chronicles/containing-mr-x/).
-
 ---
 
 ## Insurance
 
 Alice can **externalize** her exposure by buying insurance from **Carol**.
 
-Carol charges a **$40 premium** (the $30 expected exposure + margin). If Bob fails, Carol pays Alice.
+Carol charges a **\$40 premium** (the \$30 expected loss + margin). If Bob fails, Carol pays Alice.
 
 | | Without Insurance | With Insurance |
 |---|------------------|----------------|
-| Receivable | $1,000 | $1,000 |
-| Costs | $50 | $90 |
-| Exposure | $30 | $0 |
-| **NDV** | **$920** | **$910** |
-| Worst case | Lose $1,000 | Lose $90 |
+| Receivable | \$1,000 | \$1,000 |
+| Costs | \$50 | \$90 |
+| Delegation Risk (expected loss) | \$30 | \$0 |
+| **NDV** | **\$920** | **\$910** |
+| Exposure (worst case) | Lose \$1,000 | Lose \$90 |
 
 :::note[The Trade-off]
-Insurance costs $10 in expected value. But it eliminates the worst case. Alice trades expected value for certainty.
+Insurance costs \$10 in expected value. But it eliminates the worst case. Alice trades expected value for certainty.
 :::
 
 ---
@@ -652,7 +656,7 @@ Insurance costs $10 in expected value. But it eliminates the worst case. Alice t
 ## Summary
 
 ```
-Net Delegation Value = Receivable - Exposure - Costs
+Net Delegation Value = Receivable - Delegation Risk - Costs
                      = $1,000 - $30 - $50
                      = $920
 ```
@@ -661,7 +665,9 @@ Net Delegation Value = Receivable - Exposure - Costs
 |------|---------|
 | **Receivable** | What you expect to get |
 | **Cost** | Certain expenses |
-| **Exposure** | Potential losses (probability × damage) |
+| **Harm Surface** | The set of ways the delegation can go wrong |
+| **Exposure** | Worst-case loss given access (a dollar bound) |
+| **Delegation Risk** | Expected loss: Σ probability × damage |
 | **Contingent Liability** | Consequences of deliberate choices |
 | **NDV** | Expected profit after accounting for risk |
 
@@ -669,8 +675,5 @@ Net Delegation Value = Receivable - Exposure - Costs
 
 ## Next Steps
 
-- [Complexity Pricing](/research/risk-methods/complexity-pricing/) — Methods for quantifying and pricing structural complexity
-- [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) — Bounding exposure from a known threat with certain defection
-- [Five Years Later: The Anomaly Unit](/case-studies/anomaly-chronicles/five-years-later/) — How an industry emerged to contain a new class of beings
-- [Managing Exposure in Power Delegation](/case-studies/anomaly-chronicles/power-struggles/) — Apply delegation accounting to corporate governance, dictatorships, and political systems
+- [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) — Methods for quantifying and pricing structural complexity
 - [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — How insurance markets price defection risk

@@ -2,10 +2,11 @@
 title: "Worked Examples"
 description: "Step-by-step analysis of pattern interconnection in real architectures"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
-
-# Worked Examples
 
 This page walks through complete analyses of interconnection in realistic architectures.
 
@@ -262,7 +263,16 @@ MedDB         0.1    0.1     0.1     0.2     1.0     0.2
 Protocol      0.05   0.2     0.1     0.1     0.2     1.0
 
 Average correlation: 0.13 (down from 0.67)
-Correlation tax: ~2× (down from estimated 50×+)
+
+P(all layers fail), beta-factor model, assuming 90%-effective layers:
+  Old design:  ≈ 0.67 × 10% ≈ 6.7% — the five LLM layers were worth
+               barely more than one. Against the independent illusion
+               of 0.001%, that is an entanglement tax of ~6,700×.
+  Redesign:    the common-cause channel drops to ρ ≈ 0.13, and the
+               database/rule-based layers don't share the LLM failure
+               modes at all. Residual joint failure is dominated by
+               ρ × min(pᵢ) — and the mandatory physician review sits
+               outside the correlated stack entirely.
 ```
 
 ---

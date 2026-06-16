@@ -4,10 +4,8 @@ sidebar:
   order: 2
 ---
 
-# A Walk-Through: The $1,000 Delivery
-
 :::note[TL;DR]
-This walk-through builds up delegation risk concepts step by step using a simple scenario: transporting $1,000. We start with basic exposure calculation, add risk-reduction measures, introduce an overseer, and show how visibility into delegation risk changes incentives.
+This walk-through builds up delegation risk concepts step by step using a simple scenario: transporting \$1,000. We start by enumerating the harm surface and computing delegation risk, add risk-reduction measures, introduce an overseer, and show how visibility into delegation risk changes incentives.
 :::
 
 This page walks through delegation risk concepts progressively, using a concrete example that grows in complexity.
@@ -18,7 +16,7 @@ This page walks through delegation risk concepts progressively, using a concrete
 
 ### Setup
 
-**Alice** (the Delegator) needs $1,000 transported across town. She gives the cash to **Bob** (the Delegate) to deliver it.
+**Alice** (the Delegator) needs \$1,000 transported across town. She gives the cash to **Bob** (the Delegate) to deliver it.
 
 ```mermaid
 flowchart LR
@@ -26,11 +24,11 @@ flowchart LR
     Bob -.->|"Task: Deliver to recipient"| Recipient["Recipient"]
 ```
 
-### What Is the Delegation Exposure?
+### What Is the Harm Surface?
 
-The moment Alice hands Bob the $1,000, she has created a **Delegation Exposure**—the set of possible harms from this delegation.
+The moment Alice hands Bob the \$1,000, she has created a **harm surface**—the set of distinct ways this delegation can go wrong.
 
-**Bob's Delegation Exposure (Alice's perspective):**
+**Bob's harm surface (Alice's perspective):**
 
 | Harm Mode | Description |
 |-----------|-------------|
@@ -39,7 +37,7 @@ The moment Alice hands Bob the $1,000, she has created a **Delegation Exposure**
 | Delay | Bob delivers late, causing problems |
 | Partial | Bob delivers only part of the amount |
 
-This is NOT a number—it's the *surface area* of what can go wrong.
+This is NOT a number—it's the *enumeration* of what can go wrong. We then **bound** it (exposure: the worst-case loss, here \$1,000) and **expect** it (delegation risk: the probability-weighted cost, below).
 
 ### What Is the Delegation Risk?
 
@@ -53,15 +51,15 @@ Let's estimate for Bob:
 
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Loss (accident) | 2% | $1,000 | $20 |
-| Theft | 1% | $1,000 | $10 |
-| Delay (causes missed deal) | 5% | $200 | $10 |
-| Partial delivery | 0.5% | $500 | $2.50 |
+| Loss (accident) | 2% | \$1,000 | \$20 |
+| Theft | 1% | \$1,000 | \$10 |
+| Delay (causes missed deal) | 5% | \$200 | \$10 |
+| Partial delivery | 0.5% | \$500 | \$2.50 |
 
-**Total Delegation Risk = $42.50**
+**Total Delegation Risk = \$42.50**
 
 :::tip[Interpretation]
-Alice's delegation to Bob carries an expected cost of $42.50. This is the "price" of trusting Bob with this task, expressed as expected harm.
+Alice's delegation to Bob carries an expected cost of \$42.50. This is the "price" of trusting Bob with this task, expressed as expected harm.
 :::
 
 ### Exposure Lifecycle
@@ -80,7 +78,7 @@ timeline
         Recipient confirms delivery : Exposure ends
 ```
 
-**Key insight**: Exposure exists *in time*. If Bob takes 2 hours to deliver, Alice has $42.50 of risk exposure for 2 hours. If he takes 20 minutes, the exposure window is much shorter.
+**Key insight**: Exposure exists *in time*. While Bob holds the money, Alice's \$1,000 is at stake and \$42.50 of delegation risk is accruing per delivery. If he takes 20 minutes instead of 2 hours, the exposure window is much shorter.
 
 ### Closing the Exposure
 
@@ -99,13 +97,13 @@ flowchart LR
     style Success fill:#90EE90
 ```
 
-In this case: **Delegation Risk: $42.50 → Realized Harm: $0**
+In this case: **Delegation Risk: \$42.50 → Realized Harm: \$0**
 
 ---
 
-## Part 2: Reducing Exposure
+## Part 2: Reducing Risk
 
-Alice realizes $42.50 per delivery adds up. She designs **risk reduction measures**.
+Alice realizes \$42.50 per delivery adds up. She designs **risk reduction measures**. (Note: these lower the *probabilities* of harm modes, so they reduce delegation risk—the expected loss. The exposure, the \$1,000 Bob can still lose, is unchanged until Part 2's lock changes what he can reach.)
 
 ### Measure 1: Escrow Lock
 
@@ -132,12 +130,12 @@ flowchart LR
 
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Loss | 2% | $1,000 | $20 |
-| Theft | 0.1% | $1,000 | $1 |
-| Delay | 5% | $200 | $10 |
-| Partial delivery | 0% | $500 | $0 |
+| Loss | 2% | \$1,000 | \$20 |
+| Theft | 0.1% | \$1,000 | \$1 |
+| Delay | 5% | \$200 | \$10 |
+| Partial delivery | 0% | \$500 | \$0 |
 
-**New Total: $31** (reduced from $42.50)
+**New Total: \$31** (reduced from \$42.50)
 
 ### Measure 2: GPS Tracking
 
@@ -160,11 +158,11 @@ flowchart LR
 | Loss | 2% | 0.5% | Alice can intervene if off-route |
 | Theft | 0.1% | 0.05% | Theft attempts are visible |
 
-**New Total: $16.50**
+**New Total: \$15.50**
 
 ### Measure 3: Bonded Courier
 
-Alice requires Bob to post a $1,000 bond that he forfeits if delivery fails.
+Alice requires Bob to post a \$1,000 bond that he forfeits if delivery fails.
 
 **Effect:**
 
@@ -172,7 +170,7 @@ Alice requires Bob to post a $1,000 bond that he forfeits if delivery fails.
 |-----------|-------|-------|-----|
 | All intentional harms | varies | ~0% | Bob's incentives now aligned |
 
-**New Total: $5.25** (only accidental losses remain)
+**New Total: ≈\$15** (only accidental losses and delay remain)
 
 ### Summary of Risk Reduction
 
@@ -183,7 +181,7 @@ xychart-beta
     title "Delegation Risk Reduction"
     x-axis ["Baseline", "+ Lock", "+ GPS", "+ Bond"]
     y-axis "Delegation Risk ($)" 0 --> 50
-    bar [42.50, 31.00, 16.50, 5.25]
+    bar [42.50, 31.00, 15.50, 15.00]
 ```
 
 :::note[Cost-Benefit]
@@ -231,12 +229,12 @@ Carol maintains a **Delegation Risk Dashboard**:
 
 | Delegator | Delegate | Amount | Risk | Duration |
 |-----------|----------|--------|------|----------|
-| Alice | Bob | $1,000 | $16.50 | 0:45 active |
-| Dave | Frank | $5,000 | $180.00 | 2:15 active |
-| Eve | Grace | $500 | $8.25 | 0:12 active |
+| Alice | Bob | \$1,000 | \$15.50 | 0:45 active |
+| Dave | Frank | \$5,000 | \$180.00 | 2:15 active |
+| Eve | Grace | \$500 | \$8.25 | 0:12 active |
 
-- **Total Active Exposure:** $6,500
-- **Total Active Delegation Risk:** $204.75
+- **Total Active Exposure:** \$6,500
+- **Total Active Delegation Risk:** \$203.75
 
 :::caution[Alert]
 Dave→Frank exposure exceeds 2hr guideline
@@ -255,9 +253,9 @@ Risk-Weighted Exposure = Delegation Risk × Duration (hours)
 
 | Delegation | Risk | Duration | Risk-Weighted |
 |------------|------|----------|---------------|
-| Alice→Bob | $16.50 | 0.75 hr | $12.38 |
-| Dave→Frank | $180 | 2.25 hr | $405.00 |
-| Eve→Grace | $8.25 | 0.2 hr | $1.65 |
+| Alice→Bob | \$15.50 | 0.75 hr | \$11.63 |
+| Dave→Frank | \$180 | 2.25 hr | \$405.00 |
+| Eve→Grace | \$8.25 | 0.2 hr | \$1.65 |
 
 **Finding**: Dave→Frank is 97% of the organization's risk-weighted exposure!
 
@@ -269,13 +267,13 @@ Carol tracks historical performance:
 - Success rate: 97%
 - Average duration: 42 min
 - Incidents: 1 minor delay
-- Estimated Delegation Risk: **$12.00/delivery** (↓ from $16.50)
+- Estimated Delegation Risk: **\$12.00/delivery** (↓ from \$15.50)
 
 **Frank** (15 deliveries)
 - Success rate: 87%
 - Average duration: 2.1 hr
-- Incidents: 2 losses ($800 total)
-- Estimated Delegation Risk: **$220.00/delivery** (↑ from $180)
+- Incidents: 2 losses (\$800 total)
+- Estimated Delegation Risk: **\$220.00/delivery** (↑ from \$180)
 
 **3. Organizational Risk Budget**
 
@@ -286,9 +284,9 @@ Total Delegation Risk Budget: $500/day
 Current Usage: $204.75 (41% of budget)
 ```
 
-If Dave wants to delegate another $10,000 to Frank, Carol's system would flag:
-- Frank's estimated risk: $440
-- Would push total to $644.75 (129% of budget)
+If Dave wants to delegate another \$10,000 to Frank, Carol's system would flag:
+- Frank's estimated risk: \$440
+- Would push total to \$644.75 (129% of budget)
 - **BLOCKED** until Frank's risk profile improves or measures are added
 
 ---
@@ -301,7 +299,7 @@ Now we make the delegation risk visible to **Bob** (the Delegate).
 
 | Metric | Value |
 |--------|-------|
-| **Delegation Risk** | $12.00/delivery |
+| **Delegation Risk** | \$12.00/delivery |
 | **Rank** | 3rd best of 12 delegates |
 | **Trend** | ↓ 27% (improving!) |
 
@@ -316,9 +314,9 @@ Now we make the delegation risk visible to **Bob** (the Delegate).
 
 #### Opportunities to Reduce Risk Score
 
-- Reduce avg delivery time to <30 min: **-$2.00 risk**
-- Complete certification course: **-$1.50 risk**
-- 10 more clean deliveries: **-$1.00 risk**
+- Reduce avg delivery time to <30 min: **-\$2.00 risk**
+- Complete certification course: **-\$1.50 risk**
+- 10 more clean deliveries: **-\$1.00 risk**
 
 ### Why Bob Cares
 
@@ -437,13 +435,14 @@ The framework creates alignment:
 
 | Concept | Definition | In Our Example |
 |---------|------------|----------------|
-| **Delegation Exposure** | Set of possible harms from a delegation | {Loss, Theft, Delay, Partial} |
-| **Delegation Risk** | Σ P(harm) × Damage(harm) | $42.50 baseline, reduced to $5.25 |
+| **Harm Surface** | Set of possible harms from a delegation | {Loss, Theft, Delay, Partial} |
+| **Exposure** | Worst-case loss given access (a dollar bound) | \$1,000 (the cash at stake) |
+| **Delegation Risk** | Σ P(harm) × Damage(harm) | \$42.50 baseline, reduced to ≈\$15 |
 | **Exposure Window** | Time during which exposure is active | Pickup to confirmed delivery |
-| **Risk-Weighted Exposure** | Risk × Duration | $12 × 0.7hr = $8.40 |
+| **Risk-Weighted Exposure** | Risk × Duration | \$12 × 0.7hr = \$8.40 |
 | **Risk Reduction Measures** | Controls that lower harm probabilities | Lock, GPS, Bond |
-| **Delegation Risk Budget** | Org-wide limit on total active risk | $500/day |
-| **Delegate Risk Score** | Estimated risk per task for a specific delegate | Bob: $12, Frank: $220 |
+| **Delegation Risk Budget** | Org-wide limit on total active risk | \$500/day |
+| **Delegate Risk Score** | Estimated risk per task for a specific delegate | Bob: \$12, Frank: \$220 |
 
 ---
 

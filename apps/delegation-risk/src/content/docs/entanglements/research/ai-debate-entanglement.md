@@ -5,8 +5,6 @@ sidebar:
   order: 19
 ---
 
-# AI Debate and Entanglement
-
 **AI Debate** is a proposed alignment technique where two AI systems argue opposing sides of a question, with a human judge evaluating the debate. The hope is that this adversarial dynamic reveals truth that a single AI might obscure.
 
 From an entanglement perspective, debate is an attempt to **engineer independence through adversarial incentives**. This page analyzes when it succeeds, when it fails, and what it reveals about the broader problem of correlated verification.
@@ -181,13 +179,13 @@ The judge, with limited evaluation capacity, may prefer the simpler wrong argume
 - But effect size modest (60% → 70%)
 - Some questions remained hard even with debate
 
-#### Anthropic Internal Studies
+#### Capability and question-type observations
 
-**Findings** (as reported in various publications):
-- Debate helps on questions with clear answers
-- Less effective on value-laden or ambiguous questions
-- Debater capability matters a lot
-- Judge capability also matters a lot
+**General observations from the debate research literature**:
+- Debate tends to help more on questions with clear, verifiable answers
+- Less effective on value-laden or ambiguous questions where neither side has a clear "correct" position
+- Debater capability matters: stronger debaters can construct more persuasive (and potentially misleading) arguments
+- Judge capability also matters: judges who can evaluate arguments critically get more benefit from debate
 
 #### Michael et al. (2023)
 
@@ -404,7 +402,7 @@ flowchart TB
 | Irving & Askell (2019) | Initial empirical studies on human debate |
 | Barnes et al. (2020) | Theoretical analysis of debate convergence |
 | Michael et al. (2023) | Scalable oversight through debate experiments |
-| Anthropic (various) | Ongoing empirical research |
+| Constitutional AI (Bai et al., 2022) | Related debate-like self-critique mechanisms |
 | Khan et al. (2024) | Debate limitations and failure modes |
 
 ---

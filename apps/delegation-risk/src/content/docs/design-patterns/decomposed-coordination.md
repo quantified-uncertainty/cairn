@@ -2,8 +2,6 @@
 title: "Honest Agency Through Decomposed Coordination"
 ---
 
-# Honest Agency Through Decomposed Coordination
-
 :::note[TL;DR]
 Coordination should be an **architecture, not a component**. Break it into: task decomposition, priority ranking, resource allocation, routing, aggregation, exception handling, and progress monitoring—each with appropriate verifiability. Use **older/weaker models for strategy** (less capable = less risky), frontier models only for narrow tactical execution with heavy monitoring.
 :::

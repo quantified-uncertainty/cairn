@@ -5,13 +5,11 @@ sidebar:
   order: 0
 ---
 
-# Probabilistic Estimation
-
 This section provides tools and reference data for quantifying delegation risk using probability distributions rather than point estimates.
 
 ## Why Probabilistic?
 
-Most risk frameworks use point estimates like "probability = 2%" or "damage = $5,000". This approach:
+Most risk frameworks use point estimates like "probability = 2%" or "damage = \$5,000". This approach:
 
 - **Understates uncertainty** in our knowledge
 - **Hides tail risk** from rare-but-severe events
@@ -22,7 +20,7 @@ By expressing estimates as probability distributions, we can propagate uncertain
 
 ## What's Included
 
-### [Interactive Tools](/experimental/probabilistic-estimation/experimental/probabilistic-estimation/tools/)
+### [Interactive Tools](/experimental/probabilistic-estimation/tools/)
 
 Calculators and visualizations for applying probabilistic methods:
 
@@ -33,7 +31,7 @@ Calculators and visualizations for applying probabilistic methods:
 
 ### [Estimates Registry](/experimental/probabilistic-estimation/estimates/)
 
-Calibrated probability distributions for key risk parameters:
+Plausible starting priors (uncalibrated) for key risk parameters:
 
 - **Probability Priors**: Failure rates by component type
 - **Damage Distributions**: Cost magnitudes by category

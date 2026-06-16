@@ -4,8 +4,6 @@ sidebar:
   order: 1
 ---
 
-# Formalizing Agents, Power, and Authority
-
 :::note[TL;DR]
 We want AI systems that are **maximally capable while minimally risky**. This requires formalizing not just risk (which we've done) but also the positive side: **Agency** (how goal-directed is a system?), **Power** (what can it accomplish?), and **Authority** (what is it permitted to do?). This page proposes mathematical frameworks for each.
 :::
@@ -272,7 +270,7 @@ Total impact of permitted actions. High scope = broad authority.
 |---------|------------|--------------|
 | **Trust** | Belief about reliability/alignment | Precondition for granting authority |
 | **Authority** | Formal permission to act | Consequence of trust assessment |
-| **Delegation** | Transfer of authority | Creates delegation exposure |
+| **Delegation** | Transfer of authority | Creates delegation risk |
 
 $$\text{Authority Granted} = f(\text{Trust Assessment}, \text{Task Requirements}, \text{Risk Tolerance})$$
 

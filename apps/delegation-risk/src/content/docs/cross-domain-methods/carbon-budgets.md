@@ -2,8 +2,6 @@
 title: "Carbon Budgets & Large-Scale Allocation"
 ---
 
-# Carbon Budgets: Lessons for AI Safety
-
 Carbon budget frameworks manage a global constraint (total emissions) across millions of actors (countries, companies, individuals). The mechanisms for allocation, trading, and verification offer insights for AI delegation risk budgets at scale.
 
 ## The Carbon Budget Problem

@@ -1,11 +1,7 @@
 ---
 title: "Examples Catalog"
 description: "Index of all worked examples in the framework"
-sidebar:
-  order: 12
 ---
-
-# Examples Catalog
 
 A complete index of concrete examples throughout the framework.
 
@@ -67,24 +63,6 @@ Historical examples from human organizations.
 
 ---
 
-## Anomaly Chronicles (Narrative)
-
-Multi-part fictional case study exploring advanced scenarios.
-
-| Chapter | Location | Focus |
-|---------|----------|-------|
-| Overview | [Link](/case-studies/anomaly-chronicles/) | Introduction to the scenario |
-| Containing Mr. X | [Link](/case-studies/anomaly-chronicles/containing-mr-x/) | Containment strategies |
-| Mr. X Perspective | [Link](/case-studies/anomaly-chronicles/mr-x-perspective/) | Adversarial agent viewpoint |
-| Task Architecture | [Link](/case-studies/anomaly-chronicles/task-architecture/) | System design under constraints |
-| Protocol Catalog | [Link](/case-studies/anomaly-chronicles/protocol-catalog/) | Operational protocols |
-| Insurance Bot Spec | [Link](/case-studies/anomaly-chronicles/insurance-bot-spec/) | Risk quantification system |
-| Power Struggles | [Link](/case-studies/anomaly-chronicles/power-struggles/) | Authority and control |
-| Five Years Later | [Link](/case-studies/anomaly-chronicles/five-years-later/) | Long-term evolution |
-| Year Ten | [Link](/case-studies/anomaly-chronicles/year-ten/) | Extended consequences |
-
----
-
 ## Theory Worked Examples
 
 Examples embedded within theory sections.
@@ -103,10 +81,10 @@ Examples from other fields that inform the framework.
 
 | Domain | Location | Relevant Patterns |
 |--------|----------|-------------------|
-| Aviation | [Entanglements Case Studies](/entanglements/case-studies/) | Failure correlation, redundancy |
-| Finance | [Entanglements Case Studies](/entanglements/case-studies/) | Systemic risk, circuit breakers |
+| Aviation | [Entanglements Case Studies](/entanglements/case-studies/examples/) | Failure correlation, redundancy |
+| Finance | [Entanglements Historical Cases](/entanglements/case-studies/historical-cases/) | Systemic risk, circuit breakers |
 | Nuclear | [Human Systems Cases](/case-studies/human-systems/nuclear-launch-authority/) | Two-person rule, escalation |
-| Medical | [Cross-Domain Methods](/entanglements/cross-domain/) | Second opinions, checklists |
+| Medical | [Cross-Domain Methods](/entanglements/cross-domain/psychology-of-oversight/) | Second opinions, checklists |
 
 ---
 
@@ -127,8 +105,7 @@ Once you understand the basics:
 ### Advanced
 For deep understanding:
 - [Delegation Walk-Through](/delegation-risk/walkthrough/) — Full quantitative example
-- [Anomaly Chronicles](/case-studies/anomaly-chronicles/) — Extended scenario
-- [Entanglements Case Studies](/entanglements/case-studies/) — Correlation analysis
+- [Entanglements Case Studies](/entanglements/case-studies/examples/) — Correlation analysis
 
 ---
 

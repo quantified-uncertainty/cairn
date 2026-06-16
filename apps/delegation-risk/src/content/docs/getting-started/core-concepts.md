@@ -1,10 +1,7 @@
 ---
 title: "Core Concepts"
-sidebar:
-  order: 3
+description: "Key ideas of the Delegation Risk framework, plus the minimal viable version for teams starting small."
 ---
-
-# Core Concepts
 
 This page introduces the key ideas without mathematical formalism. For quantitative details, see [Delegation Risk](/delegation-risk/overview/).
 
@@ -15,7 +12,7 @@ How all the pieces fit together:
 ```mermaid
 flowchart TB
     subgraph Foundation["Foundation: What We're Managing"]
-        RISK["Delegation Risk<br/>Risk = Σ P(harm) × Damage"]
+        RISK["Delegation Risk<br/>(the expected cost of delegating)"]
     end
 
     subgraph Theory["Theory: How Risk Behaves"]
@@ -71,49 +68,41 @@ For each way something could go wrong (harm mode), multiply:
 
 Sum across all harm modes to get total Delegation Risk.
 
+:::note[Canonical definition]
+This anchor is the canonical statement of the Delegation Risk formula. Where other pages restate it for convenience, this is the authoritative form.
+:::
+
 ### Example: Employee with Check-Writing Authority
 
 | Harm Mode | Probability | Damage | Risk Contribution |
 |-----------|-------------|--------|-------------------|
-| Clerical error | 0.01 | $1,000 | $10 |
-| Unauthorized payment | 0.001 | $50,000 | $50 |
-| Fraud | 0.0001 | $500,000 | $50 |
+| Clerical error | 0.01 | \$1,000 | \$10 |
+| Unauthorized payment | 0.001 | \$50,000 | \$50 |
+| Fraud | 0.0001 | \$500,000 | \$50 |
 
-**Delegation Risk** = $10 + $50 + $50 = **$110** expected cost
+**Delegation Risk** = \$10 + \$50 + \$50 = **\$110** expected cost
 
-This doesn't mean you'll lose $110. It means that over many such delegations, you'd expect $110 in losses on average. You can compare this to the value the delegation provides and decide if it's worth it.
+This doesn't mean you'll lose \$110. It means that over many such delegations, you'd expect \$110 in losses on average. You can compare this to the value the delegation provides and decide if it's worth it.
 
 ## Risk Propagation
 
 When delegates delegate to other delegates, risk relationships form networks. If A trusts B with weight 0.8, and B trusts C with weight 0.7, how much should A trust C?
 
-Different rules give different answers:
-- **Multiplicative**: 0.8 × 0.7 = 0.56 (each stage is independent risk)
-- **Minimum**: min(0.8, 0.7) = 0.7 (chain only as strong as weakest link)
-- **Discounted**: More complex models accounting for path length
+The canonical rule is **multiplicative**: T(A→C) = 0.8 × 0.7 = 0.56. Each hop is a separate chance of failure, so reliabilities multiply — and longer chains are automatically penalized, with no separate length discount needed.
 
 ```mermaid
 graph LR
     A((A)) -->|"0.8"| B((B))
     B -->|"0.7"| C((C))
-    A -.->|"0.56 mult / 0.7 min"| C
+    A -.->|"0.56"| C
 ```
 
-The right rule depends on what "trust" means in your context. The framework provides formal tools for reasoning about these relationships.
+Multiplication assumes the hops fail **independently**. When stages share a failure cause — same model provider, same training data, same context — failures clump together, and the correction depends on which direction you're composing:
 
-<details>
-<summary>Choosing a propagation rule</summary>
+- **Serial chains** (A delegates to B delegates to C): apply the mixture to the *working* probabilities, P(chain works) = (1−ρ) · ∏ tᵢ + ρ · min(tᵢ). In the fully correlated limit (ρ = 1) the chain is exactly as reliable as its weakest link. Correlation actually *helps* chains — failures bunch up — so the plain product is the conservative choice and safe to use as-is.
+- **Parallel safety layers** (a harmful action must slip past *every* verifier): apply the mixture to the *miss* probabilities, P(all miss) = (1−ρ) · ∏ pᵢ + ρ · min(pᵢ). Here correlation *hurts* — layers miss together — and the plain product badly understates risk. This is the case where the correction is safety-critical; see [the canonical example](/entanglements/#the-canonical-example).
 
-| Rule | Formula | Best when... |
-|------|---------|--------------|
-| **Multiplicative** | T(A→C) = T(A→B) × T(B→C) | Each delegation is independent risk; default choice |
-| **Minimum** | T(A→C) = min(T(A→B), T(B→C)) | Chain only as strong as weakest link |
-| **Discounted** | T(A→C) = T(A→B) × T(B→C) × δⁿ | Longer paths inherently less trustworthy |
-| **Maximum path** | T(A→C) = max over all paths | Any valid route suffices |
-
-Most systems should start with **multiplicative** propagation—it's intuitive, conservative, and composes well.
-
-</details>
+See [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation, the simulation evidence, and why the once-offered alternative rules reduce to special cases of this one.
 
 :::note[Related: Social Choice Theory]
 Trust aggregation across multiple delegates relates to [social choice theory](https://en.wikipedia.org/wiki/Social_choice_theory)—how to combine individual inputs into collective outcomes. [Arrow's impossibility theorem](https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem) has implications for trust aggregation: no perfect rule exists.
@@ -181,7 +170,7 @@ Key requirements:
 - **Conservative margins**: Buffer for uncertainty and unknowns
 
 :::note
-This isn't theoretical—nuclear plants operate at 10⁻⁹ failure probability per reactor-year by flowing system targets down to component budgets through fault trees.
+This isn't theoretical—nuclear plants operate at core damage frequencies around 10⁻⁵/reactor-year (NRC target: ~10⁻⁴/reactor-year) by flowing system targets down to component budgets through fault trees. Aviation uses the same approach to achieve the FAA/EASA catastrophic-condition target of 10⁻⁹/flight-hour.
 :::
 
 ```mermaid
@@ -302,6 +291,124 @@ flowchart TB
 
 ---
 
+## The Minimal Viable Framework
+
+You don't need all 45 patterns. If you implement nothing else, implement these five. This is the 80/20 version for teams starting small.
+
+### The 5 Essential Patterns
+
+#### 1. Least Privilege
+**Give the minimum permissions needed for the task.**
+
+```
+❌ AI has admin access to everything
+✓ AI can only read/write files in /workspace
+```
+
+#### 2. Human Escalation
+**High-stakes decisions go to humans.**
+
+```
+❌ AI executes all actions autonomously
+✓ Actions over $1000 require human approval
+```
+
+#### 3. Output Filtering
+**Check outputs before they reach the world.**
+
+```
+❌ AI response goes directly to user
+✓ Filter checks for PII, harmful content, policy violations
+```
+
+#### 4. Sandboxing
+**Limit what can go wrong.**
+
+```
+❌ AI runs on production server
+✓ AI runs in isolated container with no network access
+```
+
+#### 5. Audit Logging
+**Record everything for when things go wrong.**
+
+```
+❌ No logs, can't investigate incidents
+✓ All inputs, outputs, and decisions logged with timestamps
+```
+
+### Low-Risk vs High-Risk Decision
+
+```mermaid
+flowchart TD
+    Start[What are you building?] --> Q1{Can it access<br/>sensitive data?}
+    Q1 -->|No| Q2{Can it take<br/>real-world actions?}
+    Q1 -->|Yes| High[High Risk Path]
+    Q2 -->|No| Q3{Does it talk to<br/>customers?}
+    Q2 -->|Yes| High
+    Q3 -->|No| Low[Low Risk Path]
+    Q3 -->|Yes| Medium[Medium Risk Path]
+
+    Low --> L1[5 Essential Patterns]
+    Medium --> M1[+ Tripwire Monitoring<br/>+ Rate Limiting]
+    High --> H1[+ Human Review<br/>+ Formal Verification<br/>+ Defense in Depth]
+
+    style Low fill:#e8f5e9
+    style Medium fill:#fff3e0
+    style High fill:#ffebee
+```
+
+### Minimum Viable Implementation Checklist
+
+**Phase 1: Foundation (1 day)**
+- [ ] Define your harm modes (what could go wrong?)
+- [ ] Set a risk budget (how much harm is acceptable?)
+- [ ] Implement least privilege (minimum permissions)
+
+**Phase 2: Safety Basics (1 week)**
+- [ ] Add output filtering
+- [ ] Implement human escalation for high-stakes
+- [ ] Set up audit logging
+- [ ] Create a sandbox environment
+
+**Phase 3: Monitoring (2 weeks)**
+- [ ] Add basic anomaly detection
+- [ ] Set up alerting for unusual patterns
+- [ ] Review logs weekly
+
+**Phase 4: Iteration (Ongoing)**
+- [ ] Track actual vs. expected harm
+- [ ] Adjust risk budgets based on data
+- [ ] Add patterns as needed
+
+### When to Expand
+
+Add more patterns when:
+
+| Signal | Suggested Addition |
+|--------|-------------------|
+| Failures are correlated | Read Entanglements, add diversity |
+| Human review bottleneck | Add AI verifiers, graduated autonomy |
+| Novel attacks detected | Add tripwires, adversarial testing |
+| Cascading failures | Add bulkheads, blast radius containment |
+| Trust is miscalibrated | Add trust decay, capability sunset |
+
+### Which Sections Can I Skip?
+
+- **Entanglements** — Skip if your system has < 3 components, or you use completely different models for each component. Don't skip if you have multiple AI verifiers, use the same base model in multiple places, or components share training data.
+- **Power Dynamics** — Skip if you just want to implement patterns, not understand the theory. Don't skip if you need to justify decisions to stakeholders or want to optimize capability/risk tradeoffs.
+- **Research** — Skip if you're implementing, not doing research. Read if you want to understand the theoretical foundations or contribute improvements.
+- **Cross-Domain Methods** — Skip if you trust the patterns as-is. Read if you want to understand why these methods work (nuclear, finance precedents).
+
+### What This Framework Is NOT
+
+- **Not an alignment solution** — Assumes components may be misaligned
+- **Not formal verification** — Probabilistic, not provable
+- **Not a substitute for good models** — Better models reduce accident risk
+- **Not zero-risk** — Manages risk, doesn't eliminate it
+
+---
+
 ## What This Framework Provides
 
 1. **Vocabulary**: Precise terms for discussing risk, delegation, and containment
@@ -331,7 +438,7 @@ See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) fo
 :::note[Key Takeaways]
 1. **The goal is maximizing capability subject to risk constraints**: Not minimizing risk to zero
 2. **Capability = Power × Agency**: We want high power, minimum necessary agency
-3. **Delegation Risk quantifies the downside**: Risk = Σ P(harm) × Damage
+3. **Delegation Risk quantifies the downside**: the expected cost of delegating, summed over harm modes ([the formula](#the-formula))
 4. **Decompose, don't centralize**: Many limited components are safer than one powerful delegate
 5. **Apply "Least X" principles**: Minimize capability, privilege, context, persistence, autonomy, connectivity
 6. **Budget both risk AND power**: Allocate, verify, and enforce limits on both sides
@@ -340,7 +447,8 @@ See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) fo
 
 ## See Also
 
-- [Introduction](/getting-started/introduction/) — The full problem statement and approach
+- [The Core Path](/getting-started/reading-order/#the-core-path) — The guided route through the framework's strongest material
+- [Getting Started](/getting-started/) — The full problem statement and approach
 - [Delegation Risk Overview](/delegation-risk/overview/) — The quantitative foundation
 - [Least X Principles](/design-patterns/least-x-principles/) — Deep dive into each principle
 - [Quick Start](/design-patterns/tools/quick-start/) — Apply these concepts step-by-step

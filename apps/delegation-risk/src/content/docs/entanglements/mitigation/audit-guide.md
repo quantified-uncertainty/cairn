@@ -5,8 +5,6 @@ sidebar:
   order: 21
 ---
 
-# Entanglement Audit Guide
-
 This guide provides a practical, step-by-step process for auditing entanglement in AI systems. Use it to assess your current architecture, identify hidden dependencies, and prioritize remediation efforts.
 
 **Estimated time**: 2-5 days for a comprehensive audit of a medium-complexity system.

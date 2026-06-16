@@ -2,8 +2,6 @@
 title: "Potential Delegation Risk Examples"
 ---
 
-# Potential Delegation Risk Examples
-
 A research compilation of interesting trust architecture examples across domains. Organized by category with notes on what makes each compelling for analysis.
 
 **Selection criteria:**
@@ -19,10 +17,10 @@ A research compilation of interesting trust architecture examples across domains
 
 | Example | What Happened | Why It's Interesting |
 |---------|---------------|---------------------|
-| **FTX Collapse (2022)** | $8B customer funds misappropriated; CEO now imprisoned | Trust concentrated in charismatic founder; auditors failed; "effective altruism" reputation as trust signal; crypto's trust-minimization ideology failed in practice |
-| **Bernie Madoff (2008)** | $65B Ponzi scheme ran for decades | SEC examined multiple times and missed it; feeder funds provided trust laundering; exclusivity created false trust signal |
+| **FTX Collapse (2022)** | \$8B customer funds misappropriated; CEO now imprisoned | Trust concentrated in charismatic founder; auditors failed; "effective altruism" reputation as trust signal; crypto's trust-minimization ideology failed in practice |
+| **Bernie Madoff (2008)** | \$65B Ponzi scheme ran for decades | SEC examined multiple times and missed it; feeder funds provided trust laundering; exclusivity created false trust signal |
 | **Wirecard (2020)** | €1.9B that "existed" didn't; German fintech darling | Auditors (EY) failed; German regulators protected national champion; short sellers attacked as unpatriotic |
-| **Barings Bank (1995)** | Single trader (Nick Leeson) destroyed 233-year-old bank | No separation of front/back office; trader controlled his own oversight; $1.3B loss |
+| **Barings Bank (1995)** | Single trader (Nick Leeson) destroyed 233-year-old bank | No separation of front/back office; trader controlled his own oversight; \$1.3B loss |
 | **LTCM (1998)** | Nobel laureates' hedge fund nearly crashed global markets | Trust in quantitative models; correlation assumptions failed; leverage amplified trust failures |
 | **Enron/Arthur Andersen (2001)** | Auditor complicity in fraud destroyed both firms | Trust laundering through auditor; document destruction; Big 5 became Big 4 |
 
@@ -38,7 +36,7 @@ A research compilation of interesting trust architecture examples across domains
 |---------|------------|---------------------|
 | **Hawala Networks** | Informal value transfer across borders with no paper trail | Works on reputation in tight communities; operates for centuries; trust without legal enforcement (like criminal orgs) |
 | **Lloyd's of London** | Insurance market where individuals ("Names") personally back policies | "Utmost good faith" doctrine; unlimited personal liability created alignment; survived 300+ years |
-| **SWIFT Network** | Interbank messaging for $5T+/day in transfers | Cooperative owned by members; Belgian law; survived being weaponized for sanctions |
+| **SWIFT Network** | Interbank messaging for \$5T+/day in transfers | Cooperative owned by members; Belgian law; survived being weaponized for sanctions |
 | **Letters of Credit** | Bank guarantees enabling trade between strangers | Trust intermediation allowing global commerce; standardized by ICC |
 | **Credit Card Chargebacks** | Consumer can dispute charges; merchant bears burden | Created trust in card-not-present transactions; enabled e-commerce |
 | **Credit Unions** | Member-owned financial cooperatives | Mutual structure aligns incentives; lower fraud rates than banks |
@@ -131,13 +129,13 @@ A research compilation of interesting trust architecture examples across domains
 
 | Example | What Happened | Why It's Interesting |
 |---------|---------------|---------------------|
-| **Volkswagen Emissions Scandal (2015)** | Software cheated on emissions tests | Trust in certification process; 11M vehicles affected; $30B+ cost |
+| **Volkswagen Emissions Scandal (2015)** | Software cheated on emissions tests | Trust in certification process; 11M vehicles affected; \$30B+ cost |
 | **Wells Fargo Fake Accounts (2016)** | 3.5M unauthorized accounts created | Trust in bank → massive internal fraud; incentive misalignment |
 | **Uber (various)** | Sexual harassment cover-ups; Greyball program | "Move fast and break things" trust culture; regulatory evasion |
-| **WeWork (2019)** | $47B valuation collapsed to near zero | Trust in founder → no governance; SoftBank enabled |
-| **Tyco/Kozlowski (2002)** | CEO looted $400M+ from company | Trust in executives; board failure |
-| **WorldCom (2002)** | $11B accounting fraud | Auditor trust failure (Arthur Andersen again); largest bankruptcy at time |
-| **Satyam Computer Services (2009)** | India's "Enron"; $1B fraud | Founder confessed in letter; "cooking the books" |
+| **WeWork (2019)** | \$47B valuation collapsed to near zero | Trust in founder → no governance; SoftBank enabled |
+| **Tyco/Kozlowski (2002)** | CEO looted \$400M+ from company | Trust in executives; board failure |
+| **WorldCom (2002)** | \$11B accounting fraud | Auditor trust failure (Arthur Andersen again); largest bankruptcy at time |
+| **Satyam Computer Services (2009)** | India's "Enron"; \$1B fraud | Founder confessed in letter; "cooking the books" |
 
 ### Successes/Innovations
 
@@ -165,9 +163,9 @@ A research compilation of interesting trust architecture examples across domains
 | **Log4j (2021)** | Critical vulnerability in ubiquitous library | Single volunteer-maintained library everywhere; patch chaos |
 | **Heartbleed (2014)** | OpenSSL vulnerability exposed private keys | Critical infrastructure maintained by few; trust in crypto libraries |
 | **Mt. Gox (2014)** | Bitcoin exchange lost 850,000 BTC | "Code is law" ideology met reality; no recourse |
-| **The DAO (2016)** | Smart contract hack drained $60M | "Code is law" → hard fork to reverse; trust in immutability violated |
+| **The DAO (2016)** | Smart contract hack drained \$60M | "Code is law" → hard fork to reverse; trust in immutability violated |
 | **Equifax Breach (2017)** | 147M people's data exposed | Trust in credit bureaus with your data; no consent, no recourse |
-| **Colonial Pipeline (2021)** | Ransomware shut down major fuel pipeline | Critical infrastructure connected to internet; $4.4M ransom paid |
+| **Colonial Pipeline (2021)** | Ransomware shut down major fuel pipeline | Critical infrastructure connected to internet; \$4.4M ransom paid |
 
 ### Successes/Innovations
 
@@ -238,7 +236,7 @@ A research compilation of interesting trust architecture examples across domains
 
 | Example | What Happened | Why It's Interesting |
 |---------|---------------|---------------------|
-| **Watergate (1972-74)** | Already covered in trust-across-civilizations | Loyalty-based trust architecture failure |
+| **Watergate (1972-74)** | Briefly noted in trust-across-civilizations (in-depth treatment was removed) | Loyalty-based trust architecture failure |
 | **Iran-Contra** | Already mentioned | Parallel chains, deniability |
 | **Hurricane Katrina Response (2005)** | FEMA failure; "heck of a job, Brownie" | Trust in incompetent appointees; cronyism |
 | **VA Healthcare Scandal (2014)** | Wait time manipulation; veterans died | Trust in reported metrics; gaming |
@@ -375,7 +373,7 @@ A research compilation of interesting trust architecture examples across domains
 | **FTX Collapse** | Failure | Trust in "effective altruist" founder; crypto's trust-minimization failure |
 | **Crew Resource Management (Aviation)** | Success | How to reduce authority gradients; anyone can raise concerns |
 | **Wikipedia** | Success | Trust through radical openness; how 300M+ articles mostly work |
-| **SWIFT Network** | Success | How $5T/day moves on trust; what happens when weaponized |
+| **SWIFT Network** | Success | How \$5T/day moves on trust; what happens when weaponized |
 | **Prediction Markets** | Innovative | Trust through incentive alignment; alternatives to expert panels |
 | **Papal Conclave** | Unusual | Physical containment, 2/3 majority, centuries of operation |
 | **Certificate Transparency** | Success | Trust through mandatory disclosure; catching rogue actors |
@@ -417,6 +415,6 @@ Based on this research, the most promising next documents would be:
 
 6. **The Replication Crisis: When Science Wasn't Trustworthy** — P-hacking; publication bias; registered reports as solution
 
-7. **SWIFT: Moving $5 Trillion a Day on Trust** — How interbank messaging works; what happened when weaponized for sanctions
+7. **SWIFT: Moving \$5 Trillion a Day on Trust** — How interbank messaging works; what happened when weaponized for sanctions
 
 8. **Medical Trust After Tuskegee** — How one study destroyed trust for generations; IRB system as response

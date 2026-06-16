@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-# Temporal Patterns
-
 :::note[TL;DR]
 Use time as a safety mechanism. Key patterns: **Cooling Off Period** (mandatory delay before high-stakes actions), **Trust Decay** (permissions expire without reinforcement), **Rate Limiting** (cap action frequency), **Capability Sunset** (automatic permission expiration). Urgency bypasses safety—enforce delays for critical decisions.
 :::
@@ -209,8 +207,8 @@ flowchart TB
 
 ### Related Patterns
 - **Cooling Off Period**: Delay before action vs. action without delay
-- **Circuit Breaker Cascade**: Coordinated shutdown mechanism
-- **Watchdog Timer**: Similar concept in embedded systems
+- **Blast Radius Containment**: Limits damage scope when switch triggers
+- **Graceful Degradation Ladder**: Graduated shutdown before full halt
 
 ---
 
@@ -551,7 +549,7 @@ flowchart TB
 
 ### Related Patterns
 - **Trust Decay**: Affects base rate limits
-- **Circuit Breaker Cascade**: Triggered by blocked tier
+- **Graceful Degradation Ladder**: Triggered when rate limits are consistently hit
 - **Behavioral Fingerprinting**: Informs pattern analysis
 
 ---

@@ -1,10 +1,11 @@
 ---
 title: "The Insurer's Dilemma"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 6
 ---
-
-# The Insurer's Dilemma
 
 :::note[TL;DR]
 Before you can insure delegation risk, you must solve the moral hazard problem: **the insurer doesn't trust the principal**. If Alice is fully covered, she has no incentive to be careful with Bob. The solution is partial coverage—but how partial? Too little and Alice won't engage agents at all. Too much and she'll take reckless risks. The optimal coverage ratio depends on how much the insurer can monitor, how aligned Alice's incentives are, and how catastrophic the worst outcomes could be.
@@ -222,13 +223,13 @@ Final Premium = Base Premium + Moral Hazard Loading + Administrative Costs
 
 | Component | Value | Calculation |
 |-----------|-------|-------------|
-| Expected loss (no insurance) | $20,000/year | Historical data |
+| Expected loss (no insurance) | \$20,000/year | Historical data |
 | Coverage ratio | 60% | Negotiated |
-| Base premium | $12,000 | $20,000 × 60% |
+| Base premium | \$12,000 | \$20,000 × 60% |
 | Moral hazard factor | 1.3× | 60% coverage, quarterly audits, reputation-dependent |
-| Moral hazard loading | $3,600 | $12,000 × 30% |
-| Administrative | $1,000 | Fixed |
-| **Final premium** | **$16,600** | |
+| Moral hazard loading | \$3,600 | \$12,000 × 30% |
+| Administrative | \$1,000 | Fixed |
+| **Final premium** | **\$16,600** | |
 
 > **Alice**: Wait—you're charging me extra because you think I'll be less careful?
 >
@@ -247,9 +248,9 @@ Alice and Diana negotiate:
 - Minimum supervision standards (specified in appendix)
 
 **Diana agrees to:**
-- 60% co-insurance on losses up to $200,000
-- 40% co-insurance on losses $200,000-$500,000
-- $500,000 coverage cap
+- 60% co-insurance on losses up to \$200,000
+- 40% co-insurance on losses \$200,000-\$500,000
+- \$500,000 coverage cap
 - Premium reduction for clean quarters
 
 > **Diana**: The monitoring isn't just about catching you being careless. It's about letting me *trust* you enough to offer real coverage. Without monitoring, I'd have to assume the worst.
@@ -483,6 +484,4 @@ She picks up the phone.
 
 ## Further Reading
 
-- [Containing Mr. X](/case-studies/anomaly-chronicles/containing-mr-x/) — What Diana proposes
 - [Delegation Accounting](/delegation-risk/delegation-accounting/) — The underlying framework
-- [Five Years Later](/case-studies/anomaly-chronicles/five-years-later/) — How this scales to an industry

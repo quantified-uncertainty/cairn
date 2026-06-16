@@ -5,8 +5,6 @@ sidebar:
   order: 7
 ---
 
-# Incentive Patterns
-
 Incentive patterns use **economic and game-theoretic mechanisms** to align agent behavior with principal goals. Rather than relying purely on technical constraints, these patterns make good behavior profitable and bad behavior costly.
 
 These patterns are inspired by mechanism design, cryptocurrency economics, and institutional economics.
@@ -231,11 +229,11 @@ flowchart TB
 
 | Category | Target | Reward Range | Severity Multiplier |
 |----------|--------|--------------|-------------------|
-| **Security** | Vulnerabilities | $1K-$100K | Critical: 10x |
-| **Error Detection** | Agent mistakes | $10-$1K | High: 3x |
-| **Deception** | Agent manipulation | $1K-$50K | Confirmed: 5x |
-| **Policy Violation** | Rule breaking | $100-$5K | Systemic: 4x |
-| **Performance** | Inefficiencies | $50-$500 | Major: 2x |
+| **Security** | Vulnerabilities | \$1K-\$100K | Critical: 10x |
+| **Error Detection** | Agent mistakes | \$10-\$1K | High: 3x |
+| **Deception** | Agent manipulation | \$1K-\$50K | Confirmed: 5x |
+| **Policy Violation** | Rule breaking | \$100-\$5K | Systemic: 4x |
+| **Performance** | Inefficiencies | \$50-\$500 | Major: 2x |
 
 ### Anti-Gaming Measures
 
@@ -343,11 +341,11 @@ flowchart TB
 
 | Activity Type | Minimum Coverage | Typical Premium |
 |---------------|------------------|-----------------|
-| **Code execution** | $100K | 0.5% |
-| **Data processing** | $500K | 1% |
-| **Financial transactions** | $1M | 2% |
-| **External communication** | $250K | 1.5% |
-| **Decision making** | $1M | 2.5% |
+| **Code execution** | \$100K | 0.5% |
+| **Data processing** | \$500K | 1% |
+| **Financial transactions** | \$1M | 2% |
+| **External communication** | \$250K | 1.5% |
+| **Decision making** | \$1M | 2.5% |
 
 ### Insurer Incentives
 

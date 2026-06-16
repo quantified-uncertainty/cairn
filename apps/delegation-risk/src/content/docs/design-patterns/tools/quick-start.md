@@ -4,8 +4,6 @@ sidebar:
   order: 0
 ---
 
-# Quick Start: Applying the Framework
-
 A practical checklist for applying the AI Safety Framework to a new system. Complete these steps in order.
 
 ## Phase 1: Scope and Budget (1-2 hours)
@@ -26,9 +24,9 @@ A practical checklist for applying the AI Safety Framework to a new system. Comp
 **Typical budgets**:
 | System Type | Suggested Delegation Risk Budget |
 |-------------|---------------------|
-| Internal tools, recoverable | $500-2,000/month |
-| Customer-facing, monitored | $2,000-10,000/month |
-| High-stakes, autonomous | $10,000-50,000/month |
+| Internal tools, recoverable | \$500-2,000/month |
+| Customer-facing, monitored | \$2,000-10,000/month |
+| High-stakes, autonomous | \$10,000-50,000/month |
 | Safety-critical | Consult specialists |
 
 ### 1.3 Identify Components
@@ -240,16 +238,16 @@ Use these calculators to run the numbers:
 **Phase 1** (5 min):
 - Task: Answer questions from internal knowledge base
 - Actions: Read docs, post messages
-- Budget: $1,000/month (internal tool, recoverable)
+- Budget: \$1,000/month (internal tool, recoverable)
 
 **Phase 2** (10 min):
 - Components: Retriever, Answerer, Poster
 - Failure modes:
-  - Retriever returns wrong docs: P=0.05, D=$100 → DR=$5
-  - Answerer hallucinates: P=0.1, D=$500 → DR=$50
-  - Answerer leaks sensitive info: P=0.01, D=$10,000 → DR=$100
-  - Poster spam: P=0.001, D=$1,000 → DR=$1
-- Total: $156/month ✓ Within budget
+  - Retriever returns wrong docs: P=0.05, D=\$100 → DR=\$5
+  - Answerer hallucinates: P=0.1, D=\$500 → DR=\$50
+  - Answerer leaks sensitive info: P=0.01, D=\$10,000 → DR=\$100
+  - Poster spam: P=0.001, D=\$1,000 → DR=\$1
+- Total: \$156/month ✓ Within budget
 
 **Phase 4** (10 min):
 - Least Intelligence: Answerer could be smaller model ✓

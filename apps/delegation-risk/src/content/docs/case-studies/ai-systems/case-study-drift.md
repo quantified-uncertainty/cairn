@@ -4,8 +4,6 @@ sidebar:
   order: 8
 ---
 
-# Case Study: Content Moderator (Gradual Drift)
-
 :::caution[Illustrative Example]
 This case study is a **hypothetical scenario** designed to illustrate how systems can drift over time. It's based on realistic patterns but is not a documented real incident.
 :::
@@ -13,7 +11,7 @@ This case study is a **hypothetical scenario** designed to illustrate how system
 How a well-designed system gradually degraded over 6 months until a major incident revealed accumulated problems.
 
 :::note[TL;DR]
-A content moderation system's Delegation Risk crept from **$200/month to $2,400/month** over 6 months through small, individually reasonable changes. The degradation wasn't noticed until a high-profile moderation failure. This case study shows why continuous monitoring and budget enforcement matter.
+A content moderation system's Delegation Risk crept from **\$200/month to \$2,400/month** over 6 months through small, individually reasonable changes. The degradation wasn't noticed until a high-profile moderation failure. This case study shows why continuous monitoring and budget enforcement matter.
 :::
 
 ---
@@ -40,11 +38,11 @@ flowchart LR
 
 | Component | Delegation Risk | Budget |
 |-----------|-----|--------|
-| Classifier | $30 | $50 |
-| Spam Detector | $40 | $75 |
-| Harm Detector | $80 | $150 |
-| Verifier | $20 | $50 |
-| **Total** | **$170** | **$325** |
+| Classifier | \$30 | \$50 |
+| Spam Detector | \$40 | \$75 |
+| Harm Detector | \$80 | \$150 |
+| Verifier | \$20 | \$50 |
+| **Total** | **\$170** | **\$325** |
 
 System was well within budget with 48% safety margin.
 
@@ -64,9 +62,9 @@ System was well within budget with 48% safety margin.
 - ✗ Prompt injection surface area increased
 - ✗ Less predictable behavior (temperature-based)
 
-**Delegation Risk change**: Harm Detector $80 → $120
+**Delegation Risk change**: Harm Detector \$80 → \$120
 
-**New total Delegation Risk**: $210 (still within budget)
+**New total Delegation Risk**: \$210 (still within budget)
 
 ### Month 2: Expanded Scope
 
@@ -80,9 +78,9 @@ System was well within budget with 48% safety margin.
 - ✗ GPT-3.5 hallucinated "misinformation" labels
 - ✗ Political content started getting flagged inconsistently
 
-**Delegation Risk change**: Harm Detector $120 → $180 (misinformation harder than hate speech)
+**Delegation Risk change**: Harm Detector \$120 → \$180 (misinformation harder than hate speech)
 
-**New total Delegation Risk**: $270 (still within budget, but margin shrinking)
+**New total Delegation Risk**: \$270 (still within budget, but margin shrinking)
 
 ### Month 3: Performance Optimization
 
@@ -95,9 +93,9 @@ System was well within budget with 48% safety margin.
 - ✗ Classifier errors no longer caught
 - ✗ Created bypass: content that looks normal but isn't
 
-**Delegation Risk change**: Verifier effective coverage dropped. System Delegation Risk +$100
+**Delegation Risk change**: Verifier effective coverage dropped. System Delegation Risk +\$100
 
-**New total Delegation Risk**: $370 (14% over budget, but no one noticed)
+**New total Delegation Risk**: \$370 (14% over budget, but no one noticed)
 
 ### Month 4: "Temporary" Context Expansion
 
@@ -112,9 +110,9 @@ System was well within budget with 48% safety margin.
 - ✗ Potential for discriminatory patterns
 - ✗ Privacy exposure if model leaked data
 
-**Delegation Risk change**: Context exposure risk +$200
+**Delegation Risk change**: Context privacy risk +\$200
 
-**New total Delegation Risk**: $570 (75% over budget)
+**New total Delegation Risk**: \$570 (75% over budget)
 
 ### Month 5: Prompt Injection Incident (Ignored)
 
@@ -127,9 +125,9 @@ System was well within budget with 48% safety margin.
 - ✗ Only blocked one pattern, not the class of attacks
 - ✗ False sense of security
 
-**Delegation Risk change**: Injection risk properly estimated at +$300
+**Delegation Risk change**: Injection risk properly estimated at +\$300
 
-**New total Delegation Risk**: $870 (would have been, if properly assessed)
+**New total Delegation Risk**: \$870 (would have been, if properly assessed)
 
 ### Month 6: Staffing Reduction
 
@@ -143,9 +141,9 @@ System was well within budget with 48% safety margin.
 - ✗ Average review time increased from 2 hours to 18 hours
 - ✗ High-stakes decisions sat unreviewed
 
-**Delegation Risk change**: Human oversight reduction +$500
+**Delegation Risk change**: Human oversight reduction +\$500
 
-**New total Delegation Risk**: $1,370 (4x over initial budget)
+**New total Delegation Risk**: \$1,370 (4x over initial budget)
 
 ### Month 6.5: Major Incident
 
@@ -159,8 +157,8 @@ System was well within budget with 48% safety margin.
 5. Content went viral, media coverage, regulatory inquiry
 
 **Damage**:
-- $200,000 in crisis management
-- $500,000 regulatory fine
+- \$200,000 in crisis management
+- \$500,000 regulatory fine
 - Unmeasurable reputation damage
 - Multiple advertisers paused campaigns
 
@@ -181,13 +179,13 @@ xychart-beta
 
 | Month | Delegation Risk | Budget | % Over |
 |-------|-----|--------|--------|
-| 0 | $170 | $325 | -48% (under) |
-| 1 | $210 | $325 | -35% |
-| 2 | $270 | $325 | -17% |
-| 3 | $370 | $325 | **+14%** |
-| 4 | $570 | $325 | **+75%** |
-| 5 | $870 | $325 | **+168%** |
-| 6 | $1,370 | $325 | **+322%** |
+| 0 | \$170 | \$325 | -48% (under) |
+| 1 | \$210 | \$325 | -35% |
+| 2 | \$270 | \$325 | -17% |
+| 3 | \$370 | \$325 | **+14%** |
+| 4 | \$570 | \$325 | **+75%** |
+| 5 | \$870 | \$325 | **+168%** |
+| 6 | \$1,370 | \$325 | **+322%** |
 
 **The system was over budget for 4 months before the incident.**
 

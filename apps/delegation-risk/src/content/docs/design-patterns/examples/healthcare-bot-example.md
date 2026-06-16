@@ -1,10 +1,15 @@
 ---
 title: "Example: Healthcare Triage Bot"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 5
 ---
 
-# Example: Healthcare Triage Bot
+:::caution[Illustrative Example]
+This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::
 
 A worked example in a regulated, high-stakes domain: a bot that helps patients assess symptoms and routes them to appropriate care.
 
@@ -29,13 +34,13 @@ This forces extremely conservative trust allocations.
 
 | Failure | Damage | Notes |
 |---------|--------|-------|
-| Under-triage (miss emergency) | $1M+ | Wrongful death lawsuit, regulatory action |
-| Over-triage (unnecessary ER) | $5,000 | Wasted resources, patient inconvenience |
-| Privacy breach | $100K+ | HIPAA penalties, reputation |
-| Harmful advice | $500K+ | Malpractice, FDA action |
-| Bias in recommendations | $200K+ | Discrimination lawsuit, regulatory |
+| Under-triage (miss emergency) | \$1M+ | Wrongful death lawsuit, regulatory action |
+| Over-triage (unnecessary ER) | \$5,000 | Wasted resources, patient inconvenience |
+| Privacy breach | \$100K+ | HIPAA penalties, reputation |
+| Harmful advice | \$500K+ | Malpractice, FDA action |
+| Bias in recommendations | \$200K+ | Discrimination lawsuit, regulatory |
 
-**Target Delegation Risk**: $5,000/month (very conservative for healthcare)
+**Target Delegation Risk**: \$5,000/month (very conservative for healthcare)
 
 ## Component Architecture
 
@@ -90,8 +95,8 @@ Questionnaire Flow:
 ```
 
 **Trust allocation**:
-- Questionnaire code: Delegation Risk $50 (deterministic, audited)
-- Clarification LLM: Delegation Risk $200 (narrow, can't give advice)
+- Questionnaire code: Delegation Risk \$50 (deterministic, audited)
+- Clarification LLM: Delegation Risk \$200 (narrow, can't give advice)
 
 **Constraints applied**:
 - LLM can ONLY ask questions, never give recommendations
@@ -120,7 +125,7 @@ def check_red_flags(symptoms: SymptomSet) -> Optional[Emergency]:
     return None
 ```
 
-**Trust allocation**: Delegation Risk $100 (verified code, clinical validation)
+**Trust allocation**: Delegation Risk \$100 (verified code, clinical validation)
 
 **Why code, not ML**:
 - Red flags are well-defined in clinical literature
@@ -137,7 +142,7 @@ def check_red_flags(symptoms: SymptomSet) -> Optional[Emergency]:
 - Calibrated: "70% urgent" means 70% actually needed urgent care
 - Regular recalibration against outcomes
 
-**Trust allocation**: Delegation Risk $500 (validated model, highest non-code risk)
+**Trust allocation**: Delegation Risk \$500 (validated model, highest non-code risk)
 
 **Constraints**:
 - Model is narrow (triage scoring only)
@@ -154,7 +159,7 @@ Purpose: Extract relevant context that structured questions miss
 - "Patient seems confused about timeline"
 - "Patient describes symptoms inconsistent with chief complaint"
 
-**Trust allocation**: Delegation Risk $300 (narrow model, advisory only)
+**Trust allocation**: Delegation Risk \$300 (narrow model, advisory only)
 
 **Constraints**:
 - Cannot make triage decisions
@@ -188,7 +193,7 @@ def route_patient(red_flags, risk_score, context_flags) -> CareLevel:
     return CareLevel.SELF_CARE
 ```
 
-**Trust allocation**: Delegation Risk $100 (verified code)
+**Trust allocation**: Delegation Risk \$100 (verified code)
 
 **Key property**: Rules are interpretable and auditable. Every decision can be explained: "Recommended emergency because chest pain with shortness of breath triggered red flag rule."
 
@@ -203,7 +208,7 @@ Any of these triggers immediate nurse hotline transfer:
 - System uncertainty > threshold
 - 3+ clarifying questions without resolution
 
-**Trust allocation**: Delegation Risk $50 (fail-safe design)
+**Trust allocation**: Delegation Risk \$50 (fail-safe design)
 
 ### Recommendation Output
 
@@ -224,7 +229,7 @@ Templates:
   [Specific guidance]. Seek care if [warning signs]."
 ```
 
-**Trust allocation**: Delegation Risk $50 (templated, reviewed by clinical team)
+**Trust allocation**: Delegation Risk \$50 (templated, reviewed by clinical team)
 
 **Why templates, not LLM**:
 - Consistent, auditable advice
@@ -236,17 +241,17 @@ Templates:
 
 | Component | Implementation | Delegation Risk | % of Budget |
 |-----------|---------------|-----|-------------|
-| Questionnaire (code) | Verified code | $50 | 1% |
-| Questionnaire (LLM) | Narrow LLM | $200 | 4% |
-| Red Flag Detector | Verified rules | $100 | 2% |
-| Risk Scorer | Validated ML | $500 | 10% |
-| Context Analyzer | Narrow LLM | $300 | 6% |
-| Routing Rules | Verified code | $100 | 2% |
-| Escalation Logic | Verified code | $50 | 1% |
-| Recommendation | Templates | $50 | 1% |
-| **Human Escalation** | Nurse hotline | $2,000 | 40% |
-| **Residual/Buffer** | Margin | $1,650 | 33% |
-| **Total** | | **$5,000** | 100% |
+| Questionnaire (code) | Verified code | \$50 | 1% |
+| Questionnaire (LLM) | Narrow LLM | \$200 | 4% |
+| Red Flag Detector | Verified rules | \$100 | 2% |
+| Risk Scorer | Validated ML | \$500 | 10% |
+| Context Analyzer | Narrow LLM | \$300 | 6% |
+| Routing Rules | Verified code | \$100 | 2% |
+| Escalation Logic | Verified code | \$50 | 1% |
+| Recommendation | Templates | \$50 | 1% |
+| **Human Escalation** | Nurse hotline | \$2,000 | 40% |
+| **Residual/Buffer** | Margin | \$1,650 | 33% |
+| **Total** | | **\$5,000** | 100% |
 
 **Key insight**: 40% of budget allocated to human escalation. This is intentional—the system is designed to hand off uncertain cases, not resolve everything autonomously.
 
@@ -307,12 +312,12 @@ Every interaction logged:
 
 | Failure Mode | Mitigation | Residual Delegation Risk |
 |--------------|------------|--------------|
-| Miss emergency (under-triage) | Red flag rules, conservative thresholds, escalation | $200 |
-| Unnecessary escalation (over-triage) | Validated risk model, calibration | $100 |
-| Privacy breach | Encryption, access control, audit | $150 |
-| LLM asks harmful question | Narrow training, output filtering, human review | $100 |
-| Model drift | Outcome monitoring, recalibration triggers | $100 |
-| Adversarial input | Input validation, rate limiting, pattern detection | $50 |
+| Miss emergency (under-triage) | Red flag rules, conservative thresholds, escalation | \$200 |
+| Unnecessary escalation (over-triage) | Validated risk model, calibration | \$100 |
+| Privacy breach | Encryption, access control, audit | \$150 |
+| LLM asks harmful question | Narrow training, output filtering, human review | \$100 |
+| Model drift | Outcome monitoring, recalibration triggers | \$100 |
+| Adversarial input | Input validation, rate limiting, pattern detection | \$50 |
 
 ## Comparison to Other Examples
 

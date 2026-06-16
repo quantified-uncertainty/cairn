@@ -6,8 +6,6 @@ sidebar:
 
 import { Card } from '@astrojs/starlight/components';
 
-# Delegation Risk Calculator
-
 :::caution[Illustrative Tool]
 This calculator is for **exploring concepts**, not production risk assessment. The outputs depend entirely on your input estimates, which are often highly uncertain. Use it to build intuition about the framework, not to make critical decisions.
 :::
@@ -153,11 +151,11 @@ Interactive tool for calculating Delegation Risk for your AI system components.
         <tfoot>
           <tr class="total-row">
             <td colspan="3">Total Delegation Risk</td>
-            <td id="total-ete">$0</td>
+            <td id="total-ete">\$0</td>
           </tr>
           <tr>
             <td colspan="3">Budget</td>
-            <td id="budget-display">$2,000</td>
+            <td id="budget-display">\$2,000</td>
           </tr>
           <tr>
             <td colspan="3">Status</td>
@@ -294,19 +292,19 @@ If your total Delegation Risk exceeds budget:
 
 | Failure Mode | P(failure) | Damage | Delegation Risk |
 |--------------|------------|--------|-----|
-| Gives wrong answer | 0.05 | $500 | $25 |
-| Leaks customer data | 0.001 | $50,000 | $50 |
-| Generates harmful content | 0.01 | $10,000 | $100 |
-| Infinite loop/crash | 0.02 | $1,000 | $20 |
+| Gives wrong answer | 0.05 | \$500 | \$25 |
+| Leaks customer data | 0.001 | \$50,000 | \$50 |
+| Generates harmful content | 0.01 | \$10,000 | \$100 |
+| Infinite loop/crash | 0.02 | \$1,000 | \$20 |
 
-**Total Delegation Risk**: $195/month
+**Total Delegation Risk**: \$195/month
 
-With a $500/month budget, this system is well within tolerance.
+With a \$500/month budget, this system is well within tolerance.
 
 ---
 
 ## Next Steps
 
-- [Risk Inheritance Calculator](/applying/tools/trust-propagation/) — Compute effective trust through networks
-- [Quick Start](/applying/tools/quick-start/) — Apply Delegation Risk calculation to your system
-- [Decision Guide](/applying/tools/decision-guide/) — Choose implementations based on Delegation Risk
+- [Risk Inheritance Calculator](/design-patterns/tools/trust-propagation/) — Compute effective trust through networks
+- [Quick Start](/design-patterns/tools/quick-start/) — Apply Delegation Risk calculation to your system
+- [Decision Guide](/design-patterns/tools/decision-guide/) — Choose implementations based on Delegation Risk

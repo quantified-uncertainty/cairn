@@ -38,12 +38,12 @@ Domain knowledge that informed the framework:
 
 | Category | Topics |
 |----------|--------|
-| **Domain Studies** | [Nuclear & Aerospace PRA](/research/nuclear-aerospace-deep-dive/), [Financial Risk Budgeting](/research/financial-risk-budgeting/) |
-| **AI Safety** | [AI Safety Frameworks](/research/ai-safety-frameworks/), [Alignment Tax](/research/alignment-tax-quantification/), [Capability Elicitation](/research/capability-elicitation-sandbagging/), [Empirical Scheming](/research/empirical-scheming-reduction/) |
-| **Technical** | [Formal Verification Limits](/research/formal-verification-limits/), [Runtime Monitoring](/research/runtime-monitoring-architectures/), [Steganography Detection](/research/steganography-detection-prevention/) |
-| **Economic** | [Fidelity Insurance](/research/fidelity-insurance/), [Mechanism Design](/research/mechanism-design/) |
-| **Mathematical** | [Compositional Risk](/research/compositional-risk-measures/), [Correlated Failures](/research/correlated-failure-modeling/), [Linear Logic](/research/linear-logic-trust-budgets/) |
-| **Meta** | [Potential Projects](/research/potential-projects/), [Human Trust Calibration](/research/human-trust-calibration/) |
+| **Domain Studies** | [Nuclear & Aerospace PRA](/research/system-design/nuclear-aerospace-deep-dive/), [Financial Risk Budgeting](/research/risk-methods/financial-risk-budgeting/) |
+| **AI Safety** | [AI Safety Frameworks](/research/technical-safety/ai-safety-frameworks/), [Capability Elicitation](/research/technical-safety/capability-elicitation-sandbagging/), [Empirical Scheming & Trust Dynamics](/research/trust-behavior/empirical-scheming-reduction/) |
+| **Technical** | [Formal Verification Limits](/research/technical-safety/formal-verification-limits/), [Runtime Monitoring](/research/technical-safety/runtime-monitoring-architectures/), [Steganography Detection](/research/technical-safety/steganography-detection-prevention/) |
+| **Economic** | [Fidelity Insurance](/research/risk-methods/fidelity-insurance/), [Mechanism Design](/research/system-design/mechanism-design/) |
+| **Mathematical** | [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/), [Correlated Failures](/research/trust-behavior/correlated-failure-modeling/), [Linear Logic](/research/trust-behavior/linear-logic-trust-budgets/) |
+| **Meta** | [Potential Projects](/research/potential-projects/), [Human Trust Calibration](/research/trust-behavior/human-trust-calibration/) |
 
 ## Connection to Main Framework
 
@@ -54,7 +54,7 @@ The theoretical foundations connect to practical concepts:
 | [Trust Dynamics](/research/theory/trust-dynamics/) | How trust changes | [Empirical Tests](/design-patterns/tools/empirical-tests/) |
 | [Trust Propagation](/research/theory/trust-propagation/) | Risk flow | [Risk Inheritance Tool](/design-patterns/tools/trust-propagation/) |
 | [Trust Economics](/research/theory/trust-economics/) | Incentive design | [Insurer's Dilemma](/delegation-risk/insurers-dilemma/) |
-| [Fidelity Insurance](/research/fidelity-insurance/) | Pricing defection | [Delegation Accounting](/delegation-risk/delegation-accounting/) |
+| [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) | Pricing defection | [Delegation Accounting](/delegation-risk/delegation-accounting/) |
 
 ## Reading Suggestions
 
@@ -62,19 +62,19 @@ The theoretical foundations connect to practical concepts:
 If you're skeptical and want to check the foundations:
 1. [Trust Dynamics](/research/theory/trust-dynamics/) — Is the trust model sound?
 2. [Trust Economics](/research/theory/trust-economics/) — Do the incentives work?
-3. [Fidelity Insurance](/research/fidelity-insurance/) — Is there real-world precedent?
+3. [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — Is there real-world precedent?
 
 ### Extend the Framework
 If you're building something the framework doesn't cover:
 1. [Trust Interfaces](/research/theory/trust-interfaces/) — How to define new boundaries
-2. [Compositional Risk](/research/compositional-risk-measures/) — How risk combines
+2. [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) — How risk composes and how to price it
 3. [Potential Projects](/research/potential-projects/) — Open research questions
 
 ### Academic Context
 If you want to connect to existing literature:
-1. [AI Safety Frameworks](/research/ai-safety-frameworks/) — Related approaches
-2. [Nuclear & Aerospace PRA](/research/nuclear-aerospace-deep-dive/) — Domain origins
-3. [Formal Verification Limits](/research/formal-verification-limits/) — What formal methods can't do
+1. [AI Safety Frameworks](/research/technical-safety/ai-safety-frameworks/) — Related approaches
+2. [Nuclear & Aerospace PRA](/research/system-design/nuclear-aerospace-deep-dive/) — Domain origins
+3. [Formal Verification Limits](/research/technical-safety/formal-verification-limits/) — What formal methods can't do
 
 ## Next Steps
 

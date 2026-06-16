@@ -2,8 +2,6 @@
 title: "Attack Surface and Capability Metrics"
 ---
 
-# Attack Surface and Capability Metrics
-
 Cybersecurity's attack surface quantification provides a template for measuring AI "capability surface area."
 
 ## Attack Surface Quantification (Manadhata and Wing)

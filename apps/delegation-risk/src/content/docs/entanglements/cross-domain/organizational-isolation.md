@@ -5,8 +5,6 @@ sidebar:
   order: 2
 ---
 
-# Organizational Isolation
-
 Organizations don't just stumble into isolation—they deliberately engineer it. Hub-and-spoke communication, rotation policies, competitive dynamics, compartmentalization: these are **control technologies** that prevent subordinate coordination.
 
 The same patterns that let dictators maintain power can help principals maintain oversight of AI systems.

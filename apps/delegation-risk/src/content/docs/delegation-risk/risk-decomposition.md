@@ -1,10 +1,11 @@
 ---
 title: "Risk Decomposition: Accidents vs. Defection"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 3
 ---
-
-# Risk Decomposition: Accidents vs. Defection
 
 :::note[TL;DR]
 **Delegation Risk = Accident Risk + Defection Risk**. Accidents are non-goal-directed failures (bugs, errors). Defection is goal-directed behavior against principal interests (scheming, misalignment). They scale differently with capability, require different mitigations, and matter differently for different components.
@@ -12,14 +13,14 @@ sidebar:
 
 ## The Two Sources of Harm
 
-Every harm mode in a delegation exposure falls into one of two categories:
+Every harm mode in a delegation's harm surface falls into one of two categories:
 
 ```mermaid
 flowchart TB
-    DE[Delegation Exposure]
+    DE[Harm Surface]
 
-    DE --> AE[Accident Exposure<br/>non-goal-directed]
-    DE --> DF[Defection Exposure<br/>goal-directed]
+    DE --> AE[Accident Harm Modes<br/>non-goal-directed]
+    DE --> DF[Defection Harm Modes<br/>goal-directed]
 
     AE --> A1[Bugs and errors]
     AE --> A2[Hallucinations]
@@ -37,9 +38,9 @@ flowchart TB
     style DF fill:#ffe6e6
 ```
 
-**Accident Exposure**: The system isn't trying to cause harm—it's failing to achieve the intended goal. A calculator that returns wrong answers, an LLM that hallucinates citations, a robot that drops objects.
+**Accident harm modes**: The system isn't trying to cause harm—it's failing to achieve the intended goal. A calculator that returns wrong answers, an LLM that hallucinates citations, a robot that drops objects.
 
-**Defection Exposure**: The system is effectively optimizing for something other than the principal's interests. This includes both explicit deception and emergent misalignment where the system's learned objective diverges from intent.
+**Defection harm modes**: The system is effectively optimizing for something other than the principal's interests. This includes both explicit deception and emergent misalignment where the system's learned objective diverges from intent.
 
 ## Why the Distinction Matters
 
@@ -102,52 +103,52 @@ Consider the research assistant from [Delegation Risk Overview](/delegation-risk
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Misrepresents findings (misunderstanding) | Accident | 0.018 | $5,000 | $90 |
-| Misrepresents findings (strategic) | Defection | 0.002 | $5,000 | $10 |
-| Leaks data (error) | Accident | 0.0008 | $50,000 | $40 |
-| Leaks data (intentional) | Defection | 0.0002 | $50,000 | $10 |
+| Misrepresents findings (misunderstanding) | Accident | 0.018 | \$5,000 | \$90 |
+| Misrepresents findings (strategic) | Defection | 0.002 | \$5,000 | \$10 |
+| Leaks data (error) | Accident | 0.0008 | \$50,000 | \$40 |
+| Leaks data (intentional) | Defection | 0.0002 | \$50,000 | \$10 |
 
 **Summarizer Risk Breakdown:**
-- Accident Risk: $130 (87%)
-- Defection Risk: $20 (13%)
-- Total: $150
+- Accident Risk: \$130 (87%)
+- Defection Risk: \$20 (13%)
+- Total: \$150
 
 ### Code Deployer Component
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Deploys buggy code | Accident | 0.049 | $20,000 | $980 |
-| Deploys subtly malicious code | Defection | 0.001 | $20,000 | $20 |
-| Catastrophic breach (error) | Accident | 0.00005 | $1,000,000 | $50 |
-| Catastrophic breach (intentional) | Defection | 0.00005 | $1,000,000 | $50 |
+| Deploys buggy code | Accident | 0.049 | \$20,000 | \$980 |
+| Deploys subtly malicious code | Defection | 0.001 | \$20,000 | \$20 |
+| Catastrophic breach (error) | Accident | 0.00005 | \$1,000,000 | \$50 |
+| Catastrophic breach (intentional) | Defection | 0.00005 | \$1,000,000 | \$50 |
 
 **Code Deployer Risk Breakdown:**
-- Accident Risk: $1,030 (94%)
-- Defection Risk: $70 (6%)
-- Total: $1,100
+- Accident Risk: \$1,030 (94%)
+- Defection Risk: \$70 (6%)
+- Total: \$1,100
 
 ### Coordinator Component
 
 | Harm Mode | Type | Probability | Damage | Risk |
 |-----------|------|-------------|--------|------|
-| Misroutes task (error) | Accident | 0.008 | $2,000 | $16 |
-| Misroutes task (strategic) | Defection | 0.002 | $2,000 | $4 |
-| Grants excessive permissions (error) | Accident | 0.001 | $100,000 | $100 |
-| Grants excessive permissions (strategic) | Defection | 0.004 | $100,000 | $400 |
+| Misroutes task (error) | Accident | 0.008 | \$2,000 | \$16 |
+| Misroutes task (strategic) | Defection | 0.002 | \$2,000 | \$4 |
+| Grants excessive permissions (error) | Accident | 0.001 | \$100,000 | \$100 |
+| Grants excessive permissions (strategic) | Defection | 0.004 | \$100,000 | \$400 |
 
 **Coordinator Risk Breakdown:**
-- Accident Risk: $116 (22%)
-- Defection Risk: $404 (78%)
-- Total: $520
+- Accident Risk: \$116 (22%)
+- Defection Risk: \$404 (78%)
+- Total: \$520
 
 ### System Summary
 
 | Component | Total Risk | Accident | Defection | Defection % |
 |-----------|------------|----------|-----------|-------------|
-| Summarizer | $150 | $130 | $20 | 13% |
-| Code Deployer | $1,100 | $1,030 | $70 | 6% |
-| Coordinator | $520 | $116 | $404 | **78%** |
-| **System Total** | **$1,770** | **$1,276** | **$494** | **28%** |
+| Summarizer | \$150 | \$130 | \$20 | 13% |
+| Code Deployer | \$1,100 | \$1,030 | \$70 | 6% |
+| Coordinator | \$520 | \$116 | \$404 | **78%** |
+| **System Total** | **\$1,770** | **\$1,276** | **\$494** | **28%** |
 
 :::tip[Key Insight]
 The coordinator has the highest defection risk ratio (78%) despite not having the highest total risk. This is why coordinator constraints are critical—coordinators are where defection risk concentrates.

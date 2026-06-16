@@ -5,8 +5,6 @@ sidebar:
   order: 3
 ---
 
-# Modeling Approaches
-
 This page provides quantitative tools for measuring interconnection—because you can't manage what you can't measure.
 
 ---
@@ -49,30 +47,27 @@ The Correlation Tax is a single number that communicates how much worse your act
 
 ### Risk Budget Formula
 
-When planning how many layers you need:
+When planning how many layers you need, use the canonical beta-factor model (see [Risk Propagation](/delegation-risk/risk-propagation/)). For n identical layers with miss rate p:
 
 ```
-Required_layers = log(target_DR) / log(1 - layer_eff × (1 - ρ))
+P(all fail) = (1−ρ) × pⁿ + ρ × p
 
-Where:
-- target_DR = target delegation risk
-- layer_eff = individual layer effectiveness
-- ρ = average pairwise correlation
+Adding layers shrinks only the first term. The second term, ρ × p, is a
+floor that no number of layers can push below.
 
-Example:
+Solve for n (valid only when target > ρ × p):
+
+n ≥ log( (target − ρ·p) / (1−ρ) ) / log(p)
+
+Example (p = 0.1, i.e. 90% effective layers):
 - Target: 0.001 (99.9% protection)
-- Layer effectiveness: 0.9 (90% each)
-- Correlation: 0.0 (independent)
-- Required layers: 3
-
-With correlation:
-- Correlation: 0.5
-- Required layers: 7 (not 3!)
-
-With high correlation:
-- Correlation: 0.8
-- Required layers: 15+ (or impossible)
+- ρ = 0.0: pⁿ ≤ 0.001 → 3 layers
+- ρ = 0.5: floor = 0.05 — the target is unreachable at ANY layer count
+           (protection caps out near 95%)
+- ρ = 0.8: floor = 0.08 — unreachable (caps near 92%)
 ```
+
+If your target sits below the ρ × p floor, the budget question is not "how many layers" — it's "how do I reduce ρ" (diversify providers and paradigms, isolate context) or "how do I improve the strongest layer" (the floor tracks min pᵢ).
 
 ---
 
@@ -139,7 +134,7 @@ Represent interconnections as a weighted directed graph:
 ```mermaid
 flowchart TB
     LLM["LLM Provider<br/>(common cause)"]
-    LLM -->|"weight: 0.8"| SF["Semantic Firewall"]
+    LLM -->|"weight: 0.8"| SF["Gateway Chokepoint"]
     LLM -->|"weight: 0.8"| GC["Ghost Checker"]
     LLM -->|"weight: 0.8"| VT["Voting Tribunal"]
 
@@ -189,7 +184,7 @@ Edge weights represent coupling strength:
 
 ### The Model
 
-Each defense layer is a slice of cheese with holes (failure modes). Threats pass through when holes align.
+The Swiss-cheese model (Reason, 1990) frames each defense layer as a slice of cheese with holes (failure modes). Threats pass through when holes align.
 
 ```mermaid
 flowchart TB
@@ -346,15 +341,18 @@ def calculate_correlation_matrix(components, test_threats):
             fails_a = {t for t in test_threats if comp_a.fails(t)}
             fails_b = {t for t in test_threats if comp_b.fails(t)}
 
-            # Calculate correlation
-            both_fail = len(fails_a & fails_b)
-            either_fail = len(fails_a | fails_b)
+            # Calculate phi coefficient (failure-indicator Pearson correlation)
+            n = len(test_threats)
+            p_a = len(fails_a) / n
+            p_b = len(fails_b) / n
+            p_both = len(fails_a & fails_b) / n
 
-            if either_fail == 0:
+            denom = (p_a * (1 - p_a) * p_b * (1 - p_b)) ** 0.5
+            if denom == 0:
                 corr = 0.0
             else:
-                # Conditional probability ratio
-                corr = both_fail / either_fail
+                corr = (p_both - p_a * p_b) / denom
+            # This is the failure-indicator Pearson correlation, the same ρ the lookup tables use.
 
             matrix[i, j] = corr
             matrix[j, i] = corr

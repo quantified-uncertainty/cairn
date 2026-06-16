@@ -1,13 +1,9 @@
 ---
 title: "Common Mistakes"
 description: "What teams get wrong when implementing delegation risk frameworks"
-sidebar:
-  order: 10
 ---
 
-# Common Mistakes
-
-Learn from others' failures. These are the most frequent mistakes teams make when implementing delegation risk frameworks.
+These are anticipated failure modes when implementing delegation risk frameworks — patterns worth watching for, drawn from analogous engineering and safety disciplines.
 
 ---
 
@@ -51,7 +47,7 @@ If verifiers share:
 - Same base model → correlated failures
 - Shared context → can be attacked together
 
-Three 90% verifiers might only give you 92% overall, not 99.9%.
+Three 90% verifiers sharing a provider (ρ ≈ 0.5) might only give you ~95% overall, not 99.9% — a [~50× entanglement tax](/entanglements/#the-canonical-example).
 
 ### How to Avoid
 - **Check for shared ancestors** — Do components use the same base model?
@@ -221,9 +217,19 @@ The real tradeoff is usually between **short-term velocity** and **long-term rob
 
 ---
 
+## Reading Mistakes
+
+Some failures happen before you write any code — in how you read the framework itself. (The biggest one — jumping straight to patterns — is Mistake 1 above.)
+
+- **Skipping Entanglements.** You assume your verification layers are independent, and correlated failures sail past all of them. *Read [Entanglements](/entanglements/) before finalizing an architecture.*
+- **Starting with Research.** You get lost in theory with nothing to anchor it to. *Read the theory and application sections first, then the [Research](/research/) section.*
+- **Reading only Case Studies.** You absorb specific examples but not the general principles, so you can't transfer them to your own system. *Use case studies to reinforce theory, not replace it.*
+
+---
+
 ## See Also
 
-- [Minimal Framework](/getting-started/minimal-framework/) — What you actually need
+- [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — What you actually need
 - [Quick Reference](/getting-started/quick-reference/) — Checklists and formulas
 - [Anti-Patterns](/case-studies/ai-systems/anti-patterns/) — Detailed failure patterns
 - [FAQ](/getting-started/faq/) — Common objections answered

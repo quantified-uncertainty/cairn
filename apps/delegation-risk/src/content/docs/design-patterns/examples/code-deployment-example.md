@@ -1,10 +1,15 @@
 ---
 title: "Example: Autonomous Code Deployment"
 sidebar:
+  badge:
+    text: Core
+    variant: tip
   order: 4
 ---
 
-# Example: Autonomous Code Deployment
+:::caution[Illustrative Example]
+This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::
 
 A second worked example showing how the framework applies to a higher-stakes domain: autonomous code review and deployment.
 
@@ -64,17 +69,17 @@ flowchart TB
 
 | Component | Implementation | Delegation Risk Budget | Rationale |
 |-----------|---------------|------------|-----------|
-| Static Analysis | Verified code | $50/month | Deterministic, auditable |
-| Security Scanner | Fine-tuned 7B model | $200/month | Narrow task, well-tested |
-| Code Reviewer | Frontier LLM + constraints | $500/month | Creative, but can't deploy |
-| Unit/Integration Tests | Code | $100/month | Deterministic |
-| Fuzzer | Code + seeded PRNG | $150/month | Reproducible randomness |
-| Staging Deploy | Verified code | $50/month | Isolated environment |
-| Canary Analysis | Fine-tuned model | $300/month | Critical gate, narrow task |
-| **Orchestrator** | **Verified code only** | **$100/month** | **No LLM in critical path** |
-| **Production Deploy** | **Code + human approval** | **$500/month** | **Human in loop** |
+| Static Analysis | Verified code | \$50/month | Deterministic, auditable |
+| Security Scanner | Fine-tuned 7B model | \$200/month | Narrow task, well-tested |
+| Code Reviewer | Frontier LLM + constraints | \$500/month | Creative, but can't deploy |
+| Unit/Integration Tests | Code | \$100/month | Deterministic |
+| Fuzzer | Code + seeded PRNG | \$150/month | Reproducible randomness |
+| Staging Deploy | Verified code | \$50/month | Isolated environment |
+| Canary Analysis | Fine-tuned model | \$300/month | Critical gate, narrow task |
+| **Orchestrator** | **Verified code only** | **\$100/month** | **No LLM in critical path** |
+| **Production Deploy** | **Code + human approval** | **\$500/month** | **Human in loop** |
 
-**System Total: $1,950/month**
+**System Total: \$1,950/month**
 
 ## Key Design Decisions
 
@@ -187,7 +192,7 @@ The architecture ensures that even if the Code Reviewer is compromised:
 | LLM in coordinator | Yes (constrained) | No (verified code) |
 | Human in loop | Strategic decisions | Every production deploy |
 | Autonomy level | Medium (can run experiments) | Low (advisory only) |
-| Acceptable Delegation Risk | $2,000/month | $2,000/month |
+| Acceptable Delegation Risk | \$2,000/month | \$2,000/month |
 | Conservative factor | 1x | 2-3x |
 
 **Key insight**: Same Delegation Risk budget, but higher-stakes domain means:

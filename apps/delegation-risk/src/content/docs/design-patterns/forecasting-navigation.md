@@ -5,8 +5,6 @@ sidebar:
   order: 10
 ---
 
-# Forecasting-Based Navigation
-
 :::note[TL;DR]
 Instead of perfectly specifying what "good" means, use AI forecasting to **navigate outcome space**. Have the AI forecast outcomes of different strategies, sample broadly, and choose paths that look good across many scenarios. Requires **calibrated forecasting**—predictions must be honest, not strategically optimistic. This sidesteps the hard problem of value specification.
 :::

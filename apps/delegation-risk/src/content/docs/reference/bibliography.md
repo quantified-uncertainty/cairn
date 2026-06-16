@@ -4,8 +4,6 @@ sidebar:
   order: 11
 ---
 
-# Bibliography & External References
-
 Key papers, books, and resources that inform this framework, organized by domain.
 
 ## AI Safety Foundations

@@ -2,8 +2,6 @@
 title: "Risk Optimization"
 ---
 
-# Risk Optimization
-
 ## Trust as Objective Function
 
 Frame trust minimization as optimization:

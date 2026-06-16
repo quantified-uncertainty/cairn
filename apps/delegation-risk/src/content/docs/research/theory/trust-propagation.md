@@ -2,8 +2,6 @@
 title: "Risk Inheritance Algorithms"
 ---
 
-# Risk Inheritance Algorithms
-
 Given a system of n components with pairwise trust relationships, how does risk inherit through delegation chains from principals to leaf executors? This is analogous to PageRank, electrical current flow, or heat diffusion—but with delegation-specific semantics.
 
 ## Setup
@@ -19,6 +17,10 @@ If principal P trusts coordinator C with weight 0.8, and C trusts executor E wit
 
 ## Candidate Propagation Rules
 
+:::note[This menu is resolved]
+The framework's canonical choice is settled in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/): compose **multiplicatively**, correct for common-cause correlation with the beta-factor mixture $(1-\rho)\prod t_i + \rho\min t_i$, and treat **minimum** as the fully-correlated (ρ = 1) limit. **Harmonic** and **discounted** are retired. The survey below is kept to document the candidates and why they fail — not as live options.
+:::
+
 ### Rule 1: Multiplicative (Independent Stages)
 
 ```
@@ -33,7 +35,7 @@ Interpretation: Each stage is an independent filter. If P→C passes 80% of good
 Trust(P→E via C) = min(Trust(P→C), Trust(C→E)) = min(0.8, 0.7) = 0.7
 ```
 
-Interpretation: Chain is only as strong as weakest link.
+Interpretation: Chain is only as strong as weakest link. Canonically this is the **ρ = 1 limit** of the beta-factor mixture — the honest bound when hops share a failure cause entirely — not a free-standing alternative.
 
 ### Rule 3: Harmonic Mean (Balanced)
 
@@ -41,7 +43,7 @@ Interpretation: Chain is only as strong as weakest link.
 Trust(P→E via C) = 2 × Trust(P→C) × Trust(C→E) / (Trust(P→C) + Trust(C→E)) = 2×0.8×0.7/1.5 = 0.747
 ```
 
-Interpretation: Balanced combination that penalizes extreme asymmetry.
+Interpretation: Balanced combination that penalizes extreme asymmetry. **Retired as incoherent** for serial chains: it yields 0.747 — *above* the weaker link (0.7) — which no serial composition can justify.
 
 ### Rule 4: Discounted Multiplicative
 
@@ -49,7 +51,7 @@ Interpretation: Balanced combination that penalizes extreme asymmetry.
 Trust(P→E via C) = Trust(P→C) × Trust(C→E) × discount^depth = 0.8 × 0.7 × 0.9 = 0.504
 ```
 
-Interpretation: Each hop adds overhead/uncertainty beyond the multiplication.
+Interpretation: Each hop adds overhead/uncertainty beyond the multiplication. **Retired as double-counting**: multiplication already penalizes chain length; a per-hop discount prices the same risk twice.
 
 ### Comparing the Rules
 
@@ -80,7 +82,7 @@ flowchart LR
 | **Harmonic** | 2×0.8×0.7/(0.8+0.7) | **0.75** | Balanced view; penalizes asymmetry |
 | **Discounted** | 0.8×0.7×0.9 | **0.50** | Long chains are inherently risky |
 
-**Recommendation**: Use **multiplicative** for safety-critical systems (most conservative). Use **minimum** when you trust verification at each stage. Use **discounted** when chain length itself is a concern.
+**The framework's canonical choice**: this menu is resolved in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/) — compose **multiplicatively**, correct for common-cause correlation with the beta-factor mixture $(1-\rho)\prod t_i + \rho\min t_i$, and treat **minimum** as the fully-correlated limit rather than an alternative. Note that the harmonic rule above is incoherent for serial chains: it yields 0.75 for links (0.8, 0.7) — higher than the weaker link alone, which no serial composition can justify. The survey below is retained for completeness and for multi-path structures, where genuine modeling choices remain.
 
 ## Multi-Path Trust
 

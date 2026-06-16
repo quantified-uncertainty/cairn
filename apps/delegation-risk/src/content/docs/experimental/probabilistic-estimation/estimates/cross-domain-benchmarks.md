@@ -5,8 +5,6 @@ sidebar:
   order: 6
 ---
 
-# Cross-Domain Benchmarks
-
 Other industries have decades of experience quantifying and managing risk. This page provides reference points for calibrating AI delegation risk estimates.
 
 ## Why Cross-Domain Benchmarks?
@@ -198,7 +196,7 @@ delegationVaR(confidence, horizon) = {
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| Average breach cost | $4.45M | IBM 2023 |
+| Average breach cost | \$4.45M | IBM 2023 |
 | Mean time to identify | 204 days | IBM 2023 |
 | Mean time to contain | 73 days | IBM 2023 |
 | Breaches with AI involvement | Growing | Emerging |
@@ -280,7 +278,7 @@ combined_detection = 1 - (1-0.5)*(1-0.4)*(1-0.45)*(1-0.35)
 - May require fundamental advances
 
 ### Likely Never (without breakthrough)
-- Aviation/nuclear-grade (~10⁻⁹)
+- Aviation-grade (~10⁻⁹/flight-hour) or nuclear-grade (~10⁻⁵/reactor-year)
 - Uncertain if achievable with current approaches
 - May require formal verification of AI systems
 

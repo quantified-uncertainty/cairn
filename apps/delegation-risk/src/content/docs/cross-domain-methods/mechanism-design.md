@@ -2,8 +2,6 @@
 title: "Mechanism Design for Truthful Risk Reporting"
 ---
 
-# Mechanism Design for Truthful Risk Reporting
-
 The fundamental challenge in risk budgeting is that those closest to the work—development teams, subsystem engineers—have private information about actual risk levels that principals (management, regulators) cannot directly observe. Contract theory and mechanism design provide the theoretical tools to address this adverse selection and moral hazard.
 
 ## The Revelation Principle

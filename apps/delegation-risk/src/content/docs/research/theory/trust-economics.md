@@ -2,8 +2,6 @@
 title: "Delegation Economics"
 ---
 
-# Delegation Economics
-
 ## Trust Production Function
 
 How is trust produced? What are the inputs?
@@ -76,7 +74,7 @@ Information asymmetry (agent knows own trustworthiness, principal doesn't), adve
 ## Trust Insurance
 
 :::tip[Deep Dive]
-For extensive coverage of how the insurance industry actually prices defection risk, see [Fidelity Insurance: Pricing Defection Risk](/research/fidelity-insurance/).
+For extensive coverage of how the insurance industry actually prices defection risk, see [Fidelity Insurance: Pricing Defection Risk](/research/risk-methods/fidelity-insurance/).
 :::
 
 **Insurance structure**:

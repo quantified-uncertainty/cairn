@@ -4,8 +4,6 @@ sidebar:
   order: 7
 ---
 
-# Open Source Supply Chain: Trust at Internet Scale
-
 :::note[Framework Interpretation]
 This case study analyzes open source ecosystems through the lens of our delegation risk framework. The facts about package managers and incidents are documented, but the framing and parallels to AI systems are our own interpretation.
 :::
@@ -196,9 +194,9 @@ Delegation Risk = P(exploitation) × Number of systems × Damage per system
 
 | Scenario | P(exploitation) | Systems | Damage/System | Total Delegation Risk |
 |----------|----------------|---------|---------------|-----------|
-| Targeted espionage | 0.001 | 100M | $1,000 | $100B |
-| Widespread ransomware | 0.01 | 100M | $10,000 | $10T |
-| Critical infrastructure | 0.0001 | 1M critical | $10M | $1T |
+| Targeted espionage | 0.001 | 100M | \$1,000 | \$100B |
+| Widespread ransomware | 0.01 | 100M | \$10,000 | \$10T |
+| Critical infrastructure | 0.0001 | 1M critical | \$10M | \$1T |
 
 **The xz attack could have been the most damaging cyberattack in history if not for one person's curiosity about CPU usage.**
 
@@ -338,9 +336,9 @@ Package Delegation Risk = Base_risk × Number_of_dependents × Impact_per_depend
 
 | Package | Dependents | Base Risk | Impact | Annual Delegation Risk |
 |---------|------------|-----------|--------|------------|
-| lodash | 150,000+ packages | 0.001 | $100K avg | $15M |
-| express | 80,000+ packages | 0.001 | $200K avg | $16M |
-| core-js | 50,000+ packages | 0.002 (single maintainer) | $100K avg | $10M |
+| lodash | 150,000+ packages | 0.001 | \$100K avg | \$15M |
+| express | 80,000+ packages | 0.001 | \$200K avg | \$16M |
+| core-js | 50,000+ packages | 0.002 (single maintainer) | \$100K avg | \$10M |
 
 ### Ecosystem-Level Delegation Risk
 
@@ -352,13 +350,13 @@ Ecosystem Delegation Risk = Σ(Package Delegation Risk) + P(registry compromise)
 
 | Component | Annual Delegation Risk |
 |-----------|------------|
-| Sum of top 1000 packages | ~$500M |
-| Long tail (2M other packages) | ~$200M |
-| Registry-level risk | ~$10B (low P, catastrophic impact) |
-| **Total npm Ecosystem Delegation Risk** | **~$10B/year** |
+| Sum of top 1000 packages | ~\$500M |
+| Long tail (2M other packages) | ~\$200M |
+| Registry-level risk | ~\$10B (low P, catastrophic impact) |
+| **Total npm Ecosystem Delegation Risk** | **~\$10B/year** |
 
 :::note[Underestimation]
-This is almost certainly an underestimate. The xz backdoor alone could have caused $100B+ in damage, and it targeted a relatively obscure package. A successful attack on a more popular package could be far worse.
+This is almost certainly an underestimate. The xz backdoor alone could have caused \$100B+ in damage, and it targeted a relatively obscure package. A successful attack on a more popular package could be far worse.
 :::
 
 ---

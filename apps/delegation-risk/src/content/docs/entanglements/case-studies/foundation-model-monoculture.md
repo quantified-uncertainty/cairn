@@ -5,8 +5,6 @@ sidebar:
   order: 14
 ---
 
-# Foundation Model Monoculture
-
 The AI ecosystem is converging on a small number of foundation models, providers, and architectural patterns. This **monoculture** creates systemic entanglement that affects not just individual systems but the entire AI infrastructure.
 
 When everyone uses GPT-4 (or models trained to imitate it), everyone shares the same blind spots.

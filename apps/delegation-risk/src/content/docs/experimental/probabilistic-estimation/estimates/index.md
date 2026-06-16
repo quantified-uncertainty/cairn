@@ -5,8 +5,6 @@ sidebar:
   order: 1
 ---
 
-# Estimates Registry
-
 This section provides a centralized registry of all quantitative estimates used in the Delegation Risk Framework. Each estimate includes:
 
 - **Point estimate**: A single representative value
@@ -17,7 +15,7 @@ This section provides a centralized registry of all quantitative estimates used 
 
 ## Why Formalize Estimates?
 
-Most risk frameworks use point estimates like "probability = 2%" or "damage = $5,000". This understates uncertainty and can lead to:
+Most risk frameworks use point estimates like "probability = 2%" or "damage = \$5,000". This understates uncertainty and can lead to:
 
 1. **Overconfidence** in risk calculations
 2. **Poor decisions** when parameters are near critical thresholds
@@ -100,4 +98,4 @@ We welcome contributions to improve these estimates:
 3. **Methodological improvements**: Better distribution families, aggregation methods
 4. **Error corrections**: If you find mistakes or inconsistencies
 
-See our [contribution guidelines](/reference/contributing/) for how to submit improvements.
+See our [About This Site](/reference/about-this-site/) for how to submit improvements.

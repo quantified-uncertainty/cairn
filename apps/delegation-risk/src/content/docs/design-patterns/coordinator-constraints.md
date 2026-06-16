@@ -2,8 +2,6 @@
 title: "Coordinator Constraints"
 ---
 
-# Coordinator-Specific Principles
-
 :::note[TL;DR]
 Coordinators are the highest-risk components—constrain them aggressively across four dimensions: **Influence** (route tasks, don't execute them), **Desires** (narrow, immediate goals only), **Intelligence** (short planning horizon, no self-model), **Knowledge** (current task only, no memory). Add external safeguards: redundancy, verification, easy veto, and full logging. Coordinators should be switchboard operators, not CEOs.
 :::
@@ -546,6 +544,10 @@ Example: 3 coordinators
 - Coordinator B: Fine-tuned 7B model
 - Coordinator C: Older frontier model (GPT-3.5)
 - Very different implementations → unlikely to fail same way
+
+:::caution[Trusted model ≠ weaker model]
+Using older or smaller models for coordination maps onto Redwood Research's *trusted model* concept (Greenblatt et al., arXiv:2312.06942), but with an important caveat: in the Control framework, *trust* means confidence that the model is **not scheming** — not merely that it is less capable. A weaker model that has been fine-tuned on adversarially-selected data or that shares training incentives with the untrusted model is not trusted in this sense. Capability rank is a useful proxy for trust, but it is not the definition; validate the assumption explicitly.
+:::
 
 ### Principle of Independent Verification
 
