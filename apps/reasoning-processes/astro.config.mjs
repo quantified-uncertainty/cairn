@@ -52,6 +52,7 @@ export default defineConfig({
 						{ label: '4. Epistemic Impact Analysis', slug: 'proposals/epistemic-impact-analysis' },
 						{ label: '5. Constructing Utility Functions', slug: 'concepts/constructing-utility-functions' },
 						{ label: 'Interlude: Untrustworthy Sources', slug: 'concepts/untrustworthy-sources' },
+						{ label: 'Interlude: The Funding Effect', slug: 'case-studies/the-funding-effect' },
 					],
 				},
 				{
@@ -62,7 +63,10 @@ export default defineConfig({
 						{ label: '7. What Grounds an Oversight Protocol?', slug: 'concepts/oversight-protocols' },
 						{ label: '8. Consistency Evaluations', slug: 'proposals/consistency-evals' },
 						{ label: '9. What Is a Strong Reasoner?', slug: 'concepts/what-is-a-strong-reasoner' },
-						{ label: '10–12. Attacks, Hardening, Certification (planned)', link: '/#the-book' },
+						{ label: '10. Attack Models (planned)', link: '/#the-book' },
+						{ label: '11. Hardening Techniques', slug: 'concepts/hardening-techniques' },
+						{ label: 'The Construction Catalogue', slug: 'concepts/construction-catalogue' },
+						{ label: '12. Certification and Gyms (planned)', link: '/#the-book' },
 					],
 				},
 				{

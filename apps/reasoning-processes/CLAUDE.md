@@ -1,4 +1,4 @@
-# Strong Reasoners Wiki
+# Reasoning Processes Wiki
 
 Astro/Starlight research wiki investigating how LLMs can be used to improve epistemics — mainly by figuring out what strong AI reasoners would look like and how to build toward them. Part of the CAIRN pnpm monorepo.
 
@@ -11,7 +11,7 @@ pnpm preview   # Preview production build
 pnpm lint      # Lint .ts/.tsx files
 ```
 
-Run from this directory, or from the repo root with `pnpm --filter strong-reasoners <cmd>`.
+Run from this directory, or from the repo root with `pnpm --filter reasoning-processes <cmd>`.
 
 ## Project Structure
 
