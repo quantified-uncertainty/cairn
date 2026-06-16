@@ -65,6 +65,7 @@ export default defineConfig({
 						{ label: '9. What Is a Strong Reasoner?', slug: 'concepts/what-is-a-strong-reasoner' },
 						{ label: '10. Attack Models (planned)', link: '/#the-book' },
 						{ label: '11. Hardening Techniques', slug: 'concepts/hardening-techniques' },
+						{ label: 'The Construction Catalogue', slug: 'concepts/construction-catalogue' },
 						{ label: '12. Certification and Gyms (planned)', link: '/#the-book' },
 					],
 				},
