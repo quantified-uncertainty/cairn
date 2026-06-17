@@ -15,7 +15,7 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 
 [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) sketches a utility function of information: $V(I, A, U)$, the value of a calibrated agent updating on $I$. Implicitly, the information just *arrives* — from a corpus, a sensor, a neutral archive. But most consequential information arrives from someone who wants something: an advocate before a judge, a company before a regulator, a debater before an audience, an AI before its overseer.
 
-So the utility function needs another axis. Let $\tau$ be the listener's credence that the source is honest rather than strategically optimizing the message. The interesting object is the curve $V_\tau(I)$ as trust falls — and the two questions it raises:
+So the utility function needs another axis. Let $\tau$ be the listener's credence that the source is honest rather than strategically optimizing the message. The interesting object is the curve $V_\tau(I)$ as trust falls — and the two questions it raises. (A scalar $\tau$ turns out to be underspecified — [When is deception possible?](#when-is-deception-possible) refines it into a decision-indexed object — but it serves to pose the spectrum.)
 
 1. **What information retains value at $\tau \approx 0$?** What can you effectively use from a source you actively distrust?
 2. **Is the decay a mappable spectrum?** Can we say, form by form, which kinds of arguments are robust, which are dual-use, and which are net-negative to even process — a science of valuable information?
@@ -35,6 +35,31 @@ and this is a property of the *message form*, not of the sender's intentions. A 
 Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.jstor.org/stable/1913390): costless when wrong, so its information content collapses under distrust. Verifiable evidence is the opposite pole: in disclosure games, a skeptical receiver has bounded downside, because what *isn't* shown becomes informative ([unraveling](https://www.jstor.org/stable/3003562)). [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) characterizes the territory in between — exactly how much a strategic sender can extract from a rational receiver.
 
 Evidence law derived the same core independently. [Friedman's route analysis](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a) (Yale L.J. 1987) grounds the value of *any* testimony in exactly this likelihood ratio, and decomposes source unreliability into four separate probabilistic links (perception, memory, sincerity, articulateness) rather than a scalar trust score. His footnote-level example is a perfect strategic-sender analysis of a message form: a stranger's offer to *bet* on a bizarre proposition is strong evidence for it, because a bluff costs money if called — sender-incentive analysis, a century of hearsay doctrine distilled into a likelihood ratio.
+
+## When is deception possible?
+
+The spectrum below grades *argument forms*. But forms only start to matter once a question is in the danger zone at all — and most aren't. Before asking which form to trust, ask whether the situation admits profitable deception in the first place. It does only when a conjunction of conditions all hold, so breaking any *one* defuses the threat — which is what makes the problem tractable, and is the lever behind the routing program in [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#narrowing-the-residue).
+
+| Condition | Deception is defused when... | The lever that breaks it |
+|---|---|---|
+| **Verification gap** | you can check the claim cheaply yourself | [verifiability asymmetry](/concepts/hardening-verifiability/) — a runnable program, a checkable proof, a tic-tac-toe board |
+| **Reproduction gap** | a known-unbiased provider reproduces the answer's *quality* | finite [replacement cost](/concepts/core-model/#1-epistemic-weight-exact) — route the question to the neutral provider |
+| **Dependence** | output quality doesn't ride on the source's advantage | drop the source; you lose nothing |
+| **Goal divergence** | the source's preferred decision ≈ the judge's on this $D$ | interest alignment — [Crawford–Sobel's](https://www.jstor.org/stable/1913390) bias parameter at zero transmits fully even via cheap talk |
+| **Never-resolves** | the claim resolves in time to punish a lie | [deterrence](/concepts/hardening-deterrence/) — clawbacks retroactively destroy the stake |
+| **Stakes** | the distortion isn't worth the source's trouble | shrink the corruption surplus |
+
+Deception is a *live* risk only in the intersection. This reframes $\tau$: a scalar "credence the source is honest" is underspecified, because an honest-but-strategic source whose goal happens to align with yours on $D$ is safe to listen to, while a source aligned in general can be adversarial on the one decision that matters. The decision-relevant object is not global honesty but **the judge's uncertainty over the source's goal-divergence on $D$** — P(strategic) times the direction and size of the divergence. (This is the [decision-relative bias](/concepts/process-catalogue/#reading-the-table) of the next chapter, seen from the source's side.)
+
+### The irreplaceable advantage
+
+Two of the conditions — reproduction gap and dependence — fuse into the one object that does most of the work: deception is dangerous exactly where a source has an **irreplaceable, output-relevant epistemic advantage** — an intuition the trusted frontier cannot reproduce *and* that the answer genuinely depends on. This is precisely the region where [replacement cost](/concepts/core-model/#1-epistemic-weight-exact) is infinite (no calibrated reference team can produce the estimate), and it is the [capability gap / ELK region](/concepts/oversight-protocols/) of scalable oversight restated in this book's terms. Everywhere else, you can route around the source. The size of that region is not a fixed fact but a [design variable](/concepts/oversight-protocols/#narrowing-the-residue).
+
+### Why AI differs from human testimony
+
+The human case is the hard one: private knowledge is genuinely non-reproducible, so the reproduction gap holds almost always — which is why a century of hearsay doctrine exists ([Friedman 1987](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a)). AI is structurally more favorable, and this book under-exploits it: reproducibility — re-run, fork, poll many models — *closes* the reproduction gap for most questions, the same affordance the [Process Catalogue](/concepts/process-catalogue/) trades on.
+
+The trap is correlated error. "Run it past many unbiased models" only closes the gap if their errors are independent, and shared training pipelines erode that ([the field's largest undefended threat](/concepts/hardening-techniques/#what-each-family-defends--and-the-gaps)). So an AI's private intuition is dangerous *specifically when it is genuinely idiosyncratic* — un-shared, un-reproducible — rather than a common-corpus artifact a neutral model would also produce. Idiosyncratic superhuman intuition is at once the most valuable case and the only truly undefendable one.
 
 ## The spectrum
 
@@ -116,6 +141,8 @@ EIA and the trust axis are complements: EIA prices *content* — how much a piec
 
 ## Open questions
 
+- Is the deception conjunction complete — are these six conditions the right cut, and are they genuinely independent levers, or do some collapse together (e.g. does "never-resolves" subsume part of the verification gap)?
+- How idiosyncratic must an AI's advantage be before reproduction (re-run, fork, multi-model polling) genuinely fails to close the reproduction gap — i.e. where does correlated error make apparent independence illusory?
 - Is a scalar $\tau$ the right parameterization, or do richer adversary models (partially aligned, budget-limited, capability-gapped) change the ordering of forms?
 - Does form-level robustness actually generalize across domains and judges, or does context-dependence reassert itself at the form level too?
 - How fine-grained can the taxonomy get before forms become gameable mixtures of one another?
