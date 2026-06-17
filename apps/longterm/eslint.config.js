@@ -1,11 +1,9 @@
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import baseConfig from '@cairn/config/eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
-export default tseslint.config(
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
+export default [
+  ...baseConfig,
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
@@ -16,13 +14,6 @@ export default tseslint.config(
       // React hooks rules
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-
-      // TypeScript - relaxed for gradual adoption
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-
-      // General
-      'no-console': 'off', // Allow console in this project
     },
   },
   {
@@ -33,12 +24,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
-      'dist/**',
-      'node_modules/**',
-      '.astro/**',
-      '.cache/**',
-      'src/data/*.json',
-    ],
-  }
-);
+    ignores: ['.cache/**', 'src/data/*.json'],
+  },
+];

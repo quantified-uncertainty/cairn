@@ -8,6 +8,7 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://delegation-risk.vercel.app',
 	redirects: {
 		'/getting-started/introduction/': '/getting-started/',
 		'/getting-started/minimal-framework/': '/getting-started/core-concepts/',
