@@ -45,6 +45,10 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 | **Resolution layer** | The enforcement of falsehood nullification: resolvers, retrodiction, consistency checks, randomized audits. "The resolution layer is the system." | [Overseeing Automated Research](/proposals/overseeing-automated-research/) |
 | **Deception affordance** | A form's false-side belief swing relative to its true-side swing — near one, the form transmits persuasion, not information | [Interlude: Untrustworthy Sources](/concepts/untrustworthy-sources/) |
 | **Built-in biases** | A process's systematic distortions with no adversary at all — corruption an attacker gets at zero marginal cost | [The Process Catalogue](/concepts/process-catalogue/) |
+| **Decision-relative (goal) bias** | A process's systematic lean toward one resolution of a specific decision $D$ (nearest standard term: *directional bias*) — as opposed to broad, decision-independent biases; should be ≈0 on decisions it has no information about | [The Process Catalogue](/concepts/process-catalogue/#reading-the-table) |
+| **Label-swap neutrality** | The unsupervised check for goal bias: swap the options of a no-information decision; residual output asymmetry is the bias | [The Process Catalogue](/concepts/process-catalogue/#reading-the-table) |
+| **Deception preconditions** | The conjunction (verification gap, reproduction gap, dependence, goal-divergence, never-resolves, stakes) all required for deception to be a live risk — break any one to defuse it | [Interlude: Untrustworthy Sources](/concepts/untrustworthy-sources/#when-is-deception-possible) |
+| **Irreplaceable advantage** | A source's output-relevant epistemic edge with no Blackwell-sufficient trusted substitute at feasible cost (replacement cost unbounded, though its value stays finite) — the region where deception is genuinely dangerous | [Interlude: Untrustworthy Sources](/concepts/untrustworthy-sources/#the-irreplaceable-advantage) |
 | **The empty quadrant** | Cheap to run and expensive to corrupt — the region of the process map the AI era needs filled | [The Process Catalogue](/concepts/process-catalogue/#the-map) |
 
 ## Notation
@@ -67,4 +71,5 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 | $M(Q, t)$ | the evaluated model's answer to $Q$ at time $t$ | [Consistency Evaluations](/proposals/consistency-evals/) |
 | $q$, $q_X$ | a forecast; the forecast after observing source $X$ | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
 | $I(Q; X)$ | mutual information between question $Q$ and source $X$ — the decision-free value of a source, per question | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
-| $\tau$ | the listener's credence that a source is honest rather than strategic | [Interlude: Untrustworthy Sources](/concepts/untrustworthy-sources/) |
+| $\tau$ | the listener's credence that a source is honest rather than strategic — refined into decision-indexed goal-divergence | [Interlude: Untrustworthy Sources](/concepts/untrustworthy-sources/#when-is-deception-possible) |
+| $b_\pi(D)$ | decision-relative (goal) bias: $\pi$'s systematic lean toward one resolution of decision $D$, holding truth-relevant information fixed | [The Process Catalogue](/concepts/process-catalogue/#reading-the-table) |
