@@ -1,0 +1,1350 @@
+# Evaluation Engineering — Complete Text
+
+> A working wiki on evaluation engineering: the discipline of designing, building, and operating systems that produce large numbers of estimates and evaluations at known cost. Maintained by QURI as part of the CAIRN project.
+>
+> This is the entire wiki concatenated into one document, in book reading order,
+> for offline reading (e-readers) and LLM context. Web version: https://evaluation-engineering.quantifieduncertainty.org
+
+
+
+================================================================================
+# Start Here
+================================================================================
+
+
+------------------------------------------------------------
+## 1. Evaluation Engineering
+Source: https://evaluation-engineering.quantifieduncertainty.org/start-here/introduction/
+------------------------------------------------------------
+
+*Status: early draft. This page states a framing, not a settled position.*
+
+## The one-sentence version
+
+**Evaluation engineering is the discipline of building systems that produce large numbers of estimates and evaluations — efficiently, consistently, and at a known cost.**
+
+The emphasis is on every word after *systems*. We already know how to produce one careful evaluation: hire a smart person, give them time, read the report. What we are bad at is producing the *ten-thousandth* evaluation as cheaply and reliably as the first — and keeping all ten thousand consistent with each other as the world changes underneath them. That is an engineering problem, and it has been studied as one only sporadically.
+
+## What problem this is a response to
+
+There is a recurring disappointment in the forecasting and decision-analysis world: prediction markets, forecasting tournaments, and proposals like futarchy all *seem* promising, and yet a decade-plus in, they are barely used — not by governments, not by firms, not even by the communities most enthusiastic about them.
+
+One diagnosis is that prediction was never the whole product. A prediction platform is one organ; a decision-support system is the body. To get from "we can forecast this clean, near-term, verifiable question" to "we can put a defensible number on the messy thing a decision actually turns on," you need more than a market:
+
+- a **structured set of questions** to forecast over (ontology),
+- **calculation** to chain raw inputs into derived estimates,
+- **prediction** to keep the system calibrated and honest, and
+- **evaluation** to resolve the questions that have no clean ground truth.
+
+Nobody was building the whole machine. Evaluation engineering is the name for building the whole machine.
+
+## Why "engineering"
+
+Calling it engineering is a deliberate move away from two adjacent framings:
+
+- It is **not evaluation-the-philosophy**: the project is not primarily about the theory of value or the epistemology of judgment, though it draws on both.
+- It is **not evaluation-the-social-science**: there is an established academic field of program evaluation, and there are lessons there, but its center of gravity is the individual study and the long report, not the high-throughput system.
+
+The mental models that fit best come from systems disciplines: **lean manufacturing, software architecture, engineering management**. The questions are throughput, cost-per-item, latency, consistency, failure modes, and how local changes propagate through a network of dependent estimates. When you produce evaluations at scale, optimizing any single evaluation is usually the wrong objective; you optimize the system.
+
+A representative list of system-level questions:
+
+- Who staffs the analyst team, and what is the cost of their time per item?
+- What data infrastructure does the system stand on?
+- Who is the audience, and what decisions are the outputs meant to support?
+- How does an update to one estimate propagate to the estimates that depend on it?
+- How do we keep ten thousand estimates *consistent* with each other?
+- How is the whole thing funded, and what keeps it from being captured?
+
+## The core split: estimation vs. evaluation
+
+The field's foundational distinction is between **estimation** (numbers you'd trust a careful quantitative analyst to produce — Fermi estimates, models, sums) and **evaluation** (messy judgments you'd want trusted experts for — "how good a president was Obama?", "how much did this org reduce existential risk?"). The design heuristic that falls out of this is *divide and conquer*: handle as much as possible as cheap, verifiable estimation, and sequester the genuinely judgment-bound evaluation into a separate, more expensive layer. This is important enough to get [its own page](/start-here/estimation-vs-evaluation/).
+
+## Why evaluation, specifically? ("all you need")
+
+The sharper, more provocative version of the thesis is that **highly optimized evaluations are (almost) all you need.** Two claims sit behind it:
+
+- **Evaluation may be the bulk of the desired output.** Forecasting discourse has under-weighted evaluation; you can get a long way on clean estimation and then hit a wall. Many of the highest-stakes processes we run are evaluation problems in disguise — courts, grantmaking, hiring, impact assessment, policy choice. It's plausible that *more* of civilization's resources flow into evaluation than into estimation, which would make optimizing it unusually valuable.
+- **The accuracy bar is lower than it looks.** A common objection is that scaled evaluation is AGI-complete. But the outputs don't need to be accurate in any absolute sense — only **better than what people would otherwise have done**, and cheap enough to actually get used. People already make vast numbers of noisy, overconfident informal judgments; beating that baseline is a far more modest target. (See [Objections & FAQ](/reference/objections/).)
+
+"Highly optimized" is doing real work in that slogan: the value comes not from any single brilliant evaluation but from *engineering the whole system* to a good point on the [accuracy × quantity × cost](/concepts/the-systems-view/) frontier.
+
+## A capability ladder
+
+It would help the field to be able to *grade* evaluation systems the way self-driving has "Level 4 autonomy." A shared scale — plus a formalization of the inputs and outputs of estimation/evaluation work — would let us draw historical trends, make projections, and say concretely how far along a given system is. No such ladder exists yet; building one is open work.
+
+## Why this is worth a field
+
+- **Generality.** Better evaluation systems would help in many domains at once — impact assessment, policy, life and work optimization, research prioritization. A broad lever, but narrow enough to be tractable.
+- **Neglect.** The component fields (forecasting, data engineering, decision analysis, survey methodology) are each studied, but rarely *integrated* under one roof aimed at high-throughput output.
+- **Timing.** Most of the labor-intensive steps — drafting evaluations, structuring ontologies, running calculations — are now partially automatable by LLMs. A program that needed an army of analysts to be cost-effective might now need a much smaller one. See [Lineage](/start-here/lineage/) for how the pre-LLM version of this argument maps onto the present.
+
+## What this wiki is (and isn't)
+
+This is a working wiki, not a manifesto and not a finished textbook. Pages are dated drafts meant to be argued with. The goal of the current version is modest: lay out the framing, the core distinction, the component architecture, the catalogue of methods, and the open questions clearly enough that the next person can disagree productively.
+
+It deliberately does **not** yet commit to: a specific software stack, a specific institutional form, or strong claims about cost-effectiveness. Those depend on experiments that haven't been run.
+
+## Where to go next
+
+- [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/) — the foundational distinction, in detail.
+- [Why It Matters — Use Cases](/start-here/use-cases/) — the concrete things this would unlock.
+- [Evaluation as a System](/concepts/the-systems-view/) — the systems view and its trade-offs.
+- [The Four Components](/concepts/components/) — prediction, calculation, ontology, evaluation.
+- [Objections & FAQ](/reference/objections/) — the strongest objections and the scale of the bet.
+- [Cruxes](/start-here/key-questions/) — the open questions the field turns on.
+
+
+------------------------------------------------------------
+## 2. Estimation vs. Evaluation
+Source: https://evaluation-engineering.quantifieduncertainty.org/start-here/estimation-vs-evaluation/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the 2021–22 estimation-theory notes (see [Lineage](/start-here/lineage/)).*
+
+This distinction is the load-bearing one. If you only take one idea from this wiki, take this one.
+
+## Estimation
+
+**Estimation** is the calculation of specific numbers, usually under uncertainty. It is a superset of ordinary numeric calculation: summing itemized expenses is "estimation" with no uncertainty; a Fermi estimate is "estimation" with a lot.
+
+The defining property: the estimator only has to be *correct*. They don't need to worry about how the result is interpreted, who trusts them, or what the number does once released. The challenge is purely accuracy.
+
+Examples:
+
+- How many piano tuners are in Boston right now?
+- How many total hours have been spent reading a particular blog post?
+- How much do Americans spend on mechanical keyboards per year?
+
+Estimation leans on logic, math, economics, and data engineering.
+
+## Evaluation
+
+**Evaluation** is similar — it also produces a judgment, often numeric — but for things that are *messy*: results that are difficult or impossible to verify or fully trust. Evaluations either avoid formal models or use them as one input among many (à la [cluster thinking](https://blog.givewell.org/2014/06/10/sequence-thinking-vs-cluster-thinking/)).
+
+The defining property: here the *effect on the audience matters*. The number usually needs explanation, the explanation needs to be tailored to readers, and — crucially — the result is only useful if the relevant people *trust* it. An excellent evaluation nobody believes changes nothing.
+
+Examples:
+
+- On a scale of 0–100, how good a job did Barack Obama do as president?
+- What is the probability that we live in a simulation?
+- How much did organization X reduce existential risk from 2000 to 2020?
+
+Evaluation leans on epistemology, sociology, survey methodology, and the "soft" sciences.
+
+## The distinction is a gradient, not a wall
+
+There is no crisp line. Many real questions sit in between. A rough contrast:
+
+| Estimation | Evaluation |
+|---|---|
+| Highly quantitative | Highly qualitative |
+| Relies on equations/models | Relies on judgment and intuition |
+| Easy for parties to agree on | Parties hold different underlying intuitions |
+| Little trust in the estimator needed | Lots of trust in the evaluator needed |
+| Terminology rarely contested | Terminology frequently contested |
+| Minimal explanation | Often substantial explanation |
+| Usually numeric | Numeric, grades, scales, or prose |
+| Math, programming, data, economics | Economics, sociology, epistemology, mixed methods |
+
+A useful intuition pump: which questions would you hand to *a sharp quantitative analyst* (estimation), and which would you want *a team of trusted domain experts or strong generalists* on (evaluation)?
+
+## Why separate them: divide and conquer
+
+The payoff of the distinction is a design strategy, borrowed from the functional-programming idea of separating pure from impure code:
+
+> Handle as much as possible as **estimation**. Sequester the genuinely judgment-bound parts into a separate **evaluation** layer. Don't let the messiness of one bleed into the cleanliness of the other.
+
+Pushed further, you get **three nested layers**, ordered by how verifiable they are — evaluation on the outside, a verifiable core of data and pure math at the center:
+
+```mermaid
+flowchart TB
+  subgraph eval[Evaluation: judgment-bound, trust-dependent]
+    subgraph est[Estimation: models & calculation]
+      core[Data & pure math:<br/>verifiable]
+    end
+  end
+```
+
+1. **Verifiable** — raw data, mathematical facts, proofs.
+2. **Estimation** — derived numbers from models and calculation.
+3. **Evaluation** — the irreducibly judgment-bound calls.
+
+The heuristic: *do as much work as possible in the deeper (more verifiable) layers, and keep the layers separate.* Every claim you can demote from "evaluation" to "estimation," and from "estimation" to "verifiable," gets cheaper, more trustworthy, and easier to keep consistent at scale.
+
+## Two notes on naming
+
+- There is already an academic field called **Evaluation** (program evaluation, rooted in the social sciences). It overlaps with this usage but is centered on bespoke studies and long reports rather than high-throughput systems. We borrow lessons but reframe the scope.
+- "Estimation" and "evaluation" are deliberately plain, unromantic words. The priority is honest categories that won't collide with existing terminology, not memorable branding. Better names may come later.
+
+## Where this goes
+
+The estimation/evaluation split is what makes the [component architecture](/concepts/components/) coherent: *prediction* and *calculation* mostly serve the estimation layer, *evaluation methods* serve the evaluation layer, and *ontology* organizes the questions both operate on. The system-level [techniques](/concepts/techniques/) — especially prediction–evaluation systems — are largely about cheaply bridging the two.
+
+
+------------------------------------------------------------
+## 3. Why It Matters — Use Cases
+Source: https://evaluation-engineering.quantifieduncertainty.org/start-here/use-cases/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the founding posts (see [Lineage](/start-here/lineage/)).*
+
+The point of an evaluation system is **end-to-end value**: resources in, better decisions out. An evaluation that is highly accurate but completely ignored is worth nothing. So the right way to motivate the field is not "wouldn't accurate numbers be nice" but "here are decisions that get meaningfully better when good evaluations get cheap." This page collects the recurring examples.
+
+```mermaid
+flowchart LR
+  subgraph inputs[Inputs]
+    pred[Prediction]
+    calc[Calculation]
+    ont[Ontology]
+    evalm[Evaluation methods]
+    culture[Epistemic culture]
+  end
+  inputs --> sys[Highly optimized<br/>evaluation systems]
+  sys --> uc
+  subgraph uc[Use cases]
+    fut[Futarchy / policy]
+    impact[Impact estimates]
+    life[Life & work optimization]
+    meta[Meta-evaluation]
+  end
+  uc --> value[Decisions that<br/>wouldn't otherwise be made]
+```
+
+## Futarchy and policy
+
+Robin Hanson's [futarchy](https://en.wikipedia.org/wiki/Futarchy) (2007) uses prediction markets to choose policies that optimize a single welfare metric ("GDP+"). The appealing core isn't the market mechanism specifically — it's the ambition of letting *calibrated estimation directly drive coordination*:
+
+> How can we ambitiously use systematized estimation systems to optimize policy decisions?
+
+Two buckets of work fall out, independent of whether the estimator is a market: (1) **building the target metric** — a GDP+ that is both high-quality and publicly acceptable, against active attempts to corrupt it; and (2) **making the forecasting cheap enough** that policy-grade forecasts (which must be very good, hence very expensive) become palatable.
+
+## Certificates of impact
+
+[Certificates of impact](https://forum.effectivealtruism.org/tag/certificate-of-impact) (Paul Christiano) require estimating the value of a long list of interventions. Setting aside the financial-instrument details, the core is an evaluation problem with two bottlenecks the field directly addresses:
+
+- **Cost-effectiveness.** Producing all those value estimates is expensive; if the resources-to-estimates conversion is poor, the scheme can't work.
+- **Candidness.** If certificate prices were public and roughly accurate, some organizations would get far worse ratings than they expected. Imagine a small market concluding — publicly — that most longtermist researchers are near-useless or slightly harmful. Even if true, that's too uncomfortable to be tolerated if done crudely; expect pushback and strategic non-participation. Good evaluation systems must offer **deliberate trade-offs between truth and discomfort**, not just accuracy. (See [Epistemic Culture](/concepts/epistemic-culture/).)
+
+## Felicific calculators
+
+Bentham's felicific calculus — quantifying the moral weight of acts — has only ever been realized in narrow corners (QALYs, welfare economics). Broad-purpose calculators that estimate the costs and benefits of actions for individuals and organizations remain out of reach. Most of the difficulty reduces to "cost-effective large-scale estimation," which is exactly the field's competence. Advanced versions should work for nearly any utility function, so almost any consequentialist framework could plug in.
+
+## Guesstimate, and the tooling gap
+
+Guesstimate (2016) gestured at making quantified, uncertain estimation accessible. Development hit diminishing returns: the remaining bottlenecks weren't incremental fixes but called for fundamentally different tooling — exactly what the [estimation-functions](/concepts/techniques/) line of work is about. The slogan version: *if you've ever thought "Guesstimate is neat, but I wish much more of the world worked like that," this field is the attempt to build that world.*
+
+## Charity evaluation and prioritization
+
+This is the use case closest to existing practice. GiveWell, Open Philanthropy, 80,000 Hours, and others pour serious effort into evaluating charities and causes — and it's been hard to scale. There are perennial calls for "GiveWell for X" (environment, political reform, s-risk, general philanthropy), and clear limits even within existing domains.
+
+Evaluation engineering reframes the goal as **augmentation, not replacement**: not "automate GiveWell," but
+
+> for every prioritization or evaluation researcher we have, can we eventually get x% more value out of them?
+
+A system that let existing teams scale output 10–100× — even at lower per-item quality — could change which questions get asked at all. There are already small instances to learn from: QURI's [shallow evaluations of longtermist organizations](/reference/related-work/) (2021) and Sam Nolan's uncertainty-quantified rebuild of GiveWell's GiveDirectly cost-effectiveness analysis both show "shallow but useful" evaluation at reduced cost. (For the strongest version of the skeptical reply — that perfect evaluations might not increase useful work by more than ~2×, and that the real bottleneck is *capable people* — see [Objections & FAQ](/reference/objections/).)
+
+## The common thread
+
+Across all five, the bottleneck is the same: **cheap, large-scale, trusted estimation and evaluation**. None of these requires AGI-level accuracy. They require outputs that are *better than what people would otherwise have done* — and a system that produces them at a cost low enough that they actually get used. That is the bet of the whole field; see [Evaluation as a System](/concepts/the-systems-view/) for the optimization target, and [Objections & FAQ](/reference/objections/) for the case against.
+
+
+------------------------------------------------------------
+## 4. Cruxes
+Source: https://evaluation-engineering.quantifieduncertainty.org/start-here/key-questions/
+------------------------------------------------------------
+
+*Status: early draft. These are the questions the rest of the wiki circles around. Most are unresolved.*
+
+These are framed as cruxes: questions where a confident answer would meaningfully redirect effort. They are grouped loosely by the part of the system they bear on. See also the running list on [Open Problems](/open-questions/).
+
+## On the premise
+
+1. **Is the bottleneck really the system, not the estimate?** The field's founding bet is that we know how to make one good evaluation and fail at making ten thousand cheaply. Is that true, or is single-evaluation quality still the binding constraint in the domains we care about?
+2. **Does scale actually unlock value, or just volume?** Ten thousand mediocre estimates may be worth less than ten excellent ones. What's the evidence that high-throughput evaluation produces decisions that wouldn't otherwise be made?
+
+## On estimation vs. evaluation
+
+3. **How much can be demoted from evaluation to estimation?** The divide-and-conquer strategy is only as good as the fraction of judgment-bound questions you can convert into model-bound ones. Where does that fraction top out?
+4. **Can LLMs do trustworthy evaluation, or only cheap evaluation?** Evaluation's defining requirement is *trust*. Cheap judgments that no one trusts don't move decisions. Under what conditions, if any, does an LLM-produced evaluation earn the trust an expert panel's does?
+
+## On the components
+
+5. **Does scalable structured forecasting work?** Most forecasting platforms rely on small sets of hand-written, unstructured questions. Can we forecast over large structured ontologies ("for each country, each month, 20 metrics, 20 years") without the quality collapsing?
+6. **Is ontology the silent bottleneck?** The 2021–22 notes flag data/ontology infrastructure as suspiciously absent from forecasting work. Is structuring the questions the real hard part, more than answering them?
+7. **What is the right interface for estimation functions?** If the unit of reuse is a cached function from parameters to an estimate, what does the tooling need to look like for these to compose at scale?
+
+## On bridging cheap and expensive judgment
+
+8. **Do prediction–evaluation systems actually calibrate cheap predictors?** The proposal: have many predictors forecast a large set, evaluate a random subset expensively, reward the best. Does the incentive structure hold up, especially against gaming and against deceptive participants?
+9. **How do you price an evaluation?** To trade accuracy against cost you need a value-of-information story for messy, normative, long-horizon questions. What's the unit, and can it be made operational?
+
+## On the environment
+
+10. **Is culture the real adoption bottleneck?** The claim that systems fail for cultural rather than technical reasons (people don't *want* loud public ratings of their work) is strong. Is it right, and if so, is culture actually more tractable than the technical problems?
+11. **How do you avoid building a corrupt or captured truth agency?** A trusted, high-throughput evaluator is a target. What keeps it honest — trust networks, meta-evaluation, decentralization — and do any of those actually work?
+
+## On the field itself
+
+12. **Is "evaluation engineering" the right frame and name?** The lineage went *advanced evaluation systems → symbolic evaluation systems → estimation systems*; the present reframe centers engineering. Does the engineering framing carve the problem at its joints, or is it one more provisional label?
+
+---
+
+If you have a candidate answer — or a crux this list is missing — that's exactly the kind of contribution this wiki wants.
+
+
+------------------------------------------------------------
+## Lineage
+Source: https://evaluation-engineering.quantifieduncertainty.org/start-here/lineage/
+------------------------------------------------------------
+
+*Status: early draft.*
+
+Evaluation engineering is not a new idea so much as a renamed and re-timed one. This page traces the lineage so the framing's assumptions are visible.
+
+## The 2021–22 program
+
+The direct ancestor is a draft post series written in 2021–22 under the banner **advanced evaluation systems** — and, for the particular paradigm it focused on, **symbolic evaluation systems**. Its core moves:
+
+- **From prediction to evaluation systems.** Prediction markets and tournaments had underwhelmed in practice. The diagnosis: prediction is one component of a larger architecture, and the larger architecture — not better markets — is the right research target.
+- **A component decomposition.** Serious systems combine **prediction**, **calculation**, **ontology**, and **evaluation**, sitting on a background of **epistemic foundations** and **epistemic culture**. (See [The Four Components](/concepts/components/).)
+- **The estimation/evaluation split** as the foundational distinction, with a divide-and-conquer design strategy. (See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).)
+- **A set of techniques** — prediction–evaluation systems, scalable structured forecasting, estimation functions, automated trust networks, and cultural change toward candidness. (See [Techniques](/concepts/techniques/).)
+
+The word *symbolic* was borrowed from symbolic AI: systems built out of explicit, inspectable structure (functions, ontologies, rules), with the matching trade-off — easy to understand and study, sometimes inefficient to run.
+
+## What was missing then
+
+The 2021–22 version had a hole it was honest about: the symbolic machinery needed a cheap, general *executor* for the labor-intensive parts — drafting evaluations, structuring ontologies, chasing down inputs. Without one, the whole architecture was either prohibitively expensive (armies of analysts) or limited to the few questions a small team could hand-craft. The notes explicitly hoped that "AI advancements will greatly augment" the program, while assuming the work had to stand without them.
+
+## The bridge draft: "Evaluations Are All You Need"
+
+Between the 2021–22 series and this wiki sits a later, still-in-progress redraft of the founding post, titled **"(Highly Optimized) Evaluations Are All You Need"** (drafted in September, LLM-aware). It keeps the architecture but shifts the emphasis in three ways that this wiki inherits directly:
+
+- **Evaluation moves to the center.** Where the original treated *estimation* as the more fundamental operation, the redraft argues that *evaluation* is plausibly the bulk of the valuable output — and that "highly optimized" evaluation is the thing to chase. This wiki's name and framing follow that move.
+- **It adds use cases and a scale estimate.** Charity evaluation/prioritization joins futarchy, certificates of impact, felicific calculators, and Guesstimate; the effort is sized at roughly autonomous-driving / ending-aging scale (~\$100B over 20 years), with companies expected to do most of it. See [Why It Matters](/start-here/use-cases/).
+- **It records objections and outside feedback.** An "objections and responses" section and external commentary (e.g. from Mark Xu) are folded into [Objections & FAQ](/reference/objections/).
+
+The redraft is explicitly provisional — the author flags being "really not sure about much of this." This wiki treats it the same way: as the current best statement of a moving target, not a settled position.
+
+## What changed
+
+Large language models are a plausible candidate for that missing executor. They are uneven and untrustworthy in exactly the places evaluation is hardest, but they are cheap and general in exactly the places the architecture was bottlenecked. That shifts the program from "interesting if we ever get the labor" to "buildable now, with the labor question reframed as a quality-and-trust question."
+
+This is why the present wiki re-centers the word **engineering**: the open problems are now less "could such a system exist in principle" and more "how do we actually build, staff, calibrate, and trust one."
+
+## The naming trail
+
+The label has moved more than once, and is still provisional:
+
+> advanced evaluation systems → symbolic evaluation systems → (general-purpose, large-scale) estimation systems → "highly optimized evaluations" → **evaluation engineering**
+
+Each rename tracked where the emphasis was: the *advance* over existing systems, then the *symbolic* paradigm, then *estimation* as the more fundamental operation, then back to *evaluation* as the dominant output to optimize, and now the *engineering* of high-throughput systems. None of these is meant as a final name. (See crux 12 on [Cruxes](/start-here/key-questions/).)
+
+## Sibling project
+
+This wiki is a sibling to **Robust Reasoning Processes (RRP)**, which inherited a different slice of the same 2021–22 corpus — the "processes over forecasts" move and the measurement of how processes resist corruption. Where RRP centers *trustworthiness under adversarial pressure*, evaluation engineering centers *high-throughput production at known cost*. They share ancestry and overlap at the edges (both care about calibration, oversight, and trust networks), but ask different primary questions.
+
+
+================================================================================
+# Part I — The Systems View
+================================================================================
+
+
+------------------------------------------------------------
+## 4. Evaluation as a System
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/the-systems-view/
+------------------------------------------------------------
+
+*Status: early draft.*
+
+## A system is not a big pile of evaluations
+
+The central shift in this field is treating the *system* — not the individual evaluation — as the unit of design.
+
+An evaluation is an artifact: a number, a grade, a report. An **evaluation system** is the standing machinery that produces such artifacts repeatedly, of a roughly consistent type. A firm issuing health grades for restaurants, an analyst team scoring acquisition targets, a charity evaluator publishing cost-effectiveness estimates — each is a system, and each lives or dies on properties no single evaluation has: throughput, cost-per-item, consistency across items, latency, and how gracefully it absorbs change.
+
+When you optimize a system, optimizing any one evaluation is usually the wrong objective. You accept that some individual outputs are rougher than a bespoke study would be, in exchange for producing thousands of them at a cost that lets the results actually get used. This is the same move lean manufacturing makes against artisanal production, and the right reference disciplines are the systems ones — **lean manufacturing, software architecture, engineering management** — not evaluation philosophy or single-study methodology.
+
+## The design space: accuracy × quantity × cost
+
+Every evaluation system is a point in a three-way trade-off:
+
+- **Accuracy** — how close outputs are to what a much more expensive process would conclude.
+- **Quantity** — how many items the system can cover.
+- **Cost** — total resources per item (analyst time, compute, data).
+
+You can usually buy more of any two by giving up the third. A hand-curated expert panel is high-accuracy, low-quantity, high-cost. A purely statistical index is low-cost, high-quantity, and accurate only where the metric happens to capture what matters. Most of the interesting engineering is in moving the whole frontier outward — getting more accuracy *and* quantity per dollar — rather than just sliding along it.
+
+LLMs are interesting precisely because they promise to bend this frontier: they collapse the cost of the labor-intensive steps, which can buy back quantity without (one hopes) surrendering too much accuracy. Whether that hope holds is an open question — see [Cruxes](/start-here/key-questions/).
+
+## The questions that define a system
+
+Designing or critiquing a system means answering, at minimum:
+
+- **Team.** Who produces the judgments — analysts, experts, crowds, models? At what cost per item?
+- **Data infrastructure.** What does the system stand on? Where do inputs come from and how fresh are they?
+- **Audience and purpose.** Who consumes the outputs, and what decisions are they meant to support? (This determines how much accuracy is actually needed.)
+- **Consistency.** How do you keep thousands of estimates coherent with each other?
+- **Propagation.** When one input or estimate updates, how does the change flow to everything downstream?
+- **Funding and incentives.** How is the system paid for, and what stops it from being captured or corrupted?
+
+The last two are where systems most often fail in ways a single-evaluation mindset never sees coming. Consistency and propagation are the reason an evaluation system resembles a *database with opinions* more than a stack of reports; funding and incentives are the reason it resembles an *institution* more than a tool.
+
+## Consistency and propagation
+
+At small scale, inconsistency is invisible. At ten thousand items it is the dominant failure mode: estimate A implies one thing, estimate B implies its opposite, and no human ever notices because no human reads both. A serious system needs some mechanism — shared inputs, derived-value chains, automated checks — that makes "these two outputs contradict each other" a detectable, ideally automatable, event.
+
+Propagation is the dynamic version of the same problem. The world moves; a key input changes; in a pile of static reports, every downstream conclusion is now silently stale. A system worth the name knows what depends on what, and can re-derive (or at least flag) the affected outputs. This is one of the strongest arguments for [estimation functions](/concepts/techniques/) and structured ontologies over free-text reports: structure is what makes propagation possible.
+
+## Grading systems: a capability ladder
+
+If the system is the unit of design, we should be able to *grade* systems. Autonomous driving has "Level 4"; evaluation engineering has no equivalent yet, and would benefit from one. A shared capability ladder — backed by a formalization of the inputs and outputs of estimation/evaluation work — would let practitioners say how advanced a given system is, compare two systems, draw historical trends, and project forward.
+
+"**Advanced**" evaluation systems, in this sense, just means high on that ladder: great cost-effectiveness, wide generality, and a real ability to create value for the agents that consume their outputs. Note the deliberate separation of *capability* from *implementation* — a system can be advanced whether its internals are [symbolic or not](/concepts/components/). Building the ladder itself is open work; see [Open Problems](/open-questions/).
+
+## How the rest of the wiki hangs off this
+
+The systems view is what makes the other pages cohere:
+
+- [The Four Components](/concepts/components/) are the reusable parts you assemble a system from.
+- [Evaluation Methods](/concepts/evaluation-methods/) are the menu of ways to fill the *evaluation* slot, each with its own accuracy/quantity/cost profile.
+- [Techniques](/concepts/techniques/) are system-level patterns — most of them ways to get expensive judgment to subsidize cheap judgment, or to keep a large system honest and consistent.
+- [Epistemic Culture](/concepts/epistemic-culture/) is the environment a system has to survive in once its outputs start affecting real people.
+
+
+------------------------------------------------------------
+## 5. The Four Components
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/components/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the 2021–22 estimation-theory notes.*
+
+A serious evaluation system decomposes into a small number of reusable parts. Studying and improving each part separately is most of the field's tractable work.
+
+```mermaid
+flowchart LR
+
+subgraph Background
+direction LR
+A[Epistemic Foundations]
+B[Epistemic Culture]
+end
+
+subgraph Components
+direction LR
+C[Prediction]
+D[Calculation]
+E[Ontology]
+F[Evaluation]
+end
+
+subgraph Domains
+direction LR
+G[Impact assessment]
+H[Policy]
+I[Research prioritization]
+J[Life & work optimization]
+end
+
+Background --> Components
+Components --> Domains
+```
+
+The **background** modules (epistemic foundations, [epistemic culture](/concepts/epistemic-culture/)) are preconditions for a system rather than parts of it. The **domains** are where systems get applied. The **components** in the middle are the active machinery — and the rest of this page.
+
+## Prediction
+
+Quantifiable prediction in the [*Superforecasting*](https://www.goodreads.com/book/show/23995360-superforecasting) sense: the emphasis is on **calibration, scorability, and aggregation**. This is the component that keeps the larger system honest. If outputs can be scored against eventual outcomes, the system has a feedback signal; if predictors can be aggregated, it has a way to combine many cheap judgments.
+
+A prediction component *without* calculation is limited to what people can intuit in their heads — fine for a few hundred hand-written questions, useless at scale.
+
+## Calculation
+
+Calculation, estimation, algorithms, logic — the multi-step machinery that turns raw inputs into derived numbers. If a single estimate requires several steps (a Fermi chain, a model, a spreadsheet), those steps live here.
+
+This is the [estimation](/start-here/estimation-vs-evaluation/) layer's engine. A calculation component *without* prediction can produce elaborate numbers that nobody has any reason to believe are calibrated. The two are complementary: prediction supplies trust, calculation supplies reach.
+
+> The line between prediction and calculation is genuinely fuzzy. A platform full of purely intuitive questions is prediction without calculation; a giant spreadsheet model is calculation that can't claim calibration. You want both, but it helps to separate them for research and for software architecture.
+
+## Ontology
+
+Ontology, taxonomy, definitions, data engineering, knowledge graphs — the **structured list of things the system makes estimates about**, and the data plumbing underneath. Large, well-structured sets of items are what let you predict or calculate over thousands of questions instead of dozens.
+
+The 2021–22 notes single this out as the *suspiciously absent* bottleneck: almost all forecasting platforms rely on small sets of unstructured, hand-written questions, which doesn't scale. Questions like "for each country, each month, for 20 years, what will each of 20 metrics be?" are trivial to *state* and very hard to *structure and forecast* with current tooling. Ontology is plausibly the part where progress is most leveraged and least worked-on.
+
+## Evaluation
+
+Qualitative-and-quantitative judgment on the questions that are abnormally hard — normative, long-horizon, or otherwise lacking clean ground truth. This is the component that handles everything the estimation layer can't reduce, and it is the one most dependent on **trust**: an evaluation only counts if its audience believes it.
+
+Evaluation is typically used as a *target* of prediction: the expensive, trusted judgment is what cheaper predictors are trained and scored against. The menu of concrete methods — expert panels, surveys, review systems, statistical and composite measures — gets its [own page](/concepts/evaluation-methods/).
+
+## How the components combine
+
+The components are not a pipeline so much as a set of interlocking parts:
+
+- **Ontology** defines the questions.
+- **Calculation** and **prediction** populate the [estimation](/start-here/estimation-vs-evaluation/) layer over those questions — calculation for reach, prediction for calibration.
+- **Evaluation** handles the residue that can't be estimated, and serves as the ground truth that prediction is scored against.
+
+The system-level [techniques](/concepts/techniques/) are mostly about wiring these together cheaply — above all, using a small amount of expensive evaluation to calibrate a large amount of cheap prediction.
+
+## A note on separating them
+
+As with [estimation vs. evaluation](/start-here/estimation-vs-evaluation/), the point of naming four components is not bureaucratic. Each is a distinct research cluster with its own literature, its own tooling needs, and its own failure modes. Keeping them separate is what makes the field tractable; combining them is a comparatively thin integration layer on top.
+
+
+------------------------------------------------------------
+## Evaluation Systems in the Wild
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/
+------------------------------------------------------------
+
+*Status: early draft / curated catalogue, assembled from a June 2026 sweep. This is the descriptive companion to the conceptual pages: the world is already full of standing systems that produce many evaluations of a repeated type. They are the field's natural experiments — its documented successes, failures, and capture stories. The founding program called for exactly this survey (the proto "process catalogue").*
+
+A working catalogue, not a reference. Systems and links are verified, but **exact figures (coverage counts, market shares, percentages) are approximate and should be checked against the source** before relying on them. Where a number is load-bearing, follow the link.
+
+## How to read this
+
+Every entry names **what it evaluates**, its **output format**, its **method**, and one **notable weakness or failure**. Before the catalogue, four cross-cutting lenses that the ~100 systems below keep illustrating:
+
+**Method archetypes.** Independent lab testing · professional anonymous inspection · expert panel/committee · critic aggregation · crowd reviews (often Bayesian/credibility-weighted) · two-sided/reciprocal rating · statistical/algorithmic model · composite index · market-based · regulatory review. These are the menu on [Evaluation Methods](/concepts/evaluation-methods/), seen in the wild.
+
+**Output formats.** Stars (1–5), points (0–100), letter grades (A–F, AAA–D), rankings, pass/fail certification, tiers, probabilities, and dollar estimates. The format is an editorial choice with consequences — binary "fresh/rotten" discards intensity; 100-point wine scales compress to 88–100.
+
+**Funding determines capture risk** — the single most predictive variable, echoing the [audit/ratings literature](/reference/adjacent-fields/) and the [trust-network](/concepts/techniques/) and [candidness](/concepts/epistemic-culture/) discussions. Three archetypes:
+1. **Independent / nonprofit, buys its own units, no ads** (Consumer Reports, Which?, Stiftung Warentest, IIHS) — strongest independence.
+2. **Affiliate / ad-funded editorial** (Wirecutter, RTINGS, CNET) — recommendation-revenue conflict.
+3. **Rated party pays** — issuer-pays ratings, fee-for-certification, award-licensing (Moody's/S&P, UL, ISO, LEED, J.D. Power, DXOMARK) — highest capture exposure.
+
+**Recurring failure modes.** Fake reviews / astroturfing / review bombing · gaming and Goodharting (citations, ratings) · capture (credit ratings in 2008; the World Bank's *Doing Business* scandal) · pay-to-play · grade inflation · self-declaration abuse · snapshot-in-time validity · reciprocal retaliation in two-sided systems · opaque weighting.
+
+---
+
+## Consumer products & testing
+
+- **[Consumer Reports](https://www.consumerreports.org/)** — consumer products & services. 0–100 scores + "Recommended"/"Best Buy". Independent lab testing + member reliability surveys; nonprofit, buys all units at retail, no ads. *Weakness:* affiliate-link revenue creates a perceived conflict.
+- **[Which?](https://www.which.co.uk/)** (UK) — products & services. Scores + "Best Buy"/"Don't Buy". Independent lab testing; nonprofit, no manufacturer money.
+- **[Stiftung Warentest](https://www.test.de/)** (Germany) — products & services. German school-grade scale, printed on packaging. Undercover purchasing + outsourced scientific testing; ad-free, government-seeded foundation. *Weakness:* sued by manufacturers ~10×/year.
+- **[CHOICE](https://www.choice.com.au/)** (Australia) — products & services. Scores + "CHOICE Recommended". Accredited in-house labs; nonprofit.
+- **[Wirecutter](https://www.nytimes.com/wirecutter/)** (NYT) — consumer gear. Narrative "top pick"/"budget pick", no scores. Hands-on reviewer testing; affiliate revenue, no on-site ads.
+- **[RTINGS](https://www.rtings.com/)** — TVs, monitors, headphones, etc. 0–100 overall + per-use-case scores. Standardized in-house bench measurements. *Weakness:* 2025 scoring overhaul drew backlash over weighting; 2026 paywall.
+- **[DXOMARK](https://www.dxomark.com/)** — camera/phone image, audio, display. Open-scale scores + sub-scores. Lab + structured perceptual testing. *Weakness:* core conflict — sells consulting to the firms it scores.
+- **[Tom's Hardware](https://www.tomshardware.com/)** / **[PCMag](https://www.pcmag.com/)** — PC components/devices. Stars + "Editors' Choice" + hierarchy charts. Standardized benchmarking labs; affiliate + ads.
+- **[J.D. Power](https://www.jdpower.com/business)** — vehicle quality/satisfaction. PP100 (problems per 100) + segment awards. Large owner surveys. *Weakness:* clients are the automakers; winners license the awards to advertise.
+- **[Kelley Blue Book](https://www.kbb.com/)** / **[Edmunds](https://www.edmunds.com/)** — vehicle valuation & reviews. Dollar values (TMV / Blue Book Value). Statistical models on transaction data. *Weakness:* dealer-referral revenue; values can diverge from actual sales.
+- **[Robert Parker / Wine Advocate](https://www.robertparker.com/)**, **[Wine Spectator](https://www.winespectator.com/)** — wine. 100-point scale. Professional critics, often blind. *Weakness:* "Parker palate" homogenization; score compression into 88–100.
+- **[Untappd](https://untappd.com/)**, **[BeerAdvocate](https://www.beeradvocate.com/)**, **[RateBeer](https://www.ratebeer.com/)** — beer. Crowd star/score averages. *Weakness:* hype/novelty bias; RateBeer is owned by AB InBev (BeerAdvocate/Untappd by Next Glass) — big-brewer ownership of the rater.
+- **[Coffee Review](https://www.coffeereview.com/)** — coffee. 100-point scale. Expert blind cupping. *Weakness:* pay-to-submit service; mostly 90+ published.
+- **[America's Test Kitchen / Cook's Illustrated](https://www.americastestkitchen.com/)** — kitchen gear, ingredients, recipes. Tiered verdicts. Expert panels, blind taste tests, heavy repeated testing; no ads.
+
+## Media, entertainment & content
+
+- **[IMDb](https://www.imdb.com/)** — films, TV, people. 1–10 Bayesian-weighted average; "Top 250". Crowd votes. *Weakness:* vote brigading; demographic skew; polarized 1/10 voting.
+- **[Rotten Tomatoes](https://www.rottentomatoes.com/)** — film/TV. % "fresh" critics + audience score. Binary critic aggregation (discards intensity). *Weakness:* review bombing of audience scores; binary loses nuance.
+- **[Metacritic](https://www.metacritic.com/)** — film/TV/games/music. 0–100 Metascore. Weighted critic average. *Weakness:* undisclosed weights; user-score review bombing.
+- **[OpenCritic](https://opencritic.com/)** — games. Top Critic Average (transparent, unweighted mean). *Weakness:* no user component; small samples for niche titles.
+- **[Steam user reviews](https://store.steampowered.com/)** — games. Positive/negative tiers, "Recent" vs "All-time". Owner-gated binary. *Weakness:* protest review bombing.
+- **[Goodreads](https://www.goodreads.com/)** — books. 1–5 simple average. Crowd, minimal verification. *Weakness:* sockpuppet scandals; pre-publication bombing of unreleased books.
+- **[Letterboxd](https://letterboxd.com/)** — film. 0.5–5 stars, weighted average. Cinephile crowd.
+- **[RateYourMusic](https://rateyourmusic.com/)** — music. Credibility-weighted crowd charts. *Weakness:* opaque user-weighting; canon/obscurity skew.
+- **[MyAnimeList](https://myanimelist.net/)** / **[AniList](https://anilist.co/)** — anime/manga. Bayesian-weighted scores. *Weakness:* score inflation; seasonal brigading.
+- **[Billboard charts](https://www.billboard.com/charts/)** — songs/albums. Weekly ranking. Statistical blend of streams + sales + airplay. *Weakness:* bundling/stream-campaign manipulation; opaque weights.
+- **[Pitchfork](https://pitchfork.com/)** — albums. Single critic 0.0–10.0. *Weakness:* single-reviewer subjectivity.
+- **[Nielsen](https://www.nielsen.com/)** — TV/streaming audience. Ratings/share. Panel + (since 2025) big-data hybrid. *Weakness:* panel sampling error for niche audiences; clients are the rated networks.
+- **[Common Sense Media](https://www.commonsensemedia.org/)** — media for kids. Age (2–18) + 5-star quality. Expert reviewers on child-development criteria; nonprofit.
+- **Age/content boards** — **[MPA](https://www.motionpictures.org/film-ratings/)** (G–NC-17, anonymous parent panel), **[ESRB](https://www.esrb.org/)** (games), **[PEGI](https://pegi.info/)** (games). Self-regulatory; rely on publisher disclosure (hidden content can slip).
+
+## Finance, credit, insurance & risk
+
+- **[FICO](https://www.fico.com/)** / **[VantageScore](https://en.wikipedia.org/wiki/VantageScore)** — consumer credit. 300–850. Proprietary statistical model. *Weakness:* opacity; thin-file exclusion; entrenched gatekeeper.
+- **Credit bureaus** — **[Experian](https://www.experian.com/)**, **[Equifax](https://www.equifax.com/)**, **[TransUnion](https://www.transunion.com/)**. Full credit reports. Data aggregation. *Weakness:* common data errors hard to dispute; the 2017 Equifax breach (~147M people).
+- **Bond/sovereign ratings** — **[Moody's](https://www.moodys.com/)**, **[S&P Global](https://www.spglobal.com/ratings/)**, **[Fitch](https://www.fitchratings.com/)**. AAA–D letter scales. Analyst committee + models, **issuer-pays**. *Weakness:* the canonical capture story — inflated AAA on mortgage CDOs, ~\$864M+ settlements after 2008.
+- **[Morningstar](https://www.morningstar.com/)** — funds/stocks. 1–5 stars (quant, backward-looking), Medalist (forward-looking), Economic Moat. *Weakness:* star ratings weakly predict future performance; "star chasing".
+- **ESG ratings** — **[MSCI](https://www.msci.com/our-solutions/esg-investing/esg-ratings)** (AAA–CCC), **[Sustainalytics](https://www.sustainalytics.com/)** (0–100 risk), **[S&P Global ESG](https://www.spglobal.com/esg/)**. *Weakness:* ratings divergence — inter-rater correlation ~0.54 vs. ~0.92 for credit ratings ([MIT "Aggregate Confusion"](https://academic.oup.com/rof/article/26/6/1315/6590670)).
+- **[A.M. Best](https://www.ambest.com/)** — insurer financial strength. A++–F. Insurance-specialist analysis; largely issuer-pays.
+- **Credit-based insurance scores** — **[LexisNexis](https://risk.lexisnexis.com/products/attract)**, FICO. Risk scores for underwriting. *Weakness:* fairness/proxy-discrimination concerns; restricted or banned in several US states.
+- **[Zillow Zestimate](https://www.zillow.com/zestimate/)** — home value. Dollar estimate + range. ML automated valuation. *Weakness:* off-market median error ~7%; ignores condition; "not an appraisal".
+- **Cyber risk** — **[BitSight](https://www.bitsight.com/security-ratings)** (250–900), **[SecurityScorecard](https://securityscorecard.com/)** (A–F), **[CVSS](https://www.first.org/cvss/)** (0–10, open standard). *Weakness:* external-only signals; CVSS severity routinely conflated with risk → "everything is Critical".
+- **[Dun & Bradstreet PAYDEX](https://www.dnb.com/)** — business payment reliability. 1–100. Vendor-reported trade data.
+
+## Academia, science & education
+
+- **Scholarly peer review** — manuscripts. Accept/revise/reject. Expert review, mostly unpaid. *Weakness:* low inter-rater reliability ("lottery"); slow; weak fraud screening.
+- **[Journal Impact Factor](https://jcr.clarivate.com/)** (Clarivate) — journals. Citation ratio. *Weakness:* heavily gamed (coercive/self-citation, cartels); [DORA](https://sfdora.org/) condemns its use to judge individuals.
+- **h-index** — authors. Single integer (productivity × impact). *Weakness:* field-dependent; gameable via self-citation; can't decrease.
+- **Citation databases** — **[Web of Science](https://clarivate.com/)**, **[Scopus](https://www.scopus.com/)** (Elsevier — also a publisher), **[Google Scholar](https://scholar.google.com/)** (widest, least curated).
+- **[Altmetric](https://www.altmetric.com/)** — online attention. Weighted "donut" score. *Weakness:* measures attention, not quality; gameable.
+- **University rankings** — **[QS](https://www.topuniversities.com/world-university-rankings)**, **[THE](https://www.timeshighereducation.com/world-university-rankings)** (reputation-survey heavy), **[ARWU/Shanghai](https://www.shanghairanking.com/)** (objective, prize-weighted), **[US News](https://www.usnews.com/best-colleges)** (self-reported data enabled the Columbia fraud; 2023 boycott), **[Leiden](https://www.leidenranking.com/)** (bibliometric, deliberately no composite).
+- **[REF](https://2029.ref.ac.uk/)** (UK Research Excellence Framework) — university research. 4*–1* profiles. Expert panel review; allocates ~£2B/yr. *Weakness:* very high administrative cost.
+- **[GRADE](https://www.gradeworkinggroup.org/)** / **[Cochrane RoB 2](https://methods.cochrane.org/risk-bias-2)** — evidence quality / trial bias. Tiered ratings. Structured expert rating. *Weakness:* domain judgments still subjective.
+- **Standardized tests** — **[SAT/ACT](https://satsuite.collegeboard.org/sat)**, **[GRE](https://www.ets.org/gre.html)**, **[PISA](https://www.oecd.org/en/about/programmes/pisa.html)**, **[TIMSS](https://www.iea.nl/studies/iea/timss)**. *Weakness:* scores track family income; teaching-to-the-test.
+- **School ratings** — **[GreatSchools](https://www.greatschools.org/)** (1–10; historically correlated with race/affluence), **[Ofsted](https://reports.ofsted.gov.uk/)** (England; replaced single-word grades with report cards in 2025 after criticism).
+- **Accreditation** — **[ABET](https://www.abet.org/)** (engineering/computing), **[AACSB](https://www.aacsb.edu/)** (business schools), US institutional accreditors (Title IV gatekeepers). *Weakness:* peers accredit peers (conflict); slow on failing schools.
+
+## Health, safety, standards & certification
+
+- **Hospital ratings** — **[CMS star ratings](https://www.medicare.gov/care-compare/)** (1–5, federal), **[Leapfrog](https://www.hospitalsafetygrade.org/)** (A–F safety), **[US News Best Hospitals](https://health.usnews.com/best-hospitals)**, **[Healthgrades](https://www.healthgrades.com/)**. *Weakness:* CMS criticized for penalizing complex/teaching hospitals; Healthgrades sells ads to the hospitals it rates.
+- **Restaurant hygiene** — **[NYC letter grades](https://www.nyc.gov/site/doh/business/food-operators/letter-grading-for-restaurants.page)** (A/B/C), **[UK Food Hygiene Rating Scheme](https://www.food.gov.uk/safety-hygiene/food-hygiene-rating-scheme)** (0–5). Unannounced inspections; municipal, no fee-for-grade. *Weakness:* snapshot validity; inspection inconsistency.
+- **Drug/device** — **[FDA](https://www.fda.gov/)**, **[EMA](https://www.ema.europa.eu/)**, **[NICE](https://www.nice.org.uk/)** (cost-per-QALY HTA). Approve/not. Expert regulatory review. *Weakness:* user-fee funding criticized as "cozy"; QALY thresholds called arbitrary.
+- **Crash tests** — **[IIHS](https://www.iihs.org/)** (Good–Poor + Top Safety Pick; insurer-funded, independent of makers), **[Euro NCAP](https://www.euroncap.com/)** (0–5 stars), **[NHTSA 5-Star](https://www.nhtsa.gov/ratings)** (most cluster at 4–5★). *Weakness:* limited scenario set; "test to the test".
+- **Product safety** — **[UL](https://www.ul.com/)** (lab testing + factory audits, fee-for-cert), **[CE marking](https://europa.eu/youreurope/business/product-requirements/labels-markings/ce-marking/index_en.htm)** (mostly self-declared). *Weakness:* UL cost barrier + counterfeit marks; CE self-declaration is gameable.
+- **Energy** — **[Energy Star](https://www.energystar.gov/)** (a 2010 GAO sting certified a gas-powered "alarm clock" → triggered third-party testing), **[EU energy label](https://energy-efficient-products.ec.europa.eu/)** (A–G; rescaled 2021).
+- **[ISO 9001 certification](https://www.iso.org/iso-9001-quality-management.html)** — quality-management systems. Pass/fail + surveillance audits. Third-party audit, **client pays the auditor**. *Weakness:* "audit shopping"; certifies process not outcome.
+- **[LEED](https://www.usgbc.org/leed)** — green buildings. Certified–Platinum, points-based; fee-for-cert. *Weakness:* design- not performance-based — certified buildings don't reliably use less energy.
+- **[B Corp](https://www.bcorporation.net/)** — whole-company social/environmental. Pass/fail seal (≥80/200); fee-for-cert. *Weakness:* bar seen as low; Dr. Bronner's dropped the cert in 2025 over multinational dilution.
+- **Food/agriculture** — **[USDA Organic](https://www.ams.usda.gov/about-ams/programs-offices/national-organic-program)**, **[Fairtrade](https://www.fairtrade.net/)**, **[MSC](https://www.msc.org/)** seafood (logo-royalty conflict), **[Rainforest Alliance](https://www.rainforest-alliance.org/)**. *Weakness:* royalty/fee models create incentives to certify generously.
+
+## Hospitality, travel & local business
+
+- **[Michelin Guide](https://guide.michelin.com/)** — restaurants/hotels. 1–3 stars. Professional anonymous inspectors, multiple visits. *Weakness:* tourism boards increasingly pay for regional entry (conflict); fine-dining/Eurocentric bias.
+- **[AAA Diamonds](https://www.aaa.com/diamonds/)** — N. American hotels/restaurants. 1–5 Diamonds. Anonymous inspectors; nonprofit. **[Forbes Travel Guide](https://www.forbestravelguide.com/)** — luxury. 4–5 Star. Inspectors on ~900 standards. *Weakness:* Forbes also sells training on how to earn its ratings.
+- **Hotel star systems** — accommodations. 1–5 stars. **[Hotelstars Union](https://www.hotelstars.eu/)** standardizes 21 European countries; the US has no government system (self-declared "5-star" is meaningless).
+- **[Yelp](https://www.yelp.com/)** — local businesses. 1–5 stars + automated review filter. *Weakness:* long-running extortion / pay-to-play allegations.
+- **[TripAdvisor](https://www.tripadvisor.com/)** — travel. 1–5 bubbles. Crowd, no proof of stay. *Weakness:* a 2018 investigation alleged ~1 in 3 reviews fake; 200k+ AI-generated reviews removed in 2024.
+- **[Google Reviews](https://maps.google.com/)** — places. 1–5 stars + AI moderation. *Weakness:* ~240M fake reviews removed in 2024; extortion scams at scale.
+- **[Booking.com](https://www.booking.com/reviews_guidelines.html)** / **Hotels.com** — accommodations. Score /10, **verified guests only**, recency-weighted. *Weakness:* commission model is a structural conflict.
+- **[Trustpilot](https://www.trustpilot.com/)** — businesses. TrustScore (Bayesian-weighted). *Weakness:* paying businesses get more tools (two-tier criticism).
+- **[BBB grades](https://www.bbb.org/)** — business trustworthiness. A+–F. Composite + accreditation fees. *Weakness:* a 2010 sting got a fake company an A+ for ~\$425 (pay-for-grade).
+- **[Glassdoor](https://www.glassdoor.com/)** — employers. 1–5 stars, anonymous, "give to get". *Weakness:* anonymity enables fakes; the rated employer pays the host.
+
+## Online platforms & reputation systems
+
+- **[eBay feedback](https://www.ebay.com/help/buying/resolving-issues-sellers/seller-ratings?id=4023)** — sellers. % positive + detailed star ratings. Transaction-linked. *Weakness:* extreme grade inflation; seller retaliation led eBay to bar negative buyer feedback.
+- **[Amazon reviews](https://www.amazon.com/)** — products/sellers. 1–5 stars + Verified Purchase. ML-weighted crowd. *Weakness:* persistent fake/incentivized reviews; the FTC's 2024 fake-review rule targets this.
+- **[Airbnb](https://www.airbnb.com/)** — hosts/guests. 1–5 stars, **double-blind reveal**, Superhost badge. *Weakness:* retaliation/extortion via review leverage; strong inflation (~4.8+ norm).
+- **[Uber](https://www.uber.com/)** / **[Lyft](https://www.lyft.com/)** — drivers/riders. 1–5 reciprocal rolling average. *Weakness:* drivers deactivated below ~4.6; a 2020 suit alleged aggregating biased customer ratings is discriminatory.
+- **[DoorDash](https://help.doordash.com/)** — Dashers. 1–5 (last 100) + completion %. *Weakness:* low deactivation thresholds; ratings reflect restaurant/app delays outside the driver's control.
+- **[Stack Overflow reputation](https://stackoverflow.com/help/whats-reputation)** — Q&A expertise. Points + privilege tiers. *Weakness:* voting rings / sockpuppets ([study](https://arxiv.org/abs/2111.07101)).
+- **[GitHub stars](https://docs.github.com/en/get-started/exploring-projects-on-github/saving-repositories-with-stars)** — repo popularity. Integer count. *Weakness:* a fake-star economy — millions of bought stars, often promoting malware ([study](https://arxiv.org/html/2412.13459v2)).
+- **[Reddit karma](https://support.reddithelp.com/hc/en-us/articles/204511829-What-is-karma)** — contribution. Numeric. *Weakness:* karma farming via reposts/bots.
+- **App store ratings** — **[Apple](https://developer.apple.com/app-store/ratings-and-reviews/)** (legacy ratings persist), **[Google Play](https://support.google.com/googleplay/android-developer/answer/138230)** (recency-weighted). *Weakness:* bought reviews + review bombing.
+- **[Wikipedia pending-changes / editor trust](https://en.wikipedia.org/wiki/Wikipedia:Reviewing_pending_changes)** — editor trustworthiness. Permission flags + edit counts. Automated thresholds + admin grants. *Weakness:* edit count is a shallow, gameable proxy.
+
+## Sports & competition rankings
+
+- **[Elo](https://en.wikipedia.org/wiki/Elo_rating_system)** / **[Glicko-2](https://en.wikipedia.org/wiki/Glicko_rating_system)** — player skill. Numeric rating (Glicko adds a confidence/deviation term). Zero-sum statistical update. *Weakness:* single K-factor models uncertainty crudely; pool-wide inflation.
+- **[FIDE](https://www.fide.com/)** — chess. Elo with tiered K-factors. *Weakness:* decades-long inflation debates.
+- **[ATP](https://www.atptour.com/en/rankings/rankings-faq)** / **[WTA](https://www.wtatennis.com/rankings-explained)** — tennis. Rolling 52-week points. *Weakness:* no opponent-strength weighting.
+- **[OWGR](https://www.owgr.com/)** — golf. Strength-of-field-weighted points. *Weakness:* the LIV Golf exclusion controversy.
+- **[FIFA rankings](https://inside.fifa.com/fifa-world-ranking/procedure-men)** — national football teams. Elo-based "SUM" model (since 2018, fixing the gameable old system).
+- **Sabermetrics / WAR** — baseball player value, in wins. Statistical composite. *Weakness:* the two main versions ([bWAR](https://www.baseball-reference.com/about/war_explained.shtml), [fWAR](https://library.fangraphs.com/misc/war/)) disagree — "which WAR?".
+- **[College Football Playoff](https://collegefootballplayoff.com/)** committee, **[AP Poll](https://apnews.com/hub/ap-top-25-college-football-poll)**, **Coaches Poll** — top-25 rankings. Expert/voter judgment. *Weakness:* opacity, reputation bias, and (Coaches Poll) direct conflicts of interest.
+
+## Governance & social indices
+
+- **[Corruption Perceptions Index](https://www.transparency.org/en/cpi/)** (Transparency International) — public-sector corruption. 0–100. Composite of expert/business surveys. *Weakness:* measures perceptions, not corruption.
+- **[Freedom in the World](https://freedomhouse.org/report/freedom-world)** (Freedom House) — political rights/civil liberties. 0–100 + Free/Partly/Not Free. Expert assessment. *Weakness:* majority US-government funded (independence critique).
+- **[V-Dem](https://www.v-dem.net/)** — democracy (5 dimensions). 0–1 indices. ~3,500 expert coders → Bayesian IRT with explicit uncertainty bounds. *Weakness:* expert-coding subjectivity; complex to audit.
+- **[EIU Democracy Index](https://www.eiu.com/)** — democracy. 0–10 + regime type. *Weakness:* opaque, proprietary, anonymous experts.
+- **[Human Development Index](https://hdr.undp.org/data-center/human-development-index)** (UNDP) — health/education/income. 0–1. Geometric mean of three indicators. *Weakness:* only three crude dimensions; arbitrary weighting.
+- **[World Press Freedom Index](https://rsf.org/en/index)** (RSF) — press freedom. 0–100. Abuse tally + expert survey.
+- **[Worldwide Governance Indicators](https://www.worldbank.org/en/publication/worldwide-governance-indicators)** (World Bank) — six governance dimensions, with standard errors.
+- **World Bank *Doing Business* (DISCONTINUED)** — ease of doing business. Killed in [September 2021](https://www.worldbank.org/en/news/statement/2021/09/16/world-bank-group-to-discontinue-doing-business-report) after audits found **deliberate data manipulation** favoring certain countries under leadership pressure — the cleanest documented case of index capture.
+- **[Gallup World Poll / World Happiness Report](https://worldhappiness.report/)** — wellbeing. Survey means (Cantril Ladder 0–10). Large-N self-report (not expert perception). *Weakness:* translation/cultural bias; over-reading a single question.
+- *Also:* [Global Peace Index](https://www.economicsandpeace.org/global-peace-index/), [WJP Rule of Law Index](https://worldjusticeproject.org/rule-of-law-index/), [Environmental Performance Index](https://epi.yale.edu/), and the ideologically-framed economic-freedom indices ([Heritage](https://www.heritage.org/index/), [Fraser](https://www.fraserinstitute.org/economic-freedom)).
+
+## Charity & nonprofit evaluation
+
+- **[GiveWell](https://www.givewell.org/)** — global health/development charities. Short "Top Charities" list + cost-per-life-saved estimates. Deep in-house CEA, publishes full models. *Weakness:* very narrow, evidence-rich cause focus.
+- **[Charity Navigator](https://www.charitynavigator.org/)** — US 501(c)(3)s. 0–4 stars / 0–100. Largely automated from Form 990s + impact "beacons". *Weakness:* historic overhead-ratio reliance is a poor, gameable impact proxy.
+- **[Candid / GuideStar](https://www.guidestar.org/)** — nonprofit profiles. Bronze–Platinum transparency seals. Self-reported data. *Weakness:* seals measure disclosure, not effectiveness.
+- **[Animal Charity Evaluators](https://animalcharityevaluators.org/)**, **[Founders Pledge](https://www.founderspledge.com/)** — impact-focused evaluation in harder-to-measure causes. **ImpactMatters** (cost-per-impact) was folded into Charity Navigator (2020).
+- *Also:* [CharityWatch](https://www.charitywatch.org/) (A+–F), [BBB Wise Giving / Give.org](https://give.org/) (pass/fail accreditation), [Giving What We Can](https://www.givingwhatwecan.org/) (meta-evaluation of evaluators).
+
+## Forecasting & prediction platforms
+
+- **[Metaculus](https://www.metaculus.com/)** — many event types. Community-prediction probability; forecasters scored by proper rules. Crowd aggregation, no betting. *Weakness:* aggregate accuracy largely self-reported; no monetary incentive.
+- **[Good Judgment](https://goodjudgment.com/)** / **[GJ Open](https://www.gjopen.com/)** — geopolitics/economics. Probabilities scored by Brier; curated Superforecasters. *Weakness:* premium forecasts paywalled; small expert panel.
+- **[Polymarket](https://polymarket.com/)** — real-world events. Market price = probability; real-money crypto. *Weakness:* past US legal issues; thin-market manipulation.
+- **[Kalshi](https://kalshi.com/)** — US event contracts. Binary \$0–\$1; CFTC-regulated exchange. *Weakness:* much volume is sports, not forecasting.
+- **[Manifold](https://manifold.markets/)** — user-created markets. Play-money market maker. *Weakness:* play money weakens incentives; creator-resolved miscalibration.
+- **[PredictIt](https://www.predictit.org/)** — US politics. Real-money, academic project. *Weakness:* position/withdrawal caps distort prices.
+
+## Lessons for evaluation engineering
+
+These five patterns are the headlines; [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) develops each one rigorously, with the academic literature (reactivity, Goodhart's law, certification economics, reputation inflation, aggregation theory) behind it.
+
+Patterns the catalogue makes hard to ignore:
+
+1. **Funding structure predicts trustworthiness better than methodology does.** The most-trusted systems (Consumer Reports, Which?, Stiftung Warentest, IIHS) share a model — independent, buys its own units, refuses ads — not a method. The clearest failures (2008 credit ratings, *Doing Business*, BBB pay-for-grade) are capture stories, not technique stories. This is the [trust-network](/concepts/techniques/) and [candidness](/concepts/epistemic-culture/) problem in the wild, and it matches the [audit/ratings literature](/reference/adjacent-fields/).
+2. **Every output format is gameable, differently.** Binary fresh/rotten invites bombing; 100-point scales inflate and compress; reciprocal two-sided ratings breed retaliation and inflation; self-declared certifications get faked. Choosing the [output format](/concepts/the-systems-view/) is choosing your failure mode.
+3. **Crowd systems converge on the same arms race** — fakes, astroturfing, review bombing — and the same defenses: purchase/stay verification, Bayesian/credibility weighting, recency weighting, and ML fraud detection. Verification of *who is evaluating* is the recurring fix.
+4. **Composite indices live or die on weighting**, which is inherently contested (HDI's three dimensions, ESG divergence, ranking methodology churn). The [OECD composite-indicators handbook](/reference/adjacent-fields/) exists precisely because this is hard.
+5. **"Shallow but standardized" often beats "deep but bespoke" at scale** — letter-grade hygiene inspections, 5-star crash tests, and star ratings change behavior precisely because they are cheap, comparable, and ubiquitous. That is the [systems view](/concepts/the-systems-view/)'s accuracy × quantity × cost trade-off, already made by society many times over.
+
+## Meta-lists & further reading
+
+Curated catalogues of evaluation systems (the "good lists" that already exist):
+
+- **Wikipedia — [List of international rankings](https://en.wikipedia.org/wiki/List_of_international_rankings)** — the best single index of country rankings by domain.
+- **Wikipedia categories** — [Review websites](https://en.wikipedia.org/wiki/Category:Review_websites), [International rankings](https://en.wikipedia.org/wiki/Category:International_rankings), [Credit rating agencies](https://en.wikipedia.org/wiki/Category:Credit_rating_agencies), [Certification marks](https://en.wikipedia.org/wiki/Category:Certification_marks).
+- **Wikipedia overviews** — [Review aggregator](https://en.wikipedia.org/wiki/Review_aggregator), [Reputation system](https://en.wikipedia.org/wiki/Reputation_system), [List of academic databases and search engines](https://en.wikipedia.org/wiki/List_of_academic_databases_and_search_engines), [Sustainability standards and certification](https://en.wikipedia.org/wiki/Sustainability_standards_and_certification), [List of freedom indices](https://en.wikipedia.org/wiki/List_of_freedom_indices).
+- **[Ecolabel Index](https://www.ecolabelindex.com/)** — a directory of ~450+ ecolabels across ~200 countries.
+- **Academic** — Davis, Kingsbury & Merry, *[Governance by Indicators](https://academic.oup.com/book/32690)* (Oxford, 2012) — the scholarly catalogue + critique of global indicators; Jøsang et al., *[A survey of trust and reputation systems](https://people.cs.vt.edu/~irchen/5984/pdf/Josang-DSS07.pdf)* (2007); Tadelis, *[Reputation and Feedback Systems in Online Platform Markets](https://faculty.haas.berkeley.edu/stadelis/Annual_Review_Tadelis.pdf)* (2016).
+
+See also [Adjacent Fields & Literature](/reference/adjacent-fields/) for the academic disciplines behind these systems, and [Related Work](/reference/related-work/) for QURI's own evaluation tools.
+
+
+------------------------------------------------------------
+## Patterns & Failure Modes
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/
+------------------------------------------------------------
+
+*Status: early draft, synthesized from a June 2026 literature sweep. This is the analytical companion to [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/): the catalogue lists ~100 systems; this page asks what is **provably and repeatedly true** across them. Each pattern names a mechanism, the key papers, and the real systems that illustrate it.*
+
+Citations and key figures have been verified against their sources. A "~" denotes a rounded or pooled value (e.g. a meta-analytic mean); check the original for exact numbers and confidence intervals.
+
+The findings cluster into five families. The first is the deepest and most distinctive of the field: **a public evaluation does not observe the world, it changes it.**
+
+## 1. The measure reshapes the measured
+
+The single most important finding across the whole literature: deploying a public evaluation is an *intervention*, not an observation. Espeland & Sauder call this **reactivity** — "how public measures recreate social worlds" ([*AJS* 2007](https://doi.org/10.1086/517897); book-length in [*Engines of Anxiety*](https://www.russellsage.org/publications/engines-anxiety), 2016) — and identify two mechanisms:
+
+- **Self-fulfilling prophecy.** Once a measure is authoritative, audiences act on it, making it true. A law school that drops a US News tier gets weaker applicants, less alumni giving, and worse placement — becoming actually worse, confirming the rank.
+- **Commensuration** ([Espeland & Stevens, *Ann. Rev. Sociology* 1998](https://doi.org/10.1146/annurev.soc.24.1.313)). Collapsing diverse qualities into one number erases information *and* reorganizes how the rated parties think and allocate effort. Power flows to whoever defines the metric — its categories, inputs, and weights.
+
+Reactivity's destructive twin is **Goodhart's law**, discovered independently three times: [Goodhart](https://en.wikipedia.org/wiki/Goodhart%27s_law) (1975, monetary policy), [Campbell](https://doi.org/10.1016/0149-7189(79)90048-X) (1979, social indicators — and note Campbell's crucial *dose–response* claim: corruption scales with the stakes attached), and Strathern's popular gloss ("when a measure becomes a target, it ceases to be a good measure," [1997](https://doi.org/10.1002/(SICI)1234-981X(199707)5:3%3C305::AID-EURO184%3E3.0.CO;2-4) — often misattributed to Goodhart).
+
+[Manheim & Garrabrant (2018)](https://arxiv.org/abs/1803.04585) give the precise decomposition. When proxy *M* is optimized for hidden goal *G*, four distinct things go wrong — and **two require no bad actor at all**:
+
+| Variant | Mechanism | Adversary needed? |
+|---|---|---|
+| **Regressional** | *M = G + noise*; the top of *M* selects partly for noise (winner's curse) | No |
+| **Extremal** | the *M*–*G* correlation breaks down in the extreme region optimization reaches | No |
+| **Causal** | *M* correlates with *G* but isn't causally upstream — intervening doesn't move *G* | No |
+| **Adversarial** | an agent who knows you optimize *M* manipulates it (incl. the "cobra effect" where the metric's own incentive backfires) | Yes |
+
+Two further mechanisms complete the picture. **Surrogation** ([Choi, Hecht & Tayler 2012](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1438212)): people don't just game the proxy cynically — they *psychologically substitute* it for the goal, strongest when a single measure is tied to pay. And a behavioral severity ladder ([Bevan & Hood 2006](https://eprints.lse.ac.uk/16211/), on NHS targets): **effort substitution** ("hitting the target and missing the point") → **gaming** (meeting the letter, subverting the purpose) → **outright fabrication**.
+
+The same law reappears in AI as **specification gaming / reward hacking** ([Krakovna et al.](https://vkrakovna.wordpress.com/2018/04/02/specification-gaming-examples-in-ai/)) — an agent maximizes the literal reward while violating intent. Evaluation engineering, which proposes to *automate* evaluation, inherits this directly.
+
+**Seen in the wild:** US News rankings (reactivity — schools restructure around the formula; [a 2022–23 revolt](https://www.usnews.com/best-colleges) saw many top law/medical schools withdraw); Journal Impact Factor (adversarial — coercive self-citation, [Wilhite & Fong, *Science* 2012](https://doi.org/10.1126/science.1212540); citation cartels); credit ratings (adversarial — issuer "ratings shopping"); NHS waiting-time gaming; cardiac-surgery report cards (cobra effect — surgeons avoid sick patients, below).
+
+> **Design implication.** A robust evaluation must be *invariant to everything but the truth it measures* — the organizing concern of the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki. Reactivity says the feedback loop (being measured → optimizing the proxy) is the enemy; provenance and control of the metric definition is the master lever.
+
+## 2. The ratings you collect are a biased sample
+
+Even setting aside gaming, the raw ratings entering a system are not a clean sample of quality.
+
+- **Distributions are J-shaped / bimodal, from self-selection.** Online ratings pile up at 5 stars with a 1-star spike and little middle ([Hu, Pavlou & Zhang, *CACM* 2009](https://dl.acm.org/doi/10.1145/1562764.1562800); [*MISQ* 2017](https://misq.umn.edu/misq/article/41/2/449/335/On-Self-Selection-Biases-in-Online-Product)). Two mechanisms: **acquisition bias** (buyers already liked the product) and **under-reporting / "brag-and-moan" bias** (only extreme experiences bother to review). The mean is therefore a biased signal; the full distribution predicts behavior better.
+- **Social influence herds, asymmetrically.** In a randomized experiment on >100,000 comments, a single seeded *positive* vote made the next viewer ~32% more likely to up-vote and, through accumulating herding, raised the comment's final mean rating by ~25%; a seeded *negative* vote was *corrected* by the crowd ([Muchnik, Aral & Taylor, *Science* 2013](https://doi.org/10.1126/science.1240466)). Positive herding accumulates; negative does not.
+- **Expert review has low inter-rater reliability.** A meta-analysis of peer review (48 studies, ~19,443 manuscripts) found mean agreement ICC ≈ 0.34, κ ≈ 0.17 ([Bornmann, Mutz & Daniel, *PLoS ONE* 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0014331)); the classic NSF re-review found funding "depends to a significant extent on chance" — i.e., on *which* reviewers are drawn ([Cole, Cole & Simon, *Science* 1981](https://doi.org/10.1126/science.7302566)).
+- **Scales drift and compress.** Grade inflation is the canonical case: the A-share rose from ~15% of grades (1940) to over 40% (2008), making A the most common grade ([Rojstaczer & Healy 2012](https://www.gradeinflation.com/tcr2012grading.pdf)). The ceiling compresses and the signal degrades — the same shape as reputation inflation (§4).
+- **Fakes are detectable but persistent.** Deceptive reviews have linguistic signatures a classifier catches at ~90% where humans are near chance ([Ott et al., *ACL* 2011](https://aclanthology.org/P11-1032/)); requiring a verified purchase raises the cost of faking and measurably reduces — but doesn't eliminate — manipulation ([Mayzlin, Dover & Chevalier, *AER* 2014](https://www.aeaweb.org/articles?id=10.1257/aer.104.8.2421)).
+
+**Seen in the wild:** Amazon's J-shape (and its Verified-Purchase badge as the Mayzlin fix); IMDb's 1/10 polarization (and its Bayesian weighting as the §5 fix); Reddit/HN early-vote snowball (and vote-fuzzing / "controversial" sort as countermeasures); peer review and grant panels (low reliability → motivates more reviewers + calibration).
+
+> **Design implication.** Never treat the mean of self-selected ratings as the quality signal. Verify *who* is evaluating, model the selection process, and prefer distribution-aware metrics.
+
+## 3. Incentives and funding decide trustworthiness — more than method does
+
+The economics of quality disclosure explains why the [catalogue's](/concepts/evaluation-systems-in-the-wild/) most-trusted and most-failed systems differ by *funding structure*, not technique. (This is the formal backbone of the [audit & ratings](/reference/adjacent-fields/) section.)
+
+- **Quality information is valuable because of adverse selection.** When buyers can't tell quality, good sellers exit and markets collapse to "lemons" ([Akerlof, *QJE* 1970](https://academic.oup.com/qje/article-abstract/84/3/488/1896241)). Evaluation systems exist to restore those lost gains from trade.
+- **A signal works only if it's differentially costly** to fake for low-quality types ([Spence, *QJE* 1973](https://academic.oup.com/qje/article-abstract/87/3/355/1909092)). The design question is always: *can a bad type cheaply mimic this?*
+- **Voluntary disclosure should "unravel" to full disclosure — but often doesn't,** because receivers aren't fully skeptical, disclosure is costly, the sender may not know its own quality, and quality is multidimensional ([Grossman 1981](https://ideas.repec.org/a/ucp/jlawec/v24y1981i3p461-83.html); [Milgrom 1981](https://milgrom.people.stanford.edu/wp-content/uploads/1981/10/Good-News-and-Bad-News.pdf); survey: [Dranove & Jin, *JEL* 2010](https://www.aeaweb.org/articles?id=10.1257/jel.48.4.935)). This is the case for *mandatory* disclosure.
+- **When the rated party pays, the certifier prefers a coarse, lenient signal.** A profit-maximizing monopoly certifier optimally reveals only whether quality clears a low threshold ([Lizzeri, *RAND* 1999](https://ideas.repec.org/a/rje/randje/v30y1999isummerp214-231.html)); issuer-pays adds ratings shopping and inflation, worse in booms ([Bolton, Freixas & Shapiro, *J. Finance* 2012](https://onlinelibrary.wiley.com/doi/10.1111/j.1540-6261.2011.01708.x)). Reputation disciplines certifiers only under strong conditions, and price *competition* can erode honesty rather than improve it ([Strausz 2005](https://www.sciencedirect.com/science/article/abs/pii/S0167718704001092)) — so "just add competitors" is not a clean fix.
+- **Disclosure backfires when the rated party games the input mix instead of improving.** Cardiac-surgery report cards led surgeons to avoid sick patients, worsening outcomes for the sickest ([Dranove, Kessler, McClellan & Satterthwaite, *JPE* 2003](https://www.journals.uchicago.edu/doi/abs/10.1086/374180)). It *works* when the metric resists gaming and demand responds: LA restaurant hygiene grade cards raised scores, shifted demand, and cut foodborne-illness hospitalizations partly via real improvement ([Jin & Leslie, *QJE* 2003](https://academic.oup.com/qje/article-abstract/118/2/409/1899578)).
+- **Too many labels destroy a label's value** — the "Groucho effect": small uncertainty about what a label *means* makes consumers infer the labeled product is marginal ([Harbaugh, Maxwell & Roussillon, *Mgmt Sci* 2011](https://pubsonline.informs.org/doi/abs/10.1287/mnsc.1110.1412)).
+- **Gatekeepers fail in correlated, predictable ways** when they rent their reputation to the issuer who pays them ([Coffee, *Gatekeepers* 2006](https://global.oup.com/academic/product/gatekeepers-9780199288090)) — Enron, WorldCom, the 2008 ratings.
+
+**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED/B-Corp/ISO (fee-for-cert → threshold-gaming, label proliferation); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → it works).
+
+> **Design implication.** Credible evaluation needs (a) a non-gameable, differentially-costly signal, (b) an independent payer or strong reputational stake, (c) skeptical receivers, and (d) a clear standard. Mandatory, standardized, risk-adjusted, hard-to-game disclosure beats voluntary issuer-paid coarse certification.
+
+## 4. Reputation systems converge on the same arms race
+
+Online-marketplace reputation has been studied enough to expose a recurring lifecycle.
+
+- **Reputation is real but modestly priced.** A matched-item eBay field experiment found established reputation raised willingness-to-pay ~8% ([Resnick et al., *Exp. Econ.* 2006](https://link.springer.com/article/10.1007/s10683-006-4309-2)).
+- **Reputation inflation is the central pathology.** eBay feedback runs ~99% positive — so even high-90s scores are unremarkable and barely discriminate between sellers ([Nosko & Tadelis, NBER 2015](https://www.nber.org/papers/w20830)). Cheap-to-give positives + costly negatives drive the pile-up.
+- **Bilateral feedback causes retaliation,** so platforms moved to **blind / simultaneous-reveal or one-sided** feedback ([Bolton, Greiner & Ockenfels, *Mgmt Sci* 2013](https://pubsonline.informs.org/doi/10.1287/mnsc.1120.1609)) — the fix is changing *information flow*, not exhortation.
+- **But selection bias often dominates retaliation:** on Airbnb, *who chooses to review* biases scores more than retaliation, with "socially induced reciprocity" from face-to-face contact suppressing negatives ([Fradkin et al., *EC* 2015](https://dl.acm.org/doi/10.1145/2764468.2764528)).
+- **Cheap pseudonyms enable whitewashing** — abandon a bad identity, re-enter clean — so cooperation survives only via a costly "newcomers pay dues" convention ([Friedman & Resnick 2001](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1430-9134.2001.00173.x)); and without a trusted identity authority one party can mint many fake identities (the **Sybil attack**, [Douceur 2002](https://www.freehaven.net/anonbib/cache/sybil.pdf)) — the engine of fake reviews and ballot-stuffing.
+- **Cold start is an efficiency loss, not just unfairness:** newcomers can't get the first transaction that would build reputation; subsidizing it and publishing detailed evaluations raised later earnings enough to prove they were inefficiently excluded ([Pallais, *AER* 2014](https://www.aeaweb.org/articles?id=10.1257/aer.104.11.3565)). (Foundational survey: [Tadelis, *Ann. Rev. Econ.* 2016](https://faculty.haas.berkeley.edu/stadelis/Annual_Review_Tadelis.pdf).)
+
+**Seen in the wild:** eBay (the most-studied — inflation, retaliation→one-sided ratings, EPP search ranking); Airbnb (double-blind reveal; selection bias; "New listing" badges); Uber (ceiling compression ~4.6+; face-to-face suppression; driver re-registration); Amazon/Yelp (Sybil fakes and the filters that fight them).
+
+> **Design implication.** Verifying *who* evaluates — tying identity to a scarce resource — is the recurring fix, and the information-flow design (blind, one-sided, recency-weighted) matters as much as the rating scale. This is the [trust-network](/concepts/techniques/) problem in miniature.
+
+## 5. The scale and the aggregation rule are not neutral
+
+How you collect and combine ratings changes the answer — there is no neutral default.
+
+- **Naive averages mis-rank low-volume items.** A 100%-positive item with 2 votes outranks a 95%-positive item with 500 under mean sorting. Two principled fixes: the **Wilson score lower bound** for binary votes ([Evan Miller, 2009](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html); Reddit's "best" sort) and **Bayesian shrinkage** toward a global prior weighted by volume ([IMDb's Top-250 formula](https://help.imdb.com/article/imdb/track-movies-tv/ratings-faq/G67Y87TFYYP6TWAV); [Trustpilot's TrustScore](https://support.trustpilot.com/hc/en-us/articles/201748946)). Both regularize the **cold-start** problem.
+- **Binary can beat fine-grained.** Up/down collapses scaling idiosyncrasies into one clean Bernoulli parameter; fine scales add interpretation variance — and 5-star scales already behave bimodally (§2). For *aggregate ranking* you can use a coarse per-rater scale and recover resolution from volume.
+- **Optimal scale granularity is ~7 ± 2.** Reliability/validity rise to about 7 points and plateau by 7–10; beyond ~10 they decline ([Preston & Colman, *Acta Psychologica* 2000](https://pubmed.ncbi.nlm.nih.gov/10769936/)).
+- **Pairwise comparison often beats absolute scores.** Humans judge "is A better than B?" more reliably than "rate A 1–5"; [Bradley–Terry (1952)](https://www.jstor.org/stable/2334029) / Elo model this and sidestep scale-anchoring — now used to rank LLMs in preference arenas. (Caveat: online Elo is order-sensitive; the static MLE is more robust; cyclic preferences break the model.)
+- **The aggregation rule materially changes the ranking.** Mean vs. median vs. Bayesian vs. positional **Borda** vs. **Kemeny** (the maximum-likelihood, Condorcet-consistent — but NP-hard — rule) give genuinely different winners on the same votes ([Dwork et al., *WWW* 2001](http://static.cs.brown.edu/courses/csci2531/papers/rank2.pdf)). Arrow-style impossibility lurks underneath: there is no canonical "correct" aggregator.
+
+**Seen in the wild:** IMDb (Bayesian shrinkage), Reddit (Wilson lower bound), Trustpilot (Bayesian + recency decay), chess/LLM leaderboards (Elo / Bradley–Terry), meta-search and committees (Borda/Kemeny).
+
+> **Design implication.** Choosing the [output format and aggregation rule](/concepts/the-systems-view/) is choosing your failure mode and partly choosing your answer. Make it explicit and defensible; for sparse data, regularize (Wilson or Bayesian); when raters are noisy, prefer pairwise.
+
+## What this means for evaluation engineering
+
+Pulling the five families together:
+
+1. **Deploying an evaluation is world-making, not world-describing.** Reactivity and Goodhart guarantee the rated parties will optimize the proxy. A system that ignores its own feedback loop will be gamed into uselessness. Design for invariance to everything but the truth.
+2. **Funding structure predicts trustworthiness better than methodology.** The master lever is *who pays the evaluator and who controls the metric's definition* — matching both the [catalogue's](/concepts/evaluation-systems-in-the-wild/) headline pattern and the certification economics here.
+3. **Raw ratings are a biased, gameable sample;** verification of *who evaluates* and distribution-aware aggregation are not optional polish — they are the difference between signal and noise.
+4. **Every output format and aggregation rule embeds a choice** with predictable, different failure modes. None is neutral.
+5. **The hard problems are old and partly solved.** Adverse selection, signaling, unraveling, reputation inflation, Wilson/Bayesian aggregation, the reactivity of public measures — these have decades of theory and evidence. An automated, LLM-powered evaluation system should treat this literature as its spec sheet, not rediscover it.
+
+## Core references by theme
+
+- **Reactivity & quantification:** Espeland & Sauder (AJS 2007); Espeland & Stevens (1998, 2008); Porter, *Trust in Numbers* (1995); Power, *The Audit Society* (1997); Merry, *The Seductions of Quantification* (2016); Muller, *The Tyranny of Metrics* (2018); Davis, Kingsbury & Merry, *Governance by Indicators* (2012).
+- **Goodhart & gaming:** Goodhart (1975); Campbell (1979); Strathern (1997); Manheim & Garrabrant (2018); Bevan & Hood (2006); Choi, Hecht & Tayler (2012/2013); Krakovna (specification gaming).
+- **Rating bias:** Muchnik, Aral & Taylor (2013); Hu, Pavlou & Zhang (2009, 2017); Godes & Silva (2012); Bornmann et al. (2010); Cole et al. (1981); Ott et al. (2011); Mayzlin et al. (2014); Rojstaczer & Healy (2012).
+- **Certification & disclosure:** Akerlof (1970); Spence (1973); Grossman (1981); Milgrom (1981); Lizzeri (1999); Strausz (2005); Dranove & Jin (2010); Dranove et al. (2003); Jin & Leslie (2003); Bolton, Freixas & Shapiro (2012); Harbaugh et al. (2011); Coffee (2006).
+- **Reputation systems:** Resnick et al. (2000); Dellarocas (2003); Resnick & Zeckhauser (2002); Resnick et al. (2006); Friedman & Resnick (2001); Douceur (2002); Bolton, Greiner & Ockenfels (2013); Nosko & Tadelis (2015); Fradkin et al. (2015); Pallais (2014); Tadelis (2016); Jøsang, Ismail & Boyd (2007).
+- **Scales & aggregation:** Evan Miller (2009); Wilson (1927); Preston & Colman (2000); Bradley & Terry (1952); Elo (1978); Dwork et al. (2001); Hunter (2004).
+
+See [Adjacent Fields & Literature](/reference/adjacent-fields/) for the broader disciplines and [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) for the systems these patterns describe.
+
+
+================================================================================
+# Part II — Methods & Techniques
+================================================================================
+
+
+------------------------------------------------------------
+## 6. Evaluation Methods
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-methods/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the 2021–22 estimation-theory notes. This is the sketchiest part of the original program and remains the most open.*
+
+The [evaluation component](/concepts/components/) needs concrete methods. This page is the menu. Each method is a different point in the [accuracy × quantity × cost](/concepts/the-systems-view/) trade-off, and each carries a different *trust* profile — which matters, because an evaluation only moves decisions if its audience believes it.
+
+Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those.
+
+## Expert panels
+
+The most general-purpose method: assemble a small team of recognized experts and have them produce the judgment. Metaculus has resolved questions against small expert teams; resolution councils have been set up for similar purposes.
+
+Key parameters to tune:
+
+- **Who counts as an expert**, and which experts *complement* each other.
+- **Team size.**
+- **Research duration** — two hours or two weeks?
+- **Assistance** — a support team of cheaper helpers behind the experts.
+- **Scoring / incentives** for correctness.
+
+Expert evaluations behave a lot like predictions, so good scoring rules still matter — you can have panels make fast intuitive calls and later test them probabilistically against better-resourced panels. The catch is cost: experts are expensive, so there's a sharp tension between labor intensity and quality. Profile: **high accuracy, low quantity, high cost, high trust.**
+
+## Surveys
+
+Survey results can themselves be forecast, which can cut their cost. Surveys have a narrower but distinct value proposition from expert panels: they can capture the opinions of a *specific population* — including the actual readers of a forecast.
+
+> "On a scale of 1–10, how valuable is this project, according to a random survey of [community] members?"
+
+A sharper version samples only people who have actually viewed the forecast. Surveys also work as cheap data collection feeding other evaluations (e.g. asking which readers found an organization's work valuable). Profile: **moderate cost, captures real audience preferences, trust depends on sampling.**
+
+## Review systems
+
+Review systems are one implementation of surveys — usually public and untargeted. Setup cost is high; marginal cost is often very low. Being public and open, they demand heavy moderation against spam and malicious entries.
+
+They're unlikely to anchor a prediction–evaluation system directly, but they're natural *targets* for more general forecasting:
+
+- Public ratings of movies before release.
+- Public ratings of future government projects.
+- Amazon ratings for products under consideration.
+- Goodreads quantity and average for upcoming books, conditional on title.
+
+Profile: **high setup cost, very low marginal cost, scalable, trust limited by gaming.**
+
+## Statistical measures
+
+Objective, low-marginal-cost metrics. Their strengths are exactly that: cheap and trustable. Their weakness is domain — a statistical measure is only as good as the match between what's easy to measure and what actually matters, and the classic failure mode is organizations measuring what's convenient rather than what's decision-relevant.
+
+Statistical measures are growing faster than any other method, because they're so cheap on the margin. Most existing forecasting systems already lean on them — but they rarely *invent* new ones, and the space of *possible* useful measures vastly exceeds the set in use. Discovering and implementing new measures is plausibly high-leverage work. Profile: **very low marginal cost, high quantity, high trust where applicable, narrow domain.**
+
+## Composite measures
+
+Indices, scales, and typologies that combine narrower measures (usually statistical ones) into an approximation of a broader variable. The aspiration: the cheapness of statistical measures with the generality of expert judgment. There are many existing social and economic indices and clearly room for more.
+
+The hard parts:
+
+- **Setup** is difficult — choosing sub-measures and weights is partly arbitrary.
+- **Adversarial settings** (anyone trying to bias the index) usually force human judgment back into the loop somewhere.
+- **Flexibility** — sub-measures and weights should ideally be adjustable on demand, and you'd like to forecast over arbitrary recompositions. That's a hard tooling problem and likely some way off.
+
+Profile: **high setup cost, low marginal cost, broad coverage, fragile under adversarial pressure.**
+
+## Partial vs. complete evaluations
+
+Not every method tries to answer the whole question. Surveys and statistical measures are often best seen as **partial evaluations** — inputs and proxies that feed a more complete judgment rather than standing in for it. Designing a system means deciding which questions get full, expensive evaluation and which can ride on partial measures plus prediction.
+
+## Open territory
+
+This is, candidly, the least-developed area of the original program — the source notes were mostly TODOs. There is some real machinery to build on, though: QURI's [Relative Value Functions](/reference/related-work/) (2023) and Utility Function Extractor are concrete attempts at the elicitation problem, and [RoastMyPost](/reference/related-work/) is a deployed LLM-plus-code evaluator spanning several method types. See [Related Work](/reference/related-work/). Live questions include:
+
+- **Elicitation** — how to phrase questions for evaluators; how to elicit utility and value judgments cleanly.
+- **Collaboration** — how evaluators interface with forecasters and other components.
+- **Reliability** — how reliable evaluations actually are, and how to keep them distinguishable from the forecasts that target them.
+- **Cost** — how to put a defensible price on a messy, normative, long-horizon evaluation so it can be traded against accuracy.
+
+These feed directly into the [techniques](/concepts/techniques/) page and the [open problems](/open-questions/).
+
+
+------------------------------------------------------------
+## 7. Techniques
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/techniques/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the 2021–22 estimation-theory notes.*
+
+The [components](/concepts/components/) are the parts; these are the patterns for wiring them into a working system. Most of them are answers to one question: *how do you get a small amount of expensive, trusted judgment to subsidize a large amount of cheap judgment — and keep the whole thing consistent and honest?*
+
+## Prediction–evaluation systems
+
+The flagship technique, and the cleanest bridge across the [estimation/evaluation gap](/start-here/estimation-vs-evaluation/).
+
+The setup: ask predictors to forecast a large set of items — say 10,000 — and announce that a small random subset — say 50 — will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward the best predictors of that subset.
+
+Why it works: expensive evaluation gives you *trust and ground truth*; cheap prediction gives you *calibration and scale*. The random-subset-resolution trick lets a tiny evaluation budget calibrate forecasts across an enormous question set, because predictors must treat every item as if it might be the one that gets graded.
+
+The pattern can chain into **multiple training steps**. Once you have 10,000 human predictions calibrated against a small evaluated subset, those predictions themselves become a labeled dataset — you can train cheaper ML predictors on them, evaluate *those* against a fresh subset, and repeat. Each step trades a little accuracy for a large drop in marginal cost. (The earlier write-up called this "prediction-augmented evaluation systems"; "prediction–evaluation" is the same idea, renamed for legibility.)
+
+This is elegant on paper and surely messier in practice. The live questions: does the incentive hold up under gaming, and what happens when some participants are actively deceptive? (See [Cruxes](/start-here/key-questions/), and the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki's work on oversight under adversarial conditions.)
+
+This isn't only theory. The idea was first written up as [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018), and it has been tested: in [*Amplifying generalist research via forecasting*](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019), crowd forecasters predicting a trusted evaluator recovered a large share (reported ~73%) of the evaluator's benefit-cost signal at much lower cost. See [Related Work](/reference/related-work/) for the empirical record and its caveats.
+
+## Scalable forecasting over structured ontologies
+
+Almost all Tetlock-style platforms rely on small sets of hand-written, unstructured questions. That's fine for a few hundred items and breaks past that. Many questions worth forecasting are inherently structured:
+
+> "For each country, each month for the next 20 years, what will each of 20 key metrics be?"
+
+Today's judgmental platforms choke on this. Making structured — and ideally continuous-domain — forecasting work at scale is one of the field's central unsolved tooling problems, and it leans directly on the [ontology](/concepts/components/) component. Fully continuous domains would be even more valuable and are harder still.
+
+## Estimation functions
+
+A convenient unit of reuse for the [estimation](/start-here/estimation-vs-evaluation/) layer: **a programming function that efficiently returns estimates for large sets of parameters** (often via caching).
+
+In principle a plain Python or JavaScript function suffices; in practice you want a lot of tooling on top — uncertainty handling, caching, composition, dependency tracking — before these become powerful. [Squiggle](https://www.squiggle-language.com/) is one early piece of work in this direction, and [Squiggle AI](/reference/related-work/) is a deployed LLM front-end that generates such models (with documented overconfidence in its outputs). (Guesstimate was an earlier, more limited gesture at the same vision.) The *Scorable Functions* (2024) writeup is worth reading alongside its own partial retraction — the author later flagged that LLM-on-demand estimates may dominate pre-built functions. See [Related Work](/reference/related-work/).
+
+Estimation functions matter for the systems view because they're what make [propagation and consistency](/concepts/the-systems-view/) tractable: if estimates are produced by composable functions over shared inputs, an update to one input can flow through to everything downstream automatically, instead of leaving a pile of silently-stale reports.
+
+## Automated trust networks
+
+Centralized "truth agencies" tend to be more corrupt and less competent than their reputations suggest, and over-trust in them is a real hazard. The proposed alternative is **networks of trust and reputation**: many evaluation agencies that evaluate the big ones and each other, with at least a few good ones earning appropriate trust from the parties that matter.
+
+The more advanced version: let agencies write *functions that adjust other agencies' outputs*. Trusted group X might accept group Y's economic forecasts but believe Y is overconfident about the steel industry — and so apply an automatic, declared correction to everything Y publishes. This turns "who do you trust" into composable, inspectable structure rather than a binary.
+
+This is the technique that most directly addresses the capture/corruption crux, and it overlaps heavily with the sibling RRP wiki's work on identity and track-record infrastructure.
+
+## Cultural change toward candidness
+
+The least technical technique, and possibly the most important — important enough to get [its own page](/concepts/epistemic-culture/). No amount of tooling helps if the community is too uncomfortable to use it. Imagine an agency that, starting tomorrow, published "pretty good" impact estimates for every politician, bill, organization, and person. Even if the estimates were sound, the rollout would be chaotic, the pushback fierce, and the agency likely shut down or captured. Getting from here to a world where high-throughput public evaluation is *tolerated* is partly a cultural-engineering problem, not just a technical one.
+
+## How these fit together
+
+A toy end-to-end system: an **ontology** defines a large structured question set; **estimation functions** populate the parts that calculation can reach; a **prediction–evaluation system** calibrates cheap forecasts against a small budget of expensive **evaluation**; **trust networks** let consumers decide whose outputs to weight; and a supportive **epistemic culture** is what lets any of it be deployed without being destroyed on contact. None of these is solved — see [Open Problems](/open-questions/).
+
+
+================================================================================
+# Part III — The Environment
+================================================================================
+
+
+------------------------------------------------------------
+## 8. Epistemic Culture
+Source: https://evaluation-engineering.quantifieduncertainty.org/concepts/epistemic-culture/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the 2021–22 estimation-theory notes.*
+
+## The claim
+
+Many of the real limits on evaluation systems are cultural, not technical. No matter how good the tooling, a system has no impact if the community around it is too uncomfortable to use it. Culture is part of the **background** an evaluation system runs on — not a component you can build, but a precondition you have to cultivate (see [The Four Components](/concepts/components/)).
+
+This is a strong claim, and it might be wrong (it's listed as a [crux](/start-here/key-questions/)). But if it's right, it reorders priorities: the highest-leverage work isn't a better forecasting algorithm, it's making candid, public, quantified judgment socially survivable.
+
+## The candidness problem
+
+The sharpest version is what you might call the **candidness problem**: the moment an evaluation starts to matter, the incentive to be honest in it collapses.
+
+A worked example from the original notes. *Certificates of impact* require estimating the value of many charitable interventions. But if an organization knows funders are watching the value of its certificates closely, it becomes wary of issuing certificates for anything but its very best work — because a mediocre rating is now a liability. The act of measuring distorts the thing measured, via the feelings and incentives of the measured.
+
+This generalizes: any evaluation system pointed at people or organizations whose reputations are at stake will face pushback, strategic non-participation, and pressure to soften or suppress unflattering outputs.
+
+## The rollout problem
+
+Now scale it up. Imagine an agency that, starting tomorrow, published "pretty good" estimates of the impact of every politician, bill, organization, and individual. Even granting the estimates were sound:
+
+- The disruption would be enormous and the pushback fierce.
+- The agency would be a magnet for libel suits and political pressure.
+- It would likely be shut down or captured before it stabilized.
+
+So the problem isn't only "can we produce the evaluations" — it's "can we *deploy* them without the system being destroyed on contact." That is a sequencing and rollout problem: which evaluations to publish first, how transparent to be how fast, how to balance information against the comfort of the evaluated. The notes suggest starting with custom, lower-stakes systems and taking carefully chosen steps toward transparency, rather than flipping on full public ratings at once.
+
+## Cultural engineering
+
+If culture is the bottleneck, it's also a design surface. Some directions:
+
+- **Norms of candidness and truth-seeking** — communities where honest negative assessments are expected and tolerated, not punished.
+- **Graduated transparency** — rolling out from private to semi-public to public as trust and norms develop, rather than all at once.
+- **Comfort-aware design** — explicitly trading some information value for reduced offense early on, to keep a system alive long enough to mature.
+- **Small-group experimentation** — testing cultural interventions in small, willing communities before deploying them in higher-stakes settings.
+
+## Why this is tractable (maybe)
+
+The optimistic case for working on culture: other constraints (talent, funding, institutional buy-in) are often *less* mutable than culture, and many of the cheapest wins are specifically cultural. The pessimistic case: culture is famously hard to change deliberately, and "just make people more candid" has defeated many reformers.
+
+Either way, an evaluation system that ignores the cultural environment is designing for a world that doesn't exist. The [techniques](/concepts/techniques/) page treats cultural change as one of the field's core techniques for exactly this reason.
+
+
+================================================================================
+# Reference
+================================================================================
+
+
+------------------------------------------------------------
+## Glossary
+Source: https://evaluation-engineering.quantifieduncertainty.org/reference/glossary/
+------------------------------------------------------------
+
+*Status: early draft. Terms are defined as this wiki uses them; several are contested or provisional.*
+
+**Evaluation engineering** — The discipline of designing, building, and operating systems that produce large numbers of estimates and evaluations efficiently, consistently, and at known cost. The unit of analysis is the *system*, not the individual evaluation. See [Evaluation Engineering](/start-here/introduction/).
+
+**Estimation** — The calculation of specific numbers, usually under uncertainty, where the estimator only has to be *correct* (interpretation and audience effects don't matter). Leans on math, models, and data. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
+
+**Evaluation** — A judgment, often numeric, on something *messy* — hard to verify and dependent on the evaluator being *trusted*. Audience effects matter; explanation is usually needed. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
+
+**Evaluation system** — Standing machinery that produces evaluations repeatedly, of a consistent type. Defined by system-level properties (throughput, cost-per-item, consistency, propagation) that no single evaluation has. See [Evaluation as a System](/concepts/the-systems-view/).
+
+**Accuracy × quantity × cost** — The three-way trade-off that defines an evaluation system's design space; you can usually buy more of any two by sacrificing the third. See [Evaluation as a System](/concepts/the-systems-view/).
+
+**Divide and conquer** — The strategy of handling as much as possible as cheap, verifiable estimation and sequestering genuinely judgment-bound work into a separate evaluation layer. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
+
+**The four components** — Prediction, calculation, ontology, and evaluation: the reusable parts of an evaluation system. See [The Four Components](/concepts/components/).
+
+**Prediction** — The component focused on calibration, scorability, and aggregation; keeps the system honest. See [The Four Components](/concepts/components/).
+
+**Calculation** — The component that chains raw inputs into derived numbers via models, algorithms, and logic; the engine of the estimation layer.
+
+**Ontology** — The component that structures the set of things a system estimates over: taxonomies, definitions, data engineering, knowledge graphs. Flagged as a likely silent bottleneck.
+
+**Symbolic (system)** — Built from explicit, inspectable structure (functions, ontologies, rules), as opposed to opaque end-to-end models. Borrowed from symbolic AI; trade-off is understandability vs. runtime efficiency. Symbolic vs. nonsymbolic is a gradient, not a binary: a system can present a symbolic *interface* (named parameters, structured outputs) over a nonsymbolic *implementation* (e.g. a black-box model populating those parameters). See [Lineage](/start-here/lineage/).
+
+**Advanced evaluation system** — An evaluation system high on the capability ladder: great cost-effectiveness, wide generality, and real value creation — independent of whether its internals are symbolic. Analogous to "Level 4" autonomy for self-driving. See [Evaluation as a System](/concepts/the-systems-view/).
+
+**Evaluations are all you need** — The thesis that evaluation (not estimation) is plausibly the bulk of the valuable output of these systems, and that highly *optimized* evaluation is the thing to chase. The accuracy bar is "better than people would otherwise do," not absolute correctness. See [Evaluation Engineering](/start-here/introduction/) and [Objections & FAQ](/reference/objections/).
+
+**Prediction–evaluation system** — A technique in which many predictors forecast a large set, a small random subset is resolved by expensive evaluation, and the best predictors are rewarded — letting a tiny evaluation budget calibrate forecasts at scale. See [Techniques](/concepts/techniques/).
+
+**Estimation function** — A (typically cached) programming function returning estimates for large parameter sets; the unit of reuse for the estimation layer, and what makes propagation/consistency tractable. See [Techniques](/concepts/techniques/).
+
+**Automated trust network** — A web of evaluation agencies that evaluate each other and can apply declared, composable adjustments to each other's outputs, as an alternative to a single centralized truth agency. See [Techniques](/concepts/techniques/).
+
+**Partial evaluation** — A method (e.g. a survey or statistical measure) used as an input or proxy feeding a fuller judgment rather than standing in for it. See [Evaluation Methods](/concepts/evaluation-methods/).
+
+**Composite measure** — An index, scale, or typology combining narrower measures into an approximation of a broader variable. See [Evaluation Methods](/concepts/evaluation-methods/).
+
+**Candidness problem** — The tendency for the incentive to be honest in an evaluation to collapse once the evaluation starts to matter to those being evaluated. See [Epistemic Culture](/concepts/epistemic-culture/).
+
+**Epistemic culture** — The cultural background (norms of candidness, tolerance for public judgment) that an evaluation system needs to survive deployment; plausibly the binding constraint. See [Epistemic Culture](/concepts/epistemic-culture/).
+
+
+------------------------------------------------------------
+## Objections & FAQ
+Source: https://evaluation-engineering.quantifieduncertainty.org/reference/objections/
+------------------------------------------------------------
+
+*Status: early draft, adapted from the founding posts and recorded external feedback (see [Lineage](/start-here/lineage/)).*
+
+The field is young and the framing is uncertain. This page collects the objections worth taking seriously, the responses currently on offer (often partial), and outside commentary.
+
+## "This is too abstract to be a real field or cause area"
+
+Granted: the area is vague. There are no crisp boundaries between evaluation systems, forecasting, institutional decision-making, epistemics, and related terms. But vagueness doesn't imply unimportance — if anything it has made the area *more* neglected than it would otherwise be. The operative test isn't "can we define it cleanly" but "does this framing help us identify valuable concrete projects?" If good projects get started, the higher-level carving can be revised later. (If you can carve the space better, that itself is a contribution — see [Cruxes](/start-here/key-questions/).)
+
+## "Scaled evaluations can never be accurate enough"
+
+A common reaction is that these proposals are AGI-complete — usually resting on the assumption that the outputs must be *highly accurate*. They don't. The estimates and evaluations only have to be **better than what people would have done otherwise**. People already make enormous numbers of informal evaluations and judgments; these are typically noisy, overconfident, and inaccurate. The bar is to beat that baseline cheaply, not to be correct in absolute terms.
+
+## "Why invent so much terminology instead of engaging the literature?"
+
+The work spans many fields, and one has to stop somewhere. The most conspicuous gap is the established academic field of **Evaluation** (program evaluation): the bet is that the bulk of this cause area lies where that field has shown little interest, but that's a bet, not a verdict. Recommendations and pointers are genuinely wanted. The decision-automation literature is also relevant and under-engaged.
+
+## "Why write theory instead of just building?"
+
+The author has spent years building tools and running practical experiments in the space, and concluded that (a) his thinking was unusually hard to articulate and diverged from others', and (b) hiring a large team to "just build it" is itself bottlenecked on having a clearly articulated vision. Theory first, then a return to direct work — not theory instead of it.
+
+## "Why make evaluation specifically such a big deal?"
+
+This is the "evaluations are all you need" claim, and it's load-bearing:
+
+- Prior forecasting discussion has under-weighted evaluation. You can get far with estimation alone, then hit a wall; foregrounding evaluation keeps it from being overlooked.
+- Evaluation may be **the bulk of the desired output**. Many of the highest-stakes existing processes are evaluation problems: courts, impact estimation, hiring decisions, grantmaking. It's plausible that far more global resources go into evaluation than into estimation — which would make optimizing it correspondingly valuable.
+
+## How big is this, and who pays?
+
+The honest scale estimate: a challenge on the order of **autonomous driving or ending aging** — plausibly absorbing \$100B over 20 years. The expectation is *not* that effective altruists fund most of it. Companies are already working in the space and will continue to; the high-leverage role is to figure out how such work can be made useful for altruistic purposes and to nudge the field in beneficial directions. The mental model is closer to **clean meat than to AI alignment** — shaping and accelerating a field that will largely happen anyway, rather than carrying it alone.
+
+A note on capability grading: it would help to be able to *grade* evaluation systems the way autonomous driving has "Level 4." Formalizing the inputs and outputs of estimation/evaluation work would let us draw historical trends and make projections — and give the field a shared yardstick. (See [Evaluation as a System](/concepts/the-systems-view/).)
+
+## Who is this for?
+
+Not individuals or small side-projects. The model is full-time specialist teams — think hedge-fund analyst desks or data-science teams — producing outputs for large organizations and the public. Small-scale benefits are a welcome side effect, not the goal. The one area where small-group work *is* on the critical path is [epistemic culture](/concepts/epistemic-culture/), which likely has to be tested in small communities first.
+
+## External commentary
+
+It helps to record outside reactions verbatim-in-spirit, especially critical ones. Notes from **Mark Xu** on an early version:
+
+- The most exciting part is the ability to **pay for outcomes instead of processes** — and possibly to *outsource* evaluation. But much of the current bottleneck is simply **people capable of doing the evaluation work** (e.g. grantmakers), and it's unclear what concrete proposal solves that.
+- The overall sketch is "a bit too vague to have strong opinions about." It seems clearly useful if done well, useless if done poorly.
+- Many things he's wanted good estimates for turn out to be questions about **how the economy actually works** (e.g. "if all software engineers got 10% more productive, how much bigger does the economy get?") more than about estimation/evaluation methodology per se.
+- Existing shallow evaluations (QURI's, epistemic spot checks, the ALLFED shallow eval) have already seemed useful — possibly because the current state of evaluation is so poor that even shallow work helps. A generically useful move is **"assumption unearthing"**: what has to be true about the world for an organization's claims to hold?
+- A skeptical magnitude estimate: even *perfect* evaluations might not increase the amount of useful work being done by more than ~2× — because the EA funding space has already funded the obviously-good things. (Doubling would still be very good.)
+- The single most wanted thing: **a few specific, concrete (even fictional) case studies** showing the value generated by better estimation and evaluation.
+
+That last request is partly answerable today. A handful of real experiments and deployments now exist — the [~73% amplification result](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019), shallow org evaluations, pre-execution project-value prediction, and deployed tools (Squiggle AI, RoastMyPost) with published usage and failure data. They're small, but they're concrete. See [Related Work](/reference/related-work/) for the full inventory. Turning them into crisp, persuasive case studies remains a standing gap; see [Open Problems](/open-questions/).
+
+
+------------------------------------------------------------
+## Related Work (QURI)
+Source: https://evaluation-engineering.quantifieduncertainty.org/reference/related-work/
+------------------------------------------------------------
+
+*Status: early draft / working bibliography. Evaluation engineering is not a standalone idea — it's the accumulated agenda of the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/) and collaborators, restated. This page maps the most relevant published work to the parts of the field it bears on. See the [EA Forum QURI topic](https://forum.effectivealtruism.org/topics/quantified-uncertainty-research-institute) for the broader list, and [Adjacent Fields & Literature](/reference/adjacent-fields/) for the external academic literatures (forecasting, decision analysis, program evaluation, LLM evals, scalable oversight, estimation/ontology tooling).*
+
+Two things in this corpus are scarce and worth foregrounding: **empirical results** (small but real experiments, listed below) and **deployed implementations** (running systems with published usage data and honest failure admissions). They are what distinguish a considered agenda from one more framework post.
+
+## Foundational framing
+
+- **Prediction-Augmented Evaluation Systems** (Ozzie Gooen, [LessWrong, 2018](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems)). The original "predict the evaluation" idea — the direct ancestor of [prediction–evaluation systems](/concepts/techniques/). The wiki's whole estimation/evaluation-bridging move is implicit here.
+- **(Highly Optimized) Evaluations Are All You Need** and the earlier *Advanced / Symbolic Evaluation Systems* drafts. The cause-area statement this wiki is built from. See [Lineage](/start-here/lineage/).
+
+## Empirical results (the scarce, valuable part)
+
+These are quotable, dated experiments — exactly the "concrete case studies" the field is short on (see [Objections & FAQ](/reference/objections/)).
+
+- **Amplifying generalist research via forecasting**, [Part 1](https://forum.effectivealtruism.org/posts/ZCZZvhYbsKCRRDTct/part-1-amplifying-generalist-research-via-forecasting-models) (models/challenges) and [Part 2](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (results) (Gooen, Sempere, et al., 2019). The flagship test of prediction–evaluation: crowd forecasters predicting a trusted evaluator recovered a large share (reported ~73%) of the evaluator's benefit-cost signal, far cheaper. One of very few real experiments in this space.
+- **An experiment to evaluate the value of one researcher's work** ([EA Forum, 2019](https://forum.effectivealtruism.org/posts/udGBF8YWshCKwRKTp/an-experiment-to-evaluate-the-value-of-one-researcher-s-work)). Elicitation of value estimates over research outputs.
+- **Predicting the value of small altruistic projects** (Nuño Sempere, 2020). Proof-of-concept that forecasters can discriminate project value pre-execution — with a documented failure mode: systematic optimism.
+- **Relative-value elicitation experiments** (Open Phil AI-safety grants, 2022; valuing research works, 2022). Real data on inter-rater disagreement and how it aggregates.
+
+## Estimation & calculation tooling
+
+- **Squiggle** ([squiggle-language.com](https://www.squiggle-language.com/); [GitHub](https://github.com/quantified-uncertainty/squiggle)). A small language for probabilistic estimation — the working instance of [estimation functions](/concepts/techniques/).
+- **Squiggle AI** (2025). An LLM (Claude) front-end that generates Squiggle models — a *deployed* estimation system, with published early usage data and a frank writeup of **systematic overconfidence** in generated estimates.
+- **Scorable Functions** (2024). The estimator-as-program object, later partially retracted (the author flagged that LLM-on-demand estimates may dominate pre-built functions) — useful lessons-learned.
+- **Guesstimate** (2016). The early spreadsheet-style tool that motivated much of this; see [Use Cases](/start-here/use-cases/).
+
+## Ontology & aggregation
+
+- **Metaforecast** ([metaforecast.org](https://metaforecast.org/)). Aggregates and searches forecasts across platforms — infrastructure for the [ontology](/concepts/components/) layer.
+- **Foretold.io** ([EA Forum, 2019](https://forum.effectivealtruism.org/posts/5nCijr7A9MfZ48o6f/introducing-foretold-io-a-new-open-source-prediction)). An open-source prediction registry; early structured-forecasting plumbing.
+
+## Evaluation methods & utility elicitation
+
+- **Relative Value Functions: A Flexible New Format for Value Estimation** ([EA Forum, 2023](https://forum.effectivealtruism.org/posts/EFEwBvuDrTLDndqCt/relative-value-functions-a-flexible-new-format-for-value)), plus the Utility Function Extractor and comparison-polling tools. The closest thing to a methods stack behind the [evaluation-methods](/concepts/evaluation-methods/) page's open "elicitation" questions.
+- **RoastMyPost** (2025). A deployed LLM-plus-code tool that evaluates posts and research documents for errors, fallacies, and inaccuracies — a running [evaluation system](/concepts/the-systems-view/) with multiple evaluator types.
+- **Shallow evaluations of longtermist organizations** (Sempere, 2021). A real, scaled-down [charity-evaluation](/start-here/use-cases/) effort; the kind of "shallow but useful" output skeptics have found valuable.
+- **Quantifying Uncertainty in GiveWell's GiveDirectly Cost-Effectiveness Analysis** (Sam Nolan, 2021). Putting distributions on a real CEA — estimation in the charity-evaluation domain.
+
+## Incentives, trust & failure modes
+
+- **Incentive Problems / Alignment Problems with Current Forecasting Platforms** (Sempere & Lawsen, 2020–21). The concrete catalogue of reward-specification failures — directly relevant to whether [prediction–evaluation](/concepts/techniques/) incentives survive gaming.
+- **Prediction Markets in the Corporate Setting** (Sempere & Yagudin, 2021). An honest negative result on why organizations reject internal markets (tooling, question-writing cost, social disruption) — feeds [Epistemic Culture](/concepts/epistemic-culture/) and [Objections](/reference/objections/).
+- **Opinion Fuzzing** (2025). Evidence that LLM judgments shift substantially on prompt phrasing alone, and more across models/personas — a caution for [evaluation reliability](/concepts/evaluation-methods/).
+- **Accuracy Agreements** (2023). Pay-per-bit scoring contracts — a [trust-network](/concepts/techniques/)-adjacent incentive design.
+
+## Resolution & oversight
+
+- **Can We Place Trust in Post-AGI Forecasting Evaluations?** (2019) → **AI for Resolving Forecasting Questions / Epistemic Selection Protocols** (2025). The deferred-resolution thread: how to ground evaluations when the resolver is itself an AI. Overlaps heavily with the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki.
+
+---
+
+**A note on sourcing.** Specific figures above (e.g. the ~73% amplification result) are quoted from QURI's published posts and the wiki's internal corpus survey; check them against the linked originals before relying on them. This list is not exhaustive — additions welcome.
+
+
+------------------------------------------------------------
+## Adjacent Fields & Literature
+Source: https://evaluation-engineering.quantifieduncertainty.org/reference/adjacent-fields/
+------------------------------------------------------------
+
+*Status: early draft / curated bibliography, assembled from a June 2026 literature sweep. Evaluation engineering is a synthesis, not a clean-sheet invention: most of its hard parts have been studied for decades under other names. This page maps the nine adjacent literatures, what each offers, and where each stops short of the systems/throughput question. For QURI's own prior work, see [Related Work](/reference/related-work/).*
+
+This is a working bibliography. Core citations have been verified against primary sources, but **a few editions, page numbers, and author lists may still need a check** before you rely on them. Where a figure is quoted (e.g. judge–human agreement rates), check the original.
+
+## 1. Judgmental forecasting & prediction markets
+
+The most direct empirical precedent for treating estimation as a measurable, optimizable pipeline. The IARPA tournaments and the Good Judgment Project showed that producing *thousands* of scored probabilistic estimates turns "forecasting" into an engineering problem whose components — talent selection, training, teaming, aggregation — each yield quantifiable accuracy gains. It hands evaluation engineering three reusable primitives: **proper scoring rules** (a metric that makes estimate quality measurable and incentive-compatible), **aggregation theory** (turning many cheap judgments into one accurate one), and two contrasting **production architectures** (polls vs. markets) with documented cost/accuracy/robustness trade-offs. Its gap: it optimizes accuracy and calibration but rarely treats cost or throughput as first-class, and says little about machine evaluators. Relates to [Prediction](/concepts/components/) and [prediction–evaluation systems](/concepts/techniques/).
+
+- **Identifying and Cultivating Superforecasters** — Mellers, Tetlock, et al. (2015), *Perspectives on Psychological Science*. [PDF](https://faculty.wharton.upenn.edu/wp-content/uploads/2015/07/2015---superforecasters.pdf) — Talent-selection + teaming produce durable accuracy gains; the case for engineering a pipeline around component interventions.
+- **Strictly Proper Scoring Rules, Prediction, and Estimation** — Gneiting & Raftery (2007), *JASA*. [PDF](https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf) — The definitive treatment of Brier/log scoring; the formal foundation for any comparable, incentive-compatible estimate metric.
+- **Distilling the Wisdom of Crowds: Prediction Markets vs. Prediction Polls** — Atanasov, Tetlock, et al. (2017), *Management Science*. [link](https://dl.acm.org/doi/abs/10.1287/mnsc.2015.2374) — A randomized comparison of two production architectures; the core accuracy-vs-architecture trade-off.
+- **Prediction Markets** — Wolfers & Zitzewitz (2004), *Journal of Economic Perspectives*. [PDF](https://jmvidal.cse.sc.edu/library/wolfers04a.pdf) — Foundational survey of markets as a low-cost information-aggregation engine.
+- **Corporate Prediction Markets: Evidence from Google, Ford, and Firm X** — Cowgill & Zitzewitz (2015), *Review of Economic Studies*. [link](https://academic.oup.com/restud/article-abstract/82/4/1309/2607345) — Internal markets are well-calibrated yet biased and participation-dependent; the key evidence on why real evaluation systems fail in practice.
+- **Shall We Vote on Values, But Bet on Beliefs?** — Hanson (2013), *Journal of Political Philosophy*. [PDF](https://mason.gmu.edu/~rhanson/futarchy2013.pdf) — Futarchy: using market-produced estimates to *drive decisions*. Direct ancestor of the decision-support framing; see [Use Cases](/start-here/use-cases/).
+
+## 2. Decision analysis, value of information & expert elicitation
+
+This is where evaluation engineering gets its triage rule. **Decision analysis** (Howard; Raiffa & Schlaifer) supplies the machinery — subjective probability, utility, and an explicit cycle in which uncertainty is quantified and its resolution priced. **Value of information** (EVPI/EVPPI/EVSI) operationalizes the most important question in the field: *how much is a given estimate worth before you pay to produce it?* **Structured expert elicitation** (Cooke's Classical Method, SHELF, IDEA, Delphi) provides validated protocols for getting estimates out of people with *measured* accuracy and informativeness. Relates to [Evaluation as a System](/concepts/the-systems-view/) (the accuracy × quantity × cost frontier) and the open elicitation questions on [Evaluation Methods](/concepts/evaluation-methods/).
+
+- **Information Value Theory** — Howard (1966), *IEEE Trans. SSC*. (DOI 10.1109/TSSC.1966.300074) — The founding VOI paper: information's value can only be assessed jointly with the decision it informs. The root of "which estimate is worth producing."
+- **Applied Statistical Decision Theory** — Raiffa & Schlaifer (1961), Harvard. [Wiley reissue](https://www.wiley.com/en-us/Applied+Statistical+Decision+Theory-p-9780471383499) — The Bayesian decision-theory foundation underpinning EVSI: the value of a *partial* evaluation.
+- **A Review of Methods for the Analysis of the Expected Value of Information** — Heath, Manolopoulou & Baio (2015), arXiv. [link](https://arxiv.org/abs/1507.02513) — How modern non-parametric methods made VOI tractable at scale — directly "many estimates at known cost."
+- **Experts in Uncertainty** — Cooke (1991), Oxford. [Internet Archive](https://archive.org/details/expertsinuncerta0000cook) — Introduces the Classical Method: weight experts by measured accuracy on seed questions. The quality-control backbone of elicited evaluation.
+- **A practical guide to structured expert elicitation using the IDEA protocol** — Hemming et al. (2018), *Methods in Ecology and Evolution*. [link](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12857) — A deployable Investigate-Discuss-Estimate-Aggregate workflow for group elicitation.
+- **Multiple Criteria Decision Analysis: An Integrated Approach** — Belton & Stewart (2002), Springer. [link](https://link.springer.com/book/10.1007/978-1-4615-1495-4) — The standard reference for evaluating options against multiple non-commensurable criteria.
+
+Cost-effectiveness analysis (QALYs/DALYs plus willingness-to-pay thresholds) is the largest real-world *standardized, scaled evaluation system* — a common unit and a calibrated price-per-unit letting thousands of interventions be compared. It is the operational descendant of Bentham's felicific calculus (see [Use Cases](/start-here/use-cases/)).
+
+## 3. Program evaluation & impact measurement
+
+There is already a mature, professionalized field called **Evaluation** — fifty years of work on exactly the problem of credibly judging the value of interventions. Its lessons transfer directly and should not be reinvented: defining the *evaluand* and the *valuing* step is the hard part (Scriven); an estimate nobody acts on is wasted throughput (Patton's utilization-focus); "what works" is incomplete without "for whom, in what context, via what mechanism" (Pawson & Tilley; Deaton's critique of the RCT movement); and aggregating heterogeneous outcomes into one score is a known minefield of normalization and weighting politics (the OECD composite-indicators handbook). Where it **differs** from evaluation engineering: it is overwhelmingly bespoke, slow, and study-centric — rich on validity, use, and the contestation of value, but nearly silent on standardizing and scaling the *production process* (throughput, cost-per-judgment, pipeline reuse). That production layer is what's left to build. Relates to the [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/) note that this field exists but is scoped differently.
+
+- **Evaluation: A Systematic Approach** — Rossi, Lipsey & Freeman (7th ed., 2004), SAGE. — The standard textbook; its needs → theory → process → outcome → efficiency division is a ready-made taxonomy of *estimate types*.
+- **Utilization-Focused Evaluation** — Patton (5th ed., 2021), SAGE. — Evaluations should be judged by their actual use by intended users. The core lesson for an estimate factory: volume is worthless without a decision attached to each output.
+- **Goal-free evaluation / Key Evaluation Checklist** — Scriven. [KEC PDF](https://files.wmich.edu/s3fs-public/attachments/u1105/2023/kec-scriven.pdf) — Measure *actual* effects without being cued by stated goals; a direct warning that goal/framing-anchoring is an attack surface on mass-produced estimates.
+- **Realistic Evaluation** — Pawson & Tilley (1997), SAGE. — The Context-Mechanism-Outcome framework; a caution against decontextualized point-estimates of effect.
+- **Instruments of Development: Randomization in the Tropics** — Deaton (2009). [PDF](https://www.princeton.edu/~deaton/downloads/Deaton_Instruments_randomization_learning_all_04April_2010.pdf) — The canonical critique of the "randomista" movement; a counterweight to equating volume-of-rigorous-estimates with knowledge. (See also J-PAL / Banerjee & Duflo's *Poor Economics* as the closest existing "evaluation-as-scaled-institution" analog.)
+- **Handbook on Constructing Composite Indicators** — OECD/JRC (2008). [PDF](https://www.oecd.org/content/dam/oecd/en/publications/reports/2008/08/handbook-on-constructing-composite-indicators-methodology-and-user-guide_g1gh9301/9789264043466-en.pdf) — The authoritative methodology for rolling many indicators into one score — and a warning that weighting choices drive results. (The UNDP's HDI is the long-running worked example.)
+- **GiveWell cost-effectiveness analyses & moral weights** — GiveWell, ongoing. [link](https://www.givewell.org/how-we-work/our-criteria/cost-effectiveness/cost-effectiveness-models) — The most evaluation-engineering-like artifact in philanthropy: a standardized, transparent, reusable pipeline whose admitted weak point is the value-laden weighting step.
+
+## 4. LLM-based evaluation & AI "evals"
+
+The empirical foundation for the AI-cheap-evaluation wing of the field. The central finding: strong LLM judges can approximate expensive human judgment at roughly human-level agreement while collapsing cost-per-evaluation by orders of magnitude — exactly the accuracy × quantity × cost move. The field has matured from "can LLMs judge?" into a *science of failure modes*: reproducible judge biases (position, verbosity, self-preference), benchmark contamination, and metric artifacts. A parallel reward-modeling thread shows the systems lesson from the optimization side — any cheap proxy evaluator degrades via Goodhart once optimized against. It supplies both the tooling and the hazard catalog any [evaluation system](/concepts/the-systems-view/) must engineer around; see also [Objections & FAQ](/reference/objections/) on evaluation reliability.
+
+- **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena** — Zheng, Chiang, et al. (2023), arXiv. [link](https://arxiv.org/abs/2306.05685) — The landmark: GPT-4-as-judge reaches ~80%+ agreement with humans (matching human–human), and names the position/verbosity/self-enhancement biases.
+- **A Survey on LLM-as-a-Judge** — Gu, Jiang, et al. (2024), arXiv. [link](https://arxiv.org/abs/2411.15594) — Frames "how to build a *reliable* LLM judge"; a good backbone for this section.
+- **Length-Controlled AlpacaEval** — Dubois, Liang & Hashimoto (2024), arXiv. [link](https://arxiv.org/abs/2404.04475) — A causal-inference debiasing estimator for verbosity gaming; exemplar of engineering a cheap evaluator to resist manipulation.
+- **Holistic Evaluation of Language Models (HELM)** — Liang, Bommasani, et al. (2022), arXiv. [link](https://arxiv.org/abs/2211.09110) — Evaluation as standardized, multi-metric, living infrastructure across many scenarios.
+- **Are Emergent Abilities of LLMs a Mirage?** — Schaeffer, Miranda & Koyejo (2023), NeurIPS (Outstanding Paper). [link](https://arxiv.org/abs/2304.15004) — Many "emergent" jumps are artifacts of the metric, not the model: the foundational construct-validity caution.
+- **LLM Critics Help Catch LLM Bugs (CriticGPT)** — McAleese et al. / OpenAI (2024), arXiv. [link](https://arxiv.org/abs/2407.00215) — Critic models help human evaluators; assisted humans beat unassisted ~60% of the time. The key human-AI teaming result.
+- **Scaling Laws for Reward Model Overoptimization** — Gao, Schulman & Hilton (2022), arXiv. [link](https://arxiv.org/abs/2210.10760) — Optimizing against a proxy reward degrades true reward predictably (Goodhart): a cheap evaluator breaks under optimization pressure.
+
+## 5. Scalable oversight & AI-assisted reasoning
+
+How to evaluate outputs too hard or costly to check directly — i.e. ground or amplify a trusted-but-expensive evaluator using cheaper or AI-assisted processes. Two protocol families dominate: **decomposition** (iterated amplification / factored cognition; recursive reward modeling), which breaks an expensive evaluation into cheaper sub-evaluations, and **adversarial/game-theoretic** (debate; prover-verifier; market-making), which pits optimizers against each other so a weak judge can extract signal from their conflict. **Sandwiching** gives a way to *measure* whether a protocol actually closes the weak-evaluator-to-expert gap. Empirically: debate beats single-advisor baselines and helps non-experts reach expert accuracy; process supervision beats outcome supervision. Caveats: results are mostly on QA/math with artificial weak/strong gaps, and persuasiveness can be optimized independently of truth. This is the literature the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki centers; here it bears on [prediction–evaluation](/concepts/techniques/) and resolution.
+
+- **AI safety via debate** — Irving, Christiano & Amodei (2018), arXiv. [link](https://arxiv.org/abs/1805.00899) — Two agents debate, a human judges; the blueprint for using adversarial structure to extend a limited evaluator's reach.
+- **Supervising strong learners by amplifying weak experts** — Christiano, Shlegeris & Amodei (2018), arXiv. [link](https://arxiv.org/abs/1810.08575) — Iterated Amplification: build a training signal for hard problems by recursive decomposition into easy ones.
+- **Scalable agent alignment via reward modeling** — Leike et al. (2018), arXiv. [link](https://arxiv.org/abs/1811.07871) — Recursive reward modeling: use trained agents to help evaluate the next, harder task.
+- **Debating with More Persuasive LLMs Leads to More Truthful Answers** — Khan, Hughes, et al. (2024), ICML. [link](https://arxiv.org/abs/2402.06782) — Empirical evidence that debate lets weaker judges reach expert-level accuracy.
+- **Let's Verify Step by Step** — Lightman et al. / OpenAI (2023), arXiv. [link](https://arxiv.org/abs/2305.20050) — Process supervision (grading each step) beats outcome supervision and yields stronger verifiers. Bears on *what* to evaluate.
+- **Measuring Progress on Scalable Oversight for Large Language Models** — Bowman et al. / Anthropic (2022), arXiv. [link](https://arxiv.org/abs/2211.03540) — Operationalizes "sandwiching" as an experimental paradigm — the most directly relevant way to benchmark an evaluation system's accuracy-vs-cost.
+- **Weak-to-Strong Generalization** — Burns et al. / OpenAI (2023), arXiv. [link](https://arxiv.org/abs/2312.09390) — Strong models trained on weak labels can exceed their supervisors: bears on whether a cheap/weak evaluator's signal can elicit what it can't itself verify.
+
+## 6. Estimation tooling, probabilistic programming & ontologies
+
+The computational substrate for the [calculation](/concepts/components/) and [ontology](/concepts/components/) components. **Probabilistic programming** (Stan, PyMC, Pyro, Church) lets a modeler declare a model once and get inference and uncertainty propagation automatically — estimation as a repeatable, composable computation. A lighter branch (Guesstimate, Squiggle, plus calibrated human Fermi estimation) targets fast estimation over many variables, closer to the throughput regime this field cares about. **Ontologies and large knowledge bases** (Gruber; the Semantic Web; Wikidata, Freebase, YAGO, NELL) address how to define and *populate at scale* the set of entities to estimate over — with a recurring tension between hand-curated and automatically-constructed knowledge that mirrors the symbolic-vs-statistical debate. Relates to [estimation functions](/concepts/techniques/) and the "ontology as silent bottleneck" claim on [The Four Components](/concepts/components/).
+
+- **Stan: A Probabilistic Programming Language** — Carpenter, Gelman, et al. (2017), *J. Statistical Software*. [link](https://www.jstatsoft.org/v076/i01) — The canonical Bayesian inference engine; the modern "specify model once, get estimates + uncertainty" template.
+- **Probabilistic Programming in Python using PyMC3** — Salvatier, Wiecki & Fonnesbeck (2016), *PeerJ CS*. [link](https://peerj.com/articles/cs-55/) — Scriptable probabilistic modeling in Python; fits programmatic generation of many models.
+- **Church: a Language for Generative Models** — Goodman, Mansinghka, et al. (2008), UAI. [link](https://arxiv.org/abs/1206.3255) — The foundational *universal* PPL; "estimation as executable generative model."
+- **A Translation Approach to Portable Ontology Specifications** — Gruber (1993), *Knowledge Acquisition*. [PDF](https://tomgruber.org/writing/ontolingua-kaj-1993.pdf) — The origin of "ontology = a specification of a conceptualization"; foundational for structuring what to estimate over.
+- **The Semantic Web** — Berners-Lee, Hendler & Lassila (2001), *Scientific American*. [link](https://www.scientificamerican.com/article/the-semantic-web/) — The manifesto for machine-readable, linkable, typed knowledge as infrastructure.
+- **Wikidata: A Free Collaborative Knowledgebase** — Vrandečić & Krötzsch (2014), *CACM*. [link](https://cacm.acm.org/research/wikidata/) — The largest open structured KB; a concrete source of the entities/relations a system would range over.
+- **YAGO: A Core of Semantic Knowledge** — Suchanek, Kasneci & Weikum (2007), WWW. [link](https://dl.acm.org/doi/10.1145/1242572.1242667) — Landmark *automated* KB construction (extracting facts from Wikipedia); harvesting rather than authoring an ontology. (See also **NELL**, Carlson et al., 2010, for never-ending machine-driven population.)
+
+## 7. Metrology & measurement science
+
+Metrology is the most mature discipline organized entirely around the property this field wants: producing measurements at *known, traceable, documented uncertainty and cost*. Four ideas transfer almost directly. **Uncertainty budgets** — enumerate every error source, classify each as Type A (statistical) or Type B (judgment/prior-based), and combine into one defensible figure — map onto reasoning about an evaluation pipeline's total error. **Traceability** — the unbroken documented chain of calibrations linking a result back to a reference — is the provenance-chain analog that makes estimates auditable. **Calibration against reference standards** and **proficiency testing / interlaboratory comparison** give a template for periodically checking that evaluators (human or model) still agree on shared reference items. Metrology also offers a clean import: the split between *error* (the unknowable true deviation) and *uncertainty* (the quantifiable, reportable dispersion). What does **not** transfer: metrology presumes a stable, SI-anchored physical measurand, whereas evaluation targets are often contested, one-off, and non-stationary — so judgment ("Type B") dominates and traceability must terminate in argument/provenance rather than a physical constant. Relates to [Evaluation as a System](/concepts/the-systems-view/) (known cost/uncertainty; the capability ladder) and consistency checks.
+
+- **Guide to the Expression of Uncertainty in Measurement (GUM)** — JCGM 100:2008, BIPM/JCGM. [link](https://www.bipm.org/en/doi/10.59161/jcgm100-2008e) — The foundational formalism for Type A/Type B uncertainty, combined/expanded uncertainty, and the uncertainty-budget method: the closest existing thing to "report every estimate with a defensible error bar."
+- **International Vocabulary of Metrology (VIM)** — JCGM 200:2012, BIPM/JCGM. [link](https://www.bipm.org/en/doi/10.59161/jcgm200-2012) — Authoritative definitions of *measurand, traceability, calibration, error, uncertainty* — a model glossary discipline to imitate.
+- **Metrological Traceability (FAQ & NIST policy)** — NIST. [link](https://www.nist.gov/metrology/metrological-traceability) — Traceability as a documented unbroken chain of calibrations, each contributing to uncertainty: the provenance-chain blueprint for auditable estimates.
+- **ISO 13528:2022 — Statistical methods for proficiency testing by interlaboratory comparison** — ISO. [link](https://www.iso.org/standard/78879.html) — How to assign reference values, score participants, and detect outlier labs: directly analogous to benchmarking multiple evaluators/models against shared items to detect drift. (Paywalled standard.)
+- **M3003: The Expression of Uncertainty and Confidence in Measurement** — UKAS (Ed. 6, 2024). [PDF](https://www.ukas.com/wp-content/uploads/2023/05/M3003-The-expression-of-uncertainty-and-confidence-in-measurement.pdf) — A working, applied companion to the GUM showing how labs actually build uncertainty budgets under accreditation.
+- **Standards for Educational and Psychological Testing** — AERA/APA/NCME (2014). [overview](https://www.apa.org/science/programs/testing/standards) — The "soft" analog: a mature framework (validity, reliability, fairness) for measuring constructs with *no* physical reference standard — closest to evaluation's contested, non-stationary targets.
+
+## 8. Audit, assurance & ratings
+
+Financial auditing is arguably the oldest *industrialized* evaluation-engineering discipline: centuries ago it had to formalize exactly this field's problems. It defines **assurance** as reducing evaluation risk to an acceptably low level (not perfection); operationalizes "how much accuracy is worth buying" through **materiality** and the **audit-risk model**; solves "evaluate a population from a subset" with explicit **sampling** theory; and standardizes the *object* of evaluation via **internal-control frameworks** (COSO). Most importantly, it has a deep, self-aware literature on **trust under adversarial incentives**: DeAngelo's reputation/quasi-rent theory of why large evaluators resist capture, Coffee's "gatekeeper failure" theory of when reputational intermediaries stop deterring misconduct, and the canonical worked example of a *captured* evaluation system — credit-rating agencies under the issuer-pays model, whose ratings inflation the official 2008-crisis inquiry called a non-optional cog of the collapse. The recurring lesson: the payment/independence structure (the provenance of the evaluator's incentives) dominates technical methodology in deciding whether a high-volume evaluation system stays trustworthy. Relates to [Techniques](/concepts/techniques/) (trust networks), [Epistemic Culture](/concepts/epistemic-culture/) (candidness), and the cost/accuracy frontier.
+
+- **ISAE 3000 (Revised) — Assurance Engagements Other Than Audits/Reviews of Historical Financial Information** — IAASB. [link](https://www.iaasb.org/publications/international-standard-assurance-engagements-isae-3000-revised-assurance-engagements-other-audits-or) — The general-purpose engine for trusted third-party evaluation of *arbitrary* subject matter (ESG, controls, compliance); the closest existing analog to a generic "evaluation engineering" standard.
+- **ISA 200 — Overall Objectives of the Independent Auditor** — IAASB. [PDF](https://www.ifac.org/_flysystem/azure-private/publications/files/A009%202012%20IAASB%20Handbook%20ISA%20200.pdf) — Defines reasonable (not absolute) assurance, the audit-risk model (inherent × control × detection), materiality, skepticism, and independence as preconditions.
+- **ISA 530 — Audit Sampling** — IAASB. [PDF](https://www.icjce.es/images/pdfs/TECNICA/C01%20-%20IFAC/C.01.021%20-%20IAASB%20-%20ISAs%20100-999/ISA530%20(amended)%20-%20Audit%20Sampling.pdf) — The standardized methodology for concluding about a whole population from a sample (sampling risk, sample size, monetary-unit sampling): the cost-vs-accuracy / "evaluate a subset" problem.
+- **Internal Control – Integrated Framework (2013)** — COSO. [link](https://www.coso.org/guidance-on-ic) — A case study in standardizing the *thing being evaluated* so many evaluators can assess it consistently and at known scope.
+- **Auditor Size and Audit Quality** — DeAngelo (1981), *J. Accounting and Economics*. [link](https://ideas.repec.org/a/eee/jaecon/v3y1981i3p183-199.html) — Foundational theory of why evaluators stay honest: quality = probability of detecting *and* reporting a breach; client-specific quasi-rents give larger evaluators more reputational capital at stake.
+- **Understanding Enron: "It's About the Gatekeepers, Stupid"** — Coffee (2002), Columbia Law. [PDF](https://scholarship.law.columbia.edu/cgi/viewcontent.cgi?article=3103&context=faculty_scholarship) — Defines reputational "gatekeepers" and models *when* they fail (when expected liability for acquiescence falls below the benefits). The model of when an evaluation system stops deterring misconduct.
+- **Markets: The Credit Rating Agencies** — White (2010), *J. Economic Perspectives*. [link](https://www.aeaweb.org/articles?id=10.1257%2Fjep.24.2.211), with the **Financial Crisis Inquiry Report** (2011) [PDF](https://www.govinfo.gov/content/pkg/GPO-FCIC/pdf/GPO-FCIC.pdf) — How regulatory reliance plus issuer-pays seeded ratings inflation; the definitive account of a captured, load-bearing evaluation system.
+
+## 9. Information theory
+
+The formal vocabulary for the field's central act: compressing complex, expensive reality into cheaper, decision-usable summaries while preserving value. Shannon established the currency — **entropy** (the information in a source) and **channel capacity** — and **mutual information** / **KL divergence** quantify how much one variable (an evaluation) tells you about another (the truth). The tightest analogy for an evaluation is **rate-distortion theory**: the minimum bits to describe a source while keeping distortion below D — exactly "how cheap can a summary be while preserving most of its value," with the distortion measure standing in for what must be preserved. **Minimum Description Length** and Kolmogorov complexity extend this to model selection (compression-as-inference), and proper scoring rules tie back to information (log score = cross-entropy, so minimizing log loss minimizes KL to the truth). Bayesian **expected information gain** lets you value an experiment *before* running it. **The crucial caveat (Howard):** Shannon information is *not* decision value — an evaluation that sharply reduces uncertainty about an irrelevant variable has high entropy reduction but zero decision value. The field needs both lenses: information theory to measure and price compression, decision/VOI theory to ensure the bits preserved are the ones that change actions. This formalizes the wiki's working definition of an evaluation as "a procedure that converts complex information into simpler information preserving most of the value" (see [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/)).
+
+- **A Mathematical Theory of Communication** — Shannon (1948), *Bell System Technical Journal*. [PDF](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) — The founding paper: entropy, the bit, source/channel coding, channel capacity. The unit in which any evaluation's information content can be measured.
+- **On Information and Sufficiency** — Kullback & Leibler (1951), *Annals of Mathematical Statistics*. [link](https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-22/issue-1/On-Information-and-Sufficiency/10.1214/aoms/1177729694.full) — Introduces relative entropy (KL divergence): "how far is this evaluation's estimate from the truth."
+- **Coding Theorems for a Discrete Source with a Fidelity Criterion** — Shannon (1959). [PDF](https://gwern.net/doc/cs/algorithm/information/1959-shannon.pdf) — Founds rate-distortion theory: the most direct formal model of an evaluation as cheap-but-lossy compression that preserves value.
+- **Modeling by Shortest Data Description (MDL)** — Rissanen (1978), *Automatica*. [link](https://www.sciencedirect.com/science/article/abs/pii/0005109878900055) — Prefer the model that most compresses the data: choosing an evaluation procedure as choosing the shortest faithful description.
+- **On a Measure of the Information Provided by an Experiment** — Lindley (1956), *Annals of Mathematical Statistics*. [link](https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-27/issue-4/On-a-Measure-of-the-Information-Provided-by-an-Experiment/10.1214/aoms/1177728069.full) — Expected (Bayesian) information gain: the way to value an evaluation/experiment *in advance*.
+- **Elements of Information Theory** — Cover & Thomas (2nd ed., 2006), Wiley. [link](https://onlinelibrary.wiley.com/doi/book/10.1002/047174882X) — The standard reference covering entropy, mutual information, capacity, rate-distortion, and Kolmogorov complexity in one place.
+- *See also* **Howard, Information Value Theory (1966)** in §2 — the essential corrective that an evaluation's worth is the decisions it changes, not the entropy it removes.
+
+---
+
+**Scope note.** Nine fields, ~55 entry points — deliberately a curated map, not a survey. Each section's synthesis reflects a single literature sweep and should be treated as a starting orientation. Suggestions and corrections are welcome; candidate fields not yet covered include scientometrics/peer review, accounting measurement theory, reliability engineering, and survey methodology.
+
+
+------------------------------------------------------------
+## Open Problems
+Source: https://evaluation-engineering.quantifieduncertainty.org/open-questions/
+------------------------------------------------------------
+
+*Status: aggregated. This collects the open questions scattered across the wiki into one place. Most are unresolved; many are barely scoped.*
+
+For the higher-level cruxes — the questions that would most redirect the field — see [Cruxes](/start-here/key-questions/). This page is the longer, more granular list, grouped by area.
+
+## Estimation vs. evaluation
+
+- How large a fraction of judgment-bound questions can actually be *demoted* to cheap, verifiable estimation? Where does the divide-and-conquer strategy top out?
+- Can an LLM-produced evaluation ever earn the *trust* that an expert panel's does, or only match its content? Trust, not accuracy, is evaluation's binding requirement.
+
+## The systems view
+
+- What's the right unit and method for measuring an evaluation system's accuracy, throughput, and cost — so that two systems can be compared?
+- How do you detect inconsistency across thousands of outputs automatically, rather than relying on no one noticing?
+- What infrastructure makes *propagation* (re-deriving downstream estimates when an input changes) cheap enough to be the default?
+
+## Components
+
+- **Ontology:** is structuring the questions the real bottleneck, more than answering them? What tooling would make large structured question sets cheap to build and maintain?
+- **Prediction:** how far can aggregation and calibration be pushed when most "predictors" are cheap models rather than scored humans?
+- **Calculation / estimation functions:** what does the tooling (uncertainty, caching, composition, dependency tracking) need to look like for estimation functions to compose at scale?
+
+## Evaluation methods
+
+- **Elicitation:** how to phrase questions for evaluators; how to elicit utility and value judgments cleanly.
+- **Reliability:** how reliable are evaluations in practice, and how do you keep them distinguishable from the forecasts that target them?
+- **Pricing:** how do you put a defensible cost (and value) on a messy, normative, long-horizon evaluation so it can be traded against accuracy?
+- **Composite measures:** how do you make sub-measure choice and weighting non-arbitrary, and robust under adversarial pressure?
+
+## Bridging cheap and expensive judgment
+
+- Do prediction–evaluation systems' incentives survive gaming and deceptive participants?
+- What's the optimal allocation of a fixed evaluation budget across a large question set?
+
+## The environment
+
+- Is epistemic culture genuinely the binding constraint, and is it more tractable than the technical problems?
+- What rollout sequence lets a high-throughput public evaluation system deploy without being shut down or captured?
+- Do automated trust networks actually prevent capture, or just relocate it?
+
+## Demonstrating the value
+
+- **Concrete case studies.** The most-requested missing piece (per [external commentary](/reference/objections/)): a few specific, concrete — even fictional — case studies showing the value generated by better estimation and evaluation. The field is long on architecture and short on worked examples.
+- **Is the bottleneck capable people, not tooling?** Much current evaluation (e.g. grantmaking) is bottlenecked on people able to do the work. Does better tooling relieve that, or just relocate it? Can the work actually be *outsourced*?
+- **How much does it really add?** A skeptical estimate holds that even perfect evaluations might not increase useful work by more than ~2×, because the obviously-good things are already funded. Is that right, and does it change the case?
+
+## The field itself
+
+- Is "evaluation engineering" the right frame and name, or one more provisional label in the [lineage](/start-here/lineage/)?
+- Which domain should the first serious end-to-end system target, to learn the most per dollar?
+- **A capability ladder.** Can we define graded levels of evaluation-system capability (à la "Level 4" autonomy), and formalize inputs/outputs well enough to chart trends and project forward? See [Evaluation as a System](/concepts/the-systems-view/).
+
+---
+
+If you can sharpen, answer, or add to any of these, that's the contribution this wiki most wants.
+
+
+================================================================================
+Generated from 17 chapters.
+Estimated tokens: ~41K
