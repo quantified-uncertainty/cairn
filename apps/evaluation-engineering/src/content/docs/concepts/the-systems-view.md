@@ -59,4 +59,6 @@ The systems view is what makes the other pages cohere:
 - [The Four Components](/concepts/components/) are the reusable parts you assemble a system from.
 - [Evaluation Methods](/concepts/evaluation-methods/) are the menu of ways to fill the *evaluation* slot, each with its own accuracy/quantity/cost profile.
 - [Techniques](/concepts/techniques/) are system-level patterns — most of them ways to get expensive judgment to subsidize cheap judgment, or to keep a large system honest and consistent.
+- [LLMs as Evaluators](/concepts/llm-evaluators/) covers what changes when the cheap labor is a model, and [the worked example](/concepts/worked-example/) prices one system end to end.
+- [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) and [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) are the evidence: ~100 standing systems, and what is repeatedly true across them.
 - [Epistemic Culture](/concepts/epistemic-culture/) is the environment a system has to survive in once its outputs start affecting real people.

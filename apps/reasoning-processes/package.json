@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "node ../../scripts/generate-llm-files.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "gen:llms": "node ../../scripts/generate-llm-files.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

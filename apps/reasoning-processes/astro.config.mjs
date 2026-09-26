@@ -84,7 +84,8 @@ export default defineConfig({
 					label: 'Part IV — The Environment',
 					collapsed: false,
 					items: [
-						{ label: '19–22. Identity, Markets, Law, Culture (planned)', link: '/#the-book' },
+						{ label: '19. Identity & Track Records', slug: 'environment/identity-and-track-records' },
+						{ label: '20–22. Markets, Law, Culture (planned)', link: '/#the-book' },
 					],
 				},
 				{

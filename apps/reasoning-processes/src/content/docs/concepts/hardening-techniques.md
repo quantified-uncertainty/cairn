@@ -36,7 +36,7 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 
 | Threat | Primary defending families | Where coverage is thin |
 |---|---|---|
-| Sybil / identity forgery | Deterrence, Invariance | needs identity infrastructure to bind bonds |
+| Sybil / identity forgery | Deterrence, Invariance | needs [identity infrastructure](/environment/identity-and-track-records/) to bind bonds |
 | Prompt-injection / framing | Invariance, Calibration | — |
 | Persuasion / sycophancy | Incentive-compatibility, Verifiability, Calibration | claims that never resolve |
 | Collusion | Independence, Incentive-compatibility | shared-training correlation |
@@ -78,7 +78,7 @@ The "read their minds" affordance is the highest-leverage and the **least reliab
 - [**Incentive-compatibility**](/concepts/hardening-incentives/) — scoring rules, bets, the persuasion-budget bound.
 - [**Deterrence**](/concepts/hardening-deterrence/) — the inspection-game frontier, tamper-evident logs, provenance bonds.
 
-The capstone — one fully-worked hardened stack on a real task — is planned as the closing chapter of this Part.
+A capstone — one fully-worked hardened stack on a real task — is planned but not yet in the [table of contents](/#the-book); Chapter 18, Certification and Gyms, is where its measurements would live.
 
 ## Open questions
 

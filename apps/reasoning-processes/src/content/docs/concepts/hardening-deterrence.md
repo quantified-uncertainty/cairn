@@ -17,13 +17,13 @@ Make corruption expensive *only when it happens*. A bond posted and forfeited on
 
 ## The limit
 
-Deterrence needs two things the field doesn't yet have for free: **enforceable identity** and **eventually-real detection**. Without identity infrastructure the maximum bond $B$ is effectively zero (an adversary re-keys after forfeiture), and the inspection-game ceiling collapses to the verification regime. Detection must also actually arrive — a tamper-evident log deters nothing if no one ever audits, and a clawback deters nothing on claims that never resolve. And deterrence fails entirely against an adversary who does not internalize the penalty: judgment-proof, one-shot, or indifferent attackers. It is the most powerful family where its preconditions hold and inert where they don't.
+Deterrence needs two things the field doesn't yet have for free: **enforceable identity** and **eventually-real detection**. Without [identity infrastructure](/environment/identity-and-track-records/) the maximum bond $B$ is effectively zero (an adversary re-keys after forfeiture), and the inspection-game ceiling collapses to the verification regime. Detection must also actually arrive — a tamper-evident log deters nothing if no one ever audits, and a clawback deters nothing on claims that never resolve. And deterrence fails entirely against an adversary who does not internalize the penalty: judgment-proof, one-shot, or indifferent attackers. It is the most powerful family where its preconditions hold and inert where they don't.
 
 ## Constructions
 
 | Construction | Bound / estimate | Defends against | Cheapest attack (≈ cost) | Maturity · source |
 |---|---|---|---|---|
-| Randomized deep-audit lottery | safe stake $S^\*=(c+pB)/(1-p)$; $\approx\$52$ below **[standard shape]** | cheap-process corruption up to $S^\*$ | keep each attack's stake just below $S^\*$ (bounded by $S^\*$) | prototyped · (inspection games) |
+| Randomized deep-audit lottery | safe stake $S^\*=(c+pB)/(1-p)$; ≈ \$52 below **[standard shape]** | cheap-process corruption up to $S^\*$ | keep each attack's stake just below $S^\*$ (bounded by $S^\*$) | prototyped · (inspection games) |
 | Merkle-logged reasoning traces | post-hoc tamper detection w.p. $\approx 1$ **[exact]** | silent after-the-fact tampering | be dishonest in the *original* trace; or rely on no one auditing (≈ free if unaudited) | deployed · [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962) |
 | Clawback-with-interest | penalty multiplier on false resolutions **[standard shape]** | claims resolving just past the horizon | be judgment-proof — take the credit and exit before clawback (≈ cost of an exit) | prototyped · [Becker 1968](https://doi.org/10.1086/259394) |
 | Provenance-bonded sources | source stake slashed if later shown corrupt **[heuristic]** | citing sources later revealed biased | stay biased but below the *proof* threshold (low — detection gap) | speculative · ([funding effect](/case-studies/the-funding-effect/)) |
@@ -37,12 +37,12 @@ Deterrence needs two things the field doesn't yet have for free: **enforceable i
 
 $$S < S^\* = \frac{c + pB}{1-p}. \qquad \textbf{[standard shape]}$$
 
-Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.01+0.05\cdot1000)/0.95\approx\$52$ of safe stake bought by a one-in-twenty audit. Strip the bond ($B=0$) and the *same* \$52 safe stake would require an audit rate of $p\approx99.98\%$ — full verification. **Robustness is bounded by the maximum enforceable penalty, not by verification spend** — the formal reason identity/escrow infrastructure is the field's most leveraged missing institution, and the cheapest attack is simply to keep each stake below $S^\*$.
+Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.01+0.05\cdot1000)/0.95\approx 52$, so about \$52 of safe stake bought by a one-in-twenty audit. Strip the bond ($B=0$) and the *same* \$52 safe stake would require an audit rate of $p\approx99.98\%$ — full verification. **Robustness is bounded by the maximum enforceable penalty, not by verification spend** — the formal reason identity/escrow infrastructure is the field's most leveraged missing institution, and the cheapest attack is simply to keep each stake below $S^\*$.
 
 **Provenance bonds and the funding-effect discount.** Make every cited source post a stake, slashed if it is later shown corrupt. This prices the [funding-effect](/case-studies/the-funding-effect/) likelihood-ratio discount directly into the mechanism: a source whose favorable conclusions are $k$ times more likely regardless of truth carries an attenuated likelihood ratio, and the bond makes that expected attenuation a cost the source internalizes ex ante — the deterrence-side counterpart to the [identity-masking gap](/concepts/hardening-invariance/) that *measures* the same bias. Its cheapest defeat is the detection gap: a source biased but never *proven* corrupt keeps its bond.
 
 ## Open questions
 
-- How much enforceable penalty $B$ is reachable without identity infrastructure, and how much does that infrastructure raise $S^\*$ across the [Process Catalogue's](/concepts/process-catalogue/) rows?
+- How much enforceable penalty $B$ is reachable without identity infrastructure (see [Identity and Track Records](/environment/identity-and-track-records/#the-quantity-enforceable-penalty) for the decomposition $B_{\text{eff}} \approx B_{\text{escrow}} + \Delta R$ and why standing is weaker than escrow), and how much does that infrastructure raise $S^\*$ across the [Process Catalogue's](/concepts/process-catalogue/) rows?
 - What is the minimal viable identity/escrow layer that makes bonds binding for AI producers?
 - How do you deter an adversary who is judgment-proof or playing a one-shot game — is there a deterrence analogue that doesn't rely on a repeated relationship?

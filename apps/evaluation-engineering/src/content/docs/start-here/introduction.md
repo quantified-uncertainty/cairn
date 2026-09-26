@@ -35,14 +35,7 @@ Calling it engineering is a deliberate move away from two adjacent framings:
 
 The mental models that fit best come from systems disciplines: **lean manufacturing, software architecture, engineering management**. The questions are throughput, cost-per-item, latency, consistency, failure modes, and how local changes propagate through a network of dependent estimates. When you produce evaluations at scale, optimizing any single evaluation is usually the wrong objective; you optimize the system.
 
-A representative list of system-level questions:
-
-- Who staffs the analyst team, and what is the cost of their time per item?
-- What data infrastructure does the system stand on?
-- Who is the audience, and what decisions are the outputs meant to support?
-- How does an update to one estimate propagate to the estimates that depend on it?
-- How do we keep ten thousand estimates *consistent* with each other?
-- How is the whole thing funded, and what keeps it from being captured?
+The system-level questions (who staffs it, what data it stands on, how updates propagate, how ten thousand outputs stay consistent, what keeps it from being captured) are laid out in [Evaluation as a System](/concepts/the-systems-view/#the-questions-that-define-a-system).
 
 ## The core split: estimation vs. evaluation
 
@@ -59,7 +52,7 @@ The sharper, more provocative version of the thesis is that **highly optimized e
 
 ## A capability ladder
 
-It would help the field to be able to *grade* evaluation systems the way self-driving has "Level 4 autonomy." A shared scale — plus a formalization of the inputs and outputs of estimation/evaluation work — would let us draw historical trends, make projections, and say concretely how far along a given system is. No such ladder exists yet; building one is open work.
+The field has no shared way to *grade* an evaluation system, the way self-driving has "Level 4." Building one is open work; see [Evaluation as a System](/concepts/the-systems-view/#grading-systems-a-capability-ladder).
 
 ## Why this is worth a field
 

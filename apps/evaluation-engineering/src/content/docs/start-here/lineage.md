@@ -26,7 +26,7 @@ The 2021–22 version had a hole it was honest about: the symbolic machinery nee
 
 ## The bridge draft: "Evaluations Are All You Need"
 
-Between the 2021–22 series and this wiki sits a later, still-in-progress redraft of the founding post, titled **"(Highly Optimized) Evaluations Are All You Need"** (drafted in September, LLM-aware). It keeps the architecture but shifts the emphasis in three ways that this wiki inherits directly:
+Between the 2021–22 series and this wiki sits a later, still-in-progress redraft of the founding post, titled **"(Highly Optimized) Evaluations Are All You Need"** (an unpublished, LLM-era draft). It keeps the architecture but shifts the emphasis in three ways that this wiki inherits directly:
 
 - **Evaluation moves to the center.** Where the original treated *estimation* as the more fundamental operation, the redraft argues that *evaluation* is plausibly the bulk of the valuable output — and that "highly optimized" evaluation is the thing to chase. This wiki's name and framing follow that move.
 - **It adds use cases and a scale estimate.** Charity evaluation/prioritization joins futarchy, certificates of impact, felicific calculators, and Guesstimate; the effort is sized at roughly autonomous-driving / ending-aging scale (~\$100B over 20 years), with companies expected to do most of it. See [Why It Matters](/start-here/use-cases/).

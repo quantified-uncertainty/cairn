@@ -9,7 +9,7 @@ sidebar:
 
 The [evaluation component](/concepts/components/) needs concrete methods. This page is the menu. Each method is a different point in the [accuracy × quantity × cost](/concepts/the-systems-view/) trade-off, and each carries a different *trust* profile — which matters, because an evaluation only moves decisions if its audience believes it.
 
-Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those.
+Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) shows each one deployed at scale, with its documented failure. The strongest lesson there is that a method's *funding model* (who pays the evaluator) predicts its trustworthiness better than the method itself does.
 
 ## Expert panels
 
@@ -50,7 +50,7 @@ Profile: **high setup cost, very low marginal cost, scalable, trust limited by g
 
 Objective, low-marginal-cost metrics. Their strengths are exactly that: cheap and trustable. Their weakness is domain — a statistical measure is only as good as the match between what's easy to measure and what actually matters, and the classic failure mode is organizations measuring what's convenient rather than what's decision-relevant.
 
-Statistical measures are growing faster than any other method, because they're so cheap on the margin. Most existing forecasting systems already lean on them — but they rarely *invent* new ones, and the space of *possible* useful measures vastly exceeds the set in use. Discovering and implementing new measures is plausibly high-leverage work. Profile: **very low marginal cost, high quantity, high trust where applicable, narrow domain.**
+Statistical measures are plausibly the fastest-growing method, because they're so cheap on the margin (a conjecture; nobody has counted). Most existing forecasting systems already lean on them — but they rarely *invent* new ones, and the space of *possible* useful measures vastly exceeds the set in use. Discovering and implementing new measures is plausibly high-leverage work. Profile: **very low marginal cost, high quantity, high trust where applicable, narrow domain.**
 
 ## Composite measures
 

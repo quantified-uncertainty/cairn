@@ -45,32 +45,39 @@ export default defineConfig({
 						{ label: '2. Estimation vs. Evaluation', slug: 'start-here/estimation-vs-evaluation' },
 						{ label: '3. Why It Matters — Use Cases', slug: 'start-here/use-cases' },
 						{ label: '4. Cruxes', slug: 'start-here/key-questions' },
-						{ label: 'Lineage', slug: 'start-here/lineage' },
 					],
 				},
 				{
 					label: 'Part I — The Systems View',
 					collapsed: false,
 					items: [
-						{ label: '4. Evaluation as a System', slug: 'concepts/the-systems-view' },
-						{ label: '5. The Four Components', slug: 'concepts/components' },
-						{ label: 'Evaluation Systems in the Wild', slug: 'concepts/evaluation-systems-in-the-wild' },
-						{ label: 'Patterns & Failure Modes', slug: 'concepts/patterns-and-failure-modes' },
+						{ label: '5. Evaluation as a System', slug: 'concepts/the-systems-view' },
+						{ label: '6. The Four Components', slug: 'concepts/components' },
 					],
 				},
 				{
 					label: 'Part II — Methods & Techniques',
 					collapsed: false,
 					items: [
-						{ label: '6. Evaluation Methods', slug: 'concepts/evaluation-methods' },
-						{ label: '7. Techniques', slug: 'concepts/techniques' },
+						{ label: '7. Evaluation Methods', slug: 'concepts/evaluation-methods' },
+						{ label: '8. Techniques', slug: 'concepts/techniques' },
+						{ label: '9. LLMs as Evaluators', slug: 'concepts/llm-evaluators' },
+						{ label: 'Interlude: A Worked Example', slug: 'concepts/worked-example' },
 					],
 				},
 				{
-					label: 'Part III — The Environment',
+					label: 'Part III — Evidence from the Wild',
 					collapsed: false,
 					items: [
-						{ label: '8. Epistemic Culture', slug: 'concepts/epistemic-culture' },
+						{ label: '10. Evaluation Systems in the Wild', slug: 'concepts/evaluation-systems-in-the-wild' },
+						{ label: '11. Patterns & Failure Modes', slug: 'concepts/patterns-and-failure-modes' },
+					],
+				},
+				{
+					label: 'Part IV — The Environment',
+					collapsed: false,
+					items: [
+						{ label: '12. Epistemic Culture', slug: 'concepts/epistemic-culture' },
 					],
 				},
 				{
@@ -79,6 +86,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Glossary', slug: 'reference/glossary' },
 						{ label: 'Objections & FAQ', slug: 'reference/objections' },
+						{ label: 'Lineage', slug: 'start-here/lineage' },
 						{ label: 'Related Work (QURI)', slug: 'reference/related-work' },
 						{ label: 'Adjacent Fields & Literature', slug: 'reference/adjacent-fields' },
 						{ label: 'Open Problems', slug: 'open-questions' },
