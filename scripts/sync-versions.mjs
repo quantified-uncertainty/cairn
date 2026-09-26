@@ -22,8 +22,9 @@ const rootDir = join(__dirname, '..');
 // Apps that have version.json files
 const apps = [
   'delegation-risk',
-  'longterm',
-  'meta'
+  'evaluation-engineering',
+  'meta',
+  'reasoning-processes'
 ];
 
 /**

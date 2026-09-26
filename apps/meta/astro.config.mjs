@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://meta.vercel.app',
+  site: 'https://cairn-meta.vercel.app',
   integrations: [
     starlight({
       title: 'LongtermWiki Meta',
