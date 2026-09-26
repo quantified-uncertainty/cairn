@@ -38,3 +38,6 @@ jobs:
 
       - name: Build evaluation-engineering
         run: pnpm --filter evaluation-engineering build
+
+      - name: Check links, anchors, and KaTeX in built wikis
+        run: python3 scripts/check-built-links.py
