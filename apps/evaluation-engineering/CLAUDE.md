@@ -1,6 +1,6 @@
 # Evaluation Engineering Wiki
 
-Astro/Starlight research wiki on **evaluation engineering**: the discipline of designing, building, and operating systems that produce large numbers of estimates and evaluations at known cost. Sibling to the `strong-reasoners` (Robust Reasoning Processes) wiki; both descend from the same 2021–22 "advanced / symbolic evaluation systems" corpus. Part of the CAIRN pnpm monorepo.
+Astro/Starlight research wiki on **evaluation engineering**: the discipline of designing, building, and operating systems that produce large numbers of estimates and evaluations at known cost. Sibling to the `reasoning-processes` (Robust Reasoning Processes, https://reasoning-processes.quantifieduncertainty.org) wiki; both descend from the same 2021–22 "advanced / symbolic evaluation systems" corpus. Part of the CAIRN pnpm monorepo.
 
 ## Commands
 
@@ -28,7 +28,7 @@ public/                 # Static assets (incl. generated llms-full.txt)
 
 ## Source corpus
 
-The intellectual source material lives in the **sibling** wiki's gitignored reference corpus at `apps/strong-reasoners/notes/estimation-theory/` (Ozzie's 2021–22 series). It is NOT in this app and must not be copied or committed here. Read `apps/strong-reasoners/notes/README.md` first if you need provenance. When wiki pages and those notes disagree, the wiki is the current position.
+The intellectual source material lives in the **sibling** wiki's gitignored reference corpus at `apps/reasoning-processes/notes/estimation-theory/` (Ozzie's 2021–22 series). It is NOT in this app and must not be copied or committed here. Read `apps/reasoning-processes/notes/README.md` first if you need provenance. When wiki pages and those notes disagree, the wiki is the current position.
 
 ## Sidebar Configuration
 
