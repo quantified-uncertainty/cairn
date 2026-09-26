@@ -8,7 +8,7 @@ description: Getting started with LongtermWiki
 LongtermWiki is a monorepo framework for building LLM-assisted knowledge bases. It provides:
 
 1. **Shared UI components** (`@cairn/ui`) - Graph visualizations, shadcn/ui components
-2. **Shared design tokens** (`@cairn/tailwind`) - Consistent theming across sites
+2. **Shared Starlight components** (`@cairn/starlight`) - Footer and layout pieces shared across sites
 3. **Site templates** - Astro + Starlight configurations
 
 ## Monorepo Structure
@@ -16,11 +16,16 @@ LongtermWiki is a monorepo framework for building LLM-assisted knowledge bases. 
 ```
 cairn/
 ├── apps/
-│   ├── longterm/     # AI safety knowledge base
-│   └── meta/         # This documentation site
+│   ├── delegation-risk/         # Delegation Risk mini-textbook
+│   ├── evaluation-engineering/  # Evaluation Engineering wiki
+│   ├── reasoning-processes/     # Robust Reasoning Processes wiki
+│   └── meta/                    # This documentation site
 ├── packages/
-│   ├── ui/           # @cairn/ui - shared components
-│   └── tailwind/     # @cairn/tailwind - shared theme
+│   ├── config/       # @cairn/config - shared ESLint config
+│   ├── starlight/    # @cairn/starlight - shared Starlight components
+│   └── ui/           # @cairn/ui - shared components
+├── starters/
+│   └── research-wiki/  # degit-able template for new wikis
 └── pnpm-workspace.yaml
 ```
 

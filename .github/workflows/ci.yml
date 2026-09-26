@@ -27,24 +27,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build data (longterm)
-        run: pnpm --filter longterm build:data
-
-      - name: Check schema docs are up to date
-        run: |
-          pnpm --filter longterm docs:schema
-          if [[ -n $(git status --porcelain apps/longterm/src/content/docs/internal/schema/) ]]; then
-            echo "::error::Schema docs are out of date. Run 'npm run docs:schema' in apps/longterm and commit the changes."
-            git diff apps/longterm/src/content/docs/internal/schema/
-            exit 1
-          fi
-
-      - name: Validate longterm
-        run: pnpm --filter longterm validate:ci
-
-      - name: Build longterm
-        run: pnpm --filter longterm build
-
       - name: Build meta
         run: pnpm --filter meta build
 
@@ -53,3 +35,6 @@ jobs:
 
       - name: Build reasoning-processes
         run: pnpm --filter reasoning-processes build
+
+      - name: Build evaluation-engineering
+        run: pnpm --filter evaluation-engineering build

@@ -3,7 +3,7 @@ import tseslint from 'typescript-eslint';
 
 // Shared base ESLint flat config for all Cairn apps.
 // Apps import this directly (`import baseConfig from '@cairn/config/eslint'`),
-// or spread it and append app-specific blocks (see apps/longterm).
+// or spread it and append app-specific blocks.
 export const baseConfig = tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
