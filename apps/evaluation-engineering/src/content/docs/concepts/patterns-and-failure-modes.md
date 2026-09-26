@@ -37,7 +37,7 @@ The same law reappears in AI as **specification gaming / reward hacking** ([Krak
 
 **Seen in the wild:** US News rankings (reactivity — schools restructure around the formula; [a 2022–23 revolt](https://www.usnews.com/best-colleges) saw many top law/medical schools withdraw); Journal Impact Factor (adversarial — coercive self-citation, [Wilhite & Fong, *Science* 2012](https://doi.org/10.1126/science.1212540); citation cartels); credit ratings (adversarial — issuer "ratings shopping"); NHS waiting-time gaming; cardiac-surgery report cards (cobra effect — surgeons avoid sick patients, below).
 
-> **Design implication.** A robust evaluation must be *invariant to everything but the truth it measures* — the organizing concern of the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki. Reactivity says the feedback loop (being measured → optimizing the proxy) is the enemy; provenance and control of the metric definition is the master lever.
+> **Design implication.** A robust evaluation must be *invariant to everything but the truth it measures* — the organizing concern of the sibling [RRP](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/) wiki's hardening chapters. Reactivity says the feedback loop (being measured → optimizing the proxy) is the enemy; provenance and control of the metric definition is the master lever.
 
 ## 2. The ratings you collect are a biased sample
 

@@ -19,9 +19,9 @@ Why it works: expensive evaluation gives you *trust and ground truth*; cheap pre
 
 The pattern can chain into **multiple training steps**. Once you have 10,000 human predictions calibrated against a small evaluated subset, those predictions themselves become a labeled dataset — you can train cheaper ML predictors on them, evaluate *those* against a fresh subset, and repeat. Each step trades a little accuracy for a large drop in marginal cost. (The earlier write-up called this "prediction-augmented evaluation systems"; "prediction–evaluation" is the same idea, renamed for legibility.)
 
-This is elegant on paper and surely messier in practice. The live questions: does the incentive hold up under gaming, and what happens when some participants are actively deceptive? (See [Cruxes](/start-here/key-questions/), and the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki's work on oversight under adversarial conditions.)
+This is elegant on paper and surely messier in practice. The live questions: does the incentive hold up under gaming, and what happens when some participants are actively deceptive? (See [Cruxes](/start-here/key-questions/), and the sibling RRP wiki's [taxonomy of oversight protocols](https://reasoning-processes.quantifieduncertainty.org/concepts/oversight-protocols/) and [attack model for untrustworthy sources](https://reasoning-processes.quantifieduncertainty.org/concepts/untrustworthy-sources/).)
 
-This isn't only theory. The idea was first written up as [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018), and it has been tested: in [*Amplifying generalist research via forecasting*](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019), crowd forecasters predicting a trusted evaluator recovered a large share (reported ~73%) of the evaluator's benefit-cost signal at much lower cost. See [Related Work](/reference/related-work/) for the empirical record and its caveats.
+This isn't only theory. The idea was first written up as [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018) and tested in [*Amplifying generalist research via forecasting*](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019). The result is instructive in both directions: 19 network-adjacent forecasters predicting a trusted evaluator recovered **87% of the value** of her direct evaluation, but at **120% of her cost** (a 72% benefit/cost ratio); cheaper online crowdworkers, at 52% of the cost, recovered *negative* value — their aggregate was worse than her prior. Amplification worked; cheap amplification did not, yet. The authors framed it as an existence proof, not a cost-effectiveness result. See [Related Work](/reference/related-work/) for the rest of the empirical record.
 
 ## Scalable forecasting over structured ontologies
 
@@ -41,7 +41,7 @@ Estimation functions matter for the systems view because they're what make [prop
 
 ## Automated trust networks
 
-Centralized "truth agencies" tend to be more corrupt and less competent than their reputations suggest, and over-trust in them is a real hazard. The proposed alternative is **networks of trust and reputation**: many evaluation agencies that evaluate the big ones and each other, with at least a few good ones earning appropriate trust from the parties that matter.
+Centralized "truth agencies" are single points of capture, and the record shows them captured: issuer-paid credit ratings before 2008, and the World Bank's *Doing Business* index, discontinued in 2021 after audits found deliberate data manipulation (see [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does)). Over-trust in them is a real hazard. The proposed alternative is **networks of trust and reputation**: many evaluation agencies that evaluate the big ones and each other, with at least a few good ones earning appropriate trust from the parties that matter.
 
 The more advanced version: let agencies write *functions that adjust other agencies' outputs*. Trusted group X might accept group Y's economic forecasts but believe Y is overconfident about the steel industry — and so apply an automatic, declared correction to everything Y publishes. This turns "who do you trust" into composable, inspectable structure rather than a binary.
 
@@ -49,7 +49,16 @@ This is the technique that most directly addresses the capture/corruption crux, 
 
 ## Cultural change toward candidness
 
-The least technical technique, and possibly the most important — important enough to get [its own page](/concepts/epistemic-culture/). No amount of tooling helps if the community is too uncomfortable to use it. Imagine an agency that, starting tomorrow, published "pretty good" impact estimates for every politician, bill, organization, and person. Even if the estimates were sound, the rollout would be chaotic, the pushback fierce, and the agency likely shut down or captured. Getting from here to a world where high-throughput public evaluation is *tolerated* is partly a cultural-engineering problem, not just a technical one.
+The least technical technique, and possibly the most important. No tooling helps if the evaluated parties can shut the system down: a high-throughput public evaluator faces pushback, libel suits, and capture before it stabilizes. Getting to a world where such evaluation is *tolerated* is partly a cultural-engineering problem. It has [its own chapter](/concepts/epistemic-culture/).
+
+## Robust aggregation and format design
+
+The 2021–22 techniques above assume someone has already decided how raw judgments become a score. The empirical literature says that choice is never neutral ([Patterns & Failure Modes §5](/concepts/patterns-and-failure-modes/#5-the-scale-and-the-aggregation-rule-are-not-neutral)), and it supplies defaults an evaluation system should start from:
+
+- **Regularize sparse items.** A naive mean ranks a 2-vote item above a 500-vote one. Use a Wilson lower bound for binary votes or Bayesian shrinkage toward a prior for scores.
+- **Prefer pairwise comparison when raters are noisy.** "Is A better than B?" is more reliable than "rate A from 1 to 5", and Bradley–Terry-style models recover a scale from the comparisons. QURI's [relative value functions](/reference/related-work/#evaluation-methods--utility-elicitation) are this idea with uncertainty attached.
+- **Pool robustly.** A mean of judges can be dragged anywhere by one bad input; a median or trimmed mean cannot. The sibling RRP wiki develops this as [breakdown-point ratings](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/#worked-bound).
+- **Verify who evaluates.** Across ~100 real systems, the recurring fix for fake and brigaded ratings is tying each rating to a verified purchase, stay, or identity ([Patterns §4](/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race)).
 
 ## How these fit together
 

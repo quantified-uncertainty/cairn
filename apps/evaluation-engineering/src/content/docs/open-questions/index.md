@@ -31,6 +31,12 @@ For the higher-level cruxes — the questions that would most redirect the field
 - **Pricing:** how do you put a defensible cost (and value) on a messy, normative, long-horizon evaluation so it can be traded against accuracy?
 - **Composite measures:** how do you make sub-measure choice and weighting non-arbitrary, and robust under adversarial pressure?
 
+## LLMs as evaluators
+
+- For which judgment-bound question classes has LLM–panel agreement actually been measured, and how does it compare with panel–panel agreement? See [LLMs as Evaluators](/concepts/llm-evaluators/#open-questions).
+- How fast does an LLM judge's accuracy decay once the evaluated parties optimize against it, and how much does randomized auditing slow the decay?
+- How much independence does a mixed human–model panel buy over a model-only panel, per dollar?
+
 ## Bridging cheap and expensive judgment
 
 - Do prediction–evaluation systems' incentives survive gaming and deceptive participants?

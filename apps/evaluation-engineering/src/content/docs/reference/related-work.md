@@ -16,7 +16,7 @@ Two things in this corpus are scarce and worth foregrounding: **empirical result
 
 These are quotable, dated experiments — exactly the "concrete case studies" the field is short on (see [Objections & FAQ](/reference/objections/)).
 
-- **Amplifying generalist research via forecasting**, [Part 1](https://forum.effectivealtruism.org/posts/ZCZZvhYbsKCRRDTct/part-1-amplifying-generalist-research-via-forecasting-models) (models/challenges) and [Part 2](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (results) (Gooen, Sempere, et al., 2019). The flagship test of prediction–evaluation: crowd forecasters predicting a trusted evaluator recovered a large share (reported ~73%) of the evaluator's benefit-cost signal, far cheaper. One of very few real experiments in this space.
+- **Amplifying generalist research via forecasting**, [Part 1](https://forum.effectivealtruism.org/posts/ZCZZvhYbsKCRRDTct/part-1-amplifying-generalist-research-via-forecasting-models) (models/challenges) and [Part 2](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (results) (Gooen, Sempere, et al., 2019). The flagship test of prediction–evaluation, and one of very few real experiments in this space. Network-adjacent forecasters predicting a trusted evaluator recovered 87% of her value at 120% of her cost (benefit/cost 72%); online crowdworkers were cheaper (52% of cost) but had negative value. Framed by its authors as an existence proof, not a cost-effectiveness result.
 - **An experiment to evaluate the value of one researcher's work** ([EA Forum, 2019](https://forum.effectivealtruism.org/posts/udGBF8YWshCKwRKTp/an-experiment-to-evaluate-the-value-of-one-researcher-s-work)). Elicitation of value estimates over research outputs.
 - **Predicting the value of small altruistic projects** (Nuño Sempere, 2020). Proof-of-concept that forecasters can discriminate project value pre-execution — with a documented failure mode: systematic optimism.
 - **Relative-value elicitation experiments** (Open Phil AI-safety grants, 2022; valuing research works, 2022). Real data on inter-rater disagreement and how it aggregates.
@@ -49,8 +49,8 @@ These are quotable, dated experiments — exactly the "concrete case studies" th
 
 ## Resolution & oversight
 
-- **Can We Place Trust in Post-AGI Forecasting Evaluations?** (2019) → **AI for Resolving Forecasting Questions / Epistemic Selection Protocols** (2025). The deferred-resolution thread: how to ground evaluations when the resolver is itself an AI. Overlaps heavily with the sibling [RRP](https://github.com/quantified-uncertainty/cairn) wiki.
+- **Can We Place Trust in Post-AGI Forecasting Evaluations?** (2019) → **AI for Resolving Forecasting Questions / Epistemic Selection Protocols** (2025). The deferred-resolution thread: how to ground evaluations when the resolver is itself an AI. Overlaps heavily with the sibling RRP wiki's [What Grounds an Oversight Protocol?](https://reasoning-processes.quantifieduncertainty.org/concepts/oversight-protocols/#resolution-grounded-markets-and-prediction-games).
 
 ---
 
-**A note on sourcing.** Specific figures above (e.g. the ~73% amplification result) are quoted from QURI's published posts and the wiki's internal corpus survey; check them against the linked originals before relying on them. This list is not exhaustive — additions welcome.
+**A note on sourcing.** Specific figures above are quoted from QURI's published posts; check them against the linked originals before relying on them. The amplification figures were re-checked against the Part 2 results table in September 2026 — an earlier version of this wiki misreported them as "~73%, far cheaper". This list is not exhaustive — additions welcome.

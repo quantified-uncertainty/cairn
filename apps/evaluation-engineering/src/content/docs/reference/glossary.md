@@ -37,6 +37,12 @@ description: Key terms used across the evaluation-engineering wiki.
 
 **Automated trust network** — A web of evaluation agencies that evaluate each other and can apply declared, composable adjustments to each other's outputs, as an alternative to a single centralized truth agency. See [Techniques](/concepts/techniques/).
 
+**LLM judge** — A language model used to score or compare outputs in place of a human evaluator. Its validity is indexed to the optimization pressure it was validated under. See [LLMs as Evaluators](/concepts/llm-evaluators/).
+
+**Agreement baseline** — The rate at which two independent expert panels agree; the right bar for a cheap evaluator is model–panel agreement near panel–panel agreement, not perfection. See [A Worked Example](/concepts/worked-example/).
+
+**Correlated error** — Evaluators that err on the same items; averaging them buys confidence without accuracy. Pronounced among LLMs that share training pipelines. See [LLMs as Evaluators](/concepts/llm-evaluators/#the-two-system-level-failures).
+
 **Partial evaluation** — A method (e.g. a survey or statistical measure) used as an input or proxy feeding a fuller judgment rather than standing in for it. See [Evaluation Methods](/concepts/evaluation-methods/).
 
 **Composite measure** — An index, scale, or typology combining narrower measures into an approximation of a broader variable. See [Evaluation Methods](/concepts/evaluation-methods/).
