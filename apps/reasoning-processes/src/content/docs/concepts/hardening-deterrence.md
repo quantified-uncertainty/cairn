@@ -43,6 +43,6 @@ Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.0
 
 ## Open questions
 
-- How much enforceable penalty $B$ is reachable without identity infrastructure (see [Identity and Track Records](/environment/identity-and-track-records/#the-quantity-enforceable-penalty) for the decomposition $B_{\text{eff}} \approx B_{\text{escrow}} + R$), and how much does that infrastructure raise $S^\*$ across the [Process Catalogue's](/concepts/process-catalogue/) rows?
+- How much enforceable penalty $B$ is reachable without identity infrastructure (see [Identity and Track Records](/environment/identity-and-track-records/#the-quantity-enforceable-penalty) for the decomposition $B_{\text{eff}} \approx B_{\text{escrow}} + \Delta R$ and why standing is weaker than escrow), and how much does that infrastructure raise $S^\*$ across the [Process Catalogue's](/concepts/process-catalogue/) rows?
 - What is the minimal viable identity/escrow layer that makes bonds binding for AI producers?
 - How do you deter an adversary who is judgment-proof or playing a one-shot game — is there a deterrence analogue that doesn't rely on a repeated relationship?

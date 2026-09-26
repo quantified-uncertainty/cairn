@@ -62,9 +62,11 @@ impressions are made by Chapters 1–7, not Part IV.
   amplification citation restated with its cost side (3).
 - **New Ch. 19, Identity and Track-Record Infrastructure.** It covers:
   - binding vs. counting;
-  - the enforceable-penalty decomposition $B_{\text{eff}} \approx B_{\text{escrow}} + R$,
-    priced with the Deterrence chapter's own $S^\*$ formula ("a track
-    record is a bond that cannot be withdrawn");
+  - the enforceable-penalty decomposition $B_{\text{eff}} \approx B_{\text{escrow}} + \Delta R$,
+    priced with the Deterrence chapter's own $S^\*$ formula, and why
+    standing is weaker than escrow: it is private, only partly lost on
+    detection, and worthless in the last round ("a bond that can't be
+    refunded but can be spent once");
   - what makes a track record expensive to fake;
   - what changes for copyable AI processes (continuity cheap, counting
     expensive);
@@ -116,7 +118,9 @@ needs a diff reviewed by the author, not a bulk rewrite.
 The book's own stated central project. Start where the data is cheapest:
 
 1. **Label-swap neutrality** for 3–5 LLM judges: a no-ground-truth
-   measurement of $b_\pi(D)$ that can run this month.
+   measurement of $b_\pi(D)$. The harness is built and validated against
+   planted biases ([`experiments/label-swap/`](experiments/label-swap/README.md));
+   running it needs an API key and costs cents.
 2. **Funding-effect likelihood-ratio discount** from the existing
    meta-science corpus (the case study's "Toward a measured version").
 3. **Correlated error** across model families, to put a number on the
