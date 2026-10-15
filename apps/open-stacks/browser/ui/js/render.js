@@ -106,21 +106,18 @@ function bitmapCanvas(bm) {
   if (ctx) ctx.transferFromImageBitmap(bm); else { c.getContext('2d').drawImage(bm, 0, 0); bm.close?.(); }
   return c;
 }
-/** Panels cut from an image (a Blob) showing region `ibox` of the page, at `fw` x `fh` px a full page. */
-async function panelsFromImage(blob, k, ibox, fw, fh, iw, ih, box, gutter, extra) {
-  const parts = partsOf(box, gutter);
+/** Panels cut from a decoded image showing region `ibox` of the page (the whole
+ *  page for scans); each crop is an ImageBitmap shown without a copy. Images come
+ *  through loadImg, so a page seen again is in the browser's memory cache. */
+async function panelsFromImage(im, k, ibox, box, gutter, extra) {
+  const iw = im.naturalWidth, ih = im.naturalHeight;
+  const fw = iw / (ibox[2] - ibox[0]), fh = ih / (ibox[3] - ibox[1]);
   const rect = (b) => {
     const sx = Math.max(0, Math.round((b.x0 - ibox[0]) * fw)), sy = Math.max(0, Math.round((b.y0 - ibox[1]) * fh));
     return [sx, sy, Math.max(1, Math.min(iw - sx, Math.round((b.x1 - b.x0) * fw))), Math.max(1, Math.min(ih - sy, Math.round((b.y1 - b.y0) * fh)))];
   };
-  let bms;
-  if (parts.length === 1 && iw && ih) bms = [await createImageBitmap(blob, ...rect(parts[0].box))];
-  else {
-    const all = await createImageBitmap(blob);
-    if (!iw) { iw = all.width; ih = all.height; fw = iw / (ibox[2] - ibox[0]); fh = ih / (ibox[3] - ibox[1]); }
-    bms = await Promise.all(parts.map((x) => createImageBitmap(all, ...rect(x.box))));
-    all.close?.();
-  }
+  const parts = partsOf(box, gutter);
+  const bms = await Promise.all(parts.map((x) => createImageBitmap(im, ...rect(x.box))));
   return parts.map((x, j) => ({ k, canvas: bitmapCanvas(bms[j]), box: x.box, srcW: Math.round(fw), srcH: Math.round(fh), ...(x.part ? { part: x.part } : {}), ...extra }));
 }
 
@@ -158,17 +155,11 @@ function renderPage1(it, k, key) {
       const d = displayFor(pf, k, RENDER_H);
       if (d) {
         try {
-          const r = await fetch(assetUrl(pf, 'display', k));
-          if (!r.ok) throw new Error('gone');
-          const fw = d.w / (d.box[2] - d.box[0]), fh = d.h / (d.box[3] - d.box[1]);
-          return await panelsFromImage(await r.blob(), k, d.box, fw, fh, d.w, d.h, cropOf(pf, k), pg.gut, { pdfScale: fw / pg.w, src: 'asset' });
-        } catch { assetMissing(pf, 'display', k); /* fall back to rendering */ }
+          const im = await loadImg(assetUrl(pf, 'display', k));
+          return await panelsFromImage(im, k, d.box, cropOf(pf, k), pg.gut, { pdfScale: d.w / (d.box[2] - d.box[0]) / pg.w, src: 'asset' });
+        } catch { assetMissing(pf, 'display', k); /* gone (evicted): render instead */ }
       }
-      if (it.kind === 'scan') {
-        const r = await fetch(P(scanUrl(it, k, SCAN_W)));
-        if (!r.ok) throw new Error('image unavailable');
-        return panelsFromImage(await r.blob(), k, [0, 0, 1, 1], 0, 0, 0, 0, state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
-      }
+      if (it.kind === 'scan') return panelsFromImage(await loadImg(P(scanUrl(it, k, SCAN_W))), k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
     }
     if (it.kind === 'scan') {
       const im = await loadImg(P(scanUrl(it, k, SCAN_W)));

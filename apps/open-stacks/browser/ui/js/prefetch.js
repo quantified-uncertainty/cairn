@@ -3,7 +3,7 @@
 import { items } from './corpus.js';
 import { state } from './state.js';
 import { openDoc, peekDoc, isFlow, scanUrl } from './docs.js';
-import { renderPage } from './render.js';
+import { renderPage, SCAN_W } from './render.js';
 import { on } from './util.js';
 import { profileOf, loadProfiles, snapStart, spreadAt, preloadSprite, cropKey } from './profile.js';
 
@@ -122,13 +122,14 @@ export function planAround(i, s) {
   loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x))).catch(() => {});
   // The server works further ahead, into its disk cache, in priority bands:
   // sharp pages near you, then the next few items' first spreads, then sharp
-  // pages further out, then the later items, then small pages around you.
+  // pages further out, then the later items. Once you stay on a scan, the
+  // whole book follows behind these (feed.js warmBook).
   // An Internet Archive page costs ~0.6 s of the datanode's time whatever its
-  // size (measured), so each page comes in two sizes only: w1000 to read and
-  // w200 for the strip, track and riffle. The server answers the strip's w120
-  // and the feed's w400 placeholder from those (cache.mjs alias()), so w400 and
-  // w120 are not fetched here. Pages go in the order you will reach them.
-  const near = [], mid = [], thumbs = [], nextItems = [], laterItems = [];
+  // size (measured), so each page is fetched once, at w1000, and the smaller
+  // sizes (the strip's w120, the track's w200, a w400) are served from it
+  // (cache.mjs alias(); merge() folds queued small ones into it). Pages go in
+  // the order you will reach them.
+  const near = [], mid = [], nextItems = [], laterItems = [];
   if (it.kind === 'scan') {
     // From the spread on screen in the direction you are paging, then back the other way.
     const run = (to, w, ahead, back) => {
@@ -137,22 +138,20 @@ export function planAround(i, s) {
       for (let j = 0; j < back; j++) { const k = b - dir * j; if (k >= 0 && k < it.n) to.push(scanUrl(it, k, w)); }
     };
     const ahead = per * (6 + 4 * v);
-    run(near, 1000, ahead, 2 * per);
-    for (const b of (it.best || []).slice(0, 4)) for (let j = 0; j < per; j++) if (b + j < it.n) near.push(scanUrl(it, b + j, 1000));
+    run(near, SCAN_W, ahead, 2 * per);
+    for (const b of (it.best || []).slice(0, 4)) for (let j = 0; j < per; j++) if (b + j < it.n) near.push(scanUrl(it, b + j, SCAN_W));
     const have = new Set(near);
-    const far = []; run(far, 1000, Math.max(40, ahead), 10);
+    const far = []; run(far, SCAN_W, Math.max(60, 2 * ahead), 10);
     for (const u of far) if (!have.has(u)) mid.push(u);
-    run(thumbs, 200, 60, 20);
   }
   state.order.slice(state.pos + 1, state.pos + 25).forEach((ii, d) => {
     const x = items[ii], to = d < 4 ? nextItems : laterItems;
-    if (x.kind === 'scan') { const s0 = startOf(ii) ?? 0; for (let j = 0; j < state.per; j++) to.push(scanUrl(x, s0 + j, 1000)); } else to.push(x.url);
+    if (x.kind === 'scan') { const s0 = startOf(ii) ?? 0; for (let j = 0; j < state.per; j++) to.push(scanUrl(x, s0 + j, SCAN_W)); } else to.push(x.url);
   });
   serverPrefetch(near, 60, 'near');
   serverPrefetch(nextItems, 55, 'next-items');
   serverPrefetch(mid, 40, 'mid');
   serverPrefetch(laterItems, 35, 'later-items');
-  serverPrefetch(thumbs, 30, 'thumbs');
 }
 
 // The profile of the current item, or of one of the next three, arrived or

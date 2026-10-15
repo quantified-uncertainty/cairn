@@ -570,8 +570,9 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       const sd = R.xlim ? 0 : sideOfX(R.x0, R.x1);
       const okSide = (b) => sd === 0 || (sd < 0 ? b.x1 <= Math.max(gm + body, R.x1 + body) : b.x0 >= Math.min(gm - body, R.x0 - body));
       const inLim = (A, b) => !A.xlim || (b.x0 >= A.xlim[0] - 0.3 * body && b.x1 <= A.xlim[1] + 0.3 * body);
-      // (Lines in the body's type, headings among them, only beside its graphics, not beside its labels.)
-      for (const s of lab2) if (!s.used && near(s, fsOk(s) && s.n >= 10 && textLike(s) ? R.gx : R, 1.6 * body, 1.25 * body) && inLim(R, s) && okSide(s)) { grow(R, s); s.used = R; changed = true; }
+      // (Lines in the body's type only beside its graphics, or above or below it within its width:
+      // a sub-figure's title, not a heading or the text beside it.)
+      for (const s of lab2) if (!s.used && (fsOk(s) && s.n >= 10 && textLike(s) ? near(s, R.gx, 1.6 * body, 1.25 * body) || (near(s, R, 1.6 * body, 1.25 * body) && s.x0 >= R.x0 - body && s.x1 <= R.x1 + body) : near(s, R, 1.6 * body, 1.25 * body)) && inLim(R, s) && okSide(s)) { grow(R, s); s.used = R; changed = true; }
       for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body) && inLim(R, Q) && inLim(Q, R) && okSide(Q)) { grow(R, Q); grow(R.gx, Q.gx); R.gc += Q.gc; R.img ||= Q.img; R.xlim ||= Q.xlim; Q.dead = true; changed = true; }
     }
   }
@@ -708,7 +709,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
   order.sort((a, b) => a.d - b.d);
   // Each region's nearest caption: a caption takes in further pieces only when no other caption is nearer to them.
   const bestFor = new Map();
-  for (const C of caps) if (!C.algo) for (const c of candsOf(C, prefOf(C.kind))) { const o = bestFor.get(c.R); if (!o || c.d < o.d) bestFor.set(c.R, { C, d: c.d }); }
+  for (const C of caps) if (!C.algo) candsOf(C, prefOf(C.kind)).forEach((c, j) => { const o = bestFor.get(c.R); if (!o || c.d < o.d) bestFor.set(c.R, { C, d: c.d, top: j === 0 }); });
   for (const { C } of order) {
     const [sx0, sx1] = spanOf(C);
     if (C.algo) {
@@ -728,7 +729,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       cand[0].R.cap = C;
       for (const c of cand.slice(1)) {
         if (c.side !== side || !(wide || c.al > 0.3) || c.d > 0.45 * H) continue;
-        { const o = bestFor.get(c.R); if (o && o.C !== C && o.d < c.d && !o.C.done) continue; } // left for a nearer caption still to come
+        { const o = bestFor.get(c.R); if (o && o.C !== C && o.d < c.d && o.top && !o.C.done) continue; } // left for the caption still to come that it is nearest to
         const R = c.R, gapY = Math.max(R.y0 - F.y1, F.y0 - R.y1);
         if ((ovY(R, F) > 0.3 * Math.min(R.y1 - R.y0, F.y1 - F.y0) && c.d < 0.12 * H) || gapY < 0.04 * H) { grow(F, R); R.cap = C; } else { R.cap = C; out.push({ ...R, cap: C, kind: C.kind }); }
       }

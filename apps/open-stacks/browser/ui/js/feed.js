@@ -120,7 +120,7 @@ function progressive(gen, it, slots, boxW, boxH) {
     if (Math.abs(a / Number(x.el.dataset.aspect) - 1) > 0.002) { x.el.dataset.aspect = String(a); layoutPanels(slots.map((y) => y.el), boxW, boxH); }
   };
   for (const x of slots) {
-    x.p.then((p) => { const pnl = one(p); if (pnl) put(x, { ...pnl, canvas: cloneCanvas(pnl.canvas) }, true); }, () => {});
+    x.p.then((p) => { const pnl = one(p); if (pnl) put(x, pnl, true); }, () => {}); // finish() moves the same canvas on
     // Not when the page is about to be there anyway (on disk; the render is a decode away).
     setTimeout(() => {
       if (gen !== state.gen || x.shown) return;
