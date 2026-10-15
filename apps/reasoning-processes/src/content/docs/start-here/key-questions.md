@@ -1,11 +1,11 @@
 ---
 title: Cruxes
-description: The central uncertainties this wiki is organized around, each stated as a proposition with a working credence, what has changed since 2024, and what would move it.
+description: The central uncertainties this wiki is organized around, each stated as a proposition with an illustrative credence, what has changed since 2024, and what would move it.
 sidebar:
   order: 2
 ---
 
-*The uncertainties these notes are organized around. They fall into four groups: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. Each is stated as a proposition with a working credence, a note on what the 2024–26 evidence did to it, and what would move it.*
+*The uncertainties these notes are organized around. They fall into four groups: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. Each is stated as a proposition with an illustrative credence, a note on what the 2024–26 evidence did to it, and what would move it.*
 
 :::note
 The question set descends from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post.
@@ -16,7 +16,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 ## 1. Definition and measurement
 
 - **"Reasoning strength" is a coherent target: calibration measured in one domain predicts calibration in another.** *~55%.*
-  - *Since 2024:* there is still no direct test. Forecasting benchmarks mix domains, and none publishes cross-domain calibration correlations.
+  - *Since 2024:* there is still no direct test. Forecasting benchmarks mix domains, and we know of none that publishes cross-domain calibration correlations.
   - *Would move it:* per-domain calibration curves for the same systems, on ForecastBench-style question sets.
   - See [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)
 - **Consistency constrains correctness, for systems not trained against the metric.** *~65%.*
@@ -36,8 +36,8 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 ## 2. Where the gains come from
 
 - **Most epistemic gains over 2027–28 come from base models, RL-trained reasoning included, rather than from scaffolding built outside the labs.** *~65%.*
-  - *Since 2024:* reasoning models absorbed much of what scaffolds used to add. A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
-  - *Against:* the top ForecastBench and Metaculus entries in 2026 are still pipelines of retrieval, decomposition and ensembling, and in Metaculus's Q2 2025 tournament, bot-makers who aggregated repeated forecasts scored higher. That last finding is correlational ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)).
+  - *Since 2024:* Metaculus concluded from its Q2 2025 bot tournament that the underlying model mattered more than the scaffolding ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)). A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
+  - *Against:* the top-ranked ForecastBench entry and Metaculus bots in 2026 are pipelines. Metaculus reports scaffolded bots pulling ahead since fall 2025; its single-prompt baseline, usually in the top 10, placed 18th of 173 in spring 2026 ([Metaculus, Sep 2026](https://www.lesswrong.com/posts/wZBbDqzfBjYG58CxK/futureeval-spring-results-pros-beat-bots-but-the-gap-is)).
   - *Would move it:* a bare frontier model, without scaffolding, topping both leaderboards would move us up; pipelines keeping a persistent lead would move us down.
   - This was the original post's flagged crux. It decides how much non-lab work is obsoleted on lab timelines.
 - **A meaningful non-commercial niche remains, mainly in evaluation and verification infrastructure rather than in the reasoners themselves.** *~60%.*
@@ -46,7 +46,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
   - *Since 2024:* little direct evidence. Reasoning gains have come fastest in verifiable domains (maths, code), which serve capabilities at least as much as judgment.
   - *Would move it:* evidence that labs' decisions on safety-relevant questions changed because of AI-generated analysis.
 - **Institutional demand for machine forecasts as decision inputs grows materially by 2028.** *~40%.*
-  - *Since 2024:* AI removes the elicitation cost that sank corporate prediction markets ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)). It does not remove leadership's aversion to forecasts it can be held to, and we have seen no evidence that this aversion has weakened.
+  - *Since 2024:* AI could lower two likely causes of corporate prediction markets' failure, immature tooling and the difficulty of writing good questions, but not a third, social disruptiveness ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)).
 - **Reliability gains unlock discontinuous application tiers, not a smooth curve.** *~40%.* See [The Reliability Ladder](/concepts/epistemic-applications/).
 
 ## 3. Failure modes
@@ -66,7 +66,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
   - The open question is how fast gaming happens, not whether it happens.
 - **Chain-of-thought monitoring remains a usable audit channel for frontier models through 2028.** *~50%.*
   - *For:* monitorability so far appears to survive RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
-  - *Against:* it is fragile by design ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)).
+  - *Against:* it can be lost to optimization pressure on the chain of thought or to architectures that reason in latent space ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)).
   - *Would move it:* labs adopting, or abandoning, training choices that preserve legible reasoning.
 - **Resolution-grounding breaks worst where it is most needed.** *~80%.*
   - AI-progress questions resolve late and are contested. There are five or more reported definitions of "human-level AGI" ([Sempere 2023](https://nunosempere.com/blog/2023/11/07/hurdles-forecasting-ai/)).

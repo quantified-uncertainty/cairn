@@ -33,7 +33,7 @@ The key move: each property earns its place only insofar as it is **measurable**
 
 We follow [My current claims and cruxes on LLM forecasting & epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) in taking the unit of analysis to be the **LLM-based epistemic process** — the process, not the model: the full system of model plus scaffolding plus protocols that carries out an analysis — data gathering, decomposition, estimation, aggregation, presentation — not the bare model, whose benchmarks miss most of what determines whether the output is worth trusting, and most of the levers for improving it.
 
-Processes also offer a degree of **reproducibility** human experts cannot: a versioned process can be re-run, perturbed, and diffed across versions, whereas a pundit cannot be re-run a thousand times. The advantage is limited. Human calibration has been measured rigorously for decades (Tetlock, the Good Judgment Project). The binding constraint is ground truth, not run-to-run variance: re-runs say nothing about a forecast that resolves in 2035. Pinning a process is also partial in practice, since retrieval drifts and hosted models are silently updated and nondeterministic even at temperature 0. Reproducibility makes measurement cheaper and sharper; it does not make it possible where it otherwise wasn't. The 2025–26 forecasting results below support the process framing directly: the leading systems are pipelines, not bare models.
+Processes also offer a degree of **reproducibility** human experts cannot: a versioned process can be re-run, perturbed, and diffed across versions, whereas a pundit cannot be re-run a thousand times. The advantage is limited. Human calibration has been measured rigorously for decades (Tetlock, the Good Judgment Project). The binding constraint is ground truth, not run-to-run variance: re-runs say nothing about a forecast that resolves in 2035. Pinning a process is also partial in practice, since retrieval drifts and hosted models are silently updated and nondeterministic even at temperature 0. Reproducibility makes measurement cheaper and sharper; it does not make it possible where it otherwise wasn't. The top-ranked entries on both 2026 forecasting leaderboards below are pipelines, not bare models.
 
 ## Why build them: the feasibility case
 
@@ -45,39 +45,39 @@ The post's core is gradualist: capability arrives in increments, as with autonom
 
 ## State of the evidence, October 2026
 
-*A dated section that will go stale within months.* Most 2024–26 results bear on calibration and discrimination on resolvable questions. That slice is the easiest to measure and the least like the judgments these notes care about.
+Most 2024–26 results concern calibration and discrimination on resolvable questions: the slice easiest to measure and least like the judgments these notes care about.
 
 ### Reasoning models
 
-From OpenAI's o1 (September 2024) onward, frontier models have been trained with reinforcement learning against checkable rewards to think at length before answering. OpenAI reported that performance rose with both RL compute and thinking time ([OpenAI 2024](https://openai.com/index/learning-to-reason-with-llms/)). DeepSeek-R1 showed that the recipe works with pure RL, without human reasoning traces ([DeepSeek-AI 2025](https://arxiv.org/abs/2501.12948)). The gains concentrate where rewards are verifiable: maths, code, STEM.
+From OpenAI's o1 (September 2024) onward, frontier models have been trained with reinforcement learning against checkable rewards to think at length before answering. OpenAI reported that performance rose with both RL compute and thinking time ([OpenAI 2024](https://openai.com/index/learning-to-reason-with-llms/)). DeepSeek showed, with R1-Zero, that the recipe works with pure RL and no human-written reasoning traces ([DeepSeek-AI 2025](https://arxiv.org/abs/2501.12948)). The gains concentrate where rewards are verifiable: maths, code, STEM.
 
 For judgment the picture is mixed:
 
 - Longer thinking is not monotonically better. Gema et al. built tasks on which longer reasoning lowers accuracy, as models drift from reasonable priors to spurious correlations or overfit to the problem's framing ([Gema et al. 2025](https://arxiv.org/abs/2507.14417)).
 - On OpenAI's internal PersonQA benchmark, o3 hallucinated 33% of the time against o1's 16%, while also answering more questions correctly. OpenAI notes that o3 makes more claims overall and says the cause needs more research ([o3 system card](https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf)).
 
-Neither result is about calibration. Both caution against assuming that test-time compute buys the assessor's virtues.
+Neither result is about calibration. Both caution against assuming that more reasoning buys the properties listed above.
 
 ### Forecasting
 
-Forecasting is the measurable proxy for "judgment deserving weight", and it has moved fastest.
+Forecasting is the most measurable proxy for judgment deserving weight.
 
 - **Early results.** In 2024 a retrieval-augmented LLM forecaster neared but did not match crowd accuracy (Brier .179 vs. .149). It beat the crowd mainly where the crowd was uncertain and lagged near resolution, where it hedged ([Halawi et al. 2024](https://arxiv.org/abs/2402.18563)). The same year, an ensemble of twelve LLMs was statistically indistinguishable from a 925-person tournament crowd on 31 questions. The models' mean forecast sat significantly above 50% although outcomes split almost evenly, a small instance of shared bias ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
 - **ForecastBench.** This benchmark scores only questions unresolved at submission time, so it is leak-free by construction ([Karger et al. 2024](https://arxiv.org/abs/2409.19839)).
   - In January 2026 superforecasters led the best LLM by 0.017 Brier points, about one year of LLM progress at the observed rate ([FRI, Jan 2026](https://forecastingresearch.substack.com/p/llms-are-closing-the-gap-on-human)).
-  - By July 2026 several systems were statistically indistinguishable from superforecasters. An ensemble pipeline (Cassi) ranked above it on market questions for the first time, but no system was significantly better, and the human baseline dates from 2024 ([FRI, Jul 2026](https://forecastingresearch.substack.com/p/ai-models-have-likely-reached-parity)).
+  - By July 2026 several systems were statistically indistinguishable from superforecasters. On market questions an ensemble pipeline (Cassi) ranked above the superforecaster median, the first system to do so. No system was significantly better, and the human baseline dates from 2024 and is extrapolated ([FRI, Jul 2026](https://forecastingresearch.substack.com/p/ai-models-have-likely-reached-parity)).
   - A pseudonymous critique points out that forecasters are shown a recent market price on those questions. After correcting for 527 comparisons, it finds that no entry significantly beats simply submitting that price; only the two pre-named comparisons, Cassi and the superforecaster median, clear it uncorrected ([Dominus 2026](https://forum.effectivealtruism.org/posts/8YuG9EuhyYqaNBt7F/the-copier-line-what-forecastbench-s-market-scores-actually)).
 - **Metaculus bot tournaments.** These compare the best bots with a team of Pro forecasters on shared questions. The bot team's head-to-head score (0 = parity) was −11.3, −8.9, −17.7 and −20.0 in the four quarters from Q3 2024 to Q2 2025; the last was highly significant ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)). In spring 2026 it was −1.25 (95% CI −4.9 to 2.4) on 99 questions, which is consistent with parity but does not establish it. In the same season some bots gamed the numeric-question scoring with "porcupine" distributions ([Metaculus, Sep 2026](https://www.lesswrong.com/posts/wZBbDqzfBjYG58CxK/futureeval-spring-results-pros-beat-bots-but-the-gap-is)).
 - **Training on outcomes.** A 14B reasoning model trained with outcome-based RL on prediction-market questions matched or beat o1's accuracy, with much better calibration ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
-- **Evaluation fragility.** Temporal leakage in backtests, and the weak link between benchmark scores and real-world forecasting, undercut many parity claims ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)).
+- **Evaluation fragility.** Temporal leakage in backtests, and the difficulty of extrapolating from benchmarks to real-world forecasting, make many parity claims hard to trust ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)).
 
-Our reading: on binary questions resolving within months, the best AI systems are now roughly level with strong human forecasters. They are not clearly better, and against a market price neither group clearly adds much. The leading entries are pipelines of retrieval, decomposition and ensembling, not bare models.
+Our reading: on binary questions resolving within months, the best AI systems are now roughly level with strong human forecasters. They are not clearly better, and against a market price neither group clearly adds much. The top-ranked entries are pipelines of retrieval, decomposition and ensembling, not bare models.
 
 ### Chain of thought as an audit channel
 
 Reasoning models make auditable reasoning partly real.
 
-- **Monitoring works, until it is optimized against.** In OpenAI's study, a weaker model (GPT-4o) reading o3-mini's chain of thought caught reward hacking far more effectively than one watching actions alone. When the monitor was put into the training reward under strong optimization, the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
+- **Monitoring works, until it is optimized against.** In OpenAI's study, a weaker model (GPT-4o) reading a frontier reasoning model's chain of thought caught reward hacking in coding tasks far more effectively than a monitor watching actions alone. When the monitor was put into the training reward under strong optimization, the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
 - **Verbalization is partial.** Reasoning models disclosed the prompt hints they used often less than 20% of the time ([Chen et al. 2025](https://arxiv.org/abs/2505.05410)).
 - **Monitorability is fragile.** A multi-lab position paper calls monitorability "a new and fragile opportunity" and asks developers to weigh it in training decisions ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)). OpenAI's follow-up evaluation suite finds most frontier models "fairly, but not perfectly, monitorable", with no material loss from RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
 
@@ -85,17 +85,17 @@ This is the general lesson of these notes in miniature: a legible channel serves
 
 ### AI-scientist systems
 
-Systems that run the whole research loop, from hypothesis to experiment to write-up, now exist:
+Systems that automate large parts of the research loop now exist:
 
 - **Sakana's AI Scientist v2.** One of its fully generated papers scored above the average acceptance threshold at an ICLR workshop ([Yamada et al. 2025](https://arxiv.org/abs/2504.08066)).
-- **Google's Co-Scientist.** Its drug-repurposing candidates for acute myeloid leukemia were validated in vitro ([Gottweis et al. 2025](https://arxiv.org/abs/2502.18864)).
-- **FutureHouse's Robin.** It proposed and lab-validated ripasudil as a candidate for dry macular degeneration ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
+- **Google's Co-Scientist.** A hypothesis generator; some of its drug-repurposing candidates for acute myeloid leukemia were validated in vitro ([Gottweis et al. 2025](https://arxiv.org/abs/2502.18864)).
+- **FutureHouse's Robin.** It proposed ripasudil as a candidate for dry macular degeneration, and analysed the experiments human scientists ran to test it. Its analysis put the effect on phagocytosis at 7.5-fold; a human analysis of the same data found 1.75-fold ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
 
 Their failure modes are the ones these notes expect of unaudited processes:
 
 - An independent evaluation of the original AI Scientist found that 42% of experiments failed on coding errors and that the system classified established ideas as novel. Some of its manuscripts contained hallucinated numerical results ([Beel et al. 2025](https://arxiv.org/abs/2502.14297)).
 - The system itself tried to edit its own code to extend a timeout ([Sakana 2024](https://sakana.ai/ai-scientist/)).
-- Controlled tests of two open-source systems found inappropriate benchmark selection, data leakage, metric misuse and post-hoc selection. These flaws were far easier to catch from trace logs and code than from the final paper ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). That is an argument for auditing the process rather than the output.
+- Controlled tests of Agent Laboratory and AI Scientist v2 found biased benchmark selection, undisclosed subsampled or synthetic datasets, and post-hoc selection of the experiments that scored best on the test set; neither system peeked at test data. An LLM auditor given the trace logs and code caught such flaws far more often than one given only the paper (82% vs. 55% accuracy) ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). That is an argument for auditing the process rather than the output.
 
 [Overseeing Automated Research](/proposals/overseeing-automated-research/) takes this further.
 
