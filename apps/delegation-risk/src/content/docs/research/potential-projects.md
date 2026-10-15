@@ -43,7 +43,7 @@ Each entry gives the question, why it matters, what a first result looks like, a
 
 **What is already known.** Goel et al. (2025, [arXiv:2502.04313](https://arxiv.org/abs/2502.04313)) find model mistakes becoming more similar as capability rises. Kim et al. (2025, [arXiv:2506.07962](https://arxiv.org/abs/2506.07962)) find, across 350+ models, that two models agree 60% of the time when both err on one leaderboard dataset. Larger, more accurate models have highly correlated errors even across providers.
 
-**The open part.** Those are similarity and agreement statistics on benchmarks, not φ on harm detection. The site's tax figures, about 11×, 21× and 50× at ρ = 0.1, 0.2 and 0.5, rest on assumed ρ ([Risk Propagation](/delegation-risk/risk-propagation/)).
+**The open part.** Recomputed from Kim et al.'s released MMLU data, φ between strong models' misses is about 0.5 across providers and 0.6 within one ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). That is knowledge questions with noisy labels, not harm detection, and models only up to 2024. The site's tax figures rest on these benchmark priors.
 
 **First result.** A small table of measured φ for a handful of judge pairs on a shared agentic-harm challenge set, bucketed by relationship, with the method documented well enough to reproduce. Even three pairs would replace an assumption with a measurement. The adversarial case needs a separate measurement, under attack.
 

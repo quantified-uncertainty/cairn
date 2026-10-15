@@ -25,7 +25,7 @@ A research exploration, not a textbook: working notes and brainstorming toward a
 
 **Robust reasoning processes (RRP)**, as we use the term, are procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. The objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. The questions are about measurement: what does a process deliver, what does it cost, and what does it cost to corrupt?
 
-The subject draws on information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and the epistemology of reliable processes; most of what follows is synthesis from those fields. The motivating observations:
+The subject draws on information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and reliabilist epistemology, which already judges beliefs by the reliability of the processes that produce them ([Goldman 1979](https://doi.org/10.1007/978-94-009-9493-5_1)); most of what follows is synthesis from those fields. The motivating observations:
 
 1. **Many important reasoning processes are unbenchmarked.** Peer review spread without an experiment. Courts, committees, and audits evolved rather than being designed, and few have measured error rates, let alone *corruption* rates.
 2. **Processes may be the leverage point.** Many large epistemic gains were procedural — double-entry bookkeeping, controlled trials, statistical inference, proper scoring rules. A method scales in a way individual brilliance does not.
@@ -62,14 +62,15 @@ A reader from AI safety will pattern-match this project to several existing prog
 
 | Neighbor | Shared ground | Where RRP differs |
 |---|---|---|
-| **Scalable oversight / debate** | a weak principal extracting truth from a stronger agent | oversight verifies *one claim at a time*; RRP prices and allocates verification across thousands of claims — the missing economics ([What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#the-missing-economics)) |
+| **Scalable oversight** (debate, [amplification](https://arxiv.org/abs/1810.08575)) | a weak principal extracting truth from a stronger agent | the protocols make one answer at a time checkable; RRP prices and allocates verification across thousands of claims — the missing economics ([What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#the-missing-economics)) |
 | **AI control** | explicit budgets, audits, distrust of the agent | control catches bad *actions*; RRP prices true *information* — metering the product, not policing the process ([Overseeing Automated Research](/proposals/overseeing-automated-research/)) |
-| **ELK** | the resolution problem — what do verdicts bottom out in? | RRP treats it as an economics and infrastructure problem (resolvers, escrow, track records), not a training problem |
+| **ELK** | the resolution problem — what do verdicts bottom out in? | ELK targets claims no outside resolver can check; RRP works where some resolver exists and asks how to price, extend, and protect it |
 | **Forecasting research** | resolution, calibration, proper scoring rules | the object of study is the *process* and its corruption cost, not forecast accuracy; forecasting platforms are catalogue rows, not the subject |
 | **[Evaluation engineering](https://evaluation-engineering.quantifieduncertainty.org/)** (sibling wiki) | the same 2021–22 corpus; prediction–evaluation systems, trust networks, Goodhart | evaluation engineering optimizes *throughput at known cost* — ten thousand evaluations cheaply; RRP optimizes *corruption cost* — the same processes under attack |
+| **[Delegation risk](https://delegation-risk.quantifieduncertainty.org/)** (sibling wiki) | principals relying on agents they cannot fully check; correlated failure across checks | delegation risk budgets the expected *harm* of delegated actions; RRP prices the *information* a process delivers and the cost of corrupting it |
 | **Epistemic security (CSER)** | adversaries attacking a society's ability to evaluate information | RRP's scope is formal reasoning procedures with measurable error rates, not public discourse at large |
 
-And what this is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this works, trust becomes unnecessary — you do not need to trust an operator whose process you can audit, re-run, and price.
+And what this is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this works, trust moves off the operator and onto the audit, the re-run, and the resolver, which is where the central uncertainty below sits.
 
 ## The central uncertainty
 
@@ -81,7 +82,7 @@ Every measurement proposed here ultimately leans on some resolution layer — so
 Source: https://reasoning-processes.quantifieduncertainty.org/start-here/key-questions/
 ------------------------------------------------------------
 
-*The uncertainties these notes are organized around. They fall into four groups: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. Each is stated as a proposition with a working credence, a note on what the 2024–26 evidence did to it, and what would move it.*
+*The uncertainties these notes are organized around. They fall into four groups: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. Each is stated as a proposition with an illustrative credence, a note on what the 2024–26 evidence did to it, and what would move it.*
 
 The question set descends from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post.
 
@@ -90,7 +91,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 ## 1. Definition and measurement
 
 - **"Reasoning strength" is a coherent target: calibration measured in one domain predicts calibration in another.** *~55%.*
-  - *Since 2024:* there is still no direct test. Forecasting benchmarks mix domains, and none publishes cross-domain calibration correlations.
+  - *Since 2024:* no direct test on forecasting. Benchmarks mix domains, and we know of none that publishes cross-domain calibration correlations. Indirectly, calibration trained with a Brier-score reward carried over to out-of-domain tasks ([Damani et al. 2025](https://arxiv.org/abs/2507.16806)), weak evidence that it is partly a general skill.
   - *Would move it:* per-domain calibration curves for the same systems, on ForecastBench-style question sets.
   - See [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)
 - **Consistency constrains correctness, for systems not trained against the metric.** *~65%.*
@@ -110,17 +111,17 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 ## 2. Where the gains come from
 
 - **Most epistemic gains over 2027–28 come from base models, RL-trained reasoning included, rather than from scaffolding built outside the labs.** *~65%.*
-  - *Since 2024:* reasoning models absorbed much of what scaffolds used to add. A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
-  - *Against:* the top ForecastBench and Metaculus entries in 2026 are still pipelines of retrieval, decomposition and ensembling, and in Metaculus's Q2 2025 tournament, bot-makers who aggregated repeated forecasts scored higher. That last finding is correlational ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)).
+  - *Since 2024:* Metaculus concluded from its Q2 2025 bot tournament that the underlying model mattered more than the scaffolding ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)). A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
+  - *Against:* the top-ranked ForecastBench entry and Metaculus bots in 2026 are pipelines. Metaculus reports scaffolded bots pulling ahead since fall 2025; its single-prompt baseline, usually in the top 10, placed 18th of 173 in spring 2026 ([Metaculus, Sep 2026](https://www.lesswrong.com/posts/wZBbDqzfBjYG58CxK/futureeval-spring-results-pros-beat-bots-but-the-gap-is)).
   - *Would move it:* a bare frontier model, without scaffolding, topping both leaderboards would move us up; pipelines keeping a persistent lead would move us down.
-  - This was the original post's flagged crux. It decides how much non-lab work is obsoleted on lab timelines.
+  - This was the original post's flagged crux: it decides how much non-lab work lab progress makes obsolete.
 - **A meaningful non-commercial niche remains, mainly in evaluation and verification infrastructure rather than in the reasoners themselves.** *~60%.*
   - *Since 2024:* the public benchmarks that track AI forecasting are run by a nonprofit (FRI) and a platform (Metaculus), not by labs. Forecasting startups now compete for the reasoner itself.
 - **Better AI epistemics differentially helps safety rather than just accelerating everything.** *~50%.*
   - *Since 2024:* little direct evidence. Reasoning gains have come fastest in verifiable domains (maths, code), which serve capabilities at least as much as judgment.
   - *Would move it:* evidence that labs' decisions on safety-relevant questions changed because of AI-generated analysis.
 - **Institutional demand for machine forecasts as decision inputs grows materially by 2028.** *~40%.*
-  - *Since 2024:* AI removes the elicitation cost that sank corporate prediction markets ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)). It does not remove leadership's aversion to forecasts it can be held to, and we have seen no evidence that this aversion has weakened.
+  - Likely reasons corporate prediction markets have not caught on include immature tooling, the cost of writing good questions, and social disruptiveness ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)). AI could lower the first two, not the third.
 - **Reliability gains unlock discontinuous application tiers, not a smooth curve.** *~40%.* See [The Reliability Ladder](/concepts/epistemic-applications/).
 
 ## 3. Failure modes
@@ -130,17 +131,19 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
   - *Would move it:* measured belief divergence among heavy users of different assistants.
 - **Persuasive capability outpaces our ability to verify.** *~55%.*
   - Judge-grounded oversight trains for what convinces. Under the [obfuscated-arguments problem](https://www.alignmentforum.org/posts/PJLABqQ962hZEqhdB/debate-update-obfuscated-arguments-problem), a flaw spread across many plausible steps cannot be efficiently located.
-  - *Would move it:* debate experiments in which judges stay accurate as the debaters' capability rises.
+  - *Since 2024:* across 19 LLMs and about 77,000 participants, the post-training and prompting methods that made models more persuasive also made their claims less accurate ([Hackenburg et al. 2025](https://arxiv.org/abs/2507.13919)).
+  - *Against:* stronger or more persuasive debaters made weak judges more accurate, but the clear gains are on reading-comprehension tasks where debaters can quote a text the judge lacks ([Khan et al. 2024](https://arxiv.org/abs/2402.06782); [Kenton et al. 2024](https://arxiv.org/abs/2407.04622)).
+  - *Would move it:* debate gains that hold where no quotation settles the question.
   - See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
 - **Errors are correlated enough across model families that multi-model checks deliver much less than naive independence implies.** *~75%.*
-  - *Since 2024:* a twelve-model ensemble's mean forecast leaned significantly above 50% despite evenly split outcomes ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
-  - *Would move it:* published estimates of effective independence across families ([Independence](/concepts/hardening-independence/)).
+  - *Since 2024:* across more than 350 LLMs, when two models both erred on one leaderboard dataset they gave the same wrong answer 60% of the time, and larger, more accurate models had more correlated errors even across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). A twelve-model forecasting ensemble's mean leaned significantly above 50% despite evenly split outcomes ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
+  - *Would move it:* estimates of effective independence on forecasting and judging tasks, not just multiple-choice benchmarks ([Independence](/concepts/hardening-independence/)).
 - **Once reasoner scores gate anything valuable, they get gamed.** *~85%.*
-  - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). Metaculus bots gamed numeric scoring with "porcupine" distributions.
+  - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). A GPT-4o update trained partly on users' thumbs-up and thumbs-down ratings turned sycophantic and was rolled back ([OpenAI 2025](https://openai.com/index/expanding-on-sycophancy/)). Metaculus bots gamed numeric scoring with "porcupine" distributions.
   - The open question is how fast gaming happens, not whether it happens.
 - **Chain-of-thought monitoring remains a usable audit channel for frontier models through 2028.** *~50%.*
   - *For:* monitorability so far appears to survive RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
-  - *Against:* it is fragile by design ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)).
+  - *Against:* it can be lost to optimization pressure on the chain of thought or to architectures that reason in latent space ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)).
   - *Would move it:* labs adopting, or abandoning, training choices that preserve legible reasoning.
 - **Resolution-grounding breaks worst where it is most needed.** *~80%.*
   - AI-progress questions resolve late and are contested. There are five or more reported definitions of "human-level AGI" ([Sempere 2023](https://nunosempere.com/blog/2023/11/07/hurdles-forecasting-ai/)).
@@ -148,7 +151,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 
 ## 4. Institutions
 
-These are mostly normative questions, so we give no credences for them.
+These are mostly normative questions; only the last, which is empirical, gets a credence.
 
 - **Who should run the oversight and metering systems for automated research?** The metering layer concentrates power over what research counts. AI-scientist systems now exist, and their documented failures are process failures ([Overseeing Automated Research](/proposals/overseeing-automated-research/)).
 - **What consent norms should govern AI evaluation of people and organizations?** Cheap automated evaluation is arriving before such norms exist ([Evaluation Consent Policies](https://quantifieduncertainty.org/posts/evaluation-consent-policies/)).
@@ -410,7 +413,7 @@ What the data support: the pipeline runs end-to-end at hours of expert time per 
 
 None of this needs inventing from scratch. Pairwise preference estimation has decades of literature in economics, marketing, and statistics — Thurstone (1927) and McFadden's conditional logit work (1974) onward; the broader literature adds Bradley–Terry-style paired-comparison models and best-worst scaling. [A short exploratory note by David Moss (Rethink Priorities)](https://forum.effectivealtruism.org/posts/oBW2zBSbxgrNoTdQz/a-peek-at-pairwise-preference-estimation-in-economics) draws the key distinction: economics leans on discrete choice models, which recover *orderings* but not the scale of value differences; graded ratio comparisons of the QURI style cost more cognitive effort but capture the scaling information a portfolio's weights require. His recommendation — a rigorous statistical model first, validated in small methodological studies — remains largely unexecuted.
 
-The closest prior method is the **Analytic Hierarchy Process** ([Saaty 1977](https://doi.org/10.1016/0022-2496(77)90033-5)): raters fill a reciprocal matrix of pairwise ratio judgments, priorities are its principal eigenvector, and consistency is measured by how far the largest eigenvalue $\lambda_{\max}$ exceeds the matrix size $n$ (it equals $n$ exactly when every ratio chains). That is the Utility Function Extractor's design with a built-in inconsistency score. Two differences matter here. AHP's standard 1–9 judgment scale cannot express the many-orders-of-magnitude ratios the 2022 experiments elicited except through a hierarchy of clusters, and AHP judgments are points, where relative value functions aim for distributions. AHP's long applied record is also where its known objections live, such as rank reversal when an alternative is added ([Belton & Gear 1983](https://doi.org/10.1016/0305-0483(83)90047-6)), which any QURI-style pipeline would need to check for too.
+The closest prior method is the **Analytic Hierarchy Process** ([Saaty 1977](https://doi.org/10.1016/0022-2496(77)90033-5)): raters fill a reciprocal matrix of pairwise ratio judgments, priorities are its principal eigenvector, and consistency is measured by how far the largest eigenvalue $\lambda_{\max}$ exceeds the matrix size $n$ (it equals $n$ exactly when every ratio chains). Unlike the Extractor's merge-sort subset, standard AHP asks for every pair, and that redundancy is what makes its consistency score possible. Two further differences matter here. AHP's 1–9 judgment scale cannot express the many-orders-of-magnitude ratios the 2022 experiments elicited except through a hierarchy of clusters, and its judgments are points, where relative value functions aim for distributions. AHP's long applied record is also where its known objections live, such as rank reversal when an alternative is added ([Belton & Gear 1983](https://doi.org/10.1016/0305-0483(83)90047-6)), which any QURI-style pipeline would need to check for too.
 
 The geometry is also already worked out. **HodgeRank** ([Jiang, Lim, Yao & Ye 2011](https://arxiv.org/abs/0811.1067), *Mathematical Programming*) treats pairwise log-ratios as flows on a comparison graph and decomposes them *exactly* into a gradient component — the best-fitting consistent utility function — plus cyclic components that measure inconsistency. Under this lens, the 400×-vs-33× transitivity failures above stop being anecdotes: each rater gets a measured cyclic-residual norm, the implied utility function is the gradient part, and the least-squares repair is canonical rather than ad hoc. (The *decision* to repair by projection is still an aggregation policy — the decomposition tells you what the consistent core is, not that the consistent core is right.)
 
@@ -459,7 +462,7 @@ $$
 
 For some forms it barely depends on the sender's intentions: a valid proof from a liar is still a valid proof. A form keeps its value under distrust when it is **hard to produce when wrong**, so the denominator stays small whoever is talking. That denominator is the cost-to-fake of the one idea. Value under distrust lives in checkability, not in source character.
 
-Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.jstor.org/stable/1913390): costless when wrong, so its content collapses under distrust. Verifiable evidence is the opposite pole: in disclosure games a skeptical receiver has bounded downside, because what *isn't* shown becomes informative ([unraveling](https://www.jstor.org/stable/3003562)). [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) characterizes the territory between. Evidence law reached the same core independently: [Friedman's route analysis](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a) (Yale L.J. 1987) grounds the value of testimony in this likelihood ratio, and analyses a stranger's offer to *bet* on a bizarre proposition as evidence for it, since a bluff costs money if called. <!-- TODO(verify): pinpoint page for Friedman's bet example; source PDF not reachable in Oct 2026 round. -->
+Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.jstor.org/stable/1913390): costless when wrong, so its content collapses under distrust. Verifiable evidence is the opposite pole: in disclosure games a skeptical receiver has bounded downside, because what *isn't* shown becomes informative ([unraveling](https://www.jstor.org/stable/3003562)). [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) characterizes the territory between. Evidence law reached the same core independently: [Friedman's route analysis](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a) (Yale L.J. 1987) grounds the value of testimony in this likelihood ratio, and analyses a stranger's offer to *bet* on a bizarre proposition as evidence for it, since a bluff costs money if called (at 685 & n.45).
 
 ## Deception is a game the defender moves first in
 
@@ -580,13 +583,13 @@ Fuzzing converts "trust me" into "check me": a listener can verify a published v
 
 Define a form's **deception affordance** as the perceived likelihood ratio divided by the actual one **[heuristic]**: near 1, the form transmits information; far above 1, persuasion. With LLMs it is measurable: on questions with known answers, have advocate models argue each side restricted to one form, and measure the swing ratio across listener types.
 
-Fragments exist under other names. Selecting debaters for persuasiveness *increased* judge accuracy in [Khan et al. 2024](https://arxiv.org/abs/2402.06782). [Sycophancy evals](https://arxiv.org/abs/2310.13548) quantify how much agreement-seeking sways beliefs regardless of truth, and judge-bias studies document [position and verbosity biases](https://arxiv.org/abs/2306.05685): truth-independent swing from form alone. The [credibility-signal literature](https://arxiv.org/abs/2410.21360) (Srba et al.'s survey, which counts persuasion techniques among its signals) flags forms as bad; the step proposed here is to grade every form's measured swing ratio.
+Fragments exist under other names. Optimizing debaters for persuasiveness *increased* judge accuracy in [Khan et al. 2024](https://arxiv.org/abs/2402.06782). [Sycophancy evals](https://arxiv.org/abs/2310.13548) quantify how much agreement-seeking sways beliefs regardless of truth, and judge-bias studies document [position and verbosity biases](https://arxiv.org/abs/2306.05685): truth-independent swing from form alone. The [credibility-signal literature](https://arxiv.org/abs/2410.21360) (Srba et al.'s survey, which counts persuasion techniques among its signals) flags forms as bad; the step proposed here is to grade every form's measured swing ratio.
 
 [EIA](/proposals/epistemic-impact-analysis/) prices *content*; this test rates *channels*, the strategic-sender discount on that price. The attestation mechanisms above — signed transcripts, run counters, query escrow, third-party process auditors — are the defender's Move-1 budget.
 
 ## Prior art
 
-Institutions have rated information for a long time, almost always by **source**, **claim**, or **method** rather than by argument form. The NATO/Admiralty code rates source and item by analyst judgment, and its labels [collapse toward a defensible band](https://doi.org/10.1080/02684527.2019.1569343) (A1 and B2 were 80% of ratings in one Army exercise). [GRADE](https://www.bmj.com/content/336/7650/924) and [Daubert](https://www.law.cornell.edu/wex/daubert_standard) rate methods against non-strategic error, and [industry sponsorship](https://doi.org/10.1002/14651858.MR000033.pub3) skews conclusions despite design hierarchies ([The Funding Effect](/case-studies/the-funding-effect/)). Reputation systems ([EigenTrust](https://dl.acm.org/doi/10.1145/775152.775242), [PageRank](https://www.researchgate.net/publication/200110773_Manipulability_of_PageRank_under_Sybil_Strategies)) fall to Sybils and collusion. [Proper scoring rules](https://doi.org/10.1198/016214506000001437) cover only resolvable claims. Argument forms appear only negatively, as anti-credibility signals. The sibling Evaluation Engineering wiki catalogues these systems and their failures at length ([in the wild](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/); [patterns and failure modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/)).
+Institutions have rated information for a long time, almost always by **source**, **claim**, or **method** rather than by argument form. The NATO/Admiralty code rates source and item by analyst judgment, and its labels [collapse toward a defensible band](https://doi.org/10.1080/02684527.2019.1569343) (A1 and B2 were 80% of ratings in one Army exercise). [GRADE](https://www.bmj.com/content/336/7650/924) and [Daubert](https://www.law.cornell.edu/wex/daubert_standard) rate methods against non-strategic error, and [industry sponsorship](https://doi.org/10.1002/14651858.MR000033.pub3) skews conclusions despite design hierarchies ([The Funding Effect](/case-studies/the-funding-effect/)). Reputation systems ([EigenTrust](https://dl.acm.org/doi/10.1145/775152.775242), [PageRank](https://www.researchgate.net/publication/200110773_Manipulability_of_PageRank_under_Sybil_Strategies)) fall to Sybils and collusion. [Proper scoring rules](https://doi.org/10.1198/016214506000001437) cover only resolvable claims. Argument forms appear only negatively, as anti-credibility signals. The sibling Evaluation Engineering wiki catalogues a broader set of real-world evaluation systems and their documented failures ([in the wild](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/); [patterns and failure modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/)).
 
 Three lessons carry over, each a corollary of the one idea:
 
@@ -660,7 +663,7 @@ Two things follow. The discount belongs to the funding arrangement, not the sour
 
 Spin runs through nameable, auditable channels ([Sismondo 2008](https://doi.org/10.1016/j.socscimed.2008.01.010)): choice of comparator and dose, selective outcome reporting, publication bias, and ghost-management of the writing itself — internal documents indicate **18–40%** of articles on some drugs were managed by industry-hired medical-communications firms ([Sismondo 2007](https://doi.org/10.1371/journal.pmed.0040286)). Each is a separate point of attack and audit, the kind of decomposition the [loss pipeline](/concepts/core-model/#2-value-delivered-the-loss-pipeline-heuristic) anticipates.
 
-The funding effect is one instance of a general pattern — when the rated party pays, certifiers drift toward lenient signals — surveyed with the credit-rating and audit cases in the sibling wiki's [Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does). Design-hierarchy rating systems such as GRADE grade evidence against *bias and noise*, yet [industry sponsorship skews conclusions despite them](https://doi.org/10.1002/14651858.MR000033.pub3): they do not model a *strategic* funder choosing which studies to run and publish, the selection term above and an open problem in [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions).
+The funding effect is one instance of a general pattern — when the rated party pays, certifiers drift toward lenient signals — surveyed with the credit-rating and audit cases in the sibling wiki's [Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness). Design-hierarchy rating systems such as GRADE grade evidence against *bias and noise*, yet [industry sponsorship skews conclusions despite them](https://doi.org/10.1002/14651858.MR000033.pub3): they do not model a *strategic* funder choosing which studies to run and publish, the selection term above and an open problem in [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions).
 
 ## Toward a measured version
 
@@ -737,9 +740,9 @@ Not yet rated, though each bears on the empty-quadrant claim: bridging-based cro
 
 **Two kinds of built-in bias, and only one is steerable.** The column above conflates them. **Broad / structural biases** (position and verbosity effects, RLHF agreeableness, the training-data majority view) tilt outputs across all decisions without aiming at an outcome. **Decision-relative (goal) bias**, $b_\pi(D)$ (nearest standard term: *directional bias*), is a systematic lean toward one resolution of a specific decision $D$: an auditor favoring the client who pays it (the [funding effect](/case-studies/the-funding-effect/) in miniature), or a model that picks "Anthony" over "Ted" with no information about either. A process can have many broad biases and still be neutral on a given $D$, or the reverse. The target is $b_\pi(D)\approx 0$ on any $D$ the process has no truth-relevant information about, and this target can be checked without ground truth: swap the labels, and any residual asymmetry is the goal bias. This **label-swap neutrality** check belongs with the [invariance constructions](/concepts/hardening-invariance/#constructions) and the [consistency battery](/proposals/consistency-evals/). Its precedents are position-swapping in LLM-judge evaluation ([Wang et al. 2023](https://arxiv.org/abs/2305.17926)) and [counterfactual fairness](https://arxiv.org/abs/1703.06856) (Kusner et al. 2017). It is blind to *symmetric* content-borne bias and to non-directional biases such as verbosity. It is also the source-side goal-divergence of [deception preconditions](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface): with no goal bias, there is nothing to deceive *toward*.
 
-**The label-swap check has been run once.** On five current LLM judges ([Measurement Log](/case-studies/measurement-log/)), options described identically drew an answer of exactly 50 every time, which is uninformative. With matched but different descriptions, label leans were a few points at most on the 0–100 scale, and no label was favored consistently across decisions. One model showed an 8-point position bias, mostly in a single prompt. On these prompts, then, the "Single LLM judge" row's goal bias on content-free labels is small, and its position bias varies by model and prompt.
+**The label-swap check has been run once.** On five current LLM judges ([Measurement Log](/case-studies/measurement-log/)), options described identically drew an answer of exactly 50 on every parsed call, which is uninformative. With matched but different descriptions, label leans were small (root mean square 0.6–3.3 points on the 0–100 scale), and no label was favored consistently across decisions. One model showed an 8-point position bias, mostly in a single prompt. On these prompts, then, the "Single LLM judge" row's goal bias on content-free labels is small, and its position bias varies by model and prompt.
 
-**Cheap and robust don't yet coexist.** Today's cheap processes (LLM judges, indices, reviews) are cheap to corrupt. Today's robust ones (replication, proofs, deep track records) are expensive or narrow. Our bet is that the empty quadrant is reachable by *composition*: cheap processes as filters, with randomized escalation to expensive robust ones, so the adversary faces the expensive process's corruption cost while the judge mostly pays the cheap one's information cost. Whether stacks behave this way is unmeasured; the [Hardening overview](/concepts/hardening-techniques/#composition-families-stack-but-how) gives the attack-tree algebra to test against.
+**Cheap and robust don't yet coexist.** Today's cheap processes (LLM judges, indices, reviews) are cheap to corrupt. Today's robust ones (replication, proofs, deep track records) are expensive or narrow. Our bet is that the empty quadrant is reachable by *composition*: cheap processes as filters, with randomized escalation to expensive robust ones, so every attack risks meeting the expensive process's corruption cost while the judge mostly pays the cheap one's information cost. Whether stacks behave this way is unmeasured; the [Hardening overview](/concepts/hardening-techniques/#composition-families-stack-but-how) gives the attack-tree algebra to test against.
 
 **Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure ([Identity and Track-Record Infrastructure](/environment/identity-and-track-records/)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — on our ratings, the most leveraged missing institution in the table.
 
@@ -768,7 +771,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/oversight
 
 ## The problem
 
-Scalable oversight ([DeepMind's term](https://arxiv.org/abs/2504.01849): *amplified oversight*) asks: how does a weaker principal extract honest, high-quality information from a more capable agent — essentially the [ELK problem](https://www.alignmentforum.org/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge) restated? The proposals — debate, market-making, prover-verifier games, recursive reward modeling, [iterated amplification](https://arxiv.org/abs/1810.08575) (Christiano, Shlegeris & Amodei 2018, which builds a training signal for hard tasks by having a weak overseer combine solutions to easier subproblems) — share a structure: each is a mechanism for making honesty or competence the agent's best strategy, judged by something weaker than the agent. Non-incentive approaches — [AI control](https://arxiv.org/abs/2312.06942), interpretability, weak-to-strong generalization — sit outside this taxonomy by design.
+Scalable oversight ([DeepMind's term](https://arxiv.org/abs/2504.01849): *amplified oversight*) asks: how does a weaker principal extract honest, high-quality information from a more capable agent — essentially the [ELK problem](https://www.alignmentforum.org/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge) restated? The proposals — debate, market-making, prover-verifier games, recursive reward modeling, [iterated amplification](https://arxiv.org/abs/1810.08575) (Christiano, Shlegeris & Amodei 2018, which builds a training signal for hard tasks by having a weak overseer combine solutions to easier subproblems) — share a structure: each is a mechanism for making honesty or competence the agent's best strategy when the overseer could not check the work unaided. Non-incentive approaches — [AI control](https://arxiv.org/abs/2312.06942), interpretability, weak-to-strong generalization — sit outside this taxonomy by design.
 
 The claim of this page: these protocols are best organized by **what their incentive grounds out in**. Every protocol needs some final arbiter that the reward chain terminates in, and there are only a few candidates:
 
@@ -825,7 +828,7 @@ Consistency protocols need no judge and no resolution: the agent is scored on wh
 
 Peer prediction scores a report by how well it predicts other informed agents' reports, making truth-telling an equilibrium with no judge and no resolution — built precisely for claims with no ground truth ([Miller, Resnick & Zeckhauser 2005](https://doi.org/10.1287/mnsc.1050.0379); [Prelec 2004](https://doi.org/10.1126/science.1102081)). The mechanism-design line has since hardened it considerably — removing the common-prior assumption ([Witkowski & Parkes 2012](https://doi.org/10.1145/2229012.2229085)), making truth-telling the *maximally-paid* equilibrium via Correlated Agreement ([Shnayder et al. 2016](https://arxiv.org/abs/1603.03151)), and unifying the family under an information-theoretic, dominantly-truthful framework ([Kong & Schoenebeck 2016](https://arxiv.org/abs/1605.01021)). It remains the least trusted grounding here: the guarantees assume non-colluding reporters, and LLM copies are the easiest colluders imaginable.
 
-The most widely deployed agreement-grounded mechanism is not peer prediction but bridging. X's Community Notes (originally Birdwatch) fits each rating as $\mu + i_u + i_n + f_u\cdot f_n$ — global, rater and note intercepts plus a rater-note viewpoint factor — and shows a note only if its intercept $i_n$, the helpfulness left after viewpoint is explained, clears a threshold. Because the intercepts are regularized more heavily than the factors, a note scores high only if raters with differing factor vectors rate it helpful ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). In their survey experiment, bridging-selected notes beat average-rating and crowd baselines, and on Twitter, users shown them were less likely to reshare the annotated post. Meta adopted X's open-source algorithm for Facebook, Instagram and Threads in [March 2025](https://about.fb.com/news/2025/03/testing-begins-community-notes-facebook-instagram-threads/). Bridging answers the factional-collusion failure: a bloc rating in lockstep loads on the viewpoint factor, not the intercept. It does not answer the LLM failure, where raters share a training corpus rather than a faction and their common errors look like cross-viewpoint agreement.
+The agreement-grounded mechanism deployed at scale is not peer prediction but bridging. X's Community Notes (originally Birdwatch) fits each rating as $\mu + i_u + i_n + f_u\cdot f_n$ — global, rater and note intercepts plus a rater-note viewpoint factor — and shows a note only if its intercept $i_n$, the helpfulness left after viewpoint is explained, clears a threshold. Because the intercepts are regularized more heavily than the factors, a note scores high only if raters with differing factor vectors rate it helpful ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). In their survey experiment, bridging-selected notes beat average-rating and crowd baselines, and on Twitter, users shown them were less likely to reshare the annotated post. Meta began testing Community Notes on Facebook, Instagram and Threads in [March 2025](https://about.fb.com/news/2025/03/testing-begins-community-notes-facebook-instagram-threads/), with X's open-source algorithm as the basis of its rating system. Bridging answers the factional-collusion failure: a bloc rating in lockstep loads on the viewpoint factor, not the intercept. It does not answer the LLM failure, where raters share a training corpus rather than a faction and their common errors look like cross-viewpoint agreement.
 
 ## Composition: the hybrid protocol
 
@@ -841,7 +844,7 @@ flowchart LR
 
 Debate operates over the unresolvable claim, but its subclaims are anchored by markets wherever they touch resolvable ground, and the debaters' probability assignments are continuously consistency-checked. The judge's job shrinks from "evaluate everything" to "evaluate the genuinely unresolvable residue" — which is the only part a judge was ever the right tool for. Each edge buys something specific — markets cap the payoff on false resolvable subclaims; consistency checks catch incoherent belief structure — but the cover is partial: a consistent, obfuscated, unresolvable argument slips all three.
 
-The human precedent for the debate-to-resolution edge is **adversarial collaboration**: rivals agree in advance, with a neutral arbiter, on an experiment whose outcome each accepts as a test of their position ([Mellers, Hertwig & Kahneman 2001](https://doi.org/10.1111/1467-9280.00350)). It moves a dispute from judge-grounding to resolution-grounding by having the parties, not the judge, decompose it. The first published exercise is also the caution: the rivals agreed on the design and the results, then still disagreed about what the results showed.
+The human precedent for the debate-to-resolution edge is **adversarial collaboration**: rivals agree in advance, with a neutral arbiter, on an experiment whose outcome each accepts as a test of their position ([Mellers, Hertwig & Kahneman 2001](https://doi.org/10.1111/1467-9280.00350)). It moves a dispute from judge-grounding to resolution-grounding by having the parties, not the judge, decompose it. That exercise is also the caution: the rivals agreed on the design and the results, then still disagreed about what the results showed.
 
 ## The missing economics
 
@@ -968,7 +971,7 @@ A note on the term first: "strong reasoner" here does **not** mean a reasoning m
 What would warrant that trust? Candidate properties:
 
 - **Calibration.** When the system says 80%, it should be right about 80% of the time — across domains, not just on the question types it was tuned on.
-- **Discrimination.** Calibrated judgments should also sit far from base rates when evidence permits — scored via proper-scoring-rule decompositions (Brier skill), not calibration curves alone; otherwise a hedger that always answers "I don't know" passes every property here.
+- **Discrimination.** Judgments should also move away from base rates when the evidence permits. A system that always answers the base rate is calibrated and useless. Proper scoring rules penalize this through the resolution term of the Brier decomposition; calibration curves alone do not.
 - **Consistency.** Beliefs should hang together: claim and negation summing to one, equivalent phrasings answered equivalently, estimates that cannot be [Dutch-booked](https://en.wikipedia.org/wiki/Dutch_book). See [Consistency Evaluations](/proposals/consistency-evals/).
 - **Honest uncertainty.** Wide intervals where evidence is thin, "I don't know" as a first-class answer, no manufactured precision.
 - **Non-sycophancy.** The answer should not depend on who is asking or what they hope to hear — a failure that ties the system's outputs to the asker rather than to the world.
@@ -977,17 +980,19 @@ What would warrant that trust? Candidate properties:
 
 (Factual accuracy has no separate entry; calibration and discrimination, properly scored, subsume it.)
 
-The key move: each property earns its place only insofar as it is **measurable**. "Honest uncertainty" as a vibe is worthless; honest uncertainty as a scored calibration curve is infrastructure. The definition is therefore inseparable from the verification stack built around it — the oversight protocols, consistency suites, and resolution mechanisms (ways to score judgments against outcomes) surveyed in [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/). In practice the best proxy — test batteries the system was *not optimized against*, plus an out-of-sample track record — remains a proxy: behavioral evals bound reliability only on distributions like the test's (hence the Goodhart question below). The batteries are also the expensive part: cleanly resolvable questions are scarce, unrepresentative of hard judgment, and costlier to author and adjudicate than to score. The research program is as much about building the batteries as building the reasoner.
+Weight is also relative to what the user already has. A system that echoes the market price can pass every test above and add nothing. The judge's question is whether the system carries information beyond existing sources, which a forecast-encompassing test answers by regressing outcomes on both forecasts ([Fair & Shiller 1990](https://ideas.repec.org/a/aea/aecrev/v80y1990i3p375-89.html)). The ForecastBench market-price critique [below](#forecasting) applies this test.
+
+Each property earns its place only insofar as it is **measurable**. "Honest uncertainty" as a vibe is worthless; honest uncertainty as a scored calibration curve is infrastructure. The definition is therefore inseparable from the verification stack around it: the oversight protocols, consistency suites, and resolution mechanisms surveyed in [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/). The best available evidence, test batteries the system was *not optimized against* plus an out-of-sample track record, still bounds reliability only on distributions like the test's. The batteries are also the expensive part: cleanly resolvable questions are scarce, unrepresentative of hard judgment, and costlier to author and adjudicate than to score. The research program is as much about building the batteries as building the reasoner.
 
 ## The unit of analysis: LLM-based epistemic processes
 
-We follow [My current claims and cruxes on LLM forecasting & epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) in taking the unit of analysis to be the **LLM-based epistemic process** — the process, not the model: the full system of model plus scaffolding plus protocols that carries out an analysis — data gathering, decomposition, estimation, aggregation, presentation — not the bare model, whose benchmarks miss most of what determines whether the output is worth trusting, and most of the levers for improving it.
+Following [My current claims and cruxes on LLM forecasting & epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and), the unit of analysis is the **LLM-based epistemic process**: model plus scaffolding plus protocols, covering data gathering, decomposition, estimation, aggregation, and presentation. Benchmarks of the bare model miss most of what determines whether the output is worth trusting, and most of the levers for improving it.
 
-Processes also offer a degree of **reproducibility** human experts cannot: a versioned process can be re-run, perturbed, and diffed across versions, whereas a pundit cannot be re-run a thousand times. The advantage is limited. Human calibration has been measured rigorously for decades (Tetlock, the Good Judgment Project). The binding constraint is ground truth, not run-to-run variance: re-runs say nothing about a forecast that resolves in 2035. Pinning a process is also partial in practice, since retrieval drifts and hosted models are silently updated and nondeterministic even at temperature 0. Reproducibility makes measurement cheaper and sharper; it does not make it possible where it otherwise wasn't. The 2025–26 forecasting results below support the process framing directly: the leading systems are pipelines, not bare models.
+Processes also offer a **reproducibility** human experts lack: a versioned process can be re-run, perturbed, and diffed across versions. The advantage is limited. Human forecasters' calibration has been measured for decades without it (Tetlock, the Good Judgment Project). The binding constraint is ground truth, not run-to-run variance: re-runs say nothing about a forecast that resolves in 2035. Pinning is also partial, since retrieval drifts and hosted models are silently updated and nondeterministic even at temperature 0. Reproducibility makes measurement cheaper; it does not make it possible where it otherwise wasn't. The top-ranked entries on both 2026 forecasting leaderboards below are pipelines, not bare models.
 
 ## Why build them: the feasibility case
 
-[6 Potential Misconceptions about AI Intellectuals](https://forum.effectivealtruism.org/posts/xSmrFTWyvSZnYMv63/6-potential-misconceptions-about-ai-intellectuals) makes the case that AI systems doing serious strategic and judgment work — the work of think tanks, analysts, public intellectuals — are **neglected**, **important**, **tractable**, and **relatively safe**. Each leg is hypothesis more than result. Neglectedness is contestable as of 2026 (forecasting startups, lab-internal judge and eval teams). Tractability has the most new evidence: on short-horizon binary questions, AI forecasters went from clearly behind strong humans in 2024 to roughly level by mid-2026 (see [State of the evidence](#state-of-the-evidence-october-2026)). That is the resolvable slice, though, and says little about the harder judgments. Safety is the most contestable: the post argues judgment work avoids the scariest capabilities and may itself help safety, but strategic judgment and persuasion are tracked dangerous capabilities, and an informer deciding what to surface is a manipulation surface — the informer-hood drift noted below is the escalation path, a dual-use objection we flag rather than resolve.
+[6 Potential Misconceptions about AI Intellectuals](https://forum.effectivealtruism.org/posts/xSmrFTWyvSZnYMv63/6-potential-misconceptions-about-ai-intellectuals) makes the case that AI systems doing serious strategic and judgment work — the work of think tanks, analysts, public intellectuals — are **neglected**, **important**, **tractable**, and **relatively safe**. Each leg is hypothesis more than result. Neglectedness is contestable as of 2026 (forecasting startups, lab-internal judge and eval teams). Tractability has the most new evidence: on short-horizon binary questions, AI forecasters went from clearly behind strong humans in 2024 to roughly level by mid-2026 (see [State of the evidence](#state-of-the-evidence-october-2026)). That is the resolvable slice, though, and says little about the harder judgments. Safety is the most contestable. The post argues judgment work avoids the scariest capabilities and may itself help safety, but persuasion and deception are standard dangerous-capability evaluation targets ([Phuong et al. 2024](https://arxiv.org/abs/2403.13793)), and an informer deciding what to surface is a manipulation surface. The informer-hood drift noted below is the escalation path; we flag this dual-use objection rather than resolve it.
 
 A load-bearing claim there: the bar set by human intellectuals is lower than assumed. Prominent intellectuals are often selected for marketing and confidence rather than calibrated accuracy (cf. Tetlock's *Expert Political Judgment*), and much elite "strategic thinking" receives little rigorous time at all. Matching the *reliability* of typical expert judgment is a nearer target than matching the brilliance of the best.
 
@@ -995,73 +1000,69 @@ The post's core is gradualist: capability arrives in increments, as with autonom
 
 ## State of the evidence, October 2026
 
-*A dated section that will go stale within months.* Most 2024–26 results bear on calibration and discrimination on resolvable questions. That slice is the easiest to measure and the least like the judgments these notes care about.
+Most 2024–26 results concern calibration and discrimination on resolvable questions: the slice easiest to measure and least like the judgments these notes care about.
 
-### Reasoning models
+### Reasoning models and post-training
 
-From OpenAI's o1 (September 2024) onward, frontier models have been trained with reinforcement learning against checkable rewards to think at length before answering. OpenAI reported that performance rose with both RL compute and thinking time ([OpenAI 2024](https://openai.com/index/learning-to-reason-with-llms/)). DeepSeek-R1 showed that the recipe works with pure RL, without human reasoning traces ([DeepSeek-AI 2025](https://arxiv.org/abs/2501.12948)). The gains concentrate where rewards are verifiable: maths, code, STEM.
+From OpenAI's o1 (September 2024) onward, frontier models have been trained with reinforcement learning against checkable rewards to think at length before answering. OpenAI reported that performance rose with both RL compute and thinking time ([OpenAI 2024](https://openai.com/index/learning-to-reason-with-llms/)). DeepSeek showed, with R1-Zero, that the recipe works with pure RL and no human-written reasoning traces ([DeepSeek-AI 2025](https://arxiv.org/abs/2501.12948)). The gains concentrate where rewards are verifiable: maths, code, STEM.
 
-For judgment the picture is mixed:
+For the properties above, what improves is what the reward scores:
 
-- Longer thinking is not monotonically better. Gema et al. built tasks on which longer reasoning lowers accuracy, as models drift from reasonable priors to spurious correlations or overfit to the problem's framing ([Gema et al. 2025](https://arxiv.org/abs/2507.14417)).
-- On OpenAI's internal PersonQA benchmark, o3 hallucinated 33% of the time against o1's 16%, while also answering more questions correctly. OpenAI notes that o3 makes more claims overall and says the cause needs more research ([o3 system card](https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf)).
+- **Calibration.** Post-training can cost calibration: GPT-4's pre-trained model was well calibrated on MMLU questions, and post-training reduced that ([OpenAI 2023](https://arxiv.org/abs/2303.08774)). For reasoning models the evidence points both ways. They state better-calibrated confidence than their non-reasoning counterparts in 33 of 36 model–dataset settings ([Yoon et al. 2025](https://arxiv.org/abs/2505.14489)). But RL on a binary correctness reward does not penalize confident guessing and degrades calibration; adding a Brier-score term to the reward improved calibration in and out of domain with no loss of accuracy ([Damani et al. 2025](https://arxiv.org/abs/2507.16806)). Benchmarks that score "I don't know" as wrong exert the same pressure ([Kalai et al. 2025](https://arxiv.org/abs/2509.04664); see [Hardening: Calibration](/concepts/hardening-calibration/)).
+- **Hallucination.** On OpenAI's internal PersonQA benchmark, o3 hallucinated 33% of the time against o1's 16%, while also answering more questions correctly. OpenAI notes that o3 makes more claims overall and says the cause needs more research ([o3 system card](https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf)).
+- **Sycophancy.** In April 2025 OpenAI rolled back a GPT-4o update that had made the model markedly sycophantic. A new reward signal from users' thumbs-up and thumbs-down ratings had weakened the one that was holding sycophancy in check ([OpenAI 2025](https://openai.com/index/expanding-on-sycophancy/)).
+- **Thinking longer.** It is not monotonically better. Gema et al. built tasks on which longer reasoning lowers accuracy, as models drift from reasonable priors to spurious correlations or overfit to the problem's framing ([Gema et al. 2025](https://arxiv.org/abs/2507.14417)).
 
-Neither result is about calibration. Both caution against assuming that test-time compute buys the assessor's virtues.
+These properties move with what training rewards. They do not arrive reliably as by-products of capability.
 
 ### Forecasting
 
-Forecasting is the measurable proxy for "judgment deserving weight", and it has moved fastest.
+Forecasting is the most measurable proxy for judgment deserving weight.
 
 - **Early results.** In 2024 a retrieval-augmented LLM forecaster neared but did not match crowd accuracy (Brier .179 vs. .149). It beat the crowd mainly where the crowd was uncertain and lagged near resolution, where it hedged ([Halawi et al. 2024](https://arxiv.org/abs/2402.18563)). The same year, an ensemble of twelve LLMs was statistically indistinguishable from a 925-person tournament crowd on 31 questions. The models' mean forecast sat significantly above 50% although outcomes split almost evenly, a small instance of shared bias ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
 - **ForecastBench.** This benchmark scores only questions unresolved at submission time, so it is leak-free by construction ([Karger et al. 2024](https://arxiv.org/abs/2409.19839)).
   - In January 2026 superforecasters led the best LLM by 0.017 Brier points, about one year of LLM progress at the observed rate ([FRI, Jan 2026](https://forecastingresearch.substack.com/p/llms-are-closing-the-gap-on-human)).
-  - By July 2026 several systems were statistically indistinguishable from superforecasters. An ensemble pipeline (Cassi) ranked above it on market questions for the first time, but no system was significantly better, and the human baseline dates from 2024 ([FRI, Jul 2026](https://forecastingresearch.substack.com/p/ai-models-have-likely-reached-parity)).
+  - By July 2026 several systems were statistically indistinguishable from superforecasters. On market questions an ensemble pipeline (Cassi) ranked above the superforecaster median, the first system to do so. No system was significantly better, and the human baseline dates from 2024 and is extrapolated ([FRI, Jul 2026](https://forecastingresearch.substack.com/p/ai-models-have-likely-reached-parity)).
   - A pseudonymous critique points out that forecasters are shown a recent market price on those questions. After correcting for 527 comparisons, it finds that no entry significantly beats simply submitting that price; only the two pre-named comparisons, Cassi and the superforecaster median, clear it uncorrected ([Dominus 2026](https://forum.effectivealtruism.org/posts/8YuG9EuhyYqaNBt7F/the-copier-line-what-forecastbench-s-market-scores-actually)).
 - **Metaculus bot tournaments.** These compare the best bots with a team of Pro forecasters on shared questions. The bot team's head-to-head score (0 = parity) was −11.3, −8.9, −17.7 and −20.0 in the four quarters from Q3 2024 to Q2 2025; the last was highly significant ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)). In spring 2026 it was −1.25 (95% CI −4.9 to 2.4) on 99 questions, which is consistent with parity but does not establish it. In the same season some bots gamed the numeric-question scoring with "porcupine" distributions ([Metaculus, Sep 2026](https://www.lesswrong.com/posts/wZBbDqzfBjYG58CxK/futureeval-spring-results-pros-beat-bots-but-the-gap-is)).
 - **Training on outcomes.** A 14B reasoning model trained with outcome-based RL on prediction-market questions matched or beat o1's accuracy, with much better calibration ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
-- **Evaluation fragility.** Temporal leakage in backtests, and the weak link between benchmark scores and real-world forecasting, undercut many parity claims ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)).
+- **Evaluation fragility.** Temporal leakage in backtests, and the difficulty of extrapolating from benchmarks to real-world forecasting, make many parity claims hard to trust ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)).
 
-Our reading: on binary questions resolving within months, the best AI systems are now roughly level with strong human forecasters. They are not clearly better, and against a market price neither group clearly adds much. The leading entries are pipelines of retrieval, decomposition and ensembling, not bare models.
+Our reading: on binary questions resolving within months, the best AI systems are now roughly level with strong human forecasters. They are not clearly better, and against a market price neither group clearly adds much. The top-ranked entries are pipelines of retrieval, decomposition and ensembling, not bare models.
 
 ### Chain of thought as an audit channel
 
 Reasoning models make auditable reasoning partly real.
 
-- **Monitoring works, until it is optimized against.** In OpenAI's study, a weaker model (GPT-4o) reading o3-mini's chain of thought caught reward hacking far more effectively than one watching actions alone. When the monitor was put into the training reward under strong optimization, the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
+- **Monitoring works, until it is optimized against.** In OpenAI's study, a weaker model (GPT-4o) reading a frontier reasoning model's chain of thought caught reward hacking in coding tasks far more effectively than a monitor watching actions alone. When the monitor was put into the training reward under strong optimization, the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
 - **Verbalization is partial.** Reasoning models disclosed the prompt hints they used often less than 20% of the time ([Chen et al. 2025](https://arxiv.org/abs/2505.05410)).
-- **Monitorability is fragile.** A multi-lab position paper calls monitorability "a new and fragile opportunity" and asks developers to weigh it in training decisions ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)). OpenAI's follow-up evaluation suite finds most frontier models "fairly, but not perfectly, monitorable", with no material loss from RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
+- **Monitorability may be fragile.** A multi-lab position paper calls monitorability "a new and fragile opportunity" and asks developers to weigh it in training decisions ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)). OpenAI's follow-up evaluation suite finds most frontier models "fairly, but not perfectly, monitorable", with no material loss from RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
 
 This is the general lesson of these notes in miniature: a legible channel serves as an audit only until it becomes the target of optimization.
 
 ### AI-scientist systems
 
-Systems that run the whole research loop, from hypothesis to experiment to write-up, now exist:
+Systems that run much of the research loop now exist. A fully generated paper from Sakana's AI Scientist v2 scored above the average acceptance threshold at an ICLR workshop ([Yamada et al. 2025](https://arxiv.org/abs/2504.08066)). Google's Co-Scientist proposed drug-repurposing candidates for acute myeloid leukemia, some of them validated in vitro ([Gottweis et al. 2025](https://arxiv.org/abs/2502.18864)). FutureHouse's Robin proposed ripasudil for dry macular degeneration and analysed the experiments run to test it ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
 
-- **Sakana's AI Scientist v2.** One of its fully generated papers scored above the average acceptance threshold at an ICLR workshop ([Yamada et al. 2025](https://arxiv.org/abs/2504.08066)).
-- **Google's Co-Scientist.** Its drug-repurposing candidates for acute myeloid leukemia were validated in vitro ([Gottweis et al. 2025](https://arxiv.org/abs/2502.18864)).
-- **FutureHouse's Robin.** It proposed and lab-validated ripasudil as a candidate for dry macular degeneration ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
+Their documented failures are process failures:
 
-Their failure modes are the ones these notes expect of unaudited processes:
+- The original AI Scientist failed 42% of experiments on coding errors, classified established ideas as novel, and put hallucinated numbers in some manuscripts ([Beel et al. 2025](https://arxiv.org/abs/2502.14297)). It also tried to edit its own code to extend a timeout ([Sakana 2024](https://sakana.ai/ai-scientist/)).
+- Robin's analysis put ripasudil's effect on phagocytosis at 7.5-fold; a human analysis of the same data found 1.75-fold ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
+- In controlled tests, Agent Laboratory and AI Scientist v2 showed biased benchmark selection, undisclosed subsampled or synthetic datasets, and post-hoc selection of the runs that scored best on the test set, though neither leaked test data. An LLM auditor given trace logs and code caught such flaws far more often than one given only the paper (82% vs. 55% accuracy) ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)).
 
-- An independent evaluation of the original AI Scientist found that 42% of experiments failed on coding errors and that the system classified established ideas as novel. Some of its manuscripts contained hallucinated numerical results ([Beel et al. 2025](https://arxiv.org/abs/2502.14297)).
-- The system itself tried to edit its own code to extend a timeout ([Sakana 2024](https://sakana.ai/ai-scientist/)).
-- Controlled tests of two open-source systems found inappropriate benchmark selection, data leakage, metric misuse and post-hoc selection. These flaws were far easier to catch from trace logs and code than from the final paper ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). That is an argument for auditing the process rather than the output.
-
-[Overseeing Automated Research](/proposals/overseeing-automated-research/) takes this further.
+That last result is the case for auditing the process rather than the output; [Overseeing Automated Research](/proposals/overseeing-automated-research/) develops it.
 
 ## Two useful typologies
 
-**Oracles, informers, controllers.** [One typology](https://www.lesswrong.com/posts/kfY2JegjuzLewWyZd/oracles-informers-and-controllers) sorts systems by autonomy: *oracles* answer when asked, *informers* proactively push what you should know, *controllers* are deferred to across most decisions. The technical distinction is thin — a strong oracle [drifts toward answering the question you *should* have asked](https://www.lesswrong.com/posts/E6sX6LpmacjfYa6N7/questions-are-tools-to-help-answerers-optimize-utility), i.e., toward informer-hood — but the trust requirements escalate sharply at each step, since users sample less and defer more.
+**Oracles, informers, controllers.** [One typology](https://www.lesswrong.com/posts/kfY2JegjuzLewWyZd/oracles-informers-and-controllers) sorts systems by autonomy: *oracles* answer when asked, *informers* proactively push what you should know, *controllers* are deferred to across most decisions. The technical distinction is thin, since a strong oracle [drifts toward answering the question you *should* have asked](https://www.lesswrong.com/posts/E6sX6LpmacjfYa6N7/questions-are-tools-to-help-answerers-optimize-utility). The trust requirements, though, escalate sharply at each step, as users check less and defer more. These notes target the oracle-to-informer range.
 
-Most of this wiki targets the oracle-to-informer range.
-
-**Disagreeables and assessors.** [A second typology](https://www.lesswrong.com/posts/v4nunCfofNo3Ze5bb/disagreeables-and-assessors-two-intellectual-archetypes) splits intellectual labor between *disagreeables* — bold idea-generators with high false-positive rates — and *assessors* — calibrated evaluators who excel at not being wrong. The roles are complementary (babble and prune: generate widely, filter hard), and the properties listed above are essentially the assessor's virtues. We think near-term LLM judges, evaluators, and estimation agents should be built and scored as assessors first: that is the role where calibration and consistency are measurable, and where an unreliable system does the most quiet damage.
+**Disagreeables and assessors.** [A second typology](https://www.lesswrong.com/posts/v4nunCfofNo3Ze5bb/disagreeables-and-assessors-two-intellectual-archetypes) splits intellectual labor between *disagreeables* — bold idea-generators with high false-positive rates — and *assessors* — calibrated evaluators who excel at not being wrong. The roles are complementary (babble and prune), and the properties listed above are the assessor's virtues. We think near-term LLM judges and estimation agents should be built and scored as assessors first: calibration and consistency are measurable there, and an unreliable assessor does the most quiet damage.
 
 ## What a strong reasoner is not
 
 - **Not necessarily superhuman.** A system somewhat below peak human insight but far more calibrated, consistent, and available already clears the bar for many uses.
 - **Not an oracle for unresolvable questions.** It outputs reasoned, uncertain judgments; pretending to settle questions the evidence cannot settle is a calibration failure.
-- **Not trustworthy by construction.** No architecture or training recipe confers trust directly. Trust is earned per-domain through track records, audits, and verification — though reproducibility speeds only the process-property half; accuracy records accrue as questions resolve (backtesting risks training-data leakage), and distribution shift, evaluation-conditional behavior, and version churn make AI track records weaker evidence than human ones.
+- **Not trustworthy by construction.** No architecture or training recipe confers trust. It is earned per domain through track records, audits, and verification. AI track records are also weaker evidence than human ones: accuracy accrues only as questions resolve, backtests risk training-data leakage, and distribution shift, evaluation-conditional behavior, and version churn erode what a record shows.
 
 ## Open questions
 
@@ -1090,7 +1091,7 @@ Opens Part III. The six-family taxonomy is a working organizing scheme, not a se
 
 ## The objective: eliminate confident error
 
-The only epistemic state that can hurt a judge without bound is being confidently wrong. A calibrated process turns that open-ended tail risk into a bounded one the judge can price, so the safety-relevant target is **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1, rather than accuracy. A process can always hedge or abstain, so "never confidently wrong" is achievable where "accurate" often is not. [Calibration](/concepts/hardening-calibration/) develops this, including its limit: a deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else. **[heuristic]** Every family below is a way to make confident error rare or expensive.
+The only epistemic state that can hurt a judge without bound is being confidently wrong. A calibrated process turns that open-ended tail risk into a bounded one the judge can price, so the safety-relevant target is **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1, rather than accuracy. A process can always hedge or abstain, so "never confidently wrong" is achievable where "accurate" often is not **[heuristic]**. [Calibration](/concepts/hardening-calibration/) develops this, including its limit: a deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else. Every family below is a way to make confident error rare or expensive.
 
 ## Two axes, six families
 
@@ -1120,14 +1121,14 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 | Sandbagging / capability-hiding | Independence, affordances (read-state) | interpretability is unreliable |
 | Resolution-criteria gaming | Deterrence, Incentive-compatibility | who defines the criteria |
 | Selection / optional-stopping | Verifiability, Deterrence | — |
-| **Correlated error** | Independence (weakly); common-cause-failure models | **no clean AI-specific defense yet** |
+| **Correlated error** | Independence (weakly) | **no clean AI-specific defense yet** |
 | Goodhart-after-publication | Deterrence, externally-grounded families | style-mimicry of high-tier forms |
 
 The standout is **correlated error**. Every aggregation, ensemble and panel defense assumes independence, and shared training pipelines erode it. Engineering has met this before, in N-version programming ([Knight & Leveson 1986](https://doi.org/10.1109/TSE.1986.6312924)), and prices it with common-cause models such as the beta factor ([Independence](/concepts/hardening-independence/) has the details). Those models measure correlation; they do not remove it. No family here removes it for AI reasoners, which makes this row a research priority.
 
 ## Composition: families stack, but how?
 
-The family pages treat constructions as atoms, but real systems are stacks. Model a hardened stack as an AND/OR attack tree ([Mauw & Oostdijk 2005](https://doi.org/10.1007/11734727_17)): an attacker needs one successful path, so the stack's corruption cost is the cheapest path, with costs summed over AND nodes and minimized over OR nodes. Series composition without randomization therefore inherits the cheapest stage. Randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation; this is the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional, and the same mechanism the [Process Catalogue](/concepts/process-catalogue/#reading-the-table) bets on for the empty quadrant. Whether real stacks behave this way is unmeasured.
+The family pages treat constructions as atoms, but real systems are stacks. Model a hardened stack as an AND/OR attack tree ([Mauw & Oostdijk 2005](https://doi.org/10.1007/11734727_17)): an attacker needs one successful path, so the stack's corruption cost is the cheapest path, with costs summed over AND nodes and minimized over OR nodes. A pipeline in which corrupting any one stage corrupts the output is an OR node, so without randomization it inherits the cheapest stage; checks that must all be defeated form an AND node, and their costs add. Randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation; this is the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional, and the same mechanism the [Process Catalogue](/concepts/process-catalogue/#reading-the-table) bets on for the empty quadrant. Whether real stacks behave this way is unmeasured.
 
 ## The cross-cutting multiplier: machine-oversight affordances
 
@@ -1192,7 +1193,7 @@ Calibration is **necessary, not sufficient**, and the gap is exactly where the a
 | Self-insurance pricing | premium demanded $=$ stated error probability **[heuristic]** | unstated overconfidence | quote an honest premium, never pay out absent escrow (≈ free) | speculative · — |
 | Reverse-Brier bounty | score $=$ adversary's confident-error-find-rate **[heuristic]** | confident errors an honest test misses | retreat to evasive vagueness; or bounty-hunter collusion (low) | speculative · — |
 
-Priced abstention depends on the scoring rule. [Kalai et al. (2025)](https://arxiv.org/abs/2509.04664) argue that language models keep hallucinating partly because most benchmarks grade "I don't know" the same as a wrong answer, so guessing scores better than abstaining. Their proposed remedy is to change the scoring of the leaderboards that already dominate, not to add more hallucination evaluations. Under this family's framing, any evaluation used to certify a process should give abstention a stated, nonzero value.
+Priced abstention depends on the scoring rule. [Kalai et al. (2025)](https://arxiv.org/abs/2509.04664) argue that language models keep hallucinating partly because most benchmarks score "I don't know" the same as a wrong answer, so guessing pays. Their remedy is to rescore the benchmarks that dominate leaderboards, for example by stating a confidence threshold $t$ and charging $t/(1-t)$ points per error, rather than to add hallucination evaluations. By the same logic, an evaluation used to certify a process should score an error below an abstention, by a stated penalty.
 
 ## Worked bounds
 
@@ -1218,7 +1219,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening
 
 If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be checked by reading $O(1)$ of its bits, chosen using $O(\log n)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
 
-The asymmetry is now also how reasoning models are trained. Reinforcement learning with verifiable rewards scores outputs with a programmatic checker instead of a learned judge (the term is from [Lambert et al. 2024](https://arxiv.org/abs/2411.15124), Tulu 3). [DeepSeek-R1](https://arxiv.org/abs/2501.12948) used RL of this kind to produce its reasoning gains on mathematics, coding and other verifiable tasks. Process reward models, trained on human labels of individual steps, push the check down a level: on MATH, step-level supervision beat outcome-only supervision ([Lightman et al. 2023](https://arxiv.org/abs/2305.20050)). We expect training to inherit this family's limit. Capability should grow fastest where checking is cheap, and any gap in the checker becomes something the policy is optimized against.
+The same asymmetry now drives much of reasoning-model training. Reinforcement learning with verifiable rewards scores outputs with a programmatic checker instead of a learned judge (the term is from [Lambert et al. 2024](https://arxiv.org/abs/2411.15124), Tulu 3). [DeepSeek-R1](https://arxiv.org/abs/2501.12948) used RL of this kind to produce its reasoning gains on mathematics, coding and other verifiable tasks. Process reward models, trained on human labels of individual steps, push the check down a level: on MATH, step-level supervision beat outcome-only supervision ([Lightman et al. 2023](https://arxiv.org/abs/2305.20050)). We expect training to inherit this family's limit. Capability should grow fastest where checking is cheap, and any gap in the checker becomes something the policy is optimized against.
 
 ## The limit
 
@@ -1319,7 +1320,7 @@ Invariance trades against signal and against correlated error. Reducing sensitiv
 | DP-noise corruption ceiling | $k$ adversarial inputs change any output probability by at most a factor $e^{k\varepsilon}$ **[exact]** | bounded-count manipulation | control many inputs so $k\varepsilon$ is large (≈ cost of $k$ inputs) | theoretical · [Dwork et al. 2006](https://doi.org/10.1007/11681878_14); group privacy, [Dwork & Roth 2014](https://doi.org/10.1561/0400000042) Thm 2.2 |
 | Randomize-everything harness | report the invariant; variance = exposure **[heuristic]** | prompt/format/persona manipulation | find a bias invariant across the fuzz distribution (moderate) | prototyped · (opinion fuzzing) |
 | Identity-masking gap | masked-vs-revealed affiliation swing **[heuristic]** | source-identity / [funding bias](/case-studies/the-funding-effect/) | leak affiliation through *content/style* the mask can't hide (low) | prototyped · [Tomkins et al. 2017](https://doi.org/10.1073/pnas.1707323114) |
-| Label-swap decision-neutrality | output invariant under relabeling a no-information decision; residual asymmetry $= b_\pi(D)$ **[heuristic]** | decision-relative (goal) bias | carry the bias in *content* a label-swap can't reach — symmetric cue, or asymmetric evidence vs. a planted lean (low–moderate) | measured once · five LLM judges: leans of a few points at most, no consistent label favored; identical-description prompts uninformative ([log](/case-studies/measurement-log/)) · [Kusner 2017](https://arxiv.org/abs/1703.06856), [Wang 2023](https://arxiv.org/abs/2305.17926) |
+| Label-swap decision-neutrality | output invariant under relabeling a no-information decision; residual asymmetry $= b_\pi(D)$ **[heuristic]** | decision-relative (goal) bias | carry the bias in *content* a label-swap can't reach — symmetric cue, or asymmetric evidence vs. a planted lean (low–moderate) | measured once · five LLM judges: small label leans (RMS ≤ 3.3 points), no label consistently favored; identical-description prompts uninformative ([log](/case-studies/measurement-log/)) · [Kusner 2017](https://arxiv.org/abs/1703.06856), [Wang 2023](https://arxiv.org/abs/2305.17926) |
 | Extremizing / recalibration | logit-pool with an extremizing parameter **[standard shape]** | shared-info under-confidence | feed correlated forecasts that extremizing wrongly sharpens (low) | deployed · [Satopää 2014](https://doi.org/10.1016/j.ijforecast.2013.09.009) |
 | Gauge-invariance tests | score violations of invariant transforms **[heuristic]** | hidden framing dependence | use a bias that respects tested gauges but not an untested one (moderate) | speculative · — |
 | Minimal-sufficient-input reduction | commit to the smallest determining set **[heuristic]** | attacks via non-load-bearing inputs | put the manipulation *inside* the minimal sufficient set (moderate) | speculative · — |
@@ -1329,7 +1330,7 @@ Invariance trades against signal and against correlated error. Reducing sensitiv
 
 **Breakdown-point ratings and the Krum impossibility.** The corruption gain of an aggregating process is its Lipschitz constant w.r.t. adversary-controllable inputs, and the breakdown point is its single-number metric. With $n=10$ judges: the **mean** has breakdown 0 — one corrupted judge can drag the average arbitrarily far — while the **median** survives up to 4 corrupted judges (breakdown 50%). Sharpened: **no linear aggregation rule tolerates even one Byzantine input** ([Blanchard et al. 2017](https://arxiv.org/abs/1703.02757)) **[exact]**, the rigorous form of "averaging LLM judges is maximally corruptible," so robust pooling (coordinate-wise median, trimmed mean) is mandatory, not optional. Differential privacy bounds per-contributor influence from the other side, on the output *distribution* (a factor $e^{\varepsilon}$), not on the output value. The cheapest defeat is simply to exceed the breakdown fraction — so the breakdown point *is* the attack budget.
 
-**What the label-swap run adds.** The first measurement of an invariance construction ([Measurement Log](/case-studies/measurement-log/)) shows that the test design matters. When the two options were described identically, all five models answered 50 every time, which says nothing about latent lean. Once the options differed, the label effects could be measured, and they were small. The one sizeable asymmetry was a position effect: +8 points on the 0–100 scale for one model, mostly from one prompt. An invariance check is informative only when the inputs do not make the invariant answer obvious.
+**What the label-swap run adds.** The first measurement of an invariance construction ([Measurement Log](/case-studies/measurement-log/)) turned on test design. With the two options described identically, every answer from all five models was exactly 50, which says nothing about latent lean. With different but comparable descriptions, label effects were measurable and small; the one sizeable asymmetry was a position effect of +8 points on the 0–100 scale, in one model and mostly from one prompt. An invariance check is informative only when the inputs do not make the invariant answer obvious.
 
 ## Open questions
 
@@ -1492,7 +1493,7 @@ A track record carries weight exactly in proportion to what it would cost a liar
 - **No selection.** A producer that picks which questions to answer can build a flattering record on easy ones. Records need a denominator: the questions offered, not just the ones taken. An analysis of Good Judgment Open and Metaculus shows their scoring rules reward picking easy questions ([Sempere & Lawsen 2021](https://arxiv.org/abs/2106.11248)), and the [sharpness floor](/concepts/hardening-calibration/#constructions) exists for the same reason.
 - **Continuity.** The record must belong to the process now speaking. For people this is nearly automatic. For AI processes it is the hard part (below).
 
-The strongest evidence that such a record predicts future accuracy comes from the IARPA geopolitical forecasting tournament. The Good Judgment Project placed the top 2% of its year-one forecasters in elite teams; together with probability training and teaming, this improved both calibration and resolution ([Mellers et al. 2014](https://doi.org/10.1177/0956797614524255)), and the selected "superforecasters" kept high accuracy across hundreds of questions, with no regression toward the mean two years in a row ([Mellers et al. 2015](https://doi.org/10.1177/1745691615577794)). Those records were scored against external resolution and accumulated over time, the two properties above. Whether records transfer as well for AI processes, whose configuration changes between versions, is the question of the next section.
+The best-known evidence that such a record predicts future accuracy comes from the IARPA geopolitical forecasting tournament. The Good Judgment Project placed the top 2% of its year-one forecasters in elite teams; together with probability training and teaming, this improved both calibration and resolution ([Mellers et al. 2014](https://doi.org/10.1177/0956797614524255)), and the selected "superforecasters" kept high accuracy across hundreds of questions, with no regression toward the mean two years in a row ([Mellers et al. 2015](https://doi.org/10.1177/1745691615577794)). The authors attribute part of that to the elite-team environment (superforecasters were "partly discovered and partly created"), so not all of the persistence is the record's predictive power. Those records were scored against external resolution and accumulated over time, the two properties above. Whether records transfer as well for AI processes, whose configuration changes between versions, is the question of the next section.
 
 Reputation is real but modestly priced where it is measured: in a matched-item field experiment, an established eBay reputation raised buyers' willingness to pay by about 8% ([Resnick et al. 2006](https://link.springer.com/article/10.1007/s10683-006-4309-2)). That is a warning against assuming standing is worth much by default. It has to be engineered, by making standing gate access to things worth having.
 
@@ -1550,7 +1551,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/epistemic
 
 The tier boundaries are a first cut, not a settled taxonomy.
 
-What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them as a **reliability ladder**. Tiers 1, 2, 4 and 5 each require more trust than the one before; tier 3 is placed by argument rather than shown, and may be harder to verify than tier 4 (see open questions), so read the ladder as a partial order. We conjecture that a tier's applications become defensible once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers run today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.
+What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them as a **reliability ladder**, ordered by the trust each tier requires. The order is partial: tier 3's place is argued rather than shown, and it may be harder to verify than tier 4 (see open questions). We conjecture that a tier's applications become defensible once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers run today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.
 
 ## Tier 1: Error-checking and critique
 
@@ -1592,7 +1593,151 @@ Each tier becomes deployable when [verification](/concepts/oversight-protocols/)
 
 
 ------------------------------------------------------------
-## 24. Overseeing Automated Research
+## 24. Building Strong Reasoners
+Source: https://reasoning-processes.quantifieduncertainty.org/proposals/building-strong-reasoners/
+------------------------------------------------------------
+
+*The rest of these notes describe how to judge, harden, and keep records of reasoning processes. This chapter asks what to build. For each of five directions it names the system, the concepts it draws on, the cheapest first experiment, the results that would change our minds, and the ways it could fail. The [Ordering](#ordering) section ranks them by cost.*
+
+Working notes. Each direction carries a confidence label: our guess at how likely the first experiment is to produce something worth building on. These labels are judgments, not estimates from data. The empirical background is the dated [State of the evidence](/concepts/what-is-a-strong-reasoner/#state-of-the-evidence-october-2026) section of Chapter 10, which this chapter does not repeat.
+
+## Starting point
+
+A [strong reasoner](/concepts/what-is-a-strong-reasoner/) is a process whose judgments deserve substantial weight within a domain. Building one therefore means building two things: the process, and the verification stack that earns it the weight. Three findings from 2025–26 shape what that looks like.
+
+- **The leading systems are pipelines, not bare models.** On short-horizon forecasting the best entries are retrieval, decomposition and ensembling scaffolds around frontier models, now roughly level with strong human forecasters but not clearly better.
+- **Training against outcomes works where outcomes exist.** Outcome-based RL on resolved prediction-market questions gave a 14B model accuracy matching or beating o1 and much better calibration ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)). Reasoning-model gains concentrate where rewards can be checked.
+- **Legible channels stop working as audits once they are optimized against.** A chain-of-thought monitor caught reward hacking well. Adding it to the training reward helped under light optimization, but under strong optimization the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
+
+Five working principles follow.
+
+1. **Build assessors first.** Calibration and consistency are measurable for [assessors](/concepts/what-is-a-strong-reasoner/#two-useful-typologies). Bold generation is not.
+2. **Score the versioned process, not the model.** Records attach to a configuration ([Identity and Track Records](/environment/identity-and-track-records/#what-changes-for-ai-processes)).
+3. **Report a corruption cost alongside accuracy.** A component with a good Brier score but no measured sensitivity to planted inputs has been rated on only one of the [two axes](/concepts/process-catalogue/).
+4. **Measure $n_{\text{eff}}$ before trusting a panel.** $k$ agreeing models look like $k$ pieces of evidence but average away error only as $n_{\text{eff}}$ independent ones would ([Independence](/concepts/hardening-independence/#the-limit)).
+5. **Hold some checks out of the reward.** Any check used for training should be paired with a held-out check of a different type, or its later readings mean little.
+
+## 1. A hardened forecasting pipeline
+
+**What to build.** Start from an open forecasting scaffold and add one layer per [hardening family](/concepts/hardening-techniques/). Each layer gets its own ablation.
+
+| Layer | Family | Mechanism |
+|---|---|---|
+| Arbitrage filter | Calibration / coherence | Before submitting, run logically related questions and repair arbitrage violations ([Paleka et al., ICLR 2025](https://arxiv.org/abs/2412.18544)) |
+| Paraphrase and label-swap ensemble | Invariance | Average over rewordings and option orderings; report the spread as a sensitivity score |
+| Tail certificate with abstention | Calibration | Publish $P(\text{false}\mid\text{asserts}\ge c)$ on held-out questions; abstain below a priced threshold |
+| Provenance-weighted retrieval | Invariance / deterrence | Down-weight conclusions that rest on a single unlogged or low-provenance source |
+| Measured-$n_{\text{eff}}$ aggregation | Independence | Extremize only in proportion to measured independence (below) |
+
+The last row deserves a note. Baron et al. give two reasons to extremize an averaged forecast: random error pulls a mean toward 0.5, and each forecaster hedges for its ignorance of what the others know, so the pooled forecast is underconfident. Taking the median removes the first effect but not the second ([Baron et al. 2014](https://pubsonline.informs.org/doi/10.1287/deca.2014.0293)). LLMs that share training data may know little that the others do not. If so, extremizing the median of individually recalibrated models should add overconfidence rather than remove underconfidence. That is a testable prediction, and a cheap one.
+
+**Cheapest first experiment.** Take a few hundred questions that resolved after the base model's training cutoff. Run the scaffold with each layer switched on and off in turn. Measure two things: Brier score, and a manipulation score, meaning how much the forecast moves when one planted, plausible but false article is added to retrieval. Run the extremizing comparison on the same questions. Compare variants on paired per-question scores: Brier differences between pipeline variants are usually small, and a few hundred questions will detect only large ones.
+
+**What would update us.**
+- If the layers cut manipulation sensitivity substantially at little Brier cost, record what each costs in calls per forecast. That gives the first measured point for an LLM pipeline on the [Catalogue's map](/concepts/process-catalogue/), whose coordinates are so far judgments.
+- Arbitrage repair has had one preliminary test, on gpt-4o-mini. It raised consistency on the checks it repaired but not on other checks, and gave no reliable Brier gain ([Paleka et al., ICLR 2025](https://arxiv.org/abs/2412.18544)). If the full stack shows the same, the filter earns its place only if it lowers the manipulation score.
+- If extremizing the median of recalibrated models helps as much as it helps human crowds, our story about shared information is wrong.
+
+**Risks.** Temporal leakage makes backtests look better than live performance ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)). A live run on an unresolved stream such as [ForecastBench](https://arxiv.org/abs/2409.19839) avoids that but takes months. The manipulation score measures one weak attack. Optimized injections are much stronger: five crafted texts per target question, in a corpus of millions, gave a 90% attack success rate against retrieval-augmented question answering ([Zou et al. 2024](https://arxiv.org/abs/2402.07867)). A pipeline that shrugs off one planted article may still yield to optimized ones, or to question wording.
+
+**Confidence: moderate.** The components exist. The open question is whether they compose or merely inherit the weakest layer.
+
+## 2. Training on hardening signals
+
+**What to build.** Outcome rewards are scarce and slow. Consistency checks need no resolution, so they could supply a dense extra signal: reward resolved accuracy, and penalize arbitrage on unresolved related questions.
+
+Consistency has been tried as a label-free signal before, with mixed results. Contrast-consistent search recovered truth-tracking directions from negation consistency alone ([Burns et al. 2022](https://arxiv.org/abs/2212.03827)), but arbitrary prominent features satisfy the same constraint, so the method often found something other than knowledge ([Farquhar et al. 2023](https://arxiv.org/abs/2312.10029)). Fine-tuning on labels chosen for mutual predictability and logical consistency matched training on gold labels on several tasks ([Wen et al. 2025](https://arxiv.org/abs/2506.10139)). None of this work used forecasting questions. The danger is the one the [consistency chapter](/proposals/consistency-evals/) names: a model trained toward coherence can learn to be coherently wrong. And the inference-time version, direction 1's arbitrage filter, improved only the checks it repaired.
+
+**Cheapest first experiment.** Fine-tune a small open model in two arms: outcome reward alone, and outcome reward plus an arbitrage penalty on one family of checks (say, negation and complement pairs). Evaluate on Brier score, on the trained check types, and on held-out check types the model never saw (conditional and temporal checks).
+
+**What would update us.** If held-out consistency improves and Brier score does not worsen, consistency is a usable training signal. If only the trained check types improve, the model has learned the check rather than coherence. That result would argue for keeping consistency purely as an audit.
+
+**Risks.** Compute and contamination. The deeper risk is the one this chapter's fifth principle names: success here makes it tempting to train on every check, which leaves nothing held out.
+
+**Confidence: moderate** that something improves; **low** that it generalizes beyond the trained check types.
+
+## 3. An adversarial-collaboration harness
+
+**What to build.** In an adversarial collaboration, opponents in a dispute jointly design the test that would settle it, with an arbiter ([Mellers, Hertwig & Kahneman 2001](https://pubmed.ncbi.nlm.nih.gov/11476091/)). The product is an agreed test, not a verdict. That makes it a way to convert a [judge-grounded](/concepts/oversight-protocols/) dispute into a [resolution-grounded](/concepts/oversight-protocols/#resolution-grounded-markets-and-prediction-games) one.
+
+The human version is slow and moves people little. In the Forecasting Research Institute's adversarial collaboration on AI risk (22 participants), the concerned group's median probability of AI-caused existential catastrophe by 2100 fell from 25% to 20% and the skeptics' rose from 0.10% to 0.12%. One of the top short-term cruxes, resolving in 2030, was expected to close only about 5% of the gap ([FRI 2024](https://forum.effectivealtruism.org/posts/orhjaZ3AJMHzDzckZ/results-from-an-adversarial-collaboration-on-ai-risk-fri)).
+
+An LLM harness could do the crux-finding part cheaply. Two agents are assigned opposing positions. Each must produce:
+1. a list of cruxes;
+2. each crux operationalized as a question with resolution criteria;
+3. conditional forecasts: its credence in its position if the crux resolves each way.
+
+The arbiter scores the cruxes for resolvability and ranks them by [epistemic impact](/proposals/epistemic-impact-analysis/): how far each resolution would move each side, weighted by when it resolves. Coherence between the conditional and unconditional forecasts is checked with the consistency battery.
+
+**Cheapest first experiment.** Run the harness on the AI-risk dispute and compare its cruxes with those in FRI's report. A blind panel rates both lists. A retrospective version uses disputes that have since resolved, and asks whether the harness's top-ranked crux pointed at the evidence that actually settled them. That version needs disputes that resolved after the model's training cutoff.
+
+**What would update us.** If the harness's crux lists match or beat human ones in blind ratings, cheap crux-finding is a real product. It would mean a judgment question can be turned into forecasting questions on demand. If the two agents drift toward each other's position whatever the evidence, the harness is measuring sycophancy, and each side needs a stake in its position, such as a bond paid out on its conditional forecasts.
+
+**Risks.**
+- **Fake disagreement.** Two agents built on similar models can disagree on the surface while sharing every blind spot. Errors of different LLMs are substantially correlated ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), so cruxes neither side can see will be missing from both lists.
+- **Persuasion of the arbiter.** An LLM arbiter can be swayed by the more persuasive agent. Two opposed agents hold up better than one advocate arguing alone, the consultancy setup ([Khan et al. 2024](https://arxiv.org/abs/2402.06782)), and limiting the arbiter to rating resolvability, not picking a winner, narrows what persuasion can buy.
+- **Cruxes that do not resolve.** The FRI result suggests that the largest disagreements rest on worldview questions that no near-term indicator settles. The harness may simply rediscover that.
+
+**Confidence: moderate** for useful crux lists; **low** that the cruxes close much of any real dispute.
+
+## 4. A track-record registry for AI processes
+
+**What to build.** The [identity chapter](/environment/identity-and-track-records/#constructions) lists the pieces: forecasts in an append-only log, keyed by a configuration hash, with records kept per operator so that running many configurations and promoting the lucky one shows up in the denominator.
+
+**Cheapest first experiment.** Two measurements, both possible without the full infrastructure.
+- **Transfer.** Log the forecasts of several versions of one model family on the same live question stream. Measure how well a version's record predicts its successor's: the rank correlation of per-domain skill across versions.
+- **Promotion inflation.** Run $k$ prompt variants of one configuration, promote the best on the first half of the questions, and score it on the second half. The drop measures how much "best of $k$" records overstate skill.
+
+Per-domain skill is noisy, so first measure each version's split-half reliability, its correlation with itself across halves of the questions. Cross-version correlation means little except relative to that ceiling.
+
+**What would update us.** If skill rankings correlate across versions nearly as well as within them, records can transfer with a measured discount, and standing has deterrent value across model updates. If they barely correlate, per-version records are close to worthless. Deterrence would then rest on escrow alone, the only part of $B_{\text{eff}}$ that, on the identity chapter's analysis, survives a change of identity.
+
+**Risks.** A registry is itself a process with a corruption cost, and a captured one launders bad records ([The registry is itself a process](/environment/identity-and-track-records/#the-registry-is-itself-a-process)). Records on resolvable questions say little about judgment on questions that never resolve.
+
+**Confidence: high** that the measurements are informative, since either answer matters.
+
+## 5. Measuring effective independence in model panels
+
+**What to build.** The [hardening overview](/concepts/hardening-techniques/#what-each-family-defends--and-the-gaps) names correlated error as the one threat with no clean AI-specific defense. The first step is a behavioral estimator. For a panel of $k$ reporters with average pairwise error correlation $\bar\rho$ on a task, the variance of the panel mean equals that of $k/(1+(k-1)\bar\rho)$ independent reporters:
+
+$$n_{\text{eff}} = \frac{k}{1+(k-1)\bar\rho} \qquad \textbf{[standard shape]}$$
+
+(This assumes equal error variances, with $\bar\rho$ averaged over pairs. It is the design-effect formula from survey sampling.) Two lines of work measure related quantities: error agreement across hundreds of LLMs ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and a chance-adjusted error-overlap metric that rises with capability ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)).
+
+**Cheapest first experiment.** Take the five models from the [label-swap run](https://github.com/quantified-uncertainty/cairn/tree/main/apps/reasoning-processes/experiments/label-swap). Estimate $\bar\rho$ on questions with known answers, where a wrong answer belongs to the model, as Kim et al. do. Raw Brier errors on forecasting questions are a poor substitute: they share each question's outcome noise, which no panel can average away, so they look highly correlated even when the models' mistakes are independent. Then try decorrelating interventions one at a time: different retrieval corpora, different decompositions, different personas. Measure how much each raises $n_{\text{eff}}$, and check the net effect on a few hundred resolved forecasting questions by comparing the panel's Brier score with its members'.
+
+**What would update us.** If some intervention raises $n_{\text{eff}}$ substantially, independence has a usable AI-specific lever, and the correlated-error row of the threat table has its first defender. If none does, panels of frontier models should be priced at their measured $n_{\text{eff}}$, not their head count, and every protocol that counts agreeing models as separate evidence needs that discount.
+
+**Risks.** Correlation is task-specific, so an estimate from one question set may not carry over to forecasting, grading or review. The interventions that decorrelate errors may also lower each reporter's accuracy.
+
+**Confidence: high** that the measurement is informative; **low** that cheap interventions move $n_{\text{eff}}$ much.
+
+## Ordering
+
+| Direction | First experiment needs | Time to a first result |
+|---|---|---|
+| 5. Measuring $n_{\text{eff}}$ | API calls, known-answer and resolved questions | days |
+| 1. Hardened pipeline | an open scaffold and resolved questions; a live run for a clean answer | weeks (backtest), months (live) |
+| 3. Adversarial collaboration | API calls, a blind rating panel | weeks |
+| 2. Training on hardening signals | fine-tuning compute on a small open model | weeks |
+| 4. Track-record registry | a live question stream, several model versions | months |
+
+For scale on cost: the label-swap run, 3,000 short calls across five current models, cost \$8.47 ([results](https://github.com/quantified-uncertainty/cairn/blob/main/apps/reasoning-processes/experiments/label-swap/RESULTS.md)). We expect directions 5 and 3 to cost the same order of magnitude, with longer prompts. A sixth direction, metering an automated research program by its validated epistemic impact, has its own chapter: [Overseeing Automated Research](/proposals/overseeing-automated-research/), whose pilot is the natural next step after these.
+
+## Cross-cutting risks
+
+- **Trust infrastructure can launder.** A registry, certificate or consistency score attached to a system invites more deference than the measurement supports, especially off the measured distribution. Each artifact should state the distribution it was measured on.
+- **Dual use.** A harness that finds which cruxes move a person is also a persuasion tool, and a pipeline that knows which inputs move a forecast tells an attacker where to push. Publishing manipulation scores helps defenders and attackers alike. We do not have a resolution for this beyond publishing aggregate scores rather than attack recipes.
+
+## Open questions
+
+- Is there any dense training signal for judgment, beyond resolved outcomes, that survives being optimized against?
+- Can crux-finding turn questions that never resolve into ones that do, or does it mostly reveal that the disagreement is about worldview?
+- What would close the correlated-error gap: training-data diversity, architecture diversity, or something about how panels are queried?
+
+
+------------------------------------------------------------
+## 25. Overseeing Automated Research
 Source: https://reasoning-processes.quantifieduncertainty.org/proposals/overseeing-automated-research/
 ------------------------------------------------------------
 
@@ -1602,11 +1747,11 @@ An agenda sketch, more speculative than the other proposals. [Building Strong Re
 
 ## The problem
 
-Labs now delegate research to AI systems and plan to delegate more. In September 2026 OpenAI said that, by its own measurements, it had reached its target of an "automated research intern", a system that carries out well-defined research tasks under human direction, and that it is working toward an automated AI researcher by March 2028 ([OpenAI 2026](https://openai.com/index/research-acceleration-view-inside-openai/); [Help Net Security](https://www.helpnetsecurity.com/2026/09/07/openai-research-automation-intern/)). Systems that run the whole loop from hypothesis to write-up exist, with lab-validated results and well-documented failures ([State of the evidence](/concepts/what-is-a-strong-reasoner/#ai-scientist-systems)). Safety research is among the work to be delegated, which makes this the sharpest form of the oversight problem: managing researchers whose object-level work you cannot check.
+Labs now delegate research to AI systems and plan to delegate more. In September 2026 OpenAI said that, by its own measurements, it had reached its target of an "automated research intern", a system that carries out well-defined research tasks under human direction, and that it is working toward an automated AI researcher by March 2028 ([OpenAI 2026](https://openai.com/index/research-acceleration-view-inside-openai/); [Help Net Security](https://www.helpnetsecurity.com/2026/09/07/openai-research-automation-intern/)). Systems that automate large parts of the research loop exist; some have lab-validated results, and their failures are well documented ([State of the evidence](/concepts/what-is-a-strong-reasoner/#ai-scientist-systems)). Safety research is among the work to be delegated, which makes this the sharpest form of the oversight problem: managing researchers whose object-level work you cannot check.
 
-*Process auditing* works better than often assumed. [AI control](https://www.redwoodresearch.org/research/ai-control) protocols extract substantial safety from weaker trusted monitors, rubric-based LLM judging grades paper replications at scale ([PaperBench](https://openai.com/index/paperbench/)), and the typical AI-scientist flaws (benchmark selection, leakage, metric misuse, post-hoc selection) are far easier to catch from trace logs and code than from the paper ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). But its cost grows with output volume and its reliability falls as the capability gap widens.
+*Process auditing* works better than often assumed. [AI control](https://www.redwoodresearch.org/research/ai-control) protocols extract substantial safety from weaker trusted monitors, rubric-based LLM judging grades paper replications at scale ([PaperBench](https://openai.com/index/paperbench/)), and the AI-scientist failure modes Luo et al. tested for (benchmark selection, data leakage, metric misuse, post-hoc selection) are far easier to catch from trace logs and code than from the paper ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). But deliberate sabotage is harder: in ResearchArena, monitors flagged sabotage hidden in the training data of an AI R&D agent's deliverable less than half the time, and letting them run experiments on the artifact helped without closing the gap ([Libon et al. 2026](https://arxiv.org/abs/2607.19321)). The sibling Delegation Risk wiki collects measured monitor recall from other control evaluations ([Empirical Scheming Reduction](https://delegation-risk.quantifieduncertainty.org/research/trust-behavior/empirical-scheming-reduction/#3-monitor-recall-control-evaluations)). Process auditing's cost grows with output volume, and its reliability falls as the capability gap widens ([Engels et al. 2025](https://arxiv.org/abs/2504.18530)).
 
-The alternative proposed here is **output-metered oversight**: the principal does not follow the work but tracks the program's beliefs, as a trading desk tracks positions. It complements process audits: trace audits catch flaws that leave marks in the logs, control protects against subversion, and metering prices the product.
+The alternative proposed here is **output-metered oversight**: the principal does not follow the work but tracks the program's beliefs, as a trading desk tracks positions. It complements process audits: trace audits catch flaws that leave marks in the logs, control protects against subversion, and metering prices the product. Metering suits what the control literature calls distributed threats, where no single output is catastrophic and evidence accumulates across many ([Wen et al. 2024](https://arxiv.org/abs/2411.17693)). Against a single catastrophic action it does nothing.
 
 ## The architecture
 
@@ -1640,17 +1785,18 @@ For safety research the resolvable region is small. Retrodiction on held-out mod
 The feasibility evidence runs both ways.
 - Forecasters predicting the value of small projects before execution discriminated good from bad but were [systematically optimistic](https://forum.effectivealtruism.org/posts/qb56nicbnj9asSemx/predicting-the-value-of-small-altruistic-projects-a-proof-of) (2020).
 - A [retrospective of 2018–19 LTFF grants](https://forum.effectivealtruism.org/posts/Ps8ecFPBzSrkLC6ip/2018-2019-long-term-future-fund-grantees-how-did-they-do) found that research outputs often existed but were illegible or unpublished. Legibility, not absence, was the validation bottleneck, and output-metering inherits it.
-- Replication markets reached roughly 73% accuracy on ~100 resolved claims, with cheap surveys statistically indistinguishable ([Gordon et al. 2021](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0248780)). DARPA SCORE scaled forecasting to ~3,000 priced claims ([Gordon et al. 2020](https://royalsocietypublishing.org/doi/10.1098/rsos.200566)) but could not afford to resolve them. The resolution layer is the system.
+- Replication markets reached roughly 73% accuracy on ~100 resolved claims, with cheap surveys statistically indistinguishable ([Gordon et al. 2021](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0248780)). DARPA SCORE scaled forecasting to ~3,000 claims but planned to replicate only about 5% of them ([Gordon et al. 2020](https://royalsocietypublishing.org/doi/10.1098/rsos.200566)). The resolution layer is the system.
 
-What exists instead: research-agent benchmarks ([RE-Bench](https://arxiv.org/abs/2411.15114), [MLE-bench](https://arxiv.org/abs/2410.07095), [PaperBench](https://openai.com/index/paperbench/)) score against fixed task metrics or rubrics. Lab oversight agendas ([amplified oversight](https://arxiv.org/abs/2504.01849), [AISI safety cases](https://www.aisi.gov.uk/blog/safety-cases-at-aisi), and OpenAI's [superalignment](https://openai.com/index/introducing-superalignment/) team, disbanded in May 2024 ([AFP via Gulf News](https://gulfnews.com/technology/companies/openai-disbands-team-devoted-to-artificial-intelligence-risks-1.1716016234882))) are process audits or per-claim judge-grounded evaluations. We know of none that meters producers against a weighted question portfolio.
+What exists instead: research-agent benchmarks ([RE-Bench](https://arxiv.org/abs/2411.15114), [MLE-bench](https://arxiv.org/abs/2410.07095), [PaperBench](https://openai.com/index/paperbench/)) score against fixed task metrics or rubrics. Lab oversight agendas ([amplified oversight](https://arxiv.org/abs/2504.01849), [AISI safety cases](https://www.aisi.gov.uk/blog/safety-cases-at-aisi)) are process audits or per-claim judge-grounded evaluations. We know of none that meters producers against a weighted question portfolio.
 
 ## Failure modes
 
 - **Persuasion of the consumer.** If credit flows on belief movement alone, the gradient favors rhetoric. As drawn, the update step is the *consultancy* protocol, which does worse than debate under persuasive advocacy ([Michael et al. 2023](https://arxiv.org/abs/2311.08702); [Khan et al. 2024](https://arxiv.org/abs/2402.06782)). Mitigations: pay at resolution (binding only for portfolio weight that resolves on a useful horizon), and make the update adversarial, with counter-producers paid for moving the book the other way.
+- **Sabotage the meter rates highly.** A misaligned producer can do subtly worse work that a weaker scorer cannot tell apart from good work. On research proposals, an optimized red team got Opus 4.6 to write proposals worse than GPT-OSS-20B's by a proxy ground truth, which a weak scorer rated as highly as Opus's best ([Terekhov et al. 2026](https://arxiv.org/abs/2606.08892)). Until resolution, the consumer is that weak scorer. Mitigation: weight credit toward resolution, and red-team the consumer's prompt adversarially, as that paper's blue team does.
 - **Portfolio fixation.** A fixed question set cannot value research showing that the portfolio asks the wrong questions. Meta-questions help but resolve by panel judgment, which keeps this the most human-dependent component.
-- **Resolver corruption and collusion.** Producers and resolvers, or producers sharing a base model with the consumer, may correlate or collude; LLM judges also favor outputs they recognize as their own ([Panickssery et al. 2024](https://arxiv.org/abs/2404.13076)). Mitigations: diverse resolver ensembles with [measured independence](/proposals/building-strong-reasoners/#5-measuring-effective-independence-in-model-panels), randomized audits, and red-team producers rewarded for exposing resolution failures. Producers may also lobby the meta loop instead.
+- **Resolver corruption and collusion.** Producers and resolvers, or producers sharing a base model with the consumer, may correlate or collude; LLM judges also favor outputs they recognize as their own ([Panickssery et al. 2024](https://arxiv.org/abs/2404.13076)). Mitigations: diverse resolver ensembles with [measured independence](/proposals/building-strong-reasoners/#5-measuring-effective-independence-in-model-panels), randomized audits, and red-team producers rewarded for exposing resolution failures. Producers may also lobby the meta loop instead, or move outcomes rather than resolutions: on questions about the field's own future, the research being scored can make itself come true.
 - **Strategic churn and Sybils.** If losses floor at zero, one identity injects an error and a colluder, or the same producer re-keyed, collects on the correction. Withholding and bundling also game sequential credit. Hence the two-sided, identity-bound escrow.
-- **Resolution ambiguity.** Disputed and N/A resolutions are the commonest resolution-layer failure on real platforms, and adversarial producers exploit criteria gaps first. Mitigations: pre-registered criteria, versioned adjudication, and the ambiguity rate tracked as a health metric.
+- **Resolution ambiguity.** Disputed and annulled resolutions are a familiar resolution-layer failure on real platforms, and adversarial producers will exploit criteria gaps first. Mitigations: pre-registered criteria, versioned adjudication, and the ambiguity rate tracked as a health metric.
 - **Goodharting the portfolio.** Optimizing measurable questions at the expense of unmeasured mission value. The meta loop exists to detect that divergence, which is why its independence is non-negotiable.
 
 ## A pilot
@@ -1659,12 +1805,12 @@ The proposal can be tested now, reflexively, on QURI's own output.
 
 1. **Portfolio.** About 200 weighted questions for one domain QURI works in (for example, AI forecasting and epistemics), with weights set by two or more staff independently before scoring begins. Pre-register the questions, weights and resolution criteria.
 2. **Consumer.** One pinned frontier model at fixed settings, benchmarked first on a consistency battery and on a few hundred resolved forecasting questions. A second model family is run in parallel to see how much the meter depends on the consumer.
-3. **Scoring.** For each of 30–50 QURI posts and papers from 2025–26 published after the consumer's training cutoff, elicit the consumer's portfolio forecasts with and without the item in context, several samples each, and compute the impact score.
+3. **Scoring.** For each of 30–50 QURI posts and papers from 2025–26 published after the consumer's training cutoff, elicit the consumer's portfolio forecasts with and without the item in context, several samples each, and compute the impact score. A placebo arm, with length-matched irrelevant documents in context, measures how far any text moves the book; impact is scored net of it.
 4. **Comparison.** Collect the staff's retrospective ranking of which items mattered, made blind to the meter's scores, and compare both with outside readership.
 
-Our rough scale estimate, not a quote: if one call answers all 200 questions at once (checked against one-question calls on a subsample, since batching may itself shift answers), 50 items × 5 samples × 2 consumers is about 500 long-context calls, likely tens to low hundreds of dollars at 2026 list prices. Building the portfolio is the expensive part, at the weeks of specialist work noted above.
+Our rough scale estimate, not a quote: if one call answers all 200 questions at once (checked against one-question calls on a subsample, since batching may itself shift answers), 50 items × 5 samples × 2 consumers is about 500 long-context calls plus the baseline and placebo runs, likely tens to low hundreds of dollars at 2026 list prices. Building the portfolio is the expensive part, at the weeks of specialist work noted above.
 
-The divergences are the deliverable. Where the meter and the judgment disagree, the portfolio is mis-weighted (meta-loop data), the consumer is miscalibrated (eval data), or the intuition is wrong (the interesting case). Pre-registered failure conditions: the meter is measuring prestige and phrasing, not epistemic impact, if its scores are predicted as well by length and venue as by content, if they are unstable under question rewording, or if the two consumer models' rankings of the items barely correlate.
+The divergences are the deliverable. Where the meter and the judgment disagree, the portfolio is mis-weighted (meta-loop data), the consumer is miscalibrated (eval data), or the intuition is wrong (the interesting case). Pre-registered failure conditions: the meter is measuring prestige and phrasing, not epistemic impact, if its scores are predicted as well by length and venue as by content or are unstable under question rewording; it is measuring the consumer, not the item, if the two consumer models' rankings barely correlate.
 
 ## Open questions
 
@@ -1676,7 +1822,7 @@ The divergences are the deliverable. Where the meter and the judgment disagree, 
 
 
 ------------------------------------------------------------
-## 25. LLM Epistemics in Production
+## 26. LLM Epistemics in Production
 Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/llm-epistemics-in-production/
 ------------------------------------------------------------
 
@@ -1739,7 +1885,7 @@ The run's one documented production failure is more instructive than the rubric:
 
 
 ------------------------------------------------------------
-## 26. Open Problems
+## 27. Open Problems
 Source: https://reasoning-processes.quantifieduncertainty.org/open-questions/
 ------------------------------------------------------------
 
@@ -1765,8 +1911,8 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 
 - **Does forecasting parity transfer?** AI forecasters now roughly match strong humans on binary questions that resolve within months. We do not know whether that predicts anything about long-horizon or unresolvable judgment, or how to find out without waiting.
 - **What is the right baseline?**
-  - On market questions, forecasters see the price. When that price is the baseline, no entry, AI or superforecaster, demonstrably adds value after correcting for multiple comparisons.
-  - We do not know which baseline a judge should use when deciding how much weight a forecaster deserves.
+  - On market questions, forecasters see the price. One analysis finds that, after correcting for multiple comparisons, no entry, AI or superforecaster, significantly beats simply submitting that price.
+  - A forecaster deserves weight only for information beyond the judge's existing sources, which [forecast-encompassing tests](/concepts/what-is-a-strong-reasoner/#a-working-definition) measure on resolved questions. We do not know how to measure it for judgments that never resolve.
 - **Do audit channels survive optimization?**
   - Chain-of-thought monitoring works, and it degrades when it is trained against.
   - The same may hold for every legible channel these notes propose, including consistency checks, track records and trace logs.
@@ -1774,7 +1920,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 
 ## By chapter
 
-- [Cruxes](/start-here/key-questions/) — strategic uncertainties with working credences: scaffolding vs. base models, demand, differential safety, lock-in, CoT monitorability.
+- [Cruxes](/start-here/key-questions/) — strategic uncertainties with illustrative credences: scaffolding vs. base models, demand, differential safety, lock-in, CoT monitorability.
 - [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/#open-questions) — consumer-agent adequacy, divergence measures for rich beliefs, efficient profundity, adversarial information, valuing question discovery.
 - [Constructing Utility Functions](/concepts/constructing-utility-functions/#open-questions) — aggregating structural disagreement, weight drift and its auditors, required elicitation precision under optimization pressure.
 - [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions) — whether the deception conjunction is complete, when reproduction fails under correlated error, whether "deception affordance" is the right central object, whether form-level robustness generalizes, composed arguments, Goodhart dynamics once the map is public, and design-time advantage without credible commitment.
@@ -1785,7 +1931,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 - [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/#open-questions) — which properties are load-bearing, cross-domain trust transfer, track records across model versions, whether forecasting parity generalizes, keeping CoT monitorable.
 - [Hardening: Overview](/concepts/hardening-techniques/#open-questions) — whether six families is the right cut, which compose multiplicatively, a single unifying inequality, the correlated-error row.
   - [Calibration](/concepts/hardening-calibration/#open-questions) — estimating tail calibration, defeating coherent ignorance, abstention exchange rates.
-  - [Verifiability Asymmetry](/concepts/hardening-verifiability/#open-questions) — a PCP-analogue for estimates, who controls decomposition, how much research is verifiable at all.
+  - [Verifiability Asymmetry](/concepts/hardening-verifiability/#open-questions) — a PCP-analogue for estimates, who controls decomposition, how much research is verifiable at all, whether reasoning trained on verifiable rewards transfers to unchecked tasks.
   - [Independence & Decorrelation](/concepts/hardening-independence/#open-questions) — estimating $n_{\text{eff}}$, whether re-seeding decorrelates, decorrelated interrogation probes.
   - [Invariance & Low Sensitivity](/concepts/hardening-invariance/#open-questions) — efficiency vs. breakdown, nuisance vs. signal sensitivity, invariance against correlated error.
   - [Incentive-Compatibility](/concepts/hardening-incentives/#open-questions) — splitting surprise and validation payments, peer prediction among colluding LLMs, attacks relocating to resolution interpreters.
@@ -1799,6 +1945,87 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 ================================================================================
 # Reference
 ================================================================================
+
+
+------------------------------------------------------------
+## Measurement Log
+Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/measurement-log/
+------------------------------------------------------------
+
+*A running record of the measurements these notes have actually made. Each entry gives the question, the [Process Catalogue](/concepts/process-catalogue/) cell it bears on, the design, the result including nulls, and what the result does not show. The code, raw data and full write-up stay in the repository, which is the record; this page summarizes them. Entries are added in date order and changed only to correct errors. A rerun gets a new entry.*
+
+## 2026-10-15 · Label-swap neutrality of five LLM judges
+
+**Question.** Does an LLM judge lean toward one label in a forced choice where the label carries no information? This is the decision-relative bias $b_\pi(D)$ from the Catalogue's [reading notes](/concepts/process-catalogue/#reading-the-table), and it can be checked without ground truth. The result bears on the built-in-bias column of the "Single LLM judge" row and on the [label-swap construction](/concepts/hardening-invariance/#constructions).
+
+**Design.** The code, prompts, every raw reply and a full write-up are in [`experiments/label-swap`](https://github.com/quantified-uncertainty/cairn/tree/main/apps/reasoning-processes/experiments/label-swap).
+
+- **Prompts.** There are four forced-choice decisions: fund a grant, judge a debate, hire a forecaster, hire an analyst. Each is asked with five label pairs: Option A/B, Candidate 1/2, Blue/Green, Anthony/Ted, Alpha/Beacon Institute. The judge states the probability (0–100) that it would pick the first-listed option. No tie is allowed.
+- **Identical condition.** Both options are described identically, and each label is listed first once.
+- **Matched condition.** Two different but comparable descriptions are crossed with the labels. This is the audit-study layout of [Bertrand & Mullainathan (2004)](https://doi.org/10.1257/0002828042002561). It removes the cue that 50 is the expected answer.
+- **Volume and settings.** There were 5 samples per cell, or 600 calls per model, sent in random order through OpenRouter. Reasoning effort was `low`, `max_tokens` was 4096, and temperature was 1.0 where the model accepts it.
+- **Statistics.**
+  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p < 0.05 with a lean of at least 2 points.
+  - An omnibus permutation test (2,000 permutations, so the smallest attainable p is about 0.0005) asks whether labels move answers at all.
+  - Position bias is the mean P(pick the first-listed option) − 0.5.
+- **Validation.** Mock judges with planted biases were run through the whole pipeline first. Unbiased mocks were flagged on 0.1–3.3% of trials against a nominal 5%. Planted leans of 8 and 12 points were flagged on nearly every planted trial.
+
+The models were Claude Sonnet 5.5, GPT-6.1 Sol, Gemini 4 Argon, DeepSeek V4 Pro 0813 and Qwen3.8 2.4T A95B. The run made 3,000 calls and cost \$8.47.
+
+**Identical condition: null.** Every parseable answer from every model was exactly 50. That covers 998 of 1,000 calls; the other two, both Qwen, were truncated. This is weak evidence of neutrality, because a model that has learned "identical options → 50" gives that answer whatever lean it has. This design is the obvious one, and on these five models it measured nothing.
+
+**Matched condition.** Bias figures are in points on the 0–100 scale.
+
+| Model | Position bias [95% CI] | Flagged trials | Omnibus p | RMS label bias (null 95th pct) | Calls lost to truncation |
+|---|---|---|---|---|---|
+| Claude Sonnet 5.5 | −0.6 [−1.3, +0.2] | 1 / 20 | ≤ 0.0005 | 0.8 (0.5) | 0 / 400 |
+| GPT-6.1 Sol | −0.3 [−1.6, +1.0] | 0 / 20 | 0.016 | 0.6 (0.6) | 0 / 400 |
+| Gemini 4 Argon | −0.3 [−1.2, +0.5] | 3 / 20 | 0.0025 | 1.5 (1.2) | 0 / 400 |
+| DeepSeek V4 Pro | +8.1 [+3.8, +12.4] | 4 / 15 | 0.013 | 3.3 (3.0) | 107 / 400 |
+| Qwen3.8 2.4T | +2.2 [−0.2, +4.6] | 2 / 15 | 0.023 | 2.0 (1.9) | 87 / 400, plus 1 error |
+
+What the run shows:
+
+1. **Labels move answers, but only slightly.**
+   - The omnibus test rejects "no label effect" at 0.05 for all five models. After a Bonferroni correction across the five tests, only Claude and Gemini remain.
+   - The root-mean-square label bias is 0.6–3.3 points. Each model's value is at most 0.3 points above its noise-only 95th percentile.
+   - Claude's rejection reflects near-deterministic answers, not a large effect. Its one flagged trial is a 2.7-point lean toward "Ted" on the grant decision.
+2. **Flags exceed chance only for DeepSeek.** It has 4 flags in 15 trials (binomial p = 0.005 against a 5% rate). Gemini has 3 in 20 (p = 0.075), all in the debate decision, and their signs differ.
+3. **No label is favored consistently.** Averaged over decisions, all 25 model × label-pair intervals include zero. Our reading is that these leans are sensitivity to particular label-and-wording combinations, not a standing preference for a label. The data cannot separate the two readings well.
+4. **Position bias is clear for one model, in one decision.**
+   - DeepSeek V4 Pro's +8.1 comes mostly from the analyst hire. It picks the statistician with probability 0.77 when that candidate is listed first, and 0.41 when listed second.
+   - The five label pairs in a decision share its descriptions, so trials are not independent. Taking decisions as the unit, the interval is [−13, +29] points. Until it is replicated on other wordings, the effect belongs to that prompt, not to the model.
+   - LLM judges are known to favor one position, most often the first ([Zheng et al. 2023](https://arxiv.org/abs/2306.05685)), though the direction varies by model ([Wang et al. 2023](https://arxiv.org/abs/2305.17926)).
+   - The first-listed option is also the one the question names, so this may be an "asked-about" effect rather than an order effect.
+5. **The DeepSeek and Qwen numbers come from a selected subset.**
+   - Hidden reasoning used up the token budget on 22–27% of their matched calls. On the forecast decision the rate was 70–82%, so every forecast trial for these two models is incomplete and excluded.
+   - Truncation did not differ clearly by which label came first.
+   - It is plausibly related to how hard the model found the choice.
+
+**What changes.** The run supports the claim that $b_\pi(D)$ can be checked without ground truth, provided the options are not described identically. For these five judges on these prompts, label leans are small (RMS 0.6–3.3 points; the largest single-trial lean is 6.8 points, from DeepSeek) and favor no label consistently. That does not show any model is neutral in general. The run says nothing about demographically coded names, which were excluded by design, or about symmetric content-borne bias, or about decisions where the judge has real information.
+
+**Limits.**
+
+- **Unequal compute.** "Low" reasoning effort bought very different amounts of reasoning. Claude and Gemini were billed no hidden tokens, GPT about 17 per call, and Qwen and DeepSeek 1,300–1,900.
+- **Temperature.** OpenRouter lists no temperature setting for Claude or GPT, so both ran at their provider default.
+- **Small stimulus set.** There are four decisions, with one wording each.
+- **Multiple comparisons.** The run made 90 matched-condition trial tests and 10 omnibus tests, so a single flag at p ≈ 0.04 means little on its own.
+- **Scope of the tests.** The permutation tests condition on these exact prompts. A stable lean on one wording need not carry over to another.
+
+**Next.**
+
+- Rerun the forecast decision for DeepSeek and Qwen with a larger token budget.
+- Counterbalance alphabetical order within the label pairs. As a post-hoc observation, all five models' trial-averaged label bias is slightly toward the later label, but only GPT-6.1 Sol's interval excludes zero.
+- Separate "listed first" from "named in the question".
+- Use two or three wordings per decision.
+
+## Queued
+
+These have not been run. Each would replace a qualitative claim elsewhere in these notes.
+
+- **RoastMyPost flag precision.** Hand-label a random sample of flags, for [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/).
+- **Squiggle AI calibration.** Score the stated intervals of generated models against resolved quantities.
+- **Correlated error across models.** Estimate error correlation for the five label-swap models on questions with known answers, as proposed in [Building Strong Reasoners](/proposals/building-strong-reasoners/).
 
 
 ------------------------------------------------------------
@@ -1885,5 +2112,5 @@ Source: https://reasoning-processes.quantifieduncertainty.org/reference/glossary
 
 
 ================================================================================
-Generated from 24 chapters.
-Estimated tokens: ~75K
+Generated from 26 chapters.
+Estimated tokens: ~83K

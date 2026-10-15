@@ -55,18 +55,18 @@ The common failures are a single layer (one bypass defeats everything), several 
 
 ## The principles in the two examples
 
-The [coding agent](/design-patterns/examples/code-deployment-example/) and the [research assistant](/design-patterns/examples/research-assistant-example/) apply the same principles to different problems.
+The [coding agent](/delegation-risk/worked-example-coding-agent/) and the [research assistant](/design-patterns/examples/research-assistant-example/) apply the same principles to different problems.
 
 The rows are the six core [Least-X principles](/design-patterns/least-x-principles/).
 
 | Principle | Research assistant | Coding agent |
 |---|---|---|
-| Least Intelligence | A capable planner, checked by code and a trusted monitor | Orchestrator and gates are tested code; only the agent is a frontier model |
-| Least Privilege | No experiments; no outbound data except search queries | Pushes to a branch; cannot merge, deploy or reach production credentials |
-| Least Context | Summarizer sees one paper; raw papers and private notes never share a context | Canary sees metrics only; monitor sees one diff and its log |
-| Least Persistence | No memory between projects beyond a curated bibliography | Fresh container per session |
-| Least Autonomy | Scientist approves direction and any change to it | Human approves every merge; two people and a time lock for high-exposure paths |
-| Least Connectivity | Results flow forward; nothing messages the planner | Output reaches the pipeline only as a pull request |
+| Least Intelligence | A capable planner, checked by code and a trusted monitor | Only the agent is a frontier model; envelope, CI and held-out tests are code |
+| Least Privilege | No experiments; no outbound data except search queries | Repository-scoped token that pushes branches but cannot merge; staging database, no production role |
+| Least Context | Summarizer sees one paper; raw papers and private notes never share a context | Agent never sees the held-out tests; CI secrets wait until a human has seen the diff |
+| Least Persistence | No memory between projects beyond a curated bibliography | Fresh container and credentials per session |
+| Least Autonomy | Scientist approves direction and any change to it | Human approves every merge; two people and a time lock on authentication, payment and deployment paths |
+| Least Connectivity | Results flow forward; nothing messages the planner | Egress only to the code host and a package proxy; output reaches the pipeline only as a pull request |
 
 The coordination choice differs for a reason. The research assistant needs a model to decide what to investigate, so its planner is capable, and its plan becomes a checked, approved artifact. The deployment pipeline's logic is fully specifiable, so it is code. Use model coordination where the decision needs judgment and its errors are recoverable. Use code where the logic can be written as rules or the outcome is hard to reverse.
 

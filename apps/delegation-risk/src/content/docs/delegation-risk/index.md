@@ -91,6 +91,7 @@ Earlier versions of this example put "trust" weights on the diagram's arrows wit
 | [Risk Decomposition](/delegation-risk/risk-decomposition/) | Does each harm mode come through accident, defection or hijack (prompt injection, poisoned tools, misuse), and why does it matter? |
 | [Risk Propagation](/delegation-risk/risk-propagation/) | How do reliabilities compose through chains and stacks of checks, and what does correlation do? |
 | [Runtime Risk Accounting](/delegation-risk/runtime-accounting/) | How would an agent harness preflight, bound and book risk as it runs? |
+| [Worked Example: Coding Agent](/delegation-risk/worked-example-coding-agent/) | What do the harm table, the entanglement tax and an exposure envelope give for one real agent configuration? |
 | [Delegation Accounting](/delegation-risk/delegation-accounting/) | What does a delegation look like on a balance sheet, and why does exposure depend on capability? |
 | [The Insurer's Dilemma](/delegation-risk/insurers-dilemma/) | What can insurance price, and where does transferring risk stop working? |
 | [Exposure Cascade](/delegation-risk/exposure-cascade/) | How does a risk budget divide down an orchestrator, its subagents and their tool calls? |

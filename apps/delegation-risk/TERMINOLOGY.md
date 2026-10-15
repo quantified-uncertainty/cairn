@@ -82,6 +82,16 @@ correlations that are inherited.
 face of the entanglement tax. ρ is always on the phi (failure-indicator) scale per
 `delegation-risk/risk-propagation.md`.
 
+**harm channels (accident / defection / hijack)** — The three ways a harm mode reaches the
+principal. *Accident*: the delegate fails at its task. *Defection*: the delegate pursues
+something other than the principal's interest; scheming is the strategic case, reward hacking a
+non-scheming sub-type. *Hijack*: a third party or the user steers a delegate that is not itself
+scheming, by direct injection or misuse, indirect prompt injection through retrieved content or
+tool outputs, tool poisoning or malicious MCP servers, or supply-chain compromise. Usage rule:
+every harm-table row carries one channel tag. Collision: OWASP's Top 10 for Agentic
+Applications (2026) names the same phenomenon "Agent Goal Hijack" (ASI01), so our use is
+compatible; cite it at first use per the Rosetta rule.
+
 ## Borrowed terms — used as-is, with attribution
 
 - **AI Control vocabulary** (Redwood Research; cite arXiv:2312.06942 at first use per page):
@@ -98,6 +108,10 @@ face of the entanglement tax. ρ is always on the phi (failure-indicator) scale 
 - **Economics/finance/accounting** (prose, never capitalized into Framework Terms):
   agency cost, moral hazard, adverse selection (Holmström lineage); margin call,
   mark-to-market, reconciliation, consolidation, exposure-at-default.
+- **LLM security**: prompt injection, direct and indirect (Greshake et al. 2023,
+  arXiv:2302.12173; OWASP LLM01:2025); tool poisoning (Invariant Labs, April 2025); lethal
+  trifecta (Willison, June 2025). Used as their home field uses them; all file under the
+  hijack channel.
 - **Climate economics**: marginal abatement cost curve — when ranking interventions by
   exposure-reduced-per-dollar, name the import explicitly rather than minting "risk
   abatement curve" as ours.

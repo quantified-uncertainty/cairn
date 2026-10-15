@@ -35,7 +35,7 @@ This page is a procedure for applying delegation risk to an agent system, from s
 | Separate instructions from data | [Need-to-Know Compartments](/design-patterns/information/#need-to-know-compartments), [Selective Amnesia](/design-patterns/information/#selective-amnesia) |
 | Split the component | [Task Decomposition Pipeline](/design-patterns/structural/#task-decomposition-pipeline) |
 
-Re-estimate after each change, and stop when the total is within budget. When you stack checks, do not multiply their miss rates as if they were independent. Take three layers that each miss 10%. A common-cause correlation $\rho$ multiplies their joint miss rate by $1+99\rho$, which is about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. Those values of $\rho$ are assumed, not measured. Against an adaptive attacker, count only the best layer ([Risk Propagation](/delegation-risk/risk-propagation/)).
+Re-estimate after each change, and stop when the total is within budget. When you stack checks, do not multiply their miss rates as if they were independent. Take three layers that each miss 10%. A common-cause correlation $\rho$ multiplies their joint miss rate by $1+99\rho$, which is about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. Benchmark data put $\rho$ between strong LLMs at about 0.3–0.7 ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)); for harm detection it is unmeasured. Against an adaptive attacker, count only the best layer ([Risk Propagation](/delegation-risk/risk-propagation/)).
 
 ## 4. Choose an implementation for each component
 

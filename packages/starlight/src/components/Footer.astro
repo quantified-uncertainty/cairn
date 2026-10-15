@@ -30,6 +30,16 @@ interface Props {
 }
 
 const { version, entry } = Astro.props;
+
+// The CAIRN sites, linked from every page's footer. The current site is left out.
+const SITES = [
+  { label: 'Delegation Risk', href: 'https://delegation-risk.quantifieduncertainty.org/' },
+  { label: 'Evaluation Engineering', href: 'https://evaluation-engineering.quantifieduncertainty.org/' },
+  { label: 'Robust Reasoning Processes', href: 'https://reasoning-processes.quantifieduncertainty.org/' },
+  { label: 'CAIRN Handbook', href: 'https://cairn-meta.vercel.app/' },
+];
+const thisHost = Astro.site?.host;
+const siblings = SITES.filter((s) => new URL(s.href).host !== thisHost);
 const pageTitle = entry?.data?.title || 'Untitled';
 const pageUrl = Astro.url.href;
 ---
@@ -43,6 +53,14 @@ const pageUrl = Astro.url.href;
   <CopyAsMarkdown pageTitle={pageTitle} pageUrl={pageUrl} />
 
   <Pagination />
+
+  <nav class="siblings" aria-label="Sibling wikis">
+    Sibling wikis:
+    {siblings.map((s, i) => (
+      <>{i > 0 && ' · '}<a href={s.href}>{s.label}</a></>
+    ))}
+    · A <a href="https://quantifieduncertainty.org/">QURI</a> project
+  </nav>
 
   <div class="footer-info sl-flex">
     {version && <span class="version">v{version}</span>}
@@ -71,6 +89,12 @@ const pageUrl = Astro.url.href;
   }
   .meta > :global(p:only-child) {
     margin-inline-start: auto;
+  }
+
+  .siblings {
+    text-align: center;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
   }
 
   .footer-info {

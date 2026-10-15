@@ -143,4 +143,4 @@ What decomposition and these constraints do is narrower and more defensible. The
 - [Least-X Principles](/design-patterns/least-x-principles/): the general principles and the verifiability tiers
 - [Structural Patterns](/design-patterns/structural/): escalation, decomposition, bulkheads and voting tribunals
 - [Risk Propagation](/delegation-risk/risk-propagation/): the correlation correction and the adversarial default
-- [Coding agent example](/design-patterns/examples/code-deployment-example/): a coordinator implemented as tested code
+- [Coding agent worked example](/delegation-risk/worked-example-coding-agent/): an agent pipeline whose gates are code

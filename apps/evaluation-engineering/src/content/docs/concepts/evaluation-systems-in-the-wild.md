@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-*Status: curated catalogue, assembled from a June 2026 sweep; coded by payer, method and documented failure in October 2026 ([below](#does-who-pays-predict-failure)). This is the descriptive companion to the conceptual pages: the world is already full of standing systems that produce many evaluations of a repeated type. They are the field's natural experiments — its documented successes, failures, and capture stories. The founding program called for exactly this survey (the proto "process catalogue").*
+*Status: curated catalogue, assembled from a June 2026 sweep; coded by payer, method and documented failure in October 2026 ([below](#does-who-pays-predict-failure)). This is the descriptive companion to the conceptual pages: the world is already full of standing systems that produce many evaluations of a repeated type. They are the field's case record: its documented successes, failures and capture stories. The founding program called for exactly this survey (the proto "process catalogue").*
 
 :::caution
 A working catalogue, not a reference. Systems and links are verified, but **exact figures (coverage counts, market shares, percentages) are approximate and should be checked against the source** before relying on them. Where a number is load-bearing, follow the link.
@@ -173,8 +173,9 @@ How much this matters is tested [below](#does-who-pays-predict-failure); the ans
 ## AI models & public information
 
 - **[Arena](https://arena.ai/)** (Chatbot Arena, then LMArena; [renamed](https://arena.ai/blog/lmarena-is-now-arena/) January 2026) — LLMs. Bradley–Terry/Elo leaderboard from crowd pairwise votes. Venture-funded; since September 2025 it also [sells evaluations](https://arena.ai/blog/ai-evaluations/) to model labs and enterprises. *Weakness:* labs can test private variants and publish the best ([Singh et al. 2025](https://arxiv.org/abs/2504.20879) count 27 private variants from Meta before Llama 4). In April 2025 Meta's leaderboard entry was a non-public, chat-tuned variant; the operator apologised and changed its policy ([TechCrunch](https://techcrunch.com/2025/04/11/metas-vanilla-maverick-ai-model-ranks-below-rivals-on-a-popular-chat-benchmark)).
-- **X Community Notes** (formerly Birdwatch) — context notes on posts. A matrix-factorisation "bridging" algorithm favours notes rated helpful across groups of raters who usually disagree, so one faction cannot carry a note alone ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). Meta replaced US third-party fact-checking with the same model in 2025 ([Meta](https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/)).
+- **X Community Notes** (formerly Birdwatch) — context notes on posts. A matrix-factorisation "bridging" algorithm favours notes rated helpful across groups of raters who usually disagree, so one faction cannot carry a note alone ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). Meta replaced US third-party fact-checking with the same model in 2025 ([Meta](https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/)). Since mid-2025 LLM "AI writers" may propose notes, which human raters still score; in a three-month field test one team's LLM notes were rated more helpful than human notes on the same posts ([Li & Bakker 2026](https://arxiv.org/abs/2604.02592)).
 - **[The Unjournal](https://unjournal.org/)** — economics, policy and social-science research. Commissions paid, public expert evaluations with ratings. Grant-funded nonprofit; charges authors nothing.
+- *Also (added after the coding):* Epoch AI's FrontierMath benchmark was funded by OpenAI, which owns its 300 core problems and has their solutions apart from a 50-problem holdout. The funding was disclosed only around the December 2024 announcement of o3's score on it, and Epoch [conceded](https://epoch.ai/blog/openai-and-frontiermath) it had not communicated the relationship clearly. With Arena's sales to model labs, it brings the rated-party-pays pattern into AI evaluation.
 
 ## Does who pays predict failure?
 
@@ -198,21 +199,20 @@ The result was 42 established failures, each sourced in the CSV, 19 alleged, and
 - *Selection.* A failure is counted only if someone documented it. Firms paid by the parties they rate attract regulators, litigants and journalists, so "none found" means "not found in a targeted search".
 - *Coder bias.* One coder, not blind: payer and failure were coded from the same reading.
 - *Multiple tests.* Three codings were tested and none was pre-registered; correcting for three tests puts the binary contrast at p ≈ 0.01.
+- *A broad variable.* "Pays anything" lumps issuer fees with advertising, marketplace commissions and products sold to the rated party (the three credit bureaus qualify because consumers buy monitoring from them). The contrast is not concentrated where certification theory puts it: where the rated party is the main payer, 12 of 35 systems have an established failure (34%); where it pays only on the side, 15 of 32 (47%; Fisher p = 0.33). This split was examined after the main results.
 - *Stakes as a confounder.* A rated party pays for a rating when the rating is worth a lot to it, and high stakes are what drive gaming ([Patterns §1](/concepts/patterns-and-failure-modes/#1-the-measure-reshapes-the-measured)). Because gaming outnumbers leniency almost two to one in the paying group, the data fit "payment marks high-stakes ratings" at least as well as "payment buys the evaluator".
 
 The claim as stated is not supported. What survives is narrower: when the rated party pays the evaluator, the odds of a documented failure are about 3.5 times higher, and the mechanism is unresolved.
 
 ## Lessons for evaluation engineering
 
-These five patterns are the headlines; [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) develops each one rigorously, with the academic literature (reactivity, Goodhart's law, certification economics, reputation inflation, aggregation theory) behind it.
+The literature behind each lesson is on [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/).
 
-Patterns the catalogue makes hard to ignore:
-
-1. **Whether the rated party pays matters; the finer funding story did not survive coding.** The [coding above](#does-who-pays-predict-failure) found no signal in the payer typology and little in method. Systems in which the evaluated party pays the evaluator had about 3.5 times the odds of a documented failure, more often through gaming than leniency. The [certification economics](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness) predicts the leniency channel; the catalogue is too thin to confirm it separately.
+1. **Whether the rated party pays matters; the finer funding story did not survive coding.** See [above](#does-who-pays-predict-failure): higher odds of documented failure, mostly through gaming; the leniency that [certification economics](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness) predicts accounts for only 6 of the 27 failures.
 2. **Every output format is gameable, differently.** Binary fresh/rotten invites bombing; 100-point scales inflate and compress; reciprocal two-sided ratings breed retaliation and inflation; self-declared certifications get faked. Choosing the [output format](/concepts/the-systems-view/) is choosing your failure mode.
-3. **Crowd systems converge on the same arms race** — fakes, astroturfing, review bombing — and the same defenses: purchase/stay verification, Bayesian/credibility weighting, recency weighting, and ML fraud detection. Verification of *who is evaluating* is the recurring fix.
+3. **Crowd systems converge on the same arms race** (fakes, astroturfing, review bombing) and the same defences: verified purchase or stay, credibility and recency weighting, and ML fraud detection.
 4. **Composite indices live or die on weighting**, which is inherently contested (HDI's three dimensions, ESG divergence, ranking methodology churn). The [OECD composite-indicators handbook](/reference/adjacent-fields/) exists precisely because this is hard.
-5. **"Shallow but standardized" often beats "deep but bespoke" at scale** — letter-grade hygiene inspections, 5-star crash tests, and star ratings change behavior precisely because they are cheap, comparable, and ubiquitous. That is the [systems view](/concepts/the-systems-view/#the-design-space)'s trade of accuracy for unit cost, already made by society many times over.
+5. **Cheap, standardized ratings can change behaviour at scale.** Los Angeles's hygiene grade cards cut foodborne-illness hospitalizations ([Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness)), though New York's inspections proved inconsistent and crash ratings invite testing to the test. That is the [systems view](/concepts/the-systems-view/#the-design-space)'s trade of accuracy for unit cost, made many times already.
 
 ## Meta-lists & further reading
 

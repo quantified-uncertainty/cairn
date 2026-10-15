@@ -91,15 +91,17 @@ export default defineConfig({
 					collapsed: false,
 					items: [
 						{ label: '23. The Reliability Ladder', slug: 'concepts/epistemic-applications' },
-						{ label: '24. Overseeing Automated Research', slug: 'proposals/overseeing-automated-research' },
-						{ label: '25. LLM Epistemics in Production', slug: 'case-studies/llm-epistemics-in-production' },
-						{ label: '26. Open Problems', slug: 'open-questions' },
+						{ label: '24. Building Strong Reasoners', slug: 'proposals/building-strong-reasoners' },
+						{ label: '25. Overseeing Automated Research', slug: 'proposals/overseeing-automated-research' },
+						{ label: '26. LLM Epistemics in Production', slug: 'case-studies/llm-epistemics-in-production' },
+						{ label: '27. Open Problems', slug: 'open-questions' },
 					],
 				},
 				{
 					label: 'Reference',
 					collapsed: false,
 					items: [
+						{ label: 'Measurement Log', slug: 'case-studies/measurement-log' },
 						{ label: 'Glossary & Notation', slug: 'reference/glossary' },
 					],
 				},

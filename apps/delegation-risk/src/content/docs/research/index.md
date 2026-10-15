@@ -21,6 +21,7 @@ These pages describe how other fields budget and bound delegated risk. They are 
 |---|---|---|
 | [Nuclear and Aerospace PRA](/research/system-design/nuclear-aerospace-deep-dive/) | Probabilistic risk assessment, common-cause failure, certification targets | Precedent survey |
 | [Financial Risk Budgeting](/research/risk-methods/financial-risk-budgeting/) | Risk budgets, Euler allocation, and where they failed | Precedent survey |
+| [Principal–Agent Foundations](/research/principal-agent-foundations/) | Agency costs, moral hazard, multitask, ambiguity aversion, and where AI delegates break the standard assumptions | Precedent survey |
 | [Mechanism Design](/research/system-design/mechanism-design/) | Incentive-compatible reporting and its impossibility results | Precedent survey |
 | [Access Control Systems](/research/system-design/access-control-systems/) | Least privilege and compartmentation in intelligence and enterprise security | Precedent survey |
 

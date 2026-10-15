@@ -68,7 +68,7 @@ Each app has a `version.json` and a small `Footer.astro` that turns it into a st
 
 `@cairn/starlight` (`packages/starlight`) exports two Astro components:
 
-- `Footer.astro` replaces Starlight's footer. It keeps Starlight's edit link, last-updated line and pagination, and adds the Copy-as-Markdown button and the version string. Apps use it through the `components.Footer` override in their Starlight config.
+- `Footer.astro` replaces Starlight's footer. It keeps Starlight's edit link, last-updated line and pagination, and adds the Copy-as-Markdown button, the version string and a line of links to the sibling wikis. The site list is hard-coded in the component; the current site is left out by matching the app's `site` host, so a new wiki must be added there. Apps use it through the `components.Footer` override in their Starlight config.
 - `CopyAsMarkdown.astro` converts the page's main content to Markdown in the browser. It loads Turndown from unpkg on first click, and copies the result to the clipboard under a small YAML header giving the title, source URL and date.
 
 Its `peerDependencies` pin `astro ^5` and `@astrojs/starlight ^0.37`, so they must be bumped together with any Astro upgrade.

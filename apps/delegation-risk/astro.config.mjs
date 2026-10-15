@@ -13,6 +13,7 @@ export default defineConfig({
 	// deleted, not archived). Each points at the closest surviving page.
 	redirects: {
 		'/design-patterns/examples/code-deployment-example/': '/delegation-risk/worked-example-coding-agent/',
+		'/research/principal-agent-theory/': '/research/principal-agent-foundations/',
 		'/getting-started/introduction/': '/',
 		'/getting-started/minimal-framework/': '/getting-started/core-concepts/',
 		'/getting-started/how-sections-connect/': '/getting-started/reading-order/',
@@ -174,6 +175,7 @@ export default defineConfig({
 						{ label: 'Risk Decomposition', slug: 'delegation-risk/risk-decomposition', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Risk Propagation', slug: 'delegation-risk/risk-propagation', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Runtime Risk Accounting', slug: 'delegation-risk/runtime-accounting', badge: { text: 'Core', variant: 'tip' } },
+						{ label: 'Worked Example: Coding Agent', slug: 'delegation-risk/worked-example-coding-agent', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Delegation Accounting', slug: 'delegation-risk/delegation-accounting', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'The Insurer’s Dilemma', slug: 'delegation-risk/insurers-dilemma', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Exposure Cascade', slug: 'delegation-risk/exposure-cascade' },
@@ -213,7 +215,6 @@ export default defineConfig({
 						{ label: 'Channel Integrity', slug: 'design-patterns/channel-integrity', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Coordinator Constraints', slug: 'design-patterns/coordinator-constraints' },
 						{ label: 'Composing Patterns', slug: 'design-patterns/composing-patterns', badge: { text: 'Core', variant: 'tip' } },
-						{ label: 'Worked Example: Coding Agent', slug: 'delegation-risk/worked-example-coding-agent', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Example: Research Assistant', slug: 'design-patterns/examples/research-assistant-example', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Quick Start', slug: 'design-patterns/tools/quick-start' },
 						{ label: 'Delegation Risk Calculator', slug: 'design-patterns/tools/delegation-risk-calculator' },
@@ -249,6 +250,7 @@ export default defineConfig({
 						{ label: 'Formal Verification Limits', slug: 'research/technical-safety/formal-verification-limits' },
 						{ label: 'Steganography and Encoded Reasoning', slug: 'research/technical-safety/steganography-detection-prevention' },
 						{ label: 'Risk Budgeting and Tail Measures', slug: 'research/risk-methods/financial-risk-budgeting' },
+						{ label: 'Principal–Agent Foundations', slug: 'research/principal-agent-foundations' },
 						{ label: 'Mechanism Design', slug: 'research/system-design/mechanism-design' },
 						{ label: 'Safety-Critical Engineering Precedents', slug: 'research/system-design/nuclear-aerospace-deep-dive' },
 						{ label: 'Access Control Systems', slug: 'research/system-design/access-control-systems' },

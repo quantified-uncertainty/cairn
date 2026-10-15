@@ -100,6 +100,7 @@ The parts for a first version exist. A pre-tool-use hook looks up each consequen
 
 ## See also
 
+- [Worked Example: Coding Agent](/delegation-risk/worked-example-coding-agent/): a harm table, the entanglement tax and an envelope applied to one agent configuration
 - [Delegation Accounting](/delegation-risk/delegation-accounting/): the balance-sheet view this page makes operational
 - [Risk Propagation](/delegation-risk/risk-propagation/): the composition rule, and why adversarial inputs need the minimum rule
 - [Exposure Cascade](/delegation-risk/exposure-cascade/): how a budget divides down an orchestrator's tree

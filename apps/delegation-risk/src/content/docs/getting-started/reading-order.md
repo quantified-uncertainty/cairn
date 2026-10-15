@@ -33,7 +33,7 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 11. **[Composing Patterns](/design-patterns/composing-patterns/)**: how patterns interact, and the failure modes of composing them badly.
 
-12. **Worked examples**: a [code-deployment agent](/design-patterns/examples/code-deployment-example/) and a [research assistant](/design-patterns/examples/research-assistant-example/), each with illustrative numbers.
+12. **Worked examples**: a [coding agent](/delegation-risk/worked-example-coding-agent/) priced end to end, where correlation erodes an AI reviewer and the exposure envelope does most of the work, and a [research assistant](/design-patterns/examples/research-assistant-example/). Both use illustrative numbers.
 
 13. **[Empirical Scheming Reduction](/research/trust-behavior/empirical-scheming-reduction/)**: what control evaluations, monitoring studies and anti-scheming training have actually measured, with their caveats.
 

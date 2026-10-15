@@ -24,7 +24,7 @@ In `apps/my-wiki/package.json`:
 
 Then run `pnpm install` from the repository root and commit the updated `pnpm-lock.yaml`. In CI, pnpm installs with a frozen lockfile by default, so a stale lockfile fails the build.
 
-For the footer, copy `src/components/Footer.astro` and `version.json` from Evaluation Engineering. The footer wraps `@cairn/starlight/Footer.astro`, which adds the Copy-as-Markdown button and the version string. Add the app's directory name to the `apps` list in `scripts/sync-versions.mjs`. [Build & Tooling](/build-and-tooling/#version-footer) explains what these do.
+For the footer, copy `src/components/Footer.astro` and `version.json` from Evaluation Engineering. The footer wraps `@cairn/starlight/Footer.astro`, which adds the Copy-as-Markdown button, the version string and the sibling-wiki links. Add the new site to the `SITES` list in that component. Add the app's directory name to the `apps` list in `scripts/sync-versions.mjs`. [Build & Tooling](/build-and-tooling/#version-footer) explains what these do.
 
 ## 3. Edit `astro.config.mjs`
 

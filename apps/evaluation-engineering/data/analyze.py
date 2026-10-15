@@ -268,6 +268,27 @@ def main():
     hi = [r for r in rows if r["payer_confidence"] != "low" and r["failure_confidence"] != "low"]
     analyse(hi, "SENSITIVITY: drop low-confidence codings", full=False)
     analyse(collapse_to_entries(rows), "SENSITIVITY: one row per catalogue entry", full=False)
+    dose_response(rows)
+
+
+def dose_response(rows):
+    """Post hoc (examined after the main results): is the rated-party-pays contrast concentrated
+    where certification theory puts it, i.e. where the rated party is the main payer?"""
+    rows = [r for r in rows if r["payer"] not in ("n/a", "unknown")]
+    print("\n=== POST HOC: main payer vs side payment by the rated party | outcome=est ===")
+    groups = [("rated party is main payer", lambda r: r["evaluated_party_pays_any"] == "yes"
+               and r["payer"] == "evaluated_party"),
+              ("rated party pays on the side", lambda r: r["evaluated_party_pays_any"] == "yes"
+               and r["payer"] != "evaluated_party"),
+              ("rated party pays nothing", lambda r: r["evaluated_party_pays_any"] == "no")]
+    counts = []
+    for label, f in groups:
+        sub = [r for r in rows if f(r)]
+        k = sum(r["failure_status"] == "established" for r in sub)
+        counts.append((k, len(sub)))
+        print(f"  {label:30s} {k:3d}/{len(sub):3d} = {k / len(sub):.2f}")
+    (a, n1), (b, n2) = counts[0], counts[1]
+    print(f"  main vs side: Fisher p={stats.fisher_exact([[a, n1 - a], [b, n2 - b]]).pvalue:.2f}")
 
 
 if __name__ == "__main__":
