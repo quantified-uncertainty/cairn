@@ -342,7 +342,7 @@ AbeBooks ISBN searches sorted by price plus shipping, 2026-10-15 [P][33]. "Total
 - **IEEE Xplore and the ACM Digital Library.**
   - Pricing pages were blocked [U].
   - **ACM's open-access transition shows in Crossref data** [P][32]:
-    - 2026 DOIs: 24,800+ of 37,502 carry a CC license (21,561 CC BY).
+    - 2026 DOIs: ≈24,780 of 37,502 carry a CC license (21,561 CC BY).
     - 2024 DOIs: about 12,100 of 45,892.
     - The 1990s backfile is still recorded under ACM's copyright policy. ACM's free-to-read backfile is a reading permission, not a license [I].
 
@@ -520,7 +520,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
 | UC Berkeley visiting scholar fee | $750 first year; $1,500 second year | 2026-10-15 | [62] | P, high |
 | Cal Alumni Association Standard | $75/yr; "open to all" | 2026-10-15 | [63] | P, high |
 | Stanford independent researcher access | $35/2 wk; $75/mo; $150/3 mo; $450/yr | 2026-10-15 | [65] | P, high |
-| Stanford day passes | 7 per year (14 for alumni) | 2026-10-15 | [65] | P, high |
+| Stanford day passes | 7 per year (14 for alumni per the library; "14 days for SAA members" per SAA) | 2026-10-15 | [65][66] | P, high |
 | SFSU Community Borrowers | $50/yr; public stations need no login | 2026-10-15 | [68][69] | P, high |
 | LAPL non-resident (outside California) | $50, in person | 2026-10-15 | [42] | P, high |
 | LAPL e-card eligibility | LA City residents only | 2026-10-15 | [41][42] | P, high |
