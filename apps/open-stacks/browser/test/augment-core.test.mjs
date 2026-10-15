@@ -1,12 +1,13 @@
 // Unit tests for server/augment.mjs: text capping, the checks that turn a model
 // answer into a stored reading guide, validation and mock mode (node --test test/*.test.mjs).
-import { test } from 'node:test';
+import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'fs';
+import { mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-process.env.STACKS_CACHE ||= mkdtempSync(join(tmpdir(), 'stacks-aug-'));
+const TMP = process.env.STACKS_CACHE ? null : mkdtempSync(join(tmpdir(), 'stacks-aug-'));
+if (TMP) { process.env.STACKS_CACHE = TMP; after(() => rmSync(TMP, { recursive: true, force: true })); }
 const A = await import('../server/augment.mjs');
 const { indexText } = await import('../server/routes/30-summarize.mjs');
 

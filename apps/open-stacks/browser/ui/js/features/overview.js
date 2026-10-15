@@ -60,14 +60,16 @@ const S = {
 
 // ---------- optional modules (only those the app loaded: /features.json) ----------
 const opt = {};
-let optP = null;
+let optP = null, optReady = false;
 function loadOpt() {
   return (optP ||= fetch('/features.json').then((r) => r.json()).catch(() => ({ js: [] })).then((f) => {
     const has = (m) => (f.js || []).includes(`js/features/${m}.js`);
     const get = (m, key) => (has(m) ? import(`./${m}.js`).then((x) => { opt[key] = x; }, () => {}) : null);
     return Promise.all([get('memory', 'memory'), get('augment', 'aug'), get('textlayer', 'tl'), get('peek', 'peek')]);
-  }));
+  }).then(() => { optReady = true; }));
 }
+// Found in idle time after boot, so opening never waits for it.
+on('boot', () => (window.requestIdleCallback || setTimeout)(() => loadOpt(), { timeout: 4000 }));
 
 // ---------- the elements ----------
 const stage = $('#stage');
@@ -133,18 +135,20 @@ export async function openOv() {
   place();
   root.hidden = false; stage.classList.add('ov-on');
   $('#track .tr-bar')?.append(winEl);
-  loadOpt().then(() => { if (S.open) { paintMarks(); attachPeekOnce(); } });
   emit('overview', { open: true });
-  await prepare(i, items[i]);
+  if (!optReady) await loadOpt();
+  attachPeekOnce();
+  if (S.open && current() === i) await prepare(i, items[i]);
 }
 /** Close; with k, read from page k. */
 export function closeOv(k) {
   if (!S.open) return;
   S.open = false; S.gen++;
   root.hidden = true; stage.classList.remove('ov-on');
+  io?.disconnect(); ioIn?.disconnect();
   for (const j of jobs.values()) j.cancel?.();
   jobs.clear(); want.clear(); S.inView.clear(); S.near.clear();
-  hidePeek(); opt.peek?.closePeek?.();
+  hidePeek(); opt.peek?.closePeek?.(); setHot(-1); grid.classList.remove('kb');
   winEl.remove(); $('#track')?.classList.remove('ov-hover');
   const pk = $('#peek'); if (pk && pkOurs) { pk.hidden = true; pkOurs = false; }
   emit('overview', { open: false });
@@ -326,10 +330,12 @@ function onView() {
   checkFull();
   pump();
 }
-let lastScroll = 0, pfT = 0;
+let lastScroll = 0, pfT = 0, progAt = 0;
+/** Scroll the grid from code (the peek stays up). */
+const scrollTo = (y) => { progAt = performance.now(); sc.scrollTop = y; };
 sc.addEventListener('scroll', () => {
   lastScroll = performance.now();
-  hidePeek();
+  if (lastScroll - progAt > 150) hidePeek();
   if (S.kind === 'scan') { clearTimeout(pfT); pfT = setTimeout(() => S.open && prefetchScan(S.center), 250); }
 }, { passive: true });
 
@@ -566,13 +572,13 @@ function paintMarks() {
     const pf = S.P?.pages?.[k];
     cl.toggle('fig', !!pf?.fig?.length || figs.has(k));
     const lab = pf?.lab || (tl && S.kind === 'scan' ? tl(it, k) : null);
-    el.title = `p. ${k + 1}${lab && lab !== String(k + 1) ? ` (printed ${lab})` : ''}${pf?.fig?.length ? ' · ' + pf.fig.map((f) => f.lab || f.kind).join(', ') : ''}`;
+    el.dataset.info = `${lab && lab !== String(k + 1) ? ` (printed ${lab})` : ''}${pf?.fig?.length ? ' · ' + pf.fig.map((f) => f.lab || f.kind).join(', ') : ''}`;
   }
   (aug?.plan || []).forEach((st, j) => {
-    const el = S.cells[st.k]; if (!el) return;
+    const el = S.cells[st.k]?.querySelector('.ov-pg'); if (!el) return;
     el.append(h('span', { className: 'ov-stop', textContent: String(j + 1), title: `Reading guide stop ${j + 1}: ${st.why || ''}` }));
   });
-  for (const [x, y] of skips) for (let k = x; k <= y && k < S.n; k++) if (S.cells[k]) S.cells[k].title += ' · the reading guide says you can skip this';
+  for (const [x, y] of skips) for (let k = Math.max(0, x); k <= y && k < S.n; k++) S.cells[k].dataset.info += ' · skippable (reading guide)';
 }
 function paintCursor() {
   grid.querySelector('.ov-cell.kc')?.classList.remove('kc');
@@ -583,10 +589,10 @@ function paintCursor() {
 function scrollToK(k, how = 'nearest') {
   const el = S.cells[k]; if (!el) return;
   const top = el.offsetTop - RGAP, bottom = el.offsetTop + el.offsetHeight + 6;
-  if (how === 'third') { sc.scrollTop = Math.max(0, top - Math.max(0, (sc.clientHeight - el.offsetHeight) / 3)); return; }
-  if (how === 'center') { sc.scrollTop = Math.max(0, el.offsetTop - (sc.clientHeight - el.offsetHeight) / 2); return; }
-  if (top < sc.scrollTop) sc.scrollTop = top;
-  else if (bottom > sc.scrollTop + sc.clientHeight) sc.scrollTop = bottom - sc.clientHeight;
+  if (how === 'third') { scrollTo(Math.max(0, top - Math.max(0, (sc.clientHeight - el.offsetHeight) / 3))); return; }
+  if (how === 'center') { scrollTo(Math.max(0, el.offsetTop - (sc.clientHeight - el.offsetHeight) / 2)); return; }
+  if (top < sc.scrollTop) scrollTo(top);
+  else if (bottom > sc.scrollTop + sc.clientHeight) scrollTo(bottom - sc.clientHeight);
 }
 /** Change the level by d (+1 more pages, -1 bigger pages), keeping the page under the pointer (or the cursor) in place. */
 function zoomBy(d, anchorK) {
@@ -598,25 +604,26 @@ function zoomBy(d, anchorK) {
   S.lvl = l; store.set('ovLevel', l);
   hidePeek();
   layout();
-  if (el) sc.scrollTop = Math.max(0, el.offsetTop - off);
+  if (el) scrollTo(Math.max(0, el.offsetTop - off));
   hudN.textContent = S.g.fit ? `all ${S.n}` : `${S.g.r * S.g.c} a screen`;
   hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump');
   observeAll();
 }
 // Pinch (ctrl+wheel) zooms the grid; plain wheel scrolls it natively (never the feed's steps).
-let pinchAcc = 0, pinchAt = 0;
+let pinchAcc = 0, pinchAt = 0, pinchSteps = 0;
 root.addEventListener('wheel', (e) => {
   e.stopPropagation();
   if (!e.ctrlKey) return;
   e.preventDefault();
   const now = performance.now();
-  if (now - pinchAt > 300) pinchAcc = 0;
+  if (now - pinchAt > 300) { pinchAcc = 0; pinchSteps = 0; }
   pinchAt = now;
   pinchAcc += e.deltaMode ? e.deltaY * 30 : e.deltaY;
-  if (Math.abs(pinchAcc) < 24) return;
+  // One level as a pinch starts; a long pinch goes on, a level per further stretch.
+  if (Math.abs(pinchAcc) < (pinchSteps ? 140 : 24)) return;
   const cell = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.ov-cell');
   zoomBy(pinchAcc > 0 ? 1 : -1, cell ? Number(cell.dataset.k) : undefined);
-  pinchAcc = 0;
+  pinchAcc = 0; pinchSteps++;
 }, { passive: false });
 
 // ---------- hover: enlarge, and the page's place on the track ----------
@@ -641,7 +648,9 @@ grid.addEventListener('click', (e) => {
   closeOv(Number(cell.dataset.k));
 });
 function setHot(k) {
+  if (S.hot >= 0) S.cells[S.hot]?.classList.remove('hot');
   S.hot = k;
+  if (k >= 0) S.cells[k]?.classList.add('hot');
   const tr = $('#track');
   if (!tr) return;
   tr.classList.toggle('ov-hover', k >= 0);
@@ -657,7 +666,7 @@ function fillPeek(body, k, W, H) {
   const pg = h('div', { className: 'ovp-page' });
   Object.assign(pg.style, { width: Math.floor(w) + 'px', height: Math.floor(hh) + 'px' });
   body.replaceChildren(pg);
-  const it = S.it, gen = S.gen;
+  const gen = S.gen;
   const fresh = () => S.open && S.gen === gen && pg.isConnected;
   if (S.kind === 'flow') {
     const t = h('div', { className: 'ovp-text' });
@@ -670,6 +679,11 @@ function fillPeek(body, k, W, H) {
   else if (m) pg.append(m.cloneNode(true));
   else if (el.classList.contains('spr')) { const cell = spriteCell(S.P, k, hh); if (cell) Object.assign(pg.style, cell); }
   if (el.classList.contains('blank')) return;
+  // The sharp picture only once the pointer rests on the page.
+  setTimeout(() => { if (fresh()) sharpPeek(pg, k, W, H, hh, fresh); }, 140);
+}
+function sharpPeek(pg, k, W, H, hh, fresh) {
+  const it = S.it;
   if (S.kind === 'scan') {
     const im = new Image(); im.decoding = 'async'; im.alt = '';
     im.src = P(scanUrl(it, k, 1000));
@@ -717,7 +731,7 @@ function showPeek(k, x) {
   peekK = k;
   fillPeek(peekEl.querySelector('.ovp-pg'), k, W, H);
   const sec = [...S.secs].reverse().find((s) => s.k <= k);
-  peekEl.querySelector('.ovp-l').textContent = `p. ${k + 1} of ${S.n}${sec ? ' · ' + sec.t : ''}`;
+  peekEl.querySelector('.ovp-l').textContent = `p. ${k + 1}${el.dataset.info || ''} of ${S.n}${sec ? ' · ' + sec.t : ''}`;
 }
 function hidePeek() { clearTimeout(peekT); peekEl.hidden = true; delete peekEl.dataset.side; peekK = -1; }
 let peekAttached = false;
@@ -741,7 +755,7 @@ function trackEvt(e) {
   e.stopPropagation();
   const pk = $('#peek');
   if (e.type === 'pointerleave' || e.type === 'pointerout') {
-    if (e.type === 'pointerleave' && e.target === tr) { if (pk && pkOurs) { pk.hidden = true; pkOurs = false; } setHot(-1); hidePeek(); }
+    if (e.type === 'pointerleave' && e.target === tr) { if (pk && pkOurs) { pk.hidden = true; pkOurs = false; } setHot(-1); hidePeek(); tr.classList.remove('ov-hover'); }
     return;
   }
   const r = tr.getBoundingClientRect();
@@ -749,19 +763,18 @@ function trackEvt(e) {
   const k = Math.floor(f * S.n);
   if (e.type === 'click') { closeOv(k); return; }
   if (e.type !== 'pointermove') return;
-  tr.querySelector('.tr-hover').style.left = f * 100 + '%';
   if (pk) {
     pk.classList.add('textonly'); pk.hidden = false; pkOurs = true;
     pk.querySelector('.pk-label').textContent = `p. ${k + 1} / ${S.n}`;
     pk.style.left = Math.min(innerWidth - 140, Math.max(8, e.clientX - 60)) + 'px';
     pk.style.top = r.top - 30 + 'px';
   }
-  if (k === S.hot) return;
-  S.hot = k;
-  grid.querySelector('.ov-cell.hot')?.classList.remove('hot');
-  S.cells[k]?.classList.add('hot');
-  scrollToK(k, S.inView.has(k) ? 'nearest' : 'center');
-  showPeek(k, S.cells[k].getBoundingClientRect().left);
+  if (k !== S.hot) {
+    setHot(k);
+    scrollToK(k, S.inView.has(k) ? 'nearest' : 'center');
+    showPeek(k, S.cells[k].getBoundingClientRect().left);
+  }
+  tr.querySelector('.tr-hover').style.left = f * 100 + '%';
 }
 for (const type of ['pointerenter', 'pointermove', 'pointerleave', 'pointerout', 'pointerover', 'pointerdown', 'click']) stage.addEventListener(type, trackEvt, true);
 
@@ -786,6 +799,7 @@ function moveCursor(key) {
     k = best ? Number(best.dataset.k) : k + dir * c;
   }
   S.cursor = Math.max(0, Math.min(S.n - 1, k));
+  grid.classList.add('kb');
   paintCursor();
   scrollToK(S.cursor);
 }
@@ -793,7 +807,7 @@ function typeDigit(d) {
   clearTimeout(S.digitT);
   S.digits = (S.digits + d).replace(/^0+/, '').slice(0, 5);
   const v = Number(S.digits);
-  if (v >= 1) { S.cursor = Math.min(S.n, v) - 1; paintCursor(); scrollToK(S.cursor, 'center'); }
+  if (v >= 1) { S.cursor = Math.min(S.n, v) - 1; grid.classList.add('kb'); paintCursor(); scrollToK(S.cursor, 'center'); }
   hudN.textContent = `p. ${S.digits || '…'} ↵`;
   S.digitT = setTimeout(() => { S.digits = ''; hudN.textContent = S.g.fit ? `all ${S.n}` : `${S.g.r * S.g.c} a screen`; }, 2000);
 }
@@ -811,8 +825,8 @@ addEventListener('keydown', (e) => {
   else if (/^Arrow/.test(k)) moveCursor(k);
   else if (k === 'Enter') { if (!e.repeat) closeOv(S.cursor); }
   else if (k === 'z' && S.kind !== 'flow') { if (!e.repeat) { const c = S.cursor; closeOv(); toggleZoom(true, c); } }
-  else if (k === 'Home') { S.cursor = 0; paintCursor(); sc.scrollTop = 0; }
-  else if (k === 'End') { S.cursor = S.n - 1; paintCursor(); sc.scrollTop = sc.scrollHeight; }
+  else if (k === 'Home') { S.cursor = 0; paintCursor(); scrollTo(0); }
+  else if (k === 'End') { S.cursor = S.n - 1; paintCursor(); scrollTo(sc.scrollHeight); }
   else if (/^[0-9]$/.test(k)) typeDigit(k);
   else done = false;
   if (done) { e.preventDefault(); e.stopImmediatePropagation(); }
@@ -858,7 +872,19 @@ on('profile:updated', ({ id }) => {
   S.P = Pn; S.sprite = true;
   for (const k of S.near) if (S.st[k] === 0) spriteInto(k);
 });
-let rzT = 0;
-addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => { if (S.open && S.built) { place(); layout(); observeAll(); } }, 180); });
+// The window, the side panel (i) or the pinned strip (p) changed the stage.
+let rzT = 0, rzW = 0, rzH = 0;
+new ResizeObserver(() => {
+  if (!S.open) return;
+  clearTimeout(rzT);
+  rzT = setTimeout(() => {
+    if (!S.open || !S.built) return;
+    place();
+    if (sc.clientWidth === rzW && sc.clientHeight === rzH) return;
+    rzW = sc.clientWidth; rzH = sc.clientHeight;
+    const k = S.view?.[0] ?? S.cursor;
+    layout(); scrollToK(k, 'third'); observeAll();
+  }, 150);
+}).observe(stage);
 
 window.__ov = { times: ovTimes, open: openOv, close: closeOv, state: () => ({ open: S.open, kind: S.kind, n: S.n, lvl: S.lvl, per: LEVELS[S.lvl], g: S.g, inView: S.inView.size, jobs: jobs.size, want: want.size, sprite: S.sprite, a: S.a, secs: S.secs.length }) };

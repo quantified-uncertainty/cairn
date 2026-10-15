@@ -1,0 +1,50 @@
+/* Broken images and archived documents (ui/js/features/rescue.js). Chip labels
+   are generated content, so they never reach summaries, export or read-aloud. */
+
+/* An image whose fate is not known yet: a small box, not a big one. */
+.flow img.rs-wait { width: 100%; min-height: 1.8em; border-radius: 3px; animation: rs-wait 1.6s ease-in-out .5s infinite both; }
+html[data-st-paper="dark"] .flow img.rs-wait { background: transparent; padding: 0; }
+@keyframes rs-wait { 0%, 100% { background-color: transparent; } 50% { background-color: var(--paper-code, #ebe4d6); } }
+/* Size known ahead (the server has seen it): the box is reserved before it loads. */
+.flow img.rs-sized { width: min(100%, var(--w), calc(var(--flow-img-h, 42vh) * var(--r))); height: auto; aspect-ratio: auto var(--r); object-fit: contain; }
+
+/* An image that cannot be shown: one line, about the height of the box it replaces. */
+.flow .rs-chip {
+  display: flex; align-items: center; gap: .5em; width: fit-content; max-width: 100%; box-sizing: border-box;
+  min-height: 2.45em; margin: .55em 0; padding: .3em .75em; overflow: hidden;
+  font: .74em/1.3 var(--sans); color: var(--paper-ink-3, #6d6252); text-align: left; hyphens: none; text-indent: 0;
+  background: var(--paper-code, #ebe4d6); border: 1px dashed var(--paper-rule, #d8cfbd); border-radius: 4px; break-inside: avoid;
+}
+.flow span.rs-chip { display: inline-flex; vertical-align: middle; margin: .15em 0; }
+.rs-chip .rs-i {
+  flex: none; width: 1.2em; height: 1.2em; background: currentColor; opacity: .8;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M21 15V5a2 2 0 0 0-2-2H9'/%3E%3Cpath d='M3 7v12a2 2 0 0 0 2 2h12'/%3E%3Cpath d='M3 16l5-5 4 4'/%3E%3Ccircle cx='15.5' cy='8.5' r='1.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M21 15V5a2 2 0 0 0-2-2H9'/%3E%3Cpath d='M3 7v12a2 2 0 0 0 2 2h12'/%3E%3Cpath d='M3 16l5-5 4 4'/%3E%3Ccircle cx='15.5' cy='8.5' r='1.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.rs-chip .rs-l { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-chip .rs-l::before { content: "Image unavailable"; font-weight: 600; }
+.rs-chip.rs-looking .rs-l::before { content: "Looking for a copy\2026"; }
+.rs-chip .rs-l[data-alt]::after { content: " \00b7  \201c" attr(data-alt) "\201d"; font-style: italic; }
+.rs-chip a, .rs-chip .rs-fix { flex: none; white-space: nowrap; color: var(--paper-link, #7a4f12); text-decoration: none; cursor: pointer; }
+.rs-chip a:hover, .rs-chip .rs-fix:hover, .rs-chip .rs-fix:focus-visible { text-decoration: underline; outline: none; }
+.rs-chip .rs-o::before { content: "original \2197"; }
+.rs-chip .rs-w::before { content: "archive \2197"; }
+.rs-chip .rs-fix::before { content: "fix\2026"; }
+.rs-chip .rs-s::before { content: "possible copy \2197"; }
+.rs-chip .rs-s { font-style: italic; }
+
+/* Hovering an image: where a rescued one came from, or "wrong image?". */
+#rs-badge { position: fixed; z-index: 35; font: 10.5px/1 var(--sans); }
+#rs-badge .rs-via, #rs-badge .rs-flag {
+  display: inline-block; padding: 4px 7px; border: 0; border-radius: 3px; cursor: pointer;
+  font: inherit; color: #fff; background: #1d1a16cc; text-decoration: none; box-shadow: 0 1px 4px #0006;
+}
+#rs-badge .rs-flag { opacity: .5; }
+#rs-badge .rs-flag:hover, #rs-badge .rs-via:hover { opacity: 1; background: #1d1a16f0; }
+
+/* A document served from the Internet Archive: said once, in the header. */
+#item-head .rs-arch {
+  flex: none; color: var(--accent); text-decoration: none; font: 10px var(--mono); text-transform: uppercase; letter-spacing: .05em;
+  border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; opacity: .85;
+}
+#item-head .rs-arch:hover { opacity: 1; }

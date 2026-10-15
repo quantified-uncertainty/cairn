@@ -86,6 +86,8 @@ export function turn(dir) {
 
 // ---------- Advance and Back ----------
 const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
+// A title short enough for a notice's second line to stay one line, read at a glance.
+const brief = (t, n = 44) => (t.length > n ? t.slice(0, n).replace(/[\s:,;.–—-]+\S*$/, '') + '…' : t);
 const laneEnd = () => toast('Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: 'Pick another lane at the top (keys 0–9)' });
 const laneStart = () => toast('First item in this lane', { icon: 'arrow-up-to-line', kind: 'edge' });
 /** Page forward; on the last spread, the next item at its opening page, but only
@@ -125,7 +127,7 @@ function pulled() {
 }
 /** The pull is a HUD notice (util.js toast) that fills from the left as you keep scrolling. */
 function showPull(frac) {
-  const nx = items[state.order[state.pos + 1]]?.t || 'the next item';
+  const nx = brief(items[state.order[state.pos + 1]]?.t || 'the next item');
   if (frac >= 1) toast('Next item', 700, { icon: 'skip-forward', kind: 'ok', sub: nx, fill: 1 });
   else if (frac > 0) toast('Keep scrolling', 1800, { icon: 'chevrons-down', kind: 'ok', sub: `Next: ${nx}`, fill: frac });
   else toast('End of document', 1800, { icon: 'arrow-down-to-line', kind: 'edge', sub: `Pause, then scroll again for: ${nx}`, fill: 0 });
@@ -334,7 +336,7 @@ function edgeTwice(dir, label) {
   if (edgePress && edgePress.dir === dir && edgePress.id === it?.id && now - edgePress.at < 1500) { edgePress = null; return true; }
   edgePress = { dir, id: it?.id, at: now };
   const other = items[state.order[state.pos + dir]];
-  if (other) toast(dir > 0 ? 'Next item' : 'Previous item', 1500, { icon: dir > 0 ? 'skip-forward' : 'skip-back', sub: `Press ${dir > 0 ? '→' : '←'} again for: ${other.t}` });
+  if (other) toast(dir > 0 ? 'Next item' : 'Previous item', 1500, { icon: dir > 0 ? 'skip-forward' : 'skip-back', sub: `Press ${dir > 0 ? '→' : '←'} again for: ${brief(other.t)}` });
   else if (dir > 0) laneEnd(); else laneStart();
   return false;
 }

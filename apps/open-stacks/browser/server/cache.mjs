@@ -146,7 +146,8 @@ export async function evict() {
   const target = MAX * 0.9, now = nowSec();
   // Anything touched in the last few seconds may be streaming to the reader right now.
   const lru = [...idx].filter(([, e]) => now - e.a > 5).map(([k, e]) => [k, e.a]);
-  for (const t of tenants.values()) { try { for (const e of t.entries()) if (now - e.a > 5) lru.push([e.k, e.a, t, e.s]); } catch { /* skip this tenant */ } }
+  let recent = idx.size - lru.length;
+  for (const t of tenants.values()) { try { for (const e of t.entries()) { if (now - e.a > 5) lru.push([e.k, e.a, t, e.s]); else if (e.a <= now) recent++; } } catch { /* skip this tenant */ } }
   lru.sort((a, b) => a[1] - b[1]);
   let tb = tenantBytes();
   let n = 0, freed = 0, i = 0;
@@ -168,6 +169,8 @@ export async function evict() {
     }
   } finally { evicting = false; }
   stats.evicted += n; stats.evictedBytes += freed;
+  // Still over, with entries spared only because they were just used: look again soon.
+  if (total + tenantBytes() > MAX && recent > 0) setTimeout(evictSoon, 6000).unref?.();
   if (n) console.log(`cache: evicted ${n} entries (${(freed / 1e6).toFixed(1)} MB), now ${(total / 1e6).toFixed(1)} of ${(MAX / 1e6).toFixed(0)} MB`);
   flush();
   return n;

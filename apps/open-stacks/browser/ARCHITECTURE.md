@@ -20,7 +20,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 
 | Module | Holds |
 |---|---|
-| `util.js` | `h()`, `$()`, `P(url)` (the proxy URL), `store`, `lru`, `fmtDate`, `toast`, `css()`, and the hooks below. `toast(text, ms?, {icon, sub, kind, fill})` is the HUD notice, low on the stage, one at a time: a big icon (a name from `hud-icons.js`, `'a+b'` for two), a short main line (2-5 words), an optional second line; `kind` is `mode`, `ok`, `edge`, `bad` or `busy`; `fill` (0-1) is the pull to the next item |
+| `util.js` | `h()`, `$()`, `P(url)` (the proxy URL), `store`, `lru`, `fmtDate`, `toast`, `css()`, and the hooks below. `toast(text, ms?, {icon, sub, kind, fill})` is the HUD notice, low on the stage (it sits inside `#stage` while the feed shows, so CSS places it and it never reads layout), one at a time: a big icon (a name from `hud-icons.js`, `'a+b'` for two), a short main line (2-5 words), an optional second line; `kind` is `mode`, `ok`, `edge`, `bad` or `busy`; `fill` (0-1) is the pull to the next item |
 | `corpus.js` | `items` (merged with `enrich.json`), `LANES`, `COUNTS`, `LANE_WEIGHTS`, `LANE_COLORS`, `byId`, `tokens`, `related(i)` |
 | `state.js` | `state` (view, lane, order, pos, `start` (Map item → page or column), `hist` (turn history), `per`, `zoom`, `crop`, `cols`, `font`, `panel`, `wheelMouse` / `wheelPad` / `wheelDevice` (the wheel map per device), `marks`, `status`, …), `current()`, `buildOrder`, `learn` |
 | `docs.js` | `openDoc(it)`: scan → `{n}`, pdf → `{n, pdf}` (a pdf.js document), html/web/text → a *flow* doc `{flow: true, html, n, texts, outline}`; `isFlow(it)`, `scanUrl`, `pdfjs()`, `extractors` (per kind), `prepareFlow`, `pdfOutline` |

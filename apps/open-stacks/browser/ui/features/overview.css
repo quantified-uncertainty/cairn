@@ -1,0 +1,95 @@
+/* Page overview (features/overview.js): every page of the item at once, over the stage. */
+#stage.ov-on #spread, #stage.ov-on #scrub { visibility: hidden; }
+#ov { position: absolute; left: 0; right: 0; z-index: 6; background: var(--bg); }
+#ov .ov-sc { position: absolute; inset: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-gutter: stable; }
+#ov .ov-grid {
+  display: grid; grid-template-columns: repeat(var(--c, 6), var(--cw, 120px)); column-gap: var(--g, 10px); row-gap: var(--rg, 22px);
+  justify-content: center; align-items: center; padding: var(--rg, 22px) 18px 26px; user-select: none; -webkit-user-select: none;
+}
+.ov-cell { position: relative; width: var(--cw); height: var(--ch); display: flex; align-items: center; justify-content: center; cursor: pointer; contain: size layout style; }
+.ov-pg { position: relative; width: var(--cw); height: var(--ch); overflow: hidden; border-radius: 1px; background: color-mix(in srgb, var(--paper) 9%, transparent); }
+.ov-cell.ld .ov-pg { background-color: var(--paper); box-shadow: 0 1px 0 #0006, 0 4px 12px #0007; }
+.ov-cell.spr .ov-pg { background-color: #fff; }
+.ov-m { display: block; width: 100%; height: 100%; }
+.ov-crop { position: relative; overflow: hidden; }
+.ov-crop > img { position: absolute; max-width: none; display: block; }
+.ov-no { position: absolute; z-index: 2; right: 3px; bottom: 2px; font: 9px/1.3 var(--mono); color: #000a; background: #fffb; padding: 0 3px; border-radius: 2px; pointer-events: none; }
+.ov-cell:not(.ld) .ov-no { inset: 0; display: grid; place-items: center; background: none; color: var(--ink-3); font-size: 12px; }
+.ov-cell.fig .ov-no::before { content: "▣ "; color: #6a4a10; }
+
+/* Where you are, where the pointer is, the keyboard cursor. */
+.ov-cell.cur .ov-pg { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ov-cell:hover .ov-pg, .ov-cell.hot .ov-pg { outline: 2px solid var(--ink-2); outline-offset: 2px; }
+.ov-cell.cur:hover .ov-pg, .ov-cell.cur.hot .ov-pg { outline-color: var(--accent); outline-width: 3px; }
+.ov-grid.kb .ov-cell.kc .ov-pg { outline: 2px dashed var(--ink); outline-offset: 4px; }
+
+/* Marks: pages seen (a bar along the bottom), key points (a dot), guide stops, skippable pages, blanks. */
+.ov-cell.seen .ov-pg::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 3px; background: var(--mem-bar, rgba(226, 165, 74, .6)); }
+.ov-cell.kp .ov-pg::before { content: ""; position: absolute; z-index: 2; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1.5px #fff; }
+.ov-stop { position: absolute; z-index: 2; top: 3px; left: 3px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 8px; background: var(--accent); color: #2a1d05; font: 600 9.5px/15px var(--mono); text-align: center; }
+.ov-cell.skip .ov-pg { opacity: .42; filter: grayscale(1); }
+.ov-cell.skip:hover .ov-pg { opacity: .85; }
+.ov-cell.blank .ov-pg { background: transparent; box-shadow: none; border: 1px dashed var(--line); }
+.ov-cell.err .ov-no { color: var(--bad); }
+
+/* Sections: a label in the gap above the page where each starts; long sections in long items open a row. */
+.ov-tag { position: absolute; z-index: 1; left: 0; bottom: calc(100% + 4px); max-width: calc(var(--cw) * 2.6); padding-right: 8px; background: var(--bg);
+  font: 500 10.5px/14px var(--sans); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: auto; }
+.ov-tag.d1 { color: var(--ink-3); font-weight: 400; font-size: 10px; }
+.ov-tag.d2 { color: var(--ink-3); font-weight: 400; font-size: 9.5px; }
+.ov-head { grid-column: 1 / -1; display: flex; gap: 10px; align-items: baseline; min-width: 0; padding: 8px 2px 0; margin-bottom: -8px; border-top: 1px solid var(--line); cursor: pointer; }
+.ov-head b { font: 600 13.5px/1.3 var(--serif); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50%; }
+.ov-head .p { font: 10px var(--mono); color: var(--ink-3); flex: none; }
+.ov-head .s { font: italic 12px/1.3 var(--serif); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ov-head:hover b { color: var(--accent); }
+
+/* Posts: stable pages as miniature pages of text. */
+.ov-mini { position: absolute; left: 0; top: 0; width: 380px; height: var(--mh, 528px); transform: scale(var(--fs, .5)); transform-origin: 0 0;
+  padding: 16px 18px; font: 10px/1.38 var(--serif); color: #2b251c; overflow: hidden; }
+.ov-mini > * { margin: 0 0 .5em; }
+.ov-mini h1, .ov-mini h2 { font-size: 13px; line-height: 1.2; margin: .6em 0 .3em; }
+.ov-mini h3, .ov-mini h4, .ov-mini h5, .ov-mini h6 { font-size: 11px; margin: .5em 0 .25em; }
+.ov-mini img { display: block; max-width: 100%; max-height: 200px; margin: .3em auto; }
+.ov-mini pre, .ov-mini code { font: 8px/1.3 var(--mono); white-space: pre-wrap; }
+.ov-mini table { font-size: 8px; border-collapse: collapse; }
+.ov-mini ul, .ov-mini ol { padding-left: 1.3em; }
+.ov-mini blockquote { margin: .4em 0 .4em .4em; padding-left: .6em; border-left: 2px solid #0002; }
+.ov-mini figure { margin: 0; }
+.ov-mini a { color: inherit; text-decoration: none; }
+.ov-mini .flow-title .t { font: 600 16px/1.2 var(--serif); }
+.ov-mini .flow-title .m { font-size: 9px; color: #6d6253; margin: .3em 0 .8em; }
+.ov-embed { height: 40px; display: grid; place-items: center; background: #0001; color: #0005; }
+
+/* Zoom, and how many pages a screen. */
+.ov-hud { position: absolute; z-index: 3; right: 16px; bottom: 6px; display: flex; gap: 2px; align-items: center; padding: 1px 4px; border: 1px solid var(--line); border-radius: 99px;
+  background: color-mix(in srgb, var(--bg-3) 92%, transparent); font: 11px var(--mono); color: var(--ink-2); opacity: .75; transition: opacity .15s; }
+.ov-hud:hover, .ov-hud.bump { opacity: 1; }
+.ov-hud button { border: 0; padding: 0 7px; font: 600 13px/18px var(--mono); }
+.ov-hud .ov-x { font: 10px/18px var(--mono); color: var(--ink-3); }
+.ov-hud .ov-n { padding: 0 2px; min-width: 76px; text-align: center; }
+.ov-hud.bump { animation: ov-bump .25s ease-out; }
+@keyframes ov-bump { from { transform: scale(1.12); } to { transform: scale(1); } }
+.ov-msg { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-3); font: 12px var(--mono); }
+
+/* Hover: the page large, over the other half of the stage. */
+#ov-peek { position: fixed; z-index: 44; pointer-events: none; }
+#ov-peek .ovp-pg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.ovp-page { position: relative; flex: none; background: var(--paper); box-shadow: 0 18px 50px #000d, 0 0 0 1px #0005; overflow: hidden; background-repeat: no-repeat; }
+.ovp-page > canvas, .ovp-page > img, .ovp-page > .ov-crop { display: block; width: 100%; height: 100%; }
+.ovp-row { display: flex; justify-content: center; width: 100%; height: 100%; }
+.ovp-row > canvas { height: 100%; width: auto; min-width: 0; }
+.ovp-text { height: 100%; padding: 22px 26px; font: 14px/1.5 var(--serif); color: #26211a; overflow: hidden; -webkit-mask-image: linear-gradient(#000 88%, transparent); mask-image: linear-gradient(#000 88%, transparent); }
+.ovp-text > * { margin: 0 0 .6em; }
+.ovp-text img { display: block; max-width: 100%; max-height: 40%; margin: .4em auto; }
+.ovp-text pre, .ovp-text code { font: 11px/1.35 var(--mono); white-space: pre-wrap; }
+.ovp-text a { color: inherit; }
+.ovp-text .flow-title .t { font: 600 20px/1.2 var(--serif); }
+.ovp-text .flow-title .m { font-size: 12px; color: #6d6253; }
+#ov-peek .ovp-l { position: absolute; left: 8px; top: 8px; z-index: 2; max-width: calc(100% - 16px); padding: 2px 8px; border-radius: 3px; background: #000b; color: #fff; font: 11px var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* The track while the grid is open: the pages in view, and the page under the pointer. */
+#track .tr-ovwin { position: absolute; top: -3px; bottom: -3px; min-width: 3px; border: 1px solid var(--ink-2); border-radius: 2px; background: color-mix(in srgb, var(--ink) 12%, transparent); pointer-events: none; }
+#track.ov-hover .tr-hover { display: block; }
+#item-head .pos { cursor: pointer; }
+#item-head .pos:hover { color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { .ov-hud.bump { animation: none; } }

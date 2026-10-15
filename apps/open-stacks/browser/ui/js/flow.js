@@ -89,6 +89,7 @@ export function showFlow(i, it, d) {
     const again = () => { clearTimeout(t); t = setTimeout(() => { if (live === L && L.sheet.isConnected) { typeset(L); measure(L); place(i); } }, 120); };
     L.flow.querySelectorAll('img').forEach((im) => { if (!im.complete) im.addEventListener('load', again, { once: true }); });
     document.fonts?.ready.then(again);
+    L.remeasure = again; // features that change the flow's content later (features/rescue.js)
   }
   live = L;
   place(i);

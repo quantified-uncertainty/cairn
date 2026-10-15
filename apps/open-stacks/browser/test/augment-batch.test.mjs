@@ -1,7 +1,7 @@
 // The Message Batches path of server/augment.mjs with a stand-in SDK client:
 // request shape, the reservation, results matched by custom_id, checks, the
 // half price, failures listed for a re-run (node --test test/*.test.mjs).
-import { test } from 'node:test';
+import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, existsSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 
 const HERE = join(dirname(fileURLToPath(import.meta.url)), '..');
 process.env.STACKS_CACHE = mkdtempSync(join(tmpdir(), 'stacks-aug-batch-'));
+after(() => rmSync(process.env.STACKS_CACHE, { recursive: true, force: true }));
 delete process.env.STACKS_MOCK_AI;
 const A = await import('../server/augment.mjs');
 const { PRICES } = await import('../server/routes/30-summarize.mjs');
@@ -81,5 +82,4 @@ test('a batch is submitted with the right requests and its results are checked a
   // A second submit skips the item that now has a guide.
   const again = await aug.submitBatch({ ids: texts.map((it) => it.id), dry: true });
   assert.deepEqual(again.skipped.map((s) => s.why), ['current']);
-  rmSync(process.env.STACKS_CACHE, { recursive: true, force: true });
 });

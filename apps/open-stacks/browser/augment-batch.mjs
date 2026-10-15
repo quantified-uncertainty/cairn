@@ -26,8 +26,10 @@ const argv = process.argv.slice(2);
 const flag = (k) => argv.includes('--' + k);
 const opt = (k, d = null) => { const j = argv.indexOf('--' + k); return j >= 0 && argv[j + 1] && !argv[j + 1].startsWith('--') ? argv[j + 1] : d; };
 const list = (k) => (opt(k) ? opt(k).split(',').map((s) => s.trim()).filter(Boolean) : undefined);
-if (flag('help') || flag('h')) { console.log(readFileHeader()); process.exit(0); }
-function readFileHeader() { return 'node augment-batch.mjs [--lanes a,b] [--ids x,y] [--limit 500] [--model m] [--max-usd 2] [--dry] [--yes] [--status] [--watch id] [--no-wait] [--port 4747]'; }
+if (flag('help') || flag('h')) {
+  console.log('node augment-batch.mjs [--lanes a,b] [--ids x,y] [--limit 500] [--model m] [--max-usd 2] [--dry] [--yes] [--verbose]\n                        [--status] [--watch <batchId>] [--no-wait] [--port 4747]   (see the comment at the top of this file)');
+  process.exit(0);
+}
 
 const port = Number(opt('port', process.env.STACKS_PORT || 4747));
 const base = `http://127.0.0.1:${port}`;

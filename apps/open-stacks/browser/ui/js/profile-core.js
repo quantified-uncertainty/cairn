@@ -230,13 +230,14 @@ export function rangesOf(pages) {
 
 // ------------------------------------------------------ 5.4 crop groups ----
 const GROUP_ROLES = new Set(['body', 'refs', 'appendix', 'index']);
+
 /**
  * One crop box shared by the body pages (recto and verso for scans with enough
  * pages, plus a group of landscape pages); pages that would lose ink under it
  * get their own box. pages: [{k, w, h, ink, blank, dens, role}].
  * Returns {groups: {body?, recto?, verso?, land?}, cg: [name per page], crop: {k: Box}}.
  */
-export function cropGroups(pages, kind = 'pdf', pair = null) {
+export function cropGroups(pages, kind = 'pdf', pair = null, q = 0.1) {
   const nb = pages.filter((p) => !p.blank && p.ink);
   const roleOk = (p) => GROUP_ROLES.has(p.role ?? 'body');
   const med = median(nb.filter(roleOk).map(ar)) ?? median(nb.map(ar)) ?? 0.75;
@@ -253,7 +254,7 @@ export function cropGroups(pages, kind = 'pdf', pair = null) {
     const ps = g === 'land' ? (lands.length >= 2 ? lands : []) : cands.filter((p) => !isLand(p) && nat(p) === g);
     if (!ps.length) continue;
     seed[g] = ps.length >= 3
-      ? [pct(ps.map((p) => p.ink[0]), 0.1), pct(ps.map((p) => p.ink[1]), 0.1), pct(ps.map((p) => p.ink[2]), 0.9), pct(ps.map((p) => p.ink[3]), 0.9)]
+      ? [pct(ps.map((p) => p.ink[0]), q), pct(ps.map((p) => p.ink[1]), q), pct(ps.map((p) => p.ink[2]), 1 - q), pct(ps.map((p) => p.ink[3]), 1 - q)]
       : ps.reduce((u, p) => union(u, p.ink), null);
   }
   const cg = new Array(pages.length).fill('body'), crop = {}, members = {};

@@ -135,11 +135,11 @@ async function showProfiled(gen, i, it, pf, s, n, per, boxW, boxH) {
   state.shown = slots.length;
   paintPos(it, s, slots.length, n);
   paintScrub(i, s, slots.length);
-  // The pages on screen first: preparing the ones ahead starts once these are
-  // decoded (they would otherwise share the image decoders and the main thread).
-  const results = await Promise.all(slots.map((x) => x.p.catch((e) => [{ err: e.message, k: x.k }])));
-  if (gen !== state.gen) return;
   planAround(i, s);
+  const stopWait = waitingNote(it, slots.filter((x) => !pf.pages[x.k]?.blank), gen);
+  const results = await Promise.all(slots.map((x) => x.p.catch((e) => [{ err: e.message, k: x.k }])));
+  stopWait();
+  if (gen !== state.gen) return;
   finish(i, it, s, n, results, slots, boxW, boxH);
 }
 /** Show a full-page placeholder image cropped like the page will be. */
