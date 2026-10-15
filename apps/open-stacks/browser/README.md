@@ -1,37 +1,51 @@
 # Stacks Browser
 
-A desktop app for browsing many open books and papers quickly, the way you would scan a bookstore table or walk the stacks, with no waiting when you open something.
+A desktop app for browsing many open books, papers and posts quickly, the way you would scan a bookstore table or walk the stacks, without waiting when you open something. Part of [Open Stacks](../).
 
 ```bash
 cd apps/open-stacks/browser
-node server.mjs            # then open http://localhost:4747
-node build-corpus.mjs      # optional: rebuild corpus.json from the live APIs (a few minutes)
+npm install                       # once (only needed for AI summaries)
+export ANTHROPIC_API_KEY=sk-...   # optional: enables summaries
+node server.mjs                   # then open http://localhost:4747
 ```
 
-Needs Node 20 or newer and no other dependencies. Fetched files are cached in `~/.cache/open-stacks` (set `STACKS_CACHE` to change it).
+Needs Node 20+. Everything you open is cached in `~/.cache/open-stacks` (`STACKS_CACHE` to change), along with your notes and summaries.
 
-## What it is
+## Lanes
 
-- **Feed**: one book or paper at a time, showing 3 real pages side by side (scanned page images, PDF pages, or typeset text). `j`/`k` move to the next or previous item, `l`/`h` turn pages, `r` jumps to a random spot, `Enter` opens the full reader at that page.
-- **Wall**: a dense grid of title pages and covers. Hovering a tile riffles through pages spread across the whole book. Click it to open in the feed, or press `Enter` on a focused tile to open the reader.
-- **Reader**: every page of the item, loaded as you scroll, with the next pages prefetched.
-- **Quick look**: `i` shows details and links, `m` filters to more like this, `g` goes to a page, `/` searches titles, authors and subjects, `s` saves, `x` means less like this, and `+`/`-` change the number of pages shown.
+| Lane | What | Source |
+|---|---|---|
+| LessWrong | top 300 posts by karma | LessWrong API |
+| AI safety | landmark papers, plus top Alignment Forum posts | arXiv, Alignment Forum |
+| LLM papers | landmark language-model papers | arXiv |
+| Information theory | Shannon, MacKay and other free texts | author / publisher hosted |
+| Cybernetics | Ashby and other legally free classics | various |
+| TTRPG manuals | openly licensed rulebooks and SRDs | publishers, Gutenberg |
+| Old technical oddities | the most-read public-domain technical scans | Internet Archive |
+
+The curated lanes come from `seeds.json` (every arXiv ID and URL was checked against the live source). `node build-corpus.mjs` rebuilds `corpus.json`.
+
+## Using it
+
+The screen is mostly pages. A thin strip at the bottom shows where you are in the item; hover it (or press `p`) for page thumbnails. The side panel (`i` to hide) shows why the item is here, an AI summary, the outline, your note, related items and today's trail. Press `?` for all keys:
+
+- `j`/`k` next/previous item · `l`/`h` (or arrows) turn pages · `z` or `Enter` zoom to one page · `r` random spot
+- `a` summarize now (otherwise automatic after 5 s on an item) · `s` save · `x` less like this · `m` more like this
+- `C` crop margins (on by default) · `c` split two-column pages into columns · `+`/`-` pages per spread
+- `n` write a note (exports to Markdown from Saved) · `o` open the original · `0`–`7` lanes · `/` search · `w` wall
 
 ## Why it is fast
 
-Open sources are slow: an Internet Archive page image takes 1–3 s, and Gutenberg and author-hosted PDFs do not allow cross-site requests. `server.mjs` is a caching proxy with a priority prefetch queue. While you look at one item, the UI asks it to fetch the next ~30 items' visible pages (12 in parallel, nearest first) and the rest of any item you linger on. In a test from a cold cache, moving to the next item took a median of about 50 ms after 1–2 s on each item, and turning pages about 20–40 ms.
+Open sources are slow (an Internet Archive page image takes 1-3 s). `server.mjs` is a caching proxy with a prioritised prefetch queue, and the page plans ahead around where you are:
 
-## Sources
+- pages ahead of you in the direction you are paging, further ahead the faster you page, already decoded and cropped in memory;
+- one spread behind you, in case you turn back;
+- the next random spot, chosen in advance;
+- the next items' first spreads;
+- on the server: sharp pages near you, the next 25 items, legible mid-resolution pages further out, then strip thumbnails.
 
-Every item can be opened legally and for free:
+In tests from a cold cache, page turns in long scanned books took 25-47 ms and moving to the next item usually 40-200 ms.
 
-| Kind | Source | Count |
-|---|---|---|
-| Scans | Internet Archive public-domain books (pre-1929, English, technical and odd subjects) | ~3,600 |
-| Papers | arXiv (forecasting, scoring rules, uncertainty, AI evaluation, alignment, decision theory...) | ~1,450 |
-| Texts | Project Gutenberg nonfiction in science, mathematics, philosophy, economics and technology | ~5,600 |
-| Textbooks | Author-hosted free editions (MacKay, Bishop, Boyd, Sutton & Barto, ...) | 8 |
+## AI summaries
 
-Edit `build-corpus.mjs` to change subjects or add sources. The proxy only fetches from the allowlisted open hosts in `server.mjs`.
-
-Part of [Open Stacks](../): see the wiki chapters on [the Access Ladder](../src/content/docs/access/access-ladder.md) and [the Reference Architecture](../src/content/docs/building/reference-architecture.md).
+After 5 s on an item, the server sends its text (PDF text, Internet Archive OCR, or post HTML, with page markers) to Claude and caches a structured summary: why you might care, the gist, key points with page links (marked on the page strip), what is on the current pages, and a skip/skim/read/study verdict. It also summarizes the next two items in the background (toggle in the panel). Default model: `claude-opus-5-5` at low effort (about 3 cents a summary); set `STACKS_MODEL=claude-haiku-5-5` for roughly 40x cheaper. Summaries are AI-generated and labelled as such.

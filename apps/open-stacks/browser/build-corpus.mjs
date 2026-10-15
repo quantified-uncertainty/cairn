@@ -1,118 +1,112 @@
 #!/usr/bin/env node
 /**
- * Build corpus.json for the Stacks Browser: a few thousand items that can be
- * opened instantly because they are open and their pages are fetchable.
+ * Build corpus.json for the Stacks Browser: a curated set of openable items in
+ * lanes chosen by the reader, rather than everything that happens to be open.
  *
  *   node build-corpus.mjs            # writes ./corpus.json
  *
- * Three kinds of item:
- *   scan  Internet Archive public-domain scans (page images, pre-1929, English)
- *   pdf   arXiv papers and author-hosted free textbooks (rendered with pdf.js)
- *   text  Project Gutenberg plain text (paginated in the browser)
+ * Lanes:
+ *   lesswrong           top LessWrong posts by karma (LessWrong GraphQL API)
+ *   ai-safety           curated papers (seeds.json) + top Alignment Forum posts
+ *   llm                 curated landmark LLM papers (seeds.json)
+ *   information-theory  curated open texts (seeds.json)
+ *   cybernetics         curated open texts (seeds.json)
+ *   ttrpg               openly licensed tabletop RPG manuals (seeds.json)
+ *   oddities            a small serendipity lane: the most-read public-domain
+ *                       technical scans on Internet Archive
  *
- * Sources: Internet Archive advanced search API, the Open Stacks datasets in
- * ../public/prototypes/data/ (arXiv metadata, Gutenberg catalogue), and a short
- * hand-checked list of free textbooks from the Open-Access Books chapter.
+ * seeds.json is a hand-curated list whose arXiv IDs and URLs were checked
+ * against the live sources; see its header.
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DATA = join(HERE, '../public/prototypes/data');
-const UA = 'OpenStacksBrowser/0.1 (https://github.com/quantified-uncertainty/cairn)';
+const UA = 'OpenStacksBrowser/0.2 (https://github.com/quantified-uncertainty/cairn)';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Subject queries for public-domain scans: the technical and odd corners of a
-// research library, which is the browsing experience we are after.
-const SCAN_SUBJECTS = [
-  'probabilities', 'mathematics', 'statistics', 'calculus', 'geometry', 'algebra', 'mechanics',
-  'physics', 'astronomy', 'logic', 'philosophy', 'political economy', 'economics', 'insurance',
-  'engineering', 'electricity', 'chemistry', 'navigation', 'surveying', 'machinery', 'cryptography',
-  'psychology', 'evolution', 'natural history', 'mathematical recreations', 'slide rule', 'telegraph',
-];
-const PER_SUBJECT = 160;
-
-const FREE_TEXTBOOKS = [
-  ['Information Theory, Inference, and Learning Algorithms', 'David MacKay', 2003, 'https://www.inference.org.uk/itprnn/book.pdf'],
-  ['Pattern Recognition and Machine Learning', 'Christopher Bishop', 2006, 'https://www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf'],
-  ['Convex Optimization', 'Stephen Boyd, Lieven Vandenberghe', 2004, 'https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf'],
-  ['Reinforcement Learning: An Introduction (2nd ed.)', 'Richard Sutton, Andrew Barto', 2018, 'http://incompleteideas.net/book/RLbook2020.pdf'],
-  ['Algorithms', 'Jeff Erickson', 2019, 'https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf'],
-  ['Mathematics for Machine Learning', 'Deisenroth, Faisal, Ong', 2020, 'https://mml-book.github.io/book/mml-book.pdf'],
-  ['Understanding Deep Learning', 'Simon Prince', 2023, 'https://github.com/udlbook/udlbook/releases/download/v5.0.2/UnderstandingDeepLearning_08_28_24_C.pdf'],
-  ['Introduction to Probability (2nd ed.)', 'Joseph Blitzstein, Jessica Hwang', 2019, 'https://drive.google.com/uc?export=download&id=1VmkAAGOYCTORq1wxSQqy255qLJjTNvBI'],
-];
+const LANES = {
+  lesswrong: 'LessWrong',
+  'ai-safety': 'AI safety',
+  llm: 'LLM papers',
+  'information-theory': 'Information theory',
+  cybernetics: 'Cybernetics',
+  ttrpg: 'TTRPG manuals',
+  oddities: 'Old technical oddities',
+};
 
 async function getJson(url) {
   for (let i = 0; i < 4; i++) {
     try {
       const r = await fetch(url, { headers: { 'User-Agent': UA } });
       if (r.ok) return await r.json();
-      console.warn(`HTTP ${r.status} ${url}`);
+      console.warn(`HTTP ${r.status} ${url.slice(0, 120)}`);
     } catch (e) { console.warn(e.message); }
     await sleep(2000 * 2 ** i);
   }
   return null;
 }
+const gql = (host, q) => getJson(`https://${host}/graphql?query=${encodeURIComponent(q)}`);
+const postBodyUrl = (host, id) => `https://${host}/graphql?query=${encodeURIComponent(`{post(input:{selector:{_id:"${id}"}}){result{htmlBody}}}`)}`;
 
 const items = [];
 const seen = new Set();
 const add = (it) => { if (!seen.has(it.id)) { seen.add(it.id); items.push(it); } };
-const one = (v) => (Array.isArray(v) ? v[0] : v) || '';
 
-// 1. Internet Archive public-domain scans.
-for (const subject of SCAN_SUBJECTS) {
-  const q = `mediatype:texts AND subject:("${subject}") AND year:[1700 TO 1928] AND language:(eng OR English) AND imagecount:[40 TO 1500] AND -collection:ericarchive AND -collection:microfilm`;
-  const url = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)}&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=imagecount&fl[]=subject&fl[]=downloads&sort[]=downloads+desc&rows=${PER_SUBJECT}&output=json`;
-  const d = await getJson(url);
-  await sleep(1000);
-  for (const x of d?.response?.docs || []) {
+// 1. LessWrong top posts, and Alignment Forum top posts not already among them.
+async function forumLane(host, lane, label, limit) {
+  const d = await gql(host, `{posts(input:{terms:{view:"top",limit:${limit}}}){results{_id title slug baseScore postedAt wordCount user{displayName}}}}`);
+  const posts = d?.data?.posts?.results || [];
+  for (const p of posts) {
     add({
-      id: `ia:${x.identifier}`, kind: 'scan', src: 'Internet Archive',
-      t: String(one(x.title)).replace(/\s*\[microform\]/i, '').slice(0, 200),
-      a: String(one(x.creator)).replace(/,\s*\d{4}-?\d{0,4}\.?$/, '').slice(0, 80),
-      y: Number(String(x.year).slice(0, 4)) || null,
-      s: [].concat(x.subject || []).slice(0, 5),
-      n: x.imagecount, ia: x.identifier, pop: x.downloads || 0, q: subject,
+      id: `lw:${p._id}`, lane, kind: 'html', src: label,
+      t: p.title, a: p.user?.displayName || '', y: Number(String(p.postedAt).slice(0, 4)),
+      url: postBodyUrl('www.lesswrong.com', p._id), page: `https://www.lesswrong.com/posts/${p._id}/${p.slug}`,
+      words: p.wordCount, score: p.baseScore,
+      why: `Top ${label} post · ${p.baseScore} karma · ${Math.max(1, Math.round((p.wordCount || 0) / 230))} min`,
     });
   }
-  console.log(`scans/${subject}: ${d?.response?.docs?.length ?? 0} (total ${items.length})`);
+  console.log(`${label}: ${posts.length}`);
 }
+await forumLane('www.lesswrong.com', 'lesswrong', 'LessWrong', 300);
+await forumLane('www.alignmentforum.org', 'ai-safety', 'Alignment Forum', 150);
 
-// 2. arXiv papers (metadata already fetched for the prototypes).
-const papers = JSON.parse(readFileSync(join(DATA, 'papers.json'), 'utf-8')).papers;
-for (const p of papers) {
-  add({
-    id: `arxiv:${p.id}`, kind: 'pdf', src: 'arXiv', t: p.t, a: p.a.slice(0, 3).join(', '),
-    y: Number(p.y.slice(0, 4)), s: p.th, url: `https://arxiv.org/pdf/${p.id}`,
-    html: `https://arxiv.org/html/${p.id}`, ab: p.ab.slice(0, 600), q: p.th[0],
-  });
-}
+// 2. Curated seeds.
+if (existsSync(join(HERE, 'seeds.json'))) {
+  const seeds = JSON.parse(readFileSync(join(HERE, 'seeds.json'), 'utf-8'));
+  for (const s of seeds.items) {
+    const src = s.id.startsWith('arxiv:') ? 'arXiv' : s.kind === 'text' ? 'Project Gutenberg' : new URL(s.page || s.url).hostname.replace(/^www\./, '');
+    add({ ...s, src, why: s.why, score: s.score || 0 });
+  }
+  console.log(`seeds: ${seeds.items.length}`);
+} else console.warn('seeds.json missing: curated lanes will be empty');
 
-// 3. Free textbooks (author or publisher hosted).
-for (const [t, a, y, url] of FREE_TEXTBOOKS) {
-  add({ id: `book:${t}`, kind: 'pdf', src: 'Author-hosted', t, a, y, s: ['textbook'], url, q: 'textbook' });
-}
-
-// 4. Project Gutenberg nonfiction in technical and philosophical classes.
-const pg = JSON.parse(readFileSync(join(DATA, 'gutenberg.json'), 'utf-8')).books;
-// Exact LC classes: science, mathematics, logic, philosophy of mind, economics, technology.
-const PG_CLASSES = /^(Q|QA|QB|QC|QD|QE|QH|QK|QL|QM|QP|B|BC|BD|BF|BH|BJ|HA|HB|HC|HD|HF|HG|HM|T|TA|TC|TJ|TK|TL|TN|TP|TS|TT|U|Z)$/;
-const outline = JSON.parse(readFileSync(join(DATA, 'lcc-outline.json'), 'utf-8')).subclasses;
-for (const b of pg) {
-  const cls = (b.c || '').replace(/[^A-Z].*$/, '');
-  if (!PG_CLASSES.test(cls)) continue;
-  add({
-    id: `pg:${b.id}`, kind: 'text', src: 'Project Gutenberg', t: b.t.slice(0, 200), a: (b.a[0] || '').replace(/,\s*\d.*$/, ''),
-    y: null, s: b.s.slice(0, 4), c: cls, url: `https://www.gutenberg.org/cache/epub/${b.id}/pg${b.id}.txt`, q: (outline[cls] || cls).toLowerCase(),
-  });
+// 3. Old technical oddities: most-read public-domain technical scans.
+const ODD = ['mathematical recreations', 'slide rule', 'telegraph', 'cryptography', 'calculating machines', 'logic', 'probabilities', 'mechanics', 'navigation', 'electricity', 'machinery', 'war games', 'chess'];
+for (const subject of ODD) {
+  const q = `mediatype:texts AND subject:("${subject}") AND year:[1700 TO 1928] AND language:(eng OR English) AND imagecount:[40 TO 1200] AND -collection:ericarchive AND -collection:microfilm`;
+  const d = await getJson(`https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)}&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=imagecount&fl[]=downloads&sort[]=downloads+desc&rows=45&output=json`);
+  await sleep(1000);
+  for (const x of d?.response?.docs || []) {
+    const one = (v) => (Array.isArray(v) ? v[0] : v) || '';
+    add({
+      id: `ia:${x.identifier}`, lane: 'oddities', kind: 'scan', src: 'Internet Archive',
+      t: String(one(x.title)).replace(/\s*\[microform\]/i, '').replace(/&amp;/gi, '&').slice(0, 200),
+      a: String(one(x.creator)).replace(/,\s*\d{4}-?\d{0,4}\.?$/, '').slice(0, 80),
+      y: Number(String(x.year).slice(0, 4)) || null, n: x.imagecount, ia: x.identifier,
+      page: `https://archive.org/details/${x.identifier}`, score: x.downloads || 0,
+      why: `Public-domain scan · shelved under "${subject}" · ${(x.downloads || 0).toLocaleString()} downloads`,
+    });
+  }
+  console.log(`oddities/${subject}: ${d?.response?.docs?.length ?? 0}`);
 }
 
 writeFileSync(join(HERE, 'corpus.json'), JSON.stringify({
   built: new Date().toISOString().slice(0, 10),
-  counts: items.reduce((m, x) => ((m[x.src] = (m[x.src] || 0) + 1), m), {}),
+  lanes: LANES,
+  counts: items.reduce((m, x) => ((m[x.lane] = (m[x.lane] || 0) + 1), m), {}),
   items,
 }));
-console.log(`Wrote ${items.length} items`);
+console.log(`Wrote ${items.length} items`, items.reduce((m, x) => ((m[x.lane] = (m[x.lane] || 0) + 1), m), {}));

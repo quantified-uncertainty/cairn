@@ -14,53 +14,51 @@
     <button id="v-feed" class="on" title="Feed (f)">Feed</button>
     <button id="v-wall" title="Wall (w)">Wall</button>
   </nav>
-  <div id="sources" class="chips" aria-label="Sources"></div>
-  <div id="shelves" class="chips shelves" aria-label="Shelves"></div>
-  <button id="search-btn" class="search-btn" title="Search (/)">Search <kbd>/</kbd></button>
-  <button id="saved-btn" class="saved-btn" title="Saved (b)">Saved <span id="saved-n">0</span></button>
+  <div id="lanes" class="chips" aria-label="Lanes"></div>
+  <button id="search-btn" class="ghost" title="Search (/)">Search <kbd>/</kbd></button>
+  <button id="saved-btn" class="ghost" title="Saved (b)">Saved <span id="saved-n">0</span></button>
+  <button id="keys-btn" class="ghost" title="Keys (?)">?</button>
+  <span id="net"></span>
 </header>
 
-<main id="feed" class="view">
-  <section id="item-head"></section>
-  <section id="spread" aria-live="polite"></section>
-  <section id="upnext" aria-label="Up next"></section>
-</main>
-
-<main id="wall" class="view" hidden>
-  <div id="grid"></div>
-  <div id="grid-more"></div>
-</main>
-
-<div id="reader" hidden>
-  <div class="r-head"><div id="r-title"></div><div class="r-actions"><a id="r-orig" target="_blank" rel="noopener">Original ↗</a><button id="r-close">Close <kbd>Esc</kbd></button></div></div>
-  <div id="r-pages"></div>
+<div id="main">
+  <section id="stage">
+    <div id="item-head"></div>
+    <div id="spread" aria-live="polite"></div>
+    <div id="scrub" aria-label="All pages"></div>
+  </section>
+  <aside id="panel" aria-label="About this item"></aside>
+  <section id="wall" hidden><div id="grid"></div><div id="grid-more"></div></section>
 </div>
 
 <div id="search" hidden>
   <div class="s-box">
-    <input id="s-input" type="search" placeholder="Title, author or subject…  (Enter: jump · Shift+Enter: browse all results)" autocomplete="off" spellcheck="false">
+    <input id="s-input" type="search" placeholder="Title, author or subject… (Enter: jump · Shift+Enter: browse all results)" autocomplete="off" spellcheck="false">
     <ol id="s-results"></ol>
   </div>
 </div>
+<aside id="saved" hidden><h2>Saved</h2><ol id="saved-list"></ol><a href="/notes.md">Export notes (Markdown)</a></aside>
 
-<aside id="info" hidden></aside>
-<aside id="saved" hidden><h2>Saved</h2><ol id="saved-list"></ol></aside>
-
-<footer id="keys">
-  <span><kbd>j</kbd>/<kbd>k</kbd> next / previous book</span>
-  <span><kbd>l</kbd>/<kbd>h</kbd> turn pages</span>
-  <span><kbd>r</kbd> random spot</span>
-  <span><kbd>t</kbd> start</span>
-  <span><kbd>Enter</kbd> open</span>
-  <span><kbd>s</kbd> save</span>
-  <span><kbd>x</kbd> less like this</span>
-  <span><kbd>i</kbd> info</span>
-  <span><kbd>m</kbd> more like this</span>
-  <span><kbd>g</kbd> go to page</span>
-  <span><kbd>+</kbd>/<kbd>-</kbd> pages</span>
-  <span><kbd>o</kbd> original</span>
-  <span id="net"></span>
-</footer>
+<div id="keys" hidden>
+  <div class="k-box">
+    <h2>Keys</h2>
+    <dl>
+      <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>next / previous item</dd>
+      <dt><kbd>l</kbd> <kbd>h</kbd></dt><dd>turn pages (arrows work too)</dd>
+      <dt><kbd>z</kbd> / <kbd>Enter</kbd></dt><dd>zoom to one page; <kbd>Esc</kbd> back</dd>
+      <dt><kbd>r</kbd></dt><dd>jump to a random spot</dd>
+      <dt><kbd>t</kbd> <kbd>g</kbd></dt><dd>first page / go to page</dd>
+      <dt><kbd>a</kbd></dt><dd>summarize now (otherwise after 5 s)</dd>
+      <dt><kbd>s</kbd> <kbd>x</kbd> <kbd>m</kbd></dt><dd>save / less like this / more like this</dd>
+      <dt><kbd>c</kbd> <kbd>C</kbd></dt><dd>split columns / crop margins</dd>
+      <dt><kbd>+</kbd> <kbd>-</kbd></dt><dd>more / fewer pages</dd>
+      <dt><kbd>i</kbd> <kbd>p</kbd></dt><dd>side panel / pin page strip</dd>
+      <dt><kbd>n</kbd> <kbd>o</kbd></dt><dd>write a note / open the original</dd>
+      <dt><kbd>0</kbd>–<kbd>7</kbd></dt><dd>lanes</dd>
+      <dt><kbd>/</kbd> <kbd>w</kbd> <kbd>b</kbd></dt><dd>search / wall / saved</dd>
+    </dl>
+  </div>
+</div>
 <script type="module" src="/app.js"></script>
 </body>
 </html>
