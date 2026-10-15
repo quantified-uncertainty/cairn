@@ -247,8 +247,10 @@ function ready(h, fg) {
   const now = Date.now();
   if (now < h.pause || now < h.next) return false;
   // Foreground never queues behind background: it may run up to 2 over the
-  // limit while background requests hold slots (not on rate-limited hosts).
-  if (fg) return h.fg < h.conc && h.active < h.conc + (h.gap ? 0 : 2);
+  // limit while background requests hold slots (not on rate-limited hosts;
+  // on hosts with a reserve, up to the reserve: a jump to a cold spread, its
+  // previews and the pages planned around it all start at once).
+  if (fg) return h.fg < h.conc && h.active < h.conc + (h.gap ? 0 : h.reserve || 2);
   return h.active < bgCap(h) && !h.waiting.some((w) => w.job.fg);
 }
 function take(h, job) {
@@ -338,10 +340,12 @@ function alias(u) {
     return true;
   } catch { return false; } // evicted meanwhile: fetch it
 }
-export function ensure(u, { fg = true, exact = false } = {}) {
+export function ensure(u, { fg = true, exact = false, ifFree = false } = {}) {
   if (cached(u) || alias(u)) return Promise.resolve();
   const cur = inflight.get(u);
   if (cur) { if (fg && !cur.fg) promote(cur); return cur.p; }
+  // ifFree: only if the host can start it right now (a preview must not hold up the page itself).
+  if (ifFree) { const h = hostOf(u); if (h.waiting.length || !ready(h, fg)) return Promise.reject(new Error('busy')); return start(u, { fg, noHedge: true }, false); }
   // One image per Internet Archive page: a smaller size of a page whose w1000
   // is on its way or queued comes from that w1000 (alias()), fetched now if it
   // was only queued. `exact` asks for the size itself (a preview, routes/13-ia.mjs).
@@ -387,7 +391,7 @@ async function fetchSource(u, src, job) {
   const opts = (signal) => ({ headers: { 'User-Agent': UA }, redirect: 'follow', signal });
   const limit = AbortSignal.timeout(TIMEOUT), a1 = new AbortController();
   const p1 = fetch(src || u, opts(AbortSignal.any([a1.signal, limit])));
-  if (!ia.pageOf(u)) return { res: await p1, src };
+  if (!ia.pageOf(u) || job.noHedge) return { res: await p1, src };
   const late = await new Promise((resolve) => {
     let t = null; const done = (v) => { clearTimeout(t); resolve(v); };
     p1.then(() => done(false), () => done(false));

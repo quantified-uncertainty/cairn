@@ -50,7 +50,7 @@ export const RE = {
   contribHead: /contributions|key (?:findings|takeaways)|summary of results/i,
   claimHead: /\b(?:claims?|takeaways?|summary|key points|in short|main points|conclusions?)\b/i,
   // extraction-yields.md section 2 ("Definitions"), without "we denote".
-  definition: /\b(?:we define|we call|is defined as|are defined as|we refer to [^.]{1,60}? as|we term|we say that|we introduce the (?:notion|concept|term)|we use the term|refers to|is called|are called|which we call|we coin)\b/i,
+  definition: /\b(?:(?<!how )we define|we call(?! (?:on|upon|for)\b)(?! \w+ (?:to|not to)\b)|is defined as|are defined as|we refer to [^.]{1,60}? as|we term|we say that|we introduce the (?:notion|concept|term)|we use the term|refers to|is called|are called|which we call|we coin)\b/i,
   eqCue: /\b(?:objective|loss|we define|defined as|bound|minimi[sz]e|maximi[sz]e|update rule|reward|expected)\b/i,
   limitSec: /limitation|threats to validity|caveat|weakness/i,
   // "we do not consider" was dropped from the spec's list: in practice it mostly states setup ("we do not consider X necessary").
@@ -64,7 +64,8 @@ export const RE = {
   status: /^\W{0,3}(?:epistemic (?:status|state|effort)|confidence)\b/i,
   notOpener: /^\s*[[(]|^\W{0,3}(?:Originally posted|Cross-?posted|This is a linkpost|Epistemic|Note:|Edit:|Update:|Disclaimer|Content warning|CW:|Thanks to|This post (?:is|was) (?:also )?(?:available|cross)|Link ?post)/i,
   pullNot: /^(?:figure|fig\.|table|chart)\b/i,
-  badImg: /emoji|icon|avatar|logo|gravatar|latex|codecogs|badge|favicon/i,
+  // Spec list, plus decorations (dividers, flourishes, spacers, tracking pixels).
+  badImg: /emoji|icon|avatar|logo|gravatar|latex|codecogs|badge|favicon|flourish|divider|separator|spacer|ornament|sprite|pixel\.|1x1|blank\.|placeholder/i,
   resultWords: /\b(?:accuracy|performance|loss|rates?|scaling|vs\.?|versus|compared|improv\w*|outperform\w*|increas\w*|decreas\w*|over training|as a function of)\b|%|×/i,
   resultCap: /\b(?:results?|accuracy|accuracies|performance|scores?|rates?|comparison|compar\w+|vs\.?|versus|win|success|errors?|evaluations?|ablations?|benchmarks?|metrics?|effect)\b|%/i,
   setupCap: /hyper-?parameters?|configurations?|settings|training details|implementation details|prompts?|templates?|examples?|notation|glossary|statistics of|list of|data ?sets? (?:statistics|details|used)|instructions|questionnaire|demographics/i,
@@ -768,7 +769,10 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     P.add({ pid: `claims:p${first.k}`, type: 'claims', text: its.join(' · '), html: listHtml(items), label: afterHead && HEAD.test(prev.tag) ? prev.t : undefined, sec: secOf(first), ctx: { before: prev && prev.tag === 'p' ? sentences(prev.t).at(-1) : '' }, loc: { anchor: `p${first.k}`, quote: its[0], href: hrefOf(first, its[0]) }, at: at(list), score: 0.6 });
   }
 
-  // Definitions (c): dt/dd pairs and "<strong>Term</strong>: gloss".
+  // Definitions (c): dt/dd pairs and "<strong>Term</strong>: gloss". A bold label that recurs
+  // in the document is a dialogue speaker or a commenter's name, not a term.
+  const leads = new Map();
+  for (const b of blocks) if ((b.tag === 'p' || b.tag === 'li') && !b.foot) { const l = leadBold(b.seg).replace(/[:.\s]+$/, '').toLowerCase(); if (l) leads.set(l, (leads.get(l) || 0) + 1); }
   for (const b of blocks) {
     if (b.foot) continue;
     if (b.tag === 'dt') {
@@ -783,6 +787,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const term = lead.replace(/[:.\s]+$/, '');
     const gloss = /:\s*$/.test(lead) ? rest.trim() : /^\s*[:—–]\s*/.test(rest) ? rest.replace(/^\s*[:—–]\s*/, '') : null;
     if (!gloss || gloss.length < 20 || gloss.length > 300 || term.length < 2 || NOT_TERM.test(term) || /^(?:this|that|it|i|we|you|he|she|they|my|our)\b/i.test(gloss)) continue;
+    if ((leads.get(term.toLowerCase()) || 0) > 1 || /\?$/.test(gloss) || /^\W*(?:\d|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b/i.test(gloss)) continue;
     P.add({ pid: `definition:p${b.k}`, type: 'definition', label: term, text: gloss, sec: secOf(b), loc: { anchor: `p${b.k}`, quote: b.t, href: hrefOf(b, b.t) }, at: at(b.el), score: 0.6 });
   }
 
@@ -811,7 +816,10 @@ function fromBlocks(root, { kind, base, page, docLen }) {
   tables.forEach((tbl, k) => {
     if (up(tbl, (x) => x.tag === 'table') || up(tbl, FOOT)) return;
     const st = tableStats(tbl);
-    if (st.rows < 2 || st.rows > 25 || st.cols < 2 || st.cols > 10 || st.digits < 0.15 || st.chars < 20) return;
+    // Posts' number-free tables are layout or examples; a wiki's are often its comparison
+    // tables, kept but ranked after tables of data.
+    const wordy = st.digits < 0.15;
+    if (st.rows < 2 || st.rows > 25 || st.cols < 2 || st.cols > 10 || st.chars < 20 || (wordy && kind !== 'web')) return;
     const html = clean(tbl);
     if (html.length > 40000) return;
     const capEl = kidsOf(tbl).find((x) => x.tag === 'caption');
@@ -819,7 +827,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const caption = capEl ? text(capEl) : prev && prev.t.length <= 300 ? prev.t : prev ? sentences(prev.t).at(-1) : '';
     if (RE.notData.test(caption)) return;
     const head = before(tbl.s, () => true)?.head;
-    P.add({ pid: `table:tbl${k}`, type: 'table', text: caption ? cut(caption, 300) : `Table ${k + 1}`, html, label: `Table ${k + 1}`, caption: caption || null, rows: st.rows, cols: st.cols, sec: head?.t, loc: { anchor: `tbl${k}`, quote: caption || undefined, href: kind === 'web' && head?.id ? `${page}#${head.id}` : page }, at: at(tbl), score: tableScore(html, st.numeric, true) });
+    P.add({ pid: `table:tbl${k}`, type: 'table', text: caption ? cut(caption, 300) : `Table ${k + 1}`, html, label: `Table ${k + 1}`, caption: caption || null, rows: st.rows, cols: st.cols, sec: head?.t, loc: { anchor: `tbl${k}`, quote: caption || undefined, href: kind === 'web' && head?.id ? `${page}#${head.id}` : page }, at: at(tbl), score: tableScore(html, st.numeric, true) - (wordy ? 0.2 : 0) });
   });
 
   // Images (body); pids number every <img>, kept or not.

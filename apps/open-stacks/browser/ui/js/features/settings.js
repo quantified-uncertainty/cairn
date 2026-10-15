@@ -37,8 +37,8 @@ const DEF = {
 // match state.js (and STORE summary.js, RA_DEF readaloud.js, TUNE_DEF gesture.js):
 // Reset puts these values back.
 const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: 'continue', wheelDevice: 'auto' };
-// Read straight from the store by summary.js.
-const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5' };
+// Read straight from the store by summary.js (upnext: by features/upnext.js).
+const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5', upnext: true };
 const RA_DEF = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore' };
 const TUNE_DEF = { rate: 14, stroke: 40 };
 
@@ -400,7 +400,7 @@ function secPages() {
 function secNav() {
   return {
     id: 'nav', title: 'Navigation and input',
-    keys: ['middle', 'repeat'], core: ['wheelMouse', 'wheelPad', 'wheelDevice', 'pin'], tune: true,
+    keys: ['middle', 'repeat'], core: ['wheelMouse', 'wheelPad', 'wheelDevice', 'pin'], tune: true, store: ['upnext'],
     rows: [
       row('Mouse wheel', ['Continue: down Advances (next spread, then next item), up goes Back. ', kb('W'), ' cycles.'],
         seg([['continue', 'Continue'], ['items', 'Items'], ['pages', 'Pages']], () => state.wheelMouse, (v) => setCore('wheelMouse', v))),
@@ -417,6 +417,8 @@ function secNav() {
       row('Holding a key', 'Off: one press, one step. Otherwise a held key repeats.',
         seg([['off', 'One step'], ['pages', 'Repeat page turns'], ['items', 'Repeat turns and items']], () => S.repeat, (v) => setS('repeat', v))),
       row('Page strip', ['Keep the thumbnails open under the pages. ', kb('p')], ...tog(() => state.pin, (v) => setCore('pin', v), ['Pinned', 'Hidden'])),
+      row('Up next', ['The next items of the stack under the pages, when there is room; click one to go there. ', kb('U')],
+        ...tog(() => store.get('upnext', true) !== false, (v) => { store.set('upnext', v); emit('settings:changed', { key: 'upnext', value: v }); }, ['Shown', 'Hidden'])),
     ],
   };
 }

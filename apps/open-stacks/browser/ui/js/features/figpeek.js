@@ -167,6 +167,12 @@ function imageBoxes(ol, OPS, vp) {
   return out;
 }
 
+/** The operator list pdf.js already holds for page (from rendering it), or null. */
+function renderedOps(page) {
+  try { for (const st of page._intentStates?.values?.() || []) { const ol = st?.operatorList; if (ol?.lastChunk && ol.fnArray?.length) return ol; } } catch { /* pdf.js internals changed */ }
+  return null;
+}
+
 // ---------- ink ----------
 /** The panels on screen that show page k of `it`. */
 function panelsOf(it, k) {
@@ -229,6 +235,17 @@ async function inkGrid(it, k, W, H, scan) {
   }
   let inked = 0; for (let i = 0; i < GW * GH; i++) inked += ink[i];
   return { gw: GW, gh: GH, cs, ink, cover: inked / (GW * GH), ms: Math.round(performance.now() - t0) };
+}
+
+/** The share of the page's grid cells with ink outside the text: 0 for a page of text. */
+function graphicsShare(runs, grid) {
+  const { gw, gh, cs, ink } = grid, T = new Uint8Array(gw * gh);
+  for (const s of runs) {
+    const m = 0.15 * s.fs, a = Math.max(0, Math.floor((s.x0 - m) / cs)), z = Math.min(gw - 1, Math.floor((s.x1 + m) / cs));
+    for (let j = Math.max(0, Math.floor((s.y0 - m) / cs)), j1 = Math.min(gh - 1, Math.floor((s.y1 + m) / cs)); j <= j1; j++) T.fill(1, j * gw + a, j * gw + z + 1);
+  }
+  let n = 0; for (let i = 0; i < gw * gh; i++) if (ink[i] && !T[i]) n++;
+  return n / (gw * gh);
 }
 
 // ---------- finding regions ----------
@@ -800,6 +817,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
 // ---------- regions per page, cached ----------
 const found = new Map(); // `${id}|${k}` -> Promise<{W, H, regions}>
 const ready = new Map(); // the same, once resolved
+debug.reset = () => { found.clear(); ready.clear(); }; // (tests: find again)
 const keyOf = (it, k) => it.id + '|' + k;
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
 /** The figure regions of page k (0-based): { W, H, regions: [{x0, y0, x1, y1 (page fractions), kind, cap}] }. */
@@ -813,22 +831,34 @@ export function regionsOf(it, k) {
       const vp = page.getViewport({ scale: 1 });
       const tc = tl?.pageModel ? (await tl.pageModel(it, k).catch(() => null))?.tc : null;
       const ta = performance.now();
-      const [text, ol] = await Promise.all([tc || page.getTextContent(), debug.noOps ? null : withTimeout(page.getOperatorList(), 8000).catch(() => null)]);
-      const tb = performance.now();
+      const text = tc || await page.getTextContent();
+      let runs = pdfRuns(text, vp);
+      // Image placements, from the operator list the reader's render already has
+      // (pdf.js keeps it); a page drawn some other way asks for one only when it
+      // has ink beside its text, as moving a page's operator list from the worker
+      // is the costliest part of looking at it.
+      let ol = renderedOps(page), imgs = ol ? imageBoxes(ol, lib.OPS, vp) : null;
+      const isScan = (bs) => bs.some((b) => (b.x1 - b.x0) * (b.y1 - b.y0) > 0.7 * vp.width * vp.height);
       // A page that is one picture (a scanned book or journal, its OCR as the
       // text) is looked at as a scan: its paper is not white, and its picture is the page.
-      const imgs = ol ? imageBoxes(ol, lib.OPS, vp) : [];
-      const tcx = performance.now();
-      // (Or, when its operator list is slow to come, a page whose paper is not white.)
-      let scanned = imgs.some((b) => (b.x1 - b.x0) * (b.y1 - b.y0) > 0.7 * vp.width * vp.height);
+      let scanned = !!imgs && isScan(imgs);
       let grid = await inkGrid(it, k, vp.width, vp.height, scanned);
+      if (!imgs && (ol = renderedOps(page))) { imgs = imageBoxes(ol, lib.OPS, vp); if (isScan(imgs)) { scanned = true; grid = await inkGrid(it, k, vp.width, vp.height, true); } } // (drawn just now, off screen)
       if (!scanned && grid.cover > 0.4) { scanned = true; grid = await inkGrid(it, k, vp.width, vp.height, true); }
+      const gshare = imgs || scanned ? null : graphicsShare(runs, grid);
+      const tb = performance.now();
+      if (!imgs && !scanned && !debug.noOps && gshare > 0.004) {
+        ol = await withTimeout(page.getOperatorList(), 8000).catch(() => null);
+        imgs = ol ? imageBoxes(ol, lib.OPS, vp) : [];
+        if (isScan(imgs)) { scanned = true; grid = await inkGrid(it, k, vp.width, vp.height, true); }
+      }
+      imgs ||= [];
+      const tcx = performance.now();
       const c1 = performance.now();
-      let runs = pdfRuns(text, vp);
       if (scanned && runs.length < 5) runs = inkRuns(grid); // a scan with no text layer
       res = { W: vp.width, H: vp.height, scanned, ...findRegions({ W: vp.width, H: vp.height, runs, imgs: scanned ? [] : imgs, grid, scan: scanned }) };
       res.cpu = [grid.ms, Math.round(performance.now() - c1)]; // ink grid, analysis (main thread)
-      res.t = { wait: Math.round(tb - ta), ops: ol?.fnArray.length || 0, imgs: Math.round(tcx - tb) };
+      res.t = { before: Math.round(tb - ta), ops: ol?.fnArray.length || 0, own: ol ? ol === renderedOps(page) : null, wait: Math.round(tcx - tb), gshare: gshare == null ? null : +gshare.toFixed(4) };
     } else {
       const tl = await textlayer();
       const m = tl?.pageModel ? await tl.pageModel(it, k).catch(() => null) : null;

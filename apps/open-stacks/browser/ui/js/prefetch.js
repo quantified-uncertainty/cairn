@@ -61,12 +61,25 @@ export function startOf(i) {
   return 0;
 }
 
+/** Pages of a scan on the server's disk at the size the feed reads: item id -> '0101…' (feed.js pollLoaded keeps it). */
+export const onDisk = new Map();
+const isOnDisk = (it, k) => onDisk.get(it.id)?.[k] === '1';
+
 export function planAround(i, s) {
   const it = items[i];
   const per = Math.max(1, state.shown || state.per);
   const { dir, v } = velocity();
   const tasks = [];
-  const render = (ii, k, pri) => tasks.push({ key: `r|${items[ii].id}|${k}|${state.crop}|${state.cols}`, pri, fn: () => renderPage(items[ii], k) });
+  // A scan page not yet on the server's disk is only prepared here when it is
+  // in the next two spreads: preparing it means a request that waits on the
+  // Internet Archive (~1 s) and holds one of the browser's six connections to
+  // the server, which a jump elsewhere then waits behind. The server fetches
+  // the rest ('near' and 'mid' below), and the next plan prepares them once
+  // they are on disk.
+  const render = (ii, k, pri) => {
+    if (ii === i && it.kind === 'scan' && pri < 80 && !isOnDisk(it, k)) return;
+    tasks.push({ key: `r|${items[ii].id}|${k}|${state.crop}|${state.cols}`, pri, fn: () => renderPage(items[ii], k) });
+  };
   const n = it.n || null;
   const pf = profileOf(it);
   if (!isFlow(it) && pf) {
@@ -140,6 +153,7 @@ export function planAround(i, s) {
     const ahead = per * (6 + 4 * v);
     run(near, SCAN_W, ahead, 2 * per);
     for (const b of (it.best || []).slice(0, 4)) for (let j = 0; j < per; j++) if (b + j < it.n) near.push(scanUrl(it, b + j, SCAN_W));
+    if (randomTarget.has(i)) for (let j = 0; j < per; j++) if (randomTarget.get(i) + j < it.n) near.push(scanUrl(it, randomTarget.get(i) + j, SCAN_W));
     const have = new Set(near);
     const far = []; run(far, SCAN_W, Math.max(60, 2 * ahead), 10);
     for (const u of far) if (!have.has(u)) mid.push(u);

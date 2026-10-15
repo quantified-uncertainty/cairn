@@ -22,17 +22,11 @@
 .lib-q::-webkit-search-cancel-button { display: none; } /* Esc clears it */
 .lib-qn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 10px var(--mono); color: var(--ink-3); pointer-events: none; }
 /* The stack you are walking ("LLM papers › Scaling  7 / 70  ✕") and the sort switch. */
-.lib-stack { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: 11px; }
-.lib-stack .ls-t { border: 0; padding: 0; background: none; color: var(--ink-2); font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; cursor: pointer; }
-.lib-stack.narrow .ls-t { color: var(--accent); }
-.lib-stack .ls-c { font: 10px var(--mono); color: var(--ink-3); flex: none; }
-.lib-stack .ls-n { margin-left: auto; font: 10px var(--mono); color: var(--ink-3); flex: none; }
-.lib-stack .ls-x { border: 0; padding: 0 2px; background: none; color: var(--ink-3); flex: none; font-size: 11px; cursor: pointer; }
-.lib-stack .ls-x:hover, .lib-stack .ls-t:hover { color: var(--ink); }
 .lib-sort { display: flex; gap: 2px; flex-wrap: wrap; }
 .lib-sort button { border: 0; border-radius: 3px; padding: 2px 7px; background: none; font: 10.5px var(--sans); color: var(--ink-3); cursor: pointer; }
 .lib-sort button:hover { color: var(--ink); }
 .lib-sort button.on { background: var(--bg-3); color: var(--ink); }
+.lib-sort .ls-c { margin-left: auto; align-self: center; font: 10px var(--mono); color: var(--ink-3); }
 
 /* The tree: a virtual list, only the rows in view exist. */
 .lib-list { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; position: relative; outline: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-bottom: 12px; }
@@ -47,8 +41,10 @@
 .lr-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .lr-l .lr-t { font: 600 12px var(--sans); color: var(--ink); }
 .lr-f .lr-t { font: 500 12px var(--sans); }
-.lr-n { font: 10px var(--mono); color: var(--ink-3); flex: none; }
-.lr-n b { font-weight: normal; color: var(--ok); }
+.lr-n { display: inline-flex; align-items: center; gap: 6px; font: 10px var(--mono); color: var(--ink-3); flex: none; font-variant-numeric: tabular-nums; }
+.lr-k { min-width: 3ch; text-align: right; }
+.lr-r { width: 22px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.lr-r i { display: block; height: 100%; background: var(--ink-3); }
 .lr-go { visibility: hidden; border: 0; padding: 0 2px; font-size: 8px; line-height: 1; color: var(--accent); flex: none; }
 .lr:hover .lr-go, .lr.sel .lr-go { visibility: visible; }
 .lr-go:hover { color: var(--ink); }

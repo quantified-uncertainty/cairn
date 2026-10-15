@@ -198,7 +198,8 @@ function openItem(i, r) {
 }
 /** After acting from the list, keys go back to the page; the filter stays for arrowing on, but typing starts a new one. */
 let stale = false;
-function done() { stale = q(); if (list?.contains(document.activeElement) || document.activeElement === input) document.activeElement.blur(); }
+let keepKeys = false; // a preview from the arrow keys keeps them in the list
+function done() { stale = q(); if (keepKeys) return; if (list?.contains(document.activeElement) || document.activeElement === input) document.activeElement.blur(); }
 
 // ---------- the pane ----------
 const main = $('#main');
@@ -209,16 +210,16 @@ const tabs = h('div', { className: 'lib-tabs', role: 'tablist', ariaLabel: 'Side
 const input = h('input', { type: 'search', className: 'lib-q', placeholder: 'Filter titles…', autocomplete: 'off', spellcheck: false, ariaLabel: 'Filter the library by title' });
 const qn = h('span', { className: 'lib-qn' });
 const SORT_SAY = { topic: 'the lanes’ folders, in order, as the tree shows', ranked: 'the ranking: quality, relevance and what you liked', newest: 'by date, the latest first', oldest: 'by date, the earliest first' };
-const stackBar = h('div', { className: 'lib-stack' });
 const sortBar = h('div', { className: 'lib-sort', role: 'radiogroup', ariaLabel: 'Sort' },
   ...Object.entries(SORTS).map(([k, label]) => {
     const b = h('button', { type: 'button', role: 'radio', textContent: label, title: `${label}: ${SORT_SAY[k]} (S cycles)`, onclick: () => { b.blur(); setSort(k); paintTop(); } });
     b.dataset.sort = k; return b;
-  }));
+  }),
+  h('span', { className: 'ls-c', hidden: true, textContent: 'own order', title: 'Search results or “more like this” made this order; the list shows it as it is. Pick a sort to put it back in order.' }));
 const pad = h('div', { className: 'lib-pad' });
 const slice = h('div', { className: 'lib-slice' });
 const list = h('div', { className: 'lib-list', tabIndex: 0, role: 'tree', ariaLabel: 'Library' }, pad, slice);
-const pane = h('aside', { id: 'lib', ariaLabel: 'Library' }, h('div', { className: 'lib-top' }, stackBar, sortBar, h('div', { className: 'lib-qbox' }, input, qn)), list);
+const pane = h('aside', { id: 'lib', ariaLabel: 'Library' }, h('div', { className: 'lib-top' }, sortBar, h('div', { className: 'lib-qbox' }, input, qn)), list);
 $('#panel').after(pane);
 let on_ = store.get('libOn', false);
 const showing = () => on_ && state.view === 'feed' && state.panel;
@@ -312,7 +313,7 @@ function rowEl(row, r, { dots, dates }) {
     el.append(h('span', { className: 'lr-t', textContent: n.label }));
     const read = readCount(n);
     el.append(h('span', { className: 'lr-n', title: match ? `${n.m} of ${n.n} ${q() ? 'match' : 'in this stack'}` : read ? `${read} of ${n.n} read` : `${n.n} items` },
-      match ? `${n.m}/${n.n}` : read ? [h('b', { textContent: `${read}✓` }), ` ${n.n}`] : String(n.n)));
+      match ? `${n.m}/${n.n}` : [read ? h('span', { className: 'lr-r' }, h('i', { style: `width:${Math.max(10, Math.round((read / n.n) * 100))}%` })) : '', h('span', { className: 'lr-k', textContent: String(n.n) })]));
     el.append(h('button', { type: 'button', className: 'lr-go', tabIndex: -1, textContent: '▶', title: n.parent ? `Stay in “${n.label}”: j/k walk only its items (Enter)` : `The ${n.label} lane (Enter)` }));
     el.title = crumbOf(n).join(' › ');
   } else {
@@ -333,19 +334,12 @@ function rowEl(row, r, { dots, dates }) {
 /** The stack line and the sort switch. */
 let topKey = '';
 function paintTop() {
-  const st = state.stack || {}, narrow = !!state.scope;
-  const key = [st.kind, st.id, st.label, state.lane, state.sort, state.pos, state.order.length, custom].join('|');
+  // Where you are (lane, folder or tag, n / total, ✕) is in the item header (stack.js); here only the sort.
+  const key = [state.sort, custom].join('|');
   if (key === topKey) return;
   topKey = key;
-  const lane = LANES[state.lane] || 'All';
-  const crumb = narrow ? (st.kind === 'tag' ? ['# ' + st.label] : st.crumb || [st.label]) : [lane];
-  stackBar.classList.toggle('narrow', narrow);
-  stackBar.replaceChildren(...[
-    h('button', { type: 'button', className: 'ls-t', textContent: crumb.join(' › '), title: narrow ? `Staying in ${(st.crumb || [st.label]).join(' › ')}: j/k walk only these · click to show where you are` : `The ${lane} lane · click to show where you are`, onclick: () => { const n = stackNode(); if (n) revealNode(n); else follow(current(), true); } }),
-    custom ? h('span', { className: 'ls-c', textContent: 'own order', title: 'Search results or “more like this” made this order; the list shows it as it is. Pick a sort to put it back in order.' }) : null,
-    h('span', { className: 'ls-n', textContent: `${state.pos + 1} / ${state.order.length}`, title: `Item ${state.pos + 1} of ${state.order.length} in this stack` }),
-    narrow ? h('button', { type: 'button', className: 'ls-x', textContent: '✕', title: `Leave: the whole ${lane} lane again, same item (u) · Back undoes`, onclick: () => leave() }) : null].filter(Boolean));
-  for (const b of sortBar.children) { const on = b.dataset.sort === state.sort && !custom; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }
+  for (const b of sortBar.querySelectorAll('button')) { const on = b.dataset.sort === state.sort && !custom; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }
+  sortBar.querySelector('.ls-c').hidden = !custom;
 }
 
 // ---------- following the current item ----------
@@ -425,10 +419,23 @@ function activate(r) {
   if (row.node) browse(row.node); else openItem(row.i, row.r);
   paint();
 }
+// Moving the cursor onto an item opens it in the main view, after a short pause so that
+// holding an arrow does not load every item it passes; the keys stay in the list.
+let previewT = 0;
+function preview(row) {
+  clearTimeout(previewT);
+  if (!row || row.node) return;
+  previewT = setTimeout(() => {
+    if (sel !== rowId(row) || current() === row.i) return;
+    keepKeys = true;
+    try { openItem(row.i, row.r ?? null); } finally { keepKeys = false; }
+  }, 140);
+}
 function move(r) {
   if (!rows.length) return;
   r = Math.max(0, Math.min(rows.length - 1, r));
   sel = rowId(rows[r]); scrollTo(r, false); paint();
+  preview(rows[r]);
 }
 list.addEventListener('click', (e) => {
   const el = e.target.closest('.lr'); if (!el) return;

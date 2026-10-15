@@ -4,7 +4,7 @@ import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
 import { renderPage, cachedRender, renderedNow, previewScan, SCAN_W } from './render.js';
-import { planAround, startOf, serverPrefetch } from './prefetch.js';
+import { planAround, startOf, serverPrefetch, onDisk } from './prefetch.js';
 import { showFlow, dropLive, live, vpToCol, flowRange } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
 import { itemIcon } from './icons.js';
@@ -446,9 +446,10 @@ async function pollLoaded() {
   const t = tr; if (!t) return;
   const it = t.it;
   if (it.kind !== 'scan') { if (loaded?.id !== it.id) { loaded = { id: it.id, bits: '1'.repeat(Math.min(t.n, 1500)), pct: 100 }; paintLoaded(); } return; }
-  const urls = Array.from({ length: Math.min(t.n, 1500) }, (_, k) => scanUrl(it, k, 1000));
+  const urls = Array.from({ length: Math.min(t.n, 1500) }, (_, k) => scanUrl(it, k, SCAN_W));
   try {
     const bits = await (await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls }) })).text();
+    onDisk.set(it.id, bits); if (onDisk.size > 20) onDisk.delete(onDisk.keys().next().value);
     if (tr?.it !== it) return;
     const have = [...bits].filter((b) => b === '1').length;
     const prev = loaded?.id === it.id ? loaded : null, now = performance.now();

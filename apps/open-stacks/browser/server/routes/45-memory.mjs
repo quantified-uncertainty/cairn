@@ -16,25 +16,41 @@
 //   GET  /memory/export.csv[?rows=items|visits|pages]
 //
 // Ops (each has id and t, epoch ms):
-//   visit {s, e, a, ti?, lane?, kind?}  a visit: start, end so far, active ms (window shown, not
-//                                       idle); upserted by s, so it is sent again as it grows
+//   visit {s, e, a, ti?, lane?, kind?, x?, via?}  a visit: start, end so far, active ms (window
+//                                       shown, not idle); upserted by s, so it is sent again as it
+//                                       grows. x: how it ended (next prev less more jump lane view);
+//                                       via: how the item was reached (feed | jump), on the first op
 //   at    {k, c, n, f, col?, g?, lay?}  the spread on screen settled: first page k (0-based;
 //                                       for flow documents f=1, a stable page), c pages of n
 //   saw   {k, c, s, ms, seen}           time on that spread (started at s); seen: long enough
 //                                       to count its pages as seen. Upserted by s.
-//   judge {j}                           save | unsave | less | more
+//   judge {j}                           save | unsave | less | more | unless | unmore (Back undid one)
 //   forget                              drop the item's record
 //
-// A record: {n, f, first, last, a (active ms), nv (visits), v: [[s, e, a]...] (latest 80),
+// A record: {n, f, first, last, a (active ms), nv (visits), v: [[s, e, a, x?, via?]...] (latest 80),
 //   pos: {k, c, t, col?, g?, lay?}, far (furthest page), seen: [[a, b]...] (page ranges),
 //   sc (pages seen), seq: [[k, c, sSec, ms]...] (spreads in order, latest 600), j: {judgment: t},
-//   jl: [[j, t]...], ti, lane, kind}
+//   jl: [[j, t]...], ti, lane, kind}. Judgments are read by replaying jl (judged()).
+//
+// app.memory = {index, take(ops), subscribe(fn)}: the learning (47-learn) and jobs (96-jobs)
+// routes read the index and hear each accepted op once it is applied.
 import { readFileSync, writeFileSync, appendFileSync, renameSync, existsSync, readdirSync, createReadStream, statSync } from 'fs';
 import { writeFile, rename } from 'fs/promises';
 import { createInterface } from 'readline';
 import { join } from 'path';
 
 const MAX_V = 80, MAX_SEQ = 600, MAX_JL = 20, COMPACT_AT = 4000;
+const EXITS = new Set(['next', 'prev', 'less', 'more', 'jump', 'lane', 'view']);
+/** Judgments replayed in order: {S, M, L}, each the time it was made or null (unsave, unmore, unless retract). */
+export function judged(jl) {
+  let S = null, M = null, L = null;
+  for (const [j, t] of jl || []) {
+    if (j === 'save') S = t; else if (j === 'unsave') S = null;
+    else if (j === 'more') { M = t; L = null; } else if (j === 'less') { L = t; M = null; }
+    else if (j === 'unmore') M = null; else if (j === 'unless') L = null;
+  }
+  return { S, M, L };
+}
 const day = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const num = (x, d = 0) => (Number.isFinite(Number(x)) ? Number(x) : d);
 const int = (x, d = 0) => Math.round(num(x, d));
@@ -61,9 +77,12 @@ export function apply(index, op) {
   switch (op.o) {
     case 'visit': {
       const s = num(op.s, t), e = Math.max(s, num(op.e, t)), a = Math.max(0, Math.min(int(op.a), e - s + 2000));
-      const v = r.v.find((x) => x[0] === s);
+      let v = r.v.find((x) => x[0] === s);
       if (v) { r.a += a - v[2]; v[1] = e; v[2] = a; }
-      else if (r.v.length < MAX_V || s > r.v[0][0]) { r.v.push([s, e, a]); r.v.sort((x, y) => x[0] - y[0]); if (r.v.length > MAX_V) r.v.shift(); r.nv++; r.a += a; }
+      else if (r.v.length < MAX_V || s > r.v[0][0]) { v = [s, e, a]; r.v.push(v); r.v.sort((x, y) => x[0] - y[0]); if (r.v.length > MAX_V) r.v.shift(); r.nv++; r.a += a; }
+      // How the visit ended (v[3]) and how the item was reached (v[4]); old rows stay [s, e, a].
+      if (v && EXITS.has(op.x)) v[3] = op.x;
+      if (v && (op.via === 'feed' || op.via === 'jump') && v[4] == null) { if (v.length < 4) v[3] = null; v[4] = op.via; }
       r.first = Math.min(r.first, s); r.last = Math.max(r.last, e);
       for (const k of ['ti', 'lane', 'kind']) if (typeof op[k] === 'string' && op[k]) r[k] = op[k].slice(0, 300);
       break;
@@ -104,10 +123,10 @@ export function brief(r) {
   if (r.f) b.f = 1;
   if (r.pos) { b.k = r.pos.k; b.c = r.pos.c; if (r.pos.col != null) b.col = r.pos.col; if (r.pos.g) b.g = r.pos.g; b.at = r.pos.t; }
   if (r.seen.length) b.seen = r.seen;
-  const saved = r.j.save && !(r.j.unsave > r.j.save);
-  if (saved) b.saved = 1;
-  if (r.j.less) b.less = r.j.less;
-  if (r.j.more) b.more = r.j.more;
+  const J = judged(r.jl);
+  if (J.S) b.saved = 1;
+  if (J.L) b.less = J.L;
+  if (J.M) b.more = J.M;
   if (r.ti) b.ti = r.ti;
   return b;
 }
@@ -152,27 +171,39 @@ export default function (app) {
       logLines = held.length;
     })().catch((e) => console.warn('memory: compaction failed:', e.message)).finally(() => {
       for (const op of held) apply(index, op);
+      const done = held;
       held = []; compacting = null;
+      notify(done);
     });
     return compacting;
   }
 
+  // Subscribers (47-learn, 96-jobs) hear every accepted op once it is applied.
+  const subs = [];
+  function notify(ops) {
+    if (!ops.length) return;
+    for (const fn of subs) { try { fn(ops); } catch (e) { console.warn('memory: subscriber failed:', e.message); } }
+  }
+
   function take(ops) {
-    const lines = [];
+    const lines = [], applied = [];
     for (const op of ops) {
       if (!op || typeof op.id !== 'string' || !op.id || op.id.length > 300 || typeof op.o !== 'string') continue;
       if (!['visit', 'at', 'saw', 'judge', 'forget'].includes(op.o)) continue;
       const line = JSON.stringify(op);
       if (line.length > 4000) continue;
       lines.push(line);
-      if (compacting) held.push(op); else apply(index, op);
+      if (compacting) held.push(op); else { apply(index, op); applied.push(op); }
     }
     if (lines.length) {
       try { appendFileSync(LOG, lines.join('\n') + '\n'); logLines += lines.length; } catch (e) { console.warn('memory: log write failed:', e.message); }
     }
     if (logLines > COMPACT_AT && !compacting && !compactT) compactT = setTimeout(() => { compactT = null; if (logLines > COMPACT_AT) compact(); }, 2000);
+    notify(applied);
     return lines.length;
   }
+  /** For the learning and jobs routes: the index (Map id → record), take(ops), subscribe(fn(ops)). */
+  app.memory = { index, take, subscribe(fn) { subs.push(fn); } };
 
   app.route('POST', '/memory', async (req, res) => {
     let b; try { b = await app.body(req); } catch { return app.json(res, { ok: false }, 400); }
@@ -226,7 +257,7 @@ export default function (app) {
       const c = corpusInfo(id), b = brief(r);
       rows.push([id, c.title || r.ti || '', c.author || '', c.year || '', c.lane || r.lane || '', c.kind || r.kind || '', c.url || '', r.pos ? (r.f ? 'stable page' : 'page') : '',
         r.n || '', r.sc, r.n ? Math.round((100 * r.sc) / r.n) : '', r.far >= 0 ? r.far + 1 : '', r.pos ? r.pos.k + 1 : '', (r.a / 60e3).toFixed(1), r.nv,
-        iso(r.first), iso(r.last), b.saved ? 1 : 0, r.j.less ? 1 : 0, r.j.more ? 1 : 0]);
+        iso(r.first), iso(r.last), b.saved ? 1 : 0, b.less ? 1 : 0, b.more ? 1 : 0]);
     }
     return rows;
   }

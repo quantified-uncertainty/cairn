@@ -1,0 +1,48 @@
+/* Tags (features/tags.js): the "Stay in" chips under the side panel's Item | Library tabs, and their hover card. */
+
+.tg { flex: none; min-width: 0; }
+#panel > .tg { margin: -9px 0 -5px; }
+#lib > .tg { padding: 7px 10px 0; }
+.tg.stale { opacity: .45; }
+/* Two rows, packed by tags.js (a canvas measures the labels); open (+n): every chip, wrapped. */
+.tg-chips { display: flex; flex-direction: column; gap: 3px; }
+.tg-r { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
+.tg-r.wrap { flex-wrap: wrap; row-gap: 3px; }
+.tg-h { font: 600 9.5px/19px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-right: 2px; white-space: nowrap; cursor: default; }
+
+.tg-c { display: inline-flex; align-items: center; height: 19px; min-width: 0; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; color: var(--ink-2); }
+.tg-c:hover { border-color: var(--ink-3); color: var(--ink); }
+.tg .tg-b { display: inline-flex; align-items: center; gap: 4px; height: 100%; min-width: 0; border: 0; border-radius: inherit; padding: 0 7px; background: none; color: inherit; font: 11px/1 var(--sans); white-space: nowrap; }
+.tg-b svg { flex: none; color: var(--ink-3); }
+.tg-c:hover .tg-b svg { color: var(--ink-2); }
+.tg-l { min-width: 0; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+.tg-n { flex: none; font: 10px/1 var(--mono); color: var(--ink-3); }
+.tg-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; }
+
+/* The tag you are staying in: accent, where you are in it, and ✕ to leave. */
+.tg-c.on { border-color: color-mix(in srgb, var(--accent) 70%, transparent); color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.tg-c.on .tg-b svg, .tg-c.on .tg-n { color: var(--accent); }
+.tg .tg-b:focus-visible, .tg .tg-x:focus-visible, .tg .tg-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tg .tg-x { flex: none; border: 0; padding: 0 6px 0 0; background: none; color: var(--ink-3); font: 10px/1 var(--sans); }
+.tg .tg-x:hover { color: var(--ink); }
+.tg .tg-more { height: 19px; border: 0; border-radius: 10px; padding: 0 6px; background: none; color: var(--ink-3); font: 10px/1 var(--mono); }
+.tg .tg-more:hover { color: var(--ink); background: var(--bg-3); }
+
+/* Hover: what the tag is, and its members around this item. */
+#tg-card { position: fixed; z-index: 45; width: 310px; max-width: calc(100vw - 16px); padding: 8px 10px 7px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; box-shadow: 0 8px 24px #0007; color: var(--ink-2); font: 12px/1.35 var(--sans); }
+#tg-card .tc-h { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; min-width: 0; }
+#tg-card .tc-h svg { flex: none; color: var(--ink-3); }
+#tg-card .tc-l { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tg-card .tc-n { margin-left: auto; flex: none; font: 400 10px var(--mono); color: var(--ink-3); }
+#tg-card .tc-k { font: 9.5px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); margin-top: 2px; }
+#tg-card .tc-d { margin-top: 4px; }
+#tg-card ol { list-style: none; margin: 6px 0 0; padding: 0; }
+#tg-card li { display: flex; align-items: center; gap: 6px; height: 21px; padding: 0 4px; margin: 0 -4px; border-radius: 3px; cursor: pointer; font: 12px/1 var(--serif); white-space: nowrap; color: var(--ink-2); }
+#tg-card li:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); color: var(--ink); }
+#tg-card li .ticon { flex: none; color: var(--ink-3); display: inline-flex; }
+#tg-card li .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+#tg-card li .y { flex: none; font: 10px var(--mono); color: var(--ink-3); }
+#tg-card li.before { opacity: .6; }
+#tg-card li.here { color: var(--accent); cursor: default; }
+#tg-card li.here .ticon, #tg-card li.here .y { color: var(--accent); }
+#tg-card .tc-f { margin-top: 5px; font-size: 10.5px; color: var(--ink-3); }

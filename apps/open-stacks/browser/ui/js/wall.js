@@ -867,4 +867,18 @@ export function typoFace(it) {
     h('div', { className: 'aa', textContent: [it.a, it.y].filter(Boolean).join(' · ') }),
     h('div', { className: 'xx', textContent: it.hook || it.why || '' }));
 }
+/** Item i's wall cover, for use outside the wall (features/upnext.js): the same
+ *  designs as the tiles (book cover scans, typeset papers, post cards, cloth),
+ *  from what is known now. It starts no post-text fetch; its only image is a
+ *  book's cover scan or a post's lead image already found. The .cv fills its
+ *  nearest positioned ancestor, which needs container-type: inline-size (the
+ *  type scales with its width) and --c (the lane colour). data-kind: book,
+ *  paper, post or cloth. */
+export function coverFor(i) {
+  const it = items[i]; if (!it) return null;
+  const T = { i, it, kind: kindOf(it), wide: false };
+  T.cv = COVERS[T.kind](T);
+  T.cv.dataset.kind = T.kind;
+  return T.cv;
+}
 export { showFeed };
