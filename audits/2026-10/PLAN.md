@@ -17,7 +17,11 @@ This plan comes from seven read-only audits run on 2026-10-15. Each audit read i
 
 ---
 
-## 0. Decisions needed from you before any execution
+## 0. Decisions (resolved 2026-10-15; see BRIEF.md)
+
+Resolved: D1 = (b) contract; D2 = delete with redirects; D3 = (i) plus (ii) for headline numbers; D4 = research exploration, not definitive; D5 = yes, run and publish; D6 = rebuild as CAIRN Handbook; D7 = yes.
+
+### Original options
 
 These change what everything downstream does.
 
