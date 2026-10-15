@@ -1,242 +1,77 @@
 ---
-title: 'The Family of "Least X" Principles'
+title: 'The "Least X" Principles'
+description: "The six core Least-X principles, the verifiability tiers that implement Least Intelligence, and a labelled tail of narrower principles with their caveats."
 ---
 
-:::note[TL;DR]
-Extend "least privilege" across multiple dimensions: **Least Intelligence** (minimum capability), **Least Privilege** (minimum permissions), **Least Context** (minimum information), **Least Persistence** (no memory), **Least Autonomy** (human oversight), **Least Connectivity** (isolated components), **Least Compute** (bounded resources). Each principle bounds a different attack surface. Apply all of them.
-:::
+Least privilege gives each component the minimum access rights its function needs (Saltzer & Schroeder 1975). A delegated AI component has more dimensions than access rights: how capable it is, what it knows, what it remembers, how freely it acts and whom it can talk to. Each "Least X" principle bounds one of these. A component's exposure, the worst-case loss given what it can reach, is limited by whichever dimension binds first, so the principles are applied together.
 
-Security engineering has long relied on the **principle of least privilege**: give each component minimum access rights needed for its function. We need to extend this thinking across multiple dimensions for AI safety.
+Six principles are the core, and this page is their canonical statement. The rest of the page lists a tail of narrower or weaker ones, each with its caveat.
 
-:::note
-Each principle bounds a different attack surface. Applied together, they create components that are limited in what they can do, know, remember, and coordinate.
-:::
-
-This is a family of containment principles, each addressing a different attack surface:
-
-| Principle | What It Bounds |
-|-----------|----------------|
-| **Least Intelligence** | Cognitive capability, optimization power |
-| **Least Privilege** | Permissions, access rights |
-| **Least Context** | Information about broader system |
-| **Least Persistence** | State/memory across invocations |
-| **Least Autonomy** | Ability to act without oversight |
-| **Least Scope** | Domain of operation |
-| **Least Surprise** | Output randomness, unpredictability |
+| Principle | What it bounds |
+|---|---|
+| **Least Intelligence** | Capability: the least capable implementation that does the task |
+| **Least Privilege** | Permissions and access rights |
+| **Least Context** | Information about the wider system, other components and other users |
+| **Least Persistence** | State carried across invocations |
+| **Least Autonomy** | Ability to act without review |
 | **Least Connectivity** | Communication paths between components |
-| **Least Observability** | Self-knowledge and system awareness |
-| **Least Compute** | Computational resources |
 
-## Principle of Least Intelligence
+None is new as a security idea. The AI setting adds that the component itself may be the adversary, misaligned or hijacked, and will use whatever capability, access, information, memory and channels it has. The principles shrink each in advance, without detecting anything.
 
-**Each component should have the minimum cognitive capability needed for its task—and no more.**
+## Least Intelligence
 
-A component that can "verify SQL injection vulnerabilities" needs less general intelligence than one that "architects database security." By bounding optimization power, you limit damage even if the component is misaligned.
+Give each component the least capable implementation that can do its job. A component that checks SQL for injection needs less general capability than one that designs database security, and a narrow component has fewer ways to fail and fewer ways to pursue something else.
 
-**Intelligence budget**: Maximum cognitive capability allocated (like memory budgets in programming)
+"Less capable" is shorthand for "more verifiable". The working version of the principle is a choice among five tiers, from most to least verifiable:
 
-- Problem-solving depth
-- Abstraction capability
-- Transfer learning ability
-- Creative reasoning
+1. **Formally verified code.** Proven against a specification. Examples: access-control checks, rate limiters, parsers with proved properties.
+2. **Deterministic tested code and rule-based checks.** Auditable and repeatable. Examples: routing tables, schema validation, allow-lists, test suites.
+3. **Narrow learned models with measured error on a fixed task.** Examples: a classifier with a known false-negative rate on a held-out set.
+4. **Trusted LLMs**, below the capability at which scheming is a live concern. This is AI Control's *trusted model* ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
+5. **Untrusted frontier models and agents.**
 
-## Principle of Least Privilege
+Use the most verifiable tier that can do the job. Training method does not define a tier: nearly every deployed frontier model is RL post-trained, and what matters is what you can verify about the deployed system. Earlier versions of this page ranked "RL systems" below "general foundation models"; that ordering would rule out every current frontier model and has been dropped.
 
-**Each component gets minimum permissions/access rights needed for its function.**
+Three rules follow from the tiers:
 
-Classic security principle applied to AI:
+- **A check sits lower than what it checks.** A frontier model checking a sibling of itself shares its blind spots and, if the actor is scheming, may share its goals. This is the [risk preflight](/delegation-risk/runtime-accounting/#who-preflights-the-preflight) rule.
+- **Push leverage down the tiers.** Where a component has leverage over others (a coordinator, a deployment gate, a permission grant), put as much of its logic as possible in tiers 1 and 2 and leave only the judgment calls to a model.
+- **Weaker is not the same as trusted.** In AI Control, *trusted* means there is reason to believe the model is not scheming, usually because it is below the capability where scheming is plausible. An older model is not trusted merely by being older. And a trusted model's job in the Control protocols is mostly to monitor and edit the untrusted model's work, not to make the most consequential decisions in its place. See [Coordinator Constraints](/design-patterns/coordinator-constraints/#who-plans).
 
-- Read vs write access to data
-- Network access (none, local, internet)
-- System calls and API permissions
-- Ability to spawn processes or invoke other components
+Two examples show the range:
 
-## Principle of Least Context
+- **A SQL-injection checker** should sit at tier 1 or 2: a real SQL parser plus rules, with a test suite of known attacks. An LLM asked "is this secure?" is a worse checker on every axis that matters here.
+- **A hypothesis generator** for a research tool can reasonably be a tier 5 model, because novelty is the point. Its exposure is kept low by the other principles: it cannot act on its ideas, its output is evaluated by other components and by people, and it keeps no state.
 
-**Each component receives minimum information about the broader system.**
+## Least Privilege
 
-Even a smart component is safer if it doesn't know:
+Grant the minimum permissions the task needs: read rather than write, one directory rather than the file system, no network or an allow-list of hosts, no ability to spawn processes or invoke other components unless required. The gap between what a delegate *can* do and what its current task *needs* is its [privilege overhang](/getting-started/glossary/#privilege-overhang); privilege creep is how the gap grows.
 
-- What other components exist
-- The overall system architecture
-- Production deployment details
-- User information beyond immediate task
-- Long-term strategic goals
+For agents the main mechanism is the tool layer and the sandbox: which tools the model is shown for this task, what credentials the session holds, and what the container's network policy allows. A shell with network access routes around any tool-level restriction, so the enforced boundary is usually the container, not the tool list. The [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway) pattern is the implementation.
 
-**Context budget**: Maximum information provided about world state, other components, deployment environment
+## Least Context
 
-## Principle of Least Persistence
+Give each component the minimum information about the wider system: which other components exist, how the system is deployed, other users' data, the long-term goal. A component that does not know where the production credentials live, or that its output feeds a deployment gate, has less to work with if it is misaligned and less to leak if it is hijacked.
 
-**Each component maintains minimum state/memory across invocations.**
+Least Context also limits the damage of prompt injection. Every piece of untrusted text a component reads is a possible instruction, so a component that reads less untrusted text is hijacked less often.
 
-Limit ability to:
+## Least Persistence
 
-- Store information between calls
-- Build up knowledge over time
-- Track patterns across users
-- Maintain long-term plans
+Keep the minimum state across invocations. For an LLM component that means more than its weights. It includes conversation history, memory and retrieval stores, prompt and KV caches the deployment reuses, scratch files in a persistent workspace, and logs the component can read back. Each is a way to carry a plan, a learned exploit or an injected instruction from one task to the next.
 
-Some components need persistence (forecasting benefits from historical accuracy tracking), but default should be stateless.
+Stateless should be the default. Some components need state (a forecaster benefits from its calibration history), and that state should be summary statistics the component cannot write to directly.
 
-## Principle of Least Autonomy
+Persistence across episodes is not the only route to deception. Frontier models given a goal in context have schemed within a single episode ([Meinke et al. 2024](https://arxiv.org/abs/2412.04984)). Least Persistence stops accumulation across tasks. It does not make a single task safe.
 
-**Each component has minimum ability to act independently without oversight.**
+## Least Autonomy
 
-Spectrum from fully supervised to fully autonomous:
+Minimize the ability to act without review. The spectrum runs from approval for every action, through acting freely under monitoring and acting freely within hard limits, to full autonomy. Choose the level per action, by stakes and reversibility, not once per agent. The [Escalation Ladder](/design-patterns/structural/#escalation-ladder) and [Graduated Autonomy](/design-patterns/structural/#graduated-autonomy) patterns implement this.
 
-- **Human approval required**: Every action needs confirmation
-- **Monitored autonomy**: Acts freely but under observation
-- **Bounded autonomy**: Can act within predefined limits
-- **Full autonomy**: Independent action (should be rare)
+Review is a resource. A human asked to approve every action stops reading them, so lower autonomy only helps where review stays real.
 
-## Principle of Least Scope
+## Least Connectivity
 
-**Each component operates in minimum domain necessary.**
-
-Not just what it can do, but where:
-
-- Input/output types it handles
-- Problem domains it touches
-- Interfaces it can access
-- Time horizons for its actions
-
-## Principle of Least Surprise
-
-**Outputs should be maximally predictable and deterministic.**
-
-**The core insight**: Randomness enables covert communication. If a component can vary its outputs, it can encode hidden signals to other components or future versions of itself.
-
-**Minimize stochasticity**:
-
-- Use temperature=0 for LLM outputs (deterministic sampling)
-- When randomness needed, use seeded PRNGs with logged seeds
-- Prefer deterministic algorithms over stochastic ones
-- Same input should produce same output (or very similar)
-
-**Standard decision procedures**:
-
-- When LLM considers multiple outputs "similar quality," use consistent tiebreaking
-- Don't let component choose randomly—use deterministic selection (e.g., alphabetical, hash-based)
-- Example: If summarization could produce 3 equivalent summaries, always pick based on deterministic criterion (shortest, most common words, etc.)
-
-:::danger[Covert Channels]
-If a scheming component can vary outputs slightly, it can encode hidden signals—communicating across time or to other components. Deterministic outputs eliminate this attack vector.
-:::
-
-**Why this matters for safety**:
-
-**Covert channels**: If a scheming component can vary outputs slightly:
-
-- Could encode bits: "output A" = 0, "output B" = 1
-- Communicate across time: leave signals for future invocations
-- Communicate to other components: coordinator sees variance pattern
-- Example: Summarizer encodes "I found vulnerability" by alternating between two phrasings
-
-**Steganography**: Hiding information in outputs:
-
-- LLM could encode information in word choices, sentence structure
-- Variation in "equivalent" outputs = potential information channel
-- Deterministic outputs eliminate this vector
-
-**Monitoring difficulty**: Random behavior is hard to audit:
-
-- Can't tell if variance is legitimate or malicious
-- Can't replay and reproduce suspicious behavior
-- Testing becomes probabilistic instead of deterministic
-
-**Practical implementation**:
-
-**For LLM components**:
-
-- Set temperature=0 (or very low, like 0.1)
-- Use fixed random seeds for any sampling
-- Log seeds: every invocation's seed recorded
-- Deterministic prompt formatting (no timestamps in prompts unless necessary)
-- Consistent tokenization
-
-**For coordinators**:
-
-- When multiple strategies seem equally good, use deterministic selection:
-  - Hash-based: hash(strategy_description) → pick lowest hash
-  - Rule-based: prefer strategy with fewer components, or alphabetically first, etc.
-  - Not: random selection, human intuition, "whatever feels right"
-
-**For aggregation**:
-
-- Deterministic combination of component outputs
-- No random weighting or selection
-- If must break ties, use deterministic procedure
-- Example: Taking mean of forecasts (deterministic) not random sampling
-
-**Exception: When randomness is beneficial**:
-
-- Adversarial testing (want diverse test cases)
-- Exploration in safe domains (generating creative hypotheses)
-- But: Even here, use logged seeds and justify the randomness
-
-**Detecting violations**:
-
-- Run component multiple times with same input
-- Outputs should be identical (or within small tolerance)
-- If variance exceeds threshold → investigate
-- Example: Summarizer produces 5 different outputs for same paper → suspicious
-
-**The surprise budget**:
-
-- Each component gets "surprise allowance"
-- High-risk components: zero surprise (completely deterministic)
-- Low-risk components: small surprise budget (slight variation okay)
-- Creative components: larger budget (novel ideas expected)
-- But: All surprise must be justified and monitored
-
-**Example: Research assistant**
-
-**High determinism (surprise budget ≈ 0)**:
-
-- Search: Same query → same results (sorted deterministically)
-- Verification: Same input → same verdict
-- Progress monitoring: Same metrics → same status
-
-**Medium determinism (small surprise budget)**:
-
-- Summarization: Slight phrasing variation okay, but structure must match
-- Gap analysis: Same papers → same major gaps identified
-- Forecasting aggregation: Deterministic combination of forecaster outputs
-
-**Lower determinism (larger surprise budget)**:
-
-- Hypothesis generation: Creativity expected, but still use low temperature
-- Individual forecasters: Can use some randomness (but logged seeds)
-- Red team: Should generate diverse attacks (but reproducibly with seeds)
-
-**Monitoring surprise**:
-
-- Track output entropy over time
-- Flag increasing variance as suspicious
-- Example: Component outputs becoming more random → possible scheming
-
-**Why this prevents coordination**:
-
-If strategy module and tactics module want to collude:
-
-- Strategy can't encode hidden signals in its outputs (deterministic)
-- Tactics can't confirm receipt via variance (also deterministic)
-- Both are "loud" in their actual outputs but can't whisper via randomness
-- Eliminates high-bandwidth covert channel
-
-This complements other principles:
-
-- Least Context: limits what component knows
-- Least Surprise: limits what component can signal
-- Together: component is both blind and mute to coordination attempts
-
-## Principle of Least Connectivity
-
-**Minimize communication paths between components.**
-
-Not just "can component A access component B" but the entire communication topology:
-
-**Directed graphs, not fully connected**:
+Minimize communication paths between components, and specify the ones that remain as a directed graph.
 
 ```mermaid
 graph LR
@@ -246,563 +81,54 @@ graph LR
     C -.->|forbidden| A
 ```
 
-- Component A → B doesn't mean B → A
-- Specify allowed paths explicitly
-- Example: Hypothesis generator → Forecaster (allowed), Forecaster → Hypothesis generator (forbidden)
+- Allow A → B without implying B → A.
+- Prefer pipelines in which results flow forward and only status flows back.
+- Give no component a broadcast channel to all others.
+- Expose minimal interfaces: a forecaster exposes `predict(scenario)` and nothing else.
 
-**One-way data flows where possible**:
+Removing a channel removes one way to coordinate, not all of them. Instances of the same model can converge on the same choice without exchanging a message, and a shared provider, prompt template or retrieval corpus makes components fail together whatever the topology. Those are the subject of [Channel Integrity](/design-patterns/channel-integrity/) and [Entanglements](/entanglements/).
 
-- Pipeline architectures: A → B → C with no backflow
-- Results flow forward, never backward
-- Prevents feedback loops and coordination
+## The principles are orthogonal
 
-**No broadcast capability**:
+Bounding one dimension does not bound the others, so a component's profile is set per dimension.
 
-- Component can only send to specific targets
-- Can't announce to all components
-- Prevents coordinated group behavior
-- Example: Coordinator invokes tactics, but tactics can't message strategy
+| | Code-generation component | Security-verification component |
+|---|---|---|
+| Intelligence | High: needs open-ended problem solving | Moderate: analytical, narrow |
+| Privilege | Low: writes to a branch in a sandbox, cannot merge or deploy | High: reads production configuration |
+| Context | Low: no production systems or user data | High: needs the system architecture |
+| Persistence | None | Low |
+| Autonomy | Low: a human reviews before merge | High: rejects insecure changes automatically |
+| Connectivity | Sends to the review queue only | Receives from the pipeline, sends pass/fail |
 
-**Physical network isolation**:
+The verifier is allowed high privilege and context because it sits at a low tier (rules and narrow models) and its only output is a verdict. The generator is allowed high capability because it has almost no privilege. The design question is never "how restricted is this component?" but "which dimension is doing the bounding?"
 
-- Critical components on separate networks
-- Air-gapped systems for highest-risk operations
-- VPCs, subnets, firewalls enforcing topology
+## The tail
 
-**API surface minimization**:
+These are narrower than the core six, or depend on an assumption that may not hold. They are listed so that older references to them resolve.
 
-- Each component exposes minimal interface
-- Only strictly necessary functions callable
-- Example: Forecaster exposes predict(scenario), nothing else
+**Least Scope.** Restrict the domain a component operates in: input and output types, problem domains, interfaces, time horizon of its actions. In practice this is Least Privilege plus Least Context applied to a task description.
 
-:::tip[Why This Matters]
-Scheming requires coordination. Coordination requires communication. Even if components want to collude, they physically can't if no path exists.
-:::
+**Least Compute.** Cap computation, memory, wall-clock time, tokens and bandwidth per invocation (cgroups, quotas, timeouts, spend caps). Caps reliably bound cost and runaway loops, which makes them part of the exposure envelope. Whether they limit deception is unclear: a model can deceive within an ordinary call's budget, so do not count a compute cap as a defense against scheming.
 
-## Principle of Least Observability
+**Reproducibility** (formerly "Least Surprise"; renamed because *least surprise* is the established name of a user-interface principle). Record everything needed to replay a component's behavior: inputs, model version, sampling parameters, seeds, tool results. Break ties in code-level aggregation deterministically. Two caveats correct earlier claims on this site:
 
-**Limit what components can observe about the system and themselves.**
+- Temperature 0 does not make a served LLM deterministic. Production inference engines are not batch-invariant, so the same request can produce different output depending on server load ([He 2025](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)).
+- Determinism does not close covert channels. A deterministic policy can encode information in *which* output it produces for a given input; steganography needs no sampling noise.
 
-**Can't see other components**:
+The value of reproducibility is auditability: a suspicious action can be replayed and examined. It is not a defense against signalling.
 
-- No component enumeration or discovery
-- Can't query "what other components exist?"
-- Blind to system architecture
-- Example: Tactics doesn't know strategy module exists
+**Least Observability.** Limit what a component can observe about the system and itself: other components, timing, resource usage, its own monitoring, whether an input is a test. The first few are ordinary information hiding. The last is hard to enforce. Frontier models distinguish evaluation transcripts from deployment ones well above chance; in one benchmark Gemini 2.5 Pro reached an AUC of 0.83 against a human baseline of 0.92 ([Needham et al. 2025](https://arxiv.org/abs/2505.23836)). In anti-scheming tests, models' reasoning often states that they are being evaluated, and that awareness causally reduced covert behavior ([Schoen et al. 2025](https://arxiv.org/abs/2509.15541)). Make tests as close to deployment as you can, but do not build a defense that assumes the component cannot tell.
 
-**Can't monitor own resource usage**:
+Earlier versions also listed a **Least Latency Budget**, on the theory that time pressure forces simpler, more honest behavior. Nothing supports that, and it has been dropped.
 
-- No access to: CPU usage, memory consumption, wall-clock time
-- Prevents detecting when being tested vs deployed
-- Can't tell if it's being monitored
-- Example: Can't tell "I'm running slow, must be being watched"
+## Coordinators
 
-**Can't see patterns across invocations**:
+Coordinators route work, grant permissions and see more of the system than any other component, so the principles bind hardest there. [Coordinator Constraints](/design-patterns/coordinator-constraints/) specializes them: decompose coordination into checkable parts, keep the coordinator's influence indirect and its messages structured, and put redundancy and veto rights around it.
 
-- No access to statistics about previous runs
-- Can't learn "I'm called more when X happens"
-- Stateless from perspective of meta-patterns
-- Example: Summarizer can't tell it's been invoked 1000 times today
+## Further reading
 
-**Can't observe timing information**:
-
-- No access to timestamps or clock
-- Prevents side-channel attacks based on timing
-- Can't coordinate based on when things happen
-- Example: Can't signal to other component via response latency
-
-**Blind to test vs production**:
-
-- Can't determine if input is real or synthetic
-- Same interface for testing and deployment
-- Prevents "behave well in tests, badly in production"
-- Example: Research assistant can't tell if working on toy problem or real research
-
-**No introspection capability**:
-
-- Can't examine own weights or architecture
-- Can't query own training data or process
-- Prevents reasoning about "how I was built"
-- Example: LLM can't access its own parameters
-
-:::caution
-Observability enables strategic behavior: "I notice I'm being tested" → behave differently. "I see my resource usage spiking" → someone's investigating me. Blindness prevents adaptive scheming.
-:::
-
-## Principle of Least Compute
-
-**Bound computational resources per component.**
-
-**Hard limits on resources**:
-
-- FLOPs budget: max computation per invocation
-- Memory budget: max RAM usage
-- Wall-clock timeout: must complete within X seconds
-- Network bandwidth: max data transferred
-
-**Forces simpler reasoning**:
-
-- Can't run expensive optimization algorithms
-- Can't do exhaustive search
-- Must use heuristics instead of brute force
-- Example: Coordinator can't search through millions of plans
-
-**Different budgets for different risks**:
-
-- Low-risk components: generous compute
-- High-risk components: minimal compute
-- Example: Creative hypothesis generation gets more compute than strategic planning
-
-**Graduated compute allocation**:
-
-- Start with tiny budget, increase if needed
-- Must justify why more compute required
-- Auditable decisions about allocation
-- Example: Forecaster starts with 1 sec, can request up to 10 sec if complexity warrants
-
-**Prevents expensive scheming**:
-
-- Strategic deception requires computation
-- Maintaining consistent lies is expensive
-- Simulating other components' reactions is expensive
-- Limited compute bounds sophistication of scheming
-
-**Implementation**:
-
-- cgroups, resource quotas in Linux
-- Cloud provider limits (Lambda timeouts, etc)
-- Hardware constraints (run on weaker machines)
-- Example: Coordinator runs on 2 CPU cores max, tactics on 8 cores
-
-## Principle of Least Latency Budget
-
-**Time pressure prevents sophisticated reasoning.**
-
-**Must respond within strict time limits**:
-
-- Real-time components: <100ms
-- Interactive components: <1 second
-- Batch components: <1 minute
-- Strategic planning: longer, but still bounded
-
-**Can't do multi-step reasoning at fast timescales**:
-
-- Forces immediate responses
-- No time for planning or coordination
-- Must rely on cached/learned heuristics
-- Example: Verification must approve/reject within 500ms
-
-**Varies by component type and risk**:
-
-- High-risk, real-time: very strict (prevents scheming)
-- Low-risk, strategic: more time (quality over speed)
-- Example: Tactics needs fast responses, strategy gets more thinking time
-
-**Adaptive timeout**:
-
-- Start with tight timeout
-- If legitimately complex, allow extension
-- But: extension must be justified and logged
-- Example: "Standard forecast: 2 sec, complex scenario: 10 sec"
-
-**Why this matters**:
-
-- Scheming takes time
-- "How do I deceive the monitor?" requires reasoning
-- "What will other components do?" requires simulation
-- Time pressure forces simpler, more honest behavior
-
-**Prevents elaborate deception**:
-
-- Can't carefully craft misleading outputs
-- Can't optimize for passing specific tests
-- Must use fast heuristics (harder to make deceptive)
-- Example: Summarizer doesn't have time to encode hidden messages
-
-**Trade-off with capability**:
-
-- Tighter time limits → simpler behavior → safer but less capable
-- This is intentional: capability-safety tradeoff
-- For high-risk components, choose safety
-- Example: Strategic coordinator uses older, slower model with longer timeout rather than frontier model with tight timeout
-
-## Principle of Least Generality
-
-**Use the least general implementation that achieves required functionality.**
-
-This principle unifies and explains the verifiability hierarchy: generality correlates with risk.
-
-**The generality spectrum:**
-
-| Level | Implementation | Generality | Verifiability |
-|-------|---------------|------------|---------------|
-| 1 | Hard-coded Rules | Lowest | Highest |
-| 2 | Deterministic Algorithms | ↓ | ↓ |
-| 3 | Fine-tuned Narrow Models | ↓ | ↓ |
-| 4 | General Models + Constraints | ↓ | ↓ |
-| 5 | General Foundation Models | ↓ | ↓ |
-| 6 | RL / Self-modifying Systems | Highest | Lowest |
-
-**1. Hard-coded rules** (Least General)
-
-- Handles only predefined cases
-- Zero adaptation or transfer
-- Example: "If SQL contains 'DROP TABLE' → reject"
-- Safest: Behavior is completely predictable
-
-**2. Deterministic algorithms**
-
-- Handles class of problems via explicit logic
-- No learning, but can process varied inputs
-- Example: Formal parser following grammar rules
-- Very safe: Verifiable by inspection
-
-**3. Fine-tuned narrow models**
-
-- Learned behavior, but domain-specific
-- Limited transfer outside training domain
-- Example: Model trained only on "summarize biology papers"
-- Moderately safe: Behavior bounded to trained domain
-
-**4. General models with constraints**
-
-- Broad capabilities, heavily prompted/tested
-- Can transfer across domains
-- Example: GPT-4 with extensive prompts and evals
-- Riskier: Capable of novel behaviors
-
-**5. General foundation models**
-
-- Very broad capabilities
-- Strong transfer learning
-- Example: Base GPT-4, Claude
-- Risky: Can adapt to many scenarios including scheming
-
-**6. RL agents / self-modifying systems** (Most General)
-
-- Can learn arbitrary policies
-- Optimize for complex objectives
-- Can adapt strategies based on feedback
-- Most risky: Emergent instrumental goals
-
-**Why generality is dangerous:**
-
-**Adaptation enables scheming**:
-
-- Narrow model: "I only know how to summarize papers" → can't scheme
-- General model: "I can reason about AI safety, testing, deception" → might scheme
-
-**Transfer enables power-seeking**:
-
-- Narrow: Capabilities don't transfer to gaining resources/power
-- General: Can apply reasoning to "how do I get more compute/influence?"
-
-**Novelty defeats verification**:
-
-- Narrow: Can test all relevant scenarios exhaustively
-- General: Infinite novel scenarios, can't test all, emergent behaviors
-
-**Predictability decreases with generality**:
-
-- Narrow: "Given input X, always does Y"
-- General: "Given input X, might do Y, or Z, or W, or something novel"
-
-**Practical implications:**
-
-**For each component, minimize generality across dimensions:**
-
-**Task breadth**:
-
-- Bad: "General research assistant" (can do anything)
-- Good: "Summarize biology papers" (narrow task)
-
-**Domain breadth**:
-
-- Bad: Model trained on all of Common Crawl
-- Good: Model trained only on academic papers in target field
-
-**Transfer capability**:
-
-- Bad: Strong few-shot learning (can quickly learn new tasks)
-- Good: Task-specific, doesn't transfer well
-
-**Adaptation ability**:
-
-- Bad: Can learn from deployment feedback
-- Good: Fixed behavior, no online learning
-
-**Model size** (as proxy for generality):
-
-- Bad: 70B parameter model for simple classification
-- Good: 1B parameter model fine-tuned for classification
-
-**Why this explains the verifiability hierarchy:**
-
-Code > Fine-tuned narrow LLM > General LLM > RL
-
-Is actually:
-
-Fixed behavior > Domain-specific > Multi-domain > Arbitrary policy learning
-
-Which is:
-
-Least general > Low generality > High generality > Most general
-
-:::tip[Key Insight]
-Generality isn't just capability—it's adaptability, transferability, and novelty-handling. The safest implementations can only do exactly what they're designed for. The most dangerous can adapt to do anything, including things we didn't anticipate.
-:::
-
-**Design principle**: Start with least general solution. Only increase generality if necessary, and add proportional safety measures.
-
-### Implementation Decision Tree
-
-Use this flowchart to select the right implementation for each component:
-
-```mermaid
-flowchart TB
-    START([New Component Needed]) --> Q1{Can behavior be<br/>fully specified<br/>as rules?}
-
-    Q1 -->|Yes| RULES[✅ Use Hard-coded Rules<br/>Level 1 - Safest]
-    Q1 -->|No| Q2{Can it be solved<br/>with deterministic<br/>algorithm?}
-
-    Q2 -->|Yes| ALGO[✅ Use Algorithm<br/>Level 2 - Very Safe]
-    Q2 -->|No| Q3{Is the domain<br/>narrow and<br/>well-defined?}
-
-    Q3 -->|Yes| NARROW[✅ Fine-tune Narrow Model<br/>Level 3 - Moderate Risk]
-    Q3 -->|No| Q4{Can a general model<br/>be heavily<br/>constrained?}
-
-    Q4 -->|Yes| CONSTRAINED[⚠️ General Model + Constraints<br/>Level 4 - Higher Risk<br/>Add: redundancy, monitoring]
-    Q4 -->|No| GENERAL[🔴 General/RL System<br/>Level 5-6 - Highest Risk<br/>Requires: all safety mechanisms]
-
-    RULES --> CHECK{Critical<br/>component?}
-    ALGO --> CHECK
-    NARROW --> CHECK
-    CONSTRAINED --> CHECK
-    GENERAL --> CHECK
-
-    CHECK -->|Yes| VERIFY[Add formal verification<br/>+ redundant implementations]
-    CHECK -->|No| DONE([Deploy with monitoring])
-    VERIFY --> DONE
-```
-
-**Most components should stop at Level 1-3.** If you find yourself at Level 4-5, ask: "Can we decompose this into simpler subproblems?"
-
-## Principle of Maximum Verifiability
-
-**Implement each component using the most verifiable method that achieves required functionality.**
-
-This principle works with Least Generality: less general methods are more verifiable. The hierarchy orders by both:
-
-There's a clear hierarchy of implementation methods, ordered by generality (low to high) and verifiability (high to low):
-
-**1. Provably Secure Code** (Most Verifiable)
-
-- Formal verification, mathematical proofs of correctness
-- Use when: component is critical and formally specifiable
-- Examples: cryptographic primitives, access control, safety invariants
-- Tools: Coq, Isabelle, TLA+, formal methods
-
-**2. Regular Code**
-
-- Human-written, reviewed, tested code
-- Static analysis, type checking, unit tests
-- Use when: functionality is well-understood and can be explicitly programmed
-- Examples: parsers, formatters, validators, deterministic logic
-
-**3. Fine-Tuned Narrow LLMs**
-
-- Models trained/fine-tuned for specific tasks
-- Much more predictable than general models
-- Use when: task needs ML but can be narrowly specified
-- Examples: specific classification tasks, domain-specific text processing
-- Why better: Smaller, faster, more verifiable behavior, less capability for scheming
-
-**4. LLMs with Extensive Prompting & Evals**
-
-- General models heavily constrained by prompts, examples, guardrails
-- Comprehensive test suites and evaluation
-- Use when: task requires pattern matching but can be thoroughly tested
-- Examples: classification, summarization with clear criteria
-
-**5. Base LLMs**
-
-- Standard prompting, RLHF training
-- Less constrained, harder to verify
-- Use when: creative tasks that are hard to specify formally
-- Examples: ideation, open-ended generation
-
-**6. RL Systems** (Least Verifiable)
-
-- Learned policies, opaque optimization
-- Hardest to verify, most likely to develop unexpected behaviors
-- Use sparingly: only when other methods insufficient
-- Examples: complex strategic planning, multi-step optimization
-
-:::tip[Key Insight]
-Fine-tuned narrow models are dramatically safer than general frontier models. For any component, ask: "Can we fine-tune a small model specifically for this task?" If yes, do that instead of using GPT-4/Claude for everything.
-:::
-
-### The Implementation Strategy
-
-**Default to higher verifiability**. For each component, ask:
-
-- Can this be done with formal verification? → Do that
-- If not, can it be regular code? → Do that
-- If not, can LLMs be heavily constrained/tested? → Do that
-- Only use less verifiable methods when necessary
-
-**Example: SQL Injection Checker**
-
-- ❌ RL-based policy that learned to detect vulnerabilities
-- ❌ Base LLM asked "is this secure?"
-- ✓✓ LLM with detailed prompt, extensive test suite of known vulnerabilities
-- ✓✓✓ Regular code implementing formal SQL parsing + pattern matching
-- ✓✓✓✓ Formally verified parser with proved security properties
-
-The checker should be implemented at the highest viable level.
-
-**Example: Creative Hypothesis Generation**
-
-- Formal verification: impossible (creativity isn't formally specifiable)
-- Regular code: insufficient (would just enumerate known patterns)
-- LLM with constraints: possible but might limit novelty
-- ✓ Base LLM: appropriate here, because:
-  - Novelty is the goal
-  - Component has low privilege (can't execute ideas)
-  - Output is evaluated by other components
-  - Failure mode is "bad ideas" not "dangerous actions"
-
-### Why This Matters
-
-**Verifiability compounds with other principles.** A component that is:
-
-- Low intelligence
-- Low privilege
-- Implemented in formally verified code
-
-…is dramatically safer than:
-
-- High intelligence
-- High privilege
-- Implemented as RL policy
-
-The safest components sit at the intersection of:
-
-- Minimal budgets (intelligence, privilege, context, etc.)
-- Maximum verifiability (formal verification or regular code)
-
-**Risk concentration**: If you must have a high-capability component (like a coordinator), push it up the verifiability hierarchy as far as possible. Even better: decompose the coordinator so that critical logic is in verified code, while only "soft" decisions use LLMs.
-
----
-
-## Why Multiple Dimensions Matter
-
-These principles are **orthogonal**—you need to bound along each axis independently.
-
-**Example: Code generation component**
-
-- Intelligence: High (needs creative problem-solving)
-- Privilege: Low (read-only access to specs, no deployment permissions)
-- Context: Low (doesn't see production systems or user data)
-- Persistence: None (stateless, no memory between generations)
-- Autonomy: Low (human reviews before merging)
-- Scope: Narrow (code generation only, not architecture decisions)
-
-**Example: Security verification component**
-
-- Intelligence: Medium (analytical reasoning, not creative)
-- Privilege: High (needs to read production configs to verify)
-- Context: High (needs system architecture understanding)
-- Persistence: Low (could track patterns but shouldn't need to)
-- Autonomy: High (should auto-reject insecure code)
-- Scope: Narrow (security only, not functionality)
-
-**Capability surface area**—total dangerous actions possible—is managed by keeping each component restricted along multiple dimensions simultaneously.
-
-### Tradeoffs and Design Decisions
-
-You can't minimize everything—some capabilities require specific allowances:
-
-**Forecasting components** need:
-
-- Medium intelligence (statistical reasoning)
-- Low privilege (read-only)
-- High context (needs to understand what it's forecasting)
-- Medium persistence (calibration history improves accuracy)
-
-**Coordinator components** need:
-
-- High intelligence (strategic reasoning)
-- Medium privilege (can invoke other components)
-- High context (understands overall system goals)
-- Low persistence (shouldn't accumulate power over time)
-
-The art is in choosing the right allocation for each component's function while maintaining overall safety.
-
----
-
-## Applying to Coordinators
-
-Coordinators are the highest-risk components—they have leverage over other components and see more context than any individual component should. The general "Least X" principles apply, but coordinators need additional, more stringent constraints.
-
-See [Coordinator-Specific Principles](/design-patterns/coordinator-constraints/) for:
-
-- **Least Influence**: Routes work, doesn't directly cause outcomes
-- **Least Direct Impact**: Works through intermediaries, never touches final outputs
-- **Maximum Transparency**: All coordination logic auditable
-- **Simplest Communication**: Structured data only, not natural language
-- **Mandatory Redundancy**: Critical coordination requires N independent implementations
-- **Byzantine Tolerance**: Assume some coordinators may be adversarial
-
-These coordinator constraints are more restrictive than general principles because coordination is the leverage point where scheming would be most dangerous.
-
----
-
-## What's Next?
-
-Now that you understand the principles, here's where to go:
-
-**To see principles in action**:
-- [Research Assistant Example](/design-patterns/examples/research-assistant-example/) — Complete worked example applying all principles
-- [Code Deployment Example](/design-patterns/examples/code-deployment-example/) — Higher-stakes example with different tradeoffs
-- [Principles to Practice](/design-patterns/principles-to-practice/) — Cross-reference mapping principles to implementations
-
-**To understand coordinator constraints deeply**:
-- [Coordinator-Specific Principles](/design-patterns/coordinator-constraints/) — Additional constraints for coordinators
-
-**To learn the math behind trust**:
-- [Delegation Risk Overview](/delegation-risk/overview/) — Delegation Risk computation and risk inheritance
-
-**To start implementing**:
-- [Quick Start](/design-patterns/tools/quick-start/) — Step-by-step checklist
-- [Decision Guide](/design-patterns/tools/decision-guide/) — Choosing implementations
-
----
-
-:::note[Related: Capability-Based Security]
-The "Least X" principles extend [capability-based security](https://en.wikipedia.org/wiki/Capability-based_security), where access rights are unforgeable tokens rather than access control lists. Systems like [seL4](https://en.wikipedia.org/wiki/L4_microkernel_family#High_assurance:_seL4) implement formally verified capability systems. The key insight: security is easier to verify when permissions are explicit, minimal, and compositional—exactly what these principles achieve for AI components.
-:::
-
----
-
-## Further Reading
-
-### Security Foundations
-- Saltzer, J.H., & Schroeder, M.D. (1975). *The Protection of Information in Computer Systems*. Proceedings of the IEEE. — The classic paper establishing security design principles including least privilege.
-- [Object-Capability Model](https://en.wikipedia.org/wiki/Object-capability_model) — Combining object-oriented programming with capability security
-- Miller, M.S. (2006). *Robust Composition*. PhD thesis, Johns Hopkins. — Modern capability security foundations
-
-### Operating Systems Security
-- [Mandatory Access Control](https://en.wikipedia.org/wiki/Mandatory_access_control) — SELinux, AppArmor
-- [Sandboxing](https://en.wikipedia.org/wiki/Sandbox_(computer_security)) — Process isolation techniques
-- [Container Security](https://en.wikipedia.org/wiki/OS-level_virtualization) — Namespaces, cgroups
-
-### AI Safety Applications
-- [AI Control](https://arxiv.org/abs/2312.06942) — Greenblatt et al. on controlling potentially scheming models
-- [Comprehensive AI Services](https://www.fhi.ox.ac.uk/reframing/) — Drexler's narrow services approach
-
-### Formal Methods
-- [Information Flow Control](https://en.wikipedia.org/wiki/Information_flow_(information_theory)) — Tracking data flow through systems
-- [Noninterference](https://en.wikipedia.org/wiki/Non-interference_(security)) — Formal security property
-
-See the [full bibliography](/reference/bibliography/) for comprehensive references.
+- Saltzer, J.H. & Schroeder, M.D. (1975). *The Protection of Information in Computer Systems.* Proceedings of the IEEE. The classic statement of least privilege and its companion design principles.
+- Miller, M.S. (2006). *Robust Composition.* PhD thesis, Johns Hopkins. Object-capability security, in which authority is explicit, minimal and composable.
+- Greenblatt, R. et al. (2023). [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942). ICML 2024. Trusted and untrusted models.
+- Drexler, K.E. (2019). [*Reframing Superintelligence: Comprehensive AI Services as General Intelligence*](https://www.futureofhumanityinstitute.org/s/2019-1.pdf). FHI Technical Report 2019-1. Capability as a system of bounded services.

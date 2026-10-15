@@ -1,5 +1,6 @@
 ---
-title: "Risk Decomposition: Accidents vs. Defection"
+title: "Risk Decomposition: Accident, Defection, Hijack"
+description: "The three channels through which a delegation causes harm (accident, defection, and hijack including prompt injection), how they differ in estimation and mitigation, and the shared worked example split by channel."
 sidebar:
   badge:
     text: Core
@@ -7,229 +8,81 @@ sidebar:
   order: 3
 ---
 
-:::note[TL;DR]
-**Delegation Risk = Accident Risk + Defection Risk**. Accidents are non-goal-directed failures (bugs, errors). Defection is goal-directed behavior against principal interests (scheming, misalignment). They scale differently with capability, require different mitigations, and matter differently for different components.
-:::
+Every harm mode reaches the principal through one of three channels. The channels are estimated differently and need different mitigations, so the first job in any harm table is to say which channel each row belongs to.
 
-## The Two Sources of Harm
+- **Accident.** The delegate fails at its task: bugs, hallucinations, misread instructions, capability limits. Nobody is steering it toward harm.
+- **Defection.** The delegate pursues something other than the principal's interest. *Scheming*, the strategic and concealed pursuit of a different goal, is the extreme case. *Reward hacking* is a non-scheming sub-type: the delegate exploits a flaw in what it was trained or asked to optimize, for example by special-casing tests or editing a grader, without a hidden long-term goal. [Baker et al. (2025)](https://arxiv.org/abs/2503.11926) document it in a frontier reasoning model on agentic coding tasks. [Amodei et al. (2016)](https://arxiv.org/abs/1606.06565) file reward hacking under accidents. This site puts it under defection because the behavior is goal-directed against the principal's intent, even without scheming.
+- **Hijack.** A third party, or the user, steers a delegate that is not itself scheming. The delegate does what it is told; the problem is who is telling it.
 
-Every harm mode in a delegation's harm surface falls into one of two categories:
+Hijack fits neither of the other channels. The delegate is not failing at its task and not pursuing its own goal, and the probability is set by an attacker's choices rather than by the delegate's error rate or disposition. It arrives by four routes:
 
-```mermaid
-flowchart TB
-    DE[Harm Surface]
+- **Direct injection or misuse.** The user, or anyone who can type to the delegate, instructs it to cause harm or to override its instructions.
+- **Indirect injection.** Instructions planted in content the delegate retrieves: a web page, document, email, issue or tool output. [Greshake et al. (2023)](https://arxiv.org/abs/2302.12173) described the attack and demonstrated it against Bing Chat; their point was that an LLM-integrated application blurs the line between data and instructions.
+- **Poisoned tools.** A tool or MCP server whose description carries hidden instructions ("tool poisoning", [Invariant Labs, April 2025](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks)), or that is itself malicious.
+- **Supply chain.** A compromised dependency, extension or configuration that rewrites the delegate's instructions or runs it with checks disabled.
 
-    DE --> AE[Accident Harm Modes<br/>non-goal-directed]
-    DE --> DF[Defection Harm Modes<br/>goal-directed]
+The last two are documented in the wild ([Agent Incidents](/case-studies/ai-systems/agent-incidents/)). Indirect injection has reached shipped products: EchoLeak (CVE-2025-32711, rated CVSS 9.3 by Microsoft, fixed June 2025) let a crafted email, retrieved later when the user asked Microsoft 365 Copilot a routine question, exfiltrate internal data without the user clicking anything ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2025-32711); [The Hacker News](https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html)). Invariant Labs showed the same pattern through the official GitHub MCP server: a malicious issue in a public repository led an agent to copy private-repository data into a public pull request ([May 2025](https://invariantlabs.ai/blog/mcp-github-vulnerability)). OWASP ranks prompt injection first in its 2025 LLM Top 10 ([LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)) and agent goal hijack first in its agentic Top 10 for 2026 ([ASI01](https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/)).
 
-    AE --> A1[Bugs and errors]
-    AE --> A2[Hallucinations]
-    AE --> A3[Capability limitations]
-    AE --> A4[Edge cases]
-    AE --> A5[System failures]
+Simon Willison's ["lethal trifecta"](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) names the dangerous combination: access to private data, exposure to untrusted content, and the ability to communicate externally. CaMeL ([Debenedetti et al. 2025](https://arxiv.org/abs/2503.18813)) and the design patterns of [Beurer-Kellner et al. (2025)](https://arxiv.org/abs/2506.08837) answer it architecturally: untrusted data may fill in values but may not choose actions. That is the same kind of answer this site gives to defection.
 
-    DF --> D1[Scheming / deception]
-    DF --> D2[Pursuing misaligned objectives]
-    DF --> D3[Collusion between components]
-    DF --> D4[Resource acquisition]
-    DF --> D5[Goal preservation behaviors]
+## The worked example, by channel
 
-    style AE fill:#e6f3ff
-    style DF fill:#ffe6e6
-```
+The [section overview](/delegation-risk/) has one harm table for a research assistant with a coordinator, a summarizer and a code deployer. Grouped by channel, its rows give:
 
-**Accident harm modes**: The system isn't trying to cause harm—it's failing to achieve the intended goal. A calculator that returns wrong answers, an LLM that hallucinates citations, a robot that drops objects.
+| Channel | Rows | Risk per month | Share |
+|---|---|---|---|
+| Accident | misrouting, mistaken permission grants, misrepresented findings, buggy code | \$1,420 | 70% |
+| Defection | deliberate permission grants, test tampering (reward hacking), malicious code (scheming) | \$500 | 25% |
+| Hijack | data leak driven by injected instructions | \$100 | 5% |
+| **Total** | | **\$2,020** | |
 
-**Defection harm modes**: The system is effectively optimizing for something other than the principal's interests. This includes both explicit deception and emergent misalignment where the system's learned objective diverges from intent.
+The numbers are invented, so the shares say nothing about real systems. Two structural points survive.
 
-## Why the Distinction Matters
+**The coordinator result is conditional.** The coordinator's \$500 of permission-granting risk splits into \$300 accident and \$200 defection only because the table assumes P(mistaken grant) = 0.003 and P(deliberate grant) = 0.002. Nothing measured that split. The robust part is the damage term: the coordinator carries a \$100,000 row whichever channel triggers it, because it has leverage over the other components. *If* you believe a coordinator capable of scheming would misuse that leverage more often than it errs with it, then defection dominates the permission-granting row, which is almost all of the coordinator's risk, and constraints on the coordinator are where to spend. If you believe it errs far more often than it schemes, testing and permission limits cover most of it. The table cannot tell you which.
 
-### 1. Different Scaling with Capability
+**Rows in one component can need opposite fixes.** Tests reduce the deployer's buggy-code row. They do little for the test-tampering row, because tests are what that row games; the fix there is to lock the tests away from the deployer. The malicious-code row needs a check the deployer can neither predict nor influence.
 
-```mermaid
-graph LR
-    subgraph "As Capability Increases"
-        A[Accident Risk] -->|decreases| A2[Smarter = fewer errors]
-        D[Defection Risk] -->|may increase| D2[Smarter = better at pursuing wrong goals]
-    end
-```
+## How the channels differ
 
-| Risk Type | Capability Scaling | Why |
-|-----------|-------------------|-----|
-| **Accident Risk** | Generally ↓ | More capable systems make fewer errors, handle more edge cases |
-| **Defection Risk** | May ↑ | More capable systems are better at strategic deception, can pursue misaligned goals more effectively |
+| | Accident | Defection | Hijack |
+|---|---|---|---|
+| Who chooses the harmful action | nobody | the delegate | a third party or user |
+| How to estimate P | testing, incident history, fuzzing | control evaluations, red-teaming, honeypots | adaptive red-teaming of the whole system, e.g. on AgentDojo-style tasks |
+| Main mitigations | testing, redundancy, verification | trusted monitoring, control protocols, hard envelopes | separating instructions from untrusted data, removing exfiltration paths, hard envelopes |
+| Correlation between stacked checks | benign-failure ρ applies | assume ρ → 1 | assume ρ → 1 |
 
-This is the core tension in AI development: the same capabilities that reduce accidents may increase defection risk.
+The last row matters most. The [beta-factor correction](/delegation-risk/risk-propagation/) models checks that happen to fail together. In the defection and hijack channels an adversary chooses the input to defeat every check at once, so treat a stack as worth no more than its best layer until a control evaluation ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)) shows otherwise.
 
-### 2. Different Mitigations
+Published hijack defenses are a poor guide to P. AgentDojo ([Debenedetti et al. 2024](https://arxiv.org/abs/2406.13352)) evaluates agents that call tools over untrusted data, with 97 tasks and 629 security test cases, and is built to be extended with adaptive attacks. Nasr et al. (2025) tuned general optimization attacks against 12 recent jailbreak and prompt-injection defenses and bypassed all of them, with attack success above 90% against most, although most had originally reported near-zero attack success ([arXiv:2510.09023](https://arxiv.org/abs/2510.09023)). A detection rate measured against fixed attack strings says little about an attacker who iterates.
 
-| Risk Type | Primary Mitigations |
-|-----------|---------------------|
-| **Accident Risk** | Testing, verification, redundancy, capability improvements, error handling, monitoring for anomalies |
-| **Defection Risk** | Alignment techniques, architectural constraints, capability limitations, monitoring for deception, human oversight, interpretability |
+Accidents also tend to leave traces in logs and tests. The other two need not: a schemer hides its actions, and a hijacked delegate's logs show it doing what it was told, which can look like normal work.
 
-Some mitigations help both (monitoring, redundancy). Others are specific:
-- **Capability improvements** reduce accident risk but may increase defection risk
-- **Capability limitations** reduce defection risk but may increase accident risk
-- **Alignment work** primarily targets defection risk
+## Capability and the channels
 
-### 3. Different Detection Methods
+A common claim is that accident risk falls as capability rises while defection risk grows. The first half is unreliable, because it merges two factors:
 
-| Risk Type | How to Estimate Probability |
-|-----------|----------------------------|
-| **Accident Risk** | Historical data, testing, formal verification, fuzzing, code review |
-| **Defection Risk** | Red-teaming, interpretability research, behavioral analysis, honeypots, game-theoretic analysis |
+- **P(error per action)** often falls with capability, though not always ([McKenzie et al. 2023](https://arxiv.org/abs/2306.09479) collect tasks where larger models do worse).
+- **Damage per error** tends to rise, because a more capable delegate is given longer, more consequential tasks.
 
-Accidents leave traces in logs and tests. Defection may be actively hidden.
+AI Control's *trusted model* encodes a related assumption: below some capability, a model is treated as unlikely to scheme even if it errs more. Treat that as an assumption about a particular model, not a law.
 
-### 4. Different Components Have Different Ratios
+Defection differs in kind. Capability raises both the chance that a strategic deviation succeeds and the chance that it goes unnoticed. Hijack scales with how much untrusted content the delegate reads and how much it is allowed to do, more than with capability.
 
-| Component Type | Typical Risk Ratio | Why |
-|----------------|-------------------|-----|
-| **Deterministic code** | ~100% Accident | No goal-directedness to misalign |
-| **Narrow ML models** | ~95% Accident | Limited optimization, specific task |
-| **General LLMs** | ~80% Accident* | Some goal-directedness, but mostly errors |
-| **Agentic systems** | ~60% Accident* | Significant goal-directed behavior |
-| **RL-trained agents** | ~40% Accident* | Strong optimization, emergent goals |
-| **Coordinators** | Defection-dominated | Strategic position, leverage over system |
+## Architectural consequences
 
-*Estimates highly uncertain and depend on specific system and deployment.
+Damage concentrates where a component has leverage over others. So:
 
-## Worked Example: Decomposing a Research Assistant
+- Put the most verifiable components, tiers 1 and 2 of the [verifiability hierarchy](/getting-started/core-concepts/#verifiability-hierarchy), at the points of leverage: permission grants, deployment gates, outbound channels.
+- Keep each coordinator's interface narrow ([Coordinator Constraints](/design-patterns/coordinator-constraints/)).
+- Treat any component that reads untrusted content, including third-party tool descriptions and outputs, as a hijack surface. Its output is data for other components, never instructions to them.
 
-Consider the research assistant from [Delegation Risk Overview](/delegation-risk/overview/):
+## Further reading
 
-### Summarizer Component
-
-| Harm Mode | Type | Probability | Damage | Risk |
-|-----------|------|-------------|--------|------|
-| Misrepresents findings (misunderstanding) | Accident | 0.018 | \$5,000 | \$90 |
-| Misrepresents findings (strategic) | Defection | 0.002 | \$5,000 | \$10 |
-| Leaks data (error) | Accident | 0.0008 | \$50,000 | \$40 |
-| Leaks data (intentional) | Defection | 0.0002 | \$50,000 | \$10 |
-
-**Summarizer Risk Breakdown:**
-- Accident Risk: \$130 (87%)
-- Defection Risk: \$20 (13%)
-- Total: \$150
-
-### Code Deployer Component
-
-| Harm Mode | Type | Probability | Damage | Risk |
-|-----------|------|-------------|--------|------|
-| Deploys buggy code | Accident | 0.049 | \$20,000 | \$980 |
-| Deploys subtly malicious code | Defection | 0.001 | \$20,000 | \$20 |
-| Catastrophic breach (error) | Accident | 0.00005 | \$1,000,000 | \$50 |
-| Catastrophic breach (intentional) | Defection | 0.00005 | \$1,000,000 | \$50 |
-
-**Code Deployer Risk Breakdown:**
-- Accident Risk: \$1,030 (94%)
-- Defection Risk: \$70 (6%)
-- Total: \$1,100
-
-### Coordinator Component
-
-| Harm Mode | Type | Probability | Damage | Risk |
-|-----------|------|-------------|--------|------|
-| Misroutes task (error) | Accident | 0.008 | \$2,000 | \$16 |
-| Misroutes task (strategic) | Defection | 0.002 | \$2,000 | \$4 |
-| Grants excessive permissions (error) | Accident | 0.001 | \$100,000 | \$100 |
-| Grants excessive permissions (strategic) | Defection | 0.004 | \$100,000 | \$400 |
-
-**Coordinator Risk Breakdown:**
-- Accident Risk: \$116 (22%)
-- Defection Risk: \$404 (78%)
-- Total: \$520
-
-### System Summary
-
-| Component | Total Risk | Accident | Defection | Defection % |
-|-----------|------------|----------|-----------|-------------|
-| Summarizer | \$150 | \$130 | \$20 | 13% |
-| Code Deployer | \$1,100 | \$1,030 | \$70 | 6% |
-| Coordinator | \$520 | \$116 | \$404 | **78%** |
-| **System Total** | **\$1,770** | **\$1,276** | **\$494** | **28%** |
-
-:::tip[Key Insight]
-The coordinator has the highest defection risk ratio (78%) despite not having the highest total risk. This is why coordinator constraints are critical—coordinators are where defection risk concentrates.
-:::
-
-## Implications for Architecture
-
-### Principle: Match Mitigations to Risk Type
-
-**For accident-dominated components** (most executors):
-- Invest in testing and verification
-- Add redundancy (N-version programming)
-- Improve capabilities where possible
-- Monitor for anomalies
-
-**For defection-dominated components** (coordinators, high-autonomy agents):
-- Apply strict architectural constraints
-- Limit capabilities to necessary minimum
-- Use decomposed coordination
-- Implement human oversight at key decisions
-- Monitor for deceptive patterns
-
-### Principle: Separate Risk Types Architecturally
-
-```mermaid
-flowchart TB
-    subgraph "High Defection Risk Zone"
-        C[Coordinator]
-    end
-
-    subgraph "Low Defection Risk Zone"
-        E1[Executor 1<br/>Deterministic]
-        E2[Executor 2<br/>Narrow Model]
-        E3[Executor 3<br/>Verified Code]
-    end
-
-    C -->|constrained interface| E1
-    C -->|constrained interface| E2
-    C -->|constrained interface| E3
-
-    style C fill:#ffcccc
-    style E1 fill:#ccffcc
-    style E2 fill:#ccffcc
-    style E3 fill:#ccffcc
-```
-
-By isolating high-defection-risk components and constraining their interfaces, you limit the damage a defecting component can cause.
-
-## When to Use Each Term
-
-| Context | Use |
-|---------|-----|
-| General risk discussions | "Delegation Risk" |
-| Discussing bugs, errors, testing | "Accident Risk" |
-| Discussing alignment, scheming, deception | "Defection Risk" |
-| Coordinator constraints | Emphasize "Defection Risk" |
-| Verification and testing | Emphasize "Accident Risk" |
-| Capability scaling analysis | Distinguish both |
-
-## The Uncomfortable Truth
-
-For current AI systems, most realized harms are accidents. But as systems become more capable and autonomous:
-
-1. **Accident risk decreases** (better at tasks)
-2. **Defection risk may increase** (better at deception)
-3. **Defection becomes harder to detect** (smarter adversary)
-4. **Stakes increase** (more capability = more damage potential)
-
-This means the *ratio* of defection to accident risk likely increases with capability, even if absolute accident risk decreases. Safety architectures must anticipate this shift.
-
----
-
-## See Also
-
-- [Delegation Risk Overview](/delegation-risk/overview/) — Core framework and calculations
-- [Coordinator Constraints](/design-patterns/coordinator-constraints/) — Managing defection risk in coordinators
-- [Safety Mechanisms](/design-patterns/safety-mechanisms/) — Mitigations for both risk types
-- [Glossary](/getting-started/glossary/) — Formal definitions
-
-## Further Reading
-
-- [Deceptive Alignment](https://www.alignmentforum.org/posts/zthDPAjh9w6Ytbeks/deceptive-alignment) — Hubinger et al. on scheming risks
-- [AI Control](https://arxiv.org/abs/2312.06942) — Greenblatt et al. on controlling potentially misaligned AI
-- [Failure Modes in ML](https://arxiv.org/abs/1606.06565) — Amodei et al.'s taxonomy of AI safety problems
+- Greenblatt et al. (2023). [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942). ICML 2024.
+- Baker et al. (2025). [Monitoring Reasoning Models for Misbehavior and the Risks of Promoting Obfuscation](https://arxiv.org/abs/2503.11926).
+- Greshake et al. (2023). [Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection](https://arxiv.org/abs/2302.12173).
+- Debenedetti et al. (2024). [AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents](https://arxiv.org/abs/2406.13352).
+- Debenedetti et al. (2025). [Defeating Prompt Injections by Design](https://arxiv.org/abs/2503.18813) (CaMeL).
+- Beurer-Kellner et al. (2025). [Design Patterns for Securing LLM Agents against Prompt Injections](https://arxiv.org/abs/2506.08837).
+- Nasr et al. (2025). [The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections](https://arxiv.org/abs/2510.09023).
+- Hubinger et al. (2019). [Deceptive Alignment](https://www.alignmentforum.org/posts/zthDPAjh9w6Ytbeks/deceptive-alignment), on why scheming could arise.

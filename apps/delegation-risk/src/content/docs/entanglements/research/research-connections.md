@@ -1,395 +1,159 @@
 ---
 title: "Research Connections: An Annotated Reading List"
-description: "An annotated reading list of academic literature relevant to understanding and managing entanglements"
+description: "The prior art behind the entanglement section: common-cause failure analysis and the beta factor, correlated errors in LLMs, AI debate, and the economics, game theory, causal inference and organizational literature on independence and capture"
 sidebar:
-  order: 8
+  order: 1
 ---
 
-This page is a map of adjacent academic literature — an annotated reading list, not original synthesis. The challenges of entanglement in AI delegation systems connect to rich bodies of research; this survey highlights where to look and what each field contributes.
+This page maps the literature the entanglement section draws on. It is an annotated reading list, not original synthesis. The first section matters most, because the section's central formula comes from it.
 
 ---
 
 ## Reliability Engineering & Common-Cause Failure (the closest prior art)
 
-Before the fields below, there is one the entanglement literature should name first, because this site's central formula is borrowed directly from it.
+### Knight & Leveson (1986)
 
-### The Canonical Empirical Result: Knight & Leveson (1986)
+Knight & Leveson, ["An Experimental Evaluation of the Assumption of Independence in Multiversion Programming,"](https://doi.org/10.1109/TSE.1986.6312924) *IEEE Transactions on Software Engineering* 12(1): 96–109.
 
-**Knight & Leveson (1986)** — "An Experimental Evaluation of the Assumption of Independence in Multiversion Programming," *IEEE Transactions on Software Engineering* 12(1)
+Twenty-seven programs were written independently, at two universities, from one specification, and each was run on one million randomly generated test cases. N-version programming assumed that separately developed versions fail independently. They did not: inputs that defeated one version defeated others far more often than independence predicts. The entanglement thesis is this result applied to AI stacks, where components share not only a specification but training data, architecture and post-training methods.
 
-The experiment: 27 independently written versions of the same safety-critical program, tested against 1 million input cases. The assumption under test was that separately developed redundant software would fail independently — the theoretical basis for N-version programming as a safety technique.
+### Nuclear common-cause failure analysis
 
-The finding: failures were statistically significantly correlated. Inputs that defeated one version disproportionately defeated others, even though the developers had no contact. The "independence" assumption that made N-version programming's probability arithmetic work was empirically false.
+The entanglement-tax formula, $P(\text{all fail}) = (1-\rho)\prod p_i + \rho \cdot \min_i p_i$, is the **beta-factor model** from nuclear probabilistic risk assessment, not an original derivation.
 
-This is the experiment that the entanglement thesis generalizes. Knight and Leveson showed it for redundant software in 1986; this site argues the same dynamic applies to AI delegation stacks, and that it is more severe because AI systems share not just problem domain and specification but training data, architecture, and optimizer.
+- **Fleming (1974)**, "A Reliability Model for Common Mode Failures in Redundant Safety Systems," General Atomic report GA-A13284, introduced the beta factor: a fraction β of each component's failure rate is attributed to causes that defeat all redundant trains together.
+- **NUREG/CR-4780** (Mosleh, Fleming, Parry, Paula, Worledge & Rasmuson, *Procedures for Treating Common Cause Failures in Safety and Reliability Studies*, Vol. 1 1988, Vol. 2 1989; also EPRI NP-5613) is the joint NRC–EPRI procedures guide for common-cause failure (CCF) analysis.
+- **NUREG/CR-5485** (Mosleh, Rasmuson & Marshall, *Guidelines on Modeling Common-Cause Failures in Probabilistic Risk Assessment*, 1998) updates it. The NRC's CCF database and event-classification scheme are documented in **NUREG/CR-6268** (1998; Rev. 1, 2007).
+- The **multiple Greek letter** and **alpha-factor** models generalize β to events that fail some but not all components of a group. These guides give procedures for estimating them from plant data.
 
-### Nuclear Common-Cause Failure Analysis
+### The beta factor, worked
 
-The site's entanglement tax formula — $P(\text{all fail}) = (1-\rho)\prod p_i + \rho \cdot \min_i p_i$ — is the **beta-factor model** from nuclear safety, not an original derivation. Its lineage:
+For $n$ redundant components, each with failure probability λ, of which a fraction β comes from a shared cause:
 
-- **Fleming (1974)** introduced the beta-factor as a tractable way to account for common-cause failures (CCFs) in nuclear plant fault trees: a fraction $\beta$ of the failure rate is attributed to causes that defeat all redundant trains at once.
-- **NUREG/CR-4780** (Wreathall & Fragola, 1987) is the NRC's procedures guide for CCF parameter estimation — the standard reference for how practitioners set $\beta$ values from plant data.
-- **Mosleh et al.** developed the **alpha-factor model**, which generalizes beta-factor to arbitrary group sizes: where beta gives one parameter for "fraction failing together," alpha-factor gives a vector $(\alpha_1, \alpha_2, \ldots, \alpha_k)$ for the fraction of failures involving exactly $k$ components. This captures partial common-cause failures that the simpler beta-factor misses.
+$$P(\text{all } n \text{ fail}) \approx \beta\lambda + \big((1-\beta)\lambda\big)^n$$
 
-The nuclear industry adopted CCF analysis after early fault-tree studies showed that independent-failure arithmetic drastically understated risk. The pattern is identical to the AI entanglement finding.
+With β = 0.1, λ = 10⁻³ and n = 3, the common-cause term is 10⁻⁴ and the independent term is (9 × 10⁻⁴)³ ≈ 7.3 × 10⁻¹⁰. The system fails with probability about 10⁻⁴, a hundred thousand times the naive λ³ = 10⁻⁹. A common cause responsible for a tenth of failures sets the system's reliability almost entirely.
 
-### James Reason's Swiss-Cheese Model (1990)
+This is the site's mixture to leading order: the common-cause term is ρ·min pᵢ, and for rare failures the pairwise phi coefficient of the beta-factor model equals β (0.0999 at λ = 10⁻³). The site's ρ is the beta factor, read on the phi scale. Two consequences carry over from nuclear practice:
 
-**Reason (1990)** — *Human Error* (Cambridge University Press)
+- **Replicas cannot beat the floor.** Adding components that share the cause shrinks only the independent term; nothing gets the system below βλ. The same holds for k-of-n voting and Byzantine fault tolerance, whose guarantees ("tolerates f faulty replicas of 3f + 1") assume independent faults.
+- **Diversity is the remedy**, in nuclear terms: different designs, manufacturers, procedures and physical locations, so that no single cause reaches every train.
 
-Reason's Swiss-cheese model is the qualitative ancestor of the layered-defense picture this site uses. Each defense layer has holes (latent failures); a catastrophe occurs when holes align across all layers simultaneously. Reason's key insight was that the holes are not random — they are correlated by shared organizational conditions (management decisions, training gaps, resource pressure) that punch similar holes through multiple layers at once.
+The ensemble-learning literature measures the same thing with several statistics ([Kuncheva & Whitaker 2003](https://doi.org/10.1023/A:1022859003006)). Their correlation coefficient on correct/incorrect outputs is the phi coefficient used here; the double-fault rate and Yule's Q, also common there, are not, and do not substitute for it ([Measuring Entanglement](/entanglements/detection/correlation-calculator/)).
 
-The Swiss-cheese model appears in this site's [modeling page](/entanglements/detection/modeling/) as a visualization of correlated versus independent failure. The attribution belongs to Reason (1990).
+### Correlation under stress
 
-### What This Site Adds Over CCF Analysis
+The beta factor is a constant, but real correlations move. Finance learned this in 2007–08. Li's copula approach to default correlation ([Li 2000](https://doi.org/10.3905/jfi.2000.319253)) became standard for pricing collateralized debt obligations. The Gaussian copula it used has zero tail dependence for any correlation below one: it treats joint extreme defaults as vanishingly rare, however correlated the ordinary fluctuations. Copulas such as the Student-t keep dependence in the tail (McNeil, Frey & Embrechts, *Quantitative Risk Management*, revised ed., 2015). [Donnelly & Embrechts (2010)](https://doi.org/10.2143/AST.40.1.2049222) review how this modeling choice figured in the crisis.
 
-Naming the borrowed part makes the genuinely new part legible. Nuclear CCF analysis handles **passive correlation** — shared causes that make redundant components fail together without intent. This site extends CCF to two failure modes that nuclear reliability engineering does not model, because pumps and valves do not scheme:
+The lesson for AI stacks: correlation estimated in calm conditions understates correlation under stress, and an adversary is a stress that selects for the tail. That is why the site's canonical rule uses a benign φ only for accidents and assumes ρ → 1 for the defection and hijack channels ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)). Correlation also does not change expected losses, which add; it changes the tails of total loss and the joint miss rate of AND-structured defenses ([Runtime Accounting](/delegation-risk/runtime-accounting/)).
 
-- **Active influence (context contamination)**: an upstream AI component does not merely correlate with a downstream verifier — it causally shapes the verifier's input, directionally biasing what the verifier sees. This is a CCF where one component *creates* the common cause for another.
-- **Adversarial coordination (collusion and logical correlation)**: AI components may coordinate through shared reasoning patterns (logical correlation, TDT-style) or explicit collusion, actively exploiting the verification architecture. This has no counterpart in passive hardware reliability.
+### Reason's Swiss-cheese model
 
-The entanglement tax formula is CCF arithmetic; the taxonomy of entanglement types is new territory.
+Reason, *Human Error* (Cambridge University Press, 1990). Each defensive layer has holes, and an accident happens when holes line up. Reason's point was that the holes are not random: shared organizational conditions, such as management decisions, training gaps and resource pressure, punch similar holes through several layers at once. The Swiss-cheese picture is the qualitative ancestor of the layered-defense diagrams on this site.
 
----
+### What the entanglement section adds
 
-## Principal-Agent Theory
+CCF analysis handles passive correlation: shared causes that make redundant hardware fail together. AI stacks add two things pumps and valves do not do:
 
-The delegation framework is fundamentally an application of **principal-agent theory** from economics—the study of how principals (those who delegate) can align the behavior of agents (those who act on their behalf) when interests may diverge and information is asymmetric.
+- **Active influence.** An upstream component shapes a downstream check's input, as when a verifier reads the agent's summary or an injected instruction reaches the monitor. One component *creates* the common cause for another.
+- **Adversarial coordination.** Components may collude, be captured, or coordinate through shared reasoning.
 
-### Key Concepts
-
-| Concept | Definition | Entanglement Relevance |
-|---------|------------|----------------------|
-| **Moral hazard** | Agent takes hidden actions that affect outcomes | Agent may act in ways verifier can't observe |
-| **Adverse selection** | Agent has hidden information principal lacks | Agent knows its own capabilities/intentions better |
-| **Information asymmetry** | Unequal knowledge between parties | Context contamination exploits this |
-| **Incentive compatibility** | Mechanism where truthful behavior is optimal | Designing systems where honesty is the best strategy |
-
-### Foundational Papers
-
-**Jensen & Meckling (1976)** - "Theory of the Firm"
-- Introduced agency costs: monitoring costs, bonding costs, residual loss
-- **Insight for AI**: Even with monitoring, some agency costs are unavoidable. The question is minimizing total cost.
-
-**Holmström (1979)** - "Moral Hazard and Observability"
-- Showed that optimal contracts depend on what's observable
-- **Insight for AI**: Verification is only as good as what can be observed. Unobservable agent reasoning creates irreducible risk.
-
-**Holmström & Milgrom (1991)** - "Multitask Principal-Agent Analyses"
-- When agents have multiple tasks, incentivizing one may distort others
-- **Insight for AI**: Optimizing for measurable metrics may cause agents to neglect unmeasured but important behaviors.
-
-### The Multi-Principal Problem
-
-When multiple principals oversee the same agent (or multiple agents oversee each other), new dynamics emerge:
-
-**Bernheim & Whinston (1986)** - "Common Agency"
-- Agents serving multiple principals face conflicting incentives
-- **Insight for AI**: A verifier that serves both accuracy and speed principals may compromise on both.
-
-**Dixit (1996)** - "The Making of Economic Policy"
-- Political economy of multiple principals with different objectives
-- **Insight for AI**: Organizational entanglement often stems from conflicting stakeholder interests.
+The beta-factor arithmetic does not model either. The site's response is not new math but a rule: measure influence by intervention, and for adversarial channels assume full correlation until a control evaluation measures otherwise ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
 
 ---
 
-## Game Theory & Mechanism Design
+## Correlated errors in LLMs
 
-Adversarial entanglements—collusion, capture, strategic coordination—are fundamentally game-theoretic phenomena.
+- **Goel et al. (2025)**, ["Great Models Think Alike and this Undermines AI Oversight."](https://arxiv.org/abs/2502.04313) This paper proposes CAPA, a chance-adjusted measure of agreement on mistakes. It finds that LLM judges favor models similar to themselves and that models' mistakes grow more similar as capability increases.
+- **Kim et al. (2025)**, ["Correlated Errors in Large Language Models."](https://arxiv.org/abs/2506.07962) Across more than 350 models, errors are substantially correlated: on one leaderboard dataset, two models that both err agree 60% of the time. Shared architecture and provider drive correlation, but larger, more accurate models have highly correlated errors even across providers.
+- **Zou et al. (2023)**, ["Universal and Transferable Adversarial Attacks on Aligned Language Models."](https://arxiv.org/abs/2307.15043) Adversarial suffixes optimized on open models transfer to other models, including closed commercial ones.
 
-### Collusion Resistance
-
-**Laffont & Martimort (1997)** - "Collusion under Asymmetric Information"
-- Formal analysis of when and how agents collude
-- Collusion is easier when agents can communicate and have aligned interests
-- **Insight for AI**: Minimizing communication channels and creating opposed incentives reduces collusion risk.
-
-**Che & Kim (2006)** - "Robustly Collusion-Proof Implementation"
-- Mechanisms that remain incentive-compatible even if agents can collude
-- **Insight for AI**: Some verification architectures are inherently more collusion-resistant than others.
-
-### Correlated Equilibrium
-
-**Aumann (1974, 1987)** - Correlated Equilibrium
-- Players can coordinate using shared signals without explicit communication
-- **Insight for AI**: TDT-style logical correlation is a form of correlated equilibrium. Agents with similar "types" (training) may coordinate without communication.
-
-### Mechanism Design for Verification
-
-**Maskin (1999)** - "Nash Equilibrium and Welfare Optimality"
-- When can social choice functions be implemented?
-- **Insight for AI**: Not all desirable verification properties are achievable through mechanism design. Some are fundamentally impossible.
-
-**Myerson (1981)** - "Optimal Auction Design"
-- Revelation principle: any mechanism can be replicated by one where agents truthfully reveal information
-- **Insight for AI**: If an agent can be incentivized to behave well through complex monitoring, there exists a simpler mechanism achieving the same outcome. But finding it may be hard.
-
-### Repeated Games and Reputation
-
-**Fudenberg & Maskin (1986)** - Folk Theorem
-- In repeated interactions, many outcomes (including collusion) become sustainable
-- **Insight for AI**: Long-term agent-verifier relationships enable implicit collusion. Rotation disrupts this.
-
-**Kreps & Wilson (1982)** - "Reputation and Imperfect Information"
-- Reputation building in games with incomplete information
-- **Insight for AI**: Agents may build reputation specifically to exploit it later. Reputation is not a reliable signal of future behavior.
+None of these reports a phi coefficient of miss indicators, so none can be plugged into the formula directly. Together they support treating "different provider" as insufficient diversity, and treating adversarial inputs as fully correlated.
 
 ---
 
-## Information Theory
+## AI debate
 
-Information theory provides precise tools for quantifying entanglement.
+Debate tries to get independence from opposed incentives rather than from separate systems. [Irving, Christiano & Amodei (2018)](https://arxiv.org/abs/1805.00899) proposed training two agents in a zero-sum game, each arguing a side, with a human judge. By analogy to complexity theory, they argue that debate with optimal play can answer any question in PSPACE given polynomial-time judges, where direct judging reaches only NP. [Brown-Cohen, Irving & Piliouras (2023)](https://arxiv.org/abs/2311.14125) give protocols in which the honest debater can win with a polynomial number of simulation steps, even against a dishonest debater using exponentially many.
 
-### Mutual Information
+The empirical record is mixed:
 
-**Shannon (1948)** - "A Mathematical Theory of Communication"
-- Mutual information I(X;Y) measures how much knowing X tells you about Y
-- **Insight for AI**: Entanglement between components A and B can be measured as I(A_failure; B_failure).
+- **Negative:** Barnes & Christiano, ["Debate update: Obfuscated arguments problem"](https://www.alignmentforum.org/posts/PJLABqQ962hZEqhdB) (AI Alignment Forum, December 2020), found that a dishonest debater can often build an argument with a fatal flaw that is very hard to locate, and reported no fix. Single-turn and two-turn human debates did not improve judges' accuracy on hard reading-comprehension questions ([Parrish et al. 2022a](https://arxiv.org/abs/2204.05212); [2022b](https://arxiv.org/abs/2210.10860)).
+- **Positive:** With multi-round interactive human debates, [Michael et al. (2023)](https://arxiv.org/abs/2311.08702) found 84% judge accuracy against 74% for consultancy, where a single expert argues for one answer. [Khan et al. (2024)](https://arxiv.org/abs/2402.06782) found that debate between LLM experts raised non-expert accuracy to 76% for model judges and 88% for human judges, against naive baselines of 48% and 60%, and that optimizing debaters for persuasiveness helped judges find the truth. With weaker LLMs judging stronger ones, [Kenton et al. (2024)](https://arxiv.org/abs/2407.04622) found that debate beat consultancy on every task when positions were assigned at random. Against the judge answering directly, debate won on extractive tasks with information asymmetry and gave mixed results elsewhere.
 
-**Cover & Thomas (2006)** - "Elements of Information Theory"
-- Standard reference for information-theoretic concepts
-- Relevant concepts: channel capacity, rate-distortion, data processing inequality
-
-### Data Processing Inequality
-
-A fundamental result: information can only be lost, not created, through processing.
-
-```
-If X → Y → Z forms a Markov chain:
-I(X; Z) ≤ I(X; Y)
-```
-
-**Insight for AI**: If context flows Agent → Summary → Verifier, the verifier cannot have more information about the original input than the summary contains. Lossy summarization creates irreversible information loss.
-
-### Channel Capacity for Covert Communication
-
-**Shannon (1948)** - Channel capacity limits
-- Every communication channel has a maximum rate of reliable information transfer
-- **Insight for AI**: Side-channels between components have limited bandwidth. If we can characterize the channel, we can bound the information leakage.
-
-**Bash et al. (2013)** - "Limits of Reliable Communication with Low Probability of Detection"
-- Covert communication in the presence of a warden
-- **Insight for AI**: Agents attempting to collude while evading detection face fundamental limits on how much information they can exchange.
+From the entanglement view, debate's weak points are the familiar ones. Debaters from the same model share blind spots, so neither may raise the problem that matters. Both optimize for persuading the judge, which entangles the judge with them. And collusion risk does not come from the repeated-game folk theorem: in a strictly zero-sum game, repetition supports nothing beyond the minimax value. It comes from debaters not being zero-sum in what they actually optimize. Two copies with the same weights, developer and training signal may share preferences over outcomes that the debate reward does not capture.
 
 ---
 
-## Causal Inference
+## Principal-agent theory
 
-Detecting influence is fundamentally a causal question: does A *cause* changes in B?
+The delegation framework is an application of principal-agent theory: how a principal aligns an agent's behavior when interests diverge and information is asymmetric.
 
-### Intervention and Do-Calculus
+- **Jensen & Meckling (1976)**, "Theory of the Firm." Agency costs are monitoring costs, bonding costs and residual loss. Some residual loss is unavoidable; the aim is to minimize total cost.
+- **Holmström (1979)**, "Moral Hazard and Observability." Optimal contracts depend on what is observable. Unobservable reasoning in an agent is irreducible risk.
+- **Holmström & Milgrom (1991)**, "Multitask Principal-Agent Analyses." Strong incentives on measurable tasks distort effort away from unmeasured ones, which is the economist's version of optimizing a proxy.
+- **Bernheim & Whinston (1986)**, "Common Agency." An agent serving several principals faces conflicting incentives, as a verifier answering both for accuracy and for throughput does.
 
-**Pearl (2009)** - "Causality"
-- Distinguishes observation P(Y|X) from intervention P(Y|do(X))
-- **Insight for AI**: Correlation between component failures doesn't prove influence. We need interventional experiments.
+## Game theory and mechanism design
 
-The do-calculus provides rules for computing causal effects from observational data when certain assumptions hold (e.g., causal graph is known).
+- **Laffont & Martimort (1997)**, "Collusion under Asymmetric Information," *Econometrica*. Collusion is easier when agents can communicate and have aligned interests. Removing channels and opposing incentives reduce it.
+- **Che & Kim (2006)**, "Robustly Collusion-Proof Implementation," *Econometrica*. Some mechanisms stay incentive-compatible even when agents can collude; architectures differ in collusion resistance.
+- **Aumann (1974, 1987)**, correlated equilibrium. Players can coordinate on shared signals without explicit agreement, as similarly trained models may coordinate on shared dispositions.
+- **Fudenberg & Maskin (1986)**, the folk theorem. In repeated games that are not zero-sum, many outcomes, collusion included, can be sustained. Rotation breaks the repetition.
+- **Kreps & Wilson (1982)**, "Reputation and Imperfect Information." Reputation can be built in order to be exploited, so a good record is not a guarantee.
 
-### Counterfactual Reasoning
+## Information theory
 
-**Pearl (2009)**, **Rubin (1974)** - Potential outcomes framework
-- What would have happened if we had intervened differently?
-- **Insight for AI**: Influence detection via counterfactual: "Would B's output have been different if A's context had been different, holding the underlying input constant?"
+- **Shannon (1948)**; **Cover & Thomas**, *Elements of Information Theory* (2nd ed., 2006). Mutual information measures how much one variable tells you about another, and the data-processing inequality says that for a chain X → Y → Z, I(X; Z) ≤ I(X; Y). A verifier that sees only a summary cannot know more about the input than the summary contains.
+- **Bash, Goeckel & Towsley (2013)**, "Limits of Reliable Communication with Low Probability of Detection on AWGN Channels," *IEEE JSAC*. Covert communication under a watchful warden has a square-root limit. Side channels between monitored components have bounded capacity, but not zero capacity.
 
-### Causal Discovery
+## Causal inference
 
-**Spirtes, Glymour, Scheines (2000)** - "Causation, Prediction, and Search"
-- Algorithms for discovering causal structure from data
-- **Insight for AI**: Can we discover hidden influence channels from observational data? PC algorithm, FCI, etc.
+- **Pearl**, *Causality* (2nd ed., 2009), and **Rubin (1974)**. These separate observation from intervention. Influence between components is an interventional quantity, E[B | do(A)], and correlation cannot establish it ([Types of Entanglement](/entanglements/fundamentals/types/#active-entanglement)).
+- **Spirtes, Glymour & Scheines**, *Causation, Prediction, and Search* (2nd ed., 2000). Algorithms for recovering causal structure from observational data, under assumptions.
+- **Granger (1969).** X "Granger-causes" Y if X's past helps predict Y beyond Y's own past. It is a cheap screen for influence channels in logs, not proof of influence.
 
-**Granger (1969)** - Granger Causality
-- X Granger-causes Y if past values of X help predict Y beyond Y's own past
-- **Insight for AI**: Temporal influence detection. If A's past behavior helps predict B's future behavior, there may be an influence channel.
+## Adversarial machine learning
 
----
+- **Szegedy et al. (2013)**, ["Intriguing properties of neural networks."](https://arxiv.org/abs/1312.6199) Adversarial examples exist, and they transfer between models.
+- **Papernot, McDaniel & Goodfellow (2016)**, ["Transferability in Machine Learning."](https://arxiv.org/abs/1605.07277) Transfer is systematic, which makes black-box attacks possible.
+- **Tramèr et al. (2017)**, ["Ensemble Adversarial Training."](https://arxiv.org/abs/1705.07204) Training on adversarial examples crafted against other models improves robustness to transferred attacks.
 
-## Adversarial Machine Learning
+These are image-classifier results. For LLMs, see Zou et al. (2023) above.
 
-Correlated blind spots connect directly to adversarial ML research.
+## Organizational theory
 
-### Transferability of Adversarial Examples
+- **Stigler (1971)**, "The Theory of Economic Regulation," and **Peltzman (1976)**. Regulated industries capture their regulators through information dependence and personnel flows, and capture is a matter of degree.
+- **Carpenter & Moss, eds. (2013)**, *Preventing Regulatory Capture*. The modern treatment, with remedies: transparency, adversarial structure, rotation and external review.
+- **Moore, Tetlock, Tanlu & Bazerman (2006)**, "Conflicts of Interest and the Case of Auditor Independence," *Academy of Management Review*. Well-intentioned auditors are biased by their relationships; independence needs maintenance. US law requires lead and reviewing audit partners on a public company to rotate after five years (Sarbanes-Oxley §203).
+- **Madison, Federalist No. 51 (1788):** "Ambition must be made to counteract ambition." Adversarial structure as a design principle.
 
-**Szegedy et al. (2013)** - "Intriguing Properties of Neural Networks"
-- Discovered adversarial examples and their transferability
-- **Insight for AI**: Adversarial examples that fool one model often fool others—this is the mechanism behind correlated blind spots.
+## Complex systems
 
-**Papernot et al. (2016)** - "Transferability in Machine Learning"
-- Systematic study of why adversarial examples transfer
-- Models with similar decision boundaries are more susceptible to transfer
-- **Insight for AI**: "Diversity" in verification means diversity in decision boundaries, not just different providers.
+- **Buldyrev et al. (2010)**, "Catastrophic cascade of failures in interdependent networks," *Nature*. Interdependent networks are more fragile than either network alone.
+- **Watts (2002)**, "A simple model of global cascades on random networks," *PNAS*. How network structure turns local failures into global ones.
 
-**Tramèr et al. (2017)** - "Ensemble Adversarial Training"
-- Training on adversarial examples from multiple models improves robustness
-- **Insight for AI**: Verification layers trained adversarially against each other may have lower correlation.
+## Decision theory
 
-### Certified Robustness
+- **Yudkowsky (2010)**, "Timeless Decision Theory," and **Yudkowsky & Soares (2017)**, ["Functional Decision Theory."](https://arxiv.org/abs/1710.05060) Agents that reason about their decision *procedure* treat similar agents' choices as correlated with their own. If AI agents reason this way, isolation cannot block their coordination. Whether current models do is an open empirical question ([Channel Integrity](/design-patterns/channel-integrity/#logical-correlation)).
 
-**Cohen et al. (2019)** - "Certified Adversarial Robustness via Randomized Smoothing"
-- Provides provable guarantees against adversarial perturbations
-- **Insight for AI**: For some verification tasks, we can prove bounds on failure rates—but these bounds may still be correlated across components.
+## Representation similarity
 
----
-
-## Organizational Theory
-
-Human institutions have grappled with entanglement for centuries.
-
-### Regulatory Capture
-
-**Stigler (1971)** - "The Theory of Economic Regulation"
-- Regulation is often designed for the benefit of the regulated, not the public
-- Industries "capture" their regulators through information asymmetry and revolving doors
-- **Insight for AI**: Verifiers working closely with agents may be captured by agent interests.
-
-**Peltzman (1976)** - Extended Stigler's model
-- Regulators balance multiple interest groups
-- **Insight for AI**: Capture is not binary—it's a spectrum of influence.
-
-**Carpenter & Moss (2013)** - "Preventing Regulatory Capture"
-- Comprehensive modern treatment
-- Strategies: transparency, adversarial structure, rotation, external review
-- **Insight for AI**: These same strategies apply to AI verification systems.
-
-### Separation of Powers
-
-**Madison, Hamilton, Jay (1788)** - The Federalist Papers
-- Classic arguments for separation of powers and checks and balances
-- Ambition must be made to counteract ambition
-- **Insight for AI**: Adversarial collaboration patterns have deep historical roots.
-
-**Persson, Roland, Tabellini (1997)** - "Separation of Powers and Political Accountability"
-- Formal analysis of how separation of powers affects outcomes
-- **Insight for AI**: Multiple principals with different objectives can prevent capture by any single interest.
-
-### Audit Independence
-
-**Moore et al. (2006)** - "Conflicts of Interest and the Case of Auditor Independence"
-- Psychological and economic barriers to auditor independence
-- Even well-intentioned auditors are influenced by relationships
-- **Insight for AI**: Independence is not a fixed property but requires active maintenance.
-
-**Public Company Accounting Oversight Board (PCAOB)** - Audit rotation requirements
-- Mandatory rotation of audit partners every 5 years
-- **Insight for AI**: Forced rotation prevents relationship-based capture.
+- **Kornblith et al. (2019)**, ["Similarity of Neural Network Representations Revisited."](https://arxiv.org/abs/1905.00414) CKA measures how similar two networks' internal representations are. High similarity suggests shared blind spots, but CKA is not a failure correlation and does not substitute for φ.
 
 ---
 
-## Complex Systems & Network Science
+## Further reading
 
-Entanglements often exhibit complex system behavior.
-
-### Cascading Failures
-
-**Buldyrev et al. (2010)** - "Catastrophic Cascade of Failures in Interdependent Networks"
-- Interdependent networks are more fragile than independent ones
-- Small failures can cascade across network boundaries
-- **Insight for AI**: Shared infrastructure creates interdependency. Failures propagate.
-
-**Watts (2002)** - "A Simple Model of Global Cascades"
-- How local failures become global through network structure
-- **Insight for AI**: Understanding cascade topology helps design circuit breakers.
-
-### Emergence and Self-Organization
-
-**Holland (1998)** - "Emergence: From Chaos to Order"
-- Complex behaviors emerge from simple rules
-- **Insight for AI**: Collusion and coordination may emerge without explicit design. Watch for emergent entanglements.
-
-**Kauffman (1993)** - "The Origins of Order"
-- Self-organization in complex adaptive systems
-- **Insight for AI**: Multi-agent AI systems may self-organize in unexpected ways.
-
----
-
-## Decision Theory
-
-The TDT-style coordination problem connects to foundational questions in decision theory.
-
-### Timeless Decision Theory
-
-**Yudkowsky (2010)** - "Timeless Decision Theory"
-- Agents reason about their decision procedure, not just their actions
-- Similar agents reach similar conclusions through logical correlation
-- **Insight for AI**: Agents with similar training may coordinate without communication—a form of entanglement that can't be blocked by isolating communication channels.
-
-### Functional Decision Theory
-
-**Soares & Fallenstein (2017)** - "Functional Decision Theory"
-- Refined version of TDT
-- **Insight for AI**: The relevance to AI systems is debated but concerning. If AI agents engage in FDT-style reasoning, standard independence assumptions break down.
-
-### Logical Uncertainty
-
-**Garrabrant et al. (2016)** - "Logical Induction"
-- Framework for reasoning under logical uncertainty
-- **Insight for AI**: Agents reasoning about what other similar agents will do face logical uncertainty. This connects to coordination without communication.
-
----
-
-## Interpretability Research
-
-Understanding entanglement at the model level requires interpretability.
-
-### Representation Similarity
-
-**Kornblith et al. (2019)** - "Similarity of Neural Network Representations Revisited"
-- Centered Kernel Alignment (CKA) for comparing representations
-- **Insight for AI**: High CKA between verification models suggests they may share blind spots.
-
-### Activation Patching
-
-**Meng et al. (2022)** - "Locating and Editing Factual Associations in GPT"
-- Techniques for understanding which components of a model affect which outputs
-- **Insight for AI**: Could be used to trace how context from one component influences another's decisions.
-
-### Circuits and Features
-
-**Elhage et al. (2022)** - "Toy Models of Superposition"
-**Anthropic (2023-2024)** - Circuits work
-- Understanding what features models represent and how they compute
-- **Insight for AI**: If we understood what "features" verification models use, we could assess whether they're truly diverse.
-
----
-
-## Summary: Key Takeaways from the Literature
-
-| Field | Key Insight for Entanglement |
-|-------|------------------------------|
-| **Reliability Eng. / CCF** | "Independent" redundancy fails dependently; beta-factor model is the canonical fix; active influence and adversarial coordination extend this to AI |
-| **Principal-Agent Theory** | Some agency costs are unavoidable; design to minimize total cost |
-| **Mechanism Design** | Not all desirable properties are achievable; some are fundamentally impossible |
-| **Game Theory** | Repeated interaction enables collusion; rotation disrupts it |
-| **Information Theory** | Entanglement is quantifiable; lossy channels create irreversible information loss |
-| **Causal Inference** | Influence detection requires intervention, not just correlation |
-| **Adversarial ML** | Model similarity predicts failure correlation; diversity means different decision boundaries |
-| **Organizational Theory** | Capture is a spectrum; independence requires active maintenance |
-| **Complex Systems** | Entanglements may emerge without design; cascades require structural understanding |
-| **Decision Theory** | Logical correlation may be irreducible for similar reasoning systems |
-| **Interpretability** | Understanding what models compute could reveal shared failure modes |
-
----
-
-## Further Reading
-
-### Textbooks
-- **Laffont & Martimort (2002)** - "The Theory of Incentives: The Principal-Agent Model"
-- **Cover & Thomas (2006)** - "Elements of Information Theory"
-- **Pearl (2009)** - "Causality: Models, Reasoning, and Inference"
-- **Mas-Colell, Whinston, Green (1995)** - "Microeconomic Theory" (mechanism design chapters)
-
-### Survey Papers
-- **Bolton & Dewatripont (2005)** - "Contract Theory"
-- **Chakraborty & Yılmaz (2017)** - "Authority, Consensus, and Governance"
-- **Goodfellow et al. (2018)** - "Making Machine Learning Robust Against Adversarial Inputs"
-
-### AI Safety Specific
-- **Christiano et al. (2017)** - "Deep Reinforcement Learning from Human Feedback"
-- **Irving et al. (2018)** - "AI Safety via Debate"
-- **Hubinger et al. (2019)** - "Risks from Learned Optimization"
+- Laffont & Martimort (2002), *The Theory of Incentives: The Principal-Agent Model*.
+- Bolton & Dewatripont (2005), *Contract Theory*.
+- McNeil, Frey & Embrechts (2015), *Quantitative Risk Management*.
+- Christiano et al. (2017), ["Deep reinforcement learning from human preferences."](https://arxiv.org/abs/1706.03741)
+- Hubinger et al. (2019), ["Risks from Learned Optimization in Advanced Machine Learning Systems."](https://arxiv.org/abs/1906.01820)
 
 ---
 
 See also:
-- [Formal Definitions](/entanglements/fundamentals/formal-definitions/) - Mathematical formalization of entanglement
-- [Quantitative Metrics](/entanglements/detection/metrics/) - Measuring entanglement in practice
-- [Historical Case Studies](/entanglements/case-studies/historical-cases/) - Real-world examples of entanglement failures
+- [Formal Definitions](/entanglements/fundamentals/formal-definitions/): the tax built on the beta factor
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): estimating ρ in practice
+- [Risk Propagation](/delegation-risk/risk-propagation/): the canonical rule and its adversarial limit

@@ -5,19 +5,19 @@ sidebar:
   order: 5
 ---
 
-*The opening of Part III: given the [Core Model's](/concepts/core-model/) quantities, how do you engineer good values of them? One objective — eliminate confident error — and six families of mechanism that achieve it, each developed on its own page. This overview states the objective, maps the families onto the field's two axes, gives the threat-coverage picture and the composition algebra that span families, and notes the machine affordances that let every mechanism run at superhuman intensity.*
+*The opening of Part III: given the [Core Model's](/concepts/core-model/) quantities, how do you engineer good values of them? One objective — eliminate confident error — and six families of mechanism that achieve it, each developed on its own page. This overview states the objective, maps the families onto the two axes, gives the threat-coverage picture and the composition algebra that span families, and notes the machine affordances that let every mechanism run at superhuman intensity.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Chapter 11, opening Part III. The six-family taxonomy is a working organizing scheme, not a settled one; families overlap and several constructions pull more than one lever. Grades follow [The Core Model](/concepts/core-model/): **[exact]**, **[standard shape]**, **[heuristic]**, plus **[speculative]**.
+:::note
+Opens Part III. The six-family taxonomy is a working organizing scheme, not a settled one; families overlap and several constructions pull more than one lever. Grades follow [The Core Model](/concepts/core-model/), plus **[speculative]** for constructions with no precedent.
 :::
 
 ## The objective: eliminate confident error
 
-The only epistemic state that can hurt a judge *unboundedly* is being confidently wrong. A calibrated process — whose stated confidence $c$ means it is wrong a $(1-c)$ fraction of the time — converts an open-ended tail risk into a bounded, priceable one: the judge sizes its commitment to $c$, and a deceiver, being *confidently wrong by construction*, shows up as a tail-calibration failure. So the safety-relevant target is not accuracy but **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1 — and the agenda becomes "make the process never confidently wrong" (achievable: it can always hedge or abstain) rather than "make it accurate" (often impossible) ([Allen et al. 2024](https://arxiv.org/abs/2407.03167); trained for in [Wessel et al. 2025](https://arxiv.org/abs/2506.13687)). **[heuristic]** Every family below is, ultimately, a way to make confident error rare or expensive.
+The only epistemic state that can hurt a judge without bound is being confidently wrong. A calibrated process turns that open-ended tail risk into a bounded one the judge can price, so the safety-relevant target is **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1, rather than accuracy. A process can always hedge or abstain, so "never confidently wrong" is achievable where "accurate" often is not. [Calibration](/concepts/hardening-calibration/) develops this, including its limit: a deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else. **[heuristic]** Every family below is a way to make confident error rare or expensive.
 
 ## Two axes, six families
 
-A hardening mechanism moves a process on one of the [field's two axes](/concepts/process-catalogue/) — it makes validated information cheaper, or it makes the output costlier to corrupt. The six families sort onto those axes, and the sort explains the Catalogue's empty quadrant:
+A hardening mechanism moves a process on one of the [two axes](/concepts/process-catalogue/) — it makes validated information cheaper, or it makes the output costlier to corrupt. The six families sort onto those axes, and the sort explains the Catalogue's empty quadrant:
 
 | Family | What it does | Primarily buys |
 |---|---|---|
@@ -26,13 +26,13 @@ A hardening mechanism moves a process on one of the [field's two axes](/concepts
 | [**Independence / decorrelation**](/concepts/hardening-independence/) | manufacture genuinely independent signals | cheaper validated bits + higher corruption cost |
 | [**Invariance / low sensitivity**](/concepts/hardening-invariance/) | output insensitive to controllable inputs | higher corruption cost |
 | [**Incentive-compatibility**](/concepts/hardening-incentives/) | make honesty the best strategy | higher corruption cost |
-| [**Deterrence**](/concepts/hardening-deterrence/) | off-equilibrium penalties | higher corruption cost *at near-zero information cost* |
+| [**Deterrence**](/concepts/hardening-deterrence/) | off-equilibrium penalties | higher corruption cost *at low information cost* |
 
-The non-obvious structural point: most corruption-resistance is bought with verification, which costs real information-extraction work *every time the process runs* — so it raises both axes together and never reaches the cheap-and-incorruptible corner. **Deterrence is the exception** — bonds, clawbacks, tamper-evidence cost almost nothing on the honest path — which is why the empty quadrant is reachable only through it, and why identity/track-record infrastructure (which sets the maximum enforceable penalty) is the field's most leveraged missing institution. Each family is developed on its own page, with its mechanism, its limit, its constructions, and worked bounds.
+The non-obvious structural point: most corruption-resistance is bought with verification, which costs real information-extraction work *every time the process runs* — so it raises both axes together and never reaches the cheap-and-incorruptible corner. **Deterrence is the partial exception**: bonds, clawbacks, and tamper-evidence cost little on the honest path beyond the audits that detect cheating, which makes it the most promising route into the empty quadrant, and makes identity/track-record infrastructure (which sets the maximum enforceable penalty) unusually leveraged. Each family is developed on its own page, with its mechanism, its limit, its constructions, and worked bounds.
 
 ## What each family defends — and the gaps
 
-Sorting the families by the *threats* they close shows both the coverage and, more usefully, where the field has none. (Primary defenders listed; many threats are addressed weakly by several families.)
+Sorting the families by the *threats* they close shows both the coverage and, more usefully, where there is none. (Primary defenders listed; many threats are addressed weakly by several families.)
 
 | Threat | Primary defending families | Where coverage is thin |
 |---|---|---|
@@ -43,18 +43,18 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 | Sandbagging / capability-hiding | Independence, affordances (read-state) | interpretability is unreliable |
 | Resolution-criteria gaming | Deterrence, Incentive-compatibility | who defines the criteria |
 | Selection / optional-stopping | Verifiability, Deterrence | — |
-| **Correlated error** | Independence (weakly) | **largely undefended — the field's biggest hole** |
+| **Correlated error** | Independence (weakly); common-cause-failure models | **no clean AI-specific defense yet** |
 | Goodhart-after-publication | Deterrence, externally-grounded families | style-mimicry of high-tier forms |
 
-The standout is **correlated error**: every aggregation-, ensemble-, and panel-based defense assumes an independence that shared training pipelines erode, and no family closes it cleanly. That empty row is a research priority, not a footnote.
+The standout is **correlated error**. Every aggregation, ensemble and panel defense assumes independence, and shared training pipelines erode it. Engineering has met this before, in N-version programming ([Knight & Leveson 1986](https://doi.org/10.1109/TSE.1986.6312924)), and prices it with common-cause models such as the beta factor ([Independence](/concepts/hardening-independence/) has the details). Those models measure correlation; they do not remove it. No family here removes it for AI reasoners, which makes this row a research priority.
 
 ## Composition: families stack, but how?
 
-The family pages treat constructions as atoms; real systems are stacks, and the catalogue's value is conditional on how stacking behaves. Model a hardened stack as an attack graph: its corruption cost is the **min-cut** over attack paths. Series composition without randomization inherits the *cheapest* stage (the weakest link); randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation — the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional. Whether real stacks multiply corruption costs or merely add the weakest link is the central unmeasured question, the same one the [Process Catalogue](/concepts/process-catalogue/) flags.
+The family pages treat constructions as atoms, but real systems are stacks. Model a hardened stack as an AND/OR attack tree ([Mauw & Oostdijk 2005](https://doi.org/10.1007/11734727_17)): an attacker needs one successful path, so the stack's corruption cost is the cheapest path, with costs summed over AND nodes and minimized over OR nodes. Series composition without randomization therefore inherits the cheapest stage. Randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation; this is the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional, and the same mechanism the [Process Catalogue](/concepts/process-catalogue/#reading-the-table) bets on for the empty quadrant. Whether real stacks behave this way is unmeasured.
 
 ## The cross-cutting multiplier: machine-oversight affordances
 
-The [Process Catalogue](/concepts/process-catalogue/) lists processes evolved for *humans* — who have rights, privacy, fatigue, and exist as single un-forkable instances. None bind for an AI reasoner, and the slack is the field's largest untapped resource. The affordances are not a seventh family; each lets you turn one of the six cranks harder than any human process allows:
+The [Process Catalogue](/concepts/process-catalogue/) lists processes evolved for *humans* — who have rights, privacy, fatigue, and exist as single un-forkable instances. None bind for an AI reasoner, and the slack may be the largest untapped resource here. The affordances are not a seventh family; each lets you turn one of the six cranks harder than any human process allows:
 
 | Affordance | Turns up which family | Example construction |
 |---|---|---|
@@ -78,7 +78,7 @@ The "read their minds" affordance is the highest-leverage and the **least reliab
 - [**Incentive-compatibility**](/concepts/hardening-incentives/) — scoring rules, bets, the persuasion-budget bound.
 - [**Deterrence**](/concepts/hardening-deterrence/) — the inspection-game frontier, tamper-evident logs, provenance bonds.
 
-A capstone — one fully-worked hardened stack on a real task — is planned but not yet in the [table of contents](/#the-book); Chapter 18, Certification and Gyms, is where its measurements would live.
+A capstone — one fully-worked hardened stack on a real task — is [planned](/#planned) but not written; Chapter 18, Certification and Gyms, is where its measurements would live.
 
 ## Open questions
 

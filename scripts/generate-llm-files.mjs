@@ -43,7 +43,8 @@ function loadSite() {
 /**
  * Walk the sidebar in astro.config.mjs and recover reading order. Returns
  * { type: 'part', label } for group headers, { type: 'chapter', label, slug }
- * for pages, and { type: 'planned', label } for `link:` placeholders.
+ * for pages (an optional trailing `badge: {...}` is allowed), and
+ * { type: 'planned', label } for `link:` placeholders.
  */
 export function readSidebarOrder(configText) {
   const start = configText.indexOf('sidebar:');
@@ -51,7 +52,7 @@ export function readSidebarOrder(configText) {
   const region = configText.slice(start);
 
   const re =
-    /label:\s*'([^']+)',\s*(?:\n\s*)?collapsed:|\{\s*label:\s*'([^']+)',\s*slug:\s*'([^']+)'\s*\}|\{\s*label:\s*'([^']+)',\s*link:\s*'[^']*'\s*\}/g;
+    /label:\s*'([^']+)',\s*(?:\n\s*)?collapsed:|\{\s*label:\s*'([^']+)',\s*slug:\s*'([^']+)'(?:,\s*badge:\s*\{[^}]*\})?\s*\}|\{\s*label:\s*'([^']+)',\s*link:\s*'[^']*'\s*\}/g;
 
   const entries = [];
   let m;

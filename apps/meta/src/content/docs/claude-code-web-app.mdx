@@ -1,144 +1,68 @@
 ---
-title: "Guide: Claude Code Web App"
-description: Using the claude.ai/code web interface to build research websites without local setup
+title: "Claude Code on the Web"
+description: Using Claude Code at claude.ai/code to build a research website with no local setup, previewing changes through Vercel preview deployments.
 ---
 
-import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 
-The [Claude Code Web App](https://claude.ai/code) lets you use Claude Code entirely in your browser — no terminal, Node.js, or local setup required. It creates a GitHub repo for your project automatically and gives you a cloud development environment with a built-in terminal and file editor.
+[Claude Code on the web](https://claude.ai/code) runs Claude Code in a cloud virtual machine. You start a session against a GitHub repository; Claude clones it, edits files, runs commands such as `npm install` and `npm run build`, and pushes its work to a new branch. You review the diff and open a pull request from the same page. Nothing is installed on your machine. For the full workshop, which assumes a local terminal, see the [workshop page](/workshop/).
 
-This guide covers the web app workflow. For the full workshop walkthrough (which assumes the local CLI), see the [workshop page](/workshop/).
+Cloud sessions are available on Pro, Max and Team plans, and to Enterprise users with seats that include Claude Code. This guide was checked against [Anthropic's documentation](https://code.claude.com/docs/en/claude-code-on-the-web) on 15 October 2026.
 
-<Aside type="note">
-The web app requires a Claude **Pro** (\$20/mo) or **Max** (\$100/mo or \$200/mo) subscription.
-</Aside>
+| | Web | Local CLI |
+|---|---|---|
+| **Setup** | A GitHub account and a browser | Node.js and Claude Code installed |
+| **Seeing your site** | A Vercel preview deployment per branch | `npm run dev` at localhost:4321, live |
+| **Git** | Claude pushes a branch; you open and merge a pull request | You commit and push yourself |
+| **Keeps running if you close the tab** | Yes | No |
 
----
+The main cost is the feedback loop. There is no live dev server, so you see a change only once Vercel has built a preview of its branch.
 
-## When to Use the Web App vs. Local CLI
-
-| | Web App | Local CLI |
-|---|---------|-----------|
-| **Setup time** | ~1 minute | ~10 minutes (install Node, npm, Claude Code) |
-| **Live preview** | No — must deploy to see your site | Yes — `npm run dev` at localhost:4321 |
-| **File editing** | Built-in editor + Claude | Your own editor + Claude in terminal |
-| **Git** | Auto-creates a GitHub repo | You manage git yourself |
-| **Best for** | Quick starts, non-technical users, workshops | Long-running projects, custom tooling, offline work |
-
-The main trade-off: **no local dev server**. You can't preview your site in the browser until you deploy it. This makes deployment setup important — do it early.
-
----
-
-## Getting Started
+## Getting started
 
 <Steps>
 
-1. **Go to [claude.ai/code](https://claude.ai/code)** and sign in with your Claude account.
+1. **Create a repository** at [github.com/new](https://github.com/new). Cloud sessions work on existing repositories; they don't create one for you. Tick **Add a README file**, so the repository has a `main` branch for pull requests to target.
 
-2. **Create a project.** Click "Create project" — this sets up a GitHub repo and cloud dev environment automatically. You'll need a GitHub account (free at [github.com](https://github.com/)).
+2. **Connect GitHub.** Go to [claude.ai/code](https://claude.ai/code), sign in, and follow the prompt to connect GitHub. For a private repository, also install the Claude GitHub App on the account that owns it. Onboarding then sets up a **Default** environment (on Team and Enterprise, accept the prefilled form). Its network access includes the npm registry, so `npm install` works.
 
-3. **Scaffold your site.** In the chat, ask Claude:
-
-   ```
-   Scaffold a new Astro Starlight research wiki in this project.
-   Run: npm create astro@latest -- --template starlight .
-   Pick: install dependencies = yes, TypeScript = strictest.
-   Then run npm run dev to verify it builds.
-   ```
-
-   Or use the QURI starter (includes Mermaid, KaTeX, Tailwind, CLAUDE.md):
+3. **Start a session.** Select your repository below the message box and ask Claude to scaffold the site. Use `git clone` rather than `npx degit` or `npm create astro`: those download a GitHub archive, which cloud sessions block for repositories not attached to the session.
 
    ```
-   Scaffold a research wiki using the QURI starter template.
-   Run: npx degit quantified-uncertainty/cairn/starters/research-wiki .
-   Then run npm install && npm run dev.
+   Set up a research wiki in this repository from the QURI starter:
+   git clone --depth 1 https://github.com/quantified-uncertainty/cairn /tmp/cairn
+   then copy /tmp/cairn/starters/research-wiki/. into the repository root.
+   Run npm install and npm run build, fix any errors, then commit and push.
    ```
 
-4. **Set up deployment** (next section) so you can actually see your site.
+4. **Merge the first pull request.** When Claude has pushed, open the diff, select **Create PR**, and merge it on GitHub. The site now exists on `main`.
+
+5. **Connect Vercel.** Sign in to [vercel.com](https://vercel.com/) with GitHub, open [vercel.com/new](https://vercel.com/new), select the repository and click **Deploy**. Vercel detects Astro. This first deployment is your production site, at `your-project.vercel.app`.
 
 </Steps>
 
----
+## The working loop
 
-## Deploying Your Site
+1. **Start a session** on the repository and describe the change: new pages, expanded content, a fixed table. Each session works on its own branch, usually named `claude/…`, so you can run several at once.
+2. **Ask Claude to run `npm run build`** before it pushes. Most errors, such as bad MDX or broken frontmatter, show up here, which is faster than waiting for a deploy.
+3. **Open a pull request** from the diff view. Vercel builds a **preview deployment** of the branch and posts its URL on the pull request.
+4. **Review the preview.** Leave inline comments on the diff, or tell Claude in the same session what to change. The session stays live after the pull request is opened, and new pushes update the preview.
+5. **Merge to `main`.** Only then does the production site change.
 
-Since the web app can't preview locally, you need a deployment pipeline. Set this up **before** you start writing content — you'll want to see what your site looks like as you work.
+Your production URL does not show a session's changes until its pull request is merged. Look at the preview URL on the pull request instead.
 
-### Vercel (recommended — zero config)
+## Differences from the local CLI
 
-[Vercel](https://vercel.com/) requires zero Astro configuration:
+- **Permission modes:** cloud sessions offer Accept edits, Plan and, where available, Auto. They have no Manual mode and no skip-all-permissions mode.
+- **Commands:** commands that only make sense in a terminal aren't available, including `/clear` and `/resume`. Start a new session from the sidebar instead. `/compact` and `/context` work.
+- **Moving to your machine:** from a local clone of the repository, `claude --teleport` lets you pick a cloud session. It checks out that session's branch and loads its conversation into your terminal. Or just `git clone` the repository and run `npm install && npm run dev`.
 
-1. Sign up at [vercel.com](https://vercel.com/) with your GitHub account (free tier available)
-2. Click **"Add New Project"** → select your repo
-3. Vercel auto-detects Astro — click **Deploy**
-4. Your site is live at `your-project.vercel.app`
+## Common issues
 
-No workflow files, no manual settings. Deploys in 30-60 seconds. Every push rebuilds automatically.
+**No repositories appear after connecting GitHub.** For private repositories, install the [Claude GitHub App](https://github.com/apps/claude) on the account or organization that owns the repository, and include that repository in the installation's access.
 
-### Other options
+**The live site isn't updating.** The change is on a branch. Check the preview URL on its pull request, then merge.
 
-**Netlify** and **Cloudflare Pages** also work well — see the [deployment section on the workshop page](/workshop/#deployment-after-the-workshop) for details.
+**The preview deployment failed.** Open the Vercel check on the pull request to see the build log, or ask Claude to run `npm run build`, read the error and fix it.
 
----
-
-## The Web App Workflow
-
-Once deployment is set up, the day-to-day workflow is straightforward:
-
-### Build → Commit → Check
-
-1. **Tell Claude what to build or change** — create pages, expand content, fix styling
-2. **Ask Claude to commit and push** — "Commit these changes with the message 'add policy approaches section' and push"
-3. **Check your deployed site** — open your Vercel URL in another tab and refresh after a minute or two
-
-Repeat. Each cycle takes 2-5 minutes depending on deploy speed.
-
-### Tips specific to the web app
-
-**Commit and push frequently.** Since you can't preview locally, small frequent pushes let you catch problems early. Don't build 10 pages before checking what they look like.
-
-**Use the built-in terminal.** The web app has a terminal — you can run `npm run build` to check for build errors without waiting for a deploy. This catches most problems (broken MDX, bad frontmatter) instantly.
-
-**Ask Claude to verify builds.** After big changes:
-```
-Run npm run build and tell me if there are any errors.
-```
-
-**Git operations through Claude.** The web app handles git well. You can ask Claude to commit, push, create branches, etc. You can also use the terminal directly for git commands.
-
----
-
-## Key Differences from Local CLI
-
-If you're used to the local CLI workflow described on the [workshop page](/workshop/), here's what's different:
-
-| Local CLI | Web App |
-|-----------|---------|
-| Three terminal windows (Claude, dev server, general) | One interface — Claude chat + terminal |
-| Live preview at localhost:4321 with hot reload | Deploy to see changes (~1-2 min per cycle) |
-| `claude --dangerously-skip-permissions` for speed | Permissions handled by the web app |
-| Manual git init and remote setup | GitHub repo created automatically |
-| Full control over Node.js version, packages, OS tools | Cloud environment with standard tooling |
-| Works offline | Requires internet connection |
-
-The biggest adjustment is the **feedback loop**. With the local CLI, you see changes instantly in your browser. With the web app, there's a 1-2 minute deploy delay. Compensate by:
-- Running `npm run build` in the terminal to catch errors immediately
-- Batching related changes before pushing
-- Keeping your deployed URL open in another tab
-
----
-
-## Common Issues
-
-**"My site isn't updating after push"**
-- Check the Vercel dashboard for deploy status
-- Build errors will prevent deployment — ask Claude to run `npm run build` to check
-
-**"Build fails with MDX errors"**
-- Paste the error to Claude: "The build failed with this error: [paste]. Fix it."
-- Common causes: unescaped `$`, `<`, or `{` characters in MDX files, or invalid YAML frontmatter
-
-**"I want to switch to local development"**
-- Clone your GitHub repo locally: `git clone https://github.com/YOUR-USERNAME/YOUR-REPO.git`
-- Run `npm install` and `npm run dev` — everything works the same locally
-- You can switch back and forth freely since the repo is the source of truth
+**Build fails with MDX errors.** Usually an unescaped `$`, `<` or `{`, or invalid YAML frontmatter. Paste the error to Claude.

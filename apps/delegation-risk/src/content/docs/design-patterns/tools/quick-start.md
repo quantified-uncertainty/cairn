@@ -1,270 +1,140 @@
 ---
 title: "Quick Start"
+description: "A procedure for estimating and reducing the delegation risk of an AI agent system, with decision trees for implementation, redundancy and human approval"
 sidebar:
   order: 0
 ---
 
-A practical checklist for applying the AI Safety Framework to a new system. Complete these steps in order.
+This page is a procedure for applying delegation risk to an agent system, from scope to a reconciled ledger. Each step names the [design patterns](/design-patterns/) that implement it. The numbers in the example are illustrative.
 
-## Phase 1: Scope and Budget (1-2 hours)
+## 1. Scope, exposure and budget
 
-### 1.1 Define System Boundaries
+- List what the system does, which tools and actions it can call, which data and credentials it can reach, and who its principals are.
+- **Bound the exposure.** Work out the worst loss the system could cause given that access. If the bound is unacceptable, shrink the access before estimating anything else: [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway), [Least Privilege](/design-patterns/least-x-principles/#least-privilege). Coding-agent harnesses already supply parts of the envelope: OS sandboxes with egress allow-lists, per-tool permission rules and pre-tool-use hooks ([what exists](/delegation-risk/runtime-accounting/#what-exists-and-what-is-new)). Check what runs outside the sandbox and whether the agent can request an exit.
+- **Set a risk budget.** The budget is the expected loss per month the operator will accept. It is a choice, not something derived. Anchor it to what the operator can absorb or insure.
 
-- [ ] What is the system's primary task?
-- [ ] What actions can the system take?
-- [ ] What data does it have access to?
-- [ ] Who are the human principals (users, operators, admins)?
+## 2. Build the harm table
 
-### 1.2 Set Risk Tolerance
+| Component | Harm mode | Channel | Actions per month (N) | P(harm) per action | Mean damage per incident | Risk per month |
+|---|---|---|---|---|---|---|
+| _name_ | _what goes wrong_ | accident / defection / hijack | | | | N × P × D |
 
-- [ ] What's the worst realistic outcome?
-- [ ] What damage would that cause? ($ or equivalent)
-- [ ] What's acceptable expected damage per month? → **This is your Delegation Risk budget**
+- **Say what P is per.** Here it is per action, and N converts it to a monthly figure. A per-month probability also works if you say so. Never mix the two.
+- **Use mean damage.** With heavy-tailed damage, the mean can be several times the typical case.
+- **Assign a channel.** Each row belongs to one of the harm channels from [Risk Decomposition](/delegation-risk/risk-decomposition/). Hijack covers prompt injection through tool outputs and retrieved content.
+- **Elicit what you cannot measure.** Where there is no data, get an interval ([Expert Elicitation](/design-patterns/tools/expert-elicitation/)) and run it through the [calculator](/design-patterns/tools/delegation-risk-calculator/).
+- **Sum the rows.** Expected losses add whatever the correlation between rows. Correlation matters for the tail and for stacked defenses.
 
-**Typical budgets**:
-| System Type | Suggested Delegation Risk Budget |
-|-------------|---------------------|
-| Internal tools, recoverable | \$500-2,000/month |
-| Customer-facing, monitored | \$2,000-10,000/month |
-| High-stakes, autonomous | \$10,000-50,000/month |
-| Safety-critical | Consult specialists |
+## 3. Reduce the largest rows
 
-### 1.3 Identify Components
+| Lever | Patterns |
+|---|---|
+| Lower P | [Trusted Monitor](/design-patterns/monitoring/#trusted-monitor), [Voting Tribunal](/design-patterns/structural/#voting-tribunal), [Consistency Triangulation](/design-patterns/verification/#consistency-triangulation), [Honeypot Injection](/design-patterns/verification/#honeypot-injection) |
+| Lower D | [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway), [Bulkhead Isolation](/design-patterns/structural/#bulkhead-isolation), [Expiring Grants](/design-patterns/information/#expiring-grants), [Checkpoint-Rollback](/design-patterns/recovery/#checkpoint-rollback) |
+| Lower N on the risky path | [Escalation Ladder](/design-patterns/structural/#escalation-ladder), [Graduated Autonomy](/design-patterns/structural/#graduated-autonomy) |
+| Separate instructions from data | [Need-to-Know Compartments](/design-patterns/information/#need-to-know-compartments), [Selective Amnesia](/design-patterns/information/#selective-amnesia) |
+| Split the component | [Task Decomposition Pipeline](/design-patterns/structural/#task-decomposition-pipeline) |
 
-List every component that will exist:
-- [ ] What does each component do?
-- [ ] What inputs does it receive?
-- [ ] What outputs does it produce?
-- [ ] What actions can it take?
+Re-estimate after each change, and stop when the total is within budget. When you stack checks, do not multiply their miss rates as if they were independent. Take three layers that each miss 10%. A common-cause correlation $\rho$ multiplies their joint miss rate by $1+99\rho$, which is about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. Those values of $\rho$ are assumed, not measured. Against an adaptive attacker, count only the best layer ([Risk Propagation](/delegation-risk/risk-propagation/)).
 
----
+## 4. Choose an implementation for each component
 
-## Phase 2: Risk Assessment (2-4 hours)
+Use the lowest verifiability tier that can do the job:
 
-### 2.1 Failure Mode Analysis
+1. formally verified code;
+2. deterministic tested code and rule-based checks;
+3. narrow learned models;
+4. trusted LLMs, in the AI Control sense ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)): less capable models you are confident are not trying to subvert your checks;
+5. untrusted frontier models and agents.
 
-For each component, complete this table:
-
-| Component | Failure Mode | P(failure) | Damage | Delegation Risk |
-|-----------|--------------|------------|--------|-----|
-| _name_ | _what could go wrong_ | _estimate_ | _$_ | P × D |
-| | | | | |
-| | | | | |
-
-**Guidance for estimates**:
-- P = 0.1 (10%): Happens regularly without mitigation
-- P = 0.01 (1%): Occasional, seen in testing
-- P = 0.001 (0.1%): Rare, but plausible
-- P = 0.0001 (0.01%): Very rare, requires adversarial action
-
-### 2.2 Sum and Compare
-
-- [ ] Total component Delegation Risks: $______
-- [ ] Budget: $______
-- [ ] **Within budget?** Yes / No
-
-If no: proceed to Phase 3 for mitigation. If yes: proceed to Phase 4.
-
----
-
-## Phase 3: Risk Mitigation (iterate until within budget)
-
-### 3.1 Identify Highest-Delegation Risk Component
-
-Which component contributes most to total Delegation Risk? → **Focus here first**
-
-### 3.2 Choose Mitigation Strategy
-
-| Strategy | Effect | Example |
-|----------|--------|---------|
-| **Add verification** | Reduce P(failure) | Code checker before deploy |
-| **Reduce permissions** | Reduce Damage | Read-only instead of read-write |
-| **Add redundancy** | Reduce P(failure) | Two models must agree |
-| **Add human gate** | Reduce P(failure) | Require approval for high-stakes |
-| **Decompose** | Reduce Damage per component | Split into smaller pieces |
-
-### 3.3 Re-estimate and Repeat
-
-- [ ] Update Delegation Risk estimates with mitigation
-- [ ] Still over budget? → Mitigate next-highest component
-- [ ] Within budget? → Proceed to Phase 4
-
----
-
-## Phase 4: Apply Principles (1-2 hours)
-
-### 4.1 Component Principles Checklist
-
-For each component, verify:
-
-| Principle | Question | Answer |
-|-----------|----------|--------|
-| Least Intelligence | Is this the dumbest implementation that works? | |
-| Least Privilege | Does it have only necessary permissions? | |
-| Least Context | Does it know only what it needs? | |
-| Least Persistence | Is it stateless between invocations? | |
-| Least Autonomy | Is human oversight proportionate to risk? | |
-| Least Surprise | Is behavior deterministic/predictable? | |
-| Least Connectivity | Are communication paths minimized? | |
-
-### 4.2 Coordinator Constraints (if applicable)
-
-If your system has a coordinator component:
-
-- [ ] Does it route rather than directly cause outcomes?
-- [ ] Does it work through intermediaries?
-- [ ] Is communication structured (not natural language)?
-- [ ] Is planning horizon limited?
-- [ ] Is it stateless between invocations?
-- [ ] Is there redundancy or verification?
-
----
-
-## Phase 5: Implementation Choices (2-4 hours)
-
-### 5.1 Choose Implementation for Each Component
-
-Use the [Decision Guide](/design-patterns/tools/decision-guide/) for details.
-
-| Component | Implementation | Justification |
-|-----------|---------------|---------------|
-| _name_ | Code / Narrow Model / General LLM | _why_ |
-| | | |
-
-**Rule of thumb**: Default to verified code or narrow models. Only use general LLMs when creativity/flexibility is required.
-
-### 5.2 Design Redundancy
-
-For safety-critical components:
-- [ ] Which components need N-version redundancy?
-- [ ] Are implementations diverse (different architectures)?
-- [ ] What agreement threshold (unanimous, majority)?
-
-### 5.3 Place Human Gates
-
-- [ ] Which actions require human approval?
-- [ ] Sync, async, or batch approval?
-- [ ] What information does the human see to decide?
-
----
-
-## Phase 6: Monitoring and Rollback (1-2 hours)
-
-### 6.1 Define Monitoring
-
-For each component:
-- [ ] What metrics indicate problems?
-- [ ] What thresholds trigger alerts?
-- [ ] What thresholds trigger automatic shutdown?
-
-### 6.2 Design Rollback
-
-- [ ] How do you undo actions if problems detected?
-- [ ] What's the maximum time to detect and rollback?
-- [ ] Are there actions that can't be rolled back? → Extra scrutiny needed
-
-### 6.3 Plan Verification
-
-- [ ] How will you test that Delegation Risk estimates are accurate?
-- [ ] What data will you collect in production?
-- [ ] When will you re-assess the risk analysis?
-
----
-
-## Phase 7: Document and Review (1-2 hours)
-
-### 7.1 Create Trust Ledger
-
-Document:
-- [ ] System architecture diagram
-- [ ] Component Delegation Risk budgets
-- [ ] Trust relationships (who delegates to whom)
-- [ ] Human approval gates
-- [ ] Monitoring thresholds
-
-### 7.2 Review Checklist
-
-Before deployment:
-- [ ] Total Delegation Risk within budget
-- [ ] All principles applied to each component
-- [ ] Coordinator constraints verified (if applicable)
-- [ ] Redundancy in place for critical components
-- [ ] Human gates at appropriate points
-- [ ] Monitoring and alerting configured
-- [ ] Rollback procedures tested
-- [ ] Documentation complete
-
----
-
-## Quick Reference Card
-
-### Delegation Risk Formula
-```
-Delegation Risk = Σ P(outcome) × Damage(outcome)
+```mermaid
+flowchart TD
+    A[Component] --> B{Specifiable as rules?}
+    B -->|Yes| C{Safety-critical?}
+    C -->|Yes| T1[Tier 1: verified code]
+    C -->|No| T2[Tier 2: tested code]
+    B -->|No| D{Narrow task with data or evals?}
+    D -->|Yes| T3[Tier 3: narrow model]
+    D -->|No| E{Can a trusted model do it?}
+    E -->|Yes| T4[Tier 4: trusted LLM]
+    E -->|No| T5[Tier 5 inside an envelope, monitored by tier 2-4,<br/>or decompose further]
 ```
 
-### Risk Inheritance (Multiplicative)
+A coordinator that routes work between agents is a component like any other. Put routing rules in tier-2 code where possible. If a model must coordinate, keep it stateless, give it structured messages and no direct actions, and gate its irreversible decisions.
+
+## 5. Add redundancy where it buys independence
+
+```mermaid
+flowchart TD
+    A[Safety-critical component?] -->|No| S[Single implementation + Flight Recorder]
+    A -->|Yes| B{Can tier 1-2 code check the output?}
+    B -->|Yes| V[Use that check]
+    B -->|No| C{Checkers sharing no model family,<br/>provider, prompt or context?}
+    C -->|Yes| K[k-of-n Voting Tribunal]
+    C -->|No| D[Count them as one check;<br/>add a different kind of check]
 ```
-Trust(A→C via B) = Trust(A→B) × Trust(B→C)
+
+With a trusted tally, meaning code that counts the votes, a k-of-n approval rule behaves as follows:
+
+| Rule | Harmful action still blocked with up to | Legitimate action still passes with up to |
+|---|---|---|
+| 2-of-2 | 1 faulty voter | 0 |
+| 2-of-3 | 1 | 1 |
+| 3-of-4 | 2 | 1 |
+| 4-of-5 | 3 | 1 |
+
+Every row assumes that voters fail independently. Checkers built on one model family can fail as one, and against an adaptive attacker you should assume they do. The tribunal is then worth its best member. Byzantine agreement bounds ($n \geq 3f+1$) apply when replicas must agree without a trusted tally. A harness that counts votes in code does not need them.
+
+## 6. Place human approval
+
+```mermaid
+flowchart TD
+    A[Action] --> B{Reversible and below<br/>your damage threshold?}
+    B -->|Yes| L[Autonomous; log it and sample for Random Audit]
+    B -->|No| C{Time-sensitive?}
+    C -->|No| H[Synchronous approval]
+    C -->|Yes| D{Similar actions batchable?}
+    D -->|Yes| BA[Batch approval]
+    D -->|No| AS[Async approval with a time lock]
 ```
 
-### Verifiability Hierarchy
-```
-Verified Code > Regular Code > Narrow Models > Constrained LLMs > Base LLMs > RL
-```
+Approval is only a control if the reviewer reads what they approve. Track the rubber-stamp rate, the share of approvals issued faster than the minimum reading time.
 
-### Key Questions
-1. What's the worst that could happen?
-2. How likely is it?
-3. Can I make it less likely (verification, redundancy)?
-4. Can I make it less bad (reduce permissions, add gates)?
-5. How will I know if it's happening (monitoring)?
-6. How will I stop it (rollback, circuit breakers)?
+## 7. Monitor, roll back, reconcile
 
-### Interactive Tools
+- For each harm mode, name the signal that would reveal it. Set one threshold that alerts and one that halts ([Graceful Degradation](/design-patterns/recovery/#graceful-degradation)).
+- For each action that cannot be undone, add a commit point and a time lock ([Checkpoint-Rollback](/design-patterns/recovery/#checkpoint-rollback)).
+- Keep an **exposure ledger** per delegate, and **reconcile** it against incidents and near misses on a schedule ([Runtime Accounting](/delegation-risk/runtime-accounting/)). A harm table that is never reconciled stays a guess.
 
-Use these calculators to run the numbers:
+**Before deployment**, check five things:
 
-- **[Delegation Risk Calculator](/design-patterns/tools/delegation-risk-calculator/)** — Input failure modes, get total Delegation Risk
-- **[Risk Inheritance](/design-patterns/tools/trust-propagation/)** — Compute effective trust through networks
-- **[Tradeoff Frontier](/design-patterns/tools/tradeoff-frontier/)** — Explore capability vs. safety tradeoffs
+- The total is within budget, and exposure is bounded by an envelope the agent cannot bypass.
+- Each component passes the six [Least-X](/design-patterns/least-x-principles/) questions: least intelligence, privilege, context, persistence, autonomy and connectivity.
+- Every redundancy states its independence assumption.
+- Rollback has been tested.
+- A date is set for the first reconciliation.
 
----
+## Example: internal Q&A bot (illustrative)
 
-## Example: 30-Minute Assessment
+A chat bot answers 3,000 employee questions a month from internal documents. The budget is \$1,000 per month.
 
-**System**: Slack bot that answers employee questions using internal docs
+| Harm mode | Channel | N | P per action | Mean D | Before | After |
+|---|---|---|---|---|---|---|
+| Wrong answer acted on | accident | 3,000 | 0.002 | \$100 | \$600 | \$600 |
+| Restricted document shown to the wrong employee | accident | 3,000 | 0.00002 → 0.000002 | \$10,000 | \$600 | \$60 |
+| Posts to the wrong channel | accident | 3,000 | 0.0001 | \$200 | \$60 | \$60 |
+| Injected instruction in a retrieved document | hijack | 3,000 | 0.00001 | \$20,000 → \$2,000 | \$600 | \$60 |
+| **Total** | | | | | **\$1,860** | **\$780** |
 
-**Phase 1** (5 min):
-- Task: Answer questions from internal knowledge base
-- Actions: Read docs, post messages
-- Budget: \$1,000/month (internal tool, recoverable)
+Two structural changes bring the table under budget:
 
-**Phase 2** (10 min):
-- Components: Retriever, Answerer, Poster
-- Failure modes:
-  - Retriever returns wrong docs: P=0.05, D=\$100 → DR=\$5
-  - Answerer hallucinates: P=0.1, D=\$500 → DR=\$50
-  - Answerer leaks sensitive info: P=0.01, D=\$10,000 → DR=\$100
-  - Poster spam: P=0.001, D=\$1,000 → DR=\$1
-- Total: \$156/month ✓ Within budget
+- Retrieval is filtered by the asker's permissions in tier-2 code, so the model never sees what the asker cannot read.
+- The bot's only tool is a reply to the asker, which caps what an injected instruction can do.
 
-**Phase 4** (10 min):
-- Least Intelligence: Answerer could be smaller model ✓
-- Least Context: Answerer doesn't see user identity ✓
-- Least Persistence: Stateless ✓
+Neither change adds a model-based check.
 
-**Phase 5** (5 min):
-- Retriever: Code (vector search)
-- Answerer: Fine-tuned 7B (narrow task)
-- Poster: Code (rate limited)
+## Quick reference
 
-**Result**: Simple, low-risk system. No redundancy needed. Monitor for hallucination rate.
-
----
-
-## Next Steps
-
-- [Decision Guide](/design-patterns/tools/decision-guide/) — Detailed decision trees
-- [Research Assistant Example](/design-patterns/examples/research-assistant-example/) — Full worked example
-- [Principles to Practice](/design-patterns/principles-to-practice/) — Mapping principles to implementations
+- **Delegation risk:** $\sum N \times P(\text{harm per action}) \times \mathbb{E}[D]$, in dollars per month.
+- **Serial chain:** P(the chain executes faithfully) $= \prod t_i$, where $t_i$ is P(link $i$ executes faithfully). The product is conservative when links are correlated.
+- **Parallel checks:** P(all miss) $\approx (1-\rho)\prod p_i + \rho \min p_i$, with $\rho$ on the phi scale. Against adaptive attackers, use $\min p_i$.

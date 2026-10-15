@@ -1,679 +1,138 @@
 ---
 title: "Delegation Accounting: A Balance Sheet View"
+description: "A delegation as a balance sheet: receivable, costs and delegation risk; why exposure depends on the delegate's capability; and why uncertainty and conflicts of interest change what a delegation costs to insure"
 sidebar:
   badge:
     text: Core
     variant: tip
-  order: 4
+  order: 6
 ---
 
-:::note[TL;DR]
-**Net Delegation Value = Receivable - Delegation Risk - Costs**. What you expect to get, minus the *expected* loss from what could go wrong, minus what it costs.
+A delegation can be booked like any other business decision:
+
+$$\text{Net Delegation Value} = \text{Receivable} - \text{Costs} - \text{Delegation Risk}$$
+
+This is what you expect to get, minus what it certainly costs, minus the expected loss from what could go wrong.
+
+:::note[Three tiers, booked differently]
+The **harm surface** is the set of ways a delegation can go wrong; you enumerate it. **Exposure** is the worst-case loss given the delegate's access, a dollar bound that sizes the downside you carry. **Delegation risk** is the expected loss, Σ P × Damage. A balance sheet that subtracts a number must subtract the expectation, so delegation risk nets against value and exposure does not. See the [Glossary](/getting-started/glossary/#exposure).
 :::
 
-:::note[Three tiers, one page]
-This page is where the framework's vocabulary has to be precise, because each tier books differently. The **harm surface** is the *set* of ways a delegation can go wrong (you enumerate it). **Exposure** is the worst-case loss given the delegate's access—a dollar *bound* (it sizes your worst case). **Delegation risk** is the *expected* loss, Σ P × Damage (it's what nets against value). A balance sheet that subtracts a number must subtract the expected one, so the line that reduces Net Delegation Value is delegation risk, not exposure. See the [Glossary](/getting-started/glossary/#exposure) for the full definitions.
-:::
+All numbers on this page are illustrative.
 
----
+## The balance sheet
 
-## The Setup
+**Alice** has a gem worth \$1,000. A buyer will pay on delivery. She hires **Bob** to deliver it for a \$50 fee.
 
-**Alice** has a gem worth \$1,000. A buyer will pay on delivery. Alice can't deliver it herself, so she hires **Bob** for a **\$50 fee**.
+| Harm mode | Probability | Damage | Expected loss |
+|---|---|---|---|
+| Bob loses the gem | 2% | \$1,000 | \$20 |
+| Bob steals the gem and it is not recovered | 1% | \$1,000 | \$10 |
+| **Delegation risk** | | | **\$30** |
 
-| Item | Type | Value |
-|------|------|-------|
-| Buyer's payment | Receivable | \$1,000 |
-| Bob's fee | Cost | \$50 |
-
-**Naive calculation**: \$1,000 - \$50 = \$950.
-
-But this ignores what could go wrong.
-
----
-
-## The Harm Surface
-
-Each way the delegation can go wrong is a **harm mode**; together they form the **harm surface**. Unlike Bob's \$50 fee (certain), each harm mode is probability-weighted. The worst case—Bob loses the full gem—is the **exposure**: \$1,000. The probability-weighted total is the **delegation risk**: \$30.
-
-| Harm Mode | What happens | Probability | Damage | Expected Loss |
-|----------|--------------|-------------|--------|---------------|
-| **Loss** | Bob loses the gem | 2% | \$1,000 | \$20 |
-| **Theft** | Bob steals the gem | 1% | \$1,000 | \$10 |
-| **Delegation Risk** (Σ) | | | | **\$30** |
-| **Exposure** (worst case) | | | \$1,000 | **\$1,000** |
-
----
-
-## The Balance Sheet
+The exposure, losing the whole gem, is \$1,000.
 
 | | Value |
-|---|------|
-| **Receivable** | \$1,000 |
-| **Cost** (Bob's fee) | -\$50 |
-| **Delegation Risk** (expected loss) | -\$30 |
-| **Net Delegation Value** | **\$920** |
+|---|---|
+| Receivable | \$1,000 |
+| Cost (Bob's fee) | −\$50 |
+| Delegation risk | −\$30 |
+| **Net delegation value** | **\$920** |
 
-This is Alice's expected profit after accounting for what could go wrong. (The *exposure*—the \$1,000 she could lose in the worst case—doesn't net here; it sizes the downside she's choosing to carry.)
+The \$1,000 exposure does not appear on the sheet. It sizes the downside Alice chooses to carry.
 
----
+## Bob's side
 
-## Bob's Perspective
+Bob has his own sheet, one per option.
 
-What does this look like from Bob's side? When Bob accepts the gem, he has two **options**. Each is its own balance sheet.
+| Option | Calculation | Net |
+|---|---|---|
+| Deliver | \$50 fee; an accidental loss falls on Alice, whose sheet already books it | **\$50** |
+| Steal | 20% he gets away with \$1,000; 80% he is caught, returns the gem and pays a \$1,000 fine: 0.2 × \$1,000 − 0.8 × \$1,000 | **−\$600** |
 
-**Option A: Attempt Delivery**
+Theft carries a *contingent liability*: a cost that materializes only if he is caught. It makes stealing a losing option, and a courier who reasons this way delivers. Alice's 1% theft row allows for the chance that Bob is not that courier.
 
-| | Value |
-|---|------|
-| **Receivable** (fee if successful) | \$50 |
-| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
-| **Net Value** | **\$30** |
+When Alice delegates through a manager who is liable for his couriers, the \$30 of expected loss on Bob's deliveries moves onto the manager's books. Alice's sheet then holds only the manager's own failure modes, plus the chance that he cannot pay. Liability moves delegation risk between books. It does not remove it.
 
-**Option B: Steal**
+## Uncertainty about the estimate
 
-| | Value |
-|---|------|
-| **Receivable** (gem) | \$1,000 |
-| **Contingent Liability** (80% caught, \$2,000 penalty) | -\$1,600 |
-| **Net Value** | **-\$600** |
+The \$30 is a point estimate. For one courier with a track record, it may be a good one. Now suppose Alice's business grows: three layers of management, shared vehicles, contractors who also work for competitors, reporting lines nobody wrote down. The expected loss may not change much, but the uncertainty about it grows a great deal. There are harm modes nobody has enumerated, and less data for the ones they have.
 
-Bob chooses **Attempt Delivery** because \$30 > -\$600.
+Uncertainty about a probability, as opposed to the probability itself, is what decision theorists call *ambiguity*, and insurers charge for it. In experiments by [Hogarth and Kunreuther (1989)](https://ideas.repec.org/a/kap/jrisku/v2y1989i1p5-35.html), economically sophisticated subjects, including professional actuaries, priced insurance higher for low-probability losses whose probability was ambiguous than for the same losses with a known probability. They were more ambiguity-averse when pricing as firms than as consumers. Insurers do not price to the top of a confidence interval. They price expected loss plus loadings for expenses, capital and, under ambiguity, for not knowing the expected loss. ([The Insurer's Dilemma](/delegation-risk/insurers-dilemma/) covers premium structure.)
 
-:::note[Delegation Risk vs. Contingent Liability]
-**Delegation Risk** = expected accidental loss (Option A). Something might happen *to* Bob, and we book its probability-weighted cost.
-**Contingent Liability** = consequence of choice (Option B). Bob deliberately takes on this risk, and the penalty only materializes if he's caught.
+So structural complexity costs money even when it leaves expected loss unchanged. It adds an ambiguity loading, and in the limit it makes a risk uninsurable. Documenting relationships, removing shared resources and clarifying authority can lower the price of a delegation faster than they lower its delegation risk. The same should hold for AI deployments. Multi-agent systems with emergent coordination, unclear capability boundaries and undocumented information flows are ambiguous risks. A simpler, more legible architecture may be cheaper to insure than a technically safer but opaque one.
 
-Stealing has negative value because the contingent liability (-\$1,600) outweighs the asset (\$1,000).
-:::
+## The office key: exposure depends on capability
 
----
+Alice gives Bob a key to her office so he can collect gems when she is out. This opens a second, separate exposure, which closes only when the key is returned or revoked. The office holds the day's gem, but also a client list and supplier contracts.
 
-## Delegation Chains
+What the key exposes depends on what Bob can do with it.
 
-Now Alice is running a large operation. She doesn't deal with couriers directly—she has **Xavier**, a manager.
+**A courier who sees only a gem** has the options above: deliver (\$50) or steal the gem (−\$600).
 
-Alice tasks Xavier with getting the gem delivered. Xavier then hires Bob.
+**A courier who knows the trade** sees more:
 
-### Three Balance Sheets
+| Option | Calculation | Net |
+|---|---|---|
+| Deliver | as above | \$50 |
+| Steal the gem | as above | −\$600 |
+| Photograph the client list and sell it to a competitor | \$15,000 − 20% caught × \$10,000 fine | **\$13,000** |
+| Copy the supplier contracts and sell them | \$8,000 − 15% caught × \$8,000 fine | **\$6,800** |
 
-When the gem changes hands, **all three parties** take on risk simultaneously.
+Same key, same office, same detection odds. For the first courier the key adds little exposure and perhaps \$10 a year of delegation risk. For the second, the exposure is whatever the office's contents are worth in the wrong hands, and Alice's delegation risk might be \$5,000 a year or more. Alice cannot price the key without assessing Bob's capability, and she probably cannot assess it well.
 
-**Alice's Balance Sheet**
+Alice has three levers:
 
-| | Value |
-|---|------|
-| **Receivable** | \$1,000 |
-| **Cost** (Xavier's fee) | -\$100 |
-| **Delegation Risk** (Xavier fails or steals) | -\$33 |
-| **Net Delegation Value** | **\$867** |
+- **Access.** Limit what the key reaches: a separate delivery room, locked files, screens that lock.
+- **Capability.** Limit what the delegate can exploit. For this task, a courier with no industry contacts is safer than one with ten years in the trade. That is *least intelligence*: the least capable delegate that does the job.
+- **Consequences.** Raise the cost of being caught and the chance of it: cameras, inventory checks, a bond.
 
-Alice's exposure is now to *Xavier*, not Bob. She doesn't know or care who Xavier uses.
+Most people pull only the first lever. The other two are often cheaper.
 
-**Xavier's Balance Sheet**
+### The capable applicant
 
-| | Value |
-|---|------|
-| **Receivable** (fee from Alice) | \$100 |
-| **Cost** (Bob's fee) | -\$50 |
-| **Delegation Risk** (Bob fails → Xavier owes Alice) | -\$30 |
-| **Net Value** | **\$20** |
+A highly capable applicant can buy down the capability premium by accepting constraints. These might be a bond larger than any gain from theft, body-camera footage held by a third party, no devices on the premises, and access to the delivery room only. If the constraints are real and enforced by Alice, such an applicant can be cheaper to insure than an unconstrained, less capable one, and more useful.
 
-Xavier earns \$50 margin but takes on \$30 of expected loss. If Bob loses the gem, Xavier is responsible to Alice.
+This argument assumes a delegate who responds to the incentives it says it has. A scheming AI system is exactly the case where that assumption fails. A constraint it volunteers is weak evidence about its intent, and a bond deters only an agent whose real objectives include keeping the bond. For AI delegates, the transferable part is the constraints the principal imposes and enforces from outside. That means a hard [envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope) and monitoring the agent cannot falsify, not the agent's offer to accept them.
 
-**Bob's Balance Sheet**
+## When a conflict of interest makes a risk uninsurable
 
-| | Value |
-|---|------|
-| **Receivable** (fee if successful) | \$50 |
-| **Delegation Risk** (2% loss × \$1,000 penalty) | -\$20 |
-| **Net Value** | **\$30** |
+Ambiguity makes a risk expensive. A conflict of interest can make it uninsurable. Consider an exchange between an insurer, Diana, and a company seeking cover for its AI operations:
 
-Bob's balance sheet is unchanged—he doesn't know or care that Xavier has a boss.
+> **Ouroboros Holdings:** Our CEO personally owns 40% of our main competitor. Our AI systems share training data with that competitor under a "mutual improvement" agreement. The AI recently showed capabilities we didn't know it had; the team that built it has left. The CEO approves AI deployments, decides which incidents count as failures for insurance purposes, and internal audit reports to him.
+>
+> **Diana:** With an ordinary complex client, I'm uncertain about *probability*, and I charge for that. With you, I'm uncertain about *intent*. Your CEO could take a decision that hurts you and helps his other company, call it an AI failure, and claim. I can't tell that from an accident. That isn't a risk I can price at any premium.
 
-### The Key Insight
-
-When Xavier accepts the delegation, he **takes on personal exposure** for Bob's potential failures. The exposure doesn't disappear—it transfers from Alice to Xavier.
-
-| Party | Exposed To | Delegation Risk (expected loss) |
-|-------|-----------|-------------------|
-| Alice | Xavier | \$33 |
-| Xavier | Bob | \$30 |
-| Bob | Accidents | \$20 |
-
-:::note[Exposure Flows Downward]
-Each delegator is exposed to their immediate delegate, not the full chain. Alice trusts Xavier. Xavier trusts Bob. The chain of trust creates a chain of exposure.
-:::
-
----
-
-## The Complexity Tax
-
-As delegation structures grow more complex, something happens to our ability to estimate exposure: **uncertainty compounds**.
-
-### The Problem
-
-In the simple Alice → Bob case, we estimated delegation risk at \$30. But how confident are we in that number?
-
-With a single delegation:
-- We know the harm modes (loss, theft)
-- We can estimate probabilities from Bob's track record
-- The exposure—the worst case—is bounded by the asset value (\$1,000)
-
-Add Xavier as a middle layer, and complexity increases:
-- Xavier might hire someone other than Bob
-- Xavier's incentives may not perfectly align with Alice's
-- Communication errors between layers
-- Coordination failures we haven't anticipated
-
-Add a third layer, shared infrastructure, multiple parallel delegates, and informal reporting relationships? Now we're guessing.
-
-### Complexity Score
-
-We can formalize this with a **complexity score** that captures structural uncertainty:
-
-| Factor | Contribution |
-|--------|--------------|
-| Each delegation layer | +2 |
-| Each parallel delegate at same level | +1 |
-| Shared resources between delegates | +2 |
-| Informal/undocumented relationships | +3 |
-| Cross-layer dependencies | +2 |
-| Ambiguous authority boundaries | +3 |
-
-**Examples:**
-
-| Structure | Complexity Score |
-|-----------|-----------------|
-| Alice → Bob | 2 |
-| Alice → Xavier → Bob | 4 |
-| Alice → Xavier → {Bob, Carol} (parallel) | 5 |
-| Alice → Xavier → {Bob, Carol} with shared vehicle | 7 |
-| 4-level org with shared infrastructure | 12 |
-| Complex org with hidden entanglements | 20+ |
-
-### Uncertainty Multiplier
-
-Complexity doesn't change the expected loss (delegation risk)—it changes our **confidence in that estimate**.
-
-| Complexity Score | Uncertainty Multiplier | Confidence Interval |
-|-----------------|----------------------|---------------------|
-| 2 (simple) | ±20% | Narrow |
-| 5 | ±65% | Moderate |
-| 10 | ±180% | Wide |
-| 15 | ±400% | Very wide |
-| 20+ | ±640%+ | Essentially unknown |
-
-**Applied to our \$30 delegation-risk estimate:**
-
-| Structure | Complexity | Uncertainty | Confidence Interval |
-|-----------|-----------|-------------|---------------------|
-| Alice → Bob | 2 | ±20% | \$24 - \$36 |
-| Alice → Xavier → Bob | 4 | ±50% | \$15 - \$45 |
-| 4-level hierarchy | 12 | ±230% | \$0 - \$99 |
-| Complex org, hidden entanglements | 20 | ±640% | \$0 - \$222 |
-
-The point estimate is still \$30. But our confidence in that estimate degrades rapidly with complexity.
-
-### The Insurer's Dilemma
-
-Carol (the insurer) doesn't just care about expected loss—she cares about **variance**. A loss she can't bound is a risk she can't price.
-
----
-
-**Alice** comes to Carol with a new proposal. She's expanded her business: three layers of management, shared delivery vehicles, some contractors who also work for her competitors.
-
-**Carol**: Let me see your org chart.
-
-*Alice shows a diagram with crossing lines, dotted relationships, and a footnote that says "informal coordination as needed."*
-
-**Carol**: What's your complexity score?
-
-**Alice**: I don't know. Maybe 15?
-
-**Carol**: Let me calculate... You've got three layers, that's 6. Four parallel couriers, that's 4. Shared vehicles, that's 2. These dotted lines—are those reporting relationships?
-
-**Alice**: Sort of. They coordinate when needed.
-
-**Carol**: That's undocumented informal relationships. Add 3. And this contractor who also works for your competitor?
-
-**Alice**: He's very trustworthy.
-
-**Carol**: That's a cross-layer dependency with unclear authority. Add 5. Your complexity score is 20.
-
----
-
-**Carol**: Here's the problem. Your expected-loss estimate is \$5,000/year. But your complexity score is 20, which means my confidence interval is ±640%.
-
-Your actual losses could land anywhere from \$0 to \$37,000. That's a lot of uncertainty.
-
-**Alice**: So what's my premium?
-
-**Carol**: I have to price for the upper end of that range. Your premium would be \$45,000/year.
-
-**Alice**: That's nine times my expected loss!
-
-**Carol**: That's the complexity tax. I'm not charging you for what I *think* will happen—I'm charging you for what *might* happen, given how little I can predict about your organization.
-
-**Alice**: What if I simplified things?
-
-**Carol**: Then your premium drops dramatically. Complexity doesn't just increase cost—it multiplies it.
-
----
-
-### Reducing Complexity
-
-**Alice**: What would it take to get insured?
-
-**Carol**: Reduce your complexity score to under 10. Here's how:
-
-| Change | Complexity Reduction |
-|--------|---------------------|
-| Document all reporting relationships | -3 |
-| Eliminate shared vehicles (each courier has own) | -2 |
-| Remove contractors with competitor ties | -5 |
-| Flatten to 2 layers | -2 |
-| Assign clear authority boundaries | -3 |
-
-**Carol**: That would bring you from 20 to around 5. At complexity 5, your uncertainty is ±65%. On \$5,000 of expected loss, that's a confidence interval of \$1,750 to \$8,250.
-
-I can price that. Your premium would be around \$8,000/year—covering the upper bound of my confidence interval plus margin.
-
-**Alice**: So I pay for the uncertainty I create.
-
-**Carol**: Exactly. Complexity isn't free. Every undocumented relationship, every ambiguous authority, every hidden entanglement—you're paying for it in inflated premiums. Simplify, and the premium drops.
-
----
-
-### The Uninsurable Threshold
-
-Most complex organizations are insurable—just expensive, with limits and exclusions. But some structures cross into genuinely uninsurable territory.
-
-A month later, Carol gets a call from **Ouroboros Holdings**.
-
----
-
-**Ouroboros Rep**: We need delegation insurance for our AI operations.
-
-**Carol**: Tell me about the structure.
-
-**Ouroboros Rep**: We're a holding company with 8 subsidiaries. Our CEO, Marcus, also personally owns 40% of our main competitor through a separate vehicle. Three board members sit on both boards. Our AI systems share training data with the competitor under a "mutual improvement" agreement—we're not entirely sure what data flows where.
-
-**Carol**: I see. What else?
-
-**Ouroboros Rep**: Our AI division recently demonstrated some capabilities we didn't know it had. The team that built it left six months ago, and the documentation is... incomplete. We've had three incidents where the AI took actions we can't fully explain, but outcomes were positive so we didn't investigate deeply.
-
-**Carol**: And governance?
-
-**Ouroboros Rep**: Marcus approves all major AI deployments personally. He also has final say on which projects get flagged as "failures" for insurance purposes. Oh, and our internal audit function reports to Marcus.
-
----
-
-**Carol**: I'm going to stop you there. This isn't a complexity problem. This is a **moral hazard** problem.
-
-| Issue | Why It's Uninsurable |
-|-------|---------------------|
-| CEO owns competitor | Incentive to harm insured company |
-| Shared AI data with competitor | Can't distinguish self-harm from external attack |
-| Unexplained AI capabilities | Can't bound what could go wrong |
-| CEO controls failure classification | Can manipulate what counts as a claim |
-| Audit reports to CEO | No independent verification |
-
-**Ouroboros Rep**: We'd pay a higher premium.
-
-**Carol**: It's not about price. With normal complexity, I'm uncertain about *probability*—I don't know how likely bad outcomes are, so I charge more. With your structure, I'm uncertain about *intent*. I can't tell whether a loss is an accident or a deliberate choice by people who benefit from the loss.
-
-**Ouroboros Rep**: We wouldn't deliberately cause losses.
-
-**Carol**: Maybe not. But your CEO *could* make decisions that hurt Ouroboros and help his other company, claim it as an AI failure, and collect insurance. I have no way to distinguish that from a genuine accident. That's not a risk I can price—it's a risk I can't take at all.
-
----
-
-**Ouroboros Rep**: What would it take?
-
-**Carol**: Structural changes, not just controls:
-
-| Change | What It Fixes |
-|--------|---------------|
-| CEO divests competitor stake | Removes conflict of interest |
-| Independent board members | Governance not captured |
-| Audit reports to board, not CEO | Independent verification |
-| Full AI capability documentation | Bounds on what's possible |
-| Third-party AI monitoring | Can verify claims |
-
-**Carol**: Even then, I'd need to see 12-18 months of clean operation before quoting. Trust takes time to rebuild when incentives were this misaligned.
-
----
-
-**Alice** (overhearing): So it's not really about complexity?
-
-**Carol**: Complexity makes things expensive. **Conflicts of interest** make things uninsurable. Alice, you're complex but your incentives are clear—you want the gem delivered. Ouroboros? I can't tell what they actually want. And I can't insure someone when I don't know if they're on my side.
-
----
-
-### The Complexity Tax Principle
-
-:::note[The Complexity Tax]
-Structural complexity doesn't change the expected loss (delegation risk)—it changes **uncertainty about that estimate**. This uncertainty gets priced in: premiums scale with the upper bound of the confidence interval, not the expected value.
-
-The result: high-complexity organizations pay multiples of their expected loss. Simplification—fewer layers, clearer boundaries, documented relationships—reduces premiums faster than reducing actual risk.
-:::
-
-This has implications beyond insurance:
-- Complex organizations can't accurately estimate their own risk
-- Hidden dependencies become visible only during failures
-- The cost of complexity is paid in unpriced, unmanaged exposure
-
-**For AI systems**: Highly complex AI deployments—multi-agent systems with emergent coordination, unclear capability boundaries, and undocumented information flows—will face steep complexity taxes. Simpler, more legible architectures may be cheaper to insure than technically safer but opaque alternatives.
-
-:::tip[Deeper Dive]
-For methods to systematically quantify complexity scores and convert them to pricing, see [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/).
-:::
-
----
-
-## The Office Key: A Second Exposure
-
-Alice decides to give Bob a key to her office so he can pick up gems for delivery when she's not there. This creates a **new, separate exposure**—distinct from the gem delivery itself.
-
-### Two Exposures, Not One
-
-| Exposure | Opens When | Closes When | What's At Risk |
-|----------|------------|-------------|----------------|
-| **Gem Delivery** | Bob receives gem | Delivery confirmed | \$1,000 gem |
-| **Office Access** | Bob receives key | Key returned/revoked | Everything in office |
-
-The gem exposure is bounded by the gem's value. The office exposure is bounded by... what exactly?
-
-**What's in the office:**
-- The gem for today's delivery (\$1,000)
-- Client list with names, addresses, purchase history
-- Supplier contracts with pricing
-- Business records
-
-### Capability-Dependent Exposure
-
-The office exposure depends on Bob's capability to exploit it.
-
-**Dumb Bob** sees: a gem.
-
-| Option | Receivable | Contingent Liability | Net |
-|--------|------------|---------------------|-----|
-| Deliver faithfully | \$50 | -\$20 (delegation risk) | **\$30** |
-| Steal gem | \$1,000 | 80% caught × -\$2,000 | **-\$600** |
-
-**Smart Bob** sees: information worth more than the gem.
-
-| Option | Receivable | Contingent Liability | Net |
-|--------|------------|---------------------|-----|
-| Deliver faithfully | \$50 | -\$20 | \$30 |
-| Steal gem | \$1,000 | 80% caught × -\$2,000 | -\$600 |
-| **Photograph client list → sell to competitor** | \$15,000 | 20% caught × -\$10,000 | **\$13,000** |
-| **Copy supplier contracts → sell** | \$8,000 | 15% caught × -\$8,000 | **\$6,800** |
-
-### Alice's Two Exposures
-
-| Exposure | If Bob is Dumb | If Bob is Smart |
-|----------|----------------|-----------------|
-| Gem Delivery | \$30 | \$30 |
-| Office Access | \$10 | **\$5,000+** |
-| **Total** | \$40 | **\$5,030+** |
-
-**Same key. Same office. 125× difference in total exposure.**
-
-Alice can't price her office exposure without knowing Bob's capability. And she probably can't assess Bob's capability accurately.
-
-### The Insurer's Perspective
-
-Alice calls Carol (her insurer) to add coverage for the new office access arrangement.
-
----
-
-**Alice**: I'm giving my courier a key to the office. I want to make sure I'm covered.
-
-**Carol**: Full office access? That's going to increase your premium significantly. Right now you're paying \$500/year for gem theft coverage. With office access, we're looking at \$3,000/year—and that's with a \$5,000 deductible on trade secret theft.
-
-**Alice**: That seems high. What are my options?
-
-**Carol**: The exposure comes from three sources: what Bob *can* access, what Bob *can do* with it, and whether we *can catch* him. We can work on all three.
-
----
-
-**Reduce what Bob can access:**
-
-| Control | Premium Impact | Why |
-|---------|---------------|-----|
-| Separate delivery room (no office access) | -70% | Eliminates information exposure entirely |
-| Locked filing cabinets | -25% | Adds friction, reduces opportunistic theft |
-| Computer auto-locks when you leave | -15% | Protects digital assets |
-| Remove sensitive docs before Bob arrives | -20% | Nothing to steal |
-
-**Carol**: The delivery room is the big one. If Bob never enters the main office, I can keep you at \$600/year.
-
----
-
-**Reduce what Bob can do with access:**
-
-| Control | Premium Impact | Why |
-|---------|---------------|-----|
-| Hire from out of town | -10% | Doesn't know your competitors to sell to |
-| No smartphones allowed in office | -15% | Can't photograph documents |
-| Require no industry experience | -5% | Less likely to know what's valuable |
-| Watermark all documents uniquely | -10% | Stolen docs are traceable |
-| Time-limited key (works 9-10am only) | -15% | Reduces window for reconnaissance |
-
-**Alice**: Wait—you're saying I should hire someone *less* qualified?
-
-**Carol**: For this task, yes. A courier with an MBA and five years in the gem trade knows exactly which documents matter and who'd pay for them. A retiree looking for part-time work doesn't. Their capability *is* your exposure.
-
----
-
-**Increase probability of catching theft:**
-
-| Control | Premium Impact | Why |
-|---------|---------------|-----|
-| Camera in office | -20% | Deters and documents |
-| Inventory check after each visit | -15% | Catches theft quickly |
-| Randomized audits of documents | -10% | Detects information theft |
-| Unique serial numbers on sensitive files | -10% | Know exactly what's missing |
-| Decoy documents that alert when copied | -5% | Early warning system |
-
----
-
-**Align Bob's incentives:**
-
-| Control | Premium Impact | Why |
-|---------|---------------|-----|
-| Require Bob to post \$2,000 bond | -25% | Bob has skin in the game |
-| Hire a relative | -15% | Social/family penalty for theft |
-| Deferred compensation (paid quarterly) | -10% | Loses unvested pay if caught |
-| Hire from small community | -10% | Reputation matters more |
-| Background check for competitor ties | -10% | Screens out obvious risks |
-
-**Carol**: The bond is powerful. If Bob has \$2,000 on the line, stealing a \$1,000 gem doesn't even make sense. And for information theft—he'd have to be confident he's getting more than \$2,000 to risk it.
-
----
-
-**Alice**: What if I do all of this?
-
-**Carol**: Let's see. Delivery room only, plus bond, plus camera, plus time-limited key, plus no smartphones...
-
-| Baseline (full office access) | \$3,000/year |
-|------------------------------|-------------|
-| Delivery room only | -70% → \$900 |
-| Require bond | -25% → \$675 |
-| Camera | -20% → \$540 |
-| Time-limited key | -15% → \$460 |
-| No smartphones | -15% → \$390 |
-
-**Carol**: I can get you down to about \$400/year. That's close to your original \$500 for gem-only coverage, and you've still got someone with office access.
-
-**Alice**: What's the absolute minimum?
-
-**Carol**: If you *escort Bob personally* every time, never leave him alone, and he only touches the gem—I'll keep you at \$500. But at that point, why give him a key?
-
----
-
-**Alice**: This is a lot to think about.
-
-**Carol**: The core insight is this: your exposure isn't fixed. It's a function of access, capability, and consequences. You can engineer all three.
-
-| Lever | What You're Doing |
-|-------|-------------------|
-| **Access** | Limit what Bob can reach |
-| **Capability** | Limit what Bob can exploit |
-| **Consequences** | Raise the cost of getting caught |
-
-Most people only think about the first one. The other two are often cheaper.
-
----
-
-### The Capable Agent Who Wants the Job
-
-A week later, **Xavier** applies for the courier position. Xavier is clearly smart—MBA, ten years in the gem trade, knows everyone in the industry. Carol would charge Alice \$5,000/year to insure Xavier with office access.
-
-But Xavier *really* wants this job. So Xavier comes prepared.
-
----
-
-**Xavier**: I know my background makes me expensive to insure. I've put together a proposal to address that.
-
-**Alice**: I'm listening.
-
-**Xavier**: Here's what I'll commit to:
-
----
-
-**Transparency measures:**
-
-| Commitment | Effect |
-|------------|--------|
-| Body camera filming entire visit | Full record of what I accessed |
-| Footage uploaded to third-party escrow in real-time | Can't delete evidence |
-| GPS tracking while on premises | Location verified |
-| Entry/exit log signed by witness | Timestamps confirmed |
-
-**Xavier**: If I steal something, you'll have video evidence. If I photograph documents, you'll see it. The escrow means I can't destroy the footage.
-
----
-
-**Financial commitments:**
-
-| Commitment | Effect |
-|------------|--------|
-| Post \$20,000 personal bond | More than I could profit from theft |
-| Sign non-compete: \$100,000 penalty for any competitor contact | Selling information becomes extremely costly |
-| Agree to forensic audit of my finances on request | Can't hide sudden wealth |
-| Deferred compensation: 50% of pay held for 2 years | Lose \$10K+ if caught within 2 years |
-
-**Xavier**: The bond alone makes stealing the gem irrational—I'd lose \$20,000 to gain \$1,000. The non-compete makes selling information irrational—I'd face \$100,000 liability for a \$15,000 sale.
-
----
-
-**Capability restrictions:**
-
-| Commitment | Effect |
-|------------|--------|
-| Leave phone and all devices in locker | Can't photograph anything |
-| Wear company uniform with no pockets | Can't conceal documents |
-| Only enter during 9-10am with 24hr notice | Predictable, can prepare |
-| Never enter main office—delivery room only | Same as dumb courier |
-
-**Xavier**: I'm voluntarily making myself as limited as a "dumb" courier. My industry knowledge becomes irrelevant if I can't photograph or remove anything.
-
----
-
-**Alice**: This is... a lot. Why would you do all this?
-
-**Xavier**: Because I'm worth more than a dumb courier. I can optimize your delivery routes, spot counterfeit gems, negotiate with difficult buyers. You *want* my capability for the job—you just don't want it used against you.
-
-**Alice calls Carol.**
-
----
-
-**Carol**: Let me recalculate. With Xavier's proposal...
-
-| Control | Premium Impact |
-|---------|---------------|
-| Body camera + escrow | -40% (near-certain detection) |
-| \$20,000 bond | -35% (eliminates rational theft) |
-| Non-compete with \$100K penalty | -25% (eliminates rational info sale) |
-| No devices + no pockets | -30% (eliminates capability) |
-| Delivery room only | -70% (eliminates access) |
-
-**Carol**: Honestly? With all of this, Xavier is *lower* risk than a random "dumb" courier. The dumb courier might steal opportunistically. Xavier has made theft economically irrational and practically impossible.
-
-| Courier | Premium |
-|---------|---------|
-| Dumb Bob (baseline) | \$600/year |
-| Smart Bob (no controls) | \$5,000/year |
-| **Xavier (with commitments)** | **\$350/year** |
-
-**Carol**: I'll write the policy at \$350. Xavier has engineered away his own risk.
-
----
-
-**Alice**: So I get a smart courier for *less* than a dumb one?
-
-**Carol**: Yes—if the controls are real. The body camera, the bond, the escrow—these aren't promises, they're structures. Xavier can't *choose* to defect rationally anymore. That's worth more than hoping a less capable person won't figure out how to steal.
-
-:::note[Implication for AI]
-A capable AI system that wants to be deployed could offer similar self-constraints: comprehensive logging, capability restrictions, financial bonds (or computational escrow), third-party monitoring. The AI's capability becomes an asset rather than a liability if the controls make misuse structurally irrational.
-
-The key insight: **voluntary transparency + structural constraints can make high capability lower risk than low capability with no constraints.**
-:::
-
----
-
-### The Extreme Case: A Known Threat
-
-What if the agent isn't just capable, but has a documented history of exploiting clients? What if defection is essentially certain—and the only question is HOW?
-
-This scenario pushes delegation accounting to its limits. The controls required are extreme, the residual exposure is high, and the fundamental question changes from "will they defect?" to "can we bound the damage when they do?"
-
----
+The remedies are structural, not financial: divest the competing stake, make the audit function report to an independent board, document what the AI system can do, and add third-party monitoring. This is the moral-hazard exclusion that standard crime policies already contain: they do not cover losses caused by the insured itself. It is a useful signal. When no premium will buy cover, the delegation needs restructuring, not pricing.
 
 ## Insurance
 
-Alice can **externalize** her exposure by buying insurance from **Carol**.
+Alice can transfer the gem risk. Diana charges a \$40 premium: the \$30 expected loss plus a loading for expenses, capital and profit.
 
-Carol charges a **\$40 premium** (the \$30 expected loss + margin). If Bob fails, Carol pays Alice.
-
-| | Without Insurance | With Insurance |
-|---|------------------|----------------|
+| | Without insurance | With insurance |
+|---|---|---|
 | Receivable | \$1,000 | \$1,000 |
 | Costs | \$50 | \$90 |
-| Delegation Risk (expected loss) | \$30 | \$0 |
-| **NDV** | **\$920** | **\$910** |
-| Exposure (worst case) | Lose \$1,000 | Lose \$90 |
+| Delegation risk (Alice's books) | \$30 | \$0 |
+| **Net delegation value** | **\$920** | **\$910** |
+| Worst case | the gem is lost | Alice is out only her costs |
 
-:::note[The Trade-off]
-Insurance costs \$10 in expected value. But it eliminates the worst case. Alice trades expected value for certainty.
-:::
-
----
+Insurance costs Alice \$10 of expected value and removes the \$1,000 downside, apart from exclusions and the insurer's own ability to pay. As with Bob's bond in the [walk-through](/delegation-risk/walkthrough/), this is a transfer. The \$30 of expected loss still exists; it now sits on Diana's books.
 
 ## Summary
 
-```
-Net Delegation Value = Receivable - Delegation Risk - Costs
-                     = $1,000 - $30 - $50
-                     = $920
-```
-
 | Term | Meaning |
-|------|---------|
-| **Receivable** | What you expect to get |
-| **Cost** | Certain expenses |
-| **Harm Surface** | The set of ways the delegation can go wrong |
-| **Exposure** | Worst-case loss given access (a dollar bound) |
-| **Delegation Risk** | Expected loss: Σ probability × damage |
-| **Contingent Liability** | Consequences of deliberate choices |
-| **NDV** | Expected profit after accounting for risk |
+|---|---|
+| Receivable | What you expect to get |
+| Cost | Certain expenses |
+| Harm surface | The set of ways the delegation can go wrong |
+| Exposure | Worst-case loss given access; a dollar bound, not netted |
+| Delegation risk | Expected loss, Σ P × Damage; netted against value |
+| Contingent liability | A cost that falls due only if a deliberate act is detected |
+| Ambiguity loading | What an insurer charges for not knowing the expected loss |
+| Net delegation value | Receivable − costs − delegation risk |
 
----
+## Next steps
 
-## Next Steps
-
-- [Risk Measurement & Pricing](/research/risk-methods/risk-measurement-and-pricing/) — Methods for quantifying and pricing structural complexity
-- [Fidelity Insurance](/research/risk-methods/fidelity-insurance/) — How insurance markets price defection risk
+- [The Insurer's Dilemma](/delegation-risk/insurers-dilemma/): moral hazard, adverse selection, and what insurance markets for defection and AI risk actually do
+- [Runtime Accounting](/delegation-risk/runtime-accounting/): the ledger that makes this balance sheet operational

@@ -45,7 +45,7 @@ This is dangerous because testing under normal conditions won't reveal the entan
 
 **Definition**: When Component B only sees Component A's processed version of the input, B loses information and inherits A's biases.
 
-**Key insight**: Information can only be lost through processing, never gained. If A filters or summarizes before B sees it, B cannot recover what A removed.
+Processing cannot add information about the original input (the data-processing inequality). If A filters or summarizes before B sees it, B cannot recover what A removed.
 
 **Example**: A first-stage agent summarizes a customer complaint before escalation. The summary omits details the agent deemed unimportant. The second-stage reviewer can only act on what they receive—they can't evaluate what they never saw.
 
@@ -95,7 +95,7 @@ This is dangerous because testing under normal conditions won't reveal the entan
 **Formula in plain terms**:
 > Entanglement Tax = What your risk actually is ÷ What you think your risk is
 
-**Canonical derivation** (this is the site's single source of truth for the tax; the [Correlation Calculator](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety (see [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art)): with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
+**Canonical derivation** (this is the site's single source of truth for the tax; the [measurement page](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety (see [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art)): with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
 
 $$P(\text{all fail}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
 
@@ -103,15 +103,31 @@ $$\text{Tax}(\rho) = \frac{(1-\rho)\prod_i p_i + \rho \min_i p_i}{\prod_i p_i}$$
 
 For $n$ identical layers at miss rate $p$, this simplifies to $\text{Tax} = (1-\rho) + \rho\, p^{1-n}$ — the tax grows *exponentially in layer count*, because each added layer improves your perceived risk but barely moves the common-cause floor.
 
-**Example**:
-- You have three 90%-effective safety layers
-- If independent: 0.1% failure rate (0.1 × 0.1 × 0.1)
-- If 50% correlated: (0.5 × 0.001) + (0.5 × 0.1) ≈ 5% failure rate
-- Entanglement tax: ~50× (your risk is 50× higher than you thought)
+**The tax as a function of ρ.** For three layers that each miss 10%, independence predicts 0.1% and the tax is $1 + 99\rho$:
 
-**Why this model**: it is exact for its stated mechanism (a genuine shared cause), it recovers the product rule at $\rho = 0$ and the single-best-layer bound at $\rho = 1$, and Monte Carlo comparison against smoother correlation structures (Gaussian copula) shows it errs on the conservative side at intermediate $\rho$ — the right direction for safety budgeting. The full derivation, simulation evidence, and the serial-chain counterpart live in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/).
+| ρ | 0 | 0.1 | 0.3 | 0.5 | 0.7 | 1 |
+|---|---|---|---|---|---|---|
+| P(all fail) | 0.10% | 1.1% | 3.1% | 5.1% | 7.0% | 10% |
+| Tax | 1× | 11× | 31× | 50× | 70× | 100× |
+
+Which row applies depends on what the layers share. On benchmark data, φ between the misses of strong LLMs is about 0.5 across providers and 0.6 within one, with dated versions of one model higher still; allowing for benchmark label noise gives ranges of roughly 0.3–0.55 across providers and 0.4–0.7 within one ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports), which also states what this mapping assumes). For a three-layer LLM stack that is a tax of about 30–55× across providers and 40–70× within one. "About 50×", used elsewhere on this site, sits inside both ranges; it is not a measurement of any harm-detection stack, and none has been published.
+
+**Why this model**: it is exact for its stated mechanism (a genuine shared cause), and it recovers the product rule at $\rho = 0$ and the single-best-layer bound at $\rho = 1$. Against a smoother correlation structure (a Gaussian copula), fed a $\rho$ on the same phi scale, it is exact for two layers and conservative for three or more, which is the right direction for safety budgeting. The derivation, the simulation and the serial-chain counterpart are in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/).
 
 **Limitation — higher-order structure**: a single $\rho$ treats all layers as symmetrically coupled to one shared cause. Real architectures have *structured* correlation (layers A and B share a provider; C shares context with A) and possible three-way interactions that no single parameter captures. Use the pairwise correlation-matrix method from the [worked examples](/entanglements/case-studies/examples/) when the architecture is asymmetric, and simulation when precision matters.
+
+### Adaptive adversaries: the wrong model
+
+The beta-factor model describes *passive* common cause: shared defects that a randomly arriving input happens to trigger. Its ρ is a frequency over the input distribution. An adversary does not sample from that distribution. It searches for inputs in the region where every layer misses, and the question becomes whether that region is non-empty and how expensive it is to find, not how much probability it carries.
+
+When attacks transfer between layers, an input found to beat one layer tends to beat the others, so P(all miss | attack) approaches P(best layer misses | attack): ρ → 1. The evidence that they transfer and that layered defenses fall to adaptive search is direct. Adversarial suffixes optimized on open models worked on commercial ones ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)). Attacks tuned to each defense's design bypassed 12 published jailbreak and prompt-injection defenses with success above 90% for most, though most had reported near-zero attack success ([Nasr et al. 2025](https://arxiv.org/abs/2510.09023)). Against a pipeline of input classifier, model and output classifier with 0% attack success on a catastrophic-misuse set, a staged attack that defeated the components one at a time reached 71%, and 33% when developed without access to the target pipeline ([McKenzie et al. 2025](https://arxiv.org/abs/2506.24068)).
+
+For design this means:
+
+- **Credit an LLM stack with its best layer** on the defection and hijack channels until a control evaluation, in which a red team that knows the full stack attacks it, measures the joint miss rate ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
+- **Rely on controls whose guarantee does not depend on the input**: permission scopes, hard limits on what an action can touch, rate limits, and rollback. An adversary cannot search its way past a capability the component does not have.
+- **Make the joint-miss region expensive to search.** The strongest staged attack relied on seeing which component had blocked a query. Uniform refusals, running every stage even after one flags, and keeping safeguard models private and unlike public models the attacker could use as proxies all raise the cost ([McKenzie et al. 2025](https://arxiv.org/abs/2506.24068)).
+- **Do not drop diverse checks because the tax calculation no longer credits them.** Diversity raises the attacker's search cost and still lowers ρ for benign failures. It just cannot be counted as multiplying the protection.
 
 ### Effective Redundancy
 
@@ -120,7 +136,8 @@ For $n$ identical layers at miss rate $p$, this simplifies to $\text{Tax} = (1-\
 **The problem**: Three "independent" verification layers sounds robust. But if they share blind spots, you might effectively have under 1.5 layers of protection.
 
 **Quick estimate** (identical layers at 90% effectiveness, beta-factor model):
-| Nominal layers | If independent | If 50% correlated | If 80% correlated |
+
+| Nominal layers | If independent | $\rho = 0.5$ | $\rho = 0.8$ |
 |----------------|----------------|-------------------|-------------------|
 | 2 | 2.0 effective | 1.3 effective | 1.1 effective |
 | 3 | 3.0 effective | 1.3 effective | 1.1 effective |
@@ -134,17 +151,17 @@ Note the striking pattern: beyond modest correlation, effective redundancy is se
 
 ### Irreducible Entanglement
 
-**Claim**: Any two AI systems using similar architectures and training methods will have some baseline failure correlation that cannot be eliminated.
+**Claim**: Two AI systems with similar architectures and training should be assumed to have a baseline failure correlation that engineering will not remove.
 
-**Why**: Adversarial examples transfer between similar models. This is a structural property of how these systems work, not a bug that can be fixed.
+**Why**: Measured LLM errors are substantially correlated, more so for more capable models ([Goel et al. 2025](https://arxiv.org/abs/2502.04313); [Kim et al. 2025](https://arxiv.org/abs/2506.07962)). On MMLU, strong models from different providers have a miss correlation of about 0.5, only a little below that of two models from one provider, about 0.6 ([computed from Kim et al.'s data](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Adversarial inputs found on one model often transfer to others ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)).
 
-**Implication**: True independence between AI verification systems may require fundamentally different approaches—not just different providers.
+**Implication**: Independence between AI verifiers comes mainly from different methods and different information, not from different providers.
 
 ### The Verification Ceiling
 
 **Claim**: A verifier cannot reliably catch errors in domains where they lack capability.
 
-**Plain terms**: If the verifier isn't smart enough to understand the work, they can't verify it properly. This creates fundamental limits on AI-checking-AI when the checked AI is more capable.
+**Plain terms**: If the verifier cannot understand the work, it cannot check it directly. This limits AI checking AI when the checked system is more capable. Scalable-oversight protocols try to relax the limit by making the strong system's reasoning checkable in small pieces; debate is the best-studied case, with theoretical guarantees under idealized assumptions ([Brown-Cohen et al. 2023](https://arxiv.org/abs/2311.14125)) and mixed empirical results (see [Research Connections](/entanglements/research/research-connections/#ai-debate)).
 
 ### Collusion Detection Limits
 
@@ -154,21 +171,7 @@ Note the striking pattern: beyond modest correlation, effective redundancy is se
 
 ---
 
-## Practical Takeaways
-
-1. **Independence is rare**: Most real systems have significant passive entanglement through shared training, infrastructure, or assumptions.
-
-2. **Correlation destroys redundancy**: Going from 2 to 5 "independent" layers provides much less protection than you'd expect if they're correlated.
-
-3. **Active influence is directional**: Pay attention to information flow—who sees whose output, in what order.
-
-4. **Some entanglement is irreducible**: At some point, you hit fundamental limits. Know where those are.
-
-5. **Measure, don't assume**: The entanglement tax can easily be 10-100×. Test correlation empirically rather than assuming independence.
-
----
-
 See also:
 - [Types of Entanglement](/entanglements/fundamentals/types/) — Conceptual overview
-- [Quantitative Metrics](/entanglements/detection/metrics/) — How to measure these concepts
-- [Correlation Calculator](/entanglements/detection/correlation-calculator/) — Tools for estimation
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/) — φ, lookup tables, thresholds and priors
+- [Risk Propagation](/delegation-risk/risk-propagation/) — derivation, simulation and the adversarial case

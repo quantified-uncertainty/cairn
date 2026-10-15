@@ -1,336 +1,88 @@
 ---
 title: "Composing Patterns"
-description: "How to combine multiple design patterns into complete architectures"
+description: "How to combine patterns into an architecture: layer by harm channel, budget for correlation between layers, match stringency to exposure, and how the two worked examples apply the principles."
 sidebar:
   order: 3
 ---
 
-Individual patterns solve specific problems. Real systems need multiple patterns working together. This guide shows how to combine patterns into coherent architectures.
-
-## The Composition Challenge
-
-A single pattern rarely provides complete safety. Consider:
-
-| Single Pattern | What It Solves | What It Doesn't Solve |
-|----------------|----------------|----------------------|
-| Human review | Catches obvious errors | Slow, fatigues, misses subtle issues |
-| AI verifier | Fast, scalable | Correlated with primary AI failures |
-| Sandboxing | Limits damage | Doesn't prevent bad outputs |
-| Rate limiting | Prevents runaway harm | Doesn't improve quality |
-
-**Real safety requires layers**—patterns that complement each other's weaknesses.
-
----
-
-## Pattern Stacks for Common Scenarios
-
-### Autonomous Code Assistant
-
-A system that writes and executes code with minimal human oversight.
-
-```mermaid
-flowchart TD
-    subgraph "Input Processing"
-        I[User Request] --> Parse[Intent Parser]
-        Parse --> Decomp[Task Decomposer]
-    end
-
-    subgraph "Execution Layer"
-        Decomp --> Code[Code Generator]
-        Code --> Sandbox[Sandboxed Execution]
-    end
-
-    subgraph "Verification Layer"
-        Sandbox --> Static[Static Analysis]
-        Static --> AI[AI Code Reviewer]
-        AI --> Tests[Automated Tests]
-    end
-
-    subgraph "Gatekeeping"
-        Tests --> Risk[Risk Scorer]
-        Risk -->|Low Risk| Auto[Auto-approve]
-        Risk -->|High Risk| Human[Human Review]
-        Auto --> Deploy[Deploy]
-        Human --> Deploy
-    end
-
-    style Parse fill:#e3f2fd
-    style Decomp fill:#e3f2fd
-    style Sandbox fill:#fff3e0
-    style Static fill:#e8f5e9
-    style AI fill:#e8f5e9
-    style Human fill:#ffebee
-```
-
-**Patterns Used:**
-1. **Task Decomposition** — Break complex requests into smaller pieces
-2. **Sandboxed Execution** — Limit blast radius of bad code
-3. **Defense in Depth** — Multiple verification layers (static, AI, tests)
-4. **Escalation Ladder** — Route risky decisions to humans
-5. **Risk Scoring** — Quantify when human review is needed
-
-**Why This Combination Works:**
-- Decomposition limits the scope of each generation
-- Sandbox prevents catastrophic damage during testing
-- Multiple verifiers catch different error types
-- Escalation ensures humans see the dangerous cases
-- Risk scoring prevents alert fatigue
-
-### Multi-Agent Research System
-
-A system with specialized agents coordinated by an orchestrator.
-
-```mermaid
-flowchart TD
-    subgraph "Coordination"
-        Orch[Orchestrator<br/>Limited Permissions]
-    end
-
-    subgraph "Specialists"
-        Lit[Literature Agent<br/>Read-Only]
-        Data[Data Agent<br/>Compute Access]
-        Write[Writing Agent<br/>Draft Access]
-        Review[Review Agent<br/>Read-Only]
-    end
-
-    subgraph "Shared Resources"
-        DB[(Shared Context)]
-        Artifacts[Output Artifacts]
-    end
-
-    subgraph "Oversight"
-        Tripwire[Tripwire Monitor]
-        Audit[Audit Log]
-        Budget[Token Budget]
-    end
-
-    Orch --> Lit
-    Orch --> Data
-    Orch --> Write
-    Orch --> Review
-
-    Lit --> DB
-    Data --> DB
-    Write --> Artifacts
-    Review --> Artifacts
-
-    Orch -.-> Tripwire
-    Lit -.-> Audit
-    Data -.-> Audit
-    Write -.-> Audit
-
-    Budget --> Orch
-
-    style Orch fill:#fff3e0
-    style Tripwire fill:#ffebee
-```
-
-**Patterns Used:**
-1. **Least Privilege** — Each agent has minimum necessary permissions
-2. **Coordinator Constraints** — Orchestrator can't directly access resources
-3. **Tripwire Monitoring** — Detect anomalous coordination patterns
-4. **Budget Limits** — Cap total compute/token spend
-5. **Audit Logging** — Record all agent actions
-6. **Role Separation** — Distinct capabilities per agent
-
-**Why This Combination Works:**
-- No single agent can cause maximum harm
-- Coordinator can't bypass specialists
-- Tripwires catch coordination failures
-- Budgets prevent runaway costs
-- Audit trail enables forensics
-
-### Customer-Facing Chatbot
-
-A public-facing assistant with brand and safety requirements.
-
-```mermaid
-flowchart LR
-    subgraph "Input"
-        User[User Message]
-        Classify[Intent Classifier]
-    end
-
-    subgraph "Processing"
-        RAG[RAG Retrieval]
-        Gen[Response Generator]
-    end
-
-    subgraph "Output Safety"
-        Filter[Output Filter]
-        Brand[Brand Checker]
-        Sensitive[PII/Sensitive Filter]
-    end
-
-    subgraph "Monitoring"
-        Log[Conversation Log]
-        Anomaly[Anomaly Detector]
-        Escalate[Escalation Queue]
-    end
-
-    User --> Classify
-    Classify --> RAG
-    RAG --> Gen
-    Gen --> Filter
-    Filter --> Brand
-    Brand --> Sensitive
-    Sensitive --> Response[User Response]
-
-    Gen -.-> Log
-    Anomaly --> Escalate
-
-    style Filter fill:#e8f5e9
-    style Brand fill:#e8f5e9
-    style Sensitive fill:#e8f5e9
-    style Escalate fill:#ffebee
-```
+A single pattern rarely bounds a system's risk. Each covers some harm modes and leaves others:
 
-**Patterns Used:**
-1. **Output Filtering** — Block harmful/inappropriate content
-2. **Brand Alignment** — Ensure responses match company voice
-3. **PII Detection** — Remove sensitive information
-4. **RAG Grounding** — Reduce hallucination via retrieval
-5. **Anomaly Detection** — Flag unusual conversation patterns
-6. **Escalation Path** — Route edge cases to humans
+| Pattern alone | Covers | Leaves |
+|---|---|---|
+| Human review | Errors a reader can see | Volume, fatigue, subtle or deliberately hidden changes |
+| Model-based checker | Scale, speed | Blind spots shared with the model it checks |
+| Sandbox or envelope | Damage from any single action | Bad outputs that stay inside the envelope |
+| Rate and spend limits | Runaway loops | Quality of what does run |
 
-**Why This Combination Works:**
-- Filtering prevents reputation damage
-- RAG reduces hallucination
-- Anomaly detection catches novel attack patterns
-- Escalation handles cases filters miss
+Composition is choosing patterns whose gaps do not line up.
 
----
+## Principles
 
-## Pattern Compatibility Matrix
+### Layer by channel
 
-Some patterns work well together; others conflict.
+Harm arrives through three [channels](/delegation-risk/risk-decomposition/), accident, defection (including reward hacking) and hijack, and they need different layers. Tests and redundancy address accidents. Defection needs checks the delegate cannot predict or influence: a [Trusted Monitor](/design-patterns/monitoring/#trusted-monitor), [Random Audit](/design-patterns/monitoring/#random-audit) and control evaluations. Hijack needs untrusted content kept apart from private data and from outbound channels. Across all three, a hard [exposure envelope](/design-patterns/structural/#exposure-envelope-gateway) bounds what any single action can do, whatever went wrong upstream. A stack is complete when every row of the harm table has at least one layer aimed at its channel and the envelope sits behind all of them.
 
-| Pattern A | Pattern B | Compatibility | Notes |
-|-----------|-----------|---------------|-------|
-| Sandboxing | Rate Limiting | ✅ Excellent | Both limit damage |
-| Human Review | AI Verifier | ✅ Excellent | Diverse verification |
-| N-Version | AI Verifier | ⚠️ Moderate | May have correlated failures |
-| Sandboxing | Full Capability | ❌ Conflict | Sandbox limits capability |
-| Real-time | Human Review | ⚠️ Moderate | Latency tradeoff |
-| Least Privilege | Maximum Capability | ❌ Conflict | Fundamental tension |
+### Budget for correlation
 
----
+Layers that share a model family, a prompt, a provider or a blind spot fail together. If layer i misses with probability $p_i$ and the layers share a common cause with weight ρ (the phi scale), the beta-factor model gives
 
-## Composition Principles
+$$P(\text{all miss}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i .$$
 
-### 1. Layer by Failure Mode
+For three layers that each miss 10%, independence gives 0.001. At ρ = 0.1, 0.2 and 0.5 the figure is about 0.011, 0.021 and 0.051, an [entanglement tax](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax) of roughly 11×, 21× and 50×. These ρ values are illustrative. [Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports) puts φ between the benchmark misses of strong LLMs from different providers at about 0.5, as an upper estimate. Against an adaptive attacker, assume ρ → 1: the stack is worth its best layer.
 
-Different patterns catch different failures:
+Diversity is the lever. One model family writing the code, reviewing it and writing its tests is one check, not three. Better: tests the model cannot see or edit, static analysis and a policy check at tiers 1–2, a reviewer model from a different provider, and a human sample. Different providers are necessary but not sufficient. Larger, more accurate models have highly correlated errors even across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). A test suite, a static analyzer and a model buy more independence than three models. Write the rule down as a correlation budget: no two checks on the same action share a model family, and at least one sits at tier 1 or 2.
 
-| Layer | Catches | Examples |
-|-------|---------|----------|
-| **Capability Limits** | Actions the system can't take | Sandboxing, permissions |
-| **Output Checks** | Bad content generation | Filters, classifiers |
-| **Behavioral Monitoring** | Anomalous patterns | Tripwires, anomaly detection |
-| **Human Oversight** | Edge cases, novel situations | Review queues, escalation |
+### Match stringency to exposure
 
-**A complete architecture has all four layers.**
+| Exposure of the action | Stack |
+|---|---|
+| Low, reversible | Envelope, output validation, logging |
+| Moderate | Add a model-based check and rate limits |
+| High | Add human review (sampled or on flag) and checkpoints before side effects |
+| Severe or irreversible | Add mandatory human approval, two-person rules, a time lock and tier 1–2 checks on the critical path |
 
-### 2. Ensure Diversity
+Choose the stack per action, not per agent ([Escalation Ladder](/design-patterns/structural/#escalation-ladder)).
 
-If all your verification uses the same base model, they'll fail together.
+### Degrade gracefully, without counting on it
 
-**Bad:**
-- GPT-4 generates code
-- GPT-4 reviews code
-- GPT-4 writes tests
+It is tempting to describe a stack as a chain of fallbacks: the filter misses, the verifier catches it; the verifier misses, the human catches it. That reasoning assumes each layer's misses are independent of the others'. They are not. The output that fools a model-based filter is often the one that fools a model-based verifier, and a reviewer who sees the verifier's approval may defer to it. In the defection and hijack channels the attacker picks the input that beats every layer at once.
 
-**Better:**
-- GPT-4 generates code
-- Claude reviews code
-- Rule-based static analysis
-- Human samples 5%
+So name the backstop whose protection does not depend on detection: the envelope, which blocks an action whatever its inputs or intent, and [Checkpoint-Rollback](/design-patterns/recovery/#checkpoint-rollback), which undoes what got through. Estimate the other layers' joint miss rate with correlation, not as a product. When layers do fail, [Graceful Degradation](/design-patterns/recovery/#graceful-degradation) should fall back to less capability, not less checking.
 
-### 3. Match Stringency to Risk
+## Anti-patterns
 
-Not every task needs maximum verification:
+The common failures are a single layer (one bypass defeats everything), several checkers on one model family counted as independent, checks never tested against adversarial inputs, and maximum checking everywhere, which latency and approval fatigue push operators to switch off.
 
-| Risk Level | Pattern Stack |
-|------------|---------------|
-| Low | Output filter + audit log |
-| Medium | + AI verifier + rate limit |
-| High | + Human review (sampled) + sandbox |
-| Critical | + Full human review + formal verification |
+## The principles in the two examples
 
-### 4. Design for Graceful Degradation
+The [coding agent](/design-patterns/examples/code-deployment-example/) and the [research assistant](/design-patterns/examples/research-assistant-example/) apply the same principles to different problems.
 
-What happens when patterns fail?
+The rows are the six core [Least-X principles](/design-patterns/least-x-principles/).
 
-- **Filter fails:** AI verifier catches it
-- **AI verifier fails:** Human review catches it
-- **Human reviewer fatigued:** Anomaly detector flags unusual rate
-- **All else fails:** Sandbox limits damage
+| Principle | Research assistant | Coding agent |
+|---|---|---|
+| Least Intelligence | A capable planner, checked by code and a trusted monitor | Orchestrator and gates are tested code; only the agent is a frontier model |
+| Least Privilege | No experiments; no outbound data except search queries | Pushes to a branch; cannot merge, deploy or reach production credentials |
+| Least Context | Summarizer sees one paper; raw papers and private notes never share a context | Canary sees metrics only; monitor sees one diff and its log |
+| Least Persistence | No memory between projects beyond a curated bibliography | Fresh container per session |
+| Least Autonomy | Scientist approves direction and any change to it | Human approves every merge; two people and a time lock for high-exposure paths |
+| Least Connectivity | Results flow forward; nothing messages the planner | Output reaches the pipeline only as a pull request |
 
-Each layer is a fallback for the one before.
+The coordination choice differs for a reason. The research assistant needs a model to decide what to investigate, so its planner is capable, and its plan becomes a checked, approved artifact. The deployment pipeline's logic is fully specifiable, so it is code. Use model coordination where the decision needs judgment and its errors are recoverable. Use code where the logic can be written as rules or the outcome is hard to reverse.
 
----
+## Designing a stack
 
-## Anti-Patterns in Composition
+1. **List the harm surface.** Harm modes per component, each tagged with a channel, with the unit and volume of every probability.
+2. **Draw the envelope first**, enforced outside the model.
+3. **Assign at least one layer per harm mode**, aimed at its channel.
+4. **Check correlation.** Note shared models, providers, prompts and inputs; estimate ρ or assume it high. Count defection and hijack stacks as their best layer.
+5. **Plan for failure**: what happens when each layer misses, and whether rollback is possible.
+6. **Price it** in latency, cost and reviewer time. A stack that operators disable under load is not a stack.
+7. **Reconcile** predictions against incidents in the [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger).
 
-### Over-Reliance on Single Layer
+## See also
 
-**Problem:** All safety in one place (e.g., just output filtering)
-**Why it fails:** Single point of failure
-**Fix:** Add diverse verification layers
-
-### Correlated Verification
-
-**Problem:** Multiple verifiers using same model/training
-**Why it fails:** Same blind spots
-**Fix:** Ensure architectural diversity
-
-### Verification Theater
-
-**Problem:** Patterns that look good but don't catch real issues
-**Why it fails:** False sense of security
-**Fix:** Test with adversarial examples
-
-### Kitchen Sink
-
-**Problem:** Every pattern applied everywhere
-**Why it fails:** Latency, cost, complexity
-**Fix:** Match patterns to risk level
-
----
-
-## Template: Designing Your Stack
-
-1. **Identify threat model:** What are you protecting against?
-   - Accidents (capability errors)
-   - Manipulation (adversarial users)
-   - Defection (misaligned AI behavior)
-
-2. **Map failure modes:** What could go wrong?
-   - List specific scenarios
-   - Estimate probability and damage
-
-3. **Select patterns:** Which patterns address each failure?
-   - Use the [pattern index](/design-patterns/) to find candidates
-   - Ensure coverage across all failure modes
-
-4. **Check compatibility:** Do patterns conflict?
-   - Use the compatibility matrix above
-   - Resolve conflicts by prioritizing
-
-5. **Design fallbacks:** What happens when each layer fails?
-   - Ensure graceful degradation
-   - No single point of failure
-
-6. **Calculate overhead:** What's the cost?
-   - Latency impact
-   - Dollar cost
-   - Development complexity
-
----
-
-## See Also
-
-- [Design Patterns Index](/design-patterns/) — Full pattern catalog
-- [Least-X Principles](/design-patterns/least-x-principles/) — Core design philosophy
-- [Quick Start](/design-patterns/tools/quick-start/) — Step-by-step application
-- [Cost-Benefit Tool](/design-patterns/tools/cost-benefit/) — Evaluate tradeoffs
+- [Design Patterns](/design-patterns/): the catalog
+- [Least-X Principles](/design-patterns/least-x-principles/): the core six and the verifiability tiers
+- [Coordinator Constraints](/design-patterns/coordinator-constraints/): constraining the component with the most leverage
+- [Risk Propagation](/delegation-risk/risk-propagation/): the correlation correction in full

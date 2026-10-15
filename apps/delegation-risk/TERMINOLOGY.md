@@ -60,8 +60,10 @@ must hit the envelope wall, not merely overdraw a budget).
 **exposure ledger** — The running account of exposure per delegate: actions debit, completed
 verifications and de-provisioning credit back. Ships ONLY with its discipline attached:
 **reconciliation** (periodically comparing ledger estimates against observed incidents and
-near-misses) and **consolidation** (rolling up a subagent tree requires correlation
-adjustments, like intercompany eliminations — naive sums double-count shared risks).
+near-misses) and **consolidation** (rolling up a subagent tree: expected-loss roll-ups add;
+where harm modes overlap on one asset the naive sum is a conservative upper bound, like
+intercompany positions before elimination; correlation matters only for tail metrics and
+AND-structured defenses).
 A ledger without reconciliation is the fake-precision trap with bookkeeping aesthetics.
 
 **privilege overhang** — The static gap between what a delegate *can* do and what its current

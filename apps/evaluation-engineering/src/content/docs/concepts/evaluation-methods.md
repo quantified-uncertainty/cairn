@@ -1,80 +1,34 @@
 ---
 title: Evaluation Methods
-description: The catalogue of concrete ways to produce evaluations — expert panels, surveys, review systems, statistical measures, and composite indices — with their cost and trust profiles.
-sidebar:
-  order: 1
+description: The concrete ways to fill the evaluation slot (expert panels, structured elicitation, appraisal tools, surveys, crowd ratings, indicators, indices, inspection, forecasting, pairwise comparison, LLM judges) compared on what each measures, how it fails, and what it costs.
 ---
 
-*Status: early draft, adapted from the 2021–22 estimation-theory notes. This is the sketchiest part of the original program and remains the most open.*
+*Status: draft, October 2026. Costs are given as structure (fixed vs. marginal) unless a source prices them. Measured reliabilities come from the cited studies and do not transfer automatically to a new domain.*
 
-The [evaluation component](/concepts/components/) needs concrete methods. This page is the menu. Each method is a different point in the [accuracy × quantity × cost](/concepts/the-systems-view/) trade-off, and each carries a different *trust* profile — which matters, because an evaluation only moves decisions if its audience believes it.
+The [evaluation component](/concepts/components/#evaluation) needs a method. Each method below is a point in the [design space](/concepts/the-systems-view/#the-design-space) of accuracy, unit cost, robustness and legitimacy. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) shows each deployed; the [capability ladder](/concepts/capability-ladder/) grades systems built from them.
 
-Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) shows each one deployed at scale, with its documented failure. The strongest lesson there is that a method's *funding model* (who pays the evaluator) predicts its trustworthiness better than the method itself does.
+| Method | What it measures | Known failure modes | Cost structure | Evidence |
+|---|---|---|---|---|
+| **Expert panel / peer review** | expert judgment of quality or merit | low inter-rater agreement (mean κ ≈ 0.17 across 48 studies); outcome depends on which reviewers are drawn | high marginal: reviewer time, over 100M hours globally in 2020, valued at over \$1.5B for US-based reviewers alone | [Bornmann et al. 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0014331); [Pier et al. 2018](https://doi.org/10.1073/pnas.1714379115); [Aczel et al. 2021](https://doi.org/10.1186/s41073-021-00118-2) |
+| **Structured expert elicitation** (Cooke's classical model; Delphi, IDEA) | calibrated quantities and uncertainty from experts | under a third of experts were statistically accurate across 33 classical-model studies; performance weighting beat equal weighting on combined score in 31 of 33 (in-sample) | high fixed (seed questions, facilitation) per study | [Colson & Cooke 2018](https://doi.org/10.1093/reep/rex022); see the sibling [elicitation guide](https://delegation-risk.quantifieduncertainty.org/design-patterns/tools/expert-elicitation/) |
+| **Structured appraisal tools** (GRADE, Cochrane RoB 2) | conformance of a study or evidence body to a checklist | checklist judgments still diverge: four expert raters reached κ 0.16 on RoB 2's overall judgment | about 28 min per trial outcome per rater | [Minozzi et al. 2020](https://doi.org/10.1016/j.jclinepi.2020.06.015) |
+| **Survey** | opinion of a defined population, e.g. a forecast's actual readers | nonresponse bias, which response rate predicts poorly; question wording | moderate marginal per respondent | [Groves & Peytcheva 2008](https://doi.org/10.1093/poq/nfn011) |
+| **Crowd ratings / reviews** | self-selected users' satisfaction | J-shaped self-selection; herding on early votes; fake reviews, reduced but not removed by verified-purchase rules | high fixed (platform, moderation), near-zero marginal | [Patterns §2](/concepts/patterns-and-failure-modes/#2-the-ratings-you-collect-are-a-biased-sample), [§4](/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race) |
+| **Statistical indicator** | a measurable proxy | Goodhart and surrogation once the indicator carries stakes; measures what is convenient | low marginal once data exist | [Patterns §1](/concepts/patterns-and-failure-modes/#1-the-measure-reshapes-the-measured) |
+| **Composite index** | a broad construct from weighted indicators | arbitrary weights; manipulation of inputs: the World Bank's *Doing Business* was discontinued in 2021 after data irregularities | moderate fixed, low marginal | [World Bank 2021](https://www.worldbank.org/en/news/statement/2021/09/16/world-bank-group-to-discontinue-doing-business-report) |
+| **Inspection / independent testing** | compliance or performance against a standard | snapshot validity; works when the metric is hard to game and demand responds (LA hygiene grade cards) | high marginal per inspection | [Jin & Leslie 2003](https://academic.oup.com/qje/article-abstract/118/2/409/1899578) |
+| **Forecasting resolved by an evaluator** (markets, polls) | predicted outcome of an expensive evaluation | thin incentives when few items resolve; accuracy must be read against the base rate (markets called 73% of 104 replication outcomes) | low marginal per item, plus a resolution budget | [Liu et al. 2020](https://arxiv.org/abs/2005.04543); [Techniques](/concepts/techniques/#predictionevaluation-systems) |
+| **Pairwise comparison** (Bradley–Terry, arenas) | relative preference | order effects in online Elo; cyclic preferences; selective disclosure of privately tested variants | low marginal per vote | [Singh et al. 2025](https://arxiv.org/abs/2504.20879); [Patterns §5](/concepts/patterns-and-failure-modes/#5-the-scale-and-the-aggregation-rule-are-not-neutral) |
+| **LLM judge** | predicted human judgment | position, verbosity and self-preference bias; prompt sensitivity; correlated errors across models; null responses and adversarial phrases inflate scores | very low marginal; fixed cost of validation and re-validation dominates | [LLMs as Evaluators](/concepts/llm-evaluators/); [Zheng et al. 2024](https://arxiv.org/abs/2410.07137) |
 
-## Expert panels
+## Reading the table
 
-The most general-purpose method: assemble a small team of recognized experts and have them produce the judgment. Metaculus has resolved questions against small expert teams; resolution councils have been set up for similar purposes.
+Two regularities stand out. First, the methods with the highest standing (peer review, appraisal tools) have some of the lowest measured agreement; their legitimacy comes from who does them, not from measured accuracy. Second, the cheap methods (indicators, indices, crowd ratings, LLM judges) fail mainly under optimization pressure, so their unattacked accuracy overstates their deployed accuracy. A system usually pairs one of each: a cheap method on every item, audited by an expensive one on a sample (the [prediction–evaluation pattern](/concepts/techniques/#predictionevaluation-systems)). Automated essay scoring has run this pairing in high-stakes testing for over a decade ([capability ladder](/concepts/capability-ladder/#eight-systems-graded)).
 
-Key parameters to tune:
-
-- **Who counts as an expert**, and which experts *complement* each other.
-- **Team size.**
-- **Research duration** — two hours or two weeks?
-- **Assistance** — a support team of cheaper helpers behind the experts.
-- **Scoring / incentives** for correctness.
-
-Expert evaluations behave a lot like predictions, so good scoring rules still matter — you can have panels make fast intuitive calls and later test them probabilistically against better-resourced panels. The catch is cost: experts are expensive, so there's a sharp tension between labor intensity and quality. Profile: **high accuracy, low quantity, high cost, high trust.**
-
-## Surveys
-
-Survey results can themselves be forecast, which can cut their cost. Surveys have a narrower but distinct value proposition from expert panels: they can capture the opinions of a *specific population* — including the actual readers of a forecast.
-
-> "On a scale of 1–10, how valuable is this project, according to a random survey of [community] members?"
-
-A sharper version samples only people who have actually viewed the forecast. Surveys also work as cheap data collection feeding other evaluations (e.g. asking which readers found an organization's work valuable). Profile: **moderate cost, captures real audience preferences, trust depends on sampling.**
-
-## Review systems
-
-Review systems are one implementation of surveys — usually public and untargeted. Setup cost is high; marginal cost is often very low. Being public and open, they demand heavy moderation against spam and malicious entries.
-
-They're unlikely to anchor a prediction–evaluation system directly, but they're natural *targets* for more general forecasting:
-
-- Public ratings of movies before release.
-- Public ratings of future government projects.
-- Amazon ratings for products under consideration.
-- Goodreads quantity and average for upcoming books, conditional on title.
-
-Profile: **high setup cost, very low marginal cost, scalable, trust limited by gaming.**
-
-## Statistical measures
-
-Objective, low-marginal-cost metrics. Their strengths are exactly that: cheap and trustable. Their weakness is domain — a statistical measure is only as good as the match between what's easy to measure and what actually matters, and the classic failure mode is organizations measuring what's convenient rather than what's decision-relevant.
-
-Statistical measures are plausibly the fastest-growing method, because they're so cheap on the margin (a conjecture; nobody has counted). Most existing forecasting systems already lean on them — but they rarely *invent* new ones, and the space of *possible* useful measures vastly exceeds the set in use. Discovering and implementing new measures is plausibly high-leverage work. Profile: **very low marginal cost, high quantity, high trust where applicable, narrow domain.**
-
-## Composite measures
-
-Indices, scales, and typologies that combine narrower measures (usually statistical ones) into an approximation of a broader variable. The aspiration: the cheapness of statistical measures with the generality of expert judgment. There are many existing social and economic indices and clearly room for more.
-
-The hard parts:
-
-- **Setup** is difficult — choosing sub-measures and weights is partly arbitrary.
-- **Adversarial settings** (anyone trying to bias the index) usually force human judgment back into the loop somewhere.
-- **Flexibility** — sub-measures and weights should ideally be adjustable on demand, and you'd like to forecast over arbitrary recompositions. That's a hard tooling problem and likely some way off.
-
-Profile: **high setup cost, low marginal cost, broad coverage, fragile under adversarial pressure.**
-
-## Partial vs. complete evaluations
-
-Not every method tries to answer the whole question. Surveys and statistical measures are often best seen as **partial evaluations** — inputs and proxies that feed a more complete judgment rather than standing in for it. Designing a system means deciding which questions get full, expensive evaluation and which can ride on partial measures plus prediction.
+Not every method answers the whole question. Surveys, indicators and appraisal checklists are often **partial evaluations**: inputs to a fuller judgment rather than substitutes for it. Designing a system means deciding which items get full evaluation and which ride on partial measures plus prediction.
 
 ## Open territory
 
-This is, candidly, the least-developed area of the original program — the source notes were mostly TODOs. There is some real machinery to build on, though: QURI's [Relative Value Functions](/reference/related-work/) (2023) and Utility Function Extractor are concrete attempts at the elicitation problem, and [RoastMyPost](/reference/related-work/) is a deployed LLM-plus-code evaluator spanning several method types. See [Related Work](/reference/related-work/). Live questions include:
-
-- **Elicitation** — how to phrase questions for evaluators; how to elicit utility and value judgments cleanly.
-- **Collaboration** — how evaluators interface with forecasters and other components.
-- **Reliability** — how reliable evaluations actually are, and how to keep them distinguishable from the forecasts that target them.
-- **Cost** — how to put a defensible price on a messy, normative, long-horizon evaluation so it can be traded against accuracy.
-
-These feed directly into the [techniques](/concepts/techniques/) page and the [open problems](/open-questions/).
+- **Elicitation.** How to phrase questions so evaluators answer the intended one, and how to elicit value judgments. QURI's relative value functions and the sibling RRP wiki's [Constructing Utility Functions](https://reasoning-processes.quantifieduncertainty.org/concepts/constructing-utility-functions/) are concrete attempts.
+- **Pricing.** Few methods have published cost per item; most rows above give structure, not numbers. A system cannot trade accuracy against cost without them.
+- **Deployed LLM evaluators.** RRP's [LLM Epistemics in Production](https://reasoning-processes.quantifieduncertainty.org/case-studies/llm-epistemics-in-production/) documents RoastMyPost and Squiggle AI, including their false-positive problems.

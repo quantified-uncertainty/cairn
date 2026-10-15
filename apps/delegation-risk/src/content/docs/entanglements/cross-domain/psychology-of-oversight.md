@@ -1,174 +1,58 @@
 ---
-title: "Psychology of Oversight"
-description: "Human cognitive biases that create entanglement in AI oversight"
+title: "Human Overseers as a Correlated Layer"
+description: "Human review is usually counted as an independent check on an AI system. It is not: reviewers see the AI's output, their attention fails at the base rates where AI errors live, and the setting pushes them toward approval. When review helps, when it hurts, and how to measure it."
 sidebar:
   order: 4
 ---
 
-Human overseers are a critical component of AI safety architectures. But humans have systematic biases and limitations that create entanglement—often without anyone noticing.
+Human review is the most common extra layer in an AI deployment, and it is usually counted as independent of the system it reviews. It is not, for three reasons:
 
----
+- **The reviewer sees the AI's output.** The AI's answer is the reviewer's starting point, so an AI error is also an input to the human. This is [active entanglement](/entanglements/fundamentals/types/#active-entanglement).
+- **Attention fails where AI errors live.** Errors in a good system are rare, and people are worst at detecting rare events.
+- **The setting rewards approval.** Throughput targets, social pressure and diffuse responsibility all push toward "approve".
 
-## The Core Problem
+Each of these makes the reviewer more likely to miss exactly the cases the AI got wrong, which is positive miss correlation and an [entanglement tax](/entanglements/fundamentals/formal-definitions/) on the stack.
 
-**The assumption**: Human review provides independent verification.
+## When review makes things worse
 
-**The reality**: Human reviewers are subject to:
-- Cognitive biases that systematically skew judgments
-- Attention limitations that create blind spots
-- Social pressures that encourage conformity
-- Automation bias that defers to AI outputs
+Let e be the AI's error rate, c the fraction of AI errors the reviewer catches, and f the fraction of correct AI outputs the reviewer wrongly overrides. The error rate after review is
 
-These create **passive entanglement** (humans share blind spots with AI) and **active entanglement** (AI outputs influence human judgments).
+e(1 − c) + (1 − e)·f,
 
----
+so review helps only if **c·e > f·(1 − e)**. Because correct outputs vastly outnumber errors in a good system, a small false-override rate can cancel a respectable catch rate. Illustrative numbers: at e = 10% and c = 20%, review breaks even at f ≈ 2.2%; at f = 5% the final error rate is 12.5%, worse than the AI alone. At e = 2% and c = 30%, the break-even false-override rate is about 0.6%. The better the AI, the harder it is for review to add accuracy.
 
-## Key Biases
+An earlier version of this page claimed review was "worse than useless" using e = 10%, c = 30% and 2% new errors. Those numbers give 9%, an improvement. The claim did not follow from its own example, and the "entanglement tax ~9×" attached to it misused the term.
 
-### Automation Bias
+The evidence that the bad regime is common: a preregistered meta-analysis of 106 experiments found that on average human–AI combinations performed worse than the better of the human or the AI alone, with losses concentrated in decision tasks and gains in content creation ([Vaccaro, Almaatouq & Malone 2024, *Nature Human Behaviour*](https://doi.org/10.1038/s41562-024-02024-1)). In an older simulated-flight study, participants with a highly but not perfectly reliable automated aid did worse on a monitoring task than participants without one. They missed events the aid did not flag (omission errors) and followed the aid against other valid indicators (commission errors) (Skitka, Mosier & Burdick 1999, *International Journal of Human-Computer Studies*).
 
-The tendency to favor suggestions from automated systems over contradictory information.
+## Why the reviewer's misses correlate with the AI's
 
-**Research**: Users fail to notice automation errors 60-70% of the time under time pressure. The effect is stronger for complex decisions.
+**Automation bias and complacency.** Parasuraman & Manzey's review (2010, *Human Factors*) treats these as overlapping attention failures. They occur in novices and experts, complacency appears mainly when the automated task competes with other work, and neither is removed by simple practice or instructions.
 
-**The deference spiral**:
-1. AI performs well initially
-2. Human learns to trust AI
-3. Overseer reduces scrutiny
-4. When AI errs, overseer doesn't catch it
-5. Trust remains high (error wasn't noticed)
-6. More deference next time
+**Explanations can raise reliance without raising accuracy.** In [Bansal et al. (2021)](https://arxiv.org/abs/2006.14779), AI explanations increased the chance that people accepted the AI's recommendation whether or not it was correct. [Buçinca et al. (2021)](https://arxiv.org/abs/2102.09692) found that cognitive forcing, such as asking for the person's own judgment before showing the AI's, reduced overreliance more than explanations did, and that participants liked those designs least. [Vasconcelos et al. (2023)](https://arxiv.org/abs/2212.06823) argue that people choose strategically whether to engage, and show that explanations reduce overreliance when they make checking the AI cheaper than trusting it.
 
-Most paths lead to increasing deference. Only rare "error caught" moments maintain calibration.
+**Trust tracks salient events, not reliability.** Lee & See (2004, *Human Factors*) define appropriate reliance as trust that is calibrated to the automation's capability and resolves changes in it. Observed trust swings instead. People abandon an algorithm after seeing it err even when it outperforms humans ([Dietvorst, Simmons & Massey 2015](https://doi.org/10.1037/xge0000033)), and in other settings prefer algorithmic advice to human advice (Logg, Minson & Moore 2019, *Organizational Behavior and Human Decision Processes*). A long run without visible errors breeds deference, which is when an error is least likely to be caught.
 
-### Anchoring Effect
+**Vigilance and capacity.** In Mackworth's clock test (1948), detection of rare signals fell within the first half hour of watch; the vigilance decrement is among the most replicated findings in human factors. Working memory holds about four chunks (Cowan 2001, *Behavioral and Brain Sciences*), not the "seven plus or minus two" often quoted. A long agent transcript or a large diff exceeds both limits, so reviewers fall back on heuristics, and "the AI is usually right" is the obvious one.
 
-The tendency to rely too heavily on the first piece of information (anchor).
+**Social and organizational pressure.** Disagreeing with the AI and with colleagues who accept it is costly ([conformity](/case-studies/human-systems/jury-trust/#correlated-jurors)). In groups each reviewer expects someone else to catch real problems. Throughput targets make approval the default and a rejection the thing that must be justified. Accountability pushes the other way: participants who saw themselves as accountable for how they used an automated aid verified it more and made fewer automation-related errors (Skitka, Mosier & Burdick 2000, *International Journal of Human-Computer Studies*).
 
-**In oversight**: AI output serves as anchor. Human adjusts from AI output rather than evaluating independently. Adjustments are typically insufficient (~50% anchoring weight).
+## Reducing the correlation
 
-### Authority Bias
+- **Get an independent judgment first.** Ask for the reviewer's assessment, or at least their key concerns, before showing the AI's output. This attacks anchoring directly and is the best-supported intervention above, at a cost in reviewer satisfaction.
+- **Make verification cheap.** Show checkable evidence (sources, diffs, test results, the exact action about to run) rather than explanations of the AI's reasoning.
+- **Inject known items.** Seed the queue with known-bad and known-good items ([Honeypot Injection](/design-patterns/verification/#honeypot-injection)) to measure c and f directly. Without them, nobody knows whether review is above or below the break-even line.
+- **Track the rubber-stamp rate:** the share of approvals issued faster than the minimum time needed to read the item.
+- **Rotate and rest reviewers,** and keep sessions short enough that the vigilance decrement does not set in.
+- **Name an accountable reviewer** for each decision.
+- **Route, do not blanket-review.** Use people where they are strong (novel situations, value judgments, spotting incoherence, high-stakes and irreversible actions) and not as a generic high-volume filter. A human asked to approve everything stops reading. Claude Code users approve 93% of permission prompts, and Anthropic cites the resulting approval fatigue as a reason for offering a mode in which a classifier decides instead ([Anthropic, March 2026](https://www.anthropic.com/engineering/claude-code-auto-mode); [Least Autonomy](/design-patterns/least-x-principles/#least-autonomy)).
 
-AI systems often presented as "intelligent," "advanced," "superhuman." Users may perceive AI as more authoritative than themselves—especially when AI has been correct in the past.
+## Measuring a human layer
 
----
+Treat a reviewer as a check with measurable error rates. From injected items, estimate c and f and test the break-even condition. Then estimate the correlation between the reviewer's misses and the AI's errors: on items the AI gets wrong, does the reviewer miss more often than on comparable items the reviewer judges without the AI's output? A positive gap is the anchoring effect, and it belongs in the stack's ρ ([Measuring Entanglement](/entanglements/detection/correlation-calculator/)).
 
-## Attention Limitations
+## See also
 
-### Vigilance Decrement
-
-Human ability to detect rare signals decreases over time:
-- Performance degrades within 15-30 minutes
-- Detection probability can drop 10-20% per hour
-- The rarer the signal, the faster the decline
-
-**If bad AI outputs are rare (1 in 1000), vigilance decrement is severe.**
-
-### Cognitive Capacity
-
-Working memory holds approximately 7±2 items. Detailed AI outputs exceed this—overseers use heuristics rather than complete analysis.
-
----
-
-## Social Pressures
-
-### Conformity
-
-If team generally trusts AI, dissent is socially costly. "Who am I to disagree with the AI and my colleagues?"
-
-### Diffusion of Responsibility
-
-In groups: "Someone else will catch it if it's really bad." Each member applies *less* scrutiny than if they were sole reviewer.
-
-### Production Pressure
-
-Organizational incentive to approve quickly. Thoroughness traded for speed. Approval bias develops (approval = no conflict).
-
----
-
-## The "Worse Than Useless" Scenario
-
-In some configurations, human oversight can be worse than no human oversight:
-
-- AI alone: 90% accurate (10% error rate)
-- AI + complacent human: Human catches 30% of AI errors but introduces 2% new errors
-- Net: ~9% error rate—slightly worse than AI alone
-- But **perceived** error rate: "Surely <1% with human check"
-- **Entanglement tax**: ~9×
-
----
-
-## Designing Against These Vulnerabilities
-
-### Cognitive Forcing Functions
-
-Make it structurally difficult to approve without genuine review:
-- Require independent assessment *before* seeing AI output
-- Require specific engagement ("Mark three concerns before approving")
-- Time delays that prevent rubber-stamping
-
-### Accountability Mechanisms
-
-Counteract diffusion of responsibility:
-- Named individual responsibility for each decision
-- Random audits with consequences
-- Track and review approval patterns
-
-### Adversarial Injection
-
-Inject known-bad items to calibrate and test vigilance:
-- Include honeypot errors humans should catch
-- Measure detection rate
-- Create uncertainty about when tests occur
-
-### Rotation and Breaks
-
-Combat vigilance decrement:
-- Rotate oversight assignments regularly
-- Mandatory breaks in extended sessions
-- Fresh reviewers for high-stakes decisions
-
----
-
-## When Human Oversight Fails Systematically
-
-Conditions that defeat human oversight:
-- High volume (vigilance decrement)
-- Rare problems (low base rate)
-- Complex outputs (exceeds cognitive capacity)
-- AI framing provided (anchoring)
-- Time pressure (production pressure)
-- Team context (conformity)
-- Repeated interaction (deference spiral)
-
-If multiple conditions apply, human oversight may provide minimal actual protection.
-
----
-
-## What Humans Are Actually Good At
-
-Despite limitations, humans excel at:
-- Novel situations outside AI training distribution
-- Value judgments requiring cultural context
-- Detecting incoherence and absurdity
-- Handling exceptions that require flexibility
-
-**Deploy human oversight where these strengths matter, not as generic verification.**
-
----
-
-## Key Takeaways
-
-1. **Don't assume human oversight is independent** — Budget for entanglement between AI and human layers
-2. **Automation bias is pervasive** — Deference spirals are the default path
-3. **Vigilance decrement is real** — Detection degrades within 30 minutes
-4. **Social pressures suppress dissent** — Structural protections are needed
-5. **Measure actual detection rates** — Inject honeypots, don't assume effectiveness
-6. **Use humans for judgment, not routine verification** — Play to strengths
-
----
-
-See also:
-- [Intelligence Community Failures](/entanglements/case-studies/intelligence-failures/) — Historical case studies
-- [Historical Case Studies](/entanglements/case-studies/historical-cases/) — Enron, Boeing failures
-- [Detecting Influence](/entanglements/detection/detecting-influence/) — Measuring active entanglement
+- [Lessons from human oversight institutions](/entanglements/case-studies/historical-cases/)
+- [Jury Systems](/case-studies/human-systems/jury-trust/): correlated human decision-makers
+- [Detecting Influence](/entanglements/detection/detecting-influence/)

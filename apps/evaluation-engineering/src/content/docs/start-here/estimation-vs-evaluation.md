@@ -80,7 +80,7 @@ The heuristic: *do as much work as possible in the deeper (more verifiable) laye
 ## Two notes on naming
 
 - There is already an academic field called **Evaluation** (program evaluation, rooted in the social sciences). It overlaps with this usage but is centered on bespoke studies and long reports rather than high-throughput systems. We borrow lessons but reframe the scope.
-- "Estimation" and "evaluation" are deliberately plain, unromantic words. The priority is honest categories that won't collide with existing terminology, not memorable branding. Better names may come later.
+- "Estimation" and "evaluation" are deliberately plain words, chosen as honest categories rather than branding. They still collide with existing usage: program evaluation (above) and AI "evals" ([Chapter 1](/start-here/introduction/#not-ai-model-evals-though-they-overlap)). Better names may come later.
 
 ## Where this goes
 

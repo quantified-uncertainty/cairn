@@ -7,17 +7,15 @@ sidebar:
 
 *Family 2 of the [Hardening overview](/concepts/hardening-techniques/). All cheap robustness runs on one asymmetry: verification costing less than production. Where it holds, a constant amount of checking catches large distortions; where it fails, nothing else in the toolkit is cheap. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-:::
-
 ## The lever
 
-If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be verified by reading $O(1)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
+If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be checked by reading $O(1)$ of its bits, chosen using $O(\log n)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
+
+The asymmetry is now also how reasoning models are trained. Reinforcement learning with verifiable rewards scores outputs with a programmatic checker instead of a learned judge (the term is from [Lambert et al. 2024](https://arxiv.org/abs/2411.15124), Tulu 3). [DeepSeek-R1](https://arxiv.org/abs/2501.12948) used RL of this kind to produce its reasoning gains on mathematics, coding and other verifiable tasks. Process reward models, trained on human labels of individual steps, push the check down a level: on MATH, step-level supervision beat outcome-only supervision ([Lightman et al. 2023](https://arxiv.org/abs/2305.20050)). We expect training to inherit this family's limit. Capability should grow fastest where checking is cheap, and any gap in the checker becomes something the policy is optimized against.
 
 ## The limit
 
-The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and the field has no PCP-analogue for quantitative reasoning yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
+The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and no PCP-analogue for quantitative reasoning is known yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
 
 ## Constructions
 
@@ -27,7 +25,7 @@ The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for g
 | Forced precision (Quine–Duhem) | defended-falsehood prior $\sim p^{k_R}$ **[heuristic]** | bold-but-vague claims | choose a claim with no checkable connections ($k_R{=}0$) (≈ free) | speculative · — |
 | Decomposition disclosure | check $O(1)$ nodes of a stated graph **[heuristic]** | hidden load-bearing assumptions | put the load-bearing claim in an un-checkable leaf (low) | prototyped · [Necula 1997](https://doi.org/10.1145/263699.263712) |
 | Entailment-web check | $N$ related questions must cohere **[standard shape]** | confident-wrong that can't stay coherent | maintain a globally coherent but wrong worldview (high — the point) | prototyped · (consistency line) |
-| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Mallen 2023](https://arxiv.org/abs/2312.01037) |
+| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Zou et al. 2022](https://arxiv.org/abs/2206.15474) |
 | Retrodiction banks (decay-accounted) | each item priced by leak probability **[heuristic]** | contamination eroding a test set | infer outcomes from correlated public knowledge (low) | prototyped · — |
 | Throttle-vs-unlimited divergence | gap between tiny- and large-compute answers **[heuristic]** | heuristic/persuasion-driven answers | cache / canonicalize so both budgets return the same answer (≈ free) | speculative · — |
 
@@ -42,3 +40,4 @@ The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for g
 - Does a non-trivial PCP-analogue for estimates exist, and what is $g(\Delta)$ for realistic decompositions?
 - Who controls the decomposition? If the producer does, it can route load-bearing claims into un-checkable nodes — can the checker force a decomposition it trusts?
 - How much of a real research portfolio is verifiable at all, versus residing in the unresolvable residue?
+- Does reasoning trained on verifiable rewards carry over to tasks with no checker, or does it make models better only where checking was already cheap?

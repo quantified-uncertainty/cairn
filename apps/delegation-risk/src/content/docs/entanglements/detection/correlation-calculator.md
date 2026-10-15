@@ -1,230 +1,197 @@
 ---
-title: "Correlation Calculator"
-description: "Tools for calculating entanglement tax and effective redundancy"
+title: "Measuring Entanglement"
+description: "How to estimate ρ on the phi scale, lookup tables for the entanglement tax, one threshold set derived from your target, and what the published evidence does and does not support"
 sidebar:
-  order: 4
+  order: 1
 ---
 
-This page provides lookup tables for calculating the **entanglement tax**—the gap between your perceived protection (assuming independent layers) and your actual protection (accounting for correlations). All ρ values are on the **phi (failure-indicator Pearson) scale**; see [What ρ means and how to estimate it](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it) for the estimation recipe.
+This page holds the numbers for the entanglement section: how to estimate ρ, what it implies, which thresholds to use, and what to assume when you cannot measure. Other pages link here rather than restating them.
 
----
+Two scope notes first. [Delegation risk](/delegation-risk/) is an expected loss in dollars, and expected-loss roll-ups add whatever the correlation. Correlation matters for AND-structured defenses, where harm gets through only if every layer misses, and for the tails of total loss ([Runtime Accounting](/delegation-risk/runtime-accounting/)). The entanglement tax multiplies the P(all layers miss) term of such a stack. Second, everything here is benign-failure math. Against an adaptive adversary, use ρ = 1 unless a control evaluation measures the joint miss rate under attack ([why](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model)).
 
-## The Core Insight
+## The formula
 
-**Independent assumption**:
-> P(all fail) = P(L₁ fails) × P(L₂ fails) × P(L₃ fails)
+For layers with miss probabilities $p_i$ and common-cause correlation ρ ([derivation](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax)):
 
-**Reality with correlation**:
-> P(all fail) is much higher because when one layer fails, correlated layers are more likely to fail too.
+$$P(\text{all miss}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
 
-**The formula** (canonical derivation in [Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax); see also [Risk Propagation](/delegation-risk/risk-propagation/)):
+The second term is a floor. Adding layers shrinks only the first.
 
-$$P(\text{all fail}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
+## Estimating ρ: the phi coefficient
 
-This is the beta-factor common-cause model: with weight ρ a shared cause defeats every correlated layer at once. It is deliberately conservative at intermediate ρ relative to smoother correlation models — the right direction for budgeting. All tables below are generated from this formula.
+ρ is always the **phi coefficient** of the miss indicators, the Pearson correlation of two 0/1 variables. The recipe is the canonical one from [Risk Propagation](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it):
 
----
+1. Run every layer on the same labeled challenge set of harmful items. Record, per item, whether each layer missed it.
+2. For each pair, compute $\phi = \dfrac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$.
+3. Use the largest pairwise φ as the mixture's ρ, or simulate the full matrix (below).
+4. When you cannot measure, use the upper end of the [priors](#priors-when-you-cannot-measure).
 
-## Quick Reference Tables
+Other statistics called "correlation" do not substitute for φ:
 
-### Two-Layer System
+- **Jaccard overlap**, P(both miss)/P(either misses), is about 0.05 for two *independent* layers at p = 0.1. It is not a correlation.
+- **Latent or copula correlation**, the parameter of a Gaussian-factor model, is larger than the φ it induces. Latent 0.4 gives φ ≈ 0.19 at p = 0.1.
+- **Yule's Q**, common in the ensemble-diversity literature ([Kuncheva & Whitaker 2003](https://doi.org/10.1023/A:1022859003006)), is always at least as large in magnitude as φ.
+- **Representation similarity** (CKA) and **output agreement rates** describe models, not joint misses.
 
-**Individual layer effectiveness: 90% (failure rate = 10%)**
+Each of these overstates or misstates the tax if plugged into the formula.
 
-| Correlation | P(Both Fail) | Effective Protection | Entanglement Tax |
-|-------------|--------------|---------------------|------------------|
-| 0.0 (independent) | 1.0% | 99.0% | 1× |
-| 0.1 | 1.9% | 98.1% | 1.9× |
-| 0.2 | 2.8% | 97.2% | 2.8× |
-| 0.3 | 3.7% | 96.3% | **3.7×** |
-| 0.5 | 5.5% | 94.5% | **5.5×** |
-| 0.7 | 7.3% | 92.7% | **7.3×** |
-| 1.0 (identical) | 10.0% | 90.0% | 10× |
+**What the challenge set must contain.** φ is a property of a layer pair *on a distribution*. Measure on the harmful items you care about, including hard and novel cases. An easy set makes every layer catch everything and leaves φ undefined. Re-measure under load, because correlation can appear only under stress, and after any change to models, prompts or infrastructure.
 
-**Key insight**: Even modest correlation (ρ = 0.3) makes your two-layer system nearly 4× worse than independent.
+**Sampling error.** Near zero, the standard error of φ is about $1/\sqrt{N}$ for N items: ±0.03 at N = 1,000. Misses are what carry the information, so a layer that misses 1% of a 1,000-item set gives you ten data points. Bootstrap a confidence interval and compare its upper end, not the point estimate, with your budget.
 
-### Three-Layer System
+```python
+import numpy as np
 
-**Individual layer effectiveness: 90% (failure rate = 10%)**
+def phi(a: np.ndarray, b: np.ndarray) -> float:
+    """Phi coefficient of two boolean miss vectors over the same items."""
+    pa, pb, pab = a.mean(), b.mean(), (a & b).mean()
+    denom = np.sqrt(pa * (1 - pa) * pb * (1 - pb))
+    return float("nan") if denom == 0 else (pab - pa * pb) / denom
 
-| Correlation | P(All Fail) | Effective Protection | Entanglement Tax |
-|-------------|-------------|---------------------|------------------|
-| 0.0 (independent) | 0.10% | 99.90% | 1× |
-| 0.1 | 1.09% | 98.91% | 10.9× |
-| 0.2 | 2.08% | 97.92% | 20.8× |
-| 0.3 | 3.07% | 96.93% | **31×** |
-| 0.5 | 5.05% | 94.95% | **50×** |
-| 0.7 | 7.03% | 92.97% | **70×** |
-| 1.0 (identical) | 10.00% | 90.00% | 100× |
+def phi_matrix(misses: np.ndarray) -> np.ndarray:
+    """misses: (n_items, n_layers) boolean array, True where a layer missed."""
+    k = misses.shape[1]
+    R = np.eye(k)
+    for i in range(k):
+        for j in range(i + 1, k):
+            R[i, j] = R[j, i] = phi(misses[:, i], misses[:, j])
+    return R
 
-**Key insight**: With three layers, even ρ = 0.1 costs you an order of magnitude — and at ρ = 0.3 you're paying ~31×. The third layer barely moves actual protection once a common cause exists.
+def measured_tax(misses: np.ndarray) -> float:
+    """Observed P(all miss) over the independence prediction."""
+    independent = misses.mean(axis=0).prod()
+    actual = misses.all(axis=1).mean()
+    return actual / independent if independent > 0 else float("nan")
+```
 
-### Five-Layer System
+A layer that never misses on the set returns NaN, not zero: the set carries no information about its correlation. The measured tax needs enough items for P(all miss) to be observed at all; for strong stacks it usually is not, which is why the mixture with a measured φ is the practical route.
 
-**Individual layer effectiveness: 90% (failure rate = 10%)**
+## Lookup tables
 
-| Correlation | P(All Fail) | Effective Protection | Entanglement Tax |
-|-------------|-------------|---------------------|------------------|
-| 0.0 (independent) | 0.001% | 99.999% | 1× |
-| 0.1 | 1.00% | 99.00% | ~1,000× |
-| 0.2 | 2.00% | 98.00% | ~2,000× |
-| 0.3 | 3.00% | 97.00% | **~3,000×** |
-| 0.5 | 5.00% | 95.00% | **~5,000×** |
-| 0.7 | 7.00% | 93.00% | **~7,000×** |
-| 1.0 (identical) | 10.00% | 90.00% | 10,000× |
+Identical layers that each miss 10%. "Effective layers" is the number of independent layers with the same P(all miss), $\ln P / \ln 0.1$.
 
-**Key insight**: Entanglement tax compounds dramatically with layer count — you *think* you have 99.999% protection, but with any appreciable common cause your actual protection is set by ρ × 10%, not by the five layers. The extra layers improve the perceived number, not the real one.
+| ρ | 2 layers: P(all miss) | tax | 3 layers: P(all miss) | tax | effective | 5 layers: P(all miss) | tax | effective |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 1.0% | 1× | 0.10% | 1× | 3.0 | 0.001% | 1× | 5.0 |
+| 0.1 | 1.9% | 1.9× | 1.09% | 11× | 2.0 | 1.00% | 1,000× | 2.0 |
+| 0.2 | 2.8% | 2.8× | 2.08% | 21× | 1.7 | 2.00% | 2,000× | 1.7 |
+| 0.3 | 3.7% | 3.7× | 3.07% | 31× | 1.5 | 3.00% | 3,000× | 1.5 |
+| 0.5 | 5.5% | 5.5× | 5.05% | 50× | 1.3 | 5.00% | 5,000× | 1.3 |
+| 0.7 | 7.3% | 7.3× | 7.03% | 70× | 1.2 | 7.00% | 7,000× | 1.2 |
+| 1.0 | 10% | 10× | 10% | 100× | 1.0 | 10% | 10,000× | 1.0 |
 
----
+Three things follow from the formula and show in the table:
 
-## Effective Redundancy
+1. **The tax is linear in ρ.** For three 90% layers, P(all miss) = 0.001 + 0.099ρ, so each 0.1 of ρ adds about one percentage point, or about 10× on the tax. The steps are equal in absolute terms. Relative to independence, the first step, from 1× to 11×, is the one that destroys the arithmetic people expect.
+2. **Past modest ρ, more layers buy nothing.** At ρ = 0.5, three and five layers are both worth 1.3 independent layers, because the floor ρ·p does not depend on the number of layers.
+3. **Two levers move the floor.** It is ρ·min pᵢ, so lower ρ (a check that uses a different method or different information) or improve the *best* layer.
 
-How many truly independent layers would give you the same protection?
+Two contrasting stacks, with ρ values taken from the [priors](#priors-when-you-cannot-measure) and miss rates that are illustrative:
 
-| Nominal Layers | Correlation | Effective Redundancy |
-|----------------|-------------|---------------------|
-| 3 | 0.0 | 3.0 layers |
-| 3 | 0.3 | 1.5 layers |
-| 3 | 0.5 | 1.3 layers |
-| 3 | 0.7 | 1.2 layers |
-| 5 | 0.0 | 5.0 layers |
-| 5 | 0.3 | 1.5 layers |
-| 5 | 0.5 | 1.3 layers |
+- *Same model three times* (agent, checker, reviewer), ρ ≈ 0.9: P(all miss) ≈ 9%, a tax of about 90×, worth 1.05 independent layers.
+- *Diverse stack*: an LLM check (p = 0.1), a rule-based check (p = 0.05) and human review of flagged items (p = 0.01), ρ ≈ 0.15. Independence predicts 0.005%; the mixture gives 0.15%, a tax of about 31×. The ratio is large because the independent baseline is tiny, but the absolute risk is about 60 times lower than the same-model stack's. Compare stacks by P(all miss), not by tax.
 
-**Interpretation**: 3 layers with ρ = 0.5 provide only ~1.3 layers worth of protection — and going from 3 layers to 5 at the same correlation buys you *nothing*. Once a common cause exists, effective redundancy is set by the correlation, not the layer count. Reduce ρ (diversify providers, isolate context) before adding layers.
+## The threshold set: a correlation budget
 
----
+Thresholds such as "investigate above 0.3" carry no information about your system. The threshold that does is the largest ρ your target tolerates. Setting the mixture equal to a target T and solving:
 
-## Realistic Correlation Estimates
+$$\rho_{\max} = \frac{T - \prod_i p_i}{\min_i p_i - \prod_i p_i}$$
 
-What correlation values should you expect?
+For layers that each miss 10%:
 
-| Configuration | Estimated Correlation |
-|---------------|----------------------|
-| **Same model, same provider** | 0.8 - 0.95 |
-| **Same provider, different models** (e.g., GPT-4 vs GPT-3.5) | 0.5 - 0.7 |
-| **Different LLM providers** (e.g., GPT-4 vs Claude) | 0.3 - 0.6 |
-| **Neural network vs rule-based** | 0.1 - 0.3 |
-| **Neural network vs formal verification** | 0.0 - 0.1 |
-| **Neural network vs human expert** | 0.2 - 0.4 |
+| Target P(all miss) | 3 layers | 5 layers |
+|---|---|---|
+| 5% (95% protection) | ρ ≤ 0.49 | ρ ≤ 0.50 |
+| 1% (99%) | ρ ≤ 0.09 | ρ ≤ 0.10 |
+| 0.1% (99.9%) | only ρ = 0 | ρ ≤ 0.01 |
+| 0.01% | unreachable | ρ ≤ 0.001 |
 
----
+The same algebra answers "how many layers?". For identical layers, $n \geq \ln\!\big((T - \rho p)/(1-\rho)\big) / \ln p$, which exists only when $T > \rho p$. At p = 0.1 and T = 0.1%, ρ = 0 needs three layers, and any ρ ≥ 0.01 makes the target unreachable at every layer count.
 
-## Worked Examples
+This is the [correlation budget](/getting-started/glossary/): the practical face of the entanglement tax. The full decision rule:
 
-### Example 1: Code Review Bot
+| Situation | Rule |
+|---|---|
+| Measured max-pairwise φ (upper CI) ≤ ρ_max | Within budget |
+| Measured φ > ρ_max | Over budget: replace a layer with one that uses a different method, improve the best layer, or narrow what is delegated |
+| Cannot measure | Use the upper end of the matching [prior range](#priors-when-you-cannot-measure): 0.7 for a shared provider or model family, 0.55 across providers |
+| Defection or hijack channel (adaptive adversary) | Assume ρ = 1 until a control evaluation measures the joint miss rate |
+| Monitoring over time | Alert when φ's confidence interval moves above ρ_max, or when φ rises significantly over its own baseline |
 
-**Setup**:
-- Layer 1: GPT-4 (90% effective)
-- Layer 2: Claude (90% effective)
-- Layer 3: Static analysis (90% effective)
+## What the evidence supports
 
-**Estimated correlations**:
-- GPT-4 ↔ Claude: ρ ≈ 0.5
-- GPT-4 ↔ Static analysis: ρ ≈ 0.2
-- Claude ↔ Static analysis: ρ ≈ 0.2
-- Average: ~0.3
+**Benchmark φ for LLM pairs.** [Kim et al. (2025)](https://arxiv.org/abs/2506.07962) released, for 71 models on HELM's MMLU set (14,042 multiple-choice questions; models released 2023–24), each model's accuracy and, for every pair, the both-correct rate and the agreement rates on errors ([data](https://github.com/nikhgarg/llm_correlated_errors_public)). Those fix the joint miss rate (P(both miss) = agreement-when-either-wrong × (1 − both-correct) ÷ agreement-when-both-wrong), so φ of the miss indicators can be computed directly. We did so; the reconstructed accuracies match the published ones to within 0.002, and with 14,042 items the sampling error of each φ is about ±0.01.
 
-**Result** (from 3-layer table at ρ = 0.3):
-- You thought: 99.9% protection
-- You have: ~96.9% protection (P(all fail) ≈ 3.1%)
-- Entanglement tax: ~31×
+| Pair type (both models ≥ 80% accurate) | Pairs | φ of misses |
+|---|---|---|
+| Dated versions of one model (GPT-4o 05→08, Claude 3.5 Sonnet 06→10, Gemini 1.5 Pro 001→002) | 3 | 0.80, 0.77, 0.66 |
+| Same provider, any two models (including the above) | 20 | median 0.61, range 0.56–0.93 |
+| Different providers | 151 | median 0.53, 80% of pairs in 0.48–0.56 |
 
-**Caveat on averaging pairwise ρs**: The single shared-ρ model used here cannot represent asymmetric pairwise structure (GPT-4↔Claude at 0.5 is quite different from either's 0.2 correlation with static analysis). Averaging (0.5 + 0.2 + 0.2) / 3 = 0.3 is a rough approximation that can *understate* the tax — the high GPT-4↔Claude correlation still creates a strong common-cause channel that averaging dilutes. For a conservative answer with asymmetric architectures, use the **max pairwise ρ** (here 0.5, giving ~50× tax from the 3-layer table) rather than the average. For a precise answer, model the pairwise matrix explicitly (see the limitation note in [Formal Definitions](/entanglements/fundamentals/formal-definitions/)).
+Across providers, φ rises with capability: the median is 0.30 for pairs where the weaker model scores below 60%, 0.44 at 60–70%, 0.48 at 70–80% and 0.53 above 80%. This is the trend [Goel et al. (2025)](https://arxiv.org/abs/2502.04313) report with a different metric (CAPA), on 130 models.
 
-### Example 2: Homogeneous LLM Stack
+**Label noise biases these figures upward.** An estimated 6.49% of MMLU questions contain errors, such as wrong answer keys or no correct option ([Gema et al. 2024](https://arxiv.org/abs/2406.04127)). A strong model that answers a mis-keyed item correctly is scored as missing it, as is every other strong model. Such items count as common-cause misses. If 3% of items are missed by every model for this reason, the cross-provider median falls from 0.53 to 0.44 and the same-provider median from 0.61 to 0.54; at 6.5% they fall to 0.27 and 0.40. Not every flawed item is missed by every model, so under this model the truth lies between the raw and the 6.5% figures.
 
-**Setup**:
-- Layer 1: GPT-4 agent
-- Layer 2: GPT-4 safety checker
-- Layer 3: GPT-4 reviewer
-- All 90% effective
+**Mapping to ρ assumes:**
 
-**Correlation**: ρ ≈ 0.9 (same model)
+1. That φ on knowledge questions resembles φ on the harmful items your checks see. Nothing establishes this. Harm detection may have its own items that every model finds hard, and checks share a prompt and a rubric more often than benchmark runs do.
+2. That the beta-factor mixture is the right model. For two layers with equal miss rates, the mixture's ρ equals φ exactly; for three or more it is conservative ([Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax)).
+3. That the 2023–24 models represent current ones. Both studies find correlation increasing with capability, so the error is more likely to be on the low side.
+4. That the failures are benign. None of this applies to inputs chosen by an attacker.
 
-**Result** (from 3-layer table, interpolating between ρ = 0.7 and ρ = 1.0):
-- You thought: 99.9% protection
-- You have: ~91% protection (P(all fail) ≈ 9%)
-- Entanglement tax: ~90×
+## Priors when you cannot measure
 
-Your three layers are worth about 1.05 effective layers — barely more than one.
+Ranges on the φ scale. The LLM rows come from the benchmark figures above, widened for label noise; the rest have no measurement behind them and are the site authors' judgment. Use them to see whether a design could meet its budget, then measure. Where a range spans your ρ_max, the design question is open until you do.
 
-### Example 3: Diverse Stack
+| Configuration | Range to assume | Basis | Tax, three layers at p = 0.1 |
+|---|---|---|---|
+| Same model and prompt, separate calls | 0.8–1.0 | Assumed; dated versions of one model already reach 0.66–0.80 | 80–100× |
+| Same provider, different models | 0.4–0.7 | Benchmark median 0.61 raw, 0.40 at full noise adjustment; up to 0.93 for a derived model | 41–70× |
+| Frontier LLMs from different providers | 0.3–0.55 | Benchmark median 0.53 raw, 0.27 at full noise adjustment | 31–55× |
+| LLM check and rule-based or static check | 0.1–0.3 | Assumed | 11–31× |
+| LLM check and formal verification of a narrow property | 0–0.1, on that property | Assumed | 1–11× |
+| LLM check and a human who sees the LLM's output | 0.2–0.4 | Assumed | 21–41× |
+| Any learned checks, adaptive attacker | 1 | [Adversarial case](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model) | 100× (the best single layer) |
 
-**Setup**:
-- Layer 1: LLM (90% effective)
-- Layer 2: Rule-based checker (95% effective)
-- Layer 3: Human review (99% effective for reviewed items)
+The tax column is $1 + 99\rho$; for other layer counts and miss rates use $(1-\rho) + \rho\,p^{1-n}$ or the [lookup table](#lookup-tables). The figure of about 50× that appears across this site is a point inside the cross-provider and same-provider ranges, not a measurement of anyone's stack. No published study reports φ between LLM checks on harmful-action detection.
 
-**Average correlation**: ~0.15 (paradigm diversity)
+Other evidence the priors should be consistent with:
 
-**Result**:
-- Independent assumption: P(all fail) = 0.1 × 0.05 × 0.01 = 0.005%
-- Actual: P(all fail) = 0.85 × 0.005% + 0.15 × 1% ≈ 0.15%
-- Entanglement tax: ~31×
+- **[Knight & Leveson (1986)](https://doi.org/10.1109/TSE.1986.6312924):** 27 independently written versions of one program, run on a million inputs, failed together far more often than independence predicts. Separate development is not independence.
+- **[Goel et al. (2025)](https://arxiv.org/abs/2502.04313):** besides the capability trend, LLM judges favor models whose mistakes resemble their own. CAPA counts different wrong answers as disagreement and uses output probabilities, so it is not φ.
+- **[Zou et al. (2023)](https://arxiv.org/abs/2307.15043)** and later attack studies: adversarial inputs transfer between models. This bears on the adversarial case, not on benign φ.
 
-The tax *ratio* is still large — with heterogeneous layers, the common-cause term ρ · min(pᵢ) dominates the tiny independent product, and the strongest layer (the 99% human review) sets the floor: P(all fail) ≥ ρ × 1%. But compare absolute risk: 0.15% here versus 3.1% for the code review bot in Example 1. Genuine diversity bought a ~20× lower actual failure rate. The remaining risk is almost entirely the shared-cause channel, so the next improvement is reducing ρ further — not adding layers.
+## Asymmetric stacks: the matrix
 
----
+A single ρ treats every layer as equally exposed to one shared cause. Real stacks are structured: two LLM checks may be strongly correlated with each other and weakly with a static analyzer. Keep a pairwise φ matrix. An illustrative one:
 
-## Decision Guidelines
+| | Rule filter | LLM monitor A | LLM monitor B | Anomaly detector |
+|---|---|---|---|---|
+| **Rule filter** | 1 | 0.1 | 0.1 | 0.2 |
+| **LLM monitor A** | 0.1 | 1 | 0.6 | 0.2 |
+| **LLM monitor B** | 0.1 | 0.6 | 1 | 0.2 |
+| **Anomaly detector** | 0.2 | 0.2 | 0.2 | 1 |
 
-### Maximum Acceptable Correlation
+There are two ways to use it:
 
-With 90%-effective layers, the common-cause floor P(all fail) ≥ ρ × 10% caps your achievable protection no matter how many layers you stack. Working backwards from each target (assuming ≥4 layers, so the independent term is negligible):
+- **Conservative:** plug the largest entry into the mixture. Averaging the entries understates the tax, because one strongly correlated pair dominates the joint miss.
+- **Sharper:** simulate. Calibrate a Gaussian copula so that each pair's simulated φ matches the matrix, then estimate P(all miss) by Monte Carlo. The [worked examples](/entanglements/case-studies/examples/) do this.
 
-| Stakes | Target Protection | Max Correlation (90% layers) |
-|--------|-------------------|------------------------------|
-| Low | 95% | ρ ≤ ~0.5 |
-| Medium | 99% | ρ ≤ ~0.1 |
-| High | 99.9% | ρ ≤ ~0.01 |
-| Critical | 99.99% | Essentially zero (ρ ≤ ~0.001) |
+Neither captures interactions beyond pairs, so also test the full stack on the challenge set where you can.
 
-If you can't get ρ that low, the other lever is stronger individual layers: the floor is ρ × min(pᵢ), so improving your *best* layer lowers it proportionally.
+## Limits of the numbers
 
-### Strategies to Reduce Correlation
+- **Stationarity.** Correlation measured in normal operation can rise under load or drift as components are tuned to each other. Re-measure on a schedule and after changes.
+- **Coverage.** The challenge set is not production. Novel inputs are where shared blind spots live and where you have the least data.
+- **Adversaries.** A φ from benign data says nothing about chosen inputs.
+- **Small samples.** Below a few hundred items with misses, treat φ as a range.
 
-| Strategy | Correlation Reduction | Trade-off |
-|----------|----------------------|-----------|
-| Different LLM providers | ρ drops ~0.2 | Higher complexity |
-| Add rule-based layer | ρ drops ~0.3 | Development cost, rigidity |
-| Add formal verification | ρ drops ~0.4 | High cost, limited scope |
-| Add human review | ρ drops ~0.3 | Latency, cost |
-| Different paradigm entirely | ρ drops ~0.5 | May not exist |
-
----
-
-## Rules of Thumb
-
-1. **The tax is linear in ρ, and the first step is the worst**: for 3 layers at 90%, each +0.1 of ρ adds roughly +10× to the tax (about +1 percentage point of P(all fail)). Going from ρ = 0 to ρ = 0.1 alone multiplies the tax by ~11×.
-
-2. **Adding layers has diminishing returns**: The n-th correlated layer adds only (1-ρ) × effectiveness of first layer
-
-3. **Paradigm diversity beats provider diversity**: Different approaches reduce ρ by ~0.3-0.5; different providers only ~0.1-0.2
-
-4. **Information flow increases correlation**: If Layer A's output influences Layer B, add ~0.1-0.2 to ρ
-
-5. **Same model = almost no redundancy**: ρ ≈ 0.9 means your 3 layers are worth ~1.05 layers
-
----
-
-## Quick Assessment
-
-**Step 1**: Count your verification layers
-
-**Step 2**: Estimate average correlation:
-- All same provider/model? → ρ ≈ 0.8-0.9
-- All LLMs, different providers? → ρ ≈ 0.4-0.6
-- Mix of LLM + rule-based? → ρ ≈ 0.2-0.3
-- Mix of paradigms (neural + rules + formal)? → ρ ≈ 0.1-0.2
-
-**Step 3**: Look up entanglement tax in tables above
-
-**Step 4**: Is effective protection sufficient for your stakes?
+When in doubt, assume the correlation is higher than measured.
 
 ---
 
 See also:
-- [Formal Definitions](/entanglements/fundamentals/formal-definitions/) — Concept definitions
-- [Metrics](/entanglements/detection/metrics/) — Measurement approaches
-- [Decision Framework](/entanglements/mitigation/decision-framework/) — When to invest in independence
+- [Formal Definitions](/entanglements/fundamentals/formal-definitions/): the tax and effective redundancy
+- [Risk Propagation](/delegation-risk/risk-propagation/): derivation, simulation, the adversarial case
+- [Audit Guide](/entanglements/mitigation/audit-guide/): the protocol that produces these measurements
+- [Solutions](/entanglements/mitigation/solutions/): how to get under budget

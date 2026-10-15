@@ -1,0 +1,1098 @@
+# CAIRN Handbook — Complete Text
+
+> How QURI builds and maintains CAIRN, its monorepo of LLM-assisted research wikis: adding a wiki, the build and link-checking tooling, the review workflow, and a workshop on building research websites with Claude Code.
+>
+> This is the entire wiki concatenated into one document, in book reading order,
+> for offline reading (e-readers) and LLM context. Web version: https://cairn-meta.vercel.app
+
+
+
+================================================================================
+# Handbook
+================================================================================
+
+
+------------------------------------------------------------
+## Adding a Wiki
+Source: https://cairn-meta.vercel.app/adding-a-wiki/
+------------------------------------------------------------
+
+A wiki in CAIRN is a directory under `apps/`. `pnpm-workspace.yaml` includes `apps/*` and `packages/*`, so any directory there with a `package.json` becomes a workspace package. Evaluation Engineering (`apps/evaluation-engineering`) is the cleanest existing app to compare against.
+
+## 1. Copy the starter
+
+```bash
+cp -r starters/research-wiki apps/my-wiki
+```
+
+`starters/research-wiki` is also the template that [workshop](/workshop/) attendees download with `degit`. It already has Starlight, `astro-mermaid`, `remark-math` with `rehype-katex`, React, and a `CLAUDE.md`. It is written for standalone use with npm, so it needs the changes below before it fits the monorepo. Delete `src/content/docs/example/` and `src/components/Counter.tsx` once you have pages of your own.
+
+## 2. Wire it into the workspace
+
+In `apps/my-wiki/package.json`:
+
+- Set `"name"`. This is the name used by `pnpm --filter my-wiki …` and CI.
+- Add `"packageManager": "pnpm@9.15.4"`, as the other apps have, and delete the starter's `engines` field. The Node requirement is set in the root `package.json` and in CI.
+- Add `"@cairn/starlight": "workspace:*"` to `dependencies`.
+- Change `build` to `node ../../scripts/generate-llm-files.mjs && astro build`, and add `"gen:llms": "node ../../scripts/generate-llm-files.mjs"`.
+
+Then run `pnpm install` from the repository root and commit the updated `pnpm-lock.yaml`. In CI, pnpm installs with a frozen lockfile by default, so a stale lockfile fails the build.
+
+For the footer, copy `src/components/Footer.astro` and `version.json` from Evaluation Engineering. The footer wraps `@cairn/starlight/Footer.astro`, which adds the Copy-as-Markdown button and the version string. Add the app's directory name to the `apps` list in `scripts/sync-versions.mjs`. [Build & Tooling](/build-and-tooling/#version-footer) explains what these do.
+
+## 3. Edit `astro.config.mjs`
+
+- `site`: the live URL. Starlight uses it for canonical links and the sitemap.
+- `title` and `description`.
+- `social`: a GitHub link to `https://github.com/quantified-uncertainty/cairn`.
+- `components: { Footer: './src/components/Footer.astro' }`.
+- `sidebar`: replace the starter's `autogenerate` sections with an explicit list.
+
+The explicit sidebar is required. `generate-llm-files.mjs` builds `llms.txt` and `llms-full.txt` by parsing the sidebar text, and it only recognises three shapes:
+
+```js
+sidebar: [
+  {
+    label: 'Part I — Foundations',        // a group header: `collapsed:` must follow `label`
+    collapsed: false,
+    items: [
+      { label: '1. Introduction', slug: 'start-here/introduction' },  // a chapter
+      { label: '2. Planned Chapter', link: '/#contents' },            // a planned placeholder
+    ],
+  },
+],
+```
+
+Each entry must be exactly `{ label: '…', slug: '…' }` (optionally followed by a one-line `badge: { … }`) or `{ label: '…', link: '…' }`, keys in that order, values single-quoted, and no straight apostrophe in the label (use ’). Anything else is skipped. A group without `collapsed:` right after its `label` still lists its pages, but gets no heading in `llms.txt`. An `autogenerate` group contributes nothing, and a sidebar with no parseable chapters fails the build.
+
+The explicit sidebar also lets Evaluation Engineering and Robust Reasoning Processes read as books. Chapter numbers live in the sidebar labels and are mirrored in a contents table on each site's index page.
+
+## 4. Add `llms.config.json`
+
+```json
+{
+  "name": "My Wiki",
+  "url": "https://my-wiki.quantifieduncertainty.org",
+  "description": "One paragraph on what the wiki covers.",
+  "intro": "Optional extra paragraph, e.g. links to sibling wikis."
+}
+```
+
+`name`, `url` and `description` are required. Keep `url` identical to `site`, because `scripts/check-built-links.py` maps each site's domain to its build through this field. The generated `public/llms.txt` and `public/llms-full.txt` are committed. Don't edit them by hand; run `pnpm gen:llms`, or just build.
+
+## 5. Deploy
+
+Copy `vercel.json` from another app:
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "installCommand": "cd ../.. && npx pnpm@9 install",
+  "buildCommand": "npx pnpm@9 run build"
+}
+```
+
+The `cd ../..` assumes the Vercel project's root directory is `apps/my-wiki`, so the install runs at the workspace root. Create the Vercel project with that root directory and attach the domain in Vercel; the three live wikis use `<name>.quantifieduncertainty.org`. By default, pushes to `main` deploy to production, and other branches and pull requests get preview deployments.
+
+## 6. Add it to CI
+
+In `.github/workflows/ci.yml`, add a build step before the link check:
+
+```yaml
+      - name: Build my-wiki
+        run: pnpm --filter my-wiki build
+```
+
+`scripts/check-built-links.py` discovers sites through their `llms.config.json`, so it checks the new wiki without changes.
+
+## 7. Finish
+
+- Rewrite the starter's `CLAUDE.md` for the monorepo, using Evaluation Engineering's as a model: pnpm commands, the explicit-sidebar rule, and "don't hand-edit the llms files".
+- Add the wiki to this handbook's [homepage](/), and mention it in the `intro` of the sibling wikis' `llms.config.json`.
+
+## Diagrams and math
+
+All three wikis render diagrams and maths the same way as the starter. ` ```mermaid ` code fences are rendered by `astro-mermaid`. `$…$` and `$$…$$` are rendered by `remark-math` and `rehype-katex`, which also need the KaTeX stylesheet. Because of `remark-math`, currency needs escaping: write `\$100`. A malformed formula does not fail the build; it renders as red text, which the link checker reports. The content column is narrow, so prefer top-down Mermaid flowcharts (`flowchart TD`) to wide left-to-right ones, and use a table rather than a diagram for a taxonomy.
+
+
+------------------------------------------------------------
+## Build & Tooling
+Source: https://cairn-meta.vercel.app/build-and-tooling/
+------------------------------------------------------------
+
+## Layout
+
+```
+cairn/
+├── apps/
+│   ├── delegation-risk/         # delegation-risk.quantifieduncertainty.org
+│   ├── evaluation-engineering/  # evaluation-engineering.quantifieduncertainty.org
+│   ├── reasoning-processes/     # reasoning-processes.quantifieduncertainty.org
+│   └── meta/                    # this handbook
+├── packages/
+│   ├── starlight/   # @cairn/starlight: shared Footer and Copy-as-Markdown button
+│   ├── config/      # @cairn/config: shared ESLint config
+│   └── ui/          # @cairn/ui: React component library, no longer imported by any site
+├── scripts/
+│   ├── generate-llm-files.mjs   # builds public/llms.txt and llms-full.txt
+│   ├── check-built-links.py     # checks links, anchors and KaTeX in built sites
+│   └── sync-versions.mjs        # writes version.json (see below)
+├── starters/research-wiki/      # standalone template, not part of the workspace
+├── audits/                      # review-round reports and plans
+└── .github/workflows/           # ci.yml, release.yml
+```
+
+Each app is an Astro Starlight site with its own `astro.config.mjs`, `vercel.json` and Vercel project. The workspace is pnpm (`pnpm-workspace.yaml` covers `apps/*` and `packages/*`):
+
+```bash
+pnpm install
+pnpm --filter evaluation-engineering dev     # http://localhost:4321
+pnpm --filter evaluation-engineering build   # → apps/evaluation-engineering/dist
+pnpm build                                   # every app
+python3 scripts/check-built-links.py         # after building
+```
+
+CI (`.github/workflows/ci.yml`) runs on pushes and pull requests to `main`. It installs, builds all four apps, then runs the link checker. It does not run lint.
+
+## llms.txt generation
+
+`scripts/generate-llm-files.mjs` writes two files into an app's `public/`:
+
+- `llms.txt`: an index with one line per page, giving its sidebar label, URL and frontmatter `description`, grouped under the sidebar's section labels.
+- `llms-full.txt`: every page concatenated in sidebar order, for LLM context or offline reading.
+
+It runs at the start of `build` in all four apps, and on its own as `pnpm gen:llms`. Site metadata comes from the app's `llms.config.json`; page order comes from parsing the `sidebar` block of `astro.config.mjs` as text. That parse only understands explicit `{ label, slug }` entries, `{ label, link }` placeholders, and group labels followed by `collapsed:`. The exact rules are in [Adding a Wiki](/adding-a-wiki/#3-edit-astroconfigmjs).
+
+Deriving the files from the sidebar is the point: an earlier hand-written `llms.txt` drifted out of step with the chapter numbering. The script fails the build if `llms.config.json` is missing or lacks a required field, if a sidebar slug has no matching `.md`/`.mdx` file, or if the sidebar yields no chapters. Page bodies are lightly cleaned: frontmatter and `import` lines are removed, `:::note[Title]` asides become bold lines, and JSX component tags are dropped while their contents are kept. Only one level is stripped, so a component nested inside another, such as `<TabItem>` inside `<Tabs>`, keeps its tags.
+
+## Link checker
+
+`scripts/check-built-links.py` reads the built HTML, not the source. It finds sites by looking for apps that have both an `llms.config.json` and a `dist/`, and maps each site's domain (the `url` in that file) to its build. For every link inside `<main>` it checks:
+
+- root-relative links (`/foo/`) against the same site's build;
+- absolute links to any checked site's domain against that site's build, so cross-wiki links are checked too;
+- `#fragment` targets against the `id` attributes of the target page.
+
+It also reports KaTeX parse errors. `rehype-katex` renders a bad formula as red text instead of failing the build, so this is the only automated check that catches them. It exits 1 on any problem. It does not check external links, relative links such as `./page`, or anything outside `<main>` (header, sidebar, footer). It also compares fragments without percent-decoding them, so a non-ASCII heading anchor can be reported as missing when it isn't.
+
+## Version footer
+
+Each app has a `version.json` and a small `Footer.astro` that turns it into a string such as `0.0.1` or `0.0.1+abc1234` and passes it to the shared footer, which prints it as `v0.0.1`. Nothing updates `version.json` during a build. It changes only when `scripts/sync-versions.mjs` runs, normally as the second half of `pnpm run version` (after `changeset version`). That script copies each app's `package.json` version into its `version.json`, along with the current short commit hash and the date. Its list of apps is hard-coded.
+
+`.changeset/` holds only the Changesets config and README, with no pending changesets, so in practice the versions stay at `0.0.1`. `release.yml` runs the Changesets action on every push to `main`, and with nothing pending it does nothing. The October 2026 infrastructure audit (`audits/2026-10/meta-infra.md`) proposes replacing this with a build-time commit hash and date.
+
+## Shared packages
+
+`@cairn/starlight` (`packages/starlight`) exports two Astro components:
+
+- `Footer.astro` replaces Starlight's footer. It keeps Starlight's edit link, last-updated line and pagination, and adds the Copy-as-Markdown button and the version string. Apps use it through the `components.Footer` override in their Starlight config.
+- `CopyAsMarkdown.astro` converts the page's main content to Markdown in the browser. It loads Turndown from unpkg on first click, and copies the result to the clipboard under a small YAML header giving the title, source URL and date.
+
+Its `peerDependencies` pin `astro ^5` and `@astrojs/starlight ^0.37`, so they must be bumped together with any Astro upgrade.
+
+`@cairn/config` (`packages/config`) is the shared flat ESLint config. Delegation Risk, Reasoning Processes and this handbook use it; Evaluation Engineering has its own. `@cairn/ui` (`packages/ui`) is a React component library built for the LongtermWiki apps, which have since moved out of this repository. No page imports it, and it is due to be deleted, along with the unused Tailwind setup, in the planned stack upgrade.
+
+
+------------------------------------------------------------
+## Review Workflow
+Source: https://cairn-meta.vercel.app/review-workflow/
+------------------------------------------------------------
+
+The wikis are drafted largely by Claude Code, and the characteristic failures of that process are known: citations that don't exist or don't say what the page claims, invented numbers presented as data, conclusions drawn from those numbers, and terminology that drifts between pages. Improvement therefore happens in rounds that treat model-written content, and model-written reviews of it, as claims to check. A round has five stages.
+
+## 1. Audit
+
+One agent per section reads all or nearly all of it and changes nothing. Its report gives:
+
+- a score;
+- findings ranked P0 (broken or wrong), P1 (significant) and P2 (polish), each with its location and quoted evidence;
+- a page-by-page triage (keep, rewrite, merge or cut);
+- a list of claims it could not check itself.
+
+The audit is a list of leads, not a verdict. Auditors share the drafting model's priors, and in October 2026 they had no web access for most fact checks, so anything they assert is verified again before it is acted on.
+
+## 2. Plan
+
+The reports are merged into one plan. It sets out cross-cutting workstreams, such as citation integrity or the maths, a plan for each site, and the decisions only the owner can make: what a site is for, what happens to cut pages, and how invented quantities are treated. The owner's answers are recorded, together with the rules every editing agent follows, in a brief that each agent reads first. For the October 2026 round these are `audits/2026-10/PLAN.md`, `audits/2026-10/BRIEF.md` and the seven reports beside them. Earlier rounds kept their plans in the app directories, as `REVISION_PLAN.md`, Delegation Risk's `CREDIBILITY_HARDENING_PLAN.md`, and its terminology canon `TERMINOLOGY.md`.
+
+## 3. Edit
+
+Editing agents work in parallel, each on its own file scope. The rules that matter most are:
+
+- **Stay in scope.** Don't touch other agents' files, shared config or git state.
+- **Verify, don't trust the audit.** Re-derive maths, with a quick script where it isn't trivial. Check citations against the source: the arXiv API for arXiv IDs, and the web for everything else.
+- **Never add a citation you have not checked.** If a claim can't be verified, soften it or mark it `<!-- TODO(verify): … -->`. Don't invent a replacement source.
+- **Rewrite shorter.** No summary boxes and no padding.
+- **Report deletions.** A deleted or merged page is reported with its slug and the page it should redirect to.
+
+Each agent reports what it changed, how it checked each change, and what it left unresolved.
+
+## 4. Adversarial verification
+
+A second agent, which did not make the change, re-checks it. A citation reviewer re-reads each changed claim against its source. An adversarial reviewer argues against new or rewritten reasoning. In the September 2026 round this caught a paper (Halawi et al. 2024) described backwards in both newer wikis, and a bond formula in a new chapter that overstated what a track record is worth.
+
+## 5. Integrate
+
+One pass then reconciles the parallel edits:
+
+- update each sidebar;
+- add a redirect in `astro.config.mjs` for every removed slug;
+- rewrite inbound links;
+- build every app, which regenerates the `llms.txt` files;
+- run `python3 scripts/check-built-links.py`.
+
+A phase is done when everything builds and the link check is clean. The work then goes up as reviewable pull requests, one per phase or one per site, from `claude/…` branches. Vercel builds a preview deployment of every site, not only the ones the pull request touches, and posts the links on it. Nothing reaches the live sites until a pull request is merged to `main`.
+
+
+================================================================================
+# Workshop
+================================================================================
+
+
+------------------------------------------------------------
+## Building Research Websites
+Source: https://cairn-meta.vercel.app/workshop/
+------------------------------------------------------------
+
+Claude Code can do most of the mechanical work of a research website: scaffolding the site, drafting pages, building tables and diagrams, and fixing build errors. This workshop shows how to start one in about an hour, and how to keep its content trustworthy afterwards.
+
+*Setup instructions last checked against the Claude Code, Astro and Vercel documentation on 15 October 2026.*
+
+Install these before you arrive:
+
+1. **Node.js 22.12 or later.** Current Astro releases require it. Get the LTS version from [nodejs.org](https://nodejs.org/) and check with `node --version`.
+2. **Claude Code**, using the native installer ([details below](#installing-claude-code)). Then run `claude` once to log in. Claude Code needs a Pro, Max, Team, Enterprise or Console account; the free Claude plan does not include it.
+3. **A terminal** you're comfortable with, such as iTerm2, the VS Code terminal or Windows Terminal.
+
+**Can't install software on your laptop?** The [Claude Code on the Web guide](/claude-code-web-app/) covers doing the whole workshop in the browser, with no local Node.js or terminal.
+
+Keep an LLM chat open alongside the workshop, such as [Claude.ai](https://claude.ai), ChatGPT or Gemini. Use it for side questions: "What does this terminal error mean?", "Help me split this topic into sections", "What does `npm run dev` do?" This is separate from Claude Code, which edits your files.
+
+---
+
+## About this workshop
+
+Organized by the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/). For background, see the LongTermWiki pages on [AI-assisted knowledge management](https://www.longtermwiki.com/wiki/E681), [LongTermWiki itself](https://www.longtermwiki.com/wiki/E384) and [QURI](https://www.longtermwiki.com/wiki/E238).
+
+A live session has three parts: a short presentation on how Claude Code builds research websites and which topics suit the approach, a hands-on session where you start your own site, and a closing round to share progress and problems. The [slides](https://docs.google.com/presentation/d/1JAm0jZ-3Hu2rgYug6sy-5l5vjhYYPovy/edit) are online. A version of this workshop was given at MOX SF in January 2026.
+
+---
+
+## What we're building
+
+You'll start a **research mini-website**: a structured knowledge base, mini-textbook or wiki on a topic in prioritization research, EA cause areas, or a related field. A finished site takes longer, but an hour gets you a solid start.
+
+1. **You** choose the topic, the structure and the editorial direction.
+2. **Claude Code** does the heavy lifting: scaffolding, drafting, creating pages, fixing build errors.
+3. **You** review, edit and iterate.
+
+### What is Claude Code?
+
+[Claude Code](https://code.claude.com/docs/en/overview) is Anthropic's agentic coding tool. It reads and edits the files in your project, runs commands and searches the web, all from a conversation: you describe what you want, and Claude does it. It runs in the terminal, in VS Code and JetBrains IDEs, in the Claude desktop app, and in the browser at [claude.ai/code](https://claude.ai/code). This walkthrough assumes the terminal; the [web guide](/claude-code-web-app/) covers the browser.
+
+### Demo projects
+
+All of these were built mainly with Claude Code:
+
+| Project | What it is |
+|---------|------------|
+| [LongTermWiki](https://www.longtermwiki.com/) | AI safety knowledge base: risks, interventions, organizations, key uncertainties. Has a YAML data layer and custom components. |
+| [Delegation Risk](https://delegation-risk.quantifieduncertainty.org/) | Mini-textbook with theory, case studies and interactive tools |
+| [Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/) | Small book with numbered chapters on systems that produce evaluations at scale |
+| [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/) | Working notes on reasoning processes that resist corruption |
+
+LongTermWiki's source is at [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki). It took months of iteration, but its basic structure was scaffolded in a single session. The other three live in the [CAIRN repository](https://github.com/quantified-uncertainty/cairn), and [this handbook](/) describes how that repository works.
+
+### Rough time budget (hands-on session)
+
+| Phase | Time | What you're doing |
+|-------|------|-------------------|
+| Setup & scaffold | ~10 min | Create the project, start the dev server, open Claude Code |
+| Initial structure | ~10 min | Create the page structure with one large prompt |
+| Content | ~35 min | Expand pages, iterate on content, add detail |
+| Polish | ~10 min | Cross-references, fixes, appearance |
+| Wrap-up | ~5 min | Commit, discuss deployment |
+
+---
+
+## Installing Claude Code
+
+The native installer is the recommended method. It needs no Node.js and updates itself.
+
+  <TabItem label="macOS, Linux, WSL">
+    ```bash
+    curl -fsSL https://claude.ai/install.sh | bash
+    ```
+  </TabItem>
+  <TabItem label="Windows (PowerShell)">
+    ```powershell
+    irm https://claude.ai/install.ps1 | iex
+    ```
+    You don't need to run it as Administrator. Installing [Git for Windows](https://git-scm.com/downloads/win) is recommended, because it gives Claude Code a Bash shell; without it, Claude Code uses PowerShell.
+  </TabItem>
+  <TabItem label="Homebrew">
+    ```bash
+    brew install --cask claude-code
+    ```
+    Homebrew installs don't update themselves. Run `brew upgrade claude-code` now and then.
+  </TabItem>
+  <TabItem label="WinGet">
+    ```powershell
+    winget install Anthropic.ClaudeCode
+    ```
+    WinGet installs don't update themselves either. Run `winget upgrade Anthropic.ClaudeCode` now and then.
+  </TabItem>
+
+Open a new terminal, then run `claude --version` to check the install and `claude` to log in through your browser. An npm package also exists (`npm install -g @anthropic-ai/claude-code`, Node.js 22 or later). If you use it, **never run it with `sudo`**; Anthropic's docs warn this causes permission and security problems. See the [setup docs](https://code.claude.com/docs/en/setup) for other platforms and for [install troubleshooting](https://code.claude.com/docs/en/troubleshoot-install).
+
+**A Claude subscription is simplest.** Pro (\$20/month billed monthly) and Max (from \$100/month) include Claude Code, so there is no surprise bill (prices as of October 2026; see [claude.com/pricing](https://claude.com/pricing)). Subscriptions have usage limits per session window and per week. If you hit one, Claude Code tells you when it resets, and `/usage` shows how much you have used. Max has higher limits than Pro.
+
+**Using the API instead?** Sign in with a [Claude Console](https://platform.claude.com/) account and set a spend limit before the workshop. Cost depends on the model and on how long your sessions run; `/usage` shows an estimate for the current session.
+
+### Key resources
+
+- [Claude Code docs](https://code.claude.com/docs/en/overview), including the [quickstart](https://code.claude.com/docs/en/quickstart) and [best practices](https://code.claude.com/docs/en/best-practices)
+- [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code)
+- [VS Code extension](https://code.claude.com/docs/en/vs-code) and [desktop app](https://code.claude.com/docs/en/desktop), if you'd rather not work in a terminal
+
+---
+
+## Terminal setup: the multi-window workflow
+
+Run several terminal windows at once:
+
+| Window | Purpose | What's running |
+|--------|---------|----------------|
+| **Window 1** (large) | Claude Code | `claude` |
+| **Window 2** | Dev server | `npm run dev`, a live preview of your site |
+| **Window 3** | General terminal | Git commands, file browsing, manual edits |
+
+Keep your browser open at `http://localhost:4321`. It reloads as Claude changes files, so you can look at the result, then go back and tell Claude what to fix.
+
+  <TabItem label="iTerm2 (macOS)">
+    - **Cmd+D**: split pane vertically
+    - **Cmd+Shift+D**: split pane horizontally
+    - **Cmd+\[** / **Cmd+\]**: switch between panes
+
+    A good layout is Claude Code in a tall left pane, the dev server top right and a general terminal bottom right.
+  </TabItem>
+  <TabItem label="VS Code">
+    Split the built-in terminal with **Cmd+\\** (Ctrl+Shift+5 on Windows/Linux), or use the Claude Code extension with Claude in the sidebar and terminals below.
+  </TabItem>
+  <TabItem label="Windows Terminal">
+    - **Alt+Shift+D**: duplicate pane
+    - **Alt+Shift+Plus**: split vertically
+    - **Alt+Shift+Minus**: split horizontally
+    - **Alt+Arrow**: switch panes
+  </TabItem>
+
+---
+
+## Choosing a framework
+
+| Framework | Best for | Scaffold command |
+|-----------|----------|-----------------|
+| **[Astro + Starlight](https://starlight.astro.build/)** | Wikis and research docs (our choice) | `npm create astro@latest -- --template starlight` |
+| **[Docusaurus](https://docusaurus.io/)** | Docs and blogs | `npx create-docusaurus@latest my-wiki classic` |
+| **[VitePress](https://vitepress.dev/)** | Vue-based docs | `npx vitepress init` |
+| **[MkDocs Material](https://squidfunk.github.io/mkdocs-material/)** | Python-based docs | `pip install mkdocs-material && mkdocs new .` |
+
+We use Starlight because pages are plain Markdown/MDX files, which Claude Code edits directly. Search, sidebar, dark mode and mobile layout work out of the box, the output is a fast static site, and React components are available when you need interactivity. The Claude Code workflow is the same for any of these frameworks.
+
+### Non-code alternatives
+
+| Tool | AI integration | Publishing | Best for |
+|------|---------------|------------|----------|
+| **[Obsidian](https://obsidian.md/)** + [Quartz](https://quartz.jzhao.xyz/) | AI plugins, local-first | Quartz builds a static site from your vault | Personal research wikis, interlinked notes |
+| **[Notion](https://notion.so/)** | Built-in Notion AI | Notion Sites or public sharing | Team wikis, collaborative docs |
+| **[Google NotebookLM](https://notebooklm.google.com/)** | Built in, grounded in your sources | Export only | Q&A over a fixed set of documents |
+
+These are quicker to start if you don't want to manage code, but harder to customize. The code approach suits a site you want full control over, with custom components, that will keep growing.
+
+---
+
+## Workshop walkthrough
+
+1. **Pick your research topic**
+
+   Choose a topic in **prioritization research, EA cause areas, or a related field** that you know something about. For the hands-on session, aim for **3–5 sections of 2–4 pages each**.
+
+   Examples of a good scope:
+   - "Key uncertainties in AI governance" (Policy Approaches, Technical Standards, International Coordination, Key Debates)
+   - "Guide to the biosecurity funding landscape" (Major Funders, Funding Gaps, Grant Mechanisms, Emerging Priorities)
+   - "S-risk research overview" (Definitions & Scope, Key Scenarios, Interventions, Open Questions)
+   - "Forecasting methods for cause prioritization" (Base Rates, Expert Elicitation, Prediction Markets, Model Comparison)
+   - "Animal welfare intervention cost-effectiveness" (Factory Farming, Wild Animal Welfare, Measurement Challenges, Key Organizations)
+
+   **Too broad**: "Everything about existential risk". **Too narrow**: "One specific Metaculus question", which is a page, not a wiki.
+
+   <Aside type="tip" title="What makes a topic well-suited?">
+   - **Natural decomposition.** If you can sketch 3–5 groups of 2–4 related subtopics, it fits.
+   - **Existing literature to synthesize.** Claude draws on published material, so well-documented topics come out much better than unpublished research.
+   - **Value from organization, not original analysis.** The format is good at structuring and connecting existing knowledge. Claude is unreliable at novel calculations and original arguments.
+   - **You can check the output.** Claude will invent facts and citations, and present contested claims as consensus. Your domain knowledge is the filter.
+
+   **Avoid** topics that need precise calculation (use a spreadsheet), topics whose sources are mostly paywalled, and topics where you would be generating new research claims rather than synthesizing existing ones.
+   </Aside>
+
+2. **Scaffold the project**
+
+   Either option works for the workshop.
+
+   <Tabs>
+     <TabItem label="Vanilla Starlight">
+       ```bash
+       npm create astro@latest -- --template starlight my-wiki
+       ```
+
+       Answer **Yes** to "Install dependencies?" and "Initialize a new git repository?", then `cd my-wiki`.
+
+       **Windows users:** avoid paths with spaces (e.g. `C:\Users\John Smith\...`). Use a short path such as `C:\projects\my-wiki`.
+     </TabItem>
+     <TabItem label="QURI starter">
+       Our starter adds Mermaid diagrams, KaTeX maths, React components and a `CLAUDE.md`:
+
+       ```bash
+       npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki
+       cd my-wiki
+       npm install
+       git init
+       ```
+
+       It includes example pages showing each feature. Delete them once you have your own content.
+     </TabItem>
+   </Tabs>
+
+   **Checkpoint:** a `my-wiki/` folder containing `src/content/docs/`, `astro.config.mjs` and `package.json`.
+
+3. **Start the dev server** (Window 2)
+
+   ```bash
+   npm run dev
+   ```
+
+   Open `http://localhost:4321`. The starter shows a "My Research Wiki" splash page; vanilla Starlight shows "Welcome to Starlight". If port 4321 is taken, run `npm run dev -- --port 4322` and open that port instead.
+
+4. **Start Claude Code** (Window 1)
+
+   ```bash
+   claude
+   ```
+
+   <Aside type="tip" title="Permission modes">
+   The permission mode decides what Claude may do without asking you. Where it is available, recent versions start in **Auto**, in which a second model reviews each action instead of you. **Shift+Tab** cycles through the modes:
+
+   - **Manual**: Claude asks before editing files or running commands. Safest, but slow.
+   - **Accept edits**: file edits and simple file commands go through; other commands still ask.
+   - **Plan**: Claude reads and proposes a plan, and edits nothing until you approve it. Useful before the big structure prompt in the next step.
+   - **Auto**: everything runs, with background safety checks.
+
+   `claude --dangerously-skip-permissions` skips all checks. Anthropic's docs recommend it only inside an isolated container or VM.
+   </Aside>
+
+5. **Create the whole page structure in one prompt**
+
+   Give Claude one detailed prompt that creates the skeleton of the wiki. **Shift+Enter** inserts a newline in most terminals; if it doesn't in yours, type `\` then Enter, or run `/terminal-setup` once. **Enter** submits.
+
+   Here is a worked example you can adapt:
+
+   <Tabs>
+     <TabItem label="Full example (AI governance)">
+       ```
+       I'm building a research wiki about key uncertainties in
+       AI governance. Create the following structure:
+
+       Sections:
+       1. Policy Approaches — pages: compute-governance,
+          licensing-regimes, liability-frameworks,
+          international-treaties
+       2. Technical Standards — pages: model-evaluations,
+          safety-benchmarks, deployment-standards,
+          red-teaming-requirements
+       3. International Coordination — pages:
+          us-china-dynamics, eu-ai-act, global-governance-gaps,
+          multilateral-proposals
+       4. Key Debates — pages: open-vs-closed-source,
+          pace-of-regulation, voluntary-vs-mandatory,
+          frontier-vs-broad-regulation
+
+       For each page:
+       - Create an MDX file in src/content/docs/ with
+         appropriate subdirectories
+       - Include frontmatter with title and description
+       - Write a 2-3 paragraph introduction covering the
+         current state of debate
+       - Add 3-4 section headers outlining what the page
+         will cover (e.g., Background, Key Arguments,
+         Open Questions, Further Reading)
+       - Include at least one Markdown table where relevant
+         (e.g., comparing policy proposals, listing key
+         actors, summarizing positions)
+
+       Also:
+       - Remove the default/example pages that came with
+         the template (e.g., the example/ directory)
+       - Update astro.config.mjs to use autogenerate for
+         each section directory, like:
+         { label: 'Policy Approaches',
+           autogenerate: { directory: 'policy-approaches' } }
+       - Update the site title to
+         "AI Governance: Key Uncertainties"
+       - Use .mdx extension for all files.
+       ```
+     </TabItem>
+     <TabItem label="Template: research wiki">
+       ```
+       I'm building a research wiki about [TOPIC]. Create
+       the following structure:
+
+       Sections:
+       1. [Section 1] — pages: [page-a], [page-b], [page-c]
+       2. [Section 2] — pages: [page-d], [page-e]
+       3. [Section 3] — pages: [page-f], [page-g], [page-h]
+       4. [Section 4] — pages: [page-i], [page-j]
+
+       For each page:
+       - Create an MDX file in src/content/docs/ with
+         appropriate subdirectories
+       - Include frontmatter with title and description
+       - Write a 2-3 paragraph introduction
+       - Add section headers for what the page will cover
+       - Include at least one Markdown table where relevant
+
+       Also:
+       - Remove the default/example pages that came with
+         the template
+       - Update astro.config.mjs to use autogenerate for
+         each section directory
+       - Update the site title to "[YOUR WIKI NAME]"
+       - Use .mdx extension for all files.
+       ```
+     </TabItem>
+     <TabItem label="Template: mini-textbook">
+       ```
+       I'm building a mini-textbook about [TOPIC]. Create
+       the following chapter structure:
+
+       Chapters:
+       1. [Chapter 1 Title] — 3 pages covering [subtopics]
+       2. [Chapter 2 Title] — 3 pages covering [subtopics]
+       3. [Chapter 3 Title] — 2 pages covering [subtopics]
+       4. [Chapter 4 Title] — 2 pages covering [subtopics]
+
+       Each chapter should have an index.mdx overview page
+       plus individual topic pages. Write in a clear,
+       analytical tone aimed at researchers and policy
+       professionals.
+
+       For each page, include:
+       - A clear introduction explaining why this matters
+       - Key concepts with explanations and evidence
+       - At least one concrete example or case study
+       - An "Open Questions" section where relevant
+
+       Also:
+       - Remove the default/example pages that came with
+         the template
+       - Update astro.config.mjs to use autogenerate for
+         each chapter directory
+       - Update the site title to "[YOUR TEXTBOOK NAME]"
+       - Use .mdx extension for all files.
+       ```
+     </TabItem>
+   </Tabs>
+
+   **Checkpoint:** after a few minutes, the browser shows every section in the sidebar, with stub pages that have introductions.
+
+6. **Check the browser and start expanding**
+
+   Pick a page and fill it in:
+
+   ```
+   Expand the page at src/content/docs/policy-approaches/compute-governance.mdx
+   with detailed content. Include the key proposals (chip export controls, compute
+   thresholds, KYC for cloud), a table comparing approaches by feasibility and
+   effectiveness, and a section on open questions.
+   ```
+
+   Or react to what you see:
+
+   ```
+   The intro on the licensing-regimes page is too vague. Add specific examples
+   of existing licensing proposals (EU AI Act tiers, proposed US frameworks),
+   a comparison table, and the key arguments for and against.
+   ```
+
+   Claude Code can search the web, which matters for research content: "Search for recent papers on [topic] and add a literature summary to this page." To draft several pages at once, ask it to use subagents: "Draft these four pages in parallel using subagents."
+
+   **Quality comes from iterating in layers.** The first prompt gives a scaffold; the next two or three make it good:
+
+   | Turn | You say | What improves |
+   |------|---------|---------------|
+   | 1 | "Create a page about compute governance" | A generic overview |
+   | 2 | "Too surface-level. Add the specific proposals: chip export controls (Oct 2022 BIS rules), compute thresholds (10^25 FLOP), KYC for cloud. Include a table comparing them by feasibility and effectiveness." | Specific proposals and a structured comparison |
+   | 3 | "The Open Questions section is weak. Add: (1) Does compute governance become less relevant as algorithmic efficiency improves? (2) How do you enforce thresholds when distillation makes smaller models more capable?" | The questions researchers actually care about |
+   | 4 | "Add cross-references to the licensing-regimes and international-coordination pages." | A connected knowledge base instead of isolated pages |
+
+   **The most common mistake is creating 15 shallow pages instead of making 5 good ones.**
+
+   <Aside type="caution" title="Watch for generic output and invented sources">
+   After the scaffold, every page tends to sound the same. Give Claude a specific voice: "Write in the style of a GiveWell cost-effectiveness analysis" or "Match the tone of 80,000 Hours career profiles." Claude will also confidently link to papers and URLs that don't exist; ask it to search the web before writing factual sections.
+   </Aside>
+
+7. **If you're stuck, try these prompts**
+
+   | What you want | Prompt |
+   |---------------|--------|
+   | Deepen a page | "Expand [page] with specific evidence, key arguments from the literature, and quantitative estimates where available" |
+   | Add structure | "Add a comparison table to [page] covering the major positions/proposals/interventions" |
+   | Connect pages | "Add cross-references between related pages — link from each page to relevant others" |
+   | Sharpen analysis | "Rewrite the intro of [page] to be more analytically precise. State the key cruxes upfront." |
+   | Add a diagram | "Add a Mermaid diagram to [page] showing the causal chain from [intervention] to [outcome]" |
+   | Create a page | "Create a new page at src/content/docs/[section]/[name].mdx about [topic]" |
+   | Fix something broken | "The dev server is showing an error. Read the terminal output and fix whatever is wrong." |
+   | Research and write | "Search the web for [topic], then update [page] with current information and citations" |
+   | Add a literature review | "Add a 'Key Papers' section to [page] summarizing the 3-5 most important papers on this topic" |
+   | Create an overview | "Create an index page at src/content/docs/index.mdx that summarizes the research area and links to all sections" |
+
+8. **Customize the appearance** (about 2 minutes)
+
+   ```
+   Customize this site: change the title to "[Your Research Topic]",
+   add a tagline "[your tagline]", and change the accent color
+   to [blue/green/purple/orange]. Also update the hero section
+   on the landing page.
+   ```
+
+   Starlight supports [theme customization](https://starlight.astro.build/guides/css-and-tailwind/) of colours, fonts and CSS.
+
+9. **Save your progress** (Window 3)
+
+   ```bash
+   git add -A && git commit -m "workshop: initial research wiki"
+   ```
+
+   Commit after the scaffold, after expanding content and before changing the appearance. `git diff` shows what changed, and `git restore <file>` reverts one file. Inside Claude Code, **Esc Esc** (or `/rewind`) rolls back Claude's own edits and the conversation to an earlier point.
+
+   **Checkpoint:** a multi-section research site with several fleshed-out pages, cross-references and your own branding.
+
+---
+
+## Claude Code tips
+
+### Essential commands
+
+| Command | What it does |
+|---------|-------------|
+| `claude` | Start Claude Code in the current directory |
+| `claude "prompt here"` | Start with an initial prompt |
+| `claude --continue` | Reopen the most recent conversation in this directory |
+| `claude --resume` | Pick an earlier conversation to reopen |
+| **Shift+Enter** | New line (or `\` then Enter; `/terminal-setup` fixes Shift+Enter in some terminals) |
+| **Shift+Tab** | Cycle permission modes: Manual, Accept edits, Plan, Auto |
+| **Esc** | Stop Claude mid-response, keeping the work so far |
+| **Esc Esc** / `/rewind` | Restore code and conversation to an earlier checkpoint |
+| `/clear` | Start a fresh conversation with empty context |
+| `/compact` | Summarize the conversation so far to free up context |
+| `/context` | Show how full the context window is |
+| `/init` | Generate a `CLAUDE.md` for the project |
+| **Ctrl+D** (twice) | Exit |
+
+| Situation | Use |
+|-----------|-----|
+| Claude is confused or keeps repeating a mistake | `/clear`, then restate the task. Put lasting corrections in `CLAUDE.md`. |
+| A long session is losing track of earlier instructions | `/compact`. Claude Code also compacts automatically as the context fills up. |
+| Switching to an unrelated task | `/clear` or a new `claude` session |
+
+The [docs](https://code.claude.com/docs/en/overview) list everything else; feature names change often, so check there rather than relying on this table.
+
+### Working effectively
+
+**Give feedback, not just instructions.** Look at the result in the browser and say what's wrong:
+> "The analysis is too surface-level. Add specific numbers, cite key papers, and state the key uncertainties."
+
+**Name specific files:**
+> "Read src/content/docs/key-debates/open-vs-closed.mdx and improve it — the arguments section needs steel-manned versions of both sides."
+
+**When Claude asks about something you don't care about**, say "your call" to keep moving.
+
+**If Claude creates files in the wrong place** (e.g. `docs/` instead of `src/content/docs/`), give exact paths in the prompt and add the convention to `CLAUDE.md`.
+
+---
+
+## CLAUDE.md: teaching Claude about your project
+
+Claude Code reads `CLAUDE.md` in the project root at the start of every session. It is a standing brief: the project's structure, commands and conventions. The QURI starter includes one. Otherwise, run `/init` to generate one, or ask:
+
+```
+Create a CLAUDE.md for this project. Include the dev command,
+build command, project structure, content conventions, and the
+sidebar autogenerate pattern we're using.
+```
+
+A minimal hand-written version:
+
+```markdown
+# My Research Wiki
+
+## Commands
+- `npm run dev` — Start dev server at localhost:4321
+- `npm run build` — Build for production
+
+## Structure
+- `src/content/docs/` — All wiki pages (MDX format)
+- `astro.config.mjs` — Site config and sidebar
+- `public/` — Static assets (images, etc.)
+
+## Conventions
+- Use .mdx extension for all pages
+- Use Markdown tables for comparisons
+- Keep pages focused on one topic each
+- Escape $ signs in MDX: \$100
+- Use autogenerate for sidebar sections in astro.config.mjs
+- Put images in public/images/ and reference as /images/name.png
+
+## Content Style
+- Analytical and evidence-based tone
+- Cite sources where possible
+- Include "Open Questions" sections
+- Use tables for comparing positions/proposals
+```
+
+Without `CLAUDE.md`, every session rediscovers your project from scratch. With one, Claude knows your commands and conventions from the first message, which matters once you work across many sessions.
+
+---
+
+## Prompting for research content
+
+### What works
+
+**Be specific about structure:**
+> "Create a page about X with: a background section, a 'Key Arguments' section with the major positions, a comparison table, an 'Open Questions' section, and a 'Further Reading' section."
+
+**Use an existing page as a template:**
+> "Look at src/content/docs/section-1/page-a.mdx and create a similar-style page for [new topic]."
+
+**Use web search for current data:**
+> "Research the latest developments in [topic] and write a page with current figures, recent papers, and links to sources."
+
+**Iterate in layers**: get the structure right, then fill in detail.
+> "The section on X is too vague. Add specific estimates, cite Ord/Cotra/Davidson/etc., and state the key cruxes."
+
+### What to watch for
+
+- **Invented facts and citations.** Check numbers, dates, quotes and paper citations. Never trust a URL Claude produces without opening it; ask it to search for real links instead.
+- **Plausible but wrong numbers.** Check any specific dollar figure, percentage or date.
+- **Lopsided "Key Arguments" sections.** Claude tends to strengthen mainstream views and weaken minority ones. Check that each side is stated as its proponents would state it.
+- **US/Western-centric content.** Ask for other perspectives if the topic needs them.
+- **MDX quirks.** `<`, `{` and `$` in text need escaping. If the build breaks, paste the error to Claude.
+- **Quantity over quality.** Ten well-researched pages beat thirty shallow ones.
+
+### Reviewing content
+
+**Scaffold broadly, then review narrowly.** Generate the full structure in the first 20 minutes, then spend the rest of the time improving 3–5 pages.
+
+For pages you want to trust:
+
+1. **Spot-check citations.** If Claude names a paper, organization or statistic, confirm it exists: "Search the web to verify whether [claim] is accurate."
+2. **Ask for a self-audit.** "Read this page and list any claims you're less than 80% confident are correct." This is a useful first pass, not a substitute for checking sources.
+3. **Ask what's missing.** "What important perspectives or counterarguments are missing from this page?"
+4. **Look for false precision.** Exact percentages, confident timelines and precise costs with no source are typical of LLM drafts. Source them or soften them.
+
+For a site you plan to publish, the [Review Workflow](/review-workflow/) page describes the heavier audit-and-verify process used on the CAIRN wikis.
+
+---
+
+## Useful patterns
+
+### Auto-generated sidebar
+
+Instead of listing every page in `astro.config.mjs`, generate sidebar sections from directories:
+
+```js
+sidebar: [
+  { label: 'Policy Approaches', autogenerate: { directory: 'policy-approaches' } },
+  { label: 'Key Debates', autogenerate: { directory: 'key-debates' } },
+  { label: 'Open Questions', autogenerate: { directory: 'open-questions' } },
+]
+```
+
+Pages within a section are sorted alphabetically by filename. To set the order, add `sidebar: { order: 1 }` to each page's frontmatter. Numeric filename prefixes such as `01-intro.mdx` also sort, but the number ends up in the page's URL. For a book with numbered chapters, an explicit sidebar list is clearer; two of the CAIRN wikis use one (see [Adding a Wiki](/adding-a-wiki/#3-edit-astroconfigmjs)).
+
+### Images
+
+Put images in `public/` and reference them from the site root:
+
+```markdown
+![Description of the image](/images/my-diagram.png)
+```
+
+### Tables over paragraphs
+
+For comparisons, positions or structured data, a table is usually clearer than prose:
+
+```markdown
+| Approach | Feasibility | Effectiveness | Key Proponents |
+|----------|-------------|---------------|----------------|
+| Compute governance | High | Medium | Brundage, Heim |
+| Licensing regimes | Medium | Medium-High | EU, NIST |
+| Voluntary commitments | High | Low | Industry |
+```
+
+### Cross-references
+
+Links between pages are what make a wiki more than a set of essays:
+
+```mdx
+See [the compute governance page](/policy-approaches/compute-governance/) for details.
+```
+
+---
+
+## Deployment (after the workshop)
+
+Make sure `npm run build` succeeds locally first; a hosting platform fails on the same errors.
+
+  <TabItem label="Vercel (recommended)">
+    1. Push the repository to GitHub.
+    2. Sign up at [vercel.com](https://vercel.com/) with GitHub (there is a free tier).
+    3. Open [vercel.com/new](https://vercel.com/new) and select the repository. Vercel detects Astro; click **Deploy**.
+    4. The site is live at `your-project.vercel.app`.
+
+    After that, each push to `main` updates the live site, and each other branch or pull request gets its own preview URL.
+  </TabItem>
+  <TabItem label="Netlify">
+    1. Push the repository to GitHub.
+    2. Sign in at [netlify.com](https://www.netlify.com/) with GitHub.
+    3. **Add new project** → **Import an existing project**, then select the repository.
+    4. Build command `npm run build`, publish directory `dist/`.
+    5. Deploy. The URL looks like `your-site.netlify.app`.
+  </TabItem>
+  <TabItem label="Cloudflare Pages">
+    1. Push the repository to GitHub.
+    2. Go to [pages.cloudflare.com](https://pages.cloudflare.com/).
+    3. Connect the repository, with build command `npm run build` and output directory `dist/`.
+  </TabItem>
+
+If you're using Claude Code on the web, see that guide's [working loop](/claude-code-web-app/#the-working-loop), which uses Vercel preview deployments.
+
+---
+
+## After the workshop
+
+- **Deploy it.** A live URL is motivating.
+- **Run `/init`** if you don't have a `CLAUDE.md` yet.
+- **Improve before you expand.** Make existing pages good before adding more.
+- **Learn Starlight.** [The docs](https://starlight.astro.build/) cover theming, components and more.
+- **Turn repeated patterns into components.** If you keep writing the same kind of box or table, ask Claude to make it a reusable MDX component.
+
+### What scaled projects look like
+
+[LongTermWiki](https://www.longtermwiki.com/) eventually added content validators (link checking, quality scoring), a YAML data layer with cross-referenced entities, custom React components and automated improvement pipelines. The CAIRN wikis use a lighter setup: an explicit sidebar, generated `llms.txt` files and a link checker that CI runs after every build (see [Build & Tooling](/build-and-tooling/)). You need none of this to start.
+
+---
+
+## Quick reference links
+
+| Resource | URL |
+|----------|-----|
+| **Workshop slides** | [Google Slides](https://docs.google.com/presentation/d/1JAm0jZ-3Hu2rgYug6sy-5l5vjhYYPovy/edit) |
+| **QURI** | [quantifieduncertainty.org](https://quantifieduncertainty.org/) |
+| **Claude Code docs** | [code.claude.com/docs/en/overview](https://code.claude.com/docs/en/overview) |
+| **Claude Code setup** | [code.claude.com/docs/en/setup](https://code.claude.com/docs/en/setup) |
+| **Claude Code best practices** | [code.claude.com/docs/en/best-practices](https://code.claude.com/docs/en/best-practices) |
+| **Starlight docs** | [starlight.astro.build](https://starlight.astro.build/) |
+| **Starlight frontmatter reference** | [starlight.astro.build/reference/frontmatter](https://starlight.astro.build/reference/frontmatter/) |
+| **Astro docs** | [docs.astro.build](https://docs.astro.build/) |
+| **MDX docs** | [mdxjs.com](https://mdxjs.com/) |
+| **QURI starter** | `npx degit quantified-uncertainty/cairn/starters/research-wiki my-wiki` |
+| **CAIRN source** | [github.com/quantified-uncertainty/cairn](https://github.com/quantified-uncertainty/cairn) |
+| **LongTermWiki source** | [github.com/quantified-uncertainty/longterm-wiki](https://github.com/quantified-uncertainty/longterm-wiki) |
+
+---
+
+## Troubleshooting
+
+### Setup and installation
+
+**Node.js too old or missing**
+- Run `node --version`. You need 22.12 or later. Install the LTS version from [nodejs.org](https://nodejs.org/).
+- With `nvm`: `nvm install --lts && nvm use --lts`.
+
+**`claude: command not found` after installing**
+- Open a new terminal window first. If it still isn't found, the install directory isn't on your `PATH`; see [the install troubleshooting docs](https://code.claude.com/docs/en/troubleshoot-install).
+
+**Permission errors (`EACCES`) when installing**
+- These come from a global npm install. Use the native installer instead. Don't use `sudo npm install -g`.
+
+**Login fails**
+- Run `claude auth logout`, then `claude` again.
+- Check that a corporate VPN or proxy isn't blocking Anthropic's servers.
+- If the browser doesn't open, copy the login URL from the terminal into a browser.
+
+**`npm create astro` or `npx degit` hangs**
+- Usually the network, especially on crowded workshop Wi-Fi. Run `npm cache clean --force` and retry, or `git clone` the starter instead.
+
+**Port 4321 already in use**
+- Another process, perhaps an old dev server, holds the port. Stop it (`lsof -i :4321`, then `kill <PID>` on macOS/Linux), or run `npm run dev -- --port 4322`.
+
+### Build and content errors
+
+**Build fails after creating pages**
+- Usually invalid frontmatter YAML or unescaped special characters (`$`, `<`, `{`). Paste the error to Claude: "The build failed with this error: [paste]. Fix it."
+
+**Frontmatter YAML errors** (`bad indentation` and similar)
+- Usually a colon in an unquoted title. Quote it: `title: "AI: Key Questions"`.
+
+**Build fails with a schema error about `title`**
+- Every page needs a `title` in its frontmatter: `---` / `title: "Page Title"` / `---`.
+
+**MDX import or syntax errors**
+- Keep all `import` lines together directly after the frontmatter, outside any JSX, and check that each imported component is spelled the same where it's used. Otherwise, paste the error to Claude.
+
+**Claude writes `.md` files instead of `.mdx`**
+- Plain Markdown works for pages without components. If you want `.mdx` throughout, say so in `CLAUDE.md`.
+
+**A component is used without being imported**
+- Ask Claude to add the import, e.g. `import { Aside } from '@astrojs/starlight/components';` at the top of the file.
+
+**Mermaid diagrams or maths don't render**
+- Vanilla Starlight doesn't include them. Use the QURI starter, or ask Claude to "add Mermaid diagram and KaTeX math support to this Starlight project".
+
+### Sidebar and navigation
+
+**New pages don't appear in the sidebar**
+- With `autogenerate`, the `directory` in `astro.config.mjs` must match the folder name under `src/content/docs/`.
+- If a whole section is missing, Claude probably didn't add it to the config. Ask it to check.
+
+**Pages are in the wrong order**
+- Add `sidebar: { order: 1 }` (2, 3, …) to the pages' frontmatter, or list the pages explicitly in the sidebar config.
+
+**Links between pages return 404**
+- URLs follow the file layout: `src/content/docs/section/page.mdx` becomes `/section/page/`, with a trailing slash. Folder and file names are case-sensitive.
+
+**Images don't show**
+- `public/images/foo.png` is referenced as `/images/foo.png`, without `public/`.
+
+### Claude Code sessions
+
+**Claude seems confused or repetitive**
+- Use `/clear` and restate the task, and make sure you started `claude` from the project root, not a subdirectory.
+
+**Claude keeps making the same mistake**
+- Add the correction to `CLAUDE.md`, e.g. "Always escape \$ signs in MDX files".
+
+**Claude edited the wrong file**
+- **Esc Esc** or `/rewind` restores an earlier checkpoint. `git diff` shows what changed, and `git restore <file>` reverts a file. This is why committing after each phase matters.
+
+**Terminal crashed or disconnected**
+- Run `claude --continue`. Your files are on disk regardless of the session.
+
+**"You've hit your session limit" or "weekly limit"**
+- A subscription usage limit. The message says when it resets; `/usage` shows where you stand. Max plans have higher limits.
+
+### Dev server
+
+**Dev server crashed**
+- Restart it with `npm run dev`. The usual cause is an MDX syntax error; paste the terminal error to Claude.
+
+**Hot reload stopped working**
+- Restart the dev server (`Ctrl+C`, then `npm run dev`) and hard-refresh the browser (`Cmd+Shift+R` / `Ctrl+Shift+R`).
+
+**A page looks garbled**
+- Usually unescaped characters or an unclosed tag in the MDX. Ask Claude: "The page at [path] looks broken in the browser. Read it and fix the MDX syntax."
+
+### Content quality
+
+**All pages sound the same**
+- Give Claude a voice ("Write in the style of a GiveWell cost-effectiveness analysis") and vary the depth ("This is a major page, about 1500 words" vs. "a brief overview, 300 words at most").
+
+**Claude invents organizations, papers or statistics**
+- Ask it to search before writing factual sections: "Search the web for real organizations working on X, then write this section."
+
+**Claude won't take a position**
+- "State which position has stronger evidence and why, while noting the key uncertainties."
+
+**Tables are generic**
+- Give the exact columns: "Create a table with columns: Proposal, Lead Organization, Implementation Status, Estimated Cost, Key Criticism."
+
+### Deployment
+
+**Build works locally but fails on Vercel or Netlify**
+- Usually a Node.js version mismatch. Set the Node version in the platform's settings to match `node --version`, or add `"engines": { "node": ">=22.12" }` to `package.json`.
+
+**Every page 404s on the deployed site**
+- Check `base` in `astro.config.mjs`. At a domain root (the usual case on Vercel and Netlify), omit it or set it to `'/'`.
+
+**The site loads but styles or images are missing**
+- Usually the site is served from a subpath that `base` doesn't match. `base` controls asset paths; `site` sets the canonical URL and sitemap and doesn't affect them.
+
+
+------------------------------------------------------------
+## Claude Code on the Web
+Source: https://cairn-meta.vercel.app/claude-code-web-app/
+------------------------------------------------------------
+
+[Claude Code on the web](https://claude.ai/code) runs Claude Code in a cloud virtual machine. You start a session against a GitHub repository; Claude clones it, edits files, runs commands such as `npm install` and `npm run build`, and pushes its work to a new branch. You review the diff and open a pull request from the same page. Nothing is installed on your machine. For the full workshop, which assumes a local terminal, see the [workshop page](/workshop/).
+
+Cloud sessions are available on Pro, Max and Team plans, and to Enterprise users with seats that include Claude Code. This guide was checked against [Anthropic's documentation](https://code.claude.com/docs/en/claude-code-on-the-web) on 15 October 2026.
+
+| | Web | Local CLI |
+|---|---|---|
+| **Setup** | A GitHub account and a browser | Node.js and Claude Code installed |
+| **Seeing your site** | A Vercel preview deployment per branch | `npm run dev` at localhost:4321, live |
+| **Git** | Claude pushes a branch; you open and merge a pull request | You commit and push yourself |
+| **Keeps running if you close the tab** | Yes | No |
+
+The main cost is the feedback loop. There is no live dev server, so you see a change only once Vercel has built a preview of its branch.
+
+## Getting started
+
+1. **Create a repository** at [github.com/new](https://github.com/new). Cloud sessions work on existing repositories; they don't create one for you. Tick **Add a README file**, so the repository has a `main` branch for pull requests to target.
+
+2. **Connect GitHub.** Go to [claude.ai/code](https://claude.ai/code), sign in, and follow the prompt to connect GitHub. For a private repository, also install the Claude GitHub App on the account that owns it. Onboarding then sets up a **Default** environment (on Team and Enterprise, accept the prefilled form). Its network access includes the npm registry, so `npm install` works.
+
+3. **Start a session.** Select your repository below the message box and ask Claude to scaffold the site. Use `git clone` rather than `npx degit` or `npm create astro`: those download a GitHub archive, which cloud sessions block for repositories not attached to the session.
+
+   ```
+   Set up a research wiki in this repository from the QURI starter:
+   git clone --depth 1 https://github.com/quantified-uncertainty/cairn /tmp/cairn
+   then copy /tmp/cairn/starters/research-wiki/. into the repository root.
+   Run npm install and npm run build, fix any errors, then commit and push.
+   ```
+
+4. **Merge the first pull request.** When Claude has pushed, open the diff, select **Create PR**, and merge it on GitHub. The site now exists on `main`.
+
+5. **Connect Vercel.** Sign in to [vercel.com](https://vercel.com/) with GitHub, open [vercel.com/new](https://vercel.com/new), select the repository and click **Deploy**. Vercel detects Astro. This first deployment is your production site, at `your-project.vercel.app`.
+
+## The working loop
+
+1. **Start a session** on the repository and describe the change: new pages, expanded content, a fixed table. Each session works on its own branch, usually named `claude/…`, so you can run several at once.
+2. **Ask Claude to run `npm run build`** before it pushes. Most errors, such as bad MDX or broken frontmatter, show up here, which is faster than waiting for a deploy.
+3. **Open a pull request** from the diff view. Vercel builds a **preview deployment** of the branch and posts its URL on the pull request.
+4. **Review the preview.** Leave inline comments on the diff, or tell Claude in the same session what to change. The session stays live after the pull request is opened, and new pushes update the preview.
+5. **Merge to `main`.** Only then does the production site change.
+
+Your production URL does not show a session's changes until its pull request is merged. Look at the preview URL on the pull request instead.
+
+## Differences from the local CLI
+
+- **Permission modes:** cloud sessions offer Accept edits, Plan and, where available, Auto. They have no Manual mode and no skip-all-permissions mode.
+- **Commands:** commands that only make sense in a terminal aren't available, including `/clear` and `/resume`. Start a new session from the sidebar instead. `/compact` and `/context` work.
+- **Moving to your machine:** from a local clone of the repository, `claude --teleport` lets you pick a cloud session. It checks out that session's branch and loads its conversation into your terminal. Or just `git clone` the repository and run `npm install && npm run dev`.
+
+## Common issues
+
+**No repositories appear after connecting GitHub.** For private repositories, install the [Claude GitHub App](https://github.com/apps/claude) on the account or organization that owns the repository, and include that repository in the installation's access.
+
+**The live site isn't updating.** The change is on a branch. Check the preview URL on its pull request, then merge.
+
+**The preview deployment failed.** Open the Vercel check on the pull request to see the build log, or ask Claude to run `npm run build`, read the error and fix it.
+
+**Build fails with MDX errors.** Usually an unescaped `$`, `<` or `{`, or invalid YAML frontmatter. Paste the error to Claude.
+
+
+================================================================================
+Generated from 5 chapters.
+Estimated tokens: ~16K

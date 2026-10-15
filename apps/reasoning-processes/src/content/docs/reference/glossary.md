@@ -1,24 +1,20 @@
 ---
 title: Glossary & Notation
-description: Index of the field's terms and symbols, with the page where each is defined.
+description: Index of the terms and symbols used in these notes, with the page where each is defined.
 ---
 
-*Every term this book mints or borrows, and every recurring symbol, with a one-line definition and a link to the page that owns it. When prose and glossary disagree, the owning page wins; please file the disagreement.*
-
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/).
-:::
+*Every term these notes mint or borrow, and every recurring symbol, with a one-line definition and a link to the page that owns it. When prose and glossary disagree, the owning page wins; please file the disagreement.*
 
 ## Terms
 
 | Term | One-line definition | Defined in |
 |---|---|---|
-| **Robust reasoning processes (RRP)** | The proposed field: the study and engineering of procedures that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure | [Robust Reasoning Processes](/start-here/introduction/) |
+| **Robust reasoning processes (RRP)** | Our working name for the subject of these notes: procedures that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure | [Robust Reasoning Processes](/start-here/introduction/) |
 | **Reasoning process** | A procedure — peer review, a prediction market, an LLM pipeline — that consumes effort and evidence and emits claims, estimates, or evaluations | [The Core Model](/concepts/core-model/) |
 | **Judge** | The consumer of reasoning, who cannot check the work object-level and must decide how much to update | [The Core Model](/concepts/core-model/) |
 | **Epistemic weight** | A process's likelihood-ratio profile: how strongly its outputs discriminate truth from falsehood, conditional on its incentive environment | [The Core Model](/concepts/core-model/#1-epistemic-weight-exact) |
 | **Loss pipeline** | The heuristic decomposition of delivered value into codification, evaluator, and interpretation losses | [The Core Model](/concepts/core-model/#2-value-delivered-the-loss-pipeline-heuristic) |
-| **Cost per validated bit** | The field's figure of merit: the price of information that survived checking, not the price of text | [The Core Model](/concepts/core-model/#3-cost-unit-economics-standard-shape) |
+| **Cost per validated bit** | The proposed figure of merit: the price of information that survived checking, not the price of text | [The Core Model](/concepts/core-model/#3-cost-unit-economics-standard-shape) |
 | **Corruption cost curve** | The minimum an adversary of given capability must spend to distort a process's output by a given amount | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
 | **Corruption surplus** | A participant's maximum expected gain from deviating from honest effort — what attackers harvest | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
 | **Robustness condition** | Corrupting the process costs more than the distortion is worth — evaluated per threat model, never threat-model-free | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
@@ -78,7 +74,8 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 | $M(Q, t)$ | the evaluated model's answer to $Q$ at time $t$ | [Consistency Evaluations](/proposals/consistency-evals/) |
 | $q$, $q_X$ | a forecast; the forecast after observing source $X$ | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
 | $I(Q; X)$ | mutual information between question $Q$ and source $X$ — the decision-free value of a source, per question | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
-| $\tau$ | (retired) a scalar credence that a source is honest; the book now uses decision-indexed goal-divergence instead, since a scalar trust score is underspecified | [Untrustworthy Sources](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface) |
+| $\tau$ | (retired) a scalar credence that a source is honest; the notes now use decision-indexed goal-divergence instead, since a scalar trust score is underspecified | [Untrustworthy Sources](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface) |
 | $B_{\text{eff}} \approx B_{\text{escrow}} + \Delta R$ | enforceable penalty: value posted up front plus the standing a cheater loses on detection (full standing only under a ruin rule) | [Identity and Track Records](/environment/identity-and-track-records/#the-quantity-enforceable-penalty) |
 | $S^\*$ | largest stake an audited process safely handles, $(c + pB)/(1-p)$ | [Deterrence](/concepts/hardening-deterrence/#worked-bounds) |
+| $s$; $r_{\neg H}/r_H$ | spin rate (chance an unfavorable result is reported as favorable, regardless of truth); selection ratio (how much more often a funder commissions or publishes when $H$ is false) | [The Funding Effect](/case-studies/the-funding-effect/#from-odds-ratios-to-a-likelihood-ratio-discount) |
 | $b_\pi(D)$ | decision-relative (goal) bias: $\pi$'s systematic lean toward one resolution of decision $D$, holding truth-relevant information fixed | [The Process Catalogue](/concepts/process-catalogue/#reading-the-table) |

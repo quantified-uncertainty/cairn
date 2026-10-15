@@ -7,8 +7,8 @@ sidebar:
 
 *A framework for putting a number on the value of a piece of information: measure how it changes a calibrated AI agent's beliefs, weight the changes by a utility function, and pay out only what survives validation. The pricing mechanism the new economy of cheap information is missing.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Adapted from earlier QURI writing, updated for the LLM era. Positions here are exploratory, not settled.
+:::note
+Adapted from earlier QURI writing, updated for the LLM era.
 :::
 
 ## Summary

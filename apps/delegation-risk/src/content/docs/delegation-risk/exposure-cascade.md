@@ -1,288 +1,77 @@
 ---
-title: "Exposure Cascade: Hierarchical Risk Budgets"
+title: "Exposure Cascade: Dividing a Risk Budget Down a Tree"
+description: "How an expected-loss risk budget divides down an orchestrator, its subagents and their tool calls, why the division is additive, and why tightening oversight moves budget rather than removing risk"
 sidebar:
-  order: 7
+  order: 8
 ---
 
-:::note[TL;DR]
-**Child Risk Budget = Parent Budget × Allocation Factor**. Each level in a hierarchy keeps some budget for direct decisions and delegates the rest downward. Tighter oversight = more retained at top = less risk at edges.
+:::note[Vocabulary]
+The budgets on this page are **risk budgets**: caps on delegation risk, the expected loss Σ P(harm) × Damage. They are not caps on exposure, the worst case. See the [Glossary](/getting-started/glossary/#delegation-risk).
 :::
 
-:::note[Vocabulary note]
-The budgets on this page are **expected-loss (Delegation Risk) budgets** — Σ P(harm) × Damage allocations — not worst-case bounds. For the distinction between Exposure (worst-case at stake) and Delegation Risk (expected loss), see the [Glossary](/getting-started/glossary/).
+An operator who sets a risk budget for an agent deployment has to decide where in the deployment that budget may be spent. Agent systems are trees: an orchestrator delegates to subagents, and each subagent acts through tool calls. This page is about dividing the budget down such a tree.
+
+## The rule is additive
+
+At each node:
+
+$$\text{budget received} = \text{budget retained} + \sum \text{budgets delegated}$$
+
+The *retained* part covers actions the node takes itself. The rest goes to its children. Nothing multiplies, and nothing is lost on the way down.
+
+Addition is the right rule because expected losses add, whatever the correlation between them, by linearity of expectation. If every node keeps its actual delegation risk within its allocation, the whole tree stays within the root budget. Where two nodes' harm modes hit the same asset, the sum overstates the true expected loss, so the check is conservative. Correlation does not change the expected-loss total. It changes the *tail*, such as the chance that several nodes have a bad month together, and it matters for stacked checks where every layer must miss. Those are handled by [Risk Propagation](/delegation-risk/risk-propagation/) and by consolidation in [Runtime Accounting](/delegation-risk/runtime-accounting/#3-the-exposure-ledger), not by the budget split.
+
+## An example tree
+
+:::caution[Illustrative numbers]
+The allocations are invented to show the bookkeeping.
 :::
 
----
-
-## The Setup
-
-Consider a corporation with a standard hierarchy:
-
-- **Board of Directors**: Sets total organizational risk tolerance
-- **CEO**: Runs the company day-to-day
-- **Executive Suite**: ~5 VPs/C-level executives
-- **Managers**: ~20 middle managers
-- **Employees**: ~200 frontline workers
-
-The Board decides: "We're willing to accept **\$5 million** in total expected delegation loss for this organization."
-
-This \$5M is the **risk budget**—the maximum expected harm from all delegation relationships combined. But how does it flow down through the hierarchy?
-
----
-
-## The Cascade Principle
-
-At each level, the principal (delegator) makes a choice:
-
-1. **Retain** some budget for direct decisions (things only they can do)
-2. **Delegate** the rest to subordinates
-
-```
-Risk_delegated = Risk_received - Risk_retained
-```
-
-Why retain budget? Because some decisions are too important to delegate:
-- Board retains authority over CEO compensation, major acquisitions
-- CEO retains strategic pivots, executive hiring
-- Managers retain performance reviews, team conflicts
-
----
-
-## Visualization: Hierarchical Tree
-
-Here's the standard oversight scenario flowing down:
+An operator gives a coding-agent deployment a risk budget of \$1,000 per month.
 
 ```mermaid
 flowchart TB
-    subgraph L1["Board Level"]
-        B["Board<br/>$5M total risk budget<br/>Retains: $500k"]
-    end
-
-    subgraph L2["Executive Level"]
-        CEO["CEO<br/>Receives: $4.5M<br/>Retains: $1.5M"]
-    end
-
-    subgraph L3["Senior Management"]
-        E1["VP Engineering<br/>$600k"]
-        E2["VP Sales<br/>$600k"]
-        E3["VP Product<br/>$600k"]
-        E4["CFO<br/>$600k"]
-        E5["VP Ops<br/>$600k"]
-    end
-
-    subgraph L4["Middle Management"]
-        M["20 Managers<br/>$1M total<br/>$50k each"]
-    end
-
-    subgraph L5["Frontline"]
-        EMP["200 Employees<br/>$600k total<br/>$3k each"]
-    end
-
-    B -->|"$4.5M"| CEO
-    CEO -->|"$3M split"| E1 & E2 & E3 & E4 & E5
-    E1 & E2 & E3 & E4 & E5 -->|"$1M total"| M
-    M -->|"$600k total"| EMP
+    O["Operator<br/>$1,000/month"] --> R["Orchestrator<br/>retains $200"]
+    R -->|"$500"| C["Coding subagent<br/>retains $50"]
+    R -->|"$150"| S["Research subagent<br/>retains $50"]
+    R -->|"$150"| T["Test subagent<br/>retains $150"]
+    C -->|"$100"| F["File edits"]
+    C -->|"$200"| X["Shell commands"]
+    C -->|"$150"| D["Deploys"]
+    S -->|"$100"| W["Web fetches"]
 ```
 
-### Reading the Diagram
+| Node | Receives | Retains | Delegates |
+|---|---|---|---|
+| Orchestrator | \$1,000 | \$200 (decomposing tasks, granting permissions) | \$800 to three subagents |
+| Coding subagent | \$500 | \$50 (planning) | \$450 to file edits, shell commands and deploys |
+| Research subagent | \$150 | \$50 | \$100 to web fetches |
+| Test subagent | \$150 | \$150 (runs the suite itself) | nothing |
 
-- **Board** has \$5M total budget, keeps \$500k for board-level decisions
-- **CEO** receives \$4.5M, keeps \$1.5M for CEO-level decisions, passes \$3M to executives
-- **Executives** (5 people) share \$3M (\$600k each), collectively pass \$1M to managers
-- **Managers** (20 people) share \$1M (\$50k each), collectively pass \$600k to employees
-- **Employees** (200 people) share \$600k (\$3k each)—this is their individual risk budget
+The retained amounts and leaf allocations sum to \$1,000. Each allocation should come from the node's harm table. The research subagent's web fetches, for instance, are its [hijack](/delegation-risk/risk-decomposition/) surface, because fetched pages can carry injected instructions.
 
----
+## Allocating is a judgment; attributing is not
 
-## Visualization: Risk Budget Flow
+Two questions are easy to confuse.
 
-Another way to see this—how the risk budget is **consumed** vs **delegated** at each level:
+**Attribution** asks how much of the system's measured expected loss each node is responsible for. For expected loss the answer is unambiguous: each node's own expected loss. The Euler allocation principle used in finance ([Tasche 2008](https://arxiv.org/abs/0708.2542)) and the Shapley value both reduce to this when the risk measure is additive. They give different, non-trivial answers only for non-additive measures, such as tail measures, where correlation creates interaction between nodes.
 
-| Level | People | Receives | Retains (direct) | Delegates | Per-Person |
-|-------|--------|----------|------------------|-----------|------------|
-| Board | 7 | \$5.0M | \$500k (10%) | \$4.5M | \$71k |
-| CEO | 1 | \$4.5M | \$1.5M (33%) | \$3.0M | \$4.5M |
-| Executives | 5 | \$3.0M | \$2.0M (67%) | \$1.0M | \$600k |
-| Managers | 20 | \$1.0M | \$400k (40%) | \$600k | \$50k |
-| Employees | 200 | \$600k | \$600k (100%) | \$0 | \$3k |
+**Allocation** asks how much each node is *allowed* to spend. No formula settles it. It is a decision about where you want expected loss to be incurred: which node should hold permission to deploy, how much autonomy the research subagent's web access deserves. The split above is judgmental, and should be labeled as such.
 
-**Key observation**: Higher levels retain more proportionally. The CEO keeps 33% for direct decisions; managers keep 40%. This is because higher-level decisions tend to be more consequential.
+## Tightening moves budget; it does not remove risk
 
-```
-$5M budget flows as:
+Suppose the operator moves deploys out of the coding subagent and makes them an orchestrator action gated by human approval. The \$150 deploy allocation moves up the tree. The root budget is still \$1,000, so on paper nothing has changed.
 
-Board    ████████████████████████████████████████████████████ $5.0M
-         ██▓▓ retained ($500k)
+The realized risk changes only if the new decider is better at the decision. If the human reviewer catches bad deploys the subagent would have shipped, the deploy row's expected loss falls, and the operator can then *lower* the root budget. If the reviewer rubber-stamps, the risk has only been relabeled. Tightening oversight is worth what the new decider's measured catch rate is worth, minus the throughput it costs.
 
-CEO      ██████████████████████████████████████████████ $4.5M
-         ███████████████▓▓▓▓▓▓ retained ($1.5M)
+## Keeping the tree honest
 
-Execs    ██████████████████████████████ $3.0M
-         ████████████████████▓▓▓▓▓▓▓▓▓▓ retained ($2.0M)
+Allocations are plans. The [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) records what each node actually spends, measured by the harness rather than reported by the agent. When a node runs over its allocation mid-task, a margin call pauses it, escalates or unwinds. Periodic reconciliation against incidents corrects the harm tables the allocations came from.
 
-Managers ██████████ $1.0M
-         ████▓▓▓▓ retained ($400k)
+The same arithmetic applies to human organizations. A board's tolerance divides among executives, managers and staff, and how much each level retains is equally a judgment about where decisions should sit.
 
-Employees ██████ $600k
-          ██████ all retained (end of chain)
-```
+## See also
 
----
-
-## Comparing Oversight Scenarios
-
-Different organizations make different choices about how much risk budget to retain at each level. Let's compare three styles:
-
-### Scenario A: Tight Oversight (Conservative)
-
-A risk-averse organization where senior leaders retain most of the risk budget:
-
-```mermaid
-flowchart TB
-    B["Board<br/>$5M"] -->|"$4M"| CEO["CEO"]
-    CEO -->|"$2M"| E["Executives (5)"]
-    E -->|"$500k"| M["Managers (20)"]
-    M -->|"$200k"| EMP["Employees (200)"]
-
-    style EMP fill:#fdd
-```
-
-**Per-employee exposure**: \$1,000
-
-**Characteristics**:
-- Heavy verification at every level
-- Employees have minimal authority
-- Slow but safe
-
-### Scenario B: Standard Oversight (Balanced)
-
-The example we've been using:
-
-```mermaid
-flowchart TB
-    B["Board<br/>$5M"] -->|"$4.5M"| CEO["CEO"]
-    CEO -->|"$3M"| E["Executives (5)"]
-    E -->|"$1M"| M["Managers (20)"]
-    M -->|"$600k"| EMP["Employees (200)"]
-
-    style EMP fill:#dfd
-```
-
-**Per-employee exposure**: \$3,000
-
-**Characteristics**:
-- Balanced delegation and oversight
-- Employees can make meaningful decisions
-- Standard corporate structure
-
-### Scenario C: Loose Oversight (High Delegation)
-
-A flat, fast-moving organization:
-
-```mermaid
-flowchart TB
-    B["Board<br/>$5M"] -->|"$4.8M"| CEO["CEO"]
-    CEO -->|"$4M"| E["Executives (5)"]
-    E -->|"$2M"| M["Managers (20)"]
-    M -->|"$1.5M"| EMP["Employees (200)"]
-
-    style EMP fill:#ddf
-```
-
-**Per-employee exposure**: \$7,500
-
-**Characteristics**:
-- Minimal verification overhead
-- Employees empowered to act
-- Fast but risky
-
----
-
-## Comparison Table
-
-| Scenario | Board | CEO | Execs | Managers | Employees | Per-Employee |
-|----------|-------|-----|-------|----------|-----------|--------------|
-| **Tight** | \$5M | \$4M | \$2M | \$500k | \$200k | **\$1,000** |
-| **Standard** | \$5M | \$4.5M | \$3M | \$1M | \$600k | **\$3,000** |
-| **Loose** | \$5M | \$4.8M | \$4M | \$2M | \$1.5M | **\$7,500** |
-
-### What the Numbers Mean
-
-**Per-employee risk budget** is a key metric. It represents the expected harm budget for an individual frontline worker's decisions.
-
-- **\$1,000/person** (tight): Employees need approval for almost everything. Good for nuclear plants, bad for startups.
-- **\$3,000/person** (standard): Employees can handle routine decisions autonomously. Most organizations.
-- **\$7,500/person** (loose): Employees are trusted to make significant judgment calls. Tech companies, professional services.
-
----
-
-## The Retention Decision
-
-How much should each level retain? It depends on:
-
-### 1. Consequence Magnitude
-Higher levels make bigger decisions, so they need bigger risk budgets for direct action.
-
-| Level | Typical Decisions | Consequence Range |
-|-------|-------------------|-------------------|
-| Board | M&A, CEO selection | \$10M - \$1B |
-| CEO | Strategy, reorgs | \$1M - \$100M |
-| Executives | Department direction | \$100k - \$10M |
-| Managers | Team operations | \$10k - \$500k |
-| Employees | Daily tasks | \$100 - \$50k |
-
-### 2. Verification Overhead
-Each delegation relationship has overhead—time spent checking work. More retention = less overhead but less scale.
-
-```
-Effective capacity = Raw capacity - Verification overhead
-```
-
-### 3. Trust Level
-Lower trust = retain more. If you don't trust your executives, keep more risk budget at CEO level.
-
----
-
-## Key Insights
-
-:::tip[Key Insights]
-1. **Risk budget cascades multiplicatively**: Each level passes a fraction down, so the bottom gets the product of all fractions (why multiplication is the right composition — and when it needs a correlation correction — is derived in [Risk Propagation](/delegation-risk/risk-propagation/))
-2. **Per-person budget shrinks at scale**: 200 employees sharing \$600k = \$3k each, while 1 CEO gets \$4.5M
-3. **Retention reflects control**: High retention = tight control, low retention = high delegation
-4. **The total is conserved**: All risk budget either gets retained or delegated—it doesn't disappear
-5. **Structure determines risk**: Same people, different cascade = different risk profile
-:::
-
----
-
-## Worked Example: Adjusting the Cascade
-
-Your company has been running with **Standard** oversight, but after a compliance incident, the board wants to tighten up.
-
-**Current state** (Standard):
-- Per-employee risk budget: \$3,000
-- Total employee risk budget: \$600k
-- Incidents last year: 3 (expected ~2 at this risk level)
-
-**Proposed change**: Move to **Tight** oversight
-- Per-employee risk budget: \$1,000 (67% reduction)
-- Total employee risk budget: \$200k
-
-**How to implement**:
-1. Managers retain more (increase approval thresholds)
-2. Executives take on decisions previously delegated to managers
-3. CEO handles exceptions that executives used to approve
-
-**Trade-off**:
-- Risk reduction: 67%
-- Velocity reduction: ~40% (more approvals = slower execution)
-- Is this trade-off worth it? Depends on the cost of the compliance incident vs. the cost of slower execution.
-
----
-
-## See Also
-
-- [Delegation Accounting](/delegation-risk/delegation-accounting/) — Balance sheet view for individual delegations
-- [Trust in Organizations](/case-studies/human-systems/organizational-trust/) — Detailed case studies with specific roles
-- [Risk Inheritance](/research/theory/trust-propagation/) — The math of how trust flows through networks
-- [Risk Budgeting Overview](/cross-domain-methods/overview/) — Cross-domain methods for allocating risk budgets
+- [Runtime Accounting](/delegation-risk/runtime-accounting/): preflight, envelope and ledger
+- [Delegation Accounting](/delegation-risk/delegation-accounting/): the balance-sheet view of one delegation
+- [Risk Propagation](/delegation-risk/risk-propagation/): composition through chains and stacks of checks

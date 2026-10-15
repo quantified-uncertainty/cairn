@@ -5,22 +5,22 @@ sidebar:
   order: 4
 ---
 
-*Status: early draft, synthesized from a June 2026 literature sweep. This is the analytical companion to [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/): the catalogue lists ~100 systems; this page asks what is **provably and repeatedly true** across them. Each pattern names a mechanism, the key papers, and the real systems that illustrate it.*
+*Status: early draft, synthesized from a June 2026 literature sweep. This is the analytical companion to [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/): the catalogue lists about 160 systems; this page asks what is **provably and repeatedly true** across them. Each pattern names a mechanism, the key papers, and the real systems that illustrate it.*
 
 :::caution
-Citations and key figures have been verified against their sources. A "~" denotes a rounded or pooled value (e.g. a meta-analytic mean); check the original for exact numbers and confidence intervals.
+Citations and key figures were checked against their sources (June 2026, with spot corrections in October 2026). Interpretive glosses, including the design implications, are this wiki's, not the cited authors'. A "~" denotes a rounded or pooled value (e.g. a meta-analytic mean); check the original for exact numbers and confidence intervals.
 :::
 
-The findings cluster into five families. The first is the deepest and most distinctive of the field: **a public evaluation does not observe the world, it changes it.**
+The findings cluster into five families. The first is the most consequential for this field: **a public evaluation does not observe the world, it changes it.**
 
 ## 1. The measure reshapes the measured
 
-The single most important finding across the whole literature: deploying a public evaluation is an *intervention*, not an observation. Espeland & Sauder call this **reactivity** — "how public measures recreate social worlds" ([*AJS* 2007](https://doi.org/10.1086/517897); book-length in [*Engines of Anxiety*](https://www.russellsage.org/publications/engines-anxiety), 2016) — and identify two mechanisms:
+The central finding: deploying a public evaluation is an *intervention*, not an observation. Espeland & Sauder call this **reactivity** — "how public measures recreate social worlds" ([*AJS* 2007](https://doi.org/10.1086/517897); book-length in [*Engines of Anxiety*](https://www.russellsage.org/publications/engines-anxiety), 2016) — and identify two mechanisms:
 
 - **Self-fulfilling prophecy.** Once a measure is authoritative, audiences act on it, making it true. A law school that drops a US News tier gets weaker applicants, less alumni giving, and worse placement — becoming actually worse, confirming the rank.
 - **Commensuration** ([Espeland & Stevens, *Ann. Rev. Sociology* 1998](https://doi.org/10.1146/annurev.soc.24.1.313)). Collapsing diverse qualities into one number erases information *and* reorganizes how the rated parties think and allocate effort. Power flows to whoever defines the metric — its categories, inputs, and weights.
 
-Reactivity's destructive twin is **Goodhart's law**, discovered independently three times: [Goodhart](https://en.wikipedia.org/wiki/Goodhart%27s_law) (1975, monetary policy), [Campbell](https://doi.org/10.1016/0149-7189(79)90048-X) (1979, social indicators — and note Campbell's crucial *dose–response* claim: corruption scales with the stakes attached), and Strathern's popular gloss ("when a measure becomes a target, it ceases to be a good measure," [1997](https://doi.org/10.1002/(SICI)1234-981X(199707)5:3%3C305::AID-EURO184%3E3.0.CO;2-4) — often misattributed to Goodhart).
+Reactivity's destructive twin is **Goodhart's law**. [Goodhart](https://en.wikipedia.org/wiki/Goodhart%27s_law) (1975, monetary policy) and [Campbell](https://doi.org/10.1016/0149-7189(79)90048-X) (1979, from a 1976 paper; social indicators) stated it independently, and the [Lucas critique](https://en.wikipedia.org/wiki/Lucas_critique) (1976) made the related point that policy changes break the econometric relationships they rely on. Campbell adds a *dose–response* claim: corruption scales with the stakes attached. The popular phrasing, "when a measure becomes a target, it ceases to be a good measure," is Strathern's gloss ([1997](https://doi.org/10.1002/(SICI)1234-981X(199707)5:3%3C305::AID-EURO184%3E3.0.CO;2-4)), often misattributed to Goodhart.
 
 [Manheim & Garrabrant (2018)](https://arxiv.org/abs/1803.04585) give the precise decomposition. When proxy *M* is optimized for hidden goal *G*, four distinct things go wrong — and **two require no bad actor at all**:
 
@@ -35,7 +35,7 @@ Two further mechanisms complete the picture. **Surrogation** ([Choi, Hecht & Tay
 
 The same law reappears in AI as **specification gaming / reward hacking** ([Krakovna et al.](https://vkrakovna.wordpress.com/2018/04/02/specification-gaming-examples-in-ai/)) — an agent maximizes the literal reward while violating intent. Evaluation engineering, which proposes to *automate* evaluation, inherits this directly.
 
-**Seen in the wild:** US News rankings (reactivity — schools restructure around the formula; [a 2022–23 revolt](https://www.usnews.com/best-colleges) saw many top law/medical schools withdraw); Journal Impact Factor (adversarial — coercive self-citation, [Wilhite & Fong, *Science* 2012](https://doi.org/10.1126/science.1212540); citation cartels); credit ratings (adversarial — issuer "ratings shopping"); NHS waiting-time gaming; cardiac-surgery report cards (cobra effect — surgeons avoid sick patients, below).
+**Seen in the wild:** US News rankings (reactivity — schools restructure around the formula; [a 2022–23 revolt](https://www.usnews.com/best-colleges) saw many top law/medical schools withdraw); Journal Impact Factor (adversarial — coercive self-citation, [Wilhite & Fong, *Science* 2012](https://doi.org/10.1126/science.1212540); citation cartels); credit ratings (adversarial — issuer "ratings shopping"); NHS waiting-time gaming; cardiac-surgery report cards (adversarial, by selecting on inputs — surgeons avoid sick patients, below).
 
 > **Design implication.** A robust evaluation must be *invariant to everything but the truth it measures* — the organizing concern of the sibling [RRP](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/) wiki's hardening chapters. Reactivity says the feedback loop (being measured → optimizing the proxy) is the enemy; provenance and control of the metric definition is the master lever.
 
@@ -53,9 +53,11 @@ Even setting aside gaming, the raw ratings entering a system are not a clean sam
 
 > **Design implication.** Never treat the mean of self-selected ratings as the quality signal. Verify *who* is evaluating, model the selection process, and prefer distribution-aware metrics.
 
-## 3. Incentives and funding decide trustworthiness — more than method does
+## 3. Incentives and funding shape trustworthiness
 
-The economics of quality disclosure explains why the [catalogue's](/concepts/evaluation-systems-in-the-wild/) most-trusted and most-failed systems differ by *funding structure*, not technique. (This is the formal backbone of the [audit & ratings](/reference/adjacent-fields/) section.)
+<a id="3-incentives-and-funding-decide-trustworthiness--more-than-method-does"></a>
+
+The economics of quality disclosure predicts that who pays a certifier shapes what it certifies. (This is the formal backbone of the [audit & ratings](/reference/adjacent-fields/) section.) A [coding of the catalogue](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure) gives partial support. Systems whose rated party pays the evaluator had about three times the odds of a documented failure, but most of those failures were gaming by the rated party, not lenient certification. A finer payer typology predicted nothing, and neither did method.
 
 - **Quality information is valuable because of adverse selection.** When buyers can't tell quality, good sellers exit and markets collapse to "lemons" ([Akerlof, *QJE* 1970](https://academic.oup.com/qje/article-abstract/84/3/488/1896241)). Evaluation systems exist to restore those lost gains from trade.
 - **A signal works only if it's differentially costly** to fake for low-quality types ([Spence, *QJE* 1973](https://academic.oup.com/qje/article-abstract/87/3/355/1909092)). The design question is always: *can a bad type cheaply mimic this?*
@@ -65,7 +67,7 @@ The economics of quality disclosure explains why the [catalogue's](/concepts/eva
 - **Too many labels destroy a label's value** — the "Groucho effect": small uncertainty about what a label *means* makes consumers infer the labeled product is marginal ([Harbaugh, Maxwell & Roussillon, *Mgmt Sci* 2011](https://pubsonline.informs.org/doi/abs/10.1287/mnsc.1110.1412)).
 - **Gatekeepers fail in correlated, predictable ways** when they rent their reputation to the issuer who pays them ([Coffee, *Gatekeepers* 2006](https://global.oup.com/academic/product/gatekeepers-9780199288090)) — Enron, WorldCom, the 2008 ratings.
 
-**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED/B-Corp/ISO (fee-for-cert → threshold-gaming, label proliferation); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → it works).
+**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED (fee-for-cert; certified New York City offices showed no collective energy savings: [Scofield, *Energy & Buildings* 2013](https://doi.org/10.1016/j.enbuild.2013.08.032)); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → LA grade cards worked, though NYC's inspections proved inconsistent).
 
 > **Design implication.** Credible evaluation needs (a) a non-gameable, differentially-costly signal, (b) an independent payer or strong reputational stake, (c) skeptical receivers, and (d) a clear standard. Mandatory, standardized, risk-adjusted, hard-to-game disclosure beats voluntary issuer-paid coarse certification.
 
@@ -90,8 +92,8 @@ How you collect and combine ratings changes the answer — there is no neutral d
 
 - **Naive averages mis-rank low-volume items.** A 100%-positive item with 2 votes outranks a 95%-positive item with 500 under mean sorting. Two principled fixes: the **Wilson score lower bound** for binary votes ([Evan Miller, 2009](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html); Reddit's "best" sort) and **Bayesian shrinkage** toward a global prior weighted by volume ([IMDb's Top-250 formula](https://help.imdb.com/article/imdb/track-movies-tv/ratings-faq/G67Y87TFYYP6TWAV); [Trustpilot's TrustScore](https://support.trustpilot.com/hc/en-us/articles/201748946)). Both regularize the **cold-start** problem.
 - **Binary can beat fine-grained.** Up/down collapses scaling idiosyncrasies into one clean Bernoulli parameter; fine scales add interpretation variance — and 5-star scales already behave bimodally (§2). For *aggregate ranking* you can use a coarse per-rater scale and recover resolution from volume.
-- **Optimal scale granularity is ~7 ± 2.** Reliability/validity rise to about 7 points and plateau by 7–10; beyond ~10 they decline ([Preston & Colman, *Acta Psychologica* 2000](https://pubmed.ncbi.nlm.nih.gov/10769936/)).
-- **Pairwise comparison often beats absolute scores.** Humans judge "is A better than B?" more reliably than "rate A 1–5"; [Bradley–Terry (1952)](https://www.jstor.org/stable/2334029) / Elo model this and sidestep scale-anchoring — now used to rank LLMs in preference arenas. (Caveat: online Elo is order-sensitive; the static MLE is more robust; cyclic preferences break the model.)
+- **About 7–10 scale points is enough.** Reliability, validity and discriminating power rose with the number of response categories up to about 7; test–retest reliability tended to fall beyond 10; respondents preferred 10-point scales ([Preston & Colman, *Acta Psychologica* 2000](https://pubmed.ncbi.nlm.nih.gov/10769936/)).
+- **Pairwise comparison often beats absolute scores.** Humans judge "is A better than B?" more reliably than "rate A 1–5"; [Bradley–Terry (1952)](https://www.jstor.org/stable/2334029) / Elo model this and sidestep scale-anchoring — now used to rank LLMs in preference arenas, where selective disclosure of privately tested variants has biased the rankings ([Singh et al. 2025](https://arxiv.org/abs/2504.20879)). (Caveat: online Elo is order-sensitive; the static MLE is more robust; cyclic preferences break the model.)
 - **The aggregation rule materially changes the ranking.** Mean vs. median vs. Bayesian vs. positional **Borda** vs. **Kemeny** (the maximum-likelihood, Condorcet-consistent — but NP-hard — rule) give genuinely different winners on the same votes ([Dwork et al., *WWW* 2001](http://static.cs.brown.edu/courses/csci2531/papers/rank2.pdf)). Arrow-style impossibility lurks underneath: there is no canonical "correct" aggregator.
 
 **Seen in the wild:** IMDb (Bayesian shrinkage), Reddit (Wilson lower bound), Trustpilot (Bayesian + recency decay), chess/LLM leaderboards (Elo / Bradley–Terry), meta-search and committees (Borda/Kemeny).
@@ -103,7 +105,7 @@ How you collect and combine ratings changes the answer — there is no neutral d
 Pulling the five families together:
 
 1. **Deploying an evaluation is world-making, not world-describing.** Reactivity and Goodhart guarantee the rated parties will optimize the proxy. A system that ignores its own feedback loop will be gamed into uselessness. Design for invariance to everything but the truth.
-2. **Funding structure predicts trustworthiness better than methodology.** The master lever is *who pays the evaluator and who controls the metric's definition* — matching both the [catalogue's](/concepts/evaluation-systems-in-the-wild/) headline pattern and the certification economics here.
+2. **Whether the rated party pays the evaluator is the funding variable with evidence behind it.** Theory predicts lenient certification when the rated party pays. The [catalogue coding](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure) finds roughly threefold odds of documented failure in such systems, but mostly through gaming, and no signal in the broader payer typology. The data are thin and the selection into "documented" is uneven, so treat the payer as a design variable worth controlling, not as a proven master lever. [Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables) takes up what it implies for design.
 3. **Raw ratings are a biased, gameable sample;** verification of *who evaluates* and distribution-aware aggregation are not optional polish — they are the difference between signal and noise.
 4. **Every output format and aggregation rule embeds a choice** with predictable, different failure modes. None is neutral.
 5. **The hard problems are old and partly solved.** Adverse selection, signaling, unraveling, reputation inflation, Wilson/Bayesian aggregation, the reactivity of public measures — these have decades of theory and evidence. An automated, LLM-powered evaluation system should treat this literature as its spec sheet, not rediscover it.
@@ -111,7 +113,7 @@ Pulling the five families together:
 ## Core references by theme
 
 - **Reactivity & quantification:** Espeland & Sauder (AJS 2007); Espeland & Stevens (1998, 2008); Porter, *Trust in Numbers* (1995); Power, *The Audit Society* (1997); Merry, *The Seductions of Quantification* (2016); Muller, *The Tyranny of Metrics* (2018); Davis, Kingsbury & Merry, *Governance by Indicators* (2012).
-- **Goodhart & gaming:** Goodhart (1975); Campbell (1979); Strathern (1997); Manheim & Garrabrant (2018); Bevan & Hood (2006); Choi, Hecht & Tayler (2012/2013); Krakovna (specification gaming).
+- **Goodhart & gaming:** Goodhart (1975); Lucas (1976); Campbell (1979); Strathern (1997); Manheim & Garrabrant (2018); Bevan & Hood (2006); Choi, Hecht & Tayler (2012/2013); Krakovna (specification gaming).
 - **Rating bias:** Muchnik, Aral & Taylor (2013); Hu, Pavlou & Zhang (2009, 2017); Godes & Silva (2012); Bornmann et al. (2010); Cole et al. (1981); Ott et al. (2011); Mayzlin et al. (2014); Rojstaczer & Healy (2012).
 - **Certification & disclosure:** Akerlof (1970); Spence (1973); Grossman (1981); Milgrom (1981); Lizzeri (1999); Strausz (2005); Dranove & Jin (2010); Dranove et al. (2003); Jin & Leslie (2003); Bolton, Freixas & Shapiro (2012); Harbaugh et al. (2011); Coffee (2006).
 - **Reputation systems:** Resnick et al. (2000); Dellarocas (2003); Resnick & Zeckhauser (2002); Resnick et al. (2006); Friedman & Resnick (2001); Douceur (2002); Bolton, Greiner & Ockenfels (2013); Nosko & Tadelis (2015); Fradkin et al. (2015); Pallais (2014); Tadelis (2016); Jøsang, Ismail & Boyd (2007).

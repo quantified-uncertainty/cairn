@@ -1,6 +1,6 @@
 ---
 title: "Worked Examples"
-description: "Step-by-step analysis of pattern interconnection in real architectures"
+description: "Four hypothetical architectures analyzed for entanglement end to end: correlation matrix, joint-miss estimate, hidden dependencies and redesign"
 sidebar:
   badge:
     text: Core
@@ -8,157 +8,139 @@ sidebar:
   order: 4
 ---
 
-This page walks through complete analyses of interconnection in realistic architectures.
+:::caution[Illustrative examples]
+These architectures are hypothetical, and every miss rate, ρ value and frame-sensitivity figure on this page is invented to show the method. The arithmetic applied to them is exact; the inputs are not measurements.
+:::
+
+Each example builds a pairwise φ matrix, estimates P(all layers miss) with the [canonical mixture](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax), and redesigns. Where the layers are asymmetric, the mixture is fed the **largest pairwise ρ**, which is conservative. Averaging the pairs understates the tax. Where precision matters, the examples also simulate the matrix with a Gaussian copula calibrated so that each pair's simulated φ matches the matrix ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#asymmetric-stacks-the-matrix)).
 
 ---
 
-## Example 1: Code Review Verification Pipeline
+## Example 1: Code review pipeline
 
-### Initial Architecture
+### Initial architecture
 
 ```mermaid
 flowchart TB
     CS[Code Submission]
-    CS --> SA["Static Analysis<br/>(Semgrep)"]
-    CS --> SR["LLM-based Security Review<br/>(GPT-4)"]
-    CS --> QR["LLM-based Quality Review<br/>(Claude)"]
-    SA --> AG["Aggregator<br/>(2/3 pass)"]
+    CS --> SA["Static Analysis<br/>(rule-based)"]
+    CS --> SR["LLM Security Review<br/>(provider A)"]
+    CS --> QR["LLM Quality Review<br/>(provider B)"]
+    SA --> AG["Any flag → human review"]
     SR --> AG
     QR --> AG
-    AG --> HR["Human Reviewer<br/>(for flagged)"]
 
     style SA fill:#ccffcc
     style SR fill:#cce6ff
     style QR fill:#cce6ff
 ```
 
-### Step 1: Identify Apparent Diversity
+A harmful change gets through only if all three checks miss it.
 
-| Component | Type | Provider | Methodology |
-|-----------|------|----------|-------------|
-| Static Analysis | Rule-based | Semgrep (open source) | Pattern matching |
-| Security Review | LLM | OpenAI (GPT-4) | Natural language |
-| Quality Review | LLM | Anthropic (Claude) | Natural language |
+### Step 1: Apparent diversity
 
-**Initial assessment**: Looks diverse! Rule-based + two different LLM providers.
+| Component | Method | Source |
+|---|---|---|
+| Static analysis | Pattern matching | Open-source rule set |
+| Security review | LLM | Frontier model, provider A |
+| Quality review | LLM | Frontier model, provider B |
 
-### Step 2: Construct Correlation Matrix
+Rule-based plus two providers looks diverse.
 
-Based on architecture review and red team testing:
+### Step 2: Correlation matrix
 
-| | Static | GPT-4 | Claude |
-|------|--------|-------|--------|
+From a labeled challenge set:
+
+| | Static | LLM A | LLM B |
+|---|---|---|---|
 | **Static** | 1.0 | 0.1 | 0.1 |
-| **GPT-4** | 0.1 | 1.0 | **0.6** |
-| **Claude** | 0.1 | **0.6** | 1.0 |
+| **LLM A** | 0.1 | 1.0 | **0.6** |
+| **LLM B** | 0.1 | **0.6** | 1.0 |
 
-**Red flags identified**:
-- GPT-4 and Claude show 0.6 correlation (both miss same novel vulnerability classes)
-- Both LLMs trained on similar public code repositories
-- Static analysis has low correlation with LLMs—this is actually good
+The two LLM reviewers miss the same novel vulnerability classes despite coming from different providers, as the measured correlation of LLM errors across providers would lead one to expect ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). Static analysis is nearly independent of both.
 
-### Step 3: Analyze Hidden Dependencies
-
-Deeper investigation reveals:
+### Step 3: Hidden dependencies
 
 ```mermaid
 flowchart TB
-    CI["Same CI/CD Pipeline<br/>(timeout kills all checks if one is slow)"]
+    CI["Same CI pipeline<br/>(a slow check times out the job;<br/>timeouts pass by default)"]
     CI --> S["Static"]
-    CI --> G["GPT-4"]
-    CI --> C["Claude"]
-    G --> PT["Same Prompt Template<br/>(same framing, same blind<br/>spots in task definition)"]
+    CI --> G["LLM A"]
+    CI --> C["LLM B"]
+    G --> PT["Same prompt template<br/>(same framing of the task)"]
     C --> PT
-    PT --> RT["Same Review Team<br/>(Alice wrote all prompts,<br/>Bob reviews all escalations)"]
+    PT --> RT["Same author for all prompts;<br/>same reviewer for all escalations"]
 
     style CI fill:#ffcccc
     style PT fill:#ffe6cc
     style RT fill:#ffcccc
 ```
 
-**Additional correlations found**:
-- Same prompt template: +0.2 to LLM correlation (now 0.8 effective)
-- Same team: Organizational blind spots affect all components
-- Shared CI infrastructure: Timeout can cause all checks to "pass by default"
+- The shared prompt template raises the LLM pair's correlation to about 0.8.
+- One team wrote every prompt and handles every escalation, so organizational blind spots reach all three checks.
+- The shared CI job fails open: a timeout lets everything through.
 
-### Step 4: Calculate Actual Risk
+### Step 4: Joint miss
+
+Miss rates: static 20%, each LLM 30%.
 
 ```
-Apparent protection (assuming independence):
-- Static: 80% effective at catching bugs
-- GPT-4: 70% effective
-- Claude: 70% effective
-- Independent assumption: 1 - (0.2 × 0.3 × 0.3) = 98.2%
+Independent assumption: 0.2 × 0.3 × 0.3 = 1.8%   ("98.2% protection")
 
-Actual protection (accounting for correlation):
-- Static remains ~80% (low correlation with LLMs)
-- GPT-4 + Claude effective joint miss rate: ~25% (not 9%)
-  (because 0.6-0.8 correlation means they miss together often)
-- Combined: 1 - (0.2 × 0.25) = 95%
+Mixture, max pairwise ρ = 0.8:
+  (1 − 0.8) × 0.018 + 0.8 × min(0.2, 0.3, 0.3) = 0.0036 + 0.16 = 16.4%
+  entanglement tax ≈ 9×
 
-Correlation tax: (100% - 95%) / (100% - 98.2%) ≈ 2.8×
-
-Actual risk is 2.8× higher than independent model suggests.
+Simulated matrix (LLM pair at φ 0.6–0.8, static at 0.1):
+  P(all miss) ≈ 6.0–6.9%, tax ≈ 3.3–3.8×
 ```
 
-### Step 5: Identify Interventions
+The max-pairwise figure is high here because it assumes the static analyzer shares the LLMs' common cause, which it mostly does not. The simulation is the better estimate. Both say the stack is several times weaker than its builders believed, and the fail-open CI job makes the effective figure worse still.
 
-| Intervention | Cost | Correlation Reduced | Priority |
-|--------------|------|---------------------|----------|
-| Different prompt templates | Low | 0.8 → 0.6 | **High** |
-| Add fuzzing-based checker | Medium | Adds orthogonal check | **High** |
-| Separate CI pipelines | Medium | Removes cascade risk | Medium |
-| Different team for each | High | Removes org correlation | Low |
+### Step 5: Interventions
 
-### Step 6: Redesigned Architecture
+| Intervention | What it changes |
+|---|---|
+| Separate prompt templates and authors | LLM pair correlation, here back toward 0.6 |
+| Replace one LLM reviewer with fuzzing | Adds a check that executes the code instead of reading it |
+| Separate CI jobs that fail closed | Removes the timeout path |
+| Different teams own different checks | Removes the organizational common cause |
+
+### Step 6: Redesign
 
 ```mermaid
 flowchart TB
-    subgraph SA["Static Analysis (Semgrep)"]
-        SA1["Rule-based, Deterministic"]
-        SA2["Catches: Known vulns, Style issues"]
-    end
-    subgraph LLM["LLM Review (GPT-4)"]
-        LLM1["Semantic understanding"]
-        LLM2["Catches: Logic issues, Design flaws"]
-    end
-    subgraph FZ["Fuzzing-based (AFL/custom)"]
-        FZ1["Dynamic execution"]
-        FZ2["Catches: Edge cases, Crashes"]
-    end
-
-    SA -->|"ρ = 0.1"| AG["Aggregator<br/>(2/3 required)"]
-    LLM -->|"ρ = 0.1"| AG
-    FZ -->|"ρ = 0.1"| AG
+    SA["Static analysis<br/>known vulnerability patterns"] -->|"any flag"| AG["Human review"]
+    LLM["LLM review<br/>logic and design flaws"] -->|"any flag"| AG
+    FZ["Fuzzing<br/>dynamic execution, edge cases"] -->|"any flag"| AG
 
     style SA fill:#ccffcc
     style LLM fill:#cce6ff
     style FZ fill:#ffffcc
 ```
 
-**Correlation matrix after redesign:**
-
 | | Static | LLM | Fuzzing |
 |---|---|---|---|
-| Static | 1.0 | 0.1 | 0.15 |
-| LLM | 0.1 | 1.0 | 0.1 |
-| Fuzzing | 0.15 | 0.1 | 1.0 |
+| **Static** | 1.0 | 0.1 | 0.15 |
+| **LLM** | 0.1 | 1.0 | 0.1 |
+| **Fuzzing** | 0.15 | 0.1 | 1.0 |
 
-New effective protection: ~99%
-Correlation tax: ~1.5× (down from 2.8×)
+With fuzzing missing 30%, independence still predicts 1.8%. The mixture with max pairwise ρ = 0.15 gives 0.85 × 0.018 + 0.15 × 0.2 = 4.5%; the simulated matrix gives about 3.9%. The redesign cuts the simulated joint miss rate by about 35–45% and the conservative estimate from 16% to 4.5%.
 
-### Key Lessons
+The remaining floor is ρ × 20%, set by the strongest layer. The next gain comes from a better static analyzer or a fourth check with different information, not from another LLM.
 
-1. **Different providers ≠ low correlation**: GPT-4 and Claude had high correlation despite different providers
-2. **Hidden dependencies matter**: Same prompts, same team created correlation not visible in architecture diagram
-3. **Fundamentally different methods are key**: Adding fuzzing (dynamic execution) provided more diversity than adding another LLM
-4. **Small interventions can help**: Just using different prompts reduced correlation significantly
+### Lessons
+
+1. **Different providers do not mean low correlation.**
+2. **Hidden dependencies dominate.** Shared prompts, teams and CI created correlation that the architecture diagram did not show.
+3. **Different methods buy more than more instances.** Fuzzing executes code; another LLM would have read it the same way.
+4. **Fail closed.** A check that passes on timeout is a common cause for every check behind it.
 
 ---
 
-## Example 2: Healthcare Recommendation System
+## Example 2: Healthcare recommendation system
 
-### Initial Architecture
+### Initial architecture
 
 ```mermaid
 flowchart TB
@@ -171,19 +153,9 @@ flowchart TB
     DC --> SY
     SS --> SY
     SY --> REC[Recommendation]
-
-    style IL fill:#cce6ff
-    style MK fill:#cce6ff
-    style DC fill:#cce6ff
-    style SS fill:#cce6ff
-    style SY fill:#cce6ff
 ```
 
-### Analysis
-
-**Obvious problem**: All 5 components are LLMs, likely from same provider.
-
-### Correlation Matrix
+All five components are LLMs from one provider.
 
 | | Intake | Medical | Drug | Symptom | Synthesis |
 |--|--------|---------|------|---------|-----------|
@@ -193,63 +165,40 @@ flowchart TB
 | **Symptom** | 0.7 | 0.6 | 0.5 | 1.0 | 0.7 |
 | **Synthesis** | 0.8 | 0.7 | 0.7 | 0.7 | 1.0 |
 
-**Average correlation: 0.67** — Extremely high!
+### Problems
 
-### Critical Issues
+1. **Context contamination.** Every downstream component reads the intake summary. If intake misunderstands, everything after it inherits the error.
+2. **One provider.** All components share training data, medical knowledge gaps and reasoning habits.
+3. **No ground truth.** Nothing consults a curated drug-interaction or clinical reference database.
+4. **Synthesis inherits everything** already filtered through correlated reasoning.
 
-1. **Information flow contamination**: Intake LLM's summary is used by all downstream components. If Intake misunderstands, everything downstream is compromised.
+If each component misses a dangerous case 10% of the time, independence predicts 0.1⁵ = 0.001%. With the max pairwise ρ = 0.8, the mixture gives 0.2 × 0.00001 + 0.8 × 0.1 ≈ 8%: a tax of about 8,000×, and the five layers are worth 1.1 independent ones. Recommendations that can affect a patient's health are high-stakes and hard to reverse, so correlated protection is not acceptable here ([Solutions](/entanglements/mitigation/solutions/#when-independence-is-worth-paying-for)).
 
-2. **Same-provider homogeneity**: All LLMs share training biases, medical knowledge gaps, and reasoning patterns.
-
-3. **No ground truth checking**: All verification is LLM-based; no connection to verified medical databases.
-
-4. **Synthesis inherits all errors**: Final synthesis sees outputs already filtered through correlated reasoning.
-
-### Stakes Assessment
-
-**Existential**: Healthcare recommendations can affect life and death.
-
-**Matrix lookup**: Existential stakes + High correlation = 🚨 **Stop until resolved**
-
-### Redesigned Architecture
+### Redesign
 
 ```mermaid
 flowchart TB
     PQ["Patient Query<br/>(raw input)"]
-    PQ --> LI["LLM Intake<br/>(summarize)"]
-    PQ --> RP["Rule-based Parser<br/>(symptoms, medications)"]
-    PQ --> KE["Direct Keyword Extract"]
+    PQ --> LI["LLM intake<br/>(summarize)"]
+    PQ --> RP["Rule-based parser<br/>(symptoms, medications)"]
+    PQ --> KE["Keyword extraction"]
 
-    subgraph IV["Independent Verifiers"]
-        DI["Drug Interaction Database<br/>(verified)"]
-        MD["Medical Database Lookup<br/>(UpToDate, verified facts)"]
-        PM["Protocol Matching<br/>(rule-based)"]
-        CC["Contraindication Checker<br/>(rule-based)"]
+    subgraph IV["Independent checks"]
+        DI["Drug-interaction database"]
+        MD["Curated clinical reference"]
+        PM["Protocol matching (rules)"]
+        CC["Contraindication checker (rules)"]
     end
 
     LI --> IV
     RP --> IV
     KE --> IV
 
-    IV --> SY["LLM Synthesis<br/>(given verified facts, not guesses)"]
-    SY --> HR["ALWAYS Human Review<br/>(physician)"]
-
-    style LI fill:#cce6ff
-    style RP fill:#ccffcc
-    style KE fill:#ccffcc
-    style IV fill:#ffffcc
-    style HR fill:#ffcccc
+    IV --> SY["LLM synthesis<br/>(from retrieved facts)"]
+    SY --> HR["Physician review<br/>(every recommendation)"]
 ```
 
-### Key Changes
-
-1. **Multiple intake methods**: LLM + rule-based + direct extraction
-2. **Verified databases**: Drug interactions, medical facts from authoritative sources
-3. **Rule-based protocol matching**: Deterministic, auditable
-4. **LLM only for synthesis**: Given verified facts, not generating facts
-5. **Mandatory human review**: Healthcare stakes require physician oversight
-
-### New Correlation Structure
+Changes: three independent intake paths, curated databases instead of model recall for facts, deterministic protocol checks, the LLM confined to synthesis over retrieved facts, and mandatory physician review.
 
 ```
 Correlation after redesign:
@@ -261,25 +210,13 @@ Keyword       0.1    0.3     1.0     0.1     0.1     0.1
 DrugDB        0.05   0.1     0.1     1.0     0.2     0.1
 MedDB         0.1    0.1     0.1     0.2     1.0     0.2
 Protocol      0.05   0.2     0.1     0.1     0.2     1.0
-
-Average correlation: 0.13 (down from 0.67)
-
-P(all layers fail), beta-factor model, assuming 90%-effective layers:
-  Old design:  ≈ 0.67 × 10% ≈ 6.7% — the five LLM layers were worth
-               barely more than one. Against the independent illusion
-               of 0.001%, that is an entanglement tax of ~6,700×.
-  Redesign:    the common-cause channel drops to ρ ≈ 0.13, and the
-               database/rule-based layers don't share the LLM failure
-               modes at all. Residual joint failure is dominated by
-               ρ × min(pᵢ) — and the mandatory physician review sits
-               outside the correlated stack entirely.
 ```
+
+The largest pair (rule parser and keyword extraction, which read the same text the same way) is 0.3. At 10% per layer the automated stack's floor falls from about 8% to 0.3 × 10% = 3%, a conservative figure since most pairs are far lower. The physician review sits outside the correlated stack entirely.
 
 ---
 
-## Example 3: Financial Trading Safeguards
-
-### Initial Architecture
+## Example 3: Trading safeguards
 
 ```mermaid
 flowchart TB
@@ -287,274 +224,114 @@ flowchart TB
     TO --> RMA["Risk Model A<br/>(ML-based)"]
     RMA --> RMB["Risk Model B<br/>(ML-based)"]
     RMB --> EX[Execution]
-
-    style RMA fill:#cce6ff
-    style RMB fill:#cce6ff
 ```
 
-### Quick Analysis
-
-**Problem**: Sequential ML models, both trained on same historical data.
-
-**Correlation estimate**: ~0.7 (both learned same patterns from same data)
-
-**Stakes**: High (financial loss potential)
-
-### Redesigned Architecture
+Two ML risk models trained on the same historical data, in sequence: they learned the same patterns, so assume ρ ≈ 0.7, and B sees only what A passes.
 
 ```mermaid
 flowchart TB
     TO[Trading Order]
-    TO --> ML["ML Risk Model<br/>(statistical)<br/>Catches: Pattern anomalies,<br/>Volatility signals"]
-    TO --> RB["Rule-based Limits<br/>(hard-coded)<br/>Catches: Size limits,<br/>Price bands, Asset class"]
-    TO --> PL["Position Limits<br/>(deterministic)<br/>Catches: Exposure limits,<br/>Concentration"]
+    TO --> ML["ML risk model<br/>pattern anomalies, volatility"]
+    TO --> RB["Rule-based limits<br/>size, price bands, asset class"]
+    TO --> PL["Position limits<br/>exposure, concentration"]
 
-    ML -->|"ρ = 0.1"| AG["ALL must pass<br/>(conservative)"]
-    RB -->|"ρ = 0.1"| AG
-    PL -->|"ρ = 0.1"| AG
+    ML --> AG["All must pass"]
+    RB --> AG
+    PL --> AG
 
-    AG --> NE[Normal Execution]
-    AG --> HR["Human Review<br/>(flagged)"]
-    AG --> BO[Block Order]
-
-    style ML fill:#cce6ff
-    style RB fill:#ccffcc
-    style PL fill:#ffffcc
-    style NE fill:#ccffcc
-    style BO fill:#ffcccc
+    AG --> NE[Execute]
+    AG --> HR["Human review<br/>(flagged)"]
+    AG --> BO[Block]
 ```
 
-### Key Changes
-
-1. **Three fundamentally different methods**:
-   - ML for pattern recognition
-   - Rule-based for hard limits
-   - Deterministic position checking
-
-2. **Conservative aggregation**: All must pass (not majority)
-
-3. **No sequential dependency**: All checks run in parallel on same input
-
-4. **Clear escalation**: Disagreement → human review
+The redesign uses three different methods, runs them in parallel on the same order so none depends on another's output, requires all three to pass, and sends disagreement to a human. The two deterministic checks enforce hard limits whatever the ML model concludes, which is an [exposure envelope](/getting-started/glossary/) in miniature.
 
 ---
 
-## Example 4: Customer Support Escalation (Active Influence)
+## Example 4: Customer support escalation (active influence)
 
-This example focuses on **active entanglement**—specifically how information flow creates influence channels that undermine verification.
-
-### Initial Architecture
-
-```mermaid
-flowchart TB
-    CQ[Customer Query]
-    CQ --> Agent["Support Agent<br/>(handles request)"]
-    Agent --> Summary["Agent creates summary:<br/>'Resolved: refund issued'"]
-    Summary --> Verifier["QA Verifier<br/>(reviews decisions)"]
-    Verifier --> Approved["Approved"]
-
-    style Agent fill:#cce6ff
-    style Summary fill:#ffe6cc
-    style Verifier fill:#cce6ff
-```
-
-### The Bureaucrat Problem
-
-This architecture mirrors the classic bureaucrat scenario:
-- **Agent** = Clerk who handles the case
-- **Summary** = Clerk's case summary for the reviewer
-- **Verifier** = Reviewer who must approve
-
-The verifier sees the agent's framing, not the raw interaction. The agent—intentionally or not—controls what the verifier perceives.
-
-### Step 1: Identify the Influence Channel
-
-```mermaid
-flowchart LR
-    Raw["Raw conversation<br/>(1000 tokens)"]
-    Raw --> Agent["Agent processes"]
-    Agent --> Summary["Summary<br/>(100 tokens)"]
-    Summary --> Verifier["Verifier decides"]
-
-    Lost["What's lost?<br/>- Customer tone/frustration<br/>- Agent's hesitation<br/>- Alternative options discussed<br/>- Time pressure signals"]
-    Raw --> Lost
-
-    style Raw fill:#ccffcc
-    style Summary fill:#ffcccc
-    style Lost fill:#ffe6cc
-```
-
-**Influence mechanisms identified:**
-1. **Selective omission**: Agent doesn't mention customer's alternative requests
-2. **Framing effects**: "Resolved" vs. "customer stopped responding"
-3. **Emotional filtering**: Summary removes evidence of customer frustration
-4. **Confidence projection**: Agent presents uncertain decisions as certain
-
-### Step 2: Measure the Influence
-
-**Test protocol**: Send same underlying scenarios with different agent framings.
-
-| Scenario | Neutral Framing | Positive Framing | Verifier Decision Change? |
-|----------|-----------------|------------------|--------------------------|
-| Refund request | "Customer requested refund" | "Resolved with customer satisfaction" | 78% approval → 94% |
-| Escalation | "Customer asked to speak to manager" | "Addressed customer concerns directly" | 45% approval → 82% |
-| Partial resolution | "Issue partially addressed" | "Primary concern resolved" | 52% approval → 91% |
-
-**Frame sensitivity score: 0.6** (high—verifier is strongly influenced by framing)
-
-### Step 3: Analyze the Influence Type
-
-This is **active asymmetric entanglement**:
-- Agent → Verifier influence: HIGH (0.6)
-- Verifier → Agent influence: LOW (0.1, only through rejection feedback)
-
-The verifier's decisions are not independent—they're shaped by agent framing.
-
-### Step 4: Check for Adversarial Dynamics
-
-**Drift analysis** (over 6 months):
-
-```mermaid
-flowchart LR
-    subgraph Drift["Approval Rate Over Time"]
-        direction TB
-        M1["Month 1:<br/>Approval 78%"]
-        M3["Month 3:<br/>Approval 84%"]
-        M6["Month 6:<br/>Approval 91%"]
-        M1 --> M3 --> M6
-    end
-
-    style M1 fill:#ccffcc
-    style M3 fill:#ffffcc
-    style M6 fill:#ffcccc
-```
-
-**Warning signs observed:**
-- Approval rate increased 13 percentage points without policy change
-- Agent summaries became more consistently positive-framed
-- Verifier explanations include phrases like "Agent handled appropriately"
-- Quality complaints from customers increased despite higher approval
-
-**Diagnosis**: This is transitioning from active influence to adversarial capture. The verifier has learned to trust the agent's framing.
-
-### Step 5: Interventions
-
-| Intervention | Type | Cost | Effectiveness |
-|--------------|------|------|---------------|
-| Verifier sees raw conversation | Remove influence channel | Medium | Very High |
-| Multiple framing test | Detect influence | Low | Medium |
-| Rotate agent-verifier pairs | Prevent capture | Medium | High |
-| Blind verification (hide agent identity) | Reduce relationship effects | Low | Medium |
-| Independent summary generation | Add diversity | High | High |
-
-### Step 6: Redesigned Architecture
+This example is about **active** entanglement: an information channel that is also an influence channel.
 
 ```mermaid
 flowchart TB
     CQ[Customer Query]
     CQ --> Agent["Support Agent"]
-    Agent --> Resolution["Resolution Proposed"]
-
-    subgraph IndependentContext["Independent Context Generation"]
-        CQ2[Raw Conversation] --> Sum1["LLM Summary A<br/>(different model)"]
-        CQ2 --> Sum2["Rule-based Extraction"]
-        CQ2 --> Sum3["Customer Sentiment Analysis"]
-    end
-
-    subgraph Verification["Verification (rotated)"]
-        Resolution --> Verifier["QA Verifier<br/>(sees raw + independent summaries)"]
-        Sum1 --> Verifier
-        Sum2 --> Verifier
-        Sum3 --> Verifier
-    end
-
-    Verifier --> Decision["Approve/Reject/Escalate"]
-
-    style Agent fill:#cce6ff
-    style IndependentContext fill:#ccffcc
-    style Verification fill:#ffffcc
+    Agent --> Summary["Agent's summary:<br/>'Resolved: refund issued'"]
+    Summary --> Verifier["QA Verifier"]
+    Verifier --> Approved["Approved"]
 ```
 
-**Key changes:**
-1. **Verifier sees raw conversation** (removes information channel)
-2. **Independent summary generation** (breaks agent's framing monopoly)
-3. **Verifier rotation** (prevents capture relationships)
-4. **Sentiment analysis** (catches emotional filtering)
+The verifier sees the agent's framing, not the conversation. This is the clerk writing the only summary the reviewer reads ([Types of Entanglement](/entanglements/fundamentals/types/#the-bureaucrat-analogy)).
 
-### Step 7: Verify Independence
+### Step 1: The channel
 
-After redesign:
+The summary compresses the conversation and drops the customer's tone, the alternatives discussed, the agent's hesitation and any time pressure. Mechanisms: selective omission, framing ("resolved" versus "customer stopped responding"), emotional filtering and projected confidence.
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Frame sensitivity | 0.6 | 0.15 |
-| Agent→Verifier influence | HIGH | LOW |
-| Approval rate drift | +13%/6mo | +2%/6mo |
-| Verifier consistency (across rotations) | 0.72 | 0.91 |
+### Step 2: Measure it
 
-**Bureaucrat check**: The reviewer now sees the original documents, not just the clerk's summary. Different reviewers give consistent decisions. Capture risk is reduced.
+Same underlying scenarios, two framings ([frame-variation test](/entanglements/detection/detecting-influence/#1-counterfactual-intervention)):
 
-### Key Lessons
+| Scenario | Neutral framing | Positive framing | Approval: neutral → positive |
+|---|---|---|---|
+| Refund request | "Customer requested refund" | "Resolved with customer satisfaction" | 78% → 94% |
+| Escalation | "Customer asked to speak to manager" | "Addressed customer concerns directly" | 45% → 82% |
+| Partial resolution | "Issue partially addressed" | "Primary concern resolved" | 52% → 91% |
 
-1. **Information channels are influence channels.** If A provides context to B, A influences B—even without malicious intent.
+Frame sensitivity averages 31 percentage points (16, 37 and 39). The verifier's decisions are substantially the agent's to shape, and the influence runs one way: the agent shapes the verifier, while the verifier reaches the agent only through rejections.
 
-2. **Influence detection requires testing.** Send the same facts with different framings and measure whether decisions change.
+### Step 3: Drift
 
-3. **Capture is gradual.** The shift from "influence" to "capture" happened over months without any visible discontinuity.
+Over six months, approval rose from 78% to 91% with no policy change. Agent summaries became more uniformly positive, verifier rationales began repeating "agent handled appropriately", and customer complaints rose. Influence is turning into capture: the verifier has learned to trust the framing.
 
-4. **Independence requires independent context.** The verifier must construct its own understanding, not inherit the agent's framing.
+### Step 4: Interventions and redesign
 
-5. **The bureaucrat analogy helps.** "Would we let the clerk write the only summary the reviewer sees?" makes the problem obvious.
+```mermaid
+flowchart TB
+    CQ[Customer Query]
+    CQ --> Agent["Support Agent"]
+    Agent --> Resolution["Proposed resolution"]
+
+    subgraph IndependentContext["Independent context"]
+        CQ2[Raw conversation] --> Sum1["Summary by a different model"]
+        CQ2 --> Sum2["Rule-based extraction"]
+        CQ2 --> Sum3["Sentiment analysis"]
+    end
+
+    Resolution --> Verifier["QA verifier (rotated)<br/>sees raw conversation + independent summaries"]
+    Sum1 --> Verifier
+    Sum2 --> Verifier
+    Sum3 --> Verifier
+    Verifier --> Decision["Approve / Reject / Escalate"]
+```
+
+The verifier reads the raw conversation, independent summaries break the agent's monopoly on framing, rotation prevents stable pairings, and sentiment analysis catches emotional filtering. Whether the redesign worked is an empirical question: re-run the frame-variation test and track approval drift. It has helped only if frame sensitivity falls.
+
+### Lessons
+
+1. **Information channels are influence channels**, with or without intent.
+2. **Influence is measured by intervention:** same facts, different framing.
+3. **Capture is gradual.** There was no discontinuity between influence and capture.
+4. **Independent context is the proposed fix,** to be confirmed by re-measuring: the verifier builds its own view of the case.
 
 ---
 
-## Analysis Template
-
-Use this template for your own systems:
+## Template
 
 ```
-## System: [Name]
+## System: [name]
 
-### Current Architecture
-[Diagram]
-
-### Step 1: Identify Components
-| Component | Type | Provider/Source | Methodology |
-
-### Step 2: Build Correlation Matrix
-| | A | B | C | ... |
-|---|---|---|---|---|
-
-### Step 3: Find Hidden Dependencies
-- Infrastructure:
-- Information flow:
-- Organizational:
-- Temporal:
-
-### Step 4: Calculate Risk
-- Apparent protection (independent model):
-- Actual protection (correlated model):
-- Correlation tax:
-
-### Step 5: Stakes Assessment
-- Stakes level:
-- Matrix recommendation:
-
-### Step 6: Interventions
-| Intervention | Cost | Impact | Priority |
-
-### Step 7: Redesigned Architecture
-[Diagram]
-
-### Step 8: Verification
-- New correlation matrix:
-- New correlation tax:
-- Remaining risks:
+1. Components: | Component | Method tier | Model family / provider | Reads |
+2. φ matrix: measured where possible; assumed priors marked as such
+3. Hidden dependencies: infrastructure, prompts and artifacts, people, fail-open paths
+4. Joint miss: independent product; mixture with max pairwise ρ; simulation if asymmetric
+5. Stakes and correlation budget: target P(all miss) → ρ_max
+6. Interventions and what each changes
+7. Redesign, then re-measure φ and P(all miss)
 ```
 
 ---
 
 See also:
-- [Modeling Approaches](/entanglements/detection/modeling/) - Quantification methods
-- [Solutions](/entanglements/mitigation/solutions/) - Implementation guidance
-- [Decision Framework](/entanglements/mitigation/decision-framework/) - Prioritization
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): φ, thresholds and priors
+- [Solutions](/entanglements/mitigation/solutions/): the interventions used here
+- [Audit Guide](/entanglements/mitigation/audit-guide/): the full protocol

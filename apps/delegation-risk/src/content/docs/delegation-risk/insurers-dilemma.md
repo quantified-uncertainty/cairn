@@ -1,487 +1,104 @@
 ---
 title: "The Insurer's Dilemma"
+description: "Transferring delegation risk to an insurer creates a second delegation problem. The principal–agent map, moral hazard and adverse selection, insurability under correlated loss, what fidelity and AI liability insurance actually do, and where insurance stops working against adversarial agents"
 sidebar:
   badge:
     text: Core
     variant: tip
-  order: 6
+  order: 7
 ---
 
-:::note[TL;DR]
-Before you can insure delegation risk, you must solve the moral hazard problem: **the insurer doesn't trust the principal**. If Alice is fully covered, she has no incentive to be careful with Bob. The solution is partial coverage—but how partial? Too little and Alice won't engage agents at all. Too much and she'll take reckless risks. The optimal coverage ratio depends on how much the insurer can monitor, how aligned Alice's incentives are, and how catastrophic the worst outcomes could be.
-:::
+Insurance is the obvious way to move delegation risk off a principal's books, and it creates a second delegation problem. Once Alice is insured against Bob's failures, her insurer has to trust Alice. It must trust her to keep supervising Bob after the loss is no longer hers (moral hazard), and to be the kind of client she says she is (adverse selection). Economics worked out much of this between the 1960s and 1970s. Two real markets show the results in use: fidelity insurance, which has priced employee dishonesty for a long time, and AI liability insurance, a niche product since 2018 that became a visible market, and a target of exclusions, in 2025–26.
 
----
+## The framework in principal–agent terms
 
-## The Setup
+This site's vocabulary maps onto the principal–agent literature as follows.
 
-Diana runs a small specialty insurance firm. Her niche: delegation risk coverage for businesses that hire high-capability contractors.
+| This site | Economics | Source |
+|---|---|---|
+| Delegation risk left after controls | *Residual loss*: the agent's divergence that monitoring and bonding do not prevent | Jensen & Meckling 1976 |
+| Delegation risk + verification spend + bond costs | *Agency cost* = monitoring + bonding + residual loss | Jensen & Meckling 1976 |
+| Defection | *Moral hazard* (hidden action): the agent's unobserved choices diverge from the principal's interest | Arrow 1963; Pauly 1968; Holmström 1979 |
+| Verification and monitoring | *Monitoring*. The informativeness principle: a contract should use any signal that carries information about the agent's action | Holmström 1979 |
+| Bond | *Bonding cost*, borne by the agent to make its commitment credible | Jensen & Meckling 1976 |
+| Deductibles and partial coverage | Optimal partial insurance under moral hazard | Pauly 1968; Shavell 1979 |
+| Clients the insurer cannot tell apart | *Adverse selection*, and screening by menus of contracts | Rothschild & Stiglitz 1976 |
+| Ambiguity loading | Ambiguity aversion in insurance pricing | Hogarth & Kunreuther 1989 |
 
-Alice walks in with a problem.
+The hijack channel, a third party steering the delegate, has no counterpart here. It is closer to the external crime that crime and cyber policies cover, such as social engineering and funds-transfer fraud.
 
-> **Alice**: I need to hire a financial analyst. Someone really good. But if they mess up—or worse, if they're malicious—it could destroy my business. I want insurance.
->
-> **Diana**: What kind of coverage are you looking for?
->
-> **Alice**: Full coverage. 100%. If anything goes wrong, I want to be made whole.
->
-> **Diana**: I can't do that.
->
-> **Alice**: Why not? I'll pay the premium.
->
-> **Diana**: Because if I give you 100% coverage, you'll stop being careful.
+## Moral hazard: why full coverage fails
 
----
+If Alice is fully insured against Bob, she loses her reason to choose him carefully, to supervise him, or to act on warning signs. Arrow (1963) analyzed the problem for medical insurance. Pauly (1968) showed that once insurance changes behavior, full coverage need not be optimal. Shavell (1979) worked out the contract. When the insurer cannot observe the insured's care, the best policy leaves the insured bearing part of the loss. When it can observe care, it can tie the premium to care and offer fuller coverage.
 
-## The Moral Hazard Problem
+That gives three standard ways to keep the principal's incentive alive:
 
-Diana sketches on a whiteboard:
+- **Deductible.** Alice pays the first part of any loss. She stays careful about small losses, but her incentive weakens beyond the deductible.
+- **Co-insurance.** Alice pays a fixed share of every loss, so every dollar lost costs her something.
+- **Cap.** Cover stops at a limit. Alice keeps the catastrophic tail, and with it an incentive to prevent catastrophes.
 
-```
-WITHOUT INSURANCE:
-Alice hires Bob → If Bob fails → Alice loses $100,000
-Alice's incentive: Be VERY careful about Bob
+There is also a substitute for all three: **monitoring**. If the insurer can see that Alice supervises Bob, through audits, reports or access to logs, it needs less of her money at risk to keep her careful. Holmström's informativeness principle says why: a signal that carries information about her effort beyond what the insurer already observes improves the contract.
 
-WITH 100% INSURANCE:
-Alice hires Bob → If Bob fails → Diana loses $100,000
-Alice's incentive: Who cares? I'm covered.
-```
+## Adverse selection: why pools unravel
 
-> **Diana**: This is called moral hazard. When you're fully insured, you have no skin in the game. You might hire someone riskier. You might supervise less. You might ignore warning signs.
->
-> **Alice**: I wouldn't do that.
->
-> **Diana**: Maybe not consciously. But at the margin? If you're choosing between a safe-but-mediocre analyst and a brilliant-but-unpredictable one—and you're fully covered—which do you pick?
->
-> **Alice**: *(pause)* The brilliant one.
->
-> **Diana**: Exactly. And that's rational for you. But it's terrible for me.
+Insurers cannot see everything their clients know. The clients keenest to buy delegation cover are disproportionately the ones who expect to claim. A premium set for the average client drives away the careful ones. That raises the average risk, which raises the premium again. Rothschild and Stiglitz (1976) showed that under this kind of hidden information, a competitive market has no equilibrium in which both kinds of client buy the same policy, and sometimes no equilibrium at all. Insurers instead offer menus that make clients reveal their type, such as a cheap, high-deductible policy that only confident clients choose. Underwriting questionnaires, waiting periods, exclusions for prior losses and discounts for documented controls are the working versions.
 
----
+## Correlated losses and the limits of insurability
 
-## The Coverage Spectrum
+The worst case cuts both ways. When a delegate could cause a loss far larger than the principal's capital, the principal most needs cover, and the insurer most needs the principal to be careful. A cap resolves this by leaving the catastrophic tail with the principal, which is exactly where the principal wanted protection.
 
-Diana draws a graph:
+Insurers face a second tail problem, across their portfolio. Berliner (1982) proposed nine criteria for insurability, grouped as actuarial, market and societal conditions. The actuarial ones bind here: losses must be independent across policies with estimable probabilities, and the maximum possible loss must be bearable for the insurer. Correlation breaks both. It matters because an insurer holds capital against a tail measure of its whole portfolio, not against expected loss, and expected losses add regardless of correlation while tail measures do not ([Risk Budgeting and Tail Measures](/research/risk-methods/financial-risk-budgeting/)). [Ibragimov, Jaffee and Walden (2009)](https://ideas.repec.org/a/oup/rfinst/v22y2009i3p959-993..html) show that when losses are heavy-tailed and insurers have limited liability, insurers may rationally decline to cover a risk even when the market as a whole could share it, a "nondiversification trap". Cyber risk is the nearest precedent. [Biener, Eling and Wirfs (2015)](https://www.alexandria.unisg.ch/handle/20.500.14171/106833) applied Berliner's criteria to 994 cyber losses from an operational-risk database. They found highly interrelated losses, scarce data, a fast-changing risk and severe information asymmetry, and noted that insurers responded to the uncertainty with high deductibles and low limits. The same problems hold back AI cover.
 
-```
-Coverage %    Alice's Behavior         Diana's Risk         System Outcome
-─────────────────────────────────────────────────────────────────────────
-0%            Extremely cautious       Zero                 Alice avoids all agents
-              (or avoids agents)                            (valuable work undone)
+Even human dishonesty is not independent across policies: [Dionne and Wang (2013)](https://ideas.repec.org/a/kap/jrisku/v47y2013i1p67-92.html) find that the severity of fraud in Taiwan's auto-theft insurance market is countercyclical. AI makes correlation much worse. If many clients delegate to the same model, one failure can produce thousands of simultaneous claims. That is the [entanglement tax](/entanglements/) at the scale of a market.
 
-25%           Very cautious            Low                  Alice uses only safest agents
-              Extensive oversight                           (moderate productivity)
+## What real markets do
 
-50%           Moderately cautious      Moderate             Alice uses good agents
-              Reasonable oversight                          (good productivity)
+### Fidelity and crime insurance
 
-75%           Somewhat cautious        High                 Alice uses risky agents
-              Light oversight                               (high productivity, high variance)
+Fidelity bonds and commercial crime policies cover theft and fraud by employees, the defection channel for human delegates. The underlying losses are well measured. The Association of Certified Fraud Examiners' *Occupational Fraud 2024: A Report to the Nations* analyzes 1,921 cases from 138 countries and territories. The median loss was \$145,000 and the median fraud ran 12 months before detection, most often by a tip (43% of cases). Frauds by owners and executives had a median loss of \$500,000, against \$60,000 for staff-level employees. 57% of victims recovered nothing. Each of the 18 anti-fraud controls studied was associated with both faster detection and lower losses.
 
-100%          Careless                 Maximum              Alice uses anyone
-              No oversight                                  (maximum productivity OR disaster)
-```
+The policies follow the theory. Standard crime forms exclude theft by the insured itself, and by employees the insured already knew to be dishonest. Coverage for an employee ends once a dishonest act is discovered. Underwriting asks about internal controls such as segregation of duties and audits. The owner exclusion is the [Ouroboros case](/delegation-risk/delegation-accounting/#when-a-conflict-of-interest-makes-a-risk-uninsurable): when the insured controls the loss, no premium is fair.
 
-> **Diana**: The coverage ratio isn't just about splitting losses. It's about maintaining your incentive to be careful.
->
-> **Alice**: So what's the right number?
->
-> **Diana**: It depends on several things.
+A premium is not exposure, and it is not delegation risk either. It is the insurer's estimate of expected loss plus loadings for expenses, capital, profit and ambiguity, so the insurer's expected loss sits below the premium. Read a fidelity premium as an upper estimate of the market's view of a delegate's defection risk.
 
----
+### AI liability insurance
 
-## Factor 1: Monitorability
+By late 2026 the market moves in two directions. Specialist products cover AI failures affirmatively, while mainstream insurers write them out of existing policies.
 
-> **Diana**: Can I watch what you're doing?
+Affirmative cover:
 
-If Diana can monitor Alice's supervision of Bob, she needs less skin-in-the-game incentive:
+- **Munich Re** has insured AI performance failures since 2018. Its [aiSure](https://www.munichre.com/en/solutions/for-industry-clients/insure-ai.html) products back AI vendors' performance warranties and cover companies using AI against losses from AI errors, such as lost revenue, business interruption and legal damages.
+- **Armilla**, a Lloyd's coverholder, [launched](https://www.armilla.ai/resources/armilla-launches-affirmative-ai-liability-insurance-with-lloyds-underwriter-chaucer) an AI liability policy in April 2025, underwritten at Lloyd's by underwriters including Chaucer. It responds when an AI system fails to perform as intended.
+- **The Artificial Intelligence Underwriting Company (AIUC)** [launched](https://amp.insurancejournal.com/news/national/2025/07/25/833169.htm) in July 2025 with a \$15 million seed round. It combines a standard for AI agents (AIUC-1, built on the NIST AI RMF, the EU AI Act and MITRE ATLAS), audits against it, and insurance whose price and availability depend on the audit. In February 2026 ElevenLabs [reported](https://elevenlabs.io/blog/aiuc-announcement) that its voice agents had been certified against AIUC-1 after 5,835 tests across 14 risk categories, making them eligible for an AIUC-1-backed policy.
 
-| Monitoring Level | Required Retention | Why |
-|------------------|-------------------|-----|
-| Full transparency | 10-20% | Diana can verify Alice is careful |
-| Quarterly audits | 30-40% | Some verification, gaps possible |
-| Annual reports only | 50-60% | Limited visibility |
-| No monitoring | 70-80% | Alice's incentive is only protection |
+Exclusions:
 
-> **Alice**: So if I let you audit my oversight processes, I can get more coverage?
->
-> **Diana**: Exactly. Monitoring substitutes for retention. If I can see you being careful, I don't need your money at risk to make you careful.
+- In November 2025 the *Financial Times* [reported](https://techcrunch.com/2025/11/23/ai-is-too-risky-to-insure-say-people-whose-job-is-insuring-risk/) that W. R. Berkley, Great American and Chubb had asked US state regulators to approve exclusions for AI-related liability in corporate policies. The reasons given were opacity (model outputs are "too much of a black box") and systemic risk. An Aon executive noted that insurers can absorb a \$400 million loss at one company; TechCrunch's gloss was that they cannot absorb an agentic failure that causes 10,000 losses at once.
+- Verisk's ISO, which drafts the standard US policy forms, introduced optional generative-AI exclusion endorsements for commercial general liability, effective January 2026 ([Independent Agent](https://www.independentagent.com/vu_resource/verisk-to-roll-out-new-general-liability-exclusions-for-generative-ai-exposures/)). CG 40 47 excludes bodily injury, property damage, and personal and advertising injury arising from generative AI. CG 40 48 excludes only the last. CG 35 08 excludes bodily injury and property damage under products and completed-operations cover.
 
----
+Both movements fit the theory. Where the insurer can audit, as AIUC does, monitoring substitutes for retention and cover is offered. Where losses are correlated across policyholders or the system is opaque, insurers exclude the risk rather than price it. These are the first market prices for AI delegation risk. The affirmative market is small, its loss history is short and its prices are not public, so there is no evidence yet on whether the prices are accurate.
 
-## Factor 2: Alice's Baseline Incentives
+## Where insurance stops working: adversarial agents
 
-> **Diana**: How much do you care about outcomes beyond the money?
+All of this assumes that the party whose behavior the contract shapes is the party that controls the loss. In the moral-hazard model that party is the insured principal, and partial coverage keeps her careful. A scheming delegate breaks the assumption. Its behavior does not depend on Alice's coverage ratio. It may also corrupt the signals that monitoring relies on, and the informativeness principle helps only while a signal is informative about what the agent actually did. Monitors can fail strategically as well. [Mookherjee and Png (1995)](https://ideas.repec.org/a/ecj/econjl/v105y1995i428p145-59.html) model a bribable pollution inspector, and find that because inspector and factory interact strategically, raising the penalty for corruption can increase pollution.
 
-Some principals have incentives beyond insurance:
+Against such an agent, coverage terms do not reduce risk. They only decide who bears the loss. What reduces it is constraining what the agent can do, with a hard [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope), and monitoring it cannot falsify, with ledger inputs measured at the boundary. Any claim that those constraints hold against intentional subversion needs a control evaluation ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). Insurance can price a delegation that is already bounded. It cannot bound one.
 
-| Principal Type | Baseline Care | Coverage Possible |
-|----------------|---------------|-------------------|
-| Reputation-dependent | High | 70-80% |
-| Regulatory scrutiny | High | 70-80% |
-| One-shot player | Low | 30-40% |
-| Repeat customer | Medium | 50-60% |
+## References
 
-> **Diana**: If your reputation is on the line—if a failure would embarrass you publicly, damage relationships, trigger investigations—then you'll be careful regardless of insurance. I can offer more coverage because your incentives are already aligned.
->
-> **Alice**: My business depends on trust. A scandal would be worse than the direct losses.
->
-> **Diana**: Good. That means I can cover more of the direct losses.
+- Arrow, K. J. (1963). Uncertainty and the Welfare Economics of Medical Care. *American Economic Review* 53(5), 941–973.
+- Association of Certified Fraud Examiners (2024). *Occupational Fraud 2024: A Report to the Nations*.
+- Berliner, B. (1982). *Limits of Insurability of Risks*. Prentice-Hall.
+- Biener, C., Eling, M., & Wirfs, J. H. (2015). Insurability of Cyber Risk: An Empirical Analysis. *Geneva Papers on Risk and Insurance – Issues and Practice* 40(1), 131–158.
+- Dionne, G., & Wang, K. C. (2013). Does Insurance Fraud in Automobile Theft Insurance Fluctuate with the Business Cycle? *Journal of Risk and Uncertainty* 47(1), 67–92.
+- Greenblatt, R., Shlegeris, B., Sachan, K., & Roger, F. (2023). [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942). ICML 2024.
+- Hogarth, R. M., & Kunreuther, H. (1989). Risk, Ambiguity, and Insurance. *Journal of Risk and Uncertainty* 2(1), 5–35.
+- Holmström, B. (1979). Moral Hazard and Observability. *Bell Journal of Economics* 10(1), 74–91.
+- Ibragimov, R., Jaffee, D., & Walden, J. (2009). Nondiversification Traps in Catastrophe Insurance Markets. *Review of Financial Studies* 22(3), 959–993.
+- Jensen, M. C., & Meckling, W. H. (1976). Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure. *Journal of Financial Economics* 3(4), 305–360.
+- Mookherjee, D., & Png, I. P. L. (1995). Corruptible Law Enforcers: How Should They Be Compensated? *Economic Journal* 105(428), 145–159.
+- Pauly, M. V. (1968). The Economics of Moral Hazard: Comment. *American Economic Review* 58(3), 531–537.
+- Rothschild, M., & Stiglitz, J. (1976). Equilibrium in Competitive Insurance Markets: An Essay on the Economics of Imperfect Information. *Quarterly Journal of Economics* 90(4), 629–649.
+- Shavell, S. (1979). On Moral Hazard and Insurance. *Quarterly Journal of Economics* 93(4), 541–562.
 
----
-
-## Factor 3: Catastrophic Tails
-
-> **Diana**: What's the worst case?
-
-```
-Scenario A: Bob makes errors
-  - Expected loss: $50,000
-  - Maximum loss: $100,000
-  - Variance: Low
-
-Scenario B: Bob is malicious
-  - Expected loss: $50,000
-  - Maximum loss: $10,000,000
-  - Variance: Extreme
-```
-
-> **Diana**: When the tail risk is catastrophic, I need you MORE careful, not less. That means lower coverage.
->
-> **Alice**: But catastrophic risk is exactly when I need insurance most!
->
-> **Diana**: I know. It's a genuine dilemma. The worse the potential outcome, the more important your vigilance—but also the more you want to transfer the risk.
-
-Diana pauses.
-
-> **Diana**: This is why we invented deductibles and coverage caps.
-
----
-
-## The Structure of Partial Coverage
-
-Diana shows three mechanisms:
-
-### 1. Co-insurance (Percentage Retention)
-
-```
-Coverage: 70%
-Loss occurs: $100,000
-Diana pays: $70,000
-Alice pays: $30,000
-
-Alice's incentive: Every dollar of loss costs her 30 cents
-```
-
-### 2. Deductible (First-Dollar Retention)
-
-```
-Deductible: $25,000
-Loss occurs: $100,000
-Diana pays: $75,000
-Alice pays: $25,000
-
-Alice's incentive: Avoid losses entirely (full exposure up to deductible)
-                   Less careful about losses beyond deductible
-```
-
-### 3. Coverage Cap (Tail Retention)
-
-```
-Cap: $500,000
-Loss occurs: $800,000
-Diana pays: $500,000
-Alice pays: $300,000
-
-Alice's incentive: Prevent catastrophic scenarios specifically
-```
-
-> **Diana**: For delegation risk, I usually combine all three. Deductible for small losses, co-insurance for medium losses, cap for catastrophic losses. You have skin in the game at every level.
-
----
-
-## The Premium Calculation
-
-> **Alice**: So what would this actually cost?
-
-Diana pulls out her formula:
-
-```
-Base Premium = E[Loss] × Coverage_Ratio
-
-Moral Hazard Loading = Base × MH_Factor(coverage_ratio, monitoring, alignment)
-
-Where MH_Factor increases with:
-  - Higher coverage ratio
-  - Less monitoring
-  - Lower baseline alignment
-
-Final Premium = Base Premium + Moral Hazard Loading + Administrative Costs
-```
-
-**Example:**
-
-| Component | Value | Calculation |
-|-----------|-------|-------------|
-| Expected loss (no insurance) | \$20,000/year | Historical data |
-| Coverage ratio | 60% | Negotiated |
-| Base premium | \$12,000 | \$20,000 × 60% |
-| Moral hazard factor | 1.3× | 60% coverage, quarterly audits, reputation-dependent |
-| Moral hazard loading | \$3,600 | \$12,000 × 30% |
-| Administrative | \$1,000 | Fixed |
-| **Final premium** | **\$16,600** | |
-
-> **Alice**: Wait—you're charging me extra because you think I'll be less careful?
->
-> **Diana**: I'm charging you for the *expected* increase in losses due to changed behavior. If you prove me wrong—if your loss rate stays low—your premiums go down over time.
-
----
-
-## The Monitoring Agreement
-
-Alice and Diana negotiate:
-
-**Alice agrees to:**
-- Quarterly reports on agent oversight activities
-- Immediate notification of any concerning behaviors
-- Diana's right to audit supervision records
-- Minimum supervision standards (specified in appendix)
-
-**Diana agrees to:**
-- 60% co-insurance on losses up to \$200,000
-- 40% co-insurance on losses \$200,000-\$500,000
-- \$500,000 coverage cap
-- Premium reduction for clean quarters
-
-> **Diana**: The monitoring isn't just about catching you being careless. It's about letting me *trust* you enough to offer real coverage. Without monitoring, I'd have to assume the worst.
->
-> **Alice**: So surveillance enables insurance.
->
-> **Diana**: Verification enables trust. The surveillance is just how we verify.
-
----
-
-## The Selection Problem
-
-A week later, Diana reviews her portfolio and notices a pattern:
-
-```
-Clients seeking delegation risk coverage:
-- 60% have had previous incidents
-- 30% are entering new high-risk ventures
-- 10% are genuinely cautious seeking protection
-
-Industry average incident rate: 5%
-My client incident rate: 12%
-```
-
-> **Diana's partner**: We're getting adverse selection. The people who want insurance are the ones who expect to need it.
->
-> **Diana**: Which makes the insurance more expensive, which drives away the cautious ones, which makes the pool even riskier...
->
-> **Partner**: Classic death spiral.
-
-Diana implements countermeasures:
-
-| Problem | Solution |
-|---------|----------|
-| Prior incidents | Higher premiums or exclusions |
-| New ventures | Waiting period before full coverage |
-| Risk-seeking principals | Enhanced monitoring requirements |
-| Cautious principals | Premium discounts to keep them in pool |
-
----
-
-## The Principal-Agent-Insurer Triangle
-
-Diana realizes she's now part of a three-way trust problem:
-
-```
-                    ALICE (Principal)
-                   /                 \
-                  /                   \
-          Delegates to            Insured by
-                /                       \
-               /                         \
-          BOB (Agent) ←─────────────→ DIANA (Insurer)
-                      Indirect exposure
-```
-
-- **Alice doesn't fully trust Bob** → That's why she wants insurance
-- **Diana doesn't fully trust Alice** → That's why coverage is partial
-- **Diana has indirect exposure to Bob** → Via Alice's claims
-
-> **Diana**: I'm not just insuring against Bob's failures. I'm insuring against *Alice's management of Bob*. My real counterparty is Alice, but my real risk is Bob—filtered through Alice's judgment.
-
-This creates interesting dynamics:
-
-| If Alice supervises poorly... | |
-|------------------------------|---|
-| Bob is more likely to fail | Diana's risk increases |
-| Alice is more likely to claim | Diana's risk increases |
-| Diana raises premiums | Alice's costs increase |
-| Alice might improve supervision | ...or might find a cheaper insurer |
-
----
-
-## The Trust Ladder
-
-Diana develops a framework for client relationships:
-
-| Level | Client Type | Coverage | Monitoring | Premium | Criteria |
-|-------|-------------|----------|------------|---------|----------|
-| **0** | New Client | 40% max | Monthly audits | Base × 1.5 | First year |
-| **1** | Established | 60% max | Quarterly audits | Base × 1.2 | 2 years, <2 incidents, audit compliance |
-| **2** | Trusted | 75% max | Semi-annual audits | Base × 1.0 | 5 years, <3 incidents, proactive reporting |
-| **3** | Partner | 85% max | Annual review | Base × 0.85 | 10 years, <2 incidents, demonstrated excellence |
-
-> **Diana**: Trust is earned through track record. As you prove your judgment is sound, I can rely less on financial incentives and more on demonstrated behavior.
->
-> **Alice**: So the coverage ratio isn't fixed—it's a relationship.
->
-> **Diana**: Exactly. We're both learning. I'm learning whether to trust you. You're learning what I need to see. The coverage tracks that mutual understanding.
-
----
-
-## The Limits of Insurance
-
-After three years, Alice is a Level 2 client. Then she comes with a new request:
-
-> **Alice**: I've found an extraordinary candidate. Brilliant. Could transform my business. But... there's something off about him. I can't explain it. My due diligence found nothing wrong, but my instincts are screaming.
->
-> **Diana**: And you want to hire him anyway?
->
-> **Alice**: If I'm covered. Yes.
-
-Diana thinks carefully.
-
-> **Diana**: This is exactly the moral hazard I worry about. Your instincts say danger, but you want to override them because you're insured.
->
-> **Alice**: My instincts might be wrong. He could be the best hire I ever make.
->
-> **Diana**: He could also be the worst. And if your instincts are right—if something IS off—then you're not just risking loss. You're risking catastrophe.
-
-Diana makes a decision.
-
-> **Diana**: I'll cover you. But at a different structure.
->
-> **Alice**: What do you mean?
->
-> **Diana**: I mean I want to meet him first.
-
----
-
-## Setting Up Mr. X
-
-*Three weeks later, Alice brings her candidate to Diana's office.*
-
-*He's tall. Immaculately dressed. His smile doesn't quite reach his eyes.*
-
-> **Diana**: Please, sit down. I understand Alice is considering bringing you on as a strategic consultant.
->
-> **Candidate**: That's correct. I specialize in situations where conventional approaches have failed.
->
-> **Diana**: And why would Alice need unconventional approaches?
->
-> **Candidate**: *(slight smile)* Because her competitors are already using them.
-
-*Diana studies him. Everything checks out. References impeccable. Track record impressive. And yet—*
-
-> **Diana**: I'd like to understand your previous engagements better. Several of your former clients seem to have... restructured significantly after your involvement.
->
-> **Candidate**: Restructuring is often necessary for growth.
->
-> **Diana**: One of them no longer exists.
->
-> **Candidate**: Regrettable. But not my doing.
->
-> **Diana**: Can you prove that?
->
-> **Candidate**: *(long pause)* No. But then, neither could anyone prove I was responsible. Because I wasn't.
-
-*Diana feels the hair rise on the back of her neck.*
-
-> **Diana**: I need to do additional due diligence before I can provide coverage.
->
-> **Candidate**: Of course. I would expect nothing less.
-
-*He stands, extends his hand. His grip is firm, his eye contact unwavering.*
-
-> **Candidate**: I look forward to working with you, Diana. Both of you.
-
-*After he leaves, Alice turns to Diana.*
-
-> **Alice**: Well?
->
-> **Diana**: *(slowly)* I need to pull some files. Some very old files.
->
-> **Alice**: What are you looking for?
->
-> **Diana**: I'm looking for anyone who's insured someone like him before. And survived.
-
----
-
-## What Diana Learns
-
-*Over the next week, Diana makes calls. Lots of calls. Most go nowhere. But a few...*
-
-> **Former Colleague**: You're asking about THAT kind of client? Jesus, Diana. Where do I start?
->
-> **Diana**: Start with the ones who got burned.
->
-> **Former Colleague**: That's most of them. The coverage ratios, the monitoring, the deductibles—none of it mattered. These clients... they're different.
->
-> **Diana**: Different how?
->
-> **Former Colleague**: They're smarter than us. They're playing a longer game. And they KNOW how insurance changes incentives—so they manipulate those incentives. I had one client who deliberately triggered small claims to build trust, then...
-
-*Silence on the line.*
-
-> **Diana**: Then what?
->
-> **Former Colleague**: Then nothing. We paid out everything. Company doesn't exist anymore. I don't talk about it.
-
----
-
-## The New Framework
-
-Diana stays late, reworking her models. The moral hazard problem with normal clients is about *incentives*—make sure they have skin in the game.
-
-But this candidate... the problem isn't Alice's incentives. The problem is the candidate himself.
-
-She writes:
-
-```
-STANDARD MORAL HAZARD:
-- Risk: Principal becomes careless when insured
-- Solution: Partial coverage, monitoring, alignment
-
-NEW CATEGORY: ADVERSARIAL AGENT RISK
-- Risk: Agent is actively malicious, regardless of principal's care
-- Principal's care level: Irrelevant if agent is sophisticated enough
-- Monitoring: Agent may manipulate what's monitored
-- Coverage ratio: Doesn't change agent's behavior, only loss allocation
-
-IMPLICATION:
-When the agent is adversarial and sophisticated,
-conventional insurance structures don't reduce risk—
-they just shift who bears the loss.
-
-NEW QUESTION:
-Can we design coverage that actually changes the AGENT's behavior,
-not just the principal's?
-```
-
-Diana looks at what she's written.
-
-This isn't insurance anymore. This is something else.
-
-She picks up the phone.
-
-> **Diana**: Alice? We need to talk. About your candidate. And about a completely different way of structuring this engagement.
-
----
-
-## Further Reading
-
-- [Delegation Accounting](/delegation-risk/delegation-accounting/) — The underlying framework
+See also [Delegation Accounting](/delegation-risk/delegation-accounting/) for the balance-sheet view and the ambiguity loading.

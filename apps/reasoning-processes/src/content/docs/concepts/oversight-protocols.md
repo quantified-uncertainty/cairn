@@ -7,19 +7,15 @@ sidebar:
 
 *Scalable-oversight protocols are best organized by what their incentives ground out in: a judge's verdict, external resolution, internal coherence, or peer agreement. No grounding dominates — they cover different claim classes and fail differently — which is why the natural design is a composition, and why the field still lacks an economics of which claims to verify at what price.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled.
-:::
-
 ## The problem
 
-Scalable oversight ([DeepMind's term](https://arxiv.org/abs/2504.01849): *amplified oversight*) asks: how does a weaker principal extract honest, high-quality information from a more capable agent — essentially the [ELK problem](https://www.alignmentforum.org/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge) restated? The incentive-based proposals — debate, market-making, prover-verifier games, recursive reward modeling — share a structure: each is a mechanism for making honesty the agent's best strategy. Non-incentive approaches — [AI control](https://arxiv.org/abs/2312.06942), interpretability, weak-to-strong generalization — sit outside this taxonomy by design.
+Scalable oversight ([DeepMind's term](https://arxiv.org/abs/2504.01849): *amplified oversight*) asks: how does a weaker principal extract honest, high-quality information from a more capable agent — essentially the [ELK problem](https://www.alignmentforum.org/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge) restated? The proposals — debate, market-making, prover-verifier games, recursive reward modeling, [iterated amplification](https://arxiv.org/abs/1810.08575) (Christiano, Shlegeris & Amodei 2018, which builds a training signal for hard tasks by having a weak overseer combine solutions to easier subproblems) — share a structure: each is a mechanism for making honesty or competence the agent's best strategy, judged by something weaker than the agent. Non-incentive approaches — [AI control](https://arxiv.org/abs/2312.06942), interpretability, weak-to-strong generalization — sit outside this taxonomy by design.
 
 The claim of this page: these protocols are best organized by **what their incentive grounds out in**. Every protocol needs some final arbiter that the reward chain terminates in, and there are only a few candidates:
 
 | Grounding | Protocols | The agent profits by... | Characteristic failure |
 |---|---|---|---|
-| A judge's verdict | [Debate](https://arxiv.org/abs/1805.00899), consultancy, [prover-verifier games](https://arxiv.org/abs/2407.13692), [recursive reward modeling](https://arxiv.org/abs/1811.07871), [market-making](https://www.alignmentforum.org/posts/YWwzccGbcHMJMpT45/ai-safety-via-market-making) | convincing the judge | persuasion ≠ truth; obfuscation |
+| A judge's verdict | [Debate](https://arxiv.org/abs/1805.00899), consultancy, [prover-verifier games](https://arxiv.org/abs/2407.13692), [recursive reward modeling](https://arxiv.org/abs/1811.07871), [iterated amplification](https://arxiv.org/abs/1810.08575), [market-making](https://www.alignmentforum.org/posts/YWwzccGbcHMJMpT45/ai-safety-via-market-making) | convincing the judge | persuasion ≠ truth; obfuscation |
 | External resolution | Prediction markets, retrodiction games, producer/consumer prediction games | beating the market and being right later | only covers resolvable claims; latency; resolution ambiguity/manipulation |
 | Internal coherence | [Consistency evaluations](/proposals/consistency-evals/), Dutch-book tests | being unexploitable | consistent-but-wrong; evasive vagueness |
 | Peer agreement | [Peer prediction](https://en.wikipedia.org/wiki/Peer_prediction), [Bayesian Truth Serum](https://en.wikipedia.org/wiki/Bayesian_truth_serum) | reporting what informed peers would report | collusion; herding on plausible falsehoods |
@@ -71,6 +67,8 @@ Consistency protocols need no judge and no resolution: the agent is scored on wh
 
 Peer prediction scores a report by how well it predicts other informed agents' reports, making truth-telling an equilibrium with no judge and no resolution — built precisely for claims with no ground truth ([Miller, Resnick & Zeckhauser 2005](https://doi.org/10.1287/mnsc.1050.0379); [Prelec 2004](https://doi.org/10.1126/science.1102081)). The mechanism-design line has since hardened it considerably — removing the common-prior assumption ([Witkowski & Parkes 2012](https://doi.org/10.1145/2229012.2229085)), making truth-telling the *maximally-paid* equilibrium via Correlated Agreement ([Shnayder et al. 2016](https://arxiv.org/abs/1603.03151)), and unifying the family under an information-theoretic, dominantly-truthful framework ([Kong & Schoenebeck 2016](https://arxiv.org/abs/1605.01021)). It remains the least trusted grounding here: the guarantees assume non-colluding reporters, and LLM copies are the easiest colluders imaginable.
 
+The most widely deployed agreement-grounded mechanism is not peer prediction but bridging. X's Community Notes (originally Birdwatch) fits each rating as $\mu + i_u + i_n + f_u\cdot f_n$ — global, rater and note intercepts plus a rater-note viewpoint factor — and shows a note only if its intercept $i_n$, the helpfulness left after viewpoint is explained, clears a threshold. Because the intercepts are regularized more heavily than the factors, a note scores high only if raters with differing factor vectors rate it helpful ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). In their survey experiment, bridging-selected notes beat average-rating and crowd baselines, and on Twitter, users shown them were less likely to reshare the annotated post. Meta adopted X's open-source algorithm for Facebook, Instagram and Threads in [March 2025](https://about.fb.com/news/2025/03/testing-begins-community-notes-facebook-instagram-threads/). Bridging answers the factional-collusion failure: a bloc rating in lockstep loads on the viewpoint factor, not the intercept. It does not answer the LLM failure, where raters share a training corpus rather than a faction and their common errors look like cross-viewpoint agreement.
+
 ## Composition: the hybrid protocol
 
 Since the groundings cover complementary territory, the natural design is layered:
@@ -84,6 +82,8 @@ flowchart LR
 ```
 
 Debate operates over the unresolvable claim, but its subclaims are anchored by markets wherever they touch resolvable ground, and the debaters' probability assignments are continuously consistency-checked. The judge's job shrinks from "evaluate everything" to "evaluate the genuinely unresolvable residue" — which is the only part a judge was ever the right tool for. Each edge buys something specific — markets cap the payoff on false resolvable subclaims; consistency checks catch incoherent belief structure — but the cover is partial: a consistent, obfuscated, unresolvable argument slips all three.
+
+The human precedent for the debate-to-resolution edge is **adversarial collaboration**: rivals agree in advance, with a neutral arbiter, on an experiment whose outcome each accepts as a test of their position ([Mellers, Hertwig & Kahneman 2001](https://doi.org/10.1111/1467-9280.00350)). It moves a dispute from judge-grounding to resolution-grounding by having the parties, not the judge, decompose it. The first published exercise is also the caution: the rivals agreed on the design and the results, then still disagreed about what the results showed.
 
 ## The missing economics
 

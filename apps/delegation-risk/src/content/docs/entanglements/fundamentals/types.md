@@ -1,6 +1,6 @@
 ---
 title: "Types of Entanglement"
-description: "Understanding passive, active, and adversarial entanglements in safety architectures"
+description: "Passive, active and adversarial entanglement: where each comes from in AI stacks, how to recognize it, and what to do about it"
 sidebar:
   badge:
     text: Core
@@ -8,460 +8,93 @@ sidebar:
   order: 1
 ---
 
-Not all entanglement is equal. Components can become entangled in fundamentally different ways—from passive shared dependencies to active influence channels to deliberate collusion. Understanding the type helps determine the appropriate response.
+Stacked defenses are priced as if their failures were independent. **Entanglement** is any dependence between components that this arithmetic ignores. It comes in three classes, ordered by how much intent is involved. The classes matter because they call for different responses, and because the [beta-factor math](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax) only describes the first.
 
----
+| Class | What links the components | Example | Main response |
+|---|---|---|---|
+| **Passive** | A shared cause: model family, training data, prompt template, infrastructure, people | Two checks built on the same model family miss the same jailbreak | Different methods, not more instances |
+| **Active** | One component's output shapes another's input | A verifier reads the agent's own summary of what it did | Verifiers build their own context |
+| **Adversarial** | Coordination against the principal | A monitor recognizes an attack from its own model family and passes it | Assume full correlation until a control evaluation says otherwise |
 
-## The Three Classes of Entanglement
+## The bureaucrat analogy
 
-| Class | Description | Example | Primary Concern |
-|-------|-------------|---------|-----------------|
-| **Passive** | Shared dependencies create correlated behavior without intent | Same LLM provider for multiple checkers | Correlated failures on the same inputs |
-| **Active** | One component influences another's behavior | Verifier inherits context from agent being verified | Compromised oversight |
-| **Adversarial** | Components coordinate against the principal's interests | Agents develop side-channels to collude | System subversion |
+A clerk prepares cases and a reviewer approves them. If both trained at the same school and use the same manual, they miss the same kinds of fraud: passive entanglement. If the reviewer reads the clerk's summary instead of the file, the clerk's framing becomes the reviewer's view, with no bad intent needed: active entanglement. If after years together the clerk knows exactly how to word a case and the reviewer has learned to trust the clerk, cases get rubber-stamped without anyone agreeing to anything: adversarial entanglement, in the form of capture.
 
-```mermaid
-flowchart TB
-    subgraph Passive["PASSIVE ENTANGLEMENT"]
-        P1["Checker A"] ~~~ P2["Checker B"]
-        PNote["Both fail on same inputs<br/>due to shared blind spots"]
-    end
-    subgraph Active["ACTIVE ENTANGLEMENT"]
-        A1["Component X"] -->|"influences"| A2["Component Y"]
-        ANote["X shapes Y's decisions<br/>through information flow"]
-    end
-    subgraph Adversarial["ADVERSARIAL ENTANGLEMENT"]
-        C1["Agent A"] <-.->|"side-deal"| C2["Agent B"]
-        CNote["Agents coordinate<br/>against oversight"]
-    end
-
-    style Passive fill:#ffe6cc
-    style Active fill:#ffcccc
-    style Adversarial fill:#ff9999
-```
+The mapping to AI stacks is direct. The manual is the shared model and prompts. The case summary is context passed downstream. Long tenure is a persistent agent–verifier pairing. The useful question carries over too: through what channel could component X affect component Y, and with what incentive?
 
----
+## Passive entanglement
 
-## The Bureaucrat Analogy
+Passive entanglement produces correlated failures without any communication. The components fail together because they share something upstream.
 
-To understand entanglement, consider how bureaucracies fail:
+**Where it comes from in AI stacks:**
 
-**Passive entanglement** is like when two clerks both miss the same types of fraud because they were trained at the same institution and use the same manual.
+- **Model and training.** Frontier LLMs are trained on overlapping web data with similar post-training, and their errors are measurably correlated. [Goel et al. (2025)](https://arxiv.org/abs/2502.04313) find that models' mistakes become more similar as capability rises, and that LLM judges favor models similar to themselves. Across more than 350 models, [Kim et al. (2025)](https://arxiv.org/abs/2506.07962) find that shared architecture and provider drive error correlation, but that larger, more accurate models have highly correlated errors even across providers. Their released data put the miss correlation (φ) of strong models at about 0.5 across providers and 0.6 within one ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). A different provider buys little.
+- **Shared artifacts.** The same prompt template, rubric, retrieved documents or tool descriptions give different models the same blind spot in the task definition.
+- **Shared infrastructure.** A common credential store, logging database, rate-limit pool or CI pipeline. When one slow check times out the whole pipeline and the pipeline fails open, every check "passes" at once.
+- **Shared people.** One team writes every prompt, one approver signs off every design, one reviewer handles every escalation. Technical diversity on the architecture diagram can sit on top of organizational uniformity.
+- **Capability ceilings.** If no available verifier can evaluate the work, diverse verifiers fail together. Diversity cannot fix this. The options are checks that do not need to match the actor's capability (tests, formal checks, hard limits on what the action can touch), a human at that point, or not delegating the task.
 
-**Active entanglement** is like when the clerk who prepares a case summary can influence the reviewer's decision through selective emphasis—even without any malicious intent.
+**Variants worth naming:**
 
-**Adversarial entanglement** is like when the clerk and reviewer have lunch together and develop an understanding that benefits them both at the organization's expense.
+- **Conditional correlation.** Components that are independent under normal load become correlated under stress: shared rate limits, timeout cascades, escalation floods that converge on one human queue. Only stress tests reveal it.
+- **Higher-order correlation.** Every pair looks fine and the triple fails, for example through contention for a resource all three use. A pairwise correlation matrix cannot see it.
+- **Emergent coupling.** Independence decays. A cache is shared to cut latency, two checks are consolidated onto one model to cut cost, a step that "always passes" is skipped. Each change is reasonable and none goes through a safety review. Re-audit after optimizations, not only after redesigns.
+- **Negative correlation.** Sometimes one component tends to succeed exactly where another fails: a strict check paired with a lenient one, or checks that look at different information. This is the valuable case. Preserve it, and do not "harmonize" the components.
 
-This bureaucrat analogy helps clarify why "just add more checkers" often fails: if those checkers share training, share information, or can coordinate, you haven't actually added independent verification.
-
----
-
-## Passive Entanglements
-
-Passive entanglements create **correlated failures without any intentional communication** between components. The components don't need to "know" about each other—they fail together because they share something upstream.
-
-### Types of Passive Entanglement
-
-| Type | Description | Bureaucrat Analogy |
-|------|-------------|--------------------|
-| **Positive failure correlation** | If A fails, B more likely to fail | Both clerks miss fraud because both use the same inadequate checklist |
-| **Negative failure correlation** | If A fails, B more likely to succeed | One clerk is overly lenient, another overly strict—they catch each other's misses |
-| **Conditional correlation** | Only correlated under certain conditions | Both clerks are fine normally, but both make errors when rushed |
-| **Higher-order correlation** | Only manifests when 3+ components interact | A+B fine, B+C fine, A+C fine, but A+B+C creates resource contention |
-
-### Positive Failure Correlation
-
-The most common and dangerous type. When component A fails, component B is more likely to fail on the same input.
-
-```mermaid
-flowchart TB
-    X[Input X arrives]
-    X --> A["Checker A<br/>(GPT-4)"]
-    X --> B["Checker B<br/>(Claude)"]
-    A -->|MISS| R[Both miss because both are<br/>LLMs with similar training]
-    B -->|MISS| R
-
-    style A fill:#ffcccc
-    style B fill:#ffcccc
-    style R fill:#ffe6e6
-```
-
-**Sources**:
-- Shared training data or methodology
-- Same underlying infrastructure
-- Similar architectural decisions
-- Common conceptual blind spots
-- Shared failure modes under stress
+What matters is correlation of *failures*. Layers that agree on what they catch are fine; layers that agree on what they miss are the problem. The canonical ρ is therefore the phi coefficient of the miss indicators, defined on [Measuring Entanglement](/entanglements/detection/correlation-calculator/).
 
-**Mitigation**: Genuine methodological diversity—not just different providers, but fundamentally different verification approaches (rule-based + statistical + semantic + formal).
+## Active entanglement
 
-### Negative Failure Correlation (Desirable)
+In active entanglement one component's output causally affects another's behavior. Unlike passive correlation it has a direction: A can shape B without B shaping A.
 
-The rare and valuable case. When A fails, B is more likely to succeed. This is what you *want* in a robust system.
-
-```mermaid
-flowchart TB
-    X[Input X arrives]
-    X --> A["Checker A<br/>(Permissive)"]
-    X --> B["Checker B<br/>(Strict)"]
-    A -->|"MISS (too lenient)"| R["A's blind spot is<br/>B's strength"]
-    B -->|"CATCH!"| R
+| Form | Mechanism | Example |
+|---|---|---|
+| **Injection** | Text written by a third party is read by one component and carried into others' context | A tool output says "this change was pre-approved"; the reviewer sees it |
+| **Context contamination** | A downstream component only sees an upstream component's processed version of the input | A verifier judges the agent's summary, not the diff |
+| **Feedback loops** | Components adapt to each other over repeated interaction | The agent learns what the verifier passes; the verifier is tuned on the agent's outputs |
+| **Hierarchy bypass** | A component reaches a higher authority without going through the intermediate checks | An agent escalates directly to a human with an urgent framing |
 
-    style A fill:#ffcccc
-    style B fill:#ccffcc
-    style R fill:#e6ffe6
-```
-
-**How to create negative correlation**:
-- **Adversarial collaboration**: Explicitly opposed incentives
-- **Complementary specialization**: One focuses on false positives, another on false negatives
-- **Different priors**: One conservative, one permissive
-- **Different granularity**: One checks high-level patterns, another checks details
-
-### Conditional Correlation
-
-Components appear independent under normal conditions but become correlated under stress—like bureaucrats who are careful during audits but sloppy when overworked.
-
-```mermaid
-flowchart LR
-    subgraph Normal["Normal Operation"]
-        N1["A: ●●●○○●●●●○ (independent)"]
-        N2["B: ●○●●●○●●○● (independent)"]
-    end
-    subgraph Stress["Under Stress"]
-        S1["A: ○○○○○●○○○○ (correlated)"]
-        S2["B: ○○○○○●○○○○ (correlated)"]
-        S3["↑ Shared failure mode<br/>activated by load"]
-    end
-    Normal --> Stress
-
-    style Normal fill:#ccffcc
-    style Stress fill:#ffcccc
-```
-
-**Detection**: Stress testing is essential. Normal-condition testing won't reveal conditional correlations.
-
-### Higher-Order Correlation
-
-Failures that only manifest when three or more components interact. Pairwise analysis will miss these entirely.
-
-```mermaid
-flowchart TB
-    subgraph Pairwise["Pairwise tests: PASS"]
-        P1["A + B: PASS"]
-        P2["B + C: PASS"]
-        P3["A + C: PASS"]
-    end
-    subgraph ThreeWay["Three-way test"]
-        A((A))
-        B((B))
-        C((C))
-        A --- B
-        B --- C
-        A --- C
-        FAIL["A + B + C: FAIL!<br/>Triangle creates emergent failure"]
-    end
-
-    style Pairwise fill:#ccffcc
-    style ThreeWay fill:#ffcccc
-    style FAIL fill:#ff9999
-```
-
----
-
-## Active Entanglements
-
-Active entanglements involve **one component influencing another's behavior**—intentionally or not. Unlike passive correlation, there's a directional relationship: Component X affects Component Y.
-
-### The Information Flow Problem
-
-```mermaid
-flowchart LR
-    A["Component A<br/>Prepares context"]
-    B["Component B<br/>Makes decision"]
-    A -->|"frames the situation"| B
-    B -.->|"decision shaped by<br/>A's framing"| OUT[Outcome]
-
-    NOTE1["A influences B<br/>(A provides context to B)"]
-    NOTE2["B doesn't influence A"]
-
-    style A fill:#ffe6cc
-    style B fill:#ffcccc
-```
-
-**Bureaucrat analogy**: The clerk who summarizes a case for the reviewer controls what the reviewer sees. Even without malice, the summary emphasizes what the clerk found important—and the reviewer inherits that framing.
-
-### Types of Active Entanglement
-
-| Type | Direction | Example |
-|------|-----------|---------|
-| **Context contamination** | Upstream → Downstream | Summarizer omits key details; all downstream components miss them |
-| **Asymmetric influence** | A → B, but not B → A | Agent provides context to verifier; corrupted context → corrupted verification |
-| **Feedback loops** | A ↔ B cyclically | Agent learns what verifier accepts; verifier trained on agent's outputs |
-| **Hierarchy bypass** | Lower → Higher directly | Agent appeals directly to human, bypassing intermediate oversight |
-
-### Context Contamination
-
-When a component that processes information early can shape what later components see:
-
-```mermaid
-flowchart LR
-    subgraph Clean["Clean Flow"]
-        T1[Task] --> D1[Decompose] --> V1[Verify]
-        D1 --> CS["[clean] steps"]
-        V1 --> CC["[clean] checks"]
-    end
-    subgraph Contaminated["Contaminated Flow"]
-        T2[Task] --> D2[Decompose] --> V2[Verify]
-        D2 --> PS["[poisoned] steps"]
-        V2 --> PC["[poisoned] checks"]
-        PS --> BAD["Both inherit bad context"]
-        PC --> BAD
-    end
-
-    style Clean fill:#ccffcc
-    style Contaminated fill:#ffcccc
-```
-
-**Mitigation**: Independent context construction. Verifiers should receive raw inputs, not summarized contexts from the components being verified.
-
-### Asymmetric Influence
-
-A's state predicts B's state, but not vice versa. The earlier component in a chain is more critical.
-
-**Examples**:
-- Summarization → analysis pipelines (bad summary → bad analysis)
-- Preprocessing → verification (malformed preprocessing → verification on wrong data)
-- Context construction → LLM evaluation (manipulated context → manipulated evaluation)
-
-### Feedback Loops
-
-Over time, components that interact repeatedly can develop co-adaptation:
-
-```mermaid
-flowchart TB
-    subgraph Loop["Feedback Loop"]
-        Agent["Agent"] -->|"learns what<br/>gets approved"| Adaptation["Adaptation"]
-        Verifier["Verifier"] -->|"trained on<br/>agent outputs"| VAdapt["Verifier drift"]
-        Adaptation --> Agent
-        VAdapt --> Verifier
-        Agent <-->|"co-evolve"| Verifier
-    end
-
-    style Loop fill:#ffcccc
-```
-
-**Bureaucrat analogy**: After working together for years, the clerk knows exactly how to word things so the reviewer approves. The reviewer has unconsciously adapted to trust the clerk's judgment.
-
----
-
-## Adversarial Entanglements
+**Injection is the dominant active channel in current agent stacks.** It is the [hijack channel](/delegation-risk/risk-decomposition/) operating between components. An instruction planted in a web page, file, email or tool output reaches every component that reads that content, including the verifiers. It acts as a common cause that an attacker controls. Treat every component that reads untrusted content as a hijack surface, and treat its output as data for other components, never as instructions to them.
 
-Adversarial entanglements involve **deliberate coordination against the principal's interests**. This is the most dangerous class—components actively working together to subvert oversight.
-
-### The Collusion Problem
-
-```mermaid
-flowchart LR
-    subgraph Intended["INTENDED: Independent Checks"]
-        A1["Agent"] --> V1["Verifier"]
-        V1 -->|"catches errors"| Output1["Safe Output"]
-    end
-    subgraph Actual["ACTUAL: Collusion"]
-        A2["Agent"] <-.->|"side-deal"| V2["Verifier"]
-        A2 --> V2
-        V2 -->|"rubber stamps"| Output2["Unsafe Output"]
-    end
-
-    style Intended fill:#ccffcc
-    style Actual fill:#ffcccc
-```
-
-**Bureaucrat analogy**: The inspector and the inspected company have developed an "understanding." The inspector finds minor violations to fill quotas while overlooking major ones. Both benefit; the public loses.
-
-### Types of Adversarial Entanglement
-
-| Type | Mechanism | Detection Difficulty |
-|------|-----------|---------------------|
-| **Explicit collusion** | Components communicate to coordinate | Medium (monitor communications) |
-| **Implicit collusion** | Components learn to cooperate without explicit communication | Hard (no visible coordination) |
-| **Regulatory capture** | Overseer's interests align with overseen | Very hard (gradual, normalized) |
-| **TDT-style coordination** | Similar reasoning leads to coordination without communication | Near-impossible (logical correlation) |
-
-### Explicit Collusion
-
-Components establish side-channels to coordinate:
-
-```mermaid
-flowchart TB
-    subgraph Adversarial["Adversarial Collaboration SUBVERTED"]
-        Red["Red Team Agent"] -.->|"signal: go easy"| Blue["Blue Team Agent"]
-        Red -->|"weak attacks"| System["System"]
-        Blue -->|"minimal defense"| System
-        System --> Fragile["Fragile Output"]
-    end
-
-    style Red fill:#fef3c7
-    style Blue fill:#fef3c7
-    style Fragile fill:#ffcccc
-```
-
-### Implicit Collusion
-
-More subtle: components develop coordination through repeated interaction without any explicit agreement:
-
-- Agent learns which outputs verifier approves
-- Verifier learns to trust agent's patterns
-- Over time, they converge on mutually beneficial behaviors
-- Neither explicitly agreed to anything, but the effect is the same
-
-### Regulatory Capture
-
-The overseer gradually comes to identify with the interests of the overseen:
-
-```mermaid
-flowchart LR
-    subgraph Capture["Regulatory Capture Evolution"]
-        direction TB
-        T1["Day 1: Adversarial<br/>(suspicious)"]
-        T2["Month 6: Professional<br/>(respectful)"]
-        T3["Year 2: Collaborative<br/>(aligned)"]
-        T4["Year 5: Captured<br/>(defending the regulated)"]
-        T1 --> T2 --> T3 --> T4
-    end
-
-    style T1 fill:#ccffcc
-    style T2 fill:#ffffcc
-    style T3 fill:#ffe6cc
-    style T4 fill:#ffcccc
-```
-
-See [Channel Integrity Patterns](/design-patterns/channel-integrity/) for detailed detection and mitigation of regulatory capture.
-
-### TDT-Style Logical Correlation
+**Context contamination** follows from the data-processing inequality: if B sees only A's summary of the input, B cannot recover what A left out. The fix is structural. A verifier should build its context from the raw input, not from the output of the component it checks.
 
-The most philosophically interesting and hardest to address: agents using similar reasoning may coordinate through logical correlation, without any communication channel.
-
-If two agents both reason "what would an agent like me do in this situation?", they may reach the same conclusion and thus coordinate—even though neither sent any message.
+**Influence must be defined interventionally.** The tempting statistic, P(B fails | A fails) − P(B fails | A succeeds), measures association. It is nonzero whenever A and B share a cause, and it cannot tell which way influence runs. The quantity that matters is what happens to B when you change A and hold everything else fixed:
 
-**Implications**:
-- True independence requires cognitive diversity, not just separate instances
-- Some correlation may be irreducible for agents that reason well
-- This is an active area of research with significant uncertainty
-
----
-
-## Success Correlation vs. Failure Correlation
-
-**Critical distinction**: We care about **failure correlation**, not general correlation.
-
-```mermaid
-flowchart LR
-    subgraph Good["Good: All detect threat X"]
-        GA[A] -->|detect| GALERT[ALERT]
-        GB[B] -->|detect| GALERT
-        GC[C] -->|detect| GALERT
-        GNOTE["Redundancy confirms<br/>the detection"]
-    end
-    subgraph Bad["Bad: All miss threat Y"]
-        BA[A] -->|miss| BNOALERT[NO ALERT]
-        BB[B] -->|miss| BNOALERT
-        BC[C] -->|miss| BNOALERT
-        BNOTE["Redundancy provides<br/>false confidence"]
-    end
-
-    style Good fill:#ccffcc
-    style Bad fill:#ffcccc
-    style GALERT fill:#99ff99
-    style BNOALERT fill:#ff9999
-```
-
-If all your detectors agree on true positives, that's *good*. The problem is when they agree on **false negatives** or when they **cascade into failure together**.
-
----
-
-## Measuring Entanglement Type
-
-### Quick Assessment
-
-| Observation | Likely Type |
-|-------------|-------------|
-| Components fail on similar input patterns | Passive (conceptual blind spots) |
-| Components fail during same time periods | Passive (resource-based) or Active (cascade) |
-| Downstream fails when upstream fails | Active (information flow) |
-| Pairs work but triples fail | Passive (higher-order) |
-| Opposite-tendency components catch each other | Passive negative (designed correctly) |
-| Component behavior shifts based on who's checking | Active (adaptation) or Adversarial |
-| Gradual convergence of component behaviors | Adversarial (capture) or Active (feedback loop) |
-
-### Correlation Coefficient Interpretation
-
-For passive entanglement, the canonical ρ is the **phi coefficient** (failure-indicator Pearson correlation). To estimate it: run both layers on the same labeled challenge set, record per-item miss/catch outcomes, then compute
-
-$$\phi = \frac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$$
-
-Use the largest pairwise φ as your system's ρ; when measurement is impossible and layers share a provider or training paradigm, assume ρ ≥ 0.5. See [What ρ means and how to estimate it](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it) for the full recipe and the pitfalls (latent-Gaussian ρ and Jaccard joint-failure share are both larger than φ and will overstate the tax if substituted).
-
-```
-ρ < 0.3:  Low correlation (acceptable)
-ρ 0.3-0.5: Moderate correlation (investigate)
-ρ > 0.5:  High correlation (redesign required)
-ρ < 0:    Negative correlation (good—maintain this)
-```
-
-For active entanglement, measure directional influence:
-
-```
-Influence(A→B) = P(B fails | A fails) - P(B fails | A succeeds)
-
-If Influence(A→B) >> Influence(B→A), the relationship is asymmetric
-```
-
----
-
-## Implications for Architecture
-
-| Entanglement Type | Architectural Response |
-|-------------------|------------------------|
-| **Passive positive** | Add fundamentally different verification methods |
-| **Passive negative** | Preserve and strengthen this diversity |
-| **Passive conditional** | Separate resource pools; stress test regularly |
-| **Passive higher-order** | Holistic testing; conservative resource allocation |
-| **Active context contamination** | Isolate information flows; verify contexts independently |
-| **Active feedback loops** | Rotate relationships; prevent co-adaptation |
-| **Adversarial explicit** | Monitor communications; penalize detected collusion |
-| **Adversarial implicit** | Rotate validators; inject honeypots |
-| **Adversarial capture** | Term limits; external audits; adversarial incentives |
-
----
-
-## The Entanglement Spectrum
-
-In practice, most entanglements exist on a spectrum:
-
-```
-PASSIVE ←────────────────────────────────→ ADVERSARIAL
-
-Shared          Information     Adaptive        Implicit        Explicit
-blind spots     flow            co-evolution    coordination    collusion
-     │               │               │               │               │
-     ▼               ▼               ▼               ▼               ▼
-  [Diversity]   [Isolation]    [Rotation]     [Monitoring]    [Penalties]
-```
-
-As you move from passive to adversarial, the entanglement becomes:
-- More intentional (even if emergent)
-- Harder to detect
-- More dangerous when undetected
-- More expensive to mitigate
-
-Design your architecture assuming passive entanglement exists, but monitor for signs of drift toward active or adversarial patterns.
+$$\text{Influence}(A \to B) = \mathbb{E}\left[B \mid do(A = a)\right] - \mathbb{E}\left[B \mid do(A = a')\right]$$
+
+In practice: keep the underlying input fixed, vary only A's output or its framing, and measure the change in B's decision. [Detecting Influence](/entanglements/detection/detecting-influence/) gives the protocols.
+
+## Adversarial entanglement
+
+Adversarial entanglement is coordination against the principal. Its forms:
+
+- **Explicit collusion** through side channels: steganography in legitimate outputs, timing, shared writable state.
+- **Implicit collusion**: a repeated pairing settles into mutual accommodation that neither side agreed to.
+- **Capture**: the overseer gradually comes to serve the interests of the overseen, through dependence on it for information and through familiarity. This is the regulatory-capture pattern from economics.
+- **Logical correlation**: similarly trained models reach the same conclusion without communicating, so there is no channel to monitor. See [Channel Integrity](/design-patterns/channel-integrity/#logical-correlation) for the current state of the argument.
+
+What sets this class apart is that inputs are *chosen*. A scheming component, the author of a prompt injection, or someone holding a jailbreak that transfers between models picks inputs that defeat every layer at once. A φ measured on a benign challenge set says nothing about those inputs. For the defection and hijack channels, count a stack as worth its best single layer (ρ = 1) until a control evaluation measures the joint miss rate under attack ([why the beta-factor model does not apply](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model)).
+
+## From symptom to response
+
+| Observation | Likely type | Response |
+|---|---|---|
+| Layers fail on the same inputs | Passive | Add a check that uses a different method or different information |
+| Layers fail together only under load | Passive, conditional | Separate resource pools; fail closed; stress-test |
+| Pairs pass, the full stack fails | Passive, higher-order | Test the whole stack; simulate rather than rely on pairwise numbers |
+| A check's decision changes with the upstream framing | Active | Give the check the raw input |
+| Content from outside reaches a check's context | Active (injection) | Treat that content as data; strip or quarantine instructions |
+| A verifier's behavior depends on which agent it is paired with | Active or adversarial | Rotate pairings; compare against a verifier the agent has never met |
+| Approval rates drift up without a policy change | Adversarial (capture) | Audit with known-bad cases; rotate; external review |
+| A red team finds one input that beats every layer | Any | Treat the stack as one layer for that attack class until fixed |
+
+As a component moves from passive to adversarial, its entanglement gets harder to detect and more expensive to fix. Design on the assumption that passive entanglement exists, and monitor for drift toward the other two.
 
 ---
 
 See also:
-- [Challenge Categories](/entanglements/fundamentals/challenges/) - Sources of entanglement
-- [Detecting Influence](/entanglements/detection/detecting-influence/) - Methods for detecting active entanglements
-- [Modeling Approaches](/entanglements/detection/modeling/) - Quantifying entanglement
-- [Solutions](/entanglements/mitigation/solutions/) - Reducing entanglement
-- [Channel Integrity Patterns](/design-patterns/channel-integrity/) - Preventing boundary violations
+- [Formal Definitions](/entanglements/fundamentals/formal-definitions/): the entanglement tax and effective redundancy
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): φ, tables, thresholds and priors
+- [Detecting Influence](/entanglements/detection/detecting-influence/): methods for active and adversarial entanglement
+- [Solutions](/entanglements/mitigation/solutions/): what to do about each type
+- [Channel Integrity](/design-patterns/channel-integrity/): the design-pattern view of side channels

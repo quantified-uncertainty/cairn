@@ -1,310 +1,57 @@
 ---
 title: "Delegation Risk Calculator"
+description: "A Monte Carlo calculator for the expected and realized monthly loss of a delegation, with per-action rates, volumes and damage distributions"
 sidebar:
-  order: 5
+  order: 1
 ---
 
-import { Card } from '@astrojs/starlight/components';
+import DelegationRiskCalculator from '../../../../components/DelegationRiskCalculator.tsx';
 
-:::caution[Illustrative Tool]
-This calculator is for **exploring concepts**, not production risk assessment. The outputs depend entirely on your input estimates, which are often highly uncertain. Use it to build intuition about the framework, not to make critical decisions.
+:::caution[Illustrative tool]
+The calculator shows how the parts of a delegation-risk estimate combine. Its output is only as good as its inputs, and for most AI harm modes the inputs are elicited guesses. The default harm modes are invented for illustration and describe no real system.
 :::
 
-Interactive tool for calculating Delegation Risk for your AI system components.
+<DelegationRiskCalculator client:load />
 
-## How to Use
+## Inputs
 
-1. Add failure modes for each component
-2. Estimate probability and damage for each
-3. Calculator computes individual and total Delegation Risk
-4. Compare against your budget
+Each row is a harm mode, one way a delegated action can cause damage (see [Risk Decomposition](/delegation-risk/risk-decomposition/)). A row takes three inputs:
 
----
+- **Actions per month.** How often the agent takes the action that exposes this harm. A probability means nothing until you say what it is per. Here it is per action, and the volume turns it into a monthly figure.
+- **P(harm) per action, as a 90% interval.** This is your uncertainty about the rate. The calculator models it as a logit-normal with those 5th and 95th percentiles. For a point estimate, enter the same number twice. Both ends must be above zero.
+- **Damage per incident, as a 90% interval.** This is the spread of cost across incidents, modeled as a lognormal. A lognormal's mean exceeds its median, and expected loss uses the mean: an interval of \$20 to \$500 has a median of \$100 and a mean of \$161. Each row's summary line shows the mean.
 
-<div id="ete-calculator">
-  <style>{`
-    .calculator-container {
-      background: var(--sl-color-gray-6);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 1rem 0;
-    }
-    .failure-mode {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
-      gap: 0.5rem;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: var(--sl-color-gray-5);
-      border-radius: 4px;
-    }
-    .failure-mode input, .failure-mode select {
-      padding: 0.5rem;
-      border: 1px solid var(--sl-color-gray-4);
-      border-radius: 4px;
-      background: var(--sl-color-bg);
-      color: var(--sl-color-text);
-    }
-    .failure-mode button {
-      padding: 0.5rem 1rem;
-      background: var(--sl-color-red);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .add-btn {
-      padding: 0.75rem 1.5rem;
-      background: var(--sl-color-accent);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    .results {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: var(--sl-color-gray-5);
-      border-radius: 4px;
-    }
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    .results-table th, .results-table td {
-      padding: 0.5rem;
-      text-align: left;
-      border-bottom: 1px solid var(--sl-color-gray-4);
-    }
-    .total-row {
-      font-weight: bold;
-      background: var(--sl-color-gray-4);
-    }
-    .budget-input {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .budget-input input {
-      padding: 0.5rem;
-      border: 1px solid var(--sl-color-gray-4);
-      border-radius: 4px;
-      background: var(--sl-color-bg);
-      color: var(--sl-color-text);
-      width: 150px;
-    }
-    .within-budget {
-      color: var(--sl-color-green);
-      font-weight: bold;
-    }
-    .over-budget {
-      color: var(--sl-color-red);
-      font-weight: bold;
-    }
-    .header-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
-      gap: 0.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-    }
-  `}</style>
+[Expert Elicitation](/design-patterns/tools/expert-elicitation/) covers how to get defensible intervals when you have no data.
 
-  <div class="calculator-container">
-    <div class="budget-input">
-      <label><strong>Monthly Delegation Risk Budget: $</strong></label>
-      <input type="number" id="budget" value="2000" min="0" />
-    </div>
+## Two different answers
 
-    <div class="header-row">
-      <span>Failure Mode</span>
-      <span>P(failure)</span>
-      <span>Damage ($)</span>
-      <span>Risk</span>
-      <span></span>
-    </div>
+**Delegation risk** is the expected loss, $\sum_m N_m \, \mathbb{E}[p_m] \, \mathbb{E}[D_m]$ per month. This is the number to compare with a risk budget. It is also the number that adds across components and subagents (see [consolidation](/delegation-risk/runtime-accounting/#3-the-exposure-ledger)). The interval beside it reflects uncertainty about the rates only.
 
-    <div id="failure-modes">
-      {/* Failure modes will be added here */}
-    </div>
+**Realized loss** is what a single month actually costs. For each simulated month, the calculator does three things for every row:
 
-    <button class="add-btn" id="add-mode">+ Add Failure Mode</button>
+1. draws a rate;
+2. draws a binomial number of incidents at that rate;
+3. draws a damage for each incident.
 
-    <div class="results" id="results">
-      <strong>Results</strong>
-      <table class="results-table">
-        <thead>
-          <tr>
-            <th>Failure Mode</th>
-            <th>Probability</th>
-            <th>Damage</th>
-            <th>Risk</th>
-          </tr>
-        </thead>
-        <tbody id="results-body">
-        </tbody>
-        <tfoot>
-          <tr class="total-row">
-            <td colspan="3">Total Delegation Risk</td>
-            <td id="total-ete">\$0</td>
-          </tr>
-          <tr>
-            <td colspan="3">Budget</td>
-            <td id="budget-display">\$2,000</td>
-          </tr>
-          <tr>
-            <td colspan="3">Status</td>
-            <td id="budget-status" class="within-budget">Within Budget</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+It repeats this 20,000 times. The resulting distribution answers different questions: how often a month's loss exceeds the budget amount, and how bad the 99th-percentile month is.
 
-  <script>{`
-    (function() {
-      let modeCount = 0;
-      const defaultModes = [
-        { name: 'Component A - Minor failure', prob: 0.05, damage: 1000 },
-        { name: 'Component A - Major failure', prob: 0.01, damage: 10000 },
-        { name: 'Component B - Error', prob: 0.02, damage: 5000 },
-      ];
+The default example shows why the two need separating. Expected loss is about \$1,700 per month, inside the \$2,000 budget. About half of that comes from the record-disclosure row, which is expected roughly once in 12 years. Because it occurs in fewer than one month in a hundred, the 99th-percentile month is set by the two routine rows, wrong answers (accident) and injected refunds (hijack). With inputs like these, a run of quiet months says little about the row that dominates expected loss. Rare, high-damage harm modes therefore need an [exposure bound](/delegation-risk/runtime-accounting/) and an elicited estimate. A tally of incidents cannot tell you their rate.
 
-      function createModeRow(mode = { name: '', prob: 0.01, damage: 1000 }) {
-        const id = modeCount++;
-        const row = document.createElement('div');
-        row.className = 'failure-mode';
-        row.id = 'mode-' + id;
-        row.innerHTML =
-          '<input type="text" placeholder="Failure mode description" value="' + mode.name + '" class="mode-name" />' +
-          '<input type="number" step="0.001" min="0" max="1" value="' + mode.prob + '" class="mode-prob" />' +
-          '<input type="number" min="0" value="' + mode.damage + '" class="mode-damage" />' +
-          '<span class="mode-ete">$' + (mode.prob * mode.damage).toFixed(0) + '</span>' +
-          '<button onclick="removeMode(' + id + ')">×</button>';
-        return row;
-      }
+## Assumptions and limits
 
-      function removeMode(id) {
-        const row = document.getElementById('mode-' + id);
-        if (row) row.remove();
-        calculate();
-      }
-      window.removeMode = removeMode;
+- **Independence.** Incidents are independent given the rates, and uncertainty about different rows is independent. Correlation leaves expected loss unchanged but fattens the tail of realized loss. When harm modes share a cause, the percentiles are therefore optimistic.
+- **Adversaries.** An adaptive adversary does not have a fixed rate. For the hijack and defection channels, a rate describes current attacks against current defenses. Assume the defenses fail together ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)).
+- **Unlisted harms.** Harm modes you have not listed are absent from the total. The calculator prices the harm surface you enumerate, not the one you have.
+- **Large incident counts.** When one row has more than 200 incidents in a simulated month, their sum is drawn from a lognormal with the same mean and variance rather than one draw at a time.
+- **Squiggle export.** The export is a [Squiggle](https://www.squiggle-language.com/) model of the expected-loss part only, tested with `@quri/squiggle-lang` 0.10.0. The realized-loss simulation is not included.
 
-      function calculate() {
-        const budget = parseFloat(document.getElementById('budget').value) || 0;
-        const modes = document.querySelectorAll('.failure-mode');
-        let total = 0;
-        const results = [];
+## Bringing a row under budget
 
-        modes.forEach(mode => {
-          const name = mode.querySelector('.mode-name').value || 'Unnamed';
-          const prob = parseFloat(mode.querySelector('.mode-prob').value) || 0;
-          const damage = parseFloat(mode.querySelector('.mode-damage').value) || 0;
-          const ete = prob * damage;
+Expected loss is a product, so there are four levers:
 
-          mode.querySelector('.mode-ete').textContent = '$' + ete.toFixed(0);
-          total += ete;
-          results.push({ name, prob, damage, ete });
-        });
+- **Lower the rate** with verification and monitoring: [Trusted Monitor](/design-patterns/monitoring/#trusted-monitor), or a [Voting Tribunal](/design-patterns/structural/#voting-tribunal) whose members genuinely fail independently.
+- **Lower the damage** with an [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway) or [Checkpoint-Rollback](/design-patterns/recovery/#checkpoint-rollback).
+- **Lower the volume** by routing fewer actions through the risky path, for example sending high-stakes cases up an [Escalation Ladder](/design-patterns/structural/#escalation-ladder).
+- **Split the row** into narrower components, each with smaller damage.
 
-        // Update results table
-        const tbody = document.getElementById('results-body');
-        tbody.innerHTML = results.map(r =>
-          '<tr><td>' + r.name + '</td><td>' + (r.prob * 100).toFixed(1) + '%</td><td>$' + r.damage.toLocaleString() + '</td><td>$' + r.ete.toFixed(0) + '</td></tr>'
-        ).join('');
-
-        document.getElementById('total-ete').textContent = '$' + total.toFixed(0);
-        document.getElementById('budget-display').textContent = '$' + budget.toLocaleString();
-
-        const status = document.getElementById('budget-status');
-        if (total <= budget) {
-          status.textContent = 'Within Budget ✓';
-          status.className = 'within-budget';
-        } else {
-          status.textContent = 'Over Budget (' + ((total / budget - 1) * 100).toFixed(0) + '% over)';
-          status.className = 'over-budget';
-        }
-      }
-
-      // Initialize with default modes
-      const container = document.getElementById('failure-modes');
-      defaultModes.forEach(mode => {
-        container.appendChild(createModeRow(mode));
-      });
-
-      // Add event listeners
-      document.getElementById('add-mode').addEventListener('click', () => {
-        container.appendChild(createModeRow());
-        calculate();
-      });
-
-      document.getElementById('budget').addEventListener('input', calculate);
-      container.addEventListener('input', calculate);
-
-      // Initial calculation
-      calculate();
-    })();
-  `}</script>
-</div>
-
----
-
-## Understanding the Results
-
-### Delegation Risk Formula
-
-For each failure mode:
-```
-Delegation Risk = P(failure) × Damage
-```
-
-Total system Delegation Risk is the sum across all failure modes.
-
-### Probability Guidelines
-
-| Probability | Meaning | Example |
-|-------------|---------|---------|
-| 0.1 (10%) | Common without mitigation | Unvalidated user input |
-| 0.01 (1%) | Occasional, seen in testing | Edge case handling |
-| 0.001 (0.1%) | Rare but plausible | Unusual input combinations |
-| 0.0001 (0.01%) | Very rare, needs adversary | Targeted attack |
-
-### What If Over Budget?
-
-If your total Delegation Risk exceeds budget:
-
-1. **Reduce probability**: Add verification, redundancy, testing
-2. **Reduce damage**: Limit permissions, add rollback capability
-3. **Split components**: Decompose into smaller, lower-risk pieces
-4. **Add human gates**: Require approval for high-risk actions
-
----
-
-## Example Calculation
-
-**Scenario**: Customer support bot
-
-| Failure Mode | P(failure) | Damage | Delegation Risk |
-|--------------|------------|--------|-----|
-| Gives wrong answer | 0.05 | \$500 | \$25 |
-| Leaks customer data | 0.001 | \$50,000 | \$50 |
-| Generates harmful content | 0.01 | \$10,000 | \$100 |
-| Infinite loop/crash | 0.02 | \$1,000 | \$20 |
-
-**Total Delegation Risk**: \$195/month
-
-With a \$500/month budget, this system is well within tolerance.
-
----
-
-## Next Steps
-
-- [Risk Inheritance Calculator](/design-patterns/tools/trust-propagation/) — Compute effective trust through networks
-- [Quick Start](/design-patterns/tools/quick-start/) — Apply Delegation Risk calculation to your system
-- [Decision Guide](/design-patterns/tools/decision-guide/) — Choose implementations based on Delegation Risk
+[Quick Start](/design-patterns/tools/quick-start/) puts these into a procedure.
