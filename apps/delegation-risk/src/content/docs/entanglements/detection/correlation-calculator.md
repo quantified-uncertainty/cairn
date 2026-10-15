@@ -90,7 +90,7 @@ Identical layers that each miss 10%. "Effective layers" is the number of indepen
 Three things follow from the formula and show in the table:
 
 1. **The tax is linear in ρ.** For three 90% layers, P(all miss) = 0.001 + 0.099ρ, so each 0.1 of ρ adds about one percentage point, or about 10× on the tax. The steps are equal in absolute terms. Relative to independence, the first step, from 1× to 11×, is the one that destroys the arithmetic people expect.
-2. **Past modest ρ, more layers buy nothing.** At ρ = 0.5, three and five layers are both worth 1.3 independent layers, because the floor ρ·p does not depend on the number of layers.
+2. **Past modest ρ, more layers buy almost nothing.** At ρ = 0.5, three and five layers are both worth 1.3 independent layers, because the floor ρ·p does not depend on the number of layers. The floor is an assumption of the model: that some inputs defeat every layer at once. A Gaussian copula fitted to the same pairwise joint misses has none, and at ρ = 0.5 gives 3.9%, 2.6% and 1.6% for three, five and ten layers. Returns still fall fast, and 99.9% stays out of practical reach. Only P(all miss) measured on the full stack tells the two models apart.
 3. **Two levers move the floor.** It is ρ·min pᵢ, so lower ρ (a check that uses a different method or different information) or improve the *best* layer.
 
 Two contrasting stacks, with ρ values taken from the [priors](#priors-when-you-cannot-measure) and miss rates that are illustrative:
@@ -135,7 +135,7 @@ This is the [correlation budget](/getting-started/glossary/): the practical face
 | Same provider, any two models (including the above) | 20 | median 0.61, range 0.56–0.93 | median 0.69, range 0.61–0.94 |
 | Different providers | 151 | median 0.53, 80% of pairs in 0.48–0.56 | median 0.58, 80% in 0.51–0.63 |
 
-Across providers, median φ rises from 0.30 for pairs where the weaker model scores below 60% to 0.53 above 80%. Most of that rise is φ's ceiling for pairs with unequal accuracies: among pairs whose accuracies are within three points of each other, the median is about 0.5 from 60% accuracy up, and the mixture ρ is 0.57–0.58 in every bin from 60% up. [Goel et al. (2025)](https://arxiv.org/abs/2502.04313), with a chance-adjusted metric (CAPA) on 130 models, do report similarity rising with capability.
+Across providers, median φ rises from 0.30 for pairs where the weaker model scores below 60% to 0.53 above 80%. Most of that rise is φ's ceiling for pairs with unequal accuracies: among pairs whose accuracies are within three points of each other, the median is about 0.5 from 60% accuracy up, and the mixture ρ is 0.57–0.58 in every bin from 60% up. [Goel et al. (2025)](https://arxiv.org/abs/2502.04313), with a chance-adjusted metric (CAPA) on 130 models, do report similarity rising with capability; CAPA counts different wrong answers as disagreement and uses output probabilities, so it is not φ.
 
 **Label noise biases these figures upward.** An estimated 6.49% of MMLU questions contain errors, such as wrong answer keys or no correct option ([Gema et al. 2024](https://arxiv.org/abs/2406.04127)). A strong model that answers a mis-keyed item correctly is scored as missing it, as is every other strong model. Such items count as common-cause misses. If 3% of items are missed by every model for this reason, the cross-provider median ρ falls from 0.58 to 0.49 and the same-provider median from 0.69 to 0.62; at 6.5% they fall to 0.31 and 0.49. Not every flawed item is missed by every model, so under this model the truth lies between the raw and the 6.5% figures.
 
@@ -143,7 +143,7 @@ Across providers, median φ rises from 0.30 for pairs where the weaker model sco
 
 1. That correlation on knowledge questions resembles correlation on the harmful items your checks see. Nothing establishes this. Harm detection may have its own items that every model finds hard, and checks share a prompt and a rubric more often than benchmark runs do.
 2. That the beta-factor mixture is the right model. Calibrated pairwise as above, it reproduces each pair's joint miss exactly; for three or more layers it is conservative against a Gaussian copula ([Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax)).
-3. That the 2023–24 models represent current ones. Both studies report errors becoming more similar as capability rises, so if anything current models are more correlated.
+3. That the 2023–24 models represent current ones. Both studies report similarity rising with capability, though in the reanalysis above ρ is flat at matched accuracy, so the rise may be mostly φ's ceiling. Nothing suggests newer models are less correlated. For them MMLU is near saturation, and a growing share of their remaining misses are flawed items, so measure on harder, cleaner items.
 4. That the failures are benign. None of this applies to inputs chosen by an attacker.
 
 ## Priors when you cannot measure
@@ -162,11 +162,7 @@ Ranges for the mixture weight ρ. The LLM rows come from the benchmark figures a
 
 The tax column is $1 + 99\rho$; for other layer counts and miss rates use $(1-\rho) + \rho\,p^{1-n}$ or the [lookup table](#lookup-tables). The figure of about 50× that appears across this site is a point inside the cross-provider and same-provider ranges, not a measurement of anyone's stack. No published study reports φ between LLM checks on harmful-action detection.
 
-Other evidence the priors should be consistent with:
-
-- **[Knight & Leveson (1986)](https://doi.org/10.1109/TSE.1986.6312924):** 27 independently written versions of one program, run on a million inputs, failed together far more often than independence predicts. Separate development is not independence.
-- **[Goel et al. (2025)](https://arxiv.org/abs/2502.04313):** besides the capability trend, LLM judges favor models whose mistakes resemble their own. CAPA counts different wrong answers as disagreement and uses output probabilities, so it is not φ.
-- **[Zou et al. (2023)](https://arxiv.org/abs/2307.15043)** and later attack studies: adversarial inputs transfer between models. This bears on the adversarial case, not on benign φ.
+The pre-LLM precedent points the same way: in [Knight & Leveson (1986)](https://doi.org/10.1109/TSE.1986.6312924), 27 independently written versions of one program, run on a million inputs, failed together far more often than independence predicts.
 
 ## Asymmetric stacks: the matrix
 

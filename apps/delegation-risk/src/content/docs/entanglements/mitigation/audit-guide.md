@@ -100,7 +100,7 @@ Prioritize novel domains, multi-step attacks, social engineering, obfuscated cod
 For each action class:
 
 1. **Correlation matrix.** Measured ρ where you have it. For pairs you could not measure, use the [assumed priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure) and mark them as assumed.
-2. **P(all miss).** The mixture with the largest pairwise ρ gives a conservative figure; simulating the matrix gives a sharper one. Report both.
+2. **P(all miss).** The mixture with the largest pairwise ρ gives a conservative figure; simulating the matrix gives a sharper one. Report both, and the observed rate on the challenge set where it has enough joint misses to estimate: that is the only figure that does not depend on a correlation model.
 3. **Budget check.** Compare the upper confidence bound of the max pairwise ρ with ρ_max, and P(all miss) with the target.
 4. **Adversarial channels.** Report the control-evaluation joint miss rate, or "best single layer" if none was run.
 5. **Effective layers.** For roughly identical layers, ln P(all miss) / ln p.

@@ -1,6 +1,6 @@
 ---
 title: "Formal Definitions"
-description: "Key concepts in entanglement, defined precisely but accessibly"
+description: "Entanglement defined relative to an input distribution; the entanglement tax and its beta-factor derivation; why adaptive adversaries break it; effective redundancy; and the bounds on what diversity can buy"
 sidebar:
   badge:
     text: Core
@@ -8,92 +8,24 @@ sidebar:
   order: 3
 ---
 
-This page defines entanglement concepts precisely. For most readers, the [Types of Entanglement](/entanglements/fundamentals/types/) overview is sufficient—this page is for those who want rigorous definitions.
+This page states the entanglement concepts precisely. [Types of Entanglement](/entanglements/fundamentals/types/) gives the overview and examples.
 
----
+## Definitions
 
-## Core Concepts
+Let $M_A(x) = 1$ when component A fails on input $x$, with $x$ drawn from a stated input distribution $\mathcal{D}$. Every definition below is relative to $\mathcal{D}$: change the distribution and the entanglement changes.
 
-### Passive Entanglement
-
-**Definition**: Components A and B are passively entangled when knowing whether A failed tells you something about whether B failed.
-
-**Levels**:
-- **Zero entanglement**: A's failure tells you nothing about B (truly independent)
-- **Partial entanglement**: A's failure makes B's failure more likely
-- **Perfect entanglement**: A fails if and only if B fails (same failure mode)
-
-**Example**: Two LLMs from the same provider. If an adversarial input fools one, it's more likely to fool the other—even without any communication between them.
-
-### Conditional Entanglement
-
-**Definition**: Components that are independent under normal conditions but become entangled under stress.
-
-**Example**: Two verification systems work independently during normal operation. Under high load, both start taking shortcuts, and their failures become correlated.
-
-This is dangerous because testing under normal conditions won't reveal the entanglement.
-
-### Active Entanglement
-
-**Definition**: Component A actively influences Component B—A's output affects B's behavior.
-
-**Key distinction from passive**: Passive entanglement is symmetric (A correlates with B = B correlates with A). Active entanglement is directional (A influences B doesn't mean B influences A).
-
-**Example**: An AI assistant summarizes a document, then a verifier reviews the summary. The assistant's framing actively shapes what the verifier sees and how they evaluate it.
-
-### Context Contamination
-
-**Definition**: When Component B only sees Component A's processed version of the input, B loses information and inherits A's biases.
-
-Processing cannot add information about the original input (the data-processing inequality). If A filters or summarizes before B sees it, B cannot recover what A removed.
-
-**Example**: A first-stage agent summarizes a customer complaint before escalation. The summary omits details the agent deemed unimportant. The second-stage reviewer can only act on what they receive—they can't evaluate what they never saw.
-
----
-
-## Game-Theoretic Concepts
-
-### The Collusion Problem
-
-**Setup**: A principal (system designer) delegates to an agent (AI), with a verifier checking the agent's work.
-
-**The risk**: If the agent and verifier can coordinate, they may both benefit from approving bad work—even though this hurts the principal.
-
-**Collusion resistance** requires that honest behavior pays better than collusion, accounting for:
-- Probability of getting caught
-- Penalties when caught
-- Benefits of collusion if undetected
-
-### Regulatory Capture
-
-**Definition**: When a verifier gradually shifts from serving the principal's interests to serving the agent's interests.
-
-**Capture ratio**: Compare how often the verifier approves when the agent wants approval vs. when the agent doesn't want approval.
-- Ratio = 1: Verifier is independent
-- Ratio > 1: Verifier is biased toward agent
-- Ratio → ∞: Verifier always agrees with agent
-
-**Causes**:
-- Information asymmetry (verifier relies on agent for expertise)
-- Relationship building (verifier trusts agent over time)
-- Incentive drift (verifier's rewards depend on agent satisfaction)
-
-### Logical Correlation
-
-**Definition**: Agents with similar training may make similar decisions without explicit communication—they reason the same way.
-
-**Why this matters**: You can't break this entanglement by isolating communication. Two AIs trained similarly will have correlated failures even if they never interact, because they share reasoning patterns.
-
----
+- **Passive entanglement:** $P(M_A = 1, M_B = 1) \neq P(M_A = 1)\,P(M_B = 1)$ under $\mathcal{D}$. It is symmetric, and its size is the phi coefficient of the miss indicators ([Measuring Entanglement](/entanglements/detection/correlation-calculator/)). Positive values erode redundancy. Negative values, where one layer tends to catch what the other misses, are better than independence.
+- **Conditional entanglement:** independence under normal conditions $\mathcal{D}$, dependence under a stress distribution $\mathcal{D}_s$ such as high load or a degraded shared dependency. Testing under $\mathcal{D}$ cannot reveal it.
+- **Active entanglement:** A's output causally affects B's decision: $\mathbb{E}[B \mid do(A = a)] \neq \mathbb{E}[B \mid do(A = a')]$ for some $a, a'$, with the underlying input held fixed. It is directional. *Context contamination* is the special case in which B sees only A's processed version of the input; by the data-processing inequality, B cannot recover what A removed.
+- **Adversarial entanglement:** joint failure on inputs chosen by an optimizer rather than drawn from $\mathcal{D}$. The relevant quantity is no longer a frequency but whether the joint-miss region is non-empty and how costly it is to find ([below](#adaptive-adversaries-the-wrong-model)). Collusion between an agent and its verifier is the case where the optimizer is one of the components.
+- **Logical correlation:** similarly trained models reach the same decision without communicating because they compute similar functions. The mechanism is passive, but a scheming model can use it to coordinate on a Schelling point, and there is no channel to monitor.
+- **Capture:** a verifier's decisions come to depend on the agent's interests and not only on the work. Measure it on work of known quality, comparing approval rates for items of the same true quality when the agent does and does not signal that it wants approval. A raw ratio of approval rates is confounded: agents want approval most for work that deserves it, so an honest verifier paired with an honest agent shows a high ratio.
 
 ## Risk Concepts
 
 ### The Entanglement Tax
 
-**Definition**: The ratio of actual risk to perceived risk.
-
-**Formula in plain terms**:
-> Entanglement Tax = What your risk actually is ÷ What you think your risk is
+The entanglement tax is the ratio of the actual probability that every layer misses to the probability the product rule predicts.
 
 **Canonical derivation** (this is the site's single source of truth for the tax; the [measurement page](/entanglements/detection/correlation-calculator/) tables are generated from it). Model correlation with the **beta-factor common-cause model**, borrowed from nuclear safety (see [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art)): with weight $\rho$, one shared cause defeats all correlated layers at once; with weight $1-\rho$, layers fail independently. For $n$ layers with miss probabilities $p_i$:
 
@@ -110,11 +42,11 @@ For $n$ identical layers at miss rate $p$, this simplifies to $\text{Tax} = (1-\
 | P(all fail) | 0.10% | 1.1% | 3.1% | 5.1% | 7.0% | 10% |
 | Tax | 1× | 11× | 31× | 50× | 70× | 100× |
 
-Which row applies depends on what the layers share. On benchmark data, ρ between the misses of strong LLMs is about 0.6 across providers and 0.7 within one, with dated versions of one model higher still; allowing for benchmark label noise gives ranges of roughly 0.3–0.6 across providers and 0.5–0.7 within one ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports), which also states what this mapping assumes). For a three-layer LLM stack that is a tax of about 30–60× across providers and 50–70× within one. "About 50×", used elsewhere on this site, sits inside both ranges; it is not a measurement of any harm-detection stack, and none has been published.
+Which row applies depends on what the layers share. Benchmark data, allowing for label noise, put ρ between strong LLMs at roughly 0.3–0.6 across providers and 0.5–0.7 within one ([evidence and assumptions](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)): a tax of about 30–60× and 50–70× for three layers. The "about 50×" used elsewhere on this site sits inside both ranges. No harm-detection stack has been measured.
 
 **Why this model**: it is exact for its stated mechanism (a genuine shared cause), and it recovers the product rule at $\rho = 0$ and the single-best-layer bound at $\rho = 1$. Calibrated to each pair's joint miss rate (for equal miss rates, ρ is then the phi coefficient of the miss indicators; for unequal ones it is larger, see [the recipe](/entanglements/detection/correlation-calculator/#estimating-ρ-from-joint-misses)), it is exact for two layers and, against a smoother correlation structure (a Gaussian copula), conservative for three or more, which is the right direction for safety budgeting. The derivation, the simulation and the serial-chain counterpart are in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/).
 
-**Limitation — higher-order structure**: a single $\rho$ treats all layers as symmetrically coupled to one shared cause. Real architectures have *structured* correlation (layers A and B share a provider; C shares context with A) and possible three-way interactions that no single parameter captures. Use the pairwise correlation-matrix method from the [worked examples](/entanglements/case-studies/examples/) when the architecture is asymmetric, and simulation when precision matters.
+**Limitation — higher-order structure**: a single $\rho$ treats all layers as symmetrically coupled to one shared cause. Real architectures have *structured* correlation (layers A and B share a provider; C shares context with A) and possible three-way interactions that no single parameter captures. Use the pairwise correlation-matrix method from the [worked examples](/entanglements/case-studies/examples/) when the architecture is asymmetric, and simulation when precision matters. Reliability engineering's established answer is the multiple Greek letter and alpha-factor models, which estimate separately how often a common-cause event fails 2, 3, … of $n$ components ([Research Connections](/entanglements/research/research-connections/#nuclear-common-cause-failure-analysis)).
 
 ### Adaptive adversaries: the wrong model
 
@@ -131,21 +63,7 @@ For design this means:
 
 ### Effective Redundancy
 
-**Definition**: How much redundancy you actually have, accounting for correlation — the number of *truly independent* layers that would give the same protection: $n_{\text{eff}} = \ln P(\text{all fail}) / \ln p$.
-
-**The problem**: Three "independent" verification layers sounds robust. But if they share blind spots, you might effectively have under 1.5 layers of protection.
-
-**Quick estimate** (identical layers at 90% effectiveness, beta-factor model):
-
-| Nominal layers | If independent | $\rho = 0.5$ | $\rho = 0.8$ |
-|----------------|----------------|-------------------|-------------------|
-| 2 | 2.0 effective | 1.3 effective | 1.1 effective |
-| 3 | 3.0 effective | 1.3 effective | 1.1 effective |
-| 5 | 5.0 effective | 1.3 effective | 1.1 effective |
-
-Note the striking pattern: beyond modest correlation, effective redundancy is set by the **correlation, not the layer count** — adding layers that share the common cause adds almost nothing. This is the nuclear-safety lesson: defense-in-depth is defeated by common cause, not by independent bad luck.
-
----
+Effective redundancy is the number of independent layers that would give the same protection: $n_{\text{eff}} = \ln P(\text{all fail}) / \ln p$. For layers that each miss 10%, two, three or five of them at ρ = 0.5 are all worth about 1.3 independent layers under the beta-factor model: past modest correlation, effective redundancy is set by ρ, not by the layer count. The flatness is partly a property of the model, which assumes some inputs defeat every layer at once. A smoother structure fitted to the same pairwise joint misses still rewards extra layers, with quickly diminishing returns ([both, tabulated](/entanglements/detection/correlation-calculator/#lookup-tables)). Under either, defense in depth is defeated by common cause, not by independent bad luck.
 
 ## Bounds and Limits
 
@@ -153,21 +71,17 @@ Note the striking pattern: beyond modest correlation, effective redundancy is se
 
 **Claim**: Two AI systems with similar architectures and training should be assumed to have a baseline failure correlation that engineering will not remove.
 
-**Why**: Measured LLM errors are substantially correlated, more so for more capable models ([Goel et al. 2025](https://arxiv.org/abs/2502.04313); [Kim et al. 2025](https://arxiv.org/abs/2506.07962)). On MMLU, strong models from different providers have a miss correlation of about 0.5, only a little below that of two models from one provider, about 0.6 ([computed from Kim et al.'s data](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Adversarial inputs found on one model often transfer to others ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)).
+**Why**: Even independently built versions fail together when inputs vary in difficulty. If $\theta(x)$ is the chance that a randomly built version fails on $x$, two independently built versions both fail with probability $\mathbb{E}[\theta^2] \geq (\mathbb{E}[\theta])^2$, with equality only if every input is equally hard ([Eckhardt & Lee 1985](https://doi.org/10.1109/TSE.1985.231895)). Shared training data and methods add to this. Measured LLM errors are substantially correlated, more so for more capable models ([Goel et al. 2025](https://arxiv.org/abs/2502.04313); [Kim et al. 2025](https://arxiv.org/abs/2506.07962)). On MMLU, strong models from different providers have a miss correlation of about 0.5, only a little below that of two models from one provider, about 0.6 ([computed from Kim et al.'s data](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Adversarial inputs found on one model often transfer to others ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)).
 
-**Implication**: Independence between AI verifiers comes mainly from different methods and different information, not from different providers.
+**Implication**: Independence between AI verifiers comes mainly from different methods and different information, which change *which* inputs are hard, not from different providers. Forced diversity of method can in principle beat independence, when the methods find different inputs hard ([Littlewood & Miller 1989](https://doi.org/10.1109/32.58771)).
 
 ### The Verification Ceiling
 
-**Claim**: A verifier cannot reliably catch errors in domains where they lack capability.
-
-**Plain terms**: If the verifier cannot understand the work, it cannot check it directly. This limits AI checking AI when the checked system is more capable. Scalable-oversight protocols try to relax the limit by making the strong system's reasoning checkable in small pieces; debate is the best-studied case, with theoretical guarantees under idealized assumptions ([Brown-Cohen et al. 2023](https://arxiv.org/abs/2311.14125)) and mixed empirical results (see [Research Connections](/entanglements/research/research-connections/#ai-debate)).
+**Claim**: A verifier cannot directly check work it cannot evaluate. The limit binds where checking is no easier than producing. Where checking is easier (running tests, checking a proof, confirming that a cited source says what is claimed), a weaker verifier can check a stronger actor. Where it is not (judging a strategy, an unfamiliar design, a long informal argument), AI checking a more capable AI is limited. Scalable-oversight protocols try to relax the limit by making the strong system's reasoning checkable in small pieces; debate is the best-studied case, with theoretical guarantees under idealized assumptions ([Brown-Cohen et al. 2023](https://arxiv.org/abs/2311.14125)) and mixed empirical results (see [Research Connections](/entanglements/research/research-connections/#ai-debate)).
 
 ### Collusion Detection Limits
 
-**Claim**: If agents coordinate through shared reasoning rather than explicit communication, monitoring communication won't detect the coordination.
-
-**Implication**: For sophisticated AI systems, collusion resistance requires more than just preventing communication—it requires genuine diversity in reasoning approaches.
+**Claim**: If agents coordinate through shared reasoning rather than explicit communication, monitoring communication will not detect the coordination. Collusion resistance then needs diversity of method, or [controls whose guarantee does not depend on the input](#adaptive-adversaries-the-wrong-model).
 
 ---
 

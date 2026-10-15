@@ -54,16 +54,16 @@ Corrected: three LLM checks from different providers, ρ ≈ 0.3–0.6
            entanglement tax ≈ 31–60×
 ```
 
-The ρ range is from benchmark data ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term:
+The ρ range is from benchmark data ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term. A Gaussian copula fitted to the same pairwise joint misses, which has no common-cause floor, is less pessimistic but agrees on the conclusion:
 
-| Layers | P(all miss) at ρ = 0.5, p = 0.1 |
-|---|---|
-| 2 | 5.50% |
-| 3 | 5.05% |
-| 5 | 5.00% |
-| 10 | 5.00% |
+| Layers | P(all miss) at ρ = 0.5, p = 0.1: beta factor | Gaussian copula |
+|---|---|---|
+| 2 | 5.50% | 5.50% |
+| 3 | 5.05% | 3.93% |
+| 5 | 5.00% | 2.63% |
+| 10 | 5.00% | 1.58% |
 
-At this correlation the floor is 5%, and 99.9% protection is unreachable at any layer count. The budget question becomes how to reduce ρ, or how to improve the strongest layer, since the floor scales with min pᵢ. How much a given intervention reduces ρ is an empirical question. Measure ρ before and after rather than assuming a reduction.
+At this correlation 99.9% protection is out of reach by stacking similar layers: the beta-factor floor is 5%, and the copula needs about a thousand layers. The budget question becomes how to reduce ρ, or how to improve the strongest layer, since the floor scales with min pᵢ. How much a given intervention reduces ρ is an empirical question. Measure ρ before and after rather than assuming a reduction.
 
 **Worksheet:**
 
@@ -89,7 +89,7 @@ Measure ρ and P(all miss) under each condition and compare them with normal ope
 
 ## 6. Correlation circuit breakers
 
-A circuit breaker watches the joint behavior of checks and tightens the system when correlation rises. In production you only know a check missed when the item is later audited, so run it on an audited stream. Audit a random sample of all traffic, not only items some layer flagged or that surfaced downstream: a stream built from flags excludes joint misses by construction and biases the estimate toward zero.
+A circuit breaker watches the joint behavior of checks and tightens the system when correlation rises. In production you only know a check missed when the item is later audited, so run it on an audited stream. Audit a random sample of all traffic, not only items some layer flagged or that surfaced downstream: a stream built from flags excludes joint misses by construction and biases the estimate toward zero. Where harmful items are rare, a random sample holds too few of them to estimate ρ in useful time. Seed the stream with known-harmful items made to look like real traffic, which also gives ground truth without waiting for an audit.
 
 ```python
 from collections import deque

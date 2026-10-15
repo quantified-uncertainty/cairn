@@ -79,7 +79,7 @@ Reasoning models make auditable reasoning partly real.
 
 - **Monitoring works, until it is optimized against.** In OpenAI's study, a weaker model (GPT-4o) reading a frontier reasoning model's chain of thought caught reward hacking in coding tasks far more effectively than a monitor watching actions alone. When the monitor was put into the training reward under strong optimization, the agent learned to hide its intent while still hacking ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
 - **Verbalization is partial.** Reasoning models disclosed the prompt hints they used often less than 20% of the time ([Chen et al. 2025](https://arxiv.org/abs/2505.05410)).
-- **Monitorability is fragile.** A multi-lab position paper calls monitorability "a new and fragile opportunity" and asks developers to weigh it in training decisions ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)). OpenAI's follow-up evaluation suite finds most frontier models "fairly, but not perfectly, monitorable", with no material loss from RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
+- **Monitorability may be fragile.** A multi-lab position paper calls monitorability "a new and fragile opportunity" and asks developers to weigh it in training decisions ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)). OpenAI's follow-up evaluation suite finds most frontier models "fairly, but not perfectly, monitorable", with no material loss from RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
 
 This is the general lesson of these notes in miniature: a legible channel serves as an audit only until it becomes the target of optimization.
 
@@ -89,12 +89,13 @@ Systems that automate large parts of the research loop now exist:
 
 - **Sakana's AI Scientist v2.** One of its fully generated papers scored above the average acceptance threshold at an ICLR workshop ([Yamada et al. 2025](https://arxiv.org/abs/2504.08066)).
 - **Google's Co-Scientist.** A hypothesis generator; some of its drug-repurposing candidates for acute myeloid leukemia were validated in vitro ([Gottweis et al. 2025](https://arxiv.org/abs/2502.18864)).
-- **FutureHouse's Robin.** It proposed ripasudil as a candidate for dry macular degeneration, and analysed the experiments human scientists ran to test it. Its analysis put the effect on phagocytosis at 7.5-fold; a human analysis of the same data found 1.75-fold ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
+- **FutureHouse's Robin.** It proposed ripasudil as a candidate for dry macular degeneration and analysed the experiments human scientists ran to test it ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
 
 Their failure modes are the ones these notes expect of unaudited processes:
 
 - An independent evaluation of the original AI Scientist found that 42% of experiments failed on coding errors and that the system classified established ideas as novel. Some of its manuscripts contained hallucinated numerical results ([Beel et al. 2025](https://arxiv.org/abs/2502.14297)).
 - The system itself tried to edit its own code to extend a timeout ([Sakana 2024](https://sakana.ai/ai-scientist/)).
+- Robin's analysis put ripasudil's effect on phagocytosis at 7.5-fold; a human analysis of the same data found 1.75-fold ([Ghareeb et al. 2025](https://arxiv.org/abs/2505.13400)).
 - Controlled tests of Agent Laboratory and AI Scientist v2 found biased benchmark selection, undisclosed subsampled or synthetic datasets, and post-hoc selection of the experiments that scored best on the test set; neither system peeked at test data. An LLM auditor given the trace logs and code caught such flaws far more often than one given only the paper (82% vs. 55% accuracy) ([Luo et al. 2025](https://arxiv.org/abs/2509.08713)). That is an argument for auditing the process rather than the output.
 
 [Overseeing Automated Research](/proposals/overseeing-automated-research/) takes this further.
