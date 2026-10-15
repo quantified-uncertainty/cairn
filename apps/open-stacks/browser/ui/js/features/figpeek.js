@@ -646,6 +646,35 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     if (sides.size === 1) vote[C.kind][sides.has('above') ? 0 : 1]++;
   }
   const prefOf = (k) => { const [u, v] = vote[k] || [0, 0]; return u > v ? 'above' : v > u ? 'below' : k === 'figure' ? 'above' : 'below'; };
+  // A figure made of text (examples of prompts and answers, a listing): the
+  // block of lines beside the caption, up to a wider gap, when it is set apart
+  // from prose: marks drawn among its lines, text turned on its side, its lines
+  // indented, or a type size of its own.
+  const textBlock = (C, sx0, sx1, below) => {
+    const pool = runs.filter((s) => !s.margin && !s.cap && s.x0 >= sx0 - body && s.x1 <= sx1 + body);
+    const R = { x0: Infinity, y0: below ? C.y1 : C.y0, x1: -Infinity, y1: below ? C.y1 : C.y0, gc: 0, proposed: true };
+    const got = new Set();
+    for (let more = true; more;) {
+      more = false;
+      for (const s of pool) {
+        if (got.has(s)) continue;
+        const d = below ? s.y0 - R.y1 : R.y0 - s.y1;
+        if (d < -0.3 * body || d > (got.size ? 1.6 : 2.2) * body) continue;
+        if (!s.rot && s.fs > 1.2 * body && s.n < 80) return null; // a heading: the section, not a figure
+        got.add(s); grow(R, s); more = true;
+        if (R.y1 - R.y0 > 0.6 * H) return null;
+      }
+    }
+    const ls = [...got].filter((s) => !s.rot);
+    if (ls.length < 2 || R.y1 - R.y0 < 2 * body) return null;
+    let g = 0; for (let j = cj(R.y0); j <= cj(R.y1); j++) for (let x = ci(R.x0); x <= ci(R.x1); x++) g += G[j * gw + x];
+    const [c0] = colOf(C.x0, C.x1);
+    const indented = ls.filter((s) => s.x0 > c0 + 2 * body).length >= 0.6 * ls.length;
+    const ownSize = Math.abs(median(ls.map((s) => s.fs)) - body) > 0.1 * body;
+    if (!(g >= 6 || got.size > ls.length || indented || ownSize)) return null;
+    R.y0 = Math.min(R.y0, C.y0); R.y1 = Math.max(R.y1, C.y1); // with its caption: the lines read with it
+    return R;
+  };
   // An algorithm: its label line on top, then its lines down to the closing rule
   // (or, with no rules, to the first break in its lines).
   const algoRegion = (C) => {
@@ -705,6 +734,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     } else {
       const order2 = C.kind === 'table' ? [true, false] : [false, true];
       for (const below of order2) if ((F = profile(C, sx0, sx1, below))) break;
+      if (!F) for (const below of order2) if ((F = textBlock(C, sx0, sx1, below))) break;
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
   }
