@@ -57,7 +57,7 @@ const THEMES = {
 };
 // On light backgrounds: status colours dark enough to read as text (4.5:1), and
 // a darker amber for the default accent.
-const LIGHT_STATUS = { ok: '#286a2a', warn: '#7a5000', bad: '#983626' };
+const LIGHT_STATUS = { ok: '#286a2a', warn: '#7a5000', bad: '#983626' }, STATUS0 = { ok: '#7fb37a', warn: '#d9a441', bad: '#c9705f' }; // STATUS0: style.css's
 const ACCENT0 = '#e2a54a', ACCENT0_LIGHT = '#86490f';
 const ACCENTS = [['#e2a54a', 'Amber'], ['#6aa6e8', 'Blue'], ['#7fb37a', 'Green'], ['#4fb3a9', 'Teal'], ['#a98bdf', 'Violet'], ['#d9776a', 'Red']];
 const PAPER_VARS = ['paper', 'paper-ink', 'paper-head', 'paper-ink-2', 'paper-ink-3', 'paper-rule', 'paper-rule-2', 'paper-quote', 'paper-code', 'paper-link'];
@@ -125,7 +125,10 @@ function applyAll() {
   R.toggleAttribute('data-st-light', !!th.light);
   const acc = accentOf(th);
   cssVar('--accent', acc === ACCENT0 ? null : acc);
-  for (const k of ['ok', 'warn', 'bad']) cssVar('--' + k, th.light ? LIGHT_STATUS[k] : null);
+  for (const k of ['ok', 'warn', 'bad']) { // status text readable at 4.5:1 on light and custom backgrounds (the dark presets keep style.css's)
+    const c = th.light || S.theme === 'custom' ? reach(th.light ? LIGHT_STATUS[k] : STATUS0[k], th.light ? '#000000' : '#ffffff', th['bg-3'], 4.5) : STATUS0[k];
+    cssVar('--' + k, c === STATUS0[k] ? null : c);
+  }
   const pp = S.paper !== 'cream' && PAPERS[S.paper];
   PAPER_VARS.forEach((v, j) => cssVar('--' + v, pp ? pp.v[j] : null));
   R.dataset.stPaper = S.paper; R.dataset.stFilter = S.filter; R.dataset.stDensity = S.density;
@@ -327,7 +330,7 @@ function secAppearance() {
     keys: ['theme', 'bgCustom', 'accent', 'paper', 'filter', 'density', 'hide'],
     rows: [
       row('Background', 'The room around the pages.', ...themes, cb),
-      row('Accent', 'Highlights, the current page, links.', ...accents, accL),
+      row('Accent', 'Highlights, the current page, links. Deepened as needed to stay readable on the background.', ...accents, accL),
       row('Paper for posts', 'Posts and web pages laid out in columns.', ...papers),
       row('Scanned and PDF pages', 'Dim or invert page images for a dark room. Inverting keeps colours roughly right (hue turned back).',
         seg([['none', 'As they are'], ['dim', 'Dimmed'], ['invert', 'Inverted']], () => S.filter, (v) => setS('filter', v)),
@@ -406,7 +409,7 @@ function secNav() {
       row('Which device', 'Detect tells a notched wheel from a trackpad per gesture.',
         seg([['auto', 'Detect'], ['mouse', 'Always mouse'], ['pad', 'Always trackpad']], () => state.wheelDevice, (v) => setCore('wheelDevice', v))),
       row('Wheel pace', 'At most this many steps a second while the wheel spins.',
-        ...slider([2, 12, 1], () => tune.rate, (v) => setTune('rate', v), (v) => v + ' / s')),
+        ...slider([2, 24, 1], () => tune.rate, (v) => setTune('rate', v), (v) => v + ' / s' + (v === TUNE_DEF.rate ? ' (default)' : ''))),
       row('Trackpad stroke', 'How far a stroke travels before it counts; shorter is more sensitive.',
         ...slider([16, 120, 4], () => tune.stroke, (v) => setTune('stroke', v), (v) => v + ' px')),
       row('Middle click', 'On the pages.',

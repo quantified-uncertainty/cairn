@@ -212,8 +212,10 @@ async function inkGrid(it, k, W, H, scan) {
       ink[i] = lum(i) < 238 || Math.max(r, gg, bb) - Math.min(r, gg, bb) > 36 ? 1 : 0;
     }
   } else {
-    const ls = []; for (let i = 0; i < GW * GH; i += 3) if (cover[i]) ls.push(lum(i));
-    const bg = ls.length ? pct(ls, 0.8) : 230, thr = bg - Math.max(26, bg * 0.13);
+    const ls = new Float32Array(Math.ceil((GW * GH) / 3)); let n = 0;
+    for (let i = 0; i < GW * GH; i += 3) if (cover[i]) ls[n++] = lum(i);
+    const sorted = ls.subarray(0, n).sort(); // the paper's tone: most of a page is paper
+    const bg = n ? sorted[Math.floor(0.8 * (n - 1))] : 230, thr = bg - Math.max(26, bg * 0.13);
     for (let i = 0; i < GW * GH; i++) ink[i] = cover[i] && lum(i) < thr ? 1 : 0;
   }
   return { gw: GW, gh: GH, cs, ink, ms: Math.round(performance.now() - t0) };

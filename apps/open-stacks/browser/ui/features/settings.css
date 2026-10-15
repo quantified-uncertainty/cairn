@@ -157,3 +157,9 @@ html[data-st-filter="invert"] #fp-ov .fp-view { background: #1a1a1a; }
    light card behind it (photos just gain a thin frame). */
 html[data-st-paper="dark"] .flow :is(img, svg:not(.ticon svg), canvas, video, .ltx_figure img) { background: #f4f1ea; padding: .35em; border-radius: 3px; box-sizing: content-box; }
 html[data-st-paper="dark"] .flow :is(math, .katex, mjx-container) { color: var(--paper-ink); }
+/* Light backgrounds: the verdict pills sit on the darker status colours, so their text turns white. */
+html[data-st-light] .pill:is(.study, .skim, .skip) { color: #fff; }
+/* Compact and roomy bars: Saved and the export tray start under the bar (style.css assumes 36-37px). */
+html[data-st-density="compact"] :is(#saved, #xp), html[data-st-density="roomy"] :is(#saved, #xp) { top: var(--st-bar-h, 37px); }
+/* Keyboard focus inside segmented controls: drawn inside the button, since the group clips overflow. */
+#st .st-seg button:focus-visible { outline-offset: -3px; }
