@@ -87,6 +87,8 @@ a { color: var(--accent); }
 #track .tr-marks i { position: absolute; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--ink); opacity: .75; }
 #track .tr-hover { position: absolute; top: 1px; bottom: 1px; width: 2px; margin-left: -1px; background: var(--ink); display: none; pointer-events: none; }
 #track:hover .tr-hover { display: block; }
+#spread .pg.scrubbing.approx > img { opacity: .45; filter: blur(1px); }
+#spread .pg.scrubbing::before { content: attr(data-k); position: absolute; inset: 0; display: grid; place-items: center; font: 600 15px var(--mono); color: #0003; }
 #peek { position: fixed; z-index: 45; pointer-events: none; }
 #peek .pk-page { background: var(--paper); box-shadow: 0 14px 40px #000c; overflow: hidden; height: 100%; }
 #peek .pk-page > img, #peek .pk-page > canvas { display: block; width: 100%; height: 100%; object-fit: contain; }

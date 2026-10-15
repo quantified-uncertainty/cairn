@@ -214,13 +214,24 @@ async function fillScrub(it, k, el) {
   const full = cachedRender(it, k);
   if (full) { const p = await full.catch(() => null); const pnl = p?.find((x) => x.canvas); if (pnl && el.isConnected) { el.replaceChildren(cloneCanvas(pnl.canvas)); el.dataset.aspect = String(pnl.canvas.width / pnl.canvas.height); return; } }
   if (it.kind === 'scan') {
-    const im = h('img', { src: P(scanUrl(it, k, 200)), alt: '' });
-    el.replaceChildren(im);
-    setTimeout(() => { if (el.isConnected && want?.k <= k) im.src = P(scanUrl(it, k, 400)); }, 180);
+    // Show the page if its small image is here; otherwise the nearest page that
+    // is, dimmed, until this one arrives (Internet Archive pages take 1-3 s).
+    const key = (kk) => `${it.id}|${kk}`;
+    let near = null;
+    for (let d = 0; d <= 40 && near == null; d++) { if (thumbOk.has(key(k - d))) near = k - d; else if (thumbOk.has(key(k + d))) near = k + d; }
+    if (near != null) { el.replaceChildren(h('img', { src: P(scanUrl(it, near, 200)), alt: '' })); el.classList.toggle('approx', near !== k); }
+    if (near !== k) loadThumb(it, k, () => { if (el.isConnected) { el.replaceChildren(h('img', { src: P(scanUrl(it, k, 200)), alt: '' })); el.classList.remove('approx'); } });
     return;
   }
   const c = await quickPdf(it, k, 700).catch(() => null);
   if (c && el.isConnected) el.replaceChildren(cloneCanvas(c));
+}
+// Small scan page images the browser already holds, by `${id}|${k}`.
+const thumbOk = new Set();
+function loadThumb(it, k, done) {
+  const im = new Image();
+  im.onload = () => { thumbOk.add(`${it.id}|${k}`); done?.(); };
+  im.src = P(scanUrl(it, k, 200));
 }
 const cloneCanvas = (c) => { const x = h('canvas', { width: c.width, height: c.height }); x.getContext('2d').drawImage(c, 0, 0); return x; };
 function scrubSpread(k) {
@@ -249,7 +260,11 @@ track.addEventListener('pointerenter', () => {
   if (!tr) return;
   const { it, n } = tr;
   // Get the whole item's small page images coming for scans.
-  if (it.kind === 'scan') serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+  if (it.kind === 'scan') {
+    serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+    // And pull an evenly spaced set into the browser first, so any hover lands near a page.
+    for (let j = 0; j < 40; j++) { const k = Math.floor((j * n) / 40); if (!thumbOk.has(`${it.id}|${k}`)) loadThumb(it, k); }
+  }
 });
 track.addEventListener('pointermove', (e) => {
   if (!tr) return;
@@ -266,7 +281,10 @@ track.addEventListener('pointermove', (e) => {
   if (isFlow(tr.it)) {
     // Posts: move the live columns there.
     if (live?.id === tr.it.id) live.flow.style.transform = `translateX(${-vpToCol(k) * live.g.pitch}px)`;
-  } else scrubSpread(k);
+  } else {
+    if (tr.it.kind === 'scan') serverPrefetch(Array.from({ length: 24 }, (_, j) => k - 8 + j).filter((x) => x >= 0 && x < tr.n).map((x) => scanUrl(tr.it, x, 200)), 75, 'track-near');
+    scrubSpread(k);
+  }
 });
 // Leaving puts the spread back where you were (renders are cached, so this is instant).
 track.addEventListener('pointerleave', () => {
