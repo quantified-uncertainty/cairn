@@ -10,7 +10,7 @@
   --leaf: #fbfbf8;
   --ink: #15192b;
   --ink-2: #454b61;
-  --ink-3: #777d92;
+  --ink-3: #62687d;
   --rule: #d6d8de;
   --rule-2: #c2c6d0;
   --plate: #17395c;
@@ -26,6 +26,7 @@
   --mark: rgba(214, 64, 42, 0.13);
   --target: rgba(29, 79, 135, 0.14);
   --ok: #2f7a55;
+  --on-verm: #ffffff;
   --shadow: 0 1px 0 rgba(21, 25, 43, 0.04), 0 10px 28px -14px rgba(21, 25, 43, 0.28);
   --serif: 'Spectral', 'Iowan Old Style', Georgia, serif;
   --didone: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
@@ -38,7 +39,7 @@
     --ink: #e7e8ee; --ink-2: #b1b6c6; --ink-3: #7d8398; --rule: #252b39; --rule-2: #323a4c;
     --plate: #182b47; --plate-2: #213b5f; --plate-ink: #dfe6f3; --plate-dim: #8197b6; --slot: #0a1322;
     --accent: #8db3e8; --verm: #ff6a4e; --verm-ink: #ff8b74; --verm-soft: rgba(255, 106, 78, 0.13);
-    --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497;
+    --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497; --on-verm: #1a0b07;
     --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
     color-scheme: dark;
   }
@@ -48,7 +49,7 @@
   --ink: #e7e8ee; --ink-2: #b1b6c6; --ink-3: #7d8398; --rule: #252b39; --rule-2: #323a4c;
   --plate: #182b47; --plate-2: #213b5f; --plate-ink: #dfe6f3; --plate-dim: #8197b6; --slot: #0a1322;
   --accent: #8db3e8; --verm: #ff6a4e; --verm-ink: #ff8b74; --verm-soft: rgba(255, 106, 78, 0.13);
-  --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497;
+  --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497; --on-verm: #1a0b07;
   --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
   color-scheme: dark;
 }
@@ -59,6 +60,8 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--verm); outline-offset: 2px; border-radius: 3px; }
 .num { font-variant-numeric: tabular-nums lining-nums; }
+/* Small Didone numerals: pin the lowest optical size so hairlines survive at 1x. */
+.costs .gnum, .gear-chip b, .gpip, .sm-row .numeral, .pk, .g-lab .gn, .shifter .sn, .claims li::before, .gauge .seg { font-variation-settings: 'opsz' 6; }
 .caps { font-family: var(--ui); font-stretch: 78%; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; font-size: 11px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -79,7 +82,7 @@ button { font: inherit; color: inherit; }
 .book-btn .bk-a { font-weight: 600; flex: none; }
 .book-btn .bk-t { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .book-btn .bk-y { color: var(--ink-3); flex: none; }
-.book-btn .chev { color: var(--ink-3); flex: none; font-size: 11px; }
+.book-btn .chev { color: var(--ink-3); flex: none; width: 10px; height: 10px; align-self: center; }
 .tools { display: flex; align-items: center; gap: 6px; flex: none; }
 .tbtn { background: none; border: 1px solid var(--rule); border-radius: 999px; height: 30px; padding: 0 12px; cursor: pointer; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; }
 .tbtn:hover { background: var(--paper-2); color: var(--ink); }
@@ -110,7 +113,7 @@ button { font: inherit; color: inherit; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: none; border: 1px solid var(--rule); background: none; border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--ink-2); font-size: 12px; }
 .chip:hover { border-color: var(--rule-2); color: var(--ink); }
-.chip[aria-pressed="true"] { background: var(--verm); border-color: var(--verm); color: #fff; }
+.chip[aria-pressed="true"] { background: var(--verm); border-color: var(--verm); color: var(--on-verm); }
 .chip-input { flex: none; width: 112px; border: 1px dashed var(--rule-2); background: none; border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 12px; color: var(--ink); }
 .chip-input::placeholder { color: var(--ink-3); }
 .edge-wrap { position: relative; height: 66px; touch-action: pan-y; }
@@ -150,6 +153,7 @@ button { font: inherit; color: inherit; }
 .knob { position: absolute; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, #ff8c75, var(--verm) 55%, #9e2a17 100%); box-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.35), inset 0 -2px 3px rgba(0,0,0,0.25); display: grid; place-items: center; color: #fff; font-family: var(--didone); font-weight: 700; font-size: 17px; cursor: grab; touch-action: none; z-index: 2; }
 .knob:active { cursor: grabbing; }
 .gate-cap { display: flex; justify-content: space-between; width: 220px; margin: 8px auto 0; color: var(--ink-3); }
+.gate-hint { width: 220px; margin: 4px auto 0; color: var(--ink-3); font-size: 11.5px; text-align: center; }
 .costs { width: 100%; margin-top: 18px; border-collapse: collapse; }
 .costs caption { text-align: left; color: var(--ink-3); padding-bottom: 6px; }
 .costs th, .costs td { padding: 5px 4px; text-align: right; border-bottom: 1px solid var(--rule); font-size: 12px; }
@@ -177,12 +181,12 @@ button { font: inherit; color: inherit; }
 .btn:hover { border-color: var(--ink-3); }
 .btn.primary { background: var(--plate); border-color: var(--plate); color: var(--plate-ink); }
 .btn.primary:hover { background: var(--plate-2); }
-.btn.verm { background: var(--verm); border-color: var(--verm); color: #fff; }
+.btn.verm { background: var(--verm); border-color: var(--verm); color: var(--on-verm); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 .linkish { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .gear-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 4px; padding: 1px 6px; font-size: 11px; font-weight: 600; background: var(--paper-3); color: var(--ink-2); white-space: nowrap; cursor: pointer; border: 0; }
 .gear-chip b { font-family: var(--didone); font-size: 12px; }
-.gear-chip.g1 { background: var(--verm); color: #fff; }
+.gear-chip.g1 { background: var(--verm); color: var(--on-verm); }
 .gear-chip.g2 { background: var(--verm-soft); color: var(--verm-ink); }
 .gear-chip.g4, .gear-chip.g5 { background: var(--paper-3); color: var(--ink-3); }
 .empty { border: 1px dashed var(--rule-2); border-radius: 10px; padding: 20px; color: var(--ink-2); background: var(--paper-2); }
@@ -325,7 +329,7 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .card .ctx .cl { font-family: var(--ui); font-size: 11px; color: var(--ink-3); display: block; margin-bottom: 3px; }
 .card .q { font-family: var(--serif); font-size: 19px; line-height: 1.45; font-weight: 500; margin: 0 0 6px; }
 .dist { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin: 12px 0 16px; background: var(--paper-3); }
-.dist i { display: block; height: 100%; transition: width 120ms; }
+.dist i { display: block; height: 100%; transition: width 120ms; box-shadow: inset -1px 0 0 var(--leaf); }
 .opt { display: grid; grid-template-columns: 22px minmax(0, 1fr) 54px; gap: 4px 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--rule); }
 .opt .ol { font-family: var(--didone); font-weight: 700; font-size: 16px; padding-top: 1px; }
 .opt label { font-family: var(--serif); font-size: 16px; line-height: 1.45; cursor: pointer; }
@@ -339,9 +343,14 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .bits { text-align: left; }
 .bits .bn { font-family: var(--didone); font-size: 52px; font-weight: 700; line-height: 1; }
 .bits .bu { color: var(--ink-3); }
-.gauge { position: relative; height: 8px; border-radius: 4px; margin: 10px 0 4px; background: linear-gradient(90deg, var(--paper-3), var(--verm)); }
-.gauge i { position: absolute; top: -4px; width: 3px; height: 16px; background: var(--ink); margin-left: -1px; }
-.gauge-l { display: flex; justify-content: space-between; color: var(--ink-3); font-size: 10px; }
+.gauge { position: relative; display: flex; height: 15px; margin: 12px 0 4px; gap: 1px; }
+.gauge .seg { display: grid; place-items: center; font-family: var(--didone); font-weight: 700; font-size: 10px; line-height: 1; min-width: 0; }
+.gauge .seg:first-child { border-radius: 3px 0 0 3px; } .gauge .seg:last-of-type { border-radius: 0 3px 3px 0; }
+.gauge i { position: absolute; top: -4px; width: 3px; height: 23px; background: var(--ink); margin-left: -1px; border-radius: 1px; box-shadow: 0 0 0 1.5px var(--leaf); }
+.gauge-l { position: relative; height: 13px; color: var(--ink-3); font-size: 10px; }
+.gauge-l span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.gauge-l span:last-child { transform: none; right: 0; }
+.gauge-cap { color: var(--ink-3); font-size: 10.5px; margin-top: 3px; line-height: 1.35; }
 .rec { font-size: 15px; }
 .rec .why { font-family: var(--serif); color: var(--ink-2); margin: 8px 0 12px; font-size: 15px; line-height: 1.5; }
 .decisive { font-family: var(--serif); font-size: 16px; line-height: 1.5; background: var(--target); border-radius: 6px; padding: 10px 12px; margin: 10px 0; }
@@ -370,7 +379,7 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .sm-row .sw.none { background: transparent; border: 1px dashed var(--rule-2); color: var(--ink-3); font-weight: 400; }
 .sm-row .tm { text-align: right; color: var(--ink-3); white-space: nowrap; }
 .gpip { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; font-family: var(--didone); font-weight: 700; font-size: 10px; margin-right: 5px; vertical-align: 1px; background: var(--paper-3); color: var(--ink-2); }
-.gpip.g1 { background: var(--verm); color: #fff; }
+.gpip.g1 { background: var(--verm); color: var(--on-verm); }
 .gpip.g2 { background: var(--verm-soft); color: var(--verm-ink); }
 .legend { display: flex; align-items: center; gap: 8px; color: var(--ink-3); font-size: 11px; margin: 10px 0 0; }
 .legend .ramp { flex: 1; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #8a93a8, var(--verm)); }
@@ -450,6 +459,13 @@ details summary { cursor: pointer; color: var(--accent); }
   .top { gap: 8px; }
   .book-btn { padding: 6px 4px; }
   .book-btn .bk-y { display: none; }
+  .shelf { position: fixed; top: 58px; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); width: auto; }
+  .leaf { min-height: 0; }
+  .leaf .chap-open { margin: 0 0 12px; }
+  .leaf .chap-open .numeral { font-size: 34px; }
+  .leaf .chap-open .ttl { font-size: 19px; }
+  .riffle-ctrl { position: sticky; bottom: 0; z-index: 3; justify-self: stretch; margin-top: 10px; padding: 12px 0 8px; background: linear-gradient(to bottom, transparent, var(--paper) 14px); }
+  .riffle-hint { font-size: 12.5px; }
 }
 @media (max-width: 520px) {
   .book-btn .bk-t { display: none; }
@@ -469,7 +485,7 @@ details summary { cursor: pointer; color: var(--accent); }
     </div>
     <div class="bookpick">
       <button class="book-btn" id="bookBtn" aria-haspopup="true" aria-expanded="false" aria-controls="shelf">
-        <span class="bk-a" id="bkA">Laplace</span><span class="bk-t" id="bkT">A Philosophical Essay on Probabilities</span><span class="bk-y num" id="bkY">1814</span><span class="chev">▼</span>
+        <span class="bk-a" id="bkA">Laplace</span><span class="bk-t" id="bkT">A Philosophical Essay on Probabilities</span><span class="bk-y num" id="bkY">1814</span><svg class="chev" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="shelf" id="shelf" hidden>
         <h3 class="caps">The shelf · nine public-domain books</h3>
@@ -514,6 +530,7 @@ details summary { cursor: pointer; color: var(--accent); }
         <div class="knob" id="knob" role="slider" tabindex="0" aria-label="Gear" aria-valuemin="0" aria-valuemax="5" aria-valuenow="3"><span id="knobN">3</span></div>
       </div>
       <div class="gate-cap caps"><span>← slower, deeper</span><span>faster →</span></div>
+      <div class="gate-hint">Drag the knob, or press <kbd>1</kbd>–<kbd>5</kbd> and <kbd>N</kbd></div>
       <table class="costs num" id="costs"></table>
       <div class="here" id="here"></div>
     </aside>
