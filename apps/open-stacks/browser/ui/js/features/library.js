@@ -96,6 +96,9 @@ function setFilter(text) {
 }
 function flatten() {
   if (!T) return;
+  const __t0 = performance.now(); try { flatten0(); } finally { (window.__lib ||= { paint: [], flat: [] }).flat.push(performance.now() - __t0); }
+}
+function flatten0() {
   const out = [];
   const walk = (n) => {
     for (const k of n.kids) {
@@ -241,6 +244,9 @@ const paint = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; pai
 let progressOf = null; // memory.js, when it is loaded
 function paintNow() {
   if (!showing() || !T) return;
+  const __t0 = performance.now(); try { paintNow0(); } finally { (window.__lib ||= { paint: [], flat: [] }).paint.push(performance.now() - __t0); }
+}
+function paintNow0() {
   paintScope();
   qn.textContent = q ? String(match.reduce((s, x) => s + x, 0)) : '';
   pad.style.height = rows.length * RH + 'px';

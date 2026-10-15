@@ -36,8 +36,9 @@ export function velocity() {
 
 export const randomTarget = new Map(); // item index -> next random start page, chosen in advance
 
-/** Where an item reopens when nothing has placed it this session: hooks fn(i, it) → a page (a stable
- *  page for flow documents, which flow.js turns into a column) or null. features/memory.js: where you left it. */
+/** Where an item reopens when nothing has placed it this session, in state.start units: hooks
+ *  fn(i, it) → a page, or for a flow document a column (asked by flow.js once its layout is
+ *  measured), or null. features/memory.js: where you left it. */
 export const reopeners = [];
 export function reopenAt(i, it = items[i]) { for (const fn of reopeners) { const k = fn(i, it); if (k != null) return k; } return null; }
 

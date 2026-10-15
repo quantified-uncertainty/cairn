@@ -10,6 +10,12 @@ export const LANE_COLORS = {
   lesswrong: '#5a7a4b', 'ai-safety': '#a0442f', 'deepmind-safety': '#3f6fb5', forecasting: '#b5833f', llm: '#3c5a7a',
   textbooks: '#7a3c5a', 'information-theory': '#6b4f8a', cybernetics: '#2f7a76', ttrpg: '#8a5a2b', oddities: '#7a6f60',
 };
+// Per-item metadata (field, technicality, maths level, genre…; data/meta.json),
+// merged under it.meta.
+try {
+  const r = await fetch('/meta.json');
+  if (r.ok) { const m = (await r.json()).items || {}; for (const it of items) if (m[it.id]) it.meta = m[it.id]; }
+} catch { /* no metadata yet */ }
 try {
   const r = await fetch('/enrich.json');
   if (r.ok) {

@@ -1,5 +1,6 @@
 /* Reading memory (ui/js/features/memory.js): the resume chip, pages seen on the track, the History view. */
-:root { --mem-seen: rgba(236, 230, 218, .26); --mem-bar: rgba(226, 165, 74, .55); }
+/* Seen is a dim amber: the bright amber is where you are, gray (feed.js) is what is on disk. */
+:root { --mem-seen: rgba(226, 165, 74, .42); --mem-bar: rgba(226, 165, 74, .6); }
 
 /* ---- the chip in the item header, next to the position */
 .mem-chip { flex: none; margin-left: auto; display: inline-flex; align-items: baseline; gap: 6px; font: 11px var(--mono); color: var(--ink-2); white-space: nowrap; animation: mem-in .3s ease-out; }
@@ -11,7 +12,7 @@
 @keyframes mem-in { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
 @media (max-width: 1500px) { .mem-chip .mem-dim { display: none; } }
 
-/* ---- the track: what you have seen, faint, under the bright part */
+/* ---- the track: what you have seen, under the bright part */
 #track .tr-seen { position: absolute; inset: 0; border-radius: 2px; pointer-events: none; }
 
 /* ---- History */

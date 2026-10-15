@@ -9,7 +9,8 @@
 //
 // - Resume: an item you come back to opens where you left it, if that is past
 //   its first few pages (prefetch.js reopeners, so prefetching for the next
-//   items warms that spread too; flow.js turns a stable page into a column),
+//   items warms that spread too; flow documents reopen at the same column, or
+//   where the same stable page starts when the layout has changed),
 //   with a chip in the header: "Resumed at p. 47 · last read 2 days ago ·
 //   ⟲ start t". t (or the chip) goes to the first page; Back returns.
 // - The track under the pages shows what you have seen as a faint fill.
@@ -29,6 +30,7 @@ import { isFlow } from '../docs.js';
 import { startOf, reopeners } from '../prefetch.js';
 import { goPage, jumpTo } from '../nav.js';
 import { setView } from '../chrome.js';
+import { live, vpToCol } from '../flow.js';
 
 const SEEN_MS = 1200;      // a spread on screen this long (active) counts its pages as seen
 const SEQ_MS = 500;        // shorter stops are not worth a place in the reading path
@@ -213,7 +215,15 @@ function resumeAt(i, it, r) {
   if (r.k < RESUME_FROM.page || (it.n && r.k >= it.n)) return null;
   return r.k;
 }
-reopeners.push((i, it) => (bypass ? null : resumeAt(i, it, mem.get(it.id))));
+reopeners.push((i, it) => {
+  if (bypass) return null;
+  const r = mem.get(it.id), k = resumeAt(i, it, r);
+  if (k == null || !r.f) return k; // a page
+  // A flow document: flow.js asks once its columns are measured. The same layout as last
+  // time (screen, text size): the very column; otherwise where that stable page starts.
+  if (live?.id !== it.id) return null;
+  return r.g === live.g.key && r.col != null ? r.col : vpToCol(k);
+});
 /** Where the item would open without its memory. */
 function defaultStart(i) { bypass = true; try { return startOf(i); } finally { bypass = false; } }
 
@@ -253,7 +263,7 @@ on('spread:rendered', ({ it, s }) => {
 
 // ---------- the track: pages seen ----------
 const seenEl = h('div', { className: 'tr-seen' });
-$('#track .tr-bar')?.prepend(seenEl);
+{ const bar = $('#track .tr-bar'); bar?.insertBefore(seenEl, bar.querySelector('.tr-fill')); } // above feed.js's 'ready' band, under the bright part
 /** Seen ranges merged to what the bar can show, as a gradient under the bright part. */
 function seenGradient(rs, n, color) {
   if (!rs?.length || !n) return 'none';

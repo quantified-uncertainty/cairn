@@ -214,7 +214,7 @@ async function inkGrid(it, k, W, H, scan) {
 }
 
 // ---------- finding regions ----------
-const CAP = /^\s*(fig(?:ure)?s?\.?|table|tab\.|algorithm|alg\.|listing|plate|chart|exhibit|diagram|box)\s*(S?\d+|[IVXLC]+\b)((?:[.\-–]\d+)?[a-z]?)(\s*[:.|—–]|\s*$|\s+(?=\p{Lu}))/iu;
+const CAP = /^\s*(fig(?:ure)?s?\.?|table|tab\.|algorithm|alg\.|listing|plate|chart|exhibit|diagram|box)\s*(S?\d+|[IVXLC]+\b)((?:[.\-–]\d+)?[a-z]?)(\s*[:.|—–]|\s*$|\s+(?=[A-Z]))/i;
 /** "FIGURE 3", "fig 3" -> "Figure 3", "Fig. 3". */
 function capLabel(m) {
   const w = m[1].replace(/\.$/, ''), word = w === w.toUpperCase() ? w[0] + w.slice(1).toLowerCase() : w;
@@ -287,16 +287,19 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   for (const s of byY) {
     const m = CAP.exec(s.str);
     if (!m || s.cap || s.margin) continue;
+    if (/^\s+$/.test(m[4]) && !/^[A-Z]/.test(s.str.slice(m.index + m[0].length))) continue; // "Figure 3 shows …" (the i flag makes [A-Z] match any letter)
     if (!m[4].trim() && !/^\s+$/.test(m[4]) && s.str.trim().length > m[0].trim().length + 2) continue;
     const [c0] = colOf(s.x0, s.x1);
     if (hz.some((o) => o !== s && Math.abs(o.base - s.base) < 0.5 * body && o.x1 <= s.x0 + 1 && o.x1 > c0 - body && s.x0 - o.x1 < 3 * body)) continue; // not at a line start
     const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m) };
     s.cap = blk;
     let last = s;
+    // A bare label ("Fig. 39.") is followed by body text, not more caption.
+    const bare = s.str.trim().length <= m[0].trim().length + 2;
     for (let more = true; more && blk.runs.length < 24;) {
       more = false;
       for (const o of byY) {
-        if (o.cap || o.margin || CAP.test(o.str)) continue;
+        if (o.cap || o.margin || CAP.test(o.str) || ((bare || scan) && o.prose)) continue;
         const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body;
         const next = o.y0 - last.y1 > -0.5 * s.fs && o.y0 - last.y1 < 0.75 * s.fs && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs;
         if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) last = o; more = true; }
@@ -318,7 +321,11 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     fill(T, { x0: s.x0 - ex * s.fs, y0: s.y0 - ey * s.fs, x1: s.x1 + ex * s.fs, y1: s.y1 + ey * s.fs });
     if (isBar(s)) fill(B, { x0: s.x0, y0: s.y0 + by * s.fs, x1: s.x1, y1: s.y1 - by * s.fs });
   }
-  for (const c of caps) fill(B, c);
+  for (const c of caps) {
+    fill(B, c);
+    // Scans: a caption line closes off its whole column (drawings must not leak round it).
+    if (scan) { const [c0, c1] = colOf(c.x0, c.x1); fill(B, { x0: Math.min(c.x0, c0) - 0.03 * W, y0: c.y0 + 0.2 * (c.y1 - c.y0), x1: Math.max(c.x1, c1) + 0.03 * W, y1: c.y1 - 0.2 * (c.y1 - c.y0) }); }
+  }
   for (let i = 0; i < N; i++) G[i] = ink[i] && !T[i] ? 1 : 0;
   // The rule under a running head (or over the footer) is a barrier, not a figure.
   for (let j = 0; j < gh; j++) {
@@ -344,7 +351,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     fill(G, b);
   }
   if (scan && long.length >= 4) { // page edges, shadows and the next page's bleed lie outside the text block
-    const a = ci(bx0 - 0.025 * W), z = ci(bx1 + 0.025 * W);
+    const a = ci(bx0 - 0.006 * W), z = ci(bx1 + 0.006 * W);
     for (let y = 0; y < gh; y++) { B.fill(1, y * gw, y * gw + a); B.fill(1, y * gw + z + 1, (y + 1) * gw); }
     // A page edge or binding shadow just beside the text: a tall column of ink outside the text block.
     for (let x = Math.max(0, a); x <= Math.min(gw - 1, z); x++) {
@@ -452,14 +459,17 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
       const d = side === 'above' ? C.y0 - R.y1 : R.y0 - C.y1;
       if (d > 0.15 * H) return null;
       if (side === 'above' ? between(R.y1, C.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C) : between(C.y1, R.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C)) return null;
-      return { R, side, d: d + ((side === 'below') === (C.kind === 'figure') ? 0.02 * H : 0) };
+      // Prefer the figure on the caption's side, then the one right above (or below) the caption.
+      const al = Math.max(0, ovX(R, C)) / Math.max(1, Math.min(R.x1 - R.x0, C.x1 - C.x0));
+      return { R, side, al, d: d + ((side === 'below') === (C.kind === 'figure') ? 0.02 * H : 0) + 0.25 * H * (1 - Math.min(1, al)) };
     }).filter(Boolean).sort((a, b) => a.d - b.d);
     let F = null;
     if (cand.length) {
       const side = cand[0].side;
       // Sub-figures: every region on that side up to the barrier beyond the nearest.
       F = { ...cand[0].R };
-      for (const c of cand) if (c.side === side && c.R !== cand[0].R && c.d < 0.12 * H) { grow(F, c.R); c.R.cap = C; }
+      const wide = C.x1 - C.x0 > 0.5 * (sx1 - sx0);
+      for (const c of cand) if (c.side === side && c.R !== cand[0].R && c.d < 0.12 * H && (wide || c.al > 0.3)) { grow(F, c.R); c.R.cap = C; }
       cand[0].R.cap = C;
     } else {
       const order = C.kind === 'table' ? [true, false] : [false, true];
@@ -467,7 +477,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
   }
-  for (const R of rs) if (!R.cap && R.strong) { R.kind = 'figure'; out.push(R); }
+  for (const R of rs) if (!R.cap && R.strong && !(scan && ((R.y0 + R.y1) / 2 < 0.07 * H || (R.y0 + R.y1) / 2 > 0.95 * H))) { R.kind = 'figure'; out.push(R); }
 
   // 9. Merge overlaps; pad a little; keep the page's figures in reading order.
   out.sort((a, b) => (b.x1 - b.x0) * (b.y1 - b.y0) - (a.x1 - a.x0) * (a.y1 - a.y0));

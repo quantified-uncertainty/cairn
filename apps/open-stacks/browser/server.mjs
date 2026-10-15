@@ -66,7 +66,7 @@ const server = http.createServer(async (req, res) => {
       return json(res, out);
     }
     if (url.pathname === '/features.json') return json(res, features());
-    const data = { '/corpus.json': 'corpus.json', '/enrich.json': 'enrich.json' }[url.pathname];
+    const data = { '/corpus.json': 'corpus.json', '/enrich.json': 'enrich.json', '/meta.json': 'data/meta.json' }[url.pathname];
     const file = url.pathname === '/' ? 'ui/index.html' : data || join('ui', url.pathname.replace(/^\/+/, ''));
     const full = join(HERE, file);
     if (!full.startsWith(HERE) || !existsSync(full) || statSync(full).isDirectory()) return send(res, 404, 'not found');
