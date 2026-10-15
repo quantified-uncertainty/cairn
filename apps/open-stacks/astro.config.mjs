@@ -43,7 +43,7 @@ export default defineConfig({
 					items: [
 						{ label: '1. Open Stacks (planned)', link: '/#the-book' },
 						{ label: '2. What to Do First', slug: 'start-here/decision-guide' },
-						{ label: '3. Cruxes (planned)', link: '/#the-book' },
+						{ label: '3. Cruxes', slug: 'start-here/cruxes' },
 					],
 				},
 				{
@@ -100,7 +100,7 @@ export default defineConfig({
 						{ label: '27. The Legal Map', slug: 'building/legal-map' },
 						{ label: '28. A Reference Architecture', slug: 'building/reference-architecture' },
 						{ label: '29. Costs and Effort', slug: 'building/costs-and-effort' },
-						{ label: '30. The Design Space (planned)', link: '/#the-book' },
+						{ label: '30. The Design Space', slug: 'building/design-space' },
 						{ label: '31. Prototype Gallery (planned)', link: '/#the-book' },
 					],
 				},
@@ -111,7 +111,7 @@ export default defineConfig({
 						{ label: 'Directory of Sources and Tools (planned)', link: '/#the-book' },
 						{ label: 'Glossary (planned)', link: '/#the-book' },
 						{ label: 'Open Problems (planned)', link: '/#the-book' },
-						{ label: 'About the Research (planned)', link: '/#the-book' },
+						{ label: 'About the Research', slug: 'reference/methodology' },
 					],
 				},
 			],
