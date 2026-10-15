@@ -1,6 +1,6 @@
 // Reader state, and the ranking that decides what comes next.
 import { store } from './util.js';
-import { items, LANE_WEIGHTS, tokens, laneMax } from './corpus.js';
+import { items, LANE_WEIGHTS, LANE_ORDERED, tokens, laneMax } from './corpus.js';
 
 export const state = {
   view: 'feed', lane: store.get('lane', 'all'),
@@ -36,7 +36,10 @@ export function score(i) {
 }
 export function buildOrder(keepHead = true) {
   let pool = items.map((_, i) => i).filter((i) => state.lane === 'all' || items[i].lane === state.lane);
+  if (state.scope) pool = pool.filter((i) => state.scope.has(i)); // one library folder (features/library.js): a Set of item indexes
   pool.sort((a, b) => score(b) - score(a));
+  // Lanes whose order matters (wikis) follow the library tree's order instead.
+  if (LANE_ORDERED[state.lane]) pool.sort((a, b) => (items[a].ord ?? 1e9) - (items[b].ord ?? 1e9));
   if (state.lane === 'all') {
     // Round-robin across lanes, weighted by the corpus's lane weights and what you like.
     const buckets = {};

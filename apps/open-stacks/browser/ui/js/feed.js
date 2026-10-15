@@ -1,12 +1,13 @@
 // The feed: one item at a time, a few real pages of it filling the stage.
-import { $, h, P, emit, emitQuiet, fmtDate, lru } from './util.js';
+import { $, h, P, on, emit, emitQuiet, fmtDate, lru } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
-import { renderPage, cachedRender } from './render.js';
+import { renderPage, cachedRender, renderedNow } from './render.js';
 import { planAround, startOf, serverPrefetch } from './prefetch.js';
 import { showFlow, dropLive, live, vpToCol } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
+import { itemIcon } from './icons.js';
 
 export async function showFeed() {
   const gen = ++state.gen;
@@ -29,7 +30,9 @@ export async function showFeed() {
   dropLive();
   let n = it.n;
   if (!n) {
-    try { n = it.n = (await openDoc(it)).n; } catch (e) { if (gen === state.gen) showError(e); return; }
+    const stop = it.kind === 'pdf' ? showDownload(it, gen) : () => {};
+    try { n = it.n = (await openDoc(it)).n; } catch (e) { stop(); if (gen === state.gen) showError(e); return; }
+    stop();
     if (gen !== state.gen) return;
   }
   const s = Math.max(0, Math.min(startOf(i), n - 1));
@@ -38,6 +41,19 @@ export async function showFeed() {
   if (state.perAuto) state.per = fitPer(it, boxW, boxH);
   const per = state.zoom ? 1 : state.per;
   const hint = aspectOf(it);
+  // Fast path: every page of the spread is already rendered, so show it now,
+  // in this frame, with no placeholders (this is what makes flipping smooth).
+  {
+    const ready = [], ks = []; let kk = s, content = 0;
+    while (content < per && kk < n) { const v = renderedNow(it, kk); if (!v) break; ready.push(v); ks.push({ k: kk }); kk++; if (!(v.length === 1 && v[0].blank)) content++; }
+    if (content >= per || (kk >= n && ready.length)) {
+      planAround(i, s);
+      state.fastHits = (state.fastHits || 0) + 1;
+      finish(i, it, s, n, ready, ks, boxW, boxH);
+      return;
+    }
+  }
+  state.slowHits = (state.slowHits || 0) + 1;
   // Lay out panels until the spread is full. Blank pages collapse to a thin
   // strip and do not count, so a spread always shows `per` pages of content.
   const slots = []; let k = s;
@@ -62,6 +78,11 @@ export async function showFeed() {
     if (gen !== state.gen) return;
     results.push(p); slots.push({ k: kk }); if (!(p.length === 1 && p[0].blank)) extra--;
   }
+  finish(i, it, s, n, results, slots, boxW, boxH);
+}
+/** Put rendered panels on the stage and tell everyone. */
+function finish(i, it, s, n, results, slots, boxW, boxH) {
+  const spread = $('#spread');
   const els = [];
   results.forEach((panels, j) => {
     for (const pnl of panels) {
@@ -105,6 +126,7 @@ const aspectOf = (it) => aspects.get(it.id) ?? (it.kind === 'scan' ? 0.66 : 0.74
  *  so a laptop shows two and a large screen three, with little empty space. */
 export function fitPer(it, W, H) {
   const gap = state.pageGap ?? 10; // Settings: gap between pages
+  if (state.fit === 'width') return 1; // Settings 'fit width': one page across the stage
   return Math.max(1, Math.min(3, Math.floor((W + gap) / (H * aspectOf(it) * 0.8 + gap))));
 }
 
@@ -124,7 +146,8 @@ export function layoutPanels(els, W, H) {
 export function paintHead(it) {
   const saved = state.saved.includes(it.id);
   $('#item-head').replaceChildren(
-    h('h1', { title: it.t, textContent: it.t }),
+    h('span', { id: 'loadpct', hidden: true }),
+    h('h1', { title: it.t }, itemIcon(it, 14), it.t),
     h('div', { className: 'meta' },
       h('span', { className: 'lane', textContent: LANES[it.lane] || it.lane }),
       it.a ? h('span', { className: 'au', textContent: it.a }) : null,
@@ -186,13 +209,83 @@ let tr = null; // { i, it, n, s }
 let peekK = -1;
 export function paintTrack(i, s, c, n) {
   const it = items[i];
+  if (tr?.it !== it) { loaded = null; paintLoaded(); }
   tr = { i, it, n: Math.max(1, n), s };
+  pollLoaded();
   const fill = track.querySelector('.tr-fill');
   fill.style.left = (100 * s) / tr.n + '%';
   fill.style.width = (100 * Math.max(1, c)) / tr.n + '%';
   const kp = state.marks?.get(it.id) || [];
   track.querySelector('.tr-marks').replaceChildren(...kp.map((p) => h('i', { style: `left:${(100 * (p - 0.5)) / tr.n}%` })));
 }
+/** While a PDF downloads (big ones take a while), show how far it has got. */
+function showDownload(it, gen) {
+  let alive = true;
+  const tick = async () => {
+    if (!alive || gen !== state.gen) return;
+    try {
+      const p = await (await fetch('/progress?u=' + encodeURIComponent(it.url))).json();
+      const el = document.getElementById('loadpct');
+      if (el && p && !p.done && alive) {
+        el.hidden = false;
+        el.textContent = p.total ? `↓ ${Math.floor((100 * p.got) / p.total)}% of ${(p.total / 1e6).toFixed(1)} MB` : p.got ? `↓ ${(p.got / 1e6).toFixed(1)} MB` : '↓ waiting…';
+        el.title = 'Downloading this PDF to your disk (once; after that it opens instantly)';
+      }
+    } catch { /* ignore */ }
+    if (alive) setTimeout(tick, 300);
+  };
+  setTimeout(tick, 250);
+  return () => { alive = false; const el = document.getElementById('loadpct'); if (el && el.textContent.startsWith('↓')) el.hidden = true; };
+}
+
+// ---------- how much of the item is ready ----------
+// Scans: which page images are in the server's disk cache (the rest come from
+// the Internet Archive at 1-3 s a page); PDFs and posts are whole files, ready
+// once opened. Shown as a lighter band under the track and, while incomplete,
+// as a percentage before the title. Staying on a scan for a few seconds asks
+// the server to fetch the whole book in the background.
+let loaded = null; // { id, bits: '0101…', pct }
+let pollT = null, bookT = null;
+function paintLoaded() {
+  const bar = track.querySelector('.tr-bar');
+  let el = bar.querySelector('.tr-load');
+  if (!el) { el = h('div', { className: 'tr-load' }); bar.prepend(el); }
+  const pctEl = document.getElementById('loadpct');
+  if (!loaded) { el.style.background = 'none'; if (pctEl) pctEl.hidden = true; return; }
+  const { bits } = loaded; const n = bits.length;
+  const stops = []; let j = 0;
+  while (j < n) { let e = j; while (e < n && bits[e] === bits[j]) e++; if (bits[j] === '1') stops.push(`transparent ${(100 * j) / n}%, var(--ink-3) ${(100 * j) / n}% ${(100 * e) / n}%, transparent ${(100 * e) / n}%`); j = e; }
+  el.style.background = stops.length ? `linear-gradient(90deg, ${stops.join(', ')})` : 'none';
+  if (pctEl) { pctEl.hidden = loaded.pct >= 100; pctEl.textContent = `${loaded.pct}%`; pctEl.title = `${loaded.pct}% of this book's pages are on your disk; the rest load from the Internet Archive`; }
+}
+async function pollLoaded() {
+  clearTimeout(pollT);
+  const t = tr; if (!t) return;
+  const it = t.it;
+  if (it.kind !== 'scan') { if (loaded?.id !== it.id) { loaded = { id: it.id, bits: '1'.repeat(Math.min(t.n, 1500)), pct: 100 }; paintLoaded(); } return; }
+  const urls = Array.from({ length: Math.min(t.n, 1500) }, (_, k) => scanUrl(it, k, 1000));
+  try {
+    const bits = await (await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls }) })).text();
+    if (tr?.it !== it) return;
+    const have = [...bits].filter((b) => b === '1').length;
+    loaded = { id: it.id, bits, pct: Math.floor((100 * have) / Math.max(1, bits.length)) };
+    paintLoaded();
+    if (loaded.pct < 100) pollT = setTimeout(pollLoaded, 2000);
+  } catch { /* offline */ }
+}
+on('item:settled', ({ it }) => {
+  clearTimeout(bookT);
+  if (it.kind !== 'scan' || !it.n) return;
+  bookT = setTimeout(() => {
+    if (tr?.it !== it) return;
+    const s = state.start.get(tr.i) ?? 0;
+    // The whole book, nearest pages first, behind everything more urgent.
+    const ks = Array.from({ length: Math.min(it.n, 1500) }, (_, k) => k).sort((a, b) => Math.abs(a - s) - Math.abs(b - s));
+    serverPrefetch(ks.map((k) => scanUrl(it, k, 1000)), 20, 'book');
+    pollLoaded();
+  }, 4000);
+});
+
 // Scrubbing redraws the main spread at the page under the pointer from
 // whatever is fastest: a full render already in memory, else a quick
 // low-resolution one (PDFs) or the small page image (scans).

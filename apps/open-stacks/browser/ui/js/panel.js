@@ -5,6 +5,7 @@ import { items, LANES, byId, tokens, related } from './corpus.js';
 import { state, current, learn } from './state.js';
 import { openDoc, pdfOutline } from './docs.js';
 import { goPage, jumpTo } from './nav.js';
+import { itemIcon } from './icons.js';
 
 export function paintPanel(i) {
   const it = items[i];
@@ -27,6 +28,7 @@ registerSection({
     const liked = tokens(it).filter((w) => (state.aff.tok[w] || 0) >= 1).slice(0, 2);
     const links = [['Original', it.page || it.url]];
     if (it.kind === 'pdf') links.push(['PDF', it.url]);
+    else if (it.pdf) links.push(['PDF', it.pdf]);
     if (it.id.startsWith('arxiv:')) links.push(['HTML', `https://arxiv.org/html/${it.id.slice(6)}`]);
     return h('div', {},
       it.hook ? h('div', { className: 'hook', textContent: it.hook }) : null,
@@ -72,7 +74,7 @@ registerSection({
   render(it, i) {
     const rel = related(i);
     if (!rel.length) return null;
-    return h('ol', { className: 'rel' }, ...rel.map((j) => h('li', { onclick: () => jumpTo(j) }, items[j].t, h('span', { className: 'l', textContent: (LANES[items[j].lane] || '').split(' ')[0] }))));
+    return h('ol', { className: 'rel' }, ...rel.map((j) => h('li', { onclick: () => jumpTo(j) }, itemIcon(items[j]), items[j].t, h('span', { className: 'l', textContent: (LANES[items[j].lane] || '').split(' ')[0] }))));
   },
 });
 
@@ -91,7 +93,7 @@ registerSection({
     const trail = store.get('trail:' + today, []);
     return h('ol', { className: 'trail' }, ...trail.slice(0, 12).map((e) => {
       const j = byId.get(e.id); if (j == null) return null;
-      return h('li', { onclick: () => jumpTo(j) }, items[j].t, h('span', { className: 's', textContent: e.sec >= 60 ? Math.round(e.sec / 60) + 'm' : e.sec + 's' }));
+      return h('li', { onclick: () => jumpTo(j) }, itemIcon(items[j]), items[j].t, h('span', { className: 's', textContent: e.sec >= 60 ? Math.round(e.sec / 60) + 'm' : e.sec + 's' }));
     }));
   },
 });

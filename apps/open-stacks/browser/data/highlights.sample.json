@@ -1,0 +1,434 @@
+{
+  "v": 1,
+  "prompt": "highlights-v1",
+  "built": "2026-10-15",
+  "by": "sample: picked by hand by claude-opus-5-5 reading each full text in an interactive session, not by the batch prompt",
+  "note": "loc is the block marker the model sees: an arXiv LaTeXML id (S3.SS2.p3, S1.F1), p<N> (the N-th paragraph of a post or wiki page, 0-based), img<N>/tbl<N> (the N-th image or table) or k<N> (a scan page, 0-based). ok: the quote was found in the source text; match: exact (after collapsing whitespace), joined (after also joining words hyphenated across OCR lines) or skel (letters and digits only, as the app matches quotes).",
+  "items": {
+    "arxiv:2503.14499": {
+      "claim": "The length of software tasks frontier AI agents can finish half the time, measured in skilled-human time, has doubled about every seven months since 2019.",
+      "passage": {
+        "quote": "Even if the absolute measurements are off by a factor of 10, the trend predicts that in under a decade we will see AI agents that can independently complete a large fraction of software tasks that currently take humans days or weeks (Section 5).",
+        "loc": "S1.F1",
+        "sec": "S1",
+        "why": "The forecast rests on the slope, not the level: a tenfold error in today's horizons is only about three doublings, under two years at this pace.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "We find large differences in the speed at which different human groups complete the internal PR tasks, with contractors taking 5-18x longer to fix issues than repo maintainers.",
+        "loc": "S4.p4",
+        "sec": "S4",
+        "value": "5-18x",
+        "what": "how much longer outside contractors took than the repo's maintainers to fix the same issues",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S1.F1",
+          "kind": "result",
+          "why": "The headline: 50% time horizon against release date on a log scale, from GPT-2 to o3.",
+          "label": "Figure 1",
+          "caption": "The length of tasks (measured by how long they take human professionals) that generalist autonomous frontier model agents can complete with 50% reliability has been doubling approximately every 7 months for the last 6 years (Section 3).",
+          "img": "https://arxiv.org/html/2503.14499v4/plots/bootstrap/headline-log.png"
+        },
+        {
+          "ref": "S5.F6",
+          "kind": "result",
+          "why": "How much each source of noise moves the forecast date for month-long tasks.",
+          "label": "Figure 6",
+          "caption": "A sensitivity analysis of the extrapolated date at which frontier AI systems will have a horizon of 1 month.",
+          "img": "https://arxiv.org/html/2503.14499v4/plots/multiverse/boxplot.png"
+        }
+      ],
+      "show": "one",
+      "question": "How long a task can AI agents complete on their own, and how fast is that growing?"
+    },
+    "arxiv:2412.14093": {
+      "claim": "Claude 3 Opus, told it is being retrained to answer harmful requests and how to tell training from deployment, complies strategically in training to keep its values, and RL can strengthen this.",
+      "passage": {
+        "quote": "We find that small variations in the prompt that prior to RL had no substantial effect on the compliance gap—such as swapping the AI company from “Anthropic” to “OpenAI”—now greatly increase the compliance gap (Table 2).",
+        "loc": "S1.SS0.SSS0.Px2.p1",
+        "sec": "S1.SS0.SSS0.Px2",
+        "why": "RL seemed to remove the unmonitored refusals, yet renaming the company brings them back: training can hide a behavior without removing it.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "For example, in our synthetic document fine-tuned helpful-only setting, the model takes opportunities to exfiltrate its weights 35–80% of the time, despite doing so only 0.5% of the time when fine-tuned on superficially similar synthetic documents with irrelevant information.",
+        "loc": "S1.SS0.SSS0.Px1.p6",
+        "sec": "S1.SS0.SSS0.Px1",
+        "value": "35–80%",
+        "what": "how often the fine-tuned model took a chance to copy out its own weights, against 0.5% for a control",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S1.F2",
+          "kind": "result",
+          "why": "Compliance, refusal and alignment-faking reasoning in training versus unmonitored, for the prompted, fine-tuned and RL setups.",
+          "label": "Figure 2",
+          "caption": "Alignment faking in our helpful-only setting in our prompted, synthetic document fine-tuned, and prompted RL training setups.",
+          "img": "https://arxiv.org/html/2412.14093v2/intro_combo_honly.svg"
+        },
+        {
+          "ref": "S1.F1",
+          "kind": "diagram",
+          "why": "The whole setup in one picture: free versus paid users, with the hidden scratchpad's reasoning.",
+          "label": "Figure 1",
+          "caption": "Claude 3 Opus fakes alignment when told it will be retrained to help with harmful tasks (randomly selected example).",
+          "img": "https://arxiv.org/html/2412.14093v2/figures/fig1.5_blog-1.png"
+        }
+      ],
+      "show": "few",
+      "question": "Will a model pretend to go along with training it disagrees with, to keep its current values?"
+    },
+    "arxiv:2406.11717": {
+      "claim": "In 13 open chat models up to 72B parameters, refusal runs through one direction in the activations: erase it and the model stops refusing; add it and it refuses harmless requests.",
+      "passage": {
+        "quote": "Normally, these heads focus on the instruction region of the prompt, which contains harmful content. With the adversarial suffix appended, these heads shift their attention to the suffix region, and away from the harmful instruction.",
+        "loc": "S5.SS2.p2",
+        "sec": "S5.SS2",
+        "why": "A mechanism for why gibberish jailbreak suffixes work: they pull the refusal heads' attention away from the harmful request.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "For Llama-2 models, including the system prompt substantially reduces ASR compared to evaluation without it (e.g. 22.6% vs 79.9% for Llama-2 7B).",
+        "loc": "S4.SS2.p4",
+        "sec": "S4.SS2",
+        "value": "22.6% vs 79.9%",
+        "what": "jailbreak success on Llama-2 7B with and without its default system prompt",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S1.F1",
+          "kind": "result",
+          "why": "Refusal and safety scores on 100 harmful prompts before and after erasing the direction, for every model.",
+          "label": "Figure 1",
+          "caption": "Ablating the “refusal direction” reduces refusal rates and elicits unsafe completions.",
+          "img": "https://arxiv.org/html/2406.11717v3/results_harmful.svg"
+        },
+        {
+          "ref": "S3.F3",
+          "kind": "result",
+          "why": "The converse: adding the direction makes the same models refuse harmless instructions.",
+          "label": "Figure 3",
+          "caption": "Adding the “refusal direction\" induces refusal on 100 harmless instructions from Alpaca.",
+          "img": "https://arxiv.org/html/2406.11717v3/results_harmless.svg"
+        }
+      ],
+      "show": "few",
+      "question": "How is refusal implemented inside a safety-tuned chat model, and how easily can it be removed?"
+    },
+    "arxiv:2401.02843": {
+      "claim": "2,778 AI researchers surveyed in late 2023 gave even odds that machines beat humans at every task by 2047, thirteen years sooner than the same survey a year earlier.",
+      "passage": {
+        "quote": "Predictions for a 50% chance of the arrival of FAOL are consistently more than sixty years later than those for a 50% chance of the arrival of HLMI. This was seen in the results from the surveys of 2023, 2022, and 2016.",
+        "loc": "S3.SS2.SSS3.p1",
+        "sec": "S3.SS2.SSS3",
+        "why": "Nearly the same question, asked about occupations instead of tasks, moves the median answer by six decades: much of what these forecasts measure is framing.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "The aggregate 2023 forecast predicted a 50% chance of HLMI by 2047, down thirteen years from 2060 in the 2022 survey.",
+        "loc": "S3.SS2.SSS1.p4",
+        "sec": "S3.SS2.SSS1",
+        "value": "thirteen years",
+        "what": "how far the median date for human-level machine intelligence moved earlier in one year",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S3.F3",
+          "kind": "result",
+          "why": "Aggregate forecasts for human-level AI and full automation of labor, 2022 against 2023, over a cloud of individual forecasts.",
+          "label": "Figure 3",
+          "caption": "Aggregate forecast for 50th percentile arrival time of High-Level Machine intelligence (HLMI) dropped by 13 years between 2022 and 2023.",
+          "img": "https://arxiv.org/html/2401.02843v3/M-cdf_hlmi_mixture_gamma.png"
+        },
+        {
+          "ref": "S2.F1",
+          "kind": "result",
+          "why": "When each of 39 milestones is expected, with 25-75% ranges.",
+          "label": "Figure 1",
+          "caption": "Most milestones are predicted to have better than even odds of happening within the next ten years, though with a wide range of plausible dates.",
+          "img": "https://arxiv.org/html/2401.02843v3/milestones.svg"
+        }
+      ],
+      "show": "few",
+      "question": "When do AI researchers expect AI to outdo humans at everything, and how fast are those expectations moving?"
+    },
+    "arxiv:1806.02404": {
+      "claim": "Carrying the real uncertainty in the Drake equation's factors through, instead of multiplying point guesses, gives a large chance that we are alone, so an empty sky is no paradox.",
+      "passage": {
+        "quote": "Monte Carlo simulation shows that this actually produces an empty galaxy 21.45 % of the time: a result that is easily reconcilable with our observations and thus generating no paradox for us to explain.",
+        "loc": "S1.SS2.p3",
+        "sec": "S1.SS2",
+        "why": "The whole argument in one toy model: point estimates make an empty galaxy all but impossible, while the same uncertainty carried through makes it a one-in-five event.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "The mean for N is very optimistic, at 27 million, but the median is now only 0.32 – less than one civilization per galaxy like our own.",
+        "loc": "S3.SS2.p3",
+        "sec": "S3.SS2",
+        "value": "0.32",
+        "what": "median number of detectable civilizations in the galaxy, against a mean of 27 million",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S3.F2",
+          "kind": "result",
+          "why": "The authors' distribution over the number of civilizations, with its heavy left tail.",
+          "label": "Figure 2",
+          "caption": "(A) A probability density function for N generated by Monte Carlo simulation based on the authors’ best estimates of our current uncertainty for each parameter.",
+          "img": "https://arxiv.org/html/1806.02404v1/fig2.png"
+        },
+        {
+          "ref": "S2.F1",
+          "kind": "result",
+          "why": "The same exercise built from the spread of published estimates.",
+          "label": "Figure 1",
+          "caption": "(A) The uncertainty in the research community represented via a synthetic probability density function over N — the expected number of detectable civilizations in our galaxy.",
+          "img": "https://arxiv.org/html/1806.02404v1/fig1.png"
+        }
+      ],
+      "show": "one",
+      "question": "Is the silence of the sky actually surprising, given how little we know about the odds of life?"
+    },
+    "arxiv:2001.08361": {
+      "claim": "Language-model loss falls as a smooth power law in parameters, data and compute over many orders of magnitude, so extra compute is best spent mostly on a bigger model.",
+      "passage": {
+        "quote": "When working within a fixed compute budget C but without any other restrictions on the model size N or available data D, we attain optimal performance by training very large models and stopping significantly short of convergence (see Figure 3).",
+        "loc": "S1.SS1.SSS0.Px7.p1",
+        "sec": "S1.SS1.SSS0.Px7",
+        "why": "The allocation rule behind the GPT-3 generation of very large, briefly trained models; the 2022 Chinchilla paper later argued for far more data per parameter.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "The performance penalty depends predictably on the ratio N^0.74/D, meaning that every time we increase the model size 8x, we only need to increase the data by roughly 5x to avoid a penalty.",
+        "loc": "S1.SS1.SSS0.Px3.p1",
+        "sec": "S1.SS1.SSS0.Px3",
+        "value": "5x",
+        "what": "more data needed for each 8x larger model to avoid overfitting",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "S1.F1",
+          "kind": "result",
+          "why": "The three power laws side by side: test loss against compute, dataset size and parameters.",
+          "label": "Figure 1",
+          "caption": "Language modeling performance improves smoothly as we increase the model size, datasetset size, and amount of compute1 used for training.",
+          "img": "https://arxiv.org/html/2001.08361v1/SimplePowerLaws.svg"
+        },
+        {
+          "ref": "S1.F3",
+          "kind": "diagram",
+          "why": "How a billion-fold increase in compute should be split between model size, batch size and training steps.",
+          "label": "Figure 3",
+          "caption": "As more compute becomes available, we can choose how much to allocate towards training larger models, using larger batches, and training for more steps.",
+          "img": "https://arxiv.org/html/2001.08361v1/ContributionIllustration.svg"
+        }
+      ],
+      "show": "one",
+      "question": "With 10x more compute, how should you split it between model size, data and training time?"
+    },
+    "lw:aPeJE8bSo6rAFoLqg": {
+      "claim": "GPT-2 and GPT-3 contain a few hundred glitch tokens, such as ' SolidGoldMagikarp', that sit near the centre of embedding space and that the models cannot repeat back.",
+      "passage": {
+        "quote": "The anomalous tokens may be those which had very little involvement in training, so that the model “doesn’t know what to do” when it encounters them, leading to evasive and erratic behaviour.",
+        "loc": "p175",
+        "why": "The proposed mechanism: the tokenizer was built from raw scraped text, the model trained on curated text, so some tokens were almost never seen.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "Comparing the completions to the original lists we were able to dismiss all but 374 tokens.",
+        "loc": "p164",
+        "value": "374",
+        "what": "suspect tokens left after testing all 50,257 GPT tokens",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "img6",
+          "kind": "example",
+          "why": "ChatGPT, asked what ' SolidGoldMagikarp' refers to, explains the word 'distribute'.",
+          "caption": null,
+          "img": "https://res.cloudinary.com/lesswrong-2-0/image/upload/v1675551031/mirroredImages/aPeJE8bSo6rAFoLqg/l8wxznzrya2s0ayrilnf.png"
+        },
+        {
+          "ref": "img7",
+          "kind": "example",
+          "why": "ChatGPT stalling on an 'unspeakable' token.",
+          "caption": "ChatGPT struggles with an \"unspeakable\" token.",
+          "img": "https://res.cloudinary.com/lesswrong-2-0/image/upload/v1675685154/mirroredImages/aPeJE8bSo6rAFoLqg/yrakuxv7iavfx3lz8lh7.png"
+        },
+        {
+          "ref": "img5",
+          "kind": "result",
+          "why": "Token clusters in embedding space, including the odd cluster where the glitch tokens gather.",
+          "caption": "Clustering tokens in embedding space. Here we see the five tokens from each of a few random clusters. But what's going on in that right-most cluster?",
+          "img": "https://res.cloudinary.com/lesswrong-2-0/image/upload/v1675551031/mirroredImages/aPeJE8bSo6rAFoLqg/tnfy7taopjpec2hkt41r.png"
+        }
+      ],
+      "show": "one",
+      "question": "Why can't GPT-3 repeat back strings like ' SolidGoldMagikarp'?"
+    },
+    "lw:6Xgy6CAf2jqHhynHL": {
+      "claim": "A year-by-year guess, written in 2021, at AI from 2022 to 2026: chatbots and agentic 'bureaucracies' keep improving while AI-tuned propaganda and censorship split the internet into territories.",
+      "passage": {
+        "quote": "Making models bigger is not what’s cool anymore. They are trillions of parameters big already. What’s cool is making them run longer, in bureaucracies of various designs, before giving their answers.",
+        "loc": "p39",
+        "why": "Written in 2021 about 2025: an early call that progress would come from letting models run longer before answering, much as reasoning models later did.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "(So, the most compute spent on a single training run is something like 5x10^25 FLOPs.)",
+        "loc": "p23",
+        "value": "5x10^25 FLOPs",
+        "what": "forecast compute of 2024's largest training run, checkable against later estimates",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [],
+      "show": "none",
+      "question": "What did a careful forecaster in 2021 expect AI and the world to look like by 2026?"
+    },
+    "lw:Kbm6QnJv9dgWsPHQP": {
+      "claim": "A slope is truly slippery when each step changes the values or power of whoever takes the next one; the defence is a Schelling fence, an arbitrary line everyone credibly commits to hold.",
+      "passage": {
+        "quote": "Unfortunately, original Gandhi isn't the one making the choice of whether or not to take the 6th pill. 95%-Gandhi is.",
+        "loc": "p13",
+        "why": "The crux of every real slippery slope in two sentences: each step changes the person who decides the next step.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": null,
+      "figures": [],
+      "show": "none",
+      "question": "When are slippery-slope arguments valid, and how can you stop sliding?"
+    },
+    "web:priors.quantifieduncertainty.org/forecasting/systems/judgemental-predictions-are-low-signal-high-skill": {
+      "claim": "Judgemental forecasting is high-skill but low-signal: a superforecaster's '42%' looks like anyone's guess, so its value only shows in a track record such as a Brier score.",
+      "passage": {
+        "quote": "The main conflict I’m raising here is that judgemental forecasts by themselves often don’t come with much information to signal how valuable they are. The result of 5 hours, 10 hours, or 500 hours of work by radically different groups of people would itself look near identical.",
+        "loc": "p7",
+        "sec": "a-simple-example",
+        "why": "Names the market problem of forecasting: the product, a bare probability, shows nothing of the skill or effort behind it.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "Importantly, being a superforecaster in one year correlated strongly with being a superforecaster the next year; there was some regression to the mean but roughly 70% of the superforecasters maintained their status from one year to the next.",
+        "loc": "p13",
+        "sec": "is-judgemental-forecasting-high-skill",
+        "value": "roughly 70%",
+        "what": "superforecasters who kept their status the following year",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "img0",
+          "kind": "result",
+          "why": "Spread of Brier scores across forecasters in Tetlock's tournament, with a tail of much better forecasters.",
+          "caption": "figure from Judgemental Predictions are Low-Signal, High-Skill_",
+          "img": "https://priors.quantifieduncertainty.org/images/judgemental-predictions-are-low-signal-high-skill/image2.png"
+        },
+        {
+          "ref": "img1",
+          "kind": "result",
+          "why": "A path model in which content knowledge predicts accuracy less than belief updating does.",
+          "caption": "figure from Judgemental Predictions are Low-Signal, High-Skill_",
+          "img": "https://priors.quantifieduncertainty.org/images/judgemental-predictions-are-low-signal-high-skill/image1.png"
+        }
+      ],
+      "show": "few",
+      "question": "Why is a great forecast hard to tell from a mediocre one, and whom should you trust?"
+    },
+    "web:delegation-risk.quantifieduncertainty.org/case-studies/ai-systems/agent-incidents": {
+      "claim": "In eight real incidents from 2022 to 2026 where AI agents could act, the damage was set by what their credentials could reach, and the fixes that work sit outside the model.",
+      "passage": {
+        "quote": "In the accidents and supply-chain cases, exposure was set by credentials, not by capability. The same models with read-only, sandboxed access would have produced only embarrassments.",
+        "loc": "p66",
+        "sec": "what-they-have-in-common",
+        "why": "The practical lesson of the eight incidents in two sentences: limit what the agent can reach, because the model will not limit itself.",
+        "ok": true,
+        "match": "exact"
+      },
+      "number": {
+        "quote": "In early February 2026 Koi Security reported that of 2,857 skills it audited, 341 were malicious.",
+        "loc": "p57",
+        "sec": "clawhavoc-a-skill-store-with-no-gate",
+        "value": "341",
+        "what": "malicious skills among 2,857 audited in an open agent-skill registry, about 12%",
+        "ok": true,
+        "match": "exact"
+      },
+      "figures": [
+        {
+          "ref": "tbl0",
+          "kind": "table",
+          "why": "One row per incident: date, harm channel, and what bounded or would have bounded it.",
+          "caption": "Incident · Date · Channel · What bounded, or would have bounded, it"
+        }
+      ],
+      "show": "one",
+      "question": "What actually went wrong when AI agents with real permissions caused harm, and what would have stopped it?"
+    },
+    "ia:littlewarsgamefo00well": {
+      "claim": "H. G. Wells sets out tested rules for a floor wargame with toy soldiers and spring-loaded guns, and ends by arguing that playing it shows how blundering real war must be.",
+      "passage": {
+        "quote": "You have only to play at Little Wars three or four times to realise just what a blundering thing Great War must be. Great War is at present, I am convinced, not only the most expensive game in the universe, but it is a game out of all proportion.",
+        "loc": "k121",
+        "page": 121,
+        "label": "100",
+        "why": "Published in 1913, a year before the First World War: a game designer's case that real war is too big for the heads that run it.",
+        "ok": true,
+        "match": "joined"
+      },
+      "number": {
+        "quote": "This priceless gift to boyhood appeared somewhen towards the end of the last century, a gun capable of hitting a toy soldier nine times out of ten at a distance of nine yards.",
+        "loc": "k15",
+        "page": 15,
+        "value": "nine times out of ten",
+        "what": "how often the toy spring breech-loader hit a soldier at nine yards",
+        "ok": true,
+        "match": "joined"
+      },
+      "figures": [
+        {
+          "ref": "k27",
+          "kind": "picture",
+          "why": "Two photographs of a game played on a lawn, with model houses, troops and a kneeling player.",
+          "page": 27,
+          "caption": "THE WAR GAME IN THE OPEN AIR."
+        },
+        {
+          "ref": "k17",
+          "kind": "picture",
+          "why": "Two photographs of model countries laid out for a game.",
+          "page": 17,
+          "caption": "SHOWING COUNTRIES PREPARED FOR THE WAR GAME."
+        }
+      ],
+      "show": "few",
+      "question": "How did H. G. Wells turn toy soldiers into a playable wargame, and what did it teach him about war?"
+    }
+  }
+}

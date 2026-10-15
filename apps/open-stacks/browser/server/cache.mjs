@@ -262,6 +262,12 @@ const inflight = new Map(); // url -> job { fg, p, group? }
  * Fetch a URL into the cache unless it is already there. Foreground by
  * default (someone is waiting); pass {fg: false} for background work.
  */
+/** Download progress of a URL: {done} when cached, {got, total} while fetching, else null. */
+export function progressOf(u) {
+  if (cached(u)) return { done: true };
+  const j = inflight.get(u);
+  return j ? { got: j.got || 0, total: j.total || 0, waiting: j.got == null } : null;
+}
 export function ensure(u, { fg = true } = {}) {
   if (cached(u)) return Promise.resolve();
   const cur = inflight.get(u);
@@ -287,7 +293,13 @@ async function fetchInto(u, job, held) {
     let res, buf, err;
     try {
       res = await fetch(u, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
-      if (res.ok) buf = Buffer.from(await res.arrayBuffer());
+      if (res.ok) {
+        // Read in chunks so the reader can see the download's progress (/progress).
+        job.total = Number(res.headers.get('content-length')) || 0; job.got = 0;
+        const chunks = [];
+        for await (const ch of res.body) { chunks.push(ch); job.got += ch.length; }
+        buf = Buffer.concat(chunks);
+      }
       else await res.body?.cancel().catch(() => {});
     } catch (e) { err = e; } finally { release(h, job); }
     if (buf) {

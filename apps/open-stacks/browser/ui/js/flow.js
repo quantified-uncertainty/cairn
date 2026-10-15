@@ -4,6 +4,7 @@
 import { $, h, emit, emitQuiet } from './util.js';
 import { state } from './state.js';
 import { paintPos, paintScrub } from './feed.js';
+import { reopenAt } from './prefetch.js';
 
 const built = new Map(); // `${id}|${geom}` -> layout, a few kept for quick returns
 export let live = null;  // the layout on screen
@@ -94,7 +95,8 @@ export function showFlow(i, it, d) {
 }
 function place(i) {
   const L = live; const it = L.it;
-  let s = Math.max(0, Math.min(state.start.get(i) ?? 0, L.n - 1));
+  if (!state.start.has(i)) { const vp = reopenAt(i, it); if (vp > 0) state.start.set(i, vpToCol(vp)); } // where you left it (prefetch.js)
+  let s =Math.max(0, Math.min(state.start.get(i) ?? 0, L.n - 1));
   state.start.set(i, s);
   L.flow.style.transform = `translateX(${-s * L.g.pitch}px)`;
   state.shown = L.g.cols;

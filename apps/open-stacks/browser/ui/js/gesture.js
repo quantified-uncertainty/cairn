@@ -91,7 +91,7 @@ function onWheel(e, steps, pinches) {
   // Notches merged during a stall: a whole multiple of the notch size (pixel
   // deltas only: Chrome merges; Firefox's line deltas are accelerated on macOS).
   const r = unitOf(mode) ? big / unitOf(mode) : 0;
-  const merged = !mode && (late || lag > 40) && r > 1.9 && Math.abs(r - Math.round(r)) < 0.12 ? Math.min(4, Math.round(r)) : 1;
+  const merged = !mode && (late || lag > 16) && r > 1.9 && Math.abs(r - Math.round(r)) < 0.12 ? Math.min(4, Math.round(r)) : 1;
   // A pause in a stepped trackpad stroke's tail (the page was busy, or events
   // were merged) continues the tail when its speed carries on from where it
   // was (a new stroke starts slow again); the rise test still catches a new flick.
@@ -111,7 +111,7 @@ function onWheel(e, steps, pinches) {
   if (G.device === 'mouse') {
     // The rest of a stopped spin is dropped; turning the wheel back starts a new one.
     if (G.stop && Math.sign(Math.abs(dx) > Math.abs(dy) ? dx : dy) === G.dir) return;
-    if (merged === 1 && !late && lag < 40) G.u = [mode, big];
+    if (merged === 1 && !late && !(G.u?.[1] <= big)) G.u = [mode, big]; // the smallest notch on time
     notch(dx, dy, now, merged, big);
   } else stroke(dx, dy, now, frames);
 }
@@ -238,7 +238,7 @@ function swallow() {
   swT = performance.now();
   if (swallowing) return;
   swallowing = true;
-  const fn = (e) => { if (e.ctrlKey) { pT = e.timeStamp || performance.now(); swT = performance.now(); e.preventDefault(); } };
+  const fn = (e) => { if (e.ctrlKey) { swT = performance.now(); e.preventDefault(); } };
   addEventListener('wheel', fn, { passive: false, capture: true });
   let t = performance.now();
   const check = () => {

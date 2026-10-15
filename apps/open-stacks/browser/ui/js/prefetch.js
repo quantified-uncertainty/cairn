@@ -36,11 +36,17 @@ export function velocity() {
 
 export const randomTarget = new Map(); // item index -> next random start page, chosen in advance
 
+/** Where an item reopens when nothing has placed it this session: hooks fn(i, it) → a page (a stable
+ *  page for flow documents, which flow.js turns into a column) or null. features/memory.js: where you left it. */
+export const reopeners = [];
+export function reopenAt(i, it = items[i]) { for (const fn of reopeners) { const k = fn(i, it); if (k != null) return k; } return null; }
+
 /** Where an item opens: where you left it, else its best page (enrichment), else a heuristic. */
 export function startOf(i) {
   if (state.start.has(i)) return state.start.get(i);
   const it = items[i];
   if (isFlow(it)) return 0;
+  const back = reopenAt(i, it); if (back != null) return back;
   if (Array.isArray(it.best) && it.best.length && (!it.n || it.best[0] < it.n)) return it.best[0];
   if (it.kind === 'scan') return Math.max(0, Math.min(Math.round(it.n * 0.08) + 3, it.n - state.per));
   if (it.kind === 'pdf' && it.n && (it.lane === 'ttrpg' || it.lane === 'textbooks' || it.n > 60)) return Math.min(Math.round(it.n * 0.05), it.n - 1);

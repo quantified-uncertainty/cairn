@@ -5,6 +5,7 @@ export const { items } = corpus;
 export const LANES = corpus.lanes || {};
 export const COUNTS = corpus.counts || {};
 export const LANE_WEIGHTS = corpus.laneWeights || {};
+export const LANE_ORDERED = corpus.laneOrdered || {}; // lanes whose order matters (wikis): the feed follows tree order (it.ord)
 export const LANE_COLORS = {
   lesswrong: '#5a7a4b', 'ai-safety': '#a0442f', 'deepmind-safety': '#3f6fb5', forecasting: '#b5833f', llm: '#3c5a7a',
   textbooks: '#7a3c5a', 'information-theory': '#6b4f8a', cybernetics: '#2f7a76', ttrpg: '#8a5a2b', oddities: '#7a6f60',

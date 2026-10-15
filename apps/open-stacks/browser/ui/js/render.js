@@ -93,8 +93,21 @@ const RENDER_CAP = RENDER_H > 1600 ? 30 : 48;
 const renders = new Map();
 /** The render of a page if it is already made or under way (never starts one). */
 export const cachedRender = (it, k) => renders.get(`${it.id}|${k}|${state.crop}|${state.cols}`) || null;
+// Finished renders, so a spread whose pages are all ready can be shown in the
+// same frame as the key press (no placeholders, no await).
+const done = new Map();
+const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}`;
+export const renderedNow = (it, k) => { const key = keyOf(it, k); return renders.has(key) ? done.get(key) || null : null; };
 export function renderPage(it, k) {
-  const key = `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}`;
+  const key = keyOf(it, k);
+  const p = renderPage1(it, k, key);
+  if (!p._watched) {
+    p._watched = true;
+    p.then((v) => { done.set(key, v); if (done.size > 400) done.delete(done.keys().next().value); }, () => {});
+  }
+  return p;
+}
+function renderPage1(it, k, key) {
   return lru(renders, key, async () => {
     if (it.kind === 'scan') {
       const im = await loadImg(P(scanUrl(it, k, 1000)));
