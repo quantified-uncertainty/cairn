@@ -1,0 +1,476 @@
+{
+ "dir": "jobs",
+ "repoPath": "apps/open-stacks/browser",
+ "every": 24,
+ "running": false,
+ "lastRefresh": 1792076400000,
+ "nextRefresh": 1792162800000,
+ "prompt": "In the cairn repo, open apps/open-stacks/browser/jobs/README.md and do the open jobs in apps/open-stacks/browser/jobs/open/, highest priority first (node jobs.mjs next). For each job: follow the playbook, run node jobs.mjs check <id> --live, then node jobs.mjs done <id>, and commit with the command it prints (one commit per job). Stop after 5 jobs or 60 minutes and summarise what you did.",
+ "caps": {
+  "total": 30,
+  "discover": 4,
+  "follow-author": 3,
+  "grow-lane": 2,
+  "fix-item": 3,
+  "media": 2,
+  "tag": 2,
+  "metadata": 2
+ },
+ "open": [
+  {
+   "id": "discover-0010",
+   "type": "discover",
+   "title": "Find 10 open papers on LLM papers › Reasoning",
+   "priority": "high",
+   "created": "2026-10-15",
+   "key": "discover:path:llm/Reasoning",
+   "target": {
+    "feature": "path:llm/Reasoning",
+    "label": "LLM papers › Reasoning",
+    "lane": "llm"
+   },
+   "inputs": [
+    {
+     "id": "arxiv:2402.03300",
+     "t": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+    },
+    {
+     "id": "arxiv:2408.03314",
+     "t": "Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters"
+    },
+    {
+     "id": "arxiv:2201.11903",
+     "t": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"
+    }
+   ],
+   "wants": {
+    "count": 10,
+    "min": 6,
+    "max": 15
+   },
+   "output": [
+    "data/lanes/llm.added.json",
+    "corpus.json"
+   ],
+   "acceptance": [
+    "6 to 15 new items"
+   ],
+   "body": "## What to do\n\nFind 10 open works (papers, reports or long posts) on **LLM papers › Reasoning** that sit close to the seed items below. Each item must be free to read without a login and must not already be in the corpus (`node jobs.mjs lookup \"<title or id>\"`).\n\n## Seeds\n\n- DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models (arxiv:2402.03300)\n- Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters (arxiv:2408.03314)\n- Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (arxiv:2201.11903)\n\n## Where to look\n\n1. Semantic Scholar recommendations with these seeds as positives (README section 6.2).\n2. arXiv phrase queries from the target and the seeds' titles (6.1).\n\n## Finish\n\n`node build-corpus.mjs --merge`, then `node jobs.mjs check discover-0010 --live`, then `node jobs.mjs done discover-0010 --note \"…\"`.",
+   "prompt": "In the cairn repo, do job discover-0010 (apps/open-stacks/browser/jobs/open/discover-0010.md) following apps/open-stacks/browser/jobs/README.md: check it with node jobs.mjs check discover-0010 --live, close it with node jobs.mjs done discover-0010, and commit with the command it prints."
+  },
+  {
+   "id": "flag-0003",
+   "type": "flag",
+   "title": "Reader flag: Pages missing or garbled on p. 7 of DeepSeekMath: Pushing the Limits of Mathematical…",
+   "priority": "high",
+   "created": "2026-10-15",
+   "key": "flag:arxiv:2402.03300:flag-0003",
+   "target": {
+    "id": "arxiv:2402.03300"
+   },
+   "inputs": [
+    {
+     "id": "arxiv:2402.03300",
+     "t": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+    }
+   ],
+   "wants": {},
+   "body": "## The flag\n\n- Item: DeepSeekMath (arxiv:2402.03300)\n- Page: 7\n- Kind: Pages missing or garbled\n- Note: Figure 3 renders as a black box\n- Picture: jobs/assets/flag-0003.webp\n\n## What to do\n\nFind the cause. If the cause is an app bug, describe it in the Result.",
+   "prompt": "In the cairn repo, do job flag-0003 (apps/open-stacks/browser/jobs/open/flag-0003.md) following apps/open-stacks/browser/jobs/README.md: check it with node jobs.mjs check flag-0003 --live, close it with node jobs.mjs done flag-0003, and commit with the command it prints."
+  },
+  {
+   "id": "follow-author-0002",
+   "type": "follow-author",
+   "title": "Find up to 5 open works by Zhihong Shao",
+   "priority": "normal",
+   "created": "2026-10-14",
+   "key": "follow-author:shao",
+   "inputs": [
+    {
+     "name": "Zhihong Shao"
+    },
+    {
+     "id": "arxiv:2402.03300",
+     "t": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+    }
+   ],
+   "wants": {
+    "count": 5,
+    "min": 1,
+    "max": 10
+   },
+   "body": "## What to do\n\nFind open works by **Zhihong Shao** not yet in the corpus.",
+   "prompt": "In the cairn repo, do job follow-author-0002 (apps/open-stacks/browser/jobs/open/follow-author-0002.md) following apps/open-stacks/browser/jobs/README.md: check it with node jobs.mjs check follow-author-0002 --live, close it with node jobs.mjs done follow-author-0002, and commit with the command it prints."
+  },
+  {
+   "id": "fix-item-0004",
+   "type": "fix-item",
+   "title": "Fix 2 items in Forecasting that fail to open",
+   "priority": "normal",
+   "created": "2026-10-13",
+   "key": "fix-item:forecasting",
+   "inputs": [
+    {
+     "id": "pdf:users.nber.org/~jwolfers/Papers/Predictionmarkets.pdf",
+     "t": "Prediction Markets",
+     "url": "https://users.nber.org/~jwolfers/Papers/Predictionmarkets.pdf",
+     "problem": "HTTP 404"
+    },
+    {
+     "id": "web:gwern.net/prediction-market",
+     "t": "Prediction Markets",
+     "url": "https://gwern.net/prediction-market",
+     "problem": "fails to open: timeout"
+    }
+   ],
+   "wants": {},
+   "body": "## What to do\n\nFor each item, find a working legal open copy of the same work (the publisher’s open PDF, the author’s page, arXiv, the Internet Archive, the Wayback Machine). Record it in `data/overrides.json`, or, if none exists, set `drop: true` with `why`.",
+   "prompt": "In the cairn repo, do job fix-item-0004 (apps/open-stacks/browser/jobs/open/fix-item-0004.md) following apps/open-stacks/browser/jobs/README.md: check it with node jobs.mjs check fix-item-0004 --live, close it with node jobs.mjs done fix-item-0004, and commit with the command it prints."
+  },
+  {
+   "id": "tag-0001",
+   "type": "tag",
+   "title": "Tag 60 untagged items in Old technical oddities",
+   "priority": "low",
+   "created": "2026-10-12",
+   "key": "tag:oddities",
+   "inputs": [
+    {
+     "id": "x0",
+     "t": "x"
+    },
+    {
+     "id": "x1",
+     "t": "x"
+    },
+    {
+     "id": "x2",
+     "t": "x"
+    },
+    {
+     "id": "x3",
+     "t": "x"
+    },
+    {
+     "id": "x4",
+     "t": "x"
+    },
+    {
+     "id": "x5",
+     "t": "x"
+    },
+    {
+     "id": "x6",
+     "t": "x"
+    },
+    {
+     "id": "x7",
+     "t": "x"
+    },
+    {
+     "id": "x8",
+     "t": "x"
+    },
+    {
+     "id": "x9",
+     "t": "x"
+    },
+    {
+     "id": "x10",
+     "t": "x"
+    },
+    {
+     "id": "x11",
+     "t": "x"
+    },
+    {
+     "id": "x12",
+     "t": "x"
+    },
+    {
+     "id": "x13",
+     "t": "x"
+    },
+    {
+     "id": "x14",
+     "t": "x"
+    },
+    {
+     "id": "x15",
+     "t": "x"
+    },
+    {
+     "id": "x16",
+     "t": "x"
+    },
+    {
+     "id": "x17",
+     "t": "x"
+    },
+    {
+     "id": "x18",
+     "t": "x"
+    },
+    {
+     "id": "x19",
+     "t": "x"
+    },
+    {
+     "id": "x20",
+     "t": "x"
+    },
+    {
+     "id": "x21",
+     "t": "x"
+    },
+    {
+     "id": "x22",
+     "t": "x"
+    },
+    {
+     "id": "x23",
+     "t": "x"
+    },
+    {
+     "id": "x24",
+     "t": "x"
+    },
+    {
+     "id": "x25",
+     "t": "x"
+    },
+    {
+     "id": "x26",
+     "t": "x"
+    },
+    {
+     "id": "x27",
+     "t": "x"
+    },
+    {
+     "id": "x28",
+     "t": "x"
+    },
+    {
+     "id": "x29",
+     "t": "x"
+    },
+    {
+     "id": "x30",
+     "t": "x"
+    },
+    {
+     "id": "x31",
+     "t": "x"
+    },
+    {
+     "id": "x32",
+     "t": "x"
+    },
+    {
+     "id": "x33",
+     "t": "x"
+    },
+    {
+     "id": "x34",
+     "t": "x"
+    },
+    {
+     "id": "x35",
+     "t": "x"
+    },
+    {
+     "id": "x36",
+     "t": "x"
+    },
+    {
+     "id": "x37",
+     "t": "x"
+    },
+    {
+     "id": "x38",
+     "t": "x"
+    },
+    {
+     "id": "x39",
+     "t": "x"
+    },
+    {
+     "id": "x40",
+     "t": "x"
+    },
+    {
+     "id": "x41",
+     "t": "x"
+    },
+    {
+     "id": "x42",
+     "t": "x"
+    },
+    {
+     "id": "x43",
+     "t": "x"
+    },
+    {
+     "id": "x44",
+     "t": "x"
+    },
+    {
+     "id": "x45",
+     "t": "x"
+    },
+    {
+     "id": "x46",
+     "t": "x"
+    },
+    {
+     "id": "x47",
+     "t": "x"
+    },
+    {
+     "id": "x48",
+     "t": "x"
+    },
+    {
+     "id": "x49",
+     "t": "x"
+    },
+    {
+     "id": "x50",
+     "t": "x"
+    },
+    {
+     "id": "x51",
+     "t": "x"
+    },
+    {
+     "id": "x52",
+     "t": "x"
+    },
+    {
+     "id": "x53",
+     "t": "x"
+    },
+    {
+     "id": "x54",
+     "t": "x"
+    },
+    {
+     "id": "x55",
+     "t": "x"
+    },
+    {
+     "id": "x56",
+     "t": "x"
+    },
+    {
+     "id": "x57",
+     "t": "x"
+    },
+    {
+     "id": "x58",
+     "t": "x"
+    },
+    {
+     "id": "x59",
+     "t": "x"
+    }
+   ],
+   "wants": {},
+   "body": "## What to do\n\nAdd each input to at least one tag in `data/tags.json`.",
+   "prompt": "In the cairn repo, do job tag-0001 (apps/open-stacks/browser/jobs/open/tag-0001.md) following apps/open-stacks/browser/jobs/README.md: check it with node jobs.mjs check tag-0001 --live, close it with node jobs.mjs done tag-0001, and commit with the command it prints."
+  }
+ ],
+ "done": [
+  {
+   "id": "discover-0008",
+   "type": "discover",
+   "title": "Find 8 open papers on AI safety › Oversight, debate & honesty",
+   "status": "done",
+   "done": "2026-10-14",
+   "result": {
+    "added": [
+     "arxiv:2608.17776",
+     "arxiv:2506.13609"
+    ],
+    "changed": [],
+    "files": [
+     "data/lanes/ai-safety.added.json",
+     "corpus.json"
+    ],
+    "text": "Items added (2): arxiv:2608.17776 \"Debate Training Reduces Reward Hacking in RLAIF\" (deepmind-safety), arxiv:2506.13609 \"Avoiding Obfuscation with Prover-Estimator Debate\" (deepmind-safety)\nItems changed: none\nFiles: data/lanes/ai-safety.added.json, corpus.json\nSources and queries: semantic-scholar recommendations (positives arXiv:2412.14093)\nNote: only two open papers passed the duplicate check."
+   }
+  },
+  {
+   "id": "discover-0007",
+   "type": "discover",
+   "title": "Find 10 open papers on chain-of-thought monitoring",
+   "status": "done",
+   "done": "2026-10-15",
+   "result": {
+    "added": [
+     "arxiv:2507.11473",
+     "arxiv:2507.05246",
+     "arxiv:2510.23966",
+     "arxiv:2605.29729"
+    ],
+    "changed": [],
+    "files": [
+     "data/lanes/deepmind-safety.added.json",
+     "corpus.json"
+    ],
+    "text": "Items added (4): …\nNote: fixture."
+   }
+  },
+  {
+   "id": "fix-item-0002",
+   "type": "fix-item",
+   "title": "Fix 1 item in AI safety that fails to open",
+   "status": "done",
+   "done": "2026-10-11",
+   "result": {
+    "added": [],
+    "changed": [
+     "arxiv:1606.06565"
+    ],
+    "files": [
+     "data/overrides.json",
+     "corpus.json"
+    ],
+    "text": "Items changed (1): arxiv:1606.06565 (new url)\nNote: the arXiv PDF moved."
+   }
+  },
+  {
+   "id": "discover-0005",
+   "type": "discover",
+   "title": "Find 6 open papers on DeepMind safety › Specification & reward",
+   "status": "done",
+   "done": "2026-10-02",
+   "result": {
+    "added": [
+     "arxiv:2501.13011",
+     "arxiv:2601.11516"
+    ],
+    "changed": [],
+    "files": [
+     "data/lanes/deepmind-safety.added.json",
+     "corpus.json"
+    ],
+    "text": "Items added (2)."
+   }
+  },
+  {
+   "id": "media-0001",
+   "type": "media",
+   "title": "Fix 3 broken images in LessWrong",
+   "status": "dropped",
+   "done": "2026-10-01",
+   "result": {
+    "added": [],
+    "changed": [],
+    "files": [],
+    "text": "Dropped: no archived copies exist."
+   }
+  }
+ ]
+}

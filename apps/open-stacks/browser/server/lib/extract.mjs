@@ -70,7 +70,7 @@ export const RE = {
   resultCap: /\b(?:results?|accuracy|accuracies|performance|scores?|rates?|comparison|compar\w+|vs\.?|versus|win|success|errors?|evaluations?|ablations?|benchmarks?|metrics?|effect)\b|%/i,
   setupCap: /hyper-?parameters?|configurations?|settings|training details|implementation details|prompts?|templates?|examples?|notation|glossary|statistics of|list of|data ?sets? (?:statistics|details|used)|instructions|questionnaire|demographics/i,
   // Tables that describe the setup rather than hold data or results.
-  notData: /\b(?:overview of (?:the |our )?(?:experiments|tasks|evaluations|datasets|methods|approaches|settings)|task (?:overview|descriptions?)|examples? (?:of|from)|(?:here are )?(?:some )?examples|sample (?:outputs|completions|prompts)|prompts? (?:used|for)|hyper-?parameters?|parameters of|glossary|notation|list of|links?\b)/i,
+  notData: /\b(?:overview of (?:the |our )?(?:experiments|tasks|evaluations|datasets|methods|approaches|settings)|task (?:overview|descriptions?)|examples? (?:of|from)|(?:here are )?(?:some )?examples|sample (?:outputs|completions|prompts)|prompts? (?:used|for)|(?:prompt|system prompt|instruction) templates?|system prompts|hyper-?parameters?|parameters of|glossary|notation|list of|links?\b)/i,
   exampleWords: /\b(?:examples?|prompts?|transcripts?|screenshots?|sample outputs?|interface|illustrat\w*)/i,
 };
 

@@ -1374,7 +1374,22 @@ function follow(r, w) {
   if (w.page >= s && w.page < s + n) return;
   turnTo(r, w.page >= s + n && w.page < s + 2 * n ? s + n : w.page < s && w.page >= s - n ? Math.max(0, s - n) : w.page);
 }
-on('nav', ({ type, it }) => { if (R && it?.id === R.it.id && type !== 'item') holdUntil = Date.now() + HOLD_MS; });
+// A jump the reader makes while the voice reads (the outline, the page strip,
+// the track, the overview, g t Home End, r) takes the voice along: it reads
+// from the top of the new view, rather than the pages going back to it after
+// HOLD_MS. A turn (PgDn PgUp), Back, a link followed or a zoom only holds the follow.
+on('nav', ({ type, it }) => {
+  const r = R;
+  if (!r || it?.id !== r.it.id || type === 'item') return;
+  if ((type === 'page' || type === 'random') && mode && r.playing && state.view === 'feed') { holdUntil = 0; readHere(r); return; }
+  holdUntil = Date.now() + HOLD_MS;
+});
+function readHere(r) {
+  const s = state.start.get(r.i) ?? 0;
+  if (r.kind !== 'flow') { rasterJump(r, s, null); return; }
+  if (flowOn(r) && live.flow.contains(r.words[0]?.node)) moveTo(firstFrom(r.words, s), { play: true });
+  else holdUntil = Date.now() + HOLD_MS; // a relayout under way: the words are not where they will be
+}
 on('flow:jump', () => { if (R) holdUntil = Date.now() + HOLD_MS; });
 on('spread:rendered', ({ it, flow }) => {
   settling = 0;

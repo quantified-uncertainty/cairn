@@ -178,10 +178,14 @@ function toggle(c) {
   if (isActive(c)) { leave(); return; }
   enter(c);
 }
-/** ; (dir 1) and : (dir -1): the item's next or previous tag; past either end, the whole lane again. */
+/** ; (dir 1) and : (dir -1): the item's next or previous tag, in the order the chips show
+ *  (kept while you stay on the item, so the presses go round once); past either end, the whole lane again. */
+let cyc = null; // { i, keys }
 function cycle(dir) {
   const i = current(); if (i == null) return;
-  const list = chipsFor(i);
+  const own = chipsFor(i), byKey = new Map(own.map((c) => [c.key, c]));
+  if (!cyc || cyc.i !== i) cyc = { i, keys: (shownFor === i ? chips : own).map((c) => c.key).filter((k) => byKey.has(k)) };
+  const list = cyc.keys.map((k) => byKey.get(k)).filter(Boolean);
   if (!list.length) { toast('No tags here', { icon: 'info', kind: 'edge', sub: 'Nothing else shares this item’s author, folder, year or a tag' }); return; }
   const k = list.findIndex(isActive);
   const next = k < 0 ? (dir > 0 ? 0 : list.length - 1) : k + dir;
@@ -222,14 +226,17 @@ function textW(s, mono) {
 }
 // Sizes in px, as tags.css draws them.
 const GAP = 4, PADX = 7, ICONW = 11, INNER = 4, LMAX = 150, XW = 14, MOREW = 30, BORDER = 2;
-const chipW = (c, act) => BORDER + 2 * PADX + ICONW + INNER + Math.min(LMAX, textW(c.label, 0)) + INNER + textW(act ? `${state.pos + 1}/${state.order.length}` : String(c.items.length), 1) + (act ? XW : 0);
-let boxW = 0, tight = 0; // tight: px taken off the width after the idle check found +n on a third row
+// Each row keeps SLACK px for the stack you are in (its place, "3/9", and ✕), so staying in or leaving moves no chip.
+const SLACK = 26;
+const chipW = (c) => BORDER + 2 * PADX + ICONW + INNER + Math.min(LMAX, textW(c.label, 0)) + INNER + textW(String(c.items.length), 1);
+let boxW = 0, tight = 0; // tight: px taken off the width after the idle check found a row too full
+let lay = null; // the packing, kept while the item, its chips and the width stay: { k, rows: [[keys], [keys]], hidden: [keys] }
 const width = () => boxW || (box.parentElement?.id === 'lib' ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--panel-w')) || 330) - 20 : (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--panel-w')) || 330) - 36);
 /** Two rows, filled first-fit in order of use (a short chip may fill the gap at the end of
  *  row one), with the "Stay in" label first and +n last; the rest wait behind +n. */
 function packed(list) {
-  const W = width() - 1 - tight, head = textW('STAY IN', 2) + 0.08 * 9.5 * 7 + 2;
-  const ws = list.map((c) => chipW(c, isActive(c)));
+  const W = width() - 1 - tight - SLACK, head = textW('STAY IN', 2) + 0.08 * 9.5 * 7 + 2;
+  const ws = list.map(chipW);
   const fill = (more) => {
     const rows = [[], []], used = [head + GAP, 0], room = [W, W - (more ? MOREW + GAP : 0)], hidden = [];
     ws.forEach((w, k) => { const r = used[0] + w <= room[0] ? 0 : used[1] + w <= room[1] ? 1 : -1; if (r < 0) hidden.push(list[k]); else { rows[r].push(list[k]); used[r] += w + GAP; } });
@@ -257,7 +264,10 @@ function paint() {
       list.length > 1 ? h('button', { type: 'button', className: 'tg-more tg-less', textContent: '−', title: 'Fewer: one or two rows' }) : null));
     return;
   }
-  let p = packed(list);
+  const k = `${i}|${list.map((c) => c.key).join('|')}|${width()}|${tight}`;
+  if (lay?.k !== k) { const q = packed(list); lay = { k, rows: q.rows.map((r) => r.map((c) => c.key)), hidden: q.hidden.map((c) => c.key) }; }
+  const byKey = new Map(list.map((c) => [c.key, c])), get = (keys) => keys.map((x) => byKey.get(x));
+  let p = { rows: lay.rows.map(get), hidden: get(lay.hidden) };
   // The stack you are in always shows: when it would wait behind +n, it goes first.
   if (p.hidden.some(isActive)) { const a = list.find(isActive); p = packed([a, ...list.filter((c) => c !== a)]); }
   chips = [...p.rows[0], ...p.rows[1], ...p.hidden]; // ; cycles in this order: as they show, then the rest
@@ -285,7 +295,7 @@ function check() {
   checkT = (window.requestIdleCallback || setTimeout)(() => {
     checkT = 0;
     if (box.hidden || open) return;
-    if ([...row.children].some((r) => r.scrollWidth > r.clientWidth + 1)) { tight += 10; paint(); }
+    if ([...row.children].some((r) => r.scrollWidth > r.clientWidth + 1)) { tight += 10; lay = null; paint(); }
   });
 }
 let raf = 0;
