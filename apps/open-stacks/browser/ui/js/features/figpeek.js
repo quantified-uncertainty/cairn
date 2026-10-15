@@ -473,9 +473,15 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
       const side = cand[0].side;
       // Sub-figures: every region on that side up to the barrier beyond the nearest.
       F = { ...cand[0].R };
+      // Sub-figures side by side, or pieces close together, become one region;
+      // sub-figures stacked further apart stay apart (each enlarges more) and share the caption.
       const wide = C.x1 - C.x0 > 0.5 * (sx1 - sx0);
-      for (const c of cand) if (c.side === side && c.R !== cand[0].R && c.d < 0.12 * H && (wide || c.al > 0.3)) { grow(F, c.R); c.R.cap = C; }
       cand[0].R.cap = C;
+      for (const c of cand.slice(1).sort((a, b) => a.d - b.d)) {
+        if (c.side !== side || !(wide || c.al > 0.3) || c.d > 0.45 * H) continue;
+        const R = c.R, gapY = Math.max(R.y0 - F.y1, F.y0 - R.y1);
+        if ((ovY(R, F) > 0.3 * Math.min(R.y1 - R.y0, F.y1 - F.y0) && c.d < 0.12 * H) || gapY < 0.04 * H) { grow(F, R); R.cap = C; } else { R.cap = C; out.push({ ...R, cap: C, kind: C.kind }); }
+      }
     } else {
       const order = C.kind === 'table' ? [true, false] : [false, true];
       for (const below of order) if ((F = profile(C, sx0, sx1, below))) break;
@@ -704,8 +710,9 @@ function footH(reg, w) {
 function layout(reg, el) {
   const pgs = [...spread.children].filter((e) => e.classList.contains('pg') && e._pnl?.canvas);
   if (!pgs.length) return null;
-  const sp = spread.getBoundingClientRect();
-  const A = { l: Math.max(sp.left, 0) + 8, t: Math.max(sp.top, 0) + 4, r: Math.min(sp.right, innerWidth) - 8, b: Math.min(sp.bottom, innerHeight) - 4 };
+  // The stage's width (zoomed pages leave room at the sides), the pages' height.
+  const sp = spread.getBoundingClientRect(), pr = pgs.map((e) => e.getBoundingClientRect());
+  const A = { l: Math.max(sp.left, 0) + 8, t: Math.max(sp.top, 0, Math.min(...pr.map((r) => r.top))), r: Math.min(sp.right, innerWidth) - 8, b: Math.min(sp.bottom, innerHeight, Math.max(...pr.map((r) => r.bottom))) };
   const F = rectOn(el, reg); // the whole figure as it is drawn (it may run past a split panel)
   const fw = F.r - F.l, fh = F.b - F.t;
   if (fw < 4 || fh < 4) return null;

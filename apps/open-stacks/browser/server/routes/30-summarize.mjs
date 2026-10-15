@@ -117,7 +117,7 @@ function schemaFor(fam) {
     this_spread: str('What is on the pages currently shown, in 1-2 sentences.'),
   });
 }
-const docBlock = (b) => `<document>\nTitle: ${b.title}\nAuthors: ${b.authors || 'unknown'}\nYear: ${b.year || 'unknown'}\nShelf: ${b.lane || b.laneId || 'unknown'}\n<text>\n${String(b.text || '').slice(0, 90000)}\n</text>\n</document>`;
+export const docBlock = (b) => `<document>\nTitle: ${b.title}\nAuthors: ${b.authors || 'unknown'}\nYear: ${b.year || 'unknown'}\nShelf: ${b.lane || b.laneId || 'unknown'}\n<text>\n${String(b.text || '').slice(0, 90000)}\n</text>\n</document>`;
 function summaryPrompt(b, fam) {
   return `You are helping a researcher triage reading quickly: they skim many items and decide in seconds what deserves their time. Summarize the ${FAMILIES[fam].label} above for them. Pages currently on screen: ${b.spread || 'unknown'}.
 
@@ -194,6 +194,8 @@ function findQuote(ix, quote) {
   for (const [at, p] of ix.pages) { if (at > start) break; pg = p; }
   return { page: pg };
 }
+// Shared with server/augment.mjs (reading guides), which checks its quotes the same way.
+export { indexText, findQuote };
 /** Mark key points' quotes as verified or not (the first `upto`), correcting the page from where the quote was found. */
 function verify(ix, s, upto = Infinity) {
   (s.key_points || []).forEach((kp, j) => {
@@ -411,6 +413,9 @@ export default function (app) {
   });
 
   app.status(() => ({ summaries: made, asks: asked, spend: spendInfo(), mockAI: MOCK, summariesEnabled: MOCK || app.hasKey(), models: Object.keys(PRICES) }));
+  // Later routes (91-augment.mjs) call the model through the same streaming, mock
+  // mode and daily budget, so spend.json keeps one writer.
+  app.ai = { generate, reserve, charge, costOf, spendInfo, pickModel, MOCK, MOCK_DELAY, docBlock, client: () => client(app) };
   if (MOCK) app.onStart(() => console.log(`AI mock mode (STACKS_MOCK_AI): canned summaries, no API calls · budget $${BUDGET}/day`));
 }
 
