@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measuring an Evaluator</title>
+<style>
+:root { --text: #2e2c28; --muted: #5f5b53; --bg: #ffffff; --accent: #1f6e46; }
+:root[data-theme='dark'] { --text: #dcd7cd; --muted: #a7a195; --bg: #161514; --accent: #7fd2a0; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) { --text: #dcd7cd; --muted: #a7a195; --bg: #161514; --accent: #7fd2a0; } }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 17px; line-height: 1.6; }
+main { max-width: 45rem; margin: 0 auto; padding: 2.5rem 16px 3rem; }
+h1 { font-size: 1.125rem; font-weight: 600; margin: 0 0 1.25rem; color: var(--muted); }
+h2 { font-size: 1.375rem; margin: 0 0 0.75rem; }
+p { margin: 0 0 1rem; }
+a { color: var(--accent); }
+.eq { text-align: center; font-style: italic; margin: 0 0 1rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Measuring an Evaluator</h1>
+<h2>Agreement, corrected for chance</h2>
+<p>Raw agreement <i>p</i><sub>o</sub> is the share of items on which two raters give the same label. It is inflated by base rates: two raters who each independently say “yes” to 80% of items agree 0.8² + 0.2² = 68% of the time without looking. Cohen’s kappa subtracts the agreement expected from the raters’ own marginal rates, <i>p</i><sub>e</sub>, and rescales:</p>
+<p class="eq">κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)</p>
+<p>so that chance scores 0 and perfect agreement 1 (Cohen 1960).</p>
+<style>
+.ka-fig {
+  --ka-text: #2e2c28; --ka-muted: #5f5b53; --ka-lines: #8f897e; --ka-hair: #d6d1c7; --ka-bg: #ffffff; --ka-accent: #1f6e46;
+  margin: 2rem 0; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+:root[data-theme='dark'] .ka-fig { --ka-text: #dcd7cd; --ka-muted: #a7a195; --ka-lines: #8f897e; --ka-hair: #45423c; --ka-bg: #161514; --ka-accent: #7fd2a0; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ka-fig { --ka-text: #dcd7cd; --ka-muted: #a7a195; --ka-lines: #8f897e; --ka-hair: #45423c; --ka-bg: #161514; --ka-accent: #7fd2a0; }
+}
+.ka-svg { display: block; width: 100%; height: auto; max-width: 660px; overflow: visible; font-family: inherit; }
+.ka-narrow { display: none; max-width: 400px; }
+@media (max-width: 34rem) { .ka-wide { display: none; } .ka-narrow { display: block; } }
+.ka-svg text { fill: var(--ka-text); }
+.ka-svg .ka-m { fill: var(--ka-muted); }
+.ka-svg .ka-b { fill: var(--ka-text); font-weight: 600; }
+.ka-svg .ka-a { fill: var(--ka-accent); }
+.ka-strong { font-weight: 600; }
+.ka-sub { font-size: 0.75em; }
+.ka-svg .ka-lab { fill: var(--ka-text); paint-order: stroke; stroke: var(--ka-bg); stroke-width: 5px; stroke-linejoin: round; }
+.ka-svg .ka-lab.ka-m { fill: var(--ka-muted); }
+.ka-axis { fill: none; stroke: var(--ka-lines); stroke-width: 1; }
+.ka-grid { fill: none; stroke: var(--ka-hair); stroke-width: 1; }
+.ka-chance { fill: none; stroke: var(--ka-muted); stroke-width: 2; }
+.ka-k { fill: none; stroke: var(--ka-lines); stroke-width: 1.25; }
+.ka-k17 { stroke-dasharray: 5 4; }
+.ka-same { fill: none; stroke: var(--ka-text); stroke-width: 1; stroke-dasharray: 2 4; }
+.ka-ci { fill: none; stroke: var(--ka-accent); stroke-width: 2; stroke-linecap: round; }
+.ka-dot { fill: var(--ka-text); stroke: var(--ka-bg); stroke-width: 2; }
+.ka-dot-a { fill: var(--ka-accent); stroke: var(--ka-bg); stroke-width: 2; }
+.ka-fig figcaption a { color: inherit; text-decoration: underline; }
+.ka-fig figcaption { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.55; color: var(--ka-muted); max-width: 40rem; }
+</style>
+<figure class="ka-fig">
+<svg class="ka-svg ka-wide" viewBox="0 0 660 418" width="660" height="418" role="img" aria-label="Chart of raw agreement against the share of items both raters call yes, from 50 to 100 percent. The chance-agreement curve p_e = pi squared plus (1 minus pi) squared rises from 50 percent to 100 percent, and the curves for kappa 0.17, 0.4, 0.6 and 0.8 sit above it and converge on it as the yes rate nears 100 percent. A horizontal line at 70 percent raw agreement runs from a balanced 50 percent yes rate, where it means kappa 0.40, to an 80 percent yes rate, where it means kappa 0.06. Fifty audits put a 95 percent interval of plus or minus 13 points on that 70 percent, and the kappa estimated from those 50 items could fall anywhere from about −0.20 to 0.37." style="font-size:15px">
+<path class="ka-grid" d="M54 290.8H640"/>
+<path class="ka-grid" d="M54 229.6H640"/>
+<path class="ka-grid" d="M54 168.4H640"/>
+<path class="ka-grid" d="M54 107.2H640"/>
+<path class="ka-grid" d="M54 46H640"/>
+<path class="ka-axis" d="M54 40V352H640"/>
+<text x="46" y="357.3" class="ka-m" text-anchor="end">50%</text>
+<text x="46" y="296.1" class="ka-m" text-anchor="end">60%</text>
+<text x="46" y="234.9" class="ka-m" text-anchor="end">70%</text>
+<text x="46" y="173.6" class="ka-m" text-anchor="end">80%</text>
+<text x="46" y="112.5" class="ka-m" text-anchor="end">90%</text>
+<text x="46" y="51.3" class="ka-m" text-anchor="end">100%</text>
+<path class="ka-axis" d="M54 352V357"/>
+<text x="54" y="374.3" class="ka-m" text-anchor="start">50%</text>
+<path class="ka-axis" d="M171.2 352V357"/>
+<text x="171.2" y="374.3" class="ka-m" text-anchor="middle">60%</text>
+<path class="ka-axis" d="M288.4 352V357"/>
+<text x="288.4" y="374.3" class="ka-m" text-anchor="middle">70%</text>
+<path class="ka-axis" d="M405.6 352V357"/>
+<text x="405.6" y="374.3" class="ka-m" text-anchor="middle">80%</text>
+<path class="ka-axis" d="M522.8 352V357"/>
+<text x="522.8" y="374.3" class="ka-m" text-anchor="middle">90%</text>
+<path class="ka-axis" d="M640 352V357"/>
+<text x="640" y="374.3" class="ka-m" text-anchor="end">100%</text>
+<path class="ka-chance" d="M54 352L58.8 352L63.7 351.9L68.5 351.8L73.3 351.7L78.2 351.5L83 351.3L87.8 351L92.7 350.7L97.5 350.3L102.3 349.9L107.2 349.5L112 349L116.8 348.5L121.7 347.9L126.5 347.3L131.4 346.7L136.2 346L141 345.3L145.9 344.5L150.7 343.7L155.5 342.8L160.4 341.9L165.2 341L170 340L174.9 339L179.7 337.9L184.5 336.8L189.4 335.7L194.2 334.5L199 333.3L203.9 332L208.7 330.7L213.5 329.3L218.4 327.9L223.2 326.5L228 325L232.9 323.5L237.7 321.9L242.5 320.3L247.4 318.7L252.2 317L257 315.3L261.9 313.5L266.7 311.7L271.6 309.8L276.4 307.9L281.2 306L286.1 304L290.9 302L295.7 299.9L300.6 297.8L305.4 295.7L310.2 293.5L315.1 291.3L319.9 289L324.7 286.7L329.6 284.3L334.4 281.9L339.2 279.5L344.1 277L348.9 274.5L353.7 271.9L358.6 269.3L363.4 266.7L368.2 264L373.1 261.3L377.9 258.5L382.7 255.7L387.6 252.8L392.4 249.9L397.2 247L402.1 244L406.9 241L411.8 238L416.6 234.8L421.4 231.7L426.3 228.5L431.1 225.3L435.9 222L440.8 218.7L445.6 215.4L450.4 212L455.3 208.5L460.1 205L464.9 201.5L469.8 198L474.6 194.4L479.4 190.7L484.3 187L489.1 183.3L493.9 179.5L498.8 175.7L503.6 171.9L508.4 168L513.3 164L518.1 160.1L522.9 156L527.8 152L532.6 147.9L537.5 143.7L542.3 139.5L547.1 135.3L552 131L556.8 126.7L561.6 122.4L566.5 118L571.3 113.6L576.1 109.1L581 104.6L585.8 100L590.6 95.4L595.5 90.7L600.3 86.1L605.1 81.3L610 76.6L614.8 71.8L619.6 66.9L624.5 62L629.3 57.1L634.1 52.1"/>
+<path class="ka-k ka-k17" d="M54 300L58.8 300L63.7 299.9L68.5 299.8L73.3 299.7L78.2 299.5L83 299.4L87.8 299.1L92.7 298.9L97.5 298.6L102.3 298.3L107.2 297.9L112 297.5L116.8 297.1L121.7 296.6L126.5 296.1L131.4 295.6L136.2 295L141 294.4L145.9 293.7L150.7 293.1L155.5 292.4L160.4 291.6L165.2 290.8L170 290L174.9 289.2L179.7 288.3L184.5 287.4L189.4 286.4L194.2 285.4L199 284.4L203.9 283.4L208.7 282.3L213.5 281.2L218.4 280L223.2 278.8L228 277.6L232.9 276.3L237.7 275L242.5 273.7L247.4 272.3L252.2 270.9L257 269.5L261.9 268L266.7 266.5L271.6 265L276.4 263.4L281.2 261.8L286.1 260.2L290.9 258.5L295.7 256.8L300.6 255L305.4 253.2L310.2 251.4L315.1 249.6L319.9 247.7L324.7 245.8L329.6 243.8L334.4 241.8L339.2 239.8L344.1 237.7L348.9 235.7L353.7 233.5L358.6 231.4L363.4 229.2L368.2 226.9L373.1 224.7L377.9 222.4L382.7 220L387.6 217.7L392.4 215.3L397.2 212.8L402.1 210.4L406.9 207.9L411.8 205.3L416.6 202.7L421.4 200.1L426.3 197.5L431.1 194.8L435.9 192.1L440.8 189.3L445.6 186.6L450.4 183.7L455.3 180.9L460.1 178L464.9 175.1L469.8 172.1L474.6 169.1L479.4 166.1L484.3 163.1L489.1 160L493.9 156.8L498.8 153.7L503.6 150.5L508.4 147.2L513.3 144L518.1 140.7L522.9 137.3L527.8 134L532.6 130.6L537.5 127.1L542.3 123.6L547.1 120.1L552 116.6L556.8 113L561.6 109.4L566.5 105.7L571.3 102.1L576.1 98.4L581 94.6L585.8 90.8L590.6 87L595.5 83.1L600.3 79.2L605.1 75.3L610 71.4L614.8 67.4L619.6 63.3L624.5 59.3L629.3 55.2L634.1 51.1"/>
+<path class="ka-k" d="M54 229.6L58.8 229.6L63.7 229.6L68.5 229.5L73.3 229.4L78.2 229.3L83 229.2L87.8 229L92.7 228.8L97.5 228.6L102.3 228.4L107.2 228.1L112 227.8L116.8 227.5L121.7 227.2L126.5 226.8L131.4 226.4L136.2 226L141 225.6L145.9 225.1L150.7 224.6L155.5 224.1L160.4 223.6L165.2 223L170 222.4L174.9 221.8L179.7 221.2L184.5 220.5L189.4 219.8L194.2 219.1L199 218.4L203.9 217.6L208.7 216.8L213.5 216L218.4 215.2L223.2 214.3L228 213.4L232.9 212.5L237.7 211.6L242.5 210.6L247.4 209.6L252.2 208.6L257 207.6L261.9 206.5L266.7 205.4L271.6 204.3L276.4 203.2L281.2 202L286.1 200.8L290.9 199.6L295.7 198.4L300.6 197.1L305.4 195.8L310.2 194.5L315.1 193.2L319.9 191.8L324.7 190.4L329.6 189L334.4 187.6L339.2 186.1L344.1 184.6L348.9 183.1L353.7 181.6L358.6 180L363.4 178.4L368.2 176.8L373.1 175.2L377.9 173.5L382.7 171.8L387.6 170.1L392.4 168.4L397.2 166.6L402.1 164.8L406.9 163L411.8 161.2L416.6 159.3L421.4 157.4L426.3 155.5L431.1 153.6L435.9 151.6L440.8 149.6L445.6 147.6L450.4 145.6L455.3 143.5L460.1 141.4L464.9 139.3L469.8 137.2L474.6 135L479.4 132.8L484.3 130.6L489.1 128.4L493.9 126.1L498.8 123.8L503.6 121.5L508.4 119.2L513.3 116.8L518.1 114.4L522.9 112L527.8 109.6L532.6 107.1L537.5 104.6L542.3 102.1L547.1 99.6L552 97L556.8 94.4L561.6 91.8L566.5 89.2L571.3 86.5L576.1 83.8L581 81.1L585.8 78.4L590.6 75.6L595.5 72.8L600.3 70L605.1 67.2L610 64.3L614.8 61.5L619.6 58.5L624.5 55.6L629.3 52.6L634.1 49.7"/>
+<path class="ka-k" d="M54 168.4L58.8 168.4L63.7 168.4L68.5 168.3L73.3 168.3L78.2 168.2L83 168.1L87.8 168L92.7 167.9L97.5 167.7L102.3 167.6L107.2 167.4L112 167.2L116.8 167L121.7 166.8L126.5 166.5L131.4 166.3L136.2 166L141 165.7L145.9 165.4L150.7 165.1L155.5 164.7L160.4 164.4L165.2 164L170 163.6L174.9 163.2L179.7 162.8L184.5 162.3L189.4 161.9L194.2 161.4L199 160.9L203.9 160.4L208.7 159.9L213.5 159.3L218.4 158.8L223.2 158.2L228 157.6L232.9 157L237.7 156.4L242.5 155.7L247.4 155.1L252.2 154.4L257 153.7L261.9 153L266.7 152.3L271.6 151.5L276.4 150.8L281.2 150L286.1 149.2L290.9 148.4L295.7 147.6L300.6 146.7L305.4 145.9L310.2 145L315.1 144.1L319.9 143.2L324.7 142.3L329.6 141.3L334.4 140.4L339.2 139.4L344.1 138.4L348.9 137.4L353.7 136.4L358.6 135.3L363.4 134.3L368.2 133.2L373.1 132.1L377.9 131L382.7 129.9L387.6 128.7L392.4 127.6L397.2 126.4L402.1 125.2L406.9 124L411.8 122.8L416.6 121.5L421.4 120.3L426.3 119L431.1 117.7L435.9 116.4L440.8 115.1L445.6 113.7L450.4 112.4L455.3 111L460.1 109.6L464.9 108.2L469.8 106.8L474.6 105.3L479.4 103.9L484.3 102.4L489.1 100.9L493.9 99.4L498.8 97.9L503.6 96.3L508.4 94.8L513.3 93.2L518.1 91.6L522.9 90L527.8 88.4L532.6 86.7L537.5 85.1L542.3 83.4L547.1 81.7L552 80L556.8 78.3L561.6 76.6L566.5 74.8L571.3 73L576.1 71.2L581 69.4L585.8 67.6L590.6 65.8L595.5 63.9L600.3 62L605.1 60.1L610 58.2L614.8 56.3L619.6 54.4L624.5 52.4L629.3 50.4L634.1 48.4"/>
+<path class="ka-k" d="M54 107.2L58.8 107.2L63.7 107.2L68.5 107.2L73.3 107.1L78.2 107.1L83 107.1L87.8 107L92.7 106.9L97.5 106.9L102.3 106.8L107.2 106.7L112 106.6L116.8 106.5L121.7 106.4L126.5 106.3L131.4 106.1L136.2 106L141 105.9L145.9 105.7L150.7 105.5L155.5 105.4L160.4 105.2L165.2 105L170 104.8L174.9 104.6L179.7 104.4L184.5 104.2L189.4 103.9L194.2 103.7L199 103.5L203.9 103.2L208.7 102.9L213.5 102.7L218.4 102.4L223.2 102.1L228 101.8L232.9 101.5L237.7 101.2L242.5 100.9L247.4 100.5L252.2 100.2L257 99.9L261.9 99.5L266.7 99.1L271.6 98.8L276.4 98.4L281.2 98L286.1 97.6L290.9 97.2L295.7 96.8L300.6 96.4L305.4 95.9L310.2 95.5L315.1 95.1L319.9 94.6L324.7 94.1L329.6 93.7L334.4 93.2L339.2 92.7L344.1 92.2L348.9 91.7L353.7 91.2L358.6 90.7L363.4 90.1L368.2 89.6L373.1 89.1L377.9 88.5L382.7 87.9L387.6 87.4L392.4 86.8L397.2 86.2L402.1 85.6L406.9 85L411.8 84.4L416.6 83.8L421.4 83.1L426.3 82.5L431.1 81.9L435.9 81.2L440.8 80.5L445.6 79.9L450.4 79.2L455.3 78.5L460.1 77.8L464.9 77.1L469.8 76.4L474.6 75.7L479.4 74.9L484.3 74.2L489.1 73.5L493.9 72.7L498.8 71.9L503.6 71.2L508.4 70.4L513.3 69.6L518.1 68.8L522.9 68L527.8 67.2L532.6 66.4L537.5 65.5L542.3 64.7L547.1 63.9L552 63L556.8 62.1L561.6 61.3L566.5 60.4L571.3 59.5L576.1 58.6L581 57.7L585.8 56.8L590.6 55.9L595.5 54.9L600.3 54L605.1 53.1L610 52.1L614.8 51.2L619.6 50.2L624.5 49.2L629.3 48.2L634.1 47.2"/>
+<path class="ka-same" d="M54 229.6H405.6"/>
+<text x="241.5" y="106.2" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> = 0.8</text>
+<text x="241.5" y="161.1" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> = 0.6</text>
+<text x="499.4" y="128.8" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> = 0.4</text>
+<text x="171.2" y="295.1" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> = 0.17, journal peer review</text>
+<text x="241.5" y="325.9" class="ka-lab ka-m" text-anchor="middle">chance, <tspan font-style="italic">κ</tspan> = 0</text>
+<path class="ka-ci" d="M405.6 307.3V151.9M400.6 307.3h10M400.6 151.9h10"/>
+<circle class="ka-dot" cx="54" cy="229.6" r="4.5"/>
+<circle class="ka-dot-a" cx="405.6" cy="229.6" r="5"/>
+<text x="4" y="20" class="ka-m">Raw agreement, p<tspan class="ka-sub" dy="4">o</tspan></text>
+<text x="54" y="402" class="ka-m">Share of items each rater calls “yes”, π (both raters at the same rate)</text>
+<text x="64" y="250.6" text-anchor="start"><tspan x="64" class="ka-b"><tspan font-style="italic">κ</tspan> = 0.40 at a 50/50 split</tspan></text>
+<text x="255.6" y="221.6" class="ka-m">70% agreement</text>
+<text x="421.6" y="254.1" text-anchor="start"><tspan x="421.6" class="ka-a ka-strong">Experts renew 80%: <tspan font-style="italic">κ</tspan> = 0.06</tspan><tspan x="421.6" dy="20" class="ka-m">50 audits: 70% ± 13 points;</tspan><tspan x="421.6" dy="20" class="ka-m"><tspan font-style="italic">κ</tspan> from about −0.20 to 0.37</tspan></text>
+</svg>
+<svg class="ka-svg ka-narrow" viewBox="0 0 343 470" width="343" height="470" role="img" aria-label="Chart of raw agreement against the share of items both raters call yes, from 50 to 100 percent. The chance-agreement curve p_e = pi squared plus (1 minus pi) squared rises from 50 percent to 100 percent, and the curves for kappa 0.17, 0.4, 0.6 and 0.8 sit above it and converge on it as the yes rate nears 100 percent. A horizontal line at 70 percent raw agreement runs from a balanced 50 percent yes rate, where it means kappa 0.40, to an 80 percent yes rate, where it means kappa 0.06. Fifty audits put a 95 percent interval of plus or minus 13 points on that 70 percent, and the kappa estimated from those 50 items could fall anywhere from about −0.20 to 0.37." style="font-size:14px">
+<path class="ka-grid" d="M44 272H326"/>
+<path class="ka-grid" d="M44 214H326"/>
+<path class="ka-grid" d="M44 156H326"/>
+<path class="ka-grid" d="M44 98H326"/>
+<path class="ka-grid" d="M44 40H326"/>
+<path class="ka-axis" d="M44 34V330H326"/>
+<text x="36" y="334.9" class="ka-m" text-anchor="end">50%</text>
+<text x="36" y="276.9" class="ka-m" text-anchor="end">60%</text>
+<text x="36" y="218.9" class="ka-m" text-anchor="end">70%</text>
+<text x="36" y="160.9" class="ka-m" text-anchor="end">80%</text>
+<text x="36" y="102.9" class="ka-m" text-anchor="end">90%</text>
+<text x="36" y="44.9" class="ka-m" text-anchor="end">100%</text>
+<path class="ka-axis" d="M44 330V335"/>
+<text x="44" y="351.1" class="ka-m" text-anchor="middle">50%</text>
+<path class="ka-axis" d="M100.4 330V335"/>
+<text x="100.4" y="351.1" class="ka-m" text-anchor="middle">60%</text>
+<path class="ka-axis" d="M156.8 330V335"/>
+<text x="156.8" y="351.1" class="ka-m" text-anchor="middle">70%</text>
+<path class="ka-axis" d="M213.2 330V335"/>
+<text x="213.2" y="351.1" class="ka-m" text-anchor="middle">80%</text>
+<path class="ka-axis" d="M269.6 330V335"/>
+<text x="269.6" y="351.1" class="ka-m" text-anchor="middle">90%</text>
+<path class="ka-axis" d="M326 330V335"/>
+<text x="326" y="351.1" class="ka-m" text-anchor="middle">100%</text>
+<path class="ka-chance" d="M44 330L46.3 330L48.7 329.9L51 329.8L53.3 329.7L55.6 329.5L58 329.3L60.3 329L62.6 328.7L64.9 328.4L67.3 328L69.6 327.6L71.9 327.2L74.2 326.7L76.6 326.1L78.9 325.6L81.2 324.9L83.6 324.3L85.9 323.6L88.2 322.9L90.5 322.1L92.9 321.3L95.2 320.4L97.5 319.6L99.8 318.6L102.2 317.7L104.5 316.7L106.8 315.6L109.1 314.5L111.5 313.4L113.8 312.2L116.1 311L118.4 309.8L120.8 308.5L123.1 307.2L125.4 305.8L127.8 304.4L130.1 303L132.4 301.5L134.7 300L137.1 298.4L139.4 296.8L141.7 295.2L144 293.5L146.4 291.8L148.7 290L151 288.2L153.3 286.4L155.7 284.5L158 282.6L160.3 280.7L162.7 278.7L165 276.6L167.3 274.6L169.6 272.4L172 270.3L174.3 268.1L176.6 265.9L178.9 263.6L181.3 261.3L183.6 258.9L185.9 256.6L188.2 254.1L190.6 251.7L192.9 249.2L195.2 246.6L197.5 244L199.9 241.4L202.2 238.7L204.5 236L206.9 233.3L209.2 230.5L211.5 227.7L213.8 224.8L216.2 221.9L218.5 219L220.8 216L223.1 213L225.5 209.9L227.8 206.8L230.1 203.7L232.4 200.5L234.8 197.3L237.1 194L239.4 190.7L241.8 187.4L244.1 184L246.4 180.6L248.7 177.1L251.1 173.7L253.4 170.1L255.7 166.5L258 162.9L260.4 159.3L262.7 155.6L265 151.9L267.3 148.1L269.7 144.3L272 140.4L274.3 136.5L276.7 132.6L279 128.7L281.3 124.6L283.6 120.6L286 116.5L288.3 112.4L290.6 108.2L292.9 104L295.3 99.8L297.6 95.5L299.9 91.2L302.2 86.8L304.6 82.4L306.9 78L309.2 73.5L311.5 69L313.9 64.4L316.2 59.8L318.5 55.2L320.9 50.5L323.2 45.8"/>
+<path class="ka-k ka-k17" d="M44 280.7L46.3 280.7L48.7 280.6L51 280.6L53.3 280.4L55.6 280.3L58 280.1L60.3 279.9L62.6 279.7L64.9 279.4L67.3 279.1L69.6 278.7L71.9 278.3L74.2 277.9L76.6 277.5L78.9 277L81.2 276.5L83.6 276L85.9 275.4L88.2 274.8L90.5 274.1L92.9 273.5L95.2 272.8L97.5 272L99.8 271.3L102.2 270.5L104.5 269.6L106.8 268.8L109.1 267.9L111.5 266.9L113.8 266L116.1 265L118.4 263.9L120.8 262.9L123.1 261.8L125.4 260.6L127.8 259.5L130.1 258.3L132.4 257L134.7 255.8L137.1 254.5L139.4 253.2L141.7 251.8L144 250.4L146.4 249L148.7 247.5L151 246L153.3 244.5L155.7 243L158 241.4L160.3 239.7L162.7 238.1L165 236.4L167.3 234.7L169.6 232.9L172 231.1L174.3 229.3L176.6 227.5L178.9 225.6L181.3 223.7L183.6 221.7L185.9 219.7L188.2 217.7L190.6 215.7L192.9 213.6L195.2 211.5L197.5 209.3L199.9 207.2L202.2 204.9L204.5 202.7L206.9 200.4L209.2 198.1L211.5 195.8L213.8 193.4L216.2 191L218.5 188.5L220.8 186.1L223.1 183.6L225.5 181L227.8 178.5L230.1 175.9L232.4 173.2L234.8 170.5L237.1 167.8L239.4 165.1L241.8 162.3L244.1 159.5L246.4 156.7L248.7 153.8L251.1 150.9L253.4 148L255.7 145L258 142L260.4 139L262.7 135.9L265 132.8L267.3 129.7L269.7 126.6L272 123.4L274.3 120.1L276.7 116.9L279 113.6L281.3 110.3L283.6 106.9L286 103.5L288.3 100.1L290.6 96.6L292.9 93.1L295.3 89.6L297.6 86.1L299.9 82.5L302.2 78.8L304.6 75.2L306.9 71.5L309.2 67.8L311.5 64L313.9 60.3L316.2 56.4L318.5 52.6L320.9 48.7L323.2 44.8"/>
+<path class="ka-k" d="M44 214L46.3 214L48.7 214L51 213.9L53.3 213.8L55.6 213.7L58 213.6L60.3 213.4L62.6 213.2L64.9 213L67.3 212.8L69.6 212.6L71.9 212.3L74.2 212L76.6 211.7L78.9 211.3L81.2 211L83.6 210.6L85.9 210.2L88.2 209.7L90.5 209.3L92.9 208.8L95.2 208.3L97.5 207.7L99.8 207.2L102.2 206.6L104.5 206L106.8 205.4L109.1 204.7L111.5 204L113.8 203.3L116.1 202.6L118.4 201.9L120.8 201.1L123.1 200.3L125.4 199.5L127.8 198.7L130.1 197.8L132.4 196.9L134.7 196L137.1 195.1L139.4 194.1L141.7 193.1L144 192.1L146.4 191.1L148.7 190L151 188.9L153.3 187.8L155.7 186.7L158 185.6L160.3 184.4L162.7 183.2L165 182L167.3 180.7L169.6 179.5L172 178.2L174.3 176.9L176.6 175.5L178.9 174.2L181.3 172.8L183.6 171.4L185.9 169.9L188.2 168.5L190.6 167L192.9 165.5L195.2 164L197.5 162.4L199.9 160.8L202.2 159.2L204.5 157.6L206.9 156L209.2 154.3L211.5 152.6L213.8 150.9L216.2 149.1L218.5 147.4L220.8 145.6L223.1 143.8L225.5 141.9L227.8 140.1L230.1 138.2L232.4 136.3L234.8 134.4L237.1 132.4L239.4 130.4L241.8 128.4L244.1 126.4L246.4 124.4L248.7 122.3L251.1 120.2L253.4 118.1L255.7 115.9L258 113.8L260.4 111.6L262.7 109.4L265 107.1L267.3 104.9L269.7 102.6L272 100.3L274.3 97.9L276.7 95.6L279 93.2L281.3 90.8L283.6 88.4L286 85.9L288.3 83.4L290.6 80.9L292.9 78.4L295.3 75.9L297.6 73.3L299.9 70.7L302.2 68.1L304.6 65.4L306.9 62.8L309.2 60.1L311.5 57.4L313.9 54.6L316.2 51.9L318.5 49.1L320.9 46.3L323.2 43.5"/>
+<path class="ka-k" d="M44 156L46.3 156L48.7 156L51 155.9L53.3 155.9L55.6 155.8L58 155.7L60.3 155.6L62.6 155.5L64.9 155.4L67.3 155.2L69.6 155L71.9 154.9L74.2 154.7L76.6 154.5L78.9 154.2L81.2 154L83.6 153.7L85.9 153.4L88.2 153.1L90.5 152.8L92.9 152.5L95.2 152.2L97.5 151.8L99.8 151.5L102.2 151.1L104.5 150.7L106.8 150.2L109.1 149.8L111.5 149.4L113.8 148.9L116.1 148.4L118.4 147.9L120.8 147.4L123.1 146.9L125.4 146.3L127.8 145.8L130.1 145.2L132.4 144.6L134.7 144L137.1 143.4L139.4 142.7L141.7 142.1L144 141.4L146.4 140.7L148.7 140L151 139.3L153.3 138.6L155.7 137.8L158 137L160.3 136.3L162.7 135.5L165 134.7L167.3 133.8L169.6 133L172 132.1L174.3 131.2L176.6 130.3L178.9 129.4L181.3 128.5L183.6 127.6L185.9 126.6L188.2 125.7L190.6 124.7L192.9 123.7L195.2 122.6L197.5 121.6L199.9 120.6L202.2 119.5L204.5 118.4L206.9 117.3L209.2 116.2L211.5 115.1L213.8 113.9L216.2 112.8L218.5 111.6L220.8 110.4L223.1 109.2L225.5 108L227.8 106.7L230.1 105.5L232.4 104.2L234.8 102.9L237.1 101.6L239.4 100.3L241.8 99L244.1 97.6L246.4 96.2L248.7 94.9L251.1 93.5L253.4 92L255.7 90.6L258 89.2L260.4 87.7L262.7 86.2L265 84.7L267.3 83.2L269.7 81.7L272 80.2L274.3 78.6L276.7 77L279 75.5L281.3 73.9L283.6 72.2L286 70.6L288.3 69L290.6 67.3L292.9 65.6L295.3 63.9L297.6 62.2L299.9 60.5L302.2 58.7L304.6 57L306.9 55.2L309.2 53.4L311.5 51.6L313.9 49.8L316.2 47.9L318.5 46.1L320.9 44.2L323.2 42.3"/>
+<path class="ka-k" d="M44 98L46.3 98L48.7 98L51 98L53.3 97.9L55.6 97.9L58 97.9L60.3 97.8L62.6 97.7L64.9 97.7L67.3 97.6L69.6 97.5L71.9 97.4L74.2 97.3L76.6 97.2L78.9 97.1L81.2 97L83.6 96.9L85.9 96.7L88.2 96.6L90.5 96.4L92.9 96.3L95.2 96.1L97.5 95.9L99.8 95.7L102.2 95.5L104.5 95.3L106.8 95.1L109.1 94.9L111.5 94.7L113.8 94.4L116.1 94.2L118.4 94L120.8 93.7L123.1 93.4L125.4 93.2L127.8 92.9L130.1 92.6L132.4 92.3L134.7 92L137.1 91.7L139.4 91.4L141.7 91L144 90.7L146.4 90.4L148.7 90L151 89.6L153.3 89.3L155.7 88.9L158 88.5L160.3 88.1L162.7 87.7L165 87.3L167.3 86.9L169.6 86.5L172 86.1L174.3 85.6L176.6 85.2L178.9 84.7L181.3 84.3L183.6 83.8L185.9 83.3L188.2 82.8L190.6 82.3L192.9 81.8L195.2 81.3L197.5 80.8L199.9 80.3L202.2 79.7L204.5 79.2L206.9 78.7L209.2 78.1L211.5 77.5L213.8 77L216.2 76.4L218.5 75.8L220.8 75.2L223.1 74.6L225.5 74L227.8 73.4L230.1 72.7L232.4 72.1L234.8 71.5L237.1 70.8L239.4 70.1L241.8 69.5L244.1 68.8L246.4 68.1L248.7 67.4L251.1 66.7L253.4 66L255.7 65.3L258 64.6L260.4 63.9L262.7 63.1L265 62.4L267.3 61.6L269.7 60.9L272 60.1L274.3 59.3L276.7 58.5L279 57.7L281.3 56.9L283.6 56.1L286 55.3L288.3 54.5L290.6 53.6L292.9 52.8L295.3 52L297.6 51.1L299.9 50.2L302.2 49.4L304.6 48.5L306.9 47.6L309.2 46.7L311.5 45.8L313.9 44.9L316.2 44L318.5 43L320.9 42.1L323.2 41.2"/>
+<path class="ka-same" d="M44 214H213.2"/>
+<text x="111.7" y="99.6" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> 0.8</text>
+<text x="111.7" y="154.2" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> 0.6</text>
+<text x="258.3" y="118.4" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> 0.4</text>
+<text x="111.7" y="271.7" class="ka-lab" text-anchor="middle"><tspan font-style="italic">κ</tspan> 0.17</text>
+<text x="111.7" y="318.2" class="ka-lab ka-m" text-anchor="middle">chance</text>
+<path class="ka-ci" d="M213.2 287.7V140.3M208.2 287.7h10M208.2 140.3h10"/>
+<circle class="ka-dot" cx="44" cy="214" r="4.5"/>
+<circle class="ka-dot-a" cx="213.2" cy="214" r="5"/>
+<text x="2" y="18" class="ka-m">Raw agreement, p<tspan class="ka-sub" dy="4">o</tspan></text>
+<text x="42" y="374" class="ka-m">Share of items each rater calls “yes”, π</text>
+<text x="52" y="233" text-anchor="start"><tspan x="52" class="ka-b"><tspan font-style="italic">κ</tspan> = 0.40</tspan></text>
+<text x="225.2" y="245.9" text-anchor="start"><tspan x="225.2" class="ka-a ka-strong"><tspan font-style="italic">κ</tspan> = 0.06</tspan></text>
+<text x="2" y="410" text-anchor="start"><tspan x="2" class="ka-t">Same 70% raw agreement: <tspan font-style="italic">κ</tspan> = 0.40 when</tspan><tspan x="2" dy="19" class="ka-t">raters split 50/50, <tspan font-style="italic">κ</tspan> = 0.06 at 80% “yes”.</tspan><tspan x="2" dy="19" class="ka-m">50 audits: 70% ± 13 points; <tspan font-style="italic">κ</tspan> about −0.20 to 0.37.</tspan></text>
+</svg>
+<figcaption>The same raw agreement means very different things at different base rates. Each curve is the raw agreement needed for a given κ when both raters say “yes” at rate π; the bottom one is chance, π² + (1 − π)². At 70% agreement, κ is 0.40 when raters split 50/50 but only 0.06 in the <a href="/concepts/worked-example/#what-50-audits-buy">worked example</a>, where experts renew 80% of grants. Fifty audits put about ±13 points on that 70% (the bar), and the κ estimated from them could fall anywhere from about −0.20 to 0.37: it cannot tell this pair of raters from chance. The picture is symmetric for π below 50%.</figcaption>
+</figure>
+<p>Kappa has two well-known paradoxes (Feinstein &amp; Cicchetti 1990). Both follow from <i>p</i><sub>e</sub> depending on the marginals …</p>
+</main>
+</body>
+</html>

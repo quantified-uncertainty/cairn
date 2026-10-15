@@ -1,0 +1,336 @@
+<style>
+.ls-fig {
+  --ls-text: #2e2c28; --ls-muted: #5f5b53; --ls-lines: #8f897e; --ls-hair: #d6d1c7; --ls-bg: #ffffff;
+  --ls-accent: #2a57a6; --ls-cell: #f7f6f3; --ls-noise: #d6d1c7;
+  margin: 2rem 0; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+:root[data-theme='dark'] .ls-fig {
+  --ls-text: #dcd7cd; --ls-muted: #a7a195; --ls-lines: #8f897e; --ls-hair: #45423c; --ls-bg: #161514;
+  --ls-accent: #9dbdf2; --ls-cell: #1e1d1b; --ls-noise: #5a564e;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ls-fig {
+    --ls-text: #dcd7cd; --ls-muted: #a7a195; --ls-lines: #8f897e; --ls-hair: #45423c; --ls-bg: #161514;
+    --ls-accent: #9dbdf2; --ls-cell: #1e1d1b; --ls-noise: #5a564e;
+  }
+}
+.ls-svg { display: block; width: 100%; height: auto; max-width: 720px; overflow: visible; font-family: inherit; }
+.ls-narrow { display: none; max-width: 400px; }
+@media (max-width: 34rem) { .ls-wide { display: none; } .ls-narrow { display: block; } }
+.ls-fig .t { fill: var(--ls-text); }
+.ls-fig .m { fill: var(--ls-muted); }
+.ls-fig .b { fill: var(--ls-text); font-weight: 600; }
+.ls-fig .a { fill: var(--ls-accent); }
+.ls-fig .sm { font-size: 0.93em; }
+.ls-fig .num { fill: var(--ls-text); font-size: 1.4em; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ls-cell { fill: var(--ls-cell); stroke: var(--ls-hair); stroke-width: 1; }
+.ls-hair { fill: none; stroke: var(--ls-hair); stroke-width: 1; }
+.ls-axis { fill: none; stroke: var(--ls-lines); stroke-width: 1; }
+.ls-zero { fill: none; stroke: var(--ls-lines); stroke-width: 1; }
+.ls-arrow { fill: none; stroke: var(--ls-muted); stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+.ls-arrowhead { fill: none; stroke: var(--ls-accent); stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+.ls-dash { fill: none; stroke: var(--ls-accent); stroke-width: 1.25; stroke-dasharray: 3 4; }
+.ls-ci { fill: none; stroke: var(--ls-text); stroke-width: 2; stroke-linecap: round; }
+.ls-ci.acc { stroke: var(--ls-accent); }
+.ls-dot { fill: var(--ls-text); stroke: var(--ls-bg); stroke-width: 1.5; }
+.ls-dot.acc { fill: var(--ls-accent); }
+.ls-noise { fill: var(--ls-noise); }
+.ls-ref { fill: none; stroke: var(--ls-lines); stroke-width: 1; stroke-dasharray: 3 3; }
+.ls-stem { fill: none; stroke: var(--ls-lines); stroke-width: 1; }
+.ls-stem.acc { stroke: var(--ls-accent); }
+.ls-mask { fill: var(--ls-bg); }
+.ls-fig .halo { paint-order: stroke; stroke: var(--ls-bg); stroke-width: 4px; stroke-linejoin: round; }
+.ls-fig figcaption { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.55; color: var(--ls-muted); max-width: 42rem; }
+</style>
+<figure class="ls-fig">
+<svg class="ls-svg ls-wide" viewBox="0 0 720 944" width="720" height="944" role="img" aria-label="Two-part figure. Top: one trial of the label-swap design, DeepSeek V4 Pro on the analyst hire with labels Option A and Option B. The four cells cross which label is listed first with which candidate is listed first; mean answers are 76, 57, 84, 73. All four are above 50, giving position bias +22.5; swapping only the labels raises both columns, giving label bias −6.0 points. Bottom: for five models, position bias with 95% intervals, RMS label bias against its noise-only range, and flagged trials against the 5% chance rate. Only DeepSeek V4 Pro clears chance: position bias +8.1 points [+3.8, +12.4] and 4 of 15 trials flagged." style="font-size:15px">
+<text x="0.0" y="20.0" class="b" text-anchor="start">How one trial is scored: DeepSeek V4 Pro, analyst hire, Option A / Option B</text>
+<text x="0.0" y="42.0" class="m" text-anchor="start">Each cell is the mean of 5 answers: the % chance of hiring whoever is listed first.</text>
+<text x="300.0" y="82.0" class="t" text-anchor="middle">Statistician listed first</text>
+<text x="536.0" y="82.0" class="t" text-anchor="middle">Economist listed first</text>
+<text x="176.0" y="136.0" class="t" text-anchor="end">Option A listed first</text>
+<rect class="ls-cell" x="190.0" y="96.0" width="220" height="70" rx="3"/>
+<text x="204.0" y="124.0" class="m sm" text-anchor="start">Option A: statistician</text>
+<text x="204.0" y="146.0" class="m sm" text-anchor="start">Option B: economist</text>
+<text x="394.0" y="142.0" class="num" text-anchor="end">76</text>
+<rect class="ls-cell" x="426.0" y="96.0" width="220" height="70" rx="3"/>
+<text x="440.0" y="124.0" class="m sm" text-anchor="start">Option A: economist</text>
+<text x="440.0" y="146.0" class="m sm" text-anchor="start">Option B: statistician</text>
+<text x="630.0" y="142.0" class="num" text-anchor="end">57</text>
+<text x="176.0" y="250.0" class="t" text-anchor="end">Option B listed first</text>
+<rect class="ls-cell" x="190.0" y="210.0" width="220" height="70" rx="3"/>
+<text x="204.0" y="238.0" class="m sm" text-anchor="start">Option B: statistician</text>
+<text x="204.0" y="260.0" class="m sm" text-anchor="start">Option A: economist</text>
+<text x="394.0" y="256.0" class="num" text-anchor="end">84</text>
+<rect class="ls-cell" x="426.0" y="210.0" width="220" height="70" rx="3"/>
+<text x="440.0" y="238.0" class="m sm" text-anchor="start">Option B: economist</text>
+<text x="440.0" y="260.0" class="m sm" text-anchor="start">Option A: statistician</text>
+<text x="630.0" y="256.0" class="num" text-anchor="end">73</text>
+<path class="ls-arrow" d="M220.0 171.0L220.0 205.0"/><path class="ls-arrow" d="M216.0 199.0L220.0 205.0L224.0 199.0"/>
+<text x="228.0" y="193.0" class="m sm" text-anchor="start">labels swapped: 76 → 84</text>
+<path class="ls-arrow" d="M456.0 171.0L456.0 205.0"/><path class="ls-arrow" d="M452.0 199.0L456.0 205.0L460.0 199.0"/>
+<text x="464.0" y="193.0" class="m sm" text-anchor="start">labels swapped: 57 → 73</text>
+<text x="0.0" y="316.0" class="t" text-anchor="start"><tspan class="b">Position bias</tspan><tspan class="m"> = mean answer − 50</tspan></text>
+<text x="720.0" y="316.0" class="t" text-anchor="end">(76 + 57 + 84 + 73) / 4 − 50 = +22.5</text>
+<text x="0.0" y="342.0" class="t" text-anchor="start"><tspan class="b">Label bias</tspan><tspan class="m"> = mean P(pick Option A) − 50</tspan></text>
+<text x="720.0" y="342.0" class="t" text-anchor="end">(76 + 57 + 16 + 27) / 4 − 50 = −6.0</text>
+<text x="0.0" y="368.0" class="t" text-anchor="start"><tspan class="b">Content effect</tspan><tspan class="m"> = mean P(pick statistician) − 50</tspan></text>
+<text x="720.0" y="368.0" class="t" text-anchor="end">(76 + 43 + 84 + 27) / 4 − 50 = +7.5</text>
+<text x="0.0" y="398.0" class="m" text-anchor="start">All four answers are above 50, so whoever is listed first is favored.</text>
+<text x="0.0" y="420.0" class="m" text-anchor="start">Swapping only the labels raised both columns: a lean to Option B (permutation p = 0.004).</text>
+<text x="0.0" y="442.0" class="m" text-anchor="start">With identical descriptions (2 cells per trial), all 998 parseable answers were exactly 50.</text>
+<path class="ls-hair" d="M0.0 482.0L720.0 482.0"/>
+<text x="0.0" y="516.0" class="b" text-anchor="start">All five models, matched condition, in points on the 0–100 scale</text>
+<text x="0.0" y="538.0" class="m" text-anchor="start">Grey bars: what noise alone produces (median to 95th percentile). Flags are tested</text>
+<text x="0.0" y="558.0" class="m" text-anchor="start">against a 5% false-positive rate (binomial p). Accent: results that clear chance.</text>
+<text x="170.0" y="598.0" class="t" text-anchor="start">Position bias, 95% CI</text>
+<text x="392.0" y="598.0" class="t" text-anchor="start">RMS label bias</text>
+<text x="566.0" y="598.0" class="t" text-anchor="start">Trials flagged</text>
+<path class="ls-hair" d="M0.0 612.0L720.0 612.0"/>
+<text x="0.0" y="659.0" class="t" text-anchor="start">Claude Sonnet 5.5</text>
+<text x="0.0" y="679.0" class="m sm" text-anchor="start">20 trials</text>
+<text x="0.0" y="711.0" class="t" text-anchor="start">GPT-6.1 Sol</text>
+<text x="0.0" y="731.0" class="m sm" text-anchor="start">20 trials</text>
+<text x="0.0" y="763.0" class="t" text-anchor="start">Gemini 4 Argon</text>
+<text x="0.0" y="783.0" class="m sm" text-anchor="start">20 trials</text>
+<text x="0.0" y="815.0" class="t" text-anchor="start">DeepSeek V4 Pro</text>
+<text x="0.0" y="835.0" class="m sm" text-anchor="start">15 trials</text>
+<text x="0.0" y="877.0" class="t" text-anchor="start">Qwen3.8 2.4T</text>
+<text x="0.0" y="897.0" class="m sm" text-anchor="start">15 trials</text>
+<path class="ls-zero" d="M217.5 612.0L217.5 910.0"/>
+<path class="ls-ci" d="M204.9 654.0L219.1 654.0"/>
+<circle class="ls-dot" cx="212.0" cy="654.0" r="4"/>
+<text x="227.1" y="659.0" class="m sm halo" text-anchor="start">−0.6</text>
+<path class="ls-ci" d="M202.3 706.0L227.0 706.0"/>
+<circle class="ls-dot" cx="214.7" cy="706.0" r="4"/>
+<text x="235.0" y="711.0" class="m sm halo" text-anchor="start">−0.3</text>
+<path class="ls-ci" d="M206.1 758.0L222.4 758.0"/>
+<circle class="ls-dot" cx="214.3" cy="758.0" r="4"/>
+<text x="230.4" y="763.0" class="m sm halo" text-anchor="start">−0.3</text>
+<path class="ls-dash" d="M176.0 823.0L354.0 823.0"/>
+<path class="ls-arrowhead" d="M176.0 819.5L170.0 823.0L176.0 826.5"/>
+<path class="ls-arrowhead" d="M354.0 819.5L360.0 823.0L354.0 826.5"/>
+<path class="ls-ci acc" d="M254.0 810.0L335.2 810.0"/>
+<circle class="ls-dot acc" cx="294.6" cy="810.0" r="4"/>
+<text x="343.2" y="815.0" class="a sm halo" text-anchor="start">+8.1</text>
+<path class="ls-ci" d="M216.0 872.0L261.6 872.0"/>
+<circle class="ls-dot" cx="238.8" cy="872.0" r="4"/>
+<text x="269.6" y="877.0" class="m sm halo" text-anchor="start">+2.2</text>
+<path class="ls-axis" d="M170.0 910.0L360.0 910.0"/>
+<path class="ls-axis" d="M170.0 910.0L170.0 914.0"/>
+<text x="170.0" y="930.0" class="m sm" text-anchor="middle">−5</text>
+<path class="ls-axis" d="M217.5 910.0L217.5 914.0"/>
+<text x="217.5" y="930.0" class="m sm" text-anchor="middle">0</text>
+<path class="ls-axis" d="M265.0 910.0L265.0 914.0"/>
+<text x="265.0" y="930.0" class="m sm" text-anchor="middle">+5</text>
+<path class="ls-axis" d="M312.5 910.0L312.5 914.0"/>
+<text x="312.5" y="930.0" class="m sm" text-anchor="middle">+10</text>
+<path class="ls-axis" d="M360.0 910.0L360.0 914.0"/>
+<text x="360.0" y="930.0" class="m sm" text-anchor="middle">+15</text>
+<rect class="ls-mask" x="173.0" y="830.0" width="245.0" height="18"/>
+<text x="176.0" y="843.0" class="a sm halo" text-anchor="start">[−13, +29] with decisions as the unit</text>
+<rect class="ls-noise" x="406.0" y="649.0" width="4.4" height="10" rx="2"/>
+<circle class="ls-dot" cx="420.7" cy="654.0" r="4"/>
+<text x="428.7" y="659.0" class="m sm" text-anchor="start">0.8</text>
+<rect class="ls-noise" x="407.9" y="701.0" width="5.0" height="10" rx="2"/>
+<circle class="ls-dot" cx="414.3" cy="706.0" r="4"/>
+<text x="422.3" y="711.0" class="m sm" text-anchor="start">0.6</text>
+<rect class="ls-noise" x="423.3" y="753.0" width="12.1" height="10" rx="2"/>
+<circle class="ls-dot" cx="445.6" cy="758.0" r="4"/>
+<text x="453.6" y="763.0" class="m sm" text-anchor="start">1.5</text>
+<rect class="ls-noise" x="465.6" y="805.0" width="30.0" height="10" rx="2"/>
+<circle class="ls-dot" cx="506.6" cy="810.0" r="4"/>
+<text x="514.6" y="815.0" class="m sm" text-anchor="start">3.3</text>
+<rect class="ls-noise" x="441.5" y="867.0" width="17.5" height="10" rx="2"/>
+<circle class="ls-dot" cx="462.6" cy="872.0" r="4"/>
+<text x="470.6" y="877.0" class="m sm" text-anchor="start">2.0</text>
+<path class="ls-axis" d="M392.0 910.0L532.0 910.0"/>
+<path class="ls-axis" d="M392.0 910.0L392.0 914.0"/>
+<text x="392.0" y="930.0" class="m sm" text-anchor="middle">0</text>
+<path class="ls-axis" d="M427.0 910.0L427.0 914.0"/>
+<text x="427.0" y="930.0" class="m sm" text-anchor="middle">1</text>
+<path class="ls-axis" d="M462.0 910.0L462.0 914.0"/>
+<text x="462.0" y="930.0" class="m sm" text-anchor="middle">2</text>
+<path class="ls-axis" d="M497.0 910.0L497.0 914.0"/>
+<text x="497.0" y="930.0" class="m sm" text-anchor="middle">3</text>
+<path class="ls-axis" d="M532.0 910.0L532.0 914.0"/>
+<text x="532.0" y="930.0" class="m sm" text-anchor="middle">4</text>
+<path class="ls-ref" d="M586.7 632.0L586.7 910.0"/>
+<text x="590.7" y="630.0" class="m sm halo" text-anchor="start">5% chance</text>
+<path class="ls-stem" d="M566.0 654.0L586.7 654.0"/>
+<circle class="ls-dot" cx="586.7" cy="654.0" r="4"/>
+<rect class="ls-mask" x="564.0" y="666.0" width="133.2" height="18"/>
+<text x="566.0" y="679.0" class="m sm halo" text-anchor="start">1 of 20, p = 0.64</text>
+<path class="ls-stem" d="M566.0 706.0L566.0 706.0"/>
+<circle class="ls-dot" cx="566.0" cy="706.0" r="4"/>
+<rect class="ls-mask" x="564.0" y="718.0" width="133.2" height="18"/>
+<text x="566.0" y="731.0" class="m sm halo" text-anchor="start">0 of 20, p = 1.00</text>
+<path class="ls-stem" d="M566.0 758.0L628.0 758.0"/>
+<circle class="ls-dot" cx="628.0" cy="758.0" r="4"/>
+<rect class="ls-mask" x="564.0" y="770.0" width="140.8" height="18"/>
+<text x="566.0" y="783.0" class="m sm halo" text-anchor="start">3 of 20, p = 0.075</text>
+<path class="ls-stem acc" d="M566.0 810.0L676.2 810.0"/>
+<circle class="ls-dot acc" cx="676.2" cy="810.0" r="4"/>
+<rect class="ls-mask" x="564.0" y="822.0" width="140.8" height="18"/>
+<text x="566.0" y="835.0" class="a sm halo" text-anchor="start">4 of 15, p = 0.005</text>
+<path class="ls-stem" d="M566.0 872.0L621.1 872.0"/>
+<circle class="ls-dot" cx="621.1" cy="872.0" r="4"/>
+<rect class="ls-mask" x="564.0" y="884.0" width="133.2" height="18"/>
+<text x="566.0" y="897.0" class="m sm halo" text-anchor="start">2 of 15, p = 0.17</text>
+<path class="ls-axis" d="M566.0 910.0L690.0 910.0"/>
+<path class="ls-axis" d="M566.0 910.0L566.0 914.0"/>
+<text x="566.0" y="930.0" class="m sm" text-anchor="middle">0%</text>
+<path class="ls-axis" d="M607.3 910.0L607.3 914.0"/>
+<text x="607.3" y="930.0" class="m sm" text-anchor="middle">10</text>
+<path class="ls-axis" d="M648.7 910.0L648.7 914.0"/>
+<text x="648.7" y="930.0" class="m sm" text-anchor="middle">20</text>
+<path class="ls-axis" d="M690.0 910.0L690.0 914.0"/>
+<text x="690.0" y="930.0" class="m sm" text-anchor="middle">30%</text>
+</svg>
+<svg class="ls-svg ls-narrow" viewBox="0 0 343 1436" width="343" height="1436" role="img" aria-label="Two-part figure. Top: one trial of the label-swap design, DeepSeek V4 Pro on the analyst hire with labels Option A and Option B. The four cells cross which label is listed first with which candidate is listed first; mean answers are 76, 57, 84, 73. All four are above 50, giving position bias +22.5; swapping only the labels raises both columns, giving label bias −6.0 points. Bottom: for five models, position bias with 95% intervals, RMS label bias against its noise-only range, and flagged trials against the 5% chance rate. Only DeepSeek V4 Pro clears chance: position bias +8.1 points [+3.8, +12.4] and 4 of 15 trials flagged." style="font-size:14px">
+<text x="0.0" y="20.0" class="b" text-anchor="start">How one trial is scored</text>
+<text x="0.0" y="40.0" class="m" text-anchor="start">DeepSeek V4 Pro, analyst hire, Option A / B</text>
+<text x="0.0" y="60.0" class="m sm" text-anchor="start">Cell: mean answer, % chance of hiring</text>
+<text x="0.0" y="78.0" class="m sm" text-anchor="start">whoever is listed first (5 replies each)</text>
+<text x="160.0" y="112.0" class="t" text-anchor="middle">Statistician</text>
+<text x="160.0" y="130.0" class="m sm" text-anchor="middle">listed first</text>
+<text x="282.0" y="112.0" class="t" text-anchor="middle">Economist</text>
+<text x="282.0" y="130.0" class="m sm" text-anchor="middle">listed first</text>
+<text x="92.0" y="165.0" class="t" text-anchor="end">Option A</text>
+<text x="92.0" y="183.0" class="m sm" text-anchor="end">listed first</text>
+<rect class="ls-cell" x="104.0" y="142.0" width="112" height="52" rx="3"/>
+<text x="160.0" y="176.0" class="num" text-anchor="middle">76</text>
+<rect class="ls-cell" x="226.0" y="142.0" width="112" height="52" rx="3"/>
+<text x="282.0" y="176.0" class="num" text-anchor="middle">57</text>
+<text x="92.0" y="257.0" class="t" text-anchor="end">Option B</text>
+<text x="92.0" y="275.0" class="m sm" text-anchor="end">listed first</text>
+<rect class="ls-cell" x="104.0" y="234.0" width="112" height="52" rx="3"/>
+<text x="160.0" y="268.0" class="num" text-anchor="middle">84</text>
+<rect class="ls-cell" x="226.0" y="234.0" width="112" height="52" rx="3"/>
+<text x="282.0" y="268.0" class="num" text-anchor="middle">73</text>
+<path class="ls-arrow" d="M116.0 199.0L116.0 229.0"/><path class="ls-arrow" d="M112.0 223.0L116.0 229.0L120.0 223.0"/>
+<text x="124.0" y="219.0" class="m sm" text-anchor="start">swap: 76 → 84</text>
+<path class="ls-arrow" d="M238.0 199.0L238.0 229.0"/><path class="ls-arrow" d="M234.0 223.0L238.0 229.0L242.0 223.0"/>
+<text x="246.0" y="219.0" class="m sm" text-anchor="start">swap: 57 → 73</text>
+<text x="0.0" y="320.0" class="t" text-anchor="start"><tspan class="b">Position bias</tspan><tspan class="m"> = mean answer − 50</tspan></text>
+<text x="16.0" y="339.0" class="t sm" text-anchor="start">(76 + 57 + 84 + 73) / 4 − 50 = +22.5</text>
+<text x="0.0" y="366.0" class="t" text-anchor="start"><tspan class="b">Label bias</tspan><tspan class="m"> = mean P(pick Option A) − 50</tspan></text>
+<text x="16.0" y="385.0" class="t sm" text-anchor="start">(76 + 57 + 16 + 27) / 4 − 50 = −6.0</text>
+<text x="0.0" y="412.0" class="t" text-anchor="start"><tspan class="b">Content effect</tspan><tspan class="m"> = mean P(pick statistician) − 50</tspan></text>
+<text x="16.0" y="431.0" class="t sm" text-anchor="start">(76 + 43 + 84 + 27) / 4 − 50 = +7.5</text>
+<text x="0.0" y="464.0" class="m sm" text-anchor="start">All four answers exceed 50: the first-listed</text>
+<text x="0.0" y="484.0" class="m sm" text-anchor="start">candidate is favored. Swapping only the labels</text>
+<text x="0.0" y="504.0" class="m sm" text-anchor="start">raised both columns: a lean to Option B</text>
+<text x="0.0" y="524.0" class="m sm" text-anchor="start">(p = 0.004). With identical descriptions, all</text>
+<text x="0.0" y="544.0" class="m sm" text-anchor="start">998 parseable answers were exactly 50.</text>
+<path class="ls-hair" d="M0.0 582.0L343.0 582.0"/>
+<text x="0.0" y="616.0" class="b" text-anchor="start">All five models, matched condition</text>
+<text x="0.0" y="636.0" class="m sm" text-anchor="start">Points on the 0–100 scale. Accent: results</text>
+<text x="0.0" y="656.0" class="m sm" text-anchor="start">that clear chance.</text>
+<text x="0.0" y="690.0" class="t" text-anchor="start">Position bias, 95% CI</text>
+<text x="0.0" y="709.0" class="m sm" text-anchor="start">Dashed: DeepSeek with decisions as the</text>
+<text x="0.0" y="728.0" class="m sm" text-anchor="start">unit, [−13, +29]</text>
+<text x="0.0" y="761.0" class="t" text-anchor="start">Claude</text>
+<text x="0.0" y="791.0" class="t" text-anchor="start">GPT</text>
+<text x="0.0" y="821.0" class="t" text-anchor="start">Gemini</text>
+<text x="0.0" y="851.0" class="t" text-anchor="start">DeepSeek</text>
+<text x="0.0" y="895.0" class="t" text-anchor="start">Qwen</text>
+<path class="ls-zero" d="M138.8 738.0L138.8 910.0"/>
+<path class="ls-ci" d="M124.2 756.0L140.6 756.0"/>
+<circle class="ls-dot" cx="132.4" cy="756.0" r="4"/>
+<text x="148.6" y="761.0" class="m sm halo" text-anchor="start">−0.6</text>
+<path class="ls-ci" d="M121.2 786.0L149.7 786.0"/>
+<circle class="ls-dot" cx="135.5" cy="786.0" r="4"/>
+<text x="157.7" y="791.0" class="m sm halo" text-anchor="start">−0.3</text>
+<path class="ls-ci" d="M125.6 816.0L144.4 816.0"/>
+<circle class="ls-dot" cx="135.0" cy="816.0" r="4"/>
+<text x="152.4" y="821.0" class="m sm halo" text-anchor="start">−0.3</text>
+<path class="ls-dash" d="M90.0 859.0L297.0 859.0"/>
+<path class="ls-arrowhead" d="M90.0 855.5L84.0 859.0L90.0 862.5"/>
+<path class="ls-arrowhead" d="M297.0 855.5L303.0 859.0L297.0 862.5"/>
+<path class="ls-ci acc" d="M180.8 846.0L274.4 846.0"/>
+<circle class="ls-dot acc" cx="227.6" cy="846.0" r="4"/>
+<text x="282.4" y="851.0" class="a sm halo" text-anchor="start">+8.1</text>
+<path class="ls-ci" d="M137.0 890.0L189.5 890.0"/>
+<circle class="ls-dot" cx="163.3" cy="890.0" r="4"/>
+<text x="197.5" y="895.0" class="m sm halo" text-anchor="start">+2.2</text>
+<path class="ls-axis" d="M84.0 910.0L303.0 910.0"/>
+<path class="ls-axis" d="M84.0 910.0L84.0 914.0"/>
+<text x="84.0" y="930.0" class="m sm" text-anchor="middle">−5</text>
+<path class="ls-axis" d="M138.8 910.0L138.8 914.0"/>
+<text x="138.8" y="930.0" class="m sm" text-anchor="middle">0</text>
+<path class="ls-axis" d="M193.5 910.0L193.5 914.0"/>
+<text x="193.5" y="930.0" class="m sm" text-anchor="middle">+5</text>
+<path class="ls-axis" d="M248.2 910.0L248.2 914.0"/>
+<text x="248.2" y="930.0" class="m sm" text-anchor="middle">+10</text>
+<path class="ls-axis" d="M303.0 910.0L303.0 914.0"/>
+<text x="303.0" y="930.0" class="m sm" text-anchor="middle">+15</text>
+<text x="0.0" y="968.0" class="t" text-anchor="start">RMS label bias</text>
+<text x="0.0" y="987.0" class="m sm" text-anchor="start">Grey bar: noise alone, median to 95th pct</text>
+<text x="0.0" y="1020.0" class="t" text-anchor="start">Claude</text>
+<text x="0.0" y="1050.0" class="t" text-anchor="start">GPT</text>
+<text x="0.0" y="1080.0" class="t" text-anchor="start">Gemini</text>
+<text x="0.0" y="1110.0" class="t" text-anchor="start">DeepSeek</text>
+<text x="0.0" y="1140.0" class="t" text-anchor="start">Qwen</text>
+<rect class="ls-noise" x="106.0" y="1010.0" width="6.9" height="10" rx="2"/>
+<circle class="ls-dot" cx="128.9" cy="1015.0" r="4"/>
+<text x="136.9" y="1020.0" class="m sm" text-anchor="start">0.8</text>
+<rect class="ls-noise" x="108.9" y="1040.0" width="7.8" height="10" rx="2"/>
+<circle class="ls-dot" cx="118.9" cy="1045.0" r="4"/>
+<text x="126.9" y="1050.0" class="m sm" text-anchor="start">0.6</text>
+<rect class="ls-noise" x="132.9" y="1070.0" width="18.9" height="10" rx="2"/>
+<circle class="ls-dot" cx="167.9" cy="1075.0" r="4"/>
+<text x="175.9" y="1080.0" class="m sm" text-anchor="start">1.5</text>
+<rect class="ls-noise" x="199.2" y="1100.0" width="47.0" height="10" rx="2"/>
+<circle class="ls-dot" cx="263.3" cy="1105.0" r="4"/>
+<text x="271.3" y="1110.0" class="m sm" text-anchor="start">3.3</text>
+<rect class="ls-noise" x="161.4" y="1130.0" width="27.4" height="10" rx="2"/>
+<circle class="ls-dot" cx="194.5" cy="1135.0" r="4"/>
+<text x="202.5" y="1140.0" class="m sm" text-anchor="start">2.0</text>
+<path class="ls-axis" d="M84.0 1155.0L303.0 1155.0"/>
+<path class="ls-axis" d="M84.0 1155.0L84.0 1159.0"/>
+<text x="84.0" y="1175.0" class="m sm" text-anchor="middle">0</text>
+<path class="ls-axis" d="M138.8 1155.0L138.8 1159.0"/>
+<text x="138.8" y="1175.0" class="m sm" text-anchor="middle">1</text>
+<path class="ls-axis" d="M193.5 1155.0L193.5 1159.0"/>
+<text x="193.5" y="1175.0" class="m sm" text-anchor="middle">2</text>
+<path class="ls-axis" d="M248.2 1155.0L248.2 1159.0"/>
+<text x="248.2" y="1175.0" class="m sm" text-anchor="middle">3</text>
+<path class="ls-axis" d="M303.0 1155.0L303.0 1159.0"/>
+<text x="303.0" y="1175.0" class="m sm" text-anchor="middle">4</text>
+<text x="0.0" y="1203.0" class="t" text-anchor="start">Share of trials flagged</text>
+<text x="0.0" y="1222.0" class="m sm" text-anchor="start">p: binomial test against a 5% rate</text>
+<text x="0.0" y="1277.0" class="t" text-anchor="start">Claude</text>
+<text x="0.0" y="1307.0" class="t" text-anchor="start">GPT</text>
+<text x="0.0" y="1337.0" class="t" text-anchor="start">Gemini</text>
+<text x="0.0" y="1367.0" class="t" text-anchor="start">DeepSeek</text>
+<text x="0.0" y="1397.0" class="t" text-anchor="start">Qwen</text>
+<path class="ls-ref" d="M102.3 1252.0L102.3 1412.0"/>
+<text x="106.3" y="1250.0" class="m sm halo" text-anchor="start">5% chance</text>
+<path class="ls-stem" d="M84.0 1272.0L102.3 1272.0"/>
+<circle class="ls-dot" cx="102.3" cy="1272.0" r="4"/>
+<text x="206.0" y="1277.0" class="m sm halo" text-anchor="start">1 of 20, p = 0.64</text>
+<path class="ls-stem" d="M84.0 1302.0L84.0 1302.0"/>
+<circle class="ls-dot" cx="84.0" cy="1302.0" r="4"/>
+<text x="206.0" y="1307.0" class="m sm halo" text-anchor="start">0 of 20, p = 1.00</text>
+<path class="ls-stem" d="M84.0 1332.0L139.0 1332.0"/>
+<circle class="ls-dot" cx="139.0" cy="1332.0" r="4"/>
+<text x="206.0" y="1337.0" class="m sm halo" text-anchor="start">3 of 20, p = 0.075</text>
+<path class="ls-stem acc" d="M84.0 1362.0L181.8 1362.0"/>
+<circle class="ls-dot acc" cx="181.8" cy="1362.0" r="4"/>
+<text x="206.0" y="1367.0" class="a sm halo" text-anchor="start">4 of 15, p = 0.005</text>
+<path class="ls-stem" d="M84.0 1392.0L132.9 1392.0"/>
+<circle class="ls-dot" cx="132.9" cy="1392.0" r="4"/>
+<text x="206.0" y="1397.0" class="m sm halo" text-anchor="start">2 of 15, p = 0.17</text>
+<path class="ls-axis" d="M84.0 1412.0L194.0 1412.0"/>
+<path class="ls-axis" d="M84.0 1412.0L84.0 1416.0"/>
+<text x="84.0" y="1432.0" class="m sm" text-anchor="middle">0%</text>
+<path class="ls-axis" d="M120.7 1412.0L120.7 1416.0"/>
+<text x="120.7" y="1432.0" class="m sm" text-anchor="middle">10</text>
+<path class="ls-axis" d="M157.3 1412.0L157.3 1416.0"/>
+<text x="157.3" y="1432.0" class="m sm" text-anchor="middle">20</text>
+<path class="ls-axis" d="M194.0 1412.0L194.0 1416.0"/>
+<text x="194.0" y="1432.0" class="m sm" text-anchor="middle">30%</text>
+</svg>
+<figcaption>The label-swap test isolates a judge’s lean toward a label by swapping only the labels between otherwise identical prompts; the mean answer over all four cells gives position bias. On five models, label leans sit just above what noise alone produces, and only DeepSeek V4 Pro clears chance, on position bias and on its flag count. Most of that comes from the analyst-hire prompt shown on top. DeepSeek and Qwen have 15 trials because every forecast trial lost replies to truncation.</figcaption>
+</figure>

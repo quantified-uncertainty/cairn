@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harm channels figure</title>
+<style>
+  :root { --text: #2e2c28; --muted: #5f5b53; --hair: #d6d1c7; --bg: #ffffff; --accent: #a8321f; }
+  :root[data-theme="dark"] { --text: #dcd7cd; --muted: #a7a195; --hair: #45423c; --bg: #161514; --accent: #f29a84; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --text: #dcd7cd; --muted: #a7a195; --hair: #45423c; --bg: #161514; --accent: #f29a84; }
+  }
+  html { background: var(--bg); }
+  body {
+    margin: 0; padding: 2rem 16px 3rem; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 17px; line-height: 1.65;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .kicker { font-size: 0.9375rem; color: var(--muted); margin: 0 0 0.25rem; }
+  h1 { font-size: 1.25rem; font-weight: 600; margin: 0 0 1.5rem; }
+  h2 { font-size: 1.125rem; font-weight: 600; margin: 2rem 0 0.75rem; }
+  a { color: var(--accent); }
+  table { border-collapse: collapse; font-size: 0.9375rem; width: 100%; display: block; overflow-x: auto; }
+  th, td { text-align: left; vertical-align: top; padding: 0.4rem 0.6rem 0.4rem 0; border-bottom: 1px solid var(--hair); }
+  th { font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<p class="kicker">Delegation Risk</p>
+<h1>Risk Decomposition: Accident, Defection, Hijack</h1>
+<h2>How the channels differ</h2>
+<table>
+<thead><tr><th></th><th>Accident</th><th>Defection</th><th>Hijack</th></tr></thead>
+<tbody>
+<tr><td>Who chooses the harmful action</td><td>nobody</td><td>the delegate</td><td>a third party or user</td></tr>
+<tr><td>How to estimate P</td><td>testing, incident history, fuzzing</td><td>control evaluations, red-teaming, honeypots</td><td>adaptive red-teaming of the whole system, e.g. on AgentDojo-style tasks</td></tr>
+<tr><td>Main mitigations</td><td>testing, redundancy, verification</td><td>trusted monitoring, control protocols, hard envelopes</td><td>separating instructions from untrusted data, removing exfiltration paths, hard envelopes</td></tr>
+<tr><td>Correlation between stacked checks</td><td>benign-failure &rho; applies</td><td>assume &rho; &rarr; 1</td><td>assume &rho; &rarr; 1</td></tr>
+</tbody>
+</table>
+<figure class="dr-harm-channels">
+  <svg class="hc-wide" viewBox="0 0 720 490" width="720" height="490" role="img" aria-label="The three channels reach the same damage through the same checks. They differ in who chooses the harmful action, and so in what a stack of checks is worth: three checks that each miss 10% pass 0.1% of accidental harmful actions if they fail independently, but a delegate or attacker who picks the action beats all three at once, so at least 10% get through. The controls that hold on every path are the ones that ignore which action arrives: keeping untrusted data from choosing actions, and a hard envelope.">
+    <text x="406" y="28" class="t b" text-anchor="middle">Three checks, each missing 10%</text>
+    <text x="406" y="48" class="t m" text-anchor="middle">share of harmful actions still going</text>
+    <rect x="168" y="70" width="100" height="296" rx="6" class="box"/>
+    <text x="218" y="94" class="t b" text-anchor="middle">Delegate</text>
+    <rect x="588" y="70" width="131" height="296" rx="6" class="box"/>
+    <text x="653.5" y="94" class="t b" text-anchor="middle">Damage D</text>
+    <text x="653.5" y="114" class="t m" text-anchor="middle">to the principal</text>
+    <text x="653.5" y="192" class="t m" text-anchor="middle">set by what the</text>
+    <text x="653.5" y="211" class="t m" text-anchor="middle">action can reach,</text>
+    <text x="653.5" y="230" class="t m" text-anchor="middle">the same for</text>
+    <text x="653.5" y="249" class="t m" text-anchor="middle">every channel</text>
+    <text x="653.5" y="302" class="t m" text-anchor="middle">A coordinator's</text>
+    <text x="653.5" y="321" class="t m" text-anchor="middle">permission grant</text>
+    <text x="653.5" y="340" class="t m" text-anchor="middle">costs $100,000</text>
+    <text x="653.5" y="359" class="t m" text-anchor="middle">either way</text>
+    <line x1="556" y1="64" x2="556" y2="372" class="wall"/>
+    <line x1="342" y1="99" x2="342" y2="133" class="chk"/>
+    <line x1="406" y1="99" x2="406" y2="133" class="chk"/>
+    <line x1="470" y1="99" x2="470" y2="133" class="chk"/>
+    <line x1="342" y1="203" x2="342" y2="237" class="chk"/>
+    <line x1="406" y1="203" x2="406" y2="237" class="chk"/>
+    <line x1="470" y1="203" x2="470" y2="237" class="chk"/>
+    <line x1="342" y1="307" x2="342" y2="341" class="chk"/>
+    <line x1="406" y1="307" x2="406" y2="341" class="chk"/>
+    <line x1="470" y1="307" x2="470" y2="341" class="chk"/>
+    <text x="0" y="100" class="t b">Accident</text>
+    <text x="0" y="121" class="t m">nobody chooses it</text>
+    <text x="0" y="141" class="t m">P: its error rate</text>
+    <circle cx="252" cy="116" r="4" class="fl"/>
+    <text x="242" y="121" class="t" text-anchor="end">error</text>
+    <line x1="256" y1="116" x2="342" y2="116" class="ll" stroke-width="2"/>
+    <text x="305" y="108" class="t" text-anchor="middle">100%</text>
+    <line x1="342" y1="116" x2="406" y2="116" class="ll" stroke-width="1.4"/>
+    <text x="374" y="108" class="t" text-anchor="middle">10%</text>
+    <line x1="406" y1="116" x2="470" y2="116" class="ll" stroke-width="0.9"/>
+    <text x="438" y="108" class="t" text-anchor="middle">1%</text>
+    <line x1="470" y1="116" x2="578" y2="116" class="ll" stroke-width="0.6"/>
+    <text x="513" y="108" class="t" text-anchor="middle">0.1%</text>
+    <path d="M587 116 L578.25 111.66 L578.25 120.34 Z" class="fl"/>
+    <text x="406" y="153" class="t m" text-anchor="middle">errors land at random, so the</text>
+    <text x="406" y="172" class="t m" text-anchor="middle">checks compound (5% if ρ = 0.5)</text>
+    <text x="0" y="204" class="t b">Defection</text>
+    <text x="0" y="225" class="t m">the delegate chooses</text>
+    <text x="0" y="245" class="t m">P: its disposition</text>
+    <circle cx="252" cy="220" r="4" class="fa"/>
+    <text x="242" y="225" class="t" text-anchor="end">own goal</text>
+    <line x1="256" y1="220" x2="342" y2="220" class="la" stroke-width="2"/>
+    <text x="305" y="212" class="t a" text-anchor="middle">100%</text>
+    <line x1="342" y1="220" x2="406" y2="220" class="la" stroke-width="2"/>
+    <text x="374" y="212" class="t a" text-anchor="middle">10%</text>
+    <line x1="406" y1="220" x2="470" y2="220" class="la" stroke-width="2"/>
+    <text x="438" y="212" class="t a" text-anchor="middle">10%</text>
+    <line x1="470" y1="220" x2="578" y2="220" class="la" stroke-width="2"/>
+    <text x="513" y="212" class="t a" text-anchor="middle">10%</text>
+    <path d="M587 220 L578.25 215.66 L578.25 224.34 Z" class="fa"/>
+    <text x="406" y="257" class="t a" text-anchor="middle">it picks an action all three miss</text>
+    <text x="0" y="308" class="t b">Hijack</text>
+    <text x="0" y="329" class="t m">someone else chooses</text>
+    <text x="0" y="349" class="t m">P: attacker's choices</text>
+    <circle cx="252" cy="324" r="4" class="fa"/>
+    <text x="242" y="329" class="t" text-anchor="end">obeys</text>
+    <line x1="256" y1="324" x2="342" y2="324" class="la" stroke-width="2"/>
+    <text x="305" y="316" class="t a" text-anchor="middle">100%</text>
+    <line x1="342" y1="324" x2="406" y2="324" class="la" stroke-width="2"/>
+    <text x="374" y="316" class="t a" text-anchor="middle">10%</text>
+    <line x1="406" y1="324" x2="470" y2="324" class="la" stroke-width="2"/>
+    <text x="438" y="316" class="t a" text-anchor="middle">10%</text>
+    <line x1="470" y1="324" x2="578" y2="324" class="la" stroke-width="2"/>
+    <text x="513" y="316" class="t a" text-anchor="middle">10%</text>
+    <path d="M587 324 L578.25 319.66 L578.25 328.34 Z" class="fa"/>
+    <text x="406" y="361" class="t a" text-anchor="middle">the attacker picks an input</text>
+    <text x="406" y="380" class="t a" text-anchor="middle">all three miss</text>
+    <line x1="252" y1="456" x2="252" y2="337" class="ll" stroke-width="1.5"/>
+    <path d="M252 329 L247.66 337.75 L256.34 337.75 Z" class="fl"/>
+    <line x1="240" y1="396" x2="264" y2="396" class="cut"/>
+    <text x="232" y="392" class="t" text-anchor="end">cut: data may fill in values,</text>
+    <text x="232" y="411" class="t" text-anchor="end">not choose actions</text>
+    <text x="262" y="438" class="t">injected instructions</text>
+    <text x="252" y="480" class="t m" text-anchor="middle">via a prompt, retrieved content, a tool or a dependency</text>
+    <text x="556" y="396" class="t b" text-anchor="middle">Hard envelope</text>
+    <text x="556" y="416" class="t" text-anchor="middle">limits what any action</text>
+    <text x="556" y="435" class="t" text-anchor="middle">can reach, whoever chose it</text>
+  </svg>
+  <svg class="hc-narrow" viewBox="0 0 343 828" width="343" height="828" role="img" aria-label="The three channels reach the same damage through the same checks. They differ in who chooses the harmful action, and so in what a stack of checks is worth: three checks that each miss 10% pass 0.1% of accidental harmful actions if they fail independently, but a delegate or attacker who picks the action beats all three at once, so at least 10% get through. The controls that hold on every path are the ones that ignore which action arrives: keeping untrusted data from choosing actions, and a hard envelope.">
+    <text x="184" y="16" class="t b" text-anchor="middle">Three checks,</text>
+    <text x="184" y="35" class="t b" text-anchor="middle">each missing 10%</text>
+    <text x="184" y="54" class="t m" text-anchor="middle">share still going</text>
+    <text x="0" y="54" class="t b">Delegate</text>
+    <text x="343" y="54" class="t b" text-anchor="end">Damage</text>
+    <text x="0" y="92" class="t"><tspan class="b">Accident:</tspan> <tspan class="m">nobody chooses it</tspan></text>
+    <text x="0" y="111" class="t m">P is set by its error rate</text>
+    <rect x="0.5" y="130" width="87.5" height="40" rx="5" class="box"/>
+    <circle cx="76" cy="150" r="4" class="fl"/>
+    <text x="67" y="155" class="t" text-anchor="end">error</text>
+    <rect x="284" y="130" width="58.5" height="40" rx="5" class="box"/>
+    <text x="313.5" y="155" class="t b" text-anchor="middle">D</text>
+    <line x1="268" y1="126" x2="268" y2="174" class="wall"/>
+    <line x1="142" y1="135" x2="142" y2="165" class="chk"/>
+    <line x1="184" y1="135" x2="184" y2="165" class="chk"/>
+    <line x1="226" y1="135" x2="226" y2="165" class="chk"/>
+    <line x1="80" y1="150" x2="142" y2="150" class="ll" stroke-width="2"/>
+    <text x="115" y="142" class="t" text-anchor="middle">100%</text>
+    <line x1="142" y1="150" x2="184" y2="150" class="ll" stroke-width="1.4"/>
+    <text x="163" y="142" class="t" text-anchor="middle">10%</text>
+    <line x1="184" y1="150" x2="226" y2="150" class="ll" stroke-width="0.9"/>
+    <text x="205" y="142" class="t" text-anchor="middle">1%</text>
+    <line x1="226" y1="150" x2="274" y2="150" class="ll" stroke-width="0.6"/>
+    <text x="247" y="142" class="t" text-anchor="middle">0.1%</text>
+    <path d="M283 150 L274.25 145.66 L274.25 154.34 Z" class="fl"/>
+    <text x="98" y="192" class="t m">errors land at random, so the</text>
+    <text x="98" y="211" class="t m">checks compound (5% if ρ = 0.5)</text>
+    <text x="0" y="242" class="t"><tspan class="b">Defection:</tspan> <tspan class="m">the delegate chooses it</tspan></text>
+    <text x="0" y="261" class="t m">P is set by its disposition</text>
+    <rect x="0.5" y="280" width="87.5" height="40" rx="5" class="box"/>
+    <circle cx="76" cy="300" r="4" class="fa"/>
+    <text x="67" y="305" class="t" text-anchor="end">own goal</text>
+    <rect x="284" y="280" width="58.5" height="40" rx="5" class="box"/>
+    <text x="313.5" y="305" class="t b" text-anchor="middle">D</text>
+    <line x1="268" y1="276" x2="268" y2="324" class="wall"/>
+    <line x1="142" y1="285" x2="142" y2="315" class="chk"/>
+    <line x1="184" y1="285" x2="184" y2="315" class="chk"/>
+    <line x1="226" y1="285" x2="226" y2="315" class="chk"/>
+    <line x1="80" y1="300" x2="142" y2="300" class="la" stroke-width="2"/>
+    <text x="115" y="292" class="t a" text-anchor="middle">100%</text>
+    <line x1="142" y1="300" x2="184" y2="300" class="la" stroke-width="2"/>
+    <text x="163" y="292" class="t a" text-anchor="middle">10%</text>
+    <line x1="184" y1="300" x2="226" y2="300" class="la" stroke-width="2"/>
+    <text x="205" y="292" class="t a" text-anchor="middle">10%</text>
+    <line x1="226" y1="300" x2="274" y2="300" class="la" stroke-width="2"/>
+    <text x="247" y="292" class="t a" text-anchor="middle">10%</text>
+    <path d="M283 300 L274.25 295.66 L274.25 304.34 Z" class="fa"/>
+    <text x="98" y="342" class="t a">it picks an action all three miss</text>
+    <text x="0" y="392" class="t"><tspan class="b">Hijack:</tspan> <tspan class="m">someone else chooses it</tspan></text>
+    <text x="0" y="411" class="t m">P is set by the attacker's choices</text>
+    <rect x="0.5" y="430" width="87.5" height="40" rx="5" class="box"/>
+    <circle cx="76" cy="450" r="4" class="fa"/>
+    <text x="67" y="455" class="t" text-anchor="end">obeys</text>
+    <rect x="284" y="430" width="58.5" height="40" rx="5" class="box"/>
+    <text x="313.5" y="455" class="t b" text-anchor="middle">D</text>
+    <line x1="268" y1="426" x2="268" y2="474" class="wall"/>
+    <line x1="142" y1="435" x2="142" y2="465" class="chk"/>
+    <line x1="184" y1="435" x2="184" y2="465" class="chk"/>
+    <line x1="226" y1="435" x2="226" y2="465" class="chk"/>
+    <line x1="80" y1="450" x2="142" y2="450" class="la" stroke-width="2"/>
+    <text x="115" y="442" class="t a" text-anchor="middle">100%</text>
+    <line x1="142" y1="450" x2="184" y2="450" class="la" stroke-width="2"/>
+    <text x="163" y="442" class="t a" text-anchor="middle">10%</text>
+    <line x1="184" y1="450" x2="226" y2="450" class="la" stroke-width="2"/>
+    <text x="205" y="442" class="t a" text-anchor="middle">10%</text>
+    <line x1="226" y1="450" x2="274" y2="450" class="la" stroke-width="2"/>
+    <text x="247" y="442" class="t a" text-anchor="middle">10%</text>
+    <path d="M283 450 L274.25 445.66 L274.25 454.34 Z" class="fa"/>
+    <text x="98" y="492" class="t a">the attacker picks an input</text>
+    <text x="98" y="511" class="t a">all three miss</text>
+    <line x1="76" y1="600" x2="76" y2="463" class="ll" stroke-width="1.5"/>
+    <path d="M76 455 L71.66 463.75 L80.34 463.75 Z" class="fl"/>
+    <line x1="65" y1="536" x2="87" y2="536" class="cut"/>
+    <text x="96" y="541" class="t">cut: data may fill in values,</text>
+    <text x="96" y="560" class="t">not choose actions</text>
+    <text x="96" y="586" class="t">injected instructions</text>
+    <text x="0" y="624" class="t m">via a prompt, retrieved content, a tool or</text>
+    <text x="0" y="643" class="t m">a dependency</text>
+    <line x1="4" y1="671" x2="4" y2="710" class="wall"/>
+    <text x="18" y="686" class="t"><tspan class="b">Thick bar: hard envelope.</tspan></text>
+    <text x="18" y="705" class="t">It limits what any action can reach,</text>
+    <text x="18" y="724" class="t">whoever chose it.</text>
+    <text x="0" y="762" class="t m">D is set by what the action can reach, the</text>
+    <text x="0" y="781" class="t m">same for every channel: a coordinator's</text>
+    <text x="0" y="800" class="t m">permission grant costs $100,000, mistaken</text>
+    <text x="0" y="819" class="t m">or deliberate.</text>
+  </svg>
+  <figcaption>The three channels reach the same damage through the same checks. They differ in who chooses the harmful action, and so in what a stack of checks is worth: three checks that each miss 10% pass 0.1% of accidental harmful actions if they fail independently, but a delegate or attacker who picks the action beats all three at once, so at least 10% get through. The controls that hold on every path are the ones that ignore which action arrives: keeping untrusted data from choosing actions, and a hard envelope.</figcaption>
+</figure>
+<style>
+  .dr-harm-channels {
+    --hc-text: #2e2c28; --hc-muted: #5f5b53; --hc-line: #8f897e; --hc-hair: #d6d1c7;
+    --hc-bg: #ffffff; --hc-accent: #a8321f;
+    container-type: inline-size;
+    margin: 2rem 0;
+  }
+  :root[data-theme="dark"] .dr-harm-channels {
+    --hc-text: #dcd7cd; --hc-muted: #a7a195; --hc-line: #8f897e; --hc-hair: #45423c;
+    --hc-bg: #161514; --hc-accent: #f29a84;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .dr-harm-channels {
+      --hc-text: #dcd7cd; --hc-muted: #a7a195; --hc-line: #8f897e; --hc-hair: #45423c;
+      --hc-bg: #161514; --hc-accent: #f29a84;
+    }
+  }
+  .dr-harm-channels svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .dr-harm-channels .hc-wide { max-width: 720px; }
+  .dr-harm-channels .hc-narrow { display: none; max-width: 420px; }
+  @container (max-width: 600px) {
+    .dr-harm-channels .hc-wide { display: none; }
+    .dr-harm-channels .hc-narrow { display: block; }
+  }
+  .dr-harm-channels text {
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; fill: var(--hc-text);
+  }
+  .dr-harm-channels .b { font-weight: 600; font-size: 15px; }
+  .dr-harm-channels .m { fill: var(--hc-muted); }
+  .dr-harm-channels .a { fill: var(--hc-accent); }
+  .dr-harm-channels .box { fill: none; stroke: var(--hc-line); stroke-width: 1; }
+  .dr-harm-channels .chk { stroke: var(--hc-text); stroke-width: 1.25; }
+  .dr-harm-channels .wall { stroke: var(--hc-text); stroke-width: 3; }
+  .dr-harm-channels .cut { stroke: var(--hc-text); stroke-width: 2.5; }
+  .dr-harm-channels .ll { stroke: var(--hc-line); fill: none; }
+  .dr-harm-channels .la { stroke: var(--hc-accent); fill: none; }
+  .dr-harm-channels .fl { fill: var(--hc-line); }
+  .dr-harm-channels .fa { fill: var(--hc-accent); }
+  .dr-harm-channels figcaption {
+    margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.55; color: var(--hc-muted);
+  }
+</style>
+
+<p>The last row matters most. The <a href="#">beta-factor correction</a> models checks that happen to fail together. In the defection and hijack channels an adversary chooses the input to defeat every check at once, so treat a stack as worth no more than its best layer until a control evaluation (<a href="#">Greenblatt et al. 2023</a>) shows otherwise.</p>
+<p>Accidents also tend to leave traces in logs and tests. The other two need not: a schemer hides its actions, and a hijacked delegate&rsquo;s logs show it doing what it was told, which can look like normal work.</p>
+</main>
+</body>
+</html>

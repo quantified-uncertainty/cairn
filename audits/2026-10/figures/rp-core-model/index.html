@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loss Pipeline Figure</title>
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('starlight-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root { --text: #dcd7cd; --muted: #a7a195; --bg: #161514; --link: #9dbdf2; --rule: #45423c; color-scheme: dark; }
+  :root[data-theme='light'] { --text: #2e2c28; --muted: #5f5b53; --bg: #ffffff; --link: #2a57a6; --rule: #d6d1c7; color-scheme: light; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px; line-height: 1.65;
+  }
+  main { max-width: 45rem; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
+  .crumb { font-size: 0.875rem; color: var(--muted); margin: 0 0 0.25rem; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 1.5rem; font-weight: 600; }
+  h2 { font-size: 1.375rem; margin: 2.25rem 0 0.75rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  a { color: var(--link); }
+  i.v { font-family: 'Times New Roman', serif; font-size: 1.08em; }
+</style>
+</head>
+<body>
+<main>
+<p class="crumb">Reasoning Processes · concepts/core-model · figure preview</p>
+<h1>The Core Model</h1>
+
+<h2>Setup</h2>
+<p>A <strong>judge</strong> <i class="v">J</i> must make decisions under uncertainty. Their preferences over knowledge are summarized by a utility function <i class="v">U</i>, represented in practice as a weighted question portfolio (<a href="#">Constructing Utility Functions</a>). A <strong>reasoning process</strong> <i class="v">π</i> — peer review, a prediction market, an LLM pipeline, an expert panel — consumes effort and evidence and emits claims, estimates, or evaluations. The judge cannot verify the claims object-level; these notes are about what they can do instead.</p>
+<p>Three families of quantities characterize <i class="v">π</i>: what it delivers, what it costs, and what it costs to corrupt. (All symbols are indexed in the <a href="#">Glossary &amp; Notation</a>.)</p>
+
+<figure class="rp-loss">
+<svg class="wide" viewBox="0 0 680 460" width="680" height="460" role="img" aria-label="Diagram of the loss pipeline. A band whose width is the information about the world narrows from Evidence to Report to Interpretation as evaluator, format and consumer losses remove bits, and arrives at the judge, who multiplies odds by the likelihood ratio and moves toward the truth. Below the line where the likelihood ratio is 1, a mirror-image band shows a captured evaluator: same width, reversed sign, so a judge using the old ratio is moved away from the truth. The process costs c_process once; each of n consumers pays c_interp. An arrow from the judge back to the process shows that the expected move can be priced before the process runs.">
+  <line x1="132" y1="124" x2="132" y2="406" class="cut"/>
+  <line x1="352" y1="124" x2="352" y2="406" class="cut"/>
+  <line x1="462" y1="124" x2="462" y2="406" class="cut"/>
+  <line x1="242" y1="124" x2="242" y2="172" class="cut"/>
+  <line x1="522" y1="124" x2="522" y2="172" class="cut"/>
+  <line x1="132" y1="176" x2="522" y2="176" class="ghost"/>
+  <path d="M132 286 L132 176 L242 196.4 L352 215.6 L462 236.7 L522 236.7 L538 261.4 L522 286 Z" class="band"/>
+  <path d="M132 286 L132 396 L242 375.6 L352 356.4 L462 335.3 L522 335.3 L538 310.6 L522 286 Z" class="mirror"/>
+  <line x1="122" y1="286" x2="540" y2="286" class="zero"/>
+  <path d="M498 122 C498 70 242 66 242 93" class="arc"/>
+  <path d="M238.2 87 L242 94 L245.8 87" class="arc-head"/>
+  <text x="370" y="22" class="t" text-anchor="middle"><tspan>Priced before it arrives: expected move = expected uncertainty resolved</tspan></text>
+  <text x="370" y="44" class="m" text-anchor="middle"><tspan>E[(</tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4"> − </tspan><tspan font-style="italic">q</tspan><tspan>)²] = </tspan><tspan font-style="italic">q</tspan><tspan>(1 − </tspan><tspan font-style="italic">q</tspan><tspan>) − E[</tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4">(1 − </tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4">)] = 0.083 here</tspan></text>
+  <text x="242" y="110" class="m" text-anchor="middle"><tspan>process </tspan><tspan font-style="italic">π</tspan><tspan>, costs </tspan><tspan font-style="italic">c</tspan><tspan dy="4" font-size="11">process</tspan><tspan dy="-4"> once</tspan></text>
+  <path d="M134 121 V116 H350 V121" class="brace"/>
+  <text x="407" y="110" class="m" text-anchor="middle"><tspan font-style="italic">c</tspan><tspan dy="4" font-size="11">interp</tspan><tspan dy="-4"> each</tspan></text>
+  <path d="M354 121 V116 H460 V121" class="brace"/>
+  <text x="187" y="142" class="t" text-anchor="middle"><tspan>evaluator</tspan></text>
+  <text x="297" y="142" class="t" text-anchor="middle"><tspan>format</tspan></text>
+  <text x="407" y="142" class="t" text-anchor="middle"><tspan font-style="italic">n</tspan><tspan> consumers</tspan></text>
+  <text x="498" y="142" class="t" text-anchor="middle"><tspan>judge </tspan><tspan font-style="italic">J</tspan></text>
+  <text x="187" y="164" class="m" text-anchor="middle"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="12">eval</tspan><tspan dy="-4"> = 19%</tspan></text>
+  <text x="297" y="164" class="m" text-anchor="middle"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="12">cod</tspan><tspan dy="-4"> = 21%</tspan></text>
+  <text x="407" y="164" class="m" text-anchor="middle"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="12">interp</tspan><tspan dy="-4"> = 30%</tspan></text>
+  <text x="142" y="274" class="m"><tspan>width: information about the world</tspan></text>
+  <text x="142" y="309" class="a"><tspan>captured evaluator: same width,</tspan></text>
+  <text x="142" y="327" class="a"><tspan>reversed sign</tspan></text>
+  <text x="8" y="224" class="t"><tspan>World </tspan><tspan font-style="italic">H</tspan></text>
+  <line x1="8" y1="232" x2="129" y2="232" class="flow"/>
+  <path d="M123 235.8 L130 232 L123 228.2" class="flow-head"/>
+  <text x="8" y="291" class="m"><tspan font-style="italic">LR</tspan><tspan> = 1</tspan></text>
+  <text x="8" y="330" class="a"><tspan>Adversary</tspan></text>
+  <text x="8" y="349" class="a"><tspan>capability </tspan><tspan font-style="italic">g</tspan></text>
+  <text x="8" y="367" class="a"><tspan>pays </tspan><tspan font-style="italic">C</tspan><tspan dy="4" font-style="italic" font-size="11">π</tspan><tspan dy="-4">(</tspan><tspan font-style="italic">Δ</tspan><tspan>, </tspan><tspan font-style="italic">g</tspan><tspan>, </tspan><tspan font-style="italic">t</tspan><tspan>)</tspan></text>
+  <line x1="8" y1="378" x2="166" y2="378" class="aflow"/>
+  <path d="M160 381.9 L167 378 L160 374.1" class="aflow-head"/>
+  <text x="548" y="243.364" class="t"><tspan>toward the truth</tspan></text>
+  <text x="548" y="261.364" class="m"><tspan>odds × </tspan><tspan font-style="italic">LR</tspan></text>
+  <text x="548" y="279.364" class="t"><tspan font-style="italic">J</tspan><tspan> gains 0.26 bits</tspan></text>
+  <text x="548" y="314.636" class="a"><tspan>away from it, if</tspan></text>
+  <text x="548" y="332.636" class="m"><tspan font-style="italic">J</tspan><tspan> keeps the old </tspan><tspan font-style="italic">LR</tspan></text>
+  <text x="548" y="350.636" class="a"><tspan font-style="italic">J</tspan><tspan> loses 0.92 bits</tspan></text>
+  <text x="8" y="428" class="m"><tspan font-style="italic">I</tspan><tspan>(World; ·)</tspan></text>
+  <text x="132" y="428" class="t" text-anchor="middle"><tspan>Evidence</tspan></text>
+  <text x="352" y="428" class="t" text-anchor="middle"><tspan>Report</tspan></text>
+  <text x="462" y="428" class="t" text-anchor="middle"><tspan>Interpretation</tspan></text>
+  <text x="132" y="448" class="m" text-anchor="middle"><tspan>0.59 bits</tspan></text>
+  <text x="352" y="448" class="m" text-anchor="middle"><tspan>0.38 bits</tspan></text>
+  <text x="462" y="448" class="m" text-anchor="middle"><tspan>0.26 bits</tspan></text>
+  <text x="246.5" y="428" class="m" text-anchor="middle"><tspan>≥</tspan></text>
+  <text x="395" y="428" class="m" text-anchor="middle"><tspan>≥</tspan></text>
+</svg>
+<svg class="narrow" viewBox="0 0 343 736" width="343" height="736" role="img" aria-label="Diagram of the loss pipeline. A band whose width is the information about the world narrows from Evidence to Report to Interpretation as evaluator, format and consumer losses remove bits, and arrives at the judge, who multiplies odds by the likelihood ratio and moves toward the truth. Below the line where the likelihood ratio is 1, a mirror-image band shows a captured evaluator: same width, reversed sign, so a judge using the old ratio is moved away from the truth. The process costs c_process once; each of n consumers pays c_interp. An arrow from the judge back to the process shows that the expected move can be priced before the process runs.">
+  <line x1="14" y1="196" x2="196" y2="196" class="cut"/>
+  <line x1="14" y1="412" x2="196" y2="412" class="cut"/>
+  <line x1="14" y1="520" x2="196" y2="520" class="cut"/>
+  <line x1="180" y1="196" x2="180" y2="572" class="ghost"/>
+  <path d="M100 196 L180 196 L165.1 304 L151.2 412 L135.8 520 L135.8 572 L117.9 586 L100 572 Z" class="band"/>
+  <path d="M100 196 L20 196 L34.9 304 L48.8 412 L64.2 520 L64.2 572 L82.1 586 L100 572 Z" class="mirror"/>
+  <line x1="100" y1="188" x2="100" y2="588" class="zero"/>
+  <text x="100" y="180" class="m" text-anchor="middle"><tspan font-style="italic">LR</tspan><tspan> = 1</tspan></text>
+  <text x="0" y="18" class="t"><tspan>Priced before it arrives:</tspan></text>
+  <text x="0" y="38" class="m"><tspan>expected move = expected uncertainty resolved</tspan></text>
+  <text x="0" y="58" class="m"><tspan>E[(</tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4"> − </tspan><tspan font-style="italic">q</tspan><tspan>)²] = </tspan><tspan font-style="italic">q</tspan><tspan>(1 − </tspan><tspan font-style="italic">q</tspan><tspan>) − E[</tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4">(1 − </tspan><tspan font-style="italic">q</tspan><tspan dy="4" font-style="italic" font-size="11">X</tspan><tspan dy="-4">)]</tspan></text>
+  <text x="0" y="78" class="m"><tspan>= 0.083 here</tspan></text>
+  <path d="M242 86 V136" class="arc"/>
+  <path d="M238.2 130 L242 137 L245.8 130" class="arc-head"/>
+  <text x="202" y="158" class="t"><tspan>process </tspan><tspan font-style="italic">π</tspan></text>
+  <text x="202" y="177" class="m"><tspan font-style="italic">c</tspan><tspan dy="4" font-size="11">process</tspan><tspan dy="-4"> once</tspan></text>
+  <path d="M200 230 H196 V398 H200" class="brace"/>
+  <text x="204" y="201" class="t"><tspan>Evidence</tspan></text>
+  <text x="204" y="219" class="m"><tspan>0.59 bits</tspan></text>
+  <text x="208" y="252" class="t"><tspan>evaluator</tspan></text>
+  <text x="208" y="270" class="m"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="11">eval</tspan><tspan dy="-4"> = 19%</tspan></text>
+  <text x="208" y="350" class="t"><tspan>format</tspan></text>
+  <text x="208" y="368" class="m"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="11">cod</tspan><tspan dy="-4"> = 21%</tspan></text>
+  <text x="204" y="417" class="t"><tspan>Report</tspan></text>
+  <text x="204" y="435" class="m"><tspan>0.38 bits</tspan></text>
+  <text x="208" y="462" class="t"><tspan font-style="italic">n</tspan><tspan> consumers</tspan></text>
+  <text x="208" y="480" class="m"><tspan font-style="italic">L</tspan><tspan dy="4" font-size="11">interp</tspan><tspan dy="-4"> = 30%</tspan></text>
+  <text x="208" y="500" class="m"><tspan font-style="italic">c</tspan><tspan dy="4" font-size="11">interp</tspan><tspan dy="-4"> each</tspan></text>
+  <text x="204" y="525" class="t"><tspan>Interpretation</tspan></text>
+  <text x="204" y="543" class="m"><tspan>0.26 bits</tspan></text>
+  <text x="208" y="568" class="t"><tspan>judge </tspan><tspan font-style="italic">J</tspan></text>
+  <text x="208" y="590" class="t"><tspan>toward the truth</tspan></text>
+  <text x="208" y="608" class="m"><tspan>odds × </tspan><tspan font-style="italic">LR</tspan></text>
+  <text x="208" y="626" class="t"><tspan font-style="italic">J</tspan><tspan> gains 0.26 bits</tspan></text>
+  <line x1="125.9" y1="585" x2="202" y2="585" class="cut"/>
+  <text x="112" y="104" class="t"><tspan>World </tspan><tspan font-style="italic">H</tspan></text>
+  <line x1="140" y1="112" x2="140" y2="193" class="flow"/>
+  <path d="M136.2 187 L140 194 L143.8 187" class="flow-head"/>
+  <text x="0" y="104" class="a"><tspan>Adversary</tspan></text>
+  <text x="0" y="123" class="a"><tspan>capability </tspan><tspan font-style="italic">g</tspan></text>
+  <text x="0" y="141" class="a"><tspan>pays </tspan><tspan font-style="italic">C</tspan><tspan dy="4" font-style="italic" font-size="11">π</tspan><tspan dy="-4">(</tspan><tspan font-style="italic">Δ</tspan><tspan>, </tspan><tspan font-style="italic">g</tspan><tspan>, </tspan><tspan font-style="italic">t</tspan><tspan>)</tspan></text>
+  <line x1="60" y1="152" x2="60" y2="226" class="aflow"/>
+  <path d="M56.1 220 L60 227 L63.9 220" class="aflow-head"/>
+  <text x="0" y="620" class="a"><tspan>away from it, if</tspan></text>
+  <text x="0" y="638" class="m"><tspan font-style="italic">J</tspan><tspan> keeps the old </tspan><tspan font-style="italic">LR</tspan></text>
+  <text x="0" y="656" class="a"><tspan font-style="italic">J</tspan><tspan> loses 0.92 bits</tspan></text>
+  <rect x="0.5" y="679" width="22" height="12" class="band"/>
+  <text x="32" y="690" class="m"><tspan>width: information about the world</tspan></text>
+  <rect x="0.5" y="699" width="22" height="12" class="mirror"/>
+  <text x="32" y="710" class="a"><tspan>captured evaluator: same width,</tspan></text>
+  <text x="32" y="728" class="a"><tspan>reversed sign</tspan></text>
+</svg>
+<figcaption>Information about the world can only leak out of the pipeline, so each loss is a measurable gap. Corruption is not a loss: a captured evaluator can keep every bit and still reverse the sign. In this illustrative process, where every width and number is computed, the misled judge loses 0.92 bits: more than the 0.26 the honest process delivers.</figcaption>
+</figure>
+<style>
+  .rp-loss {
+    --f-text: #2e2c28; --f-muted: #5f5b53; --f-line: #8f897e; --f-hair: #d6d1c7;
+    --f-bg: #ffffff; --f-band: #eeebe5; --f-accent: #2a57a6; --f-accent-fill: #eef2fa;
+    margin: 2rem 0;
+    container-type: inline-size;
+  }
+  :root[data-theme='dark'] .rp-loss {
+    --f-text: #dcd7cd; --f-muted: #a7a195; --f-line: #8f897e; --f-hair: #45423c;
+    --f-bg: #161514; --f-band: #2a2825; --f-accent: #9dbdf2; --f-accent-fill: #1b2231;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .rp-loss {
+      --f-text: #dcd7cd; --f-muted: #a7a195; --f-line: #8f897e; --f-hair: #45423c;
+      --f-bg: #161514; --f-band: #2a2825; --f-accent: #9dbdf2; --f-accent-fill: #1b2231;
+    }
+  }
+  .rp-loss svg { display: block; width: 100%; height: auto; max-width: var(--w); margin: 0 auto; overflow: visible; }
+  .rp-loss .wide { --w: 680px; }
+  .rp-loss .narrow { --w: 343px; display: none; }
+  @container (max-width: 599px) {
+    .rp-loss .wide { display: none; }
+    .rp-loss .narrow { display: block; }
+  }
+  .rp-loss text { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 15px; }
+  .rp-loss .t { fill: var(--f-text); }
+  .rp-loss .m { fill: var(--f-muted); font-size: 14px; }
+  .rp-loss .a { fill: var(--f-accent); }
+  .rp-loss .band { fill: var(--f-band); stroke: var(--f-line); stroke-width: 1; stroke-linejoin: round; }
+  .rp-loss .mirror { fill: var(--f-accent-fill); stroke: var(--f-accent); stroke-width: 1.25; stroke-dasharray: 5 4; stroke-linejoin: round; }
+  .rp-loss .zero { stroke: var(--f-text); stroke-width: 1; }
+  .rp-loss .ghost { stroke: var(--f-line); stroke-width: 1; stroke-dasharray: 2 4; }
+  .rp-loss .cut { stroke: var(--f-hair); stroke-width: 1; }
+  .rp-loss .brace { fill: none; stroke: var(--f-line); stroke-width: 1; }
+  .rp-loss .arc, .rp-loss .arc-head { fill: none; stroke: var(--f-muted); stroke-width: 1; }
+  .rp-loss .arc { stroke-dasharray: 4 4; }
+  .rp-loss .flow, .rp-loss .flow-head { fill: none; stroke: var(--f-text); stroke-width: 1; }
+  .rp-loss .aflow, .rp-loss .aflow-head { fill: none; stroke: var(--f-accent); stroke-width: 1.25; }
+  .rp-loss figcaption { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.55; color: var(--f-muted); }
+</style>
+
+
+<h2>1. Epistemic weight [exact]</h2>
+<p>The judge's master question: a claim arrives from process <i class="v">π</i> — how much should I update? The Bayesian answer runs through the process, not the claim …</p>
+</main>
+</body>
+</html>
