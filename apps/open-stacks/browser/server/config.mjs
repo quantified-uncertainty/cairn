@@ -12,7 +12,8 @@ export const PORT = Number(argPort > 0 ? process.argv[argPort + 1] : process.env
 // STACKS_HOST=0.0.0.0 opts in, e.g. for a tablet on a trusted network.
 export const HOST = process.env.STACKS_HOST || '127.0.0.1';
 export const CACHE = process.env.STACKS_CACHE || join(homedir(), '.cache', 'open-stacks');
-export const MODEL = process.env.STACKS_MODEL || 'claude-opus-5-5';
+// Haiku by default: about 40x cheaper than Opus and fast enough to keep up with skimming.
+export const MODEL = process.env.STACKS_MODEL || 'claude-haiku-5-5';
 export const UA = 'OpenStacksBrowser/0.3 (personal research reader; https://github.com/quantified-uncertainty/cairn)';
 export const hasKey = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 for (const d of ['', 'summaries']) mkdirSync(join(CACHE, d), { recursive: true });

@@ -1,40 +1,66 @@
-// Moving around: items (j/k), pages (h/l), jumps, zoom, the mouse wheel.
-import { $, store, emit, on, registerKey, toast } from './util.js';
+// Moving around: items (j/k), pages (h/l), Advance and Back, jumps, zoom, the
+// mouse wheel and the trackpad (docs/navigation-ergonomics.md, items 1-3 and 5).
+import { $, h, css, store, emit, on, registerKey, steppers, toast } from './util.js';
 import { items, related } from './corpus.js';
 import { state, current, buildOrder, learn } from './state.js';
 import { isFlow } from './docs.js';
 import { startOf, randomTarget } from './prefetch.js';
 import { showFeed, paintHead } from './feed.js';
-import { live, vpToCol } from './flow.js';
+import { live, vpToCol, elToCol } from './flow.js';
 import { setView, paintSaved } from './chrome.js';
+import { attachWheel } from './gesture.js';
+
+/** Say where we are just before a move or judgment, so that Back (features/back.js) can return here exactly. */
+export function before(label, extra) {
+  const i = current(); if (i == null) return;
+  emit('nav:before', { label, i, pos: state.pos, s: state.start.get(i), hist: [...(state.hist.get(i) || [])], zoom: state.zoom, ...extra });
+}
+const judged = () => ({ order: state.order.slice(), aff: structuredClone(state.aff), saved: state.saved.slice() });
 
 export function go(pos) {
   const p = Math.max(0, Math.min(pos, state.order.length - 1));
-  if (p === state.pos && state.view === 'feed') return;
+  if (p === state.pos && state.view === 'feed') return false;
+  if (p !== state.pos) before(p > state.pos ? 'next item' : 'previous item');
   state.pos = p; state.zoom = false; showFeed();
   emit('nav', { type: 'item', i: current(), it: items[current()] });
+  return true;
 }
-export function jumpTo(j) { state.order.splice(state.pos + 1, 0, j); setView('feed'); go(state.pos + 1); }
+export function jumpTo(j) { before('open item', { order: state.order.slice() }); state.order.splice(state.pos + 1, 0, j); setView('feed'); go(state.pos + 1); }
 
 const flowHere = (it) => isFlow(it) && live?.id === it.id;
+/** The item's extent is known (a raster's page count, a flow document's columns), or it could not open. */
+const ready = (it) => !!it && (!!it.err || (isFlow(it) ? live?.id === it.id : !!it.n));
 /** Jump to a page (for flow documents, a stable page). Clears the turn history. */
 export function goPage(k) {
   const i = current(); const it = items[i];
+  before('go to page');
   state.hist.set(i, []);
   state.start.set(i, flowHere(it) ? vpToCol(k) : Math.max(0, k));
   showFeed();
   emit('nav', { type: 'page', i, it, k });
 }
+/** End: the last spread. */
+function goEnd() {
+  const i = current(); if (i == null) return;
+  const it = items[i]; if (!ready(it)) return; // still opening: the end is not known
+  const flow = flowHere(it);
+  const s = flow ? Math.max(0, live.n - live.g.cols) : Math.max(0, (it.n || 1) - (state.zoom ? 1 : state.per));
+  before('last spread');
+  state.hist.set(i, []); state.start.set(i, s); showFeed();
+  emit('nav', { type: 'page', i, it, k: flow ? live.first[s] ?? live.running[s] ?? 0 : s });
+}
 on('flow:jump', ({ col }) => {
+  before('link jump');
   const i = current(); const hist = state.hist.get(i) || [];
   hist.push(state.start.get(i) ?? 0); state.hist.set(i, hist);
   state.start.set(i, col); showFeed();
 });
 
-/** Turn a spread. Going back returns to exactly the spread you came from. */
+/** Turn a spread; true if it moved, false at an edge. Going back returns to exactly the spread you came from. */
 export function turn(dir) {
-  const i = current(); if (i == null) return;
+  const i = current(); if (i == null) return false;
   const it = items[i];
+  if (!ready(it)) return false; // still opening
   const flow = flowHere(it);
   const s = state.start.get(i) ?? startOf(i);
   const n = flow ? live.n : (it.n || 1);
@@ -42,21 +68,43 @@ export function turn(dir) {
   const hist = state.hist.get(i) || [];
   let ns;
   if (dir > 0) {
-    if (s + step >= n) { toast('End · j for the next item'); return; }
-    hist.push(s); ns = s + step;
+    if (s + step >= n) return false;
+    ns = s + step;
   } else {
-    if (s <= 0) { toast('Start'); return; }
-    ns = hist.length ? hist.pop() : Math.max(0, s - (flow ? step : state.per));
+    if (s <= 0) { toast('Start'); return false; }
+    ns = hist.length ? hist.at(-1) : Math.max(0, s - (flow ? step : state.per));
   }
+  before(dir > 0 ? 'page turn' : 'page back');
+  if (dir > 0) hist.push(s); else hist.pop();
   state.hist.set(i, hist);
   state.turns.push({ at: Date.now(), dir });
   state.start.set(i, ns);
   showFeed();
   emit('nav', { type: 'turn', i, it, s: ns, dir });
+  return true;
 }
+
+// ---------- Advance and Back ----------
+const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
+/** Page forward; on the last spread, the next item at its opening page, but only
+ *  on a fresh press or stroke (not key repeat, not later in the same wheel gesture).
+ *  Returns true when it turned, 'crossed' when it moved on, false when it stayed. */
+export function forward(e) {
+  if (turn(1)) return true;
+  // Not while the item is still opening: its last spread is not known yet, and
+  // a quick second press would skip an item you have not seen.
+  if (e?.repeat || e?.fresh === false || !ready(items[current()])) return false;
+  if (state.pos >= state.order.length - 1) { toast('End of this lane'); return false; }
+  return go(state.pos + 1) && 'crossed';
+}
+/** Advance (Space, PageDown, F16, the wheel in continue mode): steppers, then the next spread, then the next item. */
+export function advance(e) { return stepped(1, e) || forward(e); }
+/** Back (Backspace, Shift+Space, PageUp, F17): undo the last move or judgment (features/back.js); else turn back. */
+export function back(e) { return stepped(-1, e) || turn(-1); }
 /** r: the item's best pages first (from enrichment), then random spots chosen in advance. */
 export function randomSpot() {
   const i = current(); const it = items[i];
+  if (!ready(it)) return; // still opening (a post's columns are not known yet)
   let k;
   if (flowHere(it)) k = Math.floor(Math.random() * Math.max(1, live.n - live.g.cols));
   else {
@@ -64,21 +112,26 @@ export function randomSpot() {
     if (it.best && used < it.best.length) { k = it.best[used]; seen.set(i, used + 1); toast(`Best page ${used + 1} of ${it.best.length}`); }
     else { const n = it.n || 1; k = randomTarget.get(i) ?? Math.floor(Math.random() * Math.max(1, n - state.per)); randomTarget.delete(i); }
   }
+  before('jump');
   state.hist.set(i, []);
   state.start.set(i, k); showFeed();
   emit('nav', { type: 'random', i, it, s: k });
 }
-export function toggleZoom(on) {
+/** Zoom to one page or column, or back to the spread; k: the page (column, for flow documents) to zoom into. */
+export function toggleZoom(on, k) {
   const z = on ?? !state.zoom;
   if (z === state.zoom) return;
+  before(z ? 'zoom' : 'unzoom');
   state.zoom = z;
   const i = current(); state.hist.set(i, []);
+  if (k != null && k >= 0) state.start.set(i, k);
   if (isFlow(items[i]) && live?.id === items[i].id) {
     // keep the same text in view across the relayout
     const vp = live.first[state.start.get(i) ?? 0] ?? 0;
     state.pendingVp = vp;
   }
   showFeed();
+  emit('nav', { type: 'zoom', i, it: items[i], zoom: z });
 }
 on('spread:rendered', ({ i, flow }) => {
   if (flow && state.pendingVp != null) { const vp = state.pendingVp; state.pendingVp = null; const c = vpToCol(vp); if (c !== state.start.get(i)) { state.start.set(i, c); showFeed(); } }
@@ -86,12 +139,14 @@ on('spread:rendered', ({ i, flow }) => {
 export function toggleSave() {
   const it = items[current()];
   const k = state.saved.indexOf(it.id);
+  before(k >= 0 ? 'unsave' : 'save', judged());
   if (k >= 0) state.saved.splice(k, 1); else { state.saved.unshift(it.id); learn(it, 1); buildOrder(); }
   store.set('saved', state.saved); $('#saved-n').textContent = state.saved.length; paintSaved(); paintHead(it);
   toast(k >= 0 ? 'Removed from saved' : 'Saved');
 }
-export function lessLikeThis() { learn(items[current()], -1); buildOrder(); go(state.pos + 1); }
+export function lessLikeThis() { before('less like this', judged()); learn(items[current()], -1); buildOrder(); go(state.pos + 1); }
 export function moreLikeThis() {
+  before('more like this', judged());
   const i = current(); learn(items[i], 0.7);
   const near = state.order.slice(state.pos, state.pos + 10);
   state.order.splice(state.pos + 1, 0, ...related(i).filter((j) => !near.includes(j)));
@@ -100,9 +155,10 @@ export function moreLikeThis() {
 function setPer(d) {
   const i = current();
   if (flowHere(items[i])) {
-    const cols = Math.max(1, Math.min(8, (state.flowCols || live.g.cols) + d));
-    state.flowCols = cols; store.set('flowCols', cols); toast(`${cols} column${cols > 1 ? 's' : ''}`);
-  } else { state.per = Math.max(1, Math.min(8, state.per + d)); store.set('per', state.per); toast(`${state.per} page${state.per > 1 ? 's' : ''}`); }
+    const cols = d === 0 ? 0 : Math.max(1, Math.min(8, (state.flowCols || live.g.cols) + d));
+    state.flowCols = cols; store.set('flowCols', cols); toast(cols ? `${cols} column${cols > 1 ? 's' : ''}` : 'Columns: fit to screen');
+  } else if (d === 0) { state.perAuto = true; store.set('perAuto', true); toast('Pages: fit to screen'); }
+  else { state.perAuto = false; store.set('perAuto', false); state.per = Math.max(1, Math.min(8, state.per + d)); store.set('per', state.per); toast(`${state.per} page${state.per > 1 ? 's' : ''} · = to fit the screen`); }
   state.hist.set(i, []); showFeed();
 }
 function setFont(d) {
@@ -113,59 +169,111 @@ function setFont(d) {
   showFeed();
 }
 
-// ---------- mouse wheel ----------
-// Vertical wheel moves between items (like j/k) and horizontal wheel or
-// Shift+wheel turns pages; a middle click swaps the two. One gesture (events
-// less than 140 ms apart) makes one step; a long fling can make a few.
-let acc = 0, lastT = 0, steps = 0;
-function onWheel(e) {
-  if (e.ctrlKey || state.view !== 'feed' || e.target.closest('#scrub, #panel, .fn-pop')) return;
-  e.preventDefault();
-  const now = performance.now();
-  const horiz = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-  let d = horiz ? e.deltaX : e.deltaY;
-  if (e.deltaMode === 1) d *= 40; else if (e.deltaMode === 2) d *= 800;
-  if (now - lastT > 140) { acc = 0; steps = 0; }
-  lastT = now;
-  if (acc && Math.sign(d) !== Math.sign(acc)) { acc = 0; steps = 0; }
-  acc += d;
-  if (Math.abs(acc) < (steps ? 320 : 30)) return;
-  const dir = Math.sign(acc); acc = 0; steps++;
-  const axis = horiz || e.shiftKey ? 'h' : 'v';
-  if ((axis === 'v') === (state.wheel === 'items')) go(state.pos + dir); else turn(dir);
-}
+// ---------- mouse wheel and trackpad ----------
+// gesture.js turns each notch or stroke into one step; what a step does depends
+// on the device's map (state.wheelMouse, state.wheelPad):
+//   continue: vertical = Advance / Back, sideways (or Shift) = pages
+//   items, 2d: vertical = items, sideways = pages · pages: vertical = pages, sideways = items
+// A step that would cross into the next item needs a fresh gesture, and ends it.
+// A pinch over the stage dives into the page under the pointer, or surfaces
+// (zoom → spread → wall); it never zooms the app itself.
+on('gesture:step', (d) => {
+  if (state.view !== 'feed') return;
+  const map = d.device === 'mouse' ? state.wheelMouse : state.wheelPad;
+  const v = d.axis === 'v';
+  let r;
+  if (map === 'continue' && v) { d.glyph = d.dir > 0 ? '▸' : '◂'; r = d.dir > 0 ? advance(d) : back(d); }
+  else if (v === (map !== 'pages')) r = go(state.pos + d.dir);
+  else r = d.dir > 0 ? forward(d) : turn(-1);
+  if (r === 'crossed') d.glyph = '▸▸';
+  if (r === 'crossed' || (r === false && d.dir > 0)) d.stop = true;
+  if (r === false) d.glyph = '';
+});
+on('gesture:pinch', ({ dir, x, y }) => {
+  if (state.view !== 'feed') return;
+  if (dir < 0) { if (state.zoom) toggleZoom(false); else setView('wall'); return; }
+  if (state.zoom) return;
+  const el = document.elementFromPoint(x, y);
+  const pg = el?.closest('#spread .pg[data-k]');
+  toggleZoom(true, pg ? Number(pg.dataset.k) : el?.closest('#spread .flow') ? elToCol(el) : undefined);
+});
+attachWheel($('#stage'), {
+  steps: (e) => state.view === 'feed' && !e.target.closest('#scrub, #panel, .fn-pop'),
+  pinch: () => state.view === 'feed',
+});
+
+const MOUSE = { continue: '⇣ continue', items: '↕ items', pages: '↔ pages' };
+const PAD = { '2d': '↕ items ↔ pages', continue: 'continue' };
+const WHEEL_TXT = {
+  continue: 'Wheel: down = Advance (next spread, then next item) · up = Back · sideways or Shift = pages',
+  items: 'Wheel: up/down = items · sideways or Shift = pages', pages: 'Wheel: up/down = pages · sideways or Shift = items',
+};
+function setWheel(k, v) { state[k] = v; store.set(k, v); paintWheel(); }
+/** W or a middle click: the mouse wheel's map, continue → items → pages. */
 export function toggleWheel() {
-  state.wheel = state.wheel === 'items' ? 'pages' : 'items'; store.set('wheel', state.wheel);
-  paintWheel();
-  toast(state.wheel === 'items' ? 'Wheel: up/down = items · Shift or sideways = pages' : 'Wheel: up/down = pages · Shift or sideways = items', 2400);
+  const ks = Object.keys(MOUSE);
+  setWheel('wheelMouse', ks[(ks.indexOf(state.wheelMouse) + 1) % ks.length]);
+  toast(WHEEL_TXT[state.wheelMouse], 2400);
 }
 export function paintWheel() {
   const b = $('#wheel-btn'); if (!b) return;
-  b.textContent = state.wheel === 'items' ? '↕ items' : '↔ pages';
-  b.title = `Mouse wheel moves between ${state.wheel} (middle-click or W to switch; Shift+wheel does the other)`;
+  b.textContent = MOUSE[state.wheelMouse] || MOUSE.continue;
+  b.title = `Mouse wheel: ${state.wheelMouse} (middle-click or W cycles) · trackpad: ${PAD[state.wheelPad]} · click to set each device`;
+  const f = $('#keys .k-foot')?.firstChild;
+  if (f?.nodeType === 3) f.textContent = `Mouse wheel: ${WHEEL_TXT[state.wheelMouse].replace('Wheel: ', '')} (middle-click or W changes it). Trackpad: one step per stroke; pinch out dives into a page, pinch in surfaces. Click a page to zoom.`;
 }
-$('#stage').addEventListener('wheel', onWheel, { passive: false });
+/** The wheel button: the map for each device, and whether to detect the device. */
+export function wheelMenu() {
+  if ($('#wheel-menu')) { $('#wheel-menu').remove(); return; }
+  const row = (label, k, opts) => h('div', { className: 'wm-row' }, h('span', { textContent: label }),
+    ...Object.entries(opts).map(([v, t]) => h('button', { className: state[k] === v ? 'on' : '', textContent: t, onclick: () => { setWheel(k, v); wheelMenu(); wheelMenu(); } })));
+  const m = h('div', { id: 'wheel-menu' },
+    row('Mouse wheel', 'wheelMouse', MOUSE), row('Trackpad', 'wheelPad', PAD),
+    row('Device', 'wheelDevice', { auto: 'detect', mouse: 'always mouse', pad: 'always trackpad' }),
+    h('a', { href: '?wheel=debug', textContent: 'wheel debug overlay', title: 'Plots every wheel event, to tune the thresholds' }));
+  const r = $('#wheel-btn').getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(r.left, innerWidth - 380)) + 'px'; m.style.top = r.bottom + 4 + 'px';
+  document.body.append(m);
+  setTimeout(() => addEventListener('pointerdown', function off(e) { if (!e.target.closest('#wheel-menu, #wheel-btn')) { m.remove(); removeEventListener('pointerdown', off); } }), 0);
+}
+css(`#wheel-menu { position: fixed; z-index: 40; background: var(--bg-3); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; display: grid; gap: 6px; box-shadow: 0 8px 24px #0008; font-size: 12px; }
+#wheel-menu .wm-row { display: flex; gap: 4px; align-items: center; }
+#wheel-menu .wm-row > span { width: 86px; color: var(--ink-2); }
+#wheel-menu button { padding: 1px 7px; }
+#wheel-menu a { font-size: 11px; color: var(--ink-3); }`);
 $('#scrub').addEventListener('wheel', (e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.preventDefault(); $('#scrub').scrollLeft += e.deltaY; } }, { passive: false });
 $('#stage').addEventListener('mousedown', (e) => { if (e.button === 1 && !e.target.closest('a')) { e.preventDefault(); toggleWheel(); } });
 
 // ---------- keys ----------
+// Auto-repeat is ignored (util.js), so one press is one step.
 const K = (keys, fn, help, order) => registerKey(keys, fn, { help, order });
+K([' ', 'PageDown', 'F16'], (e) => (e.key === ' ' && e.shiftKey ? back(e) : advance(e)), ['Space PgDn', 'Advance: the next spread; on the last one, the next item'], 8);
+K(['Backspace', 'PageUp', 'F17'], back, ['⌫ ⇧Space PgUp', 'Back: undo the last move or judgment, to the exact place'], 9);
+K('F18', () => go(state.pos + 1), ['F16 F17 F18', 'Advance / Back / next item (pedals, mouse buttons, a keyboard layer)'], 9);
 K(['j', 'ArrowDown'], () => go(state.pos + 1), ['j k', 'next / previous item (↓ ↑)'], 10);
 K(['k', 'ArrowUp'], () => go(state.pos - 1));
-K(['l', 'ArrowRight', ' '], () => turn(1), ['l h', 'turn pages (→ ← · Space)'], 11);
+K(['l', 'ArrowRight'], forward, ['l h', 'turn pages (→ ←); on the last spread, l goes on to the next item'], 11);
 K(['h', 'ArrowLeft'], () => turn(-1));
-K(['z', 'Enter'], () => toggleZoom(), ['z', 'zoom to one page or column; Esc back'], 12);
-K('Escape', () => toggleZoom(false));
+K(['z', 'Enter'], () => toggleZoom(), ['z Esc', 'zoom to one page or column / up a level: unzoom, then the wall'], 12);
+K('Escape', () => {
+  if ($('#wheel-menu')) $('#wheel-menu').remove();
+  else if (state.zoom) toggleZoom(false);
+  else if (!$('#saved').hidden) $('#saved').hidden = true;
+  else setView('wall');
+});
 K('r', randomSpot, ['r', 'best pages, then random spots'], 13);
 K('t', () => goPage(0), ['t g', 'first page / go to page'], 14);
+K('Home', () => goPage(0), ['Home End', 'first / last spread'], 14);
+K('End', goEnd);
 K('g', () => { const it = items[current()]; const v = Number(window.prompt(`Go to page (1-${it.n})`)); if (v >= 1) goPage(v - 1); });
 K('s', toggleSave, ['s x m', 'save / less like this / more like this'], 30);
 K('x', lessLikeThis); K('m', moreLikeThis);
-K(['+', '='], () => setPer(1), ['+ -', 'more / fewer pages or columns'], 20);
+K('+', () => setPer(1), ['+ - =', 'more / fewer pages or columns; = fits pages to the screen'], 20);
+K('=', () => setPer(0));
 K('-', () => setPer(-1));
 K(']', () => setFont(1), ['[ ]', 'smaller / larger text (posts and web pages)'], 21);
 K('[', () => setFont(-1));
 K('c', () => { state.cols = !state.cols; store.set('cols', state.cols); showFeed(); }, ['c C', 'split two-column pages / crop margins'], 22);
 K('C', () => { state.crop = !state.crop; store.set('crop', state.crop); showFeed(); });
-K('W', toggleWheel, ['W', 'mouse wheel: items ↔ pages (or middle-click)'], 23);
+K('W', toggleWheel, ['W', 'mouse wheel: continue → items → pages (or middle-click)'], 23);
 K('o', () => { const it = items[current()]; window.open(it.page || it.url, '_blank', 'noopener'); }, ['o', 'open the original'], 40);

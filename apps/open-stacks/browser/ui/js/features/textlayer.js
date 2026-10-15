@@ -223,7 +223,9 @@ async function attach(i, it, el, gen, t0) {
   emit('textlayer:ready', { i, it, k: p.k, el });
 }
 let layerGen = 0;
-on('spread:rendered', ({ i, it, els, flow }) => {
+// Layers attach once the reader stops on a spread (core's debounced
+// 'spread:settled'), so building them never delays a page turn.
+on('spread:settled', ({ i, it, els, flow }) => {
   hideQuote();
   const gen = ++layerGen;
   if (flow) { if (find.open && find.id === it.id) refreshFlowFind(); return; }
@@ -248,7 +250,7 @@ function warmAhead(i, it, gen) {
 }
 // Ask for the text of the pages being turned to as soon as the turn starts,
 // in parallel with their images.
-on('nav', ({ i, it }) => {
+on('item:settled', ({ i, it }) => {
   if (!raster(it) || i !== current()) return;
   const s = state.start.get(i) ?? 0;
   for (let k = s; k < Math.min(it.n || 0, s + Math.max(1, state.per)); k++) pageModel(it, k).catch(() => {});

@@ -1,7 +1,7 @@
 // Flow documents (posts, web articles, plain text) laid out live in CSS
 // columns across the whole stage: dense, selectable, links and footnotes
 // still work. A turn moves the column strip; nothing is re-rendered.
-import { $, h, emit } from './util.js';
+import { $, h, emit, emitQuiet } from './util.js';
 import { state } from './state.js';
 import { paintPos, paintScrub } from './feed.js';
 
@@ -37,10 +37,20 @@ function build(it, d, g) {
   return L;
 }
 
+// Measuring needs the strip at rest. .flow animates its transform, so once it
+// has been shown turned, switching the transform off starts a transition and
+// reads still see the turned strip (too few columns); suspend the transition
+// too, and settle back to the turn without animating.
+function atRest(flow) {
+  const t = flow.style.transform, tr = flow.style.transition;
+  flow.style.transition = 'none'; flow.style.transform = 'none';
+  return () => { flow.style.transform = t; flow.getBoundingClientRect(); flow.style.transition = tr; };
+}
+
 /** Count columns and map stable pages (data-vp) to columns. */
 function measure(L) {
   const { flow, port, g } = L;
-  const prev = flow.style.transform; flow.style.transform = 'none';
+  const restore = atRest(flow);
   L.n = Math.max(1, Math.round((port.scrollWidth + g.gap) / g.pitch));
   const fr = flow.getBoundingClientRect();
   const first = [], last = [], vpCol = [];
@@ -55,7 +65,7 @@ function measure(L) {
   const running = []; let run = 0;
   for (let c = 0; c < L.n; c++) { if (last[c] != null) run = last[c]; running[c] = run; }
   Object.assign(L, { first, running, vpCol });
-  flow.style.transform = prev;
+  restore();
 }
 
 export function showFlow(i, it, d) {
@@ -91,6 +101,7 @@ function place(i) {
   paintPos(it, a, b - a + 1, L.d.n, true);
   paintScrub(i, a, b - a + 1);
   emit('spread:rendered', { i, it, s, els: [L.sheet], doc: L.d, flow: L });
+  emitQuiet('spread:settled', { i, it, s, els: [L.sheet], doc: L.d, flow: L }, 160);
 }
 
 // ---------- typesetting ----------
@@ -109,7 +120,7 @@ function typeset(L) {
   const { flow, g } = L;
   const t0 = performance.now();
   flow.querySelectorAll('.ts-gap').forEach((x) => x.remove());
-  const prev = flow.style.transform; flow.style.transform = 'none';
+  const restore = atRest(flow);
   const fr = flow.getBoundingClientRect();
   const H = g.innerH;
   const colOf = (r) => Math.floor((r.left - fr.left + g.gap / 2) / g.pitch);
@@ -141,7 +152,7 @@ function typeset(L) {
       if (orphan || widow) { push(b, r0); pushes++; }
     }
   }
-  flow.style.transform = prev;
+  restore();
   L.typeset = { pushes, ms: Math.round(performance.now() - t0) };
 }
 
@@ -158,9 +169,9 @@ export const vpToCol = (vp) => live?.vpCol[vp] ?? live?.vpCol.findIndex((c, j) =
 /** The column that contains an element of the flow. */
 export function elToCol(el) {
   const L = live; if (!L) return 0;
-  const prev = L.flow.style.transform; L.flow.style.transform = 'none';
+  const restore = atRest(L.flow);
   const r = el.getClientRects()[0]; const fr = L.flow.getBoundingClientRect();
-  L.flow.style.transform = prev;
+  restore();
   return r ? Math.max(0, Math.floor((r.left - fr.left + L.g.gap / 2) / L.g.pitch)) : 0;
 }
 

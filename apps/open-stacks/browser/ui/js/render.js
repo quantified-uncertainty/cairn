@@ -85,6 +85,10 @@ export function panelsFrom(src, k) {
   return [{ ...base, canvas: state.crop ? cut(src, box) : src, box }];
 }
 
+// PDF pages render at about the screen's physical height, so text stays sharp
+// on high-DPI displays; fewer are kept in memory when they are this large.
+const RENDER_H = Math.min(2200, Math.max(1400, Math.round(screen.height * (devicePixelRatio || 1) * 0.85)));
+const RENDER_CAP = RENDER_H > 1600 ? 30 : 48;
 // Rendered pages, keyed by item, page and display options.
 const renders = new Map();
 export function renderPage(it, k) {
@@ -100,11 +104,11 @@ export function renderPage(it, k) {
     if (k >= d.n) return [];
     const page = await d.pdf.getPage(k + 1);
     const vp0 = page.getViewport({ scale: 1 });
-    const scale = Math.min(1500 / vp0.width, 1400 / vp0.height);
+    const scale = Math.min((RENDER_H * 0.85) / vp0.width, RENDER_H / vp0.height);
     const vp = page.getViewport({ scale });
     const c = document.createElement('canvas'); c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
     const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
     await page.render({ canvasContext: g, viewport: vp }).promise;
     return panelsFrom(c, k).map((p) => ({ ...p, pdfScale: scale }));
-  }, 48);
+  }, RENDER_CAP);
 }

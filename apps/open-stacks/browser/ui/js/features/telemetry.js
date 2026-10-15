@@ -11,9 +11,10 @@ import { isFlow } from '../docs.js';
 
 const buf = [];
 let keyCounts = {}; // key -> presses since the last batch
+let navCounts = {}; // `${nav type}:${input}` (a key, 'wheel', 'pinch' or 'mousedown') -> moves since the last batch
 const push = (type, o = {}) => { buf.push({ t: Date.now(), type, ...o }); if (buf.length >= 50) flush(); };
 function flush(beacon = false) {
-  if (Object.keys(keyCounts).length) { buf.push({ t: Date.now(), type: 'keys', counts: keyCounts }); keyCounts = {}; }
+  if (Object.keys(keyCounts).length || Object.keys(navCounts).length) { buf.push({ t: Date.now(), type: 'keys', counts: keyCounts, nav: navCounts }); keyCounts = {}; navCounts = {}; }
   if (!buf.length) return;
   const body = JSON.stringify(buf.splice(0));
   if (beacon && navigator.sendBeacon) navigator.sendBeacon('/events', new Blob([body], { type: 'text/plain' }));
@@ -38,11 +39,15 @@ document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
   if (keymap.has(e.key) || /^[0-9]$/.test(e.key)) keyCounts[e.key] = (keyCounts[e.key] || 0) + 1;
 }, true);
-for (const ev of ['mousedown', 'wheel']) document.addEventListener(ev, (e) => { input = { t: e.timeStamp, k: ev }; }, { passive: true, capture: true });
+for (const ev of ['mousedown', 'wheel']) document.addEventListener(ev, (e) => { input = { t: e.timeStamp, k: e.ctrlKey && ev === 'wheel' ? 'pinch' : ev }; }, { passive: true, capture: true });
 let pending = null; // { nav, i, t0 }
 const startT = () => { const now = performance.now(); return now - input.t < 500 ? input.t : now; };
 
-on('nav', ({ type, i }) => { pending = { nav: type, i, t0: startT() }; });
+on('nav', ({ type, i }) => {
+  pending = { nav: type, i, t0: startT() };
+  const k = `${type}:${performance.now() - input.t < 1500 ? input.k : 'other'}`; // wheel steps are paced, so allow some delay
+  navCounts[k] = (navCounts[k] || 0) + 1;
+});
 on('item:shown', ({ i, it }) => {
   endDwell();
   cur = { id: it.id, lane: it.lane, ms: 0, turns: 0 };

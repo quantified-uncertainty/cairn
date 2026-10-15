@@ -20,6 +20,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { height: 100%; margin: 0; }
+html { overscroll-behavior-x: none; } /* a sideways stroke never swipes the browser back or forward */
 body { background: var(--bg); color: var(--ink); font: 13px/1.45 var(--sans); display: flex; flex-direction: column; overflow: hidden; }
 button { font: inherit; color: inherit; background: none; border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px; cursor: pointer; }
 button:hover { border-color: var(--ink-3); }
@@ -65,12 +66,12 @@ a { color: var(--accent); }
 
 #spread { flex: 1; min-height: 0; display: flex; gap: 10px; justify-content: center; align-items: center; padding: 3px 12px 3px; overflow: hidden; }
 .pg { position: relative; background: var(--paper); box-shadow: 0 1px 0 #0006, 0 8px 24px #0007; flex: none; overflow: hidden; }
-.pg canvas, .pg img { display: block; width: 100%; height: 100%; }
+.pg > canvas, .pg > img { display: block; width: 100%; height: 100%; }
 .pg .pno { position: absolute; bottom: 3px; right: 5px; font: 10px var(--mono); color: #0009; background: #fff9; padding: 0 3px; border-radius: 2px; }
 .pg.loading::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, #fff8 50%, transparent 70%) -100% 0 / 200% 100%; animation: shimmer 1.1s infinite; }
 .pg.blank { background: transparent; box-shadow: none; border: 1px dashed var(--line); display: grid; place-items: center; color: var(--ink-3); font: 10px var(--mono); writing-mode: vertical-rl; }
 .pg.err { display: grid; place-items: center; color: #7a6f60; padding: 14px; text-align: center; }
-.pg.lowres canvas, .pg.lowres img { filter: blur(.4px); }
+.pg.lowres > canvas, .pg.lowres > img { filter: blur(.4px); }
 @keyframes shimmer { to { background-position: 100% 0; } }
 
 /* Page strip: a thin progress line that opens into thumbnails on hover (or when pinned with p). */
@@ -89,6 +90,7 @@ a { color: var(--accent); }
 .th.kp::before { content: ""; position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); z-index: 1; }
 
 #panel { border-right: 1px solid var(--line); overflow-y: auto; padding: 14px 18px 30px; display: flex; flex-direction: column; gap: 16px; background: var(--bg-2); }
+#panel.stale > * { opacity: .45; transition: opacity .12s; }
 #panel h3 { font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 6px; }
 #panel .why { color: var(--ink-2); font-size: 12px; }
 #panel .why b { color: var(--ink); font-weight: 500; }
@@ -173,7 +175,7 @@ a { color: var(--accent); }
 .flow h1, .flow h2, .flow h3, .flow h4, .flow h5 { font-family: var(--serif); line-height: 1.2; margin: .9em 0 .35em; color: #1a1611; text-align: left; break-after: avoid; break-inside: avoid; text-wrap: balance; }
 .flow h1 { font-size: 1.45em; } .flow h2 { font-size: 1.28em; } .flow h3 { font-size: 1.12em; } .flow h4, .flow h5 { font-size: 1em; }
 .flow blockquote { border-left: 3px solid #cfc4ad; padding-left: .8em; color: #4a4236; margin-left: 0; }
-.flow img, .flow svg, .flow video { display: block; max-width: 100%; max-height: 42vh; height: auto; margin: .4em auto; break-inside: avoid; }
+.flow img, .flow svg, .flow video { display: block; width: auto; max-width: 100%; max-height: 42vh; height: auto; object-fit: contain; margin: .4em auto; break-inside: avoid; }
 .flow figure { break-inside: avoid; } .flow figcaption { font-size: .85em; color: #5d5446; text-align: left; }
 .flow iframe { width: 100%; height: 300px; border: 1px solid #d8cfbd; break-inside: avoid; display: block; }
 .flow pre, .flow code { font: .84em/1.4 var(--mono); white-space: pre-wrap; text-align: left; }

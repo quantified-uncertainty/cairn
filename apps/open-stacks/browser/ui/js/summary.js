@@ -17,7 +17,9 @@ import { currentWords, highlight, reveal } from './text.js';
 
 export const MODELS = [['claude-haiku-5-5', 'Haiku'], ['claude-sonnet-5-5', 'Sonnet'], ['claude-opus-5-5', 'Opus'], ['claude-fable-5-1', 'Fable']];
 /** The model chosen in the panel (localStorage), else the server's default. */
-export const summaryModel = () => store.get('summodel', null) || state.status.model || 'claude-opus-5-5';
+// Haiku is the default; a one-time reset moves earlier Opus choices to it.
+if (!store.get('summodel:haiku-default', false)) { store.set('summodel', 'claude-haiku-5-5'); store.set('summodel:haiku-default', true); }
+export const summaryModel = () => store.get('summodel', null) || state.status.model || 'claude-haiku-5-5';
 const short = (m = '') => (MODELS.find(([id]) => m.startsWith(id))?.[1] || m) + (m.includes('(mock)') ? ' (mock)' : '');
 
 export const summaries = new Map(); // id -> summary for the chosen model (other modules read this)

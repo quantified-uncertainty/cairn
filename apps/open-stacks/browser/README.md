@@ -29,7 +29,9 @@ The curated lanes come from `seeds.json` (every arXiv ID and URL was checked aga
 
 The screen is mostly pages. A thin strip at the bottom shows where you are in the item; hover it (or press `p`) for page thumbnails. The side panel (`i` to hide) shows why the item is here, an AI summary, the outline, your note, related items and today's trail. Press `?` for all keys:
 
-- `j`/`k` next/previous item · `l`/`h` (or arrows) turn pages · `z` or `Enter` zoom to one page · `r` random spot
+- `Space` (or `PageDown`) Advance: the next spread, then the next item · `Backspace` (or `Shift+Space`, `PageUp`) Back: undo the last move or judgment
+- `j`/`k` next/previous item · `l`/`h` (or arrows) turn pages · `z` or `Enter` zoom to one page · `Esc` up a level (unzoom, then the wall) · `r` random spot
+- Mouse wheel: one notch, one step (down Advance, up Back; middle-click cycles continue, items, pages) · trackpad: one step per stroke, vertical items, sideways pages; pinch out dives into a page, pinch in surfaces
 - `a` summarize now (otherwise automatic after 5 s on an item) · `s` save · `x` less like this · `m` more like this
 - `C` crop margins (on by default) · `c` split two-column pages into columns · `+`/`-` pages per spread
 - `n` write a note (exports to Markdown from Saved) · `o` open the original · `0`–`7` lanes · `/` search · `w` wall
@@ -48,4 +50,4 @@ In tests from a cold cache, page turns in long scanned books took 25-47 ms and m
 
 ## AI summaries
 
-After 5 s on an item, the server sends its text (PDF text, Internet Archive OCR, or post HTML, with page markers) to Claude and caches a structured summary: why you might care, the gist, key points with page links (marked on the page strip), what is on the current pages, and a skip/skim/read/study verdict. It also summarizes the next two items in the background (toggle in the panel). Default model: `claude-opus-5-5` at low effort (about 3 cents a summary); set `STACKS_MODEL=claude-haiku-5-5` for roughly 40x cheaper. Summaries are AI-generated and labelled as such.
+After 5 s on an item, the server sends its text (PDF text, Internet Archive OCR, or post HTML, with page markers) to Claude and caches a structured summary: why you might care, the gist, key points with page links (marked on the page strip), what is on the current pages, and a skip/skim/read/study verdict. It also summarizes the next two items in the background (toggle in the panel). Default model: `claude-haiku-5-5` (well under a cent a summary); pick Sonnet, Opus or Fable in the panel, or set `STACKS_MODEL`, for better summaries at 20-100x the price. Summaries are AI-generated and labelled as such.

@@ -2,7 +2,7 @@
 import { $, h, registerKey } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state } from './state.js';
-import { jumpTo } from './nav.js';
+import { jumpTo, before } from './nav.js';
 import { setView } from './chrome.js';
 
 const hay = items.map((it) => [it.t, it.a, LANES[it.lane], it.why, it.y, (it.tags || []).join(' ')].join(' ').toLowerCase());
@@ -18,7 +18,7 @@ function paintResults() {
 }
 function pick(i, all = false) {
   $('#search').hidden = true;
-  if (all && results.length) { state.order = results.slice(); state.pos = 0; setView('feed'); } else jumpTo(i);
+  if (all && results.length) { before('browse results', { order: state.order.slice() }); state.order = results.slice(); state.pos = 0; setView('feed'); } else jumpTo(i);
 }
 export function openSearch() { $('#search').hidden = false; $('#s-input').select(); $('#s-input').focus(); }
 $('#search-btn').onclick = openSearch;

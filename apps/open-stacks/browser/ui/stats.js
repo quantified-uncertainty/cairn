@@ -131,7 +131,7 @@ function spendOf(st) {
 const usd = (x) => x == null ? '–' : `$${x < 10 ? x.toFixed(2) : x.toFixed(0)}`;
 
 function latTable(L) {
-  const NAV = { turn: 'Page turn', item: 'Next / previous item', page: 'Jump to a page', random: 'Random spot', lane: 'Lane switch' };
+  const NAV = { turn: 'Page turn', item: 'Next / previous item', page: 'Jump to a page', random: 'Random spot', lane: 'Lane switch', back: 'Back (undo)', zoom: 'Zoom in or out' };
   const rows = [['All navigation', L.all], ...Object.entries(L.nav).sort((a, b) => b[1].n - a[1].n).map(([k, v]) => [NAV[k] || k, v]),
     ...Object.entries(L.kind).sort((a, b) => b[1].n - a[1].n).map(([k, v]) => [`${k} items`, v])];
   if (L.boot?.n) rows.push(['App start to first spread', L.boot]);
@@ -230,6 +230,9 @@ async function load(days) {
     ),
     sum.keys.length ? h('p', { className: 'keys', style: 'margin:12px 0 0' }, h('span', { textContent: 'Keys you use most:' }),
       sum.keys.slice(0, 14).flatMap(([k, n]) => [h('span', { title: KEYTXT[k] || '' }, h('kbd', { textContent: k === ' ' ? 'Space' : k }), ` ${n}`), ' '])) : '',
+    // Moves per navigation type and input (a key, wheel, pinch or a click), so before and after can be compared.
+    sum.navs?.length ? h('p', { className: 'keys', style: 'margin:8px 0 0' }, h('span', { textContent: 'Moves by input:' }),
+      sum.navs.slice(0, 18).flatMap(([k, n]) => { const [type, inp] = k.split(/:(.*)/s); return [h('span', { title: `${type} by ${inp === ' ' ? 'Space' : inp}` }, `${type} `, h('kbd', { textContent: inp === ' ' ? 'Space' : inp === 'mousedown' ? 'click' : inp }), ` ${n}`), ' ']; })) : '',
   );
 }
 

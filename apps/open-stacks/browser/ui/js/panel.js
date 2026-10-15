@@ -16,7 +16,10 @@ export function paintPanel(i) {
   $('#panel').replaceChildren(...secs.filter(Boolean));
   emit('panel:painted', { i, it });
 }
-on('item:shown', ({ i, it }) => { trailTick(it); paintPanel(i); });
+// The panel follows where you stop: while skipping quickly it only dims, and
+// it paints once you have been on an item for 300 ms.
+on('item:shown', ({ it }) => { trailTick(it); $('#panel').classList.add('stale'); });
+on('item:settled', ({ i, it }) => { if (state.panelItem !== it.id) return; paintPanel(i); $('#panel').classList.remove('stale'); });
 
 registerSection({
   id: 'why', title: 'Why this', order: 10,

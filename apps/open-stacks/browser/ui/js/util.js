@@ -44,20 +44,43 @@ export function fmtDate(it) {
 }
 
 // ---- event bus ----
-// Events: 'item:shown' {i, it}, 'spread:rendered' {i, it, s, els, doc},
-// 'summary:updated' {id}, 'view:changed' {view}, 'nav' {type, i, it, s}, 'boot' {}.
+// Events: 'item:shown' {i, it}, 'spread:rendered' {i, it, s, els, doc}, and their
+// debounced twins 'item:settled' (300 ms) and 'spread:settled' (160 ms);
+// 'summary:updated' {id}, 'view:changed' {view}, 'nav' {type, i, it, s}, 'boot' {},
+// 'nav:before' {label, i, pos, s, hist, zoom, order?, aff?, saved?, lane?} (where
+// you were, just before a move or judgment), 'gesture:step', 'gesture:pinch' (gesture.js).
 const bus = new EventTarget();
 export const on = (name, fn) => bus.addEventListener(name, (e) => fn(e.detail));
 export const emit = (name, detail = {}) => bus.dispatchEvent(new CustomEvent(name, { detail }));
+/** Emit `name` once things go quiet: each call within `ms` replaces the last,
+ *  so skipping quickly through items or pages emits only where you stop.
+ *  Core emits 'item:settled' and 'spread:settled' this way; put work that the
+ *  next page or item does not need (panels, text layers, network lookups)
+ *  there instead of on 'item:shown' / 'spread:rendered'. */
+const quietT = new Map();
+export function emitQuiet(name, detail, ms) {
+  clearTimeout(quietT.get(name));
+  quietT.set(name, setTimeout(() => { quietT.delete(name); emit(name, detail); }, ms));
+}
 
 // ---- keys ----
 // registerKey('l', fn, { help: ['l h', 'turn pages'], view: 'feed' }); view null = everywhere.
+// Key auto-repeat is ignored (one press, one step) unless the binding says { repeat: true }.
 export const keymap = new Map();
 export const keyHelp = [];
-export function registerKey(keys, fn, { help, view = 'feed', order = 50 } = {}) {
-  for (const k of [].concat(keys)) keymap.set(k, { fn, view });
+export function registerKey(keys, fn, { help, view = 'feed', order = 50, repeat = false } = {}) {
+  for (const k of [].concat(keys)) keymap.set(k, { fn, view, repeat });
   if (help) keyHelp.push({ label: help[0], text: help[1], order });
 }
+
+// ---- steppers ----
+// registerStepper(fn, order): fn(dir, e) returns true when it handled the step.
+// dir 1 is Advance (Space, PageDown, the wheel in continue mode), -1 is Back
+// (Backspace, Shift+Space, PageUp). features/back.js answers Back from its undo
+// stack; tour stops and the conveyor can plug in here. Unhandled, Advance turns
+// the page and then moves to the next item, and Back turns back a page.
+export const steppers = [];
+export function registerStepper(fn, order = 50) { steppers.push({ fn, order }); steppers.sort((a, b) => a.order - b.order); }
 
 // ---- panel sections ----
 // registerSection({ id, title, order, render(it, i) -> Node|null }); the panel

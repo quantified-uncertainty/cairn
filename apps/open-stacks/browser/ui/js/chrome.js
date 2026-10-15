@@ -4,7 +4,7 @@ import { $, h, on, emit, views, registerView, registerKey, keymap, keyHelp, stor
 import { items, LANES, COUNTS, byId } from './corpus.js';
 import { state, buildOrder } from './state.js';
 import { showFeed } from './feed.js';
-import { jumpTo, paintWheel, toggleWheel } from './nav.js';
+import { jumpTo, paintWheel, wheelMenu, before } from './nav.js';
 
 export function setView(v) {
   if (!views.has(v)) v = 'feed';
@@ -40,7 +40,7 @@ export function paintLanes() {
     onclick: () => setLane(k),
   }, label, h('span', { className: 'n', textContent: String(c) }))));
 }
-export function setLane(k) { state.lane = k; store.set('lane', k); buildOrder(false); paintLanes(); refresh(); }
+export function setLane(k) { before('lane switch', { lane: state.lane, order: state.order.slice() }); state.lane = k; store.set('lane', k); buildOrder(false); paintLanes(); refresh(); }
 
 export function paintSaved() {
   $('#saved-n').textContent = state.saved.length;
@@ -71,7 +71,7 @@ $('#panel-btn').onclick = togglePanel;
 $('#keys-btn').onclick = toggleKeys;
 $('#keys').onclick = () => { $('#keys').hidden = true; };
 $('#saved-btn').onclick = () => { $('#saved').hidden = !$('#saved').hidden; };
-$('#wheel-btn').onclick = toggleWheel;
+$('#wheel-btn').onclick = wheelMenu;
 
 registerKey('i', togglePanel, { view: null, help: ['i I', 'hide/show the side panel / move it left or right'], order: 50 });
 registerKey('I', swapPanel, { view: null });
@@ -84,10 +84,11 @@ document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
   const k = e.key;
   if (!$('#keys').hidden && k === 'Escape') { $('#keys').hidden = true; return; }
-  if (/^[0-9]$/.test(k)) { const lanes = ['all', ...Object.keys(LANES).filter((l) => COUNTS[l])]; if (lanes[Number(k)]) setLane(lanes[Number(k)]); return; }
+  if (/^[0-9]$/.test(k)) { const lanes = ['all', ...Object.keys(LANES).filter((l) => COUNTS[l])]; if (lanes[Number(k)] && !e.repeat) setLane(lanes[Number(k)]); return; }
   const b = keymap.get(k);
   if (!b || (b.view && b.view !== state.view)) return;
   e.preventDefault();
+  if (e.repeat && !b.repeat) return; // one press, one step
   b.fn(e);
 });
 let rz = null;

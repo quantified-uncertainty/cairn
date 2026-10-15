@@ -8,7 +8,7 @@
 //   dwell   {id, lane, ms, turns}   active time on an item (visible, not idle)
 //   lat     {nav, id, kind, ms}     navigation (key or click) to spread rendered
 //   boot    {ms}               page load to the first spread
-//   view    {view}, summary {id}, keys {counts}
+//   view    {view}, summary {id}, keys {counts, nav}   key presses; moves per `${nav type}:${input}`
 //   cache   {hits, misses, fetched, bytes}   server-side deltas since the last batch
 import { appendFileSync, statSync, renameSync, readdirSync, createReadStream, readFileSync } from 'fs';
 import { createInterface } from 'readline';
@@ -66,7 +66,7 @@ export default function (app) {
     const since = days > 0 ? new Date(new Date().setHours(0, 0, 0, 0) - (days - 1) * 864e5).getTime() : 0;
     const files = readdirSync(CACHE).filter((f) => /^events(-[\d-]+)?\.jsonl$/.test(f))
       .filter((f) => { try { return statSync(join(CACHE, f)).mtimeMs >= since; } catch { return false; } }).sort();
-    const perDay = {}, lanes = {}, items = {}, keys = {}, views = {}, hours = new Array(24).fill(0);
+    const perDay = {}, lanes = {}, items = {}, keys = {}, navs = {}, views = {}, hours = new Array(24).fill(0);
     const lat = { all: [], nav: {}, kind: {} }, latDay = {};
     const boot = [];
     let sessions = 0, summaries = 0, first = null, lastT = null;
@@ -96,7 +96,10 @@ export default function (app) {
           case 'cache': D(e.t).hits += e.hits || 0; D(e.t).misses += e.misses || 0; break;
           case 'summary': summaries++; break;
           case 'view': views[e.view] = (views[e.view] || 0) + 1; break;
-          case 'keys': for (const [k, n] of Object.entries(e.counts || {})) keys[k] = (keys[k] || 0) + n; break;
+          case 'keys':
+            for (const [k, n] of Object.entries(e.counts || {})) keys[k] = (keys[k] || 0) + n;
+            for (const [k, n] of Object.entries(e.nav || {})) navs[k] = (navs[k] || 0) + n;
+            break;
         }
       }
     }
@@ -119,6 +122,7 @@ export default function (app) {
       },
       cache: { ...tot, rate: tot.hits + tot.misses ? tot.hits / (tot.hits + tot.misses) : null },
       keys: Object.entries(keys).sort((a, b) => b[1] - a[1]).slice(0, 20),
+      navs: Object.entries(navs).sort((a, b) => b[1] - a[1]).slice(0, 30),
       views,
       itemsViewed: Object.keys(items).length,
       laneNames: corpus.lanes,

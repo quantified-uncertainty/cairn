@@ -76,7 +76,13 @@ export function planAround(i, s) {
     const s0 = startOf(ii);
     if (isFlow(x)) tasks.push({ key: `o|${x.id}`, pri: 66 - d * 5, fn: () => openDoc(x) });
     else if (x.kind === 'scan' || x.n) for (let j = 0; j < state.per; j++) render(ii, s0 + j, 65 - d * 5 - j * 0.1);
-    else tasks.push({ key: `o|${x.id}`, pri: 64 - d * 5, fn: () => openDoc(x).then((d2) => { x.n ||= d2.n; }) });
+    // Not opened yet: open it, then render its first spread, so moving to it
+    // shows decoded pages rather than a spinner.
+    else tasks.push({ key: `o|${x.id}`, pri: 64 - d * 5, fn: async () => {
+      const d2 = await openDoc(x); x.n ||= d2.n;
+      const s1 = startOf(ii);
+      for (let j = 0; j < state.per && s1 + j < x.n; j++) await renderPage(x, s1 + j);
+    } });
   });
   plan(tasks);
   // The server works further ahead, into its disk cache, in priority bands:
