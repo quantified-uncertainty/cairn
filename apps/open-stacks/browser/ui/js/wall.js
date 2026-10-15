@@ -194,7 +194,8 @@ function leadImage(it, D) {
   return lru(leads, it.id, async () => {
     for (const src of D.imgs.filter((s) => !/\.svg(\?|$)|gravatar|emoji|latex|codecogs|badge|favicon/i.test(s)).slice(0, 4)) {
       const ok = await new Promise((res) => {
-        const im = new Image(); const t = setTimeout(() => { im.src = ''; res(false); }, 6000);
+        const im = new Image(); im.referrerPolicy = 'no-referrer';
+        const t = setTimeout(() => { im.src = ''; res(false); }, 6000);
         im.onload = () => { clearTimeout(t); const r = im.naturalWidth / Math.max(1, im.naturalHeight); res(im.naturalWidth >= 240 && im.naturalHeight >= 110 && r > 0.45 && r < 3.4); };
         im.onerror = () => { clearTimeout(t); res(false); };
         im.src = src;
@@ -224,7 +225,7 @@ function pdfDoc(it) {
   }, 40); // every visible PDF stays open, so moving the slider only renders
 }
 const thumbs = new Map(); // `${id}|${k}|${w}` -> Promise<canvas>, margins trimmed
-async function renderThumb(d, it, k, w, job) {
+async function renderThumb(d, it, k, w, job, cancellable = true) {
   const key = `${it.id}|${k}|${w}`;
   const make = async () => {
     const t0 = performance.now();
@@ -237,9 +238,8 @@ async function renderThumb(d, it, k, w, job) {
     c.width = w; c.height = Math.round((v0.height - 2 * my) * scale);
     const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
     const task = page.render({ canvasContext: g, viewport: vp });
-    job.cancel = () => task.cancel();
-    await task.promise;
-    job.cancel = null;
+    if (cancellable) job.cancel = () => task.cancel();
+    try { await task.promise; } finally { if (cancellable) job.cancel = null; }
     page.cleanup();
     perf.render[0]++; perf.render[1] += performance.now() - t0;
     return c;
@@ -256,7 +256,7 @@ function verdict(T) {
   if (s && !s.error) { paintPill(T, s); return; }
   if (asked.has(T.it.id)) return;
   asked.add(T.it.id);
-  fetch('/summary?id=' + encodeURIComponent(T.it.id)).then((r) => r.json()).then((x) => { if (x && !x.error) { T.sum = x; paintPill(T, x); } }).catch(() => {});
+  fetch('/summary?id=' + encodeURIComponent(T.it.id)).then((r) => r.json()).then((x) => { if (x && !x.error) paintPill(T, x); }).catch(() => {});
 }
 function paintPill(T, s) {
   if (!s?.verdict) return;
@@ -338,7 +338,7 @@ function layer(T, name) {
 function showPages(T, L, ks, n, cols) {
   const w = cellWidth(T, cols);
   if (L.ks && L.ks.join() === ks.join() && L.w === w && (L.ready === L.gen || L.busy)) return;
-  const gen = ++L.gen; L.ks = ks; L.w = w; L.n = n; L.busy = true; L.filled = 0;
+  const gen = ++L.gen; L.ks = ks; L.w = w; L.n = n; L.busy = true; L.got = new Set();
   if (L.cells.length !== ks.length) {
     L.cells = ks.map(() => div('cell')); L.keys = ks.map(() => null);
     for (const ld of L.loads) if (ld) ld.im.src = '';
@@ -351,12 +351,7 @@ function showPages(T, L, ks, n, cols) {
   L.pn.textContent = ks.length > 2 ? `${n} pp` : `${ks.length > 1 && ks[1] < n ? `${ks[0] + 1}–${ks[1] + 1}` : ks[0] + 1} / ${n}`;
   L.bar.style.width = (n > 1 ? (ks[0] / (n - 1)) * 100 : 0) + '%';
   ks.forEach((k, j) => { L.cells[j].dataset.k = k; });
-  const done = (j, key, node) => {
-    if (gen !== L.gen) return;
-    if (node) { L.cells[j].replaceChildren(node); L.keys[j] = key; L.el.classList.add('loaded'); if (L.name === 'gl') T.face.classList.add('paged'); }
-    L.cells[j].classList.remove('wait');
-    if (++L.filled === ks.length) { L.ready = gen; L.busy = false; L.at = performance.now(); }
-  };
+  const done = (j, key, node) => fill(T, L, gen, j, key, node);
   const it = T.it;
   if (it.kind === 'scan') {
     const sw = scanW(w);
@@ -370,8 +365,9 @@ function showPages(T, L, ks, n, cols) {
       if (prev) prev.im.src = '';
       const im = new Image(); im.decoding = 'async'; im.alt = '';
       const ld = L.loads[j] = { im, url, gen };
-      im.onload = () => { if (L.loads[j] === ld) L.loads[j] = null; im.decode().catch(() => {}).then(() => done(j, url, im)); };
-      im.onerror = () => { if (L.loads[j] === ld) { L.loads[j] = null; done(j, 'err', div('err', 'page unavailable')); } };
+      // ld.gen, not gen: a newer request for the same page adopts this load.
+      im.onload = () => { if (L.loads[j] === ld) L.loads[j] = null; im.decode().catch(() => {}).then(() => fill(T, L, ld.gen, j, url, im)); };
+      im.onerror = () => { if (L.loads[j] === ld) { L.loads[j] = null; fill(T, L, ld.gen, j, 'err', div('err', 'page unavailable')); } };
       ld.gen = gen; im.src = url;
     });
     return;
@@ -391,11 +387,23 @@ function showPages(T, L, ks, n, cols) {
       const key = `p${k}|${w}`;
       if (L.keys[j] === key) { done(j); continue; }
       if (k >= d.n) { done(j, 'x', div('end')); continue; }
-      try { const c = await renderThumb(d, it, k, w, job); done(j, key, useCanvas(c)); } catch (e) { if (!alive()) throw STALE; done(j, 'err', div('err', 'page unavailable')); }
+      try {
+        // A render cancelled for someone else (it was shared through the cache) is simply redone.
+        const c = await renderThumb(d, it, k, w, job).catch((e) => { if (e?.name === 'RenderingCancelledException' && alive()) return renderThumb(d, it, k, w, job); throw e; });
+        done(j, key, useCanvas(c));
+      } catch (e) { if (!alive()) throw STALE; done(j, 'err', div('err', 'page unavailable')); }
     }
     if (L.name === 'gl' && ks.length === 1) preRender(T, d.n, w);
   }, alive).catch((e) => { if (e !== STALE && gen === L.gen) ks.forEach((k, j) => { if (L.cells[j].classList.contains('wait')) done(j, 'err', div('err', 'could not open')); }); });
   setTimeout(() => cpuQ.sweep(), 0);
+}
+/** Put a page into cell j of layer L, if L still wants what it asked for in generation g. */
+function fill(T, L, g, j, key, node) {
+  if (g !== L.gen || L.got.has(j)) return;
+  L.got.add(j);
+  if (node) { L.cells[j].replaceChildren(node); L.keys[j] = key; L.el.classList.add('loaded'); if (L.name === 'gl') T.face.classList.add('paged'); }
+  L.cells[j].classList.remove('wait');
+  if (L.got.size === L.ks.length) { L.ready = g; L.busy = false; }
 }
 /** While idle, render the next depth (in the direction you are moving) so , and . feel instant. */
 function preRender(T, n, w) {
@@ -406,7 +414,8 @@ function preRender(T, n, w) {
     if (f <= 0 || f > 1) return;
     const k = kAt(n, f); const key = `${T.it.id}|${k}|${w}`;
     if (thumbs.has(key)) return;
-    cpuQ.add('pre|' + key, T, async (job) => renderThumb(await pdfDoc(T.it), T.it, k, w, job), () => T.vis && W.f === f0 && mode() === 'depth', level);
+    // Not cancellable once started: you may step onto this depth while it renders.
+    cpuQ.add('pre|' + key, T, async (job) => renderThumb(await pdfDoc(T.it), T.it, k, w, job, false), () => T.vis && W.f === f0 && mode() === 'depth', level);
   });
 }
 // Tile widths, measured once per layout (all columns are equal; wide tiles span two).
@@ -632,18 +641,10 @@ function schedulePrefetch() {
 function wire(T) {
   const { el, face } = T;
   let warmT = null;
-  face.addEventListener('pointerenter', () => {
-    T.hover = true;
-    if (T.it.kind === 'scan') {
-      // Coarse to fine (middle, quarters, eighths, ...), so a quick scrub finds pages already fetched.
-      const n = T.it.n; const S = Math.min(n, 40);
-      serverPrefetch(bisect(S).map((j) => scanUrl(T.it, kAt(n, j / Math.max(1, S - 1)), 200)), 75, 'wall-scrub');
-    } else if (!canShow(T.it)) ensureN(T).catch(() => {});
-    warmT = setTimeout(() => warm(T), 350);
-  });
-  face.addEventListener('pointermove', (e) => scrub(T, e));
+  face.addEventListener('pointerenter', () => { warmT = setTimeout(() => warm(T), 350); });
+  face.addEventListener('pointermove', (e) => { T.lastX = e.clientX; T.lastY = e.clientY; scrub(T, e); });
   face.addEventListener('pointerleave', () => {
-    T.hover = false; clearTimeout(warmT);
+    T.inStrip = false; clearTimeout(warmT);
     el.classList.remove('scrubbing');
     if (T.sl) { T.sl.el.classList.remove('on'); T.scrubK = null; }
   });
@@ -667,6 +668,7 @@ const zoneH = (h) => Math.max(34, Math.min(72, h * 0.26));
 function scrub(T, e) {
   const r = T.face.getBoundingClientRect();
   if (e.clientY < r.bottom - zoneH(r.height)) return;
+  if (!T.inStrip) { T.inStrip = true; prepScrub(T); }
   if (!canShow(T.it)) return;
   const n = nOf(T.it);
   const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
@@ -680,6 +682,15 @@ function scrub(T, e) {
   T.sl ||= layer(T, 'sl');
   T.sl.el.classList.add('on');
   showPages(T, T.sl, [k], n, 1);
+}
+/** On reaching the strip: fetch pages across a scan (coarse to fine: middle,
+ *  quarters, eighths, ...), so a quick scrub finds pages already fetched; or
+ *  learn a post's or PDF's page count. */
+function prepScrub(T) {
+  if (T.it.kind === 'scan') {
+    const n = T.it.n; const S = Math.min(n, 40);
+    serverPrefetch(bisect(S).map((j) => scanUrl(T.it, kAt(n, j / Math.max(1, S - 1)), 200)), 75, 'wall-scrub');
+  } else if (!canShow(T.it)) ensureN(T).then(() => { if (T.inStrip) T.face.dispatchEvent(new PointerEvent('pointermove', { clientX: T.lastX, clientY: T.lastY })); }).catch(() => {});
 }
 /** Get the item ready for the feed: the document opened, the first spread fetched. */
 function warm(T) {
@@ -738,7 +749,7 @@ const KEYS = {
   ',': () => stepDepth(-1), '.': () => stepDepth(1), g: toggleSheet,
   '+': () => setSize(1), '=': () => setSize(1), '-': () => setSize(-1),
   ArrowLeft: moveFocus, ArrowRight: moveFocus, ArrowUp: moveFocus, ArrowDown: moveFocus,
-  Enter: () => { const T = focused(); if (T) openAt(T, mode() === 'depth' && T.gl?.ks ? T.gl.ks[0] : null); },
+  Enter: () => { const T = focused(); openAt(T, mode() === 'depth' && T.gl?.ks ? T.gl.ks[0] : null); },
   Escape: () => setView('feed'),
 };
 // The key registry holds one binding per key, and the feed already binds the
@@ -750,7 +761,7 @@ window.addEventListener('keydown', (e) => {
   if (t.isContentEditable || /^(TEXTAREA|SELECT)$/.test(t.tagName) || (t.tagName === 'INPUT' && t.type !== 'range')) return;
   if (t.type === 'range' && /^(Arrow|Home|End|Page)/.test(e.key)) return;
   const fn = KEYS[e.key];
-  if (!fn) return;
+  if (!fn || (e.key === 'Enter' && !focused())) return;
   e.preventDefault(); e.stopPropagation();
   fn(e.key);
 }, true);
@@ -799,7 +810,7 @@ function paintBar() {
 }
 function paintInfo() {
   const left = Math.max(0, state.order.length - state.pos);
-  info.textContent = `${state.lane === 'all' ? 'All lanes' : LANES[state.lane] || state.lane} · ${left} ahead · hover to scrub, click to open`;
+  info.textContent = `${state.lane === 'all' ? 'All lanes' : LANES[state.lane] || state.lane} · ${left} ahead · scrub along a tile's bottom edge · click to open`;
 }
 
 // ---------- the view ----------

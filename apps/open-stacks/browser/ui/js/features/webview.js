@@ -151,7 +151,7 @@ function collectMath(root, { rawDelims = false } = {}) {
   };
   // MathJax 2 CommonHTML output (LessWrong): TeX is in the aria-label.
   for (const m of [...root.querySelectorAll('.mjx-math[aria-label]')]) {
-    if (!m.isConnected) continue;
+    if (!root.contains(m)) continue;
     const outer = m.closest('.mjpage') || m.closest('.mjx-chtml') || m;
     const display = !!(outer.matches('.mjpage__block, .MJXc-display') || outer.querySelector('.MJXc-display') || outer.closest('.mjpage__block'));
     const wrap = outer.parentElement?.matches('.math-tex') && outer.parentElement.children.length === 1 ? outer.parentElement : outer;
@@ -164,7 +164,7 @@ function collectMath(root, { rawDelims = false } = {}) {
   }
   // Prerendered KaTeX: the TeX is in the MathML annotation.
   for (const k of [...root.querySelectorAll('.katex')]) {
-    if (!k.isConnected) continue;
+    if (!root.contains(k)) continue;
     const ann = k.querySelector('annotation[encoding="application/x-tex"]');
     if (!ann) continue;
     const outer = k.closest('.katex-display') || k;
@@ -360,7 +360,7 @@ function scriptDrawn(el) {
 function markInteractive(doc, root) {
   const hint = () => { const p = doc.createElement('p'); p.className = 'wv-live-hint'; p.textContent = 'Interactive figure · N shows the live page'; return p; };
   for (const el of [...root.querySelectorAll('*')]) {
-    if (!el.isConnected || el.closest('.wv-live-hint, .wv-math, svg *')) continue;
+    if (!root.contains(el) || el.closest('.wv-live-hint, .wv-math, svg *')) continue;
     if (el.tagName === 'FIGURE') {
       if (!scriptDrawn(el)) continue;
       const cap = el.querySelector('figcaption');
@@ -386,6 +386,18 @@ function cleanStyles(root) {
     if (st.display && st.display !== 'none') st.removeProperty('display');
     if (!st.length) el.removeAttribute('style');
   }
+}
+
+/** Spacing hacks (runs of <br> between blocks, empty paragraphs) waste
+ *  column space; the flow spaces blocks itself. */
+const BLOCK = /^(P|H[1-6]|HR|UL|OL|DIV|FIGURE|TABLE|SECTION|BLOCKQUOTE|PRE|DL|BR)$/;
+function tidy(root) {
+  const side = (n, dir) => { while (n && n.nodeType === 3 && !n.data.trim()) n = n[dir]; return n; };
+  for (const br of [...root.querySelectorAll('br')]) {
+    const a = side(br.previousSibling, 'previousSibling'), b = side(br.nextSibling, 'nextSibling');
+    if ((!a || (a.nodeType === 1 && BLOCK.test(a.tagName))) && (!b || (b.nodeType === 1 && BLOCK.test(b.tagName)))) br.remove();
+  }
+  for (const p of [...root.querySelectorAll('p')]) if (!p.textContent.replace(/\u00a0/g, ' ').trim() && !p.querySelector('img, picture, video, iframe, svg, canvas, math, .wv-math, .wv-live-hint')) p.remove();
 }
 
 /** Readability drops images whose wrappers look like widgets ("media",
@@ -419,9 +431,9 @@ const remember = (url, p) => { extracted.set(url, p); p.catch(() => extracted.de
 /** Web page source -> article HTML for prepareFlow. */
 export async function extractWeb(it, src) {
   const t0 = performance.now();
-  const base0 = await finalUrl(it.url);
+  const fin = finalUrl(it.url); // memoized on the server; a HEAD request the first time
   let doc = new DOMParser().parseFromString(src, 'text/html');
-  const base = setBase(doc, base0);
+  const base = setBase(doc, await fin);
   fixLazy(doc);
   absolutize(doc, base);
   const rawDelims = !!doc.querySelector('script[src*="mathjax" i], script[src*="katex" i], script[src*="auto-render" i]') || /MathJax\.Hub|renderMathInElement/.test(src.slice(0, 300000));
@@ -446,6 +458,7 @@ export async function extractWeb(it, src) {
   await renderMath(out);
   if (how !== 'latexml') markInteractive(out.ownerDocument, out);
   cleanStyles(out);
+  tidy(out);
   sizeEmbeds(out);
   keepAspect(out);
   out.querySelectorAll('button, input, select, textarea').forEach((x) => x.remove());
@@ -618,12 +631,16 @@ const liveIds = new Set(store.get('webview:live', []));
 const views = new Map(); // id -> view (the current one and the one before, so k/j back is instant)
 let cur = null;
 
+const GAP = 10;
 const autoN = (w) => Math.max(1, Math.min(4, Math.round(w / 520)));
 const stride = (v) => Math.max(120, (v.vh || 600) - OVERLAP);
 const send = (f, m) => f.contentWindow?.postMessage({ wv: 1, ...m }, '*');
+const userN = store.get('webview:liveN', {}); // id -> views, when the reader chose with + and -
+const needs = store.get('webview:need', {}); // url -> text width the page needs (px), learned on first view
 
 function makeView(it) {
-  const v = { it, n: store.get('webview:liveN', 0), base: 0, hs: [], H: 0, vh: 0, frames: [], frac: null };
+  const need = needs[it.url] || 0;
+  const v = { it, n: userN[it.id] || 0, z: 1, need, fitted: !!need, base: 0, hs: [], H: 0, vh: 0, frames: [], frac: null };
   v.row = h('div', { className: 'wv-frames' });
   v.el = h('div', { className: 'wv-live' }, v.row);
   v.el.addEventListener('wheel', (e) => { e.preventDefault(); e.stopPropagation(); liveWheel(v, e.deltaX, e.deltaY, e.deltaMode, e.shiftKey); }, { passive: false });
@@ -640,12 +657,25 @@ function fillFrames(v) {
     v.frames.push(f); v.row.append(cell);
   }
   while (v.frames.length > v.n) v.frames.pop()._cell.remove();
+  // A page whose text needs more width than a view gets it, scaled down
+  // (every view the same, so they stay in step).
+  for (const f of v.frames) Object.assign(f.style, v.z < 1 ? { width: 100 / v.z + '%', height: 100 / v.z + '%', transform: `scale(${v.z})` } : { width: '', height: '', transform: '' });
+  v.row.style.setProperty('--seam', OVERLAP * v.z + 'px');
+}
+/** Views and scale for a page that needs `need` CSS px of width: fewer,
+ *  wider views (unless the reader chose how many), then at most a 0.6 scale. */
+function fit(v) {
+  const W = v.row.clientWidth || $('#spread').offsetWidth - 24;
+  if (v.need && !userN[v.it.id]) v.n = Math.max(1, Math.min(v.n, Math.floor((W + GAP) / (v.need * 0.8 + GAP))));
+  const fw = (W - GAP * (v.n - 1)) / v.n;
+  const z = v.need ? Math.max(0.6, Math.min(1, fw / v.need)) : 1;
+  v.z = z > 0.97 ? 1 : z;
 }
 /** Cover #spread exactly (the flow underneath keeps its layout for the other features). */
 function placeView(v) {
   const sp = $('#spread');
   Object.assign(v.el.style, { top: sp.offsetTop + 'px', left: sp.offsetLeft + 'px', width: sp.offsetWidth + 'px', height: sp.offsetHeight + 'px' });
-  if (!v.n) v.n = autoN(sp.offsetWidth);
+  if (!v.n) { v.n = autoN(sp.offsetWidth); if (v.need) fit(v); }
   fillFrames(v);
 }
 function sync(v, except = -1) {
@@ -663,20 +693,23 @@ function liveTurn(v, dir) {
   if (dir < 0 && v.base <= 0) { toast('Start'); return; }
   moveTo(v, dir > 0 ? v.base + step : Math.max(0, v.base - step));
 }
-function setN(v, n) {
-  v.n = Math.max(1, Math.min(6, n));
-  store.set('webview:liveN', v.n);
+function relayout(v) {
   fillFrames(v);
   v.frames.forEach((f) => send(f, { type: 'pad', px: (v.n + 1) * (v.vh || innerHeight) }));
   sync(v);
-  toast(`${v.n} live view${v.n > 1 ? 's' : ''}`);
+}
+function setN(v, n) {
+  v.n = Math.max(1, Math.min(6, n));
+  userN[v.it.id] = v.n; store.set('webview:liveN', userN);
+  fit(v); relayout(v);
+  toast(`${v.n} live view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''}`);
 }
 // One wheel gesture turns N screens, like a page turn; Shift+wheel scrolls finely.
 let wAcc = 0, wLast = 0, wSteps = 0;
 function liveWheel(v, dx, dy, mode, shift) {
   let d = Math.abs(dx) > Math.abs(dy) ? dx : dy;
   if (mode === 1) d *= 40; else if (mode === 2) d *= 800;
-  if (shift) { moveTo(v, v.base + d); return; }
+  if (shift) { moveTo(v, v.base + d / v.z); return; }
   const now = performance.now();
   if (now - wLast > 140) { wAcc = 0; wSteps = 0; }
   wLast = now;
@@ -688,8 +721,9 @@ function liveWheel(v, dx, dy, mode, shift) {
 }
 function paintLivePos(v) {
   const el = $('#pos'); if (!el || cur !== v) return;
-  const s = stride(v), T = Math.max(1, Math.ceil(v.H / s)), a = Math.floor(v.base / s) + 1;
-  el.textContent = `${state.pos + 1}/${state.order.length} · screens ${Math.min(a, T)}–${Math.min(T, a + v.n - 1)} of ${v.H ? T : '…'} · live`;
+  const s = stride(v), a = Math.floor(v.base / s) + 1;
+  const T = v.H ? Math.max(1, Math.ceil(v.H / s)) : null;
+  el.textContent = `${state.pos + 1}/${state.order.length} · screens ${T ? Math.min(a, T) : a}–${T ? Math.min(T, a + v.n - 1) : a + v.n - 1} of ${T ?? '…'} · live${v.z < 1 ? ` ${Math.round(v.z * 100)}%` : ''}`;
 }
 
 addEventListener('message', (e) => {
@@ -702,11 +736,18 @@ addEventListener('message', (e) => {
     if (m.type === 'ready' || m.type === 'metrics') {
       if (m.vh) v.vh = m.vh;
       if (m.h != null) { v.hs[j] = m.h; v.H = Math.max(...v.hs.filter((x) => x != null)); }
-      if (v.frac != null && v.H) { v.base = Math.floor((v.frac * v.H) / stride(v)) * stride(v); v.frac = null; sync(v); }
+      if (v.frac != null && v.H > v.vh * 2) { v.base = Math.floor((v.frac * v.H) / stride(v)) * stride(v); v.frac = null; sync(v); }
       if (m.type === 'ready') send(f, { type: 'pad', px: (v.n + 1) * (v.vh || innerHeight) });
       send(f, { type: 'scroll', y: Math.round(v.base + j * stride(v)) });
       if (m.type === 'ready') requestAnimationFrame(() => f._cell.classList.remove('loading'));
       paintLivePos(v);
+    } else if (m.type === 'fit') {
+      // Only the first view's verdict counts, once: the page's text needs this width.
+      if (j || v.fitted || !(m.need > 0)) return;
+      v.fitted = true; v.need = Math.min(+m.need, 2400);
+      needs[v.it.url] = v.need; store.set('webview:need', needs);
+      const n0 = v.n; fit(v); relayout(v);
+      if (v.n !== n0 || v.z < 1) toast(`This page needs ${v.need}px: ${v.n} view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''} (+ − to change)`, 2600);
     } else if (m.type === 'wheel') liveWheel(v, +m.dx || 0, +m.dy || 0, m.mode, !!m.shift);
     else if (m.type === 'key' && typeof m.key === 'string') document.dispatchEvent(new KeyboardEvent('keydown', { key: m.key, shiftKey: !!m.shift, bubbles: true, cancelable: true }));
     else if (m.type === 'goto') moveTo(v, +m.y || 0);
@@ -779,7 +820,7 @@ on('item:shown', applyLive);
 on('view:changed', applyLive);
 on('nav', ({ type, k }) => { if (cur && type === 'page' && cur.H) moveTo(cur, (k / Math.max(1, cur.it.n || 1)) * cur.H); });
 let rz = null;
-addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => cur && placeView(cur), 200); });
+addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (cur) { placeView(cur); fit(cur); relayout(cur); } }, 200); });
 
 // A small marker in the item head for the HTML version and live views.
 on('spread:rendered', ({ it }) => {

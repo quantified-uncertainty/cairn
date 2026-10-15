@@ -11,7 +11,7 @@
 import { mkdirSync, existsSync, readFileSync, writeFileSync, createReadStream } from 'fs';
 import { join } from 'path';
 
-const VER = 5; // bump when the parser changes, to re-extract cached lists
+const VER = 7; // bump when the parser changes, to re-extract cached lists
 const SOURCES = (id) => [`https://arxiv.org/html/${id}`, `https://ar5iv.labs.arxiv.org/html/${id}`];
 const ID_RE = /^(?:\d{4}\.\d{4,5}|[a-z-]+(?:\.[A-Z]{2})?\/\d{7})(?:v\d+)?$/;
 const safe = (s) => String(s).replace(/[^\w.-]+/g, '_');
@@ -78,7 +78,9 @@ const WRAP = TEX[0][0];
 const tex = (s) => {
   s = s.replace(/\\\{/g, '\u0001').replace(/\\\}/g, '\u0002') // \{ \} are literal braces (sets)
     .replace(/\\(?:tiny|scriptsize|footnotesize|small|normalsize|large|Large|displaystyle|textstyle|scriptstyle|mathstrut|limits|nolimits)(?![a-zA-Z])/g, '');
-  for (let prev = ''; prev !== s;) { prev = s; s = s.replace(WRAP, ' $1'); } // nested \mathbf{\mathcal{X}}; the space keeps \in\mathbb{N} apart
+  // Unwrap \mathbf{…} and friends (nested too), with a space after a command
+  // or word so \in\mathbb{N} does not run together.
+  for (let prev = ''; prev !== s;) { prev = s; s = s.replace(WRAP, (m, x, at, all) => (/[a-zA-Z]$/.test(all.slice(0, at)) ? ' ' : '') + x); }
   for (const [re, to] of TEX) s = s.replace(re, to);
   return s.replace(/\u0001/g, '{').replace(/\u0002/g, '}').trim();
 };
@@ -88,7 +90,7 @@ function text(el) {
   const rec = (n) => {
     for (const k of n.kids) {
       if (typeof k === 'string') { out += decode(k); continue; }
-      if (k.tag === 'math') { out += ' ' + tex(k.a.alttext || '') + ' '; continue; }
+      if (k.tag === 'math') { const x = tex(k.a.alttext || ''); out += (/^[_^]/.test(x) ? '' : ' ') + x + ' '; continue; } // GPT3<math>_{x}</math> stays joined
       if (k.tag === 'br') { out += ' '; continue; }
       if (SKIP_TEXT(k) || RAW.has(k.tag)) continue;
       rec(k);

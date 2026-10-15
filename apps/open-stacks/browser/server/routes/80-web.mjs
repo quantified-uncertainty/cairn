@@ -199,7 +199,7 @@ export default function (app) {
     try { const m = cache.cached(u) && cache.meta(u); if (m?.final) return m.final; } catch { /* no meta */ }
     let cur = u;
     for (let hop = 0; hop < 6; hop++) {
-      const res = await fetch(cur, { method: 'HEAD', redirect: 'manual', headers: { 'User-Agent': app.UA }, signal: AbortSignal.timeout(10000) });
+      const res = await fetch(cur, { method: 'HEAD', redirect: 'manual', headers: { 'User-Agent': app.UA }, signal: AbortSignal.timeout(5000) });
       const loc = res.headers.get('location');
       if (res.status >= 300 && res.status < 400 && loc) { cur = new URL(loc, cur).href; continue; }
       break;

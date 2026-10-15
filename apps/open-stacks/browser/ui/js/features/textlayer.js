@@ -190,7 +190,10 @@ const ROT = { 90: 'rotate(90deg) translateY(-100%)', 180: 'rotate(180deg) transl
 /** Map a whole-page layer onto a panel: scale to the panel, shift by its crop box. */
 function placeLayer(node, el, p, t) {
   const c = p.canvas;
-  const fullW = (el.clientWidth * p.srcW) / c.width, fullH = (el.clientHeight * p.srcH) / c.height;
+  // The panel's size as layoutPanels set it: reading clientWidth would force a
+  // layout of the layers just inserted next to it.
+  const W = parseFloat(el.style.width) || el.clientWidth, H = parseFloat(el.style.height) || el.clientHeight;
+  const fullW = (W * p.srcW) / c.width, fullH = (H * p.srcH) / c.height;
   const [rw, rh] = t.rot % 180 ? [t.LH, t.LW] : [t.LW, t.LH];
   const ox = (Math.round(p.box.x0 * p.srcW) / p.srcW) * rw, oy = (Math.round(p.box.y0 * p.srcH) / p.srcH) * rh;
   node.style.transform = `scale(${fullW / rw}, ${fullH / rh}) translate(${-ox}px, ${-oy}px) ${ROT[t.rot] || ''}`;

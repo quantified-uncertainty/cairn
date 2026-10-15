@@ -10,6 +10,8 @@
  *                       seeds.json) + top Alignment Forum posts
  *   deepmind-safety     Google DeepMind safety work: papers and posts (data/lanes/deepmind-safety.*.json)
  *   forecasting         papers, open PDFs and the best posts (data/lanes/forecasting.*.json)
+ *   quri                every page of QURI's wikis (Delegation Risk, Evaluation Engineering,
+ *                       Robust Reasoning Processes, Priors), from their sitemaps
  *   llm                 landmark LLM papers (seeds.json)
  *   textbooks           free, legal technical textbooks (data/lanes/textbooks.json)
  *   lesswrong           top LessWrong posts by karma (LessWrong GraphQL API)
@@ -35,6 +37,7 @@ const LANES = {
   'ai-safety': 'AI safety',
   'deepmind-safety': 'DeepMind safety',
   forecasting: 'Forecasting',
+  quri: 'QURI wikis',
   llm: 'LLM papers',
   textbooks: 'Technical books',
   lesswrong: 'LessWrong',
@@ -44,7 +47,7 @@ const LANES = {
   oddities: 'Old technical oddities',
 };
 const LANE_WEIGHTS = {
-  'ai-safety': 1.4, 'deepmind-safety': 1.3, forecasting: 1.2, llm: 1, textbooks: 0.8,
+  'ai-safety': 1.4, 'deepmind-safety': 1.3, forecasting: 1.2, quri: 0.9, llm: 1, textbooks: 0.8,
   lesswrong: 0.8, 'information-theory': 0.6, cybernetics: 0.5, ttrpg: 0.4, oddities: 0.25,
 };
 
@@ -113,6 +116,56 @@ if (existsSync(join(HERE, 'seeds.json'))) {
   }
   console.log(`seeds: ${seeds.items.length}`);
 } else console.warn('seeds.json missing: curated lanes will be empty');
+
+// 2b. QURI's wikis: every page, from each site's sitemap (or its home page's
+// links when it has none), with the page's own title and description.
+const QURI = [
+  ['delegation-risk.quantifieduncertainty.org', 'Delegation Risk'],
+  ['evaluation-engineering.quantifieduncertainty.org', 'Evaluation Engineering'],
+  ['reasoning-processes.quantifieduncertainty.org', 'Robust Reasoning Processes'],
+  ['priors.quantifieduncertainty.org', 'QURI Priors'],
+];
+async function getText(url) {
+  for (let i = 0; i < 4; i++) {
+    try {
+      const r = await fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(45000) });
+      if (r.ok) return await r.text();
+      if (r.status === 404) return null;
+    } catch { /* retry */ }
+    await sleep(1500 * 2 ** i);
+  }
+  return null;
+}
+const attr = (html, re) => (html.match(re)?.[1] || '').replace(/&amp;/g, '&').replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"').trim();
+await Promise.all(QURI.map(async ([host, site]) => {
+  const base = `https://${host}`;
+  let urls = [];
+  const sm = await getText(`${base}/sitemap-0.xml`);
+  if (sm) urls = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  else {
+    const home = await getText(base + '/') || '';
+    urls = [...new Set([...home.matchAll(/href="(\/[^"#?]*\/)"/g)].map((m) => base + m[1]))];
+  }
+  urls = urls.filter((u) => !/\/(404|tags?|_astro)\b/.test(u));
+  let n = 0;
+  for (const [j, u] of urls.entries()) {
+    const html = await getText(u);
+    await sleep(250);
+    if (!html) continue;
+    const title = attr(html, /<title>([^<]*)<\/title>/).replace(/\s*\|[^|]*$/, '');
+    const desc = attr(html, /<meta name="description" content="([^"]*)"/);
+    const words = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, ' ').split(/\s+/).length;
+    if (!title || words < 150) continue;
+    const path = new URL(u).pathname;
+    add({
+      id: `web:${host}${path.replace(/\/$/, '')}`, lane: 'quri', kind: 'web', src: site,
+      t: path === '/' ? `${site} (home)` : title, a: site, url: u, page: u,
+      why: desc || `${site} wiki page`, score: Math.max(1, 100 - j), words, tags: [site.toLowerCase(), ...path.split('/').filter(Boolean).slice(0, 1)],
+    });
+    n++;
+  }
+  console.log(`${site}: ${n} pages`);
+}));
 
 // 3. Old technical oddities: most-read public-domain technical scans.
 const ODD = ['mathematical recreations', 'slide rule', 'telegraph', 'cryptography', 'calculating machines', 'logic', 'probabilities', 'mechanics', 'navigation', 'electricity', 'machinery', 'war games', 'chess'];

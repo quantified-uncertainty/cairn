@@ -67,7 +67,7 @@ const BLOCKS = 'p,li,h1,h2,h3,h4,h5,h6,pre,table,figure,blockquote,dt,dd,img,ifr
  *  Pages are what summaries cite and the strip shows; columns are layout. */
 export function prepareFlow(it, html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc.querySelectorAll('script,style,noscript,form,object,embed,link,meta').forEach((x) => x.remove());
+  doc.querySelectorAll('script,style,noscript,form,object,embed,link,meta,.sl-anchor-link,.sr-only,.visually-hidden,.screen-reader-text,.anchor-link,.headerlink').forEach((x) => x.remove());
   doc.querySelectorAll('[style]').forEach((x) => { x.style.removeProperty('width'); x.style.removeProperty('max-width'); x.style.removeProperty('float'); });
   doc.querySelectorAll('img').forEach((img) => { img.removeAttribute('loading'); img.decoding = 'async'; img.removeAttribute('width'); img.removeAttribute('height'); });
   doc.querySelectorAll('iframe').forEach((f) => { f.setAttribute('loading', 'lazy'); f.removeAttribute('width'); f.removeAttribute('height'); });
