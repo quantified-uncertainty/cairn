@@ -7,13 +7,11 @@ sidebar:
 
 *Status: early draft, adapted from the 2021–22 estimation-theory notes (see [Lineage](/start-here/lineage/)).*
 
-This distinction is the load-bearing one. If you only take one idea from this wiki, take this one.
-
 ## Estimation
 
 **Estimation** is the calculation of specific numbers, usually under uncertainty. It is a superset of ordinary numeric calculation: summing itemized expenses is "estimation" with no uncertainty; a Fermi estimate is "estimation" with a lot.
 
-The defining property: the estimator only has to be *correct*. They don't need to worry about how the result is interpreted, who trusts them, or what the number does once released. The challenge is purely accuracy.
+The defining property: the estimator only has to be *correct*, and correctness can in principle be checked. In practice estimates carry contestable modelling choices (which inputs, which structure, which discount rate), so "only has to be correct" is an idealization; the point is that disagreements are about facts and models rather than about what is good.
 
 Examples:
 
@@ -36,6 +34,8 @@ Examples:
 - How much did organization X reduce existential risk from 2000 to 2020?
 
 Evaluation leans on epistemology, sociology, survey methodology, and the "soft" sciences.
+
+Program evaluation draws the line differently, and more sharply. Scriven defines evaluation as determining the "merit, worth, or significance" of something, which requires value premises (criteria and standards) as well as facts ([Key Evaluation Checklist](https://files.wmich.edu/s3fs-public/attachments/u1105/2023/kec-scriven.pdf)). On that definition the simulation question above is a hard *estimate*, not an evaluation. This wiki's split is mainly about verifiability and trust, and the two criteria usually coincide: the questions hardest to verify are usually the ones that embed contested values.
 
 ## The distinction is a gradient, not a wall
 
@@ -75,7 +75,9 @@ flowchart TB
 2. **Estimation** — derived numbers from models and calculation.
 3. **Evaluation** — the irreducibly judgment-bound calls.
 
-The heuristic: *do as much work as possible in the deeper (more verifiable) layers, and keep the layers separate.* Every claim you can demote from "evaluation" to "estimation," and from "estimation" to "verifiable," gets cheaper, more trustworthy, and easier to keep consistent at scale.
+The heuristic: *do as much work as possible in the deeper (more verifiable) layers, and keep the layers separate.* Every claim you can demote from "evaluation" to "estimation," and from "estimation" to "verifiable," gets cheaper and easier to keep consistent at scale.
+
+Demotion does not remove judgment; it moves it into the model's structure, weights and inputs. A cost-effectiveness model turns "how good is this charity?" into arithmetic, but its moral weights and discount rate are still evaluations. The gain is that the judgment becomes explicit and separately contestable. The risk, familiar from composite indicators, is false precision: a number that looks like an estimate and hides the value choices that drive it ([Adjacent Fields §3](/reference/adjacent-fields/#3-program-evaluation--impact-measurement)).
 
 ## Two notes on naming
 

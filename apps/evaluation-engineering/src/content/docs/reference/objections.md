@@ -9,11 +9,13 @@ The field is young and the framing is uncertain. This page collects the objectio
 
 ## "This is too abstract to be a real field or cause area"
 
-Granted: the area is vague. There are no crisp boundaries between evaluation systems, forecasting, institutional decision-making, epistemics, and related terms. But vagueness doesn't imply unimportance — if anything it has made the area *more* neglected than it would otherwise be. The operative test isn't "can we define it cleanly" but "does this framing help us identify valuable concrete projects?" If good projects get started, the higher-level carving can be revised later. (If you can carve the space better, that itself is a contribution — see [Cruxes](/start-here/key-questions/).)
+Granted: the area is vague. There are no crisp boundaries between evaluation systems, forecasting, institutional decision-making, epistemics, and related terms. But vagueness doesn't imply unimportance. The operative test isn't "can we define it cleanly" but "does this framing help us identify valuable concrete projects?" If good projects get started, the higher-level carving can be revised later. (If you can carve the space better, that itself is a contribution — see [Cruxes](/start-here/key-questions/).)
 
 ## "Scaled evaluations can never be accurate enough"
 
 A common reaction is that these proposals are AGI-complete — usually resting on the assumption that the outputs must be *highly accurate*. They don't. The estimates and evaluations only have to be **better than what people would have done otherwise**. People already make enormous numbers of informal evaluations and judgments; these are typically noisy, overconfident, and inaccurate. The bar is to beat that baseline cheaply, not to be correct in absolute terms.
+
+The response is weaker than it looks. The baseline is usually an existing process, not informal guessing, and a scaled evaluator's errors differ in kind: they are systematic, repeated across every item, and learnable by those it rates, where informal judgments are noisy but scattered. Beating the baseline on average is necessary, not sufficient; see the Goodhart and monoculture objections below.
 
 ## "Why invent so much terminology instead of engaging the literature?"
 

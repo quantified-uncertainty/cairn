@@ -56,6 +56,8 @@ Works the framework builds on, by domain. Pages cite further sources inline.
 - **Holmström, B. (1979).** Moral Hazard and Observability. *Bell Journal of Economics*, 10(1), 74–91. The informativeness principle behind monitoring.
 - **Holmström, B. (1982).** Moral Hazard in Teams. *Bell Journal of Economics*, 13(2), 324–340. Relative performance evaluation as a filter for common shocks.
 - **Holmström, B., & Milgrom, P. (1991).** Multitask Principal-Agent Analyses: Incentive Contracts, Asset Ownership, and Job Design. *Journal of Law, Economics, & Organization*, 7 (special issue), 24–52. Incentives on measured tasks divert effort from unmeasured ones; constraints substitute for incentives.
+- **Alonso, R., & Matouschek, N. (2008).** Optimal Delegation. *Review of Economic Studies*, 75(1), 259–293. Delegation without transfers as the choice of a permitted set.
+- **Kreps, D.M., & Wilson, R. (1982).** Reputation and Imperfect Information. *Journal of Economic Theory*, 27(2), 253–279. Why a bad type imitates a good one while observed.
 - **Sappington, D. (1983).** Limited Liability Contracts between Principal and Agent. *Journal of Economic Theory*, 29(1), 1–21.
 - **Tirole, J. (1986).** Hierarchies and Bureaucracies: On the Role of Collusion in Organizations. *Journal of Law, Economics, & Organization*, 2(2), 181–214.
 - **Bolton, P., & Dewatripont, M. (2005).** *Contract Theory.* MIT Press.

@@ -13,7 +13,7 @@ We know how to produce one careful evaluation: hire a capable person, give them 
 
 ## What problem this responds to
 
-Prediction markets, forecasting tournaments and proposals like futarchy looked promising and, two decades on, are little used in government, firms, or even the communities that champion them. One diagnosis is that prediction was never the whole product. Getting from "we can forecast this clean, verifiable question" to "we can put a defensible number on what the decision turns on" needs a structured set of questions (ontology), calculation that chains inputs into derived estimates, prediction to keep the system calibrated, and evaluation to resolve questions with no clean ground truth ([The Four Components](/concepts/components/)). Nobody was building the whole machine.
+Prediction markets, forecasting tournaments and proposals like futarchy looked promising two decades ago. Markets have since become a large business, mostly sports betting, but they and tournaments remain rare as inputs to decisions in government, firms, or even the communities that champion them. One diagnosis is that prediction was never the whole product. Getting from "we can forecast this clean, verifiable question" to "we can put a defensible number on what the decision turns on" needs a structured set of questions (ontology), calculation that chains inputs into derived estimates, prediction to keep the system calibrated, and evaluation to resolve questions with no clean ground truth ([The Four Components](/concepts/components/)). Outside a few hand-built pipelines, such as GiveWell's cost-effectiveness models, nobody was building the whole machine.
 
 ## Why "engineering", and what it has to include
 

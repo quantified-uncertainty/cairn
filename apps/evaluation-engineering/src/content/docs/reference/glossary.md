@@ -7,7 +7,7 @@ description: Key terms used across the evaluation-engineering wiki.
 
 **Evaluation engineering** — The design of systems that produce large numbers of estimates and evaluations at known cost, under incentives that keep them honest. The unit of analysis is the *system*, not the individual evaluation. Distinct from AI-model "evals", which measure AI systems. See [Evaluation Engineering](/start-here/introduction/).
 
-**Estimation** — The calculation of specific numbers, usually under uncertainty, where the estimator only has to be *correct* (interpretation and audience effects don't matter). Leans on math, models, and data. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
+**Estimation** — The calculation of specific numbers, usually under uncertainty, where disagreement is about facts and models rather than values, so correctness can in principle be checked. Leans on math, models, and data. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
 
 **Evaluation** — A judgment, often numeric, on something *messy* — hard to verify and dependent on the evaluator being *trusted*. Audience effects matter; explanation is usually needed. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
 
@@ -47,7 +47,7 @@ description: Key terms used across the evaluation-engineering wiki.
 
 **Agreement baseline** — How often two independent expert panels agree, measured chance-corrected (e.g. Cohen's κ), because raw agreement rises with the base rate. The bar for a cheap evaluator is model–panel agreement near panel–panel agreement, not perfection. See [A Worked Example](/concepts/worked-example/#what-50-audits-buy).
 
-**Prediction-powered inference** — A statistical method that combines a model's labels on every item with human labels on a random subset to give confidence intervals that stay valid whatever the model's quality ([Angelopoulos et al. 2023](https://arxiv.org/abs/2301.09633)). The formal version of a prediction–evaluation audit. See [LLMs as Evaluators](/concepts/llm-evaluators/#the-design-pattern-llms-as-the-cheap-layer).
+**Prediction-powered inference** — A statistical method that combines a model's labels on every item with human labels on a random subset to give confidence intervals that stay valid whatever the model's quality ([Angelopoulos et al. 2023](https://arxiv.org/abs/2301.09633)). It corrects estimates of aggregate quantities (a renewal rate, a mean score), not individual verdicts. The formal version of a prediction–evaluation audit. See [LLMs as Evaluators](/concepts/llm-evaluators/#the-design-pattern-llms-as-the-cheap-layer).
 
 **Escalation** — Routing items on which the cheap layer is unsure to a more expensive evaluator. Trust or Escalate gives a cascade with a provable human-agreement guarantee ([Jung, Brahman & Choi 2024](https://arxiv.org/abs/2407.18370)). Catches honest uncertainty, not attacks.
 

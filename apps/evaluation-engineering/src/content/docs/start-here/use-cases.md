@@ -1,67 +1,39 @@
 ---
 title: Why It Matters — Use Cases
-description: Concrete things highly optimized evaluation systems would unlock — futarchy, certificates of impact, felicific calculators, Guesstimate-scale tooling, and charity prioritization.
-sidebar:
-  order: 3
+description: Where cheap, audited evaluation at scale would change decisions — grant and research triage, peer review, charity evaluation — and the speculative mechanisms that first motivated the field.
 ---
 
-*Status: early draft, adapted from the founding posts (see [Lineage](/start-here/lineage/)).*
+*Status: draft, revised October 2026. The first section uses deployed or tested systems; the second keeps the founding posts' speculative cases, which never shipped.*
 
-The point of an evaluation system is **end-to-end value**: resources in, better decisions out. An evaluation that is highly accurate but completely ignored is worth nothing. So the right way to motivate the field is not "wouldn't accurate numbers be nice" but "here are decisions that get meaningfully better when good evaluations get cheap." This page collects the recurring examples.
+The point of an evaluation system is end-to-end value: resources in, better decisions out. An accurate evaluation that nobody acts on is worth nothing, so the motivating question is which decisions improve when adequate evaluations get cheap.
 
-```mermaid
-flowchart LR
-  subgraph inputs[Inputs]
-    pred[Prediction]
-    calc[Calculation]
-    ont[Ontology]
-    evalm[Evaluation methods]
-    culture[Epistemic culture]
-  end
-  inputs --> sys[Highly optimized<br/>evaluation systems]
-  sys --> uc
-  subgraph uc[Use cases]
-    fut[Futarchy / policy]
-    impact[Impact estimates]
-    life[Life & work optimization]
-    meta[Meta-evaluation]
-  end
-  uc --> value[Decisions that<br/>wouldn't otherwise be made]
-```
+## Cases with real systems behind them
 
-## Futarchy and policy
+**Grant portfolios.** Most funders evaluate only the grants a program officer has time to read; the rest are renewed on momentum. The [worked example](/concepts/worked-example/) prices four designs for a funder with 1,000 grants a year and shows what a 50-item audit can and cannot establish.
 
-Robin Hanson's [futarchy](https://en.wikipedia.org/wiki/Futarchy) (drafted from 2000, published 2013) uses prediction markets to choose policies that optimize a single welfare metric ("GDP+"). The appealing core isn't the market mechanism specifically — it's the ambition of letting *calibrated estimation directly drive coordination*:
+**Research triage.** DARPA's SCORE program priced the replicability of claims from about 3,000 papers and validated the forecasts against a small replicated subset; human forecasts carried real signal and AI imitators did not ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)). A cheap replicability prior over a literature is useful to funders, reviewers and meta-analysts even when it is wrong on many individual claims.
 
-> How can we ambitiously use systematized estimation systems to optimize policy decisions?
-
-Two buckets of work fall out, independent of whether the estimator is a market: (1) **building the target metric** — a GDP+ that is both high-quality and publicly acceptable, against active attempts to corrupt it; and (2) **making the forecasting cheap enough** that policy-grade forecasts (which must be very good, hence very expensive) become palatable.
-
-## Certificates of impact
-
-[Certificates of impact](https://forum.effectivealtruism.org/posts/yNn2o3kEhixZHkRga/certificates-of-impact) (Paul Christiano, 2014; trialled with Katja Grace as the 2015 [Impact Purchase](https://impactpurchase.org/certificates-of-impact/)) require estimating the value of a long list of interventions. Setting aside the financial-instrument details, the core is an evaluation problem with two bottlenecks the field directly addresses:
-
-- **Cost-effectiveness.** Producing all those value estimates is expensive; if the resources-to-estimates conversion is poor, the scheme can't work.
-- **Candidness.** If certificate prices were public and roughly accurate, some organizations would get far worse ratings than they expected. Imagine a small market concluding — publicly — that most longtermist researchers are near-useless or slightly harmful. Even if true, that's too uncomfortable to be tolerated if done crudely; expect pushback and strategic non-participation. Good evaluation systems must offer **deliberate trade-offs between truth and discomfort**, not just accuracy. (See [Epistemic Culture](/concepts/epistemic-culture/).)
-
-## Felicific calculators
-
-Bentham's felicific calculus — quantifying the moral weight of acts — has only ever been realized in narrow corners (QALYs, welfare economics). Broad-purpose calculators that estimate the costs and benefits of actions for individuals and organizations remain out of reach. Most of the difficulty reduces to "cost-effective large-scale estimation," which is exactly the field's competence. The aspiration is a calculator that accepts any utility function, so that different consequentialist frameworks could plug in; nobody has shown this is feasible.
-
-## Guesstimate, and the tooling gap
-
-Guesstimate (2016) gestured at making quantified, uncertain estimation accessible. Development hit diminishing returns: the remaining bottlenecks weren't incremental fixes but called for fundamentally different tooling — exactly what the [estimation-functions](/concepts/techniques/) line of work is about. The slogan version: *if you've ever thought "Guesstimate is neat, but I wish much more of the world worked like that," this field is the attempt to build that world.*
+**Peer review.** At AAAI-26 every main-track paper received a labelled AI review alongside the human ones, and surveyed authors and committee members preferred it on most criteria while about half of committee respondents said it missed points a human would have caught ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)). Review is the clearest live case of an LLM taking a slot in a judgment-bound evaluation system, and of the gaming that follows: hidden "positive review only" prompts turned up in arXiv preprints in 2025 ([evidence](/concepts/llm-evaluators/#evidence-under-optimization-pressure)).
 
 ## Charity evaluation and prioritization
 
-This is the use case closest to existing practice. GiveWell, Open Philanthropy, 80,000 Hours, and others pour serious effort into evaluating charities and causes — and it's been hard to scale. There are perennial calls for "GiveWell for X" (environment, political reform, s-risk, general philanthropy), and clear limits even within existing domains.
+This is the case closest to the founding notes. GiveWell, Open Philanthropy, 80,000 Hours and others put serious effort into evaluating charities and causes, and it has been hard to scale; there are perennial calls for a "GiveWell for X".
 
-Evaluation engineering reframes the goal as **augmentation, not replacement**: not "automate GiveWell," but
+The framing here is augmentation, not replacement:
 
 > for every prioritization or evaluation researcher we have, can we eventually get x% more value out of them?
 
-If a system let existing teams scale their output by an order of magnitude or more, even at lower per-item quality, it could change which questions get asked at all. That multiplier is a speculation, not an estimate. There are already small instances to learn from: QURI's [shallow evaluations of longtermist organizations](/reference/related-work/) (2021) and Sam Nolan's uncertainty-quantified rebuild of GiveWell's GiveDirectly cost-effectiveness analysis both show "shallow but useful" evaluation at reduced cost. (For the strongest version of the skeptical reply — that perfect evaluations might not increase useful work by more than ~2×, and that the real bottleneck is *capable people* — see [Objections & FAQ](/reference/objections/).)
+A system that let existing teams cover far more questions at lower per-item quality could change which questions get asked at all. How large that multiplier is has not been measured. Small instances exist: QURI's [shallow evaluations of longtermist organizations](/reference/related-work/) (2021) and Sam Nolan's uncertainty-quantified rebuild of GiveWell's GiveDirectly analysis. The strongest skeptical reply, that even perfect evaluations might not more than double useful work because the binding constraint is capable people, is in [Objections & FAQ](/reference/objections/#external-commentary).
+
+## The founding posts' speculative cases
+
+The 2021–22 notes motivated the field with mechanisms that each need cheap, trusted estimates at scale. None has been deployed at meaningful scale, so they show what the field would enable rather than demand for it.
+
+- **Futarchy.** Hanson's proposal ([drafted from 2000, published 2013](https://mason.gmu.edu/~rhanson/futarchy2013.pdf)) to "vote on values, bet on beliefs" needs a welfare metric that resists corruption and policy forecasts cheap enough to commission routinely. Both are evaluation problems whatever the forecasting mechanism.
+- **Certificates of impact.** [Christiano's 2014 proposal](https://forum.effectivealtruism.org/posts/yNn2o3kEhixZHkRga/certificates-of-impact), trialled with Katja Grace as the 2015 [Impact Purchase](https://impactpurchase.org/certificates-of-impact/), needs value estimates for many projects, and faces the candidness problem: publicly priced impact gives organizations reason to withhold their weaker work ([Epistemic Culture](/concepts/epistemic-culture/#the-candidness-problem)).
+- **General cost–benefit calculators.** QALYs and welfare economics put numbers on acts in narrow domains. A general calculator for individuals and organizations would need cheap large-scale estimation, and probably a way to plug in different value functions; nobody has shown that is feasible.
+- **Estimation tooling.** Guesstimate (2016) made uncertain estimation accessible and then hit diminishing returns; the later bet is on composable [estimation functions](/concepts/techniques/) and LLM-generated models such as Squiggle AI ([Related Work](/reference/related-work/)).
 
 ## The common thread
 
-Across all five, the bottleneck is the same: **cheap, large-scale, trusted estimation and evaluation**. None of these requires AGI-level accuracy. They require outputs that are *better than what people would otherwise have done* — and a system that produces them at a cost low enough that they actually get used. That is the bet of the whole field; see [Evaluation as a System](/concepts/the-systems-view/) for the optimization target, and [Objections & FAQ](/reference/objections/) for the case against.
+None of these needs near-perfect accuracy. Each needs outputs better than what decision-makers would otherwise have used, at a cost low enough that they get used, and robust enough that they survive the evaluated caring about them. See [Evaluation as a System](/concepts/the-systems-view/) for the design target and [Objections & FAQ](/reference/objections/) for the case against.

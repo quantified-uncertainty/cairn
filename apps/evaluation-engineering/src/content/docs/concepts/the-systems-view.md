@@ -11,11 +11,13 @@ An evaluation is an artifact: a number, a grade, a report. An **evaluation syste
 
 Optimizing a system means accepting that some outputs are rougher than a bespoke study, in exchange for producing enough of them, cheaply enough, that they get used.
 
+Program evaluation has studied such standing "evaluation systems" (performance monitoring, accreditation, institutionalized impact evaluation) and names a cost of them: they tend to produce routinized information that serves day-to-day adjustment but rarely prompts a fundamental reassessment of a programme ([Leeuw & Furubo 2008](https://doi.org/10.1177/1356389007087537)). A high-throughput design inherits that risk.
+
 ## The design space
 
 Four properties decide whether a system is worth running:
 
-- **Accuracy**: how close outputs come to what a much more expensive, trusted process would conclude, measured on a random audit ([Measuring an Evaluator](/concepts/measuring-an-evaluator/)).
+- **Accuracy**: how close outputs come to what a much more expensive, trusted process would conclude, measured on a random audit ([Measuring an Evaluator](/concepts/measuring-an-evaluator/)). This is agreement with a reference, not validity: a system that matches a biased panel inherits the bias, and the audit cannot see it.
 - **Unit cost**: a fixed cost $F$ (design, calibration, tooling, re-validation) plus a marginal cost $c$ per item. Quantity $N$ is the scale the system runs at, not a separate axis: total cost is $F + Nc$.
 - **Robustness to gaming**: whether accuracy survives once the evaluated learn what the system rewards. A judge validated at zero optimization pressure is validated only for zero pressure ([LLMs as Evaluators](/concepts/llm-evaluators/#evidence-under-optimization-pressure)).
 - **Legitimacy**: whether the audience trusts the outputs enough to act on them and the evaluated accept them enough not to exit, sue or capture the system. Trust is evaluation's [defining requirement](/start-here/estimation-vs-evaluation/#evaluation).

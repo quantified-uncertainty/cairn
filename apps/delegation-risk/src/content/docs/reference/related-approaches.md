@@ -87,7 +87,7 @@ Insurers are the market most likely to price delegation risk in dollars, and sin
 
 ## Principal–agent theory
 
-The vocabulary is economics': agency cost (Jensen & Meckling 1976), moral hazard and the informativeness of monitoring signals (Holmström 1979), and the multitask result that constraints substitute for incentives when performance is hard to measure (Holmström & Milgrom 1991). Delegation risk is roughly the residual-loss part of an agency cost, defection is hidden action, and a check is a monitoring signal. AI delegates have no wealth, no known utility function and no independence across copies, so incentives bind the operators and vendors around a model, not the model. [Principal–Agent Foundations](/research/principal-agent-foundations/) works through the correspondence and where it breaks.
+The vocabulary is economics': agency cost (Jensen & Meckling 1976), moral hazard and the informativeness of monitoring signals (Holmström 1979), and the multitask result that constraints substitute for incentives when performance is hard to measure (Holmström & Milgrom 1991). Delegation risk is roughly the residual-loss part of an agency cost, a disposition to defect is closer to a hidden type than a hidden action, a check is a monitoring signal, and an exposure envelope is a delegation set in the sense of Alonso & Matouschek (2008). AI delegates have no wealth, no known utility function and no independence across copies, so incentives bind the operators and vendors around a model, not the model. [Principal–Agent Foundations](/research/principal-agent-foundations/) works through the correspondence and where it breaks.
 
 ## What this framework does not claim
 
