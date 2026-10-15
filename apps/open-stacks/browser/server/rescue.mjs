@@ -16,6 +16,7 @@
 // State lives in CACHE/rescue.json: broken and rescued items, learned
 // placeholder hashes, a log of what was rescued and the scavenger's runs.
 import { createHash } from 'crypto';
+import { inflateSync, constants as zlibConstants } from 'zlib';
 import { readFileSync, writeFileSync, renameSync } from 'fs';
 import { mkdir, writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
@@ -464,9 +465,9 @@ async function doResolve(u, job, how, force) {
   const got = await rescueImage(u, job, how, why);
   if (got) return got;
   const r = (S.imgs[u] ||= {});
-  // The archive was rate limiting or unreachable: try again within the hour rather than in a day.
-  Object.assign(r, { st: 'bad', why, at: now(), next: now() + (job.incomplete ? 3600e3 : backoff(r.tries || 0)) });
-  if (!job.incomplete) r.tries = (r.tries || 0) + 1;
+  // The archive was rate limiting or unreachable: try again in a quarter of an hour rather than in a day.
+  Object.assign(r, { st: 'bad', why, at: now(), next: now() + (job.incomplete ? 15 * 60e3 : backoff(r.tries || 0)) });
+  if (job.incomplete) retrySoon(); else r.tries = (r.tries || 0) + 1;
   const c = ctxs.get(u); if (c) r.ctx = { ...(r.ctx || {}), ...trimCtx(c) };
   bump(); save();
   return { st: 'bad', why };
@@ -562,16 +563,30 @@ export function deadPage(buf, type, kind) {
   return null;
 }
 const titleWords = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(' ').filter((w) => w.length > 3 && !/^(with|from|that|this|what|when|their|about|into|over|than)$/.test(w));
-/** Does a candidate document look like the one we lost? (PDF magic for PDFs; the title's words in the text.) */
+/** Searchable text of a PDF, roughly: its raw bytes plus its inflated streams, with TJ kerning gaps joined. */
+function pdfHay(buf) {
+  const parts = [buf.toString('latin1', 0, Math.min(buf.length, 2e6))];
+  let total = 0;
+  for (let i = buf.indexOf('stream'); i >= 0 && parts.length < 80 && total < 8e6; i = buf.indexOf('stream', i + 6)) {
+    let s = i + 6;
+    if (buf[s] === 0x0d) s++;
+    if (buf[s] === 0x0a) s++;
+    const e = buf.indexOf('endstream', s);
+    if (e < 0) break;
+    try { const t = inflateSync(buf.subarray(s, e), { finishFlush: zlibConstants.Z_SYNC_FLUSH }); parts.push(t.toString('latin1')); total += t.length; } catch { /* not deflated */ }
+    i = e;
+  }
+  return parts.join(' ').replace(/\)\s*-?\d+(\.\d+)?\s*\(/g, '').toLowerCase();
+}
+/** Does a candidate document look like the one we lost? (PDF magic for PDFs; most of the title's words in its text.) */
 function sameDoc(buf, type, info) {
   if (!buf?.length) return false;
   if (info.kind === 'pdf' && !buf.subarray(0, 1024).toString('latin1').includes('%PDF')) return false;
   if (info.kind === 'web' && deadPage(buf, type, 'web')) return false;
   const words = titleWords(info.t);
   if (!words.length) return true;
-  const hay = buf.toString('latin1', 0, Math.min(buf.length, 4e6)).toLowerCase();
-  const found = words.filter((w) => hay.includes(w)).length;
-  return found / words.length >= (info.kind === 'pdf' ? 0.3 : 0.6);
+  const hay = info.kind === 'pdf' ? pdfHay(buf) : buf.toString('utf-8', 0, Math.min(buf.length, 4e6)).toLowerCase();
+  return words.filter((w) => hay.includes(w)).length / words.length >= 0.6;
 }
 
 /**
@@ -626,7 +641,13 @@ export function docState(u) {
 }
 
 // ------------------------------------------------------------- scavenger ----
-let running = null;
+let running = null, soonT = null;
+/** Lookups the archive turned away (rate limits): a short scavenger pass in twenty minutes. */
+function retrySoon() {
+  if (soonT) return;
+  soonT = setTimeout(() => { soonT = null; scavenge({ reason: 'after a rate limit', images: 20, docs: 5 }).catch(() => {}); }, 20 * 60e3);
+  soonT.unref?.();
+}
 export const isRunning = () => !!running;
 /**
  * Retry what is still broken (polite, capped), optionally asking Claude for

@@ -70,7 +70,8 @@ export function dateKey(i) {
   return DATE[i];
 }
 const byDate = (dir) => (a, b) => { const x = dateKey(a), y = dateKey(b), R = topicRank(); if (x !== x || y !== y) return (x !== x) - (y !== y) || R[a] - R[b]; return dir * (x - y) || R[a] - R[b]; };
-const SORTERS = { topic: (a, b) => topicRank()[a] - topicRank()[b], newest: byDate(-1), oldest: byDate(1) };
+/** The fixed sorts as comparators of item indexes (the ranking is not one). */
+export const SORTERS = { topic: (a, b) => topicRank()[a] - topicRank()[b], newest: byDate(-1), oldest: byDate(1) };
 
 /** Build state.order in state.sort (set from the lane): the lane, or state.scope when set.
  *  keepHead: ranked keeps where you are and what you have seen; the other sorts are

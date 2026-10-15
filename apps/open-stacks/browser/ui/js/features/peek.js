@@ -44,7 +44,7 @@ function paint(card, el, root) {
   const o = roots.get(root); if (!o) return;
   const gen = ++P.gen;
   P.card = card; P.el = el; P.root = root; P.o = o;
-  body.replaceChildren(); body.scrollTop = 0;
+  body.replaceChildren(); body.scrollTop = 0; body.onclick = null;
   const ctx = { width: P.w, height: innerHeight - P.top, pinned: P.pinned, live: () => gen === P.gen && P.open };
   try {
     const r = o.render(card, body, ctx);

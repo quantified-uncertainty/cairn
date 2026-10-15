@@ -298,6 +298,13 @@ function paintNote(it, st) {
   const meta = $('#item-head .meta');
   if (!meta) return;
   let el = meta.querySelector('.rs-arch');
+  if (st.st === 'bad' && st.sug?.length) {
+    // Gone, not archived, but Claude found a likely copy (not verified as the same document).
+    if (!el) { el = h('a', { className: 'rs-arch', target: '_blank', rel: 'noopener noreferrer' }); meta.append(el); }
+    el.href = st.sug[0]; el.textContent = 'possible copy ↗';
+    el.title = `The original address no longer works${st.why ? ` (${st.why})` : ''} and the Internet Archive has no copy.\nClaude found this possible copy; it could not be checked as the same document.`;
+    return;
+  }
   if (st.st !== 'rescued') { el?.remove(); return; }
   if (!el) { el = h('a', { className: 'rs-arch', target: '_blank', rel: 'noopener noreferrer' }); meta.append(el); }
   el.href = st.from || it.url;

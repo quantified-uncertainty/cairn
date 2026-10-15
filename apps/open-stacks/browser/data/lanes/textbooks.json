@@ -1,0 +1,1634 @@
+{
+ "lane": "textbooks",
+ "label": "Technical books",
+ "notes": "Built 2026-10-15. Technical books lane: free and legal full-text textbooks and monographs, each a direct PDF hosted by its authors, their university or the publisher (or an open-access edition linked from the authors' own page). Coverage: machine learning (Bishop PRML via Microsoft Research, Murphy PML 1-2, MML, Barber, GPML, MBML, Hardt-Recht, fairmlbook), deep learning (Prince UDL, D2L, Fleuret, Roberts-Yaida-Hanin, Bronstein GDL, Hamilton GRL, Blondel-Roulet, Kingma-Welling), NLP (Jurafsky-Martin SLP3 Aug 2026 draft, Eisenstein, Manning IR), learning theory (Shalev-Shwartz & Ben-David, Mohri et al. 2nd ed. open access, Bach, T. Zhang), bandits and online learning (Lattimore-Szepesvari, Slivkins, Hazan, Orabona, Thompson-sampling tutorial), RL (Sutton-Barto 2nd ed., Szepesvari, Agarwal et al. 2026 draft, Foster-Rakhlin, Bertsekas, Murphy overview, MARL book), decision making (Kochenderfer et al. Decision Making, Validation and Optimization 2nd ed., Sargent-Stachurski DP), optimization (Boyd-Vandenberghe, ADMM, Bubeck, Vishnoi, Peyre-Cuturi, Garnett BayesOpt), statistics and Bayesian inference (Gelman et al. BDA3 and ROS, Shalizi, Downey Think Stats/Think Bayes, Bretthorst as the Jaynes-related item, Probabilistic Numerics, Wainwright-Jordan), causal inference (Hernan-Robins, Wager, Neal, Chernozhukov et al.), probability (Durrett, Levin-Peres, Lyons-Peres, Vershynin HDP 2nd ed., van Handel, Sarkka-Solin), game theory and networks (Shoham-Leyton-Brown, Karlin-Peres, Handbook of Computational Social Choice, Easley-Kleinberg), theory of computation and algorithms (Arora-Barak draft, Wigderson, Barak, Vadhan, Boneh-Shoup, Dwork-Roth, O'Donnell, de Wolf, Erickson, Williamson-Shmoys, Spielman, Flajolet-Sedgewick, Lehman-Leighton-Meyer, Blum-Hopcroft-Kannan, MMDS), control, estimation and robotics (Astrom-Murray 2nd ed., Rawlings-Mayne-Diehl MPC, Brunton-Kutz, Sarkka-Svensson, Lynch-Park, LaValle, Barfoot), mathematics (Axler LADR 4e, VMLS, Matrix Cookbook, Riehl, Fong-Spivak), MacKay ITILA, Sethna, MacKay SEWTHA. The first tag is the field and becomes the library folder. Verification: every url was fetched with a ranged GET using the app's own User-Agent (OpenStacksBrowser/0.3) and returned 200/206 with a body starting %PDF; landing pages were fetched too (all 200 except github.com, which the proxy refuses for HTML, and fbsbook.org, whose wiki returned 500). Most hosts send application/pdf; GitHub release/raw assets (Murphy, Prince, Eisenstein, QuantEcon), the Kochenderfer books (algorithmsbook.com links to Google Drive; the url is the drive.usercontent direct download) and the Mohri Dropbox link send application/octet-stream or application/binary with a real PDF body. Titles, versions and dates of uncertain files were read from the PDFs themselves; the 18 arXiv IDs were checked against the arXiv API (titles, authors, dates and abstracts come from it). Note that www.microsoft.com and cs.huji.ac.il reject the bare \"Mozilla/5.0\" UA but serve the app UA and real browsers. Left out: Elements of Statistical Learning, ISLR 2nd ed./ISLP, CASI and Statistical Learning with Sparsity (hastie.su.domains resets every connection from this build environment, so they could not be verified; ISLR 1st ed. from statlearning.com is included instead; add them if the host checks out from another network); Nisan et al. Algorithmic Game Theory (Cambridge's free non-printable PDF is gone, and the remaining copy sits on a course page with no clear permission); Bishop & Bishop Deep Learning: Foundations and Concepts (free only as an online viewer, no PDF); Szeliski Computer Vision 2nd ed. (form-gated download); Jaynes, Probability Theory: The Logic of Science and Cover & Thomas (no legal free copy). MacKay ITILA uses the same PDF as seeds.json's book:mackay-itila (information-theory lane), so it will appear in both lanes unless one entry is dropped; Astrom & Murray here is the 2nd edition, while the cybernetics seed is the 1st.",
+ "items": [
+  {
+   "id": "pdf:incompleteideas.net/book/RLbook2020.pdf",
+   "kind": "pdf",
+   "t": "Reinforcement Learning: An Introduction (second edition)",
+   "a": "Richard S. Sutton, Andrew G. Barto",
+   "y": 2018,
+   "url": "http://incompleteideas.net/book/RLbook2020.pdf",
+   "page": "http://incompleteideas.net/book/the-book-2nd.html",
+   "why": "The field's standard introduction: MDPs, dynamic programming, Monte Carlo, TD learning, function approximation and policy gradients.",
+   "score": 95,
+   "tags": [
+    "reinforcement-learning",
+    "decision-making"
+   ]
+  },
+  {
+   "id": "pdf:www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf",
+   "kind": "pdf",
+   "t": "Pattern Recognition and Machine Learning",
+   "a": "Christopher M. Bishop",
+   "y": 2006,
+   "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf",
+   "page": "https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/",
+   "why": "The standard probabilistic ML text (graphical models, EM, variational inference, sampling, kernels), released free by Microsoft Research.",
+   "score": 92,
+   "tags": [
+    "machine-learning",
+    "bayesian",
+    "graphical-models"
+   ]
+  },
+  {
+   "id": "pdf:web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf",
+   "kind": "pdf",
+   "t": "Convex Optimization",
+   "a": "Stephen Boyd, Lieven Vandenberghe",
+   "y": 2004,
+   "url": "https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf",
+   "page": "https://web.stanford.edu/~boyd/cvxbook/",
+   "why": "Convex sets and functions, duality, applications in fitting, statistics and geometry, and interior-point algorithms; the standard reference.",
+   "score": 92,
+   "tags": [
+    "optimization"
+   ]
+  },
+  {
+   "id": "pdf:sites.stat.columbia.edu/gelman/book/BDA3.pdf",
+   "kind": "pdf",
+   "t": "Bayesian Data Analysis (third edition)",
+   "a": "Andrew Gelman, John B. Carlin, Hal S. Stern et al.",
+   "y": 2013,
+   "url": "https://sites.stat.columbia.edu/gelman/book/BDA3.pdf",
+   "page": "https://sites.stat.columbia.edu/gelman/book/",
+   "why": "The applied Bayesian reference: hierarchical models, model checking, MCMC and HMC, regression, mixtures and nonparametrics; free PDF from the authors.",
+   "score": 92,
+   "tags": [
+    "bayesian-inference",
+    "statistics"
+   ]
+  },
+  {
+   "id": "pdf:www.inference.org.uk/itprnn/book.pdf",
+   "kind": "pdf",
+   "t": "Information Theory, Inference, and Learning Algorithms",
+   "a": "David J. C. MacKay",
+   "y": 2003,
+   "url": "https://www.inference.org.uk/itprnn/book.pdf",
+   "page": "https://www.inference.org.uk/mackay/itila/",
+   "why": "Compression, noisy-channel coding, Bayesian inference, Monte Carlo and neural networks in one book; the free on-screen edition from the author.",
+   "score": 92,
+   "tags": [
+    "information-theory",
+    "bayesian",
+    "machine-learning"
+   ]
+  },
+  {
+   "id": "pdf:github.com/probml/pml-book/releases/latest/download/book1.pdf",
+   "kind": "pdf",
+   "t": "Probabilistic Machine Learning: An Introduction",
+   "a": "Kevin P. Murphy",
+   "y": 2022,
+   "url": "https://github.com/probml/pml-book/releases/latest/download/book1.pdf",
+   "page": "https://probml.github.io/pml-book/book1.html",
+   "why": "Murphy's rewrite of MLaPP, volume 1: probability, linear models, deep nets, nonparametrics and clustering in one probabilistic frame; author-hosted CC draft.",
+   "score": 90,
+   "tags": [
+    "machine-learning",
+    "probabilistic-ml"
+   ]
+  },
+  {
+   "id": "pdf:web.stanford.edu/~jurafsky/slp3/ed3book.pdf",
+   "kind": "pdf",
+   "t": "Speech and Language Processing (3rd edition draft)",
+   "a": "Daniel Jurafsky, James H. Martin",
+   "y": 2026,
+   "d": "2026-08-19",
+   "url": "https://web.stanford.edu/~jurafsky/slp3/ed3book.pdf",
+   "page": "https://web.stanford.edu/~jurafsky/slp3/",
+   "why": "The standard NLP text, reorganised around large language models: tokenisation, transformers, pre-training, post-training, then speech and linguistic structure.",
+   "score": 90,
+   "tags": [
+    "natural-language",
+    "llm",
+    "speech"
+   ]
+  },
+  {
+   "id": "pdf:github.com/udlbook/udlbook/releases/download/v5.0.3/UnderstandingDeepLearning_02_09_26_C.pdf",
+   "kind": "pdf",
+   "t": "Understanding Deep Learning",
+   "a": "Simon J. D. Prince",
+   "y": 2023,
+   "url": "https://github.com/udlbook/udlbook/releases/download/v5.0.3/UnderstandingDeepLearning_02_09_26_C.pdf",
+   "page": "https://udlbook.github.io/udlbook/",
+   "why": "Modern deep learning from first principles: fitting, initialisation, generalisation, transformers, GANs, flows, VAEs, diffusion and RL, with clear figures.",
+   "score": 88,
+   "tags": [
+    "deep-learning",
+    "generative-models"
+   ]
+  },
+  {
+   "id": "pdf:www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf",
+   "kind": "pdf",
+   "t": "Understanding Machine Learning: From Theory to Algorithms",
+   "a": "Shai Shalev-Shwartz, Shai Ben-David",
+   "y": 2014,
+   "url": "https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf",
+   "page": "https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/",
+   "why": "PAC learning, VC dimension, uniform convergence, stability and regularisation, then the algorithms (SGD, boosting, kernels) analysed with that theory.",
+   "score": 88,
+   "tags": [
+    "learning-theory",
+    "machine-learning"
+   ]
+  },
+  {
+   "id": "pdf:tor-lattimore.com/downloads/book/book.pdf",
+   "kind": "pdf",
+   "t": "Bandit Algorithms",
+   "a": "Tor Lattimore, Csaba Szepesvári",
+   "y": 2020,
+   "url": "https://tor-lattimore.com/downloads/book/book.pdf",
+   "page": "https://tor-lattimore.com/",
+   "why": "The comprehensive bandit text: stochastic, adversarial, linear, contextual and partial-monitoring bandits with matching lower bounds.",
+   "score": 88,
+   "tags": [
+    "bandits-and-online-learning",
+    "decision-making"
+   ]
+  },
+  {
+   "id": "pdf:drive.usercontent.google.com/download?id=1drcYW3iJz4wnnCqjuVwQyc5a6eC7i6cu",
+   "kind": "pdf",
+   "t": "Algorithms for Decision Making",
+   "a": "Mykel J. Kochenderfer, Tim A. Wheeler, Kyle H. Wray",
+   "y": 2022,
+   "url": "https://drive.usercontent.google.com/download?id=1drcYW3iJz4wnnCqjuVwQyc5a6eC7i6cu&export=download",
+   "page": "https://algorithmsbook.com/decisionmaking/",
+   "why": "Probabilistic reasoning, sequential problems, model uncertainty, state uncertainty (POMDPs) and multiagent settings, each with Julia code.",
+   "score": 88,
+   "tags": [
+    "decision-making",
+    "reinforcement-learning",
+    "pomdp"
+   ]
+  },
+  {
+   "id": "pdf:github.com/probml/pml2-book/releases/latest/download/book2.pdf",
+   "kind": "pdf",
+   "t": "Probabilistic Machine Learning: Advanced Topics",
+   "a": "Kevin P. Murphy",
+   "y": 2023,
+   "url": "https://github.com/probml/pml2-book/releases/latest/download/book2.pdf",
+   "page": "https://probml.github.io/pml-book/book2.html",
+   "why": "Volume 2: inference algorithms, generative models (VAEs, flows, diffusion), causality, decision making and RL, with extensive references.",
+   "score": 85,
+   "tags": [
+    "machine-learning",
+    "probabilistic-ml",
+    "generative-models"
+   ]
+  },
+  {
+   "id": "pdf:www.dropbox.com/s/38p0j6ds5q9c8oe/10290.pdf",
+   "kind": "pdf",
+   "t": "Foundations of Machine Learning (second edition)",
+   "a": "Mehryar Mohri, Afshin Rostamizadeh, Ameet Talwalkar",
+   "y": 2018,
+   "url": "https://www.dropbox.com/s/38p0j6ds5q9c8oe/10290.pdf?dl=1",
+   "page": "https://cs.nyu.edu/~mohri/mlbook/",
+   "why": "Rademacher complexity, margin bounds, boosting, kernels, ranking, online learning and RL; the open-access MIT Press edition linked from the authors' page.",
+   "score": 85,
+   "tags": [
+    "learning-theory",
+    "machine-learning"
+   ]
+  },
+  {
+   "id": "pdf:www.di.ens.fr/~fbach/ltfp_book.pdf",
+   "kind": "pdf",
+   "t": "Learning Theory from First Principles",
+   "a": "Francis Bach",
+   "y": 2024,
+   "url": "https://www.di.ens.fr/~fbach/ltfp_book.pdf",
+   "page": "https://www.di.ens.fr/~fbach/ltfp/",
+   "why": "Learning theory built from simple, self-contained proofs: least squares, local averaging, kernels, optimisation, neural nets and lower bounds.",
+   "score": 85,
+   "tags": [
+    "learning-theory",
+    "optimization"
+   ]
+  },
+  {
+   "id": "pdf:miguelhernan.org/s/hernanrobins_WhatIf_19aug26.pdf",
+   "kind": "pdf",
+   "t": "Causal Inference: What If",
+   "a": "Miguel A. Hernán, James M. Robins",
+   "y": 2026,
+   "d": "2026-08-19",
+   "url": "https://miguelhernan.org/s/hernanrobins_WhatIf_19aug26.pdf",
+   "page": "https://miguelhernan.org/whatifbook",
+   "why": "Counterfactuals, confounding, selection bias and g-methods (IP weighting, standardisation, g-estimation) for observational data; current author version.",
+   "score": 85,
+   "tags": [
+    "causal-inference",
+    "epidemiology"
+   ]
+  },
+  {
+   "id": "pdf:webapps.math.uci.edu/~rvershyn/papers/HDP-book/HDP-2.pdf",
+   "kind": "pdf",
+   "t": "High-Dimensional Probability: An Introduction with Applications in Data Science (second edition)",
+   "a": "Roman Vershynin",
+   "y": 2026,
+   "d": "2026-07-22",
+   "url": "https://webapps.math.uci.edu/~rvershyn/papers/HDP-book/HDP-2.pdf",
+   "page": "https://webapps.math.uci.edu/~rvershyn/papers/HDP-book/HDP-book.html",
+   "why": "Concentration, random vectors and matrices, chaining and VC theory, with applications to covariance estimation, sparse recovery and ML; author pre-publication copy.",
+   "score": 85,
+   "tags": [
+    "probability",
+    "high-dimensional",
+    "learning-theory"
+   ]
+  },
+  {
+   "id": "pdf:www.cs.cornell.edu/home/kleinber/networks-book/networks-book.pdf",
+   "kind": "pdf",
+   "t": "Networks, Crowds, and Markets: Reasoning About a Highly Connected World",
+   "a": "David Easley, Jon Kleinberg",
+   "y": 2010,
+   "url": "https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book.pdf",
+   "page": "https://www.cs.cornell.edu/home/kleinber/networks-book/",
+   "why": "Graphs, game theory and markets together: strong and weak ties, PageRank, auctions, information cascades, network effects and voting.",
+   "score": 85,
+   "tags": [
+    "networks",
+    "game-theory",
+    "economics"
+   ]
+  },
+  {
+   "id": "pdf:theory.cs.princeton.edu/complexity/book.pdf",
+   "kind": "pdf",
+   "t": "Computational Complexity: A Modern Approach (draft)",
+   "a": "Sanjeev Arora, Boaz Barak",
+   "y": 2009,
+   "url": "https://theory.cs.princeton.edu/complexity/book.pdf",
+   "page": "https://theory.cs.princeton.edu/complexity/",
+   "why": "Authors' draft of the standard graduate complexity text: NP, PH, randomness, interactive proofs, PCP, circuit lower bounds, quantum computation.",
+   "score": 84,
+   "tags": [
+    "theory-of-computation",
+    "complexity"
+   ]
+  },
+  {
+   "id": "pdf:www.cds.caltech.edu/~murray/books/AM08/pdf/fbs-public_24Jul2020.pdf",
+   "kind": "pdf",
+   "t": "Feedback Systems: An Introduction for Scientists and Engineers (second edition)",
+   "a": "Karl Johan Åström, Richard M. Murray",
+   "y": 2021,
+   "d": "2020-07-24",
+   "url": "http://www.cds.caltech.edu/~murray/books/AM08/pdf/fbs-public_24Jul2020.pdf",
+   "page": "https://fbsbook.org/",
+   "why": "Feedback for non-specialists: modelling, dynamics, stability, frequency response, PID, robustness, with examples from biology and computing (v3.1.5).",
+   "score": 84,
+   "tags": [
+    "control-and-estimation",
+    "dynamical-systems"
+   ]
+  },
+  {
+   "id": "pdf:mml-book.github.io/book/mml-book.pdf",
+   "kind": "pdf",
+   "t": "Mathematics for Machine Learning",
+   "a": "Marc Peter Deisenroth, A. Aldo Faisal, Cheng Soon Ong",
+   "y": 2020,
+   "url": "https://mml-book.github.io/book/mml-book.pdf",
+   "page": "https://mml-book.github.io/",
+   "why": "Linear algebra, calculus, probability and optimisation, then PCA, GMMs, SVMs and regression worked through with that math.",
+   "score": 82,
+   "tags": [
+    "machine-learning",
+    "mathematics"
+   ]
+  },
+  {
+   "id": "pdf:gaussianprocess.org/gpml/chapters/RW.pdf",
+   "kind": "pdf",
+   "t": "Gaussian Processes for Machine Learning",
+   "a": "Carl Edward Rasmussen, Christopher K. I. Williams",
+   "y": 2006,
+   "url": "http://gaussianprocess.org/gpml/chapters/RW.pdf",
+   "page": "http://gaussianprocess.org/gpml/",
+   "why": "The reference on GP regression and classification, covariance functions, marginal-likelihood model selection and sparse approximations.",
+   "score": 82,
+   "tags": [
+    "machine-learning",
+    "gaussian-processes",
+    "bayesian"
+   ]
+  },
+  {
+   "id": "pdf:d2l.ai/d2l-en.pdf",
+   "kind": "pdf",
+   "t": "Dive into Deep Learning",
+   "a": "Aston Zhang, Zachary C. Lipton, Mu Li et al.",
+   "y": 2023,
+   "url": "https://d2l.ai/d2l-en.pdf",
+   "page": "https://d2l.ai/",
+   "why": "Runnable deep learning textbook: every model from MLPs to attention and transformers implemented in PyTorch/JAX alongside the math.",
+   "score": 82,
+   "tags": [
+    "deep-learning",
+    "code"
+   ]
+  },
+  {
+   "id": "pdf:users.aalto.fi/~ave/ROS.pdf",
+   "kind": "pdf",
+   "t": "Regression and Other Stories",
+   "a": "Andrew Gelman, Jennifer Hill, Aki Vehtari",
+   "y": 2020,
+   "url": "https://users.aalto.fi/~ave/ROS.pdf",
+   "page": "https://avehtari.github.io/ROS-Examples/",
+   "why": "Applied regression with simulation and Bayesian fitting, causal inference basics, and the habits of checking and comparing models.",
+   "score": 82,
+   "tags": [
+    "statistics",
+    "regression",
+    "causality"
+   ]
+  },
+  {
+   "id": "pdf:www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf",
+   "kind": "pdf",
+   "t": "The Algorithmic Foundations of Differential Privacy",
+   "a": "Cynthia Dwork, Aaron Roth",
+   "y": 2014,
+   "url": "https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf",
+   "page": "https://www.cis.upenn.edu/~aaroth/privacybook.html",
+   "why": "Defines differential privacy and its core mechanisms (Laplace, exponential, sparse vector), composition, and links to learning and mechanism design.",
+   "score": 82,
+   "tags": [
+    "theory-of-computation",
+    "privacy"
+   ]
+  },
+  {
+   "id": "pdf:jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf",
+   "kind": "pdf",
+   "t": "Algorithms",
+   "a": "Jeff Erickson",
+   "y": 2019,
+   "url": "https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf",
+   "page": "https://jeffe.cs.illinois.edu/teaching/algorithms/",
+   "why": "Recursion, backtracking, dynamic programming, greedy, graph algorithms, flows and NP-hardness, with many exercises; CC-licensed.",
+   "score": 82,
+   "tags": [
+    "algorithms"
+   ]
+  },
+  {
+   "id": "pdf:linear.axler.net/LADR4e.pdf",
+   "kind": "pdf",
+   "t": "Linear Algebra Done Right (fourth edition)",
+   "a": "Sheldon Axler",
+   "y": 2024,
+   "url": "https://linear.axler.net/LADR4e.pdf",
+   "page": "https://linear.axler.net/",
+   "why": "Determinant-free linear algebra centred on operators, eigenvalues, inner products and the spectral theorem; open access since the 4th edition.",
+   "score": 82,
+   "tags": [
+    "mathematics",
+    "linear-algebra"
+   ]
+  },
+  {
+   "id": "pdf:www.statlearning.com/s/ISLR-Seventh-Printing.pdf",
+   "kind": "pdf",
+   "t": "An Introduction to Statistical Learning (with Applications in R), first edition",
+   "a": "Gareth James, Daniela Witten, Trevor Hastie et al.",
+   "y": 2013,
+   "url": "https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf",
+   "page": "https://www.statlearning.com/",
+   "why": "The gentle companion to ESL: regression, classification, resampling, regularisation, trees, SVMs and clustering with R labs.",
+   "score": 80,
+   "tags": [
+    "machine-learning",
+    "statistics"
+   ]
+  },
+  {
+   "id": "arxiv:2106.10165",
+   "kind": "pdf",
+   "t": "The Principles of Deep Learning Theory",
+   "a": "Daniel A. Roberts, Sho Yaida, Boris Hanin",
+   "y": 2021,
+   "d": "2021-06-18",
+   "url": "https://arxiv.org/pdf/2106.10165",
+   "page": "https://arxiv.org/abs/2106.10165",
+   "why": "Effective-theory treatment of finite-width networks: 1/width expansions, criticality at initialisation, and the representation-learning kernel.",
+   "score": 80,
+   "tags": [
+    "deep-learning",
+    "theory",
+    "physics"
+   ],
+   "ab": "This book develops an effective theory approach to understanding deep neural networks of practical relevance. Beginning from a first-principles component-level picture of networks, we explain how to determine an accurate description of the output of trained networks by solving layer-to-layer iteration equations and nonlinear learning dynamics. A main result is that the predictions of networks are described by nearly-Gaussian distributions, with the depth-to-width aspect ratio of the network controlling the deviations from the infinite-width Gaussian description."
+  },
+  {
+   "id": "arxiv:2104.13478",
+   "kind": "pdf",
+   "t": "Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges",
+   "a": "Michael M. Bronstein, Joan Bruna, Taco Cohen et al.",
+   "y": 2021,
+   "d": "2021-04-27",
+   "url": "https://arxiv.org/pdf/2104.13478",
+   "page": "https://arxiv.org/abs/2104.13478",
+   "why": "Unifies CNNs, GNNs, transformers and equivariant nets as architectures derived from symmetry groups and domains (grids, graphs, manifolds).",
+   "score": 80,
+   "tags": [
+    "deep-learning",
+    "geometric",
+    "graphs"
+   ],
+   "ab": "The last decade has witnessed an experimental revolution in data science and machine learning, epitomised by deep learning methods. Indeed, many high-dimensional learning tasks previously thought to be beyond reach -- such as computer vision, playing Go, or protein folding -- are in fact feasible with appropriate computational scale."
+  },
+  {
+   "id": "pdf:rltheorybook.github.io/rltheorybook_ABJKS.pdf",
+   "kind": "pdf",
+   "t": "Reinforcement Learning: Theory and Algorithms (working draft)",
+   "a": "Alekh Agarwal, Kianté Brantley, Sham M. Kakade et al.",
+   "y": 2026,
+   "d": "2026-06-27",
+   "url": "https://rltheorybook.github.io/rltheorybook_ABJKS.pdf",
+   "page": "https://rltheorybook.github.io/",
+   "why": "Sample complexity of RL: generative models, exploration in tabular and linear MDPs, policy-gradient convergence, imitation and offline RL.",
+   "score": 80,
+   "tags": [
+    "reinforcement-learning",
+    "learning-theory"
+   ]
+  },
+  {
+   "id": "arxiv:1405.4980",
+   "kind": "pdf",
+   "t": "Convex Optimization: Algorithms and Complexity",
+   "a": "Sébastien Bubeck",
+   "y": 2014,
+   "d": "2014-05-20",
+   "url": "https://arxiv.org/pdf/1405.4980",
+   "page": "https://arxiv.org/abs/1405.4980",
+   "why": "Bubeck's monograph on oracle complexity of convex optimisation: gradient methods, mirror descent, acceleration and stochastic/non-Euclidean settings.",
+   "score": 80,
+   "tags": [
+    "optimization",
+    "theory"
+   ],
+   "ab": "This monograph presents the main complexity theorems in convex optimization and their corresponding algorithms. Starting from the fundamental theory of black-box optimization, the material progresses towards recent advances in structural optimization and stochastic optimization. Our presentation of black-box optimization, strongly influenced by Nesterov's seminal book and Nemirovski's lecture notes, includes the analysis of cutting plane methods, as well as (accelerated) gradient descent schemes."
+  },
+  {
+   "id": "arxiv:1803.00567",
+   "kind": "pdf",
+   "t": "Computational Optimal Transport",
+   "a": "Gabriel Peyré, Marco Cuturi",
+   "y": 2018,
+   "d": "2018-03-01",
+   "url": "https://arxiv.org/pdf/1803.00567",
+   "page": "https://arxiv.org/abs/1803.00567",
+   "why": "Peyré and Cuturi on optimal transport for data science: Kantorovich problem, Sinkhorn entropic regularisation, Wasserstein barycentres and gradient flows.",
+   "score": 80,
+   "tags": [
+    "optimization",
+    "optimal-transport"
+   ],
+   "ab": "Optimal transport (OT) theory can be informally described using the words of the French mathematician Gaspard Monge (1746-1818): A worker with a shovel in hand has to move a large pile of sand lying on a construction site. The goal of the worker is to erect with all that sand a target pile with a prescribed shape (for example, that of a giant sand castle). Naturally, the worker wishes to minimize her total effort, quantified for instance as the total distance or time spent carrying shovelfuls of sand."
+  },
+  {
+   "id": "pdf:people.eecs.berkeley.edu/~jordan/papers/wainwright-jordan-fnt.pdf",
+   "kind": "pdf",
+   "t": "Graphical Models, Exponential Families, and Variational Inference",
+   "a": "Martin J. Wainwright, Michael I. Jordan",
+   "y": 2008,
+   "url": "https://people.eecs.berkeley.edu/~jordan/papers/wainwright-jordan-fnt.pdf",
+   "page": "https://people.eecs.berkeley.edu/~jordan/",
+   "why": "The variational view of inference: marginal polytopes, mean field, belief propagation and convex relaxations derived from exponential-family duality.",
+   "score": 80,
+   "tags": [
+    "bayesian-inference",
+    "graphical-models",
+    "variational-inference"
+   ]
+  },
+  {
+   "id": "pdf:www.masfoundations.org/mas.pdf",
+   "kind": "pdf",
+   "t": "Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations",
+   "a": "Yoav Shoham, Kevin Leyton-Brown",
+   "y": 2009,
+   "url": "https://www.masfoundations.org/mas.pdf",
+   "page": "https://www.masfoundations.org/",
+   "why": "Game theory, social choice, mechanism design and auctions, multiagent learning and logics of knowledge, for computer scientists.",
+   "score": 80,
+   "tags": [
+    "game-theory",
+    "multi-agent",
+    "mechanism-design"
+   ]
+  },
+  {
+   "id": "pdf:www.cs.cornell.edu/jeh/book.pdf",
+   "kind": "pdf",
+   "t": "Foundations of Data Science",
+   "a": "Avrim Blum, John Hopcroft, Ravindran Kannan",
+   "y": 2020,
+   "url": "https://www.cs.cornell.edu/jeh/book.pdf",
+   "page": "https://www.cs.cornell.edu/jeh/",
+   "why": "Mathematics for modern data: high-dimensional geometry, SVD, random walks, learning theory, streaming, clustering, random graphs and topic models.",
+   "score": 80,
+   "tags": [
+    "data-science",
+    "algorithms",
+    "learning-theory"
+   ]
+  },
+  {
+   "id": "pdf:infolab.stanford.edu/~ullman/mmds/book0n.pdf",
+   "kind": "pdf",
+   "t": "Mining of Massive Datasets",
+   "a": "Jure Leskovec, Anand Rajaraman, Jeffrey D. Ullman",
+   "y": 2023,
+   "url": "http://infolab.stanford.edu/~ullman/mmds/book0n.pdf",
+   "page": "http://www.mmds.org/",
+   "why": "Algorithms for data that do not fit in memory: MapReduce, locality-sensitive hashing, streams, PageRank, frequent itemsets, recommendation, and large-scale ML.",
+   "score": 80,
+   "tags": [
+    "data-science",
+    "algorithms",
+    "information-retrieval"
+   ]
+  },
+  {
+   "id": "pdf:www.math.ias.edu/files/Book-online-Aug0619.pdf",
+   "kind": "pdf",
+   "t": "Mathematics and Computation",
+   "a": "Avi Wigderson",
+   "y": 2019,
+   "url": "https://www.math.ias.edu/files/Book-online-Aug0619.pdf",
+   "page": "https://www.math.ias.edu/avi/book",
+   "why": "A survey-style book of the theory of computation: its central results, open problems and connections to mathematics and the sciences.",
+   "score": 80,
+   "tags": [
+    "theory-of-computation",
+    "complexity"
+   ]
+  },
+  {
+   "id": "pdf:mlstory.org/pdf/patterns.pdf",
+   "kind": "pdf",
+   "t": "Patterns, Predictions, and Actions: Foundations of Machine Learning",
+   "a": "Moritz Hardt, Benjamin Recht",
+   "y": 2022,
+   "url": "https://mlstory.org/pdf/patterns.pdf",
+   "page": "https://mlstory.org/",
+   "why": "Graduate ML course text that runs from prediction to datasets, causality, sequential decisions and RL, with history and critique of benchmarks.",
+   "score": 78,
+   "tags": [
+    "machine-learning",
+    "decision-making",
+    "causality"
+   ]
+  },
+  {
+   "id": "arxiv:1904.07272",
+   "kind": "pdf",
+   "t": "Introduction to Multi-Armed Bandits",
+   "a": "Aleksandrs Slivkins",
+   "y": 2019,
+   "d": "2019-04-15",
+   "url": "https://arxiv.org/pdf/1904.07272",
+   "page": "https://arxiv.org/abs/1904.07272",
+   "why": "Slivkins' monograph: IID bandits, Lipschitz and adversarial bandits, contextual bandits, and bandits with incentives and constraints.",
+   "score": 78,
+   "tags": [
+    "bandits-and-online-learning"
+   ],
+   "ab": "Multi-armed bandits a simple but very powerful framework for algorithms that make decisions over time under uncertainty. An enormous body of work has accumulated over the years, covered in several books and surveys. This book provides a more introductory, textbook-like treatment of the subject. Each chapter tackles a particular line of work, providing a self-contained, teachable technical introduction and a brief review of the further developments; many of the chapters conclude with exercises. The book is structured as follows."
+  },
+  {
+   "id": "arxiv:1909.05207",
+   "kind": "pdf",
+   "t": "Introduction to Online Convex Optimization",
+   "a": "Elad Hazan",
+   "y": 2019,
+   "d": "2019-09-07",
+   "url": "https://arxiv.org/pdf/1909.05207",
+   "page": "https://arxiv.org/abs/1909.05207",
+   "why": "Hazan's text on online convex optimisation: regret, online gradient descent, mirror descent, bandit convex optimisation and boosting.",
+   "score": 78,
+   "tags": [
+    "bandits-and-online-learning",
+    "optimization"
+   ],
+   "ab": "This manuscript portrays optimization as a process. In many practical applications the environment is so complex that it is infeasible to lay out a comprehensive theoretical model and use classical algorithmic theory and mathematical optimization. It is necessary as well as beneficial to take a robust approach, by applying an optimization method that learns as one goes along, learning from experience as more aspects of the problem are observed."
+  },
+  {
+   "id": "arxiv:2412.05265",
+   "kind": "pdf",
+   "t": "Reinforcement Learning: An Overview",
+   "a": "Kevin Murphy",
+   "y": 2024,
+   "d": "2024-12-06",
+   "url": "https://arxiv.org/pdf/2412.05265",
+   "page": "https://arxiv.org/abs/2412.05265",
+   "why": "Murphy's long, regularly updated overview of RL: value-based, policy-based and model-based methods, plus LLMs and RL.",
+   "score": 78,
+   "tags": [
+    "reinforcement-learning",
+    "llm"
+   ],
+   "ab": "This manuscript gives a big-picture, up-to-date overview of the field of (deep) reinforcement learning and sequential decision making, covering value-based methods, policy-based methods, model-based methods, multi-agent RL, LLMs and RL, and various other topics (e.g., offline RL, hierarchical RL, intrinsic reward). It also includes some code snippets for training LLMs with RL."
+  },
+  {
+   "id": "pdf:www.marl-book.com/download/",
+   "kind": "pdf",
+   "t": "Multi-Agent Reinforcement Learning: Foundations and Modern Approaches",
+   "a": "Stefano V. Albrecht, Filippos Christianos, Lukas Schäfer",
+   "y": 2024,
+   "url": "https://www.marl-book.com/download/",
+   "page": "https://www.marl-book.com/",
+   "why": "Game-theoretic solution concepts, then MARL algorithms from independent learners to centralised-critic and deep methods; MIT Press, free PDF.",
+   "score": 78,
+   "tags": [
+    "reinforcement-learning",
+    "multi-agent",
+    "game-theory"
+   ]
+  },
+  {
+   "id": "pdf:web.stanford.edu/~boyd/papers/pdf/admm_distr_stats.pdf",
+   "kind": "pdf",
+   "t": "Distributed Optimization and Statistical Learning via the Alternating Direction Method of Multipliers",
+   "a": "Stephen Boyd, Neal Parikh, Eric Chu et al.",
+   "y": 2011,
+   "url": "https://web.stanford.edu/~boyd/papers/pdf/admm_distr_stats.pdf",
+   "page": "https://web.stanford.edu/~boyd/papers/admm_distr_stats.html",
+   "why": "The ADMM monograph: convergence, distributed consensus and sharing forms, and applications to lasso, SVMs and large-scale fitting.",
+   "score": 78,
+   "tags": [
+    "optimization",
+    "distributed"
+   ]
+  },
+  {
+   "id": "pdf:www.stat.cmu.edu/~cshalizi/ADAfaEPoV/ADAfaEPoV.pdf",
+   "kind": "pdf",
+   "t": "Advanced Data Analysis from an Elementary Point of View",
+   "a": "Cosma Rohilla Shalizi",
+   "y": 2026,
+   "url": "https://www.stat.cmu.edu/~cshalizi/ADAfaEPoV/ADAfaEPoV.pdf",
+   "page": "https://www.stat.cmu.edu/~cshalizi/ADAfaEPoV/",
+   "why": "CMU 36-402 text: smoothing, the bootstrap, model checking, GAMs, density estimation, graphical causal models and time series, written with unusual care.",
+   "score": 78,
+   "tags": [
+    "statistics",
+    "causality"
+   ]
+  },
+  {
+   "id": "arxiv:2403.02467",
+   "kind": "pdf",
+   "t": "Applied Causal Inference Powered by ML and AI",
+   "a": "Victor Chernozhukov, Christian Hansen, Nathan Kallus et al.",
+   "y": 2024,
+   "d": "2024-03-04",
+   "url": "https://arxiv.org/pdf/2403.02467",
+   "page": "https://arxiv.org/abs/2403.02467",
+   "why": "Double/debiased ML for causal parameters with modern predictors: partially linear models, DAGs, IV, DiD and RD, with notebooks.",
+   "score": 78,
+   "tags": [
+    "causal-inference",
+    "machine-learning",
+    "econometrics"
+   ],
+   "ab": "An introduction to the emerging fusion of machine learning and causal inference. The book presents ideas from classical structural equation models (SEMs) and their modern AI equivalent, directed acyclical graphs (DAGs) and structural causal models (SCMs), and covers Double/Debiased Machine Learning methods to do inference in such models using modern predictive tools."
+  },
+  {
+   "id": "pdf:toc.cryptobook.us/book.pdf",
+   "kind": "pdf",
+   "t": "A Graduate Course in Applied Cryptography",
+   "a": "Dan Boneh, Victor Shoup",
+   "y": 2023,
+   "d": "2023-01",
+   "url": "https://toc.cryptobook.us/book.pdf",
+   "page": "https://toc.cryptobook.us/",
+   "why": "Security definitions and proofs for ciphers, MACs, authenticated encryption, public-key encryption, signatures and protocols (version 0.6).",
+   "score": 78,
+   "tags": [
+    "theory-of-computation",
+    "cryptography"
+   ]
+  },
+  {
+   "id": "pdf:courses.csail.mit.edu/6.042/spring18/mcs.pdf",
+   "kind": "pdf",
+   "t": "Mathematics for Computer Science",
+   "a": "Eric Lehman, F. Thomson Leighton, Albert R. Meyer",
+   "y": 2018,
+   "url": "https://courses.csail.mit.edu/6.042/spring18/mcs.pdf",
+   "page": "https://courses.csail.mit.edu/6.042/spring18/",
+   "why": "MIT 6.042 text: proofs, induction, number theory, graphs, counting, discrete probability and random walks.",
+   "score": 78,
+   "tags": [
+    "algorithms",
+    "discrete-math",
+    "mathematics"
+   ]
+  },
+  {
+   "id": "pdf:hades.mech.northwestern.edu/images/7/7f/MR.pdf",
+   "kind": "pdf",
+   "t": "Modern Robotics: Mechanics, Planning, and Control",
+   "a": "Kevin M. Lynch, Frank C. Park",
+   "y": 2017,
+   "url": "https://hades.mech.northwestern.edu/images/7/7f/MR.pdf",
+   "page": "https://hades.mech.northwestern.edu/index.php/Modern_Robotics",
+   "why": "Robot kinematics, dynamics, trajectory generation, motion planning, control and grasping using screw theory and the product of exponentials.",
+   "score": 78,
+   "tags": [
+    "robotics",
+    "control"
+   ]
+  },
+  {
+   "id": "pdf:lavalle.pl/planning/booka4.pdf",
+   "kind": "pdf",
+   "t": "Planning Algorithms",
+   "a": "Steven M. LaValle",
+   "y": 2006,
+   "url": "https://lavalle.pl/planning/booka4.pdf",
+   "page": "https://lavalle.pl/planning/",
+   "why": "Motion planning (sampling-based, combinatorial), discrete planning, decision-theoretic planning under uncertainty and differential constraints.",
+   "score": 78,
+   "tags": [
+    "robotics",
+    "planning",
+    "decision-making"
+   ]
+  },
+  {
+   "id": "arxiv:2312.16730",
+   "kind": "pdf",
+   "t": "Foundations of Reinforcement Learning and Interactive Decision Making",
+   "a": "Dylan J. Foster, Alexander Rakhlin",
+   "y": 2023,
+   "d": "2023-12-27",
+   "url": "https://arxiv.org/pdf/2312.16730",
+   "page": "https://arxiv.org/abs/2312.16730",
+   "why": "Foster and Rakhlin's lecture notes giving a unified statistical theory of interactive decision making via the decision-estimation coefficient.",
+   "score": 76,
+   "tags": [
+    "reinforcement-learning",
+    "learning-theory",
+    "decision-making"
+   ],
+   "ab": "Interactive decision making is the problem of learning to act well in an unknown environment, using the data that one's own actions generate to continuously improve, and arises in situations ranging from online platforms and robotics to medical treatments. This monograph gives a statistical perspective on algorithm design and complexity for interactive decision making, building from multi-armed bandits through contextual and structured bandits to reinforcement learning with function approximation within a single, unified framework."
+  },
+  {
+   "id": "pdf:web.mit.edu/dimitrib/www/RLCOURSECOMPLETE%202ndEDITION.pdf",
+   "kind": "pdf",
+   "t": "A Course in Reinforcement Learning (second edition)",
+   "a": "Dimitri P. Bertsekas",
+   "y": 2026,
+   "url": "https://web.mit.edu/dimitrib/www/RLCOURSECOMPLETE%202ndEDITION.pdf",
+   "page": "https://web.mit.edu/dimitrib/www/RLbook.html",
+   "why": "RL from the optimal-control side: approximation in value space, rollout, policy iteration and the AlphaZero-style lookahead connection; free on the author's site.",
+   "score": 76,
+   "tags": [
+    "reinforcement-learning",
+    "control"
+   ]
+  },
+  {
+   "id": "pdf:drive.usercontent.google.com/download?id=1ia_-f26tQKvomfyhtvXa02_0CPWZhxMZ",
+   "kind": "pdf",
+   "t": "Algorithms for Validation",
+   "a": "Mykel J. Kochenderfer, Sydney M. Katz, Anthony L. Corso et al.",
+   "y": 2026,
+   "url": "https://drive.usercontent.google.com/download?id=1ia_-f26tQKvomfyhtvXa02_0CPWZhxMZ&export=download",
+   "page": "https://algorithmsbook.com/validation/",
+   "why": "Validating safety-critical systems: falsification, failure distributions and probability estimation, formal methods, explainability and runtime monitoring.",
+   "score": 76,
+   "tags": [
+    "decision-making",
+    "safety",
+    "verification"
+   ]
+  },
+  {
+   "id": "pdf:drive.usercontent.google.com/download?id=1Rx7MAekKZbyNVc5B2MNfR0HXXIEJCksp",
+   "kind": "pdf",
+   "t": "Algorithms for Optimization (second edition)",
+   "a": "Mykel J. Kochenderfer, Tim A. Wheeler",
+   "y": 2026,
+   "url": "https://drive.usercontent.google.com/download?id=1Rx7MAekKZbyNVc5B2MNfR0HXXIEJCksp&export=download",
+   "page": "https://algorithmsbook.com/optimization/",
+   "why": "Practical optimisation algorithms with Julia code: derivatives, local descent, stochastic and population methods, surrogates and optimisation under uncertainty.",
+   "score": 76,
+   "tags": [
+    "optimization",
+    "code"
+   ]
+  },
+  {
+   "id": "pdf:bayesoptbook.com/book/bayesoptbook.pdf",
+   "kind": "pdf",
+   "t": "Bayesian Optimization",
+   "a": "Roman Garnett",
+   "y": 2023,
+   "url": "https://bayesoptbook.com/book/bayesoptbook.pdf",
+   "page": "https://bayesoptbook.com/",
+   "why": "GP models, decision-theoretic derivation of acquisition functions (EI, knowledge gradient, entropy search), and practical BO; author PDF of the Cambridge book.",
+   "score": 76,
+   "tags": [
+    "optimization",
+    "bayesian",
+    "gaussian-processes"
+   ]
+  },
+  {
+   "id": "pdf:sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf",
+   "kind": "pdf",
+   "t": "Probability: Theory and Examples (fifth edition)",
+   "a": "Rick Durrett",
+   "y": 2019,
+   "url": "https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf",
+   "page": "https://sites.math.duke.edu/~rtd/PTE/pte.html",
+   "why": "Measure-theoretic graduate probability: laws of large numbers, CLT, random walks, martingales, Markov chains, ergodic theorems, Brownian motion.",
+   "score": 76,
+   "tags": [
+    "probability"
+   ]
+  },
+  {
+   "id": "pdf:pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf",
+   "kind": "pdf",
+   "t": "Markov Chains and Mixing Times (second edition)",
+   "a": "David A. Levin, Yuval Peres",
+   "y": 2017,
+   "url": "https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf",
+   "page": "https://pages.uoregon.edu/dlevin/MARKOV/",
+   "why": "How fast Markov chains converge: coupling, strong stationary times, spectral methods, cutoff and Glauber dynamics; why MCMC samplers mix or don't.",
+   "score": 76,
+   "tags": [
+    "probability",
+    "markov-chains"
+   ]
+  },
+  {
+   "id": "pdf:web.stanford.edu/~boyd/vmls/vmls.pdf",
+   "kind": "pdf",
+   "t": "Introduction to Applied Linear Algebra: Vectors, Matrices, and Least Squares",
+   "a": "Stephen Boyd, Lieven Vandenberghe",
+   "y": 2018,
+   "url": "https://web.stanford.edu/~boyd/vmls/vmls.pdf",
+   "page": "https://web.stanford.edu/~boyd/vmls/",
+   "why": "Vectors, matrices and least squares applied to data fitting, classification, control and portfolio problems; minimal prerequisites.",
+   "score": 76,
+   "tags": [
+    "mathematics",
+    "linear-algebra",
+    "optimization"
+   ]
+  },
+  {
+   "id": "arxiv:2403.14606",
+   "kind": "pdf",
+   "t": "The Elements of Differentiable Programming",
+   "a": "Mathieu Blondel, Vincent Roulet",
+   "y": 2024,
+   "d": "2024-03-21",
+   "url": "https://arxiv.org/pdf/2403.14606",
+   "page": "https://arxiv.org/abs/2403.14606",
+   "why": "Automatic differentiation, differentiable programs, smoothing of discrete operations and their links to probabilistic modelling, from Google DeepMind authors.",
+   "score": 75,
+   "tags": [
+    "deep-learning",
+    "autodiff",
+    "optimization"
+   ],
+   "ab": "Artificial intelligence has recently experienced remarkable advances, fueled by large models, vast datasets, accelerated hardware, and, last but not least, the transformative power of differentiable programming. This new programming paradigm enables end-to-end differentiation of complex computer programs (including those with control flows and data structures), making gradient-based optimization of program parameters possible."
+  },
+  {
+   "id": "pdf:nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf",
+   "kind": "pdf",
+   "t": "Introduction to Information Retrieval",
+   "a": "Christopher D. Manning, Prabhakar Raghavan, Hinrich Schütze",
+   "y": 2008,
+   "url": "https://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf",
+   "page": "https://nlp.stanford.edu/IR-book/",
+   "why": "Indexing, Boolean and vector-space retrieval, evaluation, relevance feedback, text classification, clustering and web search.",
+   "score": 75,
+   "tags": [
+    "natural-language",
+    "information-retrieval"
+   ]
+  },
+  {
+   "id": "arxiv:1912.13213",
+   "kind": "pdf",
+   "t": "Online Learning: A Modern Introduction Using Convex Optimization",
+   "a": "Francesco Orabona",
+   "y": 2019,
+   "d": "2019-12-31",
+   "url": "https://arxiv.org/pdf/1912.13213",
+   "page": "https://arxiv.org/abs/1912.13213",
+   "why": "Orabona's course notes on online learning via online convex optimisation, from FTRL to parameter-free algorithms.",
+   "score": 74,
+   "tags": [
+    "bandits-and-online-learning",
+    "optimization"
+   ],
+   "ab": "In this book, I introduce the concepts of online learning through a modern view based on convex optimization. Here, online learning refers to the framework of regret minimization under worst-case assumptions. I attempted to unify all the literature as instantiations of Online Mirror Descent and Follow-the-Regularized-Leader (and their variants). I paid particular attention to the issue of tuning the parameters of the algorithms, through adaptive and parameter-free online learning algorithms."
+  },
+  {
+   "id": "pdf:web.stanford.edu/~swager/causal_inf_book.pdf",
+   "kind": "pdf",
+   "t": "Causal Inference: A Statistical Learning Approach",
+   "a": "Stefan Wager",
+   "y": 2024,
+   "url": "https://web.stanford.edu/~swager/causal_inf_book.pdf",
+   "page": "https://web.stanford.edu/~swager/",
+   "why": "Treatment-effect estimation with ML: AIPW and double robustness, heterogeneous effects, IV, panel methods and policy learning.",
+   "score": 74,
+   "tags": [
+    "causal-inference",
+    "statistics",
+    "machine-learning"
+   ]
+  },
+  {
+   "id": "pdf:cgi.cse.unsw.edu.au/~haziz/comsoc.pdf",
+   "kind": "pdf",
+   "t": "Handbook of Computational Social Choice",
+   "a": "Felix Brandt, Vincent Conitzer, Ulle Endriss et al.",
+   "y": 2016,
+   "url": "https://cgi.cse.unsw.edu.au/~haziz/comsoc.pdf",
+   "page": "https://cgi.cse.unsw.edu.au/~haziz/",
+   "why": "Voting rules and their complexity, tournament solutions, fair division, matching and judgment aggregation; the free Cambridge edition.",
+   "score": 74,
+   "tags": [
+    "game-theory",
+    "social-choice",
+    "voting"
+   ]
+  },
+  {
+   "id": "pdf:files.boazbarak.org/introtcs/lnotes_book.pdf",
+   "kind": "pdf",
+   "t": "Introduction to Theoretical Computer Science",
+   "a": "Boaz Barak",
+   "y": 2023,
+   "url": "https://files.boazbarak.org/introtcs/lnotes_book.pdf",
+   "page": "https://introtcs.org/",
+   "why": "Harvard CS121 text built around circuits and straight-line programs before Turing machines; covers computability, NP, randomness, crypto, quantum.",
+   "score": 74,
+   "tags": [
+    "theory-of-computation"
+   ]
+  },
+  {
+   "id": "arxiv:2105.10386",
+   "kind": "pdf",
+   "t": "Analysis of Boolean Functions",
+   "a": "Ryan O'Donnell",
+   "y": 2021,
+   "d": "2021-05-21",
+   "url": "https://arxiv.org/pdf/2105.10386",
+   "page": "https://arxiv.org/abs/2105.10386",
+   "why": "O'Donnell's textbook on Fourier analysis of Boolean functions: influences, noise stability, hypercontractivity, and applications to learning and hardness.",
+   "score": 74,
+   "tags": [
+    "theory-of-computation",
+    "fourier-analysis"
+   ],
+   "ab": "The subject of this textbook is the analysis of Boolean functions. Roughly speaking, this refers to studying Boolean functions $f : \\{0,1\\}^n \\to \\{0,1\\}$ via their Fourier expansion and other analytic means. Boolean functions are perhaps the most basic object of study in theoretical computer science, and Fourier analysis has become an indispensable tool in the field. The topic has also played a key role in several other areas of mathematics, from combinatorics, random graph theory, and statistical physics, to Gaussian geometry, metric/Banach spaces, and social choice theory."
+  },
+  {
+   "id": "pdf:www.designofapproxalgs.com/book.pdf",
+   "kind": "pdf",
+   "t": "The Design of Approximation Algorithms",
+   "a": "David P. Williamson, David B. Shmoys",
+   "y": 2011,
+   "url": "https://www.designofapproxalgs.com/book.pdf",
+   "page": "https://www.designofapproxalgs.com/",
+   "why": "Approximation algorithms organised by technique: greedy, rounding LPs, primal-dual, randomised rounding, SDP, and hardness of approximation.",
+   "score": 74,
+   "tags": [
+    "algorithms",
+    "optimization"
+   ]
+  },
+  {
+   "id": "pdf:databookuw.com/databook.pdf",
+   "kind": "pdf",
+   "t": "Data-Driven Science and Engineering: Machine Learning, Dynamical Systems, and Control",
+   "a": "Steven L. Brunton, J. Nathan Kutz",
+   "y": 2019,
+   "url": "http://databookuw.com/databook.pdf",
+   "page": "http://databookuw.com/",
+   "why": "SVD, sparse regression, system identification (DMD, SINDy, Koopman), reduced-order models and ML for control; authors' preprint of the first edition.",
+   "score": 74,
+   "tags": [
+    "control-and-estimation",
+    "dynamical-systems",
+    "machine-learning"
+   ]
+  },
+  {
+   "id": "arxiv:1803.05316",
+   "kind": "pdf",
+   "t": "Seven Sketches in Compositionality: An Invitation to Applied Category Theory",
+   "a": "Brendan Fong, David I Spivak",
+   "y": 2018,
+   "d": "2018-03-14",
+   "url": "https://arxiv.org/pdf/1803.05316",
+   "page": "https://arxiv.org/abs/1803.05316",
+   "why": "Applied category theory through examples: orders, databases, resource theories, co-design, signal-flow graphs and logic.",
+   "score": 74,
+   "tags": [
+    "mathematics",
+    "category-theory",
+    "compositionality"
+   ],
+   "ab": "This book is an invitation to discover advanced topics in category theory through concrete, real-world examples. It aims to give a tour: a gentle, quick introduction to guide later exploration. The tour takes place over seven sketches, each pairing an evocative application, such as databases, electric circuits, or dynamical systems, with the exploration of a categorical structure, such as adjoint functors, enriched categories, or toposes. No prior knowledge of category theory is assumed."
+  },
+  {
+   "id": "pdf:web4.cs.ucl.ac.uk/staff/D.Barber/textbook/200620.pdf",
+   "kind": "pdf",
+   "t": "Bayesian Reasoning and Machine Learning",
+   "a": "David Barber",
+   "y": 2020,
+   "d": "2020-06",
+   "url": "http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/200620.pdf",
+   "page": "http://web4.cs.ucl.ac.uk/staff/D.Barber/pmwiki/pmwiki.php?n=Brml.HomePage",
+   "why": "Graphical models first: belief networks, junction trees, learning with hidden variables, approximate inference; online version dated June 2020.",
+   "score": 72,
+   "tags": [
+    "machine-learning",
+    "graphical-models",
+    "bayesian"
+   ]
+  },
+  {
+   "id": "pdf:fairmlbook.org/pdf/fairmlbook.pdf",
+   "kind": "pdf",
+   "t": "Fairness and Machine Learning: Limitations and Opportunities",
+   "a": "Solon Barocas, Moritz Hardt, Arvind Narayanan",
+   "y": 2023,
+   "url": "https://fairmlbook.org/pdf/fairmlbook.pdf",
+   "page": "https://fairmlbook.org/",
+   "why": "Formal fairness criteria and their incompatibilities, causal views of discrimination, and the limits of technical fixes.",
+   "score": 72,
+   "tags": [
+    "machine-learning",
+    "fairness",
+    "ethics"
+   ]
+  },
+  {
+   "id": "pdf:www.cs.mcgill.ca/~wlh/grl_book/files/GRL_Book.pdf",
+   "kind": "pdf",
+   "t": "Graph Representation Learning",
+   "a": "William L. Hamilton",
+   "y": 2020,
+   "url": "https://www.cs.mcgill.ca/~wlh/grl_book/files/GRL_Book.pdf",
+   "page": "https://www.cs.mcgill.ca/~wlh/grl_book/",
+   "why": "Short monograph on node embeddings, graph neural networks (message passing, GCN, GAT) and deep generative models of graphs.",
+   "score": 72,
+   "tags": [
+    "deep-learning",
+    "graphs"
+   ]
+  },
+  {
+   "id": "arxiv:2501.09223",
+   "kind": "pdf",
+   "t": "Foundations of Large Language Models",
+   "a": "Tong Xiao, Jingbo Zhu",
+   "y": 2025,
+   "d": "2025-01-16",
+   "url": "https://arxiv.org/pdf/2501.09223",
+   "page": "https://arxiv.org/abs/2501.09223",
+   "why": "Book-length survey of LLM pre-training, generative models, prompting, alignment (RLHF, DPO) and inference.",
+   "score": 72,
+   "tags": [
+    "deep-learning",
+    "llm",
+    "natural-language"
+   ],
+   "ab": "This is a book about large language models. As indicated by the title, it primarily focuses on foundational concepts rather than comprehensive coverage of all cutting-edge technologies. The book is structured into six main chapters, each exploring a key area: pre-training, generative models, prompting, alignment, inference, and reasoning. It is intended for college students, professionals, and practitioners in natural language processing and related fields, and can serve as a reference for anyone interested in large language models."
+  },
+  {
+   "id": "arxiv:1906.02691",
+   "kind": "pdf",
+   "t": "An Introduction to Variational Autoencoders",
+   "a": "Diederik P. Kingma, Max Welling",
+   "y": 2019,
+   "d": "2019-06-06",
+   "url": "https://arxiv.org/pdf/1906.02691",
+   "page": "https://arxiv.org/abs/1906.02691",
+   "why": "Kingma and Welling's own monograph on VAEs: the ELBO, reparameterisation, inference models and later extensions.",
+   "score": 72,
+   "tags": [
+    "deep-learning",
+    "generative-models",
+    "variational-inference"
+   ],
+   "ab": "Variational autoencoders provide a principled framework for learning deep latent-variable models and corresponding inference models. In this work, we provide an introduction to variational autoencoders and some important extensions."
+  },
+  {
+   "id": "pdf:raw.githubusercontent.com/jacobeisenstein/gt-nlp-class/master/notes/eisenstein-nlp-notes.pdf",
+   "kind": "pdf",
+   "t": "Natural Language Processing (lecture notes)",
+   "a": "Jacob Eisenstein",
+   "y": 2018,
+   "url": "https://raw.githubusercontent.com/jacobeisenstein/gt-nlp-class/master/notes/eisenstein-nlp-notes.pdf",
+   "page": "https://github.com/jacobeisenstein/gt-nlp-class",
+   "why": "Author-released notes for the MIT Press book: linear and neural classifiers, sequence labelling, parsing, semantics, and generation.",
+   "score": 72,
+   "tags": [
+    "natural-language"
+   ]
+  },
+  {
+   "id": "arxiv:1707.02038",
+   "kind": "pdf",
+   "t": "A Tutorial on Thompson Sampling",
+   "a": "Daniel Russo, Benjamin Van Roy, Abbas Kazerouni et al.",
+   "y": 2017,
+   "d": "2017-07-07",
+   "url": "https://arxiv.org/pdf/1707.02038",
+   "page": "https://arxiv.org/abs/1707.02038",
+   "why": "Tutorial on Thompson sampling with worked examples (Bernoulli, shortest path, assortment) and guidance on approximate posterior sampling.",
+   "score": 72,
+   "tags": [
+    "bandits-and-online-learning",
+    "bayesian"
+   ],
+   "ab": "Thompson sampling is an algorithm for online decision problems where actions are taken sequentially in a manner that must balance between exploiting what is known to maximize immediate performance and investing to accumulate new information that may improve future performance. The algorithm addresses a broad range of problems in a computationally efficient manner and is therefore enjoying wide use."
+  },
+  {
+   "id": "pdf:sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf",
+   "kind": "pdf",
+   "t": "Algorithms for Reinforcement Learning",
+   "a": "Csaba Szepesvári",
+   "y": 2010,
+   "url": "https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf",
+   "page": "https://sites.ualberta.ca/~szepesva/rlbook.html",
+   "why": "A 100-page, theory-minded tour of value prediction, control and policy search in MDPs.",
+   "score": 72,
+   "tags": [
+    "reinforcement-learning",
+    "short"
+   ]
+  },
+  {
+   "id": "arxiv:1809.10756",
+   "kind": "pdf",
+   "t": "An Introduction to Probabilistic Programming",
+   "a": "Jan-Willem van de Meent, Brooks Paige, Hongseok Yang et al.",
+   "y": 2018,
+   "d": "2018-09-27",
+   "url": "https://arxiv.org/pdf/1809.10756",
+   "page": "https://arxiv.org/abs/1809.10756",
+   "why": "Introduction to probabilistic programming: first-order languages, graph-based and evaluation-based inference, and higher-order languages.",
+   "score": 72,
+   "tags": [
+    "bayesian-inference",
+    "programming-languages"
+   ],
+   "ab": "This book is a graduate-level introduction to probabilistic programming. It not only provides a thorough background for anyone wishing to use a probabilistic programming system, but also introduces the techniques needed to design and build these systems. It is aimed at people who have an undergraduate-level understanding of either or, ideally, both probabilistic machine learning and programming languages."
+  },
+  {
+   "id": "pdf:homes.cs.washington.edu/~karlin/GameTheoryBook.pdf",
+   "kind": "pdf",
+   "t": "Game Theory, Alive",
+   "a": "Anna R. Karlin, Yuval Peres",
+   "y": 2017,
+   "url": "https://homes.cs.washington.edu/~karlin/GameTheoryBook.pdf",
+   "page": "https://homes.cs.washington.edu/~karlin/",
+   "why": "Combinatorial and zero-sum games, Nash equilibria, price of anarchy, cooperative games, social choice, auctions and mechanism design.",
+   "score": 72,
+   "tags": [
+    "game-theory",
+    "mechanism-design"
+   ]
+  },
+  {
+   "id": "pdf:cs-www.cs.yale.edu/homes/spielman/sagt/sagt.pdf",
+   "kind": "pdf",
+   "t": "Spectral and Algebraic Graph Theory (incomplete draft)",
+   "a": "Daniel A. Spielman",
+   "y": 2025,
+   "d": "2025-04-02",
+   "url": "http://cs-www.cs.yale.edu/homes/spielman/sagt/sagt.pdf",
+   "page": "http://cs-www.cs.yale.edu/homes/spielman/sagt/",
+   "why": "Graph Laplacians and their eigenvalues: Cheeger inequalities, random walks, expanders, sparsification and Laplacian solvers.",
+   "score": 72,
+   "tags": [
+    "algorithms",
+    "graphs",
+    "linear-algebra"
+   ]
+  },
+  {
+   "id": "pdf:sites.engineering.ucsb.edu/~jbraw/mpc/MPC-book-2nd-edition-6th-printing.pdf",
+   "kind": "pdf",
+   "t": "Model Predictive Control: Theory, Computation, and Design (second edition)",
+   "a": "James B. Rawlings, David Q. Mayne, Moritz M. Diehl",
+   "y": 2017,
+   "url": "https://sites.engineering.ucsb.edu/~jbraw/mpc/MPC-book-2nd-edition-6th-printing.pdf",
+   "page": "https://sites.engineering.ucsb.edu/~jbraw/mpc/",
+   "why": "MPC stability and robustness, state estimation (MHE), distributed MPC and numerical optimal control; free PDF of the 6th printing.",
+   "score": 72,
+   "tags": [
+    "control-and-estimation",
+    "optimization"
+   ]
+  },
+  {
+   "id": "pdf:users.aalto.fi/~ssarkka/pub/bfs_book_2023_online.pdf",
+   "kind": "pdf",
+   "t": "Bayesian Filtering and Smoothing (second edition)",
+   "a": "Simo Särkkä, Lennart Svensson",
+   "y": 2023,
+   "url": "https://users.aalto.fi/~ssarkka/pub/bfs_book_2023_online.pdf",
+   "page": "https://users.aalto.fi/~ssarkka/",
+   "why": "Kalman, extended, unscented and particle filters and smoothers derived as Bayesian inference, plus parameter estimation; author online version.",
+   "score": 72,
+   "tags": [
+    "control-and-estimation",
+    "bayesian",
+    "state-estimation"
+   ]
+  },
+  {
+   "id": "pdf:www.inference.org.uk/sustainable/book/tex/sewtha.pdf",
+   "kind": "pdf",
+   "t": "Sustainable Energy - Without the Hot Air",
+   "a": "David J. C. MacKay",
+   "y": 2008,
+   "url": "https://www.inference.org.uk/sustainable/book/tex/sewtha.pdf",
+   "page": "https://www.withouthotair.com/",
+   "why": "Back-of-envelope accounting of UK energy demand and every renewable and nuclear supply option, in kWh per day per person.",
+   "score": 72,
+   "tags": [
+    "physics",
+    "energy",
+    "estimation"
+   ]
+  },
+  {
+   "id": "pdf:mbmlbook.com/MBMLbook.pdf",
+   "kind": "pdf",
+   "t": "Model-Based Machine Learning",
+   "a": "John Winn, Christopher M. Bishop, Thomas Diethe et al.",
+   "y": 2023,
+   "url": "https://mbmlbook.com/MBMLbook.pdf",
+   "page": "https://mbmlbook.com/",
+   "why": "Case-study book: each chapter builds a factor-graph model for a real problem (skill rating, email triage, crowdsourcing) and refines it.",
+   "score": 70,
+   "tags": [
+    "machine-learning",
+    "graphical-models",
+    "bayesian"
+   ]
+  },
+  {
+   "id": "pdf:fleuret.org/public/lbdl.pdf",
+   "kind": "pdf",
+   "t": "The Little Book of Deep Learning",
+   "a": "François Fleuret",
+   "y": 2023,
+   "url": "https://fleuret.org/public/lbdl.pdf",
+   "page": "https://fleuret.org/francois/lbdl.html",
+   "why": "A phone-sized, 170-page summary of deep learning foundations, components and architectures up to transformers and diffusion.",
+   "score": 70,
+   "tags": [
+    "deep-learning",
+    "short"
+   ]
+  },
+  {
+   "id": "pdf:www.tongzhang-ml.org/lt-book/lt-book.pdf",
+   "kind": "pdf",
+   "t": "Mathematical Analysis of Machine Learning Algorithms",
+   "a": "Tong Zhang",
+   "y": 2023,
+   "url": "https://www.tongzhang-ml.org/lt-book/lt-book.pdf",
+   "page": "https://www.tongzhang-ml.org/lt-book",
+   "why": "Generalisation analysis via concentration, covering numbers and stability, extended to online learning, bandits and RL; author pre-publication copy.",
+   "score": 70,
+   "tags": [
+    "learning-theory"
+   ]
+  },
+  {
+   "id": "pdf:convex-optimization.github.io/ACO-v1.pdf",
+   "kind": "pdf",
+   "t": "Algorithms for Convex Optimization",
+   "a": "Nisheeth K. Vishnoi",
+   "y": 2021,
+   "url": "https://convex-optimization.github.io/ACO-v1.pdf",
+   "page": "https://convex-optimization.github.io/",
+   "why": "Convex optimisation for algorithm designers: mirror descent, multiplicative weights, Newton and interior-point methods, ellipsoid, with combinatorial applications.",
+   "score": 70,
+   "tags": [
+    "optimization",
+    "algorithms"
+   ]
+  },
+  {
+   "id": "pdf:www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf",
+   "kind": "pdf",
+   "t": "Probabilistic Numerics: Computation as Machine Learning",
+   "a": "Philipp Hennig, Michael A. Osborne, Hans P. Kersting",
+   "y": 2022,
+   "url": "https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf",
+   "page": "https://www.probabilistic-numerics.org/textbooks/",
+   "why": "Treats integration, linear algebra, optimisation and ODE solving as inference, yielding calibrated uncertainty over numerical error.",
+   "score": 70,
+   "tags": [
+    "bayesian-inference",
+    "numerics",
+    "gaussian-processes"
+   ]
+  },
+  {
+   "id": "pdf:web.math.princeton.edu/~rvan/APC550.pdf",
+   "kind": "pdf",
+   "t": "Probability in High Dimension (lecture notes)",
+   "a": "Ramon van Handel",
+   "y": 2016,
+   "url": "https://web.math.princeton.edu/~rvan/APC550.pdf",
+   "page": "https://web.math.princeton.edu/~rvan/",
+   "why": "Concentration via variance and entropy methods, transportation inequalities, suprema of processes and Gaussian comparison.",
+   "score": 70,
+   "tags": [
+    "probability",
+    "high-dimensional",
+    "lecture-notes"
+   ]
+  },
+  {
+   "id": "pdf:people.seas.harvard.edu/~salil/pseudorandomness/pseudorandomness-published-Dec12.pdf",
+   "kind": "pdf",
+   "t": "Pseudorandomness",
+   "a": "Salil P. Vadhan",
+   "y": 2012,
+   "url": "https://people.seas.harvard.edu/~salil/pseudorandomness/pseudorandomness-published-Dec12.pdf",
+   "page": "https://people.seas.harvard.edu/~salil/pseudorandomness/",
+   "why": "Expander graphs, error-correcting codes, randomness extractors and pseudorandom generators, unified as one theory of pseudorandom objects.",
+   "score": 70,
+   "tags": [
+    "theory-of-computation",
+    "randomness"
+   ]
+  },
+  {
+   "id": "arxiv:1907.09415",
+   "kind": "pdf",
+   "t": "Quantum Computing: Lecture Notes",
+   "a": "Ronald de Wolf",
+   "y": 2019,
+   "d": "2019-07-19",
+   "url": "https://arxiv.org/pdf/1907.09415",
+   "page": "https://arxiv.org/abs/1907.09415",
+   "why": "De Wolf's quantum computing notes: circuits, Fourier sampling, Shor, Grover, query and communication complexity, error correction.",
+   "score": 70,
+   "tags": [
+    "theory-of-computation",
+    "quantum-computing",
+    "lecture-notes"
+   ],
+   "ab": "This is a set of lecture notes suitable for a Master's course on quantum computation and information from the perspective of theoretical computer science. The first version was written in 2011, with many extensions and improvements in subsequent years. The first 10 chapters cover the circuit model and the main quantum algorithms (Deutsch-Jozsa, Simon, Shor, Hidden Subgroup Problem, Grover, quantum walks, Hamiltonian simulation and HHL)."
+  },
+  {
+   "id": "pdf:ac.cs.princeton.edu/home/AC.pdf",
+   "kind": "pdf",
+   "t": "Analytic Combinatorics",
+   "a": "Philippe Flajolet, Robert Sedgewick",
+   "y": 2009,
+   "url": "https://ac.cs.princeton.edu/home/AC.pdf",
+   "page": "https://ac.cs.princeton.edu/home/",
+   "why": "Symbolic method plus complex analysis of generating functions, for precise asymptotics of combinatorial structures and algorithms.",
+   "score": 70,
+   "tags": [
+    "algorithms",
+    "combinatorics"
+   ]
+  },
+  {
+   "id": "pdf:asrl.utias.utoronto.ca/~tdb/bib/barfoot_ser24.pdf",
+   "kind": "pdf",
+   "t": "State Estimation for Robotics (second edition)",
+   "a": "Timothy D. Barfoot",
+   "y": 2024,
+   "url": "https://asrl.utias.utoronto.ca/~tdb/bib/barfoot_ser24.pdf",
+   "page": "https://asrl.utias.utoronto.ca/~tdb/",
+   "why": "Linear-Gaussian and nonlinear estimation, batch and recursive, with matrix Lie groups for 3D pose; the author's free PDF.",
+   "score": 70,
+   "tags": [
+    "robotics",
+    "state-estimation"
+   ]
+  },
+  {
+   "id": "pdf:www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf",
+   "kind": "pdf",
+   "t": "The Matrix Cookbook",
+   "a": "Kaare Brandt Petersen, Michael Syskind Pedersen",
+   "y": 2012,
+   "url": "https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf",
+   "page": "https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html",
+   "why": "Reference sheet of matrix identities, derivatives, decompositions and Gaussian results that ML derivations lean on.",
+   "score": 70,
+   "tags": [
+    "mathematics",
+    "linear-algebra",
+    "reference"
+   ]
+  },
+  {
+   "id": "pdf:emilyriehl.github.io/files/context.pdf",
+   "kind": "pdf",
+   "t": "Category Theory in Context",
+   "a": "Emily Riehl",
+   "y": 2016,
+   "url": "https://emilyriehl.github.io/files/context.pdf",
+   "page": "https://emilyriehl.github.io/books/",
+   "why": "Graduate introduction to categories, universal properties, limits, adjunctions and monads, with examples across mathematics.",
+   "score": 70,
+   "tags": [
+    "mathematics",
+    "category-theory"
+   ]
+  },
+  {
+   "id": "pdf:sethna.lassp.cornell.edu/StatMech/EntropyOrderParametersComplexity20.pdf",
+   "kind": "pdf",
+   "t": "Statistical Mechanics: Entropy, Order Parameters, and Complexity (second edition)",
+   "a": "James P. Sethna",
+   "y": 2021,
+   "url": "https://sethna.lassp.cornell.edu/StatMech/EntropyOrderParametersComplexity20.pdf",
+   "page": "https://sethna.lassp.cornell.edu/statistical_mechanics_entropy_order_parameters_and_complexity",
+   "why": "Statistical mechanics aimed at scientists outside physics: entropy and information, free energies, phases, criticality, with many cross-disciplinary exercises.",
+   "score": 70,
+   "tags": [
+    "physics",
+    "statistical-mechanics",
+    "information-theory"
+   ]
+  },
+  {
+   "id": "pdf:raw.githubusercontent.com/QuantEcon/book-dp-public/main/pdf/dp.pdf",
+   "kind": "pdf",
+   "t": "Dynamic Programming, Volume I: Finite States",
+   "a": "Thomas J. Sargent, John Stachurski",
+   "y": 2025,
+   "url": "https://raw.githubusercontent.com/QuantEcon/book-dp-public/main/pdf/dp.pdf",
+   "page": "https://dp.quantecon.org/",
+   "why": "Dynamic programming via fixed points and order theory, with economic applications (job search, optimal stopping, inventories) and Python/Julia code.",
+   "score": 68,
+   "tags": [
+    "decision-making",
+    "economics"
+   ]
+  },
+  {
+   "id": "pdf:math.dartmouth.edu/~prob/prob/prob.pdf",
+   "kind": "pdf",
+   "t": "Introduction to Probability",
+   "a": "Charles M. Grinstead, J. Laurie Snell",
+   "y": 1997,
+   "url": "https://math.dartmouth.edu/~prob/prob/prob.pdf",
+   "page": "https://chance.dartmouth.edu/teaching_aids/books_articles/probability_book/book.html",
+   "why": "Undergraduate probability with simulations: discrete and continuous distributions, limit theorems, generating functions, Markov chains, random walks.",
+   "score": 68,
+   "tags": [
+    "probability"
+   ]
+  },
+  {
+   "id": "pdf:rdlyons.pages.iu.edu/prbtree/book.pdf",
+   "kind": "pdf",
+   "t": "Probability on Trees and Networks",
+   "a": "Russell Lyons, Yuval Peres",
+   "y": 2016,
+   "url": "https://rdlyons.pages.iu.edu/prbtree/book.pdf",
+   "page": "https://rdlyons.pages.iu.edu/prbtree/",
+   "why": "Random walks and electrical networks, branching processes, percolation and uniform spanning trees on graphs.",
+   "score": 68,
+   "tags": [
+    "probability",
+    "networks"
+   ]
+  },
+  {
+   "id": "pdf:www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf",
+   "kind": "pdf",
+   "t": "Introduction to Causal Inference from a Machine Learning Perspective",
+   "a": "Brady Neal",
+   "y": 2020,
+   "d": "2020-12-17",
+   "url": "https://www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf",
+   "page": "https://www.bradyneal.com/causal-inference-course",
+   "why": "Course notes covering potential outcomes, causal graphs, do-calculus, estimation, unobserved confounding and causal discovery.",
+   "score": 66,
+   "tags": [
+    "causal-inference",
+    "lecture-notes"
+   ]
+  },
+  {
+   "id": "pdf:users.aalto.fi/~asolin/sde-book/sde-book.pdf",
+   "kind": "pdf",
+   "t": "Applied Stochastic Differential Equations",
+   "a": "Simo Särkkä, Arno Solin",
+   "y": 2019,
+   "url": "https://users.aalto.fi/~asolin/sde-book/sde-book.pdf",
+   "page": "https://users.aalto.fi/~asolin/sde-book/",
+   "why": "SDEs for engineers and ML: Itô calculus, Fokker-Planck, numerical solution, parameter estimation and links to Gaussian processes and filtering.",
+   "score": 66,
+   "tags": [
+    "probability",
+    "stochastic-processes",
+    "gaussian-processes"
+   ]
+  },
+  {
+   "id": "pdf:cs229.stanford.edu/main_notes.pdf",
+   "kind": "pdf",
+   "t": "CS229 Lecture Notes",
+   "a": "Tengyu Ma, Andrew Ng",
+   "y": 2026,
+   "d": "2026-08-23",
+   "url": "https://cs229.stanford.edu/main_notes.pdf",
+   "page": "https://cs229.stanford.edu/",
+   "why": "Stanford CS229 notes: linear models, GLMs, generative learning, kernels, neural nets, generalisation, EM, PCA and RL in 278 pages.",
+   "score": 65,
+   "tags": [
+    "machine-learning",
+    "lecture-notes"
+   ]
+  },
+  {
+   "id": "pdf:greenteapress.com/thinkbayes/thinkbayes.pdf",
+   "kind": "pdf",
+   "t": "Think Bayes: Bayesian Statistics Made Simple",
+   "a": "Allen B. Downey",
+   "y": 2012,
+   "url": "https://greenteapress.com/thinkbayes/thinkbayes.pdf",
+   "page": "https://greenteapress.com/wp/think-bayes/",
+   "why": "Bayesian estimation taught by computing posteriors in Python on puzzles and small real problems rather than with calculus.",
+   "score": 60,
+   "tags": [
+    "bayesian-inference",
+    "code"
+   ]
+  },
+  {
+   "id": "pdf:greenteapress.com/thinkstats2/thinkstats2.pdf",
+   "kind": "pdf",
+   "t": "Think Stats: Exploratory Data Analysis (second edition)",
+   "a": "Allen B. Downey",
+   "y": 2014,
+   "url": "https://greenteapress.com/thinkstats2/thinkstats2.pdf",
+   "page": "https://greenteapress.com/wp/think-stats-2e/",
+   "why": "Statistics through Python code on real data: distributions, estimation, hypothesis testing by simulation, regression and survival analysis.",
+   "score": 58,
+   "tags": [
+    "statistics",
+    "code"
+   ]
+  },
+  {
+   "id": "pdf:bayes.wustl.edu/glb/book.pdf",
+   "kind": "pdf",
+   "t": "Bayesian Spectrum Analysis and Parameter Estimation",
+   "a": "G. Larry Bretthorst",
+   "y": 1988,
+   "url": "https://bayes.wustl.edu/glb/book.pdf",
+   "page": "https://bayes.wustl.edu/",
+   "why": "Jaynes-school monograph applying probability theory as logic to frequency estimation and model selection; hosted on the Jaynes/Bretthorst site.",
+   "score": 58,
+   "tags": [
+    "bayesian-inference",
+    "signal-processing",
+    "jaynes"
+   ]
+  }
+ ]
+}

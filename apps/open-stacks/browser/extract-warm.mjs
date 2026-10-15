@@ -68,7 +68,7 @@ function readStored(id) {
 function allStored() {
   const out = [];
   let files = [];
-  try { files = readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'verdicts.json'); } catch { return out; }
+  try { files = readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'verdicts.json' && f !== 'index.json'); } catch { return out; }
   for (const f of files) {
     try { const j = JSON.parse(readFileSync(join(DIR, f), 'utf-8')); if (j.v === VER && byId.has(j.id)) out.push(j); } catch { /* partial write */ }
   }

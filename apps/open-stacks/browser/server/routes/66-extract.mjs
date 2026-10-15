@@ -62,7 +62,7 @@ export default function (app) {
   const lag = monitorEventLoopDelay({ resolution: 10 });
   lag.enable();
   const stats = { hits: 0, built: 0, failed: 0, served: 0, feedRequests: 0, cpuMs: 0, cpuMax: 0, files: 0 };
-  try { stats.files = readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'verdicts.json').length; } catch { /* empty */ }
+  try { stats.files = readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'verdicts.json' && f !== 'index.json').length; } catch { /* empty */ }
 
   // ------------------------------------------------------------ corpus ----
   let corpus = null, corpusCheck = 0, corpusMtime = 0;
@@ -147,17 +147,36 @@ export default function (app) {
     if (m) { mem.delete(id); mem.set(id, m); return m; }
     try {
       const j = JSON.parse(readFileSync(fileOf(id), 'utf-8'));
-      if (j.v === VER && j.id === id) { remember(j); return j; }
+      if (j.v === VER && j.id === id) { remember(j); if (!index.has(id)) note(j); return j; }
     } catch { /* not cached */ }
     return null;
   }
   const onDisk = (id) => mem.has(id) || existsSync(fileOf(id));
+  // A small index of what each stored result holds (part types, whether it has a lead), so
+  // a feed walk skips items with nothing for that feed without reading their files.
+  const IFILE = join(DIR, 'index.json');
+  let index = new Map(); // id -> { t: [part types], l: 0 | 1 }
+  try { const j = JSON.parse(readFileSync(IFILE, 'utf-8')); if (j.v === VER) index = new Map(Object.entries(j.items || {})); } catch { /* none yet */ }
+  let iTimer = null;
+  const note = (ex) => {
+    index.set(ex.id, { t: [...new Set(ex.parts.map((p) => p.type))], l: ex.lead.show !== 'none' ? 1 : 0 });
+    clearTimeout(iTimer);
+    iTimer = setTimeout(() => { try { writeFileSync(IFILE + '.tmp', JSON.stringify({ v: VER, items: Object.fromEntries(index) })); renameSync(IFILE + '.tmp', IFILE); } catch { /* rebuilt as items are read */ } }, 2000);
+  };
+  /** False when the index shows the item has nothing for this feed (highlights aside). */
+  function mayHave(type, id) {
+    const s = index.get(id);
+    if (!s || HL.items[id] || type === 'highlights') return true;
+    const has = type === 'pictures' ? !!s.l : FEEDS[type].types.some((t) => s.t.includes(t));
+    return has || !(mem.has(id) || existsSync(fileOf(id)));
+  }
   function save(ex) {
     const f = fileOf(ex.id);
     const fresh = !existsSync(f);
     writeFileSync(f + '.tmp', JSON.stringify(ex)); renameSync(f + '.tmp', f);
     if (fresh) stats.files++;
     remember(ex);
+    note(ex);
   }
 
   // ----------------------------------------------------------- worker ----
@@ -327,10 +346,11 @@ import(${JSON.stringify(LIB)}).then((X) => {
     await books.run(job, async () => {
       await idle(job);
       const enc = encodeURIComponent(it.ia);
-      const [t, l] = await Promise.allSettled([loop(`/ocr/text?ia=${enc}`), loop(`/ocr/labels?ia=${enc}`)]);
-      if (t.status === 'rejected') { if (/no OCR|no such page|HTTP 40[34]\b|bad id/i.test(t.reason?.message || '')) return; throw netErr(t.reason); }
-      pages = t.value.pages || [];
-      if (l.status === 'fulfilled') labels = l.value.labels || null;
+      const lP = loop(`/ocr/labels?ia=${enc}`).then((l) => l.labels || null, () => null);
+      try { pages = (await loop(`/ocr/text?ia=${enc}`)).pages || []; } catch (e) { if (/no OCR|no such page|HTTP 40[34]\b|bad id/i.test(e.message || '')) return; throw netErr(e); }
+      // Printed page labels only name the plates; a book too short for plates does not
+      // wait for them, and a reader waits at most 1.5 s (the labels can need archive.org).
+      if (pages.length > 12) labels = await Promise.race([lP, sleep(job.fg ? 1500 : 20000).then(() => null)]);
     });
     if (!pages) return failed('ocr', `https://archive.org/details/${it.ia}`, 'empty');
     const r = await parseJob({ src: 'ocr', pages, labels, ia: it.ia, n: it.n }, job);
@@ -416,13 +436,21 @@ import(${JSON.stringify(LIB)}).then((X) => {
   }
   async function cardsOf(st, id) {
     const it = corpus.byId.get(id);
-    if (!it) return { cards: [] };
+    if (!it || !mayHave(st.type, id)) return { cards: [] };
     st.inflight.add(id);
     try {
       const ex = await getExtract(it, { fg: true });
       const view = viewOf(ex, it);
       return { cards: cardsFor(st.type, view, st.per, { item: it, sample: HL.sample }), avatar: avatarOf(view) };
-    } catch (e) { return { failed: true, err: e }; } finally { st.inflight.delete(id); }
+    } catch (e) {
+      // A highlight card needs only the highlights file (scan plates resolve by page), so the
+      // Highlights feed still shows the item, from the file alone, when extraction fails.
+      if (st.type === 'highlights' && HL.items[id]) {
+        const view = viewOf({ v: VER, id, src: 'none', url: null, err: 'unavailable', lead: NO_LEAD, parts: [] }, it);
+        return { cards: cardsFor(st.type, view, st.per, { item: it, sample: HL.sample }), avatar: avatarOf(view) };
+      }
+      return { failed: true, err: e };
+    } finally { st.inflight.delete(id); }
   }
   const settle = (st) => {
     st.waiters = st.waiters.filter((w) => { if (st.cards.length >= w.need || st.done) { w.resolve(); return false; } return true; });

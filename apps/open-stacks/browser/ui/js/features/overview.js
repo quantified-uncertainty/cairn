@@ -34,7 +34,7 @@
 import { $, h, on, emit, store, keymap, registerKey, registerStepper, P } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
-import { openDoc, isFlow, scanUrl, pdfOutline } from '../docs.js';
+import { openDoc, isFlow, scanUrl, pdfOutline, pdfjs, PDF_ASSETS } from '../docs.js';
 import { renderPage, renderedNow } from '../render.js';
 import { serverPrefetch } from '../prefetch.js';
 import { live, flowRange } from '../flow.js';
@@ -172,11 +172,12 @@ async function prepare(i, it) {
     S.built = false; S.it = it; S.i = i; S.kind = kind; S.groups = null; S.doc = null;
     for (const j of jobs.values()) j.cancel?.();
     jobs.clear(); want.clear(); S.inView.clear(); S.near.clear();
-    grid.replaceChildren(); S.cells = []; S.heads = [];
+    grid.replaceChildren(); S.cells = []; S.heads = []; drawn.clear();
     msg.hidden = false; msg.textContent = 'Opening…';
     try {
       let n = it.n;
-      if (kind === 'flow' || (kind === 'pdf' && !n && !profileOf(it)?.n)) { S.doc = await openDoc(it); n = S.doc.n; }
+      if (kind === 'flow') { S.doc = await openDoc(it); n = S.doc.n; }
+      else if (kind === 'pdf' && !n && !profileOf(it)?.n) n = (await thumbDoc(it)).n;
       if (gen !== S.gen) return;
       S.P = kind === 'flow' ? null : profileOf(it) || null;
       n ||= S.P?.n;
@@ -221,7 +222,7 @@ async function aspectFor(it, kind) {
     return r ? r.srcW / r.srcH : 0.66;
   }
   try {
-    const d = S.doc || (S.doc = await openDoc(it));
+    const d = await thumbDoc(it);
     const k = Math.min(d.n - 1, Math.max(1, state.start.get(S.i) ?? 1));
     const v = (await d.pdf.getPage(k + 1)).getViewport({ scale: 1 });
     const t = trimOf(v.width, v.height);
@@ -239,7 +240,7 @@ async function sectionsOf(it, kind) {
   else if (kind === 'flow') out = (S.doc?.outline || []).map((x) => ({ t: x.title, k: x.page, d: x.depth }));
   else if (kind === 'pdf') {
     try {
-      const d = S.doc || (S.doc = await openDoc(it));
+      const d = await thumbDoc(it);
       const p = pdfOutline(d);
       const ol = await Promise.race([p, new Promise((r) => setTimeout(() => r(null), 250))]);
       if (!ol) {
@@ -327,11 +328,16 @@ function layout() {
   fitTags();
   // Pictures drawn much smaller than the new cells are drawn again.
   if (old && g.ch > old.ch * 1.3) for (let k = 0; k < S.n; k++) if (S.st[k] === 3 && S.kind !== 'flow' && !S.cells[k].classList.contains('blank')) S.st[k] = 2;
-  for (let k = 0; k < S.n; k++) { const m = S.cells[k]._m; if (m) sizeMedia(k, m.a); }
+  for (let k = 0; k < S.n; k++) {
+    const el = S.cells[k];
+    if (el._m) sizeMedia(k, el._m.a);
+    else if (el.classList.contains('spr')) spriteInto(k); // the sheet's cell at the new size
+  }
+  rzW = sc.clientWidth; rzH = sc.clientHeight;
 }
 
 // ---------- which cells are near the view ----------
-let io = null, ioIn = null;
+let io = null, ioIn = null, rzW = 0, rzH = 0;
 function observeAll() {
   io?.disconnect(); ioIn?.disconnect();
   const H = sc.clientHeight || 600;
@@ -412,9 +418,27 @@ function run() {
   }
 }
 
+// PDF thumbnails are canvases (about 1 MB each on a high-DPI screen): keep at most
+// MAXC, dropping those farthest from the view (they are drawn again if it comes back).
+const MAXC = 240;
+const drawn = new Set();
+function capCanvases() {
+  if (drawn.size <= MAXC) return;
+  const far = [...drawn].filter((k) => !S.near.has(k)).sort((a, b) => Math.abs(b - S.center) - Math.abs(a - S.center));
+  for (const k of far.slice(0, drawn.size - MAXC)) {
+    const el = S.cells[k]; drawn.delete(k);
+    if (!el) continue;
+    const m = el.querySelector('.ov-m'); if (m?.tagName === 'CANVAS') { m.width = m.height = 0; m.remove(); }
+    el._m = null; el.classList.remove('ld');
+    const pg = el.querySelector('.ov-pg'); pg.style.width = pg.style.height = '';
+    S.st[k] = 0;
+    if (S.sprite) spriteInto(k);
+  }
+}
 /** Show a picture (a canvas or an image, aspect a) in cell k. */
 function show(k, node, a, sharp = true) {
   const el = S.cells[k]; if (!el) return;
+  if (node.tagName === 'CANVAS') { drawn.add(k); capCanvases(); }
   const pg = el.querySelector('.ov-pg');
   pg.querySelector('.ov-m')?.remove();
   node.classList.add('ov-m');
@@ -462,6 +486,26 @@ function spriteInto(k) {
   if (S.g.ch * dpr() <= S.P.assets.sprite.ch * 1.35) S.st[k] = 3;
 }
 
+// PDFs: the overview's own pdf.js document on its own worker, so thumbnails never
+// queue behind the feed's work on the same file (its renders, the text layer, the
+// figure finder), and with no font faces: each one added restyles the whole page
+// (100s of ms with a text layer up); glyphs drawn as paths look the same this small.
+// One at a time (the item on screen); the bytes come from the browser's cache.
+let tdoc = null, tworker = null;
+function thumbDoc(it) {
+  if (tdoc?.id === it.id) return tdoc.p;
+  tdoc?.p.then((d) => d.pdf.destroy(), () => {});
+  const p = (async () => {
+    const [lib, buf] = await Promise.all([pdfjs(), fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); })]);
+    tworker ||= new lib.PDFWorker({ name: 'overview' });
+    const pdf = await lib.getDocument({ data: buf, isEvalSupported: false, disableFontFace: true, worker: tworker, ...PDF_ASSETS }).promise;
+    return { n: pdf.numPages, pdf, outline: null };
+  })();
+  p.catch(() => { if (tdoc?.p === p) tdoc = null; });
+  tdoc = { id: it.id, p };
+  return p;
+}
+
 /** The region of PDF page k to show: the profile's crop, else a margin trim. */
 function boxOf(k, w, hh) {
   if (state.crop === false) return { x0: 0, y0: 0, x1: 1, y1: 1 };
@@ -479,7 +523,7 @@ async function pdfInto(k, job) {
     if (pnl) { const c = scaled(pnl.canvas, S.g.ch * dpr()); show(k, c, c.width / c.height); return true; }
   }
   const t0 = performance.now();
-  const d = S.doc || (S.doc = await openDoc(it));
+  const d = await thumbDoc(it);
   if (job.dead || job.gen !== S.gen) return false;
   const page = await d.pdf.getPage(k + 1);
   const t1 = performance.now();
@@ -622,8 +666,11 @@ function scrollToK(k, how = 'nearest') {
   const top = el.offsetTop - RGAP, bottom = el.offsetTop + el.offsetHeight + 6;
   if (how === 'third') {
     // A row or two above the page, starting at a row's top.
-    const t = S.cells[Math.max(0, k - S.g.c * Math.floor((S.g.r - 1) / 3))] || el;
-    scrollTo(Math.max(0, t.offsetTop - RGAP));
+    let j = Math.max(0, k - S.g.c * Math.floor((S.g.r - 1) / 3));
+    const top0 = S.cells[j].offsetTop;
+    while (j > 0 && S.cells[j - 1].offsetTop === top0) j--; // the row's first page
+    const head = S.cells[j].previousElementSibling?.classList.contains('ov-head') ? S.cells[j].previousElementSibling : null;
+    scrollTo(Math.max(0, head ? head.offsetTop - 4 : top0 - RGAP));
     return;
   }
   if (how === 'center') { scrollTo(Math.max(0, el.offsetTop - (sc.clientHeight - el.offsetHeight) / 2)); return; }
@@ -903,6 +950,8 @@ on('spread:rendered', ({ i }) => {
   if (!S.inView.has(a)) scrollToK(a, 'nearest');
 });
 on('view:changed', ({ view }) => { if (view !== 'feed') closeOv(); });
+// The overview's own copy of a PDF goes once the reader has moved on to another item.
+on('item:settled', ({ it }) => { if (!S.open && tdoc && tdoc.id !== it.id) { tdoc.p.then((d) => d.pdf.destroy(), () => {}); tdoc = null; } });
 for (const ev of ['memory:updated', 'summary:updated']) on(ev, () => { if (S.open) paintMarks(); });
 on('augment:updated', ({ id }) => {
   if (!S.open || S.it?.id !== id) return;
@@ -917,7 +966,7 @@ on('profile:updated', ({ id }) => {
   for (const k of S.near) if (S.st[k] === 0) spriteInto(k);
 });
 // The window, the side panel (i) or the pinned strip (p) changed the stage.
-let rzT = 0, rzW = 0, rzH = 0;
+let rzT = 0;
 new ResizeObserver(() => {
   if (!S.open) return;
   clearTimeout(rzT);

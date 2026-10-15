@@ -12,7 +12,7 @@
 //
 // A part is { pid, type, text, html?, label?, caption?, value?, cue?, sec?,
 // ctx?, loc: {anchor?, page?, label?, quote?, href?}, at, score, ... }.
-import { parse, walk, text, clean, hasClass, extract as figuresOf } from '../routes/65-figures.mjs';
+import { parse, text, clean, hasClass, extract as figuresOf } from '../routes/65-figures.mjs';
 
 export const VER = 1;
 export const PER_TYPE = 12; // parts of one type stored per item
@@ -63,10 +63,25 @@ export const RE = {
   pullNot: /^(?:figure|fig\.|table|chart)\b/i,
   badImg: /emoji|icon|avatar|logo|gravatar|latex|codecogs|badge|favicon/i,
   resultWords: /\b(?:accuracy|performance|loss|rates?|scaling|vs\.?|versus|compared|improv\w*|outperform\w*|increas\w*|decreas\w*|over training|as a function of)\b|%|×/i,
+  resultCap: /\b(?:results?|accuracy|accuracies|performance|scores?|rates?|comparison|compar\w+|vs\.?|versus|win|success|errors?|evaluations?|ablations?|benchmarks?|metrics?|effect)\b|%/i,
+  setupCap: /hyper-?parameters?|configurations?|settings|training details|implementation details|prompts?|templates?|examples?|notation|glossary|statistics of|list of|data ?sets? (?:statistics|details|used)|instructions|questionnaire|demographics/i,
   exampleWords: /\b(?:examples?|prompts?|transcripts?|screenshots?|sample outputs?|interface|illustrat\w*)/i,
 };
 
 // ---------------------------------------------------------------- utils ----
+/**
+ * Descendant elements in document order; `stop(el)` true keeps el but skips its
+ * subtree. Same order as walk() in 65-figures.mjs, without a generator frame per
+ * nesting level (several times faster on LaTeXML's deep trees).
+ */
+function collect(el, stop, out = []) {
+  for (const k of el.kids) {
+    if (typeof k === 'string') continue;
+    out.push(k);
+    if (!stop || !stop(k)) collect(k, stop, out);
+  }
+  return out;
+}
 const sq = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
 const skel = (s) => sq(s).toLowerCase().replace(/[^a-z0-9]+/g, '');
 const wordsOf = (s) => sq(s).split(' ').filter(Boolean);
@@ -85,7 +100,7 @@ function prune(el, drop) {
   if (!isEl(el)) return el;
   return { ...el, kids: el.kids.filter((k) => !isEl(k) || !drop(k)).map((k) => prune(k, drop)) };
 }
-const tagText = (h) => { if (!h) return ''; for (const el of walk(h)) if (hasClass(el, 'ltx_tag')) return sq(text({ kids: el.kids })); return ''; };
+const tagText = (h) => { if (!h) return ''; for (const el of collect(h)) if (hasClass(el, 'ltx_tag')) return sq(text({ kids: el.kids })); return ''; };
 const BOLD = (el) => el.tag === 'b' || el.tag === 'strong' || hasClass(el, 'ltx_font_bold');
 const EMPH = (el) => el.tag === 'em' || el.tag === 'i' || BOLD(el) || hasClass(el, 'ltx_emph') || hasClass(el, 'ltx_font_italic');
 /** LaTeXML's bold and italic spans as <b> and <i>, which clean() keeps and any stylesheet shows. */
@@ -238,11 +253,11 @@ function boldLed(items) {
 /** Table stats for scoring: numeric share and bold cells. */
 function tableStats(tbl) {
   let cells = 0, num = 0, rows = 0, cols = 0;
-  for (const tr of walk(tbl)) {
+  for (const tr of collect(tbl)) {
     if (tr.tag !== 'tr') continue;
     rows++;
     let c = 0;
-    for (const td of walk(tr)) {
+    for (const td of collect(tr)) {
       if (td.tag !== 'td' && td.tag !== 'th') continue;
       c += Number(td.a.colspan) || 1;
       const t = text(td);
@@ -298,7 +313,7 @@ const rescale = (s) => r2(Math.max(0, Math.min(1, (s + 3.7) / 9.2)));
 
 export function fromLatexml({ html, url, figures = [] }) {
   const root = parse(html);
-  const article = [...walk(root, (x) => x.tag === 'article')].find((x) => x.tag === 'article') || root;
+  const article = [...collect(root, (x) => x.tag === 'article')].find((x) => x.tag === 'article') || root;
   const docStart = Math.max(0, html.indexOf('<article'));
   const span = Math.max(1, html.length - docStart);
   const at = (el) => (el.s - docStart) / span;
@@ -308,7 +323,7 @@ export function fromLatexml({ html, url, figures = [] }) {
   // Sections: title ("4.2 Results"), appendix, skipped (related work…), intro/conclusion.
   const secs = new Map();
   const ABSTRACT = { id: 'abstract', title: 'Abstract', abstract: true, appendix: false, skip: false, intro: true, concl: false };
-  for (const el of walk(article)) {
+  for (const el of collect(article)) {
     if (el.tag !== 'section') continue;
     const h = kidsOf(el).find((k) => /^h[1-6]$/.test(k.tag));
     const title = h ? sq(`${tagText(h)} ${text(h)}`).replace(/[.:]\s*$/, '') : '';
@@ -334,7 +349,7 @@ export function fromLatexml({ html, url, figures = [] }) {
 
   // Cross-references: target id -> distinct top-level sections that cite it, and a count.
   const refSecs = new Map(), refN = new Map();
-  for (const a of walk(article, (x) => x.tag === 'figure' || x.tag === 'figcaption' || hasClass(x, 'ltx_bibliography') || hasClass(x, 'ltx_TOC'))) {
+  for (const a of collect(article, (x) => x.tag === 'figure' || x.tag === 'figcaption' || hasClass(x, 'ltx_bibliography') || hasClass(x, 'ltx_TOC'))) {
     if (a.tag !== 'a' || !hasClass(a, 'ltx_ref')) continue;
     const h = a.a.href || '';
     const i = h.lastIndexOf('#');
@@ -350,7 +365,7 @@ export function fromLatexml({ html, url, figures = [] }) {
   const STOP = (x) => x.tag === 'figure' || x.tag === 'figcaption' || x.tag === 'nav' || x.tag === 'footer' || hasClass(x, 'ltx_bibliography') || hasClass(x, 'ltx_note') || hasClass(x, 'ltx_theorem') || hasClass(x, 'ltx_equation') || hasClass(x, 'ltx_equationgroup') || hasClass(x, 'ltx_TOC') || hasClass(x, 'ltx_authors') || hasClass(x, 'ltx_listing');
   const S = [];
   const perAnchor = new Map();
-  for (const p of walk(article, STOP)) {
+  for (const p of collect(article, STOP)) {
     if (p.tag !== 'p' || !hasClass(p, 'ltx_p') || STOP(p)) continue;
     const t = text(p);
     if (t.length < 20) continue;
@@ -379,7 +394,7 @@ export function fromLatexml({ html, url, figures = [] }) {
   const emphOf = (p) => {
     if (!emphCache.has(p)) {
       const out = [];
-      for (const el of walk(p)) if (EMPH(el)) { const t = sq(text(el)).replace(/^[“"'‘]|[”"'’.,:;]$/g, ''); const w = wordsOf(t).length; if (t.length >= 2 && t.length <= 60 && w <= 6 && /[a-z]/i.test(t)) out.push(t); }
+      for (const el of collect(p)) if (EMPH(el)) { const t = sq(text(el)).replace(/^[“"'‘]|[”"'’.,:;]$/g, ''); const w = wordsOf(t).length; if (t.length >= 2 && t.length <= 60 && w <= 6 && /[a-z]/i.test(t)) out.push(t); }
       emphCache.set(p, out);
     }
     return emphCache.get(p);
@@ -437,7 +452,7 @@ export function fromLatexml({ html, url, figures = [] }) {
       // List items first; otherwise the first 2 sentences (in a "Conclusion and future
       // work" section, the first 2 that look forward).
       const lis = [];
-      for (const el of walk(info.el, (x) => x.tag === 'section' && x !== info.el || x.tag === 'figure')) if (el.tag === 'li' && !up(el, (x) => x.tag === 'li')) lis.push(el);
+      for (const el of collect(info.el, (x) => x.tag === 'section' && x !== info.el || x.tag === 'figure')) if (el.tag === 'li' && !up(el, (x) => x.tag === 'li')) lis.push(el);
       const good = lis.map((li) => ({ li, t: text(li) })).filter((x) => x.t.length >= 25 && x.t.length <= 300);
       if (good.length) {
         good.slice(0, 4).forEach(({ li, t }, k) => {
@@ -498,7 +513,7 @@ export function fromLatexml({ html, url, figures = [] }) {
   // Claims (a), by heading: "Our contributions.", "Key findings", "Summary of results".
   for (const info of secs.values()) {
     if (contribDone || info.appendix || info.skip || !RE.contribHead.test(info.title)) continue;
-    const list = [...walk(info.el, (x) => x.tag === 'figure' || x.tag === 'li')].find((x) => x.tag === 'ul' || x.tag === 'ol');
+    const list = [...collect(info.el, (x) => x.tag === 'figure' || x.tag === 'li')].find((x) => x.tag === 'ul' || x.tag === 'ol');
     const items = list ? itemsOf(list) : [];
     if (items.length >= 2 && items.length <= 8) {
       const anchor = upSelf(list, (x) => !!x.a.id)?.a.id || info.id;
@@ -507,7 +522,7 @@ export function fromLatexml({ html, url, figures = [] }) {
     }
   }
   // Claims (b): bold-led lists outside the appendix.
-  for (const list of walk(article, (x) => x.tag === 'figure' || hasClass(x, 'ltx_theorem') || hasClass(x, 'ltx_bibliography') || hasClass(x, 'ltx_note') || x.tag === 'li' || hasClass(x, 'ltx_TOC'))) {
+  for (const list of collect(article, (x) => x.tag === 'figure' || hasClass(x, 'ltx_theorem') || hasClass(x, 'ltx_bibliography') || hasClass(x, 'ltx_note') || x.tag === 'li' || hasClass(x, 'ltx_TOC'))) {
     if ((list.tag !== 'ul' && list.tag !== 'ol') || hasClass(list, 'ltx_toclist')) continue;
     const sec = secOf(list);
     if (sec.appendix || sec.skip) continue;
@@ -523,19 +538,19 @@ export function fromLatexml({ html, url, figures = [] }) {
 
   // Equations: numbered or cited display equations that look key.
   const eqTables = [];
-  for (const el of walk(article, (x) => x.tag === 'figure' || hasClass(x, 'ltx_theorem') || hasClass(x, 'ltx_note') || hasClass(x, 'ltx_equationgroup'))) {
+  for (const el of collect(article, (x) => x.tag === 'figure' || hasClass(x, 'ltx_theorem') || hasClass(x, 'ltx_note') || hasClass(x, 'ltx_equationgroup'))) {
     if (el.tag === 'table' && (hasClass(el, 'ltx_equationgroup') || hasClass(el, 'ltx_equation'))) eqTables.push(el);
   }
   for (const eq of eqTables) {
     const sec = secOf(eq);
     if (sec.skip) continue;
-    const rows = [...walk(eq)].filter((x) => x.tag === 'tr' && hasClass(x, 'ltx_equation'));
-    const rowMaths = rows.map((tr) => [...walk(tr)].filter((x) => x.tag === 'math')).filter((ms) => ms.length);
+    const rows = [...collect(eq)].filter((x) => x.tag === 'tr' && hasClass(x, 'ltx_equation'));
+    const rowMaths = rows.map((tr) => [...collect(tr)].filter((x) => x.tag === 'math')).filter((ms) => ms.length);
     if (!rowMaths.length || rowMaths.length > 8) continue;
     const rowTex = rowMaths.map((ms) => texClean(ms.map((m) => m.a.alttext || '').join(' ')));
     const total = rowTex.join(' ').length;
     if (total < 15 || rowTex.some((x) => x.length > 400) || total > 900) continue;
-    const ids = [eq.a.id, ...[...walk(eq)].map((x) => x.a.id).filter((id) => id && /\.E[x\d]/.test(id) && !/\.m\d+$/.test(id))].filter(Boolean);
+    const ids = [eq.a.id, ...[...collect(eq)].map((x) => x.a.id).filter((id) => id && /\.E[x\d]/.test(id) && !/\.m\d+$/.test(id))].filter(Boolean);
     const cites = ids.reduce((n, id) => n + (refN.get(id) || 0), 0);
     const para = up(eq, (x) => hasClass(x, 'ltx_para'));
     const ks = para ? kidsOf(para) : [];
@@ -547,7 +562,7 @@ export function fromLatexml({ html, url, figures = [] }) {
     const after = /^(?:where|here|with|in which)\b/i.test(afterS) ? afterS : '';
     const cue = RE.eqCue.test(before);
     if (!cites && !cue) continue;
-    const labels = [...walk(eq)].filter((x) => hasClass(x, 'ltx_tag_equation')).map((x) => sq(text({ kids: x.kids })));
+    const labels = [...collect(eq)].filter((x) => hasClass(x, 'ltx_tag_equation')).map((x) => sq(text({ kids: x.kids })));
     const mathHtml = rowMaths.map((ms) => `<math display="block">${ms.map(mathInner).join('')}</math>`).join('');
     if (mathHtml.length > 30000) continue;
     const anchor = eq.a.id || ids[0] || para?.a.id || '';
@@ -555,7 +570,7 @@ export function fromLatexml({ html, url, figures = [] }) {
   }
 
   // Theorem-like blocks: definitions and assumptions; theorems, propositions, corollaries, claims; cited lemmas.
-  for (const div of walk(article, (x) => hasClass(x, 'ltx_theorem') || x.tag === 'figure')) {
+  for (const div of collect(article, (x) => hasClass(x, 'ltx_theorem') || x.tag === 'figure')) {
     if (div.tag !== 'div' || !hasClass(div, 'ltx_theorem')) continue;
     const sec = secOf(div);
     if (sec.skip) continue;
@@ -577,14 +592,17 @@ export function fromLatexml({ html, url, figures = [] }) {
 
   // Tables and figures from /figures.
   const figSec = new Map();
-  for (const el of walk(article)) if (el.tag === 'figure' && el.a.id) figSec.set(el.a.id, secOf(el).title || undefined);
+  for (const el of collect(article)) if (el.tag === 'figure' && el.a.id) figSec.set(el.a.id, secOf(el).title || undefined);
   for (const f of figures) {
     if (!f.table || !f.html) continue;
-    if (!(f.rows >= 2 && f.rows <= 25 && f.cols >= 2 && f.cols <= 10) || f.html.length > 40000 || /^Fig/i.test(f.label || '') || f.at >= 0.9 || /^A[\d.]/.test(f.id || '')) continue;
-    const st = tableStats(parse(f.html));
-    const main = f.at < 0.7;
+    if (!(f.rows >= 2 && f.rows <= 25 && f.cols >= 2 && f.cols <= 10) || f.html.length > 40000 || /^Fig/i.test(f.label || '')) continue;
     const cap = f.caption || '';
-    P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, sec: figSec.get(f.id), loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) });
+    // Appendix (or very late) tables only when the caption reads as results, and after the main text's.
+    const late = f.at >= 0.9 || /^A[\d.]/.test(f.id || '');
+    if (late && !(RE.resultCap.test(cap) && !RE.setupCap.test(cap))) continue;
+    const st = tableStats(parse(f.html));
+    const main = f.at < 0.7 && !late;
+    P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, sec: figSec.get(f.id), loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) - (late ? 0.3 : 0) });
   }
   const scored = scoreFigures(figures, citeSecs);
   for (const x of scored) {
@@ -638,7 +656,7 @@ function blocksOf(root) {
       if (!isEl(k)) continue;
       if (k.tag === 'img') imgs.push(k);
       if (k.tag === 'table') tables.push(k);
-      if (LEAF.has(k.tag) && !hasLeaf(k)) { addLeaf(k); for (const x of walk(k)) { if (x.tag === 'img') imgs.push(x); if (x.tag === 'table') tables.push(x); } continue; }
+      if (LEAF.has(k.tag) && !hasLeaf(k)) { addLeaf(k); for (const x of collect(k)) { if (x.tag === 'img') imgs.push(x); if (x.tag === 'table') tables.push(x); } continue; }
       visit(k);
     }
   };
@@ -660,6 +678,13 @@ const NOT_TERM = /^(?:questions?|answers?|notes?|examples?|update|edit(?:ed)?|co
 function fromBlocks(root, { kind, base, page, docLen }) {
   const P = new Parts();
   const { blocks, imgs, tables } = blocksOf(root);
+  /** The last block that starts before source offset `s` and passes `pred`. */
+  const before = (s, pred) => {
+    let lo = 0, hi = blocks.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (blocks[mid].s < s) lo = mid + 1; else hi = mid; }
+    for (let i = lo - 1; i >= 0; i--) if (pred(blocks[i])) return blocks[i];
+    return null;
+  };
   const at = (el) => Math.max(0, Math.min(1, el.s / Math.max(1, docLen)));
   const hrefOf = (b, quote) => {
     if (kind === 'web' && b?.head?.id) return `${page}#${b.head.id}`;
@@ -768,9 +793,9 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const html = clean(tbl);
     if (html.length > 40000) return;
     const capEl = kidsOf(tbl).find((x) => x.tag === 'caption');
-    const prev = [...blocks].reverse().find((b) => b.s < tbl.s && b.tag === 'p');
+    const prev = before(tbl.s, (b) => b.tag === 'p');
     const caption = capEl ? text(capEl) : prev && prev.t.length <= 300 ? prev.t : prev ? sentences(prev.t).at(-1) : '';
-    const head = [...blocks].reverse().find((b) => b.s < tbl.s)?.head;
+    const head = before(tbl.s, () => true)?.head;
     P.add({ pid: `table:tbl${k}`, type: 'table', text: caption ? cut(caption, 300) : `Table ${k + 1}`, html, label: `Table ${k + 1}`, caption: caption || null, rows: st.rows, cols: st.cols, sec: head?.t, loc: { anchor: `tbl${k}`, quote: caption || undefined, href: kind === 'web' && head?.id ? `${page}#${head.id}` : page }, at: at(tbl), score: tableScore(html, st.numeric, true) });
   });
 
@@ -782,9 +807,9 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const w = dim(el.a.width), h = dim(el.a.height);
     if ((w && w < 60) || (h && h < 60)) return;
     const fig = up(el, (x) => x.tag === 'figure');
-    const capEl = fig && [...walk(fig)].find((x) => x.tag === 'figcaption');
+    const capEl = fig && [...collect(fig)].find((x) => x.tag === 'figcaption');
     const caption = capEl ? text(capEl) : (el.a.alt && el.a.alt.length > 12 ? sq(el.a.alt) : null);
-    const prev = [...blocks].reverse().find((b) => b.s < el.s && (b.tag === 'p' || b.tag === 'li'));
+    const prev = before(el.s, (b) => b.tag === 'p' || b.tag === 'li');
     const quote = prev ? lastWords(prev.t, 30) : undefined;
     const pic = { pid: `image:img${k}`, type: 'image', img: src, w: w && h ? w : null, h: w && h ? h : null, label: null, caption: caption ? cut(caption, 600) : null, loc: { anchor: `img${k}`, quote, href: prev ? hrefOf(prev, prev.t) : page }, at: at(el) };
     images.push(pic);
@@ -797,7 +822,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
 /** A post (htmlBody): blocks, posts-only parts, and the lead (preview image, then body images). */
 export function fromPost({ htmlBody, page, preview }) {
   const root = parse(htmlBody || '');
-  for (const el of walk(root)) if (hasClass(el, 'footnote-reference')) el.kids = [];
+  for (const el of collect(root)) if (hasClass(el, 'footnote-reference')) el.kids = [];
   const { P, blocks, images, at, hrefOf, secOf } = fromBlocks(root, { kind: 'post', base: page, page, docLen: (htmlBody || '').length });
   const prose = blocks.filter((b) => !b.foot);
   const part = (type, b, t, extra) => ({ pid: `${type}:p${b.k}`, type, text: t, sec: secOf(b), loc: { anchor: `p${b.k}`, quote: t, href: hrefOf(b, t) }, at: at(b.el), ...extra });
@@ -847,8 +872,8 @@ export function fromPost({ htmlBody, page, preview }) {
   }
   // Pull lines: a bold paragraph, or a paragraph led by a bold run.
   for (const b of prose) {
-    if (b.tag !== 'p' || b.quote || RE.pullNot.test(b.t) || RE.tldr.test(b.t) || RE.status.test(b.t)) continue;
-    const share = boldShare(b.seg);
+    if (b.tag !== 'p' || b.quote || b.t.length > 400 || RE.pullNot.test(b.t) || RE.tldr.test(b.t) || RE.status.test(b.t)) continue;
+    const share = b.t.length <= 250 ? boldShare(b.seg) : 0;
     const sentenceLike = (t) => wordsOf(t).length >= 5 && (/[.!?"”’)]$/.test(t) || t.length >= 60) && !/:$/.test(t);
     if (b.t.length >= 20 && b.t.length <= 250 && share >= 0.8 && sentenceLike(b.t)) { P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, score: 0.7 })); continue; }
     const lead = leadBold(b.seg);
@@ -860,7 +885,7 @@ export function fromPost({ htmlBody, page, preview }) {
     if (b) P.add(part('opener', b, b.t, { score: 0.5 }));
   }
   // One blockquote.
-  for (const q of walk(root)) {
+  for (const q of collect(root)) {
     if (q.tag !== 'blockquote' || up(q, (x) => x.tag === 'blockquote') || up(q, FOOT)) continue;
     const t = text(q);
     if (t.length < 40 || t.length > 600) continue;
@@ -888,13 +913,13 @@ const JUNK = (e) => ['script', 'style', 'noscript', 'nav', 'form', 'button', 'te
 export function fromWeb({ html, url }) {
   const root = parse(html);
   let og = null;
-  for (const m of walk(root, (x) => x.tag === 'body')) {
+  for (const m of collect(root, (x) => x.tag === 'body')) {
     if (m.tag !== 'meta') continue;
     const k = (m.a.property || m.a.name || '').toLowerCase();
     if (!og && (k === 'og:image' || k === 'og:image:url' || k === 'twitter:image' || k === 'twitter:image:src') && m.a.content) { try { og = new URL(m.a.content, url).href; } catch { /* skip */ } }
   }
   let content = null;
-  const all = [...walk(root)];
+  const all = [...collect(root)];
   for (const pred of ROOTS) { content = all.find(pred); if (content) break; }
   content ||= root;
   const priors = /(^|\.)priors\.quantifieduncertainty\.org$/.test(new URL(url).hostname);

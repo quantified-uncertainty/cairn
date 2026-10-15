@@ -227,7 +227,8 @@ async function inkGrid(it, k, W, H, scan) {
     const bg = n ? sorted[Math.floor(0.8 * (n - 1))] : 230, thr = bg - Math.max(26, bg * 0.13);
     for (let i = 0; i < GW * GH; i++) ink[i] = cover[i] && lum(i) < thr ? 1 : 0;
   }
-  return { gw: GW, gh: GH, cs, ink, ms: Math.round(performance.now() - t0) };
+  let inked = 0; for (let i = 0; i < GW * GH; i++) inked += ink[i];
+  return { gw: GW, gh: GH, cs, ink, cover: inked / (GW * GH), ms: Math.round(performance.now() - t0) };
 }
 
 // ---------- finding regions ----------
@@ -265,7 +266,9 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
   const cj = (y) => Math.max(0, Math.min(gh - 1, Math.floor(y / cs)));
   const fill = (m, b, v = 1) => { const a = ci(b.x0), z = ci(b.x1); for (let j = cj(b.y0); j <= cj(b.y1); j++) m.fill(v, j * gw + a, j * gw + z + 1); };
   const letters = (s) => { const t = s.str.replace(/\s+/g, ''); return t.length ? (t.match(/\p{L}/gu) || []).length / t.length : 0; };
-  const textLike = (s) => s.str.replace(/\s+/g, '').length >= 2 && letters(s) >= (scan ? 0.7 : 0.55);
+  // Words, numbers among them ("5 and 12, 16, 20, as shown in Figure 12"), not symbols or OCR noise.
+  const alnum = (s) => { const t = s.str.replace(/\s+/g, ''); return t.length ? (t.match(/[\p{L}\p{N}]/gu) || []).length / t.length : 0; };
+  const textLike = (s) => s.str.replace(/\s+/g, '').length >= 2 && (letters(s) >= (scan ? 0.7 : 0.55) || (letters(s) >= 0.4 && alnum(s) >= 0.8));
 
   // 1. Body text size, the text block, and two columns or one.
   let hz = runs.filter((s) => !s.rot);
@@ -315,14 +318,24 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
   // 2. Prose: long body-size lines, and the short last lines of their paragraphs.
   for (const s of hz) { const [c0, c1] = colOf(s.x0, s.x1); s.prose = fsOk(s) && s.n >= 15 && textLike(s) && s.x1 - s.x0 >= 0.62 * (c1 - c0); }
   const byY = hz.slice().sort((a, b) => a.y0 - b.y0);
-  // Text wrapped beside a figure is narrow but justified: lines that share both edges with the lines around them.
+  // A cell of a table: another run in the same type on its line, in its column,
+  // well apart from it (a figure's labels beside text wrapped round it are smaller).
+  const byB = hz.slice().sort((a, b) => a.base - b.base);
+  byB.forEach((s, i) => {
+    const sd = sideOfX(s.x0, s.x1), apart = (o) => Math.max(o.x0 - s.x1, s.x0 - o.x1) > 1.5 * body && sideOfX(o.x0, o.x1) === sd && Math.abs(o.fs - s.fs) < 0.15 * Math.max(o.fs, s.fs);
+    for (let j = i - 1; j >= 0 && s.base - byB[j].base < 0.3 * body && !s.cell; j--) if (apart(byB[j])) s.cell = true;
+    for (let j = i + 1; j < byB.length && byB[j].base - s.base < 0.3 * body && !s.cell; j++) if (apart(byB[j])) s.cell = true;
+  });
+  // Text wrapped beside a figure is narrow but justified: lines that share both edges with the lines around them
+  // (not the cells of a table's column, nor lines much narrower than a column).
   for (const s of byY) {
-    if (s.prose || !fsOk(s) || !textLike(s) || s.n < 15) continue;
+    if (s.prose || s.cell || !fsOk(s) || !textLike(s) || s.n < 20) continue;
+    { const [c0, c1] = colOf(s.x0, s.x1); if (s.x1 - s.x0 < 0.3 * (c1 - c0)) continue; }
     const mates = byY.filter((o) => o !== s && Math.abs(o.x0 - s.x0) < 0.5 * body && Math.abs(o.x1 - s.x1) < 0.5 * body && Math.abs(o.y0 - s.y0) < 4 * body && fsOk(o));
     if (mates.length >= 2) s.prose = true;
   }
   for (const s of byY) {
-    if (s.prose || !fsOk(s) || !textLike(s)) continue;
+    if (s.prose || s.cell || !fsOk(s) || !textLike(s)) continue;
     const c0 = colOf(s.x0, s.x1)[0];
     if (byY.some((p) => p.prose && p !== s && s.y0 - p.y1 > -0.3 * body && s.y0 - p.y1 < 0.8 * body && (Math.abs(s.x0 - p.x0) < 1.2 * body || Math.abs(s.x0 - c0) < 1.2 * body))) s.prose = true;
   }
@@ -367,7 +380,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     const bare = blk.runs.reduce((n, o) => n + o.str.trim().length, 0) <= m[0].trim().length + 2;
     const [cc0, cc1] = colOf(s.x0, s.x1), centred = Math.abs((s.x0 + s.x1) / 2 - (cc0 + cc1) / 2) < body && s.x0 > cc0 + body;
     // A row of a table (cells spaced well apart on one line) is not caption text.
-    const cell = (o) => hz.some((p) => p !== o && !p.margin && inCol(p) && Math.abs(p.base - o.base) < 0.3 * body && Math.max(p.x0 - o.x1, o.x0 - p.x1) > 1.5 * body);
+    const cell = (o) => o.cell && hz.some((p) => p !== o && !p.margin && inCol(p) && Math.abs(p.base - o.base) < 0.3 * body && Math.max(p.x0 - o.x1, o.x0 - p.x1) > 1.5 * body);
     let gap = null;
     for (let more = !blk.algo; more && blk.runs.length < 24;) {
       more = false;
@@ -538,7 +551,8 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
   for (const b of pics) { if (b.dead) continue; const R = rs.find((x) => ovX(x, b) > 0 && ovY(x, b) > 0); if (R) { grow(R, b); R.img = true; } }
   // 7. Each region takes in nearby small text (labels, legends) and touching regions.
   rs.sort((a, b) => b.gc - a.gc);
-  const lab2 = runs.filter((s) => !s.prose && !s.cap && !s.margin && s.fs < 3 * body);
+  // (A line of body text across its column is never a figure's label.)
+  const lab2 = runs.filter((s) => !s.prose && !s.cap && !s.margin && s.fs < 3 * body && !(fsOk(s) && s.n >= 25 && textLike(s) && s.x1 - s.x0 >= 0.8 * (colOf(s.x0, s.x1)[1] - colOf(s.x0, s.x1)[0])));
   for (const R of rs) {
     if (R.dead) continue;
     for (let changed = true; changed;) {
@@ -559,6 +573,14 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     R.ok = w >= 0.06 * W && hh >= 0.03 * H && R.gc >= 16 && R.gc >= 0.012 * cells && !(hh < 0.02 * H);
     R.boxed = proseIn(R) > 0.18; // a framed text box: a figure only with a caption
     R.strong = R.ok && !R.boxed && ((R.gc >= 60 && hh >= 0.05 * H && w >= 0.1 * W) || (R.img && w >= 0.1 * W && hh >= 0.05 * H));
+    // How much of its graphics lies on the lines of text inside it: dot leaders,
+    // an equation the OCR could not read, a heading's band of colour.
+    const ins = hz.filter((s) => s.x0 >= R.x0 - body && s.x1 <= R.x1 + body && s.y0 >= R.y0 - body && s.y1 <= R.y1 + body);
+    const rows = new Uint8Array(gh);
+    for (const s of ins) for (let j = cj(s.y0); j <= cj(s.y1); j++) rows[j] = 1;
+    let gT = 0, gA = 0;
+    for (let j = cj(R.y0); j <= cj(R.y1); j++) for (let x = ci(R.x0); x <= ci(R.x1); x++) if (G[j * gw + x]) { gA++; gT += rows[j]; }
+    R.trf = gA ? gT / gA : 0; R.nIn = ins.length;
   }
 
   // 8. Captions claim regions beside them; a caption with none proposes one.
@@ -673,12 +695,26 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
   }
-  for (const R of rs) if (!R.cap && R.strong && !(scan && ((R.y0 + R.y1) / 2 < 0.07 * H || (R.y0 + R.y1) / 2 > 0.95 * H))) {
+  // Lines of print, not a picture: graphics that lie on the lines of text inside
+  // the region (dot leaders, a band of colour behind a heading), or, in a scan,
+  // that come in bands a line high (an equation the OCR could not read).
+  const printed = (R) => {
+    if (R.trf > 0.85 && R.nIn >= 3) return true;
+    if (!scan) return false;
+    const j0 = cj(R.y0), j1 = cj(R.y1), a = ci(R.x0), z = ci(R.x1), prof = [];
+    for (let j = j0; j <= j1; j++) { let n = 0; for (let x = a; x <= z; x++) n += G[j * gw + x]; prof.push(n); }
+    const lo = 1.5, lineH = (1.9 * body) / cs;
+    let band = 0, bands = 0, tall = 0;
+    for (const n of prof.concat(0)) { if (n > lo) band++; else if (band) { bands++; if (band > lineH) tall += band; band = 0; } }
+    return bands >= 2 && tall < 0.25 * prof.length;
+  };
+  for (const R of rs) if (!R.cap && R.strong && !printed(R) && !(scan && ((R.y0 + R.y1) / 2 < 0.07 * H || (R.y0 + R.y1) / 2 > 0.95 * H))) {
     R.kind = 'figure'; out.push(R);
     // A plate's legend: the short centred line or two right under it, numbered or not.
     if (scan && (R.x1 - R.x0) * (R.y1 - R.y0) > 0.3 * W * H) {
       const cx = (R.x0 + R.x1) / 2;
-      const leg = hz.filter((s) => !s.margin && s.y0 >= R.y1 - 0.5 * body && s.y0 - R.y1 < 3 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
+      // (A legend is short, and may already be inside the region, taken in as a label.)
+      const leg = hz.filter((s) => !s.margin && !s.prose && textLike(s) && s.x1 - s.x0 < 0.75 * (R.x1 - R.x0) && s.y0 >= R.y1 - 2.2 * body && s.y0 - R.y1 < 1.6 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
       if (leg.length) R.cap = { label: '', text: leg.map((s) => s.str).join(' ').replace(/\s+/g, ' ').trim() };
     }
   }
@@ -705,7 +741,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     for (let i = 0; i < N; i++) { const o = 4 * i; im.data[o] = G[i] ? 230 : D[i] ? 120 : 255; im.data[o + 1] = T[i] ? 200 : G[i] ? 40 : 255; im.data[o + 2] = B[i] ? 220 : G[i] ? 40 : 255; im.data[o + 3] = 255; if (ink[i] && !G[i] && !T[i] && !B[i]) { im.data[o] = im.data[o + 1] = im.data[o + 2] = 0; } }
     g.putImageData(im, 0, 0); debug.grid = c.toDataURL();
   }
-  if (debug.on) out2.dbg = { runs: runs.map((s) => ({ b: [s.x0 / W, s.y0 / H, s.x1 / W, s.y1 / H].map((v) => +v.toFixed(3)), fs: +(s.fs / body).toFixed(2), str: s.str.slice(0, 40), f: (s.prose ? 'P' : '') + (s.cap ? 'C' : '') + (s.margin ? 'M' : '') + (s.used ? 'U' : '') })), rs: rs.map((R) => ({ b: [R.x0 / W, R.y0 / H, R.x1 / W, R.y1 / H].map((v) => +v.toFixed(3)), gc: R.gc, ok: R.ok, boxed: R.boxed, strong: R.strong, cap: R.cap?.label })), caps: caps.map((c) => ({ b: [c.x0 / W, c.y0 / H, c.x1 / W, c.y1 / H].map((v) => +v.toFixed(3)), label: c.label, n: c.runs.length })) };
+  if (debug.on) out2.dbg = { runs: runs.map((s) => ({ b: [s.x0 / W, s.y0 / H, s.x1 / W, s.y1 / H].map((v) => +v.toFixed(3)), fs: +(s.fs / body).toFixed(2), str: s.str.slice(0, 40), f: (s.prose ? 'P' : '') + (s.cap ? 'C' : '') + (s.margin ? 'M' : '') + (s.used ? 'U' : '') })), rs: rs.map((R) => ({ b: [R.x0 / W, R.y0 / H, R.x1 / W, R.y1 / H].map((v) => +v.toFixed(3)), gc: R.gc, ok: R.ok, boxed: R.boxed, strong: R.strong, cap: R.cap?.label, trf: +(R.trf ?? 0).toFixed(2), nIn: R.nIn })), caps: caps.map((c) => ({ b: [c.x0 / W, c.y0 / H, c.x1 / W, c.y1 / H].map((v) => +v.toFixed(3)), label: c.label, n: c.runs.length })) };
   return out2;
 }
 
@@ -724,9 +760,18 @@ export function regionsOf(it, k) {
       const page = await d.pdf.getPage(k + 1);
       const vp = page.getViewport({ scale: 1 });
       const tc = tl?.pageModel ? (await tl.pageModel(it, k).catch(() => null))?.tc : null;
-      const [text, ol] = await Promise.all([tc || page.getTextContent(), withTimeout(page.getOperatorList(), 2500).catch(() => null)]);
-      const grid = await inkGrid(it, k, vp.width, vp.height, false), c1 = performance.now();
-      res = { W: vp.width, H: vp.height, ...findRegions({ W: vp.width, H: vp.height, runs: pdfRuns(text, vp), imgs: ol ? imageBoxes(ol, lib.OPS, vp) : [], grid }) };
+      const [text, ol] = await Promise.all([tc || page.getTextContent(), withTimeout(page.getOperatorList(), 8000).catch(() => null)]);
+      // A page that is one picture (a scanned book or journal, its OCR as the
+      // text) is looked at as a scan: its paper is not white, and its picture is the page.
+      const imgs = ol ? imageBoxes(ol, lib.OPS, vp) : [];
+      // (Or, when its operator list is slow to come, a page whose paper is not white.)
+      let scanned = imgs.some((b) => (b.x1 - b.x0) * (b.y1 - b.y0) > 0.7 * vp.width * vp.height);
+      let grid = await inkGrid(it, k, vp.width, vp.height, scanned);
+      if (!scanned && grid.cover > 0.4) { scanned = true; grid = await inkGrid(it, k, vp.width, vp.height, true); }
+      const c1 = performance.now();
+      let runs = pdfRuns(text, vp);
+      if (scanned && runs.length < 5) runs = inkRuns(grid); // a scan with no text layer
+      res = { W: vp.width, H: vp.height, scanned, ...findRegions({ W: vp.width, H: vp.height, runs, imgs: scanned ? [] : imgs, grid, scan: scanned }) };
       res.cpu = [grid.ms, Math.round(performance.now() - c1)]; // ink grid, analysis (main thread)
     } else {
       const tl = await textlayer();

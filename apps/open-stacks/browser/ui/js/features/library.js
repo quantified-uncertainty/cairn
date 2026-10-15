@@ -31,7 +31,7 @@
 // only while it is showing.
 import { $, h, on, store, registerKey, keyHelp, fmtDate } from '../util.js';
 import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
-import { state, current, topicRank } from '../state.js';
+import { state, current, topicRank, SORTERS } from '../state.js';
 import { jumpTo } from '../nav.js';
 import { setView, setLane, togglePanel } from '../chrome.js';
 import { SORTS, setSort, stayIn, leave, goTo } from '../stack.js';
@@ -78,22 +78,23 @@ const stackNode = () => (state.scope && state.stack?.kind === 'folder' ? build()
 
 // ---------- which list: the tree, or the order itself ----------
 let flat = false; // true: a flat list of state.order
-let custom = false; // topic, but the order was made by hand (search results…): shown flat
+let custom = false; // the order was made by hand (search results…), not by the sort: shown flat, as it is
 const member = (i) => (state.scope ? state.scope.has(i) : state.lane === 'all' || items[i].lane === state.lane);
-/** The order follows the tree: its members (each once; detours inserted before them aside) go up the tree. */
-function treeOrder() {
-  const R = topicRank(), o = state.order, seen = new Map();
+/** The order is in its sort: its members (each once; detours inserted between them aside) follow the sort. */
+function inSort() {
+  const cmp = SORTERS[state.sort]; if (!cmp) return true; // the ranking keeps what you have seen first: any order is its own
+  const o = state.order, seen = new Map();
   for (const i of o) seen.set(i, (seen.get(i) || 0) + 1);
-  let last = -1;
+  let last = null;
   for (const i of o) {
     if (seen.get(i) > 1 || !member(i)) continue;
-    if (R[i] < last) return false;
-    last = R[i];
+    if (last != null && cmp(last, i) > 0) return false;
+    last = i;
   }
   return true;
 }
 function pickMode() {
-  custom = state.sort === 'topic' && !treeOrder();
+  custom = !inSort();
   flat = state.sort !== 'topic' || custom;
 }
 
@@ -103,6 +104,7 @@ let autoOpen = new Set(); // the current item's branch, and the branches walked 
 let words = [], hay = null, match = null; // filter words; lowercase titles; Uint8Array of the items shown (filter, tag stack)
 let prune = null; // topic order in a tag stack: the tree shows only the stack's items
 const fClosed = new Set(); // folders closed by hand while filtering or pruned
+let multiLane = false; // the flat list spans several lanes
 let rows = []; // tree: { node, d } | { i, d }; flat: { i, r } (r: the place in state.order)
 let sel = null; // the cursor: 'n' + key or 'i' + index
 const q = () => words.length > 0;
@@ -118,6 +120,7 @@ function setFilter(text) {
 }
 /** Which tree items show: the filter's matches, within a tag stack's items. */
 function remask() {
+  elVer++;
   const tag = !flat && state.scope && !stackNode();
   const p = tag ? new Set(state.order) : null;
   if (!!p !== !!prune || (p && [...p].some((i) => !prune.has(i)))) fClosed.clear();
@@ -141,8 +144,10 @@ function remask() {
 function flatten() {
   if (!T) return;
   if (flat) {
-    const o = state.order, out = [];
-    for (let r = 0; r < o.length; r++) if (!q() || hit(o[r])) out.push({ i: o[r], r });
+    const o = state.order, out = [], lanes = new Set();
+    for (let r = 0; r < o.length; r++) { lanes.add(items[o[r]].lane); if (!q() || hit(o[r])) out.push({ i: o[r], r }); }
+    // A lane dot tells lanes apart when the stack spans several.
+    multiLane = lanes.size > 1;
     rows = out; return;
   }
   const out = [];
@@ -243,7 +248,7 @@ registerKey('L', () => {
 }, { view: null, help: ['L', 'library: the stack you are walking, in its order (a tree of folders by topic, a list otherwise; again: back to the item) · type to filter · ↑↓ →← · Enter opens, or stays in a folder · Esc'], order: 52 });
 
 // ---------- painting ----------
-let raf = 0;
+let raf = 0, paintedTop = -1;
 const paint = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; paintNow(); }); };
 let progressOf = null; // memory.js, when it is loaded
 // Reading progress per item and read counts per folder, kept until memory.js says an item changed.
@@ -260,29 +265,45 @@ function paintNow() {
   const top = list.scrollTop, H = list.clientHeight || 600;
   const a = Math.max(0, Math.floor(top / RH) - 6), b = Math.min(rows.length, Math.ceil((top + H) / RH) + 6);
   slice.style.transform = `translateY(${a * RH}px)`;
+  paintedTop = top;
   const cur = current(), s = sel;
-  // In the flat list, a lane dot tells lanes apart when the stack spans several.
-  const dots = flat && (state.lane === 'all' || (state.scope && new Set(state.order.map((i) => items[i].lane)).size > 1));
   const dates = flat && (state.sort === 'newest' || state.sort === 'oldest');
-  const els = [];
-  for (let r = a; r < b; r++) els.push(rowEl(rows[r], r, cur, s, dots, dates));
-  slice.replaceChildren(...els);
+  const ctx = { cur, s, dots: flat && multiLane, dates, anc: new Set(cur != null ? ancestors(cur) : []), sn: stackNode() };
+  // Rows already drawn are kept (walking the list redraws only the marks on them).
+  const pre = `${elVer}|${+flat}${+ctx.dots}${+dates}|`, next = new Map(), els = [];
+  for (let r = a; r < b; r++) {
+    const row = rows[r], key = pre + rowId(row) + '|' + r + (row.node ? `|${+isOpen(row.node)}|${match ? row.node.m : ''}` : '');
+    const el = drawn.get(key) || rowEl(row, r, ctx);
+    marks(el, row, r, ctx);
+    next.set(key, el); els.push(el);
+  }
+  drawn = next;
+  if (els.length !== slice.children.length || els.some((el, k) => slice.children[k] !== el)) slice.replaceChildren(...els);
   list.classList.toggle('flat', flat);
   list.setAttribute('role', flat ? 'listbox' : 'tree');
   list.setAttribute('aria-activedescendant', s ? 'lib-sel' : '');
 }
-function rowEl(row, r, cur, s, dots, dates) {
-  const id = rowId(row);
+/** What changes as you walk: the cursor, the current item, what is behind you, the folder you stay in. */
+function marks(el, row, r, { cur, s, anc, sn }) {
+  const sel = rowId(row) === s;
+  el.classList.toggle('sel', sel); if (sel) el.id = 'lib-sel'; else el.removeAttribute('id'); el.setAttribute('aria-selected', String(sel));
+  if (row.node) {
+    el.classList.toggle('scoped', row.node === sn);
+    el.classList.toggle('has-cur', !isOpen(row.node) && anc.has(row.node));
+  } else {
+    el.classList.toggle('cur', flat ? row.r === state.pos : row.i === cur);
+    el.classList.toggle('before', flat && row.r < state.pos);
+  }
+}
+let drawn = new Map(), elVer = 0; // rows on screen by what they show; elVer: bumped when rows must be drawn anew
+function rowEl(row, r, { dots, dates }) {
   const el = h('div', { className: 'lr', role: flat ? 'option' : 'treeitem' });
   el.dataset.r = r;
   el.style.setProperty('--d', row.d ?? 0);
   if (!flat) el.setAttribute('aria-level', row.d + 1);
-  if (id === s) { el.classList.add('sel'); el.id = 'lib-sel'; el.setAttribute('aria-selected', 'true'); }
   if (row.node) {
     const n = row.node, open = isOpen(n);
     el.classList.add(n.parent ? 'lr-f' : 'lr-l');
-    if (n === stackNode()) el.classList.add('scoped');
-    if (cur != null && !open && ancestors(cur).includes(n)) el.classList.add('has-cur');
     el.setAttribute('aria-expanded', String(open));
     el.append(h('span', { className: 'lr-c', textContent: open ? '▾' : '▸' }));
     if (!n.parent) el.append(h('span', { className: 'lr-dot', style: `background:${LANE_COLORS[n.lane] || 'var(--ink-3)'}` }));
@@ -296,8 +317,6 @@ function rowEl(row, r, cur, s, dots, dates) {
     const it = items[row.i];
     el.classList.add('lr-i');
     el.dataset.i = row.i;
-    if (flat ? row.r === state.pos : row.i === cur) el.classList.add('cur');
-    if (flat && row.r < state.pos) el.classList.add('before');
     if (dots) el.append(h('span', { className: 'lr-dot', title: LANES[it.lane] || it.lane, style: `background:${LANE_COLORS[it.lane] || 'var(--ink-3)'}` }));
     el.append(icon(row.i));
     el.append(h('span', { className: 'lr-t', textContent: it.t }));
@@ -329,22 +348,23 @@ function paintTop() {
 
 // ---------- following the current item ----------
 let lastPos = -1, lastOrder = null;
+let mk = {}; // what the list was made for: the order (and its length), sort, scope and lane
 /** Show the current item: open its branch (and keep the ones just walked through open),
  *  highlight it and keep it about a quarter from the top. force: also move the cursor while the list has the keyboard. */
 function follow(i, force = false) {
   if (i == null || !T) return;
-  const was = flat;
-  pickMode();
-  if (was !== flat || !flat) remask(); else flatten();
+  // The list is made again only when the stack, its sort or its order changed.
+  const fresh = mk.o !== state.order || mk.n !== state.order.length || mk.s !== state.sort || mk.sc !== state.scope || mk.l !== state.lane;
+  if (fresh) { mk = { o: state.order, n: state.order.length, s: state.sort, sc: state.scope, l: state.lane }; pickMode(); remask(); }
   if (!flat) {
     const anc = ancestors(i);
     // Walking on (a few items at a time) keeps the folders behind you open, so the rows do not jump.
     const near = lastOrder === state.order && lastPos >= 0 && Math.abs(state.pos - lastPos) <= 20;
     const keep = near ? new Set(autoOpen) : new Set();
     if (near) for (let p = Math.min(lastPos, state.pos); p <= Math.max(lastPos, state.pos); p++) for (const a of ancestors(state.order[p])) keep.add(a.key);
-    for (const a of anc) { keep.add(a.key); userClosed.delete(a.key); fClosed.delete(a.key); }
-    autoOpen = keep;
-    flatten();
+    let reopened = false;
+    for (const a of anc) { keep.add(a.key); if (userClosed.delete(a.key) | fClosed.delete(a.key)) reopened = true; }
+    if (reopened || keep.size !== autoOpen.size || [...keep].some((k) => !autoOpen.has(k))) { autoOpen = keep; flatten(); }
   }
   lastPos = state.pos; lastOrder = state.order;
   if (!browsing() || force) sel = 'i' + i;
@@ -382,12 +402,12 @@ const followSoon = (i) => {
   });
 };
 on('item:shown', ({ i }) => followSoon(i));
-on('stack:changed', () => { topKey = ''; lastOrder = null; followSoon(current()); });
-on('nav', (d) => { if (d.type === 'back') { topKey = ''; followSoon(current()); } });
+on('stack:changed', () => { topKey = ''; lastOrder = null; mk = {}; followSoon(current()); });
+on('nav', (d) => { if (d.type === 'back') { topKey = ''; mk = {}; followSoon(current()); } });
 on('stack:show', () => { if (!showing()) setMode(true); const n = stackNode(); if (n) revealNode(n); else follow(current(), true); });
 on('view:changed', () => { if (showing()) follow(current()); });
-on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); if (showing()) paint(); });
-list.addEventListener('scroll', paint, { passive: true });
+on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); elVer++; if (showing()) paint(); });
+list.addEventListener('scroll', () => { if (list.scrollTop !== paintedTop) paint(); }, { passive: true });
 addEventListener('resize', paint);
 
 // ---------- acting on rows ----------
@@ -478,7 +498,7 @@ async function helpers() {
     const f = await (await fetch('/features.json')).json();
     if ((f.js || []).some((m) => /\/memory\.js$/.test(m))) ({ progressOf } = await import('./memory.js'));
   } catch { /* no reading memory */ }
-  paint();
+  elVer++; paint();
 }
 
 on('boot', () => {

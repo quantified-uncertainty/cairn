@@ -21,7 +21,7 @@ import { setView, setLane, paintSaved } from '../chrome.js';
 import { jumpTo } from '../nav.js';
 import { showFeed } from '../feed.js';
 import { live, elToCol } from '../flow.js';
-import { currentWords, highlight } from '../text.js';
+import { currentWords, highlight, reveal } from '../text.js';
 import { appendQuote } from '../notes.js';
 import { figArt, figuresOf, openFigure, arxivId } from './figures.js';
 import { attachPeek, showPeek, closePeek, pinPeek, peekState, sharpImg } from './peek.js';
@@ -168,14 +168,19 @@ async function runInk(pic) {
   for (let p = 0, q = 0; q < grey.length; p += 4, q++) { const v = (0.299 * d[p] + 0.587 * d[p + 1] + 0.114 * d[p + 2]) | 0; grey[q] = v; hist[v]++; }
   let acc = 0, bg = 255; const target = 0.9 * grey.length;
   for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= target) { bg = v; break; } }
-  let dark = 0, mid = 0, rows = 0;
+  let dark = 0, mid = 0, rows = 0, band = 0; const bands = [];
   for (let y = 0; y < hh; y++) {
     let rd = 0;
     for (let x = 0; x < w; x++) { const v = grey[y * w + x]; if (v < bg - 60) { dark++; rd++; } else if (v < bg - 25) mid++; }
-    if (rd > 0.02 * w) rows++;
+    if (rd > 0.02 * w) { rows++; band++; } else if (band) { bands.push(band); band = 0; }
   }
+  if (band) bands.push(band);
   const n = w * hh;
-  const r = { dark: dark / n, mid: mid / n, rowsInk: rows / hh, w: W, h: H };
+  bands.sort((a, b) => a - b);
+  const r = { dark: dark / n, mid: mid / n, rowsInk: rows / hh, bands: bands.length, band50: bands.length ? bands[bands.length >> 1] / hh : 0, w: W, h: H };
+  // Ink on at least a fifth of the rows, not mostly dark, few mid greys. (Thin
+  // bands alone cannot tell type from line drawings, so a contents page whose
+  // OCR failed can still pass; the server's word count keeps those rare.)
   r.ok = r.rowsInk >= 0.2 && r.dark < 0.6 && r.mid < 0.2;
   return r;
 }
@@ -467,6 +472,7 @@ function makeFeeder(S) {
     }
     if (batch.length) { const t0 = performance.now(); S.place(batch); placeMs.push([batch.length, Math.round(performance.now() - t0)]); if (placeMs.length > 200) placeMs.shift(); }
     if (S.q.some((r) => r.ready !== undefined) || (S.q.length && S.q[0].ready === undefined)) setTimeout(S.kick, S.q.some((r) => r.ready !== undefined) ? 0 : 120);
+    else if (!S.q.length && batch.length) S.pump(); // drained: the sentinel may still be in reach
     S.status();
   };
 }
@@ -485,7 +491,7 @@ function makeBoard(type, lane) {
   B.visible = () => !root.hidden && !B.el.hidden;
   B.io = new IntersectionObserver((es) => { B.near = es.some((e) => e.isIntersecting); if (B.near) B.pump(); }, { root: B.el, rootMargin: '0px 0px 1600px 0px' });
   B.io.observe(B.sent);
-  B.el.addEventListener('scroll', () => { if (!B.el.hidden) B.scroll = B.el.scrollTop; }, { passive: true });
+  B.el.addEventListener('scroll', () => { if (B.visible()) B.scroll = B.el.scrollTop; }, { passive: true });
   B.geom = () => {
     const W = B.el.clientWidth - 36;
     if (W <= 0) return false;
@@ -568,7 +574,7 @@ function makeStream(type, lane, deck) {
   S.visible = () => !root.hidden && !deck.el.hidden;
   S.io = new IntersectionObserver((es) => { S.near = es.some((e) => e.isIntersecting); if (S.near) S.pump(); }, { root: S.list, rootMargin: '0px 0px 1600px 0px' });
   S.io.observe(S.sent);
-  S.list.addEventListener('scroll', () => { if (!deck.el.hidden) S.scroll = S.list.scrollTop; }, { passive: true });
+  S.list.addEventListener('scroll', () => { if (S.visible()) S.scroll = S.list.scrollTop; }, { passive: true });
   S.w = () => cfg.streamW - 2 * 10 - 2;
   S.place = (batch) => {
     const W = S.w();
@@ -606,7 +612,7 @@ function makeStream(type, lane, deck) {
 function makeDeck(lane) {
   const D = { kind: 'deck', lane, alive: true, streams: new Map(), scroll: 0, w: cfg.streamW };
   D.el = h('div', { className: 'fd-deck' });
-  D.el.addEventListener('scroll', () => { if (!D.el.hidden) D.scroll = D.el.scrollLeft; }, { passive: true });
+  D.el.addEventListener('scroll', () => { if (!root.hidden && !D.el.hidden) D.scroll = D.el.scrollLeft; }, { passive: true });
   D.sync = () => {
     for (const [t, s] of D.streams) if (!cfg.streams.includes(t)) { s.destroy(); D.streams.delete(t); }
     const els = [];
@@ -902,6 +908,7 @@ function figStrip(it, card, body, ctx) {
 }
 function renderPeek(card, body, ctx) {
   const it = itemOf(card); if (!it) return;
+  body.onclick = (e) => { if (e.target.closest('.pk-fig, .pk-text, .pk-eqrow, .pk-tbl, .pk-pq, .pk-claim') && !e.target.closest('a, button')) openCard(card, { pdf: e.shiftKey }); };
   const L = listOf(recFeed(card), state.lane);
   const W = ctx.width, Hmax = innerHeight * 0.7;
   const t = card.type;
@@ -919,8 +926,7 @@ function renderPeek(card, body, ctx) {
     figStrip(it, card, body, ctx);
     return;
   }
-  const head2 = h('div', { className: 'pk-kind' }, h('span', { className: 'fd-chip c-' + t, textContent: chipOf(card) }), card.sec ? h('span', { className: 'pk-sec', textContent: card.sec }) : null);
-  body.append(head2);
+  if (t !== 'table' || card.sec) body.append(h('div', { className: 'pk-kind' }, t !== 'table' ? h('span', { className: 'fd-chip c-' + t, textContent: chipOf(card) }) : null, card.sec ? h('span', { className: 'pk-sec', textContent: card.sec }) : null));
   if (t === 'table') {
     body.append(h('div', { className: 'pk-cap' }, h('b', { textContent: card.label || 'Table' }), card.caption || ''));
     const box = h('div', { className: 'pk-tbl' }); box.append(card.html ? htmlEl('fg-tbl-in', card.html) : h('pre', { textContent: card.text }));
@@ -947,7 +953,7 @@ function renderPeek(card, body, ctx) {
     body.append(h('div', { className: 'pk-leadbox' }, im));
   }
   const others = L.cards.filter((c) => c.id === card.id && c.cid !== card.cid && !hidden.has(c.cid)).slice(0, 4);
-  if (others.length) body.append(h('div', { className: 'pk-others' }, h('div', { className: 'pk-sl', textContent: 'More from this item' }), ...others.map((c) => h('div', { className: 'pk-o' }, h('span', { className: 'fd-chip c-' + c.type, textContent: TYPE_LABEL[c.type] || c.type }), ' ', c.value ? h('b', { textContent: c.value + ' ' }) : null, (c.text || '').slice(0, 300)))));
+  if (others.length) body.append(h('div', { className: 'pk-others' }, h('div', { className: 'pk-sl', textContent: 'More from this item' }), ...others.map((c) => h('div', { className: 'pk-o' }, h('span', { className: 'fd-chip c-' + c.type, textContent: c.type === 'table' ? c.label || 'Table' : chipOf(c) }), ' ', c.value ? h('b', { textContent: c.value + ' ' }) : null, (c.type === 'table' ? c.caption || '' : c.text || '').slice(0, 300)))));
   body.append(h('div', { className: 'pk-meta' }, ...peekMeta(it, card)), peekKeys());
 }
 // ---------------------------------------------------------------- opening at the place
@@ -1004,12 +1010,25 @@ on('spread:rendered', ({ i, it }) => {
   markQuote(dive);
 });
 const skel = (s) => String(s || '').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g, '');
-async function markQuote(d) {
-  d.n++;
+/** After the dive's spread is on screen: find the quote's first 12 words among
+ *  the words of the item, light them for 4 s and bring them on screen. Text
+ *  layers can arrive after the render, so try a few times. */
+function markQuote(d) {
+  clearTimeout(d.retry);
+  const attempt = async (k) => {
+    if (dive !== d) return;
+    if (await findMark(d)) { dive = null; return; }
+    if (dive !== d) return;
+    if (k < 4 && performance.now() - d.t < 12000) d.retry = setTimeout(() => attempt(k + 1), [250, 600, 1200, 2400][k]);
+    else if (++d.n >= 3) dive = null;
+  };
+  attempt(0);
+}
+async function findMark(d) {
   const target = skel(String(d.quote).split(/\s+/).slice(0, 12).join(' '));
-  if (target.length < 12) { dive = null; return; }
+  if (target.length < 12) return true;
   const r = await currentWords().catch(() => null);
-  if (dive !== d) return;
+  if (dive !== d) return true;
   const ws = r?.words || [];
   const sk = ws.map((w) => skel(w.text));
   for (let j = 0; j < ws.length; j++) {
@@ -1018,13 +1037,36 @@ async function markQuote(d) {
     while (e < ws.length && acc.length < target.length) acc += sk[e++];
     if (acc.startsWith(target) || target.startsWith(acc)) {
       const run = ws.slice(j, e);
-      highlight('fd', run);
-      setTimeout(() => highlight('fd', []), 4000);
       dive = null;
-      return;
+      showMark(d.i, run);
+      return true;
     }
   }
-  if (d.n >= 3 || performance.now() - d.t > 9000) dive = null; // not on screen yet: try the next render, a few times
+  return false;
+}
+
+/** Light the run for 4 s and keep it on screen while the page settles: a
+ *  raster page's text layer can arrive late, and images loading above a quote
+ *  can push a flow's columns along. Stops as soon as the reader moves. */
+function showMark(i, run) {
+  // A quote inside a collapsed section (LessWrong's <details>): open it first.
+  const closed = run[0].range?.startContainer?.parentElement?.closest('details:not([open])');
+  if (closed) closed.open = true;
+  highlight('fd', run);
+  reveal(run[0]);
+  const s0 = () => state.start.get(i);
+  let mine = null;
+  queueMicrotask(() => { mine = s0(); });
+  const check = (k) => {
+    if (state.view !== 'feed' || state.order[state.pos] !== i || (mine != null && s0() !== mine)) return;
+    highlight('fd', run); // text-layer spans that exist now
+    const w = run[0];
+    const r = w.range?.getBoundingClientRect?.() || w.el?.getBoundingClientRect?.();
+    if (r && (r.right < 0 || r.left > innerWidth)) { reveal(w); queueMicrotask(() => { mine = s0(); }); }
+    if (k < 3) setTimeout(() => check(k + 1), [500, 900, 1400][k]);
+  };
+  setTimeout(() => check(0), 400);
+  setTimeout(() => highlight('fd', []), 4000);
 }
 
 // ---------------------------------------------------------------- actions
@@ -1126,16 +1168,18 @@ function togglePin() {
 
 // ---------------------------------------------------------------- keys
 const REPEAT = new Set(['j', 'k', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ']);
+/** The card the action keys act on: the one in the open peek, else the selection. */
+const target = () => { const pk = peekState(); const r = pk.open && pk.root === root && pk.card ? cardRec.get(pk.card) : null; return r && !r.hidden ? r : V.sel; };
 const KEYS = {
   j: () => step(1), k: () => step(-1),
   ArrowDown: () => spatial(0, 1), ArrowUp: () => spatial(0, -1), ArrowRight: () => spatial(1, 0), ArrowLeft: () => spatial(-1, 0),
   ' ': (e) => { const S = activeStream(); const sc = S?.kind === 'stream' ? S.list : S?.el; sc?.scrollBy({ top: (e.shiftKey ? -1 : 1) * sc.clientHeight * 0.85 }); },
-  Enter: (e) => { const r = V.sel; if (r && !r.hidden) openCard(r.card, { pdf: e.shiftKey, feed: r.type }); },
+  Enter: (e) => { const r = target(); if (r && !r.hidden) openCard(r.card, { pdf: e.shiftKey, feed: r.type }); },
   z: togglePin, Z: togglePin,
-  q: () => V.sel && !V.sel.hidden && quote(V.sel),
-  s: () => V.sel && save(V.sel),
-  x: () => hide(V.sel), X: () => hideItem(V.sel), u: () => undo(),
-  o: () => V.sel && original(V.sel),
+  q: () => { const r = target(); if (r && !r.hidden) quote(r); },
+  s: () => { const r = target(); if (r) save(r); },
+  x: () => hide(target()), X: () => hideItem(target()), u: () => undo(),
+  o: () => { const r = target(); if (r) original(r); },
   '[': () => nextFeed(-1), ']': () => nextFeed(1),
   c: () => setLayout(cfg.layout === 'board' ? 'columns' : 'board'),
   '-': () => density(-1), '=': () => density(1), '+': () => density(1),
@@ -1170,7 +1214,7 @@ keyHelp.push(
 
 // ---------------------------------------------------------------- dev hooks
 window.__feeds = {
-  cfg, lists, V, openCard, getFeed, placeMs,
+  cfg, lists, V, openCard, getFeed, placeMs, setType, setLayout,
   /** Run the ink test over every plate candidate in a lane, in idle time. */
   async verifyAll(lane = state.lane) {
     let off = 0, done = false, tested = 0, passed = 0; const out = [];

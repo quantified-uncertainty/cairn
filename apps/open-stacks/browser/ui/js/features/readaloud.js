@@ -612,8 +612,9 @@ function anchorAt(r, j) {
 }
 
 // --- raster pages: PDFs and scans ---
-let TL = null; // features/textlayer.js: pageModel(it, k) gives the words its spans are made from
-const tlReady = import('./textlayer.js').then((m) => (TL = m)).catch(() => null);
+// features/textlayer.js: pageModel(it, k) gives the words its spans are made from
+// (loaded lazily, so read-aloud still works on flow text without it).
+const tlReady = import('./textlayer.js').catch(() => null);
 const ENDS_LINE = /[.!?:…]["'”’)\]]*$/;
 const isPageNo = (t) => /^\s*(\d{1,4}|[ivxlc]{1,7})\s*$/i.test(t);
 /** Paragraph numbers for lines { x0, x1, top, bottom, h, text } in reading order:
@@ -635,13 +636,15 @@ function paragraphs(lines, W) {
     return para;
   });
 }
-/** A PDF page's words from pdf.js: lines rebuilt, page numbers and sideways
- *  text left out, paragraphs found, line-end hyphens joined. */
-async function pdfWords(it, k) {
-  const d = await openDoc(it);
-  const page = await d.pdf.getPage(k + 1);
-  const tc = await page.getTextContent();
-  const [vx0, vy0, vx1, vy1] = page.view, W = vx1 - vx0, H = vy1 - vy0;
+/** A PDF page's words from its pdf.js text (`tc`, with the page's view box):
+ *  lines rebuilt, page numbers and sideways text left out, paragraphs found,
+ *  line-end hyphens joined. */
+async function pdfText(it, k) {
+  const page = await (await openDoc(it)).pdf.getPage(k + 1);
+  return { tc: await page.getTextContent(), view: page.view };
+}
+function pdfWords(tc, view, k) {
+  const [vx0, vy0, vx1, vy1] = view, W = vx1 - vx0, H = vy1 - vy0;
   const lines = []; let L = null;
   for (const x of tc.items) {
     if (typeof x.str !== 'string') continue;
@@ -708,8 +711,12 @@ async function scanWords(it, k) {
 async function pageWords(r, k) {
   const tl = await tlReady;
   if (r.kind === 'pdf') {
-    const ws = await pdfWords(r.it, k);
-    if (tl?.pageModel) { try { bindWi(ws, (await tl.pageModel(r.it, k)).words.map((w) => w.t)); } catch { /* no layer for this page */ } }
+    // The text layer's page model holds the page's pdf.js text already: one parse for both.
+    let m = null;
+    if (tl?.pageModel) { try { m = await tl.pageModel(r.it, k); } catch { /* no layer for this page */ } }
+    const { tc, view } = m?.tc && m.vp?.viewBox ? { tc: m.tc, view: m.vp.viewBox } : await pdfText(r.it, k);
+    const ws = pdfWords(tc, view, k);
+    if (m?.words) bindWi(ws, m.words.map((w) => w.t));
     return ws;
   }
   if (tl?.pageModel) { try { const m = await tl.pageModel(r.it, k); if (m.kind === 'ocr') return ocrWords(m, k); } catch { /* no word boxes */ } }
@@ -788,9 +795,11 @@ function extend(r) {
 function ensureAhead(r) {
   while (r.passages.length - r.index <= 4 && extend(r)) { /* cut more */ }
   if (r.kind === 'flow' || r.next >= r.n || r.ahead) return;
-  if (r.passages.length - r.index > 4 && r.words.length - r.cur > 250) return;
+  // the pages on screen (a click there is then instant), and enough ahead of the voice
+  const onScreenEnd = (state.start.get(r.i) ?? 0) + Math.max(1, state.shown || 1);
+  if (r.next >= onScreenEnd && r.passages.length - r.index > 4 && r.words.length - r.cur > 250) return;
   r.ahead = true;
-  more(r).finally(() => { r.ahead = false; if (R === r && r.playing && engines.get(r.eng)?.kind === 'audio') prefetch(r.index); });
+  more(r).finally(() => { r.ahead = false; if (R !== r) return; ensureAhead(r); if (r.playing && engines.get(r.eng)?.kind === 'audio') prefetch(r.index); });
 }
 /** The reading's word on raster page k nearest text-layer word `wi` (else the page's first). */
 function wordFor(r, k, wi) {
@@ -835,9 +844,10 @@ async function begin(opt = {}) {
     moveTo(j);
     return;
   }
+  // where the reader is, read before the player takes its room (the pages then shrink a little)
+  const s = state.start.get(i) ?? 0, shown = Math.max(1, state.shown || 1);
   setMode(true);
   paintBar();
-  const s = state.start.get(i) ?? 0, shown = Math.max(1, state.shown || 1);
   let k = opt.page, wi = opt.wi;
   if (k == null && prev?.page != null && prev.page >= s && prev.page < s + shown) ({ page: k, wi } = prev);
   if (k == null) k = s;
@@ -867,10 +877,14 @@ function exitMode(remember = true) {
   endSession(remember);
   setMode(false);
 }
+let perHeld = null; // pages a spread had when the mode began, kept while the player takes room
 function setMode(on) {
   if (mode === on) { paintBar(); return; }
   mode = on;
   document.documentElement.classList.toggle('ra-on', on);
+  // A shorter stage would fit another page and regroup the spread: keep the pages as they are.
+  if (on && state.perAuto && !isFlow(items[current()])) { perHeld = state.per; state.perAuto = false; }
+  else if (!on && perHeld != null) { if (!state.perAuto && state.per === perHeld) state.perAuto = true; perHeld = null; }
   if (on) buildBar();
   paintBar();
   if (state.view === 'feed') showFeed(); // the pages make room for the player, or take it back
@@ -1532,9 +1546,14 @@ document.addEventListener('click', (e) => {
   if (a) toast('Reading from the link', { icon: 'volume-2', sub: 'Click it again to follow it' });
   readFrom(hit);
 }, true);
-// Hovering a word in the mode marks it lightly: that is where a click reads from.
-let hovRaf = 0, hovT = 0, hovXY = null;
+// Hovering a word in the mode marks it lightly (for 1.5 s after the pointer
+// stops): that is where a click reads from.
+let hovRaf = 0, hovT = 0, hovXY = null, hovEl = null;
+const unhover = () => { hovEl?.classList.remove('ra-hov'); hovEl = null; };
 addEventListener('mousemove', (e) => {
+  const w = mode && R && R.kind !== 'flow' ? e.target.closest?.('#spread .tl .w') : null;
+  if (w !== hovEl) { unhover(); if (w) { hovEl = w; w.classList.add('ra-hov'); } }
+  if (w) { clearTimeout(hovT); hovT = setTimeout(unhover, 1500); }
   if (!mode || R?.kind !== 'flow' || !e.target.closest?.('#spread .flow')) { if (hovXY) { hovXY = null; highlight('tts-hover', []); } return; }
   hovXY = [e.clientX, e.clientY];
   if (hovRaf) return;

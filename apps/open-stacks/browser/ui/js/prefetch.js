@@ -117,11 +117,9 @@ export function planAround(i, s) {
     } });
   });
   plan(tasks);
-  // The next items' profiles, in one request; when some arrive, plan again so
-  // their first spreads are prepared the profile's way.
-  const pos0 = state.pos;
-  loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x)))
-    .then((got) => { if (got && state.pos === pos0 && state.order[state.pos] === i) planAround(i, state.start.get(i) ?? s); }, () => {});
+  // The next items' profiles, in one request (when they arrive, 'profile:updated'
+  // below plans again, so their first spreads are prepared the profile's way).
+  loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x))).catch(() => {});
   // The server works further ahead, into its disk cache, in priority bands:
   // sharp pages near you, then the next few items' first spreads, then sharp
   // pages further out, then the later items, then small pages around you.
@@ -157,16 +155,20 @@ export function planAround(i, s) {
   serverPrefetch(thumbs, 30, 'thumbs');
 }
 
-// The current item's profile arrived or changed how it crops: prepare the pages
-// around the reader again (renders are keyed by the crop, so they redo once).
+// The profile of the current item, or of one of the next three, arrived or
+// changed how it crops: prepare those pages again (renders are keyed by the
+// crop, so what was prepared before would not be found).
 let planned = new Map(); // id -> cropKey last planned with
+let replanT = null;
 on('profile:updated', ({ id, profile }) => {
   const i = state.order[state.pos]; const it = items[i];
-  if (!it || it.id !== id || state.view !== 'feed') return;
+  if (!it || state.view !== 'feed') return;
+  if (it.id !== id && !state.order.slice(state.pos + 1, state.pos + 4).some((ii) => items[ii]?.id === id)) return;
   const ck = cropKey(profile);
   if (planned.get(id) === ck) return;
   planned.set(id, ck); if (planned.size > 50) planned = new Map([...planned].slice(-25));
-  planAround(i, state.start.get(i) ?? 0);
+  clearTimeout(replanT);
+  replanT = setTimeout(() => { if (state.order[state.pos] === i) planAround(i, state.start.get(i) ?? 0); }, 50);
 });
 // Settled on an item with a profile: its sprite comes in (one small image), and
 // a PDF shown from display images is opened in idle time, so the first turn past
