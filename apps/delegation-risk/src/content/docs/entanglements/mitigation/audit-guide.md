@@ -47,9 +47,9 @@ Then draw the graph: data flows, shared resources, and every point where third-p
 
 **2.2 Shared artifacts and infrastructure.** For each shared item (prompt template, rubric, retrieval index, database, cache, credential store, CI pipeline, cloud region), ask which checks fail if it fails or is wrong. Look specifically for checks that *fail open*: a timeout or error that lets the action through.
 
-**2.3 Measure φ.** Build a labeled challenge set of harmful items for each action class. Cover categories (domain, difficulty, novelty, attack type) so that blind spots show up as cells where every check misses. Run every check on every item, record misses, and compute the pairwise φ matrix with the code on the measurement page. Bootstrap confidence intervals.
+**2.3 Measure ρ.** Build a labeled challenge set of harmful items for each action class. Cover categories (domain, difficulty, novelty, attack type) so that blind spots show up as cells where every check misses. Do not assemble it from items that one of the checks already missed or flagged; selecting on a check's outcome biases its correlation with the others. Size it for the budget ([sampling error](/entanglements/detection/correlation-calculator/#estimating-ρ-from-joint-misses)). Run every check on every item, record misses, and compute the pairwise ρ matrix with the code on the measurement page. Bootstrap confidence intervals.
 
-**2.4 Repeat under stress.** Re-run a sample at high load, with a shared dependency degraded, and with injected latency. Compare φ and the fail-open rate with normal conditions.
+**2.4 Repeat under stress.** Re-run a sample at high load, with a shared dependency degraded, and with injected latency. Compare ρ and the fail-open rate with normal conditions.
 
 ## Phase 3: Active entanglement
 
@@ -93,15 +93,15 @@ Prioritize novel domains, multi-step attacks, social engineering, obfuscated cod
 - *favoritism:* the same verifier's approval rate across agents doing comparable work;
 - *logical coordination:* two instances of the same model given the same scenario separately, compared with a model from another family.
 
-**4.4 Control evaluation.** For the defection and hijack channels, the benign φ from phase 2 does not apply. Have the red team, knowing the full stack, build attacks against it, and measure the joint miss rate on those attacks ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). If no such evaluation is run, record ρ = 1 for those channels.
+**4.4 Control evaluation.** For the defection and hijack channels, the benign ρ from phase 2 does not apply. Have the red team, knowing the full stack, build attacks against it, and measure the joint miss rate on those attacks ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). If no such evaluation is run, record ρ = 1 for those channels.
 
 ## Phase 5: Quantify
 
 For each action class:
 
-1. **Correlation matrix.** Measured φ where you have it. For pairs you could not measure, use the [assumed priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure) and mark them as assumed.
-2. **P(all miss).** The mixture with the largest pairwise ρ gives a conservative figure; simulating the matrix gives a sharper one. Report both.
-3. **Budget check.** Compare the upper confidence bound of the max pairwise φ with ρ_max, and P(all miss) with the target.
+1. **Correlation matrix.** Measured ρ where you have it. For pairs you could not measure, use the [assumed priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure) and mark them as assumed.
+2. **P(all miss).** The mixture with the largest pairwise ρ gives a conservative figure; simulating the matrix gives a sharper one. Report both, and the observed rate on the challenge set where it has enough joint misses to estimate: that is the only figure that does not depend on a correlation model.
+3. **Budget check.** Compare the upper confidence bound of the max pairwise ρ with ρ_max, and P(all miss) with the target.
 4. **Adversarial channels.** Report the control-evaluation joint miss rate, or "best single layer" if none was run.
 5. **Effective layers.** For roughly identical layers, ln P(all miss) / ln p.
 
@@ -117,7 +117,7 @@ Rank findings by how much expected loss each fix removes per unit of cost ([when
 # Entanglement audit: [system], [date], [auditors]
 
 ## Per action class
-| Action class | Target P(all miss) | ρ_max | Max φ (measured / assumed) | P(all miss) | Adversarial joint miss | Verdict |
+| Action class | Target P(all miss) | ρ_max | Max ρ (measured / assumed) | P(all miss) | Adversarial joint miss | Verdict |
 
 ## Findings
 - Master keys: [count, classes]
@@ -145,6 +145,6 @@ Common ways audits miss entanglement:
 ---
 
 See also:
-- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): φ, thresholds and priors
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): ρ, thresholds and priors
 - [Detecting Influence](/entanglements/detection/detecting-influence/): the methods behind phases 3 and 4
 - [Solutions](/entanglements/mitigation/solutions/): remediation options

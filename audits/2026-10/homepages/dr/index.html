@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delegation Risk</title>
+<meta name="description" content="Treating the risk of delegating to people, software and AI agents as a quantity you can estimate, budget and design against.">
+<script>
+  /* Starlight's ThemeProvider does this: resolve the stored or system theme before paint. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('starlight-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+/* =====================================================================
+   1. Tokens, in Starlight's own variable names. Neutrals are identical
+      to the CAIRN Handbook FINAL; only the three accent values differ
+      (Delegation Risk: ledger red). Starlight's convention: :root is
+      dark, [data-theme='light'] is light.
+   ===================================================================== */
+/* SPEC: tokens (dark) */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings          16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text         12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text     7.1:1 */
+  --sl-color-gray-4: #8f897e;
+  --sl-color-gray-5: #45423c;  /* borders, rules */
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #3d1f19;
+  --sl-color-accent: #c4523b;
+  --sl-color-accent-high: #f29a84; /* link underline in dark */
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  color-scheme: dark;
+}
+/* SPEC: tokens (light) */
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings          17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text         13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text     6.8:1 */
+  --sl-color-gray-4: #6f6a61;
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #f6ddd6;
+  --sl-color-accent: #a8321f;  /* link underline in light, 6.7:1 */
+  --sl-color-accent-high: #6e2014;
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
+  color-scheme: light;
+}
+/* Mock only: with no data-theme attribute, follow the OS. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --sl-color-white: #1c1b19; --sl-color-gray-1: #24221f; --sl-color-gray-2: #2e2c28;
+    --sl-color-gray-3: #5f5b53; --sl-color-gray-4: #6f6a61; --sl-color-gray-5: #d6d1c7;
+    --sl-color-gray-6: #ebe8e2; --sl-color-gray-7: #f7f6f3; --sl-color-black: #ffffff;
+    --sl-color-accent-low: #f6ddd6; --sl-color-accent: #a8321f; --sl-color-accent-high: #6e2014;
+    --sl-color-text-accent: var(--sl-color-accent);
+    --sl-color-bg-nav: var(--sl-color-gray-7);
+    --sl-color-hairline: var(--sl-color-gray-6);
+    --sl-color-hairline-shade: var(--sl-color-gray-6);
+    color-scheme: light;
+  }
+}
+
+/* =====================================================================
+   2. Starlight defaults this mock imitates (not part of the spec).
+   ===================================================================== */
+:root {
+  --sl-font-system: ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --sl-nav-height: 3.5rem;
+  --sl-content-pad-x: 1rem;
+  --sl-content-width: 67.5rem;
+  --sl-content-gap-y: 1rem;
+  --sl-line-height: 1.75;
+  --sl-text-h1: 2.1875rem;
+  --sl-text-h2: 2.1875rem;
+}
+@media (min-width: 50em) {
+  :root { --sl-nav-height: 4rem; --sl-content-pad-x: 1.5rem; --sl-text-h1: 2.625rem; }
+}
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sl-font-system);
+  line-height: var(--sl-line-height);
+  -webkit-font-smoothing: antialiased;
+  color: var(--sl-color-text);
+  background-color: var(--sl-color-black);
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.header {
+  position: sticky; top: 0; z-index: 10;
+  height: var(--sl-nav-height);
+  padding: 0 var(--sl-content-pad-x);
+  background: var(--sl-color-bg-nav);
+  border-bottom: 1px solid var(--sl-color-hairline-shade);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.site-title { font-size: 1.25rem; font-weight: 600; white-space: nowrap; color: var(--sl-color-white); text-decoration: none; }
+.search {
+  display: flex; align-items: center; gap: .5rem; height: 2.5rem; padding: 0 .25rem;
+  border: 0; background: none; color: var(--sl-color-gray-1); font: inherit; cursor: pointer;
+}
+.search .label, .search kbd { display: none; }
+.search svg { width: 1.25rem; height: 1.25rem; }
+.right { display: none; align-items: center; gap: 1rem; }
+.right .gh { color: var(--sl-color-gray-3); display: flex; }
+.right .gh svg { width: 1.25rem; height: 1.25rem; }
+.right .sep { width: 1px; height: 2rem; background: var(--sl-color-gray-5); }
+.theme select { font: inherit; font-size: .875rem; color: var(--sl-color-gray-2); background: transparent; border: 0; padding: .25rem 0; cursor: pointer; }
+.theme select option { background: var(--sl-color-black); color: var(--sl-color-gray-2); }
+@media (min-width: 50em) {
+  .header { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(0, 22rem) 1fr; }
+  .search {
+    width: 100%; padding: 0 .5rem 0 .75rem;
+    border: 1px solid var(--sl-color-gray-5); border-radius: .5rem;
+    background: var(--sl-color-black); color: var(--sl-color-gray-2); font-size: .875rem;
+  }
+  .search svg { width: 1rem; height: 1rem; }
+  .search .label { display: inline; }
+  .search kbd { display: inline; margin-left: auto; padding: 0 .375rem; border-radius: .25rem;
+    background: var(--sl-color-gray-6); color: var(--sl-color-gray-2); font: inherit; font-size: .75rem; }
+  .right { display: flex; justify-self: end; }
+}
+
+main { padding: 0 0 3vh; }
+.content-panel { padding: 1.5rem var(--sl-content-pad-x); }
+.content-panel + .content-panel { border-top: 1px solid var(--sl-color-hairline); }
+.sl-container { max-width: var(--sl-content-width); }
+@media (min-width: 72rem) { .sl-container { margin-inline: auto; } }
+.sl-container > * + * { margin-top: 1.5rem; }
+h1 { font-size: var(--sl-text-h1); line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content > * + * { margin-top: var(--sl-content-gap-y); }
+.sl-markdown-content :not(h2) + h2 { margin-top: 1.5em; }
+.sl-markdown-content h2 { font-size: var(--sl-text-h2); line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content strong { font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content a { color: var(--sl-color-text-accent); }
+.sl-markdown-content a:hover { color: var(--sl-color-white); }
+.sl-markdown-content dt { font-weight: 700; }
+.sl-markdown-content dd { padding-inline-start: 1rem; }
+.sl-markdown-content dd + dt { margin-top: var(--sl-content-gap-y); }
+.sl-markdown-content dt + dd { margin-top: .25rem; }
+footer { display: flex; justify-content: center; margin: 3rem 0 1.5rem; }
+.version { font-size: .8125rem; color: var(--sl-color-gray-3); }
+
+/* =====================================================================
+   3. SPEC: links (site-wide). Red link text reads as "missing page" to
+      wiki readers, so links keep the text colour and carry the accent
+      in the underline only.
+   ===================================================================== */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: inherit;
+  text-decoration-color: var(--sl-color-text-accent);
+  text-underline-offset: .2em;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover { color: inherit; text-decoration-thickness: 2px; }
+
+/* =====================================================================
+   4. SPEC: home.css. Identical to the Handbook's, plus .formula.
+      Scoped to splash pages (no sidebar), so inner pages are untouched.
+   ===================================================================== */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 39rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt { font-weight: 600; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd { padding-inline-start: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr ~ p { font-size: 1rem; color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr + p a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .sl-markdown-content .status { color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content .status strong { color: inherit; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(p, dd) { text-wrap: pretty; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .sl-markdown-content .formula { padding-inline-start: 1.5rem; color: var(--sl-color-white); }
+:root:not([data-has-sidebar]) .sl-markdown-content .formula span { white-space: nowrap; }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="site-title" href="/">Delegation Risk</a>
+  <button class="search" type="button" aria-label="Search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span class="label">Search</span>
+    <kbd>Ctrl K</kbd>
+  </button>
+  <div class="right">
+    <a class="gh" href="https://github.com/quantified-uncertainty/delegation-risk-framework" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"/></svg>
+    </a>
+    <span class="sep" aria-hidden="true"></span>
+    <label class="theme">
+      <span class="sr-only">Select theme</span>
+      <select id="theme-select">
+        <option value="auto">Auto</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main>
+  <!-- Starlight PageTitle panel: renders the frontmatter title once `hero` is removed. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <h1 id="_top">Delegation Risk</h1>
+    </div>
+  </div>
+
+  <!-- Starlight MarkdownContent panel: this is the body of index.mdx. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <div class="sl-markdown-content">
+        <p>This site treats the risk of handing work to people, software and, above all, AI agents as a quantity: something to estimate before acting, budget across a system and design to keep small.</p>
+
+        <p class="status"><strong>Epistemic status:</strong> early-stage, exploratory work, written quickly with LLM assistance. The core ideas seem promising, but the framework is largely untested on real AI systems and most numbers on the site are illustrative. See <a href="/reference/about-this-site/">About This Site</a>.</p>
+
+        <p>Start with <a href="/getting-started/five-minute-intro/">Delegation Risk in 5 Minutes</a>, the whole argument on one page. Then follow <a href="/getting-started/reading-order/#the-core-path">the Core Path</a>, fifteen stops through the strongest material, in order. If you build agent systems, <a href="/getting-started/for-engineers/">For Engineers</a> shows where the ideas sit in a current agent stack.</p>
+
+        <h2 id="the-idea-in-brief">The idea in brief</h2>
+
+        <p><strong>Risk is a number you can budget.</strong> For each way a delegation can go wrong, multiply its probability by the damage it would do, and add up the results:</p>
+
+        <p class="formula">Delegation risk = <span>Σ P(harm mode) × Damage</span></p>
+
+        <p>A research assistant that might leak proprietary data (P = 0.001 a month, damage $50,000) contributes $50 a month. Harm arrives through three channels: <a href="/delegation-risk/risk-decomposition/">accident, defection and hijack</a>.</p>
+
+        <p><strong>Stacked checks fail together.</strong> Three checks that each miss 10% of harmful actions promise a 0.1% miss rate if they fail independently. If they share a common cause with weight ρ (the same model, data or context), the <a href="/delegation-risk/risk-propagation/">beta‑factor correction</a> gives a miss rate of (1&minus;ρ)·0.001 + ρ·0.1. That is about 11 times the promised rate at ρ&nbsp;=&nbsp;0.1, 21 times at 0.2 and 50 times at 0.5. This multiplier is the <a href="/entanglements/">entanglement tax</a>.</p>
+
+        <p>The weight ρ is assumed, not measured. Against an attacker who searches for inputs that defeat every layer at once, assume ρ is near&nbsp;1: three checks are then worth one.</p>
+
+        <p><strong>Do the accounting at runtime.</strong> Before a consequential action, the agent&rsquo;s harness runs a <a href="/delegation-risk/runtime-accounting/">risk preflight</a> that estimates expected damage. It enforces an <a href="/delegation-risk/runtime-accounting/#2-the-exposure-envelope">exposure envelope</a> of hard limits that hold whatever the agent intends, and keeps an <a href="/delegation-risk/runtime-accounting/#3-the-exposure-ledger">exposure ledger</a> reconciled against real incidents.</p>
+
+        <h2 id="contents">Contents</h2>
+        <dl>
+          <dt><a href="/delegation-risk/">Delegation Risk</a></dt>
+          <dd>The formula, harm channels, propagation, runtime accounting and insurance.</dd>
+          <dt><a href="/entanglements/">Entanglements</a></dt>
+          <dd>Why stacked safety checks fail together, and how to measure and reduce it.</dd>
+          <dt><a href="/design-patterns/">Design Patterns</a></dt>
+          <dd>Twenty patterns for bounding delegation risk, each mapped to its prior art.</dd>
+          <dt><a href="/case-studies/">Case Studies</a></dt>
+          <dd>Agent incidents, and institutions such as nuclear launch authority and juries.</dd>
+          <dt><a href="/research/">Research</a></dt>
+          <dd>Evidence on scheming, precedents from other fields, and open problems.</dd>
+          <dt><a href="/power-dynamics/">Power Dynamics</a></dt>
+          <dd>Speculative: how a delegate&rsquo;s agency and power map onto the risk formula.</dd>
+          <dt>Reference</dt>
+          <dd><a href="/getting-started/core-concepts/">Concepts</a>, <a href="/getting-started/glossary/">Glossary</a>, <a href="/getting-started/quick-reference/">Quick Reference</a>, <a href="/getting-started/faq/">FAQ</a>, <a href="/reference/related-approaches/">Related Approaches</a>, <a href="/reference/bibliography/">Bibliography</a>.</dd>
+        </dl>
+
+        <hr>
+
+        <p>Sibling sites: <a href="https://reasoning-processes.quantifieduncertainty.org/">Robust Reasoning Processes</a>, <a href="https://evaluation-engineering.quantifieduncertainty.org/">Evaluation Engineering</a> and the <a href="https://cairn-meta.vercel.app/">CAIRN Handbook</a>.</p>
+
+        <p>Maintained by the <a href="https://quantifieduncertainty.org/">Quantified Uncertainty Research Institute</a>. Source on <a href="https://github.com/quantified-uncertainty/delegation-risk-framework">GitHub</a>.</p>
+      </div>
+
+      <footer><span class="version">v0.0.1+320fa80</span></footer>
+    </div>
+  </div>
+</main>
+
+<script>
+  /* Stand-in for Starlight's ThemeSelect. */
+  (function () {
+    var sel = document.getElementById('theme-select');
+    var stored = null;
+    try { stored = localStorage.getItem('starlight-theme'); } catch (e) {}
+    sel.value = stored === 'light' || stored === 'dark' ? stored : 'auto';
+    sel.addEventListener('change', function () {
+      var v = sel.value;
+      try { v === 'auto' ? localStorage.removeItem('starlight-theme') : localStorage.setItem('starlight-theme', v); } catch (e) {}
+      if (v === 'auto') v = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', v);
+    });
+  })();
+</script>
+</body>
+</html>

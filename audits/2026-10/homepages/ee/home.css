@@ -1,0 +1,57 @@
+/* apps/evaluation-engineering/src/styles/home.css
+   Register after global.css: customCss: ['./src/styles/global.css', './src/styles/home.css'].
+   Unlayered, so it overrides Starlight's layered defaults. Neutrals are the CAIRN family set
+   (identical to the Handbook); only the three accent values are Evaluation Engineering's. */
+
+/* Site-wide tokens. Starlight's :root is dark. */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings        16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text       12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text   7.1:1 */
+  --sl-color-gray-4: #8f897e;
+  --sl-color-gray-5: #45423c;
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #173323;
+  --sl-color-accent: #3f9a68;
+  --sl-color-accent-high: #7fd2a0; /* links     10.1:1 */
+}
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings        17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text       13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text   6.8:1 */
+  --sl-color-gray-4: #6f6a61;
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;  /* nav bg */
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #d5ece0;
+  --sl-color-accent: #1f6e46;  /* links            6.2:1 */
+  --sl-color-accent-high: #124a2e;
+}
+
+/* Homepage only (splash pages have no sidebar). Use :root, not html:
+   Starlight's own unlayered `html:not([data-has-sidebar])` would otherwise win. */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 39rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+  --sl-text-h3: 1.0625rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2.5rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 + h3 { margin-top: 1rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h3 + * { margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol { padding-left: 2em; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol ::marker { color: var(--sl-color-gray-3); font-variant-numeric: tabular-nums; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol + ul { list-style: none; padding-left: 2em; margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a { text-decoration: none; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a:hover { text-decoration: underline; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr ~ p { font-size: 1rem; color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr + p a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }

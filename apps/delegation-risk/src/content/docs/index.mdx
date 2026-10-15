@@ -38,7 +38,7 @@ Stacked safeguards are rarely independent. Put three checks that each miss 10% o
 
 Two caveats:
 
-- **ρ is assumed, not measured.** We know of no measurement of it for same-provider monitor stacks on the failure-indicator scale this formula uses. Empirical work does find that different LLMs' errors are substantially correlated, more so among more capable models and even across providers (Goel et al. 2025, [arXiv:2502.04313](https://arxiv.org/abs/2502.04313); Kim et al. 2025, [arXiv:2506.07962](https://arxiv.org/abs/2506.07962)).
+- **ρ is measured only on benchmarks.** Recomputed from Kim et al.'s released MMLU data ([arXiv:2506.07962](https://arxiv.org/abs/2506.07962)), strong LLMs from different providers have ρ of about 0.3–0.6 on their misses and models from one provider about 0.5–0.7, so 50× is a plausible central value ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Nothing comparable has been measured for harm detection.
 - **It is benign-failure math.** Against an attacker who searches for inputs that defeat every layer at once, assume ρ near 1 unless a control evaluation shows otherwise.
 
 ## Why AI systems

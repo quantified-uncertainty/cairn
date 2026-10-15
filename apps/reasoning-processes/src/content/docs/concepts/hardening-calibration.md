@@ -27,7 +27,7 @@ Calibration is **necessary, not sufficient**, and the gap is exactly where the a
 | Self-insurance pricing | premium demanded $=$ stated error probability **[heuristic]** | unstated overconfidence | quote an honest premium, never pay out absent escrow (≈ free) | speculative · — |
 | Reverse-Brier bounty | score $=$ adversary's confident-error-find-rate **[heuristic]** | confident errors an honest test misses | retreat to evasive vagueness; or bounty-hunter collusion (low) | speculative · — |
 
-Priced abstention depends on the scoring rule. [Kalai et al. (2025)](https://arxiv.org/abs/2509.04664) argue that language models keep hallucinating partly because most benchmarks grade "I don't know" the same as a wrong answer, so guessing scores better than abstaining. Their proposed remedy is to change the scoring of the leaderboards that already dominate, not to add more hallucination evaluations. Under this family's framing, any evaluation used to certify a process should give abstention a stated, nonzero value.
+Priced abstention depends on the scoring rule. [Kalai et al. (2025)](https://arxiv.org/abs/2509.04664) argue that language models keep hallucinating partly because most benchmarks score "I don't know" the same as a wrong answer, so guessing pays. Their remedy is to rescore the benchmarks that dominate leaderboards, for example by stating a confidence threshold $t$ and charging $t/(1-t)$ points per error, rather than to add hallucination evaluations. By the same logic, an evaluation used to certify a process should score an error below an abstention, by a stated penalty.
 
 ## Worked bounds
 

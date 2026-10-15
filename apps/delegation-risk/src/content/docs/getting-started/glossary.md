@@ -34,7 +34,7 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 **Trust (quantitative)**: where a number is attached, t = P(the delegate executes the task faithfully), estimated from its harm-mode table. Unquantified, "trust" is ordinary English. *Risk inheritance*: when A delegates to B and B to C, A carries C's harm modes, composed by the propagation rule.
 
 <span id="entanglement-tax"></span>
-**Entanglement tax**: actual joint failure probability divided by what independence predicts, P(all fail) / ∏pᵢ. For n identical layers with miss rate p, it is (1−ρ) + ρ·p^(1−n). For three layers at p = 0.1 that is 1 + 99ρ: about 11×, 21× and 50× at ρ = 0.1, 0.2 and 0.5. This is benign-failure math; ρ for same-provider stacks is assumed, not measured. See [Formal Definitions](/entanglements/fundamentals/formal-definitions/).
+**Entanglement tax**: actual joint failure probability divided by what independence predicts, P(all fail) / ∏pᵢ. For n identical layers with miss rate p, it is (1−ρ) + ρ·p^(1−n). For three layers at p = 0.1 that is 1 + 99ρ: about 11×, 21× and 50× at ρ = 0.1, 0.2 and 0.5. This is benign-failure math; ρ between LLM checks is measured only on benchmarks, where it is about 0.3–0.7 ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). See [Formal Definitions](/entanglements/fundamentals/formal-definitions/).
 
 <span id="correlation-budget"></span>
 **Correlation budget**: a limit on failure correlation within a defense stack, such as "no two checks share a model family". It complements the risk budget. ρ is on the failure-indicator (phi) scale.

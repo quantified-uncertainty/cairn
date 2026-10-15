@@ -1,0 +1,20 @@
+# ee-kappa
+
+**Page:** apps/evaluation-engineering/src/content/docs/concepts/measuring-an-evaluator.md (convert to .mdx to embed).
+
+**Placement:** in "Agreement, corrected for chance", right after the κ formula and "so that chance scores 0 and perfect agreement 1 (Cohen 1960)." and before "The relatives:" (end that sentence after the citation and start "The relatives:" as its own line). Second choice: after the Prevalence/Bias bullets, before "Neither paradox is an error in kappa." The figure is the prevalence paradox drawn as a function.
+
+**What it shows:** x = the "yes" rate π, assumed the same for both raters (50–100%; symmetric below 50%). y = raw agreement p_o. Bottom curve: chance, p_e = π² + (1−π)². Above it: the p_o needed for κ = 0.17 (dashed, journal peer review), 0.4, 0.6 and 0.8, from p_o = p_e + κ(1 − p_e). All curves converge at π → 1. A dotted line at 70% joins the balanced point (π 50%, κ 0.40) to the worked example (experts renew 80%, κ 0.06). The accent is used only for the worked example: its point and a 95% bar for 50 audits (70% ± 13 points, binomial). The κ range in the labels (about −0.20 to 0.37) is simulated (100k multinomial draws of the 2×2 table, both marginals estimated), the same method as the page's "±0.3".
+
+**Data source:** compute.mjs uses the page's κ formula and the worked example's numbers (worked-example.md: 80% renewal, 70%, κ 0.06 and 0.40, κ 0.17, 50 audits, 1.96·√(a(1−a)/n)). It asserts the worked-example table (50%/68%, 58.5%/73%, 70%/81%, 0.40/0.06), ±11 at 80% agreement, and paradox rows 1–2. Run `node compute.mjs` to regenerate figure.html and index.html.
+
+**Added beyond the page / possible disagreements:**
+- The ±13-point bar is a calculation the page doesn't give. The page gives ±11 at 80% agreement, and the same formula at 70% gives ±12.7.
+- κ range (reviewer change): the builder mapped the bar ends onto κ with the marginals held fixed (−0.33 to 0.46). That overstates the spread, because estimated marginals move with p_o, and it contradicted the page's own simulated "±0.3". The labels now use a simulation of the 2×2 table at the worked example's true table (yes-yes 0.65, yes-no 0.15, no-yes 0.15, no-no 0.05, n = 50): 95% range −0.20 to 0.37 (≈ ±0.3, consistent with the page). compute.mjs asserts this and review_check.py is an independent NumPy cross-check (gives −0.20 to 0.36). Consequence: reading the bar's ends against the contours gives a wider κ range than the label says; that is intended, since the contours assume known marginals.
+- In the worked example the 70% figure is the earlier assumption about *expert–expert* agreement, not an audit result. The bar shows what 50 double-rated items would pin down at that level. It applies to whichever pair is measured on 50 items.
+- With equal marginals at π = 0.8, p_o cannot fall below 2π − 1 = 60%. The bar's lower end (57%) is reachable only because sample marginals vary. Not drawn.
+- The figure assumes equal marginals, so it cannot show the bias paradox (paradox table rows 3–4) or row 2 (90%/85%). The page's text covers these.
+
+**Astro notes:** figure.html is self-contained. Classes are prefixed ka-. Theme tokens are scoped to .ka-fig through [data-theme] plus prefers-color-scheme, and the accent is EE green #1f6e46 / #7fd2a0. Below 34rem the narrow 343-px SVG replaces the 660-px wide one. In the narrow SVG the worked-example explanation moves into three lines under the axis. Contour labels use a background-coloured halo (paint-order: stroke). There is no JS.
+
+**Reviewer changes (2026-10-15):** the simulated κ range replaces the fixed-marginal one; the κ = 0.4 contour is now labelled (it was the only unlabelled curve), at π = 0.88; the κ = 0.17 label moved to π = 0.60 so it no longer crosses the chance curve; the desktop worked-example note is shorter (it overflowed the 660-px viewBox by about 20 px); the narrow variant has ticks at 50–100% in steps of 10, so the 80% point sits on a labelled tick; the caption links to the worked example (link styled with text colour, not accent).

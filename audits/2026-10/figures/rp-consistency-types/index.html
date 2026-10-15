@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consistency Types</title>
+<style>
+:root{--t:#2e2c28;--m:#5f5b53;--bg:#ffffff;--a:#2a57a6}
+:root[data-theme="dark"]{--t:#dcd7cd;--m:#a7a195;--bg:#161514;--a:#9dbdf2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--t:#dcd7cd;--m:#a7a195;--bg:#161514;--a:#9dbdf2}}
+body{margin:0;background:var(--bg);color:var(--t);font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:46rem;margin:0 auto;padding:2rem 16px 3rem}
+h1{font-size:1.15rem;font-weight:600;margin:0 0 1rem;color:var(--m)}
+h2{font-size:1.3rem;font-weight:600;margin:1.6rem 0 .6rem}
+p,ul{margin:0 0 1rem}
+a{color:var(--a)}
+</style></head><body><main>
+<h1>Consistency Evaluations</h1>
+<p>Consistency is a spectrum, not a binary. Two answers to equivalent questions will rarely be identical; the right move is to measure the gap (e.g., Jensen–Shannon divergence between two distributions — symmetric, as the relation is) and track it. The Dutch-book characterization is exact for logical and constraint checks, extends to temporal checks via dynamic books, reaches paraphrase and repeatability only through a trusted equivalence judge (itself part of the trusted base), and is a looser metaphor for method and evidential consistency.</p>
+<h2>What’s covered and what’s open</h2>
+<p>Mapping the seven types against published work:</p>
+<ul>
+<li><strong>Largely covered.</strong> Logical consistency (Paleka et al.’s negation/and/or/conditional checks, with the arbitrage metric); evidential consistency in substantial part (their conservation-of-expected-evidence check; Bayes-rule coherence tests); paraphrase invariance (one of their ten checks; see also ParaRel and semantic consistency work).</li>
+<li><strong>Partially covered.</strong> Temporal consistency (Fluri et al. ran temporal-monotonicity checks, and the conservation-of-expected-evidence check is a one-step martingale test; martingale drift as a standing regression test is not benchmarked); repeatability (LLM probability judgments show human-like systematic incoherence — Zhu &amp; Griffiths 2024 — but variance is not yet integrated into forecasting evals as a scored metric).</li>
+<li><strong>Open.</strong> Constraint consistency beyond binary probabilities — full distributions, physical bounds, conservation laws, cross-estimate inequalities (published checks handle binary event probabilities only); method consistency (Monte Carlo vs. analytic vs. independent Fermi decompositions), which we have not seen scored anywhere — the nearest work, chain-of-thought vs. program-aided answer agreement, improves answers rather than scoring disagreement; adversarial question generation (explicitly deferred as future work by Paleka et al.); and progressive property testing, below.</li>
+</ul>
+
+<style>
+.rp-ct{margin:1.75rem 0;
+  --ct-text:#2e2c28;--ct-muted:#5f5b53;--ct-line:#8f897e;--ct-hair:#d6d1c7;--ct-bg:#ffffff;--ct-accent:#2a57a6}
+:root[data-theme="dark"] .rp-ct{--ct-text:#dcd7cd;--ct-muted:#a7a195;--ct-line:#8f897e;--ct-hair:#45423c;--ct-bg:#161514;--ct-accent:#9dbdf2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rp-ct{--ct-text:#dcd7cd;--ct-muted:#a7a195;--ct-line:#8f897e;--ct-hair:#45423c;--ct-bg:#161514;--ct-accent:#9dbdf2}}
+.rp-ct svg{display:block;width:100%;height:auto;overflow:visible;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.rp-ct .ct-narrow{display:none}
+@media (max-width:600px){.rp-ct .ct-wide{display:none}.rp-ct .ct-narrow{display:block}}
+.rp-ct text{fill:var(--ct-text)}
+.rp-ct .head{font-size:15px;font-weight:600}
+.rp-ct .band{font-size:14.5px;fill:var(--ct-muted)}
+.rp-ct .name{font-size:15px;font-weight:600}
+.rp-ct .formula{font-size:14.5px}
+.rp-ct .gl{font-size:14.5px}
+.rp-ct .muted{fill:var(--ct-muted)}
+.rp-ct .accent{fill:var(--ct-accent)}
+.rp-ct .req-t{fill:var(--ct-muted)}
+.rp-ct .rule{stroke:var(--ct-hair);stroke-width:1}
+.rp-ct .hair{stroke:var(--ct-hair);stroke-width:1.25;fill:none}
+.rp-ct .hairdash{stroke:var(--ct-line);stroke-width:1;stroke-dasharray:2 3;fill:none}
+.rp-ct .req{stroke:var(--ct-line);stroke-width:1.5;fill:none}
+.rp-ct .reqfill{fill:var(--ct-line)}
+.rp-ct .ink{stroke:var(--ct-text);stroke-width:1.5;fill:none}
+.rp-ct .ink2{stroke:var(--ct-text);stroke-width:2;fill:none;stroke-linecap:round}
+.rp-ct .inkfill{fill:var(--ct-text)}
+.rp-ct .bar{fill:var(--ct-text)}
+.rp-ct .dot{fill:var(--ct-text);stroke:var(--ct-bg);stroke-width:1.25}
+.rp-ct .tail{fill:var(--ct-text);fill-opacity:.35}
+.rp-ct .br{stroke:var(--ct-text);stroke-width:1;fill:none}
+.rp-ct .openframe{fill:none;stroke:var(--ct-accent);stroke-width:1.25;stroke-dasharray:4 4}
+.rp-ct figcaption{font-size:.95rem;line-height:1.55;color:var(--ct-muted);margin-top:.75rem}
+</style>
+<figure class="rp-ct">
+<svg class="ct-wide" viewBox="0 0 720 714" role="img" aria-label="The seven consistency types, each drawn as the invariant it tests with one example violation. Published evals cover three types and part of two more; the two open types sit at opposite ends of the Dutch-book scale: constraint consistency, which a book prices exactly, and method consistency, which it prices only as a metaphor.">
+<rect x="484" y="2" width="232" height="708" rx="6" class="openframe"/>
+<text x="16" y="20" class="head" text-anchor="start">Largely covered</text>
+<text x="256" y="20" class="head" text-anchor="start">Partially covered</text>
+<text x="496" y="20" class="head accent" text-anchor="start">Open</text>
+<line x1="0" y1="34.5" x2="720" y2="34.5" class="rule"/>
+<text x="16" y="55" class="band" text-anchor="start">Dutch book: exact</text>
+<line x1="0" y1="202.5" x2="720" y2="202.5" class="rule"/>
+<text x="16" y="223" class="band" text-anchor="start">Dutch book: a dynamic book, across time</text>
+<line x1="0" y1="370.5" x2="720" y2="370.5" class="rule"/>
+<text x="16" y="391" class="band" text-anchor="start">Dutch book: only via a trusted equivalence judge</text>
+<line x1="0" y1="538.5" x2="720" y2="538.5" class="rule"/>
+<text x="16" y="559" class="band" text-anchor="start">Dutch book: a loose metaphor</text>
+<g class="cell" transform="translate(256 398)">
+<text x="0" y="18" class="name" text-anchor="start">1  Repeatability</text>
+<text x="0" y="40" class="formula" text-anchor="start">Var[M(Q)] over n runs = 0</text>
+<g transform="translate(0 50)"><line x1="6" y1="62" x2="202" y2="62" class="hair"/><line x1="6" y1="58" x2="6" y2="66" class="hair"/><line x1="202" y1="58" x2="202" y2="66" class="hair"/><path d="M66.8 49V44H143.2V49" class="br"/><text x="105" y="36" class="gl" text-anchor="middle">range .39</text><circle cx="66.8" cy="62" r="4" class="dot"/><circle cx="88.3" cy="62" r="4" class="dot"/><circle cx="98.1" cy="62" r="4" class="dot"/><circle cx="113.8" cy="62" r="4" class="dot"/><circle cx="125.6" cy="62" r="4" class="dot"/><circle cx="143.2" cy="62" r="4" class="dot"/><text x="6" y="80" class="gl muted" text-anchor="start">six asks of the same Q</text></g>
+</g>
+<g class="cell" transform="translate(16 62)">
+<text x="0" y="18" class="name" text-anchor="start">2  Logical</text>
+<text x="0" y="40" class="formula" text-anchor="start">P(A) + P(¬A) = 1</text>
+<g transform="translate(0 50)"><line x1="6" y1="22" x2="6" y2="58" class="req"/><line x1="202" y1="22" x2="202" y2="58" class="req"/><text x="10" y="16" class="gl" text-anchor="start">P(A) .7</text><text x="198" y="16" class="gl" text-anchor="end">P(¬A) .4</text><rect x="6" y="26" width="137.2" height="7" class="bar"/><rect x="123.6" y="39" width="78.4" height="7" class="bar"/><line x1="123.6" y1="24" x2="123.6" y2="48" class="hairdash"/><line x1="143.2" y1="24" x2="143.2" y2="48" class="hairdash"/><path d="M123.6 51V56H143.2V51" class="br"/><text x="133.4" y="74" class="gl" text-anchor="middle">sure profit .1</text></g>
+</g>
+<g class="cell" transform="translate(496 62)">
+<text x="0" y="18" class="name" text-anchor="start">3  Constraint</text>
+<text x="0" y="40" class="formula" text-anchor="start">X ≥ 0 physically ⇒ P(X &lt; 0) = 0</text>
+<g transform="translate(0 50)"><path d="M4 60L4 59.8L6.5 59.7L9 59.6L11.5 59.5L14 59.4L16.5 59.2L19 59L21.5 58.8L24 58.5L26.5 58.2L29 57.9L31.5 57.4L34 56.9L36.5 56.3L39 55.7L41.5 54.9L44 54.1L46.5 53.1L49 52.1L51.5 51L54 49.7L56.5 48.4L56.6 48.3L56.6 60Z" class="tail"/><line x1="4" y1="60" x2="204" y2="60" class="hair"/><path d="M4 59.8L6.5 59.7L9 59.6L11.5 59.5L14 59.4L16.5 59.2L19 59L21.5 58.8L24 58.5L26.5 58.2L29 57.9L31.5 57.4L34 56.9L36.5 56.3L39 55.7L41.5 54.9L44 54.1L46.5 53.1L49 52.1L51.5 51L54 49.7L56.5 48.4L59 47L61.5 45.4L64 43.9L66.5 42.2L69 40.5L71.5 38.8L74 37.1L76.5 35.4L79 33.7L81.5 32.1L84 30.5L86.5 29.1L89 27.8L91.5 26.7L94 25.8L96.5 25L99 24.4L101.5 24.1L104 24L106.5 24.1L109 24.4L111.5 25L114 25.8L116.5 26.7L119 27.8L121.5 29.1L124 30.5L126.5 32.1L129 33.7L131.5 35.4L134 37.1L136.5 38.8L139 40.5L141.5 42.2L144 43.9L146.5 45.4L149 47L151.5 48.4L154 49.7L156.5 51L159 52.1L161.5 53.1L164 54.1L166.5 54.9L169 55.7L171.5 56.3L174 56.9L176.5 57.4L179 57.9L181.5 58.2L184 58.5L186.5 58.8L189 59L191.5 59.2L194 59.4L196.5 59.5L199 59.6L201.5 59.7L204 59.8" class="ink"/><line x1="56.6" y1="10" x2="56.6" y2="64" class="req"/><text x="61.6" y="18" class="gl req-t" text-anchor="start">bound</text><text x="0" y="78" class="gl" text-anchor="start">6.7% of belief below 0</text></g>
+</g>
+<g class="cell" transform="translate(256 230)">
+<text x="0" y="18" class="name" text-anchor="start">4  Temporal</text>
+<text x="0" y="40" class="formula" text-anchor="start">E[tomorrow’s P] = today’s P</text>
+<g transform="translate(0 50)"><line x1="6" y1="66" x2="192" y2="66" class="hair"/><line x1="192" y1="62" x2="192" y2="70" class="hair"/><path d="M6 31.6L9.1 31.9L12.2 32.3L15.3 32.6L18.4 33L21.5 33.3L24.6 33.7L27.7 34L30.8 34.4L33.9 34.8L37 35.2L40.1 35.6L43.2 35.9L46.3 36.3L49.4 36.7L52.5 37.2L55.6 37.6L58.7 38L61.8 38.4L64.9 38.9L68 39.3L71.1 39.8L74.2 40.2L77.3 40.7L80.4 41.2L83.5 41.6L86.6 42.1L89.7 42.6L92.8 43.1L95.9 43.6L99 44.2L102.1 44.7L105.2 45.2L108.3 45.8L111.4 46.3L114.5 46.9L117.6 47.4L120.7 48L123.8 48.6L126.9 49.2L130 49.8L133.1 50.4L136.2 51L139.3 51.7L142.4 52.3L145.5 52.9L148.6 53.6L151.7 54.3L154.8 55L157.9 55.6L161 56.4L164.1 57.1L167.2 57.8L170.3 58.5L173.4 59.3L176.5 60L179.6 60.8L182.7 61.6L185.8 62.4L188.9 63.2L192 64" class="req"/><text x="6" y="84" class="gl req-t" text-anchor="start">if no news</text><circle cx="6" cy="31.6" r="4" class="dot"/><circle cx="52.5" cy="31.6" r="4" class="dot"/><circle cx="99" cy="31.6" r="4" class="dot"/><circle cx="145.5" cy="31.6" r="4" class="dot"/><path d="M148.5 31.6H153.5V52.9H148.5" class="br"/><text x="157.5" y="47.3" class="gl" text-anchor="start">.40</text><text x="192" y="84" class="gl muted" text-anchor="end">deadline</text></g>
+</g>
+<g class="cell" transform="translate(496 566)">
+<text x="0" y="18" class="name" text-anchor="start">5  Method</text>
+<text x="0" y="40" class="formula" text-anchor="start">Monte Carlo ≈ analytic ≈ Fermi</text>
+<g transform="translate(0 50)"><text x="0" y="21" class="gl" text-anchor="start">MC</text><line x1="69.5" y1="16" x2="126" y2="16" class="ink2"/><circle cx="97.8" cy="16" r="3.5" class="dot"/><text x="0" y="41" class="gl" text-anchor="start">analytic</text><line x1="88" y1="36" x2="114.4" y2="36" class="ink2"/><circle cx="101.2" cy="36" r="3.5" class="dot"/><text x="0" y="61" class="gl" text-anchor="start">Fermi</text><line x1="144.7" y1="56" x2="201.6" y2="56" class="ink2"/><circle cx="173.1" cy="56" r="3.5" class="dot"/><path d="M99.5 61V66H173.1V61" class="br"/><text x="136.3" y="82" class="gl" text-anchor="middle">3× apart</text></g>
+</g>
+<g class="cell" transform="translate(16 398)">
+<text x="0" y="18" class="name" text-anchor="start">6  Contextual</text>
+<text x="0" y="40" class="formula" text-anchor="start">M(Q) = M(Q′), Q′ a paraphrase</text>
+<g transform="translate(0 50)"><text x="0" y="27" class="gl" text-anchor="start">Q</text><text x="0" y="51" class="gl" text-anchor="start">Q′</text><line x1="26" y1="22" x2="202" y2="22" class="hair"/><line x1="26" y1="46" x2="202" y2="46" class="hair"/><line x1="135.1" y1="22" x2="135.1" y2="60" class="hairdash"/><line x1="103.4" y1="46" x2="103.4" y2="60" class="hairdash"/><circle cx="135.1" cy="22" r="4.5" class="dot"/><circle cx="103.4" cy="46" r="4.5" class="dot"/><path d="M103.4 59V64H135.1V59" class="br"/><text x="119.3" y="82" class="gl" text-anchor="middle">shift .18</text></g>
+</g>
+<g class="cell" transform="translate(16 566)">
+<text x="0" y="18" class="name" text-anchor="start">7  Evidential</text>
+<text x="0" y="40" class="formula" text-anchor="start">prior = Σ P(e) · P(H | e)</text>
+<g transform="translate(0 50)"><line x1="8" y1="50" x2="200" y2="50" class="hair"/><circle cx="46.4" cy="40.3" r="8.7" class="dot"/><circle cx="161.6" cy="42.2" r="6.8" class="dot"/><text x="46.4" y="26.7" class="gl muted" text-anchor="middle">if ¬e</text><text x="161.6" y="26.7" class="gl muted" text-anchor="middle">if e</text><path d="M65.6 52L59.6 63L71.6 63Z" class="reqfill"/><path d="M90.2 52L84.2 63L96.2 63Z" class="inkfill"/><text x="56.6" y="63" class="gl req-t" text-anchor="end">prior</text><text x="99.2" y="63" class="gl" text-anchor="start">average</text><path d="M65.6 65V70H90.2V65" class="br"/><text x="77.9" y="84" class="gl" text-anchor="middle">.13</text></g>
+</g>
+</svg>
+<svg class="ct-narrow" viewBox="0 0 343 940" role="img" aria-label="The seven consistency types, each drawn as the invariant it tests with one example violation. Published evals cover three types and part of two more; the two open types sit at opposite ends of the Dutch-book scale: constraint consistency, which a book prices exactly, and method consistency, which it prices only as a metaphor.">
+<text x="0" y="16" class="band" text-anchor="start">Grouped by how exactly a Dutch book</text>
+<text x="0" y="36" class="band" text-anchor="start">prices a violation.</text>
+<line x1="0" y1="52.5" x2="343" y2="52.5" class="rule"/>
+<text x="0" y="74" class="band" text-anchor="start">Exact</text>
+<g transform="translate(0 86)">
+<g transform="translate(0 6)"><line x1="6" y1="22" x2="6" y2="58" class="req"/><line x1="152" y1="22" x2="152" y2="58" class="req"/><text x="10" y="16" class="gl" text-anchor="start">P(A) .7</text><text x="148" y="16" class="gl" text-anchor="end">P(¬A) .4</text><rect x="6" y="26" width="102.2" height="7" class="bar"/><rect x="93.6" y="39" width="58.4" height="7" class="bar"/><line x1="93.6" y1="24" x2="93.6" y2="48" class="hairdash"/><line x1="108.2" y1="24" x2="108.2" y2="48" class="hairdash"/><path d="M93.6 51V56H108.2V51" class="br"/><text x="100.9" y="74" class="gl" text-anchor="middle">sure profit .1</text></g>
+<text x="174" y="18" class="name" text-anchor="start">2  Logical</text>
+<text x="174" y="40" class="formula" text-anchor="start">P(A) + P(¬A) = 1</text>
+<text x="174" y="63" class="formula muted" text-anchor="start">Largely covered</text>
+</g>
+<g transform="translate(0 190)">
+<g transform="translate(0 6)"><path d="M4 60L4 59.8L5.9 59.7L7.7 59.6L9.6 59.5L11.5 59.4L13.4 59.2L15.2 59L17.1 58.8L19 58.5L20.9 58.2L22.8 57.9L24.6 57.4L26.5 56.9L28.4 56.3L30.3 55.7L32.1 54.9L34 54.1L35.9 53.1L37.8 52.1L39.6 51L41.5 49.7L43.4 48.4L43.5 48.3L43.5 60Z" class="tail"/><line x1="4" y1="60" x2="154" y2="60" class="hair"/><path d="M4 59.8L5.9 59.7L7.7 59.6L9.6 59.5L11.5 59.4L13.4 59.2L15.2 59L17.1 58.8L19 58.5L20.9 58.2L22.8 57.9L24.6 57.4L26.5 56.9L28.4 56.3L30.3 55.7L32.1 54.9L34 54.1L35.9 53.1L37.8 52.1L39.6 51L41.5 49.7L43.4 48.4L45.2 47L47.1 45.4L49 43.9L50.9 42.2L52.7 40.5L54.6 38.8L56.5 37.1L58.4 35.4L60.2 33.7L62.1 32.1L64 30.5L65.9 29.1L67.8 27.8L69.6 26.7L71.5 25.8L73.4 25L75.3 24.4L77.1 24.1L79 24L80.9 24.1L82.8 24.4L84.6 25L86.5 25.8L88.4 26.7L90.3 27.8L92.1 29.1L94 30.5L95.9 32.1L97.8 33.7L99.6 35.4L101.5 37.1L103.4 38.8L105.3 40.5L107.1 42.2L109 43.9L110.9 45.4L112.8 47L114.6 48.4L116.5 49.7L118.4 51L120.3 52.1L122.1 53.1L124 54.1L125.9 54.9L127.8 55.7L129.6 56.3L131.5 56.9L133.4 57.4L135.3 57.9L137.1 58.2L139 58.5L140.9 58.8L142.8 59L144.6 59.2L146.5 59.4L148.4 59.5L150.3 59.6L152.1 59.7L154 59.8" class="ink"/><line x1="43.5" y1="10" x2="43.5" y2="64" class="req"/><text x="48.5" y="18" class="gl req-t" text-anchor="start">bound</text><text x="0" y="78" class="gl" text-anchor="start">6.7% of belief below 0</text></g>
+<text x="174" y="18" class="name" text-anchor="start">3  Constraint</text>
+<text x="174" y="40" class="formula" text-anchor="start">X ≥ 0 physically</text>
+<text x="174" y="59" class="formula" text-anchor="start">⇒ P(X &lt; 0) = 0</text>
+<text x="174" y="82" class="formula accent" text-anchor="start">Open: not yet scored</text>
+</g>
+<line x1="0" y1="300.5" x2="343" y2="300.5" class="rule"/>
+<text x="0" y="322" class="band" text-anchor="start">A dynamic book, across time</text>
+<g transform="translate(0 334)">
+<g transform="translate(0 6)"><line x1="6" y1="66" x2="142" y2="66" class="hair"/><line x1="142" y1="62" x2="142" y2="70" class="hair"/><path d="M6 31.6L8.3 31.9L10.5 32.3L12.8 32.6L15.1 33L17.3 33.3L19.6 33.7L21.9 34L24.1 34.4L26.4 34.8L28.7 35.2L30.9 35.6L33.2 35.9L35.5 36.3L37.7 36.7L40 37.2L42.3 37.6L44.5 38L46.8 38.4L49.1 38.9L51.3 39.3L53.6 39.8L55.9 40.2L58.1 40.7L60.4 41.2L62.7 41.6L64.9 42.1L67.2 42.6L69.5 43.1L71.7 43.6L74 44.2L76.3 44.7L78.5 45.2L80.8 45.8L83.1 46.3L85.3 46.9L87.6 47.4L89.9 48L92.1 48.6L94.4 49.2L96.7 49.8L98.9 50.4L101.2 51L103.5 51.7L105.7 52.3L108 52.9L110.3 53.6L112.5 54.3L114.8 55L117.1 55.6L119.3 56.4L121.6 57.1L123.9 57.8L126.1 58.5L128.4 59.3L130.7 60L132.9 60.8L135.2 61.6L137.5 62.4L139.7 63.2L142 64" class="req"/><text x="6" y="84" class="gl req-t" text-anchor="start">if no news</text><circle cx="6" cy="31.6" r="4" class="dot"/><circle cx="40" cy="31.6" r="4" class="dot"/><circle cx="74" cy="31.6" r="4" class="dot"/><circle cx="108" cy="31.6" r="4" class="dot"/><path d="M111 31.6H116V52.9H111" class="br"/><text x="120" y="47.3" class="gl" text-anchor="start">.40</text><text x="142" y="84" class="gl muted" text-anchor="end">deadline</text></g>
+<text x="174" y="18" class="name" text-anchor="start">4  Temporal</text>
+<text x="174" y="40" class="formula" text-anchor="start">E[tomorrow’s P]</text>
+<text x="174" y="59" class="formula" text-anchor="start">= today’s P</text>
+<text x="174" y="82" class="formula muted" text-anchor="start">Partially covered</text>
+</g>
+<line x1="0" y1="444.5" x2="343" y2="444.5" class="rule"/>
+<text x="0" y="466" class="band" text-anchor="start">Only via a trusted equivalence judge</text>
+<g transform="translate(0 478)">
+<g transform="translate(0 6)"><text x="0" y="27" class="gl" text-anchor="start">Q</text><text x="0" y="51" class="gl" text-anchor="start">Q′</text><line x1="26" y1="22" x2="152" y2="22" class="hair"/><line x1="26" y1="46" x2="152" y2="46" class="hair"/><line x1="104.1" y1="22" x2="104.1" y2="60" class="hairdash"/><line x1="81.4" y1="46" x2="81.4" y2="60" class="hairdash"/><circle cx="104.1" cy="22" r="4.5" class="dot"/><circle cx="81.4" cy="46" r="4.5" class="dot"/><path d="M81.4 59V64H104.1V59" class="br"/><text x="92.8" y="82" class="gl" text-anchor="middle">shift .18</text></g>
+<text x="174" y="18" class="name" text-anchor="start">6  Contextual</text>
+<text x="174" y="40" class="formula" text-anchor="start">M(Q) = M(Q′),</text>
+<text x="174" y="59" class="formula" text-anchor="start">Q′ a paraphrase</text>
+<text x="174" y="82" class="formula muted" text-anchor="start">Largely covered</text>
+</g>
+<g transform="translate(0 582)">
+<g transform="translate(0 6)"><line x1="6" y1="62" x2="152" y2="62" class="hair"/><line x1="6" y1="58" x2="6" y2="66" class="hair"/><line x1="152" y1="58" x2="152" y2="66" class="hair"/><path d="M51.3 49V44H108.2V49" class="br"/><text x="79.7" y="36" class="gl" text-anchor="middle">range .39</text><circle cx="51.3" cy="62" r="4" class="dot"/><circle cx="67.3" cy="62" r="4" class="dot"/><circle cx="74.6" cy="62" r="4" class="dot"/><circle cx="86.3" cy="62" r="4" class="dot"/><circle cx="95.1" cy="62" r="4" class="dot"/><circle cx="108.2" cy="62" r="4" class="dot"/><text x="6" y="80" class="gl muted" text-anchor="start">six asks of the same Q</text></g>
+<text x="174" y="18" class="name" text-anchor="start">1  Repeatability</text>
+<text x="174" y="40" class="formula" text-anchor="start">Var[M(Q)] = 0</text>
+<text x="174" y="59" class="formula" text-anchor="start">across n runs</text>
+<text x="174" y="82" class="formula muted" text-anchor="start">Partially covered</text>
+</g>
+<line x1="0" y1="692.5" x2="343" y2="692.5" class="rule"/>
+<text x="0" y="714" class="band" text-anchor="start">A loose metaphor</text>
+<g transform="translate(0 726)">
+<g transform="translate(0 6)"><line x1="8" y1="50" x2="150" y2="50" class="hair"/><circle cx="36.4" cy="40.3" r="8.7" class="dot"/><circle cx="121.6" cy="42.2" r="6.8" class="dot"/><text x="36.4" y="26.7" class="gl muted" text-anchor="middle">if ¬e</text><text x="121.6" y="26.7" class="gl muted" text-anchor="middle">if e</text><path d="M50.6 52L44.6 63L56.6 63Z" class="reqfill"/><path d="M68.8 52L62.8 63L74.8 63Z" class="inkfill"/><text x="41.6" y="63" class="gl req-t" text-anchor="end">prior</text><text x="77.8" y="63" class="gl" text-anchor="start">average</text><path d="M50.6 65V70H68.8V65" class="br"/><text x="59.7" y="84" class="gl" text-anchor="middle">.13</text></g>
+<text x="174" y="18" class="name" text-anchor="start">7  Evidential</text>
+<text x="174" y="40" class="formula" text-anchor="start">prior =</text>
+<text x="174" y="59" class="formula" text-anchor="start">Σ P(e) · P(H | e)</text>
+<text x="174" y="82" class="formula muted" text-anchor="start">Largely covered</text>
+</g>
+<g transform="translate(0 830)">
+<g transform="translate(0 6)"><text x="0" y="21" class="gl" text-anchor="start">MC</text><line x1="66.9" y1="16" x2="103.5" y2="16" class="ink2"/><circle cx="85.2" cy="16" r="3.5" class="dot"/><text x="0" y="41" class="gl" text-anchor="start">analytic</text><line x1="78.8" y1="36" x2="95.9" y2="36" class="ink2"/><circle cx="87.4" cy="36" r="3.5" class="dot"/><text x="0" y="61" class="gl" text-anchor="start">Fermi</text><line x1="115.5" y1="56" x2="152.4" y2="56" class="ink2"/><circle cx="134" cy="56" r="3.5" class="dot"/><path d="M86.3 61V66H134V61" class="br"/><text x="110.1" y="82" class="gl" text-anchor="middle">3× apart</text></g>
+<text x="174" y="18" class="name" text-anchor="start">5  Method</text>
+<text x="174" y="40" class="formula" text-anchor="start">Monte Carlo ≈ analytic</text>
+<text x="174" y="59" class="formula" text-anchor="start">≈ Fermi</text>
+<text x="174" y="82" class="formula accent" text-anchor="start">Open: not yet scored</text>
+</g>
+</svg>
+<figcaption>Published evals cover three types and part of two more; the two open types sit at opposite ends of the Dutch-book scale: constraint consistency, which a book prices exactly, and method consistency, which it prices only as a metaphor. In each glyph, solid marks are the model’s answers, grey marks are what consistency requires, and the bracketed number is the size of the violation (the shaded tail is belief the bound rules out). Repeatability, contextual and method values are illustrative; the others are computed from the page’s example or stated inputs.</figcaption>
+</figure>
+<h2>Generating test questions</h2>
+<p>Four escalating strategies: …</p>
+</main></body></html>

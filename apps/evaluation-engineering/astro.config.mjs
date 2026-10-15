@@ -62,22 +62,25 @@ export default defineConfig({
 						{ label: '7. Evaluation Methods', slug: 'concepts/evaluation-methods' },
 						{ label: '8. Techniques', slug: 'concepts/techniques' },
 						{ label: '9. LLMs as Evaluators', slug: 'concepts/llm-evaluators' },
+						{ label: '10. Measuring an Evaluator', slug: 'concepts/measuring-an-evaluator' },
 						{ label: 'Interlude: A Worked Example', slug: 'concepts/worked-example' },
+						{ label: '11. The Capability Ladder', slug: 'concepts/capability-ladder' },
+						{ label: '12. Launch Checklist', slug: 'concepts/launch-checklist' },
 					],
 				},
 				{
 					label: 'Part III — Evidence from the Wild',
 					collapsed: false,
 					items: [
-						{ label: '10. Evaluation Systems in the Wild', slug: 'concepts/evaluation-systems-in-the-wild' },
-						{ label: '11. Patterns & Failure Modes', slug: 'concepts/patterns-and-failure-modes' },
+						{ label: '13. Evaluation Systems in the Wild', slug: 'concepts/evaluation-systems-in-the-wild' },
+						{ label: '14. Patterns & Failure Modes', slug: 'concepts/patterns-and-failure-modes' },
 					],
 				},
 				{
 					label: 'Part IV — The Environment',
 					collapsed: false,
 					items: [
-						{ label: '12. Epistemic Culture', slug: 'concepts/epistemic-culture' },
+						{ label: '15. Epistemic Culture', slug: 'concepts/epistemic-culture' },
 					],
 				},
 				{

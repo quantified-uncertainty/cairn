@@ -86,7 +86,7 @@ For three layers that each miss 10%, the mixture gives P(all miss) = 0.001 + 0.0
 | 0.5 | 0.051 | ~50× |
 | 1 | 0.100 | 100× |
 
-The "~50×" figure quoted elsewhere on this site is the ρ = 0.5 row. **That ρ is assumed, not measured.** We know of no published measurement of φ between same-provider LLM checks on harmful-action detection. Two 2025 studies show that LLM errors are substantially correlated. [Goel et al.](https://arxiv.org/abs/2502.04313) find that models' mistakes grow more similar as capability increases. [Kim et al.](https://arxiv.org/abs/2506.07962) find, across more than 350 models, that shared architecture and provider drive error correlation, but that larger, more accurate models have highly correlated errors even across providers. Their statistics are similarity and agreement measures, not φ, so they cannot be plugged in, but they suggest that "use a different provider" is not by itself a sufficient correlation budget. Until φ is measured for your stack, show the whole table, not one row.
+The "~50×" figure quoted elsewhere on this site is the ρ = 0.5 row. It is a benchmark-based prior, not a measurement of any monitor stack. Recomputing joint miss rates from the per-pair data [Kim et al. (2025)](https://arxiv.org/abs/2506.07962) released for 71 models on MMLU gives ρ of about 0.3–0.6 for strong models from different providers and 0.5–0.7 within one provider, the ranges reflecting how much label noise is allowed for ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). So "use a different provider" lowers ρ only a little. No published study reports φ between LLM checks on harmful-action detection, and knowledge-question misses may not transfer to it. Until φ is measured for your stack, show the whole table, not one row.
 
 ## Adversarial inputs
 
@@ -122,11 +122,11 @@ It is *not* interchangeable with other numbers called "correlation":
 1. Run all layers on the same labeled challenge set, recording each layer's miss or catch on each item.
 2. For each pair of layers, compute the phi coefficient: $\phi = \dfrac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$.
 3. Use the largest pairwise $\phi$, or a deliberately high estimate, as the mixture's $\rho$.
-4. When you cannot measure, round up. For layers that share a provider, training method or context, assume $\rho \geq 0.5$.
+4. When you cannot measure, round up: assume $\rho \approx 0.7$ for layers that share a provider and 0.6 for strong LLMs from different providers ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)).
 
 This recipe estimates benign-failure correlation only. For adversarial channels, see [above](#adversarial-inputs).
 
-Every $\rho$ in this page's mixture columns and in the [correlation calculator](/entanglements/detection/correlation-calculator/) tables is on this indicator (phi) scale. The calculator's per-configuration ρ values are assumptions of the same kind as the ~50× row, not measurements.
+Every $\rho$ in this page's mixture columns and in the [correlation calculator](/entanglements/detection/correlation-calculator/) tables is on this indicator (phi) scale. The calculator's per-configuration priors rest on benchmark data for the LLM rows and on judgment for the rest.
 
 ## Limitations
 

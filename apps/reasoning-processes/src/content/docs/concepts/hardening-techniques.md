@@ -13,7 +13,7 @@ Opens Part III. The six-family taxonomy is a working organizing scheme, not a se
 
 ## The objective: eliminate confident error
 
-The only epistemic state that can hurt a judge without bound is being confidently wrong. A calibrated process turns that open-ended tail risk into a bounded one the judge can price, so the safety-relevant target is **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1, rather than accuracy. A process can always hedge or abstain, so "never confidently wrong" is achievable where "accurate" often is not. [Calibration](/concepts/hardening-calibration/) develops this, including its limit: a deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else. **[heuristic]** Every family below is a way to make confident error rare or expensive.
+The only epistemic state that can hurt a judge without bound is being confidently wrong. A calibrated process turns that open-ended tail risk into a bounded one the judge can price, so the safety-relevant target is **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1, rather than accuracy. A process can always hedge or abstain, so "never confidently wrong" is achievable where "accurate" often is not **[heuristic]**. [Calibration](/concepts/hardening-calibration/) develops this, including its limit: a deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else. Every family below is a way to make confident error rare or expensive.
 
 ## Two axes, six families
 
@@ -43,14 +43,14 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 | Sandbagging / capability-hiding | Independence, affordances (read-state) | interpretability is unreliable |
 | Resolution-criteria gaming | Deterrence, Incentive-compatibility | who defines the criteria |
 | Selection / optional-stopping | Verifiability, Deterrence | — |
-| **Correlated error** | Independence (weakly); common-cause-failure models | **no clean AI-specific defense yet** |
+| **Correlated error** | Independence (weakly) | **no clean AI-specific defense yet** |
 | Goodhart-after-publication | Deterrence, externally-grounded families | style-mimicry of high-tier forms |
 
 The standout is **correlated error**. Every aggregation, ensemble and panel defense assumes independence, and shared training pipelines erode it. Engineering has met this before, in N-version programming ([Knight & Leveson 1986](https://doi.org/10.1109/TSE.1986.6312924)), and prices it with common-cause models such as the beta factor ([Independence](/concepts/hardening-independence/) has the details). Those models measure correlation; they do not remove it. No family here removes it for AI reasoners, which makes this row a research priority.
 
 ## Composition: families stack, but how?
 
-The family pages treat constructions as atoms, but real systems are stacks. Model a hardened stack as an AND/OR attack tree ([Mauw & Oostdijk 2005](https://doi.org/10.1007/11734727_17)): an attacker needs one successful path, so the stack's corruption cost is the cheapest path, with costs summed over AND nodes and minimized over OR nodes. Series composition without randomization therefore inherits the cheapest stage. Randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation; this is the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional, and the same mechanism the [Process Catalogue](/concepts/process-catalogue/#reading-the-table) bets on for the empty quadrant. Whether real stacks behave this way is unmeasured.
+The family pages treat constructions as atoms, but real systems are stacks. Model a hardened stack as an AND/OR attack tree ([Mauw & Oostdijk 2005](https://doi.org/10.1007/11734727_17)): an attacker needs one successful path, so the stack's corruption cost is the cheapest path, with costs summed over AND nodes and minimized over OR nodes. A pipeline in which corrupting any one stage corrupts the output is an OR node, so without randomization it inherits the cheapest stage; checks that must all be defeated form an AND node, and their costs add. Randomized escalation with probability $p$ to an expensive stage adds roughly $p\cdot C_{\text{expensive}}$ to every path that must survive escalation; this is the [inspection-game frontier](/concepts/hardening-deterrence/) made compositional, and the same mechanism the [Process Catalogue](/concepts/process-catalogue/#reading-the-table) bets on for the empty quadrant. Whether real stacks behave this way is unmeasured.
 
 ## The cross-cutting multiplier: machine-oversight affordances
 

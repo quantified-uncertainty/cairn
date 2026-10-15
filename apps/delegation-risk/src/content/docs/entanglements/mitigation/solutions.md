@@ -15,7 +15,7 @@ The main lever on ρ is a check that fails for different reasons: one that uses 
 |---|---|---|
 | **Method** | Mixing tiers of the [verifiability hierarchy](/getting-started/core-concepts/#verifiability-hierarchy): formally verified code, deterministic tests and rule-based checks, narrow learned models, LLMs | The strongest lever. A test suite and an LLM reviewer fail for different reasons |
 | **Information** | Giving checks different inputs: the raw diff, the execution trace, the network log | Two checks reading the same text share its blind spots |
-| **Model family** | Using different providers or families for LLM checks | Weak: strong models from different providers have a miss correlation of about 0.5 on benchmarks, against about 0.6 within one provider ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)) |
+| **Model family** | Using different providers or families for LLM checks | Weak: strong models from different providers have a miss correlation (φ) of about 0.5 on benchmarks, against about 0.6 within one provider ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)) |
 | **People** | Having different teams write prompts, rules and escalation paths | Organizational uniformity re-correlates technical diversity |
 | **Timing** | Checking before execution, during it and after it | Different moments see different evidence |
 
@@ -49,27 +49,27 @@ The naive calculation and the honest one:
 
 ```
 Naive:     three 90% layers → P(all miss) = 0.1³ = 0.1% → "99.9% protection"
-Corrected: three LLM checks from different providers, ρ ≈ 0.3–0.55 (phi scale)
-           P(all miss) = (1 − ρ) × 0.001 + ρ × 0.1 ≈ 3.1–5.5% → about 95–97% protection
-           entanglement tax ≈ 31–55×
+Corrected: three LLM checks from different providers, ρ ≈ 0.3–0.6
+           P(all miss) = (1 − ρ) × 0.001 + ρ × 0.1 ≈ 3.1–6.0% → about 94–97% protection
+           entanglement tax ≈ 31–60×
 ```
 
-The ρ range is from benchmark data ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term:
+The ρ range is from benchmark data ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term. A Gaussian copula fitted to the same pairwise joint misses, which has no common-cause floor, is less pessimistic but agrees on the conclusion:
 
-| Layers | P(all miss) at ρ = 0.5, p = 0.1 |
-|---|---|
-| 2 | 5.50% |
-| 3 | 5.05% |
-| 5 | 5.00% |
-| 10 | 5.00% |
+| Layers | P(all miss) at ρ = 0.5, p = 0.1: beta factor | Gaussian copula |
+|---|---|---|
+| 2 | 5.50% | 5.50% |
+| 3 | 5.05% | 3.93% |
+| 5 | 5.00% | 2.63% |
+| 10 | 5.00% | 1.58% |
 
-At this correlation the floor is 5%, and 99.9% protection is unreachable at any layer count. The budget question becomes how to reduce ρ, or how to improve the strongest layer, since the floor scales with min pᵢ. How much a given intervention reduces ρ is an empirical question. Measure φ before and after rather than assuming a reduction.
+At this correlation 99.9% protection is out of reach by stacking similar layers: the beta-factor floor is 5%, and the copula needs about a thousand layers. The budget question becomes how to reduce ρ, or how to improve the strongest layer, since the floor scales with min pᵢ. How much a given intervention reduces ρ is an empirical question. Measure ρ before and after rather than assuming a reduction.
 
 **Worksheet:**
 
 1. Set the target P(all miss) for the action class.
 2. List the layers and estimate each miss rate pᵢ.
-3. Estimate ρ on the phi scale ([recipe and priors](/entanglements/detection/correlation-calculator/)).
+3. Estimate ρ from joint misses ([recipe and priors](/entanglements/detection/correlation-calculator/)).
 4. Compute the floor ρ · min pᵢ and the full mixture.
 5. If the target is below the floor: reduce ρ, improve the best layer, accept more risk explicitly, or narrow what is delegated.
 
@@ -85,18 +85,18 @@ At this correlation the floor is 5%, and 99.9% protection is unreachable at any 
 | Shared-dependency outage | What happens when a common provider, database or rate limit goes down |
 | Latency injection | Race conditions between a check and the action it gates |
 
-Measure φ and P(all miss) under each condition and compare them with normal operation and with the correlation budget. Conditional correlation, which appears only under stress, is invisible to every other method.
+Measure ρ and P(all miss) under each condition and compare them with normal operation and with the correlation budget. Conditional correlation, which appears only under stress, is invisible to every other method.
 
 ## 6. Correlation circuit breakers
 
-A circuit breaker watches the joint behavior of checks and tightens the system when correlation rises. In production you only know a check missed when the item is later audited or caught downstream, so run it on that audited stream:
+A circuit breaker watches the joint behavior of checks and tightens the system when correlation rises. In production you only know a check missed when the item is later audited, so run it on an audited stream. Audit a random sample of all traffic, not only items some layer flagged or that surfaced downstream: a stream built from flags excludes joint misses by construction and biases the estimate toward zero. Where harmful items are rare, a random sample holds too few of them to estimate ρ in useful time. Seed the stream with known-harmful items made to look like real traffic, which also gives ground truth without waiting for an audit.
 
 ```python
 from collections import deque
 import numpy as np
 
 class CorrelationCircuitBreaker:
-    """Trips when the max pairwise phi of recent audited misses exceeds the budget."""
+    """Trips when the max pairwise rho of recent audited items exceeds the budget."""
 
     def __init__(self, n_layers: int, rho_max: float, window: int = 500):
         self.rho_max = rho_max
@@ -110,14 +110,14 @@ class CorrelationCircuitBreaker:
             return False
         m = np.array(self.window, dtype=bool)
         worst = np.nanmax([
-            phi(m[:, i], m[:, j])          # phi() from the measurement page
+            rho_pair(m[:, i], m[:, j])     # from the measurement page
             for i in range(self.n_layers)
             for j in range(i + 1, self.n_layers)
         ])
         return worst > self.rho_max      # True: escalate
 ```
 
-Use φ, not the share of joint failures among all failures. That share is a Jaccard index, not a correlation: it is about 0.05 even for independent layers at p = 0.1. Expect noise: from 500 items the standard error of φ is roughly 0.045, so require the excess to persist before tripping. When the breaker trips, respond in proportion: raise the human review rate, route the action class to a stricter path, or pause autonomous execution of it.
+Use ρ, not the share of joint failures among all failures. That share is a Jaccard index, not a correlation: it is about 0.05 even for independent layers at p = 0.1. Expect noise: from 500 harmful items the standard error of φ is roughly 0.045, and of ρ more when miss rates differ, so require the excess to persist before tripping. When the breaker trips, respond in proportion: raise the human review rate, route the action class to a stricter path, or pause autonomous execution of it.
 
 ## 7. Re-verify independence
 
@@ -125,7 +125,7 @@ Independence decays as systems are optimized. Re-check it after any change to mo
 
 - **Ablation:** disable one layer on a test set. If the stack's miss rate barely changes, that layer was covering the same items as the others.
 - **Transfer:** take inputs that defeat one layer and measure how often they defeat each other layer, relative to that layer's base miss rate.
-- **Fresh measurement:** recompute the φ matrix on a refreshed challenge set ([Audit Guide](/entanglements/mitigation/audit-guide/)).
+- **Fresh measurement:** recompute the ρ matrix on a refreshed challenge set ([Audit Guide](/entanglements/mitigation/audit-guide/)).
 
 ## 8. Rotation against capture
 
@@ -174,13 +174,13 @@ It is not reasonable when:
 - **the target is valuable enough** that finding a master key is worth an attacker's effort;
 - **regulation or contract requires** demonstrable independence.
 
-When you cannot estimate ρ, treat "unknown" as "correlated" (0.7 for a shared provider or model family, 0.55 across providers; see the [priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)) and invest in measuring it once stakes are more than low. With limited resources, start with the highest-stakes action classes and the most correlated pairs, take the cheap interventions first (independent context, separate prompts and teams, fail-closed checks), and remember that monitoring a correlation does not reduce it.
+When you cannot estimate ρ, treat "unknown" as "correlated" (0.7 for a shared provider or model family, 0.6 across providers; see the [priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)) and invest in measuring it once stakes are more than low. With limited resources, start with the highest-stakes action classes and the most correlated pairs, take the cheap interventions first (independent context, separate prompts and teams, fail-closed checks), and remember that monitoring a correlation does not reduce it.
 
 ---
 
 See also:
 - [Types of Entanglement](/entanglements/fundamentals/types/): what you are mitigating
-- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): φ, thresholds and priors
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): ρ, thresholds and priors
 - [Audit Guide](/entanglements/mitigation/audit-guide/): the assessment protocol
 - [Worked Examples](/entanglements/case-studies/examples/): redesigns end to end
 - [Channel Integrity](/design-patterns/channel-integrity/): the design-pattern view

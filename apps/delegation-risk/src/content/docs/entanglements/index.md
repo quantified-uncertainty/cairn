@@ -19,7 +19,7 @@ $$P(\text{all miss}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
 
 Three caveats travel with these numbers:
 
-- **ρ = 0.5 is assumed, not measured.** Published studies find LLM errors substantially correlated, even across providers, but none reports the statistic this formula needs ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Show the range, not one row.
+- **ρ = 0.5 is a benchmark-based prior, not a measurement of any monitor stack.** On MMLU misses, strong LLMs from different providers give ρ of about 0.3–0.6 and models from one provider about 0.5–0.7, depending on how much label noise is allowed for ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). No study reports ρ for harm detection. Show the range, not one row.
 - **This is benign-failure math.** Against an adaptive adversary, such as a scheming component or a prompt-injection author, inputs are chosen to beat every layer at once. Count the stack as its best single layer unless a control evaluation shows otherwise ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)).
 - **Correlation does not change expected losses**, which add. It matters for defenses where every layer must miss, and for the tails of total loss.
 
@@ -35,4 +35,4 @@ Then, by need:
 - **Running an assessment:** [Detecting Influence](/entanglements/detection/detecting-influence/) for the methods, the [Audit Guide](/entanglements/mitigation/audit-guide/) for the protocol, and [Worked Examples](/entanglements/case-studies/examples/) for four analyses end to end.
 - **Background and evidence:** [Research Connections](/entanglements/research/research-connections/) covers common-cause failure analysis, correlated LLM errors and AI debate. [Foundation-Model Monoculture](/entanglements/case-studies/foundation-model-monoculture/) covers provider concentration. [Historical Cases](/entanglements/case-studies/historical-cases/) covers human institutions that failed this way, [Psychology of Oversight](/entanglements/cross-domain/psychology-of-oversight/) covers human reviewers as a correlated layer, and [Regulatory Approaches](/entanglements/cross-domain/regulatory-approaches/) covers policy.
 
-The design-pattern view of the same problem is [Channel Integrity](/design-patterns/channel-integrity/), and the canonical propagation rule is [Risk Propagation](/delegation-risk/risk-propagation/).
+The design-pattern view of the same problem is [Channel Integrity](/design-patterns/channel-integrity/), and the canonical propagation rule is [Risk Propagation](/delegation-risk/risk-propagation/). The sibling Reasoning Processes notes treat decorrelation as a hardening technique for any reasoning process, human or model ([Independence & Decorrelation](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-independence/)).

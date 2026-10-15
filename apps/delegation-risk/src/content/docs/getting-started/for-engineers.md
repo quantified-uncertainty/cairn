@@ -30,7 +30,7 @@ The [pattern catalogue](/design-patterns/) has about twenty AI-specific patterns
 - **[Information](/design-patterns/information/)**: Need-to-Know Compartments, which separate untrusted context from capabilities.
 - **[Recovery](/design-patterns/recovery/)**: Checkpoint-Rollback and Graceful Degradation.
 
-There are two worked examples: a [code-deployment agent](/design-patterns/examples/code-deployment-example/) and a [research assistant](/design-patterns/examples/research-assistant-example/). [Composing Patterns](/design-patterns/composing-patterns/) covers how patterns interact.
+There are two worked examples: a [coding agent](/delegation-risk/worked-example-coding-agent/) and a [research assistant](/design-patterns/examples/research-assistant-example/). [Composing Patterns](/design-patterns/composing-patterns/) covers how patterns interact.
 
 ## Three mistakes specific to this framework
 
@@ -38,7 +38,7 @@ Generic engineering advice (threat-model before copying patterns, don't over-eng
 
 ### 1. Multiplying miss rates as if checks were independent
 
-"Three checks, each catching 90%, so we miss 0.1%." That holds only if the checks fail independently. Checks built on one model family, trained on overlapping data or reading the same context tend to miss the same items. With common-cause weight ρ, three such checks miss (1−ρ)·0.001 + ρ·0.1 of harmful actions: about 11× the naive figure at ρ = 0.1, 21× at ρ = 0.2 and 50× at ρ = 0.5 (the [entanglement tax](/entanglements/)). We know of no measurement of ρ for same-provider stacks on this scale, so treat these values as assumptions.
+"Three checks, each catching 90%, so we miss 0.1%." That holds only if the checks fail independently. Checks built on one model family, trained on overlapping data or reading the same context tend to miss the same items. With common-cause weight ρ, three such checks miss (1−ρ)·0.001 + ρ·0.1 of harmful actions: about 11× the naive figure at ρ = 0.1, 21× at ρ = 0.2 and 50× at ρ = 0.5 (the [entanglement tax](/entanglements/)). On benchmark questions strong LLMs give ρ of about 0.3–0.6 across providers and 0.5–0.7 within one ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)); for harm detection it is unmeasured, so treat these values as priors.
 
 These figures describe benign, common-cause failure. Against an adaptive attacker, such as an injected prompt or a scheming component searching for an input that defeats every layer, assume ρ near 1, so that only your single best check counts, unless a [control evaluation](/research/trust-behavior/empirical-scheming-reduction/) shows otherwise.
 

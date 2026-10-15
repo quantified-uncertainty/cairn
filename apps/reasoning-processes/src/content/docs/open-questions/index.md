@@ -27,8 +27,8 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 
 - **Does forecasting parity transfer?** AI forecasters now roughly match strong humans on binary questions that resolve within months. We do not know whether that predicts anything about long-horizon or unresolvable judgment, or how to find out without waiting.
 - **What is the right baseline?**
-  - On market questions, forecasters see the price. When that price is the baseline, no entry, AI or superforecaster, demonstrably adds value after correcting for multiple comparisons.
-  - We do not know which baseline a judge should use when deciding how much weight a forecaster deserves.
+  - On market questions, forecasters see the price. One analysis finds that, after correcting for multiple comparisons, no entry, AI or superforecaster, significantly beats simply submitting that price.
+  - A forecaster deserves weight only for information beyond the judge's existing sources, which [forecast-encompassing tests](/concepts/what-is-a-strong-reasoner/#a-working-definition) measure on resolved questions. We do not know how to measure it for judgments that never resolve.
 - **Do audit channels survive optimization?**
   - Chain-of-thought monitoring works, and it degrades when it is trained against.
   - The same may hold for every legible channel these notes propose, including consistency checks, track records and trace logs.
@@ -36,7 +36,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 
 ## By chapter
 
-- [Cruxes](/start-here/key-questions/) — strategic uncertainties with working credences: scaffolding vs. base models, demand, differential safety, lock-in, CoT monitorability.
+- [Cruxes](/start-here/key-questions/) — strategic uncertainties with illustrative credences: scaffolding vs. base models, demand, differential safety, lock-in, CoT monitorability.
 - [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/#open-questions) — consumer-agent adequacy, divergence measures for rich beliefs, efficient profundity, adversarial information, valuing question discovery.
 - [Constructing Utility Functions](/concepts/constructing-utility-functions/#open-questions) — aggregating structural disagreement, weight drift and its auditors, required elicitation precision under optimization pressure.
 - [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions) — whether the deception conjunction is complete, when reproduction fails under correlated error, whether "deception affordance" is the right central object, whether form-level robustness generalizes, composed arguments, Goodhart dynamics once the map is public, and design-time advantage without credible commitment.
@@ -47,7 +47,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 - [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/#open-questions) — which properties are load-bearing, cross-domain trust transfer, track records across model versions, whether forecasting parity generalizes, keeping CoT monitorable.
 - [Hardening: Overview](/concepts/hardening-techniques/#open-questions) — whether six families is the right cut, which compose multiplicatively, a single unifying inequality, the correlated-error row.
   - [Calibration](/concepts/hardening-calibration/#open-questions) — estimating tail calibration, defeating coherent ignorance, abstention exchange rates.
-  - [Verifiability Asymmetry](/concepts/hardening-verifiability/#open-questions) — a PCP-analogue for estimates, who controls decomposition, how much research is verifiable at all.
+  - [Verifiability Asymmetry](/concepts/hardening-verifiability/#open-questions) — a PCP-analogue for estimates, who controls decomposition, how much research is verifiable at all, whether reasoning trained on verifiable rewards transfers to unchecked tasks.
   - [Independence & Decorrelation](/concepts/hardening-independence/#open-questions) — estimating $n_{\text{eff}}$, whether re-seeding decorrelates, decorrelated interrogation probes.
   - [Invariance & Low Sensitivity](/concepts/hardening-invariance/#open-questions) — efficiency vs. breakdown, nuisance vs. signal sensitivity, invariance against correlated error.
   - [Incentive-Compatibility](/concepts/hardening-incentives/#open-questions) — splitting surprise and validation payments, peer prediction among colluding LLMs, attacks relocating to resolution interpreters.

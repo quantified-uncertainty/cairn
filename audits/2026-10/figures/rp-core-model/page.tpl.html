@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loss Pipeline Figure</title>
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('starlight-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root { --text: #dcd7cd; --muted: #a7a195; --bg: #161514; --link: #9dbdf2; --rule: #45423c; color-scheme: dark; }
+  :root[data-theme='light'] { --text: #2e2c28; --muted: #5f5b53; --bg: #ffffff; --link: #2a57a6; --rule: #d6d1c7; color-scheme: light; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px; line-height: 1.65;
+  }
+  main { max-width: 45rem; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
+  .crumb { font-size: 0.875rem; color: var(--muted); margin: 0 0 0.25rem; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 1.5rem; font-weight: 600; }
+  h2 { font-size: 1.375rem; margin: 2.25rem 0 0.75rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  a { color: var(--link); }
+  i.v { font-family: 'Times New Roman', serif; font-size: 1.08em; }
+</style>
+</head>
+<body>
+<main>
+<p class="crumb">Reasoning Processes · concepts/core-model · figure preview</p>
+<h1>The Core Model</h1>
+
+<h2>Setup</h2>
+<p>A <strong>judge</strong> <i class="v">J</i> must make decisions under uncertainty. Their preferences over knowledge are summarized by a utility function <i class="v">U</i>, represented in practice as a weighted question portfolio (<a href="#">Constructing Utility Functions</a>). A <strong>reasoning process</strong> <i class="v">π</i> — peer review, a prediction market, an LLM pipeline, an expert panel — consumes effort and evidence and emits claims, estimates, or evaluations. The judge cannot verify the claims object-level; these notes are about what they can do instead.</p>
+<p>Three families of quantities characterize <i class="v">π</i>: what it delivers, what it costs, and what it costs to corrupt. (All symbols are indexed in the <a href="#">Glossary &amp; Notation</a>.)</p>
+
+<!--FIGURE-->
+
+<h2>1. Epistemic weight [exact]</h2>
+<p>The judge's master question: a claim arrives from process <i class="v">π</i> — how much should I update? The Bayesian answer runs through the process, not the claim …</p>
+</main>
+</body>
+</html>

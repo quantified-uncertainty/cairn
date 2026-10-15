@@ -41,4 +41,4 @@ Open an issue on [GitHub](https://github.com/quantified-uncertainty/delegation-r
 
 ## Acknowledgments
 
-The framework draws on Eric Drexler's CAIS, Redwood Research's AI Control work, and decades of nuclear and financial risk practice. Errors are ours.
+The framework draws on Eric Drexler's CAIS, Redwood Research's AI Control work, the economics of agency and insurance, and decades of nuclear and financial risk practice. Errors are ours.

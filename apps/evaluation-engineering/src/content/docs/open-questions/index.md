@@ -29,12 +29,12 @@ description: The unresolved problems in evaluation engineering, grouped by chapt
 
 - For which judgment-bound question classes has chance-corrected LLM–panel agreement been measured against panel–panel agreement, beyond essays, paper review and clinical rubrics ([LLMs as Evaluators](/concepts/llm-evaluators/#open-questions))?
 - How fast does a judge's accuracy decay once the evaluated optimize against it, and how much do random audits with penalties slow the decay?
-- Can a cheaper model learn to imitate a human middle layer well enough to be useful? SCORE's AI systems matched the humans' distribution of judgments but not their discrimination ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)).
+- When does a model of a human evaluator inherit its accuracy? Linear models of clinicians out-predicted the clinicians; SCORE's AI systems matched the human forecasters' distribution of judgments but not their discrimination ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)). One difference: the clinicians' models used the same few test scores the clinicians saw, while SCORE's systems had to extract their inputs from the papers.
 - How much independence does a mixed human–model panel buy over a model-only panel, per dollar?
 
 ## Bridging cheap and expensive judgment
 
-- Do prediction–evaluation incentives survive deceptive participants? Random resolution keeps a proper score proper but divides each item's expected reward by the audit ratio; at 50 audits in 10,000 items, each forecast carries 1/200 of the stake.
+- Do prediction–evaluation incentives survive deceptive participants? Random resolution keeps a proper score proper, and paying resolved items at the inverse audit rate keeps expected rewards intact, but each payoff becomes a lottery: at 50 audits in 10,000 items, a forecast is scored with probability 1/200. How risk-averse or strategic participants respond is untested.
 - What is the best allocation of a fixed audit budget across a large question set: uniform random, stratified by stakes, or concentrated near decision thresholds and reweighted?
 
 ## The environment

@@ -9,7 +9,7 @@ An evaluation system decomposes into four reusable parts. Each has its own liter
 
 ## Prediction
 
-Probabilistic forecasts that can be scored against outcomes and aggregated, in the sense of Tetlock & Gardner's *Superforecasting* (2015). Scoring gives the system a feedback signal; aggregation lets it combine many cheap judgments. Prediction without calculation is limited to what people can intuit, which suffices for hundreds of hand-written questions and not for thousands.
+Probabilistic forecasts that can be scored against outcomes and aggregated, in the sense of Tetlock & Gardner's *Superforecasting* (2015). Scoring gives the system a feedback signal; aggregation lets it combine many cheap judgments. Human prediction without calculation is limited to what people can intuit, which suffices for hundreds of hand-written questions and not for thousands. LLM forecasters lift the volume limit at a shrinking cost in accuracy ([LLMs as Evaluators](/concepts/llm-evaluators/#what-llms-cheapen-component-by-component)).
 
 ## Calculation
 

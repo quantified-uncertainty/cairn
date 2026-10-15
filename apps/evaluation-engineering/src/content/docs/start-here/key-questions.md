@@ -10,7 +10,7 @@ A crux is a question where a confident answer would redirect effort. Each entry 
 ## On the premise
 
 1. **Is the bottleneck the system, not the estimate?** The founding bet is that we can make one good evaluation and fail at making ten thousand cheaply. In domains where experts barely agree with each other (grant review is one), single-evaluation quality may still be the binding constraint.
-2. **Does scale unlock value, or just volume?** Ten thousand mediocre estimates may be worth less than ten excellent ones. No study yet shows a high-throughput evaluation system changing decisions that would not otherwise have changed.
+2. **Does scale unlock value, or just volume?** Ten thousand mediocre estimates may be worth less than ten excellent ones. As far as this wiki knows, no study yet shows a high-throughput system for judging grants, organizations or policies changing decisions that would not otherwise have changed.
 
 ## On estimation vs. evaluation
 
@@ -31,12 +31,12 @@ A crux is a question where a confident answer would redirect effort. Each entry 
 ## On the environment
 
 10. **Is culture the real adoption bottleneck?** Documented cases show the evaluated exiting (the 2022 US News law-school boycott) and an inspectorate losing its coarsest output (Ofsted's single-word grades, removed in 2024) ([Epistemic Culture](/concepts/epistemic-culture/)). Whether such pushback binds harder than technical limits, and whether it is more tractable, is unknown.
-11. **Does payment buy the evaluator, or mark high stakes?** A coding of 161 catalogued systems found that neither payer type nor method predicted documented failure, but systems paid by the parties they rate had about three times the odds of one ([catalogue](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure)). Most of those failures were gaming by the rated party rather than lenient rating, which fits either reading. If payment buys the evaluator, the main work is designing payer and governance; if it marks stakes, the main work is robustness to gaming.
+11. **Does payment buy the evaluator, or mark high stakes?** A coding of 161 catalogued systems found that neither payer type nor method predicted documented failure, but systems paid by the parties they rate had about 3.5 times the odds of one ([catalogue](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure)). Most of those failures were gaming by the rated party rather than lenient rating, which fits either reading. If payment buys the evaluator, the main work is designing payer and governance; if it marks stakes, the main work is robustness to gaming.
 
 ## On the field itself
 
 12. **Is "evaluation engineering" the right frame and name?** The lineage went from advanced evaluation systems through estimation systems to the present framing. The name also collides with AI-model "evals" ([Chapter 1](/start-here/introduction/#not-ai-model-evals-though-they-overlap)). Renaming would avoid confusion; keeping it claims the overlap with a large, funded community.
-13. **Does shared infrastructure make errors systemic?** If many funders adopt the same few LLM judges, their mistakes correlate across institutions, and the same applicants are rejected everywhere ([Kleinberg & Raghavan 2021](https://arxiv.org/abs/2101.05853); [Bommasani et al. 2022](https://arxiv.org/abs/2211.13972)). Scaled evaluation may need deliberate diversity of judges, which costs some of the savings.
+13. **Does shared infrastructure make errors systemic?** If many funders adopt the same few LLM judges, their mistakes may correlate across institutions, so that the same applicants are rejected everywhere ([Kleinberg & Raghavan 2021](https://arxiv.org/abs/2101.05853); [Bommasani et al. 2022](https://arxiv.org/abs/2211.13972)). Scaled evaluation may need deliberate diversity of judges, which costs some of the savings.
 
 ---
 

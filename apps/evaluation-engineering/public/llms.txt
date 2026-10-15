@@ -9,7 +9,7 @@ Sibling wiki: Robust Reasoning Processes (https://reasoning-processes.quantified
 
 - [1. Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/start-here/introduction/): What evaluation engineering is, why treat evaluation as a systems problem that includes its incentives, and how it relates to AI-model evals.
 - [2. Estimation vs. Evaluation](https://evaluation-engineering.quantifieduncertainty.org/start-here/estimation-vs-evaluation/): The field's foundational distinction — clean quantitative estimation vs. messy judgment-bound evaluation — and the divide-and-conquer design strategy it implies.
-- [3. Why It Matters — Use Cases](https://evaluation-engineering.quantifieduncertainty.org/start-here/use-cases/): Concrete things highly optimized evaluation systems would unlock — futarchy, certificates of impact, felicific calculators, Guesstimate-scale tooling, and charity prioritization.
+- [3. Why It Matters — Use Cases](https://evaluation-engineering.quantifieduncertainty.org/start-here/use-cases/): Where cheap, audited evaluation at scale would change decisions — grant and research triage, peer review, charity evaluation — and the speculative mechanisms that first motivated the field.
 - [4. Cruxes](https://evaluation-engineering.quantifieduncertainty.org/start-here/key-questions/): The open questions evaluation engineering turns on — the things that, if resolved, would most change the shape of the field.
 
 ## Part I — The Systems View
@@ -19,27 +19,30 @@ Sibling wiki: Robust Reasoning Processes (https://reasoning-processes.quantified
 
 ## Part II — Methods & Techniques
 
-- [7. Evaluation Methods](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-methods/): The concrete ways to fill the evaluation slot (expert panels, structured elicitation, appraisal tools, surveys, crowd ratings, indicators, indices, inspection, forecasting, pairwise comparison, LLM judges) compared on what each measures, how it fails, and what it costs.
+- [7. Evaluation Methods](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-methods/): The concrete ways to fill the evaluation slot (expert panels, structured elicitation, appraisal tools, surveys, crowd ratings, indicators, indices, inspection, impact evaluation, forecasting, pairwise comparison, LLM judges) compared on what each measures, how it fails, and what it costs.
 - [8. Techniques](https://evaluation-engineering.quantifieduncertainty.org/concepts/techniques/): System-level patterns that wire the components together (prediction–evaluation systems, structured forecasting, estimation functions, trust networks, robust aggregation), each with its evidence status.
 - [9. LLMs as Evaluators](https://evaluation-engineering.quantifieduncertainty.org/concepts/llm-evaluators/): What language models change in an evaluation system — which components they cheapen, what the LLM-as-judge literature measures about their reliability, the evidence that undefended judges get gamed, the two system-level failures (correlated error and Goodhart), and how to use them as the cheap layer of a prediction–evaluation system.
+- [10. Measuring an Evaluator](https://evaluation-engineering.quantifieduncertainty.org/concepts/measuring-an-evaluator/): How to tell whether an evaluator, human or LLM, is any good — chance-corrected agreement and its paradoxes, the human-panel baseline, reliability versus validity, calibration, error bars and sample sizes, prediction-powered inference for combining a few gold labels with many model labels, and the gaming tests a judge should pass before it is trusted.
 - [Interlude: A Worked Example](https://evaluation-engineering.quantifieduncertainty.org/concepts/worked-example/): One evaluation problem — a funder reviewing 1,000 grants a year — carried through four system designs with explicit costs, what each design can and cannot learn, and why a 50-item audit needs chance-corrected agreement.
+- [11. The Capability Ladder](https://evaluation-engineering.quantifieduncertainty.org/concepts/capability-ladder/): Five rungs for grading an evaluation system, each defined by a test it must pass (standardized, measured, monitored, gaming-tested, accountable), with eight real systems graded against them.
+- [12. Launch Checklist](https://evaluation-engineering.quantifieduncertainty.org/concepts/launch-checklist/): What to have in place before an evaluation system's scores are used — decision, payer, rubric, measured baselines, gaming tests, audits, escalation, appeals, drift triggers and disclosure — each linked to the chapter that justifies it.
 
 ## Part III — Evidence from the Wild
 
-- [10. Evaluation Systems in the Wild](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/): A catalogue of about 160 real-world evaluation systems, from RTINGS and IMDb to credit ratings, Michelin and the Arena LLM leaderboard, coded by who pays and documented failure, and what they teach about building evaluation systems.
-- [11. Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/): What the academic literature establishes across real-world evaluation systems — reactivity, Goodhart's law, selection bias, certification economics, reputation inflation, and aggregation theory — and what it implies for evaluation engineering.
+- [13. Evaluation Systems in the Wild](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/): A catalogue of about 160 real-world evaluation systems, from RTINGS and IMDb to credit ratings, Michelin and the Arena LLM leaderboard, coded by who pays and documented failure, and what they teach about building evaluation systems.
+- [14. Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/): What the academic literature establishes across real-world evaluation systems — reactivity, Goodhart's law, selection bias, certification economics, reputation inflation, and aggregation theory — and what it implies for evaluation engineering.
 
 ## Part IV — The Environment
 
-- [12. Epistemic Culture](https://evaluation-engineering.quantifieduncertainty.org/concepts/epistemic-culture/): How evaluation systems fare once the evaluated push back — documented backlash and exit cases, the candidness problem, and what they suggest about rollout.
+- [15. Epistemic Culture](https://evaluation-engineering.quantifieduncertainty.org/concepts/epistemic-culture/): How evaluation systems fare once the evaluated push back — documented backlash and exit cases, the candidness problem, and what they suggest about rollout.
 
 ## Reference
 
 - [Glossary](https://evaluation-engineering.quantifieduncertainty.org/reference/glossary/): Key terms used across the evaluation-engineering wiki.
 - [Objections & FAQ](https://evaluation-engineering.quantifieduncertainty.org/reference/objections/): The strongest objections to evaluation engineering, the responses on offer, the cost/scale picture, and external commentary.
-- [Lineage](https://evaluation-engineering.quantifieduncertainty.org/start-here/lineage/): Where evaluation engineering comes from — QURI's 2021–22 "advanced / symbolic evaluation systems" program, the outside precedents for its core audit pattern, and its relation to AI-model evals.
+- [Lineage](https://evaluation-engineering.quantifieduncertainty.org/start-here/lineage/): Where evaluation engineering comes from — QURI's 2021–22 "advanced / symbolic evaluation systems" program, the outside precedents for its core audit pattern (models of expert judges, essay scoring, replication forecasting), and its relation to AI-model evals.
 - [Related Work (QURI)](https://evaluation-engineering.quantifieduncertainty.org/reference/related-work/): QURI's published work that this wiki draws on — the framing, the deployed tools, and the scarce empirical results behind evaluation engineering.
-- [Adjacent Fields & Literature](https://evaluation-engineering.quantifieduncertainty.org/reference/adjacent-fields/): The mature literatures evaluation engineering draws on — forecasting, decision analysis, program evaluation, LLM evals, scalable oversight, and estimation/ontology tooling — with entry-point citations.
+- [Adjacent Fields & Literature](https://evaluation-engineering.quantifieduncertainty.org/reference/adjacent-fields/): The mature literatures evaluation engineering draws on — forecasting, decision analysis, program evaluation, LLM evals, scalable oversight, estimation tooling, metrology, audit, information theory and psychometrics — with entry-point citations.
 - [Open Problems](https://evaluation-engineering.quantifieduncertainty.org/open-questions/): The unresolved problems in evaluation engineering, grouped by chapter, as of October 2026.
 
 ## Optional

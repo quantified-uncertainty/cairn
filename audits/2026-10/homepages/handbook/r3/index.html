@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAIRN Handbook</title>
+<meta name="description" content="How QURI builds and maintains CAIRN, its monorepo of LLM-assisted research wikis.">
+<script>
+  /* Stand-in for Starlight's ThemeProvider: a stored choice wins, otherwise follow the OS. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('starlight-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+/* =====================================================================
+   1. Tokens. These use Starlight's own variable names, so the block
+      under "SPEC: tokens" is what goes into the app's custom CSS.
+      Starlight's convention: :root is dark, [data-theme='light'] is light.
+      The prefers-color-scheme block only matters for this static mock.
+   ===================================================================== */
+/* SPEC: tokens (dark) */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings          16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text         12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text     7.1:1 */
+  --sl-color-gray-4: #8f897e;  /*                    5.3:1 */
+  --sl-color-gray-5: #45423c;  /* borders, rules */
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #3a2c12;
+  --sl-color-accent: #b98a35;
+  --sl-color-accent-high: #e8be6a; /* links in dark  10.4:1 */
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  color-scheme: dark;
+}
+/* SPEC: tokens (light) */
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings          17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text         13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text     6.8:1 */
+  --sl-color-gray-4: #6f6a61;  /*                    5.4:1 */
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #f3e6c8;
+  --sl-color-accent: #8a5a0b;  /* links in light     5.9:1 */
+  --sl-color-accent-high: #5e3d06;
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
+  color-scheme: light;
+}
+/* Mock only: with no data-theme attribute, follow the OS. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --sl-color-white: #1c1b19; --sl-color-gray-1: #24221f; --sl-color-gray-2: #2e2c28;
+    --sl-color-gray-3: #5f5b53; --sl-color-gray-4: #6f6a61; --sl-color-gray-5: #d6d1c7;
+    --sl-color-gray-6: #ebe8e2; --sl-color-gray-7: #f7f6f3; --sl-color-black: #ffffff;
+    --sl-color-accent-low: #f3e6c8; --sl-color-accent: #8a5a0b; --sl-color-accent-high: #5e3d06;
+    --sl-color-text-accent: var(--sl-color-accent);
+    --sl-color-bg-nav: var(--sl-color-gray-7);
+    --sl-color-hairline: var(--sl-color-gray-6);
+    --sl-color-hairline-shade: var(--sl-color-gray-6);
+    color-scheme: light;
+  }
+}
+
+/* =====================================================================
+   2. Starlight defaults this mock imitates (not part of the spec).
+   ===================================================================== */
+:root {
+  --sl-font-system: ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --sl-nav-height: 3.5rem;
+  --sl-content-pad-x: 1rem;
+  --sl-content-width: 67.5rem;
+  --sl-content-gap-y: 1rem;
+  --sl-line-height: 1.75;
+  --sl-text-h1: 2.1875rem;
+  --sl-text-h2: 2.1875rem;
+}
+@media (min-width: 50em) {
+  :root { --sl-nav-height: 4rem; --sl-content-pad-x: 1.5rem; --sl-text-h1: 2.625rem; }
+}
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sl-font-system);
+  line-height: var(--sl-line-height);
+  -webkit-font-smoothing: antialiased;
+  color: var(--sl-color-text);
+  background-color: var(--sl-color-black);
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.header {
+  position: sticky; top: 0; z-index: 10;
+  height: var(--sl-nav-height);
+  padding: 0 var(--sl-content-pad-x);
+  background: var(--sl-color-bg-nav);
+  border-bottom: 1px solid var(--sl-color-hairline-shade);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.site-title { font-size: 1.25rem; font-weight: 600; white-space: nowrap; color: var(--sl-color-white); text-decoration: none; }
+.search {
+  display: flex; align-items: center; gap: .5rem; height: 2.5rem; padding: 0 .25rem;
+  border: 0; background: none; color: var(--sl-color-gray-1); font: inherit; cursor: pointer;
+}
+.search .label, .search kbd { display: none; }
+.search svg { width: 1.25rem; height: 1.25rem; }
+.right { display: none; align-items: center; gap: 1rem; }
+.right .gh { color: var(--sl-color-gray-3); display: flex; }
+.right .gh svg { width: 1.25rem; height: 1.25rem; }
+.right .sep { width: 1px; height: 2rem; background: var(--sl-color-gray-5); }
+.theme select { font: inherit; font-size: .875rem; color: var(--sl-color-gray-2); background: transparent; border: 0; padding: .25rem 0; cursor: pointer; }
+.theme select option { background: var(--sl-color-black); color: var(--sl-color-gray-2); }
+@media (min-width: 50em) {
+  .header { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(0, 22rem) 1fr; }
+  .search {
+    width: 100%; padding: 0 .5rem 0 .75rem;
+    border: 1px solid var(--sl-color-gray-5); border-radius: .5rem;
+    background: var(--sl-color-black); color: var(--sl-color-gray-2); font-size: .875rem;
+  }
+  .search svg { width: 1rem; height: 1rem; }
+  .search .label { display: inline; }
+  .search kbd { display: inline; margin-left: auto; padding: 0 .375rem; border-radius: .25rem;
+    background: var(--sl-color-gray-6); color: var(--sl-color-gray-2); font: inherit; font-size: .75rem; }
+  .right { display: flex; justify-self: end; }
+}
+
+main { padding: 0 0 3vh; }
+.content-panel { padding: 1.5rem var(--sl-content-pad-x); }
+.content-panel + .content-panel { border-top: 1px solid var(--sl-color-hairline); }
+.sl-container { max-width: var(--sl-content-width); }
+@media (min-width: 72rem) { .sl-container { margin-inline: auto; } }
+.sl-container > * + * { margin-top: 1.5rem; }
+h1 { font-size: var(--sl-text-h1); line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content > * + * { margin-top: var(--sl-content-gap-y); }
+.sl-markdown-content :not(h2) + h2 { margin-top: 1.5em; }
+.sl-markdown-content h2 { font-size: var(--sl-text-h2); line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content a { color: var(--sl-color-text-accent); }
+.sl-markdown-content a:hover { color: var(--sl-color-white); }
+.sl-markdown-content dt { font-weight: 700; }
+.sl-markdown-content dd { padding-inline-start: 1rem; }
+.sl-markdown-content dd + dt { margin-top: var(--sl-content-gap-y); }
+.sl-markdown-content dt + dd { margin-top: .25rem; }
+footer { display: flex; justify-content: center; margin: 3rem 0 1.5rem; }
+.version { font-size: .8125rem; color: var(--sl-color-gray-3); }
+
+/* =====================================================================
+   3. SPEC: home.css. Everything below is the homepage's own CSS.
+      Scoped to splash pages (no sidebar), so inner pages are untouched.
+   ===================================================================== */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 39rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt { font-weight: 600; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt a { text-decoration: none; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt a:hover { text-decoration: underline; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd { padding-inline-start: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr ~ p { font-size: 1rem; color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr + p a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   4. SPEC: flourish. Shared round-3 system (style/CHOSEN.md). Swappable as one block.
+      Placeholder: option 1, Source Serif 4 + warm paper (CHOSEN.md was absent when built).
+   ===================================================================== */
+:root:not([data-has-sidebar]) h1, :root:not([data-has-sidebar]) .sl-markdown-content h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; letter-spacing: -0.005em; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { font-size: 1.375rem; }
+:root:not([data-has-sidebar]) { --sl-color-black: #181715; }
+:root:not([data-has-sidebar]):root[data-theme='light'] { --sl-color-black: #fbf9f4; }
+@media (prefers-color-scheme: light) { :root:not([data-has-sidebar]):not([data-theme='dark']) { --sl-color-black: #fbf9f4; } }
+
+/* =====================================================================
+   5. SPEC: review-round figure (also in home.css).
+   ===================================================================== */
+.rw-fig { margin-top: 1.75rem !important; }
+.rw-fig svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; }
+.rw-fig .rw-tall { display: none; max-width: 343px; }
+@media (max-width: 40rem) { .rw-fig .rw-wide { display: none; } .rw-fig .rw-tall { display: block; } }
+.rw-fig .st { font-size: 12.5px; font-weight: 600; fill: var(--sl-color-white); }
+.rw-fig .bl { font-size: 12px; fill: var(--sl-color-gray-2); }
+.rw-fig .nt { font-size: 12px; fill: var(--sl-color-gray-3); }
+.rw-fig .box { fill: var(--sl-color-black); stroke: var(--sl-color-gray-4); stroke-width: 1; }
+.rw-fig .box.live { stroke: var(--sl-color-gray-2); stroke-width: 1.25; }
+.rw-fig .e { fill: none; stroke: var(--sl-color-gray-4); stroke-width: 1.1; }
+.rw-fig .ah { fill: var(--sl-color-gray-4); }
+.rw-fig .wr { fill: var(--sl-color-gray-2); }
+.rw-fig .rd { fill: var(--sl-color-black); stroke: var(--sl-color-gray-2); stroke-width: 1.5; }
+.rw-fig .mg { stroke: var(--sl-color-text-accent); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.rw-fig figcaption { margin-top: .75rem; font-size: .9375rem; line-height: 1.5; color: var(--sl-color-gray-3); }
+.rw-fig .key { display: inline-block; width: .6em; height: .6em; border-radius: 50%; vertical-align: .02em; margin-inline: .1em .25em; }
+.rw-fig .key.wr { background: var(--sl-color-gray-2); }
+.rw-fig .key.rd { box-shadow: inset 0 0 0 1.5px var(--sl-color-gray-2); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="site-title" href="/">CAIRN Handbook</a>
+  <button class="search" type="button" aria-label="Search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span class="label">Search</span>
+    <kbd>Ctrl K</kbd>
+  </button>
+  <div class="right">
+    <a class="gh" href="https://github.com/quantified-uncertainty/cairn" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"/></svg>
+    </a>
+    <span class="sep" aria-hidden="true"></span>
+    <label class="theme">
+      <span class="sr-only">Select theme</span>
+      <select id="theme-select">
+        <option value="auto">Auto</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main>
+  <!-- Starlight PageTitle panel: renders the frontmatter title once `hero` is removed. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <h1 id="_top">CAIRN Handbook</h1>
+    </div>
+  </div>
+
+  <!-- Starlight MarkdownContent panel: this is the body of index.mdx. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <div class="sl-markdown-content">
+        <p>This handbook explains how QURI builds and maintains CAIRN, its repository of research wikis, as of October 2026. The wikis are drafted largely with Claude Code and checked in review rounds that treat model-written text as claims to verify.</p>
+
+        <p>Start with the <a href="/review-workflow/">Review Workflow</a>, the five-stage round used to check the wikis. To build a site of your own from an empty folder, take the <a href="/workshop/">Workshop</a>.</p>
+
+        <figure class="rw-fig">
+          <!-- FIG:wide --><svg class="rw-wide" viewBox="0 0 624 176" width="624" height="176" role="img" aria-labelledby="rw-t"><title id="rw-t">One review round: read-only auditors, one per section, feed a single plan and brief; it fans out to parallel editors; each edit is re-checked by a different agent; the parallel edits are reconciled in one pass, built and link-checked, and go up as pull requests with previews. Nothing reaches the live sites until a pull request is merged to main.</title><defs><marker id="rw-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0.5 L7.5,4 L0,7.5z" class="ah"/></marker></defs><text x="46" y="16" text-anchor="middle" class="st">1 Audit</text><text x="134" y="16" text-anchor="middle" class="st">2 Plan</text><text x="226" y="16" text-anchor="middle" class="st">3 Edit</text><text x="312" y="16" text-anchor="middle" class="st">4 Verify</text><text x="410" y="16" text-anchor="middle" class="st">5 Integrate</text><path d="M532,28 L532,140" class="mg"/><text x="532" y="16" text-anchor="middle" class="st">merge</text><circle cx="46" cy="54" r="6.5" class="rd"/><path d="M54.5,54 C81.25,54 81.25,84 108,84" class="e" marker-end="url(#rw-a)"/><circle cx="46" cy="84" r="6.5" class="rd"/><path d="M54.5,84 C81.25,84 81.25,84 108,84" class="e" marker-end="url(#rw-a)"/><circle cx="46" cy="114" r="6.5" class="rd"/><path d="M54.5,114 C81.25,114 81.25,84 108,84" class="e" marker-end="url(#rw-a)"/><rect x="110" y="71" width="48" height="26" rx="4" class="box"/><text x="134" y="88" text-anchor="middle" class="bl">brief</text><path d="M160,84 C188.75,84 188.75,54 217.5,54" class="e" marker-end="url(#rw-a)"/><circle cx="226" cy="54" r="6.5" class="wr"/><path d="M234.5,54 L302.5,54" class="e" marker-end="url(#rw-a)"/><circle cx="312" cy="54" r="6.5" class="rd"/><path d="M320.5,54 C346.25,54 346.25,84 372,84" class="e" marker-end="url(#rw-a)"/><path d="M160,84 C188.75,84 188.75,84 217.5,84" class="e" marker-end="url(#rw-a)"/><circle cx="226" cy="84" r="6.5" class="wr"/><path d="M234.5,84 L302.5,84" class="e" marker-end="url(#rw-a)"/><circle cx="312" cy="84" r="6.5" class="rd"/><path d="M320.5,84 C346.25,84 346.25,84 372,84" class="e" marker-end="url(#rw-a)"/><path d="M160,84 C188.75,84 188.75,114 217.5,114" class="e" marker-end="url(#rw-a)"/><circle cx="226" cy="114" r="6.5" class="wr"/><path d="M234.5,114 L302.5,114" class="e" marker-end="url(#rw-a)"/><circle cx="312" cy="114" r="6.5" class="rd"/><path d="M320.5,114 C346.25,114 346.25,84 372,84" class="e" marker-end="url(#rw-a)"/><rect x="374" y="71" width="72" height="26" rx="4" class="box"/><text x="410" y="88" text-anchor="middle" class="bl">one pass</text><path d="M448,84 L470,84" class="e" marker-end="url(#rw-a)"/><rect x="472" y="71" width="38" height="26" rx="4" class="box"/><text x="491" y="88" text-anchor="middle" class="bl">PRs</text><path d="M512,84 L546,84" class="e" marker-end="url(#rw-a)"/><rect x="548" y="71" width="76" height="26" rx="4" class="box live"/><text x="586" y="88" text-anchor="middle" class="bl">live sites</text><text x="46" y="156" text-anchor="middle" class="nt">read-only,</text><text x="46" y="170" text-anchor="middle" class="nt">per section</text><text x="134" y="156" text-anchor="middle" class="nt">one brief;</text><text x="134" y="170" text-anchor="middle" class="nt">owner decides</text><text x="226" y="156" text-anchor="middle" class="nt">in parallel,</text><text x="226" y="170" text-anchor="middle" class="nt">own files</text><text x="312" y="156" text-anchor="middle" class="nt">never the</text><text x="312" y="170" text-anchor="middle" class="nt">editor</text><text x="410" y="156" text-anchor="middle" class="nt">build,</text><text x="410" y="170" text-anchor="middle" class="nt">link check</text><text x="491" y="156" text-anchor="middle" class="nt">previews</text><text x="491" y="170" text-anchor="middle" class="nt">for review</text><text x="586" y="156" text-anchor="middle" class="nt">only after</text><text x="586" y="170" text-anchor="middle" class="nt">merge</text></svg><!-- /FIG:wide -->
+          <!-- FIG:tall --><svg class="rw-tall" viewBox="0 0 343 318" width="343" height="318" role="img" aria-labelledby="rt-t"><title id="rt-t">One review round: read-only auditors, one per section, feed a single plan and brief; it fans out to parallel editors; each edit is re-checked by a different agent; the parallel edits are reconciled in one pass, built and link-checked, and go up as pull requests with previews. Nothing reaches the live sites until a pull request is merged to main.</title><defs><marker id="rt-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0.5 L7.5,4 L0,7.5z" class="ah"/></marker></defs><text x="0" y="26" text-anchor="start" class="st">1 Audit</text><text x="0" y="74" text-anchor="start" class="st">2 Plan</text><text x="0" y="122" text-anchor="start" class="st">3 Edit</text><text x="0" y="170" text-anchor="start" class="st">4 Verify</text><text x="0" y="218" text-anchor="start" class="st">5 Integrate</text><circle cx="94" cy="22" r="6.5" class="rd"/><path d="M94,30.5 C94,43.25 128,43.25 128,56" class="e" marker-end="url(#rt-a)"/><circle cx="128" cy="22" r="6.5" class="rd"/><path d="M128,30.5 C128,43.25 128,43.25 128,56" class="e" marker-end="url(#rt-a)"/><circle cx="162" cy="22" r="6.5" class="rd"/><path d="M162,30.5 C162,43.25 128,43.25 128,56" class="e" marker-end="url(#rt-a)"/><rect x="92" y="58" width="72" height="24" rx="4" class="box"/><text x="128" y="74" text-anchor="middle" class="bl">brief</text><path d="M128,84 C128,96.75 94,96.75 94,109.5" class="e" marker-end="url(#rt-a)"/><circle cx="94" cy="118" r="6.5" class="wr"/><path d="M94,126.5 L94,156.5" class="e" marker-end="url(#rt-a)"/><circle cx="94" cy="166" r="6.5" class="rd"/><path d="M94,174.5 C94,187.25 128,187.25 128,200" class="e" marker-end="url(#rt-a)"/><path d="M128,84 C128,96.75 128,96.75 128,109.5" class="e" marker-end="url(#rt-a)"/><circle cx="128" cy="118" r="6.5" class="wr"/><path d="M128,126.5 L128,156.5" class="e" marker-end="url(#rt-a)"/><circle cx="128" cy="166" r="6.5" class="rd"/><path d="M128,174.5 C128,187.25 128,187.25 128,200" class="e" marker-end="url(#rt-a)"/><path d="M128,84 C128,96.75 162,96.75 162,109.5" class="e" marker-end="url(#rt-a)"/><circle cx="162" cy="118" r="6.5" class="wr"/><path d="M162,126.5 L162,156.5" class="e" marker-end="url(#rt-a)"/><circle cx="162" cy="166" r="6.5" class="rd"/><path d="M162,174.5 C162,187.25 128,187.25 128,200" class="e" marker-end="url(#rt-a)"/><rect x="88" y="202" width="80" height="24" rx="4" class="box"/><text x="128" y="218" text-anchor="middle" class="bl">one pass</text><path d="M128,228 L128,245" class="e" marker-end="url(#rt-a)"/><rect x="108" y="246" width="40" height="20" rx="4" class="box"/><text x="128" y="260" text-anchor="middle" class="bl">PRs</text><path d="M64,280 L192,280" class="mg"/><text x="0" y="284" text-anchor="start" class="st">merge</text><path d="M128,267 L128,290" class="e" marker-end="url(#rt-a)"/><rect x="88" y="291" width="80" height="22" rx="4" class="box live"/><text x="128" y="306" text-anchor="middle" class="bl">live sites</text><text x="200" y="20" text-anchor="start" class="nt">one per section,</text><text x="200" y="34" text-anchor="start" class="nt">change nothing</text><text x="200" y="68" text-anchor="start" class="nt">one brief;</text><text x="200" y="82" text-anchor="start" class="nt">owner decides</text><text x="200" y="116" text-anchor="start" class="nt">in parallel, each</text><text x="200" y="130" text-anchor="start" class="nt">on its own files</text><text x="200" y="164" text-anchor="start" class="nt">never the agent</text><text x="200" y="178" text-anchor="start" class="nt">that made the edit</text><text x="200" y="212" text-anchor="start" class="nt">build, redirects,</text><text x="200" y="226" text-anchor="start" class="nt">link check</text><text x="200" y="260" text-anchor="start" class="nt">previews for review</text><text x="200" y="306" text-anchor="start" class="nt">only after merge</text></svg><!-- /FIG:tall -->
+          <figcaption>One review round. Filled dots (<span class="key wr"></span>) are agents that edit; hollow dots (<span class="key rd"></span>) only read, and every edit is re-checked by an agent that did not make it. Work fans out twice, is reconciled in one pass, and reaches the live sites only when a pull request is merged (dashed line).</figcaption>
+        </figure>
+
+        <h2 id="handbook">Handbook</h2>
+        <dl>
+          <dt><a href="/adding-a-wiki/">Adding a Wiki</a></dt>
+          <dd>From the starter template to a deployed, CI-checked site, in seven steps.</dd>
+          <dt><a href="/build-and-tooling/">Build &amp; Tooling</a></dt>
+          <dd>The repository layout, llms.txt, the link checker and shared packages.</dd>
+          <dt><a href="/review-workflow/">Review Workflow</a></dt>
+          <dd>How audit and revision rounds are run, from read-only audit to merge.</dd>
+        </dl>
+
+        <h2 id="workshop">Workshop</h2>
+        <dl>
+          <dt><a href="/workshop/">Building Research Websites</a></dt>
+          <dd>Start a research website with Claude Code in about an hour.</dd>
+          <dt><a href="/claude-code-web-app/">Claude Code on the Web</a></dt>
+          <dd>The same workshop in a browser, with nothing to install.</dd>
+        </dl>
+
+        <hr>
+
+        <p>The wikis: <a href="https://delegation-risk.quantifieduncertainty.org/">Delegation Risk</a>, <a href="https://reasoning-processes.quantifieduncertainty.org/">Robust Reasoning Processes</a>, <a href="https://evaluation-engineering.quantifieduncertainty.org/">Evaluation Engineering</a>.</p>
+
+        <p>Maintained by the <a href="https://quantifieduncertainty.org/">Quantified Uncertainty Research Institute</a>. Source on <a href="https://github.com/quantified-uncertainty/cairn">GitHub</a>.</p>
+      </div>
+
+      <footer><span class="version">v0.0.1</span></footer>
+    </div>
+  </div>
+</main>
+
+<script>
+  /* Stand-in for Starlight's ThemeSelect. */
+  (function () {
+    var sel = document.getElementById('theme-select');
+    var stored = null;
+    try { stored = localStorage.getItem('starlight-theme'); } catch (e) {}
+    sel.value = stored === 'light' || stored === 'dark' ? stored : 'auto';
+    sel.addEventListener('change', function () {
+      var v = sel.value;
+      try { v === 'auto' ? localStorage.removeItem('starlight-theme') : localStorage.setItem('starlight-theme', v); } catch (e) {}
+      if (v === 'auto') v = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', v);
+    });
+  })();
+</script>
+</body>
+</html>

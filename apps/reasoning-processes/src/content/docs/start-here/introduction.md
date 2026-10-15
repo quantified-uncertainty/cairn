@@ -15,7 +15,7 @@ A research exploration, not a textbook: working notes and brainstorming toward a
 
 **Robust reasoning processes (RRP)**, as we use the term, are procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. The objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. The questions are about measurement: what does a process deliver, what does it cost, and what does it cost to corrupt?
 
-The subject draws on information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and the epistemology of reliable processes; most of what follows is synthesis from those fields. The motivating observations:
+The subject draws on information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and reliabilist epistemology, which already judges beliefs by the reliability of the processes that produce them ([Goldman 1979](https://doi.org/10.1007/978-94-009-9493-5_1)); most of what follows is synthesis from those fields. The motivating observations:
 
 1. **Many important reasoning processes are unbenchmarked.** Peer review spread without an experiment. Courts, committees, and audits evolved rather than being designed, and few have measured error rates, let alone *corruption* rates.
 2. **Processes may be the leverage point.** Many large epistemic gains were procedural — double-entry bookkeeping, controlled trials, statistical inference, proper scoring rules. A method scales in a way individual brilliance does not.
@@ -52,14 +52,15 @@ A reader from AI safety will pattern-match this project to several existing prog
 
 | Neighbor | Shared ground | Where RRP differs |
 |---|---|---|
-| **Scalable oversight / debate** | a weak principal extracting truth from a stronger agent | oversight verifies *one claim at a time*; RRP prices and allocates verification across thousands of claims — the missing economics ([What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#the-missing-economics)) |
+| **Scalable oversight** (debate, [amplification](https://arxiv.org/abs/1810.08575)) | a weak principal extracting truth from a stronger agent | the protocols make one answer at a time checkable; RRP prices and allocates verification across thousands of claims — the missing economics ([What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#the-missing-economics)) |
 | **AI control** | explicit budgets, audits, distrust of the agent | control catches bad *actions*; RRP prices true *information* — metering the product, not policing the process ([Overseeing Automated Research](/proposals/overseeing-automated-research/)) |
-| **ELK** | the resolution problem — what do verdicts bottom out in? | RRP treats it as an economics and infrastructure problem (resolvers, escrow, track records), not a training problem |
+| **ELK** | the resolution problem — what do verdicts bottom out in? | ELK targets claims no outside resolver can check; RRP works where some resolver exists and asks how to price, extend, and protect it |
 | **Forecasting research** | resolution, calibration, proper scoring rules | the object of study is the *process* and its corruption cost, not forecast accuracy; forecasting platforms are catalogue rows, not the subject |
 | **[Evaluation engineering](https://evaluation-engineering.quantifieduncertainty.org/)** (sibling wiki) | the same 2021–22 corpus; prediction–evaluation systems, trust networks, Goodhart | evaluation engineering optimizes *throughput at known cost* — ten thousand evaluations cheaply; RRP optimizes *corruption cost* — the same processes under attack |
+| **[Delegation risk](https://delegation-risk.quantifieduncertainty.org/)** (sibling wiki) | principals relying on agents they cannot fully check; correlated failure across checks | delegation risk budgets the expected *harm* of delegated actions; RRP prices the *information* a process delivers and the cost of corrupting it |
 | **Epistemic security (CSER)** | adversaries attacking a society's ability to evaluate information | RRP's scope is formal reasoning procedures with measurable error rates, not public discourse at large |
 
-And what this is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this works, trust becomes unnecessary — you do not need to trust an operator whose process you can audit, re-run, and price.
+And what this is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this works, trust moves off the operator and onto the audit, the re-run, and the resolver, which is where the central uncertainty below sits.
 
 ## The central uncertainty
 
