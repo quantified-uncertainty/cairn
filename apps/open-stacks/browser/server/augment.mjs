@@ -84,7 +84,10 @@ export function corpusItems() {
   }
   return corpus;
 }
-export const itemOf = (id) => corpusItems().byId.get(id) || null;
+// Items that are not in corpus.json (routes/17-local.mjs: your own files, guides only on request) come through registerItems(fn), fn(id) → item | null.
+const extraItems = [];
+export const registerItems = (fn) => { extraItems.push(fn); };
+export const itemOf = (id) => corpusItems().byId.get(id) || extraItems.reduce((it, f) => it || f(id), null) || null;
 
 // ---- text: [p. N] markers, N = k + 1 ----
 /** Split marked text into pages [{p, t}] (1-based p). Text before the first marker counts as page 1. */

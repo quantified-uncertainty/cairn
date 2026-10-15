@@ -85,7 +85,9 @@ export default async function (app) {
 
   // Profiles (server/profile.mjs) know corpus items; local ones are looked up here, so a
   // local PDF gets a compiled profile in the cache like any other.
-  try { const P = await import('../profile.mjs'); P.registerItems?.((id) => (id?.startsWith('local:') ? index.get(id)?.it || null : null)); } catch (e) { console.warn('local: profiles:', e.message); }
+  // Reading guides (server/augment.mjs) likewise; the client asks for one only when you do.
+  const lookup = (id) => (String(id ?? '').startsWith('local:') ? index.get(id)?.it || null : null);
+  for (const m of ['../profile.mjs', '../augment.mjs']) { try { (await import(m)).registerItems?.(lookup); } catch (e) { console.warn(`local: ${m}:`, e.message); } }
 
   app.local = {
     get index() { return index; },

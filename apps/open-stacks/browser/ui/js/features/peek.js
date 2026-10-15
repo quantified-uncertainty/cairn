@@ -9,8 +9,11 @@
 // Used by the Feeds view (features/feeds.js) and the Figures river
 // (features/figures.js). Styles live in ui/features/feeds.css (#pk-panel, pk-).
 // Only real pointer movement counts: content scrolling under a still pointer
-// (Chrome sends mouse events then) never opens or swaps anything.
-import { h, on } from '../util.js';
+// (Chrome sends mouse events then) never opens or swaps anything. Scrolling closes
+// an open panel (unless pinned) and keeps it shut for a moment, the pointer has to
+// rest about half a second, and P turns hover previews off (Enter, the keyboard
+// selection and pinning still work).
+import { h, on, store, toast, registerKey } from '../util.js';
 
 const panel = h('aside', { id: 'pk-panel', hidden: true });
 panel.setAttribute('aria-label', 'Preview');
@@ -24,7 +27,7 @@ const roots = new Map(); // root -> options
 let restT = null, closeT = null, swapT = null;
 let px = -1, py = -1, vx = 0; // last pointer position; smoothed horizontal speed
 
-const panelW = () => Math.round(Math.max(480, Math.min(1400, innerWidth * 0.42)));
+const panelW = () => Math.round(Math.max(380, Math.min(760, innerWidth * 0.34))); // a third of the window: the columns stay in view
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const towardPanel = () => (P.side === 'right' ? vx > 2.5 : vx < -2.5);
 
@@ -115,16 +118,36 @@ function onDown(e) {
 panel.addEventListener('pointerenter', () => { P.inPanel = true; clearTimeout(closeT); clearTimeout(swapT); clearTimeout(restT); });
 panel.addEventListener('pointerleave', () => { P.inPanel = false; vx = 0; scheduleClose(true); });
 
+// Hover previews on or off (P); scrolling shuts them for a moment.
+let hoverOn = store.get('peekHover', true), lastScroll = 0;
+const SCROLL_QUIET = 700;
+registerKey('P', () => {
+  hoverOn = !hoverOn; store.set('peekHover', hoverOn);
+  if (!hoverOn && !P.pinned) closePeek();
+  toast(hoverOn ? 'Previews on hover' : 'No previews on hover', { icon: hoverOn ? 'app-window' : 'search-x', kind: 'mode', sub: hoverOn ? 'Rest the pointer on a card · P turns them off' : 'Enter or z still opens one · P turns them back on' });
+}, { help: ['P', 'hover previews in Feeds and Figures on or off'], order: 56, view: null });
+
 /** Watch `root` for cards to peek at. Returns a function that stops watching. */
-export function attachPeek(root, { selector, cardOf, render, delay = 200, grace = 250, onOpen, onClose } = {}) {
+export function attachPeek(root, { selector, cardOf, render, delay = 450, grace = 250, onOpen, onClose } = {}) {
+  delay = Math.max(delay, 450); // a deliberate rest, not a pass on the way somewhere else
   const o = { selector, cardOf, render, delay, grace, onOpen, onClose };
   roots.set(root, o);
   let restEl = null, ax = 0, ay = 0;
+  // Scrolling (wheel or trackpad, the columns or the page) closes an unpinned panel and
+  // keeps previews shut until the scrolling has stopped for a moment.
+  const scrolled = () => {
+    lastScroll = performance.now();
+    clearTimeout(restT); clearTimeout(swapT); restEl = null;
+    if (P.open && !P.pinned && P.root === root) closePeek();
+  };
+  root.addEventListener('wheel', scrolled, { passive: true });
+  root.addEventListener('scroll', scrolled, { passive: true, capture: true });
   const move = (e) => {
     if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     if (e.clientX === px && e.clientY === py) return; // content scrolled under a still pointer
     vx = vx * 0.6 + (e.clientX - (px < 0 ? e.clientX : px)) * 0.4;
     px = e.clientX; py = e.clientY;
+    if (!hoverOn || performance.now() - lastScroll < SCROLL_QUIET) { clearTimeout(restT); restEl = null; return; }
     let el = e.target.closest?.(selector);
     if (el && !root.contains(el)) el = null;
     const card = el ? cardOf(el) : null;
@@ -154,6 +177,7 @@ export function attachPeek(root, { selector, cardOf, render, delay = 200, grace 
   root.addEventListener('pointerleave', leave);
   return () => {
     root.removeEventListener('pointermove', move); root.removeEventListener('pointerleave', leave);
+    root.removeEventListener('wheel', scrolled); root.removeEventListener('scroll', scrolled, { capture: true });
     roots.delete(root); if (P.root === root) closePeek();
   };
 }

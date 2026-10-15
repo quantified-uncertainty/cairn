@@ -1,0 +1,34 @@
+/* Local folders (features/local.js): your own files in the reader, the why line, Settings. */
+
+/* A folder of pictures: each one as large as a column allows. */
+.flow .lc-gallery figure { margin: 0 0 1em; break-inside: avoid; }
+.flow .lc-gallery img { max-height: 76vh; max-width: 100%; }
+.flow .lc-gallery figcaption { font: 11px var(--mono); color: var(--paper-ink-3, #5d5446); text-align: center; overflow-wrap: anywhere; }
+/* A folder of sound files. */
+.flow .lc-playlist { padding-left: 1.4em; }
+.flow .lc-playlist li { margin-bottom: .7em; break-inside: avoid; }
+.flow .lc-playlist p { margin: 0 0 .25em; }
+.flow .lc-playlist audio { width: 100%; height: 32px; }
+/* "Not downloaded from iCloud yet", "not supported yet". */
+.flow .lc-note { border-left: 3px solid var(--accent); padding: .2em 0 .2em .9em; margin: 1em 0; }
+.flow .lc-note p { margin: 0 0 .6em; }
+.flow .lc-note code { font: .86em var(--mono); background: var(--paper-code, #ebe4d6); padding: .15em .35em; border-radius: 3px; overflow-wrap: anywhere; user-select: all; }
+.flow .lc-ch + .lc-ch { break-before: auto; }
+.flow li.task { list-style: none; margin-left: -1.3em; }
+
+/* The why line under "Why this". */
+#panel .lc-why { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; font-size: 11.5px; color: var(--ink-3); }
+#panel .lc-why .lc-what { margin-right: 2px; }
+#panel .lc-why .lc-btn { padding: 1px 7px; font-size: 11px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 3px; text-decoration: none; line-height: 1.5; }
+#panel .lc-why .lc-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+#panel .lc-why .lc-ai { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+#panel .why b { overflow-wrap: anywhere; }
+
+/* Settings › Local folders. */
+#st .lc-set { display: flex; flex-direction: column; gap: 6px; width: 100%; min-width: 0; }
+#st .lc-dirs { width: 100%; min-height: 4.2em; resize: vertical; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; font: 12px/1.45 var(--mono); }
+#st .lc-acts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+#st .lc-roots { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-2); }
+#st .lc-root b { color: var(--ink); font-weight: 600; }
+#st .lc-root.bad span { color: var(--bad); }
+#st .lc-path, #st .lc-from { font: 11px var(--mono); color: var(--ink-3); overflow-wrap: anywhere; }

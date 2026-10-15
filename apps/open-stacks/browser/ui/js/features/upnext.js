@@ -8,11 +8,11 @@
 //
 // Its size follows the free space under the pages, measured after the spread
 // settles: 120 px or more, tiles (the strip at most 220 px tall, at the bottom
-// of the band); 40-120 px, one line of titles; less, nothing (posts fill the
-// stage, so they never have one). It never moves the pages: it is placed
-// absolutely in #stage, before #spread in the document, so pages
-// (position: relative) paint over it if a new spread is taller, until it
-// measures again.
+// of the band, as many tiles as fit, widened to fill the row); 40-120 px, one
+// line of titles; less, nothing (posts fill the stage, so they never have
+// one). It never moves the pages: it is placed absolutely in #stage, before
+// #spread in the document, so pages (position: relative) paint over it if a
+// new spread is taller, until it measures again.
 //
 // Work: only on 'item:settled', 'stack:changed', 'spread:settled' and resizes,
 // in idle time, nothing on the way to a page or item. Covers come from what is

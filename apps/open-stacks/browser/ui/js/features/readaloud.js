@@ -1803,6 +1803,8 @@ function paintBar() {
   progress();
 }
 function paintPill() {
+  // No Read button in the top bar by default: v starts and leaves read-aloud (store 'raPill' brings it back).
+  if (!store.get('raPill', false)) { pill?.remove(); pill = null; return; }
   if (!pill) {
     const hdr = $('#bar'); if (!hdr) return;
     pill = h('button', { id: 'ra-pill', type: 'button', className: 'ghost', onclick: blurred(() => (mode ? exitMode(true) : begin())) });
