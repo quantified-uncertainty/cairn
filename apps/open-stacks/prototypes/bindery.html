@@ -237,7 +237,7 @@ a { color: inherit; }
 .cover .frame { position: absolute; inset: 12px; border: 1px solid rgba(0,0,0,.28); box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px rgba(0,0,0,.22), 0 1px 0 rgba(255,255,255,.08); border-radius: 2px; }
 .cover .c-title { position: absolute; left: 20px; right: 20px; top: 50px; text-align: center; }
 .gilt {
-  background: linear-gradient(100deg, var(--gold-lo) 0%, var(--gold-hi) 24%, #c79a3d 46%, var(--gold-hi) 64%, var(--gold-lo) 100%);
+  background: linear-gradient(100deg, #b38a3a 0%, #f0d68e 22%, #c99c40 46%, #f2da95 64%, #b08636 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   filter: drop-shadow(0 1px 0 rgba(0,0,0,.45));
 }
@@ -412,6 +412,8 @@ a.chip:hover { border-color: currentColor; }
 .coreview { margin-top: 18px; overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2); }
 .coreview svg { display: block; min-width: 820px; width: 100%; height: auto; }
 .coreview .node { cursor: pointer; }
+.coreview.drilling .node, .coreview.drilling .thread { animation: drillin .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes drillin { from { opacity: 0; } to { opacity: 1; } }
 .coreview .node:focus { outline: none; }
 .coreview .node:focus-visible rect.box { stroke: var(--focus); stroke-width: 2.5; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font: 12px/1.3 var(--mono); color: var(--ink-2); }
@@ -830,6 +832,7 @@ const S = {
 const textCache = new Map();
 const marbleCache = new Map();
 const thresholdCache = new Map();
+const drilled = new Set();
 let sample = null, sampleChecked = false;
 
 const vol = () => VOLS.find((v) => v.id === S.vid) || VOLS[0];
@@ -1216,13 +1219,16 @@ function renderRoute() {
     </button>`;
   };
   const same = free && fast && !free.gaps && !fast.gaps && [...free.refs].sort().join() === [...fast.refs].sort().join();
+  const drillNow = !reduced && (S.replay || !drilled.has(v.id));
+  drilled.add(v.id); S.replay = false;
   pane.innerHTML = `<div class="route-top"><div>
       <div class="vmeta"><span>Route · core sample</span><span>·</span>${R.live ? '<span class="badge badge-live">Drilled live by Claude</span>' : '<span class="badge badge-pre">Precomputed</span>'}<span class="badge badge-ai">AI-chosen links</span></div>
       <h3 style="margin-top:8px">From ${esc(target.piece)}</h3>
+      <button class="linkbtn" type="button" id="btn-replay" style="margin-top:8px">Replay the drill</button>
       <p>The drill starts at a ${esc(target.date ? target.date.slice(0, 7) : target.year)} paper and goes down, concept by concept, through papers, textbooks and books to the oldest work in this corpus. Depth is time (log scale). Click a layer to see why it is there, or to mark it as already read: read layers cost nothing and need no prerequisites.</p>
     </div></div>
     <div class="routes">${card('free', 'Free route', free)}${same ? `<div class="rcard" style="cursor:default"><h4><span>Fastest route</span></h4><p style="margin:10px 0 0;font-size:14px;color:var(--ink-2)">Same as the free route: no purchase would make this climb shorter. Mark layers you have already read to see the route change.</p></div>` : card('fast', 'Fastest route', fast)}</div>
-    <div class="coreview" id="coreview">${coreSVG(v, show)}</div>
+    <div class="coreview${drillNow ? ' drilling' : ''}" id="coreview">${coreSVG(v, show)}</div>
     <div class="legend">${Object.values(GENRE).map((g) => `<span><i style="background:${g.bg};border-color:${g.c}"></i>${g.name}</span>`).join('')}<span><i style="background:var(--route-bg);border-color:var(--gold)"></i>On the chosen route</span><span><i style="background:transparent;border-color:var(--ink-3);border-style:dashed"></i>Uncharted (not in corpus)</span><span><i style="background:rgba(201,162,79,.25);border-color:var(--gold);border-style:dashed;width:22px"></i>Seam: one work under two concepts</span><span><svg width="26" height="10" aria-hidden="true" style="vertical-align:-1px;margin-right:5px"><path d="M1 5h24" stroke="var(--gold)" stroke-width="1.6" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Needs first</span><span><i style="background:var(--gold-hi);border-color:var(--gold)"></i>Already read</span></div>
     <div id="ncard"></div>
     <div class="route-foot" id="route-foot"></div>`;
@@ -1239,13 +1245,13 @@ function genreOf(r) {
   if (r.year && r.year < 1950) return 'classic';
   return 'book';
 }
-function wrap2(text, maxc) {
+function wrap2(text, m1, m2 = m1) {
   const words = String(text).split(/\s+/);
   let a = '', k = 0;
-  while (k < words.length && (a + ' ' + words[k]).trim().length <= maxc) { a = (a + ' ' + words[k]).trim(); k++; }
-  if (!a) { a = words[0].slice(0, maxc - 1) + '‐'; words[0] = words[0].slice(maxc - 1); k = 0; }
+  while (k < words.length && (a + ' ' + words[k]).trim().length <= m1) { a = (a + ' ' + words[k]).trim(); k++; }
+  if (!a) { a = words[0].slice(0, m1 - 1) + '‐'; words[0] = words[0].slice(m1 - 1); k = 0; }
   let b = words.slice(k).join(' ');
-  if (b.length > maxc - 5) b = b.slice(0, maxc - 6).replace(/\s+\S*$/, '') + '…';
+  if (b.length > m2) b = b.slice(0, m2 - 1).replace(/\s+\S*$/, '') + '…';
   return [a, b];
 }
 function coreSVG(v, sol) {
@@ -1268,6 +1274,7 @@ function coreSVG(v, sol) {
     return { c, ci, cx, bw, ns, bottom: (ns.length ? ns[ns.length - 1].y : yTop) + NH / 2 + 10 };
   });
   const deepestBottom = Math.max(yBot, ...cols.map((k) => k.bottom));
+  const deepestNode = Math.max(yTop, ...cols.flatMap((k) => k.ns.map((o) => o.y)));
   const unchartedTop = deepestBottom + 54;
   const maxUn = Math.max(0, ...C.map((c) => (c.uncharted || []).length));
   const H = unchartedTop + (maxUn ? maxUn * 40 + 16 : 0) + 10;
@@ -1306,7 +1313,7 @@ function coreSVG(v, sol) {
     const pick = picks[c.key];
     if (pick) {
       const p = ns.find((o) => o.nd.ref === pick);
-      if (p) s += `<path d="M${cx} 120 V ${yTop - 22} H ${cx - bw / 2 - 1} V ${p.y}" fill="none" stroke="var(--gold)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+      if (p) s += `<path class="thread" style="animation-delay:${Math.round(900 + (deepestNode - yTop) * 2.2)}ms" d="M${cx} 120 V ${yTop - 22} H ${cx - bw / 2 - 1} V ${p.y}" fill="none" stroke="var(--gold)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
       if (p) for (const k of p.nd.needs || []) {
         const kc = cols.find((x) => x.c.key === k);
         const kp = kc && kc.ns.find((o) => o.nd.ref === picks[k]);
@@ -1332,13 +1339,12 @@ function coreSVG(v, sol) {
     ns.forEach((o) => {
       const g = GENRE[genreOf(o.r)];
       const on = pick === o.nd.ref, rd = S.read.has(o.nd.ref), sel = S.sel === o.nd.ref;
-      let [l1, l2] = wrap2(o.r.piece, maxc - 6);
-      if (l2.length > maxc) l2 = l2.slice(0, maxc - 1) + '…';
+      const [l1, l2] = wrap2(o.r.piece, maxc - 6, maxc);
       const author = String(o.r.by || '').split(',')[0].trim().split(' ').pop();
       const byLine = !l2 && author ? author : '';
       if (Math.abs(o.y - o.ty) > 2) s += `<path d="M${cx + bw / 2 + 4} ${o.ty} h4 V ${o.y}" fill="none" stroke="var(--ink-3)" stroke-width=".8"/>`;
       const fill = rd ? 'var(--gold-hi)' : on ? 'var(--route-bg)' : g.bg;
-      s += `<g class="node" tabindex="0" role="button" data-node="${esc(o.nd.ref)}" aria-label="${esc(o.r.piece)}, ${o.r.year}, ${esc(g.name)}${on ? ', on the chosen route' : ''}${rd ? ', already read' : ''}">
+      s += `<g class="node" style="animation-delay:${Math.round((o.y - yTop) * 2.2 + cols.findIndex((k) => k.c === c) * 60)}ms" tabindex="0" role="button" data-node="${esc(o.nd.ref)}" aria-label="${esc(o.r.piece)}, ${o.r.year}, ${esc(g.name)}${on ? ', on the chosen route' : ''}${rd ? ', already read' : ''}">
         <rect class="box" x="${cx - bw / 2}" y="${o.y - NH / 2}" width="${bw}" height="${NH}" rx="3" fill="${fill}" stroke="${on || rd ? 'var(--gold)' : g.c}" stroke-width="${on || sel ? 2.4 : 1.1}"/>
         <rect x="${cx - bw / 2}" y="${o.y - NH / 2}" width="5" height="${NH}" rx="1.5" fill="${g.c}"/>
         <text font-size="11" fill="${rd ? '#2a2412' : 'var(--ink)'}" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 11}" y="${o.y - 3}">${esc(l1)}</tspan><tspan x="${cx - bw / 2 + 11}" y="${o.y + 11}">${esc(l2)}</tspan></text>${byLine ? `<text x="${cx - bw / 2 + 11}" y="${o.y + 11}" font-size="10.5" font-style="italic" fill="${rd ? '#2a2412' : 'var(--ink-3)'}" font-family="Libre Caslon Text, Georgia, serif">${esc(byLine)}</text>` : ''}
@@ -1349,7 +1355,7 @@ function coreSVG(v, sol) {
     });
     (c.uncharted || []).forEach((u, ui) => {
       const y = unchartedTop + 20 + ui * 40;
-      const [u1, u2] = wrap2(u.title, Math.floor((bw - 12) / 5.6));
+      const [u1, u2] = wrap2(u.title, Math.floor((bw - 12) / 5.6), Math.floor((bw - 12) / 5.6) - 2);
       s += `<a href="${esc(u.search)}" target="_blank" rel="noopener"><title>${esc(u.title)}: ${esc(u.note)} Opens a search outside this corpus.</title><rect x="${cx - bw / 2}" y="${y - NH / 2}" width="${bw}" height="${NH}" rx="3" fill="none" stroke="var(--ink-3)" stroke-dasharray="4 3"/><text font-size="10.5" fill="var(--ink-3)" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 7}" y="${y - 3}">${esc(u1)}</tspan><tspan x="${cx - bw / 2 + 7}" y="${y + 11}">${esc(u2)} ↗</tspan></text></a>`;
     });
   });
@@ -1627,6 +1633,7 @@ function wire() {
     const wkb = e.target.closest('#weekly [data-w]');
     if (wkb) { S.weekly = Number(wkb.dataset.w); update(); return; }
     if (e.target.closest('#btn-drill')) { drillLive(); }
+    if (e.target.closest('#btn-replay')) { S.replay = true; renderRoute(); }
   });
   document.addEventListener('keydown', (e) => {
     const nd = e.target.closest?.('#coreview [data-node]');

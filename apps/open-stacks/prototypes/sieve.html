@@ -1,0 +1,1677 @@
+<title>Sieve</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Big+Shoulders+Text:wght@500;600;700;800&family=Bitter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Martian+Mono:wdth,wght@75..112.5,400..600&display=swap');
+
+:root {
+  --floor: #d3d8d5;
+  --floor-2: #c8cecb;
+  --floor-grain: rgba(30, 40, 38, .05);
+  --steel: #eef1ef;
+  --steel-2: #e2e6e4;
+  --steel-3: #d6dbd9;
+  --rim: #aab3b0;
+  --rim-2: #87918e;
+  --ink: #192022;
+  --ink-2: #3f494b;
+  --ink-3: #626d70;
+  --ink-4: #8e989a;
+  --enamel: #2b5a4c;
+  --enamel-2: #20473c;
+  --enamel-3: #3a6f60;
+  --enamel-ink: #edf3ef;
+  --enamel-dim: #a9c6bb;
+  --slot: #0f1716;
+  --signal: #cf4b14;
+  --signal-ink: #ffffff;
+  --signal-wash: rgba(207, 75, 20, .09);
+  --signal-line: rgba(207, 75, 20, .55);
+  --tag: #fbfcfa;
+  --acc-pub: #23864a;
+  --acc-bor: #2a62a8;
+  --acc-pd: #bf8212;
+  --acc-none: #5f686c;
+  --acc-unk: #aeb6b8;
+  --heap-floor: #c3cac7;
+  --focus: #cf4b14;
+  --shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 -1px 0 rgba(0,0,0,.06) inset;
+  --drop: rgba(22, 32, 30, .22);
+  --scrim: rgba(18, 24, 24, .38);
+  --f-stencil: 'Big Shoulders Stencil Display', 'Impact', 'Arial Narrow', sans-serif;
+  --f-ui: 'Big Shoulders Text', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --f-serif: 'Bitter', 'Rockwell', 'Georgia', serif;
+  --f-mono: 'Martian Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --floor: #0f1314;
+    --floor-2: #141a1b;
+    --floor-grain: rgba(220, 235, 230, .035);
+    --steel: #1a2022;
+    --steel-2: #20272a;
+    --steel-3: #273033;
+    --rim: #344044;
+    --rim-2: #4c5a5e;
+    --ink: #e3e9e7;
+    --ink-2: #b7c1bf;
+    --ink-3: #8b9694;
+    --ink-4: #5f6a69;
+    --enamel: #1f4238;
+    --enamel-2: #17342c;
+    --enamel-3: #2c5a4c;
+    --enamel-ink: #e4eee9;
+    --enamel-dim: #8db2a5;
+    --slot: #030606;
+    --signal: #f0763c;
+    --signal-ink: #170a03;
+    --signal-wash: rgba(240, 118, 60, .12);
+    --signal-line: rgba(240, 118, 60, .6);
+    --tag: #232b2e;
+    --acc-pub: #4cc177;
+    --acc-bor: #5c9de8;
+    --acc-pd: #e5a93c;
+    --acc-none: #8a979c;
+    --acc-unk: #485356;
+    --heap-floor: #2c3538;
+    --focus: #f0763c;
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 -1px 0 rgba(0,0,0,.3) inset;
+    --drop: rgba(0, 0, 0, .55);
+    --scrim: rgba(0, 0, 0, .55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --floor: #0f1314;
+  --floor-2: #141a1b;
+  --floor-grain: rgba(220, 235, 230, .035);
+  --steel: #1a2022;
+  --steel-2: #20272a;
+  --steel-3: #273033;
+  --rim: #344044;
+  --rim-2: #4c5a5e;
+  --ink: #e3e9e7;
+  --ink-2: #b7c1bf;
+  --ink-3: #8b9694;
+  --ink-4: #5f6a69;
+  --enamel: #1f4238;
+  --enamel-2: #17342c;
+  --enamel-3: #2c5a4c;
+  --enamel-ink: #e4eee9;
+  --enamel-dim: #8db2a5;
+  --slot: #030606;
+  --signal: #f0763c;
+  --signal-ink: #170a03;
+  --signal-wash: rgba(240, 118, 60, .12);
+  --signal-line: rgba(240, 118, 60, .6);
+  --tag: #232b2e;
+  --acc-pub: #4cc177;
+  --acc-bor: #5c9de8;
+  --acc-pd: #e5a93c;
+  --acc-none: #8a979c;
+  --acc-unk: #485356;
+  --heap-floor: #2c3538;
+  --focus: #f0763c;
+  --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 -1px 0 rgba(0,0,0,.3) inset;
+  --drop: rgba(0, 0, 0, .55);
+  --scrim: rgba(0, 0, 0, .55);
+  color-scheme: dark;
+}
+
+html, body { background: var(--floor); }
+body {
+  margin: 0;
+  color: var(--ink);
+  font: 14px/1.45 var(--f-serif);
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--floor);
+  background-image:
+    radial-gradient(var(--floor-grain) 1px, transparent 1.2px),
+    radial-gradient(var(--floor-grain) 1px, transparent 1.2px);
+  background-size: 7px 7px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+}
+* { box-sizing: border-box; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+a { color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.num-tab { font-variant-numeric: tabular-nums; }
+
+/* ---------- frame ---------- */
+.app {
+  max-width: 1580px;
+  margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 56px max(16px, env(safe-area-inset-left, 0px));
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  column-gap: 26px;
+}
+.top {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 18px;
+  padding: 16px 0 14px;
+  min-width: 0;
+}
+.plate {
+  flex: none;
+  display: flex; align-items: baseline; gap: 10px;
+  background: var(--enamel);
+  color: var(--enamel-ink);
+  padding: 6px 14px 4px 14px;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+.plate-word { font: 900 34px/1 var(--f-stencil); letter-spacing: .08em; }
+.plate-no { font: 500 10px/1 var(--f-mono); font-stretch: semi-condensed; letter-spacing: .08em; color: var(--enamel-dim); text-transform: uppercase; }
+.tagline { margin: 0; min-width: 0; flex: 1; color: var(--ink-2); font-size: 13.5px; max-width: 64ch; }
+.tagline b { font-weight: 600; color: var(--ink); }
+.top-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+
+.btn {
+  appearance: none; border: 0; cursor: pointer;
+  font: 700 13px/1 var(--f-ui); letter-spacing: .06em; text-transform: uppercase;
+  padding: 9px 13px 8px;
+  background: var(--steel); color: var(--ink);
+  box-shadow: 0 0 0 1px var(--rim) inset, var(--shadow);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--steel-2); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn.primary { background: var(--signal); color: var(--signal-ink); box-shadow: none; }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.on-enamel { background: var(--enamel-2); color: var(--enamel-ink); box-shadow: 0 0 0 1px var(--enamel-3) inset; }
+.btn.on-enamel:hover { background: var(--enamel-3); }
+.btn.icon { padding: 7px 9px 6px; line-height: 0; }
+.btn.icon svg { width: 16px; height: 16px; display: block; }
+.link-btn { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; font: 600 12px/1.2 var(--f-ui); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--rim-2); text-underline-offset: 3px; }
+.link-btn:hover { color: var(--signal); text-decoration-color: currentColor; }
+
+/* ---------- sieve log (breadcrumb as a funnel) ---------- */
+.log { grid-column: 1; align-self: start; position: sticky; top: 14px; min-width: 0; }
+.kicker { margin: 0 0 8px; font: 800 12px/1 var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.log ol { list-style: none; margin: 0; padding: 0; }
+.log li { position: relative; }
+.log-step {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: 0; background: none; padding: 7px 0 9px;
+  color: var(--ink-2);
+}
+.log-step:hover .log-name { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rim-2); text-underline-offset: 3px; }
+.log-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.log-no { font: 900 18px/1 var(--f-stencil); color: var(--ink-4); width: 16px; flex: none; }
+.log-name { flex: 1; min-width: 0; font: 600 13px/1.25 var(--f-serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.log-n { font: 500 11px/1 var(--f-mono); font-stretch: semi-condensed; font-variant-numeric: tabular-nums; color: var(--ink-3); flex: none; }
+.log-bar { display: block; height: 9px; margin: 7px 0 0 24px; position: relative; }
+.log-bar i { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); background: var(--rim); clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 4px 100%); }
+.log-kept { display: block; margin: 5px 0 0 24px; font: 400 11px/1.3 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-3); }
+.log-kept b { color: var(--signal); font-weight: 600; }
+.log li.cur .log-no { color: var(--signal); }
+.log li.cur .log-name { color: var(--ink); }
+.log li.cur .log-bar i { background: var(--signal); }
+.log li.ahead { opacity: .5; }
+.log-note { margin: 14px 0 0; font: 400 11.5px/1.45 var(--f-serif); color: var(--ink-3); font-style: italic; }
+.log-actions { display: flex; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ---------- hopper ---------- */
+main { grid-column: 2; min-width: 0; }
+.hopper {
+  position: sticky; top: 0; z-index: 6;
+  margin-top: 2px;
+  background: var(--enamel);
+  color: var(--enamel-ink);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 11px 16px 15px;
+}
+.hopper::after { /* hazard band */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px;
+  background: repeating-linear-gradient(-45deg, var(--signal) 0 7px, var(--slot) 7px 14px);
+}
+.hop-count { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.hop-lbl { font: 900 15px/1 var(--f-stencil); letter-spacing: .16em; text-transform: uppercase; color: var(--enamel-dim); }
+.hop-n { font: 600 26px/1 var(--f-mono); font-stretch: semi-condensed; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.hop-unit { font: 600 12px/1 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--enamel-dim); }
+.hop-status { min-width: 0; font: 400 12.5px/1.35 var(--f-serif); color: var(--enamel-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+.hop-status b { color: var(--enamel-ink); font-weight: 600; }
+.hop-actions { display: flex; align-items: center; gap: 8px; }
+.chute {
+  position: absolute; left: 50%; bottom: -17px; width: 76px; height: 17px; transform: translateX(-50%);
+  background: var(--enamel-2);
+  clip-path: polygon(0 0, 100% 0, 74% 100%, 26% 100%);
+}
+.chute::before { content: ""; position: absolute; left: 27%; right: 27%; bottom: 0; height: 3px; background: var(--slot); }
+.hopper.busy .hop-n { animation: tick .5s steps(2) infinite; }
+@keyframes tick { 50% { opacity: .78; } }
+
+/* ---------- step head ---------- */
+.stephead { margin: 30px 0 14px; min-width: 0; }
+.sh-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 20px; flex-wrap: wrap; min-width: 0; }
+.sh-title { margin: 0; font: 700 26px/1.1 var(--f-serif); letter-spacing: -.01em; min-width: 0; }
+.sh-step { font: 900 15px/1 var(--f-stencil); letter-spacing: .14em; color: var(--signal); vertical-align: 4px; margin-right: 10px; text-transform: uppercase; }
+.sh-meta { margin: 0; font: 400 11px/1.5 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.sh-row2 { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; margin-top: 10px; min-width: 0; }
+.badge { display: inline-flex; align-items: center; gap: 7px; font: 600 11.5px/1.2 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px 4px; background: var(--steel); box-shadow: 0 0 0 1px var(--rim) inset; color: var(--ink-2); min-width: 0; }
+.badge::before { content: ""; width: 7px; height: 7px; flex: none; background: var(--ink-4); }
+.badge.pre::before { background: var(--enamel-3); }
+.badge.live::before { background: var(--signal); }
+.badge.naming::before { background: var(--signal); animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; margin-left: auto; font: 500 11px/1 var(--f-ui); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.legend i, .sw { display: inline-block; width: 9px; height: 6px; flex: none; }
+.a-pub { background: var(--acc-pub); } .a-bor { background: var(--acc-bor); } .a-pd { background: var(--acc-pd); } .a-none { background: var(--acc-none); } .a-unk { background: var(--acc-unk); }
+.hint { margin: 10px 0 0; font: italic 400 13px/1.45 var(--f-serif); color: var(--ink-3); max-width: 80ch; }
+.hint kbd { font: 500 11px/1 var(--f-mono); font-style: normal; padding: 2px 4px; background: var(--steel); box-shadow: 0 0 0 1px var(--rim) inset; color: var(--ink-2); }
+.naming-note { font: italic 400 12.5px/1.35 var(--f-serif); color: var(--ink-3); }
+
+/* ---------- trays ---------- */
+.trays { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tray {
+  position: relative; cursor: pointer; min-width: 0;
+  filter: drop-shadow(0 2px 0 var(--drop));
+  transition: transform .18s ease, opacity .35s ease, filter .35s ease;
+  outline: none;
+}
+.tray:hover { transform: translateY(-2px); }
+.tray:focus-visible .tray-rim { background: var(--focus); }
+.tray-rim {
+  padding: 1.5px;
+  background: var(--rim);
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+  transition: background .2s;
+}
+.tray-in {
+  position: relative;
+  background: linear-gradient(180deg, var(--steel) 0%, var(--steel-2) 100%);
+  clip-path: polygon(11.4px 0, calc(100% - 11.4px) 0, 100% 11.4px, 100% 100%, 0 100%, 0 11.4px);
+  padding: 12px 14px 0;
+  display: flex; flex-direction: column;
+  min-height: 100%;
+}
+.tray.on .tray-rim { background: var(--signal); padding: 3px; }
+.tray.on .tray-in { background: linear-gradient(180deg, var(--steel) 0%, var(--steel-2) 100%); }
+.tray.on .tray-in::before { content: ""; position: absolute; inset: 0; background: var(--signal-wash); pointer-events: none; }
+.tray.aside { opacity: .32; filter: grayscale(1); }
+.tray.aside:hover { transform: none; }
+.tray-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+.tray-toggle { appearance: none; border: 0; background: none; padding: 0; margin: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
+.tray-toggle::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.tray-toggle:focus-visible { outline: none; text-decoration: underline; text-decoration-color: var(--focus); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.tray:has(.tray-toggle:focus-visible) .tray-rim { background: var(--focus); padding: 3px; }
+.pnum { font: 900 40px/.8 var(--f-stencil); color: var(--rim-2); width: 22px; text-align: center; padding-top: 2px; transition: color .2s; }
+.tray.on .pnum { color: var(--signal); }
+.ptag { min-width: 0; }
+.pname { margin: 0; font: 600 15.5px/1.2 var(--f-serif); color: var(--ink); overflow-wrap: anywhere; }
+.pname.kw { font: 600 12.5px/1.3 var(--f-mono); font-stretch: semi-condensed; letter-spacing: .01em; text-transform: uppercase; color: var(--ink-2); padding-top: 2px; }
+.pname .caret { display: inline-block; width: .5em; height: 1em; vertical-align: -2px; background: var(--signal); margin-left: 2px; animation: blink .8s steps(2) infinite; }
+.pline { margin: 3px 0 0; font: italic 400 12.5px/1.35 var(--f-serif); color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.7em; }
+.pline.data { font-style: normal; font-size: 11.5px; color: var(--ink-3); }
+.pcount { text-align: right; line-height: 1; }
+.pcount b { display: block; font: 600 19px/1 var(--f-mono); font-stretch: semi-condensed; font-variant-numeric: tabular-nums; letter-spacing: -.02em; color: var(--ink); }
+.pcount span { display: block; margin-top: 4px; font: 600 10px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.pcount small { display: block; margin-top: 3px; font: 400 10px/1 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+.heap { position: relative; height: 96px; margin: 8px -4px 0; }
+.heap::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--heap-floor); }
+.heap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stamp {
+  position: absolute; right: 2px; top: 4px;
+  font: 900 13px/1 var(--f-stencil); letter-spacing: .18em; text-transform: uppercase;
+  color: var(--signal); border: 2px solid var(--signal); padding: 4px 6px 3px 8px;
+  transform: rotate(-4deg); opacity: 0; transition: opacity .15s;
+  pointer-events: none; background: var(--steel);
+}
+.tray.on .stamp { opacity: .95; }
+.terms { margin: 9px 0 0; font: 400 10.5px/1.5 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3em; }
+.terms em { font-style: normal; color: var(--ink-4); }
+.terms i { font-style: normal; color: var(--ink-4); padding: 0 .35em; }
+.reps { list-style: none; margin: 8px 0 0; padding: 8px 0 0; border-top: 1px dashed var(--rim); display: grid; gap: 3px; }
+.reps li { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 7px; align-items: baseline; min-width: 0; }
+.reps .sw { transform: translateY(-1px); }
+.rt { min-width: 0; font: 400 12.5px/1.35 var(--f-serif); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rt span { color: var(--ink-3); }
+.ry { font: 400 10.5px/1 var(--f-mono); font-stretch: semi-condensed; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.tray-foot { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 10px 0 8px; font: 400 10.5px/1.2 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 0; }
+.tray-foot .lcs { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tray-foot .lcs b { color: var(--ink-2); font-weight: 600; }
+.mini { position: relative; z-index: 2; appearance: none; border: 0; background: none; cursor: pointer; padding: 3px 0; font: 700 11.5px/1 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+.mini:hover { color: var(--signal); }
+.accbar { display: flex; height: 5px; margin: 0 -14px; }
+.accbar i { display: block; height: 100%; }
+.tray.empty .heap::before { content: "sorting…"; position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font: italic 400 12px/1 var(--f-serif); color: var(--ink-4); }
+.tray.blank .tray-top, .tray.blank .terms, .tray.blank .reps, .tray.blank .tray-foot { visibility: hidden; }
+.tray.blank .pnum { visibility: visible; }
+.tray.blank .tray-top > .pnum { visibility: visible; }
+
+.tip {
+  position: fixed; z-index: 30; pointer-events: none;
+  max-width: 280px; padding: 7px 9px;
+  background: var(--slot); color: #e9efed;
+  font: 400 12px/1.35 var(--f-serif);
+  box-shadow: 0 6px 18px -8px rgba(0,0,0,.5);
+}
+.tip b { font-weight: 600; }
+.tip small { display: block; margin-top: 2px; font: 400 10.5px/1.3 var(--f-mono); font-stretch: semi-condensed; color: #a9b6b3; }
+
+/* ---------- manifest (final list) ---------- */
+.manifest { margin-top: 26px; min-width: 0; }
+.man-head { display: flex; align-items: flex-end; gap: 12px 22px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.man-kicker { display: block; margin: 0 0 4px; font: 900 14px/1 var(--f-stencil); letter-spacing: .18em; text-transform: uppercase; color: var(--signal); }
+.man-head h2 { margin: 0; font: 700 24px/1.15 var(--f-serif); letter-spacing: -.01em; }
+.man-sub { margin: 6px 0 0; font: 400 13px/1.4 var(--f-serif); color: var(--ink-2); }
+.man-tools { margin-left: auto; display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; font: 600 12px/1 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.man-tools select { font: 500 12px/1 var(--f-mono); font-stretch: semi-condensed; padding: 6px 8px; background: var(--steel); border: 1px solid var(--rim); color: var(--ink); text-transform: none; letter-spacing: 0; }
+.man-tools label.chk { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.man-tools input[type=checkbox] { accent-color: var(--signal); width: 15px; height: 15px; margin: 0; }
+.man-sum { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 12px 0; font: 400 11.5px/1.3 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.man-sum .bar { display: flex; height: 8px; width: min(320px, 100%); background: var(--steel-3); }
+.man-sum .bar i { display: block; height: 100%; }
+.man-sum span { display: inline-flex; align-items: center; gap: 5px; }
+.man-list { list-style: none; margin: 0; padding: 0; counter-reset: row; }
+.row {
+  display: grid;
+  grid-template-columns: 34px 150px minmax(0, 1fr) 150px 70px;
+  gap: 4px 16px; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px solid var(--rim);
+  min-width: 0;
+}
+.row:nth-child(odd) { background: linear-gradient(90deg, transparent, var(--steel-3) 40%, transparent); background-color: transparent; }
+.r-i { font: 900 15px/1 var(--f-stencil); color: var(--ink-4); text-align: right; }
+.r-call { font: 400 11px/1.3 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-2); overflow-wrap: anywhere; }
+.r-main { min-width: 0; }
+.r-title { font: 600 14.5px/1.3 var(--f-serif); color: var(--ink); text-decoration: none; }
+.r-title:hover { text-decoration: underline; text-decoration-color: var(--signal); text-underline-offset: 3px; }
+.r-sub { font: 400 13px/1.3 var(--f-serif); color: var(--ink-2); }
+.r-by { margin-top: 2px; font: 400 12px/1.35 var(--f-serif); color: var(--ink-3); }
+.r-by a { color: var(--ink-2); text-decoration-color: var(--rim-2); text-underline-offset: 2px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 700 11px/1 var(--f-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 5px 8px 4px 6px; background: var(--steel); box-shadow: 0 0 0 1px var(--rim) inset; white-space: nowrap; justify-self: start; }
+a.chip:hover { box-shadow: 0 0 0 1px var(--ink-2) inset; }
+.chip i { width: 8px; height: 8px; display: block; }
+.r-rl { font: 400 11px/1.2 var(--f-mono); font-stretch: semi-condensed; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+.man-more { margin: 16px auto 0; display: block; }
+.man-empty { padding: 30px 0; font: italic 400 14px/1.4 var(--f-serif); color: var(--ink-3); }
+
+/* ---------- about drawer ---------- */
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 40; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+  width: min(520px, 100%);
+  background: var(--steel); color: var(--ink);
+  box-shadow: -1px 0 0 var(--rim), -20px 0 50px -20px rgba(0,0,0,.4);
+  overflow-y: auto;
+  padding: 22px max(22px, env(safe-area-inset-right, 0px)) 40px 26px;
+}
+.drawer h2 { margin: 0 0 4px; font: 900 30px/1 var(--f-stencil); letter-spacing: .1em; text-transform: uppercase; }
+.drawer h3 { margin: 22px 0 6px; font: 800 12px/1 var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--signal); }
+.drawer p, .drawer li { font: 400 13.5px/1.55 var(--f-serif); color: var(--ink-2); }
+.drawer p { margin: 0 0 8px; }
+.drawer ul { margin: 0 0 8px; padding-left: 18px; }
+.drawer li { margin: 3px 0; }
+.drawer code { font: 400 11.5px/1 var(--f-mono); font-stretch: semi-condensed; }
+.drawer .close { position: absolute; top: 18px; right: max(18px, env(safe-area-inset-right, 0px)); }
+.drawer a { color: var(--ink); text-decoration-color: var(--signal); text-underline-offset: 3px; }
+.cite { padding: 10px 12px; background: var(--steel-2); box-shadow: 0 0 0 1px var(--rim) inset; font-size: 13px !important; }
+
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1180px) {
+  .trays { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1080px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .log { grid-column: 1; position: static; margin-bottom: 14px; }
+  main { grid-column: 1; }
+  .log ol { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  .log li { flex: none; max-width: 230px; }
+  .log-step { padding: 6px 10px 7px; background: var(--steel); box-shadow: 0 0 0 1px var(--rim) inset; }
+  .log li.cur .log-step { box-shadow: 0 0 0 2px var(--signal) inset; }
+  .log-bar, .log-kept, .log-note { display: none; }
+  .log .kicker { display: none; }
+  .log-actions { margin-top: 8px; }
+}
+@media (max-width: 760px) {
+  .top { flex-wrap: wrap; gap: 10px 14px; padding: 12px 0 10px; }
+  .plate-word { font-size: 28px; }
+  .tagline { order: 3; flex-basis: 100%; font-size: 13px; }
+  .top-actions { margin-left: auto; }
+  .hopper { grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; padding: 9px 12px 14px; }
+  .hop-status { grid-column: 1 / -1; grid-row: 2; text-align: left; font-size: 12px; }
+  .hop-actions { justify-self: end; gap: 6px; }
+  .hop-n { font-size: 21px; }
+  .hop-lbl { display: none; }
+  #listBtn { display: none; }
+  .trays { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .stephead { margin-top: 26px; }
+  .sh-title { font-size: 22px; }
+  .legend { margin-left: 0; }
+  .row { grid-template-columns: 26px minmax(0, 1fr); gap: 6px 10px; }
+  .row .r-call { grid-column: 2; grid-row: 2; }
+  .row .chip { grid-column: 2; }
+  .row .r-rl { grid-column: 2; text-align: left; }
+  .man-tools { margin-left: 0; }
+}
+.tap { display: none; }
+@media (max-width: 760px) {
+  .dt { display: none; }
+  .tap { display: inline; }
+  .sh-meta { font-size: 10px; }
+  .sh-row2 { gap: 6px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tray, .tray-rim, .stamp, .pnum { transition: none; }
+  .tray:hover { transform: none; }
+  .hopper.busy .hop-n, .badge.naming::before, .pname .caret { animation: none; }
+}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="plate"><span class="plate-word">SIEVE</span><span class="plate-no">k = 9</span></div>
+    <p class="tagline"><b>Scatter/Gather</b>, revived on <span id="tagN">7,127</span> Open Library works. Keep the piles that look promising; the sieve re-sorts what you kept into nine finer piles.</p>
+    <div class="top-actions">
+      <button class="btn icon" id="themeBtn" type="button" aria-label="Switch between light and dark theme" title="Light / dark"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+      <button class="btn" id="aboutBtn" type="button" aria-haspopup="dialog" aria-controls="about">About</button>
+    </div>
+  </header>
+
+  <aside class="log" aria-labelledby="logTitle">
+    <h2 class="kicker" id="logTitle">Sieve log</h2>
+    <ol id="logList"></ol>
+    <div class="log-actions">
+      <button class="link-btn" id="backBtn" type="button">◂ Back a step</button>
+      <button class="link-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <p class="log-note">Each step keeps what you gathered and sets the rest aside. Click any earlier step to branch from it.</p>
+  </aside>
+
+  <main id="main">
+    <section class="hopper" id="hopper" aria-label="Hopper">
+      <div class="hop-count"><span class="hop-lbl">Hopper</span><b class="hop-n" id="hopN" aria-live="off">0</b><span class="hop-unit">works</span></div>
+      <p class="hop-status" id="hopStatus" aria-live="polite">Loading the catalog…</p>
+      <div class="hop-actions">
+        <button class="btn primary" id="scatterBtn" type="button" disabled>Scatter ▸</button>
+        <button class="btn on-enamel" id="listBtn" type="button" disabled>List</button>
+      </div>
+      <div class="chute" id="chute" aria-hidden="true"></div>
+    </section>
+
+    <section class="stephead" id="stepHead" aria-live="polite">
+      <div class="sh-row">
+        <h1 class="sh-title" id="shTitle"><span class="sh-step">Step 1</span>Whole catalog</h1>
+        <p class="sh-meta" id="shMeta">TF-IDF over subjects, titles and LC class letters · k-means, k = 9</p>
+      </div>
+      <div class="sh-row2">
+        <span class="badge" id="nameBadge">Names: waiting for piles</span>
+        <button class="link-btn" id="nameBtn" type="button" hidden>Name with Claude</button>
+        <button class="link-btn" id="stopBtn" type="button" hidden>Stop</button>
+        <span class="naming-note" id="namingNote"></span>
+        <button class="link-btn" id="pourBtn" type="button">Pour again</button>
+        <span class="legend" aria-label="Chit colours: ebook access">
+          <span><i class="a-pub"></i>Free</span><span><i class="a-bor"></i>Borrow</span><span><i class="a-pd"></i>Print-disabled</span><span><i class="a-none"></i>No ebook</span><span><i class="a-unk"></i>Unknown</span>
+        </span>
+      </div>
+      <p class="hint" id="hint">Click the piles worth keeping (or press <kbd>1</kbd>–<kbd>9</kbd>), then <b>Scatter</b>: what you gathered is re-sorted into nine finer piles. Neighbouring trays hold related piles. Each chit in a heap is one work; hover to read it.</p>
+    </section>
+
+    <section class="trays" id="trays" aria-label="Nine piles"></section>
+
+    <section class="manifest" id="manifest" hidden aria-labelledby="manTitle">
+      <div class="man-head">
+        <button class="btn" id="manBack" type="button">◂ Trays</button>
+        <div>
+          <span class="man-kicker">Manifest</span>
+          <h2 id="manTitle">Pile</h2>
+          <p class="man-sub" id="manSub"></p>
+        </div>
+        <div class="man-tools">
+          <label for="manSort">Sort</label>
+          <select id="manSort">
+            <option value="rl">Most read</option>
+            <option value="sim">Most typical</option>
+            <option value="call">Call number</option>
+            <option value="y">Newest</option>
+            <option value="yo">Oldest</option>
+          </select>
+          <label class="chk" for="manReadable"><input type="checkbox" id="manReadable"> Readable online</label>
+        </div>
+      </div>
+      <div class="man-sum" id="manSum"></div>
+      <ol class="man-list" id="manList"></ol>
+      <button class="btn man-more" id="manMore" type="button" hidden>Show more</button>
+    </section>
+  </main>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="tip" id="tip" hidden></div>
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="drawer" id="about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" hidden>
+  <button class="btn close" id="aboutClose" type="button">Close</button>
+  <h2 id="aboutTitle">About</h2>
+  <p><b>Sieve</b> is a light prototype for <a href="https://open-stacks.quantifieduncertainty.org/" target="_blank" rel="noopener">Open Stacks</a>. It revives <b>Scatter/Gather</b>: instead of guessing search words, you look at nine piles, keep the promising ones, and the machine re-sorts what you kept into nine finer piles, as many times as you like.</p>
+  <p class="cite">Cutting, D. R., Karger, D. R., Pedersen, J. O. &amp; Tukey, J. W. (1992). <i>Scatter/Gather: a cluster-based approach to browsing large document collections.</i> Proc. SIGIR ’92, 318–329. <a href="https://doi.org/10.1145/133160.133214" target="_blank" rel="noopener">doi:10.1145/133160.133214</a></p>
+  <p>Pirolli, Schank, Hearst &amp; Diehl (CHI ’96, <a href="https://doi.org/10.1145/238386.238489" target="_blank" rel="noopener">doi:10.1145/238386.238489</a>) found it worse than keyword search for finding a known item, but better at teaching the shape of a collection and the words to search it with. The weak link was the cluster labels, which were lists of words. Here Claude writes the labels.</p>
+
+  <h3>How it works</h3>
+  <ul>
+    <li><b>Features.</b> Title and subtitle words, subject headings (as words and as whole phrases) and the LC class letters (for example <code>Q</code> and <code>QA</code>), weighted by TF-IDF. The IDF is recomputed on every gathered set, so words shared by the whole set stop counting.</li>
+    <li><b>Clustering.</b> Spherical k-means, k = 9, in a Web Worker in your browser. Seeds come from k-means++ driven by a random number generator keyed to a hash of the gathered set, with 4–10 restarts. The same gather therefore always gives the same piles.</li>
+    <li><b>Layout.</b> The nine trays are placed on the 3 × 3 grid so that neighbouring trays have the most similar centroids.</li>
+    <li><b>Heaps.</b> Each chit is one work, coloured by its ebook access. Heaps settle by a sand-pile rule (angle of repose), so a pile’s height shows its size. Chits get bigger as the sieve gets finer.</li>
+    <li><b>Representatives.</b> Four works from the most central 30% of each pile, ranked by Open Library reading-log count, with duplicate titles removed.</li>
+    <li><b>Distinctive terms.</b> The terms most over-represented in a pile relative to the whole gathered set.</li>
+  </ul>
+
+  <h3>Real data</h3>
+  <ul>
+    <li>7,127 works from the Open Library Search API (CC0), fetched 15 October 2026 through 50 subject queries around decisions, uncertainty, statistics, AI, economics, philosophy and science. It is a slice, not a whole library.</li>
+    <li>Access status, call numbers, years and reading-log counts are Open Library’s own. LC class names come from the Library of Congress Classification Outline.</li>
+  </ul>
+
+  <h3>Generated by Claude</h3>
+  <ul>
+    <li><b>Precomputed:</b> names and one-line descriptions for the first nine piles and for the nine piles you get by gathering any one of them (90 piles). Written by Claude in October 2026 from each pile’s terms and typical titles. They are AI-generated, so spot-check them.</li>
+    <li><b>Live:</b> when this page is opened in Claude, every new scatter sends one batched request for nine names and lines. Claude sees only the terms, LC classes and typical titles of each pile.</li>
+    <li><b>Fallback:</b> without Claude, deeper piles are named from their two most distinctive terms, shown in capitals.</li>
+  </ul>
+
+  <h3>Not built here</h3>
+  <ul>
+    <li>No search box, no steering by text, and no papers or Gutenberg records mixed in. The fuller design is in the gallery.</li>
+  </ul>
+
+  <h3>Keys</h3>
+  <p><code>1</code>–<code>9</code> gather or release a pile · <code>Enter</code> scatter · <code>L</code> list · <code>Backspace</code> back a step · <code>Esc</code> close</p>
+
+  <h3>Links</h3>
+  <ul>
+    <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a></li>
+    <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/exploratory-search/" target="_blank" rel="noopener">Chapter: Exploratory search</a></li>
+    <li><a href="https://openlibrary.org/developers/api" target="_blank" rel="noopener">Open Library APIs</a></li>
+  </ul>
+</aside>
+
+<script type="text/plain" id="sieve-worker">
+/* Sieve clustering core. Runs in a Web Worker in the page, and in Node for
+   scripts/prototypes/sieve.mjs (which extracts this exact text from the page).
+   TF-IDF over subjects + titles + LC class letters, spherical k-means (k = 9),
+   k-means++ seeding from a PRNG keyed by a hash of the gathered set. */
+var SIEVE = (function () {
+  'use strict';
+  var STOP = new Set(('a an the of and or in on for to with from by at as its it his her their our your my how what why when who whom which that this these those is are was were be been being into about between through after before over under toward towards upon within without against among across per via vs versus not no nor but than then so such can may might will would should could do does did done more most less least very also only own same other another each every some any all both few many much one two three four five six seven eight nine ten first second third new old ' +
+    'introduction introductory intro guide guides handbook handbooks manual manuals edition editions ed eds vol vols volume volumes part parts book books text texts textbook textbooks primer companion series selected collected essay essays reading readings note notes lecture lectures paper papers study studies course courses approach approaches perspective perspectives modern contemporary advanced elementary basic basics fundamental fundamentals principle principles essential essentials concise complete comprehensive practical applied using use uses toward topic topics issue issues aspect aspects general nonfiction fiction popular work works exercise exercises congress congresses case cases ' +
+    'de la le les et des du en el los las y un une und der die das zur zum im von mit fur für al di da del della e il ou sur pour dans ' +
+    'vii viii ix xi xii ii iii iv vi xx xxi th st nd rd s t').split(/\s+/));
+  var JUNK = /^(nyt:|open_syllabus|long now|accessible book|protected daisy|in library|lending library|overdrive|large type|non-?fiction|general$|fiction$|textbooks?$|popular works|problems,? exercises|congresses|handbooks|case studies|study and teaching|reading level|juvenile|e-?books?$|electronic books|internet archive|english language|translations into|biography$|new york times|readers?$|examinations|outlines, syllabi|dictionaries|bibliography|catalogs|periodicals|statistics as topic$)/;
+  var CALLNO = /^([a-z]{1,3}\s?\d|\d)/;
+
+  var VOCAB = new Map(), SURF = [], DOCS = [], LC = [];
+
+  function stem(w) {
+    if (w.length > 4) {
+      if (/sses$/.test(w)) return w.slice(0, -2);
+      if (/ies$/.test(w) && !/eies$/.test(w)) return w.slice(0, -3) + 'y';
+      if (/s$/.test(w) && !/(ss|us|is|ics|ys|as)$/.test(w)) return w.slice(0, -1);
+    }
+    return w;
+  }
+  function words(str) {
+    var m = str.toLowerCase().replace(/[’']s\b/g, '').match(/[\p{L}][\p{L}\p{N}\-]*/gu) || [];
+    var out = [];
+    for (var i = 0; i < m.length; i++) {
+      var w = m[i].replace(/^-+|-+$/g, '');
+      if (w.length < 3 && w !== 'ai') continue;
+      if (STOP.has(w)) continue;
+      out.push([stem(w), w]);
+    }
+    return out;
+  }
+  function tokId(tok, surface) {
+    var id = VOCAB.get(tok);
+    if (id === undefined) { id = SURF.length; VOCAB.set(tok, id); SURF.push(new Map()); }
+    var s = SURF[id]; s.set(surface, (s.get(surface) || 0) + 1);
+    return id;
+  }
+  function tokenize(w) {
+    var tf = new Map();
+    function add(tok, surface, n) { var id = tokId(tok, surface); tf.set(id, (tf.get(id) || 0) + (n || 1)); }
+    var subj = w.s || [];
+    for (var i = 0; i < subj.length; i++) {
+      var s = String(subj[i]).trim().toLowerCase();
+      if (!s || JUNK.test(s) || CALLNO.test(s)) continue;
+      var phrases = s.split(/\s*(?:--|[,;:\/&()\[\]])\s*/);
+      for (var j = 0; j < phrases.length; j++) {
+        var p = phrases[j].trim();
+        if (p.length < 3 || /\d/.test(p) && !/century/.test(p) || JUNK.test(p)) continue;
+        var ws = words(p);
+        if (!ws.length) continue;
+        for (var q = 0; q < ws.length; q++) add(ws[q][0], ws[q][1], 1);
+        if (ws.length > 1 && ws.length <= 6) add('§' + ws.map(function (x) { return x[0]; }).join(' '), p, 1);
+      }
+    }
+    var tw = words((w.t || '') + ' ' + (w.st || ''));
+    for (var k = 0; k < tw.length; k++) add(tw[k][0], tw[k][1], 1);
+    var lc = '';
+    if (w.lcc) {
+      var m = /^([A-Z]{1,3})/.exec(w.lcc);
+      if (m) { lc = m[1]; add('lc:' + lc[0], lc[0], 2); if (lc.length > 1) add('lc:' + lc, lc, 2); }
+    }
+    var ids = new Int32Array(tf.size), wt = new Float32Array(tf.size), n = 0;
+    tf.forEach(function (v, key) { ids[n] = key; wt[n] = 1 + Math.log(v); n++; });
+    return { ids: ids, tf: wt, lc: lc };
+  }
+
+  function init(works) {
+    VOCAB = new Map(); SURF = []; DOCS = []; LC = [];
+    for (var i = 0; i < works.length; i++) { var d = tokenize(works[i]); DOCS.push(d); LC.push(d.lc); }
+    return { docs: DOCS.length, vocab: SURF.length };
+  }
+
+  function surface(id) {
+    var best = '', bn = -1;
+    SURF[id].forEach(function (n, s) { if (n > bn) { bn = n; best = s; } });
+    return best;
+  }
+
+  function hashIds(ids) {
+    var h = 2166136261 >>> 0;
+    for (var i = 0; i < ids.length; i++) { h ^= ids[i]; h = Math.imul(h, 16777619) >>> 0; h ^= h >>> 13; }
+    return h >>> 0;
+  }
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function scatter(idsIn, opt) {
+    opt = opt || {};
+    var t0 = Date.now();
+    var ids = Array.from(idsIn).sort(function (a, b) { return a - b; });
+    var n = ids.length, K = Math.min(opt.k || 9, n);
+    var seed = hashIds(ids), c = 0, i = 0, j = 0, d = null, v = 0;
+    // document frequency within this set
+    var df = new Map();
+    for (i = 0; i < n; i++) { d = DOCS[ids[i]]; for (j = 0; j < d.ids.length; j++) df.set(d.ids[j], (df.get(d.ids[j]) || 0) + 1); }
+    var minDf = n < 60 ? 1 : n < 400 ? 2 : 3, maxDf = Math.max(2, Math.floor(n * 0.5));
+    var local = new Map(), terms = [];
+    df.forEach(function (c, id) { if (c >= minDf && c <= maxDf) { local.set(id, terms.length); terms.push(id); } });
+    var V = terms.length;
+    var idf = new Float64Array(V);
+    for (v = 0; v < V; v++) idf[v] = Math.log(n / df.get(terms[v]));
+    // sparse unit vectors
+    var vi = [], vw = [];
+    for (i = 0; i < n; i++) {
+      d = DOCS[ids[i]];
+      var a = [], b = [], ss = 0;
+      for (j = 0; j < d.ids.length; j++) {
+        var l = local.get(d.ids[j]);
+        if (l === undefined) continue;
+        var x = d.tf[j] * idf[l]; a.push(l); b.push(x); ss += x * x;
+      }
+      ss = Math.sqrt(ss) || 1;
+      for (j = 0; j < b.length; j++) b[j] /= ss;
+      vi.push(Int32Array.from(a)); vw.push(Float64Array.from(b));
+    }
+    function dot(c, p) { var s = 0, ia = vi[p], wa = vw[p]; for (var q = 0; q < ia.length; q++) s += c[ia[q]] * wa[q]; return s; }
+    function denseOf(p) { var c = new Float64Array(V); for (var q = 0; q < vi[p].length; q++) c[vi[p][q]] = vw[p][q]; return c; }
+    function run(r) {
+      var rand = rng(seed ^ Math.imul(r + 1, 0x9E3779B1));
+      var C = [], cent;
+      // k-means++ on cosine distance (1 - sim), over a sample for large sets
+      var first = Math.floor(rand() * n), chosen = [first];
+      var dmin = new Float64Array(n), dv = denseOf(first);
+      for (i = 0; i < n; i++) dmin[i] = Math.max(0, 1 - dot(dv, i));
+      while (chosen.length < K) {
+        var tot = 0; for (i = 0; i < n; i++) tot += dmin[i] * dmin[i];
+        var pick = n - 1;
+        if (tot > 0) { var u = rand() * tot; for (i = 0; i < n; i++) { u -= dmin[i] * dmin[i]; if (u <= 0) { pick = i; break; } } }
+        else pick = Math.floor(rand() * n);
+        chosen.push(pick); dv = denseOf(pick);
+        for (i = 0; i < n; i++) { var dd = Math.max(0, 1 - dot(dv, i)); if (dd < dmin[i]) dmin[i] = dd; }
+      }
+      for (var c = 0; c < K; c++) { cent = new Float64Array(V); var p = chosen[c]; for (j = 0; j < vi[p].length; j++) cent[vi[p][j]] = vw[p][j]; C.push(cent); }
+      var asg = new Int32Array(n).fill(-1), sim = new Float64Array(n), obj = 0;
+      for (var it = 0; it < 60; it++) {
+        var changed = 0; obj = 0;
+        for (i = 0; i < n; i++) {
+          var bc = 0, bs = -1;
+          for (c = 0; c < K; c++) { var s2 = dot(C[c], i); if (s2 > bs) { bs = s2; bc = c; } }
+          if (asg[i] !== bc) { changed++; asg[i] = bc; }
+          sim[i] = bs; obj += bs;
+        }
+        // update centroids
+        var cnt = new Int32Array(K);
+        for (c = 0; c < K; c++) C[c].fill(0);
+        for (i = 0; i < n; i++) { c = asg[i]; cnt[c]++; var cc = C[c], ia = vi[i], wa = vw[i]; for (j = 0; j < ia.length; j++) cc[ia[j]] += wa[j]; }
+        for (c = 0; c < K; c++) {
+          if (!cnt[c]) { // empty: reseed with the worst-fitting document
+            var worst = 0, wv = 2; for (i = 0; i < n; i++) if (sim[i] < wv && cnt[asg[i]] > 1) { wv = sim[i]; worst = i; }
+            cnt[asg[worst]]--; asg[worst] = c; cnt[c] = 1; for (j = 0; j < vi[worst].length; j++) C[c][vi[worst][j]] = vw[worst][j];
+            changed++;
+          }
+          var nr = 0; for (v = 0; v < V; v++) nr += C[c][v] * C[c][v]; nr = Math.sqrt(nr) || 1;
+          for (v = 0; v < V; v++) C[c][v] /= nr;
+        }
+        if (!changed && it > 0) break;
+      }
+      return { asg: asg, sim: sim, obj: obj, C: C };
+    }
+    var restarts = opt.restarts || (n > 4000 ? 4 : n > 1000 ? 6 : 10);
+    var best = null;
+    for (var r = 0; r < restarts; r++) { var res = run(r); if (!best || res.obj > best.obj + 1e-9) best = res; }
+    // per-pile summaries
+    var piles = [];
+    for (c = 0; c < K; c++) piles.push({ m: [], s: [] });
+    for (i = 0; i < n; i++) { piles[best.asg[i]].m.push(i); }
+    var dfIn = [];
+    for (c = 0; c < K; c++) {
+      var P = piles[c];
+      P.m.sort(function (x, y) { return best.sim[y] - best.sim[x] || ids[x] - ids[y]; });
+      var cdf = new Map(), lcc = new Map();
+      for (j = 0; j < P.m.length; j++) {
+        var di = P.m[j];
+        for (var q = 0; q < vi[di].length; q++) cdf.set(vi[di][q], (cdf.get(vi[di][q]) || 0) + 1);
+        var lc = LC[ids[di]]; if (lc) lcc.set(lc, (lcc.get(lc) || 0) + 1);
+      }
+      // distinctive terms: share inside pile vs share in the whole set (KL contribution)
+      var cand = [], m = P.m.length;
+      cdf.forEach(function (cin, lv) {
+        var gid = terms[lv], tok = null;
+        var pin = cin / m, pall = df.get(gid) / n;
+        if (cin < Math.min(3, Math.max(1, Math.ceil(m * 0.08)))) return;
+        var score = pin * Math.log(pin / pall);
+        if (score <= 0) return;
+        cand.push([gid, score, pin]);
+      });
+      cand.sort(function (x, y) { return y[1] - x[1] || x[0] - y[0]; });
+      var outTerms = [], seen = [];
+      for (j = 0; j < cand.length && outTerms.length < 8; j++) {
+        var g = cand[j][0], key = tokenOfCache(g);
+        if (key.indexOf('lc:') === 0) continue;
+        var surf = surface(g);
+        var isPhrase = key[0] === '§';
+        // skip a word already inside a chosen phrase, or a phrase that only repeats chosen words
+        var low = surf.toLowerCase(), dup = false;
+        for (var z = 0; z < seen.length; z++) {
+          var o = seen[z];
+          if (o.indexOf(low) >= 0 || low.indexOf(o) >= 0 || (o.length >= 6 && low.length >= 6 && o.slice(0, 6) === low.slice(0, 6))) { dup = true; break; }
+        }
+        if (dup) continue;
+        seen.push(low);
+        outTerms.push({ t: surf, p: isPhrase ? 1 : 0, f: Math.round(cand[j][2] * 100) / 100 });
+      }
+      var lcs = Array.from(lcc.entries()).sort(function (x, y) { return y[1] - x[1] || (x[0] < y[0] ? -1 : 1); }).slice(0, 4);
+      var gids = P.m.map(function (x) { return ids[x]; });
+      piles[c] = {
+        h: hashIds(gids.slice().sort(function (x, y) { return x - y; })).toString(16),
+        ids: gids,
+        sim: P.m.map(function (x) { return Math.round(best.sim[x] * 1000) / 1000; }),
+        terms: outTerms,
+        lc: lcs,
+        c: best.C[c]
+      };
+    }
+    // lay the nine piles on a 3x3 grid so that neighbours are similar (brute force over permutations)
+    var S = [];
+    for (c = 0; c < K; c++) { S.push([]); for (var e = 0; e < K; e++) { var sv = 0, A = best.C[c], B = best.C[e]; for (v = 0; v < V; v++) sv += A[v] * B[v]; S[c].push(sv); } }
+    var order = gridOrder(S, K);
+    var out = order.map(function (c) { var p = piles[c]; delete p.c; return p; });
+    return { n: n, k: K, seed: seed.toString(16), restarts: restarts, vocab: V, obj: Math.round(best.obj * 100) / 100, ms: Date.now() - t0, piles: out };
+  }
+  var TOKCACHE = null;
+  function tokenOfCache(id) {
+    if (!TOKCACHE || TOKCACHE.length !== SURF.length) { TOKCACHE = new Array(SURF.length); VOCAB.forEach(function (v, k) { TOKCACHE[v] = k; }); }
+    return TOKCACHE[id];
+  }
+  function gridOrder(S, K) {
+    var idx = []; for (var i = 0; i < K; i++) idx.push(i);
+    if (K !== 9) return idx;
+    // adjacency on a 3x3 grid (4-neighbour)
+    var edges = [];
+    for (var cell = 0; cell < 9; cell++) { var r = Math.floor(cell / 3), c = cell % 3; if (c < 2) edges.push([cell, cell + 1]); if (r < 2) edges.push([cell, cell + 3]); }
+    var best = -Infinity, bestP = idx.slice(), p = idx.slice(), used = new Array(9).fill(false), cur = new Array(9);
+    // fix the largest-similarity-sum pile in the centre to cut symmetric duplicates
+    (function rec(pos) {
+      if (pos === 9) {
+        var sc = 0; for (var e = 0; e < edges.length; e++) sc += S[cur[edges[e][0]]][cur[edges[e][1]]];
+        if (sc > best + 1e-12) { best = sc; bestP = cur.slice(); }
+        return;
+      }
+      for (var k = 0; k < 9; k++) { if (used[k]) continue; used[k] = true; cur[pos] = k; rec(pos + 1); used[k] = false; }
+    })(0);
+    return bestP;
+  }
+
+  return { init: init, scatter: scatter, hashIds: hashIds };
+})();
+
+if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typeof window === 'undefined') {
+  self.onmessage = function (ev) {
+    var msg = ev.data || {};
+    try {
+      if (msg.type === 'init') self.postMessage({ type: 'ready', id: msg.id, info: SIEVE.init(msg.works) });
+      else if (msg.type === 'scatter') self.postMessage({ type: 'scattered', id: msg.id, result: SIEVE.scatter(msg.ids, msg.opt) });
+    } catch (err) { self.postMessage({ type: 'error', id: msg.id, message: String(err && err.message || err) }); }
+  };
+}
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reduced = function () { return RM.matches; };
+
+  var ACC_KEYS = ['public', 'borrowable', 'printdisabled', 'no_ebook', 'unclassified'];
+  var ACC_CSS = ['pub', 'bor', 'pd', 'none', 'unk'];
+  var ACC_LABEL = ['Free to read', 'Borrowable', 'Print-disabled', 'No ebook', 'Unknown'];
+  var accIdx = function (a) { var i = ACC_KEYS.indexOf(a); return i < 0 ? 4 : i; };
+  var MIN_SCATTER = 27;
+
+  var S = {
+    W: [], meta: { labels: {}, lc: {} }, engine: null, steps: [], cur: -1, busy: false, anim: false,
+    sample: null, claude: 'pending', naming: null, note: '',
+    view: 'trays', man: null, manLimit: 120
+  };
+
+  /* ---------------- storage + theme ---------------- */
+  function storeGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function storeSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* private mode */ } }
+  var savedTheme = storeGet('sieve-theme');
+  if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
+  var darkMQ = window.matchMedia('(prefers-color-scheme: dark)');
+  function effectiveDark() { var t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : darkMQ.matches; }
+  $('themeBtn').addEventListener('click', function () {
+    var t = effectiveDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t); storeSet('sieve-theme', t);
+    readPalette(); redrawAll();
+  });
+  if (darkMQ.addEventListener) darkMQ.addEventListener('change', function () { readPalette(); redrawAll(); });
+
+  var PAL = null;
+  function toRgb(c) {
+    c = (c || '').trim();
+    if (c[0] === '#') {
+      if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+      var n = parseInt(c.slice(1, 7), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255];
+    }
+    var m = c.match(/\d+(\.\d+)?/g); return m ? m.slice(0, 3).map(Number) : [128, 128, 128];
+  }
+  function mix(a, b, f) { return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * f); }).join(',') + ')'; }
+  function readPalette() {
+    var cs = getComputedStyle(document.documentElement);
+    PAL = ACC_CSS.map(function (k) { var c = toRgb(cs.getPropertyValue('--acc-' + k)); return [mix(c, c, 0), mix(c, [255, 255, 255], 0.18), mix(c, [0, 0, 0], 0.16)]; });
+  }
+
+  /* ---------------- small utils ---------------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  function surname(w) {
+    var a = (w.a && w.a[0]) || '';
+    if (!a) return 'anon.';
+    if (a.indexOf(',') > 0) return a.split(',')[0].trim();
+    var parts = a.replace(/\(.*?\)/g, '').trim().split(/\s+/);
+    var last = parts[parts.length - 1];
+    if (/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(last) && parts.length > 1) last = parts[parts.length - 2];
+    return last.replace(/[.,]$/, '');
+  }
+  function normTitle(t) { return String(t || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim().slice(0, 40); }
+  function lcName(c) { return (S.meta.lc && S.meta.lc[c]) || ''; }
+  function countUp(el, to, ms) {
+    if (reduced()) { el.textContent = fmt(to); return; }
+    var from = Number(String(el.textContent).replace(/\D/g, '')) || 0, t0 = performance.now();
+    (function f(now) { var u = Math.min(1, (now - t0) / ms); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - u, 3)))); if (u < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  /* ---------------- clustering engine (Web Worker, main-thread fallback) ---------------- */
+  function mainEngine() {
+    if (!window.SIEVE) { var s = document.createElement('script'); s.textContent = $('sieve-worker').textContent; (document.head || document.body).appendChild(s); }
+    var E = window.SIEVE;
+    return { kind: 'main thread', init: function (w) { return Promise.resolve(E.init(w)); }, scatter: function (ids) { return Promise.resolve(E.scatter(ids)); } };
+  }
+  function workerEngine() {
+    var url = URL.createObjectURL(new Blob([$('sieve-worker').textContent], { type: 'text/javascript' }));
+    var w = new Worker(url), pend = new Map(), seq = 0, dead = false;
+    w.onmessage = function (e) {
+      var m = e.data || {}, p = pend.get(m.id); if (!p) return; pend.delete(m.id);
+      if (m.type === 'error') p.reject(new Error(m.message)); else p.resolve(m.info || m.result);
+    };
+    w.onerror = function () { dead = true; pend.forEach(function (p) { p.reject(new Error('worker failed')); }); pend.clear(); };
+    function call(msg) {
+      return new Promise(function (resolve, reject) {
+        if (dead) { reject(new Error('worker unavailable')); return; }
+        var id = ++seq; pend.set(id, { resolve: resolve, reject: reject }); msg.id = id; w.postMessage(msg);
+      });
+    }
+    return { kind: 'Web Worker', init: function (works) { return call({ type: 'init', works: works }); }, scatter: function (ids) { return call({ type: 'scatter', ids: ids }); } };
+  }
+
+  /* ---------------- steps and piles ---------------- */
+  function derivePile(p, i) {
+    var W = S.W, m = p.ids.length, acc = [0, 0, 0, 0, 0], years = [];
+    for (var j = 0; j < m; j++) { var w = W[p.ids[j]]; acc[accIdx(w.acc)]++; if (w.y) years.push(w.y); }
+    years.sort(function (a, b) { return a - b; });
+    var pool = Math.max(12, Math.min(60, Math.ceil(m * 0.3)));
+    var cand = p.ids.slice(0, pool).map(function (id, r) { return { id: id, s: p.sim[r], rl: W[id].rl || 0 }; });
+    cand.sort(function (a, b) { return (Math.log1p(b.rl) + 4 * b.s) - (Math.log1p(a.rl) + 4 * a.s) || a.id - b.id; });
+    var reps = [], seenT = new Set(), seenA = new Set();
+    for (var k = 0; k < cand.length && reps.length < 6; k++) {
+      var wk = W[cand[k].id], tk = normTitle(wk.t), ak = surname(wk).toLowerCase();
+      if (seenT.has(tk) || seenA.has(ak)) continue;
+      seenT.add(tk); seenA.add(ak); reps.push(cand[k].id);
+    }
+    return { i: i, h: p.h, ids: p.ids, sim: p.sim, terms: p.terms, lc: p.lc, m: m, acc: acc, med: years.length ? years[Math.floor(years.length / 2)] : null, reps: reps, heap: null };
+  }
+  function readablePct(p) { return p.m ? Math.round(100 * (p.acc[0] + p.acc[1]) / p.m) : 0; }
+  function kwName(p) {
+    var t = p.terms;
+    var name = !t.length ? 'Miscellany' : (t[0].p || t.length < 2) ? t[0].t : t[0].t + ' · ' + t[1].t;
+    var lc = p.lc[0] ? 'Mostly LC ' + p.lc[0][0] + (lcName(p.lc[0][0]) ? ' (' + lcName(p.lc[0][0]) + ')' : '') : 'Mostly without LC numbers';
+    return { name: name, line: lc + '; median year ' + (p.med || 'n/a') + '; ' + readablePct(p) + '% readable online.', src: 'kw' };
+  }
+  function makeStep(ids, res, from) {
+    var piles = res.piles.map(derivePile);
+    var simOf = new Map();
+    piles.forEach(function (p) { p.ids.forEach(function (id, r) { simOf.set(id, p.sim[r]); }); });
+    var names = piles.map(function (p) {
+      var L = S.meta.labels && S.meta.labels[p.h];
+      return L && L.name ? { name: L.name, line: L.line || '', src: 'pre' } : kwName(p);
+    });
+    return { ids: ids, res: res, piles: piles, from: from, gathered: new Set(), simOf: simOf, names: names, geom: null };
+  }
+  function stepLabel(k) {
+    if (k <= 0) return 'Whole catalog';
+    var st = S.steps[k], par = S.steps[st.from.step];
+    var nm = st.from.piles.map(function (i) { return par.names[i].name; });
+    if (nm.length === 1) return nm[0];
+    if (nm.length === 2) return nm[0] + ' + ' + nm[1];
+    return nm[0] + ' + ' + (nm.length - 1) + ' more';
+  }
+  function curStep() { return S.steps[S.cur]; }
+
+  /* ---------------- rendering: log ---------------- */
+  function renderLog() {
+    var ol = $('logList'), max = S.steps.length ? S.steps[0].ids.length : 1;
+    ol.innerHTML = S.steps.map(function (st, k) {
+      var n = st.ids.length, w = Math.max(5, 100 * Math.log(n + 1) / Math.log(max + 1));
+      var sel = Array.from(st.gathered).sort(function (a, b) { return a - b; });
+      var keptN = sel.reduce(function (s, i) { return s + st.piles[i].m; }, 0);
+      var nx = S.steps[k + 1], used = nx && nx.from.piles.join() === sel.join();
+      var kept = sel.length ? '<span class="log-kept">' + (used ? 'kept' : 'gathering') + ' <b>' + sel.map(function (i) { return i + 1; }).join(' · ') + '</b> → ' + fmt(keptN) + '</span>' : '';
+      var cls = (k === S.cur ? 'cur' : '') + (k > S.cur ? ' ahead' : '');
+      return '<li class="' + cls + '"><button class="log-step" type="button" data-step="' + k + '"' + (k === S.cur ? ' aria-current="step"' : '') + '>' +
+        '<span class="log-row"><span class="log-no">' + (k + 1) + '</span><span class="log-name">' + esc(stepLabel(k)) + '</span><span class="log-n">' + fmt(n) + '</span></span>' +
+        '<span class="log-bar" aria-hidden="true"><i style="width:' + w.toFixed(1) + '%"></i></span>' + kept + '</button></li>';
+    }).join('');
+    $('backBtn').disabled = S.cur <= 0;
+  }
+
+  /* ---------------- rendering: step head ---------------- */
+  function renderHead() {
+    var st = curStep(); if (!st) return;
+    var r = st.res;
+    $('shTitle').innerHTML = '<span class="sh-step">Step ' + (S.cur + 1) + '</span>' + esc(stepLabel(S.cur));
+    var meta = fmt(st.ids.length) + ' works → ' + st.piles.length + ' piles · TF-IDF on ' + fmt(r.vocab) + ' terms · ' + r.restarts + ' restarts · seed ' + String(r.seed).slice(0, 6) + ' · ' + fmt(r.ms) + ' ms in a ' + (S.engine ? S.engine.kind : 'worker');
+    if (S.cur > 0) { var par = S.steps[st.from.step]; meta = 'kept ' + (100 * st.ids.length / par.ids.length).toFixed(1) + '% of step ' + (st.from.step + 1) + ' · ' + meta; }
+    $('shMeta').textContent = meta;
+    var small = st.ids.length < 80;
+    $('hint').innerHTML = small
+      ? 'This set is small enough to read: open the <b>List</b>, or gather piles and sieve once more.<span class="dt"> Each chit in a heap is one work; hover to read it.</span>'
+      : '<span class="tap">Tap</span><span class="dt">Click</span> the piles worth keeping<span class="dt"> (or press <kbd>1</kbd>–<kbd>9</kbd>)</span>, then <b>Scatter</b>: what you gathered is re-sorted into nine finer piles.<span class="dt"> Neighbouring trays hold related piles. Each chit is one work; hover a heap to read it.</span>';
+  }
+
+  /* ---------------- rendering: trays ---------------- */
+  function termsHTML(p) {
+    if (!p.terms.length) return '<em>no distinctive terms</em>';
+    return p.terms.slice(0, 5).map(function (t) { return esc(t.t); }).join(' <i>/</i> ');
+  }
+  function repsHTML(p) {
+    return p.reps.slice(0, 4).map(function (id) {
+      var w = S.W[id], a = accIdx(w.acc);
+      return '<li><span class="sw a-' + ACC_CSS[a] + '" title="' + ACC_LABEL[a] + '"></span><span class="rt" title="' + esc(w.t + (w.st ? ': ' + w.st : '')) + '">' + esc(w.t) + '<span> · ' + esc(surname(w)) + '</span></span><span class="ry">' + (w.y || '') + '</span></li>';
+    }).join('');
+  }
+  function lcHTML(p) {
+    if (!p.lc.length) return 'no LC numbers';
+    return p.lc.slice(0, 2).map(function (x) { return '<b title="' + esc(lcName(x[0])) + '">' + esc(x[0]) + '</b> ' + Math.round(100 * x[1] / p.m) + '%'; }).join(' · ');
+  }
+  function accbarHTML(p) {
+    return p.acc.map(function (c, a) { return c ? '<i class="a-' + ACC_CSS[a] + '" style="flex:' + c + '" title="' + ACC_LABEL[a] + ': ' + fmt(c) + '"></i>' : ''; }).join('');
+  }
+  function nameHTML(nm) {
+    return '<button class="tray-toggle" type="button" aria-pressed="false">' + esc(nm.name) + '</button>';
+  }
+  function trayHTML(st, i) {
+    var p = st.piles[i], nm = st.names[i], on = st.gathered.has(i), kw = nm.src === 'kw';
+    var pct = (100 * p.m / st.ids.length);
+    return '<div class="tray' + (on ? ' on' : '') + '" data-i="' + i + '">' +
+      '<div class="tray-rim"><div class="tray-in">' +
+      '<div class="tray-top"><span class="pnum" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<div class="ptag"><h3 class="pname' + (kw ? ' kw' : '') + '">' + nameHTML(nm).replace('aria-pressed="false"', 'aria-pressed="' + on + '"') + '</h3>' +
+      '<p class="pline' + (kw ? ' data' : '') + '">' + esc(nm.line) + '</p></div>' +
+      '<div class="pcount"><b data-count>' + fmt(p.m) + '</b><span>works</span><small>' + (pct < 1 ? pct.toFixed(1) : Math.round(pct)) + '%</small></div></div>' +
+      '<div class="heap"><canvas></canvas><span class="stamp" aria-hidden="true">Gathered</span></div>' +
+      '<p class="terms" title="Most distinctive terms in this pile">' + termsHTML(p) + '</p>' +
+      '<ul class="reps" aria-label="Representative works">' + repsHTML(p) + '</ul>' +
+      '<div class="tray-foot"><span class="lcs">' + lcHTML(p) + '</span><span class="era">' + (p.med ? 'c. ' + p.med : '') + '</span>' +
+      '<button class="mini" type="button" data-list="' + i + '">List ▸</button></div>' +
+      '<div class="accbar" aria-hidden="true">' + accbarHTML(p) + '</div>' +
+      '</div></div></div>';
+  }
+  function renderBlankTrays() {
+    var h = '';
+    for (var i = 0; i < 9; i++) {
+      h += '<div class="tray blank empty"><div class="tray-rim"><div class="tray-in"><div class="tray-top"><span class="pnum">' + (i + 1) + '</span><div class="ptag"><h3 class="pname">&nbsp;</h3><p class="pline">&nbsp;</p></div><div class="pcount"><b>0</b></div></div>' +
+        '<div class="heap"><canvas></canvas></div><p class="terms">&nbsp;</p><ul class="reps"><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li></ul><div class="tray-foot">&nbsp;</div><div class="accbar"></div></div></div></div>';
+    }
+    $('trays').innerHTML = h;
+  }
+  function trayEls() { return Array.prototype.slice.call($('trays').querySelectorAll('.tray')); }
+  function renderTrays(st) {
+    var h = '';
+    for (var i = 0; i < st.piles.length; i++) h += trayHTML(st, i);
+    $('trays').innerHTML = h;
+  }
+  function updateTrayState(i) {
+    var st = curStep(), el = trayEls()[i]; if (!el) return;
+    var on = st.gathered.has(i);
+    el.classList.toggle('on', on);
+    var b = el.querySelector('.tray-toggle'); if (b) b.setAttribute('aria-pressed', String(on));
+  }
+  function setTrayName(i, nm, animate) {
+    var el = trayEls()[i]; if (!el) return;
+    var h = el.querySelector('.pname'), pl = el.querySelector('.pline'), b = el.querySelector('.tray-toggle');
+    h.classList.toggle('kw', nm.src === 'kw'); pl.classList.toggle('data', nm.src === 'kw');
+    pl.textContent = nm.line;
+    if (!animate || reduced()) { b.textContent = nm.name; return; }
+    var txt = nm.name, n = 0;
+    b.textContent = '';
+    var caret = document.createElement('span'); caret.className = 'caret';
+    var tick = function () {
+      n = Math.min(txt.length, n + 1);
+      b.textContent = txt.slice(0, n); if (n < txt.length) { b.appendChild(caret); setTimeout(tick, 28); }
+    };
+    tick();
+  }
+
+  /* ---------------- heaps (sand-pile with an angle of repose) ---------------- */
+  function sandpile(m, C, rand) {
+    var h = new Int32Array(C), col = new Int16Array(m), row = new Int16Array(m), mid = (C - 1) / 2;
+    for (var k = 0; k < m; k++) {
+      var c = Math.max(0, Math.min(C - 1, Math.round(mid + (rand() - 0.5) * 2.6)));
+      for (var g = 0; g < C; g++) {
+        var l = c > 0 ? h[c - 1] : 1e9, r = c < C - 1 ? h[c + 1] : 1e9;
+        var goL = h[c] > l, goR = h[c] > r;
+        if (!goL && !goR) break;
+        if (goL && goR) c += l < r ? -1 : r < l ? 1 : (rand() < 0.5 ? -1 : 1);
+        else c += goL ? -1 : 1;
+      }
+      col[k] = c; row[k] = h[c]++;
+    }
+    return { col: col, row: row };
+  }
+  function layoutHeaps(st) {
+    var trays = trayEls(); if (!trays.length || !st) return false;
+    var cvs = trays.map(function (t) { return t.querySelector('canvas'); });
+    var Wc = cvs[0].clientWidth, Hc = cvs[0].clientHeight;
+    if (!Wc || !Hc) return false;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var mMax = Math.max.apply(null, st.piles.map(function (p) { return p.m; }).concat([1]));
+    var ch = Math.min(9, Hc / (Math.sqrt(mMax) * 1.12));
+    var cw = Math.min(15, ch / 0.6);
+    var need = 2 * Math.sqrt(mMax) * 1.12 * cw;
+    if (need > Wc - 4) cw = (Wc - 4) / (2 * Math.sqrt(mMax) * 1.12);
+    var C = Math.max(3, Math.floor((Wc - 4) / cw));
+    st.geom = { Wc: Wc, Hc: Hc, cw: cw, ch: ch, dpr: dpr, C: C };
+    st.piles.forEach(function (p, i) {
+      var cv = cvs[i];
+      cv.width = Math.round(Wc * dpr); cv.height = Math.round(Hc * dpr);
+      var seed = parseInt(p.h, 16) >>> 0, rand = rng(seed ^ 0x51E7E);
+      var sp = sandpile(p.m, C, rand);
+      // which work sits in which slot: a seeded shuffle, so access colours speckle the heap
+      var order = p.ids.slice();
+      for (var k = order.length - 1; k > 0; k--) { var j = Math.floor(rand() * (k + 1)); var tmp = order[k]; order[k] = order[j]; order[j] = tmp; }
+      var color = new Uint8Array(p.m), shade = new Uint8Array(p.m);
+      for (k = 0; k < p.m; k++) { color[k] = accIdx(S.W[order[k]].acc); shade[k] = Math.floor(rand() * 3); }
+      p.heap = { col: sp.col, row: sp.row, x0: (Wc - C * cw) / 2, color: color, shade: shade, work: order, lookup: null, cv: cv, shown: 0 };
+    });
+    return true;
+  }
+  function drawHeap(st, i, from, to, clear) {
+    var p = st.piles[i], g = st.geom, hp = p.heap; if (!g || !hp) return;
+    var ctx = hp.cv.getContext('2d');
+    ctx.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
+    if (clear) ctx.clearRect(0, 0, g.Wc, g.Hc);
+    var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+    for (var k = from; k < to; k++) {
+      ctx.fillStyle = PAL[hp.color[k]][hp.shade[k]];
+      ctx.fillRect(hp.x0 + hp.col[k] * g.cw, g.Hc - (hp.row[k] + 1) * g.ch, g.cw - gap, g.ch - gy);
+    }
+    hp.shown = to;
+  }
+  function drawAllFull(st) { st.piles.forEach(function (p, i) { drawHeap(st, i, 0, p.m, true); }); }
+  function redrawAll() {
+    var st = curStep(); if (!st || S.anim || S.view !== 'trays') return;
+    if (st.geom) st.piles.forEach(function (p, i) { if (p.heap) drawHeap(st, i, 0, p.heap.shown || p.m, true); });
+  }
+
+  /* ---------------- particle overlay ---------------- */
+  var fx = $('fx'), fxc = fx.getContext('2d'), fxDpr = 1;
+  function sizeFx() {
+    fxDpr = Math.min(2, window.devicePixelRatio || 1);
+    fx.width = Math.round(window.innerWidth * fxDpr); fx.height = Math.round(window.innerHeight * fxDpr);
+  }
+  function clearFx() { fxc.setTransform(fxDpr, 0, 0, fxDpr, 0, 0); fxc.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+
+  function pour(st, opts) {
+    opts = opts || {};
+    return new Promise(function (resolve) {
+      var trays = trayEls(), counts = trays.map(function (t) { return t.querySelector('[data-count]'); });
+      var piles = st.piles, g = st.geom, N = piles.reduce(function (s, p) { return s + p.m; }, 0);
+      if (!g || reduced() || document.hidden) {
+        if (g) drawAllFull(st);
+        counts.forEach(function (c, i) { if (c) c.textContent = fmt(piles[i].m); });
+        resolve(); return;
+      }
+      S.anim = true; sizeFx();
+      piles.forEach(function (p, i) { drawHeap(st, i, 0, 0, true); counts[i].textContent = '0'; });
+      var T = Math.min(1700, 650 + N * 0.15) * (opts.fast ? 0.6 : 1);
+      var rand = rng(0x5EED ^ N);
+      var chuteEl = $('chute'), cvs = piles.map(function (p) { return p.heap.cv; });
+      var c0 = chuteEl.getBoundingClientRect();
+      var dur = cvs.map(function (cv) {
+        var r = cv.getBoundingClientRect();
+        var d = Math.hypot(r.left + r.width / 2 - (c0.left + c0.width / 2), r.top + r.height - c0.bottom);
+        return Math.min(950, 480 + d * 0.32);
+      });
+      var jx = piles.map(function (p) { var a = new Float32Array(p.m); for (var k = 0; k < p.m; k++) a[k] = rand() - 0.5; return a; });
+      var landed = new Int32Array(piles.length);
+      var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+      var hopN = $('hopN'), t0 = performance.now();
+      function launchAt(i, k) { return T * (k / piles[i].m); }
+      function frame(now) {
+        var t = now - t0, c = chuteEl.getBoundingClientRect();
+        var sx = c.left + c.width / 2, sy = c.bottom - 2, sw = c.width * 0.42;
+        clearFx();
+        var paths = [new Path2D(), new Path2D(), new Path2D(), new Path2D(), new Path2D()];
+        var launchedAll = 0, done = true;
+        for (var i = 0; i < piles.length; i++) {
+          var p = piles[i], hp = p.heap, m = p.m, d = dur[i], r = cvs[i].getBoundingClientRect();
+          var L = landed[i];
+          while (L < m && launchAt(i, L) + d <= t) L++;
+          if (L !== landed[i]) { drawHeap(st, i, landed[i], L, false); landed[i] = L; counts[i].textContent = fmt(L); }
+          if (L < m) done = false;
+          var k = L;
+          for (; k < m; k++) {
+            var lt = launchAt(i, k); if (lt > t) break;
+            var u = (t - lt) / d, ex = 1 - (1 - u) * (1 - u), ey = 0.1 * u + 0.9 * u * u;
+            var x0 = sx + jx[i][k] * sw;
+            var x1 = r.left + hp.x0 + hp.col[k] * g.cw, y1 = r.top + g.Hc - (hp.row[k] + 1) * g.ch;
+            paths[hp.color[k]].rect(x0 + (x1 - x0) * ex, sy + (y1 - sy) * ey, g.cw - gap, g.ch - gy);
+          }
+          launchedAll += k;
+        }
+        for (var q = 0; q < 5; q++) { fxc.fillStyle = PAL[q][0]; fxc.fill(paths[q]); }
+        hopN.textContent = fmt(Math.max(0, N - launchedAll));
+        if (done) { clearFx(); S.anim = false; resolve(); return; }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  function gatherAnim(st, sel) {
+    return new Promise(function (resolve) {
+      var trays = trayEls();
+      trays.forEach(function (t, i) { if (sel.indexOf(i) < 0) t.classList.add('aside'); });
+      var g = st.geom;
+      if (!g || reduced() || document.hidden) { resolve(); return; }
+      S.anim = true; sizeFx();
+      var T = 560, D = 440, chuteEl = $('chute'), hopN = $('hopN');
+      var total = sel.reduce(function (s, i) { return s + st.piles[i].m; }, 0);
+      var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+      var rects = {}, t0 = performance.now();
+      sel.forEach(function (i) { rects[i] = st.piles[i].heap.cv.getBoundingClientRect(); });
+      function frame(now) {
+        var t = now - t0, c = chuteEl.getBoundingClientRect(), sx = c.left + c.width / 2, sy = c.bottom - 4;
+        clearFx();
+        var paths = [new Path2D(), new Path2D(), new Path2D(), new Path2D(), new Path2D()], arrived = 0;
+        sel.forEach(function (i) {
+          var p = st.piles[i], hp = p.heap, m = p.m, r = rects[i];
+          // the top of the heap leaves first: slot k launches at T * (m-1-k)/m
+          var remain = Math.max(0, Math.min(m, Math.ceil(m - t * m / T)));
+          if (remain !== hp.shown) drawHeap(st, i, 0, remain, true);
+          for (var k = remain; k < m; k++) {
+            var lt = T * (m - 1 - k) / m, u = (t - lt) / D;
+            if (u >= 1) { arrived++; continue; }
+            if (u < 0) continue;
+            var ex = u, ey = 1 - (1 - u) * (1 - u);
+            var x1 = r.left + hp.x0 + hp.col[k] * g.cw, y1 = r.top + g.Hc - (hp.row[k] + 1) * g.ch;
+            paths[hp.color[k]].rect(x1 + (sx - x1) * ex, y1 + (sy - y1) * ey, g.cw - gap, g.ch - gy);
+          }
+        });
+        for (var q = 0; q < 5; q++) { fxc.fillStyle = PAL[q][0]; fxc.fill(paths[q]); }
+        hopN.textContent = fmt(arrived);
+        if (t >= T + D) { clearFx(); hopN.textContent = fmt(total); S.anim = false; resolve(); return; }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  /* ---------------- hopper + buttons ---------------- */
+  function setStatus(html) { $('hopStatus').innerHTML = html; }
+  function gatheredIds(st) {
+    var sel = Array.from(st.gathered).sort(function (a, b) { return a - b; }), ids = [];
+    sel.forEach(function (i) { ids = ids.concat(st.piles[i].ids); });
+    return { sel: sel, ids: ids };
+  }
+  function updateHopper() {
+    var st = curStep(); if (!st) return;
+    var g = gatheredIds(st), n = g.ids.length, btn = $('scatterBtn');
+    $('listBtn').disabled = S.busy;
+    if (S.busy) { btn.disabled = true; return; }
+    if (g.sel.length) {
+      $('hopN').textContent = fmt(n);
+      document.querySelector('.hop-unit').textContent = 'gathered';
+      setStatus('Gathered pile' + (g.sel.length > 1 ? 's' : '') + ' <b>' + g.sel.map(function (i) { return i + 1; }).join(' · ') + '</b>: ' + fmt(n) + ' works. ' +
+        (n < MIN_SCATTER ? 'Too few to sieve again; read the list.' : 'Scatter re-sorts them into nine.'));
+      btn.disabled = false; btn.textContent = n < MIN_SCATTER ? 'List ' + n + ' ▸' : 'Scatter ' + fmt(n) + ' ▸';
+    } else {
+      $('hopN').textContent = fmt(st.ids.length);
+      document.querySelector('.hop-unit').textContent = 'sorted';
+      setStatus('<b>' + fmt(st.ids.length) + '</b> works in nine piles. Gather the promising ones.');
+      btn.disabled = true; btn.textContent = 'Scatter ▸';
+    }
+  }
+
+  /* ---------------- actions ---------------- */
+  function toggle(i) {
+    if (S.busy || S.view !== 'trays') return;
+    var st = curStep(); if (!st || i < 0 || i >= st.piles.length) return;
+    if (st.gathered.has(i)) st.gathered.delete(i); else st.gathered.add(i);
+    updateTrayState(i); updateHopper(); renderLog();
+  }
+  function renderStep(opts) {
+    opts = opts || {};
+    var st = curStep(); if (!st) return;
+    renderLog(); renderHead(); renderTrays(st);
+    layoutHeaps(st);
+    if (!opts.empty) drawAllFull(st);
+    updateHopper(); updateNamingUI();
+  }
+  function scrollToHead() {
+    var el = $('stepHead'), top = el.getBoundingClientRect().top;
+    if (top < 0 || top > window.innerHeight * 0.5) el.scrollIntoView({ block: 'start', behavior: reduced() ? 'auto' : 'smooth' });
+  }
+  async function scatter() {
+    var st = curStep(); if (!st || S.busy || S.view !== 'trays') return;
+    var g = gatheredIds(st);
+    if (!g.sel.length) return;
+    if (g.ids.length < MIN_SCATTER) { openManifest({ kind: 'gathered', step: S.cur }); return; }
+    S.busy = true; updateHopper(); hideTip();
+    abortNaming();
+    var fromIdx = S.cur;
+    S.steps.length = S.cur + 1;
+    $('hopper').classList.add('busy');
+    var job = S.engine.scatter(g.ids);
+    setStatus('Gathering pile' + (g.sel.length > 1 ? 's ' : ' ') + '<b>' + g.sel.map(function (i) { return i + 1; }).join(' · ') + '</b> into the hopper…');
+    await gatherAnim(st, g.sel);
+    setStatus('Re-weighting terms for these ' + fmt(g.ids.length) + ' works; k-means, k = 9…');
+    var res;
+    try { res = await job; }
+    catch (e) {
+      setStatus('The sieve jammed: ' + esc(e.message || e) + '.'); S.busy = false; $('hopper').classList.remove('busy');
+      trayEls().forEach(function (t) { t.classList.remove('aside'); }); updateHopper(); return;
+    }
+    var step = makeStep(g.ids, res, { step: fromIdx, piles: g.sel });
+    S.steps.push(step); S.cur = S.steps.length - 1;
+    renderStep({ empty: true });
+    $('hopper').classList.remove('busy');
+    S.busy = true; updateHopper();
+    $('hopN').textContent = fmt(g.ids.length);
+    setStatus('Pouring <b>' + fmt(g.ids.length) + '</b> works into nine piles…');
+    scrollToHead();
+    if (S.sample && step.names.some(function (n) { return n.src === 'kw'; })) nameLive(step);
+    await pour(step);
+    S.busy = false; updateHopper(); updateNamingUI();
+  }
+  function goStep(k) {
+    if (S.busy || k < 0 || k >= S.steps.length) return;
+    closeManifest(true);
+    S.cur = k; renderStep();
+  }
+  async function pourAgain() {
+    var st = curStep(); if (!st || S.busy || S.view !== 'trays') return;
+    S.busy = true; updateHopper(); hideTip();
+    $('hopN').textContent = fmt(st.ids.length);
+    setStatus('Pouring <b>' + fmt(st.ids.length) + '</b> works again…');
+    await pour(st);
+    S.busy = false; updateHopper();
+  }
+  async function startOver() {
+    if (S.busy || !S.steps.length) return;
+    abortNaming(); closeManifest(true);
+    S.steps.length = 1; S.cur = 0; S.steps[0].gathered.clear();
+    renderStep({ empty: true });
+    window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' });
+    await pourAgain();
+  }
+
+  /* ---------------- manifest (final list) ---------------- */
+  function scopeInfo(sc) {
+    var st = S.steps[sc.step], path = [];
+    for (var k = 0; k <= sc.step; k++) path.push(stepLabel(k));
+    if (sc.kind === 'pile') {
+      var p = st.piles[sc.i];
+      return { ids: p.ids, title: 'Pile ' + (sc.i + 1) + ': ' + st.names[sc.i].name, path: path, step: st };
+    }
+    if (sc.kind === 'gathered') {
+      var g = gatheredIds(st);
+      return { ids: g.ids, title: 'Gathered piles ' + g.sel.map(function (i) { return i + 1; }).join(' · '), path: path, step: st };
+    }
+    return { ids: st.ids, title: 'All of step ' + (sc.step + 1), path: path, step: st };
+  }
+  function openManifest(sc) {
+    if (S.busy && S.view === 'trays' && S.anim) return;
+    S.man = sc; S.view = 'list'; S.manLimit = 120; hideTip();
+    $('trays').hidden = true; $('stepHead').hidden = true; $('manifest').hidden = false;
+    renderManifest();
+    $('manifest').scrollIntoView({ block: 'start', behavior: 'auto' });
+    window.scrollBy(0, -90);
+    $('manBack').focus({ preventScroll: true });
+  }
+  function closeManifest(silent) {
+    if (S.view !== 'list') return;
+    S.view = 'trays'; $('manifest').hidden = true; $('trays').hidden = false; $('stepHead').hidden = false;
+    var st = curStep(); if (st) { layoutHeaps(st); drawAllFull(st); }
+    if (!silent) { var t = $('trays').querySelector('.tray-toggle'); if (t) t.focus({ preventScroll: true }); }
+  }
+  function renderManifest() {
+    var sc = S.man, info = scopeInfo(sc), W = S.W, st = info.step;
+    var sort = $('manSort').value, readable = $('manReadable').checked;
+    var ids = info.ids.slice();
+    var acc = [0, 0, 0, 0, 0]; ids.forEach(function (id) { acc[accIdx(W[id].acc)]++; });
+    if (readable) ids = ids.filter(function (id) { var a = accIdx(W[id].acc); return a <= 1; });
+    var cmp = {
+      rl: function (a, b) { return (W[b].rl || 0) - (W[a].rl || 0) || a - b; },
+      sim: function (a, b) { return (st.simOf.get(b) || 0) - (st.simOf.get(a) || 0) || a - b; },
+      call: function (a, b) { var x = W[a].lcc, y = W[b].lcc; if (!x && !y) return a - b; if (!x) return 1; if (!y) return -1; return x < y ? -1 : x > y ? 1 : 0; },
+      y: function (a, b) { return (W[b].y || -1e9) - (W[a].y || -1e9) || a - b; },
+      yo: function (a, b) { return (W[a].y || 1e9) - (W[b].y || 1e9) || a - b; }
+    }[sort] || function (a, b) { return a - b; };
+    ids.sort(cmp);
+    $('manTitle').textContent = info.title;
+    $('manSub').textContent = fmt(info.ids.length) + ' works · ' + info.path.join(' › ');
+    var tot = info.ids.length;
+    $('manSum').innerHTML = '<span class="bar" aria-hidden="true">' + acc.map(function (c, a) { return c ? '<i class="a-' + ACC_CSS[a] + '" style="flex:' + c + '"></i>' : ''; }).join('') + '</span>' +
+      acc.map(function (c, a) { return c ? '<span><i class="sw a-' + ACC_CSS[a] + '"></i>' + ACC_LABEL[a] + ' ' + fmt(c) + '</span>' : ''; }).join('') +
+      '<span>· ' + Math.round(100 * (acc[0] + acc[1]) / Math.max(1, tot)) + '% readable online</span>';
+    var shown = ids.slice(0, S.manLimit);
+    if (!shown.length) { $('manList').innerHTML = '<li class="man-empty">None of these works has a free or borrowable ebook on Open Library. Untick “Readable online” to see them all.</li>'; $('manMore').hidden = true; return; }
+    $('manList').innerHTML = shown.map(function (id, n) {
+      var w = W[id], a = accIdx(w.acc);
+      var chipInner = '<i class="a-' + ACC_CSS[a] + '"></i>' + (a === 0 ? 'Read free' : a === 1 ? 'Borrow' : ACC_LABEL[a]);
+      var chip = w.ia && a <= 2 ? '<a class="chip" href="https://archive.org/details/' + encodeURIComponent(w.ia) + '" target="_blank" rel="noopener" title="Internet Archive: ' + esc(w.ia) + '">' + chipInner + '</a>' : '<span class="chip">' + chipInner + '</span>';
+      var by = [(w.a || []).slice(0, 3).join(', ') || 'Unknown author', w.y || 'n.d.'];
+      if (w.pp) by.push(w.pp + ' pp.');
+      var extra = w.pg ? ' · <a href="https://www.gutenberg.org/ebooks/' + encodeURIComponent(w.pg) + '" target="_blank" rel="noopener">Gutenberg</a>' : '';
+      return '<li class="row"><span class="r-i">' + (n + 1) + '</span><span class="r-call">' + esc(w.call || '—') + '</span>' +
+        '<div class="r-main"><a class="r-title" href="https://openlibrary.org/works/' + encodeURIComponent(w.id) + '" target="_blank" rel="noopener">' + esc(w.t) + '</a>' + (w.st ? '<span class="r-sub">: ' + esc(w.st) + '</span>' : '') +
+        '<div class="r-by">' + esc(by.join(' · ')) + extra + '</div></div>' + chip +
+        '<span class="r-rl" title="Open Library reading-log count">' + (w.rl ? fmt(w.rl) + ' logs' : '') + '</span></li>';
+    }).join('');
+    $('manMore').hidden = ids.length <= S.manLimit;
+    $('manMore').textContent = 'Show ' + fmt(Math.min(240, ids.length - S.manLimit)) + ' more of ' + fmt(ids.length - S.manLimit);
+  }
+  $('manSort').addEventListener('change', renderManifest);
+  $('manReadable').addEventListener('change', function () { S.manLimit = 120; renderManifest(); });
+  $('manMore').addEventListener('click', function () { S.manLimit += 240; renderManifest(); });
+  $('manBack').addEventListener('click', function () { closeManifest(); });
+
+  /* ---------------- Claude: live pile names (one batched sample.json per scatter) ---------------- */
+  async function initClaude() {
+    try {
+      if (!window.claude || typeof window.claude.use !== 'function') { S.claude = 'off'; updateNamingUI(); return; }
+      var f = await window.claude.use('sample');
+      S.sample = typeof f === 'function' ? f : null;
+      S.claude = S.sample ? 'ready' : 'off';
+    } catch (e) { S.sample = null; S.claude = 'off'; }
+    updateNamingUI();
+  }
+  function pathText(k) {
+    var out = [];
+    for (var j = 0; j <= k; j++) out.push('"' + stepLabel(j) + '" (' + fmt(S.steps[j].ids.length) + ' works)');
+    return out.join(' → ');
+  }
+  function buildPrompt(st) {
+    var W = S.W, k = S.steps.indexOf(st);
+    var piles = st.piles.map(function (p, i) {
+      var terms = p.terms.slice(0, 8).map(function (t) { return t.t + ' (' + Math.round(t.f * 100) + '%)'; }).join(', ') || 'none';
+      var lc = p.lc.slice(0, 3).map(function (x) { return x[0] + (lcName(x[0]) ? ' ' + lcName(x[0]) : '') + ' ' + Math.round(100 * x[1] / p.m) + '%'; }).join('; ') || 'none';
+      var pick = p.reps.slice(), seen = new Set(pick.map(function (id) { return normTitle(W[id].t); }));
+      for (var j = 0; j < p.ids.length && pick.length < 10; j++) { var id = p.ids[j], nt = normTitle(W[id].t); if (seen.has(nt)) continue; seen.add(nt); pick.push(id); }
+      var titles = pick.map(function (id) { var w = W[id]; return (w.t + (w.st ? ': ' + w.st : '')).slice(0, 110) + ' (' + surname(w) + ', ' + (w.y || 'n.d.') + ')'; }).join(' | ');
+      return 'PILE ' + (i + 1) + ' (' + p.m + ' works, median year ' + (p.med || 'n/a') + ')\n  distinctive terms: ' + terms + '\n  LC classes: ' + lc + '\n  typical titles: ' + titles;
+    }).join('\n\n');
+    return 'You are labelling piles in a Scatter/Gather browser over a library catalog of Open Library works (mostly nonfiction about decisions, uncertainty, statistics, computing, economics, philosophy and science).\n\n' +
+      'Sieving path so far: ' + pathText(k) + '.\n' +
+      'The ' + fmt(st.ids.length) + ' works in the current set were just clustered (TF-IDF + k-means) into ' + st.piles.length + ' piles. Each pile below lists its most distinctive terms (with the share of the pile that carries each), its main Library of Congress classes, and typical titles.\n\n' +
+      'For EACH pile write:\n' +
+      '- "name": 2 to 5 words; a specific noun phrase a librarian or researcher would recognise, like a subject heading. Plain English, no quotation marks, no numbering. Sibling names must be clearly different from one another, and none should just repeat the parent pile\'s name.\n' +
+      '- "line": one sentence of at most 18 words saying what the pile holds and what sets it apart from its siblings. Say so if a pile is a mixture.\n' +
+      'Base everything only on the evidence given. Do not mention works that are not listed.\n\n' +
+      'Reply with only a JSON array of ' + st.piles.length + ' objects in pile order, for example:\n' +
+      '[{"pile": 1, "name": "Medieval monastic life", "line": "Histories of abbeys and their rules, mostly 20th-century scholarship rather than primary sources."}]\n\n' + piles;
+  }
+  function cleanName(o, st) {
+    if (!o || typeof o !== 'object') return null;
+    var k = Number(o.pile); if (!Number.isInteger(k) || k < 1 || k > st.piles.length) return null;
+    var name = typeof o.name === 'string' ? o.name.replace(/\s+/g, ' ').trim().replace(/^["“'”]+|["“'”.]+$/g, '') : '';
+    var words = name.split(' ').filter(Boolean);
+    if (!name || words.length > 7 || name.length > 64) return null;
+    var line = typeof o.line === 'string' ? o.line.replace(/\s+/g, ' ').trim() : '';
+    if (line.length > 220) line = line.slice(0, 217).replace(/\s+\S*$/, '') + '…';
+    return { i: k - 1, name: name, line: line };
+  }
+  function applyOne(job, o) {
+    var st = job.step, c = cleanName(o, st);
+    if (!c || job.got.has(c.i)) return false;
+    var dup = st.names.some(function (n, j) { return j !== c.i && n.src === 'live' && n.name.toLowerCase() === c.name.toLowerCase(); });
+    if (dup) return false;
+    job.got.add(c.i);
+    st.names[c.i] = { name: c.name, line: c.line, src: 'live' };
+    if (st === curStep() && S.view === 'trays') setTrayName(c.i, st.names[c.i], true);
+    renderLog(); if (st === curStep()) { $('shTitle').innerHTML = '<span class="sh-step">Step ' + (S.cur + 1) + '</span>' + esc(stepLabel(S.cur)); }
+    updateNamingUI();
+    return true;
+  }
+  function applyPartial(job, text) {
+    var m = String(text).match(/\{[^{}]*\}/g) || [];
+    m.forEach(function (s) { try { applyOne(job, JSON.parse(s)); } catch (e) { /* incomplete object */ } });
+  }
+  function abortNaming() { if (S.naming) { try { S.naming.ctl.abort(); } catch (e) { /* already settled */ } S.naming = null; } }
+  function setNote(t) { S.note = t || ''; $('namingNote').textContent = S.note; }
+  async function nameLive(st) {
+    if (!S.sample || typeof S.sample.json !== 'function') { setNote('This viewer cannot return JSON from Claude; keyword names kept.'); return; }
+    abortNaming();
+    var ctl = new AbortController(), job = { step: st, ctl: ctl, got: new Set() };
+    S.naming = job; setNote(''); updateNamingUI();
+    try {
+      var out = await S.sample.json(buildPrompt(st), { modelTier: 'quick', signal: ctl.signal, onText: function (u) { if (S.naming === job) applyPartial(job, u.text); } });
+      var arr = Array.isArray(out) ? out : (out && Array.isArray(out.piles) ? out.piles : []);
+      arr.forEach(function (o) { applyOne(job, o); });
+      var n = job.got.size;
+      if (!n) setNote('Claude’s reply could not be used; keyword names kept.');
+      else if (n < st.piles.length) setNote('Claude named ' + n + ' of ' + st.piles.length + ' piles; the rest keep keyword names.');
+    } catch (e) {
+      var code = e && e.code;
+      if (code === 'cancelled') { /* superseded or stopped */ }
+      else if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].indexOf(code) >= 0) { S.sample = null; S.claude = 'off'; setNote('Claude naming is off for this view; keyword names shown.'); }
+      else if (code === 'rate_limited') setNote('Claude is busy (rate limited). Keyword names kept; try again in a while.');
+      else if (code === 'session_expired') setNote('Sign in to Claude again to name piles live.');
+      else { if (e && e.text) applyPartial(job, e.text); setNote(job.got.size ? 'Naming stopped part-way; the rest keep keyword names.' : 'Naming did not complete; keyword names kept.'); }
+    } finally {
+      if (S.naming === job) S.naming = null;
+      updateNamingUI();
+    }
+  }
+  function updateNamingUI() {
+    var st = curStep(), badge = $('nameBadge'), nameBtn = $('nameBtn'), stopBtn = $('stopBtn');
+    if (!st) return;
+    var src = st.names.map(function (n) { return n.src; });
+    var all = function (s) { return src.every(function (x) { return x === s; }); };
+    var naming = S.naming && S.naming.step === st;
+    badge.className = 'badge';
+    if (naming) { badge.classList.add('naming'); badge.textContent = 'Claude is naming the piles… ' + S.naming.got.size + '/' + st.piles.length; }
+    else if (all('pre')) { badge.classList.add('pre'); badge.textContent = 'Names: Claude, precomputed Oct 2026 · AI-generated'; }
+    else if (all('live')) { badge.classList.add('live'); badge.textContent = 'Names: Claude, live · AI-generated'; }
+    else if (all('kw')) { badge.textContent = 'Names: two most distinctive terms'; }
+    else { badge.classList.add('live'); badge.textContent = 'Names: Claude (AI-generated) + keywords'; }
+    stopBtn.hidden = !naming;
+    var canName = !!S.sample && !naming && !all('live');
+    nameBtn.hidden = !canName;
+    nameBtn.textContent = src.indexOf('kw') >= 0 ? 'Name with Claude' : 'Rename live with Claude';
+    if (!naming && !S.note && S.claude === 'off' && src.indexOf('kw') >= 0) $('namingNote').textContent = 'Live naming by Claude works when this page is opened in Claude.';
+    else if (!S.note) $('namingNote').textContent = '';
+  }
+  $('nameBtn').addEventListener('click', function () { var st = curStep(); if (st) nameLive(st); });
+  $('stopBtn').addEventListener('click', function () { abortNaming(); setNote('Stopped; unnamed piles keep keyword names.'); updateNamingUI(); });
+
+  /* ---------------- hover: read a chit ---------------- */
+  var tip = $('tip'), hoverKey = '';
+  function hideTip() { if (!tip.hidden) tip.hidden = true; if (hoverKey) { hoverKey = ''; if (!S.anim) clearFx(); } }
+  $('trays').addEventListener('pointermove', function (e) {
+    if (S.anim || e.pointerType === 'touch') return;
+    var tray = e.target.closest ? e.target.closest('.tray') : null, st = curStep();
+    if (!tray || !st || !st.geom || tray.classList.contains('blank')) { hideTip(); return; }
+    var i = Number(tray.dataset.i), p = st.piles[i], hp = p && p.heap; if (!hp) { hideTip(); return; }
+    var r = hp.cv.getBoundingClientRect(), g = st.geom, x = e.clientX - r.left, y = e.clientY - r.top;
+    if (x < 0 || y < 0 || x > r.width || y > r.height) { hideTip(); return; }
+    if (!hp.lookup) { hp.lookup = new Map(); for (var k = 0; k < p.m; k++) hp.lookup.set(hp.col[k] * 4096 + hp.row[k], k); }
+    var col = Math.floor((x - hp.x0) / g.cw), row = Math.floor((g.Hc - y) / g.ch);
+    var kk = hp.lookup.get(col * 4096 + row);
+    if (kk === undefined || kk >= hp.shown) { hideTip(); return; }
+    var w = S.W[hp.work[kk]], a = accIdx(w.acc), key = i + ':' + kk;
+    if (key !== hoverKey) {
+      hoverKey = key;
+      tip.innerHTML = '<b>' + esc(w.t) + '</b>' + (w.st ? ': ' + esc(w.st) : '') + '<small>' + esc(surname(w)) + ' · ' + (w.y || 'n.d.') + ' · ' + ACC_LABEL[a] + (w.call ? ' · ' + esc(w.call) : '') + '</small>';
+      sizeFx(); clearFx();
+      fxc.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#cf4b14';
+      fxc.lineWidth = 1.5;
+      fxc.strokeRect(r.left + hp.x0 + hp.col[kk] * g.cw - 1.5, r.top + g.Hc - (hp.row[kk] + 1) * g.ch - 1.5, g.cw + 2, g.ch + 2);
+    }
+    tip.hidden = false;
+    var tx = Math.min(window.innerWidth - tip.offsetWidth - 8, e.clientX + 14), ty = e.clientY + 16;
+    if (ty + tip.offsetHeight > window.innerHeight - 8) ty = e.clientY - tip.offsetHeight - 12;
+    tip.style.left = Math.max(8, tx) + 'px'; tip.style.top = ty + 'px';
+  });
+  $('trays').addEventListener('pointerleave', hideTip);
+  window.addEventListener('scroll', hideTip, { passive: true });
+
+  /* ---------------- events ---------------- */
+  $('trays').addEventListener('click', function (e) {
+    var li = e.target.closest('[data-list]');
+    if (li) { e.stopPropagation(); if (!S.busy) openManifest({ kind: 'pile', step: S.cur, i: Number(li.dataset.list) }); return; }
+    var tray = e.target.closest('.tray'); if (!tray || tray.classList.contains('blank')) return;
+    toggle(Number(tray.dataset.i));
+  });
+  $('logList').addEventListener('click', function (e) { var b = e.target.closest('[data-step]'); if (b) goStep(Number(b.dataset.step)); });
+  $('scatterBtn').addEventListener('click', scatter);
+  $('listBtn').addEventListener('click', function () {
+    var st = curStep(); if (!st || S.busy) return;
+    openManifest({ kind: st.gathered.size ? 'gathered' : 'set', step: S.cur });
+  });
+  $('pourBtn').addEventListener('click', pourAgain);
+  $('backBtn').addEventListener('click', function () { if (S.view === 'list') closeManifest(); else goStep(S.cur - 1); });
+  $('resetBtn').addEventListener('click', startOver);
+
+  var aboutReturn = null;
+  function openAbout() { aboutReturn = document.activeElement; $('about').hidden = false; $('scrim').hidden = false; $('aboutClose').focus(); }
+  function closeAbout() { $('about').hidden = true; $('scrim').hidden = true; if (aboutReturn && aboutReturn.focus) aboutReturn.focus(); }
+  $('aboutBtn').addEventListener('click', openAbout);
+  $('aboutClose').addEventListener('click', closeAbout);
+  $('scrim').addEventListener('click', closeAbout);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName || '').toLowerCase();
+    if (!$('about').hidden) {
+      if (e.key === 'Escape') closeAbout();
+      if (e.key === 'Tab') { // keep focus inside the drawer
+        var f = $('about').querySelectorAll('button, a[href]'), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      }
+      return;
+    }
+    if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+    if (S.view === 'list') { if (e.key === 'Escape' || e.key === 'Backspace') { closeManifest(); e.preventDefault(); } return; }
+    if (/^[1-9]$/.test(e.key)) { toggle(Number(e.key) - 1); e.preventDefault(); }
+    else if (e.key === 's' || e.key === 'S' || (e.key === 'Enter' && (tag === 'body' || tag === 'main' || tag === 'html'))) { scatter(); e.preventDefault(); }
+    else if (e.key === 'l' || e.key === 'L') { $('listBtn').click(); }
+    else if (e.key === 'Backspace') { goStep(S.cur - 1); e.preventDefault(); }
+  });
+
+  var rsT = 0;
+  function onResize() {
+    clearTimeout(rsT);
+    rsT = setTimeout(function () {
+      sizeFx();
+      var st = curStep(); if (!st || S.anim || S.view !== 'trays') return;
+      layoutHeaps(st); drawAllFull(st);
+    }, 120);
+  }
+  window.addEventListener('resize', onResize);
+  if (window.ResizeObserver) new ResizeObserver(onResize).observe($('trays'));
+
+  /* ---------------- boot ---------------- */
+  async function boot() {
+    readPalette(); sizeFx(); renderBlankTrays();
+    initClaude();
+    setStatus('Loading <b>catalog.json</b>: Open Library works (CC0)…');
+    var cat;
+    try { var r = await fetch('data/catalog.json'); if (!r.ok) throw new Error('HTTP ' + r.status); cat = await r.json(); }
+    catch (e) { setStatus('Could not load data/catalog.json (' + esc(e.message) + ').'); return; }
+    S.W = cat.works || [];
+    try { var r2 = await fetch('data/sieve/sieve.json'); if (r2.ok) S.meta = await r2.json(); } catch (e) { /* names fall back to keywords */ }
+    if (!S.meta || typeof S.meta !== 'object') S.meta = {};
+    S.meta.labels = S.meta.labels || {}; S.meta.lc = S.meta.lc || {};
+    $('tagN').textContent = fmt(S.W.length);
+    countUp($('hopN'), S.W.length, 700);
+    $('hopper').classList.add('busy');
+    setStatus('Tokenizing ' + fmt(S.W.length) + ' titles, subtitles and subject headings…');
+    var slim = S.W.map(function (w) { return { t: w.t, st: w.st, s: w.s, lcc: w.lcc }; });
+    var info;
+    try { S.engine = workerEngine(); info = await S.engine.init(slim); }
+    catch (e) { S.engine = mainEngine(); info = await S.engine.init(slim); }
+    setStatus('TF-IDF on subjects, titles and LC letters (' + fmt(info.vocab) + ' tokens); k-means, k = 9…');
+    var all = S.W.map(function (_, i) { return i; });
+    var res = await S.engine.scatter(all);
+    var step = makeStep(all, res, null);
+    S.steps = [step]; S.cur = 0;
+    $('hopper').classList.remove('busy');
+    renderStep({ empty: true });
+    S.busy = true; updateHopper();
+    $('hopN').textContent = fmt(S.W.length);
+    setStatus('Pouring <b>' + fmt(S.W.length) + '</b> works through the sieve…');
+    await pour(step);
+    S.busy = false; updateHopper(); updateNamingUI();
+  }
+  boot();
+})();
+</script>

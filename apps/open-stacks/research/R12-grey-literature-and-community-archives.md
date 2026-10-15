@@ -6,7 +6,7 @@
 
 Covered elsewhere, cross-referenced only: SSRN, RePEc/IDEAS, OSF Preprints and PhilArchive sizes (R02 §2); Dimensions' 2.5M policy documents (R02 §3); LessWrong and ACX reviews as curation signals (R11 §1.1); general copyright, fair use and API-terms law (R09); the bulk-first architecture and the unified work record (R10).
 
-**Method.** Most numbers here are primary measurements taken on 2026-10-15 between about 10:00 and 10:50 UTC:
+**Method.** Most numbers here are primary measurements taken on 2026-10-15 between about 10:00 and 10:55 UTC:
 - **Direct API counts:** ForumMagnum GraphQL on all three forums (post, comment, tag, sequence and review-winner totals; per-year post counts; a 500-post sample per forum for cross-posting and edit statistics; revision history); Rogue Scholar API; api.congress.gov (CRS endpoint, shared `DEMO_KEY`); OSTI.gov and NASA NTRS APIs; the Hacker News Firebase and Algolia APIs; Crossref prefix counts; GOV.UK search API; Hugging Face dataset API.
 - **Measurement A (curricula):** I pulled every resource from three current BlueDot Impact courses (391 entries) via the course pages' embedded JSON, every link on Stanford CS120 (Fall 2025), and every link in a new EA Forum reading list. I classified each by type with domain rules plus manual review.
 - **Measurement B (index coverage):** 60 grey items (20 forum/blog posts, 20 think-tank or lab reports, 20 working papers or government documents), mostly drawn from those curricula. Each was checked against OpenAlex (free autocomplete and DOI lookups, because the anonymous search budget on this network was exhausted), Semantic Scholar (`search/match`), Crossref (bibliographic query, prefix and DOI registration-agency lookups), a live fetch with a descriptive User-Agent (retrying with a browser User-Agent on failure), licence strings in the page or PDF, and the Wayback Machine availability API. Google Scholar was spot-checked by hand on 18 items. Every automatic index match was reviewed manually; title-only matching produced false positives that I removed (see §5.2).
@@ -28,7 +28,7 @@ Confidence appears as [~NN%] where useful. Sources more than about two years old
 
 1. **For this audience, grey literature is the literature.** Across three current BlueDot Impact courses (AI Governance, Technical AI Safety, AGI Strategy), 310 unique reading items break down as 40.3% blog or newsletter posts, 21.3% reports, 12.3% forum or social posts and 12.3% preprints or working papers. Only **1.3% are peer-reviewed papers** and 1.0% books. That makes 85.5% grey and 97.7% not peer-reviewed. A university course on the same topic (Stanford CS120, Fall 2025) is the mirror image: 45.8% peer-reviewed, 35.3% preprints, 17.9% grey. As of October 2026. [V, measured; classification rubric in §5.1]
 
-2. **The scholarly graphs see almost none of the forum and blog layer.** In a 60-item test, **0 of 20** forum and blog posts were in OpenAlex, Semantic Scholar or Crossref. For reports the figure was 7 of 20, and for working papers and government documents 14 of 20. **Headline: 39 of 60 items (65%) were invisible to all three graphs**, as of October 2026. Google Scholar did better on posts (4 of 7 spot checks found, often through third-party PDF mirrors) and worse on government documents (0 of 5). [V, n = 60; GS n = 18, low confidence]
+2. **The scholarly graphs see almost none of the forum and blog layer.** In a 60-item test, **0 of 20** forum and blog posts were in OpenAlex, Semantic Scholar or Crossref. For reports the figure was 7 of 20, and for working papers and government documents 14 of 20. **Headline: 39 of 60 items (65%) were invisible to all three graphs**, as of October 2026. Google Scholar did better on posts (4 of 7 spot checks found, often through third-party PDF mirrors) and worse on government documents (0 of 5). [V, n = 60; GS n = 18, low confidence][34][35][36][37]
 
 3. **The forum corpora are small, structured and cheaply mirrorable.** As of 2026-10-15 via GraphQL:
    - LessWrong: **54,587 posts and 1,090,404 comments**;
@@ -55,7 +55,7 @@ Confidence appears as [~NN%] where useful. Sources more than about two years old
    - **EveryCRSReport**'s bulk `reports.csv`: **23,564 rows**, refreshed 2026-10-15;
    - the **OSTI** API: **5,047,570** records, 711,165 of them technical reports;
    - the **NTRS** API: **648,017** records;
-   - the keyless **GOV.UK** Content API: 17,977 "research" documents.
+   - the keyless **GOV.UK** Content and Search APIs: 17,977 "research" documents.
 
    As of October 2026. [V]
 
@@ -94,7 +94,7 @@ Confidence appears as [~NN%] where useful. Sources more than about two years old
 
 15. **Mirroring this whole layer is cheap; the cost is legal and engineering care, not money.**
     - **Embedding** all three forums (≈370M tokens [I]) costs about **$7** at $0.02/MTok [I, R10 prices].
-    - **One-paragraph summaries** of all ~80k forum posts cost about **$15 on Haiku 5.5 batch** or **~$290 on Sonnet 5.5 batch** [I, pricing-reference.md].
+    - **One-paragraph summaries** of all ~80k forum posts cost about **$14 on Haiku 5.5 batch** or **~$270 on Sonnet 5.5 batch** [I, pricing-reference.md].
     - **Daily incremental sync** is a few dozen API calls.
     - **Existing dumps are stale or mislabelled.** The StampyAI alignment dataset (14,271 documents) was last modified 2023-11-16. Third-party Hugging Face LessWrong dumps carry contradictory licence tags (MIT, Apache-2.0, CC0, "unknown") that the source does not grant.
 
@@ -115,7 +115,7 @@ Confidence appears as [~NN%] where useful. Sources more than about two years old
 | **EA Forum** | Posts, comments, topics, sequences | 24,972 posts (dated reprints from 1972; native from ~2011); 208,515 comments [V][3] | ~9–10 posts/day in 2025–26 [V] | GraphQL, older `input:{terms}` schema; robots Crawl-Delay 2; sitemap [V][5] | **CC BY 4.0 for content posted from 2022-12-01**; earlier posts author-owned [V][9][10] | ✗ / ✗ / ✗ / ~ | Stable `_id`; revisions [V] |
 | **Substack** | Newsletters | Platform total not published; one third-party metadata dump claims 3,513,881 posts [S][12]; ACX alone 1,493 posts in sitemap [V][17] | Per publication | No content API; RSS = 20 latest; unofficial `/api/v1/archive` JSON; sitemaps [V][15][16][17] | ToS (2026-10-06) bans crawling/scraping and storing "significant" portions; authors own posts [V][15] | ✗ / ✗ / ✗ / ~ | Custom domains move; Wayback mostly yes [V] |
 | **Ghost / Medium / WordPress blogs** | Personal and lab blogs | n/a | Per blog | RSS: Ghost 15, Medium 10, WordPress.com 10 items; Ghost Content API (read-only key, often embedded in pages); Medium API "no longer supported" [V][18][19][20] | Per author; mostly © | ✗ / ✗ / ✗ / ~ | Varies |
-| **Rogue Scholar** | Science blogs with DOIs | 57,803 posts, 184 blogs [V][21]; 78,191 DOIs on prefix 10.59350 [V][34] | Continuous (feed polling) | Open JSON API (Typesense-style `found`/`hits`) [V] | CC BY 4.0 per-post metadata (sample) [V]; required for inclusion [K ~80%] | ✓ (as type "other") / ? / ✓ / ? | Crossref DOIs; IA arrangement [V][21] |
+| **Rogue Scholar** | Science blogs with DOIs | 57,803 posts, 184 blogs [V][21]; 78,191 DOIs on prefix 10.59350 [V][34] | Continuous (feed polling) | Open JSON API (`found`/`hits`) [V] | CC BY 4.0 per-post metadata (sample) [V]; required for inclusion [K ~80%] | ✓ (as type "other") / ? / ✓ / ? | Crossref DOIs; IA arrangement [V][21] |
 | **Think tanks** (RAND, CSET, GovAI, Epoch, Brookings, CNAS, CSIS, Carnegie, IAPS, Forethought) | Reports, briefs, commentary | RAND 10,810 DOIs; CSET 284 DOIs [V][34]; others not counted | Weekly–monthly | Site RSS/sitemaps; Crossref for DOI-minting publishers | Mixed: see §1.3 | RAND/CSET ✓ via DOI; most others ✗ unless also on arXiv [V] | DOIs where minted; PDFs on CDNs |
 | **AI-lab reports & system cards** | System cards, frameworks, research posts | n/a | Per model release | PDFs on CDNs; no API | © (no licence stated) [V] | ✗ / ✗ / ✗ / ~ [V] | Unstable CDN hash URLs (e.g., `www-cdn.anthropic.com/<hash>.pdf`) [V] |
 | **CRS** (via api.congress.gov) | Reports, In Focus, Insights, legal sidebars | 14,180 via API [V][39]; 23,564 rows at EveryCRSReport [V][41] | Daily | API key from api.data.gov, 5,000 req/h [V][39]; `DEMO_KEY` 10/h on this endpoint [V]; EveryCRSReport bulk CSV + files [V][41] | US government work, public domain [V][47] | ✗ / ✗ / ✗ / ✗ (spot check) [V] | Versioned; congress.gov files behind Cloudflare [V] |
@@ -344,7 +344,7 @@ The per-year sums match the totals (54,585 + 2 pre-2006 posts on LW; 24,970 + 2 
 - **Policy Commons (Coherent Digital):** free registration with **25 searches/month** at launch. Institutions get unlimited searches plus licensed premium content. The launch materials and a 2022 release claim 3.5M+ reports from about 8,500 organisations, over 75% "openly available on the web" [S][60] (stale?). The site returned 403 to scripts [V].
 - **Dimensions:** 2.5M policy documents (R02 §3).
 - **Google Scholar:**
-  - **Spot check:** found 4 of 7 forum/blog posts, 3 of 6 reports and 0 of 5 government documents or working papers [V, low confidence: n = 18; queries via WebFetch].
+  - **Spot check:** found 4 of 7 forum/blog posts, 3 of 6 reports and 0 of 5 government documents or working papers [V, low confidence: n = 18; queries via WebFetch][37].
   - **Mirrors:** it indexes some forum posts through third-party PDFs. "What failure looks like" and "AGI Ruin" appear via `pdf.stafforini.com`, attributed to "AI Alignment Forum"; "Machines of Loving Grace" via `dentonhawk.com`.
   - **Citation-only entries:** some EA Forum posts appear this way ("AI pause will likely backfire").
   - **Misses:** the CRS report, the UK discussion paper and the NASA TM, though other NTRS records by the same author were found.
@@ -431,7 +431,7 @@ Do not rely on archive.today [I].
 
 ### 4. Builder questions
 
-**4.1 Deduplicating cross-posts.** One essay can exist as a personal-blog original, a Substack mirror, an LW post (native, RSS-imported via `feedId`, or a link-post via `url`), an AF promotion (same document), an EAF cross-post (`fmCrosspost.foreignPostId`), a GreaterWrong view, third-party PDFs (stafforini.com) and Wayback copies. Example: Holden Karnofsky's "AI strategy nearcasting" is on the EA Forum (2022-08-26) without an `fmCrosspost` link, though the same series runs on LW and Cold Takes [V].
+**4.1 Deduplicating cross-posts.** One essay can exist as a personal-blog original, a Substack mirror, an LW post (native, RSS-imported via `feedId`, or a link-post via `url`), an AF promotion (same document), an EAF cross-post (`fmCrosspost.foreignPostId`), a GreaterWrong view, third-party PDFs (stafforini.com) and Wayback copies. Example: Holden Karnofsky's "AI strategy nearcasting" is on the EA Forum (2022-08-26) without an `fmCrosspost` link, while another post in the same series ("Nearcast-based 'deployment problem' analysis") is assigned from LessWrong in the same BlueDot course set [V].
 
 Recipe [I]:
 1. **Hard links:** `fmCrosspost` IDs, `canonicalSource`, `feedLink`, link-post `url`, and `<link rel="canonical">`. The canonical tag was present on 16 of 20 test posts.
@@ -509,7 +509,7 @@ Dollar cost about $0 plus storage. Re-summarising edited posts on Haiku 5.5 batc
 #### 5.2 Measurement B — index coverage of 60 grey items
 
 **Matching rules.** A match counts only if the record is the same work.
-- **Rejected title-collisions:** "What failure looks like" matched a Princeton UP chapter in Crossref and OpenAlex; "Machines of Loving Grace" matched a 2012 Springer chapter and a *Nature Physics* paper; "The Scaling Hypothesis" matched a Cambridge chapter, an ACM paper and an S2 physics paper; "On the Biology of a LLM" matched a different HAL record; the RSP matched a 2025 journal article by Hubinger; the EU AI Act matched a commentary.
+- **Rejected title-collisions:** "What failure looks like" matched a Princeton UP chapter in Crossref and OpenAlex; "Machines of Loving Grace" matched a 2012 Springer chapter and a *Nature Physics* paper; "The Scaling Hypothesis" matched a Cambridge chapter, an ACM paper and an S2 physics paper; "On the Biology of a LLM" matched a different OpenAlex record (DOI 10.58079/15404); in Crossref the RSP matched a 2025 journal article by Hubinger; in OpenAlex the EU AI Act matched a commentary.
 - **Accepted as "in OpenAlex":** arXiv twins of Forethought and IAPS reports.
 - **Accepted only as "related":** a same-author conference paper for the NASA TM.
 
@@ -519,8 +519,8 @@ Dollar cost about $0 plus storage. Re-summarising edited posts on Haiku 5.5 batc
 |---|---|---|---|---|---|---|---|---|---|
 | Forum & blog posts | 0% | 0% | 0% | 0% | **100%** | 4/7 | 100% | 10% | 85% |
 | Think-tank & lab reports | 30% | 25% | 20% | 30% | **65%** | 3/6 | 100% (2 only with browser UA) | 20% | 80% |
-| Working papers & gov docs | 65% | 45% | 50% | 65% | **30%** | 0/5 | 60% | 60% | 75% |
-| **All 60** | **32%** | **23%** | **23%** | **32%** | **65%** | **7/18 (39%)** | **87%** | **30%** | **80%** |
+| Working papers & gov docs | 65% | 65% | 50% | 65% | **30%** | 0/5 | 60% | 60% | 75% |
+| **All 60** | **32%** | **30%** | **23%** | **32%** | **65%** | **7/18 (39%)** | **87%** | **30%** | **80%** |
 
 **Headline.** About two-thirds of this literature (65% of the sample; 100% of forum and blog posts) cannot be seen by the scholarly graphs at all. A tool that starts from OpenAlex or Semantic Scholar sees the working-paper end and almost none of the conversation. [V, n = 60; 95% Wilson interval for 39/60 ≈ 52–76% [I]]
 
@@ -593,9 +593,10 @@ Notes: "Script full text" means retrievable without login or challenge, as HTML 
 
 **Patterns** [I]:
 1. **A DOI is the gate.** Every item with a Crossref or DataCite DOI was in OpenAlex. No item without one was, unless an arXiv twin existed.
-2. **Lab reports and system cards are the biggest blind spot by influence.** None of the three system cards, the RSP or the Transformer Circuits paper was in any graph.
+2. **Lab reports and system cards are the biggest blind spot by influence.** None of the three system cards or the Transformer Circuits paper was in any graph. The RSP appears only as a DOI-less Semantic Scholar record (36 citations), apparently built from citing papers' reference lists.
 3. **Government documents are open but hard to fetch.** Public-domain items were the most often walled (6 of 20 blocked).
 4. **Licence detection by regex is unreliable.** One of four automatic "CC" hits (Brookings) was an image credit.
+5. **Type metadata is noisy.** Semantic Scholar labels the CSET and OSTI reports `CaseReport`, a clinical genre, and both arXiv-twin reports `JournalArticle`. Do not trust graph "type" fields for grey literature.
 
 #### 5.3 Measurement C — direct counts (2026-10-15)
 
@@ -705,7 +706,7 @@ Multiply by 1.0–1.35 for the newer tokenizer (pricing-reference.md). Keep each
 | 66.5% of 28k+ economics WPs eventually published in journals | 2020 (stale?) | [49] | Medium |
 | EThOS: 650,000+ theses metadata; restored (BL update 2026-07-08) | 2026-07 | [51] | High |
 | 50% of Sept-2026 LW posts revised after publication | 2026-10-15 | [1] | High |
-| Forum-corpus LLM summary cost ≈ $15 (Haiku 5.5 batch) | 2026-10-15 | [76] | Medium (token estimates) |
+| Forum-corpus LLM summary cost ≈ $14 (Haiku 5.5 batch) | 2026-10-15 | [76] | Medium (token estimates) |
 
 ---
 
@@ -733,7 +734,7 @@ Multiply by 1.0–1.35 for the newer tokenizer (pricing-reference.md). Keep each
 - **The AF ⊂ LW relationship.** I treated AF posts as LW documents with `af: true` (same `_id`). I did not verify that all 4,684 AF posts are visible on LW [~90%].
 - **CRS counts (14,180 vs 23,564).** The definitions are not reconciled [I].
 - **Google Scholar coverage** is from 18 hand checks via a third-party fetcher, and GS results changed with phrasing. Treat 39% as indicative only.
-- **Semantic Scholar.** S2's `search/match` returns one best match. Some S2-indexed items might have been missed if the title differs (the OSTI item matched only on a longer title) [V]. One or more C-group items were still being checked when this was written; see the verification pass.
+- **Semantic Scholar.** S2's `search/match` returns one best match. Some S2-indexed items might have been missed if the title differs (the OSTI item matched only on a longer title) [V]. S2's shared unauthenticated pool returned 429s for most of the run, so matching took about 40 minutes with backoff [V].
 - **Wayback "none returned"** may be a false negative (demonstrated once) [V].
 - **Cloudflare test scope.** 14 sites, one request per UA, from one cloud IP. Cloudflare bot scores are adaptive, so higher volumes would likely trigger challenges [I].
 - **Overton pricing.** Federal purchase records are not list prices [S].

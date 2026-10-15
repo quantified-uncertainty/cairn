@@ -3,36 +3,37 @@ title: Searching Inside Books You Don't Have
 description: Page-level search for in-copyright books you cannot read, as of October 2026. Covers what HathiTrust, Internet Archive and Open Library, Google Books, Amazon, HTRC Extracted Features and the Ngram Viewer each return; a workflow, run live, that finds which books discuss proper scoring rules and on which pages; and how to turn the hits into a borrow, buy or subscribe plan.
 ---
 
-*Status: draft, October 2026. Collection sizes, API behaviour and service statuses are as of 2026-10-15 unless another date is given. The worked example was run live on 2026-10-15 against the Open Library, Internet Archive, HathiTrust catalog, HTRC and Ngram endpoints, and its numbers come from those runs. HathiTrust's full-text search and Amazon's Look Inside could not be queried by script; they are described from court opinions, help pages and library guides. Sources: the [R05 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R05-book-discovery-and-catalogs.md), the [R04 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R04-ai-research-assistants.md), and primary sources linked inline.*
+*Status: draft, October 2026. Collection sizes, API behaviour and service statuses are as of 2026-10-15 unless another date is given. The worked example was run live on 2026-10-15 against the Open Library, Internet Archive, HathiTrust catalog, HTRC and Ngram endpoints, and its numbers come from those runs. An independent editorial check the same day re-ran the candidate search, the Lad Extracted Features analysis, the `page_num` test (6 hits) and three of the five Ngram series, and reproduced every figure checked; the HathiTrust matching and the EF page ranges for rows 2–20 were not re-run. HathiTrust's full-text search and Amazon's Look Inside could not be queried by script; they are described from court opinions, help pages and library guides. Sources: the [R05 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R05-book-discovery-and-catalogs.md), the [R04 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R04-ai-research-assistants.md), and primary sources linked inline.*
 
 ## The short version
 
-- **Several services will tell you where a term occurs in an in-copyright book; none reliably shows you the page.** HathiTrust shows no text, the Internet Archive and Google show snippets, and previews show only what the publisher allows. Choose by what comes back: page numbers, snippets, token counts, or a list of matching books.
-- **HathiTrust returns page numbers and per-page counts, with no text.** That covers 11.4M search-only volumes. It is the most precise "which page" answer, but it is interactive only: scripted requests were refused (HTTP 403) on 2026-10-15.
-- **Internet Archive search-inside is the best scriptable way to find candidates.** One JSON call returns the matching scanned books, up to five highlighted snippets each, and facets by subject and year. It does *not* say which page matched. The `page_num` field is the length of the scan, not the location of the hit: it equalled the scan's image count in 20 of 20 hits I checked.
-- **HTRC Extracted Features 2.5 is the largest bulk, legal, page-level dataset that covers in-copyright books.** It gives per-page token counts for 18.7M volumes, 9.97M of them in copyright, under CC BY 4.0 (April 2025 snapshot). HTRC's analytics services shut down on 2026-09-30. The files were still downloadable over HTTPS on 2026-10-15. If you depend on them, mirror the subset you need now.
-- **A worked run took about 15 minutes and cost nothing.** The question was "which books discuss proper scoring rules, and on which pages?" The run went 179 candidate books → 52 in HathiTrust → printed page locations for 43, of which 17 show a section of three or more pages. The best hit was Lad (1996), pp. 334–357, in a chapter whose running head carries "proper", "scoring" and "rules".
-- **Recency is the main cliff.** Of the candidates published before 1990, 82% could be borrowed from the Internet Archive or page-searched in HathiTrust. Of those from 2010 on, 4 of 31 could. For recent books the page-finding work falls to Google Books and Amazon previews, and the reading plan usually ends in buying or a subscription.
-- **The legal footing for search is settled; the footing for reading is not.** *Authors Guild v. HathiTrust* (2014) and *Authors Guild v. Google* (2015) made search and limited snippets fair use. *Hachette v. Internet Archive* (2024) went the other way on lending scans. See [The Legal Map](/building/legal-map/).
+- **Several services tell you where a term occurs in an in-copyright book; none reliably shows you the page.** HathiTrust shows no text, the Internet Archive and Google show snippets, and previews show only what the publisher allows. Choose by what comes back: page numbers, snippets, token counts, or a list of matching books.
+- **Default workflow:** Internet Archive search-inside to find candidate books, the HathiTrust catalog API to map them to HathiTrust IDs, HTRC Extracted Features to place the topic on pages, HathiTrust's web search to verify by hand, then [The Access Ladder](/access/access-ladder/) to get the pages. For books from after about 2010, go straight to Google Books and Amazon previews.
+- **HathiTrust returns page numbers and per-page counts, with no text,** for 11.4M search-only volumes. It is the most precise "which page" answer, but it is interactive only: scripted requests were refused (HTTP 403) on 2026-10-15.
+- **Internet Archive search-inside is the best scriptable way to find candidates.** One JSON call returns the matching scanned books, up to five highlighted snippets each, and facets by subject and year. It does *not* say which page matched: the `page_num` field equalled the scan's total image count in all 20 hits checked.
+- **HTRC Extracted Features (EF) 2.5 is the largest openly licensed page-level dataset that covers in-copyright books.** It gives per-page token counts for 18.7M volumes, 9.97M of them in copyright, under CC BY 4.0 (April 2025 snapshot). HTRC's services shut down on 2026-09-30; the files were still downloadable on 2026-10-15. If you depend on them, mirror your subset now.
+- **A worked run took about 15 minutes and cost nothing.** The question: which books discuss proper scoring rules, and on which pages? 179 candidate books → 52 in HathiTrust → printed page locations for 43, of which 17 show a section of three or more pages. The best hit was Lad (1996), pp. 334–357, Chapter 6, "Proper Scoring Rules".
+- **Recency is the main cliff.** Of the candidates published before 1990, 82% could be borrowed from the Internet Archive or page-searched in HathiTrust. Of those from 2010 on, 4 of 31 could. For recent books, page-finding falls to Google Books and Amazon previews, and the plan usually ends in buying or a subscription.
+- **The legal footing for search is settled; the footing for reading is not.** *Authors Guild v. HathiTrust* (2014) and *Authors Guild v. Google* (2015) held search and limited snippets to be fair use. *Hachette v. Internet Archive* (2024) went the other way on lending scans. See [The Legal Map](/building/legal-map/).
 
 ## What each service returns
 
 | Service | Coverage (date) | What a query returns for an in-copyright book | Scriptable? | Catch | Best use |
 |---|---|---|---|---|---|
 | [HathiTrust full-text search](https://babel.hathitrust.org/cgi/ls) | 19,701,406 volumes; 11,408,072 search-only (Hathifiles, 2026-10-01) | Page numbers where the term occurs and the count on each page; no text | No. `babel.hathitrust.org` returned 403 to scripts on 2026-10-15. The catalog API and Hathifiles are open | Few recent books (1 of 31 post-2010 candidates in the worked example) | Hand-checking pages in one volume |
-| [Internet Archive / Open Library search-inside](https://openlibrary.org/search/inside) | 52.7M IA text items; 5.46M print-disabled and 4.41M lendable (2026-10-15) | Matching volumes, a total, up to 5 highlighted snippets per volume, facets by year, subject and collection. For restricted books, no hit page | Yes: `search/inside.json`, 1 request/s (3 with an identifying User-Agent) | Snippets are for locating; harvesting them as a corpus raises terms and copyright issues | Candidate generation across scanned 20th-century books |
-| [Google Books](https://books.google.com/) | "More than 40 million books" (2019); "more than 20 million" scanned by 2015 | Snippet view: hit count plus at most 3 snippets of about an eighth of a page. Preview books show some full pages | API needs a key; anonymous quota was 0 on 2026-10-15 | API terms forbid charging users without Google's agreement and building databases from responses | Spot checks; recent books |
-| Amazon Look Inside ("Search Inside the Book") | Titles with both a print and a Kindle edition | Search across the whole text; some pages only for signed-in buyers | No public API [~85%] | Retail preview; limits not published | Checking contents and index pages before buying |
+| [Internet Archive / Open Library search-inside](https://openlibrary.org/search/inside) | 52.7M IA text items; 5.46M print-disabled and 4.41M lendable (2026-10-15) | Matching volumes, a total, up to 5 highlighted snippets per volume, facets by year, subject and collection. For restricted books, no hit page | Yes: `search/inside.json`, 1 request/s (3 with an identifying User-Agent) | No page numbers; snippets are for locating, not for building a corpus | Candidate generation across scanned 20th-century books |
+| [Google Books](https://books.google.com/) | "More than 40 million books" (Google, 2019); "more than 20 million" scanned by 2015 (Second Circuit) | Snippet view: hit count plus at most 3 snippets of about an eighth of a page. Preview books show some full pages | API needs a key; anonymous quota was 0 on 2026-10-15 | API terms forbid charging users without Google's agreement and building databases from responses | Spot checks; recent books |
+| Amazon Look Inside ("Search Inside the Book") | Only titles with both a print and a Kindle edition (help page, undated) | Search across the whole text; some pages only for signed-in buyers | No public API [~85%] | Retail preview; limits not published | Checking contents and index pages before buying |
 | [HTRC Extracted Features 2.5](https://htrc.atlassian.net/wiki/spaces/COM/pages/975306753/Extracted+Features+v.2.5) | 18,725,868 volumes; 9,969,251 in copyright (April 2025 snapshot) | Per-page token counts with part-of-speech tags; header, body and footer counted separately | Yes: bulk files (rsync; HTTPS worked on 2026-10-15) | Unigrams only, so no phrase search; host's future unclear after HTRC closes | Page localization at scale; table-of-contents detection |
 | [Google Books Ngram Viewer](https://books.google.com/ngrams/info) | Unstated for the July 2024 dataset | Yearly frequency of a phrase of up to 7 words | Yes: downloadable data | Not page-level | Choosing search terms and eras |
 
 ## HathiTrust full-text search
 
-**What it returns.** The Second Circuit described the output precisely in [*Authors Guild v. HathiTrust*](https://cases.justia.com/federal/appellate-courts/ca2/12-4547/12-4547-2014-06-10.pdf) (2014-06-10). Unless the rights holder allows more, "the search results show only the page numbers on which the search term is found within the work and the number of times the term appears on each page." The library "does not display to the user any text from the underlying copyrighted work (either in 'snippet' form or otherwise)." A 2024 library guide describes the same behaviour: "the full-text search will tell you which page(s) include your keywords" ([FSU Libraries, updated 2024-10-09](https://guides.lib.fsu.edu/hathitrust/search)). No other service gives this. You get every page with a hit and a count for each, so you can tell a three-page treatment from a passing mention without seeing any text.
+**What it returns.** The Second Circuit described the output precisely in [*Authors Guild v. HathiTrust*](https://cases.justia.com/federal/appellate-courts/ca2/12-4547/12-4547-2014-06-10.pdf) (2014-06-10). Unless the rights holder allows more, "the search results show only the page numbers on which the search term is found within the work and the number of times the term appears on each page." The library "does not display to the user any text from the underlying copyrighted work (either in 'snippet' form or otherwise)." A 2024 library guide describes the same behaviour: "the full-text search will tell you which page(s) include your keywords" ([FSU Libraries, updated 2024-10-09](https://guides.lib.fsu.edu/hathitrust/search)). HathiTrust's own help pages returned 403 to every fetcher, so this rests on the opinion and library guides [~85% that it still works this way for interactive users]. You get every page with a hit and a count for each, so you can tell a three-page treatment from a passing mention without seeing any text.
 
-**What it covers.** The 2026-10-01 Hathifiles (HathiTrust's monthly bulk metadata) list **19,701,406 volumes** under **9,745,536 bibliographic records**. Of these, 8,293,334 (42.1%) are full view and 11,408,072 (57.9%) are search-only. Rights codes put 10,366,655 volumes in copyright (R05's tabulation of the [full file](https://www.hathitrust.org/files/hathifiles/hathi_file_list.json), confirmed in its verification pass). The search-only half is the part this chapter is about: digitized, indexed and unreadable.
+**What it covers.** The 2026-10-01 Hathifiles (HathiTrust's monthly bulk metadata) list **19,701,406 volumes** under **9,745,536 bibliographic records**. Of these, 8,293,334 (42.1%) are full view and 11,408,072 (57.9%) are search-only. Rights codes put 10,366,655 volumes in copyright (R05's tabulation of the [full file](https://www.hathitrust.org/files/hathifiles/hathi_file_list.json), confirmed in its verification pass). The search-only part is what this chapter is about: digitized, indexed and unreadable.
 
-**Access in practice.** On 2026-10-15, scripted requests to both the collection search (`/cgi/ls`) and the within-volume search (`/cgi/pt/search`) returned HTTP 403, a Cloudflare challenge (R05, re-checked for this chapter). A person in a browser is unaffected. Two programmatic doors remain open:
+**Access in practice.** On 2026-10-15, scripted requests to both the collection search (`/cgi/ls`) and the within-volume search (`/cgi/pt/search`) returned HTTP 403, a Cloudflare challenge. A person in a browser is unaffected. Two programmatic doors remain open:
 
 - the **Bib API** (`catalog.hathitrust.org/api/volumes/brief/isbn/<ISBN>.json`), which returned records with HathiTrust IDs and rights strings such as "Limited (search-only)" on 2026-10-15;
 - the **[Hathifiles](https://www.hathitrust.org/files/hathifiles/hathi_file_list.json)**, a monthly 1.23 GB tab-separated file with `htid`, `access`, `rights`, OCLC, ISBN and LCCN columns.
@@ -51,7 +52,7 @@ Use these to find out *whether* a book is in HathiTrust and under which ID. Then
 
 The index includes in-copyright books in IA's lending (`inlibrary`) and print-disabled (`printdisabled`) collections, which is why it reaches modern scholarship. A test for "base rate neglect" returned 472 volumes, 469 of them print-disabled (R05, verified). For "proper scoring rule" on 2026-10-15 it returned 97 volumes, all in `printdisabled` and 34 in `inlibrary`.
 
-**What it does not return: the page of the hit.** Each hit carries a `page_num` field, and earlier notes (including R05) read it as the page of the match. It is not. For all 20 hits on the first page of the "proper scoring rule" results, `page_num` equalled the item's `imagecount` in the Internet Archive metadata API. For example, Lad's *Operational Subjective Statistical Methods* returned 522 for a 522-image scan, and Cooke's *Experts in Uncertainty* returned 346 for 346 images (my check, 2026-10-15). So `page_num` is the length of the scan. The JSON API tells you *which* book and *what the passage says*, not *where* it is.
+**What it does not return: the page of the hit.** Each hit carries a `page_num` field, and earlier notes (including the R05 dossier) read it as the page of the match. It is not. For all 20 hits on the first page of the "proper scoring rule" results, `page_num` equalled the item's `imagecount` in the Internet Archive metadata API. Lad's *Operational Subjective Statistical Methods* returned 522 for a 522-image scan; Cooke's *Experts in Uncertainty* returned 346 for 346 images (2026-10-15). So `page_num` is the length of the scan. The JSON API tells you *which* book and *what the passage says*, not *where* it is.
 
 **The per-page API refuses restricted books.** The documented lower-level endpoint, `fulltext/inside.php` on the item's data node, returns each match with its page and word bounding boxes. Its own [documentation](https://openlibrary.org/dev/docs/api/search_inside) labels it "experimental". On 2026-10-15 it returned 104 page-located matches for a public-domain test item. For Cooke's book, which is print-disabled only, it returned an "Item not available" page. For in-copyright books, the page comes only from reading the book: through a loan if it is lendable, or through print-disabled access if you qualify.
 
@@ -60,7 +61,7 @@ The index includes in-copyright books in IA's lending (`inlibrary`) and print-di
 - **Rate:** 1 request/s anonymously, 3 requests/s with a User-Agent naming your app and a contact ([OL API page](https://openlibrary.org/developers/api)).
 - **Paging:** 20 hits per page, via `&page=N`.
 - **Web interface:** the search-inside page served a "Human Verification" interstitial to my scripted fetch, so treat it as a human interface.
-- **Snippets:** use them to *locate* passages, not to assemble text (R05).
+- **Snippets:** use them to *locate* passages. Harvesting them into a text corpus would raise copyright and terms-of-use problems.
 
 **Decision.** Make this your first call for any concept in 20th-century scholarship. It is free, scriptable and phrase-aware, and its subject facets show which fields discuss the term.
 
@@ -73,38 +74,38 @@ The index includes in-copyright books in IA's lending (`inlibrary`) and print-di
 - Repeating a search returns the same three snippets. Only the first use of the term on a page is shown.
 - Google "blacklists" one snippet on every page and one page in every ten, permanently blocking about 22% of the text.
 - Snippet view is disabled for books where one snippet would satisfy the need, such as dictionaries, cookbooks and books of short poems. Rights holders can opt out entirely.
-- The plaintiffs' searchers, trying hard, never reached as much as 16% of any book's text.
+- Researchers hired by the plaintiffs, searching for weeks, never reached as much as 16% of any book's text, and what they got was scattered fragments.
 
 Preview books, where the publisher agreed, also show some full pages [~85% that this two-tier description still matches the 2026 interface; I did not test the web UI].
 
-**What it covers.** The last official figure is "more than 40 million books in over 400 languages" ([Google, 2019-10-17](https://blog.google/products/search/15-years-google-books/)). That is twice HathiTrust's volume count and the largest index of in-print books available to the public [~80%, given the stale figure].
+**What it covers.** The last official figure is "more than 40 million books in over 400 languages" ([Google, 2019-10-17](https://blog.google/products/search/15-years-google-books/)). That is twice HathiTrust's volume count, and probably still the largest book full-text index anyone can search free [~80%; the figure is seven years old]. It is not mainly an in-print index: of the scanned books, the Second Circuit noted in 2015, "the vast majority … are non-fiction, and most are out of print."
 
 **The API.**
 
 - **Requests:** need an API key or OAuth. `maxResults` defaults to 10 and caps at 40 ([docs, updated 2025-08-28](https://developers.google.com/books/docs/v1/using)).
 - **No key:** an anonymous call on 2026-10-15 returned HTTP 429 with `quota_limit_value: "0"` for the shared default project. Without a key you get nothing.
 - **Within-volume search:** the "Using the API" page documents volume search and volume lookup, but no search inside a single volume. Full-text queries do return a per-result `searchInfo.textSnippet` [~80%, background knowledge, not re-tested].
-- **Terms:** the [Books API terms](https://developers.google.com/books/terms) (2012-04-25) forbid charging users "any fee for the use of your application" without Google's agreement and require honouring removal requests. Google's general API terms forbid using responses to "build databases, or otherwise create permanent copies" (R09).
+- **Terms:** the [Books API terms](https://developers.google.com/books/terms) (2012-04-25) forbid charging users "any fee for the use of your application" without Google's agreement and require honouring removal requests. Google's [general API terms](https://developers.google.com/terms) (2021-11-09) forbid using responses to "build databases, or otherwise create permanent copies."
 
 **Decision.** Use the Google Books web interface by hand for spot checks and for books published after 2010, which the other indexes cover poorly (see below). Use the API only for live lookups with your own key. Do not build a stored index from it.
 
 ## Amazon Look Inside
 
-Amazon's help page ([digprjsurvey.amazon.com mirror](https://digprjsurvey.amazon.com/csad/help/node/GFUKUP5925ED8MN4); the main help URL returned 503 to my fetcher) says three things:
+Amazon's help article "What Is Search Inside the Book?" (undated; read on an Amazon-hosted [copy](https://digprjsurvey.amazon.com/csad/help/node/GFUKUP5925ED8MN4) because the main help URL returned 503) says three things:
 
-- "Search Inside the Book" lets you "view, search, and browse books," with results matching every word inside a book.
-- This works "as long as there's both a print and a Kindle edition."
-- "Some features and pages are only available if you're logged into your Amazon account and have made a prior purchase," because of publisher agreements.
+- Search Inside the Book "lets you view, search, and browse books," and "search results include matches based on every word inside a book."
+- This "works as long as there's both a print and a Kindle edition of the book."
+- Because of publisher agreements, some features and pages are "only available if you're logged into your Amazon account and have made a prior purchase."
 
-A distributor's guide adds that publishers submit a PDF and that Amazon displays "the front cover and a number of pages," starting from the front ([Bookmobile](https://info.bookmobile.com/knowledge/how-do-i-do-amazons-search-inside-the-book), undated). I found no published page quota and no API for in-book search [~85% that none exists].
+A distributor's guide adds that publishers submit a PDF of the whole book and that "Amazon will only display the front cover and a number of pages," in sequence from the front ([Bookmobile](https://info.bookmobile.com/knowledge/how-do-i-do-amazons-search-inside-the-book), undated). Search results list the page of each match with a short excerpt [~75%; background knowledge, not tested here]. I found no published page quota and no API for in-book search [~85% that none exists].
 
-**Decision.** Use Look Inside on recent, in-print books, usually just before buying. Check the table of contents and, if visible, the index. A back-of-book index entry for "scoring rules" is often the most reliable "which pages" answer for a recent textbook.
+**Decision.** Use Look Inside on recent, in-print books, just before buying. Search your term, then read the table of contents and, if it is visible, the back-of-book index. For a recent textbook, an index entry for "scoring rules" is often the most reliable "which pages" answer available.
 
 ## HTRC Extracted Features 2.5 and the September 2026 shutdown
 
 ### What the dataset is
 
-HTRC Extracted Features (EF) is the HathiTrust Research Center's derived dataset. It holds one JSON-LD file per volume, with per-page features computed from the full text. It is the largest openly licensed, page-level dataset that includes in-copyright books.
+EF is the HathiTrust Research Center's derived dataset: one JSON-LD file per volume, with per-page features computed from the full text.
 
 | Field | EF 2.5 (current) |
 |---|---|
@@ -118,7 +119,7 @@ HTRC Extracted Features (EF) is the HathiTrust Research Center's derived dataset
 | License | **CC BY 4.0** |
 | Citation | Walsh et al. (2025), [doi:10.13012/PXP0-F135](https://doi.org/10.13012/PXP0-F135), with an "accessed on" date, because EF 2.5 "is designed to be updated incrementally under the same version number" |
 
-Source: the [EF 2.5 documentation](https://htrc.atlassian.net/wiki/spaces/COM/pages/975306753/Extracted+Features+v.2.5) (page last edited 2026-02-27), re-read for this chapter. EF 2.5 extends EF 2.0 with about 1.6M more volumes and re-processed OCR. HTRC's [Derived Datasets page](https://analytics.hathitrust.org/deriveddatasets) still lists only the 2020 **EF 2.0** (17,123,746 volumes, 10,550,952 in copyright); a 17.1M figure elsewhere means that release. Not every HathiTrust volume has a file: EF 2.5's 9.97M in-copyright volumes compare with 11.4M search-only volumes in the October 2026 Hathifiles.
+Source: the [EF 2.5 documentation](https://htrc.atlassian.net/wiki/spaces/COM/pages/975306753/Extracted+Features+v.2.5) (page last edited 2026-02-27), re-read 2026-10-15. EF 2.5 adds about 1.6M volumes to EF 2.0 and reprocesses all texts, citing "substantial improvements in OCR quality since 2020." HTRC's [Derived Datasets page](https://analytics.hathitrust.org/deriveddatasets) still lists only the 2020 **EF 2.0** (17,123,746 volumes, 10,550,952 in copyright); a 17.1M figure elsewhere means that release. Not every HathiTrust volume has a file: EF 2.5's 9.97M in-copyright volumes compare with 11.4M search-only volumes in the October 2026 Hathifiles.
 
 **Per page you get** (schema shared with EF 2.0):
 
@@ -147,10 +148,10 @@ Producing all of that took one 328 KB download and about 40 lines of Python. No 
 
 The [HTRC Analytics homepage](https://analytics.hathitrust.org/) (read 2026-10-15) says:
 
-- "HTRC has discontinued its services as of September 30, 2026. HTRC accounts are no longer available."
+- "HTRC has discontinued its services as of September 30, 2026." "HTRC accounts and logins are no longer available."
 - "HTRC Algorithms and Data Capsule services have also been discontinued."
-- Funding "would cease at the end of 2026, at which time the center will be formally closed."
-- What remains "without an HTRC Analytics account" is Bookworm, the Derived Datasets, and one visualization. The HathiTrust Digital Library itself "remains open."
+- In October 2024 HathiTrust announced that "funding for the Research Center would cease at the end of 2026, at which time the center will be formally closed."
+- What remains "without an HTRC Analytics account" is HathiTrust+Bookworm, the Derived Datasets, and one visualization (Gendered Characterizations). "Access to the HathiTrust Digital Library remains open."
 
 The Data Capsules were the sanctioned way to run your own code over in-copyright HathiTrust full text, under HathiTrust's "non-consumptive research" policy. That route is gone. No replacement was announced [~80% that none exists as of October 2026]. Two things survive: the derived datasets, and HathiTrust's interactive search.
 
@@ -160,7 +161,7 @@ The Data Capsules were the sanctioned way to run your own code over in-copyright
 - it returned the 52 files used in the worked example below (20 MB in total);
 - in the one directory listing I inspected, some files carry modification dates as late as 2026-10-06, consistent with the incremental-update note.
 
-The HTTPS route is not documented, so do not assume it will last. The workset-to-rsync-script feature lived in HTRC Analytics and is gone. Compute file paths yourself (the "stubbytree" rule below) or with `htid2rsync` from the [HTRC Feature Reader](https://github.com/htrc/htrc-feature-reader) Python package.
+The HTTPS route is not documented, so do not assume it will last. The Extracted Features Download Helper, which turned a workset into an rsync script, ran on HTRC Analytics and is gone. Compute file paths yourself (the "stubbytree" rule below) or with `htid2rsync` from the [HTRC Feature Reader](https://github.com/htrc/htrc-feature-reader) Python package.
 
 ```python
 # Stubbytree path for an EF 2.5 file (rule from HTRC's download docs)
@@ -182,9 +183,9 @@ ef_path("mdp.39015038140094")
 
 ## Google Books Ngram Viewer: which words, which decades
 
-The [Ngram Viewer](https://books.google.com/ngrams/info) charts how often a phrase of up to 7 words appears in Google's scanned books, year by year. It added "a new Ngram Viewer dataset" in July 2024, the first since the 2019 corpora, and its data "may be freely used for any purpose." It says nothing about pages. It settles two earlier choices: which words to search for, and which decades to expect books from.
+The [Ngram Viewer](https://books.google.com/ngrams/info) charts how often a phrase of up to 7 words appears in Google's scanned books, year by year. It added "a new Ngram Viewer dataset" in July 2024, the first since the corpora generated in February 2020, and its "graphs and data may be freely used for any purpose." It says nothing about pages. It settles two earlier choices: which words to search for, and which decades to expect books from.
 
-I queried the viewer's JSON endpoint on 2026-10-15. The endpoint is undocumented; `corpus=en`, with data through 2022.
+I queried the viewer's undocumented JSON endpoint (`books.google.com/ngrams/json`) on 2026-10-15 with `corpus=en`, which returned data through 2022. The info page does not give the July 2024 dataset's year range or say which corpus `en` maps to; I assume it is the 2024 dataset [~85%].
 
 | Phrase | First non-zero year | Frequency 1970 | Frequency 2000 | Frequency 2022 |
 |---|---|---|---|---|
@@ -199,9 +200,9 @@ I queried the viewer's JSON endpoint on 2026-10-15. The endpoint is undocumented
 - a 1960s–1970s decision-analysis and subjective-probability era, which the worked example below confirms;
 - a post-2010 forecasting and machine-learning era, in which "Brier score" grew about 19-fold from its 1970 level.
 
-So the search must cover both the singular and plural phrase, the named rules (quadratic, logarithmic, spherical, Brier), and "strictly proper". Expect the older books to be in HathiTrust and the newer ones not.
+A complete search therefore covers the singular and plural phrase, the named rules (quadratic, logarithmic, spherical, Brier) and "strictly proper"; the worked example below searched only the singular and plural phrase. Expect the older books to be in HathiTrust and the newer ones not.
 
-## Worked example: which 20 books discuss proper scoring rules, and on which pages?
+## Worked example: locating proper scoring rules in 179 books
 
 Everything below ran on 2026-10-15. The scripts made about 700 polite API calls and downloaded 20 MB. Wall-clock time was about 15 minutes, nearly all of it rate-limit sleeps.
 
@@ -209,18 +210,18 @@ Everything below ran on 2026-10-15. The scripts made about 700 polite API calls 
 |---|---|---|---|
 | 1. Vocabulary | Ngram JSON for the phrases above | The two eras; a list of variant phrasings | 2 calls |
 | 2. Candidates | `search/inside.json` for `"proper scoring rule"` and `"proper scoring rules"`, all pages | 97 and 140 volumes; **179 distinct** (58 matched both). 177 in `printdisabled`, 73 in `inlibrary`. Top subject facets for the singular phrase: "Decision making" (11), "Bayesian statistical decision theory" (8), "Probabilities" (6), "Economic forecasting" (5). All 97 singular-phrase hits were English | 14 calls, under a minute, \$0 |
-| 3. Triage | Read the snippets (1–5 per volume per query; 85 of the 179 volumes yielded only one) | Sorts textbooks that define proper scoring rules from passing mentions and from catalog errors. One hit catalogued as *St. John's Pentateuch*, a commentary on the Johannine writings, has scanned text that is a glossary of decision-analysis terms. Claude can do this in one pass: about 80k input tokens, under \$0.25 on Sonnet 5.5 at standard rates [estimate] | Minutes by eye |
+| 3. Triage | Read the snippets (1–5 per volume per query; 85 of the 179 volumes yielded only one) | Sorts textbooks that define proper scoring rules from passing mentions and from catalog errors. One hit catalogued as *St. John's Pentateuch: An Interpretation of the Fourth Gospel* has scanned text that is a glossary of decision-analysis terms. Claude can do this in one pass: about 80k input tokens, under \$0.25 on Sonnet 5.5 at \$2/\$10 per million input/output tokens (October 2026) [estimate] | Minutes by eye |
 | 4. Map to HathiTrust | IA metadata API for ISBN and OCLC, then the HathiTrust Bib API | 178 of 179 had an ISBN, 54 an OCLC number. **52 matched a HathiTrust record (29%), all "Limited (search-only)"**, none full view | About 5 minutes |
 | 5. Locate pages | EF 2.5 file per matched volume. Count pages where "scoring" co-occurs with "proper", "strictly" or "rule(s)" in the body. Cluster adjacent pages. Read running-head numerals to convert scan pages to printed pages | 52 files, 20 MB, 49 distinct volumes. 45 had at least one co-occurrence page. A running-head page offset was recoverable (10 or more supporting numerals) for 43. **17 had a cluster of 3 or more pages**, the signature of a section rather than a mention | About 2 minutes |
 | 6. Verify | HathiTrust full-text search inside each short-listed volume, by hand. Google Books search for the rest | Page numbers and per-page counts (HathiTrust) or 3 snippets (Google). Not scripted; 403 to bots | About 1–2 minutes per book [estimate] |
 | 7. Route | The [Access Ladder](/access/access-ladder/) | See the next section | — |
 
-**The result.** The table lists 14 books located to pages through HathiTrust and EF, then 6 strong candidates with no HathiTrust record by ISBN. For those six, the snippets confirm the topic, but pages require a loan, a preview or a purchase. "Pages" are printed page numbers inferred from running-head numerals. Where the running heads carry no numerals, scan pages are given. Running-head wording is reconstructed from EF's bag of header words. "Lendable" means the IA copy is in the `inlibrary` collection; "print-disabled only" means IA serves it only to certified print-disabled readers.
+**The result.** The table lists 14 books located to pages through HathiTrust and EF, then 6 strong candidates with no HathiTrust record by ISBN. For those six, the snippets confirm the topic, but pages require a loan, a preview or a purchase. "Pages" are printed page numbers inferred from running-head numerals. Where the running heads carry no numerals, scan pages are given. Running-head wording is reconstructed from EF's bag of header words. First authors and years come from IA metadata; co-authors and co-editors (rows 2, 6, 8, 16, 17, 20) and the edition in row 18 are from background knowledge. "Lendable" means the IA copy is in the `inlibrary` collection; "print-disabled only" means IA serves it only to certified print-disabled readers.
 
 | # | Book (year) | Where | Evidence | Free route on 2026-10-15 |
 |---|---|---|---|---|
 | 1 | Lad, *Operational Subjective Statistical Methods* (1996) | pp. 334–357 and 367–370 (ch. 6, "Proper Scoring Rules"); peak p. 336 | 37 co-occurrence pages; TOC lists the topic | HathiTrust search-only; IA print-disabled only |
-| 2 | Kyburg (ed.), *Studies in Subjective Probability* (1980) | pp. 177–191; peak p. 187 | Running head "The Elicitation of Personal Probabilities and Expectations", the title of [Savage's 1971 JASA paper](https://doi.org/10.1080/01621459.1971.10482346), so probably a reprint [~90%] | Search-only. The JASA original is the easier read |
+| 2 | Kyburg and Smokler (eds.), *Studies in Subjective Probability* (1980) | pp. 177–191; peak p. 187 | Running head "The Elicitation of Personal Probabilities and Expectations", the title of [Savage's 1971 JASA paper](https://doi.org/10.1080/01621459.1971.10482346), so probably a reprint [~90%] | Search-only. The JASA original is the easier read |
 | 3 | *Studies in Bayesian Econometrics and Statistics in Honor of Leonard J. Savage* (1975) | pp. 140–152; peak p. 151 | Running heads "Elicitation of personal probabilities", "Savage" | Search-only; IA lendable |
 | 4 | *Computing with Social Trust* (2009) | pp. 190–212; peak p. 190 | Chapter running head "Eliciting Informative Feedback" (Miller et al.), i.e. peer prediction | Search-only |
 | 5 | *Machine Learning Challenges* (PASCAL workshop, 2006) | pp. 95–108; peak p. 106 | Running heads "Kohonen and Suomela", "Predictions"; 22 co-occurrence pages | Search-only |
@@ -238,7 +239,7 @@ Everything below ran on 2026-10-15. The scripts made about 700 polite API calls 
 | 17 | Bernardo and Smith, *Bayesian Theory* (1994) | Not located | 4 snippets | IA print-disabled only; check a library |
 | 18 | Wilks, *Statistical Methods in the Atmospheric Sciences* (3rd ed., 2011) | Not located | 6 snippets | IA print-disabled only; check Google Books preview |
 | 19 | Abramowicz, *Predictocracy* (2007) | Not located | 10 snippets | IA print-disabled only |
-| 20 | *Probabilistic Forecasting and Bayesian Data Assimilation* (2015) | Not located | 2 snippets | IA print-disabled only; recent, so likely buy or subscription |
+| 20 | Reich and Cotter, *Probabilistic Forecasting and Bayesian Data Assimilation* (2015) | Not located | 2 snippets | IA print-disabled only; recent, so likely buy or subscription |
 
 **How much to trust it.**
 
@@ -268,7 +269,7 @@ HathiTrust match rates by decade fall from 21 of 42 (1980s) to 9 of 46 (2000s) a
 | Snippet caps | IA (5 per volume per query), Google (3 per term) | Treat snippets as evidence of topic, not of extent; use per-page counts for extent |
 | Bot walls | HathiTrust search, OL web UI, Google Books API without a key | Script the candidate and EF steps; verify by hand |
 | Snapshot lag | EF (April 2025); Hathifiles monthly; IA continuous | Newer scans will be in IA before EF |
-| Language | All; this query returned only English | Search each language's own term; facets show the language mix |
+| Language | All; all 97 singular-phrase hits were English | Search each language's own term; facets show the language mix |
 | Edition drift | All | Page numbers belong to one edition. Carry the HathiTrust ID or IA identifier with every page reference |
 
 ## From hits to a reading plan
@@ -278,12 +279,12 @@ The output of search is a list of (book, page range) pairs. The plan is to get e
 | What the hit tells you | Do this | Cost (Oct 2026) | Catch |
 |---|---|---|---|
 | HathiTrust full view | Read it on HathiTrust now | Free | Rare for anything in copyright; none of the 52 matches here |
-| IA lendable (`inlibrary`) | Borrow on Open Library and go straight to the pages | Free with an account | Limited copies; more than 500,000 books reportedly left lending after *Hachette* (2024) |
-| Search-only in HathiTrust, older book, a short range | Request the pages through your [public library](/access/public-libraries/) or a [university or employer library](/access/academic-and-employer/) (scan-a-chapter or interlibrary loan). Use the Hathifiles OCLC number to find holders through [WorldCat](https://search.worldcat.org/) by hand | Usually free [~70%; varies by library] | Days to weeks; do not scrape WorldCat ([Catalogs and Metadata](/finding/catalogs-and-metadata/)) |
+| IA lendable (`inlibrary`) | Borrow on Open Library and go straight to the pages | Free with an account | Limited copies, and the pool shrinks: more than 500,000 books were withdrawn from lending as a result of the *Hachette* suit ([Wikipedia](https://en.wikipedia.org/wiki/Hachette_v._Internet_Archive), secondary) |
+| Search-only in HathiTrust, older book, a short range | Ask a [university or employer library](/access/academic-and-employer/) for a chapter scan, or borrow the book by interlibrary loan through your [public library](/access/public-libraries/). Use the Hathifiles OCLC number to find holders through [WorldCat](https://search.worldcat.org/) by hand | Usually free [~70%; varies by library]. Oakland Public Library, for example, allows 3 interlibrary-loan requests a month and some loans carry a fee ([R03 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R03-paid-and-institutional-access.md), 2026) | Days to weeks; do not scrape WorldCat ([Catalogs and Metadata](/finding/catalogs-and-metadata/)) |
 | An edited-volume chapter | Look for the original article or a preprint (row 2's chapter is Savage's 1971 JASA paper) | Often free | Reprints may be revised |
 | Recent book, in print | Confirm pages in Google Books preview or Amazon Look Inside, then check [subscriptions](/access/subscriptions/) or buy used | Varies | Previews may withhold exactly the pages you need |
 | You will reread it, or the range is over about 50 pages | Buy it | Varies | The decision is about reuse, not one lookup |
-| You have a qualifying print disability | IA's print-disabled program and HathiTrust's accessible-text service cover the search-only books [~85%] | Free | Eligibility must be certified |
+| You have a qualifying print disability | IA's print-disabled program and HathiTrust's accessible-text service cover the search-only books [~85%] | Free | Eligibility must be certified. HathiTrust's service is, to my knowledge, open only to users at its member institutions [~80%; its pages returned 403] |
 
 **Batch by route, not by rank.** In the worked example, all 14 located books are search-only in HathiTrust, and 7 of them (rows 3, 6–9, 11, 12) are also lendable on IA. A sensible plan:
 
@@ -299,7 +300,7 @@ The full routing logic, including the cases where the answer is a subscription o
 |---|---|---|
 | [*Authors Guild v. HathiTrust*](https://cases.justia.com/federal/appellate-courts/ca2/12-4547/12-4547-2014-06-10.pdf), 755 F.3d 87 (2d Cir., 2014-06-10) | Full-text search over scanned in-copyright books, returning page numbers and per-page counts only, is fair use. Access for print-disabled readers is fair use | Final; remaining claims settled 2015-01-06 ([summary](https://en.wikipedia.org/wiki/Authors_Guild,_Inc._v._HathiTrust)) |
 | [*Authors Guild v. Google*](https://cases.justia.com/federal/appellate-courts/ca2/13-4829/13-4829-2015-10-16.pdf), 804 F.3d 202 (2d Cir., 2015-10-16) | Scanning, search and snippet display are fair use. The snippet limits above (three per term, an eighth of a page, blacklisting) were central to the holding | Final; certiorari denied 2016-04-18 ([summary](https://en.wikipedia.org/wiki/Authors_Guild,_Inc._v._Google,_Inc.)) |
-| [*Hachette v. Internet Archive*](https://storage.courtlistener.com/recap/gov.uscourts.ca2.60988/gov.uscourts.ca2.60988.306.1.pdf) (2d Cir., 2024-09-04) | Lending scans of in-copyright books under controlled digital lending is not fair use | Final; affects reading, not search |
+| [*Hachette v. Internet Archive*](https://storage.courtlistener.com/recap/gov.uscourts.ca2.60988/gov.uscourts.ca2.60988.306.1.pdf) (2d Cir., 2024-09-04) | Lending scans of in-copyright books under controlled digital lending is not fair use | Final; the Internet Archive did not seek Supreme Court review. Affects reading, not search |
 
 **For people building tools** (the Legal Map's risk ratings):
 
@@ -319,7 +320,7 @@ None of this is legal advice. See [The Legal Map](/building/legal-map/).
 - **What fraction of EF co-occurrence clusters of 3 or more pages are real treatments rather than mentions?** Hand-label 100 clusters against HathiTrust search results. If precision is high, EF alone can drive a "chapter shelf".
 - **How accurate is running-head page-offset recovery across the 9.97M in-copyright EF volumes?** It worked for 43 of 49 here. Front-matter roman numerals, unnumbered plates and multi-part volumes are the likely failure modes.
 - **What daily quota does a new Google Books API key get in 2026?** The documentation page does not say. Create a key and read the Cloud console quota page.
-- **What share of post-2015 technical books has Look Inside with search enabled, and how many pages can a signed-out user see?** Sample 50 recent statistics and ML titles.
+- **What share of post-2015 technical books has Look Inside with search enabled, do its results give page numbers, and how many pages can a signed-out user see?** Sample 50 recent statistics and ML titles.
 
 ## Related pages
 

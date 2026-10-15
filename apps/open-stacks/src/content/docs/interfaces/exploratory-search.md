@@ -35,7 +35,7 @@ White and Roth's *Exploratory Search: Beyond the Query-Response Paradigm* (2009)
 - O'Day and Jeffries interviewed 15 business analysts and found "the main value of the search was found to reside in the accumulated learning," not in the final result set ([Hearst, ch. 3](http://searchuserinterfaces.com/book/sui_ch3_models_of_information_seeking.html)).
 - Kuhlthau's field study of 385 library users at 21 sites, mostly students writing research papers, found that half "did not show evidence of successfully reaching a focused perspective" at any time during their search (Hearst, ch. 3). Exploratory search often fails at the learning step, not the retrieval step [I].
 
-**Evidence about the evidence.** Exploratory search is hard to evaluate: more time spent is not failure, and there is no single right answer. The 2006 editors wrote that "no metrics exist to determine how well a system supports exploration." Medlar, Kotkov and Głowacka's [systematic review](https://arxiv.org/abs/2312.13695) of 231 publications from 2010–2021 (172 with user studies) found:
+**Evidence about the evidence.** Exploratory search is hard to evaluate: more time spent is not failure, and there is no single right answer ("no metrics exist to determine how well a system supports exploration," the 2006 editors wrote). Medlar, Kotkov and Głowacka's [systematic review](https://arxiv.org/abs/2312.13695) of 231 publications from 2010–2021 (172 with user studies) found:
 
 - 77% of studies evaluated a new experimental system rather than how people search.
 - 20.7% concerned scientific-literature search, most of them over computer-science articles.
@@ -68,7 +68,7 @@ For a decision theorist this is an explore–exploit problem with an optimal-sto
 **What LLMs make worse.** Generated scent is fluent, so it reads as strong whether or not it is accurate. Two results bear on this:
 
 - **Accuracy.** Liu, Zhang and Liang audited four generative search engines in 2023 (Bing Chat, NeevaAI, perplexity.ai, YouChat). Only 51.5% of generated sentences were fully supported by their citations, and only 74.5% of citations supported their sentence ([arXiv 2304.09848](https://arxiv.org/abs/2304.09848)). These are 2023 systems; I found no comparable 2026 audit.
-- **Learning.** Melumad and Yun ran seven experiments with 10,462 participants in total, four in the paper and three preregistered replications in its supplement ([*PNAS Nexus*, October 2025](https://doi.org/10.1093/pnasnexus/pgaf316)). People who researched a topic through an LLM synthesis (ChatGPT; a simulated chatbot showing the same facts as a simulated results page; or Google's AI Overview) reported shallower knowledge than people who used ordinary web results. In Experiment 2, with the facts held constant, they spent less time with the results: 83.65 s against 124.32 s, F(1, 1,977) = 58.75. They wrote sparser, less original advice, which blind recipients rated less helpful (3.553 vs 3.816 in Experiment 4, AI Overview vs ordinary Google results). The effect held in a replication where the LLM summaries carried real-time web links. The authors' explanation is foraging-shaped: a synthesis removes the work of finding and combining sources, and that work is where learning happens. Caveats: learning was measured by self-report and by text analysis of the advice, not by a knowledge test; the topics were everyday ones (planting a vegetable garden, leading a healthier lifestyle) researched to advise a friend; and the authors note the effect might not hold for advanced science or math, where a synthesis might help comprehension.
+- **Learning.** Melumad and Yun ran seven experiments (four in the paper, three preregistered replications in its supplement) with 10,462 participants in total ([*PNAS Nexus*, October 2025](https://doi.org/10.1093/pnasnexus/pgaf316)). People who researched a topic through an LLM synthesis (ChatGPT; a simulated chatbot showing the same facts as a simulated results page; Google's AI Overview) reported shallower knowledge than people who used ordinary web results. In Experiment 2, with the facts held constant, they spent less time with the results: 83.65 s against 124.32 s, F(1, 1,977) = 58.75. They wrote sparser, less original advice, which blind recipients rated less helpful (3.553 vs 3.816 in Experiment 4, AI Overview vs ordinary Google results). The effect held in a replication where the LLM summaries carried real-time web links. The authors' explanation is foraging-shaped: a synthesis removes the work of finding and combining sources, and that work is where learning happens. Caveats: learning was measured by self-report and by text analysis of the advice, not by a knowledge test; the topics were everyday ones (planting a vegetable garden, leading a healthier lifestyle) researched to advise a friend; and the authors note the effect might not hold for advanced science or math, where a synthesis might help comprehension.
 
 **Design consequences** [I]:
 
@@ -118,7 +118,7 @@ For a forecasting-minded reader the natural end of the sensemaking loop is a set
 
 ## Shneiderman's mantra
 
-**Mechanism.** Ben Shneiderman's ["The Eyes Have It"](https://www.cs.umd.edu/~ben/papers/Shneiderman1996eyes.pdf) (1996) gives the Visual Information-Seeking Mantra, "overview first, zoom and filter, then details-on-demand," and prints it ten times. It lists seven tasks (overview, zoom, filter, details-on-demand, relate, history, extract) and seven data types (1D, 2D, 3D, temporal, multidimensional, tree, network). Textual documents fall under 1D.
+**Mechanism.** Ben Shneiderman's ["The Eyes Have It"](https://www.cs.umd.edu/~ben/papers/Shneiderman1996eyes.pdf) (1996) gives the Visual Information-Seeking Mantra, "overview first, zoom and filter, then details-on-demand," and prints it ten times. It lists seven tasks (overview, zoom, filter, details-on-demand, relate, history, extract) and seven data types, with textual documents under 1D.
 
 **Status of the evidence.** Shneiderman says the mantra "proved to be only a starting point," and closes by saying that tools such as "dynamic queries, treemaps, fisheye views, parallel coordinates, starfields, and perspective walls … will have to be tamed and validated." It is a design heuristic, not an empirical law. For text collections the evidence suggests a different order. Clustering a query's *retrieved* results concentrated relevant documents: they "tended to fall mainly into one or two out of five clusters" ([Hearst & Pedersen 1996](https://doi.org/10.1145/243199.243216)). I know of no comparable result for whole-collection overviews. Hearst's 2009 verdict on visualization for search is that it "has not yet proven itself for search interfaces" ([ch. 10](http://searchuserinterfaces.com/book/sui_ch10_visualization.html)).
 
@@ -155,13 +155,13 @@ TopicGPT and the map-oriented tools built on the same pipeline are compared in [
 
 ## Faceted search: Flamenco
 
-**Mechanism.** Facets are independent dimensions of metadata (date, place, medium, author, topic), each possibly hierarchical, shown with counts of matching items. Users narrow or broaden along any facet in any order, mixed with keyword search, and the structure of the collection stays visible throughout. Flamenco ("FLexible information Access using MEtadata in Novel COmbinations") was Hearst's group's research system, built in the early 2000s.
+**Mechanism.** Facets are independent dimensions of metadata (date, place, medium, author, topic), each possibly hierarchical, shown with counts of matching items. Users narrow or broaden along any facet in any order, mixed with keyword search, and the structure of the collection stays visible throughout. Flamenco was Hearst's group's research system, built in the early 2000s.
 
 **Evidence.** Yee, Swearingen, Li and Hearst ([CHI 2003](https://flamenco.berkeley.edu/papers/flamenco-chi03.pdf)) tested 32 art-history students on a collection of 35,000 fine-arts images against a baseline modeled on Google Image search. From the paper:
 
 - **Preference:** 90% preferred the faceted interface overall (the abstract; the results section says 91%). 97% said it helped them learn more about the collection, 75% found it more flexible, and 72% found it easier to use. 88% said it was more useful "for the types of searching they usually do."
 - **Success:** on "find all" tasks, 81% of faceted users retrieved all the aquatints against 57% with the baseline, and 77% retrieved all the woodcuts against 21%. Baseline users hit empty results 82 times, faceted users 26 times. Part of the baseline's failure was users not trying both singular and plural query terms.
-- **Time:** faceted users took longer: 12 min 6 s against 9 min 30 s on one task (about 27% longer) and about 9 min against 7 min 45 s on the other (about 16% longer). The authors attribute much of the gap to the prototype's latency (3.7 s per step against 0.3 s for the baseline) and to system errors in 5 of 32 sessions.
+- **Time:** faceted users took longer: 12 min 6 s against 9 min 30 s on one task (about 27% longer, with 3 extra minutes allowed for the faceted condition) and about 9 min against 7 min 45 s on the other (about 16% longer). The authors attribute much of the gap to the prototype's latency (3.7 s per step against 0.3 s for the baseline) and to system errors in 5 of 32 sessions.
 - **Caveats:** for a simple single-facet task ("roses") about half preferred the baseline. Seeing the faceted interface first lowered the baseline's ratings.
 
 **What "an order of magnitude slower" means.** The paper's conclusion says the interface "was often an order of magnitude slower" than the baseline, and Hearst's book repeats the phrase. The measurement behind it is the system's *processing time* per step; users' task times were 16–27% longer. So the preference result is less paradoxical than it is usually told: users preferred a system that was slow to respond and more successful.
@@ -178,7 +178,7 @@ TopicGPT and the map-oriented tools built on the same pipeline are compared in [
 
 ## Fisheye, overview+detail, zooming
 
-These are the ways an interface lets a reader see a focus and its context together. Cockburn, Karlson and Bederson's survey ([*ACM Computing Surveys* 41(1), 2008](https://www.microsoft.com/en-us/research/wp-content/uploads/2008/01/cockburn-ComputingSurveys09.pdf); 784 citations in Semantic Scholar on 2026-10-15) sorts them by how they separate the two:
+These are the ways an interface lets a reader see a focus and its context together. Cockburn, Karlson and Bederson's survey ([*ACM Computing Surveys* 41(1), 2008](https://www.microsoft.com/en-us/research/wp-content/uploads/2008/01/cockburn-ComputingSurveys09.pdf)) sorts them by how they separate the two:
 
 | Approach | How focus and context are separated | Examples | Main cost |
 |---|---|---|---|
@@ -198,7 +198,7 @@ That fisheye is structurally an extractive summary view: headings plus first and
 
 **Evidence elsewhere.**
 
-- Hornbæk, Bederson and Plaisant (2002), map navigation: adding an overview to a zoomable map *slowed* tasks when semantic zoom was on, because the semantic labels made the overview redundant. Participants still preferred the overview, saying it helped them orient. Spatial recall was better *without* it.
+- Hornbæk, Bederson and Plaisant (2002), map navigation: with semantic zoom on, adding an overview *slowed* tasks, apparently because the semantic labels made it redundant. Participants still preferred the overview, and spatial recall was better *without* it.
 - Baudisch, Lee and Hanna (2004), web pages: participants generally preferred overview+detail; the fisheye "polarised opinions."
 - Fisheye menus performed worse than ordinary hierarchical menus (Hornbæk & Hertzum 2007). Distortion causes target-acquisition problems because items move under the cursor.
 - Code folding is the fisheye that survived: fisheye code views were "generally no worse and often better than flat code listings" (Cockburn & Smith 2003; Jakobsen & Hornbæk 2006). It *elides* rather than distorts.

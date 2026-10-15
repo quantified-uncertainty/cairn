@@ -1,9 +1,7 @@
 <title>Chapter Lenses</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,300..900;1,62..125,300..900&family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,300..900;1,62..125,300..900&family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap");
 :root{
   --paper:#ECEFEE; --grid:rgba(52,132,200,.12); --grid-major:rgba(52,132,200,.20);
   --sheet:#FCFCFA; --sheet-2:#F3F5F4; --page:#FDFDFB;
@@ -1009,7 +1007,7 @@ function paramControl(p, cur, onChange, key) {
   const dp = p.step ? Math.max(0, (String(p.step).split('.')[1] || '').length) : (log ? 0 : 3);
   const toPos = (v) => (log ? Math.round(1000 * Math.log(v / min) / Math.log(max / min)) : v);
   const fromPos = (pos) => (log ? Math.round(min * Math.pow(max / min, pos / 1000)) : Number(pos));
-  const id = `p-${Math.random().toString(36).slice(2, 8)}`;
+  const id = `p-${String(key || p.id).replace(/[^A-Za-z0-9]+/g, '-')}`;
   const input = h('input', { type: 'range', id, min: log ? 0 : min, max: log ? 1000 : max, step: log ? 1 : (p.step || 'any'), value: toPos(toNum(cur)) });
   const pv = h('span', { class: 'pv num' });
   const show = (val) => { pv.textContent = ''; const isDef = def && eqR(val, def); pv.classList.toggle('chg', !isDef); pv.append(val.d === 1n ? groupInt(val.n) : (isDef && String(val.n).length + String(val.d).length < 9 ? fracText(val) : fmtDec(toNum(val)))); };

@@ -386,6 +386,28 @@ function checkXrefs(specs) {
   for (const s of specs) visit(s.lenses, s.id);
 }
 
+// Quoted fragments inside paraphrases ('...' or “...”) and each cast member's "as named"
+// string must also occur in the book (case-insensitive, italics marks ignored). Warn if not.
+// Cross-reference labels quote other books; their anchors are checked by checkXrefs().
+function checkQuotedFragments(spec) {
+  const L = LINES[spec.book];
+  const norm = (t) => t.replace(/_/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').toLowerCase().trim();
+  const ch = norm(L.join('\n')); // the whole book: notes may quote the front matter
+  const skip = /(^|\.)(q|L|expr|printed|stated|value|label)$|\.(src|ruleSrc|erratum|quoteCheck|xref)(\.|$)/;
+  const visit = (o, path) => {
+    if (typeof o === 'string') {
+      if (skip.test(path) && !/\.(examples\.\d+|cards\.\d+)\.label$/.test(path)) return;
+      for (const m of o.matchAll(/(?:^|[\s(])['‘“"]([^'’”"]{3,140})['’”"](?=[\s.,;:)!?]|$)/g)) {
+        if (m[1].split(' ').length >= 2 && !ch.includes(norm(m[1]))) console.warn(`  QUOTE NOT IN TEXT ${path}: '${m[1]}'`);
+      }
+      if (path.endsWith('.as') && !ch.includes(norm(o))) console.warn(`  NAME NOT IN TEXT ${path}: '${o}'`);
+      return;
+    }
+    if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) visit(v, `${path}.${k}`);
+  };
+  visit(spec.lenses, spec.id);
+}
+
 const lensList = [];
 const built = [];
 const files = readdirSync(SRC).filter((f) => f.endsWith('.json')).sort();
@@ -399,6 +421,7 @@ for (const f of files) {
     continue;
   }
   const spec = validateSpec(raw);
+  checkQuotedFragments(spec);
   built.push(spec);
   const v = spec.verification;
   console.log(`${spec.id}: ${v.verified}/${v.anchors} anchors verified; checks ${JSON.stringify(v.checks)}`);

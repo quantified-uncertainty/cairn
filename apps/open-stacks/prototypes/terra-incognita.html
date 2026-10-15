@@ -136,10 +136,18 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 
 /* ---------------- map ---------------- */
 #mapwrap { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--paper); }
-#mapwrap canvas { position: absolute; inset: 0; display: block; }
+#mapwrap canvas { position: absolute; inset: 0; display: block; pointer-events: none; transform-origin: 0 0; }
+#hit { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+/* neatline: the engraved double frame of a printed chart */
+#mapwrap::after {
+  content: ""; position: absolute; inset: 7px; pointer-events: none; z-index: 1;
+  border: 1px solid var(--rule-strong);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--paper) 70%, transparent), inset 0 0 0 4px var(--rule);
+}
+.cartouche, .ladder, .legend, #card, #tip { z-index: 2; }
+#hit:active { cursor: grabbing; }
+#hit:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
 #cv-glow { pointer-events: none; filter: blur(5px); mix-blend-mode: var(--glow-blend); animation: breathe 3.6s ease-in-out infinite; }
-#cv-top { cursor: grab; touch-action: none; }
-#cv-top:active { cursor: grabbing; }
 @keyframes breathe { 0%, 100% { opacity: .62; } 50% { opacity: 1; } }
 
 .cartouche {
@@ -422,7 +430,6 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
 .opt span { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; }
 .matchres { margin-top: 8px; font-size: 13px; color: var(--ink-2); max-height: 160px; overflow: auto; }
 
-.mobile-only { display: none; }
 
 @media (max-width: 899px) {
   #app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 54fr) minmax(0, 46fr); }
@@ -431,7 +438,8 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
   .pb { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
   .tabs { margin-top: 6px; }
   .tab { padding: 4px 8px 7px; flex: 0 0 auto; }
-  .cartouche { top: 10px; left: max(12px, env(safe-area-inset-left, 0px)); max-width: 220px; padding: 7px 10px 6px; }
+  .cartouche { top: 12px; left: max(14px, env(safe-area-inset-left, 0px)); max-width: 220px; padding: 7px 10px 6px; }
+  #mapwrap::after { inset: 5px; }
   .cartouche h1 { font-size: 18px; }
   .cartouche .sub { font-size: 12px; margin-top: 2px; }
   .cartouche .meta { display: none; }
@@ -445,7 +453,6 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
   #card { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 80%; }
   #card .spines { height: 58px; padding-top: 6px; }
   .explorer .tools .btn { padding: 4px 8px; }
-  .mobile-only { display: initial; }
 }
 @media (prefers-reduced-motion: reduce) {
   #cv-glow { animation: none; opacity: .9; }
@@ -457,7 +464,8 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
   <section id="mapwrap" aria-label="Map of the Library of Congress Classification under fog of war">
     <canvas id="cv-base" aria-hidden="true"></canvas>
     <canvas id="cv-glow" aria-hidden="true"></canvas>
-    <canvas id="cv-top" tabindex="0" role="img" aria-label="Interactive map. Drag to pan, scroll or pinch to zoom, click a province or a settlement to inspect it. The panel lists the same places."></canvas>
+    <canvas id="cv-top" aria-hidden="true"></canvas>
+    <div id="hit" tabindex="0" role="group" aria-label="Interactive map. Drag to pan, scroll or pinch to zoom, arrow keys to pan, plus and minus to zoom; click a province or a settlement to inspect it. The panel lists the same places."></div>
 
     <div class="cartouche" id="cartouche">
       <h1>Terra Incognita</h1>
@@ -527,7 +535,7 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
     </ul>
     <h3>Real data</h3>
     <ul>
-      <li>7,127 Open Library works (CC0; Search API, fetched 2026-10-15): titles, call numbers, editions, reading-log counts, first sentences, access status. 6,518 have a call number; the 609 without one sit on the Uncharted Isles.</li>
+      <li>7,127 Open Library works (CC0; Search API, fetched 2026-10-15): titles, call numbers, editions, reading-log counts, first sentences, access status. 6,517 carry an LC call number; the other 610 (609 with none, one with a National Library of Medicine number) wash up on the Uncharted Isles.</li>
       <li>29,007 Project Gutenberg nonfiction titles (catalog feed, fetched 2026-10-15), counted by LoC class and drawn as forest ("hinterland").</li>
       <li>Library of Congress Classification Outline: class, subclass and range names.</li>
       <li>The catalog was assembled from 50 subject searches, so it is a 7k sample with artificial coastlines, heavy in science, social science and philosophy. Some Open Library years are wrong (first-publication dates are crowd-edited).</li>
@@ -628,11 +636,11 @@ function glyphSVG(acc, read) {
 
 /* =============================== DOM =============================== */
 const mapwrap = $('#mapwrap');
-const cvBase = $('#cv-base'), cvGlow = $('#cv-glow'), cvTop = $('#cv-top');
+const cvBase = $('#cv-base'), cvGlow = $('#cv-glow'), cvTop = $('#cv-top'), hit = $('#hit');
 const ctxB = cvBase.getContext('2d'), ctxG = cvGlow.getContext('2d'), ctxT = cvTop.getContext('2d');
 const off = (w = 2, h = 2) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-const cvWL = off(), cvFog = off(), cvMask = off();
-const ctxWL = cvWL.getContext('2d'), ctxF = cvFog.getContext('2d'), ctxM = cvMask.getContext('2d');
+const cvWL = off(), cvFog = off(), cvMask = off(), cvTer = off(), cvFogSheet = off();
+const ctxWL = cvWL.getContext('2d'), ctxF = cvFog.getContext('2d'), ctxM = cvMask.getContext('2d'), ctxTer = cvTer.getContext('2d'), ctxFS = cvFogSheet.getContext('2d');
 const tip = $('#tip'), card = $('#card');
 
 /* =============================== theme =============================== */
@@ -1054,21 +1062,61 @@ function view() { return [(-T.x) / T.k, (-T.y) / T.k, (W - T.x) / T.k, (H - T.y)
 function bbVisible(bb, v, pad = 0) { return !(bb[2] < v[0] - pad || bb[0] > v[2] + pad || bb[3] < v[1] - pad || bb[1] > v[3] + pad); }
 const ptVisible = (x, y, v, pad = 0) => x >= v[0] - pad && x <= v[2] + pad && y >= v[1] - pad && y <= v[3] + pad;
 
-let raf = 0;
-function requestRender() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); }
+// Rendering is layered and cached. The terrain (everything but fog and flags) is redrawn only when the view
+// or theme changes; the fog sheet only when the view changes. While the map is being dragged, zoomed or
+// flown, the last full frame is scaled and shifted instead, and a full redraw follows once motion pauses.
+let raf = 0, terKey = '', fogKey = '', themeVer = 0, rendered = null, interacting = false, idleTimer = 0, lastFull = 0;
+const dirty = new Set(['base', 'glow', 'top']);
+function requestRender(what) {
+  if (!what) { dirty.add('base'); dirty.add('glow'); dirty.add('top'); }
+  else dirty.add(what);
+  if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); });
+}
+function viewKey() { return [T.x.toFixed(2), T.y.toFixed(2), T.k.toFixed(5), W, H, DPR, themeVer].join('|'); }
+// While the map moves, the last rendered frame is moved and scaled with CSS (cheap, on the compositor);
+// a full redraw follows when motion pauses, or sooner if the zoom has drifted far from the rendered frame.
+function onZoomed() {
+  interacting = true;
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => { interacting = false; requestRender(); }, 160);
+  requestRender();
+}
+function cssMove() {
+  const r = T.k / rendered.k, tx = T.x - rendered.x * r, ty = T.y - rendered.y * r;
+  const tf = `translate(${tx}px, ${ty}px) scale(${r})`;
+  cvBase.style.transform = tf; cvGlow.style.transform = tf; cvTop.style.transform = tf;
+}
 function render() {
   if (!M || !W) return;
-  drawBase();
-  drawGlow();
-  drawTop();
+  const now = performance.now();
+  if (interacting && rendered) {
+    const r = T.k / rendered.k;
+    if (now - lastFull < 320 || (r < 1.5 && r > 0.67)) { cssMove(); updateLadder(); return; }
+  }
+  if (rendered && (rendered.x !== T.x || rendered.y !== T.y || rendered.k !== T.k)) { dirty.add('base'); dirty.add('glow'); dirty.add('top'); }
+  if (dirty.has('base')) drawBase();
+  if (dirty.has('glow')) drawGlow();
+  if (dirty.has('top')) drawTop();
+  dirty.clear();
+  cvBase.style.transform = cvGlow.style.transform = cvTop.style.transform = '';
+  rendered = { x: T.x, y: T.y, k: T.k };
+  lastFull = performance.now();
   updateLadder();
 }
 
 function straitHalf() { return clamp(2.1 / T.k, 0.32, 1.25); }
 
 function drawBase() {
-  const c = ctxB, p = 1 / T.k, v = view(), Z = z();
-  const D = st.derived;
+  const key = viewKey();
+  if (key !== terKey) { drawTerrain(ctxTer); terKey = key; }
+  const c = ctxB, v = view(), Z = z(), D = st.derived;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.drawImage(cvTer, 0, 0);
+  drawFlags(c, v, Z);
+  if (D && st.fog !== 'off') drawFog(c, v, Z);
+}
+function drawTerrain(c) {
+  const p = 1 / T.k, v = view(), Z = z();
   screenTf(c);
   c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
   c.fillStyle = C.paper; c.fillRect(0, 0, W, H);
@@ -1144,15 +1192,10 @@ function drawBase() {
   drawMountains(c, v);
 
   // settlements
-  if (Z >= 1.9) drawSettlements(c, v, Z);
-  // read flags always
-  drawFlags(c, v, Z);
+  if (T.k * M.S >= 24) drawSettlements(c, v, Z);
 
   // wind roses
   for (const r of M.roses) drawRose(c, r);
-
-  // fog
-  if (D && st.fog !== 'off') drawFog(c, v, Z);
 }
 
 function drawHachures(c, v, p) {
@@ -1232,7 +1275,6 @@ function drawSettlements(c, v, Z) {
   for (const w of M.works) {
     if (w.hex < 0) continue;
     if (!ptVisible(w.px, w.py, v, 2)) continue;
-    if (D && D.readSet.has(w.i)) continue; // flags drawn separately
     const [sx, sy] = toScreen(w.px, w.py);
     const r = clamp(1.25 + 0.55 * Math.log10((w.rl || 0) + 1), 1.2, 3.4) * scale;
     groups[accOf(w).cls].push(sx, sy, r);
@@ -1315,17 +1357,25 @@ function drawFog(c, v, Z) {
   }
   m.globalCompositeOperation = 'source-over'; m.globalAlpha = 1;
   // 2. fog sheet at full resolution: clouds, conjectural coasts, rumoured settlements
+  const key = viewKey();
+  if (key !== fogKey) {
+    // clouds and conjectural (dotted) coastlines depend only on the view
+    const fs = ctxFS;
+    fs.setTransform(1, 0, 0, 1, 0, 0); fs.globalCompositeOperation = 'source-over'; fs.globalAlpha = 1;
+    if (cloudPat && cloudPat.setTransform) cloudPat.setTransform(new DOMMatrix().translateSelf(T.x * DPR, T.y * DPR).scaleSelf(DPR * 1.7 * Math.pow(T.k / K0, 0.4)));
+    fs.fillStyle = cloudPat || C.fog; fs.fillRect(0, 0, cvFogSheet.width, cvFogSheet.height);
+    worldTf(fs);
+    const p = 1 / T.k;
+    fs.lineCap = 'round';
+    fs.setLineDash([0.2 * p, 3.4 * p]); fs.lineWidth = 1.6 * p; fs.strokeStyle = C.ink2; fs.globalAlpha = C.dark ? 0.7 : 0.6;
+    fs.stroke(M.classesAll);
+    fs.setLineDash([]); fs.globalAlpha = 1;
+    fogKey = key;
+  }
   const f = ctxF;
-  f.setTransform(1, 0, 0, 1, 0, 0); f.globalCompositeOperation = 'source-over'; f.globalAlpha = 1;
-  f.clearRect(0, 0, cvFog.width, cvFog.height);
-  if (cloudPat && cloudPat.setTransform) cloudPat.setTransform(new DOMMatrix().translateSelf(T.x * DPR, T.y * DPR).scaleSelf(DPR * 1.7 * Math.pow(T.k / K0, 0.4)));
-  f.fillStyle = cloudPat || C.fog; f.fillRect(0, 0, cvFog.width, cvFog.height);
-  worldTf(f);
-  const p = 1 / T.k;
-  f.lineCap = 'round';
-  f.setLineDash([0.2 * p, 3.4 * p]); f.lineWidth = 1.6 * p; f.strokeStyle = C.ink2; f.globalAlpha = C.dark ? 0.7 : 0.6;
-  f.stroke(M.classesAll);
-  f.setLineDash([]); f.globalAlpha = 1;
+  f.setTransform(1, 0, 0, 1, 0, 0); f.globalCompositeOperation = 'copy'; f.globalAlpha = 1;
+  f.drawImage(cvFogSheet, 0, 0);
+  f.globalCompositeOperation = 'source-over';
   // rumoured: met but unread, seen through the fog
   if (Z >= 3 && st.met) {
     screenTf(f);
@@ -1447,17 +1497,6 @@ function drawTop() {
   }
 
   screenTf(c);
-  // route
-  if (st.tab === 'exp' && st.route) drawRoute(c);
-  // landfalls (atlas)
-  if (st.tab === 'atlas' && st.landfalls) {
-    st.landfalls.forEach((lf, k) => {
-      const w = M.works[lf.i]; const [x, y] = toScreen(w.px, w.py);
-      if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
-      diamond(c, x, y - 1, 8.5, String(k + 1));
-      placed.push([x - 10, y - 11, x + 10, y + 9]);
-    });
-  }
   // unseen species: singletons (works met exactly once) mark where unmet works probably are
   if (st.tab === 'unseen' && st.unShow && st.unseen) {
     const rr = clamp(2.2 * Math.sqrt(T.k), 3, 6.5);
@@ -1466,10 +1505,6 @@ function drawTop() {
     for (const row of st.unseen.where) for (const wi of row.singletons) { const w = M.works[wi]; const [x, y] = toScreen(w.px, w.py); c.moveTo(x + rr, y); c.arc(x, y, rr, 0, 7); }
     c.fillStyle = C.accent; c.globalAlpha = 0.16; c.fill(); c.globalAlpha = 0.9; c.stroke(); c.globalAlpha = 1;
   }
-  // field-guide pins
-  if (st.tab === 'guide' && st.guide.cited && st.guide.cited.length) {
-    st.guide.cited.forEach((wi, k) => { const w = M.works[wi]; const [x, y] = toScreen(w.px, w.py); pin(c, x, y, k + 1); placed.push([x - 9, y - 22, x + 9, y]); });
-  }
   // selected work
   if (st.work != null) {
     const w = M.works[st.work]; const [x, y] = toScreen(w.px, w.py);
@@ -1477,8 +1512,30 @@ function drawTop() {
     c.lineWidth = 1; c.beginPath(); c.arc(x, y, 14, 0, 7); c.globalAlpha = 0.6; c.stroke(); c.globalAlpha = 1;
     label(c, shortTitle(w.t, 40), x + 17, y, { font: 'italic 15px "IM Fell English", Georgia, serif', align: 'left', priority: true, force: true });
   }
-
-  drawLabels(c, v, Z);
+  // continent names first, so the big lettering is never crowded out by markers
+  drawLabels(c, v, Z, 1);
+  // route
+  if (st.tab === 'exp' && st.route) drawRoute(c);
+  // landfalls (atlas)
+  if (st.tab === 'atlas' && st.landfalls) {
+    const marks = [];
+    st.landfalls.forEach((lf, k) => {
+      const w = M.works[lf.i]; let [x, y] = toScreen(w.px, w.py);
+      if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
+      // nudge markers that would sit on top of one another, and draw a short leader back
+      const x0 = x, y0 = y;
+      for (let t = 0; t < 6 && marks.some(([mx, my]) => Math.hypot(mx - x, my - y) < 17); t++) { x += 13; y -= 9; }
+      if (x !== x0) { c.beginPath(); c.moveTo(x0, y0); c.lineTo(x, y); c.strokeStyle = C.accent; c.lineWidth = 1; c.stroke(); }
+      diamond(c, x, y - 1, 8.5, String(k + 1));
+      marks.push([x, y]);
+      placed.push([x - 10, y - 11, x + 10, y + 9]);
+    });
+  }
+  // field-guide pins
+  if (st.tab === 'guide' && st.guide.cited && st.guide.cited.length) {
+    st.guide.cited.forEach((wi, k) => { const w = M.works[wi]; const [x, y] = toScreen(w.px, w.py); pin(c, x, y, k + 1); placed.push([x - 9, y - 22, x + 9, y]); });
+  }
+  drawLabels(c, v, Z, 2);
 }
 
 function diamond(c, x, y, r, txt) {
@@ -1532,9 +1589,10 @@ function drawRoute(c) {
   });
 }
 
-function drawLabels(c, v, Z) {
+function drawLabels(c, v, Z, phase) {
   const D = st.derived;
   const fogOn = D && st.fog === 'full';
+  if (phase === 1) {
   // continents
   const contAlpha = Z < 2.6 ? 1 : Z < 5 ? 1 - (Z - 2.6) / 3.2 : 0.22;
   for (const cl of M.classes.slice().sort((a, b) => b.nh - a.nh)) {
@@ -1548,11 +1606,10 @@ function drawLabels(c, v, Z) {
     const font = `${Math.round(px)}px "IM Fell English SC", "IM Fell English", Georgia, serif`;
     const lineH = px * 1.02;
     const y0 = y - ((lines.length - 1) * lineH) / 2;
-    let ok = true;
     // measure every line first so a label is placed whole or not at all
     c.font = font;
     const sp = px * (small ? 0.08 : 0.22);
-    const boxes = lines.map((ln, k) => { const t = ln.toUpperCase(); const wdt = [...t].reduce((a, ch) => a + c.measureText(ch).width, 0) + sp * ([...t].length - 1); const yy = y0 + k * lineH; return [x - wdt / 2 - 2, yy - px / 2 - 2, x + wdt / 2 + 2, yy + px / 2 + 2]; });
+    const boxes = lines.map((ln, k) => { const t = ln.toUpperCase(); const wdt = [...t].reduce((a, ch) => a + c.measureText(ch).width, 0) + sp * ([...t].length - 1); const yy = y0 + k * lineH; return [x - wdt / 2 - 10, yy - px / 2 - 3, x + wdt / 2 + 10, yy + px / 2 + 3]; });
     if (boxes.some((b) => b[0] < 4 || b[2] > W - 4 || b[1] < 2 || b[3] > H - 2 || collide(...b))) continue;
     lines.forEach((ln, k) => label(c, ln.toUpperCase(), x, y0 + k * lineH, { font, spacing: sp, color: C.ink, alpha: contAlpha, haloW: 4, force: true }));
     if (Z < 3.5) label(c, '— ' + cl.c + ' —', x, y0 + lines.length * lineH + 2, { font: `italic ${Math.round(clamp(px * 0.45, 10, 15))}px "IM Fell English", Georgia, serif`, color: C.ink2, alpha: contAlpha });
@@ -1565,6 +1622,10 @@ function drawLabels(c, v, Z) {
     const [ax, ay] = toScreen(xs.reduce((a, b) => a + b, 0) / xs.length, Math.min(...ys) - M.S * 2.6);
     label(c, 'UNCHARTED ISLES', ax, ay, { font: `${Math.round(clamp(9 * T.k, 12, 24))}px "IM Fell English SC", Georgia, serif`, spacing: 3, color: C.water });
     label(c, 'works without a call number', ax, ay + clamp(9 * T.k, 12, 24) * 0.95, { font: `italic ${Math.round(clamp(5 * T.k, 10.5, 15))}px "IM Fell English", Georgia, serif`, color: C.water });
+  }
+  return;
+  }
+  if (M.isles.length) {
     for (const isle of M.isles) { const [x, y] = toScreen(isle.lx, isle.ly + M.S * 1.6); label(c, isle.n, x, y, { font: `italic ${Math.round(clamp(4.2 * T.k, 10.5, 16))}px "IM Fell English", Georgia, serif`, color: C.water }); }
   }
   // provinces
@@ -1631,19 +1692,21 @@ function resize() {
   const r = mapwrap.getBoundingClientRect();
   const prevW = W, prevH = H;
   W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
-  DPR = Math.min(2, window.devicePixelRatio || 1);
-  for (const cv of [cvBase, cvGlow, cvTop, cvWL, cvFog]) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
+  // large maps get a lower backing resolution so seven full-size canvases stay within memory budgets
+  DPR = Math.min(window.devicePixelRatio || 1, W * H > 1.2e6 ? 1.25 : W * H > 6e5 ? 1.5 : 2);
+  for (const cv of [cvBase, cvGlow, cvTop, cvWL, cvFog, cvTer, cvFogSheet]) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
+  terKey = ''; fogKey = ''; rendered = null;
   for (const cv of [cvBase, cvGlow, cvTop]) { cv.style.width = W + 'px'; cv.style.height = H + 'px'; }
   cvMask.width = Math.ceil((W * DPR) / 5); cvMask.height = Math.ceil((H * DPR) / 5);
   if (!M) return;
   const fit = fitTransform();
   K0 = fit.k;
   zoomB.scaleExtent([K0 * 0.7, K0 * 60]).translateExtent([[M.bounds[0] - 400, M.bounds[1] - 400], [M.bounds[2] + 400, M.bounds[3] + 400]]);
-  if (!fitted) { fitted = true; d3.select(cvTop).call(zoomB.transform, fit); }
+  if (!fitted) { fitted = true; d3.select(hit).call(zoomB.transform, fit); }
   else {
     // keep the centre
     const cx = (prevW / 2 - T.x) / T.k, cy = (prevH / 2 - T.y) / T.k;
-    d3.select(cvTop).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * T.k, H / 2 - cy * T.k).scale(T.k));
+    d3.select(hit).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * T.k, H / 2 - cy * T.k).scale(T.k));
   }
   requestRender();
 }
@@ -1661,11 +1724,11 @@ function flyTo(bb, maxZ = 18, dur = 900) {
   const aw = Math.max(80, W - P.l - P.r), ah = Math.max(80, H - P.t - P.b);
   const k = Math.min(K0 * maxZ, aw / Math.max(1, x1 - x0), ah / Math.max(1, y1 - y0));
   const t = d3.zoomIdentity.translate(P.l + aw / 2 - (k * (x0 + x1)) / 2, P.t + ah / 2 - (k * (y0 + y1)) / 2).scale(k);
-  d3.select(cvTop).transition().duration(REDUCED ? 0 : dur).ease(d3.easeCubicInOut).call(zoomB.transform, t);
+  d3.select(hit).transition().duration(REDUCED ? 0 : dur).ease(d3.easeCubicInOut).call(zoomB.transform, t);
 }
 function zoomToLevel(zz) {
   const t = T, cx = (W / 2 - t.x) / t.k, cy = (H / 2 - t.y) / t.k, k = K0 * zz;
-  d3.select(cvTop).transition().duration(REDUCED ? 0 : 600).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * k, H / 2 - cy * k).scale(k));
+  d3.select(hit).transition().duration(REDUCED ? 0 : 600).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * k, H / 2 - cy * k).scale(k));
 }
 function updateLadder() {
   const Z = z();
@@ -1675,7 +1738,7 @@ function updateLadder() {
 
 /* =============================== interaction =============================== */
 function pointerWorld(ev) {
-  const r = cvTop.getBoundingClientRect();
+  const r = hit.getBoundingClientRect();
   const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
   return { sx, sy, x: (sx - T.x) / T.k, y: (sy - T.y) / T.k };
 }
@@ -1683,7 +1746,7 @@ function pick(ev) {
   const p = pointerWorld(ev);
   const Z = z();
   let work = -1;
-  if (Z >= 1.9) work = workAt(p.x, p.y, 7 / T.k);
+  if (T.k * M.S >= 24) work = workAt(p.x, p.y, 7 / T.k);
   else if (st.derived) {
     // flags are visible at every zoom
     let best = -1, bd = (8 / T.k) ** 2;
@@ -1694,11 +1757,11 @@ function pick(ev) {
   return { ...p, work, hex };
 }
 function onMove(ev) {
-  if (ev.buttons) return;
+  if (ev.buttons || interacting) return;
   const h = pick(ev);
   const prev = st.hover;
   st.hover = h;
-  if (!prev || prev.hex !== h.hex || prev.work !== h.work) requestRender();
+  if (!prev || prev.hex !== h.hex || prev.work !== h.work) requestRender('top');
   showTip(h);
 }
 function showTip(h) {
@@ -1753,7 +1816,7 @@ function selectProvince(si, { fly = true, tab = 'prov' } = {}) {
   if (tab) setTab(tab);
   renderProvince();
   if (fly) flyTo(M.subs[si].bb, 8);
-  requestRender();
+  requestRender('top');
 }
 function selectWork(i, { fly = true } = {}) {
   st.work = i;
@@ -1761,13 +1824,13 @@ function selectWork(i, { fly = true } = {}) {
   if (w.sub >= 0 && st.prov !== w.sub) { st.prov = w.sub; if (st.tab === 'prov') renderProvince(); }
   renderCard();
   if (fly) {
-    const r = M.S * 2.2;
+    const r = M.S * 1.5;
     flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14);
   }
-  requestRender();
+  requestRender('top');
 }
 function renderCard() {
-  if (st.work == null) { card.hidden = true; requestRender(); return; }
+  if (st.work == null) { card.hidden = true; requestRender('top'); return; }
   const w = M.works[st.work], D = st.derived;
   const p = M.shelfPos[w.i];
   const nbrs = [];
@@ -1806,7 +1869,7 @@ function renderCard() {
       </div>
     </div>`;
   card.hidden = false;
-  requestRender();
+  requestRender('top');
 }
 
 /* =============================== tabs =============================== */
@@ -1824,7 +1887,7 @@ function setTab(tab, opts = {}) {
     if (tab === 'unseen' && st.unRegion) { closeCard(); flyTo(regionBBox(st.unRegion), 12); }
     if (tab === 'guide' && st.guide.sc) { const s = M.subByCode.get(st.guide.sc); if (s) flyTo(s.bb, 8); }
   }
-  requestRender();
+  requestRender('top');
 }
 function closeCard() { if (st.work != null) { st.work = null; card.hidden = true; } }
 
@@ -1851,17 +1914,6 @@ function computeLandfalls() {
   }
   return out;
 }
-// what the explorer reads about: subject headings that recur among the works read (and are specific enough to mean something)
-let profCache = null;
-function interestProfile() {
-  const D = st.derived; if (!D) return new Map();
-  if (profCache && profCache.D === D) return profCache.m;
-  const m = new Map();
-  for (const r of D.readNow) for (const s of (M.works[r.i].s || []).slice(0, 12)) { const k = s.toLowerCase(); m.set(k, (m.get(k) || 0) + 1); }
-  for (const [k, v] of [...m]) { const n = M.subjIndex.get(k)?.length || 0; if (v < 2 || n > 260) m.delete(k); else m.set(k, Math.min(1, v / 6)); }
-  profCache = { D, m };
-  return m;
-}
 const LATIN = /^[\x20-\x7E\u00C0-\u024F\u2018-\u201D\u2013\u2014]+$/;
 function queryProfile() {
   const D = st.derived; const m = new Map(); if (!D) return m;
@@ -1869,8 +1921,6 @@ function queryProfile() {
   const mx = Math.max(1, ...m.values()); m.forEach((v, k) => m.set(k, v / mx));
   return m;
 }
-function affinitySum(w, prof) { let a = 0; for (const s of (w.s || []).slice(0, 12)) a += prof.get(s.toLowerCase()) || 0; return a; }
-function affinity(w, prof) { return Math.min(1, affinitySum(w, prof)); }
 function blindSpots() {
   const D = st.derived; if (!D || !D.readNow.length) return [];
   const out = [];
@@ -2180,7 +2230,7 @@ function renderUnseen() {
       <p>Assumptions that fail here: encounters are not independent draws (shelf walks are clustered), and probes favour popular works, so treat the interval as a floor. The catalog itself is a sample of about 7k works from 50 subject searches.</p>
     </details>`}`;
   if (c.n) drawUnseenChart($('#un-chart'), U);
-  requestRender();
+  requestRender('top');
 }
 function drawUnseenChart(host, U) {
   const { c, seq, truth } = U;
@@ -2252,13 +2302,13 @@ function renderGuide() {
     ${body}
     ${G.status === 'done' || G.source === 'pre' ? `<p class="note">${G.cited.length} cited works resolved and pinned on the map${G.dropped ? `; ${G.dropped} citation${G.dropped > 1 ? 's' : ''} that did not resolve ${G.dropped > 1 ? 'were' : 'was'} removed` : ''}. Click a citation to visit it.</p>` : ''}
     ${G.status === 'error' ? `<p class="note">${esc(G.err || 'Generation stopped.')}</p>` : ''}`;
-  requestRender();
+  requestRender('top');
 }
 function templateGuide(s) {
   const ws = s.works.map((i) => M.works[i]);
   const byEd = ws.slice().sort((a, b) => (b.ed || 0) - (a.ed || 0));
   const free = ws.filter((w) => w.acc === 'public').sort((a, b) => (b.ed || 0) - (a.ed || 0));
-  const old = ws.filter((w) => w.y && w.y > 1000).sort((a, b) => a.y - b.y);
+  const old = ws.filter((w) => w.y && w.y > 1000 && (w.ed || 0) >= 8).sort((a, b) => a.y - b.y); // many editions: guards against bad dates
   const withFs = byEd.find((w) => w.fs && w.fs.length < 220);
   const towns = s.towns.map((t) => M.towns[t]).filter((t) => t.lv === 1).sort((a, b) => b.k - a.k).slice(0, 3);
   const nb = s.adj.map((o) => M.subs[o]).filter((o) => o.cat > 0).slice(0, 3);
@@ -2268,7 +2318,7 @@ function templateGuide(s) {
   if (byEd[0]) { L.push(`## Capital`); L.push(`The most-edited work is ${byEd[0].t} by ${firstAuthor(byEd[0])} [${byEd[0].id}], with ${byEd[0].ed} editions.`); }
   if (free.length) { L.push(`## Free to forage`); L.push(free.slice(0, 3).map((w) => `- ${w.t} (${firstAuthor(w)}) [${w.id}]`).join('\n')); }
   if (old[0]) { L.push(`## Oldest recorded`); L.push(`${old[0].t} [${old[0].id}], first published ${old[0].y} according to Open Library.`); }
-  if (withFs) { L.push(`## A first line`); L.push(`“${withFs.fs}” [${withFs.id}]`); }
+  if (withFs) { L.push(`## A first line`); L.push(`“${withFs.fs.replace(/^[\s"“”'‘’]+|[\s"“”'‘’]+$/g, '')}” [${withFs.id}], the first sentence of ${withFs.t} as Open Library records it.`); }
   if (nb.length) { L.push(`## Borderlands`); L.push(`Borders ${nb.map((o) => `${o.c} (${o.n})`).join(', ')}.`); }
   return L.join('\n\n');
 }
@@ -2298,7 +2348,7 @@ function renderGuideText(text, s) {
   return html;
 }
 let guideCtl = null;
-async function guideLive() {
+async function guideLive(opts = {}) {
   const sample = sampleFn; if (!sample) return;
   const s = M.subByCode.get(st.guide.sc); if (!s) return;
   const D = st.derived;
@@ -2349,22 +2399,36 @@ Write about 230 words in this exact shape, with these five headings as lines sta
 ## Free to forage
 ## Rare sightings
 ## For this explorer
-Rules: name only works returned by the tools, and after each work you name put its id in square brackets, like [OL123W]. Do not invent works, dates or facts not in the tool results; years come from Open Library and may be wrong, so hedge any year that looks implausible. No quotations. Plain prose, two to four sentences per section; a "-" bullet list is fine in "Free to forage".`;
+Rules: name only works that appear in the records you were given (tool results), and after each work you name put its id in square brackets, like [OL123W]. Do not invent works, dates or facts not in the tool results; years come from Open Library and may be wrong, so hedge any year that looks implausible. No quotations. Plain prose, two to four sentences per section; a "-" bullet list is fine in "Free to forage".`;
+  let retryNoTools = false;
+  // Without page tools, ground the guide in a fixed extract of the province's records instead.
+  const extract = () => {
+    const ws = s.works.map((i) => M.works[i]);
+    const pick = new Map();
+    const add = (list, n) => list.slice(0, n).forEach((w) => pick.set(w.id, w));
+    add(ws.slice().sort((a, b) => (b.ed || 0) - (a.ed || 0)), 15);
+    add(ws.filter((w) => w.acc === 'public').sort((a, b) => (b.ed || 0) - (a.ed || 0)), 8);
+    add(ws.filter((w) => w.y > 1000).sort((a, b) => a.y - b.y), 5);
+    add(ws.slice().sort((a, b) => (b.rl || 0) - (a.rl || 0)), 10);
+    if (D) add(ws.filter((w) => D.readSet.has(w.i)), 10);
+    return JSON.stringify({ towns: tools[1].execute({}), works: rows([...pick.values()]) });
+  };
+  const finalPrompt = opts.noTools ? prompt.replace(/Use the tools to look before you write:[^\n]*\n/, 'The province records you may use are below as JSON (an extract: landmarks, free works, the oldest, the most read, and the explorer\'s own); use only these.\n').replace(' (tool results)', ' (the JSON below)') + '\n\nRecords:\n' + extract() : prompt;
   try {
-    const { text, truncated } = await sample(prompt, {
-      tools, signal: guideCtl.signal,
+    const { text, truncated } = await sample(finalPrompt, {
+      ...(opts.noTools ? {} : { tools }), signal: guideCtl.signal,
       onText: ({ text }) => { st.guide.status = 'streaming'; st.guide.text = text; renderGuide(); },
     });
     st.guide.text = text; st.guide.status = 'done'; st.guide.err = truncated ? 'The guide was cut short.' : '';
   } catch (e) {
     const code = e && e.code;
     if (code === 'not_granted' || code === 'sampling_disabled' || code === 'capability_disabled' || code === 'not_declared' || code === 'capability_removed') { sampleFn = null; resetGuide(); }
-    else if (code === 'tools_unavailable') { st.guide.status = 'error'; st.guide.err = 'This view cannot run page tools, so the guide cannot be grounded; showing the precomputed version instead.'; st.guide.text = ''; resetGuide(); }
+    else if (code === 'tools_unavailable' && !opts.noTools) retryNoTools = true;
     else if (code === 'cancelled') { st.guide.status = e.text ? 'done' : 'idle'; st.guide.text = e.text || ''; if (!e.text) resetGuide(); }
     else { st.guide.status = e && e.text ? 'error' : 'idle'; st.guide.text = (e && e.text) || ''; st.guide.err = code === 'rate_limited' ? 'Claude is busy for this account right now; try again in a while.' : 'Generation was interrupted; try again.'; if (!e?.text) resetGuide(); }
   } finally {
     guideCtl = null;
-    renderGuide();
+    if (retryNoTools) guideLive({ noTools: true }); else renderGuide();
   }
 }
 
@@ -2431,13 +2495,13 @@ function matchList(text) {
 
 /* =============================== events =============================== */
 function bind() {
-  const sel = d3.select(cvTop);
-  zoomB = d3.zoom().on('zoom', (e) => { T = e.transform; requestRender(); tip.hidden = true; });
+  const sel = d3.select(hit);
+  zoomB = d3.zoom().on('zoom', (e) => { T = e.transform; tip.hidden = true; if (e.sourceEvent || e.transform) onZoomed(); });
   sel.call(zoomB);
-  cvTop.addEventListener('pointermove', onMove);
-  cvTop.addEventListener('pointerleave', () => { tip.hidden = true; st.hover = null; requestRender(); });
-  cvTop.addEventListener('click', onClick);
-  cvTop.addEventListener('keydown', (e) => {
+  hit.addEventListener('pointermove', onMove);
+  hit.addEventListener('pointerleave', () => { tip.hidden = true; st.hover = null; requestRender('top'); });
+  hit.addEventListener('click', onClick);
+  hit.addEventListener('keydown', (e) => {
     const step = 60;
     const map = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
     if (map[e.key]) { e.preventDefault(); sel.call(zoomB.translateBy, map[e.key][0] / T.k, map[e.key][1] / T.k); }
@@ -2455,7 +2519,7 @@ function bind() {
     const n = tabs[(k + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
     e.preventDefault(); setTab(n.dataset.tab); n.focus();
   });
-  $('#legend').addEventListener('toggle', () => requestRender());
+  $('#legend').addEventListener('toggle', () => requestRender('top'));
   // delegated clicks
   document.addEventListener('click', (e) => {
     const t = e.target.closest('[data-work],[data-prov],[data-town],[data-cls],[data-act],[data-pf],[data-ps],[data-legs],[data-unz],[data-fog],[data-close-card],[data-close]');
@@ -2468,14 +2532,14 @@ function bind() {
       const tw = M.towns[+t.dataset.town];
       st.prov = tw.sub;
       if (st.tab === 'unseen') { st.unRegion = { type: 'town', ti: tw.ti }; renderUnseen(); }
-      flyTo(regionBBox({ type: 'town', ti: tw.ti }), 16); requestRender(); return;
+      flyTo(regionBBox({ type: 'town', ti: tw.ti }), 16); requestRender('top'); return;
     }
     if (t.dataset.cls != null) { flyTo(M.classes[+t.dataset.cls].bb, 6); return; }
     if (t.dataset.pf) { st.provFilter = t.dataset.pf; st.provMore = 60; renderProvince(); return; }
     if (t.dataset.ps) { st.provSort = t.dataset.ps; renderProvince(); return; }
-    if (t.dataset.legs) { st.expLegs = +t.dataset.legs; planRoute(); renderExpedition(); requestRender(); return; }
+    if (t.dataset.legs) { st.expLegs = +t.dataset.legs; planRoute(); renderExpedition(); requestRender('top'); return; }
     if (t.dataset.unz) { st.unZ = +t.dataset.unz; renderUnseen(); return; }
-    if (t.dataset.fog) { st.fog = t.dataset.fog; store.set('fog', st.fog); renderLegend(); requestRender(); return; }
+    if (t.dataset.fog) { st.fog = t.dataset.fog; store.set('fog', st.fog); renderLegend(); requestRender('base'); return; }
     const act = t.dataset.act;
     if (act === 'replay') setReader(st.reader, { animate: true });
     else if (act === 'fit') sel.transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
@@ -2485,7 +2549,7 @@ function bind() {
     else if (act === 'guide-prov') { st.guide.sc = M.subs[st.prov].c; resetGuide(); setTab('guide'); }
     else if (act === 'more') { st.provMore += 60; renderProvince(); }
     else if (act === 'key') { const lg = $('#legend'); lg.open = true; lg.querySelector('summary').focus(); }
-    else if (act === 'center-work') { const w = M.works[st.work]; const r = M.S * 2.2; flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14); }
+    else if (act === 'center-work') { const w = M.works[st.work]; const r = M.S * 1.5; flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14); }
     else if (act === 'exp-from-work') {
       const w = M.works[st.work];
       st.expRegion = w.town >= 0 ? { type: 'town', ti: w.town } : { type: 'sub', si: w.sub };
@@ -2497,9 +2561,9 @@ function bind() {
   document.addEventListener('change', (e) => {
     const t = e.target;
     if (t.id === 'exp-region') { st.expRegion = JSON.parse(t.value); planRoute(); renderExpedition(); flyTo(regionBBox(st.expRegion), 12); }
-    if (t.id === 'exp-free') { st.expFree = t.checked; planRoute(); renderExpedition(); requestRender(); }
+    if (t.id === 'exp-free') { st.expFree = t.checked; planRoute(); renderExpedition(); requestRender('top'); }
     if (t.id === 'un-region') { st.unRegion = JSON.parse(t.value); renderUnseen(); flyTo(regionBBox(st.unRegion), 12); }
-    if (t.id === 'un-show') { st.unShow = t.checked; requestRender(); }
+    if (t.id === 'un-show') { st.unShow = t.checked; requestRender('top'); }
     if (t.id === 'un-thr') { st.unThr = +t.value; renderUnseen(); }
     if (t.id === 'g-prov') { st.guide.sc = t.value; resetGuide(); const s = M.subByCode.get(t.value); if (s) { st.prov = s.si; flyTo(s.bb, 8); } renderGuide(); }
   });
@@ -2529,11 +2593,11 @@ function bind() {
     $('#dlg-settle').close();
     st.work = null; card.hidden = true;
     setReader(rd, { animate: true });
-    d3.select(cvTop).transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
+    d3.select(hit).transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
   };
   new ResizeObserver(() => { resize(); if (st.tab === 'unseen' && st.unseen) renderUnseen(); }).observe(mapwrap);
   const mq = matchMedia('(prefers-color-scheme: dark)');
-  const onTheme = () => { readTheme(); renderLegend(); requestRender(); };
+  const onTheme = () => { readTheme(); themeVer++; renderLegend(); if (st.tab === 'unseen' && st.unseen) renderUnseen(); requestRender(); };
   mq.addEventListener ? mq.addEventListener('change', onTheme) : mq.addListener(onTheme);
   new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
@@ -2587,7 +2651,7 @@ async function boot() {
   setReader(rd, { animate: false });
   $('#loading').hidden = true;
   requestRender();
-  document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => requestRender());
+  document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => { themeVer++; requestRender(); });
 }
 boot();
 })();

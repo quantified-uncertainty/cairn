@@ -29,12 +29,18 @@
  * 6. Outline ranges (lcc-outline.json) become "towns": each work belongs to the
  *    deepest range that contains its class number; a town's label sits at the
  *    median position of its works.
- * 7. The 609 works without a call number wash up on six "Uncharted Isles",
+ * 7. The 610 works without a usable LC call number wash up on six "Uncharted Isles",
  *    grouped by the subject search that found them.
- * 8. An example reader (synthetic, clearly labelled in the UI): about 150 works
- *    from probability, decision theory, machine learning, economics and the
+ * 8. An example reader (synthetic, clearly labelled in the UI): 150 works from
+ *    probability, decision theory, machine learning, economics and the
  *    philosophy of science: 22 hand-picked anchors plus a seeded, popularity-
- *    weighted sample, with synthetic read dates and a synthetic search history.
+ *    weighted sample from the matching subject searches, restricted to fitting
+ *    LC classes and skipping self-help shelves and study guides, with synthetic
+ *    read dates and a synthetic search history.
+ * 9. If public/prototypes/data/terra-incognita/field-guides.json exists (Claude-
+ *    written guides), every [OL…W] id in it must resolve to a catalog work in
+ *    that province, and any “quoted” text before an id must be a verbatim part
+ *    of that work's first sentence; the script exits non-zero otherwise.
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';

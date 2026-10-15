@@ -21,6 +21,9 @@
  *              Libby holdings, §2.2). Each work is joined to catalog.json by Open Library work id, or, when
  *              the shared catalog lacks it, looked up live in the Open Library search API (id stored).
  *   sample     The prefilled reading list (28 registry titles plus two deliberately messy lines).
+ *   linkCheck  HTTP status of every free / partial / shadow URL when this script ran (0 = no answer, e.g. a
+ *              host that resets connections; 403 = blocks bots, as DOAB does).
+ *   overdrive  OverDrive library keys (R03 §2.2) for "search this library" links.
  *   precomputed  Claude-written route explanations and two tray resolutions, labelled AI-generated.
  *
  * Live checks made by this script (polite: one request at a time, >= 1.1 s apart, User-Agent set):
@@ -94,6 +97,8 @@ const rules = {
     d: 'Open Library marks the work "public": a full scan anyone can read without a loan.' },
   A6: { name: 'Partial free text', src: 'R01 §9 (coverage test)', conf: 'verified',
     d: 'Only part of the book is free. Counted as a start, not as the book.' },
+  A7: { name: 'Open textbook (OpenStax)', src: 'R01 §3; openstax.json', conf: 'verified',
+    d: 'Free online from OpenStax. Most titles moved from CC BY to CC BY-NC-SA on 2026-04-22.' },
   B1: { name: 'Internet Archive loan, English scan verified', src: 'R01 §9 (corrected); R03 §1.6; IA metadata re-checked ' + CHECKED, conf: 'verified',
     d: 'An English-language scan is in the Internet Archive lending collection. Free account; 1-hour renewable loans, some 14-day; waitlists possible.' },
   B2: { name: 'Internet Archive loan flag, edition unverified', src: 'catalog.json: ebook_access = borrowable; R01 verification #10', conf: 'likely',
@@ -221,7 +226,7 @@ const works = [
   { key: 'pml1', olq: { title: 'Probabilistic Machine Learning', author: 'Kevin P. Murphy' }, t: 'Probabilistic Machine Learning: An Introduction', a: ['Kevin P. Murphy'], y: 2022, kind: 'textbook', pub: 'MIT Press', alias: ['pml', 'probml', 'pml1'],
     free: [{ rule: 'A1', label: 'AUTHOR PDF', url: 'https://probml.github.io/pml-book/book1.html', terms: 'Draft PDF dated 2025-04-18, CC BY-NC-ND.' }] },
   { key: 'prml', ol: 'OL2963587W', t: 'Pattern Recognition and Machine Learning', a: ['Christopher M. Bishop'], y: 2006, kind: 'textbook', pub: 'Springer', alias: ['prml'],
-    free: [{ rule: 'A1', label: 'PUBLISHER PDF', url: 'https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/', terms: 'Full PDF hosted by Microsoft Research; no licence text on the page.' }],
+    free: [{ rule: 'A1', label: 'AUTHOR PDF', url: 'https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/', terms: 'Full PDF hosted by Microsoft Research, where the author works; no licence text on the page.' }],
     oreilly: false, perlego: false, libby: { checked: true }, used: [{ p: 38.19, isbn: '9780387310732' }] },
   { key: 'bda3', ol: 'OL17552975W', t: 'Bayesian Data Analysis', ed: '3rd ed. (2013)', a: ['Andrew Gelman', 'John B. Carlin', 'Hal S. Stern', 'David B. Dunson', 'Aki Vehtari', 'Donald B. Rubin'], y: 2013, kind: 'textbook', pub: 'CRC Press', alias: ['bda', 'bda3'],
     free: [{ rule: 'A1', label: 'AUTHOR PDF', url: 'https://sites.stat.columbia.edu/gelman/book/', terms: 'PDF "for non-commercial purposes".' }],
@@ -245,7 +250,7 @@ const works = [
   { key: 'ddia', olq: { title: 'Designing Data-Intensive Applications', author: 'Kleppmann' }, t: 'Designing Data-Intensive Applications', a: ['Martin Kleppmann'], y: 2017, kind: 'technical', pub: "O'Reilly Media", alias: ['ddia'],
     oreilly: true, perlego: false, libby: { checked: true, sfpl: { c: 10 }, bay: ['OPL', 'SJPL', 'SCCLD'], lapl: true }, used: [{ p: 44.54, isbn: '9781449373320', ed: '1st ed.' }],
     notes: ['Not free: the book site points to purchase (R01 §4).'] },
-  { key: 'geron', ol: 'OL19543288W', t: 'Hands-On Machine Learning with Scikit-Learn and TensorFlow', a: ['Aurélien Géron'], y: 2017, kind: 'technical', pub: "O'Reilly Media", alias: ['homl'],
+  { key: 'geron', ol: 'OL19543288W', t: 'Hands-On Machine Learning with Scikit-Learn and TensorFlow', a: ['Aurélien Géron'], y: 2017, kind: 'technical', pub: "O'Reilly Media", alias: ['homl', 'hands on machine learning'],
     iaCheck: true, iaEdNote: 'The lendable scan is the 1st edition (2017, TensorFlow 1). The current edition is the 3rd (2022).',
     oreilly: true, perlego: false, libby: { checked: true, bay: ['SJPL', 'SCCLD'], lapl: true }, used: [{ p: 32.74, isbn: '9781098125974', ed: '3rd ed.' }] },
   { key: 'clrs', ol: 'OL4781294W', t: 'Introduction to Algorithms', a: ['Thomas H. Cormen', 'Charles E. Leiserson', 'Ronald L. Rivest', 'Clifford Stein'], y: 1990, kind: 'textbook', pub: 'MIT Press', alias: ['clrs'],
@@ -311,7 +316,7 @@ const sample = [
   'Laplace, A Philosophical Essay on Probabilities',
   'Hume, An Enquiry Concerning Human Understanding',
   'Darwin, On the Origin of Species',
-  'the Kahneman/Tversky heuristics & biases volume',
+  'the heuristics & biases anthology Tversky co-edited',
   "de Finetti's two-volume Theory of Probability (the Wiley one)",
 ].join('\n');
 
@@ -328,14 +333,14 @@ const explanations = {
   ddia: 'Not free: the author\'s site points to purchase. O\'Reilly carries both editions [O1], and a public library card reaches O\'Reilly at no cost [O3]. SFPL also held 10 Libby copies [L1].',
 };
 const tray = [
-  { line: 'the Kahneman/Tversky heuristics & biases volume',
-    match: { src: 'catalog', id: 'OL12970183W' }, confidence: 0.86,
-    explanation: 'This is Judgment under Uncertainty: Heuristics and Biases, edited by Kahneman, Slovic and Tversky; the local catalog lists it as "Judgement under uncertainty" (OL12970183W). Open Library has no ebook for it, so there is no Internet Archive route. Its ISBN is a Cambridge one, and O\'Reilly carries no Cambridge titles [O2]; Perlego carries about 15,700, so it may be there, unchecked [E2]. Otherwise, buy a copy [U2].' },
+  { line: 'the heuristics & biases anthology Tversky co-edited',
+    match: { src: 'catalog', id: 'OL12970183W' }, confidence: 0.85,
+    explanation: 'This is Judgment under Uncertainty: Heuristics and Biases (1982), edited by Kahneman, Slovic and Tversky; the catalog spells it "Judgement under uncertainty" (OL12970183W). The closest title match, Heuristics and Biases (2002), was edited by Gilovich, Griffin and Kahneman, not Tversky. Open Library has no ebook of the 1982 volume, so there is no Internet Archive route. Its ISBN is Cambridge\'s, and O\'Reilly carries no Cambridge titles [O2]; Perlego carries about 15,700, so it may be there, unchecked [E2]. A library copy is possible but unchecked [L2]; otherwise buy one [U2].' },
   { line: "de Finetti's two-volume Theory of Probability (the Wiley one)",
     match: null, confidence: 0.7,
     identified: { t: 'Theory of Probability: A Critical Introductory Treatment', a: ['Bruno de Finetti'], y: 1974, pub: 'Wiley', kind: 'textbook' },
     olq: { title: 'Theory of Probability', author: 'de Finetti' },
-    explanation: 'Not in the local catalog. This is most likely Bruno de Finetti\'s Theory of Probability (Wiley, two volumes, 1974–75, translated by Machí and Smith). It is in copyright, so no Gutenberg route [A3]. Wiley is O\'Reilly\'s largest publisher (about 9,200 titles) and has about 19,000 Perlego titles, so either subscription may carry it, unchecked [O2] [E2]. Otherwise buy a copy [U2].' },
+    explanation: 'Not in the local catalog. This is most likely Bruno de Finetti\'s Theory of Probability: A Critical Introductory Treatment (Wiley, two volumes, 1974–75). It is still in copyright, and Open Library has no ebook of it. Wiley is O\'Reilly\'s largest publisher (about 9,200 titles) and has about 19,000 titles on Perlego, so either subscription may carry it, unchecked [O2] [E2]. Otherwise buy a copy [U2].' },
 ];
 
 // ---------------------------------------------------------------------------------------------
@@ -439,6 +444,29 @@ for (const t of tray) {
   t.provenance = PROV;
 }
 
+// Link check for every free, partial and shadow URL (status recorded, shown on the route).
+const linkCheck = {};
+if (!OFFLINE) {
+  for (const w of out) for (const r of [...(w.free || []), ...(w.partial || []), ...(w.shadow || [])]) {
+    if (linkCheck[r.url]) continue;
+    const wait = 1100 - (Date.now() - lastReq);
+    if (wait > 0) await new Promise((res) => setTimeout(res, wait));
+    lastReq = Date.now();
+    let status = 0;
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 20000);
+      const res = await fetch(r.url, { method: 'GET', redirect: 'follow', signal: ctl.signal, headers: { 'User-Agent': UA } });
+      clearTimeout(timer);
+      status = res.status;
+      try { await res.body?.cancel(); } catch {}
+    } catch (e) { status = 0; }
+    linkCheck[r.url] = { status, date: new Date().toISOString().slice(0, 10) };
+    console.log(`  link ${status || 'ERR'} ${r.url}`);
+  }
+  writeFileSync(join(CACHE, 'linkcheck.json'), JSON.stringify(linkCheck));
+} else if (existsSync(join(CACHE, 'linkcheck.json'))) Object.assign(linkCheck, JSON.parse(readFileSync(join(CACHE, 'linkcheck.json'), 'utf-8')));
+
 const payload = {
   title: 'The Circulation Desk: access-route registry',
   generated: new Date().toISOString().slice(0, 10),
@@ -448,7 +476,8 @@ const payload = {
     R03: 'research/R03-paid-and-institutional-access.md (Paid and institutional access; 33 + 20 title spot-check), 2026-10-15',
     catalog: 'catalog.json: Open Library works (CC0), fetched October 2026',
   },
-  rules, keys, publishers, works: out, sample,
+  rules, keys, publishers, works: out, sample, linkCheck,
+  overdrive: { sfpl: 'sfpl', OPL: 'oakland', BPL: 'berkeleypubliclibrary', SJPL: 'sanjose', SCCLD: 'santaclara', PLS: 'pls', lapl: 'lapl' },
   precomputed: { provenance: PROV, explanations, tray },
 };
 writeFileSync(join(OUT_DIR, 'routes.json'), JSON.stringify(payload));

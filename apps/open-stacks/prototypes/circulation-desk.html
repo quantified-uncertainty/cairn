@@ -1,0 +1,1447 @@
+<title>The Circulation Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=B612+Mono:wght@400;700&family=Overpass:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap">
+<style>
+:root{
+  --tile:#F2F2EE; --grout:#DCDDD7; --glaze:rgba(255,255,255,.75);
+  --panel:#FCFCFA; --panel-2:#F1F1EC; --line:#D3D4CE; --line-2:#B7B8B1;
+  --ink:#121315; --ink-2:#383B40; --ink-3:#62666C; --ink-4:#8E9297;
+  --sign:#0D0E0F; --sign-ink:#F5F5F2; --sign-ink-2:#A9ACAF; --sign-rule:rgba(245,245,242,.9);
+  --board:#0B0B0C; --board-2:#131416; --board-line:#1E1F22; --board-ink:#EEECE6; --board-ink-2:#A3A5A8; --board-ink-3:#6F7276; --board-hover:#17181B;
+  --flap-top:#2A2B2E; --flap-top-2:#232427; --flap-bot:#1C1D20; --flap-ink:#F3F0E8; --flap-seam:#040405;
+  --free:#00933C; --free-2:#6CBE45; --loan:#0039A6; --lib:#B933AD; --sub:#FCCC0A; --buy:#EE352E; --pd:#A7A9AC; --warn:#FF6319;
+  --lamp-ok:#3BD46A; --lamp-wait:#FFB000; --lamp-stop:#FF4A36; --lamp-off:#4A4C50;
+  --focus:#0039A6; --link:#0039A6; --ai:#6B3FA0; --ai-bg:#F3EEF9;
+  --shadow:0 1px 0 rgba(0,0,0,.04), 0 10px 30px -18px rgba(0,0,0,.35);
+  --tile-img:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48'%3E%3Cpath d='M0 .5H96M0 24.5H96M.5 0V24M48.5 24V48' stroke='%23DCDDD7' stroke-width='1' fill='none'/%3E%3Cpath d='M1 1.5H95M1 25.5H47M49 25.5H95' stroke='%23FFFFFF' stroke-width='1' fill='none' opacity='.9'/%3E%3C/svg%3E");
+  --f-sign:"Big Shoulders Display","Oswald","Arial Narrow",sans-serif;
+  --f-ui:"Overpass","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"B612 Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --tile:#0F1011; --grout:#191A1C; --glaze:rgba(255,255,255,.02);
+    --panel:#151618; --panel-2:#1B1C1F; --line:#2A2C30; --line-2:#3B3E43;
+    --ink:#EDECE8; --ink-2:#C3C5C8; --ink-3:#8F9297; --ink-4:#666A6F;
+    --sign:#000; --sign-ink:#F5F5F2; --sign-ink-2:#9C9FA3;
+    --board:#060607; --board-2:#0E0F10; --board-line:#1A1B1E; --board-hover:#121315;
+    --loan:#2A5BD0; --focus:#7FA6FF; --link:#8FB0FF; --ai:#C3A5EE; --ai-bg:#221B2D;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+    --tile-img:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48'%3E%3Cpath d='M0 .5H96M0 24.5H96M.5 0V24M48.5 24V48' stroke='%23191A1C' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --tile:#0F1011; --grout:#191A1C; --glaze:rgba(255,255,255,.02);
+  --panel:#151618; --panel-2:#1B1C1F; --line:#2A2C30; --line-2:#3B3E43;
+  --ink:#EDECE8; --ink-2:#C3C5C8; --ink-3:#8F9297; --ink-4:#666A6F;
+  --sign:#000; --sign-ink:#F5F5F2; --sign-ink-2:#9C9FA3;
+  --board:#060607; --board-2:#0E0F10; --board-line:#1A1B1E; --board-hover:#121315;
+  --loan:#2A5BD0; --focus:#7FA6FF; --link:#8FB0FF; --ai:#C3A5EE; --ai-bg:#221B2D;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  --tile-img:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48'%3E%3Cpath d='M0 .5H96M0 24.5H96M.5 0V24M48.5 24V48' stroke='%23191A1C' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  color-scheme:dark;
+}
+html,body{min-height:100%}
+body{margin:0;background:var(--tile);background-image:linear-gradient(180deg,var(--glaze),transparent 420px),var(--tile-img);color:var(--ink);font:400 15px/1.45 var(--f-ui);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--link);text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- station sign ---------- */
+.sign{background:var(--sign);color:var(--sign-ink);padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));position:relative}
+.sign::before{content:"";position:absolute;left:0;right:0;top:5px;height:2px;background:var(--sign-rule)}
+.sign-in{max-width:1480px;margin:0 auto;display:flex;align-items:center;gap:14px;padding-top:6px}
+.picto{flex:none;width:44px;height:44px;border-radius:50%;background:var(--sign-ink);display:grid;place-items:center}
+.picto svg{width:26px;height:26px}
+.sign-t{min-width:0;flex:1}
+.sign h1{margin:0;font:800 32px/1 var(--f-sign);letter-spacing:.035em;text-transform:uppercase}
+.sign p{margin:3px 0 0;color:var(--sign-ink-2);font-size:14px}
+.sign-r{display:flex;align-items:center;gap:8px;flex:none}
+.clock{font:700 13px/1 var(--f-mono);letter-spacing:.08em;color:var(--sign-ink);border:1px solid #3a3c40;padding:7px 9px;border-radius:3px;white-space:nowrap}
+.clock b{color:var(--lamp-wait);font-weight:700}
+.sbtn{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);border-radius:3px;padding:6px 11px;font:700 13px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.sbtn:hover{border-color:var(--sign-ink)}
+.sbtn svg{width:15px;height:15px;vertical-align:-3px}
+
+/* ---------- layout ---------- */
+.hall{max-width:1480px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-right,0px)) 60px max(16px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:340px minmax(0,1fr);gap:22px;align-items:start}
+.rail,.main{min-width:0;display:flex;flex-direction:column;gap:18px}
+
+/* ---------- panels ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
+.band{display:flex;align-items:center;gap:10px;background:var(--sign);color:var(--sign-ink);padding:8px 12px 7px;position:relative}
+.band::before{content:"";position:absolute;left:0;right:0;top:3px;height:1px;background:rgba(245,245,242,.55)}
+.band h2{margin:0;font:800 19px/1 var(--f-sign);letter-spacing:.06em;text-transform:uppercase;flex:1;min-width:0}
+.band .num{flex:none;width:22px;height:22px;background:var(--sign-ink);color:var(--sign);display:grid;place-items:center;font:800 14px/1 var(--f-sign);border-radius:2px}
+.band .aside{font:400 12px/1.2 var(--f-mono);color:var(--sign-ink-2);letter-spacing:.04em;text-align:right}
+.pbody{padding:12px 14px 14px}
+.hint{color:var(--ink-3);font-size:13px;margin:0}
+
+/* intake */
+#intake{width:100%;min-height:212px;resize:vertical;border:1px solid var(--line-2);background:var(--panel-2);padding:10px 11px;font:400 12.5px/1.6 var(--f-mono);color:var(--ink);border-radius:0;background-image:repeating-linear-gradient(transparent 0 19px,var(--line) 19px 20px);background-attachment:local;background-position:0 9px;line-height:20px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{border:1px solid var(--ink);background:var(--panel);color:var(--ink);padding:7px 12px 6px;font:700 13px/1.1 var(--f-ui);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.btn:hover{background:var(--panel-2)}
+.btn.primary{background:var(--ink);color:var(--panel)}
+.btn.primary:hover{opacity:.88}
+.btn.small{padding:5px 9px 4px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.ai{border-color:var(--ai);color:var(--ai);background:var(--ai-bg)}
+.parse-stat{margin-top:9px;font:400 12px/1.4 var(--f-mono);color:var(--ink-3)}
+.parse-stat b{color:var(--ink);font-weight:700}
+details.intake-d>summary{list-style:none;cursor:pointer}
+details.intake-d>summary::-webkit-details-marker{display:none}
+details.intake-d>summary .tog{font:400 12px/1 var(--f-mono);color:var(--sign-ink-2)}
+
+/* keyring */
+.keys{display:flex;flex-direction:column;gap:7px}
+.kgroup{font:700 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 1px}
+.kgroup:first-child{margin-top:0}
+.key{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line-2);background:var(--panel);padding:7px 10px 7px 8px;cursor:pointer;border-radius:2px 14px 14px 2px;transition:background .15s,border-color .15s}
+.key:hover{border-color:var(--ink-3)}
+.key input{position:absolute;opacity:0;pointer-events:none}
+.key .hole{width:12px;height:12px;border-radius:50%;border:2px solid var(--line-2);background:var(--tile);flex:none}
+.key .kt{min-width:0}
+.key .kn{font:700 14px/1.15 var(--f-ui);display:flex;align-items:center;gap:6px}
+.key .kf{font-size:12px;color:var(--ink-3);line-height:1.3;margin-top:1px}
+.key .kc{font:700 12px/1.1 var(--f-mono);text-align:right;white-space:nowrap}
+.key .kc small{display:block;font-weight:400;color:var(--ink-3);margin-top:3px}
+.key.on{background:var(--sign);border-color:var(--sign);color:var(--sign-ink)}
+.key.on .kf,.key.on .kc small{color:var(--sign-ink-2)}
+.key.on .hole{border-color:var(--sign-ink-2);background:var(--sign-ink)}
+.key.fixed{cursor:default}
+.key:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.key.restricted{border-style:dashed}
+.elig{margin:6px 0 0;padding:8px 10px;background:var(--panel-2);border-left:3px solid var(--pd);font-size:12.5px;color:var(--ink-2)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+
+/* advisor */
+.nk-top{border:2px solid var(--ink);padding:11px 12px 12px;position:relative;background:var(--panel)}
+.nk-top .lbl{font:700 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.nk-top .name{font:800 27px/1 var(--f-sign);letter-spacing:.04em;text-transform:uppercase;margin:6px 0 4px;display:flex;align-items:center;gap:8px}
+.nk-top .gain{font:700 15px/1.3 var(--f-ui)}
+.nk-top .gain .g{color:var(--free)}
+.nk-top .fr{font-size:12.5px;color:var(--ink-3);margin:3px 0 10px}
+.nk-list{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line)}
+.nk-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+.nk-list .k{font-weight:700;display:flex;gap:6px;align-items:center;min-width:0}
+.nk-list .k span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nk-list .v{font:400 12px/1.2 var(--f-mono);color:var(--ink-2);text-align:right;white-space:nowrap}
+.nk-list .v b{color:var(--free)}
+.nk-list .zero{color:var(--ink-4)}
+.path{margin-top:14px}
+.path h3{margin:0 0 8px;font:800 15px/1.1 var(--f-sign);letter-spacing:.07em;text-transform:uppercase}
+.line-map{position:relative;padding-left:22px;margin:0;list-style:none}
+.line-map::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:5px;background:var(--ink);border-radius:3px}
+.line-map li{position:relative;padding:4px 0 8px;font-size:13px;line-height:1.3}
+.line-map li::before{content:"";position:absolute;left:-19px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--panel);border:3px solid var(--ink)}
+.line-map li.term::before{background:var(--ink)}
+.line-map b{font-weight:700}
+.line-map .m{font:400 11.5px/1.3 var(--f-mono);color:var(--ink-3);display:block;margin-top:1px}
+.path-total{margin-top:4px;padding-top:8px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;font:700 14px/1.2 var(--f-ui)}
+.path-total span:last-child{font-family:var(--f-mono)}
+
+/* ---------- departures board ---------- */
+.board{background:var(--board);color:var(--board-ink);border-radius:6px;padding:0 0 10px;box-shadow:0 0 0 1px #000,0 0 0 5px #2b2c2f,0 0 0 6px #000,0 24px 50px -24px rgba(0,0,0,.6);overflow:hidden;margin:6px}
+.btop{display:flex;align-items:flex-end;gap:16px;padding:16px 18px 10px;border-bottom:1px solid var(--board-line);flex-wrap:wrap}
+.btop h2{margin:0;font:900 40px/.86 var(--f-sign);letter-spacing:.05em;text-transform:uppercase;color:var(--flap-ink)}
+.btop .sub{font:400 12px/1.3 var(--f-mono);color:var(--board-ink-2);letter-spacing:.04em;margin-top:6px}
+.btop .grow{flex:1;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{background:transparent;border:1px solid #34363a;color:var(--board-ink-2);padding:6px 9px 5px;font:700 11.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.seg button[aria-pressed="true"]{background:var(--flap-ink);color:#0b0b0c;border-color:var(--flap-ink)}
+.seg button:hover{border-color:var(--board-ink-2)}
+.seg .n{opacity:.7;margin-left:4px}
+
+.totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--board-line);border-bottom:1px solid var(--board-line)}
+.tot{background:var(--board);padding:12px 16px 13px;min-width:0}
+.tot .cap{font:700 11px/1 var(--f-mono);letter-spacing:.14em;color:var(--board-ink-2);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.tot .val{margin:9px 0 7px;display:flex;gap:3px;align-items:center;flex-wrap:nowrap}
+.tot .unit{font:700 14px/1 var(--f-mono);color:var(--board-ink-2);margin-left:5px}
+.tot .note{font-size:12.5px;line-height:1.3;color:var(--board-ink-2);min-height:2.6em}
+.tot .note b{color:var(--board-ink);font-weight:600}
+.tot select{background:#1a1b1e;border:1px solid #34363a;color:var(--board-ink);font:700 11px/1 var(--f-mono);padding:3px 4px;border-radius:2px}
+.tot .take{margin-top:6px;background:var(--flap-ink);color:#0b0b0c;border:0;font:700 11.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 5px;border-radius:2px;cursor:pointer}
+.tot .take:hover{background:#fff}
+.tot .take[hidden]{display:none}
+
+/* flaps */
+.flap{position:relative;display:inline-block;vertical-align:middle;height:var(--fh,26px);line-height:var(--fh,26px);min-width:var(--fw,auto);padding:0 var(--fp,7px);font:700 var(--fs,13px)/var(--fh,26px) var(--f-mono);letter-spacing:.05em;color:var(--flap-ink);text-transform:uppercase;white-space:nowrap;border-radius:3px;background:var(--flap-bot);box-shadow:0 1px 0 rgba(0,0,0,.85),inset 0 0 0 1px rgba(255,255,255,.035);perspective:260px;text-align:left}
+.flap .sz{visibility:hidden}
+.flap .h{position:absolute;inset:0;padding:0 var(--fp,7px);border-radius:inherit;overflow:hidden;backface-visibility:hidden;transform-origin:50% 50%}
+.flap .h.t{clip-path:inset(0 0 50% 0);background:linear-gradient(180deg,var(--flap-top),var(--flap-top-2))}
+.flap .h.b{clip-path:inset(50% 0 0 0);background:var(--flap-bot)}
+.flap::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:var(--flap-seam);box-shadow:0 1px 0 rgba(255,255,255,.05);z-index:4;pointer-events:none}
+.flap::before{content:"";position:absolute;left:-1px;right:-1px;top:calc(50% - 2px);height:4px;background:linear-gradient(90deg,#000 0 2px,transparent 2px calc(100% - 2px),#000 calc(100% - 2px));z-index:5;pointer-events:none}
+.flap .leaf{z-index:3;will-change:transform}
+.flap.c{--fp:0px;min-width:0;width:var(--cw,19px);text-align:center}
+.flap.c .h{text-align:center}
+.tot .flap.c{--fh:40px;--fs:25px;--cw:26px}
+.tot .flap.w{--fh:40px;--fs:20px}
+.flap.dim{color:#767879}
+
+/* rows */
+.bhead,.rowb{display:grid;grid-template-columns:30px minmax(0,1fr) 190px 150px 112px 92px 46px;gap:12px;align-items:center}
+.bhead{padding:10px 18px 7px;font:700 10.5px/1 var(--f-mono);letter-spacing:.14em;color:var(--board-ink-3);text-transform:uppercase;border-bottom:1px solid var(--board-line)}
+.bhead .r{text-align:right}
+.rows{list-style:none;margin:0;padding:0}
+.row{border-bottom:1px solid var(--board-line)}
+.row.hide{display:none}
+.rowb{width:100%;background:transparent;border:0;color:inherit;text-align:left;padding:9px 18px;cursor:pointer;font:inherit}
+.rowb:hover{background:var(--board-hover)}
+.row[data-open="1"] .rowb{background:var(--board-2)}
+.c-no{font:700 13px/1 var(--f-mono);color:var(--board-ink-3)}
+.c-title{min-width:0}
+.c-title b{display:block;font:600 15px/1.2 var(--f-ui);color:var(--board-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-title i{display:block;font-style:normal;font-size:12.5px;color:var(--board-ink-2);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-title .tag{display:inline-block;font:700 9.5px/1 var(--f-mono);letter-spacing:.08em;padding:3px 4px 2px;border:1px solid var(--lamp-wait);color:var(--lamp-wait);border-radius:2px;margin-left:6px;vertical-align:2px}
+.c-title .tag.unv{border-style:dashed;border-color:var(--board-ink-2);color:var(--board-ink-2)}
+.c-route{display:flex;align-items:center;gap:8px;min-width:0}
+.c-route .flap{--fw:calc(12ch + 14px)}
+.c-via{font:400 11.5px/1.3 var(--f-mono);color:var(--board-ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-via .conf{display:block;color:var(--board-ink-3);font-size:10.5px;margin-top:2px;letter-spacing:.04em}
+.c-dep{display:flex;align-items:center;gap:7px}
+.c-dep .flap{--fw:calc(8ch + 14px)}
+.c-fare .flap{--fw:calc(7ch + 14px)}
+.c-hrs{font:700 13px/1 var(--f-mono);color:var(--board-ink-2);text-align:right}
+.lamp{width:9px;height:9px;border-radius:50%;background:var(--lamp-off);flex:none;box-shadow:0 0 0 2px #000}
+.lamp.tonight{background:var(--lamp-ok);box-shadow:0 0 0 2px #000,0 0 8px var(--lamp-ok)}
+.lamp.maybe,.lamp.wait,.lamp.partial{background:var(--lamp-wait);box-shadow:0 0 0 2px #000,0 0 7px rgba(255,176,0,.6)}
+.lamp.buy{background:var(--lamp-stop);box-shadow:0 0 0 2px #000,0 0 7px rgba(255,74,54,.55)}
+
+/* route bullets (transit style) */
+.bul{flex:none;width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font:800 13px/1 var(--f-sign);color:#fff;letter-spacing:0}
+.bul.free{background:var(--free)}.bul.partial{background:var(--free-2);color:#0b0b0c}.bul.loan{background:var(--loan)}.bul.library{background:var(--lib)}
+.bul.sub{background:var(--sub);color:#0b0b0c}.bul.buy{background:var(--buy)}.bul.pd{background:var(--pd);color:#0b0b0c}.bul.warn{background:transparent;border:2px solid var(--warn);color:var(--warn)}
+.bul.shadow{background:transparent;border:2px dashed var(--free);color:var(--free)}
+.bul.sm{width:16px;height:16px;font-size:10px}
+
+/* detail (timetable) */
+.det{background:var(--panel);color:var(--ink);padding:16px 18px 18px;border-top:3px solid var(--flap-ink)}
+.det[hidden]{display:none}
+.det-h{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.det-h .tt{flex:1;min-width:240px}
+.det-h h3{margin:0;font:700 20px/1.2 var(--f-ui)}
+.det-h .meta{font-size:13px;color:var(--ink-3);margin-top:4px}
+.det-h .ids{font:400 11.5px/1.6 var(--f-mono);color:var(--ink-3);text-align:right}
+.det-h .ids a{color:var(--ink-2)}
+.matchline{margin:10px 0 0;font:400 12px/1.4 var(--f-mono);color:var(--ink-3);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cbar{display:inline-block;width:70px;height:6px;background:var(--line);position:relative;vertical-align:1px}
+.cbar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink-2)}
+.tt-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line)}
+table.tt{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+table.tt th{font:700 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 9px;background:var(--panel-2);border-bottom:1px solid var(--line)}
+table.tt td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tt tr:last-child td{border-bottom:0}
+table.tt tr.best td{background:color-mix(in srgb,var(--free) 9%,transparent)}
+table.tt tr.off td{color:var(--ink-3)}
+table.tt .rt{display:flex;gap:7px;align-items:center;font:700 12px/1.2 var(--f-mono);white-space:nowrap}
+table.tt .terms{font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.35}
+.held{font:700 10.5px/1 var(--f-mono);letter-spacing:.06em;padding:2px 4px 1px;border-radius:2px;white-space:nowrap}
+.held.y{background:var(--ink);color:var(--panel)}
+.held.n{border:1px solid var(--line-2);color:var(--ink-3)}
+.rule{font:700 11px/1 var(--f-mono);padding:3px 5px 2px;border:1px solid var(--ink-2);border-radius:2px;background:transparent;color:var(--ink);cursor:pointer;letter-spacing:.03em}
+.rule:hover{background:var(--ink);color:var(--panel)}
+.rule.bad{border-color:var(--buy);color:var(--buy);text-decoration:line-through}
+.conf{font:400 11px/1 var(--f-mono);letter-spacing:.04em}
+.conf.verified{color:var(--free)}.conf.likely{color:#B57A00}.conf.estimate{color:var(--warn)}
+:root[data-theme="dark"] .conf.likely{color:#E5A82E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .conf.likely{color:#E5A82E}}
+.det-cols{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;margin-top:14px}
+.det h4{margin:0 0 6px;font:800 14px/1.1 var(--f-sign);letter-spacing:.08em;text-transform:uppercase}
+.notes{margin:0;padding:0;list-style:none;font-size:13px;color:var(--ink-2)}
+.notes li{padding:5px 0 5px 14px;position:relative;border-bottom:1px dashed var(--line)}
+.notes li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;background:var(--warn)}
+.why{font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.why p{margin:0 0 8px}
+.ai-box{border:1px solid var(--ai);background:var(--ai-bg);padding:9px 11px;margin-top:8px}
+.ai-box .badge{font:700 10.5px/1 var(--f-mono);letter-spacing:.06em;color:var(--ai);text-transform:uppercase;display:block;margin-bottom:6px}
+.ai-box .out{white-space:pre-wrap}
+.ai-box .cites{margin-top:7px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;font:400 11px/1 var(--f-mono);color:var(--ink-3)}
+.shadow-l{font-size:13px}
+
+/* tray */
+.tray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.slip{border:1px solid var(--line-2);background:var(--panel);padding:11px 12px 12px;position:relative;background-image:linear-gradient(90deg,transparent 0 22px,color-mix(in srgb,var(--buy) 35%,transparent) 22px 23px,transparent 23px)}
+.slip .raw{font:400 13px/1.45 var(--f-mono);padding-left:20px;color:var(--ink)}
+.slip .ln{position:absolute;left:5px;top:12px;font:700 10px/1 var(--f-mono);color:var(--ink-4)}
+.slip .why2{font-size:12.5px;color:var(--ink-3);margin:6px 0 0 20px}
+.cands{margin:8px 0 0 20px;display:flex;flex-direction:column;gap:5px}
+.cand{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid var(--line);padding:5px 7px;font-size:12.5px;background:var(--panel-2)}
+.cand .ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cand .ct small{color:var(--ink-3)}
+.slip .acts{margin:9px 0 0 20px;display:flex;gap:6px;flex-wrap:wrap}
+.slip .ai-box{margin-left:20px}
+.tray-empty{color:var(--ink-3);font-size:13px}
+
+/* rulebook */
+.rules-l{columns:2 320px;column-gap:24px;margin:0;padding:0;list-style:none}
+.rules-l li{break-inside:avoid;padding:7px 0 8px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.4;scroll-margin-top:16px}
+.rules-l li.flash{background:color-mix(in srgb,var(--sub) 30%,transparent)}
+.rules-l .rh{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.rules-l .rh b{font-weight:700}
+.rules-l .src{font:400 11px/1.3 var(--f-mono);color:var(--ink-3);display:block;margin-top:3px}
+
+/* board foot / legend */
+.bfoot{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 18px 2px;font:400 11.5px/1.2 var(--f-mono);color:var(--board-ink-2)}
+.bfoot .lg{display:flex;gap:6px;align-items:center}
+.bfoot .grow{flex:1}
+.bfoot button{background:transparent;border:1px solid #3a3c40;color:var(--board-ink);font:700 11.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px 6px;border-radius:2px;cursor:pointer}
+.bfoot button:hover{border-color:var(--board-ink)}
+.ai-avail{font:400 11.5px/1.3 var(--f-mono);color:var(--ink-3)}
+.loading{padding:40px 18px;color:var(--board-ink-2);font:700 14px/1 var(--f-mono);letter-spacing:.1em}
+
+/* dialogs */
+dialog{border:0;padding:0;max-width:min(760px,calc(100vw - 32px));width:100%;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(5,5,6,.6)}
+dialog .pbody{padding:16px 20px 20px;max-height:min(76vh,760px);overflow:auto}
+dialog h3{font:800 16px/1.1 var(--f-sign);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 6px}
+dialog p,dialog li{font-size:14px;line-height:1.5;color:var(--ink-2)}
+dialog ul{padding-left:18px;margin:6px 0}
+dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);font:700 12px/1 var(--f-mono);padding:6px 9px;cursor:pointer;border-radius:2px}
+#packetText{width:100%;min-height:340px;font:400 12px/1.5 var(--f-mono);background:var(--panel-2);color:var(--ink);border:1px solid var(--line-2);padding:10px}
+
+@media (max-width:1180px){
+  .hall{grid-template-columns:300px minmax(0,1fr)}
+  .bhead,.rowb{grid-template-columns:26px minmax(0,1fr) 176px 98px 92px 40px;gap:10px}
+  .c-via,.bhead .h-via{display:none}
+  .c-hrs{display:block}
+}
+@media (max-width:980px){
+  .hall{grid-template-columns:minmax(0,1fr)}
+  .rail{order:2}
+  .main{order:1}
+  .totals{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .sign h1{font-size:24px}
+  .sign p{font-size:12.5px}
+  .clock{display:none}
+  .sbtn .lbl{display:none}
+  .hall{padding-top:14px;gap:16px}
+  .board{margin:3px;border-radius:4px}
+  .btop{padding:13px 12px 9px}
+  .btop h2{font-size:32px}
+  .tot{padding:10px 11px 11px}
+  .tot .flap.c{--fh:32px;--fs:19px;--cw:20px}
+  .tot .flap.w{--fh:32px;--fs:15px}
+  .tot .note{font-size:11.5px;min-height:0}
+  .bhead{display:none}
+  .rowb{grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"no ti ti" "no ro de" "no vi fa";gap:7px 8px;padding:10px 12px}
+  .c-no{grid-area:no;align-self:start;padding-top:3px}
+  .c-title{grid-area:ti}
+  .c-route{grid-area:ro}
+  .c-dep{grid-area:de;justify-self:end}
+  .c-via{grid-area:vi;display:block;align-self:center}
+  .c-fare{grid-area:fa;justify-self:end}
+  .c-hrs{display:none}
+  .c-title b{white-space:normal;font-size:14.5px}
+  .c-route .flap{--fs:11.5px;--fh:24px}
+  .c-dep .flap,.c-fare .flap{--fs:11.5px;--fh:24px}
+  .det{padding:14px 12px 16px}
+  .det-cols{grid-template-columns:minmax(0,1fr)}
+  .det-h .ids{text-align:left}
+  .bfoot{padding:10px 12px 2px}
+  .tray-list{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+
+<header class="sign">
+  <div class="sign-in">
+    <span class="picto" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none"><path d="M3 6.5c3.2-1.4 6.4-1.4 9.5.6v13.4c-3.1-2-6.3-2-9.5-.6z" fill="#0D0E0F"/><path d="M23 6.5c-3.2-1.4-6.4-1.4-9.5.6v13.4c3.1-2 6.3-2 9.5-.6z" fill="#0D0E0F"/><path d="M15.5 13.3h5.2m0 0-2-2m2 2-2 2" stroke="#F5F5F2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <div class="sign-t">
+      <h1>The Circulation Desk</h1>
+      <p>Paste a reading list. Each title is routed to where it can be read legally tonight.</p>
+    </div>
+    <div class="sign-r">
+      <span class="clock" id="clock" aria-label="Local time">LOCAL <b>--:--</b></span>
+      <button class="sbtn" id="aboutBtn" type="button"><span class="lbl">About</span><span class="sr"> this prototype</span><svg class="ic" viewBox="0 0 16 16" aria-hidden="true" style="display:none"></svg></button>
+      <button class="sbtn" id="themeBtn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main class="hall">
+  <aside class="rail" aria-label="Reading list and keys">
+    <section class="panel">
+      <details class="intake-d" id="intakeD" open>
+        <summary class="band"><span class="num">1</span><h2>Call slip</h2><span class="tog" id="intakeTog">paste a list</span></summary>
+        <div class="pbody">
+          <label for="intake" class="hint" style="display:block;margin-bottom:7px">One title per line: titles, authors, nicknames (PRML, BDA3, CLRS), ISBNs. Lines starting with # are ignored.</label>
+          <textarea id="intake" spellcheck="false" aria-describedby="parseStat"></textarea>
+          <div class="btns">
+            <button class="btn primary" id="routeBtn" type="button">Route this list</button>
+            <button class="btn" id="sampleBtn" type="button">Sample list</button>
+            <button class="btn" id="clearBtn" type="button">Clear</button>
+          </div>
+          <div class="parse-stat" id="parseStat" aria-live="polite">Loading the registry…</div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" aria-labelledby="keysH">
+      <div class="band"><span class="num">2</span><h2 id="keysH">Keyring</h2><span class="aside">keys you hold</span></div>
+      <div class="pbody">
+        <p class="hint" style="margin-bottom:10px">A route opens when you hold its key. Toggle a key and the board re-routes. Library keys use the Bay Area systems sampled in the research as a worked example.</p>
+        <div class="keys" id="keys"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="nextH">
+      <div class="band"><span class="num">3</span><h2 id="nextH">Next key</h2><span class="aside">most doors per dollar</span></div>
+      <div class="pbody" id="advisor"></div>
+    </section>
+  </aside>
+
+  <div class="main">
+    <section class="board" id="board" aria-labelledby="boardH">
+      <div class="btop">
+        <div class="grow">
+          <h2 id="boardH">Departures</h2>
+          <div class="sub" id="boardSub">Legal routes only · data checked 15 Oct 2026</div>
+        </div>
+        <div class="seg" id="filters" role="group" aria-label="Filter the board"></div>
+      </div>
+      <div class="totals" id="totals">
+        <div class="tot"><div class="cap"><span class="lamp tonight"></span>Readable tonight</div><div class="val" id="tTonight"></div><div class="note" id="nTonight"></div></div>
+        <div class="tot"><div class="cap">Fare tonight</div><div class="val" id="tFare"></div><div class="note" id="nFare"></div></div>
+        <div class="tot"><div class="cap">Reading time</div><div class="val" id="tHours"></div><div class="note" id="nHours"></div></div>
+        <div class="tot"><div class="cap">Next key</div><div class="val" id="tNext"></div><div class="note" id="nNext"></div><button class="take" id="takeBtn" type="button" hidden>Take this key</button></div>
+      </div>
+      <div class="bhead" aria-hidden="true"><span>No.</span><span>Reading</span><span>Route</span><span class="h-via">Via</span><span>Departs</span><span>Fare</span><span class="r">Hrs</span></div>
+      <ol class="rows" id="rows"><li class="loading">LOADING BOARD…</li></ol>
+      <div class="bfoot" id="bfoot">
+        <span class="lg"><span class="bul sm free">F</span>Free</span>
+        <span class="lg"><span class="bul sm loan">A</span>Archive loan</span>
+        <span class="lg"><span class="bul sm library">L</span>Library</span>
+        <span class="lg"><span class="bul sm sub">S</span>Subscription</span>
+        <span class="lg"><span class="bul sm buy">$</span>Buy</span>
+        <span class="lg"><span class="bul sm pd">P</span>Print-disabled</span>
+        <span class="grow"></span>
+        <button type="button" id="packetBtn">Tonight packet</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="trayH">
+      <div class="band"><span class="num">4</span><h2 id="trayH">Unresolved slips</h2><span class="aside" id="trayCount"></span></div>
+      <div class="pbody">
+        <p class="hint" id="trayHint" style="margin-bottom:10px">Lines the matcher could not pin to one record. Pick a candidate, or ask Claude, which may only choose among real records.</p>
+        <div class="tray-list" id="tray"></div>
+        <div class="btns" id="trayBtns"></div>
+        <div class="ai-avail" id="aiAvail" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="rulesH">
+      <div class="band"><span class="num">5</span><h2 id="rulesH">Rulebook</h2><span class="aside">every route cites one</span></div>
+      <div class="pbody">
+        <p class="hint" style="margin-bottom:8px">Routing is deterministic: each route comes from one of these rules, with its source in the Open Stacks research dossiers. Claude's explanations must cite them too. No rule routes to shadow libraries.</p>
+        <ul class="rules-l" id="rules"></ul>
+      </div>
+    </section>
+  </div>
+</main>
+
+<dialog id="aboutDlg" aria-labelledby="aboutH">
+  <div class="band"><h2 id="aboutH">About this prototype</h2><button class="x" type="button" data-close>Close</button></div>
+  <div class="pbody">
+    <p><b>The Circulation Desk</b> is a light prototype of batch access triage. Paste a reading list and every line is matched to a real catalog record, then routed to the cheapest legal way to read it tonight: a free copy, an Internet Archive loan, a library ebook, a subscription, or a used copy. It totals the cost and reading hours and names the single key (a library card or a subscription) that would open the most of what is left.</p>
+    <h3>What is real</h3>
+    <ul>
+      <li><b>The 28-book registry</b> behind the sample list. Free copies come from the author-hosted table and the 55-book coverage test in the Open Stacks research dossier R01. O'Reilly and Perlego presence, Libby holdings at nine library systems, used prices (AbeBooks) and every subscription price come from dossier R03. Both were checked on 15 October 2026.</li>
+      <li><b>English loan checks.</b> For each book R01 lists as borrowable, the build script read Internet Archive item metadata to find an English scan in the lending collection. That is how the board knows that <i>Thinking, Fast and Slow</i> lends only in translation.</li>
+      <li><b>Matching.</b> Lines are matched against the registry, 7,127 Open Library works (<code>catalog.json</code>, CC0), 84 OpenStax textbooks and, on request, 29,007 Project Gutenberg titles. Books outside the registry get routes from their catalog fields (open scan, loan flag, print-disabled flag, Gutenberg and Standard Ebooks ids).</li>
+      <li><b>Link checks.</b> Every free-copy URL was fetched when the data was built; the status is shown on the route.</li>
+    </ul>
+    <h3>What is estimated or illustrative</h3>
+    <ul>
+      <li>Library keys use R03's Bay Area sample (SFPL, five other Bay Area systems, LAPL) as a worked example. Your own library's holdings will differ.</li>
+      <li>Subscription coverage for titles nobody checked is estimated from publisher shares (rules O2, E2). Everand's catalog could not be checked, and Kindle Unlimited routes nothing.</li>
+      <li>Hold waits assume two weeks per loan cycle. Reading hours use Open Library's median page count at assumed paces (textbook 10 pages an hour, monograph 25, popular 45).</li>
+      <li>Nothing is re-checked live: the page cannot reach other sites. Treat every route as a dated snapshot.</li>
+    </ul>
+    <h3>What Claude does</h3>
+    <ul>
+      <li><b>Precomputed (AI-generated):</b> explanations for six books and the resolutions of the two messy lines in the sample, written by Claude in October 2026 and labelled in place.</li>
+      <li><b>Live, when opened in Claude:</b> "Ask Claude" resolves an unmatched line. It can only pick a record returned by a local catalog search, or name a work as <i>unverified</i>, which the desk then routes by rule. "Explain with Claude" writes a short rationale that must cite rule codes; codes that do not exist are struck through. Routing, totals and the advisor stay deterministic.</li>
+    </ul>
+    <h3>Never</h3>
+    <p>No shadow libraries, ever (rule X1). Print-disabled scans are offered only if you say you are eligible.</p>
+    <h3>Read more</h3>
+    <ul>
+      <li><a href="https://open-stacks.quantifieduncertainty.org/access/access-ladder/" target="_blank" rel="noopener">The access ladder</a> (the chapter this prototype illustrates)</li>
+      <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a></li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog id="packetDlg" aria-labelledby="packetH">
+  <div class="band"><h2 id="packetH">Tonight packet</h2><button class="x" type="button" data-close>Close</button></div>
+  <div class="pbody">
+    <p class="hint" style="margin-bottom:8px">Direct links for everything readable tonight, the holds to place, a buy list and an ISBN list for interlibrary loan. Copy it into your notes.</p>
+    <textarea id="packetText" readonly aria-label="Tonight packet text"></textarea>
+    <div class="btns"><button class="btn primary" id="copyPacket" type="button">Copy</button><span class="hint" id="copyStat" aria-live="polite" style="align-self:center"></span></div>
+  </div>
+</dialog>
+
+<script id="desk-core">
+/* Pure logic: matching, routing, board totals, advisor. No DOM. */
+(function (root) {
+  const STOP = new Set('a an and the of on in to for with by from at as its it is be book books volume volumes vol vols ed edn edition editions nd rd th st second third fourth fifth new one two et al eds etc reprint printing vs'.split(' '));
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/['’]s\b/g, '').replace(/['’]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  const SPELL = { judgement: 'judgment', behaviour: 'behavior', colour: 'color', programme: 'program', catalogue: 'catalog', modelling: 'modeling', labour: 'labor', centre: 'center', analysing: 'analyzing', optimisation: 'optimization', organisation: 'organization' };
+  const toks = (s) => norm(s).split(' ').filter((t) => t.length > 1 && !STOP.has(t) && !/^\d+$/.test(t)).map((t) => SPELL[t] || t);
+
+  function makeIndex() { return { docs: [], post: new Map(), N: 0 }; }
+  function addDocs(idx, docs) {
+    for (const d of docs) {
+      const i = idx.docs.length;
+      idx.docs.push(d);
+      d.T = new Set(toks(d.t + (d.st ? ' ' + d.st : '')));
+      d.TM = new Set(toks(String(d.t).split(':')[0]));
+      d.A = new Set((d.a || []).flatMap((n) => toks(n)));
+      d.AL = (d.alias || []).map(norm).filter(Boolean);
+      const all = new Set([...d.T, ...d.A, ...d.AL.filter((x) => !x.includes(' '))]);
+      for (const t of all) { let p = idx.post.get(t); if (!p) idx.post.set(t, (p = [])); p.push(i); }
+    }
+    idx.N = idx.docs.length;
+  }
+  const idf = (idx, t) => Math.log(1 + idx.N / ((idx.post.get(t)?.length || 0) + 1));
+
+  function search(idx, line, limit = 8) {
+    const L = [...new Set(toks(line))];
+    if (!L.length) return [];
+    const nl = ' ' + norm(line) + ' ';
+    const years = (String(line).match(/\b(1[5-9]\d\d|20[0-2]\d)\b/g) || []).map(Number);
+    const w = new Map(L.map((t) => [t, idf(idx, t)]));
+    const lineTot = [...w.values()].reduce((a, b) => a + b, 0);
+    const cand = new Set();
+    for (const t of L) { const p = idx.post.get(t); if (!p || p.length > 3000) continue; for (const i of p) cand.add(i); }
+    for (let i = 0; i < idx.docs.length; i++) { const d = idx.docs[i]; if (d.AL.some((a) => a.includes(' ') && nl.includes(' ' + a + ' '))) cand.add(i); }
+    const out = [];
+    for (const i of cand) {
+      const d = idx.docs[i];
+      let tHit = 0, tTot = 0, aHit = 0, alHit = 0;
+      for (const t of d.T) { const wt = idf(idx, t); tTot += wt; if (w.has(t)) tHit += w.get(t); }
+      for (const t of L) if (d.A.has(t) && !d.T.has(t)) aHit += w.get(t);
+      let alias = false;
+      for (const a of d.AL) {
+        if (a.includes(' ') ? nl.includes(' ' + a + ' ') : w.has(a)) { alias = true; if (!a.includes(' ') && !d.T.has(a) && !d.A.has(a)) alHit += w.get(a) || 0; }
+      }
+      let mHit = 0, mTot = 0;
+      for (const t of d.TM) { const wt = idf(idx, t); mTot += wt; if (w.has(t)) mHit += w.get(t); }
+      const titleCov = Math.max(tTot ? tHit / tTot : 0, mTot && d.TM.size < d.T.size ? (mHit / mTot) * 0.92 : 0);
+      const lineCov = lineTot ? Math.min(1, (tHit + aHit + alHit) / lineTot) : 0;
+      let s = 0.5 * titleCov + 0.35 * lineCov + (aHit > 0 ? 0.15 : 0);
+      if (tHit === 0) s *= aHit / (lineTot || 1) >= 0.6 ? 0.5 : 0.3;
+      if (alias) s = Math.max(s, 0.9 + 0.05 * lineCov);
+      if (years.length && d.y && years.includes(d.y)) s += 0.04;
+      if (d.src === 'registry') s += 0.03;
+      s += Math.min(0.02, Math.log10(1 + (d.rl || 0)) / 200);
+      out.push({ i, d, s, titleCov, lineCov, alias });
+    }
+    out.sort((a, b) => b.s - a.s);
+    return out.slice(0, limit);
+  }
+  function sameFamily(a, b) {
+    if (![...a.A].some((t) => b.A.has(t))) return false;
+    const inter = [...a.T].filter((t) => b.T.has(t)).length;
+    return inter / Math.max(1, Math.min(a.T.size, b.T.size)) >= 0.6;
+  }
+  function match(idx, line) {
+    const isbn = String(line).replace(/[^0-9Xx]/g, '');
+    const c = search(idx, line, 8);
+    if (/^(97[89]\d{10}|\d{9}[\dXx])$/.test(isbn)) {
+      const hit = idx.docs.findIndex((d) => d.isbn && (d.isbn === isbn || (d.isbns || []).includes(isbn)));
+      if (hit >= 0) return { status: 'board', top: { d: idx.docs[hit], s: 0.99, alias: true }, cands: c, conf: 0.99, how: 'isbn' };
+    }
+    if (!c.length) return { status: 'tray', cands: [], conf: 0 };
+    const top = c[0];
+    const rival = c.find((x) => x !== top && x.d.wid !== top.d.wid && !sameFamily(x.d, top.d));
+    const margin = top.s - (rival ? rival.s : 0);
+    const okCov = top.alias || top.lineCov >= 0.5;
+    let status = 'tray';
+    if (okCov && top.s >= 0.72 && margin >= 0.05) status = 'board';
+    else if (okCov && top.s >= 0.55) status = 'check';
+    return { status, top, cands: c, conf: Math.min(0.99, top.s), how: top.alias ? 'alias' : 'title' };
+  }
+
+  // ---------------- routing ----------------
+  const DEP = { NOW: 0, LOAN: 1, ELIG: 1, PART: 2, CHECK: 3, HOLD: 4, SHIPS: 10 };
+  const PACE = { textbook: 10, technical: 20, monograph: 25, popular: 45, classic: 30 };
+  const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } };
+
+  function pubFromIsbn(isbn, prefixes) {
+    if (!isbn) return null;
+    let s = String(isbn).replace(/[^0-9X]/gi, '');
+    if (s.length === 10) s = '978' + s.slice(0, 9);
+    let best = null;
+    for (const [p, name] of prefixes) if (s.startsWith(p) && (!best || p.length > best[0].length)) best = [p, name];
+    return best ? best[1] : null;
+  }
+
+  function buildRoutes(w, ctx) {
+    const f = w.facts || {};
+    const R = [];
+    const conf = (rule, c) => c || ctx.rules[rule]?.conf || 'verified';
+    const lc = (u) => ctx.linkCheck?.[u];
+    for (const x of f.free || []) R.push({ cls: 'free', label: x.label, key: 'web', rule: x.rule, dep: 'NOW', fare: 0, url: x.url, via: host(x.url), terms: x.terms, note: x.note, conf: conf(x.rule, x.conf), link: lc(x.url) });
+    if (w.se) R.push({ cls: 'free', label: 'STD EBOOKS', key: 'web', rule: 'A4', dep: 'NOW', fare: 0, url: 'https://standardebooks.org/ebooks/' + w.se, via: 'standardebooks.org', terms: 'Proofread, typeset public-domain edition.', conf: 'verified' });
+    if (w.pg) R.push({ cls: 'free', label: 'GUTENBERG', key: 'web', rule: 'A3', dep: 'NOW', fare: 0, url: 'https://www.gutenberg.org/ebooks/' + w.pg, via: 'gutenberg.org #' + w.pg, terms: 'Public domain in the US.' + (w.pgTitle ? ' Gutenberg title: ' + w.pgTitle + '.' : ''), conf: 'verified' });
+    if (w.acc === 'public' && w.ia) R.push({ cls: 'free', label: 'IA OPEN SCAN', key: 'web', rule: 'A5', dep: 'NOW', fare: 0, url: 'https://archive.org/details/' + w.ia, via: 'archive.org/' + w.ia, terms: 'Full scan, no loan needed.', conf: 'verified' });
+    for (const x of f.partial || []) R.push({ cls: 'partial', label: 'PARTIAL', key: 'web', rule: 'A6', dep: 'PART', fare: 0, url: x.url, via: host(x.url), terms: x.terms, conf: 'verified', link: lc(x.url) });
+    if (f.iaLend) R.push({ cls: 'loan', label: 'IA LOAN', key: 'ia', rule: 'B1', dep: 'LOAN', fare: 0, url: 'https://archive.org/details/' + f.iaLend, via: 'archive.org/' + f.iaLend, terms: '1-hour renewable loan (some 14-day); free account; a waitlist if all copies are out.', note: f.iaEdNote, conf: 'verified' });
+    else if (w.acc === 'borrowable' && w.ia && !f.iaTrap && !f.iaChecked && !(f.free || []).length && !w.pg) R.push({ cls: 'loan', label: 'IA LOAN?', key: 'ia', rule: 'B2', dep: 'LOAN', fare: 0, url: 'https://archive.org/details/' + w.ia, via: 'archive.org/' + w.ia, terms: 'Work-level loan flag; the lendable scan may be a translation.', conf: 'likely' });
+    if (f.iaTrap) R.push({ cls: 'warn', label: 'NO EN LOAN', rule: 'B3', dep: null, fare: null, url: 'https://archive.org/details/' + f.iaTrap.lend, via: 'archive.org/' + f.iaTrap.lend, terms: f.iaTrap.note, conf: 'verified' });
+    const pdId = f.iaTrap ? f.iaTrap.english : (w.acc === 'printdisabled' ? w.ia : null);
+    if (pdId) R.push({ cls: 'pd', label: 'PRINT-DIS.', key: 'pd', rule: 'P1', dep: 'ELIG', fare: 0, url: 'https://archive.org/details/' + pdId, via: 'archive.org/' + pdId, terms: 'Eligible print-disabled readers only.', conf: 'verified' });
+
+    // Libraries
+    const lb = f.libby;
+    const od = ctx.overdrive || {};
+    const odUrl = (k) => 'https://' + k + '.overdrive.com/search?query=' + encodeURIComponent(w.t);
+    if (lb && lb.checked) {
+      const libs = [
+        ['sfpl', 'LIBBY SFPL', 'SFPL', lb.sfpl, od.sfpl],
+        ['bay', 'LIBBY BAY', (lb.bay || []).join(', '), (lb.bay || []).length ? true : null, od[(lb.bay || [])[0]]],
+        ['lapl', 'LIBBY LAPL', 'LAPL', lb.lapl, od.lapl],
+      ];
+      for (const [k, label, name, v, okey] of libs) {
+        if (!v) continue;
+        const c = typeof v === 'object' ? v.c : null, h = typeof v === 'object' ? v.h : null;
+        let dep = 'CHECK', weeks = 0;
+        if (c && h != null) { if (h === 0) dep = 'NOW'; else { dep = 'HOLD'; weeks = Math.max(1, Math.round((2 * h) / c)); } }
+        const via = name + (c ? ': ' + c + (c === 1 ? ' copy' : ' copies') + (h != null ? ', ' + h + ' holds' : '') : ': held');
+        R.push({ cls: 'library', label, key: k, rule: 'L1', dep, weeks, fare: 0, via, url: okey ? odUrl(okey) : null, terms: dep === 'CHECK' ? 'Owned on the snapshot date; queue not recorded.' : (dep === 'HOLD' ? 'Estimated wait ~' + weeks + ' weeks (2 weeks per cycle).' : 'Copies available on the snapshot date.'), conf: 'verified' });
+      }
+    } else if (lb === null || (lb === undefined && (w.kind === 'popular' || w.kind === 'monograph') && (w.y || 0) >= 1950 && !(f.free || []).length)) {
+      R.push({ cls: 'library', label: 'LIBBY?', keys: ['sfpl', 'bay', 'lapl'], rule: 'L2', dep: 'CHECK', weeks: 0, fare: 0, via: 'not checked by title', url: od.sfpl ? odUrl(od.sfpl) : null, terms: 'Likely but unchecked: search your library.', conf: 'estimate' });
+    }
+
+    // Subscriptions
+    const pt = ctx.pubTable[w.pub] || null;
+    let o = f.oreilly, oRule = 'O1';
+    if (o === undefined && pt && pt.o != null) { oRule = 'O2'; o = pt.o >= 500 ? 'est' : false; }
+    if (o === true || o === 'est') {
+      const c = o === true ? 'verified' : 'estimate';
+      R.push({ cls: 'sub', label: "O'REILLY", key: 'oreilly', sub: 'oreilly', rule: oRule, dep: 'NOW', fare: 49, per: 'mo', via: o === true ? 'title in O’Reilly sitemap' : 'publisher: ' + w.pub, terms: 'Individual plan; personal use only; content may not be used as AI input.', conf: c });
+      R.push({ cls: 'sub', label: "O'REILLY LIB", keys: ['sfpl', 'bay'], rule: 'O3', dep: 'NOW', fare: 0, via: 'O’Reilly for Public Libraries', terms: 'Free with an SFPL, Oakland, Berkeley, San José or Santa Clara County card.', conf: o === true ? 'likely' : 'estimate' });
+    }
+    let p = f.perlego, pRule = 'E1';
+    if (p === undefined && pt && pt.p != null) { pRule = 'E2'; p = pt.p >= 1000 ? 'est' : false; }
+    if (p === true || p === 'est' || (p && typeof p === 'object')) {
+      R.push({ cls: 'sub', label: 'PERLEGO', key: 'perlego', sub: 'perlego', rule: pRule, dep: 'NOW', fare: 27, per: 'mo', via: p === 'est' ? 'publisher: ' + w.pub : (p.restricted ? 'US rights; restricted' : 'US rights'), terms: p && p.restricted ? 'Marked restricted: probably needs the Complete plan.' : 'Complete plan; personal use.', conf: p === 'est' ? 'estimate' : 'verified' });
+    }
+    if (w.kind === 'popular' && (w.y || 0) >= 1990) R.push({ cls: 'sub', label: 'EVERAND?', key: 'everand', sub: 'everand', rule: 'V1', dep: 'NOW', fare: 16.99, per: 'mo', via: 'catalog not checkable', terms: 'Costs one of 3 monthly unlocks on Plus.', conf: 'estimate' });
+
+    // Buy
+    for (const u of f.used || []) R.push({ cls: 'buy', label: u.cond === 'new' ? 'BUY NEW' : 'BUY USED', key: 'wallet', rule: 'U1', dep: 'SHIPS', fare: u.p, via: 'AbeBooks' + (u.ed ? ' · ' + u.ed : ''), url: 'https://www.abebooks.com/servlet/SearchResults?isbn=' + u.isbn, isbn: u.isbn, terms: (u.note ? u.note + ' ' : '') + 'Cheapest total incl. US shipping, 15 Oct 2026.', conf: 'verified' });
+    if (!(f.used || []).length && !w.pg && !(f.free || []).length) R.push({ cls: 'buy', label: 'BUY', key: 'wallet', rule: 'U2', dep: 'SHIPS', fare: null, via: 'price not checked', url: w.isbn ? 'https://www.abebooks.com/servlet/SearchResults?isbn=' + w.isbn : 'https://www.abebooks.com/servlet/SearchResults?kn=' + encodeURIComponent(w.t + ' ' + (w.a || [])[0]), isbn: w.isbn, terms: 'Search by ISBN or title.', conf: 'estimate' });
+
+    return R.sort((a, b) => rank(a) - rank(b));
+  }
+  function rank(r) {
+    if (r.cls === 'warn') return 99;
+    return DEP[r.dep] + (r.dep === 'HOLD' ? r.weeks / 100 : 0) + (r.conf === 'estimate' ? 0.5 : r.conf === 'likely' ? 0.1 : 0) + (r.fare ? Math.min(0.4, r.fare / 500) : 0);
+  }
+  function usable(r, held) {
+    if (r.cls === 'warn' || r.cls === 'shadow') return false;
+    if (r.key === 'web' || r.key === 'wallet') return true;
+    if (r.keys) return r.keys.some((k) => held.has(k));
+    return held.has(r.key);
+  }
+  function best(routes, held, filt) {
+    let b = null;
+    for (const r of routes) if (usable(r, held) && (!filt || filt(r)) && (!b || rank(r) < rank(b))) b = r;
+    return b;
+  }
+  function status(r) {
+    if (!r) return 'none';
+    if (r.dep === 'NOW' || r.dep === 'LOAN' || r.dep === 'ELIG') return r.conf === 'estimate' ? 'maybe' : 'tonight';
+    if (r.dep === 'PART') return 'partial';
+    if (r.dep === 'CHECK') return 'maybe';
+    if (r.dep === 'HOLD') return 'wait';
+    return 'buy';
+  }
+  const depText = (r) => !r ? '—' : r.dep === 'NOW' ? 'NOW' : r.dep === 'LOAN' ? 'LOAN 1H' : r.dep === 'ELIG' ? 'ELIGIBLE' : r.dep === 'PART' ? 'PART NOW' : r.dep === 'CHECK' ? 'CHECK' : r.dep === 'HOLD' ? '~' + r.weeks + ' WK' : '3-5 DAYS';
+  const hoursOf = (w, mult) => (w.pp || 300) / (PACE[w.kind] || 25) / (mult || 1);
+
+  function computeBoard(items, held, mult) {
+    const picks = items.map((it) => best(it.routes, held));
+    const cap = 3;
+    if (held.has('everand')) {
+      let n = 0;
+      picks.forEach((p, i) => { if (p && p.sub === 'everand') { n++; if (n > cap) picks[i] = best(items[i].routes, held, (r) => r.sub !== 'everand'); } });
+    }
+    const st = picks.map(status);
+    const rk = picks.map((p) => (p ? rank(p) : 99));
+    const subs = new Map();
+    picks.forEach((p, i) => { if (p && p.sub && p.fare) { if (!subs.has(p.sub)) subs.set(p.sub, { fare: p.fare, first: i, n: 0 }); subs.get(p.sub).n++; } });
+    const T = { tonight: 0, maybe: 0, partial: 0, wait: 0, buy: 0, none: 0 };
+    st.forEach((s) => T[s]++);
+    let fare = 0; for (const v of subs.values()) fare += v.fare;
+    let buyTotal = 0, buyN = 0, unpriced = 0;
+    picks.forEach((p, i) => { if (st[i] === 'buy') { if (p.fare != null) { buyTotal += p.fare; buyN++; } else unpriced++; } });
+    let hours = 0, hoursTonight = 0;
+    items.forEach((it, i) => { const h = hoursOf(it.w, mult); hours += h; if (st[i] === 'tonight') hoursTonight += h; });
+    return { picks, st, rk, subs, T, fare, buyTotal, buyN, unpriced, hours, hoursTonight, n: items.length };
+  }
+  function advise(items, held, keys, mult) {
+    const base = computeBoard(items, held, mult);
+    return keys.filter((k) => !held.has(k.id) && !k.fixed && !k.restricted).map((k) => {
+      const h2 = new Set(held); h2.add(k.id);
+      const b2 = computeBoard(items, h2, mult);
+      let tonight = 0, maybe = 0, sooner = 0;
+      items.forEach((_, i) => {
+        const s1 = base.st[i], s2 = b2.st[i];
+        if (s2 === 'tonight' && s1 !== 'tonight') tonight++;
+        else if (s2 === 'maybe' && !['tonight', 'maybe'].includes(s1)) maybe++;
+        else if (b2.rk[i] < base.rk[i] - 0.5) sooner++;
+      });
+      return { k, tonight, maybe, sooner, cost: k.cost };
+    }).sort((a, b) => b.tonight - a.tonight || a.cost - b.cost || b.sooner - a.sooner || b.maybe - a.maybe);
+  }
+  function cheapestPath(items, held, keys, mult) {
+    const h = new Set(held), steps = [];
+    for (let g = 0; g < 8; g++) {
+      const adv = advise(items, h, keys, mult).filter((a) => a.tonight > 0);
+      if (!adv.length) break;
+      adv.sort((a, b) => b.tonight / (b.cost + 1) - a.tonight / (a.cost + 1) || b.tonight - a.tonight);
+      const a = adv[0];
+      h.add(a.k.id);
+      steps.push({ k: a.k, tonight: a.tonight, sooner: a.sooner, cost: a.cost });
+    }
+    const b = computeBoard(items, h, mult);
+    return { steps, board: b, subsTotal: b.fare, total: b.fare + b.buyTotal };
+  }
+
+  root.DC = { norm, toks, makeIndex, addDocs, search, match, buildRoutes, rank, usable, best, status, depText, computeBoard, advise, cheapestPath, pubFromIsbn, hoursOf, PACE, DEP };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script>
+(function () {
+  const DC = window.DC;
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const store = { get(k) { try { return localStorage.getItem('circdesk.' + k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem('circdesk.' + k, v); } catch (e) {} } };
+  const money = (n) => n == null ? '$?' : '$' + (Math.round(n * 100) % 100 ? n.toFixed(2) : String(Math.round(n)));
+  const BUL = { free: 'F', partial: 'F', loan: 'A', library: 'L', sub: 'S', buy: '$', pd: 'P', warn: '!', shadow: 'F' };
+  const KCOLOR = { web: 'var(--free)', ia: 'var(--loan)', sfpl: 'var(--lib)', bay: 'var(--lib)', lapl: 'var(--lib)', oreilly: 'var(--sub)', perlego: 'var(--sub)', everand: 'var(--sub)', ku: 'var(--sub)', pd: 'var(--pd)' };
+  const DRUM = ['AUTHOR PDF', 'HTML ONLY', 'OPEN ACCESS', 'OPENSTAX', 'STD EBOOKS', 'GUTENBERG', 'IA OPEN SCAN', 'PARTIAL', 'IA LOAN', 'IA LOAN?', 'LIBBY SFPL', 'LIBBY BAY', 'LIBBY LAPL', 'LIBBY?', "O'REILLY", "O'REILLY LIB", 'PERLEGO', 'EVERAND?', 'PRINT-DIS.', 'BUY NEW', 'BUY USED', 'BUY'];
+  const DDRUM = ['NOW', 'LOAN 1H', 'ELIGIBLE', 'PART NOW', 'CHECK', '~2 WK', '~4 WK', '~8 WK', '3-5 DAYS'];
+
+  const S = {
+    D: null, idx: DC.makeIndex(), ctx: null, reg: new Map(), regByOL: new Map(), catLoaded: false, gutLoaded: false, gutLoading: false,
+    items: [], tray: [], held: new Set(['web', 'ia']), mult: 1, filter: 'all', open: null, sample: null, sampleTools: false,
+    board: null, live: new Map(), trayLive: new Map(), workCache: new Map(), claudeN: 0,
+  };
+  try { const h = JSON.parse(store.get('held') || 'null'); if (Array.isArray(h)) { S.held = new Set(['web', ...h.filter((x) => x !== 'pd')]); } } catch (e) {}
+  const pm = Number(store.get('pace')); if (pm > 0) S.mult = pm;
+
+  // ---------------- flaps ----------------
+  function flapHTML(text, cls, attrs = '') {
+    const t = esc(text);
+    return `<span class="flap ${cls || ''}" data-v="${t}" ${attrs}><span class="sz">${t}</span><span class="h t">${t}</span><span class="h b">${t}</span></span>`;
+  }
+  function charFlaps(str, width) {
+    const s = String(str).padStart(width, ' ');
+    return [...s].map((ch) => flapHTML(ch === ' ' ? ' ' : ch, 'c' + (ch === ' ' ? ' dim' : ''))).join('');
+  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  function setStatic(el, text) {
+    el.dataset.v = text;
+    el.querySelector('.sz').textContent = text;
+    el.querySelector('.h.t').textContent = text;
+    el.querySelector('.h.b').textContent = text;
+  }
+  async function flipOnce(el, to, dur) {
+    const from = el.dataset.v;
+    const t = el.querySelector('.h.t'), b = el.querySelector('.h.b');
+    el.querySelector('.sz').textContent = to.length > from.length ? to : from;
+    t.textContent = to;
+    const lt = document.createElement('span'); lt.className = 'h t leaf'; lt.textContent = from;
+    const lb = document.createElement('span'); lb.className = 'h b leaf'; lb.textContent = to; lb.style.transform = 'rotateX(90deg)';
+    el.append(lt, lb);
+    try {
+      await lt.animate([{ transform: 'rotateX(0deg)', filter: 'brightness(1)' }, { transform: 'rotateX(-90deg)', filter: 'brightness(.45)' }], { duration: dur * 0.5, easing: 'cubic-bezier(.55,0,1,.45)', fill: 'forwards' }).finished;
+      lt.remove();
+      await lb.animate([{ transform: 'rotateX(90deg)', filter: 'brightness(1.5)' }, { transform: 'rotateX(0deg)', filter: 'brightness(1)' }], { duration: dur * 0.5, easing: 'cubic-bezier(.2,.9,.35,1.25)', fill: 'forwards' }).finished;
+    } catch (e) {}
+    lt.remove(); lb.remove();
+    b.textContent = to;
+    el.querySelector('.sz').textContent = to;
+    el.dataset.v = to;
+  }
+  function stepsFor(from, to, drum) {
+    if (!drum) return [to];
+    let i = drum.indexOf(from), j = drum.indexOf(to);
+    if (j < 0) return [to];
+    if (i < 0) i = (j + drum.length - 4) % drum.length;
+    const seq = [];
+    for (let k = (i + 1) % drum.length; k !== j; k = (k + 1) % drum.length) seq.push(drum[k]);
+    const keep = seq.length > 4 ? seq.filter((_, n) => n % Math.ceil(seq.length / 4) === 0).slice(0, 4) : seq;
+    return [...keep, to];
+  }
+  function setFlap(el, text, opts = {}) {
+    if (!el) return;
+    el._target = text;
+    if (RM || opts.instant || document.hidden) { setStatic(el, text); return; }
+    if (el._busy || el.dataset.v === text) return;
+    el._busy = true;
+    (async () => {
+      if (opts.delay) await sleep(opts.delay);
+      while (el.dataset.v !== el._target) {
+        const tgt = el._target;
+        const seq = opts.digits ? digitSteps(el.dataset.v, tgt) : stepsFor(el.dataset.v, tgt, opts.drum);
+        for (const s of seq) { if (el._target !== tgt) break; await flipOnce(el, s, opts.dur || 110); }
+      }
+      el._busy = false;
+    })();
+  }
+  function digitSteps(from, to) {
+    const D = ' 0123456789';
+    const a = D.indexOf(from), b = D.indexOf(to);
+    if (a < 0 || b < 0) return [to];
+    const seq = [];
+    for (let k = (a + 1) % D.length; k !== b && seq.length < 5; k = (k + 1) % D.length) seq.push(D[k]);
+    return [...seq, to];
+  }
+  function setChars(box, str, width, delay = 0) {
+    const s = String(str).padStart(width, ' ').replace(/ /g, ' ');
+    let cells = [...box.querySelectorAll('.flap.c')];
+    if (cells.length !== s.length) { box.innerHTML = charFlaps(str, width); return; }
+    [...s].forEach((ch, i) => { cells[i].classList.toggle('dim', ch === ' '); setFlap(cells[i], ch, { digits: true, delay: delay + i * 40, dur: 90 }); });
+  }
+
+  // ---------------- data ----------------
+  async function loadJSON(u) { const r = await fetch(u); if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }
+
+  function regWork(x) {
+    return {
+      wid: 'reg:' + x.key, src: 'registry', key: x.key, t: x.t, a: x.a, y: x.y, ed: x.ed, kind: x.kind, pub: x.pub, pp: x.pp, call: x.call, ol: x.ol,
+      ia: x.ia, acc: x.acc, pg: x.pg, pgTitle: x.pgTitle, se: x.se, isbn: x.isbn, olTitle: x.olTitle, inCatalog: x.inCatalog,
+      facts: { free: x.free, partial: x.partial, iaLend: x.iaLend, iaEdNote: x.iaEdNote, iaTrap: x.iaTrap, iaChecked: x.iaChecked || x.iaLendNote ? true : false, iaLendNote: x.iaLendNote,
+        oreilly: x.oreilly, perlego: x.perlego, perlegoNote: x.perlegoNote, libby: x.libby, used: x.used, shadow: x.shadow, notes: x.notes },
+    };
+  }
+  function inferKind(c) {
+    const cls = ((c.call || '').match(/^[A-Z]+/) || [''])[0];
+    if (c.y && c.y < 1927) return 'classic';
+    if (/^(QA|QC|QD|QH|QB|T|TA|TJ|TK|HA)$/.test(cls)) return c.pp && c.pp < 260 ? 'monograph' : (cls === 'QA' && /^QA76/.test(c.call || '') ? 'technical' : 'textbook');
+    if ((c.rl || 0) >= 120 && (c.y || 0) >= 1980) return 'popular';
+    return 'monograph';
+  }
+  function catWork(c) {
+    return { wid: 'ol:' + c.id, src: 'catalog', t: c.t + (c.st ? ': ' + c.st : ''), a: c.a || [], y: c.y, kind: inferKind(c), pub: DC.pubFromIsbn(c.isbn, S.D.publishers.prefixes), pp: c.pp, call: c.call, ol: c.id, ia: c.ia, acc: c.acc, pg: c.pg, se: c.se, isbn: c.isbn, rl: c.rl, facts: {} };
+  }
+  function getWork(d) {
+    if (S.workCache.has(d.wid)) return S.workCache.get(d.wid);
+    let w;
+    if (d.src === 'registry') w = regWork(d.ref);
+    else if (d.src === 'catalog') w = catWork(d.ref);
+    else if (d.src === 'gutenberg') w = { wid: d.wid, src: 'gutenberg', t: d.t, a: d.a, y: null, kind: 'classic', pub: '(public domain)', pg: d.ref.id, pp: null, facts: {} };
+    else if (d.src === 'openstax') w = { wid: d.wid, src: 'openstax', t: d.t, a: ['OpenStax'], y: d.y, kind: 'textbook', pub: 'OpenStax', pp: null, facts: { free: [{ rule: 'A7', label: 'OPENSTAX', url: d.ref.url, terms: 'Free online from OpenStax (most titles CC BY-NC-SA since 2026-04-22).' }] } };
+    S.workCache.set(d.wid, w);
+    return w;
+  }
+  function itemFor(w, extra) {
+    const routes = DC.buildRoutes(w, S.ctx);
+    return Object.assign({ w, routes }, extra);
+  }
+
+  function buildRegistryIndex() {
+    const docs = S.D.works.map((x) => ({ wid: 'reg:' + x.key, src: 'registry', t: x.t, a: x.a, alias: x.alias, y: x.y, rl: x.rl || 0, isbn: x.isbn, isbns: (x.used || []).map((u) => u.isbn), ref: x }));
+    DC.addDocs(S.idx, docs);
+    for (const x of S.D.works) { S.reg.set(x.key, x); if (x.ol) S.regByOL.set(x.ol, x.key); }
+  }
+  function addCatalog(cat) {
+    const docs = cat.works.filter((c) => !S.regByOL.has(c.id)).map((c) => ({ wid: 'ol:' + c.id, src: 'catalog', t: c.t, st: c.st, a: c.a, y: c.y, rl: c.rl || 0, isbn: c.isbn, ref: c }));
+    DC.addDocs(S.idx, docs);
+  }
+  function addOpenStax(ox) {
+    const docs = ox.books.filter((b) => b.state === 'live').map((b, i) => ({ wid: 'ox:' + i, src: 'openstax', t: b.t, a: ['OpenStax'], y: Number((b.d || '').slice(0, 4)) || null, rl: 0, ref: b }));
+    DC.addDocs(S.idx, docs);
+  }
+  function addGutenberg(g) {
+    const have = new Set(S.D.works.map((x) => x.pg).filter(Boolean));
+    const docs = g.books.filter((b) => !have.has(b.id)).map((b) => ({ wid: 'pg:' + b.id, src: 'gutenberg', t: b.t, a: (b.a || []).map((n) => n.split(',').reverse().join(' ')), y: null, rl: 0, ref: b }));
+    DC.addDocs(S.idx, docs);
+  }
+
+  // ---------------- parse & route ----------------
+  function parseList(text, { animate } = {}) {
+    const lines = String(text).split(/\r?\n/);
+    const items = [], tray = [];
+    const seen = new Set();
+    lines.forEach((raw, n) => {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) return;
+      const m = DC.match(S.idx, line);
+      if (m.status !== 'tray') {
+        const w = getWork(m.top.d);
+        if (seen.has(w.wid)) return;
+        seen.add(w.wid);
+        items.push(itemFor(w, { n: n + 1, raw: line, conf: m.conf, how: m.how, check: m.status === 'check', alts: m.cands.filter((c) => c.d.wid !== m.top.d.wid).slice(0, 3) }));
+      } else tray.push({ n: n + 1, raw: line, cands: m.cands.slice(0, 4), pre: precomputedFor(line) });
+    });
+    S.items = items; S.tray = tray;
+    S.open = null;
+    renderAll({ cascade: animate });
+  }
+  function precomputedFor(line) {
+    const p = (S.D.precomputed.tray || []).find((t) => DC.norm(t.line) === DC.norm(line));
+    return p || null;
+  }
+
+  // ---------------- render ----------------
+  function renderAll(opts = {}) {
+    S.board = DC.computeBoard(S.items, S.held, S.mult);
+    renderKeys();
+    renderRows(opts);
+    renderTotals(opts);
+    renderAdvisor();
+    renderFilters();
+    renderTray();
+    renderParseStat();
+  }
+  function renderParseStat() {
+    const n = S.items.length + S.tray.length;
+    $('#parseStat').innerHTML = `<b>${n}</b> lines · <b>${S.items.length}</b> on the board${S.items.filter((i) => i.check).length ? ` (${S.items.filter((i) => i.check).length} to confirm)` : ''} · <b>${S.tray.length}</b> in the tray${S.catLoaded ? '' : ' · loading catalog…'}`;
+    $('#intakeTog').textContent = `${S.items.length} routed`;
+  }
+  function rowState(i) {
+    const p = S.board.picks[i], st = S.board.st[i];
+    let fareTxt = '$0';
+    if (p) {
+      if (p.sub && p.fare) fareTxt = S.board.subs.get(p.sub)?.first === i ? money(p.fare) + '/MO' : 'INCL';
+      else fareTxt = money(p.fare);
+    }
+    return { p, st, route: p ? p.label : '—', dep: DC.depText(p), fare: fareTxt };
+  }
+  function authorsShort(a) {
+    const s = (a || []).map((n) => n.split(/\s+/).pop());
+    return s.length > 3 ? s.slice(0, 2).join(', ') + ' et al.' : s.join(', ');
+  }
+  function rowHTML(it, i) {
+    const r = rowState(i);
+    const w = it.w;
+    const tags = (it.check ? '<span class="tag" title="Matched with moderate confidence: open the row to confirm">CONFIRM</span>' : '') + (w.src === 'claude' ? '<span class="tag unv" title="Identified by Claude; not in the local catalog">UNVERIFIED</span>' : '');
+    const hrs = Math.round(DC.hoursOf(w, S.mult));
+    const viaConf = r.p ? `<span class="conf">${r.p.conf.toUpperCase()} · ${r.p.rule}</span>` : '';
+    return `<li class="row" data-i="${i}" data-st="${r.st}">
+      <button class="rowb" type="button" aria-expanded="false" aria-controls="det-${i}" aria-label="${esc(w.t)}: ${esc(r.route)}, departs ${esc(r.dep)}, fare ${esc(r.fare)}">
+        <span class="c-no">${String(i + 1).padStart(2, '0')}</span>
+        <span class="c-title"><b>${esc(w.t)}${tags}</b><i>${esc(authorsShort(w.a))}${w.y ? ' · ' + w.y : ''}${w.ed ? ' · ' + esc(w.ed) : ''}</i></span>
+        <span class="c-route"><span class="bul ${r.p ? r.p.cls : 'warn'}" aria-hidden="true">${r.p ? BUL[r.p.cls] : '!'}</span>${flapHTML(r.route, 'w r-route')}</span>
+        <span class="c-via">${esc(r.p ? r.p.via : '')}${viaConf}</span>
+        <span class="c-dep"><span class="lamp ${r.st}" aria-hidden="true"></span>${flapHTML(r.dep, 'w r-dep')}</span>
+        <span class="c-fare">${flapHTML(r.fare, 'w r-fare')}</span>
+        <span class="c-hrs">${hrs}</span>
+      </button>
+      <div class="det" id="det-${i}" hidden></div>
+    </li>`;
+  }
+  function renderRows(opts = {}) {
+    const ol = $('#rows');
+    const sameList = ol.children.length === S.items.length && ol.dataset.sig === sig();
+    if (!sameList || opts.rebuild) {
+      ol.dataset.sig = sig();
+      if (opts.cascade && !RM) {
+        ol.innerHTML = S.items.map((it, i) => rowHTML(it, i)).join('');
+        // clack in: blank first, then flip row by row
+        ol.querySelectorAll('.row').forEach((row, i) => {
+          const r = rowState(i);
+          ['.r-route', '.r-dep', '.r-fare'].forEach((sel) => setStatic(row.querySelector(sel), ' '));
+          setFlap(row.querySelector('.r-route'), r.route, { drum: DRUM, delay: 90 * i, dur: 100 });
+          setFlap(row.querySelector('.r-dep'), r.dep, { drum: DDRUM, delay: 90 * i + 120, dur: 100 });
+          setFlap(row.querySelector('.r-fare'), r.fare, { delay: 90 * i + 200, dur: 100 });
+        });
+      } else ol.innerHTML = S.items.map((it, i) => rowHTML(it, i)).join('') || '<li class="loading">THE BOARD IS EMPTY · PASTE A LIST</li>';
+      applyFilter();
+      return;
+    }
+    // Same list: ripple the changes
+    [...ol.querySelectorAll('.row')].forEach((row, i) => {
+      const r = rowState(i), it = S.items[i];
+      const changed = row.dataset.st !== r.st || row.querySelector('.r-route').dataset.v !== r.route || row.querySelector('.r-dep').dataset.v !== r.dep || row.querySelector('.r-fare').dataset.v !== r.fare;
+      row.dataset.st = r.st;
+      const bul = row.querySelector('.bul');
+      bul.className = 'bul ' + (r.p ? r.p.cls : 'warn'); bul.textContent = r.p ? BUL[r.p.cls] : '!';
+      row.querySelector('.lamp').className = 'lamp ' + r.st;
+      row.querySelector('.c-via').innerHTML = esc(r.p ? r.p.via : '') + (r.p ? `<span class="conf">${r.p.conf.toUpperCase()} · ${r.p.rule}</span>` : '');
+      row.querySelector('.c-hrs').textContent = Math.round(DC.hoursOf(it.w, S.mult));
+      row.querySelector('.rowb').setAttribute('aria-label', `${it.w.t}: ${r.route}, departs ${r.dep}, fare ${r.fare}`);
+      const d = changed ? 45 * i : 0;
+      setFlap(row.querySelector('.r-route'), r.route, { drum: DRUM, delay: d });
+      setFlap(row.querySelector('.r-dep'), r.dep, { drum: DDRUM, delay: d + 80 });
+      setFlap(row.querySelector('.r-fare'), r.fare, { delay: d + 140 });
+      if (row.dataset.open === '1') renderDetail(i);
+    });
+    applyFilter();
+  }
+  const sig = () => S.items.map((it) => it.w.wid).join('|');
+  function applyFilter() {
+    $('#rows').querySelectorAll('.row').forEach((row) => {
+      const st = row.dataset.st;
+      const f = S.filter;
+      const show = f === 'all' || (f === 'tonight' && st === 'tonight') || (f === 'waiting' && ['maybe', 'wait', 'partial'].includes(st)) || (f === 'buy' && st === 'buy');
+      row.classList.toggle('hide', !show);
+    });
+  }
+  function renderFilters() {
+    const T = S.board.T;
+    const F = [['all', 'All', S.items.length], ['tonight', 'Tonight', T.tonight], ['waiting', 'Waiting', T.maybe + T.wait + T.partial], ['buy', 'Buy', T.buy]];
+    $('#filters').innerHTML = F.map(([id, l, n]) => `<button type="button" data-f="${id}" aria-pressed="${S.filter === id}">${l}<span class="n">${n}</span></button>`).join('');
+  }
+  function renderTotals(opts = {}) {
+    const B = S.board;
+    const d = opts.cascade ? 300 : 0;
+    const tonight = `${B.T.tonight}/${B.n}`;
+    const tT = $('#tTonight');
+    if (!tT.children.length || opts.instant) tT.innerHTML = charFlaps(tonight, 5); else setChars(tT, tonight, 5, d);
+    const extra = [];
+    if (B.T.partial) extra.push(`${B.T.partial} partial`);
+    if (B.T.maybe) extra.push(`${B.T.maybe} maybe`);
+    if (B.T.wait) extra.push(`${B.T.wait} on hold`);
+    $('#nTonight').innerHTML = extra.length ? `Also <b>${extra.join(', ')}</b>.` : 'Everything else ships or waits.';
+    const fare = money(B.fare);
+    const tF = $('#tFare');
+    if (!tF.children.length) tF.innerHTML = charFlaps(fare, 6); else setChars(tF, fare, 6, d + 120);
+    const subNames = [...B.subs.keys()].map((k) => S.D.keys.find((x) => x.id === k)?.short).filter(Boolean);
+    $('#nFare').innerHTML = (subNames.length ? `${subNames.join(' + ')}, one month. ` : 'Free routes and cards only. ') + (B.buyN ? `<b>+${money(B.buyTotal)}</b> to buy ${B.buyN} used${B.unpriced ? ` (+${B.unpriced} unpriced)` : ''}, 3–5 days.` : (B.unpriced ? `${B.unpriced} to buy, unpriced.` : ''));
+    const hrs = Math.round(B.hours).toLocaleString('en-US');
+    const tH = $('#tHours');
+    if (!tH.children.length) tH.innerHTML = charFlaps(hrs, 5) + '<span class="unit">H</span>';
+    else setChars(tH, hrs, 5, d + 200);
+    $('#nHours').innerHTML = `<b>${Math.round(B.hoursTonight)} h</b> of it readable tonight · ≈${Math.round(B.hours / 10)} weeks at 10 h/wk · pace <select id="pace" aria-label="Reading pace">${[[0.5, '×0.5'], [0.75, '×0.75'], [1, '×1'], [1.5, '×1.5'], [2, '×2']].map(([v, l]) => `<option value="${v}" ${v === S.mult ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+    const adv = DC.advise(S.items, S.held, S.D.keys, S.mult);
+    const top = adv.find((a) => a.tonight || a.maybe || a.sooner);
+    const tN = $('#tNext');
+    const name = top ? top.k.short : 'ALL KEYS';
+    const gain = top ? '+' + (top.tonight || top.sooner || top.maybe) : '';
+    const html = flapHTML(name, 'w n-name', 'style="--fw:calc(11ch + 14px)"') + `<span class="n-gain">${charFlaps(gain, 3)}</span>`;
+    if (!tN.querySelector('.n-name')) tN.innerHTML = html;
+    else { setFlap(tN.querySelector('.n-name'), name, { delay: d + 260 }); setChars(tN.querySelector('.n-gain'), gain, 3, d + 320); }
+    $('#nNext').innerHTML = top ? `${top.tonight ? `<b>+${top.tonight} tonight</b>` : ''}${top.sooner ? `${top.tonight ? ', ' : ''}<b>+${top.sooner} sooner</b>` : ''}${top.maybe ? `, +${top.maybe} maybe` : ''} · ${top.cost ? money(top.cost) + '/mo' : 'free'}` : 'No key opens more of this list.';
+    const tb = $('#takeBtn');
+    tb.hidden = !top; tb.dataset.k = top ? top.k.id : '';
+    tb.textContent = top ? `Take the ${top.k.name.replace(/^the /i, '')}` : '';
+  }
+  function keyUse(k) {
+    let n = 0;
+    S.board.picks.forEach((p) => { if (p && (p.key === k.id || (p.keys && p.keys.includes(k.id) && S.held.has(k.id)))) n++; });
+    return n;
+  }
+  function renderKeys() {
+    const adv = new Map(DC.advise(S.items, S.held, S.D.keys, S.mult).map((a) => [a.k.id, a]));
+    const groups = [['Free cards & accounts', ['web', 'ia', 'sfpl', 'bay', 'lapl']], ['Subscriptions', ['oreilly', 'perlego', 'everand', 'ku']], ['Restricted', ['pd']]];
+    const el = $('#keys');
+    const focusId = document.activeElement?.id;
+    el.innerHTML = groups.map(([g, ids]) => `<div class="kgroup">${g}</div>` + ids.map((id) => {
+      const k = S.D.keys.find((x) => x.id === id);
+      const on = S.held.has(id);
+      let right;
+      if (on) right = `${keyUse(k)} in use<small>${k.cost ? money(k.cost) + '/mo' : 'free'}</small>`;
+      else { const a = adv.get(id); right = a ? `${a.tonight ? '+' + a.tonight + ' tonight' : a.sooner ? '+' + a.sooner + ' sooner' : a.maybe ? '+' + a.maybe + ' maybe' : '+0'}<small>${k.cost ? money(k.cost) + '/mo' : 'free'}</small>` : `<small>${k.cost ? money(k.cost) + '/mo' : 'free'}</small>`; }
+      return `<label class="key ${on ? 'on' : ''} ${k.fixed ? 'fixed' : ''} ${k.restricted ? 'restricted' : ''}" title="${esc(k.note)}">
+        <input type="checkbox" id="key-${id}" data-k="${id}" ${on ? 'checked' : ''} ${k.fixed ? 'disabled' : ''}>
+        <span class="hole" aria-hidden="true"></span>
+        <span class="kt"><span class="kn"><span class="dot" style="background:${KCOLOR[id]}" aria-hidden="true"></span>${esc(k.name)}</span><span class="kf">${esc(k.friction)}</span></span>
+        <span class="kc">${right}</span>
+      </label>` + (id === 'pd' && on ? `<p class="elig">Print-disabled scans are for readers who cannot read standard print because of a disability, certified through a qualifying organization or professional. Only keep this key on if that applies to you.</p>` : '');
+    }).join('')).join('');
+    if (focusId && document.getElementById(focusId)) document.getElementById(focusId).focus();
+  }
+  function renderAdvisor() {
+    const adv = DC.advise(S.items, S.held, S.D.keys, S.mult);
+    const top = adv.find((a) => a.tonight || a.maybe || a.sooner);
+    const path = DC.cheapestPath(S.items, S.held, S.D.keys, S.mult);
+    const pb = path.board;
+    let h = '';
+    if (top) {
+      const per = top.cost && top.tonight ? ` · ${money(top.cost / top.tonight)} per book opened` : '';
+      h += `<div class="nk-top"><div class="lbl">Next key</div><div class="name"><span class="dot" style="background:${KCOLOR[top.k.id]};width:14px;height:14px"></span>${esc(top.k.short)}</div>
+        <div class="gain">${top.tonight ? `<span class="g">+${top.tonight} readable tonight</span>` : ''}${top.sooner ? `${top.tonight ? ' · ' : ''}+${top.sooner} sooner` : ''}${top.maybe ? ` · +${top.maybe} maybe` : ''}</div>
+        <div class="fr">${esc(top.k.friction)}${per}</div>
+        <button class="btn primary small" type="button" data-take="${top.k.id}">Take this key</button></div>`;
+    } else h += `<div class="nk-top"><div class="lbl">Next key</div><div class="name">None</div><div class="fr">No key you lack would open more of this list. The rest is a purchase or a wait.</div></div>`;
+    h += `<ul class="nk-list" aria-label="All keys you do not hold, ranked">` + adv.filter((a) => a !== top).map((a) => `<li><span class="k"><span class="dot" style="background:${KCOLOR[a.k.id]}"></span><span>${esc(a.k.name)}</span></span><span class="v">${a.tonight || a.sooner || a.maybe ? `<b>${a.tonight ? '+' + a.tonight : ''}</b>${a.sooner ? (a.tonight ? ' ' : '') + '+' + a.sooner + ' sooner' : ''}${a.maybe ? ' +' + a.maybe + '?' : ''}` : '<span class="zero">+0</span>'} · ${a.cost ? money(a.cost) : 'free'}</span></li>`).join('') + `</ul>`;
+    // cheapest complete path as a line map
+    const tonightNow = S.board.T.tonight;
+    const stops = [`<li><b>Now: ${tonightNow} of ${S.items.length} tonight</b><span class="m">${[...S.held].map((k) => S.D.keys.find((x) => x.id === k)?.short).join(' + ')}</span></li>`];
+    let running = tonightNow;
+    for (const s of path.steps) { running += s.tonight; stops.push(`<li><b>${esc(s.k.name)}</b> · +${s.tonight} → ${running} tonight<span class="m">${s.cost ? money(s.cost) + ' for a month' : 'free'} · ${esc(s.k.friction.split(';')[0])}</span></li>`); }
+    if (pb.buyN) stops.push(`<li><b>Buy ${pb.buyN} used</b> · ${money(pb.buyTotal)}<span class="m">${S.items.filter((_, i) => pb.st[i] === 'buy' && pb.picks[i]?.fare != null).map((it) => it.w.t.split(':')[0]).slice(0, 4).join(' · ')}${pb.buyN > 4 ? ' …' : ''}</span></li>`);
+    const waits = pb.T.wait + pb.T.maybe + pb.T.partial;
+    stops.push(`<li class="term"><b>${pb.T.tonight} tonight${waits ? `, ${waits} waiting or partial` : ''}</b><span class="m">${pb.unpriced ? pb.unpriced + ' still to buy, unpriced · ' : ''}holds and library checks finish the list</span></li>`);
+    h += `<div class="path"><h3>Cheapest way to start everything</h3><ol class="line-map">${stops.join('')}</ol><div class="path-total"><span>Total outlay</span><span>${money(path.total)}</span></div></div>`;
+    $('#advisor').innerHTML = h;
+  }
+
+  // ---------------- detail ----------------
+  function keyName(r) {
+    if (r.key === 'web') return 'Open web';
+    if (r.key === 'wallet') return 'Wallet';
+    const ids = r.keys || [r.key];
+    return ids.map((id) => S.D.keys.find((k) => k.id === id)?.short || id).join(' or ');
+  }
+  function ruleChip(code, bad) { return `<button type="button" class="rule ${bad ? 'bad' : ''}" data-rule="${esc(code)}" title="${esc(S.D.rules[code]?.name || 'Unknown rule code')}">${esc(code)}</button>`; }
+  function templateWhy(it, p) {
+    if (!p) return 'No route is open with the keys you hold.';
+    const r = S.D.rules[p.rule];
+    const alt = it.routes.find((x) => x !== p && x.cls !== 'warn' && !DC.usable(x, S.held) && DC.rank(x) < DC.rank(p));
+    let s = `Routed by ${p.rule} (${r.name.toLowerCase()}; ${r.src}).`;
+    if (p.terms) s += ' ' + p.terms;
+    if (alt) s += ` With ${keyName(alt)} it would depart ${DC.depText(alt).toLowerCase()} via ${alt.label.toLowerCase()} (${alt.rule}).`;
+    return s;
+  }
+  function renderDetail(i) {
+    const it = S.items[i], w = it.w, det = $('#det-' + i);
+    if (!det) return;
+    const p = S.board.picks[i];
+    const shadow = (w.facts.shadow || []);
+    const notes = [...(w.facts.notes || [])];
+    if (w.facts.perlegoNote) notes.push(w.facts.perlegoNote);
+    if (w.facts.iaLendNote && !w.facts.iaLend) notes.push(w.facts.iaLendNote);
+    if (w.src === 'claude') notes.unshift('Identified by Claude from your line; not in the local catalog and not verified. Routes below follow the rules for its stated publisher and year.');
+    if (it.check) notes.unshift('Matched with moderate confidence. If this is the wrong book, pick an alternative below.');
+    if (w.facts.libby && w.facts.libby.checked && !it.routes.some((r) => r.cls === 'library')) notes.push('No Libby ebook at any of the nine library systems R03 checked.');
+    const rows = it.routes.map((r) => {
+      const ok = DC.usable(r, S.held);
+      const isBest = r === p;
+      const link = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.cls === 'buy' ? 'AbeBooks' : r.cls === 'library' ? 'OverDrive' : 'open')}</a>` : '<span class="hint">in app</span>';
+      const lc = r.link ? `<div class="terms">link ${r.link.status === 200 ? 'OK' : r.link.status ? 'HTTP ' + r.link.status : 'no answer'} on ${r.link.date}</div>` : '';
+      return `<tr class="${isBest ? 'best' : ''} ${ok ? '' : 'off'}">
+        <td><div class="rt"><span class="bul sm ${r.cls}">${BUL[r.cls]}</span>${esc(r.label)}</div><div class="terms">${esc(r.via || '')}</div></td>
+        <td>${r.cls === 'warn' ? '<span class="hint">not routed</span>' : `<span class="held ${ok ? 'y' : 'n'}">${ok ? 'HELD' : 'NEED'}</span> <span class="terms" style="display:inline">${esc(keyName(r))}</span>`}</td>
+        <td class="conf">${r.cls === 'warn' ? '—' : esc(DC.depText(r))}</td>
+        <td class="conf">${r.cls === 'warn' ? '—' : r.fare == null ? '$?' : money(r.fare) + (r.per ? '/' + r.per : '')}</td>
+        <td>${ruleChip(r.rule)} <span class="conf ${r.conf}">${r.conf}</span></td>
+        <td style="min-width:200px">${link}<div class="terms">${esc(r.terms || '')}${r.note ? ' ' + esc(r.note) : ''}</div>${lc}</td>
+      </tr>`;
+    }).join('');
+    const pre = S.D.precomputed.explanations[w.key];
+    const live = S.live.get(w.wid);
+    const olLink = w.ol ? `<a href="https://openlibrary.org/works/${esc(w.ol)}" target="_blank" rel="noopener">${esc(w.ol)}</a>` : '';
+    det.innerHTML = `
+      <div class="det-h"><div class="tt"><h3>${esc(w.t)}</h3><div class="meta">${esc((w.a || []).join(', '))}${w.y ? ' · ' + w.y : ''}${w.ed ? ' · ' + esc(w.ed) : ''}${w.pub ? ' · ' + esc(w.pub) : ''}${w.pp ? ' · ' + w.pp + ' pp. (median)' : ''} · ~${Math.round(DC.hoursOf(w, S.mult))} h at ${DC.PACE[w.kind] / 1} pp/h ×${S.mult}</div></div>
+        <div class="ids">${olLink ? 'Open Library ' + olLink + '<br>' : ''}${w.call ? 'LC ' + esc(w.call) + '<br>' : ''}${w.pg ? 'Gutenberg #' + w.pg + '<br>' : ''}${w.src === 'registry' ? 'Registry: R01 + R03' : w.src === 'claude' ? 'Claude identification' : 'Catalog record'}</div></div>
+      <div class="matchline">Line ${it.n}: “${esc(it.raw)}” · ${esc(it.how === 'alias' ? 'matched by nickname' : it.how === 'isbn' ? 'matched by ISBN' : it.how === 'claude' ? 'resolved by Claude' : it.how === 'pick' ? 'picked by you' : 'matched by title and author')} <span class="cbar" title="match confidence"><i style="width:${Math.round((it.conf || 0) * 100)}%"></i></span> ${Math.round((it.conf || 0) * 100)}%
+        ${it.alts && it.alts.length ? ' · not this one? ' + it.alts.map((c, k) => `<button type="button" class="btn small" data-swap="${i}" data-alt="${k}">${esc(c.d.t.slice(0, 40))}${c.d.y ? ' (' + c.d.y + ')' : ''}</button>`).join(' ') : ''}</div>
+      <div class="tt-wrap"><table class="tt"><thead><tr><th>Route</th><th>Key</th><th>Departs</th><th>Fare</th><th>Rule</th><th>Link and terms</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="det-cols">
+        <div>
+          <h4>Why this route</h4>
+          <div class="why"><p>${esc(templateWhy(it, p))}</p>
+            ${live ? aiBox(live, 'Claude, live') : pre ? aiBox({ text: pre, done: true }, 'Precomputed by Claude, Oct 2026 · AI-generated') : ''}
+            ${S.sample ? `<div class="btns"><button type="button" class="btn ai small" data-explain="${i}" ${live && !live.done ? 'disabled' : ''}>${live && !live.done ? 'Thinking…' : 'Explain with Claude'}</button>${live && !live.done ? `<button type="button" class="btn small" data-stop="${esc(w.wid)}">Stop</button>` : ''}</div>` : ''}
+          </div>
+        </div>
+        <div>
+          ${notes.length ? `<h4>Notes</h4><ul class="notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}
+          ${shadow.length ? `<h4 style="margin-top:12px">Free shadow</h4>${shadow.map((s) => `<p class="shadow-l"><span class="bul sm shadow">F</span> <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a> ${ruleChip(s.rule)}<br><span class="hint">${esc(s.terms)}</span></p>`).join('')}` : ''}
+          ${!notes.length && !shadow.length ? '<h4>Notes</h4><p class="hint">No caveats recorded for this book.</p>' : ''}
+        </div>
+      </div>`;
+  }
+  function citeCheck(text) {
+    const codes = [...new Set((text.match(/\[([A-Z]\d{1,2})\]/g) || []).map((c) => c.slice(1, -1)))];
+    return codes.map((c) => ({ c, ok: !!S.D.rules[c] }));
+  }
+  function aiBox(st, badge) {
+    const cites = st.done ? citeCheck(st.text) : [];
+    const html = esc(st.text || 'Thinking…').replace(/\[([A-Z]\d{1,2})\]/g, (m, c) => ruleChip(c, !S.D.rules[c]));
+    return `<div class="ai-box"><span class="badge">${esc(badge)}</span><div class="out">${html}</div>${st.err ? `<div class="cites" style="color:var(--buy)">${esc(st.err)}</div>` : ''}${st.done && cites.length ? `<div class="cites">Cites ${cites.map((x) => (x.ok ? x.c + ' ✓' : x.c + ' ✗ unknown')).join(' · ')}</div>` : ''}${st.done && !cites.length && st.text ? '<div class="cites">No rule cited: read with care.</div>' : ''}</div>`;
+  }
+  function toggleRow(i) {
+    const row = $(`#rows .row[data-i="${i}"]`);
+    if (!row) return;
+    const open = row.dataset.open === '1';
+    $('#rows').querySelectorAll('.row[data-open="1"]').forEach((r) => { r.dataset.open = '0'; r.querySelector('.det').hidden = true; r.querySelector('.rowb').setAttribute('aria-expanded', 'false'); });
+    if (!open) { row.dataset.open = '1'; renderDetail(i); row.querySelector('.det').hidden = false; row.querySelector('.rowb').setAttribute('aria-expanded', 'true'); S.open = i; } else S.open = null;
+  }
+
+  // ---------------- tray ----------------
+  function renderTray() {
+    const el = $('#tray');
+    $('#trayCount').textContent = S.tray.length ? S.tray.length + (S.tray.length === 1 ? ' slip' : ' slips') : 'empty';
+    if (!S.tray.length) { el.innerHTML = '<p class="tray-empty">Every line found a record.</p>'; $('#trayBtns').innerHTML = ''; return; }
+    el.innerHTML = S.tray.map((t, k) => {
+      const live = S.trayLive.get(t.raw);
+      const res = live && live.done && live.result ? live.result : null;
+      const pre = t.pre;
+      let ai = '';
+      if (live) ai = aiBox(live, 'Claude, live');
+      else if (pre) ai = aiBox({ text: pre.explanation, done: true }, 'Precomputed by Claude, Oct 2026 · AI-generated');
+      const proposal = res || (pre && !live ? preResult(pre) : null);
+      return `<div class="slip"><span class="ln">${String(t.n).padStart(2, '0')}</span><div class="raw">${esc(t.raw)}</div>
+        <div class="why2">${t.cands.length ? 'No confident match. Closest records:' : 'No record shares enough words with this line.'}</div>
+        ${t.cands.length ? `<div class="cands">${t.cands.slice(0, 3).map((c, ci) => `<div class="cand"><span class="ct">${esc(c.d.t)} <small>${esc(authorsShort(c.d.a))}${c.d.y ? ' · ' + c.d.y : ''} · ${c.d.src}</small></span><button type="button" class="btn small" data-pick="${k}" data-ci="${ci}">Board it</button></div>`).join('')}</div>` : ''}
+        ${ai}
+        <div class="acts">
+          ${proposal ? `<button type="button" class="btn primary small" data-accept="${k}">${proposal.kind === 'match' ? 'Board Claude’s match' : 'Board as unverified'}</button>` : ''}
+          ${S.sample ? `<button type="button" class="btn ai small" data-ask="${k}" ${live && !live.done ? 'disabled' : ''}>${live && !live.done ? 'Thinking…' : 'Ask Claude'}</button>${live && !live.done ? `<button type="button" class="btn small" data-stopt="${k}">Stop</button>` : ''}` : ''}
+          <button type="button" class="btn small" data-drop="${k}">Drop</button>
+        </div></div>`;
+    }).join('');
+    $('#trayBtns').innerHTML = S.gutLoaded ? '<span class="hint">Project Gutenberg titles are included in matching.</span>' : `<button class="btn small" type="button" id="gutBtn" ${S.gutLoading ? 'disabled' : ''}>${S.gutLoading ? 'Loading Gutenberg…' : 'Also search Project Gutenberg (29,007 titles, 7.9 MB)'}</button>`;
+  }
+  function preResult(pre) {
+    if (pre.match) return { kind: 'match', wid: (pre.match.src === 'catalog' ? 'ol:' : '') + pre.match.id, conf: pre.confidence, explanation: pre.explanation, pre: true };
+    if (pre.identified) return { kind: 'identified', identified: pre.identified, conf: pre.confidence, explanation: pre.explanation, pre: true };
+    return null;
+  }
+  function boardFromTray(k, proposal) {
+    const t = S.tray[k];
+    let w = null, how = 'claude';
+    if (proposal.kind === 'match') {
+      const d = S.idx.docs.find((x) => x.wid === proposal.wid || (proposal.wid.startsWith('ol:') && x.wid === 'reg:' + S.regByOL.get(proposal.wid.slice(3))));
+      if (!d) return;
+      w = getWork(d);
+    } else if (proposal.kind === 'identified') {
+      const x = proposal.identified;
+      const pubKey = matchPublisher(x.pub || x.publisher || '');
+      w = { wid: 'cl:' + (++S.claudeN), src: 'claude', t: x.t || x.title, a: x.a || x.authors || [], y: Number(x.y || x.year) || null, kind: ['textbook', 'technical', 'monograph', 'popular', 'classic'].includes(x.kind) ? x.kind : 'monograph', pub: pubKey || x.pub || x.publisher || null, pp: x.pp || null, ol: x.ol || null, acc: x.acc === 'borrowable' ? null : null, facts: {} };
+    }
+    if (!w) return;
+    S.items.push(itemFor(w, { n: t.n, raw: t.raw, conf: proposal.conf || 0.6, how, check: false, alts: [] }));
+    if (proposal.explanation) S.live.set(w.wid, { text: proposal.explanation, done: true });
+    S.tray.splice(k, 1);
+    renderAll();
+  }
+  function matchPublisher(name) {
+    const n = DC.norm(name);
+    if (!n) return null;
+    for (const p of Object.keys(S.D.publishers.table)) { const pn = DC.norm(p); if (n.includes(pn) || pn.includes(n) || n.split(' ')[0] === pn.split(' ')[0]) return p; }
+    return null;
+  }
+
+  // ---------------- Claude ----------------
+  function rulesText() { return Object.entries(S.D.rules).map(([c, r]) => `${c}: ${r.name}. ${r.d} (source: ${r.src})`).join('\n'); }
+  function stopCodes(e) { return ['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e?.code); }
+  function errCopy(e) {
+    const c = e?.code;
+    if (c === 'rate_limited') return 'Claude is busy or you have hit a usage limit. Try again later.';
+    if (c === 'session_expired') return 'Sign in to Claude again, then retry.';
+    if (c === 'refused') return 'Claude declined this request.';
+    if (c === 'invalid_json') return 'Claude’s answer could not be read as data. Try again.';
+    if (c === 'cancelled') return 'Stopped.';
+    return 'Something went wrong reaching Claude. Try again.';
+  }
+  async function explain(i) {
+    const it = S.items[i], w = it.w;
+    if (!S.sample) return;
+    const ctl = new AbortController();
+    const st = { text: '', done: false, ctl };
+    S.live.set(w.wid, st); renderDetail(i);
+    const p = S.board.picks[i];
+    const held = [...S.held].map((k) => S.D.keys.find((x) => x.id === k)?.name).join(', ');
+    const routes = it.routes.map((r) => `${r === p ? '>> BEST ' : DC.usable(r, S.held) ? '* ' : '  '}${r.label} | key: ${keyName(r)}${DC.usable(r, S.held) ? ' (held)' : ' (not held)'} | departs ${DC.depText(r)} | fare ${r.fare == null ? 'unknown' : money(r.fare) + (r.per ? '/' + r.per : '')} | rule ${r.rule} | ${r.conf} | ${r.via || ''} | ${r.terms || ''}${r.note ? ' ' + r.note : ''}`).join('\n');
+    const notes = [...(w.facts.notes || []), w.facts.perlegoNote, w.facts.iaTrap?.note].filter(Boolean).join('\n');
+    const prompt = `You are the clerk at "The Circulation Desk", a tool that routes each book on a reading list to a LEGAL way to read it tonight. Explain to a technically sophisticated reader, in 2 to 4 short sentences, why the board routes this book the way it does and what would get it sooner.
+
+Strict rules:
+- Use only the facts below. Do not add prices, holdings, editions or URLs that are not listed.
+- After each factual claim, cite the rule code it rests on in square brackets, e.g. [A1]. Use only codes from RULES.
+- If a key the reader does not hold would give a better route, say which one.
+- Never suggest unauthorised copies or shadow libraries.
+- Plain text. No markdown, no preamble.
+
+RULES
+${rulesText()}
+
+BOOK: ${w.t}${w.ed ? ' (' + w.ed + ')' : ''}; ${(w.a || []).join(', ')}; ${w.y || 'year unknown'}; publisher: ${w.pub || 'unknown'}${w.src === 'claude' ? '; identified by Claude, not in the catalog' : ''}
+KEYS HELD: ${held}
+ROUTES (best first; >> = chosen, * = usable now):
+${routes}
+${notes ? 'NOTES:\n' + notes : ''}`;
+    try {
+      const res = await S.sample(prompt, { signal: ctl.signal, onText: ({ text }) => { st.text = text; const box = $(`#det-${i} .ai-box .out`); if (box) box.textContent = text; } });
+      st.text = res.text; st.done = true;
+      if (res.truncated) st.err = 'Cut short.';
+    } catch (e) {
+      st.text = e?.text || ''; st.done = true; st.err = errCopy(e);
+      if (stopCodes(e)) { S.sample = null; S.live.delete(w.wid); renderAI(); }
+    }
+    if (S.items[i] === it) renderDetail(i);
+  }
+  async function askClaude(k) {
+    const t = S.tray[k];
+    if (!S.sample || !t) return;
+    const ctl = new AbortController();
+    const st = { text: '', done: false, ctl };
+    S.trayLive.set(t.raw, st); renderTray();
+    const cands = DC.search(S.idx, t.raw, 12).map((c) => ({ id: c.d.wid, title: c.d.t, authors: (c.d.a || []).slice(0, 3), year: c.d.y || null, source: c.d.src }));
+    const tools = S.sampleTools ? [{
+      name: 'search_local', description: 'Search the local catalog (Open Library works, the curated registry, OpenStax' + (S.gutLoaded ? ', Project Gutenberg' : '') + ') by words from a title and/or author surname. Returns up to 10 records as {id, title, authors, year, source}. Only ids returned here may be used as match_id.',
+      inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Title words and/or author surnames' } }, required: ['query'] },
+      execute: (inp) => DC.search(S.idx, String(inp.query || ''), 10).map((c) => ({ id: c.d.wid, title: c.d.t, authors: (c.d.a || []).slice(0, 3), year: c.d.y || null, source: c.d.src })),
+    }] : undefined;
+    const prompt = `A reader pasted this line into a reading list: «${t.raw}»
+The desk's deterministic matcher could not pin it to one record. Decide which book is meant.
+
+1. ${tools ? 'Use the search_local tool (1 to 3 queries) to look for it in the local catalog. ' : ''}Here are the closest local records already found:
+${JSON.stringify(cands)}
+2. If one of the local records is the book, set match_id to its id exactly as given. Never invent an id.
+3. If none is, and you are confident which real book is meant, set match_id to null and fill "identified" with its title, authors, first publication year, original publisher and kind. If unsure, set both to null.
+4. Write "explanation": 2 or 3 sentences saying what the book is and how it is likely routed, citing rule codes in square brackets from RULES (e.g. [O2], [E2], [U2]). Never mention unauthorised copies or shadow libraries.
+
+RULES
+${rulesText()}
+
+Reply with only JSON: {"match_id": string|null, "identified": {"title": string, "authors": [string], "year": number, "publisher": string, "kind": "textbook"|"technical"|"monograph"|"popular"|"classic"}|null, "confidence": number, "explanation": string}`;
+    try {
+      const out = await S.sample.json(prompt, { signal: ctl.signal, tools, onText: () => {} });
+      st.done = true;
+      st.text = String(out?.explanation || '').slice(0, 900);
+      const idOk = out && typeof out.match_id === 'string' && S.idx.docs.some((d) => d.wid === out.match_id);
+      if (idOk) st.result = { kind: 'match', wid: out.match_id, conf: Number(out.confidence) || 0.7, explanation: st.text };
+      else if (out && out.identified && out.identified.title) {
+        st.result = { kind: 'identified', identified: { t: String(out.identified.title).slice(0, 200), a: (out.identified.authors || []).map(String).slice(0, 6), y: Number(out.identified.year) || null, pub: String(out.identified.publisher || ''), kind: out.identified.kind }, conf: Number(out.confidence) || 0.5, explanation: st.text };
+        if (out.match_id) st.err = 'Claude named an id that is not in the local catalog; it was ignored.';
+      } else { st.text = st.text || 'Claude could not identify this line.'; }
+    } catch (e) {
+      st.done = true; st.text = e?.text && e.code !== 'invalid_json' ? e.text : ''; st.err = errCopy(e);
+      if (stopCodes(e)) { S.sample = null; S.trayLive.delete(t.raw); renderAI(); }
+    }
+    renderTray();
+  }
+  function renderAI() {
+    $('#aiAvail').textContent = S.sample ? 'Live Claude is available: "Ask Claude" and "Explain with Claude" spend your own Claude usage.' : 'Claude content here is precomputed (labelled). Live resolution and explanations are available when this page is opened in Claude.';
+    renderTray();
+    if (S.open != null) renderDetail(S.open);
+  }
+
+  // ---------------- packet ----------------
+  function packet() {
+    const B = S.board, L = [];
+    const day = new Date().toISOString().slice(0, 10);
+    L.push(`TONIGHT PACKET · The Circulation Desk · ${day}`, `Keys: ${[...S.held].map((k) => S.D.keys.find((x) => x.id === k)?.name).join(', ')}`, '');
+    const sec = (title, filt, fmt) => { const rows = S.items.map((it, i) => [it, B.picks[i], B.st[i]]).filter(([it, p, st]) => filt(st, p)); if (!rows.length) return; L.push(title); rows.forEach((r) => L.push(fmt(...r))); L.push(''); };
+    sec('READ TONIGHT', (st) => st === 'tonight', (it, p) => `- ${it.w.t} · ${p.label} · ${p.url || keyName(p) + ' app'}`);
+    sec('START TONIGHT (PARTIAL)', (st) => st === 'partial', (it, p) => `- ${it.w.t} · ${p.terms} · ${p.url}`);
+    sec('PLACE HOLDS / CHECK THE LIBRARY', (st) => st === 'wait' || st === 'maybe', (it, p) => `- ${it.w.t} · ${p.label} · ${p.via}${p.url ? ' · ' + p.url : ''}`);
+    sec('BUY (SHIPS 3–5 DAYS)', (st) => st === 'buy', (it, p) => `- ${it.w.t} · ${p.fare != null ? money(p.fare) : 'price not checked'}${p.isbn ? ' · ISBN ' + p.isbn : ''}${p.url ? ' · ' + p.url : ''}`);
+    const ill = S.items.map((it, i) => [it, B.st[i]]).filter(([it, st]) => st !== 'tonight').map(([it]) => { const u = (it.w.facts.used || [])[0]; const isbn = u?.isbn || it.w.isbn; return isbn ? `${isbn}  ${it.w.t}` : null; }).filter(Boolean);
+    if (ill.length) { L.push('ISBNS FOR INTERLIBRARY LOAN'); ill.forEach((x) => L.push(x)); L.push(''); }
+    L.push('Routes are a snapshot from 15 Oct 2026 (Open Stacks research R01/R03). Legal routes only.');
+    return L.join('\n');
+  }
+
+  // ---------------- events ----------------
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('button, [data-close]');
+    if (!t) return;
+    if (t.classList.contains('rowb')) { toggleRow(Number(t.closest('.row').dataset.i)); return; }
+    if (t.dataset.f) { S.filter = t.dataset.f; renderFilters(); applyFilter(); return; }
+    if (t.dataset.take) { takeKey(t.dataset.take); return; }
+    if (t.id === 'takeBtn') { takeKey(t.dataset.k); return; }
+    if (t.dataset.rule) { showRule(t.dataset.rule); return; }
+    if (t.dataset.explain != null) { explain(Number(t.dataset.explain)); return; }
+    if (t.dataset.stop) { S.live.get(t.dataset.stop)?.ctl?.abort(); return; }
+    if (t.dataset.stopt != null) { const tr = S.tray[Number(t.dataset.stopt)]; S.trayLive.get(tr?.raw)?.ctl?.abort(); return; }
+    if (t.dataset.ask != null) { askClaude(Number(t.dataset.ask)); return; }
+    if (t.dataset.pick != null) { const k = Number(t.dataset.pick), c = S.tray[k].cands[Number(t.dataset.ci)]; const w = getWork(c.d); S.items.push(itemFor(w, { n: S.tray[k].n, raw: S.tray[k].raw, conf: c.s, how: 'pick', alts: [] })); S.tray.splice(k, 1); renderAll(); return; }
+    if (t.dataset.accept != null) { const k = Number(t.dataset.accept); const tr = S.tray[k]; const live = S.trayLive.get(tr.raw); const prop = live?.result || (tr.pre ? preResult(tr.pre) : null); if (prop) boardFromTray(k, prop); return; }
+    if (t.dataset.drop != null) { S.tray.splice(Number(t.dataset.drop), 1); renderTray(); renderParseStat(); return; }
+    if (t.dataset.swap != null) { const i = Number(t.dataset.swap), c = S.items[i].alts[Number(t.dataset.alt)]; const old = S.items[i]; S.items[i] = itemFor(getWork(c.d), { n: old.n, raw: old.raw, conf: c.s, how: 'pick', alts: [] }); renderAll({ rebuild: true }); toggleRow(i); return; }
+    if (t.id === 'gutBtn') { loadGutenberg(); return; }
+    if (t.id === 'routeBtn') { store.set('list', $('#intake').value); parseList($('#intake').value, { animate: true }); return; }
+    if (t.id === 'sampleBtn') { $('#intake').value = S.D.sample; store.set('list', ''); parseList(S.D.sample, { animate: true }); return; }
+    if (t.id === 'clearBtn') { $('#intake').value = ''; $('#intake').focus(); return; }
+    if (t.id === 'aboutBtn') { $('#aboutDlg').showModal(); return; }
+    if (t.id === 'packetBtn') { $('#packetText').value = packet(); $('#copyStat').textContent = ''; $('#packetDlg').showModal(); return; }
+    if (t.id === 'copyPacket') { const ta = $('#packetText'); ta.select(); (navigator.clipboard?.writeText(ta.value) || Promise.reject()).then(() => { $('#copyStat').textContent = 'Copied.'; }).catch(() => { $('#copyStat').textContent = 'Selected: press Ctrl/⌘+C to copy.'; }); return; }
+    if (t.hasAttribute('data-close')) { t.closest('dialog').close(); return; }
+    if (t.id === 'themeBtn') { const r = document.documentElement; const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; store.set('theme', r.dataset.theme); return; }
+  });
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.matches('input[data-k]')) { const k = t.dataset.k; if (t.checked) S.held.add(k); else S.held.delete(k); store.set('held', JSON.stringify([...S.held])); rerouteKeys(); return; }
+    if (t.id === 'pace') { S.mult = Number(t.value) || 1; store.set('pace', String(S.mult)); renderAll(); return; }
+  });
+  function takeKey(id) { if (!id) return; S.held.add(id); store.set('held', JSON.stringify([...S.held])); rerouteKeys(); }
+  function rerouteKeys() { S.board = DC.computeBoard(S.items, S.held, S.mult); renderKeys(); renderRows(); renderTotals(); renderAdvisor(); renderFilters(); }
+  function showRule(code) {
+    const li = document.getElementById('rule-' + code);
+    if (!li) return;
+    li.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
+    li.classList.add('flash'); setTimeout(() => li.classList.remove('flash'), 1600);
+  }
+  function renderRules() {
+    $('#rules').innerHTML = Object.entries(S.D.rules).map(([c, r]) => `<li id="rule-${c}"><div class="rh"><span class="rule" style="cursor:default">${c}</span><b>${esc(r.name)}</b><span class="conf ${r.conf}">${esc(r.conf)}</span></div>${esc(r.d)}<span class="src">${esc(r.src)}</span></li>`).join('');
+  }
+  async function loadGutenberg() {
+    if (S.gutLoaded || S.gutLoading) return;
+    S.gutLoading = true; renderTray();
+    try {
+      const g = await loadJSON('data/gutenberg.json');
+      addGutenberg(g); S.gutLoaded = true;
+      // re-try tray lines
+      const keep = [];
+      for (const t of S.tray) {
+        const m = DC.match(S.idx, t.raw);
+        if (m.status !== 'tray' && !S.items.some((it) => it.w.wid === m.top.d.wid)) S.items.push(itemFor(getWork(m.top.d), { n: t.n, raw: t.raw, conf: m.conf, how: m.how, check: m.status === 'check', alts: [] }));
+        else keep.push(Object.assign(t, { cands: m.cands.slice(0, 4) }));
+      }
+      S.tray = keep;
+    } catch (e) { console.warn(e); }
+    S.gutLoading = false;
+    renderAll();
+  }
+  function tick() { const d = new Date(); $('#clock').innerHTML = `LOCAL <b>${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</b>`; }
+
+  // ---------------- boot ----------------
+  async function boot() {
+    try { const th = store.get('theme'); if (th === 'light' || th === 'dark') document.documentElement.dataset.theme = th; } catch (e) {}
+    tick(); setInterval(tick, 30000);
+    if (window.matchMedia('(max-width: 760px)').matches) $('#intakeD').open = false;
+    try {
+      S.D = await loadJSON('data/circulation-desk/routes.json');
+    } catch (e) { $('#rows').innerHTML = '<li class="loading">COULD NOT LOAD THE ROUTE REGISTRY</li>'; return; }
+    S.ctx = { rules: S.D.rules, pubTable: S.D.publishers.table, linkCheck: S.D.linkCheck, overdrive: S.D.overdrive };
+    buildRegistryIndex();
+    renderRules();
+    const saved = store.get('list');
+    $('#intake').value = saved || S.D.sample;
+    try { addOpenStax(await loadJSON('data/openstax.json')); } catch (e) {}
+    parseList($('#intake').value);
+    renderAI();
+    // full catalog for everything the registry does not cover
+    try {
+      const cat = await loadJSON('data/catalog.json');
+      addCatalog(cat); S.catLoaded = true;
+      const keep = [];
+      for (const t of S.tray) {
+        const m = DC.match(S.idx, t.raw);
+        if (m.status !== 'tray' && !S.items.some((it) => it.w.wid === m.top.d.wid)) S.items.push(itemFor(getWork(m.top.d), { n: t.n, raw: t.raw, conf: m.conf, how: m.how, check: m.status === 'check', alts: m.cands.filter((c) => c.d.wid !== m.top.d.wid).slice(0, 3) }));
+        else keep.push(Object.assign(t, { cands: m.cands.slice(0, 4) }));
+      }
+      S.items.sort((a, b) => a.n - b.n);
+      S.tray = keep;
+      renderAll({ rebuild: true });
+    } catch (e) { S.catLoaded = true; renderParseStat(); }
+    // live Claude (never blocks first paint)
+    try {
+      const fn = await window.claude?.use?.('sample');
+      if (fn) {
+        S.sample = fn;
+        try { const lim = await fn.limits(); S.sampleTools = !!lim?.tools; } catch (e) { S.sampleTools = false; }
+      }
+    } catch (e) { S.sample = null; }
+    renderAI();
+  }
+  boot();
+})();
+</script>

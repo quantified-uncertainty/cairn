@@ -190,6 +190,12 @@ button { cursor: pointer; }
 .card .meta-row { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 8px; }
 .card .meta-row b { color: var(--text); font-family: var(--f-mono); font-weight: 400; font-size: 12.5px; }
 
+/* ---------- Leader line from the pulled book to its card ---------- */
+.leader { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none !important; overflow: visible; }
+.leader line { stroke: rgba(239,215,156,.55); stroke-width: 1; stroke-dasharray: 3 3; }
+.leader circle { fill: none; stroke: var(--lit); stroke-width: 1.5; }
+.leader.off { display: none; }
+
 /* ---------- Tooltip ---------- */
 .tip { position: absolute; left: 0; top: 0; max-width: 340px; background: rgba(6,8,12,.94); border: 1px solid var(--line-strong); border-radius: 2px; padding: 6px 9px 7px; font-size: 13.5px; line-height: 1.3; pointer-events: none; transform: translate(-9999px, -9999px); z-index: 5; }
 .tip .c { font-family: var(--f-mono); font-size: 11.5px; color: var(--brass-hi); }
@@ -227,9 +233,13 @@ button { cursor: pointer; }
 .err { color: #f0a8a8; }
 
 /* ---------- Narrow screens ---------- */
-@media (max-width: 1180px) {
-  .crumb { right: var(--gut-r); bottom: calc(var(--gut-b) + 118px); left: calc(var(--gut-l) + 190px); }
-  .ask { left: auto; right: var(--gut-r); transform: none; width: min(520px, calc(100% - 400px)); min-width: 0; }
+@media (max-width: 1180px) and (min-width: 861px) {
+  .alt { display: none; }
+  .plate p { display: none; }
+  .ask { left: var(--gut-l); top: calc(var(--gut-t) + 34px); transform: none; width: min(420px, calc(100% - 420px)); min-width: 0; }
+  .card { top: var(--gut-t); max-height: calc(100% - var(--gut-t) - 150px); width: 360px; }
+  .crumb { left: calc(var(--gut-l) + 190px); right: var(--gut-r); bottom: calc(var(--gut-b) + 112px); }
+  .legend { max-width: 420px; }
 }
 @media (max-width: 860px) {
   .plate { max-width: calc(100% - 32px); }
@@ -330,6 +340,7 @@ button { cursor: pointer; }
       </div>
     </div>
 
+    <svg class="leader" id="leader" aria-hidden="true"><line id="leader-l" x1="0" y1="0" x2="0" y2="0"/><circle id="leader-c" r="4"/></svg>
     <aside class="card" id="card" hidden aria-label="Pulled book"></aside>
     <div class="tip" id="tip" role="tooltip"></div>
 
@@ -360,7 +371,7 @@ button { cursor: pointer; }
         <p>This is the spatial-computing piece in the gallery; its design follows the <a href="https://open-stacks.quantifieduncertainty.org/environments/virtual-reading-room/" target="_blank" rel="noopener">Virtual reading room</a> chapter.</p>
         <ul>
           <li><b>Walls, not clouds.</b> Spatial memory is the strongest case for a spatial interface (virtual memory palaces: 84% recall in a headset against 75% on a monitor, Krokos et al. 2019), but freedom to place things <i>in depth</i> made retrieval worse (Cockburn &amp; McKenzie 2002). So the works sit on one 2.5D wall with landmarks (the door, class pilasters, the public-domain line), never in a free-floating 3D cloud.</li>
-          <li><b>Space, not sharper text.</b> Headsets resolve about 20–37 pixels per degree, against about 60 for normal acuity, so a headset gives more room but not more legible text. Titles therefore appear only when you are close, and the headset card is set at about 1.4° per em, above the chapter's 1° guideline.</li>
+          <li><b>Space, not sharper text.</b> Headsets resolve about 20–37 pixels per degree, against about 60 for normal acuity, so a headset gives more room but not more legible text. Titles therefore appear only when you are close, and the headset reading card is set at 1.3° per em or larger, above the chapter's 1° guideline.</li>
           <li><b>Text in WebGL.</b> Inside an immersive WebXR session the page's HTML is not drawn, so every label here is painted into textures. That is why the same room works in Quest Browser and in Vision Pro Safari (WebXR VR sessions), served from the wiki.</li>
           <li><b>A mode, not a silo.</b> Sessions in a headset run an hour or two, so the same wall, positions and whisper work on a laptop and a phone, and the unrolled view is the everyday tool.</li>
         </ul>
@@ -1288,7 +1299,7 @@ function updateNearLabels(view, force = false) {
   if (!force && key === labelKey) return;
   labelKey = key;
   const wantSpines = [], wantLips = [];
-  if (unrollState.u < 0.02 && view.dist < 4.2) {
+  if ((unrollState.u < 0.02 || unrollState.u > 0.98) && view.dist < 4.2) {
     const dTh = (view.halfW + 0.4) / R_FRONT, y0 = view.y - view.halfH - 0.4, y1 = view.y + view.halfH + 0.4;
     let b0 = bayAt(view.theta - dTh); if (b0 < 0) b0 = 0;
     const t0 = clamp(Math.floor((y0 - Y0) / TIER_H), 0, NT - 1), t1 = clamp(Math.floor((y1 - Y0) / TIER_H), 0, NT - 1);
@@ -1520,7 +1531,7 @@ const roomFade = { value: 1 };
     p3.set(Math.sin(a) * mid, 0.36, -Math.cos(a) * mid); s3.set(1.2, 0.72, 9.5);
     m4.compose(p3, q, s3); deskI.setMatrixAt(k, m4);
     p3.y = 0.73; s3.set(1.25, 0.03, 9.6); m4.compose(p3, q, s3); topI.setMatrixAt(k, m4);
-    for (const r of [7.2, 9.6, 12.0, 14.4]) {
+    for (const r of [9.6, 12.0, 14.4]) {
       const lamp = new THREE.Mesh(lampGeo, lampMat); lamp.position.set(Math.sin(a) * r, 1.12, -Math.cos(a) * r); roomGroup.add(lamp);
       const spr = new THREE.Sprite(glowMat); spr.position.set(Math.sin(a) * r, 1.0, -Math.cos(a) * r); spr.scale.set(0.75, 0.75, 1); roomGroup.add(spr);
     }
@@ -1740,7 +1751,7 @@ canvas.addEventListener('keydown', (e) => {
   else if (e.key === 'ArrowDown') st.h -= m;
   else if (e.key === '+' || e.key === '=') st.d *= 0.8;
   else if (e.key === '-' || e.key === '_') st.d *= 1.25;
-  else if (e.key === 'Enter' || e.key === ' ') { const r = canvas.getBoundingClientRect(); const i = pickAt(r.left + r.width / 2, r.top + r.height / 2, true); if (i >= 0) pullBook(i, { fly: true }); }
+  else if (e.key === 'Enter' || e.key === ' ') { const i = bookAt(wrapTau(st.theta), st.h, true); if (i >= 0) pullBook(i, { fly: true }); }
   else handled = false;
   if (handled) { e.preventDefault(); fly = null; clampState(); }
 });
@@ -1826,7 +1837,6 @@ function updateAltimeter() {
   tiersEl.querySelectorAll('li').forEach((li) => li.classList.toggle('cur', Number(li.dataset.t) === t));
 }
 function zoomLevel() {
-  if (unrollState.u > 0.5) return st.d > 30 ? 0 : st.d > 9 ? 1 : st.d > 3.2 ? 2 : 3;
   return st.d > 13 ? 0 : st.d > 4.2 ? 1 : st.d > 1.9 ? 2 : 3;
 }
 const ZOOM_CAPS = ['Class names on the frieze', 'Subclass plates on the shelves', 'Call ranges on shelf lips', 'Titles on the spines'];
@@ -2379,10 +2389,16 @@ detectXR();
 vrBtn.addEventListener('click', () => {
   if (xrInfo.supported) { enterXR(); return; }
   const note = $('#xr-note');
+  let framed = false; try { framed = window.self !== window.top; } catch { framed = true; }
+  const why = xrInfo.reason === 'no-device'
+    ? 'No headset is connected to this browser, so there is nothing to enter.'
+    : framed
+      ? 'That is expected inside the artifact viewer, which shows the page in an embedded frame without headset permission.'
+      : 'This browser does not offer WebXR to this page.';
   $('#xr-body').innerHTML = `
-    <p>Headset mode is not available in this view.</p>
+    <p>Headset mode is not available in this view. ${why}</p>
     <div class="why">${esc(xrInfo.detail || 'WebXR is unavailable.')}</div>
-    <p>That is expected inside the artifact viewer, which embeds the page in a frame without headset permission. The same page works on the wiki: open it in <b>Quest Browser</b> (Quest 3 / 3S) or <b>Safari on Vision Pro</b> (WebXR VR sessions) and press <b>Enter VR</b>:</p>
+    <p>The same page works from the wiki: open it in <b>Quest Browser</b> (Quest 3 / 3S) or <b>Safari on Vision Pro</b> (WebXR VR sessions) and press <b>Enter VR</b>:</p>
     <p><a href="${WIKI_URL}" target="_blank" rel="noopener">${WIKI_URL.replace('https://', '')}</a></p>
     <p style="color:var(--muted);font-size:13.5px">In the headset you stand at the centre of the room. Trigger or pinch at a book to glide to it, again to pull it onto a reading card; left stick glides, right stick turns and rises; grip cycles example whispers. The desktop view, the whisper and the unrolled wall do the same work without a headset.</p>`;
   note.hidden = false;
@@ -2390,7 +2406,7 @@ vrBtn.addEventListener('click', () => {
 });
 $('#xr-close').addEventListener('click', () => { $('#xr-note').hidden = true; vrBtn.focus(); });
 
-let xrSession = null, xrCard = null, lectern = null, xrWhisperK = -1, xrControllers = [];
+let xrSession = null, xrCard = null, lectern = null, xrWhisperK = -1, xrControllers = [], xrFloorOffset = 0;
 const XR_WHISPERS = ['probability', 'evolution', 'decision making', 'slavery', 'artificial intelligence'];
 function panelCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
 function drawXRCard(i) {
@@ -2444,11 +2460,14 @@ function drawLectern() {
 async function enterXR() {
   try {
     const session = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking'] });
-    renderer.xr.setReferenceSpaceType('local-floor');
+    let floor = true;
+    try { await session.requestReferenceSpace('local-floor'); } catch { floor = false; }
+    renderer.xr.setReferenceSpaceType(floor ? 'local-floor' : 'local');
     await renderer.xr.setSession(session);
+    xrFloorOffset = floor ? 0 : 1.6;
     xrSession = session; xrActive = true;
     unrollState.u = unrollState.target = 0; stepUnroll(0);
-    rig.position.set(0, 0, 0); rig.rotation.set(0, 0, 0);
+    rig.position.set(0, xrFloorOffset, 0); rig.rotation.set(0, 0, 0);
     $('#hud').classList.add('xr-on');
     if (!xrCard) {
       const cv = panelCanvas(1024, 640);
@@ -2490,7 +2509,7 @@ function controllerRay(ctl) {
 function onXRSelect(e) {
   const { o, v } = controllerRay(e.target);
   const s = surfaceFromRay(o, v);
-  if (!s || v.y < -0.55 && o.y + v.y * s.t < 0.1) { rig.position.set(0, 0, 0); return; } // pointed at the floor
+  if (!s || (v.y < -0.55 && o.y + v.y * s.t < 0.1)) { rig.position.set(0, xrFloorOffset, 0); return; } // pointed at the floor: back to the centre
   const i = bookAt(s.theta, s.y, true);
   const head = renderer.xr.getCamera(); const hp = new THREE.Vector3(); head.getWorldPosition(hp);
   const target = i >= 0 ? { th: thC[i], y: yB[i] + hgt[i] * 0.5 } : { th: s.theta, y: s.y };
@@ -2501,7 +2520,7 @@ function onXRSelect(e) {
     const n = wallIn(target.th);
     const dest = wp.clone().addScaledVector(n, 1.3);
     const local = hp.clone().sub(rig.position);
-    rig.position.set(dest.x - local.x, Math.max(0, target.y - local.y), dest.z - local.z);
+    rig.position.set(dest.x - local.x, Math.max(xrFloorOffset, target.y - (hp.y - rig.position.y)), dest.z - local.z);
   } else if (i >= 0) pullBook(i);
 }
 function onXRSqueeze() {
@@ -2528,7 +2547,7 @@ function stepXR(dt, frame) {
     } else if (src.handedness === 'right') {
       if (Math.abs(x) > 0.7 && snapArmed) { rig.rotation.y -= Math.sign(x) * Math.PI / 6; snapArmed = false; }
       if (Math.abs(x) < 0.3) snapArmed = true;
-      if (Math.abs(y) > 0.2) rig.position.y = clamp(rig.position.y - y * 2.2 * dt, 0, WALL_TOP - 1.4);
+      if (Math.abs(y) > 0.2) rig.position.y = clamp(rig.position.y - y * 2.2 * dt, xrFloorOffset, WALL_TOP - 1.4 + xrFloorOffset);
     }
   }
   // gaze lamp and near labels from the head pose
@@ -2565,10 +2584,11 @@ function measureFree() {
   const Wd = rrEl.clientWidth, Hd = rrEl.clientHeight;
   const rect = (el) => { if (!el || el.hidden) return null; const r = el.getBoundingClientRect(); return r.width && r.height ? r : null; };
   let l = 0, r = Wd, t = 0, b = Hd;
-  const alt = rect($('#alt')); if (alt) l = alt.right + 8;
-  const ask = rect($('.ask')); if (ask) t = ask.bottom + 8;
-  const card = rect(cardEl);
   const mobile = Wd <= 860;
+  const alt = rect($('#alt')); if (alt) l = alt.right + 8;
+  const ask = rect($('.ask'));
+  if (ask) { if (!mobile && ask.left < Wd * 0.1 && ask.right < Wd * 0.5) l = Math.max(l, ask.right + 8); else t = ask.bottom + 8; }
+  const card = rect(cardEl);
   if (card) { if (mobile) b = Math.min(b, card.top); else r = Math.min(r, card.left - 8); }
   const dock = rect($('.dock')); if (dock) b = Math.min(b, mobile ? dock.top : Hd - 96);
   if (b - t < Hd * 0.22) t = Math.max(0, b - Hd * 0.22);
@@ -2581,6 +2601,26 @@ function applyViewShift(dt) {
   const Wd = rrEl.clientWidth, Hd = rrEl.clientHeight;
   if (Math.abs(viewShift.x) < 0.5 && Math.abs(viewShift.y) < 0.5) { if (camera.view?.enabled) camera.clearViewOffset(); return; }
   camera.setViewOffset(Wd, Hd, -viewShift.x, -viewShift.y, Wd, Hd);
+}
+const leader = $('#leader'), leaderL = $('#leader-l'), leaderC = $('#leader-c');
+const projV = new THREE.Vector3();
+function updateLeader() {
+  if (selIdx < 0 || cardEl.hidden || xrActive || (unrollState.u > 0.02 && unrollState.u < 0.98)) { leader.classList.add('off'); return; }
+  const i = selIdx;
+  wallPos(thC[i], yB[i] + hgt[i] * 0.5, INSET_FRONT + 0.17 * LIT.uPull.value, projV);
+  projV.project(camera);
+  const Wd = rrEl.clientWidth, Hd = rrEl.clientHeight;
+  const x = (projV.x * 0.5 + 0.5) * Wd, y = (-projV.y * 0.5 + 0.5) * Hd;
+  const cr = cardEl.getBoundingClientRect(), rr = rrEl.getBoundingClientRect();
+  const mobile = Wd <= 860;
+  const tx = mobile ? Math.min(Math.max(x, cr.left - rr.left + 24), cr.right - rr.left - 24) : cr.left - rr.left;
+  const ty = mobile ? cr.top - rr.top : Math.min(Math.max(y, cr.top - rr.top + 24), cr.top - rr.top + 90);
+  const visible = projV.z < 1 && x > -20 && x < Wd + 20 && y > -20 && y < Hd + 20 && (mobile ? y < cr.top - rr.top : x < cr.left - rr.left);
+  if (!visible) { leader.classList.add('off'); return; }
+  leader.classList.remove('off');
+  leaderL.setAttribute('x1', x.toFixed(1)); leaderL.setAttribute('y1', y.toFixed(1));
+  leaderL.setAttribute('x2', tx.toFixed(1)); leaderL.setAttribute('y2', ty.toFixed(1));
+  leaderC.setAttribute('cx', x.toFixed(1)); leaderC.setAttribute('cy', y.toFixed(1));
 }
 let lastLabel = 0;
 function labelTick(now, view) {
@@ -2613,7 +2653,7 @@ renderer.setAnimationLoop((tms, frame) => {
     U.uLamp.value.set(st.theta, st.h, Math.max(2.4, Math.min(st.d * 0.6, 12)) * (unrollState.u > 0.5 ? 3 : 1));
     haloMat.uniforms.uCam.value = st.d / (1 + 2.5 * unrollState.u);
     // semantic-zoom opacities
-    const dd = unrollState.u > 0.5 ? st.d / 2.4 : st.d;
+    const dd = st.d;
     plateOpacity.value = smooth(2.4, 4.4, dd) * (1 - smooth(15, 19, dd));
     nearOpacity.spine.value = 1 - smooth(1.9, 3.1, dd);
     nearOpacity.lip.value = 1 - smooth(2.7, 4.0, dd);
@@ -2625,6 +2665,7 @@ renderer.setAnimationLoop((tms, frame) => {
     applyViewShift(dt);
   }
   renderer.render(scene, camera);
+  updateLeader();
 });
 
 /* =====================================================================
