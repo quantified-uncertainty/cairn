@@ -54,6 +54,7 @@ async function load(it, i) {
     if (state.status.summariesEnabled === false) return paintSummary(it);
     if (spend && spend.today >= spend.budget) return paintSummary(it, 'budget');
     if (!store.get('autoSum', true)) return paintSummary(it, 'manual'); // Settings: only on a
+    if (it.private) return paintSummary(it, 'private'); // your own files (features/local.js): only when you ask
     paintSummary(it, 'countdown');
     textFor(it, isFlow(it) ? 0 : startOf(i)).catch(() => {}); // extract during the countdown, so the request goes out at once
     clearTimeout(dwellTimer);
@@ -102,6 +103,7 @@ export function paintSummary(it, mode) {
   else if (mode === 'budget') msg(`Daily AI budget reached ($${spend.today.toFixed(2)} of $${spend.budget}). Raise it in Settings (⌘, or Ctrl+,) to continue.`, 'budget');
   else if (mode === 'countdown') msg([`Summary in ${store.get('sumDelay', 5000) / 1000} s if you stay (a: now) · ${short(summaryModel())}`, h('span', { className: 'bar' })]);
   else if (mode === 'manual') msg(`a: summarize with ${short(summaryModel())} (automatic summaries are off in Settings)`);
+  else if (mode === 'private') msg(`a: summarize with ${short(summaryModel())} (your own files are sent to Claude only when you ask; Settings › Local folders)`);
   else box.replaceChildren();
 }
 
@@ -277,7 +279,7 @@ export function summarizeItem(i, visible, { force = false } = {}) {
     if (out.error && !visible && state.panelItem !== it.id) return out;
     setSummary(it, m, out);
     if (visible && state.presum && !out.error && !(spend && spend.today >= 0.9 * spend.budget)) {
-      for (const ii of state.order.slice(state.pos + 1, state.pos + 3)) summarizeItem(ii, false);
+      for (const ii of state.order.slice(state.pos + 1, state.pos + 3)) if (!items[ii]?.private) summarizeItem(ii, false);
     }
     return out;
   })().finally(() => inflight.delete(k));

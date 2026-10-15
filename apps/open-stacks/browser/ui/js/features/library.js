@@ -546,6 +546,12 @@ on('nav', (d) => { if (d.type === 'back') { topKey = ''; mk = {}; followSoon(cur
 on('stack:show', () => { if (!showing()) setMode(true); const n = stackNode(); if (n) revealNode(n); else follow(current(), true); });
 on('view:changed', () => { if (showing()) follow(current()); });
 on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); elVer++; if (showing()) paint(); });
+// Items added or changed (features/local.js: a file appeared in your folder): the tree is built again.
+on('corpus:changed', ({ changed = [] } = {}) => {
+  T = null; parentOf.clear(); hay = null; icons.clear(); prog.clear(); readN.clear(); for (const i of changed) ready.delete(i);
+  elVer++; mk = {}; topKey = '';
+  if (showing()) { build(); follow(current()); }
+});
 list.addEventListener('scroll', () => { if (list.scrollTop !== paintedTop) paint(); }, { passive: true });
 addEventListener('resize', paint);
 

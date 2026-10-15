@@ -116,12 +116,14 @@ Send a `User-Agent` that names the tool, e.g. `OpenStacksBrowser/0.3 jobs (https
 - **At most one request every 3 seconds**, one connection.
 - Shapes that work: `(cat:cs.AI OR cat:cs.LG OR cat:cs.CL) AND abs:"scalable oversight"`; `au:"Rohin Shah"`; `(au:"A" OR au:"B") AND submittedDate:[202606010000 TO 202610152359]`.
 - Single words explode ("strategy" matched 1,072 papers in a month); even phrases catch homonyms ("AI control" was on topic for 3 of 8). Read every abstract before adding.
+- For a topic, `sortBy=relevance` surfaces the papers people cite; `sortBy=submittedDate` is for "what is new". In a test run, `(cat:cs.LG OR cat:cs.CL) AND abs:"GRPO" AND ti:"reasoning"` over 24 months matched 443 papers, and relevance order put well-known analyses in the first 25.
 - Entry ids carry a version (`2402.03300v3`): strip it. A malformed query returns HTTP 400; an unknown id returns zero results.
 
 ### 6.2 Semantic Scholar
 
 - Recommendations: `POST https://api.semanticscholar.org/recommendations/v1/papers?limit=20&fields=title,year,authors,externalIds,openAccessPdf,abstract,venue,publicationDate` with `{"positivePaperIds": ["arXiv:2402.03300", "DOI:10.…"], "negativePaperIds": []}`. **One topic per call**: mixed seeds return generic papers.
 - Follow-up work: `GET /graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds,openAccessPdf,publicationDate&limit=100` (sort by `publicationDate` yourself). Lookups: `POST /graph/v1/paper/batch` with `{"ids": [...]}`.
+- Recommendations come only from recent papers (in a test run, all 20 were from the last three months), so they find what is new; for older follow-up work use citations or arXiv.
 - Without a key, about two thirds of calls returned 429 in testing: send **at most 1 request per second**, back off from 4 s doubling to 30 s, give up after about 3 minutes and use another source. Keyword search ranks poorly; prefer recommendations and citations.
 - Take author ids from a paper's `authors` list, not from author search (one person can have several profiles).
 

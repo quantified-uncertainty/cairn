@@ -1,12 +1,14 @@
 // Search over titles, authors, lanes and reasons.
-import { $, h, registerKey } from './util.js';
+import { $, h, on, registerKey } from './util.js';
 import { itemIcon } from './icons.js';
 import { items, LANES } from './corpus.js';
 import { state } from './state.js';
 import { jumpTo, before } from './nav.js';
 import { setView } from './chrome.js';
 
-const hay = items.map((it) => [it.t, it.a, LANES[it.lane], it.why, it.y, (it.tags || []).join(' ')].join(' ').toLowerCase());
+const hayOf = (it) => [it.t, it.a, LANES[it.lane], it.why, it.y, (it.tags || []).join(' ')].join(' ').toLowerCase();
+const hay = items.map(hayOf);
+on('corpus:changed', ({ added = [], changed = [] }) => { for (const i of [...added, ...changed]) hay[i] = hayOf(items[i]); }); // features/local.js
 let results = []; let sel = 0;
 function runSearch() {
   const q = $('#s-input').value.toLowerCase().split(/\s+/).filter(Boolean);

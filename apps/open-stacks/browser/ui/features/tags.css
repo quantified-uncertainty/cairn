@@ -4,6 +4,10 @@
 #panel > .tg { margin: -9px 0 -5px; }
 #lib > .tg { padding: 7px 10px 0; }
 .tg.stale { opacity: .45; }
+/* In the Library the block keeps two rows' room (and keeps it with no tags), so the list below does not move as the chips change. */
+#lib > .tg .tg-chips { min-height: 41px; }
+#panel > .tg.none { display: none; }
+#lib > .tg.none { visibility: hidden; }
 /* Two rows, packed by tags.js (a canvas measures the labels); open (+n): every chip, wrapped. */
 .tg-chips { display: flex; flex-direction: column; gap: 3px; }
 .tg-r { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }

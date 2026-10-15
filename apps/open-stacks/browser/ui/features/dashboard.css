@@ -90,8 +90,9 @@
 .db-fl { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex: 1 1 auto; overflow: hidden; }
 .db-fn { color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; font-size: 12.5px; }
 .db-g { font: 9.5px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); border: 1px solid var(--line); border-radius: 2px; padding: 0 3px; flex: none; }
-.db-lam { position: relative; width: 64px; height: 10px; flex: none; }
-.db-lam::before { content: ""; position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: var(--ink-3); }
+/* A diverging bar from −2 to +2 on a faint track, so a short bar still reads as a place on the scale. */
+.db-lam { position: relative; width: 84px; height: 10px; flex: none; background: var(--bg-3); border-radius: 2px; }
+.db-lam::before { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--ink-3); z-index: 1; }
 .db-lam i { position: absolute; top: 2px; bottom: 2px; }
 .db-lam i.pos { background: var(--accent); border-radius: 0 2px 2px 0; }
 .db-lam i.neg { background: var(--ink-3); border-radius: 2px 0 0 2px; }
@@ -151,6 +152,7 @@
 .db-md :is(ul, ol) { margin: 0 0 6px; padding-left: 18px; }
 .db-md code { font: 11px var(--mono); color: var(--ink); background: var(--bg-3); padding: 0 3px; border-radius: 2px; }
 .db-md a { color: var(--accent); }
+.db-md blockquote { margin: 0 0 6px; padding: 2px 0 2px 10px; border-left: 2px solid var(--ink-3); color: var(--ink); font-family: var(--serif); }
 .db-pic { display: block; max-width: 100%; max-height: 320px; margin: 6px 0; border: 1px solid var(--line); }
 .db-jacts { display: flex; gap: 6px; margin-top: 6px; }
 .db-hint { margin: 10px 0 0; color: var(--ink-3); font-size: 11.5px; line-height: 1.5; }

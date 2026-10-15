@@ -88,13 +88,21 @@ function index() {
   IX = { au, yr, rec, src, lane, folders: new Map(), llm: [], llmOf: new Map(), since: `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]} ${d.getFullYear()}` };
   return IX;
 }
-/** The model's tags (from /tags.json): members by item index, each tag once per item. */
+/** The model's tags (from /tags.json): members by item index, each tag once per item.
+ *  An item in none of them joins those its own it.tags name by id (items an agent added
+ *  later carry tag ids there; jobs/README.md). */
 function setTags(list) {
   const ix = index();
   ix.llm = []; ix.llmOf = new Map();
-  for (const t of Array.isArray(list) ? list : []) {
-    if (!t || !Array.isArray(t.items)) continue;
-    const mem = [...new Set(t.items.map((id) => byId.get(id)).filter((i) => i != null))];
+  const raw = (Array.isArray(list) ? list : []).filter((t) => t && Array.isArray(t.items));
+  const mems = raw.map((t) => [...new Set(t.items.map((id) => byId.get(id)).filter((i) => i != null))]);
+  const covered = new Set(mems.flat()), byTag = new Map(raw.map((t, k) => [String(t.id ?? t.label), k]));
+  items.forEach((it, i) => {
+    if (covered.has(i) || !Array.isArray(it.tags)) return;
+    for (const id of it.tags) { const k = byTag.get(id); if (k != null && !mems[k].includes(i)) mems[k].push(i); }
+  });
+  for (const [k, t] of raw.entries()) {
+    const mem = mems[k];
     if (mem.length < 2) continue;
     const tag = { id: String(t.id ?? t.label), label: String(t.label || t.id), kind: KIND_RANK[t.kind] != null ? t.kind : 'topic', desc: t.desc || '', items: mem };
     ix.llm.push(tag);
@@ -132,11 +140,14 @@ export function chipsFor(i) {
     const n = t.items.length;
     out.push({ key: 'tag:' + t.id, kind: t.kind, label: t.label, desc: t.desc, items: t.items, ai: true, g: n > 60 ? 3 : n >= 3 ? 0 : 0.5 });
   }
-  const a = firstAuthor(it.a), am = a && ix.au.get(a.toLowerCase());
+  // A derived chip named like one of the model's tags for this item ("Eric Neyman" the series and the author) shows once, as the model's.
+  const named = new Set(out.map((c) => c.label.toLowerCase()));
+  const a = firstAuthor(it.a), am = a && !named.has(a.toLowerCase()) && ix.au.get(a.toLowerCase());
   if (am && am.length >= 2) out.push({ key: 'author:' + a.toLowerCase(), kind: 'author', label: a, desc: `${am.length} items with ${a} as first author`, items: am, g: 1 });
   const path = Array.isArray(it.path) ? it.path : [];
   for (let d = path.length; d >= 1; d--) {
     const f = folderOf(it.lane, path.slice(0, d));
+    if (named.has(String(f.label).toLowerCase())) continue;
     out.push({ key: 'folder:' + f.id, kind: 'folder', label: f.label, desc: `In the library: ${f.crumb.join(' › ')}`, items: f.items, folder: f, g: 2 + (path.length - d) / 100 });
   }
   const rec = ix.rec.get(it.lane);
@@ -246,9 +257,9 @@ function packed(list) {
   return p.hidden.length ? fill(true) : p;
 }
 
-let paintMs = 0; // the last paint's cost (for tests)
+let paintMs = 0, paints = 0; // the last paint's cost, and how many (for tests)
 function paint() {
-  const t0 = performance.now();
+  const t0 = performance.now(); paints++;
   try { paintNow(); } finally { paintMs = performance.now() - t0; }
 }
 function paintNow() {
@@ -259,7 +270,9 @@ function paintNow() {
   if (state.scope && !list.some(isActive)) { const a = activeChip(); if (a) list = [a, ...list]; }
   shownFor = i;
   box.classList.remove('stale');
-  box.hidden = !list.length;
+  // No tags: gone from the Item panel; in the Library the block keeps its room, so the list does not jump.
+  box.hidden = false;
+  box.classList.toggle('none', !list.length);
   const label = h('span', { className: 'tg-h', textContent: 'Stay in', title: 'Click a tag to stay in it: you stay on this page, and j/k then walk only its items (; next tag, u leaves)' });
   if (!list.length) { chips = []; row.replaceChildren(); return; }
   box.classList.toggle('open', open);
@@ -314,7 +327,7 @@ function check() {
   if (checkT || tight > 40) return;
   checkT = (window.requestIdleCallback || setTimeout)(() => {
     checkT = 0;
-    if (box.hidden || open) return;
+    if (box.hidden || open || !chips.length) return;
     if ([...row.children].some((r) => r.scrollWidth > r.clientWidth + 1)) { tight += 10; lay = null; paint(); }
   });
 }
@@ -395,7 +408,9 @@ card.addEventListener('click', (e) => {
 
 // ---------- when to paint ----------
 // While you skip, the chips are the last item's: dim them until it settles.
-on('item:shown', ({ i }) => { if (shownFor != null && i !== shownFor) box.classList.add('stale'); if (!card.hidden) hideCard(true); });
+const dim = ({ i }) => { if (shownFor != null && i !== shownFor) box.classList.add('stale'); if (!card.hidden) hideCard(true); };
+on('item:shown', dim);
+on('item:skim', dim); // holding j/k (riffle.js): the items passed are not visits, and the chips wait for the one you land on
 on('item:settled', () => { if (loaded) paint(); else tagsP?.then(paintSoon); });
 on('stack:changed', () => { if (shownFor != null && shownFor === current()) paintSoon(); });
 on('nav', (d) => { if (d.type === 'back') paintSoon(); });
@@ -417,5 +432,5 @@ registerKey(':', () => cycle(-1));
 window.__tags = {
   chips: () => chips.map((c) => ({ key: c.key, kind: c.kind, label: c.label, n: c.items.length, on: isActive(c), shown: fit < 0 || chips.indexOf(c) < fit })),
   of: (i) => chipsFor(i).map((c) => ({ key: c.key, label: c.label, n: c.items.length })),
-  loaded: () => loaded, fit: () => fit, ms: () => paintMs,
+  loaded: () => loaded, fit: () => fit, ms: () => paintMs, paints: () => paints,
 };

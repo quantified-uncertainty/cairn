@@ -192,9 +192,14 @@ function pillUpNext() {
   if (!unEl) return;
   for (const el of unEl.querySelectorAll('[data-i], [data-id]')) {
     const id = el.dataset.id || items[Number(el.dataset.i)]?.id;
-    const pill = el.querySelector(':scope > .new-pill');
-    if (id && L.newIds.has(id)) { if (!pill) el.append(h('span', { className: 'new-pill', textContent: 'NEW' })); }
-    else pill?.remove();
+    const pill = el.querySelector('.new-pill');
+    if (id && L.newIds.has(id)) {
+      if (pill) continue;
+      // upnext.js: a tile's meta line (.un-m, the tile clips below it), or the title of a one-line entry (.un-lt).
+      const p = h('span', { className: 'new-pill', textContent: 'NEW' });
+      const meta = el.querySelector(':scope > .un-m'), line = el.querySelector(':scope > .un-lt');
+      if (meta) meta.prepend(p); else if (line) line.before(p); else el.append(p);
+    } else pill?.remove();
   }
 }
 on('item:settled', () => { if (L.newIds.size && !unEl?.isConnected) upNextBadges(); });
@@ -268,9 +273,16 @@ export function loadFinds(force = false) {
   if (!findsP || force || Date.now() - findsAt > 30e3) {
     findsAt = Date.now();
     findsP = getJSON('/learn/finds.json');
-    findsP.catch(() => { findsP = null; });
+    findsP.then(reconcile, () => { findsP = null; });
   }
   return findsP;
+}
+/** The finds list is computed from memory when asked; the rank part's `new` waits for the next
+ *  recompute. A find the list no longer calls new loses its badge now, so the chip and the Dashboard agree. */
+function reconcile(f) {
+  let ch = false;
+  for (const x of f?.items || []) if (x.st !== 'new' && L.newIds.delete(x.id)) { L.cleared.add(x.id); ch = true; }
+  if (ch) paintNew();
 }
 const whyC = new Map(); // id -> {at, p}
 /** {id: why} for ids, batched (30 per request) and cached per profile. */
@@ -297,7 +309,7 @@ function settleLocal(id, fields) {
   const r = memoryOf(id);
   if (r) { for (const [k, v] of Object.entries(fields)) { if (v == null) delete r[k]; else r[k] = v; } emit('memory:updated', { id }); }
   if (L.newIds.delete(id)) L.cleared.add(id);
-  findsP = null;
+  findsP = null; whyC.delete(id);
   paintNew();
   setTimeout(() => refresh(), 300);
 }
@@ -395,7 +407,19 @@ export const READ = { deep: 'You read this deeply', skim: 'You skimmed this', gl
 export const fmtD = (d) => (Math.abs(d) < 0.005 ? '0' : (d > 0 ? '+' : '−') + Math.abs(d).toFixed(2));
 /** A chip: "+0.25 LLM papers › Reasoning", the evidence in the tooltip. */
 export function chipEl(c) {
-  return h('span', { className: 'lw-c' + (c.d < 0 ? ' neg' : ''), title: [c.label, c.text].filter(Boolean).join(': ') }, h('b', { textContent: fmtD(c.d) }), c.label);
+  return h('span', { className: 'lw-c' + (c.d < 0 ? ' neg' : '') + (c.phi ? ' phi' : ''), title: [c.label, c.text].filter(Boolean).join(': ') }, h('b', { textContent: fmtD(c.d) }), c.label);
+}
+/** Familiarity (Φ, from a why response) as a chip: why a read, skipped or new item moved
+ *  regardless of its topics. Null when it is near 0. */
+export function phiChip(v) {
+  const d = Number(v?.phi) || 0;
+  if (Math.abs(d) < 0.05) return null;
+  const j = v.read?.j;
+  const [label, text] = d > 0
+    ? (v.find?.st === 'new' ? ['new find', 'Added by an agent job and not read yet: it rises for 14 days'] : ['in progress', 'Started and not finished: it stays near the top for 3 weeks'])
+    : d <= -0.79 ? (j === 'less' ? ['less like this', 'You marked it less like this'] : j === 'save' ? ['saved', 'Saved items live in Saved and sink in For you'] : ['finished', 'Read through: it sinks in For you'])
+      : v.state === 'skip' ? ['skipped lately', 'Left within seconds: it sinks for a month or so'] : ['glanced at lately', 'Opened briefly: it sinks a little for a month or so'];
+  return chipEl({ d, label, text, phi: true });
 }
 
 // ---------------------------------------------------------------- the why line (§8.3)
@@ -414,24 +438,36 @@ function findLine(it, f) {
     if (state0 === 'kept') acts.append(h('span', { className: 'lw-done', textContent: '★ kept' }));
     else if (state0 === 'dismissed') acts.append(h('span', { className: 'lw-done', textContent: 'dismissed' }));
     else acts.append(
-      h('button', { type: 'button', className: 'lw-btn', textContent: 'Keep ★', title: 'Save it (Saved list); it stops being new', onclick: () => undoable(acts, () => keep(it.id), () => unkeep(it.id), paint, 'kept') }),
-      h('button', { type: 'button', className: 'lw-btn', textContent: 'Dismiss −', title: 'Less like this: it sinks in For you', onclick: () => undoable(acts, () => dismiss(it.id), () => undismiss(it.id), paint, 'dismissed') }));
+      h('button', { type: 'button', className: 'lw-btn', textContent: 'Keep ★', title: 'Save it (Saved list); it stops being new', onclick: () => undoable(acts, () => keep(it.id), () => unkeep(it.id), paint, 'kept', it.id) }),
+      h('button', { type: 'button', className: 'lw-btn', textContent: 'Dismiss −', title: 'Less like this: it sinks in For you', onclick: () => undoable(acts, () => dismiss(it.id), () => undismiss(it.id), paint, 'dismissed', it.id) }));
   };
-  paint(f.st);
+  // The panel repaints on every settle: an Undo still open comes back, and Keep or Dismiss done here shows before the server's answer does.
+  const u = undos.get(it.id);
+  if (u && u.until > Date.now()) showUndo(acts, u.undo, paint, u.done, u.until, it.id);
+  else paint(localFind(it.id, f.st));
   return h('div', { className: 'lw-find' }, h('span', {}, ...kids), acts);
 }
-/** Run `act`; the buttons become "Undo" for 6 s, which runs `undo`. */
-export function undoable(box, act, undo, paint, done) {
+const localFind = (id, st) => (st === 'new' || st === 'seen' ? (state.saved.includes(id) ? 'kept' : memoryOf(id)?.less ? 'dismissed' : st) : st);
+const undos = new Map(); // id -> {until, undo, done}: an Undo offered in the panel, for 6 s
+/** Run `act`; the buttons become "Undo" for 6 s, which runs `undo`. With an id, a repaint of the panel keeps the Undo. */
+export function undoable(box, act, undo, paint, done, id = null) {
   act();
+  const until = Date.now() + 6000;
+  if (id) undos.set(id, { until, undo, done });
+  showUndo(box, undo, paint, done, until, id);
+}
+function showUndo(box, undo, paint, done, until, id) {
   let t = null;
-  const btn = h('button', { type: 'button', className: 'lw-btn undo', textContent: 'Undo', onclick: () => { clearTimeout(t); undo(); paint('new'); } });
+  const btn = h('button', { type: 'button', className: 'lw-btn undo', textContent: 'Undo', onclick: () => { clearTimeout(t); if (id) undos.delete(id); undo(); paint('new'); } });
   box.replaceChildren(h('span', { className: 'lw-done', textContent: done === 'kept' ? '★ kept' : 'dismissed' }), btn);
-  t = setTimeout(() => paint(done), 6000);
+  t = setTimeout(() => { if (id && undos.get(id)?.until === until) undos.delete(id); paint(done); }, Math.max(0, until - Date.now()));
 }
 function fillWhy(box, it, i, v) {
   const kids = [];
-  const chips = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.005);
-  if (chips.length) kids.push(h('div', { className: 'lw-chips' }, ...chips.map(chipEl)));
+  const chips = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.005).map(chipEl);
+  const fam = phiChip(v);
+  if (fam) chips.push(fam);
+  if (chips.length) kids.push(h('div', { className: 'lw-chips' }, ...chips));
   const rank = h('div', { className: 'lw-rank', hidden: true });
   kids.push(rank);
   if (v.find) kids.push(findLine(it, v.find));

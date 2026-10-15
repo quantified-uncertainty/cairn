@@ -76,7 +76,7 @@ async function load(it) {
   if (a) return setAug(it, a);
   if (running && await joinRunning(it)) return; // being written elsewhere (another tab, a reload mid-stream)
   if (!here(it) || augs.has(k) || inflight.has(k)) return;
-  if (state.status.summariesEnabled === false || !S.auto || (spend && spend.today >= spend.budget)) return paintGuide(it);
+  if (state.status.summariesEnabled === false || !S.auto || it.private || (spend && spend.today >= spend.budget)) return paintGuide(it); // private: your own files, only on request
   countdown = { id: it.id, at: Date.now(), ms: S.delay };
   paintGuide(it);
   textFor(it).catch(() => {}); // extract in idle time during the countdown, so the request goes out at once
@@ -287,7 +287,7 @@ function paintGuide(it) {
     const bar = h('span', { className: 'bar' }); bar.style.setProperty('--aug-t', left + 'ms');
     return msg([`Reading guide in ${Math.ceil(left / 1000)} s if you stay`, bar, makeBtn('now')], 'countdown');
   }
-  if (!S.auto) return msg([`Reading guides are made on request.`, makeBtn('make one')]);
+  if (!S.auto || it.private) return msg([it.private ? 'Your own file: a guide is written (by Claude) only when you ask.' : `Reading guides are made on request.`, makeBtn('make one')]);
   box.replaceChildren();
 }
 function guideView(it, a, streaming) {

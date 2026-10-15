@@ -15,7 +15,7 @@
 // automatic refreshes (24; 0 = only on request); STACKS_JOBS_MAX caps open jobs (30).
 // Bookkeeping lives in CACHE/jobs/: state.json (runs, what was written) and
 // errors.json (open errors the reader's browser saw), never in the repo.
-import { readFileSync, writeFileSync, renameSync, mkdirSync, statSync, existsSync, createReadStream, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, mkdirSync, statSync, existsSync, createReadStream, unlinkSync, readdirSync } from 'fs';
 import { join, resolve, relative, isAbsolute } from 'path';
 import * as J from '../jobs.mjs';
 import { localDay } from '../learn.mjs';
@@ -51,7 +51,8 @@ export default function (app) {
   function list(force = false) {
     if (!force && listing && Date.now() - listedAt < 2000) return listing;
     listedAt = Date.now();
-    const sig = ['open', 'done'].map((d) => mtime(join(ROOT, d))).join('|');
+    // The folders' mtimes catch added, moved and removed jobs; the files' catch an edit in place.
+    const sig = ['open', 'done'].map((d) => { const p = join(ROOT, d); let s = String(mtime(p)); try { for (const f of readdirSync(p)) if (f.endsWith('.md')) s += ',' + mtime(join(p, f)); } catch { /* no folder */ } return s; }).join('|');
     if (!force && listing && sig === listSig) return listing;
     listing = J.listJobs(ROOT); listSig = sig;
     const open = listing.open.filter((x) => x.job);

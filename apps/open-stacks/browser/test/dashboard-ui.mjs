@@ -5,20 +5,31 @@
 //   node test/dashboard-ui.mjs [--url http://127.0.0.1:4747] [--port 4820] [--shots DIR]
 //                              [--fixtures | --real] [--only name,name] [--no-speed]
 //
-// Without --url it starts server.mjs on a temp cache (STACKS_WARM_MB=0, temp
-// STACKS_JOBS_DIR) and stops it at the end. When the server has no /learn routes
-// (or with --fixtures) it serves test/fixtures/learn-ui/*.json through page.route,
-// and adds the find fields (added, job, via, why) to the fixture finds in
-// /corpus.json. --real runs against the server's own routes. Live network: only the
-// few arXiv PDFs it opens; every other /proxy and /img request is answered locally,
-// and client prefetches are dropped. Uses the global Playwright
+// Two modes:
+// - real (the default without --url): a throwaway copy of the browser folder
+//   (test/stacks-root.mjs) whose corpus.json marks the fixture finds as items agent
+//   jobs added, and server.mjs on it with a temp cache and a temp STACKS_JOBS_DIR
+//   (STACKS_WARM_MB=0, STACKS_JOBS_EVERY=0). The cold start is checked on the empty
+//   memory; then reading is simulated through POST /memory (test/learn-ops.mjs), the
+//   jobs are refreshed and one is closed with jobs.mjs done, and every other check
+//   runs against the server's own /learn and /jobs routes.
+// - fixtures (--fixtures, or --url to a server without /learn): /learn and /jobs answer
+//   from test/fixtures/learn-ui/*.json through page.route, and the find fields (added,
+//   job, via, why) are added to the fixture finds in /corpus.json.
+// Live network: only the few arXiv PDFs it opens; every other /proxy and /img request
+// is answered locally, and client prefetches are dropped. Uses the global Playwright
 // (/opt/node22/lib/node_modules) and Chromium from PLAYWRIGHT_CHROMIUM_EXECUTABLE.
+// Temp folders (the copy, its cache and jobs) go under --tmp DIR, else $TMPDIR; the
+// browser's own profile always goes under $TMPDIR (Chromium needs a short path there).
 import { createRequire } from 'module';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { mkdtempSync, readFileSync, rmSync, mkdirSync, existsSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+
+import { makeRoot, realCorpus, startServer as startRootServer } from './stacks-root.mjs';
+import { readOps, quickOps } from './learn-ops.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = join(ROOT, 'test/fixtures/learn-ui');
@@ -48,7 +59,8 @@ let server = null, cacheDir = null, BASE = arg('url', '');
 async function startServer() {
   if (BASE) return;
   const port = Number(arg('port', 4820));
-  cacheDir = mkdtempSync(join(tmpdir(), 'stacks-dui-'));
+  const tmp = arg('tmp', '') || tmpdir(); mkdirSync(tmp, { recursive: true });
+  cacheDir = mkdtempSync(join(tmp, 'stacks-dui-'));
   server = spawn(process.execPath, ['server.mjs', '--port', String(port)], {
     cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'],
     env: { ...process.env, STACKS_CACHE: cacheDir, STACKS_CACHE_MAX: '400000000', STACKS_WARM_MB: '0', STACKS_JOBS_DIR: join(cacheDir, 'jobs'), STACKS_JOBS_EVERY: '0' },
@@ -57,7 +69,71 @@ async function startServer() {
   for (let k = 0; k < 60; k++) { try { if ((await fetch(BASE + '/status')).ok) return; } catch { /* starting */ } await sleep(250); }
   throw new Error('server did not start');
 }
-function stopServer() { server?.kill(); if (cacheDir) rmSync(cacheDir, { recursive: true, force: true }); }
+function stopServer() {
+  server?.kill(); if (cacheDir) rmSync(cacheDir, { recursive: true, force: true });
+  seeded?.srv?.stop(); if (seeded?.root) rmSync(seeded.root, { recursive: true, force: true });
+  server = null; cacheDir = null; seeded = null;
+}
+// The server never outlives the script: a failed start, an exception or a timeout's SIGTERM.
+process.on('exit', () => { try { server?.kill(); seeded?.srv?.proc.kill(); } catch { /* gone */ } });
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { stopServer(); process.exit(130); });
+
+// ---------------------------------------------------------------- the seeded real server
+const DAY = 864e5;
+const localDay = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+let seeded = null; // {root, srv, jobsDir, closed}
+/** A browser-folder copy whose corpus has the fixture finds as items agent jobs added, and a server on it. */
+async function startSeeded() {
+  const c = realCorpus(), by = new Map(c.items.map((it) => [it.id, it]));
+  let k = 0;
+  for (const x of F('finds').items) {
+    const it = by.get(x.id); if (!it) continue;
+    const ago = x.st === 'new' ? (k++ < 4 ? 0 : 1) : 6;
+    Object.assign(it, { added: localDay(Date.now() - ago * DAY), job: x.job, via: x.via, why: x.why });
+  }
+  const tmp = arg('tmp', ''), was = process.env.TMPDIR;
+  if (tmp) { mkdirSync(tmp, { recursive: true }); process.env.TMPDIR = tmp; } // os.tmpdir() reads it on each call
+  let root, srv;
+  try {
+    root = makeRoot({ corpus: c, data: false, prefix: 'stacks-dui-root-' });
+    seeded = { root, srv: null, jobsDir: join(root, 'jobs'), closed: null };
+    for (const d of ['open', 'done', 'assets']) mkdirSync(join(seeded.jobsDir, d), { recursive: true });
+    srv = await startRootServer(root, { STACKS_JOBS_DIR: seeded.jobsDir }, { port: Number(arg('port', 4820)) });
+  } finally { if (tmp) { if (was == null) delete process.env.TMPDIR; else process.env.TMPDIR = was; } }
+  seeded.srv = srv;
+  BASE = srv.base;
+}
+/** Reading like the spec's session A (§11.1), a few forecasting reads, and the two finds already read or kept. */
+async function seedReading() {
+  const now = Date.now(), ops = [];
+  const read = (id, o) => ops.push(...readOps(id, { ...o, at: now - (o.ago ?? 1) * DAY }));
+  read('arxiv:2402.03300', { mins: 18, frac: 0.9, ago: 3 });                          // DeepSeekMath
+  read('arxiv:2501.12948', { mins: 20, frac: 0.8, days: 2, judge: ['save'], ago: 2 }); // DeepSeek-R1
+  read('arxiv:2501.19393', { mins: 12, frac: 0.8, ago: 4 });                          // s1
+  read('arxiv:2408.03314', { mins: 14, frac: 0.7, judge: ['more'], ago: 5 });         // test-time compute
+  read('arxiv:2503.11926', { mins: 16, frac: 0.9, ago: 2 });                          // Monitoring Reasoning Models
+  read('arxiv:2412.14093', { mins: 10, frac: 0.5, ago: 6 });                          // Alignment faking
+  read('pdf:sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf', { mins: 11, frac: 0.6, ago: 1 });
+  read('pdf:faculty.wharton.upenn.edu/wp-content/uploads/2015/07/2015---superforecasters.pdf', { mins: 9, frac: 0.6, ago: 1 });
+  ['ia:reisswitz-1824', 'ia:beitragzumkrieg00unkngoog', 'ia:1880-strategos-american-wargame', 'ia:americankriegssp00live', 'pg:3690', 'ttrpg:d20srd35']
+    .forEach((id, j) => ops.push(...quickOps(id, { secs: 3, at: now - (2 + j * 0.1) * DAY, judge: j === 5 ? ['less'] : [] })));
+  read('arxiv:2501.13011', { mins: 1.5, frac: 0.2, ago: 1 });                         // a find, read: seen
+  ops.push({ o: 'judge', id: 'arxiv:2601.11516', t: now - DAY, j: 'save' });           // a find, kept
+  const r = await fetch(BASE + '/memory', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ops }) });
+  if (!r.ok) throw new Error('POST /memory ' + r.status);
+  // Judgments recompute in 250 ms, visits within 10 s.
+  for (let j = 0; j < 80; j++) { const s = await (await fetch(BASE + '/status')).json(); if (s.learn?.exposures >= 12) break; await sleep(250); }
+  const st = await (await fetch(BASE + '/status')).json();
+  // Jobs from what it learned, and one closed the way an agent closes it.
+  const jr = await (await fetch(BASE + '/jobs/refresh', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).json();
+  const id = (jr.created || []).find((x) => /^discover-/.test(x)) || (jr.created || [])[0];
+  if (id) {
+    const d = spawnSync(process.execPath, ['jobs.mjs', 'done', id, '--force', '--note', 'Closed by the UI test: nothing was added.', '--dir', seeded.jobsDir, '--root', seeded.root], { cwd: ROOT, encoding: 'utf8' });
+    seeded.closed = d.status === 0 ? id : null;
+    if (d.status !== 0) console.log('jobs.mjs done failed:', (d.stderr || d.stdout).slice(0, 300));
+  }
+  console.log(`seeded: ${ops.length} memory ops, ${st.learn?.exposures} exposures, jobs created ${(jr.created || []).join(', ') || 'none'}, closed ${seeded.closed || 'none'}`);
+}
 
 // ---------------------------------------------------------------- fixtures and network
 const FINDS = F('finds');
@@ -142,9 +218,13 @@ async function context(browser, { fixtures = MODE === 'fixtures', rank = null, r
       route.fulfill({ response: res, json: c });
     });
   }
+  if (!fixtures && rankDelay) await ctx.route(/\/learn\/profile\.json\?part=rank/, async (route) => { await sleep(rankDelay); route.continue(); });
   ctx.on('request', (q) => {
     const u = new URL(q.url());
-    if (q.method() === 'POST' && u.pathname === '/memory') { try { log.memory.push(...JSON.parse(q.postData() || '{}').ops || []); } catch { /* beacon text */ } }
+    if (q.method() !== 'POST') return;
+    if (u.pathname === '/memory') { try { log.memory.push(...JSON.parse(q.postData() || '{}').ops || []); } catch { /* beacon text */ } }
+    // Against the real server, the POSTs the fixture routes would have logged.
+    else if (!fixtures && /^\/(learn|jobs)\//.test(u.pathname)) { try { (u.pathname.startsWith('/jobs') ? log.jobs : log.learn).push({ path: u.pathname, body: JSON.parse(q.postData() || '{}') }); } catch { /* not JSON */ } }
   });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => log.errors.push('pageerror: ' + e.message));
@@ -185,13 +265,18 @@ T.cold = async (browser) => {
   const { ctx, page, log } = await context(browser, { rank: F('rank-cold') });
   await open(page, '?lane=all');
   const r = await S(page, `
-    const st = await import('/js/state.js');
+    const st = await import('/js/state.js'); const { items } = await import('/js/corpus.js');
     const on = !!st.scoreTerms.length;
+    // With no memory every λ is 0: score() is baseScore() bit for bit, except that a new find gets Φ in (0, 0.3] (spec §2.7, S10).
+    const odd = [], finds = [];
+    for (let i = 0; i < items.length; i++) { const d = st.score(i) - st.baseScore(i); if (L.isNew(items[i].id)) finds.push(d); else if (d !== 0) odd.push(items[i].id); }
     st.buildOrder(false); const a = state.order.slice();
     L.setLearnOn(false); st.buildOrder(false); const b = state.order.slice();
     L.setLearnOn(true);
-    return { on, same: a.length === b.length && a.every((x, k) => x === b[k]), n: a.length };`);
-  check('1 cold start: order identical with learning on and off', r.on && r.same, `term registered ${r.on}, ${r.n} items`);
+    return { on, odd: odd.slice(0, 5), nOdd: odd.length, finds, same: a.length === b.length && a.every((x, k) => x === b[k]), n: a.length };`);
+  check('1 cold start: score() = baseScore() for every item but new finds', r.on && !r.nOdd, `term registered ${r.on}, ${r.n} items, ${r.nOdd} differ ${r.odd.join(' ')}`);
+  if (r.finds.length) check('1 cold start: each new find gets only Φ in (0, 0.3]', r.finds.every((d) => d > 0 && d <= 0.3 + 1e-9), `${r.finds.length} finds: ${r.finds.map((d) => d.toFixed(2)).join(' ')}`);
+  else check('1 cold start: order identical with learning on and off', r.same, `${r.n} items`);
   check('1 cold start: no console errors', !log.errors.length, log.errors.slice(0, 3).join(' | '));
   await ctx.close();
 };
@@ -209,9 +294,11 @@ T.term = async (browser) => {
   const after = await S(page, `
     const st = await import('/js/state.js'); const { items, byId } = await import('/js/corpus.js');
     const R = (await (await fetch('/learn/profile.json?part=rank')).json());
-    const ids = Object.keys(R.pred).filter((id) => R.pred[id] > 0.3 && byId.has(id));
+    const term = (id) => 0.8 * (R.pred[id] || 0) + (R.phi[id] || 0); // read items sink (Φ −0.8) however liked
+    let ids = Object.keys(R.pred).filter((id) => term(id) > 0.3 && byId.has(id));
+    if (ids.length < 5) ids = Object.keys(R.pred).filter((id) => byId.has(id)).sort((a, b) => term(b) - term(a)).slice(0, 20);
     const i = byId.get(ids[0]);
-    return { order: state.order.slice(), pos: state.pos, ids, diff: st.score(i) - st.baseScore(i), want: 0.8 * R.pred[ids[0]] + (R.phi[ids[0]] || 0),
+    return { order: state.order.slice(), pos: state.pos, ids, diff: st.score(i) - st.baseScore(i), want: term(ids[0]),
       idx: ids.map((id) => byId.get(id)) };`);
   const head = before.order.slice(0, before.pos + 3);
   const headKept = head.every((x, k) => after.order[k] === x);
@@ -227,14 +314,16 @@ T.term = async (browser) => {
 
 T.badges = async (browser) => {
   const { ctx, page, log } = await context(browser);
+  // Against the real server earlier checks may have read a find: take one that is new now.
+  const FIND0 = MODE === 'real' ? ((await (await fetch(BASE + '/learn/finds.json')).json()).items.find((x) => x.st === 'new')?.id || FINDS.items[0].id) : FINDS.items[0].id;
   // Checked as soon as the item shows: 1.2 s on a spread of 2 or more pages counts as read (§2.9), which clears it.
   await page.goto(`${BASE}/?id=${encodeURIComponent(FIND0)}`, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.querySelector('#item-head h1') && window.__stacksLearn?.L.on, null, { timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('#item-head')?.dataset.badges === 'new', null, { timeout: 3000 }).catch(() => {});
   const head = await page.evaluate(() => [document.querySelector('#item-head')?.dataset.badges, getComputedStyle(document.querySelector('#item-head h1'), '::before').content]);
   check('3 NEW badge in the item header', head[0] === 'new' && head[1] === '"NEW"', JSON.stringify(head));
-  const chip = await page.evaluate(() => { const c = document.querySelector('#new-chip'); return c && !c.hidden ? c.textContent : null; });
-  check('3 the NEW chip shows the count', chip === 'NEW 6', String(chip));
+  const chip = await page.evaluate(() => { const c = document.querySelector('#new-chip'); return c && !c.hidden ? [c.textContent, window.__stacksLearn.L.newIds.size] : null; });
+  check('3 the NEW chip shows the count', chip && chip[0] === `NEW ${MODE === 'real' ? chip[1] : 6}` && chip[1] >= 4, String(chip));
   await shot(page, 'new-badge-feed-early', { clip: { x: 0, y: 0, width: 1728, height: 90 } });
   await waitSpread(page);
   await settle(page, 600);
@@ -245,20 +334,39 @@ T.badges = async (browser) => {
   check('3 a toast announces the batch', toasts.some((t) => /^\d+ new items?$/.test(t)), toasts.join(' | '));
   // Library row.
   await page.keyboard.press('L'); await page.waitForTimeout(700);
-  const lib = await page.evaluate(async () => {
+  const libRows = () => page.evaluate(async () => {
     const { byId, items } = await import('/js/corpus.js'); const L = window.__stacksLearn.L;
     const rows = [...document.querySelectorAll('.lr-i')];
     const isNew = rows.filter((r) => L.newIds.has(items[Number(r.dataset.i)]?.id)), other = rows.filter((r) => !isNew.includes(r));
     const pill = (r) => getComputedStyle(r.querySelector('.lr-t'), '::before').content;
-    return { newRows: isNew.length, newPill: isNew.every((r) => pill(r) === '"NEW"'), otherPill: other.some((r) => pill(r) === '"NEW"') };
+    return { newRows: isNew.length, rows: rows.length, newPill: isNew.every((r) => pill(r) === '"NEW"'), otherPill: other.some((r) => pill(r) === '"NEW"') };
   });
+  let lib = await libRows(), walked = false;
+  if (!lib.newRows) { await page.click('#new-chip'); await page.waitForTimeout(800); lib = await libRows(); walked = true; } // the New stack, in the Library
+  lib.inNewStack = walked;
   check('3 NEW badge on the library rows of new items (and only those)', lib.newRows > 0 && lib.newPill && !lib.otherPill, JSON.stringify(lib));
   await shot(page, 'new-badge-library', { clip: { x: 0, y: 0, width: 900, height: 700 } });
+  if (walked) { await page.keyboard.press('u'); await page.waitForTimeout(400); }
   await page.keyboard.press('L'); await page.waitForTimeout(300);
   // Walk: the chip narrows to the new items; u leaves; Back undoes.
-  await page.click('#new-chip'); await page.waitForTimeout(600);
-  const w1 = await S(page, `return { kind: state.stack?.kind, n: state.scope?.size, want: L.L.newIds.size };`);
+  // The stack is what was new when the chip was clicked (reading the first one clears its badge, not its place).
+  const want = await S(page, `const n = L.L.newIds.size; document.querySelector('#new-chip').click(); return n;`); // the same task: nothing clears in between
+  await page.waitForTimeout(600);
+  const w1 = { ...(await S(page, `return { kind: state.stack?.kind, n: state.scope?.size };`)), want };
   check('4 the chip walks the new items', w1.kind === 'new' && w1.n === w1.want && w1.n >= 4, JSON.stringify(w1));
+  // Up Next (upnext.js), walking the new items: a pill on each new tile, inside the strip (it clips).
+  await page.waitForTimeout(400);
+  const un = await page.evaluate(() => {
+    const strip = document.querySelector('#upnext:not([hidden])'); if (!strip) return { shown: false };
+    const b = strip.getBoundingClientRect(), ps = [...strip.querySelectorAll('.new-pill')];
+    const inside = ps.filter((p) => { const r = p.getBoundingClientRect(); return r.width > 0 && r.top >= b.top - 0.5 && r.bottom <= b.bottom + 0.5 && r.left >= b.left - 0.5; });
+    return { shown: true, pills: ps.length, inside: inside.length };
+  });
+  if (un.shown) {
+    check('3 NEW pill on Up Next tiles, inside the strip', un.pills >= 1 && un.inside === un.pills, JSON.stringify(un));
+    const ub = await page.locator('#upnext').boundingBox();
+    if (ub) await shot(page, 'new-badge-upnext', { clip: { x: ub.x, y: ub.y, width: Math.min(ub.width, 900), height: ub.height } });
+  }
   await page.keyboard.press('Backspace'); await page.waitForTimeout(500);
   const w2 = await S(page, `return { kind: state.stack?.kind, scope: !!state.scope };`);
   check('4 Back undoes the walk', w2.kind !== 'new' && !w2.scope, JSON.stringify(w2));
@@ -275,7 +383,11 @@ T.badges = async (browser) => {
   await page.keyboard.press('f'); await page.waitForTimeout(500);
   // A flick past leaves the badge; reading clears it everywhere.
   // The next new item in the New stack: a flick past (j, then k after 0.7 s) leaves it new.
-  const cur = await S(page, `const { items } = await import('/js/corpus.js'); return state.order.slice(state.pos + 1).map((i) => items[i].id).find((id) => L.isNew(id));`);
+  // One that memory does not already count as read (in fixtures mode the server's memory is shared by every check).
+  const cur = await S(page, `const { items } = await import('/js/corpus.js'); const m = await import('/js/features/memory.js');
+    const read = (r) => r && ((r.a || 0) >= 20000 || (r.sc || 0) >= 2 || r.saved || r.more || r.less);
+    const ids = state.order.slice(state.pos + 1).map((i) => items[i].id).filter((id) => L.isNew(id));
+    return ids.find((id) => !read(m.memoryOf(id))) || ids[0];`);
   await S(page, `const { byId } = await import('/js/corpus.js'); const st = await import('/js/stack.js'); st.goTo(byId.get(a), 'next item');`, cur);
   await page.waitForTimeout(700);
   await page.keyboard.press('Backspace'); await page.waitForTimeout(400);
@@ -305,7 +417,7 @@ T.why = async (browser) => {
     find: document.querySelector('#sec-why .lw-find')?.textContent || '',
     liked: document.querySelector('#sec-why .why')?.textContent || '',
   }));
-  check('5 why line: chips', w.chips.length >= 2, w.chips.join(' | '));
+  check('5 why line: chips on a find', w.chips.length >= (MODE === 'real' ? 1 : 2), w.chips.join(' | '));
   check('5 why line: rank movement', /▲ \d+ places? in All/.test(w.rank), w.rank);
   check('5 why line: find provenance', /added .* by job discover-0007 · via Semantic Scholar/.test(w.find), w.find.slice(0, 120));
   check('5 why line: no "you liked" while learning is on', !/you liked/.test(w.liked));
@@ -316,6 +428,15 @@ T.why = async (browser) => {
   await S(page, `const { byId } = await import('/js/corpus.js'); const nav = await import('/js/nav.js'); nav.jumpTo(byId.get('arxiv:2203.11171'));`);
   await page.waitForSelector('#sec-why .lw-rank:not([hidden])', { timeout: 8000 }).catch(() => {});
   if (box) await shot(page, 'why-pred', { clip: { x: box.x, y: box.y, width: box.width, height: 360 } });
+  const chipsNow = () => page.evaluate(() => [...document.querySelectorAll('#sec-why .lw-c')].map((c) => ({ t: c.textContent, neg: c.classList.contains('neg'), phi: c.classList.contains('phi') })));
+  const pc = await chipsNow();
+  check('5 why line: a predicted item shows topic chips', pc.filter((c) => !c.phi && !c.neg).length >= 1, pc.map((c) => c.t).join(' | '));
+  await S(page, `const { byId } = await import('/js/corpus.js'); const nav = await import('/js/nav.js'); nav.jumpTo(byId.get('ttrpg:fate-core'));`);
+  await page.waitForFunction(() => document.querySelector('#item-head h1')?.textContent.includes('Fate'), null, { timeout: 8000 }).catch(() => {});
+  await page.waitForSelector('#sec-why .lw-c.neg', { timeout: 8000 }).catch(() => {});
+  const fc = await chipsNow();
+  check('5 why line: Fate Core (after the TTRPG skips) shows a negative chip', fc.some((c) => c.neg && !c.phi), fc.map((c) => c.t).join(' | '));
+  if (box) await shot(page, 'why-fate', { clip: { x: box.x, y: box.y, width: box.width, height: 360 } });
   // Keep from the panel: a save op, then Undo sends unsave.
   await S(page, `const { byId } = await import('/js/corpus.js'); const nav = await import('/js/nav.js'); nav.jumpTo(byId.get(a));`, FINDS.items[2].id);
   await page.waitForSelector('#sec-why .lw-find .lw-btn', { timeout: 8000 }).catch(() => {});
@@ -351,14 +472,16 @@ T.dashboard = async (browser) => {
       await page.evaluate(() => { const d = document.querySelector('#dashboard'); d.scrollTop = document.querySelector('#db-learned').offsetTop - 60; });
       await page.waitForTimeout(300);
       await shot(page, `dashboard-${tag}-learned`);
-      await page.click('#db-jobs .db-row[data-id="flag-0003"] .db-l1'); await page.waitForTimeout(500);
+      const jrow = MODE === 'real' ? await page.evaluate(() => (document.querySelector('#db-jobs .db-row[data-id^="flag-"]') || document.querySelector('#db-jobs .db-row'))?.dataset.id) : 'flag-0003';
+      if (jrow) { await page.click(`#db-jobs .db-row[data-id="${jrow}"] .db-l1`); await page.waitForTimeout(500); }
       await page.evaluate(() => { const d = document.querySelector('#dashboard'); d.scrollTop = document.querySelector('#db-jobs').offsetTop - 60; });
       await page.waitForTimeout(400);
       await shot(page, `dashboard-${tag}-jobs`);
       // Copy instructions.
       await page.click('.db-strip [data-act="copy-all"]'); await page.waitForTimeout(300);
       const clip = await page.evaluate(() => navigator.clipboard.readText().catch(() => ''));
-      check('6 Copy instructions puts the exact prompt on the clipboard', clip === F_JOBS.prompt, clip.slice(0, 60));
+      const want = MODE === 'real' ? (await (await fetch(BASE + '/jobs')).json()).prompt : F_JOBS.prompt;
+      check('6 Copy instructions puts the exact prompt on the clipboard', clip === want, clip.slice(0, 60));
       // Keep, Undo, Dismiss, Undo on the first New row.
       await page.evaluate(() => { document.querySelector('#dashboard').scrollTop = 0; });
       const n0 = log.memory.length;
@@ -554,19 +677,21 @@ if (process.env.DUI_PROFILE) T.profile = async (browser) => {
   console.log([...self].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${v.toFixed(1)} ms  ${k}`).join('\n'));
   await ctx.close();
 };
+const SEED = !BASE && !flag('fixtures'); // real mode on a seeded copy (the default without --url)
 const browser = await (async () => {
-  await startServer();
+  if (SEED) await startSeeded(); else await startServer();
   const r = await fetch(BASE + '/learn/profile.json?part=rank').catch(() => null);
-  MODE = flag('fixtures') ? 'fixtures' : flag('real') ? 'real' : r?.ok ? 'real' : 'fixtures';
+  MODE = SEED ? 'real' : flag('fixtures') ? 'fixtures' : flag('real') ? 'real' : r?.ok ? 'real' : 'fixtures';
   console.log(`Stacks dashboard UI test · ${BASE} · ${MODE} · screenshots in ${SHOTS}`);
   return chromium.launch({ executablePath: EXE });
-})();
-const ORDER = [...(process.env.DUI_DEBUG ? ['debug'] : []), ...(process.env.DUI_PROFILE ? ['profile'] : []), 'keys', 'cold', 'term', 'why', 'flag', 'dashboard', 'badges', 'memory', 'reload', 'speed'];
+})().catch((e) => { stopServer(); throw e; });
+const ORDER = [...(process.env.DUI_DEBUG ? ['debug'] : []), ...(process.env.DUI_PROFILE ? ['profile'] : []), 'keys', 'cold', 'seed', 'term', 'why', 'flag', 'dashboard', 'badges', 'memory', 'reload', 'speed'];
 const t0 = Date.now();
 try {
   for (const name of ORDER) {
+    if (name === 'seed') { if (SEED) { try { await seedReading(); } catch (e) { check('seed: simulated reading and jobs', false, e.message); } } continue; }
     if (ONLY && !ONLY.has(name)) continue;
-    if (MODE === 'real' && ['cold', 'reload'].includes(name)) { console.log(`- ${name}: fixture-only, skipped against the real server`); continue; }
+    if (MODE === 'real' && (name === 'reload' || (name === 'cold' && !SEED))) { console.log(`- ${name}: fixture-only, skipped against the real server`); continue; }
     try { await T[name](browser); } catch (e) { check(`${name}: ran`, false, e.message.split('\n')[0]); }
   }
 } finally {

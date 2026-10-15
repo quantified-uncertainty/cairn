@@ -236,10 +236,16 @@ function paint() {
 
 const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 800 }) : setTimeout(fn, 60));
 let queued = false;
+const cost = { n: 0, ms: 0 }; // time spent painting, for window.__upnext()
 function soon() {
   if (queued) return;
   queued = true;
-  idle(() => { queued = false; try { paint(); } catch (e) { console.error('upnext', e); hide(); } });
+  idle(() => {
+    queued = false;
+    const t0 = performance.now();
+    try { paint(); } catch (e) { console.error('upnext', e); hide(); }
+    cost.n++; cost.ms += performance.now() - t0;
+  });
 }
 on('item:settled', soon);
 on('spread:settled', soon);
@@ -249,7 +255,7 @@ on('view:changed', ({ view }) => { if (view === 'feed') soon(); else hide(); });
 on('settings:changed', ({ key }) => {
   if (key !== 'upnext' && key !== '*') return;
   shown = store.get('upnext', true) !== false;
-  soon();
+  if (shown) soon(); else hide(); // off at once: it is your own key or click
 });
 let rz = 0;
 addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(soon, 250); });
@@ -286,4 +292,4 @@ registerKey('U', () => setShown(!shown), { view: 'feed', help: ['U', 'up next: t
 
 /** For tests: what the strip shows. */
 window.__upnext = () => ({ shown, hidden: root.hidden, mode: root.hidden ? null : root.classList.contains('tiles') ? 'tiles' : 'line', band: measure()?.band ?? null,
-  h: root.offsetHeight, items: [...row.querySelectorAll('[data-i]')].map((x) => ({ i: Number(x.dataset.i), prev: x.classList.contains('prev') })) });
+  h: root.offsetHeight, paints: cost.n, paintMs: Math.round(cost.ms * 10) / 10, items: [...row.querySelectorAll('[data-i]')].map((x) => ({ i: Number(x.dataset.i), prev: x.classList.contains('prev') })) });

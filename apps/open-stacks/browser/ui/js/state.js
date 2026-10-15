@@ -1,5 +1,5 @@
 // Reader state, and the ranking that decides what comes next.
-import { store } from './util.js';
+import { store, on } from './util.js';
 import { items, LANES, COUNTS, LANE_WEIGHTS, tokens, laneMax } from './corpus.js';
 
 export const state = {
@@ -71,6 +71,7 @@ export const SORT_KEYS = ['topic', 'ranked', 'newest', 'oldest'];
 /** The lane's sort: chosen per lane (store 'sort:<lane>'); All is ranked, a single lane follows its topics. */
 export function sortFor(lane) { const s = store.get('sort:' + lane, null); return SORT_KEYS.includes(s) ? s : lane === 'all' ? 'ranked' : 'topic'; }
 let RANK = null, DATE = null;
+on('corpus:changed', () => { RANK = null; DATE = null; }); // items added or changed (features/local.js)
 /** Each item's place in the library tree, depth first: lanes in chip order, then folders
  *  (it.path) by their first item, items by it.ord. features/library.js draws this tree. */
 export function topicRank() {

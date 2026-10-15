@@ -1,5 +1,7 @@
 // The corpus (corpus.json) plus optional per-item enrichment (enrich.json:
 // relevance, hooks and best pages), merged by id.
+import { emit } from './util.js';
+const localP = fetch('/local/items.json').then((r) => (r.ok ? r.json() : null)).catch(() => null); // your own folders, below
 const corpus = await (await fetch('/corpus.json')).json();
 export const { items } = corpus;
 export const LANES = corpus.lanes || {};
@@ -9,6 +11,7 @@ export const LANE_ORDERED = corpus.laneOrdered || {}; // lanes whose order matte
 export const LANE_COLORS = {
   lesswrong: '#5a7a4b', 'ai-safety': '#a0442f', 'deepmind-safety': '#3f6fb5', forecasting: '#b5833f', llm: '#3c5a7a',
   textbooks: '#7a3c5a', 'information-theory': '#6b4f8a', cybernetics: '#2f7a76', ttrpg: '#8a5a2b', oddities: '#7a6f60',
+  local: '#c0567f',
 };
 // Per-item metadata (field, technicality, maths level, genre…; data/meta.json),
 // merged under it.meta.
@@ -36,6 +39,39 @@ export const tokens = (it) => {
 };
 export const laneMax = {};
 for (const it of items) laneMax[it.lane] = Math.max(laneMax[it.lane] || 1, it.score || 0);
+
+// Your own folders (server/routes/17-local.mjs, features/local.js): /local/items.json, appended
+// after the corpus so no index moves, as the 'local' lane. mergeItems() adds and updates later.
+export const LOCAL = { v: null, roots: [] };
+const served = new WeakMap(); // item -> the server's copy, to see what changed
+/** Append new items, update known ones in place; emits 'corpus:changed' {added, changed} (item indexes). */
+export function mergeItems(list) {
+  const added = [], changed = [];
+  for (const x of list || []) {
+    if (!x?.id) continue;
+    const i = byId.get(x.id), json = JSON.stringify(x);
+    if (i == null) {
+      const it = { ...x };
+      served.set(it, json); byId.set(it.id, items.length); added.push(items.length); items.push(it);
+      COUNTS[it.lane] = (COUNTS[it.lane] || 0) + 1; laneMax[it.lane] = Math.max(laneMax[it.lane] || 1, it.score || 0);
+      continue;
+    }
+    const it = items[i], old = served.get(it);
+    if (old === json) continue;
+    if (old) for (const k of Object.keys(JSON.parse(old))) if (!(k in x)) delete it[k];
+    Object.assign(it, x); served.set(it, json); tokCache.delete(it.id); changed.push(i);
+  }
+  if (added.length || changed.length) emit('corpus:changed', { added, changed });
+  return { added, changed };
+}
+{
+  const j = await localP;
+  if (j && Array.isArray(j.items)) {
+    LOCAL.v = j.v; LOCAL.roots = j.roots || [];
+    if (j.items.length || LOCAL.roots.length) LANES.local ||= j.label || 'Local';
+    mergeItems(j.items);
+  }
+}
 
 /** Items sharing title words (and lane), best first. */
 export function related(i, n = 6) {

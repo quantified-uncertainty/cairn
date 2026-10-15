@@ -31,7 +31,7 @@ on('views:changed', () => {
   for (const [name, v] of views) if (v.key && !keymap.has(v.key)) registerKey(v.key, () => setView(name), { view: null });
 });
 
-registerView('feed', { label: 'Feed', key: 'f', order: 0, roots: () => [$('#stage'), $('#panel')], show: () => showFeed() });
+registerView('feed', { label: 'Reader', key: 'f', order: 0, roots: () => [$('#stage'), $('#panel')], show: () => showFeed() });
 
 export function paintLanes() {
   const all = [['all', 'All', items.length], ...Object.entries(LANES).map(([k, v]) => [k, v, COUNTS[k] || 0]).filter(([, , c]) => c)];
@@ -90,6 +90,12 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
   if (e.repeat && !b.repeat) return; // one press, one step
   b.fn(e);
+});
+// The gear is in the page from the start; features/settings.js takes it over. If that
+// feature did not load, a click says so instead of doing nothing.
+$('#st-btn')?.addEventListener('click', () => {
+  if ($('#st-btn').dataset.ready) return;
+  import('./util.js').then(({ toast }) => toast('Settings did not load', { icon: 'circle-alert', kind: 'bad', sub: 'Details are in the browser console (⌥⌘K in Firefox); restarting the server after a pull usually fixes it' }));
 });
 let rz = null;
 // Moving the window to another screen brings that screen's page and column counts.

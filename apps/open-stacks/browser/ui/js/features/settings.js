@@ -651,17 +651,25 @@ function flash(text, undo = false) {
   clearTimeout(flashT); flashT = setTimeout(() => box.replaceChildren(), 9000);
 }
 
+// ---------- sections from other features ----------
+// registerSettings(fn): fn(ui) → {id, title, note?, rows, reset?} | null, built with the sheet, before Data
+// (features/local.js: Local folders). ui: the row helpers below and sync / flash. reset() replaces Reset's default.
+const extra = [];
+export function registerSettings(fn) { extra.push(fn); }
+const UI = () => ({ h, row, seg, tog, slider, dim, kb, upd, sync, flash: (t, undo) => flash(t, undo) });
+
 // ---------- build, open, close ----------
 function build() {
   ups.length = 0;
-  const secs = [secAppearance(), secText(), secPages(), secNav(), secPanel(), secAI(), secVoice(), secData()];
+  const more = extra.map((f) => { try { return f(UI()); } catch (e) { console.error('settings section', e); return null; } }).filter(Boolean);
+  const secs = [secAppearance(), secText(), secPages(), secNav(), secPanel(), secAI(), secVoice(), ...more, secData()];
   const main = h('div', { className: 'st-main', tabIndex: -1 });
   const nav = h('nav', { className: 'st-nav', ariaLabel: 'Settings sections' });
   let picked = -1; // the section last clicked in the list: the last ones cannot scroll to the top
   secs.forEach((s, j) => {
     const el = h('section', { className: 'st-sec', id: 'st-' + s.id },
       h('div', { className: 'st-sh' }, h('h3', { textContent: s.title }), s.note ? h('span', { className: 'st-note', textContent: s.note }) : null,
-        s.id === 'data' ? null : h('button', { type: 'button', className: 'st-reset', textContent: 'Reset', title: `Put ${s.title} back to the defaults`, onclick: () => resetSection(s) })),
+        s.id === 'data' ? null : h('button', { type: 'button', className: 'st-reset', textContent: 'Reset', title: `Put ${s.title} back to the defaults`, onclick: () => (s.reset ? s.reset() : resetSection(s)) })),
       ...s.rows);
     main.append(el);
     nav.append(h('button', { type: 'button', textContent: s.title, onclick: () => { picked = j; main.scrollTop = el.offsetTop - 4; main.dispatchEvent(new Event('scroll')); } })); // no scroll event when already at the end
@@ -741,9 +749,11 @@ addEventListener('keydown', (e) => {
 }, true);
 
 // The gear, beside ?.
-gear = h('button', { id: 'st-btn', className: 'ghost', type: 'button', title: 'Settings (, or Ctrl+,)', ariaLabel: 'Settings', onclick: () => toggleSheet() });
-gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
-if ($('#keys-btn')) $('#keys-btn').after(gear); else $('#bar').append(gear);
+gear = $('#st-btn') || h('button', { id: 'st-btn', className: 'ghost', type: 'button', title: 'Settings (, or Ctrl+,)', ariaLabel: 'Settings' });
+gear.dataset.ready = '1';
+gear.onclick = () => toggleSheet();
+if (!gear.querySelector('svg')) gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+if (!gear.isConnected) { if ($('#keys-btn')) $('#keys-btn').after(gear); else $('#bar').append(gear); }
 keyHelp.push({ label: ', Ctrl+, ⌘,', text: 'settings: colours, text, pages, wheel, side panel, AI budget, voice (Firefox on a Mac keeps ⌘, for itself)', order: 66 });
 
 // Apply what was saved now, before the first page is laid out; sections and

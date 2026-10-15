@@ -3,7 +3,8 @@
 import { hudIcon } from './hud-icons.js';
 
 export const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
-export const P = (u) => '/proxy?u=' + encodeURIComponent(u);
+// Your own files (/local/…, server/routes/17-local.mjs) come straight from this server, not through the proxy.
+export const P = (u) => (/^\/local\//.test(u) ? u : '/proxy?u=' + encodeURIComponent(u));
 export const $ = (s, root = document) => root.querySelector(s);
 export const h = (tag, props = {}, ...kids) => {
   const el = Object.assign(document.createElement(tag), props);

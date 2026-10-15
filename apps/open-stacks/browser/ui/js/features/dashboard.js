@@ -87,13 +87,16 @@ function md(text) {
     .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
     .replace(/(^|[\s(])\*([^*\s][^*]*)\*/g, '$1<i>$2</i>')
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-  const out = []; let para = [], list = null;
-  const endPara = () => { if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = []; } };
+  const out = []; let para = [], list = null, quote = [];
+  const endQuote = () => { if (quote.length) { out.push(`<blockquote>${quote.map(inline).join('<br>')}</blockquote>`); quote = []; } };
+  const endPara = () => { endQuote(); if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = []; } };
   const endList = () => { if (list) { out.push(`<${list.tag}>${list.items.map((x) => `<li>${inline(x)}</li>`).join('')}</${list.tag}>`); list = null; } };
   for (const raw of String(text || '').split('\n')) {
     const line = raw.trimEnd();
     let m;
     if (!line.trim()) { endPara(); endList(); continue; }
+    if ((m = /^\s*>\s?(.*)$/.exec(line))) { if (para.length) endPara(); endList(); quote.push(m[1]); continue; } // the reader's note in a flag
+    endQuote();
     if ((m = /^(#{1,4})\s+(.*)$/.exec(line))) { endPara(); endList(); out.push(`<h${Math.min(6, m[1].length + 3)}>${inline(m[2])}</h${Math.min(6, m[1].length + 3)}>`); continue; }
     if ((m = /^\s*[-*]\s+(.*)$/.exec(line))) { endPara(); if (list?.tag !== 'ul') { endList(); list = { tag: 'ul', items: [] }; } list.items.push(m[1]); continue; }
     if ((m = /^\s*\d+[.)]\s+(.*)$/.exec(line))) { endPara(); if (list?.tag !== 'ol') { endList(); list = { tag: 'ol', items: [] }; } list.items.push(m[1]); continue; }
@@ -495,7 +498,15 @@ function paintRanking() {
     since);
   const ids = [...boxes.keys()];
   if (ids.length) Lm.whyOf(ids).then((w) => {
-    for (const [id, b] of boxes) { const v = w[id]; if (v?.chips?.length) b.replaceChildren(...v.chips.slice(0, 2).map(Lm.chipEl)); }
+    for (const [id, b] of boxes) {
+      const v = w[id]; if (!v) continue;
+      // Familiarity (finished, skipped, a new find) can outweigh the topics: show it first then.
+      const chips = (v.chips || []).slice(0, 2), fam = Lm.phiChip?.(v);
+      const top = Math.max(0, ...chips.map((c) => Math.abs(c.d)));
+      const els = chips.map(Lm.chipEl);
+      if (fam) { if (Math.abs(v.phi) >= top) els.unshift(fam); else els.push(fam); }
+      b.replaceChildren(...els.slice(0, 3));
+    }
   }).catch(() => {});
 }
 

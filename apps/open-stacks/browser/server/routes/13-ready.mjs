@@ -22,6 +22,8 @@ export default function (app) {
     const ids = (url.searchParams.get('ids') || '').split(',').filter(Boolean).slice(0, 200);
     const all = corpus(), out = {};
     for (const id of ids) {
+      const loc = app.local?.ready(id); // your own files (17-local.mjs): on disk, or still in iCloud
+      if (loc) { out[id] = loc; continue; }
       const it = all.get(id); if (!it) continue;
       if (it.kind === 'scan' && it.ia && it.n) {
         const s = Math.max(0, Math.min(startOf(it), it.n - 1));

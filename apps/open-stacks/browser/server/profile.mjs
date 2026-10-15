@@ -51,7 +51,10 @@ function corpusMap() {
   corpus = map;
   return map;
 }
-export const itemOf = (id) => corpusMap().get(id) || null;
+// Items that are not in corpus.json (routes/17-local.mjs: your own files) are looked up through registerItems(fn), fn(id) → item | null.
+const extraItems = [];
+export const registerItems = (fn) => { extraItems.push(fn); };
+export const itemOf = (id) => corpusMap().get(id) || extraItems.reduce((it, f) => it || f(id), null) || null;
 export const srcKeyOf = (it, src) => (it.kind === 'scan' && it.ia ? 'ia:' + it.ia : src || it.url || '');
 export const pidOf = (id, srcKey) => sha1(id + '|' + srcKey);
 /** {it, pid, srcKey, url} for an item id (and optional source URL), or null for an unknown id. */
