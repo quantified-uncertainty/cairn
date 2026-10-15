@@ -107,8 +107,8 @@ function pdfRuns(tc, vp) {
       const gap = S ? t.x0 - S.x1 : Infinity;
       // A caption beside wrapped text starts a run of its own.
       if (S && gap < 0.9 * fsl && !(gap > 0.3 * fsl && /^\s*(fig(ure)?s?\.?|table)\s*\d/i.test(t.str))) {
-        S.str += (gap > 0.12 * fsl ? ' ' : '') + t.str; S.fsw += t.fs * t.n; S.nw += t.n; S.n += t.n + 1; grow(S, t);
-      } else { S = { ...t, fsw: t.fs * t.n, nw: t.n }; runs.push(S); }
+        S.str += (gap > 0.12 * fsl ? ' ' : '') + t.str; S.fsw += t.fs * t.n; S.nw += t.n; S.n += t.n + 1; grow(S, t); S.parts.push(t);
+      } else { S = { ...t, fsw: t.fs * t.n, nw: t.n, parts: [t] }; runs.push(S); }
     }
   }
   for (const s of runs) if (s.fsw) { s.fs = s.fsw / Math.max(1, s.nw); delete s.fsw; delete s.nw; }

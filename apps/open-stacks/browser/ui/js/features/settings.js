@@ -698,13 +698,15 @@ function closeSheet() {
   if (had) document.activeElement?.blur?.(); // keys go to the page again
 }
 async function openSheet() {
-  // What the server and the read-aloud module know, before building.
-  const [si, g] = await Promise.all([
+  // What the server knows (budget, prices, Gemini voices) and the read-aloud
+  // module. The first time, wait for it; after that, open at once and refresh behind.
+  const fresh = Promise.all([
     fetch('/settings/server').then((r) => r.json()).catch(() => null),
     fetch('/tts').then((r) => r.json()).catch(() => null),
-    import('./readaloud.js').then((m) => { RA = m; }).catch(() => { RA = null; }),
-  ]);
-  serverInfo = si; if (g) gem = g;
+  ]).then(([si, g]) => { if (si) serverInfo = si; if (g) gem = g; });
+  if (!RA) RA = await import('./readaloud.js').catch(() => null);
+  if (!serverInfo) await fresh;
+  else fresh.then(() => { if (sheet && !sheet.hidden) sync(); });
   applySections(); applyRepeat();
   if (sheet) sheet.remove();
   sheet = build();

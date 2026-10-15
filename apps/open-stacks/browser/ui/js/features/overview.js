@@ -51,6 +51,7 @@ const dpr = () => Math.min(3, window.devicePixelRatio || 1);
 const clampLvl = (l) => Math.max(0, Math.min(LEVELS.length - 1, Number.isFinite(l) ? l : 3));
 
 export const ovTimes = []; // {id, kind, n, per, cells, grid, first, full, sharp} in ms from opening
+export const ovRenders = []; // PDF thumbnails: {k, page (ms to the page object), draw (ms drawing), px}
 
 const S = {
   open: false, gen: 0, i: null, it: null, kind: null, n: 0, P: null, doc: null, sprite: false,
@@ -451,9 +452,11 @@ async function pdfInto(k, job) {
     const pnl = r?.length === 1 && r[0].canvas ? r[0] : null;
     if (pnl) { const c = scaled(pnl.canvas, S.g.ch * dpr()); show(k, c, c.width / c.height); return true; }
   }
+  const t0 = performance.now();
   const d = S.doc || (S.doc = await openDoc(it));
   if (job.dead || job.gen !== S.gen) return false;
   const page = await d.pdf.getPage(k + 1);
+  const t1 = performance.now();
   if (job.dead || job.gen !== S.gen) return false;
   const v0 = page.getViewport({ scale: 1 });
   const b = boxOf(k, v0.width, v0.height);
@@ -467,6 +470,8 @@ async function pdfInto(k, job) {
   const task = page.render({ canvasContext: g, viewport: vp });
   job.cancel = () => { job.dead = true; task.cancel(); };
   try { await task.promise; } catch (e) { if (job.dead) return false; throw e; }
+  ovRenders.push({ k, page: Math.round(t1 - t0), draw: Math.round(performance.now() - t1), px: c.height });
+  if (ovRenders.length > 300) ovRenders.shift();
   if (job.dead || job.gen !== S.gen) return false;
   show(k, c, a);
   return true;
@@ -895,4 +900,4 @@ new ResizeObserver(() => {
   }, 150);
 }).observe(stage);
 
-window.__ov = { times: ovTimes, open: openOv, close: closeOv, state: () => ({ open: S.open, kind: S.kind, n: S.n, lvl: S.lvl, per: LEVELS[S.lvl], g: S.g, inView: S.inView.size, jobs: jobs.size, want: want.size, sprite: S.sprite, a: S.a, secs: S.secs.length }) };
+window.__ov = { times: ovTimes, renders: ovRenders, open: openOv, close: closeOv, state: () => ({ open: S.open, kind: S.kind, n: S.n, lvl: S.lvl, per: LEVELS[S.lvl], g: S.g, inView: S.inView.size, jobs: jobs.size, want: want.size, sprite: S.sprite, a: S.a, secs: S.secs.length }) };

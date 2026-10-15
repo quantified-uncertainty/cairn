@@ -326,6 +326,12 @@ function capOf(p, n) {
   return h('div', { className: 'fd-cap' + (n === 1 ? ' one' : '') }, label ? h('b', { textContent: label }) : null, text || '');
 }
 
+function chipOf(card) {
+  const t = card.type;
+  if (t === 'definition' && !card.html && card.label && !/^(Definition|Assumption)\b/.test(card.label)) return 'Term';
+  if (t === 'claims') return /contribut/i.test(card.cue || '') ? 'Contributions' : /claim/i.test(card.cue || '') ? 'Claims' : 'Key points';
+  return CHIP[t] || TYPE_LABEL[t] || t;
+}
 /** The card element for `card` at width W. `ready` is what prepare() gave. */
 function renderCard(card, L, W, ready) {
   const it = itemOf(card);
@@ -354,7 +360,7 @@ function renderCard(card, L, W, ready) {
     return el;
   }
   const main = h('div', { className: 'fd-main' });
-  if (CHIP[t]) main.append(h('div', { className: 'fd-chip c-' + t, textContent: t === 'definition' && !card.html && card.label && !/^(Definition|Assumption)\b/.test(card.label) ? 'Term' : CHIP[t] }));
+  if (CHIP[t]) main.append(h('div', { className: 'fd-chip c-' + t, textContent: chipOf(card) }));
   switch (t) {
     case 'finding':
       main.append(h('p', { className: 'fd-s' }, ...cued(card.text, card.cue)));
@@ -912,7 +918,7 @@ function renderPeek(card, body, ctx) {
     figStrip(it, card, body, ctx);
     return;
   }
-  const head2 = h('div', { className: 'pk-kind' }, h('span', { className: 'fd-chip c-' + t, textContent: TYPE_LABEL[t] || t }), card.sec ? h('span', { className: 'pk-sec', textContent: card.sec }) : null);
+  const head2 = h('div', { className: 'pk-kind' }, h('span', { className: 'fd-chip c-' + t, textContent: chipOf(card) }), card.sec ? h('span', { className: 'pk-sec', textContent: card.sec }) : null);
   body.append(head2);
   if (t === 'table') {
     body.append(h('div', { className: 'pk-cap' }, h('b', { textContent: card.label || 'Table' }), card.caption || ''));

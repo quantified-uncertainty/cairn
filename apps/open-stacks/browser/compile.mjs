@@ -15,9 +15,9 @@
  *   PLAYWRIGHT_CHROMIUM_EXECUTABLE points at another Chromium.
  * --engine poppler (auto picks it when pdftoppm is on the PATH): PDFs only.
  *   pdfinfo for page sizes, pdftoppm (400 px, greyscale) for the analysis,
- *   pdftotext for words, headings and the page-marked text, and pdftoppm JPEGs
- *   for display images with --assets full. No sprite and no figures (the
- *   browser adds them later).
+ *   pdftotext in reading order (it keeps two columns apart) for words,
+ *   headings and the page-marked text, and pdftoppm JPEGs for display images
+ *   with --assets full. No sprite and no figures (the browser adds them later).
  * --assets full adds display images: the opening spread, the best pages and
  *   pages with figures (with --all-pages, every page, within each profile's
  *   budget), rendered --height px tall (default 1800).
@@ -168,7 +168,7 @@ async function popplerItem(it) {
     const sizes = pdfinfo(file, n);
     execFileSync('pdftoppm', ['-gray', '-scale-to-y', '400', '-scale-to-x', '-1', file, join(dir, 'p')], { maxBuffer: 64e6 });
     const pgms = readdirSync(dir).filter((f) => /^p-\d+\.pgm$/.test(f)).sort((a, b) => Number(a.match(/\d+/)[0]) - Number(b.match(/\d+/)[0]));
-    const text = execFileSync('pdftotext', ['-layout', '-enc', 'UTF-8', file, '-'], { maxBuffer: 256e6 }).toString().split('\f');
+    const text = execFileSync('pdftotext', ['-enc', 'UTF-8', file, '-'], { maxBuffer: 256e6 }).toString().split('\f');
     const pages = [], heads = [], ixf = [];
     for (let k = 0; k < n; k++) {
       const { lum, W, H } = pgmLum(readFileSync(join(dir, pgms[k])));

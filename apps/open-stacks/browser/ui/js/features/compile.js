@@ -105,7 +105,7 @@ class Job {
   /** The next unit of work, or null (nothing left, or waiting for one under way). */
   next() {
     if (this.busy || this.phase === 'done' || this.phase === 'dropped' || S.failed.has(this.it.id)) return null;
-    const run = (fn) => async () => { this.busy = true; const t0 = performance.now(); try { await fn(); } catch (e) { if (!/cancel/i.test(e?.name || e?.message || '')) { S.failed.add(this.it.id); this.drop(); throw e; } } finally { this.busy = false; note(this.it.id, this.phase, this.k, performance.now() - t0); } };
+    const run = (fn) => async () => { this.busy = true; const t0 = performance.now(); try { await fn(); } catch (e) { if (this.phase !== 'dropped' && !/cancel/i.test(e?.name || e?.message || '')) { S.failed.add(this.it.id); this.drop(); throw e; } } finally { this.busy = false; note(this.it.id, this.phase, this.k, performance.now() - t0); } };
     switch (this.phase) {
       case 'check': return run(() => this.check());
       case 'open': return run(() => this.open());

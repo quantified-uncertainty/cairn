@@ -1,29 +1,57 @@
-// Read aloud, with the word being said lit on the page and the page following
-// the voice. Ported from Starfleet v3 (web/src/readAloud/*.ts).
+// Read aloud as a mode. The voice reads the page's own words, the word being
+// said is lit, the pages follow the voice, and while the mode is on the voice
+// is the main focus: a large player sits under the pages (the pages shrink to
+// make room, so it never covers the text) and the keys, the wheel and clicks
+// move the voice instead of the pages. Ported from Starfleet v3
+// (web/src/readAloud/*.ts, components/readAloud/ReadAloud.tsx).
 //
-// Two voices. The browser's (speechSynthesis) is the default: free, instant,
-// and its 'boundary' events say exactly which word it is on. Gemini's (POST
-// /tts, server/routes/55-tts.mjs) sounds far better; its audio carries no word
-// times, so words are placed on it by the audio's own pauses (timeWords).
+// Starting: v (or Read in the top bar) reads from the first word on screen (the
+// first word of the visible columns, or of the first page on screen), without
+// moving the view; Alt+click a word reads from that word. In the mode:
+//   click a word          the voice goes there at once. A link reads too; click
+//                         it again (or Cmd/Ctrl/Shift+click it) to follow it
+//   ← →, h l, the wheel   back / forward a sentence; hold a key to skip faster
+//   Shift+← →             back / forward a paragraph
+//   ↑ ↓  (< >)            faster / slower
+//   Space, v              pause / play
+//   Esc, V, ×             leave the mode
+//   j k                   another item: the mode ends, or with "Next item" on
+//                         the reading goes on there (and at the end of an item)
+// The pages turn when the spoken word leaves the screen; a page the reader turns
+// holds that for HOLD_MS.
 //
-// What is read is the page's own words (text.js currentWords), so every spoken
-// word knows the word on the page it came from: flow documents give DOM ranges;
-// a PDF page is read from its pdf.js text and lined up with a text layer's
-// spans when one is drawn (align); a scan with no text layer reads its OCR text
-// by estimate, unlit. Code blocks and footnote marks are skipped, a URL is
-// said as "a link". The text from the first word on screen is cut into
-// passages of whole sentences, short first (the one the listener waits for);
-// Gemini's next passages are fetched while one plays.
+// Voices are engines (registerEngine, exported):
+//   { id, label, kind: 'events' | 'audio', sizes: [characters per passage, the
+//     last repeating], voices() -> [{ id, label, group? }], available() -> '' | why not,
+//     speak(...) }
+//   events: speak({ text, voice, rate, onstart, onword(charIndex), onend, onerror(code) })
+//           -> { stop(), rate?, key?, startMs? }; also cancel(). The browser's
+//           speechSynthesis, whose boundary events say which word it is on.
+//   audio:  speak({ text, voice, priority: 'now' | 'ahead', signal, passage })
+//           -> Promise<{ buf | blob | url, type?, wordTimes?: [{ start: char, at: seconds }] }>.
+//           Gemini (POST /tts, server/routes/55-tts.mjs). Played by one <audio>
+//           at the reading speed; passages ahead are made while one plays.
+//           Without wordTimes, words are placed by the audio's own pauses
+//           (16-bit WAV, timeWords) or by characters.
+// A local voice (Kokoro-82M through kokoro-js, a Mac server voice) is one more
+// 'audio' engine: registerEngine({ id: 'kokoro', label: 'Kokoro', kind: 'audio', ... }).
 //
-// Keys: v play/pause (resumes where it paused if that is on screen, else reads
-// from the top of the screen), V stop, < > speed; Alt+click a word: read from
-// there. A page turned by the reader holds the follow for HOLD_MS.
-import { h, P, store, on, registerKey, toast, sleep } from '../util.js';
+// What is read: flow documents give DOM words (code blocks and footnote marks
+// skipped, a URL said as "a link"); a PDF page is read from its pdf.js text
+// (line-end hyphens joined, page numbers and sideways margin stamps dropped,
+// paragraphs found from the line layout) and lined up with the text layer's
+// word spans (features/textlayer.js pageModel; data-wi); a scan reads its OCR
+// word boxes the same way, or with none, its djvu.txt share by estimate, unlit.
+// Words are cut into sentences (navigation, the lit sentence) and into
+// passages of whole sentences (what an engine says at once).
+import { $, h, P, store, on, registerKey, keyHelp, toast, sleep } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { isFlow, openDoc } from '../docs.js';
 import { live } from '../flow.js';
-import { currentWords, highlight, reveal } from '../text.js';
+import { highlight } from '../text.js';
+import { showFeed } from '../feed.js';
+import { go } from '../nav.js';
 
 // ==== pure: passages and word timing (no DOM; the node unit test runs this block) ====
 export const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4];
@@ -49,17 +77,13 @@ const ABBR = /^[("'“‘[]*(?:e\.g|i\.e|etc|vs|cf|al|Mr|Mrs|Ms|Dr|Prof|St|Jr|Sr
 const INITIAL = /^[("'“‘[]*[A-Z]\.$/;      // ...unless it is an abbreviation or an initial
 const CLOSED = /[.!?:;…]["'”’)\]]*$/;      // a voice pauses after this
 
-/** Cut words[from..to) into passages of whole sentences.
- *  A word is { text, para?, glue? }: `para` changes where a block (paragraph,
- *  heading, list item, cell) ends, which closes a sentence (with a full stop if
- *  it has none, so the voice pauses after a heading); `glue` says the next word
- *  continues this one with no space ("<em>word</em>s"). A sentence longer than
- *  a passage is cut at word boundaries. `first` continues a size ramp.
- *  Returns [{ text, toks: [{ at, end, j, s, g }], sents: [[j0, j1]] }]: each
- *  spoken token knows its character span, its page word j, its sentence s
- *  (the page words of the whole sentence, even one cut across passages), and
- *  whether it is glued to the token before it (g). */
-export function buildPassages(words, from, to, sizes, first = 0) {
+/** Sentences of words[from..to) as runs of spoken tokens { say, j, glue }.
+ *  A word is { text, say?, para?, glue? }: `say` replaces spokenOf(text) (a
+ *  line-end hyphen dropped); a change of `para` (paragraph, heading, list item,
+ *  cell) ends a sentence, with a full stop if it has none, so the voice pauses
+ *  after a heading; `glue` says the next word continues this one with no space
+ *  ("<em>word</em>s"). */
+function cutSentences(words, from, to) {
   const sents = []; let cur = [];
   const close = (dot) => {
     if (!cur.length) return;
@@ -68,13 +92,28 @@ export function buildPassages(words, from, to, sizes, first = 0) {
     sents.push(cur); cur = [];
   };
   for (let j = from; j < to; j++) {
-    const w = words[j]; const say = spokenOf(w.text);
+    const w = words[j]; const say = w.say ?? spokenOf(w.text);
     if (say) cur.push({ say, j, glue: !!w.glue });
     const next = j + 1 < to ? words[j + 1] : null;
     if (!next) close(false);
     else if (next.para !== w.para) close(true);
     else if (say && !w.glue && ENDS.test(say) && !ABBR.test(say) && !INITIAL.test(say)) close(false);
   }
+  return sents;
+}
+/** The sentences of words[from..to) as [first word said, last word said]. */
+export function sentencesOf(words, from = 0, to = words.length) {
+  return cutSentences(words, from, to).map((s) => [s[0].j, s[s.length - 1].j]);
+}
+
+/** Cut words[from..to) into passages of whole sentences (see cutSentences). A
+ *  sentence longer than a passage is cut at word boundaries. `first` continues
+ *  a size ramp. Returns [{ text, toks: [{ at, end, j, s, g }], sents: [[j0, j1]] }]:
+ *  each spoken token knows its character span, its page word j, its sentence s
+ *  (the page words of the whole sentence, even one cut across passages), and
+ *  whether it is glued to the token before it (g). */
+export function buildPassages(words, from, to, sizes, first = 0) {
+  const sents = cutSentences(words, from, to);
   const out = []; let p = null;
   const size = () => sizes[Math.min(first + out.length, sizes.length - 1)];
   const flush = () => { if (p?.toks.length) out.push(p); p = null; };
@@ -103,7 +142,7 @@ export function tokAt(p, c) {
   return lo;
 }
 
-/** The words Gemini's timing places: glued tokens joined, punctuation-only ones left out. */
+/** The words an audio timing places: glued tokens joined, punctuation-only ones left out. */
 export function timingWords(p) {
   const out = [];
   for (const t of p.toks) {
@@ -113,7 +152,7 @@ export function timingWords(p) {
   return out;
 }
 
-// --- when each word of a Gemini passage is said, read off the audio (readAloudTiming.ts) ---
+// --- when each word of an audio passage is said, read off the audio (readAloudTiming.ts) ---
 // The audio says where the voice is SILENT. Find the pauses (runs of quiet
 // frames relative to the passage's own loudness), decide which word gap each
 // pause is (a small dynamic programme preferring punctuation and stretches
@@ -332,74 +371,321 @@ export function align(a, b) {
   fill(s0, a.length, p0, b.length);
   return out;
 }
+/** Give each reading word (`ws`, { text }) the indexes of the same word among a
+ *  text layer's words (`layer`, strings) as `wi`: aligned, and a word the layer
+ *  holds in two parts (a hyphen at a line end, two text runs) gets both. */
+export function bindWi(ws, layer) {
+  const ia = [], ib = [];
+  ws.forEach((w, t) => { if (norm(w.text)) ia.push(t); });
+  layer.forEach((s, t) => { if (norm(s)) ib.push(t); });
+  const m = align(ia.map((t) => norm(ws[t].text)), ib.map((t) => norm(layer[t])));
+  ia.forEach((t, x) => { if (m[x] >= 0) ws[t].wi = [ib[m[x]]]; });
+  let next = 0;
+  for (const w of ws) {
+    if (w.wi) { next = w.wi[w.wi.length - 1] + 1; continue; }
+    const n = norm(w.text);
+    if (n && next + 1 < layer.length && norm(layer[next] + layer[next + 1]) === n) { w.wi = [next, next + 1]; next += 2; }
+  }
+  return ws;
+}
 // ==== end pure ====
 
+// ---------- voices: the engine registry ----------
+let bar = null, pill = null, noteTimer = 0; // the player and the Read button (built below)
+const engines = new Map();
+/** Add a voice engine (see the top of this file). Registering an id again replaces it. */
+export function registerEngine(e) {
+  engines.set(e.id, { kind: 'audio', sizes: SIZES.gemini, voices: () => [], available: () => '', ...e });
+  if (bar) fillVoices();
+}
+export { engines as readAloudEngines };
+
+const prefs = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore', voices: {}, cont: false, ...store.get('readaloud', {}) };
+const savePrefs = () => store.set('readaloud', prefs);
+const voiceOf = (id) => (id === 'browser' ? prefs.browserVoice : id === 'gemini' ? prefs.geminiVoice : prefs.voices?.[id] ?? '');
+function setVoicePref(id, v) {
+  if (id === 'browser') prefs.browserVoice = v;
+  else if (id === 'gemini') prefs.geminiVoice = v;
+  else prefs.voices = { ...prefs.voices, [id]: v };
+}
+
+// The browser's voice (speechSynthesis).
+const hasSynth = typeof speechSynthesis !== 'undefined';
+const START_MS = 6000; // a browser voice that has not started by then has failed
+const shortName = (v) => v.name.replace(/^(Microsoft|Google|Apple)\s+/, '').replace(/\s+Online.*$/, '').replace(/\s*\(.*\)$/, '').replace(/\s+-\s+.*$/, '');
+// macOS voice quality: Premium > Enhanced > the rest. Firefox may drop the
+// "(Premium)" suffix from names, but the voice URI keeps it
+// (com.apple.voice.premium.en-US.Ava). Old MacinTalk and novelty voices go last.
+const quality = (v) => { const t = (v.voiceURI + ' ' + v.name).toLowerCase(); return /premium/.test(t) ? 2 : /enhanced/.test(t) ? 1 : 0; };
+const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley)\b/i;
+const voiceLabel = (v) => shortName(v) + (quality(v) === 2 ? ' · Premium' : quality(v) === 1 ? ' · Enhanced' : '') + (v.localService ? '' : ' ☁');
+function pickVoice(all, uri, rate) {
+  const chosen = all.find((v) => v.voiceURI === uri);
+  if (chosen) return chosen;
+  // Chrome's online voices top out at 2x: above that, a local voice in the same language
+  if (rate <= 2) return undefined;
+  const base = (navigator.language || 'en').slice(0, 2);
+  return all.find((v) => v.default && v.localService) || all.find((v) => v.localService && v.lang.toLowerCase().startsWith(base));
+}
+registerEngine({
+  id: 'browser', label: 'This browser', kind: 'events', sizes: SIZES.browser, defaultLabel: 'Browser voice',
+  available: () => (hasSynth ? '' : 'This browser has no speech voices'),
+  voices() {
+    const all = hasSynth ? speechSynthesis.getVoices() : [];
+    const base = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    const mine = all.filter((v) => v.lang.toLowerCase().startsWith(base) || v.voiceURI === prefs.browserVoice)
+      .sort((a, b) => quality(b) - quality(a) || (NOVELTY.test(a.name) - NOVELTY.test(b.name)) || a.name.localeCompare(b.name));
+    const good = mine.filter((v) => !NOVELTY.test(shortName(v)) || quality(v) > 0);
+    // With no choice made yet, use the best voice installed.
+    if (!prefs.browserVoice && good[0] && quality(good[0]) > 0) prefs.browserVoice = good[0].voiceURI;
+    return mine.map((v) => ({ id: v.voiceURI, label: voiceLabel(v), group: good.includes(v) ? '' : 'Older voices' }));
+  },
+  cancel() { if (hasSynth) speechSynthesis.cancel(); },
+  speak({ text, voice, rate, onstart, onword, onend, onerror }) {
+    const all = speechSynthesis.getVoices();
+    const v = pickVoice(all, voice, rate);
+    const u = new SpeechSynthesisUtterance(text);
+    if (v) u.voice = v;
+    u.lang = v?.lang || navigator.language || 'en-US';
+    const online = v ? !v.localService : !!all.find((x) => x.default && !x.localService);
+    u.rate = online ? Math.min(rate, 2) : rate;
+    u.onstart = () => onstart();
+    u.onboundary = (e) => { if (!e.name || e.name === 'word') onword(e.charIndex); };
+    u.onend = () => onend();
+    u.onerror = (e) => onerror(e.error);
+    speechSynthesis.speak(u);
+    // Chrome's online voices stop after ~15 s unless nudged.
+    const keep = online ? setInterval(() => { if (speechSynthesis.speaking) { speechSynthesis.pause(); speechSynthesis.resume(); } }, 10000) : 0;
+    return {
+      rate: u.rate, key: v?.voiceURI || 'default', startMs: all.length ? START_MS : 3000,
+      stop() { clearInterval(keep); u.onstart = u.onend = u.onerror = u.onboundary = null; },
+    };
+  },
+});
+
+// Gemini's voices (POST /tts).
+let gem = { enabled: false, voices: [], model: '' };
+fetch('/tts').then((r) => r.json()).then((j) => { gem = j; if (bar) fillVoices(); }).catch(() => {});
+const GEM_VOICES = ['Kore', 'Puck', 'Charon', 'Aoede', 'Gacrux', 'Achird', 'Autonoe', 'Erinome'];
+registerEngine({
+  id: 'gemini', label: 'Gemini', kind: 'audio', sizes: SIZES.gemini,
+  available: () => (gem.enabled ? '' : 'Gemini voices need GEMINI_API_KEY (or GOOGLE_API_KEY) set where the server runs'),
+  voices: () => (gem.voices?.length ? gem.voices : GEM_VOICES).map((n) => ({ id: n, label: 'Gemini ' + n })),
+  async speak({ text, voice, priority, signal }) {
+    for (let n = 0; ; n++) {
+      const res = await fetch('/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, voice: voice || 'Kore', priority }), signal });
+      if (res.ok) return { buf: await res.arrayBuffer(), type: res.headers.get('Content-Type') || 'audio/wav' };
+      const j = await res.json().catch(() => ({}));
+      // Google's minute quota: back off and ask again; the hourly budget is not worth asking again
+      if (res.status === 429 && j.code === 'busy' && n < 2) { await sleep([3000, 8000][n]); if (signal.aborted) throw new Error('cancelled'); continue; }
+      throw Object.assign(new Error(j.error || `HTTP ${res.status}`), { code: j.code, status: res.status });
+    }
+  },
+});
+
+/** The engine to read with: the chosen one if it can, else the browser's (saying why on `r`). */
+function pickEngine(r) {
+  const want = engines.get(prefs.engine);
+  if (want && !want.available()) return want.id;
+  const b = engines.get('browser');
+  if (want && want.id !== 'browser') r.notice = `${want.available()}; using the browser’s voice.`;
+  return b && !b.available() ? 'browser' : null;
+}
+const sizesOf = (id) => engines.get(id)?.sizes || SIZES.browser;
+
 // ---------- the reading ----------
-const LEAD_S = 0.06;   // light a Gemini word this much before it is heard
+const LEAD_S = 0.06;   // light an audio word this much before it is heard
 const HOLD_MS = 5000;  // a page the reader turns holds the follow this long (Starfleet)
 const CPS = 15;        // characters a second a voice says at 1x
-const START_MS = 6000; // a browser voice that has not started by then has failed
-const hasSynth = typeof speechSynthesis !== 'undefined';
-const prefs = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore', ...store.get('readaloud', {}) };
-const savePrefs = () => store.set('readaloud', prefs);
-let gem = { enabled: false, voices: [], model: '' }; // GET /tts
-fetch('/tts').then((r) => r.json()).then((j) => { gem = j; if (bar) fillVoices(); }).catch(() => {});
 
-/** The reading: { i, it, kind: 'flow'|'pdf'|'scan', words, spans (page -> [a, b)),
- *  passages, index, lastTok, lastJ, engine, playing, loading, more, next, notice }. */
-let R = null;
-let run = 0; // bumped by every (re)start; callbacks from an older run do nothing
-let timers = [], keepalive = 0;
+let mode = false;      // read-aloud mode: the player is up; keys, wheel and clicks move the voice
+/** The reading of one item while the mode is on: { id, i, it, kind: 'flow'|'pdf'|'scan',
+ *  eng, words, sents, cum (flow), spans (raster: page -> [a, b)), first, next, n,
+ *  passages, index, tok, cur (the word lit), at/c (where the voice is: passage,
+ *  character), playing, loading, notice, gen }. */
+let R = null, sessions = 0;
+let run = 0;           // bumped by every (re)start of speech; callbacks from an older run do nothing
+let timers = [];
 const later = (fn, ms) => timers.push(setTimeout(fn, ms));
-const clearTimers = () => { timers.forEach(clearTimeout); timers = []; clearInterval(keepalive); keepalive = 0; };
-let heldAt = -1, heldChar = 0;   // the last place known: passage, character
-const lastAt = new Map();        // item id -> page word read last, for coming back
-let holdUntil = 0, settleUntil = 0;
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+let holdUntil = 0;     // Date.now() until which the pages do not follow (the reader turned one)
+let settling = 0;      // performance.now() until which a turn of ours is on its way
+let anchor = null;     // { id, j, slot }: keep flow word j in the same column slot across a relayout
+let contFor = null;    // the item the reading goes on with, once it is on screen
+let contT = 0;
+let drawGen = 0;       // bumped when the drawn words change (relayout, text layers)
+const lastAt = new Map(); // item id -> { j } (flow) or { page, wi }: where the reading stopped
 
+function session(i, it, eng) {
+  return {
+    id: ++sessions, i, it, eng, kind: isFlow(it) ? 'flow' : it.kind === 'pdf' ? 'pdf' : 'scan',
+    words: [], sents: [], cum: null, spans: new Map(), first: 0, next: 0, n: it.n || 1, paraNext: 0,
+    passages: [], index: 0, tok: 0, cur: 0, at: 0, c: 0,
+    playing: true, loading: true, notice: '', gen: 0, approx: false, q: Promise.resolve(),
+  };
+}
+/** Run fn after the reading's earlier loads, unless the reading has ended. */
+function queue(r, fn) { const p = r.q.then(() => (R === r ? fn() : false)); r.q = p.catch(() => {}); return p; }
+
+// --- flow documents: the words in the live columns ---
+const SKIP = 'pre, script, style, .flow-title .m, sup, .ts-gap';
 const PARA = 'p,li,h1,h2,h3,h4,h5,h6,blockquote,td,th,dt,dd,figcaption,caption,pre,div,section,article,header,tr';
-/** Flow words: which block each is in, and which run into the next with no space. */
-function markFlow(words) {
-  for (const w of words) w.para = w.range.startContainer.parentElement?.closest(PARA) || null;
-  for (let j = 0; j + 1 < words.length; j++) {
+/** Every word of a flow layout as { text, page, para, range, glue? } (the words text.js gives, in order). */
+function collectFlow(L) {
+  const words = [], paras = new Map();
+  const walker = document.createTreeWalker(L.flow, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) => (n.parentElement.closest(SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const pe = n.parentElement, vp = pe.closest('[data-vp]'), blk = pe.closest(PARA);
+    let para = paras.get(blk); if (para == null) paras.set(blk, (para = paras.size));
+    const page = vp ? Number(vp.dataset.vp) : 0;
+    for (const m of n.data.matchAll(/\S+/g)) {
+      const range = document.createRange();
+      range.setStart(n, m.index); range.setEnd(n, m.index + m[0].length);
+      words.push({ text: m[0], page, para, range });
+    }
+  }
+  for (let j = 0; j + 1 < words.length; j++) { // "<em>word</em>s": no space between
     const a = words[j].range, b = words[j + 1].range;
     if (a.endContainer === b.startContainer || a.endOffset !== a.endContainer.length || b.startOffset !== 0 || words[j].para !== words[j + 1].para) continue;
     const gap = document.createRange();
     gap.setStart(a.endContainer, a.endOffset); gap.setEnd(b.startContainer, 0);
     words[j].glue = !/\s/.test(gap.toString()) && !gap.cloneContents().querySelector('br,img,svg');
   }
+  return words;
 }
-/** The first flow word inside the visible columns (binary search over their boxes). */
-function firstOnScreen(words, fallback) {
-  if (!live) return fallback;
-  const left = live.port.getBoundingClientRect().left - 2;
+const flowOn = (r) => r?.kind === 'flow' && live?.id === r.it.id;
+/** The column a flow word is in (from its first line box), or null when it is not drawn. */
+function colOf(w, L = live) {
+  const rr = w?.range?.getClientRects()[0];
+  if (!rr || (!rr.width && !rr.height) || !L) return null;
+  const fr = L.flow.getBoundingClientRect();
+  return Math.max(0, Math.floor((rr.left - fr.left + L.g.gap / 2) / L.g.pitch));
+}
+/** The first word in column `s` or after (binary search; words not drawn are passed over). */
+function firstFrom(words, s, L = live) {
   let lo = 0, hi = words.length - 1, ans = -1;
   while (lo <= hi) {
-    const m = (lo + hi) >> 1; const r = words[m].range.getBoundingClientRect();
-    if (!r.width && !r.height) return fallback;
-    if (r.left >= left) { ans = m; hi = m - 1; } else lo = m + 1;
+    const m = (lo + hi) >> 1;
+    let q = m, c = null;
+    while (q <= hi && (c = colOf(words[q], L)) == null) q++;
+    if (c == null) { hi = m - 1; continue; }
+    if (c >= s) { ans = q; hi = m - 1; } else lo = q + 1;
   }
-  return ans >= 0 ? ans : fallback;
+  return ans >= 0 ? ans : Math.max(0, words.length - 1);
+}
+/** Tie the reading's words to a new layout of the same text (a relayout makes new DOM). */
+function rebind(r, L) {
+  const ws = collectFlow(L);
+  if (ws.length !== r.words.length) { exitMode(false); toast('Reading stopped', { icon: 'circle-alert', kind: 'bad', sub: 'The text changed under it' }); return false; }
+  ws.forEach((w, j) => { r.words[j].range = w.range; });
+  drawGen++;
+  return true;
+}
+/** After a relayout (the player coming or going), put the anchored word back in its column slot. */
+function applyAnchor(L) {
+  const a = anchor; anchor = null;
+  const r = R && R.it.id === a.id && R.kind === 'flow' ? R : null;
+  if (r && r.words[0] && !L.flow.contains(r.words[0].range.startContainer) && !rebind(r, L)) return;
+  const words = r ? r.words : collectFlow(L);
+  const c = colOf(words[a.j], L); if (c == null) return;
+  const i = current();
+  // No slide from the start of the text: the new layout appears in place.
+  L.flow.style.transition = 'none';
+  requestAnimationFrame(() => requestAnimationFrame(() => { L.flow.style.transition = ''; }));
+  const ns = Math.max(0, Math.min(L.n - 1, c - a.slot));
+  if (ns === (state.start.get(i) ?? 0)) return;
+  state.hist.set(i, []); // its columns changed: the turn history no longer applies
+  state.start.set(i, ns); showFeed();
+}
+function anchorAt(r, j) {
+  if (!flowOn(r) || !r.words[j]) return null;
+  const c = colOf(r.words[j]); if (c == null) return null;
+  const s = state.start.get(r.i) ?? 0;
+  return { id: r.it.id, j, slot: Math.max(0, Math.min(live.g.cols - 1, c - s)) };
 }
 
-// --- raster pages ---
-/** A PDF page's words from pdf.js, line-end hyphens joined. */
+// --- raster pages: PDFs and scans ---
+let TL = null; // features/textlayer.js: pageModel(it, k) gives the words its spans are made from
+const tlReady = import('./textlayer.js').then((m) => (TL = m)).catch(() => null);
+const ENDS_LINE = /[.!?:…]["'”’)\]]*$/;
+const isPageNo = (t) => /^\s*(\d{1,4}|[ivxlc]{1,7})\s*$/i.test(t);
+/** Paragraph numbers for lines { x0, x1, top, bottom, h, text } in reading order:
+ *  a new one after a blank line, into or out of a heading, after a short line
+ *  that ends a sentence, or at an indented first line. */
+function paragraphs(lines, W) {
+  const hs = lines.map((l) => l.h).sort((a, b) => a - b), mh = hs[hs.length >> 1] || 10;
+  const colRight = (l) => { let m = l.x1; for (const o of lines) if (Math.abs(o.x0 - l.x0) < W * 0.15) m = Math.max(m, o.x1); return m; };
+  let para = 0;
+  return lines.map((l, x) => {
+    const p = lines[x - 1];
+    if (p) {
+      const gap = l.top - p.bottom, ended = ENDS_LINE.test(p.text.trim());
+      if ((gap > 0.9 * mh && gap < 12 * mh)
+        || (l.h > mh * 1.2) !== (p.h > mh * 1.2)
+        || (ended && p.x1 < colRight(p) - 1.5 * mh)
+        || (ended && l.x0 > p.x0 + 0.8 * mh && l.x0 < p.x0 + 6 * mh)) para++;
+    }
+    return para;
+  });
+}
+/** A PDF page's words from pdf.js: lines rebuilt, page numbers and sideways
+ *  text left out, paragraphs found, line-end hyphens joined. */
 async function pdfWords(it, k) {
   const d = await openDoc(it);
-  const tc = await (await d.pdf.getPage(k + 1)).getTextContent();
-  let text = '', prev = null;
+  const page = await d.pdf.getPage(k + 1);
+  const tc = await page.getTextContent();
+  const [vx0, vy0, vx1, vy1] = page.view, W = vx1 - vx0, H = vy1 - vy0;
+  const lines = []; let L = null;
   for (const x of tc.items) {
     if (typeof x.str !== 'string') continue;
-    if (prev && !prev.hasEOL && text && !/\s$/.test(text) && !/^\s/.test(x.str)) {
-      // pdf.js leaves some spaces implicit: a gap, or a new line, between items
-      const hgt = x.height || prev.height || 10;
-      const gap = x.transform[4] - (prev.transform[4] + prev.width);
-      if (Math.abs(x.transform[5] - prev.transform[5]) > hgt * 0.5 || gap > hgt * 0.2) text += ' ';
+    const [, b, c, dd, e, f] = x.transform;
+    if (Math.abs(b) > 0.01 || Math.abs(c) > 0.01) { L = null; continue; } // sideways: margin stamps, axis labels
+    const hgt = x.height || Math.abs(dd) || 10;
+    if (x.str) {
+      if (!L || Math.abs(f - L.y) > hgt * 0.5) { L = { y: f, h: hgt, x0: e, x1: e + (x.width || 0), text: '' }; lines.push(L); }
+      else if (L.text && !/\s$/.test(L.text) && !/^\s/.test(x.str) && e - L.x1 > hgt * 0.2) L.text += ' '; // pdf.js leaves some spaces implicit
+      L.text += x.str; L.x1 = Math.max(L.x1, e + (x.width || 0)); L.h = Math.max(L.h, hgt);
     }
-    text += x.str + (x.hasEOL ? '\n' : '');
-    prev = x;
+    if (x.hasEOL) L = null;
   }
-  text = text.replace(/(\p{L})-\n(\p{Ll})/gu, '$1$2');
-  return text.split(/\s+/).filter(Boolean).map((t) => ({ text: t, page: k }));
+  let body = lines.filter((l) => l.text.trim());
+  body = body.filter((l, x) => !(isPageNo(l.text) && (x === 0 || x === body.length - 1 || l.y - vy0 < H * 0.08 || vy1 - l.y > H * 0.92)));
+  for (const l of body) { l.top = vy1 - l.y - l.h; l.bottom = vy1 - l.y; } // PDF y grows upward
+  const paras = paragraphs(body, W);
+  const out = [];
+  body.forEach((l, x) => {
+    const ws = l.text.split(/\s+/).filter(Boolean);
+    const last = out[out.length - 1];
+    // A word broken at the line end with a hyphen is said whole.
+    if (last && last.para === paras[x] && /\p{L}-$/u.test(last.text) && /^\p{Ll}/u.test(ws[0] || '')) last.text = last.text.slice(0, -1) + ws.shift();
+    for (const t of ws) out.push({ text: t, page: k, para: paras[x] });
+  });
+  return out;
+}
+/** A scan page's words from its OCR word boxes (the text layer's own words). */
+function ocrWords(m, k) {
+  const ws = m.o.words || [], W = m.o.w || 1000, H = m.o.h || 1400;
+  const lines = [];
+  for (let j = 0; j < ws.length;) {
+    let e = j; while (e < ws.length && ws[e].l === ws[j].l) e++;
+    const seg = ws.slice(j, e);
+    const top = Math.min(...seg.map((w) => w.y0)), bottom = Math.max(...seg.map((w) => w.y1));
+    lines.push({ a: j, b: e, x0: Math.min(...seg.map((w) => w.x0)), x1: Math.max(...seg.map((w) => w.x1)), top, bottom, h: bottom - top, text: seg.map((w) => w.t).join(' ') });
+    j = e;
+  }
+  const body = lines.filter((l, x) => !(isPageNo(l.text) && (x === 0 || x === lines.length - 1 || l.top < H * 0.08 || l.bottom > H * 0.92)));
+  const paras = paragraphs(body, W);
+  const out = [];
+  body.forEach((l, x) => {
+    for (let j = l.a; j < l.b; j++) out.push({ text: ws[j].t, page: k, para: paras[x], wi: [j] });
+    const last = out[out.length - 1], nx = body[x + 1];
+    if (last && nx && paras[x + 1] === paras[x] && /\p{L}-$/u.test(last.text) && /^\p{Ll}/u.test(ws[nx.a]?.t || '')) {
+      last.say = spokenOf(last.text.slice(0, -1)); last.glue = true; // said whole with the next line's first word
+    }
+  });
+  return out;
 }
 /** A scan page's OCR text by estimate: its share of the item's djvu.txt (no page breaks there). */
 const ocr = new Map();
@@ -413,311 +699,435 @@ async function scanWords(it, k) {
   for (const m of txt.slice(a, b).matchAll(/\S+|\n\s*\n/g)) { if (m[0][0] === '\n') para++; else out.push({ text: m[0], page: k, para }); }
   return out;
 }
-/** The words a text source has for page k (textlayer.js: the pages on screen and the next spread). */
-async function shownWords(k) {
-  const got = await currentWords().catch(() => null);
-  const ws = got?.words.filter((w) => w.page === k) || [];
-  return ws.length ? ws : null;
-}
-const waiting = []; // [item id, resolve] until that item's next render
-on('spread:rendered', ({ it }) => { for (let k = waiting.length - 1; k >= 0; k--) if (waiting[k][0] === it.id) waiting.splice(k, 1)[0][1](); });
-const rendered = (id, ms = 4000) => new Promise((res) => { waiting.push([id, res]); setTimeout(res, ms); });
+/** The words of raster page k, each with `wi` (its text-layer span indexes) when known. */
 async function pageWords(r, k) {
-  if (r.kind === 'pdf') return pdfWords(r.it, k);
-  let ws = await shownWords(k);
-  if (!ws && r.layer && current() === r.i && state.view === 'feed') { reveal({ page: k }); await rendered(r.it.id); ws = await shownWords(k); }
-  if (ws) { r.layer = true; return ws.map((w) => ({ text: w.text, page: k, src: w })); }
-  if (!r.approx) { r.approx = true; r.notice = 'No text layer on this scan yet: reading its OCR text by estimate, without highlighting.'; }
+  const tl = await tlReady;
+  if (r.kind === 'pdf') {
+    const ws = await pdfWords(r.it, k);
+    if (tl?.pageModel) { try { bindWi(ws, (await tl.pageModel(r.it, k)).words.map((w) => w.t)); } catch { /* no layer for this page */ } }
+    return ws;
+  }
+  if (tl?.pageModel) { try { const m = await tl.pageModel(r.it, k); if (m.kind === 'ocr') return ocrWords(m, k); } catch { /* no word boxes */ } }
+  if (!r.approx) { r.approx = true; r.notice = 'No OCR word boxes for this scan: reading its OCR text by estimate, without highlighting.'; paintBar(); }
   return scanWords(r.it, k);
 }
-/** Session words of one page lined up with the words a text layer draws for it. */
-function alignPage(sw, dws) {
-  if (sw.length === dws.length && sw.every((w, t) => w.text === dws[t].text)) return sw.map((_, t) => t);
-  const ia = [], ib = [];
-  sw.forEach((w, t) => { if (norm(w.text)) ia.push(t); });
-  dws.forEach((w, t) => { if (norm(w.text)) ib.push(t); });
-  const m = align(ia.map((t) => norm(sw[t].text)), ib.map((t) => norm(dws[t].text)));
-  const out = new Array(sw.length).fill(-1);
-  ia.forEach((t, x) => { if (m[x] >= 0) out[t] = ib[m[x]]; });
-  return out;
-}
-/** Load the next page with words into the reading (blank pages are passed over). */
-async function loadPage(r, k, start = null) {
-  const n = r.it.n || 1;
-  for (let tries = 0; k < n && tries < 12; k++, tries++) {
-    const ws = await pageWords(r, k);
-    if (R !== r) return;
-    const a = r.words.length;
-    r.words.push(...ws);
-    r.spans.set(k, [a, r.words.length]);
-    r.next = k + 1; r.more = r.next < n;
-    let from = a;
-    if (start && start.d != null && start.display?.length) {
-      const m = alignPage(ws, start.display);
-      const t = m.findIndex((x) => x >= start.d);
-      from = a + Math.max(0, t);
-    }
-    start = null;
-    const ps = buildPassages(r.words, from, r.words.length, SIZES[r.engine], r.passages.length);
-    r.passages.push(...ps);
-    if (ps.length) { bindShown(r); return; }
+/** Add page k's words after the loaded ones (its first paragraph continues the last). */
+function append(r, k, ws) {
+  const a = r.words.length, map = new Map();
+  for (const w of ws) {
+    let id = map.get(w.para);
+    if (id == null) { id = !map.size && a ? r.words[a - 1].para : r.paraNext++; map.set(w.para, id); }
+    w.para = id;
   }
+  r.words.push(...ws);
+  r.spans.set(k, [a, r.words.length]);
+  r.next = k + 1;
+  r.sents = sentencesOf(r.words);
+  if (ws.length) r.passages.push(...buildPassages(r.words, a, r.words.length, sizesOf(r.eng), r.passages.length));
 }
+/** Add page k's words before the loaded ones; every index moves up. */
+function prepend(r, k, ws) {
+  const m = ws.length, map = new Map(), lastLocal = ws[m - 1]?.para;
+  for (const w of ws) {
+    let id = map.get(w.para);
+    if (id == null) { id = w.para === lastLocal && r.words.length ? r.words[0].para : r.paraNext++; map.set(w.para, id); }
+    w.para = id;
+  }
+  r.words = ws.concat(r.words);
+  for (const [kk, [a, b]] of r.spans) r.spans.set(kk, [a + m, b + m]);
+  r.spans.set(k, [0, m]); r.first = k;
+  r.cur += m; r.gen++;
+  for (const p of r.passages) { for (const t of p.toks) t.j += m; for (const s of p.sents) { s[0] += m; s[1] += m; } }
+  r.sents = sentencesOf(r.words);
+}
+const more = (r) => queue(r, async () => {
+  if (r.next >= r.n) return false;
+  const k = r.next, gen = r.gen;
+  const ws = await pageWords(r, k);
+  if (R !== r || r.gen !== gen || r.next !== k) return R === r;
+  append(r, k, ws);
+  return true;
+});
+const earlier = (r) => queue(r, async () => {
+  if (r.first <= 0) return false;
+  const k = r.first - 1, gen = r.gen;
+  const ws = await pageWords(r, k);
+  if (R !== r || r.gen !== gen || r.first !== k + 1) return R === r;
+  prepend(r, k, ws);
+  return true;
+});
+/** Read from page k afresh: its words (blank pages passed over, up to 12). */
+const loadFrom = (r, k) => queue(r, async () => {
+  r.gen++; const gen = r.gen;
+  Object.assign(r, { words: [], sents: [], spans: new Map(), passages: [], first: k, next: k, index: 0, tok: 0, cur: 0 });
+  for (let tries = 0; r.next < r.n && tries < 12; tries++) {
+    const kk = r.next;
+    const ws = await pageWords(r, kk);
+    if (R !== r || r.gen !== gen) return false;
+    append(r, kk, ws);
+    if (r.words.length) return true;
+  }
+  return r.words.length > 0;
+});
 function ensureAhead(r) {
-  if (r.kind === 'flow' || !r.more || r.pageLoad || r.passages.length - r.index > 4) return;
-  r.pageLoad = loadPage(r, r.next).catch((e) => console.warn('read aloud: page', e)).finally(() => { r.pageLoad = null; if (R === r && r.engine === 'gemini' && r.playing) prefetch(r.index); });
+  if (r.kind === 'flow' || r.next >= r.n || r.ahead) return;
+  if (r.passages.length - r.index > 4 && r.words.length - r.cur > 250) return;
+  r.ahead = true;
+  more(r).finally(() => { r.ahead = false; if (R === r && r.playing && engines.get(r.eng)?.kind === 'audio') prefetch(r.index); });
 }
-/** Tie the reading's words of the pages a text source has now to its words
- *  (`src`); their `el` is looked up live, so this holds across re-renders. */
-async function bindShown(r, tries = 0) {
-  if (r.kind === 'flow') return;
-  const got = await currentWords().catch(() => null);
-  if (R !== r) return;
-  const ws = got?.words || [];
-  if (!ws.length) { if (tries < 2) setTimeout(() => R === r && bindShown(r, tries + 1), 500 * (tries + 1)); return; }
-  const byPage = new Map();
-  for (const w of ws) { if (!byPage.has(w.page)) byPage.set(w.page, []); byPage.get(w.page).push(w); }
-  for (const [k, dws] of byPage) {
-    const span = r.spans.get(k); if (!span) continue;
-    const sw = r.words.slice(span[0], span[1]);
-    if (sw.length && sw.every((w, t) => w.src === dws[t])) continue; // tied already
-    const m = alignPage(sw, dws);
-    sw.forEach((w, t) => { w.src = m[t] >= 0 ? dws[m[t]] : null; });
+/** The reading's word on raster page k nearest text-layer word `wi` (else the page's first). */
+function wordFor(r, k, wi) {
+  const sp = r.spans.get(k); if (!sp) return null;
+  let best = sp[0], bestWi = -1;
+  if (wi != null) for (let j = sp[0]; j < sp[1]; j++) {
+    const x = r.words[j].wi; if (!x) continue;
+    if (x.includes(wi)) return j;
+    if (x[0] < wi && x[0] > bestWi) { bestWi = x[0]; best = j; }
   }
-  repaint();
-}
-async function rebindFlow(r) {
-  const got = await currentWords().catch(() => null);
-  if (R !== r || !got) return;
-  if (got.words.length !== r.words.length) { stopReading(); toast('Reading stopped', { icon: 'volume-x', sub: 'The text on screen changed' }); return; }
-  got.words.forEach((w, j) => { r.words[j].range = w.range; r.words[j].block = w.block; });
-  repaint();
+  return best;
 }
 
-// ---------- starting, pausing, stopping ----------
-function pickEngine(r) {
-  if (prefs.engine === 'gemini' && gem.enabled) return 'gemini';
-  if (prefs.engine === 'gemini') r.notice = 'Gemini voices need GEMINI_API_KEY (or GOOGLE_API_KEY) set where the server runs; using the browser’s voice.';
-  return 'browser';
-}
-
-/** Start reading the current item: from page word `j` (flow), from page `page`
- *  (raster; `d` a text-layer word on it), else from the first word on screen. */
+// ---------- starting and stopping ----------
+/** Start reading the current item (and turn the mode on): from flow word `j`,
+ *  from raster page `page` (text-layer word `wi` on it), else from where it
+ *  stopped if that is on screen, else from the first word on screen. */
 async function begin(opt = {}) {
-  const i = current(); const it = items[i];
-  if (it == null) return;
-  stopReading();
-  const r = { i, it, kind: isFlow(it) ? 'flow' : it.kind === 'pdf' ? 'pdf' : 'scan', words: [], spans: new Map(), passages: [], index: 0, lastTok: 0, lastJ: -1, playing: true, loading: true, more: false, next: 0, notice: '' };
-  r.engine = pickEngine(r);
-  if (r.engine === 'browser' && !hasSynth) { toast('No voice to read with', { icon: 'volume-x', kind: 'bad', sub: 'This browser has none; Gemini voices need GEMINI_API_KEY' }); return; }
-  R = r; heldAt = 0; heldChar = 0;
+  const i = current(), it = items[i];
+  if (it == null || state.view !== 'feed') return;
+  const flow = isFlow(it);
+  if (flow && live?.id !== it.id) { toast('Still opening', { icon: 'loader-circle', kind: 'busy' }); return; }
+  if (!flow && it.kind !== 'pdf' && it.kind !== 'scan') { toast('Nothing to read here', { icon: 'volume-x', kind: 'edge' }); return; }
+  const probe = {};
+  const eng = pickEngine(probe);
+  if (!eng) { toast('No voice here', 3200, { icon: 'volume-x', kind: 'bad', sub: 'This browser has no speech voices; Gemini voices need GEMINI_API_KEY where the server runs' }); return; }
+  endSession(true);
+  clearTimeout(contT); contFor = null;
+  const r = session(i, it, eng);
+  r.notice = probe.notice || '';
+  R = r;
+  const prev = lastAt.get(it.id);
+  if (flow) {
+    r.words = collectFlow(live);
+    if (!r.words.length) { R = null; toast('Nothing to read here', { icon: 'volume-x', kind: 'edge' }); if (mode) setMode(false); return; }
+    r.sents = sentencesOf(r.words);
+    r.cum = [0]; for (const w of r.words) r.cum.push(r.cum[r.cum.length - 1] + w.text.length + 1);
+    let j = opt.j;
+    if (j == null) j = prev?.j != null && r.words[prev.j] && onScreen(r, r.words[prev.j]) ? prev.j : firstFrom(r.words, state.start.get(i) ?? 0);
+    if (!mode) anchor = anchorAt(r, j); // the player takes room: keep this word where it is
+    setMode(true);
+    moveTo(j);
+    return;
+  }
+  setMode(true);
   paintBar();
-  try {
-    if (r.kind === 'flow') {
-      const got = await currentWords();
-      if (R !== r) return;
-      if (!got) throw new Error('No text on screen to read');
-      r.words = got.words; markFlow(r.words);
-      let from = opt.j;
-      if (from == null) {
-        const prev = lastAt.get(it.id); // where it paused, if that is still on screen
-        from = prev != null && r.words[prev] && onScreen(r.words[prev], r) ? prev : firstOnScreen(r.words, got.start);
-      }
-      r.passages = buildPassages(r.words, from, r.words.length, SIZES[r.engine]);
-    } else {
-      await loadPage(r, opt.page ?? state.start.get(i) ?? 0, opt);
-      if (R !== r) return;
-    }
-  } catch (e) { if (R === r) { stopReading(false); toast('Cannot read aloud', { icon: 'volume-x', kind: 'bad', sub: e.message }); } return; }
-  if (!r.passages.length) { stopReading(false); toast('Nothing to read here', { icon: 'volume-x' }); return; }
-  r.loading = false;
-  holdUntil = 0;
-  speak(0); ensureAhead(r); tick(); paintBar(); syncMedia();
+  const s = state.start.get(i) ?? 0, shown = Math.max(1, state.shown || 1);
+  let k = opt.page, wi = opt.wi;
+  if (k == null && prev?.page != null && prev.page >= s && prev.page < s + shown) ({ page: k, wi } = prev);
+  if (k == null) k = s;
+  const ok = await loadFrom(r, k);
+  if (R !== r) return;
+  if (!ok) { exitMode(false); toast('Nothing to read here', { icon: 'volume-x', kind: 'edge', sub: 'No text on these pages' }); return; }
+  moveTo(wordFor(r, r.spans.has(k) ? k : r.first, wi) ?? 0);
 }
 
-function speak(from) { if (R.engine === 'gemini') speakGemini(from); else speakBrowser(from ?? 0); }
+/** Stop the reading (the mode stays). */
+function endSession(remember = true) {
+  const r = R; if (!r) return;
+  const w = r.words[r.cur];
+  if (remember && w) lastAt.set(r.it.id, r.kind === 'flow' ? { j: r.cur } : { page: w.page, wi: w.wi?.[0] });
+  else if (!remember) lastAt.delete(r.it.id);
+  endHold(false);
+  stopSpeech(); dropFetches();
+  highlight('tts-word', []); highlight('tts-sentence', []); highlight('tts-hover', []);
+  R = null; cancelAnimationFrame(raf); raf = 0;
+  syncMedia();
+}
+/** Leave the mode: the reading stops and the pages take back the player's room. */
+function exitMode(remember = true) {
+  const r = R;
+  if (r && items[current()]?.id === r.it.id) anchor = anchorAt(r, r.cur) || anchor;
+  clearTimeout(contT); contFor = null;
+  endSession(remember);
+  setMode(false);
+}
+function setMode(on) {
+  if (mode === on) { paintBar(); return; }
+  mode = on;
+  document.documentElement.classList.toggle('ra-on', on);
+  if (on) buildBar();
+  paintBar();
+  if (state.view === 'feed') showFeed(); // the pages make room for the player, or take it back
+}
+/** The end of the item: on to the next one ("Next item" on), else out of the mode. */
+function finish() {
+  const nx = state.order[state.pos + 1];
+  if (prefs.cont && nx != null) {
+    endSession(false);
+    contFor = items[nx].id; armCont();
+    toast('Next item', { icon: 'skip-forward', kind: 'ok', sub: items[nx].t });
+    go(state.pos + 1);
+    return;
+  }
+  exitMode(false);
+  toast('Finished reading', { icon: 'circle-check', kind: 'ok' });
+}
+function armCont() { clearTimeout(contT); contT = setTimeout(() => { if (mode && !R && contFor) exitMode(false); }, 20000); }
 
-function stopEngines() {
-  run++; clearTimers(); detachUtterance();
-  if (hasSynth) speechSynthesis.cancel();
+// ---------- moving the voice ----------
+/** Put the voice on word j: lit at once, the pages brought to it, and (playing) speaking from there.
+ *  speak: 'now', 'soon' (after the wheel settles) or 'none' (a held key skimming). */
+function moveTo(j, { speak: how = 'now', play = false } = {}) {
+  const r = R; if (!r || !r.words.length) return;
+  j = Math.max(0, Math.min(r.words.length - 1, j));
+  stopSpeech(); dropFetches();
+  r.passages = buildPassages(r.words, j, r.words.length, sizesOf(r.eng));
+  r.index = 0; r.tok = 0; r.at = 0; r.c = 0; r.loading = false;
+  r.cur = r.passages[0]?.toks[0]?.j ?? j;
+  if (play) r.playing = true;
+  holdUntil = 0;
+  paint();
+  if (!r.passages.length) { r.index = -1; if (r.playing) advance(); paintBar(); return; } // nothing said on this page: on to the next
+  if (r.playing) { if (how === 'now') speak(0); else if (how === 'soon') speakSoon(); }
+  ensureAhead(r); paintBar(); syncMedia();
+}
+/** The sentence holding word j (index into r.sents). */
+function sentIdx(r, j) {
+  let lo = 0, hi = r.sents.length - 1;
+  if (hi < 0) return -1;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (r.sents[m][0] <= j) lo = m; else hi = m - 1; }
+  return lo;
+}
+let navBusy = false;
+const edge = (msg, icon) => toast(msg, { icon, kind: 'edge' });
+/** Back or forward a sentence. Back goes to the start of this sentence when the
+ *  voice is two words into it, else to the one before (a held key skims on). */
+async function stepSentence(d, o = {}) {
+  const r = R; if (!r || navBusy || !r.sents.length) return;
+  navBusy = true;
+  try {
+    let si = sentIdx(r, r.cur), target = null;
+    if (d < 0) {
+      const a = r.sents[si][0];
+      if (r.cur - a >= 2 && !o.repeat) target = a;
+      else if (si > 0) target = r.sents[si - 1][0];
+      else if (r.kind !== 'flow' && r.first > 0 && await earlier(r)) { if (R !== r) return; si = sentIdx(r, r.cur); target = r.sents[Math.max(0, si - 1)][0]; }
+      else { target = a; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
+    } else {
+      if (si + 1 >= r.sents.length && r.kind !== 'flow' && r.next < r.n) {
+        for (let n = 0; n < 6 && si + 1 >= r.sents.length && r.next < r.n; n++) { if (!(await more(r)) || R !== r) return; si = sentIdx(r, r.cur); }
+      }
+      if (si + 1 < r.sents.length) target = r.sents[si + 1][0];
+      else if (!o.repeat) edge('End of document', 'arrow-down-to-line');
+    }
+    if (target != null && R === r) moveTo(target, o);
+  } finally { navBusy = false; }
+}
+/** Back or forward a paragraph (a heading, list item or table cell counts as one). */
+async function stepPara(d, o = {}) {
+  const r = R; if (!r || navBusy || !r.sents.length) return;
+  navBusy = true;
+  try {
+    const start = (j) => { const p = r.words[j].para; while (j > 0 && r.words[j - 1].para === p) j--; return j; };
+    const sentFrom = (j) => { const si = sentIdx(r, j), s = r.sents[si]; return s && s[0] >= j ? s[0] : r.sents[si + 1]?.[0] ?? s?.[0] ?? j; };
+    let target = null;
+    if (d < 0) {
+      let a = start(r.cur);
+      if (a === 0 && r.kind !== 'flow' && r.first > 0 && (r.cur - sentFrom(a) < 2 || o.repeat) && await earlier(r)) { if (R !== r) return; a = start(r.cur); }
+      const fa = sentFrom(a);
+      if (r.cur - fa >= 2 && !o.repeat) target = fa;
+      else if (a > 0) target = sentFrom(start(a - 1));
+      else { target = fa; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
+    } else {
+      const p = r.words[r.cur].para; let j = r.cur;
+      for (let n = 0; n < 6; n++) {
+        while (j < r.words.length && r.words[j].para === p) j++;
+        if (j < r.words.length || r.kind === 'flow' || r.next >= r.n) break;
+        if (!(await more(r)) || R !== r) return;
+      }
+      if (j < r.words.length) target = sentFrom(j);
+      else if (!o.repeat) edge('End of document', 'arrow-down-to-line');
+    }
+    if (target != null && R === r) moveTo(target, o);
+  } finally { navBusy = false; }
+}
+/** Read from a share of the item (a click on the progress line). */
+async function seekFraction(f) {
+  const r = R; if (!r) return;
+  f = Math.max(0, Math.min(1, f));
+  holdUntil = 0;
+  if (r.kind === 'flow') { const s = r.sents[sentIdx(r, Math.round(f * (r.words.length - 1)))]; moveTo(s ? s[0] : 0, { play: true }); return; }
+  const k = Math.min(r.n - 1, Math.floor(f * r.n));
+  if (!r.spans.has(k) && !(await loadFrom(r, k))) return;
+  if (R !== r) return;
+  moveTo(wordFor(r, r.spans.has(k) ? k : r.first, null) ?? 0, { play: true });
+}
+/** The voice to a raster word: page k, text-layer word wi (pages loaded on the way). */
+async function rasterJump(r, k, wi) {
+  if (!r.spans.has(k)) {
+    if (k >= r.next && k - r.next < 6) { while (R === r && r.next <= k && r.next < r.n) if (!(await more(r))) break; }
+    else if (k < r.first && r.first - k < 3) { while (R === r && r.first > k) if (!(await earlier(r))) break; }
+    else await loadFrom(r, k);
+  }
+  if (R !== r) return;
+  const j = wordFor(r, k, wi);
+  if (j != null) moveTo(j, { play: true });
+}
+
+// ---------- speaking ----------
+function speak(from = 0) {
+  const r = R; if (!r?.passages[r.index]) return;
+  if (engines.get(r.eng).kind === 'audio') speakAudio(from); else speakEvents(from);
+  tick();
+}
+let soonT = 0, rateT = 0;
+function speakSoon(ms = 280) { clearTimeout(soonT); soonT = setTimeout(() => { if (R?.playing) speak(0); }, ms); }
+function stopSpeech() {
+  run++; clearTimers(); clearTimeout(soonT); clearTimeout(rateT);
+  if (B.h) { B.h.stop(); B.h = null; }
+  for (const e of engines.values()) if (e.kind === 'events') e.cancel?.();
   if (audio) { audio.onended = audio.onerror = null; audio.pause(); audio.removeAttribute('src'); audio.load(); }
   audioAt = -1;
 }
-
 function pause() {
   const r = R; if (!r || !r.playing) return;
   position();
   r.playing = false; r.loading = false;
-  if (r.engine === 'gemini' && audio && audioAt === r.index) { run++; clearTimers(); audio.onended = audio.onerror = null; audio.pause(); }
-  else stopEngines();
+  if (engines.get(r.eng).kind === 'audio' && audio && audioAt === r.index) { run++; clearTimers(); audio.onended = audio.onerror = null; audio.pause(); }
+  else stopSpeech();
   paintBar(); syncMedia();
 }
 function resume() {
   const r = R; if (!r || r.playing) return;
-  r.playing = true; r.notice = '';
-  speak(r.engine === 'gemini' ? null : resumePoint());
-  tick(); paintBar(); syncMedia();
+  r.notice = '';
+  // The reader moved the pages away while paused: read from where they are now.
+  const w = r.words[r.cur];
+  if (w && !onScreen(r, w) && state.view === 'feed' && current() === r.i) {
+    if (r.kind === 'flow') { moveTo(firstFrom(r.words, state.start.get(r.i) ?? 0), { play: true }); return; }
+    r.playing = true; rasterJump(r, state.start.get(r.i) ?? 0, null); return;
+  }
+  r.playing = true;
+  speak(engines.get(r.eng).kind === 'audio' ? null : resumePoint());
+  paintBar(); syncMedia();
 }
 /** Stop and pause, saying why. */
 function halt(msg) { pause(); if (R) { R.notice = msg; paintBar(); } }
-
-function stopReading(remember = true) {
-  if (!R) return;
-  if (remember && R.lastJ >= 0) lastAt.set(R.it.id, R.lastJ); else lastAt.delete(R.it.id);
-  stopEngines(); dropFetches();
-  highlight('tts-word', []); highlight('tts-sentence', []);
-  R = null; cancelAnimationFrame(raf); raf = 0;
-  paintBar(); syncMedia();
-}
-function finish() { stopReading(false); toast('Finished reading', { icon: 'circle-check', kind: 'ok' }); }
-
 async function advance() {
   const r = R; if (!r) return;
   const mine = run;
-  for (let n = 0; r.index + 1 >= r.passages.length && r.more && n < 8; n++) { // the next page (blank ones passed over)
+  for (let n = 0; r.index + 1 >= r.passages.length && r.next < r.n && r.kind !== 'flow' && n < 12; n++) { // the next page (blank ones passed over)
     r.loading = true; paintBar();
-    ensureAhead(r); await r.pageLoad;
+    await more(r);
     if (R !== r || mine !== run) return;
   }
   r.loading = false;
   if (r.index + 1 >= r.passages.length) return finish();
-  r.index++; r.lastTok = 0; heldAt = r.index; heldChar = 0;
+  r.index++; r.tok = 0; r.at = r.index; r.c = 0;
   keepWindow(r.index);
-  speak(0); ensureAhead(r); paintBar();
-}
-/** Jump d passages, playing or not. */
-function skip(d) {
-  const r = R; if (!r) return;
-  const to = Math.max(0, Math.min(r.passages.length - 1, r.index + d));
-  stopEngines(); keepWindow(to);
-  r.index = to; r.lastTok = 0; heldAt = to; heldChar = 0; repaint();
   if (r.playing) speak(0);
-  ensureAhead(r);
-}
-/** Cut the rest again for another engine, from the word being read. */
-function recut(engine) {
-  const r = R; if (!r) return;
-  const j = r.passages[r.index]?.toks[r.lastTok]?.j ?? 0;
-  stopEngines(); dropFetches();
-  r.engine = engine; r.passages = [];
-  if (r.kind === 'flow') r.passages = buildPassages(r.words, j, r.words.length, SIZES[engine]);
-  else for (const [, [a, b]] of r.spans) if (b > j) r.passages.push(...buildPassages(r.words, Math.max(a, j), b, SIZES[engine], r.passages.length));
-  r.index = 0; r.lastTok = 0; heldAt = 0; heldChar = 0;
+  ensureAhead(r); paintBar();
 }
 /** Where the current passage picks up: the start of the word it was on. */
 function resumePoint() {
   const c = position(); const p = R.passages[R.index];
   return c == null || !p ? 0 : p.toks[tokAt(p, c)].at;
 }
-
-// ---------- the browser's voice ----------
-let utterance = null;
-const B = { run: -1, at: 0, from: 0, rate: 1, bounded: false, retried: false };
-const pace = new Map(); // voice -> characters a second measured at 1x (voices that report no words)
-function detachUtterance() { if (utterance) utterance.onstart = utterance.onend = utterance.onerror = utterance.onboundary = null; utterance = null; }
-function pickVoice(all) {
-  const chosen = all.find((v) => v.voiceURI === prefs.browserVoice);
-  if (chosen) return chosen;
-  // Chrome's online voices top out at 2x: above that, a local voice in the same language
-  if (prefs.rate <= 2) return undefined;
-  const base = (navigator.language || 'en').slice(0, 2);
-  return all.find((v) => v.default && v.localService) || all.find((v) => v.localService && v.lang.toLowerCase().startsWith(base));
+/** Another engine: cut the rest again from the word being read. */
+function recut(engine) {
+  const r = R; if (!r) return;
+  r.eng = engine;
+  moveTo(r.cur, { speak: r.playing ? 'now' : 'none' });
 }
-function speakBrowser(from) {
+
+// --- events engines (the browser's voice) ---
+const B = { run: -1, t0: 0, from: 0, rate: 1, bounded: false, retried: false, key: 'default', h: null };
+const pace = new Map(); // voice -> characters a second measured at 1x (voices that report no words)
+function speakEvents(from) {
   const mine = ++run;
-  clearTimers(); detachUtterance(); speechSynthesis.cancel();
-  heldAt = R.index; heldChar = from;
+  clearTimers(); if (B.h) { B.h.stop(); B.h = null; }
+  engines.get(R.eng).cancel?.();
+  R.at = R.index; R.c = from || 0;
   // a speak() in the same task as a cancel() is dropped on some Chrome builds
-  later(() => { if (mine === run) utter(mine, from); }, 30);
+  later(() => { if (mine === run) utter(mine, from || 0); }, 30);
 }
 function utter(mine, from) {
-  const r = R, p = r.passages[r.index];
+  const r = R, p = r.passages[r.index], e = engines.get(r.eng);
   const at = from > 0 && p.text.slice(from).trim() ? from : 0;
-  const u = new SpeechSynthesisUtterance(p.text.slice(at));
-  const all = speechSynthesis.getVoices();
-  const v = pickVoice(all);
-  if (v) u.voice = v;
-  u.lang = v?.lang || navigator.language || 'en-US';
-  const online = v ? !v.localService : !!all.find((x) => x.default && !x.localService);
-  u.rate = online ? Math.min(prefs.rate, 2) : prefs.rate;
   let started = false;
-  Object.assign(B, { run: -1, from: at, rate: u.rate, bounded: false });
-  u.onstart = () => { if (mine !== run) return; started = true; B.retried = false; B.run = mine; B.at = performance.now(); };
-  u.onboundary = (e) => {
-    if (mine !== run || (e.name && e.name !== 'word')) return;
-    B.bounded = true; heldAt = r.index; heldChar = at + e.charIndex;
-  };
-  u.onend = () => {
-    if (mine !== run) return;
-    clearTimers();
-    const took = (performance.now() - B.at) / 1000;
-    if (!B.bounded && started && u.text.length > 40 && took > 1) { // learn this voice's real pace
-      const m = u.text.length / took / (u.rate || 1); const vk = u.voice?.voiceURI || 'default';
-      if (m > 5 && m < 40) pace.set(vk, pace.has(vk) ? pace.get(vk) * 0.6 + m * 0.4 : m);
-    }
-    advance();
-  };
-  u.onerror = (e) => {
-    if (mine !== run || e.error === 'interrupted' || e.error === 'canceled') return;
-    clearTimers();
-    if (e.error === 'not-allowed') halt('The browser wants a click on the page before it speaks; then press v.');
-    else browserFailed(`failed (${e.error})`);
-  };
-  utterance = u;
-  speechSynthesis.speak(u);
-  if (online) keepalive = setInterval(() => { if (mine === run && speechSynthesis.speaking) { speechSynthesis.pause(); speechSynthesis.resume(); } }, 10000);
+  Object.assign(B, { run: -1, from: at, bounded: false });
+  let hnd;
+  try {
+    hnd = e.speak({
+      text: p.text.slice(at), voice: voiceOf(e.id), rate: prefs.rate,
+      onstart: () => { if (mine !== run) return; started = true; B.retried = false; B.run = mine; B.t0 = performance.now(); },
+      onword: (ci) => { if (mine !== run) return; B.bounded = true; r.at = r.index; r.c = at + ci; },
+      onend: () => {
+        if (mine !== run) return;
+        clearTimers();
+        const took = (performance.now() - B.t0) / 1000, len = p.text.length - at;
+        if (!B.bounded && started && len > 40 && took > 1) { // learn this voice's real pace
+          const m = len / took / (B.rate || 1);
+          if (m > 5 && m < 40) pace.set(B.key, pace.has(B.key) ? pace.get(B.key) * 0.6 + m * 0.4 : m);
+        }
+        B.h?.stop(); B.h = null;
+        advance();
+      },
+      onerror: (err) => {
+        if (mine !== run || err === 'interrupted' || err === 'canceled') return;
+        clearTimers();
+        if (err === 'not-allowed') halt('The browser wants a click on the page before it speaks; then press Space.');
+        else voiceFailed(`failed (${err})`);
+      },
+    });
+  } catch (err) { voiceFailed(`failed (${err.message})`); return; }
+  B.h = hnd; B.rate = hnd?.rate || prefs.rate; B.key = hnd?.key || 'default';
   later(() => {
     if (mine !== run || started) return;
-    if (!B.retried) { B.retried = true; speakBrowser(at); } else { B.retried = false; browserFailed('did not start'); }
-  }, all.length ? START_MS : 3000);
+    if (!B.retried) { B.retried = true; speakEvents(at); } else { B.retried = false; voiceFailed('did not start'); }
+  }, hnd?.startMs || START_MS);
 }
-function browserFailed(what) {
-  halt(gem.enabled
-    ? `The browser’s voice ${what}. Pick another voice, or a Gemini voice.`
-    : `The browser’s voice ${what}. This system may have no speech voices; Gemini voices need GEMINI_API_KEY set where the server runs.`);
+function voiceFailed(what) {
+  const others = [...engines.values()].filter((e) => e.id !== R?.eng && !e.available()).map((e) => e.label);
+  halt(`The voice ${what}. ${others.length ? `Pick another voice (${others.join(', ')}).` : 'This system may have no speech voices; Gemini voices need GEMINI_API_KEY set where the server runs.'}`);
 }
 
-// ---------- Gemini's voice ----------
+// --- audio engines (Gemini, local models) ---
 let audio = null, audioAt = -1;
-const fetches = new Map(); // passage index -> { p, ac, e?: { url, timed }, failed? }
-function gemini(idx, priority = 'ahead') {
+const fetches = new Map(); // passage index -> { p, ac, e?: { url, own, timed }, failed? }
+function make(idx, priority = 'ahead') {
   const hit = fetches.get(idx); if (hit) return hit.p;
-  const r = R, p = r.passages[idx], ac = new AbortController(), voice = prefs.geminiVoice;
-  const ask = async (n) => {
-    const res = await fetch('/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: p.text, voice, priority }), signal: ac.signal });
-    if (!res.ok) {
-      const j = await res.json().catch(() => ({}));
-      // Google's minute quota: back off and ask again; the hourly budget is not worth asking again
-      if (res.status === 429 && j.code === 'busy' && n < 2) { await sleep([3000, 8000][n]); if (ac.signal.aborted) throw new Error('cancelled'); return ask(n + 1); }
-      throw Object.assign(new Error(j.error || `HTTP ${res.status}`), { code: j.code, status: res.status });
+  const r = R, p = r.passages[idx], ac = new AbortController(), e = engines.get(r.eng);
+  const f = { ac };
+  f.p = (async () => {
+    const out = await e.speak({ text: p.text, voice: voiceOf(e.id), priority, signal: ac.signal, passage: p });
+    const blob = out.blob || (out.buf ? new Blob([out.buf], { type: out.type || 'audio/wav' }) : null);
+    const res = { url: out.url || URL.createObjectURL(blob), own: !out.url, timed: null };
+    if (out.wordTimes?.length) res.timed = out.wordTimes.map((w) => ({ start: w.start, at: w.at })).sort((a, b) => a.at - b.at);
+    else if (out.buf) {
+      setTimeout(() => { // off the play path: a few ms of arithmetic per passage
+        try { const pcm = parseWav(out.buf); if (pcm) res.timed = timeWords(p.text, timingWords(p), silences(pcm), pcm.samples.length / pcm.rate); } catch (err) { console.warn('read aloud: timing', err); }
+      }, 0);
     }
-    const buf = await res.arrayBuffer();
-    const e = { url: URL.createObjectURL(new Blob([buf], { type: res.headers.get('Content-Type') || 'audio/wav' })), timed: null };
-    setTimeout(() => { // off the play path: a few ms of arithmetic per passage
-      try { const pcm = parseWav(buf); if (pcm) e.timed = timeWords(p.text, timingWords(p), silences(pcm), pcm.samples.length / pcm.rate); } catch (err) { console.warn('read aloud: timing', err); }
-    }, 0);
-    return e;
-  };
-  const f = { p: ask(0), ac };
-  f.p.then((e) => { f.e = e; }, () => { f.failed = true; });
+    return res;
+  })();
+  f.p.then((x) => { f.e = x; }, () => { f.failed = true; });
   fetches.set(idx, f);
   return f.p;
 }
 function dropFetch(idx) {
   const f = fetches.get(idx); if (!f) return;
-  f.ac.abort(); f.p.then((e) => URL.revokeObjectURL(e.url), () => {});
+  f.ac.abort(); f.p.then((x) => x.own && URL.revokeObjectURL(x.url), () => {});
   fetches.delete(idx);
 }
 function dropFetches() { for (const idx of [...fetches.keys()]) dropFetch(idx); }
 const depth = () => (prefs.rate <= 3 ? 3 : 4);
-function prefetch(at) { for (let k = at + 1; k <= at + depth() && k < R.passages.length; k++) gemini(k); }
-/** After a skip: let go of passages behind, and of requests in flight past the window. */
+function prefetch(at) { for (let k = at + 1; k <= at + depth() && k < R.passages.length; k++) make(k); }
+/** After a move: let go of passages behind, and of requests in flight past the window. */
 function keepWindow(from) { for (const [k, f] of [...fetches]) if (k < from || (k > from + depth() && !f.e)) dropFetch(k); }
-
-function speakGemini(from) {
+function speakAudio(from) {
   const mine = ++run;
-  clearTimers(); detachUtterance(); if (hasSynth) speechSynthesis.cancel();
-  const r = R, at = r.index, f = fetches.get(at);
+  clearTimers(); if (B.h) { B.h.stop(); B.h = null; }
+  for (const e of engines.values()) if (e.kind === 'events') e.cancel?.();
+  const r = R, at = r.index, f = fetches.get(at), label = engines.get(r.eng).label;
   if (audio && audioAt === at && audio.getAttribute('src') && f?.e) { // paused on this passage: carry on
     if (from != null) seekTo(f.e, at, from);
     prefetch(at);
@@ -725,22 +1135,22 @@ function speakGemini(from) {
   }
   if (f?.e) { prefetch(at); return playAudio(mine, at, f.e, from); }
   if (f?.failed) dropFetch(at);
-  heldAt = at; heldChar = from || 0;
+  r.at = at; r.c = from || 0;
   r.loading = true; paintBar();
-  gemini(at, 'now').then((e) => {
+  make(at, 'now').then((x) => {
     if (mine !== run || R !== r) return;
     r.loading = false; paintBar();
-    playAudio(mine, at, e, from);
+    playAudio(mine, at, x, from);
   }, (err) => {
     if (mine !== run || R !== r) return;
     r.loading = false;
-    fallBack(err.code === 'busy' ? 'Gemini’s voice is over its quota for now' : `Gemini’s voice failed (${err.message})`);
+    fallBack(err.code === 'busy' ? `${label}’s voice is over its quota for now` : `${label}’s voice failed (${err.message})`);
   });
   prefetch(at);
 }
 function seekTo(e, at, from) {
-  const el = audio, go = () => { el.currentTime = e.timed?.length ? timeAtChar(e.timed, from) : fractionAtChar(R.passages[at].text, from) * (el.duration || 0); };
-  if (el.readyState >= 1) go(); else el.addEventListener('loadedmetadata', go, { once: true });
+  const el = audio, go2 = () => { el.currentTime = e.timed?.length ? timeAtChar(e.timed, from) : fractionAtChar(R.passages[at].text, from) * (el.duration || 0); };
+  if (el.readyState >= 1) go2(); else el.addEventListener('loadedmetadata', go2, { once: true });
 }
 function playAudio(mine, at, e, from) {
   const el = (audio ||= new Audio());
@@ -752,25 +1162,23 @@ function playAudio(mine, at, e, from) {
   el.onended = () => {
     if (mine !== run) return;
     const f = fetches.get(at); fetches.delete(at);
-    if (f?.e) setTimeout(() => URL.revokeObjectURL(f.e.url), 2000);
+    if (f?.e?.own) setTimeout(() => URL.revokeObjectURL(f.e.url), 2000);
     advance();
   };
-  el.onerror = () => { if (mine === run) fallBack(`Gemini’s audio would not play (${el.error?.message || el.error?.code || 'unknown'})`); };
+  el.onerror = () => { if (mine === run) fallBack(`The audio would not play (${el.error?.message || el.error?.code || 'unknown'})`); };
   el.play().catch((err) => {
     if (mine !== run || err.name === 'AbortError') return;
-    if (err.name === 'NotAllowedError') halt('The browser wants a click on the page before it plays; then press v.');
-    else fallBack(`Gemini’s audio would not play (${err.message})`);
+    if (err.name === 'NotAllowedError') halt('The browser wants a click on the page before it plays; then press Space.');
+    else fallBack(`The audio would not play (${err.message})`);
   });
   syncMedia();
 }
-/** Gemini failed: the browser's voice reads the rest of this reading, and the bar says why. */
+/** An audio engine failed: the browser's voice reads the rest, and the player says why. */
 function fallBack(why) {
   if (!R) return;
-  if (!hasSynth) { halt(`${why}.`); return; }
-  const playing = R.playing;
-  recut('browser');
+  if (engines.get('browser').available()) { halt(`${why}.`); return; }
   R.notice = `${why}; the browser’s voice reads the rest.`;
-  if (playing) speak(0);
+  recut('browser');
   paintBar(); syncMedia();
 }
 
@@ -778,20 +1186,19 @@ function fallBack(why) {
 /** The character the voice is at in the current passage, or null. */
 function position() {
   const r = R; const p = r?.passages[r.index]; if (!p) return null;
-  if (r.engine === 'gemini') {
+  if (engines.get(r.eng).kind === 'audio') {
     if (audio && audioAt === r.index && audio.duration > 0) {
       const e = fetches.get(r.index)?.e;
       const t = audio.currentTime + (audio.paused ? 0 : LEAD_S * audio.playbackRate);
-      heldAt = r.index; heldChar = e?.timed?.length ? charAtTime(e.timed, t) : charAtFraction(p.text, t / audio.duration);
+      r.at = r.index; r.c = e?.timed?.length ? charAtTime(e.timed, t) : charAtFraction(p.text, t / audio.duration);
     }
   } else if (r.playing && B.run === run && !B.bounded) {
     // a voice that reports no words (Chrome's online ones): by its pace
-    const sec = (performance.now() - B.at) / 1000;
-    if (sec > 0.6) { heldAt = r.index; heldChar = Math.min(p.text.length - 1, B.from + Math.floor(sec * (pace.get(utterance?.voice?.voiceURI || 'default') || CPS) * B.rate)); }
+    const sec = (performance.now() - B.t0) / 1000;
+    if (sec > 0.6) { r.at = r.index; r.c = Math.min(p.text.length - 1, B.from + Math.floor(sec * (pace.get(B.key) || CPS) * B.rate)); }
   }
-  return heldAt === r.index ? heldChar : null;
+  return r.at === r.index ? r.c : null;
 }
-
 let raf = 0, lastProg = 0;
 function tick() {
   if (raf) return;
@@ -799,9 +1206,10 @@ function tick() {
     raf = 0;
     const r = R; if (!r) return;
     const c = position(), p = r.passages[r.index];
-    if (c != null && p) {
-      const t = tokAt(p, c);
-      if (t !== r.lastTok || p.toks[t].j !== r.lastJ) { r.lastTok = t; r.lastJ = p.toks[t].j; paint(); }
+    if (c != null && p?.toks.length) {
+      const t = tokAt(p, c), j = p.toks[t].j;
+      r.tok = t;
+      if (j !== r.cur) { r.cur = j; paint(); }
     }
     const now = performance.now();
     if (now - lastProg > 250) { lastProg = now; progress(); }
@@ -809,84 +1217,131 @@ function tick() {
   };
   raf = requestAnimationFrame(step);
 }
-function repaint() { if (R) { R.lastJ = -1; tick(); } }
 
-const elOf = (w) => w.el || w.src?.el || null;
-const drawn = (w) => (w.range ? w.range.startContainer.isConnected : !!elOf(w)?.isConnected);
+/** The text-layer spans of a raster word (looked up live: layers come and go with turns). */
+function elsOf(w) {
+  if (!w?.wi) return [];
+  const out = [];
+  for (const tl of document.querySelectorAll(`#spread .pg[data-k="${w.page}"] > .tl`)) {
+    for (const x of w.wi) for (const el of tl._wi?.get(x) || tl.querySelectorAll(`[data-wi="${x}"]`)) out.push(el);
+  }
+  return out;
+}
+const drawn = (r, w) => (w.range ? flowOn(r) && live.flow.contains(w.range.startContainer) : elsOf(w).length > 0);
 /** A word's range without its quotes and punctuation. */
 function trimmed(w) {
-  if (!w.range) return { el: elOf(w) };
   const lead = w.text.match(/^[^\p{L}\p{N}]*/u)[0].length, tail = w.text.match(/[^\p{L}\p{N}]*$/u)[0].length;
-  if (lead + tail >= w.text.length || w.range.startContainer !== w.range.endContainer) return w;
+  if (lead + tail >= w.text.length || w.range.startContainer !== w.range.endContainer) return { range: w.range };
   const r = document.createRange();
   r.setStart(w.range.startContainer, w.range.startOffset + lead); r.setEnd(w.range.endContainer, w.range.endOffset - tail);
   return { range: r };
 }
-function paint() {
-  const r = R, p = r.passages[r.index], tok = p?.toks[r.lastTok]; if (!tok) return;
-  // the word, or (not drawn: a page with no text layer, a mark) the last drawn one before it
-  let k = tok.j; while (k > tok.j - 8 && k > 0 && !drawn(r.words[k])) k--;
-  const w = drawn(r.words[k]) ? r.words[k] : null;
-  const mark = w ? trimmed(w) : null;
-  highlight('tts-word', mark ? [mark] : []);
-  dodge(mark);
-  const [a, b] = p.sents[tok.s]; const ws = r.words.slice(a, b + 1).filter(drawn);
-  let marks = ws.filter((x) => !x.range).map((x) => ({ el: elOf(x) }));
-  const rs = ws.filter((x) => x.range);
-  if (rs.length) { // one range over the sentence, spaces included: an even tint
-    try { const s = document.createRange(); s.setStart(rs[0].range.startContainer, rs[0].range.startOffset); s.setEnd(rs.at(-1).range.endContainer, rs.at(-1).range.endOffset); marks = marks.concat({ range: s }); } catch { marks = marks.concat(rs); }
-  }
-  highlight('tts-sentence', marks);
-  if (globalThis.CSS?.highlights) { const hw = CSS.highlights.get('tts-word'), hs = CSS.highlights.get('tts-sentence'); if (hw) hw.priority = 2; if (hs) hs.priority = 1; }
-  follow(r.words[tok.j]);
+const marksOf = (w) => (w.range ? [trimmed(w)] : elsOf(w).map((el) => ({ el })));
+function prioritise() {
+  if (!globalThis.CSS?.highlights) return;
+  [['tts-hover', 0], ['tts-sentence', 1], ['tts-word', 2]].forEach(([n, p]) => { const x = CSS.highlights.get(n); if (x) x.priority = p; });
 }
+let painted = ''; // the sentence lit last: repainted only when it, or what is drawn, changes
+function paint() {
+  const r = R; if (!r) return;
+  const j = r.cur, w = r.words[j]; if (!w) return;
+  // the word, or (not drawn: a page with no text layer, a mark) the last drawn one before it
+  let k = j; while (k > j - 8 && k > 0 && !drawn(r, r.words[k])) k--;
+  const ww = drawn(r, r.words[k]) ? r.words[k] : null;
+  highlight('tts-word', ww ? marksOf(ww) : []);
+  const si = sentIdx(r, j), key = `${r.id}|${r.gen}|${si}|${drawGen}`;
+  if (key !== painted) {
+    painted = key;
+    const [a, b] = r.sents[si] || [j, j];
+    let marks = [];
+    if (r.kind === 'flow') {
+      const fa = r.words[a], fb = r.words[b];
+      if (fa && fb && drawn(r, fa) && drawn(r, fb)) {
+        try { const s = document.createRange(); s.setStart(fa.range.startContainer, fa.range.startOffset); s.setEnd(fb.range.endContainer, fb.range.endOffset); marks = [{ range: s }]; } catch { /* torn DOM */ }
+      }
+    } else for (let x = a; x <= b && x - a < 160; x++) for (const el of elsOf(r.words[x])) marks.push({ el });
+    highlight('tts-sentence', marks);
+  }
+  prioritise();
+  follow(r, w);
+  paintNow(si);
+}
+on('spread:rendered', () => { drawGen++; });
+on('textlayer:ready', ({ it }) => { drawGen++; if (R && it?.id === R.it.id) paint(); }); // a page's spans just arrived
 
 /** Whether a word is on screen now. */
-function onScreen(w, r = R) {
-  if (w.range && live?.id === r.it.id && live.flow.contains(w.range.startContainer)) {
-    const a = w.range.getBoundingClientRect(), b = live.port.getBoundingClientRect();
-    return a.width > 0 && a.left >= b.left - 2 && a.right <= b.right + 2;
+function onScreen(r, w) {
+  if (r.kind === 'flow') {
+    if (!flowOn(r) || !live.flow.contains(w.range.startContainer)) return false;
+    const c = colOf(w), s = state.start.get(r.i) ?? 0;
+    return c != null && c >= s && c < s + live.g.cols;
   }
-  if (w.range) return false;
   const s = state.start.get(r.i) ?? 0;
   return w.page >= s && w.page < s + Math.max(1, state.shown || 1);
 }
-/** Keep the spoken word on screen, unless the reader turned the page lately. */
-function follow(w) {
-  const r = R;
-  if (!w || state.view !== 'feed' || current() !== r.i) return;
-  const now = Date.now();
-  if (now < holdUntil || now < settleUntil) return;
-  if (w.range && !(live?.id === r.it.id && live.flow.contains(w.range.startContainer))) return; // relayout pending
-  if (onScreen(w)) return;
-  settleUntil = now + 400; // the columns slide for 140 ms
-  reveal(w);
+/** Turn so that the start is `ns` (a column, or a page), without a 'nav' event (that would hold the follow). */
+function turnTo(r, ns) {
+  const i = r.i, s = state.start.get(i) ?? 0;
+  if (ns === s) return;
+  const hist = state.hist.get(i) || [];
+  if (ns > s) hist.push(s); else while (hist.length && hist.at(-1) >= ns) hist.pop();
+  state.hist.set(i, hist);
+  settling = performance.now() + 700;
+  state.start.set(i, ns); showFeed();
+}
+/** Keep the spoken word on screen: the next spread when it runs off the end
+ *  (the previous one when it goes back), else straight to its column or page;
+ *  not while the reader holds the pages (they turned one lately). */
+function follow(r, w) {
+  if (!w || !mode || state.view !== 'feed' || current() !== r.i) return;
+  if (Date.now() < holdUntil || performance.now() < settling || anchor) return;
+  if (document.querySelector('#track:hover, #scrub:hover')) return; // the reader is looking through the item
+  if (r.kind === 'flow') {
+    if (!flowOn(r) || !live.flow.contains(w.range.startContainer)) return; // relayout pending
+    const c = colOf(w); if (c == null) return;
+    const s = state.start.get(r.i) ?? 0, n = live.g.cols;
+    if (c >= s && c < s + n) return;
+    const ns = c >= s + n && c < s + 2 * n ? s + n : c < s && c >= s - n ? Math.max(0, s - n) : c;
+    turnTo(r, Math.min(ns, Math.max(0, live.n - 1)));
+    return;
+  }
+  const s = state.start.get(r.i) ?? 0, n = Math.max(1, state.shown || 1);
+  if (w.page >= s && w.page < s + n) return;
+  turnTo(r, w.page >= s + n && w.page < s + 2 * n ? s + n : w.page < s && w.page >= s - n ? Math.max(0, s - n) : w.page);
 }
 on('nav', ({ type, it }) => { if (R && it?.id === R.it.id && type !== 'item') holdUntil = Date.now() + HOLD_MS; });
 on('flow:jump', () => { if (R) holdUntil = Date.now() + HOLD_MS; });
-on('item:shown', ({ it }) => { if (R && it.id !== R.it.id) stopReading(); });
 on('spread:rendered', ({ it, flow }) => {
-  const r = R; if (!r || it.id !== r.it.id) return;
-  if (flow) { const w0 = r.words.find((w) => w.range); if (w0 && !flow.flow.contains(w0.range.startContainer)) rebindFlow(r); else repaint(); }
-  else bindShown(r);
+  settling = 0;
+  if (anchor && anchor.id === it.id && flow) applyAnchor(flow);
+  const r = R;
+  if (r && it.id === r.it.id) {
+    if (flow && r.kind === 'flow' && r.words[0] && !flow.flow.contains(r.words[0].range.startContainer) && !rebind(r, flow)) return;
+    paint();
+  }
+  if (mode && !R && contFor === it.id) { contFor = null; setTimeout(() => { if (mode && !R && items[current()]?.id === it.id) begin({ cont: true }); }, 0); }
 });
-on('textlayer:ready', ({ it }) => { if (R && it?.id === R.it.id) repaint(); }); // a page's spans just arrived
+on('item:shown', ({ it }) => {
+  if (anchor && anchor.id !== it.id) anchor = null;
+  if (!mode || (R && R.it.id === it.id)) return;
+  if (contFor === it.id) return;
+  if (prefs.cont) { endSession(true); contFor = it.id; armCont(); paintBar(); } else exitMode(true);
+});
+on('view:changed', ({ view }) => { if (mode && view !== 'feed') exitMode(true); paintPill(); });
 
-// ---------- keys and the pointer ----------
+// ---------- keys: in the mode, the voice is what moves ----------
 function toggle() {
   const it = items[current()];
-  if (!R || R.it.id !== it?.id) return begin();
+  if (!mode || !R || R.it.id !== it?.id) return begin();
   if (R.loading && !R.passages.length) return;
-  if (R.playing) return pause();
-  const w = R.words[R.lastJ];
-  if (!w || onScreen(w)) return resume();
-  begin(); // the reader moved on while paused: from the top of the screen
+  if (R.playing) pause(); else resume();
 }
 function setRate(v) {
   prefs.rate = v; savePrefs();
-  if (R) {
-    if (R.engine === 'gemini') { if (audio) audio.playbackRate = v; }
-    else if (R.playing) speak(resumePoint()); // a browser utterance's rate is fixed: restart at the word
+  const r = R;
+  if (r) {
+    if (engines.get(r.eng).kind === 'audio') { if (audio) audio.playbackRate = v; }
+    else if (r.playing) { clearTimeout(rateT); rateT = setTimeout(() => { if (R === r && r.playing) speak(resumePoint()); }, 160); } // an utterance's rate is fixed: restart at the word
   }
   paintBar();
 }
@@ -894,13 +1349,86 @@ function stepRate(d) {
   let k = SPEEDS.findIndex((s) => s >= prefs.rate - 1e-6); if (k < 0) k = SPEEDS.length - 1;
   if (d > 0 && SPEEDS[k] > prefs.rate) k--; // between steps: the next one up is k itself
   setRate(SPEEDS[Math.max(0, Math.min(SPEEDS.length - 1, k + d))]);
-  toast(`Reading speed ${prefs.rate}×`, { icon: 'gauge', sub: '< slower · > faster' });
+  if (!mode) toast(`Reading speed ${prefs.rate}×`, { icon: 'gauge' });
 }
-registerKey('v', toggle, { help: ['v V', 'read aloud from the top of the screen (Alt+click a word: from there) / stop'], order: 45 });
-registerKey('V', () => stopReading(false)); // a stop forgets the place: v then reads from the top of the screen
-registerKey('<', () => stepRate(-1), { help: ['< >', 'slower / faster reading'], order: 46 });
+registerKey('v', toggle, { help: ['v', 'read aloud from the top of the screen (Alt+click a word: from there); in read-aloud: pause / play'], order: 45 });
+registerKey('V', () => exitMode(false));
+registerKey('<', () => stepRate(-1), { help: ['< >', 'slower / faster reading'], order: 46.5 });
 registerKey('>', () => stepRate(1));
+keyHelp.push(
+  { label: '← →', text: 'read-aloud: back / forward a sentence (h l and the wheel too; hold to skip on)', order: 45.1 },
+  { label: '⇧← ⇧→', text: 'read-aloud: back / forward a paragraph', order: 45.2 },
+  { label: '↑ ↓', text: 'read-aloud: faster / slower', order: 45.3 },
+  { label: 'Space', text: 'read-aloud: pause / play', order: 45.4 },
+  { label: 'click', text: 'read-aloud: read from the word clicked (a link: click it again, or ⌘-click, to follow it)', order: 45.5 },
+  { label: 'Esc V', text: 'leave read-aloud (j k: another item ends it, unless “Next item” is on)', order: 45.6 },
+);
 
+// A held arrow skims: one step at once, then (after 0.4 s) a step every 160 ms,
+// faster the longer it is held, silently; on release the voice reads from there.
+let hold = null; // { code, fn, t0, n, timer }
+function press(code, fn) {
+  endHold(false);
+  fn({ speak: 'now' });
+  const h0 = (hold = { code, fn, t0: performance.now(), n: 0, timer: 0 });
+  const again = () => {
+    if (hold !== h0) return;
+    if (!navBusy) { h0.n++; h0.fn({ speak: 'none', repeat: true }); }
+    const held = performance.now() - h0.t0;
+    h0.timer = setTimeout(again, held > 1800 ? 60 : held > 1000 ? 100 : 160);
+  };
+  h0.timer = setTimeout(again, 400);
+}
+function endHold(say = true) {
+  const h0 = hold; if (!h0) return;
+  hold = null; clearTimeout(h0.timer);
+  if (say && h0.n && R?.playing) speak(0);
+}
+const typing = (t) => /^(INPUT|TEXTAREA|SELECT)$/.test(t?.tagName) || t?.isContentEditable;
+function modeKey(e) {
+  const c = e.code, k = e.key;
+  if (k === 'ArrowLeft' || (k === 'h' && !e.shiftKey)) return () => press(c, (o) => (e.shiftKey ? stepPara(-1, o) : stepSentence(-1, o)));
+  if (k === 'ArrowRight' || (k === 'l' && !e.shiftKey)) return () => press(c, (o) => (e.shiftKey ? stepPara(1, o) : stepSentence(1, o)));
+  if (k === 'ArrowUp' && !e.shiftKey) return () => stepRate(1);
+  if (k === 'ArrowDown' && !e.shiftKey) return () => stepRate(-1);
+  if (k === ' ' && !e.shiftKey) return () => { if (R) toggle(); };
+  if (k === 'Escape') return () => exitMode(true);
+  return null;
+}
+// Capture phase, ahead of the key registry (chrome.js) and hold-to-riffle
+// (riffle.js): in the mode these keys move the voice, not the pages.
+addEventListener('keydown', (e) => {
+  if (!mode || state.view !== 'feed' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, inBar = !!t?.closest?.('#ra-bar');
+  if (typing(t) && !(inBar && t.tagName === 'SELECT')) return;
+  if ($('#keys') && !$('#keys').hidden) return;
+  const act = modeKey(e); if (!act) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (inBar) t.blur?.();
+  if (e.repeat) return; // a held key repeats on our own clock (press)
+  act();
+}, true);
+addEventListener('keyup', (e) => {
+  if (hold && e.code === hold.code) endHold();
+  if (mode && e.key === ' ' && e.target?.closest?.('#ra-bar')) e.preventDefault(); // no click on a focused button
+}, true);
+addEventListener('blur', () => endHold());
+
+// The wheel and the trackpad (nav.js asks state.stepHook first): a sentence a notch or stroke.
+state.stepHook = (d) => {
+  if (!mode) return false;
+  d.glyph = '';
+  if (R) stepSentence(d.dir > 0 ? 1 : -1, { speak: 'soon' });
+  return true;
+};
+
+// ---------- the pointer: click a word to read from it ----------
+function caretAt(x, y) {
+  const cp = document.caretPositionFromPoint?.(x, y);
+  if (cp) return { node: cp.offsetNode, off: cp.offset };
+  const cr = document.caretRangeFromPoint?.(x, y);
+  return cr ? { node: cr.startContainer, off: cr.startOffset } : null;
+}
 /** The flow word at a caret (or the next one after it): binary search by comparePoint. */
 function wordAtCaret(words, node, off) {
   let lo = 0, hi = words.length - 1, ans = -1;
@@ -912,38 +1440,84 @@ function wordAtCaret(words, node, off) {
   }
   return ans;
 }
-async function readFromPoint(x, y, target) {
-  const it = items[current()];
-  if (isFlow(it)) {
-    const cp = document.caretPositionFromPoint?.(x, y), cr = cp ? null : document.caretRangeFromPoint?.(x, y);
-    const node = cp?.offsetNode || cr?.startContainer, off = cp ? cp.offset : cr?.startOffset;
-    if (!node) return;
-    const got = R && R.it.id === it.id && R.kind === 'flow' ? { words: R.words } : await currentWords();
-    const j = got ? wordAtCaret(got.words, node, off) : -1;
-    if (j >= 0) begin({ j }); else toast('No text there to read', { icon: 'volume-x' });
-    return;
-  }
-  const pg = target.closest('.pg[data-k]'); if (!pg) return;
-  const k = Number(pg.dataset.k);
-  const display = (await currentWords().catch(() => null))?.words.filter((w) => w.page === k) || [];
-  // The span whose box holds the point, nearest its centre: text-layer spans overlap their neighbours.
-  let d = -1, best = Infinity;
-  display.forEach((w, j) => {
-    const r = w.el?.getBoundingClientRect(); if (!r?.width) return;
-    const inside = x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
-    const dist = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2) + (inside ? 0 : 1e3);
-    if (dist < best && dist < 1e3 + 30) { best = dist; d = j; }
-  });
-  begin({ page: k, d: d >= 0 ? d : null, display });
+const distTo = (rects, x, y) => { let d = Infinity; for (const b of rects) d = Math.min(d, Math.hypot(Math.max(b.left - x, 0, x - b.right), Math.max(b.top - y, 0, y - b.bottom))); return d; };
+/** The flow word under (or within a few px of) a point, or -1. */
+function flowWordAt(words, x, y) {
+  const c = caretAt(x, y);
+  if (!c || !live?.flow.contains(c.node)) return -1;
+  const j = wordAtCaret(words, c.node, c.off); if (j < 0) return -1;
+  let best = -1, bd = Infinity;
+  for (const q of [j - 1, j]) { if (!words[q]) continue; const d = distTo(words[q].range.getClientRects(), x, y); if (d < bd) { bd = d; best = q; } }
+  return bd <= 14 ? best : -1;
 }
-// Alt+click a word: read from there. Capture phase, before links (Alt+click downloads one) and zoom.
+/** The text-layer word under (or nearest, within 20 px of) a point on a raster page. */
+function rasterWordAt(x, y, target) {
+  const pg = target.closest?.('#spread .pg[data-k]'); if (!pg) return null;
+  const k = Number(pg.dataset.k), layer = pg.querySelector(':scope > .tl');
+  let sp = target.closest?.('.tl .w');
+  if (!sp && layer) {
+    let best = 21;
+    for (const w of layer.querySelectorAll('.w')) { const d = distTo([w.getBoundingClientRect()], x, y); if (d < best) { best = d; sp = w; } }
+  }
+  if (sp) return { page: k, wi: Number(sp.dataset.wi) };
+  return layer ? null : { page: k, wi: null }; // a page with no words drawn: from its top
+}
+function hitAt(x, y, target) {
+  const it = items[current()];
+  if (!isFlow(it)) return rasterWordAt(x, y, target);
+  if (live?.id !== it.id) return null;
+  const words = R && R.kind === 'flow' && R.it.id === it.id ? R.words : collectFlow(live);
+  const j = flowWordAt(words, x, y);
+  return j >= 0 ? { j } : null;
+}
+function readFrom(hit) {
+  const r = R;
+  if (!mode || !r || r.it.id !== items[current()]?.id) { begin(hit); return; }
+  holdUntil = 0;
+  if (r.kind === 'flow') moveTo(hit.j, { play: true });
+  else rasterJump(r, hit.page, hit.wi);
+}
+// Capture phase, before links (an Alt+click downloads one), footnote jumps and zoom.
+let down = null, armed = null;
+addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; }, true);
 document.addEventListener('mousedown', (e) => { if (e.altKey && e.button === 0 && e.target.closest?.('#spread')) e.preventDefault(); }, true);
 document.addEventListener('click', (e) => {
-  if (!e.altKey || e.button !== 0 || state.view !== 'feed' || !e.target.closest?.('#spread')) return;
+  if (e.button !== 0 || state.view !== 'feed' || !e.target.closest?.('#spread')) return;
+  const alt = e.altKey && !e.metaKey && !e.ctrlKey;
+  if (!alt && (!mode || !R || e.metaKey || e.ctrlKey || e.shiftKey)) return; // a modifier: the click does what it always does
+  if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return; // the end of a drag (a selection)
+  if (!alt && String(getSelection() || '').trim()) return;
+  const a = e.target.closest('a[href]');
+  if (!alt && a) {
+    // A link reads from its words; clicked again (or double-clicked), it goes where it points.
+    if (e.detail > 1 || (armed?.a === a && performance.now() - armed.t < 6000)) { armed = null; return; }
+    armed = { a, t: performance.now() };
+  } else if (!alt && e.detail > 1) { e.preventDefault(); e.stopPropagation(); return; } // a double click selects a word; the first click moved the voice
+  const hit = hitAt(e.clientX, e.clientY, e.target);
+  if (!hit) {
+    if (alt) { e.preventDefault(); e.stopPropagation(); toast('No text there to read', { icon: 'text-cursor', kind: 'edge' }); }
+    else armed = null;
+    return;
+  }
   e.preventDefault(); e.stopPropagation();
-  readFromPoint(e.clientX, e.clientY, e.target);
+  if (a) toast('Reading from the link', { icon: 'volume-2', sub: 'Click it again to follow it' });
+  readFrom(hit);
 }, true);
-addEventListener('pagehide', () => stopReading());
+// Hovering a word in the mode marks it lightly: that is where a click reads from.
+let hovRaf = 0, hovT = 0, hovXY = null;
+addEventListener('mousemove', (e) => {
+  if (!mode || R?.kind !== 'flow' || !e.target.closest?.('#spread .flow')) { if (hovXY) { hovXY = null; highlight('tts-hover', []); } return; }
+  hovXY = [e.clientX, e.clientY];
+  if (hovRaf) return;
+  hovRaf = requestAnimationFrame(() => {
+    hovRaf = 0;
+    if (!hovXY || R?.kind !== 'flow') return;
+    const j = flowWordAt(R.words, hovXY[0], hovXY[1]);
+    highlight('tts-hover', j >= 0 ? [trimmed(R.words[j])] : []); prioritise();
+    clearTimeout(hovT); hovT = setTimeout(() => highlight('tts-hover', []), 1500);
+  });
+}, { passive: true });
+addEventListener('pagehide', () => endSession());
 
 // ---------- the media keys and the lock screen ----------
 // Chrome routes media keys only to a page playing a media element, and the
@@ -958,141 +1532,190 @@ function silentClip() {
   return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
 }
 function syncMedia() {
-  const want = R && R.engine === 'browser' && R.playing;
+  const want = R && engines.get(R.eng)?.kind === 'events' && R.playing;
   if (want) { loop ||= Object.assign(new Audio(silentClip()), { loop: true }); if (loop.paused) loop.play().catch(() => {}); } else if (loop && !loop.paused) loop.pause();
   const ms = navigator.mediaSession; if (!ms) return;
   const set = (a, fn) => { try { ms.setActionHandler(a, fn); } catch { /* unknown here */ } };
-  if (!R) { ms.metadata = null; ms.playbackState = 'none'; for (const a of ['play', 'pause', 'stop', 'nexttrack', 'previoustrack']) set(a, null); return; }
+  if (!R) { ms.metadata = null; ms.playbackState = 'none'; for (const a of ['play', 'pause', 'stop', 'nexttrack', 'previoustrack', 'seekforward', 'seekbackward']) set(a, null); return; }
   if (typeof MediaMetadata !== 'undefined' && ms.metadata?.title !== R.it.t) ms.metadata = new MediaMetadata({ title: R.it.t, artist: R.it.a || 'Stacks', album: 'Read aloud' });
   ms.playbackState = R.playing ? 'playing' : 'paused';
-  set('play', resume); set('pause', pause); set('stop', () => stopReading());
-  set('nexttrack', () => skip(1)); set('previoustrack', () => skip(-1));
+  set('play', resume); set('pause', pause); set('stop', () => exitMode());
+  set('nexttrack', () => stepSentence(1)); set('previoustrack', () => stepSentence(-1));
+  set('seekforward', () => stepPara(1)); set('seekbackward', () => stepPara(-1));
 }
 
-// ---------- the player bar (bottom right) ----------
-let bar = null;
-const DODGE = 46; // px the bar steps up while the spoken word is under it (it then covers lines already read)
-function dodge(mark) {
-  if (!bar || bar.hidden || bar.matches(':hover, :focus-within')) return;
-  const r = (mark?.range || mark?.el)?.getBoundingClientRect();
-  const b = bar.getBoundingClientRect(), up = bar.classList.contains('dodge') ? DODGE : 0;
-  const under = !!r?.width && r.bottom > b.top + up - 8 && r.top < b.bottom + up + 8 && r.right > b.left - 8;
-  bar.classList.toggle('dodge', under);
-}
-let noteTimer = 0;
+// ---------- the player (under the pages, while the mode is on) and the Read button ----------
+const svg = (body, size = 20, fill = false) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="${fill ? 'currentColor' : 'none'}" stroke="${fill ? 'none' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
 const ICON = {
-  play: '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg>',
-  pause: '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z" fill="currentColor"/></svg>',
+  play: svg('<path d="M7 4.5v15l12.5-7.5z"/>', 22, true),
+  pause: svg('<path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/>', 22, true),
+  back: svg('<path d="M18 19 9 12l9-7v14z"/><path d="M5 5v14"/>'),
+  fwd: svg('<path d="m6 5 9 7-9 7V5z"/><path d="M19 5v14"/>'),
+  speaker: svg('<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>', 15),
+  cont: svg('<path d="m15 10 5 5-5 5"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/>', 16),
+  x: svg('<path d="M18 6 6 18M6 6l12 12"/>', 18),
 };
-const blurred = (fn) => (e) => { e.currentTarget.blur(); fn(e); }; // keep keys for the page
+const blurred = (fn) => (e) => { e.currentTarget.blur(); fn(e); }; // keep the keys for the page
 function buildBar() {
-  const play = h('button', { className: 'ra-play', onclick: blurred(() => toggle()) });
-  const fill = h('i');
-  const prog = h('div', { className: 'ra-prog', title: 'Click to read from there' }, fill);
-  prog.onclick = (e) => seekFraction(e.offsetX / prog.clientWidth);
-  const left = h('span', { className: 'ra-left' });
-  const speed = h('select', { className: 'ra-speed', title: 'Speed (< >)' }, ...SPEEDS.map((s) => h('option', { value: String(s), textContent: `${s}×` })));
+  if (bar) { placeBar(); return; }
+  const btn = (cls, icon, title, fn) => { const b = h('button', { type: 'button', className: cls, title, ariaLabel: title, onclick: blurred(fn) }); b.innerHTML = icon; return b; };
+  const back = btn('ra-step', ICON.back, 'Back a sentence (←; Shift+←: a paragraph)', () => stepSentence(-1));
+  const play = btn('ra-play', ICON.play, 'Play (Space)', () => toggle());
+  const fwd = btn('ra-step', ICON.fwd, 'Forward a sentence (→; Shift+→: a paragraph)', () => stepSentence(1));
+  const sent = h('div', { className: 'ra-sent', title: 'The sentence being read' });
+  const fill = h('i', { className: 'ra-fill' }), knob = h('b', { className: 'ra-knob' });
+  const prog = h('div', { className: 'ra-prog', title: 'Where the voice is in this item · click to read from there' }, h('div', { className: 'ra-rail' }, fill, knob));
+  prog.onclick = (e) => { const b = prog.getBoundingClientRect(); seekFraction((e.clientX - b.left) / b.width); };
+  const where = h('div', { className: 'ra-where' });
+  const slower = btn('ra-sp', '−', 'Slower (↓ or <)', () => stepRate(-1));
+  const faster = btn('ra-sp', '+', 'Faster (↑ or >)', () => stepRate(1));
+  const speed = h('select', { className: 'ra-speed', title: 'Reading speed (↑ ↓)' }, ...SPEEDS.map((s) => h('option', { value: String(s), textContent: `${s}×` })));
   speed.onchange = () => { setRate(Number(speed.value)); speed.blur(); };
   const voice = h('select', { className: 'ra-voice', title: 'Voice' });
   voice.onchange = () => { setVoice(voice.value); voice.blur(); };
-  const x = h('button', { className: 'ra-x', title: 'Stop (V)', ariaLabel: 'Stop reading', textContent: '×', onclick: blurred(() => stopReading(false)) });
+  const cont = btn('ra-cont', ICON.cont + '<span>Next item</span>', '', () => {
+    prefs.cont = !prefs.cont; savePrefs(); paintBar();
+    toast(prefs.cont ? 'Then the next item' : 'Stop at the end', { icon: prefs.cont ? 'skip-forward' : 'arrow-down-to-line', kind: 'mode', sub: prefs.cont ? 'At the end (or on j/k) reading goes on with the next item' : 'Reading stops at the end of this item' });
+  });
+  const x = btn('ra-x', ICON.x, 'Leave read-aloud (Esc or V)', () => exitMode(true));
   const note = h('div', { className: 'ra-note', hidden: true, title: 'Click to dismiss', onclick: () => { if (R) R.notice = ''; paintBar(); } });
-  bar = h('div', { id: 'ra-bar', className: 'ra', role: 'region', ariaLabel: 'Read aloud' }, note, play, prog, left, speed, voice, x);
-  Object.assign(bar, { play, fill, left, speed, voice, note });
-  document.body.append(bar);
+  const card = h('div', { className: 'ra-card' }, note,
+    h('div', { className: 'ra-ctl' }, back, play, fwd),
+    h('div', { className: 'ra-mid' }, sent, prog),
+    where,
+    h('div', { className: 'ra-spd' }, slower, speed, faster),
+    voice, cont, x);
+  bar = h('div', { id: 'ra-bar', role: 'region', ariaLabel: 'Read aloud', hidden: true }, card);
+  Object.assign(bar, { play, sent, fill, knob, where, speed, voice, cont, note });
+  placeBar();
   fillVoices();
   if (hasSynth) speechSynthesis.addEventListener?.('voiceschanged', fillVoices);
 }
-const shortName = (v) => v.name.replace(/^(Microsoft|Google|Apple)\s+/, '').replace(/\s+Online.*$/, '').replace(/\s*\(.*\)$/, '').replace(/\s+-\s+.*$/, '');
-// macOS voice quality: Premium > Enhanced > the rest. Firefox may drop the
-// "(Premium)" suffix from names, but the voice URI keeps it
-// (com.apple.voice.premium.en-US.Ava). Old MacinTalk and novelty voices go last.
-const quality = (v) => { const t = (v.voiceURI + ' ' + v.name).toLowerCase(); return /premium/.test(t) ? 2 : /enhanced/.test(t) ? 1 : 0; };
-const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley)\b/i;
-const voiceLabel = (v) => shortName(v) + (quality(v) === 2 ? ' · Premium' : quality(v) === 1 ? ' · Enhanced' : '') + (v.localService ? '' : ' ☁');
+/** In the stage's column under the pages, so the pages make room for it. */
+function placeBar() {
+  const st = $('#stage'); if (!st) { if (!bar.isConnected) document.body.append(bar); return; }
+  if (bar.parentElement === st) return;
+  const after = $('#spread');
+  st.insertBefore(bar, after?.parentElement === st ? after.nextSibling : null);
+}
 function fillVoices() {
   if (!bar) return;
-  const all = hasSynth ? speechSynthesis.getVoices() : [];
-  const base = (navigator.language || 'en').slice(0, 2).toLowerCase();
-  const mine = all.filter((v) => v.lang.toLowerCase().startsWith(base) || v.voiceURI === prefs.browserVoice)
-    .sort((a, b) => quality(b) - quality(a) || (NOVELTY.test(a.name) - NOVELTY.test(b.name)) || a.name.localeCompare(b.name));
-  const good = mine.filter((v) => !NOVELTY.test(shortName(v)) || quality(v) > 0), older = mine.filter((v) => !good.includes(v));
-  // With no choice made yet, use the best voice installed.
-  if (!prefs.browserVoice && good[0] && quality(good[0]) > 0) prefs.browserVoice = good[0].voiceURI;
-  const names = gem.voices?.length ? gem.voices : ['Kore', 'Puck', 'Charon', 'Aoede', 'Gacrux', 'Achird', 'Autonoe', 'Erinome'];
-  bar.voice.replaceChildren(...[
-    h('optgroup', { label: all.length ? 'This browser' : 'This browser (no voices found)' },
-      h('option', { value: 'b:', textContent: 'Browser voice' }),
-      ...good.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: voiceLabel(v) }))),
-    older.length ? h('optgroup', { label: 'Older voices' }, ...older.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: voiceLabel(v) }))) : null,
-    h('optgroup', { label: gem.enabled ? 'Gemini' : 'Gemini (needs GEMINI_API_KEY)' },
-      ...names.map((n) => h('option', { value: 'g:' + n, textContent: 'Gemini ' + n, disabled: !gem.enabled })))].filter(Boolean));
-  const eng = R ? R.engine : (prefs.engine === 'gemini' && gem.enabled ? 'gemini' : 'browser');
-  bar.voice.value = eng === 'gemini' ? 'g:' + prefs.geminiVoice : 'b:' + (mine.some((v) => v.voiceURI === prefs.browserVoice) ? prefs.browserVoice : '');
-  bar.voice.title = gem.enabled ? 'Voice' : 'Voice · Gemini voices need GEMINI_API_KEY (or GOOGLE_API_KEY) set where the server runs';
+  const groups = [];
+  for (const e of engines.values()) {
+    const why = e.available(); let vs = [];
+    try { vs = e.voices() || []; } catch { /* none */ }
+    const opt = (v) => h('option', { value: `${e.id}:${v.id}`, textContent: v.label, disabled: !!why });
+    const head = e.defaultLabel ? [h('option', { value: `${e.id}:`, textContent: e.defaultLabel, disabled: !!why })] : [];
+    groups.push(h('optgroup', { label: why ? `${e.label} (not set up)` : e.label }, ...head, ...vs.filter((v) => !v.group).map(opt)));
+    for (const g of new Set(vs.filter((v) => v.group).map((v) => v.group))) groups.push(h('optgroup', { label: g }, ...vs.filter((v) => v.group === g).map(opt)));
+  }
+  bar.voice.replaceChildren(...groups);
+  syncVoice();
 }
+function syncVoice() {
+  if (!bar) return;
+  const pref = engines.get(prefs.engine);
+  const id = R?.eng || (pref && !pref.available() ? prefs.engine : 'browser');
+  const want = `${id}:${voiceOf(id)}`;
+  bar.voice.value = want;
+  if (bar.voice.value !== want) bar.voice.value = `${id}:`;
+  const e = engines.get(id);
+  bar.voice.title = `Voice: ${e?.label || id}` + [...engines.values()].filter((x) => x.available()).map((x) => ` · ${x.label}: ${x.available()}`).join('');
+}
+/** Pick a voice: 'engine:voice' ('b:' and 'g:' are the browser's and Gemini's, as the Settings sheet says them). */
 function setVoice(val) {
-  const kind = val[0], name = val.slice(2);
-  if (kind === 'g') {
-    if (!gem.enabled) { if (R) { R.notice = 'Gemini voices need GEMINI_API_KEY (or GOOGLE_API_KEY) set where the server runs.'; paintBar(); } return; }
-    Object.assign(prefs, { engine: 'gemini', geminiVoice: name });
-  } else Object.assign(prefs, { engine: 'browser', browserVoice: name });
+  const at = val.indexOf(':');
+  let id = at < 0 ? val : val.slice(0, at); const name = at < 0 ? '' : val.slice(at + 1);
+  id = { b: 'browser', g: 'gemini' }[id] || id;
+  const e = engines.get(id); if (!e) return;
+  if (e.available()) { if (R) { R.notice = e.available() + '.'; paintBar(); } syncVoice(); return; }
+  prefs.engine = id; setVoicePref(id, name);
   savePrefs();
-  if (!R) return;
-  const playing = R.playing;
-  R.notice = '';
-  recut(prefs.engine);
-  if (playing) speak(0);
+  if (R) { R.notice = ''; recut(id); }
   paintBar(); syncMedia();
-}
-/** Read from a share of the item (a click on the progress line). */
-function seekFraction(f) {
-  const r = R; if (!r) return;
-  f = Math.max(0, Math.min(1, f));
-  holdUntil = 0;
-  if (r.kind === 'flow') { const j = Math.min(r.words.length - 1, Math.floor(f * r.words.length)); reveal(r.words[j]); begin({ j }); }
-  else { const k = Math.min((r.it.n || 1) - 1, Math.floor(f * (r.it.n || 1))); reveal({ page: k }); begin({ page: k }); }
 }
 const clock = (s) => { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60); return m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${m}:${String(s % 60).padStart(2, '0')}`; };
 function progress() {
-  const r = R; if (!r || !bar) return;
-  const p = r.passages[r.index], tok = p?.toks[r.lastTok];
-  const j = tok?.j ?? 0;
+  const r = R; if (!bar || !mode) return;
+  if (!r || !r.words.length) { bar.fill.style.width = '0%'; bar.knob.style.left = '0%'; bar.where.replaceChildren(); return; }
+  const w = r.words[r.cur] || r.words[0];
+  let f, top, sub;
   if (r.kind === 'flow') {
-    let chars = p ? p.text.length - (tok?.at ?? 0) : 0;
-    for (let x = r.index + 1; x < r.passages.length; x++) chars += r.passages[x].text.length + 1;
-    bar.fill.style.width = ((100 * j) / Math.max(1, r.words.length - 1)).toFixed(1) + '%';
-    bar.left.textContent = '−' + clock(chars / (CPS * prefs.rate));
-    bar.left.title = `about ${clock(chars / (CPS * prefs.rate))} left at ${prefs.rate}×`;
+    f = r.cur / Math.max(1, r.words.length - 1);
+    const left = (r.cum.at(-1) - r.cum[r.cur]) / (CPS * prefs.rate);
+    top = `p. ${w.page + 1} / ${r.it.n || w.page + 1}`; sub = `−${clock(left)}`;
+    bar.where.title = `stable page ${w.page + 1} of ${r.it.n}; about ${clock(left)} left at ${prefs.rate}×`;
   } else {
-    const n = r.it.n || 1, pg = r.words[j]?.page ?? 0;
-    bar.fill.style.width = ((100 * (pg + 0.5)) / n).toFixed(1) + '%';
-    bar.left.textContent = `p.${pg + 1}`;
-    bar.left.title = `page ${pg + 1} of ${n}`;
+    const [a, b] = r.spans.get(w.page) || [r.cur, r.cur + 1];
+    f = (w.page + (r.cur - a) / Math.max(1, b - a)) / r.n;
+    top = `p. ${w.page + 1} / ${r.n}`; sub = r.approx ? 'by estimate' : `${Math.round(100 * f)}%`;
+    bar.where.title = `page ${w.page + 1} of ${r.n}`;
+  }
+  const pct = (100 * Math.max(0, Math.min(1, f))).toFixed(2) + '%';
+  bar.fill.style.width = pct; bar.knob.style.left = pct;
+  bar.where.replaceChildren(h('b', { textContent: top }), h('span', { textContent: sub }));
+}
+/** The sentence being read, faintly, in the player, its current word brighter. */
+function paintNow(si) {
+  const r = R; if (!bar || !mode || !r) return;
+  const box = bar.sent, key = `${r.id}|${r.gen}|${si}`;
+  if (box._key !== key) {
+    const [a, b] = r.sents[si] || [r.cur, r.cur];
+    const lo = Math.max(a, r.cur - 80), hi = Math.min(b, lo + 160);
+    box._key = key; box._a = lo;
+    box.replaceChildren(...r.words.slice(lo, hi + 1).map((w, x) => h('span', { textContent: (x && !r.words[lo + x - 1].glue ? ' ' : '') + w.text })));
+    box.scrollLeft = 0;
+  }
+  box.querySelector('.cur')?.classList.remove('cur');
+  const el = box.children[r.cur - box._a];
+  if (el) {
+    el.classList.add('cur');
+    if (el.offsetLeft + el.offsetWidth > box.scrollLeft + box.clientWidth - 24 || el.offsetLeft < box.scrollLeft) box.scrollLeft = Math.max(0, el.offsetLeft - box.clientWidth * 0.3);
   }
 }
 function paintBar() {
-  if (!R) { if (bar) bar.hidden = true; return; }
-  if (!bar) buildBar();
-  bar.hidden = false;
-  bar.classList.toggle('playing', R.playing);
-  bar.classList.toggle('loading', !!R.loading && R.playing);
-  bar.play.innerHTML = R.playing ? ICON.pause : ICON.play;
-  bar.play.title = R.playing ? 'Pause (v)' : 'Play (v)';
-  bar.play.ariaLabel = bar.play.title;
+  paintPill();
+  if (!bar) return;
+  bar.hidden = !mode;
+  if (!mode) return;
+  const r = R, playing = !!r?.playing;
+  bar.classList.toggle('playing', playing);
+  bar.classList.toggle('loading', !r || (!!r.loading && playing));
+  bar.play.innerHTML = playing ? ICON.pause : ICON.play;
+  bar.play.title = bar.play.ariaLabel = playing ? 'Pause (Space)' : 'Play (Space)';
   if (![...bar.speed.options].some((o) => o.value === String(prefs.rate))) bar.speed.append(h('option', { value: String(prefs.rate), textContent: `${prefs.rate}×` }));
   bar.speed.value = String(prefs.rate);
-  const v = R.engine === 'gemini' ? 'g:' + prefs.geminiVoice : 'b:' + (prefs.browserVoice || '');
-  if (bar.voice.value !== v) { bar.voice.value = v; if (bar.voice.value !== v) fillVoices(); }
-  if (bar.note.textContent !== (R.notice || '')) {
-    bar.note.textContent = R.notice || '';
+  syncVoice();
+  bar.cont.classList.toggle('on', !!prefs.cont);
+  bar.cont.setAttribute('aria-pressed', String(!!prefs.cont));
+  bar.cont.title = prefs.cont ? 'Next item: on · at the end (or on j/k) reading goes on with the next item' : 'Next item: off · reading stops at the end of this item (click to go on to the next)';
+  const msg = r?.notice || (!r && contFor ? 'Opening the next item…' : '');
+  if (bar.note.textContent !== msg) {
+    bar.note.textContent = msg;
     clearTimeout(noteTimer);
-    if (R.notice) noteTimer = setTimeout(function fade() { if (bar.note.matches(':hover')) noteTimer = setTimeout(fade, 3000); else if (R) { R.notice = ''; paintBar(); } }, 12000);
+    if (r?.notice) noteTimer = setTimeout(function fade() { if (bar.note.matches(':hover')) noteTimer = setTimeout(fade, 3000); else if (R) { R.notice = ''; paintBar(); } }, 12000);
   }
-  bar.note.hidden = !R.notice;
+  bar.note.hidden = !msg;
+  if (!r) { bar.sent.replaceChildren(); bar.sent._key = ''; }
   progress();
 }
+function paintPill() {
+  if (!pill) {
+    const hdr = $('#bar'); if (!hdr) return;
+    pill = h('button', { id: 'ra-pill', type: 'button', className: 'ghost', onclick: blurred(() => (mode ? exitMode(true) : begin())) });
+    pill.innerHTML = ICON.speaker + '<span>Read</span>';
+    const before = $('#search-btn');
+    hdr.insertBefore(pill, before?.parentElement === hdr ? before : null);
+  }
+  pill.classList.toggle('on', mode);
+  pill.title = mode ? 'Leave read-aloud (Esc or V)' : 'Read aloud from the top of the screen (v) · Alt+click a word to read from there';
+  pill.ariaLabel = mode ? 'Leave read-aloud' : 'Read aloud';
+  pill.hidden = state.view !== 'feed' && !mode;
+}
+paintPill();
 
-// For the Settings sheet (features/settings.js): the saved voice and speed, and
-// the setters the bar uses (they also retune a reading in progress).
+// For the Settings sheet (features/settings.js) and other features: the saved
+// voice and speed, the setters the player uses (they also retune a reading in
+// progress), and starting / leaving the mode.
 export { prefs as readAloudPrefs, setRate as setReadRate, setVoice as setReadVoice };
+export const readAloud = { start: (opt) => begin(opt), stop: () => exitMode(true), get on() { return mode; }, get playing() { return !!R?.playing; } };
