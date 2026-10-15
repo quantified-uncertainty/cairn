@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import ConsistencyTypes from '@/components/figures/ConsistencyTypes.astro';
+
 *Evaluate AI estimation systems by whether they can be arbitraged, not only whether they are accurate: seven types of consistency check, a Dutch-book framing that prices inconsistency as extractable profit, and a proposed counterexample-shrinking method for minimizing violations. Consistency is the cheap, unsupervised, never-sufficient layer of the verification stack.*
 
 :::note
@@ -48,6 +50,8 @@ Mapping the seven types against published work:
 - **Largely covered.** Logical consistency (Paleka et al.'s negation/and/or/conditional checks, with the arbitrage metric); evidential consistency in substantial part (their conservation-of-expected-evidence check; [Bayes-rule coherence tests](https://arxiv.org/abs/2507.17951)); paraphrase invariance (one of their ten checks; see also [ParaRel](https://aclanthology.org/2021.tacl-1.60/) and [semantic consistency](https://arxiv.org/abs/2308.09138) work).
 - **Partially covered.** Temporal consistency (Fluri et al. ran temporal-monotonicity checks, and the conservation-of-expected-evidence check is a one-step martingale test; martingale drift as a standing regression test is not benchmarked); repeatability (LLM probability judgments show human-like systematic incoherence — [Zhu & Griffiths 2024](https://arxiv.org/abs/2401.16646) — but variance is not yet integrated into forecasting evals as a scored metric).
 - **Open.** Constraint consistency beyond binary probabilities — full distributions, physical bounds, conservation laws, cross-estimate inequalities (published checks handle binary event probabilities only); method consistency (Monte Carlo vs. analytic vs. independent Fermi decompositions), which we have not seen scored anywhere — the nearest work, chain-of-thought vs. program-aided answer agreement, improves answers rather than scoring disagreement; adversarial question generation (explicitly deferred as future work by Paleka et al.); and progressive property testing, below.
+
+<ConsistencyTypes />
 
 ## Generating test questions
 

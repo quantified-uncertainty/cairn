@@ -5,6 +5,8 @@ sidebar:
   order: 1
 ---
 
+import EiaLoops from '@/components/figures/EiaLoops.astro';
+
 *A framework for putting a number on the value of a piece of information: measure how it changes a calibrated AI agent's beliefs, weight the changes by a utility function, and pay out only what survives validation. The pricing mechanism the new economy of cheap information is missing.*
 
 :::note
@@ -65,6 +67,8 @@ EIA is most interesting not as a one-shot measurement but as a control loop:
 
 - **Object loop**: agents find or create information that scores highly on $V$. "Research" becomes the activity of maximizing validated epistemic impact per unit cost.
 - **Meta loop**: the $V$ function itself is improved, based on how well its scores tracked realized value — did high-$V$ information actually improve downstream decisions?
+
+<EiaLoops />
 
 This resembles generalized policy iteration from reinforcement learning — $V$ the critic, the researchers (human or AI) the actors — but only as analogy: the real failure mode is reward-model overoptimization ([Gao, Schulman & Hilton 2023](https://arxiv.org/abs/2210.10760)), and the loop needs an evaluator-plus-protocol that resists exploitation, not a strictly stronger critic — debate-style protocols give weaker judges leverage over stronger provers. Accordingly, the meta loop must run on out-of-band signals (realized outcomes, retrodiction, human spot-evaluations), institutionally separated from the producers being scored. The producers must not mark their own book, nor choose its pages: sample validator-chosen claims, grade on randomized holdouts (outcomes are endogenous to scores), and keep critics diverse or hidden, since a known critic can be optimized against offline.
 

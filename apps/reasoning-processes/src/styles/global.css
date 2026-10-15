@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import '@fontsource-variable/source-serif-4';
 
 /* Restore list styles that Tailwind's preflight removes */
 .sl-markdown-content ul {
@@ -15,3 +16,84 @@
   margin-top: 0.25em;
   margin-bottom: 0.25em;
 }
+
+/* =====================================================================
+   Homepage round 3 (audits/2026-10/homepages/rp/r3). 1. Tokens. Starlight's own variable names. The neutrals are the
+      family's shared set (identical to the Handbook); only the three
+      accent values are RRP's. Starlight: :root is dark, [data-theme='light'] is light.
+   ===================================================================== */
+/* SPEC: tokens (dark) */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings          16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text         12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text     7.1:1 */
+  --sl-color-gray-4: #8f897e;  /* map dots, axes     5.3:1 */
+  --sl-color-gray-5: #45423c;  /* borders, rules */
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #1b2c4a;
+  --sl-color-accent: #4f7fd1;
+  --sl-color-accent-high: #9dbdf2; /* links in dark   9.6:1 */
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  color-scheme: dark;
+}
+/* SPEC: tokens (light) */
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings          17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text         13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text     6.8:1 */
+  --sl-color-gray-4: #6f6a61;  /* map dots, axes     5.4:1 */
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #dbe5f6;
+  --sl-color-accent: #2a57a6;  /* links in light     7.0:1 */
+  --sl-color-accent-high: #183a75;
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
+  color-scheme: light;
+}
+
+/* =====================================================================
+   3. SPEC: home.css. The Handbook's splash rules, plus the h3 and
+      contents-list rules RRP needs. Scoped to splash pages.
+   ===================================================================== */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 40rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+  --sl-text-h3: 1.0625rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2.5rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 + h3 { margin-top: 1rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h3 + * { margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content p + ol { margin-top: .5rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol { padding-left: 2em; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol ::marker { color: var(--sl-color-gray-3); font-variant-numeric: tabular-nums; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol + ul { list-style: none; padding-left: 2em; margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a { text-decoration: none; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a:hover { text-decoration: underline; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+
+/* =====================================================================
+   5. SPEC: flourish. Shared round-3 system (style/CHOSEN.md). Swappable as one block.
+      Placeholder: option 1, Source Serif 4 + warm paper (CHOSEN.md was absent when built),
+      identical to the Handbook's round-3 block. h3 stays in the body face.
+   ===================================================================== */
+:root:not([data-has-sidebar]) h1, :root:not([data-has-sidebar]) .sl-markdown-content h2 { font-family: 'Source Serif 4 Variable', Georgia, serif; font-weight: 600; letter-spacing: -0.005em; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { font-size: 1.375rem; }
+:root:not([data-has-sidebar]) { --sl-color-black: #181715; }
+:root:not([data-has-sidebar]):root[data-theme='light'] { --sl-color-black: #fbf9f4; }

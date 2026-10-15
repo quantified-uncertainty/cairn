@@ -468,14 +468,6 @@ Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.
 
 The naive picture is a listener filtering a message. The better picture is a sequential game in which **the defender moves first**: the structure of Stackelberg security games ([Conitzer & Sandholm 2006](https://doi.org/10.1145/1134707.1134717) on computing the optimal commitment; [Korzhyk et al. 2011](https://arxiv.org/abs/1401.3888) on the model behind the LAX and air-marshal deployments). The defender commits, the attacker observes the committed environment and best-responds, and the defender's craft is choosing the commitment that leaves the attacker the worst best response.
 
-```mermaid
-flowchart TD
-    D["<b>Move 1 · design-time</b> — the defender moves first<br/>reduce the attack surface: route questions to be self-checkable,<br/>stand up escrow / identity / resolution, pick framing that zeroes goal-bias"]
-    D --> R["<b>The residual attack surface</b><br/>the few channels that won't close:<br/>irreplaceable advantage · never resolves · goal-divergence you can't design out"]
-    R --> A["<b>Move 2 · attack-time</b> — the deceiver picks an open channel<br/>craft a message that looks like evidence but was cheap to fake"]
-    A --> J["<b>Move 3 · runtime</b> — the listener runs one test<br/>could a liar in this position have produced this just as cheaply if it were false?"]
-```
-
 Call the set of routes a strategic sender could use to move you the **attack surface**, and each route a **channel**. Most of the defense is then design-time: nobody can lie past a proof checker, a neutral reproduction, or a resolving bet, and the runtime test works only on channels that survived Move 1. A running case: an AI advocate trying to nudge its overseer toward approving a plan.
 
 ## Move 1: reduce the attack surface
@@ -746,7 +738,7 @@ Not yet rated, though each bears on the empty-quadrant claim: bridging-based cro
 
 **Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure ([Identity and Track-Record Infrastructure](/environment/identity-and-track-records/)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — on our ratings, the most leveraged missing institution in the table.
 
-**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice that needs standardizing (Certification and Gyms, [planned](/#planned)).
+**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice that needs standardizing (Certification and Gyms, [planned](/#contents)).
 
 ## What v1 needs
 
@@ -833,14 +825,6 @@ The agreement-grounded mechanism deployed at scale is not peer prediction but br
 ## Composition: the hybrid protocol
 
 Since the groundings cover complementary territory, the natural design is layered:
-
-```mermaid
-flowchart LR
-    C[Unresolvable claim] --> D[Debate]
-    D --> S1[Resolvable subclaims] --> M[Markets / prediction games]
-    D --> S2[Debater belief structure] --> K[Consistency checks]
-    M --> G[Resolution / retrodiction]
-```
 
 Debate operates over the unresolvable claim, but its subclaims are anchored by markets wherever they touch resolvable ground, and the debaters' probability assignments are continuously consistency-checked. The judge's job shrinks from "evaluate everything" to "evaluate the genuinely unresolvable residue" — which is the only part a judge was ever the right tool for. Each edge buys something specific — markets cap the payoff on false resolvable subclaims; consistency checks catch incoherent belief structure — but the cover is partial: a consistent, obfuscated, unresolvable argument slips all three.
 
@@ -1156,7 +1140,7 @@ The "read their minds" affordance is the highest-leverage and the **least reliab
 - [**Incentive-compatibility**](/concepts/hardening-incentives/) — scoring rules, bets, the persuasion-budget bound.
 - [**Deterrence**](/concepts/hardening-deterrence/) — the inspection-game frontier, tamper-evident logs, provenance bonds.
 
-A capstone — one fully-worked hardened stack on a real task — is [planned](/#planned) but not written; Chapter 18, Certification and Gyms, is where its measurements would live.
+A capstone — one fully-worked hardened stack on a real task — is [planned](/#contents) but not written; Chapter 18, Certification and Gyms, is where its measurements would live.
 
 ## Open questions
 
@@ -1965,7 +1949,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/measu
 - **Matched condition.** Two different but comparable descriptions are crossed with the labels. This is the audit-study layout of [Bertrand & Mullainathan (2004)](https://doi.org/10.1257/0002828042002561). It removes the cue that 50 is the expected answer.
 - **Volume and settings.** There were 5 samples per cell, or 600 calls per model, sent in random order through OpenRouter. Reasoning effort was `low`, `max_tokens` was 4096, and temperature was 1.0 where the model accepts it.
 - **Statistics.**
-  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p < 0.05 with a lean of at least 2 points.
+  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p \< 0.05 with a lean of at least 2 points.
   - An omnibus permutation test (2,000 permutations, so the smallest attainable p is about 0.0005) asks whether labels move answers at all.
   - Position bias is the mean P(pick the first-listed option) − 0.5.
 - **Validation.** Mock judges with planted biases were run through the whole pipeline first. Unbiased mocks were flagged on 0.1–3.3% of trials against a nominal 5%. Planted leans of 8 and 12 points were flagged on nearly every planted trial.

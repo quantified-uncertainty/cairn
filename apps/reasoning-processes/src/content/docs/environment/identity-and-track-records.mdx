@@ -3,6 +3,8 @@ title: Identity and Track-Record Infrastructure
 description: The institution every incentive scheme in these notes silently assumes — identities that make penalties stick and make "n independent reports" mean n, and track records that cost time to fake — and what changes when the reporters are copyable AI processes.
 ---
 
+import IdentityReset from '@/components/figures/IdentityReset.astro';
+
 *Three chapters here end at the same wall. [Deterrence](/concepts/hardening-deterrence/) needs a penalty that sticks; [incentive-compatibility](/concepts/hardening-incentives/) needs escrow netted across a history; [independence](/concepts/hardening-independence/) needs "k reports" to mean k reporters. All three are functions of one missing institution: identity bound to something scarce, plus track records that accumulate against it. This chapter states what that institution has to deliver, prices it with the deterrence chapter's own formula, and marks what changes when the reporters are copyable AI processes rather than people.*
 
 :::note
@@ -54,6 +56,8 @@ Plug in the deterrence chapter's numbers: a \$0.01 LLM-judge call, a 5% audit ra
 
 - **A newcomer with nothing escrowed** has $B_{\text{eff}} \approx 0$, so $S^\* \approx 0.01/0.95$: about one cent of safe stake. The process is back in the pure-verification regime.
 - **An established producer** reaches the deterrence chapter's \$53 safe stake only if $\Delta R$ is about \$1,000. That needs a ruin rule, a standing worth \$1,000 that re-entry can't recover, and a producer not near its last round. Unlike escrow, the mechanism can verify none of these: $R$ is private to the producer, and the producer gains by *appearing* to value it highly.
+
+<IdentityReset />
 
 So **a track record works like a bond that can't be refunded but can be spent once**, and its deterrent value falls to zero as exit approaches. One more wrinkle: these notes recommend making standing gate access to valuable work, which means the stakes a producer handles grow with its standing. A mechanism that sizes stakes to standing has to cap them at what escrow alone covers, or accept that the most trusted producers are also the most tempted.
 

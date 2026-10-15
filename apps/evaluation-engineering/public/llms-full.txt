@@ -406,6 +406,8 @@ The [components](/concepts/components/) are the parts; these are ways to wire th
 
 Ask predictors to forecast a large set of items, say 10,000, and announce that a random subset, say 50, will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward accuracy on that subset. Because no predictor knows which items will be graded, each must treat every item as if it might be. A small evaluation budget then calibrates forecasts across the whole set. What gets calibrated is agreement with the evaluator, errors included: predictors are paid to model the evaluator, not the truth.
 
+The [worked example](/concepts/worked-example/) runs this at a smaller scale: 1,000 grants, a hidden random 50 audited by two experts.
+
 The incentive thins as the set grows: with 50 of 10,000 resolved, each item has a 1-in-200 chance of counting. A proper scoring rule stays proper under random resolution, but the reward for effort on any one item falls by that factor.
 
 The pattern can chain. Calibrated human predictions become training labels for cheaper ML predictors, which are audited against a fresh subset, and so on. Whether each step loses little accuracy has not been measured, and errors compound across steps.
@@ -557,9 +559,13 @@ The converse fails. A judge can be perfectly reliable and wrong every time in th
 
 Raw agreement $p_o$ is the share of items on which two raters give the same label. It is inflated by base rates: two raters who each independently say "yes" to 80% of items agree $0.8^2 + 0.2^2 = 68\%$ of the time without looking. Cohen's kappa subtracts the agreement expected from the raters' own marginal rates, $p_e$, and rescales:
 
-$$\kappa = \frac{p_o - p_e}{1 - p_e}$$
+$$
+\kappa = \frac{p_o - p_e}{1 - p_e}
+$$
 
-so that chance scores 0 and perfect agreement 1 ([Cohen 1960](https://doi.org/10.1177/001316446002000104)). The relatives:
+so that chance scores 0 and perfect agreement 1 ([Cohen 1960](https://doi.org/10.1177/001316446002000104)).
+
+The relatives:
 
 - **Fleiss' κ** extends the idea to many raters: each item gets the same number of ratings, possibly from different raters ([Fleiss 1971](https://doi.org/10.1037/h0031619)).
 - **Weighted κ** gives partial credit for near-misses on an ordinal scale. The quadratic-weighted version is the standard in automated essay scoring, whose acceptance test ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)) compares machine–human against human–human weighted κ.
@@ -616,7 +622,9 @@ For a proportion near $p$, a 95% interval of half-width $h$ needs $n \approx 1.9
 
 The audit design in [LLMs as Evaluators](/concepts/llm-evaluators/#the-design-pattern-llms-as-the-cheap-layer) produces two datasets: the judge's score $f$ on all $N$ items, and gold labels $y$ on a random $n$ of them. The naive estimator of a population quantity, such as the share of grants experts would renew, uses only the $n$ gold labels. Plugging in the judge's scores on all $N$ items is precise but biased by however wrong the judge is. Prediction-powered inference (PPI) uses both. It takes the judge's average over all $N$ items and corrects it by the judge's average error on the $n$ audited ones:
 
-$$\hat\theta_{\text{PP}} = \frac{1}{N}\sum_{i=1}^{N} f_i \;-\; \frac{1}{n}\sum_{j=1}^{n} (f_j - y_j)$$
+$$
+\hat\theta_{\text{PP}} = \frac{1}{N}\sum_{i=1}^{N} f_i \;-\; \frac{1}{n}\sum_{j=1}^{n} (f_j - y_j)
+$$
 
 The result is unbiased whatever the judge's quality, provided the audited items are a uniformly random draw (or have known inclusion probabilities) and the judge is frozen before the audit labels are seen. Its variance is roughly $\mathrm{Var}(f)/N + \mathrm{Var}(f - y)/n$, so the interval narrows as the judge's errors shrink ([Angelopoulos et al. 2023](https://arxiv.org/abs/2301.09633)). PPI++ adds a tuning weight on $f$, chosen from the data, so that, asymptotically, the interval is never wider than the gold-labels-only one ([Angelopoulos, Duchi & Zrnic 2023](https://arxiv.org/abs/2311.01453)). Several refinements fit audit design directly:
 
@@ -1729,4 +1737,4 @@ Source: https://evaluation-engineering.quantifieduncertainty.org/open-questions/
 
 ================================================================================
 Generated from 22 chapters.
-Estimated tokens: ~69K
+Estimated tokens: ~70K

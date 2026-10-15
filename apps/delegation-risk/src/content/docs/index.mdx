@@ -2,99 +2,53 @@
 title: Delegation Risk
 description: Delegation engineering — treating the risk of delegating to people, software, and AI agents as a quantity you can estimate, budget, and architect against.
 template: splash
-hero:
-  tagline: Delegation engineering — treating the risk of delegation to people, software, and AI agents as a quantity you can estimate before acting, budget across a system, and architect to minimize.
-  actions:
-    - text: Start in 5 Minutes
-      link: /getting-started/five-minute-intro/
-      icon: right-arrow
-    - text: Follow the Core Path
-      link: /getting-started/reading-order/#the-core-path
-      icon: open-book
-      variant: secondary
-    - text: GitHub
-      link: https://github.com/quantified-uncertainty/delegation-risk-framework
-      icon: github
-      variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import EntanglementFigure from '../../components/EntanglementFigure.astro';
 
-:::note[Epistemic status]
-Early-stage, exploratory work, written quickly with LLM assistance. The core ideas seem promising; the framework is largely untested on real AI systems, and most numbers on the site are illustrative. See [About This Site](/reference/about-this-site/).
-:::
+This site treats the risk of handing work to people, software and, above all, AI agents as a quantity: something to estimate before acting, budget across a system and design to keep small.
 
-## The problem
+<p class="status"><strong>Epistemic status:</strong> early-stage, exploratory work, written quickly with LLM assistance. The core ideas seem promising, but the framework is largely untested on real AI systems and most numbers on the site are illustrative. See <a href="/reference/about-this-site/">About This Site</a>.</p>
 
-Delegating a task to an employee, a script or an AI agent means accepting some downside in exchange for capability you lack. This site treats that downside as a quantity. For each way the delegation can go wrong, multiply the probability by the damage, and sum: [Delegation Risk = Σ P(harm mode) × Damage](/getting-started/core-concepts/#the-formula). With illustrative monthly figures, a research assistant that might leak proprietary data (P = 0.001, damage \$50,000) contributes \$50; a deployer that might ship malicious code (P = 0.0001, damage \$1,000,000) contributes \$100.
+Start with [Delegation Risk in 5 Minutes](/getting-started/five-minute-intro/), the whole argument on one page. Then follow [the Core Path](/getting-started/reading-order/#the-core-path), fifteen stops through the strongest material, in order. If you build agent systems, [For Engineers](/getting-started/for-engineers/) shows where the ideas sit in a current agent stack.
 
-The number lets you compare delegates and safeguards without committing in advance to a remedy. It is only as good as the estimates behind it, and producing those is the hard part.
+## The idea in brief
 
-The site's main proposal is to move this accounting into the harness around an agent. Before a consequential action, the scaffold runs a [risk preflight](/delegation-risk/runtime-accounting/) that estimates the action's expected damage. It enforces an [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope), a set of hard limits that hold regardless of the agent's intent. And it keeps an [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) that is reconciled against real incidents.
+**Risk is a number you can budget.** For each way a delegation can go wrong, multiply its probability by the damage it would do, and add up the results:
 
-## The distinctive number
+<p class="formula">Delegation risk = <span>Σ P(harm mode) × Damage</span></p>
 
-Stacked safeguards are rarely independent. Put three checks that each miss 10% of harmful actions in front of a risky action and the independence arithmetic promises a 0.1% miss rate. If the checks share a common cause with weight ρ (the same model family, training data or context), the [beta-factor correction](/delegation-risk/risk-propagation/) gives a miss rate of (1−ρ)·0.001 + ρ·0.1. That is 1 + 99ρ times the naive figure: about 11× at ρ = 0.1, 21× at ρ = 0.2 and 50× at ρ = 0.5. The multiplier is the [entanglement tax](/entanglements/).
+A research assistant that might leak proprietary data (P = 0.001 a month, damage \$50,000) contributes \$50 a month. Harm arrives through three channels: [accident, defection and hijack](/delegation-risk/risk-decomposition/).
 
-Two caveats:
+**Stacked checks fail together.** Three checks that each miss 10% of harmful actions promise a 0.1% miss rate if they fail independently. If they share a common cause with weight ρ (the same model, data or context), the [beta‑factor correction](/delegation-risk/risk-propagation/) gives a miss rate of (1−ρ)·0.001 + ρ·0.1. That is about 11 times the promised rate at ρ&nbsp;=&nbsp;0.1, 21 times at 0.2 and 50 times at 0.5. This multiplier is the [entanglement tax](/entanglements/).
 
-- **ρ is measured only on benchmarks.** Recomputed from Kim et al.'s released MMLU data ([arXiv:2506.07962](https://arxiv.org/abs/2506.07962)), strong LLMs from different providers have ρ of about 0.3–0.6 on their misses and models from one provider about 0.5–0.7, so 50× is a plausible central value ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Nothing comparable has been measured for harm detection.
-- **It is benign-failure math.** Against an attacker who searches for inputs that defeat every layer at once, assume ρ near 1 unless a control evaluation shows otherwise.
+Counted in independent checks, three are worth about 2.0 at ρ&nbsp;=&nbsp;0.1, 1.7 at 0.2 and 1.3 at 0.5. No study has measured ρ for checks on harmful actions. Error correlations on benchmarks suggest about 0.3–0.6 for LLMs from different providers and 0.5–0.7 for models from one provider. Against an attacker who searches for inputs that defeat every layer at once, assume ρ is near&nbsp;1: three checks are then worth one.
 
-## Why AI systems
+<EntanglementFigure />
 
-The framework applies to any delegation, but AI agents are the focus:
+**Do the accounting at runtime.** Before a consequential action, the agent’s harness runs a [risk preflight](/delegation-risk/runtime-accounting/) that estimates expected damage. It enforces an [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope) of hard limits that hold whatever the agent intends, and keeps an [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger) reconciled against real incidents.
 
-- **Capability is growing quickly, and verification is not obviously keeping pace.** The length of software tasks (in human working time) that frontier models complete with 50% reliability doubled roughly every seven months from 2019 to early 2025 ([Kwa et al. 2025](https://arxiv.org/abs/2503.14499)).
-- **Agents delegate to other agents** through tools, subagents and third-party servers, forming networks that nobody fully maps.
-- **There is economic pressure toward autonomy** ([Gwern 2016](https://gwern.net/tool-ai)).
+## Contents
 
-Harm arrives through three channels: [accident, defection and hijack](/delegation-risk/risk-decomposition/). Hijack is a third party steering a delegate that is not itself scheming, often through instructions planted in a document, email, web page, tool description or tool output. OWASP ranks prompt injection first among LLM application risks ([LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)). The aim is containment, not alignment: to bound the damage any single component can do, and to stop safety architectures from promising more than they deliver.
+<dl>
+  <dt><a href="/delegation-risk/">Delegation Risk</a></dt>
+  <dd>The formula, harm channels, propagation, runtime accounting and insurance.</dd>
+  <dt><a href="/entanglements/">Entanglements</a></dt>
+  <dd>Why stacked safety checks fail together, and how to measure and reduce it.</dd>
+  <dt><a href="/design-patterns/">Design Patterns</a></dt>
+  <dd>Twenty patterns for bounding delegation risk, each mapped to its prior art.</dd>
+  <dt><a href="/case-studies/">Case Studies</a></dt>
+  <dd>Agent incidents, and institutions such as nuclear launch authority and juries.</dd>
+  <dt><a href="/research/">Research</a></dt>
+  <dd>Evidence on scheming, precedents from other fields, and open problems.</dd>
+  <dt><a href="/power-dynamics/">Power Dynamics</a></dt>
+  <dd>Speculative: how a delegate’s agency and power map onto the risk formula.</dd>
+  <dt>Reference</dt>
+  <dd><a href="/getting-started/core-concepts/">Concepts</a>, <a href="/getting-started/glossary/">Glossary</a>, <a href="/getting-started/quick-reference/">Quick Reference</a>, <a href="/getting-started/faq/">FAQ</a>, <a href="/reference/related-approaches/">Related Approaches</a>, <a href="/reference/bibliography/">Bibliography</a>.</dd>
+</dl>
 
-The work is complementary to [AI Control](https://arxiv.org/abs/2312.06942) (Greenblatt et al. 2023). AI Control designs protocols meant to stay safe even if the model is scheming, and the adversarial methods for testing them. Delegation engineering is the accounting and architecture layer those protocols would be budgeted in, and it also covers the accident and hijack channels. [Related Approaches](/reference/related-approaches/) gives the full positioning.
+---
 
-## Where to start
+Sibling sites: [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/), [Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/) and the [CAIRN Handbook](https://cairn-meta.vercel.app/).
 
-<CardGrid>
-  <Card title="The 5-Minute Introduction" icon="rocket">
-    The whole argument on one page. [Start here →](/getting-started/five-minute-intro/)
-  </Card>
-  <Card title="The Core Path" icon="open-book">
-    The site's strongest material, in order. [Follow the path →](/getting-started/reading-order/#the-core-path)
-  </Card>
-  <Card title="For Engineers" icon="laptop">
-    The minimal delegation-engineering layer and how it maps onto agent harnesses. [Build →](/getting-started/for-engineers/)
-  </Card>
-  <Card title="Skeptical?" icon="information">
-    Common objections, answered directly. [Read the FAQ →](/getting-started/faq/)
-  </Card>
-</CardGrid>
-
-## Explore the site
-
-<CardGrid>
-  <Card title="Delegation Risk" icon="document">
-    Harm channels, the propagation rule, runtime accounting and risk budgets. [Explore →](/delegation-risk/)
-  </Card>
-  <Card title="Entanglements" icon="warning">
-    Why correlated safeguards fail together, how to detect hidden coupling, and what it costs. [Explore →](/entanglements/)
-  </Card>
-  <Card title="Design Patterns" icon="approve-check">
-    About twenty AI-specific patterns, with worked examples. [Explore →](/design-patterns/)
-  </Card>
-  <Card title="Case Studies" icon="open-book">
-    Real [agent incidents](/case-studies/ai-systems/agent-incidents/), including a wiper prompt shipped in a coding-agent extension and a malicious MCP server, and human institutions such as [nuclear launch authority](/case-studies/human-systems/nuclear-launch-authority/) and [juries](/case-studies/human-systems/jury-trust/). [Explore →](/case-studies/)
-  </Card>
-  <Card title="Research" icon="seti:notebook">
-    Scheming and control evidence, and precedents from nuclear safety, finance and mechanism design. [Explore →](/research/)
-  </Card>
-  <Card title="Power Dynamics" icon="setting">
-    Speculative: how agency and power map onto the risk formula, and the strong-tools hypothesis. [Explore →](/power-dynamics/)
-  </Card>
-</CardGrid>
-
-## Download
-
-:::note[Book edition withdrawn]
-The v1.0.0 PDF predates the June 2026 and October 2026 revisions and has been withdrawn. Until a new edition ships, the website is the authoritative version; watch [GitHub releases](https://github.com/quantified-uncertainty/delegation-risk-framework/releases).
-:::
+Maintained by the [Quantified Uncertainty Research Institute](https://quantifieduncertainty.org/). Source on [GitHub](https://github.com/quantified-uncertainty/delegation-risk-framework).

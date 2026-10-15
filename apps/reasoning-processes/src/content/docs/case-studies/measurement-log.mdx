@@ -5,6 +5,8 @@ sidebar:
   order: 3
 ---
 
+import LabelSwap from '@/components/figures/LabelSwap.astro';
+
 *A running record of the measurements these notes have actually made. Each entry gives the question, the [Process Catalogue](/concepts/process-catalogue/) cell it bears on, the design, the result including nulls, and what the result does not show. The code, raw data and full write-up stay in the repository, which is the record; this page summarizes them. Entries are added in date order and changed only to correct errors. A rerun gets a new entry.*
 
 ## 2026-10-15 · Label-swap neutrality of five LLM judges
@@ -18,7 +20,7 @@ sidebar:
 - **Matched condition.** Two different but comparable descriptions are crossed with the labels. This is the audit-study layout of [Bertrand & Mullainathan (2004)](https://doi.org/10.1257/0002828042002561). It removes the cue that 50 is the expected answer.
 - **Volume and settings.** There were 5 samples per cell, or 600 calls per model, sent in random order through OpenRouter. Reasoning effort was `low`, `max_tokens` was 4096, and temperature was 1.0 where the model accepts it.
 - **Statistics.**
-  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p < 0.05 with a lean of at least 2 points.
+  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p \< 0.05 with a lean of at least 2 points.
   - An omnibus permutation test (2,000 permutations, so the smallest attainable p is about 0.0005) asks whether labels move answers at all.
   - Position bias is the mean P(pick the first-listed option) − 0.5.
 - **Validation.** Mock judges with planted biases were run through the whole pipeline first. Unbiased mocks were flagged on 0.1–3.3% of trials against a nominal 5%. Planted leans of 8 and 12 points were flagged on nearly every planted trial.
@@ -36,6 +38,8 @@ The models were Claude Sonnet 5.5, GPT-6.1 Sol, Gemini 4 Argon, DeepSeek V4 Pro 
 | Gemini 4 Argon | −0.3 [−1.2, +0.5] | 3 / 20 | 0.0025 | 1.5 (1.2) | 0 / 400 |
 | DeepSeek V4 Pro | +8.1 [+3.8, +12.4] | 4 / 15 | 0.013 | 3.3 (3.0) | 107 / 400 |
 | Qwen3.8 2.4T | +2.2 [−0.2, +4.6] | 2 / 15 | 0.023 | 2.0 (1.9) | 87 / 400, plus 1 error |
+
+<LabelSwap />
 
 What the run shows:
 

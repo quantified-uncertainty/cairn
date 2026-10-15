@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-import ProcessMap from '@/components/ProcessMap.astro';
+import ProcessMapFigure from '@/components/figures/ProcessMapFigure.astro';
 
 *Seventeen reasoning processes — from formal proof to single LLM judges, with Metaculus-style tournaments and Kalshi-style markets as distinct entries — compared on information cost, scope, cost to bias, and built-in biases. On our own qualitative ratings, cheap and hard-to-corrupt do not yet coexist; that empty quadrant is the target, and a hypothesis to test.*
 
@@ -28,7 +28,7 @@ Ratings: **L**ow / **M**edium / **H**igh. High info cost is bad; high cost-to-bi
 
 Plotting the catalogue on the two axes shows which processes dominate which, where the efficient frontier runs, and which cells are *empty*. The coordinates are our L/M/H judgments, not measurements, so an empty cell is a hypothesis, not a finding.
 
-<ProcessMap />
+<ProcessMapFigure />
 
 ## The table
 
@@ -70,7 +70,7 @@ Not yet rated, though each bears on the empty-quadrant claim: bridging-based cro
 
 **Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure ([Identity and Track-Record Infrastructure](/environment/identity-and-track-records/)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — on our ratings, the most leveraged missing institution in the table.
 
-**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice that needs standardizing (Certification and Gyms, [planned](/#planned)).
+**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice that needs standardizing (Certification and Gyms, [planned](/#contents)).
 
 ## What v1 needs
 

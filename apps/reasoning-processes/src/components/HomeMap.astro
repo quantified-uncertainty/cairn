@@ -1,0 +1,144 @@
+---
+// Homepage map: the catalogue's 17 processes on cost to run (x) vs cost to
+// corrupt (y), marked by family, with the empty corner and two hardening arrows.
+// Geometry ported from audits/2026-10/homepages/rp/r3/compute.mjs (which also
+// checks label/marker/arrow collisions). Points come from src/data/processes.ts,
+// shared with ProcessMap.astro.
+// Arrows: directions stated in concepts/hardening-techniques.md ("Two axes, six
+// families") and concepts/hardening-deterrence.md. Illustrative, not measured.
+import { points, type Family } from '@/data/processes';
+
+const famName: Record<Family, string> = {
+	resolution: 'grounded in resolution or track records',
+	institutional: 'institutional judgment',
+	ai: 'AI-native',
+};
+
+// Empty corner, as in ProcessMap: info < 35, corrupt > 55.
+const CORNER = { x: 35, y: 55 };
+// Both arrows start just off Single LLM judge (6, 14).
+const ARROWS = {
+	verify: { from: [9, 17.5], to: [34, 40], label: 'Verification' },
+	deter: { from: [6, 19], to: [6, 54], label: 'Deterrence' },
+} as const;
+
+type Anchor = 'start' | 'middle' | 'end';
+type LabelSpec = { dx: number; dy: number; anchor: Anchor } | { leaderTo: [number, number]; at: [number, number] };
+interface Layout {
+	W: number; H: number; fs: number; sx: number; x0: number; y0: number; sy: number; r: number;
+	axisTop: number; axisBot: number; axisRight: number;
+	labels: Record<string, LabelSpec>;
+	deterLabel: [number, number]; verifyLabel: [number, number];
+	cornerLabelAt: [number, number]; cornerLh: number; cornerFs: number;
+}
+
+const L: Record<'wide' | 'narrow', Layout> = {
+	wide: {
+		W: 640, H: 396, fs: 16, sx: 6.28, x0: 2, y0: 351.5, sy: 3.075, r: 5, axisTop: 38, axisBot: 364, axisRight: 636,
+		labels: {
+			'Formal proof': { dx: 0, dy: -13, anchor: 'middle' },
+			'Real-money market': { dx: 12, dy: 5, anchor: 'start' },
+			'Peer review': { dx: 12, dy: 5, anchor: 'start' },
+			'Single LLM judge': { leaderTo: [145, 346.4], at: [150, 352] },
+		},
+		deterLabel: [50, 228], verifyLabel: [222, 240], cornerLabelAt: [16, 70], cornerLh: 22, cornerFs: 16,
+	},
+	narrow: {
+		W: 343, H: 356, fs: 15, sx: 3.33, x0: 2, y0: 309.9, sy: 2.7, r: 4.5, axisTop: 34, axisBot: 320, axisRight: 341,
+		labels: {
+			'Formal proof': { dx: 0, dy: -12, anchor: 'middle' },
+			'Peer review': { dx: 10, dy: 5, anchor: 'start' },
+			'Single LLM judge': { leaderTo: [77, 304], at: [82, 309] },
+		},
+		deterLabel: [30, 190], verifyLabel: [121, 210], cornerLabelAt: [10, 60], cornerLh: 19, cornerFs: 14,
+	},
+};
+
+const f1 = (n: number) => (Math.round(n * 10) / 10).toString();
+// Short display names: drop ProcessMap's parentheticals ("Real-money market (Kalshi-style)").
+const shortName = (s: string) => s.replace(/\s*\(.*\)$/, '');
+
+function marker(fam: Family, cx: number, cy: number, r: number, title: string) {
+	const t = `<title>${title} (${famName[fam]})</title>`;
+	if (fam === 'resolution') return `<circle class="mk" cx="${f1(cx)}" cy="${f1(cy)}" r="${r}">${t}</circle>`;
+	if (fam === 'institutional') {
+		const s = r * 1.65;
+		return `<rect class="mk" x="${f1(cx - s / 2)}" y="${f1(cy - s / 2)}" width="${f1(s)}" height="${f1(s)}">${t}</rect>`;
+	}
+	const h = r * 2.3, w = r * 2.6;
+	return `<path class="mk" d="M${f1(cx)} ${f1(cy - (2 * h) / 3)}L${f1(cx + w / 2)} ${f1(cy + h / 3)}L${f1(cx - w / 2)} ${f1(cy + h / 3)}Z">${t}</path>`;
+}
+
+function arrow(x1: number, y1: number, x2: number, y2: number) {
+	const a = Math.atan2(y2 - y1, x2 - x1), k = 7, s = 0.45;
+	const p = (ang: number) => `${f1(x2 - k * Math.cos(ang))} ${f1(y2 - k * Math.sin(ang))}`;
+	return `<path class="move" d="M${f1(x1)} ${f1(y1)}L${f1(x2)} ${f1(y2)}"/><path class="move" d="M${p(a - s)}L${f1(x2)} ${f1(y2)}L${p(a + s)}"/>`;
+}
+
+function txt(x: number, y: number, s: string, anchor: Anchor = 'start', cls = '') {
+	return `<text${cls ? ` class="${cls}"` : ''} x="${f1(x)}" y="${f1(y)}"${anchor !== 'start' ? ` text-anchor="${anchor}"` : ''}>${s}</text>`;
+}
+
+function body(key: 'wide' | 'narrow') {
+	const c = L[key];
+	const X = (v: number) => c.x0 + c.sx * v, Y = (v: number) => c.y0 - c.sy * v;
+	const out: string[] = [];
+	out.push(`<path class="corner" d="M${c.x0} ${f1(c.axisTop + 6)}H${f1(X(CORNER.x))}V${f1(Y(CORNER.y))}H${c.x0}"/>`);
+	const [clx, cly] = c.cornerLabelAt;
+	['Empty so far:', 'cheap to run,', 'hard to corrupt'].forEach((s, i) => {
+		out.push(`<text class="corner-label" x="${clx}" y="${cly + i * c.cornerLh}"${key === 'narrow' ? ` style="font-size:${c.cornerFs}px"` : ''}>${s}</text>`);
+	});
+	out.push(`<path class="axis" d="M${c.x0} ${c.axisTop}V${c.axisBot}H${c.axisRight}"/>`);
+	out.push(`<path class="axis" d="M${c.x0 - 4} ${c.axisTop + 6}L${c.x0} ${c.axisTop - 1}L${c.x0 + 4} ${c.axisTop + 6}"/>`);
+	out.push(`<path class="axis" d="M${c.axisRight - 7} ${c.axisBot - 4}L${c.axisRight} ${c.axisBot}L${c.axisRight - 7} ${c.axisBot + 4}"/>`);
+	out.push(`<text class="axis-label" x="${c.x0}" y="${c.axisTop - 12}">Cost to corrupt</text>`);
+	out.push(`<text class="axis-label" x="${c.axisRight}" y="${c.H - 6}" text-anchor="end">Cost to run</text>`);
+	for (const k of ['verify', 'deter'] as const) {
+		const A = ARROWS[k];
+		out.push(arrow(X(A.from[0]), Y(A.from[1]), X(A.to[0]), Y(A.to[1])));
+	}
+	out.push(txt(c.deterLabel[0], c.deterLabel[1], ARROWS.deter.label, 'start', 'move-label'));
+	out.push(txt(c.verifyLabel[0], c.verifyLabel[1], ARROWS.verify.label, 'start', 'move-label'));
+	const pts = points.map((p) => ({ ...p, name: shortName(p.name), px: X(p.x), py: Y(p.y) }));
+	for (const p of pts) out.push(marker(p.family, p.px, p.py, c.r, p.name));
+	for (const p of pts) {
+		const lb = c.labels[p.name];
+		if (!lb) continue;
+		if ('leaderTo' in lb) {
+			const a = Math.atan2(lb.leaderTo[1] - p.py, lb.leaderTo[0] - p.px);
+			out.push(`<path class="leader" d="M${f1(p.px + 7 * Math.cos(a))} ${f1(p.py + 7 * Math.sin(a))}L${lb.leaderTo[0]} ${lb.leaderTo[1]}"/>`);
+			out.push(txt(lb.at[0], lb.at[1], p.name));
+		} else out.push(txt(p.px + lb.dx, p.py + lb.dy, p.name, lb.anchor));
+	}
+	return out.join('');
+}
+
+const aria = `Scatter plot of ${points.length} reasoning processes by cost to run and cost to corrupt, marked by family: AI-native processes cluster at the cheap, easy-to-corrupt end, resolution-grounded ones toward the expensive, hard-to-corrupt end. The cheap-to-run, hard-to-corrupt corner is empty. Two arrows from the single LLM judge: verification moves it up and to the right along the diagonal; deterrence moves it straight up toward the empty corner.`;
+const wide = L.wide, narrow = L.narrow;
+---
+
+<figure class="home-map">
+	<svg class="wide" viewBox={`0 0 ${wide.W} ${wide.H}`} width={wide.W} height={wide.H} style={`font-size:${wide.fs}px`} role="img" aria-label={aria} set:html={body('wide')} />
+	<svg class="narrow" viewBox={`0 0 ${narrow.W} ${narrow.H}`} width={narrow.W} height={narrow.H} style={`font-size:${narrow.fs}px`} role="img" aria-label={aria} set:html={body('narrow')} />
+	<figcaption><slot /></figcaption>
+</figure>
+
+<style is:global>
+	.home-map { margin-inline: 0; }
+	.sl-markdown-content .home-map { margin-top: 1.5rem; }
+	.home-map svg { width: 100%; height: auto; overflow: visible; font-family: inherit; }
+	.home-map .narrow { display: none; }
+	@media (max-width: 34rem) { .home-map .wide { display: none; } .home-map .narrow { display: block; } }
+	.home-map text { fill: var(--sl-color-gray-2); }
+	.home-map .axis-label { fill: var(--sl-color-gray-3); }
+	.home-map .axis, .home-map .leader { fill: none; stroke: var(--sl-color-gray-4); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+	.home-map .mk { fill: var(--sl-color-gray-4); }
+	.home-map .move { fill: none; stroke: var(--sl-color-gray-2); stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+	.home-map .move-label { fill: var(--sl-color-gray-2); }
+	.home-map .corner { fill: none; stroke: var(--sl-color-text-accent); stroke-width: 1.25; stroke-dasharray: 5 4; }
+	.home-map .corner-label { fill: var(--sl-color-text-accent); }
+	.home-map figcaption { margin-top: .75rem; font-size: 1rem; line-height: 1.55; color: var(--sl-color-gray-3); }
+	.home-map figcaption p + p { margin-top: .5rem; }
+	.home-map .key { display: inline-block; width: .7em; height: .7em; vertical-align: -.02em; margin-inline: .05em .3em; fill: var(--sl-color-gray-4); }
+	.home-map .fam { white-space: nowrap; }
+</style>
