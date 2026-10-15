@@ -1,0 +1,1382 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "stacks-browser/meta-schema.json",
+ "title": "Stacks Browser per-item metadata (data/meta.json)",
+ "description": "Per-item metadata merged by ui/js/corpus.js as it.meta. Definitions, anchors and classifier procedure: docs/meta/schema.md. Field paths must also pass the taxonomy check (levels 1-3 from x-taxonomy), which JSON Schema cannot express.",
+ "version": 1,
+ "type": "object",
+ "required": ["version", "built", "items"],
+ "properties": {
+  "version": {
+   "const": 1
+  },
+  "built": {
+   "type": "string",
+   "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+  },
+  "taxonomy": {
+   "description": "A copy of x-taxonomy, so the UI needs only meta.json.",
+   "type": "object"
+  },
+  "items": {
+   "type": "object",
+   "additionalProperties": {
+    "$ref": "#/$defs/item"
+   }
+  }
+ },
+ "$defs": {
+  "path": {
+   "type": "array",
+   "minItems": 2,
+   "maxItems": 4,
+   "items": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 48
+   }
+  },
+  "item": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["field", "genre", "stance", "tech", "math", "formal", "empirical", "code", "audience", "era", "len", "mins", "gist", "basis"],
+   "properties": {
+    "field": {
+     "$ref": "#/$defs/path",
+     "description": "Primary subject: 2-4 levels, levels 1-3 from the taxonomy, level 4 a specific free term."
+    },
+    "also": {
+     "type": "array",
+     "maxItems": 2,
+     "items": {
+      "$ref": "#/$defs/path"
+     },
+     "description": "0-2 secondary subject paths."
+    },
+    "genre": {
+     "enum": ["empirical", "method", "theory", "benchmark", "survey", "position", "policy", "report", "essay", "explainer", "textbook", "monograph", "handbook", "reference", "rules", "periodical", "collection", "puzzles", "fiction", "news"]
+    },
+    "stance": {
+     "enum": ["argues", "critiques", "proposes", "reports", "explains", "surveys", "specifies", "narrates", "records"]
+    },
+    "tech": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 5
+    },
+    "math": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 5
+    },
+    "mathAreas": {
+     "type": "array",
+     "maxItems": 4,
+     "uniqueItems": true,
+     "items": {
+      "enum": ["arithmetic", "algebra", "logarithms", "trigonometry", "geometry", "calculus", "differential equations", "linear algebra", "abstract algebra", "number theory", "combinatorics", "graph theory", "probability", "statistics", "Bayesian inference", "stochastic processes", "causal inference", "measure theory", "real analysis", "functional analysis", "ergodic theory", "information theory", "coding theory", "algorithmic information", "optimisation", "convex optimisation", "control theory", "dynamical systems", "game theory", "decision theory", "mechanism design", "social choice", "logic", "proof theory", "set theory", "type theory", "computability", "complexity theory", "learning theory", "statistical mechanics", "quantum information", "numerical methods", "topology", "category theory"]
+     }
+    },
+    "formal": {
+     "enum": [0, 1, 2],
+     "description": "Proofs and derivations: 0 none, 1 some, 2 central."
+    },
+    "empirical": {
+     "enum": [0, 1, 2],
+     "description": "Evidence from the world: 0 none, 1 cited or small-scale, 2 original data or experiments central."
+    },
+    "code": {
+     "enum": [0, 1, 2],
+     "description": "Program code or pseudocode: 0 none, 1 snippets, 2 central."
+    },
+    "prereqs": {
+     "type": "array",
+     "maxItems": 3,
+     "items": {
+      "type": "string",
+      "pattern": "^\\S+( \\S+){0,3}$"
+     }
+    },
+    "audience": {
+     "enum": ["general", "enthusiast", "student", "practitioner", "researcher", "policymaker"]
+    },
+    "era": {
+     "enum": ["classic", "historical", "established", "recent", "frontier"]
+    },
+    "len": {
+     "enum": ["xs", "s", "m", "l", "xl", "xxl"]
+    },
+    "mins": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "gist": {
+     "type": "string",
+     "maxLength": 110,
+     "pattern": "^\\S+(\\s+\\S+){0,11}$"
+    },
+    "lang": {
+     "type": "string",
+     "pattern": "^[a-z]{2}$",
+     "description": "ISO 639-1, only when not English."
+    },
+    "basis": {
+     "enum": ["title", "blurb", "abstract", "known", "text"]
+    },
+    "by": {
+     "type": "string",
+     "description": "Who classified it: 'calibration' or a model id."
+    },
+    "note": {
+     "type": "string",
+     "maxLength": 240,
+     "description": "Rationale for edge cases (calibration and audits; the UI ignores it)."
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "math": {
+        "const": 0
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "mathAreas": {
+        "maxItems": 0
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "math": {
+        "minimum": 2
+       }
+      }
+     },
+     "then": {
+      "required": ["mathAreas"],
+      "properties": {
+       "mathAreas": {
+        "minItems": 1
+       }
+      }
+     }
+    }
+   ]
+  }
+ },
+ "x-genres": {
+  "empirical": {
+   "code": "Em",
+   "label": "Empirical study",
+   "def": "New observations, experiments, measurements or data analysis are the main contribution."
+  },
+  "method": {
+   "code": "Me",
+   "label": "Method",
+   "def": "Proposes a technique, architecture, algorithm or system and shows it works."
+  },
+  "theory": {
+   "code": "Th",
+   "label": "Theory",
+   "def": "Formal analysis is the contribution: definitions, derivations, theorems."
+  },
+  "benchmark": {
+   "code": "Bm",
+   "label": "Benchmark",
+   "def": "Introduces a benchmark, dataset or evaluation suite."
+  },
+  "survey": {
+   "code": "Sv",
+   "label": "Survey",
+   "def": "Maps a literature or landscape: review, taxonomy, synthesis, overview."
+  },
+  "position": {
+   "code": "Po",
+   "label": "Position paper",
+   "def": "A paper-form argument, agenda or proposal for what should be believed or done."
+  },
+  "policy": {
+   "code": "Pl",
+   "label": "Policy",
+   "def": "Lays down governance rules: lab frameworks, standards, draft treaties or laws, official policies."
+  },
+  "report": {
+   "code": "Rp",
+   "label": "Technical report",
+   "def": "An organisation's account of its system or assessment: model reports and cards, eval or risk reports, incident reports."
+  },
+  "essay": {
+   "code": "Es",
+   "label": "Essay",
+   "def": "Informal argument, reflection or exploration (blog posts, dialogues, transcripts)."
+  },
+  "explainer": {
+   "code": "Ex",
+   "label": "Explainer",
+   "def": "Teaches existing ideas or a practice in one sitting: tutorial, guide, primer."
+  },
+  "textbook": {
+   "code": "Tb",
+   "label": "Textbook",
+   "def": "Book-length systematic teaching of established material; lecture notes and course texts."
+  },
+  "monograph": {
+   "code": "Mo",
+   "label": "Monograph",
+   "def": "Book-length original work: treatise, research monograph, book-length argument."
+  },
+  "handbook": {
+   "code": "Hb",
+   "label": "Handbook",
+   "def": "Practical manual for doing something: how-to, field manual, trade handbook."
+  },
+  "reference": {
+   "code": "Rf",
+   "label": "Reference",
+   "def": "Material to look things up in: wiki reference pages, glossaries, code books, tables, catalogues, indexes, bibliographies."
+  },
+  "rules": {
+   "code": "Ru",
+   "label": "Game rules",
+   "def": "Rules of a game: rulebooks, system reference documents."
+  },
+  "periodical": {
+   "code": "Pe",
+   "label": "Periodical",
+   "def": "A journal, magazine, almanac or proceedings issue or volume."
+  },
+  "collection": {
+   "code": "Co",
+   "label": "Collection",
+   "def": "Several independent works bound together: collected works, anthologies, miscellaneous papers."
+  },
+  "puzzles": {
+   "code": "Pz",
+   "label": "Puzzles & problems",
+   "def": "Problems, puzzles or exercises are the substance: puzzle books, problem sets, chess problems."
+  },
+  "fiction": {
+   "code": "Fi",
+   "label": "Fiction",
+   "def": "Stories, parables, satire, poems."
+  },
+  "news": {
+   "code": "Nw",
+   "label": "Announcement",
+   "def": "Announces a launch, release, organisation, result or event."
+  }
+ },
+ "x-stances": {
+  "argues": "Advocates a thesis; the gist states it.",
+  "critiques": "Argues against a specific claim, method, tool or work.",
+  "proposes": "Puts forward a new method, design, framework, institution or theory.",
+  "reports": "Presents findings, results, data or events with modest interpretation.",
+  "explains": "Teaches established ideas or practice.",
+  "surveys": "Maps a body of work without a strong thesis.",
+  "specifies": "Lays down rules, protocols or procedures to follow.",
+  "narrates": "Tells a story: fiction, memoir, narrative history.",
+  "records": "Compiles reference material to be looked up: codes, tables, catalogues, periodical runs, quick references."
+ },
+ "x-audiences": {
+  "general": "Any curious reader; no background assumed.",
+  "enthusiast": "Informed amateurs and community insiders: LessWrong/EA readers, hobbyist players, puzzle fans.",
+  "student": "Learners working through a subject: course texts, textbooks, primers.",
+  "practitioner": "People applying the material: engineers, forecasters, analysts, officers, clerks, game masters.",
+  "researcher": "Specialists in the field or an adjacent one.",
+  "policymaker": "Decision-makers and policy staff in governments, labs and funders."
+ },
+ "x-eras": {
+  "classic": {
+   "code": "Cl",
+   "def": "Landmark: founded or defined a field or subfield and is still the reference everyone cites as the origin. Any age; rarely under 3 years."
+  },
+  "historical": {
+   "code": "Hi",
+   "def": "An ordinary period piece read today for history or curiosity (superseded manuals, code books, magazines). Never for landmarks."
+  },
+  "established": {
+   "code": "Es",
+   "def": "Dated before 2022 and still read for its content."
+  },
+  "recent": {
+   "code": "Re",
+   "def": "Dated 2022-01 to 2025-09."
+  },
+  "frontier": {
+   "code": "Fr",
+   "def": "Dated 2025-10 or later (the last 12 months before 2026-10) and working on an open question."
+  }
+ },
+ "x-scales": {
+  "tech": {
+   "1": {
+    "label": "General",
+    "def": "No background needed; everyday language."
+   },
+   "2": {
+    "label": "Informed",
+    "def": "Some field vocabulary, explained or guessable; a curious reader of the community can follow."
+   },
+   "3": {
+    "label": "Technical",
+    "def": "A STEM-literate reader from the broad area can follow with effort; jargon used freely."
+   },
+   "4": {
+    "label": "Specialist",
+    "def": "Assumes working knowledge of the field (graduate level or practitioner)."
+   },
+   "5": {
+    "label": "Expert",
+    "def": "Assumes the subfield's recent literature and formal machinery; written for the few working on it."
+   }
+  },
+  "math": {
+   "0": {
+    "label": "None",
+    "def": "No mathematics beyond counting."
+   },
+   "1": {
+    "label": "Arithmetic",
+    "def": "Percentages, simple probabilities, tables, dice, back-of-envelope numbers."
+   },
+   "2": {
+    "label": "School",
+    "def": "Algebraic formulas, logs and exponents, odds and expected value, power laws and log-log plots, vectors as arrows."
+   },
+   "3": {
+    "label": "Undergraduate",
+    "def": "Calculus, linear algebra, probability distributions, ODEs, standard ML maths; derivations to follow."
+   },
+   "4": {
+    "label": "Graduate",
+    "def": "Measure-theoretic or advanced probability, functional and convex analysis, game-theoretic refinements, research-grade proofs."
+   },
+   "5": {
+    "label": "Research",
+    "def": "The mathematics is the content: specialist command of a mathematical field, proof-dense throughout."
+   }
+  },
+  "formal": {
+   "0": "None",
+   "1": "Some",
+   "2": "Central"
+  },
+  "empirical": {
+   "0": "None",
+   "1": "Some",
+   "2": "Central"
+  },
+  "code": {
+   "0": "None",
+   "1": "Some",
+   "2": "Central"
+  }
+ },
+ "x-len": {
+  "xs": {
+   "label": "<5 min",
+   "minMins": 0,
+   "maxMins": 4
+  },
+  "s": {
+   "label": "5-19 min",
+   "minMins": 5,
+   "maxMins": 19
+  },
+  "m": {
+   "label": "20-59 min",
+   "minMins": 20,
+   "maxMins": 59
+  },
+  "l": {
+   "label": "1-4 h",
+   "minMins": 60,
+   "maxMins": 239
+  },
+  "xl": {
+   "label": "4-15 h",
+   "minMins": 240,
+   "maxMins": 899
+  },
+  "xxl": {
+   "label": ">15 h",
+   "minMins": 900,
+   "maxMins": null
+  }
+ },
+ "x-reading": {
+  "wpm": {
+   "P1": 230,
+   "P2": 180,
+   "P3": 130,
+   "P4": 90,
+   "P5": 60
+  },
+  "pace": "Slowest that applies: P1 if tech<=2 and math<=1; P2 if tech 3 or math 2; P3 if tech 4 or math 3; P4 if tech 5 or math 4; P5 if math 5. formal 2 drops one step (floor P5). Fiction reads at P1.",
+  "wordsPerPage": {
+   "singleColumnPaper": 550,
+   "twoColumnPaper": 900,
+   "modernBook": 400,
+   "oldScanOctavo": 300,
+   "oldScanLargePage": 450,
+   "slides": 50
+  },
+  "tables": "Tables, code books and catalogues: 1 minute per page.",
+  "scope": "Main body only: exclude references, appendices, indexes, front matter and attached system cards.",
+  "rounding": "under 10: whole minutes; 10-120: nearest 5; 120-600: nearest 15; over 600: nearest 60."
+ },
+ "x-mathAreas": ["arithmetic", "algebra", "logarithms", "trigonometry", "geometry", "calculus", "differential equations", "linear algebra", "abstract algebra", "number theory", "combinatorics", "graph theory", "probability", "statistics", "Bayesian inference", "stochastic processes", "causal inference", "measure theory", "real analysis", "functional analysis", "ergodic theory", "information theory", "coding theory", "algorithmic information", "optimisation", "convex optimisation", "control theory", "dynamical systems", "game theory", "decision theory", "mechanism design", "social choice", "logic", "proof theory", "set theory", "type theory", "computability", "complexity theory", "learning theory", "statistical mechanics", "quantum information", "numerical methods", "topology", "category theory"],
+ "x-taxonomy": {
+  "AI": {
+   "code": "AI",
+   "abbr": "AI",
+   "note": "Artificial intelligence: safety, governance, language models, machine learning. AI forecasting lives under Forecasting.",
+   "kids": {
+    "Alignment": {
+     "abbr": "Align",
+     "note": "Technical AI safety: making AI goals, behaviour and internals safe, incl. agent foundations and safety engineering.",
+     "kids": {
+      "Interpretability": {"abbr": "Interp", "leaves": ["Sparse autoencoders", "Transcoders & crosscoders", "Circuits", "Superposition", "Linear probes", "Steering vectors", "Activation patching", "Attribution graphs", "Model diffing", "Representation geometry", "Interpretability methodology"]},
+      "Evaluations": {"abbr": "Evals", "leaves": ["Dangerous capabilities", "Capability elicitation", "Cyber capabilities", "Bio & chem capabilities", "Autonomy & AI R&D", "Propensity evals", "Situational awareness", "Sandbagging", "Eval methodology"]},
+      "Control & monitoring": {"abbr": "Control", "leaves": ["AI control", "CoT monitoring", "CoT faithfulness", "Trusted monitoring", "Auditing agents", "Model forensics", "Monitor evasion"]},
+      "Oversight & honesty": {"abbr": "Oversight", "leaves": ["Debate", "Scalable oversight protocols", "Weak-to-strong generalisation", "Eliciting latent knowledge", "Lie detection", "Truthfulness", "Sycophancy"]},
+      "Deception & scheming": {"abbr": "Scheming", "leaves": ["Scheming", "Alignment faking", "Deceptive alignment", "Model organisms", "Sabotage", "Steganography", "Gradient hacking"]},
+      "Reward & generalisation": {"abbr": "Reward", "leaves": ["Reward hacking", "Specification gaming", "Reward modelling", "Goal misgeneralisation", "Emergent misalignment", "Side effects & impact", "Subliminal learning"]},
+      "Training methods": {"abbr": "Training", "leaves": ["RLHF", "Constitutional AI", "Preference optimisation", "Character training", "Safety fine-tuning", "Data filtering"]},
+      "Robustness & security": {"abbr": "Robust", "leaves": ["Jailbreaks", "Prompt injection", "Adversarial examples", "Certified robustness", "Backdoors & poisoning", "Unlearning", "Safeguard classifiers", "Weight security"]},
+      "Agent foundations": {"abbr": "AgentFdn", "leaves": ["Decision theory", "Embedded agency", "Corrigibility", "Power-seeking", "Causal incentives", "Universal AI", "Natural abstractions", "Optimisation & agency", "Value learning theory"]},
+      "Multi-agent safety": {"abbr": "MultiAgt", "leaves": ["Multi-agent risks", "Cooperative AI", "Collusion", "Multi-agent control"]},
+      "Safety engineering": {"abbr": "SafetyEng", "leaves": ["Delegation risk", "Design patterns", "Correlated failures", "Incident analysis", "Formal verification", "Security mindset"]},
+      "Threat models": {"abbr": "Threats", "leaves": ["Takeover scenarios", "Alignment difficulty", "Risk arguments", "Critiques of risk arguments", "Misalignment in current models"]},
+      "Agendas & strategy": {"abbr": "Agendas", "leaves": ["Lab safety agendas", "Research agendas", "Theories of impact", "Field retrospectives", "Careers & funding"]}
+     }
+    },
+    "Governance": {
+     "abbr": "Gov",
+     "note": "AI governance, policy and strategy.",
+     "kids": {
+      "Frontier safety frameworks": {"abbr": "Frameworks", "leaves": ["Critical capability levels", "Responsible scaling policies", "Mitigation tiers", "Framework comparisons"]},
+      "Risk assessment": {"abbr": "RiskAssess", "leaves": ["Safety cases", "Risk reports", "Risk taxonomies", "Third-party audits", "Incident reporting"]},
+      "International coordination": {"abbr": "Intl", "leaves": ["Treaties & agreements", "Compute governance", "Verification", "Deterrence & nonproliferation", "Red lines"]},
+      "Policy & regulation": {"abbr": "Policy", "leaves": ["Legislation", "Standards", "AI safety institutes", "Transparency & reporting", "Advocacy & communication"]},
+      "Open weights & access": {"abbr": "Access", "leaves": ["Open release", "Structured access", "Misuse"]},
+      "Strategy & macrostrategy": {"abbr": "Strategy", "leaves": ["Pause & slowdown", "Timelines & takeoff", "Post-AGI world", "Political will", "Existential risk"]},
+      "Labs & industry": {"abbr": "Labs", "leaves": ["Lab strategy", "Lab culture", "Corporate governance", "Insider accounts"]},
+      "Societal impacts": {"abbr": "Society", "leaves": ["Labour & economy", "Power concentration", "Epistemic impacts", "Human-AI relationships", "Gradual disempowerment"]}
+     }
+    },
+    "Language models": {
+     "abbr": "LLMs",
+     "note": "Capabilities research on LLMs: how they are built, trained, scaled, run and evaluated.",
+     "kids": {
+      "Architectures": {"abbr": "Arch", "leaves": ["Transformer", "Attention variants", "Mixture of experts", "Positional encoding", "State-space models", "Long context"]},
+      "Pretraining & scaling": {"abbr": "Scaling", "leaves": ["Scaling laws", "Pretraining data", "Emergent abilities", "Compute-optimal training", "Transfer learning", "Predictable scaling"]},
+      "Post-training": {"abbr": "PostTrain", "leaves": ["Instruction tuning", "RLHF", "Preference optimisation", "Parameter-efficient fine-tuning", "Synthetic data", "RLAIF"]},
+      "Reasoning": {"abbr": "Reasoning", "leaves": ["Chain of thought", "Test-time compute", "RL for reasoning", "Search & verifiers"]},
+      "Agents & tools": {"abbr": "Agents", "leaves": ["Tool use", "Retrieval augmentation", "Agent scaffolds", "Coding agents", "Computer use"]},
+      "Evaluation & benchmarks": {"abbr": "Bench", "leaves": ["Knowledge benchmarks", "Coding benchmarks", "Math benchmarks", "LLM-as-judge", "Long-context evaluation", "Benchmark validity"]},
+      "Systems & efficiency": {"abbr": "Systems", "leaves": ["Distributed training", "Inference serving", "Attention kernels", "Quantisation", "Speculative decoding"]},
+      "Model reports": {"abbr": "Reports", "leaves": ["Frontier model reports", "Open-weight model reports", "Model & system cards"]},
+      "Model behaviour & personas": {"abbr": "Behaviour", "leaves": ["Simulators", "Assistant personas", "Glitch tokens", "Model introspection", "AI psychosis & parasocial use"]},
+      "Pre-transformer NLP": {"abbr": "PreTx", "leaves": ["Word embeddings", "Seq2seq", "Attention origins", "Contextual embeddings"]}
+     }
+    },
+    "Machine learning": {
+     "abbr": "ML",
+     "note": "General machine learning outside LLM-specific work.",
+     "kids": {
+      "Reinforcement learning": {"abbr": "RL", "leaves": ["Policy gradients", "Model-based RL", "Meta-learning", "Safe RL", "RL as control"]},
+      "Learning theory": {"abbr": "Theory", "leaves": ["Generalisation bounds", "Singular learning theory", "Training dynamics & grokking", "Phase changes", "Inductive biases"]},
+      "Representation learning": {"abbr": "RepLearn", "leaves": ["Contrastive learning", "Self-supervised learning", "Information bottleneck"]},
+      "Probabilistic ML": {"abbr": "ProbML", "leaves": ["Bayesian inference", "Graphical models", "Monte Carlo methods", "Classic neural networks"]},
+      "Generative models & compression": {"abbr": "GenModels", "leaves": ["Learned compression", "Variational autoencoders", "Diffusion models"]}
+     }
+    }
+   }
+  },
+  "Forecasting": {
+   "code": "FC",
+   "abbr": "Fcst",
+   "note": "Making, aggregating, scoring and using forecasts and quantitative estimates, incl. forecasts about AI.",
+   "kids": {
+    "Judgmental forecasting": {
+     "abbr": "Judgment",
+     "kids": {
+      "Superforecasting": {"abbr": "Superfc", "leaves": ["Good Judgment Project", "Forecaster skill", "Teams & training"]},
+      "Aggregation": {"abbr": "Aggreg", "leaves": ["Pooling methods", "Geometric mean of odds", "Extremising", "Wisdom of crowds"]},
+      "Base rates & priors": {"abbr": "BaseRates", "leaves": ["Rule of succession", "Reference classes", "Outside view", "Technological discontinuities"]},
+      "Expert elicitation": {"abbr": "Elicit", "leaves": ["Elicitation protocols", "Expert surveys"]},
+      "Forecasting practice": {"abbr": "Practice", "leaves": ["Everyday predictions", "Predictable updating", "Question decomposition"]}
+     }
+    },
+    "Calibration & track records": {
+     "abbr": "TrackRec",
+     "kids": {
+      "Personal calibration": {"abbr": "Personal", "leaves": ["Prediction logs", "Calibration training"]},
+      "Institutional track records": {"abbr": "Institutional", "leaves": ["Grantmaker predictions", "Government forecasts"]},
+      "Historical predictions": {"abbr": "Historical", "leaves": ["Futurist predictions", "Long-range forecasts"]},
+      "Accuracy & horizons": {"abbr": "Horizons", "leaves": ["Forecast horizon", "Overconfidence"]}
+     }
+    },
+    "Scoring & evaluation": {
+     "abbr": "Scoring",
+     "kids": {
+      "Proper scoring rules": {"abbr": "ScoreRules", "leaves": ["Brier score", "Log score", "Fixed points"]},
+      "Evaluating forecasters": {"abbr": "EvalFcst", "leaves": ["Skill vs luck", "Relative scoring"]},
+      "Performative prediction": {"abbr": "Performative", "leaves": ["Self-fulfilling forecasts"]}
+     }
+    },
+    "Prediction markets": {
+     "abbr": "Markets",
+     "kids": {
+      "Market design": {"abbr": "Design", "leaves": ["Market makers", "Subsidies & liquidity", "Play-money markets"]},
+      "Futarchy & decision markets": {"abbr": "Futarchy", "leaves": ["Futarchy", "Decision markets", "Conditional markets"]},
+      "Market accuracy": {"abbr": "Accuracy", "leaves": ["Manipulation", "Long-shot bias"]},
+      "Idea futures & science": {"abbr": "IdeaFut", "leaves": ["Idea futures", "Replication markets"]}
+     }
+    },
+    "Quantitative estimation": {
+     "abbr": "Estimation",
+     "note": "Fermi models, probabilistic programming and cost-effectiveness modelling (QURI's Squiggle work lives here).",
+     "kids": {
+      "Fermi estimation": {"abbr": "Fermi", "leaves": ["Back-of-envelope models", "Guesstimate"]},
+      "Probabilistic programming": {"abbr": "ProbProg", "leaves": ["Squiggle", "Squiggle AI"]},
+      "Uncertainty propagation": {"abbr": "Uncertainty", "leaves": ["Parameter uncertainty", "Monte Carlo models"]},
+      "Cost-effectiveness models": {"abbr": "CEA", "leaves": ["GiveWell models", "Grant evaluation models"]},
+      "Value of information": {"abbr": "VOI", "leaves": ["Research prioritisation"]}
+     }
+    },
+    "AI forecasting": {
+     "abbr": "AIFcst",
+     "note": "Forecasts about AI: timelines, benchmark trends, takeoff, scenarios. Strategy given those forecasts goes to AI > Governance.",
+     "kids": {
+      "Timelines": {"abbr": "Timelines", "leaves": ["Broad timelines", "Compute-based models"]},
+      "Benchmark progress": {"abbr": "BenchProg", "leaves": ["Tournament results", "Predictability of progress"]},
+      "Takeoff speeds": {"abbr": "Takeoff", "leaves": ["Discontinuities", "Intelligence explosion"]},
+      "Scenarios": {"abbr": "Scenarios", "leaves": ["AI 2027-style scenarios", "Bear cases"]},
+      "Expert surveys on AI": {"abbr": "Surveys", "leaves": ["Researcher surveys"]}
+     }
+    },
+    "Risk forecasting": {
+     "abbr": "RiskFcst",
+     "kids": {
+      "Nuclear risk": {"abbr": "Nuclear", "leaves": ["Nuclear war probability"]},
+      "Existential risk estimates": {"abbr": "XriskEst", "leaves": ["AI takeover probability", "Aggregated x-risk forecasts"]},
+      "Pandemic forecasting": {"abbr": "Pandemic", "leaves": ["COVID forecasts"]},
+      "Geopolitics": {"abbr": "Geopol", "leaves": ["Conflict forecasts"]}
+     }
+    },
+    "Forecasting infrastructure": {
+     "abbr": "Infra",
+     "kids": {
+      "Platforms & aggregators": {"abbr": "Platforms", "leaves": ["Metaculus", "Metaforecast", "Prediction platforms"]},
+      "Question design": {"abbr": "Questions", "leaves": ["Resolution criteria", "Conditional questions"]},
+      "Funding & impact": {"abbr": "Impact", "leaves": ["Decision relevance", "Funding forecasting"]}
+     }
+    }
+   }
+  },
+  "Epistemics": {
+   "code": "EP",
+   "abbr": "Epist",
+   "note": "How individuals, institutions and processes reach good beliefs and judgments: rationality, evaluation, reasoning processes, discourse.",
+   "kids": {
+    "Rationality": {
+     "abbr": "Rational",
+     "note": "LessWrong-style practical rationality. Academic psychology of bias goes to Psychology & self > Cognition.",
+     "kids": {
+      "Updating & belief": {"abbr": "Updating", "leaves": ["Admitting mistakes", "Conservation of evidence", "Strong evidence", "Belief in belief"]},
+      "Biases in practice": {"abbr": "Biases", "leaves": ["Scope insensitivity", "Motivated reasoning", "Generalising from one example"]},
+      "Rationalist virtues": {"abbr": "Virtues", "leaves": ["Twelve virtues", "Curiosity", "Scholarship"]},
+      "Words & concepts": {"abbr": "Concepts", "leaves": ["Tabooing words", "Dissolving questions", "Categories"]},
+      "Practical rationality": {"abbr": "Practical", "leaves": ["Decision-making", "Noticing confusion", "Agency"]}
+     }
+    },
+    "Evaluation": {
+     "abbr": "Eval",
+     "note": "Evaluating work, evaluators and evaluation systems (QURI Evaluation Engineering).",
+     "kids": {
+      "Evaluation systems": {"abbr": "EvalSys", "leaves": ["System components", "Use cases", "Evaluation pipelines"]},
+      "Evaluator reliability": {"abbr": "Reliability", "leaves": ["Inter-rater agreement", "Validity", "Gaming tests"]},
+      "LLM judges": {"abbr": "LLMJudges", "leaves": ["Judge auditing", "Judge calibration"]},
+      "Research & grant evaluation": {"abbr": "ResEval", "leaves": ["Impact evaluation", "Certificates of impact"]},
+      "Metrics & Goodhart": {"abbr": "Goodhart", "leaves": ["Proxy failure", "Measurement design"]}
+     }
+    },
+    "Reasoning processes": {
+     "abbr": "Reasoning",
+     "note": "Designing robust judgment and oversight processes (QURI Robust Reasoning Processes).",
+     "kids": {
+      "Judges & verdicts": {"abbr": "Judges", "leaves": ["Judge design", "Verdict aggregation"]},
+      "Oversight protocols": {"abbr": "Protocols", "leaves": ["Incentive grounding", "Protocol composition"]},
+      "Hardening": {"abbr": "Hardening", "leaves": ["Invariance", "Low sensitivity", "Adversarial inputs"]},
+      "Automated research oversight": {"abbr": "AutoRes", "leaves": ["Output-metered oversight"]},
+      "Applied reasoning systems": {"abbr": "Applied", "leaves": ["LLM epistemics in production"]}
+     }
+    },
+    "Institutional epistemics": {
+     "abbr": "Institutions",
+     "kids": {
+      "Information aggregation": {"abbr": "InfoAgg", "leaves": ["Expert panels", "Collective judgment"]},
+      "Expert disagreement": {"abbr": "Disagree", "leaves": ["Deference", "Inside vs outside views"]},
+      "Epistemic legibility": {"abbr": "Legibility", "leaves": ["Legible reasoning", "Epistemic status"]},
+      "Science & replication": {"abbr": "Science", "leaves": ["Selective reporting", "Replication"]},
+      "Reliable sources": {"abbr": "Sources", "leaves": ["Wikipedia", "Media reliability"]}
+     }
+    },
+    "Argument & discourse": {
+     "abbr": "Discourse",
+     "kids": {
+      "Discourse norms": {"abbr": "Norms", "leaves": ["Rationalist discourse norms", "Online debate"]},
+      "Persuasion & framing": {"abbr": "Persuasion", "leaves": ["Frame control", "Changing minds"]},
+      "Writing & communication": {"abbr": "Writing", "leaves": ["Writing quickly", "Explaining to policymakers"]},
+      "Fallacies": {"abbr": "Fallacies", "leaves": ["Noncentral fallacy", "Fallacy of gray"]}
+     }
+    }
+   }
+  },
+  "Mathematics": {
+   "code": "MA",
+   "abbr": "Math",
+   "note": "Mathematics as subject matter (not as a tool used by another field).",
+   "kids": {
+    "Probability": {
+     "abbr": "Prob",
+     "kids": {
+      "Foundations & interpretations": {"abbr": "Fdn", "leaves": ["Logic of chance", "Frequentism vs Bayesianism"]},
+      "Combinatorial probability": {"abbr": "Combin", "leaves": ["Chance and choice", "Games of chance"]},
+      "Priors & succession": {"abbr": "Priors", "leaves": ["Rule of succession"]},
+      "Stochastic processes": {"abbr": "Stoch", "leaves": ["Random walks", "Markov chains"]},
+      "Theory of errors": {"abbr": "Errors", "leaves": ["Least squares", "Error distributions"]},
+      "History of probability": {"abbr": "HistProb", "leaves": ["Pascal to Laplace"]}
+     }
+    },
+    "Statistics": {
+     "abbr": "Stats",
+     "kids": {
+      "Bayesian statistics": {"abbr": "Bayes", "leaves": ["Bayesian updating", "Hierarchical models"]},
+      "Inference & testing": {"abbr": "Inference", "leaves": ["Hypothesis testing", "Confidence intervals"]},
+      "Measurement & reliability": {"abbr": "Measure", "leaves": ["Inter-rater agreement", "Psychometrics", "Sample sizes"]},
+      "Causal inference": {"abbr": "Causal", "leaves": ["Causal graphs", "Experiments"]},
+      "Selection & reporting bias": {"abbr": "SelBias", "leaves": ["Selective reporting", "Tails coming apart"]}
+     }
+    },
+    "Logic & foundations": {
+     "abbr": "Logic",
+     "note": "Mathematical and symbolic logic. Traditional and inductive logic go to Philosophy > Logic & reasoning.",
+     "kids": {
+      "Boolean algebra": {"abbr": "Boolean", "leaves": ["Laws of thought"]},
+      "Symbolic logic": {"abbr": "Symbolic", "leaves": ["Principia Mathematica", "Predicate logic"]},
+      "Set theory": {"abbr": "Sets", "leaves": ["ZFC", "Large cardinals"]},
+      "Type theory": {"abbr": "Types", "leaves": ["Dependent types", "Consistency proofs"]},
+      "Proof theory": {"abbr": "Proofs", "leaves": ["Formal proof"]},
+      "Computability": {"abbr": "Comput", "leaves": ["Turing machines"]},
+      "History of logic": {"abbr": "HistLogic", "leaves": ["Nineteenth-century logic"]}
+     }
+    },
+    "Analysis": {
+     "abbr": "Analysis",
+     "kids": {
+      "Calculus": {"abbr": "Calc", "leaves": ["Limits", "Integration"]},
+      "Differential equations": {"abbr": "ODEs", "leaves": ["Stability of linear systems"]},
+      "Measure theory": {"abbr": "Measure", "leaves": ["Measure-theoretic probability"]},
+      "Ergodic theory": {"abbr": "Ergodic", "leaves": ["Ergodic theorems"]},
+      "Calculus of variations": {"abbr": "Variations", "leaves": ["Euler-Lagrange equations"]}
+     }
+    },
+    "Algebra & geometry": {
+     "abbr": "AlgGeom",
+     "kids": {
+      "Euclidean geometry": {"abbr": "Geometry", "leaves": ["Conics", "Areas & volumes"]},
+      "Linear algebra": {"abbr": "LinAlg", "leaves": ["Matrices", "Eigenvalues"]},
+      "Abstract algebra": {"abbr": "Abstract", "leaves": ["Groups"]},
+      "Polytopes": {"abbr": "Polytopes", "leaves": ["Uniform polytopes"]},
+      "Trigonometry": {"abbr": "Trig", "leaves": ["Spherical trigonometry"]}
+     }
+    },
+    "Optimisation": {
+     "abbr": "Optim",
+     "kids": {
+      "Convex optimisation": {"abbr": "Convex", "leaves": ["Lagrangian duality"]},
+      "Dynamic programming": {"abbr": "DP", "leaves": ["Bellman equations"]},
+      "Optimal control": {"abbr": "OptCtl", "leaves": ["Maximum principle"]}
+     }
+    },
+    "Game & decision theory": {
+     "abbr": "GameDec",
+     "note": "Mathematical game and decision theory. Philosophical decision theory goes to Philosophy; MIRI-style decision theory for AI agents to AI > Alignment > Agent foundations.",
+     "kids": {
+      "Game theory": {"abbr": "GameTh", "leaves": ["Extensive-form games", "Nash equilibrium"]},
+      "Equilibrium refinements": {"abbr": "Refine", "leaves": ["Subgame perfection", "Trembling-hand perfection"]},
+      "Mechanism design": {"abbr": "MechDes", "leaves": ["Auctions", "Incentive compatibility"]},
+      "Social choice": {"abbr": "SocChoice", "leaves": ["Voting rules"]},
+      "Bayesian decision theory": {"abbr": "BayesDec", "leaves": ["Expected utility"]}
+     }
+    },
+    "Combinatorics & number theory": {
+     "abbr": "Discrete",
+     "kids": {
+      "Combinatorics": {"abbr": "Combin", "leaves": ["Kirkman's problem", "Permutations"]},
+      "Graph theory": {"abbr": "Graphs", "leaves": ["Unicursal problems"]},
+      "Number theory": {"abbr": "Numbers", "leaves": ["Primes", "Large numbers"]}
+     }
+    },
+    "Recreational mathematics": {
+     "abbr": "Recreat",
+     "kids": {
+      "Puzzles & problems": {"abbr": "Puzzles", "leaves": ["Classic recreations", "Problem stories"]},
+      "Magic squares": {"abbr": "Magic", "leaves": ["Magic squares"]},
+      "Mathematical games": {"abbr": "MathGames", "leaves": ["Nim-like games"]},
+      "Mathematical essays": {"abbr": "Essays", "leaves": ["Popular mathematics"]}
+     }
+    },
+    "Calculation & numerical methods": {
+     "abbr": "Calc",
+     "note": "Practical computation, calculating aids and their manuals.",
+     "kids": {
+      "Slide rules": {"abbr": "SlideRule", "leaves": ["Slide rule manuals", "Special-purpose slide rules"]},
+      "Logarithms & tables": {"abbr": "Tables", "leaves": ["Logarithm tables", "Ready reckoners"]},
+      "Calculating machines": {"abbr": "Machines", "leaves": ["Mechanical calculators"]},
+      "Practical arithmetic": {"abbr": "Arith", "leaves": ["Mental arithmetic", "Commercial arithmetic"]},
+      "Numerical methods": {"abbr": "Numerics", "leaves": ["Interpolation"]}
+     }
+    },
+    "Historical mathematics": {
+     "abbr": "HistMath",
+     "note": "Old mathematical texts read as sources: editions, translations, collected works.",
+     "kids": {
+      "Greek mathematics": {"abbr": "Greek", "leaves": ["Archimedes", "Euclid"]},
+      "Early modern mathematics": {"abbr": "EarlyMod", "leaves": ["Seventeenth-century mathematics"]},
+      "Collected works": {"abbr": "Collected", "leaves": ["Mathematical works"]}
+     }
+    }
+   }
+  },
+  "Information theory": {
+   "code": "IT",
+   "abbr": "InfoTh",
+   "note": "Shannon theory and its descendants: coding, compression, algorithmic information, information in learning and statistics.",
+   "kids": {
+    "Foundations": {
+     "abbr": "Fdn",
+     "kids": {
+      "Entropy & capacity": {"abbr": "Entropy", "leaves": ["Coding theorems", "Entropy of English", "Information rate"]},
+      "Information measures": {"abbr": "Measures", "leaves": ["Mutual information", "Divergences"]},
+      "Ergodic theory of sources": {"abbr": "Ergodic", "leaves": ["General sources", "Stationary processes"]},
+      "Precursors": {"abbr": "Precursors", "leaves": ["Hartley information", "Nyquist signalling"]}
+     }
+    },
+    "Coding": {
+     "abbr": "Coding",
+     "kids": {
+      "Error-correcting codes": {"abbr": "ECC", "leaves": ["Hamming codes", "Sparse-graph codes"]},
+      "Source codes": {"abbr": "SrcCodes", "leaves": ["Huffman codes", "Arithmetic coding"]},
+      "Coding theorems": {"abbr": "Theorems", "leaves": ["Noisy-channel coding theorem"]}
+     }
+    },
+    "Compression & rate-distortion": {
+     "abbr": "Compress",
+     "kids": {
+      "Rate-distortion": {"abbr": "RD", "leaves": ["Rate-distortion-perception"]},
+      "Lossy compression": {"abbr": "Lossy", "leaves": ["Transform coding"]},
+      "Lossless compression": {"abbr": "Lossless", "leaves": ["Language models as compressors"]}
+     }
+    },
+    "Algorithmic information": {
+     "abbr": "AIT",
+     "kids": {
+      "Kolmogorov complexity": {"abbr": "Kolmogorov", "leaves": ["Algorithmic randomness"]},
+      "Solomonoff induction": {"abbr": "Solomonoff", "leaves": ["Universal induction"]},
+      "Minimum description length": {"abbr": "MDL", "leaves": ["MDL principle"]}
+     }
+    },
+    "Information & learning": {
+     "abbr": "Learning",
+     "kids": {
+      "Information bottleneck": {"abbr": "IB", "leaves": ["Bottleneck method"]},
+      "Generalisation bounds": {"abbr": "GenBounds", "leaves": ["Mutual-information bounds"]},
+      "Contrastive objectives": {"abbr": "Contrastive", "leaves": ["InfoNCE"]},
+      "Prediction as compression": {"abbr": "PredComp", "leaves": ["Compression and intelligence"]}
+     }
+    },
+    "Information & statistics": {
+     "abbr": "Stats",
+     "kids": {
+      "Maximum entropy": {"abbr": "MaxEnt", "leaves": ["Jaynes' principle"]},
+      "Statistical lower bounds": {"abbr": "Bounds", "leaves": ["Minimax bounds"]},
+      "Hypothesis testing": {"abbr": "Testing", "leaves": ["Error exponents"]}
+     }
+    },
+    "Information & gambling": {
+     "abbr": "Gambling",
+     "kids": {
+      "Kelly criterion": {"abbr": "Kelly", "leaves": ["Growth-optimal betting"]}
+     }
+    },
+    "Network & quantum information": {
+     "abbr": "NetQ",
+     "kids": {
+      "Multi-user information theory": {"abbr": "Network", "leaves": ["Broadcast & multiple access"]},
+      "Quantum Shannon theory": {"abbr": "Quantum", "leaves": ["Quantum channels"]}
+     }
+    }
+   }
+  },
+  "Computing": {
+   "code": "CS",
+   "abbr": "Comp",
+   "note": "Computer science and cryptography outside AI.",
+   "kids": {
+    "Cryptography": {
+     "abbr": "Crypto",
+     "note": "Ciphers and codebreaking of every era. Commercial (non-secret) telegraph codes go to Engineering > Telecommunications.",
+     "kids": {
+      "Classical ciphers": {"abbr": "Ciphers", "leaves": ["Substitution ciphers", "Military codes"]},
+      "Codebreaking": {"abbr": "Cryptanalysis", "leaves": ["Frequency analysis"]},
+      "Secrecy theory": {"abbr": "Secrecy", "leaves": ["Information-theoretic secrecy", "One-time pad"]},
+      "Cipher history": {"abbr": "History", "leaves": ["Shorthand & cipher bibliographies"]},
+      "Steganography": {"abbr": "Stego", "leaves": ["Hidden writing"]}
+     }
+    },
+    "Formal methods": {
+     "abbr": "Formal",
+     "kids": {
+      "Proof assistants": {"abbr": "ProofAsst", "leaves": ["Lean", "Coq/Rocq", "Kernel soundness"]},
+      "Verification": {"abbr": "Verify", "leaves": ["Model checking", "Verified software"]},
+      "Type systems": {"abbr": "Types", "leaves": ["Dependent types"]}
+     }
+    },
+    "Software & security": {
+     "abbr": "Security",
+     "kids": {
+      "Software security": {"abbr": "SoftSec", "leaves": ["Vulnerability research", "Zero-days"]},
+      "Security mindset": {"abbr": "Mindset", "leaves": ["Threat modelling"]},
+      "Software engineering": {"abbr": "SWE", "leaves": ["Code review", "Testing"]}
+     }
+    },
+    "Programming languages": {
+     "abbr": "PL",
+     "kids": {
+      "Probabilistic programming": {"abbr": "ProbProg", "leaves": ["Squiggle", "Monte Carlo languages"]},
+      "Language design": {"abbr": "Design", "leaves": ["DSLs"]}
+     }
+    },
+    "Algorithms & complexity": {
+     "abbr": "Algo",
+     "kids": {
+      "Algorithms": {"abbr": "Algorithms", "leaves": ["Search", "Data structures"]},
+      "Complexity theory": {"abbr": "Complexity", "leaves": ["Interactive proofs"]}
+     }
+    },
+    "History of computing": {
+     "abbr": "HistComp",
+     "kids": {
+      "Early computers": {"abbr": "Early", "leaves": ["Analytical engines"]},
+      "Computing pioneers": {"abbr": "Pioneers", "leaves": ["Biography"]}
+     }
+    }
+   }
+  },
+  "Systems & control": {
+   "code": "SC",
+   "abbr": "Sys",
+   "note": "Cybernetics, control theory and systems theory, incl. their precursors.",
+   "kids": {
+    "Cybernetics": {
+     "abbr": "Cyber",
+     "kids": {
+      "Regulation & variety": {"abbr": "Variety", "leaves": ["Law of requisite variety", "Homeostats"]},
+      "Self-organisation": {"abbr": "SelfOrg", "leaves": ["Observer-relative self-organisation"]},
+      "Second-order cybernetics": {"abbr": "2ndOrder", "leaves": ["Observing systems"]},
+      "Metasystem transitions": {"abbr": "Metasys", "leaves": ["Evolution of control"]},
+      "Autopoiesis": {"abbr": "Autopoiesis", "leaves": ["Living systems as self-producing"]}
+     }
+    },
+    "Control theory": {
+     "abbr": "Control",
+     "kids": {
+      "Feedback stability": {"abbr": "Stability", "leaves": ["Governors", "Stability criteria"]},
+      "Feedback amplifiers": {"abbr": "Amplifiers", "leaves": ["Negative feedback", "Gain-phase relations"]},
+      "Robust control": {"abbr": "Robust", "leaves": ["Loop shaping", "H-infinity"]},
+      "Optimal control": {"abbr": "Optimal", "leaves": ["Maximum principle", "Dynamic programming"]},
+      "Learning-based control": {"abbr": "Learning", "leaves": ["RL as control"]}
+     }
+    },
+    "Systems theory": {
+     "abbr": "Systems",
+     "kids": {
+      "Systems thinking": {"abbr": "Thinking", "leaves": ["Macroscope", "General systems theory"]},
+      "Complexity & scale": {"abbr": "Complexity", "leaves": ["Multiscale variety"]},
+      "Computational mechanics": {"abbr": "CompMech", "leaves": ["Epsilon-machines", "Mixed-state presentations"]},
+      "Emergence": {"abbr": "Emergence", "leaves": ["Levels of description"]}
+     }
+    },
+    "Living systems": {
+     "abbr": "Living",
+     "kids": {
+      "Homeostasis": {"abbr": "Homeo", "leaves": ["Milieu interieur"]},
+      "Predictive processing": {"abbr": "PredProc", "leaves": ["Interoceptive inference"]},
+      "Free energy principle": {"abbr": "FEP", "leaves": ["Active inference"]},
+      "Population dynamics": {"abbr": "PopDyn", "leaves": ["Lotka-Volterra"]}
+     }
+    },
+    "Information & control": {
+     "abbr": "InfoCtl",
+     "kids": {
+      "Limits of control": {"abbr": "Limits", "leaves": ["Information-theoretic limits"]},
+      "Thermodynamics of control": {"abbr": "Thermo", "leaves": ["Information engines"]}
+     }
+    }
+   }
+  },
+  "Physics": {
+   "code": "PH",
+   "abbr": "Phys",
+   "note": "Physics as subject matter, incl. historical physics texts.",
+   "kids": {
+    "Mechanics": {
+     "abbr": "Mech",
+     "kids": {
+      "Statics & machines": {"abbr": "Statics", "leaves": ["Simple machines", "Levers"]},
+      "Dynamics": {"abbr": "Dynamics", "leaves": ["Motion", "Rigid bodies"]},
+      "Hydrostatics": {"abbr": "Hydro", "leaves": ["Floating bodies"]},
+      "Instruments & measurement": {"abbr": "Instruments", "leaves": ["Balances", "Weighing"]},
+      "History of mechanics": {"abbr": "HistMech", "leaves": ["Mach's critique"]}
+     }
+    },
+    "Electromagnetism": {
+     "abbr": "EM",
+     "kids": {
+      "Electromagnetic theory": {"abbr": "EMTheory", "leaves": ["Maxwell's treatise"]},
+      "Electric waves": {"abbr": "Waves", "leaves": ["Hertzian waves"]},
+      "Applied electricity": {"abbr": "Applied", "leaves": ["Electrical mathematics"]}
+     }
+    },
+    "Optics": {
+     "abbr": "Optics",
+     "kids": {
+      "Wave theory of light": {"abbr": "WaveLight", "leaves": ["Huygens' principle"]},
+      "Optical instruments": {"abbr": "OptInst", "leaves": ["Telescopes"]}
+     }
+    },
+    "Thermodynamics & statistical mechanics": {
+     "abbr": "StatMech",
+     "kids": {
+      "Maximum entropy methods": {"abbr": "MaxEnt", "leaves": ["Jaynes"]},
+      "Thermodynamics of information": {"abbr": "ThermoInfo", "leaves": ["Landauer limit"]}
+     }
+    },
+    "Quantum physics": {
+     "abbr": "Quantum",
+     "kids": {
+      "Quantum information": {"abbr": "QInfo", "leaves": ["Entanglement"]},
+      "Quantum foundations": {"abbr": "QFdn", "leaves": ["Interpretations"]}
+     }
+    }
+   }
+  },
+  "Engineering": {
+   "code": "EN",
+   "abbr": "Eng",
+   "note": "Applied technology and trades, incl. period manuals, codes and trade literature.",
+   "kids": {
+    "Telecommunications": {
+     "abbr": "Telecom",
+     "kids": {
+      "Telegraph engineering": {"abbr": "Telegraph", "leaves": ["Telegraph practice", "Signalling speed"]},
+      "Telegraphic codes": {"abbr": "Codes", "leaves": ["Commercial code books", "Cable codes"]},
+      "Telephony & radio": {"abbr": "Telephony", "leaves": ["Early radio"]},
+      "Cable networks": {"abbr": "Cables", "leaves": ["Cable directories", "Submarine cables"]},
+      "Trade journals": {"abbr": "Journals", "leaves": ["Telegraph journals"]}
+     }
+    },
+    "Electrical engineering": {
+     "abbr": "EE",
+     "kids": {
+      "Electrical machinery": {"abbr": "Machines", "leaves": ["Dynamos", "Motors"]},
+      "Circuits & amplifiers": {"abbr": "Circuits", "leaves": ["Feedback amplifiers"]},
+      "Power & lighting": {"abbr": "Power", "leaves": ["Electric lighting"]}
+     }
+    },
+    "Mechanical engineering": {
+     "abbr": "MechEng",
+     "kids": {
+      "Machine elements": {"abbr": "Elements", "leaves": ["Gears", "Mechanisms"]},
+      "Governors & regulators": {"abbr": "Governors", "leaves": ["Steam engine governors"]},
+      "Foundry & manufacturing": {"abbr": "Foundry", "leaves": ["Moulding", "Casting"]},
+      "Textile machinery": {"abbr": "Textile", "leaves": ["Jacquard looms"]},
+      "Materials handling": {"abbr": "Handling", "leaves": ["Conveyors"]}
+     }
+    },
+    "Civil & transport": {
+     "abbr": "Civil",
+     "kids": {
+      "Railways": {"abbr": "Rail", "leaves": ["Railroad surveying"]},
+      "Building & construction": {"abbr": "Building", "leaves": ["Builder's manuals"]},
+      "Canals & ports": {"abbr": "Canals", "leaves": ["Waterways"]},
+      "Steam navigation": {"abbr": "Steam", "leaves": ["River steamboats"]}
+     }
+    },
+    "Navigation & seafaring": {
+     "abbr": "Nav",
+     "kids": {
+      "Celestial navigation": {"abbr": "Celestial", "leaves": ["Practical navigators", "Nautical tables"]},
+      "Seamanship": {"abbr": "Seaman", "leaves": ["Rigging", "Sea law"]},
+      "Voyages & exploration": {"abbr": "Voyages", "leaves": ["Explorers' accounts"]},
+      "Merchant shipping": {"abbr": "Shipping", "leaves": ["Maritime commerce"]}
+     }
+    },
+    "Printing & typography": {
+     "abbr": "Print",
+     "kids": {
+      "Type specimens": {"abbr": "Specimens", "leaves": ["Type founders' catalogues"]},
+      "Printing machinery": {"abbr": "Presses", "leaves": ["Presses"]},
+      "Ornaments & borders": {"abbr": "Ornaments", "leaves": ["Printers' ornaments"]}
+     }
+    },
+    "Patents & invention": {
+     "abbr": "Patents",
+     "kids": {
+      "Patent indexes": {"abbr": "Indexes", "leaves": ["Patentee indexes"]},
+      "Invention history": {"abbr": "Invention", "leaves": ["Inventors"]}
+     }
+    }
+   }
+  },
+  "Life sciences": {
+   "code": "LS",
+   "abbr": "Life",
+   "note": "Biology, medicine, genetics and neuroscience.",
+   "kids": {
+    "Medicine & health": {
+     "abbr": "Med",
+     "kids": {
+      "Infectious disease": {"abbr": "Infect", "leaves": ["Measles", "Dysentery"]},
+      "Vaccines": {"abbr": "Vaccines", "leaves": ["DIY vaccines"]},
+      "Nutrition": {"abbr": "Nutrition", "leaves": ["Seed oils", "Obesity"]},
+      "Longevity": {"abbr": "Longevity", "leaves": ["Anti-ageing"]},
+      "Patient experience": {"abbr": "Patient", "leaves": ["Hospitalisation", "Navigating medicine"]}
+     }
+    },
+    "Genetics": {
+     "abbr": "Genetics",
+     "kids": {
+      "Human genetics": {"abbr": "Human", "leaves": ["Polygenic scores"]},
+      "Embryo selection": {"abbr": "Embryo", "leaves": ["Polygenic screening"]},
+      "Gene editing": {"abbr": "Editing", "leaves": ["Adult gene editing"]},
+      "Intelligence enhancement": {"abbr": "IQEnhance", "leaves": ["Superbabies"]}
+     }
+    },
+    "Biology": {
+     "abbr": "Bio",
+     "kids": {
+      "Evolution & phylogeny": {"abbr": "Evolution", "leaves": ["Phylogenetics"]},
+      "Population dynamics": {"abbr": "PopDyn", "leaves": ["Predator-prey models"]},
+      "Physical biology": {"abbr": "PhysBio", "leaves": ["Energetics of life"]},
+      "Ecology": {"abbr": "Ecology", "leaves": ["Mirror life"]}
+     }
+    },
+    "Neuroscience": {
+     "abbr": "Neuro",
+     "kids": {
+      "Predictive processing": {"abbr": "PredProc", "leaves": ["Bayesian brain"]},
+      "Brain theory": {"abbr": "BrainTh", "leaves": ["Brain-like AGI"]},
+      "Consciousness science": {"abbr": "Conscious", "leaves": ["Global workspace"]}
+     }
+    },
+    "Physiology": {
+     "abbr": "Physio",
+     "kids": {
+      "Homeostasis": {"abbr": "Homeo", "leaves": ["Internal environment"]},
+      "Experimental medicine": {"abbr": "ExpMed", "leaves": ["Method of experimental medicine"]}
+     }
+    }
+   }
+  },
+  "Social science": {
+   "code": "SS",
+   "abbr": "Soc",
+   "note": "Economics, politics, global risk, effective altruism, communities, culture, education, military science.",
+   "kids": {
+    "Economics": {
+     "abbr": "Econ",
+     "kids": {
+      "Markets & prices": {"abbr": "Markets", "leaves": ["Price signals"]},
+      "Growth & progress": {"abbr": "Progress", "leaves": ["Industrial literacy", "Progress studies"]},
+      "Welfare & inequality": {"abbr": "Welfare", "leaves": ["Universal basic income", "Poverty"]},
+      "Principal-agent & contracts": {"abbr": "Agency", "leaves": ["Moral hazard", "Delegation economics"]},
+      "Post-AGI economics": {"abbr": "PostAGI", "leaves": ["Capital after AGI"]},
+      "Risk & insurance": {"abbr": "Insurance", "leaves": ["Risk transfer"]}
+     }
+    },
+    "Politics & law": {
+     "abbr": "Politics",
+     "kids": {
+      "Institutional design": {"abbr": "InstDesign", "leaves": ["New forms of governance"]},
+      "Elections & voting": {"abbr": "Voting", "leaves": ["Election forecasting"]},
+      "Law & regulation": {"abbr": "Law", "leaves": ["Litigation", "Lawmaking"]},
+      "Geopolitics": {"abbr": "Geopol", "leaves": ["China", "Great-power competition"]}
+     }
+    },
+    "Global catastrophic risk": {
+     "abbr": "GCR",
+     "note": "Catastrophic and existential risk in general; AI-specific risk goes to AI.",
+     "kids": {
+      "Existential risk theory": {"abbr": "Xrisk", "leaves": ["Longtermism", "Civilisational collapse"]},
+      "Technology governance": {"abbr": "TechGov", "leaves": ["Vulnerable world hypothesis", "Differential technology development"]},
+      "Nuclear risk": {"abbr": "Nuclear", "leaves": ["Nuclear war"]},
+      "Biorisk": {"abbr": "Biorisk", "leaves": ["Mirror bacteria", "Pandemics"]}
+     }
+    },
+    "Effective altruism": {
+     "abbr": "EA",
+     "kids": {
+      "Cause prioritisation": {"abbr": "Causes", "leaves": ["Cause comparison"]},
+      "Cost-effectiveness": {"abbr": "CEA", "leaves": ["GiveWell-style analysis"]},
+      "Grantmaking": {"abbr": "Grants", "leaves": ["Funding constraints"]},
+      "EA community & criticism": {"abbr": "EACommunity", "leaves": ["Candour", "Criticism culture"]}
+     }
+    },
+    "Communities": {
+     "abbr": "Community",
+     "kids": {
+      "Rationalist community": {"abbr": "Rationalists", "leaves": ["Rationalist history"]},
+      "LessWrong & Lightcone": {"abbr": "LessWrong", "leaves": ["Site announcements", "Fundraising"]},
+      "Online communities": {"abbr": "Online", "leaves": ["Forum moderation"]}
+     }
+    },
+    "Sociology & culture": {
+     "abbr": "Culture",
+     "kids": {
+      "Cooperation & status": {"abbr": "Cooperation", "leaves": ["Status games", "Prosocial behaviour"]},
+      "Social norms": {"abbr": "Norms", "leaves": ["Kindness", "Reputation"]},
+      "Media & information": {"abbr": "Media", "leaves": ["Social media dynamics"]}
+     }
+    },
+    "Education": {
+     "abbr": "Edu",
+     "kids": {
+      "Gifted education": {"abbr": "Gifted", "leaves": ["Exceptional childhoods"]},
+      "Self-teaching": {"abbr": "SelfTeach", "leaves": ["Textbook lists", "Tacit knowledge"]},
+      "Schools & costs": {"abbr": "Schools", "leaves": ["College costs"]}
+     }
+    },
+    "Military science": {
+     "abbr": "Military",
+     "kids": {
+      "Tactics & staff training": {"abbr": "Tactics", "leaves": ["Map problems", "Staff rides"]},
+      "War-game exercises": {"abbr": "WarGames", "leaves": ["Kriegsspiel for officers"]},
+      "Military organisation": {"abbr": "Org", "leaves": ["Army schools"]}
+     }
+    }
+   }
+  },
+  "Psychology & self": {
+   "code": "PS",
+   "abbr": "Psych",
+   "note": "Minds, emotions, self-improvement, relationships and personal experience.",
+   "kids": {
+    "Cognition": {
+     "abbr": "Cog",
+     "kids": {
+      "Heuristics & biases": {"abbr": "Biases", "leaves": ["Judgment under uncertainty"]},
+      "Intelligence": {"abbr": "IQ", "leaves": ["Intelligence amplification"]},
+      "Memory": {"abbr": "Memory", "leaves": ["Mnemonics"]},
+      "Judgment": {"abbr": "Judgment", "leaves": ["Self-prediction"]}
+     }
+    },
+    "Emotion & motivation": {
+     "abbr": "Emotion",
+     "kids": {
+      "Emotions": {"abbr": "Emotions", "leaves": ["Rationality and emotion"]},
+      "Motivation & procrastination": {"abbr": "Motivation", "leaves": ["Ugh fields", "Laziness"]},
+      "Mental health": {"abbr": "MentalHealth", "leaves": ["Burnout", "Psychosis"]}
+     }
+    },
+    "Self-improvement": {
+     "abbr": "SelfImp",
+     "kids": {
+      "Life advice": {"abbr": "Advice", "leaves": ["Tips lists"]},
+      "Productivity": {"abbr": "Productivity", "leaves": ["Writing speed", "Effort"]},
+      "Skill learning": {"abbr": "Skills", "leaves": ["Deliberate practice"]},
+      "Courage & agency": {"abbr": "Agency", "leaves": ["Strategic behaviour"]}
+     }
+    },
+    "Relationships & family": {
+     "abbr": "Family",
+     "kids": {
+      "Parenting": {"abbr": "Parenting", "leaves": ["Fatherhood", "Daycare"]},
+      "Relationships": {"abbr": "Relationships", "leaves": ["Polyamory"]},
+      "Sex & gender": {"abbr": "Gender", "leaves": ["Transition", "Sexual dimorphism"]}
+     }
+    },
+    "Personal experience": {
+     "abbr": "Personal",
+     "kids": {
+      "Memoir": {"abbr": "Memoir", "leaves": ["Turning points"]},
+      "Illness narratives": {"abbr": "Illness", "leaves": ["Hospital stays"]},
+      "Unusual experiences": {"abbr": "Unusual", "leaves": ["Memory loss", "Altered states"]}
+     }
+    }
+   }
+  },
+  "Philosophy": {
+   "code": "PL",
+   "abbr": "Phil",
+   "note": "Philosophy as subject matter.",
+   "kids": {
+    "Ethics": {
+     "abbr": "Ethics",
+     "kids": {
+      "Moral theory": {"abbr": "Theory", "leaves": ["Consequentialism", "Metaethics"]},
+      "Moral uncertainty": {"abbr": "Uncertainty", "leaves": ["Moral parliament"]},
+      "Population ethics": {"abbr": "PopEthics", "leaves": ["Longtermism"]},
+      "Animal ethics": {"abbr": "Animals", "leaves": ["Factory farming"]},
+      "Applied ethics": {"abbr": "Applied", "leaves": ["Preventive policing", "Self-integrity"]}
+     }
+    },
+    "Epistemology": {
+     "abbr": "Epist",
+     "kids": {
+      "Bayesian epistemology": {"abbr": "Bayes", "leaves": ["Credences"]},
+      "Induction": {"abbr": "Induction", "leaves": ["Problem of induction"]},
+      "Philosophy of science": {"abbr": "PhilSci", "leaves": ["Falsification", "High-dimensional science"]},
+      "Probability interpretations": {"abbr": "ProbInterp", "leaves": ["Logic of chance"]}
+     }
+    },
+    "Logic & reasoning": {
+     "abbr": "Logic",
+     "note": "Traditional, inductive and informal logic; reasoning manuals.",
+     "kids": {
+      "Traditional logic": {"abbr": "Traditional", "leaves": ["Syllogisms"]},
+      "Inductive logic": {"abbr": "Inductive", "leaves": ["Mill's methods"]},
+      "Informal reasoning": {"abbr": "Informal", "leaves": ["Improvement of the mind"]},
+      "Laws of thought": {"abbr": "LawsThought", "leaves": ["Logic as psychology"]}
+     }
+    },
+    "Mind": {
+     "abbr": "Mind",
+     "kids": {
+      "Consciousness": {"abbr": "Conscious", "leaves": ["Hard problem"]},
+      "Personal identity": {"abbr": "Identity", "leaves": ["Memory and self"]},
+      "AI minds": {"abbr": "AIMinds", "leaves": ["AI moral status", "AI personhood"]}
+     }
+    },
+    "Decision theory": {
+     "abbr": "Decision",
+     "note": "Philosophical decision theory. MIRI-style decision theory for AI agents goes to AI > Alignment > Agent foundations.",
+     "kids": {
+      "Newcomb-like problems": {"abbr": "Newcomb", "leaves": ["Causal vs evidential"]},
+      "Expected utility": {"abbr": "EU", "leaves": ["Independence axiom"]},
+      "Axioms of rationality": {"abbr": "Axioms", "leaves": ["Coherence arguments"]}
+     }
+    }
+   }
+  },
+  "Games": {
+   "code": "GM",
+   "abbr": "Games",
+   "note": "Games as subject: tabletop RPGs, wargames, chess and board games, cards, game design.",
+   "kids": {
+    "Tabletop RPGs": {
+     "abbr": "TTRPG",
+     "kids": {
+      "D&D & d20 family": {"abbr": "d20", "leaves": ["D&D 5e", "D&D 3.5", "Pathfinder", "Starfinder"]},
+      "Old-school (OSR)": {"abbr": "OSR", "leaves": ["Basic/Expert D&D", "Into the Odd family"]},
+      "Story games": {"abbr": "Story", "leaves": ["Powered by the Apocalypse", "Forged in the Dark", "Fate"]},
+      "Minimalist RPGs": {"abbr": "Minimal", "leaves": ["One-page RPGs"]},
+      "Generic systems": {"abbr": "Generic", "leaves": ["Toolkits"]}
+     }
+    },
+    "Wargames": {
+     "abbr": "Wargames",
+     "kids": {
+      "Kriegsspiel": {"abbr": "Kriegsspiel", "leaves": ["Rigid Kriegsspiel", "Free Kriegsspiel"]},
+      "Miniature wargames": {"abbr": "Miniatures", "leaves": ["Toy soldiers"]},
+      "Map exercises": {"abbr": "MapEx", "leaves": ["Map manoeuvres"]}
+     }
+    },
+    "Chess & board games": {
+     "abbr": "Chess",
+     "kids": {
+      "Openings & theory": {"abbr": "Openings", "leaves": ["Opening manuals"]},
+      "Problems & studies": {"abbr": "Problems", "leaves": ["Chess problems", "Endgame studies"]},
+      "Game collections": {"abbr": "Games", "leaves": ["Annotated games"]},
+      "Periodicals": {"abbr": "Periodicals", "leaves": ["Chess magazines"]},
+      "History & culture": {"abbr": "History", "leaves": ["Chess history", "Chess and playing cards"]},
+      "Shogi & variants": {"abbr": "Shogi", "leaves": ["Shogi"]}
+     }
+    },
+    "Card & parlour games": {
+     "abbr": "Cards",
+     "kids": {
+      "Playing cards": {"abbr": "Cards", "leaves": ["Card games"]},
+      "Parlour games": {"abbr": "Parlour", "leaves": ["Floor games"]}
+     }
+    },
+    "Game design": {
+     "abbr": "Design",
+     "kids": {
+      "Design essays": {"abbr": "Essays", "leaves": ["Design philosophy"]},
+      "Play & players": {"abbr": "Play", "leaves": ["Player behaviour"]}
+     }
+    }
+   }
+  },
+  "Humanities": {
+   "code": "HU",
+   "abbr": "Hum",
+   "note": "History, literature, linguistics, religion and the arts.",
+   "kids": {
+    "History": {
+     "abbr": "History",
+     "note": "History as the main subject. History of a technical field goes under that field's own history node where one exists.",
+     "kids": {
+      "History of science": {"abbr": "HistSci", "leaves": ["Serendipity in discovery", "Renaissance"]},
+      "History of technology": {"abbr": "HistTech", "leaves": ["Industrial history"]},
+      "Economic & social history": {"abbr": "SocHist", "leaves": ["Slave trade", "Commerce"]},
+      "Colonial history": {"abbr": "Colonial", "leaves": ["Colonial Virginia"]},
+      "Maritime history": {"abbr": "Maritime", "leaves": ["Merchant shipping", "Steamboats"]},
+      "Military history": {"abbr": "MilHist", "leaves": ["Napoleonic era"]}
+     }
+    },
+    "Literature": {
+     "abbr": "Lit",
+     "kids": {
+      "Fiction & criticism": {"abbr": "Fiction", "leaves": ["Reviews of fiction", "Rationalist fiction"]},
+      "Satire": {"abbr": "Satire", "leaves": ["AI satire", "April Fools"]},
+      "Literary ciphers": {"abbr": "Ciphers", "leaves": ["Dante"]},
+      "Fan fiction": {"abbr": "Fanfic", "leaves": ["HPMOR"]}
+     }
+    },
+    "Linguistics": {
+     "abbr": "Ling",
+     "kids": {
+      "Grammar & semantics": {"abbr": "Grammar", "leaves": ["Negation"]},
+      "Shorthand & writing systems": {"abbr": "Shorthand", "leaves": ["Shorthand systems"]}
+     }
+    },
+    "Religion": {
+     "abbr": "Religion",
+     "kids": {
+      "Theology": {"abbr": "Theology", "leaves": ["Natural theology"]},
+      "Religion & prediction": {"abbr": "Prophecy", "leaves": ["Second coming markets"]}
+     }
+    },
+    "Arts & music": {
+     "abbr": "Arts",
+     "kids": {
+      "Music": {"abbr": "Music", "leaves": ["Community albums"]},
+      "Visual art": {"abbr": "Visual", "leaves": ["Portraits"]}
+     }
+    }
+   }
+  }
+ }
+}

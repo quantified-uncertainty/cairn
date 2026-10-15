@@ -671,6 +671,8 @@ function onMove(e) {
     }).catch(() => {});
     return;
   }
+  // A scan page with figures: start fetching its full-size image now, for a sharp enlargement sooner.
+  if (it.kind === 'scan' && ready.get(keyOf(it, k)).regions.length) bigImg(it, k).catch(() => {});
   const reg = hitAt(hoverEl, e.clientX, e.clientY);
   if (reg) enterRegion(reg, hoverEl, it); else leaveRegion();
 }

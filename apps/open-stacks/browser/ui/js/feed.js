@@ -8,6 +8,15 @@ import { planAround, startOf, serverPrefetch } from './prefetch.js';
 import { showFlow, dropLive, live, vpToCol, flowRange } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
 import { itemIcon } from './icons.js';
+import { profileOf, loadProfile, snapStart, spreadAt, cropOf, pageAspect, itemAspect, spriteCell, spriteAspect, assetUrl } from './profile.js';
+
+// An item's profile, if the server has one: asked once per item (a loopback
+// GET of a few ms; planAround usually has it already), never waited on long.
+const profileSoon = (it) => {
+  const P = profileOf(it);
+  if (P !== undefined || !(it.kind === 'pdf' || it.kind === 'scan')) return P ?? null;
+  return Promise.race([loadProfile(it), new Promise((r) => setTimeout(r, 150))]).then(() => profileOf(it) ?? null);
+};
 
 export async function showFeed() {
   const gen = ++state.gen;
@@ -29,18 +38,27 @@ export async function showFeed() {
   }
   dropLive();
   let n = it.n;
+  // With a profile the page count, shapes and blank pages are known before the
+  // PDF is even opened (and its display images may make opening it unnecessary).
+  let pf = profileOf(it);
+  if (pf === undefined) { pf = await profileSoon(it); if (gen !== state.gen) return; }
+  if (!n && pf?.n) n = it.n = pf.n;
   if (!n) {
     const stop = it.kind === 'pdf' ? showDownload(it, gen) : () => {};
     try { n = it.n = (await openDoc(it)).n; } catch (e) { stop(); if (gen === state.gen) showError(e); return; }
     stop();
     if (gen !== state.gen) return;
   }
-  const s = Math.max(0, Math.min(startOf(i), n - 1));
-  state.start.set(i, s);
+  pf = profileOf(it);
   const boxH = spread.clientHeight - 8, boxW = spread.clientWidth - 24;
   if (state.perAuto) state.per = fitPer(it, boxW, boxH);
   const per = state.zoom ? 1 : state.per;
+  let s = Math.max(0, Math.min(startOf(i), n - 1));
+  // Profile: spreads start where the layout says (facing pages, pages shown alone, blanks riding along).
+  if (pf) s = snapStart(pf, s, per);
+  state.start.set(i, s);
   const hint = aspectOf(it);
+  if (pf) { showProfiled(gen, i, it, pf, s, n, per, boxW, boxH); return; }
   // Fast path: every page of the spread is already rendered, so show it now,
   // in this frame, with no placeholders (this is what makes flipping smooth).
   {
@@ -80,6 +98,50 @@ export async function showFeed() {
   }
   finish(i, it, s, n, results, slots, boxW, boxH);
 }
+/** A spread of an item with a profile: its pages and their shapes are known, so
+ *  placeholders are exact and blank pages need no render to be found. */
+async function showProfiled(gen, i, it, pf, s, n, per, boxW, boxH) {
+  const spread = $('#spread');
+  const ks = spreadAt(pf, s, per);
+  const ready = ks.map((k) => renderedNow(it, k));
+  if (ready.every(Boolean)) {
+    planAround(i, s);
+    state.fastHits = (state.fastHits || 0) + 1;
+    finish(i, it, s, n, ready, ks.map((k) => ({ k })), boxW, boxH);
+    return;
+  }
+  state.slowHits = (state.slowHits || 0) + 1;
+  const slots = ks.map((k) => ({ el: h('div', { className: pf.pages[k]?.blank ? 'pg blank' : 'pg loading' }), k, p: renderPage(it, k) }));
+  spread.replaceChildren(...slots.map((x) => x.el));
+  for (const x of slots) {
+    const a = pageAspect(pf, x.k);
+    if (!a) { x.el.dataset.aspect = '0.06'; continue; }
+    if (it.kind === 'scan') { x.el.append(h('img', { src: P(scanUrl(it, x.k, 400)), alt: '' })); x.el.classList.add('lowres'); }
+    x.el.dataset.aspect = String(a);
+  }
+  layoutPanels(slots.map((x) => x.el), boxW, boxH);
+  // Until the page arrives: the scan's low-resolution image, cropped as the page
+  // will be, or the page's cell of the sprite (body pages, whose cells they fill).
+  for (const x of slots) {
+    if (!pageAspect(pf, x.k)) continue;
+    if (it.kind === 'scan') { placeLowres(x.el, pf, x.k); continue; }
+    if (state.crop !== false && pf.pages[x.k]?.cg !== 'own') { const cell = spriteCell(pf, x.k, parseFloat(x.el.style.height) || 0); if (cell) Object.assign(x.el.style, cell); }
+  }
+  state.shown = slots.length;
+  paintPos(it, s, slots.length, n);
+  paintScrub(i, s, slots.length);
+  planAround(i, s);
+  const results = await Promise.all(slots.map((x) => x.p.catch((e) => [{ err: e.message, k: x.k }])));
+  if (gen !== state.gen) return;
+  finish(i, it, s, n, results, slots, boxW, boxH);
+}
+/** Show a full-page placeholder image cropped like the page will be. */
+function placeLowres(el, pf, k) {
+  const im = el.querySelector(':scope > img'); const b = state.crop !== false && cropOf(pf, k);
+  if (!im || !b) return;
+  const bw = b.x1 - b.x0, bh = b.y1 - b.y0;
+  im.style.cssText = `position:absolute;width:${(100 / bw).toFixed(3)}%;height:${(100 / bh).toFixed(3)}%;left:${((-100 * b.x0) / bw).toFixed(3)}%;top:${((-100 * b.y0) / bh).toFixed(3)}%;max-width:none`;
+}
 /** Put rendered panels on the stage and tell everyone. */
 function finish(i, it, s, n, results, slots, boxW, boxH) {
   const spread = $('#spread');
@@ -100,7 +162,7 @@ function finish(i, it, s, n, results, slots, boxW, boxH) {
   // Remember this item's page shape; if it differs enough to change how many
   // pages fit, lay the spread out again (once, when the item first opens).
   const asp = els.filter((e) => e._pnl?.canvas).map((e) => Number(e.dataset.aspect) * (e._pnl.part ? 2 : 1)).sort((a, b) => a - b);
-  if (asp.length) {
+  if (asp.length && !profileOf(it)) {
     const first = !aspects.has(it.id);
     aspects.set(it.id, asp[Math.floor(asp.length / 2)]);
     if (first && state.perAuto && !state.zoom && fitPer(it, boxW, boxH) !== state.per) { showFeed(); return; }
@@ -121,7 +183,7 @@ function showError(e) {
 // ---------- how many pages fit ----------
 // Page shape (width / height) per item, learned from rendered pages.
 const aspects = new Map();
-const aspectOf = (it) => aspects.get(it.id) ?? (it.kind === 'scan' ? 0.66 : 0.74);
+const aspectOf = (it) => itemAspect(profileOf(it)) || (aspects.get(it.id) ?? (it.kind === 'scan' ? 0.66 : 0.74));
 /** Pages per spread in auto mode: as many as fit at (nearly) full height, 1 to 3,
  *  so a laptop shows two and a large screen three, with little empty space. */
 export function fitPer(it, W, H) {
@@ -172,6 +234,13 @@ let scrubObs = null; let scrubFor = null;
 // One thumbnail of the pinned strip (p), filled as it scrolls into view.
 async function fillThumb(it, t) {
   const k = Number(t.dataset.k);
+  // A cell of the item's sprite sheet (profile.js): one image for the whole strip, no rendering.
+  const cell = spriteCell(profileOf(it), k, 74);
+  if (cell) {
+    const d = h('div', { className: 'spr' });
+    Object.assign(d.style, cell, { position: 'absolute', top: '0', left: '50%', height: '74px', width: `${(74 * spriteAspect(profileOf(it))).toFixed(1)}px`, transform: 'translateX(-50%)' });
+    t.prepend(d); return;
+  }
   if (it.kind === 'scan') { t.prepend(h('img', { loading: 'lazy', src: P(scanUrl(it, k, 120)), alt: '' })); return; }
   const d = await openDoc(it).catch(() => null);
   if (!d) return;
@@ -232,6 +301,24 @@ export function paintTrack(i, s, c, n) {
   fill.style.width = (100 * Math.max(1, c)) / tr.n + '%';
   const kp = state.marks?.get(it.id) || [];
   track.querySelector('.tr-marks').replaceChildren(...kp.map((p) => h('i', { style: `left:${(100 * (p - 0.5)) / tr.n}%` })));
+  paintLayers(c);
+}
+// Track layers (docs/profiles/spec.md 9.3): registerTrackLayer(name, fn) — fn({ i, it, n, s, c, el })
+// paints inside el, a div.tr-layer[data-layer=name] in .tr-bar, emptied when the item changes.
+// Called on every paintTrack (so a layer returns at once when it has nothing new) and on repaintTrack().
+const trackLayers = new Map(); // name -> { fn, el, id }
+export function registerTrackLayer(name, fn) { trackLayers.set(name, { fn, el: null, id: null }); if (tr) paintLayers(); }
+export function repaintTrack() { paintLayers(); }
+let trC = 1;
+function paintLayers(c = trC) {
+  trC = c;
+  if (!tr) return;
+  const bar = track.querySelector('.tr-bar');
+  for (const [name, L] of trackLayers) {
+    if (!L.el || !L.el.isConnected) { L.el = h('div', { className: 'tr-layer' }); L.el.dataset.layer = name; bar.append(L.el); }
+    if (L.id !== tr.it.id) { L.el.replaceChildren(); L.id = tr.it.id; }
+    try { L.fn({ i: tr.i, it: tr.it, n: tr.n, s: tr.s, c, el: L.el }); } catch (e) { console.error('track layer', name, e); }
+  }
 }
 /** While a PDF downloads (big ones take a while), show how far it has got. */
 function showDownload(it, gen) {
@@ -321,6 +408,25 @@ let want = null; // the spread the pointer asks for: { k, els }
 async function fillScrub(it, k, el) {
   const full = cachedRender(it, k);
   if (full) { const p = await full.catch(() => null); const pnl = p?.find((x) => x.canvas); if (pnl && el.isConnected) { el.replaceChildren(cloneCanvas(pnl.canvas)); el.dataset.aspect = String(pnl.canvas.width / pnl.canvas.height); return; } }
+  // The page's cell of the sprite sheet: a CSS background, in this frame. If the
+  // pointer stays, the page comes in sharper (its display image, else a quick render).
+  const pf = profileOf(it);
+  const cell = pf && spriteCell(pf, k, parseFloat(el.style.height) || el.clientHeight);
+  if (cell) {
+    Object.assign(el.style, cell); el.classList.add('sprite');
+    // Scrubbing replaces these elements whenever the page under the pointer
+    // changes, so a page the pointer has left is never sharpened.
+    const swap = (node) => { if (!el.isConnected) return; node.style.objectFit = 'contain'; el.style.backgroundImage = 'none'; el.replaceChildren(node); };
+    const sharpen = () => {
+      if (!el.isConnected) return;
+      if (it.kind === 'scan') { loadThumb(it, k, () => swap(h('img', { src: P(scanUrl(it, k, 200)), alt: '' }))); return; }
+      const u = pf.assets?.display?.[k] ? assetUrl(pf, 'display', k) : null;
+      if (u) { const im = h('img', { alt: '', decoding: 'async' }); im.src = u; im.decode().then(() => swap(im), () => {}); return; }
+      quickPdf(it, k, 700).then((c) => c && swap(cloneCanvas(c)), () => {});
+    };
+    setTimeout(sharpen, it.kind === 'scan' ? 60 : 250);
+    return;
+  }
   if (it.kind === 'scan') {
     // Show the page if its small image is here; otherwise the nearest page that
     // is, dimmed, until this one arrives (Internet Archive pages take 1-3 s).
@@ -348,9 +454,10 @@ function scrubSpread(k) {
   const k0 = Math.max(0, Math.min(k, n - per));
   const spread = $('#spread');
   const els = [];
+  const sa = spriteAspect(profileOf(it)); // with a sprite, every cell has the same shape
   for (let j = 0; j < per && k0 + j < n; j++) {
     const el = h('div', { className: 'pg scrubbing' });
-    el.dataset.k = k0 + j; el.dataset.aspect = String(aspectOf(it));
+    el.dataset.k = k0 + j; el.dataset.aspect = String(sa || aspectOf(it));
     el.append(h('span', { className: 'pno', textContent: String(k0 + j + 1) }));
     els.push(el);
   }

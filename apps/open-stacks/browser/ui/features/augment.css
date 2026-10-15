@@ -1,0 +1,79 @@
+/* Reading guides (features/augment.js): the guide, section map and glossary in
+   the panel, margin notes on the pages, the skim badge in the head, and the
+   guide's marks on the track. */
+
+/* ---- panel: Reading guide ---- */
+.aug { display: flex; flex-direction: column; gap: 8px; }
+.aug.streaming::after { content: ""; height: 2px; background: var(--accent); border-radius: 1px; animation: pulse 1.2s ease-in-out infinite; }
+.aug-hook { font: 14px/1.4 var(--serif); color: var(--ink); }
+.aug-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font: 10.5px var(--mono); color: var(--ink-3); }
+.aug-line button { font: 10.5px var(--mono); padding: 1px 7px; border-radius: 99px; color: var(--ink-2); }
+.aug-line button.on { background: none; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+.aug-skimbtn { margin-left: auto; }
+.aug-plan { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; font: 12.5px/1.4 var(--serif); counter-reset: st; }
+.aug-plan li { display: grid; grid-template-columns: 38px 52px minmax(0, 1fr); align-items: baseline; gap: 6px; padding: 3px 8px; margin: 0 -8px; border-radius: 4px; cursor: pointer; color: var(--ink-2); }
+.aug-plan li:hover { background: var(--bg-3); color: var(--ink); }
+.aug-plan li.cur { box-shadow: inset 2px 0 0 var(--accent); color: var(--ink); }
+.aug-plan .pl, .aug-skip .pl, .aug-gloss .pl { font: 10px var(--mono); color: var(--accent); cursor: pointer; white-space: nowrap; }
+.aug-plan .kd { font: 600 9px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+.aug-skip { font: 12px/1.45 var(--serif); color: var(--ink-3); }
+.aug-skip b { font: 600 9px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); margin-right: 2px; }
+.aug-hints { list-style: none; margin: 0; padding: 0; font: 12px/1.45 var(--serif); color: var(--ink-3); display: flex; flex-direction: column; gap: 2px; }
+.aug-hints b { font-weight: 600; color: var(--ink-2); }
+.aug-hints .aug-apply { margin-left: 6px; font: 10px var(--mono); }
+.aug-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.aug-tags span { font: 10px var(--mono); color: var(--ink-3); border: 1px solid var(--line); border-radius: 99px; padding: 0 6px; }
+.aug .ai-note .aug-redo { color: var(--ink-3); }
+.aug-make { margin-left: auto; font-size: 11px; padding: 1px 8px; }
+.sum-state.countdown .bar::after { animation-duration: var(--aug-t, 15s); }
+
+/* ---- panel: Sections (replaces the built-in outline while it shows) ---- */
+#panel.has-aug-sections #sec-outline { display: none; }
+.aug-secs.outline { max-height: 340px; }
+.aug-secs li { align-items: baseline; }
+.aug-secs .st { display: flex; flex-direction: column; min-width: 0; }
+.aug-secs .tt { color: inherit; }
+.aug-secs .sm { font: 11.5px/1.35 var(--serif); color: var(--ink-3); margin-top: 1px; }
+.aug-secs li.cur .sm { color: var(--ink-2); }
+.aug-secs li.aug-ai { cursor: default; font: 9.5px var(--mono); color: var(--ink-3); padding-top: 4px; }
+
+/* ---- panel: Glossary ---- */
+.aug-gloss { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; font: 12.5px/1.4 var(--serif); }
+.aug-gloss dt { font-weight: 600; color: var(--ink); cursor: pointer; margin-top: 4px; }
+.aug-gloss dt:hover { color: var(--accent); }
+.aug-gloss dd { margin: 0; color: var(--ink-2); }
+
+/* ---- head: the skim badge ---- */
+#item-head .aug-skim { margin-left: auto; font: 11px var(--mono); color: var(--accent); white-space: nowrap; }
+#item-head .aug-skim + .pos { margin-left: 0; }
+
+/* ---- margin notes on the pages ---- */
+.pg > .aug-mk {
+  position: absolute; z-index: 3; width: 16px; height: 16px; margin-top: -8px; padding: 0;
+  border: 0; border-radius: 50%; background: rgb(226 165 74 / .92); color: #1a1611;
+  font: 700 10px/16px var(--serif); text-align: center; cursor: pointer;
+  box-shadow: 0 1px 3px #0005; opacity: .82; transition: opacity .12s, transform .12s;
+}
+.pg > .aug-mk.l { left: 3px; }
+.pg > .aug-mk.r { right: 3px; }
+.pg > .aug-mk.fig { border-radius: 3px; font: 9px/16px var(--mono); }
+.pg > .aug-mk:hover, .pg > .aug-mk:focus-visible { opacity: 1; transform: scale(1.15); outline: none; }
+.aug-pop {
+  position: fixed; z-index: 60; width: 320px; pointer-events: none;
+  background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; padding: 8px 10px 9px;
+  box-shadow: 0 10px 30px #000a; display: flex; flex-direction: column; gap: 4px;
+}
+.aug-pop .ap-h { font: 10px var(--mono); color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
+.aug-pop .ap-ai { font: 700 9px var(--mono); color: #1a1611; background: var(--accent); border-radius: 3px; padding: 0 4px; letter-spacing: .05em; }
+.aug-pop .ap-t { font: 13px/1.45 var(--serif); color: var(--ink); }
+.aug-pop .ap-b { font: 12.5px/1.4 var(--serif); color: var(--ink-2); }
+.aug-pop .ap-q { font: italic 11.5px/1.4 var(--serif); color: var(--ink-3); border-left: 2px solid var(--line); padding-left: 7px; }
+
+/* ---- the track: sections as ticks, stops as triangles, skip ranges hatched ---- */
+#track .tr-layer[data-layer="augment"] { position: absolute; inset: 0; pointer-events: none; }
+#track .tr-layer[data-layer="augment"] i { position: absolute; display: block; pointer-events: auto; }
+#track .ag-skip { top: 0; bottom: 0; background: repeating-linear-gradient(135deg, rgb(236 230 218 / .28) 0 2px, transparent 2px 4px); border-radius: 1px; }
+#track .ag-sec { top: -3px; bottom: -3px; width: 1px; margin-left: -.5px; background: var(--ink-2); opacity: .6; }
+#track .ag-sec.d1, #track .ag-sec.d2 { top: -1px; bottom: -1px; opacity: .4; }
+#track .ag-stop { bottom: calc(100% + 1px); width: 0; height: 0; margin-left: -4px; border: 4px solid transparent; border-bottom: 0; border-top: 5px solid var(--accent); }
+#track:hover .ag-sec { top: -2px; bottom: -2px; }

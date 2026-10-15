@@ -278,7 +278,8 @@ function rowEl(row, r, cur, s) {
     if (!n.parent) el.append(h('span', { className: 'lr-dot', style: `background:${LANE_COLORS[n.lane] || 'var(--ink-3)'}` }));
     el.append(h('span', { className: 'lr-t', textContent: n.label }));
     const read = readCount(n);
-    el.append(h('span', { className: 'lr-n', textContent: q ? `${n.m}/${n.n}` : read ? `${read}/${n.n}` : String(n.n), title: q ? `${n.m} of ${n.n} match` : read ? `${read} of ${n.n} read` : `${n.n} items` }));
+    el.append(h('span', { className: 'lr-n', title: q ? `${n.m} of ${n.n} match` : read ? `${read} of ${n.n} read` : `${n.n} items` },
+      q ? `${n.m}/${n.n}` : read ? [h('b', { textContent: `${read}✓` }), ` ${n.n}`] : String(n.n)));
     el.append(h('button', { type: 'button', className: 'lr-go', tabIndex: -1, textContent: '▶', title: n.parent ? `Browse “${n.label}” in the feed (Enter)` : `Browse the ${n.label} lane (Enter)` }));
     el.title = crumbOf(n).join(' › ');
   } else {

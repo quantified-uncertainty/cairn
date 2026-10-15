@@ -299,11 +299,20 @@ function guideView(it, a, streaming) {
       stops.length && !streaming ? h('button', {
         className: 'aug-skimbtn' + (S.skim ? ' on' : ''), title: 'Skim path: Advance (Space) goes to the next stop, then the next item (T)',
         textContent: S.skim ? 'skim path on' : 'follow with Space', onclick: toggleSkim,
+      }) : null,
+      a.notes?.length && !streaming ? h('button', {
+        className: 'aug-notesbtn' + (S.notes ? ' on' : ''), title: 'Margin notes on the pages: hover a † for the note, click it to light the sentence',
+        textContent: `${a.notes.length} margin note${a.notes.length > 1 ? 's' : ''}${S.notes ? '' : ' (off)'}`,
+        onclick: () => { store.set('notes', !S.notes); paintGuide(it); paintNotesSoon(); },
       }) : null),
-    stops.length ? h('ol', { className: 'aug-plan' }, ...stops.map((st) => h('li', {
-      className: 'st' + (st.k >= lo && st.k <= end ? ' cur' : ''), title: st.quote ? `“${st.quote}”` : `Go to p. ${st.k + 1}`,
-      onclick: () => moveTo(it, st.k, 'reading guide stop', st.quote),
-    }, pageLink(st.k), h('span', { className: 'kd', textContent: KIND[st.kind] || st.kind }), h('span', { className: 'why', textContent: st.why })))) : null,
+    stops.length ? h('ol', { className: 'aug-plan' }, ...stops.map((st) => {
+      const li = h('li', {
+        className: 'st' + (st.k >= lo && st.k <= end ? ' cur' : ''), title: st.quote ? `“${st.quote}”` : `Go to p. ${st.k + 1}`,
+        onclick: () => moveTo(it, st.k, 'reading guide stop', st.quote),
+      }, pageLink(st.k), h('span', { className: 'kd', textContent: KIND[st.kind] || st.kind }), h('span', { className: 'why', textContent: st.why }));
+      li.dataset.k = st.k;
+      return li;
+    })) : null,
     a.skip?.length ? h('div', { className: 'aug-skip' }, h('b', { textContent: 'Skip ' }), ...a.skip.flatMap((x, j) => [j ? ' · ' : null,
       h('span', { className: 'pl', textContent: x.a === x.b ? `p. ${x.a + 1}` : `pp. ${x.a + 1}–${x.b + 1}`, title: 'Go past it', onclick: () => moveTo(it, Math.min((it.n || x.b + 2) - 1, x.b + 1), 'skip ahead') }),
       x.why ? ` ${x.why}` : ''])) : null,
@@ -371,13 +380,15 @@ function paintSections(it) {
   }), ...(secs.length ? [h('li', { className: 'aug-ai', textContent: `Section lines: ${ai}-written` })] : []));
   litSections();
 }
+/** Light the section and the stops on screen (after the spread settles: a few class changes). */
 function litSections() {
-  const lis = document.querySelectorAll('#aug-secs li[data-page]'); if (!lis.length) return;
   const i = current(); const it = items[i]; if (!it) return;
   const end = spreadEnd(i, it);
+  const lo = isFlow(it) ? (flowHere(it) ? flowRange(state.start.get(i) ?? 0)[0] : 0) : state.start.get(i) ?? 0;
   let lit = null;
-  for (const li of lis) { li.classList.remove('cur'); if (Number(li.dataset.page) <= end) lit = li; }
+  for (const li of document.querySelectorAll('#aug-secs li[data-page]')) { li.classList.remove('cur'); if (Number(li.dataset.page) <= end) lit = li; }
   lit?.classList.add('cur');
+  for (const li of document.querySelectorAll('#aug-guide .aug-plan li[data-k]')) { const k = Number(li.dataset.k); li.classList.toggle('cur', k >= lo && k <= end); }
 }
 on('spread:settled', litSections);
 
@@ -583,7 +594,10 @@ function repaintTrack() {
   paintLayer({ i, it, n: it.n || augOf(it)?.n || 1, el: fallbackEl });
 }
 if (typeof feed.registerTrackLayer === 'function') feed.registerTrackLayer('augment', paintLayer);
-else on('item:settled', () => repaintTrack());
+else {
+  on('item:shown', () => { if (fallbackEl) { fallbackEl.replaceChildren(); fallbackEl.dataset.for = ''; } });
+  on('item:settled', () => repaintTrack());
+}
 
 // ---------- settings changes from elsewhere ----------
 on('settings:changed', ({ key }) => {
