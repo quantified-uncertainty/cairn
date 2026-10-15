@@ -526,7 +526,68 @@ Dollar cost about $0 plus storage. Re-summarising edited posts on Haiku 5.5 batc
 
 **Per-item results:**
 
-{{COVERAGE_TABLE}}
+| # | Item (year) | Type | OpenAlex | S2 | DOI (RA) | GS spot | Script full text | Open licence / PD | Wayback (availability API) |
+|---|---|---|---|---|---|---|---|---|---|
+| A01 | What failure looks like (2019) | AF | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20230101 |
+| A02 | AGI Ruin: A List of Lethalities (2022) | AF | ✗ | ✗ | ✗ | ✓ | ✓ | none stated / © | 20260921 |
+| A03 | Without specific countermeasures, the easiest path to tran… (2022) | AF | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261001 |
+| A04 | Model Organisms of Misalignment: The Case for a New Pillar… (2023) | AF | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| A05 | Counterarguments to the basic AI x-risk case (2022) | LW | ✗ | ✗ | ✗ | ✗ | ✓ | none stated / © | 20260724 |
+| A06 | Alignment remains a hard, unsolved problem (2025) | LW | ✗ | ✗ | ✗ | — | ✓ | none stated / © | none returned |
+| A07 | Current AIs seem pretty misaligned to me (2026) | LW | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| A08 | Interpretability Will Not Reliably Find Deceptive AI (2025) | LW | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| A09 | AI Pause Will Likely Backfire (2023) | EAF | ✗ | ✗ | ✗ | ✓ | ✓ | CC BY 4.0 (EAF terms, post after 2022-12-01) [V] | 20261001 |
+| A10 | AI strategy nearcasting (2022) | EAF | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20260521 |
+| A11 | AI Could Defeat All Of Us Combined (2022) | blog | ✗ | ✗ | ✗ | ✓ | ✓ | none stated / © | 20261013 |
+| A12 | The Most Important Century (in a nutshell) (2021) | blog | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261003 |
+| A13 | Otherness and control in the age of AGI (2024) | blog | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20260925 |
+| A14 | Pause For Thought: The AI Pause Debate (2023) | substack | ✗ | ✗ | ✗ | ✗ | ✓ | none stated / © | 20260728 |
+| A15 | Machines of Loving Grace (2024) | blog | ✗ | ✗ | ✗ | ✓ | ✓ | none stated / © | 20250417 |
+| A16 | AI as Normal Technology (2025) | substack | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20250904 |
+| A17 | The case for ensuring that powerful AIs are controlled (2024) | substack | ✗ | ✗ | ✗ | — | ✓ | none stated / © | none returned |
+| A18 | Takeoff speeds rule everything around me (2026) | substack | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| A19 | The Scaling Hypothesis (2020) | blog | ✗ | ✗ | ✗ | ✗ | ✓ | CC0 [V] | none returned |
+| A20 | The state of AI safety in four fake graphs (2026) | blog | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20260810 |
+| B01 | The Operational Risks of AI in Large-Scale Biological Atta… (2024) | think tank | ✓ | ✓ | Crossref | ✓ | ✓ (browser UA only) | none stated / © | 20261012 |
+| B02 | Securing AI Model Weights: Preventing Theft and Misuse of … (2024) | think tank | ✓ | ✗ | Crossref | — | ✓ (browser UA only) | none stated / © | none returned |
+| B03 | When AI Builds AI (2025) | think tank | ✓ | ✓ | Crossref | — | ✓ | CC BY-NC 4.0 [V] | 20261011 |
+| B04 | AI Governance at the Frontier: Unpacking Foundational Assu… (2025) | think tank | ✓ | ✗ | Crossref | — | ✓ | CC BY-NC 4.0 (CSET house licence) [I] | 20260927 |
+| B05 | International Control of Powerful Technology: Lessons from… (2021) | think tank | ✗ | ✗ | ✗ | ✓ | ✓ | none stated / © | 20260609 |
+| B06 | Can AI scaling continue through 2030? (2024) | research org | ✗ | ✗ | ✗ | — | ✓ | CC BY 4.0 [V] | 20261015 |
+| B07 | Preparing for the Intelligence Explosion (2025) | research org | ✓ (arXiv twin) | ✓ (arXiv twin) | DataCite (arXiv version) | — | ✓ | none stated / © | 20261011 |
+| B08 | Risk Reporting for Developers' Internal AI Model Use (2025) | think tank | ✓ (arXiv twin) | ✓ (arXiv twin) | DataCite (arXiv version) | — | ✓ | none stated / © | none returned |
+| B09 | International AI Safety Report 2026: Extended Summary for … (2026) | intergov | ✗ | ✗ | ✗ | — | ✓ | OGL v3.0 [V] | 20261009 |
+| B10 | Anthropic's Responsible Scaling Policy (2026) | lab | ✗ | ✓ | ✗ | — | ✓ | none stated / © | 20261011 |
+| B11 | System Card: Claude Opus 4.6 (2026) | lab | ✗ | ✗ | ✗ | ✗ | ✓ | none stated / © | 20261011 |
+| B12 | GPT-5 System Card (2025) | lab | ✗ | ✗ | ✗ | — | ✓ | none stated / © | none returned |
+| B13 | Gemini 3 Pro Model Card (2025) | lab | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261004 |
+| B14 | On the Biology of a Large Language Model (2025) | lab | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| B15 | If-Then Commitments for AI Risk Reduction (2024) | think tank | ✗ | ✗ | ✗ | ✓ | ✓ | none stated / © | 20261011 |
+| B16 | Beyond DeepSeek: China's Diverse Open-Weight AI Ecosystem … (2025) | think tank | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261011 |
+| B17 | Report on Semi-informative Priors (2021) | funder | ✗ | ✗ | ✗ | ✗ | ✓ | none stated / © | 20251112 |
+| B18 | Superpowers and AGI (2026) | think tank | ✗ | ✗ | ✗ | ✗ | ✓ | none stated / © | 20261010 |
+| B19 | Shaping global governance of AI agents (2026) | think tank | ✗ | ✗ | ✗ | — | ✓ | none stated / © | none returned |
+| B20 | Frontier Risk Report (February to March 2026) (2026) | research org | ✗ | ✗ | ✗ | — | ✓ | none stated / © | 20261012 |
+| C01 | The Simple Macroeconomics of AI (2024) | NBER | ✓ | ✓ | Crossref | — | ✗ (3 free/yr, then paid) | none stated / © | 20261007 |
+| C02 | Generative AI at Work (2023) | NBER | ✓ | ✓ | Crossref | — | ✗ (3 free/yr, then paid) | none stated / © | 20261011 |
+| C03 | The Most Dangerous Fiction: The Rhetoric and Reality of th… (2025) | SSRN | ✓ | ✗ | Crossref | ✗ | ✗ [cloudflare-challenge] | none stated / © | 20261012 |
+| C04 | Gen-AI: Artificial Intelligence and the Future of Work (2024) | IMF | ✓ | ✓ | Crossref | — | ✗ [akamai-deny] | none stated / © | 20260709 |
+| C05 | Developing a Measure of Women's Agency in Tunisia: Machine… (2026) | World Bank | ✓ | ✓ | Crossref | — | ✓ | CC BY 3.0 IGO [V] | none returned |
+| C06 | Defining AI incidents and related terms (2024) | OECD | ✓ | ✓ | Crossref | — | ✗ [cloudflare-challenge] | OECD (CC BY 4.0?) [I] | none returned |
+| C07 | Artificial Intelligence Risk Management Framework: Generat… (2024) | US gov | ✓ | ✓ | Crossref | — | ✓ | US gov work (17 USC 105) [V] | 20261011 |
+| C08 | Artificial Intelligence Risk Management Framework (AI RMF … (2023) | US gov | ✓ | ✓ | Crossref | — | ✓ | US gov work [V] | 20261012 |
+| C09 | Artificial Intelligence: Overview, Recent Advances, and Co… (2023) | US gov | ✗ | ✗ | ✗ | ✗ | ✗ official (Cloudflare) / ✓ EveryCRSReport [cloudflare-challenge] | US gov work (CRS) [V] | 20260219 |
+| C10 | Artificial Intelligence: Agencies Have Begun Implementatio… (2023) | US gov | ✗ | ✗ | ✗ | — | ✗ [access-denied] | US gov work (GAO) [I] | 20260914 |
+| C11 | Frontier AI: capabilities and risks - discussion paper (2023) | UK gov | ✗ | ✗ | ✗ | ✗ | ✓ | OGL v3.0 [I] | 20261002 |
+| C12 | Regulation (EU) 2024/1689 laying down harmonised rules on … (2024) | EU | ✗ | ✗ | ✗ | — | ✗ [HTTP 202 challenge] | EU reuse policy [I] | 20261014 |
+| C13 | AI Watch. Defining Artificial Intelligence 2.0 (2021) | EU | ✗ | ✗ | OP (EU) | — | ✓ | CC BY 4.0 (EC reuse) [I] | none returned |
+| C14 | Facilitating the use of Common Test Definitions by Convert… (2026) | US gov | ✓ | ✓ | Crossref | — | ✓ | contractor report: not automatically PD [I] | none returned |
+| C15 | Aero-Engines AI - A Machine-Learning App for Aircraft Engi… (2023) | US gov | ~ (conf. version) | ~ (conf. version) | ✗ | ✗ | ✓ | US gov work (NASA civil servant) [I] | 20260427 |
+| C16 | GPTs are GPTs: An Early Look at the Labor Market Impact Po… (2023) | arXiv econ | ✓ | ✓ | DataCite | — | ✓ | CC BY-SA 4.0 [V] | 20261009 |
+| C17 | Computing Power and the Governance of Artificial Intellige… (2024) | arXiv cs.CY | ✓ | ✓ | DataCite | — | ✓ | CC BY 4.0 [V] | 20261012 |
+| C18 | The Economics of Recursive Self-Improvement (2026) | indep WP | ✓ | ✓ (arXiv twin) | ✗ | — | ✓ | none stated / © | 20261012 |
+| C19 | Optimal Timing for Superintelligence: Mundane Consideratio… (2026) | indep WP | ✗ | ✓ | ✗ | ✗ | ✓ | none stated / © | 20261005 |
+| C20 | AI and Coder Employment: Compiling the Evidence (2026) | Fed | ✓ | ✓ | Crossref | — | ✓ | Fed Board staff work, likely PD [I] | none returned |
 
 Notes: "Script full text" means retrievable without login or challenge, as HTML or via a PDF link on the landing page. GS "—" = not spot-checked. Licence marks: [V] seen on page or PDF; [I] inferred from publisher policy. Wayback dates are the snapshot the availability API returned (YYYYMMDD), not the first capture.
 

@@ -268,7 +268,8 @@ const works = [
     iaCheck: true, oreilly: false, perlego: false, libby: null },
   { key: 'scott', ol: 'OL26241985W', t: 'Seeing Like a State', a: ['James C. Scott'], y: 1998, kind: 'monograph', pub: 'Yale University Press', alias: [],
     oreilly: false, perlego: true, libby: null },
-  { key: 'savage', olq: { title: 'The Foundations of Statistics', author: 'Savage' }, t: 'The Foundations of Statistics', a: ['Leonard J. Savage'], y: 1954, kind: 'monograph', pub: 'Dover', alias: [],
+  // Open Library splits Savage's book over several work records; OL17945387W is the one with a lending scan.
+  { key: 'savage', olq: { key: 'OL17945387W', title: 'The Foundations of Statistics' }, t: 'The Foundations of Statistics', a: ['Leonard J. Savage'], y: 1954, kind: 'monograph', pub: 'Dover', alias: [],
     iaCheck: true },
   { key: 'moral-uncertainty', olq: { title: 'Moral Uncertainty', author: 'MacAskill' }, t: 'Moral Uncertainty', a: ['William MacAskill', 'Krister Bykvist', 'Toby Ord'], y: 2020, kind: 'monograph', pub: 'Oxford University Press', alias: [],
     free: [{ rule: 'A2', label: 'OPEN ACCESS', url: 'https://directory.doabooks.org/handle/20.500.12854/30579', terms: 'Open access from Oxford University Press, CC BY-NC-ND (DOAB record).' }] },
@@ -343,8 +344,10 @@ const tray = [
 const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 
 async function olSearch(q) {
-  const url = 'https://openlibrary.org/search.json?' + new URLSearchParams({ title: q.title, author: q.author,
-    fields: 'key,title,subtitle,author_name,first_publish_year,ebook_access,ia,number_of_pages_median,isbn,lcc_sort,lcc,language', limit: '5' });
+  const fields = 'key,title,subtitle,author_name,first_publish_year,ebook_access,ia,number_of_pages_median,isbn,lcc_sort,lcc,language';
+  const url = 'https://openlibrary.org/search.json?' + new URLSearchParams(q.key
+    ? { q: 'key:/works/' + q.key, fields, limit: '1' }
+    : { title: q.title, author: q.author, fields, limit: '5' });
   const j = await getJSON(url);
   const docs = j?.docs || [];
   // Prefer the doc whose title matches best, then by number of IA scans (the main work record).
@@ -400,14 +403,18 @@ for (const w of works) {
       const d2 = await getJSON('https://openlibrary.org/search.json?' + new URLSearchParams({ q: 'key:/works/' + rec.ol, fields: 'key,ia', limit: '1' }));
       ids = d2?.docs?.[0]?.ia || (rec.ia ? [rec.ia] : []);
     }
+    // An English lending scan: in `inlibrary`, language eng, and its title shares the work's leading words
+    // (IA language fields are sometimes wrong: a Portuguese Kuhn translation is tagged "eng").
+    const lead = norm(w.t).split(' ').filter((x) => x.length > 3 && !['with', 'from', 'that', 'this'].includes(x)).slice(0, 2);
+    const isEn = (x) => x.lend && /eng/.test(x.lang) && lead.every((t) => norm(x.title).includes(t));
     const scans = [];
     for (const id of ids.slice(0, 14)) {
       const s = await iaScan(id);
       if (s) scans.push(s);
-      if (scans.some((x) => x.lend && /eng/.test(x.lang))) break;
+      if (scans.some(isEn)) break;
     }
-    const en = scans.find((x) => x.lend && /eng/.test(x.lang));
-    rec.iaChecked = scans.map((s) => ({ id: s.id, lend: s.lend, pd: s.pd, lang: s.lang }));
+    const en = scans.find(isEn);
+    rec.iaChecked = scans.map((s) => ({ id: s.id, title: s.title, lend: s.lend, pd: s.pd, lang: s.lang }));
     if (en) rec.iaLend = en.id;
     else rec.iaLendNote = 'No English scan in the lending collection among ' + scans.length + ' checked (' + CHECKED + ').';
     console.log(`  ${w.key}: ${scans.length} scans checked -> ${en ? 'English loan ' + en.id : 'no English loan'}`);

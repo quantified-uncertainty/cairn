@@ -1401,6 +1401,7 @@ archGroup.add(halos);
 /* ---------- Trail ribbon + stop numbers ---------- */
 const trailGroup = new THREE.Group(); archGroup.add(trailGroup);
 const trailMat = new THREE.ShaderMaterial({
+  side: THREE.DoubleSide,
   uniforms: { ...U, uT0: { value: 0 } },
   vertexShader: /* glsl */`
     ${WALL_GLSL}
@@ -2645,6 +2646,7 @@ renderer.setAnimationLoop((tms, frame) => {
 window.__rr = { st, flyTo, whisper, setUnroll, pullBook, closeCard, setTab, showTrail, rowById, thC, yB, hgt, clearLit: () => { whisperState = null; trailState = null; clearLit(); statusEl.hidden = true; }, get u() { return unrollState.u; },
   setU(u) { unrollState.u = unrollState.target = u; btnUnroll.setAttribute('aria-pressed', String(u > 0.5)); btnUnroll.textContent = u > 0.5 ? 'Roll the wall up' : 'Unroll the wall'; },
   frames: (n) => new Promise((res) => { let k = 0; const f = () => (++k >= n ? res() : requestAnimationFrame(f)); requestAnimationFrame(f); }),
+  get view() { return { ...viewShift, v: camera.view && { ...camera.view } }; },
   ripple() { LIT.uLitT0.value = U.uTime.value - 30; ringUntil = 0; trailMat.uniforms.uT0.value = -1000; } };
 $('#btn-about').addEventListener('click', () => { $('#about').hidden = false; $('#about-close').focus(); });
 function closeAbout() { $('#about').hidden = true; $('#btn-about').focus(); }

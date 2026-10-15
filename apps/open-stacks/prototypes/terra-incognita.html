@@ -2413,7 +2413,8 @@ function matchList(text) {
     const full = tokens(clean(tPart)), head = tokens(clean(tPart).split(/:\s|\s[—–]\s/)[0]), at = tokens(aPart || '');
     if (!full.length) { out.push({ line, i: -1 }); continue; }
     const cand = new Set();
-    for (const tk of [...head, ...full].sort((a, b) => (tokIndex.get(a)?.length || 1e9) - (tokIndex.get(b)?.length || 1e9)).slice(0, 2)) for (const i of tokIndex.get(tk) || []) cand.add(i);
+    const byRarity = (arr) => arr.slice().sort((a, b) => (tokIndex.get(a)?.length || 1e9) - (tokIndex.get(b)?.length || 1e9));
+    for (const tk of [...byRarity(full).slice(0, 2), ...byRarity(head).slice(0, 1)]) for (const i of tokIndex.get(tk) || []) cand.add(i);
     let best = -1, bs = 0;
     for (const i of cand) {
       const w = M.works[i];
