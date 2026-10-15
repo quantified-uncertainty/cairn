@@ -26,7 +26,7 @@ const isLocal = (it) => it?.src === 'local' && String(it.id).startsWith('local:'
 
 // ---------------------------------------------------------------- reading
 /** A /local/doc page → article HTML for prepareFlow: no scripts, frames, forms or handlers. */
-export function localHtml(src) {
+export function localHtml(src, it = null) {
   const doc = new DOMParser().parseFromString(src, 'text/html');
   doc.querySelectorAll('script, style, link, meta, base, iframe, frame, object, embed, form, noscript, template').forEach((x) => x.remove());
   for (const el of doc.body.querySelectorAll('*')) {
@@ -36,10 +36,13 @@ export function localHtml(src) {
       else if (/^(href|src|xlink:href|poster|action)$/.test(n) && /^\s*(javascript|vbscript|data:(?!image\/))/i.test(a.value)) el.removeAttribute(a.name);
     }
   }
+  // A document's own first heading that repeats its title (shown above it already) goes.
+  const first = doc.body.querySelector('article > :first-child');
+  if (it && first && /^H[12]$/.test(first.tagName) && first.textContent.trim().toLowerCase() === String(it.t || '').trim().toLowerCase()) first.remove();
   return doc.body.innerHTML;
 }
 const coreHtml = extractors.html;
-extractors.html = async (it, r) => (isLocal(it) ? localHtml(await r.text()) : coreHtml(it, r));
+extractors.html = async (it, r) => (isLocal(it) ? localHtml(await r.text(), it) : coreHtml(it, r));
 
 // ---------------------------------------------------------------- keeping up
 let checking = false, lastCheck = 0;

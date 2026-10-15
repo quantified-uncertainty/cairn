@@ -294,7 +294,7 @@ function paintNow() {
   const more = p.hidden.length ? h('button', { type: 'button', className: 'tg-more', textContent: `+${p.hidden.length}`, title: `${p.hidden.map((c) => `${c.label} (${c.items.length})`).join('\n')}\n\nClick to show them all` }) : null;
   row.replaceChildren(
     h('div', { className: 'tg-r' }, label, ...p.rows[0].map(chipEl), p.rows[1].length ? null : more),
-    p.rows[1].length ? h('div', { className: 'tg-r' }, ...p.rows[1].map(chipEl), more) : null);
+    p.rows[1].length ? h('div', { className: 'tg-r' }, ...p.rows[1].map(chipEl), more) : ''); // '' not null: replaceChildren would write "null"
   check();
 }
 /** The active chip is wider ("3/9" and ✕): if its row no longer fits, the row's last other chip waits behind +n. */

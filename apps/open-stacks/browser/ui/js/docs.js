@@ -33,6 +33,7 @@ export const extractors = {
     // A plain reader-mode extraction: the main content element, minus page chrome.
     const doc = new DOMParser().parseFromString(await r.text(), 'text/html');
     const base = it.url;
+    markWidgets(doc, it.page || it.url);
     for (const [sel, attr] of [['img', 'src'], ['a', 'href'], ['source', 'srcset'], ['img', 'srcset']]) {
       doc.querySelectorAll(`${sel}[${attr}]`).forEach((el) => {
         const v = el.getAttribute(attr);
@@ -77,6 +78,47 @@ export function dropDocs(it = null) {
 
 /** Feature hooks fn(doc, it) that edit a flow document's parsed HTML before layout and
  *  paging, with img width/height still present (features/rescue.js routes images through /img). */
+// Interactive components (calculators, sliders, live charts) cannot run in the reader,
+// and extraction (Readability drops inputs and buttons) would flatten them into stray
+// labels and numbers. markWidgets finds them in the page as served — an Astro island or a
+// framework mount holding controls or a chart, or the largest block around 3+ form controls
+// that is not the article itself — and puts one short note in their place, naming the
+// widget, with a link to it on the original page.
+const CONTROLS = 'input:not([type=hidden]), select, textarea, [role=slider]';
+const CHROME = 'header, nav, aside, footer, [role=navigation], [role=banner], [role=search]';
+const titleCase = (s) => s.replace(/[-_]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\s+/g, ' ').trim().replace(/^./, (c) => c.toUpperCase());
+export function markWidgets(doc, page) {
+  const roots = new Set();
+  for (const el of doc.querySelectorAll('astro-island, [data-reactroot], [data-v-app], [data-svelte-h], [data-widget]'))
+    if (el.querySelector(CONTROLS + ', canvas, button') && !el.closest(CHROME)) roots.add(el);
+  for (const c of doc.querySelectorAll(CONTROLS)) {
+    if (c.closest(CHROME)) continue;
+    let el = c.parentElement, k = 0;
+    while (el && el !== doc.body && k++ < 12 && el.querySelectorAll(CONTROLS).length < 3) el = el.parentElement;
+    if (!el || el === doc.body || el.querySelectorAll(CONTROLS).length < 3) continue;
+    // Grow to take in the widget's outputs and chart, but not the article around it.
+    while (el.parentElement && el.parentElement !== doc.body && !/^(MAIN|ARTICLE)$/.test(el.parentElement.tagName)
+      && !el.parentElement.querySelector('h1, h2') && el.parentElement.textContent.length < 4000) el = el.parentElement;
+    roots.add(el);
+  }
+  let n = 0;
+  for (const el of roots) {
+    if (!el.isConnected || [...roots].some((o) => o !== el && o.isConnected && o.contains(el))) continue;
+    const inputs = el.querySelectorAll(CONTROLS).length, charts = el.querySelectorAll('canvas, svg').length;
+    const comp = /([A-Za-z][\w-]*?)(?:\.[\w-]+)?\.(?:m?js|tsx?|jsx|svelte|vue)/.exec(el.getAttribute('component-url') || '')?.[1];
+    let head = null;
+    for (let p = el; p && !head; p = p.parentElement) { let s = p.previousElementSibling; while (s && !/^H[1-4]$/.test(s.tagName)) s = s.previousElementSibling; head = s; }
+    const name = el.getAttribute('aria-label') || (comp && comp.length > 3 ? titleCase(comp) : '') || head?.textContent.trim() || '';
+    const what = [inputs ? `${inputs} input${inputs > 1 ? 's' : ''}` : '', charts ? (charts > 1 ? `${charts} charts or diagrams` : 'a chart or diagram') : ''].filter(Boolean).join(', ');
+    const p = doc.createElement('p');
+    p.className = 'wv-widget';
+    const b = doc.createElement('b'); b.textContent = `Interactive${name ? ': ' + name : ' widget'}.`;
+    p.append(b, ` This part of the page is a live component${what ? ` (${what})` : ''}; it only runs on the original page. `);
+    if (page) { const a = doc.createElement('a'); a.href = page + (head?.id ? '#' + head.id : ''); a.textContent = 'Open it ↗'; p.append(a, ' · N shows the live page here.'); }
+    el.replaceWith(p); n++;
+  }
+  return n;
+}
 export const flowFilters = [];
 
 const VP_WORDS = 280; // words per stable "page" of a flow document
@@ -94,7 +136,9 @@ export function prepareFlow(it, html) {
   doc.querySelectorAll('a[href]').forEach((a) => { if (!a.getAttribute('href').startsWith('#')) { a.target = '_blank'; a.rel = 'noopener'; } });
   const title = doc.createElement('header');
   title.className = 'flow-title';
-  title.innerHTML = `<div class="t">${esc(it.t)}</div><div class="m">${esc([it.a, it.d || it.y, it.src].filter(Boolean).join(' · '))}</div>`;
+  const orig = it.page || (/\/graphql\b/.test(it.url || '') ? '' : it.url || '');
+  const tt = /^https?:/.test(orig) ? `<a href="${esc(orig)}" target="_blank" rel="noopener" title="Open the original">${esc(it.t)}</a>` : esc(it.t);
+  title.innerHTML = `<div class="t">${tt}</div><div class="m">${esc([it.a, it.d || it.y, it.src].filter(Boolean).join(' · '))}</div>`;
   doc.body.prepend(title);
   const blocks = [...doc.body.querySelectorAll(BLOCKS)].filter((b) => !b.parentElement.closest(BLOCKS));
   const texts = ['']; const outline = [];

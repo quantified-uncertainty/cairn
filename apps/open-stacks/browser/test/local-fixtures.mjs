@@ -9,8 +9,8 @@ import { join, dirname } from 'path';
 const CRC_T = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc32 = zlib.crc32 || ((b) => { let c = 0xffffffff; for (const x of b) c = CRC_T[(c ^ x) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; });
 
-/** A zip archive from [[name, Buffer|string, {store}?]]. */
-export function makeZip(entries) {
+/** A zip archive from [[name, Buffer|string, {store}?]]; zip64: write zip64 records (sizes and offsets in extra fields), as big archives have. */
+export function makeZip(entries, { zip64 = false } = {}) {
   const locals = [], centrals = [];
   let off = 0;
   for (const [name, content, opt = {}] of entries) {
@@ -23,15 +23,24 @@ export function makeZip(entries) {
     lh.writeUInt32LE(0x04034b50, 0); lh.writeUInt16LE(20, 4); lh.writeUInt16LE(0x800, 6); lh.writeUInt16LE(store ? 0 : 8, 8);
     lh.writeUInt32LE(crc, 14); lh.writeUInt32LE(comp.length, 18); lh.writeUInt32LE(data.length, 22); lh.writeUInt16LE(nb.length, 26);
     const ch = Buffer.alloc(46);
-    ch.writeUInt32LE(0x02014b50, 0); ch.writeUInt16LE(20, 4); ch.writeUInt16LE(20, 6); ch.writeUInt16LE(0x800, 8); ch.writeUInt16LE(store ? 0 : 8, 10);
-    ch.writeUInt32LE(crc, 16); ch.writeUInt32LE(comp.length, 20); ch.writeUInt32LE(data.length, 24); ch.writeUInt16LE(nb.length, 28); ch.writeUInt32LE(off, 42);
-    locals.push(lh, nb, comp); centrals.push(ch, nb);
+    ch.writeUInt32LE(0x02014b50, 0); ch.writeUInt16LE(zip64 ? 45 : 20, 4); ch.writeUInt16LE(zip64 ? 45 : 20, 6); ch.writeUInt16LE(0x800, 8); ch.writeUInt16LE(store ? 0 : 8, 10);
+    ch.writeUInt32LE(crc, 16); ch.writeUInt32LE(zip64 ? 0xffffffff : comp.length, 20); ch.writeUInt32LE(zip64 ? 0xffffffff : data.length, 24); ch.writeUInt16LE(nb.length, 28); ch.writeUInt32LE(zip64 ? 0xffffffff : off, 42);
+    let extra = Buffer.alloc(0);
+    if (zip64) { extra = Buffer.alloc(28); extra.writeUInt16LE(1, 0); extra.writeUInt16LE(24, 2); extra.writeBigUInt64LE(BigInt(data.length), 4); extra.writeBigUInt64LE(BigInt(comp.length), 12); extra.writeBigUInt64LE(BigInt(off), 20); ch.writeUInt16LE(28, 30); }
+    locals.push(lh, nb, comp); centrals.push(ch, nb, extra);
     off += 30 + nb.length + comp.length;
   }
   const cd = Buffer.concat(centrals);
   const end = Buffer.alloc(22);
-  end.writeUInt32LE(0x06054b50, 0); end.writeUInt16LE(entries.length, 8); end.writeUInt16LE(entries.length, 10); end.writeUInt32LE(cd.length, 12); end.writeUInt32LE(off, 16);
-  return Buffer.concat([...locals, cd, end]);
+  end.writeUInt32LE(0x06054b50, 0);
+  if (!zip64) { end.writeUInt16LE(entries.length, 8); end.writeUInt16LE(entries.length, 10); end.writeUInt32LE(cd.length, 12); end.writeUInt32LE(off, 16); return Buffer.concat([...locals, cd, end]); }
+  end.writeUInt16LE(0xffff, 8); end.writeUInt16LE(0xffff, 10); end.writeUInt32LE(0xffffffff, 12); end.writeUInt32LE(0xffffffff, 16);
+  const z = Buffer.alloc(56);
+  z.writeUInt32LE(0x06064b50, 0); z.writeBigUInt64LE(44n, 4); z.writeUInt16LE(45, 12); z.writeUInt16LE(45, 14);
+  z.writeBigUInt64LE(BigInt(entries.length), 24); z.writeBigUInt64LE(BigInt(entries.length), 32); z.writeBigUInt64LE(BigInt(cd.length), 40); z.writeBigUInt64LE(BigInt(off), 48);
+  const loc = Buffer.alloc(20);
+  loc.writeUInt32LE(0x07064b50, 0); loc.writeBigUInt64LE(BigInt(off + cd.length), 8); loc.writeUInt32LE(1, 16);
+  return Buffer.concat([...locals, cd, z, loc, end]);
 }
 
 /** A small valid PDF: `pages` pages, each saying "Page k" (and `words` after it), with an Info title and author. */

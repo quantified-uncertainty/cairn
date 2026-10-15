@@ -25,7 +25,7 @@
 // cannot list or read your files through the browser.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, realpathSync, createReadStream, watch, readdirSync, unlinkSync, renameSync } from 'fs';
 import { readFile } from 'fs/promises';
-import { join, dirname, basename, extname, sep, resolve } from 'path';
+import { join, dirname, basename, sep, resolve, relative, isAbsolute } from 'path';
 import { homedir } from 'os';
 import { execFile, spawn } from 'child_process';
 import { HOST } from '../config.mjs';
@@ -179,8 +179,10 @@ export default async function (app) {
     const x = itemFrom(m);
     if (!x || x.gone) return fail(res, 404, 'not found');
     let parts; try { parts = m[2].split('/').map(decodeURIComponent); } catch { return fail(res, 400, 'bad path'); }
-    if (parts.some((p) => !p || p === '.' || p === '..' || p.startsWith('.') || p.includes('\0') || p.includes('\\'))) return fail(res, 404, 'not found');
-    const real = within(resolve(baseOf(x), ...parts));
+    let base = baseOf(x);
+    if (parts[0] === '~') { base = x.e.root.dir; parts = parts.slice(1); } // relative to the folder you configured (a link up and over: ../other/x.png)
+    if (!parts.length || parts.some((p) => !p || p === '.' || p === '..' || p.startsWith('.') || p.includes('\0') || p.includes('\\'))) return fail(res, 404, 'not found');
+    const real = within(resolve(base, ...parts));
     if (!real) return fail(res, 404, 'not found');
     sendFile(req, res, real, L.mimeOf(real));
   });
@@ -212,9 +214,14 @@ export default async function (app) {
     if (/^(https?|mailto|ftp):/i.test(v)) return v;
     if (/^data:image\//i.test(v)) return isImg ? v : '#';
     if (/^[a-z][a-z0-9+.-]*:/i.test(v) || v.startsWith('/') || v.startsWith('\\')) return '#';
-    const [p] = v.split(/[?#]/);
-    const parts = p.split('/').filter((s) => s && s !== '.');
-    return parts.length ? `/local/rel/${x.it.id}/${parts.map((s) => { try { return encodeURIComponent(decodeURIComponent(s)); } catch { return encodeURIComponent(s); } }).join('/')}` : '#';
+    let p = v.split(/[?#]/)[0];
+    try { p = decodeURIComponent(p); } catch { /* as written */ }
+    if (!p) return '#';
+    const base = baseOf(x), target = resolve(base, p);
+    const inRoot = relative(x.e.root.dir, target);
+    if (!inRoot || inRoot.startsWith('..') || isAbsolute(inRoot)) return '#'; // outside the folder: not served
+    const fromBase = relative(base, target);
+    return fromBase.startsWith('..') ? `/local/rel/${x.it.id}/~/${enc(inRoot)}` : `/local/rel/${x.it.id}/${enc(fromBase)}`;
   }
   function cachePath(x) { return join(DOCS, `${x.it.id.slice(6)}-${Math.round(x.e.mtimeMs).toString(36)}-${x.e.size.toString(36)}.html`); }
   function keep(x, html) {
