@@ -897,10 +897,18 @@ function sentIdx(r, j) {
   while (lo < hi) { const m = (lo + hi + 1) >> 1; if (r.sents[m][0] <= j) lo = m; else hi = m - 1; }
   return lo;
 }
-let navBusy = false;
+let navBusy = false, lastBack = 0;
 const edge = (msg, icon) => toast(msg, { icon, kind: 'edge' });
+/** Whether a step back should only go to the start of what is being read: the
+ *  voice is a few words into it, and this is not a second press in a row. */
+function restart(r, a, o) {
+  const again = performance.now() - lastBack < 1500;
+  lastBack = performance.now();
+  return r.cur - a >= 3 && !o.repeat && !again;
+}
 /** Back or forward a sentence. Back goes to the start of this sentence when the
- *  voice is two words into it, else to the one before (a held key skims on). */
+ *  voice is a few words into it, else (or pressed again) to the one before;
+ *  a held key skims on. */
 async function stepSentence(d, o = {}) {
   const r = R; if (!r || navBusy || !r.sents.length) return;
   navBusy = true;
@@ -908,7 +916,7 @@ async function stepSentence(d, o = {}) {
     let si = sentIdx(r, r.cur), target = null;
     if (d < 0) {
       const a = r.sents[si][0];
-      if (r.cur - a >= 2 && !o.repeat) target = a;
+      if (restart(r, a, o)) target = a;
       else if (si > 0) target = r.sents[si - 1][0];
       else if (r.kind !== 'flow' && r.first > 0 && await earlier(r)) { if (R !== r) return; si = sentIdx(r, r.cur); target = r.sents[Math.max(0, si - 1)][0]; }
       else { target = a; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
@@ -932,9 +940,9 @@ async function stepPara(d, o = {}) {
     let target = null;
     if (d < 0) {
       let a = start(r.cur);
-      if (a === 0 && r.kind !== 'flow' && r.first > 0 && (r.cur - sentFrom(a) < 2 || o.repeat) && await earlier(r)) { if (R !== r) return; a = start(r.cur); }
+      if (a === 0 && r.kind !== 'flow' && r.first > 0 && (r.cur - sentFrom(a) < 3 || o.repeat) && await earlier(r)) { if (R !== r) return; a = start(r.cur); }
       const fa = sentFrom(a);
-      if (r.cur - fa >= 2 && !o.repeat) target = fa;
+      if (restart(r, fa, o)) target = fa;
       else if (a > 0) target = sentFrom(start(a - 1));
       else { target = fa; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
     } else {
@@ -1617,6 +1625,7 @@ function syncVoice() {
   const pref = engines.get(prefs.engine);
   const id = R?.eng || (pref && !pref.available() ? prefs.engine : 'browser');
   const want = `${id}:${voiceOf(id)}`;
+  if (bar.voice.value === want) return;
   bar.voice.value = want;
   if (bar.voice.value !== want) bar.voice.value = `${id}:`;
   const e = engines.get(id);
@@ -1637,7 +1646,7 @@ function setVoice(val) {
 const clock = (s) => { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60); return m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${m}:${String(s % 60).padStart(2, '0')}`; };
 function progress() {
   const r = R; if (!bar || !mode) return;
-  if (!r || !r.words.length) { bar.fill.style.width = '0%'; bar.knob.style.left = '0%'; bar.where.replaceChildren(); return; }
+  if (!r || !r.words.length) { bar.fill.style.width = '0%'; bar.knob.style.left = '0%'; bar.where.replaceChildren(); bar.where._t = ''; return; }
   const w = r.words[r.cur] || r.words[0];
   let f, top, sub;
   if (r.kind === 'flow') {
@@ -1652,8 +1661,8 @@ function progress() {
     bar.where.title = `page ${w.page + 1} of ${r.n}`;
   }
   const pct = (100 * Math.max(0, Math.min(1, f))).toFixed(2) + '%';
-  bar.fill.style.width = pct; bar.knob.style.left = pct;
-  bar.where.replaceChildren(h('b', { textContent: top }), h('span', { textContent: sub }));
+  if (bar.fill.style.width !== pct) { bar.fill.style.width = pct; bar.knob.style.left = pct; }
+  if (bar.where._t !== top + sub) { bar.where._t = top + sub; bar.where.replaceChildren(h('b', { textContent: top }), h('span', { textContent: sub })); }
 }
 /** The sentence being read, faintly, in the player, its current word brighter. */
 function paintNow(si) {
@@ -1681,13 +1690,13 @@ function paintBar() {
   const r = R, playing = !!r?.playing;
   bar.classList.toggle('playing', playing);
   bar.classList.toggle('loading', !r || (!!r.loading && playing));
-  bar.play.innerHTML = playing ? ICON.pause : ICON.play;
-  bar.play.title = bar.play.ariaLabel = playing ? 'Pause (Space)' : 'Play (Space)';
-  if (![...bar.speed.options].some((o) => o.value === String(prefs.rate))) bar.speed.append(h('option', { value: String(prefs.rate), textContent: `${prefs.rate}×` }));
-  bar.speed.value = String(prefs.rate);
+  if (bar.play._on !== playing) { bar.play._on = playing; bar.play.innerHTML = playing ? ICON.pause : ICON.play; bar.play.title = bar.play.ariaLabel = playing ? 'Pause (Space)' : 'Play (Space)'; }
+  if (bar.speed.value !== String(prefs.rate)) {
+    if (![...bar.speed.options].some((o) => o.value === String(prefs.rate))) bar.speed.append(h('option', { value: String(prefs.rate), textContent: `${prefs.rate}×` }));
+    bar.speed.value = String(prefs.rate);
+  }
   syncVoice();
-  bar.cont.classList.toggle('on', !!prefs.cont);
-  bar.cont.setAttribute('aria-pressed', String(!!prefs.cont));
+  if (bar.cont._on !== !!prefs.cont) bar.cont._on = !!prefs.cont, bar.cont.classList.toggle('on', !!prefs.cont), bar.cont.setAttribute('aria-pressed', String(!!prefs.cont));
   bar.cont.title = prefs.cont ? 'Next item: on · at the end (or on j/k) reading goes on with the next item' : 'Next item: off · reading stops at the end of this item (click to go on to the next)';
   const msg = r?.notice || (!r && contFor ? 'Opening the next item…' : '');
   if (bar.note.textContent !== msg) {

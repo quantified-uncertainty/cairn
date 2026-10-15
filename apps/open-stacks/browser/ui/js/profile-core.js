@@ -192,6 +192,13 @@ export function pageRoles(pages, heads = [], kind = 'pdf', ixf = []) {
   if (kind === 'scan' && n) {
     if (!role[0]) role[0] = 'cover';
     let fe = pages.findIndex((p) => p.lab === '1');
+    // Page 1 often carries no printed number (a chapter opening): count back from
+    // the first run of three consecutive arabic labels.
+    if (fe < 0) {
+      const num = (k) => (pages[k]?.lab && /^\d+$/.test(pages[k].lab) ? Number(pages[k].lab) : null);
+      const k0 = pages.findIndex((p) => { const L = num(p.k); return L != null && L < 40 && num(p.k + 1) === L + 1 && num(p.k + 2) === L + 2; });
+      if (k0 >= 0 && k0 - (num(k0) - 1) >= 1) fe = k0 - (num(k0) - 1);
+    }
     if (fe < 0) { const lim = Math.ceil(n * 0.15); const l = hs.find((x) => x.k <= lim && FRONT_END.test(tx(x))); fe = l ? l.k : 0; }
     for (let k = 1; k < fe; k++) if (!role[k]) role[k] = hs.some((l) => l.k === k && TOC_HEAD.test(tx(l))) ? 'toc' : 'front';
   }

@@ -19,7 +19,7 @@ import { paintSaved, paintLanes } from '../chrome.js';
 
 const MAX = 100;
 // The 'nav:before' labels are identifiers (other modules match them); these read better in the notice.
-const SAY = { 'last spread': 'go to the end', jump: 'random spot', 'link jump': 'followed link', unzoom: 'zoom out' };
+const SAY = { 'last spread': 'go to the end', jump: 'random spot', 'link jump': 'followed link', unzoom: 'zoom out', sort: 'sort change', 'leave stack': 'left the stack' };
 const stack = [];
 let restoring = false, tick = false, seen = null;
 
@@ -63,7 +63,7 @@ export function undo() {
     if (snap.lane != null) paintLanes();
     if (snap.saved) paintSaved();
     showFeed();
-    emit('nav', { type: 'back', i: snap.i, it: items[snap.i], s: snap.s, undone: snap.label });
+    emit('nav', { type: 'back', i: snap.i, it: items[snap.i], s: snap.s, undone: snap.label, snap });
   } finally { restoring = false; }
   toast(`Undone: ${SAY[snap.label] || snap.label}`, { icon: 'rotate-ccw' });
   return true;

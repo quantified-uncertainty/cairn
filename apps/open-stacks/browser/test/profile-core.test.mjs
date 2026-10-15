@@ -146,3 +146,10 @@ test('flow documents', () => {
   assert.equal(P.text.layer, 'html');
   assert.equal(P.toc[0].src, 'flow');
 });
+
+test('scans: front matter ends where printed page 1 would be, even when it bears no number', () => {
+  const labels = {}; for (let k = 14; k < 60; k++) labels[k] = String(k - 11); // page 14 is printed "3"
+  const P = core.finalize(raw(60, { kind: 'scan', labels }));
+  assert.deepEqual(P.ranges.front, [0, 11]);
+  assert.equal(P.ranges.body[0], 12);
+});

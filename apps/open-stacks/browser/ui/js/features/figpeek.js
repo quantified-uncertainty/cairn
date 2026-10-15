@@ -556,7 +556,8 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
   const bars = runs.filter(isBar).concat(caps);
   const between = (a, b, x0, x1, skip) => bars.some((s) => s !== skip && !(skip?.runs || []).includes(s) && s.y0 >= a - 0.2 * body && s.y1 <= b + 0.2 * body && Math.min(s.x1, x1) - Math.max(s.x0, x0) > 0.25 * Math.min(s.x1 - s.x0, x1 - x0));
   const out = [];
-  const spanOf = (C) => { const [c0, c1] = colOf(C.x0, C.x1); return [Math.min(c0, C.x0), Math.max(c1, C.x1)]; };
+  // The width a caption looks across: its column, or its own side of a caption beside it.
+  const spanOf = (C) => { const [c0, c1] = colOf(C.x0, C.x1), [l0, l1] = C.lim || [-Infinity, Infinity]; return [Math.max(Math.min(c0, C.x0), l0), Math.min(Math.max(c1, C.x1), l1)]; };
   const profile = (C, sx0, sx1, below) => {
     // The ink beside a caption: walk away from it, over a small gap, through
     // the ink, until a blank band or a barrier.
@@ -579,23 +580,72 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     const R = { x0: x0 * cs, y0: y0 * cs, x1: (x1 + 1) * cs, y1: (y1 + 1) * cs, gc: 0, proposed: true };
     return R.y1 - R.y0 >= 1.5 * body && R.x1 - R.x0 >= 0.06 * W ? R : null;
   };
-  for (const C of caps) {
-    const [sx0, sx1] = spanOf(C);
-    const S = { x0: sx0, x1: sx1 };
+  // A caption vouches for small drawings too.
+  const fits = (R) => R.ok || R.boxed || (R.x1 - R.x0 >= 0.025 * W && R.y1 - R.y0 >= 0.025 * H && R.gc >= 12);
+  /** The regions a caption could belong to, nearest first (`pref`: the side its kind's regions are on). */
+  const candsOf = (C, pref) => {
+    const [sx0, sx1] = spanOf(C), S = { x0: sx0, x1: sx1 };
     const sideOf = (R) => (R.y1 <= C.y0 + 0.5 * body ? 'above' : R.y0 >= C.y1 - 0.5 * body ? 'below' : null);
-    // A caption vouches for small drawings too.
-    const fits = (R) => R.ok || R.boxed || (R.x1 - R.x0 >= 0.025 * W && R.y1 - R.y0 >= 0.025 * H && R.gc >= 12);
-    const cand = rs.filter((R) => fits(R) && !R.cap && ovX(R, S) > 0.3 * Math.min(R.x1 - R.x0, sx1 - sx0)).map((R) => {
+    return rs.filter((R) => fits(R) && ovX(R, S) > 0.3 * Math.min(R.x1 - R.x0, sx1 - sx0)).map((R) => {
       const side = sideOf(R); if (!side) return null;
       const d = side === 'above' ? C.y0 - R.y1 : R.y0 - C.y1;
       if (d > 0.45 * H) return null;
       if (side === 'above' ? between(R.y1, C.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C) : between(C.y1, R.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C)) return null;
       // Prefer the figure on the caption's side, then the one right above (or below) the caption.
       const al = Math.max(0, ovX(R, C)) / Math.max(1, Math.min(R.x1 - R.x0, C.x1 - C.x0));
-      return { R, side, al, d: d + ((side === 'below') === (C.kind === 'figure') ? 0.02 * H : 0) + 0.25 * H * (1 - Math.min(1, al)) };
+      return { R, side, al, raw: d, d: d + (pref && side !== pref ? 0.02 * H : 0) + 0.25 * H * (1 - Math.min(1, al)) };
     }).filter(Boolean).sort((a, b) => a.d - b.d);
+  };
+  // Which side of their captions this page puts figures and tables: told by the
+  // captions with regions on one side only (a table's caption may be above or
+  // below it; papers keep to one way). Unknown: figures above, tables below.
+  const vote = { figure: [0, 0], table: [0, 0] };
+  for (const C of caps) {
+    if (C.algo) continue;
+    const sides = new Set(candsOf(C, null).filter((c) => c.raw <= 0.15 * H).map((c) => c.side));
+    if (sides.size === 1) vote[C.kind][sides.has('above') ? 0 : 1]++;
+  }
+  const prefOf = (k) => { const [u, v] = vote[k] || [0, 0]; return u > v ? 'above' : v > u ? 'below' : k === 'figure' ? 'above' : 'below'; };
+  // An algorithm: its label line on top, then its lines down to the closing rule
+  // (or, with no rules, to the first break in its lines).
+  const algoRegion = (C) => {
+    const [sx0, sx1] = spanOf(C), a = ci(sx0), z = ci(sx1), need = 0.6 * (z - a + 1);
+    const ruleAt = (j) => { let run = 0; for (let x = a; x <= z; x++) { const i = j * gw + x; if (ink[i] && !T[i]) { if (++run >= need) return true; } else run = 0; } return false; };
+    let y1 = null, seenRule = false;
+    for (let j = cj(C.y1) + 1, end = Math.min(gh - 1, cj(C.y1 + 0.7 * H)); j <= end; j++) {
+      if (!ruleAt(j)) continue;
+      const y = j * cs;
+      if (y - C.y1 < 1.5 * body && !seenRule) { seenRule = true; while (j + 1 <= end && ruleAt(j + 1)) j++; continue; }
+      if (y - C.y1 >= 2 * body) { y1 = (j + 1) * cs; break; }
+    }
+    const inside = (o) => !o.margin && o !== C && !(C.runs || []).includes(o) && o.x0 >= sx0 - body && o.x1 <= sx1 + body;
+    const R = { x0: C.x0, y0: C.y0 - 0.6 * body, x1: C.x1, y1: C.y1, gc: 0, proposed: true };
+    if (y1 != null) { for (const o of hz) if (inside(o) && o.y0 >= C.y1 - 0.2 * body && o.y1 <= y1 + 0.2 * body) grow(R, o); R.y1 = y1; } else {
+      const used = new Set();
+      for (let more = true; more;) {
+        more = false;
+        for (const o of hz) {
+          if (used.has(o) || !inside(o) || o.cap || o.prose || o.y1 <= R.y1 || o.y0 - R.y1 > 0.9 * body || o.y0 < C.y1 - 0.2 * body) continue;
+          used.add(o); grow(R, o); more = true;
+        }
+      }
+    }
+    return R.y1 - C.y1 >= 1.5 * body ? R : null;
+  };
+  // Captions claim their regions surest first, so a caption between two figures
+  // does not take the one whose own caption is right beside it.
+  const order = caps.map((C) => ({ C, d: C.algo ? -1 : candsOf(C, prefOf(C.kind))[0]?.d ?? Infinity }));
+  order.sort((a, b) => a.d - b.d);
+  for (const { C } of order) {
+    const [sx0, sx1] = spanOf(C);
+    if (C.algo) {
+      const F = algoRegion(C);
+      if (F) { F.cap = C; F.kind = 'table'; out.push(F); for (const R of rs) if (!R.cap && ovX(R, F) > 0 && ovY(R, F) > 0.5 * (R.y1 - R.y0)) R.cap = C; }
+      continue;
+    }
+    const cand = candsOf(C, prefOf(C.kind)).filter((c) => !c.R.cap);
     let F = null;
-    if (cand.length && (cand[0].side === 'above' ? C.y0 - cand[0].R.y1 : cand[0].R.y0 - C.y1) <= 0.15 * H) {
+    if (cand.length && cand[0].raw <= 0.15 * H) {
       const side = cand[0].side;
       // Sub-figures: every region on that side up to the barrier beyond the nearest.
       F = { ...cand[0].R };
@@ -603,14 +653,14 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       // sub-figures stacked further apart stay apart (each enlarges more) and share the caption.
       const wide = C.x1 - C.x0 > 0.5 * (sx1 - sx0);
       cand[0].R.cap = C;
-      for (const c of cand.slice(1).sort((a, b) => a.d - b.d)) {
+      for (const c of cand.slice(1)) {
         if (c.side !== side || !(wide || c.al > 0.3) || c.d > 0.45 * H) continue;
         const R = c.R, gapY = Math.max(R.y0 - F.y1, F.y0 - R.y1);
         if ((ovY(R, F) > 0.3 * Math.min(R.y1 - R.y0, F.y1 - F.y0) && c.d < 0.12 * H) || gapY < 0.04 * H) { grow(F, R); R.cap = C; } else { R.cap = C; out.push({ ...R, cap: C, kind: C.kind }); }
       }
     } else {
-      const order = C.kind === 'table' ? [true, false] : [false, true];
-      for (const below of order) if ((F = profile(C, sx0, sx1, below))) break;
+      const order2 = C.kind === 'table' ? [true, false] : [false, true];
+      for (const below of order2) if ((F = profile(C, sx0, sx1, below))) break;
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
   }

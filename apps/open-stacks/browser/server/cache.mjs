@@ -11,10 +11,11 @@
 // writes cost one buffered line rather than a scan of the tree. A background
 // pass at startup reconciles it with what is actually on disk.
 import { createHash } from 'crypto';
-import { existsSync, readFileSync, appendFileSync, writeFileSync, renameSync } from 'fs';
+import { existsSync, readFileSync, appendFileSync, writeFileSync, renameSync, mkdirSync, linkSync, copyFileSync, unlinkSync } from 'fs';
 import { mkdir, writeFile, unlink, readdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { HERE, CACHE, UA } from './config.mjs';
+import * as ia from './ia.mjs';
 
 // Only open sources; the proxy is not a general-purpose fetcher. Hosts of every
 // item in corpus.json are added at startup.
@@ -44,7 +45,7 @@ export const meta = (u) => { const k = key(u); const m = JSON.parse(readFileSync
 /** Body of a cached URL; counts as an access for eviction. */
 export const read = (u) => { const k = key(u); const b = readFileSync(pathsK(k).body); touch(k); return b; };
 
-export const stats = { hits: 0, misses: 0, fetched: 0, failed: 0, bytes: 0, throttled: 0, evicted: 0, evictedBytes: 0 };
+export const stats = { hits: 0, misses: 0, fetched: 0, failed: 0, bytes: 0, throttled: 0, evicted: 0, evictedBytes: 0, aliased: 0, iaDirect: 0 };
 
 // ---------------------------------------------------------------- index ----
 
@@ -190,8 +191,13 @@ process.on('exit', flush);
 // leaves slots free for them (see bgCap), never starts while a foreground
 // request is waiting for that host, and narrows overall while any foreground
 // request is in flight. 429 and 503 pause the host, honouring Retry-After.
+// archive.org: page images go straight to the item's datanodes (ia.mjs), ~0.6 s
+// each whatever their size; measured (2026-10-15), w1000 pages per second went
+// 2.1 / 3.5 / 5.5 / 8.6 / 12.7 at 2 / 4 / 6 / 8 / 12 at a time and no further at
+// 16, with no 429 or 503. 10 leaves room below that, and the background still
+// keeps slots free for the reader (bgCap).
 const LIMITS = {
-  'archive.org': { conc: 6 },
+  'archive.org': { conc: 10 },
   'arxiv.org': { conc: 2, rps: 2 },
   'lesswrong.com': { conc: 3 },
   'alignmentforum.org': { conc: 3 },
@@ -285,8 +291,28 @@ export function progressOf(u) {
   const j = inflight.get(u);
   return j ? { got: j.got || 0, total: j.total || 0, waiting: j.got == null } : null;
 }
+// A smaller size of an Internet Archive page image already on disk (the feed's
+// w400 placeholder for a page whose w1000 is cached, the strip's w120 for a
+// w200): the cached image stands in, hard-linked, with no request (ia.larger).
+function alias(u) {
+  if (inflight.has(u)) return false;
+  const big = ia.larger(u, cached);
+  if (!big) return false;
+  try {
+    const from = paths(big), k = key(u), to = pathsK(k);
+    const m0 = JSON.parse(readFileSync(from.meta, 'utf-8'));
+    mkdirSync(to.d, { recursive: true });
+    try { unlinkSync(to.body); } catch { /* none */ }
+    try { linkSync(from.body, to.body); } catch { copyFileSync(from.body, to.body); }
+    const m = JSON.stringify({ url: u, type: m0.type, size: m0.size, at: Date.now(), alias: big });
+    writeFileSync(to.meta, m); // last: cached() means the body is complete
+    put(k, m0.size + m.length, nowSec());
+    stats.aliased++;
+    return true;
+  } catch { return false; } // evicted meanwhile: fetch it
+}
 export function ensure(u, { fg = true } = {}) {
-  if (cached(u)) return Promise.resolve();
+  if (cached(u) || alias(u)) return Promise.resolve();
   const cur = inflight.get(u);
   if (cur) { if (fg && !cur.fg) promote(cur); return cur.p; }
   return start(u, { fg }, false);
@@ -309,13 +335,16 @@ let deadHook = null;
 export const onDead = (fn) => { deadHook = fn; };
 async function fetchInto(u, job, held) {
   const h = hostOf(u);
+  let viaIA = true; // Internet Archive page images may go straight to the datanode (ia.mjs)
   for (let attempt = 0; ; attempt++) {
     if (!held) await acquire(h, job);
     held = false;
-    let res, buf, err;
+    let res, buf, err, src = null;
     try {
       job.t0 = Date.now();
-      res = await fetch(u, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
+      src = viaIA ? ia.direct(u) : null;
+      if (src) stats.iaDirect++;
+      res = await fetch(src || u, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
       if (res.ok) {
         // Read in chunks so the reader can see the download's progress (/progress).
         job.total = Number(res.headers.get('content-length')) || 0; job.got = 0;
@@ -338,12 +367,16 @@ async function fetchInto(u, job, held) {
     };
     if (buf) {
       h.strikes = 0;
+      if (!src) ia.learn(u, res.url); // where archive.org's 302 sent a page image
       const type = res.headers.get('content-type') || 'application/octet-stream';
       // A document that now serves a placeholder page: its archived copy instead (onDead).
       const alt = deadHook && await deadHook(u, { status: res.status, type, buf, fg: job.fg }).catch(() => null);
       if (alt) return store(alt.buf, alt.type, alt.meta);
       return store(buf, type, res.url && res.url !== u ? { final: res.url } : {});
     }
+    // Straight to a datanode, and it failed (404 once the item has moved, a node
+    // that is down): forget that node and go through archive.org's 302 at once.
+    if (src && !(res && (res.status === 429 || res.status === 503))) { ia.forget(u, src); viaIA = false; attempt--; continue; }
     // Rate limited or overloaded: pause the whole host, with exponential backoff.
     if (res && (res.status === 429 || res.status === 503)) {
       stats.throttled++; h.throttled++; h.strikes++;
@@ -386,7 +419,7 @@ function pump() {
       if (t > 0) wake = Math.min(wake, t);
       continue;
     }
-    if (cached(job.u)) continue;
+    if (cached(job.u) || alias(job.u)) continue;
     bgActive++; take(h, job);
     start(job.u, job, true).catch(() => { stats.failed++; }).finally(() => { bgActive--; pump(); });
   }

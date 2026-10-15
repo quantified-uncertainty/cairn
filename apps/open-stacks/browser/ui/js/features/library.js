@@ -19,7 +19,7 @@
 // Scale: only the rows in view exist (a virtual list), lanes and folders start
 // closed with the current item's branch open, and nothing here runs on a page
 // turn or item switch except one tiny label in the header: the tree follows the
-// current item on 'item:settled', and only while it is showing.
+// current item on 'item:shown' (once a frame), and only while it is showing.
 import { $, h, on, emit, store, registerKey, keyHelp } from '../util.js';
 import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
 import { state, current, buildOrder } from '../state.js';
@@ -329,7 +329,18 @@ function scrollTo(r, center) {
   else if (y < list.scrollTop) list.scrollTop = y;
   else if (y + RH > list.scrollTop + H) list.scrollTop = y + RH - H;
 }
-on('item:settled', ({ i }) => { if (showing()) revealItem(i); });
+// Follow the current item the moment it changes, so holding j/k moves the highlight row
+// by row with the pages (one flatten and ~40 rows, at most once a frame).
+let followI = null, followRaf = 0;
+on('item:shown', ({ i }) => {
+  if (!showing()) return;
+  followI = i;
+  followRaf ||= requestAnimationFrame(() => {
+    followRaf = 0;
+    revealItem(followI);
+    if (raf) { cancelAnimationFrame(raf); raf = 0; paintNow(); } // this frame, not the next
+  });
+});
 on('view:changed', () => { if (showing()) { flatten(); paint(); } });
 on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); if (showing()) paint(); });
 list.addEventListener('scroll', paint, { passive: true });

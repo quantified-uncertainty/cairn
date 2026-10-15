@@ -240,8 +240,15 @@ async function sectionsOf(it, kind) {
   else if (kind === 'pdf') {
     try {
       const d = S.doc || (S.doc = await openDoc(it));
-      const ol = await Promise.race([pdfOutline(d), new Promise((r) => setTimeout(() => r(null), 250))]);
-      out = (ol || []).filter((x) => x.page != null).map((x) => ({ t: x.title, k: x.page, d: x.depth }));
+      const p = pdfOutline(d);
+      const ol = await Promise.race([p, new Promise((r) => setTimeout(() => r(null), 250))]);
+      if (!ol) {
+        // Slow (many entries to resolve): labels only, when it comes; rows stay where they are.
+        const gen = S.gen;
+        p.then(() => { if (S.open && S.gen === gen && S.it === it && !S.secs.length) sectionsOf(it, kind).then((x) => { if (S.gen === gen) { S.secs = x; paintTags(); } }); }, () => {});
+        return [];
+      }
+      out = ol.filter((x) => x.page != null).map((x) => ({ t: x.title, k: x.page, d: x.depth }));
     } catch { /* none */ }
   }
   out = out.filter((x) => x.k >= 0 && x.k < S.n && x.t);
@@ -276,11 +283,25 @@ function paintTags() {
     const el = S.cells[k]; if (!el) continue;
     el.append(h('span', { className: 'ov-tag d' + s.d, textContent: s.t, title: `${s.t} · p. ${k + 1}${s.sum ? '\n' + s.sum : ''}` }));
   }
+  if (S.g) fitTags();
+}
+/** Each label runs until the next one in its row (or the row's end), so none covers another. */
+function fitTags() {
+  const tags = [...grid.querySelectorAll('.ov-tag:not(.hd)')];
+  if (!tags.length || !S.g) return;
+  const right = (S.cells[0]?.offsetLeft ?? PADX) + S.g.c * S.g.cw + (S.g.c - 1) * GAP;
+  const at = tags.map((t) => ({ t, top: t.parentElement.offsetTop, left: t.parentElement.offsetLeft })).sort((a, b) => a.top - b.top || a.left - b.left);
+  at.forEach((p, j) => {
+    const q = at[j + 1];
+    const end = q && q.top === p.top ? q.left - 6 : right;
+    p.t.style.maxWidth = Math.max(24, end - p.left) + 'px';
+  });
 }
 /** In long items, a long top-level section starts a new row headed by its title. */
 function paintHeads() {
   for (const x of S.heads) x.remove();
   S.heads = [];
+  grid.querySelectorAll('.ov-tag.hd').forEach((x) => x.classList.remove('hd'));
   const { c, fit } = S.g;
   if (fit || S.n < 1.3 * LEVELS[S.lvl] || c < 3) return;
   const top = S.secs.filter((s) => s.d === 0);
@@ -292,6 +313,7 @@ function paintHeads() {
       h('b', { textContent: s.t }), h('span', { className: 'p', textContent: `p. ${s.k + 1}` }), s.sum ? h('span', { className: 's', textContent: s.sum }) : null);
     el.onclick = () => closeOv(s.k);
     S.cells[s.k].before(el); S.heads.push(el);
+    S.cells[s.k].querySelector('.ov-tag.d0')?.classList.add('hd'); // the row's heading says it already
   });
 }
 
@@ -302,6 +324,7 @@ function layout() {
   S.g = g;
   grid.style.cssText = `--c:${g.c};--cw:${g.cw}px;--ch:${g.ch}px;--g:${GAP}px;--rg:${RGAP}px;--fs:${(g.cw / MINI_W).toFixed(4)};--mh:${Math.round(MINI_W / S.a)}px`;
   paintHeads();
+  fitTags();
   // Pictures drawn much smaller than the new cells are drawn again.
   if (old && g.ch > old.ch * 1.3) for (let k = 0; k < S.n; k++) if (S.st[k] === 3 && S.kind !== 'flow' && !S.cells[k].classList.contains('blank')) S.st[k] = 2;
   for (let k = 0; k < S.n; k++) { const m = S.cells[k]._m; if (m) sizeMedia(k, m.a); }
@@ -597,7 +620,12 @@ function paintCursor() {
 function scrollToK(k, how = 'nearest') {
   const el = S.cells[k]; if (!el) return;
   const top = el.offsetTop - RGAP, bottom = el.offsetTop + el.offsetHeight + 6;
-  if (how === 'third') { scrollTo(Math.max(0, top - Math.max(0, (sc.clientHeight - el.offsetHeight) / 3))); return; }
+  if (how === 'third') {
+    // A row or two above the page, starting at a row's top.
+    const t = S.cells[Math.max(0, k - S.g.c * Math.floor((S.g.r - 1) / 3))] || el;
+    scrollTo(Math.max(0, t.offsetTop - RGAP));
+    return;
+  }
   if (how === 'center') { scrollTo(Math.max(0, el.offsetTop - (sc.clientHeight - el.offsetHeight) / 2)); return; }
   if (top < sc.scrollTop) scrollTo(top);
   else if (bottom > sc.scrollTop + sc.clientHeight) scrollTo(bottom - sc.clientHeight);

@@ -1,6 +1,7 @@
 /* Page overview (features/overview.js): every page of the item at once, over the stage. */
-#stage.ov-on #spread, #stage.ov-on #scrub { visibility: hidden; }
-#ov { position: absolute; left: 0; right: 0; z-index: 6; background: var(--bg); }
+/* Opaque, over the spread (whose overlays stay at z-index 3 or less); the spread is left
+   alone underneath, since restyling a post laid out in columns would cost 100+ ms. */
+#ov { position: absolute; left: 0; right: 0; z-index: 4; background: var(--bg); }
 #ov .ov-sc { position: absolute; inset: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-gutter: stable; }
 #ov .ov-grid {
   display: grid; grid-template-columns: repeat(var(--c, 6), var(--cw, 120px)); column-gap: var(--g, 10px); row-gap: var(--rg, 22px);
@@ -33,10 +34,11 @@
 .ov-cell.err .ov-no { color: var(--bad); }
 
 /* Sections: a label in the gap above the page where each starts; long sections in long items open a row. */
-.ov-tag { position: absolute; z-index: 1; left: 0; bottom: calc(100% + 4px); max-width: calc(var(--cw) * 2.6); padding-right: 8px; background: var(--bg);
-  font: 500 10.5px/14px var(--sans); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: auto; }
-.ov-tag.d1 { color: var(--ink-3); font-weight: 400; font-size: 10px; }
-.ov-tag.d2 { color: var(--ink-3); font-weight: 400; font-size: 9.5px; }
+.ov-tag { position: absolute; z-index: 1; left: 0; bottom: calc(100% + 4px); max-width: calc(var(--cw) * 2.6); padding: 0 4px 0 5px; border-left: 2px solid var(--accent);
+  font: 500 10.5px/13px var(--sans); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: auto; }
+.ov-tag.hd { display: none; }
+.ov-tag.d1 { color: var(--ink-3); font-weight: 400; font-size: 10px; border-left-color: var(--ink-3); }
+.ov-tag.d2 { color: var(--ink-3); font-weight: 400; font-size: 9.5px; border-left-color: var(--line); }
 .ov-head { grid-column: 1 / -1; display: flex; gap: 10px; align-items: baseline; min-width: 0; padding: 8px 2px 0; margin-bottom: -8px; border-top: 1px solid var(--line); cursor: pointer; }
 .ov-head b { font: 600 13.5px/1.3 var(--serif); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50%; }
 .ov-head .p { font: 10px var(--mono); color: var(--ink-3); flex: none; }
@@ -45,7 +47,7 @@
 
 /* Posts: stable pages as miniature pages of text. */
 .ov-mini { position: absolute; left: 0; top: 0; width: 380px; height: var(--mh, 528px); transform: scale(var(--fs, .5)); transform-origin: 0 0;
-  padding: 16px 18px; font: 10px/1.38 var(--serif); color: #2b251c; overflow: hidden; }
+  padding: 16px 18px; font: 10px/1.38 var(--flow-font, var(--serif)); color: var(--paper-ink, #2b251c); text-align: left; overflow: hidden; overflow-wrap: break-word; }
 .ov-mini > * { margin: 0 0 .5em; }
 .ov-mini h1, .ov-mini h2 { font-size: 13px; line-height: 1.2; margin: .6em 0 .3em; }
 .ov-mini h3, .ov-mini h4, .ov-mini h5, .ov-mini h6 { font-size: 11px; margin: .5em 0 .25em; }
@@ -78,7 +80,7 @@
 .ovp-page > canvas, .ovp-page > img, .ovp-page > .ov-crop { display: block; width: 100%; height: 100%; }
 .ovp-row { display: flex; justify-content: center; width: 100%; height: 100%; }
 .ovp-row > canvas { height: 100%; width: auto; min-width: 0; }
-.ovp-text { height: 100%; padding: 22px 26px; font: 14px/1.5 var(--serif); color: #26211a; overflow: hidden; -webkit-mask-image: linear-gradient(#000 88%, transparent); mask-image: linear-gradient(#000 88%, transparent); }
+.ovp-text { height: 100%; padding: 22px 26px; font: 14px/1.5 var(--flow-font, var(--serif)); color: var(--paper-ink, #26211a); text-align: left; overflow-wrap: break-word; overflow: hidden; -webkit-mask-image: linear-gradient(#000 88%, transparent); mask-image: linear-gradient(#000 88%, transparent); }
 .ovp-text > * { margin: 0 0 .6em; }
 .ovp-text img { display: block; max-width: 100%; max-height: 40%; margin: .4em auto; }
 .ovp-text pre, .ovp-text code { font: 11px/1.35 var(--mono); white-space: pre-wrap; }

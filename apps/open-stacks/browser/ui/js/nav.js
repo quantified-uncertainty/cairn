@@ -25,7 +25,13 @@ export function go(pos) {
   emit('nav', { type: 'item', i: current(), it: items[current()] });
   return true;
 }
-export function jumpTo(j) { before('open item', { order: state.order.slice() }); state.order.splice(state.pos + 1, 0, j); setView('feed'); go(state.pos + 1); }
+/** Open item j. In a fixed sort (topic, newest, oldest: stack.js) an item already in the
+ *  order opens in its place, so j/k go on in the order the Library shows; otherwise it comes next. */
+export function jumpTo(j) {
+  const at = state.sort && state.sort !== 'ranked' ? state.order.indexOf(j) : -1;
+  if (at >= 0) { if (at !== state.pos || state.view !== 'feed') { before('open item'); setView('feed'); go(at); } return; }
+  before('open item', { order: state.order.slice() }); state.order.splice(state.pos + 1, 0, j); setView('feed'); go(state.pos + 1);
+}
 
 const flowHere = (it) => isFlow(it) && live?.id === it.id;
 /** The item's extent is known (a raster's page count, a flow document's columns), or it could not open. */
@@ -88,8 +94,10 @@ export function turn(dir) {
 const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
 // A title short enough for a notice's second line to stay one line, read at a glance.
 const brief = (t, n = 44) => (t.length > n ? t.slice(0, n).replace(/[\s:,;.–—-]+\S*$/, '') + '…' : t);
-const laneEnd = () => toast('Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: 'Pick another lane at the top (keys 0–9)' });
-const laneStart = () => toast('First item in this lane', { icon: 'arrow-up-to-line', kind: 'edge' });
+// A narrowed stack (stack.js: a folder or a tag you stay in) is named.
+const inStack = () => (state.scope && state.stack?.label ? state.stack.label : null);
+const laneEnd = () => { const s = inStack(); toast(s ? `Last in ${s}` : 'Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: s ? 'u leaves it: the whole lane, from here · 0–9 other lanes' : 'Pick another lane at the top (keys 0–9)' }); };
+const laneStart = () => { const s = inStack(); toast(s ? `First in ${s}` : 'First item in this lane', { icon: 'arrow-up-to-line', kind: 'edge' }); };
 /** Page forward; on the last spread, the next item at its opening page, but only
  *  on a fresh press or stroke (not key repeat, not later in the same wheel gesture).
  *  Returns true when it turned, 'crossed' when it moved on, false when it stayed. */
