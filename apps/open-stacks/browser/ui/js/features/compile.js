@@ -10,9 +10,10 @@
 // image instead of drawing the page. render.js, feed.js and prefetch.js use
 // the result through profile.js.
 //
-// Rules: a unit starts only with more than 8 ms of idle time left; any 'nav'
-// (and hovering the track) pauses compiling, cancelling a render under way,
-// until 300 ms after the next 'spread:settled'. Its own pdf.js document on its
+// Rules: a unit starts only with more than 8 ms of idle time left and 1.5 s
+// after the last key, wheel or click; any 'nav' (and hovering the track) pauses
+// compiling, cancelling a render under way, until 300 ms after the next
+// 'spread:settled'. Its own pdf.js document on its
 // own worker, so it never queues behind the feed's renders. Settings (store):
 // compile (true), compileAhead (10, up to 50), writeBack (true).
 //

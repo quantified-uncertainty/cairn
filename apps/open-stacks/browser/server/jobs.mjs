@@ -809,6 +809,7 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
       if (!parents(h).some((x) => corpusHosts.has(x) || BASE_HOSTS.includes(x))) added.add(h);
     }
     out.hostsAdded = [...added];
+    if (added.size) { const hf = [join(dir, 'hosts.json'), join(root, 'jobs', 'hosts.json')].find((f) => existsSync(f)); if (hf) files.add(relTo(root, hf)); }
     if (!hostBad) say(true, `every URL is on an open host${added.size ? ` (hosts new to the corpus, for review: ${[...added].join(', ')})` : ''}`);
     for (const it of mine) if (it.kind === 'scan' && !(it.y <= 1930 || OPEN_LICENSE.test(it.license || ''))) say(false, `${it.id}: a scan must be from 1930 or earlier, or carry an open licence`);
     const unmerged = mine.filter((it) => { const c = corpusById.get(it.id); return !c || !Array.isArray(c.path) || !Number.isFinite(c.ord); });

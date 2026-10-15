@@ -912,6 +912,7 @@ addEventListener('keydown', (e) => {
   if (!S.open || e.metaKey || e.ctrlKey || e.altKey) return;
   const t = e.target;
   if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+  if (t?.closest?.('#lib')) return; // the Library has the keyboard (L): its arrows, Enter and type-to-filter
   if (!$('#keys')?.hidden || ($('#search') && !$('#search').hidden)) return;
   const k = e.key;
   let done = true;

@@ -78,7 +78,8 @@ export function apply(index, op) {
     case 'visit': {
       const s = num(op.s, t), e = Math.max(s, num(op.e, t)), a = Math.max(0, Math.min(int(op.a), e - s + 2000));
       let v = r.v.find((x) => x[0] === s);
-      if (v) { r.a += a - v[2]; v[1] = e; v[2] = a; }
+      // A visit only grows: an older copy arriving late (a fetch overtaken by the beacon sent on hide) changes nothing.
+      if (v) { if (a > v[2]) { r.a += a - v[2]; v[2] = a; } v[1] = Math.max(v[1], e); }
       else if (r.v.length < MAX_V || s > r.v[0][0]) { v = [s, e, a]; r.v.push(v); r.v.sort((x, y) => x[0] - y[0]); if (r.v.length > MAX_V) r.v.shift(); r.nv++; r.a += a; }
       // How the visit ended (v[3]) and how the item was reached (v[4]); old rows stay [s, e, a].
       if (v && EXITS.has(op.x)) v[3] = op.x;
@@ -91,6 +92,7 @@ export function apply(index, op) {
       const k = Math.max(0, int(op.k)), c = Math.max(1, int(op.c, 1));
       if (op.n > 0) r.n = int(op.n);
       r.f = op.f ? 1 : 0;
+      if (r.pos && r.pos.t > t) { r.far = Math.max(r.far, k + c - 1); break; } // an older place arriving late: keep the newer one
       r.pos = { k, c, t };
       if (op.col != null) r.pos.col = int(op.col);
       if (op.g) r.pos.g = String(op.g).slice(0, 60);

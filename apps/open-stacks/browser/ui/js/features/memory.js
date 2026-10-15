@@ -81,7 +81,8 @@ export function progressOf(id) {
 }
 /** The brief record (see above), or null. */
 export const memoryOf = (id) => mem.get(id) || null;
-const finished = (r) => !!r.n && (r.far >= r.n - 1 || (r.sc || 0) >= r.n * 0.9);
+// Finished: the last page seen (on screen 1.2 s, not just flipped past on the way out), or nearly every page.
+const finished = (r) => !!r.n && ((r.seen?.at(-1)?.[1] ?? -1) >= r.n - 1 || (r.sc || 0) >= r.n * 0.9);
 
 // ---------- sending ----------
 let ops = [];
@@ -230,8 +231,11 @@ let bypass = false;
 function resumeAt(i, it, r) {
   if (!r || r.k == null || !!r.f !== isFlow(it)) return null; // a PDF read as HTML (webview H) has other units
   if (r.f) return r.k >= RESUME_FROM.flow ? r.k : null;
-  if (r.k < RESUME_FROM.page || (it.n && r.k >= it.n)) return null;
-  return r.k;
+  if (it.n && r.k >= it.n) return null;
+  if (r.k >= RESUME_FROM.page) return r.k;
+  // Left on its first pages: it opens there anyway, unless it would open further in (a scan's
+  // or a long PDF's default skips the front matter); then back to the first pages you were on.
+  return !state.start.has(i) && defaultStart(i) >= RESUME_FROM.page ? r.k : null;
 }
 reopeners.push((i, it) => {
   if (bypass) return null;
@@ -251,7 +255,7 @@ let chip = null; // { id, s (the start it opened at, once rendered), k }
 function resumeChip(i, it) {
   chip = null;
   const r = mem.get(it.id), k = resumeAt(i, it, r);
-  if (k == null) return;
+  if (k == null || (!r.f && k < RESUME_FROM.page)) return; // on the first pages: nothing to go back to the start for
   // Placed this session: only when it is still where you left it, and you were away a while
   // (flipping j/k is not coming back). Not placed: it opens at k, unless that is where it opens anyway.
   if (state.start.has(i) ? state.start.get(i) !== (r.f ? r.col : r.k) || Date.now() - r.last < 120e3 : !r.f && defaultStart(i) === k) return;
@@ -460,7 +464,7 @@ document.addEventListener('keydown', (e) => {
   if (state.view !== 'history' || e.metaKey || e.ctrlKey || e.altKey) return;
   const inFilter = e.target.classList?.contains('hy-filter');
   if (inFilter) {
-    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (H.filter) { H.filter = ''; paintHistory(); } else focusRow(0); }
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (H.filter) { H.filter = ''; paintHistory(); $('.hy-filter', root)?.focus(); } else focusRow(0); }
     else if (e.key === 'ArrowDown' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); focusRow(0); }
     return;
   }

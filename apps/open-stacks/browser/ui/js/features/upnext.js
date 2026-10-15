@@ -202,7 +202,7 @@ function paint() {
   root.classList.remove('under');
   const s = [mode, H, tw, prev, next.join(), st.kind, st.id, st.pos, st.n, st.sort].join('|');
   if (root.hidden) root.hidden = false;
-  if (s === sig) { budget = Math.max(budget, 2); moving = false; idle(pumpImages); return; }
+  if (s === sig) { moving = false; idle(pumpImages); return; } // same tiles: the rest of this paint's budget
   sig = s;
   root.className = 'un ' + mode;
   root.style.setProperty('--un-w', tw + 'px');

@@ -446,7 +446,7 @@ function paintLearned() {
     : `Not enough opens yet for the ranking check (${cal.n ?? 0} of 10)`;
   const head = h('p', { className: 'db-lead' }, `Learned from ${plural(p.exposures ?? 0, 'item')} you opened`, p.at ? ` · updated ${ago(p.at)}` : '', ` · your average engagement ${Number(p.mu0 ?? 0).toFixed(2)}`);
   fill('db-learned', head,
-    h('div', { className: 'db-two' }, list('Interests', pos, 'Nothing yet: read a few items, or boost a topic below.'), list('Less of', neg, 'Nothing it would show less of yet.')),
+    list('Interests', pos, 'Nothing yet: read a few items, or boost a topic below.'), list('Less of', neg, 'Nothing it would show less of yet.'),
     ctlOnly.length ? list('Your controls', ctlOnly, '') : null,
     mix, h('div', { className: 'db-search' }, qIn, qBox),
     h('p', { className: 'db-check' + (cal.rho != null && cal.rho < 0.2 && cal.n >= 10 ? ' warn' : ''), textContent: check, title: 'Spearman correlation between the predicted interest of each item when you opened it and how much you then read it (last 30 days)' }));
@@ -506,7 +506,7 @@ function jobRow(j, done = false) {
     const pic = (/jobs\/assets\/([a-z-]+-\d{4}\.(?:webp|png))/.exec(j.body || '') || [])[1] || (j.asset && String(j.asset).split('/').pop());
     detail.replaceChildren(
       done ? md(j.result?.text || '(no Result section)') : md(j.body || ''),
-      pic ? h('img', { className: 'db-pic', src: '/jobs/asset?name=' + encodeURIComponent(pic), alt: 'The page the reader flagged', loading: 'lazy' }) : null,
+      pic ? h('img', { className: 'db-pic', src: '/jobs/asset?name=' + encodeURIComponent(pic), alt: 'The page the reader flagged', loading: 'lazy', onerror: (e) => e.target.replaceWith(h('p', { className: 'db-empty sm', textContent: `The picture (${pic}) is not on disk.` })) }) : null,
       !done ? h('div', { className: 'db-jacts' },
         j.prompt ? act('copy', 'Copy instructions for this job', () => copy(j.prompt), 'A prompt that tells an agent to do just this job') : null,
         act('dismiss-job', 'Dismiss', async () => {

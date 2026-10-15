@@ -228,7 +228,6 @@ function textW(s, mono) {
 const GAP = 4, PADX = 7, ICONW = 11, INNER = 4, LMAX = 150, XW = 14, MOREW = 30, BORDER = 2;
 // The rows are packed as if no chip were active, so staying in or leaving moves no chip; when the active
 // chip ("3/9" and ✕) no longer fits its row, the last other chip of that row waits behind +n instead.
-const SLACK = 0;
 const chipW = (c) => BORDER + 2 * PADX + ICONW + INNER + Math.min(LMAX, textW(c.label, 0)) + INNER + textW(String(c.items.length), 1);
 let boxW = 0, tight = 0; // tight: px taken off the width after the idle check found a row too full
 let lay = null; // the packing, kept while the item, its chips and the width stay: { k, rows: [[keys], [keys]], hidden: [keys] }
@@ -236,18 +235,23 @@ const width = () => boxW || (box.parentElement?.id === 'lib' ? (parseFloat(getCo
 /** Two rows, filled first-fit in order of use (a short chip may fill the gap at the end of
  *  row one), with the "Stay in" label first and +n last; the rest wait behind +n. */
 function packed(list) {
-  const W = width() - 1 - tight - SLACK, head = textW('STAY IN', 2) + 0.08 * 9.5 * 7 + 2;
+  const W = width() - 1 - tight, head = textW('STAY IN', 2) + 0.08 * 9.5 * 7 + 2;
   const ws = list.map(chipW);
   const fill = (more) => {
     const rows = [[], []], used = [head + GAP, 0], room = [W, W - (more ? MOREW + GAP : 0)], hidden = [];
     ws.forEach((w, k) => { const r = used[0] + w <= room[0] ? 0 : used[1] + w <= room[1] ? 1 : -1; if (r < 0) hidden.push(list[k]); else { rows[r].push(list[k]); used[r] += w + GAP; } });
-    return { rows: rows.map((r) => r), hidden };
+    return { rows, hidden };
   };
   const p = fill(false);
   return p.hidden.length ? fill(true) : p;
 }
 
+let paintMs = 0; // the last paint's cost (for tests)
 function paint() {
+  const t0 = performance.now();
+  try { paintNow(); } finally { paintMs = performance.now() - t0; }
+}
+function paintNow() {
   const i = current();
   if (i == null || state.view !== 'feed') return;
   index();
@@ -413,5 +417,5 @@ registerKey(':', () => cycle(-1));
 window.__tags = {
   chips: () => chips.map((c) => ({ key: c.key, kind: c.kind, label: c.label, n: c.items.length, on: isActive(c), shown: fit < 0 || chips.indexOf(c) < fit })),
   of: (i) => chipsFor(i).map((c) => ({ key: c.key, label: c.label, n: c.items.length })),
-  loaded: () => loaded, fit: () => fit,
+  loaded: () => loaded, fit: () => fit, ms: () => paintMs,
 };

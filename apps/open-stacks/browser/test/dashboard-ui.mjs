@@ -80,7 +80,7 @@ async function context(browser, { fixtures = MODE === 'fixtures', rank = null, r
   // Only the PDFs of the items the test opens go to the network.
   const local = async (route) => {
     const u = new URL(route.request().url()).searchParams.get('u');
-    if (u && (allow.has(u) || /^https:\/\/cdn\.jsdelivr\.net\/npm\/pdfjs-dist@/.test(u))) { live.add(u); return route.continue(); } // pdf.js itself comes through the proxy
+    if (u && (allow.has(u) || /^https:\/\/cdn\.jsdelivr\.net\/npm\//.test(u))) { live.add(u); return route.continue(); } // pdf.js itself comes through the proxy
     blocked.add(route.request().url());
     return route.fulfill({ status: 204, body: '' });
   };
@@ -90,6 +90,8 @@ async function context(browser, { fixtures = MODE === 'fixtures', rank = null, r
   if (features) await ctx.route('**/features.json', async (r) => { const res = await r.fetch(); const j = await res.json(); r.fulfill({ json: features(j) }); });
   if (settings) await ctx.addInitScript((s) => { localStorage.setItem('stacks2:settings', JSON.stringify(s)); }, settings);
   await ctx.addInitScript(() => { localStorage.setItem('stacks2:upnext', 'true'); });
+  // Every HUD notice shown, for the checks (the toast replaces itself).
+  await ctx.addInitScript(() => { window.__toasts = []; setInterval(() => { const t = document.querySelector('#toast.on .hud-m')?.textContent; if (t && window.__toasts.at(-1) !== t) window.__toasts.push(t); }, 100); });
   if (fixtures) {
     let R = rank || F('rank');
     const prof = F('profile'), why = F('why'), fnd = finds || FINDS;
@@ -225,28 +227,38 @@ T.term = async (browser) => {
 
 T.badges = async (browser) => {
   const { ctx, page, log } = await context(browser);
-  await open(page, `?id=${encodeURIComponent(FIND0)}`);
-  await page.waitForFunction(() => window.__stacksLearn?.L.on, null, { timeout: 8000 });
-  await waitSpread(page);
-  await settle(page, 600);
+  // Checked as soon as the item shows: 1.2 s on a spread of 2 or more pages counts as read (§2.9), which clears it.
+  await page.goto(`${BASE}/?id=${encodeURIComponent(FIND0)}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => document.querySelector('#item-head h1') && window.__stacksLearn?.L.on, null, { timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('#item-head')?.dataset.badges === 'new', null, { timeout: 3000 }).catch(() => {});
   const head = await page.evaluate(() => [document.querySelector('#item-head')?.dataset.badges, getComputedStyle(document.querySelector('#item-head h1'), '::before').content]);
   check('3 NEW badge in the item header', head[0] === 'new' && head[1] === '"NEW"', JSON.stringify(head));
   const chip = await page.evaluate(() => { const c = document.querySelector('#new-chip'); return c && !c.hidden ? c.textContent : null; });
   check('3 the NEW chip shows the count', chip === 'NEW 6', String(chip));
+  await shot(page, 'new-badge-feed-early', { clip: { x: 0, y: 0, width: 1728, height: 90 } });
+  await waitSpread(page);
+  await settle(page, 600);
   // The toast for the batch.
-  const toastText = await page.evaluate(() => document.querySelector('#toast .hud-m')?.textContent || '');
+  await page.waitForFunction(() => window.__toasts.some((t) => /new items?$/.test(t)), null, { timeout: 6000 }).catch(() => {});
   await shot(page, 'new-badge-feed');
-  check('3 toast announced the batch (or was shown earlier)', /new item/.test(toastText) || true, toastText || '(gone by now)');
+  const toasts = await page.evaluate(() => window.__toasts);
+  check('3 a toast announces the batch', toasts.some((t) => /^\d+ new items?$/.test(t)), toasts.join(' | '));
   // Library row.
   await page.keyboard.press('L'); await page.waitForTimeout(700);
-  const lib = await page.evaluate((id) => { const { } = {}; const rows = [...document.querySelectorAll('.lr-i')]; const r = rows.find((x) => x.classList.contains('cur')) || rows[0]; const t = r?.querySelector('.lr-t'); return t ? getComputedStyle(t, '::before').content : null; }, FIND0);
-  check('3 NEW badge on the library row', lib === '"NEW"', String(lib));
+  const lib = await page.evaluate(async () => {
+    const { byId, items } = await import('/js/corpus.js'); const L = window.__stacksLearn.L;
+    const rows = [...document.querySelectorAll('.lr-i')];
+    const isNew = rows.filter((r) => L.newIds.has(items[Number(r.dataset.i)]?.id)), other = rows.filter((r) => !isNew.includes(r));
+    const pill = (r) => getComputedStyle(r.querySelector('.lr-t'), '::before').content;
+    return { newRows: isNew.length, newPill: isNew.every((r) => pill(r) === '"NEW"'), otherPill: other.some((r) => pill(r) === '"NEW"') };
+  });
+  check('3 NEW badge on the library rows of new items (and only those)', lib.newRows > 0 && lib.newPill && !lib.otherPill, JSON.stringify(lib));
   await shot(page, 'new-badge-library', { clip: { x: 0, y: 0, width: 900, height: 700 } });
   await page.keyboard.press('L'); await page.waitForTimeout(300);
   // Walk: the chip narrows to the new items; u leaves; Back undoes.
   await page.click('#new-chip'); await page.waitForTimeout(600);
-  const w1 = await S(page, `return { kind: state.stack?.kind, n: state.scope?.size };`);
-  check('4 the chip walks the new items', w1.kind === 'new' && w1.n === 6, JSON.stringify(w1));
+  const w1 = await S(page, `return { kind: state.stack?.kind, n: state.scope?.size, want: L.L.newIds.size };`);
+  check('4 the chip walks the new items', w1.kind === 'new' && w1.n === w1.want && w1.n >= 4, JSON.stringify(w1));
   await page.keyboard.press('Backspace'); await page.waitForTimeout(500);
   const w2 = await S(page, `return { kind: state.stack?.kind, scope: !!state.scope };`);
   check('4 Back undoes the walk', w2.kind !== 'new' && !w2.scope, JSON.stringify(w2));
@@ -262,10 +274,14 @@ T.badges = async (browser) => {
   await shot(page, 'new-badge-wall', { clip: { x: 0, y: 0, width: 1728, height: 640 } });
   await page.keyboard.press('f'); await page.waitForTimeout(500);
   // A flick past leaves the badge; reading clears it everywhere.
-  const cur = await S(page, `const { items } = await import('/js/corpus.js'); return items[state.order[state.pos]].id;`);
-  await page.keyboard.press('j'); await page.waitForTimeout(700); await page.keyboard.press('k'); await page.waitForTimeout(300);
+  // The next new item in the New stack: a flick past (j, then k after 0.7 s) leaves it new.
+  const cur = await S(page, `const { items } = await import('/js/corpus.js'); return state.order.slice(state.pos + 1).map((i) => items[i].id).find((id) => L.isNew(id));`);
+  await S(page, `const { byId } = await import('/js/corpus.js'); const st = await import('/js/stack.js'); st.goTo(byId.get(a), 'next item');`, cur);
+  await page.waitForTimeout(700);
+  await page.keyboard.press('Backspace'); await page.waitForTimeout(400);
   const stillNew = await S(page, `return L.isNew(a);`, cur);
   check('3 a flick past leaves the badge', stillNew, cur);
+  await S(page, `const { byId } = await import('/js/corpus.js'); const st = await import('/js/stack.js'); st.goTo(byId.get(a), 'next item');`, cur);
   await waitSpread(page);
   const t0 = Date.now();
   // Reading: keep the input fresh (memory counts active time) until 2 pages are seen or 25 s pass.
@@ -519,7 +535,8 @@ T.reload = async (browser) => {
 let MODE = 'fixtures';
 if (process.env.DUI_DEBUG) T.debug = async (browser) => {
   const { ctx, page } = await context(browser);
-  await open(page, process.env.DUI_DEBUG); await page.waitForTimeout(2500);
+  await page.goto(BASE + '/' + process.env.DUI_DEBUG, { waitUntil: 'domcontentloaded' });
+  for (let k = 0; k < 12; k++) { await page.waitForTimeout(150); console.log(await page.evaluate(async () => { try { const { state } = await import('/js/state.js'); const { items } = await import('/js/corpus.js'); const L = window.__stacksLearn?.L; const id = items[state.order[state.pos]]?.id; return [performance.now() | 0, id, document.querySelector('#item-head')?.dataset.badges ?? null, L?.on, L?.newIds.size, L?.newIds.has(id)]; } catch (e) { return e.message; } })); }
   console.log(await page.evaluate(() => { const c = document.querySelector('#new-chip'); return { chip: c && { hidden: c.hidden, text: c.textContent, parent: c.parentNode?.id, prev: c.previousElementSibling?.id, rect: JSON.stringify(c.getBoundingClientRect()), disp: getComputedStyle(c).display }, L: window.__stacksLearn && { on: window.__stacksLearn.L.on, n: window.__stacksLearn.L.newIds.size } }; }));
   await ctx.close();
 };
