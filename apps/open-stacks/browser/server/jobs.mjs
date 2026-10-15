@@ -154,6 +154,7 @@ export function repoPathOf(here) {
 // ---------------------------------------------------------- body templates ----
 const FINISH = (id, title, merge = true) => `## Finish\n\n${merge ? '`node build-corpus.mjs --merge`, then ' : ''}\`node jobs.mjs check ${id} --live\`, then \`node jobs.mjs done ${id} --note "…"\`, then commit the files \`done\` lists as "Stacks job ${id}: ${title}".\n`;
 const lineOf = (x) => `- ${x.t} (${x.id})`;
+const seedsOf = (inputs) => inputs.filter((x) => !x.ex);
 /** Where to look, from the kinds of the seeds (README section 6). */
 function whereToLook(seeds, lane) {
   const ids = seeds.map((s) => s.id || '');
@@ -173,12 +174,8 @@ export function bodyOf(job) {
   switch (type) {
     case 'discover': return `## What to do
 
-Find ${wants.count} open works (papers, reports or long posts) on **${target.label}** that sit close to the seed items below: the same questions, methods or debates, by other authors as well as the same ones. Prefer work from the last three years; at most two older classics the library is missing. Each item must be free to read without a login and must not already be in the corpus (\`node jobs.mjs lookup "<title or id>"\`). Put each item in the lane where it fits best; most will fit \`${target.lane}\`. Add between ${wants.min} and ${wants.max} items, each with \`job: "${id}"\` (README section 3).
-
-## Seeds
-
-${inputs.map(lineOf).join('\n')}
-
+Find ${wants.count} open works (papers, reports or long posts) on **${target.label}** that sit close to the ${seedsOf(inputs).length ? 'seed items' : 'examples'} below: the same questions, methods or debates, by other authors as well as the same ones. Prefer work from the last three years; at most two older classics the library is missing. Each item must be free to read without a login and must not already be in the corpus (\`node jobs.mjs lookup "<title or id>"\`). Put each item in the lane where it fits best; most will fit \`${target.lane}\`. Add between ${wants.min} and ${wants.max} items, each with \`job: "${id}"\` (README section 3).
+${seedsOf(inputs).length ? `\n## Seeds\n\n${seedsOf(inputs).map(lineOf).join('\n')}\n` : ''}${inputs.some((x) => x.ex) ? `\n## Examples already in the library\n\n${inputs.filter((x) => x.ex).map(lineOf).join('\n')}\n` : ''}
 ## Where to look
 
 ${whereToLook(inputs, target.lane)}
@@ -335,10 +332,13 @@ export function candidates(ctx) {
       const boosted = x.ctl === 'boost';
       const with_ = seeds.filter((id) => has(id, f));
       if (!boosted && !(reading && x.l >= 0.5 && x.W >= 2 && with_.length >= 2)) continue;
-      let ins = with_.slice(0, 5);
-      if (ins.length < 3) {
+      // Seeds are items the reader valued (2-5, one topic). Library examples stand in only for a
+      // boosted topic with fewer than 2 seeds: padding a read topic with unread items mixes topics
+      // (an RL-for-reasoning job once got an AI-safety paper as its third "seed").
+      let ins = with_.slice(0, 5), ex = new Set();
+      if (ins.length < 2) {
         const more = (index?.inv.get(f) ? [...index.inv.get(f)] : []).map((i) => items[i]).filter((it) => !ins.includes(it.id)).sort((a, b) => (b.q ?? 0.5) - (a.q ?? 0.5));
-        for (const it of more) { if (ins.length >= 3) break; ins.push(it.id); }
+        for (const it of more) { if (ins.length >= 3) break; ins.push(it.id); ex.add(it.id); }
       }
       if (!ins.length) continue;
       const laneOf = () => {
@@ -347,14 +347,14 @@ export function candidates(ctx) {
         return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || 'ai-safety';
       };
       const priority = boosted || (x.l >= 1 && x.W >= 4) ? 'high' : x.l >= 0.75 ? 'normal' : 'low';
-      cands.push({ f, x, boosted, seedSet: with_, ins, lane: laneOf(), priority, rank: x.l * Math.sqrt(Math.max(x.W, 1)) });
+      cands.push({ f, x, boosted, seedSet: with_, ins, ex, lane: laneOf(), priority, rank: x.l * Math.sqrt(Math.max(x.W, 1)) });
     }
     cands.sort((a, b) => b.rank - a.rank);
     const kept = [];
     for (const c of cands) {
       if (c.seedSet.length && kept.some((k) => c.seedSet.filter((s) => k.seedSet.includes(s)).length >= 0.8 * c.seedSet.length)) continue;
       kept.push(c);
-      const ins = c.ins.map(itemOf).filter(Boolean).sort((a, b) => (dateKey(a) < dateKey(b) ? 1 : -1)).map(pub);
+      const ins = c.ins.map(itemOf).filter(Boolean).sort((a, b) => (c.ex.has(a.id) - c.ex.has(b.id)) || (dateKey(a) < dateKey(b) ? 1 : -1)).map((it) => (c.ex.has(it.id) ? { ...pub(it), ex: true } : pub(it)));
       const wants = { ...WANTS[c.priority] };
       out.push({ type: 'discover', key: `discover:${c.f}`, priority: c.priority, rank: c.rank, title: `Find ${wants.count} open works on ${c.x.label}`,
         target: { feature: c.f, label: c.x.label, lane: c.lane }, inputs: ins, wants });

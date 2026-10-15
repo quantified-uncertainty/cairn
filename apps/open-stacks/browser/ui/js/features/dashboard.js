@@ -58,6 +58,8 @@ function evidence(c = {}) {
 }
 const day = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const pill = () => h('span', { className: 'new-pill', textContent: 'NEW' });
+/** A feature's control: the server sends the mode as a string ('boost' | 'mute' | 'ignore' | null); an object {mode} is accepted too. */
+const modeOf = (x) => (typeof x?.ctl === 'string' ? x.ctl : x?.ctl?.mode) || null;
 const dot = (l) => h('i', { className: 'db-dot', style: `--c:${laneColor(l)}`, title: laneName(l) });
 /** A button with a data-act for QA. */
 const act = (name, text, fn, title = '') => {
@@ -376,12 +378,12 @@ function featRow(x, wk) {
   const setC = async (mode) => {
     try { await (Lm ? Lm.setControl(x.f, mode) : post('/learn/control', { f: x.f, mode })); }
     catch { toast('Could not change it', { icon: 'circle-alert', kind: 'bad' }); return; }
-    x.ctl = mode ? { mode } : null; paintCtl();
+    x.ctl = mode || null; paintCtl();
     toast(mode ? { boost: 'Boosted', mute: 'Muted', ignore: 'Ignored' }[mode] : 'Reset', { icon: mode === 'mute' ? 'thumbs-down' : mode === 'ignore' ? 'circle-alert' : 'thumbs-up', kind: 'ok', sub: clip(x.label || x.f, 40) });
     setTimeout(() => load(['full'], true), 700);
   };
   const paintCtl = () => {
-    const mode = x.ctl?.mode;
+    const mode = modeOf(x);
     ctl.replaceChildren(...(mode
       ? [h('span', { className: 'db-mode', textContent: mode }), act('reset', 'Reset', () => setC(null), 'Back to what it learned')]
       : [act('boost', '+', () => setC('boost'), 'Boost: more of this in For you (and agents may look for more)'),
@@ -391,7 +393,7 @@ function featRow(x, wk) {
   paintCtl();
   const ex = (x.ex || []).map((id) => byId.get(id)).filter((i) => i != null).slice(0, 3);
   const ev = evidence(x.c);
-  const el = h('div', { className: 'db-row db-f' + (x.ctl?.mode === 'ignore' ? ' gone' : ''), tabIndex: 0 },
+  const el = h('div', { className: 'db-row db-f' + (modeOf(x) === 'ignore' ? ' gone' : ''), tabIndex: 0 },
     h('div', { className: 'db-l1' },
       h('span', { className: 'db-fl', title: x.f }, h('span', { className: 'db-fn', textContent: x.label || x.f }), h('span', { className: 'db-g', textContent: groupOf(x.f, x.g) })),
       lamBar(l),
@@ -418,9 +420,9 @@ function paintLearned() {
   const wk = weekAgo();
   const feats = Object.entries(p.feat || {}).map(([f, v]) => ({ f, ...v }));
   const strength = (x) => (x.l || 0) * Math.sqrt(x.W || 0);
-  const pos = feats.filter((x) => (x.l || 0) > 0 && x.ctl?.mode !== 'ignore').sort((a, b) => strength(b) - strength(a)).slice(0, 12);
-  const neg = feats.filter((x) => (x.l || 0) < 0 && x.ctl?.mode !== 'ignore').sort((a, b) => strength(a) - strength(b)).slice(0, 6);
-  const ctlOnly = feats.filter((x) => x.ctl?.mode && !pos.includes(x) && !neg.includes(x));
+  const pos = feats.filter((x) => (x.l || 0) > 0 && modeOf(x) !== 'ignore').sort((a, b) => strength(b) - strength(a)).slice(0, 12);
+  const neg = feats.filter((x) => (x.l || 0) < 0 && modeOf(x) !== 'ignore').sort((a, b) => strength(a) - strength(b)).slice(0, 6);
+  const ctlOnly = feats.filter((x) => modeOf(x) && !pos.includes(x) && !neg.includes(x));
   const list = (title, xs, empty) => h('div', { className: 'db-fl-list' }, h('div', { className: 'db-ch' }, h('span', { textContent: title }), h('span', { className: 'db-legend', textContent: '−2 ◂ λ ▸ +2' })),
     xs.length ? xs.map((x) => featRow(x, wk)) : note(empty, 'db-empty sm'));
   // Lane mix.
@@ -569,7 +571,7 @@ function paintJobs() {
     h('span', { textContent: `Last refreshed ${ago(j.lastRefresh)}${j.nextRefresh ? ` · next ${ago(j.nextRefresh)}` : j.every === 0 ? ' · automatic refresh off' : ''}` }),
     Object.keys(types).length ? h('span', { className: 'db-types', textContent: Object.entries(types).map(([t, n]) => `${n} ${t}`).join(' · ') }) : null);
   const hint = h('p', { className: 'db-hint' }, 'Using an agent in the cloud? Commit and push ', h('code', { textContent: 'jobs/open/' }), ' first: ',
-    h('code', { className: 'db-cmd', textContent: `git add ${j.repoPath || 'apps/open-stacks/browser'}/${j.dir || 'jobs'}/open && git commit -m "Stacks: open jobs" && git push` }), '. The app never runs git.');
+    h('code', { className: 'db-cmd', textContent: `git add ${/^(\/|[A-Za-z]:\\)/.test(j.dir || '') ? j.dir : `${j.repoPath || 'apps/open-stacks/browser'}/${j.dir || 'jobs'}`}/open && git commit -m "Stacks: open jobs" && git push` }), '. The app never runs git.');
   fill('db-jobs', info, open.length ? h('div', { className: 'db-list' }, open.map((x) => jobRow(x))) : note('No open jobs. Refresh jobs writes them from your reading and from gaps in the library; ! in the reader flags a problem for an agent.'), hint);
 }
 function paintDone() {

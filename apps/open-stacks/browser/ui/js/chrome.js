@@ -2,7 +2,7 @@
 // the keys overlay, the key dispatcher and the server status line.
 import { $, h, on, emit, views, registerView, registerKey, keymap, keyHelp, store } from './util.js';
 import { items, LANES, COUNTS, byId } from './corpus.js';
-import { state, buildOrder } from './state.js';
+import { state, buildOrder, screenKey, loadScreenPrefs } from './state.js';
 import { showFeed } from './feed.js';
 import { jumpTo, paintWheel, wheelMenu, before } from './nav.js';
 
@@ -92,7 +92,8 @@ document.addEventListener('keydown', (e) => {
   b.fn(e);
 });
 let rz = null;
-window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(refresh, 150); });
+// Moving the window to another screen brings that screen's page and column counts.
+window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (screenKey() !== state.screen) loadScreenPrefs(); refresh(); }, 150); });
 
 async function pollStatus() {
   try {

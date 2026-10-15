@@ -2,7 +2,7 @@
 // mouse wheel and the trackpad (docs/navigation-ergonomics.md, items 1-3 and 5).
 import { $, h, css, store, emit, on, registerKey, steppers, toast } from './util.js';
 import { items, related } from './corpus.js';
-import { state, current, buildOrder, learn } from './state.js';
+import { state, current, buildOrder, learn, saveScreenPref } from './state.js';
 import { isFlow } from './docs.js';
 import { startOf, randomTarget } from './prefetch.js';
 import { showFeed, paintHead } from './feed.js';
@@ -206,10 +206,10 @@ function setPer(d) {
   const i = current();
   if (flowHere(items[i])) {
     const cols = d === 0 ? 0 : Math.max(1, Math.min(8, (state.flowCols || live.g.cols) + d));
-    state.flowCols = cols; store.set('flowCols', cols);
+    state.flowCols = cols; saveScreenPref('flowCols');
     if (cols) toast(`${cols} column${cols > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press = to fit the screen' }); else toast('Columns fit the screen', { icon: 'maximize' });
-  } else if (d === 0) { state.perAuto = true; store.set('perAuto', true); toast('Pages fit the screen', { icon: 'maximize' }); }
-  else { state.perAuto = false; store.set('perAuto', false); state.per = Math.max(1, Math.min(8, state.per + d)); store.set('per', state.per); toast(`${state.per} page${state.per > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press = to fit the screen' }); }
+  } else if (d === 0) { state.perAuto = true; saveScreenPref('perAuto'); toast('Pages fit the screen', { icon: 'maximize' }); }
+  else { state.perAuto = false; state.per = Math.max(1, Math.min(8, state.per + d)); saveScreenPref('perAuto'); saveScreenPref('per'); toast(`${state.per} page${state.per > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press = to fit the screen' }); }
   state.hist.set(i, []); showFeed();
 }
 function setFont(d) {

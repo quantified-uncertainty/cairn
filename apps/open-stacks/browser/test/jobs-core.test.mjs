@@ -82,6 +82,21 @@ test('no reading-based jobs below 10 exposures; boosts still count', () => {
   assert.ok(d, 'a boosted tag gets a discover job');
   assert.equal(d.priority, 'high');
   assert.equal(d.inputs.length, 3, 'filled from the corpus, best q first');
+  assert.ok(d.inputs.filter((x) => x.ex).length >= 1, 'library examples are marked');
+  const body = J.finish({ id: 'discover-0001', type: 'discover', title: d.title, target: d.target, inputs: d.inputs, wants: d.wants }).body;
+  assert.match(body, /## Examples already in the library\n/);
+});
+
+test('discover seeds: a read topic with two seeds is not padded with unread items', () => {
+  // Two deep reads (one saved) in Reasoning, plus quick exits elsewhere to pass the 10-exposure gate.
+  const ops = [...readOps(ITEMS[0].id, { mins: 18, frac: 0.9, at, it: ITEMS[0], n: 12, judge: ['save'] }), ...readOps(ITEMS[3].id, { mins: 18, frac: 0.9, at, it: ITEMS[3], n: 12, judge: ['save'] })];
+  for (const k of [46, 49, 52, 55, 58, 61, 62, 63, 64, 65]) ops.push(...quickOps(ITEMS[k].id, { secs: 3, at, it: ITEMS[k] }));
+  const P = profileOf(ops);
+  assert.ok(P.exposures >= 10);
+  const d = J.candidates(ctxOf(P, { now: NOW })).find((x) => x.type === 'discover');
+  assert.ok(d, 'a discover job for the read topic');
+  assert.deepEqual(d.inputs.map((x) => x.id).sort(), [ITEMS[0].id, ITEMS[3].id].sort(), 'only the two seeds');
+  assert.ok(!d.inputs.some((x) => x.ex));
 });
 
 test('the generator: each type under its rule, ordered, capped, deduped, cooled down, rewritten only when untouched', () => {

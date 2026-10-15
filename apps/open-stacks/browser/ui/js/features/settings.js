@@ -16,7 +16,7 @@
 // The daily AI budget lives on the server (routes/85-settings.mjs).
 import { $, h, on, emit, store, toast, today, keymap, keyHelp, sections, registerStepper } from '../util.js';
 import { items } from '../corpus.js';
-import { state, current } from '../state.js';
+import { state, current, saveScreenPref, isScreenPref } from '../state.js';
 import { refresh, applyChrome } from '../chrome.js';
 import { live, dropLive } from '../flow.js';
 import { paintWheel, advance, back, toggleZoom } from '../nav.js';
@@ -178,7 +178,7 @@ function setS(k, v) {
   emit('settings:changed', { key: k, value: v });
 }
 function setCore(k, v, quiet = false) {
-  state[k] = v; store.set(k, v);
+  state[k] = v; if (isScreenPref(k)) saveScreenPref(k); else store.set(k, v); // pages and columns: per screen
   if (quiet) return;
   if (k.startsWith('wheel')) paintWheel();
   if (k === 'pin' || k === 'panel' || k === 'panelSide') { applyChrome(); relayout(); }

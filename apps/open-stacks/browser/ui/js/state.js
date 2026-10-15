@@ -24,6 +24,18 @@ export const state = {
   // state.stack describes it ({kind, id, label, crumb, size}).
   sort: null, scope: null, stack: null,
 };
+// Pages per spread and text columns are kept per screen: a 32-inch monitor and a laptop want
+// different counts, and a count chosen on one should not carry over to the other. A screen
+// with no choice yet fits automatically (store keys 'per@1512x982' and so on).
+export const screenKey = () => { try { return `${screen.width}x${screen.height}`; } catch { return 'default'; } };
+const SCREEN_PREFS = { per: 3, perAuto: true, flowCols: 0 };
+export function loadScreenPrefs() {
+  const k = state.screen = screenKey();
+  for (const [f, d] of Object.entries(SCREEN_PREFS)) state[f] = store.get(`${f}@${k}`, d);
+}
+export function saveScreenPref(f) { if (f in SCREEN_PREFS) store.set(`${f}@${state.screen || screenKey()}`, state[f]); }
+export const isScreenPref = (f) => f in SCREEN_PREFS;
+loadScreenPrefs();
 const seed = store.get('seed', Math.floor(Math.random() * 1e9));
 store.set('seed', seed);
 const noise = (i) => { let x = (i + 1) * 2654435761 ^ seed; x = Math.imul(x ^ (x >>> 15), 2246822507); x ^= x >>> 13; return ((x >>> 0) % 10000) / 10000; };

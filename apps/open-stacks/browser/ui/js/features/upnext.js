@@ -49,7 +49,7 @@ $('#stage').insertBefore(root, $('#spread'));
 /** The stack's name as the header gives it. */
 function where(st) {
   if (st.kind === 'folder') return (st.crumb?.length ? st.crumb : [st.label]).join(' › ');
-  if (st.kind === 'tag') return '# ' + st.label;
+  if (st.kind === 'tag') return st.label;
   if (st.kind === 'all') return 'All lanes';
   return st.label || LANES[state.lane] || '';
 }
@@ -102,7 +102,7 @@ function endTile(st) {
   return h('div', { className: 'un-end' },
     h('div', { className: 'un-end-t', textContent: inside ? `Last in ${st.label}` : `End of ${name}` }),
     h('div', { className: 'un-end-s' }, inside
-      ? [h('button', { type: 'button', textContent: 'Leave it', title: 'The whole lane again, on this item (u) · Back undoes', onclick: () => leave() }), ' u: the whole lane, from here']
+      ? [h('button', { type: 'button', textContent: 'Leave · u', title: 'The whole lane again, on this item (u) · Back undoes', onclick: () => leave() }), h('div', { textContent: 'the whole lane, from here' })]
       : '0–9: another lane'));
 }
 function lineItem(i, role) {
@@ -189,12 +189,16 @@ function paint() {
   const st = stack();
   const H = mode === 'tiles' ? Math.min(MAX_H, m.band) : LINE_H;
   const coverH = H - HEAD_H - GAP_V - CAP_H - 5;
-  const tw = Math.max(112, Math.min(160, Math.round(coverH * 0.78)));
+  let tw = Math.max(112, Math.min(160, Math.round(coverH * 0.78)));
   const prev = upPrev(1)[0];
-  let next;
+  let next, slots = 0;
   if (mode === 'tiles') {
-    const room = m.width - (prev != null ? tw + SEP_W + GAP_X : 0);
-    next = upNext(Math.max(0, Math.min(30, Math.floor((room + GAP_X) / (tw + GAP_X)))));
+    // As many tiles as fit; when they fill the row, widened to fill it exactly.
+    const room = m.width - (prev != null ? SEP_W : 0);
+    slots = Math.max(1, Math.min(30, Math.floor((room + GAP_X) / (tw + GAP_X))));
+    next = upNext(slots - (prev != null ? 1 : 0));
+    const used = next.length + (prev != null ? 1 : 0) + (st.pos + 1 + next.length >= st.n ? 1 : 0);
+    if (used >= slots) tw = Math.floor((room + GAP_X) / slots - GAP_X);
   } else next = upNext(12);
   root.style.top = Math.round(m.end - H) + 'px';
   root.style.height = H + 'px';
@@ -215,7 +219,7 @@ function paint() {
     const kids = [];
     if (prev != null) kids.push(tile(prev, 'prev'), h('i', { className: 'un-sep' }));
     next.forEach((i, j) => kids.push(tile(i, j === 0 ? 'first' : '')));
-    if (st.pos + 1 + next.length >= st.n) kids.push(endTile(st)); // the stack ends in view
+    if (st.pos + 1 + next.length >= st.n && kids.length - (prev != null ? 1 : 0) < slots) kids.push(endTile(st)); // the stack ends in view
     row.replaceChildren(...kids);
     // Forget tiles far from here (they are cheap to make again).
     if (tiles.size > 90) { const keep = new Set([prev, ...next]); for (const k of tiles.keys()) if (!keep.has(k)) tiles.delete(k); }
