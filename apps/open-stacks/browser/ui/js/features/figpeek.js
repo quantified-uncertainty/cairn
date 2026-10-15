@@ -467,7 +467,66 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     }
     regs.push(R);
   }
-  let rs = regs.filter((R) => R.gc >= 4).map((R) => ({ x0: R.x0 * cs, y0: R.y0 * cs, x1: (R.x1 + 1) * cs, y1: (R.y1 + 1) * cs, gc: R.gc }));
+  let rs = regs.map((R, id) => ({ x0: R.x0 * cs, y0: R.y0 * cs, x1: (R.x1 + 1) * cs, y1: (R.y1 + 1) * cs, gc: R.gc, id })).filter((R) => R.gc >= 4);
+  // Figures side by side that touch are one region by now. Cut it apart where the
+  // captions say there are two: captions side by side next to it (sub-figures
+  // with captions of their own), or, on a two-column page, captions in both
+  // columns and none across both (a figure reaching into the other column).
+  // The cut runs down the emptiest column of graphics between them.
+  let nextId = regs.length;
+  const splitAt = (R, xa, xb, xm) => {
+    const r0 = Math.max(0, ci(R.x0) - r), r1 = Math.min(gw - 1, ci(R.x1 - 1e-6) + r), j0 = Math.max(0, cj(R.y0) - r), j1 = Math.min(gh - 1, cj(R.y1 - 1e-6) + r);
+    let cut = -1, best = Infinity;
+    for (let x = Math.max(r0 + 1, ci(xa)); x <= Math.min(r1 - 1, ci(xb)); x++) {
+      let n = 0; for (let j = j0; j <= j1; j++) { const i = j * gw + x; if (lab[i] === R.id && G[i]) n++; }
+      const sc = n + Math.abs((x + 0.5) * cs - xm) / (6 * body);
+      if (sc < best) { best = sc; cut = x; }
+    }
+    if (cut < 0) return null;
+    const parts = [], seen = new Uint8Array((r1 - r0 + 1) * (j1 - j0 + 1)), sw = r1 - r0 + 1, qq = [];
+    for (let j = j0; j <= j1; j++) for (let x = r0; x <= r1; x++) {
+      if (x === cut || seen[(j - j0) * sw + x - r0] || lab[j * gw + x] !== R.id) continue;
+      const P = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity, gc: 0 }, cells = [];
+      qq.length = 0; qq.push(j * gw + x); seen[(j - j0) * sw + x - r0] = 1;
+      while (qq.length) {
+        const i = qq.pop(), xx = i % gw, yy = (i / gw) | 0;
+        cells.push(i);
+        if (G[i]) { P.gc++; P.x0 = Math.min(P.x0, xx); P.x1 = Math.max(P.x1, xx); P.y0 = Math.min(P.y0, yy); P.y1 = Math.max(P.y1, yy); }
+        for (const [nx, ny] of [[xx - 1, yy], [xx + 1, yy], [xx, yy - 1], [xx, yy + 1]]) {
+          if (nx < r0 || nx > r1 || ny < j0 || ny > j1 || nx === cut) continue;
+          const k2 = (ny - j0) * sw + nx - r0, ii = ny * gw + nx;
+          if (!seen[k2] && lab[ii] === R.id) { seen[k2] = 1; qq.push(ii); }
+        }
+      }
+      if (P.gc >= 4) parts.push({ x0: P.x0 * cs, y0: P.y0 * cs, x1: (P.x1 + 1) * cs, y1: (P.y1 + 1) * cs, gc: P.gc, cells, xlim: P.x1 < cut ? [-Infinity, (cut + 0.5) * cs] : [(cut + 0.5) * cs, Infinity] });
+    }
+    const L = parts.filter((P) => P.x1 <= (cut + 0.5) * cs), Rt = parts.filter((P) => P.x0 >= (cut + 0.5) * cs);
+    if (!(L.some((P) => P.gc >= 16) && Rt.some((P) => P.gc >= 16))) return null;
+    // New labels for the parts' cells, so a later pass can cut a part again.
+    for (const P of parts) { P.id = nextId++; for (const i of P.cells) lab[i] = P.id; delete P.cells; }
+    return parts;
+  };
+  for (let pass = 0, again = true; again && pass < 4; pass++) {
+    again = false;
+    for (const R of rs) {
+      if (R.dead || R.gc < 16) continue;
+      const by = (C) => (C.y0 >= R.y1 - body && C.y0 - R.y1 < 0.12 * H ? 1 : C.y1 <= R.y0 + body && R.y0 - C.y1 < 0.12 * H ? -1 : 0);
+      const adj = caps.filter((C) => by(C) && ovX(C, R) > 0);
+      let parts = null;
+      for (const C of adj) {
+        const D2 = adj.find((o) => o !== C && by(o) === by(C) && o.x0 > C.x1 && ovY(o, C) > 0);
+        if (D2 && (parts = splitAt(R, C.x1 - 3 * body, D2.x0 + 3 * body, (C.x1 + D2.x0) / 2))) break;
+      }
+      if (!parts && two && R.x0 < gL - 2 * body && R.x1 > gR + 2 * body) {
+        const nearC = caps.filter((C) => C.y0 < R.y1 + 0.12 * H && C.y1 > R.y0 - 0.12 * H);
+        if (!nearC.some((C) => C.x0 < gm - body && C.x1 > gm + body) && nearC.some((C) => C.x1 <= gm + body) && nearC.some((C) => C.x0 >= gm - body)) parts = splitAt(R, gL - 6 * body, gR + 6 * body, gm);
+      }
+      if (!parts) continue;
+      R.dead = true; rs.push(...parts); again = true;
+      break;
+    }
+    rs = rs.filter((R) => !R.dead);
+  }
   for (const b of pics) { if (b.dead) continue; const R = rs.find((x) => ovX(x, b) > 0 && ovY(x, b) > 0); if (R) { grow(R, b); R.img = true; } }
   // 7. Each region takes in nearby small text (labels, legends) and touching regions.
   rs.sort((a, b) => b.gc - a.gc);
@@ -476,10 +535,12 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     if (R.dead) continue;
     for (let changed = true; changed;) {
       changed = false;
-      // Labels from the region's own column only (unless it spans both).
+      // Labels from the region's own column only (unless it spans both); a region
+      // cut apart above keeps to its side of the cut.
       const side = !two ? 0 : R.x1 <= gm + body ? -1 : R.x0 >= gm - body ? 1 : 0;
-      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body) && (side === 0 || (side < 0 ? s.x1 <= gm + body : s.x0 >= gm - body))) { grow(R, s); s.used = R; changed = true; }
-      for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body)) { grow(R, Q); R.gc += Q.gc; R.img ||= Q.img; Q.dead = true; changed = true; }
+      const inLim = (A, b) => !A.xlim || (b.x0 >= A.xlim[0] - 0.3 * body && b.x1 <= A.xlim[1] + 0.3 * body);
+      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body) && inLim(R, s) && (R.xlim || side === 0 || (side < 0 ? s.x1 <= gm + body : s.x0 >= gm - body))) { grow(R, s); s.used = R; changed = true; }
+      for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body) && inLim(R, Q) && inLim(Q, R)) { grow(R, Q); R.gc += Q.gc; R.img ||= Q.img; R.xlim ||= Q.xlim; Q.dead = true; changed = true; }
     }
   }
   rs = rs.filter((R) => !R.dead);
