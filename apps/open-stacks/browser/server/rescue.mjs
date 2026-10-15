@@ -428,6 +428,10 @@ export function resolveImage(u, { fg = true, how = 'reader', force = false } = {
 async function doResolve(u, job, how, force) {
   const m = cachedImage(u);
   if (m && !force) return { st: m.via ? 'rescued' : 'ok', meta: m };
+  // Remembered: too big to proxy, or broken until its retry time (the scavenger, a flag or a pasted copy force a look).
+  const known = S.imgs[u];
+  if (!force && known?.st === 'big' && now() - (known.at || 0) < 30 * DAY) return { st: 'big' };
+  if (!force && known?.st === 'bad' && now() < (known.next || 0)) return { st: 'bad', why: known.why };
   if (cache.cached(u)) {
     // Cached by someone else (the /proxy route), or a cached placeholder: check it again.
     let mm = null; try { mm = cache.meta(u); } catch { /* evicted */ }
