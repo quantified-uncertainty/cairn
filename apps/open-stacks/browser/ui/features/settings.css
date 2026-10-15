@@ -152,3 +152,8 @@ html[data-st-filter="invert"] #st .st-pages i { filter: invert(.9) hue-rotate(18
 html[data-st-filter="invert"] #fp-ov .fp-view canvas { filter: invert(.9) hue-rotate(180deg); }
 html[data-st-filter="dim"] #fp-ov .fp-view canvas { filter: brightness(.78) contrast(1.06); }
 html[data-st-filter="invert"] #fp-ov .fp-view { background: #1a1a1a; }
+/* Dark paper: figures, charts and diagrams often have transparent backgrounds
+   and dark ink, which vanish on a dark page. Give every image in a post a
+   light card behind it (photos just gain a thin frame). */
+html[data-st-paper="dark"] .flow :is(img, svg:not(.ticon svg), canvas, video, .ltx_figure img) { background: #f4f1ea; padding: .35em; border-radius: 3px; box-sizing: content-box; }
+html[data-st-paper="dark"] .flow :is(math, .katex, mjx-container) { color: var(--paper-ink); }
